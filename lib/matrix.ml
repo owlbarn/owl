@@ -30,19 +30,29 @@ module Matrix = struct
 
   (* matrix mathematical operations *)
 
-  let add = LM.add
-  let ( +@ ) x1 x2 = add x1 x2
+  let add x1 x2 = LM.add x1 x2
+  let ( +@ ) x1 x2 = add
 
-  let sub = LM.sub
-  let ( -@ ) x1 x2 = sub x1 x2
+  let sub x1 x2 = LM.sub x1 x2
+  let ( -@ ) = sub
 
-  (* this is elementwise product ... fix *)
-  let mul = LM.mul
-  let ( *@ ) x1 x2 = mul x1 x2
-  let ( *$@ ) x1 x2 = None
+  let dot x1 x2 = LL.gemm x1 x2
+  let ( $@ ) = dot
 
-  let div = LM.div
-  let ( /@ ) x1 x2 = div x1 x2
+  let mul x1 x2 = LM.mul x1 x2
+  let ( *@ ) = mul
+
+  let div x1 x2 = LM.div x1 x2
+  let ( /@ ) = div
+
+  let compare = None
+  let ( =@ ) = None
+
+  let ( ?@ ) = None
+
+  let ( >@ ) = None
+
+  let ( <@ ) = None
 
   let min = None
 
@@ -68,7 +78,8 @@ module Matrix = struct
   let concat_horizontal = None
   let ( @= ) = concat_horizontal
 
-  let transpose = None
+  let transpose x =
+    LL.Mat.transpose_copy x
 
   let size (x : LM.t) =
     let m = BA.Array2.dim1 x in
@@ -77,12 +88,20 @@ module Matrix = struct
 
   let shape = size
 
+  let numel x =
+    let m, n = size x in
+    m * n
+
   let col_num x = fst (size x)
 
   let row_num x = snd (size x)
 
   let part ~a1 ~b1 ~a2 ~b2 x =
     LL.lacpy ~ar:(a1+1) ~ac:(b1+1) ~m:(a2-a1+1) ~n:(b2-b1+1) x
+
+  let duplicate x =
+    let m, n = size x in
+    part 0 0 (m - 1) (n - 1) x
 
   let col x i =
     let m, n = size x in
