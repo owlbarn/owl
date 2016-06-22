@@ -39,6 +39,7 @@ module Matrix = struct
   (* this is elementwise product ... fix *)
   let mul = LM.mul
   let ( *@ ) x1 x2 = mul x1 x2
+  let ( *$@ ) x1 x2 = None
 
   let div = LM.div
   let ( /@ ) x1 x2 = div x1 x2
