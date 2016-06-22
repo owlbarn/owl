@@ -55,6 +55,10 @@ module Matrix = struct
 
   let max_row = None
 
+  let qr = None
+
+  let svd = None
+
   (* matrix manipulations *)
 
   let concat_vertical = None
@@ -65,7 +69,7 @@ module Matrix = struct
 
   let transpose = None
 
-  let size x =
+  let size (x : LM.t) =
     let m = BA.Array2.dim1 x in
     let n = BA.Array2.dim2 x in
     m, n
@@ -76,26 +80,46 @@ module Matrix = struct
 
   let row_num x = snd (size x)
 
-  let col x n = LM.col x (n + 1)
+  let part ~a1 ~b1 ~a2 ~b2 x =
+    LL.lacpy ~ar:(a1+1) ~ac:(b1+1) ~m:(a2-a1+1) ~n:(b2-b1+1) x
 
-  let row x n = None
+  let col x i =
+    let m, n = size x in
+    part 0 i (m - 1) i x
+
+  let row x i =
+    let m, n = size x in
+    part i 0 i (n - 1) x
 
   let cols = None
 
   let rows = None
 
   let diag x =
-    let m, n = size x in
-    let j = Pervasives.min m n in
-    let v = vector_zeros j in
-    for i = 0 to (j - 1) do
-      v.{1, i + 1} <- x.{i + 1, i + 1}
-    done;
-    v
+    let v = LM.copy_diag x in
+    LM.from_row_vec v
 
   (* matrix iteration operations *)
 
-  let map = None
+  let map = LM.map
+
+  (* TODO: implement region *)
+  let iteri f x =
+    let m, n = size x in
+    let a1, b1, a2, b2 = 0, 0, m - 1, n - 1 in
+    let inc = let c = ref (-1) in fun () -> c := !c + 1; !c in
+    for i = a1 to a2 do
+      for j = b1 to b2 do
+        f (inc ()) i j x.{i + 1, j + 1}
+      done
+    done
+
+  let iter f x =
+    iteri (fun _ _ _ y -> f y) x
+
+  let iter_rows = None
+
+  let iter_cols = None
 
   let filter = None
 
@@ -106,5 +130,28 @@ module Matrix = struct
   (* formatted output operations *)
 
   let pprint x = Format.printf "%a\n" LL.pp_mat x
+
+  (* other functions *)
+
+  let sequential m n =
+    let x = zeros m n in
+    let _ = iteri (fun c i j _ -> x.{i + 1, j + 1} <- (float_of_int c)) x in
+    x
+
+  let ( +$ ) x a =
+    let _ = iteri (fun _ i j y -> x.{i + 1, j + 1} <- y +. a) x in
+    x
+
+  let ( -$ ) x a =
+    let _ = iteri (fun _ i j y -> x.{i + 1, j + 1} <- y -. a) x in
+    x
+
+  let ( *$ ) x a =
+    let _ = iteri (fun _ i j y -> x.{i + 1, j + 1} <- y *. a) x in
+    x
+
+  let ( /$ ) x a =
+    let _ = iteri (fun _ i j y -> x.{i + 1, j + 1} <- y /. a) x in
+    x
 
 end;;
