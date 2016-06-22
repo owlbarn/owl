@@ -31,7 +31,7 @@ module Matrix = struct
   (* matrix mathematical operations *)
 
   let add x1 x2 = LM.add x1 x2
-  let ( +@ ) x1 x2 = add
+  let ( +@ ) = add
 
   let sub x1 x2 = LM.sub x1 x2
   let ( -@ ) = sub
@@ -121,8 +121,6 @@ module Matrix = struct
 
   (* matrix iteration operations *)
 
-  let map = LM.map
-
   (* TODO: implement region *)
   let iteri f x =
     let m, n = size x in
@@ -136,6 +134,13 @@ module Matrix = struct
 
   let iter f x =
     iteri (fun _ _ _ y -> f y) x
+
+  let map f x = LM.map f x
+
+  let mapi f x =
+    let y = duplicate x in
+    let _ = iteri (fun c i j z -> y.{i + 1, j + 1} <- f c i j z) x in
+    y
 
   let iter_rows = None
 
@@ -158,20 +163,20 @@ module Matrix = struct
     let _ = iteri (fun c i j _ -> x.{i + 1, j + 1} <- (float_of_int c)) x in
     x
 
-  let ( +$ ) x a =
-    let _ = iteri (fun _ i j y -> x.{i + 1, j + 1} <- y +. a) x in
-    x
+  let ( +$ ) x a = map (fun y -> y +. a) x
 
-  let ( -$ ) x a =
-    let _ = iteri (fun _ i j y -> x.{i + 1, j + 1} <- y -. a) x in
-    x
+  let ( $+ ) a x = ( +$ ) x a
 
-  let ( *$ ) x a =
-    let _ = iteri (fun _ i j y -> x.{i + 1, j + 1} <- y *. a) x in
-    x
+  let ( -$ ) x a = map (fun y -> y -. a) x
 
-  let ( /$ ) x a =
-    let _ = iteri (fun _ i j y -> x.{i + 1, j + 1} <- y /. a) x in
-    x
+  let ( $- ) a x = ( -$ ) x a
+
+  let ( *$ ) x a = map (fun y -> y *. a) x
+
+  let ( $* ) a x = ( *$ ) x a
+
+  let ( /$ ) x a = map (fun y -> y /. a) x
+
+  let ( $/ ) a x = ( /$ ) x a
 
 end;;
