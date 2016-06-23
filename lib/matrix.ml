@@ -141,14 +141,13 @@ module Matrix = struct
   let iteri f x =
     let m, n = size x in
     let a1, b1, a2, b2 = 0, 0, m - 1, n - 1 in
-    let inc = let c = ref (-1) in fun () -> c := !c + 1; !c in
     for i = a1 to a2 do
       for j = b1 to b2 do
-        f (inc ()) i j x.{i + 1, j + 1}
+        f i j x.{i + 1, j + 1}
       done
     done
 
-  let iter f x = iteri (fun _ _ _ y -> f y) x
+  let iter f x = iteri (fun _ _ y -> f y) x
 
   let _iteri_dim bound_fun get_fun f x =
     for i = 0 to (bound_fun x) - 1 do
@@ -165,7 +164,7 @@ module Matrix = struct
 
   let mapi f x =
     let y = duplicate x in
-    let _ = iteri (fun c i j z -> y.{i + 1, j + 1} <- f c i j z) x in
+    let _ = iteri (fun i j z -> y.{i + 1, j + 1} <- f i j z) x in
     y
 
   let map f x = LM.map f x
@@ -173,10 +172,10 @@ module Matrix = struct
   let filteri f x =
     let r = ref [ ] in
     let _ = iteri (fun c i j y ->
-      if (f c i j y) = true then r := !r @ [(i,j)]
+      if (f i j y) = true then r := !r @ [(i,j)]
     ) x in !r
 
-  let filter f x = filteri (fun _ _ _ y -> f y) x
+  let filter f x = filteri (fun _ _ y -> f y) x
 
   let _filteri_dim iter_fun f x =
     let r = ref [ ] in
@@ -303,8 +302,10 @@ module Matrix = struct
 
   let sequential m n =
     let x = zeros m n in
-    let _ = iteri (fun c i j _ -> x.{i + 1, j + 1} <- (float_of_int c)) x in
-    x
+    let _ = iteri (fun i j _ ->
+      let c = i * m + j * n in
+      x.{i + 1, j + 1} <- (float_of_int c)
+    ) x in x
 
 end;;
 
