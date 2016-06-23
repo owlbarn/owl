@@ -1,5 +1,6 @@
 (** [
   Wrap up Lacaml module
+  Note: row-based matrix
   ]  *)
 
 module LL = Lacaml.D
@@ -134,7 +135,7 @@ module Matrix = struct
 
   (* matrix iteration operations *)
 
-  let iteri f x =
+  let iteri f x = (* TODO: replace with map ??? *)
     let m, n = size x in
     let a1, b1, a2, b2 = 0, 0, m - 1, n - 1 in
     for i = a1 to a2 do
@@ -165,13 +166,17 @@ module Matrix = struct
 
   let map f x = LM.map f x
 
-  let mapi_rows = None
+  let mapi_rows f x =
+    let r = ref [] in
+    iteri_rows (fun i y -> r := !r @ [f i y]) x; !r
 
-  let mapi_cols = None
+  let map_rows f x = mapi_rows (fun _ y -> f y) x
 
-  let map_rows = None
+  let mapi_cols f x =
+    let r = ref [] in
+    iteri_cols (fun i y -> r := !r @ [f i y]) x; !r
 
-  let map_cols = None
+  let map_cols f x = mapi_cols (fun _ y -> f y) x
 
   let filteri f x =
     let r = ref [ ] in
@@ -235,6 +240,8 @@ module Matrix = struct
 
   let abs x = LM.abs x
 
+  let neg x = LM.neg x
+
   let sum x = LM.sum x
 
   let is_equal x1 x2 = for_all (( = ) 0.) (sub x1 x2)
@@ -259,15 +266,15 @@ module Matrix = struct
 
   let min = fold min min_float
 
-  let min_col = None
+  let min_col = map_cols min
 
-  let min_row = None
+  let min_row = map_rows min
 
-  let max_dim = None
+  let max = fold max max_float
 
-  let max_col = None
+  let max_col = map_cols max
 
-  let max_row = None
+  let max_row = map_cols max
 
   let qr = None
 
