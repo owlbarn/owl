@@ -264,13 +264,13 @@ module Matrix = struct
 
   let ( <=@ ) = equal_or_smaller
 
-  let min = fold min min_float
+  let min = fold min max_float
 
   let min_col = map_cols min
 
   let min_row = map_rows min
 
-  let max = fold max max_float
+  let max = fold max min_float
 
   let max_col = map_cols max
 
