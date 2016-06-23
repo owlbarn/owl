@@ -30,48 +30,6 @@ module Matrix = struct
 
   let vector_random = random 1
 
-  (* matrix mathematical operations *)
-
-  let add x1 x2 = LM.add x1 x2
-  let ( +@ ) = add
-
-  let sub x1 x2 = LM.sub x1 x2
-  let ( -@ ) = sub
-
-  let dot x1 x2 = LL.gemm x1 x2
-  let ( $@ ) = dot
-
-  let mul x1 x2 = LM.mul x1 x2
-  let ( *@ ) = mul
-
-  let div x1 x2 = LM.div x1 x2
-  let ( /@ ) = div
-
-  let compare = None
-  let ( =@ ) = None
-
-  let ( ?@ ) = None
-
-  let ( >@ ) = None
-
-  let ( <@ ) = None
-
-  let min = None
-
-  let min_col = None
-
-  let min_row = None
-
-  let max = None
-
-  let max_col = None
-
-  let max_row = None
-
-  let qr = None
-
-  let svd = None
-
   (* matrix manipulations *)
 
   let size (x : LM.t) =
@@ -79,14 +37,20 @@ module Matrix = struct
     let n = BA.Array2.dim2 x in
     m, n
 
+  let shape = size
+
+  let same_shape x1 x2 = shape x1 = shape x2
+
   let area a b c d = { a = a; b = b; c = c; d= d }
 
   let area_of x =
     let m, n = size x in
     { a = 0; b = 0; c = m - 1; d= n - 1 }
 
-  let assert_equal_area r1 r2 =
-    assert ((r1.c-r1.a = r2.c-r2.a) && (r1.d-r1.b = r2.d-r2.b))
+  let equal_area r1 r2 =
+    ((r1.c-r1.a = r2.c-r2.a) && (r1.d-r1.b = r2.d-r2.b))
+
+  let same_area r1 r2 = r1 = r2
 
   let copy_area_to x1 r1 x2 r2 =
     LL.lacpy ~ar:(r1.a+1) ~ac:(r1.b+1) ~br:(r2.a+1) ~bc:(r2.b+1)
@@ -108,7 +72,7 @@ module Matrix = struct
     let _ = copy_area_to x2 r2 x3 r3 in
     x3
 
-  let ( @|| ) = concat_vertical
+  let ( @= ) = concat_vertical
 
   let concat_horizontal x1 x2 =
     let r1, r2 = area_of x1, area_of x2 in
@@ -119,12 +83,10 @@ module Matrix = struct
     let _ = copy_area_to x2 r2 x3 r3 in
     x3
 
-  let ( @= ) = concat_horizontal
+  let ( @|| ) = concat_horizontal
 
   let transpose x =
     LL.Mat.transpose_copy x
-
-  let shape = size
 
   let numel x =
     let m, n = size x in
@@ -161,9 +123,10 @@ module Matrix = struct
     let v = LM.copy_diag x in
     LM.from_row_vec v
 
+  let trace x = LM.trace
+
   (* matrix iteration operations *)
 
-  (* TODO: implement region *)
   let iteri f x =
     let m, n = size x in
     let a1, b1, a2, b2 = 0, 0, m - 1, n - 1 in
@@ -177,33 +140,91 @@ module Matrix = struct
   let iter f x =
     iteri (fun _ _ _ y -> f y) x
 
-  let map f x = LM.map f x
-
   let mapi f x =
     let y = duplicate x in
     let _ = iteri (fun c i j z -> y.{i + 1, j + 1} <- f c i j z) x in
     y
 
-  let iter_rows = None
+  let map f x = LM.map f x
 
-  let iter_cols = None
+  let iteri_rows f x =
+    for i = 0 to (row_num x) - 1 do
+      f i (row x i)
+    done
+
+  let iter_rows f x = iteri_rows (fun _ y -> f y) x
+
+  let iteri_cols f x =
+    for i = 0 to (col_num x) - 1 do
+      f i (col x i)
+    done
+
+  let iter_cols f x = iteri_cols (fun _ y -> f y) x
 
   let filter = None
 
-  let check = None
+  let exists f x =
+    try iter (fun y ->
+      if (f y) = true then failwith "found"
+    ) x; false
+    with exn -> true
 
-  let checkall = None
+  let not_exists f x = not (exists f x)
 
-  (* formatted output operations *)
+  let forall f x = let g y = not (f y) in not_exists g x
 
-  let pprint x = Format.printf "%a\n" LL.pp_mat x
+  (* matrix mathematical operations *)
 
-  (* other functions *)
+  let add x1 x2 = LM.add x1 x2
+  let ( +@ ) = add
 
-  let sequential m n =
-    let x = zeros m n in
-    let _ = iteri (fun c i j _ -> x.{i + 1, j + 1} <- (float_of_int c)) x in
-    x
+  let sub x1 x2 = LM.sub x1 x2
+  let ( -@ ) = sub
+
+  let dot x1 x2 = LL.gemm x1 x2
+  let ( $@ ) = dot
+
+  let mul x1 x2 = LM.mul x1 x2
+  let ( *@ ) = mul
+
+  let div x1 x2 = LM.div x1 x2
+  let ( /@ ) = div
+
+  let is_equal x1 x2 = forall (( = ) 0.) (sub x1 x2)
+
+  let ( =@ ) = is_equal
+
+  let is_greater x1 x2 = forall (( < ) 0.) (sub x1 x2)
+
+  let ( >@ ) = is_greater
+
+  let is_smaller x1 x2 = forall (( > ) 0.) (sub x1 x2)
+
+  let ( <@ ) = is_smaller
+
+  let equal_or_greater x1 x2 = forall (( <= ) 0.) (sub x1 x2)
+
+  let ( >=@ ) = equal_or_greater
+
+  let equal_or_smaller x1 x2 = forall (( >= ) 0.) (sub x1 x2)
+
+  let ( <=@ ) = equal_or_smaller
+
+  let min = None
+
+  let min_col = None
+
+  let min_row = None
+
+  let max = None
+
+  let max_col = None
+
+  let max_row = None
+
+  let qr = None
+
+  let svd = None
 
   let ( +$ ) x a = map (fun y -> y +. a) x
 
@@ -221,4 +242,17 @@ module Matrix = struct
 
   let ( $/ ) a x = ( /$ ) x a
 
+  (* formatted output operations *)
+
+  let pprint x = Format.printf "%a\n" LL.pp_mat x
+
+  (* other functions *)
+
+  let sequential m n =
+    let x = zeros m n in
+    let _ = iteri (fun c i j _ -> x.{i + 1, j + 1} <- (float_of_int c)) x in
+    x
+
 end;;
+
+module M = Matrix;;
