@@ -187,7 +187,10 @@ module Matrix = struct
 
   let filter_cols f x = filteri_cols (fun _ y -> f y) x
 
-  let fold = None
+  (* folding is always up->down and left->right order. *)
+  let fold f a x =
+    let r = ref a in
+    iter (fun y -> r := f !r y); !r
 
   let fold_rows = None
 
@@ -244,7 +247,7 @@ module Matrix = struct
 
   let ( <=@ ) = equal_or_smaller
 
-  let min_dim = None
+  let min = None
 
   let min_col = None
 
