@@ -190,7 +190,7 @@ module Matrix = struct
   (* folding is always up->down and left->right order. *)
   let fold f a x =
     let r = ref a in
-    iter (fun y -> r := f !r y); !r
+    iter (fun y -> r := f !r y) x; !r
 
   let fold_rows = None
 
@@ -204,7 +204,7 @@ module Matrix = struct
 
   let not_exists f x = not (exists f x)
 
-  let forall f x = let g y = not (f y) in not_exists g x
+  let for_all f x = let g y = not (f y) in not_exists g x
 
   (* matrix mathematical operations *)
 
@@ -227,23 +227,23 @@ module Matrix = struct
 
   let sum x = LM.sum x
 
-  let is_equal x1 x2 = forall (( = ) 0.) (sub x1 x2)
+  let is_equal x1 x2 = for_all (( = ) 0.) (sub x1 x2)
 
   let ( =@ ) = is_equal
 
-  let is_greater x1 x2 = forall (( < ) 0.) (sub x1 x2)
+  let is_greater x1 x2 = for_all (( < ) 0.) (sub x1 x2)
 
   let ( >@ ) = is_greater
 
-  let is_smaller x1 x2 = forall (( > ) 0.) (sub x1 x2)
+  let is_smaller x1 x2 = for_all (( > ) 0.) (sub x1 x2)
 
   let ( <@ ) = is_smaller
 
-  let equal_or_greater x1 x2 = forall (( <= ) 0.) (sub x1 x2)
+  let equal_or_greater x1 x2 = for_all (( <= ) 0.) (sub x1 x2)
 
   let ( >=@ ) = equal_or_greater
 
-  let equal_or_smaller x1 x2 = forall (( >= ) 0.) (sub x1 x2)
+  let equal_or_smaller x1 x2 = for_all (( >= ) 0.) (sub x1 x2)
 
   let ( <=@ ) = equal_or_smaller
 
