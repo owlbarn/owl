@@ -2,7 +2,6 @@
   Wrap up Lacaml module
   ]  *)
 
-module BA = Bigarray
 module LL = Lacaml.D
 module LM = LL.Mat
 
@@ -32,7 +31,7 @@ module Matrix = struct
 
   (* matrix manipulations *)
 
-  let size (x : LM.t) = LM.dim1 x, LM.dim2 x
+  let size x = LM.dim1 x, LM.dim2 x
 
   let shape = size
 
