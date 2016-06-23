@@ -303,7 +303,7 @@ module Matrix = struct
   let sequential m n =
     let x = zeros m n in
     let _ = iteri (fun i j _ ->
-      let c = i * m + j * n in
+      let c = i * m + j in
       x.{i + 1, j + 1} <- (float_of_int c)
     ) x in x
 
