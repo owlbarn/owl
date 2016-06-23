@@ -264,7 +264,9 @@ module Matrix = struct
 
   (* transform to or from other types *)
 
-  let
+  let to_list = LM.to_list
+
+  let to_array = LM.to_array
 
   (* other functions *)
 
