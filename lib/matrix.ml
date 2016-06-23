@@ -165,6 +165,14 @@ module Matrix = struct
 
   let map f x = LM.map f x
 
+  let mapi_rows = None
+
+  let mapi_cols = None
+
+  let map_rows = None
+
+  let map_cols = None
+
   let filteri f x =
     let r = ref [ ] in
     let _ = iteri (fun c i j y ->
@@ -188,13 +196,15 @@ module Matrix = struct
   let filter_cols f x = filteri_cols (fun _ y -> f y) x
 
   (* folding is always up->down and left->right order. *)
-  let fold f a x =
+  let _fold_raw iter_fun f a x =
     let r = ref a in
-    iter (fun y -> r := f !r y) x; !r
+    iter_fun (fun y -> r := f !r y) x; !r
 
-  let fold_rows = None
+  let fold f a x = _fold_raw iter f a x
 
-  let fold_cols = None
+  let fold_rows f a x = _fold_raw iter_rows f a x
+
+  let fold_cols f a x = _fold_raw iter_cols f a x
 
   let exists f x =
     try iter (fun y ->
@@ -247,7 +257,7 @@ module Matrix = struct
 
   let ( <=@ ) = equal_or_smaller
 
-  let min = None
+  let min = fold min min_float
 
   let min_col = None
 
