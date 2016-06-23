@@ -85,16 +85,17 @@ module Matrix = struct
 
   let ( @|| ) = concat_horizontal
 
-  let transpose x =
-    LL.Mat.transpose_copy x
+  let fill = LM.fill (* TODO: refine *)
+
+  let transpose x = LL.Mat.transpose_copy x
 
   let numel x =
     let m, n = size x in
     m * n
 
-  let col_num x = fst (size x)
+  let row_num x = fst (size x)
 
-  let row_num x = snd (size x)
+  let col_num x = snd (size x)
 
   let part x r =
     let a, b, c, d = r.a, r.b, r.c, r.d in
@@ -115,9 +116,19 @@ module Matrix = struct
     let r = area i 0 i (n - 1) in
     part x r
 
-  let cols x l = List.map (fun i -> col x i) l
+  let _get_content_dim x l dim =  (* dim = 0 for rows; 1 for cols *)
+    let m, n = size x and c = List.length l in
+    let area_at i = if dim = 0 then area i 0 i (n - 1)
+      else area 0 i (m - 1) i in
+    let a, b = if dim = 0 then (c, n) else (m, c) in
+    let y = zeros a b in
+    List.iteri (fun i j ->
+      let _ = copy_area_to x (area_at j) y (area_at i) in ()
+    ) l; y
 
-  let rows = None
+  let cols x l = _get_content_dim x l 1
+
+  let rows x l = _get_content_dim x l 0
 
   let diag x =
     let v = LM.copy_diag x in
@@ -137,8 +148,20 @@ module Matrix = struct
       done
     done
 
-  let iter f x =
-    iteri (fun _ _ _ y -> f y) x
+  let iter f x = iteri (fun _ _ _ y -> f y) x
+
+  let _iteri_dim bound_fun get_fun f x =
+    for i = 0 to (bound_fun x) - 1 do
+      f i (get_fun x i)
+    done
+
+  let iteri_rows f x = _iteri_dim row_num row f x
+
+  let iter_rows f x = iteri_rows (fun _ y -> f y) x
+
+  let iteri_cols f x = _iteri_dim col_num col f x
+
+  let iter_cols f x = iteri_cols (fun _ y -> f y) x
 
   let mapi f x =
     let y = duplicate x in
@@ -147,25 +170,27 @@ module Matrix = struct
 
   let map f x = LM.map f x
 
-  let iteri_rows f x =
-    for i = 0 to (row_num x) - 1 do
-      f i (row x i)
-    done
+  let filteri f x =
+    let r = ref [ ] in
+    let _ = iteri (fun c i j y ->
+      if (f c i j y) = true then r := !r @ [(i,j)]
+    ) x in !r
 
-  let iter_rows f x = iteri_rows (fun _ y -> f y) x
+  let filter f x = filteri (fun _ _ _ y -> f y) x
 
-  let iteri_cols f x =
-    for i = 0 to (col_num x) - 1 do
-      f i (col x i)
-    done
+  let _filteri_dim iter_fun f x =
+    let r = ref [ ] in
+    let _ = iter_fun (fun i v ->
+      if (f i v) = true then r := !r @ [i]
+    ) x in !r
 
-  let iter_cols f x = iteri_cols (fun _ y -> f y) x
+  let filteri_rows f x = _filteri_dim iteri_rows f x
 
-  let filteri = None
+  let filter_rows f x = filteri_rows (fun _ y -> f y) x
 
-  let filteri_rows = None
+  let filteri_cols f x = _filteri_dim iteri_cols f x
 
-  let filteri_cols = None
+  let filter_cols f x = filteri_cols (fun _ y -> f y) x
 
   let fold = None
 
@@ -267,6 +292,10 @@ module Matrix = struct
   let to_list = LM.to_list
 
   let to_array = LM.to_array
+
+  let of_list = LM.of_list
+
+  let of_array = LM.of_array
 
   (* other functions *)
 
