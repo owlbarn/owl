@@ -115,7 +115,7 @@ module Matrix = struct
     let r = area i 0 i (n - 1) in
     part x r
 
-  let cols = None
+  let cols x l = List.map (fun i -> col x i) l
 
   let rows = None
 
