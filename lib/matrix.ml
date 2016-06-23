@@ -32,14 +32,11 @@ module Matrix = struct
 
   (* matrix manipulations *)
 
-  let size (x : LM.t) =
-    let m = BA.Array2.dim1 x in
-    let n = BA.Array2.dim2 x in
-    m, n
+  let size (x : LM.t) = LM.dim1 x, LM.dim2 x
 
   let shape = size
 
-  let same_shape x1 x2 = shape x1 = shape x2
+  let same_shape x1 x2 = size x1 = size x2
 
   let area a b c d = { a = a; b = b; c = c; d= d }
 
