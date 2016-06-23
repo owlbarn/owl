@@ -161,7 +161,17 @@ module Matrix = struct
 
   let iter_cols f x = iteri_cols (fun _ y -> f y) x
 
-  let filter = None
+  let filteri = None
+
+  let filteri_rows = None
+
+  let filteri_cols = None
+
+  let fold = None
+
+  let fold_rows = None
+
+  let fold_cols = None
 
   let exists f x =
     try iter (fun y ->
@@ -190,6 +200,8 @@ module Matrix = struct
   let div x1 x2 = LM.div x1 x2
   let ( /@ ) = div
 
+  let sum = None
+
   let is_equal x1 x2 = forall (( = ) 0.) (sub x1 x2)
 
   let ( =@ ) = is_equal
@@ -210,13 +222,13 @@ module Matrix = struct
 
   let ( <=@ ) = equal_or_smaller
 
-  let min = None
+  let min_dim = None
 
   let min_col = None
 
   let min_row = None
 
-  let max = None
+  let max_dim = None
 
   let max_col = None
 
@@ -242,9 +254,17 @@ module Matrix = struct
 
   let ( $/ ) a x = ( /$ ) x a
 
-  (* formatted output operations *)
+  (* formatted input / output operations *)
 
   let pprint x = Format.printf "%a\n" LL.pp_mat x
+
+  let write_file = None
+
+  let read_file = None
+
+  (* transform to or from other types *)
+
+  let
 
   (* other functions *)
 
