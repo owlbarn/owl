@@ -225,7 +225,9 @@ module Matrix = struct
   let div x1 x2 = LM.div x1 x2
   let ( /@ ) = div
 
-  let sum = None
+  let abs x = LM.abs x
+
+  let sum x = LM.sum x
 
   let is_equal x1 x2 = forall (( = ) 0.) (sub x1 x2)
 
