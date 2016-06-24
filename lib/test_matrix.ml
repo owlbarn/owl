@@ -18,6 +18,7 @@ let _ =
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
   (* test_op "random    " c (fun () -> M.random m n); *)
+  (* test_op "sequential" c (fun () -> M.sequential m n); *)
   let x, y = (M.random m n), (M.random m n) in
   test_op "add       " c (fun () -> M.add x y);
   test_op "mul       " c (fun () -> M.mul x y);
@@ -33,6 +34,9 @@ let _ =
   test_op "iter      " c (fun () -> M.iter ((+.) 1.) x);
   test_op "iteri     " c (fun () -> M.iteri (fun _ _ y -> y +. 1.) x);
   test_op "iteri_cols" c (fun () -> M.iteri_cols (fun i y -> ()) x);
+  test_op "iter_cols " c (fun () -> M.iter_cols (fun y -> ()) x);
   test_op "iteri_rows" c (fun () -> M.iteri_rows (fun i y -> ()) x);
+  test_op "iter_rows " c (fun () -> M.iter_rows (fun i y -> ()) x);
+  test_op "for_all   " c (fun () -> M.for_all ((>) 10000.) x);
   test_op "transpose " c (fun () -> M.transpose x);
   print_endline (Bytes.make 60 '+');

@@ -340,12 +340,12 @@ module Matrix = struct
 
   (* other functions *)
 
-  let sequential m n =
-    let x = zeros m n in
-    let _ = iteri (fun i j _ ->
-      let c = i + (j - 1) * m in
-      x.{i,j} <- (float_of_int c)
-    ) x in x
+ let sequential m n =
+   let x = zeros m n and c = ref 0 in
+   let _ = iteri (fun i j _ ->
+     let _ = c := !c + 1 in
+     x.{i,j} <- (float_of_int !c)
+   ) x in x
 
 end;;
 
