@@ -166,10 +166,19 @@ module Matrix = struct
 
   let map f x = LM.map f x
 
-  let mapi f x =
-    let y = duplicate x in
+  let _mapi f x =
+    let y = zeros (row_num x) (col_num x) in
     let _ = iteri (fun i j z -> y.{i + 1, j + 1} <- f i j z) x in
     y
+
+  let mapi f x =
+    let m, n = size x in
+    let i, j = ref 0, ref 0 in
+    map (fun z ->
+      let r = f !i !j z in
+      let _ = i := !i + 1;
+      if (!i = n) then i := 0; j := !j + 1 in r
+    ) x
 
   let mapi_rows f x =
     let r = ref [] in

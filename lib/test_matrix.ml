@@ -13,11 +13,11 @@ let test_op s c op =
   flush stdout
 
 let _ =
-  let m, n = 5000, 5000 and c = 5 in
+  let m, n = 5000, 5000 and c = 10 in
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
-  test_op "random" c (fun () -> M.random m n);
+  test_op "random  " c (fun () -> M.random m n);
   let x, y = (M.random m n), (M.random m n) in
   test_op "add     " c (fun () -> M.add x y);
   test_op "mul     " c (fun () -> M.mul x y);
@@ -32,4 +32,5 @@ let _ =
   test_op "mapi    " c (fun () -> M.mapi (fun _ _ y -> y +. 1.) x);
   test_op "iter    " c (fun () -> M.iter ((+.) 1.) x);
   test_op "iteri   " c (fun () -> M.iteri (fun _ _ y -> y +. 1.) x);
+  test_op "transp  " c (fun () -> M.transpose x);
   print_endline (Bytes.make 60 '+');
