@@ -6,4 +6,4 @@ test:
 	ocamlfind ocamlopt -c learn.ml matrix.cmx
 	ocamlfind ocamlopt -o test_matrix matrix.cmx test_matrix.ml -package lacaml -linkpkg
 clean:
-	rm -rf *.cmi *.cmo *.cmx *.o dummy
+	rm -rf *.cmi *.cmo *.cmx *.o test_performance
