@@ -37,6 +37,8 @@ let _ =
   test_op "iter_cols " c (fun () -> M.iter_cols (fun y -> ()) x);
   test_op "iteri_rows" c (fun () -> M.iteri_rows (fun i y -> ()) x);
   test_op "iter_rows " c (fun () -> M.iter_rows (fun i y -> ()) x);
+  test_op "filteri   " c (fun () -> M.filteri (fun i j y -> false) x);
+  test_op "filter    " c (fun () -> M.filter (fun y -> false) x);
   test_op "for_all   " c (fun () -> M.for_all ((>) 10000.) x);
   test_op "transpose " c (fun () -> M.transpose x);
   print_endline (Bytes.make 60 '+');

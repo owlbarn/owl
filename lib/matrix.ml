@@ -184,7 +184,7 @@ module Matrix = struct
 
   let filteri f x =
     let r = ref [ ] in
-    let _ = iteri (fun c i j y ->
+    let _ = iteri (fun i j y ->
       if (f i j y) = true then r := !r @ [(i,j)]
     ) x in !r
 
@@ -323,6 +323,8 @@ module Matrix = struct
   (* formatted input / output operations *)
 
   let pprint x = Format.printf "%a\n" LL.pp_mat x
+
+  let pprint_header = None
 
   let write_file = None
 
