@@ -4,6 +4,7 @@
   The layout is really important, can impact the performance greatly!
   ]  *)
 
+module LC = Lacaml
 module LL = Lacaml.D
 module LM = LL.Mat
 
@@ -326,9 +327,15 @@ module Matrix = struct
 
   let pprint_header = None
 
-  let write_file = None
+  let dump x f =
+    let h = open_out f in
+    iter_rows (fun y ->
+      iter (fun z -> Printf.fprintf h "%f " z) y;
+      Printf.fprintf h "\n"
+    ) x;
+    close_out h
 
-  let read_file = None
+  let load f = None
 
   (* transform to or from other types *)
 
