@@ -1,6 +1,6 @@
 (** [
   Wrap up Lacaml module
-  Note: row-based matrix
+  Note: Fortran layout column-based matrix
   ]  *)
 
 module LL = Lacaml.D
@@ -22,7 +22,7 @@ module Matrix = struct
 
   let random = LM.random
 
-  let vector = make 1
+  let vector x = make x 1
 
   let vector_ones x = vector x 1.
 
@@ -44,7 +44,7 @@ module Matrix = struct
 
   let area_of x =
     let m, n = size x in
-    { a = 0; b = 0; c = m - 1; d= n - 1 }
+    { a = 1; b = 1; c = m; d= n }
 
   let equal_area r1 r2 =
     ((r1.c-r1.a = r2.c-r2.a) && (r1.d-r1.b = r2.d-r2.b))
@@ -52,7 +52,7 @@ module Matrix = struct
   let same_area r1 r2 = r1 = r2
 
   let copy_area_to x1 r1 x2 r2 =
-    LL.lacpy ~ar:(r1.a+1) ~ac:(r1.b+1) ~br:(r2.a+1) ~bc:(r2.b+1)
+    LL.lacpy ~ar:(r1.a) ~ac:(r1.b) ~br:(r2.a) ~bc:(r2.b)
       ~m:(r1.c-r1.a+1) ~n:(r1.d-r1.b+1) ~b:x2 x1
 
   let copy_to x1 x2 =
@@ -65,8 +65,8 @@ module Matrix = struct
   let concat_vertical x1 x2 =
     let r1, r2 = area_of x1, area_of x2 in
     let _ = assert (r1.d = r2.d) in
-    let r3 = area (r1.c + 1) 0 (r1.c + r2.c + 1) r1.d in
-    let x3 = zeros (r1.c + r2.c + 2) (r1.d + 1) in
+    let r3 = area (r1.c + 1) 1 (r1.c + r2.c) r1.d in
+    let x3 = zeros (r1.c + r2.c) r1.d in
     let _ = copy_area_to x1 r1 x3 r1 in
     let _ = copy_area_to x2 r2 x3 r3 in
     x3
@@ -76,8 +76,8 @@ module Matrix = struct
   let concat_horizontal x1 x2 =
     let r1, r2 = area_of x1, area_of x2 in
     let _ = assert (r1.c = r2.c) in
-    let r3 = area 0 (r1.d + 1) r1.c (r1.d + r2.d + 1) in
-    let x3 = zeros (r1.c + 1) (r1.d + r2.d + 2) in
+    let r3 = area 1 (r1.d + 1) r1.c (r1.d + r2.d) in
+    let x3 = zeros r1.c (r1.d + r2.d) in
     let _ = copy_area_to x1 r1 x3 r1 in
     let _ = copy_area_to x2 r2 x3 r3 in
     x3
@@ -85,7 +85,7 @@ module Matrix = struct
   let ( @|| ) = concat_horizontal
 
   let fill_area x v r =
-    LM.fill ~ar:(r.a+1) ~ac:(r.b+1) ~m:(r.c-r.a+1) ~n:(r.d-r.b+1) x v
+    LM.fill ~ar:(r.a) ~ac:(r.b) ~m:(r.c-r.a+1) ~n:(r.d-r.b+1) x v
 
   let fill x v = fill_area x v (area_of x)
 
@@ -101,27 +101,27 @@ module Matrix = struct
 
   let part x r =
     let a, b, c, d = r.a, r.b, r.c, r.d in
-    LL.lacpy ~ar:(a+1) ~ac:(b+1) ~m:(c-a+1) ~n:(d-b+1) x
+    LL.lacpy ~ar:a ~ac:b ~m:(c-a+1) ~n:(d-b+1) x
 
   let duplicate x =
     let m, n = size x in
-    let r = area 0 0 (m - 1) (n - 1) in
+    let r = area 1 1 m n in
     part x r
 
   let col x i =
     let m, n = size x in
-    let r = area 0 i (m - 1) i in
+    let r = area 1 i m i in
     part x r
 
   let row x i =
     let m, n = size x in
-    let r = area i 0 i (n - 1) in
+    let r = area i 1 i n in
     part x r
 
   let _get_content_dim x l dim =  (* dim = 0 for rows; 1 for cols *)
     let m, n = size x and c = List.length l in
-    let area_at i = if dim = 0 then area i 0 i (n - 1)
-      else area 0 i (m - 1) i in
+    let area_at i = if dim = 0 then area i 1 i n
+      else area 1 i m i in
     let a, b = if dim = 0 then (c, n) else (m, c) in
     let y = zeros a b in
     List.iteri (fun i j ->
@@ -142,17 +142,16 @@ module Matrix = struct
 
   let iteri f x =
     let m, n = size x in
-    let a1, b1, a2, b2 = 0, 0, m - 1, n - 1 in
-    for i = a1 to a2 do
-      for j = b1 to b2 do
-        f i j x.{i + 1, j + 1}
+    for j = 1 to n do
+      for i = 1 to m do
+        f i j x.{i,j}
       done
     done
 
   let iter f x = iteri (fun _ _ y -> f y) x
 
   let _iteri_dim bound_fun get_fun f x =
-    for i = 0 to (bound_fun x) - 1 do
+    for i = 1 to (bound_fun x) do
       f i (get_fun x i)
     done
 
@@ -168,16 +167,16 @@ module Matrix = struct
 
   let _mapi f x =
     let y = zeros (row_num x) (col_num x) in
-    let _ = iteri (fun i j z -> y.{i + 1, j + 1} <- f i j z) x in
+    let _ = iteri (fun i j z -> y.{i,j} <- f i j z) x in
     y
 
-  let mapi f x =
+  let mapi f x = (* TODO: need to fix the index bug ... *)
     let m, n = size x in
-    let i, j = ref 0, ref 0 in
+    let i, j = ref 1, ref 1 in
     map (fun z ->
       let r = f !i !j z in
       let _ = i := !i + 1;
-      if (!i = n) then i := 0; j := !j + 1 in r
+      if (!i = m + 1) then (i := 1; j := !j + 1) in r
     ) x
 
   let mapi_rows f x =
@@ -258,9 +257,9 @@ module Matrix = struct
 
   let sum x = LM.sum x
 
-  let _sum_cols = map_cols sum  (* TODO: try to optimise with matrix opeartion *)
+  let sum_cols = map_cols sum  (* TODO: try to optimise with matrix opeartion *)
 
-  let sum_cols x =
+  let _sum_cols x =
     let y = ones (col_num x) 1 in
     dot x y
 
@@ -353,8 +352,8 @@ module Matrix = struct
   let sequential m n =
     let x = zeros m n in
     let _ = iteri (fun i j _ ->
-      let c = i * n + j in
-      x.{i + 1, j + 1} <- (float_of_int c)
+      let c = i + (j - 1) * m in
+      x.{i,j} <- (float_of_int c)
     ) x in x
 
 end;;
