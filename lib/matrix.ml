@@ -249,7 +249,11 @@ module Matrix = struct
 
   let sum x = LM.sum x
 
-  let sum_cols = map_cols sum
+  let _sum_cols = map_cols sum  (* TODO: try to optimise with matrix opeartion *)
+
+  let sum_cols x =
+    let y = ones (col_num x) 1 in
+    dot x y
 
   let sum_rows = map_rows sum
 
