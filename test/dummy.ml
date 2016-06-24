@@ -1,6 +1,9 @@
-open Matrix
+module M = Matrix.Matrix
 
-module M = MakeMatrix (Lacaml.D.Mat)
+let test_op s c op =
+  for i = 1 to c do
+    op ()
+  done
 
 let test () =
   let x = Lacaml.D.Mat.random 3 3 in
