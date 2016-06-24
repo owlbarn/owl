@@ -1,8 +1,8 @@
-open Matrix.Matrix
+module M = Matrix.Matrix
 
-let test () =
-  let x = random 3 3 in
-  pprint x
+let test_01 () =
+  let x = M.random 10000 1000 in
+  M.(x *$ 10.)
 
-let _ = print_endline "hello test";
-  test ()
+let _ = print_endline "matrix test";
+  test_01 ()

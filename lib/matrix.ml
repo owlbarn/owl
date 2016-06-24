@@ -30,6 +30,8 @@ module Matrix = struct
 
   let vector_random = random 1
 
+  let empty = LM.empty
+
   (* matrix manipulations *)
 
   let size x = LM.dim1 x, LM.dim2 x
@@ -82,7 +84,10 @@ module Matrix = struct
 
   let ( @|| ) = concat_horizontal
 
-  let fill = LM.fill (* TODO: refine *)
+  let fill_area x v r =
+    LM.fill ~ar:(r.a+1) ~ac:(r.b+1) ~m:(r.c-r.a+1) ~n:(r.d-r.b+1) x v
+
+  let fill x v = fill_area x v (area_of x)
 
   let transpose x = LL.Mat.transpose_copy x
 
@@ -135,7 +140,7 @@ module Matrix = struct
 
   (* matrix iteration operations *)
 
-  let iteri f x = (* TODO: replace with map ??? *)
+  let iteri f x =
     let m, n = size x in
     let a1, b1, a2, b2 = 0, 0, m - 1, n - 1 in
     for i = a1 to a2 do
@@ -159,12 +164,12 @@ module Matrix = struct
 
   let iter_cols f x = iteri_cols (fun _ y -> f y) x
 
+  let map f x = LM.map f x
+
   let mapi f x =
     let y = duplicate x in
     let _ = iteri (fun i j z -> y.{i + 1, j + 1} <- f i j z) x in
     y
-
-  let map f x = LM.map f x
 
   let mapi_rows f x =
     let r = ref [] in
@@ -244,6 +249,10 @@ module Matrix = struct
 
   let sum x = LM.sum x
 
+  let sum_cols = map_cols sum
+
+  let sum_rows = map_rows sum
+
   let is_equal x1 x2 = for_all (( = ) 0.) (sub x1 x2)
 
   let ( =@ ) = is_equal
@@ -276,10 +285,6 @@ module Matrix = struct
 
   let max_row = map_cols max
 
-  let qr = None
-
-  let svd = None
-
   let ( +$ ) x a = map (fun y -> y +. a) x
 
   let ( $+ ) a x = ( +$ ) x a
@@ -295,6 +300,14 @@ module Matrix = struct
   let ( /$ ) x a = map (fun y -> y /. a) x
 
   let ( $/ ) a x = ( /$ ) x a
+
+  (* advanced matrix methematical operations *)
+
+  let detri x = LM.detri x  (* TODO: refine this *)
+
+  let qr x = LM.from_col_vec (LL.geqrf x) (* TODO: refine this *)
+
+  let svd x = LL.gesvd x (* TODO: refine this *)
 
   (* formatted input / output operations *)
 
@@ -319,7 +332,7 @@ module Matrix = struct
   let sequential m n =
     let x = zeros m n in
     let _ = iteri (fun i j _ ->
-      let c = i * m + j in
+      let c = i * n + j in
       x.{i + 1, j + 1} <- (float_of_int c)
     ) x in x
 
