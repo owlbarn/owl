@@ -13,11 +13,12 @@ let test_op s c op =
   flush stdout
 
 let _ =
-  let m, n = 10, 10 and c = 1 in
+  let m, n = 20, 10 and c = 1 in
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
   let x, y = (M.random m n), (M.random m n) in
   (* test_op "pretty print    " c (fun () -> M.pprint x); *)
   test_op "dump matrix    " c (fun () -> M.dump x "zmatrix.txt");
+  test_op "load matrix    " c (fun () -> M.load "zmatrix.txt");
   print_endline (Bytes.make 60 '+');

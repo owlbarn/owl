@@ -335,7 +335,19 @@ module Matrix = struct
     ) x;
     close_out h
 
-  let load f = None
+  let load f =
+    let h = open_in f in
+    let s = input_line h in
+    let n = List.length(Str.split (Str.regexp " ") s) in
+    let m = ref 1 in (* counting lines in the input file *)
+    let _ = try while true do ignore(input_line h); m := !m + 1
+      done with End_of_file -> () in
+    let x = zeros !m n in seek_in h 0;
+    for i = 1 to !m do
+      let s = Str.split (Str.regexp " ") (input_line h) in
+      List.iteri (fun j y -> x.{i,j+1} <- float_of_string y) s
+    done;
+    close_in h; x
 
   (* transform to or from other types *)
 
