@@ -305,9 +305,17 @@ module Matrix = struct
 
   let detri x = LM.detri x  (* TODO: refine this *)
 
+  let lu x = LL.getrf
+
   let qr x = LM.from_col_vec (LL.geqrf x) (* TODO: refine this *)
 
+  let cholesky = LL.potrf
+
   let svd x = LL.gesvd x (* TODO: refine this *)
+
+  let inv x = LL.getri x
+
+  let least_square = LL.gels (* TODO: refine this *)
 
   (* formatted input / output operations *)
 
