@@ -19,5 +19,5 @@ let _ =
   print_endline (Bytes.make 60 '-');
   let x, y = (M.random m n), (M.random m n) in
   (* test_op "pretty print    " c (fun () -> M.pprint x); *)
-  test_op "dump matrix    " c (fun () -> M.dump (M.sequential 10 10) "zmatrix.txt");
+  test_op "dump matrix    " c (fun () -> M.dump x "zmatrix.txt");
   print_endline (Bytes.make 60 '+');
