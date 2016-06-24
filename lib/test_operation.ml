@@ -13,7 +13,7 @@ let test_op s c op =
   flush stdout
 
 let _ =
-  let m, n = 20, 10 and c = 1 in
+  let m, n = 5000, 5000 and c = 1 in
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
