@@ -1,6 +1,7 @@
 (** [
   Wrap up Lacaml module
   Note: Fortran layout column-based matrix
+  The layout is really important, can impact the performance greatly!
   ]  *)
 
 module LL = Lacaml.D
@@ -134,7 +135,7 @@ module Matrix = struct
 
   let diag x =
     let v = LM.copy_diag x in
-    LM.from_row_vec v
+    LM.from_col_vec v
 
   let trace x = LM.trace
 
@@ -165,19 +166,9 @@ module Matrix = struct
 
   let map f x = LM.map f x
 
-  let _mapi f x =
+  let mapi f x =
     let y = zeros (row_num x) (col_num x) in
-    let _ = iteri (fun i j z -> y.{i,j} <- f i j z) x in
-    y
-
-  let mapi f x = (* TODO: need to fix the index bug ... *)
-    let m, n = size x in
-    let i, j = ref 1, ref 1 in
-    map (fun z ->
-      let r = f !i !j z in
-      let _ = i := !i + 1;
-      if (!i = m + 1) then (i := 1; j := !j + 1) in r
-    ) x
+    let _ = iteri (fun i j z -> y.{i,j} <- f i j z) x in y
 
   let mapi_rows f x =
     let r = ref [] in
@@ -257,13 +248,13 @@ module Matrix = struct
 
   let sum x = LM.sum x
 
-  let sum_cols = map_cols sum  (* TODO: try to optimise with matrix opeartion *)
-
-  let _sum_cols x =
+  let sum_cols x =
     let y = ones (col_num x) 1 in
     dot x y
 
-  let sum_rows = map_rows sum
+  let sum_rows x =
+    let y = ones 1 (row_num x) in
+    dot y x
 
   let is_equal x1 x2 = for_all (( = ) 0.) (sub x1 x2)
 
