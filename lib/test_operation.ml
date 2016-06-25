@@ -1,4 +1,5 @@
 module M = Matrix.Matrix
+module L = Learn.Cluster
 
 let test_op s c op =
   let ttime = ref 0. in
@@ -19,6 +20,5 @@ let _ =
   print_endline (Bytes.make 60 '-');
   let x, y = (M.random m n), (M.random m n) in
   (* test_op "pretty print    " c (fun () -> M.pprint x); *)
-  test_op "dump matrix    " c (fun () -> M.dump x "zmatrix.txt");
   test_op "load matrix    " c (fun () -> M.load "zmatrix.txt");
   print_endline (Bytes.make 60 '+');

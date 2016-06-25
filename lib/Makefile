@@ -1,7 +1,7 @@
 all:
 	ocamlfind ocamlc -c matrix.ml -package lacaml
 	ocamlfind ocamlc -c learn.ml matrix.cmo
-	ocamlfind ocamlc -o test_operation str.cma matrix.cmo test_operation.ml -package lacaml -linkpkg
+	ocamlfind ocamlc -o test_operation str.cma matrix.cmo learn.cmo test_operation.ml -package lacaml -linkpkg
 test:
 	ocamlfind ocamlopt -c matrix.ml -package lacaml
 	ocamlfind ocamlopt -c learn.ml matrix.cmx

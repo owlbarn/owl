@@ -374,6 +374,13 @@ module Matrix = struct
       x.{i,j} <- (float_of_int !c)
     ) x in x
 
+  let randomi ?(a=0) ?(b=99) m n =
+    let x = zeros m n in
+    let c = b - a in
+    let _ = iteri (fun i j _ ->
+      x.{i,j} <- float_of_int (Random.int c + a)
+    ) x in x
+
 end;;
 
 module M = Matrix;;

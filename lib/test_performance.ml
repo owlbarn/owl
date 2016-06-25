@@ -17,14 +17,15 @@ let _ =
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
-  (* test_op "random    " c (fun () -> M.random m n); *)
-  (* test_op "sequential" c (fun () -> M.sequential m n); *)
+  test_op "random    " c (fun () -> M.random m n);
+  test_op "randomi   " c (fun () -> M.randomi m n);
+  test_op "sequential" c (fun () -> M.sequential m n);
   let x, y = (M.random m n), (M.random m n) in
   test_op "svd       " c (fun () -> M.svd (M.sequential 1000 1000));
   test_op "sdd       " c (fun () -> M.sdd (M.sequential 1000 1000));
   test_op "add       " c (fun () -> M.add x y);
   test_op "mul       " c (fun () -> M.mul x y);
-  (* test_op "dot       " c (fun () -> M.dot x y); *)
+  test_op "dot       " 1 (fun () -> M.dot x y);
   test_op "min       " c (fun () -> M.min x);
   test_op "min_col   " c (fun () -> M.min_col x);
   test_op "min_row   " c (fun () -> M.min_row x);
