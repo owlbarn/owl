@@ -32,6 +32,10 @@ let _ =
   test_op "sum       " c (fun () -> M.sum x);
   test_op "sum_cols  " c (fun () -> M.sum_cols x);
   test_op "sum_rows  " c (fun () -> M.sum_rows x);
+  test_op "col       " c (fun () -> M.col x (n-1));
+  test_op "row       " c (fun () -> M.row x (m-1));
+  test_op "cols      " c (fun () -> M.cols x [1;2]);
+  test_op "rows      " c (fun () -> M.rows x [1;2]);
   test_op "map       " c (fun () -> M.map ((+.) 1.) x);
   test_op "mapi      " c (fun () -> M.mapi (fun _ _ y -> y +. 1.) x);
   test_op "iter      " c (fun () -> M.iter ((+.) 1.) x);

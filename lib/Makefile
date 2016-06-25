@@ -1,11 +1,11 @@
 all:
 	ocamlfind ocamlc -c matrix.ml -package lacaml
-	ocamlfind ocamlc -c learn.ml matrix.cmo
+	ocamlfind ocamlc -c learn.ml matrix.cmo -package lacaml
 	ocamlfind ocamlc -o test_operation str.cma matrix.cmo learn.cmo test_operation.ml -package lacaml -linkpkg
 test:
 	ocamlfind ocamlopt -c matrix.ml -package lacaml
-	ocamlfind ocamlopt -c learn.ml matrix.cmx
+	ocamlfind ocamlopt -c learn.ml matrix.cmx -package lacaml
 	ocamlfind ocamlopt -o test_performance str.cmxa matrix.cmx test_performance.ml -package lacaml -linkpkg
-	ocamlfind ocamlopt -o test_operation str.cmxa matrix.cmx test_operation.ml -package lacaml -linkpkg
+	ocamlfind ocamlopt -o test_operation str.cmxa matrix.cmx learn.cmx test_operation.ml -package lacaml -linkpkg
 clean:
 	rm -rf *.cmi *.cmo *.cmx *.o test*.tmp test_performance test_operation

@@ -40,13 +40,25 @@ module Matrix = struct
 
   let shape = size
 
-  let same_shape x1 x2 = size x1 = size x2
+  let numel x =
+    let m, n = shape x in
+    m * n
+
+  let row_num x = fst (shape x)
+
+  let col_num x = snd (shape x)
+
+  let same_shape x1 x2 = shape x1 = shape x2
 
   let area a b c d = { a = a; b = b; c = c; d= d }
 
   let area_of x =
     let m, n = size x in
     { a = 1; b = 1; c = m; d= n }
+
+  let area_of_col x i = area 1 i (row_num x) i
+
+  let area_of_row x i = area i 1 i (col_num x)
 
   let equal_area r1 r2 =
     ((r1.c-r1.a = r2.c-r2.a) && (r1.d-r1.b = r2.d-r2.b))
@@ -63,6 +75,14 @@ module Matrix = struct
   let ( >> ) = copy_to
 
   let ( << ) x1 x2 = copy_to x2 x1
+
+  let copy_to_row v i x =
+    let r1 = area_of v and r2 = area_of_row x i in
+    copy_area_to v r1 x r2
+
+  let copy_to_col v i x =
+    let r1 = area_of v and r2 = area_of_col x i in
+    copy_area_to v r1 x r2
 
   let concat_vertical x1 x2 =
     let r1, r2 = area_of x1, area_of x2 in
@@ -93,14 +113,6 @@ module Matrix = struct
 
   let transpose x = LL.Mat.transpose_copy x
 
-  let numel x =
-    let m, n = size x in
-    m * n
-
-  let row_num x = fst (size x)
-
-  let col_num x = snd (size x)
-
   let part x r =
     let a, b, c, d = r.a, r.b, r.c, r.d in
     LL.lacpy ~ar:a ~ac:b ~m:(c-a+1) ~n:(d-b+1) x
@@ -127,7 +139,7 @@ module Matrix = struct
     let a, b = if dim = 0 then (c, n) else (m, c) in
     let y = zeros a b in
     List.iteri (fun i j ->
-      let _ = copy_area_to x (area_at j) y (area_at i) in ()
+      let _ = copy_area_to x (area_at j) y (area_at (i+1)) in ()
     ) l; y
 
   let cols x l = _get_content_dim x l 1
@@ -380,6 +392,12 @@ module Matrix = struct
     let _ = iteri (fun i j _ ->
       x.{i,j} <- float_of_int (Random.int c + a)
     ) x in x
+
+  let power x c = map (fun y -> y ** c) x
+
+  let draw_rows = None
+
+  let draw_cols = None
 
 end;;
 
