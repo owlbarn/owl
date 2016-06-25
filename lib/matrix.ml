@@ -315,11 +315,11 @@ module Matrix = struct
 
   let cholesky = LL.potrf
 
-  let svd x =
+  let svd x =  (* svd: more robust, slower *)
     let s, u, v = LL.gesvd x in
     u, LM.from_row_vec s, v
 
-  let sdd x =
+  let sdd x =  (* svd: faster but less robust *)
     let s, u, v = LL.gesdd x in
     u, LM.from_row_vec s, v
 
