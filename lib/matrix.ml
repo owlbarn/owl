@@ -50,7 +50,7 @@ module Matrix = struct
 
   let same_shape x1 x2 = shape x1 = shape x2
 
-  let area a b c d = { a = a; b = b; c = c; d= d }
+  let area a b c d = { a = a; b = b; c = c; d = d }
 
   let area_of x =
     let m, n = size x in
