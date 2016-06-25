@@ -13,13 +13,15 @@ let test_op s c op =
   flush stdout
 
 let _ =
-  let m, n = 5000, 5000 and c = 10 in
+  let m, n = 5000, 5000 and c = 5 in
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
   (* test_op "random    " c (fun () -> M.random m n); *)
   (* test_op "sequential" c (fun () -> M.sequential m n); *)
   let x, y = (M.random m n), (M.random m n) in
+  test_op "svd       " c (fun () -> M.svd (M.sequential 1000 1000));
+  test_op "sdd       " c (fun () -> M.sdd (M.sequential 1000 1000));
   test_op "add       " c (fun () -> M.add x y);
   test_op "mul       " c (fun () -> M.mul x y);
   (* test_op "dot       " c (fun () -> M.dot x y); *)
@@ -41,4 +43,6 @@ let _ =
   test_op "filter    " c (fun () -> M.filter (fun y -> false) x);
   test_op "for_all   " c (fun () -> M.for_all ((>) 10000.) x);
   test_op "transpose " c (fun () -> M.transpose x);
+  test_op "dump      " 1 (fun () -> M.dump x "test_matrix.tmp");
+  test_op "load      " 1 (fun () -> M.load "test_matrix.tmp");
   print_endline (Bytes.make 60 '+');

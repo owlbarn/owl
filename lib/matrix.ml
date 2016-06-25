@@ -315,7 +315,13 @@ module Matrix = struct
 
   let cholesky = LL.potrf
 
-  let svd x = LL.gesvd x (* TODO: refine this *)
+  let svd x =
+    let s, u, v = LL.gesvd x in
+    u, LM.from_row_vec s, v
+
+  let sdd x =
+    let s, u, v = LL.gesdd x in
+    u, LM.from_row_vec s, v
 
   let inv x = LL.getri x
 
@@ -329,8 +335,8 @@ module Matrix = struct
 
   let dump x f =
     let h = open_out f in
-    iter_rows (fun y ->
-      iter (fun z -> Printf.fprintf h "%f " z) y;
+    iter_rows (fun y ->  (* TODO: 64-bit -> 16 digits *)
+      iter (fun z -> Printf.fprintf h "%.8f " z) y;
       Printf.fprintf h "\n"
     ) x;
     close_out h
@@ -361,12 +367,12 @@ module Matrix = struct
 
   (* other functions *)
 
- let sequential m n =
-   let x = zeros m n and c = ref 0 in
-   let _ = iteri (fun i j _ ->
-     let _ = c := !c + 1 in
-     x.{i,j} <- (float_of_int !c)
-   ) x in x
+  let sequential m n =
+    let x = zeros m n and c = ref 0 in
+    let _ = iteri (fun i j _ ->
+      let _ = c := !c + 1 in
+      x.{i,j} <- (float_of_int !c)
+    ) x in x
 
 end;;
 

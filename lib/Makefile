@@ -8,4 +8,4 @@ test:
 	ocamlfind ocamlopt -o test_performance str.cmxa matrix.cmx test_performance.ml -package lacaml -linkpkg
 	ocamlfind ocamlopt -o test_operation str.cmxa matrix.cmx test_operation.ml -package lacaml -linkpkg
 clean:
-	rm -rf *.cmi *.cmo *.cmx *.o test_performance test_operation
+	rm -rf *.cmi *.cmo *.cmx *.o test*.tmp test_performance test_operation
