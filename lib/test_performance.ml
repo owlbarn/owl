@@ -48,6 +48,11 @@ let _ =
   test_op "filter    " c (fun () -> M.filter (fun y -> false) x);
   test_op "for_all   " c (fun () -> M.for_all ((>) 10000.) x);
   test_op "transpose " c (fun () -> M.transpose x);
+  test_op "draw_cols " c (fun () -> M.draw_cols x 500);
+  test_op "draw_rows " c (fun () -> M.draw_rows x 500);
+  test_op "average   " c (fun () -> M.average x);
+  test_op "avg_cols  " c (fun () -> M.average_cols x);
+  test_op "avg_rows  " c (fun () -> M.average_rows x);
   test_op "dump      " 1 (fun () -> M.dump x "test_matrix.tmp");
   test_op "load      " 1 (fun () -> M.load "test_matrix.tmp");
   print_endline (Bytes.make 60 '+');

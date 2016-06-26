@@ -14,9 +14,6 @@ let test_op s c op =
   flush stdout
 
 let test_kmeans () =
-  let z1 = M.random 10 2 in
-  let z2 = M.random 10 2 in
-  let z3 = M.((z1 +$ 50.) @= z2) in
   let z3 = M.random 100000 3 in
   L.kmeans z3 3
 

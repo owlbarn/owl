@@ -12,8 +12,7 @@ module Cluster = struct
 
   let kmeans x c = let open M in
     let m, n = shape x in
-    let l = Array.to_list (Array.map (fun _ -> Random.int m + 1) (Array.make c 0)) in
-    let cpts = rows x l and cpts_new = zeros (List.length l) n in
+    let cpts = draw_rows ~replacement:false x c and cpts_new = zeros c n in
     let assignment = Array.make m (0, max_float) in
     for counter = 1 to 100 do
     Printf.printf "iteration %i ...\n" counter; flush stdout;
@@ -30,7 +29,7 @@ module Cluster = struct
       let l = List.map (fun y -> fst y) l in
       let _ = print_int (List.length l); print_char ' ' in
       if List.length l != 0 then
-       let z = (sum_rows (rows x l)) /$ (float_of_int (List.length l)) in
+       let z = average_rows (rows x l) in
        copy_to_row z j cpts_new; ()
     ) cpts;
     if cpts =@ cpts_new then failwith "converged";

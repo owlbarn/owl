@@ -113,33 +113,23 @@ module Matrix = struct
 
   let transpose x = LL.Mat.transpose_copy x
 
-  let part x r =
+  let duplicate_area x r =
     let a, b, c, d = r.a, r.b, r.c, r.d in
     LL.lacpy ~ar:a ~ac:b ~m:(c-a+1) ~n:(d-b+1) x
 
-  let duplicate x =
-    let m, n = size x in
-    let r = area 1 1 m n in
-    part x r
+  let duplicate x = duplicate_area x (area_of x)
 
-  let col x i =
-    let m, n = size x in
-    let r = area 1 i m i in
-    part x r
+  let col x i = duplicate_area x (area_of_col x i)
 
-  let row x i =
-    let m, n = size x in
-    let r = area i 1 i n in
-    part x r
+  let row x i = duplicate_area x (area_of_row x i)
 
   let _get_content_dim x l dim =  (* dim = 0 for rows; 1 for cols *)
     let m, n = size x and c = List.length l in
-    let area_at i = if dim = 0 then area i 1 i n
-      else area 1 i m i in
+    let area_at = if dim = 0 then area_of_row x else area_of_col x in
     let a, b = if dim = 0 then (c, n) else (m, c) in
     let y = zeros a b in
     List.iteri (fun i j ->
-      let _ = copy_area_to x (area_at j) y (area_at (i+1)) in ()
+      let _ = copy_area_to x (area_at j) y (area_at (i + 1)) in ()
     ) l; y
 
   let cols x l = _get_content_dim x l 1
@@ -269,6 +259,18 @@ module Matrix = struct
     let y = ones 1 (row_num x) in
     dot y x
 
+  let average x = (sum x) /. (float_of_int (numel x))
+
+  let average_cols x =
+    let m, n = shape x in
+    let y = make n 1 (1. /. (float_of_int n)) in
+    dot x y
+
+  let average_rows x = 
+    let m, n = shape x in
+    let y = make 1 m (1. /. (float_of_int m)) in
+    dot y x
+
   let is_equal x1 x2 = for_all (( = ) 0.) (sub x1 x2)
 
   let ( =@ ) = is_equal
@@ -395,9 +397,35 @@ module Matrix = struct
 
   let power x c = map (fun y -> y ** c) x
 
-  let draw_rows = None
+  let _shuffle l =
+    let nd = List.map (fun c -> (Random.bits (), c)) l in
+    let sond = List.sort compare nd in
+    List.map snd sond
 
-  let draw_cols = None
+  let _range a b =
+    let rec aux a b =
+      if a > b then [] else a :: aux (a+1) b  in
+    if a > b then List.rev (aux b a) else aux a b;;
+
+  let rec _sublist b e l =
+    match l with
+    | [] -> failwith "sublist"
+    | h :: t -> let tail = if e = 0 then [] else _sublist (b - 1) (e - 1) t in
+      if b > 0 then tail else h :: tail
+
+  let draw_rows ?(replacement=true) x c =
+    let m, n = shape x in
+    let l = if replacement = true then
+      List.map (fun _ -> Random.int (m - 1) + 1) (_range 1 c)
+      else _sublist 0 (c - 1) (_shuffle (_range 1 m)) in
+    rows x l
+
+  let draw_cols ?(replacement=true) x c =
+    let m, n = shape x in
+    let l = if replacement = true then
+      List.map (fun _ -> Random.int (n - 1) + 1) (_range 1 c)
+      else _sublist 0 (c - 1) (_shuffle (_range 1 n)) in
+    cols x l
 
 end;;
 
