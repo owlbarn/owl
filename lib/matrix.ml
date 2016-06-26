@@ -7,6 +7,7 @@
 module LC = Lacaml
 module LL = Lacaml.D
 module LM = LL.Mat
+module UT = Utils
 
 type area = { a : int; b : int; c : int; d : int }
 
@@ -266,7 +267,7 @@ module Matrix = struct
     let y = make n 1 (1. /. (float_of_int n)) in
     dot x y
 
-  let average_rows x = 
+  let average_rows x =
     let m, n = shape x in
     let y = make 1 m (1. /. (float_of_int m)) in
     dot y x
@@ -302,6 +303,12 @@ module Matrix = struct
   let max_col = map_cols max
 
   let max_row = map_cols max
+
+  let mini x =
+    let r = ref max_float and p = ref (0,0) in
+    iteri (fun i j y ->
+      if y < !r then (r := y; p := (i,j))
+    ) x; !r, !p
 
   let ( +$ ) x a = map (fun y -> y +. a) x
 
@@ -397,34 +404,18 @@ module Matrix = struct
 
   let power x c = map (fun y -> y ** c) x
 
-  let _shuffle l =
-    let nd = List.map (fun c -> (Random.bits (), c)) l in
-    let sond = List.sort compare nd in
-    List.map snd sond
-
-  let _range a b =
-    let rec aux a b =
-      if a > b then [] else a :: aux (a+1) b  in
-    if a > b then List.rev (aux b a) else aux a b;;
-
-  let rec _sublist b e l =
-    match l with
-    | [] -> failwith "sublist"
-    | h :: t -> let tail = if e = 0 then [] else _sublist (b - 1) (e - 1) t in
-      if b > 0 then tail else h :: tail
-
-  let draw_rows ?(replacement=true) x c =
+  let draw_rows ?(replacement=true) x c = let open UT in
     let m, n = shape x in
     let l = if replacement = true then
-      List.map (fun _ -> Random.int (m - 1) + 1) (_range 1 c)
-      else _sublist 0 (c - 1) (_shuffle (_range 1 m)) in
+      List.map (fun _ -> Random.int (m - 1) + 1) (range 1 c)
+      else sublist 0 (c - 1) (shuffle (range 1 m)) in
     rows x l
 
-  let draw_cols ?(replacement=true) x c =
+  let draw_cols ?(replacement=true) x c = let open UT in
     let m, n = shape x in
     let l = if replacement = true then
-      List.map (fun _ -> Random.int (n - 1) + 1) (_range 1 c)
-      else _sublist 0 (c - 1) (_shuffle (_range 1 n)) in
+      List.map (fun _ -> Random.int (n - 1) + 1) (range 1 c)
+      else sublist 0 (c - 1) (shuffle (range 1 n)) in
     cols x l
 
 end;;

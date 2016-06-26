@@ -30,10 +30,10 @@ module Cluster = struct
       let _ = print_int (List.length l); print_char ' ' in
       if List.length l != 0 then
        let z = average_rows (rows x l) in
-       copy_to_row z j cpts_new; ()
+       let _ = copy_to_row z j cpts_new in ()
     ) cpts;
     if cpts =@ cpts_new then failwith "converged";
-    cpts << cpts_new;
+    ignore (cpts << cpts_new);
     done;
     assignment
 

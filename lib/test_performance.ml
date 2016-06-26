@@ -27,6 +27,7 @@ let _ =
   test_op "mul       " c (fun () -> M.mul x y);
   test_op "dot       " 1 (fun () -> M.dot x y);
   test_op "min       " c (fun () -> M.min x);
+  test_op "mini      " c (fun () -> M.mini x);
   test_op "min_col   " c (fun () -> M.min_col x);
   test_op "min_row   " c (fun () -> M.min_row x);
   test_op "sum       " c (fun () -> M.sum x);
