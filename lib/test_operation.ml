@@ -14,7 +14,7 @@ let test_op s c op =
   flush stdout
 
 let test_kmeans () =
-  let z3 = M.random 1000000 8 in
+  let z3 = M.random 10000 8 in
   L.kmeans z3 3
 
 let _ =

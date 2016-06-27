@@ -276,6 +276,10 @@ module Matrix = struct
 
   let ( =@ ) = is_equal
 
+  let is_unequal x1 x2 = not (is_equal x1 x2)
+
+  let ( <>@ ) = is_unequal
+
   let is_greater x1 x2 = for_all (( < ) 0.) (sub x1 x2)
 
   let ( >@ ) = is_greater

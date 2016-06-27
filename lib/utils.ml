@@ -12,13 +12,17 @@ let range a b =
   for i = a to b do r.(i - a) <- i done;
   Array.to_list r
 
-let rec _sublist b e l =
-  match l with
-  | [] -> failwith "sublist"
-  | h :: t -> let tail = if e = 0 then [] else _sublist (b - 1) (e - 1) t in
-    if b > 0 then tail else h :: tail
-
 let sublist a b l =
   let r = Array.make (b - a + 1) 0 in
   for i = a to b do r.(i - a) <- (List.nth l (i - a)) done;
   Array.to_list r
+
+let filter_array f x =
+  let r = Array.make (Array.length x) 0 and c = ref 0 in
+  for i = 0 to Array.length x - 1 do
+    let y, z = f i x.(i) in
+    if y = true then (r.(!c) <- z; c := !c + 1)
+  done;
+  Array.sub r 0 !c
+
+let log s = None
