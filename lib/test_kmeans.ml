@@ -10,4 +10,4 @@ let _ =
   print_endline "test on input data ...";
   let centers, _ = ML.kmeans x 2 in MM.pprint centers;
   print_endline "test on random data ...";
-  let x = MM.random 100000 8 in ML.kmeans x 3
+  let x = MM.random 1000000 8 in ML.kmeans x 3
