@@ -292,23 +292,49 @@ module Matrix = struct
 
   let ( <=@ ) = equal_or_smaller
 
-  let min = fold min max_float
+  let _min = fold min max_float
 
-  let min_col = map_cols min
+  let _min_col = map_cols min
 
-  let min_row = map_rows min
+  let _min_row = map_rows min
 
-  let max = fold max min_float
+  let _max = fold max min_float
 
-  let max_col = map_cols max
+  let _max_col = map_cols max
 
-  let max_row = map_cols max
+  let _max_row = map_cols max
 
-  let mini x =
+  let min x =
     let r = ref max_float and p = ref (0,0) in
     iteri (fun i j y ->
       if y < !r then (r := y; p := (i,j))
     ) x; !r, !p
+
+  let min_col x =
+    mapi_cols (fun j v ->
+      let r, (i, _) = min v in r, (i,j)
+    ) x
+
+  let min_row x =
+    mapi_rows (fun i v ->
+      let r, (_, j) = min v in r, (i,j)
+    ) x
+
+  let max x =
+    let r = ref min_float and p = ref (0,0) in
+    iteri (fun i j y ->
+      if y > !r then (r := y; p := (i,j))
+    ) x; !r, !p
+
+  let max_col x =
+    mapi_cols (fun j v ->
+      let r, (i, _) = max v in r, (i,j)
+    ) x
+
+  let max_row x =
+    mapi_rows (fun i v ->
+      let r, (_, j) = max v in r, (i,j)
+    ) x
 
   let ( +$ ) x a = map (fun y -> y +. a) x
 
