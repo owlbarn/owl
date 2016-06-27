@@ -292,18 +292,6 @@ module Matrix = struct
 
   let ( <=@ ) = equal_or_smaller
 
-  let _min = fold min max_float
-
-  let _min_col = map_cols min
-
-  let _min_row = map_rows min
-
-  let _max = fold max min_float
-
-  let _max_col = map_cols max
-
-  let _max_row = map_cols max
-
   let min x =
     let r = ref max_float and p = ref (0,0) in
     iteri (fun i j y ->
