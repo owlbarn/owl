@@ -417,6 +417,7 @@ module Matrix = struct
     ) x in x
 
   let power x c = map (fun y -> y ** c) x
+  let ( **@ ) = power
 
   let draw_rows ?(replacement=true) x c = let open UT in
     let m, n = shape x in
