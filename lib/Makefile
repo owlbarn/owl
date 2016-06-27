@@ -10,5 +10,6 @@ test:
 	ocamlfind ocamlopt -c learn.ml matrix.cmx -package lacaml
 	ocamlfind ocamlopt -o test_performance utils.cmx str.cmxa matrix.cmx test_performance.ml -package lacaml -linkpkg
 	ocamlfind ocamlopt -o test_operation utils.cmx str.cmxa matrix.cmx learn.cmx test_operation.ml -package lacaml -linkpkg
+	ocamlfind ocamlopt -o test_kmeans utils.cmx str.cmxa matrix.cmx learn.cmx test_kmeans.ml -package lacaml -linkpkg
 clean:
 	rm -rf *.cmi *.cmo *.cmx *.o test*.tmp test_performance test_operation
