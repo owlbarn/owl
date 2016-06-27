@@ -10,7 +10,7 @@ module UT = Utils
 module Cluster = struct
 
   let kmeans x c = let open MM in
-    let cpts0 = draw_rows ~replacement:true x c in
+    let cpts0 = draw_rows x c in
     let cpts1 = zeros c (col_num x) in
     let assignment = Array.make (row_num x) (0, max_float) in
     let _ = try for counter = 1 to 100 do
