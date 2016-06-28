@@ -91,9 +91,14 @@ module Matrix = struct
 
   let ( >> ) = copy_to
 
-  let row x i = clone_area x (area_of_row x i)
+  let row x i = Gsl.Matrix.row x i
 
-  let col x i = clone_area x (area_of_col x i)
+  let col x j =
+    let m, n = shape x in
+    let y = empty m 1 in
+    for i = 0 to m - 1 do
+      y.{i,0} <- x.{i,j}
+    done; y
 
   (* matrix iteration operations *)
 
