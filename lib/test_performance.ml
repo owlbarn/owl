@@ -18,6 +18,7 @@ let _ =
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
+  test_op "zeros     " c (fun () -> M.zeros m n);
   test_op "random    " c (fun () -> M.random m n);
   test_op "randomi   " c (fun () -> M.randomi m n);
   test_op "sequential" c (fun () -> M.sequential m n);
@@ -37,9 +38,9 @@ let _ =
   test_op "row       " c (fun () -> M.row x (m-1));
   test_op "cols      " c (fun () -> M.cols x [1;2]);
   test_op "rows      " c (fun () -> M.rows x [1;2]);
-  test_op "map       " c (fun () -> M.map ((+.) 1.) x);
+  test_op "map       " c (fun () -> M.map (fun y -> y +. 1.) x);
   test_op "mapi      " c (fun () -> M.mapi (fun _ _ y -> y +. 1.) x);
-  test_op "iter      " c (fun () -> M.iter ((+.) 1.) x);
+  test_op "iter      " c (fun () -> M.iter (fun y -> y +. 1.) x);
   test_op "iteri     " c (fun () -> M.iteri (fun _ _ y -> y +. 1.) x);
   test_op "iteri_cols" c (fun () -> M.iteri_cols (fun i y -> ()) x);
   test_op "iter_cols " c (fun () -> M.iter_cols (fun y -> ()) x);
