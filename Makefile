@@ -1,6 +1,9 @@
 all:
-	ocamlfind ocamlopt -c ./lib/matrix.ml -package lacaml
-	ocamlfind ocamlopt -c ./lib/learn.ml ./lib/matrix.cmx
-	ocamlfind ocamlc -o dummy ../lib/matrix.cmx ./test/dummy.ml -package lacaml -linkpkg
+	ocaml setup.ml -uninstall
+	ocaml setup.ml -build
+	ocaml setup.ml -install
+oasis:
+	oasis setup
+	ocaml setup.ml -configure
 clean:
-	cd ./lib && rm -rf *.cmi *.cmo *.cmx *.o dummy && cd ../
+	rm -rf _build setup.* myocamlbuild.ml _tags
