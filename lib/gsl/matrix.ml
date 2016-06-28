@@ -157,7 +157,9 @@ module Matrix = struct
 
   let swap_rowcol = Gsl.Matrix.swap_rowcol
 
-  let transpose = Gsl.Matrix.transpose
+  let transpose x =
+    let y = empty (row_num x) (col_num x) in
+    Gsl.Matrix.transpose x y; x
 
   let diag x =
     let m = min (row_num x) (col_num x) in
@@ -187,9 +189,19 @@ module Matrix = struct
 
   let iter_rows f x = iteri_rows (fun _ y -> f y) x
 
-  let iteri_cols f x =
+  let _iteri_cols f x =  (* TODO: slow, use iteri_cols instead *)
     for i = 0 to (col_num x) - 1 do
       f i (col x i)
+    done
+
+  let _row x i =
+    let y = Array2.slice_left x i in
+    reshape_2 (genarray_of_array1 y) (col_num x) 1
+
+  let iteri_cols f x =
+    let y = transpose x in
+    for i = 0 to (col_num x) - 1 do
+      f i (_row y i)
     done
 
   let iter_cols f x = iteri_cols (fun _ y -> f y) x
@@ -405,7 +417,12 @@ module Matrix = struct
 
   let cholesky x = x
 
-  let svd x = x
+  let svd x = let open Gsl.Vectmat in
+    let m, n = shape x in
+    let y, v = `M (clone x), `M (empty n n) in
+    let s, w = `V (Gsl.Vector.create n), `V (Gsl.Vector.create n) in
+    let _ = Gsl.Linalg._SV_decomp y v s w in
+    match y, s, v with `M y, `V s, `M v -> y, s, v
 
   let sdd x = x
 

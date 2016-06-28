@@ -57,7 +57,7 @@ let _ =
   test_op ">=@       " c (fun () -> M.(x >=@ y));
   test_op "diag      " c (fun () -> M.diag x);
   test_op "transpose " c (fun () -> M.transpose x);
-  test_op "duplicate " c (fun () -> M.clone x);
+  test_op "clone     " c (fun () -> M.clone x);
   test_op "@=        " c (fun () -> M.(x @= y));
   test_op "@||       " c (fun () -> M.(x @|| y));
   test_op "svd       " 1 (fun () -> M.svd (M.sequential 1000 1000));
