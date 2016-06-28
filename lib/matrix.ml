@@ -1,13 +1,12 @@
 (** [
   Wrap up Lacaml module
-  Note: Fortran layout column-based matrix
+  Note: C layout row-major matrix
   The layout is really important, can impact the performance greatly!
   ]  *)
 
-module LC = Lacaml
-module LL = Lacaml.D
-module LM = LL.Mat
-module UT = Utils
+open Bigarray
+
+type matrix = Gsl.Matrix.matrix
 
 type area = { a : int; b : int; c : int; d : int }
 
@@ -15,209 +14,245 @@ module Matrix = struct
 
   (* matrix creation operations *)
 
-  let make = LM.make
+  let size = None
 
-  let zeros = LM.make0
-
-  let ones m n = make m n 1.
-
-  let eye = LM.identity
-
-  let random = LM.random
-
-  let vector x = make x 1
-
-  let vector_ones x = vector x 1.
-
-  let vector_zeros x = vector x 0.
-
-  let vector_random = random 1
-
-  let empty = LM.empty
-
-  (* matrix manipulations *)
-
-  let size x = LM.dim1 x, LM.dim2 x
-
-  let shape = size
-
-  let numel x =
-    let m, n = shape x in
-    m * n
+  let shape x = (Array2.dim1 x, Array2.dim2 x)
 
   let row_num x = fst (shape x)
 
   let col_num x = snd (shape x)
+
+  let numel x = (row_num x) * (col_num x)
+
+  let empty = Gsl.Matrix.create
+
+  let create m n v = empty ~init:v m n
+
+  let ones m n = create m n 1.
+
+  let zeros m n = create m n 0.
+
+  let eye n =
+    let x = empty n n in
+    for i = 0 to n - 1 do x.{i,i} <- 1. done; x
+
+  let identity = eye
+
+  let sequential m n =
+    let x = empty m n and c = ref 0 in
+    for i = 0 to m - 1 do
+      for j = 0 to n - 1 do
+        c := !c + 1; x.{i,j} <- (float_of_int !c)
+      done
+    done; x
+
+  let random m n = None
+
+  let vector n = empty 1 n
+
+  let vector_ones n = ones 1 n
+
+  let vector_zeros n = zeros 1 n
+
+  let vector_random = None
+
+  (* matrix manipulations *)
 
   let same_shape x1 x2 = shape x1 = shape x2
 
   let area a b c d = { a = a; b = b; c = c; d = d }
 
   let area_of x =
-    let m, n = size x in
-    { a = 1; b = 1; c = m; d= n }
+    let m, n = shape x in
+    { a = 0; b = 0; c = m - 1; d = n - 1 }
 
-  let area_of_col x i = area 1 i (row_num x) i
+  let area_of_row x i = area i 0 i (col_num x - 1)
 
-  let area_of_row x i = area i 1 i (col_num x)
+  let area_of_col x i = area 0 i (row_num x - 1) i
 
   let equal_area r1 r2 =
     ((r1.c-r1.a = r2.c-r2.a) && (r1.d-r1.b = r2.d-r2.b))
 
   let same_area r1 r2 = r1 = r2
 
-  let copy_area_to x1 r1 x2 r2 =
-    LL.lacpy ~ar:(r1.a) ~ac:(r1.b) ~br:(r2.a) ~bc:(r2.b)
-      ~m:(r1.c-r1.a+1) ~n:(r1.d-r1.b+1) ~b:x2 x1
+  let row x i =
+    let y = Array2.slice_left x i in
+    reshape_2 (genarray_of_array1 y) 1 (col_num x)
 
-  let copy_to x1 x2 =
-    copy_area_to x1 (area_of x1) x2 (area_of x2)
+  let col x j =
+    let m, n = shape x in
+    let y = empty m 1 in
+    for i = 0 to m - 1 do
+      Array2.unsafe_set y i 0 (Array2.unsafe_get x i j)
+    done; y
+
+  let copy_area_to x1 r1 x2 r2 =
+    if not (equal_area r1 r2) then
+      failwith "Error: area mismatch"
+    else
+      for i = 0 to r1.c - r1.a do
+        for j = 0 to r1.d - r1.b do
+          Array2.unsafe_set x2 (r2.a + i) (r2.b + j)
+          (Array2.unsafe_get x1 (r1.a + i) (r1.b + j))
+        done
+      done
+
+  let copy_to x1 x2 = Array2.blit x1 x2
 
   let ( >> ) = copy_to
 
   let ( << ) x1 x2 = copy_to x2 x1
 
-  let copy_to_row v i x =
-    let r1 = area_of v and r2 = area_of_row x i in
-    copy_area_to v r1 x r2
+  let clone_area x r =
+    let y = empty (r.c - r.a + 1) (r.d - r.b + 1) in
+    copy_area_to x r y (area_of y)
 
-  let copy_to_col v i x =
+  let clone x =
+    let y = empty (row_num x) (col_num x) in
+    Array2.blit x y; y
+
+  let copy_row_to v x i =
+    let u = row x i in
+    copy_to v u
+
+  let copy_col_to v x i =
     let r1 = area_of v and r2 = area_of_col x i in
     copy_area_to v r1 x r2
 
   let concat_vertical x1 x2 =
-    let r1, r2 = area_of x1, area_of x2 in
-    let _ = assert (r1.d = r2.d) in
-    let r3 = area (r1.c + 1) 1 (r1.c + r2.c) r1.d in
-    let x3 = zeros (r1.c + r2.c) r1.d in
-    let _ = copy_area_to x1 r1 x3 r1 in
-    let _ = copy_area_to x2 r2 x3 r3 in
-    x3
+    let m1, m2 = row_num x1, row_num x2 in
+    let n1, n2 = col_num x1, col_num x2 in
+    let x3 = empty (m1 + m2) (min n1 n2) in
+    for i = 0 to (m1 + m2) - 1 do
+      let z = if i < m1 then row x1 i else row x2 (i - m1) in
+      copy_row_to z x3 i
+    done; x3
 
   let ( @= ) = concat_vertical
 
   let concat_horizontal x1 x2 =
-    let r1, r2 = area_of x1, area_of x2 in
-    let _ = assert (r1.c = r2.c) in
-    let r3 = area 1 (r1.d + 1) r1.c (r1.d + r2.d) in
-    let x3 = zeros r1.c (r1.d + r2.d) in
-    let _ = copy_area_to x1 r1 x3 r1 in
-    let _ = copy_area_to x2 r2 x3 r3 in
-    x3
+    let m1, m2 = row_num x1, row_num x2 in
+    let n1, n2 = col_num x1, col_num x2 in
+    let x3 = empty (min m1 m2) (n1 + n2)  in
+    for i = 0 to (row_num x3) - 1 do
+      for j = 0 to n1 - 1 do x3.{i,j} <- x1.{i,j} done;
+      for j = 0 to n2 - 1 do x3.{i,j+n1} <- x2.{i,j} done;
+    done; x3
 
   let ( @|| ) = concat_horizontal
 
-  let fill_area x v r =
-    LM.fill ~ar:(r.a) ~ac:(r.b) ~m:(r.c-r.a+1) ~n:(r.d-r.b+1) x v
+  let rows x l =
+    let m, n = Array.length (l), col_num x in
+    let y = empty m n in
+    Array.iteri (fun i j -> copy_row_to (row x j) y i) l; y
 
-  let fill x v = fill_area x v (area_of x)
+  let cols x l =
+    let m, n = row_num x, Array.length (l) in
+    let y = empty m n in
+    Array.iteri (fun i j -> copy_col_to (col x j) y i) l; y
 
-  let transpose x = LL.Mat.transpose_copy x
+  let swap_rows = Gsl.Matrix.swap_rows
 
-  let duplicate_area x r =
-    let a, b, c, d = r.a, r.b, r.c, r.d in
-    LL.lacpy ~ar:a ~ac:b ~m:(c-a+1) ~n:(d-b+1) x
+  let swap_cols = Gsl.Matrix.swap_columns
 
-  let duplicate x = duplicate_area x (area_of x)
+  let swap_rowcol = Gsl.Matrix.swap_rowcol
 
-  let col x i = duplicate_area x (area_of_col x i)
-
-  let row x i = duplicate_area x (area_of_row x i)
-
-  let _get_content_dim x l dim =  (* dim = 0 for rows; 1 for cols *)
-    let m, n = size x and c = List.length l in
-    let area_at = if dim = 0 then area_of_row x else area_of_col x in
-    let a, b = if dim = 0 then (c, n) else (m, c) in
-    let y = zeros a b in
-    List.iteri (fun i j ->
-      let _ = copy_area_to x (area_at j) y (area_at (i + 1)) in ()
-    ) l; y
-
-  let cols x l = _get_content_dim x l 1
-
-  let rows x l = _get_content_dim x l 0
+  let transpose x =
+    let y = empty (row_num x) (col_num x) in
+    Gsl.Matrix.transpose x y; x
 
   let diag x =
-    let v = LM.copy_diag x in
-    LM.from_col_vec v
+    let m = min (row_num x) (col_num x) in
+    let y = empty 1 m in
+    for i = 0 to m - 1 do y.{0,i} <- x.{i,i} done; y
 
-  let trace x = LM.trace
+  let trace = None
+
+  let add_diag = None
 
   (* matrix iteration operations *)
 
   let iteri f x =
-    let m, n = size x in
-    for j = 1 to n do
-      for i = 1 to m do
-        f i j x.{i,j}
+    let m, n = shape x in
+    for i = 0 to m - 1 do
+      for j = 0 to n - 1 do
+        f i j (Array2.unsafe_get x i j)
       done
     done
 
   let iter f x = iteri (fun _ _ y -> f y) x
 
-  let _iteri_dim bound_fun get_fun f x =
-    for i = 1 to (bound_fun x) do
-      f i (get_fun x i)
+  let iteri_rows f x =
+    for i = 0 to (row_num x) - 1 do
+      f i (row x i)
     done
-
-  let iteri_rows f x = _iteri_dim row_num row f x
 
   let iter_rows f x = iteri_rows (fun _ y -> f y) x
 
-  let iteri_cols f x = _iteri_dim col_num col f x
+  let _iteri_cols f x =  (* TODO: slow, use iteri_cols instead *)
+    for i = 0 to (col_num x) - 1 do
+      f i (col x i)
+    done
+
+  let _row x i =
+    let y = Array2.slice_left x i in
+    reshape_2 (genarray_of_array1 y) (col_num x) 1
+
+  let iteri_cols f x =
+    let y = transpose x in
+    for i = 0 to (col_num x) - 1 do
+      f i (_row y i)
+    done
 
   let iter_cols f x = iteri_cols (fun _ y -> f y) x
 
-  let map f x = LM.map f x
-
   let mapi f x =
-    let y = zeros (row_num x) (col_num x) in
-    let _ = iteri (fun i j z -> y.{i,j} <- f i j z) x in y
+    let y = empty (row_num x) (col_num x) in
+    iteri (fun i j z -> Array2.unsafe_set y i j (f i j z)) x; y
 
-  let mapi_rows f x =
-    let r = ref [] in
-    iteri_rows (fun i y -> r := !r @ [f i y]) x; !r
+  let map f x = mapi (fun _ _ y -> f y) x
+
+  let mapi_rows f x = Array.init (row_num x) (fun i -> f i (row x i))
 
   let map_rows f x = mapi_rows (fun _ y -> f y) x
 
-  let mapi_cols f x =
-    let r = ref [] in
-    iteri_cols (fun i y -> r := !r @ [f i y]) x; !r
+  let mapi_cols f x = Array.init (col_num x) (fun i -> f i (col x i))
 
   let map_cols f x = mapi_cols (fun _ y -> f y) x
 
   let filteri f x =
-    let r = ref [ ] in
-    let _ = iteri (fun i j y ->
-      if (f i j y) = true then r := !r @ [(i,j)]
-    ) x in !r
+    let r = ref [||] in
+    iteri (fun i j y ->
+      if (f i j y) then r := Array.append !r [|(i,j)|]
+    ) x; !r
 
   let filter f x = filteri (fun _ _ y -> f y) x
 
-  let _filteri_dim iter_fun f x =
-    let r = ref [ ] in
-    let _ = iter_fun (fun i v ->
-      if (f i v) = true then r := !r @ [i]
+  let filteri_rows f x =
+    let r = ref [||] in
+    let _ = iteri_rows (fun i v ->
+      if (f i v) then r := Array.append !r [|i|]
     ) x in !r
 
-  let filteri_rows f x = _filteri_dim iteri_rows f x
+  let filter_rows f x = filteri_rows (fun _ v -> f v) x
 
-  let filter_rows f x = filteri_rows (fun _ y -> f y) x
+  let filteri_cols f x =
+    let r = ref [||] in
+    let _ = iteri_cols (fun i v ->
+      if (f i v) then r := Array.append !r [|i|]
+    ) x in !r
 
-  let filteri_cols f x = _filteri_dim iteri_cols f x
+  let filter_cols f x = filteri_cols (fun _ v -> f v) x
 
-  let filter_cols f x = filteri_cols (fun _ y -> f y) x
-
-  (* folding is always up->down and left->right order. *)
-  let _fold_raw iter_fun f a x =
+  let _fold_basic iter_fun f a x =
     let r = ref a in
     iter_fun (fun y -> r := f !r y) x; !r
 
-  let fold f a x = _fold_raw iter f a x
+  let fold f a x = _fold_basic iter f a x
 
-  let fold_rows f a x = _fold_raw iter_rows f a x
+  let fold_rows f a x = _fold_basic iter_rows f a x
 
-  let fold_cols f a x = _fold_raw iter_cols f a x
+  let fold_cols f a x = _fold_basic iter_cols f a x
 
   let exists f x =
     try iter (fun y ->
@@ -229,28 +264,52 @@ module Matrix = struct
 
   let for_all f x = let g y = not (f y) in not_exists g x
 
+  let inplace_map = None
+
   (* matrix mathematical operations *)
 
-  let add x1 x2 = LM.add x1 x2
+  let add x1 x2 =
+    let x3 = clone x1 in
+    Gsl.Matrix.add x3 x2; x3
+
   let ( +@ ) = add
 
-  let sub x1 x2 = LM.sub x1 x2
+  let sub x1 x2 =
+    let x3 = clone x1 in
+    Gsl.Matrix.sub x3 x2; x3
+
   let ( -@ ) = sub
 
-  let dot x1 x2 = LL.gemm x1 x2
+  let dot x1 x2 = let open Gsl.Blas in
+    let x3 = empty (row_num x1) (col_num x2) in
+    gemm ~ta:NoTrans ~tb:NoTrans ~alpha:1. ~beta:0. ~a:x1 ~b:x2 ~c:x3; x3
+
   let ( $@ ) = dot
 
-  let mul x1 x2 = LM.mul x1 x2
+  let mul x1 x2 =
+    let x3 = clone x1 in
+    Gsl.Matrix.mul_elements x3 x2; x3
+
   let ( *@ ) = mul
 
-  let div x1 x2 = LM.div x1 x2
+  let div x1 x2 =
+    let x3 = clone x1 in
+    Gsl.Matrix.div_elements x3 x2; x3
+
   let ( /@ ) = div
 
-  let abs x = LM.abs x
+  let power x c = map (fun y -> y ** c) x
 
-  let neg x = LM.neg x
+  let ( **@ ) = power
 
-  let sum x = LM.sum x
+  let abs x = None
+
+  let neg x = None
+
+  let sum x =
+    let y = ones 1 (row_num x) in
+    let z = ones (col_num x) 1 in
+    (dot (dot y x) z).{0,0}
 
   let sum_cols x =
     let y = ones (col_num x) 1 in
@@ -264,12 +323,12 @@ module Matrix = struct
 
   let average_cols x =
     let m, n = shape x in
-    let y = make n 1 (1. /. (float_of_int n)) in
+    let y = create n 1 (1. /. (float_of_int n)) in
     dot x y
 
   let average_rows x =
     let m, n = shape x in
-    let y = make 1 m (1. /. (float_of_int m)) in
+    let y = create 1 m (1. /. (float_of_int m)) in
     dot y x
 
   let is_equal x1 x2 = for_all (( = ) 0.) (sub x1 x2)
@@ -328,49 +387,50 @@ module Matrix = struct
       let r, (_, j) = max v in r, (i,j)
     ) x
 
-  let ( +$ ) x a = map (fun y -> y +. a) x
+  let ( +$ ) x a =
+    let y = clone x in
+    Gsl.Matrix.add_constant y a; y
 
   let ( $+ ) a x = ( +$ ) x a
 
-  let ( -$ ) x a = map (fun y -> y -. a) x
+  let ( -$ ) x a = ( +$ ) x (-1. *. a)
 
   let ( $- ) a x = ( -$ ) x a
 
-  let ( *$ ) x a = map (fun y -> y *. a) x
+  let ( *$ ) x a =
+    let y = clone x in
+    Gsl.Matrix.scale y a; y
 
   let ( $* ) a x = ( *$ ) x a
 
-  let ( /$ ) x a = map (fun y -> y /. a) x
+  let ( /$ ) x a = ( *$ ) x (1. /. a)
 
   let ( $/ ) a x = ( /$ ) x a
 
   (* advanced matrix methematical operations *)
 
-  let detri x = LM.detri x  (* TODO: refine this *)
+  let detri x = x
 
-  let lu x = LL.getrf
+  let lu x = x
 
-  let qr x = LM.from_col_vec (LL.geqrf x) (* TODO: refine this *)
+  let qr x = x
 
-  let cholesky = LL.potrf
+  let cholesky x = x
 
-  let svd x =  (* svd: more robust, slower *)
-    let s, u, v = LL.gesvd x in
-    u, LM.from_row_vec s, v
+  let svd x = let open Gsl.Vectmat in
+    let m, n = shape x in
+    let y, v = `M (clone x), `M (empty n n) in
+    let s, w = `V (Gsl.Vector.create n), `V (Gsl.Vector.create n) in
+    let _ = Gsl.Linalg._SV_decomp y v s w in
+    match y, s, v with `M y, `V s, `M v -> y, s, v
 
-  let sdd x =  (* svd: faster but less robust *)
-    let s, u, v = LL.gesdd x in
-    u, LM.from_row_vec s, v
+  let sdd x = x
 
-  let inv x = LL.getri x
+  let inv x = x
 
-  let least_square = LL.gels (* TODO: refine this *)
+  let least_square x = x
 
   (* formatted input / output operations *)
-
-  let pprint x = Format.printf "%a\n" LL.pp_mat x
-
-  let pprint_header = None
 
   let dump x f =
     let h = open_out f in
@@ -388,54 +448,32 @@ module Matrix = struct
     let _ = try while true do ignore(input_line h); m := !m + 1
       done with End_of_file -> () in
     let x = zeros !m n in seek_in h 0;
-    for i = 1 to !m do
+    for i = 0 to !m - 1 do
       let s = Str.split (Str.regexp " ") (input_line h) in
-      List.iteri (fun j y -> x.{i,j+1} <- float_of_string y) s
+      List.iteri (fun j y -> x.{i,j} <- float_of_string y) s
     done;
     close_in h; x
 
-  (* transform to or from other types *)
-
-  let to_list = LM.to_list
-
-  let to_array = LM.to_array
-
-  let of_list = LM.of_list
-
-  let of_array = LM.of_array
+  let pprint x =
+    let m = Pervasives.min 10 (row_num x) in
+    let n = Pervasives.min 10 (col_num x) in
+    for i = 0 to m - 1 do
+      for j = 0 to n - 1 do
+        Printf.printf "%.2f " x.{i,j}
+      done;
+      if n < (col_num x) then print_endline "..."
+      else print_endline ""
+    done;
+    if m < (row_num x) then print_endline "..."
+    else print_endline ""
 
   (* other functions *)
 
-  let sequential m n =
-    let x = zeros m n and c = ref 0 in
-    let _ = iteri (fun i j _ ->
-      let _ = c := !c + 1 in
-      x.{i,j} <- (float_of_int !c)
-    ) x in x
+  let randomi ?(a=0) ?(b=99) m n = None
 
-  let randomi ?(a=0) ?(b=99) m n =
-    let x = zeros m n in
-    let c = b - a in
-    let _ = iteri (fun i j _ ->
-      x.{i,j} <- float_of_int (Random.int c + a)
-    ) x in x
+  let draw_rows ?(replacement=true) x c = x
 
-  let power x c = map (fun y -> y ** c) x
-  let ( **@ ) = power
-
-  let draw_rows ?(replacement=true) x c = let open UT in
-    let m, n = shape x in
-    let l = if replacement = true then
-      List.map (fun _ -> Random.int (m - 1) + 1) (range 1 c)
-      else sublist 0 (c - 1) (shuffle (range 1 m)) in
-    rows x l
-
-  let draw_cols ?(replacement=true) x c = let open UT in
-    let m, n = shape x in
-    let l = if replacement = true then
-      List.map (fun _ -> Random.int (n - 1) + 1) (range 1 c)
-      else sublist 0 (c - 1) (shuffle (range 1 n)) in
-    cols x l
+  let draw_cols ?(replacement=true) x c = x
 
 end;;
 

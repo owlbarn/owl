@@ -21,8 +21,8 @@ let _ =
   let x, y = (M.sequential m n), (M.sequential m n) in
   test_op "col       " c (fun () -> M.col x (n-1));
   test_op "row       " c (fun () -> M.row x (m-1));
-  test_op "cols      " c (fun () -> M.cols x [1;2]);
-  test_op "rows      " c (fun () -> M.rows x [1;2]);
+  test_op "cols      " c (fun () -> M.cols x [|1;2|]);
+  test_op "rows      " c (fun () -> M.rows x [|1;2|]);
   test_op "map       " c (fun () -> M.map (fun y -> 0.) x);
   test_op "mapi      " c (fun () -> M.mapi (fun _ _ y -> 0.) x);
   test_op "iter      " c (fun () -> M.iter (fun y -> 0.) x);
@@ -57,7 +57,7 @@ let _ =
   test_op ">=@       " c (fun () -> M.(x >=@ y));
   test_op "diag      " c (fun () -> M.diag x);
   test_op "transpose " c (fun () -> M.transpose x);
-  test_op "duplicate " c (fun () -> M.duplicate x);
+  test_op "clone     " c (fun () -> M.clone x);
   test_op "@=        " c (fun () -> M.(x @= y));
   test_op "@||       " c (fun () -> M.(x @|| y));
   test_op "svd       " 1 (fun () -> M.svd (M.sequential 1000 1000));
