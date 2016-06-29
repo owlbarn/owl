@@ -3,19 +3,17 @@
   ]  *)
 
 let shuffle l =
-  let nd = List.map (fun c -> (Random.bits (), c)) l in
-  let sond = List.sort compare nd in
-  List.map snd sond
+  let nd = Array.map (fun c -> (Random.bits (), c)) l in
+  let _ = Array.sort compare nd in
+  Array.map snd nd
 
 let range a b =
   let r = Array.make (b - a + 1) 0 in
-  for i = a to b do r.(i - a) <- i done;
-  Array.to_list r
+  for i = a to b do r.(i - a) <- i done; r
 
 let sublist a b l =
   let r = Array.make (b - a + 1) 0 in
-  for i = a to b do r.(i - a) <- (List.nth l (i - a)) done;
-  Array.to_list r
+  for i = a to b do r.(i - a) <- l.(i - a) done; r
 
 let filteri_array f x =
   let atype = snd (f 0 x.(0)) in

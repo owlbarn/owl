@@ -489,9 +489,21 @@ module Dense = struct
 
   let vector_uniform n = uniform 1 n
 
-  let draw_rows ?(replacement=true) x c = x
+  let draw_rows ?(replacement=true) x c =
+    let open Utils in
+    let m, n = shape x in
+    let l = if replacement = true then
+      Array.map (fun _ -> Random.int (m-1)) (range 1 c)
+      else sublist 0 (c-1) (shuffle (range 0 (m-1))) in
+    rows x l
 
-  let draw_cols ?(replacement=true) x c = x
+  let draw_cols ?(replacement=true) x c =
+    let open Utils in
+    let m, n = shape x in
+    let l = if replacement = true then
+      Array.map (fun _ -> Random.int (n-1)) (range 1 c)
+      else sublist 0 (c-1) (shuffle (range 0 (n-1))) in
+    cols x l
 
 end;;
 
