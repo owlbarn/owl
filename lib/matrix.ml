@@ -6,7 +6,7 @@
 
 open Bigarray
 
-type matrix = Gsl.Matrix.matrix
+type mat = Gsl.Matrix.matrix
 
 type area = { a : int; b : int; c : int; d : int }
 
@@ -24,9 +24,9 @@ module Dense = struct
 
   let numel x = (row_num x) * (col_num x)
 
-  let empty = Gsl.Matrix.create
+  let empty m n = Gsl.Matrix.create m n
 
-  let create m n v = empty ~init:v m n
+  let create m n v = Gsl.Matrix.create ~init:v m n
 
   let ones m n = create m n 1.
 
@@ -46,15 +46,11 @@ module Dense = struct
       done
     done; x
 
-  let random m n = None
-
   let vector n = empty 1 n
 
   let vector_ones n = ones 1 n
 
   let vector_zeros n = zeros 1 n
-
-  let vector_random = None
 
   (* matrix manipulations *)
 
@@ -158,8 +154,8 @@ module Dense = struct
   let swap_rowcol = Gsl.Matrix.swap_rowcol
 
   let transpose x =
-    let y = empty (row_num x) (col_num x) in
-    Gsl.Matrix.transpose x y; x
+    let y = empty (col_num x) (row_num x) in
+    Gsl.Matrix.transpose y x; y
 
   let diag x =
     let m = min (row_num x) (col_num x) in
@@ -490,6 +486,8 @@ module Dense = struct
   let gaussian ?(sigma=1.) m n =
     let x = empty m n in
     iteri (fun i j _ -> x.{i,j} <- Rand.gaussian ~sigma ()) x; x
+
+  let vector_uniform n = uniform 1 n
 
   let draw_rows ?(replacement=true) x c = x
 
