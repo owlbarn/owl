@@ -5,7 +5,7 @@
 type t = Gsl.Rng.t
 
 let rng =
-  let r = Gsl.Rng.make Gsl.Rng.RAND in
+  let r = Gsl.Rng.make Gsl.Rng.CMRG in
   let s = Nativeint.of_float (Unix.gettimeofday () *. 1000000.) in
   Gsl.Rng.set r s; r
 

@@ -44,12 +44,14 @@ let _ =
   test_op "dot        " 1 (fun () -> M.dot x y);
   test_op "+$         " c (fun () -> M.(x +$ 1.));
   test_op "*$         " c (fun () -> M.(x *$ 1.));
+  test_op "abs        " c (fun () -> M.abs x);
+  test_op "neg        " c (fun () -> M.neg x);
   test_op "sum        " c (fun () -> M.sum x);
   test_op "sum_cols   " c (fun () -> M.sum_cols x);
   test_op "sum_rows   " c (fun () -> M.sum_rows x);
   test_op "min        " c (fun () -> M.min x);
-  test_op "min_col    " c (fun () -> M.min_col x);
-  test_op "min_row    " c (fun () -> M.min_row x);
+  test_op "min_cols   " c (fun () -> M.min_cols x);
+  test_op "min_rows   " c (fun () -> M.min_rows x);
   test_op "average    " c (fun () -> M.average x);
   test_op "avg_col    " c (fun () -> M.average_cols x);
   test_op "avg_row    " c (fun () -> M.average_rows x);
@@ -60,7 +62,7 @@ let _ =
   test_op "clone      " c (fun () -> M.clone x);
   test_op "@=         " c (fun () -> M.(x @= y));
   test_op "@||        " c (fun () -> M.(x @|| y));
-  test_op "svd        " 1 (fun () -> M.svd (M.sequential 1000 1000));
+  (*test_op "svd        " 1 (fun () -> M.svd (M.sequential 1000 1000));*)
   test_op "sdd        " c (fun () -> M.sdd (M.sequential 1000 1000));
   test_op "draw_cols  " c (fun () -> M.draw_cols x 500);
   test_op "draw_rows  " c (fun () -> M.draw_rows x 500);
