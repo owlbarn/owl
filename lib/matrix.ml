@@ -481,9 +481,15 @@ module Dense = struct
       float_of_int (Rand.uniform_int ~a ~b ())
     ) x; x
 
-  let uniform m n = None
+  let uniform ?(scale=1.) m n =
+    let x = empty m n in
+    iteri (fun i j _ ->
+      x.{i,j} <- Rand.uniform () *. scale
+    ) x; x
 
-  let gaussian m n = None
+  let gaussian ?(sigma=1.) m n =
+    let x = empty m n in
+    iteri (fun i j _ -> x.{i,j} <- Rand.gaussian ~sigma ()) x; x
 
   let draw_rows ?(replacement=true) x c = x
 
