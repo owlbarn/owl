@@ -62,8 +62,8 @@ let _ =
   test_op "clone      " c (fun () -> M.clone x);
   test_op "@=         " c (fun () -> M.(x @= y));
   test_op "@||        " c (fun () -> M.(x @|| y));
-  (*test_op "svd        " 1 (fun () -> M.svd (M.sequential 1000 1000));*)
-  test_op "sdd        " c (fun () -> M.sdd (M.sequential 1000 1000));
+  (*test_op "svd        " 1 (fun () -> M.svd (M.sequential 1000 1000));
+  test_op "sdd        " c (fun () -> M.sdd (M.sequential 1000 1000));*)
   test_op "draw_cols  " c (fun () -> M.draw_cols x 500);
   test_op "draw_rows  " c (fun () -> M.draw_rows x 500);
   test_op "dump       " 1 (fun () -> M.dump x "test_matrix.tmp");
