@@ -10,7 +10,7 @@ type matrix = Gsl.Matrix.matrix
 
 type area = { a : int; b : int; c : int; d : int }
 
-module Matrix = struct
+module Dense = struct
 
   (* matrix creation operations *)
 
@@ -483,4 +483,10 @@ module Matrix = struct
 
 end;;
 
-module M = Matrix;;
+
+module Sparse = struct
+
+end;;
+
+
+module M = Dense;;
