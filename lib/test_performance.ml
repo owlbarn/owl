@@ -1,4 +1,4 @@
-module M = Matrix.Matrix
+module M = Matrix.Dense
 
 let test_op s c op =
   let ttime = ref 0. in
@@ -67,7 +67,8 @@ let _ =
   test_op "dump      " 1 (fun () -> M.dump x "test_matrix.tmp");
   test_op "load      " 1 (fun () -> M.load "test_matrix.tmp");
   test_op "zeros     " c (fun () -> M.zeros m n);
-  test_op "random    " c (fun () -> M.random m n);
-  test_op "randomi   " c (fun () -> M.randomi m n);
+  test_op "unifm_int " c (fun () -> M.uniform_int m n);
+  test_op "uniform   " c (fun () -> M.uniform m n);
+  test_op "gaussian  " c (fun () -> M.gaussian m n);
   test_op "sequential" c (fun () -> M.sequential m n);
   print_endline (Bytes.make 60 '+');
