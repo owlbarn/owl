@@ -467,6 +467,12 @@ module Matrix = struct
     if m < (row_num x) then print_endline "..."
     else print_endline ""
 
+  let print x = let open Pretty in
+    Format.printf "%a\n" Pretty.pp_fmat x;;
+
+  let pprint x = let open Pretty in
+    Format.printf "%a\n" Toplevel.pp_fmat x;;
+
   (* other functions *)
 
   let randomi ?(a=0) ?(b=99) m n = None
