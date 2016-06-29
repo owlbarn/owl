@@ -162,10 +162,6 @@ module Dense = struct
     let y = empty 1 m in
     for i = 0 to m - 1 do y.{0,i} <- x.{i,i} done; y
 
-  let trace = None
-
-  let add_diag = None
-
   (* matrix iteration operations *)
 
   let iteri f x =
@@ -298,9 +294,11 @@ module Dense = struct
 
   let ( **@ ) = power
 
-  let abs x = None
+  let abs x = map abs_float x
 
-  let neg x = None
+  let neg x =
+    let y = clone x in
+    Gsl.Matrix.scale y (-1.); y
 
   let sum x =
     let y = ones 1 (row_num x) in
@@ -357,12 +355,12 @@ module Dense = struct
       if y < !r then (r := y; p := (i,j))
     ) x; !r, !p
 
-  let min_col x =
+  let min_cols x =
     mapi_cols (fun j v ->
       let r, (i, _) = min v in r, (i,j)
     ) x
 
-  let min_row x =
+  let min_rows x =
     mapi_rows (fun i v ->
       let r, (_, j) = min v in r, (i,j)
     ) x
@@ -373,12 +371,12 @@ module Dense = struct
       if y > !r then (r := y; p := (i,j))
     ) x; !r, !p
 
-  let max_col x =
+  let max_cols x =
     mapi_cols (fun j v ->
       let r, (i, _) = max v in r, (i,j)
     ) x
 
-  let max_row x =
+  let max_rows x =
     mapi_rows (fun i v ->
       let r, (_, j) = max v in r, (i,j)
     ) x
@@ -403,7 +401,22 @@ module Dense = struct
 
   let ( $/ ) a x = ( /$ ) x a
 
+  let add_scalar = ( +$ )
+
+  let sub_scalar = ( -$ )
+
+  let mul_scalar = ( *$ )
+
+  let div_scalar = ( /$ )
+
   (* advanced matrix methematical operations *)
+
+  let trace x = sum (diag x)
+
+  let add_diag x a =
+    let m = Pervasives.min (row_num x) (col_num x) in
+    let y = clone x in
+    for i = 0 to m - 1 do y.{i,i} <- x.{i,i} +. a done; y
 
   let detri x = x
 
@@ -450,26 +463,13 @@ module Dense = struct
     done;
     close_in h; x
 
-  let pprint x =
-    let m = Pervasives.min 10 (row_num x) in
-    let n = Pervasives.min 10 (col_num x) in
-    for i = 0 to m - 1 do
-      for j = 0 to n - 1 do
-        Printf.printf "%.2f " x.{i,j}
-      done;
-      if n < (col_num x) then print_endline "..."
-      else print_endline ""
-    done;
-    if m < (row_num x) then print_endline "..."
-    else print_endline ""
-
   let print x = let open Pretty in
     Format.printf "%a\n" Pretty.pp_fmat x;;
 
   let pprint x = let open Pretty in
     Format.printf "%a\n" Toplevel.pp_fmat x;;
 
-  (* other functions *)
+  (* some other uncategorised functions *)
 
   let uniform_int ?(a=0) ?(b=99) m n =
     let x = empty m n in
