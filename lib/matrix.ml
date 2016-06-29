@@ -475,7 +475,15 @@ module Dense = struct
 
   (* other functions *)
 
-  let randomi ?(a=0) ?(b=99) m n = None
+  let uniform_int ?(a=0) ?(b=99) m n =
+    let x = empty m n in
+    iteri (fun i j _ -> x.{i,j} <-
+      float_of_int (Rand.uniform_int ~a ~b ())
+    ) x; x
+
+  let uniform m n = None
+
+  let gaussian m n = None
 
   let draw_rows ?(replacement=true) x c = x
 

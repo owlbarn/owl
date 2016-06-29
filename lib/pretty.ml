@@ -82,7 +82,7 @@ module Context = struct
   let ellipsis_default = ref "..."
 
   let vertical_default, horizontal_default =
-    let context = if !Sys.interactive then Some 3 else None in
+    let context = if !Sys.interactive then Some 4 else None in
     ref context, ref context
 
   let set_dim_defaults opt_n =
