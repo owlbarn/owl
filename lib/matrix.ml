@@ -33,7 +33,7 @@ module Matrix = struct
   let zeros m n = create m n 0.
 
   let eye n =
-    let x = empty n n in
+    let x = zeros n n in
     for i = 0 to n - 1 do x.{i,i} <- 1. done; x
 
   let identity = eye
