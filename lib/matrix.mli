@@ -26,6 +26,8 @@ module Dense : sig
 
   val uniform : ?scale:float -> int -> int -> mat
 
+  val gaussian : ?sigma:float -> int -> int -> mat
+
   val vector : int -> mat
 
   val vector_zeros : int -> mat
