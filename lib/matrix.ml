@@ -508,9 +508,4 @@ module Dense = struct
 end;;
 
 
-module Sparse = struct
-
-end;;
-
-
 module M = Dense;;
