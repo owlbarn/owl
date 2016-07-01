@@ -1,3 +1,4 @@
+(* Sparse matrix support *)
 
 type 'a spmt = {
   m : int;
