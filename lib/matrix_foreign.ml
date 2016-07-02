@@ -77,6 +77,6 @@ let gsl_matrix_max = foreign "gsl_matrix_max" (ptr mat @-> returning double)
 
 let gsl_matrix_max_index = foreign "gsl_matrix_max_index" (ptr mat @-> ptr int @-> ptr int @-> returning void)
 
-let gsl_matrix_fwrite = foreign "gsl_matrix_fwrite" (string @-> ptr mat @-> returning void)
+let gsl_matrix_fwrite = foreign "gsl_matrix_fwrite" (ptr int @-> ptr mat @-> returning void)
 
 let empty = foreign "gsl_matrix_alloc" (int @-> int @-> returning (ptr mat))

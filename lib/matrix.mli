@@ -212,6 +212,8 @@ module Dense : sig
 
   val load : string -> mat
 
+  val dump_binary : mat -> string -> unit
+
   val print : mat -> unit
 
   val pprint : mat -> unit

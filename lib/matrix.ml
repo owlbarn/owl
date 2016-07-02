@@ -500,6 +500,14 @@ module Dense = struct
     done;
     close_in h; x
 
+  let dump_binary x f =  (* FIXME: it does not work!!! *)
+    let open Matrix_foreign in
+    let open Ctypes in
+    let h = open_out f in
+    let i = allocate int (Obj.magic h : int) in
+    let _ = gsl_matrix_fwrite i (mat_to_matptr x) in
+    close_out h
+
   let print x = let open Pretty in
     Format.printf "%a\n" Pretty.pp_fmat x;;
 
