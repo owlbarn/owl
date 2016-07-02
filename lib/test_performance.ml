@@ -50,6 +50,7 @@ let _ =
   test_op "sum_cols   " c (fun () -> M.sum_cols x);
   test_op "sum_rows   " c (fun () -> M.sum_rows x);
   test_op "min        " c (fun () -> M.min x);
+  test_op "gsl_test   " c (fun () -> M.gsl_test x);
   test_op "min_cols   " c (fun () -> M.min_cols x);
   test_op "min_rows   " c (fun () -> M.min_rows x);
   test_op "average    " c (fun () -> M.average x);
@@ -58,7 +59,6 @@ let _ =
   test_op "=@         " c (fun () -> M.(x =@ y));
   test_op ">@         " c (fun () -> M.(x >@ y));
   test_op ">=@        " c (fun () -> M.(x >=@ y));
-  test_op "gsl_test   " c (fun () -> M.gsl_test x y);
   test_op "diag       " c (fun () -> M.diag x);
   test_op "transpose  " c (fun () -> M.transpose x);
   test_op "clone      " c (fun () -> M.clone x);

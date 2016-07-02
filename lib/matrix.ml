@@ -181,12 +181,7 @@ module Dense = struct
 
   let iter_rows f x = iteri_rows (fun _ y -> f y) x
 
-  let _iteri_cols f x =  (* TODO: slow, use iteri_cols instead *)
-    for i = 0 to (col_num x) - 1 do
-      f i (col x i)
-    done
-
-  let _row x i =
+  let _row x i =  (* get row i of x, but return as a column vector *)
     let y = Array2.slice_left x i in
     reshape_2 (genarray_of_array1 y) (col_num x) 1
 
@@ -208,7 +203,9 @@ module Dense = struct
 
   let map_rows f x = mapi_rows (fun _ y -> f y) x
 
-  let mapi_cols f x = Array.init (col_num x) (fun i -> f i (col x i))
+  let mapi_cols f x =
+    let y = transpose x in
+    Array.init (col_num x) (fun i -> f i (_row y i))
 
   let map_cols f x = mapi_cols (fun _ y -> f y) x
 
@@ -382,35 +379,43 @@ module Dense = struct
     (gsl_matrix_isnonneg x) = 1
 
   let min x =
-    let r = ref max_float and p = ref (0,0) in
-    iteri (fun i j y ->
-      if y < !r then (r := y; p := (i,j))
-    ) x; !r, !p
+    let open Matrix_foreign in
+    let open Ctypes in
+    let x = mat_to_matptr x in
+    let i = allocate int 0 in
+    let j = allocate int 0 in
+    let r = gsl_matrix_min x in
+    let _ = gsl_matrix_min_index x i j in
+    r, !@i, !@j
 
   let min_cols x =
     mapi_cols (fun j v ->
-      let r, (i, _) = min v in r, (i,j)
+      let r, i, _ = min v in r, i, j
     ) x
 
   let min_rows x =
     mapi_rows (fun i v ->
-      let r, (_, j) = min v in r, (i,j)
+      let r, _, j = min v in r, i, j
     ) x
 
   let max x =
-    let r = ref min_float and p = ref (0,0) in
-    iteri (fun i j y ->
-      if y > !r then (r := y; p := (i,j))
-    ) x; !r, !p
+    let open Matrix_foreign in
+    let open Ctypes in
+    let x = mat_to_matptr x in
+    let i = allocate int 0 in
+    let j = allocate int 0 in
+    let r = gsl_matrix_max x in
+    let _ = gsl_matrix_max_index x i j in
+    r, !@i, !@j
 
   let max_cols x =
     mapi_cols (fun j v ->
-      let r, (i, _) = max v in r, (i,j)
+      let r, i, _ = max v in r, i, j
     ) x
 
   let max_rows x =
     mapi_rows (fun i v ->
-      let r, (_, j) = max v in r, (i,j)
+      let r, _, j = max v in r, i, j
     ) x
 
   let ( +$ ) x a =
@@ -537,10 +542,15 @@ module Dense = struct
       else sublist 0 (c-1) (shuffle (range 0 (n-1))) in
     cols x l
 
-  let gsl_test x1 x2 = let open Matrix_foreign in
-    let x3 = sub x1 x2 in
-    let x3 = mat_to_matptr x3 in
-    (gsl_matrix_ispos x3) = 1
+  let gsl_test x =
+    let open Matrix_foreign in
+    let open Ctypes in
+    let x = mat_to_matptr x in
+    let i = allocate int 0 in
+    let j = allocate int 0 in
+    let r = gsl_matrix_min x in
+    let _ = gsl_matrix_min_index x i j in
+    r, !@i, !@j
 
 end;;
 

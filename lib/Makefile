@@ -5,8 +5,8 @@ all:
 	ocamlfind ocamlopt -c rand.ml -package gsl
 	ocamlfind ocamlopt -c pretty.mli
 	ocamlfind ocamlopt -c pretty.ml
-	ocamlfind ocamlopt -c matrix.mli -package gsl
-	ocamlfind ocamlopt -c matrix.ml pretty.cmx rand.cmx utils.cmx matrix_foreign.cmx -package gsl
+	ocamlfind ocamlopt -c matrix.mli -package gsl -package ctypes
+	ocamlfind ocamlopt -c matrix.ml pretty.cmx rand.cmx utils.cmx matrix_foreign.cmx -package gsl -package ctypes
 	ocamlfind ocamlopt -linkpkg -o test_performance pretty.cmx rand.cmx utils.cmx matrix_foreign.cmx matrix.cmx test_performance.ml -package gsl -package ctypes -package ctypes.foreign
 clean:
 	rm -rf *.cmi *.cmo *.cmx *.o test*.tmp test_performance test_operation

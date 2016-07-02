@@ -182,17 +182,17 @@ module Dense : sig
 
   val average_cols : mat -> mat
 
-  val min : mat -> float * (int * int)
+  val min : mat -> float * int * int
 
-  val min_rows : mat -> (float * (int * int)) array
+  val min_rows : mat -> (float * int * int) array
 
-  val min_cols : mat -> (float * (int * int)) array
+  val min_cols : mat -> (float * int * int) array
 
-  val max : mat -> float * (int * int)
+  val max : mat -> float * int * int
 
-  val max_rows : mat -> (float * (int * int)) array
+  val max_rows : mat -> (float * int * int) array
 
-  val max_cols : mat -> (float * (int * int)) array
+  val max_cols : mat -> (float * int * int) array
 
   val is_zero : mat -> bool
 
@@ -266,6 +266,6 @@ module Dense : sig
 
   val ( <=@ ) : mat -> mat -> bool
 
-  val gsl_test : mat -> mat -> bool
+  val gsl_test : mat -> float * int * int
 
 end
