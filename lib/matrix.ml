@@ -550,16 +550,6 @@ module Dense = struct
       else sublist 0 (c-1) (shuffle (range 0 (n-1))) in
     cols x l
 
-  let gsl_test x =
-    let open Matrix_foreign in
-    let open Ctypes in
-    let x = mat_to_matptr x in
-    let i = allocate int 0 in
-    let j = allocate int 0 in
-    let r = gsl_matrix_min x in
-    let _ = gsl_matrix_min_index x i j in
-    r, !@i, !@j
-
 end;;
 
 

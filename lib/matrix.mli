@@ -268,6 +268,4 @@ module Dense : sig
 
   val ( <=@ ) : mat -> mat -> bool
 
-  val gsl_test : mat -> float * int * int
-
 end
