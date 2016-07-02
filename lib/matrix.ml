@@ -507,8 +507,7 @@ module Dense = struct
 
   let get_col x i = let open Matrix_foreign in
     let m, n = shape x in
-    let raw = gsl_matrix_column
-    (mat_to_ptr x m n) i in
+    let raw = gsl_matrix_column (mat_to_ptr x m n) i in
     vec_to_mat raw m 1
 
 end;;

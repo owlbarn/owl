@@ -42,21 +42,21 @@ let vec_to_mat x m n =
   bigarray_of_ptr array2 (m,n) Bigarray.float64 raw
 
 let mat_to_ptr x m n =
-  let y = make mblk in
-  let z = make mat in
+  let m, n = Int64.of_int(m), Int64.of_int(n) in
+  let y, z = make mblk, make mat in
   let p = Ctypes.bigarray_start Ctypes_static.Array2 x in
-  let _ = setf y msize (Int64.of_int(m * n)) in
+  let _ = setf y msize (Int64.mul m n) in
   let _ = setf y mdata p in
-  let _ = setf z size1 (Int64.of_int(m)) in
-  let _ = setf z size2 (Int64.of_int(n)) in
-  let _ = setf z tda (Int64.of_int(n)) in
+  let _ = setf z size1 m in
+  let _ = setf z size2 n in
+  let _ = setf z tda n in
   let _ = setf z data p in
   let _ = setf z block (addr y) in
   (addr z)
 
 (* import some matrix functions from gsl *)
 
-let gsl_matrix_column = foreign "gsl_matrix_column" (ptr mat @-> int @-> returning vec)
+let gsl_matrix_column = foreign "gsl_matrix_row" (ptr mat @-> int @-> returning vec)
 
 let gsl_matrix_equal = foreign "gsl_matrix_equal" (ptr mat @-> ptr mat @-> returning int)
 
