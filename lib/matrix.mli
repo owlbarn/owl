@@ -2,7 +2,7 @@
  A library for matrix operations
 *)
 
-type mat
+type mat = Gsl.Matrix.matrix
 
 module Dense : sig
 
@@ -257,5 +257,7 @@ module Dense : sig
   val ( >=@ ) : mat -> mat -> bool
 
   val ( <=@ ) : mat -> mat -> bool
+
+  val get_col : mat -> int -> mat
 
 end
