@@ -550,6 +550,13 @@ module Dense = struct
       else sublist 0 (c-1) (shuffle (range 0 (n-1))) in
     cols x l
 
+  let test x i =  (* FIXME: cannot read column correctly *)
+    let open Matrix_foreign in
+    let open Ctypes in
+    let p = allocate_col_vecptr (row_num x) in
+    let _ = gsl_matrix_get_col p (mat_to_matptr x) i in
+    col_vec_to_mat (!@p)
+
 end;;
 
 

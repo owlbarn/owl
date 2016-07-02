@@ -268,4 +268,6 @@ module Dense : sig
 
   val ( <=@ ) : mat -> mat -> bool
 
+  val test : mat -> int -> mat
+
 end
