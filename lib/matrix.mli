@@ -268,6 +268,7 @@ module Dense : sig
 
   val ( <=@ ) : mat -> mat -> bool
 
+  (* FIXME: for debug purpose *)
   val test : mat -> int -> mat
 
 end

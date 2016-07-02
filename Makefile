@@ -1,6 +1,6 @@
 all:
-	ocaml setup.ml -uninstall
 	ocaml setup.ml -build
+	ocaml setup.ml -uninstall
 	ocaml setup.ml -install
 oasis:
 	oasis setup
