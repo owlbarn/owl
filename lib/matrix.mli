@@ -194,6 +194,14 @@ module Dense : sig
 
   val max_cols : mat -> (float * (int * int)) array
 
+  val is_zero : mat -> bool
+
+  val is_positive : mat -> bool
+
+  val is_negative : mat -> bool
+
+  val is_nonnegative : mat -> bool
+
   (* advanced linear algebra functions *)
 
   (* val svd : mat -> mat -> mat -> mat *)
@@ -258,6 +266,6 @@ module Dense : sig
 
   val ( <=@ ) : mat -> mat -> bool
 
-  val get_col : mat -> int -> mat
+  val gsl_test : mat -> mat -> bool
 
 end

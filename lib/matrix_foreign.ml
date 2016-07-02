@@ -33,17 +33,20 @@ let block = field mat "block" (ptr mblk)
 let owner = field mat "owner" int64_t
 let () = seal mat
 
-let mat_ptr_to_mat x m n =
+let matptr_to_mat x m n =
   let raw = getf (!@ x) data in
   bigarray_of_ptr array2 (m,n) Bigarray.float64 raw
 
-let vec_to_mat x m n =
+let vec_to_mat x =
   let raw = getf x vdata in
-  bigarray_of_ptr array2 (m,n) Bigarray.float64 raw
+  let len = getf x vsize in
+  bigarray_of_ptr array2 (1,(Int64.to_int len)) Bigarray.float64 raw
 
-let mat_to_ptr x m n =
-  let m, n = Int64.of_int(m), Int64.of_int(n) in
-  let y, z = make mblk, make mat in
+let mat_to_matptr x : mat Ctypes.structure Ctypes_static.ptr =
+  let m = Int64.of_int(Bigarray.Array2.dim1 x) in
+  let n = Int64.of_int(Bigarray.Array2.dim2 x) in
+  let y = make mblk in
+  let z = make mat in
   let p = Ctypes.bigarray_start Ctypes_static.Array2 x in
   let _ = setf y msize (Int64.mul m n) in
   let _ = setf y mdata p in
@@ -56,9 +59,15 @@ let mat_to_ptr x m n =
 
 (* import some matrix functions from gsl *)
 
-let gsl_matrix_column = foreign "gsl_matrix_row" (ptr mat @-> int @-> returning vec)
-
 let gsl_matrix_equal = foreign "gsl_matrix_equal" (ptr mat @-> ptr mat @-> returning int)
+
+let gsl_matrix_isnull = foreign "gsl_matrix_isnull" (ptr mat @-> returning int)
+
+let gsl_matrix_ispos = foreign "gsl_matrix_ispos" (ptr mat @-> returning int)
+
+let gsl_matrix_isneg = foreign "gsl_matrix_isneg" (ptr mat @-> returning int)
+
+let gsl_matrix_isnonneg = foreign "gsl_matrix_isnonneg" (ptr mat @-> returning int)
 
 let gsl_matrix_fwrite = foreign "gsl_matrix_fwrite" (string @-> ptr mat @-> returning void)
 

@@ -325,7 +325,11 @@ module Dense = struct
     let y = create 1 m (1. /. (float_of_int m)) in
     dot y x
 
-  let is_equal x1 x2 = for_all (( = ) 0.) (sub x1 x2)
+  let is_equal x1 x2 =
+    let open Matrix_foreign in
+    let x1 = mat_to_matptr x1 in
+    let x2 = mat_to_matptr x2 in
+    (gsl_matrix_equal x1 x2) = 1
 
   let ( =@ ) = is_equal
 
@@ -333,21 +337,49 @@ module Dense = struct
 
   let ( <>@ ) = is_unequal
 
-  let is_greater x1 x2 = for_all (( < ) 0.) (sub x1 x2)
+  let is_greater x1 x2 =
+    let open Matrix_foreign in
+    let x3 = sub x1 x2 in
+    let x3 = mat_to_matptr x3 in
+    (gsl_matrix_ispos x3) = 1
 
   let ( >@ ) = is_greater
 
-  let is_smaller x1 x2 = for_all (( > ) 0.) (sub x1 x2)
+  let is_smaller x1 x2 = is_greater x2 x1
 
   let ( <@ ) = is_smaller
 
-  let equal_or_greater x1 x2 = for_all (( <= ) 0.) (sub x1 x2)
+  let equal_or_greater x1 x2 =
+    let open Matrix_foreign in
+    let x3 = sub x1 x2 in
+    let x3 = mat_to_matptr x3 in
+    (gsl_matrix_isnonneg x3) = 1
 
   let ( >=@ ) = equal_or_greater
 
-  let equal_or_smaller x1 x2 = for_all (( >= ) 0.) (sub x1 x2)
+  let equal_or_smaller x1 x2 = equal_or_greater x2 x1
 
   let ( <=@ ) = equal_or_smaller
+
+  let is_zero x =
+    let open Matrix_foreign in
+    let x = mat_to_matptr x in
+    (gsl_matrix_isnull x) = 1
+
+  let is_positive x =
+    let open Matrix_foreign in
+    let x = mat_to_matptr x in
+    (gsl_matrix_ispos x) = 1
+
+  let is_negative x =
+    let open Matrix_foreign in
+    let x = mat_to_matptr x in
+    (gsl_matrix_isneg x) = 1
+
+  let is_nonnegative x =
+    let open Matrix_foreign in
+    let x = mat_to_matptr x in
+    (gsl_matrix_isnonneg x) = 1
 
   let min x =
     let r = ref max_float and p = ref (0,0) in
@@ -505,10 +537,10 @@ module Dense = struct
       else sublist 0 (c-1) (shuffle (range 0 (n-1))) in
     cols x l
 
-  let get_col x i = let open Matrix_foreign in
-    let m, n = shape x in
-    let raw = gsl_matrix_column (mat_to_ptr x m n) i in
-    vec_to_mat raw m 1
+  let gsl_test x1 x2 = let open Matrix_foreign in
+    let x3 = sub x1 x2 in
+    let x3 = mat_to_matptr x3 in
+    (gsl_matrix_ispos x3) = 1
 
 end;;
 

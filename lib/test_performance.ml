@@ -56,7 +56,9 @@ let _ =
   test_op "avg_col    " c (fun () -> M.average_cols x);
   test_op "avg_row    " c (fun () -> M.average_rows x);
   test_op "=@         " c (fun () -> M.(x =@ y));
+  test_op ">@         " c (fun () -> M.(x >@ y));
   test_op ">=@        " c (fun () -> M.(x >=@ y));
+  test_op "gsl_test   " c (fun () -> M.gsl_test x y);
   test_op "diag       " c (fun () -> M.diag x);
   test_op "transpose  " c (fun () -> M.transpose x);
   test_op "clone      " c (fun () -> M.clone x);
