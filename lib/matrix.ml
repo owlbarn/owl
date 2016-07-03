@@ -553,7 +553,7 @@ module Dense = struct
 
   let gsl_col x i =
     let open Matrix_foreign in
-    let y = allocate_vecptr (row_num x) in
+    let y = allocate_col_vecptr (row_num x) in
     let _ = gsl_matrix_get_col y.vptr (mat_to_matptr x) i in
     y.vdata
 
