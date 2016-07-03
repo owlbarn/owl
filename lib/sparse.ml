@@ -133,7 +133,12 @@ let transpose x =
 
 let diag = None
 
-let trace = None
+let trace x =
+  let r = ref 0. in
+  let c = Pervasives.min (row_num x) (col_num x) in
+  for i = 0 to c - 1 do
+    r := !r +. (get x i i)
+  done; !r
 
 (* matrix mathematical operations *)
 
