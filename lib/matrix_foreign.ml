@@ -136,5 +136,9 @@ let gsl_spmatrix_minmax = foreign "gsl_spmatrix_minmax" (ptr sp_mat @-> ptr doub
 
 let gsl_spmatrix_equal = foreign "gsl_spmatrix_equal" (ptr sp_mat @-> ptr sp_mat @-> returning int)
 
+let gsl_spmatrix_transpose_memcpy = foreign "gsl_spmatrix_transpose_memcpy" (ptr sp_mat @-> ptr sp_mat @-> returning int)
+
+
+
 
 (* ends here *)

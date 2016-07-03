@@ -118,6 +118,18 @@ let to_csc x =
 
 let to_triplet x = None
 
+let transpose x =
+  let open Matrix_foreign in
+  let y = if _is_csc_format x
+    then empty_csc (col_num x) (row_num x)
+    else empty (col_num x) (row_num x) in
+  let _ = gsl_spmatrix_transpose_memcpy y.ptr x.ptr in
+  _update_rec_from_ptr y
+
+let diag = None
+
+let trace = None
+
 (* matrix mathematical operations *)
 
 let mul_scalar x1 y =
