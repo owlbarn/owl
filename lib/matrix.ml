@@ -551,6 +551,7 @@ module Dense = struct
       else sublist 0 (c-1) (shuffle (range 0 (n-1))) in
     cols x l
 
+  (* TODO: use this to replace col function, faster *)
   let gsl_col x i =
     let open Matrix_foreign in
     let y = allocate_col_vecptr (row_num x) in
