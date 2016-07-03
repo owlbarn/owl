@@ -153,5 +153,21 @@ let gsl_spblas_dgemv = foreign "gsl_spblas_dgemv" (int @-> double @-> ptr sp_mat
 let gsl_spblas_dgemm = foreign "gsl_spblas_dgemm" (double @-> ptr sp_mat @-> ptr sp_mat @-> ptr sp_mat @-> returning int)
 
 
+(* some other helper functions *)
+
+let allocate_vecptr m =
+  let open Types in
+  let open Ctypes in
+  let p = gsl_vector_alloc m in
+  let y = !@ p in
+  let x = {
+    vsize = Int64.to_int (getf y vsize);
+    stride = Int64.to_int (getf y vsize);
+    vdata = (
+      let raw = getf y vdata in
+      bigarray_of_ptr array2 (1,m) Bigarray.float64 raw );
+    vptr = p } in x
+
+
 
 (* ends here *)

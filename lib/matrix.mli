@@ -268,9 +268,8 @@ module Dense : sig
 
   val ( <=@ ) : mat -> mat -> bool
 
-  (* FIXME: for debug purpose *)
-  val test : mat -> int -> mat
+  (* TODO: for debug purpose *)
 
-  val get_col : mat -> int -> mat
+  val gsl_col : mat -> int -> mat
 
 end
