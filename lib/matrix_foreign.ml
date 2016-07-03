@@ -1,14 +1,14 @@
 open Ctypes
 open Foreign
 
-(* Dense matrices
-  define the block struct, refer to gsl_matrix_double.h *)
+(* Some common data structure for both dense and sparse matrices.
+  please refer to related header files in GSL code repository. *)
 
 type block
 
 let mblk : block structure typ = structure "mblk"
-let msize = field mblk "msize" int64_t
-let mdata = field mblk "mdata" (ptr double)
+  let msize = field mblk "msize" int64_t
+  let mdata = field mblk "mdata" (ptr double)
 let () = seal mblk
 
 (* define vector struct, refer to gsl_vector_double.h *)
@@ -16,25 +16,27 @@ let () = seal mblk
 type vec
 
 let vec : vec structure typ = structure "vec"
-let vsize = field vec "vsize" int64_t
-let stride = field vec "stride" int64_t
-let vdata = field vec "vdata" (ptr double)
-let vblock = field vec "vblock" (ptr mblk)
-let vowner = field vec "vowner" int64_t
+  let vsize = field vec "vsize" int64_t
+  let stride = field vec "stride" int64_t
+  let vdata = field vec "vdata" (ptr double)
+  let vblock = field vec "vblock" (ptr mblk)
+  let vowner = field vec "vowner" int64_t
 let () = seal vec
 
-(* define matrix struct, refer to gsl_matrix_double.h *)
+(* define dense matrix struct, refer to gsl_matrix_double.h *)
 
 type mat
 
 let mat : mat structure typ = structure "mat"
-let size1 = field mat "size1" int64_t
-let size2 = field mat "size2" int64_t
-let tda = field mat "tda" int64_t
-let data = field mat "data" (ptr double)
-let block = field mat "block" (ptr mblk)
-let owner = field mat "owner" int64_t
+  let size1 = field mat "size1" int64_t
+  let size2 = field mat "size2" int64_t
+  let tda = field mat "tda" int64_t
+  let data = field mat "data" (ptr double)
+  let block = field mat "block" (ptr mblk)
+  let owner = field mat "owner" int64_t
 let () = seal mat
+
+(* some helper fucntions for type translation and construction *)
 
 let matptr_to_mat x m n =
   let raw = getf (!@ x) data in
@@ -74,7 +76,10 @@ let allocate_col_vecptr x = (* FIXME: not sure is setting is right, use gsl_vect
   let _ = setf z vdata p in
   (addr z)
 
-(* import some matrix functions from gsl *)
+(* Dense matrices
+  define the block struct, refer to gsl_matrix_double.h *)
+
+let gsl_vector_alloc = foreign "gsl_vector_alloc" (int @-> returning (ptr vec))
 
 let gsl_matrix_get_col = foreign "gsl_matrix_get_col" (ptr vec @-> ptr mat @-> int @-> returning int)
 
@@ -100,21 +105,21 @@ let gsl_matrix_fwrite = foreign "gsl_matrix_fwrite" (ptr int @-> ptr mat @-> ret
 
 
 (* Sparse matrices
-  define the block struct, refer to gsl_spmatrix.h *)
+  define sparse matrix struct, refer to gsl_spmatrix.h *)
 
 type sp_mat
 
 let sp_mat : sp_mat structure typ = structure "sp_mat"
-let sp_size1 = field sp_mat "sp_size1" int64_t
-let sp_size2 = field sp_mat "sp_size2" int64_t
-let sp_i = field sp_mat "sp_i" (ptr int64_t)
-let sp_data = field sp_mat "sp_data" (ptr double)
-let sp_p = field sp_mat "sp_p" (ptr int64_t)
-let sp_nzmax = field sp_mat "sp_nzmax" int64_t
-let sp_nz = field sp_mat "sp_nz" int64_t
-let sp_tree = field sp_mat "sp_tree" (ptr void)
-let sp_work = field sp_mat "sp_nz" (ptr void)
-let sp_type = field sp_mat "sp_type" int64_t
+  let sp_size1 = field sp_mat "sp_size1" int64_t
+  let sp_size2 = field sp_mat "sp_size2" int64_t
+  let sp_i = field sp_mat "sp_i" (ptr int64_t)
+  let sp_data = field sp_mat "sp_data" (ptr double)
+  let sp_p = field sp_mat "sp_p" (ptr int64_t)
+  let sp_nzmax = field sp_mat "sp_nzmax" int64_t
+  let sp_nz = field sp_mat "sp_nz" int64_t
+  let sp_tree = field sp_mat "sp_tree" (ptr void)
+  let sp_work = field sp_mat "sp_nz" (ptr void)
+  let sp_type = field sp_mat "sp_type" int64_t
 let () = seal sp_mat
 
 
