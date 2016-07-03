@@ -2,49 +2,8 @@ open Ctypes
 open Foreign
 open Types
 
-(* some helper fucntions for type translation and construction *)
 
-let matptr_to_mat x m n =
-  let raw = getf (!@ x) data in
-  bigarray_of_ptr array2 (m,n) Bigarray.float64 raw
-
-let col_vec_to_mat x =
-  let raw = getf x vdata in
-  let len = getf x vsize in
-  bigarray_of_ptr array2 ((Int64.to_int len),1) Bigarray.float64 raw
-
-let mat_to_matptr x :
-  mat_struct Ctypes.structure Ctypes_static.ptr =
-  let m = Int64.of_int (Bigarray.Array2.dim1 x) in
-  let n = Int64.of_int (Bigarray.Array2.dim2 x) in
-  let y = make mblk_struct in
-  let z = make mat_struct in
-  let p = Ctypes.bigarray_start Ctypes_static.Array2 x in
-  let _ = setf y msize (Int64.mul m n) in
-  let _ = setf y mdata p in
-  let _ = setf z size1 m in
-  let _ = setf z size2 n in
-  let _ = setf z tda n in
-  let _ = setf z data p in
-  let _ = setf z block (addr y) in
-  (addr z)
-
-let allocate_col_vecptr x = (* FIXME: not sure is setting is right, use gsl_vector_alloc *)
-  let m = Int64.of_int x in
-  let p = Bigarray.Array1.create Bigarray.float64 Bigarray.c_layout x in
-  let p = Ctypes.bigarray_start Ctypes_static.Array1 p in
-  let y = make mblk_struct in
-  let z = make vec_struct in
-  let _ = setf y mdata p in
-  let _ = setf y msize m in
-  let _ = setf z vsize m in
-  (* let _ = setf z stride 5L in *)
-  let _ = setf z vblock (addr y) in
-  let _ = setf z vdata p in
-  (addr z)
-
-(* Dense matrices
-  define the block struct, refer to gsl_matrix_double.h *)
+(* Dense matrices functions, refer to gsl_matrix_double.h *)
 
 let gsl_vector_alloc = foreign "gsl_vector_alloc" (int @-> returning (ptr vec_struct))
 
@@ -71,9 +30,7 @@ let gsl_matrix_max_index = foreign "gsl_matrix_max_index" (ptr mat_struct @-> pt
 let gsl_matrix_fwrite = foreign "gsl_matrix_fwrite" (ptr int @-> ptr mat_struct @-> returning void)
 
 
-(* Sparse matrices
-  define sparse matrix struct, refer to gsl_spmatrix.h *)
-
+(* Sparse matrices functions, refer to gsl_spmatrix.h *)
 
 let gsl_spmatrix_alloc = foreign "gsl_spmatrix_alloc" (int @-> int @-> returning (ptr spmat_struct))
 
@@ -105,7 +62,32 @@ let gsl_spblas_dgemv = foreign "gsl_spblas_dgemv" (int @-> double @-> ptr spmat_
 let gsl_spblas_dgemm = foreign "gsl_spblas_dgemm" (double @-> ptr spmat_struct @-> ptr spmat_struct @-> ptr spmat_struct @-> returning int)
 
 
-(* some other helper functions *)
+(* some helper fucntions, e.g., for type translation and construction *)
+
+let matptr_to_mat x m n =
+  let raw = getf (!@ x) data in
+  bigarray_of_ptr array2 (m,n) Bigarray.float64 raw
+
+let col_vec_to_mat x =
+  let raw = getf x vdata in
+  let len = getf x vsize in
+  bigarray_of_ptr array2 ((Int64.to_int len),1) Bigarray.float64 raw
+
+let mat_to_matptr x :
+  mat_struct Ctypes.structure Ctypes_static.ptr =
+  let m = Int64.of_int (Bigarray.Array2.dim1 x) in
+  let n = Int64.of_int (Bigarray.Array2.dim2 x) in
+  let y = make mblk_struct in
+  let z = make mat_struct in
+  let p = Ctypes.bigarray_start Ctypes_static.Array2 x in
+  let _ = setf y msize (Int64.mul m n) in
+  let _ = setf y mdata p in
+  let _ = setf z size1 m in
+  let _ = setf z size2 n in
+  let _ = setf z tda n in
+  let _ = setf z data p in
+  let _ = setf z block (addr y) in
+  (addr z)
 
 let _allocate_vecptr m n =
   let open Types in
@@ -123,5 +105,7 @@ let _allocate_vecptr m n =
 let allocate_row_vecptr m = _allocate_vecptr 1 m
 
 let allocate_col_vecptr m = _allocate_vecptr m 1
+
+
 
 (* ends here *)
