@@ -154,5 +154,4 @@ let gsl_spblas_dgemm = foreign "gsl_spblas_dgemm" (double @-> ptr sp_mat @-> ptr
 
 
 
-
 (* ends here *)

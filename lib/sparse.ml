@@ -2,7 +2,11 @@
 
 open Bigarray
 
-type int_array = (int64, int64_elt, c_layout) Array1.t;;
+type int_array = (int64, int64_elt, c_layout) Array1.t
+
+type float_array1 = (float, float64_elt, c_layout) Array1.t
+
+type float_array2 = (float, float64_elt, c_layout) Array2.t
 
 type 'a sp_mat = {
   mutable m : int;           (* number of rows *)
@@ -11,8 +15,9 @@ type 'a sp_mat = {
   mutable d : 'a array;      (* where data actually stored *)
   mutable p : int_array;     (* p index, meaning depends on the matrix format *)
   mutable nz : int;          (* total number of non-zero elements *)
-  mutable ptr : Matrix_foreign.sp_mat Ctypes_static.structure Ctypes_static.ptr;  (* pointer to the sparse metrix *)
   mutable typ : int;         (* format of the sparse matrix, 0:triplet; 1: CCS *)
+  mutable ptr : Matrix_foreign.sp_mat Ctypes_static.structure Ctypes_static.ptr;
+  (* pointer to the sparse metrix *)
 }
 
 let _empty_int_array () = Array1.create int64 c_layout 0
@@ -50,6 +55,33 @@ let _update_rec_from_ptr x =
   x
 
 let _is_csc_format x = x.typ = 1
+
+
+(* vector related functions *)
+
+type vec = {
+  mutable vsize : int;            (* size of a vector *)
+  mutable stride : int;           (* stride of a vector *)
+  mutable vdata : float_array2;   (* actual data of a vector *)
+  mutable vptr : Matrix_foreign.vec Ctypes_static.structure Ctypes_static.ptr;
+  (* pointer to a vector's memory *)
+}
+
+let allocate_vecptr m =
+  let open Matrix_foreign in
+  let open Ctypes in
+  let p = gsl_vector_alloc m in
+  let y = !@ p in
+  let x = {
+    vsize = Int64.to_int (getf y vsize);
+    stride = Int64.to_int (getf y vsize);
+    vdata = (
+      let raw = getf y vdata in
+      bigarray_of_ptr array2 (1,m) Bigarray.float64 raw );
+    vptr = p } in x
+
+
+(* sparse matrix creation function *)
 
 let empty m n =
   let open Matrix_foreign in

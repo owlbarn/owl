@@ -271,4 +271,6 @@ module Dense : sig
   (* FIXME: for debug purpose *)
   val test : mat -> int -> mat
 
+  val get_col : mat -> int -> mat
+
 end

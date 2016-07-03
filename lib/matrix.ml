@@ -557,6 +557,35 @@ module Dense = struct
     let _ = gsl_matrix_get_col p (mat_to_matptr x) i in
     col_vec_to_mat (!@p)
 
+type float_array2 = (float, float64_elt, c_layout) Array2.t
+
+    type vec = {
+      mutable vsize : int;            (* size of a vector *)
+      mutable stride : int;           (* stride of a vector *)
+      mutable vdata : float_array2;   (* actual data of a vector *)
+      mutable vptr : Matrix_foreign.vec Ctypes_static.structure Ctypes_static.ptr;
+      (* pointer to a vector's memory *)
+    }
+
+    let allocate_vecptr m =
+      let open Matrix_foreign in
+      let open Ctypes in
+      let p = gsl_vector_alloc m in
+      let y = !@ p in
+      let x = {
+        vsize = Int64.to_int (getf y vsize);
+        stride = Int64.to_int (getf y vsize);
+        vdata = (
+          let raw = getf y vdata in
+          bigarray_of_ptr array2 (1,m) Bigarray.float64 raw );
+        vptr = p } in x
+
+    let get_col x i =
+      let open Matrix_foreign in
+      let y = allocate_vecptr (row_num x) in
+      let _ = gsl_matrix_get_col y.vptr (mat_to_matptr x) i in
+      y.vdata
+
 end;;
 
 
