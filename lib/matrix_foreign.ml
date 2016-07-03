@@ -1,7 +1,8 @@
 open Ctypes
 open Foreign
 
-(* define the block struct, refer to gsl_matrix_double.h *)
+(* Dense matrices
+  define the block struct, refer to gsl_matrix_double.h *)
 
 type block
 
@@ -57,7 +58,7 @@ let mat_to_matptr x : mat Ctypes.structure Ctypes_static.ptr =
   let _ = setf z block (addr y) in
   (addr z)
 
-let allocate_col_vecptr x = (* FIXME: not sure is setting is right *)
+let allocate_col_vecptr x = (* FIXME: not sure is setting is right, use gsl_vector_alloc *)
   let m = Int64.of_int x in
   let p = Bigarray.Array1.create Bigarray.float64 Bigarray.c_layout x in
   let p = Ctypes.bigarray_start Ctypes_static.Array1 p in
@@ -94,3 +95,45 @@ let gsl_matrix_max = foreign "gsl_matrix_max" (ptr mat @-> returning double)
 let gsl_matrix_max_index = foreign "gsl_matrix_max_index" (ptr mat @-> ptr int @-> ptr int @-> returning void)
 
 let gsl_matrix_fwrite = foreign "gsl_matrix_fwrite" (ptr int @-> ptr mat @-> returning void)
+
+
+(* Sparse matrices
+  define the block struct, refer to gsl_spmatrix.h *)
+
+type sp_mat
+
+let sp_mat : sp_mat structure typ = structure "sp_mat"
+let sp_size1 = field sp_mat "sp_size1" int64_t
+let sp_size2 = field sp_mat "sp_size2" int64_t
+let sp_i = field sp_mat "sp_i" (ptr int64_t)
+let sp_data = field sp_mat "sp_data" (ptr double)
+let sp_p = field sp_mat "sp_p" (ptr int64_t)
+let sp_nzmax = field sp_mat "sp_nzmax" int64_t
+let sp_nz = field sp_mat "sp_nz" int64_t
+let sp_tree = field sp_mat "sp_tree" (ptr void)
+let sp_work = field sp_mat "sp_nz" (ptr void)
+let sp_type = field sp_mat "sp_type" int64_t
+let () = seal sp_mat
+
+
+let gsl_spmatrix_alloc = foreign "gsl_spmatrix_alloc" (int @-> int @-> returning (ptr sp_mat))
+
+let gsl_spmatrix_alloc_nzmax = foreign "gsl_spmatrix_alloc_nzmax" (int @-> int @-> int @-> int @-> returning (ptr sp_mat))
+
+let gsl_spmatrix_set = foreign "gsl_spmatrix_set" (ptr sp_mat @-> int @-> int @-> double @-> returning int)
+
+let gsl_spmatrix_get = foreign "gsl_spmatrix_get" (ptr sp_mat @-> int @-> int @-> returning double)
+
+let gsl_spmatrix_add = foreign "gsl_spmatrix_add" (ptr sp_mat @-> ptr sp_mat @-> ptr sp_mat @-> returning int)
+
+let gsl_spmatrix_scale = foreign "gsl_spmatrix_scale" (ptr sp_mat @-> double @-> returning int)
+
+let gsl_spmatrix_memcpy = foreign "gsl_spmatrix_memcpy" (ptr sp_mat @-> ptr sp_mat @-> returning int)
+
+let gsl_spmatrix_compcol = foreign "gsl_spmatrix_compcol" (ptr sp_mat @-> returning (ptr sp_mat))
+
+
+
+
+
+(* ends here *)
