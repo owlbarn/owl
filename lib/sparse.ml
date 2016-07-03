@@ -49,6 +49,8 @@ let _update_rec_from_ptr x =
   let _ = x.typ <- Int64.to_int (getf y sp_type) in
   x
 
+let _is_csc_format x = x.typ = 1
+
 let empty m n =
   let open Matrix_foreign in
   let x = gsl_spmatrix_alloc m n in
@@ -103,31 +105,56 @@ let copy_to x1 x2 =
   _update_rec_from_ptr x2
 
 let clone x =
-  let y = empty (row_num x) (col_num x) in
-  let _ = copy_to x y in
-  y
+  let y = if _is_csc_format x
+    then empty_csc (row_num x) (col_num x)
+    else empty (row_num x) (col_num x) in
+  let _ = copy_to x y in y
 
 let to_csc x =
   let open Matrix_foreign in
-  let p = gsl_spmatrix_compcol x.ptr in
-  _of_sp_mat_ptr p
+  let y = if _is_csc_format x then clone x
+  else let p = gsl_spmatrix_compcol x.ptr in _of_sp_mat_ptr p
+  in y
 
 let to_triplet x = None
 
 (* matrix mathematical operations *)
 
+let mul_scalar x1 y =
+  let open Matrix_foreign in
+  let x2 = to_csc x1 in
+  let _ = gsl_spmatrix_scale x2.ptr y in
+  x2
+
+let div_scalar x1 y = mul_scalar x1 (1. /. y)
+
 let add x1 x2 =
   let open Matrix_foreign in
-  let x3 = empty_csc (row_num x1) (col_num x2) in
+  let x1 = if _is_csc_format x1 then x1 else to_csc x1 in
+  let x2 = if _is_csc_format x2 then x2 else to_csc x2 in
+  let x3 = empty_csc (row_num x1) (col_num x1) in
   let _ = gsl_spmatrix_add x3.ptr x1.ptr x2.ptr in
   _update_rec_from_ptr x3
 
-let mul_scalar x1 y =
+let sub x1 x2 =
+  let x2 = mul_scalar x2 (-1.) in
+  add x1 x2
+
+let minmax x =
   let open Matrix_foreign in
-  (* FIXME: duplicate ... *)
-  (*let x3 = empty (row_num x1) (col_num x2) in*)
-  let _ = gsl_spmatrix_scale x1.ptr y in
-  x1
+  let open Ctypes in
+  let xmin = allocate double 0. in
+  let xmax = allocate double 0. in
+  let _ = gsl_spmatrix_minmax x.ptr xmin xmax in
+  !@ xmin, !@ xmax
+
+let min x = fst (minmax x)
+
+let max x = snd (minmax x)
+
+let is_equal x1 x2 =
+  let open Matrix_foreign in
+  (gsl_spmatrix_equal x1.ptr x2.ptr) = 1
 
 (* formatted input / output operations *)
 
