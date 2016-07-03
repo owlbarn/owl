@@ -11,6 +11,8 @@ let msize = field mblk "msize" int64_t
 let mdata = field mblk "mdata" (ptr double)
 let () = seal mblk
 
+(* define vector struct, refer to gsl_vector_double.h *)
+
 type vec
 
 let vec : vec structure typ = structure "vec"
@@ -21,7 +23,7 @@ let vblock = field vec "vblock" (ptr mblk)
 let vowner = field vec "vowner" int64_t
 let () = seal vec
 
-(* define the matrix struct, refer to gsl_matrix_double.h *)
+(* define matrix struct, refer to gsl_matrix_double.h *)
 
 type mat
 
