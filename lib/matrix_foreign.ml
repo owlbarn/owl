@@ -1,40 +1,6 @@
 open Ctypes
 open Foreign
-
-(* Some common data structure for both dense and sparse matrices.
-  please refer to related header files in GSL code repository. *)
-
-type block
-
-let mblk : block structure typ = structure "mblk"
-  let msize = field mblk "msize" int64_t
-  let mdata = field mblk "mdata" (ptr double)
-let () = seal mblk
-
-(* define vector struct, refer to gsl_vector_double.h *)
-
-type vec
-
-let vec : vec structure typ = structure "vec"
-  let vsize = field vec "vsize" int64_t
-  let stride = field vec "stride" int64_t
-  let vdata = field vec "vdata" (ptr double)
-  let vblock = field vec "vblock" (ptr mblk)
-  let vowner = field vec "vowner" int64_t
-let () = seal vec
-
-(* define dense matrix struct, refer to gsl_matrix_double.h *)
-
-type mat
-
-let mat : mat structure typ = structure "mat"
-  let size1 = field mat "size1" int64_t
-  let size2 = field mat "size2" int64_t
-  let tda = field mat "tda" int64_t
-  let data = field mat "data" (ptr double)
-  let block = field mat "block" (ptr mblk)
-  let owner = field mat "owner" int64_t
-let () = seal mat
+open Types
 
 (* some helper fucntions for type translation and construction *)
 
@@ -47,11 +13,12 @@ let col_vec_to_mat x =
   let len = getf x vsize in
   bigarray_of_ptr array2 ((Int64.to_int len),1) Bigarray.float64 raw
 
-let mat_to_matptr x : mat Ctypes.structure Ctypes_static.ptr =
+let mat_to_matptr x :
+  mat_struct Ctypes.structure Ctypes_static.ptr =
   let m = Int64.of_int (Bigarray.Array2.dim1 x) in
   let n = Int64.of_int (Bigarray.Array2.dim2 x) in
-  let y = make mblk in
-  let z = make mat in
+  let y = make mblk_struct in
+  let z = make mat_struct in
   let p = Ctypes.bigarray_start Ctypes_static.Array2 x in
   let _ = setf y msize (Int64.mul m n) in
   let _ = setf y mdata p in
@@ -66,8 +33,8 @@ let allocate_col_vecptr x = (* FIXME: not sure is setting is right, use gsl_vect
   let m = Int64.of_int x in
   let p = Bigarray.Array1.create Bigarray.float64 Bigarray.c_layout x in
   let p = Ctypes.bigarray_start Ctypes_static.Array1 p in
-  let y = make mblk in
-  let z = make vec in
+  let y = make mblk_struct in
+  let z = make vec_struct in
   let _ = setf y mdata p in
   let _ = setf y msize m in
   let _ = setf z vsize m in
@@ -79,78 +46,63 @@ let allocate_col_vecptr x = (* FIXME: not sure is setting is right, use gsl_vect
 (* Dense matrices
   define the block struct, refer to gsl_matrix_double.h *)
 
-let gsl_vector_alloc = foreign "gsl_vector_alloc" (int @-> returning (ptr vec))
+let gsl_vector_alloc = foreign "gsl_vector_alloc" (int @-> returning (ptr vec_struct))
 
-let gsl_matrix_get_col = foreign "gsl_matrix_get_col" (ptr vec @-> ptr mat @-> int @-> returning int)
+let gsl_matrix_get_col = foreign "gsl_matrix_get_col" (ptr vec_struct @-> ptr mat_struct @-> int @-> returning int)
 
-let gsl_matrix_equal = foreign "gsl_matrix_equal" (ptr mat @-> ptr mat @-> returning int)
+let gsl_matrix_equal = foreign "gsl_matrix_equal" (ptr mat_struct @-> ptr mat_struct @-> returning int)
 
-let gsl_matrix_isnull = foreign "gsl_matrix_isnull" (ptr mat @-> returning int)
+let gsl_matrix_isnull = foreign "gsl_matrix_isnull" (ptr mat_struct @-> returning int)
 
-let gsl_matrix_ispos = foreign "gsl_matrix_ispos" (ptr mat @-> returning int)
+let gsl_matrix_ispos = foreign "gsl_matrix_ispos" (ptr mat_struct @-> returning int)
 
-let gsl_matrix_isneg = foreign "gsl_matrix_isneg" (ptr mat @-> returning int)
+let gsl_matrix_isneg = foreign "gsl_matrix_isneg" (ptr mat_struct @-> returning int)
 
-let gsl_matrix_isnonneg = foreign "gsl_matrix_isnonneg" (ptr mat @-> returning int)
+let gsl_matrix_isnonneg = foreign "gsl_matrix_isnonneg" (ptr mat_struct @-> returning int)
 
-let gsl_matrix_min = foreign "gsl_matrix_min" (ptr mat @-> returning double)
+let gsl_matrix_min = foreign "gsl_matrix_min" (ptr mat_struct @-> returning double)
 
-let gsl_matrix_min_index = foreign "gsl_matrix_min_index" (ptr mat @-> ptr int @-> ptr int @-> returning void)
+let gsl_matrix_min_index = foreign "gsl_matrix_min_index" (ptr mat_struct @-> ptr int @-> ptr int @-> returning void)
 
-let gsl_matrix_max = foreign "gsl_matrix_max" (ptr mat @-> returning double)
+let gsl_matrix_max = foreign "gsl_matrix_max" (ptr mat_struct @-> returning double)
 
-let gsl_matrix_max_index = foreign "gsl_matrix_max_index" (ptr mat @-> ptr int @-> ptr int @-> returning void)
+let gsl_matrix_max_index = foreign "gsl_matrix_max_index" (ptr mat_struct @-> ptr int @-> ptr int @-> returning void)
 
-let gsl_matrix_fwrite = foreign "gsl_matrix_fwrite" (ptr int @-> ptr mat @-> returning void)
+let gsl_matrix_fwrite = foreign "gsl_matrix_fwrite" (ptr int @-> ptr mat_struct @-> returning void)
 
 
 (* Sparse matrices
   define sparse matrix struct, refer to gsl_spmatrix.h *)
 
-type sp_mat
 
-let sp_mat : sp_mat structure typ = structure "sp_mat"
-  let sp_size1 = field sp_mat "sp_size1" int64_t
-  let sp_size2 = field sp_mat "sp_size2" int64_t
-  let sp_i = field sp_mat "sp_i" (ptr int64_t)
-  let sp_data = field sp_mat "sp_data" (ptr double)
-  let sp_p = field sp_mat "sp_p" (ptr int64_t)
-  let sp_nzmax = field sp_mat "sp_nzmax" int64_t
-  let sp_nz = field sp_mat "sp_nz" int64_t
-  let sp_tree = field sp_mat "sp_tree" (ptr void)
-  let sp_work = field sp_mat "sp_nz" (ptr void)
-  let sp_type = field sp_mat "sp_type" int64_t
-let () = seal sp_mat
+let gsl_spmatrix_alloc = foreign "gsl_spmatrix_alloc" (int @-> int @-> returning (ptr spmat_struct))
 
+let gsl_spmatrix_alloc_nzmax = foreign "gsl_spmatrix_alloc_nzmax" (int @-> int @-> int @-> int @-> returning (ptr spmat_struct))
 
-let gsl_spmatrix_alloc = foreign "gsl_spmatrix_alloc" (int @-> int @-> returning (ptr sp_mat))
+let gsl_spmatrix_set = foreign "gsl_spmatrix_set" (ptr spmat_struct @-> int @-> int @-> double @-> returning int)
 
-let gsl_spmatrix_alloc_nzmax = foreign "gsl_spmatrix_alloc_nzmax" (int @-> int @-> int @-> int @-> returning (ptr sp_mat))
+let gsl_spmatrix_get = foreign "gsl_spmatrix_get" (ptr spmat_struct @-> int @-> int @-> returning double)
 
-let gsl_spmatrix_set = foreign "gsl_spmatrix_set" (ptr sp_mat @-> int @-> int @-> double @-> returning int)
+let gsl_spmatrix_add = foreign "gsl_spmatrix_add" (ptr spmat_struct @-> ptr spmat_struct @-> ptr spmat_struct @-> returning int)
 
-let gsl_spmatrix_get = foreign "gsl_spmatrix_get" (ptr sp_mat @-> int @-> int @-> returning double)
+let gsl_spmatrix_scale = foreign "gsl_spmatrix_scale" (ptr spmat_struct @-> double @-> returning int)
 
-let gsl_spmatrix_add = foreign "gsl_spmatrix_add" (ptr sp_mat @-> ptr sp_mat @-> ptr sp_mat @-> returning int)
+let gsl_spmatrix_memcpy = foreign "gsl_spmatrix_memcpy" (ptr spmat_struct @-> ptr spmat_struct @-> returning int)
 
-let gsl_spmatrix_scale = foreign "gsl_spmatrix_scale" (ptr sp_mat @-> double @-> returning int)
+let gsl_spmatrix_compcol = foreign "gsl_spmatrix_compcol" (ptr spmat_struct @-> returning (ptr spmat_struct))
 
-let gsl_spmatrix_memcpy = foreign "gsl_spmatrix_memcpy" (ptr sp_mat @-> ptr sp_mat @-> returning int)
+let gsl_spmatrix_minmax = foreign "gsl_spmatrix_minmax" (ptr spmat_struct @-> ptr double @-> ptr double @-> returning int)
 
-let gsl_spmatrix_compcol = foreign "gsl_spmatrix_compcol" (ptr sp_mat @-> returning (ptr sp_mat))
+let gsl_spmatrix_equal = foreign "gsl_spmatrix_equal" (ptr spmat_struct @-> ptr spmat_struct @-> returning int)
 
-let gsl_spmatrix_minmax = foreign "gsl_spmatrix_minmax" (ptr sp_mat @-> ptr double @-> ptr double @-> returning int)
+let gsl_spmatrix_transpose_memcpy = foreign "gsl_spmatrix_transpose_memcpy" (ptr spmat_struct @-> ptr spmat_struct @-> returning int)
 
-let gsl_spmatrix_equal = foreign "gsl_spmatrix_equal" (ptr sp_mat @-> ptr sp_mat @-> returning int)
-
-let gsl_spmatrix_transpose_memcpy = foreign "gsl_spmatrix_transpose_memcpy" (ptr sp_mat @-> ptr sp_mat @-> returning int)
-
-let gsl_spmatrix_set_zero = foreign "gsl_spmatrix_set_zero" (ptr sp_mat @-> returning int)
+let gsl_spmatrix_set_zero = foreign "gsl_spmatrix_set_zero" (ptr spmat_struct @-> returning int)
 
 (* TODO: not sure what to do with this function ... unless it is faster than dgemm *)
-let gsl_spblas_dgemv = foreign "gsl_spblas_dgemv" (int @-> double @-> ptr sp_mat @-> ptr vec @-> double @-> ptr vec @-> returning int)
+let gsl_spblas_dgemv = foreign "gsl_spblas_dgemv" (int @-> double @-> ptr spmat_struct @-> ptr vec_struct @-> double @-> ptr vec_struct @-> returning int)
 
-let gsl_spblas_dgemm = foreign "gsl_spblas_dgemm" (double @-> ptr sp_mat @-> ptr sp_mat @-> ptr sp_mat @-> returning int)
+let gsl_spblas_dgemm = foreign "gsl_spblas_dgemm" (double @-> ptr spmat_struct @-> ptr spmat_struct @-> ptr spmat_struct @-> returning int)
 
 
 (* some other helper functions *)

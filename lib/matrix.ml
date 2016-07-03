@@ -5,6 +5,7 @@
   ]  *)
 
 open Bigarray
+open Types
 
 type mat = Gsl.Matrix.matrix
 

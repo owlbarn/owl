@@ -1,24 +1,7 @@
 (* Sparse matrix support *)
 
 open Bigarray
-
-type int_array = (int64, int64_elt, c_layout) Array1.t
-
-type float_array1 = (float, float64_elt, c_layout) Array1.t
-
-type float_array2 = (float, float64_elt, c_layout) Array2.t
-
-type 'a sp_mat = {
-  mutable m : int;           (* number of rows *)
-  mutable n : int;           (* number of columns *)
-  mutable i : int_array;     (* i index, meaning depends on the matrix format *)
-  mutable d : 'a array;      (* where data actually stored *)
-  mutable p : int_array;     (* p index, meaning depends on the matrix format *)
-  mutable nz : int;          (* total number of non-zero elements *)
-  mutable typ : int;         (* format of the sparse matrix, 0:triplet; 1: CCS *)
-  mutable ptr : Matrix_foreign.sp_mat Ctypes_static.structure Ctypes_static.ptr;
-  (* pointer to the sparse metrix *)
-}
+open Types
 
 let _empty_int_array () = Array1.create int64 c_layout 0
 
@@ -55,17 +38,6 @@ let _update_rec_from_ptr x =
   x
 
 let _is_csc_format x = x.typ = 1
-
-
-(* vector related functions *)
-
-type vec = {
-  mutable vsize : int;            (* size of a vector *)
-  mutable stride : int;           (* stride of a vector *)
-  mutable vdata : float_array2;   (* actual data of a vector *)
-  mutable vptr : Matrix_foreign.vec Ctypes_static.structure Ctypes_static.ptr;
-  (* pointer to a vector's memory *)
-}
 
 let allocate_vecptr m =
   let open Matrix_foreign in
