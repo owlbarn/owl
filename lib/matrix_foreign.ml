@@ -140,6 +140,12 @@ let gsl_spmatrix_transpose_memcpy = foreign "gsl_spmatrix_transpose_memcpy" (ptr
 
 let gsl_spmatrix_set_zero = foreign "gsl_spmatrix_set_zero" (ptr sp_mat @-> returning int)
 
+(* TODO: not sure what to do with this function ... unless it is faster than dgemm *)
+let gsl_spblas_dgemv = foreign "gsl_spblas_dgemv" (int @-> double @-> ptr sp_mat @-> ptr vec @-> double @-> ptr vec @-> returning int)
+
+let gsl_spblas_dgemm = foreign "gsl_spblas_dgemm" (double @-> ptr sp_mat @-> ptr sp_mat @-> ptr sp_mat @-> returning int)
+
+
 
 
 (* ends here *)

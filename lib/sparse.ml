@@ -158,6 +158,14 @@ let add x1 x2 =
   let _ = gsl_spmatrix_add x3.ptr x1.ptr x2.ptr in
   _update_rec_from_ptr x3
 
+let dot x1 x2 =
+  let open Matrix_foreign in
+  let x1 = if _is_csc_format x1 then x1 else to_csc x1 in
+  let x2 = if _is_csc_format x2 then x2 else to_csc x2 in
+  let x3 = empty_csc (row_num x1) (col_num x2) in
+  let _ = gsl_spblas_dgemm 1.0 x1.ptr x2.ptr x3.ptr in
+  _update_rec_from_ptr x3
+
 let sub x1 x2 =
   let x2 = mul_scalar x2 (-1.) in
   add x1 x2
