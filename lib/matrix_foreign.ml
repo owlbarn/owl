@@ -138,6 +138,7 @@ let gsl_spmatrix_equal = foreign "gsl_spmatrix_equal" (ptr sp_mat @-> ptr sp_mat
 
 let gsl_spmatrix_transpose_memcpy = foreign "gsl_spmatrix_transpose_memcpy" (ptr sp_mat @-> ptr sp_mat @-> returning int)
 
+let gsl_spmatrix_set_zero = foreign "gsl_spmatrix_set_zero" (ptr sp_mat @-> returning int)
 
 
 

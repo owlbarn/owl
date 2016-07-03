@@ -74,6 +74,11 @@ let get x i j =
   let open Matrix_foreign in
   gsl_spmatrix_get x.ptr i j
 
+let reset x =
+  let open Matrix_foreign in
+  let _ = (gsl_spmatrix_set_zero x.ptr) in
+  let _ = _update_rec_from_ptr x in ()
+
 let shape x = x.m, x.n
 
 let row_num x = x.m
