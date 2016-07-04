@@ -220,13 +220,9 @@ let iteri f x =
     done
   done
 
-let mapi f x =
+let mapi f x = (* note: if f returns zero, no actual value will be added into sparse matrix. *)
   let y = empty (row_num x) (col_num x) in
-  for i = 0 to (row_num x) - 1 do
-    for j = 0 to (col_num x) - 1 do
-      set y i j (f i j (get x i j))
-    done
-  done; y
+  iteri (fun i j z -> set y i j (f i j z)) x; y
 
 let iteri_nz f x =
   let x = if _is_csc_format x then x else to_csc x in
