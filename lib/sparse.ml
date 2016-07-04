@@ -9,26 +9,28 @@ let _of_sp_mat_ptr p =
   let open Matrix_foreign in
   let open Ctypes in
   let y = !@ p in
-  let tnz = Int64.to_int (getf y sp_nz) in
+  let tz = Int64.to_int (getf y sp_nz) in
+  let ty = Int64.to_int (getf y sp_type) in
   let tm = Int64.to_int (getf y sp_size1) in
   let tn = Int64.to_int (getf y sp_size2) in
-  let ti = bigarray_of_ptr array1 tnz Bigarray.int64 (getf y sp_i) in
-  let tp = bigarray_of_ptr array1 tnz Bigarray.int64 (getf y sp_p) in
-  let td = bigarray_of_ptr array1 tnz Bigarray.float64 (getf y sp_data) in
-  let ty = Int64.to_int (getf y sp_type) in
-  { m = tm; n = tn; i = ti; d = td; p = tp; nz = tnz; typ = ty; ptr = p; }
+  let ti = bigarray_of_ptr array1 tz Bigarray.int64 (getf y sp_i) in
+  let td = bigarray_of_ptr array1 tz Bigarray.float64 (getf y sp_data) in
+  (* note: need to add one to p array length if it is in csc format *)
+  let tp = bigarray_of_ptr array1 (tz + ty) Bigarray.int64 (getf y sp_p) in
+  { m = tm; n = tn; i = ti; d = td; p = tp; nz = tz; typ = ty; ptr = p; }
 
 let _update_rec_from_ptr x =
   let open Matrix_foreign in
   let open Ctypes in
   let y = !@ (x.ptr) in
+  let _ = x.typ <- Int64.to_int (getf y sp_type) in
   let _ = x.m <- Int64.to_int (getf y sp_size1) in
   let _ = x.n <- Int64.to_int (getf y sp_size2) in
   let _ = x.nz <- Int64.to_int (getf y sp_nz) in
   let _ = x.i <- (bigarray_of_ptr array1 x.nz Bigarray.int64 (getf y sp_i)) in
-  let _ = x.p <- (bigarray_of_ptr array1 x.nz Bigarray.int64 (getf y sp_p)) in
   let _ = x.d <- (bigarray_of_ptr array1 x.nz Bigarray.float64 (getf y sp_data)) in
-  let _ = x.typ <- Int64.to_int (getf y sp_type) in
+  (* note: need to add one to p array length if it is in csc format *)
+  let _ = x.p <- (bigarray_of_ptr array1 (x.nz + x.typ) Bigarray.int64 (getf y sp_p)) in
   x
 
 let _is_csc_format x = x.typ = 1
@@ -223,6 +225,12 @@ let mapi f x =
       set y i j (f i j (get x i j))
     done
   done; y
+
+(*let iteri_nz f x =
+  let x = if _is_csc_format x then x else to_csc x in
+  for k = 0 to x.nnz - 1 do
+    None
+  done*)
 
 
 (* formatted input / output operations *)
