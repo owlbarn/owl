@@ -190,12 +190,20 @@ let col = None
 
 let row = None
 
-let iteri x f =
+let iteri f x =
   for i = 0 to (row_num x) - 1 do
     for j = 0 to (col_num x) - 1 do
       f i j (get x i j)
     done
   done
+
+let mapi f x =
+  let y = empty (row_num x) (col_num x) in
+  for i = 0 to (row_num x) - 1 do
+    for j = 0 to (col_num x) - 1 do
+      set y i j (f i j (get x i j))
+    done
+  done; y
 
 
 (* formatted input / output operations *)
