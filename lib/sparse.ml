@@ -286,13 +286,18 @@ let sum x = fold (+.) 0. x
 
 let average x = (sum x) /. (float_of_int (x.m * x.n))
 
-let is_zero x = None
+let is_zero x = x.nz = 0
 
-let is_positive x = None
+let is_positive x =
+  if x.nz < (x.m * x.n) then false
+  else for_all (( < ) 0.) x
 
-let is_negative x = None
+let is_negative x =
+  if x.nz < (x.m * x.n) then false
+  else for_all (( > ) 0.) x
 
-let is_nonnegative x = None
+let is_nonnegative x =
+  for_all_nz (( < ) 0.) x
 
 let minmax x =
   let open Matrix_foreign in
