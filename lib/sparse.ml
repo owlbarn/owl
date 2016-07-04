@@ -238,6 +238,10 @@ let iteri_nz f x =
     done
   done
 
+let mapi_nz f x =
+  let y = empty (row_num x) (col_num x) in
+  iteri_nz (fun i j z -> set y i j (f i j z)) x; y
+
 
 (* formatted input / output operations *)
 
