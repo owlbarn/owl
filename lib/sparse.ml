@@ -352,6 +352,12 @@ let diag x =
 
 let trace x = sum (diag x)
 
+let svd x = None
+
+let qr x = None
+
+let lu x = None
+
 (* formatted input / output operations *)
 
 let print x =
