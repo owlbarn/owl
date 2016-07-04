@@ -8,22 +8,15 @@ let _empty_int_array () = Array1.create int64 c_layout 0
 let _of_sp_mat_ptr p =
   let open Matrix_foreign in
   let open Ctypes in
-  let x = {
-    m = 0; n = 0;
-    i = _empty_int_array ();
-    d = [||];
-    p = _empty_int_array ();
-    nz = 0;
-    ptr = p; typ = 0;
-    } in
   let y = !@ p in
-  let _ = x.m <- Int64.to_int (getf y sp_size1) in
-  let _ = x.n <- Int64.to_int (getf y sp_size2) in
-  let _ = x.nz <- Int64.to_int (getf y sp_nz) in
-  let _ = x.i <- (bigarray_of_ptr array1 x.nz Bigarray.int64 (getf y sp_i)) in
-  let _ = x.p <- (bigarray_of_ptr array1 x.nz Bigarray.int64 (getf y sp_p)) in
-  let _ = x.typ <- Int64.to_int (getf y sp_type) in
-  x
+  let tnz = Int64.to_int (getf y sp_nz) in
+  let tm = Int64.to_int (getf y sp_size1) in
+  let tn = Int64.to_int (getf y sp_size2) in
+  let ti = bigarray_of_ptr array1 tnz Bigarray.int64 (getf y sp_i) in
+  let tp = bigarray_of_ptr array1 tnz Bigarray.int64 (getf y sp_p) in
+  let td = bigarray_of_ptr array1 tnz Bigarray.float64 (getf y sp_data) in
+  let ty = Int64.to_int (getf y sp_type) in
+  { m = tm; n = tn; i = ti; d = td; p = tp; nz = tnz; typ = ty; ptr = p; }
 
 let _update_rec_from_ptr x =
   let open Matrix_foreign in
@@ -34,6 +27,7 @@ let _update_rec_from_ptr x =
   let _ = x.nz <- Int64.to_int (getf y sp_nz) in
   let _ = x.i <- (bigarray_of_ptr array1 x.nz Bigarray.int64 (getf y sp_i)) in
   let _ = x.p <- (bigarray_of_ptr array1 x.nz Bigarray.int64 (getf y sp_p)) in
+  let _ = x.d <- (bigarray_of_ptr array1 x.nz Bigarray.float64 (getf y sp_data)) in
   let _ = x.typ <- Int64.to_int (getf y sp_type) in
   x
 
@@ -190,6 +184,20 @@ let is_equal x1 x2 =
   let open Matrix_foreign in
   (gsl_spmatrix_equal x1.ptr x2.ptr) = 1
 
+(* matrix interation functions *)
+
+let col = None
+
+let row = None
+
+let iteri x f =
+  for i = 0 to (row_num x) - 1 do
+    for j = 0 to (col_num x) - 1 do
+      f i j (get x i j)
+    done
+  done
+
+
 (* formatted input / output operations *)
 
 let print x =
@@ -200,6 +208,14 @@ let print x =
     print_endline ""
   done
 
+(* transform to and from different types *)
+
+let to_dense x =
+  let open Matrix_foreign in
+  let y = gsl_spmatrix_sp2d x.ptr in
+  matptr_to_mat y (row_num x) (col_num x)
+
+let of_dense = None
 
 
 (* ends here *)

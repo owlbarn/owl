@@ -73,11 +73,11 @@ let spmat_struct : spmat_struct structure typ = structure "spmat_struct"
 let () = seal spmat_struct
 
 (** [ record definition for sparse matrix ]  *)
-type 'a spmat_record = {
+type spmat_record = {
   mutable m   : int;           (* number of rows *)
   mutable n   : int;           (* number of columns *)
   mutable i   : int_array;     (* i index, meaning depends on the matrix format *)
-  mutable d   : 'a array;      (* where data actually stored *)
+  mutable d   : float_array1;  (* where data actually stored *)
   mutable p   : int_array;     (* p index, meaning depends on the matrix format *)
   mutable nz  : int;           (* total number of non-zero elements *)
   mutable typ : int;           (* format of the sparse matrix, 0:triplet; 1: CCS *)

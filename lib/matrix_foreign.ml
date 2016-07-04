@@ -61,6 +61,10 @@ let gsl_spblas_dgemv = foreign "gsl_spblas_dgemv" (int @-> double @-> ptr spmat_
 
 let gsl_spblas_dgemm = foreign "gsl_spblas_dgemm" (double @-> ptr spmat_struct @-> ptr spmat_struct @-> ptr spmat_struct @-> returning int)
 
+let gsl_spmatrix_d2sp = foreign "gsl_spmatrix_d2sp" (ptr mat_struct @-> returning (ptr spmat_struct))
+
+let gsl_spmatrix_sp2d = foreign "gsl_spmatrix_sp2d" (ptr spmat_struct @-> returning (ptr mat_struct))
+
 
 (* some helper fucntions, e.g., for type translation and construction *)
 
