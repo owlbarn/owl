@@ -207,7 +207,7 @@ let mapi_nz f x =
   let y = empty (row_num x) (col_num x) in
   iteri_nz (fun i j z -> set y i j (f i j z)) x; y
 
-let foldi_nz = None
+let fold_nz f a x = _fold_basic iter_nz f a x
 
 let iteri_rows_nz = None
 
@@ -284,7 +284,7 @@ let abs x = map (abs_float) x
 
 let neg x = mul_scalar x (-1.)
 
-let sum x = fold (+.) 0. x (* FIXME : too slow ... *)
+let sum x = fold_nz (+.) 0. x
 
 let average x = (sum x) /. (float_of_int (x.m * x.n))
 
