@@ -6,7 +6,10 @@
 module MM = Matrix.Dense
 module UT = Utils
 
-
+(** [
+  k-means clustering algorithm
+  x is the row-based data points and c is the number of clusters.
+]  *)
 let kmeans x c = let open MM in
   let cpts0 = draw_rows x c in
   let cpts1 = zeros c (col_num x) in
@@ -27,3 +30,13 @@ let kmeans x c = let open MM in
   if cpts0 =@ cpts1 then failwith "converged" else ignore (cpts0 << cpts1)
   done with exn -> () in
   cpts1, UT.map_array fst assignment
+
+
+(** [
+  Stochastic gradient descent algorithm
+]  *)
+
+let sgd = None
+
+
+(* ends here *)
