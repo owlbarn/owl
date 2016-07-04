@@ -142,52 +142,6 @@ let trace x =
     r := !r +. (get x i i)
   done; !r
 
-(* matrix mathematical operations *)
-
-let mul_scalar x1 y =
-  let open Matrix_foreign in
-  let x2 = to_csc x1 in
-  let _ = gsl_spmatrix_scale x2.ptr y in
-  x2
-
-let div_scalar x1 y = mul_scalar x1 (1. /. y)
-
-let add x1 x2 =
-  let open Matrix_foreign in
-  let x1 = if _is_csc_format x1 then x1 else to_csc x1 in
-  let x2 = if _is_csc_format x2 then x2 else to_csc x2 in
-  let x3 = empty_csc (row_num x1) (col_num x1) in
-  let _ = gsl_spmatrix_add x3.ptr x1.ptr x2.ptr in
-  _update_rec_from_ptr x3
-
-let dot x1 x2 =
-  let open Matrix_foreign in
-  let x1 = if _is_csc_format x1 then x1 else to_csc x1 in
-  let x2 = if _is_csc_format x2 then x2 else to_csc x2 in
-  let x3 = empty_csc (row_num x1) (col_num x2) in
-  let _ = gsl_spblas_dgemm 1.0 x1.ptr x2.ptr x3.ptr in
-  _update_rec_from_ptr x3
-
-let sub x1 x2 =
-  let x2 = mul_scalar x2 (-1.) in
-  add x1 x2
-
-let minmax x =
-  let open Matrix_foreign in
-  let open Ctypes in
-  let xmin = allocate double 0. in
-  let xmax = allocate double 0. in
-  let _ = gsl_spmatrix_minmax x.ptr xmin xmax in
-  !@ xmin, !@ xmax
-
-let min x = fst (minmax x)
-
-let max x = snd (minmax x)
-
-let is_equal x1 x2 =
-  let open Matrix_foreign in
-  (gsl_spmatrix_equal x1.ptr x2.ptr) = 1
-
 (* matrix interation functions *)
 
 let row x i =
@@ -220,9 +174,33 @@ let iteri f x =
     done
   done
 
+let iter f x = iteri (fun _ _ y -> f y) x
+
 let mapi f x = (* note: if f returns zero, no actual value will be added into sparse matrix. *)
   let y = empty (row_num x) (col_num x) in
   iteri (fun i j z -> set y i j (f i j z)) x; y
+
+let map f x = mapi (fun _ _ y -> f y) x
+
+let _fold_basic iter_fun f a x =
+  let r = ref a in
+  iter_fun (fun y -> r := f !r y) x; !r
+
+let fold f a x = _fold_basic iter f a x
+
+let filteri = None
+
+let iteri_rows = None
+
+let iteri_cols = None
+
+let mapi_rows = None
+
+let mapi_cols = None
+
+let foldi_rows = None
+
+let foldi_cols = None
 
 let iteri_nz f x =
   let x = if _is_csc_format x then x else to_csc x in
@@ -238,6 +216,67 @@ let mapi_nz f x =
   let y = empty (row_num x) (col_num x) in
   iteri_nz (fun i j z -> set y i j (f i j z)) x; y
 
+let foldi_nz = None
+
+let iteri_rows_nz = None
+
+let iteri_cols_nz = None
+
+let mapi_rows_nz = None
+
+let mapi_cols_nz = None
+
+let foldi_rows_nz = None
+
+let foldi_cols_nz = None
+
+(* matrix mathematical operations *)
+
+let mul_scalar x1 y =
+  let open Matrix_foreign in
+  let x2 = to_csc x1 in
+  let _ = gsl_spmatrix_scale x2.ptr y in
+  x2
+
+let div_scalar x1 y = mul_scalar x1 (1. /. y)
+
+let add x1 x2 =
+  let open Matrix_foreign in
+  let x1 = if _is_csc_format x1 then x1 else to_csc x1 in
+  let x2 = if _is_csc_format x2 then x2 else to_csc x2 in
+  let x3 = empty_csc (row_num x1) (col_num x1) in
+  let _ = gsl_spmatrix_add x3.ptr x1.ptr x2.ptr in
+  _update_rec_from_ptr x3
+
+let dot x1 x2 =
+  let open Matrix_foreign in
+  let x1 = if _is_csc_format x1 then x1 else to_csc x1 in
+  let x2 = if _is_csc_format x2 then x2 else to_csc x2 in
+  let x3 = empty_csc (row_num x1) (col_num x2) in
+  let _ = gsl_spblas_dgemm 1.0 x1.ptr x2.ptr x3.ptr in
+  _update_rec_from_ptr x3
+
+let sub x1 x2 =
+  let x2 = mul_scalar x2 (-1.) in
+  add x1 x2
+
+let sum x = fold (+.) 0. x
+
+let minmax x =
+  let open Matrix_foreign in
+  let open Ctypes in
+  let xmin = allocate double 0. in
+  let xmax = allocate double 0. in
+  let _ = gsl_spmatrix_minmax x.ptr xmin xmax in
+  !@ xmin, !@ xmax
+
+let min x = fst (minmax x)
+
+let max x = snd (minmax x)
+
+let is_equal x1 x2 =
+  let open Matrix_foreign in
+  (gsl_spmatrix_equal x1.ptr x2.ptr) = 1
 
 (* formatted input / output operations *)
 
