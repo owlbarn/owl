@@ -210,6 +210,8 @@ let iteri_nz f x =
     done
   done
 
+let iter_nz f x = iteri_nz (fun _ _ y -> f y) x
+
 let mapi_nz f x =
   let y = empty (row_num x) (col_num x) in
   iteri_nz (fun i j z -> set y i j (f i j z)) x; y
@@ -227,6 +229,24 @@ let mapi_cols_nz = None
 let foldi_rows_nz = None
 
 let foldi_cols_nz = None
+
+let _exists_basic iter_fun f x =
+  try iter_fun (fun y ->
+    if (f y) = true then failwith "found"
+  ) x; false
+  with exn -> true
+
+let exists f x = _exists_basic iter f x
+
+let not_exists f x = not (exists f x)
+
+let for_all f x = let g y = not (f y) in not_exists g x
+
+let exists_nz f x = _exists_basic iter_nz f x
+
+let not_exists_nz f x = not (exists_nz f x)
+
+let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
 
 (* matrix mathematical operations *)
 
