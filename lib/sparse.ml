@@ -131,15 +131,6 @@ let transpose x =
   let _ = gsl_spmatrix_transpose_memcpy y.ptr x.ptr in
   _update_rec_from_ptr y
 
-let diag = None
-
-let trace x =
-  let r = ref 0. in
-  let c = Pervasives.min (row_num x) (col_num x) in
-  for i = 0 to c - 1 do
-    r := !r +. (get x i i)
-  done; !r
-
 (* matrix interation functions *)
 
 let row x i =
@@ -278,6 +269,10 @@ let sub x1 x2 =
   let x2 = mul_scalar x2 (-1.) in
   add x1 x2
 
+let mul x1 x2 = None
+
+let div x1 x2 = None
+
 let abs x = map (abs_float) x
 
 let neg x = mul_scalar x (-1.)
@@ -314,6 +309,17 @@ let max x = snd (minmax x)
 let is_equal x1 x2 =
   let open Matrix_foreign in
   (gsl_spmatrix_equal x1.ptr x2.ptr) = 1
+
+(* advanced matrix methematical operations *)
+
+let diag x =
+  let m = Pervasives.min (row_num x) (col_num x) in
+  let y = empty 1 m in
+  iteri_nz (fun i j z ->
+    if i = j then set y 0 j z else ()
+  ) x; y
+
+let trace x = sum (diag x)
 
 (* formatted input / output operations *)
 
