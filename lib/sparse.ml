@@ -177,7 +177,13 @@ let _fold_basic iter_fun f a x =
 
 let fold f a x = _fold_basic iter f a x
 
-let filteri = None
+let filteri f x =
+  let r = ref [||] in
+  iteri (fun i j y ->
+    if (f i j y) then r := Array.append !r [|(i,j)|]
+  ) x; !r
+
+let filter f x = filteri (fun _ _ y -> f y) x
 
 let iteri_rows = None
 
@@ -208,6 +214,14 @@ let mapi_nz f x =
   iteri_nz (fun i j z -> set y i j (f i j z)) x; y
 
 let fold_nz f a x = _fold_basic iter_nz f a x
+
+let filteri_nz f x =
+  let r = ref [||] in
+  iteri_nz (fun i j y ->
+    if (f i j y) then r := Array.append !r [|(i,j)|]
+  ) x; !r
+
+let filter_nz f x = filteri_nz (fun _ _ y -> f y) x
 
 let iteri_rows_nz = None
 
