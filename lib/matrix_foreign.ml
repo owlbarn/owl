@@ -7,6 +7,8 @@ open Types
 
 let gsl_vector_alloc = foreign "gsl_vector_alloc" (int @-> returning (ptr vec_struct))
 
+let gsl_matrix_alloc = foreign "gsl_matrix_alloc" (int @-> int @-> returning (ptr mat_struct))
+
 let gsl_matrix_get_col = foreign "gsl_matrix_get_col" (ptr vec_struct @-> ptr mat_struct @-> int @-> returning int)
 
 let gsl_matrix_equal = foreign "gsl_matrix_equal" (ptr mat_struct @-> ptr mat_struct @-> returning int)
@@ -94,8 +96,6 @@ let mat_to_matptr x :
   (addr z)
 
 let _allocate_vecptr m n =
-  let open Types in
-  let open Ctypes in
   let p = gsl_vector_alloc m in
   let y = !@ p in
   let x = {
