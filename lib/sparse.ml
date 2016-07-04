@@ -210,14 +210,21 @@ let print x =
 
 (* transform to and from different types *)
 
-(* FIXME : does not work ... *)
 let to_dense x =
   let open Matrix_foreign in
   let y = gsl_matrix_alloc (row_num x) (col_num x) in
-  let z = gsl_spmatrix_sp2d y x.ptr in
+  let _ = gsl_spmatrix_sp2d y x.ptr in
   matptr_to_mat y (row_num x) (col_num x)
 
-let of_dense =
+let of_dense x =
+  let open Matrix_foreign in
+  let y = empty (Array2.dim1 x) (Array2.dim2 x) in
+  let _ = gsl_spmatrix_d2sp y.ptr (mat_to_matptr x) in
+  _update_rec_from_ptr y
+
+
+
+
 
 
 (* ends here *)
