@@ -313,7 +313,7 @@ let is_negative x =
   else for_all (( > ) 0.) x
 
 let is_nonnegative x =
-  for_all_nz (( < ) 0.) x
+  for_all_nz (( <= ) 0.) x
 
 let minmax x =
   let open Matrix_foreign in
@@ -388,6 +388,6 @@ let of_dense x =
 
 
 
-
+(* TODO: out of OCaml GC, need to release the memory *)
 
 (* ends here *)
