@@ -186,9 +186,28 @@ let is_equal x1 x2 =
 
 (* matrix interation functions *)
 
-let col = None
+let row x i =
+  let y = empty 1 (col_num x) in
+  for j = 0 to (col_num x) - 1 do
+    set y 0 j (get x i j)
+  done; y
 
-let row = None
+let col x i =
+  let y = empty (row_num x) 1 in
+  for j = 0 to (row_num x) - 1 do
+    set y j 0 (get x j i)
+  done; y
+
+let rows x l =
+  let m, n = Array.length l, col_num x in
+  let y = empty m n in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      set y i j (get x i j)
+    done
+  done; y
+
+let cols = None
 
 let iteri f x =
   for i = 0 to (row_num x) - 1 do
