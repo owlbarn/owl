@@ -123,8 +123,6 @@ let to_csc x =
   else let p = gsl_spmatrix_compcol x.ptr in _of_sp_mat_ptr p
   in y
 
-let to_triplet x = None
-
 let transpose x =
   let open Matrix_foreign in
   let y = if _is_csc_format x
@@ -260,7 +258,21 @@ let sub x1 x2 =
   let x2 = mul_scalar x2 (-1.) in
   add x1 x2
 
+let abs x = map (abs_float) x
+
+let neg x = mul_scalar x (-1.)
+
 let sum x = fold (+.) 0. x
+
+let average x = (sum x) /. (float_of_int (x.m * x.n))
+
+let is_zero x = None
+
+let is_positive x = None
+
+let is_negative x = None
+
+let is_nonnegative x = None
 
 let minmax x =
   let open Matrix_foreign in
@@ -290,8 +302,11 @@ let print x =
 
 (* transform to and from different types *)
 
+let to_triplet x = map (fun y -> y) x
+
 let to_dense x =
   let open Matrix_foreign in
+  let x = if _is_csc_format x then to_triplet x else x in
   let y = gsl_matrix_alloc (row_num x) (col_num x) in
   let _ = gsl_spmatrix_sp2d y x.ptr in
   matptr_to_mat y (row_num x) (col_num x)
