@@ -269,15 +269,22 @@ let sub x1 x2 =
   let x2 = mul_scalar x2 (-1.) in
   add x1 x2
 
-let mul x1 x2 = None
+let mul x1 x2 =
+  mapi_nz (fun i j y ->
+    (get x2 i j) *. y
+  ) x1
 
-let div x1 x2 = None
+let div x1 x2 =
+  mapi_nz (fun i j y ->
+    let z = get x2 i j in
+    if z = 0. then 0. else (y /. z)
+  ) x1
 
 let abs x = map (abs_float) x
 
 let neg x = mul_scalar x (-1.)
 
-let sum x = fold (+.) 0. x
+let sum x = fold (+.) 0. x (* FIXME : too slow ... *)
 
 let average x = (sum x) /. (float_of_int (x.m * x.n))
 
