@@ -15,8 +15,9 @@ let _of_sp_mat_ptr p =
   let tn = Int64.to_int (getf y sp_size2) in
   let ti = bigarray_of_ptr array1 tz Bigarray.int64 (getf y sp_i) in
   let td = bigarray_of_ptr array1 tz Bigarray.float64 (getf y sp_data) in
-  (* note: need to add one to p array length if it is in csc format *)
-  let tp = bigarray_of_ptr array1 (tz + ty) Bigarray.int64 (getf y sp_p) in
+  (* note: p array has different length in triplet and csc format *)
+  let pl = if ty = 0 then tz else tn + 1 in
+  let tp = bigarray_of_ptr array1 pl Bigarray.int64 (getf y sp_p) in
   { m = tm; n = tn; i = ti; d = td; p = tp; nz = tz; typ = ty; ptr = p; }
 
 let _update_rec_from_ptr x =
@@ -29,8 +30,9 @@ let _update_rec_from_ptr x =
   let _ = x.nz <- Int64.to_int (getf y sp_nz) in
   let _ = x.i <- (bigarray_of_ptr array1 x.nz Bigarray.int64 (getf y sp_i)) in
   let _ = x.d <- (bigarray_of_ptr array1 x.nz Bigarray.float64 (getf y sp_data)) in
-  (* note: need to add one to p array length if it is in csc format *)
-  let _ = x.p <- (bigarray_of_ptr array1 (x.nz + x.typ) Bigarray.int64 (getf y sp_p)) in
+  (* note: p array has different length in triplet and csc format *)
+  let pl = if x.typ = 0 then x.nz else x.n + 1 in
+  let _ = x.p <- (bigarray_of_ptr array1 pl Bigarray.int64 (getf y sp_p)) in
   x
 
 let _is_csc_format x = x.typ = 1
@@ -226,11 +228,15 @@ let mapi f x =
     done
   done; y
 
-(*let iteri_nz f x =
+let iteri_nz f x =
   let x = if _is_csc_format x then x else to_csc x in
-  for k = 0 to x.nnz - 1 do
-    None
-  done*)
+  for j = 0 to x.n - 1 do
+    for k = Int64.to_int (Array1.get x.p j) to (Int64.to_int (Array1.get x.p (j + 1))) - 1 do
+      let i = Int64.to_int (Array1.get x.i k) in
+      let y = Array1.get x.d k in
+      f i j y
+    done
+  done
 
 
 (* formatted input / output operations *)

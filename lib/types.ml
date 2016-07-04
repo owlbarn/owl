@@ -68,7 +68,7 @@ let spmat_struct : spmat_struct structure typ = structure "spmat_struct"
   let sp_nzmax = field spmat_struct "sp_nzmax" int64_t
   let sp_nz    = field spmat_struct "sp_nz" int64_t
   let sp_tree  = field spmat_struct "sp_tree" (ptr void)
-  let sp_work  = field spmat_struct "sp_nz" (ptr void)
+  let sp_work  = field spmat_struct "sp_work" (ptr void)
   let sp_type  = field spmat_struct "sp_type" int64_t
 let () = seal spmat_struct
 
@@ -80,6 +80,8 @@ type spmat_record = {
   mutable d   : float_array1;  (* where data actually stored *)
   mutable p   : int_array;     (* p index, meaning depends on the matrix format *)
   mutable nz  : int;           (* total number of non-zero elements *)
+  (* tree missing *)
+  (* work missing *)
   mutable typ : int;           (* format of the sparse matrix, 0:triplet; 1: CCS *)
   mutable ptr : spmat_struct Ctypes_static.structure Ctypes_static.ptr;
   (* pointer to the sparse metrix *)
