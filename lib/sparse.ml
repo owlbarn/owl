@@ -317,6 +317,16 @@ let is_equal x1 x2 =
   let open Matrix_foreign in
   (gsl_spmatrix_equal x1.ptr x2.ptr) = 1
 
+let is_unequal x1 x2 = not (is_equal x1 x2)
+
+let is_greater x1 x2 = is_positive (sub x1 x2)
+
+let is_smaller x1 x2 = is_greater x2 x1
+
+let equal_or_greater x1 x2 = is_nonnegative (sub x1 x2)
+
+let equal_or_smaller x1 x2 = equal_or_greater x2 x1
+
 (* advanced matrix methematical operations *)
 
 let diag x =
