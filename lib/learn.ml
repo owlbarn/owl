@@ -11,7 +11,7 @@ module UT = Utils
   x is the row-based data points and c is the number of clusters.
 ]  *)
 let kmeans x c = let open MX in
-  let cpts0 = draw_rows x c in
+  let cpts0 = fst (draw_rows x c) in
   let cpts1 = zeros c (col_num x) in
   let assignment = Array.make (row_num x) (0, max_float) in
   let _ = try for counter = 1 to 100 do
@@ -47,12 +47,16 @@ let numerical_gradient f x =
   b : batch size
   s : step size
   t : stop criteria
-  f : loss function
+  g : gradient function
+  l : loss function
   p : model parameters
   x : data points
   y : labels
 ]  *)
-let sgd b s t f p x  = None
+(*let sgd ?(b=1) ?(s=0.01) ?(t=0.001) ?(g=numerical_gradient) l p x y =
+  while improvement < t do
+    let sample = MX.draw_rows x
+  done*)
 
 
 (* ends here *)

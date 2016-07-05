@@ -541,7 +541,7 @@ module Dense = struct
     let l = if replacement = true then
       Array.map (fun _ -> Random.int (m-1)) (range 1 c)
       else sublist 0 (c-1) (shuffle (range 0 (m-1))) in
-    rows x l
+    rows x l, l
 
   let draw_cols ?(replacement=true) x c =
     let open Utils in
@@ -549,7 +549,7 @@ module Dense = struct
     let l = if replacement = true then
       Array.map (fun _ -> Random.int (n-1)) (range 1 c)
       else sublist 0 (c-1) (shuffle (range 0 (n-1))) in
-    cols x l
+    cols x l, l
 
   (* TODO: use this to replace col function, faster *)
   let gsl_col x i =

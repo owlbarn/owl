@@ -76,9 +76,9 @@ module Dense : sig
 
   val add_diag : mat -> float -> mat
 
-  val draw_rows : ?replacement:bool -> mat -> int -> mat
+  val draw_rows : ?replacement:bool -> mat -> int -> mat * int array
 
-  val draw_cols : ?replacement:bool -> mat -> int -> mat
+  val draw_cols : ?replacement:bool -> mat -> int -> mat * int array
 
   (* matrix iteration operations *)
 

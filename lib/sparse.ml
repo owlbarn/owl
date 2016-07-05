@@ -385,9 +385,16 @@ let of_dense x =
   let _ = gsl_spmatrix_d2sp y.ptr (mat_to_matptr x) in
   _update_rec_from_ptr y
 
+(* some other uncategorised functions *)
 
+let draw_rows ?(replacement=true) x c = None
+
+let draw_cols ?(replacement=true) x c = None
 
 
 (* TODO: out of OCaml GC, need to release the memory *)
+
+
+
 
 (* ends here *)
