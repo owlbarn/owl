@@ -254,6 +254,20 @@ module Dense = struct
 
   let for_all f x = let g y = not (f y) in not_exists g x
 
+  let mapi_at_row f x i =
+    let v = mapi (fun _ j y -> f i j y) (row x i) in
+    let y = clone x in
+    copy_row_to v y i; y
+
+  let map_at_row f x i = mapi_at_row (fun _ _ y -> f y) x i
+
+  let mapi_at_col f x j =
+    let v = mapi (fun i _ y -> f i j y) (col x j) in
+    let y = clone x in
+    copy_col_to v y j; y
+
+  let map_at_col f x j = mapi_at_col (fun _ _ y -> f y) x j
+
   let inplace_map = None
 
   (* matrix mathematical operations *)

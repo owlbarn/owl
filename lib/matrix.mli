@@ -104,6 +104,10 @@ module Dense : sig
 
   val mapi_rows : (int -> mat -> 'a) -> mat -> 'a array
 
+  val map_at_row : (float -> float) -> mat -> int -> mat
+
+  val mapi_at_row : (int -> int -> float -> float) -> mat -> int -> mat
+
   val filter_rows : (mat -> bool) -> mat -> int array
 
   val filteri_rows : (int -> mat -> bool) -> mat -> int array
@@ -117,6 +121,10 @@ module Dense : sig
   val map_cols : (mat -> 'a) -> mat -> 'a array
 
   val mapi_cols : (int -> mat -> 'a) -> mat -> 'a array
+
+  val map_at_col : (float -> float) -> mat -> int -> mat
+
+  val mapi_at_col : (int -> int -> float -> float) -> mat -> int -> mat
 
   val filter_cols : (mat -> bool) -> mat -> int array
 
