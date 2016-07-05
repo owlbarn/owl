@@ -33,10 +33,16 @@ let kmeans x c = let open MM in
 
 
 (** [
-  Stochastic gradient descent algorithm
+  Stochastic Gradient Descent (SGD) algorithm
+  b : batch size
+  s : step size
+  t : stop criteria
+  f : loss function
+  p : model parameters
+  x : data points
+  y : labels
 ]  *)
-
-let sgd = None
+let sgd b s t f p x  = None
 
 
 (* ends here *)
