@@ -3,14 +3,14 @@
   Note: Fortran layout column-based matrix
   ]  *)
 
-module MM = Matrix.Dense
+module MX = Matrix.Dense
 module UT = Utils
 
 (** [
   k-means clustering algorithm
   x is the row-based data points and c is the number of clusters.
 ]  *)
-let kmeans x c = let open MM in
+let kmeans x c = let open MX in
   let cpts0 = draw_rows x c in
   let cpts1 = zeros c (col_num x) in
   let assignment = Array.make (row_num x) (0, max_float) in
@@ -31,6 +31,16 @@ let kmeans x c = let open MM in
   done with exn -> () in
   cpts1, UT.map_array fst assignment
 
+
+(** [
+  numberical way to calculate gradient.
+  x is a matrix containing the varialbles.
+]  *)
+let numerical_gradient f x =
+  let h = 0.00001 in
+  let fa = MX.map f MX.(x -$ h) in
+  let fb = MX.map f MX.(x +$ h) in
+  MX.((fb -@ fa) /$ (2. *. h))
 
 (** [
   Stochastic Gradient Descent (SGD) algorithm
