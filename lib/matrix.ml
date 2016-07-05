@@ -162,7 +162,7 @@ module Dense = struct
     let y = clone x in
     copy_row_to v y i; y
 
-  let replace_col v x i =
+  let replace_col v x i = 
     let y = clone x in
     copy_col_to v y i; y
 
