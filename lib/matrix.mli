@@ -70,15 +70,13 @@ module Dense : sig
 
   val transpose : mat -> mat
 
-  val diag : mat -> mat
-
-  val trace : mat -> float
-
-  val add_diag : mat -> float -> mat
-
   val draw_rows : ?replacement:bool -> mat -> int -> mat * int array
 
   val draw_cols : ?replacement:bool -> mat -> int -> mat * int array
+
+  val replace_row : mat -> mat -> int -> mat
+
+  val replace_col : mat -> mat -> int -> mat
 
   (* matrix iteration operations *)
 
@@ -211,6 +209,12 @@ module Dense : sig
   val is_nonnegative : mat -> bool
 
   (* advanced linear algebra functions *)
+
+  val diag : mat -> mat
+
+  val trace : mat -> float
+
+  val add_diag : mat -> float -> mat
 
   (* val svd : mat -> mat -> mat -> mat *)
 

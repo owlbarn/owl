@@ -42,13 +42,12 @@ let gradient f x =
   let fb = MX.map f MX.(x +$ h) in
   MX.((fb -@ fa) /$ (2. *. h))
 
-(*
-let gradient f x =
+(*let gradient f x =
   let h = 0.00001 in
   let fa = f MX.mapi () x
   let fb = f MX.(x +$ h) in
-  MX.((fb -@ fa) /$ (2. *. h))
-*)
+  MX.((fb -@ fa) /$ (2. *. h))*)
+
 
 (** [ L1 regularisation ]  *)
 let l1 x = MX.(sum (abs x))

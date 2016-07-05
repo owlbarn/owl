@@ -158,10 +158,13 @@ module Dense = struct
     let y = empty (col_num x) (row_num x) in
     Gsl.Matrix.transpose y x; y
 
-  let diag x =
-    let m = min (row_num x) (col_num x) in
-    let y = empty 1 m in
-    for i = 0 to m - 1 do y.{0,i} <- x.{i,i} done; y
+  let replace_row v x i =
+    let y = clone x in
+    copy_row_to v y i; y
+
+  let replace_col v x i =
+    let y = clone x in
+    copy_col_to v y i; y
 
   (* matrix iteration operations *)
 
@@ -462,6 +465,11 @@ module Dense = struct
   let div_scalar = ( /$ )
 
   (* advanced matrix methematical operations *)
+
+  let diag x =
+    let m = Pervasives.min (row_num x) (col_num x) in
+    let y = empty 1 m in
+    for i = 0 to m - 1 do y.{0,i} <- x.{i,i} done; y
 
   let trace x = sum (diag x)
 
