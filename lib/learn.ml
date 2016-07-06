@@ -34,13 +34,16 @@ let kmeans x c = let open MX in
 
 (** [
   numberical way to calculate gradient.
-  x is a matrix containing the varialbles.
+  x is a k x m matrix containing m classifiers of k features.
 ]  *)
 let gradient f x =
+  let open MX in
   let h = 0.00001 in
-  let fa = MX.map f MX.(x -$ h) in
-  let fb = MX.map f MX.(x +$ h) in
-  MX.((fb -@ fa) /$ (2. *. h))
+  let g = mapi_rows (fun i v ->
+    let fa = f (replace_row (v -$ h) x i) in
+    let fb = f (replace_row (v +$ h) x i) in
+    average_rows ((fb -@ fa) /$ (2. *. h))
+  ) x in g
 
 (*let gradient f x =
   let h = 0.00001 in

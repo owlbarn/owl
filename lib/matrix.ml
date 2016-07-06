@@ -162,7 +162,7 @@ module Dense = struct
     let y = clone x in
     copy_row_to v y i; y
 
-  let replace_col v x i = 
+  let replace_col v x i =
     let y = clone x in
     copy_col_to v y i; y
 
@@ -212,6 +212,24 @@ module Dense = struct
     Array.init (col_num x) (fun i -> f i (_row y i))
 
   let map_cols f x = mapi_cols (fun _ y -> f y) x
+
+  let mapi_by_row ?(d=0) f x =
+    let n = if d > 0 then d else col_num (f 0 (row x 0)) in
+    let y = empty (row_num x) n in
+    iteri_rows (fun i z ->
+      copy_row_to (f i z) y i
+    ) x; y
+
+  let map_by_row ?(d=0) f x = mapi_by_row ~d (fun _ y -> f y) x
+
+  let mapi_by_col ?(d=0) f x =
+    let m = if d > 0 then d else row_num (f 0 (col x 0)) in
+    let y = empty m (col_num x) in
+    iteri_cols (fun j z ->
+      copy_col_to (f j z) y j
+    ) x; y
+
+  let map_by_col ?(d=0) f x = mapi_by_col ~d (fun _ y -> f y) x
 
   let filteri f x =
     let r = ref [||] in
