@@ -85,17 +85,18 @@ let loss y x p =
   x : data matrix (n x k), each row is a data point. So we have n datea points of k features each.
   y : labeled data (n x m), n data points and each is labeled with m classifiers
 ]  *)
-let sgd ?(b=1) ?(s=0.01) ?(t=0.001) ?(l=loss) ?(g=numerical_gradient) p x y =
+let sgd ?(b=1) ?(s=0.01) ?(t=0.00001) ?(l=loss) ?(g=numerical_gradient) p x y =
   let p = ref p in
-  let imp = ref max_float in
-  for i = 0 to 1000 do
+  let obj0, obj1 = ref max_float, ref (-1000.) in
+  while (abs_float (!obj1 -. !obj0)) > t do
+    let _ = obj0 := !obj1 in
     let xt, idx = MX.draw_rows x b in
     let yt = MX.rows y idx in
-    let obj = MX.sum (l yt xt !p) in
-    let _ = Printf.printf "iteration: %.4f\n" obj in
     let dt = g (l yt xt) !p in
-    p := MX.(!p -@ (dt *$ s))
-  done; p
+    let _ = p := MX.(!p -@ (dt *$ s)) in
+    let _ = obj1 := MX.sum (l yt xt !p) in
+    Printf.printf "iteration: %.4f\n" !obj1
+  done; !p
 
 
 
