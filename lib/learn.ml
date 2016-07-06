@@ -36,13 +36,14 @@ let kmeans x c = let open MX in
   numberical way to calculate gradient.
   x is a k x m matrix containing m classifiers of k features.
 ]  *)
-let gradient f x =
+let numerical_gradient f x =
   let open MX in
   let h = 0.00001 in
-  let g = mapi_rows (fun i v ->
+  let g = mapi_by_row ~d:(col_num x)
+  (fun i v ->
     let fa = f (replace_row (v -$ h) x i) in
     let fb = f (replace_row (v +$ h) x i) in
-    average_rows ((fb -@ fa) /$ (2. *. h))
+    (fb -@ fa) /$ (2. *. h)
   ) x in g
 
 (*let gradient f x =
@@ -67,7 +68,11 @@ let hinge x = None
   y' is the prediction.
   y is the labeled data.
 ]  *)
-let loss p y y' = MX.average MX.(y' -@ y)
+let loss y x p =
+  let open MX in
+  let y' = x $@ p in
+  let r = (y' -@ y) **@ 2. in
+  average_rows r
 
 (** [
   Stochastic Gradient Descent (SGD) algorithm
@@ -80,18 +85,20 @@ let loss p y y' = MX.average MX.(y' -@ y)
   x : data matrix (n x k), each row is a data point. So we have n datea points of k features each.
   y : labeled data (n x m), n data points and each is labeled with m classifiers
 ]  *)
-(*
-let sgd ?(b=1) ?(s=0.01) ?(t=0.001) ?(l=loss) ?(g=gradient) p x y =
+let sgd ?(b=1) ?(s=0.01) ?(t=0.001) ?(l=loss) ?(g=numerical_gradient) p x y =
   let p = ref p in
-  let improvement = ref max_float in
-  while !improvement < t do
+  let imp = ref max_float in
+  for i = 0 to 1000 do
     let xt, idx = MX.draw_rows x b in
     let yt = MX.rows y idx in
-    let yt' = MX.(xt $@ !p) in
-    let grad = gradient (loss !p yt) !p in
-    p := MX.(!p -@ grad)
-  done
-*)
+    let obj = MX.sum (l yt xt !p) in
+    let _ = Printf.printf "iteration: %.4f\n" obj in
+    let dt = g (l yt xt) !p in
+    p := MX.(!p -@ (dt *$ s))
+  done; p
+
+
+
 
 
 (* ends here *)
