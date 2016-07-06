@@ -33,7 +33,7 @@ let kmeans x c = let open MX in
 
 
 (** [
-  numberical way to calculate gradient.
+  a numberical way of calculating gradient.
   x is a k x m matrix containing m classifiers of k features.
 ]  *)
 let numerical_gradient f x =
@@ -46,29 +46,25 @@ let numerical_gradient f x =
     (fb -@ fa) /$ (2. *. h)
   ) x in g
 
-(*let gradient f x =
-  let h = 0.00001 in
-  let fa = f MX.mapi () x
-  let fb = f MX.(x +$ h) in
-  MX.((fb -@ fa) /$ (2. *. h))*)
-
-
 (** [ L1 regularisation ]  *)
 let l1 x = MX.(sum (abs x))
 
 (** [ L2 regularisation ]  *)
 let l2 x = MX.(sum (x **@ 2.))
 
+(** [ hinge loss function ]  *)
+let hinge_loss x = None
+
 (** [ softmax loss function ]  *)
-let hinge x = None
+let softmax_loss x = None
 
 (** [
-  a loss function for testing
+  least square loss function for testing
   p is the model parameters.
   y' is the prediction.
   y is the labeled data.
 ]  *)
-let loss y x p =
+let loss_lsq y x p =
   let open MX in
   let y' = x $@ p in
   let r = (y' -@ y) **@ 2. in
@@ -85,9 +81,10 @@ let loss y x p =
   x : data matrix (n x k), each row is a data point. So we have n datea points of k features each.
   y : labeled data (n x m), n data points and each is labeled with m classifiers
 ]  *)
-let sgd ?(b=1) ?(s=0.01) ?(t=0.00001) ?(l=loss) ?(g=numerical_gradient) p x y =
+let sgd ?(b=1) ?(s=0.01) ?(t=0.00001) ?(l=loss_lsq) ?(g=numerical_gradient) p x y =
   let p = ref p in
-  let obj0, obj1 = ref max_float, ref (-1000.) in
+  let obj0 = ref max_float in
+  let obj1 = ref min_float in
   while (abs_float (!obj1 -. !obj0)) > t do
     let _ = obj0 := !obj1 in
     let xt, idx = MX.draw_rows x b in
