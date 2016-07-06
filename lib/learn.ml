@@ -46,11 +46,22 @@ let numerical_gradient f x =
     (fb -@ fa) /$ (2. *. h)
   ) x in g
 
+
+(* Regularisation functions *)
+
 (** [ L1 regularisation ]  *)
 let l1 x = MX.(sum (abs x))
 
 (** [ L2 regularisation ]  *)
-let l2 x = MX.(sum (x **@ 2.))
+let l2 x = 0.5 *. MX.(sum (x **@ 2.))
+
+(** [ Elastic net regularisation ]  *)
+let elastic x = None
+
+(** [ No regularisation ]  *)
+let noreg x = 0.
+
+(* Loss functions *)
 
 (** [ hinge loss function ]  *)
 let hinge_loss x = None
@@ -64,11 +75,17 @@ let softmax_loss x = None
   y' is the prediction.
   y is the labeled data.
 ]  *)
-let loss_lsq y x p =
+let loss_squared a r y x p =
   let open MX in
   let y' = x $@ p in
-  let r = (y' -@ y) **@ 2. in
-  average_rows r
+  let l = (y' -@ y) **@ 2. in
+  (average_rows l) +$ ((r p) *. a)
+
+let loss_hinge = None
+
+let loss_log = None
+
+let loss_huber = None
 
 (** [
   Stochastic Gradient Descent (SGD) algorithm
@@ -77,22 +94,31 @@ let loss_lsq y x p =
   t : stop criteria
   l : loss function
   g : gradient function
+  r : regularisation function
+  a : weight on the regularisation term
   p : model parameters (k * m), each column is a classifier. So we have m classifier of k features.
   x : data matrix (n x k), each row is a data point. So we have n datea points of k features each.
   y : labeled data (n x m), n data points and each is labeled with m classifiers
 ]  *)
-let sgd ?(b=1) ?(s=0.01) ?(t=0.00001) ?(l=loss_lsq) ?(g=numerical_gradient) p x y =
+let sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=loss_squared) ?(g=numerical_gradient) ?(r=noreg) ?(a=0.0001) p x y =
+  (* preprocess data, add bias variable *)
+  (*let p = MX.(p @= (ones 1 (col_num p))) in
+  let x = MX.(x @|| (ones (row_num p) 1)) in*)
+  (* start following the descent *)
   let p = ref p in
   let obj0 = ref max_float in
   let obj1 = ref min_float in
+  let counter = ref 0 in
   while (abs_float (!obj1 -. !obj0)) > t do
     let _ = obj0 := !obj1 in
     let xt, idx = MX.draw_rows x b in
     let yt = MX.rows y idx in
-    let dt = g (l yt xt) !p in
+    let lt = l a r yt xt in
+    let dt = g lt !p in
     let _ = p := MX.(!p -@ (dt *$ s)) in
-    let _ = obj1 := MX.sum (l yt xt !p) in
-    Printf.printf "iteration: %.4f\n" !obj1
+    let _ = obj1 := MX.sum (lt !p) in
+    let _ = counter := !counter + 1 in
+    Printf.printf "iteration #%i: %.4f\n" !counter !obj1
   done; !p
 
 
