@@ -52,8 +52,12 @@ let numerical_gradient f x =
 (** [ L1 regularisation ]  *)
 let l1 x = MX.(sum (abs x))
 
+let l1_grad x = MX.((abs x) /@ x)
+
 (** [ L2 regularisation ]  *)
 let l2 x = 0.5 *. MX.(sum (x *@ x))
+
+let l2_grad x = x
 
 (** [ Elastic net regularisation, a is l1 ration ]  *)
 let elastic a x = a *. (l1 x) +. (1. -. a) *. (l2 x)
@@ -90,17 +94,12 @@ let log_loss a r y x p = None
   y' is the prediction.
   y is the labeled data.
 ]  *)
-let _leastsquare_loss a r y x p =
-  let open MX in
-  let y' = x $@ p in
-  let l = (y' -@ y) **@ 2. in
-  (average_rows l) +$ ((r p) *. a)
 
 let leastsquare_loss a r y x p =
   let open MX in
   let y' = x $@ p in
   let l = (y' -@ y) **@ 2. in
-  (average_rows l) +$ ((r p) *. a)
+  (average_rows l) +$ (a *. (r p))
 
 let leastsquare_grad y' y x =
   let open MX in
