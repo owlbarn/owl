@@ -522,7 +522,7 @@ module Dense = struct
   let dump x f =
     let h = open_out f in
     iter_rows (fun y ->  (* TODO: 64-bit -> 16 digits *)
-      iter (fun z -> Printf.fprintf h "%.8f " z) y;
+      iter (fun z -> Printf.fprintf h "%.8f\t" z) y;
       Printf.fprintf h "\n"
     ) x;
     close_out h
@@ -536,7 +536,7 @@ module Dense = struct
       done with End_of_file -> () in
     let x = zeros !m n in seek_in h 0;
     for i = 0 to !m - 1 do
-      let s = Str.split (Str.regexp " ") (input_line h) in
+      let s = Str.split (Str.regexp "\t") (input_line h) in
       List.iteri (fun j y -> x.{i,j} <- float_of_string y) s
     done;
     close_in h; x

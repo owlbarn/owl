@@ -7,7 +7,7 @@ module MX = Matrix.Dense
 module UT = Utils
 
 (** [
-  k-means clustering algorithm
+  K-means clustering algorithm
   x is the row-based data points and c is the number of clusters.
 ]  *)
 let kmeans x c = let open MX in
@@ -36,15 +36,16 @@ let kmeans x c = let open MX in
   a numberical way of calculating gradient.
   x is a k x m matrix containing m classifiers of k features.
 ]  *)
-let numerical_gradient f x =
+let numerical_gradient l p x y y' =
   let open MX in
   let h = 0.00001 in
-  let g = mapi_by_row ~d:(col_num x)
+  let f = l y in
+  let g = mapi_by_row ~d:(col_num p)
   (fun i v ->
-    let fa = f (replace_row (v -$ h) x i) in
-    let fb = f (replace_row (v +$ h) x i) in
+    let fa = f (x $@ (replace_row (v -$ h) p i)) in
+    let fb = f (x $@ (replace_row (v +$ h) p i)) in
     (fb -@ fa) /$ (2. *. h)
-  ) x in g
+  ) p in g
 
 
 (* Regularisation functions *)
@@ -83,7 +84,6 @@ let noreg_grad x = MX.(zeros (row_num x) (col_num x))
 let square_loss y y' =
   let open MX in
   average_rows ((y' -@ y) **@ 2.)
-  (*if a = 0. then l else l +$ (a *. (r p))*)
 
 let square_grad x y y' =
   let open MX in
@@ -98,9 +98,20 @@ let square_grad x y y' =
 let hinge_loss y y' =
   let open MX in
   let z = 1. $- ( y *@ y' ) in
-  map (Pervasives.max 0.) z
+  let z = map (Pervasives.max 0.) z in
+  average_rows z
 
-let hinge_grad x y y' = None
+let hinge_grad x y y' =
+  let open MX in
+  let z = y *@ y' in
+  mapi_by_col ~d:(col_num x)
+  (fun i v ->
+    let k = mapi_by_row ~d:(col_num x)
+    (fun j u ->
+      if v.{j,0} < 1. then u *$ (-1. *. y.{j,i}) else zeros 1 (col_num x)
+    ) x in
+    transpose (average_rows k)
+  ) z
 
 
 (** [ squared hinge loss function ]  *)
@@ -156,7 +167,7 @@ let _sgd_basic b s t l g r o a p x y =
     let lt = l yt yt' in
     let dt = g xt yt yt' in
     (* check if it is regularised *)
-    let lt = if a = 0. then lt else MX.(lt +@ (a $* (r !p))) in
+    let lt = if a = 0. then lt else MX.(lt +@ (a $* (r !p))) in  (* this can be removed if we don't need accurate loss tracking *)
     let dt = if a = 0. then dt else MX.(dt +@ (a $* (o !p))) in
     (* update the gradient with step size *)
     let st = s () in
@@ -172,8 +183,17 @@ let _sgd_basic b s t l g r o a p x y =
 ]  *)
 let sgd ?(b=1) ?(s=constant_rate) ?(t=0.00001) ?(l=square_loss) ?(g=square_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.) p x y = _sgd_basic b s t l g r o a p x y
 
-
 (* TODO: step size scheduling needs to be implemented *)
+(* TODO: intercept has not been considered in regression *)
+
+
+(* Support Vector Machine *)
+
+let svm ?(b=200) ?(s=constant_rate) ?(t=0.00001) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) ?(a=1.) p x y = _sgd_basic b s t l g r o a p x y
+
+
+
+
 
 
 (* ends here *)

@@ -21,7 +21,7 @@ let test () =
 
 let test_small () =
   let p = MX.uniform_int 5 3 in
-  let p = MX.map_at_row (fun _ -> 0.) p 4 in
+  let p = MX.map_at_row (fun _ -> float_of_int (Random.int 30)) p 4 in
   let x = MX.uniform 1000 5 in
   let x = MX.map_at_col (fun _ -> 1.) x 4 in
   let y = MX.(x $@ p) in
@@ -33,4 +33,5 @@ let test_small () =
   Printf.printf "error ==> %.4f\n" MX.(sum (abs (p'-@ p)))
 
 let _ =
-  test ()
+  Random.self_init ();
+  test_small ()
