@@ -49,7 +49,7 @@ let numerical_gradient f x =
 
 (* Regularisation functions *)
 
-(** [ L1 regularisation ]  *)
+(** [ L1 regularisation and its gradient ]  *)
 let l1 p = MX.(average_rows (abs p))
 
 let l1_grad p =
@@ -57,13 +57,19 @@ let l1_grad p =
     if x > 0. then 1. else if x < 0. then (-1.) else 0.
   ) p
 
-(** [ L2 regularisation ]  *)
+(** [ L2 regularisation and its grandient ]  *)
 let l2 p = MX.(0.5 $* (average_rows (p *@ p)))
 
 let l2_grad p = p
 
-(** [ Elastic net regularisation, a is l1 ration ]  *)
+(** [ Elastic net regularisation and its gradient
+  "a" is l1 ration ]  *)
 let elastic a x = MX.(a $* (l1 x) +@ ((1. -. a) $* (l2 x)))
+
+let elastic_grad a x =
+  let g1 = l1_grad x in
+  let g2 = l2_grad x in
+  MX.(a $* g1 +@ (a $* g2))
 
 (** [ No regularisation ]  *)
 let noreg x = MX.(zeros 1 (col_num x))
@@ -163,7 +169,7 @@ let _sgd_basic b s t l g r o a p x y =
 ]  *)
 let _sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=leastsquare_loss) ?(g=leastsquare_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.) p x y = _sgd_basic b s t l g r o a p x y
 
-let sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=leastsquare_loss) ?(g=leastsquare_grad) ?(r=l1) ?(o=l1_grad) ?(a=0.0001) p x y = _sgd_basic b s t l g r o a p x y
+let sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=leastsquare_loss) ?(g=leastsquare_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.0001) p x y = _sgd_basic b s t l g r o a p x y
 
 
 (* TODO: step size scheduling needs to be implemented *)
