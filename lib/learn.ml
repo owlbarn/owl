@@ -53,10 +53,10 @@ let numerical_gradient f x =
 let l1 x = MX.(sum (abs x))
 
 (** [ L2 regularisation ]  *)
-let l2 x = 0.5 *. MX.(sum (x **@ 2.))
+let l2 x = 0.5 *. MX.(sum (x *@ x))
 
-(** [ Elastic net regularisation ]  *)
-let elastic x = None
+(** [ Elastic net regularisation, a is l1 ration ]  *)
+let elastic a x = a *. (l1 x) +. (1. -. a) *. (l2 x)
 
 (** [ No regularisation ]  *)
 let noreg x = 0.
@@ -64,10 +64,25 @@ let noreg x = 0.
 (* Loss functions *)
 
 (** [ hinge loss function ]  *)
-let hinge_loss x = None
+let hinge_loss a r y x p =
+  let open MX in
+  let z = 1. $- ( x $@ p *@ y ) in
+  let z = map (Pervasives.max 0.) z in
+  z +$ ((r p) *. a)
+
+let hinge_grad x = None
+
+let squaredhinge_loss a r y x p =
+  let z = hinge_loss a r y x p in
+  MX.(z *@ z)
 
 (** [ softmax loss function ]  *)
 let softmax_loss x = None
+
+let softmax_grad x = None
+
+let log_loss a r y x p = None
+
 
 (** [
   least square loss function for testing
@@ -75,17 +90,32 @@ let softmax_loss x = None
   y' is the prediction.
   y is the labeled data.
 ]  *)
-let loss_squared a r y x p =
+let _leastsquare_loss a r y x p =
   let open MX in
   let y' = x $@ p in
   let l = (y' -@ y) **@ 2. in
   (average_rows l) +$ ((r p) *. a)
 
-let loss_hinge = None
+let leastsquare_loss a r y x p =
+  let open MX in
+  let y' = x $@ p in
+  let l = (y' -@ y) **@ 2. in
+  (average_rows l) +$ ((r p) *. a)
 
-let loss_log = None
+let leastsquare_grad y' y x =
+  let open MX in
+  let z = y' -@ y in
+  mapi_by_col ~d:(col_num x)
+  (fun i v ->
+    let k = mapi_by_row ~d:(col_num x) (fun j u -> u *$ v.{j,0}) x in
+    transpose (average_rows k)
+  ) z
 
-let loss_huber = None
+(* learning rate scheduling *)
+
+let constant_rate () = 0.1
+
+let optimal_rate () = 0.1
 
 (** [
   Stochastic Gradient Descent (SGD) algorithm
@@ -100,7 +130,7 @@ let loss_huber = None
   x : data matrix (n x k), each row is a data point. So we have n datea points of k features each.
   y : labeled data (n x m), n data points and each is labeled with m classifiers
 ]  *)
-let sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=loss_squared) ?(g=numerical_gradient) ?(r=noreg) ?(a=0.0001) p x y =
+let _sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=leastsquare_loss) ?(g=numerical_gradient) ?(r=noreg) ?(a=0.0001) p x y =
   (* preprocess data, add bias variable *)
   (*let p = MX.(p @= (ones 1 (col_num p))) in
   let x = MX.(x @|| (ones (row_num p) 1)) in*)
@@ -118,11 +148,28 @@ let sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=loss_squared) ?(g=numerical_gradient) ?
     let _ = p := MX.(!p -@ (dt *$ s)) in
     let _ = obj1 := MX.sum (lt !p) in
     let _ = counter := !counter + 1 in
-    Printf.printf "iteration #%i: %.4f\n" !counter !obj1
+    Printf.printf "iteration #%i: %.4f\n" !counter !obj1;
+    flush stdout
   done; !p
 
 
-
+let sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=leastsquare_loss) ?(g=numerical_gradient) ?(r=noreg) ?(a=0.0001) p x y =
+  let p = ref p in
+  let obj0 = ref max_float in
+  let obj1 = ref min_float in
+  let counter = ref 0 in
+  while (abs_float (!obj1 -. !obj0)) > t do
+    let _ = obj0 := !obj1 in
+    let xt, idx = MX.draw_rows x b in
+    let yt = MX.rows y idx in
+    let lt = l a r yt xt in
+    let dt = leastsquare_grad MX.(xt $@ !p) yt xt in
+    let _ = p := MX.(!p -@ (dt *$ s)) in
+    let _ = obj1 := MX.sum (lt !p) in
+    let _ = counter := !counter + 1 in
+    Printf.printf "iteration #%i: %.4f\n" !counter !obj1;
+    flush stdout
+  done; !p
 
 
 (* ends here *)
