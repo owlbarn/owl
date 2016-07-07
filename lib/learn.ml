@@ -52,7 +52,10 @@ let numerical_gradient f x =
 (** [ L1 regularisation ]  *)
 let l1 p = MX.(average_rows (abs p))
 
-let l1_grad p = MX.((abs p) /@ p)
+let l1_grad p =
+  MX.map (fun x ->
+    if x > 0. then 1. else if x < 0. then (-1.) else 0.
+  ) p
 
 (** [ L2 regularisation ]  *)
 let l2 p = MX.(0.5 $* (average_rows (p *@ p)))
@@ -158,9 +161,9 @@ let _sgd_basic b s t l g r o a p x y =
 (** [
   wrapper for _sgd_basic fucntion
 ]  *)
-let sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=leastsquare_loss) ?(g=leastsquare_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.) p x y = _sgd_basic b s t l g r o a p x y
+let _sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=leastsquare_loss) ?(g=leastsquare_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.) p x y = _sgd_basic b s t l g r o a p x y
 
-let _sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=leastsquare_loss) ?(g=leastsquare_grad) ?(r=l2) ?(o=l2_grad) ?(a=0.0001) p x y = _sgd_basic b s t l g r o a p x y
+let sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=leastsquare_loss) ?(g=leastsquare_grad) ?(r=l1) ?(o=l1_grad) ?(a=0.0001) p x y = _sgd_basic b s t l g r o a p x y
 
 
 (* TODO: step size scheduling needs to be implemented *)
