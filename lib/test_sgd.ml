@@ -11,11 +11,11 @@ let centerise x =
   map_by_row (fun x -> x -@ v) x
 
 let test () =
-  let p = MX.uniform_int 100 10 in
-  let x = centerise (MX.uniform 10000 100) in
+  let p = MX.uniform_int 200 10 in
+  let x = centerise (MX.uniform 10000 200) in
   let y = MX.(x $@ p) in
-  let q = MX.uniform_int 100 10 in
-  let p' = LL.sgd ~r:LL.l2 q x y in
+  let q = MX.uniform_int 200 10 in
+  let p' = LL.sgd q x y in
   MX.(pprint (p' -@ p));
   Printf.printf "error ==> %.4f\n" MX.(sum (abs (p'-@ p)))
 
@@ -26,11 +26,11 @@ let test_small () =
   let x = MX.map_at_col (fun _ -> 1.) x 4 in
   let y = MX.(x $@ p) in
   let q = MX.uniform_int 5 3 in
-  let p' = LL.sgd ~r:LL.l2 q x y in
+  let p' = LL.sgd q x y in
   MX.(pprint (p));
   MX.(pprint (p'));
   MX.(pprint (p' -@ p));
   Printf.printf "error ==> %.4f\n" MX.(sum (abs (p'-@ p)))
 
 let _ =
-  test_small ()
+  test ()

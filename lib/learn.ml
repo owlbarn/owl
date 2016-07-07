@@ -50,20 +50,22 @@ let numerical_gradient f x =
 (* Regularisation functions *)
 
 (** [ L1 regularisation ]  *)
-let l1 x = MX.(sum (abs x))
+let l1 p = MX.(average_rows (abs p))
 
-let l1_grad x = MX.((abs x) /@ x)
+let l1_grad p = MX.((abs p) /@ p)
 
 (** [ L2 regularisation ]  *)
-let l2 x = 0.5 *. MX.(sum (x *@ x))
+let l2 p = MX.(0.5 $* (average_rows (p *@ p)))
 
-let l2_grad x = x
+let l2_grad p = p
 
 (** [ Elastic net regularisation, a is l1 ration ]  *)
-let elastic a x = a *. (l1 x) +. (1. -. a) *. (l2 x)
+let elastic a x = MX.(a $* (l1 x) +@ ((1. -. a) $* (l2 x)))
 
 (** [ No regularisation ]  *)
-let noreg x = 0.
+let noreg x = MX.(zeros 1 (col_num x))
+
+let noreg_grad x = MX.(zeros (row_num x) (col_num x))
 
 (* Loss functions *)
 
@@ -120,31 +122,48 @@ let optimal_rate () = 0.1
   s : step size
   t : stop criteria
   l : loss function
-  g : gradient function
+  g : gradient function of the loss function
   r : regularisation function
-  a : weight on the regularisation term
+  o : gradient fucntion of the regularisation function
+  a : weight on the regularisation term, common setting is 0.0001
   p : model parameters (k * m), each column is a classifier. So we have m classifier of k features.
   x : data matrix (n x k), each row is a data point. So we have n datea points of k features each.
   y : labeled data (n x m), n data points and each is labeled with m classifiers
 ]  *)
-let sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=leastsquare_loss) ?(g=leastsquare_grad) ?(r=noreg) ?(a=0.0001) p x y =
+let _sgd_basic b s t l g r o a p x y =
   let p = ref p in
   let obj0 = ref max_float in
   let obj1 = ref min_float in
   let counter = ref 0 in
   while (abs_float (!obj1 -. !obj0)) > t do
     let _ = obj0 := !obj1 in
+    (* draw random samples for data *)
     let xt, idx = MX.draw_rows x b in
     let yt = MX.rows y idx in
+    (* predict then estimate the loss and gradient *)
     let yt' = MX.(xt $@ !p) in
     let lt = l yt yt' in
     let dt = g xt yt yt' in
+    (* check if it is regularised *)
+    let lt = if a = 0. then lt else MX.(lt +@ (a $* (r !p))) in
+    let dt = if a = 0. then dt else MX.(dt +@ (a $* (o !p))) in
+    (* update the gradient with step size *)
     let _ = p := MX.(!p -@ (dt *$ s)) in
     let _ = obj1 := MX.sum lt in
     let _ = counter := !counter + 1 in
     Printf.printf "iteration #%i: %.4f\n" !counter !obj1;
     flush stdout
   done; !p
+
+(** [
+  wrapper for _sgd_basic fucntion
+]  *)
+let sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=leastsquare_loss) ?(g=leastsquare_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.) p x y = _sgd_basic b s t l g r o a p x y
+
+let _sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=leastsquare_loss) ?(g=leastsquare_grad) ?(r=l2) ?(o=l2_grad) ?(a=0.0001) p x y = _sgd_basic b s t l g r o a p x y
+
+
+(* TODO: step size scheduling needs to be implemented *)
 
 
 (* ends here *)
