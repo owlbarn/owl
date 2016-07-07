@@ -19,5 +19,17 @@ let test () =
   MX.(pprint (p' -@ p));
   Printf.printf "error ==> %.4f\n" MX.(sum (abs (p'-@ p)))
 
+let test_small () =
+  let p = MX.uniform_int 4 3 in
+  let x = MX.uniform 1000 4 in
+  let x = MX.map_at_col (fun _ -> 1.) x 3 in
+  let y = MX.(x $@ p) in
+  let q = MX.uniform_int 4 3 in
+  let p' = LL.sgd ~r:LL.l2 q x y in
+  MX.(pprint (p));
+  MX.(pprint (p'));
+  MX.(pprint (p' -@ p));
+  Printf.printf "error ==> %.4f\n" MX.(sum (abs (p'-@ p)))
+
 let _ =
-  test ()
+  test_small ()
