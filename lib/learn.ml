@@ -100,20 +100,28 @@ let hinge_loss y y' =
   let z = 1. $- ( y *@ y' ) in
   map (Pervasives.max 0.) z
 
-let hinge_grad x = None
+let hinge_grad x y y' = None
 
-let squaredhinge_loss y y' =
+
+(** [ squared hinge loss function ]  *)
+let hinge2_loss y y' =
   let z = hinge_loss y y' in
   MX.(z *@ z)
+
+let hinge2_grad x y y' = None
 
 (** [ softmax loss function ]  *)
 let softmax_loss y y' = None
 
-let softmax_grad y y' = None
+let softmax_grad x y y' = None
 
+(** [ softmax loss function ]  *)
 let log_loss y y' = None
 
-(* learning rate scheduling *)
+let log_grad x y y' = None
+
+
+(* Stochastic Gradient Descent related functions *)
 
 let constant_rate () = 0.1
 
@@ -151,7 +159,8 @@ let _sgd_basic b s t l g r o a p x y =
     let lt = if a = 0. then lt else MX.(lt +@ (a $* (r !p))) in
     let dt = if a = 0. then dt else MX.(dt +@ (a $* (o !p))) in
     (* update the gradient with step size *)
-    let _ = p := MX.(!p -@ (dt *$ s)) in
+    let st = s () in
+    let _ = p := MX.(!p -@ (dt *$ st)) in
     let _ = obj1 := MX.sum lt in
     let _ = counter := !counter + 1 in
     Printf.printf "iteration #%i: %.4f\n" !counter !obj1;
@@ -161,9 +170,7 @@ let _sgd_basic b s t l g r o a p x y =
 (** [
   wrapper for _sgd_basic fucntion
 ]  *)
-let _sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=square_loss) ?(g=square_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.) p x y = _sgd_basic b s t l g r o a p x y
-
-let sgd ?(b=1) ?(s=0.1) ?(t=0.00001) ?(l=square_loss) ?(g=square_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.0001) p x y = _sgd_basic b s t l g r o a p x y
+let sgd ?(b=1) ?(s=constant_rate) ?(t=0.00001) ?(l=square_loss) ?(g=square_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.) p x y = _sgd_basic b s t l g r o a p x y
 
 
 (* TODO: step size scheduling needs to be implemented *)
