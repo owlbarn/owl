@@ -134,9 +134,9 @@ let log_grad x y y' = None
 
 (* Stochastic Gradient Descent related functions *)
 
-let constant_rate () = 0.1
+let constant_rate = 0.1
 
-let optimal_rate () = 0.1
+let optimal_rate = 0.1
 
 (** [
   Stochastic Gradient Descent (SGD) algorithm
@@ -170,7 +170,7 @@ let _sgd_basic b s t l g r o a p x y =
     let lt = if a = 0. then lt else MX.(lt +@ (a $* (r !p))) in  (* this can be removed if we don't need accurate loss tracking *)
     let dt = if a = 0. then dt else MX.(dt +@ (a $* (o !p))) in
     (* update the gradient with step size *)
-    let st = s () in
+    let st = s in
     let _ = p := MX.(!p -@ (dt *$ st)) in
     let _ = obj1 := MX.sum lt in
     let _ = counter := !counter + 1 in
@@ -189,7 +189,33 @@ let sgd ?(b=1) ?(s=constant_rate) ?(t=0.00001) ?(l=square_loss) ?(g=square_grad)
 
 (* Support Vector Machine *)
 
-let svm ?(b=200) ?(s=constant_rate) ?(t=0.00001) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) ?(a=1.) p x y = _sgd_basic b s t l g r o a p x y
+let ssgd_basic b s t l g r o a p x y =
+  let p = ref p in
+  let obj0 = ref max_float in
+  let obj1 = ref min_float in
+  let counter = ref 0 in
+  for i = 0 to 5000 do
+    let _ = obj0 := !obj1 in
+    (* draw random samples for data *)
+    let xt, idx = MX.draw_rows ~replacement:false x b in
+    let yt = MX.rows y idx in
+    (* predict then estimate the loss and gradient *)
+    let yt' = MX.(xt $@ !p) in
+    let lt = l yt yt' in
+    let dt = g xt yt yt' in
+    (* check if it is regularised *)
+    let lt = if a = 0. then lt else MX.(lt +@ (a $* (r !p))) in  (* this can be removed if we don't need accurate loss tracking *)
+    let dt = if a = 0. then dt else MX.(dt +@ (a $* (o !p))) in
+    (* update the gradient with step size *)
+    let st = s in
+    let _ = p := MX.(!p -@ (dt *$ st)) in
+    let _ = obj1 := MX.sum lt in
+    let _ = counter := !counter + 1 in
+    Printf.printf "iteration #%i: %.4f\n" !counter !obj1;
+    flush stdout
+  done; !p
+
+let svm ?(b=200) ?(s=0.05) ?(t=0.00001) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) ?(a=1. /. 200.) p x y = ssgd_basic b s t l g r o a p x y
 
 
 
