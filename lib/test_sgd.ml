@@ -20,11 +20,12 @@ let test () =
   Printf.printf "error ==> %.4f\n" MX.(sum (abs (p'-@ p)))
 
 let test_small () =
-  let p = MX.uniform_int 4 3 in
-  let x = MX.uniform 1000 4 in
-  let x = MX.map_at_col (fun _ -> 1.) x 3 in
+  let p = MX.uniform_int 5 3 in
+  let p = MX.map_at_row (fun _ -> 0.) p 4 in
+  let x = MX.uniform 1000 5 in
+  let x = MX.map_at_col (fun _ -> 1.) x 4 in
   let y = MX.(x $@ p) in
-  let q = MX.uniform_int 4 3 in
+  let q = MX.uniform_int 5 3 in
   let p' = LL.sgd ~r:LL.l2 q x y in
   MX.(pprint (p));
   MX.(pprint (p'));
