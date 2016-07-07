@@ -39,7 +39,7 @@ let draw_line p =
   done; MX.dump z "test_svm.model.tmp"
 
 let test x y =
-  let x = MX.(x @|| (create (row_num x) 1 1.)) in
+  let x = MX.(x @|| (create (row_num x) 1 0.)) in
   let p = MX.uniform 3 1 in
   LL.svm p x y
 
