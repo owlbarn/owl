@@ -205,12 +205,19 @@ let gradient_descent = None
 (* TODO: wrap parameters into a record type *)
 
 
-(* Support Vector Machine *)
-
-let svm ?(s=optimal_rate) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) ?(i=false) p x y =
+(** [ Support Vector Machine regression
+  i : wether to include intercept bias in parameters
+  note that the values in y are either +1 or -1.
+ ]  *)
+let svm ?(i=false) p x y =
   let b = min 50 (MX.(row_num x) / 2) in
-  let a = 1. /. (float_of_int 100) in
+  let s = optimal_rate in
   let t = when_enough in
+  let l = hinge_loss in
+  let g = hinge_grad in
+  let r = l2 in
+  let o = l2_grad in
+  let a = 1. /. (float_of_int 100) in
   _sgd_basic b s t l g r o a i p x y
 
 (** [ Ordinary Least Square regression
