@@ -228,7 +228,20 @@ let osl_regression ?(i=true) x y =
   let p = MX.(uniform (col_num x) (col_num y)) in
   _sgd_basic b s t l g r o a i p x y
 
-let ridge_regression = None
+(** [ Ridge regression
+  i : wether to include intercept bias in parameters
+  a : weight on the regularisation term
+]  *)
+let ridge_regression ?(i=true) ?(a=0.001) x y =
+  let b = 1 in
+  let s = optimal_rate in
+  let t = when_stable in
+  let l = square_loss in
+  let g = square_grad in
+  let r = l2 in
+  let o = l2_grad in
+  let p = MX.(uniform (col_num x) (col_num y)) in
+  _sgd_basic b s t l g r o a i p x y
 
 let lasso_regression = None
 
