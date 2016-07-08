@@ -591,6 +591,22 @@ module Dense = struct
       else sublist 0 (c-1) (shuffle (range 0 (n-1))) in
     cols x l, l
 
+  let shuffle_rows x =
+    let y = clone x in
+    let m, n = shape x in
+    for i = 0 to m - 1 do
+      swap_rows y i (Rand.uniform_int ~a:0 ~b:(m-1) ())
+    done; y
+
+  let shuffle_cols x =
+    let y = clone x in
+    let m, n = shape x in
+    for i = 0 to n - 1 do
+      swap_cols y i (Rand.uniform_int ~a:0 ~b:(n-1) ())
+    done; y
+
+  let shuffle_all x = shuffle_rows (shuffle_cols x)
+
   (* TODO: use this to replace col function, faster *)
   let gsl_col x i =
     let open Matrix_foreign in

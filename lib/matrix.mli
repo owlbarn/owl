@@ -74,6 +74,12 @@ module Dense : sig
 
   val draw_cols : ?replacement:bool -> mat -> int -> mat * int array
 
+  val shuffle_rows : mat -> mat
+
+  val shuffle_cols : mat -> mat
+
+  val shuffle_all: mat -> mat
+
   val replace_row : mat -> mat -> int -> mat
 
   val replace_col : mat -> mat -> int -> mat
