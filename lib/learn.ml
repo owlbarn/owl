@@ -196,13 +196,13 @@ let _sgd_basic b s t l g r o a i p x y =
   done; !p
 
 (** [
-  wrapper for _sgd_basic fucntion
+  wrapper of the _sgd_basic fucntion
 ]  *)
 let sgd ?(b=1) ?(s=optimal_rate) ?(t=when_stable) ?(l=square_loss) ?(g=square_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.) ?(i=false) p x y = _sgd_basic b s t l g r o a i p x y
 
 let gradient_descent = None
 
-(* TODO: intercept has not been considered in regression *)
+(* TODO: wrap parameters into a record type *)
 
 
 (* Support Vector Machine *)
@@ -213,7 +213,26 @@ let svm ?(s=optimal_rate) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) ?
   let t = when_enough in
   _sgd_basic b s t l g r o a i p x y
 
+(** [ Ordinary Least Square regression
+  i : wether to include intercept bias in parameters
+]  *)
+let osl_regression ?(i=true) x y =
+  let b = 1 in
+  let s = optimal_rate in
+  let t = when_stable in
+  let l = square_loss in
+  let g = square_grad in
+  let r = noreg in
+  let o = noreg_grad in
+  let a = 0. in
+  let p = MX.(uniform (col_num x) (col_num y)) in
+  _sgd_basic b s t l g r o a i p x y
 
+let ridge_regression = None
+
+let lasso_regression = None
+
+let logistic_regression = None
 
 
 
