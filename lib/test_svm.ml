@@ -17,7 +17,7 @@ let generate_data () =
   let x2 = map_at_col (fun x -> x +. a) x2 0 in
   let x2 = map_at_col (fun x -> x +. b) x2 1 in
   let y1 = create c 1 ( 1.) in
-  let y2 = create c 1 (-1.)in
+  let y2 = create c 1 ( -1.)in
   let x = x1 @= x2 in
   let y = y1 @= y2 in
   let _ = dump x1 "test_svm.data1.tmp" in
@@ -33,14 +33,13 @@ let draw_line p =
     z.{i,0} <- x; z.{i,1} <- y
   done; MX.dump z "test_svm.model.tmp"
 
-let test x y =
-  let x = MX.(x @|| (create (row_num x) 1 1.)) in
-  let p = MX.uniform 3 1 in
-  LL.svm p x y
+let test_svm x y =
+  let p = MX.uniform 2 1 in
+  LL.svm ~i:true p x y
 
 let _ =
   let _ = Random.self_init () in
   let x, y = generate_data () in
-  let p = test x y in
+  let p = test_svm x y in
   draw_line p;
   MX.pprint p;

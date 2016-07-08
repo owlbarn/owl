@@ -157,12 +157,17 @@ let when_enough v c = (v < 0.00001) || (c > 5000)
   r : regularisation function
   o : gradient fucntion of the regularisation function
   a : weight on the regularisation term, common setting is 0.0001
+  i : wether to include intercept or not, default value is false
   p : model parameters (k * m), each column is a classifier. So we have m classifier of k features.
   x : data matrix (n x k), each row is a data point. So we have n datea points of k features each.
   y : labeled data (n x m), n data points and each is labeled with m classifiers
 ]  *)
-let _sgd_basic b s t l g r o a p x y =
-  let p = ref p in
+let _sgd_basic b s t l g r o a i p x y =
+  (* check whether the intercept is needed or not *)
+  let p = if i = false then ref p
+    else ref MX.(p @= uniform 1 (col_num p)) in
+  let x = if i = false then x
+    else MX.(x @|| ones (row_num x) 1) in
   let st = ref 0.1 in
   let obj0 = ref max_float in
   let obj1 = ref min_float in
@@ -191,21 +196,20 @@ let _sgd_basic b s t l g r o a p x y =
 (** [
   wrapper for _sgd_basic fucntion
 ]  *)
-let sgd ?(b=1) ?(s=optimal_rate) ?(t=when_stable) ?(l=square_loss) ?(g=square_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.) p x y = _sgd_basic b s t l g r o a p x y
+let sgd ?(b=1) ?(s=optimal_rate) ?(t=when_stable) ?(l=square_loss) ?(g=square_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.) ?(i=false) p x y = _sgd_basic b s t l g r o a i p x y
 
 let gradient_descent = None
 
-(* TODO: step size scheduling needs to be implemented *)
 (* TODO: intercept has not been considered in regression *)
 
 
 (* Support Vector Machine *)
 
-let svm ?(s=decr_rate) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) p x y =
-  let b = max 100 (MX.(row_num x) / 2) in
+let svm ?(s=optimal_rate) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) ?(i=false) p x y =
+  let b = min 50 (MX.(row_num x) / 2) in
   let a = 1. /. (float_of_int 100) in
   let t = when_enough in
-  _sgd_basic b s t l g r o a p x y
+  _sgd_basic b s t l g r o a i p x y
 
 
 
