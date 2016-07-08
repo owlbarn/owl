@@ -26,7 +26,8 @@ let generate_data () =
   let y2 = create c 1 (-1.)in
   let x = x1 @= x2 in
   let y = y1 @= y2 in
-  let _ = dump x "test_svm.data.tmp" in
+  let _ = dump x1 "test_svm.data1.tmp" in
+  let _ = dump x2 "test_svm.data2.tmp" in
   x, y
 
 let draw_line p =

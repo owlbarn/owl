@@ -134,9 +134,14 @@ let log_grad x y y' = None
 
 (* Stochastic Gradient Descent related functions *)
 
-let constant_rate t = 0.1
+let constant_rate c = 0.1
 
-let optimal_rate t = 0.1
+let optimal_rate c = 0.1
+
+let when_stable v c = v < 0.00001
+
+let when_enough v c = (v < 0.00001) || (c > 5000)
+
 
 (** [
   Stochastic Gradient Descent (SGD) algorithm
@@ -157,7 +162,7 @@ let _sgd_basic b s t l g r o a p x y =
   let obj0 = ref max_float in
   let obj1 = ref min_float in
   let counter = ref 0 in
-  while (abs_float (!obj1 -. !obj0)) > t do
+  while not (t (abs_float (!obj1 -. !obj0)) !counter) do
     let _ = obj0 := !obj1 in
     (* draw random samples for data *)
     let xt, idx = MX.draw_rows x b in
@@ -167,7 +172,7 @@ let _sgd_basic b s t l g r o a p x y =
     let lt = l yt yt' in
     let dt = g xt yt yt' in
     (* check if it is regularised *)
-    let lt = if a = 0. then lt else MX.(lt +@ (a $* (r !p))) in  (* this can be removed if we don't need accurate loss tracking *)
+    let lt = if a = 0. then lt else MX.(lt +@ (a $* (r !p))) in
     let dt = if a = 0. then dt else MX.(dt +@ (a $* (o !p))) in
     (* update the gradient with step size *)
     let st = s !counter in
@@ -181,7 +186,9 @@ let _sgd_basic b s t l g r o a p x y =
 (** [
   wrapper for _sgd_basic fucntion
 ]  *)
-let sgd ?(b=1) ?(s=constant_rate) ?(t=0.00001) ?(l=square_loss) ?(g=square_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.) p x y = _sgd_basic b s t l g r o a p x y
+let sgd ?(b=1) ?(s=constant_rate) ?(t=when_stable) ?(l=square_loss) ?(g=square_grad) ?(r=noreg) ?(o=noreg_grad) ?(a=0.) p x y = _sgd_basic b s t l g r o a p x y
+
+let gradient_descent = None
 
 (* TODO: step size scheduling needs to be implemented *)
 (* TODO: intercept has not been considered in regression *)
@@ -217,11 +224,12 @@ let ssgd_basic b s t l g r o a p x y =
 
 let svm_step_size a t = min 0.5 (a /. float_of_int t)
 
-let svm ?(s=constant_rate) ?(t=0.00001) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) p x y =
+let svm ?(s=constant_rate) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) p x y =
   let b = max 100 (MX.(row_num x) / 2) in
   let a = 1. /. (float_of_int 100) in
   let s = svm_step_size (1. /. a) in
-  ssgd_basic b s t l g r o a p x y
+  let t = when_enough in
+  _sgd_basic b s t l g r o a p x y
 
 
 
