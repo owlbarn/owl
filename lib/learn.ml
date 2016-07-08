@@ -134,9 +134,9 @@ let log_grad x y y' = None
 
 (* Stochastic Gradient Descent related functions *)
 
-let constant_rate = 0.1
+let constant_rate t = 0.1
 
-let optimal_rate = 0.1
+let optimal_rate t = 0.1
 
 (** [
   Stochastic Gradient Descent (SGD) algorithm
@@ -170,7 +170,7 @@ let _sgd_basic b s t l g r o a p x y =
     let lt = if a = 0. then lt else MX.(lt +@ (a $* (r !p))) in  (* this can be removed if we don't need accurate loss tracking *)
     let dt = if a = 0. then dt else MX.(dt +@ (a $* (o !p))) in
     (* update the gradient with step size *)
-    let st = s in
+    let st = s !counter in
     let _ = p := MX.(!p -@ (dt *$ st)) in
     let _ = obj1 := MX.sum lt in
     let _ = counter := !counter + 1 in
@@ -207,7 +207,7 @@ let ssgd_basic b s t l g r o a p x y =
     let lt = if a = 0. then lt else MX.(lt +@ (a $* (r !p))) in  (* this can be removed if we don't need accurate loss tracking *)
     let dt = if a = 0. then dt else MX.(dt +@ (a $* (o !p))) in
     (* update the gradient with step size *)
-    let st = s in
+    let st = s !counter in
     let _ = p := MX.(!p -@ (dt *$ st)) in
     let _ = obj1 := MX.sum lt in
     let _ = counter := !counter + 1 in
@@ -215,9 +215,12 @@ let ssgd_basic b s t l g r o a p x y =
     flush stdout
   done; !p
 
-let svm ?(s=0.05) ?(t=0.00001) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) p x y =
+let svm_step_size a t = min 0.5 (a /. float_of_int t)
+
+let svm ?(s=constant_rate) ?(t=0.00001) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) p x y =
   let b = max 100 (MX.(row_num x) / 2) in
-  let a = 1. /. (float_of_int b) in
+  let a = 1. /. (float_of_int 100) in
+  let s = svm_step_size (1. /. a) in
   ssgd_basic b s t l g r o a p x y
 
 
