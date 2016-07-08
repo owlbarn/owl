@@ -144,7 +144,7 @@ let decr_rate a s c = min 0.5 (1. /. (a *. float_of_int c))
 
 let when_stable v c = v < 0.00001
 
-let when_enough v c = (v < 0.00001) || (c > 5000)
+let when_enough v c = (v < 0.00001 && c > 1000) || (c > 5000)
 
 
 (** [
@@ -211,7 +211,7 @@ let gradient_descent = None
  ]  *)
 let svm ?(i=false) p x y =
   let b = min 50 (MX.(row_num x) / 2) in
-  let s = optimal_rate in
+  let s = decr_rate in
   let t = when_enough in
   let l = hinge_loss in
   let g = hinge_grad in
