@@ -215,7 +215,10 @@ let ssgd_basic b s t l g r o a p x y =
     flush stdout
   done; !p
 
-let svm ?(b=200) ?(s=0.05) ?(t=0.00001) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) ?(a=1. /. 200.) p x y = ssgd_basic b s t l g r o a p x y
+let svm ?(s=0.05) ?(t=0.00001) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) p x y =
+  let b = max 100 (MX.(row_num x) / 2) in
+  let a = 1. /. (float_of_int b) in
+  ssgd_basic b s t l g r o a p x y
 
 
 
