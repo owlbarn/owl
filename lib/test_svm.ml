@@ -16,12 +16,6 @@ let generate_data () =
   let a, b = float_of_int (Random.int 15), float_of_int (Random.int 15) in
   let x2 = map_at_col (fun x -> x +. a) x2 0 in
   let x2 = map_at_col (fun x -> x +. b) x2 1 in
-  (*let x1 = map_at_col (fun x -> x -. 2.) (gaussian c 2) 0 in
-  let x2 = map_at_col (fun x -> x +. 2.) (gaussian c 2) 0 in*)
-  (*let x1 = map_at_col (fun x -> x -. 3.) (gaussian c 2) 0 in
-  let x1 = map_at_col (fun x -> x +. 3.) x1 1 in
-  let x2 = map_at_col (fun x -> x +. 3.) (gaussian c 2) 0 in
-  let x2 = map_at_col (fun x -> x -. 3.) x2 1 in*)
   let y1 = create c 1 ( 1.) in
   let y2 = create c 1 (-1.)in
   let x = x1 @= x2 in
