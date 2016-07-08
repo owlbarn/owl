@@ -216,7 +216,7 @@ let svm ?(s=optimal_rate) ?(l=hinge_loss) ?(g=hinge_grad) ?(r=l2) ?(o=l2_grad) ?
 (** [ Ordinary Least Square regression
   i : wether to include intercept bias in parameters
 ]  *)
-let osl_regression ?(i=true) x y =
+let ols_regression ?(i=true) x y =
   let b = 1 in
   let s = optimal_rate in
   let t = when_stable in
@@ -231,6 +231,7 @@ let osl_regression ?(i=true) x y =
 (** [ Ridge regression
   i : wether to include intercept bias in parameters
   a : weight on the regularisation term
+  TODO: how to choose a automatically
 ]  *)
 let ridge_regression ?(i=true) ?(a=0.001) x y =
   let b = 1 in
@@ -243,7 +244,21 @@ let ridge_regression ?(i=true) ?(a=0.001) x y =
   let p = MX.(uniform (col_num x) (col_num y)) in
   _sgd_basic b s t l g r o a i p x y
 
-let lasso_regression = None
+(** [ Lasso regression
+  i : wether to include intercept bias in parameters
+  a : weight on the regularisation term
+  TODO: how to choose a automatically
+]  *)
+let lasso_regression ?(i=true) ?(a=0.001) x y =
+  let b = 1 in
+  let s = optimal_rate in
+  let t = when_stable in
+  let l = square_loss in
+  let g = square_grad in
+  let r = l1 in
+  let o = l1_grad in
+  let p = MX.(uniform (col_num x) (col_num y)) in
+  _sgd_basic b s t l g r o a i p x y
 
 let logistic_regression = None
 
