@@ -209,7 +209,7 @@ let gradient_descent = None
   i : wether to include intercept bias in parameters
   note that the values in y are either +1 or -1.
  ]  *)
-let svm ?(i=false) p x y =
+let svm_regression ?(i=false) p x y =
   let b = min 50 (MX.(row_num x) / 2) in
   let s = decr_rate in
   let t = when_enough in

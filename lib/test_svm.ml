@@ -35,7 +35,7 @@ let draw_line p =
 
 let test_svm x y =
   let p = MX.uniform 2 1 in
-  LL.svm ~i:true p x y
+  LL.svm_regression ~i:true p x y
 
 let _ =
   let _ = Random.self_init () in
