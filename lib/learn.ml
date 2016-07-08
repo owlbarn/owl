@@ -169,6 +169,7 @@ let _sgd_basic b s t l g r o a i p x y =
   let x = if i = false then x
     else MX.(x @|| ones (row_num x) 1) in
   let st = ref 0.1 in
+  let cost = ref (Array.make 5000 0.) in
   let obj0 = ref max_float in
   let obj1 = ref min_float in
   let counter = ref 0 in
@@ -188,6 +189,7 @@ let _sgd_basic b s t l g r o a i p x y =
     let _ = st := s a !st !counter in
     let _ = p := MX.(!p -@ (dt *$ !st)) in
     let _ = obj1 := MX.sum lt in
+    let _ = if !counter < (Array.length !cost) then !cost.(!counter) <- !obj1 in
     let _ = counter := !counter + 1 in
     Printf.printf "iteration #%i: %.4f\n" !counter !obj1;
     flush stdout
