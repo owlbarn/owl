@@ -224,6 +224,12 @@ module Dense : sig
 
   (* advanced linear algebra functions *)
 
+  val log : mat -> mat
+
+  val log10 : mat -> mat
+
+  val exp : mat -> mat
+
   val diag : mat -> mat
 
   val trace : mat -> float

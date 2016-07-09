@@ -358,6 +358,12 @@ module Dense = struct
     let y = create 1 m (1. /. (float_of_int m)) in
     dot y x
 
+  let stderr = None
+
+  let stderr_cols = None
+
+  let stderr_rows = None
+
   let is_equal x1 x2 =
     let open Matrix_foreign in
     let x1 = mat_to_matptr x1 in
@@ -483,6 +489,12 @@ module Dense = struct
   let div_scalar = ( /$ )
 
   (* advanced matrix methematical operations *)
+
+  let log x = map log x
+
+  let log10 x = map log10 x
+
+  let exp x = map exp x
 
   let diag x =
     let m = Pervasives.min (row_num x) (col_num x) in

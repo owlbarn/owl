@@ -127,9 +127,17 @@ let softmax_loss y y' = None
 let softmax_grad x y y' = None
 
 (** [ softmax loss function ]  *)
-let log_loss y y' = None
 
-let log_grad x y y' = None
+let sigmoid x = 1. /. (1. +. (exp (-1. *. x)))
+
+let log_loss y y' =
+  let open MX in
+  let z = y *@ (log y') +@ ((1. $- y) *@ (log (1. $- y'))) in
+  average_rows (-1. $* z)
+
+let log_grad x y y' =
+  let open MX in
+  (transpose x) $@ (y -@ y') /$ (float_of_int (row_num x))
 
 
 (* Stochastic Gradient Descent related functions *)
@@ -267,9 +275,26 @@ let lasso_regression ?(i=true) ?(a=0.001) x y =
   let p = MX.(uniform (col_num x) (col_num y)) in
   _sgd_basic b s t l g r o a i p x y
 
-let logistic_regression = None
+(** [ Logistic regression
+  i : wether to include intercept bias in parameters
+  a : weight on the regularisation term
+]  *)
+let logistic_regression ?(i=true) x y =
+  let b = 1 in
+  let s = optimal_rate in
+  let t = when_stable in
+  let l = log_loss in
+  let g = log_grad in
+  let r = noreg in
+  let o = noreg_grad in
+  let a = 0. in
+  let p = MX.(uniform (col_num x) (col_num y)) in
+  _sgd_basic b s t l g r o a i p x y
 
 
 
+
+
+(* TODO: 'lbfgs', 'newton-cg', 'liblinear', 'sag' solvers *)
 
 (* ends here *)
