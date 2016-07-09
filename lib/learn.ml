@@ -128,16 +128,18 @@ let softmax_grad x y y' = None
 
 (** [ softmax loss function ]  *)
 
-let sigmoid x = 1. /. (1. +. (exp (-1. *. x)))
-
 let log_loss y y' =
-  let open MX in
-  let z = y *@ (log y') +@ ((1. $- y) *@ (log (1. $- y'))) in
-  average_rows (-1. $* z)
+  let z = MX.map (fun x ->
+    if x > 18. then exp (-1. *. x)
+    else if x < (-18.) then (-1. *. x)
+    else log (1. +. exp(-1. *. x))
+  ) MX.(y *@ y') in
+  MX.average_rows z
 
 let log_grad x y y' =
   let open MX in
-  (transpose x) $@ (y -@ y') /$ (float_of_int (row_num x))
+  let y' = sigmoid y' in
+  (transpose x) $@ (y' -@ y) /$ (float_of_int (row_num x))
 
 
 (* Stochastic Gradient Descent related functions *)

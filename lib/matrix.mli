@@ -230,6 +230,8 @@ module Dense : sig
 
   val exp : mat -> mat
 
+  val sigmoid : mat -> mat
+
   val diag : mat -> mat
 
   val trace : mat -> float

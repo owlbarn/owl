@@ -496,6 +496,8 @@ module Dense = struct
 
   let exp x = map exp x
 
+  let sigmoid x = map (fun y -> 1. /. (1. +. (Pervasives.exp (-1. *. y)))) x
+
   let diag x =
     let m = Pervasives.min (row_num x) (col_num x) in
     let y = empty 1 m in
