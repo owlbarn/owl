@@ -43,4 +43,4 @@ let test_intercept () =
 
 let _ =
   Random.self_init ();
-  test ()
+  test_small ()

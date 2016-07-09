@@ -96,7 +96,7 @@ let hinge_loss y y' =
   let z = map (Pervasives.max 0.) z in
   average_rows z
 
-let hinge_grad x y y' =
+let _hinge_grad x y y' =
   let open MX in
   let z = y *@ y' in
   mapi_by_col ~d:(col_num x)
@@ -108,6 +108,12 @@ let hinge_grad x y y' =
     transpose (average_rows k)
   ) z
 
+let hinge_grad x y y' =
+  let open MX in
+  let z = mapi (fun i j x ->
+    if x < 1. then (0. -. y.{i,j}) else 0.
+  ) (y *@ y') in
+  (transpose x) $@ z /$ (float_of_int (row_num x))
 
 (** [ squared hinge loss function ]  *)
 let hinge2_loss y y' =
@@ -275,6 +281,7 @@ let lasso_regression ?(i=true) ?(a=0.001) x y =
 (** [ Logistic regression
   i : wether to include intercept bias in parameters
   a : weight on the regularisation term
+  note that the values in y are either +1 or 0.
 ]  *)
 let logistic_regression ?(i=true) x y =
   let b = 1 in
