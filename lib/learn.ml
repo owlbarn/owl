@@ -87,12 +87,7 @@ let square_loss y y' =
 
 let square_grad x y y' =
   let open MX in
-  let z = y' -@ y in
-  mapi_by_col ~d:(col_num x)
-  (fun i v ->
-    let k = mapi_by_row ~d:(col_num x) (fun j u -> u *$ v.{j,0}) x in
-    transpose (average_rows k)
-  ) z
+  (transpose x) $@ (y' -@ y) /$ (float_of_int (row_num x))
 
 (** [ hinge loss function ]  *)
 let hinge_loss y y' =
@@ -126,7 +121,7 @@ let softmax_loss y y' = None
 
 let softmax_grad x y y' = None
 
-(** [ softmax loss function ]  *)
+(** [ logistic loss function ]  *)
 
 let log_loss y y' =
   let z = MX.map (fun x ->
