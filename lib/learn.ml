@@ -1,6 +1,6 @@
 (** [
   Machine learning library
-  Note: Fortran layout column-based matrix
+  Note: C layout row-major matrix
   ]  *)
 
 module MX = Matrix.Dense

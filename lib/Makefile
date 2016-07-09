@@ -15,4 +15,4 @@ all:
 	ocamlfind ocamlopt -linkpkg -o test_svm types.cmx pretty.cmx rand.cmx utils.cmx matrix_foreign.cmx matrix.cmx learn.cmx test_svm.ml -package gsl -package ctypes -package ctypes.foreign
 	ocamlfind ocamlopt -linkpkg -o test_log types.cmx pretty.cmx rand.cmx utils.cmx matrix_foreign.cmx matrix.cmx learn.cmx test_log.ml -package gsl -package ctypes -package ctypes.foreign
 clean:
-	rm -rf *.cmi *.cmo *.cmx *.o test*.tmp test_performance test_operation test_sgd test_log
+	rm -rf *.cmi *.cmo *.cmx *.o test*.tmp test_kmeans test_performance test_operation test_sgd test_svm test_log
