@@ -96,18 +96,6 @@ let hinge_loss y y' =
   let z = map (Pervasives.max 0.) z in
   average_rows z
 
-let _hinge_grad x y y' =
-  let open MX in
-  let z = y *@ y' in
-  mapi_by_col ~d:(col_num x)
-  (fun i v ->
-    let k = mapi_by_row ~d:(col_num x)
-    (fun j u ->
-      if v.{j,0} < 1. then u *$ (-1. *. y.{j,i}) else zeros 1 (col_num x)
-    ) x in
-    transpose (average_rows k)
-  ) z
-
 let hinge_grad x y y' =
   let open MX in
   let z = mapi (fun i j x ->
