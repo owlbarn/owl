@@ -162,8 +162,14 @@ let logarithmic_pdf x p = Gsl.Randist.logarithmic_pdf x p
 
 (* randomisation function *)
 
-let shuffle x = Gsl.Randist.shuffle rng x
+let shuffle x =
+  let y = Array.copy x in
+  Gsl.Randist.shuffle rng y; y
 
-let choose x y =  Gsl.Randist.choose rng x y
+let choose x n =
+  let y = Array.make n x.(0) in
+  Gsl.Randist.choose rng x y; y
 
-let sample x y = Gsl.Randist.sample rng x y
+let sample x n =
+  let y = Array.make n x.(0) in
+  Gsl.Randist.sample rng x y; y

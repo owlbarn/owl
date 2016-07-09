@@ -61,3 +61,14 @@ val laplace_pdf : float -> float -> float
 (* discrete random variables *)
 
 val poisson : float -> int
+
+(* randomisation function *)
+
+val shuffle : 'a array -> 'a array
+(** [ shuffle x ] return a new array of the shuffled x  *)
+
+val choose : 'a array -> int -> 'a array
+(** [ choose x n ] draw n samples from x without replecement  *)
+
+val sample : 'a array -> int -> 'a array
+(** [ sample x n ] draw n samples from x with replacement  *)
