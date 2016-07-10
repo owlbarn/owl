@@ -18,7 +18,7 @@ let _ =
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
-  let x, y = (M.sequential m n), (M.sequential m n) in
+  let x, y = (M.uniform m n), (M.uniform m n) in
   test_op "col        " c (fun () -> M.col x (n-1));
   test_op "row        " c (fun () -> M.row x (m-1));
   test_op "cols       " c (fun () -> M.cols x [|1;2|]);

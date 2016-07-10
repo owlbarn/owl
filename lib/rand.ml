@@ -226,7 +226,9 @@ let dir_2d_trig_method () = Gsl.Randist.dir_2d_trig_method rng
 
 let dir_3d () = Gsl.Randist.dir_3d rng
 
-let dir_nd x = Gsl.Randist.dir_nd rng x
+let dir_nd n =
+  let x = Array.make n 0. in
+  Gsl.Randist.dir_nd rng x; x
 
 let weibull a b = Gsl.Randist.weibull rng a b
 

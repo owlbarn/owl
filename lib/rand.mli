@@ -237,7 +237,7 @@ val chisq_Qinv : float -> float -> float
 
 
 (** [ Dirichlet distribution ]  *)
-(* FIXME : make it functional ... *)
+
 val dirichlet : float array -> float array -> unit
 
 val dirichlet_pdf : float array -> float array -> float
@@ -321,14 +321,14 @@ val pareto_Qinv : float -> float -> float -> float
 
 
 (** [ Spherical Vector distributions: ]  *)
-(* FIXME : make functional *)
+
 val dir_2d : unit -> float * float
 
 val dir_2d_trig_method : unit -> float * float
 
 val dir_3d : unit -> float * float * float
 
-val dir_nd : float array -> unit
+val dir_nd : int -> float array
 
 
 (** [ Weibull distribution ]  *)
