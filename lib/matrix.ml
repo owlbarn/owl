@@ -305,6 +305,7 @@ module Dense = struct
 
   let ( -@ ) = sub
 
+  (* TODO: far too slow! need to find a solution! *)
   let dot x1 x2 =
     let open Gsl.Blas in
     let x3 = empty (row_num x1) (col_num x2) in
