@@ -305,7 +305,8 @@ module Dense = struct
 
   let ( -@ ) = sub
 
-  let dot x1 x2 = let open Gsl.Blas in
+  let dot x1 x2 =
+    let open Gsl.Blas in
     let x3 = empty (row_num x1) (col_num x2) in
     gemm ~ta:NoTrans ~tb:NoTrans ~alpha:1. ~beta:0. ~a:x1 ~b:x2 ~c:x3; x3
 
@@ -533,6 +534,10 @@ module Dense = struct
 
   (* formatted input / output operations *)
 
+  let to_array x = Gsl.Matrix.to_array x
+
+  let to_arrays x = Gsl.Matrix.to_arrays x
+
   let dump x f =
     let h = open_out f in
     iter_rows (fun y ->  (* TODO: 64-bit -> 16 digits *)
@@ -544,7 +549,7 @@ module Dense = struct
   let load f =
     let h = open_in f in
     let s = input_line h in
-    let n = List.length(Str.split (Str.regexp " ") s) in
+    let n = List.length(Str.split (Str.regexp "\t") s) in
     let m = ref 1 in (* counting lines in the input file *)
     let _ = try while true do ignore(input_line h); m := !m + 1
       done with End_of_file -> () in

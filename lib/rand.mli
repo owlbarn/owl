@@ -23,6 +23,14 @@ val gaussian_pdf : float -> float -> float
 (** [ gaussian_pdf x sigma ] returns the probability density at x of a given
   gaussian distribution p(x) dx = {1 \over \sqrt{2 \pi \sigma^2}} \exp (-x^2 / 2\sigma^2) dx *)
 
+val gaussian_P : float -> float -> float
+
+val gaussian_Q : float -> float -> float
+
+val gaussian_Pinv : float -> float -> float
+
+val gaussian_Qinv : float -> float -> float
+
 val gaussian_tail : float -> float -> float
 (** [ gaussian_tail a x sigma ] returns a random value of a gaussian tail
   distribution. note "a" must be positive.

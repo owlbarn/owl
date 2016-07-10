@@ -242,6 +242,12 @@ module Dense : sig
 
   (* input and output functions *)
 
+  val to_array : mat -> float array
+  (** [ to_array x ] flatten matrix x then return as an array *)
+
+  val to_arrays : mat -> float array array
+  (** [ to arrays x ] returns an array of arrays, wherein each row becomes an array *)
+
   val dump : mat -> string -> unit
 
   val load : string -> mat
@@ -252,7 +258,7 @@ module Dense : sig
 
   val pprint : mat -> unit
 
-  (* some short hand infix operators *)
+  (* some short-hand infix operators *)
 
   val ( >> ) : mat -> mat -> unit
 

@@ -288,5 +288,6 @@ let logistic_regression ?(i=true) x y =
 
 
 (* TODO: 'lbfgs', 'newton-cg', 'liblinear', 'sag' solvers *)
+(* TODO: Simulated Annealing *)
 
 (* ends here *)
