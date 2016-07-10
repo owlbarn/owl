@@ -186,7 +186,7 @@ let tdist_Qinv q nu = Gsl.Cdf.tdist_Qinv q nu
 
 let beta a b = Gsl.Randist.beta rng a b
 
-let beta_pdf x a b = Gsl.Randist.beta x a b
+let beta_pdf x a b = Gsl.Randist.beta_pdf x a b
 
 let beta_P x a b = Gsl.Cdf.beta_P x a b
 
