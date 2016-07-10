@@ -248,6 +248,10 @@ module Dense : sig
   val to_arrays : mat -> float array array
   (** [ to arrays x ] returns an array of arrays, wherein each row becomes an array *)
 
+  val of_array : float array -> int -> int -> mat
+
+  val of_arrays : float array array -> mat
+
   val dump : mat -> string -> unit
 
   val load : string -> mat

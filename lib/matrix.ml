@@ -539,6 +539,10 @@ module Dense = struct
 
   let to_arrays x = Gsl.Matrix.to_arrays x
 
+  let of_array x m n = Gsl.Matrix.of_array x m n
+
+  let of_arrays x = Gsl.Matrix.of_arrays x
+
   let dump x f =
     let h = open_out f in
     iter_rows (fun y ->  (* TODO: 64-bit -> 16 digits *)
