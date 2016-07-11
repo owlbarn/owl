@@ -50,10 +50,10 @@ let numerical_gradient l p x y y' =
 
 (* Regularisation functions *)
 
-(** [ L1 regularisation and its gradient ]  *)
+(** [ L1 regularisation and its subgradient ] *)
 let l1 p = MX.(average_rows (abs p))
 
-let l1_grad p =
+let l1_grad p =  (* TODO: I may change it to noisy unbiased subgradient in future *)
   MX.map (fun x ->
     if x > 0. then 1. else if x < 0. then (-1.) else 0.
   ) p
