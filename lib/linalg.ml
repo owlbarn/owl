@@ -1,6 +1,7 @@
 
 module MX = Matrix.Dense
 
+
 (** [ LU decomposition ]  *)
 
 let inv x =
@@ -65,20 +66,68 @@ let qr_solve a b =
 
 let rank = None
 
+
 (** [ Sigular Value decomposition ]  *)
 
-let svd x = None
+let _svd_decomp x =
+  let open Gsl.Vectmat in
+  let m, n = MX.shape x in
+  let u = MX.clone x in
+  let v = MX.empty n n in
+  let s = Gsl.Vector.create n in
+  let w = Gsl.Vector.create n in
+  let _ = Gsl.Linalg._SV_decomp (`M u) (`M v) (`V s) (`V w) in
+  let s = MX.of_array (Gsl.Vector.to_array s) n 1 in
+  u, s, v
+
+let _svd_jacobi x =
+  let open Gsl.Vectmat in
+  let m, n = MX.shape x in
+  let u = MX.clone x in
+  let v = MX.empty n n in
+  let s = Gsl.Vector.create n in
+  let _ = Gsl.Linalg._SV_decomp_jacobi (`M u) (`M v) (`V s) in
+  let s = MX.of_array (Gsl.Vector.to_array s) n 1 in
+  u, s, v
+
+let _svd_mod x =
+  let open Gsl.Vectmat in
+  let m, n = MX.shape x in
+  let u = MX.clone x in
+  let v = MX.empty n n in
+  let s = Gsl.Vector.create n in
+  let w = Gsl.Vector.create n in
+  let y = MX.empty n n in
+  let _ = Gsl.Linalg._SV_decomp_mod (`M u) (`M y) (`M v) (`V s) (`V w) in
+  let s = MX.of_array (Gsl.Vector.to_array s) n 1 in
+  u, s, v
+
+let svd x = (* v is in un-transposed form *)
+  let _f =
+    if MX.numel x < 10_000 then _svd_jacobi
+    else if (MX.row_num x) > (3 * (MX.col_num x)) then _svd_mod
+    else _svd_decomp in
+    _f x
+
 
 (** [ Cholesky Decomposition ]  *)
 
 let cholesky x =
   let open Gsl.Vectmat in
   let y = MX.clone x in
-  let _ = Gsl.Linalg.cho_decomp (`M y) in y
+  let _ = Gsl.Linalg.cho_decomp (`M y) in
+  for i = 0 to (MX.row_num y) - 1 do
+    for j = 0 to (MX.col_num y) - 1 do
+      if i > j then y.{i,j} <- 0.
+    done
+  done; y
 
 let is_posdef x =
   try cholesky x; true
   with exn -> false
+
+
+
 
 
 
