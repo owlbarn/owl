@@ -28,7 +28,8 @@ module Dense : sig
 
   val gaussian : ?sigma:float -> int -> int -> mat
 
-  val symmetric : int -> mat
+  val semidef : int -> mat
+  (** [ semidef n ] genereates a n x n positive semi-definite matrix *)
 
   val vector : int -> mat
 

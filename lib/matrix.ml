@@ -47,15 +47,6 @@ module Dense = struct
       done
     done; x
 
-  let symmetric n = (* TODO: make it semi-positive definite *)
-    let x = empty n n and c = ref 0 in
-    for i = 0 to n - 1 do
-      for j = 0 to n - 1 do
-        if i <= j then x.{i,j} <- Rand.uniform ()
-        else x.{i,j} <- x.{j,i}
-      done
-    done; x
-
   let vector n = empty 1 n
 
   let vector_ones n = ones 1 n
@@ -607,6 +598,10 @@ module Dense = struct
     iteri (fun i j _ -> x.{i,j} <- Rand.gaussian ~sigma ()) x; x
 
   let vector_uniform n = uniform 1 n
+
+  let semidef n =
+    let x = uniform n n in
+    dot (transpose x) x
 
   let draw_rows ?(replacement=true) x c =
     let open Utils in

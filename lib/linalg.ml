@@ -75,3 +75,13 @@ let cholesky x =
   let open Gsl.Vectmat in
   let y = MX.clone x in
   let _ = Gsl.Linalg.cho_decomp (`M y) in y
+
+let is_posdef x =
+  try cholesky x; true
+  with exn -> false
+
+
+
+
+
+(* ends here *)
