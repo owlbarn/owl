@@ -127,8 +127,48 @@ let is_posdef x =
   with exn -> false
 
 
+(** [ Symmetric tridiagonal decomposition ]  *)
+
+let _symmtd x =
+  let open Gsl.Vectmat in
+  let m, n = MX.shape x in
+  let q = MX.clone x in
+  let t = Gsl.Vector.create (m - 1) in
+  let _ = Gsl.Linalg.symmtd_decomp (`M q) (`V t) in
+  q, t
+
+let symmtd x =
+  let m, n = MX.shape x in
+  let p, r = _symmtd x in
+  let q = MX.empty m m in
+  let u = Gsl.Vector.create m in
+  let v = Gsl.Vector.create (m - 1) in
+  let _ = Gsl.Linalg.symmtd_unpack (`M p) (`V r) (`M q) (`V u) (`V v) in
+  let u = MX.of_array (Gsl.Vector.to_array u) m 1 in
+  let v = MX.of_array (Gsl.Vector.to_array v) (m - 1) 1 in
+  q, u, v
 
 
+(** [ Bidiagonalization ]  *)
+
+let _bidiag x =
+  let open Gsl.Vectmat in
+  let m, n = MX.shape x in
+  let u = MX.clone x in
+  let tu = Gsl.Vector.create (min m n) in
+  let tv = Gsl.Vector.create ((min m n) - 1) in
+  let _ = Gsl.Linalg.bidiag_decomp (`M u) (`V tu) (`V tv) in
+  u, tu, tv
+
+let bidiag x =
+  let open Gsl.Vectmat in
+  let m, n = MX.shape x in
+  let u, tu, tv = _bidiag x in
+  let v = MX.empty n n in
+  let _ = Gsl.Linalg.bidiag_unpack2 (`M u) (`V tu) (`V tv) (`M v) in
+  let d0 = MX.of_array (Gsl.Vector.to_array tu) (min m n) 1 in
+  let d1 = MX.of_array (Gsl.Vector.to_array tv) ((min m n) - 1) 1 in
+  u, v, d0, d1
 
 
 
