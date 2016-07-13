@@ -1,13 +1,38 @@
 
 module MX = Matrix.Dense
 
+(** [ Helper functions ]  *)
+
+let tridiag_to_vecs x =
+  let m = min (MX.row_num x) (MX.col_num x) in
+  let d = MX.empty 1 m in
+  let e = MX.empty 1 (m - 1) in
+  let f = MX.empty 1 (m - 1) in
+  for i = 0 to m - 1 do
+    d.{0,i} <- x.{i,i};
+    if (i > 0) then e.{0,i-1} <- x.{i-1,i};
+    if (i < m - 1) then f.{0,i} <- x.{i+1,i};
+  done; d, e, f
+
+
+let vecs_to_tridiag d e f =
+  let m = MX.numel d in
+  let x = MX.zeros m m in
+  for i = 0 to m - 1 do
+    x.{i,i} <- d.{0,i};
+    if (i > 0) then x.{i-1,i} <- e.{0,i-1};
+    if (i < m - 1) then x.{i+1,i} <- f.{0,i};
+  done; x
+
 
 (** [ LU decomposition ]  *)
 
 let inv x =
   let open Gsl.Vectmat in
   let y = Gsl.Linalg.invert_LU (`M x) in
-  match y with `M y -> y | _ -> MX.empty 0 0
+  match y with
+    | `M y -> y
+    | _ -> MX.empty 0 0
 
 let det x =
   let open Gsl.Vectmat in
@@ -16,7 +41,9 @@ let det x =
 let lu x =
   let open Gsl.Vectmat in
   let y = Gsl.Linalg.decomp_LU (`M x) in
-  match y with `M a, b, c -> a, b, c
+  match y with
+    | `M a, b, c -> a, b, c
+    | _, b, c -> MX.empty 0 0, b, c
 
 let lu_solve = None
 
@@ -123,7 +150,7 @@ let cholesky x =
   done; y
 
 let is_posdef x =
-  try cholesky x; true
+  try ignore (cholesky x); true
   with exn -> false
 
 
@@ -169,6 +196,37 @@ let bidiag x =
   let d0 = MX.of_array (Gsl.Vector.to_array tu) (min m n) 1 in
   let d1 = MX.of_array (Gsl.Vector.to_array tv) ((min m n) - 1) 1 in
   u, v, d0, d1
+
+
+(** [  Tridiagonal Systems ]  *)
+
+let tridiag_solve a b =
+  let open Gsl.Vectmat in
+  let m, n = MX.shape a in
+  let d, e, f = tridiag_to_vecs a in
+  let d = Gsl.Vector.of_array (MX.to_array d) in
+  let e = Gsl.Vector.of_array (MX.to_array e) in
+  let f = Gsl.Vector.of_array (MX.to_array f) in
+  let b = Gsl.Vector.of_array (MX.to_array b) in
+  let x = Gsl.Vector.create n in
+  let _ = Gsl.Linalg.solve_tridiag (`V d) (`V e) (`V f) (`V b) (`V x) in
+  MX.of_array (Gsl.Vector.to_array x) 1 m
+
+let symm_tridiag_solve a b =
+  let open Gsl.Vectmat in
+  let m, n = MX.shape a in
+  let d, e, _ = tridiag_to_vecs a in
+  let d = Gsl.Vector.of_array (MX.to_array d) in
+  let e = Gsl.Vector.of_array (MX.to_array e) in
+  let b = Gsl.Vector.of_array (MX.to_array b) in
+  let x = Gsl.Vector.create n in
+  let _ = Gsl.Linalg.solve_symm_tridiag (`V d) (`V e) (`V b) (`V x) in
+  MX.of_array (Gsl.Vector.to_array x) 1 m
+
+let cyc_tridiag_solve x = None
+
+let symm_cyc_tridiag_solve x = None
+
 
 
 
