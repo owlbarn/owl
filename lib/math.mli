@@ -16,6 +16,15 @@
 *)
 
 
+(** [ Constants ]  *)
+
+val e : float
+
+val pi : float
+
+val euler : float
+
+
 (** [ Helper and randomisation functions ]  *)
 
 val seed : int -> unit
@@ -66,6 +75,20 @@ val abs : float -> float
 
 val sqrt : float -> float
 
+val pow : float -> float -> float
+
+val exp : float -> float
+
+val expm1 : float -> float
+
+val exp_mult : float -> float -> float
+
+val exprel : float -> float
+
+val log1p : float -> float
+
+val log_abs : float -> float
+
 val sin : float -> float
 
 val cos : float -> float
@@ -75,6 +98,40 @@ val asinh : float -> float
 val acosh : float -> float
 
 val atanh : float -> float
+
+val hypot : float -> float -> float
+
+val beta : float -> float
+
+val betaf : float -> float -> float
+
+val betaf_inc : float -> float -> float -> float
+
+val gammaf : float -> float
+
+val lngammaf : float -> float
+
+val zeta : float -> float
+
+val hzeta : float -> float -> float
+
+val eta : float -> float
+
+val lambert_w0 : float -> float
+
+val lambert_w1 : float -> float
+
+val factorial : int -> float
+
+val double_factorial : int -> float
+
+val taylorcoeff : int -> float -> float
+
+val combination : int -> int -> float
+
+val poch : float -> float -> float
+
+val dilog : float -> float
 
 
 (** [ Uniform distribution ]  *)

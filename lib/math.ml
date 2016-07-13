@@ -4,7 +4,17 @@
 
 type t = Gsl.Rng.t
 
-(* set up random environment *)
+
+(** [ Constants ]  *)
+
+let e = Gsl.Math.e
+
+let pi = Gsl.Math.pi
+
+let euler = Gsl.Math.euler
+
+
+(** [ Set up random environment ]  *)
 
 let rng =
   let r = Gsl.Rng.make Gsl.Rng.CMRG in
@@ -17,7 +27,7 @@ let uniform_int ?(a=0) ?(b=65535) ()=
   (Gsl.Rng.uniform_int rng (b - a + 1)) + a
 
 
-(* continuous random variables *)
+(** [ Continuous random variables ]  *)
 
 let uniform () = Gsl.Rng.uniform rng
 
@@ -269,7 +279,8 @@ let gumbel2_Pinv p a b = Gsl.Cdf.gumbel2_Pinv p a b
 
 let gumbel2_Qinv q a b = Gsl.Cdf.gumbel2_Qinv q a b
 
-(* discrete random variables *)
+
+(** [ Discrete random variables ]  *)
 
 let poisson mu = Gsl.Randist.poisson rng mu
 
@@ -334,7 +345,7 @@ let logarithmic p = Gsl.Randist.logarithmic rng p
 let logarithmic_pdf x p = Gsl.Randist.logarithmic_pdf x p
 
 
-(* randomisation function *)
+(** [ Randomisation function ]  *)
 
 let shuffle x =
   let y = Array.copy x in
@@ -349,7 +360,7 @@ let sample x n =
   Gsl.Randist.sample rng x y; y
 
 
-(* statistics function *)
+(** [ Statistics function ]  *)
 
 let mean ?w x = Gsl.Stats.mean ?w x
 
@@ -399,12 +410,27 @@ let i, j = Gsl.Stats.minmax_index x in
 x.(i), i, x.(j), j
 
 
-(** [ Basic and advanced math functions ]
-  refer to GSL special functions *)
+(** [ Basic and advanced math functions ] *)
 
 let abs x = if x < 0. then (0.-.x) else x
 
 let sqrt x = sqrt x
+
+let pow x y = x ** y
+
+let exp x = Gsl.Sf.exp x
+
+let expm1 x = Gsl.Sf.expm1 x
+
+let exp_mult x y = Gsl.Sf.exp_mult x y
+
+let exprel x = Gsl.Sf.exprel x
+
+let log x = Gsl.Sf.log x
+
+let log1p x = Gsl.Sf.log_1plusx x
+
+let log_abs x = Gsl.Sf.log_abs x
 
 let sin x = Gsl.Sf.sin x
 
@@ -415,6 +441,43 @@ let acosh x = Gsl.Math.acosh x
 let asinh x = Gsl.Math.asinh x
 
 let atanh x = Gsl.Math.atanh x
+
+let hypot x y = Gsl.Sf.hypot x y
+
+let betaf x y = Gsl.Sf.beta x y
+
+let lnbetaf x y = Gsl.Sf.lnbeta x y
+
+let betaf_inc a b x = Gsl.Sf.beta_inc a b x
+
+let gammaf x = Gsl.Sf.gamma x
+
+let lngammaf x = Gsl.Sf.lngamma x
+
+let gammaf_inc x = Gsl.Sf.gamma_inc x
+
+let zeta x = Gsl.Sf.zeta x
+
+let hzeta x y = Gsl.Sf.hzeta x y
+
+let eta x = Gsl.Sf.eta x
+
+let lambert_w0 x = Gsl.Sf.lambert_W0 x
+
+let lambert_w1 x = Gsl.Sf.lambert_Wm1 x
+
+let factorial x = Gsl.Sf.fact x
+
+let double_factorial x = Gsl.Sf.doublefact x
+
+let combination n x = Gsl.Sf.choose n x
+
+let taylorcoeff n x = Gsl.Sf.taylorcoeff n x
+
+let poch x y = Gsl.Sf.poch x y
+
+let dilog x = Gsl.Sf.dilog x
+
 
 
 
