@@ -512,26 +512,6 @@ module Dense = struct
     let y = clone x in
     for i = 0 to m - 1 do y.{i,i} <- x.{i,i} +. a done; y
 
-  let detri x = x
-
-  let lu x = x
-
-  let qr x = x
-
-  let cholesky x = x
-
-  let svd x = let open Gsl.Vectmat in
-    let m, n = shape x in
-    let y, v = `M (clone x), `M (empty n n) in
-    let s, w = `V (Gsl.Vector.create n), `V (Gsl.Vector.create n) in
-    let _ = Gsl.Linalg._SV_decomp y v s w in
-    match y, s, v with `M y, `V s, `M v -> y, s, v
-
-  let sdd x = x
-
-  let inv x = x
-
-  let least_square x = x
 
   (* formatted input / output operations *)
 
