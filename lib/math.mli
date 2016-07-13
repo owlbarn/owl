@@ -1,4 +1,4 @@
-(** [ Module for various distributions of random variables ]
+(** [ Module for math, statistics, distributions ]
 
   The functions in this module are grouped based on their corresponding
   distributions. For each random variable distribution, e.g., distribution abc,
@@ -29,6 +29,52 @@ val choose : 'a array -> int -> 'a array
 
 val sample : 'a array -> int -> 'a array
 (** [ sample x n ] draw n samples from x with replacement  *)
+
+
+(** [ Statistics functions ]  *)
+
+val mean : ?w:float array -> float array -> float
+
+val variance : ?w:float array -> ?mean:float -> float array -> float
+
+val std : ?w:float array -> ?mean:float -> float array -> float
+
+val absdev : ?w:float array -> ?mean:float -> float array -> float
+
+val skew : ?w:float array -> ?mean:float -> ?sd:float -> float array -> float
+
+val kurtosis : ?w:float array -> ?mean:float -> ?sd:float -> float array -> float
+
+val covariance : ?mean0:float -> ?mean1:float -> float array -> float array -> float
+
+val min : float array -> float
+
+val max : float array -> float
+
+val minmax : float array -> float * float
+
+val min_i : float array -> float * int
+
+val max_i : float array -> float * int
+
+val minmax_i : float array -> float * int * float * int
+
+
+(** [ Basic and advanced math functions ]  *)
+
+val abs : float -> float
+
+val sqrt : float -> float
+
+val sin : float -> float
+
+val cos : float -> float
+
+val asinh : float -> float
+
+val acosh : float -> float
+
+val atanh : float -> float
 
 
 (** [ Uniform distribution ]  *)

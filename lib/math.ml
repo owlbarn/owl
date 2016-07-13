@@ -4,6 +4,8 @@
 
 type t = Gsl.Rng.t
 
+(* set up random environment *)
+
 let rng =
   let r = Gsl.Rng.make Gsl.Rng.CMRG in
   let s = Nativeint.of_float (Unix.gettimeofday () *. 1000000.) in
@@ -13,6 +15,7 @@ let seed s = Gsl.Rng.set rng (Nativeint.of_int s)
 
 let uniform_int ?(a=0) ?(b=65535) ()=
   (Gsl.Rng.uniform_int rng (b - a + 1)) + a
+
 
 (* continuous random variables *)
 
@@ -330,6 +333,7 @@ let logarithmic p = Gsl.Randist.logarithmic rng p
 
 let logarithmic_pdf x p = Gsl.Randist.logarithmic_pdf x p
 
+
 (* randomisation function *)
 
 let shuffle x =
@@ -343,3 +347,75 @@ let choose x n =
 let sample x n =
   let y = Array.make n x.(0) in
   Gsl.Randist.sample rng x y; y
+
+
+(* statistics function *)
+
+let mean ?w x = Gsl.Stats.mean ?w x
+
+let variance ?w ?mean x = Gsl.Stats.variance ?w ?mean x
+
+let std ?w ?mean x = Gsl.Stats.sd ?w ?mean x
+
+let absdev ?w ?mean x = Gsl.Stats.absdev ?w ?mean x
+
+let skew ?w ?mean ?sd x =
+  match mean, sd with
+  | Some m, Some sd -> Gsl.Stats.skew_m_sd ?w ~mean:m ~sd:sd x
+  | None, None -> Gsl.Stats.skew x
+  | _, _ -> failwith "not enough arguments"
+
+let kurtosis ?w ?mean ?sd x =
+  match mean, sd with
+  | Some m, Some sd -> Gsl.Stats.kurtosis_m_sd ?w ~mean:m ~sd:sd x
+  | None, None -> Gsl.Stats.kurtosis x
+  | _, _ -> failwith "not enough arguments"
+
+let autocorrelation = None
+
+let covariance ?mean0 ?mean1 x0 x1 =
+  match mean0, mean1 with
+  | Some m0, Some m1 -> Gsl.Stats.covariance_m m0 x0 m1 x1
+  | Some m0, None -> Gsl.Stats.covariance_m m0 x0 (mean x1) x1
+  | None, Some m1 -> Gsl.Stats.covariance_m (mean x0) x0 m1 x1
+  | None, None -> Gsl.Stats.covariance x0 x1
+
+let max x = Gsl.Stats.max x
+
+let min x = Gsl.Stats.min x
+
+let minmax x = Gsl.Stats.minmax x
+
+let max_i x =
+  let i = Gsl.Stats.max_index x in
+  x.(i), i
+
+let min_i x =
+  let i = Gsl.Stats.min_index x in
+  x.(i), i
+
+let minmax_i x =
+let i, j = Gsl.Stats.minmax_index x in
+x.(i), i, x.(j), j
+
+
+(** [ Basic and advanced math functions ]
+  refer to GSL special functions *)
+
+let abs x = if x < 0. then (0.-.x) else x
+
+let sqrt x = sqrt x
+
+let sin x = Gsl.Sf.sin x
+
+let cos x = Gsl.Sf.cos x
+
+let acosh x = Gsl.Math.acosh x
+
+let asinh x = Gsl.Math.asinh x
+
+let atanh x = Gsl.Math.atanh x
+
+
+
+(* ends here *)
