@@ -99,9 +99,9 @@ let uniform_int ?(a=0) ?(b=99) m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.1) in
   let x = empty m n in
   for k = 0 to c do
-    let i = Rand.uniform_int ~a:0 ~b:(m-1) () in
-    let j = Rand.uniform_int ~a:0 ~b:(n-1) () in
-    set x i j (float_of_int (Rand.uniform_int ~a ~b ()))
+    let i = Math.uniform_int ~a:0 ~b:(m-1) () in
+    let j = Math.uniform_int ~a:0 ~b:(n-1) () in
+    set x i j (float_of_int (Math.uniform_int ~a ~b ()))
   done; x
 
 (* matrix manipulations *)
