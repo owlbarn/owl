@@ -478,6 +478,134 @@ let poch x y = Gsl.Sf.poch x y
 
 let dilog x = Gsl.Sf.dilog x
 
+let airy_Ai x = Gsl.Sf.airy_Ai x Gsl.Fun.DOUBLE
+
+let airy_Bi x = Gsl.Sf.airy_Ai x Gsl.Fun.DOUBLE
+
+let airy_Ai_scaled x = Gsl.Sf.airy_Ai_scaled x Gsl.Fun.DOUBLE
+
+let airy_Bi_scaled x = Gsl.Sf.airy_Bi_scaled x Gsl.Fun.DOUBLE
+
+let airy_Ai_deriv x = Gsl.Sf.airy_Ai_deriv x Gsl.Fun.DOUBLE
+
+let airy_Bi_deriv x = Gsl.Sf.airy_Ai_deriv x Gsl.Fun.DOUBLE
+
+let airy_Ai_deriv x = Gsl.Sf.airy_Ai_deriv_scaled x Gsl.Fun.DOUBLE
+
+let airy_Bi_deriv x = Gsl.Sf.airy_Bi_deriv_scaled x Gsl.Fun.DOUBLE
+
+let airy_zero_Ai x = Gsl.Sf.airy_zero_Ai x
+
+let airy_zero_Bi x = Gsl.Sf.airy_zero_Ai x
+
+let bessel_J0 x = Gsl.Sf.bessel_J0 x
+
+let bessel_J1 x = Gsl.Sf.bessel_J1 x
+
+let bessel_Jn n x = Gsl.Sf.bessel_Jn n x
+
+let bessel_Jn_array n x = Gsl.Sf.bessel_Jn_array n x
+
+let bessel_Y0 x = Gsl.Sf.bessel_Y0 x
+
+let bessel_Y1 x = Gsl.Sf.bessel_Y1 x
+
+let bessel_Yn n x = Gsl.Sf.bessel_Yn n x
+
+let bessel_Yn_array n x = Gsl.Sf.bessel_Yn_array n x
+
+let bessel_I0 x = Gsl.Sf.bessel_I0 x
+
+let bessel_I1 x = Gsl.Sf.bessel_I1 x
+
+let bessel_In n x = Gsl.Sf.bessel_In n x
+
+let bessel_In_array n x = Gsl.Sf.bessel_In_array n x
+
+let bessel_K0 x = Gsl.Sf.bessel_K0 x
+
+let bessel_K1 x = Gsl.Sf.bessel_K1 x
+
+let bessel_Kn x = Gsl.Sf.bessel_Kn x
+
+let bessel_Kn_array n x = Gsl.Sf.bessel_Kn_array n x
+
+let bessel_I0_scaled x = Gsl.Sf.bessel_I0_scaled x
+
+let bessel_I1_scaled x = Gsl.Sf.bessel_I1_scaled x
+
+let bessel_In_scaled n x = Gsl.Sf.bessel_In_scaled n x
+
+let bessel_In_scaled_array n x = Gsl.Sf.bessel_In_scaled_array n x
+
+let bessel_K0_scaled x = Gsl.Sf.bessel_K0_scaled x
+
+let bessel_K1_scaled x = Gsl.Sf.bessel_K1_scaled x
+
+let bessel_Kn_scaled n x = Gsl.Sf.bessel_Kn_scaled n x
+
+let bessel_Kn_scaled_array n x = Gsl.Sf.bessel_Kn_scaled_array n x
+
+let bessel_j0 x = Gsl.Sf.bessel_j0 x
+
+let bessel_j1 x = Gsl.Sf.bessel_j1 x
+
+let bessel_j2 x = Gsl.Sf.bessel_j2 x
+
+let bessel_jl l x = Gsl.Sf.bessel_jl l x
+
+let bessel_jl_array l x = Gsl.Sf.bessel_jl_array l x
+
+let bessel_jl_steed_array l x = Gsl.Sf.bessel_jl_steed_array l x
+
+let bessel_y0 x = Gsl.Sf.bessel_y0 x
+
+let bessel_y1 x = Gsl.Sf.bessel_y1 x
+
+let bessel_y2 x = Gsl.Sf.bessel_y2 x
+
+let bessel_yl l x = Gsl.Sf.bessel_yl l x
+
+let bessel_yl_array l x = Gsl.Sf.bessel_yl_array l x
+
+let bessel_i0_scaled x = Gsl.Sf.bessel_i0_scaled x
+
+let bessel_i1_scaled x = Gsl.Sf.bessel_i1_scaled x
+
+let bessel_il_scaled l x = Gsl.Sf.bessel_il_scaled l x
+
+let bessel_il_array_scaled l x = Gsl.Sf.bessel_il_scaled_array l x
+
+let bessel_k0_scaled x = Gsl.Sf.bessel_k0_scaled x
+
+let bessel_k1_scaled x = Gsl.Sf.bessel_k1_scaled x
+
+let bessel_kl_scaled l x = Gsl.Sf.bessel_kl_scaled l x
+
+let bessel_kl_array_scaled l x = Gsl.Sf.bessel_kl_scaled_array l x
+
+let bessel_Jnu nu x = Gsl.Sf.bessel_Jnu nu x
+
+let bessel_Ynu nu x = Gsl.Sf.bessel_Ynu nu x
+
+let bessel_Inu nu x = Gsl.Sf.bessel_Inu nu x
+
+let bessel_Inu_scaled nu x = Gsl.Sf.bessel_Inu_scaled nu x
+
+let bessel_Knu nu x = Gsl.Sf.bessel_Knu nu x
+
+let bessel_lnKnu nu x = Gsl.Sf.bessel_lnKnu nu x
+
+let bessel_Knu_scaled nu x = Gsl.Sf.bessel_Knu_scaled nu x
+
+let bessel_zero_J0 x = Gsl.Sf.bessel_zero_J0 x
+
+let bessel_zero_J1 x = Gsl.Sf.bessel_zero_J1 x
+
+let bessel_zero_Jnu nu x = Gsl.Sf.bessel_zero_Jnu nu x
+
+
+
 
 
 
