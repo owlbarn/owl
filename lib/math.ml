@@ -436,47 +436,33 @@ let sin x = Gsl.Sf.sin x
 
 let cos x = Gsl.Sf.cos x
 
+let sinc x = Gsl.Sf.sinc x
+
 let acosh x = Gsl.Math.acosh x
 
 let asinh x = Gsl.Math.asinh x
 
 let atanh x = Gsl.Math.atanh x
 
+let lnsinh x = Gsl.Sf.lnsinh x
+
+let lncosh x = Gsl.Sf.lncosh x
+
 let hypot x y = Gsl.Sf.hypot x y
 
-let betaf x y = Gsl.Sf.beta x y
+let rect_of_polar ~r ~theta =
+  let open Gsl.Fun in
+  let x, y = Gsl.Sf.rect_of_polar ~r ~theta in
+  x.res, y.res
 
-let lnbetaf x y = Gsl.Sf.lnbeta x y
+let polar_of_rect ~x ~y =
+  let open Gsl.Fun in
+  let a, b = Gsl.Sf.polar_of_rect ~x ~y in
+  a.res, b.res
 
-let betaf_inc a b x = Gsl.Sf.beta_inc a b x
+let angle_restrict_symm x = Gsl.Sf.angle_restrict_symm x
 
-let gammaf x = Gsl.Sf.gamma x
-
-let lngammaf x = Gsl.Sf.lngamma x
-
-let gammaf_inc x = Gsl.Sf.gamma_inc x
-
-let zeta x = Gsl.Sf.zeta x
-
-let hzeta x y = Gsl.Sf.hzeta x y
-
-let eta x = Gsl.Sf.eta x
-
-let lambert_w0 x = Gsl.Sf.lambert_W0 x
-
-let lambert_w1 x = Gsl.Sf.lambert_Wm1 x
-
-let factorial x = Gsl.Sf.fact x
-
-let double_factorial x = Gsl.Sf.doublefact x
-
-let combination n x = Gsl.Sf.choose n x
-
-let taylorcoeff n x = Gsl.Sf.taylorcoeff n x
-
-let poch x y = Gsl.Sf.poch x y
-
-let dilog x = Gsl.Sf.dilog x
+let angle_restrict_pos x = Gsl.Sf.angle_restrict_pos x
 
 let airy_Ai x = Gsl.Sf.airy_Ai x Gsl.Fun.DOUBLE
 
@@ -504,7 +490,7 @@ let bessel_J1 x = Gsl.Sf.bessel_J1 x
 
 let bessel_Jn n x = Gsl.Sf.bessel_Jn n x
 
-let bessel_Jn_array n x = Gsl.Sf.bessel_Jn_array n x
+let bessel_Jn_array n x a = Gsl.Sf.bessel_Jn_array n x a
 
 let bessel_Y0 x = Gsl.Sf.bessel_Y0 x
 
@@ -526,9 +512,9 @@ let bessel_K0 x = Gsl.Sf.bessel_K0 x
 
 let bessel_K1 x = Gsl.Sf.bessel_K1 x
 
-let bessel_Kn x = Gsl.Sf.bessel_Kn x
+let bessel_Kn n x = Gsl.Sf.bessel_Kn n x
 
-let bessel_Kn_array n x = Gsl.Sf.bessel_Kn_array n x
+let bessel_Kn_array n x a = Gsl.Sf.bessel_Kn_array n x a
 
 let bessel_I0_scaled x = Gsl.Sf.bessel_I0_scaled x
 
@@ -554,9 +540,9 @@ let bessel_j2 x = Gsl.Sf.bessel_j2 x
 
 let bessel_jl l x = Gsl.Sf.bessel_jl l x
 
-let bessel_jl_array l x = Gsl.Sf.bessel_jl_array l x
+let bessel_jl_array l x a = Gsl.Sf.bessel_jl_array l x a
 
-let bessel_jl_steed_array l x = Gsl.Sf.bessel_jl_steed_array l x
+let bessel_jl_steed_array x a = Gsl.Sf.bessel_jl_steed_array x a
 
 let bessel_y0 x = Gsl.Sf.bessel_y0 x
 
@@ -566,7 +552,7 @@ let bessel_y2 x = Gsl.Sf.bessel_y2 x
 
 let bessel_yl l x = Gsl.Sf.bessel_yl l x
 
-let bessel_yl_array l x = Gsl.Sf.bessel_yl_array l x
+let bessel_yl_array l x a = Gsl.Sf.bessel_yl_array l x a
 
 let bessel_i0_scaled x = Gsl.Sf.bessel_i0_scaled x
 
@@ -604,8 +590,193 @@ let bessel_zero_J1 x = Gsl.Sf.bessel_zero_J1 x
 
 let bessel_zero_Jnu nu x = Gsl.Sf.bessel_zero_Jnu nu x
 
+let clausen x = Gsl.Sf.clausen x
 
+let dawson x = Gsl.Sf.dawson x
 
+let debye_1 x = Gsl.Sf.debye_1 x
+
+let debye_2 x = Gsl.Sf.debye_2 x
+
+let debye_3 x = Gsl.Sf.debye_3 x
+
+let debye_4 x = Gsl.Sf.debye_4 x
+
+let debye_5 x = Gsl.Sf.debye_5 x
+
+let debye_6 x = Gsl.Sf.debye_6 x
+
+let dilog x = Gsl.Sf.dilog x
+
+let ellint_Kcomp x = Gsl.Sf.ellint_Kcomp x Gsl.Fun.DOUBLE
+
+let ellint_Ecomp x = Gsl.Sf.ellint_Ecomp x Gsl.Fun.DOUBLE
+
+let ellint_Pcomp x n = Gsl.Sf.ellint_Pcomp x n Gsl.Fun.DOUBLE
+
+let ellint_Dcomp x = Gsl.Sf.ellint_Dcomp x Gsl.Fun.DOUBLE
+
+let ellint_F phi x =  Gsl.Sf.ellint_F phi x Gsl.Fun.DOUBLE
+
+let ellint_E phi x =  Gsl.Sf.ellint_E phi x Gsl.Fun.DOUBLE
+
+let ellint_P phi x n =  Gsl.Sf.ellint_P phi x n Gsl.Fun.DOUBLE
+
+let ellint_D phi x =  Gsl.Sf.ellint_D phi x Gsl.Fun.DOUBLE
+
+let ellint_RC x y = Gsl.Sf.ellint_RC x y Gsl.Fun.DOUBLE
+
+let ellint_RD x y z = Gsl.Sf.ellint_RD x y z Gsl.Fun.DOUBLE
+
+let ellint_RF x y z = Gsl.Sf.ellint_RF x y z Gsl.Fun.DOUBLE
+
+let ellint_RJ x y z p = Gsl.Sf.ellint_RJ x y z p Gsl.Fun.DOUBLE
+
+let expint_E1 x = Gsl.Sf.expint_E1 x
+
+let expint_E2 x = Gsl.Sf.expint_E2 x
+
+let expint_Ei x = Gsl.Sf.expint_Ei x
+
+let expint_E1_scaled x = Gsl.Sf.expint_E1_scaled x
+
+let expint_E2_scaled x = Gsl.Sf.expint_E2_scaled x
+
+let expint_Ei_scaled x = Gsl.Sf.expint_Ei_scaled x
+
+let expint_3 x = Gsl.Sf.expint_3 x
+
+let shi x = Gsl.Sf.shi x
+
+let chi x = Gsl.Sf.chi x
+
+let si x = Gsl.Sf.si x
+
+let ci x = Gsl.Sf.ci x
+
+let atanint x = Gsl.Sf.atanint x
+
+let fermi_dirac_m1 x = Gsl.Sf.fermi_dirac_m1 x
+
+let fermi_dirac_0 x = Gsl.Sf.fermi_dirac_0 x
+
+let fermi_dirac_1 x = Gsl.Sf.fermi_dirac_1 x
+
+let fermi_dirac_2 x = Gsl.Sf.fermi_dirac_2 x
+
+let fermi_dirac_int j x = Gsl.Sf.fermi_dirac_int j x
+
+let fermi_dirac_mhalf x = Gsl.Sf.fermi_dirac_mhalf x
+
+let fermi_dirac_half x = Gsl.Sf.fermi_dirac_half x
+
+let fermi_dirac_3half x = Gsl.Sf.fermi_dirac_3half x
+
+let fermi_dirac_inc_0 x b = Gsl.Sf.fermi_dirac_inc_0 x b
+
+let gammaf x = Gsl.Sf.gamma x
+
+let lngamma x = Gsl.Sf.lngamma x
+
+let gammastar x = Gsl.Sf.gammastar x
+
+let gammainv x = Gsl.Sf.gammainv x
+
+let gamma_inc a x = Gsl.Sf.gamma_inc a x
+
+let gamma_inc_Q a x  = Gsl.Sf.gamma_inc_Q a x
+
+let gamma_inc_P a x  = Gsl.Sf.gamma_inc_P a x
+
+let factorial x = Gsl.Sf.fact x
+
+let double_factorial x = Gsl.Sf.doublefact x
+
+let ln_factorial x = Gsl.Sf.lnfact x
+
+let ln_double_factorial x = Gsl.Sf.lndoublefact x
+
+let combination n x = Gsl.Sf.choose n x
+
+let ln_combination n x = Gsl.Sf.lnchoose n x
+
+let taylorcoeff n x = Gsl.Sf.taylorcoeff n x
+
+let poch a x = Gsl.Sf.poch a x
+
+let lnpoch a x = Gsl.Sf.lnpoch a x
+
+let pochrel a x = Gsl.Sf.pochrel a x
+
+let betaf x y = Gsl.Sf.beta x y
+
+let lnbeta x y = Gsl.Sf.lnbeta x y
+
+let beta_inc a b x = Gsl.Sf.beta_inc a b x
+
+let laguerre_1 a x = Gsl.Sf.laguerre_1 a x
+
+let laguerre_2 a x = Gsl.Sf.laguerre_2 a x
+
+let laguerre_3 a x = Gsl.Sf.laguerre_3 a x
+
+let laguerre_n n a x = Gsl.Sf.laguerre_n n a x
+
+let lambert_w0 x = Gsl.Sf.lambert_W0 x
+
+let lambert_w1 x = Gsl.Sf.lambert_Wm1 x
+
+let legendre_P1 x = Gsl.Sf.legendre_P1 x
+
+let legendre_P2 x = Gsl.Sf.legendre_P2 x
+
+let legendre_P3 x = Gsl.Sf.legendre_P3 x
+
+let legendre_Pl l x = Gsl.Sf.legendre_Pl l x
+
+let legendre_Pl_array l x =
+  let y = Array.make l 0. in
+  Gsl.Sf.legendre_Pl_array x y; y
+
+let legendre_Q0 x = Gsl.Sf.legendre_Q0 x
+
+let legendre_Q1 x = Gsl.Sf.legendre_Q1 x
+
+let legendre_Ql l x = Gsl.Sf.legendre_Ql l x
+
+let psi x = Gsl.Sf.psi x
+
+let psi_int n = Gsl.Sf.psi_int n
+
+let psi_1 x = Gsl.Sf.psi_1 x
+
+let psi_1piy n = Gsl.Sf.psi_1piy n
+
+let psi_1_pint n = Gsl.Sf.psi_int n
+
+let psi_n n x = Gsl.Sf.psi_n n x
+
+let synchrotron_1 x = Gsl.Sf.synchrotron_1 x
+
+let synchrotron_2 x = Gsl.Sf.synchrotron_2 x
+
+let transport_2 x = Gsl.Sf.transport_2 x
+
+let transport_3 x = Gsl.Sf.transport_3 x
+
+let transport_4 x = Gsl.Sf.transport_4 x
+
+let transport_5 x = Gsl.Sf.transport_5 x
+
+let zeta x = Gsl.Sf.zeta x
+
+let zeta_int x = Gsl.Sf.zeta_int x
+
+let hzeta x y = Gsl.Sf.hzeta x y
+
+let eta x = Gsl.Sf.eta x
+
+let eta_int x = Gsl.Sf.eta_int x
 
 
 
