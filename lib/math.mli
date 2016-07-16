@@ -584,7 +584,7 @@ val bessel_J1 : float -> float
 
 val bessel_Jn : int -> float -> float
 
-val bessel_Jn_array : int -> float -> float array -> unit (* FIXME *)
+val bessel_Jn_array : int -> int -> float -> float array
 
 
 (** [ Irregular Cylindrical Bessel Functions ]  *)
@@ -595,7 +595,7 @@ val bessel_Y1 : float -> float
 
 val bessel_Yn : int -> float -> float
 
-val bessel_Yn_array : int -> float -> float array -> unit  (* FIXME *)
+val bessel_Yn_array : int -> int -> float -> float array
 
 
 (** [ Regular Modified Cylindrical Bessel Functions ]  *)
@@ -606,7 +606,7 @@ val bessel_I1 : float -> float
 
 val bessel_In : int -> float -> float
 
-val bessel_In_array : int -> float -> float array -> unit  (* FIXME *)
+val bessel_In_array : int -> int -> float -> float array
 
 val bessel_I0_scaled : float -> float
 
@@ -614,7 +614,7 @@ val bessel_I1_scaled : float -> float
 
 val bessel_In_scaled : int -> float -> float
 
-val bessel_In_scaled_array : int -> float -> float array -> unit  (* FIXME *)
+val bessel_In_scaled_array : int -> int -> float -> float array
 
 
 (** [ Irregular Modified Cylindrical Bessel Functions ]  *)
@@ -625,7 +625,7 @@ val bessel_K1 : float -> float
 
 val bessel_Kn : int -> float -> float
 
-val bessel_Kn_array : int -> float -> float array -> unit  (* FIXME *)
+val bessel_Kn_array : int -> int -> float -> float array
 
 val bessel_K0_scaled : float -> float
 
@@ -633,7 +633,7 @@ val bessel_K1_scaled : float -> float
 
 val bessel_Kn_scaled : int -> float -> float
 
-val bessel_Kn_scaled_array : int -> float -> float array -> unit  (* FIXME *)
+val bessel_Kn_scaled_array : int -> int -> float -> float array
 
 
 (** [ Regular Spherical Bessel Functions ]  *)
@@ -646,9 +646,9 @@ val bessel_j2 : float -> float
 
 val bessel_jl : int -> float -> float
 
-val bessel_jl_array : int -> float -> float array -> unit  (* FIXME *)
+val bessel_jl_array : int -> float -> float array
 
-val bessel_jl_steed_array : float -> float array -> unit  (* FIXME *)
+val bessel_jl_steed_array : int -> float -> float array
 
 
 (** [ Irregular Spherical Bessel Functions ]  *)
@@ -661,7 +661,7 @@ val bessel_y2 : float -> float
 
 val bessel_yl : int -> float -> float
 
-val bessel_yl_array : int -> float -> float array -> unit  (* FIXME *)
+val bessel_yl_array : int -> float -> float array
 
 
 (** [ Regular Modified Spherical Bessel Functions ]  *)
@@ -672,7 +672,7 @@ val bessel_i1_scaled : float -> float
 
 val bessel_il_scaled : int -> float -> float
 
-val bessel_il_array_scaled : int -> float -> float array -> unit  (* FIXME *)
+val bessel_il_array_scaled : int -> float -> float array
 
 
 (** [ Irregular Modified Spherical Bessel Functions ]  *)
@@ -683,7 +683,7 @@ val bessel_k1_scaled : float -> float
 
 val bessel_kl_scaled : int -> float -> float
 
-val bessel_kl_array_scaled : int -> float -> float array -> unit  (* FIXME *)
+val bessel_kl_array_scaled : int -> float -> float array
 
 
 (** [ Regular Bessel Function—Fractional Order ]  *)
@@ -979,6 +979,12 @@ val hzeta : float -> float -> float
 val eta : float -> float
 
 val eta_int : int -> float
+
+
+
+
+
+(* TODO: Wavelet function is missing; FFT function is missing *)
 
 
 

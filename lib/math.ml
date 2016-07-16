@@ -490,7 +490,9 @@ let bessel_J1 x = Gsl.Sf.bessel_J1 x
 
 let bessel_Jn n x = Gsl.Sf.bessel_Jn n x
 
-let bessel_Jn_array n x a = Gsl.Sf.bessel_Jn_array n x a
+let bessel_Jn_array nmin nmax x =
+  let y = Array.make (nmax - nmin + 1) 0. in
+  Gsl.Sf.bessel_Jn_array nmin x y; y
 
 let bessel_Y0 x = Gsl.Sf.bessel_Y0 x
 
@@ -498,7 +500,9 @@ let bessel_Y1 x = Gsl.Sf.bessel_Y1 x
 
 let bessel_Yn n x = Gsl.Sf.bessel_Yn n x
 
-let bessel_Yn_array n x = Gsl.Sf.bessel_Yn_array n x
+let bessel_Yn_array nmin nmax x =
+  let y = Array.make (nmax - nmin + 1) 0. in
+  Gsl.Sf.bessel_Yn_array nmin x y; y
 
 let bessel_I0 x = Gsl.Sf.bessel_I0 x
 
@@ -506,7 +510,9 @@ let bessel_I1 x = Gsl.Sf.bessel_I1 x
 
 let bessel_In n x = Gsl.Sf.bessel_In n x
 
-let bessel_In_array n x = Gsl.Sf.bessel_In_array n x
+let bessel_In_array nmin nmax x =
+  let y = Array.make (nmax - nmin + 1) 0. in
+  Gsl.Sf.bessel_In_array nmin x y; y
 
 let bessel_K0 x = Gsl.Sf.bessel_K0 x
 
@@ -514,7 +520,9 @@ let bessel_K1 x = Gsl.Sf.bessel_K1 x
 
 let bessel_Kn n x = Gsl.Sf.bessel_Kn n x
 
-let bessel_Kn_array n x a = Gsl.Sf.bessel_Kn_array n x a
+let bessel_Kn_array nmin nmax x =
+  let y = Array.make (nmax - nmin + 1) 0. in
+  Gsl.Sf.bessel_Kn_array nmin x y; y
 
 let bessel_I0_scaled x = Gsl.Sf.bessel_I0_scaled x
 
@@ -522,7 +530,9 @@ let bessel_I1_scaled x = Gsl.Sf.bessel_I1_scaled x
 
 let bessel_In_scaled n x = Gsl.Sf.bessel_In_scaled n x
 
-let bessel_In_scaled_array n x = Gsl.Sf.bessel_In_scaled_array n x
+let bessel_In_scaled_array nmin nmax x =
+  let y = Array.make (nmax - nmin + 1) 0. in
+  Gsl.Sf.bessel_In_scaled_array nmin x y; y
 
 let bessel_K0_scaled x = Gsl.Sf.bessel_K0_scaled x
 
@@ -530,7 +540,9 @@ let bessel_K1_scaled x = Gsl.Sf.bessel_K1_scaled x
 
 let bessel_Kn_scaled n x = Gsl.Sf.bessel_Kn_scaled n x
 
-let bessel_Kn_scaled_array n x = Gsl.Sf.bessel_Kn_scaled_array n x
+let bessel_Kn_scaled_array nmin nmax x =
+  let y = Array.make (nmax - nmin + 1) 0. in
+  Gsl.Sf.bessel_Kn_scaled_array nmin x y; y
 
 let bessel_j0 x = Gsl.Sf.bessel_j0 x
 
@@ -540,9 +552,13 @@ let bessel_j2 x = Gsl.Sf.bessel_j2 x
 
 let bessel_jl l x = Gsl.Sf.bessel_jl l x
 
-let bessel_jl_array l x a = Gsl.Sf.bessel_jl_array l x a
+let bessel_jl_array l x =
+  let y = Array.make (l + 1) 0. in
+  Gsl.Sf.bessel_jl_array l x y; y
 
-let bessel_jl_steed_array x a = Gsl.Sf.bessel_jl_steed_array x a
+let bessel_jl_steed_array l x =
+  let y = Array.make (l + 1) 0. in
+  Gsl.Sf.bessel_jl_steed_array x y; y
 
 let bessel_y0 x = Gsl.Sf.bessel_y0 x
 
@@ -552,7 +568,9 @@ let bessel_y2 x = Gsl.Sf.bessel_y2 x
 
 let bessel_yl l x = Gsl.Sf.bessel_yl l x
 
-let bessel_yl_array l x a = Gsl.Sf.bessel_yl_array l x a
+let bessel_yl_array l x =
+  let y = Array.make (l + 1) 0. in
+  Gsl.Sf.bessel_yl_array l x y; y
 
 let bessel_i0_scaled x = Gsl.Sf.bessel_i0_scaled x
 
@@ -560,7 +578,9 @@ let bessel_i1_scaled x = Gsl.Sf.bessel_i1_scaled x
 
 let bessel_il_scaled l x = Gsl.Sf.bessel_il_scaled l x
 
-let bessel_il_array_scaled l x = Gsl.Sf.bessel_il_scaled_array l x
+let bessel_il_array_scaled l x =
+  let y = Array.make (l + 1) 0. in
+  Gsl.Sf.bessel_il_scaled_array l x y; y
 
 let bessel_k0_scaled x = Gsl.Sf.bessel_k0_scaled x
 
@@ -568,7 +588,9 @@ let bessel_k1_scaled x = Gsl.Sf.bessel_k1_scaled x
 
 let bessel_kl_scaled l x = Gsl.Sf.bessel_kl_scaled l x
 
-let bessel_kl_array_scaled l x = Gsl.Sf.bessel_kl_scaled_array l x
+let bessel_kl_array_scaled l x =
+  let y = Array.make (l + 1) 0. in
+  Gsl.Sf.bessel_kl_scaled_array l x y; y
 
 let bessel_Jnu nu x = Gsl.Sf.bessel_Jnu nu x
 
