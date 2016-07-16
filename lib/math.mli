@@ -519,9 +519,17 @@ val exp_mult : float -> float -> float
 
 val exprel : float -> float
 
-val log1p : float -> float
+val ln : float -> float
 
-val log_abs : float -> float
+val ln1p : float -> float
+
+val ln_abs : float -> float
+
+val log2 : float -> float
+
+val log10 : float -> float
+
+val log : float -> float -> float
 
 
 (** [ Trigonometric Functions ]  *)
@@ -529,6 +537,26 @@ val log_abs : float -> float
 val sin : float -> float
 
 val cos : float -> float
+
+val tan : float -> float
+
+val cot : float -> float
+
+val sec : float -> float
+
+val csc : float -> float
+
+val asin : float -> float
+
+val acos : float -> float
+
+val atan : float -> float
+
+val acot : float -> float
+
+val sinh : float -> float
+
+val cosh : float -> float
 
 val asinh : float -> float
 

@@ -426,17 +426,47 @@ let exp_mult x y = Gsl.Sf.exp_mult x y
 
 let exprel x = Gsl.Sf.exprel x
 
-let log x = Gsl.Sf.log x
+let ln x = Gsl.Sf.log x
 
-let log1p x = Gsl.Sf.log_1plusx x
+let ln1p x = Gsl.Sf.log_1plusx x
 
-let log_abs x = Gsl.Sf.log_abs x
+let ln_abs x = Gsl.Sf.log_abs x
+
+let log2 x = (ln x) /. Gsl.Math.ln2
+
+let log10 x = (ln x) /. Gsl.Math.ln10
+
+let log base x = (ln x) /. (ln base)
 
 let sin x = Gsl.Sf.sin x
 
 let cos x = Gsl.Sf.cos x
 
+let tan x = tan x
+
+let cot x = 1. /. (tan x)
+
+let sec x = 1. /. (cos x)
+
+let csc x = 1. /. (sin x)
+
+let asin x = asin x
+
+let acos x = acos x
+
+let atan x = atan x
+
+let acot x = (Gsl.Math.pi /. 2.) -. (atan x)
+
+let asec = None
+
+let acsc = None
+
 let sinc x = Gsl.Sf.sinc x
+
+let sinh x = sinh x
+
+let cosh x = cosh x
 
 let acosh x = Gsl.Math.acosh x
 
