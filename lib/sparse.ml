@@ -392,7 +392,7 @@ let draw_rows ?(replacement=true) x c = None
 let draw_cols ?(replacement=true) x c = None
 
 
-(* TODO: out of OCaml GC, need to release the memory *)
+(* TODO: out of OCaml GC, need to release the memory, refer to gsl_multifit_nlin.ml file. *)
 
 
 

@@ -37,7 +37,7 @@ let linear ?(i=false) x y =
     else _linear_multiple_var ~i x y
   in r
 
-(** [ polynomial regression without regression ]
+(** [ Polynomial regression without regression ]
   x : variables
   y : observations
   d : the highest degree
@@ -49,9 +49,14 @@ let polynomial x y d =
   let c, _, _ = Gsl.Multifit.fit_poly ~x ~y d in
   MX.of_array c (Array.length c) 1
 
+(** [ Nonlinear Least Square Regression ]  *)
+let nonlinear x y =
+  let open Gsl.Multifit_nlin in
+  None
 
 
 
+(* TODO: approximate Jacobian matrix for a given function *)
 
 
 
