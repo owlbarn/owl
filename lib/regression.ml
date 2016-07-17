@@ -37,8 +37,17 @@ let linear ?(i=false) x y =
     else _linear_multiple_var ~i x y
   in r
 
-(** [ polynomial regression without regression ]  *)
-let polynomial ?(i=false) x y = None
+(** [ polynomial regression without regression ]
+  x : variables
+  y : observations
+  d : the highest degree
+  the returned value is a (d+1)x1 matrix, the value in each row is the coeff of corresponding degree
+  *)
+let polynomial x y d =
+  let x = MX.to_array x in
+  let y = MX.to_array y in
+  let c, _, _ = Gsl.Multifit.fit_poly ~x ~y d in
+  MX.of_array c (Array.length c) 1
 
 
 
