@@ -53,6 +53,13 @@ module Dense = struct
 
   let vector_zeros n = zeros 1 n
 
+  let linspace a b n =
+    let x = empty 1 n in
+    let c = ((b -. a) /. (float_of_int (n - 1))) in
+    for i = 0 to n - 1 do
+      x.{0,i} <- a +. c *. (float_of_int i)
+    done; x
+
   (* matrix manipulations *)
 
   let same_shape x1 x2 = shape x1 = shape x2
@@ -614,6 +621,8 @@ module Dense = struct
     done; y
 
   let shuffle_all x = shuffle_rows (shuffle_cols x)
+
+  let reshape m n x = of_array (to_array x) m n
 
   (* TODO: use this to replace col function, faster *)
   let gsl_col x i =

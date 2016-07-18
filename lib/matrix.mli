@@ -39,6 +39,9 @@ module Dense : sig
 
   val vector_uniform : int -> mat
 
+  val linspace : float -> float -> int -> mat
+  (** [ linspace a b n ] generates linearly spaced interval *)
+
   (* matrix manipulations functions *)
 
   val shape : mat -> int * int
@@ -50,6 +53,8 @@ module Dense : sig
   val numel : mat -> int
 
   val same_shape : mat -> mat -> bool
+
+  val reshape : int -> int -> mat -> mat
 
   val row : mat -> int -> mat
 

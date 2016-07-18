@@ -9,5 +9,5 @@ Plugins:     META (0.4)
 Library "Owl"
   Path:       ./lib
   BuildTools: ocamlbuild, ocamldoc
-  Modules:    Types, Pretty, Utils, Maths, Stats, Optimise, Matrix, Sparse, Matrix_foreign, Linalg, Regression
-  BuildDepends: str, gsl, ctypes, ctypes.foreign
+  Modules:    Types, Utils, Maths, Stats, Optimise, Matrix, Sparse, Matrix_foreign, Linalg, Regression, Pretty, Graph
+  BuildDepends: str, gsl, ctypes, ctypes.foreign, plplot
