@@ -47,6 +47,10 @@ val kurtosis : ?w:float array -> ?mean:float -> ?sd:float -> float array -> floa
 
 val covariance : ?mean0:float -> ?mean1:float -> float array -> float array -> float
 
+val correlation : float array -> float array -> float
+
+val autocorrelation : ?lag:int -> float array -> float
+
 val min : float array -> float
 
 val max : float array -> float

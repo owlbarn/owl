@@ -373,7 +373,20 @@ let kurtosis ?w ?mean ?sd x =
   | None, None -> Gsl.Stats.kurtosis x
   | _, _ -> failwith "not enough arguments"
 
-let autocorrelation = None
+let correlation x0 x1 = Gsl.Stats.correlation x0 x1
+
+let autocorrelation ?(lag=1) x =
+  let n = Array.length x in
+  let y = mean x in
+  let a = ref 0. in
+  let _ = for i = 0 to (n - lag - 1) do
+    a := !a +. ((x.(i) -. y) *. (x.(i+lag) -. y))
+  done in
+  let b = ref 0. in
+  let _ = for i = 0 to (n - 1) do
+    b := !b +. (x.(i) -. y) ** 2.
+  done in
+  (!a /. !b)
 
 let covariance ?mean0 ?mean1 x0 x1 =
   match mean0, mean1 with
