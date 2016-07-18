@@ -112,7 +112,7 @@ let nonlinear g p x y =
       let z = g p x.{i} in
       y'.{i} <- (z -. y.{i})
     done )
-  in
+  in (* _df is a numberical approx of Jacobian matrix *)
   let _df ~x:p ~j:j = (
     let dp = 1e-6 in
     for i = 0 to (MX.row_num j) - 1 do
@@ -137,7 +137,11 @@ let nonlinear g p x y =
     MX.of_array (Gsl.Vector.to_array p) (Gsl.Vector.length p) 1
 
 
-(* TODO: approximate Jacobian matrix for a given function *)
+
+
+
+
+
 
 
 
