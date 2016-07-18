@@ -65,6 +65,7 @@ val max_i : float array -> float * int
 
 val minmax_i : float array -> float * int * float * int
 
+val sort : ?inc:bool -> float array -> float array
 
 (** [ Uniform distribution ]  *)
 

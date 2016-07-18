@@ -421,7 +421,14 @@ let minmax_i x =
 let i, j = Gsl.Stats.minmax_index x in
 x.(i), i, x.(j), j
 
-
+let sort ?(inc=true) x =
+  let y = Array.copy x in
+  let c = if inc then 1 else (-1) in
+  Array.sort (fun a b ->
+    if a < b then (-c)
+    else if a > b then c
+    else 0
+  ) y; y
 
 
 
