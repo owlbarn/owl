@@ -564,18 +564,18 @@ module Dense = struct
   let uniform_int ?(a=0) ?(b=99) m n =
     let x = empty m n in
     iteri (fun i j _ -> x.{i,j} <-
-      float_of_int (Math.uniform_int ~a ~b ())
+      float_of_int (Maths.uniform_int ~a ~b ())
     ) x; x
 
   let uniform ?(scale=1.) m n =
     let x = empty m n in
     iteri (fun i j _ ->
-      x.{i,j} <- Math.uniform () *. scale
+      x.{i,j} <- Maths.uniform () *. scale
     ) x; x
 
   let gaussian ?(sigma=1.) m n =
     let x = empty m n in
-    iteri (fun i j _ -> x.{i,j} <- Math.gaussian ~sigma ()) x; x
+    iteri (fun i j _ -> x.{i,j} <- Maths.gaussian ~sigma ()) x; x
 
   let vector_uniform n = uniform 1 n
 
@@ -603,14 +603,14 @@ module Dense = struct
     let y = clone x in
     let m, n = shape x in
     for i = 0 to m - 1 do
-      swap_rows y i (Math.uniform_int ~a:0 ~b:(m-1) ())
+      swap_rows y i (Maths.uniform_int ~a:0 ~b:(m-1) ())
     done; y
 
   let shuffle_cols x =
     let y = clone x in
     let m, n = shape x in
     for i = 0 to n - 1 do
-      swap_cols y i (Math.uniform_int ~a:0 ~b:(n-1) ())
+      swap_cols y i (Maths.uniform_int ~a:0 ~b:(n-1) ())
     done; y
 
   let shuffle_all x = shuffle_rows (shuffle_cols x)
