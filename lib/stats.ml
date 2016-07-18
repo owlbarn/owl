@@ -373,7 +373,15 @@ let kurtosis ?w ?mean ?sd x =
   | None, None -> Gsl.Stats.kurtosis x
   | _, _ -> failwith "not enough arguments"
 
+let moment n x = None
+
 let correlation x0 x1 = Gsl.Stats.correlation x0 x1
+
+let pearson_r x0 x1 = correlation x0 x1
+
+let kendall_tau = None
+
+let spearman_rho = None
 
 let autocorrelation ?(lag=1) x =
   let n = Array.length x in

@@ -49,6 +49,8 @@ val covariance : ?mean0:float -> ?mean1:float -> float array -> float array -> f
 
 val correlation : float array -> float array -> float
 
+val pearson_r : float array -> float array -> float
+
 val autocorrelation : ?lag:int -> float array -> float
 
 val min : float array -> float
