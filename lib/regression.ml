@@ -28,6 +28,7 @@ let _linear_multiple_var ?(i=false) x y =
 
 (** [ Linear regression without regularisation ]
   i : whether to include intercept, the first coeff in the returned result is the intercept.
+  both x and y are n x 1 matrices.
   *)
 let linear ?(i=false) x y =
   let m, n = MX.shape x in
@@ -37,8 +38,8 @@ let linear ?(i=false) x y =
   in r
 
 (** [ Polynomial regression without regression ]
-  x : variables
-  y : observations
+  x : variables, n x 1 matrix
+  y : observations, n x 1 matrix
   d : the highest degree
   the returned value is a (d+1)x1 matrix, the value in each row is the coeff of corresponding degree
   *)
@@ -60,9 +61,11 @@ let _nonlinear_driver s maxiter epsabs epsrel =
     let _ = iterate s in
     if test_delta s epsabs epsrel then
       failwith "converged"
-  done with exn -> print_endline "converged"
+  done with exn -> ()
 
-(** [ y = a * exp^(-lambda * x) + b ] *)
+(** [ y = a * exp^(-lambda * x) + b ]
+  both x and y are n x 1 matrices.
+*)
 let exponential x y =
   let open Gsl.Fun in
   let p = Gsl.Vector.of_array [|0.1;0.1;0.1|] in
@@ -89,13 +92,49 @@ let exponential x y =
   let _fdf ~x:p ~f:y' ~j:j = () in
   let fdf = { multi_f=_f; multi_df=_df; multi_fdf=_fdf } in
   let s = _nonlinear p fdf x in
-  let maxiter, epsabs, epsrel = 100, 1e-6, 1e-6 in
+  let maxiter, epsabs, epsrel = 1000, 1e-6, 1e-6 in
   let _ = _nonlinear_driver s maxiter epsabs epsrel in
   let _ = Gsl.Multifit_nlin.position s p in
   MX.of_array (Gsl.Vector.to_array p) 3 1
 
 
-
+(** [ Nonlinear regression for user-defined function ]
+  both x and y are n x 1 matrices; p is the initial guess of the parameters
+  g : user-defined function, first is parameter array, second is variable
+*)
+let nonlinear g p x y =
+  let open Gsl.Fun in
+  let p = Gsl.Vector.of_array p in
+  let x = Gsl.Vector.of_array MX.(to_array x) in
+  let y = Gsl.Vector.of_array MX.(to_array y) in
+  let _f ~x:p ~f:y' = (
+    for i = 0 to (Gsl.Vector.length y') - 1 do
+      let z = g p x.{i} in
+      y'.{i} <- (z -. y.{i})
+    done )
+  in
+  let _df ~x:p ~j:j = (
+    let dp = 1e-6 in
+    for i = 0 to (MX.row_num j) - 1 do
+      for k = 0 to (Gsl.Vector.length p) - 1 do
+        let p0 = Gsl.Vector.copy p in
+        let p1 = Gsl.Vector.copy p in
+        let _ = p0.{k} <- p.{k} -. dp in
+        let _ = p1.{k} <- p.{k} +. dp in
+        let y0 = g p0 x.{i} in
+        let y1 = g p1 x.{i} in
+        let dj = (y1 -. y0) /. (2. *. dp) in
+        j.{i,k} <- dj
+      done
+    done )
+    in
+    let _fdf ~x:p ~f:y' ~j:j = () in
+    let fdf = { multi_f=_f; multi_df=_df; multi_fdf=_fdf } in
+    let s = _nonlinear p fdf x in
+    let maxiter, epsabs, epsrel = 1000, 1e-6, 1e-6 in
+    let _ = _nonlinear_driver s maxiter epsabs epsrel in
+    let _ = Gsl.Multifit_nlin.position s p in
+    MX.of_array (Gsl.Vector.to_array p) (Gsl.Vector.length p) 1
 
 
 (* TODO: approximate Jacobian matrix for a given function *)
