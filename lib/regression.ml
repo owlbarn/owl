@@ -6,7 +6,6 @@
 
 module MX = Matrix.Dense
 
-
 (** [ Linear regression with single variables ]  *)
 let _linear_single_var ?(i=false) x y =
   let open Gsl.Fit in
@@ -55,20 +54,17 @@ let _nonlinear p fdf x =
   let open Gsl.Multifit_nlin in
   make LMSDER (Gsl.Vector.length x) (Gsl.Vector.length p) fdf p
 
-let _nonlinear_driver p y s maxiter ptol gtol ftol =
+let _nonlinear_driver s maxiter epsabs epsrel =
   let open Gsl.Multifit_nlin in
-  let p' = Gsl.Vector.create (Gsl.Vector.length p) in
-  let y' = Gsl.Vector.create (Gsl.Vector.length y) in
-  let dp' = Gsl.Vector.create (Gsl.Vector.length p) in
-  for i = 0 to maxiter - 1 do
+  try for i = 0 to maxiter - 1 do
     let _ = iterate s in
-    let _ = get_state s ~x:p' ~f:y' ~dx:dp' in ()
-  done
+    if test_delta s epsabs epsrel then
+      failwith "converged"
+  done with exn -> print_endline "converged"
 
 (** [ y = a * exp^(-lambda * x) + b ] *)
 let exponential x y =
   let open Gsl.Fun in
-  (*let p = Gsl.Vector.of_array MX.(to_array (uniform 3 1)) in*)
   let p = Gsl.Vector.of_array [|0.1;0.1;0.1|] in
   let x = Gsl.Vector.of_array MX.(to_array x) in
   let y = Gsl.Vector.of_array MX.(to_array y) in
@@ -93,8 +89,8 @@ let exponential x y =
   let _fdf ~x:p ~f:y' ~j:j = () in
   let fdf = { multi_f=_f; multi_df=_df; multi_fdf=_fdf } in
   let s = _nonlinear p fdf x in
-  let maxiter, ptol, gtol, ftol = 100, 1e-6, 1e-6, 1e-6 in
-  let _ = _nonlinear_driver p y s maxiter ptol gtol ftol in
+  let maxiter, epsabs, epsrel = 100, 1e-6, 1e-6 in
+  let _ = _nonlinear_driver s maxiter epsabs epsrel in
   let _ = Gsl.Multifit_nlin.position s p in
   MX.of_array (Gsl.Vector.to_array p) 3 1
 
