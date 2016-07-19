@@ -28,3 +28,11 @@ let scatter x y =
   let _ = plenv xmin xmax ymin ymax 0 0 in
   let _ = plpoin x y 2 in (* TODO: + is 2; x is 5 *)
   plend ()
+
+let histogram ?(bin=10) x =
+  let open Plplot in
+  let x = MX.to_array x in
+  let _ = plinit () in
+  let xmin, xmax = Stats.minmax x in
+  let _ = plhist x xmin xmax bin [ PL_HIST_DEFAULT ] in
+  plend ()
