@@ -316,7 +316,7 @@ let fermi_dirac_3half x = Gsl.Sf.fermi_dirac_3half x
 
 let fermi_dirac_inc_0 x b = Gsl.Sf.fermi_dirac_inc_0 x b
 
-let gammaf x = Gsl.Sf.gamma x
+let gamma x = Gsl.Sf.gamma x
 
 let lngamma x = Gsl.Sf.lngamma x
 

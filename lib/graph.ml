@@ -15,7 +15,9 @@ let plot x y =
   plend ()
 
 let plot_fun f a b =
-  None
+  let x = MX.linspace a b 100 in
+  let y = MX.map f x in
+  plot x y
 
 let scatter x y =
   let x = MX.to_array x in

@@ -378,7 +378,7 @@ val fermi_dirac_inc_0 : float -> float -> float
 
 (** [ Gamma Functions ]  *)
 
-val gammaf : float -> float
+val gamma : float -> float
 
 val lngamma : float -> float
 
