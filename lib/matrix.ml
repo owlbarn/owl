@@ -624,6 +624,15 @@ module Dense = struct
 
   let reshape m n x = of_array (to_array x) m n
 
+  let meshgrid xa xb ya yb xn yn =
+    let u = linspace xa xb xn in
+    let v = linspace ya yb yn in
+    let x = map_by_row (fun _ -> u) (empty yn xn) in
+    let y = map_by_row (fun _ -> v) (empty xn yn) in
+    x, transpose y
+
+  let ( @@ ) f x = map f x  (* TODO: experimental *)
+
   (* TODO: use this to replace col function, faster *)
   let gsl_col x i =
     let open Matrix_foreign in

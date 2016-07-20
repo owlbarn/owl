@@ -42,6 +42,8 @@ module Dense : sig
   val linspace : float -> float -> int -> mat
   (** [ linspace a b n ] generates linearly spaced interval *)
 
+  val meshgrid : float -> float -> float -> float -> int -> int -> mat * mat
+
   (* matrix manipulations functions *)
 
   val shape : mat -> int * int
@@ -319,6 +321,8 @@ module Dense : sig
   val ( >=@ ) : mat -> mat -> bool
 
   val ( <=@ ) : mat -> mat -> bool
+
+  val ( @@ ) : (float -> float) -> mat -> mat
 
   (* TODO: for debug purpose *)
 
