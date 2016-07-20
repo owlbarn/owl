@@ -40,4 +40,22 @@ let histogram ?(bin=10) x =
 
 let mesh x y z =
   let open Plplot in
-  None
+  let x = MX.to_array x in
+  let y = MX.to_array y in
+  let xmin, xmax = Stats.minmax x in
+  let ymin, ymax = Stats.minmax y in
+  let zmin, zmax, _, _, _, _ = MX.minmax z in
+  let _ = plinit () in
+  let _ = pladv 0 in
+  let _ = plcol0 1 in
+  let _ = plvpor 0.0 1.0 0.0 1.0 in
+  let _ = plwind (-1.0) 1.0 (-1.0) 1.5 in
+  let _ = plw3d 1.0 1.0 1.0 xmin xmax ymin ymax zmin zmax 33. 115. in
+  let _ = plbox3  "bnstu", "x axis", 0.0, 0,
+                  "bnstu", "y axis", 0.0, 0,
+                  "bcdmnstuv", "z axis", 0.0, 4 in
+  let _ = plcol0 2 in
+  let z = MX.to_arrays z in
+  let _ = plmesh x y z [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
+  let _ = plcol0 3 in
+  plend ()

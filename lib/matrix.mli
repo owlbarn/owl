@@ -224,6 +224,8 @@ module Dense : sig
 
   val max_cols : mat -> (float * int * int) array
 
+  val minmax : mat -> float * float * int * int * int * int
+
   val is_zero : mat -> bool
 
   val is_positive : mat -> bool

@@ -469,6 +469,11 @@ module Dense = struct
       let r, _, j = max v in r, i, j
     ) x
 
+  let minmax x =
+    let xmin, irow, icol = min x in
+    let xmax, arow, acol = max x in
+    xmin, xmax, irow, icol, arow, acol
+
   let ( +$ ) x a =
     let y = clone x in
     Gsl.Matrix.add_constant y a; y
@@ -630,6 +635,8 @@ module Dense = struct
     let x = map_by_row (fun _ -> u) (empty yn xn) in
     let y = map_by_row (fun _ -> v) (empty xn yn) in
     x, transpose y
+
+  let meshup x y = None  (* TODO: make a meshgrid from two vectors *)
 
   let ( @@ ) f x = map f x  (* TODO: experimental *)
 
