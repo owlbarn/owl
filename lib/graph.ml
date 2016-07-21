@@ -47,9 +47,9 @@ let mesh x y z =
   let zmin, zmax, _, _, _, _ = MX.minmax z in
   let _ = plinit () in
   let _ = pladv 0 in
-  let _ = plcol0 1 in
   let _ = plvpor 0.0 1.0 0.0 1.0 in
   let _ = plwind (-1.0) 1.0 (-1.0) 1.5 in
+  let _ = plcol0 1 in
   let _ = plw3d 1.0 1.0 1.0 xmin xmax ymin ymax zmin zmax 33. 115. in
   let _ = plbox3  "bnstu", "x axis", 0.0, 0,
                   "bnstu", "y axis", 0.0, 0,
@@ -59,3 +59,9 @@ let mesh x y z =
   let _ = plmesh x y z [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
   let _ = plcol0 3 in
   plend ()
+
+
+
+
+
+(* ends here *)

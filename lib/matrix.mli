@@ -44,6 +44,8 @@ module Dense : sig
 
   val meshgrid : float -> float -> float -> float -> int -> int -> mat * mat
 
+  val meshup : mat -> mat -> mat * mat
+
   (* matrix manipulations functions *)
 
   val shape : mat -> int * int

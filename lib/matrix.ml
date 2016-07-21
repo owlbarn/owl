@@ -636,7 +636,12 @@ module Dense = struct
     let y = map_by_row (fun _ -> v) (empty xn yn) in
     x, transpose y
 
-  let meshup x y = None  (* TODO: make a meshgrid from two vectors *)
+  let meshup x y =
+    let xn = numel x in
+    let yn = numel y in
+    let x = map_by_row (fun _ -> x) (empty yn xn) in
+    let y = map_by_row (fun _ -> y) (empty xn yn) in
+    x, transpose y
 
   let ( @@ ) f x = map f x  (* TODO: experimental *)
 
