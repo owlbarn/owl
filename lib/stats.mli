@@ -30,6 +30,9 @@ val choose : 'a array -> int -> 'a array
 val sample : 'a array -> int -> 'a array
 (** [ sample x n ] draw n samples from x with replacement  *)
 
+val metropolis_hastings : (float array -> float) -> float array -> int -> float array array
+(** [ metropolis_hastings f p n ] is Metropolis-Hastings Markov chains Monte-Carlo algorithm *)
+
 
 (** [ Statistics functions ]  *)
 

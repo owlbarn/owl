@@ -20,6 +20,8 @@ let uniform_int ?(a=0) ?(b=65535) ()=
 
 (** [ Continuous random variables ]  *)
 
+(* TODO: change the order of the arguments in _pdf functions *)
+
 let uniform () = Gsl.Rng.uniform rng
 
 let gaussian ?(sigma=1.) () = Gsl.Randist.gaussian_ziggurat rng sigma
@@ -429,6 +431,31 @@ let sort ?(inc=true) x =
     else if a > b then c
     else 0
   ) y; y
+
+let metropolis_hastings f p n =
+  let stepsize = 0.1 in    (* be careful about step size, try 0.01 *)
+  let a, b = 10000, 10 in
+  let m = a + b * n in
+  let s = Array.make m p in
+  for i = 1 to m - 1 do
+    let p = s.(i - 1) in
+    let y = f p in
+    let p' = Array.map (fun x -> gaussian ~sigma:stepsize () +. x) p in
+    let y' = f p' in
+    let p' = (
+      if y' >= y then p'
+      else if (flat 0. 1.) < (y' /. y) then p'
+      else p
+    ) in
+    s.(i) <- p'
+  done;
+  (* burning phase *)
+  let s' = Array.make n p in
+  for i = 0 to n - 1 do
+    s'.(i) <- s.(a + i * b)
+  done; s'
+
+
 
 
 
