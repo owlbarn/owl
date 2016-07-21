@@ -8,7 +8,7 @@ type t = Gsl.Rng.t
 (** [ Set up random environment ]  *)
 
 let rng =
-  let r = Gsl.Rng.make Gsl.Rng.CMRG in
+  let r = Gsl.Rng.make Gsl.Rng.MT19937 in
   let s = Nativeint.of_float (Unix.gettimeofday () *. 1000000.) in
   Gsl.Rng.set r s; r
 
