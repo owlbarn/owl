@@ -432,27 +432,21 @@ let sort ?(inc=true) x =
     else 0
   ) y; y
 
-(* TODO: optimise *)
 let metropolis_hastings f p n =
   let stepsize = 0.1 in    (* be careful about step size, try 0.01 *)
   let a, b = 1000, 10 in
-  let m = a + b * n in
-  let s = Array.make m p in
-  for i = 1 to m - 1 do
-    let p = s.(i - 1) in
+  let s = Array.make n p in
+  for i = 0 to a + b * n - 1 do
     let p' = Array.map (fun x -> gaussian ~sigma:stepsize () +. x) p in
     let y, y' = f p, f p' in
     let p' = (
       if y' >= y then p'
       else if (flat 0. 1.) < (y' /. y) then p'
-      else p ) in
-    s.(i) <- p'
-  done;
-  (* burn-in and thin phase *)
-  let s' = Array.make n p in
-  for i = 0 to n - 1 do
-    s'.(i) <- s.(a + i * b)
-  done; s'
+      else Array.copy p ) in
+    Array.iteri (fun i x -> p.(i) <- x) p';
+    if (i >= a) && (i mod b = 0) then
+      s.( (i - a) / b ) <- (Array.copy p)
+  done; s
 
 let gibbs_sampling f p n =
   let a, b = 1000, 10 in

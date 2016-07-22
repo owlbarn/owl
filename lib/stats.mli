@@ -31,7 +31,7 @@ val sample : 'a array -> int -> 'a array
 (** [ sample x n ] draw n samples from x with replacement  *)
 
 val metropolis_hastings : (float array -> float) -> float array -> int -> float array array
-(** [ metropolis_hastings f p n ] is Metropolis-Hastings MCMC algorithm *)
+(** [ metropolis_hastings f p n ] is Metropolis-Hastings MCMC algorithm. f is pdf of the p *)
 
 val gibbs_sampling : (float array -> int -> float) -> float array -> int -> float array array
 (** [ gibbs_sampling f p n ] is Gibbs sampler. f is a sampler based on the full conditional function of all variables *)
