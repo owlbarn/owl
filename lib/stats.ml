@@ -454,7 +454,18 @@ let metropolis_hastings f p n =
     s'.(i) <- s.(a + i * b)
   done; s'
 
-let gibbs_sampling = None
+let gibbs_sampling f p n =
+  let a, b = 1000, 10 in
+  let m = a + b * n in
+  let s = Array.make n p in
+  let c = Array.length p in
+  for i = 1 to m - 1 do
+    for j = 0 to c - 1 do
+      p.(j) <- f p j
+    done;
+    if (i >= a) && (i mod b = 0) then
+      s.( (i - a) / b ) <- (Array.copy p)
+  done; s
 
 
 

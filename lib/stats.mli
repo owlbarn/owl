@@ -33,6 +33,8 @@ val sample : 'a array -> int -> 'a array
 val metropolis_hastings : (float array -> float) -> float array -> int -> float array array
 (** [ metropolis_hastings f p n ] is Metropolis-Hastings MCMC algorithm *)
 
+val gibbs_sampling : (float array -> int -> float) -> float array -> int -> float array array
+(** [ gibbs_sampling f p n ] is Gibbs sampler. f is a sampler based on the full conditional function of all variables *)
 
 (** [ Statistics functions ]  *)
 
