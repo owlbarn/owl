@@ -50,6 +50,8 @@ val skew : ?w:float array -> ?mean:float -> ?sd:float -> float array -> float
 
 val kurtosis : ?w:float array -> ?mean:float -> ?sd:float -> float array -> float
 
+val central_moment : int -> float array -> float
+
 val covariance : ?mean0:float -> ?mean1:float -> float array -> float array -> float
 
 val correlation : float array -> float array -> float

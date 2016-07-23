@@ -375,7 +375,12 @@ let kurtosis ?w ?mean ?sd x =
   | None, None -> Gsl.Stats.kurtosis x
   | _, _ -> failwith "not enough arguments"
 
-let moment n x = None
+let central_moment n x =
+  let m = float_of_int n in
+  let u = mean x in
+  let x = Array.map (fun x -> (x -. u) ** m) x in
+  let a = Array.fold_left (+.) 0. x in
+  a /. (float_of_int (Array.length x))
 
 let correlation x0 x1 = Gsl.Stats.correlation x0 x1
 
