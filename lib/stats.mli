@@ -58,6 +58,8 @@ val correlation : float array -> float array -> float
 
 val pearson_r : float array -> float array -> float
 
+val spearman_rho : float array -> float array -> float
+
 val autocorrelation : ?lag:int -> float array -> float
 
 val min : float array -> float
@@ -73,6 +75,9 @@ val max_i : float array -> float * int
 val minmax_i : float array -> float * int * float * int
 
 val sort : ?inc:bool -> float array -> float array
+
+val rank : float array -> float array
+(** [ rank x ] translates each element in x to its ranking *)
 
 (** [ Uniform distribution ]  *)
 

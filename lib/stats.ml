@@ -386,9 +386,29 @@ let correlation x0 x1 = Gsl.Stats.correlation x0 x1
 
 let pearson_r x0 x1 = correlation x0 x1
 
-let kendall_tau = None
+let sort ?(inc=true) x =
+  let y = Array.copy x in
+  let c = if inc then 1 else (-1) in
+  Array.sort (fun a b ->
+    if a < b then (-c)
+    else if a > b then c
+    else 0
+  ) y; y
 
-let spearman_rho = None
+let rank x =
+  let _index a x =
+    let y = ref [||] in
+    let _ = Array.iteri (fun i z ->
+      if z = a then y := Array.append !y [|float_of_int (i + 1)|]
+    ) x in !y
+  in
+  let y = sort ~inc:true x in
+  let y = Array.map (fun z ->
+    let i = _index z y in
+    let a = Array.fold_left (+.) 0. i in
+    let b = float_of_int (Array.length i) in
+    a /. b
+  ) x in y
 
 let autocorrelation ?(lag=1) x =
   let n = Array.length x in
@@ -410,6 +430,15 @@ let covariance ?mean0 ?mean1 x0 x1 =
   | None, Some m1 -> Gsl.Stats.covariance_m (mean x0) x0 m1 x1
   | None, None -> Gsl.Stats.covariance x0 x1
 
+let kendall_tau = None
+
+let spearman_rho x0 x1 =
+  let r0 = rank x0 in
+  let r1 = rank x1 in
+  let a = covariance r0 r1 in
+  let b = (std r0) *. (std r1) in
+  a /. b
+
 let max x = Gsl.Stats.max x
 
 let min x = Gsl.Stats.min x
@@ -427,15 +456,6 @@ let min_i x =
 let minmax_i x =
 let i, j = Gsl.Stats.minmax_index x in
 x.(i), i, x.(j), j
-
-let sort ?(inc=true) x =
-  let y = Array.copy x in
-  let c = if inc then 1 else (-1) in
-  Array.sort (fun a b ->
-    if a < b then (-c)
-    else if a > b then c
-    else 0
-  ) y; y
 
 let metropolis_hastings f p n =
   let stepsize = 0.1 in    (* be careful about step size, try 0.01 *)
