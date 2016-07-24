@@ -58,6 +58,8 @@ val correlation : float array -> float array -> float
 
 val pearson_r : float array -> float array -> float
 
+val kendall_tau : float array -> float array -> float
+
 val spearman_rho : float array -> float array -> float
 
 val autocorrelation : ?lag:int -> float array -> float

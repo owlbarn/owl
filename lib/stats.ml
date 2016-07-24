@@ -430,7 +430,55 @@ let covariance ?mean0 ?mean1 x0 x1 =
   | None, Some m1 -> Gsl.Stats.covariance_m (mean x0) x0 m1 x1
   | None, None -> Gsl.Stats.covariance x0 x1
 
-let kendall_tau = None
+let _concordant x0 x1 =
+  let c = ref 0 in
+  for i = 0 to (Array.length x0) - 1 do
+    for j = 0 to (Array.length x0) - 1 do
+      if (i <> j) && (
+        ((x0.(i) < x0.(j)) && (x1.(i) < x1.(j))) ||
+        ((x0.(i) > x0.(j)) && (x1.(i) > x1.(j))) ) then
+        c := !c + 1
+    done
+  done; (!c / 2)
+
+let _discordant x0 x1 =
+  let c = ref 0 in
+  for i = 0 to (Array.length x0) - 1 do
+    for j = 0 to (Array.length x0) - 1 do
+      if (i <> j) && (
+        ((x0.(i) < x0.(j)) && (x1.(i) > x1.(j))) ||
+        ((x0.(i) > x0.(j)) && (x1.(i) < x1.(j))) ) then
+        c := !c + 1
+    done
+  done; (!c / 2)
+
+let concordant x0 x1 =
+  let c = ref 0 in
+  for i = 0 to (Array.length x0) - 2 do
+    for j = i + 1 to (Array.length x0) - 1 do
+      if (i <> j) && (
+        ((x0.(i) < x0.(j)) && (x1.(i) < x1.(j))) ||
+        ((x0.(i) > x0.(j)) && (x1.(i) > x1.(j))) ) then
+        c := !c + 1
+    done
+  done; !c
+
+let discordant x0 x1 =
+  let c = ref 0 in
+  for i = 0 to (Array.length x0) - 2 do
+    for j = i + 1 to (Array.length x0) - 1 do
+      if (i <> j) && (
+        ((x0.(i) < x0.(j)) && (x1.(i) > x1.(j))) ||
+        ((x0.(i) > x0.(j)) && (x1.(i) < x1.(j))) ) then
+        c := !c + 1
+    done
+  done; !c
+
+let kendall_tau x0 x1 =
+  let a = float_of_int (concordant x0 x1) in
+  let b = float_of_int (discordant x0 x1) in
+  let n = float_of_int (Array.length x0) in
+  2. *. (a -. b) /. (n *. (n -. 1.))
 
 let spearman_rho x0 x1 =
   let r0 = rank x0 in
