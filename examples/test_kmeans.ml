@@ -1,5 +1,5 @@
 module MX = Matrix.Dense
-module LL = Learn
+module LL = Optimise
 
 let _ =
   let x = MX.load "test_kmeans.data" in

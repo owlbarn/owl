@@ -1,5 +1,5 @@
-module M = Matrix.Matrix
-module L = Learn.Cluster
+module M = Matrix.Dense
+module L = Optimise
 
 let test_op s c op =
   let ttime = ref 0. in
@@ -14,7 +14,7 @@ let test_op s c op =
   flush stdout
 
 let test_kmeans () =
-  let z3 = M.random 10000 8 in
+  let z3 = M.uniform 10000 8 in
   L.kmeans z3 3
 
 let _ =

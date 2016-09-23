@@ -3,7 +3,7 @@
 ]  *)
 
 module MX = Matrix.Dense
-module LL = Learn
+module LL = Optimise
 
 let centerise x =
   let open MX in

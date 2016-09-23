@@ -3,7 +3,7 @@
 ]  *)
 
 module MX = Matrix.Dense
-module LL = Learn
+module LL = Optimise
 
 let generate_data () =
   let open MX in

@@ -1,5 +1,6 @@
 all:
 	ocaml setup.ml -build
+	mv *.byte examples/
 	ocaml setup.ml -uninstall
 	ocaml setup.ml -install
 oasis:
@@ -7,7 +8,8 @@ oasis:
 	ocaml setup.ml -configure
 clean:
 	rm -rf _build
+	rm -rf examples/*.byte examples/*.native
 cleanall:
 	rm -rf _build setup.* myocamlbuild.ml _tags
 	rm -rf lib/META lib/*.mldylib lib/*.mllib
-	rm -rf *.byte *.native
+	rm -rf examples/*.byte examples/*.native
