@@ -1,8 +1,8 @@
 all:
 	ocaml setup.ml -build
-	mv *.byte examples/
 	ocaml setup.ml -uninstall
 	ocaml setup.ml -install
+	mv *.byte examples/
 oasis:
 	oasis setup
 	ocaml setup.ml -configure
