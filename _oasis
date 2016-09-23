@@ -46,3 +46,10 @@ Executable test_operation
   CompiledObject: byte
   MainIs:         test_operation.ml
   BuildDepends:   Owl
+
+Executable test_performance
+  Path:           ./examples
+  BuildTools:     ocamlbuild
+  CompiledObject: byte
+  MainIs:         test_performance.ml
+  BuildDepends:   Owl
