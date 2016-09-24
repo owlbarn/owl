@@ -7,7 +7,7 @@
 open Bigarray
 open Types
 
-type mat = Gsl.Matrix.matrix
+type dsmat = Gsl.Matrix.matrix
 
 type area = { a : int; b : int; c : int; d : int }
 
