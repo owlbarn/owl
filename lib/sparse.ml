@@ -3,6 +3,8 @@
 open Bigarray
 open Types
 
+type spmat = spmat_record
+
 let _empty_int_array () = Array1.create int64 c_layout 0
 
 let _of_sp_mat_ptr p =

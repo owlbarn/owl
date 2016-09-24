@@ -1,6 +1,4 @@
-(*
- A library for dsmatrix operations
-*)
+(** [ Dense Matrix ]  *)
 
 type dsmat = Gsl.Matrix.matrix
 
