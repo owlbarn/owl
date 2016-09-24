@@ -1,4 +1,4 @@
-module MX = Matrix.Dense
+module MX = Dense
 module LL = Optimise
 
 let _ =

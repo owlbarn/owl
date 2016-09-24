@@ -4,7 +4,7 @@
   and optimisation module.
 *)
 
-module MX = Matrix.Dense
+module MX = Dense
 
 (** [ Linear regression with single variables ]  *)
 let _linear_single_var ?(i=false) x y =

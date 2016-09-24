@@ -2,7 +2,7 @@
 
 open Plplot
 
-module MX = Matrix.Dense
+module MX = Dense
 
 let plot x y =
   let x = MX.to_array x in

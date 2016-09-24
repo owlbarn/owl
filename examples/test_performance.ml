@@ -1,4 +1,4 @@
-module M = Matrix.Dense
+module M = Dense
 
 let test_op s c op =
   let ttime = ref 0. in

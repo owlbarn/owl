@@ -2,7 +2,7 @@
   test stochastic gradient decent algorithm on dense metrix.
 ]  *)
 
-module MX = Matrix.Dense
+module MX = Dense
 module LL = Optimise
 
 let generate_data () =

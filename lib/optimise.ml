@@ -3,7 +3,7 @@
   Note: C layout row-major matrix
   ]  *)
 
-module MX = Matrix.Dense
+module MX = Dense
 module UT = Utils
 
 (** [

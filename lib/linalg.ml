@@ -1,5 +1,5 @@
 
-module MX = Matrix.Dense
+module MX = Dense
 
 (** [ Helper functions ]  *)
 

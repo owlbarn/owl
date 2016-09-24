@@ -1,4 +1,4 @@
-module M = Matrix.Dense
+module M = Dense
 module L = Optimise
 
 let test_op s c op =
