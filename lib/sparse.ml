@@ -446,9 +446,19 @@ let pp_spmat x =
 
 (** some other uncategorised functions *)
 
-let draw_rows ?(replacement=true) x c = None
+let draw_rows ?(replacement=true) x c =
+  let a = Array.init (row_num x - 1) (fun i -> i) in
+  let l = match replacement with
+    | true  -> Stats.sample a c
+    | false -> Stats.choose a c
+  in rows x l
 
-let draw_cols ?(replacement=true) x c = None
+let draw_cols ?(replacement=true) x c =
+  let a = Array.init (col_num x - 1) (fun i -> i) in
+  let l = match replacement with
+    | true  -> Stats.sample a c
+    | false -> Stats.choose a c
+  in cols x l
 
 
 (** TODO: out of OCaml GC, need to release the memory, refer to gsl_multifit_nlin.ml file. *)

@@ -192,6 +192,6 @@ val print : spmat -> unit
 
 val pp_spmat : spmat -> unit
 
-(** TODO: val draw_rows : *)
+val draw_rows : ?replacement:bool -> spmat -> int -> spmat
 
-(** TODO: val draw_cols : *)
+val draw_cols : ?replacement:bool -> spmat -> int -> spmat
