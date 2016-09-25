@@ -204,9 +204,15 @@ let filteri f x =
 
 let filter f x = filteri (fun _ _ y -> f y) x
 
-let iteri_rows = None
+let iteri_rows f x =
+  for i = 0 to row_num x do
+    f i (row x i)
+  done
 
-let iteri_cols = None
+let iteri_cols f x =
+  for j = 0 to col_num x do
+    f j (col x j)
+  done
 
 let mapi_rows = None
 

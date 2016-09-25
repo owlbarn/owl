@@ -56,9 +56,9 @@ val fold : ('a -> float -> 'a) -> 'a -> spmat -> 'a
 
 val filter : (float -> bool) -> spmat -> (int * int) array
 
-(** TODO: val iteri_rows : *)
+val iteri_rows : (int -> spmat -> unit) -> spmat -> unit
 
-(** TODO: val iteri_cols : *)
+val iteri_cols : (int -> spmat -> unit) -> spmat -> unit
 
 (** TODO: val mapi_rows : *)
 
