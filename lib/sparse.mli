@@ -42,7 +42,7 @@ val col : spmat -> int -> spmat
 
 val rows : spmat -> int array -> spmat
 
-(** TODO: val cols : spmat -> int array -> spmat *)
+val cols : spmat -> int array -> spmat
 
 val iteri : (int -> int -> float -> 'a) -> spmat -> unit
 

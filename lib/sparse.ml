@@ -150,13 +150,20 @@ let col x i =
 let rows x l =
   let m, n = Array.length l, col_num x in
   let y = empty m n in
-  for i = 0 to m - 1 do
+  Array.iteri (fun i i' ->
     for j = 0 to n - 1 do
-      set y i j (get x i j)
+      set y i j (get x i' j)
     done
-  done; y
+  ) l; y
 
-let cols = None
+let cols x l =
+  let m, n = row_num x, Array.length l in
+  let y = empty m n in
+  Array.iteri (fun j j' ->
+    for i = 0 to m - 1 do
+      set y i j (get x i j')
+    done
+  ) l; y
 
 let iteri f x =
   for i = 0 to (row_num x) - 1 do
