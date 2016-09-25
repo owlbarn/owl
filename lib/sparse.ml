@@ -265,17 +265,27 @@ let fold_rows f a x = _fold_basic iter_rows f a x
 
 let fold_cols f a x = _fold_basic iter_cols f a x
 
-let iteri_rows_nz = None
+let iteri_rows_nz f x =
+  iteri_rows (fun i r ->
+    match r.nz = 0 with true  -> () | false -> f i r
+  ) x
 
-let iteri_cols_nz = None
+let iter_rows_nz f x = iteri_rows_nz (fun _ y -> f y) x
+
+let iteri_cols_nz f x =
+  iteri_cols (fun j c ->
+    match c.nz = 0 with true  -> () | false -> f j c
+  ) x
+
+let iter_cols_nz f x = iteri_cols_nz (fun _ y -> f y) x
 
 let mapi_rows_nz = None
 
 let mapi_cols_nz = None
 
-let foldi_rows_nz = None
+let fold_rows_nz f a x = _fold_basic iter_rows_nz f a x
 
-let foldi_cols_nz = None
+let fold_cols_nz f a x = _fold_basic iter_cols_nz f a x
 
 let _exists_basic iter_fun f x =
   try iter_fun (fun y ->

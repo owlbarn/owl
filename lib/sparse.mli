@@ -84,17 +84,21 @@ val filteri_nz : (int -> int -> float -> bool) -> spmat -> (int * int) array
 
 val filter_nz : (float -> bool) -> spmat -> (int * int) array
 
-(** TODO: val iteri_rows_nz : *)
+val iter_rows_nz : (spmat -> unit) -> spmat -> unit
 
-(** TODO: val iteri_cols_nz : *)
+val iteri_rows_nz : (int -> spmat -> unit) -> spmat -> unit
+
+val iter_cols_nz : (spmat -> unit) -> spmat -> unit
+
+val iteri_cols_nz : (int -> spmat -> unit) -> spmat -> unit
 
 (** TODO: val mapi_rows_nz : *)
 
 (** TODO: val mapi_cols_nz : *)
 
-(** TODO: val foldi_rows_nz : *)
+val fold_rows_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
 
-(** TODO: val foldi_cols_nz : *)
+val fold_cols_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
 
 val exists : (float -> bool) -> spmat -> bool
 
