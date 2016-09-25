@@ -1,15 +1,13 @@
 (** [ Install Toplevel Printers ]  *)
 
-module Longident = struct
-	type t =
-		| Lident of string
-		| Ldot of t * string
-		| Lapply of t * t
-end
+type t =
+	| Lident of string
+	| Ldot of t * string
+	| Lapply of t * t
 
 let printers = [
-  Obj.magic Longident.(Ldot (Lident "Dense", "pp_dsmat"));
-  Obj.magic Longident.(Ldot (Lident "Sparse", "pp_spmat"));
+  Obj.magic (Ldot (Lident "Dense", "pp_dsmat"));
+  Obj.magic (Ldot (Lident "Sparse", "pp_spmat"));
 ]
 
 let () =
