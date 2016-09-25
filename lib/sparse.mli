@@ -186,6 +186,8 @@ val of_dense : Dense.dsmat -> spmat
 
 val print : spmat -> unit
 
+val pp_spmat : spmat -> unit
+
 (** TODO: val draw_rows : *)
 
 (** TODO: val draw_cols : *)

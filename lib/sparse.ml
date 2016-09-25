@@ -409,6 +409,8 @@ let print x =
     print_endline ""
   done
 
+let pp_spmat x = print x
+
 (* transform to and from different types *)
 
 let to_triplet x = map (fun y -> y) x

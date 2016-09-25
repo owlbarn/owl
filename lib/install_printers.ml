@@ -6,6 +6,7 @@ let printers =
     "Pretty.Toplevel.pp_fmat";
     "Pretty.Toplevel.pp_cmat";
     "Pretty.Toplevel.pp_imat";
+    "Sparse.pp_spmat";
   ]
 
 let eval_string
