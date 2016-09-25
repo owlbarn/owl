@@ -270,7 +270,7 @@ val dump_binary : dsmat -> string -> unit
 
 val print : dsmat -> unit
 
-val pprint : dsmat -> unit
+val pp_dsmat : dsmat -> unit
 
 (* some short-hand infix operators *)
 

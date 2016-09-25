@@ -1,5 +1,6 @@
 all:
 	ocaml setup.ml -build
+	rm -rf examples/*.byte examples/*.native examples/*.tmp
 	mv test_* examples/
 install:
 	ocaml setup.ml -uninstall

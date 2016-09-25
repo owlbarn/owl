@@ -45,4 +45,4 @@ let _ =
   let _ = Random.self_init () in
   let x, y = generate_data () in
   let p = test_log x y in
-  MX.pprint p;
+  MX.pp_dsmat p;

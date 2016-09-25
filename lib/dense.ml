@@ -571,7 +571,7 @@ let dump_binary x f =  (* FIXME: it does not work!!! *)
 let print x = let open Pretty in
   Format.printf "%a\n" Pretty.pp_fmat x;;
 
-let pprint x = let open Pretty in
+let pp_dsmat x = let open Pretty in
   Format.printf "%a\n" Toplevel.pp_fmat x;;
 
 (* some other uncategorised functions *)

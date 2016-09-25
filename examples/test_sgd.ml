@@ -26,9 +26,9 @@ let test_small () =
   let y = MX.(x $@ p) in
   let q = MX.uniform_int 5 3 in
   let p' = LL.sgd q x y in
-  MX.(pprint (p));
-  MX.(pprint (p'));
-  MX.(pprint (p' -@ p));
+  MX.(pp_dsmat (p));
+  MX.(pp_dsmat (p'));
+  MX.(pp_dsmat (p' -@ p));
   Printf.printf "error ==> %.4f\n" MX.(sum (abs (p'-@ p)))
 
 let test_intercept () =

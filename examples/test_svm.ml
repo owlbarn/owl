@@ -42,4 +42,4 @@ let _ =
   let x, y = generate_data () in
   let p = test_svm x y in
   draw_line p;
-  MX.pprint p;
+  MX.pp_dsmat p;
