@@ -1,4 +1,4 @@
-(* Sparse matrix support *)
+(** [ Sparse matrix support ] *)
 
 open Bigarray
 open Types
@@ -17,7 +17,7 @@ let _of_sp_mat_ptr p =
   let tn = Int64.to_int (getf y sp_size2) in
   let ti = bigarray_of_ptr array1 tz Bigarray.int64 (getf y sp_i) in
   let td = bigarray_of_ptr array1 tz Bigarray.float64 (getf y sp_data) in
-  (* note: p array has different length in triplet and csc format *)
+  (** note: p array has different length in triplet and csc format *)
   let pl = if ty = 0 then tz else tn + 1 in
   let tp = bigarray_of_ptr array1 pl Bigarray.int64 (getf y sp_p) in
   { m = tm; n = tn; i = ti; d = td; p = tp; nz = tz; typ = ty; ptr = p; }
@@ -53,7 +53,7 @@ let allocate_vecptr m =
     vptr = p } in x
 
 
-(* sparse matrix creation function *)
+(** sparse matrix creation function *)
 
 let empty m n =
   let open Matrix_foreign in
@@ -116,7 +116,7 @@ let uniform ?(scale=1.) m n =
   done; x
 
 
-(* matrix manipulations *)
+(** matrix manipulations *)
 
 let copy_to x1 x2 =
   let open Matrix_foreign in
@@ -184,7 +184,8 @@ let iteri f x =
 
 let iter f x = iteri (fun _ _ y -> f y) x
 
-let mapi f x = (* note: if f returns zero, no actual value will be added into sparse matrix. *)
+let mapi f x =
+  (** note: if f returns zero, no actual value will be added into sparse matrix. *)
   let y = empty (row_num x) (col_num x) in
   iteri (fun i j z -> set y i j (f i j z)) x; y
 
@@ -294,7 +295,7 @@ let not_exists_nz f x = not (exists_nz f x)
 
 let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
 
-(* matrix mathematical operations *)
+(** matrix mathematical operations *)
 
 let mul_scalar x1 y =
   let open Matrix_foreign in
@@ -382,7 +383,7 @@ let equal_or_greater x1 x2 = is_nonnegative (sub x1 x2)
 
 let equal_or_smaller x1 x2 = equal_or_greater x2 x1
 
-(* advanced matrix methematical operations *)
+(** advanced matrix methematical operations *)
 
 let diag x =
   let m = Pervasives.min (row_num x) (col_num x) in
@@ -399,19 +400,7 @@ let qr x = None
 
 let lu x = None
 
-(* formatted input / output operations *)
-
-let print x =
-  for i = 0 to (row_num x) - 1 do
-    for j = 0 to (col_num x) - 1 do
-      Printf.printf "%.2f " (get x i j)
-    done;
-    print_endline ""
-  done
-
-let pp_spmat x = print x
-
-(* transform to and from different types *)
+(** transform to and from different types *)
 
 let to_triplet x = map (fun y -> y) x
 
@@ -428,16 +417,33 @@ let of_dense x =
   let _ = gsl_spmatrix_d2sp y.ptr (mat_to_matptr x) in
   _update_rec_from_ptr y
 
-(* some other uncategorised functions *)
+(** formatted input / output operations *)
+
+let print x =
+  for i = 0 to (row_num x) - 1 do
+    for j = 0 to (col_num x) - 1 do
+      Printf.printf "%.2f " (get x i j)
+    done;
+    print_endline ""
+  done
+
+let pp_spmat x =
+  let m, n = shape x in
+  let c = nnz x in
+  let p = 100. *. (float_of_int c) /. (float_of_int (m * n)) in
+  let _ = if m < 100 && n < 100 then Dense.pp_dsmat (to_dense x) in
+  Printf.printf "shape = (%i,%i); nnz = %i (%.1f%%)\n" m n c p
+
+(** some other uncategorised functions *)
 
 let draw_rows ?(replacement=true) x c = None
 
 let draw_cols ?(replacement=true) x c = None
 
 
-(* TODO: out of OCaml GC, need to release the memory, refer to gsl_multifit_nlin.ml file. *)
+(** TODO: out of OCaml GC, need to release the memory, refer to gsl_multifit_nlin.ml file. *)
 
 
 
 
-(* ends here *)
+(** ends here *)
