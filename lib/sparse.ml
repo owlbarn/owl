@@ -106,6 +106,16 @@ let uniform_int ?(a=0) ?(b=99) m n =
     set x i j (float_of_int (Stats.uniform_int ~a ~b ()))
   done; x
 
+let uniform ?(scale=1.) m n =
+  let c = int_of_float ((float_of_int (m * n)) *. 0.1) in
+  let x = empty m n in
+  for k = 0 to c do
+    let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
+    let j = Stats.uniform_int ~a:0 ~b:(n-1) () in
+    set x i j (Stats.uniform () *. scale)
+  done; x
+
+
 (* matrix manipulations *)
 
 let copy_to x1 x2 =

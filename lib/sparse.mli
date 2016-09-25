@@ -18,6 +18,8 @@ val nnz : spmat -> int
 
 val eye : int -> spmat
 
+val uniform : ?scale:float -> int -> int -> spmat
+
 val uniform_int : ?a:int -> ?b:int -> int -> int -> spmat
 
 (** matrix manipulations *)
