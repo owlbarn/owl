@@ -14,7 +14,7 @@ let test_op s c op =
 
 let _ =
   let _ = Random.self_init () in
-  let m, n = 5000, 5000 and c = 5 in
+  let m, n = 5000, 5000 and c = 1 in
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
@@ -28,8 +28,12 @@ let _ =
   test_op "rows       " c (fun () -> M.rows x [|1;2|]);
   test_op "map        " 0 (fun () -> M.map (fun y -> 0.) x);
   test_op "mapi       " 0 (fun () -> M.mapi (fun _ _ y -> 0.) x);
-  test_op "iteri      " 1 (fun () -> M.iteri (fun _ _ y -> 0.) x);
-  test_op "filter     " c (fun () -> M.filter (fun y -> false) x);
-  test_op "fold       " c (fun () -> M.fold (fun y z -> ()) () x);
+  test_op "iteri      " 0 (fun () -> M.iteri (fun _ _ y -> 0.) x);
+  test_op "filter     " 0 (fun () -> M.filter (fun y -> false) x);
+  test_op "fold       " 0 (fun () -> M.fold (fun y z -> ()) () x);
   test_op "for_all    " c (fun () -> M.for_all ((>) min_float) x);
+  test_op "iteri_rows " c (fun () -> M.iteri_rows (fun _ y -> ()) x);
+  test_op "iteri_cols " c (fun () -> M.iteri_cols (fun _ y -> ()) x);
+  test_op "mapi_rows  " c (fun () -> M.mapi_rows (fun _ _ -> M.uniform 1 100) x);
+  test_op "mapi_cols  " c (fun () -> M.mapi_cols (fun _ _ -> M.uniform 100 1) x);
   print_endline (Bytes.make 60 '+');

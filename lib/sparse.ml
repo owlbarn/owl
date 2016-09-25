@@ -205,22 +205,18 @@ let filteri f x =
 let filter f x = filteri (fun _ _ y -> f y) x
 
 let iteri_rows f x =
-  for i = 0 to row_num x do
+  for i = 0 to (row_num x) - 1 do
     f i (row x i)
   done
 
+let iter_rows f x = iteri_rows (fun _ y -> f y) x
+
 let iteri_cols f x =
-  for j = 0 to col_num x do
+  for j = 0 to (col_num x) - 1 do
     f j (col x j)
   done
 
-let mapi_rows = None
-
-let mapi_cols = None
-
-let foldi_rows = None
-
-let foldi_cols = None
+let iter_cols f x = iteri_cols (fun _ y -> f y) x
 
 let iteri_nz f x =
   let x = if _is_csc_format x then x else to_csc x in
@@ -247,6 +243,26 @@ let filteri_nz f x =
   ) x; !r
 
 let filter_nz f x = filteri_nz (fun _ _ y -> f y) x
+
+let mapi_rows f x =
+  let m = row_num x in
+  let n = col_num (f 0 (row x 0)) in
+  let y = empty m n in
+  iteri_rows (fun i r ->
+    iteri_nz (fun _ j z -> set y i j z) r
+  ) x; y
+
+let mapi_cols f x =
+  let m = row_num (f 0 (col x 0)) in
+  let n = col_num x in
+  let y = empty m n in
+  iteri_cols (fun j c ->
+    iteri_nz (fun i _ z -> set y i j z) c
+  ) x; y
+
+let fold_rows f a x = _fold_basic iter_rows f a x
+
+let fold_cols f a x = _fold_basic iter_cols f a x
 
 let iteri_rows_nz = None
 

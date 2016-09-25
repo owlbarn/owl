@@ -48,25 +48,29 @@ val cols : spmat -> int array -> spmat
 
 val iteri : (int -> int -> float -> 'a) -> spmat -> unit
 
-val mapi : (int -> int -> float -> float) -> spmat -> spmat
-
 val map : (float -> float) -> spmat -> spmat
+
+val mapi : (int -> int -> float -> float) -> spmat -> spmat
 
 val fold : ('a -> float -> 'a) -> 'a -> spmat -> 'a
 
 val filter : (float -> bool) -> spmat -> (int * int) array
 
+val iter_rows : (spmat -> unit) -> spmat -> unit
+
 val iteri_rows : (int -> spmat -> unit) -> spmat -> unit
+
+val iter_cols : (spmat -> unit) -> spmat -> unit
 
 val iteri_cols : (int -> spmat -> unit) -> spmat -> unit
 
-(** TODO: val mapi_rows : *)
+val mapi_rows : (int -> spmat -> spmat) -> spmat -> spmat
 
-(** TODO: val mapi_cols : *)
+val mapi_cols : (int -> spmat -> spmat) -> spmat -> spmat
 
-(** TODO: val foldi_rows : *)
+val fold_rows : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
 
-(** TODO: val foldi_cols : *)
+val fold_cols : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
 
 val iteri_nz : (int -> int -> float -> 'a) -> spmat -> unit
 
