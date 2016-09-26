@@ -37,6 +37,12 @@ let _update_rec_from_ptr x =
   let _ = x.p <- (bigarray_of_ptr array1 pl Bigarray.int64 (getf y sp_p)) in
   x
 
+let _update_rec_after_set x =
+  let open Matrix_foreign in
+  let open Ctypes in
+  let y = !@ (x.ptr) in
+  let _ = x.nz <- Int64.to_int (getf y sp_nz) in x
+
 let _is_csc_format x = x.typ = 1
 
 let allocate_vecptr m =
@@ -68,13 +74,16 @@ let empty_csc m n =
   _of_sp_mat_ptr x
 
 let set x i j y =
-  (* FIXME: must be in triplet form *)
+  (* FIXME: must be in triplet form; _update_rec_after_set *)
   let open Matrix_foreign in
   let _ = gsl_spmatrix_set x.ptr i j y in
-  let _ = _update_rec_from_ptr x in ()
+  let _ = _update_rec_after_set x in ()
+
+let set_without_update_rec x i j y =
+  let open Matrix_foreign in
+  let _ = gsl_spmatrix_set x.ptr i j y in ()
 
 let get x i j =
-  (* FIXME: may be in both forms *)
   let open Matrix_foreign in
   gsl_spmatrix_get x.ptr i j
 
@@ -186,7 +195,8 @@ let iter f x = iteri (fun _ _ y -> f y) x
 let mapi f x =
   (** note: if f returns zero, no actual value will be added into sparse matrix. *)
   let y = empty (row_num x) (col_num x) in
-  iteri (fun i j z -> set y i j (f i j z)) x; y
+  iteri (fun i j z -> set_without_update_rec y i j (f i j z)) x;
+  _update_rec_from_ptr y
 
 let map f x = mapi (fun _ _ y -> f y) x
 

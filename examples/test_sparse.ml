@@ -29,7 +29,7 @@ let _ =
   test_op "row           " c (fun () -> M.row x (m-1));
   test_op "cols          " c (fun () -> M.cols x [|1;2|]);
   test_op "rows          " c (fun () -> M.rows x [|1;2|]);
-  test_op "mapi          " 0 (fun () -> M.mapi (fun _ _ y -> 0.) x);
+  test_op "mapi          " c (fun () -> M.mapi (fun _ _ y -> 0.) x);
   test_op "mapi_nz       " c (fun () -> M.mapi_nz (fun _ _ y -> 0.) x);
   test_op "iteri         " c (fun () -> M.iteri (fun _ _ y -> 0.) x);
   test_op "iteri_nz      " c (fun () -> M.iteri_nz (fun _ _ y -> ()) x);
