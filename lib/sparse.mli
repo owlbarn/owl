@@ -6,8 +6,6 @@ type spmat
 
 val empty : int -> int -> spmat
 
-val empty_csc : int -> int -> spmat
-
 val shape : spmat -> int * int
 
 val row_num : spmat -> int
@@ -29,8 +27,6 @@ val set : spmat -> int -> int -> float -> unit
 val get : spmat -> int -> int -> float
 
 val reset : spmat -> unit
-
-val copy_to : spmat -> spmat -> spmat
 
 val clone : spmat -> spmat
 

@@ -91,6 +91,8 @@ let col_num x = x.n
 
 let nnz x = x.nz
 
+let density = None
+
 let eye n =
   let x = empty n n in
   for i = 0 to (row_num x) - 1 do
@@ -123,17 +125,12 @@ let copy_to x1 x2 =
   let _ = gsl_spmatrix_memcpy x2.ptr x1.ptr in
   _update_rec_from_ptr x2
 
-let clone x =
-  let y = if _is_csc_format x
-    then empty_csc (row_num x) (col_num x)
-    else empty (row_num x) (col_num x) in
-  let _ = copy_to x y in y
-
 let to_csc x =
   let open Matrix_foreign in
-  let y = if _is_csc_format x then clone x
-  else let p = gsl_spmatrix_compcol x.ptr in _of_sp_mat_ptr p
-  in y
+  let m, n = shape x in
+  match _is_csc_format x with
+  | true  -> let y = empty_csc m n in copy_to x y
+  | false -> let p = gsl_spmatrix_compcol x.ptr in _of_sp_mat_ptr p
 
 let transpose x =
   let open Matrix_foreign in
@@ -304,6 +301,12 @@ let exists_nz f x = _exists_basic iter_nz f x
 let not_exists_nz f x = not (exists_nz f x)
 
 let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
+
+let clone x =
+  let y = empty (row_num x) (col_num x) in
+  match _is_csc_format x with
+  | true  -> iteri_nz (fun i j z ->  set y i j z) x; y
+  | false -> copy_to x y
 
 (** matrix mathematical operations *)
 
