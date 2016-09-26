@@ -479,10 +479,6 @@ let shuffle_cols = None
 
 let shuffle = None
 
-let test () =
-  let x = empty_csc 100 100 in
-  let _ = print_int (Array1.dim x.d) in
-  ()
 
 (** TODO: out of OCaml GC, need to release the memory, refer to gsl_multifit_nlin.ml file. *)
 

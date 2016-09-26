@@ -195,5 +195,3 @@ val pp_spmat : spmat -> unit
 val draw_rows : ?replacement:bool -> spmat -> int -> spmat
 
 val draw_cols : ?replacement:bool -> spmat -> int -> spmat
-
-val test : unit -> unit
