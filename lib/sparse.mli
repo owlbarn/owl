@@ -2,7 +2,7 @@
 
 type spmat
 
-(** sparse matrix creation function *)
+(** sparse matrix creation and basic functions *)
 
 val empty : int -> int -> spmat
 
@@ -13,6 +13,8 @@ val row_num : spmat -> int
 val col_num : spmat -> int
 
 val nnz : spmat -> int
+
+val density : spmat -> float
 
 val eye : int -> spmat
 

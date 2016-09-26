@@ -91,7 +91,9 @@ let col_num x = x.n
 
 let nnz x = x.nz
 
-let density = None
+let density x =
+  let m, n, c = row_num x, col_num x, nnz x in
+  (float_of_int c) /. (float_of_int (m * n))
 
 let eye n =
   let x = empty n n in
@@ -453,7 +455,7 @@ let print x =
 let pp_spmat x =
   let m, n = shape x in
   let c = nnz x in
-  let p = 100. *. (float_of_int c) /. (float_of_int (m * n)) in
+  let p = 100. *. (density x) in
   let _ = if m < 100 && n < 100 then Dense.pp_dsmat (to_dense x) in
   Printf.printf "shape = (%i,%i); nnz = %i (%.1f%%)\n" m n c p
 
