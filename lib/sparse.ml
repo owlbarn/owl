@@ -341,10 +341,9 @@ let sub x1 x2 =
   add x1 x2
 
 let mul x1 x2 =
-  (** TODO: optimize ... *)
-  mapi_nz (fun i j y ->
-    (get x2 i j) *. y
-  ) x1
+  match (nnz x1) < (nnz x2) with
+  | true  -> mapi_nz (fun i j y -> (get x2 i j) *. y) x1
+  | false -> mapi_nz (fun i j y -> (get x1 i j) *. y) x2
 
 let div x1 x2 =
   mapi_nz (fun i j y ->
@@ -386,7 +385,6 @@ let min x = fst (minmax x)
 let max x = snd (minmax x)
 
 let is_equal x1 x2 =
-  (** TODO: optimise ... *)
   let open Matrix_foreign in
   (gsl_spmatrix_equal x1.ptr x2.ptr) = 1
 

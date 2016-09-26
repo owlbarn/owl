@@ -36,7 +36,7 @@ let _ =
   test_op "filter        " c (fun () -> M.filter (fun y -> false) x);
   test_op "filter_nz     " c (fun () -> M.filter_nz (fun y -> false) x);
   test_op "fold          " c (fun () -> M.fold (fun y z -> ()) () x);
-  (** fold_nz *)
+  test_op "fold_nz       " c (fun () -> M.fold_nz (fun y z -> ()) () x);
   test_op "for_all       " c (fun () -> M.for_all ((>) min_float) x);
   test_op "iteri_rows    " 0 (fun () -> M.iteri_rows (fun _ y -> ()) x);
   test_op "iteri_rows_nz " 0 (fun () -> M.iteri_rows_nz (fun _ y -> ()) x);
