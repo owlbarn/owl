@@ -229,8 +229,16 @@ let iteri_nz f x =
 let iter_nz f x = iteri_nz (fun _ _ y -> f y) x
 
 let mapi_nz f x =
-  let y = empty (row_num x) (col_num x) in
-  iteri_nz (fun i j z -> set y i j (f i j z)) x; y
+  let x = if _is_csc_format x then x else to_csc x in
+  let y = empty_csc (row_num x) (col_num x) in
+  let _ = copy_to x y in
+  for j = 0 to y.n - 1 do
+    for k = Int64.to_int (Array1.get y.p j) to (Int64.to_int (Array1.get y.p (j + 1))) - 1 do
+      let i = Int64.to_int (Array1.get y.i k) in
+      let z = Array1.get y.d k in
+      Array1.set y.d k (f i j z)
+    done
+  done; y
 
 let map_nz f x = mapi_nz (fun _ _ y -> f y) x
 
