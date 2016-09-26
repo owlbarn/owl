@@ -460,6 +460,12 @@ let draw_cols ?(replacement=true) x c =
     | false -> Stats.choose a c
   in cols x l
 
+let shuffle_rows = None
+
+let shuffle_cols = None
+
+let shuffle = None
+
 
 (** TODO: out of OCaml GC, need to release the memory, refer to gsl_multifit_nlin.ml file. *)
 

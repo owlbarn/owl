@@ -598,6 +598,7 @@ let semidef n =
   let x = uniform n n in
   dot (transpose x) x
 
+(** TODO: use stats to rewrite ... *)
 let draw_rows ?(replacement=true) x c =
   let open Utils in
   let m, n = shape x in
@@ -606,6 +607,7 @@ let draw_rows ?(replacement=true) x c =
     else sublist 0 (c-1) (shuffle (range 0 (m-1))) in
   rows x l, l
 
+(** TODO: use stats to rewrite ... *)
 let draw_cols ?(replacement=true) x c =
   let open Utils in
   let m, n = shape x in
