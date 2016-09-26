@@ -341,6 +341,7 @@ let sub x1 x2 =
   add x1 x2
 
 let mul x1 x2 =
+  (** TODO: optimize ... *)
   mapi_nz (fun i j y ->
     (get x2 i j) *. y
   ) x1
@@ -351,7 +352,7 @@ let div x1 x2 =
     if z = 0. then 0. else (y /. z)
   ) x1
 
-let abs x = map (abs_float) x
+let abs x = map_nz (abs_float) x
 
 let neg x = mul_scalar x (-1.)
 
@@ -385,6 +386,7 @@ let min x = fst (minmax x)
 let max x = snd (minmax x)
 
 let is_equal x1 x2 =
+  (** TODO: optimise ... *)
   let open Matrix_foreign in
   (gsl_spmatrix_equal x1.ptr x2.ptr) = 1
 
