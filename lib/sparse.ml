@@ -107,8 +107,9 @@ let density x =
 let eye n =
   let x = empty n n in
   for i = 0 to (row_num x) - 1 do
-      set x i i 1.
-  done; x
+      set_without_update_rec x i i 1.
+  done;
+  _update_rec_from_ptr x
 
 let uniform_int ?(a=0) ?(b=99) m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.1) in
@@ -117,7 +118,8 @@ let uniform_int ?(a=0) ?(b=99) m n =
     let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
     let j = Stats.uniform_int ~a:0 ~b:(n-1) () in
     set_without_update_rec x i j (float_of_int (Stats.uniform_int ~a ~b ()))
-  done; _update_rec_from_ptr x
+  done;
+  _update_rec_from_ptr x
 
 let uniform ?(scale=1.) m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.1) in
@@ -126,7 +128,8 @@ let uniform ?(scale=1.) m n =
     let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
     let j = Stats.uniform_int ~a:0 ~b:(n-1) () in
     set_without_update_rec x i j (Stats.uniform () *. scale)
-  done; _update_rec_from_ptr x
+  done;
+  _update_rec_from_ptr x
 
 
 (** matrix manipulations *)
@@ -156,32 +159,36 @@ let transpose x =
 let row x i =
   let y = empty 1 (col_num x) in
   for j = 0 to (col_num x) - 1 do
-    set y 0 j (get x i j)
-  done; y
+    set_without_update_rec y 0 j (get x i j)
+  done;
+  _update_rec_from_ptr y
 
 let col x i =
   let y = empty (row_num x) 1 in
   for j = 0 to (row_num x) - 1 do
-    set y j 0 (get x j i)
-  done; y
+    set_without_update_rec y j 0 (get x j i)
+  done;
+  _update_rec_from_ptr y
 
 let rows x l =
   let m, n = Array.length l, col_num x in
   let y = empty m n in
   Array.iteri (fun i i' ->
     for j = 0 to n - 1 do
-      set y i j (get x i' j)
+      set_without_update_rec y i j (get x i' j)
     done
-  ) l; y
+  ) l;
+  _update_rec_from_ptr y
 
 let cols x l =
   let m, n = row_num x, Array.length l in
   let y = empty m n in
   Array.iteri (fun j j' ->
     for i = 0 to m - 1 do
-      set y i j (get x i j')
+      set_without_update_rec y i j (get x i j')
     done
-  ) l; y
+  ) l;
+  _update_rec_from_ptr y
 
 let iteri f x =
   for i = 0 to (row_num x) - 1 do
