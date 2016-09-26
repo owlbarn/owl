@@ -195,3 +195,39 @@ val pp_spmat : spmat -> unit
 val draw_rows : ?replacement:bool -> spmat -> int -> spmat
 
 val draw_cols : ?replacement:bool -> spmat -> int -> spmat
+
+(** short-hand infix operators *)
+
+val ( +@ ) : spmat -> spmat -> spmat
+
+val ( -@ ) : spmat -> spmat -> spmat
+
+val ( *@ ) : spmat -> spmat -> spmat
+
+val ( /@ ) : spmat -> spmat -> spmat
+
+val ( $@ ) : spmat -> spmat -> spmat
+
+val ( **@ ) : spmat -> float -> spmat
+
+val ( *$ ) : spmat -> float -> spmat
+
+val ( /$ ) : spmat -> float -> spmat
+
+val ( $* ) : float -> spmat -> spmat
+
+val ( $/ ) : float -> spmat -> spmat
+
+val ( =@ ) : spmat -> spmat -> bool
+
+val ( >@ ) : spmat -> spmat -> bool
+
+val ( <@ ) : spmat -> spmat -> bool
+
+val ( <>@ ) : spmat -> spmat -> bool
+
+val ( >=@ ) : spmat -> spmat -> bool
+
+val ( <=@ ) : spmat -> spmat -> bool
+
+(* val ( @@ ) : (float -> float) -> dsmat -> dsmat *)

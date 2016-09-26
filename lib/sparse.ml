@@ -386,6 +386,8 @@ let sum x = fold_nz (+.) 0. x
 
 let average x = (sum x) /. (float_of_int (x.m * x.n))
 
+let power x c = map_nz (fun y -> y ** c) x
+
 let is_zero x = x.nz = 0
 
 let is_positive x =
@@ -496,6 +498,39 @@ let shuffle_cols = None
 
 let shuffle = None
 
+(** short-hand infix operators *)
+
+let ( +@ ) = add
+
+let ( -@ ) = sub
+
+let ( *@ ) = mul
+
+let ( /@ ) = div
+
+let ( $@ ) = dot
+
+let ( **@ ) = power
+
+let ( *$ ) x a = mul_scalar x a
+
+let ( $* ) a x = mul_scalar x a
+
+let ( /$ ) x a = div_scalar x a
+
+let ( $/ ) a x = div_scalar x a
+
+let ( =@ ) = is_equal
+
+let ( >@ ) = is_greater
+
+let ( <@ ) = is_smaller
+
+let ( <>@ ) = is_unequal
+
+let ( >=@ ) = equal_or_greater
+
+let ( <=@ ) = equal_or_smaller
 
 (** TODO: out of OCaml GC, need to release the memory, refer to gsl_multifit_nlin.ml file. *)
 
