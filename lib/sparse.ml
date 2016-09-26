@@ -427,11 +427,9 @@ let lu x = None
 
 (** transform to and from different types *)
 
-let to_triplet x = map (fun y -> y) x
-
 let to_dense x =
   let open Matrix_foreign in
-  let x = if _is_csc_format x then to_triplet x else x in
+  let x = if _is_csc_format x then clone x else x in
   let y = gsl_matrix_alloc (row_num x) (col_num x) in
   let _ = gsl_spmatrix_sp2d y x.ptr in
   matptr_to_mat y (row_num x) (col_num x)
@@ -481,6 +479,10 @@ let shuffle_cols = None
 
 let shuffle = None
 
+let test () =
+  let x = empty_csc 100 100 in
+  let _ = print_int (Array1.dim x.d) in
+  ()
 
 (** TODO: out of OCaml GC, need to release the memory, refer to gsl_multifit_nlin.ml file. *)
 

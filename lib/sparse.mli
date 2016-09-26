@@ -182,10 +182,6 @@ val trace : spmat -> float
 
 (** transform to and from different types *)
 
-val to_csc : spmat -> spmat
-
-val to_triplet : spmat -> spmat
-
 val to_dense : spmat -> Dense.dsmat
 
 val of_dense : Dense.dsmat -> spmat
@@ -199,3 +195,5 @@ val pp_spmat : spmat -> unit
 val draw_rows : ?replacement:bool -> spmat -> int -> spmat
 
 val draw_cols : ?replacement:bool -> spmat -> int -> spmat
+
+val test : unit -> unit
