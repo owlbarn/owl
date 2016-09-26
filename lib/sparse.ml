@@ -116,8 +116,8 @@ let uniform_int ?(a=0) ?(b=99) m n =
   for k = 0 to c do
     let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
     let j = Stats.uniform_int ~a:0 ~b:(n-1) () in
-    set x i j (float_of_int (Stats.uniform_int ~a ~b ()))
-  done; x
+    set_without_update_rec x i j (float_of_int (Stats.uniform_int ~a ~b ()))
+  done; _update_rec_from_ptr x
 
 let uniform ?(scale=1.) m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.1) in
@@ -125,8 +125,8 @@ let uniform ?(scale=1.) m n =
   for k = 0 to c do
     let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
     let j = Stats.uniform_int ~a:0 ~b:(n-1) () in
-    set x i j (Stats.uniform () *. scale)
-  done; x
+    set_without_update_rec x i j (Stats.uniform () *. scale)
+  done; _update_rec_from_ptr x
 
 
 (** matrix manipulations *)
