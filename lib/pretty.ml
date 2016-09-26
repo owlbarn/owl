@@ -76,14 +76,14 @@ module Context = struct
   type t = int
 
   let create n =
-    if n < 1 then failwith "Lacaml.Io.Context.create: n < 1"
+    if n < 1 then failwith "Context.create: n < 1"
     else n
 
   let ellipsis_default = ref "..."
 
   let vertical_default, horizontal_default =
     (** TODO: check terminal type and auto configure the size *)
-    let context = if !Sys.interactive then Some 8 else None in
+    let context = if !Sys.interactive then Some 5 else None in
     ref context, ref context
 
   let set_dim_defaults opt_n =
