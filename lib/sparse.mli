@@ -74,6 +74,8 @@ val iter_nz : (float -> 'a) -> spmat -> unit
 
 val mapi_nz : (int -> int -> float -> float) -> spmat -> spmat
 
+val map_nz : (float -> float) -> spmat -> spmat
+
 val fold_nz : ('a -> float -> 'a) -> 'a -> spmat -> 'a
 
 val filteri_nz : (int -> int -> float -> bool) -> spmat -> (int * int) array

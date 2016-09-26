@@ -232,6 +232,8 @@ let mapi_nz f x =
   let y = empty (row_num x) (col_num x) in
   iteri_nz (fun i j z -> set y i j (f i j z)) x; y
 
+let map_nz f x = mapi_nz (fun _ _ y -> f y) x
+
 let fold_nz f a x = _fold_basic iter_nz f a x
 
 let filteri_nz f x =
