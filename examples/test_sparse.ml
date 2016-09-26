@@ -22,7 +22,7 @@ let _ =
   let z = M.add x x in
   test_op "empty         " c (fun () -> M.empty m n);
   test_op "eye           " c (fun () -> M.eye m);
-  test_op "uniform       " 1 (fun () -> M.uniform m n);
+  test_op "uniform       " c (fun () -> M.uniform m n);
   test_op "clone trt     " c (fun () -> M.clone x);
   test_op "clone csc     " c (fun () -> M.clone z);
   test_op "col           " c (fun () -> M.col x (n-1));
@@ -38,12 +38,12 @@ let _ =
   test_op "fold          " c (fun () -> M.fold (fun y z -> ()) () x);
   test_op "fold_nz       " c (fun () -> M.fold_nz (fun y z -> ()) () x);
   test_op "for_all       " c (fun () -> M.for_all ((>) min_float) x);
-  test_op "iteri_rows    " 0 (fun () -> M.iteri_rows (fun _ y -> ()) x);
-  test_op "iteri_rows_nz " 0 (fun () -> M.iteri_rows_nz (fun _ y -> ()) x);
-  test_op "iteri_cols    " 0 (fun () -> M.iteri_cols (fun _ y -> ()) x);
-  test_op "iteri_cols_nz " 0 (fun () -> M.iteri_cols_nz (fun _ y -> ()) x);
-  test_op "mapi_rows     " 0 (fun () -> M.mapi_rows (fun _ _ -> M.uniform 1 100) x);
-  test_op "mapi_cols     " 0 (fun () -> M.mapi_cols (fun _ _ -> M.uniform 100 1) x);
+  test_op "iteri_rows    " c (fun () -> M.iteri_rows (fun _ y -> ()) x);
+  test_op "iteri_rows_nz " c (fun () -> M.iteri_rows_nz (fun _ y -> ()) x);
+  test_op "iteri_cols    " c (fun () -> M.iteri_cols (fun _ y -> ()) x);
+  test_op "iteri_cols_nz " c (fun () -> M.iteri_cols_nz (fun _ y -> ()) x);
+  test_op "mapi_rows     " c (fun () -> M.mapi_rows (fun _ _ -> M.uniform 1 100) x);
+  test_op "mapi_cols     " c (fun () -> M.mapi_cols (fun _ _ -> M.uniform 100 1) x);
   test_op "mul_scalar    " c (fun () -> M.mul_scalar x 2.);
   test_op "div_scalar    " c (fun () -> M.div_scalar x 2.);
   test_op "add           " c (fun () -> M.add x y);
