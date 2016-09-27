@@ -333,6 +333,19 @@ let clone x =
   | true  -> iteri_nz (fun i j z -> set_without_update_rec y i j z) x; _update_rec_from_ptr y
   | false -> copy_to x y
 
+let nnz_rows x =
+  let s = ref IntSet.empty in
+  let _ = iteri_nz (fun i _ _ -> s := IntSet.add (Int64.of_int i) !s) x in
+  IntSet.elements !s |> List.map (fun y -> Int64.to_int y) |> Array.of_list
+
+let nnz_cols x =
+  let s = ref IntSet.empty in
+  let _ = iteri_nz (fun _ j _ -> s := IntSet.add (Int64.of_int j) !s) x in
+  IntSet.elements !s |> List.map (fun y -> Int64.to_int y) |> Array.of_list
+
+let row_num_nz x = nnz_rows x |> Array.length
+
+let col_num_nz x = nnz_cols x |> Array.length
 
 (** matrix mathematical operations *)
 

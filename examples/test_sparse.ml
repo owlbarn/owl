@@ -24,6 +24,8 @@ let _ =
   test_op "eye           " c (fun () -> M.eye m);
   test_op "binary        " c (fun () -> M.binary m n);
   test_op "uniform       " c (fun () -> M.uniform m n);
+  test_op "nnz_rows      " c (fun () -> M.nnz_rows z);
+  test_op "row_num_nz    " c (fun () -> M.row_num_nz z);
   test_op "clone trt     " c (fun () -> M.clone x);
   test_op "clone csc     " c (fun () -> M.clone z);
   test_op "col           " c (fun () -> M.col x (n-1));
