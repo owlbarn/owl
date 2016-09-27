@@ -533,11 +533,6 @@ let of_array x m n = Gsl.Matrix.of_array x m n
 
 let of_arrays x = Gsl.Matrix.of_arrays x
 
-(** TODO: sparse matrices *)
-let to_sparse x = None
-
-let of_sparse x = None
-
 let save_txt x f =
   let h = open_out f in
   iter_rows (fun y ->  (* TODO: 64-bit -> 16 digits *)
@@ -601,25 +596,20 @@ let semidef n =
   let x = uniform n n in
   dot (transpose x) x
 
-(** TODO: use stats to rewrite ... *)
 let draw_rows ?(replacement=true) x c =
-  let open Utils in
-  let m, n = shape x in
-  let l = if replacement = true then
-    Array.map (fun _ -> Random.int (m-1)) (range 1 c)
-    else sublist 0 (c-1) (shuffle (range 0 (m-1))) in
-  rows x l, l
+  let a = Array.init (row_num x - 1) (fun i -> i) in
+  let l = match replacement with
+    | true  -> Stats.sample a c
+    | false -> Stats.choose a c
+  in rows x l, l
 
-(** TODO: use stats to rewrite ... *)
 let draw_cols ?(replacement=true) x c =
-  let open Utils in
-  let m, n = shape x in
-  let l = if replacement = true then
-    Array.map (fun _ -> Random.int (n-1)) (range 1 c)
-    else sublist 0 (c-1) (shuffle (range 0 (n-1))) in
-  cols x l, l
+  let a = Array.init (col_num x - 1) (fun i -> i) in
+  let l = match replacement with
+    | true  -> Stats.sample a c
+    | false -> Stats.choose a c
+  in cols x l, l
 
-(** TODO: use permutation_matrix to rewrite *)
 let shuffle_rows x =
   let y = clone x in
   let m, n = shape x in
