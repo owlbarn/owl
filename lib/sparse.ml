@@ -416,9 +416,12 @@ let min x = fst (minmax x)
 let max x = snd (minmax x)
 
 let is_equal x1 x2 =
-  (** FIXME: currently cannot compare different storage format *)
   let open Matrix_foreign in
-  (gsl_spmatrix_equal x1.ptr x2.ptr) = 1
+  let x2 = match (_is_csc_format x1), (_is_csc_format x2) with
+    | true, false -> to_csc x2
+    | false, true -> clone x2
+    | _ -> x2
+  in (gsl_spmatrix_equal x1.ptr x2.ptr) = 1
 
 let is_unequal x1 x2 = not (is_equal x1 x2)
 
