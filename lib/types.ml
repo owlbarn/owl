@@ -11,8 +11,6 @@ type float_array1 = (float, float64_elt, c_layout) Array1.t
 
 type float_array2 = (float, float64_elt, c_layout) Array2.t
 
-module IntSet = Set.Make(Int64)
-
 (* Some common data structure for both dense and sparse matrices.
   please refer to related header files in GSL code repository. *)
 

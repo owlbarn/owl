@@ -334,14 +334,14 @@ let clone x =
   | false -> copy_to x y
 
 let nnz_rows x =
-  let s = ref IntSet.empty in
-  let _ = iteri_nz (fun i _ _ -> s := IntSet.add (Int64.of_int i) !s) x in
-  IntSet.elements !s |> List.map (fun y -> Int64.to_int y) |> Array.of_list
+  let s = Hashtbl.create 1000 in
+  let _ = iteri_nz (fun i _ _ -> if not (Hashtbl.mem s i) then Hashtbl.add s i 0) x in
+  Hashtbl.fold (fun k v l -> l @ [k]) s [] |> Array.of_list
 
 let nnz_cols x =
-  let s = ref IntSet.empty in
-  let _ = iteri_nz (fun _ j _ -> s := IntSet.add (Int64.of_int j) !s) x in
-  IntSet.elements !s |> List.map (fun y -> Int64.to_int y) |> Array.of_list
+  let s = Hashtbl.create 1000 in
+  let _ = iteri_nz (fun _ j _ -> if not (Hashtbl.mem s j) then Hashtbl.add s j 0) x in
+  Hashtbl.fold (fun k v l -> l @ [k]) s [] |> Array.of_list
 
 let row_num_nz x = nnz_rows x |> Array.length
 
@@ -508,8 +508,9 @@ let pp_spmat x =
   let m, n = shape x in
   let c = nnz x in
   let p = 100. *. (density x) in
+  let mz, nz = row_num_nz x, col_num_nz x in
   let _ = if m < 100 && n < 100 then Dense.pp_dsmat (to_dense x) in
-  Printf.printf "shape = (%i,%i); nnz = %i (%.1f%%)\n" m n c p
+  Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
 let save x f =
   let s = Marshal.to_string x [] in
