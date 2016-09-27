@@ -66,4 +66,6 @@ let _ =
   test_op "draw_cols     " c (fun () -> M.draw_cols x 1000);
   test_op "shuffle_rows  " c (fun () -> M.shuffle_rows x);
   test_op "shuffle       " c (fun () -> M.shuffle x);
+  test_op "save          " c (fun () -> M.save x "zsparse.tmp");
+  test_op "load          " c (fun () -> M.load "zsparse.tmp");
   print_endline (Bytes.make 60 '+');
