@@ -43,8 +43,8 @@ let _ =
   test_op "iteri_rows_nz " c (fun () -> M.iteri_rows_nz (fun _ y -> ()) x);
   test_op "iteri_cols    " c (fun () -> M.iteri_cols (fun _ y -> ()) x);
   test_op "iteri_cols_nz " c (fun () -> M.iteri_cols_nz (fun _ y -> ()) x);
-  test_op "mapi_rows     " c (fun () -> M.mapi_rows (fun _ _ -> M.uniform 1 100) x);
-  test_op "mapi_cols     " c (fun () -> M.mapi_cols (fun _ _ -> M.uniform 100 1) x);
+  test_op "mapi_rows     " c (fun () -> M.mapi_rows (fun _ _ -> 0) x);
+  test_op "mapi_cols     " c (fun () -> M.mapi_cols (fun _ _ -> 0) x);
   test_op "mul_scalar    " c (fun () -> M.mul_scalar x 2.);
   test_op "div_scalar    " c (fun () -> M.div_scalar x 2.);
   test_op "add           " c (fun () -> M.add x y);

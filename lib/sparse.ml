@@ -1,4 +1,4 @@
-(** [ Sparse matrix support ] *)
+(** [ Sparse matrix ] *)
 
 open Bigarray
 open Types
@@ -278,22 +278,16 @@ let filteri_nz f x =
 let filter_nz f x = filteri_nz (fun _ _ y -> f y) x
 
 let mapi_rows f x =
-  let m = row_num x in
-  let n = col_num (f 0 (row x 0)) in
-  let y = empty m n in
-  iteri_rows (fun i r ->
-    iteri_nz (fun _ j z -> set_without_update_rec y i j z) r
-  ) x;
-  _update_rec_from_ptr y
+  let a = _disassemble_rows x in
+  Array.init (row_num x) (fun i -> f i a.(i))
+
+let map_rows f x = mapi_rows (fun _ y -> f y) x
 
 let mapi_cols f x =
-  let m = row_num (f 0 (col x 0)) in
-  let n = col_num x in
-  let y = empty m n in
-  iteri_cols (fun j c ->
-    iteri_nz (fun i _ z -> set_without_update_rec y i j z) c
-  ) x;
-  _update_rec_from_ptr y
+  let a = _disassemble_cols x in
+  Array.init (col_num x) (fun i -> f i a.(i))
+
+let map_cols f x = mapi_cols (fun _ y -> f y) x
 
 let fold_rows f a x = _fold_basic iter_rows f a x
 

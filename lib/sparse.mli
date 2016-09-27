@@ -70,9 +70,13 @@ val iteri_cols : (int -> spmat -> unit) -> spmat -> unit
 
 val iter_cols : (spmat -> unit) -> spmat -> unit
 
-val mapi_rows : (int -> spmat -> spmat) -> spmat -> spmat
+val map_rows : (spmat -> 'a) -> spmat -> 'a array
 
-val mapi_cols : (int -> spmat -> spmat) -> spmat -> spmat
+val mapi_rows : (int -> spmat -> 'a) -> spmat -> 'a array
+
+val map_cols : (spmat -> 'a) -> spmat -> 'a array
+
+val mapi_cols : (int -> spmat -> 'a) -> spmat -> 'a array
 
 val fold_rows : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
 
@@ -185,12 +189,6 @@ val equal_or_smaller : spmat -> spmat -> bool
 val diag : spmat -> spmat
 
 val trace : spmat -> float
-
-(** TODO: val svd : *)
-
-(** TODO: val qr : *)
-
-(** TODO: val lu : *)
 
 (** transform to and from different types *)
 

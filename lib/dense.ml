@@ -1,8 +1,4 @@
-(** [
-  Wrap up Lacaml module
-  Note: C layout row-major matrix
-  The layout is really important, can impact the performance greatly!
-  ]  *)
+(** [ Dense matrix ]  *)
 
 open Bigarray
 open Types
