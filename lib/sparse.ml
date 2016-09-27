@@ -111,7 +111,7 @@ let eye n =
   done;
   _update_rec_from_ptr x
 
-let uniform_int ?(a=0) ?(b=99) m n =
+let uniform_int' ?(a=0) ?(b=99) m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
   let x = empty m n in
   for k = 0 to c do
@@ -121,7 +121,7 @@ let uniform_int ?(a=0) ?(b=99) m n =
   done;
   _update_rec_from_ptr x
 
-let uniform ?(scale=1.) m n =
+let uniform' ?(scale=1.) m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
   let x = empty m n in
   for k = 0 to c do
@@ -131,6 +131,31 @@ let uniform ?(scale=1.) m n =
   done;
   _update_rec_from_ptr x
 
+let uniform_int ?(a=0) ?(b=99) m n =
+  let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
+  let tm = Array.init m (fun x -> x) in
+  let tn = Array.init n (fun x -> x) in
+  let ma = Stats.sample tm c in
+  let na = Stats.sample tn c in
+  let x = empty m n in
+  for k = 0 to c - 1 do
+    let i, j = ma.(k), na.(k) in
+    set_without_update_rec x i j (float_of_int (Stats.uniform_int ~a ~b ()))
+  done;
+  _update_rec_from_ptr x
+
+let uniform ?(scale=1.) m n =
+  let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
+  let tm = Array.init m (fun x -> x) in
+  let tn = Array.init n (fun x -> x) in
+  let ma = Stats.sample tm c in
+  let na = Stats.sample tn c in
+  let x = empty m n in
+  for k = 0 to c - 1 do
+    let i, j = ma.(k), na.(k) in
+    set_without_update_rec x i j (Stats.uniform () *. scale)
+  done;
+  _update_rec_from_ptr x
 
 (** matrix manipulations *)
 
@@ -485,6 +510,13 @@ let pp_spmat x =
   let _ = if m < 100 && n < 100 then Dense.pp_dsmat (to_dense x) in
   Printf.printf "shape = (%i,%i); nnz = %i (%.1f%%)\n" m n c p
 
+let save = None
+
+let load = None
+
+let save_txt = None
+
+let load_txt = None
 
 (** permutation and draw functions *)
 
