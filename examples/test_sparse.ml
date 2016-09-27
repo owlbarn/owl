@@ -22,6 +22,7 @@ let _ =
   let z = M.add x x in
   test_op "empty         " c (fun () -> M.empty m n);
   test_op "eye           " c (fun () -> M.eye m);
+  test_op "binary        " c (fun () -> M.binary m n);
   test_op "uniform       " c (fun () -> M.uniform m n);
   test_op "clone trt     " c (fun () -> M.clone x);
   test_op "clone csc     " c (fun () -> M.clone z);

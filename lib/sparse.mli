@@ -20,6 +20,8 @@ val density : spmat -> float
 
 val eye : int -> spmat
 
+val binary : int -> int -> spmat
+
 val uniform : ?scale:float -> int -> int -> spmat
 
 val uniform_int : ?a:int -> ?b:int -> int -> int -> spmat
