@@ -276,16 +276,18 @@ let mapi_rows f x =
   let n = col_num (f 0 (row x 0)) in
   let y = empty m n in
   iteri_rows (fun i r ->
-    iteri_nz (fun _ j z -> set y i j z) r
-  ) x; y
+    iteri_nz (fun _ j z -> set_without_update_rec y i j z) r
+  ) x;
+  _update_rec_from_ptr y
 
 let mapi_cols f x =
   let m = row_num (f 0 (col x 0)) in
   let n = col_num x in
   let y = empty m n in
   iteri_cols (fun j c ->
-    iteri_nz (fun i _ z -> set y i j z) c
-  ) x; y
+    iteri_nz (fun i _ z -> set_without_update_rec y i j z) c
+  ) x;
+  _update_rec_from_ptr y
 
 let fold_rows f a x = _fold_basic iter_rows f a x
 
@@ -334,7 +336,7 @@ let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
 let clone x =
   let y = empty (row_num x) (col_num x) in
   match _is_csc_format x with
-  | true  -> iteri_nz (fun i j z ->  set y i j z) x; y
+  | true  -> iteri_nz (fun i j z -> set_without_update_rec y i j z) x; _update_rec_from_ptr y
   | false -> copy_to x y
 
 (** matrix mathematical operations *)
