@@ -236,12 +236,14 @@ let iter_nz f x = iteri_nz (fun _ _ y -> f y) x
 let _disassemble_rows x =
   let x = if _is_csc_format x then x else to_csc x in
   let d = Array.init (row_num x) (fun _ -> empty 1 (col_num x)) in
-  iteri_nz (fun i j z -> set d.(i) 0 j z) x; d
+  let _ = iteri_nz (fun i j z -> set_without_update_rec d.(i) 0 j z) x in
+  Array.iter (fun z -> ignore (_update_rec_from_ptr z)) d; d
 
 let _disassemble_cols x =
   let x = if _is_csc_format x then x else to_csc x in
   let d = Array.init (col_num x) (fun _ -> empty (row_num x) 1) in
-  iteri_nz (fun i j z -> set d.(j) i 0 z) x; d
+  let _ = iteri_nz (fun i j z -> set_without_update_rec d.(j) i 0 z) x in
+  Array.iter (fun z -> ignore (_update_rec_from_ptr z)) d; d
 
 let iteri_rows f x = Array.iteri (fun i y -> f i y) (_disassemble_rows x)
 
