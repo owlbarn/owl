@@ -536,7 +536,7 @@ let draw_rows ?(replacement=true) x c =
   in
   let y = empty c m in
   let _ = Array.iteri (fun i j -> set y i j 1.) l in
-  dot y x
+  dot y x, l
 
 let draw_cols ?(replacement=true) x c =
   let m, n = shape x in
@@ -547,7 +547,7 @@ let draw_cols ?(replacement=true) x c =
   in
   let y = empty n c in
   let _ = Array.iteri (fun j i -> set y i j 1.) l in
-  dot x y
+  dot x y, l
 
 let shuffle_rows x =
   let y = permutation_matrix (row_num x) in dot y x

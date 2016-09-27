@@ -202,9 +202,9 @@ val of_dense : Dense.dsmat -> spmat
 
 val permutation_matrix : int -> spmat
 
-val draw_rows : ?replacement:bool -> spmat -> int -> spmat
+val draw_rows : ?replacement:bool -> spmat -> int -> spmat * int array
 
-val draw_cols : ?replacement:bool -> spmat -> int -> spmat
+val draw_cols : ?replacement:bool -> spmat -> int -> spmat * int array
 
 val shuffle_rows : spmat -> spmat
 
