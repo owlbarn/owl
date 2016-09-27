@@ -452,6 +452,7 @@ let qr x = None
 
 let lu x = None
 
+
 (** transform to and from different types *)
 
 let to_dense x =
@@ -485,6 +486,7 @@ let average_cols x =
   let y = Dense.create n 1 (1. /. (float_of_int n)) |> of_dense in
   dot x y
 
+
 (** formatted input / output operations *)
 
 let print x =
@@ -516,6 +518,7 @@ let load f =
 let save_txt = None
 
 let load_txt = None
+
 
 (** permutation and draw functions *)
 
