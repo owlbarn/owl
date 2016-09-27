@@ -14,7 +14,7 @@ let test_op s c op =
 
 let _ =
   let _ = Random.self_init () in
-  let m, n = 5000, 5000 and c = 5 in
+  let m, n = 5000, 5000 and c = 1 in
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
@@ -41,7 +41,7 @@ let _ =
   test_op "sub        " c (fun () -> M.sub x y);
   test_op "mul        " c (fun () -> M.mul x y);
   test_op "div        " c (fun () -> M.div x y);
-  test_op "dot        " 1 (fun () -> M.dot x y);
+  test_op "dot        " 0 (fun () -> M.dot x y);
   test_op "+$         " c (fun () -> M.(x +$ 1.));
   test_op "*$         " c (fun () -> M.(x *$ 1.));
   test_op "abs        " c (fun () -> M.abs x);
@@ -63,12 +63,12 @@ let _ =
   test_op "clone      " c (fun () -> M.clone x);
   test_op "@=         " c (fun () -> M.(x @= y));
   test_op "@||        " c (fun () -> M.(x @|| y));
-  (*test_op "svd        " 1 (fun () -> M.svd (M.sequential 1000 1000));
-  test_op "sdd        " c (fun () -> M.sdd (M.sequential 1000 1000));*)
   test_op "draw_cols  " c (fun () -> M.draw_cols x 500);
   test_op "draw_rows  " c (fun () -> M.draw_rows x 500);
-  test_op "save_txt   " 1 (fun () -> M.save_txt x "test_matrix.tmp");
-  test_op "load_txt   " 1 (fun () -> M.load_txt "test_matrix.tmp");
+  test_op "save       " c (fun () -> M.save x "test_matrix0.tmp");
+  test_op "load       " c (fun () -> M.load "test_matrix0.tmp");
+  test_op "save_txt   " c (fun () -> M.save_txt x "test_matrix1.tmp");
+  test_op "load_txt   " c (fun () -> M.load_txt "test_matrix1.tmp");
   test_op "zeros      " c (fun () -> M.zeros m n);
   test_op "uniform_int" c (fun () -> M.uniform_int m n);
   test_op "uniform    " c (fun () -> M.uniform m n);
