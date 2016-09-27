@@ -64,4 +64,6 @@ let _ =
   test_op "to_dense      " c (fun () -> M.to_dense x);
   test_op "draw_rows     " c (fun () -> M.draw_rows x 1000);
   test_op "draw_cols     " c (fun () -> M.draw_cols x 1000);
+  test_op "shuffle_rows  " c (fun () -> M.shuffle_rows x);
+  test_op "shuffle       " c (fun () -> M.shuffle x);
   print_endline (Bytes.make 60 '+');
