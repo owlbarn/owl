@@ -112,7 +112,7 @@ let eye n =
   _update_rec_from_ptr x
 
 let uniform_int ?(a=0) ?(b=99) m n =
-  let c = int_of_float ((float_of_int (m * n)) *. 0.1) in
+  let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
   let x = empty m n in
   for k = 0 to c do
     let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
@@ -122,7 +122,7 @@ let uniform_int ?(a=0) ?(b=99) m n =
   _update_rec_from_ptr x
 
 let uniform ?(scale=1.) m n =
-  let c = int_of_float ((float_of_int (m * n)) *. 0.1) in
+  let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
   let x = empty m n in
   for k = 0 to c do
     let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
@@ -153,6 +153,7 @@ let transpose x =
     else empty (col_num x) (row_num x) in
   let _ = gsl_spmatrix_transpose_memcpy y.ptr x.ptr in
   _update_rec_from_ptr y
+
 
 (* matrix interation functions *)
 
@@ -339,6 +340,7 @@ let clone x =
   | true  -> iteri_nz (fun i j z -> set_without_update_rec y i j z) x; _update_rec_from_ptr y
   | false -> copy_to x y
 
+
 (** matrix mathematical operations *)
 
 let mul_scalar x1 y =
@@ -433,6 +435,7 @@ let equal_or_greater x1 x2 = is_nonnegative (sub x1 x2)
 
 let equal_or_smaller x1 x2 = equal_or_greater x2 x1
 
+
 (** advanced matrix methematical operations *)
 
 let diag x =
@@ -482,6 +485,7 @@ let pp_spmat x =
   let _ = if m < 100 && n < 100 then Dense.pp_dsmat (to_dense x) in
   Printf.printf "shape = (%i,%i); nnz = %i (%.1f%%)\n" m n c p
 
+
 (** permutation and draw functions *)
 
 let permutation_matrix d =
@@ -518,6 +522,7 @@ let shuffle_cols x =
   let y = permutation_matrix (col_num x) in dot x y
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols
+
 
 (** short-hand infix operators *)
 
