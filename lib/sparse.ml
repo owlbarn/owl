@@ -221,20 +221,6 @@ let filteri f x =
 
 let filter f x = filteri (fun _ _ y -> f y) x
 
-let iteri_rows f x =
-  for i = 0 to (row_num x) - 1 do
-    f i (row x i)
-  done
-
-let iter_rows f x = iteri_rows (fun _ y -> f y) x
-
-let iteri_cols f x =
-  for j = 0 to (col_num x) - 1 do
-    f j (col x j)
-  done
-
-let iter_cols f x = iteri_cols (fun _ y -> f y) x
-
 let iteri_nz f x =
   let x = if _is_csc_format x then x else to_csc x in
   for j = 0 to x.n - 1 do
@@ -246,6 +232,24 @@ let iteri_nz f x =
   done
 
 let iter_nz f x = iteri_nz (fun _ _ y -> f y) x
+
+let _disassemble_rows x =
+  let x = if _is_csc_format x then x else to_csc x in
+  let d = Array.init (row_num x) (fun _ -> empty 1 (col_num x)) in
+  iteri_nz (fun i j z -> set d.(i) 0 j z) x; d
+
+let _disassemble_cols x =
+  let x = if _is_csc_format x then x else to_csc x in
+  let d = Array.init (col_num x) (fun _ -> empty (row_num x) 1) in
+  iteri_nz (fun i j z -> set d.(j) i 0 z) x; d
+
+let iteri_rows f x = Array.iteri (fun i y -> f i y) (_disassemble_rows x)
+
+let iter_rows f x = iteri_rows (fun _ y -> f y) x
+
+let iteri_cols f x = Array.iteri (fun j y -> f j y) (_disassemble_cols x)
+
+let iter_cols f x = iteri_cols (fun _ y -> f y) x
 
 let mapi_nz f x =
   let x = if _is_csc_format x then x else to_csc x in
@@ -293,17 +297,11 @@ let fold_rows f a x = _fold_basic iter_rows f a x
 
 let fold_cols f a x = _fold_basic iter_cols f a x
 
-let iteri_rows_nz f x =
-  iteri_rows (fun i r ->
-    match r.nz = 0 with true  -> () | false -> f i r
-  ) x
+let iteri_rows_nz f x = iteri_rows (fun i y -> if y.nz != 0 then f i y) x
 
 let iter_rows_nz f x = iteri_rows_nz (fun _ y -> f y) x
 
-let iteri_cols_nz f x =
-  iteri_cols (fun j c ->
-    match c.nz = 0 with true  -> () | false -> f j c
-  ) x
+let iteri_cols_nz f x = iteri_cols (fun i y -> if y.nz != 0 then f i y) x
 
 let iter_cols_nz f x = iteri_cols_nz (fun _ y -> f y) x
 
