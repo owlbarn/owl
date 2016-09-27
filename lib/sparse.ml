@@ -485,9 +485,16 @@ let pp_spmat x =
   let _ = if m < 100 && n < 100 then Dense.pp_dsmat (to_dense x) in
   Printf.printf "shape = (%i,%i); nnz = %i (%.1f%%)\n" m n c p
 
-let save = None
+let save x f =
+  let s = Marshal.to_string x [] in
+  let h = open_out f in
+  output_string h s;
+  close_out h
 
-let load = None
+let load f =
+  let h = open_in f in
+  let s = really_input_string h (in_channel_length h) in
+  Marshal.from_string s 0
 
 let save_txt = None
 

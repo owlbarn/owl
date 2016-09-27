@@ -206,6 +206,10 @@ val print : spmat -> unit
 
 val pp_spmat : spmat -> unit
 
+val save : spmat -> string -> unit
+
+val load : string -> spmat
+
 (** short-hand infix operators *)
 
 val ( +@ ) : spmat -> spmat -> spmat
