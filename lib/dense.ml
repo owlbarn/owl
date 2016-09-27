@@ -538,7 +538,7 @@ let to_sparse x = None
 
 let of_sparse x = None
 
-let dump x f =
+let save_txt x f =
   let h = open_out f in
   iter_rows (fun y ->  (* TODO: 64-bit -> 16 digits *)
     iter (fun z -> Printf.fprintf h "%.8f\t" z) y;
@@ -546,7 +546,7 @@ let dump x f =
   ) x;
   close_out h
 
-let load f =
+let load_txt f =
   let h = open_in f in
   let s = input_line h in
   let n = List.length(Str.split (Str.regexp "\t") s) in
@@ -560,13 +560,15 @@ let load f =
   done;
   close_in h; x
 
-let dump_binary x f =  (* FIXME: it does not work!!! *)
+let save x f =  (* FIXME: it does not work!!! *)
   let open Matrix_foreign in
   let open Ctypes in
   let h = open_out f in
   let i = allocate int (Obj.magic h : int) in
   let _ = gsl_matrix_fwrite i (mat_to_matptr x) in
   close_out h
+
+let load f = None
 
 let print x = let open Pretty in
   Format.printf "%a\n" Pretty.pp_fmat x;;

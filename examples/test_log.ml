@@ -20,8 +20,8 @@ let generate_data () =
   let y2 = create c 1 ( 0.)in
   let x = x1 @= x2 in
   let y = y1 @= y2 in
-  let _ = dump x1 "test_log.data1.tmp" in
-  let _ = dump x2 "test_log.data2.tmp" in
+  let _ = save_txt x1 "test_log.data1.tmp" in
+  let _ = save_txt x2 "test_log.data2.tmp" in
   x, y
 
 let draw_line p =
@@ -31,7 +31,7 @@ let draw_line p =
     let x = a +. (float_of_int i *. (b -. a) /. float_of_int c) in
     let y = (p.{0,0} *. x +. p.{2,0}) /. (p.{1,0} *. (-1.)) in
     z.{i,0} <- x; z.{i,1} <- y
-  done; MX.dump z "test_log.model.tmp"
+  done; MX.save_txt z "test_log.model.tmp"
 
 let test_log x y =
   let p = LL.logistic_regression ~i:true x y in

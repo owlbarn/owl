@@ -67,8 +67,8 @@ let _ =
   test_op "sdd        " c (fun () -> M.sdd (M.sequential 1000 1000));*)
   test_op "draw_cols  " c (fun () -> M.draw_cols x 500);
   test_op "draw_rows  " c (fun () -> M.draw_rows x 500);
-  test_op "dump       " 1 (fun () -> M.dump x "test_matrix.tmp");
-  test_op "load       " 1 (fun () -> M.load "test_matrix.tmp");
+  test_op "save_txt   " 1 (fun () -> M.save_txt x "test_matrix.tmp");
+  test_op "load_txt   " 1 (fun () -> M.load_txt "test_matrix.tmp");
   test_op "zeros      " c (fun () -> M.zeros m n);
   test_op "uniform_int" c (fun () -> M.uniform_int m n);
   test_op "uniform    " c (fun () -> M.uniform m n);

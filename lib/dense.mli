@@ -262,11 +262,11 @@ val of_array : float array -> int -> int -> dsmat
 
 val of_arrays : float array array -> dsmat
 
-val dump : dsmat -> string -> unit
+val save : dsmat -> string -> unit
 
-val load : string -> dsmat
+val save_txt : dsmat -> string -> unit
 
-val dump_binary : dsmat -> string -> unit
+val load_txt : string -> dsmat
 
 val print : dsmat -> unit
 

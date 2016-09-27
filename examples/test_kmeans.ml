@@ -2,7 +2,7 @@ module MX = Dense
 module LL = Optimise
 
 let _ =
-  let x = MX.load "test_kmeans.data" in
+  let x = MX.load_txt "test_kmeans.data" in
   let m, n = MX.shape x in
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i\n" m n;
