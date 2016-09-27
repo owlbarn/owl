@@ -12,6 +12,8 @@ val row_num : spmat -> int
 
 val col_num : spmat -> int
 
+val numel : spmat -> int
+
 val nnz : spmat -> int
 
 val density : spmat -> float

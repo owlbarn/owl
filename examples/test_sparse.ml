@@ -57,10 +57,10 @@ let _ =
   test_op "average       " c (fun () -> M.average x);
   test_op "sum_rows      " c (fun () -> M.sum_rows x);
   test_op "average_rows  " c (fun () -> M.average_rows x);
+  test_op "minmax        " c (fun () -> M.minmax x);
   test_op "is_zero       " c (fun () -> M.is_zero x);
   test_op "is_negative   " c (fun () -> M.is_negative x);
   test_op "is_positive   " c (fun () -> M.is_positive x);
-  test_op "minmax        " c (fun () -> M.minmax x);
   test_op "is_equal      " c (fun () -> M.is_equal x x);
   test_op "is_greater    " c (fun () -> M.is_greater x x);
   test_op "to_dense      " c (fun () -> M.to_dense x);

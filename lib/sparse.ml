@@ -98,11 +98,13 @@ let row_num x = x.m
 
 let col_num x = x.n
 
+let numel x = (row_num x) * (col_num x)
+
 let nnz x = x.nz
 
 let density x =
-  let m, n, c = row_num x, col_num x, nnz x in
-  (float_of_int c) /. (float_of_int (m * n))
+  let a, b = nnz x, numel x in
+  (float_of_int a) /. (float_of_int b)
 
 let eye n =
   let x = empty n n in
