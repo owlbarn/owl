@@ -264,6 +264,8 @@ val of_arrays : float array array -> dsmat
 
 val save : dsmat -> string -> unit
 
+val load : string -> dsmat
+
 val save_txt : dsmat -> string -> unit
 
 val load_txt : string -> dsmat

@@ -560,15 +560,16 @@ let load_txt f =
   done;
   close_in h; x
 
-let save x f =  (* FIXME: it does not work!!! *)
-  let open Matrix_foreign in
-  let open Ctypes in
+let save x f =
+  let s = Marshal.to_string x [] in
   let h = open_out f in
-  let i = allocate int (Obj.magic h : int) in
-  let _ = gsl_matrix_fwrite i (mat_to_matptr x) in
+  output_string h s;
   close_out h
 
-let load f = None
+let load f =
+  let h = open_in f in
+  let s = really_input_string h (in_channel_length h) in
+  Marshal.from_string s 0
 
 let print x = let open Pretty in
   Format.printf "%a\n" Pretty.pp_fmat x;;
