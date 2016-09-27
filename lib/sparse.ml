@@ -416,6 +416,7 @@ let min x = fst (minmax x)
 let max x = snd (minmax x)
 
 let is_equal x1 x2 =
+  (** FIXME: currently cannot compare different storage format *)
   let open Matrix_foreign in
   (gsl_spmatrix_equal x1.ptr x2.ptr) = 1
 
