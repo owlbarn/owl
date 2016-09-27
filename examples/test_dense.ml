@@ -41,7 +41,7 @@ let _ =
   test_op "sub        " c (fun () -> M.sub x y);
   test_op "mul        " c (fun () -> M.mul x y);
   test_op "div        " c (fun () -> M.div x y);
-  test_op "dot        " 0 (fun () -> M.dot x y);
+  test_op "dot        " 1 (fun () -> M.dot x y);
   test_op "+$         " c (fun () -> M.(x +$ 1.));
   test_op "*$         " c (fun () -> M.(x *$ 1.));
   test_op "abs        " c (fun () -> M.abs x);
