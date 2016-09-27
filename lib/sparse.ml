@@ -111,51 +111,26 @@ let eye n =
   done;
   _update_rec_from_ptr x
 
-let uniform_int' ?(a=0) ?(b=99) m n =
-  let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
-  let x = empty m n in
-  for k = 0 to c do
-    let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
-    let j = Stats.uniform_int ~a:0 ~b:(n-1) () in
-    set_without_update_rec x i j (float_of_int (Stats.uniform_int ~a ~b ()))
-  done;
-  _update_rec_from_ptr x
-
-let uniform' ?(scale=1.) m n =
-  let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
-  let x = empty m n in
-  for k = 0 to c do
-    let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
-    let j = Stats.uniform_int ~a:0 ~b:(n-1) () in
-    set_without_update_rec x i j (Stats.uniform () *. scale)
-  done;
-  _update_rec_from_ptr x
-
 let uniform_int ?(a=0) ?(b=99) m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
-  let tm = Array.init m (fun x -> x) in
-  let tn = Array.init n (fun x -> x) in
-  let ma = Stats.sample tm c in
-  let na = Stats.sample tn c in
   let x = empty m n in
-  for k = 0 to c - 1 do
-    let i, j = ma.(k), na.(k) in
+  for k = 0 to c do
+    let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
+    let j = Stats.uniform_int ~a:0 ~b:(n-1) () in
     set_without_update_rec x i j (float_of_int (Stats.uniform_int ~a ~b ()))
   done;
   _update_rec_from_ptr x
 
 let uniform ?(scale=1.) m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
-  let tm = Array.init m (fun x -> x) in
-  let tn = Array.init n (fun x -> x) in
-  let ma = Stats.sample tm c in
-  let na = Stats.sample tn c in
   let x = empty m n in
-  for k = 0 to c - 1 do
-    let i, j = ma.(k), na.(k) in
+  for k = 0 to c do
+    let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
+    let j = Stats.uniform_int ~a:0 ~b:(n-1) () in
     set_without_update_rec x i j (Stats.uniform () *. scale)
   done;
   _update_rec_from_ptr x
+
 
 (** matrix manipulations *)
 
