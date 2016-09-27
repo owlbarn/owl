@@ -484,20 +484,6 @@ let pp_spmat x =
 
 (** some other uncategorised functions *)
 
-let draw_rows' ?(replacement=true) x c =
-  let a = Array.init (row_num x - 1) (fun i -> i) in
-  let l = match replacement with
-    | true  -> Stats.sample a c
-    | false -> Stats.choose a c
-  in rows x l
-
-let draw_cols' ?(replacement=true) x c =
-  let a = Array.init (col_num x - 1) (fun i -> i) in
-  let l = match replacement with
-    | true  -> Stats.sample a c
-    | false -> Stats.choose a c
-  in cols x l
-
 let permutation_matrix d =
   let l = Array.init d (fun x -> x) |> Stats.shuffle in
   let y = empty d d in
