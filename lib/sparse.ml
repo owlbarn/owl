@@ -468,6 +468,24 @@ let of_dense x =
   let _ = gsl_spmatrix_d2sp y.ptr (mat_to_matptr x) in
   _update_rec_from_ptr y
 
+let sum_rows x =
+  let y = Dense.ones 1 (row_num x) |> of_dense in
+  dot y x
+
+let sum_cols x =
+  let y = Dense.ones (col_num x) 1 |> of_dense in
+  dot x y
+
+let average_rows x =
+  let m, n = shape x in
+  let y = Dense.create 1 m (1. /. (float_of_int m)) |> of_dense in
+  dot y x
+
+let average_cols x =
+  let m, n = shape x in
+  let y = Dense.create n 1 (1. /. (float_of_int n)) |> of_dense in
+  dot x y
+
 (** formatted input / output operations *)
 
 let print x =

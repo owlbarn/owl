@@ -154,6 +154,14 @@ val max : spmat -> float
 
 val minmax : spmat -> float * float
 
+val sum_rows : spmat -> spmat
+
+val sum_cols : spmat -> spmat
+
+val average_rows : spmat -> spmat
+
+val average_cols : spmat -> spmat
+
 (** compare two matrices *)
 
 val is_equal : spmat -> spmat -> bool
