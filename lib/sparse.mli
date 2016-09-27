@@ -186,23 +186,25 @@ val to_dense : spmat -> Dense.dsmat
 
 val of_dense : Dense.dsmat -> spmat
 
-(** some other uncategorised functions *)
+(** permutation and draw functions *)
 
-val print : spmat -> unit
-
-val pp_spmat : spmat -> unit
+val permutation_matrix : int -> spmat
 
 val draw_rows : ?replacement:bool -> spmat -> int -> spmat
 
 val draw_cols : ?replacement:bool -> spmat -> int -> spmat
-
-val permutation_matrix : int -> spmat
 
 val shuffle_rows : spmat -> spmat
 
 val shuffle_cols : spmat -> spmat
 
 val shuffle : spmat -> spmat
+
+(** some other uncategorised functions *)
+
+val print : spmat -> unit
+
+val pp_spmat : spmat -> unit
 
 (** short-hand infix operators *)
 

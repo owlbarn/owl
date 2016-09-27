@@ -482,7 +482,7 @@ let pp_spmat x =
   let _ = if m < 100 && n < 100 then Dense.pp_dsmat (to_dense x) in
   Printf.printf "shape = (%i,%i); nnz = %i (%.1f%%)\n" m n c p
 
-(** some other uncategorised functions *)
+(** permutation and draw functions *)
 
 let permutation_matrix d =
   let l = Array.init d (fun x -> x) |> Stats.shuffle in
