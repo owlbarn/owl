@@ -498,11 +498,18 @@ let draw_cols ?(replacement=true) x c =
     | false -> Stats.choose a c
   in cols x l
 
-let shuffle_rows = None
+let permutation_matrix d =
+  let l = Array.init d (fun x -> x) |> Stats.shuffle in
+  let y = empty d d in
+  let _ = Array.iteri (fun i j -> set y i j 1.) l in y
 
-let shuffle_cols = None
+let shuffle_rows x =
+  let y = permutation_matrix (row_num x) in dot y x
 
-let shuffle = None
+let shuffle_cols x =
+  let y = permutation_matrix (col_num x) in dot x y
+
+let shuffle x = x |> shuffle_rows |> shuffle_cols
 
 (** short-hand infix operators *)
 
@@ -537,6 +544,9 @@ let ( <>@ ) = is_unequal
 let ( >=@ ) = equal_or_greater
 
 let ( <=@ ) = equal_or_smaller
+
+
+
 
 (** TODO: out of OCaml GC, need to release the memory, refer to gsl_multifit_nlin.ml file. *)
 

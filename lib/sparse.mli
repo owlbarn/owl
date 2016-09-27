@@ -196,6 +196,14 @@ val draw_rows : ?replacement:bool -> spmat -> int -> spmat
 
 val draw_cols : ?replacement:bool -> spmat -> int -> spmat
 
+val permutation_matrix : int -> spmat
+
+val shuffle_rows : spmat -> spmat
+
+val shuffle_cols : spmat -> spmat
+
+val shuffle : spmat -> spmat
+
 (** short-hand infix operators *)
 
 val ( +@ ) : spmat -> spmat -> spmat
