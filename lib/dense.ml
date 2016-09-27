@@ -616,6 +616,7 @@ let draw_cols ?(replacement=true) x c =
     else sublist 0 (c-1) (shuffle (range 0 (n-1))) in
   cols x l, l
 
+(** TODO: use permutation_matrix to rewrite *)
 let shuffle_rows x =
   let y = clone x in
   let m, n = shape x in

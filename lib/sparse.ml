@@ -484,14 +484,14 @@ let pp_spmat x =
 
 (** some other uncategorised functions *)
 
-let draw_rows ?(replacement=true) x c =
+let draw_rows' ?(replacement=true) x c =
   let a = Array.init (row_num x - 1) (fun i -> i) in
   let l = match replacement with
     | true  -> Stats.sample a c
     | false -> Stats.choose a c
   in rows x l
 
-let draw_cols ?(replacement=true) x c =
+let draw_cols' ?(replacement=true) x c =
   let a = Array.init (col_num x - 1) (fun i -> i) in
   let l = match replacement with
     | true  -> Stats.sample a c
@@ -502,6 +502,28 @@ let permutation_matrix d =
   let l = Array.init d (fun x -> x) |> Stats.shuffle in
   let y = empty d d in
   let _ = Array.iteri (fun i j -> set y i j 1.) l in y
+
+let draw_rows ?(replacement=true) x c =
+  let m, n = shape x in
+  let a = Array.init m (fun x -> x) |> Stats.shuffle in
+  let l = match replacement with
+    | true  -> Stats.sample a c
+    | false -> Stats.choose a c
+  in
+  let y = empty c m in
+  let _ = Array.iteri (fun i j -> set y i j 1.) l in
+  dot y x
+
+let draw_cols ?(replacement=true) x c =
+  let m, n = shape x in
+  let a = Array.init n (fun x -> x) |> Stats.shuffle in
+  let l = match replacement with
+    | true  -> Stats.sample a c
+    | false -> Stats.choose a c
+  in
+  let y = empty n c in
+  let _ = Array.iteri (fun j i -> set y i j 1.) l in
+  dot x y
 
 let shuffle_rows x =
   let y = permutation_matrix (row_num x) in dot y x
