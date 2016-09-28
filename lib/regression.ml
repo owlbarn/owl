@@ -6,6 +6,9 @@
 
 module MX = Dense
 
+type dsmat = Dense.dsmat
+type vector = Gsl.Vector.vector
+
 (** [ Linear regression with single variables ]  *)
 let _linear_single_var ?(i=false) x y =
   let open Gsl.Fit in
