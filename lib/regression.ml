@@ -1,3 +1,8 @@
+(*
+ * OWL - an OCaml math library for scientific computing
+ * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
+
 (** [ Regression Module ]
   This module implements a set of regression models with and without
   regularisation. The module relies on the algorithms provided in GSL library
