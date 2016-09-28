@@ -6,6 +6,9 @@
 module MX = Dense
 module UT = Utils
 
+(** configure the logger *)
+let _ = Log.color_on (); Log.(set_log_level INFO)
+
 (** [
   K-means clustering algorithm
   x is the row-based data points and c is the number of clusters.
@@ -15,7 +18,7 @@ let kmeans x c = let open MX in
   let cpts1 = zeros c (col_num x) in
   let assignment = Array.make (row_num x) (0, max_float) in
   let _ = try for counter = 1 to 100 do
-  Printf.printf "iteration %i ...\n" counter; flush stdout;
+  Log.info "iteration %i ..." counter; flush stdout;
   iteri_rows (fun i v ->
     iteri_rows (fun j u ->
       let e = sum((v -@ u) **@ 2.) in
@@ -190,7 +193,7 @@ let _sgd_basic b s t l g r o a i p x y =
     let _ = obj1 := MX.sum lt in
     let _ = if !counter < (Array.length !cost) then !cost.(!counter) <- !obj1 in
     let _ = counter := !counter + 1 in
-    Printf.printf "iteration #%i: %.4f\n" !counter !obj1;
+    Log.info "iteration #%i: %.4f" !counter !obj1;
     flush stdout
   done; !p
 

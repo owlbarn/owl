@@ -10,4 +10,4 @@ let _ =
   print_endline "test on input data ...";
   let centers, _ = LL.kmeans x 2 in MX.pp_dsmat centers;
   print_endline "test on random data ...";
-  let x = MX.uniform 1000000 8 in LL.kmeans x 3
+  let x = MX.uniform 100000 8 in LL.kmeans x 3

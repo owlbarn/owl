@@ -10,7 +10,7 @@ Library "Owl"
   Path:       ./lib
   BuildTools: ocamlbuild, ocamldoc
   Modules:    Types, Utils, Maths, Stats, Optimise, Dense, Sparse, Matrix_foreign, Linalg, Regression, Pretty, Plot, Owl_toplevel
-  BuildDepends: str, gsl, ctypes, ctypes.foreign, plplot
+  BuildDepends: str, gsl, ctypes, ctypes.foreign, plplot, dolog
 
 Executable test_sgd
   Path:           ./examples
