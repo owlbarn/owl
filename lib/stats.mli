@@ -7,13 +7,15 @@
 
   The functions in this module are grouped based on their corresponding
   distributions. For each random variable distribution, e.g., distribution abc,
-  there are usually six corresponding (if any) functions as follows: {b list}
-  - abc : generate a random value following the distribution abc;
-  - abc_pdf : calculate the probability desensit at a given point;
-  - abc_P : calculate CDF of the distribution, i.e., P(X <= x);
-  - abc_Q : calculate tail distribution Q (X > x), i.e., 1 - P (X <= x);
-  - abc_Pinv : the inverse function of P, also a.k.a percentile function;
-  - abc_Qinv : the inverse function of Q.
+  there are usually six corresponding (if any) functions as follows:
+  {ol
+  {- abc : generate a random value following the distribution abc;}
+  {- abc_pdf : calculate the probability desensit at a given point;}
+  {- abc_P : calculate CDF of the distribution, i.e., P(X <= x);}
+  {- abc_Q : calculate tail distribution Q (X > x), i.e., 1 - P (X <= x);}
+  {- abc_Pinv : the inverse function of P, also a.k.a percentile function;}
+  {- abc_Qinv : the inverse function of Q.}
+}
 
   Please refer to GSL documentation using following linke for details:
   https://www.gnu.org/software/gsl/manual
