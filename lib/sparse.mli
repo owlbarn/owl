@@ -4,7 +4,7 @@ type spmat
 
 (** sparse matrix creation and basic functions *)
 
-val empty : int -> int -> spmat
+val zeros : int -> int -> spmat
 
 val shape : spmat -> int * int
 

@@ -61,7 +61,7 @@ let allocate_vecptr m =
 
 (** sparse matrix creation function *)
 
-let empty m n =
+let zeros m n =
   let open Matrix_foreign in
   let x = gsl_spmatrix_alloc m n in
   _of_sp_mat_ptr x
@@ -107,7 +107,7 @@ let density x =
   (float_of_int a) /. (float_of_int b)
 
 let eye n =
-  let x = empty n n in
+  let x = zeros n n in
   for i = 0 to (row_num x) - 1 do
       set_without_update_rec x i i 1.
   done;
@@ -115,7 +115,7 @@ let eye n =
 
 let _random_basic f m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
-  let x = empty m n in
+  let x = zeros m n in
   for k = 0 to c do
     let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
     let j = Stats.uniform_int ~a:0 ~b:(n-1) () in
@@ -149,7 +149,7 @@ let transpose x =
   let open Matrix_foreign in
   let y = if _is_csc_format x
     then empty_csc (col_num x) (row_num x)
-    else empty (col_num x) (row_num x) in
+    else zeros (col_num x) (row_num x) in
   let _ = gsl_spmatrix_transpose_memcpy y.ptr x.ptr in
   _update_rec_from_ptr y
 
@@ -157,14 +157,14 @@ let transpose x =
 (* matrix interation functions *)
 
 let row x i =
-  let y = empty 1 (col_num x) in
+  let y = zeros 1 (col_num x) in
   for j = 0 to (col_num x) - 1 do
     set_without_update_rec y 0 j (get x i j)
   done;
   _update_rec_from_ptr y
 
 let col x i =
-  let y = empty (row_num x) 1 in
+  let y = zeros (row_num x) 1 in
   for j = 0 to (row_num x) - 1 do
     set_without_update_rec y j 0 (get x j i)
   done;
@@ -172,7 +172,7 @@ let col x i =
 
 let rows x l =
   let m, n = Array.length l, col_num x in
-  let y = empty m n in
+  let y = zeros m n in
   Array.iteri (fun i i' ->
     for j = 0 to n - 1 do
       set_without_update_rec y i j (get x i' j)
@@ -182,7 +182,7 @@ let rows x l =
 
 let cols x l =
   let m, n = row_num x, Array.length l in
-  let y = empty m n in
+  let y = zeros m n in
   Array.iteri (fun j j' ->
     for i = 0 to m - 1 do
       set_without_update_rec y i j (get x i j')
@@ -201,7 +201,7 @@ let iter f x = iteri (fun _ _ y -> f y) x
 
 let mapi f x =
   (** note: if f returns zero, no actual value will be added into sparse matrix. *)
-  let y = empty (row_num x) (col_num x) in
+  let y = zeros (row_num x) (col_num x) in
   iteri (fun i j z -> set_without_update_rec y i j (f i j z)) x;
   _update_rec_from_ptr y
 
@@ -235,13 +235,13 @@ let iter_nz f x = iteri_nz (fun _ _ y -> f y) x
 
 let _disassemble_rows x =
   let x = if _is_csc_format x then x else to_csc x in
-  let d = Array.init (row_num x) (fun _ -> empty 1 (col_num x)) in
+  let d = Array.init (row_num x) (fun _ -> zeros 1 (col_num x)) in
   let _ = iteri_nz (fun i j z -> set_without_update_rec d.(i) 0 j z) x in
   Array.iter (fun z -> ignore (_update_rec_from_ptr z)) d; d
 
 let _disassemble_cols x =
   let x = if _is_csc_format x then x else to_csc x in
-  let d = Array.init (col_num x) (fun _ -> empty (row_num x) 1) in
+  let d = Array.init (col_num x) (fun _ -> zeros (row_num x) 1) in
   let _ = iteri_nz (fun i j z -> set_without_update_rec d.(j) i 0 z) x in
   Array.iter (fun z -> ignore (_update_rec_from_ptr z)) d; d
 
@@ -328,7 +328,7 @@ let not_exists_nz f x = not (exists_nz f x)
 let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
 
 let clone x =
-  let y = empty (row_num x) (col_num x) in
+  let y = zeros (row_num x) (col_num x) in
   match _is_csc_format x with
   | true  -> iteri_nz (fun i j z -> set_without_update_rec y i j z) x; _update_rec_from_ptr y
   | false -> copy_to x y
@@ -446,7 +446,7 @@ let equal_or_smaller x1 x2 = equal_or_greater x2 x1
 
 let diag x =
   let m = Pervasives.min (row_num x) (col_num x) in
-  let y = empty 1 m in
+  let y = zeros 1 m in
   iteri_nz (fun i j z ->
     if i = j then set y 0 j z else ()
   ) x; y
@@ -471,7 +471,7 @@ let to_dense x =
 
 let of_dense x =
   let open Matrix_foreign in
-  let y = empty (Array2.dim1 x) (Array2.dim2 x) in
+  let y = zeros (Array2.dim1 x) (Array2.dim2 x) in
   let _ = gsl_spmatrix_d2sp y.ptr (mat_to_matptr x) in
   _update_rec_from_ptr y
 
@@ -532,7 +532,7 @@ let load_txt = None
 
 let permutation_matrix d =
   let l = Array.init d (fun x -> x) |> Stats.shuffle in
-  let y = empty d d in
+  let y = zeros d d in
   let _ = Array.iteri (fun i j -> set y i j 1.) l in y
 
 let draw_rows ?(replacement=true) x c =
@@ -542,7 +542,7 @@ let draw_rows ?(replacement=true) x c =
     | true  -> Stats.sample a c
     | false -> Stats.choose a c
   in
-  let y = empty c m in
+  let y = zeros c m in
   let _ = Array.iteri (fun i j -> set y i j 1.) l in
   dot y x, l
 
@@ -553,7 +553,7 @@ let draw_cols ?(replacement=true) x c =
     | true  -> Stats.sample a c
     | false -> Stats.choose a c
   in
-  let y = empty n c in
+  let y = zeros n c in
   let _ = Array.iteri (fun j i -> set y i j 1.) l in
   dot x y, l
 

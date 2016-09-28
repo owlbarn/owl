@@ -20,7 +20,7 @@ let _ =
   print_endline (Bytes.make 60 '-');
   let x, y = (M.uniform_int m n), (M.uniform_int m n) in
   let z = M.add x x in
-  test_op "empty         " c (fun () -> M.empty m n);
+  test_op "zeros         " c (fun () -> M.zeros m n);
   test_op "eye           " c (fun () -> M.eye m);
   test_op "binary        " c (fun () -> M.binary m n);
   test_op "uniform       " c (fun () -> M.uniform m n);
