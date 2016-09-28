@@ -118,9 +118,13 @@ val iter_cols_nz : (spmat -> unit) -> spmat -> unit
 
 val iteri_cols_nz : (int -> spmat -> unit) -> spmat -> unit
 
-(** TODO: val mapi_rows_nz : *)
+val map_rows_nz : (spmat -> 'a) -> spmat -> 'a array
 
-(** TODO: val mapi_cols_nz : *)
+val map_cols_nz : (spmat -> 'a) -> spmat -> 'a array
+
+val mapi_rows_nz : (int -> spmat -> 'a) -> spmat -> 'a array
+
+val mapi_cols_nz : (int -> spmat -> 'a) -> spmat -> 'a array
 
 val fold_rows_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
 

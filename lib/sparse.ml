@@ -301,9 +301,23 @@ let iteri_cols_nz f x = iteri_cols (fun i y -> if y.nz != 0 then f i y) x
 
 let iter_cols_nz f x = iteri_cols_nz (fun _ y -> f y) x
 
-let mapi_rows_nz = None
+let mapi_rows_nz f x =
+  let a = _disassemble_rows x in
+  let r = ref [||] in
+  Array.iteri (fun i y ->
+    if (nnz y) != 0 then r := Array.append !r [|f i y|]
+  ) a; !r
 
-let mapi_cols_nz = None
+let map_rows_nz f x = mapi_rows_nz (fun _ y -> f y) x
+
+let mapi_cols_nz f x =
+  let a = _disassemble_cols x in
+  let r = ref [||] in
+  Array.iteri (fun i y ->
+    if (nnz y) != 0 then r := Array.append !r [|f i y|]
+  ) a; !r
+
+let map_cols_nz f x = mapi_cols_nz (fun _ y -> f y) x
 
 let fold_rows_nz f a x = _fold_basic iter_rows_nz f a x
 
