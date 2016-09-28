@@ -2,10 +2,8 @@
  * OWL - an OCaml math library for scientific computing
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
- 
-(** [
-  Helper functions used in the library
-  ]  *)
+
+(** Helper functions used in the library *)
 
 let range a b =
   let r = Array.make (b - a + 1) 0 in

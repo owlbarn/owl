@@ -3,7 +3,7 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** [ Dense Matrix ]  *)
+(** Dense matrix operations *)
 
 type dsmat = Gsl.Matrix.matrix
 
