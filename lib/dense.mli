@@ -27,8 +27,8 @@ val uniform : ?scale:float -> int -> int -> dsmat
 
 val gaussian : ?sigma:float -> int -> int -> dsmat
 
-val semidef : int -> dsmat
 (** [ semidef n ] genereates a n x n positive semi-definite dsmatrix *)
+val semidef : int -> dsmat
 
 val vector : int -> dsmat
 
@@ -38,8 +38,8 @@ val vector_ones : int -> dsmat
 
 val vector_uniform : int -> dsmat
 
-val linspace : float -> float -> int -> dsmat
 (** [ linspace a b n ] generates linearly spaced interval *)
+val linspace : float -> float -> int -> dsmat
 
 val meshgrid : float -> float -> float -> float -> int -> int -> dsmat * dsmat
 
@@ -255,11 +255,11 @@ val add_diag : dsmat -> float -> dsmat
 
 (* input and output functions *)
 
-val to_array : dsmat -> float array
 (** [ to_array x ] flatten dsmatrix x then return as an array *)
+val to_array : dsmat -> float array
 
-val to_arrays : dsmat -> float array array
 (** [ to arrays x ] returns an array of arrays, wherein each row becomes an array *)
+val to_arrays : dsmat -> float array array
 
 val of_array : float array -> int -> int -> dsmat
 
