@@ -11,10 +11,13 @@ type float_array1 = (float, float64_elt, c_layout) Array1.t
 
 type float_array2 = (float, float64_elt, c_layout) Array2.t
 
+(** configure the logger *)
+let _ = Log.color_on (); Log.(set_log_level INFO)
+
 (* Some common data structure for both dense and sparse matrices.
   please refer to related header files in GSL code repository. *)
 
-(** [ structure definition for memory block used in GSL ]  *)
+(** structure definition for memory block used in GSL  *)
 type mblk_struct
 
 let mblk_struct : mblk_struct structure typ = structure "mblk_struct"
@@ -22,7 +25,7 @@ let mblk_struct : mblk_struct structure typ = structure "mblk_struct"
   let mdata = field mblk_struct "mdata" (ptr double)
 let () = seal mblk_struct
 
-(** [ structure definition for vector, refer to gsl_vector_double.h ]  *)
+(** structure definition for vector, refer to gsl_vector_double.h *)
 type vec_struct
 
 let vec_struct : vec_struct structure typ = structure "vec_struct"
@@ -33,7 +36,7 @@ let vec_struct : vec_struct structure typ = structure "vec_struct"
   let vowner = field vec_struct "vowner" int64_t
 let () = seal vec_struct
 
-(** [ define the vector record ]  *)
+(** define the vector record *)
 type vec_record = {
   mutable vsize  : int;            (* size of a vector *)
   mutable stride : int;            (* stride of a vector *)
@@ -42,7 +45,7 @@ type vec_record = {
   (* pointer to a vector's memory *)
 }
 
-(** [ structure definition for dense matrix, refer to gsl_matrix_double.h  ]  *)
+(** structure definition for dense matrix, refer to gsl_matrix_double.h *)
 type mat_struct
 
 let mat_struct : mat_struct structure typ = structure "mat_struct"
@@ -55,7 +58,7 @@ let mat_struct : mat_struct structure typ = structure "mat_struct"
 let () = seal mat_struct
 
 
-(** [ structure definition for sparse matrix, refer to gsl_spmatrix.h ]  *)
+(** structure definition for sparse matrix, refer to gsl_spmatrix.h *)
 type spmat_struct
 
 let spmat_struct : spmat_struct structure typ = structure "spmat_struct"
@@ -71,7 +74,7 @@ let spmat_struct : spmat_struct structure typ = structure "spmat_struct"
   let sp_type  = field spmat_struct "sp_type" int64_t
 let () = seal spmat_struct
 
-(** [ record definition for sparse matrix ]  *)
+(** record definition for sparse matrix *)
 type spmat_record = {
   mutable m   : int;           (* number of rows *)
   mutable n   : int;           (* number of columns *)

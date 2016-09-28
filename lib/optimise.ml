@@ -6,9 +6,6 @@
 module MX = Dense
 module UT = Utils
 
-(** configure the logger *)
-let _ = Log.color_on (); Log.(set_log_level INFO)
-
 (** [
   K-means clustering algorithm
   x is the row-based data points and c is the number of clusters.
