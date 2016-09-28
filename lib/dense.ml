@@ -31,8 +31,6 @@ let eye n =
   let x = zeros n n in
   for i = 0 to n - 1 do x.{i,i} <- 1. done; x
 
-let identity = eye
-
 let sequential m n =
   let x = empty m n and c = ref 0 in
   for i = 0 to m - 1 do

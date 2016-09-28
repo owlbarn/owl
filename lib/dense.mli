@@ -14,8 +14,6 @@ val ones : int -> int -> dsmat
 
 val eye : int -> dsmat
 
-val identity : int -> dsmat
-
 val sequential : int -> int -> dsmat
 
 val uniform_int : ?a:int -> ?b:int -> int -> int -> dsmat

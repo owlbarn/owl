@@ -31,7 +31,8 @@ let draw_line p =
     let x = a +. (float_of_int i *. (b -. a) /. float_of_int c) in
     let y = (p.{0,0} *. x +. p.{2,0}) /. (p.{1,0} *. (-1.)) in
     z.{i,0} <- x; z.{i,1} <- y
-  done; MX.save_txt z "test_log.model.tmp"
+  done;
+  MX.save_txt z "test_log.model.tmp"
 
 let test_log x y =
   let p = LL.logistic_regression ~i:true x y in
@@ -39,7 +40,7 @@ let test_log x y =
   let y' = MX.(sigmoid (x $@ p)) in
   let y' = MX.map (fun x -> if x > 0.5 then 1. else 0.) y' in
   let e = MX.(average (abs (y -@ y'))) in
-  let _ = Printf.printf "accuracy: %.4f\n" (1. -. e) in p
+  let _ = Log.info "accuracy: %.4f" (1. -. e) in p
 
 let _ =
   let _ = Random.self_init () in

@@ -6,6 +6,16 @@ type spmat
 
 val zeros : int -> int -> spmat
 
+val ones : int -> int -> spmat
+
+val eye : int -> spmat
+
+val binary : int -> int -> spmat
+
+val uniform : ?scale:float -> int -> int -> spmat
+
+val uniform_int : ?a:int -> ?b:int -> int -> int -> spmat
+
 val shape : spmat -> int * int
 
 val row_num : spmat -> int
@@ -25,14 +35,6 @@ val nnz_rows : spmat -> int array
 val nnz_cols : spmat -> int array
 
 val density : spmat -> float
-
-val eye : int -> spmat
-
-val binary : int -> int -> spmat
-
-val uniform : ?scale:float -> int -> int -> spmat
-
-val uniform_int : ?a:int -> ?b:int -> int -> int -> spmat
 
 (** matrix manipulations *)
 

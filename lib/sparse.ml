@@ -566,6 +566,11 @@ let shuffle_cols x =
 let shuffle x = x |> shuffle_rows |> shuffle_cols
 
 
+(** uncategorised functions *)
+
+let ones m n = Dense.ones m n |> of_dense
+
+
 (** short-hand infix operators *)
 
 let ( +@ ) = add

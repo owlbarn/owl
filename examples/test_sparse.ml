@@ -21,6 +21,7 @@ let _ =
   let x, y = (M.uniform_int m n), (M.uniform_int m n) in
   let z = M.add x x in
   test_op "zeros         " c (fun () -> M.zeros m n);
+  test_op "ones          " c (fun () -> M.ones m n);
   test_op "eye           " c (fun () -> M.eye m);
   test_op "binary        " c (fun () -> M.binary m n);
   test_op "uniform       " c (fun () -> M.uniform m n);
