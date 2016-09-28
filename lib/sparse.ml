@@ -570,6 +570,8 @@ let shuffle x = x |> shuffle_rows |> shuffle_cols
 
 let ones m n = Dense.ones m n |> of_dense
 
+let linspace a b n = Dense.linspace a b n |> of_dense
+
 
 (** short-hand infix operators *)
 

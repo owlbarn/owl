@@ -16,6 +16,10 @@ val uniform : ?scale:float -> int -> int -> spmat
 
 val uniform_int : ?a:int -> ?b:int -> int -> int -> spmat
 
+val linspace : float -> float -> int -> spmat
+
+(** matrix manipulation and properties *)
+
 val shape : spmat -> int * int
 
 val row_num : spmat -> int
