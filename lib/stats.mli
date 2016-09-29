@@ -213,6 +213,52 @@ module Pdf : sig
 
   val rayleigh_pdf : float -> float -> float
 
+  val landau_pdf : float -> float
+
+  val gamma_pdf : float -> float -> float -> float
+
+  val lognormal_pdf : float -> float -> float -> float
+
+  val chisq_pdf : float -> float -> float
+
+  val dirichlet_pdf : float array -> float array -> float
+
+  val dirichlet_lnpdf : float array -> float array -> float
+
+  val fdist_pdf : float -> float -> float -> float
+
+  val beta_pdf : float -> float -> float -> float
+
+  val logistic_pdf : float -> float -> float
+
+  val pareto_pdf : float -> float -> float -> float
+
+  val weibull_pdf : float -> float -> float -> float
+
+  val gumbel1_pdf : float -> float -> float -> float
+
+  val gumbel2_pdf : float -> float -> float -> float
+
+  val poisson_pdf : int -> float -> float
+
+  val bernoulli_pdf : int -> float -> float
+
+  val binomial_pdf : int -> float -> int -> float
+
+  val multinomial_pdf : float array -> int array -> float
+
+  val multinomial_lnpdf : float array -> int array -> float
+
+  val negative_binomial_pdf : int -> float -> float -> float
+
+  val pascal_pdf : int -> float -> int -> float
+
+  val geometric_pdf : int -> float -> float
+
+  val hypergeometric_pdf : int -> int -> int -> int -> float
+
+  val logarithmic_pdf : int -> float -> float
+
 end
 
 
@@ -301,8 +347,6 @@ val rayleigh_Qinv : float -> float -> float
 
 (** [ Landau distribution ]  *)
 
-val landau_pdf : float -> float
-
 
 (** [ Levy alpha-stable distribution ]  *)
 
@@ -314,7 +358,7 @@ val landau_pdf : float -> float
 
 (** [ Gamma distribution ]  *)
 
-val gamma_pdf : float -> float -> float -> float
+
 
 val gamma_P : float -> float -> float -> float
 
@@ -327,7 +371,6 @@ val gamma_Qinv : float -> float -> float -> float
 
 (** [ Lognormal distribution ]  *)
 
-val lognormal_pdf : float -> float -> float -> float
 
 val lognormal_P : float -> float -> float -> float
 
@@ -340,8 +383,6 @@ val lognormal_Qinv : float -> float -> float -> float
 
 (** [ Chi-squared distribution ]  *)
 
-val chisq_pdf : float -> float -> float
-
 val chisq_P : float -> float -> float
 
 val chisq_Q : float -> float -> float
@@ -353,14 +394,10 @@ val chisq_Qinv : float -> float -> float
 
 (** [ Dirichlet distribution ]  *)
 
-val dirichlet_pdf : float array -> float array -> float
 
-val dirichlet_lnpdf : float array -> float array -> float
 
 
 (** [ F distribution ]  *)
-
-val fdist_pdf : float -> float -> float -> float
 
 val fdist_P : float -> float -> float -> float
 
@@ -386,8 +423,6 @@ val tdist_Qinv : float -> float -> float
 
 (** [ Beta distribution ]  *)
 
-val beta_pdf : float -> float -> float -> float
-
 val beta_P : float -> float -> float -> float
 
 val beta_Q : float -> float -> float -> float
@@ -399,9 +434,6 @@ val beta_Qinv : float -> float -> float -> float
 
 (** [ Logistic distribution ]  *)
 
-
-val logistic_pdf : float -> float -> float
-
 val logistic_P : float -> float -> float
 
 val logistic_Q : float -> float -> float
@@ -412,8 +444,6 @@ val logistic_Qinv : float -> float -> float
 
 
 (** [ Pareto distribution ]  *)
-
-val pareto_pdf : float -> float -> float -> float
 
 val pareto_P : float -> float -> float -> float
 
@@ -431,8 +461,6 @@ val dir_2d_trig_method : unit -> float * float
 
 (** [ Weibull distribution ]  *)
 
-val weibull_pdf : float -> float -> float -> float
-
 val weibull_P : float -> float -> float -> float
 
 val weibull_Q : float -> float -> float -> float
@@ -443,8 +471,6 @@ val weibull_Qinv : float -> float -> float -> float
 
 
 (** [ Type-1 Gumbel distribution ]  *)
-
-val gumbel1_pdf : float -> float -> float -> float
 
 val gumbel1_P : float -> float -> float -> float
 
@@ -457,8 +483,6 @@ val gumbel1_Qinv : float -> float -> float -> float
 
 (** [ Type-2 Gumbel distribution ]  *)
 
-val gumbel2_pdf : float -> float -> float -> float
-
 val gumbel2_P : float -> float -> float -> float
 
 val gumbel2_Q : float -> float -> float -> float
@@ -470,8 +494,6 @@ val gumbel2_Qinv : float -> float -> float -> float
 
 (** [ Poisson distribution ]  *)
 
-val poisson_pdf : int -> float -> float
-
 val poisson_P : int -> float -> float
 
 val poisson_Q : int -> float -> float
@@ -479,12 +501,9 @@ val poisson_Q : int -> float -> float
 
 (** [ Bernoulli distribution ]  *)
 
-val bernoulli_pdf : int -> float -> float
-
 
 (** [ Binomial distribution ]  *)
 
-val binomial_pdf : int -> float -> int -> float
 
 val binomial_P : int -> float -> int -> float
 
@@ -493,14 +512,8 @@ val binomial_Q : int -> float -> int -> float
 
 (** [ Multinomial distribution ]  *)
 
-val multinomial_pdf : float array -> int array -> float
-
-val multinomial_lnpdf : float array -> int array -> float
-
 
 (** [ Negative Binomial distribution ]  *)
-
-val negative_binomial_pdf : int -> float -> float -> float
 
 val negative_binomial_P : int -> float -> float -> float
 
@@ -509,16 +522,12 @@ val negative_binomial_Q : int -> float -> float -> float
 
 (** [ Pascal distribution ]  *)
 
-val pascal_pdf : int -> float -> int -> float
-
 val pascal_P : int -> float -> int -> float
 
 val pascal_Q : int -> float -> int -> float
 
 
 (** [ Geometric distribution ]  *)
-
-val geometric_pdf : int -> float -> float
 
 val geometric_P : int -> float -> float
 
@@ -527,16 +536,12 @@ val geometric_Q : int -> float -> float
 
 (** [ Hypergeometric distribution ]  *)
 
-val hypergeometric_pdf : int -> int -> int -> int -> float
-
 val hypergeometric_P : int -> int -> int -> int -> float
 
 val hypergeometric_Q : int -> int -> int -> int -> float
 
 
 (** [ Logarithmic distribution ]  *)
-
-val logarithmic_pdf : int -> float -> float
 
 
 
