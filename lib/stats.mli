@@ -42,8 +42,6 @@ val metropolis_hastings : (float array -> float) -> float array -> int -> float 
 val gibbs_sampling : (float array -> int -> float) -> float array -> int -> float array array
 (** [ gibbs_sampling f p n ] is Gibbs sampler. f is a sampler based on the full conditional function of all variables *)
 
-(** [ Statistics functions ]  *)
-
 val mean : ?w:float array -> float array -> float
 
 val variance : ?w:float array -> ?mean:float -> float array -> float
@@ -152,6 +150,8 @@ module Rnd : sig
   val pareto : float -> float -> float
 
   val dir_2d : unit -> float * float
+
+  val dir_2d_trig_method : unit -> float * float
 
   val dir_3d : unit -> float * float * float
 
@@ -433,12 +433,8 @@ module Cdf : sig
 end
 
 
-val dir_2d_trig_method : unit -> float * float
-
 
 (* TODO: implement a small PPL *)
-
-
 
 
 (* ends here *)

@@ -10,7 +10,7 @@
 type t = Gsl.Rng.t
 
 
-(** [ Set up random environment ]  *)
+(* Set up random environment *)
 
 let rng =
   let r = Gsl.Rng.make Gsl.Rng.MT19937 in
@@ -19,17 +19,10 @@ let rng =
 
 let seed s = Gsl.Rng.set rng (Nativeint.of_int s)
 
-
-(** [ Continuous random variables ]  *)
-
 (* TODO: change the order of the arguments in _pdf functions *)
 
 
-let dir_2d_trig_method () = Gsl.Randist.dir_2d_trig_method rng
-
-
-
-(** [ Randomisation function ]  *)
+(* Randomisation function *)
 
 let shuffle x =
   let y = Array.copy x in
@@ -249,6 +242,8 @@ module Rnd = struct
   let pareto a b = Gsl.Randist.pareto rng a b
 
   let dir_2d () = Gsl.Randist.dir_2d rng
+
+  let dir_2d_trig_method () = Gsl.Randist.dir_2d_trig_method rng
 
   let dir_3d () = Gsl.Randist.dir_3d rng
 
