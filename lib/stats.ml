@@ -26,8 +26,6 @@ let seed s = Gsl.Rng.set rng (Nativeint.of_int s)
 
 
 
-let gaussian_pdf x sigma = Gsl.Randist.gaussian_pdf x sigma
-
 let gaussian_P x sigma = Gsl.Cdf.gaussian_P x sigma
 
 let gaussian_Q x sigma = Gsl.Cdf.gaussian_Q x sigma
@@ -44,8 +42,6 @@ let bivariate_gaussian_pdf x y sigma_x sigma_y rho = Gsl.Randist.bivariate_gauss
 
 
 
-let exponential_pdf x mu = Gsl.Randist.exponential_pdf x mu
-
 let exponential_P x mu = Gsl.Cdf.exponential_P x mu
 
 let exponential_Q x mu = Gsl.Cdf.exponential_Q x mu
@@ -55,7 +51,6 @@ let exponential_Pinv p mu = Gsl.Cdf.exponential_Pinv p mu
 let exponential_Qinv q mu = Gsl.Cdf.exponential_Qinv q mu
 
 
-let laplace_pdf x a = Gsl.Randist.laplace_pdf x a
 
 let laplace_P x a = Gsl.Cdf.laplace_P x a
 
@@ -66,14 +61,11 @@ let laplace_Pinv p a = Gsl.Cdf.laplace_Pinv p a
 let laplace_Qinv q a = Gsl.Cdf.laplace_Qinv q a
 
 
-let exppow_pdf x a b = Gsl.Randist.exppow_pdf x a b
-
 let exppow_P x a b = Gsl.Cdf.exppow_P x a b
 
 let exppow_Q x a b = Gsl.Cdf.exppow_Q x a b
 
 
-let cauchy_pdf x a = Gsl.Randist.cauchy_pdf x a
 
 let cauchy_P x a = Gsl.Cdf.cauchy_P x a
 
@@ -85,8 +77,6 @@ let cauchy_Qinv q a = Gsl.Cdf.cauchy_Qinv q a
 
 
 
-let rayleigh_pdf x sigma = Gsl.Randist.rayleigh_pdf x sigma
-
 let rayleigh_P x sigma = Gsl.Cdf.rayleigh_P x sigma
 
 let rayleigh_Q x sigma = Gsl.Cdf.rayleigh_Q x sigma
@@ -95,15 +85,6 @@ let rayleigh_Pinv p sigma = Gsl.Cdf.rayleigh_Pinv p sigma
 
 let rayleigh_Qinv q sigma = Gsl.Cdf.rayleigh_Qinv q sigma
 
-
-let rayleigh_tail_pdf x a sigma = Gsl.Randist.rayleigh_tail_pdf x a sigma
-
-
-let landau_pdf x = Gsl.Randist.landau_pdf x
-
-
-
-let gamma_pdf x a b = Gsl.Randist.gamma_pdf x a b
 
 let gamma_P x a b = Gsl.Cdf.gamma_P x a b
 
@@ -114,9 +95,6 @@ let gamma_Pinv p a b = Gsl.Cdf.gamma_Pinv p a b
 let gamma_Qinv q a b = Gsl.Cdf.gamma_Qinv q a b
 
 
-
-let flat_pdf x a b = Gsl.Randist.flat_pdf x a b
-
 let flat_P x a b = Gsl.Cdf.flat_P x a b
 
 let flat_Q x a b = Gsl.Cdf.flat_Q x a b
@@ -125,9 +103,6 @@ let flat_Pinv p a b = Gsl.Cdf.flat_Pinv p a b
 
 let flat_Qinv q a b = Gsl.Cdf.flat_Qinv q a b
 
-
-
-let lognormal_pdf x zeta sigma = Gsl.Randist.lognormal_pdf x zeta sigma
 
 let lognormal_P x zeta sigma = Gsl.Cdf.lognormal_P x zeta sigma
 
@@ -138,9 +113,6 @@ let lognormal_Pinv p zeta sigma = Gsl.Cdf.lognormal_Pinv p zeta sigma
 let lognormal_Qinv q zeta sigma = Gsl.Cdf.lognormal_Qinv q zeta sigma
 
 
-
-let chisq_pdf x nu = Gsl.Randist.chisq_pdf x nu
-
 let chisq_P x nu = Gsl.Cdf.chisq_P x nu
 
 let chisq_Q x nu = Gsl.Cdf.chisq_Q x nu
@@ -149,15 +121,6 @@ let chisq_Pinv p nu = Gsl.Cdf.chisq_Pinv p nu
 
 let chisq_Qinv q nu = Gsl.Cdf.chisq_Qinv q nu
 
-
-
-let dirichlet_pdf alpha theta = Gsl.Randist.dirichlet_pdf alpha theta
-
-let dirichlet_lnpdf alpha theta = Gsl.Randist.dirichlet_lnpdf alpha theta
-
-
-
-let fdist_pdf x nu1 nu2 = Gsl.Randist.fdist_pdf x nu1 nu2
 
 let fdist_P x nu1 nu2 = Gsl.Cdf.fdist_P x nu1 nu2
 
@@ -168,9 +131,6 @@ let fdist_Pinv p nu1 nu2 = Gsl.Cdf.fdist_Pinv p nu1 nu2
 let fdist_Qinv q nu1 nu2 = Gsl.Cdf.fdist_Qinv q nu1 nu2
 
 
-
-let tdist_pdf x nu = Gsl.Randist.tdist_pdf x nu
-
 let tdist_P x nu = Gsl.Cdf.tdist_P x nu
 
 let tdist_Q x nu = Gsl.Cdf.tdist_Q x nu
@@ -179,9 +139,6 @@ let tdist_Pinv p nu = Gsl.Cdf.tdist_Pinv p nu
 
 let tdist_Qinv q nu = Gsl.Cdf.tdist_Qinv q nu
 
-
-
-let beta_pdf x a b = Gsl.Randist.beta_pdf x a b
 
 let beta_P x a b = Gsl.Cdf.beta_P x a b
 
@@ -192,8 +149,6 @@ let beta_Pinv p a b = Gsl.Cdf.beta_Pinv p a b
 let beta_Qinv q a b = Gsl.Cdf.beta_Qinv q a b
 
 
-let logistic_pdf x a = Gsl.Randist.logistic_pdf x a
-
 let logistic_P x a = Gsl.Cdf.logistic_P x a
 
 let logistic_Q x a = Gsl.Cdf.logistic_Q x a
@@ -202,9 +157,6 @@ let logistic_Pinv p a = Gsl.Cdf.logistic_Pinv p a
 
 let logistic_Qinv q a = Gsl.Cdf.logistic_Qinv q a
 
-
-
-let pareto_pdf x a b = Gsl.Randist.pareto_pdf x a b
 
 let pareto_P x a b = Gsl.Cdf.pareto_P x a b
 
@@ -219,9 +171,6 @@ let pareto_Qinv q a b = Gsl.Cdf.pareto_Qinv q a b
 let dir_2d_trig_method () = Gsl.Randist.dir_2d_trig_method rng
 
 
-
-let weibull_pdf x a b = Gsl.Randist.weibull_pdf x a b
-
 let weibull_P x a b = Gsl.Cdf.weibull_P x a b
 
 let weibull_Q x a b = Gsl.Cdf.weibull_Q x a b
@@ -230,8 +179,6 @@ let weibull_Pinv p a b = Gsl.Cdf.weibull_Pinv p a b
 
 let weibull_Qinv q a b = Gsl.Cdf.weibull_Qinv q a b
 
-
-let gumbel1_pdf x a b = Gsl.Randist.gumbel1_pdf x a b
 
 let gumbel1_P x a b = Gsl.Cdf.gumbel1_P x a b
 
@@ -242,8 +189,6 @@ let gumbel1_Pinv p a b = Gsl.Cdf.gumbel1_Pinv p a b
 let gumbel1_Qinv q a b = Gsl.Cdf.gumbel1_Qinv q a b
 
 
-let gumbel2_pdf x a b = Gsl.Randist.gumbel2_pdf x a b
-
 let gumbel2_P x a b = Gsl.Cdf.gumbel2_P x a b
 
 let gumbel2_Q x a b = Gsl.Cdf.gumbel2_Q x a b
@@ -252,8 +197,6 @@ let gumbel2_Pinv p a b = Gsl.Cdf.gumbel2_Pinv p a b
 
 let gumbel2_Qinv q a b = Gsl.Cdf.gumbel2_Qinv q a b
 
-
-let poisson_pdf x mu = Gsl.Randist.poisson_pdf x mu
 
 let poisson_P x mu = Gsl.Cdf.poisson_P x mu
 
@@ -561,7 +504,53 @@ end
 
 
 module Pdf = struct
-  
+
+  let gaussian_pdf x sigma = Gsl.Randist.gaussian_pdf x sigma
+
+  let exponential_pdf x mu = Gsl.Randist.exponential_pdf x mu
+
+  let laplace_pdf x a = Gsl.Randist.laplace_pdf x a
+
+  let exppow_pdf x a b = Gsl.Randist.exppow_pdf x a b
+
+  let cauchy_pdf x a = Gsl.Randist.cauchy_pdf x a
+
+  let rayleigh_pdf x sigma = Gsl.Randist.rayleigh_pdf x sigma
+
+  let rayleigh_tail_pdf x a sigma = Gsl.Randist.rayleigh_tail_pdf x a sigma
+
+  let landau_pdf x = Gsl.Randist.landau_pdf x
+
+  let gamma_pdf x a b = Gsl.Randist.gamma_pdf x a b
+
+  let flat_pdf x a b = Gsl.Randist.flat_pdf x a b
+
+  let lognormal_pdf x zeta sigma = Gsl.Randist.lognormal_pdf x zeta sigma
+
+  let chisq_pdf x nu = Gsl.Randist.chisq_pdf x nu
+
+  let dirichlet_pdf alpha theta = Gsl.Randist.dirichlet_pdf alpha theta
+
+  let dirichlet_lnpdf alpha theta = Gsl.Randist.dirichlet_lnpdf alpha theta
+
+  let fdist_pdf x nu1 nu2 = Gsl.Randist.fdist_pdf x nu1 nu2
+
+  let tdist_pdf x nu = Gsl.Randist.tdist_pdf x nu
+
+  let beta_pdf x a b = Gsl.Randist.beta_pdf x a b
+
+  let logistic_pdf x a = Gsl.Randist.logistic_pdf x a
+
+  let pareto_pdf x a b = Gsl.Randist.pareto_pdf x a b
+
+  let weibull_pdf x a b = Gsl.Randist.weibull_pdf x a b
+
+  let gumbel1_pdf x a b = Gsl.Randist.gumbel1_pdf x a b
+
+  let gumbel2_pdf x a b = Gsl.Randist.gumbel2_pdf x a b
+
+  let poisson_pdf x mu = Gsl.Randist.poisson_pdf x mu
+
 end
 
 
