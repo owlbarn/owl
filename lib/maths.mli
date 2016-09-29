@@ -4,7 +4,7 @@
  *)
 
 
-(** [ Mathematics Module ]
+(** Mathematics module
 
   This module contains some basic and advanced mathematical operations.
   If you cannot find some function in this module, try Stats module.

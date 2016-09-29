@@ -3,19 +3,18 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** [ Statistics Module ]
+(** Statistics module
 
   The functions in this module are grouped based on their corresponding
   distributions. For each random variable distribution, e.g., distribution abc,
   there are usually six corresponding (if any) functions as follows:
-
 
   Please refer to GSL documentation using following linke for details:
   https://www.gnu.org/software/gsl/manual
 *)
 
 
-(** [ Helper and randomisation functions ]  *)
+(** {6 Randomisation functions} *)
 
 val seed : int -> unit
 (** [seed x] sets x as seed for the internal random number generator.  *)
@@ -29,11 +28,8 @@ val choose : 'a array -> int -> 'a array
 val sample : 'a array -> int -> 'a array
 (** [ sample x n ] draw n samples from x with replacement  *)
 
-val metropolis_hastings : (float array -> float) -> float array -> int -> float array array
-(** [ metropolis_hastings f p n ] is Metropolis-Hastings MCMC algorithm. f is pdf of the p *)
 
-val gibbs_sampling : (float array -> int -> float) -> float array -> int -> float array array
-(** [ gibbs_sampling f p n ] is Gibbs sampler. f is a sampler based on the full conditional function of all variables *)
+(** {6 Basic statistical functions} *)
 
 val mean : ?w:float array -> float array -> float
 
@@ -79,13 +75,24 @@ val rank : float array -> float array
 (** [ rank x ] translates each element in x to its ranking *)
 
 
+(** {6 MCMC: Markov Chain Monte Carlo} *)
+
+val metropolis_hastings : (float array -> float) -> float array -> int -> float array array
+(** [ metropolis_hastings f p n ] is Metropolis-Hastings MCMC algorithm.
+  f is pdf of the p *)
+
+val gibbs_sampling : (float array -> int -> float) -> float array -> int -> float array array
+(** [ gibbs_sampling f p n ] is Gibbs sampler. f is a sampler based on the full
+  conditional function of all variables *)
+
+
+(** {6 Random numbers, PDF, and CDF} *)
+
 module Rnd : sig
 
-  (** [ Continuous random variables ]  *)
+  (** Rnd module is for generating random variables of various distributions. *)
 
-  val uniform_int : ?a:int -> ?b:int -> unit -> int
-  (** [uniform_int a b] returns a random int between a and b inclusive,
-      i.e., a random int in [a, b] *)
+  (** {6 Continuous random variables} *)
 
   val uniform : unit -> float
   (** [uniform] returns a random float number within [0,1), includes 0.
@@ -156,7 +163,12 @@ module Rnd : sig
 
   val gumbel2 : float -> float -> float
 
-  (** [ Discrete random variables ]  *)
+
+  (** {6 Discrete random variables} *)
+
+  val uniform_int : ?a:int -> ?b:int -> unit -> int
+  (** [uniform_int a b] returns a random int between a and b inclusive,
+      i.e., a random int in [a, b] *)
 
   val poisson : float -> int
 
