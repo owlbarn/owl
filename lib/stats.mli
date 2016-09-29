@@ -180,79 +180,82 @@ end
 
 
 module Pdf : sig
+  (** Pdf module provides the probability density functions of various random
+    number distribution.
+   *)
 
-  val flat_pdf : float -> float -> float -> float
+  val flat : float -> float -> float -> float
 
-  val gaussian_pdf : float -> float -> float
+  val gaussian : float -> float -> float
   (** [ gaussian_pdf x sigma ] returns the probability density at x *)
 
-  val gaussian_tail_pdf : float -> float -> float -> float
+  val gaussian_tail : float -> float -> float -> float
   (** [ gaussian_tail_pdf x a sigma ] returns the probability density at x given
       a gaussian tail distribution of N(a, sigma) *)
 
-  val bivariate_gaussian_pdf : float -> float -> float -> float -> float -> float
-  (** [ bivariate_gaussian_pdf x y sigma_x sigma_y rho ] returns the probability
+  val bivariate_gaussian : float -> float -> float -> float -> float -> float
+  (** [ bivariate_gaussian x y sigma_x sigma_y rho ] returns the probability
     density p(x,y) at (x,y) for a bivariate Gaussian distribution with standard
     deviations sigma_x, sigma_y and correlation coefficient rho.  *)
 
-  val exponential_pdf : float -> float -> float
-  (** [ exponential_pdf x mu ] returns the probability density at x*)
+  val exponential : float -> float -> float
+  (** [ exponential x mu ] returns the probability density at x*)
 
-  val laplace_pdf : float -> float -> float
+  val laplace : float -> float -> float
 
-  val cauchy_pdf : float -> float -> float
+  val cauchy : float -> float -> float
 
-  val exppow_pdf : float -> float -> float -> float
+  val exppow : float -> float -> float -> float
 
-  val rayleigh_pdf : float -> float -> float
+  val rayleigh : float -> float -> float
 
-  val landau_pdf : float -> float
+  val landau : float -> float
 
-  val gamma_pdf : float -> float -> float -> float
+  val gamma : float -> float -> float -> float
 
-  val lognormal_pdf : float -> float -> float -> float
+  val lognormal : float -> float -> float -> float
 
-  val chisq_pdf : float -> float -> float
+  val chisq : float -> float -> float
 
-  val dirichlet_pdf : float array -> float array -> float
+  val dirichlet : float array -> float array -> float
 
   val dirichlet_lnpdf : float array -> float array -> float
 
-  val fdist_pdf : float -> float -> float -> float
+  val fdist : float -> float -> float -> float
 
-  val tdist_pdf : float -> float -> float
+  val tdist : float -> float -> float
 
-  val beta_pdf : float -> float -> float -> float
+  val beta : float -> float -> float -> float
 
-  val logistic_pdf : float -> float -> float
+  val logistic : float -> float -> float
 
-  val pareto_pdf : float -> float -> float -> float
+  val pareto : float -> float -> float -> float
 
-  val weibull_pdf : float -> float -> float -> float
+  val weibull : float -> float -> float -> float
 
-  val gumbel1_pdf : float -> float -> float -> float
+  val gumbel1 : float -> float -> float -> float
 
-  val gumbel2_pdf : float -> float -> float -> float
+  val gumbel2 : float -> float -> float -> float
 
-  val poisson_pdf : int -> float -> float
+  val poisson : int -> float -> float
 
-  val bernoulli_pdf : int -> float -> float
+  val bernoulli : int -> float -> float
 
-  val binomial_pdf : int -> float -> int -> float
+  val binomial : int -> float -> int -> float
 
-  val multinomial_pdf : float array -> int array -> float
+  val multinomial : float array -> int array -> float
 
   val multinomial_lnpdf : float array -> int array -> float
 
-  val negative_binomial_pdf : int -> float -> float -> float
+  val negative_binomial : int -> float -> float -> float
 
-  val pascal_pdf : int -> float -> int -> float
+  val pascal : int -> float -> int -> float
 
-  val geometric_pdf : int -> float -> float
+  val geometric : int -> float -> float
 
-  val hypergeometric_pdf : int -> int -> int -> int -> float
+  val hypergeometric : int -> int -> int -> int -> float
 
-  val logarithmic_pdf : int -> float -> float
+  val logarithmic : int -> float -> float
 
 end
 
@@ -434,7 +437,6 @@ module Cdf : sig
   val hypergeometric_Q : int -> int -> int -> int -> float
 
 end
-
 
 
 (* TODO: implement a small PPL *)

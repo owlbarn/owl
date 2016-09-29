@@ -280,73 +280,73 @@ end
 
 module Pdf = struct
 
-  let gaussian_pdf x sigma = Gsl.Randist.gaussian_pdf x sigma
+  let gaussian x sigma = Gsl.Randist.gaussian_pdf x sigma
 
-  let gaussian_tail_pdf x a sigma = Gsl.Randist.gaussian_tail_pdf x a sigma
+  let gaussian_tail x a sigma = Gsl.Randist.gaussian_tail_pdf x a sigma
 
-  let bivariate_gaussian_pdf x y sigma_x sigma_y rho = Gsl.Randist.bivariate_gaussian_pdf x y sigma_x sigma_y rho
+  let bivariate_gaussian x y sigma_x sigma_y rho = Gsl.Randist.bivariate_gaussian_pdf x y sigma_x sigma_y rho
 
-  let exponential_pdf x mu = Gsl.Randist.exponential_pdf x mu
+  let exponential x mu = Gsl.Randist.exponential_pdf x mu
 
-  let laplace_pdf x a = Gsl.Randist.laplace_pdf x a
+  let laplace x a = Gsl.Randist.laplace_pdf x a
 
-  let exppow_pdf x a b = Gsl.Randist.exppow_pdf x a b
+  let exppow x a b = Gsl.Randist.exppow_pdf x a b
 
-  let cauchy_pdf x a = Gsl.Randist.cauchy_pdf x a
+  let cauchy x a = Gsl.Randist.cauchy_pdf x a
 
-  let rayleigh_pdf x sigma = Gsl.Randist.rayleigh_pdf x sigma
+  let rayleigh x sigma = Gsl.Randist.rayleigh_pdf x sigma
 
-  let rayleigh_tail_pdf x a sigma = Gsl.Randist.rayleigh_tail_pdf x a sigma
+  let rayleigh_tail x a sigma = Gsl.Randist.rayleigh_tail_pdf x a sigma
 
-  let landau_pdf x = Gsl.Randist.landau_pdf x
+  let landau x = Gsl.Randist.landau_pdf x
 
-  let gamma_pdf x a b = Gsl.Randist.gamma_pdf x a b
+  let gamma x a b = Gsl.Randist.gamma_pdf x a b
 
-  let flat_pdf x a b = Gsl.Randist.flat_pdf x a b
+  let flat x a b = Gsl.Randist.flat_pdf x a b
 
-  let lognormal_pdf x zeta sigma = Gsl.Randist.lognormal_pdf x zeta sigma
+  let lognormal x zeta sigma = Gsl.Randist.lognormal_pdf x zeta sigma
 
-  let chisq_pdf x nu = Gsl.Randist.chisq_pdf x nu
+  let chisq x nu = Gsl.Randist.chisq_pdf x nu
 
-  let dirichlet_pdf alpha theta = Gsl.Randist.dirichlet_pdf alpha theta
+  let dirichlet alpha theta = Gsl.Randist.dirichlet_pdf alpha theta
 
   let dirichlet_lnpdf alpha theta = Gsl.Randist.dirichlet_lnpdf alpha theta
 
-  let fdist_pdf x nu1 nu2 = Gsl.Randist.fdist_pdf x nu1 nu2
+  let fdist x nu1 nu2 = Gsl.Randist.fdist_pdf x nu1 nu2
 
-  let tdist_pdf x nu = Gsl.Randist.tdist_pdf x nu
+  let tdist x nu = Gsl.Randist.tdist_pdf x nu
 
-  let beta_pdf x a b = Gsl.Randist.beta_pdf x a b
+  let beta x a b = Gsl.Randist.beta_pdf x a b
 
-  let logistic_pdf x a = Gsl.Randist.logistic_pdf x a
+  let logistic x a = Gsl.Randist.logistic_pdf x a
 
-  let pareto_pdf x a b = Gsl.Randist.pareto_pdf x a b
+  let pareto x a b = Gsl.Randist.pareto_pdf x a b
 
-  let weibull_pdf x a b = Gsl.Randist.weibull_pdf x a b
+  let weibull x a b = Gsl.Randist.weibull_pdf x a b
 
-  let gumbel1_pdf x a b = Gsl.Randist.gumbel1_pdf x a b
+  let gumbel1 x a b = Gsl.Randist.gumbel1_pdf x a b
 
-  let gumbel2_pdf x a b = Gsl.Randist.gumbel2_pdf x a b
+  let gumbel2 x a b = Gsl.Randist.gumbel2_pdf x a b
 
-  let poisson_pdf x mu = Gsl.Randist.poisson_pdf x mu
+  let poisson x mu = Gsl.Randist.poisson_pdf x mu
 
-  let bernoulli_pdf x p = Gsl.Randist.bernoulli_pdf x p
+  let bernoulli x p = Gsl.Randist.bernoulli_pdf x p
 
-  let binomial_pdf x p n = Gsl.Randist.binomial_pdf x p n
+  let binomial x p n = Gsl.Randist.binomial_pdf x p n
 
-  let multinomial_pdf p n = Gsl.Randist.multinomial_pdf p n
+  let multinomial p n = Gsl.Randist.multinomial_pdf p n
 
   let multinomial_lnpdf p n = Gsl.Randist.multinomial_lnpdf p n
 
-  let negative_binomial_pdf x p n = Gsl.Randist.negative_binomial_pdf x p n
+  let negative_binomial x p n = Gsl.Randist.negative_binomial_pdf x p n
 
-  let pascal_pdf x p n = Gsl.Randist.pascal_pdf x p n
+  let pascal x p n = Gsl.Randist.pascal_pdf x p n
 
-  let geometric_pdf x p = Gsl.Randist.geometric_pdf x p
+  let geometric x p = Gsl.Randist.geometric_pdf x p
 
-  let hypergeometric_pdf x n1 n2 t = Gsl.Randist.hypergeometric_pdf x n1 n2 t
+  let hypergeometric x n1 n2 t = Gsl.Randist.hypergeometric_pdf x n1 n2 t
 
-  let logarithmic_pdf x p = Gsl.Randist.logarithmic_pdf x p
+  let logarithmic x p = Gsl.Randist.logarithmic_pdf x p
 
 end
 
