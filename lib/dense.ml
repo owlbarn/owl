@@ -2,7 +2,7 @@
  * OWL - an OCaml math library for scientific computing
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
- 
+
 (** [ Dense matrix ]  *)
 
 open Bigarray
@@ -576,18 +576,18 @@ let pp_dsmat x = let open Pretty in
 let uniform_int ?(a=0) ?(b=99) m n =
   let x = empty m n in
   iteri (fun i j _ -> x.{i,j} <-
-    float_of_int (Stats.uniform_int ~a ~b ())
+    float_of_int (Stats.Rnd.uniform_int ~a ~b ())
   ) x; x
 
 let uniform ?(scale=1.) m n =
   let x = empty m n in
   iteri (fun i j _ ->
-    x.{i,j} <- Stats.uniform () *. scale
+    x.{i,j} <- Stats.Rnd.uniform () *. scale
   ) x; x
 
 let gaussian ?(sigma=1.) m n =
   let x = empty m n in
-  iteri (fun i j _ -> x.{i,j} <- Stats.gaussian ~sigma ()) x; x
+  iteri (fun i j _ -> x.{i,j} <- Stats.Rnd.gaussian ~sigma ()) x; x
 
 let vector_uniform n = uniform 1 n
 
@@ -613,14 +613,14 @@ let shuffle_rows x =
   let y = clone x in
   let m, n = shape x in
   for i = 0 to m - 1 do
-    swap_rows y i (Stats.uniform_int ~a:0 ~b:(m-1) ())
+    swap_rows y i (Stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
   done; y
 
 let shuffle_cols x =
   let y = clone x in
   let m, n = shape x in
   for i = 0 to n - 1 do
-    swap_cols y i (Stats.uniform_int ~a:0 ~b:(n-1) ())
+    swap_cols y i (Stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
   done; y
 
 let shuffle_all x = shuffle_rows (shuffle_cols x)

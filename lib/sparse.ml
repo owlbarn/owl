@@ -122,8 +122,8 @@ let _random_basic f m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
   let x = zeros m n in
   for k = 0 to c do
-    let i = Stats.uniform_int ~a:0 ~b:(m-1) () in
-    let j = Stats.uniform_int ~a:0 ~b:(n-1) () in
+    let i = Stats.Rnd.uniform_int ~a:0 ~b:(m-1) () in
+    let j = Stats.Rnd.uniform_int ~a:0 ~b:(n-1) () in
     set_without_update_rec x i j (f ())
   done;
   _update_rec_from_ptr x
@@ -131,10 +131,10 @@ let _random_basic f m n =
 let binary m n = _random_basic (fun () -> 1.) m n
 
 let uniform ?(scale=1.) m n =
-  _random_basic (fun () -> Stats.uniform () *. scale) m n
+  _random_basic (fun () -> Stats.Rnd.uniform () *. scale) m n
 
 let uniform_int ?(a=0) ?(b=99) m n =
-  _random_basic (fun () -> float_of_int (Stats.uniform_int ~a ~b ())) m n
+  _random_basic (fun () -> float_of_int (Stats.Rnd.uniform_int ~a ~b ())) m n
 
 (** matrix manipulations *)
 

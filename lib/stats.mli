@@ -87,17 +87,108 @@ val sort : ?inc:bool -> float array -> float array
 val rank : float array -> float array
 (** [ rank x ] translates each element in x to its ranking *)
 
-(** [ Uniform distribution ]  *)
 
-val uniform_int : ?a:int -> ?b:int -> unit -> int
-(** [uniform_int a b] returns a random int between a and b inclusive,
-    i.e., a random int in [a, b] *)
+module Rnd : sig
 
-val uniform : unit -> float
-(** [uniform] returns a random float number within [0,1), includes 0.
-    but excludes 1. *)
+  (** [ Continuous random variables ]  *)
 
-val flat : float -> float -> float
+  val uniform_int : ?a:int -> ?b:int -> unit -> int
+  (** [uniform_int a b] returns a random int between a and b inclusive,
+      i.e., a random int in [a, b] *)
+
+  val uniform : unit -> float
+  (** [uniform] returns a random float number within [0,1), includes 0.
+      but excludes 1. *)
+
+  val flat : float -> float -> float
+
+  val gaussian : ?sigma:float -> unit -> float
+  (** [gaussian ~sigma:s ()] returns the value of a random variable that
+      follows Normal distribution of sigma = s. *)
+
+  val gaussian_tail : float -> float -> float
+  (** [ gaussian_tail a x sigma ] returns a random value of a gaussian tail
+    distribution. note "a" must be positive. *)
+
+  val bivariate_gaussian : float -> float -> float -> float * float
+  (** [ bivariate_gaussian sigma_x sigma_y rho ] returns a pair of correlated
+    gaussian variates, with mean zero, correlation coefficient rho [-1, 1] and
+    standard deviations sigma_x and sigma_y in the x and y directions. *)
+
+  val exponential : float -> float
+  (** [ exponential mu ] return a random value *)
+
+  val laplace : float -> float
+  (** p(x) dx = {1 \over 2 a}  \exp(-|x/a|) dx  *)
+
+  val exppow : float -> float -> float
+
+  val cauchy : float -> float
+
+  val rayleigh : float -> float
+
+  val landau : unit -> float
+
+  val levy : float -> float -> float
+
+  val levy_skew : float -> float -> float -> float
+
+  val gamma : float -> float -> float
+
+  val lognormal : float -> float -> float
+
+  val chisq : float -> float
+
+  val dirichlet : float array -> float array -> unit
+
+  val fdist : float -> float -> float
+
+  val tdist : float -> float
+
+  val beta : float -> float -> float
+
+  val logistic : float -> float
+
+  val pareto : float -> float -> float
+
+  val dir_2d : unit -> float * float
+
+  val dir_3d : unit -> float * float * float
+
+  val dir_nd : int -> float array
+
+  val weibull : float -> float -> float
+
+  val gumbel1 : float -> float -> float
+
+  val gumbel2 : float -> float -> float
+
+  (** [ Discrete random variables ]  *)
+
+  val poisson : float -> int
+
+  val bernoulli : float -> int
+
+  val binomial : float -> int -> int
+
+  val multinomial : int -> float array -> int array
+
+  val negative_binomial : float -> float -> int
+
+  val pascal : float -> int -> int
+
+  val geometric : float -> int
+
+  val hypergeometric : int -> int -> int -> int
+
+  val logarithmic : float -> int
+
+end
+
+
+
+
+
 
 val flat_pdf : float -> float -> float -> float
 
@@ -112,9 +203,7 @@ val flat_Qinv : float -> float -> float -> float
 
 (** [ Gaussian distribution ]  *)
 
-val gaussian : ?sigma:float -> unit -> float
-(** [gaussian ~sigma:s ()] returns the value of a random variable that
-    follows Normal distribution of sigma = s. *)
+
 
 val gaussian_pdf : float -> float -> float
 (** [ gaussian_pdf x sigma ] returns the probability density at x *)
@@ -130,9 +219,7 @@ val gaussian_Qinv : float -> float -> float
 
 (** [ Gaussian tail distribution ]  *)
 
-val gaussian_tail : float -> float -> float
-(** [ gaussian_tail a x sigma ] returns a random value of a gaussian tail
-  distribution. note "a" must be positive. *)
+
 
 val gaussian_tail_pdf : float -> float -> float -> float
 (** [ gaussian_tail_pdf x a sigma ] returns the probability density at x given
@@ -140,11 +227,6 @@ val gaussian_tail_pdf : float -> float -> float -> float
 
 
 (** [ Bivariate distribution ]  *)
-
-val bivariate_gaussian : float -> float -> float -> float * float
-(** [ bivariate_gaussian sigma_x sigma_y rho ] returns a pair of correlated
-  gaussian variates, with mean zero, correlation coefficient rho [-1, 1] and
-  standard deviations sigma_x and sigma_y in the x and y directions. *)
 
 val bivariate_gaussian_pdf : float -> float -> float -> float -> float -> float
 (** [ bivariate_gaussian_pdf x y sigma_x sigma_y rho ] returns the probability
@@ -156,8 +238,6 @@ val bivariate_gaussian_pdf : float -> float -> float -> float -> float -> float
   p(x) dx = {1 \over \mu} \exp(-x/\mu) dx
   *)
 
-val exponential : float -> float
-(** [ exponential mu ] return a random value *)
 
 val exponential_pdf : float -> float -> float
 (** [ exponential_pdf x mu ] returns the probability density at x*)
@@ -175,9 +255,6 @@ val exponential_Qinv : float -> float -> float
   p(x) dx = {1 \over 2 a}  \exp(-|x/a|) dx
   *)
 
-val laplace : float -> float
-(** p(x) dx = {1 \over 2 a}  \exp(-|x/a|) dx  *)
-
 val laplace_pdf : float -> float -> float
 
 val laplace_P : float -> float -> float
@@ -191,8 +268,6 @@ val laplace_Qinv : float -> float -> float
 
 (** [ Exponential power distribution ]  *)
 
-val exppow : float -> float -> float
-
 val exppow_pdf : float -> float -> float -> float
 
 val exppow_P : float -> float -> float -> float
@@ -201,8 +276,6 @@ val exppow_Q : float -> float -> float -> float
 
 
 (** [ Cauchy distribution ]  *)
-
-val cauchy : float -> float
 
 val cauchy_pdf : float -> float -> float
 
@@ -217,8 +290,6 @@ val cauchy_Qinv : float -> float -> float
 
 (** [ Rayleigh distribution ]  *)
 
-val rayleigh : float -> float
-
 val rayleigh_pdf : float -> float -> float
 
 val rayleigh_P : float -> float -> float
@@ -232,24 +303,18 @@ val rayleigh_Qinv : float -> float -> float
 
 (** [ Landau distribution ]  *)
 
-val landau : unit -> float
-
 val landau_pdf : float -> float
 
 
 (** [ Levy alpha-stable distribution ]  *)
 
-val levy : float -> float -> float
-
 
 (** [ Levy skew alpha-stable distribution ]  *)
 
-val levy_skew : float -> float -> float -> float
+
 
 
 (** [ Gamma distribution ]  *)
-
-val gamma : float -> float -> float
 
 val gamma_pdf : float -> float -> float -> float
 
@@ -264,8 +329,6 @@ val gamma_Qinv : float -> float -> float -> float
 
 (** [ Lognormal distribution ]  *)
 
-val lognormal : float -> float -> float
-
 val lognormal_pdf : float -> float -> float -> float
 
 val lognormal_P : float -> float -> float -> float
@@ -278,8 +341,6 @@ val lognormal_Qinv : float -> float -> float -> float
 
 
 (** [ Chi-squared distribution ]  *)
-
-val chisq : float -> float
 
 val chisq_pdf : float -> float -> float
 
@@ -294,16 +355,12 @@ val chisq_Qinv : float -> float -> float
 
 (** [ Dirichlet distribution ]  *)
 
-val dirichlet : float array -> float array -> unit
-
 val dirichlet_pdf : float array -> float array -> float
 
 val dirichlet_lnpdf : float array -> float array -> float
 
 
 (** [ F distribution ]  *)
-
-val fdist : float -> float -> float
 
 val fdist_pdf : float -> float -> float -> float
 
@@ -318,8 +375,6 @@ val fdist_Qinv : float -> float -> float -> float
 
 (** [ T distribution ]  *)
 
-val tdist : float -> float
-
 val tdist_pdf : float -> float -> float
 
 val tdist_P : float -> float -> float
@@ -332,8 +387,6 @@ val tdist_Qinv : float -> float -> float
 
 
 (** [ Beta distribution ]  *)
-
-val beta : float -> float -> float
 
 val beta_pdf : float -> float -> float -> float
 
@@ -348,7 +401,6 @@ val beta_Qinv : float -> float -> float -> float
 
 (** [ Logistic distribution ]  *)
 
-val logistic : float -> float
 
 val logistic_pdf : float -> float -> float
 
@@ -363,8 +415,6 @@ val logistic_Qinv : float -> float -> float
 
 (** [ Pareto distribution ]  *)
 
-val pareto : float -> float -> float
-
 val pareto_pdf : float -> float -> float -> float
 
 val pareto_P : float -> float -> float -> float
@@ -378,18 +428,10 @@ val pareto_Qinv : float -> float -> float -> float
 
 (** [ Spherical Vector distributions: ]  *)
 
-val dir_2d : unit -> float * float
-
 val dir_2d_trig_method : unit -> float * float
-
-val dir_3d : unit -> float * float * float
-
-val dir_nd : int -> float array
 
 
 (** [ Weibull distribution ]  *)
-
-val weibull : float -> float -> float
 
 val weibull_pdf : float -> float -> float -> float
 
@@ -404,8 +446,6 @@ val weibull_Qinv : float -> float -> float -> float
 
 (** [ Type-1 Gumbel distribution ]  *)
 
-val gumbel1 : float -> float -> float
-
 val gumbel1_pdf : float -> float -> float -> float
 
 val gumbel1_P : float -> float -> float -> float
@@ -418,8 +458,6 @@ val gumbel1_Qinv : float -> float -> float -> float
 
 
 (** [ Type-2 Gumbel distribution ]  *)
-
-val gumbel2 : float -> float -> float
 
 val gumbel2_pdf : float -> float -> float -> float
 
@@ -434,8 +472,6 @@ val gumbel2_Qinv : float -> float -> float -> float
 
 (** [ Poisson distribution ]  *)
 
-val poisson : float -> int
-
 val poisson_pdf : int -> float -> float
 
 val poisson_P : int -> float -> float
@@ -445,14 +481,10 @@ val poisson_Q : int -> float -> float
 
 (** [ Bernoulli distribution ]  *)
 
-val bernoulli : float -> int
-
 val bernoulli_pdf : int -> float -> float
 
 
 (** [ Binomial distribution ]  *)
-
-val binomial : float -> int -> int
 
 val binomial_pdf : int -> float -> int -> float
 
@@ -463,16 +495,12 @@ val binomial_Q : int -> float -> int -> float
 
 (** [ Multinomial distribution ]  *)
 
-val multinomial : int -> float array -> int array
-
 val multinomial_pdf : float array -> int array -> float
 
 val multinomial_lnpdf : float array -> int array -> float
 
 
 (** [ Negative Binomial distribution ]  *)
-
-val negative_binomial : float -> float -> int
 
 val negative_binomial_pdf : int -> float -> float -> float
 
@@ -483,8 +511,6 @@ val negative_binomial_Q : int -> float -> float -> float
 
 (** [ Pascal distribution ]  *)
 
-val pascal : float -> int -> int
-
 val pascal_pdf : int -> float -> int -> float
 
 val pascal_P : int -> float -> int -> float
@@ -493,8 +519,6 @@ val pascal_Q : int -> float -> int -> float
 
 
 (** [ Geometric distribution ]  *)
-
-val geometric : float -> int
 
 val geometric_pdf : int -> float -> float
 
@@ -505,8 +529,6 @@ val geometric_Q : int -> float -> float
 
 (** [ Hypergeometric distribution ]  *)
 
-val hypergeometric : int -> int -> int -> int
-
 val hypergeometric_pdf : int -> int -> int -> int -> float
 
 val hypergeometric_P : int -> int -> int -> int -> float
@@ -515,8 +537,6 @@ val hypergeometric_Q : int -> int -> int -> int -> float
 
 
 (** [ Logarithmic distribution ]  *)
-
-val logarithmic : float -> int
 
 val logarithmic_pdf : int -> float -> float
 
