@@ -35,12 +35,6 @@ let gaussian_Pinv x sigma = Gsl.Cdf.gaussian_Pinv x sigma
 let gaussian_Qinv x sigma = Gsl.Cdf.gaussian_Qinv x sigma
 
 
-let gaussian_tail_pdf x a sigma = Gsl.Randist.gaussian_tail_pdf x a sigma
-
-
-let bivariate_gaussian_pdf x y sigma_x sigma_y rho = Gsl.Randist.bivariate_gaussian_pdf x y sigma_x sigma_y rho
-
-
 
 let exponential_P x mu = Gsl.Cdf.exponential_P x mu
 
@@ -203,50 +197,34 @@ let poisson_P x mu = Gsl.Cdf.poisson_P x mu
 let poisson_Q x mu = Gsl.Cdf.poisson_Q x mu
 
 
-let bernoulli_pdf x p = Gsl.Randist.bernoulli_pdf x p
-
-
-let binomial_pdf x p n = Gsl.Randist.binomial_pdf x p n
 
 let binomial_P x p n = Gsl.Cdf.binomial_P x p n
 
 let binomial_Q x p n = Gsl.Cdf.binomial_Q x p n
 
 
-let multinomial_pdf p n = Gsl.Randist.multinomial_pdf p n
-
-let multinomial_lnpdf p n = Gsl.Randist.multinomial_lnpdf p n
-
-
-let negative_binomial_pdf x p n = Gsl.Randist.negative_binomial_pdf x p n
-
 let negative_binomial_P x p n = Gsl.Cdf.negative_binomial_P x p n
 
 let negative_binomial_Q x p n = Gsl.Cdf.negative_binomial_Q x p n
 
 
-let pascal_pdf x p n = Gsl.Randist.pascal_pdf x p n
 
 let pascal_P x p n = Gsl.Cdf.pascal_P x p n
 
 let pascal_Q x p n = Gsl.Cdf.pascal_Q x p n
 
 
-let geometric_pdf x p = Gsl.Randist.geometric_pdf x p
 
 let geometric_P x p = Gsl.Cdf.geometric_P x p
 
 let geometric_Q x p = Gsl.Cdf.geometric_Q x p
 
 
-let hypergeometric_pdf x n1 n2 t = Gsl.Randist.hypergeometric_pdf x n1 n2 t
 
 let hypergeometric_P x n1 n2 t = Gsl.Cdf.hypergeometric_P x n1 n2 t
 
 let hypergeometric_Q x n1 n2 t = Gsl.Cdf.hypergeometric_Q x n1 n2 t
 
-
-let logarithmic_pdf x p = Gsl.Randist.logarithmic_pdf x p
 
 
 (** [ Randomisation function ]  *)
@@ -473,8 +451,8 @@ module Rnd = struct
   let dir_3d () = Gsl.Randist.dir_3d rng
 
   let dir_nd n =
-  let x = Array.make n 0. in
-  Gsl.Randist.dir_nd rng x; x
+    let x = Array.make n 0. in
+    Gsl.Randist.dir_nd rng x; x
 
   let weibull a b = Gsl.Randist.weibull rng a b
 
@@ -506,6 +484,10 @@ end
 module Pdf = struct
 
   let gaussian_pdf x sigma = Gsl.Randist.gaussian_pdf x sigma
+
+  let gaussian_tail_pdf x a sigma = Gsl.Randist.gaussian_tail_pdf x a sigma
+
+  let bivariate_gaussian_pdf x y sigma_x sigma_y rho = Gsl.Randist.bivariate_gaussian_pdf x y sigma_x sigma_y rho
 
   let exponential_pdf x mu = Gsl.Randist.exponential_pdf x mu
 
@@ -550,6 +532,24 @@ module Pdf = struct
   let gumbel2_pdf x a b = Gsl.Randist.gumbel2_pdf x a b
 
   let poisson_pdf x mu = Gsl.Randist.poisson_pdf x mu
+
+  let bernoulli_pdf x p = Gsl.Randist.bernoulli_pdf x p
+
+  let binomial_pdf x p n = Gsl.Randist.binomial_pdf x p n
+
+  let multinomial_pdf p n = Gsl.Randist.multinomial_pdf p n
+
+  let multinomial_lnpdf p n = Gsl.Randist.multinomial_lnpdf p n
+
+  let negative_binomial_pdf x p n = Gsl.Randist.negative_binomial_pdf x p n
+
+  let pascal_pdf x p n = Gsl.Randist.pascal_pdf x p n
+
+  let geometric_pdf x p = Gsl.Randist.geometric_pdf x p
+
+  let hypergeometric_pdf x n1 n2 t = Gsl.Randist.hypergeometric_pdf x n1 n2 t
+
+  let logarithmic_pdf x p = Gsl.Randist.logarithmic_pdf x p
 
 end
 

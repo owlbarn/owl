@@ -227,6 +227,8 @@ module Pdf : sig
 
   val fdist_pdf : float -> float -> float -> float
 
+  val tdist_pdf : float -> float -> float
+
   val beta_pdf : float -> float -> float -> float
 
   val logistic_pdf : float -> float -> float
@@ -410,7 +412,6 @@ val fdist_Qinv : float -> float -> float -> float
 
 (** [ T distribution ]  *)
 
-val tdist_pdf : float -> float -> float
 
 val tdist_P : float -> float -> float
 
