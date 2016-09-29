@@ -560,6 +560,10 @@ module Rnd = struct
 end
 
 
+module Pdf = struct
+  
+end
+
 
 let metropolis_hastings f p n =
   let stepsize = 0.1 in    (* be careful about step size, try 0.01 *)

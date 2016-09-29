@@ -186,11 +186,35 @@ module Rnd : sig
 end
 
 
+module Pdf : sig
 
+  val flat_pdf : float -> float -> float -> float
 
+  val gaussian_pdf : float -> float -> float
+  (** [ gaussian_pdf x sigma ] returns the probability density at x *)
 
+  val gaussian_tail_pdf : float -> float -> float -> float
+  (** [ gaussian_tail_pdf x a sigma ] returns the probability density at x given
+      a gaussian tail distribution of N(a, sigma) *)
 
-val flat_pdf : float -> float -> float -> float
+  val bivariate_gaussian_pdf : float -> float -> float -> float -> float -> float
+  (** [ bivariate_gaussian_pdf x y sigma_x sigma_y rho ] returns the probability
+    density p(x,y) at (x,y) for a bivariate Gaussian distribution with standard
+    deviations sigma_x, sigma_y and correlation coefficient rho.  *)
+
+  val exponential_pdf : float -> float -> float
+  (** [ exponential_pdf x mu ] returns the probability density at x*)
+
+  val laplace_pdf : float -> float -> float
+
+  val cauchy_pdf : float -> float -> float
+
+  val exppow_pdf : float -> float -> float -> float
+
+  val rayleigh_pdf : float -> float -> float
+
+end
+
 
 val flat_P : float -> float -> float -> float
 
@@ -205,9 +229,6 @@ val flat_Qinv : float -> float -> float -> float
 
 
 
-val gaussian_pdf : float -> float -> float
-(** [ gaussian_pdf x sigma ] returns the probability density at x *)
-
 val gaussian_P : float -> float -> float
 
 val gaussian_Q : float -> float -> float
@@ -220,27 +241,12 @@ val gaussian_Qinv : float -> float -> float
 (** [ Gaussian tail distribution ]  *)
 
 
-
-val gaussian_tail_pdf : float -> float -> float -> float
-(** [ gaussian_tail_pdf x a sigma ] returns the probability density at x given
-    a gaussian tail distribution of N(a, sigma) *)
-
-
 (** [ Bivariate distribution ]  *)
-
-val bivariate_gaussian_pdf : float -> float -> float -> float -> float -> float
-(** [ bivariate_gaussian_pdf x y sigma_x sigma_y rho ] returns the probability
-  density p(x,y) at (x,y) for a bivariate Gaussian distribution with standard
-  deviations sigma_x, sigma_y and correlation coefficient rho.  *)
 
 
 (** [ Exponential distribution ]
   p(x) dx = {1 \over \mu} \exp(-x/\mu) dx
   *)
-
-
-val exponential_pdf : float -> float -> float
-(** [ exponential_pdf x mu ] returns the probability density at x*)
 
 val exponential_P : float -> float -> float
 
@@ -255,8 +261,6 @@ val exponential_Qinv : float -> float -> float
   p(x) dx = {1 \over 2 a}  \exp(-|x/a|) dx
   *)
 
-val laplace_pdf : float -> float -> float
-
 val laplace_P : float -> float -> float
 
 val laplace_Q : float -> float -> float
@@ -268,16 +272,12 @@ val laplace_Qinv : float -> float -> float
 
 (** [ Exponential power distribution ]  *)
 
-val exppow_pdf : float -> float -> float -> float
-
 val exppow_P : float -> float -> float -> float
 
 val exppow_Q : float -> float -> float -> float
 
 
 (** [ Cauchy distribution ]  *)
-
-val cauchy_pdf : float -> float -> float
 
 val cauchy_P : float -> float -> float
 
@@ -289,8 +289,6 @@ val cauchy_Qinv : float -> float -> float
 
 
 (** [ Rayleigh distribution ]  *)
-
-val rayleigh_pdf : float -> float -> float
 
 val rayleigh_P : float -> float -> float
 
