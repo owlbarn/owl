@@ -3,6 +3,8 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Linear algebra module *)
+
 type dsmat = Dense.dsmat
 
 val inv : dsmat -> dsmat

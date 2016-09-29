@@ -22,7 +22,7 @@
    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 *)
 
-(** [Lacaml.Io]: generic matrix printing functions. *)
+(** Generic matrix printing functions. *)
 
 open Format
 open Bigarray

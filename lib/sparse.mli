@@ -3,17 +3,28 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** [ Sparse Matrix ]  *)
+(** Sparse matrix module *)
 
 type spmat
+(** Type of sparse matrices. It is defined in [types.ml] as record type. *)
 
-(** sparse matrix creation and basic functions *)
+
+(** {6 Create sparse matrices} *)
 
 val zeros : int -> int -> spmat
+(** [zeros m n] creates an [m] by [n] matrix where all the elements are zeros.
+  This operation is very fast since it only allocates a small amount of memory.
+  The memory will grow automatically as more elements are inserted.
+*)
 
 val ones : int -> int -> spmat
+(** [ones m n] creates an [m] by [n] matrix where all the elements are ones.
+  This operation can be very slow if matrix size is big. You might consider to
+  use dense matrix for better performance in this case.
+*)
 
 val eye : int -> spmat
+(** [eye m] creates an [m] by [m] identity matrix. *)
 
 val binary : int -> int -> spmat
 
@@ -23,7 +34,8 @@ val uniform_int : ?a:int -> ?b:int -> int -> int -> spmat
 
 val linspace : float -> float -> int -> spmat
 
-(** matrix manipulation and properties *)
+
+(** {6 Obtain the basic properties of a matrix} *)
 
 val shape : spmat -> int * int
 
@@ -45,7 +57,8 @@ val nnz_cols : spmat -> int array
 
 val density : spmat -> float
 
-(** matrix manipulations *)
+
+(** {6 Manipulate a matrix} *)
 
 val set : spmat -> int -> int -> float -> unit
 
@@ -57,7 +70,9 @@ val clone : spmat -> spmat
 
 val transpose : spmat -> spmat
 
-(** matrix interation functions *)
+val diag : spmat -> spmat
+
+val trace : spmat -> float
 
 val row : spmat -> int -> spmat
 
@@ -66,6 +81,9 @@ val col : spmat -> int -> spmat
 val rows : spmat -> int array -> spmat
 
 val cols : spmat -> int array -> spmat
+
+
+(** {6 Iterate elements, columns, and rows.} *)
 
 val iteri : (int -> int -> float -> 'a) -> spmat -> unit
 
@@ -135,6 +153,9 @@ val fold_rows_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
 
 val fold_cols_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
 
+
+(** {6 Examine the elements in a matrix} *)
+
 val exists : (float -> bool) -> spmat -> bool
 
 val not_exists : (float -> bool) -> spmat -> bool
@@ -147,7 +168,8 @@ val not_exists_nz : (float -> bool) -> spmat -> bool
 
 val for_all_nz :  (float -> bool) -> spmat -> bool
 
-(** matrix mathematical operations *)
+
+(** {6 Basic mathematical operations of matrices} *)
 
 val mul_scalar : spmat -> float -> spmat
 
@@ -193,7 +215,8 @@ val average_rows : spmat -> spmat
 
 val average_cols : spmat -> spmat
 
-(** compare two matrices *)
+
+(** {6 Compare two matrices} *)
 
 val is_equal : spmat -> spmat -> bool
 
@@ -207,19 +230,8 @@ val equal_or_greater : spmat -> spmat -> bool
 
 val equal_or_smaller : spmat -> spmat -> bool
 
-(** advanced matrix methematical operations *)
 
-val diag : spmat -> spmat
-
-val trace : spmat -> float
-
-(** transform to and from different types *)
-
-val to_dense : spmat -> Dense.dsmat
-
-val of_dense : Dense.dsmat -> spmat
-
-(** permutation and draw functions *)
+(** {6 Randomisation functions} *)
 
 val permutation_matrix : int -> spmat
 
@@ -233,7 +245,11 @@ val shuffle_cols : spmat -> spmat
 
 val shuffle : spmat -> spmat
 
-(** some other uncategorised functions *)
+(** {6 Input/Output, pretty printing, and helper functions} *)
+
+val to_dense : spmat -> Dense.dsmat
+
+val of_dense : Dense.dsmat -> spmat
 
 val print : spmat -> unit
 
@@ -243,7 +259,7 @@ val save : spmat -> string -> unit
 
 val load : string -> spmat
 
-(** short-hand infix operators *)
+(** {6 Shorhand infix operators} *)
 
 val ( +@ ) : spmat -> spmat -> spmat
 
