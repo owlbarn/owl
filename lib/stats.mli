@@ -264,286 +264,176 @@ module Pdf : sig
 end
 
 
-val flat_P : float -> float -> float -> float
+module Cdf : sig
 
-val flat_Q : float -> float -> float -> float
+  val flat_P : float -> float -> float -> float
 
-val flat_Pinv : float -> float -> float -> float
+  val flat_Q : float -> float -> float -> float
 
-val flat_Qinv : float -> float -> float -> float
+  val flat_Pinv : float -> float -> float -> float
 
+  val flat_Qinv : float -> float -> float -> float
 
-(** [ Gaussian distribution ]  *)
+  val gaussian_P : float -> float -> float
 
+  val gaussian_Q : float -> float -> float
 
+  val gaussian_Pinv : float -> float -> float
 
-val gaussian_P : float -> float -> float
+  val gaussian_Qinv : float -> float -> float
 
-val gaussian_Q : float -> float -> float
+  val exponential_P : float -> float -> float
 
-val gaussian_Pinv : float -> float -> float
+  val exponential_Q : float -> float -> float
 
-val gaussian_Qinv : float -> float -> float
+  val exponential_Pinv : float -> float -> float
 
+  val exponential_Qinv : float -> float -> float
 
-(** [ Gaussian tail distribution ]  *)
+  val laplace_P : float -> float -> float
 
+  val laplace_Q : float -> float -> float
 
-(** [ Bivariate distribution ]  *)
+  val laplace_Pinv : float -> float -> float
 
+  val laplace_Qinv : float -> float -> float
 
-(** [ Exponential distribution ]
-  p(x) dx = {1 \over \mu} \exp(-x/\mu) dx
-  *)
+  val exppow_P : float -> float -> float -> float
 
-val exponential_P : float -> float -> float
+  val exppow_Q : float -> float -> float -> float
 
-val exponential_Q : float -> float -> float
+  val cauchy_P : float -> float -> float
 
-val exponential_Pinv : float -> float -> float
+  val cauchy_Q : float -> float -> float
 
-val exponential_Qinv : float -> float -> float
+  val cauchy_Pinv : float -> float -> float
 
+  val cauchy_Qinv : float -> float -> float
 
-(** [ Laplace distribution ]
-  p(x) dx = {1 \over 2 a}  \exp(-|x/a|) dx
-  *)
+  val rayleigh_P : float -> float -> float
 
-val laplace_P : float -> float -> float
+  val rayleigh_Q : float -> float -> float
 
-val laplace_Q : float -> float -> float
+  val rayleigh_Pinv : float -> float -> float
 
-val laplace_Pinv : float -> float -> float
+  val rayleigh_Qinv : float -> float -> float
 
-val laplace_Qinv : float -> float -> float
+  val gamma_P : float -> float -> float -> float
 
+  val gamma_Q : float -> float -> float -> float
 
-(** [ Exponential power distribution ]  *)
+  val gamma_Pinv : float -> float -> float -> float
 
-val exppow_P : float -> float -> float -> float
+  val gamma_Qinv : float -> float -> float -> float
 
-val exppow_Q : float -> float -> float -> float
+  val lognormal_P : float -> float -> float -> float
 
+  val lognormal_Q : float -> float -> float -> float
 
-(** [ Cauchy distribution ]  *)
+  val lognormal_Pinv : float -> float -> float -> float
 
-val cauchy_P : float -> float -> float
+  val lognormal_Qinv : float -> float -> float -> float
 
-val cauchy_Q : float -> float -> float
+  val chisq_P : float -> float -> float
 
-val cauchy_Pinv : float -> float -> float
+  val chisq_Q : float -> float -> float
 
-val cauchy_Qinv : float -> float -> float
+  val chisq_Pinv : float -> float -> float
 
+  val chisq_Qinv : float -> float -> float
 
-(** [ Rayleigh distribution ]  *)
+  val fdist_P : float -> float -> float -> float
 
-val rayleigh_P : float -> float -> float
+  val fdist_Q : float -> float -> float -> float
 
-val rayleigh_Q : float -> float -> float
+  val fdist_Pinv : float -> float -> float -> float
 
-val rayleigh_Pinv : float -> float -> float
+  val fdist_Qinv : float -> float -> float -> float
 
-val rayleigh_Qinv : float -> float -> float
+  val tdist_P : float -> float -> float
 
+  val tdist_Q : float -> float -> float
 
-(** [ Landau distribution ]  *)
+  val tdist_Pinv : float -> float -> float
 
+  val tdist_Qinv : float -> float -> float
 
-(** [ Levy alpha-stable distribution ]  *)
+  val beta_P : float -> float -> float -> float
 
+  val beta_Q : float -> float -> float -> float
 
-(** [ Levy skew alpha-stable distribution ]  *)
+  val beta_Pinv : float -> float -> float -> float
 
+  val beta_Qinv : float -> float -> float -> float
 
+  val logistic_P : float -> float -> float
 
+  val logistic_Q : float -> float -> float
 
-(** [ Gamma distribution ]  *)
+  val logistic_Pinv : float -> float -> float
 
+  val logistic_Qinv : float -> float -> float
 
+  val pareto_P : float -> float -> float -> float
 
-val gamma_P : float -> float -> float -> float
+  val pareto_Q : float -> float -> float -> float
 
-val gamma_Q : float -> float -> float -> float
+  val pareto_Pinv : float -> float -> float -> float
 
-val gamma_Pinv : float -> float -> float -> float
+  val pareto_Qinv : float -> float -> float -> float
 
-val gamma_Qinv : float -> float -> float -> float
+  val weibull_P : float -> float -> float -> float
 
+  val weibull_Q : float -> float -> float -> float
 
-(** [ Lognormal distribution ]  *)
+  val weibull_Pinv : float -> float -> float -> float
 
+  val weibull_Qinv : float -> float -> float -> float
 
-val lognormal_P : float -> float -> float -> float
+  val gumbel1_P : float -> float -> float -> float
 
-val lognormal_Q : float -> float -> float -> float
+  val gumbel1_Q : float -> float -> float -> float
 
-val lognormal_Pinv : float -> float -> float -> float
+  val gumbel1_Pinv : float -> float -> float -> float
 
-val lognormal_Qinv : float -> float -> float -> float
+  val gumbel1_Qinv : float -> float -> float -> float
 
+  val gumbel2_P : float -> float -> float -> float
 
-(** [ Chi-squared distribution ]  *)
+  val gumbel2_Q : float -> float -> float -> float
 
-val chisq_P : float -> float -> float
+  val gumbel2_Pinv : float -> float -> float -> float
 
-val chisq_Q : float -> float -> float
+  val gumbel2_Qinv : float -> float -> float -> float
 
-val chisq_Pinv : float -> float -> float
+  val poisson_P : int -> float -> float
 
-val chisq_Qinv : float -> float -> float
+  val poisson_Q : int -> float -> float
 
+  val binomial_P : int -> float -> int -> float
 
-(** [ Dirichlet distribution ]  *)
+  val binomial_Q : int -> float -> int -> float
 
+  val negative_binomial_P : int -> float -> float -> float
 
+  val negative_binomial_Q : int -> float -> float -> float
 
+  val pascal_P : int -> float -> int -> float
 
-(** [ F distribution ]  *)
+  val pascal_Q : int -> float -> int -> float
 
-val fdist_P : float -> float -> float -> float
+  val geometric_P : int -> float -> float
 
-val fdist_Q : float -> float -> float -> float
+  val geometric_Q : int -> float -> float
 
-val fdist_Pinv : float -> float -> float -> float
+  val hypergeometric_P : int -> int -> int -> int -> float
 
-val fdist_Qinv : float -> float -> float -> float
+  val hypergeometric_Q : int -> int -> int -> int -> float
 
+end
 
-(** [ T distribution ]  *)
-
-
-val tdist_P : float -> float -> float
-
-val tdist_Q : float -> float -> float
-
-val tdist_Pinv : float -> float -> float
-
-val tdist_Qinv : float -> float -> float
-
-
-(** [ Beta distribution ]  *)
-
-val beta_P : float -> float -> float -> float
-
-val beta_Q : float -> float -> float -> float
-
-val beta_Pinv : float -> float -> float -> float
-
-val beta_Qinv : float -> float -> float -> float
-
-
-(** [ Logistic distribution ]  *)
-
-val logistic_P : float -> float -> float
-
-val logistic_Q : float -> float -> float
-
-val logistic_Pinv : float -> float -> float
-
-val logistic_Qinv : float -> float -> float
-
-
-(** [ Pareto distribution ]  *)
-
-val pareto_P : float -> float -> float -> float
-
-val pareto_Q : float -> float -> float -> float
-
-val pareto_Pinv : float -> float -> float -> float
-
-val pareto_Qinv : float -> float -> float -> float
-
-
-(** [ Spherical Vector distributions: ]  *)
 
 val dir_2d_trig_method : unit -> float * float
-
-
-(** [ Weibull distribution ]  *)
-
-val weibull_P : float -> float -> float -> float
-
-val weibull_Q : float -> float -> float -> float
-
-val weibull_Pinv : float -> float -> float -> float
-
-val weibull_Qinv : float -> float -> float -> float
-
-
-(** [ Type-1 Gumbel distribution ]  *)
-
-val gumbel1_P : float -> float -> float -> float
-
-val gumbel1_Q : float -> float -> float -> float
-
-val gumbel1_Pinv : float -> float -> float -> float
-
-val gumbel1_Qinv : float -> float -> float -> float
-
-
-(** [ Type-2 Gumbel distribution ]  *)
-
-val gumbel2_P : float -> float -> float -> float
-
-val gumbel2_Q : float -> float -> float -> float
-
-val gumbel2_Pinv : float -> float -> float -> float
-
-val gumbel2_Qinv : float -> float -> float -> float
-
-
-(** [ Poisson distribution ]  *)
-
-val poisson_P : int -> float -> float
-
-val poisson_Q : int -> float -> float
-
-
-(** [ Bernoulli distribution ]  *)
-
-
-(** [ Binomial distribution ]  *)
-
-
-val binomial_P : int -> float -> int -> float
-
-val binomial_Q : int -> float -> int -> float
-
-
-(** [ Multinomial distribution ]  *)
-
-
-(** [ Negative Binomial distribution ]  *)
-
-val negative_binomial_P : int -> float -> float -> float
-
-val negative_binomial_Q : int -> float -> float -> float
-
-
-(** [ Pascal distribution ]  *)
-
-val pascal_P : int -> float -> int -> float
-
-val pascal_Q : int -> float -> int -> float
-
-
-(** [ Geometric distribution ]  *)
-
-val geometric_P : int -> float -> float
-
-val geometric_Q : int -> float -> float
-
-
-(** [ Hypergeometric distribution ]  *)
-
-val hypergeometric_P : int -> int -> int -> int -> float
-
-val hypergeometric_Q : int -> int -> int -> int -> float
-
-
-(** [ Logarithmic distribution ]  *)
-
 
 
 (* TODO: implement a small PPL *)

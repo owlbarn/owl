@@ -25,205 +25,7 @@ let seed s = Gsl.Rng.set rng (Nativeint.of_int s)
 (* TODO: change the order of the arguments in _pdf functions *)
 
 
-
-let gaussian_P x sigma = Gsl.Cdf.gaussian_P x sigma
-
-let gaussian_Q x sigma = Gsl.Cdf.gaussian_Q x sigma
-
-let gaussian_Pinv x sigma = Gsl.Cdf.gaussian_Pinv x sigma
-
-let gaussian_Qinv x sigma = Gsl.Cdf.gaussian_Qinv x sigma
-
-
-
-let exponential_P x mu = Gsl.Cdf.exponential_P x mu
-
-let exponential_Q x mu = Gsl.Cdf.exponential_Q x mu
-
-let exponential_Pinv p mu = Gsl.Cdf.exponential_Pinv p mu
-
-let exponential_Qinv q mu = Gsl.Cdf.exponential_Qinv q mu
-
-
-
-let laplace_P x a = Gsl.Cdf.laplace_P x a
-
-let laplace_Q x a = Gsl.Cdf.laplace_Q x a
-
-let laplace_Pinv p a = Gsl.Cdf.laplace_Pinv p a
-
-let laplace_Qinv q a = Gsl.Cdf.laplace_Qinv q a
-
-
-let exppow_P x a b = Gsl.Cdf.exppow_P x a b
-
-let exppow_Q x a b = Gsl.Cdf.exppow_Q x a b
-
-
-
-let cauchy_P x a = Gsl.Cdf.cauchy_P x a
-
-let cauchy_Q x a = Gsl.Cdf.cauchy_Q x a
-
-let cauchy_Pinv p a = Gsl.Cdf.cauchy_Pinv p a
-
-let cauchy_Qinv q a = Gsl.Cdf.cauchy_Qinv q a
-
-
-
-let rayleigh_P x sigma = Gsl.Cdf.rayleigh_P x sigma
-
-let rayleigh_Q x sigma = Gsl.Cdf.rayleigh_Q x sigma
-
-let rayleigh_Pinv p sigma = Gsl.Cdf.rayleigh_Pinv p sigma
-
-let rayleigh_Qinv q sigma = Gsl.Cdf.rayleigh_Qinv q sigma
-
-
-let gamma_P x a b = Gsl.Cdf.gamma_P x a b
-
-let gamma_Q x a b = Gsl.Cdf.gamma_Q x a b
-
-let gamma_Pinv p a b = Gsl.Cdf.gamma_Pinv p a b
-
-let gamma_Qinv q a b = Gsl.Cdf.gamma_Qinv q a b
-
-
-let flat_P x a b = Gsl.Cdf.flat_P x a b
-
-let flat_Q x a b = Gsl.Cdf.flat_Q x a b
-
-let flat_Pinv p a b = Gsl.Cdf.flat_Pinv p a b
-
-let flat_Qinv q a b = Gsl.Cdf.flat_Qinv q a b
-
-
-let lognormal_P x zeta sigma = Gsl.Cdf.lognormal_P x zeta sigma
-
-let lognormal_Q x zeta sigma = Gsl.Cdf.lognormal_Q x zeta sigma
-
-let lognormal_Pinv p zeta sigma = Gsl.Cdf.lognormal_Pinv p zeta sigma
-
-let lognormal_Qinv q zeta sigma = Gsl.Cdf.lognormal_Qinv q zeta sigma
-
-
-let chisq_P x nu = Gsl.Cdf.chisq_P x nu
-
-let chisq_Q x nu = Gsl.Cdf.chisq_Q x nu
-
-let chisq_Pinv p nu = Gsl.Cdf.chisq_Pinv p nu
-
-let chisq_Qinv q nu = Gsl.Cdf.chisq_Qinv q nu
-
-
-let fdist_P x nu1 nu2 = Gsl.Cdf.fdist_P x nu1 nu2
-
-let fdist_Q x nu1 nu2 = Gsl.Cdf.fdist_Q x nu1 nu2
-
-let fdist_Pinv p nu1 nu2 = Gsl.Cdf.fdist_Pinv p nu1 nu2
-
-let fdist_Qinv q nu1 nu2 = Gsl.Cdf.fdist_Qinv q nu1 nu2
-
-
-let tdist_P x nu = Gsl.Cdf.tdist_P x nu
-
-let tdist_Q x nu = Gsl.Cdf.tdist_Q x nu
-
-let tdist_Pinv p nu = Gsl.Cdf.tdist_Pinv p nu
-
-let tdist_Qinv q nu = Gsl.Cdf.tdist_Qinv q nu
-
-
-let beta_P x a b = Gsl.Cdf.beta_P x a b
-
-let beta_Q x a b = Gsl.Cdf.beta_Q x a b
-
-let beta_Pinv p a b = Gsl.Cdf.beta_Pinv p a b
-
-let beta_Qinv q a b = Gsl.Cdf.beta_Qinv q a b
-
-
-let logistic_P x a = Gsl.Cdf.logistic_P x a
-
-let logistic_Q x a = Gsl.Cdf.logistic_Q x a
-
-let logistic_Pinv p a = Gsl.Cdf.logistic_Pinv p a
-
-let logistic_Qinv q a = Gsl.Cdf.logistic_Qinv q a
-
-
-let pareto_P x a b = Gsl.Cdf.pareto_P x a b
-
-let pareto_Q x a b = Gsl.Cdf.pareto_Q x a b
-
-let pareto_Pinv p a b = Gsl.Cdf.pareto_Pinv p a b
-
-let pareto_Qinv q a b = Gsl.Cdf.pareto_Qinv q a b
-
-
-
 let dir_2d_trig_method () = Gsl.Randist.dir_2d_trig_method rng
-
-
-let weibull_P x a b = Gsl.Cdf.weibull_P x a b
-
-let weibull_Q x a b = Gsl.Cdf.weibull_Q x a b
-
-let weibull_Pinv p a b = Gsl.Cdf.weibull_Pinv p a b
-
-let weibull_Qinv q a b = Gsl.Cdf.weibull_Qinv q a b
-
-
-let gumbel1_P x a b = Gsl.Cdf.gumbel1_P x a b
-
-let gumbel1_Q x a b = Gsl.Cdf.gumbel1_Q x a b
-
-let gumbel1_Pinv p a b = Gsl.Cdf.gumbel1_Pinv p a b
-
-let gumbel1_Qinv q a b = Gsl.Cdf.gumbel1_Qinv q a b
-
-
-let gumbel2_P x a b = Gsl.Cdf.gumbel2_P x a b
-
-let gumbel2_Q x a b = Gsl.Cdf.gumbel2_Q x a b
-
-let gumbel2_Pinv p a b = Gsl.Cdf.gumbel2_Pinv p a b
-
-let gumbel2_Qinv q a b = Gsl.Cdf.gumbel2_Qinv q a b
-
-
-let poisson_P x mu = Gsl.Cdf.poisson_P x mu
-
-let poisson_Q x mu = Gsl.Cdf.poisson_Q x mu
-
-
-
-let binomial_P x p n = Gsl.Cdf.binomial_P x p n
-
-let binomial_Q x p n = Gsl.Cdf.binomial_Q x p n
-
-
-let negative_binomial_P x p n = Gsl.Cdf.negative_binomial_P x p n
-
-let negative_binomial_Q x p n = Gsl.Cdf.negative_binomial_Q x p n
-
-
-
-let pascal_P x p n = Gsl.Cdf.pascal_P x p n
-
-let pascal_Q x p n = Gsl.Cdf.pascal_Q x p n
-
-
-
-let geometric_P x p = Gsl.Cdf.geometric_P x p
-
-let geometric_Q x p = Gsl.Cdf.geometric_Q x p
-
-
-
-let hypergeometric_P x n1 n2 t = Gsl.Cdf.hypergeometric_P x n1 n2 t
-
-let hypergeometric_Q x n1 n2 t = Gsl.Cdf.hypergeometric_Q x n1 n2 t
 
 
 
@@ -553,6 +355,176 @@ module Pdf = struct
 
 end
 
+
+module Cdf = struct
+
+  let gaussian_P x sigma = Gsl.Cdf.gaussian_P x sigma
+
+  let gaussian_Q x sigma = Gsl.Cdf.gaussian_Q x sigma
+
+  let gaussian_Pinv x sigma = Gsl.Cdf.gaussian_Pinv x sigma
+
+  let gaussian_Qinv x sigma = Gsl.Cdf.gaussian_Qinv x sigma
+
+  let exponential_P x mu = Gsl.Cdf.exponential_P x mu
+
+  let exponential_Q x mu = Gsl.Cdf.exponential_Q x mu
+
+  let exponential_Pinv p mu = Gsl.Cdf.exponential_Pinv p mu
+
+  let exponential_Qinv q mu = Gsl.Cdf.exponential_Qinv q mu
+
+  let laplace_P x a = Gsl.Cdf.laplace_P x a
+
+  let laplace_Q x a = Gsl.Cdf.laplace_Q x a
+
+  let laplace_Pinv p a = Gsl.Cdf.laplace_Pinv p a
+
+  let laplace_Qinv q a = Gsl.Cdf.laplace_Qinv q a
+
+  let exppow_P x a b = Gsl.Cdf.exppow_P x a b
+
+  let exppow_Q x a b = Gsl.Cdf.exppow_Q x a b
+
+  let cauchy_P x a = Gsl.Cdf.cauchy_P x a
+
+  let cauchy_Q x a = Gsl.Cdf.cauchy_Q x a
+
+  let cauchy_Pinv p a = Gsl.Cdf.cauchy_Pinv p a
+
+  let cauchy_Qinv q a = Gsl.Cdf.cauchy_Qinv q a
+
+  let rayleigh_P x sigma = Gsl.Cdf.rayleigh_P x sigma
+
+  let rayleigh_Q x sigma = Gsl.Cdf.rayleigh_Q x sigma
+
+  let rayleigh_Pinv p sigma = Gsl.Cdf.rayleigh_Pinv p sigma
+
+  let rayleigh_Qinv q sigma = Gsl.Cdf.rayleigh_Qinv q sigma
+
+  let gamma_P x a b = Gsl.Cdf.gamma_P x a b
+
+  let gamma_Q x a b = Gsl.Cdf.gamma_Q x a b
+
+  let gamma_Pinv p a b = Gsl.Cdf.gamma_Pinv p a b
+
+  let gamma_Qinv q a b = Gsl.Cdf.gamma_Qinv q a b
+
+  let flat_P x a b = Gsl.Cdf.flat_P x a b
+
+  let flat_Q x a b = Gsl.Cdf.flat_Q x a b
+
+  let flat_Pinv p a b = Gsl.Cdf.flat_Pinv p a b
+
+  let flat_Qinv q a b = Gsl.Cdf.flat_Qinv q a b
+
+  let lognormal_P x zeta sigma = Gsl.Cdf.lognormal_P x zeta sigma
+
+  let lognormal_Q x zeta sigma = Gsl.Cdf.lognormal_Q x zeta sigma
+
+  let lognormal_Pinv p zeta sigma = Gsl.Cdf.lognormal_Pinv p zeta sigma
+
+  let lognormal_Qinv q zeta sigma = Gsl.Cdf.lognormal_Qinv q zeta sigma
+
+  let chisq_P x nu = Gsl.Cdf.chisq_P x nu
+
+  let chisq_Q x nu = Gsl.Cdf.chisq_Q x nu
+
+  let chisq_Pinv p nu = Gsl.Cdf.chisq_Pinv p nu
+
+  let chisq_Qinv q nu = Gsl.Cdf.chisq_Qinv q nu
+
+  let fdist_P x nu1 nu2 = Gsl.Cdf.fdist_P x nu1 nu2
+
+  let fdist_Q x nu1 nu2 = Gsl.Cdf.fdist_Q x nu1 nu2
+
+  let fdist_Pinv p nu1 nu2 = Gsl.Cdf.fdist_Pinv p nu1 nu2
+
+  let fdist_Qinv q nu1 nu2 = Gsl.Cdf.fdist_Qinv q nu1 nu2
+
+  let tdist_P x nu = Gsl.Cdf.tdist_P x nu
+
+  let tdist_Q x nu = Gsl.Cdf.tdist_Q x nu
+
+  let tdist_Pinv p nu = Gsl.Cdf.tdist_Pinv p nu
+
+  let tdist_Qinv q nu = Gsl.Cdf.tdist_Qinv q nu
+
+  let beta_P x a b = Gsl.Cdf.beta_P x a b
+
+  let beta_Q x a b = Gsl.Cdf.beta_Q x a b
+
+  let beta_Pinv p a b = Gsl.Cdf.beta_Pinv p a b
+
+  let beta_Qinv q a b = Gsl.Cdf.beta_Qinv q a b
+
+  let logistic_P x a = Gsl.Cdf.logistic_P x a
+
+  let logistic_Q x a = Gsl.Cdf.logistic_Q x a
+
+  let logistic_Pinv p a = Gsl.Cdf.logistic_Pinv p a
+
+  let logistic_Qinv q a = Gsl.Cdf.logistic_Qinv q a
+
+  let pareto_P x a b = Gsl.Cdf.pareto_P x a b
+
+  let pareto_Q x a b = Gsl.Cdf.pareto_Q x a b
+
+  let pareto_Pinv p a b = Gsl.Cdf.pareto_Pinv p a b
+
+  let pareto_Qinv q a b = Gsl.Cdf.pareto_Qinv q a b
+
+  let weibull_P x a b = Gsl.Cdf.weibull_P x a b
+
+  let weibull_Q x a b = Gsl.Cdf.weibull_Q x a b
+
+  let weibull_Pinv p a b = Gsl.Cdf.weibull_Pinv p a b
+
+  let weibull_Qinv q a b = Gsl.Cdf.weibull_Qinv q a b
+
+  let gumbel1_P x a b = Gsl.Cdf.gumbel1_P x a b
+
+  let gumbel1_Q x a b = Gsl.Cdf.gumbel1_Q x a b
+
+  let gumbel1_Pinv p a b = Gsl.Cdf.gumbel1_Pinv p a b
+
+  let gumbel1_Qinv q a b = Gsl.Cdf.gumbel1_Qinv q a b
+
+  let gumbel2_P x a b = Gsl.Cdf.gumbel2_P x a b
+
+  let gumbel2_Q x a b = Gsl.Cdf.gumbel2_Q x a b
+
+  let gumbel2_Pinv p a b = Gsl.Cdf.gumbel2_Pinv p a b
+
+  let gumbel2_Qinv q a b = Gsl.Cdf.gumbel2_Qinv q a b
+
+  let poisson_P x mu = Gsl.Cdf.poisson_P x mu
+
+  let poisson_Q x mu = Gsl.Cdf.poisson_Q x mu
+
+  let binomial_P x p n = Gsl.Cdf.binomial_P x p n
+
+  let binomial_Q x p n = Gsl.Cdf.binomial_Q x p n
+
+  let negative_binomial_P x p n = Gsl.Cdf.negative_binomial_P x p n
+
+  let negative_binomial_Q x p n = Gsl.Cdf.negative_binomial_Q x p n
+
+  let pascal_P x p n = Gsl.Cdf.pascal_P x p n
+
+  let pascal_Q x p n = Gsl.Cdf.pascal_Q x p n
+
+  let geometric_P x p = Gsl.Cdf.geometric_P x p
+
+  let geometric_Q x p = Gsl.Cdf.geometric_Q x p
+
+  let hypergeometric_P x n1 n2 t = Gsl.Cdf.hypergeometric_P x n1 n2 t
+
+  let hypergeometric_Q x n1 n2 t = Gsl.Cdf.hypergeometric_Q x n1 n2 t
+
+end
+
+(* MCMC: Metropolis and Gibbs sampling *)
 
 let metropolis_hastings f p n =
   let stepsize = 0.1 in    (* be careful about step size, try 0.01 *)
