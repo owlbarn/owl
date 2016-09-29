@@ -3,6 +3,8 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+type dsmat = Dense.dsmat
+
 module MX = Dense
 
 (** [ Helper functions ]  *)
