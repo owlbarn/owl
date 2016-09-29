@@ -3,15 +3,21 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** [ Regression module ]  *)
+(** Regression module provides basic functions to fit data into
+  different models such as linear, polynomial, and exponential.
+ *)
 
 type dsmat = Dense.dsmat
 type vector = Gsl.Vector.vector
 
 val linear : ?i:bool -> dsmat -> dsmat -> dsmat
+(** Linear regression:  *)
 
 val polynomial : dsmat -> dsmat -> int -> dsmat
+(** polynomial regression:  *)
 
 val exponential : dsmat -> dsmat -> dsmat
+(** Exponential regression:  *)
 
 val nonlinear : (vector -> float -> float) -> float array -> dsmat -> dsmat -> dsmat
+(** Nonlinear regression: *)
