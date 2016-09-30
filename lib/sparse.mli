@@ -293,142 +293,210 @@ val fold_cols_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
 (** {6 Examine the elements in a matrix} *)
 
 val exists : (float -> bool) -> spmat -> bool
+(** [exists f x] checks all the elements in [x] using [f]. If at least one
+  element satisfies [f] then the function returns [true] otherwise [false].
+ *)
 
 val not_exists : (float -> bool) -> spmat -> bool
+(** [not_exists f x] checks all the elements in [x], the function returns
+  [true] only if all the elements fail to satisfy [f : float -> bool].
+ *)
 
 val for_all : (float -> bool) -> spmat -> bool
+(** [for_all f x] checks all the elements in [x], the function returns [true]
+  if and only if all the elements pass the check of function [f].
+ *)
 
 val exists_nz : (float -> bool) -> spmat -> bool
+(** [exists_nz f x] is similar to [exists] but only checks non-zero elements. *)
 
 val not_exists_nz : (float -> bool) -> spmat -> bool
+(** [not_exists_nz f x] is similar to [not_exists] but only checks non-zero elements. *)
 
 val for_all_nz :  (float -> bool) -> spmat -> bool
+(** [for_all_nz f x] is similar to [for_all_nz] but only checks non-zero elements. *)
 
 
 (** {6 Basic mathematical operations of matrices} *)
 
 val mul_scalar : spmat -> float -> spmat
+(** [] *)
 
 val div_scalar : spmat -> float -> spmat
+(** [] *)
 
 val add : spmat -> spmat -> spmat
+(** [] *)
 
 val sub : spmat -> spmat -> spmat
+(** [] *)
 
 val dot : spmat -> spmat -> spmat
+(** [] *)
 
 val mul : spmat -> spmat -> spmat
+(** [] *)
 
 val div : spmat -> spmat -> spmat
+(** [] *)
 
 val abs : spmat -> spmat
+(** [] *)
 
 val neg : spmat -> spmat
+(** [] *)
 
 val sum : spmat -> float
+(** [] *)
 
 val average : spmat -> float
+(** [] *)
 
 val is_zero : spmat -> bool
+(** [] *)
 
 val is_positive : spmat -> bool
+(** [] *)
 
 val is_negative : spmat -> bool
+(** [] *)
 
 val is_nonnegative : spmat -> bool
+(** [] *)
 
 val min : spmat -> float
+(** [] *)
 
 val max : spmat -> float
+(** [] *)
 
 val minmax : spmat -> float * float
+(** [] *)
 
 val sum_rows : spmat -> spmat
+(** [] *)
 
 val sum_cols : spmat -> spmat
+(** [] *)
 
 val average_rows : spmat -> spmat
+(** [] *)
 
 val average_cols : spmat -> spmat
+(** [] *)
 
 
 (** {6 Compare two matrices} *)
 
 val is_equal : spmat -> spmat -> bool
+(** [] *)
 
 val is_unequal : spmat -> spmat -> bool
+(** [] *)
 
 val is_greater : spmat -> spmat -> bool
+(** [] *)
 
 val is_smaller : spmat -> spmat -> bool
+(** [] *)
 
 val equal_or_greater : spmat -> spmat -> bool
+(** [] *)
 
 val equal_or_smaller : spmat -> spmat -> bool
+(** [] *)
 
 
 (** {6 Randomisation functions} *)
 
 val permutation_matrix : int -> spmat
+(** [] *)
 
 val draw_rows : ?replacement:bool -> spmat -> int -> spmat * int array
+(** [] *)
 
 val draw_cols : ?replacement:bool -> spmat -> int -> spmat * int array
+(** [] *)
 
 val shuffle_rows : spmat -> spmat
+(** [] *)
 
 val shuffle_cols : spmat -> spmat
+(** [] *)
 
 val shuffle : spmat -> spmat
+(** [] *)
 
 
 (** {6 Input/Output and helper functions} *)
 
 val to_dense : spmat -> Dense.dsmat
+(** [] *)
 
 val of_dense : Dense.dsmat -> spmat
+(** [] *)
 
 val print : spmat -> unit
+(** [] *)
 
 val pp_spmat : spmat -> unit
+(** [] *)
 
 val save : spmat -> string -> unit
+(** [] *)
 
 val load : string -> spmat
+(** [] *)
 
 
 (** {6 Shorhand infix operators} *)
 
 val ( +@ ) : spmat -> spmat -> spmat
+(** [] *)
 
 val ( -@ ) : spmat -> spmat -> spmat
+(** [] *)
 
 val ( *@ ) : spmat -> spmat -> spmat
+(** [] *)
 
 val ( /@ ) : spmat -> spmat -> spmat
+(** [] *)
 
 val ( $@ ) : spmat -> spmat -> spmat
+(** [] *)
 
 val ( **@ ) : spmat -> float -> spmat
+(** [] *)
 
 val ( *$ ) : spmat -> float -> spmat
+(** [] *)
 
 val ( /$ ) : spmat -> float -> spmat
+(** [] *)
 
 val ( $* ) : float -> spmat -> spmat
+(** [] *)
 
 val ( $/ ) : float -> spmat -> spmat
+(** [] *)
 
 val ( =@ ) : spmat -> spmat -> bool
+(** [] *)
 
 val ( >@ ) : spmat -> spmat -> bool
+(** [] *)
 
 val ( <@ ) : spmat -> spmat -> bool
+(** [] *)
 
 val ( <>@ ) : spmat -> spmat -> bool
+(** [] *)
 
 val ( >=@ ) : spmat -> spmat -> bool
+(** [] *)
 
 val ( <=@ ) : spmat -> spmat -> bool
+(** [] *)
 
 (* val ( @@ ) : (float -> float) -> dsmat -> dsmat *)
