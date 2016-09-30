@@ -96,8 +96,13 @@ val get : spmat -> int -> int -> float
 (** [get x i j] returns the value of element [(i,j)] of [x]. *)
 
 val reset : spmat -> unit
+(** [reset x] resets all the elements in [x] to [0]. *)
 
 val clone : spmat -> spmat
+(** [clone x] makes an exact copy of matrix [x]. Note that the clone becomes
+  mutable no matter [w] is mutable or not. This is expecially useful if you
+  want to modify certain elements in an immutable matrix from math operations.
+ *)
 
 val transpose : spmat -> spmat
 
