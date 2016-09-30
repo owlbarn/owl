@@ -241,8 +241,8 @@ val fold_nz : ('a -> float -> 'a) -> 'a -> spmat -> 'a
  *)
 
 val filteri_nz : (int -> int -> float -> bool) -> spmat -> (int * int) array
-(** [filteri_nz f x] is similar to [filter f x] but only applies to non-zero
-  elements in [x].
+(** [filteri_nz f x] is similar to [filter f x] but only applies [f] to
+  non-zero elements in [x].
  *)
 
 val filter_nz : (float -> bool) -> spmat -> (int * int) array
@@ -251,34 +251,43 @@ val filter_nz : (float -> bool) -> spmat -> (int * int) array
  *)
 
 val iteri_rows_nz : (int -> spmat -> unit) -> spmat -> unit
-(** [] *)
+(** [iteri_rows_nz f x] is similar to [iteri_rows] but only applies [f] to
+  non-zero rows in [x].
+ *)
 
 val iter_rows_nz : (spmat -> unit) -> spmat -> unit
-(** [] *)
+(** Similar to [iteri_rows_nz] except that row numbers are not passed to [f].
+ *)
 
 val iteri_cols_nz : (int -> spmat -> unit) -> spmat -> unit
-(** [] *)
+(** [iteri_cols_nz f x] is similar to [iteri_cols] but only applies [f] to
+  non-zero columns in [x].
+ *)
 
 val iter_cols_nz : (spmat -> unit) -> spmat -> unit
-(** [] *)
+(** Similar to [iteri_cols_nz] except that column numbers are not passed to [f]. *)
 
 val mapi_rows_nz : (int -> spmat -> 'a) -> spmat -> 'a array
-(** [] *)
+(** [mapi_rows_nz f x] applies [f] only to the non-zero rows in [x]. *)
 
 val map_rows_nz : (spmat -> 'a) -> spmat -> 'a array
-(** [] *)
+(** Similar to [mapi_rows_nz], but row numbers are not passed to [f]. *)
 
 val mapi_cols_nz : (int -> spmat -> 'a) -> spmat -> 'a array
-(** [] *)
+(** [mapi_cols_nz f x] applies [f] only to the non-zero columns in [x]. *)
 
 val map_cols_nz : (spmat -> 'a) -> spmat -> 'a array
-(** [] *)
+(** Similar to [mapi_cols_nz], but columns numbers are not passed to [f]. *)
 
 val fold_rows_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
-(** [] *)
+(** [fold_rows_nz f a x] is similar to [fold_rows] but only folds non-zero
+  rows in [x] using function [f]. Zero rows will be dropped in iterating [x].
+ *)
 
 val fold_cols_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
-(** [] *)
+(** [fold_cols_nz f a x] is similar to [fold_cols] but only folds non-zero
+  columns in [x] using function [f]. Zero columns will be dropped in iterating [x].
+ *)
 
 
 (** {6 Examine the elements in a matrix} *)
