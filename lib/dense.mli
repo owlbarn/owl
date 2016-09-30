@@ -3,9 +3,9 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Dense matrix operations *)
+(** Dense matrix module *)
 
-type dsmat = Gsl.Matrix.matrix
+type dsmat (* = Gsl.Matrix.matrix *)
 (** Type of dense matrices. It is defined as [Gsl.Matrix.matrix] which is
   essentially a two dimensional array in [Bigarray] module. *)
 
@@ -13,25 +13,51 @@ type dsmat = Gsl.Matrix.matrix
 (** {6 Create dense matrices} *)
 
 val empty : int -> int -> dsmat
+(** [empty m n] creates an [m] by [n] matrix without initialising the values of
+  elements in [x].
+ *)
 
 val create : int -> int -> float -> dsmat
+(** [create m n a] creates an [m] by [n] matrix and all the elements of [x] are
+  initialised with the value [a].
+ *)
 
 val zeros : int -> int -> dsmat
+(** [zeros m n] creates an [m] by [n] matrix where all the elements are
+  initialised to zeros.
+ *)
 
 val ones : int -> int -> dsmat
+(** [ones m n] creates an [m] by [n] matrix where all the elements are ones. *)
 
 val eye : int -> dsmat
+(** [eye m] creates an [m] by [m] identity matrix. *)
 
 val sequential : int -> int -> dsmat
+(** [sequential m n] creates an [m] by [n] matrix. The elements in [x] are
+  initialised sequentiallly from [0] to [(m * n - 1)].
+ *)
 
 val uniform_int : ?a:int -> ?b:int -> int -> int -> dsmat
+(** [uniform ~a ~b m n] creates an [m] by [n] matrix where all the elements
+  follow a uniform distribution in [[a, b]] interval. By default, [a = 0] and
+  [b = 100].
+ *)
 
 val uniform : ?scale:float -> int -> int -> dsmat
+(** [uniform m n] creates an [m] by [n] matrix where all the elements
+  follow a uniform distribution in [(0,1)] interval. [uniform ~scale:a m n]
+  adjusts the interval to [(0,a)].
+ *)
 
 val gaussian : ?sigma:float -> int -> int -> dsmat
+(** [gaussian m n] creates an [m] by [n] matrix where all the elements in [x]
+  follow a Gaussian distribution with specified sigma. By default [sigma = 1].
+ *)
 
 val semidef : int -> dsmat
-(** [ semidef n ] genereates a n x n positive semi-definite dsmatrix *)
+(** [ semidef n ] returns an random [n] by [n] positive semi-definite matrix. *)
+
 
 (** {7 Dense vectors and meshgrids} *)
 

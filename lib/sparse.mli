@@ -3,9 +3,7 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Sparse matrix module
-  Note that in general
- *)
+(** Sparse matrix module *)
 
 type spmat
 (** Type of sparse matrices. It is defined in [types.ml] as record type. *)
@@ -494,51 +492,51 @@ val load : string -> spmat
 (** {6 Shorhand infix operators} *)
 
 val ( +@ ) : spmat -> spmat -> spmat
-(** Shorthand for [add x y], e.g., [x +@ y] *)
+(** Shorthand for [add x y], i.e., [x +@ y] *)
 
 val ( -@ ) : spmat -> spmat -> spmat
-(** Shorthand for [sub x y], e.g., [x -@ y] *)
+(** Shorthand for [sub x y], i.e., [x -@ y] *)
 
 val ( *@ ) : spmat -> spmat -> spmat
-(** Shorthand for [mul x y], e.g., [x *@ y] *)
+(** Shorthand for [mul x y], i.e., [x *@ y] *)
 
 val ( /@ ) : spmat -> spmat -> spmat
-(** Shorthand for [div x y], e.g., [x /@ y] *)
+(** Shorthand for [div x y], i.e., [x /@ y] *)
 
 val ( $@ ) : spmat -> spmat -> spmat
-(** Shorthand for [dot x y], e.g., [x $@ y] *)
+(** Shorthand for [dot x y], i.e., [x $@ y] *)
 
 val ( **@ ) : spmat -> float -> spmat
-(** Shorthand for [power x a], e.g., [x **@ a] *)
+(** Shorthand for [power x a], i.e., [x **@ a] *)
 
 val ( *$ ) : spmat -> float -> spmat
-(** Shorthand for [mul_scalar x a], e.g., [x *$ a] *)
+(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
 
 val ( /$ ) : spmat -> float -> spmat
-(** Shorthand for [div_scalar x a], e.g., [x /$ a] *)
+(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
 
 val ( $* ) : float -> spmat -> spmat
-(** Shorthand for [mul_scalar x a], e.g., [x $* a] *)
+(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
 
 val ( $/ ) : float -> spmat -> spmat
-(** Shorthand for [div_scalar x a], e.g., [x $/ a] *)
+(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
 
 val ( =@ ) : spmat -> spmat -> bool
-(** Shorthand for [is_equal x y], e.g., [x =@ y] *)
+(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
 
 val ( >@ ) : spmat -> spmat -> bool
-(** Shorthand for [is_greater x y], e.g., [x >@ y] *)
+(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
 
 val ( <@ ) : spmat -> spmat -> bool
-(** Shorthand for [is_smaller x y], e.g., [x <@ y] *)
+(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
 
 val ( <>@ ) : spmat -> spmat -> bool
-(** Shorthand for [is_unequal x y], e.g., [x <>@ y] *)
+(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
 
 val ( >=@ ) : spmat -> spmat -> bool
-(** Shorthand for [equal_or_greater x y], e.g., [x >=@ y] *)
+(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
 
 val ( <=@ ) : spmat -> spmat -> bool
-(** Shorthand for [equal_or_smaller x y], e.g., [x <=@ y] *)
+(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
 
 (* val ( @@ ) : (float -> float) -> dsmat -> dsmat *)
