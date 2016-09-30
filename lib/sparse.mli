@@ -105,18 +105,25 @@ val clone : spmat -> spmat
  *)
 
 val transpose : spmat -> spmat
+(** [transpose x] transposes an [m] by [n] matrix to [n] by [m] one. *)
 
 val diag : spmat -> spmat
+(** [diag x] returns the diagonal elements of [x]. *)
 
 val trace : spmat -> float
+(** [trace x] returns the sum of diagonal elements in [x]. *)
 
 val row : spmat -> int -> spmat
+(** [row x i] returns the row [i] of [x]. *)
 
 val col : spmat -> int -> spmat
+(** [col x j] returns the column [j] of [x]. *)
 
 val rows : spmat -> int array -> spmat
+(** [] *)
 
 val cols : spmat -> int array -> spmat
+(** [] *)
 
 
 (** {6 Iterate elements, columns, and rows.} *)
