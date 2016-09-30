@@ -364,6 +364,9 @@ val average : spmat -> float
   equivalent to calculate [sum x] divided by [numel x]
  *)
 
+val power : spmat -> float -> spmat
+(** [power x a] calculates the power of [a] of each element in [x]. *)
+
 val is_zero : spmat -> bool
 (** [is_zero x] returns [true] if all the elements in [x] are zeros. *)
 
@@ -435,93 +438,107 @@ val equal_or_smaller : spmat -> spmat -> bool
 (** {6 Randomisation functions} *)
 
 val permutation_matrix : int -> spmat
-(** [] *)
+(** [permutation_matrix m] returns an [m] by [m] permutation matrix. *)
 
 val draw_rows : ?replacement:bool -> spmat -> int -> spmat * int array
-(** [] *)
+(** [draw_rows x m] draws [m] rows randomly from [x]. The row indices are also
+  returned in an int array along with the selected rows. The parameter
+  [replacement] indicates whether the drawing is by replacement or not.
+ *)
 
 val draw_cols : ?replacement:bool -> spmat -> int -> spmat * int array
-(** [] *)
+(** [draw_cols x m] draws [m] cols randomly from [x]. The column indices are
+  also returned in an int array along with the selected columns. The parameter
+  [replacement] indicates whether the drawing is by replacement or not.
+ *)
 
 val shuffle_rows : spmat -> spmat
-(** [] *)
+(** [shuffle_rows x] shuffles all the rows in matrix [x]. *)
 
 val shuffle_cols : spmat -> spmat
-(** [] *)
+(** [shuffle_cols x] shuffles all the columns in matrix [x]. *)
 
 val shuffle : spmat -> spmat
-(** [] *)
+(** [shuffle x] shuffles all the elements in [x] by first shuffling along the
+  rows then shuffling along columns. It is equivalent to [shuffle_cols (shuffle_rows x)].
+ *)
 
 
 (** {6 Input/Output and helper functions} *)
 
 val to_dense : spmat -> Dense.dsmat
-(** [] *)
+(** [to_dense x] converts [x] into a dense matrix. *)
 
 val of_dense : Dense.dsmat -> spmat
-(** [] *)
+(** [of_dense x] returns a sparse matrix from the dense matrix [x]. *)
 
 val print : spmat -> unit
-(** [] *)
+(** [print x] pretty prints matrix [x] without headings. *)
 
 val pp_spmat : spmat -> unit
-(** [] *)
+(** [pp_spmat x] pretty prints matrix [x] with headings. Toplevel uses this
+  function to print out the matrices.
+ *)
 
 val save : spmat -> string -> unit
-(** [] *)
+(** [save x f] saves the matrix [x] to a file with the name [f]. The format
+  is binary by using [Marshal] module to serialise the matrix.
+*)
 
 val load : string -> spmat
-(** [] *)
+(** [load f] loads a sparse matrix from file [f]. The file must be previously
+  saved by using [save] function.
+ *)
 
 
 (** {6 Shorhand infix operators} *)
 
 val ( +@ ) : spmat -> spmat -> spmat
-(** [] *)
+(** Shorthand for [add x y], e.g., [x +@ y] *)
 
 val ( -@ ) : spmat -> spmat -> spmat
-(** [] *)
+(** Shorthand for [sub x y], e.g., [x -@ y] *)
 
 val ( *@ ) : spmat -> spmat -> spmat
-(** [] *)
+(** Shorthand for [mul x y], e.g., [x *@ y] *)
 
 val ( /@ ) : spmat -> spmat -> spmat
-(** [] *)
+(** Shorthand for [div x y], e.g., [x /@ y] *)
 
 val ( $@ ) : spmat -> spmat -> spmat
-(** [] *)
+(** Shorthand for [dot x y], e.g., [x $@ y] *)
 
 val ( **@ ) : spmat -> float -> spmat
-(** [] *)
+(** Shorthand for [power x a], e.g., [x **@ a] *)
 
 val ( *$ ) : spmat -> float -> spmat
-(** [] *)
+(** Shorthand for [mul_scalar x a], e.g., [x *$ a] *)
 
 val ( /$ ) : spmat -> float -> spmat
-(** [] *)
+(** Shorthand for [div_scalar x a], e.g., [x /$ a] *)
 
 val ( $* ) : float -> spmat -> spmat
-(** [] *)
+(** Shorthand for [mul_scalar x a], e.g., [x $* a] *)
 
 val ( $/ ) : float -> spmat -> spmat
-(** [] *)
+(** Shorthand for [div_scalar x a], e.g., [x $/ a] *)
 
 val ( =@ ) : spmat -> spmat -> bool
-(** [] *)
+(** Shorthand for [is_equal x y], e.g., [x =@ y] *)
 
 val ( >@ ) : spmat -> spmat -> bool
-(** [] *)
+(** Shorthand for [is_greater x y], e.g., [x >@ y] *)
 
 val ( <@ ) : spmat -> spmat -> bool
-(** [] *)
+(** Shorthand for [is_smaller x y], e.g., [x <@ y] *)
 
 val ( <>@ ) : spmat -> spmat -> bool
-(** [] *)
+(** Shorthand for [is_unequal x y], e.g., [x <>@ y] *)
 
 val ( >=@ ) : spmat -> spmat -> bool
-(** [] *)
+(** Shorthand for [equal_or_greater x y], e.g., [x >=@ y] *)
 
 val ( <=@ ) : spmat -> spmat -> bool
-(** [] *)
+(** Shorthand for [equal_or_smaller x y], e.g., [x <=@ y] *)
 
 (* val ( @@ ) : (float -> float) -> dsmat -> dsmat *)
