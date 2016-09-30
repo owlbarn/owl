@@ -33,7 +33,7 @@ val gaussian : ?sigma:float -> int -> int -> dsmat
 val semidef : int -> dsmat
 (** [ semidef n ] genereates a n x n positive semi-definite dsmatrix *)
 
-(** {7 Create dense vectors and meshgrids} *)
+(** {7 Dense vectors and meshgrids} *)
 
 val vector : int -> dsmat
 
