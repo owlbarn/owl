@@ -214,70 +214,142 @@ val iteri : (int -> int -> float -> 'a) -> dsmat -> unit
   *)
 
 val iter : (float -> 'a) -> dsmat -> unit
+(** [iter f x] is the same as as [iteri f x] except the coordinates of the
+  current element is not passed to the function [f : float -> 'a]
+ *)
 
 val mapi : (int -> int -> float -> float) -> dsmat -> dsmat
+(** [mapi f x] maps each element in [x] to a new value by applying
+  [f : int -> int -> float -> float]. The first two parameters are the
+  coordinates of the element, and the third parameter is the value.
+ *)
 
 val map : (float -> float) -> dsmat -> dsmat
-
-val filteri : (int -> int -> float -> bool) -> dsmat -> (int * int) array
-
-val filter : (float -> bool) -> dsmat -> (int * int) array
+(** [map f x] is similar to [mapi f x] except the coordinates of the
+  current element is not passed to the function [f : float -> float]
+ *)
 
 val fold : ('a -> float -> 'a) -> 'a -> dsmat -> 'a
+(** [fold f a x] folds all the elements in [x] with the function
+  [f : 'a -> float -> 'a]. For an [m] by [n] matrix [x], the order of folding
+  is from [(0,0)] to [(m-1,n-1)], row by row.
+ *)
+
+val filteri : (int -> int -> float -> bool) -> dsmat -> (int * int) array
+(** [filteri f x] uses [f : int -> int -> float -> bool] to filter out certain
+  elements in [x]. An element will be included if [f] returns [true]. The
+  returned result is a list of coordinates of the selected elements.
+ *)
+
+val filter : (float -> bool) -> dsmat -> (int * int) array
+(** Similar to [filteri], but the coordinates of the elements are not passed to
+  the function [f : float -> bool].
+ *)
 
 val iteri_rows : (int -> dsmat -> 'a) -> dsmat -> unit
+(** [iteri_rows f x] iterates every row in [x] and applies function
+  [f : int -> dsmat -> unit] to each of them.
+ *)
 
 val iter_rows : (dsmat -> 'a) -> dsmat -> unit
+(** Similar to [iteri_rows] except row number is not passed to [f]. *)
 
 val iteri_cols : (int -> dsmat -> 'a) -> dsmat -> unit
+(** [iteri_cols f x] iterates every column in [x] and applies function
+  [f : int -> dsmat -> unit] to each of them. Column number is passed to [f] as
+  the first parameter.
+ *)
 
 val iter_cols : (dsmat -> 'a) -> dsmat -> unit
-
-val filteri_cols : (int -> dsmat -> bool) -> dsmat -> int array
-
-val filter_cols : (dsmat -> bool) -> dsmat -> int array
+(** Similar to [iteri_cols] except col number is not passed to [f]. *)
 
 val filteri_rows : (int -> dsmat -> bool) -> dsmat -> int array
+(** [filteri_rows f x] uses function [f : int -> dsmat -> bool] to check each
+  row in [x], then returns an int array containing the indices of those rows
+  which satisfy the function [f].
+ *)
 
 val filter_rows : (dsmat -> bool) -> dsmat -> int array
+(** Similar to [filteri_rows] except that the row indices are not passed to [f]. *)
+
+val filteri_cols : (int -> dsmat -> bool) -> dsmat -> int array
+(** [filteri_cols f x] uses function [f : int -> dsmat -> bool] to check each
+  column in [x], then returns an int array containing the indices of those
+  columns which satisfy the function [f].
+ *)
+
+val filter_cols : (dsmat -> bool) -> dsmat -> int array
+(** Similar to [filteri_cols] except that the column indices are not passed to [f]. *)
 
 val fold_rows : ('a -> dsmat -> 'a) -> 'a -> dsmat -> 'a
+(** [fold_rows f a x] folds all the rows in [x] using function [f]. The order
+  of folding is from the first row to the last one.
+ *)
 
 val fold_cols : ('a -> dsmat -> 'a) -> 'a -> dsmat -> 'a
+(** [fold_cols f a x] folds all the columns in [x] using function [f]. The
+  order of folding is from the first column to the last one.
+ *)
 
 val mapi_rows : (int -> dsmat -> 'a) -> dsmat -> 'a array
+(** [mapi_rows f x] maps every row in [x] to a type ['a] value by applying
+  function [f : int -> dsmat -> 'a] to each of them. The results is an array of
+  all the returned values.
+ *)
 
 val map_rows : (dsmat -> 'a) -> dsmat -> 'a array
+(** Similar to [mapi_rows] except row number is not passed to [f]. *)
 
 val mapi_cols : (int -> dsmat -> 'a) -> dsmat -> 'a array
+(** [mapi_cols f x] maps every column in [x] to a type ['a] value by applying
+  function [f : int -> dsmat -> 'a].
+ *)
 
 val map_cols : (dsmat -> 'a) -> dsmat -> 'a array
+(** Similar to [mapi_cols] except column number is not passed to [f]. *)
 
 val mapi_by_row : ?d:int -> (int -> dsmat -> dsmat) -> dsmat -> dsmat
+(** [] *)
 
 val map_by_row : ?d:int -> (dsmat -> dsmat) -> dsmat -> dsmat
+(** [] *)
 
 val mapi_by_col : ?d:int -> (int -> dsmat -> dsmat) -> dsmat -> dsmat
+(** [] *)
 
 val map_by_col : ?d:int -> (dsmat -> dsmat) -> dsmat -> dsmat
+(** [] *)
 
 val mapi_at_row : (int -> int -> float -> float) -> dsmat -> int -> dsmat
+(** [] *)
 
 val map_at_row : (float -> float) -> dsmat -> int -> dsmat
+(** [] *)
 
 val mapi_at_col : (int -> int -> float -> float) -> dsmat -> int -> dsmat
+(** [] *)
 
 val map_at_col : (float -> float) -> dsmat -> int -> dsmat
+(** [] *)
 
 
 (** {6 Examine the elements in a matrix} *)
 
 val exists : (float -> bool) -> dsmat -> bool
+(** [exists f x] checks all the elements in [x] using [f]. If at least one
+  element satisfies [f] then the function returns [true] otherwise [false].
+ *)
 
 val not_exists : (float -> bool) -> dsmat -> bool
+(** [not_exists f x] checks all the elements in [x], the function returns
+  [true] only if all the elements fail to satisfy [f : float -> bool].
+ *)
 
 val for_all : (float -> bool) -> dsmat -> bool
-
+(** [for_all f x] checks all the elements in [x], the function returns [true]
+  if and only if all the elements pass the check of function [f].
+ *)
+ 
 
 (** {6 Compare two matrices} *)
 

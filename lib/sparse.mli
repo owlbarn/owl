@@ -206,7 +206,7 @@ val mapi_cols : (int -> spmat -> 'a) -> spmat -> 'a array
  *)
 
 val map_cols : (spmat -> 'a) -> spmat -> 'a array
-(** Similar to [mapi_rows] except column number is not passed to [f]. *)
+(** Similar to [mapi_cols] except column number is not passed to [f]. *)
 
 val fold_rows : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
 (** [fold_rows f a x] folds all the rows in [x] using function [f]. The order

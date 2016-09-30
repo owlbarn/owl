@@ -629,9 +629,17 @@ let ( <=@ ) = equal_or_smaller
 
 
 
-(** TODO: out of OCaml GC, need to release the memory, refer to gsl_multifit_nlin.ml file. *)
+(* TODO: out of OCaml GC, need to release the memory, refer to gsl_multifit_nlin.ml file. *)
 
+(* TODO:
+val filteri_cols : (int -> dsmat -> bool) -> dsmat -> int array
 
+val filter_cols : (dsmat -> bool) -> dsmat -> int array
+
+val filteri_rows : (int -> dsmat -> bool) -> dsmat -> int array
+
+val filter_rows : (dsmat -> bool) -> dsmat -> int array
+*)
 
 
 (** ends here *)
