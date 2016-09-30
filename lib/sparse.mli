@@ -330,11 +330,6 @@ val add : spmat -> spmat -> spmat
 val sub : spmat -> spmat -> spmat
 (** [sub x y] subtracts the matrix [x] from [y]. Both must have the same dimensions. *)
 
-val dot : spmat -> spmat -> spmat
-(** [dot x y] calculates the dot product of an [m] by [n] matrix [x] and
-  another [n] by [p] matrix [y].
- *)
-
 val mul : spmat -> spmat -> spmat
 (** [mul x y] performs an element-wise multiplication, so both [x] and [y]
   must have the same dimensions.
@@ -343,6 +338,11 @@ val mul : spmat -> spmat -> spmat
 val div : spmat -> spmat -> spmat
 (** [div x y] performs an element-wise division, so both [x] and [y]
   must have the same dimensions.
+ *)
+
+val dot : spmat -> spmat -> spmat
+(** [dot x y] calculates the dot product of an [m] by [n] matrix [x] and
+  another [n] by [p] matrix [y].
  *)
 
 val abs : spmat -> spmat
@@ -400,7 +400,8 @@ val average_rows : spmat -> spmat
 
 val average_cols : spmat -> spmat
 (** [average_cols x] returns the average value of all column vectors in [x].
-  It is equivalent to [div_scalar (sum_cols x) (float_of_int (col_num x))]. *)
+  It is equivalent to [div_scalar (sum_cols x) (float_of_int (col_num x))].
+ *)
 
 
 (** {6 Compare two matrices} *)
@@ -429,7 +430,7 @@ val equal_or_greater : spmat -> spmat -> bool
  *)
 
 val equal_or_smaller : spmat -> spmat -> bool
-(** [equal_or_greater x y] returns [true] if all the elements in [x] are not
+(** [equal_or_smaller x y] returns [true] if all the elements in [x] are not
   greater than the corresponding elements in [y].
  *)
 
