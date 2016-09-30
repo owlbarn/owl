@@ -15,13 +15,13 @@ val zeros : int -> int -> spmat
 (** [zeros m n] creates an [m] by [n] matrix where all the elements are zeros.
   This operation is very fast since it only allocates a small amount of memory.
   The memory will grow automatically as more elements are inserted.
-*)
+ *)
 
 val ones : int -> int -> spmat
 (** [ones m n] creates an [m] by [n] matrix where all the elements are ones.
   This operation can be very slow if matrix size is big. You might consider to
   use dense matrix for better performance in this case.
-*)
+ *)
 
 val eye : int -> spmat
 (** [eye m] creates an [m] by [m] identity matrix. *)
@@ -29,40 +29,71 @@ val eye : int -> spmat
 val binary : int -> int -> spmat
 
 val uniform : ?scale:float -> int -> int -> spmat
+(** [uniform m n] creates an [m] by [n] matrix where 10% ~ 15% elements
+  follow a uniform distribution in [(0,1)] interval. [uniform ~scale:a m n]
+  adjusts the interval to [(0,a)].
+ *)
 
 val uniform_int : ?a:int -> ?b:int -> int -> int -> spmat
+(** [uniform ~a ~b m n] creates an [m] by [n] matrix where 10% ~ 15% elements
+  follow a uniform distribution in [[a, b]] interval. By default, [a = 0] and
+  [b = 100].
+ *)
 
 val linspace : float -> float -> int -> spmat
+(** [linspace a b n] linearly divides the interval [[a,b]] into [n] pieces by
+  creating an [m] by [1] row vector. E.g., [linspace 0. 5. 5] will create a
+  row vector [[0;1;2;3;4;5]].
+ *)
 
 
 (** {6 Obtain the basic properties of a matrix} *)
 
 val shape : spmat -> int * int
+(** If [x] is an [m] by [n] matrix, [shape x] returns [(m,n)], i.e., the size
+  of two dimensions of [x].
+ *)
 
 val row_num : spmat -> int
+(** [row_num x] returns the number of rows in matrix [x]. *)
 
 val col_num : spmat -> int
+(** [col_num x] returns the number of columns in matrix [x]. *)
 
 val row_num_nz : spmat -> int
+(** [row_num_nz x] returns the number of non-zero rows in matrix [x]. *)
 
 val col_num_nz : spmat -> int
+(** [col_num_nz x] returns the number of non-zero columns in matrix [x]. *)
 
 val numel : spmat -> int
+(** [row_num_nz x] returns the number of elements in matrix [x]. It is equivalent
+  to [(row_num x) * (col_num x)].
+ *)
 
 val nnz : spmat -> int
+(** [nnz x] returns the number of non-zero elements in matrix [x]. *)
 
 val nnz_rows : spmat -> int array
+(** [nnz_rows x] returns the number of non-zero rows in matrix [x]. A non-zero
+  row means there is at least one non-zero element in that row.
+ *)
 
 val nnz_cols : spmat -> int array
+(** [nnz_cols x] returns the number of non-zero cols in matrix [x]. *)
 
 val density : spmat -> float
-
+(** [density x] returns the density of non-zero element. This operation is
+  equivalent to [nnz x] divided by [numel x].
+ *)
 
 (** {6 Manipulate a matrix} *)
 
 val set : spmat -> int -> int -> float -> unit
+(** [set x i j a] sets the element [(i,j)] of [x] to value [a]. *)
 
 val get : spmat -> int -> int -> float
+(** [get x i j] returns the value of element [(i,j)] of [x]. *)
 
 val reset : spmat -> unit
 
