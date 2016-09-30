@@ -163,91 +163,111 @@ val copy_to : dsmat -> dsmat -> unit
  *)
 
 val copy_row_to : dsmat -> dsmat -> int -> unit
-(** [copy_row_to u x i] copies an [1] by [n] row vector [u] to the [i]th row
+(** [copy_row_to v x i] copies an [1] by [n] row vector [v] to the [i]th row
   in an [m] by [n] matrix [x].
  *)
 
 val copy_col_to : dsmat -> dsmat -> int -> unit
-(** [copy_col_to v x j] copies an [1] by [n] column vector [v] to the [j]th 
+(** [copy_col_to v x j] copies an [1] by [n] column vector [v] to the [j]th
   column in an [m] by [n] matrix [x].
  *)
 
 val concat_vertical : dsmat -> dsmat -> dsmat
+(** [concat_vertical x y] concats two matrices [x] and [y] vertically,
+  therefore their column numbers must be the same.
+  *)
 
 val concat_horizontal : dsmat -> dsmat -> dsmat
+(** [concat_horizontal x y] concats two matrices [x] and [y] horizontally,
+  therefore their row numbers must be the same.
+  *)
 
 val transpose : dsmat -> dsmat
+(** [transpose x] transposes an [m] by [n] matrix to [n] by [m] one. *)
 
 val diag : dsmat -> dsmat
+(** [diag x] returns the diagonal elements of [x]. *)
 
 val trace : dsmat -> float
+(** [trace x] returns the sum of diagonal elements in [x]. *)
 
 val add_diag : dsmat -> float -> dsmat
+(** [add_diag x a] adds a constant [a] to all the diagonal elements in [x]. *)
 
 val replace_row : dsmat -> dsmat -> int -> dsmat
+(** [replace_row v x i] uses the row vector [v] to replace the [i]th row in
+  the matrix [x].
+ *)
 
 val replace_col : dsmat -> dsmat -> int -> dsmat
+(** [replace_col v x j] uses the column vector [v] to replace the [j]th column
+  in the matrix [x].
+ *)
 
 
 (** {6 Iterate elements, columns, and rows.} *)
 
-val iter : (float -> 'a) -> dsmat -> unit
-
 val iteri : (int -> int -> float -> 'a) -> dsmat -> unit
+(** [iteri f x] iterates all the elements in [x] and applies the user defined
+  function [f : int -> int -> float -> 'a]. [f i j v] takes three parameters,
+  [i] and [j] are the coordinates of current element, and [v] is its value.
+  *)
 
-val map : (float -> float) -> dsmat -> dsmat
+val iter : (float -> 'a) -> dsmat -> unit
 
 val mapi : (int -> int -> float -> float) -> dsmat -> dsmat
 
-val filter : (float -> bool) -> dsmat -> (int * int) array
+val map : (float -> float) -> dsmat -> dsmat
 
 val filteri : (int -> int -> float -> bool) -> dsmat -> (int * int) array
 
-val fold : ('a -> float -> 'a) -> 'a -> dsmat -> 'a
+val filter : (float -> bool) -> dsmat -> (int * int) array
 
-val iter_rows : (dsmat -> 'a) -> dsmat -> unit
+val fold : ('a -> float -> 'a) -> 'a -> dsmat -> 'a
 
 val iteri_rows : (int -> dsmat -> 'a) -> dsmat -> unit
 
-val map_rows : (dsmat -> 'a) -> dsmat -> 'a array
+val iter_rows : (dsmat -> 'a) -> dsmat -> unit
+
+val iteri_cols : (int -> dsmat -> 'a) -> dsmat -> unit
+
+val iter_cols : (dsmat -> 'a) -> dsmat -> unit
+
+val filteri_cols : (int -> dsmat -> bool) -> dsmat -> int array
+
+val filter_cols : (dsmat -> bool) -> dsmat -> int array
+
+val filteri_rows : (int -> dsmat -> bool) -> dsmat -> int array
+
+val filter_rows : (dsmat -> bool) -> dsmat -> int array
+
+val fold_rows : ('a -> dsmat -> 'a) -> 'a -> dsmat -> 'a
+
+val fold_cols : ('a -> dsmat -> 'a) -> 'a -> dsmat -> 'a
 
 val mapi_rows : (int -> dsmat -> 'a) -> dsmat -> 'a array
+
+val map_rows : (dsmat -> 'a) -> dsmat -> 'a array
+
+val mapi_cols : (int -> dsmat -> 'a) -> dsmat -> 'a array
+
+val map_cols : (dsmat -> 'a) -> dsmat -> 'a array
 
 val mapi_by_row : ?d:int -> (int -> dsmat -> dsmat) -> dsmat -> dsmat
 
 val map_by_row : ?d:int -> (dsmat -> dsmat) -> dsmat -> dsmat
 
-val map_at_row : (float -> float) -> dsmat -> int -> dsmat
-
-val mapi_at_row : (int -> int -> float -> float) -> dsmat -> int -> dsmat
-
-val filter_rows : (dsmat -> bool) -> dsmat -> int array
-
-val filteri_rows : (int -> dsmat -> bool) -> dsmat -> int array
-
-val fold_rows : ('a -> dsmat -> 'a) -> 'a -> dsmat -> 'a
-
-val iter_cols : (dsmat -> 'a) -> dsmat -> unit
-
-val iteri_cols : (int -> dsmat -> 'a) -> dsmat -> unit
-
-val map_cols : (dsmat -> 'a) -> dsmat -> 'a array
-
-val mapi_cols : (int -> dsmat -> 'a) -> dsmat -> 'a array
-
 val mapi_by_col : ?d:int -> (int -> dsmat -> dsmat) -> dsmat -> dsmat
 
 val map_by_col : ?d:int -> (dsmat -> dsmat) -> dsmat -> dsmat
 
-val map_at_col : (float -> float) -> dsmat -> int -> dsmat
+val mapi_at_row : (int -> int -> float -> float) -> dsmat -> int -> dsmat
+
+val map_at_row : (float -> float) -> dsmat -> int -> dsmat
 
 val mapi_at_col : (int -> int -> float -> float) -> dsmat -> int -> dsmat
 
-val filter_cols : (dsmat -> bool) -> dsmat -> int array
-
-val filteri_cols : (int -> dsmat -> bool) -> dsmat -> int array
-
-val fold_cols : ('a -> dsmat -> 'a) -> 'a -> dsmat -> 'a
+val map_at_col : (float -> float) -> dsmat -> int -> dsmat
 
 
 (** {6 Examine the elements in a matrix} *)
