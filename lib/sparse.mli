@@ -3,7 +3,9 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Sparse matrix module *)
+(** Sparse matrix module
+  Note that in general
+ *)
 
 type spmat
 (** Type of sparse matrices. It is defined in [types.ml] as record type. *)
@@ -27,6 +29,7 @@ val eye : int -> spmat
 (** [eye m] creates an [m] by [m] identity matrix. *)
 
 val binary : int -> int -> spmat
+(** [binary m n] creates an [m] by [n] random matrix where 10% ~ 15% elements are 1. *)
 
 val uniform : ?scale:float -> int -> int -> spmat
 (** [uniform m n] creates an [m] by [n] matrix where 10% ~ 15% elements
@@ -126,80 +129,156 @@ val rows : spmat -> int array -> spmat
  *)
 
 val cols : spmat -> int array -> spmat
-(** Similar to [rows], [cols x a] returns the columns (specified in arry [a])
+(** Similar to [rows], [cols x a] returns the columns (specified in array [a])
   of x in a new sparse matrix.
  *)
 
 
-(** {6 Iterate elements, columns, and rows.} *)
+(** {6 Iterate elements, columns, and rows} *)
 
 val iteri : (int -> int -> float -> 'a) -> spmat -> unit
+(** [iteri f x] iterates all the elements in [x] and applies the user defined
+  function [f : int -> int -> float -> 'a]. [f i j v] takes three parameters,
+  [i] and [j] are the coordinates of current element, and [v] is its value.
+  *)
 
 val iter : (float -> 'a) -> spmat -> unit
+(** [iter f x] is the same as as [iteri f x] except the coordinates of the
+  current element is not passed to the function [f : float -> 'a]
+ *)
 
 val mapi : (int -> int -> float -> float) -> spmat -> spmat
+(** [mapi f x] maps each element in [x] to a new value by applying
+  [f : int -> int -> float -> float]. The first two parameters are the
+  coordinates of the element, and the third parameter is the value.
+ *)
 
 val map : (float -> float) -> spmat -> spmat
+(** [map f x] is similar to [mapi f x] except the coordinates of the
+  current element is not passed to the function [f : float -> float]
+ *)
 
 val fold : ('a -> float -> 'a) -> 'a -> spmat -> 'a
+(** [fold f a x] folds all the elements in [x] with the function
+  [f : 'a -> float -> 'a]. For an [m] by [n] matrix [x], the order of folding
+  is from [(0,0)] to [(m-1,n-1)], row by row.
+ *)
 
 val filteri : (int -> int -> float -> bool) -> spmat -> (int * int) array
+(** [filteri f x] uses [f : int -> int -> float -> bool] to filter out certain
+  elements in [x]. An element will be included if [f] returns [true]. The
+  returned result is a list of coordinates of the selected elements.
+ *)
 
 val filter : (float -> bool) -> spmat -> (int * int) array
+(** Similar to [filteri], but the coordinates of the elements are not passed to
+  the function [f : float -> bool].
+ *)
 
 val iteri_rows : (int -> spmat -> unit) -> spmat -> unit
+(** [iteri_rows f x] iterates every row in [x] and applies function
+  [f : int -> spmat -> unit] to each of them.
+ *)
 
 val iter_rows : (spmat -> unit) -> spmat -> unit
+(** Similar to [iteri_rows] except row number is not passed to [f]. *)
 
 val iteri_cols : (int -> spmat -> unit) -> spmat -> unit
+(** [iteri_cols f x] iterates every column in [x] and applies function
+  [f : int -> spmat -> unit] to each of them. Column number is passed to [f] as
+  the first parameter.
+ *)
 
 val iter_cols : (spmat -> unit) -> spmat -> unit
-
-val map_rows : (spmat -> 'a) -> spmat -> 'a array
+(** Similar to [iteri_cols] except col number is not passed to [f]. *)
 
 val mapi_rows : (int -> spmat -> 'a) -> spmat -> 'a array
+(** [mapi_rows f x] maps every row in [x] to a type ['a] value by applying
+  function [f : int -> spmat -> 'a] to each of them. The results is an array of
+  all the returned values.
+ *)
 
-val map_cols : (spmat -> 'a) -> spmat -> 'a array
+val map_rows : (spmat -> 'a) -> spmat -> 'a array
+(** Similar to [mapi_rows] except row number is not passed to [f]. *)
 
 val mapi_cols : (int -> spmat -> 'a) -> spmat -> 'a array
+(** [mapi_cols f x] maps every column in [x] to a type ['a] value by applying
+  function [f : int -> spmat -> 'a].
+ *)
+
+val map_cols : (spmat -> 'a) -> spmat -> 'a array
+(** Similar to [mapi_rows] except column number is not passed to [f]. *)
 
 val fold_rows : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
+(** [fold_rows f a x] folds all the rows in [x] using function [f]. The order
+  of folding is from the first row to the last one.
+ *)
 
 val fold_cols : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
+(** [fold_cols f a x] folds all the columns in [x] using function [f]. The
+  order of folding is from the first column to the last one.
+ *)
 
 val iteri_nz : (int -> int -> float -> 'a) -> spmat -> unit
+(** [iteri_nz f x] iterates all the non-zero elements in [x] by applying the
+  function [f : int -> int -> float -> 'a]. It is much faster than [iteri].
+ *)
 
 val iter_nz : (float -> 'a) -> spmat -> unit
+(** Similar to [iter_nz] except the coordinates of elements are not passed to [f]. *)
 
 val mapi_nz : (int -> int -> float -> float) -> spmat -> spmat
+(** [mapi_nz f x] is similar to [mapi f x] but only applies [f] to non-zero
+  elements in [x]. The zeros in [x] will remain the same in the new matrix.
+ *)
 
 val map_nz : (float -> float) -> spmat -> spmat
+(** Similar to [mapi_nz] except the coordinates of elements are not passed to [f]. *)
 
 val fold_nz : ('a -> float -> 'a) -> 'a -> spmat -> 'a
+(** [fold_nz f a x] is similar to [fold f a x] but only applies to non-zero
+  rows in [x]. zero rows will be simply skipped in folding.
+ *)
 
 val filteri_nz : (int -> int -> float -> bool) -> spmat -> (int * int) array
+(** [filteri_nz f x] is similar to [filter f x] but only applies to non-zero
+  elements in [x].
+ *)
 
 val filter_nz : (float -> bool) -> spmat -> (int * int) array
-
-val iter_rows_nz : (spmat -> unit) -> spmat -> unit
+(** [filter_nz f x] is similar to [filteri_nz] except that the coordinates of
+  matrix elements are not passed to [f].
+ *)
 
 val iteri_rows_nz : (int -> spmat -> unit) -> spmat -> unit
+(** [] *)
 
-val iter_cols_nz : (spmat -> unit) -> spmat -> unit
+val iter_rows_nz : (spmat -> unit) -> spmat -> unit
+(** [] *)
 
 val iteri_cols_nz : (int -> spmat -> unit) -> spmat -> unit
+(** [] *)
 
-val map_rows_nz : (spmat -> 'a) -> spmat -> 'a array
-
-val map_cols_nz : (spmat -> 'a) -> spmat -> 'a array
+val iter_cols_nz : (spmat -> unit) -> spmat -> unit
+(** [] *)
 
 val mapi_rows_nz : (int -> spmat -> 'a) -> spmat -> 'a array
+(** [] *)
+
+val map_rows_nz : (spmat -> 'a) -> spmat -> 'a array
+(** [] *)
 
 val mapi_cols_nz : (int -> spmat -> 'a) -> spmat -> 'a array
+(** [] *)
+
+val map_cols_nz : (spmat -> 'a) -> spmat -> 'a array
+(** [] *)
 
 val fold_rows_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
+(** [] *)
 
 val fold_cols_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
+(** [] *)
 
 
 (** {6 Examine the elements in a matrix} *)
