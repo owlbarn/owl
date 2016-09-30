@@ -120,10 +120,15 @@ val col : spmat -> int -> spmat
 (** [col x j] returns the column [j] of [x]. *)
 
 val rows : spmat -> int array -> spmat
-(** [] *)
+(** [rows x a] returns the rows (defined in an int array [a]) of [x]. The
+  returned rows will be combined into a new sparse matrix. The order of rows in
+  the new matrix is the same as that in the array [a].
+ *)
 
 val cols : spmat -> int array -> spmat
-(** [] *)
+(** Similar to [rows], [cols x a] returns the columns (specified in arry [a])
+  of x in a new sparse matrix.
+ *)
 
 
 (** {6 Iterate elements, columns, and rows.} *)
