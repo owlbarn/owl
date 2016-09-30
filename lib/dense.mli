@@ -62,57 +62,115 @@ val semidef : int -> dsmat
 (** {7 Dense vectors and meshgrids} *)
 
 val vector : int -> dsmat
+(** [vector m] returns an [1] by [m] row vector [x] without initialising the
+  values in [x].
+ *)
 
 val vector_zeros : int -> dsmat
+(** [vector_zeros m] returns an [1] by [m] row vector [x] by initialising the
+  all values in [x] to zeros.
+ *)
 
 val vector_ones : int -> dsmat
+(** [vector_ones m] returns an [1] by [m] row vector [x] by initialising the
+  all values in [x] to ones.
+ *)
 
 val vector_uniform : int -> dsmat
+(** [vector_zeros m] returns an [1] by [m] row vector [x] and the values are
+  drawn from the interval [(0,1)] with a uniform distribution.
+ *)
 
 val linspace : float -> float -> int -> dsmat
-(** [ linspace a b n ] generates linearly spaced interval *)
+(** [linspace a b n] linearly divides the interval [[a,b]] into [n] pieces by
+  creating an [m] by [1] row vector. E.g., [linspace 0. 5. 5] will create a
+  row vector [[0;1;2;3;4;5]].
+ *)
 
 val meshgrid : float -> float -> float -> float -> int -> int -> dsmat * dsmat
+(** [meshgrid a1 b1 a2 b2 n1 n2] is similar to the [meshgrid] function in
+  Matlab. It returns two matrices [x] and [y] where the row vectors in [x] are
+  linearly spaced between [[a1,b1]] by [n1] whilst the column vectors in [y]
+  are linearly spaced between [(a2,b2)] by [n2].
+ *)
 
 val meshup : dsmat -> dsmat -> dsmat * dsmat
+(** [meshup x y] creates mesh grids by using two row vectors [x] and [y]. *)
 
 
 (** {6 Obtain the basic properties of a matrix} *)
 
 val shape : dsmat -> int * int
+(** If [x] is an [m] by [n] matrix, [shape x] returns [(m,n)], i.e., the size
+  of two dimensions of [x].
+ *)
 
 val row_num : dsmat -> int
+(** [row_num x] returns the number of rows in matrix [x]. *)
 
 val col_num : dsmat -> int
+(** [col_num x] returns the number of columns in matrix [x]. *)
 
 val numel : dsmat -> int
+(** [numel x] returns the number of elements in matrix [x]. It is equivalent
+  to [(row_num x) * (col_num x)].
+ *)
 
 val same_shape : dsmat -> dsmat -> bool
+(** [same_shape x y] returns [true] if two matrics have the same shape. *)
 
 val reshape : int -> int -> dsmat -> dsmat
-
-val row : dsmat -> int -> dsmat
-
-val col : dsmat -> int -> dsmat
-
-val rows : dsmat -> int array -> dsmat
-
-val cols : dsmat -> int array -> dsmat
+(** [reshape m n x] creates a new [m] by [n] matrix from the [m'] by [n']
+  matrix [x]. Note that [(m * n)] must be equal to [(m' * n')].
+ *)
 
 
 (** {6 Manipulate a matrix} *)
 
 val get : dsmat -> int -> int -> float
+(** [get x i j] returns the value of element [(i,j)] of [x]. The shorthand
+  for [get x i j] is [x.{i,j}]
+ *)
 
 val set : dsmat -> int -> int -> float -> unit
+(** [set x i j a] sets the element [(i,j)] of [x] to value [a]. The shorthand
+  for [set x i j a] is [x.{i,j} <- a]
+ *)
+
+val row : dsmat -> int -> dsmat
+(** [row x i] returns the row [i] of [x]. *)
+
+val col : dsmat -> int -> dsmat
+(** [col x j] returns the column [j] of [x]. *)
+
+val rows : dsmat -> int array -> dsmat
+(** [rows x a] returns the rows (defined in an int array [a]) of [x]. The
+  returned rows will be combined into a new sparse matrix. The order of rows in
+  the new matrix is the same as that in the array [a].
+ *)
+
+val cols : dsmat -> int array -> dsmat
+(** Similar to [rows], [cols x a] returns the columns (specified in array [a])
+  of x in a new sparse matrix.
+ *)
 
 val clone : dsmat -> dsmat
+(** [clone x] returns a copy of matrix [x]. *)
 
 val copy_to : dsmat -> dsmat -> unit
+(** [copy_to x y] copies the elements of [x] to [y]. [x] and [y] must have
+  the same demensions.
+ *)
 
 val copy_row_to : dsmat -> dsmat -> int -> unit
+(** [copy_row_to u x i] copies an [1] by [n] row vector [u] to the [i]th row
+  in an [m] by [n] matrix [x].
+ *)
 
 val copy_col_to : dsmat -> dsmat -> int -> unit
+(** [copy_col_to v x j] copies an [1] by [n] column vector [v] to the [j]th 
+  column in an [m] by [n] matrix [x].
+ *)
 
 val concat_vertical : dsmat -> dsmat -> dsmat
 

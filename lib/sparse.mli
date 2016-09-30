@@ -68,7 +68,7 @@ val col_num_nz : spmat -> int
 (** [col_num_nz x] returns the number of non-zero columns in matrix [x]. *)
 
 val numel : spmat -> int
-(** [row_num_nz x] returns the number of elements in matrix [x]. It is equivalent
+(** [numel x] returns the number of elements in matrix [x]. It is equivalent
   to [(row_num x) * (col_num x)].
  *)
 
@@ -88,13 +88,14 @@ val density : spmat -> float
   equivalent to [nnz x] divided by [numel x].
  *)
 
-(** {6 Manipulate a matrix} *)
 
-val set : spmat -> int -> int -> float -> unit
-(** [set x i j a] sets the element [(i,j)] of [x] to value [a]. *)
+(** {6 Manipulate a matrix} *)
 
 val get : spmat -> int -> int -> float
 (** [get x i j] returns the value of element [(i,j)] of [x]. *)
+
+val set : spmat -> int -> int -> float -> unit
+(** [set x i j a] sets the element [(i,j)] of [x] to value [a]. *)
 
 val reset : spmat -> unit
 (** [reset x] resets all the elements in [x] to [0]. *)
