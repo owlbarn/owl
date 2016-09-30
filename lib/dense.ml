@@ -76,6 +76,10 @@ let equal_area r1 r2 =
 
 let same_area r1 r2 = r1 = r2
 
+let set = Array2.unsafe_set
+
+let get = Array2.unsafe_get
+
 let row x i =
   let y = Array2.slice_left x i in
   reshape_2 (genarray_of_array1 y) 1 (col_num x)

@@ -6,8 +6,11 @@
 (** Dense matrix operations *)
 
 type dsmat = Gsl.Matrix.matrix
+(** Type of dense matrices. It is defined as [Gsl.Matrix.matrix] which is
+  essentially a two dimensional array in [Bigarray] module. *)
 
-(* matrix creation operations *)
+
+(** {6 Create dense matrices} *)
 
 val empty : int -> int -> dsmat
 
@@ -27,8 +30,10 @@ val uniform : ?scale:float -> int -> int -> dsmat
 
 val gaussian : ?sigma:float -> int -> int -> dsmat
 
-(** [ semidef n ] genereates a n x n positive semi-definite dsmatrix *)
 val semidef : int -> dsmat
+(** [ semidef n ] genereates a n x n positive semi-definite dsmatrix *)
+
+(** {7 Create dense vectors and meshgrids} *)
 
 val vector : int -> dsmat
 
@@ -38,14 +43,15 @@ val vector_ones : int -> dsmat
 
 val vector_uniform : int -> dsmat
 
-(** [ linspace a b n ] generates linearly spaced interval *)
 val linspace : float -> float -> int -> dsmat
+(** [ linspace a b n ] generates linearly spaced interval *)
 
 val meshgrid : float -> float -> float -> float -> int -> int -> dsmat * dsmat
 
 val meshup : dsmat -> dsmat -> dsmat * dsmat
 
-(* dsmatrix manipulations functions *)
+
+(** {6 Obtain the basic properties of a matrix} *)
 
 val shape : dsmat -> int * int
 
@@ -67,6 +73,13 @@ val rows : dsmat -> int array -> dsmat
 
 val cols : dsmat -> int array -> dsmat
 
+
+(** {6 Manipulate a matrix} *)
+
+val get : dsmat -> int -> int -> float
+
+val set : dsmat -> int -> int -> float -> unit
+
 val clone : dsmat -> dsmat
 
 val copy_to : dsmat -> dsmat -> unit
@@ -81,21 +94,18 @@ val concat_horizontal : dsmat -> dsmat -> dsmat
 
 val transpose : dsmat -> dsmat
 
-val draw_rows : ?replacement:bool -> dsmat -> int -> dsmat * int array
+val diag : dsmat -> dsmat
 
-val draw_cols : ?replacement:bool -> dsmat -> int -> dsmat * int array
+val trace : dsmat -> float
 
-val shuffle_rows : dsmat -> dsmat
-
-val shuffle_cols : dsmat -> dsmat
-
-val shuffle_all: dsmat -> dsmat
+val add_diag : dsmat -> float -> dsmat
 
 val replace_row : dsmat -> dsmat -> int -> dsmat
 
 val replace_col : dsmat -> dsmat -> int -> dsmat
 
-(* dsmatrix iteration operations *)
+
+(** {6 Iterate elements, columns, and rows.} *)
 
 val iter : (float -> 'a) -> dsmat -> unit
 
@@ -155,13 +165,17 @@ val filteri_cols : (int -> dsmat -> bool) -> dsmat -> int array
 
 val fold_cols : ('a -> dsmat -> 'a) -> 'a -> dsmat -> 'a
 
+
+(** {6 Examine the elements in a matrix} *)
+
 val exists : (float -> bool) -> dsmat -> bool
 
 val not_exists : (float -> bool) -> dsmat -> bool
 
 val for_all : (float -> bool) -> dsmat -> bool
 
-(* functions for comparing two dsmatrices *)
+
+(** {6 Compare two matrices} *)
 
 val is_equal : dsmat -> dsmat -> bool
 
@@ -175,7 +189,8 @@ val equal_or_greater : dsmat -> dsmat -> bool
 
 val equal_or_smaller : dsmat -> dsmat -> bool
 
-(* basic arithmetic functions *)
+
+(** {6 Basic mathematical operations of matrices} *)
 
 val add : dsmat -> dsmat -> dsmat
 
@@ -235,8 +250,6 @@ val is_negative : dsmat -> bool
 
 val is_nonnegative : dsmat -> bool
 
-(* advanced linear algebra functions *)
-
 val log : dsmat -> dsmat
 
 val log10 : dsmat -> dsmat
@@ -245,21 +258,27 @@ val exp : dsmat -> dsmat
 
 val sigmoid : dsmat -> dsmat
 
-val diag : dsmat -> dsmat
 
-val trace : dsmat -> float
+(** {6 Randomisation functions} *)
 
-val add_diag : dsmat -> float -> dsmat
+val draw_rows : ?replacement:bool -> dsmat -> int -> dsmat * int array
 
-(* val svd : dsmat -> dsmat -> dsmat -> dsmat *)
+val draw_cols : ?replacement:bool -> dsmat -> int -> dsmat * int array
 
-(* input and output functions *)
+val shuffle_rows : dsmat -> dsmat
 
-(** [ to_array x ] flatten dsmatrix x then return as an array *)
+val shuffle_cols : dsmat -> dsmat
+
+val shuffle_all: dsmat -> dsmat
+
+
+(** {6 Input/Output and helper functions} *)
+
 val to_array : dsmat -> float array
+(** [ to_array x ] flatten dsmatrix x then return as an array *)
 
-(** [ to arrays x ] returns an array of arrays, wherein each row becomes an array *)
 val to_arrays : dsmat -> float array array
+(** [ to arrays x ] returns an array of arrays, wherein each row becomes an array *)
 
 val of_array : float array -> int -> int -> dsmat
 
@@ -277,7 +296,8 @@ val print : dsmat -> unit
 
 val pp_dsmat : dsmat -> unit
 
-(* some short-hand infix operators *)
+
+(** {6 Shorhand infix operators} *)
 
 val ( >> ) : dsmat -> dsmat -> unit
 

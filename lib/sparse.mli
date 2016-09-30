@@ -245,7 +245,8 @@ val shuffle_cols : spmat -> spmat
 
 val shuffle : spmat -> spmat
 
-(** {6 Input/Output, pretty printing, and helper functions} *)
+
+(** {6 Input/Output and helper functions} *)
 
 val to_dense : spmat -> Dense.dsmat
 
@@ -258,6 +259,7 @@ val pp_spmat : spmat -> unit
 val save : spmat -> string -> unit
 
 val load : string -> spmat
+
 
 (** {6 Shorhand infix operators} *)
 
