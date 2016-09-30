@@ -627,7 +627,7 @@ let shuffle_cols x =
     swap_cols y i (Stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
   done; y
 
-let shuffle_all x = shuffle_rows (shuffle_cols x)
+let shuffle x = x |> shuffle_rows |> shuffle_cols
 
 let reshape m n x = of_array (to_array x) m n
 

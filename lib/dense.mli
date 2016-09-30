@@ -503,14 +503,27 @@ val max_cols : dsmat -> (float * int * int) array
 (** {6 Randomisation functions} *)
 
 val draw_rows : ?replacement:bool -> dsmat -> int -> dsmat * int array
+(** [draw_rows x m] draws [m] rows randomly from [x]. The row indices are also
+  returned in an int array along with the selected rows. The parameter
+  [replacement] indicates whether the drawing is by replacement or not.
+ *)
 
 val draw_cols : ?replacement:bool -> dsmat -> int -> dsmat * int array
+(** [draw_cols x m] draws [m] cols randomly from [x]. The column indices are
+  also returned in an int array along with the selected columns. The parameter
+  [replacement] indicates whether the drawing is by replacement or not.
+ *)
 
 val shuffle_rows : dsmat -> dsmat
+(** [shuffle_rows x] shuffles all the rows in matrix [x]. *)
 
 val shuffle_cols : dsmat -> dsmat
+(** [shuffle_cols x] shuffles all the columns in matrix [x]. *)
 
-val shuffle_all: dsmat -> dsmat
+val shuffle: dsmat -> dsmat
+(** [shuffle x] shuffles all the elements in [x] by first shuffling along the
+  rows then shuffling along columns. It is equivalent to [shuffle_cols (shuffle_rows x)].
+ *)
 
 
 (** {6 Input/Output and helper functions} *)
