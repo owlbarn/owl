@@ -320,91 +320,116 @@ val for_all_nz :  (float -> bool) -> spmat -> bool
 (** {6 Basic mathematical operations of matrices} *)
 
 val mul_scalar : spmat -> float -> spmat
-(** [] *)
+(** [mul_scalar x a] multiplies every element in [x] by a constant factor [a]. *)
 
 val div_scalar : spmat -> float -> spmat
-(** [] *)
+(** [div_scalar x a] divides every element in [x] by a constant factor [a]. *)
 
 val add : spmat -> spmat -> spmat
-(** [] *)
+(** [add x y] adds two matrices [x] and [y]. Both must have the same dimensions. *)
 
 val sub : spmat -> spmat -> spmat
-(** [] *)
+(** [sub x y] subtracts the matrix [x] from [y]. Both must have the same dimensions. *)
 
 val dot : spmat -> spmat -> spmat
-(** [] *)
+(** [dot x y] calculates the dot product of an [m] by [n] matrix [x] and
+  another [n] by [p] matrix [y].
+ *)
 
 val mul : spmat -> spmat -> spmat
-(** [] *)
+(** [mul x y] performs an element-wise multiplication, so both [x] and [y]
+  must have the same dimensions.
+ *)
 
 val div : spmat -> spmat -> spmat
-(** [] *)
+(** [div x y] performs an element-wise division, so both [x] and [y]
+  must have the same dimensions.
+ *)
 
 val abs : spmat -> spmat
-(** [] *)
+(** [abs x] returns a new matrix where each element has the absolute value of
+  that in the original matrix [x].
+ *)
 
 val neg : spmat -> spmat
-(** [] *)
+(** [neg x] returns a new matrix where each element has the negative value of
+  that in the original matrix [x].
+ *)
 
 val sum : spmat -> float
-(** [] *)
+(** [sum x] returns the summation of all the elements in [x]. *)
 
 val average : spmat -> float
-(** [] *)
+(** [average x] returns the average value of all the elements in [x]. It is
+  equivalent to calculate [sum x] divided by [numel x]
+ *)
 
 val is_zero : spmat -> bool
-(** [] *)
+(** [is_zero x] returns [true] if all the elements in [x] are zeros. *)
 
 val is_positive : spmat -> bool
-(** [] *)
+(** [is_positive x] returns [true] if all the elements in [x] are positive. *)
 
 val is_negative : spmat -> bool
-(** [] *)
+(** [is_negative x] returns [true] if all the elements in [x] are negative. *)
 
 val is_nonnegative : spmat -> bool
-(** [] *)
+(** [is_nonnegative] returns [true] if all the elements in [x] are non-negative. *)
 
 val min : spmat -> float
-(** [] *)
+(** [min x] returns the minimum value of all elements in [x]. *)
 
 val max : spmat -> float
-(** [] *)
+(** [max x] returns the maximum value of all elements in [x]. *)
 
 val minmax : spmat -> float * float
-(** [] *)
+(** [minmax x] returns both the minimum and minimum values in [x]. *)
 
 val sum_rows : spmat -> spmat
-(** [] *)
+(** [sum_rows x] returns the summation of all the row vectors in [x]. *)
 
 val sum_cols : spmat -> spmat
-(** [] *)
+(** [sum_cols] returns the summation of all the column vectors in [x]. *)
 
 val average_rows : spmat -> spmat
-(** [] *)
+(** [average_rows x] returns the average value of all row vectors in [x]. It is
+  equivalent to [div_scalar (sum_rows x) (float_of_int (row_num x))].
+ *)
 
 val average_cols : spmat -> spmat
-(** [] *)
+(** [average_cols x] returns the average value of all column vectors in [x].
+  It is equivalent to [div_scalar (sum_cols x) (float_of_int (col_num x))]. *)
 
 
 (** {6 Compare two matrices} *)
 
 val is_equal : spmat -> spmat -> bool
-(** [] *)
+(** [is_equal x y] returns [true] if two matrices [x] and [y] are equal. *)
 
 val is_unequal : spmat -> spmat -> bool
-(** [] *)
+(** [is_unequal x y] returns [true] if there is at least one element in [x] is
+  not equal to that in [y].
+ *)
 
 val is_greater : spmat -> spmat -> bool
-(** [] *)
+(** [is_greater x y] returns [true] if all the elements in [x] are greater than
+  the corresponding elements in [y].
+ *)
 
 val is_smaller : spmat -> spmat -> bool
-(** [] *)
+(** [is_smaller x y] returns [true] if all the elements in [x] are smaller than
+  the corresponding elements in [y].
+ *)
 
 val equal_or_greater : spmat -> spmat -> bool
-(** [] *)
+(** [equal_or_greater x y] returns [true] if all the elements in [x] are not
+  smaller than the corresponding elements in [y].
+ *)
 
 val equal_or_smaller : spmat -> spmat -> bool
-(** [] *)
+(** [equal_or_greater x y] returns [true] if all the elements in [x] are not
+  greater than the corresponding elements in [y].
+ *)
 
 
 (** {6 Randomisation functions} *)
