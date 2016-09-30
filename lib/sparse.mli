@@ -483,7 +483,7 @@ val pp_spmat : spmat -> unit
 val save : spmat -> string -> unit
 (** [save x f] saves the matrix [x] to a file with the name [f]. The format
   is binary by using [Marshal] module to serialise the matrix.
-*)
+ *)
 
 val load : string -> spmat
 (** [load f] loads a sparse matrix from file [f]. The file must be previously

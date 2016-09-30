@@ -529,79 +529,120 @@ val shuffle: dsmat -> dsmat
 (** {6 Input/Output and helper functions} *)
 
 val to_array : dsmat -> float array
-(** [ to_array x ] flatten dsmatrix x then return as an array *)
+(** [to_array x] flattens an [m] by [n] matrix [x] then returns [x] as an
+  float array of length [(numel x)].
+ *)
 
 val to_arrays : dsmat -> float array array
-(** [ to arrays x ] returns an array of arrays, wherein each row becomes an array *)
+(** [to arrays x] returns an array of float arrays, wherein each row in [x]
+  becomes an array in the result.
+ *)
 
 val of_array : float array -> int -> int -> dsmat
+(** [] *)
 
 val of_arrays : float array array -> dsmat
+(** [] *)
+
+val print : dsmat -> unit
+(** [print x] pretty prints matrix [x] without headings. *)
+
+val pp_dsmat : dsmat -> unit
+(** [pp_spmat x] pretty prints matrix [x] with headings. Toplevel uses this
+  function to print out the matrices.
+ *)
 
 val save : dsmat -> string -> unit
+(** [save x f] saves the matrix [x] to a file with the name [f]. The format
+  is binary by using [Marshal] module to serialise the matrix.
+ *)
 
 val load : string -> dsmat
+(** [load f] loads a sparse matrix from file [f]. The file must be previously
+  saved by using [save] function.
+ *)
 
 val save_txt : dsmat -> string -> unit
 
 val load_txt : string -> dsmat
 
-val print : dsmat -> unit
-
-val pp_dsmat : dsmat -> unit
-
 
 (** {6 Shorhand infix operators} *)
 
 val ( >> ) : dsmat -> dsmat -> unit
+(** [] *)
 
 val ( << ) : dsmat -> dsmat -> unit
+(** [] *)
 
 val ( @= ) : dsmat -> dsmat -> dsmat
+(** [] *)
 
 val ( @|| ) : dsmat -> dsmat -> dsmat
+(** [] *)
 
 val ( +@ ) : dsmat -> dsmat -> dsmat
+(** Shorthand for [add x y], i.e., [x +@ y] *)
 
 val ( -@ ) : dsmat -> dsmat -> dsmat
+(** Shorthand for [sub x y], i.e., [x -@ y] *)
 
 val ( *@ ) : dsmat -> dsmat -> dsmat
+(** Shorthand for [mul x y], i.e., [x *@ y] *)
 
 val ( /@ ) : dsmat -> dsmat -> dsmat
+(** Shorthand for [div x y], i.e., [x /@ y] *)
 
 val ( $@ ) : dsmat -> dsmat -> dsmat
+(** Shorthand for [dot x y], i.e., [x $@ y] *)
 
 val ( **@ ) : dsmat -> float -> dsmat
+(** Shorthand for [power x a], i.e., [x **@ a] *)
 
 val ( +$ ) : dsmat -> float -> dsmat
+(** [] *)
 
 val ( -$ ) : dsmat -> float -> dsmat
+(** [] *)
 
 val ( *$ ) : dsmat -> float -> dsmat
+(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
 
 val ( /$ ) : dsmat -> float -> dsmat
+(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
 
 val ( $+ ) : float -> dsmat -> dsmat
+(** [] *)
 
 val ( $- ) : float -> dsmat -> dsmat
+(** [] *)
 
 val ( $* ) : float -> dsmat -> dsmat
+(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
 
 val ( $/ ) : float -> dsmat -> dsmat
+(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
 
 val ( =@ ) : dsmat -> dsmat -> bool
+(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
 
 val ( >@ ) : dsmat -> dsmat -> bool
+(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
 
 val ( <@ ) : dsmat -> dsmat -> bool
+(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
 
 val ( <>@ ) : dsmat -> dsmat -> bool
+(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
 
 val ( >=@ ) : dsmat -> dsmat -> bool
+(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
 
 val ( <=@ ) : dsmat -> dsmat -> bool
+(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
 
 val ( @@ ) : (float -> float) -> dsmat -> dsmat
+(** [] *)
 
 (* TODO: for debug purpose *)
 
