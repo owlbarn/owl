@@ -309,28 +309,44 @@ val map_cols : (dsmat -> 'a) -> dsmat -> 'a array
 (** Similar to [mapi_cols] except column number is not passed to [f]. *)
 
 val mapi_by_row : ?d:int -> (int -> dsmat -> dsmat) -> dsmat -> dsmat
-(** [] *)
+(** [mapi_by_row f x] applies [f] to each row of [x], then uses the returned
+  row vectors to assemble a new matrix.
+ *)
 
 val map_by_row : ?d:int -> (dsmat -> dsmat) -> dsmat -> dsmat
-(** [] *)
+(** [map_by_row f x i] is similar to [mapi_by_row] except that the row indices
+  are not passed to [f].
+ *)
 
 val mapi_by_col : ?d:int -> (int -> dsmat -> dsmat) -> dsmat -> dsmat
-(** [] *)
+(** [mapi_by_col f x] applies [f] to each column of [x], then uses the returned
+  column vectors to assemble a new matrix.
+ *)
 
 val map_by_col : ?d:int -> (dsmat -> dsmat) -> dsmat -> dsmat
-(** [] *)
+(** [map_by_col f x i] is similar to [mapi_by_col] except that the column
+  indices are not passed to [f].
+ *)
 
 val mapi_at_row : (int -> int -> float -> float) -> dsmat -> int -> dsmat
-(** [] *)
+(** [mapi_at_row f x i] creates a new matrix by applying function [f] only to
+  the [i]th row in matrix [x].
+ *)
 
 val map_at_row : (float -> float) -> dsmat -> int -> dsmat
-(** [] *)
+(** [map_at_row f x i] is similar to [mapi_at_row] except that the coordinates
+  of an element is not passed to [f].
+ *)
 
 val mapi_at_col : (int -> int -> float -> float) -> dsmat -> int -> dsmat
-(** [] *)
+(** [mapi_at_col f x j] creates a new matrix by applying function [f] only to
+  the [j]th column in matrix [x].
+ *)
 
 val map_at_col : (float -> float) -> dsmat -> int -> dsmat
-(** [] *)
+(** [map_at_col f x i] is similar to [mapi_at_col] except that the coordinates
+  of an element is not passed to [f].
+ *)
 
 
 (** {6 Examine the elements in a matrix} *)
