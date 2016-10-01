@@ -109,7 +109,7 @@ module Rnd : sig
 
   val gaussian : ?sigma:float -> unit -> float
   (** [gaussian ~sigma:s ()] returns the value of a random variable that
-      follows Normal distribution of sigma = s. *)
+      follows Normal distribution of [sigma = s]. *)
 
   val gaussian_tail : float -> float -> float
   (** [ gaussian_tail a x sigma ] returns a random value of a gaussian tail
