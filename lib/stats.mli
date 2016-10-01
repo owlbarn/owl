@@ -6,15 +6,15 @@
 (** Statistics module
 
   The module includes some basic statistical functions such as mean, variance,
-  skew, and etc.
+  skew, and etc. It also includes the following three submodules.
 
-  The {b [Rnd]} module provides random number generators of various
+  The {! Rnd } module provides random number generators of various
   distributions.
 
-  The {b [Pdf]} module provides a range of probability density/mass functions of
+  The {! Pdf } module provides a range of probability density/mass functions of
   different distributions.
 
-  The {b [Cdf]} module provides cumulative distribution functions.
+  The {! Cdf } module provides cumulative distribution functions.
 
   Please refer to {{: https://www.gnu.org/software/gsl/manual }
   GSL documentation} for details.
@@ -298,18 +298,22 @@ end
 
 module Cdf : sig
   (**
-    {ol
-      {- abc : generate a random value following the distribution abc;}
-      {- abc_pdf : calculate the probability desensit at a given point;}
-      {- abc_P : calculate CDF of the distribution, i.e., P(X <= x);}
-      {- abc_Q : calculate tail distribution Q (X > x), i.e., 1 - P (X <= x);}
-      {- abc_Pinv : the inverse function of P, also a.k.a percentile function;}
-      {- abc_Qinv : the inverse function of Q.}
+    For each random variable distribution, the module includes four corresponding
+    functions (if well-defined).
+
+    E.g., for [gaussian] distribution, there are four functions as follows:
+    {ul
+      {- [gaussian_P] : calculates CDF of the distribution, i.e., P(X <= x);}
+      {- [gaussian_Q] : calculates tail distribution Q (X > x), i.e., 1 - P (X <= x);}
+      {- [gaussian_Pinv] : the inverse function of P, also a.k.a percentile function;}
+      {- [gaussian_Qinv] : the inverse function of Q.}
     }
 
     Please refer to {{: https://www.gnu.org/software/gsl/manual }
     GSL documentation} for details.
   *)
+
+  (** {6 Continuous random variables} *)
 
   val flat_P : float -> float -> float -> float
 
@@ -450,6 +454,8 @@ module Cdf : sig
   val gumbel2_Pinv : float -> float -> float -> float
 
   val gumbel2_Qinv : float -> float -> float -> float
+
+  (** {6 Discrete random variables} *)
 
   val poisson_P : int -> float -> float
 
