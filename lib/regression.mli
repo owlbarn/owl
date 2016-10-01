@@ -8,7 +8,7 @@
  *)
 
 type dsmat = Dense.dsmat
-type vector
+type vector = Gsl.Vector.vector
 
 val linear : ?i:bool -> dsmat -> dsmat -> dsmat
 (** Linear regression:  *)
@@ -21,6 +21,5 @@ val exponential : dsmat -> dsmat -> dsmat
 
 val nonlinear : (vector -> float -> float) -> float array -> dsmat -> dsmat -> dsmat
 (** Nonlinear regression: *)
-
 
 (* TODO: center the data, and unit variance *)
