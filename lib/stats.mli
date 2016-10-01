@@ -8,16 +8,16 @@
   The module includes some basic statistical functions such as mean, variance,
   skew, and etc.
 
-  The [Rnd] module provides random number generators of various
+  The {b [Rnd]} module provides random number generators of various
   distributions.
 
-  The [Pdf] module provides a range of probability density/mass functions of
+  The {b [Pdf]} module provides a range of probability density/mass functions of
   different distributions.
 
-  The [Cdf] module provides cumulative distribution functions.
+  The {b [Cdf]} module provides cumulative distribution functions.
 
-  Please refer to GSL documentation using following link for details:
-  https://www.gnu.org/software/gsl/manual
+  Please refer to {{: https://www.gnu.org/software/gsl/manual }
+  GSL documentation} for details.
 *)
 
 
@@ -102,7 +102,8 @@ module Rnd : sig
 
   (** Rnd module is for generating random variables of various distributions.
 
-    Please refer to https://www.gnu.org/ for more details.
+    Please refer to {{: https://www.gnu.org/software/gsl/manual }
+    GSL documentation} for details.
    *)
 
   (** {6 Continuous random variables} *)
@@ -211,7 +212,8 @@ module Pdf : sig
   (** Pdf module provides the probability density functions of various random
     number distribution.
 
-    Please refer to https://www.gnu.org/ for more details.
+    Please refer to {{: https://www.gnu.org/software/gsl/manual }
+    GSL documentation} for details.
    *)
 
   val flat : float -> float -> float -> float
@@ -301,7 +303,8 @@ module Cdf : sig
       {- abc_Qinv : the inverse function of Q.}
     }
 
-    Please refer to https://www.gnu.org/ for more details.
+    Please refer to {{: https://www.gnu.org/software/gsl/manual }
+    GSL documentation} for details.
   *)
 
   val flat_P : float -> float -> float -> float
