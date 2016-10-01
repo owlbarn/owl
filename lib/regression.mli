@@ -8,10 +8,16 @@
  *)
 
 type dsmat = Dense.dsmat
-type vector = Gsl.Vector.vector
+type vector (* = Gsl.Vector.vector*)
 
 val linear : ?i:bool -> dsmat -> dsmat -> dsmat
-(** Linear regression:  *)
+(** Linear regression: [linear ~i x y] fits the measurements [x] and the
+  observations [y] into a linear model. [x] is a row-based matrix and each row
+  represents one measurement. [y] is a column vector and each number is an
+  observation. The parameters will be returned as a column vector. [~i] indicates
+  wether to include intercept, the default value is [false]. The intercept will
+  be the first elelment in the returned parameters.
+ *)
 
 val polynomial : dsmat -> dsmat -> int -> dsmat
 (** polynomial regression:  *)
