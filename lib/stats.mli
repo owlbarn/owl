@@ -216,6 +216,8 @@ module Pdf : sig
     GSL documentation} for details.
    *)
 
+   (** {6 Continuous random variables} *)
+
   val flat : float -> float -> float -> float
 
   val gaussian : float -> float -> float
@@ -268,6 +270,8 @@ module Pdf : sig
   val gumbel1 : float -> float -> float -> float
 
   val gumbel2 : float -> float -> float -> float
+
+  (** {6 Discrete random variables} *)
 
   val poisson : int -> float -> float
 
