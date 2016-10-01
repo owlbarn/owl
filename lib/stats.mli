@@ -72,7 +72,10 @@ val minmax_i : float array -> float * int * float * int
 val sort : ?inc:bool -> float array -> float array
 
 val rank : float array -> float array
-(** [ rank x ] translates each element in x to its ranking *)
+(** [ rank x ] translates each element in [x] to its ranking. The ranking Order
+  is from the smallest one to the largest. E.g., [rank [|54.; 74.; 55.; 86.; 56.|]]
+  returns [[|1.; 4.; 2.; 5.; 3.|]].
+ *)
 
 
 (** {6 MCMC: Markov Chain Monte Carlo} *)
