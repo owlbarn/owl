@@ -74,7 +74,7 @@ val sort : ?inc:bool -> float array -> float array
 val rank : float array -> float array
 (** [ rank x ] translates each element in [x] to its ranking. The ranking Order
   is from the smallest one to the largest. E.g., [rank [|54.; 74.; 55.; 86.; 56.|]]
-  returns [[|1.; 4.; 2.; 5.; 3.|]].
+  returns [[|1.; 4.; 2.; 5.; 3.|]]. Note that the ranking starts with one!
  *)
 
 
@@ -97,11 +97,15 @@ module Rnd : sig
 
   (** {6 Continuous random variables} *)
 
+  val flat : float -> float -> float
+  (** [flat a b] draws a random number from the interval [[a,b)] with a uniform
+    distribution.
+   *)
+
   val uniform : unit -> float
   (** [uniform] returns a random float number within [0,1), includes 0.
-      but excludes 1. *)
-
-  val flat : float -> float -> float
+      but excludes 1. [uniform ()] is equivalent to [flat 0. 1.]
+   *)
 
   val gaussian : ?sigma:float -> unit -> float
   (** [gaussian ~sigma:s ()] returns the value of a random variable that
@@ -117,10 +121,9 @@ module Rnd : sig
     standard deviations sigma_x and sigma_y in the x and y directions. *)
 
   val exponential : float -> float
-  (** [ exponential mu ] return a random value *)
+  (** [ exponential mu ] return a random value that follows exponential distribution. *)
 
   val laplace : float -> float
-  (** p(x) dx = {1 \over 2 a}  \exp(-|x/a|) dx  *)
 
   val exppow : float -> float -> float
 
