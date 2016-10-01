@@ -265,7 +265,7 @@ val bessel_zero_Jnu : float -> int -> float
 val clausen : float -> float
 
 
-(** {Dawson Function} *)
+(** {6 Dawson Function} *)
 
 val dawson : float -> float
 
