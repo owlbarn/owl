@@ -242,7 +242,7 @@ val bessel_Inu : float -> float -> float
 val bessel_Inu_scaled : float -> float -> float
 
 
-(** {6 Irregular Modified Bessel Functions—Fractional Order} *)
+(** {6 Irregular Modified Bessel Functions - Fractional Order} *)
 
 val bessel_Knu : float -> float -> float
 
