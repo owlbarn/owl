@@ -460,16 +460,16 @@ val is_nonnegative : dsmat -> bool
 (** [is_nonnegative] returns [true] if all the elements in [x] are non-negative. *)
 
 val log : dsmat -> dsmat
-(** [] *)
+(** [log x] applies [log] function to each element in matrix [x]. *)
 
 val log10 : dsmat -> dsmat
-(** [] *)
+(** [log10 x] applies [log10] function to each element in matrix [x]. *)
 
 val exp : dsmat -> dsmat
-(** [] *)
+(** [exp x] applies [exp] function to each element in matrix [x]. *)
 
 val sigmoid : dsmat -> dsmat
-(** [] *)
+(** [sigmoid x] applies [sigmoid] function to each element in matrix [x]. *)
 
 val sum_rows : dsmat -> dsmat
 (** [sum_rows x] returns the summation of all the row vectors in [x]. *)
@@ -488,16 +488,16 @@ val average_cols : dsmat -> dsmat
  *)
 
 val min_rows : dsmat -> (float * int * int) array
-(** [] *)
+(** [min_rows x] returns the minimum value in each row along with their coordinates. *)
 
 val min_cols : dsmat -> (float * int * int) array
-(** [] *)
+(** [min_cols x] returns the minimum value in each column along with their coordinates. *)
 
 val max_rows : dsmat -> (float * int * int) array
-(** [] *)
+(** [max_rows x] returns the maximum value in each row along with their coordinates. *)
 
 val max_cols : dsmat -> (float * int * int) array
-(** [] *)
+(** [min_cols x] returns the minimum value in each column along with their coordinates. *)
 
 
 (** {6 Randomisation functions} *)
@@ -539,10 +539,14 @@ val to_arrays : dsmat -> float array array
  *)
 
 val of_array : float array -> int -> int -> dsmat
-(** [] *)
+(** [of_array x m n] converts a float array [x] into an [m] by [n] matrix. Note the
+  length of [x] must be equal to [(m * n)].
+ *)
 
 val of_arrays : float array array -> dsmat
-(** [] *)
+(** [of_arrays x] converts an array of [m] float arrays (of length [n]) in to
+  an [m] by [n] matrix.
+ *)
 
 val print : dsmat -> unit
 (** [print x] pretty prints matrix [x] without headings. *)
@@ -563,23 +567,27 @@ val load : string -> dsmat
  *)
 
 val save_txt : dsmat -> string -> unit
+(** [save_txt x f] save the matrix [x] into a text file [f]. The operation can
+  be very time consuming.
+ *)
 
 val load_txt : string -> dsmat
+(** [load_txt f] load a text file [f] into a matrix. *)
 
 
 (** {6 Shorhand infix operators} *)
 
 val ( >> ) : dsmat -> dsmat -> unit
-(** [] *)
+(** Shorthand for [copy_to x y], i.e., x >> y *)
 
 val ( << ) : dsmat -> dsmat -> unit
-(** [] *)
+(** Shorthand for [copy_to y x], i.e., x << y *)
 
 val ( @= ) : dsmat -> dsmat -> dsmat
-(** [] *)
+(** Shorthand for [concat_vertical x y], i.e., x @= y *)
 
 val ( @|| ) : dsmat -> dsmat -> dsmat
-(** [] *)
+(** Shorthand for [concat_horizontal x y], i.e., x @|| y *)
 
 val ( +@ ) : dsmat -> dsmat -> dsmat
 (** Shorthand for [add x y], i.e., [x +@ y] *)
@@ -600,10 +608,10 @@ val ( **@ ) : dsmat -> float -> dsmat
 (** Shorthand for [power x a], i.e., [x **@ a] *)
 
 val ( +$ ) : dsmat -> float -> dsmat
-(** [] *)
+(** Shorthand for [add_scalar x a], i.e., [x +$ a] *)
 
 val ( -$ ) : dsmat -> float -> dsmat
-(** [] *)
+(** Shorthand for [sub_scalar x a], i.e., [x -$ a] *)
 
 val ( *$ ) : dsmat -> float -> dsmat
 (** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
@@ -612,10 +620,10 @@ val ( /$ ) : dsmat -> float -> dsmat
 (** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
 
 val ( $+ ) : float -> dsmat -> dsmat
-(** [] *)
+(** Shorthand for [add_scalar x a], i.e., [a $+ x] *)
 
 val ( $- ) : float -> dsmat -> dsmat
-(** [] *)
+(** Shorthand for [sub_scalar x a], i.e., [a -$ x] *)
 
 val ( $* ) : float -> dsmat -> dsmat
 (** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
@@ -642,7 +650,7 @@ val ( <=@ ) : dsmat -> dsmat -> bool
 (** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
 
 val ( @@ ) : (float -> float) -> dsmat -> dsmat
-(** [] *)
+(** Shorthand for [map f x], i.e., f @@ x *)
 
 (* TODO: for debug purpose *)
 
