@@ -24,16 +24,16 @@
 (** {6 Randomisation functions} *)
 
 val seed : int -> unit
-(** [seed x] sets x as seed for the internal random number generator.  *)
+(** [seed x] sets [x] as seed for the internal random number generator.  *)
 
 val shuffle : 'a array -> 'a array
-(** [ shuffle x ] return a new array of the shuffled x  *)
+(** [ shuffle x ] return a new array of the shuffled [x].  *)
 
 val choose : 'a array -> int -> 'a array
-(** [ choose x n ] draw n samples from x without replecement  *)
+(** [ choose x n ] draw [n] samples from [x] without replecement.  *)
 
 val sample : 'a array -> int -> 'a array
-(** [ sample x n ] draw n samples from x with replacement  *)
+(** [ sample x n ] draw [n] samples from [x] with replacement.  *)
 
 
 (** {6 Basic statistical functions} *)
@@ -88,12 +88,14 @@ val rank : float array -> float array
 (** {6 MCMC: Markov Chain Monte Carlo} *)
 
 val metropolis_hastings : (float array -> float) -> float array -> int -> float array array
-(** [ metropolis_hastings f p n ] is Metropolis-Hastings MCMC algorithm.
-  f is pdf of the p *)
+(** TODO: [ metropolis_hastings f p n ] is Metropolis-Hastings MCMC algorithm.
+  f is pdf of the p
+ *)
 
 val gibbs_sampling : (float array -> int -> float) -> float array -> int -> float array array
-(** [ gibbs_sampling f p n ] is Gibbs sampler. f is a sampler based on the full
-  conditional function of all variables *)
+(** TODO: [ gibbs_sampling f p n ] is Gibbs sampler. f is a sampler based on the full
+  conditional function of all variables
+ *)
 
 
 (** {6 Random numbers, PDF, and CDF} *)
@@ -109,13 +111,13 @@ module Rnd : sig
   (** {6 Continuous random variables} *)
 
   val flat : float -> float -> float
-  (** [flat a b] draws a random number from the interval [[a,b)] with a uniform
+  (** [flat a b] draws a random number from the interval [\[a,b\)] with a uniform
     distribution.
    *)
 
   val uniform : unit -> float
-  (** [uniform] returns a random float number within [0,1), includes 0.
-      but excludes 1. [uniform ()] is equivalent to [flat 0. 1.]
+  (** [uniform] returns a random float number within [\[0,1\)], including 0
+      but excluding 1. [uniform ()] is equivalent to [flat 0. 1.]
    *)
 
   val gaussian : ?sigma:float -> unit -> float
