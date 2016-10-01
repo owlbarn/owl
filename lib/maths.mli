@@ -14,7 +14,7 @@
 *)
 
 
-(** [ Basic math functions ]  *)
+(** {6 Basic math functions} *)
 
 val abs : float -> float
 
@@ -43,7 +43,7 @@ val log10 : float -> float
 val log : float -> float -> float
 
 
-(** [ Trigonometric Functions ]  *)
+(** {6 Trigonometric Functions} *)
 
 val sin : float -> float
 
