@@ -92,7 +92,7 @@ val angle_restrict_symm : float -> float
 val angle_restrict_pos : float -> float
 
 
-(** [ Airy functions and derivatives ]  *)
+(** {6 Airy functions and derivatives} *)
 
 val airy_Ai : float -> float
 
@@ -115,7 +115,7 @@ val airy_zero_Ai : int -> float
 val airy_zero_Bi : int -> float
 
 
-(** [ Regular Cylindrical Bessel Functions ]  *)
+(** {6 Regular Cylindrical Bessel Functions} *)
 
 val bessel_J0 : float -> float
 
@@ -126,7 +126,7 @@ val bessel_Jn : int -> float -> float
 val bessel_Jn_array : int -> int -> float -> float array
 
 
-(** [ Irregular Cylindrical Bessel Functions ]  *)
+(** {6 Irregular Cylindrical Bessel Functions} *)
 
 val bessel_Y0 : float -> float
 
@@ -137,7 +137,7 @@ val bessel_Yn : int -> float -> float
 val bessel_Yn_array : int -> int -> float -> float array
 
 
-(** [ Regular Modified Cylindrical Bessel Functions ]  *)
+(** {6 Regular Modified Cylindrical Bessel Functions} *)
 
 val bessel_I0 : float -> float
 
@@ -156,7 +156,7 @@ val bessel_In_scaled : int -> float -> float
 val bessel_In_scaled_array : int -> int -> float -> float array
 
 
-(** [ Irregular Modified Cylindrical Bessel Functions ]  *)
+(** {6 Irregular Modified Cylindrical Bessel Functions} *)
 
 val bessel_K0 : float -> float
 
@@ -175,7 +175,7 @@ val bessel_Kn_scaled : int -> float -> float
 val bessel_Kn_scaled_array : int -> int -> float -> float array
 
 
-(** [ Regular Spherical Bessel Functions ]  *)
+(** {6 Regular Spherical Bessel Functions} *)
 
 val bessel_j0 : float -> float
 
@@ -190,7 +190,7 @@ val bessel_jl_array : int -> float -> float array
 val bessel_jl_steed_array : int -> float -> float array
 
 
-(** [ Irregular Spherical Bessel Functions ]  *)
+(** {6 Irregular Spherical Bessel Functions} *)
 
 val bessel_y0 : float -> float
 
@@ -203,7 +203,7 @@ val bessel_yl : int -> float -> float
 val bessel_yl_array : int -> float -> float array
 
 
-(** [ Regular Modified Spherical Bessel Functions ]  *)
+(** {6 Regular Modified Spherical Bessel Functions} *)
 
 val bessel_i0_scaled : float -> float
 
@@ -214,7 +214,7 @@ val bessel_il_scaled : int -> float -> float
 val bessel_il_array_scaled : int -> float -> float array
 
 
-(** [ Irregular Modified Spherical Bessel Functions ]  *)
+(** {6 Irregular Modified Spherical Bessel Functions} *)
 
 val bessel_k0_scaled : float -> float
 
@@ -225,24 +225,24 @@ val bessel_kl_scaled : int -> float -> float
 val bessel_kl_array_scaled : int -> float -> float array
 
 
-(** [ Regular Bessel Function—Fractional Order ]  *)
+(** {6 Regular Bessel Function—Fractional Order} *)
 
 val bessel_Jnu : float -> float -> float
 
 
-(** [ Irregular Bessel Functions—Fractional Order ]  *)
+(** {6 Irregular Bessel Functions—Fractional Order} *)
 
 val bessel_Ynu : float -> float -> float
 
 
-(** [ Regular Modified Bessel Functions—Fractional Order ]  *)
+(** {6 Regular Modified Bessel Functions—Fractional Order} *)
 
 val bessel_Inu : float -> float -> float
 
 val bessel_Inu_scaled : float -> float -> float
 
 
-(** [ Irregular Modified Bessel Functions—Fractional Order ]  *)
+(** {6 Irregular Modified Bessel Functions—Fractional Order} *)
 
 val bessel_Knu : float -> float -> float
 
@@ -251,7 +251,7 @@ val bessel_lnKnu : float -> float -> float
 val bessel_Knu_scaled : float -> float -> float
 
 
-(** [ Zeros of Regular Bessel Functions ]  *)
+(** {6 Zeros of Regular Bessel Functions} *)
 
 val bessel_zero_J0 : int -> float
 
@@ -260,17 +260,17 @@ val bessel_zero_J1 : int -> float
 val bessel_zero_Jnu : float -> int -> float
 
 
-(** [ Clausen Functions ]  *)
+(** {6 Clausen Functions} *)
 
 val clausen : float -> float
 
 
-(** [ Dawson Function ]  *)
+(** {Dawson Function} *)
 
 val dawson : float -> float
 
 
-(** [ Debye Functions ]  *)
+(** {6 Debye Functions} *)
 
 val debye_1 : float -> float
 
@@ -285,12 +285,12 @@ val debye_5 : float -> float
 val debye_6 : float -> float
 
 
-(** [ Dilogarithm ]  *)
+(** {6 Dilogarithm} *)
 
 val dilog : float -> float
 
 
-(** [ Elliptic Integrals ]  *)
+(** {6 Elliptic Integrals} *)
 
 val ellint_Kcomp : float -> float
 
@@ -301,7 +301,7 @@ val ellint_Pcomp : float -> float -> float
 val ellint_Dcomp : float -> float
 
 
-(** [ Elliptic Integrals - Legendre Form of Complete Elliptic Integrals ]  *)
+(** {6 Elliptic Integrals - Legendre Form of Complete Elliptic Integrals} *)
 
 val laguerre_1 : float -> float -> float
 
@@ -312,7 +312,7 @@ val laguerre_3 : float -> float -> float
 val laguerre_n : int -> float -> float -> float
 
 
-(** [ Elliptic Integrals - Legendre Form of Incomplete Elliptic Integrals ]  *)
+(** {6 Elliptic Integrals - Legendre Form of Incomplete Elliptic Integrals} *)
 
 val ellint_F : float -> float -> float
 
@@ -323,7 +323,7 @@ val ellint_P : float -> float -> float -> float
 val ellint_D : float -> float -> float
 
 
-(** [ Elliptic Integrals - Carlson Forms of Incomplete Elliptic Integrals ]  *)
+(** {6 Elliptic Integrals - Carlson Forms of Incomplete Elliptic Integrals} *)
 
 val ellint_RC : float -> float -> float
 
@@ -334,7 +334,7 @@ val ellint_RF : float -> float -> float -> float
 val ellint_RJ : float -> float -> float -> float -> float
 
 
-(** [ Exponential Integrals ]  *)
+(** {6 Exponential Integrals} *)
 
 val expint_E1 : float -> float
 
@@ -361,7 +361,7 @@ val ci : float -> float
 val atanint : float -> float
 
 
-(** [ Fermi-Dirac Function ]  *)
+(** {6 Fermi-Dirac Function} *)
 
 val fermi_dirac_m1 : float -> float
 
@@ -382,7 +382,7 @@ val fermi_dirac_3half : float -> float
 val fermi_dirac_inc_0 : float -> float -> float
 
 
-(** [ Gamma Functions ]  *)
+(** {6 Gamma Functions} *)
 
 val gamma : float -> float
 
@@ -393,7 +393,7 @@ val gammastar : float -> float
 val gammainv : float -> float
 
 
-(** [ Incomplete Gamma Functions ]  *)
+(** {6 Incomplete Gamma Functions} *)
 
 val gamma_inc : float -> float -> float
 
@@ -402,7 +402,7 @@ val gamma_inc_Q : float -> float -> float
 val gamma_inc_P : float -> float -> float
 
 
-(** [ Factorials ]  *)
+(** {6 Factorials} *)
 
 val factorial : int -> float
 
@@ -419,7 +419,7 @@ val ln_combination : int -> int -> float
 val taylorcoeff : int -> float -> float
 
 
-(** [ Pochhammer Symbol ]  *)
+(** {6 Pochhammer Symbol} *)
 
 val poch : float -> float -> float
 
@@ -428,7 +428,7 @@ val lnpoch : float -> float -> float
 val pochrel : float -> float -> float
 
 
-(** [ Beta functions ]  *)
+(** {6 Beta functions} *)
 
 val betaf : float -> float -> float
 
@@ -437,7 +437,7 @@ val lnbeta : float -> float -> float
 val beta_inc : float -> float -> float -> float
 
 
-(** [ Laguerre Functions ]  *)
+(** {6 Laguerre Functions} *)
 
 val laguerre_1 : float -> float -> float
 
@@ -448,14 +448,14 @@ val laguerre_3 : float -> float -> float
 val laguerre_n : int -> float -> float -> float
 
 
-(** [ Lambert W Functions ]  *)
+(** {6 Lambert W Functions} *)
 
 val lambert_w0 : float -> float
 
 val lambert_w1 : float -> float
 
 
-(** [ Legendre Functions and Spherical Harmonics ]  *)
+(** {6 Legendre Functions and Spherical Harmonics} *)
 
 val legendre_P1 : float -> float
 
@@ -474,7 +474,7 @@ val legendre_Q1 : float -> float
 val legendre_Ql : int -> float -> float
 
 
-(** [ Psi (Digamma) Function ]  *)
+(** {6 Psi (Digamma) Function} *)
 
 val psi : float -> float
 
@@ -489,14 +489,14 @@ val psi_1_pint : int -> float
 val psi_n : int -> float -> float
 
 
-(** [ Synchrotron Functions ]  *)
+(** {6 Synchrotron Functions} *)
 
 val synchrotron_1 : float -> float
 
 val synchrotron_2 : float -> float
 
 
-(** [ Transport Functions ]  *)
+(** {6 Transport Functions} *)
 
 val transport_2 : float -> float
 
@@ -507,7 +507,7 @@ val transport_4 : float -> float
 val transport_5 : float -> float
 
 
-(** [ Zeta Functions ]  *)
+(** {6 Zeta Functions} *)
 
 val zeta : float -> float
 
