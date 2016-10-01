@@ -111,12 +111,12 @@ module Rnd : sig
   (** {6 Continuous random variables} *)
 
   val flat : float -> float -> float
-  (** [flat a b] draws a random number from the interval [\[a,b\)] with a uniform
+  (** [flat a b] draws a random number from the interval [\[a,b)] with a uniform
     distribution.
    *)
 
   val uniform : unit -> float
-  (** [uniform] returns a random float number within [\[0,1\)], including 0
+  (** [uniform] returns a random float number within [\[0,1)], including 0
       but excluding 1. [uniform ()] is equivalent to [flat 0. 1.]
    *)
 
