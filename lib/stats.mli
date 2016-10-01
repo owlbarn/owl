@@ -5,11 +5,18 @@
 
 (** Statistics module
 
-  The functions in this module are grouped based on their corresponding
-  distributions. For each random variable distribution, e.g., distribution abc,
-  there are usually six corresponding (if any) functions as follows:
+  The module includes some basic statistical functions such as mean, variance,
+  skew, and etc.
 
-  Please refer to GSL documentation using following linke for details:
+  The [Rnd] module provides random number generators of various
+  distributions.
+
+  The [Pdf] module provides a range of probability density/mass functions of
+  different distributions.
+
+  The [Cdf] module provides cumulative distribution functions.
+
+  Please refer to GSL documentation using following link for details:
   https://www.gnu.org/software/gsl/manual
 *)
 
@@ -93,7 +100,10 @@ val gibbs_sampling : (float array -> int -> float) -> float array -> int -> floa
 
 module Rnd : sig
 
-  (** Rnd module is for generating random variables of various distributions. *)
+  (** Rnd module is for generating random variables of various distributions.
+
+    Please refer to https://www.gnu.org/ for more details.
+   *)
 
   (** {6 Continuous random variables} *)
 
@@ -200,6 +210,8 @@ end
 module Pdf : sig
   (** Pdf module provides the probability density functions of various random
     number distribution.
+
+    Please refer to https://www.gnu.org/ for more details.
    *)
 
   val flat : float -> float -> float -> float
@@ -280,14 +292,16 @@ end
 
 module Cdf : sig
   (**
-  {ol
-    {- abc : generate a random value following the distribution abc;}
-    {- abc_pdf : calculate the probability desensit at a given point;}
-    {- abc_P : calculate CDF of the distribution, i.e., P(X <= x);}
-    {- abc_Q : calculate tail distribution Q (X > x), i.e., 1 - P (X <= x);}
-    {- abc_Pinv : the inverse function of P, also a.k.a percentile function;}
-    {- abc_Qinv : the inverse function of Q.}
-  }
+    {ol
+      {- abc : generate a random value following the distribution abc;}
+      {- abc_pdf : calculate the probability desensit at a given point;}
+      {- abc_P : calculate CDF of the distribution, i.e., P(X <= x);}
+      {- abc_Q : calculate tail distribution Q (X > x), i.e., 1 - P (X <= x);}
+      {- abc_Pinv : the inverse function of P, also a.k.a percentile function;}
+      {- abc_Qinv : the inverse function of Q.}
+    }
+
+    Please refer to https://www.gnu.org/ for more details.
   *)
 
   val flat_P : float -> float -> float -> float
