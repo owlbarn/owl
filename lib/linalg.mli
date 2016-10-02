@@ -33,10 +33,16 @@ val qr_sqsolve : dsmat -> dsmat -> dsmat
 val qr_lssolve : dsmat -> dsmat -> dsmat * dsmat
 
 val svd : dsmat -> dsmat * dsmat * dsmat
+(** [svd x] calculates the singular value decomposition of [x], and returns a
+  tuple [(u,s,v)]. [u] is an [m] by [n] orthogonal matrix, [s] an [n] by [1]
+  matrix of singular values, and [v] is the transpose of an [n] by [n]
+  orthogonal square matrix.
+ *)
 
 val cholesky : dsmat -> dsmat
 
 val is_posdef : dsmat -> bool
+(** [is_posdef x] checks whether [x] is a positive semi-definite matrix. *)
 
 val symmtd : dsmat -> dsmat * dsmat * dsmat
 

@@ -8,7 +8,7 @@
  *)
 
 type dsmat = Dense.dsmat
-type vector (*= Gsl.Vector.vector *)
+type vector = Gsl.Vector.vector
 
 val linear : ?i:bool -> dsmat -> dsmat -> dsmat
 (** Linear regression: [linear ~i x y] fits the measurements [x] and the
