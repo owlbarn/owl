@@ -3,17 +3,27 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Linear algebra module *)
+(** Linalg module includes a set of advanced linear algebra operations such as
+  singular value decomposition.
+
+  Currently, Linalg module only supports dense matrix. The support for sparse
+  matrices will be provided very soon.
+ *)
 
 type dsmat = Dense.dsmat
 
+
 val inv : dsmat -> dsmat
+(** A general square matrix A has an LU decomposition into upper and lower triangular matrices,
+ [P A = L U] where P is a permutation matrix, L is unit lower triangular matrix and U is upper triangular matrix. For square matrices this decomposition can be used to convert the linear system A x = b into a pair of triangular systems (L y = P b, U x = y), which can be solved by forward and back-substitution. Note that the LU decomposition is valid for singular matrices.
+
+ *)
 
 val det : dsmat -> float
+(** [det x] computes the determinant of a matrix [x] from its LU decomposition. *)
 
 val qr : dsmat -> dsmat * dsmat
-
-val qr : dsmat -> dsmat * dsmat
+(** [qr x] *)
 
 val qr_sqsolve : dsmat -> dsmat -> dsmat
 
