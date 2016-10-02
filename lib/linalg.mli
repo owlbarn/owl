@@ -23,7 +23,10 @@ val det : dsmat -> float
 (** [det x] computes the determinant of a matrix [x] from its LU decomposition. *)
 
 val qr : dsmat -> dsmat * dsmat
-(** [qr x] *)
+(** [qr x] calculates QR decomposition for an [m] by [n] matrix [x] as
+  [x = Q R]. [Q] is an [m] by [m] square matrix (where [Q^T Q = I]) and [R] is
+  an [m] by [n] right-triangular matrix.
+ *)
 
 val qr_sqsolve : dsmat -> dsmat -> dsmat
 
