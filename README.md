@@ -237,7 +237,9 @@ let x, y = Dense.meshgrid (-2.5) 2.5 (-2.5) 2.5 100 100 in
 let z = Dense.(Maths.sin @@ ((x **@ 2.) +@ (y **@ 2.))) in
 Plot.mesh x y z;;
 ```
-
+<center>
 ![Plot example](examples/test_plot.png)
+</center>
+
 
 ## Maths and Stats
