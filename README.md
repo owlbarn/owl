@@ -251,7 +251,7 @@ Plot.mesh x y z;;
 
 No matter what plot terminal you use, you should end up with a figure as below.
 
-![Plot example](examples/test_plot.png)
+![Plot example 01](examples/test_plot_01.png)
 
 Besides `Plot.mesh`, there are several other basic plotting functions in `Plot`. The module is still under active development.
 
@@ -260,6 +260,15 @@ Besides `Plot.mesh`, there are several other basic plotting functions in `Plot`.
 
 There are a lot of basic and advanced mathematical and statistical functions in `Maths` and `Stats` modules. Most of them are interfaced to Gsl directly, so you may want to read [GSL Manual](https://www.gnu.org/software/gsl/manual/html_node/) carefully before using the module.
 
-`Stats` has three submodules: [`Stats.Rnd`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Rnd.html) for random numbers, [`Stats.Pdf`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Pdf.html) for probability dense functions, and [`Stats.Cdf`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Cdf.html) for cumulative distribution functions. In addition, I have implemented extra functions such MCMC (Markov Chain Monte Carlo) functions in `Stats` module: Metropolis-Hastings (`Stats.metropolis_hastings`) and Gibbs sampling (`Stats.gibbs_sampling`) algorithms.
+[`Stats`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.html) has three submodules: [`Stats.Rnd`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Rnd.html) for random numbers, [`Stats.Pdf`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Pdf.html) for probability dense functions, and [`Stats.Cdf`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Cdf.html) for cumulative distribution functions. In addition, I have implemented extra functions such as two ranking correlations: `Stats.kendall_tau` and `Stats.spearman_rho`); two MCMC (Markov Chain Monte Carlo) functions in `Stats` module: Metropolis-Hastings (`Stats.metropolis_hastings`) and Gibbs sampling (`Stats.gibbs_sampling`) algorithms.
+
+```ocaml
+let f p = Stats.Pdf.((gaussian p.(0) 0.5) +. (gaussian (p.(0) -. 3.5) 1.)) in
+let y = Stats.metropolis_hastings f [|0.1|] 100000 |>  Dense.of_arrays in
+Plot.histogram ~bin:100 y;;
+```
+
+![Plot example 02](examples/test_plot_02.png)
+
 
 The future plan is to embed a small PPL (Probabilistic Programming Language) in `Stats` module.
