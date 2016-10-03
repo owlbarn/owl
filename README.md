@@ -33,4 +33,12 @@ Owl is well integrated with `utop`. Now you can start `utop` and continue this t
 
 ```ocaml
 let x = Dense.uniform_int 5 5;;
+
+C0 C1 C2 C3 C4
+R0 25  2 77 85 72
+R1 71 92 98 87 53
+R2 35 29 82 65 20
+R3  2 29 66 42 12
+R4 99 72 78 30 11
+val x : Dense.dsmat =
 ```
