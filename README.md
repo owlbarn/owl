@@ -70,6 +70,8 @@ With `Dense` module, you can also generate linearly spaced interval and meshgrid
 
 ```ocaml
 let x = Dense.linspace 0. 5. 6;;
+```
+```bash
    C0  C1  C2  C3  C4  C5
 R0  0   1   2   3   4   5
 val x : Dense.dsmat =
