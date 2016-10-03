@@ -1,10 +1,11 @@
 # Owl - An OCaml Math Library
 Owl is an OCaml math library. It supports both dense and sparse matrix operations, linear algebra, regressions, and many advanced mathematical and statistical functions (such as Markov chain Monte Carlo methods).
 
-The full documentation is here:
+The full documentation is here: [Owl Manual](http://www.cl.cam.ac.uk/~lw525/owl/)
 
 If you have any questions, please email me: liang.wang [at] cl.cam.ac.uk
 
+or message me on:
 [Twitter](https://twitter.com/ryan_liang),
 [Google+](https://www.google.com/+RyanLiang),
 [Facebook](http://www.facebook.com/ryan.liang.wang),
