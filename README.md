@@ -247,6 +247,9 @@ Besides `Plot.mesh`, there are several other basic plotting functions in `Plot`.
 
 ## Maths and Stats
 
-There are a lot of basic and advanced mathematical and statistical functions in `Maths` and `Stats` modules. Most of them are interfaced to Gsl directly, so you may want to read GSL Manual carefully before using the module.
+There are a lot of basic and advanced mathematical and statistical functions in `Maths` and `Stats` modules. Most of them are interfaced to Gsl directly, so you may want to read [GSL Manual](https://www.gnu.org/software/gsl/manual/html_node/) carefully before using the module.
 
-In addition, I implement extra functions such as ... the future plan is ...
+In addition, I have implemented extra functions such MCMC (Markov Chain Monte Carlo) functions: Metropolis-Hastings and Gibbs sampling algorithms.
+
+
+The future plan is to embed a small PPL (Probabilistic Programming Language) in `Stats` module.
