@@ -145,8 +145,18 @@ let nonlinear g p x y =
     MX.of_array (Gsl.Vector.to_array p) (Gsl.Vector.length p) 1
 
 
+(* regression functions in Optimise module *)
+let kmeans = Optimise.kmeans
 
+let ols = Optimise.ols_regression
 
+let lasso = Optimise.lasso_regression
+
+let svm = Optimise.svm_regression
+
+let ridge = Optimise.ridge_regression
+
+let logistic = Optimise.logistic_regression
 
 
 

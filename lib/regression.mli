@@ -55,4 +55,47 @@ val nonlinear : (vector -> float -> float) -> float array -> dsmat -> dsmat -> d
   Finally, we can perform the nonlinear regression by calling [nonlinear f p x y].
  *)
 
+val ols : ?i:bool -> dsmat -> dsmat -> dsmat
+(** Ordinary Least Square regression: in [ols ~i x y], [i] : whether or not to
+  include intercept bias in parameters, the default is [true]; ; [x] is the
+  measurements, and [y] is the observations. THe return is the model.
+ *)
+
+val ridge : ?i:bool -> ?a:float -> dsmat -> dsmat -> dsmat
+(** Ridge regression: in [ridge ~i ~a x y], [i] : whether or not to include
+  intercept bias in parameters, the default is [true]; [a] : the weight on the
+  regularisation term; [x] is the measurements, and [y] is the observations.
+  The return is the model.
+ *)
+
+val lasso : ?i:bool -> ?a:float -> dsmat -> dsmat -> dsmat
+(** LASSO regression: in [lasso ~i ~a x y], [i] : whether or not to include
+  intercept bias in parameters, the default is [true]; [a] : the weight on the
+  regularisation term; [x] is the measurements, and [y] is the observations.
+  The return is the model.
+ *)
+
+val logistic : ?i:bool -> dsmat -> dsmat -> dsmat
+(** Logistic regression: in [logistic ~i x y], [i] : whether or not to include
+  intercept bias in parameters, the default is [true]; ; [x] is the
+  measurements, and [y] is the observations.
+
+  Note that the values in [y] are either [+1] or [0]. The return is the model.
+ *)
+
+val svm : ?i:bool -> dsmat -> dsmat -> dsmat -> dsmat
+(** Support Vector Machine regression: in [svm ~i p x y], [i] : whether or not
+  to include intercept bias in parameters, the default is [true]; [p] : the
+  initial guess of the model; [x] is the measurements, and [y] is the observations.
+
+  Note that the values in [y] are either [+1] or [-1].
+ *)
+
+val kmeans : dsmat -> int -> dsmat * int array
+(** K-means clustering: [kmeans x c] divides [x] which is a row-based matrix
+  into [c] clusters. The return is [(y,a)] where [y] is the model and [a] is
+  the membership list of all nodes in [x].
+ *)
+
+
 (* TODO: center the data, and unit variance *)
