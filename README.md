@@ -31,4 +31,6 @@ Owl is well integrated with `utop`. Now you can start `utop` and continue this t
 
 ## Create Matrices
 
-Create Matrices
+```ocaml
+let x = Dense.uniform_int 5 5;;
+```
