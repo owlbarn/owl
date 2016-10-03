@@ -85,5 +85,22 @@ val x : Dense.dsmat =
 ```
 
 
+## Iterate
+
+Both `Dense` and `Sparse` modules provide a wide range of operations to access the elements, rows, and columns in a matrix. E.g., the following code generates a random matrix, then scales up each element by a factor of 10 using `Dense.map` function.
+
+```ocaml
+let x = Dense.uniform 6 6 |> Dense.map (fun x -> x *. 10.);;
+```
+
+We can also iterate a matrix row by row, or column by column. The following code calcuates the sum of each row by calling `Dense.map_rows` function.
+
+```ocaml
+let x = Dense.(uniform 6 6 |> map_rows sum);;
+```
+
+
+
+
 
 ## Conclude
