@@ -3,8 +3,10 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Linalg module includes a set of advanced linear algebra operations such as
-  singular value decomposition.
+(** Linalg module
+
+  The module includes a set of advanced linear algebra operations such as
+  singular value decomposition, and etc.
 
   Currently, Linalg module only supports dense matrix. The support for sparse
   matrices will be provided very soon.
