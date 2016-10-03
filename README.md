@@ -85,12 +85,26 @@ val x : Dense.dsmat =
 ```
 
 
-## Iterate
+## Access Elements, Rows, and Columns
 
-Both `Dense` and `Sparse` modules provide a wide range of operations to access the elements, rows, and columns in a matrix. E.g., the following code generates a random matrix, then scales up each element by a factor of 10 using `Dense.map` function.
+Both `Dense` and `Sparse` modules provide a wide range of operations to access the elements, rows, and columns of a matrix. You can use `Dense.set` and `Dense.get` to manipulate individual element.
 
 ```ocaml
-let x = Dense.uniform 6 6 |> Dense.map (fun x -> x *. 10.);;
+Dense.set x 0 1 2.5;;
+Dense.get x 0 1;;
+```
+
+Equivalently, there are shorthands for `Dense.get` and `Dense.set`.
+
+```ocaml
+x.{0, 1} <- 2.5;;  (* Dense.set x 0 1 2.5 *)
+x.{0, 1};;         (* Dense.get x 0 1 *)
+```
+
+E.g., the following code generates a random matrix, then scales up each element by a factor of 10 using `Dense.map` function.
+
+```ocaml
+let x = Dense.(uniform 6 6 |> map (fun x -> x *. 10.));;
 ```
 
 We can also iterate a matrix row by row, or column by column. The following code calcuates the sum of each row by calling `Dense.map_rows` function.
