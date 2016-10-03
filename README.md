@@ -60,12 +60,20 @@ let x = Dense.gaussian 5 5;;      (* random matrix of gaussian distribution *)
 ...
 ```
 
-Combined with `Stats` module, you can also create any matrices of many distributions.
+Combined with `Stats` module, you can also create any matrices of many distributions. E.g., the following code first creates an empty dense matrix, then initialise the elements with Bernoulli distribution. Test it in `utop`, you should get a dense matrix where half of the elements are zeros.
 
 ```ocaml
 let x = Dense.empty 8 8 |> Dense.map (fun _ -> Stats.Rnd.bernoulli 0.5 |> float_of_int);;
 ```
 
+With `Dense` module, you can also generate linearly spaced interval and meshgrids, as below.
+
+```ocaml
+let x = Dense.linspace 0. 5. 6;;
+   C0  C1  C2  C3  C4  C5
+R0  0   1   2   3   4   5
+val x : Dense.dsmat =
+```
 
 
 
