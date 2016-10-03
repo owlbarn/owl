@@ -120,7 +120,17 @@ We can also iterate a matrix row by row, or column by column. The following code
 let x = Dense.(uniform 6 6 |> map_rows sum);;
 ```
 
-You can also fold elements by calling `Dense.fold`, fold rows by calling `Dense.fold_rows`. Similarly, there are also functions for `filter` operations.
+You can also fold elements by calling `Dense.fold`, fold rows by calling `Dense.fold_rows`. Similarly, there are also functions for `filter` operations. The following code filters out the elements not greater than 0.1 in x.
+
+```ocaml
+Dense.filter ((>) 0.1) x;;
+```
+
+We can also do something more complicated, e.g., by filtering out the rows whose summation is greater than 3.
+
+```ocaml
+Dense.filter ((>) 0.1) x;;    (* not greater than 0.1 in x *)
+```
 
 
 ## Linear Algebra
