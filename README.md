@@ -238,4 +238,6 @@ let z = Dense.(Maths.sin @@ ((x **@ 2.) +@ (y **@ 2.))) in
 Plot.mesh x y z;;
 ```
 
+![Plot example](examples/test_plot.png)
+
 ## Maths and Stats
