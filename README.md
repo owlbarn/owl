@@ -190,6 +190,12 @@ let l = Linalg.cholesky x  (* cholesky decomposition *)
 ```
 
 
+## Regression
+
+`Regression` module currently includes `linear`, `exponential`, `nonlinear`, `ols`, `ridge`, `lasso`, `svm`, and etc. Most of them are based on a stochastic gradient descent algorithm implemented in `Optimise` module.
+
+In the following, let's use an example to illustrate `Regression` module. First, let's generate the measurement x which is a 100 by 
+
 
 
 ## Conclude
