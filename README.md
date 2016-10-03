@@ -72,11 +72,12 @@ Or create a matrix where the elements follow Laplace distribution.
 let x = Dense.empty 8 8 |> Dense.map (fun _ -> Stats.Rnd.laplace 0.2);;
 ```
 
-With `Dense` module, you can also generate linearly spaced interval and meshgrids, as below.
+With `Dense` module, you can also generate linearly spaced interval and meshgrids, e.g.,
 
 ```ocaml
 let x = Dense.linspace 0. 5. 6;;
 ```
+which will return a 1x5 row vector as below
 ```bash
    C0  C1  C2  C3  C4  C5
 R0  0   1   2   3   4   5
