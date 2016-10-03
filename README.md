@@ -85,7 +85,7 @@ val x : Dense.dsmat =
 ```
 
 
-## Access Elements, Rows, and Columns
+Access Elements, Rows, and Columns
 
 Both `Dense` and `Sparse` modules provide a wide range of operations to access the elements, rows, and columns of a matrix. You can use `Dense.set` and `Dense.get` to manipulate individual element.
 
@@ -97,8 +97,15 @@ Dense.get x 0 1;;
 Equivalently, there are shorthands for `Dense.get` and `Dense.set`.
 
 ```ocaml
-x.{0, 1} <- 2.5;;  (* Dense.set x 0 1 2.5 *)
-x.{0, 1};;         (* Dense.get x 0 1 *)
+x.{0,1} <- 2.5;;  (* Dense.set x 0 1 2.5 *)
+x.{0,1};;         (* Dense.get x 0 1 *)
+```
+
+You can use `Dense.row` and `Dense.col` to retrieve a specific row or column of a matrix, or use `Dense.rows` and `Dense.cols` to retrieve multiple of them.
+
+```ocaml
+Dense.row x 5;;        (* retrieve the fifth row *)
+Dense.cols x [|1;3;2|] (* retrieve the column 1, 3, and 2 *)
 ```
 
 E.g., the following code generates a random matrix, then scales up each element by a factor of 10 using `Dense.map` function.
@@ -107,12 +114,18 @@ E.g., the following code generates a random matrix, then scales up each element 
 let x = Dense.(uniform 6 6 |> map (fun x -> x *. 10.));;
 ```
 
-We can also iterate a matrix row by row, or column by column. The following code calcuates the sum of each row by calling `Dense.map_rows` function.
+We can also iterate a matrix row by row, or column by column. The following code calculates the sum of each row by calling `Dense.map_rows` function.
 
 ```ocaml
 let x = Dense.(uniform 6 6 |> map_rows sum);;
 ```
 
+You can also fold elements by calling `Dense.fold`, fold rows by calling `Dense.fold_rows`. Similarly, there are also functions for `filter` operations.
+
+
+## Linear Algebra
+
+Simple matrix mathematics like add, sub, multiplication, and division are included in `Dense` module. Moreover, there are predefined shorthands for such operations. E.g., the following code.
 
 
 
