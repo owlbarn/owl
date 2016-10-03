@@ -140,6 +140,8 @@ Dense.draw_cols x 3;;                 (* draw 3 columns from x with replacement 
 ...
 ```
 
+Practically, `Sparse` module provides all the similar operations for sparse matrices. In addition, `Sparse` module also has extra functions such as only iterating non-zero elements `Sparse.iter_nz`, and etc. Please read the full documentation for details.
+
 
 ## Linear Algebra
 
