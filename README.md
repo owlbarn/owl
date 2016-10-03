@@ -230,16 +230,23 @@ From `utop`, you can see that p' equals `[|0.2; 0.4; 0.8|]` which is exactly the
 
 ## Plotting
 
-Again, let's use an example to show how to plot the result using `Plot` module. We first generate two mesh grids then apply sine function to them.
+Again, let's use an example to show how to plot the result using `Plot` module. We first generate two mesh grids then apply sine function to them by using the operations introduced before.
 
 ```ocaml
 let x, y = Dense.meshgrid (-2.5) 2.5 (-2.5) 2.5 100 100 in
 let z = Dense.(Maths.sin @@ ((x **@ 2.) +@ (y **@ 2.))) in
 Plot.mesh x y z;;
 ```
-<center>
+
+No matter what plot terminal you use, you should end up with a figure as below.
+
 ![Plot example](examples/test_plot.png)
-</center>
+
+Besides `Plot.mesh`, there are several other basic plotting functions in `Plot`. The module is still under active development.
 
 
 ## Maths and Stats
+
+There are a lot of basic and advanced mathematical and statistical functions in `Maths` and `Stats` modules. Most of them are interfaced to Gsl directly, so you may want to read GSL Manual carefully before using the module.
+
+In addition, I implement some 
