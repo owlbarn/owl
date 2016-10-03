@@ -161,7 +161,7 @@ let when_enough v c = (v < 0.00001 && c > 1000) || (c > 5000)
   r : regularisation function
   o : gradient fucntion of the regularisation function
   a : weight on the regularisation term, common setting is 0.0001
-  i : wether to include intercept or not, default value is false
+  i : whether to include intercept or not, default value is false
   p : model parameters (k * m), each column is a classifier. So we have m classifier of k features.
   x : data matrix (n x k), each row is a data point. So we have n datea points of k features each.
   y : labeled data (n x m), n data points and each is labeled with m classifiers
@@ -210,7 +210,7 @@ let gradient_descent = None
 
 
 (** [ Support Vector Machine regression
-  i : wether to include intercept bias in parameters
+  i : whether to include intercept bias in parameters
   note that the values in y are either +1 or -1.
  ]  *)
 let svm_regression ?(i=false) p x y =
@@ -225,7 +225,7 @@ let svm_regression ?(i=false) p x y =
   _sgd_basic b s t l g r o a i p x y
 
 (** [ Ordinary Least Square regression
-  i : wether to include intercept bias in parameters
+  i : whether to include intercept bias in parameters
 ]  *)
 let ols_regression ?(i=true) x y =
   let b = 1 in
@@ -240,7 +240,7 @@ let ols_regression ?(i=true) x y =
   _sgd_basic b s t l g r o a i p x y
 
 (** [ Ridge regression
-  i : wether to include intercept bias in parameters
+  i : whether to include intercept bias in parameters
   a : weight on the regularisation term
   TODO: how to choose a automatically
 ]  *)
@@ -256,7 +256,7 @@ let ridge_regression ?(i=true) ?(a=0.001) x y =
   _sgd_basic b s t l g r o a i p x y
 
 (** [ Lasso regression
-  i : wether to include intercept bias in parameters
+  i : whether to include intercept bias in parameters
   a : weight on the regularisation term
   TODO: how to choose a automatically
 ]  *)
@@ -272,7 +272,7 @@ let lasso_regression ?(i=true) ?(a=0.001) x y =
   _sgd_basic b s t l g r o a i p x y
 
 (** [ Logistic regression
-  i : wether to include intercept bias in parameters
+  i : whether to include intercept bias in parameters
   a : weight on the regularisation term
   note that the values in y are either +1 or 0.
 ]  *)
