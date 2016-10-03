@@ -85,7 +85,7 @@ val x : Dense.dsmat =
 ```
 
 
-Access Elements, Rows, and Columns
+## Access Elements, Rows, and Columns
 
 Both `Dense` and `Sparse` modules provide a wide range of operations to access the elements, rows, and columns of a matrix. You can use `Dense.set` and `Dense.get` to manipulate individual element.
 
