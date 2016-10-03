@@ -48,7 +48,7 @@ let histogram ?(bin=10) x =
 let mesh x y z =
   let open Plplot in
   let x = MX.to_array x in
-  let y = MX.to_array y in
+  let y = MX.(transpose y |> to_array) in
   let xmin, xmax = Stats.minmax x in
   let ymin, ymax = Stats.minmax y in
   let zmin, zmax, _, _, _, _ = MX.minmax z in

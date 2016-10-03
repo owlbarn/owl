@@ -230,6 +230,12 @@ From `utop`, you can see that p' equals `[|0.2; 0.4; 0.8|]` which is exactly the
 
 ## Plotting
 
+Again, let's use an example to show how to plot the result using `Plot` module. We first generate two mesh grids then apply sine function to them.
 
+```ocaml
+let x, y = Dense.meshgrid (-2.5) 2.5 (-2.5) 2.5 100 100 in
+let z = Dense.(Maths.sin @@ ((x **@ 2.) +@ (y **@ 2.))) in
+Plot.mesh x y z;;
+```
 
-## Conclude
+## Maths and Stats
