@@ -3,16 +3,30 @@ Owl is an OCaml math library. It supports both dense and sparse matrix operation
 
 ## Installation
 
-Installation is rather trivial. You need to clone the repository, install all the dependency, then [make && make install].
+Installation is rather trivial. First, you need to clone the repository.
 
 ```bash
 git clone git@github.com:ryanrhymes/owl.git
-cd owl
+```
+
+Then you need to install all the dependencies. Owl depends on gsl, ctypes, plplot, and several other modules. Check the `_oasis` file in the `owl` folder to find out the complete list of required modules.
+
+Next, you can compile and install the module with the following command.
+
+```bash
 make oasis
 make && make install
 ```
 
-Edit .ocamlinit.
+If you want `utop` to automatically load Owl for you, you can also edit `.ocamlinit` file in your home folder by adding the following lines.
+
+```bash
+#require "Owl"
+#require "ctypes"
+#require "ctypes.foreign"
+```
+
+Owl is well integrated with `utop`. Now you can start `utop` and continue this tutorial to do some experiments.
 
 
 ## Create Matrices
