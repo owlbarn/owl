@@ -155,12 +155,20 @@ Dense.(x +$ 2.)                 (* add a scalar to all elements in x *)
 ...
 ```
 
+Apply various functions in `Maths` module to every element in x
+
+```ocaml
+Dense.(Maths.sin @@ x);;        (* apply sine function *)
+Dense.(Maths.exp @@ x);;        (* apply exponential function *)
+...
+```
+
 More advanced linear algebra operations such as `svd`, `qr`, and `cholesky` decomposition are included in `Linalg` module.
 
 ```ocaml
 let u,s,v = Linalg.svd x   (* singular value decomposition *)
 let q,r = Linalg.qr x      (* QR decomposition *)
-let l = cholesky x         (* cholesky decomposition *)
+let l = Linalg.cholesky x  (* cholesky decomposition *)
 ...
 ```
 
