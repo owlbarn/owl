@@ -66,6 +66,12 @@ Combined with `Stats` module, you can also create any matrices of many distribut
 let x = Dense.empty 8 8 |> Dense.map (fun _ -> Stats.Rnd.bernoulli 0.5 |> float_of_int);;
 ```
 
+Or create a matrix where the elements follow Laplace distribution.
+
+```ocaml
+let x = Dense.empty 8 8 |> Dense.map (fun _ -> Stats.Rnd.laplace 0.2);;
+```
+
 With `Dense` module, you can also generate linearly spaced interval and meshgrids, as below.
 
 ```ocaml
