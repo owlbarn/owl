@@ -1,10 +1,6 @@
-# owl
-OCaml Whatever Library ...
+# Owl
+Owl is an OCaml math library. It supports both dense and sparse matrix operations, linear algebra, regressions, and many advanced mathematical and statistical functions (such as Markov chain Monte Carlo methods).
 
-## TODO
+## Tutorial
 
-GSL's gemm is too slow, which causes Dense.dot slow. Need to find a solution for this.
-
-Proximal, coordinate algorithms ...
-
-Improve graphic module and rename it ...
+Create Matrices
