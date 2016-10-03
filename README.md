@@ -3,13 +3,13 @@ Owl is an OCaml math library. It supports both dense and sparse matrix operation
 
 The full documentation is here:
 
-If you have any questions, please email me: liang.wang [at] cl.cam.ac.uk,
-or contact me on
- [Twitter](https://twitter.com/ryan_liang),
- [Google+](https://www.google.com/+RyanLiang),
- [Facebook](http://www.facebook.com/ryan.liang.wang),
- [Blogger](http://ryanrhymes.blogspot.com/),
- [LinkedIn](http://uk.linkedin.com/in/liangsuomi/)
+If you have any questions, please email me: liang.wang [at] cl.cam.ac.uk
+
+[Twitter](https://twitter.com/ryan_liang),
+[Google+](https://www.google.com/+RyanLiang),
+[Facebook](http://www.facebook.com/ryan.liang.wang),
+[Blogger](http://ryanrhymes.blogspot.com/),
+[LinkedIn](http://uk.linkedin.com/in/liangsuomi/)
 
 ## Installation
 
