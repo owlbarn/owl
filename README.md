@@ -101,7 +101,7 @@ x.{0,1} <- 2.5;;  (* Dense.set x 0 1 2.5 *)
 x.{0,1};;         (* Dense.get x 0 1 *)
 ```
 
-You can use `Dense.row` and `Dense.col` to retrieve a specific row or column of a matrix, or use `Dense.rows` and `Dense.cols` to retrieve multiple of them.
+We can use `Dense.row` and `Dense.col` to retrieve a specific row or column of a matrix, or use `Dense.rows` and `Dense.cols` to retrieve multiple of them.
 
 ```ocaml
 Dense.row x 5;;        (* retrieve the fifth row *)
@@ -114,13 +114,13 @@ E.g., the following code generates a random matrix, then scales up each element 
 let x = Dense.(uniform 6 6 |> map (fun x -> x *. 10.));;
 ```
 
-We can also iterate a matrix row by row, or column by column. The following code calculates the sum of each row by calling `Dense.map_rows` function.
+We can iterate a matrix row by row, or column by column. The following code calculates the sum of each row by calling `Dense.map_rows` function.
 
 ```ocaml
 let x = Dense.(uniform 6 6 |> map_rows sum);;
 ```
 
-You can also fold elements by calling `Dense.fold`, fold rows by calling `Dense.fold_rows`. Similarly, there are also functions for `filter` operations. The following code filters out the elements not greater than 0.1 in x.
+We can fold elements by calling `Dense.fold`, fold rows by calling `Dense.fold_rows`. Similarly, there are also functions for `filter` operations. The following code filters out the elements not greater than 0.1 in x.
 
 ```ocaml
 Dense.filter ((>) 0.1) x;;
@@ -135,7 +135,34 @@ Dense.filter ((>) 0.1) x;;    (* not greater than 0.1 in x *)
 
 ## Linear Algebra
 
-Simple matrix mathematics like add, sub, multiplication, and division are included in `Dense` module. Moreover, there are predefined shorthands for such operations. E.g., the following code.
+Simple matrix mathematics like add, sub, multiplication, and division are included in `Dense` module. Moreover, there are predefined shorthands for such operations. E.g., the following code creates two random matrices then compare which is greater.
+
+```ocaml
+let x = Dense.uniform 6 6;;
+let y = Dense.uniform 6 6;;
+Dense.(x >@ y)                  (* is x greater than y? *)
+Dense.(x =@ y)                  (* is x equal to y? *)
+...
+```
+
+Some basic math operations includes:
+
+```ocaml
+Dense.(x +@ y)                  (* add two matrices *)
+Dense.(x *@ y)                  (* multiply two matrices, element-wise *)
+Dense.(x $@ y)                  (* dot product of two matrices *)
+Dense.(x +$ 2.)                 (* add a scalar to all elements in x *)
+...
+```
+
+More advanced linear algebra operations such as `svd`, `qr`, and `cholesky` decomposition are included in `Linalg` module.
+
+```ocaml
+let u,s,v = Linalg.svd x   (* singular value decomposition *)
+let q,r = Linalg.qr x      (* QR decomposition *)
+let l = cholesky x         (* cholesky decomposition *)
+...
+```
 
 
 
