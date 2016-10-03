@@ -1,0 +1,43 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Dense" rel="Chapter" href="Dense.html">
+<link title="Sparse" rel="Chapter" href="Sparse.html">
+<link title="Maths" rel="Chapter" href="Maths.html">
+<link title="Stats" rel="Chapter" href="Stats.html">
+<link title="Linalg" rel="Chapter" href="Linalg.html">
+<link title="Regression" rel="Chapter" href="Regression.html">
+<link title="Plot" rel="Chapter" href="Plot.html"><title>Regression</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;dsmat&nbsp;=&nbsp;<span class="constructor">Dense</span>.dsmat
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;vector
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;linear&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?i:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;polynomial&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exponential&nbsp;:&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;nonlinear&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Regression</span>.vector&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;float&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?i:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ridge&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?i:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?a:float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;lasso&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?i:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?a:float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;logistic&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?i:bool&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;svm&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?i:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;kmeans&nbsp;:&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Regression</span>.dsmat&nbsp;*&nbsp;int&nbsp;array
+<span class="keyword">end</span></code></body></html>

@@ -1,0 +1,132 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Stats.Pdf.html">
+<link rel="Up" href="Stats.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Dense" rel="Chapter" href="Dense.html">
+<link title="Sparse" rel="Chapter" href="Sparse.html">
+<link title="Maths" rel="Chapter" href="Maths.html">
+<link title="Stats" rel="Chapter" href="Stats.html">
+<link title="Linalg" rel="Chapter" href="Linalg.html">
+<link title="Regression" rel="Chapter" href="Regression.html">
+<link title="Plot" rel="Chapter" href="Plot.html"><link title="Continuous random variables" rel="Section" href="#6_Continuousrandomvariables">
+<link title="Discrete random variables" rel="Section" href="#6_Discreterandomvariables">
+<title>Stats.Cdf</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Stats.Pdf.html" title="Stats.Pdf">Previous</a>
+&nbsp;<a class="up" href="Stats.html" title="Stats">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Stats.Cdf.html">Stats.Cdf</a></h1>
+
+<pre><span class="keyword">module</span> Cdf: <code class="code">sig</code> <a href="Stats.Cdf.html">..</a> <code class="code">end</code></pre><hr width="100%">
+<br>
+For each random variable distribution, the module includes four corresponding
+    functions (if well-defined).
+<p>
+
+    E.g., for <code class="code">gaussian</code> distribution, there are four functions as follows:
+    <ul>
+<li><code class="code">gaussian_P</code> : calculates CDF of the distribution, i.e., P(X &lt;= x);</li>
+<li><code class="code">gaussian_Q</code> : calculates tail distribution Q (X &gt; x), i.e., 1 - P (X &lt;= x);</li>
+<li><code class="code">gaussian_Pinv</code> : the inverse function of P, also a.k.a percentile function;</li>
+<li><code class="code">gaussian_Qinv</code> : the inverse function of Q.</li>
+</ul>
+
+<p>
+
+    Please refer to <a href=" https://www.gnu.org/software/gsl/manual ">
+    GSL documentation</a> for details.<br>
+<br>
+<h6 id="6_Continuousrandomvariables">Continuous random variables</h6><br>
+
+<pre><span id="VALflat_P"><span class="keyword">val</span> flat_P</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALflat_Q"><span class="keyword">val</span> flat_Q</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALflat_Pinv"><span class="keyword">val</span> flat_Pinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALflat_Qinv"><span class="keyword">val</span> flat_Qinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgaussian_P"><span class="keyword">val</span> gaussian_P</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALgaussian_Q"><span class="keyword">val</span> gaussian_Q</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALgaussian_Pinv"><span class="keyword">val</span> gaussian_Pinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALgaussian_Qinv"><span class="keyword">val</span> gaussian_Qinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALexponential_P"><span class="keyword">val</span> exponential_P</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALexponential_Q"><span class="keyword">val</span> exponential_Q</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALexponential_Pinv"><span class="keyword">val</span> exponential_Pinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALexponential_Qinv"><span class="keyword">val</span> exponential_Qinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALlaplace_P"><span class="keyword">val</span> laplace_P</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALlaplace_Q"><span class="keyword">val</span> laplace_Q</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALlaplace_Pinv"><span class="keyword">val</span> laplace_Pinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALlaplace_Qinv"><span class="keyword">val</span> laplace_Qinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALexppow_P"><span class="keyword">val</span> exppow_P</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALexppow_Q"><span class="keyword">val</span> exppow_Q</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALcauchy_P"><span class="keyword">val</span> cauchy_P</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALcauchy_Q"><span class="keyword">val</span> cauchy_Q</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALcauchy_Pinv"><span class="keyword">val</span> cauchy_Pinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALcauchy_Qinv"><span class="keyword">val</span> cauchy_Qinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALrayleigh_P"><span class="keyword">val</span> rayleigh_P</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALrayleigh_Q"><span class="keyword">val</span> rayleigh_Q</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALrayleigh_Pinv"><span class="keyword">val</span> rayleigh_Pinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALrayleigh_Qinv"><span class="keyword">val</span> rayleigh_Qinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALgamma_P"><span class="keyword">val</span> gamma_P</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgamma_Q"><span class="keyword">val</span> gamma_Q</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgamma_Pinv"><span class="keyword">val</span> gamma_Pinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgamma_Qinv"><span class="keyword">val</span> gamma_Qinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALlognormal_P"><span class="keyword">val</span> lognormal_P</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALlognormal_Q"><span class="keyword">val</span> lognormal_Q</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALlognormal_Pinv"><span class="keyword">val</span> lognormal_Pinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALlognormal_Qinv"><span class="keyword">val</span> lognormal_Qinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALchisq_P"><span class="keyword">val</span> chisq_P</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALchisq_Q"><span class="keyword">val</span> chisq_Q</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALchisq_Pinv"><span class="keyword">val</span> chisq_Pinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALchisq_Qinv"><span class="keyword">val</span> chisq_Qinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALfdist_P"><span class="keyword">val</span> fdist_P</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALfdist_Q"><span class="keyword">val</span> fdist_Q</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALfdist_Pinv"><span class="keyword">val</span> fdist_Pinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALfdist_Qinv"><span class="keyword">val</span> fdist_Qinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALtdist_P"><span class="keyword">val</span> tdist_P</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALtdist_Q"><span class="keyword">val</span> tdist_Q</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALtdist_Pinv"><span class="keyword">val</span> tdist_Pinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALtdist_Qinv"><span class="keyword">val</span> tdist_Qinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALbeta_P"><span class="keyword">val</span> beta_P</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALbeta_Q"><span class="keyword">val</span> beta_Q</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALbeta_Pinv"><span class="keyword">val</span> beta_Pinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALbeta_Qinv"><span class="keyword">val</span> beta_Qinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALlogistic_P"><span class="keyword">val</span> logistic_P</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALlogistic_Q"><span class="keyword">val</span> logistic_Q</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALlogistic_Pinv"><span class="keyword">val</span> logistic_Pinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALlogistic_Qinv"><span class="keyword">val</span> logistic_Qinv</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALpareto_P"><span class="keyword">val</span> pareto_P</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALpareto_Q"><span class="keyword">val</span> pareto_Q</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALpareto_Pinv"><span class="keyword">val</span> pareto_Pinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALpareto_Qinv"><span class="keyword">val</span> pareto_Qinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALweibull_P"><span class="keyword">val</span> weibull_P</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALweibull_Q"><span class="keyword">val</span> weibull_Q</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALweibull_Pinv"><span class="keyword">val</span> weibull_Pinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALweibull_Qinv"><span class="keyword">val</span> weibull_Qinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgumbel1_P"><span class="keyword">val</span> gumbel1_P</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgumbel1_Q"><span class="keyword">val</span> gumbel1_Q</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgumbel1_Pinv"><span class="keyword">val</span> gumbel1_Pinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgumbel1_Qinv"><span class="keyword">val</span> gumbel1_Qinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgumbel2_P"><span class="keyword">val</span> gumbel2_P</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgumbel2_Q"><span class="keyword">val</span> gumbel2_Q</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgumbel2_Pinv"><span class="keyword">val</span> gumbel2_Pinv</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgumbel2_Qinv"><span class="keyword">val</span> gumbel2_Qinv</span> : <code class="type">float -> float -> float -> float</code></pre><br>
+<h6 id="6_Discreterandomvariables">Discrete random variables</h6><br>
+
+<pre><span id="VALpoisson_P"><span class="keyword">val</span> poisson_P</span> : <code class="type">int -> float -> float</code></pre>
+<pre><span id="VALpoisson_Q"><span class="keyword">val</span> poisson_Q</span> : <code class="type">int -> float -> float</code></pre>
+<pre><span id="VALbinomial_P"><span class="keyword">val</span> binomial_P</span> : <code class="type">int -> float -> int -> float</code></pre>
+<pre><span id="VALbinomial_Q"><span class="keyword">val</span> binomial_Q</span> : <code class="type">int -> float -> int -> float</code></pre>
+<pre><span id="VALnegative_binomial_P"><span class="keyword">val</span> negative_binomial_P</span> : <code class="type">int -> float -> float -> float</code></pre>
+<pre><span id="VALnegative_binomial_Q"><span class="keyword">val</span> negative_binomial_Q</span> : <code class="type">int -> float -> float -> float</code></pre>
+<pre><span id="VALpascal_P"><span class="keyword">val</span> pascal_P</span> : <code class="type">int -> float -> int -> float</code></pre>
+<pre><span id="VALpascal_Q"><span class="keyword">val</span> pascal_Q</span> : <code class="type">int -> float -> int -> float</code></pre>
+<pre><span id="VALgeometric_P"><span class="keyword">val</span> geometric_P</span> : <code class="type">int -> float -> float</code></pre>
+<pre><span id="VALgeometric_Q"><span class="keyword">val</span> geometric_Q</span> : <code class="type">int -> float -> float</code></pre>
+<pre><span id="VALhypergeometric_P"><span class="keyword">val</span> hypergeometric_P</span> : <code class="type">int -> int -> int -> int -> float</code></pre>
+<pre><span id="VALhypergeometric_Q"><span class="keyword">val</span> hypergeometric_Q</span> : <code class="type">int -> int -> int -> int -> float</code></pre></body></html>

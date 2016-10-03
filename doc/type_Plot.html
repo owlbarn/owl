@@ -1,0 +1,24 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=iso-8859-1" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Dense" rel="Chapter" href="Dense.html">
+<link title="Sparse" rel="Chapter" href="Sparse.html">
+<link title="Maths" rel="Chapter" href="Maths.html">
+<link title="Stats" rel="Chapter" href="Stats.html">
+<link title="Linalg" rel="Chapter" href="Linalg.html">
+<link title="Regression" rel="Chapter" href="Regression.html">
+<link title="Plot" rel="Chapter" href="Plot.html"><title>Plot</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;dsmat&nbsp;=&nbsp;<span class="constructor">Dense</span>.dsmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;plot&nbsp;:&nbsp;<span class="constructor">Plot</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Plot</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;plot_fun&nbsp;:&nbsp;(float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;scatter&nbsp;:&nbsp;?marker:char&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Plot</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Plot</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;histogram&nbsp;:&nbsp;?bin:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Plot</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mesh&nbsp;:&nbsp;<span class="constructor">Plot</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Plot</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Plot</span>.dsmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+<span class="keyword">end</span></code></body></html>
