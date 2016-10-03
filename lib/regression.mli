@@ -3,7 +3,9 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Regression module provides basic functions to fit data into
+(** Regression module
+
+  The module provides basic functions to fit data into
   different models such as linear, polynomial, and exponential.
  *)
 

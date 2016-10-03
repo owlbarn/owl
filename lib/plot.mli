@@ -1,4 +1,4 @@
-(** [ Plot module ]  *)
+(** Plot module  *)
 
 type dsmat = Dense.dsmat
 
