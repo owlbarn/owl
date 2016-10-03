@@ -194,7 +194,32 @@ let l = Linalg.cholesky x  (* cholesky decomposition *)
 
 `Regression` module currently includes `linear`, `exponential`, `nonlinear`, `ols`, `ridge`, `lasso`, `svm`, and etc. Most of them are based on a stochastic gradient descent algorithm implemented in `Optimise` module.
 
-In the following, let's use an example to illustrate `Regression` module. First, let's generate the measurement x which is a 100 by 
+In the following, let's use an example to illustrate `Regression` module. First, let's generate the measurement x which is a 1000 x 3 matrix. Each row of x is an independent measurement.
+
+```ocaml
+let x = Dense.uniform 1000 3;;
+```
+
+Next let's define the parameter of a linear model, namely p, a 3 x 1 matrix.
+
+```ocaml
+let p = Dense.of_array [|0.2;0.4;0.8|] 3 1;;
+```
+
+Then we generate the observations y from x and p by
+
+```ocaml
+let y = Dense.(x $@ p);;
+```
+
+Now, assume we only know x and y, how can we fit x and y into a linear model? It is very simple.
+
+```ocaml
+let p' = Regression.linear x y;;
+```
+
+From `utop`, you can see that p' equals `[|0.2; 0.4; 0.8|]` which is exactly the same as p.
+
 
 
 
