@@ -132,6 +132,14 @@ We can also do something more complicated, e.g., by filtering out the rows whose
 Dense.filter ((>) 0.1) x;;    (* not greater than 0.1 in x *)
 ```
 
+Shuffle the rows and columns, or draw some of them from a matrix.
+
+```ocaml
+Dense.shuffle_rows x;;                (* shuffle the rows in x *)
+Dense.draw_cols x 3;;                 (* draw 3 columns from x with replacement *)
+...
+```
+
 
 ## Linear Algebra
 
@@ -161,6 +169,13 @@ Apply various functions in `Maths` module to every element in x
 Dense.(Maths.sin @@ x);;        (* apply sine function *)
 Dense.(Maths.exp @@ x);;        (* apply exponential function *)
 ...
+```
+
+Concat two matrices, vertically or horizontally by
+
+```ocaml
+Dense.(x @= y);;                (* equivalent to Dense.concat_vertical *)
+Dense.(x @|| y);;               (* equivalent to Dense.concat_horizontal *)
 ```
 
 More advanced linear algebra operations such as `svd`, `qr`, and `cholesky` decomposition are included in `Linalg` module.
