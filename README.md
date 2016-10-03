@@ -1,6 +1,15 @@
 # Owl - An OCaml Math Library
 Owl is an OCaml math library. It supports both dense and sparse matrix operations, linear algebra, regressions, and many advanced mathematical and statistical functions (such as Markov chain Monte Carlo methods).
 
+The full documentation is here:
+
+**If you have any questions, please contact me ==>
+ [Twitter](https://twitter.com/ryan_liang),
+ [Google+](https://www.google.com/+RyanLiang),
+ [Facebook](http://www.facebook.com/ryan.liang.wang),
+ [Blogger](http://ryanrhymes.blogspot.com/),
+ [LinkedIn](http://uk.linkedin.com/in/liangsuomi/)**
+
 ## Installation
 
 Installation is rather trivial. First, you need to clone the repository.
@@ -249,7 +258,6 @@ Besides `Plot.mesh`, there are several other basic plotting functions in `Plot`.
 
 There are a lot of basic and advanced mathematical and statistical functions in `Maths` and `Stats` modules. Most of them are interfaced to Gsl directly, so you may want to read [GSL Manual](https://www.gnu.org/software/gsl/manual/html_node/) carefully before using the module.
 
-In addition, I have implemented extra functions such MCMC (Markov Chain Monte Carlo) functions: Metropolis-Hastings and Gibbs sampling algorithms.
-
+`Stats` has three submodules: `Stats.Rnd` for random numbers, `Stats.Pdf` for probability dense functions, and `Stats.Cdf` for cumulative distribution functions. In addition, I have implemented extra functions such MCMC (Markov Chain Monte Carlo) functions in `Stats` module: Metropolis-Hastings (`Stats.metropolis_hastings`) and Gibbs sampling (`Stats.gibbs_sampling`) algorithms.
 
 The future plan is to embed a small PPL (Probabilistic Programming Language) in `Stats` module.
