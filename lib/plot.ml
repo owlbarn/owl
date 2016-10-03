@@ -9,6 +9,8 @@ open Plplot
 
 module MX = Dense
 
+type dsmat = Dense.dsmat
+
 let plot x y =
   let x = MX.to_array x in
   let y = MX.to_array y in
