@@ -84,6 +84,13 @@ R0  0   1   2   3   4   5
 val x : Dense.dsmat =
 ```
 
+Matrices can be saved to and loaded from a file.
+
+```ocaml
+Dense.save x 'matrix_01.data';;  (* save the matrix to a file *)
+Dense.load 'matrix_01.data';;    (* load the matrix from a file *)
+```
+
 
 ## Access Elements, Rows, and Columns
 
@@ -194,7 +201,7 @@ let l = Linalg.cholesky x  (* cholesky decomposition *)
 
 `Regression` module currently includes `linear`, `exponential`, `nonlinear`, `ols`, `ridge`, `lasso`, `svm`, and etc. Most of them are based on a stochastic gradient descent algorithm implemented in `Optimise` module.
 
-In the following, let's use an example to illustrate `Regression` module. First, let's generate the measurement x which is a 1000 x 3 matrix. Each row of x is an independent measurement.
+In the following, let's use an example to illustrate the simplest linear regression in `Regression` module. First, let's generate the measurement x which is a 1000 x 3 matrix. Each row of x is an independent measurement.
 
 ```ocaml
 let x = Dense.uniform 1000 3;;
@@ -218,8 +225,10 @@ Now, assume we only know x and y, how can we fit x and y into a linear model? It
 let p' = Regression.linear x y;;
 ```
 
-From `utop`, you can see that p' equals `[|0.2; 0.4; 0.8|]` which is exactly the same as p.
+From `utop`, you can see that p' equals `[|0.2; 0.4; 0.8|]` which is exactly the same as p. For other regression such as `lasso` and `svm`, the operation is more or less the same, please read Owl document for details.
 
+
+## Plotting
 
 
 
