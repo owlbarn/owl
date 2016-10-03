@@ -191,7 +191,7 @@ Dense.(Maths.exp @@ x);;        (* apply exponential function *)
 ...
 ```
 
-Concat two matrices, vertically or horizontally by
+Concatenate two matrices, vertically or horizontally by
 
 ```ocaml
 Dense.(x @= y);;                (* equivalent to Dense.concat_vertical *)
