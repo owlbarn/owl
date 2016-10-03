@@ -249,4 +249,4 @@ Besides `Plot.mesh`, there are several other basic plotting functions in `Plot`.
 
 There are a lot of basic and advanced mathematical and statistical functions in `Maths` and `Stats` modules. Most of them are interfaced to Gsl directly, so you may want to read GSL Manual carefully before using the module.
 
-In addition, I implement some 
+In addition, I implement extra functions such as ... the future plan is ...
