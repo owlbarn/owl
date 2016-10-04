@@ -33,7 +33,7 @@ let scatter ?(marker='+') x y =
   let xmin, xmax = Stats.minmax x in
   let ymin, ymax = Stats.minmax y in
   let _ = plenv xmin xmax ymin ymax 0 0 in
-  let _ = pllab "x" "y" "scatter ploat" in
+  let _ = pllab "x" "y" "scatter plot" in
   let _ = plpoin x y 2 in (* TODO: + is 2; x is 5 *)
   plend ()
 

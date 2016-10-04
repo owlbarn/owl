@@ -274,5 +274,19 @@ The histogram below shows the distribution of the samples.
 
 ![Plot example 02](examples/test_plot_02.png)
 
+Here is another example using `Stats.gibbs_sampling` to sample a bivariate distribution. Gibbs sampling requires the full conditional probability function as we defined in `f p i` where `p` is the parameter vector and `i` indicates which parameter to sample.
+
+```ocaml
+let f p i = match i with
+  | 0 -> Stats.Rnd.gaussian ~sigma:0.5 () +. p.(1)
+  | _ -> Stats.Rnd.gaussian ~sigma:0.1 () *. p.(0)
+in
+let y = Stats.gibbs_sampling f [|0.1;0.1|] 5_000 |> Dense.of_arrays in
+Plot.scatter (Dense.col y 0) (Dense.col y 1);;
+```
+
+We take 5000 samples from the defined distribution and plot them as a scatter plot, as below.
+
+![Plot example 02](examples/test_plot_03.png)
 
 The future plan is to embed a small PPL (Probabilistic Programming Language) in `Stats` module.
