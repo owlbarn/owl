@@ -29,15 +29,18 @@ make oasis
 make && make install
 ```
 
-If you want `utop` to automatically load Owl for you, you can also edit `.ocamlinit` file in your home folder by adding the following lines.
+Owl is well integrated with `utop`. Now you can start `utop` and continue this tutorial to do some experiments. If you want `utop` to automatically load Owl for you, you can also edit `.ocamlinit` file in your home folder by adding the following lines.
 
 ```bash
 #require "Owl"
-#require "ctypes"
-#require "ctypes.foreign"
 ```
 
-Owl is well integrated with `utop`. Now you can start `utop` and continue this tutorial to do some experiments.
+If you are too lazy to install anything, here is a docker image to let you try Owl without dealing with aforementioned steps. Just pull the image, start a container, then play with it in `utop`. The source code is in `/root/code/owl`
+
+```bash
+docker pull ryanrhymes/owl
+docker run -t -i ryanrhymes/owl /bin/bash
+```
 
 
 ## Create Matrices
@@ -274,7 +277,7 @@ The histogram below shows the distribution of the samples.
 
 ![Plot example 02](examples/test_plot_02.png)
 
-Here is another example using `Stats.gibbs_sampling` to sample a bivariate distribution. Gibbs sampling requires the full conditional probability function as we defined in `f p i` where `p` is the parameter vector and `i` indicates which parameter to sample.
+Here is another example using `Stats.gibbs_sampling` to sample a bivariate distribution. Gibbs sampling requires the full conditional probability function so we defined its corresponding random number generator in `f p i` where `p` is the parameter vector and `i` indicates which parameter to sample.
 
 ```ocaml
 let f p i = match i with
