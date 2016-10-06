@@ -1,7 +1,7 @@
 OASISFormat: 0.4
 Name:        Owl
 Version:     0.1
-Synopsis:    Owl is an Ocaml library for scientific computing
+Synopsis:    Owl is an OCaml library for scientific computing
 Authors:     Liang Wang
 License:     MIT
 Plugins:     META (0.4)
@@ -9,7 +9,7 @@ Plugins:     META (0.4)
 Library "Owl"
   Path:       ./lib
   BuildTools: ocamlbuild, ocamldoc
-  Modules:    Owl, Owl_types, Owl_utils, Maths, Stats, Optimise, Owl_dense, Owl_sparse, Matrix_foreign, Linalg, Regression, Pretty, Plot, Owl_toplevel
+  Modules:    Owl, Owl_types, Owl_utils, Maths, Stats, Optimise, Owl_dense, Owl_sparse, Matrix_foreign, Linalg, Regression, Pretty, Owl_plot, Owl_toplevel
   BuildDepends: str, gsl, ctypes, ctypes.foreign, plplot, dolog
 
 Executable test_sgd
