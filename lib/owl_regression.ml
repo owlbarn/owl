@@ -9,9 +9,9 @@
   and optimisation module.
 *)
 
-module MX = Dense
+module MX = Owl_dense
 
-type dsmat = Dense.dsmat
+type dsmat = Owl_dense.dsmat
 type vector = Gsl.Vector.vector
 
 (** [ Linear regression with single variables ]  *)
@@ -83,7 +83,7 @@ let exponential x y =
     let a, lambda, b = p.{0}, p.{1}, p.{2} in
     for i = 0 to (Gsl.Vector.length y') - 1 do
       let x' = x.{i} in
-      let z = (a *. Maths.exp ((-.lambda) *. x')) +. b in
+      let z = (a *. Owl_maths.exp ((-.lambda) *. x')) +. b in
       y'.{i} <- (z -. y.{i})
     done )
   in
@@ -91,7 +91,7 @@ let exponential x y =
     let a, lambda, b = p.{0}, p.{1}, p.{2} in
     for i = 0 to (MX.row_num j) - 1 do
       let x' = x.{i} in
-      let e = Maths.exp ((-.lambda) *. x') in
+      let e = Owl_maths.exp ((-.lambda) *. x') in
       j.{i,0} <- e;
       j.{i,1} <- ((-.x') *. a *. e);
       j.{i,2} <- 1.;
@@ -146,17 +146,17 @@ let nonlinear g p x y =
 
 
 (* regression functions in Optimise module *)
-let kmeans = Optimise.kmeans
+let kmeans = Owl_optimise.kmeans
 
-let ols = Optimise.ols_regression
+let ols = Owl_optimise.ols_regression
 
-let lasso = Optimise.lasso_regression
+let lasso = Owl_optimise.lasso_regression
 
-let svm = Optimise.svm_regression
+let svm = Owl_optimise.svm_regression
 
-let ridge = Optimise.ridge_regression
+let ridge = Owl_optimise.ridge_regression
 
-let logistic = Optimise.logistic_regression
+let logistic = Owl_optimise.logistic_regression
 
 
 

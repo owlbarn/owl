@@ -1,6 +1,6 @@
 (** Plot module  *)
 
-type dsmat = Dense.dsmat
+type dsmat = Owl_dense.dsmat
 
 val plot : dsmat -> dsmat -> unit
 

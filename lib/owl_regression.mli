@@ -9,7 +9,7 @@
   different models such as linear, polynomial, and exponential.
  *)
 
-type dsmat = Dense.dsmat
+type dsmat = Owl_dense.dsmat
 type vector = Gsl.Vector.vector
 
 val linear : ?i:bool -> dsmat -> dsmat -> dsmat

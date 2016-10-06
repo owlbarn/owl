@@ -3,16 +3,16 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** [ Install Toplevel Printers ]  *)
+(** Install Toplevel Printers *)
 
 type t =
-	| Lident of string
-	| Ldot of t * string
-	| Lapply of t * t
+  | Lident of string
+  | Ldot of t * string
+  | Lapply of t * t
 
 let printers = [
   Obj.magic (Ldot (Lident "Owl_dense",  "pp_dsmat"));
-  Obj.magic (Ldot (Lident "Sparse", "pp_spmat"));
+  Obj.magic (Ldot (Lident "Owl_sparse", "pp_spmat"));
 ]
 
 let () =
