@@ -6,7 +6,7 @@
 (** [ Dense matrix ]  *)
 
 open Bigarray
-open Types
+open Owl_types
 
 type dsmat = Gsl.Matrix.matrix
 

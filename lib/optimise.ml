@@ -9,7 +9,7 @@
   ]  *)
 
 module MX = Dense
-module UT = Utils
+module UT = Owl_utils
 
 (** [
   K-means clustering algorithm

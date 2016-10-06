@@ -5,7 +5,7 @@
 
 open Ctypes
 open Foreign
-open Types
+open Owl_types
 
 
 (* Dense matrices functions, refer to gsl_matrix_double.h *)
