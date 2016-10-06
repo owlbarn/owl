@@ -1,4 +1,4 @@
-module MX = Dense
+module MX = Owl_dense
 module LL = Optimise
 
 let _ =
