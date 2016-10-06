@@ -9,7 +9,9 @@ Plugins:     META (0.4)
 Library "Owl"
   Path:       ./lib
   BuildTools: ocamlbuild, ocamldoc
-  Modules:    Owl, Owl_types, Owl_utils, Maths, Stats, Optimise, Owl_dense, Owl_sparse, Matrix_foreign, Linalg, Regression, Pretty, Owl_plot, Owl_toplevel
+  Modules:    Owl, Owl_types, Owl_utils, Owl_maths, Owl_stats, Owl_optimise,
+              Owl_dense, Owl_sparse, Owl_matrix_foreign, Owl_linalg, Owl_regression,
+              Owl_pretty, Owl_plot, Owl_toplevel
   BuildDepends: str, gsl, ctypes, ctypes.foreign, plplot, dolog
 
 Executable test_sgd

@@ -375,7 +375,7 @@ let stderr_cols = None
 let stderr_rows = None
 
 let is_equal x1 x2 =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x1 = mat_to_matptr x1 in
   let x2 = mat_to_matptr x2 in
   (gsl_matrix_equal x1 x2) = 1
@@ -387,7 +387,7 @@ let is_unequal x1 x2 = not (is_equal x1 x2)
 let ( <>@ ) = is_unequal
 
 let is_greater x1 x2 =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x3 = sub x1 x2 in
   let x3 = mat_to_matptr x3 in
   (gsl_matrix_ispos x3) = 1
@@ -399,7 +399,7 @@ let is_smaller x1 x2 = is_greater x2 x1
 let ( <@ ) = is_smaller
 
 let equal_or_greater x1 x2 =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x3 = sub x1 x2 in
   let x3 = mat_to_matptr x3 in
   (gsl_matrix_isnonneg x3) = 1
@@ -411,27 +411,27 @@ let equal_or_smaller x1 x2 = equal_or_greater x2 x1
 let ( <=@ ) = equal_or_smaller
 
 let is_zero x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x = mat_to_matptr x in
   (gsl_matrix_isnull x) = 1
 
 let is_positive x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x = mat_to_matptr x in
   (gsl_matrix_ispos x) = 1
 
 let is_negative x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x = mat_to_matptr x in
   (gsl_matrix_isneg x) = 1
 
 let is_nonnegative x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x = mat_to_matptr x in
   (gsl_matrix_isnonneg x) = 1
 
 let min x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let open Ctypes in
   let x = mat_to_matptr x in
   let i = allocate int 0 in
@@ -451,7 +451,7 @@ let min_rows x =
   ) x
 
 let max x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let open Ctypes in
   let x = mat_to_matptr x in
   let i = allocate int 0 in
@@ -569,10 +569,10 @@ let load f =
   let s = really_input_string h (in_channel_length h) in
   Marshal.from_string s 0
 
-let print x = let open Pretty in
-  Format.printf "%a\n" Pretty.pp_fmat x;;
+let print x = let open Owl_pretty in
+  Format.printf "%a\n" Owl_pretty.pp_fmat x;;
 
-let pp_dsmat x = let open Pretty in
+let pp_dsmat x = let open Owl_pretty in
   Format.printf "%a\n" Toplevel.pp_fmat x;;
 
 (* some other uncategorised functions *)
@@ -580,18 +580,18 @@ let pp_dsmat x = let open Pretty in
 let uniform_int ?(a=0) ?(b=99) m n =
   let x = empty m n in
   iteri (fun i j _ -> x.{i,j} <-
-    float_of_int (Stats.Rnd.uniform_int ~a ~b ())
+    float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ())
   ) x; x
 
 let uniform ?(scale=1.) m n =
   let x = empty m n in
   iteri (fun i j _ ->
-    x.{i,j} <- Stats.Rnd.uniform () *. scale
+    x.{i,j} <- Owl_stats.Rnd.uniform () *. scale
   ) x; x
 
 let gaussian ?(sigma=1.) m n =
   let x = empty m n in
-  iteri (fun i j _ -> x.{i,j} <- Stats.Rnd.gaussian ~sigma ()) x; x
+  iteri (fun i j _ -> x.{i,j} <- Owl_stats.Rnd.gaussian ~sigma ()) x; x
 
 let vector_uniform n = uniform 1 n
 
@@ -602,29 +602,29 @@ let semidef n =
 let draw_rows ?(replacement=true) x c =
   let a = Array.init (row_num x - 1) (fun i -> i) in
   let l = match replacement with
-    | true  -> Stats.sample a c
-    | false -> Stats.choose a c
+    | true  -> Owl_stats.sample a c
+    | false -> Owl_stats.choose a c
   in rows x l, l
 
 let draw_cols ?(replacement=true) x c =
   let a = Array.init (col_num x - 1) (fun i -> i) in
   let l = match replacement with
-    | true  -> Stats.sample a c
-    | false -> Stats.choose a c
+    | true  -> Owl_stats.sample a c
+    | false -> Owl_stats.choose a c
   in cols x l, l
 
 let shuffle_rows x =
   let y = clone x in
   let m, n = shape x in
   for i = 0 to m - 1 do
-    swap_rows y i (Stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
+    swap_rows y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
   done; y
 
 let shuffle_cols x =
   let y = clone x in
   let m, n = shape x in
   for i = 0 to n - 1 do
-    swap_cols y i (Stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
+    swap_cols y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
   done; y
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols
@@ -649,7 +649,7 @@ let ( @@ ) f x = map f x  (* TODO: experimental *)
 
 (* TODO: use this to replace col function, faster *)
 let gsl_col x i =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let y = allocate_col_vecptr (row_num x) in
   let _ = gsl_matrix_get_col y.vptr (mat_to_matptr x) i in
   y.vdata

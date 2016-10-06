@@ -3,427 +3,528 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** [ Mathematics Module ]  *)
 
-(** [ Basic and advanced math functions ] *)
+(** Mathematics module
 
-let abs x = if x < 0. then (0.-.x) else x
+  This module contains some basic and advanced mathematical operations.
+  If you cannot find some function in this module, try Stats module.
 
-let sqrt x = sqrt x
+  Please refer to GSL documentation using following linke for details:
+  https://www.gnu.org/software/gsl/manual
+*)
 
-let pow x y = x ** y
 
-let exp x = Gsl.Sf.exp x
+(** {6 Basic math functions} *)
 
-let expm1 x = Gsl.Sf.expm1 x
+val abs : float -> float
 
-let exp_mult x y = Gsl.Sf.exp_mult x y
+val sqrt : float -> float
 
-let exprel x = Gsl.Sf.exprel x
+val pow : float -> float -> float
 
-let ln x = Gsl.Sf.log x
+val exp : float -> float
 
-let ln1p x = Gsl.Sf.log_1plusx x
+val expm1 : float -> float
 
-let ln_abs x = Gsl.Sf.log_abs x
+val exp_mult : float -> float -> float
 
-let log2 x = (ln x) /. Gsl.Math.ln2
+val exprel : float -> float
 
-let log10 x = (ln x) /. Gsl.Math.ln10
+val ln : float -> float
 
-let log base x = (ln x) /. (ln base)
+val ln1p : float -> float
 
-let sin x = Gsl.Sf.sin x
+val ln_abs : float -> float
 
-let cos x = Gsl.Sf.cos x
+val log2 : float -> float
 
-let tan x = tan x
+val log10 : float -> float
 
-let cot x = 1. /. (tan x)
+val log : float -> float -> float
 
-let sec x = 1. /. (cos x)
 
-let csc x = 1. /. (sin x)
+(** {6 Trigonometric Functions} *)
 
-let asin x = asin x
+val sin : float -> float
 
-let acos x = acos x
+val cos : float -> float
 
-let atan x = atan x
+val tan : float -> float
 
-let acot x = (Gsl.Math.pi /. 2.) -. (atan x)
+val cot : float -> float
 
-let asec = None
+val sec : float -> float
 
-let acsc = None
+val csc : float -> float
 
-let sinc x = Gsl.Sf.sinc x
+val asin : float -> float
 
-let sinh x = sinh x
+val acos : float -> float
 
-let cosh x = cosh x
+val atan : float -> float
 
-let acosh x = Gsl.Math.acosh x
+val acot : float -> float
 
-let asinh x = Gsl.Math.asinh x
+val sinh : float -> float
 
-let atanh x = Gsl.Math.atanh x
+val cosh : float -> float
 
-let lnsinh x = Gsl.Sf.lnsinh x
+val asinh : float -> float
 
-let lncosh x = Gsl.Sf.lncosh x
+val acosh : float -> float
 
-let hypot x y = Gsl.Sf.hypot x y
+val atanh : float -> float
 
-let rect_of_polar ~r ~theta =
-  let open Gsl.Fun in
-  let x, y = Gsl.Sf.rect_of_polar ~r ~theta in
-  x.res, y.res
+val sinc : float -> float
 
-let polar_of_rect ~x ~y =
-  let open Gsl.Fun in
-  let a, b = Gsl.Sf.polar_of_rect ~x ~y in
-  a.res, b.res
+val lnsinh : float -> float
 
-let angle_restrict_symm x = Gsl.Sf.angle_restrict_symm x
+val lncosh : float -> float
 
-let angle_restrict_pos x = Gsl.Sf.angle_restrict_pos x
+val hypot : float -> float -> float
 
-let airy_Ai x = Gsl.Sf.airy_Ai x Gsl.Fun.DOUBLE
+val rect_of_polar : r:float -> theta:float -> float * float
 
-let airy_Bi x = Gsl.Sf.airy_Ai x Gsl.Fun.DOUBLE
+val polar_of_rect : x:float -> y:float -> float * float
 
-let airy_Ai_scaled x = Gsl.Sf.airy_Ai_scaled x Gsl.Fun.DOUBLE
+val angle_restrict_symm : float -> float
 
-let airy_Bi_scaled x = Gsl.Sf.airy_Bi_scaled x Gsl.Fun.DOUBLE
+val angle_restrict_pos : float -> float
 
-let airy_Ai_deriv x = Gsl.Sf.airy_Ai_deriv x Gsl.Fun.DOUBLE
 
-let airy_Bi_deriv x = Gsl.Sf.airy_Ai_deriv x Gsl.Fun.DOUBLE
+(** {6 Airy functions and derivatives} *)
 
-let airy_Ai_deriv x = Gsl.Sf.airy_Ai_deriv_scaled x Gsl.Fun.DOUBLE
+val airy_Ai : float -> float
 
-let airy_Bi_deriv x = Gsl.Sf.airy_Bi_deriv_scaled x Gsl.Fun.DOUBLE
+val airy_Bi : float -> float
 
-let airy_zero_Ai x = Gsl.Sf.airy_zero_Ai x
+val airy_Ai_scaled : float -> float
 
-let airy_zero_Bi x = Gsl.Sf.airy_zero_Ai x
+val airy_Bi_scaled : float -> float
 
-let bessel_J0 x = Gsl.Sf.bessel_J0 x
+val airy_Ai_deriv : float -> float
 
-let bessel_J1 x = Gsl.Sf.bessel_J1 x
+val airy_Bi_deriv : float -> float
 
-let bessel_Jn n x = Gsl.Sf.bessel_Jn n x
+val airy_Ai_deriv : float -> float
 
-let bessel_Jn_array nmin nmax x =
-  let y = Array.make (nmax - nmin + 1) 0. in
-  Gsl.Sf.bessel_Jn_array nmin x y; y
+val airy_Bi_deriv : float -> float
 
-let bessel_Y0 x = Gsl.Sf.bessel_Y0 x
+val airy_zero_Ai : int -> float
 
-let bessel_Y1 x = Gsl.Sf.bessel_Y1 x
+val airy_zero_Bi : int -> float
 
-let bessel_Yn n x = Gsl.Sf.bessel_Yn n x
 
-let bessel_Yn_array nmin nmax x =
-  let y = Array.make (nmax - nmin + 1) 0. in
-  Gsl.Sf.bessel_Yn_array nmin x y; y
+(** {6 Regular Cylindrical Bessel Functions} *)
 
-let bessel_I0 x = Gsl.Sf.bessel_I0 x
+val bessel_J0 : float -> float
 
-let bessel_I1 x = Gsl.Sf.bessel_I1 x
+val bessel_J1 : float -> float
 
-let bessel_In n x = Gsl.Sf.bessel_In n x
+val bessel_Jn : int -> float -> float
 
-let bessel_In_array nmin nmax x =
-  let y = Array.make (nmax - nmin + 1) 0. in
-  Gsl.Sf.bessel_In_array nmin x y; y
+val bessel_Jn_array : int -> int -> float -> float array
 
-let bessel_K0 x = Gsl.Sf.bessel_K0 x
 
-let bessel_K1 x = Gsl.Sf.bessel_K1 x
+(** {6 Irregular Cylindrical Bessel Functions} *)
 
-let bessel_Kn n x = Gsl.Sf.bessel_Kn n x
+val bessel_Y0 : float -> float
 
-let bessel_Kn_array nmin nmax x =
-  let y = Array.make (nmax - nmin + 1) 0. in
-  Gsl.Sf.bessel_Kn_array nmin x y; y
+val bessel_Y1 : float -> float
 
-let bessel_I0_scaled x = Gsl.Sf.bessel_I0_scaled x
+val bessel_Yn : int -> float -> float
 
-let bessel_I1_scaled x = Gsl.Sf.bessel_I1_scaled x
+val bessel_Yn_array : int -> int -> float -> float array
 
-let bessel_In_scaled n x = Gsl.Sf.bessel_In_scaled n x
 
-let bessel_In_scaled_array nmin nmax x =
-  let y = Array.make (nmax - nmin + 1) 0. in
-  Gsl.Sf.bessel_In_scaled_array nmin x y; y
+(** {6 Regular Modified Cylindrical Bessel Functions} *)
 
-let bessel_K0_scaled x = Gsl.Sf.bessel_K0_scaled x
+val bessel_I0 : float -> float
 
-let bessel_K1_scaled x = Gsl.Sf.bessel_K1_scaled x
+val bessel_I1 : float -> float
 
-let bessel_Kn_scaled n x = Gsl.Sf.bessel_Kn_scaled n x
+val bessel_In : int -> float -> float
 
-let bessel_Kn_scaled_array nmin nmax x =
-  let y = Array.make (nmax - nmin + 1) 0. in
-  Gsl.Sf.bessel_Kn_scaled_array nmin x y; y
+val bessel_In_array : int -> int -> float -> float array
 
-let bessel_j0 x = Gsl.Sf.bessel_j0 x
+val bessel_I0_scaled : float -> float
 
-let bessel_j1 x = Gsl.Sf.bessel_j1 x
+val bessel_I1_scaled : float -> float
 
-let bessel_j2 x = Gsl.Sf.bessel_j2 x
+val bessel_In_scaled : int -> float -> float
 
-let bessel_jl l x = Gsl.Sf.bessel_jl l x
+val bessel_In_scaled_array : int -> int -> float -> float array
 
-let bessel_jl_array l x =
-  let y = Array.make (l + 1) 0. in
-  Gsl.Sf.bessel_jl_array l x y; y
 
-let bessel_jl_steed_array l x =
-  let y = Array.make (l + 1) 0. in
-  Gsl.Sf.bessel_jl_steed_array x y; y
+(** {6 Irregular Modified Cylindrical Bessel Functions} *)
 
-let bessel_y0 x = Gsl.Sf.bessel_y0 x
+val bessel_K0 : float -> float
 
-let bessel_y1 x = Gsl.Sf.bessel_y1 x
+val bessel_K1 : float -> float
 
-let bessel_y2 x = Gsl.Sf.bessel_y2 x
+val bessel_Kn : int -> float -> float
 
-let bessel_yl l x = Gsl.Sf.bessel_yl l x
+val bessel_Kn_array : int -> int -> float -> float array
 
-let bessel_yl_array l x =
-  let y = Array.make (l + 1) 0. in
-  Gsl.Sf.bessel_yl_array l x y; y
+val bessel_K0_scaled : float -> float
 
-let bessel_i0_scaled x = Gsl.Sf.bessel_i0_scaled x
+val bessel_K1_scaled : float -> float
 
-let bessel_i1_scaled x = Gsl.Sf.bessel_i1_scaled x
+val bessel_Kn_scaled : int -> float -> float
 
-let bessel_il_scaled l x = Gsl.Sf.bessel_il_scaled l x
+val bessel_Kn_scaled_array : int -> int -> float -> float array
 
-let bessel_il_array_scaled l x =
-  let y = Array.make (l + 1) 0. in
-  Gsl.Sf.bessel_il_scaled_array l x y; y
 
-let bessel_k0_scaled x = Gsl.Sf.bessel_k0_scaled x
+(** {6 Regular Spherical Bessel Functions} *)
 
-let bessel_k1_scaled x = Gsl.Sf.bessel_k1_scaled x
+val bessel_j0 : float -> float
 
-let bessel_kl_scaled l x = Gsl.Sf.bessel_kl_scaled l x
+val bessel_j1 : float -> float
 
-let bessel_kl_array_scaled l x =
-  let y = Array.make (l + 1) 0. in
-  Gsl.Sf.bessel_kl_scaled_array l x y; y
+val bessel_j2 : float -> float
 
-let bessel_Jnu nu x = Gsl.Sf.bessel_Jnu nu x
+val bessel_jl : int -> float -> float
 
-let bessel_Ynu nu x = Gsl.Sf.bessel_Ynu nu x
+val bessel_jl_array : int -> float -> float array
 
-let bessel_Inu nu x = Gsl.Sf.bessel_Inu nu x
+val bessel_jl_steed_array : int -> float -> float array
 
-let bessel_Inu_scaled nu x = Gsl.Sf.bessel_Inu_scaled nu x
 
-let bessel_Knu nu x = Gsl.Sf.bessel_Knu nu x
+(** {6 Irregular Spherical Bessel Functions} *)
 
-let bessel_lnKnu nu x = Gsl.Sf.bessel_lnKnu nu x
+val bessel_y0 : float -> float
 
-let bessel_Knu_scaled nu x = Gsl.Sf.bessel_Knu_scaled nu x
+val bessel_y1 : float -> float
 
-let bessel_zero_J0 x = Gsl.Sf.bessel_zero_J0 x
+val bessel_y2 : float -> float
 
-let bessel_zero_J1 x = Gsl.Sf.bessel_zero_J1 x
+val bessel_yl : int -> float -> float
 
-let bessel_zero_Jnu nu x = Gsl.Sf.bessel_zero_Jnu nu x
+val bessel_yl_array : int -> float -> float array
 
-let clausen x = Gsl.Sf.clausen x
 
-let dawson x = Gsl.Sf.dawson x
+(** {6 Regular Modified Spherical Bessel Functions} *)
 
-let debye_1 x = Gsl.Sf.debye_1 x
+val bessel_i0_scaled : float -> float
 
-let debye_2 x = Gsl.Sf.debye_2 x
+val bessel_i1_scaled : float -> float
 
-let debye_3 x = Gsl.Sf.debye_3 x
+val bessel_il_scaled : int -> float -> float
 
-let debye_4 x = Gsl.Sf.debye_4 x
+val bessel_il_array_scaled : int -> float -> float array
 
-let debye_5 x = Gsl.Sf.debye_5 x
 
-let debye_6 x = Gsl.Sf.debye_6 x
+(** {6 Irregular Modified Spherical Bessel Functions} *)
 
-let dilog x = Gsl.Sf.dilog x
+val bessel_k0_scaled : float -> float
 
-let ellint_Kcomp x = Gsl.Sf.ellint_Kcomp x Gsl.Fun.DOUBLE
+val bessel_k1_scaled : float -> float
 
-let ellint_Ecomp x = Gsl.Sf.ellint_Ecomp x Gsl.Fun.DOUBLE
+val bessel_kl_scaled : int -> float -> float
 
-let ellint_Pcomp x n = Gsl.Sf.ellint_Pcomp x n Gsl.Fun.DOUBLE
+val bessel_kl_array_scaled : int -> float -> float array
 
-let ellint_Dcomp x = Gsl.Sf.ellint_Dcomp x Gsl.Fun.DOUBLE
 
-let ellint_F phi x =  Gsl.Sf.ellint_F phi x Gsl.Fun.DOUBLE
+(** {6 Regular Bessel Function - Fractional Order} *)
 
-let ellint_E phi x =  Gsl.Sf.ellint_E phi x Gsl.Fun.DOUBLE
+val bessel_Jnu : float -> float -> float
 
-let ellint_P phi x n =  Gsl.Sf.ellint_P phi x n Gsl.Fun.DOUBLE
 
-let ellint_D phi x =  Gsl.Sf.ellint_D phi x Gsl.Fun.DOUBLE
+(** {6 Irregular Bessel Functions - Fractional Order} *)
 
-let ellint_RC x y = Gsl.Sf.ellint_RC x y Gsl.Fun.DOUBLE
+val bessel_Ynu : float -> float -> float
 
-let ellint_RD x y z = Gsl.Sf.ellint_RD x y z Gsl.Fun.DOUBLE
 
-let ellint_RF x y z = Gsl.Sf.ellint_RF x y z Gsl.Fun.DOUBLE
+(** {6 Regular Modified Bessel Functions - Fractional Order} *)
 
-let ellint_RJ x y z p = Gsl.Sf.ellint_RJ x y z p Gsl.Fun.DOUBLE
+val bessel_Inu : float -> float -> float
 
-let expint_E1 x = Gsl.Sf.expint_E1 x
+val bessel_Inu_scaled : float -> float -> float
 
-let expint_E2 x = Gsl.Sf.expint_E2 x
 
-let expint_Ei x = Gsl.Sf.expint_Ei x
+(** {6 Irregular Modified Bessel Functions - Fractional Order} *)
 
-let expint_E1_scaled x = Gsl.Sf.expint_E1_scaled x
+val bessel_Knu : float -> float -> float
 
-let expint_E2_scaled x = Gsl.Sf.expint_E2_scaled x
+val bessel_lnKnu : float -> float -> float
 
-let expint_Ei_scaled x = Gsl.Sf.expint_Ei_scaled x
+val bessel_Knu_scaled : float -> float -> float
 
-let expint_3 x = Gsl.Sf.expint_3 x
 
-let shi x = Gsl.Sf.shi x
+(** {6 Zeros of Regular Bessel Functions} *)
 
-let chi x = Gsl.Sf.chi x
+val bessel_zero_J0 : int -> float
 
-let si x = Gsl.Sf.si x
+val bessel_zero_J1 : int -> float
 
-let ci x = Gsl.Sf.ci x
+val bessel_zero_Jnu : float -> int -> float
 
-let atanint x = Gsl.Sf.atanint x
 
-let fermi_dirac_m1 x = Gsl.Sf.fermi_dirac_m1 x
+(** {6 Clausen Functions} *)
 
-let fermi_dirac_0 x = Gsl.Sf.fermi_dirac_0 x
+val clausen : float -> float
 
-let fermi_dirac_1 x = Gsl.Sf.fermi_dirac_1 x
 
-let fermi_dirac_2 x = Gsl.Sf.fermi_dirac_2 x
+(** {6 Dawson Function} *)
 
-let fermi_dirac_int j x = Gsl.Sf.fermi_dirac_int j x
+val dawson : float -> float
 
-let fermi_dirac_mhalf x = Gsl.Sf.fermi_dirac_mhalf x
 
-let fermi_dirac_half x = Gsl.Sf.fermi_dirac_half x
+(** {6 Debye Functions} *)
 
-let fermi_dirac_3half x = Gsl.Sf.fermi_dirac_3half x
+val debye_1 : float -> float
 
-let fermi_dirac_inc_0 x b = Gsl.Sf.fermi_dirac_inc_0 x b
+val debye_2 : float -> float
 
-let gamma x = Gsl.Sf.gamma x
+val debye_3 : float -> float
 
-let lngamma x = Gsl.Sf.lngamma x
+val debye_4 : float -> float
 
-let gammastar x = Gsl.Sf.gammastar x
+val debye_5 : float -> float
 
-let gammainv x = Gsl.Sf.gammainv x
+val debye_6 : float -> float
 
-let gamma_inc a x = Gsl.Sf.gamma_inc a x
 
-let gamma_inc_Q a x  = Gsl.Sf.gamma_inc_Q a x
+(** {6 Dilogarithm} *)
 
-let gamma_inc_P a x  = Gsl.Sf.gamma_inc_P a x
+val dilog : float -> float
 
-let factorial x = Gsl.Sf.fact x
 
-let double_factorial x = Gsl.Sf.doublefact x
+(** {6 Elliptic Integrals} *)
 
-let ln_factorial x = Gsl.Sf.lnfact x
+val ellint_Kcomp : float -> float
 
-let ln_double_factorial x = Gsl.Sf.lndoublefact x
+val ellint_Ecomp : float -> float
 
-let combination n x = Gsl.Sf.choose n x
+val ellint_Pcomp : float -> float -> float
 
-let ln_combination n x = Gsl.Sf.lnchoose n x
+val ellint_Dcomp : float -> float
 
-let taylorcoeff n x = Gsl.Sf.taylorcoeff n x
 
-let poch a x = Gsl.Sf.poch a x
+(** {6 Elliptic Integrals - Legendre Form of Complete Elliptic Integrals} *)
 
-let lnpoch a x = Gsl.Sf.lnpoch a x
+val laguerre_1 : float -> float -> float
 
-let pochrel a x = Gsl.Sf.pochrel a x
+val laguerre_2 : float -> float -> float
 
-let betaf x y = Gsl.Sf.beta x y
+val laguerre_3 : float -> float -> float
 
-let lnbeta x y = Gsl.Sf.lnbeta x y
+val laguerre_n : int -> float -> float -> float
 
-let beta_inc a b x = Gsl.Sf.beta_inc a b x
 
-let laguerre_1 a x = Gsl.Sf.laguerre_1 a x
+(** {6 Elliptic Integrals - Legendre Form of Incomplete Elliptic Integrals} *)
 
-let laguerre_2 a x = Gsl.Sf.laguerre_2 a x
+val ellint_F : float -> float -> float
 
-let laguerre_3 a x = Gsl.Sf.laguerre_3 a x
+val ellint_E : float -> float -> float
 
-let laguerre_n n a x = Gsl.Sf.laguerre_n n a x
+val ellint_P : float -> float -> float -> float
 
-let lambert_w0 x = Gsl.Sf.lambert_W0 x
+val ellint_D : float -> float -> float
 
-let lambert_w1 x = Gsl.Sf.lambert_Wm1 x
 
-let legendre_P1 x = Gsl.Sf.legendre_P1 x
+(** {6 Elliptic Integrals - Carlson Forms of Incomplete Elliptic Integrals} *)
 
-let legendre_P2 x = Gsl.Sf.legendre_P2 x
+val ellint_RC : float -> float -> float
 
-let legendre_P3 x = Gsl.Sf.legendre_P3 x
+val ellint_RD : float -> float -> float -> float
 
-let legendre_Pl l x = Gsl.Sf.legendre_Pl l x
+val ellint_RF : float -> float -> float -> float
 
-let legendre_Pl_array l x =
-  let y = Array.make l 0. in
-  Gsl.Sf.legendre_Pl_array x y; y
+val ellint_RJ : float -> float -> float -> float -> float
 
-let legendre_Q0 x = Gsl.Sf.legendre_Q0 x
 
-let legendre_Q1 x = Gsl.Sf.legendre_Q1 x
+(** {6 Exponential Integrals} *)
 
-let legendre_Ql l x = Gsl.Sf.legendre_Ql l x
+val expint_E1 : float -> float
 
-let psi x = Gsl.Sf.psi x
+val expint_E2 : float -> float
 
-let psi_int n = Gsl.Sf.psi_int n
+val expint_Ei : float -> float
 
-let psi_1 x = Gsl.Sf.psi_1 x
+val expint_E1_scaled : float -> float
 
-let psi_1piy n = Gsl.Sf.psi_1piy n
+val expint_E2_scaled : float -> float
 
-let psi_1_pint n = Gsl.Sf.psi_int n
+val expint_Ei_scaled : float -> float
 
-let psi_n n x = Gsl.Sf.psi_n n x
+val expint_3 : float -> float
 
-let synchrotron_1 x = Gsl.Sf.synchrotron_1 x
+val shi : float -> float
 
-let synchrotron_2 x = Gsl.Sf.synchrotron_2 x
+val chi : float -> float
 
-let transport_2 x = Gsl.Sf.transport_2 x
+val si : float -> float
 
-let transport_3 x = Gsl.Sf.transport_3 x
+val ci : float -> float
 
-let transport_4 x = Gsl.Sf.transport_4 x
+val atanint : float -> float
 
-let transport_5 x = Gsl.Sf.transport_5 x
 
-let zeta x = Gsl.Sf.zeta x
+(** {6 Fermi-Dirac Function} *)
 
-let zeta_int x = Gsl.Sf.zeta_int x
+val fermi_dirac_m1 : float -> float
 
-let hzeta x y = Gsl.Sf.hzeta x y
+val fermi_dirac_0 : float -> float
 
-let eta x = Gsl.Sf.eta x
+val fermi_dirac_1 : float -> float
 
-let eta_int x = Gsl.Sf.eta_int x
+val fermi_dirac_2 : float -> float
+
+val fermi_dirac_int : int -> float -> float
+
+val fermi_dirac_mhalf : float -> float
+
+val fermi_dirac_half : float -> float
+
+val fermi_dirac_3half : float -> float
+
+val fermi_dirac_inc_0 : float -> float -> float
+
+
+(** {6 Gamma Functions} *)
+
+val gamma : float -> float
+
+val lngamma : float -> float
+
+val gammastar : float -> float
+
+val gammainv : float -> float
+
+
+(** {6 Incomplete Gamma Functions} *)
+
+val gamma_inc : float -> float -> float
+
+val gamma_inc_Q : float -> float -> float
+
+val gamma_inc_P : float -> float -> float
+
+
+(** {6 Factorials} *)
+
+val factorial : int -> float
+
+val double_factorial : int -> float
+
+val ln_factorial : int -> float
+
+val ln_double_factorial : int -> float
+
+val combination : int -> int -> float
+
+val ln_combination : int -> int -> float
+
+val taylorcoeff : int -> float -> float
+
+
+(** {6 Pochhammer Symbol} *)
+
+val poch : float -> float -> float
+
+val lnpoch : float -> float -> float
+
+val pochrel : float -> float -> float
+
+
+(** {6 Beta functions} *)
+
+val betaf : float -> float -> float
+
+val lnbeta : float -> float -> float
+
+val beta_inc : float -> float -> float -> float
+
+
+(** {6 Laguerre Functions} *)
+
+val laguerre_1 : float -> float -> float
+
+val laguerre_2 : float -> float -> float
+
+val laguerre_3 : float -> float -> float
+
+val laguerre_n : int -> float -> float -> float
+
+
+(** {6 Lambert W Functions} *)
+
+val lambert_w0 : float -> float
+
+val lambert_w1 : float -> float
+
+
+(** {6 Legendre Functions and Spherical Harmonics} *)
+
+val legendre_P1 : float -> float
+
+val legendre_P2 : float -> float
+
+val legendre_P3 : float -> float
+
+val legendre_Pl : int -> float -> float
+
+val legendre_Pl_array : int -> float -> float array
+
+val legendre_Q0 : float -> float
+
+val legendre_Q1 : float -> float
+
+val legendre_Ql : int -> float -> float
+
+
+(** {6 Psi (Digamma) Function} *)
+
+val psi : float -> float
+
+val psi_int : int -> float
+
+val psi_1 : float -> float
+
+val psi_1piy : float -> float
+
+val psi_1_pint : int -> float
+
+val psi_n : int -> float -> float
+
+
+(** {6 Synchrotron Functions} *)
+
+val synchrotron_1 : float -> float
+
+val synchrotron_2 : float -> float
+
+
+(** {6 Transport Functions} *)
+
+val transport_2 : float -> float
+
+val transport_3 : float -> float
+
+val transport_4 : float -> float
+
+val transport_5 : float -> float
+
+
+(** {6 Zeta Functions} *)
+
+val zeta : float -> float
+
+val zeta_int : int -> float
+
+val hzeta : float -> float -> float
+
+val eta : float -> float
+
+val eta_int : int -> float
+
+
+
+
+
+(* TODO: Wavelet function is missing; FFT function is missing *)
+
 
 
 

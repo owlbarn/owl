@@ -3,7 +3,7 @@
 ]  *)
 
 module MX = Owl_dense
-module LL = Optimise
+module LL = Owl_optimise
 
 let centerise x =
   let open MX in

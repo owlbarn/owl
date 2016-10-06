@@ -13,7 +13,7 @@ type spmat = spmat_record
 let _empty_int_array () = Array1.create int64 c_layout 0
 
 let _of_sp_mat_ptr p =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let open Ctypes in
   let y = !@ p in
   let tz = Int64.to_int (getf y sp_nz) in
@@ -28,7 +28,7 @@ let _of_sp_mat_ptr p =
   { m = tm; n = tn; i = ti; d = td; p = tp; nz = tz; typ = ty; ptr = p; }
 
 let _update_rec_from_ptr x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let open Ctypes in
   let y = !@ (x.ptr) in
   let _ = x.typ <- Int64.to_int (getf y sp_type) in
@@ -43,7 +43,7 @@ let _update_rec_from_ptr x =
   x
 
 let _update_rec_after_set x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let open Ctypes in
   let y = !@ (x.ptr) in
   let _ = x.nz <- Int64.to_int (getf y sp_nz) in x
@@ -51,7 +51,7 @@ let _update_rec_after_set x =
 let _is_csc_format x = x.typ = 1
 
 let allocate_vecptr m =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let open Ctypes in
   let p = gsl_vector_alloc m in
   let y = !@ p in
@@ -67,12 +67,12 @@ let allocate_vecptr m =
 (** sparse matrix creation function *)
 
 let zeros m n =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x = gsl_spmatrix_alloc m n in
   _of_sp_mat_ptr x
 
 let empty_csc m n =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let c = int_of_float ((float_of_int (m * n)) *. 0.1) in
   let c = Pervasives.max 10 c in
   let x = gsl_spmatrix_alloc_nzmax m n c 1 in
@@ -80,20 +80,20 @@ let empty_csc m n =
 
 let set x i j y =
   (* FIXME: must be in triplet form; _update_rec_after_set *)
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let _ = gsl_spmatrix_set x.ptr i j y in
   let _ = _update_rec_after_set x in ()
 
 let set_without_update_rec x i j y =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let _ = gsl_spmatrix_set x.ptr i j y in ()
 
 let get x i j =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   gsl_spmatrix_get x.ptr i j
 
 let reset x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let _ = (gsl_spmatrix_set_zero x.ptr) in
   let _ = _update_rec_from_ptr x in ()
 
@@ -122,8 +122,8 @@ let _random_basic f m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
   let x = zeros m n in
   for k = 0 to c do
-    let i = Stats.Rnd.uniform_int ~a:0 ~b:(m-1) () in
-    let j = Stats.Rnd.uniform_int ~a:0 ~b:(n-1) () in
+    let i = Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) () in
+    let j = Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) () in
     set_without_update_rec x i j (f ())
   done;
   _update_rec_from_ptr x
@@ -131,27 +131,27 @@ let _random_basic f m n =
 let binary m n = _random_basic (fun () -> 1.) m n
 
 let uniform ?(scale=1.) m n =
-  _random_basic (fun () -> Stats.Rnd.uniform () *. scale) m n
+  _random_basic (fun () -> Owl_stats.Rnd.uniform () *. scale) m n
 
 let uniform_int ?(a=0) ?(b=99) m n =
-  _random_basic (fun () -> float_of_int (Stats.Rnd.uniform_int ~a ~b ())) m n
+  _random_basic (fun () -> float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ())) m n
 
 (** matrix manipulations *)
 
 let copy_to x1 x2 =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let _ = gsl_spmatrix_memcpy x2.ptr x1.ptr in
   _update_rec_from_ptr x2
 
 let to_csc x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let m, n = shape x in
   match _is_csc_format x with
   | true  -> let y = empty_csc m n in copy_to x y
   | false -> let p = gsl_spmatrix_compcol x.ptr in _of_sp_mat_ptr p
 
 let transpose x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let y = if _is_csc_format x
     then empty_csc (col_num x) (row_num x)
     else zeros (col_num x) (row_num x) in
@@ -369,7 +369,7 @@ let col_num_nz x = nnz_cols x |> Array.length
 (** matrix mathematical operations *)
 
 let mul_scalar x1 y =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x2 = to_csc x1 in
   let _ = gsl_spmatrix_scale x2.ptr y in
   x2
@@ -377,7 +377,7 @@ let mul_scalar x1 y =
 let div_scalar x1 y = mul_scalar x1 (1. /. y)
 
 let add x1 x2 =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x1 = if _is_csc_format x1 then x1 else to_csc x1 in
   let x2 = if _is_csc_format x2 then x2 else to_csc x2 in
   let x3 = empty_csc (row_num x1) (col_num x1) in
@@ -385,7 +385,7 @@ let add x1 x2 =
   _update_rec_from_ptr x3
 
 let dot x1 x2 =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x1 = if _is_csc_format x1 then x1 else to_csc x1 in
   let x2 = if _is_csc_format x2 then x2 else to_csc x2 in
   let x3 = empty_csc (row_num x1) (col_num x2) in
@@ -431,7 +431,7 @@ let is_nonnegative x =
   for_all_nz (( <= ) 0.) x
 
 let minmax x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let open Ctypes in
   let xmin = allocate double 0. in
   let xmax = allocate double 0. in
@@ -443,7 +443,7 @@ let min x = fst (minmax x)
 let max x = snd (minmax x)
 
 let is_equal x1 x2 =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x2 = match (_is_csc_format x1), (_is_csc_format x2) with
     | true, false -> to_csc x2
     | false, true -> clone x2
@@ -482,14 +482,14 @@ let lu x = None
 (** transform to and from different types *)
 
 let to_dense x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let x = if _is_csc_format x then clone x else x in
   let y = gsl_matrix_alloc (row_num x) (col_num x) in
   let _ = gsl_spmatrix_sp2d y x.ptr in
   matptr_to_mat y (row_num x) (col_num x)
 
 let of_dense x =
-  let open Matrix_foreign in
+  let open Owl_matrix_foreign in
   let y = zeros (Array2.dim1 x) (Array2.dim2 x) in
   let _ = gsl_spmatrix_d2sp y.ptr (mat_to_matptr x) in
   _update_rec_from_ptr y
@@ -550,16 +550,16 @@ let load_txt = None
 (** permutation and draw functions *)
 
 let permutation_matrix d =
-  let l = Array.init d (fun x -> x) |> Stats.shuffle in
+  let l = Array.init d (fun x -> x) |> Owl_stats.shuffle in
   let y = zeros d d in
   let _ = Array.iteri (fun i j -> set y i j 1.) l in y
 
 let draw_rows ?(replacement=true) x c =
   let m, n = shape x in
-  let a = Array.init m (fun x -> x) |> Stats.shuffle in
+  let a = Array.init m (fun x -> x) |> Owl_stats.shuffle in
   let l = match replacement with
-    | true  -> Stats.sample a c
-    | false -> Stats.choose a c
+    | true  -> Owl_stats.sample a c
+    | false -> Owl_stats.choose a c
   in
   let y = zeros c m in
   let _ = Array.iteri (fun i j -> set y i j 1.) l in
@@ -567,10 +567,10 @@ let draw_rows ?(replacement=true) x c =
 
 let draw_cols ?(replacement=true) x c =
   let m, n = shape x in
-  let a = Array.init n (fun x -> x) |> Stats.shuffle in
+  let a = Array.init n (fun x -> x) |> Owl_stats.shuffle in
   let l = match replacement with
-    | true  -> Stats.sample a c
-    | false -> Stats.choose a c
+    | true  -> Owl_stats.sample a c
+    | false -> Owl_stats.choose a c
   in
   let y = zeros n c in
   let _ = Array.iteri (fun j i -> set y i j 1.) l in

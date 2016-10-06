@@ -3,7 +3,7 @@
 ]  *)
 
 module MX = Owl_dense
-module LL = Optimise
+module LL = Owl_optimise
 
 let generate_data () =
   let open MX in
