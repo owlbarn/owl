@@ -1,6 +1,6 @@
 ############################################################
 # Dockerfile to build Owl container image from github
-# Based on Ubuntu
+# Based on ryanrhymes/owl-base
 # By Liang Wang <liang.wang@cl.cam.ac.uk>
 ############################################################
 
