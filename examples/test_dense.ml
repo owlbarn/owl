@@ -25,6 +25,8 @@ let _ =
   test_op "rows       " c (fun () -> M.rows x [|1;2|]);
   test_op "map        " c (fun () -> M.map (fun y -> 0.) x);
   test_op "mapi       " c (fun () -> M.mapi (fun _ _ y -> 0.) x);
+  test_op "map2       " c (fun () -> M.map2 (fun _ _ -> 0.) x x);
+  test_op "map2i      " c (fun () -> M.map2i (fun _ _ _ _ -> 0.) x x);
   test_op "iter       " c (fun () -> M.iter (fun y -> 0.) x);
   test_op "iteri      " c (fun () -> M.iteri (fun _ _ y -> 0.) x);
   test_op "iter_cols  " c (fun () -> M.iter_cols (fun y -> ()) x);

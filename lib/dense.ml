@@ -242,11 +242,17 @@ let map_by_col ?(d=0) f x = mapi_by_col ~d (fun _ y -> f y) x
 let map2i f x y =
   if row_num x = row_num y && col_num x = col_num y then
     let z = empty (row_num x) (col_num x) in
-    iteri (fun i j w -> Array2.unsafe_set z i j (f i j w)) x; y
+    iteri
+      (fun i j vx ->
+        let vy = Array2.unsafe_get y i j in
+        Array2.unsafe_set z i j (f i j vx vy)
+      )
+      x;
+    y
   else
     raise (Invalid_argument "map2ij: dimensions do not match")
 
-let map2 f x y = mapi (fun _ _ w -> f w) x
+let map2 f x y = map2i (fun _ _ vx vy -> f vx vy) x y
 
 let filteri f x =
   let r = ref [||] in

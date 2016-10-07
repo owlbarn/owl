@@ -229,6 +229,19 @@ val map : (float -> float) -> dsmat -> dsmat
   current element is not passed to the function [f : float -> float]
  *)
 
+val map2i : (int -> int -> float -> float -> float) -> dsmat -> dsmat -> dsmat
+(** [map2i f x y] maps each pointwise pair of elements in [x] and [y] to a
+  new value by applying [f : int -> int -> float -> float -> float]. The
+  first two parameters are the coordinates of the elements, and the third
+  and fourth parameters are the values.
+ *)
+
+val map2 : (float -> float -> float) -> dsmat -> dsmat -> dsmat
+(** [map2 f x y] is similar to [map2i f x y] except the coordinates of the
+  current element is not passed to the function [f : float -> float -> float]
+ *)
+
+
 val fold : ('a -> float -> 'a) -> 'a -> dsmat -> 'a
 (** [fold f a x] folds all the elements in [x] with the function
   [f : 'a -> float -> 'a]. For an [m] by [n] matrix [x], the order of folding
