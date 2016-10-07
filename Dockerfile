@@ -4,7 +4,7 @@
 # By Liang Wang <liang.wang@cl.cam.ac.uk>
 ############################################################
 
-FROM ryanrhymes/owl:base
+FROM ryanrhymes/owl-base
 MAINTAINER Liang Wang
 
 ################## INSTALL OWL LIBRARY #####################
