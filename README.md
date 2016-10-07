@@ -35,11 +35,13 @@ Owl is well integrated with `utop`. Now you can start `utop` and continue this t
 #require "Owl"
 ```
 
-If you are too lazy to install anything, here is a docker image to let you try Owl without dealing with aforementioned steps. Just pull the image, start a container, then play with it in `utop`. The source code is in `/root/code/owl`
+If you are too lazy to do any labour work, here is a docker image to let you try Owl without dealing with aforementioned installation and configuration steps. The docker image is automatically build from the master branch whenever there are new commits. You can check the building history on [Docker Hub](https://hub.docker.com/r/ryanrhymes/owl/builds/).
+
+Just pull the image, start a container, then play with it in `utop`. The latest source code is saved in `/root/owl` directory.
 
 ```bash
 docker pull ryanrhymes/owl
-docker run -t -i ryanrhymes/owl /bin/bash
+docker run -t -i ryanrhymes/owl
 ```
 
 
@@ -300,3 +302,8 @@ We take 5000 samples from the defined distribution and plot them as a scatter pl
 ![Plot example 02](examples/test_plot_03.png)
 
 The future plan is to embed a small PPL (Probabilistic Programming Language) in `Stats` module.
+
+
+## How To Contribute
+
+Owl is under active development, and I really look forward to your comments and contributions. Besides setting up a complete development environment on your native system, the easiest way to contribute is to use the [Owl Docker Image](https://hub.docker.com/r/ryanrhymes/owl/). Just pull the image and dig into code saved in `/root/owl`, then have fun!
