@@ -16,8 +16,8 @@ type dsmat = Owl_dense.dsmat
 type marker_typ = SQUARE | DOT | PLUS | STAR | CIRCLE | CROSS | UPTRI | DIAMOND | PENTAGON
 
 type plot_typ = {
-  mutable title : string;
   mutable output : string;
+  mutable title : string;
   mutable xlabel : string;
   mutable ylabel : string;
   mutable zlabel : string;
@@ -32,8 +32,8 @@ type plot_typ = {
 (* module functions to simplify plotting *)
 
 let create () = {
-  title = "";
   output = "";
+  title = "";
   xlabel = "x";
   ylabel = "y";
   zlabel = "z";
@@ -47,11 +47,21 @@ let create () = {
 
 let _default_handle = create ()
 
-let _set_device h = Owl_utils.get_suffix h.output |> plsdev
+let _supported_device = ["apt"; "pdf"; "ps"; "psc"; "png"; "svg"; "xfig"]
+
+let _set_device h =
+  try let x = Owl_utils.get_suffix h.output in
+    plsdev x;
+    plsfnam h.output;
+  with exn -> ()
+
+let set_output h s =
+  let x = Owl_utils.get_suffix s in
+  match (List.mem x _supported_device) with
+  | true  -> h.output <- s
+  | false -> Log.error "unsupported file type."
 
 let set_title h s = h.title <- s
-
-let set_output h s = h.output <- s
 
 let set_xlabel h s = h.xlabel <- s
 
@@ -95,7 +105,6 @@ let plot ?(h=_default_handle) x y =
   let x = MX.to_array x in
   let y = MX.to_array y in
   let _ = _set_device h in
-  let _ = plsfnam h.output in
   let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   let _ = plinit () in
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
@@ -116,7 +125,6 @@ let scatter ?(h=_default_handle) x y =
   let x = MX.to_array x in
   let y = MX.to_array y in
   let _ = _set_device h in
-  let _ = plsfnam h.output in
   let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   let _ = plinit () in
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
@@ -131,8 +139,9 @@ let histogram ?(h=_default_handle) ?(bin=10) x =
   let open Plplot in
   let x = MX.to_array x in
   let _ = _set_device h in
-  let _ = plsfnam h.output in
+  let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   let _ = plinit () in
+  let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
   let xmin, xmax = _update_range h.xrange x in
   let _ = plhist x xmin xmax bin [ PL_HIST_DEFAULT ] in
   let _ = pllab h.xlabel h.ylabel h.title in
@@ -147,7 +156,6 @@ let mesh ?(h=_default_handle) x y z =
   let ymin, ymax = Owl_stats.minmax y in
   let zmin, zmax, _, _, _, _ = MX.minmax z in
   let _ = _set_device h in
-  let _ = plsfnam h.output in
   let _ = plinit () in
   let _ = pladv 0 in
   let _ = plvpor 0.0 1.0 0.0 1.0 in
