@@ -89,14 +89,15 @@ let set_font_size h x = h.fontsize <- x
 let set_marker_style h x =
   let m = match x with
     | SQUARE   -> 0
-    | DOT      -> 0
+    | DOT      -> 1
     | PLUS     -> 2
-    | STAR     -> 0
-    | CIRCLE   -> 0
+    | STAR     -> 3
+    | CIRCLE   -> 4
     | CROSS    -> 5
-    | UPTRI    -> 0
-    | DIAMOND  -> 0
-    | PENTAGON -> 0
+    | UPTRI    -> 7
+    | DIAMOND  -> 11
+    | PENTAGON -> 12
+    | OTHER -> 13
   in h.marker_style <- m
 
 let set_marker_size h x = h.marker_size <- x
