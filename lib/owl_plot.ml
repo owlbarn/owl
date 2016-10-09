@@ -101,6 +101,21 @@ let set_marker_style h x =
 
 let set_marker_size h x = h.marker_size <- x
 
+(* TODO *)
+let set_line_style = None
+
+(* TODO *)
+let set_line_size = None
+
+(* TODO *)
+let set_plot_size = None
+
+(* TODO *)
+let legend_on = None
+
+(* TODO *)
+let legend_off = None
+
 let _update_range r x =
   match r with
   | Some a, None -> a, Owl_stats.max x
@@ -112,9 +127,12 @@ let plot ?(h=_default_handle) x y =
   let open Plplot in
   let x = MX.to_array x in
   let y = MX.to_array y in
+  (* configure before init *)
   let _ = _set_device h in
   let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
+  (* init the plot *)
   let _ = plinit () in
+  (* configure after init *)
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
   let _ = if h.fontsize > 0. then plschr h.fontsize 1.0 in
   let _ = if h.marker_size > 0. then plssym h.marker_size 1. in
@@ -122,6 +140,7 @@ let plot ?(h=_default_handle) x y =
   let ymin, ymax = _update_range h.yrange y in
   let _ = plenv xmin xmax ymin ymax 0 0 in
   let _ = pllab h.xlabel h.ylabel h.title in
+  (* plot *)
   let _ = plline x y in
   plend ()
 
@@ -134,9 +153,12 @@ let scatter ?(h=_default_handle) x y =
   let open Plplot in
   let x = MX.to_array x in
   let y = MX.to_array y in
+  (* configure before init *)
   let _ = _set_device h in
   let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
+  (* init the plot *)
   let _ = plinit () in
+  (* configure after init *)
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
   let _ = if h.fontsize > 0. then plschr h.fontsize 1. in
   let _ = if h.marker_size > 0. then plssym h.marker_size 1. in
@@ -144,19 +166,24 @@ let scatter ?(h=_default_handle) x y =
   let ymin, ymax = _update_range h.yrange y in
   let _ = plenv xmin xmax ymin ymax 0 0 in
   let _ = pllab h.xlabel h.ylabel h.title in
+  (* plot *)
   let _ = plpoin x y h.marker_style in
   plend ()
 
 let histogram ?(h=_default_handle) ?(bin=10) x =
   let open Plplot in
   let x = MX.to_array x in
+  (* configure before init *)
   let _ = _set_device h in
   let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
+  (* init the plot *)
   let _ = plinit () in
+  (* configure after init *)
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
   let _ = if h.fontsize > 0. then plschr h.fontsize 1.0 in
   let _ = if h.marker_size > 0. then plssym h.marker_size 1. in
   let xmin, xmax = _update_range h.xrange x in
+  (* plot *)
   let _ = plhist x xmin xmax bin [ PL_HIST_DEFAULT ] in
   let _ = pllab h.xlabel h.ylabel h.title in
   plend ()
