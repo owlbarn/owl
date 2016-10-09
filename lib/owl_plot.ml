@@ -142,6 +142,7 @@ let plot ?(h=_default_handle) x y =
   let _ = plenv xmin xmax ymin ymax 0 0 in
   let _ = pllab h.xlabel h.ylabel h.title in
   (* plot *)
+  let _ = plcol0 3 in
   let _ = plline x y in
   plend ()
 
