@@ -24,7 +24,9 @@ val set_yrange : plot_typ -> float option -> float option -> unit
 
 val set_zrange : plot_typ -> float option -> float option -> unit
 
-val set_marker : plot_typ -> marker_typ -> unit
+val set_marker_style : plot_typ -> marker_typ -> unit
+
+val set_marker_size : plot_typ -> float -> unit
 
 val set_foreground_color : plot_typ -> int -> int -> int -> unit
 
