@@ -147,10 +147,10 @@ let plot ?(h=_default_handle) x y =
   let y = MX.to_array y in
   (* configure before init *)
   let _ = _set_device h in
+  let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   (* init the plot *)
   let _ = plinit () in
   (* configure after init *)
-  let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
   let _ = if h.fontsize > 0. then plschr h.fontsize 1.0 in
   let _ = if h.marker_size > 0. then plssym h.marker_size 1. in
@@ -173,10 +173,10 @@ let scatter ?(h=_default_handle) x y =
   let y = MX.to_array y in
   (* configure before init *)
   let _ = _set_device h in
+  let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   (* init the plot *)
   let _ = plinit () in
   (* configure after init *)
-  let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
   let _ = if h.fontsize > 0. then plschr h.fontsize 1. in
   let _ = if h.marker_size > 0. then plssym h.marker_size 1. in
@@ -193,18 +193,19 @@ let histogram ?(h=_default_handle) ?(bin=10) x =
   let x = MX.to_array x in
   (* configure before init *)
   let _ = _set_device h in
+  let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   (* init the plot *)
   let _ = plinit () in
   (* configure after init *)
-  let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
   let _ = if h.fontsize > 0. then plschr h.fontsize 1.0 in
   let _ = if h.marker_size > 0. then plssym h.marker_size 1. in
   let xmin, xmax = _update_range h.xrange x in
-let _ = plenv xmin xmax 0. 5000. 0 0 in
+  let ymin, ymax = 0., Owl_stats.(histogram x bin |> Array.map float_of_int |> max)  *. 1.1 in
+  let _ = plenv xmin xmax ymin ymax 0 0 in
+  let _ = pllab h.xlabel h.ylabel h.title in
   (* plot *)
   let _ = plhist x xmin xmax bin [ PL_HIST_DEFAULT; PL_HIST_NOSCALING ] in
-  let _ = pllab h.xlabel h.ylabel h.title in
   plend ()
 
 (* FIXME: the labels will not show *)
