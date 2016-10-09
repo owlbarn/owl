@@ -16,6 +16,7 @@ type dsmat = Owl_dense.dsmat
 type marker_typ = SQUARE | DOT | PLUS | STAR | CIRCLE | CROSS | UPTRI | DIAMOND | PENTAGON
 
 type plot_typ = {
+  mutable holdon : bool;
   mutable output : string;
   mutable title : string;
   mutable xlabel : string;
@@ -29,11 +30,15 @@ type plot_typ = {
   mutable fontsize : float;
   mutable marker_style : int;
   mutable marker_size : float;
+  mutable auto_xrange : bool;
+  mutable auto_yrange : bool;
+  mutable auto_zrange : bool;
 }
 
 (* module functions to simplify plotting *)
 
 let create () = {
+  holdon = true;
   output = "";
   title = "";
   xlabel = "x";
@@ -47,9 +52,14 @@ let create () = {
   fontsize = -1.;
   marker_style = 2;
   marker_size = -1.;
+  auto_xrange = true;
+  auto_yrange = true;
+  auto_zrange = true;
 }
 
-let _default_handle = create ()
+let _default_handle =
+  let h = create () in
+  let _ = h.holdon <- false in h
 
 let _supported_device = ["aqt"; "pdf"; "ps"; "psc"; "png"; "svg"; "xfig"]
 
