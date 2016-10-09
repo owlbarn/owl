@@ -97,7 +97,6 @@ let set_marker_style h x =
     | UPTRI    -> 7
     | DIAMOND  -> 11
     | PENTAGON -> 12
-    | OTHER -> 13
   in h.marker_style <- m
 
 let set_marker_size h x = h.marker_size <- x
@@ -142,7 +141,6 @@ let plot ?(h=_default_handle) x y =
   let _ = plenv xmin xmax ymin ymax 0 0 in
   let _ = pllab h.xlabel h.ylabel h.title in
   (* plot *)
-  let _ = plcol0 3 in
   let _ = plline x y in
   plend ()
 
