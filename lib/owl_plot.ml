@@ -27,6 +27,7 @@ type plot_typ = {
   mutable marker : int;
   mutable bgcolor : int * int * int;
   mutable fgcolor : int * int * int;
+  mutable fontsize : float;
 }
 
 (* module functions to simplify plotting *)
@@ -43,11 +44,12 @@ let create () = {
   marker = 2;
   bgcolor = (0, 0, 0);
   fgcolor = (255, 0, 0);
+  fontsize = -1.;
 }
 
 let _default_handle = create ()
 
-let _supported_device = ["apt"; "pdf"; "ps"; "psc"; "png"; "svg"; "xfig"]
+let _supported_device = ["aqt"; "pdf"; "ps"; "psc"; "png"; "svg"; "xfig"]
 
 let _set_device h =
   try let x = Owl_utils.get_suffix h.output in
@@ -79,6 +81,8 @@ let set_foreground_color h r g b = h.fgcolor <- (r, g, b)
 
 let set_background_color h r g b = h.bgcolor <- (r, g, b)
 
+let set_font_size h x = h.fontsize <- x
+
 (* FIXME: need to fill in right numbers *)
 let set_marker h x =
   let m = match x with
@@ -108,6 +112,7 @@ let plot ?(h=_default_handle) x y =
   let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   let _ = plinit () in
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
+  let _ = if h.fontsize > 0. then plschr h.fontsize 1.0 in
   let xmin, xmax = _update_range h.xrange x in
   let ymin, ymax = _update_range h.yrange y in
   let _ = plenv xmin xmax ymin ymax 0 0 in
@@ -128,6 +133,7 @@ let scatter ?(h=_default_handle) x y =
   let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   let _ = plinit () in
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
+  let _ = if h.fontsize > 0. then plschr h.fontsize 1.0 in
   let xmin, xmax = _update_range h.xrange x in
   let ymin, ymax = _update_range h.yrange y in
   let _ = plenv xmin xmax ymin ymax 0 0 in
@@ -142,6 +148,7 @@ let histogram ?(h=_default_handle) ?(bin=10) x =
   let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   let _ = plinit () in
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
+  let _ = if h.fontsize > 0. then plschr h.fontsize 1.0 in
   let xmin, xmax = _update_range h.xrange x in
   let _ = plhist x xmin xmax bin [ PL_HIST_DEFAULT ] in
   let _ = pllab h.xlabel h.ylabel h.title in

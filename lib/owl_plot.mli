@@ -30,6 +30,8 @@ val set_foreground_color : plot_typ -> int -> int -> int -> unit
 
 val set_background_color : plot_typ -> int -> int -> int -> unit
 
+val set_font_size : plot_typ -> float -> unit
+
 val plot : ?h:plot_typ -> dsmat -> dsmat -> unit
 
 val plot_fun : ?h:plot_typ -> (float -> float) -> float -> float -> unit
