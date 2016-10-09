@@ -189,6 +189,14 @@ let minmax_i x =
 let i, j = Gsl.Stats.minmax_index x in
 x.(i), i, x.(j), j
 
+let histogram x n =
+  let a, b = minmax x in
+  let c = (b -. a) /. (float_of_int n) in
+  let d = Array.make n 0 in
+  Array.iter (fun y ->
+    let i = int_of_float ((y -. a) /. c) in
+    d.(i) <- d.(i) + 1
+  ) x; d
 
 module Rnd = struct
 

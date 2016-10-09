@@ -17,48 +17,48 @@ Library "Owl"
 Executable test_sgd
   Path:           ./examples
   BuildTools:     ocamlbuild
-  CompiledObject: byte
+  CompiledObject: best
   MainIs:         test_sgd.ml
   BuildDepends:   Owl
 
 Executable test_kmeans
   Path:           ./examples
   BuildTools:     ocamlbuild
-  CompiledObject: byte
+  CompiledObject: best
   MainIs:         test_kmeans.ml
   BuildDepends:   Owl
 
 Executable test_log
   Path:           ./examples
   BuildTools:     ocamlbuild
-  CompiledObject: byte
+  CompiledObject: best
   MainIs:         test_log.ml
   BuildDepends:   Owl
 
 Executable test_svm
   Path:           ./examples
   BuildTools:     ocamlbuild
-  CompiledObject: byte
+  CompiledObject: best
   MainIs:         test_svm.ml
   BuildDepends:   Owl
 
 Executable test_operation
   Path:           ./examples
   BuildTools:     ocamlbuild
-  CompiledObject: byte
+  CompiledObject: best
   MainIs:         test_operation.ml
   BuildDepends:   Owl
 
 Executable test_dense
   Path:           ./examples
   BuildTools:     ocamlbuild
-  CompiledObject: byte
+  CompiledObject: best
   MainIs:         test_dense.ml
   BuildDepends:   Owl
 
 Executable test_sparse
   Path:           ./examples
   BuildTools:     ocamlbuild
-  CompiledObject: byte
+  CompiledObject: best
   MainIs:         test_sparse.ml
   BuildDepends:   Owl

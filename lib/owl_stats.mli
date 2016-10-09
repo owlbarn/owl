@@ -84,6 +84,8 @@ val rank : float array -> float array
   returns [[|1.; 4.; 2.; 5.; 3.|]]. Note that the ranking starts with one!
  *)
 
+val histogram : float array -> int -> int array
+
 
 (** {6 MCMC: Markov Chain Monte Carlo} *)
 
