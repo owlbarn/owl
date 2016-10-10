@@ -35,6 +35,7 @@ type plot_typ = {
   mutable auto_yrange : bool;
   mutable auto_zrange : bool;
   mutable plots : (unit -> unit) array;
+  mutable pages : plot_typ array;
 }
 
 (* module functions to simplify plotting *)
@@ -59,6 +60,7 @@ let create () = {
   auto_yrange = true;
   auto_zrange = true;
   plots = [||];
+  pages = [||];
 }
 
 let _default_handle =
@@ -257,6 +259,16 @@ let mesh ?(h=_default_handle) x y z =
   let _ = plmesh x y z [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
   let _ = plmtex "t" 1.0 1.0 0.5 h.title in
   plend ()
+
+let subplot h i j =
+  let c = i * j in
+  match (Array.length h.pages) = 0 with
+  | true  -> (
+      let a = Array.make c _default_handle |> Array.map (fun _ -> create ()) in
+      h.pages <- a
+    )
+  | false -> ()
+
 
 (* TODO *)
 let stem = None
