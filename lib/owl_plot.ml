@@ -237,8 +237,6 @@ let plot ?(h=_default_handle) x y =
     let _ = plscol0 1 r g b; plcol0 1 in
     let _ = pllsty line_style in
     let _ = plline x y in
-    let x', y' = _thinning x, _thinning y in
-    let _ = plstring x y "x" in
     (* restore original settings *)
     let _ = pllsty 1 in
     plscol0 1 r' g' b'; plcol0 1
