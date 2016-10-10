@@ -154,11 +154,14 @@ let legend_on = None
 (* TODO *)
 let legend_off = None
 
-let text ?(h=_default_handle) x y z s =
+(* TODO *)
+let rgb = None
+
+let text ?(h=_default_handle) x y ?(dx=0.) ?(dy=0.) s =
   let open Plplot in
   (* prepare the closure *)
   let f = (fun () ->
-    plmtex "tl" x y z s
+    plptex x y dx dy 0. s
   ) in
   (* add closure as a layer *)
   let _ = h.plots <- Array.append h.plots [|f|] in
