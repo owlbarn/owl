@@ -6,7 +6,11 @@ type plot_typ
 
 type marker_typ = SQUARE | DOT | PLUS | STAR | CIRCLE | CROSS | UPTRI | DIAMOND | PENTAGON
 
-val create : unit -> plot_typ
+type color = RED | GREEN | BLUE
+
+val create : ?m:int -> ?n:int -> string -> plot_typ
+
+val subplot : plot_typ -> int -> int -> unit
 
 val output : plot_typ -> unit
 

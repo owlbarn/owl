@@ -15,32 +15,39 @@ type dsmat = Owl_dense.dsmat
 
 type marker_typ = SQUARE | DOT | PLUS | STAR | CIRCLE | CROSS | UPTRI | DIAMOND | PENTAGON
 
+type color = RED | GREEN | BLUE
+
 type plot_typ = {
   mutable holdon : bool;
   mutable output : string;
   mutable title : string;
-  mutable xlabel : string;
-  mutable ylabel : string;
-  mutable zlabel : string;
-  mutable xrange : float * float;
-  mutable yrange : float * float;
-  mutable zrange : float * float;
   mutable bgcolor : int * int * int;
   mutable fgcolor : int * int * int;
   mutable fontsize : float;
   mutable marker_style : int;
   mutable marker_size : float;
   mutable line_color : int * int * int;
+  (* control axises *)
+  mutable xlabel : string;
+  mutable ylabel : string;
+  mutable zlabel : string;
+  mutable xrange : float * float;
+  mutable yrange : float * float;
+  mutable zrange : float * float;
   mutable auto_xrange : bool;
   mutable auto_yrange : bool;
   mutable auto_zrange : bool;
-  mutable plots : (unit -> unit) array;
+  (* control the sub plots *)
+  mutable shape : int * int;
   mutable pages : plot_typ array;
+  mutable current_page : int;
+  (* cache the plot operations *)
+  mutable plots : (unit -> unit) array;
 }
 
 (* module functions to simplify plotting *)
 
-let create () = {
+let _create () = {
   holdon = true;
   output = "";
   title = "";
@@ -60,11 +67,23 @@ let create () = {
   auto_yrange = true;
   auto_zrange = true;
   plots = [||];
+  shape = (1, 1);
+  current_page = 0;
   pages = [||];
 }
 
+let create ?(m=1) ?(n=1) s =
+  let pages = match (m * n) > 1 with
+    | true  -> Array.make (m * n) None |> Array.map (fun _ -> _create ())
+    | false -> [||]
+  in
+  let h = _create () in
+  let _ = h.shape <- (m, n) in
+  let _ = h.pages <- pages in
+  let _ = h.output <- s in h
+
 let _default_handle =
-  let h = create () in
+  let h = _create () in
   let _ = h.holdon <- false in h
 
 let _supported_device = ["aqt"; "pdf"; "ps"; "psc"; "png"; "svg"; "xfig"]
@@ -80,22 +99,35 @@ let _initialise h =
   let _ = _set_device h in
   let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   (* init the plot *)
+  let m, n = h.shape in
+  let _ = if not (h.shape = (1,1)) then plssub m n in
   let _ = plinit () in
   (* configure after init *)
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
   let _ = if h.fontsize > 0. then plschr h.fontsize 1.0 in
   let _ = if h.marker_size > 0. then plssym h.marker_size 1. in
-  let xmin, xmax = h.xrange in
-  let ymin, ymax = h.yrange in
-  let _ = plenv xmin xmax ymin ymax 0 0 in
-  let _ = pllab h.xlabel h.ylabel h.title in ()
+  let g h' = (
+    let xmin, xmax = h'.xrange in
+    let ymin, ymax = h'.yrange in
+    let _ = plenv xmin xmax ymin ymax 0 0 in
+    let _ = pllab h.xlabel h'.ylabel h'.title in ()
+  ) in
+  match h.shape = (1, 1) with
+  | true  -> g h
+  | false -> Array.iteri (fun i h' -> if i > 0 then Plplot.pladv i; g h') h.pages
 
 let _finalise () = plend ()
 
 let output h =
-  h.holdon <- false;
-  _initialise h;
-  Array.iter (fun f -> f ()) h.plots;
+  let _  = h.holdon <- false in
+  let _  = _initialise h in
+  let _  = match h.shape = (1, 1) with
+    | true  -> Array.iter (fun f -> f ()) h.plots
+    | false -> Array.iteri (fun i h' ->
+        if i > 0 then Plplot.pladv i;
+        Array.iter (fun f -> f ()) h'.plots
+      ) h.pages
+  in
   _finalise ()
 
 let set_output h s =
@@ -197,7 +229,13 @@ let plot ?(h=_default_handle) x y =
     plscol0 1 r' g' b'; plcol0 1
   ) in
   (* add closure as a layer *)
-  let _ = h.plots <- Array.append h.plots [|f|] in
+  let _ = match h.shape = (1, 1) with
+    | true  -> h.plots <- Array.append h.plots [|f|]
+    | false -> (
+        let h' = h.pages.(h.current_page) in
+        h'.plots <- Array.append h'.plots [|f|]
+      )
+  in
   if not h.holdon then output h
 
 let plot_fun ?(h=_default_handle) f a b =
@@ -219,7 +257,13 @@ let scatter ?(h=_default_handle) x y =
     plpoin x y marker_style
   ) in
   (* add closure as a layer *)
-  let _ = h.plots <- Array.append h.plots [|f|] in
+  let _ = match h.shape = (1, 1) with
+    | true  -> h.plots <- Array.append h.plots [|f|]
+    | false -> (
+        let h' = h.pages.(h.current_page) in
+        h'.plots <- Array.append h'.plots [|f|]
+      )
+  in
   if not h.holdon then output h
 
 let histogram ?(h=_default_handle) ?(bin=10) x =
@@ -235,7 +279,13 @@ let histogram ?(h=_default_handle) ?(bin=10) x =
     plhist x xmin xmax bin [ PL_HIST_DEFAULT; PL_HIST_NOSCALING ]
   ) in
   (* add closure as a layer *)
-  let _ = h.plots <- Array.append h.plots [|f|] in
+  let _ = match h.shape = (1, 1) with
+    | true  -> h.plots <- Array.append h.plots [|f|]
+    | false -> (
+        let h' = h.pages.(h.current_page) in
+        h'.plots <- Array.append h'.plots [|f|]
+      )
+  in
   if not h.holdon then output h
 
 (* FIXME: the labels will not show *)
@@ -261,13 +311,10 @@ let mesh ?(h=_default_handle) x y z =
   plend ()
 
 let subplot h i j =
-  let c = i * j in
-  match (Array.length h.pages) = 0 with
-  | true  -> (
-      let a = Array.make c _default_handle |> Array.map (fun _ -> create ()) in
-      h.pages <- a
-    )
-  | false -> ()
+  let open Plplot in
+  let m, n = h.shape in
+  let c = m * i + j in
+  h.current_page <- c
 
 
 (* TODO *)
