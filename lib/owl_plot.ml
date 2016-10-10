@@ -154,6 +154,16 @@ let legend_on = None
 (* TODO *)
 let legend_off = None
 
+let text ?(h=_default_handle) x y z s =
+  let open Plplot in
+  (* prepare the closure *)
+  let f = Obj.repr (fun () ->
+    plmtex "tl" x y z s
+  ) in
+  (* add closure as a layer *)
+  let _ = h.plots <- Array.append h.plots [|f|] in
+  if not h.holdon then output h
+
 let _union_range r x =
   let a, b = r in
   let m, n = Owl_stats.minmax x in

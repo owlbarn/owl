@@ -47,3 +47,5 @@ val scatter : ?h:plot_typ -> dsmat -> dsmat -> unit
 val histogram : ?h:plot_typ -> ?bin:int -> dsmat -> unit
 
 val mesh : ?h:plot_typ -> dsmat -> dsmat -> dsmat -> unit
+
+val text : ?h:plot_typ -> float -> float -> float -> string -> unit
