@@ -8,6 +8,8 @@ type marker_typ = SQUARE | DOT | PLUS | STAR | CIRCLE | CROSS | UPTRI | DIAMOND 
 
 val create : unit -> plot_typ
 
+val output : plot_typ -> unit
+
 val set_output : plot_typ -> string -> unit
 
 val set_title : plot_typ -> string -> unit
@@ -18,11 +20,11 @@ val set_ylabel : plot_typ -> string -> unit
 
 val set_zlabel : plot_typ -> string -> unit
 
-val set_xrange : plot_typ -> float option -> float option -> unit
+val set_xrange : plot_typ -> float -> float -> unit
 
-val set_yrange : plot_typ -> float option -> float option -> unit
+val set_yrange : plot_typ -> float -> float -> unit
 
-val set_zrange : plot_typ -> float option -> float option -> unit
+val set_zrange : plot_typ -> float -> float -> unit
 
 val set_marker_style : plot_typ -> marker_typ -> unit
 
@@ -33,6 +35,8 @@ val set_foreground_color : plot_typ -> int -> int -> int -> unit
 val set_background_color : plot_typ -> int -> int -> int -> unit
 
 val set_font_size : plot_typ -> float -> unit
+
+val set_line_color : plot_typ -> int -> int -> int -> unit
 
 val plot : ?h:plot_typ -> dsmat -> dsmat -> unit
 
