@@ -270,7 +270,7 @@ let scatter ?(h=_default_handle) x y =
   let marker_size = p.marker_size in
   let f = (fun () ->
     plssym marker_size 1.;
-    plpoin x y marker_style
+    plstring x y marker_style
   ) in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
