@@ -42,6 +42,9 @@ val set_font_size : handle -> float -> unit
 
 val set_line_color : handle -> int -> int -> int -> unit
 
+val set_line_style : handle -> int -> unit
+(** Line style is an integer ranging from 1 to 8. *)
+
 val plot : ?h:handle -> dsmat -> dsmat -> unit
 
 val plot_fun : ?h:handle -> (float -> float) -> float -> float -> unit

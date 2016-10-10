@@ -24,6 +24,7 @@ type page = {
   mutable marker_style : int;
   mutable marker_size : float;
   mutable line_color : int * int * int;
+  mutable line_style : int;
   (* control axises *)
   mutable xlabel : string;
   mutable ylabel : string;
@@ -34,6 +35,9 @@ type page = {
   mutable auto_xrange : bool;
   mutable auto_yrange : bool;
   mutable auto_zrange : bool;
+  mutable xgrid : bool;
+  mutable ygrid : bool;
+  mutable zgrid : bool;
   (* cache the plot operations *)
   mutable plots : (unit -> unit) array;
 }
@@ -63,9 +67,13 @@ let _create_page () = {
   marker_style = 2;
   marker_size = -1.;
   line_color = Plplot.plgcol0 1;
+  line_style = 1;
   auto_xrange = true;
   auto_yrange = true;
   auto_zrange = true;
+  xgrid = false;
+  ygrid = false;
+  zgrid = false;
   plots = [||];
 }
 
@@ -180,8 +188,7 @@ let set_marker_size h x = (h.pages.(h.current_page)).marker_size <- x
 
 let set_line_color h r g b = (h.pages.(h.current_page)).line_color <- (r, g, b)
 
-(* TODO *)
-let set_line_style = None
+let set_line_style h x = (h.pages.(h.current_page)).line_style <- x
 
 (* TODO *)
 let set_line_size = None
@@ -232,10 +239,14 @@ let plot ?(h=_default_handle) x y =
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let r, g, b = p.line_color in
+  let line_style = p.line_style in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
+    let _ = pllsty line_style in
     let _ = plline x y in
+    (* restore original settings *)
+    let _ = pllsty 1 in
     plscol0 1 r' g' b'; plcol0 1
   ) in
   (* add closure as a layer *)
@@ -306,10 +317,8 @@ let mesh ?(h=_default_handle) x y z =
   plend ()
 
 let subplot h i j =
-  let open Plplot in
-  let m, n = h.shape in
-  let c = m * i + j in
-  h.current_page <- c
+  let m, _ = h.shape in
+  h.current_page <- (m * i + j)
 
 
 (* TODO *)
