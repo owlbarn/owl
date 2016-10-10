@@ -75,7 +75,7 @@ let _create_handle () = {
   bgcolor = (0, 0, 0);
   shape = (1, 1);
   current_page = 0;
-  pages = [||];
+  pages = [|_create_page ()|];
 }
 
 let create ?(m=1) ?(n=1) s =
@@ -103,28 +103,31 @@ let _initialise h =
   let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   (* init the plot *)
   let m, n = h.shape in
-  let _ = if not (h.shape = (1,1)) then plssub m n in
-  let _ = plinit () in
-  (* configure after init *)
-  let g p = (
-    let _ = (let r, g, b = p.fgcolor in plscol0 1 r g b; plcol0 1) in
-    let _ = if p.fontsize > 0. then plschr p.fontsize 1.0 in
-    let _ = if p.marker_size > 0. then plssym p.marker_size 1. in
-    let xmin, xmax = p.xrange in
-    let ymin, ymax = p.yrange in
-    let _ = plenv xmin xmax ymin ymax 0 0 in
-    let _ = pllab p.xlabel p.ylabel p.title in ()
-  ) in
-  Array.iteri (fun i h' -> if i > 0 then Plplot.pladv i; g h') h.pages
+  let _ = if not (h.shape = (1,1)) then plssub n m in
+  plinit ()
 
-let _finalise () = plend ()
+let _prepare_page p =
+  (* configure after init *)
+  let _ = (let r, g, b = p.fgcolor in plscol0 1 r g b; plcol0 1) in
+  let _ = if p.fontsize > 0. then plschr p.fontsize 1.0 in
+  let _ = if p.marker_size > 0. then plssym p.marker_size 1. in
+  let xmin, xmax = p.xrange in
+  let ymin, ymax = p.yrange in
+  let _ = plenv xmin xmax ymin ymax 0 0 in
+  let _ = pllab p.xlabel p.ylabel p.title in ()
+
+let _finalise () =
+  (* play safe, reset pages in default_handle *)
+  _default_handle.pages <- [|_create_page ()|];
+  plend ()
 
 let output h =
   h.holdon <- false;
   _initialise h;
-  Array.iteri (fun i h' ->
+  Array.iteri (fun i p ->
     if i > 0 then Plplot.pladv i;
-    Array.iter (fun f -> f ()) h'.plots
+    _prepare_page p;
+    Array.iter (fun f -> f ()) p.plots
   ) h.pages;
   _finalise ()
 
