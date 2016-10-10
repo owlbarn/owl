@@ -203,6 +203,11 @@ let text ?(h=_default_handle) x y ?(dx=0.) ?(dy=0.) s =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
+let _thinning x =
+  let n = min ((float_of_int (Array.length x)) *. 0.1 ) 15. in
+  let c = float_of_int (Array.length x) /. n in
+  Array.init (int_of_float n) (fun i -> x.(int_of_float (float_of_int i *. c)))
+
 let _union_range r x =
   let a, b = r in
   let m, n = Owl_stats.minmax x in
@@ -232,6 +237,8 @@ let plot ?(h=_default_handle) x y =
     let _ = plscol0 1 r g b; plcol0 1 in
     let _ = pllsty line_style in
     let _ = plline x y in
+    let x', y' = _thinning x, _thinning y in
+    let _ = plstring x y "x" in
     (* restore original settings *)
     let _ = pllsty 1 in
     plscol0 1 r' g' b'; plcol0 1
