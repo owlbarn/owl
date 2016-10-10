@@ -2,54 +2,54 @@
 
 type dsmat = Owl_dense.dsmat
 
-type plot_typ
+type handle
 
 type marker_typ = SQUARE | DOT | PLUS | STAR | CIRCLE | CROSS | UPTRI | DIAMOND | PENTAGON
 
 type color = RED | GREEN | BLUE
 
-val create : ?m:int -> ?n:int -> string -> plot_typ
+val create : ?m:int -> ?n:int -> string -> handle
 
-val subplot : plot_typ -> int -> int -> unit
+val subplot : handle -> int -> int -> unit
 
-val output : plot_typ -> unit
+val output : handle -> unit
 
-val set_output : plot_typ -> string -> unit
+val set_output : handle -> string -> unit
 
-val set_title : plot_typ -> string -> unit
+val set_title : handle -> string -> unit
 
-val set_xlabel : plot_typ -> string -> unit
+val set_xlabel : handle -> string -> unit
 
-val set_ylabel : plot_typ -> string -> unit
+val set_ylabel : handle -> string -> unit
 
-val set_zlabel : plot_typ -> string -> unit
+val set_zlabel : handle -> string -> unit
 
-val set_xrange : plot_typ -> float -> float -> unit
+val set_xrange : handle -> float -> float -> unit
 
-val set_yrange : plot_typ -> float -> float -> unit
+val set_yrange : handle -> float -> float -> unit
 
-val set_zrange : plot_typ -> float -> float -> unit
+val set_zrange : handle -> float -> float -> unit
 
-val set_marker_style : plot_typ -> marker_typ -> unit
+val set_marker_style : handle -> marker_typ -> unit
 
-val set_marker_size : plot_typ -> float -> unit
+val set_marker_size : handle -> float -> unit
 
-val set_foreground_color : plot_typ -> int -> int -> int -> unit
+val set_foreground_color : handle -> int -> int -> int -> unit
 
-val set_background_color : plot_typ -> int -> int -> int -> unit
+val set_background_color : handle -> int -> int -> int -> unit
 
-val set_font_size : plot_typ -> float -> unit
+val set_font_size : handle -> float -> unit
 
-val set_line_color : plot_typ -> int -> int -> int -> unit
+val set_line_color : handle -> int -> int -> int -> unit
 
-val plot : ?h:plot_typ -> dsmat -> dsmat -> unit
+val plot : ?h:handle -> dsmat -> dsmat -> unit
 
-val plot_fun : ?h:plot_typ -> (float -> float) -> float -> float -> unit
+val plot_fun : ?h:handle -> (float -> float) -> float -> float -> unit
 
-val scatter : ?h:plot_typ -> dsmat -> dsmat -> unit
+val scatter : ?h:handle -> dsmat -> dsmat -> unit
 
-val histogram : ?h:plot_typ -> ?bin:int -> dsmat -> unit
+val histogram : ?h:handle -> ?bin:int -> dsmat -> unit
 
-val mesh : ?h:plot_typ -> dsmat -> dsmat -> dsmat -> unit
+val mesh : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 
-val text : ?h:plot_typ -> float -> float -> ?dx:float -> ?dy:float -> string -> unit
+val text : ?h:handle -> float -> float -> ?dx:float -> ?dy:float -> string -> unit

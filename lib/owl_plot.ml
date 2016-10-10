@@ -17,11 +17,8 @@ type marker_typ = SQUARE | DOT | PLUS | STAR | CIRCLE | CROSS | UPTRI | DIAMOND 
 
 type color = RED | GREEN | BLUE
 
-type plot_typ = {
-  mutable holdon : bool;
-  mutable output : string;
+type page = {
   mutable title : string;
-  mutable bgcolor : int * int * int;
   mutable fgcolor : int * int * int;
   mutable fontsize : float;
   mutable marker_style : int;
@@ -37,19 +34,23 @@ type plot_typ = {
   mutable auto_xrange : bool;
   mutable auto_yrange : bool;
   mutable auto_zrange : bool;
-  (* control the sub plots *)
-  mutable shape : int * int;
-  mutable pages : plot_typ array;
-  mutable current_page : int;
   (* cache the plot operations *)
   mutable plots : (unit -> unit) array;
 }
 
+type handle = {
+  mutable holdon : bool;
+  mutable output : string;
+  mutable bgcolor : int * int * int;
+  (* control the sub plots *)
+  mutable shape : int * int;
+  mutable pages : page array;
+  mutable current_page : int;
+}
+
 (* module functions to simplify plotting *)
 
-let _create () = {
-  holdon = true;
-  output = "";
+let _create_page () = {
   title = "";
   xlabel = "x";
   ylabel = "y";
@@ -57,7 +58,6 @@ let _create () = {
   xrange = (infinity, neg_infinity);
   yrange = (infinity, neg_infinity);
   zrange = (infinity, neg_infinity);
-  bgcolor = (0, 0, 0);
   fgcolor = (255, 0, 0);
   fontsize = -1.;
   marker_style = 2;
@@ -67,23 +67,26 @@ let _create () = {
   auto_yrange = true;
   auto_zrange = true;
   plots = [||];
+}
+
+let _create_handle () = {
+  holdon = true;
+  output = "";
+  bgcolor = (0, 0, 0);
   shape = (1, 1);
   current_page = 0;
   pages = [||];
 }
 
 let create ?(m=1) ?(n=1) s =
-  let pages = match (m * n) > 1 with
-    | true  -> Array.make (m * n) None |> Array.map (fun _ -> _create ())
-    | false -> [||]
-  in
-  let h = _create () in
+  let pages = Array.make (m * n) None |> Array.map (fun _ -> _create_page ()) in
+  let h = _create_handle () in
   let _ = h.shape <- (m, n) in
   let _ = h.pages <- pages in
   let _ = h.output <- s in h
 
 let _default_handle =
-  let h = _create () in
+  let h = _create_handle () in
   let _ = h.holdon <- false in h
 
 let _supported_device = ["aqt"; "pdf"; "ps"; "psc"; "png"; "svg"; "xfig"]
@@ -103,31 +106,26 @@ let _initialise h =
   let _ = if not (h.shape = (1,1)) then plssub m n in
   let _ = plinit () in
   (* configure after init *)
-  let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
-  let _ = if h.fontsize > 0. then plschr h.fontsize 1.0 in
-  let _ = if h.marker_size > 0. then plssym h.marker_size 1. in
-  let g h' = (
-    let xmin, xmax = h'.xrange in
-    let ymin, ymax = h'.yrange in
+  let g p = (
+    let _ = (let r, g, b = p.fgcolor in plscol0 1 r g b; plcol0 1) in
+    let _ = if p.fontsize > 0. then plschr p.fontsize 1.0 in
+    let _ = if p.marker_size > 0. then plssym p.marker_size 1. in
+    let xmin, xmax = p.xrange in
+    let ymin, ymax = p.yrange in
     let _ = plenv xmin xmax ymin ymax 0 0 in
-    let _ = pllab h.xlabel h'.ylabel h'.title in ()
+    let _ = pllab p.xlabel p.ylabel p.title in ()
   ) in
-  match h.shape = (1, 1) with
-  | true  -> g h
-  | false -> Array.iteri (fun i h' -> if i > 0 then Plplot.pladv i; g h') h.pages
+  Array.iteri (fun i h' -> if i > 0 then Plplot.pladv i; g h') h.pages
 
 let _finalise () = plend ()
 
 let output h =
-  let _  = h.holdon <- false in
-  let _  = _initialise h in
-  let _  = match h.shape = (1, 1) with
-    | true  -> Array.iter (fun f -> f ()) h.plots
-    | false -> Array.iteri (fun i h' ->
-        if i > 0 then Plplot.pladv i;
-        Array.iter (fun f -> f ()) h'.plots
-      ) h.pages
-  in
+  h.holdon <- false;
+  _initialise h;
+  Array.iteri (fun i h' ->
+    if i > 0 then Plplot.pladv i;
+    Array.iter (fun f -> f ()) h'.plots
+  ) h.pages;
   _finalise ()
 
 let set_output h s =
@@ -136,25 +134,31 @@ let set_output h s =
   | true  -> h.output <- s
   | false -> Log.error "unsupported file type."
 
-let set_title h s = h.title <- s
+let set_title h s = (h.pages.(h.current_page)).title <- s
 
-let set_xlabel h s = h.xlabel <- s
+let set_xlabel h s = (h.pages.(h.current_page)).xlabel <- s
 
-let set_ylabel h s = h.ylabel <- s
+let set_ylabel h s = (h.pages.(h.current_page)).ylabel <- s
 
-let set_zlabel h s = h.zlabel <- s
+let set_zlabel h s = (h.pages.(h.current_page)).zlabel <- s
 
-let set_xrange h a b = h.auto_xrange <- false; h.xrange <- (a, b)
+let set_xrange h a b =
+  (h.pages.(h.current_page)).auto_xrange <- false;
+  (h.pages.(h.current_page)).xrange <- (a, b)
 
-let set_yrange h a b = h.auto_yrange <- false; h.yrange <- (a, b)
+let set_yrange h a b =
+  (h.pages.(h.current_page)).auto_yrange <- false;
+  (h.pages.(h.current_page)).yrange <- (a, b)
 
-let set_zrange h a b = h.auto_zrange <- false; h.zrange <- (a, b)
+let set_zrange h a b =
+  (h.pages.(h.current_page)).auto_zrange <- false;
+  (h.pages.(h.current_page)).zrange <- (a, b)
 
-let set_foreground_color h r g b = h.fgcolor <- (r, g, b)
+let set_foreground_color h r g b = (h.pages.(h.current_page)).fgcolor <- (r, g, b)
 
 let set_background_color h r g b = h.bgcolor <- (r, g, b)
 
-let set_font_size h x = h.fontsize <- x
+let set_font_size h x = (h.pages.(h.current_page)).fontsize <- x
 
 let set_marker_style h x =
   let m = match x with
@@ -167,11 +171,11 @@ let set_marker_style h x =
     | UPTRI    -> 7
     | DIAMOND  -> 11
     | PENTAGON -> 12
-  in h.marker_style <- m
+  in (h.pages.(h.current_page)).marker_style <- m
 
-let set_marker_size h x = h.marker_size <- x
+let set_marker_size h x = (h.pages.(h.current_page)).marker_size <- x
 
-let set_line_color h r g b = h.line_color <- (r, g, b)
+let set_line_color h r g b = (h.pages.(h.current_page)).line_color <- (r, g, b)
 
 (* TODO *)
 let set_line_style = None
@@ -198,7 +202,8 @@ let text ?(h=_default_handle) x y ?(dx=0.) ?(dy=0.) s =
     plptex x y dx dy 0. s
   ) in
   (* add closure as a layer *)
-  let _ = h.plots <- Array.append h.plots [|f|] in
+  let p = h.pages.(h.current_page) in
+  p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
 let _union_range r x =
@@ -209,10 +214,11 @@ let _union_range r x =
   c, d
 
 let _adjust_range h d axis =
+  let p = h.pages.(h.current_page) in
   match axis with
-  | `X -> if h.auto_xrange then h.xrange <- _union_range h.xrange d
-  | `Y -> if h.auto_yrange then h.yrange <- _union_range h.yrange d
-  | `Z -> if h.auto_zrange then h.zrange <- _union_range h.zrange d
+  | `X -> if p.auto_xrange then p.xrange <- _union_range p.xrange d
+  | `Y -> if p.auto_yrange then p.yrange <- _union_range p.yrange d
+  | `Z -> if p.auto_zrange then p.zrange <- _union_range p.zrange d
 
 let plot ?(h=_default_handle) x y =
   let open Plplot in
@@ -221,7 +227,8 @@ let plot ?(h=_default_handle) x y =
   let _ = _adjust_range h x `X in
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
-  let r, g, b = h.line_color in
+  let p = h.pages.(h.current_page) in
+  let r, g, b = p.line_color in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -229,13 +236,7 @@ let plot ?(h=_default_handle) x y =
     plscol0 1 r' g' b'; plcol0 1
   ) in
   (* add closure as a layer *)
-  let _ = match h.shape = (1, 1) with
-    | true  -> h.plots <- Array.append h.plots [|f|]
-    | false -> (
-        let h' = h.pages.(h.current_page) in
-        h'.plots <- Array.append h'.plots [|f|]
-      )
-  in
+  p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
 let plot_fun ?(h=_default_handle) f a b =
@@ -250,20 +251,15 @@ let scatter ?(h=_default_handle) x y =
   let _ = _adjust_range h x `X in
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
-  let marker_style = h.marker_style in
-  let marker_size = h.marker_size in
+  let p = h.pages.(h.current_page) in
+  let marker_style = p.marker_style in
+  let marker_size = p.marker_size in
   let f = (fun () ->
     plssym marker_size 1.;
     plpoin x y marker_style
   ) in
   (* add closure as a layer *)
-  let _ = match h.shape = (1, 1) with
-    | true  -> h.plots <- Array.append h.plots [|f|]
-    | false -> (
-        let h' = h.pages.(h.current_page) in
-        h'.plots <- Array.append h'.plots [|f|]
-      )
-  in
+  p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
 let histogram ?(h=_default_handle) ?(bin=10) x =
@@ -275,17 +271,12 @@ let histogram ?(h=_default_handle) ?(bin=10) x =
   let _ = _adjust_range h [|xmin; xmax|] `X in
   let _ = _adjust_range h [|ymin; ymax|] `Y in
   (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
   let f = (fun () ->
     plhist x xmin xmax bin [ PL_HIST_DEFAULT; PL_HIST_NOSCALING ]
   ) in
   (* add closure as a layer *)
-  let _ = match h.shape = (1, 1) with
-    | true  -> h.plots <- Array.append h.plots [|f|]
-    | false -> (
-        let h' = h.pages.(h.current_page) in
-        h'.plots <- Array.append h'.plots [|f|]
-      )
-  in
+  p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
 (* FIXME: the labels will not show *)
@@ -307,7 +298,8 @@ let mesh ?(h=_default_handle) x y z =
                   "bcdmnstuv", "z axis", 0.0, 4 in
   let z = MX.to_arrays z in
   let _ = plmesh x y z [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
-  let _ = plmtex "t" 1.0 1.0 0.5 h.title in
+  let p = h.pages.(h.current_page) in
+  let _ = plmtex "t" 1.0 1.0 0.5 p.title in
   plend ()
 
 let subplot h i j =
