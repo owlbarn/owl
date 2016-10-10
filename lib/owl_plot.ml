@@ -34,7 +34,7 @@ type plot_typ = {
   mutable auto_xrange : bool;
   mutable auto_yrange : bool;
   mutable auto_zrange : bool;
-  mutable plots : Obj.t array;
+  mutable plots : (unit -> unit) array;
 }
 
 (* module functions to simplify plotting *)
@@ -76,10 +76,10 @@ let _set_device h =
 let _initialise h =
   (* configure before init *)
   let _ = _set_device h in
+  let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   (* init the plot *)
   let _ = plinit () in
   (* configure after init *)
-  let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   let _ = (let r, g, b = h.fgcolor in plscol0 1 r g b; plcol0 1) in
   let _ = if h.fontsize > 0. then plschr h.fontsize 1.0 in
   let _ = if h.marker_size > 0. then plssym h.marker_size 1. in
@@ -93,7 +93,7 @@ let _finalise () = plend ()
 let output h =
   h.holdon <- false;
   _initialise h;
-  Array.iter (fun f -> (Obj.obj f)()) h.plots;
+  Array.iter (fun f -> f ()) h.plots;
   _finalise ()
 
 let set_output h s =
@@ -157,7 +157,7 @@ let legend_off = None
 let text ?(h=_default_handle) x y z s =
   let open Plplot in
   (* prepare the closure *)
-  let f = Obj.repr (fun () ->
+  let f = (fun () ->
     plmtex "tl" x y z s
   ) in
   (* add closure as a layer *)
@@ -185,7 +185,7 @@ let plot ?(h=_default_handle) x y =
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let r, g, b = h.line_color in
-  let f = Obj.repr (fun () ->
+  let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
     let _ = plline x y in
@@ -209,7 +209,7 @@ let scatter ?(h=_default_handle) x y =
   (* prepare the closure *)
   let marker_style = h.marker_style in
   let marker_size = h.marker_size in
-  let f = Obj.repr (fun () ->
+  let f = (fun () ->
     plssym marker_size 1.;
     plpoin x y marker_style
   ) in
@@ -226,7 +226,7 @@ let histogram ?(h=_default_handle) ?(bin=10) x =
   let _ = _adjust_range h [|xmin; xmax|] `X in
   let _ = _adjust_range h [|ymin; ymax|] `Y in
   (* prepare the closure *)
-  let f = Obj.repr (fun () ->
+  let f = (fun () ->
     plhist x xmin xmax bin [ PL_HIST_DEFAULT; PL_HIST_NOSCALING ]
   ) in
   (* add closure as a layer *)
