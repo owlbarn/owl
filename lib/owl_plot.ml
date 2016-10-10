@@ -13,15 +13,13 @@ module MX = Owl_dense
 
 type dsmat = Owl_dense.dsmat
 
-type marker_typ = SQUARE | DOT | PLUS | STAR | CIRCLE | CROSS | UPTRI | DIAMOND | PENTAGON
-
 type color = RED | GREEN | BLUE
 
 type page = {
   mutable title : string;
   mutable fgcolor : int * int * int;
   mutable fontsize : float;
-  mutable marker_style : int;
+  mutable marker_style : string;
   mutable marker_size : float;
   mutable line_color : int * int * int;
   mutable line_style : int;
@@ -64,7 +62,7 @@ let _create_page () = {
   zrange = (infinity, neg_infinity);
   fgcolor = (255, 0, 0);
   fontsize = -1.;
-  marker_style = 2;
+  marker_style = "•";
   marker_size = -1.;
   line_color = Plplot.plgcol0 1;
   line_style = 1;
@@ -171,18 +169,7 @@ let set_background_color h r g b = h.bgcolor <- (r, g, b)
 
 let set_font_size h x = (h.pages.(h.current_page)).fontsize <- x
 
-let set_marker_style h x =
-  let m = match x with
-    | SQUARE   -> 0
-    | DOT      -> 1
-    | PLUS     -> 2
-    | STAR     -> 3
-    | CIRCLE   -> 4
-    | CROSS    -> 5
-    | UPTRI    -> 7
-    | DIAMOND  -> 11
-    | PENTAGON -> 12
-  in (h.pages.(h.current_page)).marker_style <- m
+let set_marker_style h x = (h.pages.(h.current_page)).marker_style <- x
 
 let set_marker_size h x = (h.pages.(h.current_page)).marker_size <- x
 

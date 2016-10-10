@@ -4,8 +4,6 @@ type dsmat = Owl_dense.dsmat
 
 type handle
 
-type marker_typ = SQUARE | DOT | PLUS | STAR | CIRCLE | CROSS | UPTRI | DIAMOND | PENTAGON
-
 type color = RED | GREEN | BLUE
 
 val create : ?m:int -> ?n:int -> string -> handle
@@ -30,7 +28,7 @@ val set_yrange : handle -> float -> float -> unit
 
 val set_zrange : handle -> float -> float -> unit
 
-val set_marker_style : handle -> marker_typ -> unit
+val set_marker_style : handle -> string -> unit
 
 val set_marker_size : handle -> float -> unit
 
