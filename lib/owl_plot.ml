@@ -17,16 +17,18 @@ type page = {
   mutable title : string;
   mutable fgcolor : int * int * int;
   mutable fontsize : float;
-  (* control axises *)
+  (* control axis labels *)
   mutable xlabel : string;
   mutable ylabel : string;
   mutable zlabel : string;
+  (* control axis ranges *)
   mutable xrange : float * float;
   mutable yrange : float * float;
   mutable zrange : float * float;
   mutable auto_xrange : bool;
   mutable auto_yrange : bool;
   mutable auto_zrange : bool;
+  (* control grids *)
   mutable xgrid : bool;
   mutable ygrid : bool;
   mutable zgrid : bool;
@@ -39,6 +41,7 @@ type handle = {
   mutable output : string;
   mutable bgcolor : int * int * int;
   mutable pensize : float;
+  mutable page_size : int * int;
   (* control the sub plots *)
   mutable shape : int * int;
   mutable pages : page array;
@@ -71,6 +74,7 @@ let _create_handle () = {
   output = "";
   bgcolor = (0, 0, 0);
   pensize = 0.;
+  page_size = (0,0);
   shape = (1, 1);
   current_page = 0;
   pages = [|_create_page ()|];
@@ -87,7 +91,8 @@ let _default_handle =
   let h = _create_handle () in
   let _ = h.holdon <- false in h
 
-let _supported_device = ["aqt"; "pdf"; "ps"; "psc"; "png"; "svg"; "xfig"]
+let _supported_device = ["aqt"; "xwin"; "pdf"; "ps"; "psc"; "png"; "svg"; "xfig"; "psttf"; "psttc";
+  "xcairo"; "pdfcairo"; "epscairo"; "pscairo"; "svgcairo"; "pngcairo"; "memcairo"; "extcairo"]
 
 let _set_device h =
   try let x = Owl_utils.get_suffix h.output in
@@ -103,6 +108,8 @@ let _initialise h =
   (* init the plot *)
   let m, n = h.shape in
   let _ = if not (h.shape = (1,1)) then plssub n m in
+  let x, y = h.page_size in
+  let _ = plspage 0. 0. x y 0 0 in
   let _ = plinit () in
   (* configure after init *)
   let _ = plwidth h.pensize in ()
@@ -166,6 +173,8 @@ let set_font_size h x = (h.pages.(h.current_page)).fontsize <- x
 
 let set_pen_size h x = h.pensize <- x
 
+let set_page_size h x y = h.page_size <- (x, y)
+
 (* TODO *)
 let set_plot_size = None
 
@@ -208,7 +217,7 @@ let _adjust_range h d axis =
   | `Y -> if p.auto_yrange then p.yrange <- _union_range p.yrange d
   | `Z -> if p.auto_zrange then p.zrange <- _union_range p.zrange d
 
-let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) ?(line_width=(-1.)) x y =
+let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(marker_size=1.) ?(line_style=1) ?(line_width=(-1.)) x y =
   let open Plplot in
   let x = MX.to_array x in
   let y = MX.to_array y in
@@ -222,6 +231,8 @@ let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) ?(
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
     let _ = if line_width > (-1.) then plwidth line_width in
+    let c' = plgchr () |> fst in
+    let _ = plschr marker_size 1. in
     let _ = match line_style > 0 && line_style < 9 with
       | true  -> pllsty line_style; plline x y
       | false -> ()
@@ -233,6 +244,7 @@ let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) ?(
           plstring x' y' marker )
     in
     (* restore original settings *)
+    let _ = plschr c' 1. in
     let _ = plwidth old_pensize in
     let _ = pllsty 1 in
     plscol0 1 r' g' b'; plcol0 1
@@ -241,12 +253,12 @@ let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) ?(
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let plot_fun ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) ?(line_width=(-1.)) f a b =
+let plot_fun ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) f a b =
   let x = MX.linspace a b 100 in
   let y = MX.map f x in
-  plot ~h ~color ~marker ~line_style ~line_width x y
+  plot ~h ~color ~marker ~marker_size ~line_style ~line_width x y
 
-let scatter ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="•") ?(marker_size=1.) x y =
+let scatter ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="•") ?(marker_size=4.) x y =
   let open Plplot in
   let x = MX.to_array x in
   let y = MX.to_array y in
@@ -258,8 +270,11 @@ let scatter ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="•") ?(marker_siz
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
+    let c' = plgchr () |> fst in
+    let _ = plschr marker_size 1. in
     let _ = plstring x y marker in
     (* restore original settings *)
+    let _ = plschr c' 1. in
     plscol0 1 r' g' b'; plcol0 1
   ) in
   (* add closure as a layer *)
@@ -307,8 +322,8 @@ let mesh ?(h=_default_handle) x y z =
   plend ()
 
 let subplot h i j =
-  let m, _ = h.shape in
-  h.current_page <- (m * i + j)
+  let _, n = h.shape in
+  h.current_page <- (n * i + j)
 
 
 (* TODO *)
