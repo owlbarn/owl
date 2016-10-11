@@ -100,6 +100,18 @@ let _set_device h =
     Plplot.plsfnam h.output;
   with exn -> ()
 
+let _calculate_paper_size m n =
+  let max_w, max_h = 900., 900. in
+  let r0 = 4. /. 3. in
+  let cur_w, cur_h = r0 *. (float_of_int n), float_of_int m in
+  let r1 = max_w /. max_h in
+  let r2 = cur_w /. cur_h in
+  let w, h = match (r1 /. r2) < 1. with
+    | true  -> max_w, max_w /. r2
+    | false -> max_h *. r2, max_h
+  in
+  int_of_float w, int_of_float h
+
 let _initialise h =
   let open Plplot in
   (* configure before init *)
@@ -108,8 +120,11 @@ let _initialise h =
   (* init the plot *)
   let m, n = h.shape in
   let _ = if not (h.shape = (1,1)) then plssub n m in
-  let x, y = h.page_size in
-  (* let _ = plspage 0. 0. 300 900 0 0 in *)
+  let x, y = match h.page_size = (0, 0) with
+    | true  -> _calculate_paper_size m n
+    | false -> h.page_size
+  in
+  let _ = plspage 0. 0. x y 0 0 in
   let _ = plinit () in
   (* configure after init *)
   let _ = plwidth h.pensize in ()
