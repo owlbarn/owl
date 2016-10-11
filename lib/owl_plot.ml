@@ -109,7 +109,7 @@ let _initialise h =
   let m, n = h.shape in
   let _ = if not (h.shape = (1,1)) then plssub n m in
   let x, y = h.page_size in
-  let _ = plspage 0. 0. x y 0 0 in
+  (* let _ = plspage 0. 0. 300 900 0 0 in *)
   let _ = plinit () in
   (* configure after init *)
   let _ = plwidth h.pensize in ()
