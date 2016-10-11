@@ -34,11 +34,13 @@ val set_background_color : handle -> int -> int -> int -> unit
 
 val set_font_size : handle -> float -> unit
 
+val set_pen_size : handle -> float -> unit
+
 (** Line style is an integer ranging from 1 to 8. *)
 
-val plot : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?line_style:int -> dsmat -> dsmat -> unit
+val plot : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> unit
 
-val plot_fun : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?line_style:int -> (float -> float) -> float -> float -> unit
+val plot_fun : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?line_style:int -> ?line_width:float -> (float -> float) -> float -> float -> unit
 
 val scatter : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> dsmat -> dsmat -> unit
 

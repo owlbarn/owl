@@ -5,8 +5,6 @@
 
 (** [ Graphical Module ]  *)
 
-open Plplot
-
 module MX = Owl_dense
 
 (* types in plot module *)
@@ -40,6 +38,7 @@ type handle = {
   mutable holdon : bool;
   mutable output : string;
   mutable bgcolor : int * int * int;
+  mutable pensize : float;
   (* control the sub plots *)
   mutable shape : int * int;
   mutable pages : page array;
@@ -71,6 +70,7 @@ let _create_handle () = {
   holdon = true;
   output = "";
   bgcolor = (0, 0, 0);
+  pensize = 0.;
   shape = (1, 1);
   current_page = 0;
   pages = [|_create_page ()|];
@@ -91,21 +91,25 @@ let _supported_device = ["aqt"; "pdf"; "ps"; "psc"; "png"; "svg"; "xfig"]
 
 let _set_device h =
   try let x = Owl_utils.get_suffix h.output in
-    plsdev x;
-    plsfnam h.output;
+    Plplot.plsdev x;
+    Plplot.plsfnam h.output;
   with exn -> ()
 
 let _initialise h =
+  let open Plplot in
   (* configure before init *)
   let _ = _set_device h in
   let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
   (* init the plot *)
   let m, n = h.shape in
   let _ = if not (h.shape = (1,1)) then plssub n m in
-  plinit ()
+  let _ = plinit () in
+  (* configure after init *)
+  let _ = plwidth h.pensize in ()
 
 let _prepare_page p =
-  (* configure after init *)
+  let open Plplot in
+  (* configure an individual page *)
   let _ = (let r, g, b = p.fgcolor in plscol0 1 r g b; plcol0 1) in
   let _ = if p.fontsize > 0. then plschr p.fontsize 1.0 in
   let xmin, xmax = p.xrange in
@@ -116,7 +120,7 @@ let _prepare_page p =
 let _finalise () =
   (* play safe, reset pages in default_handle *)
   _default_handle.pages <- [|_create_page ()|];
-  plend ()
+  Plplot.plend ()
 
 let output h =
   h.holdon <- false;
@@ -160,6 +164,8 @@ let set_background_color h r g b = h.bgcolor <- (r, g, b)
 
 let set_font_size h x = (h.pages.(h.current_page)).fontsize <- x
 
+let set_pen_size h x = h.pensize <- x
+
 (* TODO *)
 let set_plot_size = None
 
@@ -202,7 +208,7 @@ let _adjust_range h d axis =
   | `Y -> if p.auto_yrange then p.yrange <- _union_range p.yrange d
   | `Z -> if p.auto_zrange then p.zrange <- _union_range p.zrange d
 
-let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) x y =
+let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) ?(line_width=(-1.)) x y =
   let open Plplot in
   let x = MX.to_array x in
   let y = MX.to_array y in
@@ -211,11 +217,15 @@ let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) x 
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let r, g, b = color in
+  let old_pensize = h.pensize in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
-    let _ = pllsty line_style in
-    let _ = plline x y in
+    let _ = if line_width > (-1.) then plwidth line_width in
+    let _ = match line_style > 0 && line_style < 9 with
+      | true  -> pllsty line_style; plline x y
+      | false -> ()
+    in
     let _ = match marker = "" with
       | true  -> ()
       | false -> (
@@ -223,6 +233,7 @@ let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) x 
           plstring x' y' marker )
     in
     (* restore original settings *)
+    let _ = plwidth old_pensize in
     let _ = pllsty 1 in
     plscol0 1 r' g' b'; plcol0 1
   ) in
@@ -230,10 +241,10 @@ let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) x 
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let plot_fun ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) f a b =
+let plot_fun ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) ?(line_width=(-1.)) f a b =
   let x = MX.linspace a b 100 in
   let y = MX.map f x in
-  plot ~h ~marker ~line_style ~color x y
+  plot ~h ~color ~marker ~line_style ~line_width x y
 
 let scatter ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="•") ?(marker_size=1.) x y =
   let open Plplot in
