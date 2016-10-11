@@ -232,7 +232,7 @@ let _adjust_range h d axis =
   | `Y -> if p.auto_yrange then p.yrange <- _union_range p.yrange d
   | `Z -> if p.auto_zrange then p.zrange <- _union_range p.zrange d
 
-let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(marker_size=1.) ?(line_style=1) ?(line_width=(-1.)) x y =
+let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) x y =
   let open Plplot in
   let x = MX.to_array x in
   let y = MX.to_array y in
@@ -340,6 +340,36 @@ let subplot h i j =
   let _, n = h.shape in
   h.current_page <- (n * i + j)
 
-
-(* TODO *)
-let stem = None
+let stem ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="#[0x2299]") ?(marker_size=4.) ?(line_style=2) ?(line_width=(-1.)) x y =
+  let open Plplot in
+  let x = MX.to_array x in
+  let y = MX.to_array y in
+  let _ = _adjust_range h x `X in
+  let _ = _adjust_range h y `Y in
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let r, g, b = color in
+  let old_pensize = h.pensize in
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    let _ = if line_width > (-1.) then plwidth line_width in
+    let c' = plgchr () |> fst in
+    let _ = plschr marker_size 1. in
+    let _ = match line_style > 0 && line_style < 9 with
+      | true  -> (
+          pllsty line_style;
+          Array.iter2 (fun x' y' -> pljoin x' 0. x' y') x y
+        )
+      | false -> ()
+    in
+    let _ = if not (marker = "") then plstring x y marker in
+    (* restore original settings *)
+    let _ = plschr c' 1. in
+    let _ = plwidth old_pensize in
+    let _ = pllsty 1 in
+    plscol0 1 r' g' b'; plcol0 1
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
