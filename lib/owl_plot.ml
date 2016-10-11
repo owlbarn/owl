@@ -19,10 +19,6 @@ type page = {
   mutable title : string;
   mutable fgcolor : int * int * int;
   mutable fontsize : float;
-  mutable marker_style : string;
-  mutable marker_size : float;
-  mutable line_color : int * int * int;
-  mutable line_style : int;
   (* control axises *)
   mutable xlabel : string;
   mutable ylabel : string;
@@ -62,10 +58,6 @@ let _create_page () = {
   zrange = (infinity, neg_infinity);
   fgcolor = (255, 0, 0);
   fontsize = -1.;
-  marker_style = "•";
-  marker_size = -1.;
-  line_color = Plplot.plgcol0 1;
-  line_style = 1;
   auto_xrange = true;
   auto_yrange = true;
   auto_zrange = true;
@@ -116,7 +108,6 @@ let _prepare_page p =
   (* configure after init *)
   let _ = (let r, g, b = p.fgcolor in plscol0 1 r g b; plcol0 1) in
   let _ = if p.fontsize > 0. then plschr p.fontsize 1.0 in
-  let _ = if p.marker_size > 0. then plssym p.marker_size 1. in
   let xmin, xmax = p.xrange in
   let ymin, ymax = p.yrange in
   let _ = plenv xmin xmax ymin ymax 0 0 in
@@ -169,17 +160,6 @@ let set_background_color h r g b = h.bgcolor <- (r, g, b)
 
 let set_font_size h x = (h.pages.(h.current_page)).fontsize <- x
 
-let set_marker_style h x = (h.pages.(h.current_page)).marker_style <- x
-
-let set_marker_size h x = (h.pages.(h.current_page)).marker_size <- x
-
-let set_line_color h r g b = (h.pages.(h.current_page)).line_color <- (r, g, b)
-
-let set_line_style h x = (h.pages.(h.current_page)).line_style <- x
-
-(* TODO *)
-let set_line_size = None
-
 (* TODO *)
 let set_plot_size = None
 
@@ -222,7 +202,7 @@ let _adjust_range h d axis =
   | `Y -> if p.auto_yrange then p.yrange <- _union_range p.yrange d
   | `Z -> if p.auto_zrange then p.zrange <- _union_range p.zrange d
 
-let plot ?(h=_default_handle) x y =
+let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) x y =
   let open Plplot in
   let x = MX.to_array x in
   let y = MX.to_array y in
@@ -230,13 +210,18 @@ let plot ?(h=_default_handle) x y =
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = p.line_color in
-  let line_style = p.line_style in
+  let r, g, b = color in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
     let _ = pllsty line_style in
     let _ = plline x y in
+    let _ = match marker = "" with
+      | true  -> ()
+      | false -> (
+          let x', y' = _thinning x, _thinning y in
+          plstring x' y' marker )
+    in
     (* restore original settings *)
     let _ = pllsty 1 in
     plscol0 1 r' g' b'; plcol0 1
@@ -245,12 +230,12 @@ let plot ?(h=_default_handle) x y =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let plot_fun ?(h=_default_handle) f a b =
+let plot_fun ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(line_style=1) f a b =
   let x = MX.linspace a b 100 in
   let y = MX.map f x in
-  plot ~h x y
+  plot ~h ~marker ~line_style ~color x y
 
-let scatter ?(h=_default_handle) x y =
+let scatter ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="•") ?(marker_size=1.) x y =
   let open Plplot in
   let x = MX.to_array x in
   let y = MX.to_array y in
@@ -258,11 +243,13 @@ let scatter ?(h=_default_handle) x y =
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let marker_style = p.marker_style in
-  let marker_size = p.marker_size in
+  let r, g, b = color in
   let f = (fun () ->
-    plssym marker_size 1.;
-    plstring x y marker_style
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    let _ = plstring x y marker in
+    (* restore original settings *)
+    plscol0 1 r' g' b'; plcol0 1
   ) in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];

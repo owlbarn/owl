@@ -28,26 +28,19 @@ val set_yrange : handle -> float -> float -> unit
 
 val set_zrange : handle -> float -> float -> unit
 
-val set_marker_style : handle -> string -> unit
-
-val set_marker_size : handle -> float -> unit
-
 val set_foreground_color : handle -> int -> int -> int -> unit
 
 val set_background_color : handle -> int -> int -> int -> unit
 
 val set_font_size : handle -> float -> unit
 
-val set_line_color : handle -> int -> int -> int -> unit
-
-val set_line_style : handle -> int -> unit
 (** Line style is an integer ranging from 1 to 8. *)
 
-val plot : ?h:handle -> dsmat -> dsmat -> unit
+val plot : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?line_style:int -> dsmat -> dsmat -> unit
 
-val plot_fun : ?h:handle -> (float -> float) -> float -> float -> unit
+val plot_fun : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?line_style:int -> (float -> float) -> float -> float -> unit
 
-val scatter : ?h:handle -> dsmat -> dsmat -> unit
+val scatter : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> dsmat -> dsmat -> unit
 
 val histogram : ?h:handle -> ?bin:int -> dsmat -> unit
 
