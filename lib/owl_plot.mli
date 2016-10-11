@@ -50,6 +50,8 @@ val histogram : ?h:handle -> ?bin:int -> dsmat -> unit
 
 val stem : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> unit
 
-val mesh : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
+val autocorr : ?h:handle -> dsmat -> unit
 
 val text : ?h:handle -> float -> float -> ?dx:float -> ?dy:float -> string -> unit
+
+val mesh : ?h:handle -> dsmat -> dsmat -> dsmat -> unit

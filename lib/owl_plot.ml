@@ -373,3 +373,15 @@ let stem ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="#[0x2299]") ?(marker_
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
+
+let autocorr ?(h=_default_handle) x =
+  let z = MX.to_array x in
+  let x' = Array.init (Array.length z) (fun i -> float_of_int i) in
+  let y' = Array.mapi (fun i _ -> Owl_stats.autocorrelation ~lag:i z) x' in
+  let x' = MX.of_arrays [|x'|] in
+  let y' = MX.of_arrays [|y'|] in
+  let _ = set_xlabel h "Lag" in
+  let _ = set_ylabel h "Autocorrelation" in
+  stem ~h ~line_style:1 x' y'
+
+let draw_line = None
