@@ -389,9 +389,8 @@ let plot_multi = None
 
 let boxplot = None
 
-let _draw_bar x0 y0 =
+let _draw_bar w x0 y0 =
   let open Plplot in
-  let w = 0.4 in
   let x = [|x0-.w; x0-.w; x0+.w; x0+.w|] in
   let y = [|0.; y0; y0; 0.|] in
   let _ = plfill x y in
@@ -399,14 +398,16 @@ let _draw_bar x0 y0 =
 
 let bar ?(h=_default_handle) y =
   let open Plplot in
+  let w = 0.4 in
   let y = MX.to_array y in
   let x = Array.mapi (fun i _ -> float_of_int i +. 1.) y in
-  let _ = _adjust_range h x `X in
+  let x_min, x_max = Owl_stats.minmax x in
+  let _ = _adjust_range h [|x_min-.w; x_max+.w|] `X in
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let f = (fun () ->
-    Owl_utils.array_iter2 (fun x0 y0 -> _draw_bar x0 y0) x y;
+    Owl_utils.array_iter2 (fun x0 y0 -> _draw_bar w x0 y0) x y;
     (* restore original settings *)
     pllsty 1
   ) in
