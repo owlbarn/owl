@@ -392,6 +392,53 @@ let draw_line ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_wi
 
 let plot_multi = None
 
+let _draw_error_bar ?(w=0.) x y e =
+  let open Plplot in
+  let w = w /. 2. in
+  (* draw vertical line *)
+  let x' = [|x; x|] in
+  let y' = [|y-.e; y+.e|] in
+  let _ = plline x' y' in
+  (* draw upper bar *)
+  let x' = [|x-.w; x+.w|] in
+  let y' = [|y+.e; y+.e|] in
+  let _ = plline x' y' in
+  (* draw lower line *)
+  let x' = [|x-.w; x+.w|] in
+  let y' = [|y-.e; y-.e|] in
+  let _ = plline x' y' in ()
+
+let error_bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) x y e =
+  let open Plplot in
+  let ymin, _, _ = MX.(min(y -@ e)) in
+  let ymax, _, _ = MX.(max(y +@ e)) in
+  let x = MX.to_array x in
+  let y = MX.to_array y in
+  let e = MX.to_array e in
+  let _ = _adjust_range h x `X in
+  let _ = _adjust_range h [|ymin; ymax|] `Y in
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let old_pensize = h.pensize in
+  let w = let a, b = Owl_stats.minmax x in (a -. b) *. 0.02 in
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    let _ = if line_width > (-1.) then plwidth line_width in
+    let _ = pllsty line_style in
+    let _ = Owl_utils.array_iter3 (fun x0 y0 e0 ->
+      _draw_error_bar ~w x0 y0 e0
+    ) x y e in
+    (* restore original settings *)
+    let _ = plwidth old_pensize in
+    let _ = pllsty 1 in
+    plscol0 1 r' g' b'; plcol0 1
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
+
 let boxplot = None
 
 let _draw_bar w x0 y0 =

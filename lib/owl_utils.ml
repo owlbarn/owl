@@ -41,3 +41,9 @@ let array_iter2 f x y =
   for i = 0 to c - 1 do
     f x.(i) y.(i)
   done
+
+let array_iter3 f x y z =
+  let c = min (Array.length x) (Array.length y) |> min (Array.length z) in
+  for i = 0 to c - 1 do
+    f x.(i) y.(i) z.(i)
+  done
