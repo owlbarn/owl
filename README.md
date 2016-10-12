@@ -265,7 +265,39 @@ No matter what plot terminal you use, you should end up with a figure as below.
 
 ![Plot example 01](examples/test_plot_01.png)
 
-Besides `Plot.mesh`, there are several other basic plotting functions in `Plot`. The module is still under active development.
+Besides `Plot.mesh`, there are several other basic plotting functions in `Plot`. Even though the module is still immature and under active development, it can already do some fairly complicated plots with minimal coding efforts. E.g., the following code will generate a `2 x 2` subplot.
+
+```ocaml
+let f p i = match i with
+  | 0 -> Stats.Rnd.gaussian ~sigma:0.5 () +. p.(1)
+  | _ -> Stats.Rnd.gaussian ~sigma:0.1 () *. p.(0)
+in
+let y = Stats.gibbs_sampling f [|0.1;0.1|] 5_000 |> Dense.of_arrays in
+let h = Plot.create ~m:2 ~n:2 "test_plot_04.png" in
+let _ = Plot.set_background_color h 255 255 255 in
+let _ = Plot.subplot h 0 0 in
+let _ = Plot.set_title h "Bivariate model" in
+let _ = Plot.scatter ~h (Dense.col y 0) (Dense.col y 1) in
+let _ = Plot.subplot h 0 1 in
+let _ = Plot.set_title h "Distribution of y" in
+let _ = Plot.set_xlabel h "y" in
+let _ = Plot.set_ylabel h "Frequency" in
+let _ = Plot.histogram ~h ~bin:50 (Dense.col y 1) in
+let _ = Plot.subplot h 1 0 in
+let _ = Plot.set_title h "Distribution of x" in
+let _ = Plot.set_ylabel h "Frequency" in
+let _ = Plot.histogram ~h ~bin:50 (Dense.col y 0) in
+let _ = Plot.subplot h 1 1 in
+let _ = Plot.set_foreground_color h 51  102 255 in
+let _ = Plot.set_title h "Sine function" in
+let _ = Plot.plot_fun ~h ~line_style:2 Maths.sin 0. 28. in
+let _ = Plot.autocorr ~h (Dense.sequential 1 28) in
+Plot.output h;;
+```
+
+The end result is as follows. You probably have already grasped the idea of how to plot in Owl. But I promise to write another separate post to introduce plotting in more details.
+
+![Plot example 04](examples/test_plot_04.png)
 
 
 ## Maths and Stats
@@ -299,7 +331,7 @@ Plot.scatter (Dense.col y 0) (Dense.col y 1);;
 
 We take 5000 samples from the defined distribution and plot them as a scatter plot, as below.
 
-![Plot example 02](examples/test_plot_03.png)
+![Plot example 03](examples/test_plot_03.png)
 
 The future plan is to embed a small PPL (Probabilistic Programming Language) in `Stats` module.
 
