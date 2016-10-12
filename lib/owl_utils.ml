@@ -29,7 +29,15 @@ let mapi_array f x =
 
 let map_array f x = mapi_array (fun _ y -> f y) x
 
-(** get the suffix a file name *)
+(* get the suffix a file name *)
 let get_suffix s =
   let parts = Str.(split (regexp "\.")) s in
   List.(nth parts (length parts - 1))
+
+(* deal with the issue: OCaml 4.02.3 does not have Array.iter2
+  eventually we need to move to OCaml 4.03.0 *)
+let array_iter2 f x y =
+  let c = min (Array.length x) (Array.length y) in
+  for i = 0 to c - 1 do
+    f x.(i) y.(i)
+  done

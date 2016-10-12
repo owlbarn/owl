@@ -333,7 +333,7 @@ let stem ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="#[0x2299]") ?(marker_
     let _ = match line_style > 0 && line_style < 9 with
       | true  -> (
           pllsty line_style;
-          Array.iter2 (fun x' y' -> pljoin x' 0. x' y') x y
+          Owl_utils.array_iter2 (fun x' y' -> pljoin x' 0. x' y') x y
         )
       | false -> ()
     in
