@@ -58,4 +58,6 @@ val draw_line: ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_w
 
 val mesh : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 
-val bar : ?h:handle -> dsmat -> unit
+val bar : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?fill_pattern:int -> dsmat -> unit
+
+val area : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?fill_pattern:int -> dsmat -> dsmat -> unit

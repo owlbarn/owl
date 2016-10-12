@@ -385,6 +385,8 @@ let draw_line ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(line_wid
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
+let draw_rectangular ?(color=(255,0,0)) ?(fill_pattern=0) x0 y0 x1 y1 = None
+
 let plot_multi = None
 
 let boxplot = None
@@ -396,7 +398,7 @@ let _draw_bar w x0 y0 =
   let _ = plfill x y in
   let _ = pllsty 1; plline x y in ()
 
-let bar ?(h=_default_handle) y =
+let bar ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(fill_pattern=0) y =
   let open Plplot in
   let w = 0.4 in
   let y = MX.to_array y in
@@ -406,16 +408,47 @@ let bar ?(h=_default_handle) y =
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
+  let r, g, b = color in
   let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    let _ = pllsty line_style in
+    let _ = plpsty fill_pattern in
     Owl_utils.array_iter2 (fun x0 y0 -> _draw_bar w x0 y0) x y;
     (* restore original settings *)
+    plscol0 1 r' g' b'; plcol0 1;
     pllsty 1
   ) in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let area = None
+let area ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(fill_pattern=0) x y=
+  let open Plplot in
+  let x = MX.to_array x in
+  let y = MX.to_array y in
+  let xmin, xmax = Owl_stats.minmax x in
+  let x = Array.(append (append [|xmin|] x) [|xmax|]) in
+  let y = Array.(append (append [|0.|] y) [|0.|]) in
+  let _ = _adjust_range h x `X in
+  let _ = _adjust_range h y `Y in
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let r, g, b = color in
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    let _ = pllsty line_style in
+    let _ = plline x y in
+    let _ = plpsty fill_pattern in
+    let _ = plfill x y in
+    (* restore original settings *)
+    plscol0 1 r' g' b'; plcol0 1;
+    pllsty 1
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
 
 let pie = None
 
