@@ -191,9 +191,6 @@ let set_pen_size h x = h.pensize <- x
 let set_page_size h x y = h.page_size <- (x, y)
 
 (* TODO *)
-let set_plot_size = None
-
-(* TODO *)
 let legend_on = None
 
 (* TODO *)
@@ -313,29 +310,6 @@ let histogram ?(h=_default_handle) ?(bin=10) x =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-(* FIXME: the labels will not show *)
-let mesh ?(h=_default_handle) x y z =
-  let open Plplot in
-  let x = MX.to_array x in
-  let y = MX.(transpose y |> to_array) in
-  let xmin, xmax = Owl_stats.minmax x in
-  let ymin, ymax = Owl_stats.minmax y in
-  let zmin, zmax, _, _, _, _ = MX.minmax z in
-  let _ = _set_device h in
-  let _ = plinit () in
-  let _ = pladv 0 in
-  let _ = plvpor 0.0 1.0 0.0 1.0 in
-  let _ = plwind (-1.0) 1.0 (-1.0) 1.5 in
-  let _ = plw3d 1.0 1.0 1.0 xmin xmax ymin ymax zmin zmax 33. 115. in
-  let _ = plbox3  "bnstu", "x axis", 0.0, 0,
-                  "bnstu", "y axis", 0.0, 0,
-                  "bcdmnstuv", "z axis", 0.0, 4 in
-  let z = MX.to_arrays z in
-  let _ = plmesh x y z [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
-  let p = h.pages.(h.current_page) in
-  let _ = plmtex "t" 1.0 1.0 0.5 p.title in
-  plend ()
-
 let subplot h i j =
   let _, n = h.shape in
   h.current_page <- (n * i + j)
@@ -410,3 +384,36 @@ let draw_line ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(line_wid
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
+
+let bar = None
+
+let area = None
+
+let pie = None
+
+let contour = None
+
+let surf = None
+
+(* FIXME: the labels will not show *)
+let mesh ?(h=_default_handle) x y z =
+  let open Plplot in
+  let x = MX.to_array x in
+  let y = MX.(transpose y |> to_array) in
+  let xmin, xmax = Owl_stats.minmax x in
+  let ymin, ymax = Owl_stats.minmax y in
+  let zmin, zmax, _, _, _, _ = MX.minmax z in
+  let _ = _set_device h in
+  let _ = plinit () in
+  let _ = pladv 0 in
+  let _ = plvpor 0.0 1.0 0.0 1.0 in
+  let _ = plwind (-1.0) 1.0 (-1.0) 1.5 in
+  let _ = plw3d 1.0 1.0 1.0 xmin xmax ymin ymax zmin zmax 33. 115. in
+  let _ = plbox3  "bnstu", "x axis", 0.0, 0,
+                  "bnstu", "y axis", 0.0, 0,
+                  "bcdmnstuv", "z axis", 0.0, 4 in
+  let z = MX.to_arrays z in
+  let _ = plmesh x y z [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
+  let p = h.pages.(h.current_page) in
+  let _ = plmtex "t" 1.0 1.0 0.5 p.title in
+  plend ()
