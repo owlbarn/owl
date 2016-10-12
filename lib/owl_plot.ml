@@ -218,19 +218,20 @@ let _thinning x =
   let c = float_of_int (Array.length x) /. n in
   Array.init (int_of_float n) (fun i -> x.(int_of_float (float_of_int i *. c)))
 
-let _union_range r x =
+let _union_range p r x =
   let a, b = r in
   let m, n = Owl_stats.minmax x in
   let c = if a < m then a else m in
   let d = if b > n then b else n in
-  c, d
+  let e = (d -. c) *. p in
+  c -. e, d +. e
 
-let _adjust_range h d axis =
+let _adjust_range ?(margin=0.) h d axis =
   let p = h.pages.(h.current_page) in
   match axis with
-  | `X -> if p.auto_xrange then p.xrange <- _union_range p.xrange d
-  | `Y -> if p.auto_yrange then p.yrange <- _union_range p.yrange d
-  | `Z -> if p.auto_zrange then p.zrange <- _union_range p.zrange d
+  | `X -> if p.auto_xrange then p.xrange <- _union_range margin p.xrange d
+  | `Y -> if p.auto_yrange then p.yrange <- _union_range margin p.yrange d
+  | `Z -> if p.auto_zrange then p.zrange <- _union_range margin p.zrange d
 
 let plot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) x y =
   let open Plplot in
@@ -437,11 +438,48 @@ let error_bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_wi
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let _draw_whiskers_box x y =
+let _draw_whiskers_box w x y =
+  let open Plplot in
+  let ymed, y1st, y3rd = Owl_stats.(median y, first_quartile y, third_quartile y) in
+  let w = w /. 2. in
+  let x' = [|x-.w; x-.w; x+.w; x+.w; x-.w|] in
+  let y' = [|y1st; y3rd; y3rd; y1st; y1st|] in
+  let _ = pllsty 1; plline x' y' in
+  let x' = [|x-.w; x+.w|] in
+  let y' = [|ymed; ymed|] in
+  let _ = pllsty 1; plline x' y' in
   let ymin, ymax = Owl_stats.minmax y in
-  ()
+  let x' = [|x; x|] in
+  let y' = [|ymin; y1st|] in
+  let _ = pllsty 1; plline x' y' in
+  let x' = [|x; x|] in
+  let y' = [|y3rd; ymax|] in
+  let _ = pllsty 1; plline x' y' in ()
 
-let boxplot = None
+let boxplot ?(h=_default_handle) ?(color=(-1,-1,-1)) y =
+  let open Plplot in
+  let m, _ = Owl_dense.shape y in
+  let x = Array.init m (fun i -> float_of_int i +. 1.) in
+  let xmin, xmax = Owl_stats.minmax x in
+  let w = 0.4 in
+  let y0 = Owl_dense.to_array y in
+  let y1 = Owl_dense.to_arrays y in
+  let _ = _adjust_range h [|xmin-.w; xmax+.w|] `X in
+  let _ = _adjust_range h ~margin:0.1 y0 `Y in
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    Owl_utils.array_iter2 (fun x' y' -> _draw_whiskers_box w x' y') x y1;
+    (* restore original settings *)
+    plscol0 1 r' g' b'; plcol0 1;
+    pllsty 1
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
 
 let _draw_bar w x0 y0 =
   let open Plplot in
@@ -478,8 +516,8 @@ let bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=
   let w = 0.4 in
   let y = Owl_dense.to_array y in
   let x = Array.mapi (fun i _ -> float_of_int i +. 1.) y in
-  let x_min, x_max = Owl_stats.minmax x in
-  let _ = _adjust_range h [|x_min-.w; x_max+.w|] `X in
+  let xmin, xmax = Owl_stats.minmax x in
+  let _ = _adjust_range h [|xmin-.w; xmax+.w|] `X in
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
@@ -555,3 +593,8 @@ let mesh ?(h=_default_handle) x y z =
   let p = h.pages.(h.current_page) in
   let _ = plmtex "t" 1.0 1.0 0.5 p.title in
   plend ()
+
+
+
+
+(* ends here *)
