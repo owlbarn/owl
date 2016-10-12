@@ -199,11 +199,11 @@ let legend_off = None
 (* TODO *)
 let rgb = None
 
-let text ?(h=_default_handle) ?(color=(255,0,0)) x y ?(dx=0.) ?(dy=0.) s =
+let text ?(h=_default_handle) ?(color=(-1,-1,-1)) x y ?(dx=0.) ?(dy=0.) s =
   let open Plplot in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = color in
+  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -234,7 +234,7 @@ let _adjust_range h d axis =
   | `Y -> if p.auto_yrange then p.yrange <- _union_range p.yrange d
   | `Z -> if p.auto_zrange then p.zrange <- _union_range p.zrange d
 
-let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) x y =
+let plot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) x y =
   let open Plplot in
   let x = MX.to_array x in
   let y = MX.to_array y in
@@ -242,7 +242,7 @@ let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(marker_size=4.) 
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = color in
+  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
   let old_pensize = h.pensize in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
@@ -270,12 +270,12 @@ let plot ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(marker_size=4.) 
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let plot_fun ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) f a b =
+let plot_fun ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) f a b =
   let x = MX.linspace a b 100 in
   let y = MX.map f x in
   plot ~h ~color ~marker ~marker_size ~line_style ~line_width x y
 
-let scatter ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="•") ?(marker_size=4.) x y =
+let scatter ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_size=4.) x y =
   let open Plplot in
   let x = MX.to_array x in
   let y = MX.to_array y in
@@ -283,7 +283,7 @@ let scatter ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="•") ?(marker_siz
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = color in
+  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -319,7 +319,7 @@ let subplot h i j =
   let _, n = h.shape in
   h.current_page <- (n * i + j)
 
-let stem ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="#[0x2299]") ?(marker_size=4.) ?(line_style=2) ?(line_width=(-1.)) x y =
+let stem ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="#[0x2299]") ?(marker_size=4.) ?(line_style=2) ?(line_width=(-1.)) x y =
   let open Plplot in
   let x = MX.to_array x in
   let y = MX.to_array y in
@@ -327,7 +327,7 @@ let stem ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="#[0x2299]") ?(marker_
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = color in
+  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
   let old_pensize = h.pensize in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
@@ -363,7 +363,7 @@ let autocorr ?(h=_default_handle) ?(marker="•") ?(marker_size=4.) x =
   let _ = set_ylabel h "Autocorrelation" in
   stem ~h ~marker ~marker_size ~line_style:1 x' y'
 
-let draw_line ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(line_width=(-1.)) x0 y0 x1 y1 =
+let draw_line ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) x0 y0 x1 y1 =
   let open Plplot in
   let x = [|x0; x1|] in
   let y = [|y0; y1|] in
@@ -371,7 +371,7 @@ let draw_line ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(line_wid
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = color in
+  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
   let old_pensize = h.pensize in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
@@ -401,7 +401,7 @@ let _draw_bar w x0 y0 =
   let _ = plfill x y in
   let _ = pllsty 1; plline x y in ()
 
-let draw_rect ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(fill_pattern=0) x0 y0 x1 y1 =
+let draw_rect ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=0) x0 y0 x1 y1 =
   let open Plplot in
   let x = [|x0; x0; x1; x1|] in
   let y = [|y1; y0; y0; y1|] in
@@ -409,7 +409,7 @@ let draw_rect ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(fill_pat
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = color in
+  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -424,7 +424,7 @@ let draw_rect ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(fill_pat
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let bar ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(fill_pattern=0) y =
+let bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=0) y =
   let open Plplot in
   let w = 0.4 in
   let y = MX.to_array y in
@@ -434,7 +434,7 @@ let bar ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(fill_pattern=0
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = color in
+  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -449,7 +449,7 @@ let bar ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(fill_pattern=0
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let area ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(fill_pattern=0) x y=
+let area ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=0) x y=
   let open Plplot in
   let x = MX.to_array x in
   let y = MX.to_array y in
@@ -460,7 +460,7 @@ let area ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(fill_pattern=
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = color in
+  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -481,6 +481,8 @@ let pie = None
 let contour = None
 
 let surf = None
+
+let heatmap = None
 
 (* FIXME: the labels will not show *)
 let mesh ?(h=_default_handle) x y z =
