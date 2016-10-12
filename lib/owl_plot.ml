@@ -385,6 +385,10 @@ let draw_line ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(line_wid
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
+let plot_multi = None
+
+let boxplot = None
+
 let bar = None
 
 let area = None
