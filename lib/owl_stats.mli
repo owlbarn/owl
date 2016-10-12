@@ -64,6 +64,20 @@ val spearman_rho : float array -> float array -> float
 
 val autocorrelation : ?lag:int -> float array -> float
 
+val median : float array -> float
+(** [median x] returns the median of [x]. *)
+
+val percentile : float array -> float -> float
+(** [percentile x p] returns the [p] percentile of the data [x]. [p] is between
+  0. and 1. [x] does not need to be sorted.
+ *)
+
+val first_quartile : float array -> float
+(** [first_quartile x] returns the first quartile of [x], i.e., 25 percentiles. *)
+
+val third_quartile : float array -> float
+(** [third_quartile x] returns the third quartile of [x], i.e., 75 percentiles. *)
+
 val min : float array -> float
 
 val max : float array -> float

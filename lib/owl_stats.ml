@@ -199,6 +199,18 @@ let histogram x n =
     d.(i) <- d.(i) + 1
   ) x; d
 
+let _quantile_from_sorted_data x q = Gsl.Stats.quantile_from_sorted_data x q
+(* x must be in ascending order. *)
+
+let percentile x q = _quantile_from_sorted_data (sort ~inc:true x) q
+
+let median x = percentile x 0.5
+
+let first_quartile x = percentile x 0.25
+
+let third_quartile x = percentile x 0.75
+
+
 module Rnd = struct
 
   let uniform_int ?(a=0) ?(b=65535) ()=

@@ -437,6 +437,10 @@ let error_bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_wi
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
+let _draw_whiskers_box x y =
+  let ymin, ymax = Owl_stats.minmax y in
+  ()
+
 let boxplot = None
 
 let _draw_bar w x0 y0 =
