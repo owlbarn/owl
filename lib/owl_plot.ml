@@ -374,7 +374,7 @@ let stem ?(h=_default_handle) ?(color=(255,0,0)) ?(marker="#[0x2299]") ?(marker_
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let autocorr ?(h=_default_handle) x =
+let autocorr ?(h=_default_handle) ?(marker="•") ?(marker_size=4.) x =
   let z = MX.to_array x in
   let x' = Array.init (Array.length z) (fun i -> float_of_int i) in
   let y' = Array.mapi (fun i _ -> Owl_stats.autocorrelation ~lag:i z) x' in
@@ -382,6 +382,31 @@ let autocorr ?(h=_default_handle) x =
   let y' = MX.of_arrays [|y'|] in
   let _ = set_xlabel h "Lag" in
   let _ = set_ylabel h "Autocorrelation" in
-  stem ~h ~line_style:1 x' y'
+  stem ~h ~marker ~marker_size ~line_style:1 x' y'
 
-let draw_line = None
+let draw_line ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(line_width=(-1.)) x0 y0 x1 y1 =
+  let open Plplot in
+  let x = [|x0; x1|] in
+  let y = [|y0; y1|] in
+  let _ = _adjust_range h x `X in
+  let _ = _adjust_range h y `Y in
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let r, g, b = color in
+  let old_pensize = h.pensize in
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    let _ = if line_width > (-1.) then plwidth line_width in
+    let _ = match line_style > 0 && line_style < 9 with
+      | true  -> pllsty line_style; pljoin x0 y0 x1 y1
+      | false -> ()
+    in
+    (* restore original settings *)
+    let _ = plwidth old_pensize in
+    let _ = pllsty 1 in
+    plscol0 1 r' g' b'; plcol0 1
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
