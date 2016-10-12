@@ -57,3 +57,5 @@ val text : ?h:handle -> float -> float -> ?dx:float -> ?dy:float -> string -> un
 val draw_line: ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_width:float -> float -> float -> float -> float -> unit
 
 val mesh : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
+
+val bar : ?h:handle -> dsmat -> unit
