@@ -52,9 +52,11 @@ val stem : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size
 
 val autocorr : ?h:handle -> ?marker:string -> ?marker_size:float -> dsmat -> unit
 
-val text : ?h:handle -> float -> float -> ?dx:float -> ?dy:float -> string -> unit
+val text : ?h:handle -> ?color:int * int * int -> float -> float -> ?dx:float -> ?dy:float -> string -> unit
 
 val draw_line: ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_width:float -> float -> float -> float -> float -> unit
+
+val draw_rect : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?fill_pattern:int -> float -> float -> float -> float -> unit
 
 val mesh : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 

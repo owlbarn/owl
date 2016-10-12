@@ -199,14 +199,19 @@ let legend_off = None
 (* TODO *)
 let rgb = None
 
-let text ?(h=_default_handle) x y ?(dx=0.) ?(dy=0.) s =
+let text ?(h=_default_handle) ?(color=(255,0,0)) x y ?(dx=0.) ?(dy=0.) s =
   let open Plplot in
   (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let r, g, b = color in
   let f = (fun () ->
-    plptex x y dx dy 0. s
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    let _ = plptex x y dx dy 0. s in
+    (* restore original settings *)
+    plscol0 1 r' g' b'; plcol0 1
   ) in
   (* add closure as a layer *)
-  let p = h.pages.(h.current_page) in
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
@@ -385,8 +390,6 @@ let draw_line ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(line_wid
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let draw_rectangular ?(color=(255,0,0)) ?(fill_pattern=0) x0 y0 x1 y1 = None
-
 let plot_multi = None
 
 let boxplot = None
@@ -397,6 +400,29 @@ let _draw_bar w x0 y0 =
   let y = [|0.; y0; y0; 0.|] in
   let _ = plfill x y in
   let _ = pllsty 1; plline x y in ()
+
+let draw_rect ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(fill_pattern=0) x0 y0 x1 y1 =
+  let open Plplot in
+  let x = [|x0; x0; x1; x1|] in
+  let y = [|y1; y0; y0; y1|] in
+  let _ = _adjust_range h x `X in
+  let _ = _adjust_range h y `Y in
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let r, g, b = color in
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    let _ = pllsty line_style in
+    let _ = plpsty fill_pattern in
+    let _ = plfill x y in
+    (* restore original settings *)
+    plscol0 1 r' g' b'; plcol0 1;
+    pllsty 1
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
 
 let bar ?(h=_default_handle) ?(color=(255,0,0)) ?(line_style=1) ?(fill_pattern=0) y =
   let open Plplot in
