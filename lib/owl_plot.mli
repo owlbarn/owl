@@ -75,4 +75,6 @@ val surf : ?h:handle -> ?contour:bool -> dsmat -> dsmat -> dsmat -> unit
 
 val mesh : ?h:handle -> ?contour:bool -> dsmat -> dsmat -> dsmat -> unit
 
+val contour : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
+
 val heatmap : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
