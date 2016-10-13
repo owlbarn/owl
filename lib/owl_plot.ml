@@ -147,9 +147,9 @@ let _prepare_page p =
     let _ = plvpor 0.0 1.0 0.0 1.0 in
     let _ = plwind (-1.0) 1.0 (-1.0) 1.5 in
     let _ = plw3d 1.0 1.0 1.0 xmin xmax ymin ymax zmin zmax 33. 115. in
-    let _ = plbox3  "bnstu", "x axis", 0.0, 0,
-                    "bnstu", "y axis", 0.0, 0,
-                    "bcdmnstuv", "z axis", 0.0, 4
+    let _ = plbox3  "bntu", "x axis", 0.0, 0,
+                    "bntu", "y axis", 0.0, 0,
+                    "bcdfntu", "z axis", 0.0, 4
     in ()
 
 let _finalise () =
@@ -593,12 +593,33 @@ let surf ?(h=_default_handle) x y z =
   let _ = _adjust_range h z1 `Z in
   (* construct contour level *)
   let zmin, zmax = Owl_stats.minmax z1 in
-  let clvl = Owl_dense.(linspace zmin zmax 5 |> to_array) in
+  let clvl = Owl_dense.(linspace zmin zmax 10 |> to_array) in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.is_3d <- true in
   let f = (fun () ->
-    let _ = plsurf3d x y z0 [ PL_FACETED ] clvl in
+    let _ = plsurf3d x y z0 [ PL_FACETED; PL_BASE_CONT; PL_SURF_CONT; PL_MAG_COLOR ] clvl in
+    (* restore original settings *)
+    ()
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
+
+let mesh ?(h=_default_handle) x y z =
+  let open Plplot in
+  let x = Owl_dense.to_array x in
+  let y = Owl_dense.(transpose y |> to_array) in
+  let z0 = Owl_dense.to_arrays z in
+  let z1 = Owl_dense.to_array z in
+  let _ = _adjust_range h x `X in
+  let _ = _adjust_range h y `Y in
+  let _ = _adjust_range h z1 `Z in
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let _ = p.is_3d <- true in
+  let f = (fun () ->
+    let _ = plmesh x y z0 [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
     (* restore original settings *)
     ()
   ) in
@@ -607,30 +628,6 @@ let surf ?(h=_default_handle) x y z =
   if not h.holdon then output h
 
 let heatmap = None
-
-(* FIXME: the labels will not show *)
-let mesh ?(h=_default_handle) x y z =
-  let open Plplot in
-  let x = Owl_dense.to_array x in
-  let y = Owl_dense.(transpose y |> to_array) in
-  let xmin, xmax = Owl_stats.minmax x in
-  let ymin, ymax = Owl_stats.minmax y in
-  let zmin, zmax, _, _, _, _ = Owl_dense.minmax z in
-  let _ = _set_device h in
-  let _ = plinit () in
-  let _ = pladv 0 in
-  let _ = plvpor 0.0 1.0 0.0 1.0 in
-  let _ = plwind (-1.0) 1.0 (-1.0) 1.5 in
-  let _ = plw3d 1.0 1.0 1.0 xmin xmax ymin ymax zmin zmax 33. 115. in
-  let _ = plbox3  "bnstu", "x axis", 0.0, 0,
-                  "bnstu", "y axis", 0.0, 0,
-                  "bcdmnstuv", "z axis", 0.0, 4 in
-  let z = Owl_dense.to_arrays z in
-  let _ = plmesh x y z [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
-  let p = h.pages.(h.current_page) in
-  let _ = plmtex "t" 1.0 1.0 0.5 p.title in
-  plend ()
-
 
 
 
