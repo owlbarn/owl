@@ -132,7 +132,8 @@ let _initialise h =
 let _prepare_page p =
   let open Plplot in
   (* configure an individual page *)
-  let _ = (let r, g, b = p.fgcolor in plscol0 1 r g b; plcol0 1) in
+  let r, g, b = p.fgcolor in
+  let _ = plscol0 1 r g b; plcol0 1 in
   let _ = if p.fontsize > 0. then plschr p.fontsize 1.0 in
   let xmin, xmax = p.xrange in
   let ymin, ymax = p.yrange in
@@ -144,12 +145,12 @@ let _prepare_page p =
   else
     (* prepare a 3D plot *)
     let _ = pladv 0 in
-    let _ = plvpor 0.0 1.0 0.0 1.0 in
+    let _ = plvpor 0.0 1.0 0.0 0.9 in
     let _ = plwind (-1.0) 1.0 (-1.0) 1.5 in
-    let _ = plw3d 1.0 1.0 1.0 xmin xmax ymin ymax zmin zmax 33. 115. in
-    let _ = plbox3  "bntu", "x axis", 0.0, 0,
-                    "bntu", "y axis", 0.0, 0,
-                    "bcdfntu", "z axis", 0.0, 4
+    let _ = plw3d 1.0 1.0 1.2 xmin xmax ymin ymax zmin zmax 33. 115. in
+    let _ = plbox3 "bntu" "x axis" 0.0 0
+                   "bntu" "y axis" 0.0 0
+                   "bcdfntu" "z axis" 0.0 4
     in ()
 
 let _finalise () =
