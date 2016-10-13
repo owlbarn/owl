@@ -583,7 +583,7 @@ let pie = None
 
 let contour = None
 
-let surf ?(h=_default_handle) x y z =
+let surf ?(h=_default_handle) ?(contour=false) x y z =
   let open Plplot in
   let x = Owl_dense.to_array x in
   let y = Owl_dense.(transpose y |> to_array) in
@@ -598,16 +598,19 @@ let surf ?(h=_default_handle) x y z =
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.is_3d <- true in
+  let opt = match contour with
+    | true  -> [ PL_FACETED; PL_MAG_COLOR; PL_BASE_CONT; PL_SURF_CONT ]
+    | false -> [ PL_FACETED; PL_MAG_COLOR ]
+  in
   let f = (fun () ->
-    let _ = plsurf3d x y z0 [ PL_FACETED; PL_BASE_CONT; PL_SURF_CONT; PL_MAG_COLOR ] clvl in
-    (* restore original settings *)
-    ()
+    plsurf3d x y z0 opt clvl;
+    (* restore original settings, if any *)
   ) in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let mesh ?(h=_default_handle) x y z =
+let mesh ?(h=_default_handle) ?(contour=false) x y z =
   let open Plplot in
   let x = Owl_dense.to_array x in
   let y = Owl_dense.(transpose y |> to_array) in
@@ -616,13 +619,19 @@ let mesh ?(h=_default_handle) x y z =
   let _ = _adjust_range h x `X in
   let _ = _adjust_range h y `Y in
   let _ = _adjust_range h z1 `Z in
+  (* construct contour level *)
+  let zmin, zmax = Owl_stats.minmax z1 in
+  let clvl = Owl_dense.(linspace zmin zmax 10 |> to_array) in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.is_3d <- true in
+  let opt0 = [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH; PL_BASE_CONT; PL_SURF_CONT ] in
+  let opt1 = [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
   let f = (fun () ->
-    let _ = plmesh x y z0 [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
-    (* restore original settings *)
-    ()
+    match contour with
+    | true  -> plmeshc x y z0 opt0 clvl
+    | false -> plmesh x y z0 opt1
+    (* restore original settings, if any *)
   ) in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];

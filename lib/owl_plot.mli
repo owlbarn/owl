@@ -58,8 +58,6 @@ val draw_line: ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_w
 
 val draw_rect : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?fill_pattern:int -> float -> float -> float -> float -> unit
 
-val mesh : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
-
 val bar : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?fill_pattern:int -> dsmat -> unit
 
 val area : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?fill_pattern:int -> dsmat -> dsmat -> unit
@@ -68,4 +66,6 @@ val error_bar : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_
 
 val boxplot : ?h:handle -> ?color:int * int * int -> dsmat -> unit
 
-val surf : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
+val surf : ?h:handle -> ?contour:bool -> dsmat -> dsmat -> dsmat -> unit
+
+val mesh : ?h:handle -> ?contour:bool -> dsmat -> dsmat -> dsmat -> unit
