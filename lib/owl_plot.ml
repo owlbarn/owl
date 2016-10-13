@@ -662,27 +662,71 @@ let heatmap ?(h=_default_handle) x y z =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let contour ?(h=_default_handle) x y z =
+let contour' ?(h=_default_handle) x y z =
   let open Plplot in
-  let m = Owl_dense.row_num x in
-  let n = Owl_dense.row_num y in
-  let x = Owl_dense.to_array x in
-  let y = Owl_dense.(transpose y |> to_array) in
+  let m, n = Owl_dense.shape x in
+  let y = Owl_dense.transpose y in
+  let x0 = Owl_dense.to_arrays x in
+  let x1 = Owl_dense.to_array x in
+  let y0 = Owl_dense.to_arrays y in
+  let y1 = Owl_dense.to_array y in
   let z0 = Owl_dense.to_arrays z in
   let z1 = Owl_dense.to_array z in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
-  let _ = _adjust_range h z1 `Z in
+  let _ = _adjust_range h x1 `X in
+  let _ = _adjust_range h y1 `Y in
   (* construct contour level *)
-  let xmin, xmax = Owl_stats.minmax x in
-  let ymin, ymax = Owl_stats.minmax y in
   let zmin, zmax = Owl_stats.minmax z1 in
   let clvl = Owl_dense.(linspace zmin zmax 10 |> to_array) in
   (* prepare the closure *)
+  let mypltr x y i j =
+    let i, j = int_of_float i, int_of_float j in
+    x.(i).(j), y.(i).(j)
+  in
   let p = h.pages.(h.current_page) in
   let f = (fun () ->
-    plset_pltr pltr0;
-    plcont z0 1 m 1 n clvl
+    let x', y', z' = x0, y0, z0 in
+    plset_pltr (pltr2 x' y');
+    plcont z' 1 m 1 n clvl;
+    plunset_pltr ();
+    print_int m; print_char ' '; print_int n; print_char '\n'
+    (* restore original settings, if any *)
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
+
+let contour ?(h=_default_handle) x y z =
+  let open Plplot in
+  let m, n = Owl_dense.shape x in
+  let x0 = Owl_dense.to_arrays x in
+  let x1 = Owl_dense.to_array x in
+  let y0 = Owl_dense.to_arrays y in
+  let y1 = Owl_dense.to_array y in
+  let z0 = Owl_dense.to_arrays z in
+  let z1 = Owl_dense.to_array z in
+  let _ = _adjust_range h x1 `X in
+  let _ = _adjust_range h y1 `Y in
+  (* construct contour level *)
+  let zmin, zmax = Owl_stats.minmax z1 in
+  let clvl = Owl_dense.(linspace zmin zmax 10 |> to_array) in
+  (* prepare the closure *)
+  let mypltr x y i j =
+    let i, j = int_of_float i, int_of_float j in
+    x.(i).(j), y.(i).(j)
+  in
+  let s1 = Marshal.to_string x0 [] in
+  let s2 = Marshal.to_string y0 [] in
+  let s3 = Marshal.to_string z0 [] in
+  let p = h.pages.(h.current_page) in
+  let f = (fun () ->
+    (*let x', y', z' = Array.(copy x0, copy y0, copy z0) in*)
+    let x' = Marshal.from_string s1 0 in
+    let y' = Marshal.from_string s2 0 in
+    let z' = Marshal.from_string s3 0 in
+    plset_pltr (pltr2 x' y');
+    plcont z' 1 m 1 n clvl;
+    plunset_pltr ();
+    print_int m; print_char ' '; print_int n; print_char '\n'
     (* restore original settings, if any *)
   ) in
   (* add closure as a layer *)
