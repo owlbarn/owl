@@ -66,6 +66,13 @@ val error_bar : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_
 
 val boxplot : ?h:handle -> ?color:int * int * int -> dsmat -> unit
 
+(** Plot 3D figures *)
+
+val plot3d : ?h:handle -> ?contour:bool -> dsmat -> dsmat -> dsmat -> unit
+(** [plot3d] is just an alias of [surf] function. *)
+
 val surf : ?h:handle -> ?contour:bool -> dsmat -> dsmat -> dsmat -> unit
 
 val mesh : ?h:handle -> ?contour:bool -> dsmat -> dsmat -> dsmat -> unit
+
+val contour : ?h:handle -> dsmat -> dsmat -> dsmat -> unit

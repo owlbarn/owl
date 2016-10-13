@@ -213,6 +213,7 @@ let legend_off = None
 (* TODO *)
 let rgb = None
 
+(*FIXME: plptex3d*)
 let text ?(h=_default_handle) ?(color=(-1,-1,-1)) x y ?(dx=0.) ?(dy=0.) s =
   let open Plplot in
   (* prepare the closure *)
@@ -581,7 +582,28 @@ let area ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern
 
 let pie = None
 
-let contour = None
+let contour ?(h=_default_handle) x y z =
+  let open Plplot in
+  let x = Owl_dense.to_array x in
+  let y = Owl_dense.(transpose y |> to_array) in
+  let z0 = Owl_dense.to_arrays z in
+  let z1 = Owl_dense.to_array z in
+  let _ = _adjust_range h x `X in
+  let _ = _adjust_range h y `Y in
+  let _ = _adjust_range h z1 `Z in
+  (* construct contour level *)
+  let zmin, zmax = Owl_stats.minmax z1 in
+  let clvl = Owl_dense.(linspace zmin zmax 10 |> to_array) in
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let _ = p.is_3d <- true in
+  let f = (fun () ->
+    ()
+    (* restore original settings, if any *)
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
 
 let surf ?(h=_default_handle) ?(contour=false) x y z =
   let open Plplot in
@@ -609,6 +631,8 @@ let surf ?(h=_default_handle) ?(contour=false) x y z =
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
+
+let plot3d = surf
 
 let mesh ?(h=_default_handle) ?(contour=false) x y z =
   let open Plplot in
