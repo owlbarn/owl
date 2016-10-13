@@ -15,6 +15,7 @@ type page = {
   mutable title : string;
   mutable fgcolor : int * int * int;
   mutable fontsize : float;
+  mutable is_3d : bool;
   (* control axis labels *)
   mutable xlabel : string;
   mutable ylabel : string;
@@ -50,14 +51,15 @@ type handle = {
 
 let _create_page () = {
   title = "";
+  fgcolor = (255, 0, 0);
+  fontsize = -1.;
+  is_3d = false;
   xlabel = "x";
   ylabel = "y";
   zlabel = "z";
   xrange = (infinity, neg_infinity);
   yrange = (infinity, neg_infinity);
   zrange = (infinity, neg_infinity);
-  fgcolor = (255, 0, 0);
-  fontsize = -1.;
   auto_xrange = true;
   auto_yrange = true;
   auto_zrange = true;
@@ -134,8 +136,21 @@ let _prepare_page p =
   let _ = if p.fontsize > 0. then plschr p.fontsize 1.0 in
   let xmin, xmax = p.xrange in
   let ymin, ymax = p.yrange in
-  let _ = plenv xmin xmax ymin ymax 0 0 in
-  let _ = pllab p.xlabel p.ylabel p.title in ()
+  let zmin, zmax = p.zrange in
+  if not p.is_3d then
+    (* prepare a 2D plot *)
+    let _ = plenv xmin xmax ymin ymax 0 0 in
+    let _ = pllab p.xlabel p.ylabel p.title in ()
+  else
+    (* prepare a 3D plot *)
+    let _ = pladv 0 in
+    let _ = plvpor 0.0 1.0 0.0 1.0 in
+    let _ = plwind (-1.0) 1.0 (-1.0) 1.5 in
+    let _ = plw3d 1.0 1.0 1.0 xmin xmax ymin ymax zmin zmax 33. 115. in
+    let _ = plbox3  "bnstu", "x axis", 0.0, 0,
+                    "bnstu", "y axis", 0.0, 0,
+                    "bcdmnstuv", "z axis", 0.0, 4
+    in ()
 
 let _finalise () =
   (* play safe, reset pages in default_handle *)
@@ -567,7 +582,29 @@ let pie = None
 
 let contour = None
 
-let surf = None
+let surf ?(h=_default_handle) x y z =
+  let open Plplot in
+  let x = Owl_dense.to_array x in
+  let y = Owl_dense.(transpose y |> to_array) in
+  let z0 = Owl_dense.to_arrays z in
+  let z1 = Owl_dense.to_array z in
+  let _ = _adjust_range h x `X in
+  let _ = _adjust_range h y `Y in
+  let _ = _adjust_range h z1 `Z in
+  (* construct contour level *)
+  let zmin, zmax = Owl_stats.minmax z1 in
+  let clvl = Owl_dense.(linspace zmin zmax 5 |> to_array) in
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let _ = p.is_3d <- true in
+  let f = (fun () ->
+    let _ = plsurf3d x y z0 [ PL_FACETED ] clvl in
+    (* restore original settings *)
+    ()
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
 
 let heatmap = None
 

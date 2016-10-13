@@ -67,3 +67,5 @@ val area : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?fill_patte
 val error_bar : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> dsmat -> unit
 
 val boxplot : ?h:handle -> ?color:int * int * int -> dsmat -> unit
+
+val surf : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
