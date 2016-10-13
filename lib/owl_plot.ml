@@ -582,7 +582,7 @@ let area ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern
 
 let pie = None
 
-let contour ?(h=_default_handle) x y z =
+let heatmap ?(h=_default_handle) x y z =
   let open Plplot in
   let x = Owl_dense.to_array x in
   let y = Owl_dense.(transpose y |> to_array) in
@@ -592,13 +592,14 @@ let contour ?(h=_default_handle) x y z =
   let _ = _adjust_range h y `Y in
   let _ = _adjust_range h z1 `Z in
   (* construct contour level *)
+  let xmin, xmax = Owl_stats.minmax x in
+  let ymin, ymax = Owl_stats.minmax y in
   let zmin, zmax = Owl_stats.minmax z1 in
   let clvl = Owl_dense.(linspace zmin zmax 10 |> to_array) in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let _ = p.is_3d <- true in
   let f = (fun () ->
-    ()
+    plshades z0 xmin xmax ymin ymax clvl 1.0 0 1.0 false
     (* restore original settings, if any *)
   ) in
   (* add closure as a layer *)
@@ -661,7 +662,7 @@ let mesh ?(h=_default_handle) ?(contour=false) x y z =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let heatmap = None
+let contour = None
 
 
 
