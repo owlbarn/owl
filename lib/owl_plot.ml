@@ -662,6 +662,8 @@ let heatmap ?(h=_default_handle) x y z =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
+(* FIXME: something wrong with Plplot callback function. The contour function
+  may cause segmentation fault. I suspect plset_pltr and plunset_pltr functions. *)
 let contour ?(h=_default_handle) x y z =
   let open Plplot in
   let m, n = Owl_dense.shape x in
@@ -681,8 +683,7 @@ let contour ?(h=_default_handle) x y z =
   let f = (fun () ->
     plset_pltr (pltr2 x0 y0);
     plcont z0 1 m 1 n clvl;
-    plunset_pltr ();
-    print_int m; print_char ' '; print_int n; print_char '\n'
+    plunset_pltr ()
     (* restore original settings, if any *)
   ) in
   (* add closure as a layer *)
