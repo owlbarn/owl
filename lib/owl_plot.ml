@@ -148,9 +148,9 @@ let _prepare_page p =
     let _ = plvpor 0.0 1.0 0.0 0.9 in
     let _ = plwind (-1.0) 1.0 (-1.0) 1.5 in
     let _ = plw3d 1.0 1.0 1.2 xmin xmax ymin ymax zmin zmax 33. 115. in
-    let _ = plbox3 "bntu" "x axis" 0.0 0
-                   "bntu" "y axis" 0.0 0
-                   "bcdfntu" "z axis" 0.0 4
+    let _ = plbox3 "bntu" p.xlabel 0.0 0
+                   "bntu" p.ylabel 0.0 0
+                   "bcdfntu" p.zlabel 0.0 4
     in ()
 
 let _finalise () =
@@ -664,6 +664,8 @@ let heatmap ?(h=_default_handle) x y z =
 
 let contour ?(h=_default_handle) x y z =
   let open Plplot in
+  let m = Owl_dense.row_num x in
+  let n = Owl_dense.row_num y in
   let x = Owl_dense.to_array x in
   let y = Owl_dense.(transpose y |> to_array) in
   let z0 = Owl_dense.to_arrays z in
@@ -679,7 +681,8 @@ let contour ?(h=_default_handle) x y z =
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let f = (fun () ->
-    plcont z0 1 40 1 40 clvl
+    plset_pltr pltr0;
+    plcont z0 1 m 1 n clvl
     (* restore original settings, if any *)
   ) in
   (* add closure as a layer *)
