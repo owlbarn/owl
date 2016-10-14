@@ -11,10 +11,12 @@ type dsmat = Owl_dense.dsmat
 
 type color = RED | GREEN | BLUE
 
-type plot_typ = LINE | SCATTER | BAR
+type legend_typ = LINE | SCATTER | BAR
+
+type legend_position = North | South | West | East | NorthWest | NorthEast | SouthWest | SouthEast
 
 type legend_item = {
-  mutable plot_type : plot_typ;
+  mutable plot_type : legend_typ;
   mutable line_style : int;
   mutable line_color : int * int * int;
   mutable marker : string;
@@ -45,6 +47,7 @@ type page = {
   mutable zgrid : bool;
   (* control legend *)
   mutable legend : bool;
+  mutable legend_position : legend_position;
   mutable legend_items : legend_item array;
   mutable legend_names : string array;
   (* cache the plot operations *)
@@ -83,6 +86,7 @@ let _create_page () = {
   ygrid = false;
   zgrid = false;
   legend = false;
+  legend_position = NorthEast;
   legend_items = [||];
   legend_names = [||];
   plots = [||];
@@ -132,12 +136,24 @@ let _add_legend_item p plot_type line_style line_color marker marker_color fill_
   in
   p.legend_items <- Array.append p.legend_items [|item|]
 
+let _plplot_position pos =
+  let open Plplot in
+  match pos with
+  | North     -> [ PL_POSITION_TOP ]
+  | South     -> [ PL_POSITION_BOTTOM ]
+  | West      -> [ PL_POSITION_LEFT ]
+  | East      -> [ PL_POSITION_RIGHT ]
+  | NorthWest -> [ PL_POSITION_TOP; PL_POSITION_LEFT ]
+  | NorthEast -> [ PL_POSITION_TOP; PL_POSITION_RIGHT ]
+  | SouthWest -> [ PL_POSITION_BOTTOM; PL_POSITION_LEFT ]
+  | SouthEast -> [ PL_POSITION_BOTTOM; PL_POSITION_RIGHT ]
+
 let _draw_legend p =
   let open Plplot in
   let _ = plscmap0n 64 in
   let cbase = 16 in
   let opt = [ PL_LEGEND_BOUNDING_BOX ] in
-  let position = [ PL_POSITION_TOP; PL_POSITION_INSIDE ] in
+  let position = _plplot_position p.legend_position @ [ PL_POSITION_INSIDE ] in
   let opt_array = Array.map (fun item ->
     match item.plot_type with
     | LINE -> [ PL_LEGEND_LINE; PL_LEGEND_SYMBOL ]
@@ -271,8 +287,9 @@ let set_pen_size h x = h.pensize <- x
 
 let set_page_size h x y = h.page_size <- (x, y)
 
-let legend_on h s =
+let legend_on h ?(position=NorthEast) s =
   (h.pages.(h.current_page)).legend <- true;
+  (h.pages.(h.current_page)).legend_position <- position;
   (h.pages.(h.current_page)).legend_names <- s
 
 let legend_off h = (h.pages.(h.current_page)).legend <- false

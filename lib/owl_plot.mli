@@ -6,6 +6,9 @@ type handle
 
 type color = RED | GREEN | BLUE
 
+type legend_position = North | South | West | East | NorthWest | NorthEast | SouthWest | SouthEast
+
+
 val create : ?m:int -> ?n:int -> string -> handle
 
 val subplot : handle -> int -> int -> unit
@@ -38,7 +41,7 @@ val set_pen_size : handle -> float -> unit
 
 val set_page_size : handle -> int -> int -> unit
 
-val legend_on : handle -> string array -> unit
+val legend_on : handle -> ?position:legend_position -> string array -> unit
 
 val legend_off : handle -> unit
 
