@@ -11,6 +11,18 @@ type dsmat = Owl_dense.dsmat
 
 type color = RED | GREEN | BLUE
 
+type plot_typ = LINE | SCATTER | BAR
+
+type legend_item = {
+  mutable plot_type : plot_typ;
+  mutable line_style : int;
+  mutable line_color : int * int * int;
+  mutable marker : string;
+  mutable marker_color : int * int * int;
+  mutable fill_pattern : int;
+  mutable fill_color : int * int * int;
+}
+
 type page = {
   mutable title : string;
   mutable fgcolor : int * int * int;
@@ -31,6 +43,10 @@ type page = {
   mutable xgrid : bool;
   mutable ygrid : bool;
   mutable zgrid : bool;
+  (* control legend *)
+  mutable legend : bool;
+  mutable legend_items : legend_item array;
+  mutable legend_names : string array;
   (* cache the plot operations *)
   mutable plots : (unit -> unit) array;
 }
@@ -66,6 +82,9 @@ let _create_page () = {
   xgrid = false;
   ygrid = false;
   zgrid = false;
+  legend = false;
+  legend_items = [||];
+  legend_names = [||];
   plots = [||];
 }
 
@@ -99,6 +118,52 @@ let _set_device h =
     Plplot.plsdev x;
     Plplot.plsfnam h.output;
   with exn -> ()
+
+let _add_legend_item p plot_type line_style line_color marker marker_color fill_pattern fill_color =
+  let item = {
+    plot_type = plot_type;
+    line_style = line_style;
+    line_color = line_color;
+    marker = marker;
+    marker_color = marker_color;
+    fill_pattern = fill_pattern;
+    fill_color = fill_color;
+  }
+  in
+  p.legend_items <- Array.append p.legend_items [|item|]
+
+let _draw_legend p =
+  let open Plplot in
+  let _ = plscmap0n 64 in
+  let cbase = 16 in
+  let opt = [ PL_LEGEND_BOUNDING_BOX ] in
+  let position = [ PL_POSITION_TOP; PL_POSITION_INSIDE ] in
+  let opt_array = Array.map (fun item ->
+    match item.plot_type with
+    | LINE -> [ PL_LEGEND_LINE; PL_LEGEND_SYMBOL ]
+    | SCATTER -> [ PL_LEGEND_SYMBOL ]
+    | BAR -> [ PL_LEGEND_COLOR_BOX ]
+    ) p.legend_items in
+  let text_colors = Array.map (fun _ -> 1) p.legend_items in
+  let text = Array.mapi (fun i _ -> p.legend_names.(i)) p.legend_items in
+  let line_colors = Array.mapi (fun i x ->
+    let r, g, b = x.line_color
+    in plscol0 (i + cbase) r g b; (i + cbase)
+    ) p.legend_items in
+  let line_styles = Array.map (fun x -> x.line_style) p.legend_items in
+  let line_widths = Array.map (fun _ -> 1.) p.legend_items in
+  let marker_colors = line_colors in
+  let marker_scales = Array.map (fun _ -> 1.) p.legend_items in
+  let marker_nums = Array.map (fun _ -> 3) p.legend_items in
+  let markers = Array.map (fun x -> x.marker) p.legend_items in
+  let _ = pllegend opt position 0.05 0.05
+    0.1 15 1 1 0 0
+    opt_array 1.0 1.0 2.0
+    1.0 text_colors text
+    [||] [||] [||] [||]
+    line_colors line_styles line_widths
+    marker_colors marker_scales marker_nums markers
+  in ()
 
 let _calculate_paper_size m n =
   let max_w, max_h = 900., 900. in
@@ -137,7 +202,7 @@ let _prepare_page p =
   let _ = if p.fontsize > 0. then plschr p.fontsize 1.0 in
   let xmin, xmax = p.xrange in
   let ymin, ymax = p.yrange in
-  let zmin, zmax = p.zrange in
+  let zmin, zmax = p.zrange in (
   if not p.is_3d then
     (* prepare a 2D plot *)
     let _ = plenv xmin xmax ymin ymax 0 0 in
@@ -152,6 +217,8 @@ let _prepare_page p =
                    "bntu" p.ylabel 0.0 0
                    "bcdfntu" p.zlabel 0.0 4
     in ()
+  );
+  if p.legend then _draw_legend p
 
 let _finalise () =
   (* play safe, reset pages in default_handle *)
@@ -204,11 +271,11 @@ let set_pen_size h x = h.pensize <- x
 
 let set_page_size h x y = h.page_size <- (x, y)
 
-(* TODO *)
-let legend_on = None
+let legend_on h s =
+  (h.pages.(h.current_page)).legend <- true;
+  (h.pages.(h.current_page)).legend_names <- s
 
-(* TODO *)
-let legend_off = None
+let legend_off h = (h.pages.(h.current_page)).legend <- false
 
 (* TODO *)
 let rgb = None
@@ -258,7 +325,8 @@ let plot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.)
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let r, g, b = color in
   let old_pensize = h.pensize in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
@@ -284,6 +352,8 @@ let plot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.)
   ) in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
+  (* add legend item to page *)
+  _add_legend_item p LINE line_style color marker color 0 color;
   if not h.holdon then output h
 
 let plot_fun ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) f a b =
@@ -299,7 +369,8 @@ let scatter ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_si
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let r, g, b = color in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -312,6 +383,8 @@ let scatter ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_si
   ) in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
+  (* add legend item to page *)
+  _add_legend_item p SCATTER 0 color marker color 0 color;
   if not h.holdon then output h
 
 let histogram ?(h=_default_handle) ?(bin=10) x =
