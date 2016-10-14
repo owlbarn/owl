@@ -158,7 +158,7 @@ let _draw_legend p =
     match item.plot_type with
     | LINE -> [ PL_LEGEND_LINE; PL_LEGEND_SYMBOL ]
     | SCATTER -> [ PL_LEGEND_SYMBOL ]
-    | BOX -> [ PL_LEGEND_LINE; PL_LEGEND_COLOR_BOX ]
+    | BOX -> [ PL_LEGEND_COLOR_BOX ]
     ) p.legend_items in
   let text_colors = Array.map (fun _ -> 1) p.legend_items in
   let text = Array.mapi (fun i _ -> p.legend_names.(i)) p.legend_items in
