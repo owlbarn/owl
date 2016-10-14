@@ -158,13 +158,13 @@ let _draw_legend p =
     match item.plot_type with
     | LINE -> [ PL_LEGEND_LINE; PL_LEGEND_SYMBOL ]
     | SCATTER -> [ PL_LEGEND_SYMBOL ]
-    | BOX -> [ PL_LEGEND_COLOR_BOX ]
+    | BOX -> [ PL_LEGEND_LINE; PL_LEGEND_COLOR_BOX ]
     ) p.legend_items in
   let text_colors = Array.map (fun _ -> 1) p.legend_items in
   let text = Array.mapi (fun i _ -> p.legend_names.(i)) p.legend_items in
   let line_colors = Array.mapi (fun i x ->
-    let r, g, b = x.line_color
-    in plscol0 (i + cbase) r g b; (i + cbase)
+    let r, g, b = x.line_color in
+    plscol0 (i + cbase) r g b; (i + cbase)
     ) p.legend_items in
   let line_styles = Array.map (fun x -> x.line_style) p.legend_items in
   let line_widths = Array.map (fun _ -> 1.) p.legend_items in
@@ -408,7 +408,7 @@ let scatter ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_si
   _add_legend_item p SCATTER 0 color marker color 0 color;
   if not h.holdon then output h
 
-let histogram ?(h=_default_handle) ?(bin=10) x =
+let histogram ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(bin=10) x =
   let open Plplot in
   let x = Owl_dense.to_array x in
   let _ = _adjust_range h x `X in
@@ -418,11 +418,19 @@ let histogram ?(h=_default_handle) ?(bin=10) x =
   let _ = _adjust_range h [|ymin; ymax|] `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
+  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let r, g, b = color in
   let f = (fun () ->
-    plhist x xmin xmax bin [ PL_HIST_DEFAULT; PL_HIST_NOSCALING ]
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    plhist x xmin xmax bin [ PL_HIST_DEFAULT; PL_HIST_NOSCALING ];
+    (* restore original settings *)
+    plscol0 1 r' g' b'; plcol0 1;
   ) in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
+  (* add legend item to page *)
+  _add_legend_item p BOX 1 color "" color 0 color;
   if not h.holdon then output h
 
 let subplot h i j =

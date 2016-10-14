@@ -55,7 +55,7 @@ val plot_fun : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_
 
 val scatter : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> dsmat -> dsmat -> unit
 
-val histogram : ?h:handle -> ?bin:int -> dsmat -> unit
+val histogram : ?h:handle -> ?color:int * int * int -> ?bin:int -> dsmat -> unit
 
 val stem : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> unit
 
