@@ -1,4 +1,6 @@
-(** Plot module  *)
+(** Plot module
+  The input to a plot function is supposed to be a row-based matrix.
+ *)
 
 type dsmat = Owl_dense.dsmat
 
