@@ -11,7 +11,7 @@ type dsmat = Owl_dense.dsmat
 
 type color = RED | GREEN | BLUE
 
-type legend_typ = LINE | SCATTER | BAR
+type legend_typ = LINE | SCATTER | BOX
 
 type legend_position = North | South | West | East | NorthWest | NorthEast | SouthWest | SouthEast
 
@@ -158,7 +158,7 @@ let _draw_legend p =
     match item.plot_type with
     | LINE -> [ PL_LEGEND_LINE; PL_LEGEND_SYMBOL ]
     | SCATTER -> [ PL_LEGEND_SYMBOL ]
-    | BAR -> [ PL_LEGEND_COLOR_BOX ]
+    | BOX -> [ PL_LEGEND_COLOR_BOX ]
     ) p.legend_items in
   let text_colors = Array.map (fun _ -> 1) p.legend_items in
   let text = Array.mapi (fun i _ -> p.legend_names.(i)) p.legend_items in
@@ -172,11 +172,15 @@ let _draw_legend p =
   let marker_scales = Array.map (fun _ -> 1.) p.legend_items in
   let marker_nums = Array.map (fun _ -> 3) p.legend_items in
   let markers = Array.map (fun x -> x.marker) p.legend_items in
+  let box_colors = line_colors in
+  let box_patterns = Array.map (fun x -> x.fill_pattern) p.legend_items in
+  let box_scales = Array.map (fun x -> 0.8) p.legend_items in
+  let box_linewidths = Array.map (fun x -> 1.) p.legend_items in
   let _ = pllegend opt position 0.05 0.05
     0.1 15 1 1 0 0
     opt_array 1.0 1.0 2.0
     1.0 text_colors text
-    [||] [||] [||] [||]
+    box_colors box_patterns box_scales box_linewidths
     line_colors line_styles line_widths
     marker_colors marker_scales marker_nums markers
   in ()
@@ -433,7 +437,8 @@ let stem ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="#[0x2299]") ?(marker
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let r, g, b = color in
   let old_pensize = h.pensize in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
@@ -457,6 +462,8 @@ let stem ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="#[0x2299]") ?(marker
   ) in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
+  (* add legend item to page *)
+  _add_legend_item p LINE line_style color marker color 0 color;
   if not h.holdon then output h
 
 let autocorr ?(h=_default_handle) ?(marker="•") ?(marker_size=4.) x =
@@ -628,7 +635,8 @@ let bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let r, g, b = color in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -641,6 +649,8 @@ let bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=
   ) in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
+  (* add legend item to page *)
+  _add_legend_item p BOX line_style color "" color fill_pattern color;
   if not h.holdon then output h
 
 let area ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=0) x y=
@@ -654,7 +664,8 @@ let area ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let r, g, b = color in
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -668,6 +679,8 @@ let area ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern
   ) in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
+  (* add legend item to page *)
+  _add_legend_item p BOX line_style color "" color fill_pattern color;
   if not h.holdon then output h
 
 let pie = None
