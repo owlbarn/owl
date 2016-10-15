@@ -33,6 +33,8 @@ let log10 x = (ln x) /. Gsl.Math.ln10
 
 let log base x = (ln x) /. (ln base)
 
+let sigmoid x = 1. /. (exp (-.x) +. 1.)
+
 let sin x = Gsl.Sf.sin x
 
 let cos x = Gsl.Sf.cos x

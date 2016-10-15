@@ -42,6 +42,7 @@ val log10 : float -> float
 
 val log : float -> float -> float
 
+val sigmoid : float -> float
 
 (** {6 Trigonometric Functions} *)
 
