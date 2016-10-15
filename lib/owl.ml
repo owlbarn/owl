@@ -5,6 +5,8 @@
 
 (** Make alias of the modules in Owl for your convenience. *)
 
+module Const = Owl_const
+
 module Dense = Owl_dense
 
 module Sparse = Owl_sparse
