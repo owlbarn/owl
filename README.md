@@ -253,7 +253,8 @@ From `utop`, you can see that p' equals `[|0.2; 0.4; 0.8|]` which is exactly the
 
 ## Plotting
 
-Again, let's use an example to show how to plot the result using `Plot` module. We first generate two mesh grids then apply sine function to them by using the operations introduced before.
+There is another separate [Tutorial on Plotting in Owl](https://github.com/ryanrhymes/owl/wiki/Tutorial:-How-to-Plot-in-Owl%3F).
+Herein, let's use an example to briefly show how to plot the result using `Plot` module. We first generate two mesh grids then apply sine function to them by using the operations introduced before.
 
 ```ocaml
 let x, y = Dense.meshgrid (-2.5) 2.5 (-2.5) 2.5 100 100 in
