@@ -114,6 +114,22 @@ val gibbs_sampling : (float array -> int -> float) -> float array -> int -> floa
  *)
 
 
+(** {6 Hypothesis tests} *)
+
+type tail = BothSide | RightSide | LeftSide
+(** Types of alternative hypothesis tests: one-side, left-side, or right-side. *)
+
+val z_test : mu:float -> sigma:float -> ?alpha:float -> ?side:tail -> float array -> bool * float * float
+(** [z_test ~mu ~sigma ~alpha ~side x] returns a test decision for the null
+  hypothesis that the data [x] comes from a normal distribution with mean [mu]
+  and a standard deviation [sigma], using the z-test of [alpha] significance
+  level. The alternative hypothesis is that the mean is not [mu].
+
+  The result [h,p,z]: [h] is [true] if the test rejects the null hypothesis at
+  the [alpha] significance level, and [false] otherwise. [p] is the p-value and
+  [z] is the z-score.
+ *)
+
 (** {6 Random numbers, PDF, and CDF} *)
 
 module Rnd : sig

@@ -210,12 +210,6 @@ let first_quartile x = percentile x 0.25
 
 let third_quartile x = percentile x 0.75
 
-let z_test x = None
-
-let f_test x = None
-
-let t_test x = None
-
 
 module Rnd = struct
 
@@ -545,6 +539,26 @@ module Cdf = struct
   let hypergeometric_Q x n1 n2 t = Gsl.Cdf.hypergeometric_Q x n1 n2 t
 
 end
+
+
+(* Hypothesis tests *)
+
+type tail = BothSide | RightSide | LeftSide
+
+let z_test ~mu ~sigma ?(alpha=0.05) ?(side=BothSide) x =
+  let n = float_of_int (Array.length x) in
+  let z = (mean x -. mu) *. (sqrt n) /. sigma in
+  let p' = Cdf.gaussian_Q (abs_float z) 1. in
+  let p = match side with
+    | BothSide -> 2. *. p'
+    | LeftSide | RightSide -> p'
+  in
+  let h = alpha > p in
+  (h, p, z)
+
+let f_test x = None
+
+let t_test x = None
 
 (* MCMC: Metropolis and Gibbs sampling *)
 
