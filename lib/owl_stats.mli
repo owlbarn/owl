@@ -130,6 +130,7 @@ val z_test : mu:float -> sigma:float -> ?alpha:float -> ?side:tail -> float arra
   [z] is the z-score.
  *)
 
+
 (** {6 Random numbers, PDF, and CDF} *)
 
 module Rnd : sig

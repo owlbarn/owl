@@ -560,6 +560,37 @@ let f_test x = None
 
 let t_test x = None
 
+let ks_test x = None
+(* One-sample Kolmogorov-Smirnov test *)
+
+let ks2_test x = None
+(* Two-sample Kolmogorov-Smirnov test *)
+
+let ad_test x = None
+(* Anderson-Darling test *)
+
+let dw_test x = None
+(* Durbin-Watson test *)
+
+let jb_test x = None
+(* Jarque-Bera test *)
+
+let chi2_test x = None
+(* Chi-square variance test *)
+
+let fisher_test x = None
+(* Fisher's exact test *)
+
+let lillie_test x = None
+(* Lilliefors test *)
+
+let runs_test x = None
+(* Run test for randomness *)
+
+let crosstab x = None
+(* Cross-tabulation *)
+
+
 (* MCMC: Metropolis and Gibbs sampling *)
 
 let metropolis_hastings f p n =
