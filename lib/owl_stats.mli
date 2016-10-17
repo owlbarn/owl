@@ -43,6 +43,11 @@ val mean : ?w:float array -> float array -> float
 val variance : ?w:float array -> ?mean:float -> float array -> float
 
 val std : ?w:float array -> ?mean:float -> float array -> float
+(** [std x] calculates the standard deviation of [x]. *)
+
+val sem : ?w:float array -> ?mean:float -> float array -> float
+(** [sem x] calculates the standard error of [x], also referred to as standard
+  error of the mean. *)
 
 val absdev : ?w:float array -> ?mean:float -> float array -> float
 
@@ -130,6 +135,17 @@ val z_test : mu:float -> sigma:float -> ?alpha:float -> ?side:tail -> float arra
   [z] is the z-score.
  *)
 
+ val t_test : mu:float -> ?alpha:float -> ?side:tail -> float array -> bool * float * float
+(** [t_test ~mu ~alpha ~side x] returns a test decision of one-sample t-test
+  which is a parametric test of the location parameter when the population
+  standard deviation is unknown. [mu] is population mean, [alpha] is the
+  significance level.
+ *)
+
+val t_test_paired : ?alpha:float -> ?side:tail -> float array -> float array -> bool * float * float
+(** [t_test_paired ~alpha ~side x y] returns a test decision for the null
+  hypothesis that the data in [x – y] comes from a normal distribution with
+  mean equal to zero and unknown variance, using the paired-sample t-test. *)
 
 (** {6 Random numbers, PDF, and CDF} *)
 

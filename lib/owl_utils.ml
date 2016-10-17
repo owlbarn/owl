@@ -47,3 +47,9 @@ let array_iter3 f x y z =
   for i = 0 to c - 1 do
     f x.(i) y.(i) z.(i)
   done
+
+let array_map2i f x y =
+  let c = min (Array.length x) (Array.length y) in
+  Array.init c (fun i -> f i x.(i) y.(i))
+
+let array_sum x = Array.fold_left (+.) 0. x

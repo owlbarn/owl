@@ -45,6 +45,11 @@ let variance ?w ?mean x = Gsl.Stats.variance ?w ?mean x
 
 let std ?w ?mean x = Gsl.Stats.sd ?w ?mean x
 
+let sem ?w ?mean x =
+  let s = std ?w ?mean x in
+  let n = float_of_int (Array.length x) in
+  s /. (sqrt n)
+
 let absdev ?w ?mean x = Gsl.Stats.absdev ?w ?mean x
 
 let skew ?w ?mean ?sd x =
@@ -558,7 +563,38 @@ let z_test ~mu ~sigma ?(alpha=0.05) ?(side=BothSide) x =
 
 let f_test x = None
 
-let t_test x = None
+let t_test ~mu ?(alpha=0.05) ?(side=BothSide) x =
+  let n = float_of_int (Array.length x) in
+  let m = mean x in
+  let s = std ~mean:m x in
+  let t = (m -. mu) *. (sqrt n) /. s in
+  let p' = Cdf.tdist_Q (abs_float t) (n -. 1.) in
+  let p = match side with
+    | BothSide -> 2. *. p'
+    | LeftSide | RightSide -> p'
+  in
+  let h = alpha > p in
+  (h, p, t)
+
+let t_test_paired ?(alpha=0.05) ?(side=BothSide) x y =
+  let nx = float_of_int (Array.length x) in
+  let ny = float_of_int (Array.length y) in
+  let _ = if nx <> ny then
+    failwith "the sizes of two samples does not equal."
+  in
+  let d = Owl_utils.array_map2i (fun _ a b -> a -. b) x y in
+  let m = Owl_utils.array_sum d /. nx in
+  let t = m /. (sem ~mean:m d) in
+  let p' = Cdf.tdist_Q (abs_float t) (nx -. 1.) in
+  let p = match side with
+    | BothSide -> 2. *. p'
+    | LeftSide | RightSide -> p'
+  in
+  let h = alpha > p in
+  (h, p, t)
+
+
+let t_test2 ~mu ?(alpha=0.05) ?(side=BothSide) x y = None
 
 let ks_test x = None
 (* One-sample Kolmogorov-Smirnov test *)
