@@ -210,6 +210,12 @@ let first_quartile x = percentile x 0.25
 
 let third_quartile x = percentile x 0.75
 
+let z_test x = None
+
+let f_test x = None
+
+let t_test x = None
+
 
 module Rnd = struct
 
