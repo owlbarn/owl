@@ -59,10 +59,12 @@ let skew ?w ?mean ?sd x =
   | _, _ -> failwith "not enough arguments"
 
 let kurtosis ?w ?mean ?sd x =
-  match mean, sd with
-  | Some m, Some sd -> Gsl.Stats.kurtosis_m_sd ?w ~mean:m ~sd:sd x
-  | None, None -> Gsl.Stats.kurtosis x
-  | _, _ -> failwith "not enough arguments"
+  let k = match mean, sd with
+    | Some m, Some sd -> Gsl.Stats.kurtosis_m_sd ?w ~mean:m ~sd:sd x
+    | None, None -> Gsl.Stats.kurtosis x
+    | _, _ -> failwith "not enough arguments"
+  (* GSL returns excess kurtosis, so add back *)
+  in k +. 3.
 
 let central_moment n x =
   let m = float_of_int n in
@@ -672,7 +674,7 @@ let jb_test ?(alpha=0.05) x =
   let j = (n /. 6.) *. ((s ** 2.) +. (((k -. 3.) ** 2.) /. 4.)) in
   let p = Cdf.chisq_Q j 2. in
   let h = alpha > p in
-  (h, p, k)
+  (h, p, j)
 
 let var_test ?(alpha=0.05) ?(side=BothSide) ~var x =
   let n = float_of_int (Array.length x) in

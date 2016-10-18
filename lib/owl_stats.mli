@@ -54,6 +54,7 @@ val absdev : ?w:float array -> ?mean:float -> float array -> float
 val skew : ?w:float array -> ?mean:float -> ?sd:float -> float array -> float
 
 val kurtosis : ?w:float array -> ?mean:float -> ?sd:float -> float array -> float
+(** [kurtosis x] return the Pearson's kurtosis of [x]. *)
 
 val central_moment : int -> float array -> float
 
