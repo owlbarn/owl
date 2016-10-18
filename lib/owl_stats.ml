@@ -559,12 +559,14 @@ type test_result = {
 let z_test ~mu ~sigma ?(alpha=0.05) ?(side=BothSide) x =
   let n = float_of_int (Array.length x) in
   let z = (mean x -. mu) *. (sqrt n) /. sigma in
-  let p' = Cdf.gaussian_Q (abs_float z) 1. in
-  let p = match side with
-    | BothSide -> 2. *. p'
-    | LeftSide | RightSide -> p'
+  let pl = Cdf.gaussian_P z 1. in
+  let pr = Cdf.gaussian_Q z 1. in
+  let a, p = match side with
+    | LeftSide  -> alpha, pl
+    | RightSide -> alpha, pr
+    | BothSide  -> alpha /. 2., min [|pl; pr|]
   in
-  let h = alpha > p in
+  let h = a > p in
   (h, p, z)
 
 let f_test x = None
@@ -574,12 +576,14 @@ let t_test ~mu ?(alpha=0.05) ?(side=BothSide) x =
   let m = mean x in
   let s = std ~mean:m x in
   let t = (m -. mu) *. (sqrt n) /. s in
-  let p' = Cdf.tdist_Q (abs_float t) (n -. 1.) in
-  let p = match side with
-    | BothSide -> 2. *. p'
-    | LeftSide | RightSide -> p'
+  let pl = Cdf.tdist_P t (n -. 1.) in
+  let pr = Cdf.tdist_Q t (n -. 1.) in
+  let a, p = match side with
+    | LeftSide  -> alpha, pl
+    | RightSide -> alpha, pr
+    | BothSide  -> alpha /. 2., min [|pl; pr|]
   in
-  let h = alpha > p in
+  let h = a > p in
   (h, p, t)
 
 let t_test_paired ?(alpha=0.05) ?(side=BothSide) x y =
@@ -591,12 +595,14 @@ let t_test_paired ?(alpha=0.05) ?(side=BothSide) x y =
   let d = Owl_utils.array_map2i (fun _ a b -> a -. b) x y in
   let m = Owl_utils.array_sum d /. nx in
   let t = m /. (sem ~mean:m d) in
-  let p' = Cdf.tdist_Q (abs_float t) (nx -. 1.) in
-  let p = match side with
-    | BothSide -> 2. *. p'
-    | LeftSide | RightSide -> p'
+  let pl = Cdf.tdist_P t (nx -. 1.) in
+  let pr = Cdf.tdist_Q t (nx -. 1.) in
+  let a, p = match side with
+    | LeftSide  -> alpha, pl
+    | RightSide -> alpha, pr
+    | BothSide  -> alpha /. 2., min [|pl; pr|]
   in
-  let h = alpha > p in
+  let h = a > p in
   (h, p, t)
 
 let _t_test2_equal_var ~alpha ~side x y =
@@ -608,12 +614,14 @@ let _t_test2_equal_var ~alpha ~side x y =
   let ys = std y in
   let v = nx +. ny -. 2. in
   let t = (xm -. ym) /. (sqrt (((xs ** 2.) /. nx) +. ((ys ** 2.) /. ny))) in
-  let p' = Cdf.tdist_Q (abs_float t) v in
-  let p = match side with
-    | BothSide -> 2. *. p'
-    | LeftSide | RightSide -> p'
+  let pl = Cdf.tdist_P t v in
+  let pr = Cdf.tdist_Q t v in
+  let a, p = match side with
+    | LeftSide  -> alpha, pl
+    | RightSide -> alpha, pr
+    | BothSide  -> alpha /. 2., min [|pl; pr|]
   in
-  let h = alpha > p in
+  let h = a > p in
   (h, p, t)
 
 let _t_test2_welche ~alpha ~side x y =
@@ -629,12 +637,14 @@ let _t_test2_welche ~alpha ~side x y =
     ((xs ** 4.) /. ((vx *. (nx ** 2.))) +. ((ys ** 4.) /. (vy *. (ny ** 2.))))
   in
   let t = (xm -. ym) /. (sqrt (((xs ** 2.) /. nx) +. ((ys ** 2.) /. ny))) in
-  let p' = Cdf.tdist_Q (abs_float t) v in
-  let p = match side with
-    | BothSide -> 2. *. p'
-    | LeftSide | RightSide -> p'
+  let pl = Cdf.tdist_P t v in
+  let pr = Cdf.tdist_Q t v in
+  let a, p = match side with
+    | LeftSide  -> alpha, pl
+    | RightSide -> alpha, pr
+    | BothSide  -> alpha /. 2., min [|pl; pr|]
   in
-  let h = alpha > p in
+  let h = a > p in
   (h, p, t)
 
 let t_test_unpaired ?(alpha=0.05) ?(side=BothSide) ?(equal_var=true) x y =
