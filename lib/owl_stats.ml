@@ -550,6 +550,12 @@ end
 
 type tail = BothSide | RightSide | LeftSide
 
+type test_result = {
+  reject : bool;
+  p_value : float;
+  score : float;
+}
+
 let z_test ~mu ~sigma ?(alpha=0.05) ?(side=BothSide) x =
   let n = float_of_int (Array.length x) in
   let z = (mean x -. mu) *. (sqrt n) /. sigma in

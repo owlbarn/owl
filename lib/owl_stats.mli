@@ -155,8 +155,8 @@ val t_test_unpaired : ?alpha:float -> ?side:tail -> ?equal_var:bool -> float arr
   hypothesis is that the data in [x] and [y] comes from populations with
   unequal means.
 
-  [equal_var] indicates whether two samples have the same variance. If not, it
-  is actually Welche's t-test.
+  [equal_var] indicates whether two samples have the same variance. If the
+  two variances are not the same, the test is referred to as Welche's t-test.
  *)
 
 
