@@ -657,8 +657,20 @@ let dw_test x = None
 let jb_test x = None
 (* Jarque-Bera test *)
 
-let chi2_test x = None
+let var_test ?(alpha=0.05) ?(side=BothSide) ~var x =
 (* Chi-square variance test *)
+  let n = float_of_int (Array.length x) in
+  let v = n -. 1. in
+  let k = v *. (variance x) /. var in
+  let pl = Cdf.chisq_P k v in
+  let pr = Cdf.chisq_Q k v in
+  let a, p = match side with
+    | LeftSide  -> alpha, pl
+    | RightSide -> alpha, pr
+    | BothSide  -> alpha /. 2., min [|pl; pr|]
+  in
+  let h = a > p in
+  (h, p, k)
 
 let fisher_test x = None
 (* Fisher's exact test *)
