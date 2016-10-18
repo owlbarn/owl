@@ -593,8 +593,48 @@ let t_test_paired ?(alpha=0.05) ?(side=BothSide) x y =
   let h = alpha > p in
   (h, p, t)
 
+let _t_test2_equal_var ~alpha ~side x y =
+  let nx = float_of_int (Array.length x) in
+  let ny = float_of_int (Array.length y) in
+  let xm = mean x in
+  let ym = mean y in
+  let xs = std x in
+  let ys = std y in
+  let v = nx +. ny -. 2. in
+  let t = (xm -. ym) /. (sqrt (((xs ** 2.) /. nx) +. ((ys ** 2.) /. ny))) in
+  let p' = Cdf.tdist_Q (abs_float t) v in
+  let p = match side with
+    | BothSide -> 2. *. p'
+    | LeftSide | RightSide -> p'
+  in
+  let h = alpha > p in
+  (h, p, t)
 
-let t_test2 ~mu ?(alpha=0.05) ?(side=BothSide) x y = None
+let _t_test2_welche ~alpha ~side x y =
+  let nx = float_of_int (Array.length x) in
+  let ny = float_of_int (Array.length y) in
+  let xm = mean x in
+  let ym = mean y in
+  let xs = std x in
+  let ys = std y in
+  let vx = nx -. 1. in
+  let vy = ny -. 1. in
+  let v = ((((xs ** 2.) /. nx) +. ((ys ** 2.) /. ny)) ** 2.) /.
+    ((xs ** 4.) /. ((vx *. (nx ** 2.))) +. ((ys ** 4.) /. (vy *. (ny ** 2.))))
+  in
+  let t = (xm -. ym) /. (sqrt (((xs ** 2.) /. nx) +. ((ys ** 2.) /. ny))) in
+  let p' = Cdf.tdist_Q (abs_float t) v in
+  let p = match side with
+    | BothSide -> 2. *. p'
+    | LeftSide | RightSide -> p'
+  in
+  let h = alpha > p in
+  (h, p, t)
+
+let t_test_unpaired ?(alpha=0.05) ?(side=BothSide) ?(equal_var=true) x y =
+  match equal_var with
+  | true  -> _t_test2_equal_var ~alpha ~side x y
+  | false -> _t_test2_welche ~alpha ~side x y
 
 let ks_test x = None
 (* One-sample Kolmogorov-Smirnov test *)

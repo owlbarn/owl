@@ -147,6 +147,19 @@ val t_test_paired : ?alpha:float -> ?side:tail -> float array -> float array -> 
   hypothesis that the data in [x – y] comes from a normal distribution with
   mean equal to zero and unknown variance, using the paired-sample t-test. *)
 
+val t_test_unpaired : ?alpha:float -> ?side:tail -> ?equal_var:bool -> float array -> float array -> bool * float * float
+(** [t_test_unpaired ~alpha ~side ~equal_var x y] returns a test decision for
+  the null hypothesis that the data in vectors [x] and [y] comes from
+  independent random samples from normal distributions with equal means and
+  equal but unknown variances, using the two-sample t-test. The alternative
+  hypothesis is that the data in [x] and [y] comes from populations with
+  unequal means.
+
+  [equal_var] indicates whether two samples have the same variance. If not, it
+  is actually Welche's t-test.
+ *)
+
+
 (** {6 Random numbers, PDF, and CDF} *)
 
 module Rnd : sig
