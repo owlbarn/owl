@@ -166,6 +166,12 @@ val var_test : ?alpha:float -> ?side:tail -> var:float -> float array -> bool * 
   is that [x] comes from a normal distribution with a different variance.
  *)
 
+val jb_test : ?alpha:float -> float array -> bool * float * float
+(** [jb_test ~alpha x] returns a test decision for the null hypothesis that the
+  data [x] comes from a normal distribution with an unknown mean and variance,
+  using the Jarque-Bera test.
+ *)
+
 
 (** {6 Random numbers, PDF, and CDF} *)
 

@@ -561,12 +561,12 @@ let z_test ~mu ~sigma ?(alpha=0.05) ?(side=BothSide) x =
   let z = (mean x -. mu) *. (sqrt n) /. sigma in
   let pl = Cdf.gaussian_P z 1. in
   let pr = Cdf.gaussian_Q z 1. in
-  let a, p = match side with
-    | LeftSide  -> alpha, pl
-    | RightSide -> alpha, pr
-    | BothSide  -> alpha /. 2., min [|pl; pr|]
+  let p = match side with
+    | LeftSide  -> pl
+    | RightSide -> pr
+    | BothSide  -> min [|pl; pr|] *. 2.
   in
-  let h = a > p in
+  let h = alpha > p in
   (h, p, z)
 
 let f_test x = None
@@ -578,12 +578,12 @@ let t_test ~mu ?(alpha=0.05) ?(side=BothSide) x =
   let t = (m -. mu) *. (sqrt n) /. s in
   let pl = Cdf.tdist_P t (n -. 1.) in
   let pr = Cdf.tdist_Q t (n -. 1.) in
-  let a, p = match side with
-    | LeftSide  -> alpha, pl
-    | RightSide -> alpha, pr
-    | BothSide  -> alpha /. 2., min [|pl; pr|]
+  let p = match side with
+    | LeftSide  -> pl
+    | RightSide -> pr
+    | BothSide  -> min [|pl; pr|] *. 2.
   in
-  let h = a > p in
+  let h = alpha > p in
   (h, p, t)
 
 let t_test_paired ?(alpha=0.05) ?(side=BothSide) x y =
@@ -597,12 +597,12 @@ let t_test_paired ?(alpha=0.05) ?(side=BothSide) x y =
   let t = m /. (sem ~mean:m d) in
   let pl = Cdf.tdist_P t (nx -. 1.) in
   let pr = Cdf.tdist_Q t (nx -. 1.) in
-  let a, p = match side with
-    | LeftSide  -> alpha, pl
-    | RightSide -> alpha, pr
-    | BothSide  -> alpha /. 2., min [|pl; pr|]
+  let p = match side with
+    | LeftSide  -> pl
+    | RightSide -> pr
+    | BothSide  -> min [|pl; pr|] *. 2.
   in
-  let h = a > p in
+  let h = alpha > p in
   (h, p, t)
 
 let _t_test2_equal_var ~alpha ~side x y =
@@ -616,12 +616,12 @@ let _t_test2_equal_var ~alpha ~side x y =
   let t = (xm -. ym) /. (sqrt (((xs ** 2.) /. nx) +. ((ys ** 2.) /. ny))) in
   let pl = Cdf.tdist_P t v in
   let pr = Cdf.tdist_Q t v in
-  let a, p = match side with
-    | LeftSide  -> alpha, pl
-    | RightSide -> alpha, pr
-    | BothSide  -> alpha /. 2., min [|pl; pr|]
+  let p = match side with
+    | LeftSide  -> pl
+    | RightSide -> pr
+    | BothSide  -> min [|pl; pr|] *. 2.
   in
-  let h = a > p in
+  let h = alpha > p in
   (h, p, t)
 
 let _t_test2_welche ~alpha ~side x y =
@@ -639,12 +639,12 @@ let _t_test2_welche ~alpha ~side x y =
   let t = (xm -. ym) /. (sqrt (((xs ** 2.) /. nx) +. ((ys ** 2.) /. ny))) in
   let pl = Cdf.tdist_P t v in
   let pr = Cdf.tdist_Q t v in
-  let a, p = match side with
-    | LeftSide  -> alpha, pl
-    | RightSide -> alpha, pr
-    | BothSide  -> alpha /. 2., min [|pl; pr|]
+  let p = match side with
+    | LeftSide  -> pl
+    | RightSide -> pr
+    | BothSide  -> min [|pl; pr|] *. 2.
   in
-  let h = a > p in
+  let h = alpha > p in
   (h, p, t)
 
 let t_test_unpaired ?(alpha=0.05) ?(side=BothSide) ?(equal_var=true) x y =
@@ -664,22 +664,28 @@ let ad_test x = None
 let dw_test x = None
 (* Durbin-Watson test *)
 
-let jb_test x = None
+let jb_test ?(alpha=0.05) x =
 (* Jarque-Bera test *)
+  let n = float_of_int (Array.length x) in
+  let s = skew x in
+  let k = kurtosis x in
+  let j = (n /. 6.) *. ((s ** 2.) +. (((k -. 3.) ** 2.) /. 4.)) in
+  let p = Cdf.chisq_Q j 2. in
+  let h = alpha > p in
+  (h, p, k)
 
 let var_test ?(alpha=0.05) ?(side=BothSide) ~var x =
-(* Chi-square variance test *)
   let n = float_of_int (Array.length x) in
   let v = n -. 1. in
   let k = v *. (variance x) /. var in
   let pl = Cdf.chisq_P k v in
   let pr = Cdf.chisq_Q k v in
-  let a, p = match side with
-    | LeftSide  -> alpha, pl
-    | RightSide -> alpha, pr
-    | BothSide  -> alpha /. 2., min [|pl; pr|]
+  let p = match side with
+    | LeftSide  -> pl
+    | RightSide -> pr
+    | BothSide  -> min [|pl; pr|] *. 2.
   in
-  let h = a > p in
+  let h = alpha > p in
   (h, p, k)
 
 let fisher_test x = None
