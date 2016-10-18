@@ -159,6 +159,13 @@ val t_test_unpaired : ?alpha:float -> ?side:tail -> ?equal_var:bool -> float arr
   two variances are not the same, the test is referred to as Welche's t-test.
  *)
 
+val var_test : ?alpha:float -> ?side:tail -> var:float -> float array -> bool * float * float
+(** [var_test ~alpha ~side ~var x] returns a test decision for the null
+  hypothesis that the data in [x] comes from a normal distribution with
+  variance [var], using the chi-square variance test. The alternative hypothesis
+  is that [x] comes from a normal distribution with a different variance.
+ *)
+
 
 (** {6 Random numbers, PDF, and CDF} *)
 
