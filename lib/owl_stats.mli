@@ -173,6 +173,13 @@ val jb_test : ?alpha:float -> float array -> bool * float * float
   using the Jarque-Bera test.
  *)
 
+val runs_test : ?alpha:float -> ?side:tail -> ?v:float -> float array -> bool * float * float
+(** [runs_test ~alpha ~v x] returns a test decision for the null hypothesis that
+  the data [x] comes in random order, against the alternative that they do not.
+  The test is based on the number of runs of consecutive values above or below
+  the mean of [x]. [~v] is the reference value, the default is the median of [x].
+ *)
+
 
 (** {6 Random numbers, PDF, and CDF} *)
 

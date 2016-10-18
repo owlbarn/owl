@@ -696,8 +696,38 @@ let fisher_test x = None
 let lillie_test x = None
 (* Lilliefors test *)
 
-let runs_test x = None
+let runs_test ?(alpha=0.05) ?(side=BothSide) ?v x =
 (* Run test for randomness *)
+let v = match v with
+  | Some v -> v
+  | None -> median x
+in
+let n1, n2 = ref 0., ref 0. in
+let z = ref [||] in
+let _ = Array.iter (fun y ->
+  if y > v then (n1 := !n1 +. 1.; z := Array.append !z [|1|])
+  else if y < v then (n2 := !n2 +. 1.; z := Array.append !z [|-1|])
+) x in
+let r0 = ref 1. in
+let _ = for i = 0 to Array.length !z - 2 do
+  match (!z.(i) * !z.(i+1)) < 0 with
+  | true  -> r0 := !r0 +. 1.
+  | false -> ()
+done in
+let aa = 2. *. !n1 *. !n2 in
+let bb = !n1 +. !n2 in
+let r1 = aa /. bb +. 1. in
+let sr = aa *. (aa -. bb) /. (bb *. bb *. (bb -. 1.)) in
+let z = (!r0 -. r1) /. (sqrt sr) in
+let pl = Cdf.gaussian_P z 1. in
+let pr = Cdf.gaussian_Q z 1. in
+let p = match side with
+  | LeftSide  -> pl
+  | RightSide -> pr
+  | BothSide  -> min [|pl; pr|] *. 2.
+in
+let h = alpha > p in
+(h, p, z)
 
 let crosstab x = None
 (* Cross-tabulation *)
