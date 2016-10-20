@@ -712,6 +712,18 @@ let ecdf ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(
   let y = Owl_dense.of_array y n 1 in
   plot ~h ~color ~line_style ~line_width x y
 
+let stairs ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) x y =
+  let x = Owl_dense.to_array x in
+  let y = Owl_dense.to_array y in
+  let x = _ecdf_interleave x 0 in
+  let a = y.(0) in
+  let y = _ecdf_interleave y 1 in
+  let _ = y.(0) <- a in
+  let n = Array.length x in
+  let x = Owl_dense.of_array x n 1 in
+  let y = Owl_dense.of_array y n 1 in
+  plot ~h ~color ~line_style ~line_width x y
+
 let pie = None
 
 let surf ?(h=_default_handle) ?(contour=false) x y z =

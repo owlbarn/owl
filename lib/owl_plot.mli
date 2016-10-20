@@ -59,6 +59,8 @@ val histogram : ?h:handle -> ?color:int * int * int -> ?bin:int -> dsmat -> unit
 
 val ecdf : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_width:float -> dsmat -> unit
 
+val stairs : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> unit
+
 val stem : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> unit
 
 val autocorr : ?h:handle -> ?marker:string -> ?marker_size:float -> dsmat -> unit
