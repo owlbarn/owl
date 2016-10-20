@@ -226,8 +226,6 @@ let ecdf x =
   done;
   !y, !f
 
-
-
 let _quantile_from_sorted_data x q = Gsl.Stats.quantile_from_sorted_data x q
 (* x must be in ascending order. *)
 

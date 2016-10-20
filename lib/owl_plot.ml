@@ -691,6 +691,27 @@ let area ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern
   _add_legend_item p BOX line_style color "" color fill_pattern color;
   if not h.holdon then output h
 
+let _ecdf_interleave x i =
+  let m = Array.length x in
+  let n = 2 * m in
+  let y = Array.make n 0. in
+  let _ = Array.iteri (fun j z ->
+    let k = 2 * j + i in
+    if k < n then y.(k) <- z;
+    if k < n - 1 then y.(k + 1) <- z
+  ) x
+  in y
+
+let ecdf ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) x =
+  let x0 = Owl_dense.to_array x in
+  let x, y = Owl_stats.ecdf x0 in
+  let x = _ecdf_interleave x 0 in
+  let y = _ecdf_interleave y 1 in
+  let n = Array.length x in
+  let x = Owl_dense.of_array x n 1 in
+  let y = Owl_dense.of_array y n 1 in
+  plot ~h ~color ~line_style ~line_width x y
+
 let pie = None
 
 let surf ?(h=_default_handle) ?(contour=false) x y z =
