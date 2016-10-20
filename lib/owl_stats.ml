@@ -206,6 +206,28 @@ let histogram x n =
     d.(i) <- d.(i) + 1
   ) x; d
 
+let ecdf x =
+  let x = sort ~inc:true x in
+  let n = Array.length x in
+  let m = float_of_int n in
+  let y = ref [||] in
+  let f = ref [||] in
+  let i = ref 0 in
+  let c = ref 0. in
+  while !i < n do
+    let j = ref !i in
+    while (!j < n) && (x.(!i) = x.(!j)) do
+      c := !c +. 1.;
+      j := !j + 1
+    done;
+    y := Array.append !y [|x.(!i)|];
+    f := Array.append !f [|!c /. m|];
+    i := !j
+  done;
+  !y, !f
+
+
+
 let _quantile_from_sorted_data x q = Gsl.Stats.quantile_from_sorted_data x q
 (* x must be in ascending order. *)
 

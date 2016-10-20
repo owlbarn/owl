@@ -106,6 +106,12 @@ val rank : float array -> float array
 
 val histogram : float array -> int -> int array
 
+val ecdf : float array -> float array * float array
+(** [ecdf x] returns [(x',f)] which are the empirical cumulative distribution
+  function [f] of [x] at points [x']. [x'] is just [x] sorted in increasing
+  order with duplicates removed.
+ *)
+
 
 (** {6 MCMC: Markov Chain Monte Carlo} *)
 
@@ -177,7 +183,7 @@ val runs_test : ?alpha:float -> ?side:tail -> ?v:float -> float array -> bool * 
 (** [runs_test ~alpha ~v x] returns a test decision for the null hypothesis that
   the data [x] comes in random order, against the alternative that they do not,
   by runnign Wald–Wolfowitz runs test. The test is based on the number of runs
-  of consecutive values above or below the mean of [x]. [~v] is the reference 
+  of consecutive values above or below the mean of [x]. [~v] is the reference
   value, the default value is the median of [x].
  *)
 
