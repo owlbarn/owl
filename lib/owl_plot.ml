@@ -724,6 +724,31 @@ let stairs ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width
   let y = Owl_dense.of_array y n 1 in
   plot ~h ~color ~line_style ~line_width x y
 
+let draw_circle ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) ?(fill=true) x y rr =
+  let open Plplot in
+  let x' = [|x -. rr; x +. rr|] in
+  let y' = [|y -. rr; y +. rr|] in
+  let _ = _adjust_range h ~margin:0.05 x' `X in
+  let _ = _adjust_range h ~margin:0.05 y' `Y in
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let old_pensize = h.pensize in
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    let _ = if line_width > (-1.) then plwidth line_width in
+    let _ = pllsty line_style in
+    let _ = plarc x y rr rr 0.0 360.0 0.0 fill in
+    (* restore original settings *)
+    plscol0 1 r' g' b'; plcol0 1;
+    plwidth old_pensize;
+    pllsty 1
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
+
 let pie = None
 
 let surf ?(h=_default_handle) ?(contour=false) x y z =
