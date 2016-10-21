@@ -3,11 +3,9 @@ Owl is an OCaml numerical library. It supports both dense and sparse matrix oper
 
 The full API documentation is here: [Owl Manual](http://www.cl.cam.ac.uk/~lw525/owl/)
 
-There will be a series of tutorials here: [How to Plot in Owl](https://github.com/ryanrhymes/owl/wiki/Tutorial:-How-to-Plot-in-Owl%3F)
+The series of tutorials is here: [How to Plot in Owl](https://github.com/ryanrhymes/owl/wiki/Tutorial:-How-to-Plot-in-Owl%3F)
 
-If you have any questions, please email to liang.wang@cl.cam.ac.uk
-
-or message me on:
+[Email Me](liang.wang@cl.cam.ac.uk) or message me on:
 [Twitter](https://twitter.com/ryan_liang),
 [Google+](https://www.google.com/+RyanLiang),
 [Facebook](http://www.facebook.com/ryan.liang.wang),
