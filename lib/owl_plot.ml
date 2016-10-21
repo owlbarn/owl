@@ -773,8 +773,7 @@ let pie ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(fill=false) x =
   let _ = _adjust_range h ~margin:0.1 [|-1.; 1.|] `X in
   let _ = _adjust_range h ~margin:0.1 [|-1.; 1.|] `Y in
   let x = Owl_dense.to_array x in
-  let m = Owl_utils.array_sum x in
-  let x = Array.map (fun x -> x /. m) x in
+  let x = Owl_stats.normlise_pdf x in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in

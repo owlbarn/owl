@@ -237,13 +237,16 @@ let first_quartile x = percentile x 0.25
 
 let third_quartile x = percentile x 0.75
 
-let z_score x = None
+let z_score ~mu ~sigma x = Array.map (fun y -> (y -. mu) /. sigma) x
 
-let t_score x = None
+let t_score x =
+  let mu = mean x in
+  let sigma = std x in
+  z_score ~mu ~sigma x
 
-let normlise x = None
-
-let standardise x = None
+let normlise_pdf x =
+  let c = Owl_utils.array_sum x in
+  Array.map (fun x -> x /. c) x
 
 
 module Rnd = struct

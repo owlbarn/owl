@@ -112,6 +112,12 @@ val ecdf : float array -> float array * float array
   order with duplicates removed.
  *)
 
+val z_score : mu:float -> sigma:float -> float array -> float array
+
+val t_score : float array -> float array
+
+val normlise_pdf : float array -> float array
+
 
 (** {6 MCMC: Markov Chain Monte Carlo} *)
 
