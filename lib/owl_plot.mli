@@ -71,7 +71,7 @@ val draw_line: ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_w
 
 val draw_rect : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?fill_pattern:int -> float -> float -> float -> float -> unit
 
-val draw_circle : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_width:float -> ?fill:bool -> float -> float -> float -> unit
+val draw_circle : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_width:float -> ?fill_pattern:int -> float -> float -> float -> unit
 
 val bar : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?fill_pattern:int -> dsmat -> unit
 

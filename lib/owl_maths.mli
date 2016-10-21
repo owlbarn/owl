@@ -521,7 +521,9 @@ val eta : float -> float
 val eta_int : int -> float
 
 
+(** {6 Some constants} *)
 
+val pi : float
 
 
 (* TODO: Wavelet function is missing; FFT function is missing *)
