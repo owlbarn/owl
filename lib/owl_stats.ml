@@ -237,6 +237,14 @@ let first_quartile x = percentile x 0.25
 
 let third_quartile x = percentile x 0.75
 
+let z_score x = None
+
+let t_score x = None
+
+let normlise x = None
+
+let standardise x = None
+
 
 module Rnd = struct
 

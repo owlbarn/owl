@@ -726,7 +726,7 @@ let stairs ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width
 
 let draw_circle ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) ?(fill_pattern=0) x y rr =
   let open Plplot in
-  let n = 500 in
+  let n = 1000 in
   let theta = (2. *. Owl_maths.pi) /. (float_of_int n) in
   let x' = Array.init (n + 1) (fun i -> x +. Owl_maths.(sin (float_of_int i *. theta)) *. rr) in
   let y' = Array.init (n + 1) (fun i -> y +. Owl_maths.(cos (float_of_int i *. theta)) *. rr) in
@@ -753,7 +753,47 @@ let draw_circle ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let pie ?(h=_default_handle) x = None
+let _draw_arc fill n x =
+  let open Plplot in
+  let a = 2. *. Owl_maths.pi in
+  let theta = a /. n in
+  let i = ref 0. in
+  Array.iter (fun y ->
+    let c = n *. y in
+    let x' = Array.init (int_of_float c + 1) (fun j -> Owl_maths.(sin ((float_of_int j +. !i) *. theta))) in
+    let y' = Array.init (int_of_float c + 1) (fun j -> Owl_maths.(cos ((float_of_int j +. !i) *. theta))) in
+    let x' = Array.(append [|0.|] x') in
+    let y' = Array.(append [|0.|] y') in
+    let _ = plline x' y' in
+    i := !i +. c;
+  ) x
+
+let pie ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(fill=false) x =
+  let open Plplot in
+  let _ = _adjust_range h ~margin:0.1 [|-1.; 1.|] `X in
+  let _ = _adjust_range h ~margin:0.1 [|-1.; 1.|] `Y in
+  let x = Owl_dense.to_array x in
+  let m = Owl_utils.array_sum x in
+  let x = Array.map (fun x -> x /. m) x in
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let old_pensize = h.pensize in
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    let _ = plwidth 1. in
+    let _ = pllsty 1 in
+    let _ = plpsty 0 in
+    let _ = _draw_arc fill 1000. x in
+    (* restore original settings *)
+    plscol0 1 r' g' b'; plcol0 1;
+    plwidth old_pensize;
+    pllsty 1
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
 
 let surf ?(h=_default_handle) ?(contour=false) x y z =
   let open Plplot in

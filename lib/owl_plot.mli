@@ -81,6 +81,8 @@ val error_bar : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_
 
 val boxplot : ?h:handle -> ?color:int * int * int -> dsmat -> unit
 
+val pie : ?h:handle -> ?color:int * int * int -> ?fill:bool -> dsmat -> unit
+
 (** Plot 3D figures *)
 
 val plot3d : ?h:handle -> ?contour:bool -> dsmat -> dsmat -> dsmat -> unit
