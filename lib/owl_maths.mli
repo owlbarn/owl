@@ -413,13 +413,17 @@ val ln_factorial : int -> float
 
 val ln_double_factorial : int -> float
 
-val combination : int -> int -> float
+val permutation : int -> int -> int
+
+val combination : int -> int -> int
 
 val ln_combination : int -> int -> float
 
 val taylorcoeff : int -> float -> float
 
 val combination_iterator : int -> int -> (unit -> int array)
+
+val permutation_iterator : int -> (unit -> int array)
 
 
 (** {6 Pochhammer Symbol} *)

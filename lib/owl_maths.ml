@@ -347,7 +347,7 @@ let ln_factorial x = Gsl.Sf.lnfact x
 
 let ln_double_factorial x = Gsl.Sf.lndoublefact x
 
-let combination n x = Gsl.Sf.choose n x
+let combination n x = int_of_float (Gsl.Sf.choose n x)
 
 let ln_combination n x = Gsl.Sf.lnchoose n x
 
@@ -429,8 +429,15 @@ let eta x = Gsl.Sf.eta x
 
 let eta_int x = Gsl.Sf.eta_int x
 
+let permutation n k =
+  let r = ref 1 in
+  for i = 0 to k - 1 do
+    r := !r * (n - i)
+  done;
+  !r
+
 let combination_iterator n k =
-  let c = combination n k |> int_of_float in
+  let c = combination n k in
   let x = Gsl.Combi.make n k in
   let i = ref 0 in
   let f = fun () -> (
@@ -439,6 +446,20 @@ let combination_iterator n k =
       | false -> [||]
     in
     let _ = Gsl.Combi.next x in
+    let _ = i := !i + 1 in
+    y )
+  in f
+
+let permutation_iterator n =
+  let c = permutation n n in
+  let x = Gsl.Permut.make n in
+  let i = ref 0 in
+  let f = fun () -> (
+    let y = match !i < c with
+      | true  -> Gsl.Permut.to_array x
+      | false -> [||]
+    in
+    let _ = Gsl.Permut.next x in
     let _ = i := !i + 1 in
     y )
   in f
