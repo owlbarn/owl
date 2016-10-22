@@ -248,6 +248,12 @@ let normlise_pdf x =
   let c = Owl_utils.array_sum x in
   Array.map (fun x -> x /. c) x
 
+let centerise x = None
+
+let standarderise x = None
+
+let ksdensity x = None
+
 
 module Rnd = struct
 

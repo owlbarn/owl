@@ -429,6 +429,19 @@ let eta x = Gsl.Sf.eta x
 
 let eta_int x = Gsl.Sf.eta_int x
 
+let combination_iterator n k =
+  let c = combination n k |> int_of_float in
+  let x = Gsl.Combi.make n k in
+  let i = ref 0 in
+  let f = fun () -> (
+    let y = match !i < c with
+      | true  -> Gsl.Combi.to_array x
+      | false -> [||]
+    in
+    let _ = Gsl.Combi.next x in
+    let _ = i := !i + 1 in
+    y )
+  in f
 
 
 (* ends here *)

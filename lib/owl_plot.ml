@@ -902,6 +902,18 @@ let contour ?(h=_default_handle) x y z =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
+(* TODO *)
+
+let qqplot = None
+
+let scatterhist = None
+
+let probplot = None
+
+let normplot = None
+
+let wblplot = None
+
 
 
 (* ends here *)

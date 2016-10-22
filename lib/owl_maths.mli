@@ -419,6 +419,8 @@ val ln_combination : int -> int -> float
 
 val taylorcoeff : int -> float -> float
 
+val combination_iterator : int -> int -> (unit -> int array)
+
 
 (** {6 Pochhammer Symbol} *)
 
