@@ -2,7 +2,7 @@
   The input to a plot function is supposed to be a row-based matrix.
  *)
 
-type dsmat = Owl_dense.dsmat
+type dsmat = Owl_dense_real.mat
 
 type handle
 

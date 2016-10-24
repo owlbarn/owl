@@ -1,4 +1,4 @@
-module M = Owl_dense
+module M = Owl_dense_real
 
 let test_op s c op =
   let ttime = ref 0. in

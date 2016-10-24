@@ -495,21 +495,21 @@ let of_dense x =
   _update_rec_from_ptr y
 
 let sum_rows x =
-  let y = Owl_dense.ones 1 (row_num x) |> of_dense in
+  let y = Owl_dense_real.ones 1 (row_num x) |> of_dense in
   dot y x
 
 let sum_cols x =
-  let y = Owl_dense.ones (col_num x) 1 |> of_dense in
+  let y = Owl_dense_real.ones (col_num x) 1 |> of_dense in
   dot x y
 
 let average_rows x =
   let m, n = shape x in
-  let y = Owl_dense.create 1 m (1. /. (float_of_int m)) |> of_dense in
+  let y = Owl_dense_real.create 1 m (1. /. (float_of_int m)) |> of_dense in
   dot y x
 
 let average_cols x =
   let m, n = shape x in
-  let y = Owl_dense.create n 1 (1. /. (float_of_int n)) |> of_dense in
+  let y = Owl_dense_real.create n 1 (1. /. (float_of_int n)) |> of_dense in
   dot x y
 
 
@@ -528,7 +528,7 @@ let pp_spmat x =
   let c = nnz x in
   let p = 100. *. (density x) in
   let mz, nz = row_num_nz x, col_num_nz x in
-  let _ = if m < 100 && n < 100 then Owl_dense.pp_dsmat (to_dense x) in
+  let _ = if m < 100 && n < 100 then Owl_dense_real.pp_dsmat (to_dense x) in
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
 let save x f =
@@ -587,9 +587,9 @@ let shuffle x = x |> shuffle_rows |> shuffle_cols
 
 (** uncategorised functions *)
 
-let ones m n = Owl_dense.ones m n |> of_dense
+let ones m n = Owl_dense_real.ones m n |> of_dense
 
-let linspace a b n = Owl_dense.linspace a b n |> of_dense
+let linspace a b n = Owl_dense_real.linspace a b n |> of_dense
 
 
 (** short-hand infix operators *)

@@ -7,7 +7,7 @@
 
 (* types in plot module *)
 
-type dsmat = Owl_dense.dsmat
+type dsmat = Owl_dense_real.mat
 
 type color = RED | GREEN | BLUE
 
@@ -340,8 +340,8 @@ let _adjust_range ?(margin=0.) h d axis =
 
 let plot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) x y =
   let open Plplot in
-  let x = Owl_dense.to_array x in
-  let y = Owl_dense.to_array y in
+  let x = Owl_dense_real.to_array x in
+  let y = Owl_dense_real.to_array y in
   let _ = _adjust_range h x `X in
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
@@ -378,14 +378,14 @@ let plot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.)
   if not h.holdon then output h
 
 let plot_fun ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) f a b =
-  let x = Owl_dense.linspace a b 100 in
-  let y = Owl_dense.map f x in
+  let x = Owl_dense_real.linspace a b 100 in
+  let y = Owl_dense_real.map f x in
   plot ~h ~color ~marker ~marker_size ~line_style ~line_width x y
 
 let scatter ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_size=4.) x y =
   let open Plplot in
-  let x = Owl_dense.to_array x in
-  let y = Owl_dense.to_array y in
+  let x = Owl_dense_real.to_array x in
+  let y = Owl_dense_real.to_array y in
   let _ = _adjust_range h x `X in
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
@@ -410,7 +410,7 @@ let scatter ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_si
 
 let histogram ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(bin=10) x =
   let open Plplot in
-  let x = Owl_dense.to_array x in
+  let x = Owl_dense_real.to_array x in
   let _ = _adjust_range h x `X in
   let xmin, xmax = Owl_stats.minmax x in
   let ymin, ymax = 0., Owl_stats.(histogram x bin |> Array.map float_of_int |> max)  *. 1.1 in
@@ -439,8 +439,8 @@ let subplot h i j =
 
 let stem ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="#[0x2299]") ?(marker_size=4.) ?(line_style=2) ?(line_width=(-1.)) x y =
   let open Plplot in
-  let x = Owl_dense.to_array x in
-  let y = Owl_dense.to_array y in
+  let x = Owl_dense_real.to_array x in
+  let y = Owl_dense_real.to_array y in
   let _ = _adjust_range h x `X in
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
@@ -475,11 +475,11 @@ let stem ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="#[0x2299]") ?(marker
   if not h.holdon then output h
 
 let autocorr ?(h=_default_handle) ?(marker="•") ?(marker_size=4.) x =
-  let z = Owl_dense.to_array x in
+  let z = Owl_dense_real.to_array x in
   let x' = Array.init (Array.length z) (fun i -> float_of_int i) in
   let y' = Array.mapi (fun i _ -> Owl_stats.autocorrelation ~lag:i z) x' in
-  let x' = Owl_dense.of_arrays [|x'|] in
-  let y' = Owl_dense.of_arrays [|y'|] in
+  let x' = Owl_dense_real.of_arrays [|x'|] in
+  let y' = Owl_dense_real.of_arrays [|y'|] in
   let _ = set_xlabel h "Lag" in
   let _ = set_ylabel h "Autocorrelation" in
   stem ~h ~marker ~marker_size ~line_style:1 x' y'
@@ -531,11 +531,11 @@ let _draw_error_bar ?(w=0.) x y e =
 
 let error_bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) x y e =
   let open Plplot in
-  let ymin, _, _ = Owl_dense.(min(y -@ e)) in
-  let ymax, _, _ = Owl_dense.(max(y +@ e)) in
-  let x = Owl_dense.to_array x in
-  let y = Owl_dense.to_array y in
-  let e = Owl_dense.to_array e in
+  let ymin, _, _ = Owl_dense_real.(min(y -@ e)) in
+  let ymax, _, _ = Owl_dense_real.(max(y +@ e)) in
+  let x = Owl_dense_real.to_array x in
+  let y = Owl_dense_real.to_array y in
+  let e = Owl_dense_real.to_array e in
   let _ = _adjust_range h x `X in
   let _ = _adjust_range h [|ymin; ymax|] `Y in
   (* prepare the closure *)
@@ -580,12 +580,12 @@ let _draw_whiskers_box w x y =
 
 let boxplot ?(h=_default_handle) ?(color=(-1,-1,-1)) y =
   let open Plplot in
-  let m, _ = Owl_dense.shape y in
+  let m, _ = Owl_dense_real.shape y in
   let x = Array.init m (fun i -> float_of_int i +. 1.) in
   let xmin, xmax = Owl_stats.minmax x in
   let w = 0.4 in
-  let y0 = Owl_dense.to_array y in
-  let y1 = Owl_dense.to_arrays y in
+  let y0 = Owl_dense_real.to_array y in
+  let y1 = Owl_dense_real.to_arrays y in
   let _ = _adjust_range h [|xmin-.w; xmax+.w|] `X in
   let _ = _adjust_range h ~margin:0.1 y0 `Y in
   (* prepare the closure *)
@@ -636,7 +636,7 @@ let draw_rect ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pa
 let bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=0) y =
   let open Plplot in
   let w = 0.4 in
-  let y = Owl_dense.to_array y in
+  let y = Owl_dense_real.to_array y in
   let x = Array.mapi (fun i _ -> float_of_int i +. 1.) y in
   let xmin, xmax = Owl_stats.minmax x in
   let _ = _adjust_range h [|xmin-.w; xmax+.w|] `X in
@@ -663,8 +663,8 @@ let bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=
 
 let area ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=0) x y=
   let open Plplot in
-  let x = Owl_dense.to_array x in
-  let y = Owl_dense.to_array y in
+  let x = Owl_dense_real.to_array x in
+  let y = Owl_dense_real.to_array y in
   let xmin, xmax = Owl_stats.minmax x in
   let x = Array.(append (append [|xmin|] x) [|xmax|]) in
   let y = Array.(append (append [|0.|] y) [|0.|]) in
@@ -703,25 +703,25 @@ let _ecdf_interleave x i =
   in y
 
 let ecdf ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) x =
-  let x0 = Owl_dense.to_array x in
+  let x0 = Owl_dense_real.to_array x in
   let x, y = Owl_stats.ecdf x0 in
   let x = _ecdf_interleave x 0 in
   let y = _ecdf_interleave y 1 in
   let n = Array.length x in
-  let x = Owl_dense.of_array x n 1 in
-  let y = Owl_dense.of_array y n 1 in
+  let x = Owl_dense_real.of_array x n 1 in
+  let y = Owl_dense_real.of_array y n 1 in
   plot ~h ~color ~line_style ~line_width x y
 
 let stairs ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) x y =
-  let x = Owl_dense.to_array x in
-  let y = Owl_dense.to_array y in
+  let x = Owl_dense_real.to_array x in
+  let y = Owl_dense_real.to_array y in
   let x = _ecdf_interleave x 0 in
   let a = y.(0) in
   let y = _ecdf_interleave y 1 in
   let _ = y.(0) <- a in
   let n = Array.length x in
-  let x = Owl_dense.of_array x n 1 in
-  let y = Owl_dense.of_array y n 1 in
+  let x = Owl_dense_real.of_array x n 1 in
+  let y = Owl_dense_real.of_array y n 1 in
   plot ~h ~color ~line_style ~line_width x y
 
 let draw_circle ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) ?(fill_pattern=0) x y rr =
@@ -772,7 +772,7 @@ let pie ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(fill=false) x =
   let open Plplot in
   let _ = _adjust_range h ~margin:0.1 [|-1.; 1.|] `X in
   let _ = _adjust_range h ~margin:0.1 [|-1.; 1.|] `Y in
-  let x = Owl_dense.to_array x in
+  let x = Owl_dense_real.to_array x in
   let x = Owl_stats.normlise_pdf x in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
@@ -796,16 +796,16 @@ let pie ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(fill=false) x =
 
 let surf ?(h=_default_handle) ?(contour=false) x y z =
   let open Plplot in
-  let x = Owl_dense.to_array x in
-  let y = Owl_dense.(transpose y |> to_array) in
-  let z0 = Owl_dense.to_arrays z in
-  let z1 = Owl_dense.to_array z in
+  let x = Owl_dense_real.to_array x in
+  let y = Owl_dense_real.(transpose y |> to_array) in
+  let z0 = Owl_dense_real.to_arrays z in
+  let z1 = Owl_dense_real.to_array z in
   let _ = _adjust_range h x `X in
   let _ = _adjust_range h y `Y in
   let _ = _adjust_range h z1 `Z in
   (* construct contour level *)
   let zmin, zmax = Owl_stats.minmax z1 in
-  let clvl = Owl_dense.(linspace zmin zmax 10 |> to_array) in
+  let clvl = Owl_dense_real.(linspace zmin zmax 10 |> to_array) in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.is_3d <- true in
@@ -825,16 +825,16 @@ let plot3d = surf
 
 let mesh ?(h=_default_handle) ?(contour=false) x y z =
   let open Plplot in
-  let x = Owl_dense.to_array x in
-  let y = Owl_dense.(transpose y |> to_array) in
-  let z0 = Owl_dense.to_arrays z in
-  let z1 = Owl_dense.to_array z in
+  let x = Owl_dense_real.to_array x in
+  let y = Owl_dense_real.(transpose y |> to_array) in
+  let z0 = Owl_dense_real.to_arrays z in
+  let z1 = Owl_dense_real.to_array z in
   let _ = _adjust_range h x `X in
   let _ = _adjust_range h y `Y in
   let _ = _adjust_range h z1 `Z in
   (* construct contour level *)
   let zmin, zmax = Owl_stats.minmax z1 in
-  let clvl = Owl_dense.(linspace zmin zmax 10 |> to_array) in
+  let clvl = Owl_dense_real.(linspace zmin zmax 10 |> to_array) in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.is_3d <- true in
@@ -852,10 +852,10 @@ let mesh ?(h=_default_handle) ?(contour=false) x y z =
 
 let heatmap ?(h=_default_handle) x y z =
   let open Plplot in
-  let x = Owl_dense.to_array x in
-  let y = Owl_dense.(transpose y |> to_array) in
-  let z0 = Owl_dense.to_arrays z in
-  let z1 = Owl_dense.to_array z in
+  let x = Owl_dense_real.to_array x in
+  let y = Owl_dense_real.(transpose y |> to_array) in
+  let z0 = Owl_dense_real.to_arrays z in
+  let z1 = Owl_dense_real.to_array z in
   let _ = _adjust_range h x `X in
   let _ = _adjust_range h y `Y in
   let _ = _adjust_range h z1 `Z in
@@ -863,7 +863,7 @@ let heatmap ?(h=_default_handle) x y z =
   let xmin, xmax = Owl_stats.minmax x in
   let ymin, ymax = Owl_stats.minmax y in
   let zmin, zmax = Owl_stats.minmax z1 in
-  let clvl = Owl_dense.(linspace zmin zmax 10 |> to_array) in
+  let clvl = Owl_dense_real.(linspace zmin zmax 10 |> to_array) in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let f = (fun () ->
@@ -878,18 +878,18 @@ let heatmap ?(h=_default_handle) x y z =
   may cause segmentation fault. I suspect plset_pltr and plunset_pltr functions. *)
 let contour ?(h=_default_handle) x y z =
   let open Plplot in
-  let m, n = Owl_dense.shape x in
-  let x0 = Owl_dense.to_arrays x in
-  let x1 = Owl_dense.to_array x in
-  let y0 = Owl_dense.to_arrays y in
-  let y1 = Owl_dense.to_array y in
-  let z0 = Owl_dense.to_arrays z in
-  let z1 = Owl_dense.to_array z in
+  let m, n = Owl_dense_real.shape x in
+  let x0 = Owl_dense_real.to_arrays x in
+  let x1 = Owl_dense_real.to_array x in
+  let y0 = Owl_dense_real.to_arrays y in
+  let y1 = Owl_dense_real.to_array y in
+  let z0 = Owl_dense_real.to_arrays z in
+  let z1 = Owl_dense_real.to_array z in
   let _ = _adjust_range h x1 `X in
   let _ = _adjust_range h y1 `Y in
   (* construct contour level *)
   let zmin, zmax = Owl_stats.minmax z1 in
-  let clvl = Owl_dense.(linspace zmin zmax 10 |> to_array) in
+  let clvl = Owl_dense_real.(linspace zmin zmax 10 |> to_array) in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let f = (fun () ->
