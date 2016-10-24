@@ -24,6 +24,12 @@ val eye : int -> mat
 
 val sequential : int -> int -> mat
 
+val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
+
+val uniform : ?scale:float -> int -> int -> mat
+
+val gaussian : ?sigma:float -> int -> int -> mat
+
 
 (** {7 Dense vectors and meshgrids} *)
 
@@ -32,6 +38,8 @@ val vector : int -> mat
 val vector_zeros : int -> mat
 
 val vector_ones : int -> mat
+
+val vector_uniform : int -> mat
 
 
 (** {6 Obtain the basic properties of a matrix} *)
@@ -45,6 +53,8 @@ val col_num : mat -> int
 val numel : mat -> int
 
 val same_shape : mat -> mat -> bool
+
+(* val reshape : int -> int -> mat -> mat *)
 
 
 (** {6 Manipulate a matrix} *)
@@ -74,6 +84,16 @@ val concat_vertical : mat -> mat -> mat
 val concat_horizontal : mat -> mat -> mat
 
 val transpose : mat -> mat
+
+val diag : mat -> mat
+
+val trace : mat -> elt
+
+val add_diag : mat -> elt -> mat
+
+val replace_row : mat -> mat -> int -> mat
+
+val replace_col : mat -> mat -> int -> mat
 
 
 (** {6 Iterate elements, columns, and rows.} *)
@@ -146,6 +166,11 @@ val not_exists : (elt -> bool) -> mat -> bool
 val for_all : (elt -> bool) -> mat -> bool
 
 
+(** {6 Compare two matrices} *)
+
+(* val is_equal : mat -> mat -> bool *)
+
+
 (** {6 Basic mathematical operations of matrices} *)
 
 val add : mat -> mat -> mat
@@ -159,6 +184,8 @@ val div : mat -> mat -> mat
 val dot : mat -> mat -> mat
 
 val abs : mat -> mat
+
+val abs2 : mat -> mat
 
 val neg : mat -> mat
 
@@ -184,6 +211,17 @@ val average_rows : mat -> mat
 
 val average_cols : mat -> mat
 
+val is_zero : mat -> bool
+
+val log : mat -> mat
+
+val log10 : mat -> mat
+
+val exp : mat -> mat
+
+val sin : mat -> mat
+
+val cos : mat -> mat
 
 (** {6 Shorhand infix operators} *)
 

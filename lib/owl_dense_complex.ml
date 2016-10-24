@@ -24,16 +24,6 @@ let empty m n = Gsl.Matrix_complex.create m n
 
 let create m n v = Gsl.Matrix_complex.create ~init:v m n
 
-let swap_rows = Gsl.Matrix_complex.swap_rows
-
-let swap_cols = Gsl.Matrix_complex.swap_columns
-
-let swap_rowcol = Gsl.Matrix_complex.swap_rowcol
-
-let transpose x =
-  let y = empty (Array2.dim2 x) (Array2.dim1 x) in
-  Gsl.Matrix_complex.transpose y x; y
-
 let shape x = (Array2.dim1 x, Array2.dim2 x)
 
 let row_num x = fst (shape x)
@@ -154,6 +144,16 @@ let cols x l =
   let m, n = row_num x, Array.length (l) in
   let y = empty m n in
   Array.iteri (fun i j -> copy_col_to (col x j) y i) l; y
+
+let swap_rows = Gsl.Matrix_complex.swap_rows
+
+let swap_cols = Gsl.Matrix_complex.swap_columns
+
+let swap_rowcol = Gsl.Matrix_complex.swap_rowcol
+
+let transpose x =
+  let y = empty (Array2.dim2 x) (Array2.dim1 x) in
+  Gsl.Matrix_complex.transpose y x; y
 
 let replace_row v x i =
   let y = clone x in
@@ -287,8 +287,6 @@ let mapi_at_col f x j =
 
 let map_at_col f x j = mapi_at_col (fun _ _ y -> f y) x j
 
-
-
 let sequential m n =
   let x = empty m n and c = ref const_0 in
   for i = 0 to m - 1 do
@@ -327,6 +325,8 @@ let power x c = map (fun y -> Complex.pow y c) x
 
 let abs x = map (fun y -> Complex.({re = norm y; im = 0.})) x
 
+let abs2 x = map (fun y -> Complex.({re = norm2 y; im = 0.})) x
+
 let neg x =
   let y = clone x in
   Gsl.Matrix_complex.scale y Complex.({re = -1.; im = -1.}); y
@@ -359,6 +359,8 @@ let average_rows x =
   let c = 1. /. (float_of_int m) in
   let y = create 1 m Complex.({re = c; im = 0.}) in
   dot y x
+
+let is_zero x = Gsl.Matrix_complex.is_null x
 
 let ( +@ ) = add
 
@@ -400,5 +402,62 @@ let mul_scalar = ( *$ )
 
 let div_scalar = ( /$ )
 
+(* advanced matrix methematical operations *)
+
+let log x = map Gsl_complex.log x
+
+let log10 x = map Gsl_complex.log10 x
+
+let exp x = map Gsl_complex.exp x
+
+let sin x = map Gsl_complex.sin x
+
+let cos x = map Gsl_complex.cos x
+
+
+let diag x =
+  let m = Pervasives.min (row_num x) (col_num x) in
+  let y = empty 1 m in
+  for i = 0 to m - 1 do y.{0,i} <- x.{i,i} done; y
+
+let trace x = sum (diag x)
+
+let add_diag x a =
+  let m = Pervasives.min (row_num x) (col_num x) in
+  let y = clone x in
+  for i = 0 to m - 1 do
+    y.{i,i} <- (Complex.add x.{i,i} a)
+  done; y
+
+
 
 let pp_dsmat_complex x = Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat x
+
+
+(* some other uncategorised functions *)
+
+let uniform_int ?(a=0) ?(b=99) m n =
+  let x = empty m n in
+  iteri (fun i j _ ->
+    let re = float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ()) in
+    let im = float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ()) in
+    x.{i,j} <- Complex.({re; im})
+  ) x; x
+
+let uniform ?(scale=1.) m n =
+  let x = empty m n in
+  iteri (fun i j _ ->
+    let re = Owl_stats.Rnd.uniform () *. scale in
+    let im = Owl_stats.Rnd.uniform () *. scale in
+    x.{i,j} <- Complex.({re; im})
+  ) x; x
+
+let gaussian ?(sigma=1.) m n =
+  let x = empty m n in
+  iteri (fun i j _ ->
+    let re = Owl_stats.Rnd.gaussian ~sigma () in
+    let im = Owl_stats.Rnd.gaussian ~sigma () in
+    x.{i,j} <- Complex.({re; im})
+  ) x; x
+
+let vector_uniform n = uniform 1 n
