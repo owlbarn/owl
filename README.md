@@ -54,10 +54,10 @@ However, a more convenient way is to use `Owl` module as an entry point which pr
 
 ## Create Matrices
 
-[`Dense`](http://www.cl.cam.ac.uk/~lw525/owl/Real.html) module supports dense matrix operations while [`Sparse`](http://www.cl.cam.ac.uk/~lw525/owl/Sparse.html) module supports sparse ones. There are two submodules in `Dense`: `Real` module supports matrices of real numbers while `Complex` supports matrices of complex numbers. To start, we can use `Real.uniform_int` to create a 5x5 random dense matrix.
+[`Dense`](http://www.cl.cam.ac.uk/~lw525/owl/Real.html) module supports dense matrix operations while [`Sparse`](http://www.cl.cam.ac.uk/~lw525/owl/Sparse.html) module supports sparse ones. There are two submodules in `Dense`: `Real` module supports matrices of real numbers while `Complex` supports matrices of complex numbers. To start, we can use `Dense.Real.uniform_int` to create a 5x5 random dense matrix.
 
 ```ocaml
-let x = Real.uniform_int 5 5;;
+let x = Dense.Real.uniform_int 5 5;;
 ```
 
 You should see the following output in `utop`.
