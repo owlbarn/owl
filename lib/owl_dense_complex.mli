@@ -223,6 +223,20 @@ val sin : mat -> mat
 
 val cos : mat -> mat
 
+
+(** {6 Randomisation functions} *)
+
+val draw_rows : ?replacement:bool -> mat -> int -> mat * int array
+
+val draw_cols : ?replacement:bool -> mat -> int -> mat * int array
+
+val shuffle_rows : mat -> mat
+
+val shuffle_cols : mat -> mat
+
+val shuffle: mat -> mat
+
+
 (** {6 Shorhand infix operators} *)
 
 val ( +@ ) : mat -> mat -> mat
