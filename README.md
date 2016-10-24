@@ -72,9 +72,10 @@ R4 99 72 78 30 11
 val x : Real.dsmat =
 ```
 
-To save some typing efforts, we open the `Dense` module in `utop` for the following examples by `open Dense` so that we can access `Real` module directly. `Real` module also provides other functions to create various matrices, e.g., as below.
+To save some typing efforts, we open the `Dense` module by default in `utop` for the following examples using `open Dense` so that we can access `Real` module directly. `Real` module also provides other functions to create various matrices, e.g., as below.
 
 ```ocaml
+open Dense;;
 let x = Real.eye 5;;             (* identity matrix *)
 let x = Real.zeros 5 5;;         (* all elements are zeros *)
 let x = Real.ones 5 5;;          (* all elements are ones *)
