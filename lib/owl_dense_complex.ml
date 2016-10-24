@@ -318,7 +318,7 @@ let div x1 x2 =
 let dot x1 x2 =
   let open Gsl.Blas.Complex in
   let x3 = empty (row_num x1) (col_num x2) in
-  let _ = gemm ~ta:NoTrans ~tb:NoTrans ~alpha:const_1 ~beta:const_0 ~a:x1 ~b:x2 ~c:x3
+  let _ = Gsl.Blas.(Complex.gemm ~ta:NoTrans ~tb:NoTrans ~alpha:const_1 ~beta:const_0 ~a:x1 ~b:x2 ~c:x3)
   in x3
 
 let power x c = map (fun y -> Complex.pow y c) x
