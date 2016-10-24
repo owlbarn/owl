@@ -430,10 +430,6 @@ let add_diag x a =
   done; y
 
 
-
-let pp_dsmat_complex x = Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat x
-
-
 (* some other uncategorised functions *)
 
 let uniform_int ?(a=0) ?(b=99) m n =
@@ -496,3 +492,16 @@ let shuffle_cols x =
   let y = permutation_matrix (col_num x) in dot x y
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols
+
+
+(* formatted input / output operations *)
+
+let to_array x = Gsl.Matrix_complex.to_array x
+
+let to_arrays x = Gsl.Matrix_complex.to_arrays x
+
+let of_array x m n = Gsl.Matrix_complex.of_array x m n
+
+let of_arrays x = Gsl.Matrix_complex.of_arrays x
+
+let pp_dsmat x = Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat x

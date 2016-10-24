@@ -12,7 +12,7 @@ type t =
 
 let printers = [
   Obj.magic (Ldot (Lident "Owl_dense_real", "pp_dsmat"));
-  Obj.magic (Ldot (Lident "Owl_dense_complex", "pp_dsmat_complex"));
+  Obj.magic (Ldot (Lident "Owl_dense_complex", "pp_dsmat"));
   Obj.magic (Ldot (Lident "Owl_sparse", "pp_spmat"));
 ]
 

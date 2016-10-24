@@ -237,6 +237,19 @@ val shuffle_cols : mat -> mat
 val shuffle: mat -> mat
 
 
+(** {6 Input/Output and helper functions} *)
+
+val to_array : mat -> elt array
+
+val to_arrays : mat -> elt array array
+
+val of_array : elt array -> int -> int -> mat
+
+val of_arrays : elt array array -> mat
+
+val pp_dsmat : mat -> unit
+
+
 (** {6 Shorhand infix operators} *)
 
 val ( +@ ) : mat -> mat -> mat
@@ -280,6 +293,3 @@ val ( $* ) : elt -> mat -> mat
 
 val ( $/ ) : elt -> mat -> mat
 (** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
-
-
-val pp_dsmat_complex : mat -> unit
