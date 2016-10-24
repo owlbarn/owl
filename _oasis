@@ -11,7 +11,7 @@ Library "Owl"
   BuildTools: ocamlbuild, ocamldoc
   Modules:    Owl, Owl_types, Owl_utils, Owl_maths, Owl_stats, Owl_optimise,
               Owl_dense, Owl_sparse, Owl_matrix_foreign, Owl_linalg, Owl_regression,
-              Owl_pretty, Owl_plot, Owl_toplevel, Owl_const
+              Owl_pretty, Owl_plot, Owl_toplevel, Owl_const, Owl_dense_complex
   BuildDepends: str, gsl, ctypes, ctypes.foreign, plplot, dolog
 
 Executable test_sgd
