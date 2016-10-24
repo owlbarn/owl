@@ -3,7 +3,7 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** [ Complex dense matrix ]  *)
+(** [ Complex dense matrix module ]  *)
 
 open Bigarray
 open Owl_types
@@ -11,7 +11,10 @@ open Owl_types
 
 type mat = Gsl.Matrix_complex.matrix
 
+type elt = Complex.t
+
 type area = { a : int; b : int; c : int; d : int }
+
 
 let const_0 = Complex.zero
 
@@ -295,14 +298,6 @@ let sequential m n =
     done
   done; x
 
-let linspace a b n =
-  let x = empty 1 n in
-  let c = ((b -. a) /. (float_of_int (n - 1))) in
-  for i = 0 to n - 1 do
-    let d = a +. c *. (float_of_int i) in
-     x.{0,i} <- Complex.({re = d; im = 0.})
-  done; x
-
 
 (* matrix mathematical operations *)
 
@@ -404,7 +399,6 @@ let sub_scalar = ( -$ )
 let mul_scalar = ( *$ )
 
 let div_scalar = ( /$ )
-
 
 
 let pp_dsmat_complex x = Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat x

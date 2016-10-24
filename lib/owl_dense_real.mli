@@ -3,7 +3,7 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Dense matrix module *)
+(** Real dense matrix module *)
 
 type mat = Gsl.Matrix.matrix
 (** Type of dense matrices. It is defined as [Gsl.Matrix.matrix] which is
