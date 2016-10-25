@@ -53,6 +53,8 @@ let _is_csc_format x = x.typ = 1
 
 (** sparse matrix creation function *)
 
+module S = Ffi_bindings.Bindings(Ffi_generated)
+
 let zeros m n =
   let x = gsl_spmatrix_alloc m n in
   _of_sp_mat_ptr x

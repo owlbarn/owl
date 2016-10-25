@@ -23,7 +23,7 @@ Library Ffi_bindings
   Install:          false
   Path:             lib/bindings
   Modules:          Ffi_bindings
-  BuildDepends:     Owl, ctypes.stubs
+  BuildDepends:     ctypes.stubs
 
 Executable ffi_stubgen
   Install:        false
