@@ -57,6 +57,12 @@ let zeros m n =
   let x = gsl_spmatrix_alloc m n in
   _of_sp_mat_ptr x
 (*
+let zeros m n =
+  let open Ffi_generated in
+  let x = owl_stub_2_gsl_spmatrix_alloc m n in
+  _of_sp_mat_ptr x
+
+
 let empty_csc m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.1) in
   let c = Pervasives.max 10 c in
