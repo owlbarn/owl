@@ -50,6 +50,7 @@ let _update_rec_after_set x =
 
 let _is_csc_format x = x.typ = 1
 
+(* FIXME: redundant function, remove *)
 let allocate_vecptr m =
   let open Owl_matrix_foreign in
   let open Ctypes in

@@ -95,4 +95,52 @@ type spmat_record = {
 }
 
 
+(** Complex sparse matrix *)
+module Complex_sparse = struct
+
+  open Foreign
+
+  type elt = Complex.t
+  type prc = complex64_elt
+  type int_array = (int64, int64_elt, c_layout) Array1.t
+  type elt_array = (elt, prc, c_layout) Array1.t
+
+  type spmat_struct
+
+  let spmat_struct : spmat_struct structure typ = structure "spmat_struct"
+    let sp_size1 = field spmat_struct "sp_size1" int64_t
+    let sp_size2 = field spmat_struct "sp_size2" int64_t
+    let sp_i     = field spmat_struct "sp_i" (ptr int64_t)
+    let sp_data  = field spmat_struct "sp_data" (ptr complex64)
+    let sp_p     = field spmat_struct "sp_p" (ptr int64_t)
+    let sp_nzmax = field spmat_struct "sp_nzmax" int64_t
+    let sp_nz    = field spmat_struct "sp_nz" int64_t
+    let sp_tree  = field spmat_struct "sp_tree" (ptr void)
+    let sp_work  = field spmat_struct "sp_work" (ptr void)
+    let sp_type  = field spmat_struct "sp_type" int64_t
+  let () = seal spmat_struct
+
+  type spmat_record = {
+    mutable m   : int;           (* number of rows *)
+    mutable n   : int;           (* number of columns *)
+    mutable i   : int_array;     (* i index, meaning depends on the matrix format *)
+    mutable d   : elt_array;     (* where data actually stored *)
+    mutable p   : int_array;     (* p index, meaning depends on the matrix format *)
+    mutable nz  : int;           (* total number of non-zero elements *)
+    (* tree missing *)
+    (* work missing *)
+    mutable typ : int;           (* format of the sparse matrix, 0:triplet; 1: CCS *)
+    mutable ptr : spmat_struct Ctypes_static.structure Ctypes_static.ptr;
+    (* pointer to the sparse metrix *)
+  }
+
+  let gsl_spmatrix_alloc = foreign "gsl_spmatrix_alloc" (int @-> int @-> returning (ptr spmat_struct))
+  let gsl_spmatrix_alloc_nzmax = foreign "gsl_spmatrix_alloc_nzmax" (int @-> int @-> int @-> int @-> returning (ptr spmat_struct))
+  let gsl_spmatrix_set = foreign "gsl_spmatrix_set" (ptr spmat_struct @-> int @-> int @-> complex64 @-> returning int)
+  let gsl_spmatrix_get = foreign "gsl_spmatrix_get" (ptr spmat_struct @-> int @-> int @-> returning complex64)
+  let gsl_spmatrix_set_zero = foreign "gsl_spmatrix_set_zero" (ptr spmat_struct @-> returning int)
+
+end
+
+
 (* ends here *)
