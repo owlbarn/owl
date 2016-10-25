@@ -73,7 +73,7 @@ let set x i j y =
 
 let set_without_update_rec x i j y = gsl_spmatrix_set x.ptr i j y
 
-let get x i j = gsl_spmatrix_get x.ptr i j
+let get x i j = gsl_spmatrix_get x.ptr i j |> Obj.magic
 
 let reset x =
   let _ = gsl_spmatrix_set_zero x.ptr in

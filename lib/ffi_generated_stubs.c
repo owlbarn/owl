@@ -1,4 +1,5 @@
 #include <sys/file.h>
+#include <gsl/gsl_spmatrix.h>
 #include "ctypes_cstubs_internals.h"
 value owl_stub_1_flock(value x2, value x1)
 {

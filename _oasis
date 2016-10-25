@@ -16,7 +16,7 @@ Library Owl
               Owl_pretty, Owl_plot, Owl_toplevel, Owl_const, Ffi_bindings
   InternalModules: Ffi_generated
   CSources:   ffi_generated_stubs.c
-  CCOpt:      -I$pkg_ctypes
+  CCOpt:      -I$pkg_ctypes -I/usr/local/include
   BuildDepends: str, gsl, ctypes, ctypes.foreign, plplot, dolog, ctypes.stubs
 
 Library Ffi_bindings_base
