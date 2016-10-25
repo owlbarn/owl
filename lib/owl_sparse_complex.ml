@@ -10,6 +10,8 @@ open Owl_types.Complex_sparse
 
 type spmat = spmat_record
 
+type elt = Complex.t
+
 let _empty_int_array () = Array1.create int64 c_layout 0
 
 let _of_sp_mat_ptr p =
