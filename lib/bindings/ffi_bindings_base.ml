@@ -10,7 +10,7 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   open F
 
-  (* foreign functions of real dense matrix *)
+  (* foreign functions of dense real matrix *)
 
   module Dense_real = struct
 
@@ -46,7 +46,7 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   end
 
-  (* foreign functions of complex dense matrix *)
+  (* foreign functions of dense complex matrix *)
 
   module Dense_complex = struct
 
@@ -68,7 +68,7 @@ module Bindings (F : Cstubs.FOREIGN) = struct
   end
 
 
-  (* foreign functions of complex dense matrix *)
+  (* foreign functions of sparse real matrix *)
 
   module Sparse_real = struct
 
