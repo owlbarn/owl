@@ -375,8 +375,8 @@ let stderr_cols = None
 let stderr_rows = None
 
 let is_equal x1 x2 =
-  let open Owl_matrix_foreign in
-  let open Owl_matrix_foreign.DR in
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
   let x1 = dr_mat_to_matptr x1 in
   let x2 = dr_mat_to_matptr x2 in
   (gsl_matrix_equal x1 x2) = 1
@@ -388,8 +388,8 @@ let is_unequal x1 x2 = not (is_equal x1 x2)
 let ( <>@ ) = is_unequal
 
 let is_greater x1 x2 =
-  let open Owl_matrix_foreign in
-  let open Owl_matrix_foreign.DR in
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
   let x3 = sub x1 x2 in
   let x3 = dr_mat_to_matptr x3 in
   (gsl_matrix_ispos x3) = 1
@@ -401,8 +401,8 @@ let is_smaller x1 x2 = is_greater x2 x1
 let ( <@ ) = is_smaller
 
 let equal_or_greater x1 x2 =
-  let open Owl_matrix_foreign in
-  let open Owl_matrix_foreign.DR in
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
   let x3 = sub x1 x2 in
   let x3 = dr_mat_to_matptr x3 in
   (gsl_matrix_isnonneg x3) = 1
@@ -414,32 +414,32 @@ let equal_or_smaller x1 x2 = equal_or_greater x2 x1
 let ( <=@ ) = equal_or_smaller
 
 let is_zero x =
-  let open Owl_matrix_foreign in
-  let open Owl_matrix_foreign.DR in
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
   let x = dr_mat_to_matptr x in
   (gsl_matrix_isnull x) = 1
 
 let is_positive x =
-  let open Owl_matrix_foreign in
-  let open Owl_matrix_foreign.DR in
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
   let x = dr_mat_to_matptr x in
   (gsl_matrix_ispos x) = 1
 
 let is_negative x =
-  let open Owl_matrix_foreign in
-  let open Owl_matrix_foreign.DR in
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
   let x = dr_mat_to_matptr x in
   (gsl_matrix_isneg x) = 1
 
 let is_nonnegative x =
-  let open Owl_matrix_foreign in
-  let open Owl_matrix_foreign.DR in
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
   let x = dr_mat_to_matptr x in
   (gsl_matrix_isnonneg x) = 1
 
 let min x =
-  let open Owl_matrix_foreign in
-  let open Owl_matrix_foreign.DR in
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
   let open Ctypes in
   let x = dr_mat_to_matptr x in
   let i = allocate size_t (Unsigned.Size_t.of_int 0) in
@@ -461,8 +461,8 @@ let min_rows x =
   ) x
 
 let max x =
-  let open Owl_matrix_foreign in
-  let open Owl_matrix_foreign.DR in
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
   let open Ctypes in
   let x = dr_mat_to_matptr x in
   let i = allocate size_t (Unsigned.Size_t.of_int 0) in
@@ -662,8 +662,8 @@ let ( @@ ) f x = map f x  (* TODO: experimental *)
 
 (* TODO: use this to replace col function, faster *)
 let gsl_col x i =
-  let open Owl_matrix_foreign in
-  let open Owl_matrix_foreign.DR in
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
   let y = dr_allocate_col_vecptr (row_num x) in
   let _ = gsl_matrix_get_col y.vptr (dr_mat_to_matptr x) i in
   y.vdata
