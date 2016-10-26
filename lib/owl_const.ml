@@ -1,4 +1,8 @@
-(** [Const] module includes some useful constant like the speed of light.  *)
+(*
+ * OWL - an OCaml math library for scientific computing
+ * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *
+ *)
 
 include Gsl.Const
 

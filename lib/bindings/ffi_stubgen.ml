@@ -1,8 +1,14 @@
+(*
+ * OWL - an OCaml math library for scientific computing
+ * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *
+ *)
+
 let _ =
   let prefix = "owl_stub" in
   let generate_ml, generate_c = ref false, ref false in
   Arg.(parse [ ("-ml", Set generate_ml, "Generate ML");
-                ("-c", Set generate_c, "Generate C") ])
+               ("-c", Set generate_c, "Generate C") ])
     (fun _ -> failwith "unexpected anonymous argument")
     "stubgen [-ml|-c]";
   match !generate_ml, !generate_c with

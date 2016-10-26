@@ -11,8 +11,6 @@ module Dense = Owl_dense
 
 module Sparse = Owl_sparse
 
-module Sparse_complex = Owl_sparse_complex
-
 module Maths = Owl_maths
 
 module Stats = Owl_stats
