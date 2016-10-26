@@ -1,50 +1,89 @@
 #include <sys/file.h>
-//#include <gsl/gsl_spmatrix.h>
+#include <gsl/gsl_spmatrix.h>
+#include <gsl/gsl_block_double.h>
+#include <gsl/gsl_block_complex_double.h>
+#include <gsl/gsl_vector_double.h>
+#include <gsl/gsl_vector_complex_double.h>
+#include <gsl/gsl_matrix_double.h>
+#include <gsl/gsl_matrix_complex_double.h>
 #include "ctypes_cstubs_internals.h"
-value owl_stub_1_flock(value x2, value x1)
+value owl_stub_1_gsl_vector_alloc(value x1)
 {
-   int x3 = Int_val(x2);
-   int x6 = Int_val(x1);
-   int x9 = flock(x3, x6);
-   return Val_int(x9);
+   size_t x2 = ctypes_size_t_val(x1);
+   gsl_vector* x5 = gsl_vector_alloc(x2);
+   return CTYPES_FROM_PTR(x5);
 }
-value owl_stub_2_gsl_spmatrix_alloc(value x11, value x10)
+value owl_stub_2_gsl_matrix_alloc(value x7, value x6)
 {
-   int x12 = Int_val(x11);
-   int x15 = Int_val(x10);
-   struct spmat_struct* x18 = gsl_spmatrix_alloc(x12, x15);
-   return CTYPES_FROM_PTR(x18);
+   size_t x8 = ctypes_size_t_val(x7);
+   size_t x11 = ctypes_size_t_val(x6);
+   gsl_matrix* x14 = gsl_matrix_alloc(x8, x11);
+   return CTYPES_FROM_PTR(x14);
 }
-value owl_stub_3_gsl_spmatrix_alloc_nzmax(value x22, value x21, value x20,
-                                          value x19)
+value owl_stub_3_gsl_matrix_get_col(value x17, value x16, value x15)
 {
-   int x23 = Int_val(x22);
-   int x26 = Int_val(x21);
-   int x29 = Int_val(x20);
-   int x32 = Int_val(x19);
-   struct spmat_struct* x35 = gsl_spmatrix_alloc_nzmax(x23, x26, x29, x32);
-   return CTYPES_FROM_PTR(x35);
+   gsl_vector* x18 = CTYPES_ADDR_OF_FATPTR(x17);
+   gsl_matrix* x19 = CTYPES_ADDR_OF_FATPTR(x16);
+   int x20 = Int_val(x15);
+   int x23 = gsl_matrix_get_col(x18, x19, x20);
+   return Val_int(x23);
 }
-value owl_stub_4_gsl_spmatrix_set(value x39, value x38, value x37, value x36)
+value owl_stub_4_gsl_matrix_equal(value x25, value x24)
 {
-   struct spmat_struct* x40 = CTYPES_ADDR_OF_FATPTR(x39);
-   int x41 = Int_val(x38);
-   int x44 = Int_val(x37);
-   double _Complex x47 = ctypes_double_complex_val(x36);
-   int x50 = gsl_spmatrix_set(x40, x41, x44, x47);
-   return Val_int(x50);
+   gsl_matrix* x26 = CTYPES_ADDR_OF_FATPTR(x25);
+   gsl_matrix* x27 = CTYPES_ADDR_OF_FATPTR(x24);
+   int x28 = gsl_matrix_equal(x26, x27);
+   return Val_int(x28);
 }
-value owl_stub_5_gsl_spmatrix_get(value x53, value x52, value x51)
+value owl_stub_5_gsl_matrix_isnull(value x29)
 {
-   struct spmat_struct* x54 = CTYPES_ADDR_OF_FATPTR(x53);
-   int x55 = Int_val(x52);
-   int x58 = Int_val(x51);
-   double _Complex x61 = gsl_spmatrix_get(x54, x55, x58);
-   return ctypes_copy_double_complex(x61);
+   gsl_matrix* x30 = CTYPES_ADDR_OF_FATPTR(x29);
+   int x31 = gsl_matrix_isnull(x30);
+   return Val_int(x31);
 }
-value owl_stub_6_gsl_spmatrix_set_zero(value x62)
+value owl_stub_6_gsl_matrix_ispos(value x32)
 {
-   struct spmat_struct* x63 = CTYPES_ADDR_OF_FATPTR(x62);
-   int x64 = gsl_spmatrix_set_zero(x63);
-   return Val_int(x64);
+   gsl_matrix* x33 = CTYPES_ADDR_OF_FATPTR(x32);
+   int x34 = gsl_matrix_ispos(x33);
+   return Val_int(x34);
+}
+value owl_stub_7_gsl_matrix_isneg(value x35)
+{
+   gsl_matrix* x36 = CTYPES_ADDR_OF_FATPTR(x35);
+   int x37 = gsl_matrix_isneg(x36);
+   return Val_int(x37);
+}
+value owl_stub_8_gsl_matrix_isnonneg(value x38)
+{
+   gsl_matrix* x39 = CTYPES_ADDR_OF_FATPTR(x38);
+   int x40 = gsl_matrix_isnonneg(x39);
+   return Val_int(x40);
+}
+value owl_stub_9_gsl_matrix_min(value x41)
+{
+   gsl_matrix* x42 = CTYPES_ADDR_OF_FATPTR(x41);
+   double x43 = gsl_matrix_min(x42);
+   return caml_copy_double(x43);
+}
+value owl_stub_10_gsl_matrix_min_index(value x46, value x45, value x44)
+{
+   gsl_matrix* x47 = CTYPES_ADDR_OF_FATPTR(x46);
+   size_t* x48 = CTYPES_ADDR_OF_FATPTR(x45);
+   size_t* x49 = CTYPES_ADDR_OF_FATPTR(x44);
+   gsl_matrix_min_index(x47, x48, x49);
+   return Val_unit;
+}
+value owl_stub_11_gsl_matrix_max(value x51)
+{
+   gsl_matrix* x52 = CTYPES_ADDR_OF_FATPTR(x51);
+   double x53 = gsl_matrix_max(x52);
+   return caml_copy_double(x53);
+}
+value owl_stub_12_gsl_matrix_max_index(value x56, value x55, value x54)
+{
+   gsl_matrix* x57 = CTYPES_ADDR_OF_FATPTR(x56);
+   size_t* x58 = CTYPES_ADDR_OF_FATPTR(x55);
+   size_t* x59 = CTYPES_ADDR_OF_FATPTR(x54);
+   gsl_matrix_max_index(x57, x58, x59);
+   return Val_unit;
 }

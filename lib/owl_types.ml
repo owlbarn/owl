@@ -23,21 +23,33 @@ module Dense_real = struct
 
   type mblk_struct
 
-  let mblk_struct : mblk_struct structure typ = structure "mblk_struct"
-    let msize = field mblk_struct "msize" int64_t
-    let mdata = field mblk_struct "mdata" (ptr double)
+  let mblk_struct : mblk_struct structure typ = structure "gsl_block_struct"
+    let msize = field mblk_struct "size" int64_t
+    let mdata = field mblk_struct "data" (ptr double)
   let () = seal mblk_struct
 
   (** structure definition for vector, refer to gsl_vector_double.h *)
   type vec_struct
 
-  let vec_struct : vec_struct structure typ = structure "vec_struct"
-    let vsize  = field vec_struct "vsize" int64_t
+  let vec_struct : vec_struct structure typ = structure "gsl_vector"
+    let vsize  = field vec_struct "size" int64_t
     let stride = field vec_struct "stride" int64_t
-    let vdata  = field vec_struct "vdata" (ptr double)
-    let vblock = field vec_struct "vblock" (ptr mblk_struct)
-    let vowner = field vec_struct "vowner" int64_t
+    let vdata  = field vec_struct "data" (ptr double)
+    let vblock = field vec_struct "block" (ptr mblk_struct)
+    let vowner = field vec_struct "owner" int64_t
   let () = seal vec_struct
+
+  (** structure definition for dense matrix, refer to gsl_matrix_double.h *)
+  type mat_struct
+
+  let mat_struct : mat_struct structure typ = structure "gsl_matrix"
+    let size1 = field mat_struct "size1" int64_t
+    let size2 = field mat_struct "size2" int64_t
+    let tda   = field mat_struct "tda" int64_t
+    let data  = field mat_struct "data" (ptr double)
+    let block = field mat_struct "block" (ptr mblk_struct)
+    let owner = field mat_struct "owner" int64_t
+  let () = seal mat_struct
 
   (** define the vector record *)
   type vec_record = {
@@ -47,18 +59,6 @@ module Dense_real = struct
     mutable vptr   : vec_struct Ctypes_static.structure Ctypes_static.ptr;
     (* pointer to a vector's memory *)
   }
-
-  (** structure definition for dense matrix, refer to gsl_matrix_double.h *)
-  type mat_struct
-
-  let mat_struct : mat_struct structure typ = structure "mat_struct"
-    let size1 = field mat_struct "size1" int64_t
-    let size2 = field mat_struct "size2" int64_t
-    let tda   = field mat_struct "tda" int64_t
-    let data  = field mat_struct "data" (ptr double)
-    let block = field mat_struct "block" (ptr mblk_struct)
-    let owner = field mat_struct "owner" int64_t
-  let () = seal mat_struct
 
 end
 
@@ -68,21 +68,33 @@ module Dense_complex = struct
 
   type mblk_struct
 
-  let mblk_struct : mblk_struct structure typ = structure "mblk_struct"
-    let msize = field mblk_struct "msize" int64_t
-    let mdata = field mblk_struct "mdata" (ptr complex64)
+  let mblk_struct : mblk_struct structure typ = structure "gsl_block_complex_struct"
+    let msize = field mblk_struct "size" int64_t
+    let mdata = field mblk_struct "data" (ptr complex64)
   let () = seal mblk_struct
 
   (** structure definition for vector, refer to gsl_vector_double.h *)
   type vec_struct
 
-  let vec_struct : vec_struct structure typ = structure "vec_struct"
-    let vsize  = field vec_struct "vsize" int64_t
+  let vec_struct : vec_struct structure typ = structure "gsl_vector_complex"
+    let vsize  = field vec_struct "size" int64_t
     let stride = field vec_struct "stride" int64_t
-    let vdata  = field vec_struct "vdata" (ptr complex64)
-    let vblock = field vec_struct "vblock" (ptr mblk_struct)
-    let vowner = field vec_struct "vowner" int64_t
+    let vdata  = field vec_struct "data" (ptr complex64)
+    let vblock = field vec_struct "block" (ptr mblk_struct)
+    let vowner = field vec_struct "owner" int64_t
   let () = seal vec_struct
+
+  (** structure definition for dense matrix, refer to gsl_matrix_double.h *)
+  type mat_struct
+
+  let mat_struct : mat_struct structure typ = structure "gsl_matrix_complex"
+    let size1 = field mat_struct "size1" int64_t
+    let size2 = field mat_struct "size2" int64_t
+    let tda   = field mat_struct "tda" int64_t
+    let data  = field mat_struct "data" (ptr complex64)
+    let block = field mat_struct "block" (ptr mblk_struct)
+    let owner = field mat_struct "owner" int64_t
+  let () = seal mat_struct
 
   (** define the vector record *)
   type vec_record = {
@@ -93,17 +105,6 @@ module Dense_complex = struct
     (* pointer to a vector's memory *)
   }
 
-  (** structure definition for dense matrix, refer to gsl_matrix_double.h *)
-  type mat_struct
-
-  let mat_struct : mat_struct structure typ = structure "mat_struct"
-    let size1 = field mat_struct "size1" int64_t
-    let size2 = field mat_struct "size2" int64_t
-    let tda   = field mat_struct "tda" int64_t
-    let data  = field mat_struct "data" (ptr complex64)
-    let block = field mat_struct "block" (ptr mblk_struct)
-    let owner = field mat_struct "owner" int64_t
-  let () = seal mat_struct
 end
 
 
@@ -116,17 +117,17 @@ module Sparse_real = struct
 
   type spmat_struct
 
-  let spmat_struct : spmat_struct structure typ = structure "spmat_struct"
-    let sp_size1 = field spmat_struct "sp_size1" int64_t
-    let sp_size2 = field spmat_struct "sp_size2" int64_t
-    let sp_i     = field spmat_struct "sp_i" (ptr int64_t)
-    let sp_data  = field spmat_struct "sp_data" (ptr double)
-    let sp_p     = field spmat_struct "sp_p" (ptr int64_t)
-    let sp_nzmax = field spmat_struct "sp_nzmax" int64_t
-    let sp_nz    = field spmat_struct "sp_nz" int64_t
-    let sp_tree  = field spmat_struct "sp_tree" (ptr void)
-    let sp_work  = field spmat_struct "sp_work" (ptr void)
-    let sp_type  = field spmat_struct "sp_type" int64_t
+  let spmat_struct : spmat_struct structure typ = structure "gsl_spmatrix"
+    let sp_size1 = field spmat_struct "size1" int64_t
+    let sp_size2 = field spmat_struct "size2" int64_t
+    let sp_i     = field spmat_struct "i" (ptr int64_t)
+    let sp_data  = field spmat_struct "data" (ptr double)
+    let sp_p     = field spmat_struct "p" (ptr int64_t)
+    let sp_nzmax = field spmat_struct "nzmax" int64_t
+    let sp_nz    = field spmat_struct "nz" int64_t
+    let sp_tree  = field spmat_struct "tree_data" (ptr void)
+    let sp_work  = field spmat_struct "work" (ptr void)
+    let sp_type  = field spmat_struct "sptype" int64_t
   let () = seal spmat_struct
 
   (** record definition for sparse matrix *)
@@ -151,35 +152,6 @@ module Sparse_complex = struct
 
   type int_array = (int64, int64_elt, c_layout) Array1.t
   type elt_array = (Complex.t, complex64_elt, c_layout) Array1.t
-
-  type spmat_struct
-
-  let spmat_struct : spmat_struct structure typ = structure "spmat_struct"
-    let sp_size1 = field spmat_struct "sp_size1" int64_t
-    let sp_size2 = field spmat_struct "sp_size2" int64_t
-    let sp_i     = field spmat_struct "sp_i" (ptr int64_t)
-    let sp_data  = field spmat_struct "sp_data" (ptr complex64)
-    let sp_p     = field spmat_struct "sp_p" (ptr int64_t)
-    let sp_nzmax = field spmat_struct "sp_nzmax" int64_t
-    let sp_nz    = field spmat_struct "sp_nz" int64_t
-    let sp_tree  = field spmat_struct "sp_tree" (ptr void)
-    let sp_work  = field spmat_struct "sp_work" (ptr void)
-    let sp_type  = field spmat_struct "sp_type" int64_t
-  let () = seal spmat_struct
-
-  type spmat_record = {
-    mutable m   : int;           (* number of rows *)
-    mutable n   : int;           (* number of columns *)
-    mutable i   : int_array;     (* i index, meaning depends on the matrix format *)
-    mutable d   : elt_array;     (* where data actually stored *)
-    mutable p   : int_array;     (* p index, meaning depends on the matrix format *)
-    mutable nz  : int;           (* total number of non-zero elements *)
-    (* tree missing *)
-    (* work missing *)
-    mutable typ : int;           (* format of the sparse matrix, 0:triplet; 1: CCS *)
-    mutable ptr : spmat_struct Ctypes_static.structure Ctypes_static.ptr;
-    (* pointer to the sparse metrix *)
-  }
 
 end
 

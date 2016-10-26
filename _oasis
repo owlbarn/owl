@@ -5,7 +5,7 @@ Synopsis:    Owl is an OCaml library for scientific computing
 Authors:     Liang Wang
 License:     MIT
 Plugins:     META (0.4)
-BuildTools:     ocamlbuild
+BuildTools:  ocamlbuild
 
 Library Owl
   Path:       lib
@@ -16,7 +16,7 @@ Library Owl
               Owl_pretty, Owl_plot, Owl_toplevel, Owl_const, Ffi_bindings
   InternalModules: Ffi_generated
   CSources:   ffi_generated_stubs.c
-  CCOpt:      -I$pkg_ctypes -I/usr/local/include
+  CCOpt:      -I$pkg_ctypes
   BuildDepends: str, gsl, ctypes, ctypes.foreign, plplot, dolog, ctypes.stubs
 
 Library Ffi_bindings_base
