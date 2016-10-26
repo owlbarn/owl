@@ -213,6 +213,12 @@ val average_cols : mat -> mat
 
 val is_zero : mat -> bool
 
+val is_positive : mat -> bool
+
+val is_negative : mat -> bool
+
+val is_nonnegative : mat -> bool
+
 val log : mat -> mat
 
 val log10 : mat -> mat

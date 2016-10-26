@@ -58,6 +58,27 @@ let dr_allocate_row_vecptr m = dr_allocate_vecptr 1 m
 
 let dr_allocate_col_vecptr m = dr_allocate_vecptr m 1
 
+let dc_matptr_to_mat x m n =
+  let open Dense_complex in
+  let raw = getf (!@ x) data in
+  bigarray_of_ptr array2 (m,n) Bigarray.complex64 raw
+
+let dc_mat_to_matptr x :
+  Dense_complex.mat_struct Ctypes.structure Ctypes_static.ptr =
+  let open Dense_complex in
+  let m = Int64.of_int (Bigarray.Array2.dim1 x) in
+  let n = Int64.of_int (Bigarray.Array2.dim2 x) in
+  let y = make mblk_struct in
+  let z = make mat_struct in
+  let p = Ctypes.bigarray_start Ctypes_static.Array2 x in
+  let _ = setf y msize (Int64.mul m n) in
+  let _ = setf y mdata p in
+  let _ = setf z size1 m in
+  let _ = setf z size2 n in
+  let _ = setf z tda n in
+  let _ = setf z data p in
+  let _ = setf z block (addr y) in
+  (addr z)
 
 
 (* ends here *)

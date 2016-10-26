@@ -360,22 +360,25 @@ let average_rows x =
   dot y x
 
 let is_zero x = Gsl.Matrix_complex.is_null x
-(*
+
 let is_positive x =
-  let open Owl_matrix_foreign in
-  let x = mat_to_matptr x in
-  (gsl_matrix_ispos x) = 1
+  let open Owl_foreign in
+  let open Owl_foreign.DC in
+  let x = dc_mat_to_matptr x in
+  (gsl_matrix_complex_ispos x) = 1
 
 let is_negative x =
-  let open Owl_matrix_foreign in
-  let x = mat_to_matptr x in
-  (gsl_matrix_isneg x) = 1
+  let open Owl_foreign in
+  let open Owl_foreign.DC in
+  let x = dc_mat_to_matptr x in
+  (gsl_matrix_complex_isneg x) = 1
 
 let is_nonnegative x =
-  let open Owl_matrix_foreign in
-  let x = mat_to_matptr x in
-  (gsl_matrix_isnonneg x) = 1
-*)
+  let open Owl_foreign in
+  let open Owl_foreign.DC in
+  let x = dc_mat_to_matptr x in
+  (gsl_matrix_complex_isnonneg x) = 1
+
 let ( +@ ) = add
 
 let ( -@ ) = sub
