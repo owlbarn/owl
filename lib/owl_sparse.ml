@@ -54,6 +54,7 @@ let _is_csc_format x = x.typ = 1
 (* FIXME: redundant function, remove *)
 let allocate_vecptr m =
   let open Owl_matrix_foreign in
+  let open Owl_matrix_foreign.DR in
   let open Ctypes in
   let p = gsl_vector_alloc (Unsigned.Size_t.of_int m) in
   let y = !@ p in
@@ -485,18 +486,19 @@ let lu x = None
 
 let to_dense x =
   let open Owl_matrix_foreign in
+  let open Owl_matrix_foreign.DR in
   let x = if _is_csc_format x then clone x else x in
   let m, n = shape x in
   let m' = Unsigned.Size_t.of_int m in
   let n' = Unsigned.Size_t.of_int n in
   let y = gsl_matrix_alloc m' n' in
   let _ = gsl_spmatrix_sp2d y x.ptr in
-  matptr_to_mat y m n
+  dr_matptr_to_mat y m n
 
 let of_dense x =
   let open Owl_matrix_foreign in
   let y = zeros (Array2.dim1 x) (Array2.dim2 x) in
-  let _ = gsl_spmatrix_d2sp y.ptr (mat_to_matptr x) in
+  let _ = gsl_spmatrix_d2sp y.ptr (dr_mat_to_matptr x) in
   _update_rec_from_ptr y
 
 let sum_rows x =

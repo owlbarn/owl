@@ -13,8 +13,7 @@ open Ctypes
 (** configure the logger *)
 let _ = Log.color_on (); Log.(set_log_level INFO)
 
-(* Some common data structure for both dense and sparse matrices.
-  please refer to related header files in GSL code repository. *)
+(* struct definition for real dense matrix *)
 
 module Dense_real = struct
 
@@ -62,7 +61,10 @@ module Dense_real = struct
 
 end
 
+(* struct definition for complex dense matrix *)
+
 module Dense_complex = struct
+
   type int_array = (int64, int64_elt, c_layout) Array1.t
   type elt_array = (Complex.t, complex64_elt, c_layout) Array2.t
 
@@ -107,8 +109,7 @@ module Dense_complex = struct
 
 end
 
-
-(** structure definition for sparse matrix, refer to gsl_spmatrix.h *)
+(* struct definition for real sparse matrix *)
 
 module Sparse_real = struct
 
@@ -147,7 +148,8 @@ module Sparse_real = struct
 
 end
 
-(** Complex sparse matrix *)
+(* struct definition for complex sparse matrix *)
+
 module Sparse_complex = struct
 
   type int_array = (int64, int64_elt, c_layout) Array1.t

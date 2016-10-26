@@ -87,3 +87,34 @@ value owl_stub_12_gsl_matrix_max_index(value x56, value x55, value x54)
    gsl_matrix_max_index(x57, x58, x59);
    return Val_unit;
 }
+value owl_stub_13_gsl_matrix_complex_equal(value x62, value x61)
+{
+   gsl_matrix_complex* x63 = CTYPES_ADDR_OF_FATPTR(x62);
+   gsl_matrix_complex* x64 = CTYPES_ADDR_OF_FATPTR(x61);
+   int x65 = gsl_matrix_complex_equal(x63, x64);
+   return Val_int(x65);
+}
+value owl_stub_14_gsl_matrix_complex_isnull(value x66)
+{
+   gsl_matrix_complex* x67 = CTYPES_ADDR_OF_FATPTR(x66);
+   int x68 = gsl_matrix_complex_isnull(x67);
+   return Val_int(x68);
+}
+value owl_stub_15_gsl_matrix_complex_ispos(value x69)
+{
+   gsl_matrix_complex* x70 = CTYPES_ADDR_OF_FATPTR(x69);
+   int x71 = gsl_matrix_complex_ispos(x70);
+   return Val_int(x71);
+}
+value owl_stub_16_gsl_matrix_complex_isneg(value x72)
+{
+   gsl_matrix_complex* x73 = CTYPES_ADDR_OF_FATPTR(x72);
+   int x74 = gsl_matrix_complex_isneg(x73);
+   return Val_int(x74);
+}
+value owl_stub_17_gsl_matrix_complex_isnonneg(value x75)
+{
+   gsl_matrix_complex* x76 = CTYPES_ADDR_OF_FATPTR(x75);
+   int x77 = gsl_matrix_complex_isnonneg(x76);
+   return Val_int(x77);
+}
