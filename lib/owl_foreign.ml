@@ -11,43 +11,7 @@ open Owl_types.Sparse_real
 module B = Ffi_bindings.Bindings(Ffi_generated)
 module DR = B.Dense_real
 module DC = B.Dense_complex
-
-(* Sparse matrices functions, refer to gsl_spmatrix.h *)
-
-let gsl_spmatrix_alloc = foreign "gsl_spmatrix_alloc" (int @-> int @-> returning (ptr spmat_struct))
-
-let gsl_spmatrix_alloc_nzmax = foreign "gsl_spmatrix_alloc_nzmax" (int @-> int @-> int @-> int @-> returning (ptr spmat_struct))
-
-let gsl_spmatrix_set = foreign "gsl_spmatrix_set" (ptr spmat_struct @-> int @-> int @-> double @-> returning int)
-
-let gsl_spmatrix_get = foreign "gsl_spmatrix_get" (ptr spmat_struct @-> int @-> int @-> returning double)
-
-let gsl_spmatrix_add = foreign "gsl_spmatrix_add" (ptr spmat_struct @-> ptr spmat_struct @-> ptr spmat_struct @-> returning int)
-
-let gsl_spmatrix_scale = foreign "gsl_spmatrix_scale" (ptr spmat_struct @-> double @-> returning int)
-
-let gsl_spmatrix_memcpy = foreign "gsl_spmatrix_memcpy" (ptr spmat_struct @-> ptr spmat_struct @-> returning int)
-
-let gsl_spmatrix_compcol = foreign "gsl_spmatrix_compcol" (ptr spmat_struct @-> returning (ptr spmat_struct))
-
-let gsl_spmatrix_minmax = foreign "gsl_spmatrix_minmax" (ptr spmat_struct @-> ptr double @-> ptr double @-> returning int)
-
-let gsl_spmatrix_equal = foreign "gsl_spmatrix_equal" (ptr spmat_struct @-> ptr spmat_struct @-> returning int)
-
-let gsl_spmatrix_transpose_memcpy = foreign "gsl_spmatrix_transpose_memcpy" (ptr spmat_struct @-> ptr spmat_struct @-> returning int)
-
-let gsl_spmatrix_set_zero = foreign "gsl_spmatrix_set_zero" (ptr spmat_struct @-> returning int)
-
-(* TODO: not sure what to do with this function ... unless it is faster than dgemm
-let gsl_spblas_dgemv = foreign "gsl_spblas_dgemv" (int @-> double @-> ptr spmat_struct @-> ptr vec_struct @-> double @-> ptr vec_struct @-> returning int)
-*)
-
-let gsl_spblas_dgemm = foreign "gsl_spblas_dgemm" (double @-> ptr spmat_struct @-> ptr spmat_struct @-> ptr spmat_struct @-> returning int)
-
-let gsl_spmatrix_d2sp = foreign "gsl_spmatrix_d2sp" (ptr spmat_struct @-> ptr Dense_real.mat_struct @-> returning int)
-
-let gsl_spmatrix_sp2d = foreign "gsl_spmatrix_sp2d" (ptr Dense_real.mat_struct @-> ptr spmat_struct @-> returning int)
-
+module SR = B.Sparse_real
 
 (* some helper fucntions, e.g., for type translation and construction *)
 
