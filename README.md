@@ -33,6 +33,7 @@ Owl is well integrated with `utop`. Now you can start `utop` and continue this t
 
 ```bash
 #require "Owl"
+open Owl;;
 ```
 
 If you are too lazy to do any labour work, here is a docker image to let you try Owl without dealing with aforementioned installation and configuration steps. The docker image is automatically build from the master branch whenever there are new commits. You can check the building history on [Docker Hub](https://hub.docker.com/r/ryanrhymes/owl/builds/).
