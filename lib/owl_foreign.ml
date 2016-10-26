@@ -4,9 +4,7 @@
  *)
 
 open Ctypes
-open Foreign
 open Owl_types
-open Owl_types.Sparse_real
 
 module B = Ffi_bindings.Bindings(Ffi_generated)
 module DR = B.Dense_real

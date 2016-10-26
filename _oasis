@@ -18,7 +18,7 @@ Library Owl
   InternalModules:  Ffi_generated
   CSources:         ffi_generated_stub.c
   CCOpt:            -I$pkg_ctypes
-  BuildDepends:     str, gsl, ctypes, ctypes.foreign, plplot, dolog, ctypes.stubs
+  BuildDepends:     str, gsl, ctypes, plplot, dolog, ctypes.stubs
 
 Library Ffi_bindings_base
   Install:          false
