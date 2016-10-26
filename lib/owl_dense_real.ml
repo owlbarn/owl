@@ -434,11 +434,13 @@ let min x =
   let open Owl_matrix_foreign in
   let open Ctypes in
   let x = mat_to_matptr x in
-  let i = allocate int 0 in
-  let j = allocate int 0 in
+  let i = allocate size_t (Unsigned.Size_t.of_int 0) in
+  let j = allocate size_t (Unsigned.Size_t.of_int 0) in
   let r = gsl_matrix_min x in
   let _ = gsl_matrix_min_index x i j in
-  r, !@i, !@j
+  let i = Unsigned.Size_t.to_int !@i in
+  let j = Unsigned.Size_t.to_int !@j in
+  r, i, j
 
 let min_cols x =
   mapi_cols (fun j v ->
@@ -454,11 +456,13 @@ let max x =
   let open Owl_matrix_foreign in
   let open Ctypes in
   let x = mat_to_matptr x in
-  let i = allocate int 0 in
-  let j = allocate int 0 in
+  let i = allocate size_t (Unsigned.Size_t.of_int 0) in
+  let j = allocate size_t (Unsigned.Size_t.of_int 0) in
   let r = gsl_matrix_max x in
   let _ = gsl_matrix_max_index x i j in
-  r, !@i, !@j
+  let i = Unsigned.Size_t.to_int !@i in
+  let j = Unsigned.Size_t.to_int !@j in
+  r, i, j
 
 let max_cols x =
   mapi_cols (fun j v ->

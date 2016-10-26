@@ -1,12 +1,16 @@
 open Ctypes
 
 module Bindings (F : Cstubs.FOREIGN) = struct
+
   open F
   open Owl_types.Dense_real
 
   (* deal with anonymous c struct *)
+
   let mat_struct = typedef mat_struct "gsl_matrix"
   let vec_struct = typedef vec_struct "gsl_vector"
+
+  (* dense real matrix functions *)
 
   let gsl_vector_alloc = foreign "gsl_vector_alloc" (size_t @-> returning (ptr vec_struct))
 

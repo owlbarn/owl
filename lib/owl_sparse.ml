@@ -55,7 +55,7 @@ let _is_csc_format x = x.typ = 1
 let allocate_vecptr m =
   let open Owl_matrix_foreign in
   let open Ctypes in
-  let p = gsl_vector_alloc m in
+  let p = gsl_vector_alloc (Unsigned.Size_t.of_int m) in
   let y = !@ p in
   let x = {
     vsize = Int64.to_int (getf y vsize);
@@ -486,9 +486,12 @@ let lu x = None
 let to_dense x =
   let open Owl_matrix_foreign in
   let x = if _is_csc_format x then clone x else x in
-  let y = gsl_matrix_alloc (row_num x) (col_num x) in
+  let m, n = shape x in
+  let m' = Unsigned.Size_t.of_int m in
+  let n' = Unsigned.Size_t.of_int n in
+  let y = gsl_matrix_alloc m' n' in
   let _ = gsl_spmatrix_sp2d y x.ptr in
-  matptr_to_mat y (row_num x) (col_num x)
+  matptr_to_mat y m n
 
 let of_dense x =
   let open Owl_matrix_foreign in

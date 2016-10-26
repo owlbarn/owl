@@ -8,34 +8,7 @@ open Foreign
 open Owl_types.Dense_real
 open Owl_types.Sparse_real
 
-(* Dense matrices functions, refer to gsl_matrix_double.h *)
-
-let gsl_vector_alloc = foreign "gsl_vector_alloc" (int @-> returning (ptr vec_struct))
-
-let gsl_matrix_alloc = foreign "gsl_matrix_alloc" (int @-> int @-> returning (ptr mat_struct))
-
-let gsl_matrix_get_col = foreign "gsl_matrix_get_col" (ptr vec_struct @-> ptr mat_struct @-> int @-> returning int)
-
-let gsl_matrix_equal = foreign "gsl_matrix_equal" (ptr mat_struct @-> ptr mat_struct @-> returning int)
-
-let gsl_matrix_isnull = foreign "gsl_matrix_isnull" (ptr mat_struct @-> returning int)
-
-let gsl_matrix_ispos = foreign "gsl_matrix_ispos" (ptr mat_struct @-> returning int)
-
-let gsl_matrix_isneg = foreign "gsl_matrix_isneg" (ptr mat_struct @-> returning int)
-
-let gsl_matrix_isnonneg = foreign "gsl_matrix_isnonneg" (ptr mat_struct @-> returning int)
-
-let gsl_matrix_min = foreign "gsl_matrix_min" (ptr mat_struct @-> returning double)
-
-let gsl_matrix_min_index = foreign "gsl_matrix_min_index" (ptr mat_struct @-> ptr int @-> ptr int @-> returning void)
-
-let gsl_matrix_max = foreign "gsl_matrix_max" (ptr mat_struct @-> returning double)
-
-let gsl_matrix_max_index = foreign "gsl_matrix_max_index" (ptr mat_struct @-> ptr int @-> ptr int @-> returning void)
-
-let gsl_matrix_fwrite = foreign "gsl_matrix_fwrite" (ptr int @-> ptr mat_struct @-> returning void)
-
+include Ffi_bindings.Bindings(Ffi_generated)
 
 (* Sparse matrices functions, refer to gsl_spmatrix.h *)
 
@@ -101,7 +74,7 @@ let mat_to_matptr x :
   (addr z)
 
 let _allocate_vecptr m n =
-  let p = gsl_vector_alloc m in
+  let p = gsl_vector_alloc (Unsigned.Size_t.of_int m) in
   let y = !@ p in
   let x = {
     vsize = Int64.to_int (getf y vsize);
