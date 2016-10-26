@@ -1,4 +1,4 @@
-module M = Owl_sparse
+module M = Owl_sparse.Real
 
 let test_op s c op =
   let ttime = ref 0. in

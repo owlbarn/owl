@@ -31,7 +31,7 @@ let map_array f x = mapi_array (fun _ y -> f y) x
 
 (* get the suffix a file name *)
 let get_suffix s =
-  let parts = Str.(split (regexp "\.")) s in
+  let parts = Str.(split (regexp "\\.")) s in
   List.(nth parts (length parts - 1))
 
 (* deal with the issue: OCaml 4.02.3 does not have Array.iter2
