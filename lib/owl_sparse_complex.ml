@@ -6,7 +6,7 @@
 (** [ Complex sparse matrix ] *)
 
 open Bigarray
-open Owl_types.Complex_sparse
+open Owl_types.Sparse_complex
 
 type spmat = spmat_record
 

@@ -6,7 +6,8 @@
 (** [ Sparse matrix ] *)
 
 open Bigarray
-open Owl_types
+open Owl_types.Sparse_real
+open Owl_types.Dense_real
 
 type spmat = spmat_record
 

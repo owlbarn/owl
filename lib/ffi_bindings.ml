@@ -2,7 +2,7 @@ open Ctypes
 
 module Bindings (F : Cstubs.FOREIGN) = struct
   open F
-  open Owl_types.Complex_sparse
+  open Owl_types.Sparse_complex
 
   let flock = foreign "flock" (int @-> int @-> returning int)
 
