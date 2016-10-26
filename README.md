@@ -33,10 +33,9 @@ Owl is well integrated with `utop`. Now you can start `utop` and continue this t
 
 ```bash
 #require "Owl"
-open Owl;;
 ```
 
-If you are too lazy to do any labour work, here is a docker image to let you try Owl without dealing with aforementioned installation and configuration steps. The docker image is automatically build from the master branch whenever there are new commits. You can check the building history on [Docker Hub](https://hub.docker.com/r/ryanrhymes/owl/builds/).
+If you are too lazy to do any labour work, here is a [docker image](https://hub.docker.com/r/ryanrhymes/owl/) to let you try Owl without dealing with aforementioned installation and configuration steps. The docker image is automatically build from the master branch whenever there are new commits. You can check the building history on [Docker Hub](https://hub.docker.com/r/ryanrhymes/owl/builds/).
 
 Just pull the image, start a container, then play with it in `utop`. The latest source code is saved in `/root/owl` directory.
 
@@ -51,6 +50,10 @@ docker run -t -i ryanrhymes/owl
 `Owl` currently has seven core modules and their names all start with `Owl_` to avoid name conflicts, e.g., `Owl_dense`, `Owl_sparse`, `Owl_maths`, `Owl_stats`, and etc. After `utop` successfully loads `Owl` library, you can access the module functions using aforementioned names.
 
 However, a more convenient way is to use `Owl` module as an entry point which provides aliases of the core module names for easy access, e.g., `Owl.Dense` is the same as `Owl_dense`, and `Owl.Regression` is the same as `Owl_regression`. Given no name conflicts, you can simply open the whole `Owl` module for convenience as I will do in the rest of this tutorial.
+
+```ocaml
+open Owl;;
+```
 
 
 ## Create Matrices
