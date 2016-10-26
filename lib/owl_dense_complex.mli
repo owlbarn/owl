@@ -168,7 +168,17 @@ val for_all : (elt -> bool) -> mat -> bool
 
 (** {6 Compare two matrices} *)
 
-(* val is_equal : mat -> mat -> bool *)
+val is_equal : mat -> mat -> bool
+
+val is_unequal : mat -> mat -> bool
+
+val is_greater : mat -> mat -> bool
+
+val is_smaller : mat -> mat -> bool
+
+val equal_or_greater : mat -> mat -> bool
+
+val equal_or_smaller : mat -> mat -> bool
 
 
 (** {6 Basic mathematical operations of matrices} *)
@@ -299,3 +309,21 @@ val ( $* ) : elt -> mat -> mat
 
 val ( $/ ) : elt -> mat -> mat
 (** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
+
+val ( =@ ) : mat -> mat -> bool
+(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
+
+val ( >@ ) : mat -> mat -> bool
+(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
+
+val ( <@ ) : mat -> mat -> bool
+(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
+
+val ( <>@ ) : mat -> mat -> bool
+(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
+
+val ( >=@ ) : mat -> mat -> bool
+(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
+
+val ( <=@ ) : mat -> mat -> bool
+(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
