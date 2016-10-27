@@ -54,7 +54,7 @@ val numel : mat -> int
 
 val same_shape : mat -> mat -> bool
 
-(* val reshape : int -> int -> mat -> mat *)
+val reshape : int -> int -> mat -> mat
 
 
 (** {6 Manipulate a matrix} *)

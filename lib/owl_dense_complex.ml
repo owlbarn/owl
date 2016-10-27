@@ -560,4 +560,6 @@ let of_array x m n = Gsl.Matrix_complex.of_array x m n
 
 let of_arrays x = Gsl.Matrix_complex.of_arrays x
 
+let reshape m n x = of_array (to_array x) m n
+
 let pp_dsmat x = Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat x
