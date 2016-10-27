@@ -263,6 +263,12 @@ val of_array : elt array -> int -> int -> mat
 
 val of_arrays : elt array array -> mat
 
+val save : mat -> string -> unit
+
+val load : string -> mat
+
+val print : mat -> unit
+
 val pp_dsmat : mat -> unit
 
 

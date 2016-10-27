@@ -562,4 +562,18 @@ let of_arrays x = Gsl.Matrix_complex.of_arrays x
 
 let reshape m n x = of_array (to_array x) m n
 
+let save x f =
+  let s = Marshal.to_string x [] in
+  let h = open_out f in
+  output_string h s;
+  close_out h
+
+let load f =
+  let h = open_in f in
+  let s = really_input_string h (in_channel_length h) in
+  Marshal.from_string s 0
+
+let print x = let open Owl_pretty in
+  Format.printf "%a\n" Owl_pretty.pp_cmat x;;
+
 let pp_dsmat x = Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat x
