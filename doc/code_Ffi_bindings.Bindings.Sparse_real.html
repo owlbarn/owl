@@ -1,0 +1,66 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><title>Ffi_bindings.Bindings.Sparse_real</title>
+</head>
+<body>
+<code class="code"><span class="keyword">struct</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">open</span>&nbsp;<span class="constructor">Owl_types</span>.<span class="constructor">Sparse_real</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;spmat_struct&nbsp;=&nbsp;typedef&nbsp;spmat_struct&nbsp;<span class="string">"gsl_spmatrix"</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_alloc&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_alloc"</span>&nbsp;(int&nbsp;@-&gt;&nbsp;int&nbsp;@-&gt;&nbsp;returning&nbsp;(ptr&nbsp;spmat_struct))
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_alloc_nzmax&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_alloc_nzmax"</span>&nbsp;(int&nbsp;@-&gt;&nbsp;int&nbsp;@-&gt;&nbsp;int&nbsp;@-&gt;&nbsp;int&nbsp;@-&gt;&nbsp;returning&nbsp;(ptr&nbsp;spmat_struct))
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_set&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_set"</span>&nbsp;(ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;int&nbsp;@-&gt;&nbsp;int&nbsp;@-&gt;&nbsp;double&nbsp;@-&gt;&nbsp;returning&nbsp;int)
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_get&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_get"</span>&nbsp;(ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;int&nbsp;@-&gt;&nbsp;int&nbsp;@-&gt;&nbsp;returning&nbsp;double)
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_add&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_add"</span>&nbsp;(ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;returning&nbsp;int)
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_scale&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_scale"</span>&nbsp;(ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;double&nbsp;@-&gt;&nbsp;returning&nbsp;int)
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_memcpy&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_memcpy"</span>&nbsp;(ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;returning&nbsp;int)
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_compcol&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_compcol"</span>&nbsp;(ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;returning&nbsp;(ptr&nbsp;spmat_struct))
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_minmax&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_minmax"</span>&nbsp;(ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;ptr&nbsp;double&nbsp;@-&gt;&nbsp;ptr&nbsp;double&nbsp;@-&gt;&nbsp;returning&nbsp;int)
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_equal&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_equal"</span>&nbsp;(ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;returning&nbsp;int)
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_transpose_memcpy&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_transpose_memcpy"</span>&nbsp;(ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;returning&nbsp;int)
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_set_zero&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_set_zero"</span>&nbsp;(ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;returning&nbsp;int)
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spblas_dgemm&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spblas_dgemm"</span>&nbsp;(double&nbsp;@-&gt;&nbsp;ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;returning&nbsp;int)
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_d2sp&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_d2sp"</span>&nbsp;(ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;ptr&nbsp;<span class="constructor">Dense_real</span>.mat_struct&nbsp;@-&gt;&nbsp;returning&nbsp;int)
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">let</span>&nbsp;gsl_spmatrix_sp2d&nbsp;=&nbsp;foreign&nbsp;<span class="string">"gsl_spmatrix_sp2d"</span>&nbsp;(ptr&nbsp;<span class="constructor">Dense_real</span>.mat_struct&nbsp;@-&gt;&nbsp;ptr&nbsp;spmat_struct&nbsp;@-&gt;&nbsp;returning&nbsp;int)
+
+&nbsp;&nbsp;<span class="keyword">end</span></code></body></html>

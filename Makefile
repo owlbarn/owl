@@ -8,6 +8,8 @@ install:
 oasis:
 	oasis setup
 	ocaml setup.ml -configure
+doc:
+	ocaml setup.ml -doc
 clean:
 	rm -rf _build
 	rm -rf *.byte *.native examples/*.byte examples/*.native examples/*.tmp

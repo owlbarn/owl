@@ -75,3 +75,13 @@ Executable test_sparse
   CompiledObject: best
   MainIs:         test_sparse.ml
   BuildDepends:   Owl
+
+AlphaFeatures: ocamlbuild_more_args
+Document owldoc
+  Title:                API reference for Owl
+  Type:                 ocamlbuild (0.4)
+  InstallDir:           doc
+  BuildTools:           ocamldoc
+  XOCamlBuildPath:      .
+  XOCamlBuildLibraries: Owl
+  XOCamlbuildExtraArgs: "-docflags '-colorize-code -keep-code -charset utf-8'"

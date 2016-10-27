@@ -1,0 +1,142 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Owl.Linalg.html">
+<link rel="next" href="Owl.Plot.html">
+<link rel="Up" href="Owl.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><title>Owl.Regression</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Owl.Linalg.html" title="Owl.Linalg">Previous</a>
+&nbsp;<a class="up" href="Owl.html" title="Owl">Up</a>
+&nbsp;<a class="post" href="Owl.Plot.html" title="Owl.Plot">Next</a>
+</div>
+<h1>Module <a href="type_Owl.Regression.html">Owl.Regression</a> (<a href="code_Owl.Regression.html">.ml</a>)</h1>
+
+<pre><span class="keyword">module</span> Regression: <code class="type"><a href="Owl_regression.html">Owl_regression</a></code></pre><hr width="100%">
+
+<pre><span id="TYPEdsmat"><span class="keyword">type</span> <code class="type"></code>dsmat</span> = <code class="type"><a href="Owl_dense_real.html#TYPEmat">Owl_dense_real.mat</a></code> </pre>
+
+
+<pre><span id="TYPEvector"><span class="keyword">type</span> <code class="type"></code>vector</span> = <code class="type">Gsl.Vector.vector</code> </pre>
+
+
+<pre><span id="VALlinear"><span class="keyword">val</span> linear</span> : <code class="type">?i:bool -><br>       <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a></code></pre><div class="info ">
+Linear regression: <code class="code">linear ~i x y</code> fits the measurements <code class="code">x</code> and the
+  observations <code class="code">y</code> into a linear model. <code class="code">x</code> is a <code class="code">m</code> by <code class="code">n</code> row-based matrix
+  and each row represents one measurement. <code class="code">y</code> is a <code class="code">m</code> by <code class="code">1</code> matrix and each
+  number is an observation. The parameters will be returned as a column vector.
+  <code class="code">~i</code> indicates wether to include intercept, the default value is <code class="code"><span class="keyword">false</span></code>. The
+  intercept will be the first elelment in the returned parameters.<br>
+</div>
+
+<pre><span id="VALpolynomial"><span class="keyword">val</span> polynomial</span> : <code class="type"><a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> int -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a></code></pre><div class="info ">
+polynomial regression:  <code class="code">polynomial x y d</code> fits the measurements <code class="code">x</code> and the
+  observations <code class="code">y</code> into a polynomial model. Both <code class="code">x</code> and <code class="code">y</code> are <code class="code">m</code> by <code class="code">1</code>
+  matrices. Parameter <code class="code">d</code> specifies the highest degree of the polynomial model.
+  The function returns a <code class="code">(d+1)</code> by <code class="code">1</code> matrix where the first element is the
+  intercept and the rest are the corresponding coefficients of each degree from
+  <code class="code">1</code> to <code class="code">d</code>.<br>
+</div>
+
+<pre><span id="VALexponential"><span class="keyword">val</span> exponential</span> : <code class="type"><a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a></code></pre><div class="info ">
+Exponential regression: <code class="code">exponential x y</code> fits the measurements <code class="code">x</code> and the
+  observations <code class="code">y</code> into a exponential model: <code class="code"> y = a * exp^(-lambda * x) + b </code>.
+  Both <code class="code">x</code> and <code class="code">y</code> are <code class="code">m</code> by <code class="code">1</code> matrices. The returned result is a matrix of
+  three model parameters <code class="code">[a, lambda, b]</code>.<br>
+</div>
+
+<pre><span id="VALnonlinear"><span class="keyword">val</span> nonlinear</span> : <code class="type">(<a href="Owl_regression.html#TYPEvector">vector</a> -> float -> float) -><br>       float array -><br>       <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a></code></pre><div class="info ">
+Nonlinear regression: <code class="code">nonlinear f p x y</code> fits the measurements <code class="code">x</code> and the
+  observations <code class="code">y</code> into a user-defined nonlinear model. Both <code class="code">x</code> and <code class="code">y</code> are
+  <code class="code">m</code> x <code class="code">1</code> matrices; <code class="code">p</code> is the initial guess of the parameters, <code class="code">f</code> is the
+  user-defined function, its first parameter is the parameter array, and the
+  second is the variable.
+<p>
+
+  E.g., if we want to fit <code class="code">x</code> and <code class="code">y</code> using <code class="code"> y = a *. (log x) +. b </code> model, we
+  first define the function <code class="code">f</code> as
+<p>
+
+  <code class="code"> <span class="keyword">let</span> f p x = p.{0} *. (log x) + p.{1} </code>
+<p>
+
+  where <code class="code">p.{0}</code> represents <code class="code">a</code> and <code class="code">p.{1}</code> represents <code class="code">b</code>. Then we also need to make
+  an initial guess of the parameters (i.e., <code class="code">a</code> and <code class="code">b</code>) by defining
+<p>
+
+  <code class="code"><span class="keyword">let</span> p = [0.1; 0.1]</code>.
+<p>
+
+  Finally, we can perform the nonlinear regression by calling <code class="code">nonlinear f p x y</code>.<br>
+</div>
+
+<pre><span id="VALols"><span class="keyword">val</span> ols</span> : <code class="type">?i:bool -><br>       <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a></code></pre><div class="info ">
+Ordinary Least Square regression: in <code class="code">ols ~i x y</code>, <code class="code">i</code> : whether or not to
+  include intercept bias in parameters, the default is <code class="code"><span class="keyword">true</span></code>; ; <code class="code">x</code> is the
+  measurements, and <code class="code">y</code> is the observations. THe return is the model.<br>
+</div>
+
+<pre><span id="VALridge"><span class="keyword">val</span> ridge</span> : <code class="type">?i:bool -><br>       ?a:float -><br>       <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a></code></pre><div class="info ">
+Ridge regression: in <code class="code">ridge ~i ~a x y</code>, <code class="code">i</code> : whether or not to include
+  intercept bias in parameters, the default is <code class="code"><span class="keyword">true</span></code>; <code class="code">a</code> : the weight on the
+  regularisation term; <code class="code">x</code> is the measurements, and <code class="code">y</code> is the observations.
+  The return is the model.<br>
+</div>
+
+<pre><span id="VALlasso"><span class="keyword">val</span> lasso</span> : <code class="type">?i:bool -><br>       ?a:float -><br>       <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a></code></pre><div class="info ">
+LASSO regression: in <code class="code">lasso ~i ~a x y</code>, <code class="code">i</code> : whether or not to include
+  intercept bias in parameters, the default is <code class="code"><span class="keyword">true</span></code>; <code class="code">a</code> : the weight on the
+  regularisation term; <code class="code">x</code> is the measurements, and <code class="code">y</code> is the observations.
+  The return is the model.<br>
+</div>
+
+<pre><span id="VALlogistic"><span class="keyword">val</span> logistic</span> : <code class="type">?i:bool -><br>       <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a></code></pre><div class="info ">
+Logistic regression: in <code class="code">logistic ~i x y</code>, <code class="code">i</code> : whether or not to include
+  intercept bias in parameters, the default is <code class="code"><span class="keyword">true</span></code>; ; <code class="code">x</code> is the
+  measurements, and <code class="code">y</code> is the observations.
+<p>
+
+  Note that the values in <code class="code">y</code> are either <code class="code">+1</code> or <code class="code">0</code>. The return is the model.<br>
+</div>
+
+<pre><span id="VALsvm"><span class="keyword">val</span> svm</span> : <code class="type">?i:bool -><br>       <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -><br>       <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a></code></pre><div class="info ">
+Support Vector Machine regression: in <code class="code">svm ~i p x y</code>, <code class="code">i</code> : whether or not
+  to include intercept bias in parameters, the default is <code class="code"><span class="keyword">true</span></code>; <code class="code">p</code> : the
+  initial guess of the model; <code class="code">x</code> is the measurements, and <code class="code">y</code> is the observations.
+<p>
+
+  Note that the values in <code class="code">y</code> are either <code class="code">+1</code> or <code class="code">-1</code>.<br>
+</div>
+
+<pre><span id="VALkmeans"><span class="keyword">val</span> kmeans</span> : <code class="type"><a href="Owl_regression.html#TYPEdsmat">dsmat</a> -> int -> <a href="Owl_regression.html#TYPEdsmat">dsmat</a> * int array</code></pre><div class="info ">
+K-means clustering: <code class="code">kmeans x c</code> divides <code class="code">x</code> which is a row-based matrix
+  into <code class="code">c</code> clusters. The return is <code class="code">(y,a)</code> where <code class="code">y</code> is the model and <code class="code">a</code> is
+  the membership list of all nodes in <code class="code">x</code>.<br>
+</div>
+</body></html>

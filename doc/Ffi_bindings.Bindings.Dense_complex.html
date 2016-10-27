@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Ffi_bindings.Bindings.Dense_real.html">
+<link rel="next" href="Ffi_bindings.Bindings.Sparse_real.html">
+<link rel="Up" href="Ffi_bindings.Bindings.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><title>Ffi_bindings.Bindings.Dense_complex</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Ffi_bindings.Bindings.Dense_real.html" title="Ffi_bindings.Bindings.Dense_real">Previous</a>
+&nbsp;<a class="up" href="Ffi_bindings.Bindings.html" title="Ffi_bindings.Bindings">Up</a>
+&nbsp;<a class="post" href="Ffi_bindings.Bindings.Sparse_real.html" title="Ffi_bindings.Bindings.Sparse_real">Next</a>
+</div>
+<h1>Module <a href="type_Ffi_bindings.Bindings.Dense_complex.html">Ffi_bindings.Bindings.Dense_complex</a> (<a href="code_Ffi_bindings.Bindings.Dense_complex.html">.ml</a>)</h1>
+
+<pre><span class="keyword">module</span> Dense_complex: <code class="code"><span class="keyword">sig</span></code> <a href="Ffi_bindings.Bindings.Dense_complex.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+
+<pre><span id="VALmat_struct"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Dense_complex.mat_struct.html">mat_struct</a></span> : <code class="type"><a href="Owl_types.Dense_complex.html#TYPEmat_struct">Owl_types.Dense_complex.mat_struct</a> Ctypes.structure Ctypes.typ</code></pre>
+<pre><span id="VALvec_struct"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Dense_complex.vec_struct.html">vec_struct</a></span> : <code class="type"><a href="Owl_types.Dense_complex.html#TYPEvec_struct">Owl_types.Dense_complex.vec_struct</a> Ctypes.structure Ctypes.typ</code></pre>
+<pre><span id="VALgsl_matrix_complex_equal"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Dense_complex.gsl_matrix_complex_equal.html">gsl_matrix_complex_equal</a></span> : <code class="type">(<a href="Owl_types.Dense_complex.html#TYPEmat_struct">Owl_types.Dense_complex.mat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        <a href="Owl_types.Dense_complex.html#TYPEmat_struct">Owl_types.Dense_complex.mat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_matrix_complex_isnull"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Dense_complex.gsl_matrix_complex_isnull.html">gsl_matrix_complex_isnull</a></span> : <code class="type">(<a href="Owl_types.Dense_complex.html#TYPEmat_struct">Owl_types.Dense_complex.mat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_matrix_complex_ispos"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Dense_complex.gsl_matrix_complex_ispos.html">gsl_matrix_complex_ispos</a></span> : <code class="type">(<a href="Owl_types.Dense_complex.html#TYPEmat_struct">Owl_types.Dense_complex.mat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_matrix_complex_isneg"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Dense_complex.gsl_matrix_complex_isneg.html">gsl_matrix_complex_isneg</a></span> : <code class="type">(<a href="Owl_types.Dense_complex.html#TYPEmat_struct">Owl_types.Dense_complex.mat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_matrix_complex_isnonneg"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Dense_complex.gsl_matrix_complex_isnonneg.html">gsl_matrix_complex_isnonneg</a></span> : <code class="type">(<a href="Owl_types.Dense_complex.html#TYPEmat_struct">Owl_types.Dense_complex.mat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre></body></html>

@@ -1,0 +1,350 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Owl_regression.html">
+<link rel="next" href="Owl_plot.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><link title="Default pretty-printers used by the other pretty-printing functions" rel="Section" href="#6_Defaultprettyprintersusedbytheotherprettyprintingfunctions">
+<link title="Pretty-printing in standard style" rel="Section" href="#6_Prettyprintinginstandardstyle">
+<link title="Pretty-printing in OCaml-style" rel="Section" href="#6_PrettyprintinginOCamlstyle">
+<link title="Good pretty-printers for toplevels" rel="Section" href="#6_Goodprettyprintersfortoplevels">
+<link title="Labeled pretty-printing" rel="Subsection" href="#7_Labeledprettyprinting">
+<title>Owl_pretty</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Owl_regression.html" title="Owl_regression">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Owl_plot.html" title="Owl_plot">Next</a>
+</div>
+<h1>Module <a href="type_Owl_pretty.html">Owl_pretty</a></h1>
+
+<pre><span class="keyword">module</span> Owl_pretty: <code class="code"><span class="keyword">sig</span></code> <a href="Owl_pretty.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Generic matrix printing functions.<br>
+</div>
+<hr width="100%">
+
+<pre><span class="keyword">module</span> <a href="Owl_pretty.Context.html">Context</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Owl_pretty.Context.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
+<pre><span id="VALpp_mat_gen"><span class="keyword">val</span> pp_mat_gen</span> : <code class="type">?pp_open:(Format.formatter -> unit) -><br>       ?pp_close:(Format.formatter -> unit) -><br>       ?pp_head:(Format.formatter -> int -> unit) -><br>       ?pp_foot:(Format.formatter -> int -> unit) -><br>       ?pp_end_row:(Format.formatter -> int -> unit) -><br>       ?pp_end_col:(Format.formatter -> row:int -> col:int -> unit) -><br>       ?pp_left:(Format.formatter -> int -> unit) -><br>       ?pp_right:(Format.formatter -> int -> unit) -><br>       ?pad:char option -><br>       ?ellipsis:string -><br>       ?vertical_context:<a href="Owl_pretty.Context.html#TYPEt">Context.t</a> option -><br>       ?horizontal_context:<a href="Owl_pretty.Context.html#TYPEt">Context.t</a> option -><br>       (Format.formatter -> 'el -> unit) -><br>       Format.formatter -> ('el, 'a, Bigarray.c_layout) Bigarray.Array2.t -> unit</code></pre><div class="info ">
+<code class="code">pp_mat_gen
+       ?pp_open ?pp_close ?pp_head ?pp_foot ?pp_end_row ?pp_end_col
+       ?pp_left ?pp_right ?pad pp_el ppf mat</code>
+<p>
+
+    Generic printing of matrices (two-dimensional bigarrays).
+<p>
+
+    <code class="code">pp_open ppf</code> is called whenever printing of a matrix <code class="code">mat</code>
+    is started, <code class="code">pp_close ppf</code> whenever printing is complete.
+    These functions are not called when the matrix is empty.
+<p>
+
+    <code class="code">pp_head other_ppf col</code> is used to print a header for column <code class="code">col</code>
+    in matrix <code class="code">mat</code>.  This header is right-aligned and eventually padded
+    using <code class="code"><span class="constructor">Some</span> pad</code>-character to match the matrix rows in the column
+    beneath.  The passed formatter <code class="code">other_ppf</code> is not identical to <code class="code">ppf</code>!
+<p>
+
+    <code class="code">pp_foot other_ppf col</code> is used to print a footer for column <code class="code">col</code>
+    in matrix <code class="code">mat</code>.  It is similar to <code class="code">pp_head col other_ppf</code> otherwise.
+<p>
+
+    <code class="code">pp_end_row ppf row</code> is called on row number <code class="code">row</code> and formatter
+    <code class="code">ppf</code> whenever the end of a row has been reached.
+<p>
+
+    <code class="code">pp_end_col ppf ~row ~col</code> is called on the row number <code class="code">row</code>, column
+    number <code class="code">col</code> and formatter <code class="code">ppf</code> whenever the element at this position
+    has been printed and if it is not the last element in the row.
+<p>
+
+    <code class="code">pp_left ppf row</code> is called on row number <code class="code">row</code> and formatter
+    <code class="code">ppf</code> to print labels to the left of each row.  The labels are
+    right-aligned within a virtual column.
+<p>
+
+    <code class="code">pp_right ppf row</code> is called on row number <code class="code">row</code> and formatter
+    <code class="code">ppf</code> to print labels to the right of each row.  The labels are
+    left-aligned.
+<p>
+
+    The character <code class="code">pad</code> is used to pad matrix elements for right-aligning
+    them appropriately.  If it is set to <code class="code"><span class="constructor">None</span></code>, no alignment will
+    be performed.
+<p>
+
+    <code class="code">ellipsis</code> is used as a filler when elements need to be skipped in
+    the case of printing with contexts.
+<p>
+
+    <code class="code">vertical_context</code> determines the number of initial and final
+    rows to be printed.  Intermediate row will be skipped, and one row
+    containing ellipsis elements will be printed in their place instead.
+    <code class="code"><span class="constructor">None</span></code> chooses no context, <code class="code"><span class="constructor">Some</span> v</code> sets the vertical context to <code class="code">v</code>.
+<p>
+
+    <code class="code">horizontal_context</code> determines the number of initial and final
+    columns to be printed.  Intermediate columns will be skipped,
+    and one columns containing ellipsis elements will be printed in
+    their place instead.  <code class="code"><span class="constructor">None</span></code> chooses no context, <code class="code"><span class="constructor">Some</span> h</code> sets the
+    horizontal context to <code class="code">h</code>.
+<p>
+
+    <code class="code">pp_el other_ppf el</code> is called on formatter <code class="code">other_ppf</code> (not
+    <code class="code">ppf</code>!) and each matrix element.
+<p>
+
+    <code class="code">ppf</code> is the formatter to which all output is finally printed.
+<p>
+
+    <code class="code">mat</code> is the matrix to be printed.<br>
+</div>
+<div class="param_info"><code class="code">pp_open</code> : default = open standard pretty-printing box</div>
+<div class="param_info"><code class="code">pp_close</code> : default = close standard pretty-printing box</div>
+<div class="param_info"><code class="code">pp_head</code> : default = no default</div>
+<div class="param_info"><code class="code">pp_foot</code> : default = no default</div>
+<div class="param_info"><code class="code">pp_end_row</code> : default = print newline (within pretty-printing box)</div>
+<div class="param_info"><code class="code">pp_end_col</code> : default = print space</div>
+<div class="param_info"><code class="code">pp_left</code> : default = no default</div>
+<div class="param_info"><code class="code">pad</code> : default = <code class="code"><span class="constructor">Some</span> <span class="string">' '</span></code></div>
+<div class="param_info"><code class="code">ellipsis</code> : default = <code class="code">!<span class="constructor">Context</span>.ellipsis</code></div>
+<div class="param_info"><code class="code">vertical_context</code> : default = <code class="code"><span class="constructor">Some</span> !<span class="constructor">Context</span>.vertical_default</code></div>
+<div class="param_info"><code class="code">horizontal_context</code> : default = <code class="code"><span class="constructor">Some</span> !<span class="constructor">Context</span>.horizontal_default</code></div>
+<br>
+<h6 id="6_Defaultprettyprintersusedbytheotherprettyprintingfunctions">Default pretty-printers used by the other pretty-printing functions</h6><br>
+
+<pre><span id="TYPEpp_el_default"><span class="keyword">type</span> <code class="type">'el</code> pp_el_default</span> = <code class="type">(Format.formatter -> 'el -> unit) Pervasives.ref</code> </pre>
+<div class="info ">
+Type of references for default printers of elements<br>
+</div>
+
+
+<pre><span id="VALpp_float_el_default"><span class="keyword">val</span> pp_float_el_default</span> : <code class="type">float <a href="Owl_pretty.html#TYPEpp_el_default">pp_el_default</a></code></pre><div class="info ">
+fprintf ppf "%G" el<br>
+</div>
+
+<pre><span id="VALpp_complex_el_default"><span class="keyword">val</span> pp_complex_el_default</span> : <code class="type">Complex.t <a href="Owl_pretty.html#TYPEpp_el_default">pp_el_default</a></code></pre><div class="info ">
+fprintf ppf "(%G, %Gi)" el.re el.im<br>
+</div>
+
+<pre><span id="VALpp_int32_el"><span class="keyword">val</span> pp_int32_el</span> : <code class="type">Format.formatter -> int32 -> unit</code></pre><div class="info ">
+fprintf ppf "%ld" el<br>
+</div>
+<br>
+<h6 id="6_Prettyprintinginstandardstyle">Pretty-printing in standard style</h6><br>
+
+<pre><span id="TYPEpp_vec"><span class="keyword">type</span> <code class="type">('el, 'elt)</code> pp_vec</span> = <code class="type">Format.formatter -> ('el, 'elt, Bigarray.c_layout) Bigarray.Array1.t -> unit</code> </pre>
+<div class="info ">
+Type of standard pretty-printers for column vectors
+<p>
+<code class="code">pp_vec ppf vec</code> prints a vector <code class="code">vec</code> to formatter <code class="code">ppf</code>
+    using the defaults.<br>
+</div>
+
+
+<pre><span id="VALpp_fvec"><span class="keyword">val</span> pp_fvec</span> : <code class="type">(float, 'elt) <a href="Owl_pretty.html#TYPEpp_vec">pp_vec</a></code></pre>
+<pre><span id="VALpp_cvec"><span class="keyword">val</span> pp_cvec</span> : <code class="type">(Complex.t, 'elt) <a href="Owl_pretty.html#TYPEpp_vec">pp_vec</a></code></pre>
+<pre><span id="VALpp_ivec"><span class="keyword">val</span> pp_ivec</span> : <code class="type">(int32, 'elt) <a href="Owl_pretty.html#TYPEpp_vec">pp_vec</a></code></pre>
+<pre><span id="VALpp_rfvec"><span class="keyword">val</span> pp_rfvec</span> : <code class="type">(float, 'elt) <a href="Owl_pretty.html#TYPEpp_vec">pp_vec</a></code></pre>
+<pre><span id="VALpp_rcvec"><span class="keyword">val</span> pp_rcvec</span> : <code class="type">(Complex.t, 'elt) <a href="Owl_pretty.html#TYPEpp_vec">pp_vec</a></code></pre>
+<pre><span id="VALpp_rivec"><span class="keyword">val</span> pp_rivec</span> : <code class="type">(int32, 'elt) <a href="Owl_pretty.html#TYPEpp_vec">pp_vec</a></code></pre>
+<pre><span id="TYPEpp_mat"><span class="keyword">type</span> <code class="type">('el, 'elt)</code> pp_mat</span> = <code class="type">Format.formatter -> ('el, 'elt, Bigarray.c_layout) Bigarray.Array2.t -> unit</code> </pre>
+<div class="info ">
+Type of standard pretty-printers for matrices
+<p>
+<code class="code">pp_mat ppf mat</code> prints a matrix <code class="code">mat</code> to formatter <code class="code">ppf</code> using the
+    defaults.<br>
+</div>
+
+
+<pre><span id="VALpp_fmat"><span class="keyword">val</span> pp_fmat</span> : <code class="type">(float, 'elt) <a href="Owl_pretty.html#TYPEpp_mat">pp_mat</a></code></pre>
+<pre><span id="VALpp_cmat"><span class="keyword">val</span> pp_cmat</span> : <code class="type">(Complex.t, 'elt) <a href="Owl_pretty.html#TYPEpp_mat">pp_mat</a></code></pre>
+<pre><span id="VALpp_imat"><span class="keyword">val</span> pp_imat</span> : <code class="type">(int32, 'elt) <a href="Owl_pretty.html#TYPEpp_mat">pp_mat</a></code></pre><br>
+<div class="h7" id="7_Labeledprettyprinting">Labeled pretty-printing</div><br>
+<br>
+<div class="h8" id="8_Vectors">Vectors</div><br>
+
+<pre><span id="TYPEpp_labeled_vec"><span class="keyword">type</span> <code class="type">('el, 'elt)</code> pp_labeled_vec</span> = <code class="type">?pp_head:(Format.formatter -> int -> unit) -><br>       ?pp_foot:(Format.formatter -> int -> unit) -><br>       ?pp_left:(Format.formatter -> int -> unit) option -><br>       ?pp_right:(Format.formatter -> int -> unit) -><br>       ?pad:char option -><br>       ?ellipsis:string -><br>       ?vertical_context:<a href="Owl_pretty.Context.html#TYPEt">Context.t</a> option -><br>       ?horizontal_context:<a href="Owl_pretty.Context.html#TYPEt">Context.t</a> option -><br>       unit -><br>       Format.formatter -> ('el, 'elt, Bigarray.c_layout) Bigarray.Array1.t -> unit</code> </pre>
+<div class="info ">
+Type of pretty-printers for labeled vectors
+<p>
+<code class="code">pp_labeled_vec ?pp_head ?pp_foot ?pp_left ?pp_right ?pad
+      ?ellipsis ?vertical_context ?horizontal_context () ppf vec</code>
+    prints vector <code class="code">vec</code> to formatter <code class="code">ppf</code> labeling the header using
+    function <code class="code">pp_head</code>, the footer using <code class="code">pp_foot</code>, the left side (of
+    rows for column vectors; of columns for row vectors) using <code class="code">pp_left</code>,
+    and the right side using <code class="code">pp_right</code>.  A <code class="code">pad</code>-option and context
+    options can be passed.
+<p>
+
+    For column vectors the labels on the left side are right-aligned
+    while those on the right side are left-aligned.<br>
+</div>
+
+
+<pre><span id="VALpp_labeled_fvec"><span class="keyword">val</span> pp_labeled_fvec</span> : <code class="type">(float, 'elt) <a href="Owl_pretty.html#TYPEpp_labeled_vec">pp_labeled_vec</a></code></pre>
+<pre><span id="VALpp_labeled_cvec"><span class="keyword">val</span> pp_labeled_cvec</span> : <code class="type">(Complex.t, 'elt) <a href="Owl_pretty.html#TYPEpp_labeled_vec">pp_labeled_vec</a></code></pre>
+<pre><span id="VALpp_labeled_ivec"><span class="keyword">val</span> pp_labeled_ivec</span> : <code class="type">(int32, 'elt) <a href="Owl_pretty.html#TYPEpp_labeled_vec">pp_labeled_vec</a></code></pre>
+<pre><span id="VALpp_labeled_rfvec"><span class="keyword">val</span> pp_labeled_rfvec</span> : <code class="type">(float, 'elt) <a href="Owl_pretty.html#TYPEpp_labeled_vec">pp_labeled_vec</a></code></pre>
+<pre><span id="VALpp_labeled_rcvec"><span class="keyword">val</span> pp_labeled_rcvec</span> : <code class="type">(Complex.t, 'elt) <a href="Owl_pretty.html#TYPEpp_labeled_vec">pp_labeled_vec</a></code></pre>
+<pre><span id="VALpp_labeled_rivec"><span class="keyword">val</span> pp_labeled_rivec</span> : <code class="type">(int32, 'elt) <a href="Owl_pretty.html#TYPEpp_labeled_vec">pp_labeled_vec</a></code></pre>
+<pre><span id="TYPEpp_lvec"><span class="keyword">type</span> <code class="type">('el, 'elt)</code> pp_lvec</span> = <code class="type">?print_head:bool -><br>       ?print_foot:bool -><br>       ?print_left:bool -><br>       ?print_right:bool -><br>       ?labels:string array -><br>       ?name:string -><br>       ?pad:char option -><br>       ?ellipsis:string -><br>       ?vertical_context:<a href="Owl_pretty.Context.html#TYPEt">Context.t</a> option -><br>       ?horizontal_context:<a href="Owl_pretty.Context.html#TYPEt">Context.t</a> option -><br>       unit -><br>       Format.formatter -> ('el, 'elt, Bigarray.c_layout) Bigarray.Array1.t -> unit</code> </pre>
+<div class="info ">
+Type of pretty-printers for string labeled vectors
+<p>
+<code class="code">pp_lvec ?print_head ?print_foot ?print_left ?print_right
+      ?labels ?name ?pad ?ellipsis ?vertical_context ?horizontal_context
+      () ppf vec</code>
+    prints vector <code class="code">vec</code> to formatter <code class="code">ppf</code> labeling the header with <code class="code">name</code>
+    if provided and if <code class="code">print_head</code> is true, and labeling the footer with
+    <code class="code">name</code> if <code class="code">print_foot</code> is true.  The left side (of rows for column
+    vectors; of columns for row vectors) is labeled with <code class="code">labels</code> if
+    provided and if <code class="code">print_left</code> is true, and the right side is labeled
+    with <code class="code">labels</code> if <code class="code">print_right</code> is true.  A <code class="code">pad</code>-option and context
+    options can be passed.
+<p>
+
+    For columns vectors the labels on the left side are right-aligned
+    while those on the right side are left-aligned.
+<p>
+
+    It is the duty of the user to make sure that the array containing
+    the labels is sufficiently large for the given vector.<br>
+</div>
+
+
+<pre><span id="VALpp_lfvec"><span class="keyword">val</span> pp_lfvec</span> : <code class="type">(float, 'elt) <a href="Owl_pretty.html#TYPEpp_lvec">pp_lvec</a></code></pre>
+<pre><span id="VALpp_lcvec"><span class="keyword">val</span> pp_lcvec</span> : <code class="type">(Complex.t, 'elt) <a href="Owl_pretty.html#TYPEpp_lvec">pp_lvec</a></code></pre>
+<pre><span id="VALpp_livec"><span class="keyword">val</span> pp_livec</span> : <code class="type">(int32, 'elt) <a href="Owl_pretty.html#TYPEpp_lvec">pp_lvec</a></code></pre>
+<pre><span id="VALpp_rlfvec"><span class="keyword">val</span> pp_rlfvec</span> : <code class="type">(float, 'elt) <a href="Owl_pretty.html#TYPEpp_lvec">pp_lvec</a></code></pre>
+<pre><span id="VALpp_rlcvec"><span class="keyword">val</span> pp_rlcvec</span> : <code class="type">(Complex.t, 'elt) <a href="Owl_pretty.html#TYPEpp_lvec">pp_lvec</a></code></pre>
+<pre><span id="VALpp_rlivec"><span class="keyword">val</span> pp_rlivec</span> : <code class="type">(int32, 'elt) <a href="Owl_pretty.html#TYPEpp_lvec">pp_lvec</a></code></pre><br>
+<div class="h8" id="8_Matrices">Matrices</div><br>
+
+<pre><span id="TYPEpp_labeled_mat"><span class="keyword">type</span> <code class="type">('el, 'elt)</code> pp_labeled_mat</span> = <code class="type">?pp_head:(Format.formatter -> int -> unit) option -><br>       ?pp_foot:(Format.formatter -> int -> unit) option -><br>       ?pp_left:(Format.formatter -> int -> unit) option -><br>       ?pp_right:(Format.formatter -> int -> unit) option -><br>       ?pad:char option -><br>       ?ellipsis:string -><br>       ?vertical_context:<a href="Owl_pretty.Context.html#TYPEt">Context.t</a> option -><br>       ?horizontal_context:<a href="Owl_pretty.Context.html#TYPEt">Context.t</a> option -><br>       unit -><br>       Format.formatter -> ('el, 'elt, Bigarray.c_layout) Bigarray.Array2.t -> unit</code> </pre>
+<div class="info ">
+Type of pretty-printers for labeled matrices
+<p>
+<code class="code">pp_labeled_mat ?pp_head ?pp_foot ?pp_left ?pp_right ?pad
+      ?ellipsis ?vertical_context ?horizontal_context () ppf mat</code>
+    prints a matrix <code class="code">mat</code> to formatter <code class="code">ppf</code> labeling the header using
+    function <code class="code">pp_head</code>, the footer using <code class="code">pp_foot</code>, the left side of rows
+    using <code class="code">pp_left</code>, and the right one using <code class="code">pp_right</code>.  A <code class="code">pad</code>-option
+    and context options can be passed.
+<p>
+
+    If <code class="code"><span class="constructor">None</span></code> is passed as argument for the default printers, the
+    corresponding labels will not be printed.<br>
+</div>
+
+
+<pre><span id="VALpp_labeled_fmat"><span class="keyword">val</span> pp_labeled_fmat</span> : <code class="type">(float, 'elt) <a href="Owl_pretty.html#TYPEpp_labeled_mat">pp_labeled_mat</a></code></pre>
+<pre><span id="VALpp_labeled_cmat"><span class="keyword">val</span> pp_labeled_cmat</span> : <code class="type">(Complex.t, 'elt) <a href="Owl_pretty.html#TYPEpp_labeled_mat">pp_labeled_mat</a></code></pre>
+<pre><span id="VALpp_labeled_imat"><span class="keyword">val</span> pp_labeled_imat</span> : <code class="type">(int32, 'elt) <a href="Owl_pretty.html#TYPEpp_labeled_mat">pp_labeled_mat</a></code></pre>
+<pre><span id="TYPEpp_lmat"><span class="keyword">type</span> <code class="type">('el, 'elt)</code> pp_lmat</span> = <code class="type">?print_head:bool -><br>       ?print_foot:bool -><br>       ?print_left:bool -><br>       ?print_right:bool -><br>       ?row_labels:string array -><br>       ?col_labels:string array -><br>       ?pad:char option -><br>       ?ellipsis:string -><br>       ?vertical_context:<a href="Owl_pretty.Context.html#TYPEt">Context.t</a> option -><br>       ?horizontal_context:<a href="Owl_pretty.Context.html#TYPEt">Context.t</a> option -><br>       unit -><br>       Format.formatter -> ('el, 'elt, Bigarray.c_layout) Bigarray.Array2.t -> unit</code> </pre>
+<div class="info ">
+Type of pretty-printers for string labeled matrices
+<p>
+<code class="code">pp_lmat ?print_head ?print_foot ?print_left ?print_right
+      ?row_labels ?col_labels ?pad ?ellipsis
+      ?vertical_context ?horizontal_context () ppf mat</code>
+    prints a matrix <code class="code">mat</code> to formatter <code class="code">ppf</code> labeling the header with
+    the column labels in <code class="code">col_labels</code> if provided and if <code class="code">print_head</code> is
+    true, and labeling the footer with the column labels if <code class="code">print_foot</code>
+    is true.  The left side of rows is labeled with the row labels
+    <code class="code">row_labels</code> if provided and if <code class="code">print_left</code> is true, and the right
+    side of rows is labeled with the row labels if <code class="code">print_right</code> is true.
+    A <code class="code">pad</code>-option and context options can be passed.
+<p>
+
+    It is the duty of the user to make sure that the arrays containing the
+    row- and column labels are sufficiently large for the given matrix.<br>
+</div>
+
+
+<pre><span id="VALpp_lfmat"><span class="keyword">val</span> pp_lfmat</span> : <code class="type">(float, 'elt) <a href="Owl_pretty.html#TYPEpp_lmat">pp_lmat</a></code></pre>
+<pre><span id="VALpp_lcmat"><span class="keyword">val</span> pp_lcmat</span> : <code class="type">(Complex.t, 'elt) <a href="Owl_pretty.html#TYPEpp_lmat">pp_lmat</a></code></pre>
+<pre><span id="VALpp_limat"><span class="keyword">val</span> pp_limat</span> : <code class="type">(int32, 'elt) <a href="Owl_pretty.html#TYPEpp_lmat">pp_lmat</a></code></pre><br>
+<h6 id="6_PrettyprintinginOCamlstyle">Pretty-printing in OCaml-style</h6><br>
+
+<pre><span id="TYPEpp_el_ovec"><span class="keyword">type</span> <code class="type">('el, 'elt)</code> pp_el_ovec</span> = <code class="type">Format.formatter -><br>       (Format.formatter -> 'el -> unit) -><br>       ('el, 'elt, Bigarray.c_layout) Bigarray.Array1.t -> unit</code> </pre>
+<div class="info ">
+Type of pretty-printers for OCaml-vectors
+<p>
+<code class="code">pp_el_ovec ppf pp_el vec</code> prints the vector <code class="code">vec</code> to formatter
+    <code class="code">ppf</code> in OCaml-style using the element printer <code class="code">pp_el</code>.<br>
+</div>
+
+
+<pre><span id="VALpp_ovec"><span class="keyword">val</span> pp_ovec</span> : <code class="type">('el, 'elt) <a href="Owl_pretty.html#TYPEpp_el_ovec">pp_el_ovec</a></code></pre><div class="info ">
+<code class="code">pp_ovec ppf pp_el vec</code> prints the column vector <code class="code">vec</code> to formatter
+    <code class="code">ppf</code> in OCaml-style using the element printer <code class="code">pp_el</code>.<br>
+</div>
+
+<pre><span id="VALpp_rovec"><span class="keyword">val</span> pp_rovec</span> : <code class="type">('el, 'elt) <a href="Owl_pretty.html#TYPEpp_el_ovec">pp_el_ovec</a></code></pre><div class="info ">
+<code class="code">pp_rovec ppf pp_el vec</code> prints the row vector <code class="code">vec</code> to formatter
+    <code class="code">ppf</code> in OCaml-style using the element printer <code class="code">pp_el</code>.<br>
+</div>
+
+<pre><span id="TYPEpp_ovec"><span class="keyword">type</span> <code class="type">('el, 'elt)</code> pp_ovec</span> = <code class="type">Format.formatter -> ('el, 'elt, Bigarray.c_layout) Bigarray.Array1.t -> unit</code> </pre>
+<div class="info ">
+Type of pretty-printers for OCaml-vectors of a given element type
+<p>
+<code class="code">pp_ovec ppf vec</code> prints the vector <code class="code">vec</code> to formatter <code class="code">ppf</code> in
+    OCaml-style.<br>
+</div>
+
+
+<pre><span id="VALpp_ofvec"><span class="keyword">val</span> pp_ofvec</span> : <code class="type">(float, 'elt) <a href="Owl_pretty.html#TYPEpp_ovec">pp_ovec</a></code></pre>
+<pre><span id="VALpp_ocvec"><span class="keyword">val</span> pp_ocvec</span> : <code class="type">(Complex.t, 'elt) <a href="Owl_pretty.html#TYPEpp_ovec">pp_ovec</a></code></pre>
+<pre><span id="VALpp_oivec"><span class="keyword">val</span> pp_oivec</span> : <code class="type">(int32, 'elt) <a href="Owl_pretty.html#TYPEpp_ovec">pp_ovec</a></code></pre>
+<pre><span id="VALpp_rofvec"><span class="keyword">val</span> pp_rofvec</span> : <code class="type">(float, 'elt) <a href="Owl_pretty.html#TYPEpp_ovec">pp_ovec</a></code></pre>
+<pre><span id="VALpp_rocvec"><span class="keyword">val</span> pp_rocvec</span> : <code class="type">(Complex.t, 'elt) <a href="Owl_pretty.html#TYPEpp_ovec">pp_ovec</a></code></pre>
+<pre><span id="VALpp_roivec"><span class="keyword">val</span> pp_roivec</span> : <code class="type">(int32, 'elt) <a href="Owl_pretty.html#TYPEpp_ovec">pp_ovec</a></code></pre>
+<pre><span id="VALpp_omat"><span class="keyword">val</span> pp_omat</span> : <code class="type">Format.formatter -><br>       (Format.formatter -> 'el -> unit) -><br>       ('el, 'c, Bigarray.c_layout) Bigarray.Array2.t -> unit</code></pre><div class="info ">
+<code class="code">pp_omat ppf pp_el mat</code> prints matrix <code class="code">mat</code> to formatter <code class="code">ppf</code>
+    in OCaml-style using the element printer <code class="code">pp_el</code>.<br>
+</div>
+
+<pre><span id="TYPEpp_omat"><span class="keyword">type</span> <code class="type">('el, 'elt)</code> pp_omat</span> = <code class="type">Format.formatter -> ('el, 'elt, Bigarray.c_layout) Bigarray.Array2.t -> unit</code> </pre>
+<div class="info ">
+Type of pretty-printers for OCaml-matrices of a given element type
+<p>
+<code class="code">pp_omat ppf mat</code> prints the matrix <code class="code">mat</code> to formatter <code class="code">ppf</code> in
+    OCaml-style.<br>
+</div>
+
+
+<pre><span id="VALpp_ofmat"><span class="keyword">val</span> pp_ofmat</span> : <code class="type">(float, 'elt) <a href="Owl_pretty.html#TYPEpp_omat">pp_omat</a></code></pre>
+<pre><span id="VALpp_ocmat"><span class="keyword">val</span> pp_ocmat</span> : <code class="type">(Complex.t, 'elt) <a href="Owl_pretty.html#TYPEpp_omat">pp_omat</a></code></pre>
+<pre><span id="VALpp_oimat"><span class="keyword">val</span> pp_oimat</span> : <code class="type">(int32, 'elt) <a href="Owl_pretty.html#TYPEpp_omat">pp_omat</a></code></pre><br>
+<h6 id="6_Goodprettyprintersfortoplevels">Good pretty-printers for toplevels</h6><br>
+<br>
+These pretty-printers will use index labels for easier identification
+    of rows and columns.<br>
+
+<pre><span class="keyword">module</span> <a href="Owl_pretty.Toplevel.html">Toplevel</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Owl_pretty.Toplevel.html">..</a> <code class="code"><span class="keyword">end</span></code></pre></body></html>

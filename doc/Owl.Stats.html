@@ -1,0 +1,237 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Owl.Maths.html">
+<link rel="next" href="Owl.Linalg.html">
+<link rel="Up" href="Owl.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><link title="Randomisation functions" rel="Section" href="#6_Randomisationfunctions">
+<link title="Basic statistical functions" rel="Section" href="#6_Basicstatisticalfunctions">
+<link title="MCMC: Markov Chain Monte Carlo" rel="Section" href="#6_MCMCMarkovChainMonteCarlo">
+<link title="Hypothesis tests" rel="Section" href="#6_Hypothesistests">
+<link title="Random numbers, PDF, and CDF" rel="Section" href="#6_RandomnumbersPDFandCDF">
+<title>Owl.Stats</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Owl.Maths.html" title="Owl.Maths">Previous</a>
+&nbsp;<a class="up" href="Owl.html" title="Owl">Up</a>
+&nbsp;<a class="post" href="Owl.Linalg.html" title="Owl.Linalg">Next</a>
+</div>
+<h1>Module <a href="type_Owl.Stats.html">Owl.Stats</a> (<a href="code_Owl.Stats.html">.ml</a>)</h1>
+
+<pre><span class="keyword">module</span> Stats: <code class="type"><a href="Owl_stats.html">Owl_stats</a></code></pre><hr width="100%">
+<br>
+<h6 id="6_Randomisationfunctions">Randomisation functions</h6><br>
+
+<pre><span id="VALseed"><span class="keyword">val</span> seed</span> : <code class="type">int -> unit</code></pre><div class="info ">
+<code class="code">seed x</code> sets <code class="code">x</code> as seed for the internal random number generator.<br>
+</div>
+
+<pre><span id="VALshuffle"><span class="keyword">val</span> shuffle</span> : <code class="type">'a array -> 'a array</code></pre><div class="info ">
+<code class="code"> shuffle x </code> return a new array of the shuffled <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALchoose"><span class="keyword">val</span> choose</span> : <code class="type">'a array -> int -> 'a array</code></pre><div class="info ">
+<code class="code"> choose x n </code> draw <code class="code">n</code> samples from <code class="code">x</code> without replecement.<br>
+</div>
+
+<pre><span id="VALsample"><span class="keyword">val</span> sample</span> : <code class="type">'a array -> int -> 'a array</code></pre><div class="info ">
+<code class="code"> sample x n </code> draw <code class="code">n</code> samples from <code class="code">x</code> with replacement.<br>
+</div>
+<br>
+<h6 id="6_Basicstatisticalfunctions">Basic statistical functions</h6><br>
+
+<pre><span id="VALmean"><span class="keyword">val</span> mean</span> : <code class="type">?w:float array -> float array -> float</code></pre>
+<pre><span id="VALvariance"><span class="keyword">val</span> variance</span> : <code class="type">?w:float array -> ?mean:float -> float array -> float</code></pre>
+<pre><span id="VALstd"><span class="keyword">val</span> std</span> : <code class="type">?w:float array -> ?mean:float -> float array -> float</code></pre><div class="info ">
+<code class="code">std x</code> calculates the standard deviation of <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALsem"><span class="keyword">val</span> sem</span> : <code class="type">?w:float array -> ?mean:float -> float array -> float</code></pre><div class="info ">
+<code class="code">sem x</code> calculates the standard error of <code class="code">x</code>, also referred to as standard
+  error of the mean.<br>
+</div>
+
+<pre><span id="VALabsdev"><span class="keyword">val</span> absdev</span> : <code class="type">?w:float array -> ?mean:float -> float array -> float</code></pre>
+<pre><span id="VALskew"><span class="keyword">val</span> skew</span> : <code class="type">?w:float array -> ?mean:float -> ?sd:float -> float array -> float</code></pre>
+<pre><span id="VALkurtosis"><span class="keyword">val</span> kurtosis</span> : <code class="type">?w:float array -> ?mean:float -> ?sd:float -> float array -> float</code></pre><div class="info ">
+<code class="code">kurtosis x</code> return the Pearson's kurtosis of <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALcentral_moment"><span class="keyword">val</span> central_moment</span> : <code class="type">int -> float array -> float</code></pre>
+<pre><span id="VALcovariance"><span class="keyword">val</span> covariance</span> : <code class="type">?mean0:float -> ?mean1:float -> float array -> float array -> float</code></pre>
+<pre><span id="VALcorrelation"><span class="keyword">val</span> correlation</span> : <code class="type">float array -> float array -> float</code></pre>
+<pre><span id="VALpearson_r"><span class="keyword">val</span> pearson_r</span> : <code class="type">float array -> float array -> float</code></pre>
+<pre><span id="VALkendall_tau"><span class="keyword">val</span> kendall_tau</span> : <code class="type">float array -> float array -> float</code></pre>
+<pre><span id="VALspearman_rho"><span class="keyword">val</span> spearman_rho</span> : <code class="type">float array -> float array -> float</code></pre>
+<pre><span id="VALautocorrelation"><span class="keyword">val</span> autocorrelation</span> : <code class="type">?lag:int -> float array -> float</code></pre>
+<pre><span id="VALmedian"><span class="keyword">val</span> median</span> : <code class="type">float array -> float</code></pre><div class="info ">
+<code class="code">median x</code> returns the median of <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALpercentile"><span class="keyword">val</span> percentile</span> : <code class="type">float array -> float -> float</code></pre><div class="info ">
+<code class="code">percentile x p</code> returns the <code class="code">p</code> percentile of the data <code class="code">x</code>. <code class="code">p</code> is between
+  0. and 1. <code class="code">x</code> does not need to be sorted.<br>
+</div>
+
+<pre><span id="VALfirst_quartile"><span class="keyword">val</span> first_quartile</span> : <code class="type">float array -> float</code></pre><div class="info ">
+<code class="code">first_quartile x</code> returns the first quartile of <code class="code">x</code>, i.e., 25 percentiles.<br>
+</div>
+
+<pre><span id="VALthird_quartile"><span class="keyword">val</span> third_quartile</span> : <code class="type">float array -> float</code></pre><div class="info ">
+<code class="code">third_quartile x</code> returns the third quartile of <code class="code">x</code>, i.e., 75 percentiles.<br>
+</div>
+
+<pre><span id="VALmin"><span class="keyword">val</span> min</span> : <code class="type">float array -> float</code></pre>
+<pre><span id="VALmax"><span class="keyword">val</span> max</span> : <code class="type">float array -> float</code></pre>
+<pre><span id="VALminmax"><span class="keyword">val</span> minmax</span> : <code class="type">float array -> float * float</code></pre>
+<pre><span id="VALmin_i"><span class="keyword">val</span> min_i</span> : <code class="type">float array -> float * int</code></pre>
+<pre><span id="VALmax_i"><span class="keyword">val</span> max_i</span> : <code class="type">float array -> float * int</code></pre>
+<pre><span id="VALminmax_i"><span class="keyword">val</span> minmax_i</span> : <code class="type">float array -> float * int * float * int</code></pre>
+<pre><span id="VALsort"><span class="keyword">val</span> sort</span> : <code class="type">?inc:bool -> float array -> float array</code></pre>
+<pre><span id="VALrank"><span class="keyword">val</span> rank</span> : <code class="type">float array -> float array</code></pre><div class="info ">
+<code class="code"> rank x </code> translates each element in <code class="code">x</code> to its ranking. The ranking Order
+  is from the smallest one to the largest. E.g., <code class="code">rank [|54.; 74.; 55.; 86.; 56.|]</code>
+  returns <code class="code">[|1.; 4.; 2.; 5.; 3.|]</code>. Note that the ranking starts with one!<br>
+</div>
+
+<pre><span id="VALhistogram"><span class="keyword">val</span> histogram</span> : <code class="type">float array -> int -> int array</code></pre>
+<pre><span id="VALecdf"><span class="keyword">val</span> ecdf</span> : <code class="type">float array -> float array * float array</code></pre><div class="info ">
+<code class="code">ecdf x</code> returns <code class="code">(x',f)</code> which are the empirical cumulative distribution
+  function <code class="code">f</code> of <code class="code">x</code> at points <code class="code">x'</code>. <code class="code">x'</code> is just <code class="code">x</code> sorted in increasing
+  order with duplicates removed.<br>
+</div>
+
+<pre><span id="VALz_score"><span class="keyword">val</span> z_score</span> : <code class="type">mu:float -> sigma:float -> float array -> float array</code></pre>
+<pre><span id="VALt_score"><span class="keyword">val</span> t_score</span> : <code class="type">float array -> float array</code></pre>
+<pre><span id="VALnormlise_pdf"><span class="keyword">val</span> normlise_pdf</span> : <code class="type">float array -> float array</code></pre><br>
+<h6 id="6_MCMCMarkovChainMonteCarlo">MCMC: Markov Chain Monte Carlo</h6><br>
+
+<pre><span id="VALmetropolis_hastings"><span class="keyword">val</span> metropolis_hastings</span> : <code class="type">(float array -> float) -> float array -> int -> float array array</code></pre><div class="info ">
+TODO: <code class="code"> metropolis_hastings f p n </code> is Metropolis-Hastings MCMC algorithm.
+  f is pdf of the p<br>
+</div>
+
+<pre><span id="VALgibbs_sampling"><span class="keyword">val</span> gibbs_sampling</span> : <code class="type">(float array -> int -> float) -> float array -> int -> float array array</code></pre><div class="info ">
+TODO: <code class="code"> gibbs_sampling f p n </code> is Gibbs sampler. f is a sampler based on the full
+  conditional function of all variables<br>
+</div>
+<br>
+<h6 id="6_Hypothesistests">Hypothesis tests</h6><br>
+
+<pre><code><span id="TYPEtail"><span class="keyword">type</span> <code class="type"></code>tail</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtail.BothSide"><span class="constructor">BothSide</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtail.RightSide"><span class="constructor">RightSide</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTtail.LeftSide"><span class="constructor">LeftSide</span></span></code></td>
+<td class="typefieldcomment" align="left" valign="top" ><code>(*</code></td><td class="typefieldcomment" align="left" valign="top" ><div class="info ">
+Types of alternative hypothesis tests: one-side, left-side, or right-side.<br>
+</div>
+</td><td class="typefieldcomment" align="left" valign="bottom" ><code>*)</code></td>
+</tr></table>
+
+
+
+<pre><span id="VALz_test"><span class="keyword">val</span> z_test</span> : <code class="type">mu:float -><br>       sigma:float -><br>       ?alpha:float -> ?side:<a href="Owl_stats.html#TYPEtail">tail</a> -> float array -> bool * float * float</code></pre><div class="info ">
+<code class="code">z_test ~mu ~sigma ~alpha ~side x</code> returns a test decision for the null
+  hypothesis that the data <code class="code">x</code> comes from a normal distribution with mean <code class="code">mu</code>
+  and a standard deviation <code class="code">sigma</code>, using the z-test of <code class="code">alpha</code> significance
+  level. The alternative hypothesis is that the mean is not <code class="code">mu</code>.
+<p>
+
+  The result <code class="code">h,p,z</code>: <code class="code">h</code> is <code class="code"><span class="keyword">true</span></code> if the test rejects the null hypothesis at
+  the <code class="code">alpha</code> significance level, and <code class="code"><span class="keyword">false</span></code> otherwise. <code class="code">p</code> is the p-value and
+  <code class="code">z</code> is the z-score.<br>
+</div>
+
+<pre><span id="VALt_test"><span class="keyword">val</span> t_test</span> : <code class="type">mu:float -><br>       ?alpha:float -> ?side:<a href="Owl_stats.html#TYPEtail">tail</a> -> float array -> bool * float * float</code></pre><div class="info ">
+<code class="code">t_test ~mu ~alpha ~side x</code> returns a test decision of one-sample t-test
+  which is a parametric test of the location parameter when the population
+  standard deviation is unknown. <code class="code">mu</code> is population mean, <code class="code">alpha</code> is the
+  significance level.<br>
+</div>
+
+<pre><span id="VALt_test_paired"><span class="keyword">val</span> t_test_paired</span> : <code class="type">?alpha:float -><br>       ?side:<a href="Owl_stats.html#TYPEtail">tail</a> -> float array -> float array -> bool * float * float</code></pre><div class="info ">
+<code class="code">t_test_paired ~alpha ~side x y</code> returns a test decision for the null
+  hypothesis that the data in <code class="code">x – y</code> comes from a normal distribution with
+  mean equal to zero and unknown variance, using the paired-sample t-test.<br>
+</div>
+
+<pre><span id="VALt_test_unpaired"><span class="keyword">val</span> t_test_unpaired</span> : <code class="type">?alpha:float -><br>       ?side:<a href="Owl_stats.html#TYPEtail">tail</a> -><br>       ?equal_var:bool -> float array -> float array -> bool * float * float</code></pre><div class="info ">
+<code class="code">t_test_unpaired ~alpha ~side ~equal_var x y</code> returns a test decision for
+  the null hypothesis that the data in vectors <code class="code">x</code> and <code class="code">y</code> comes from
+  independent random samples from normal distributions with equal means and
+  equal but unknown variances, using the two-sample t-test. The alternative
+  hypothesis is that the data in <code class="code">x</code> and <code class="code">y</code> comes from populations with
+  unequal means.
+<p>
+
+  <code class="code">equal_var</code> indicates whether two samples have the same variance. If the
+  two variances are not the same, the test is referred to as Welche's t-test.<br>
+</div>
+
+<pre><span id="VALvar_test"><span class="keyword">val</span> var_test</span> : <code class="type">?alpha:float -><br>       ?side:<a href="Owl_stats.html#TYPEtail">tail</a> -> var:float -> float array -> bool * float * float</code></pre><div class="info ">
+<code class="code">var_test ~alpha ~side ~var x</code> returns a test decision for the null
+  hypothesis that the data in <code class="code">x</code> comes from a normal distribution with
+  variance <code class="code">var</code>, using the chi-square variance test. The alternative hypothesis
+  is that <code class="code">x</code> comes from a normal distribution with a different variance.<br>
+</div>
+
+<pre><span id="VALjb_test"><span class="keyword">val</span> jb_test</span> : <code class="type">?alpha:float -> float array -> bool * float * float</code></pre><div class="info ">
+<code class="code">jb_test ~alpha x</code> returns a test decision for the null hypothesis that the
+  data <code class="code">x</code> comes from a normal distribution with an unknown mean and variance,
+  using the Jarque-Bera test.<br>
+</div>
+
+<pre><span id="VALruns_test"><span class="keyword">val</span> runs_test</span> : <code class="type">?alpha:float -><br>       ?side:<a href="Owl_stats.html#TYPEtail">tail</a> -> ?v:float -> float array -> bool * float * float</code></pre><div class="info ">
+<code class="code">runs_test ~alpha ~v x</code> returns a test decision for the null hypothesis that
+  the data <code class="code">x</code> comes in random order, against the alternative that they do not,
+  by runnign Wald–Wolfowitz runs test. The test is based on the number of runs
+  of consecutive values above or below the mean of <code class="code">x</code>. <code class="code">~v</code> is the reference
+  value, the default value is the median of <code class="code">x</code>.<br>
+</div>
+<br>
+<h6 id="6_RandomnumbersPDFandCDF">Random numbers, PDF, and CDF</h6><br>
+
+<pre><span class="keyword">module</span> <a href="Owl_stats.Rnd.html">Rnd</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Owl_stats.Rnd.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
+<pre><span class="keyword">module</span> <a href="Owl_stats.Pdf.html">Pdf</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Owl_stats.Pdf.html">..</a> <code class="code"><span class="keyword">end</span></code></pre>
+<pre><span class="keyword">module</span> <a href="Owl_stats.Cdf.html">Cdf</a>: <code class="code"><span class="keyword">sig</span></code> <a href="Owl_stats.Cdf.html">..</a> <code class="code"><span class="keyword">end</span></code></pre></body></html>

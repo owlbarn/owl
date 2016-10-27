@@ -1,0 +1,56 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Ffi_bindings.Bindings.Dense_complex.html">
+<link rel="Up" href="Ffi_bindings.Bindings.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><title>Ffi_bindings.Bindings.Sparse_real</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Ffi_bindings.Bindings.Dense_complex.html" title="Ffi_bindings.Bindings.Dense_complex">Previous</a>
+&nbsp;<a class="up" href="Ffi_bindings.Bindings.html" title="Ffi_bindings.Bindings">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Ffi_bindings.Bindings.Sparse_real.html">Ffi_bindings.Bindings.Sparse_real</a> (<a href="code_Ffi_bindings.Bindings.Sparse_real.html">.ml</a>)</h1>
+
+<pre><span class="keyword">module</span> Sparse_real: <code class="code"><span class="keyword">sig</span></code> <a href="Ffi_bindings.Bindings.Sparse_real.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+
+<pre><span id="VALspmat_struct"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.spmat_struct.html">spmat_struct</a></span> : <code class="type"><a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes.typ</code></pre>
+<pre><span id="VALgsl_spmatrix_alloc"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_alloc.html">gsl_spmatrix_alloc</a></span> : <code class="type">(int -><br>        int -><br>        <a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr<br>        F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_alloc_nzmax"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_alloc_nzmax.html">gsl_spmatrix_alloc_nzmax</a></span> : <code class="type">(int -><br>        int -><br>        int -><br>        int -><br>        <a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr<br>        F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_set"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_set.html">gsl_spmatrix_set</a></span> : <code class="type">(<a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int -> int -> float -> int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_get"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_get.html">gsl_spmatrix_get</a></span> : <code class="type">(<a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int -> int -> float F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_add"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_add.html">gsl_spmatrix_add</a></span> : <code class="type">(<a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        <a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        <a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_scale"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_scale.html">gsl_spmatrix_scale</a></span> : <code class="type">(<a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        float -> int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_memcpy"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_memcpy.html">gsl_spmatrix_memcpy</a></span> : <code class="type">(<a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        <a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_compcol"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_compcol.html">gsl_spmatrix_compcol</a></span> : <code class="type">(<a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        <a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr<br>        F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_minmax"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_minmax.html">gsl_spmatrix_minmax</a></span> : <code class="type">(<a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        float Ctypes_static.ptr -> float Ctypes_static.ptr -> int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_equal"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_equal.html">gsl_spmatrix_equal</a></span> : <code class="type">(<a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        <a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_transpose_memcpy"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_transpose_memcpy.html">gsl_spmatrix_transpose_memcpy</a></span> : <code class="type">(<a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        <a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_set_zero"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_set_zero.html">gsl_spmatrix_set_zero</a></span> : <code class="type">(<a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spblas_dgemm"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spblas_dgemm.html">gsl_spblas_dgemm</a></span> : <code class="type">(float -><br>        <a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        <a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        <a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_d2sp"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_d2sp.html">gsl_spmatrix_d2sp</a></span> : <code class="type">(<a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        <a href="Owl_types.Dense_real.html#TYPEmat_struct">Owl_types.Dense_real.mat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre>
+<pre><span id="VALgsl_spmatrix_sp2d"><span class="keyword">val</span> <a href="code_VALFfi_bindings.Bindings.Sparse_real.gsl_spmatrix_sp2d.html">gsl_spmatrix_sp2d</a></span> : <code class="type">(<a href="Owl_types.Dense_real.html#TYPEmat_struct">Owl_types.Dense_real.mat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        <a href="Owl_types.Sparse_real.html#TYPEspmat_struct">Owl_types.Sparse_real.spmat_struct</a> Ctypes.structure Ctypes_static.ptr -><br>        int F.return)<br>       F.result</code></pre></body></html>

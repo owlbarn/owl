@@ -1,0 +1,178 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Owl.Regression.html">
+<link rel="Up" href="Owl.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><title>Owl.Plot</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Owl.Regression.html" title="Owl.Regression">Previous</a>
+&nbsp;<a class="up" href="Owl.html" title="Owl">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Owl.Plot.html">Owl.Plot</a> (<a href="code_Owl.Plot.html">.ml</a>)</h1>
+
+<pre><span class="keyword">module</span> Plot: <code class="type"><a href="Owl_plot.html">Owl_plot</a></code></pre><hr width="100%">
+
+<pre><span id="TYPEdsmat"><span class="keyword">type</span> <code class="type"></code>dsmat</span> = <code class="type"><a href="Owl_dense_real.html#TYPEmat">Owl_dense_real.mat</a></code> </pre>
+
+
+<pre><span id="TYPEhandle"><span class="keyword">type</span> <code class="type"></code>handle</span> </pre>
+
+
+<pre><code><span id="TYPEcolor"><span class="keyword">type</span> <code class="type"></code>color</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcolor.RED"><span class="constructor">RED</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcolor.GREEN"><span class="constructor">GREEN</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTcolor.BLUE"><span class="constructor">BLUE</span></span></code></td>
+
+</tr></table>
+
+
+
+<pre><code><span id="TYPElegend_position"><span class="keyword">type</span> <code class="type"></code>legend_position</span> = </code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlegend_position.North"><span class="constructor">North</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlegend_position.South"><span class="constructor">South</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlegend_position.West"><span class="constructor">West</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlegend_position.East"><span class="constructor">East</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlegend_position.NorthWest"><span class="constructor">NorthWest</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlegend_position.NorthEast"><span class="constructor">NorthEast</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlegend_position.SouthWest"><span class="constructor">SouthWest</span></span></code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code><span class="keyword">|</span></code></td>
+<td align="left" valign="top" >
+<code><span id="TYPEELTlegend_position.SouthEast"><span class="constructor">SouthEast</span></span></code></td>
+
+</tr></table>
+
+
+
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">?m:int -> ?n:int -> string -> <a href="Owl_plot.html#TYPEhandle">handle</a></code></pre>
+<pre><span id="VALsubplot"><span class="keyword">val</span> subplot</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> int -> int -> unit</code></pre>
+<pre><span id="VALoutput"><span class="keyword">val</span> output</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> unit</code></pre>
+<pre><span id="VALset_output"><span class="keyword">val</span> set_output</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> string -> unit</code></pre>
+<pre><span id="VALset_title"><span class="keyword">val</span> set_title</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> string -> unit</code></pre>
+<pre><span id="VALset_xlabel"><span class="keyword">val</span> set_xlabel</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> string -> unit</code></pre>
+<pre><span id="VALset_ylabel"><span class="keyword">val</span> set_ylabel</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> string -> unit</code></pre>
+<pre><span id="VALset_zlabel"><span class="keyword">val</span> set_zlabel</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> string -> unit</code></pre>
+<pre><span id="VALset_xrange"><span class="keyword">val</span> set_xrange</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> float -> float -> unit</code></pre>
+<pre><span id="VALset_yrange"><span class="keyword">val</span> set_yrange</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> float -> float -> unit</code></pre>
+<pre><span id="VALset_zrange"><span class="keyword">val</span> set_zrange</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> float -> float -> unit</code></pre>
+<pre><span id="VALset_foreground_color"><span class="keyword">val</span> set_foreground_color</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> int -> int -> int -> unit</code></pre>
+<pre><span id="VALset_background_color"><span class="keyword">val</span> set_background_color</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> int -> int -> int -> unit</code></pre>
+<pre><span id="VALset_font_size"><span class="keyword">val</span> set_font_size</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> float -> unit</code></pre>
+<pre><span id="VALset_pen_size"><span class="keyword">val</span> set_pen_size</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> float -> unit</code></pre>
+<pre><span id="VALset_page_size"><span class="keyword">val</span> set_page_size</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> int -> int -> unit</code></pre>
+<pre><span id="VALlegend_on"><span class="keyword">val</span> legend_on</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> ?position:<a href="Owl_plot.html#TYPElegend_position">legend_position</a> -> string array -> unit</code></pre>
+<pre><span id="VALlegend_off"><span class="keyword">val</span> legend_off</span> : <code class="type"><a href="Owl_plot.html#TYPEhandle">handle</a> -> unit</code></pre><br>
+Line style is an integer ranging from 1 to 8.<br>
+
+<pre><span id="VALplot"><span class="keyword">val</span> plot</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       ?marker:string -><br>       ?marker_size:float -><br>       ?line_style:int -><br>       ?line_width:float -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALplot_fun"><span class="keyword">val</span> plot_fun</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       ?marker:string -><br>       ?marker_size:float -><br>       ?line_style:int -><br>       ?line_width:float -> (float -> float) -> float -> float -> unit</code></pre>
+<pre><span id="VALscatter"><span class="keyword">val</span> scatter</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       ?marker:string -><br>       ?marker_size:float -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALhistogram"><span class="keyword">val</span> histogram</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -> ?bin:int -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALecdf"><span class="keyword">val</span> ecdf</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       ?line_style:int -> ?line_width:float -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALstairs"><span class="keyword">val</span> stairs</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       ?line_style:int -><br>       ?line_width:float -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALstem"><span class="keyword">val</span> stem</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       ?marker:string -><br>       ?marker_size:float -><br>       ?line_style:int -><br>       ?line_width:float -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALautocorr"><span class="keyword">val</span> autocorr</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?marker:string -> ?marker_size:float -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALtext"><span class="keyword">val</span> text</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       float -> float -> ?dx:float -> ?dy:float -> string -> unit</code></pre>
+<pre><span id="VALdraw_line"><span class="keyword">val</span> draw_line</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       ?line_style:int -><br>       ?line_width:float -> float -> float -> float -> float -> unit</code></pre>
+<pre><span id="VALdraw_rect"><span class="keyword">val</span> draw_rect</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       ?line_style:int -><br>       ?fill_pattern:int -> float -> float -> float -> float -> unit</code></pre>
+<pre><span id="VALdraw_circle"><span class="keyword">val</span> draw_circle</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       ?line_style:int -><br>       ?line_width:float -> ?fill_pattern:int -> float -> float -> float -> unit</code></pre>
+<pre><span id="VALbar"><span class="keyword">val</span> bar</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       ?line_style:int -> ?fill_pattern:int -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALarea"><span class="keyword">val</span> area</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       ?line_style:int -><br>       ?fill_pattern:int -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALerror_bar"><span class="keyword">val</span> error_bar</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -><br>       ?line_style:int -><br>       ?line_width:float -><br>       <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALboxplot"><span class="keyword">val</span> boxplot</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -> ?color:int * int * int -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALpie"><span class="keyword">val</span> pie</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?color:int * int * int -> ?fill:bool -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre><br>
+Plot 3D figures<br>
+
+<pre><span id="VALplot3d"><span class="keyword">val</span> plot3d</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?contour:bool -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre><div class="info ">
+<code class="code">plot3d</code> is just an alias of <code class="code">surf</code> function.<br>
+</div>
+
+<pre><span id="VALsurf"><span class="keyword">val</span> surf</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?contour:bool -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALmesh"><span class="keyword">val</span> mesh</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       ?contour:bool -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALcontour"><span class="keyword">val</span> contour</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre>
+<pre><span id="VALheatmap"><span class="keyword">val</span> heatmap</span> : <code class="type">?h:<a href="Owl_plot.html#TYPEhandle">handle</a> -><br>       <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> <a href="Owl_plot.html#TYPEdsmat">dsmat</a> -> unit</code></pre></body></html>

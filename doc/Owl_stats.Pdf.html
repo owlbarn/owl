@@ -1,0 +1,103 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Owl_stats.Rnd.html">
+<link rel="next" href="Owl_stats.Cdf.html">
+<link rel="Up" href="Owl_stats.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><link title="Continuous random variables" rel="Section" href="#6_Continuousrandomvariables">
+<link title="Discrete random variables" rel="Section" href="#6_Discreterandomvariables">
+<title>Owl_stats.Pdf</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Owl_stats.Rnd.html" title="Owl_stats.Rnd">Previous</a>
+&nbsp;<a class="up" href="Owl_stats.html" title="Owl_stats">Up</a>
+&nbsp;<a class="post" href="Owl_stats.Cdf.html" title="Owl_stats.Cdf">Next</a>
+</div>
+<h1>Module <a href="type_Owl_stats.Pdf.html">Owl_stats.Pdf</a></h1>
+
+<pre><span class="keyword">module</span> Pdf: <code class="code"><span class="keyword">sig</span></code> <a href="Owl_stats.Pdf.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
+<br>
+Pdf module provides the probability density functions of various random
+    number distribution.
+<p>
+
+    Please refer to <a href=" https://www.gnu.org/software/gsl/manual ">
+    GSL documentation</a> for details.<br>
+<br>
+<h6 id="6_Continuousrandomvariables">Continuous random variables</h6><br>
+
+<pre><span id="VALflat"><span class="keyword">val</span> flat</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgaussian"><span class="keyword">val</span> gaussian</span> : <code class="type">float -> float -> float</code></pre><div class="info ">
+<code class="code"> gaussian_pdf x sigma </code> returns the probability density at x<br>
+</div>
+
+<pre><span id="VALgaussian_tail"><span class="keyword">val</span> gaussian_tail</span> : <code class="type">float -> float -> float -> float</code></pre><div class="info ">
+<code class="code"> gaussian_tail_pdf x a sigma </code> returns the probability density at x given
+      a gaussian tail distribution of N(a, sigma)<br>
+</div>
+
+<pre><span id="VALbivariate_gaussian"><span class="keyword">val</span> bivariate_gaussian</span> : <code class="type">float -> float -> float -> float -> float -> float</code></pre><div class="info ">
+<code class="code"> bivariate_gaussian x y sigma_x sigma_y rho </code> returns the probability
+    density p(x,y) at (x,y) for a bivariate Gaussian distribution with standard
+    deviations sigma_x, sigma_y and correlation coefficient rho.<br>
+</div>
+
+<pre><span id="VALexponential"><span class="keyword">val</span> exponential</span> : <code class="type">float -> float -> float</code></pre><div class="info ">
+<code class="code"> exponential x mu </code> returns the probability density at x<br>
+</div>
+
+<pre><span id="VALlaplace"><span class="keyword">val</span> laplace</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALcauchy"><span class="keyword">val</span> cauchy</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALexppow"><span class="keyword">val</span> exppow</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALrayleigh"><span class="keyword">val</span> rayleigh</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALlandau"><span class="keyword">val</span> landau</span> : <code class="type">float -> float</code></pre>
+<pre><span id="VALgamma"><span class="keyword">val</span> gamma</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALlognormal"><span class="keyword">val</span> lognormal</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALchisq"><span class="keyword">val</span> chisq</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALdirichlet"><span class="keyword">val</span> dirichlet</span> : <code class="type">float array -> float array -> float</code></pre>
+<pre><span id="VALdirichlet_lnpdf"><span class="keyword">val</span> dirichlet_lnpdf</span> : <code class="type">float array -> float array -> float</code></pre>
+<pre><span id="VALfdist"><span class="keyword">val</span> fdist</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALtdist"><span class="keyword">val</span> tdist</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALbeta"><span class="keyword">val</span> beta</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALlogistic"><span class="keyword">val</span> logistic</span> : <code class="type">float -> float -> float</code></pre>
+<pre><span id="VALpareto"><span class="keyword">val</span> pareto</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALweibull"><span class="keyword">val</span> weibull</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgumbel1"><span class="keyword">val</span> gumbel1</span> : <code class="type">float -> float -> float -> float</code></pre>
+<pre><span id="VALgumbel2"><span class="keyword">val</span> gumbel2</span> : <code class="type">float -> float -> float -> float</code></pre><br>
+<h6 id="6_Discreterandomvariables">Discrete random variables</h6><br>
+
+<pre><span id="VALpoisson"><span class="keyword">val</span> poisson</span> : <code class="type">int -> float -> float</code></pre>
+<pre><span id="VALbernoulli"><span class="keyword">val</span> bernoulli</span> : <code class="type">int -> float -> float</code></pre>
+<pre><span id="VALbinomial"><span class="keyword">val</span> binomial</span> : <code class="type">int -> float -> int -> float</code></pre>
+<pre><span id="VALmultinomial"><span class="keyword">val</span> multinomial</span> : <code class="type">float array -> int array -> float</code></pre>
+<pre><span id="VALmultinomial_lnpdf"><span class="keyword">val</span> multinomial_lnpdf</span> : <code class="type">float array -> int array -> float</code></pre>
+<pre><span id="VALnegative_binomial"><span class="keyword">val</span> negative_binomial</span> : <code class="type">int -> float -> float -> float</code></pre>
+<pre><span id="VALpascal"><span class="keyword">val</span> pascal</span> : <code class="type">int -> float -> int -> float</code></pre>
+<pre><span id="VALgeometric"><span class="keyword">val</span> geometric</span> : <code class="type">int -> float -> float</code></pre>
+<pre><span id="VALhypergeometric"><span class="keyword">val</span> hypergeometric</span> : <code class="type">int -> int -> int -> int -> float</code></pre>
+<pre><span id="VALlogarithmic"><span class="keyword">val</span> logarithmic</span> : <code class="type">int -> float -> float</code></pre></body></html>

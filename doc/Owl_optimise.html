@@ -1,0 +1,176 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Owl_stats.html">
+<link rel="next" href="Owl_dense_real.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><title>Owl_optimise</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Owl_stats.html" title="Owl_stats">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Owl_dense_real.html" title="Owl_dense_real">Next</a>
+</div>
+<h1>Module <a href="type_Owl_optimise.html">Owl_optimise</a> (<a href="code_Owl_optimise.html">.ml</a>)</h1>
+
+<pre><span class="keyword">module</span> Owl_optimise: <code class="code"><span class="keyword">sig</span></code> <a href="Owl_optimise.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+<code class="code">
+  <span class="constructor">Machine</span> learning library
+  <span class="constructor">Note</span>: <span class="constructor">C</span> layout row-major matrix
+  </code><br>
+</div>
+<hr width="100%">
+
+<pre><span class="keyword">module</span> <a href="Owl_optimise.MX.html">MX</a>: <code class="type"><a href="Owl_dense_real.html">Owl_dense_real</a></code></pre>
+<pre><span class="keyword">module</span> <a href="Owl_optimise.UT.html">UT</a>: <code class="type"><a href="Owl_utils.html">Owl_utils</a></code></pre>
+<pre><span id="VALkmeans"><span class="keyword">val</span> <a href="code_VALOwl_optimise.kmeans.html">kmeans</a></span> : <code class="type">MX.mat -> int -> MX.mat * int array</code></pre><div class="info ">
+<code class="code">
+  <span class="constructor">K</span>-means clustering algorithm
+  x is the row-based data points <span class="keyword">and</span> c is the number <span class="keyword">of</span> clusters.
+</code><br>
+</div>
+
+<pre><span id="VALnumerical_gradient"><span class="keyword">val</span> <a href="code_VALOwl_optimise.numerical_gradient.html">numerical_gradient</a></span> : <code class="type">('a -> MX.mat -> MX.mat) -> MX.mat -> MX.mat -> 'a -> 'b -> MX.mat</code></pre><div class="info ">
+<code class="code">
+  a numberical way <span class="keyword">of</span> calculating gradient.
+  x is a k x m matrix containing m classifiers <span class="keyword">of</span> k features.
+</code><br>
+</div>
+
+<pre><span id="VALl1"><span class="keyword">val</span> <a href="code_VALOwl_optimise.l1.html">l1</a></span> : <code class="type">MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code"> <span class="constructor">L1</span> regularisation <span class="keyword">and</span> its subgradient </code><br>
+</div>
+
+<pre><span id="VALl1_grad"><span class="keyword">val</span> <a href="code_VALOwl_optimise.l1_grad.html">l1_grad</a></span> : <code class="type">MX.mat -> MX.mat</code></pre>
+<pre><span id="VALl2"><span class="keyword">val</span> <a href="code_VALOwl_optimise.l2.html">l2</a></span> : <code class="type">MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code"> <span class="constructor">L2</span> regularisation <span class="keyword">and</span> its grandient </code><br>
+</div>
+
+<pre><span id="VALl2_grad"><span class="keyword">val</span> <a href="code_VALOwl_optimise.l2_grad.html">l2_grad</a></span> : <code class="type">'a -> 'a</code></pre>
+<pre><span id="VALelastic"><span class="keyword">val</span> <a href="code_VALOwl_optimise.elastic.html">elastic</a></span> : <code class="type">float -> MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code"> <span class="constructor">Elastic</span> net regularisation <span class="keyword">and</span> its gradient
+  <span class="string">"a"</span> is the weight on l1 regularisation term. </code><br>
+</div>
+
+<pre><span id="VALelastic_grad"><span class="keyword">val</span> <a href="code_VALOwl_optimise.elastic_grad.html">elastic_grad</a></span> : <code class="type">float -> MX.mat -> MX.mat</code></pre>
+<pre><span id="VALnoreg"><span class="keyword">val</span> <a href="code_VALOwl_optimise.noreg.html">noreg</a></span> : <code class="type">MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code"> <span class="constructor">No</span> regularisation <span class="keyword">and</span> its gradient </code><br>
+</div>
+
+<pre><span id="VALnoreg_grad"><span class="keyword">val</span> <a href="code_VALOwl_optimise.noreg_grad.html">noreg_grad</a></span> : <code class="type">MX.mat -> MX.mat</code></pre>
+<pre><span id="VALsquare_loss"><span class="keyword">val</span> <a href="code_VALOwl_optimise.square_loss.html">square_loss</a></span> : <code class="type">MX.mat -> MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code"> least square loss <span class="keyword">function</span> </code><br>
+</div>
+
+<pre><span id="VALsquare_grad"><span class="keyword">val</span> <a href="code_VALOwl_optimise.square_grad.html">square_grad</a></span> : <code class="type">MX.mat -> MX.mat -> MX.mat -> MX.mat</code></pre>
+<pre><span id="VALhinge_loss"><span class="keyword">val</span> <a href="code_VALOwl_optimise.hinge_loss.html">hinge_loss</a></span> : <code class="type">MX.mat -> MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code"> hinge loss <span class="keyword">function</span> </code><br>
+</div>
+
+<pre><span id="VALhinge_grad"><span class="keyword">val</span> <a href="code_VALOwl_optimise.hinge_grad.html">hinge_grad</a></span> : <code class="type">MX.mat -> MX.mat -> MX.mat -> MX.mat</code></pre>
+<pre><span id="VALhinge2_loss"><span class="keyword">val</span> <a href="code_VALOwl_optimise.hinge2_loss.html">hinge2_loss</a></span> : <code class="type">MX.mat -> MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code"> squared hinge loss <span class="keyword">function</span> </code><br>
+</div>
+
+<pre><span id="VALhinge2_grad"><span class="keyword">val</span> <a href="code_VALOwl_optimise.hinge2_grad.html">hinge2_grad</a></span> : <code class="type">'a -> 'b -> 'c -> 'd option</code></pre>
+<pre><span id="VALsoftmax_loss"><span class="keyword">val</span> <a href="code_VALOwl_optimise.softmax_loss.html">softmax_loss</a></span> : <code class="type">'a -> 'b -> 'c option</code></pre><div class="info ">
+<code class="code"> softmax loss <span class="keyword">function</span> </code><br>
+</div>
+
+<pre><span id="VALsoftmax_grad"><span class="keyword">val</span> <a href="code_VALOwl_optimise.softmax_grad.html">softmax_grad</a></span> : <code class="type">'a -> 'b -> 'c -> 'd option</code></pre><br>
+<code class="code"> logistic loss <span class="keyword">function</span> </code><br>
+
+<pre><span id="VALlog_loss"><span class="keyword">val</span> <a href="code_VALOwl_optimise.log_loss.html">log_loss</a></span> : <code class="type">MX.mat -> MX.mat -> MX.mat</code></pre>
+<pre><span id="VALlog_grad"><span class="keyword">val</span> <a href="code_VALOwl_optimise.log_grad.html">log_grad</a></span> : <code class="type">MX.mat -> MX.mat -> MX.mat -> MX.mat</code></pre>
+<pre><span id="VALconstant_rate"><span class="keyword">val</span> <a href="code_VALOwl_optimise.constant_rate.html">constant_rate</a></span> : <code class="type">'a -> 'b -> 'c -> float</code></pre>
+<pre><span id="VALoptimal_rate"><span class="keyword">val</span> <a href="code_VALOwl_optimise.optimal_rate.html">optimal_rate</a></span> : <code class="type">float -> float -> int -> float</code></pre>
+<pre><span id="VALdecr_rate"><span class="keyword">val</span> <a href="code_VALOwl_optimise.decr_rate.html">decr_rate</a></span> : <code class="type">float -> 'a -> int -> float</code></pre>
+<pre><span id="VALwhen_stable"><span class="keyword">val</span> <a href="code_VALOwl_optimise.when_stable.html">when_stable</a></span> : <code class="type">float -> 'a -> bool</code></pre>
+<pre><span id="VALwhen_enough"><span class="keyword">val</span> <a href="code_VALOwl_optimise.when_enough.html">when_enough</a></span> : <code class="type">float -> int -> bool</code></pre>
+<pre><span id="VAL_sgd_basic"><span class="keyword">val</span> <a href="code_VALOwl_optimise._sgd_basic.html">_sgd_basic</a></span> : <code class="type">int -><br>       (float -> float -> int -> float) -><br>       (float -> int -> bool) -><br>       (MX.mat -> MX.mat -> MX.mat) -><br>       (MX.mat -> MX.mat -> MX.mat -> MX.mat) -><br>       (MX.mat -> MX.mat) -><br>       (MX.mat -> MX.mat) -> float -> bool -> MX.mat -> MX.mat -> MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code">
+  <span class="constructor">Stochastic</span> <span class="constructor">Gradient</span> <span class="constructor">Descent</span> (<span class="constructor">SGD</span>) algorithm
+  b : batch size
+  s : step size
+  t : stop criteria
+  l : loss <span class="keyword">function</span>
+  g : gradient <span class="keyword">function</span> <span class="keyword">of</span> the loss <span class="keyword">function</span>
+  r : regularisation <span class="keyword">function</span>
+  o : gradient fucntion <span class="keyword">of</span> the regularisation <span class="keyword">function</span>
+  a : weight on the regularisation term, common setting is 0.0001
+  i : whether <span class="keyword">to</span> <span class="keyword">include</span> intercept <span class="keyword">or</span> not, default value is <span class="keyword">false</span>
+  p : model parameters (k * m), each column is a classifier. <span class="constructor">So</span> we have m classifier <span class="keyword">of</span> k features.
+  x : data matrix (n x k), each row is a data point. <span class="constructor">So</span> we have n datea points <span class="keyword">of</span> k features each.
+  y : labeled data (n x m), n data points <span class="keyword">and</span> each is labeled <span class="keyword">with</span> m classifiers
+</code><br>
+</div>
+
+<pre><span id="VALsgd"><span class="keyword">val</span> <a href="code_VALOwl_optimise.sgd.html">sgd</a></span> : <code class="type">?b:int -><br>       ?s:(float -> float -> int -> float) -><br>       ?t:(float -> int -> bool) -><br>       ?l:(MX.mat -> MX.mat -> MX.mat) -><br>       ?g:(MX.mat -> MX.mat -> MX.mat -> MX.mat) -><br>       ?r:(MX.mat -> MX.mat) -><br>       ?o:(MX.mat -> MX.mat) -><br>       ?a:float -> ?i:bool -> MX.mat -> MX.mat -> MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code">
+  wrapper <span class="keyword">of</span> the _sgd_basic fucntion
+</code><br>
+</div>
+
+<pre><span id="VALgradient_descent"><span class="keyword">val</span> <a href="code_VALOwl_optimise.gradient_descent.html">gradient_descent</a></span> : <code class="type">'a option</code></pre>
+<pre><span id="VALsvm_regression"><span class="keyword">val</span> <a href="code_VALOwl_optimise.svm_regression.html">svm_regression</a></span> : <code class="type">?i:bool -> MX.mat -> MX.mat -> MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code"> <span class="constructor">Support</span> <span class="constructor">Vector</span> <span class="constructor">Machine</span> regression
+  i : whether <span class="keyword">to</span> <span class="keyword">include</span> intercept bias <span class="keyword">in</span> parameters
+  note that the values <span class="keyword">in</span> y are either +1 <span class="keyword">or</span> -1.
+ </code><br>
+</div>
+
+<pre><span id="VALols_regression"><span class="keyword">val</span> <a href="code_VALOwl_optimise.ols_regression.html">ols_regression</a></span> : <code class="type">?i:bool -> MX.mat -> MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code"> <span class="constructor">Ordinary</span> <span class="constructor">Least</span> <span class="constructor">Square</span> regression
+  i : whether <span class="keyword">to</span> <span class="keyword">include</span> intercept bias <span class="keyword">in</span> parameters
+</code><br>
+</div>
+
+<pre><span id="VALridge_regression"><span class="keyword">val</span> <a href="code_VALOwl_optimise.ridge_regression.html">ridge_regression</a></span> : <code class="type">?i:bool -> ?a:float -> MX.mat -> MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code"> <span class="constructor">Ridge</span> regression
+  i : whether <span class="keyword">to</span> <span class="keyword">include</span> intercept bias <span class="keyword">in</span> parameters
+  a : weight on the regularisation term
+  <span class="constructor">TODO</span>: how <span class="keyword">to</span> choose a automatically
+</code><br>
+</div>
+
+<pre><span id="VALlasso_regression"><span class="keyword">val</span> <a href="code_VALOwl_optimise.lasso_regression.html">lasso_regression</a></span> : <code class="type">?i:bool -> ?a:float -> MX.mat -> MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code"> <span class="constructor">Lasso</span> regression
+  i : whether <span class="keyword">to</span> <span class="keyword">include</span> intercept bias <span class="keyword">in</span> parameters
+  a : weight on the regularisation term
+  <span class="constructor">TODO</span>: how <span class="keyword">to</span> choose a automatically
+</code><br>
+</div>
+
+<pre><span id="VALlogistic_regression"><span class="keyword">val</span> <a href="code_VALOwl_optimise.logistic_regression.html">logistic_regression</a></span> : <code class="type">?i:bool -> MX.mat -> MX.mat -> MX.mat</code></pre><div class="info ">
+<code class="code"> <span class="constructor">Logistic</span> regression
+  i : whether <span class="keyword">to</span> <span class="keyword">include</span> intercept bias <span class="keyword">in</span> parameters
+  a : weight on the regularisation term
+  note that the values <span class="keyword">in</span> y are either +1 <span class="keyword">or</span> 0.
+</code><br>
+</div>
+</body></html>

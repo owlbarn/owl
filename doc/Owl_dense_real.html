@@ -1,0 +1,787 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Owl_optimise.html">
+<link rel="next" href="Owl_dense_complex.html">
+<link rel="Up" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><link title="Create dense matrices" rel="Section" href="#6_Createdensematrices">
+<link title="Obtain the basic properties of a matrix" rel="Section" href="#6_Obtainthebasicpropertiesofamatrix">
+<link title="Manipulate a matrix" rel="Section" href="#6_Manipulateamatrix">
+<link title="Iterate elements, columns, and rows." rel="Section" href="#6_Iterateelementscolumnsandrows">
+<link title="Examine the elements in a matrix" rel="Section" href="#6_Examinetheelementsinamatrix">
+<link title="Compare two matrices" rel="Section" href="#6_Comparetwomatrices">
+<link title="Basic mathematical operations of matrices" rel="Section" href="#6_Basicmathematicaloperationsofmatrices">
+<link title="Randomisation functions" rel="Section" href="#6_Randomisationfunctions">
+<link title="Input/Output and helper functions" rel="Section" href="#6_InputOutputandhelperfunctions">
+<link title="Shorhand infix operators" rel="Section" href="#6_Shorhandinfixoperators">
+<link title="Dense vectors and meshgrids" rel="Subsection" href="#7_Densevectorsandmeshgrids">
+<title>Owl_dense_real</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Owl_optimise.html" title="Owl_optimise">Previous</a>
+&nbsp;<a class="up" href="index.html" title="Index">Up</a>
+&nbsp;<a class="post" href="Owl_dense_complex.html" title="Owl_dense_complex">Next</a>
+</div>
+<h1>Module <a href="type_Owl_dense_real.html">Owl_dense_real</a></h1>
+
+<pre><span class="keyword">module</span> Owl_dense_real: <code class="code"><span class="keyword">sig</span></code> <a href="Owl_dense_real.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
+Real dense matrix module<br>
+</div>
+<hr width="100%">
+
+<pre><span id="TYPEmat"><span class="keyword">type</span> <code class="type"></code>mat</span> = <code class="type">Gsl.Matrix.matrix</code> </pre>
+<div class="info ">
+Type of dense matrices. It is defined as <code class="code"><span class="constructor">Gsl</span>.<span class="constructor">Matrix</span>.matrix</code> which is
+  essentially a two dimensional array in <code class="code"><span class="constructor">Bigarray</span></code> module.<br>
+</div>
+
+<br>
+<h6 id="6_Createdensematrices">Create dense matrices</h6><br>
+
+<pre><span id="VALempty"><span class="keyword">val</span> empty</span> : <code class="type">int -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">empty m n</code> creates an <code class="code">m</code> by <code class="code">n</code> matrix without initialising the values of
+  elements in <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALcreate"><span class="keyword">val</span> create</span> : <code class="type">int -> int -> float -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">create m n a</code> creates an <code class="code">m</code> by <code class="code">n</code> matrix and all the elements of <code class="code">x</code> are
+  initialised with the value <code class="code">a</code>.<br>
+</div>
+
+<pre><span id="VALzeros"><span class="keyword">val</span> zeros</span> : <code class="type">int -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">zeros m n</code> creates an <code class="code">m</code> by <code class="code">n</code> matrix where all the elements are
+  initialised to zeros.<br>
+</div>
+
+<pre><span id="VALones"><span class="keyword">val</span> ones</span> : <code class="type">int -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">ones m n</code> creates an <code class="code">m</code> by <code class="code">n</code> matrix where all the elements are ones.<br>
+</div>
+
+<pre><span id="VALeye"><span class="keyword">val</span> eye</span> : <code class="type">int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">eye m</code> creates an <code class="code">m</code> by <code class="code">m</code> identity matrix.<br>
+</div>
+
+<pre><span id="VALsequential"><span class="keyword">val</span> sequential</span> : <code class="type">int -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">sequential m n</code> creates an <code class="code">m</code> by <code class="code">n</code> matrix. The elements in <code class="code">x</code> are
+  initialised sequentiallly from <code class="code">0</code> to <code class="code">(m * n - 1)</code>.<br>
+</div>
+
+<pre><span id="VALuniform_int"><span class="keyword">val</span> uniform_int</span> : <code class="type">?a:int -> ?b:int -> int -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">uniform ~a ~b m n</code> creates an <code class="code">m</code> by <code class="code">n</code> matrix where all the elements
+  follow a uniform distribution in <code class="code">[a, b]</code> interval. By default, <code class="code">a = 0</code> and
+  <code class="code">b = 100</code>.<br>
+</div>
+
+<pre><span id="VALuniform"><span class="keyword">val</span> uniform</span> : <code class="type">?scale:float -> int -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">uniform m n</code> creates an <code class="code">m</code> by <code class="code">n</code> matrix where all the elements
+  follow a uniform distribution in <code class="code">(0,1)</code> interval. <code class="code">uniform ~scale:a m n</code>
+  adjusts the interval to <code class="code">(0,a)</code>.<br>
+</div>
+
+<pre><span id="VALgaussian"><span class="keyword">val</span> gaussian</span> : <code class="type">?sigma:float -> int -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">gaussian m n</code> creates an <code class="code">m</code> by <code class="code">n</code> matrix where all the elements in <code class="code">x</code>
+  follow a Gaussian distribution with specified sigma. By default <code class="code">sigma = 1</code>.<br>
+</div>
+
+<pre><span id="VALsemidef"><span class="keyword">val</span> semidef</span> : <code class="type">int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code"> semidef n </code> returns an random <code class="code">n</code> by <code class="code">n</code> positive semi-definite matrix.<br>
+</div>
+<br>
+<div class="h7" id="7_Densevectorsandmeshgrids">Dense vectors and meshgrids</div><br>
+
+<pre><span id="VALvector"><span class="keyword">val</span> vector</span> : <code class="type">int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">vector m</code> returns an <code class="code">1</code> by <code class="code">m</code> row vector <code class="code">x</code> without initialising the
+  values in <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALvector_zeros"><span class="keyword">val</span> vector_zeros</span> : <code class="type">int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">vector_zeros m</code> returns an <code class="code">1</code> by <code class="code">m</code> row vector <code class="code">x</code> by initialising the
+  all values in <code class="code">x</code> to zeros.<br>
+</div>
+
+<pre><span id="VALvector_ones"><span class="keyword">val</span> vector_ones</span> : <code class="type">int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">vector_ones m</code> returns an <code class="code">1</code> by <code class="code">m</code> row vector <code class="code">x</code> by initialising the
+  all values in <code class="code">x</code> to ones.<br>
+</div>
+
+<pre><span id="VALvector_uniform"><span class="keyword">val</span> vector_uniform</span> : <code class="type">int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">vector_zeros m</code> returns an <code class="code">1</code> by <code class="code">m</code> row vector <code class="code">x</code> and the values are
+  drawn from the interval <code class="code">(0,1)</code> with a uniform distribution.<br>
+</div>
+
+<pre><span id="VALlinspace"><span class="keyword">val</span> linspace</span> : <code class="type">float -> float -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">linspace a b n</code> linearly divides the interval <code class="code">[a,b]</code> into <code class="code">n</code> pieces by
+  creating an <code class="code">m</code> by <code class="code">1</code> row vector. E.g., <code class="code">linspace 0. 5. 5</code> will create a
+  row vector <code class="code">[0;1;2;3;4;5]</code>.<br>
+</div>
+
+<pre><span id="VALmeshgrid"><span class="keyword">val</span> meshgrid</span> : <code class="type">float -><br>       float -><br>       float -> float -> int -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> * <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">meshgrid a1 b1 a2 b2 n1 n2</code> is similar to the <code class="code">meshgrid</code> function in
+  Matlab. It returns two matrices <code class="code">x</code> and <code class="code">y</code> where the row vectors in <code class="code">x</code> are
+  linearly spaced between <code class="code">[a1,b1]</code> by <code class="code">n1</code> whilst the column vectors in <code class="code">y</code>
+  are linearly spaced between <code class="code">(a2,b2)</code> by <code class="code">n2</code>.<br>
+</div>
+
+<pre><span id="VALmeshup"><span class="keyword">val</span> meshup</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -><br>       <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> * <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">meshup x y</code> creates mesh grids by using two row vectors <code class="code">x</code> and <code class="code">y</code>.<br>
+</div>
+<br>
+<h6 id="6_Obtainthebasicpropertiesofamatrix">Obtain the basic properties of a matrix</h6><br>
+
+<pre><span id="VALshape"><span class="keyword">val</span> shape</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int * int</code></pre><div class="info ">
+If <code class="code">x</code> is an <code class="code">m</code> by <code class="code">n</code> matrix, <code class="code">shape x</code> returns <code class="code">(m,n)</code>, i.e., the size
+  of two dimensions of <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALrow_num"><span class="keyword">val</span> row_num</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int</code></pre><div class="info ">
+<code class="code">row_num x</code> returns the number of rows in matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALcol_num"><span class="keyword">val</span> col_num</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int</code></pre><div class="info ">
+<code class="code">col_num x</code> returns the number of columns in matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALnumel"><span class="keyword">val</span> numel</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int</code></pre><div class="info ">
+<code class="code">numel x</code> returns the number of elements in matrix <code class="code">x</code>. It is equivalent
+  to <code class="code">(row_num x) * (col_num x)</code>.<br>
+</div>
+
+<pre><span id="VALsame_shape"><span class="keyword">val</span> same_shape</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">same_shape x y</code> returns <code class="code"><span class="keyword">true</span></code> if two matrics have the same shape.<br>
+</div>
+
+<pre><span id="VALreshape"><span class="keyword">val</span> reshape</span> : <code class="type">int -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">reshape m n x</code> creates a new <code class="code">m</code> by <code class="code">n</code> matrix from the <code class="code">m'</code> by <code class="code">n'</code>
+  matrix <code class="code">x</code>. Note that <code class="code">(m * n)</code> must be equal to <code class="code">(m' * n')</code>.<br>
+</div>
+<br>
+<h6 id="6_Manipulateamatrix">Manipulate a matrix</h6><br>
+
+<pre><span id="VALget"><span class="keyword">val</span> get</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> int -> float</code></pre><div class="info ">
+<code class="code">get x i j</code> returns the value of element <code class="code">(i,j)</code> of <code class="code">x</code>. The shorthand
+  for <code class="code">get x i j</code> is <code class="code">x.{i,j}</code><br>
+</div>
+
+<pre><span id="VALset"><span class="keyword">val</span> set</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> int -> float -> unit</code></pre><div class="info ">
+<code class="code">set x i j a</code> sets the element <code class="code">(i,j)</code> of <code class="code">x</code> to value <code class="code">a</code>. The shorthand
+  for <code class="code">set x i j a</code> is <code class="code">x.{i,j} &lt;- a</code><br>
+</div>
+
+<pre><span id="VALrow"><span class="keyword">val</span> row</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">row x i</code> returns the row <code class="code">i</code> of <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALcol"><span class="keyword">val</span> col</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">col x j</code> returns the column <code class="code">j</code> of <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALrows"><span class="keyword">val</span> rows</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int array -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">rows x a</code> returns the rows (defined in an int array <code class="code">a</code>) of <code class="code">x</code>. The
+  returned rows will be combined into a new sparse matrix. The order of rows in
+  the new matrix is the same as that in the array <code class="code">a</code>.<br>
+</div>
+
+<pre><span id="VALcols"><span class="keyword">val</span> cols</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int array -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Similar to <code class="code">rows</code>, <code class="code">cols x a</code> returns the columns (specified in array <code class="code">a</code>)
+  of x in a new sparse matrix.<br>
+</div>
+
+<pre><span id="VALclone"><span class="keyword">val</span> clone</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">clone x</code> returns a copy of matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALcopy_to"><span class="keyword">val</span> copy_to</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<code class="code">copy_to x y</code> copies the elements of <code class="code">x</code> to <code class="code">y</code>. <code class="code">x</code> and <code class="code">y</code> must have
+  the same demensions.<br>
+</div>
+
+<pre><span id="VALcopy_row_to"><span class="keyword">val</span> copy_row_to</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> unit</code></pre><div class="info ">
+<code class="code">copy_row_to v x i</code> copies an <code class="code">1</code> by <code class="code">n</code> row vector <code class="code">v</code> to the <code class="code">i</code>th row
+  in an <code class="code">m</code> by <code class="code">n</code> matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALcopy_col_to"><span class="keyword">val</span> copy_col_to</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> unit</code></pre><div class="info ">
+<code class="code">copy_col_to v x j</code> copies an <code class="code">1</code> by <code class="code">n</code> column vector <code class="code">v</code> to the <code class="code">j</code>th
+  column in an <code class="code">m</code> by <code class="code">n</code> matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALconcat_vertical"><span class="keyword">val</span> concat_vertical</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">concat_vertical x y</code> concats two matrices <code class="code">x</code> and <code class="code">y</code> vertically,
+  therefore their column numbers must be the same.<br>
+</div>
+
+<pre><span id="VALconcat_horizontal"><span class="keyword">val</span> concat_horizontal</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">concat_horizontal x y</code> concats two matrices <code class="code">x</code> and <code class="code">y</code> horizontally,
+  therefore their row numbers must be the same.<br>
+</div>
+
+<pre><span id="VALtranspose"><span class="keyword">val</span> transpose</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">transpose x</code> transposes an <code class="code">m</code> by <code class="code">n</code> matrix to <code class="code">n</code> by <code class="code">m</code> one.<br>
+</div>
+
+<pre><span id="VALdiag"><span class="keyword">val</span> diag</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">diag x</code> returns the diagonal elements of <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALtrace"><span class="keyword">val</span> trace</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float</code></pre><div class="info ">
+<code class="code">trace x</code> returns the sum of diagonal elements in <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALadd_diag"><span class="keyword">val</span> add_diag</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">add_diag x a</code> adds a constant <code class="code">a</code> to all the diagonal elements in <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALreplace_row"><span class="keyword">val</span> replace_row</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">replace_row v x i</code> uses the row vector <code class="code">v</code> to replace the <code class="code">i</code>th row in
+  the matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALreplace_col"><span class="keyword">val</span> replace_col</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">replace_col v x j</code> uses the column vector <code class="code">v</code> to replace the <code class="code">j</code>th column
+  in the matrix <code class="code">x</code>.<br>
+</div>
+<br>
+<h6 id="6_Iterateelementscolumnsandrows">Iterate elements, columns, and rows.</h6><br>
+
+<pre><span id="VALiteri"><span class="keyword">val</span> iteri</span> : <code class="type">(int -> int -> float -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<code class="code">iteri f x</code> iterates all the elements in <code class="code">x</code> and applies the user defined
+  function <code class="code">f : int <span class="keywordsign">-&gt;</span> int <span class="keywordsign">-&gt;</span> float <span class="keywordsign">-&gt;</span> <span class="keywordsign">'</span>a</code>. <code class="code">f i j v</code> takes three parameters,
+  <code class="code">i</code> and <code class="code">j</code> are the coordinates of current element, and <code class="code">v</code> is its value.<br>
+</div>
+
+<pre><span id="VALiter"><span class="keyword">val</span> iter</span> : <code class="type">(float -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<code class="code">iter f x</code> is the same as as <code class="code">iteri f x</code> except the coordinates of the
+  current element is not passed to the function <code class="code">f : float <span class="keywordsign">-&gt;</span> <span class="keywordsign">'</span>a</code><br>
+</div>
+
+<pre><span id="VALmapi"><span class="keyword">val</span> mapi</span> : <code class="type">(int -> int -> float -> float) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">mapi f x</code> maps each element in <code class="code">x</code> to a new value by applying
+  <code class="code">f : int <span class="keywordsign">-&gt;</span> int <span class="keywordsign">-&gt;</span> float <span class="keywordsign">-&gt;</span> float</code>. The first two parameters are the
+  coordinates of the element, and the third parameter is the value.<br>
+</div>
+
+<pre><span id="VALmap"><span class="keyword">val</span> map</span> : <code class="type">(float -> float) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">map f x</code> is similar to <code class="code">mapi f x</code> except the coordinates of the
+  current element is not passed to the function <code class="code">f : float <span class="keywordsign">-&gt;</span> float</code><br>
+</div>
+
+<pre><span id="VALfold"><span class="keyword">val</span> fold</span> : <code class="type">('a -> float -> 'a) -> 'a -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a</code></pre><div class="info ">
+<code class="code">fold f a x</code> folds all the elements in <code class="code">x</code> with the function
+  <code class="code">f : <span class="keywordsign">'</span>a <span class="keywordsign">-&gt;</span> float <span class="keywordsign">-&gt;</span> <span class="keywordsign">'</span>a</code>. For an <code class="code">m</code> by <code class="code">n</code> matrix <code class="code">x</code>, the order of folding
+  is from <code class="code">(0,0)</code> to <code class="code">(m-1,n-1)</code>, row by row.<br>
+</div>
+
+<pre><span id="VALfilteri"><span class="keyword">val</span> filteri</span> : <code class="type">(int -> int -> float -> bool) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> (int * int) array</code></pre><div class="info ">
+<code class="code">filteri f x</code> uses <code class="code">f : int <span class="keywordsign">-&gt;</span> int <span class="keywordsign">-&gt;</span> float <span class="keywordsign">-&gt;</span> bool</code> to filter out certain
+  elements in <code class="code">x</code>. An element will be included if <code class="code">f</code> returns <code class="code"><span class="keyword">true</span></code>. The
+  returned result is a list of coordinates of the selected elements.<br>
+</div>
+
+<pre><span id="VALfilter"><span class="keyword">val</span> filter</span> : <code class="type">(float -> bool) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> (int * int) array</code></pre><div class="info ">
+Similar to <code class="code">filteri</code>, but the coordinates of the elements are not passed to
+  the function <code class="code">f : float <span class="keywordsign">-&gt;</span> bool</code>.<br>
+</div>
+
+<pre><span id="VALiteri_rows"><span class="keyword">val</span> iteri_rows</span> : <code class="type">(int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<code class="code">iteri_rows f x</code> iterates every row in <code class="code">x</code> and applies function
+  <code class="code">f : int <span class="keywordsign">-&gt;</span> mat <span class="keywordsign">-&gt;</span> unit</code> to each of them.<br>
+</div>
+
+<pre><span id="VALiter_rows"><span class="keyword">val</span> iter_rows</span> : <code class="type">(<a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+Similar to <code class="code">iteri_rows</code> except row number is not passed to <code class="code">f</code>.<br>
+</div>
+
+<pre><span id="VALiteri_cols"><span class="keyword">val</span> iteri_cols</span> : <code class="type">(int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<code class="code">iteri_cols f x</code> iterates every column in <code class="code">x</code> and applies function
+  <code class="code">f : int <span class="keywordsign">-&gt;</span> mat <span class="keywordsign">-&gt;</span> unit</code> to each of them. Column number is passed to <code class="code">f</code> as
+  the first parameter.<br>
+</div>
+
+<pre><span id="VALiter_cols"><span class="keyword">val</span> iter_cols</span> : <code class="type">(<a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+Similar to <code class="code">iteri_cols</code> except col number is not passed to <code class="code">f</code>.<br>
+</div>
+
+<pre><span id="VALfilteri_rows"><span class="keyword">val</span> filteri_rows</span> : <code class="type">(int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int array</code></pre><div class="info ">
+<code class="code">filteri_rows f x</code> uses function <code class="code">f : int <span class="keywordsign">-&gt;</span> mat <span class="keywordsign">-&gt;</span> bool</code> to check each
+  row in <code class="code">x</code>, then returns an int array containing the indices of those rows
+  which satisfy the function <code class="code">f</code>.<br>
+</div>
+
+<pre><span id="VALfilter_rows"><span class="keyword">val</span> filter_rows</span> : <code class="type">(<a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int array</code></pre><div class="info ">
+Similar to <code class="code">filteri_rows</code> except that the row indices are not passed to <code class="code">f</code>.<br>
+</div>
+
+<pre><span id="VALfilteri_cols"><span class="keyword">val</span> filteri_cols</span> : <code class="type">(int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int array</code></pre><div class="info ">
+<code class="code">filteri_cols f x</code> uses function <code class="code">f : int <span class="keywordsign">-&gt;</span> mat <span class="keywordsign">-&gt;</span> bool</code> to check each
+  column in <code class="code">x</code>, then returns an int array containing the indices of those
+  columns which satisfy the function <code class="code">f</code>.<br>
+</div>
+
+<pre><span id="VALfilter_cols"><span class="keyword">val</span> filter_cols</span> : <code class="type">(<a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int array</code></pre><div class="info ">
+Similar to <code class="code">filteri_cols</code> except that the column indices are not passed to <code class="code">f</code>.<br>
+</div>
+
+<pre><span id="VALfold_rows"><span class="keyword">val</span> fold_rows</span> : <code class="type">('a -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> 'a -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a</code></pre><div class="info ">
+<code class="code">fold_rows f a x</code> folds all the rows in <code class="code">x</code> using function <code class="code">f</code>. The order
+  of folding is from the first row to the last one.<br>
+</div>
+
+<pre><span id="VALfold_cols"><span class="keyword">val</span> fold_cols</span> : <code class="type">('a -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> 'a -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a</code></pre><div class="info ">
+<code class="code">fold_cols f a x</code> folds all the columns in <code class="code">x</code> using function <code class="code">f</code>. The
+  order of folding is from the first column to the last one.<br>
+</div>
+
+<pre><span id="VALmapi_rows"><span class="keyword">val</span> mapi_rows</span> : <code class="type">(int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a array</code></pre><div class="info ">
+<code class="code">mapi_rows f x</code> maps every row in <code class="code">x</code> to a type <code class="code"><span class="keywordsign">'</span>a</code> value by applying
+  function <code class="code">f : int <span class="keywordsign">-&gt;</span> mat <span class="keywordsign">-&gt;</span> <span class="keywordsign">'</span>a</code> to each of them. The results is an array of
+  all the returned values.<br>
+</div>
+
+<pre><span id="VALmap_rows"><span class="keyword">val</span> map_rows</span> : <code class="type">(<a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a array</code></pre><div class="info ">
+Similar to <code class="code">mapi_rows</code> except row number is not passed to <code class="code">f</code>.<br>
+</div>
+
+<pre><span id="VALmapi_cols"><span class="keyword">val</span> mapi_cols</span> : <code class="type">(int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a array</code></pre><div class="info ">
+<code class="code">mapi_cols f x</code> maps every column in <code class="code">x</code> to a type <code class="code"><span class="keywordsign">'</span>a</code> value by applying
+  function <code class="code">f : int <span class="keywordsign">-&gt;</span> mat <span class="keywordsign">-&gt;</span> <span class="keywordsign">'</span>a</code>.<br>
+</div>
+
+<pre><span id="VALmap_cols"><span class="keyword">val</span> map_cols</span> : <code class="type">(<a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a array</code></pre><div class="info ">
+Similar to <code class="code">mapi_cols</code> except column number is not passed to <code class="code">f</code>.<br>
+</div>
+
+<pre><span id="VALmapi_by_row"><span class="keyword">val</span> mapi_by_row</span> : <code class="type">?d:int -><br>       (int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a>) -><br>       <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">mapi_by_row f x</code> applies <code class="code">f</code> to each row of <code class="code">x</code>, then uses the returned
+  row vectors to assemble a new matrix.<br>
+</div>
+
+<pre><span id="VALmap_by_row"><span class="keyword">val</span> map_by_row</span> : <code class="type">?d:int -><br>       (<a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a>) -><br>       <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">map_by_row f x i</code> is similar to <code class="code">mapi_by_row</code> except that the row indices
+  are not passed to <code class="code">f</code>.<br>
+</div>
+
+<pre><span id="VALmapi_by_col"><span class="keyword">val</span> mapi_by_col</span> : <code class="type">?d:int -><br>       (int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a>) -><br>       <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">mapi_by_col f x</code> applies <code class="code">f</code> to each column of <code class="code">x</code>, then uses the returned
+  column vectors to assemble a new matrix.<br>
+</div>
+
+<pre><span id="VALmap_by_col"><span class="keyword">val</span> map_by_col</span> : <code class="type">?d:int -><br>       (<a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a>) -><br>       <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">map_by_col f x i</code> is similar to <code class="code">mapi_by_col</code> except that the column
+  indices are not passed to <code class="code">f</code>.<br>
+</div>
+
+<pre><span id="VALmapi_at_row"><span class="keyword">val</span> mapi_at_row</span> : <code class="type">(int -> int -> float -> float) -><br>       <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">mapi_at_row f x i</code> creates a new matrix by applying function <code class="code">f</code> only to
+  the <code class="code">i</code>th row in matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALmap_at_row"><span class="keyword">val</span> map_at_row</span> : <code class="type">(float -> float) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">map_at_row f x i</code> is similar to <code class="code">mapi_at_row</code> except that the coordinates
+  of an element is not passed to <code class="code">f</code>.<br>
+</div>
+
+<pre><span id="VALmapi_at_col"><span class="keyword">val</span> mapi_at_col</span> : <code class="type">(int -> int -> float -> float) -><br>       <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">mapi_at_col f x j</code> creates a new matrix by applying function <code class="code">f</code> only to
+  the <code class="code">j</code>th column in matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALmap_at_col"><span class="keyword">val</span> map_at_col</span> : <code class="type">(float -> float) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">map_at_col f x i</code> is similar to <code class="code">mapi_at_col</code> except that the coordinates
+  of an element is not passed to <code class="code">f</code>.<br>
+</div>
+<br>
+<h6 id="6_Examinetheelementsinamatrix">Examine the elements in a matrix</h6><br>
+
+<pre><span id="VALexists"><span class="keyword">val</span> exists</span> : <code class="type">(float -> bool) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">exists f x</code> checks all the elements in <code class="code">x</code> using <code class="code">f</code>. If at least one
+  element satisfies <code class="code">f</code> then the function returns <code class="code"><span class="keyword">true</span></code> otherwise <code class="code"><span class="keyword">false</span></code>.<br>
+</div>
+
+<pre><span id="VALnot_exists"><span class="keyword">val</span> not_exists</span> : <code class="type">(float -> bool) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">not_exists f x</code> checks all the elements in <code class="code">x</code>, the function returns
+  <code class="code"><span class="keyword">true</span></code> only if all the elements fail to satisfy <code class="code">f : float <span class="keywordsign">-&gt;</span> bool</code>.<br>
+</div>
+
+<pre><span id="VALfor_all"><span class="keyword">val</span> for_all</span> : <code class="type">(float -> bool) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">for_all f x</code> checks all the elements in <code class="code">x</code>, the function returns <code class="code"><span class="keyword">true</span></code>
+  if and only if all the elements pass the check of function <code class="code">f</code>.<br>
+</div>
+<br>
+<h6 id="6_Comparetwomatrices">Compare two matrices</h6><br>
+
+<pre><span id="VALis_equal"><span class="keyword">val</span> is_equal</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">is_equal x y</code> returns <code class="code"><span class="keyword">true</span></code> if two matrices <code class="code">x</code> and <code class="code">y</code> are equal.<br>
+</div>
+
+<pre><span id="VALis_unequal"><span class="keyword">val</span> is_unequal</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">is_unequal x y</code> returns <code class="code"><span class="keyword">true</span></code> if there is at least one element in <code class="code">x</code> is
+  not equal to that in <code class="code">y</code>.<br>
+</div>
+
+<pre><span id="VALis_greater"><span class="keyword">val</span> is_greater</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">is_greater x y</code> returns <code class="code"><span class="keyword">true</span></code> if all the elements in <code class="code">x</code> are greater than
+  the corresponding elements in <code class="code">y</code>.<br>
+</div>
+
+<pre><span id="VALis_smaller"><span class="keyword">val</span> is_smaller</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">is_smaller x y</code> returns <code class="code"><span class="keyword">true</span></code> if all the elements in <code class="code">x</code> are smaller than
+  the corresponding elements in <code class="code">y</code>.<br>
+</div>
+
+<pre><span id="VALequal_or_greater"><span class="keyword">val</span> equal_or_greater</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">equal_or_greater x y</code> returns <code class="code"><span class="keyword">true</span></code> if all the elements in <code class="code">x</code> are not
+  smaller than the corresponding elements in <code class="code">y</code>.<br>
+</div>
+
+<pre><span id="VALequal_or_smaller"><span class="keyword">val</span> equal_or_smaller</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">equal_or_smaller x y</code> returns <code class="code"><span class="keyword">true</span></code> if all the elements in <code class="code">x</code> are not
+  greater than the corresponding elements in <code class="code">y</code>.<br>
+</div>
+<br>
+<h6 id="6_Basicmathematicaloperationsofmatrices">Basic mathematical operations of matrices</h6><br>
+
+<pre><span id="VALadd"><span class="keyword">val</span> add</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">add x y</code> adds two matrices <code class="code">x</code> and <code class="code">y</code>. Both must have the same dimensions.<br>
+</div>
+
+<pre><span id="VALsub"><span class="keyword">val</span> sub</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">sub x y</code> subtracts the matrix <code class="code">x</code> from <code class="code">y</code>. Both must have the same dimensions.<br>
+</div>
+
+<pre><span id="VALmul"><span class="keyword">val</span> mul</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">mul x y</code> performs an element-wise multiplication, so both <code class="code">x</code> and <code class="code">y</code>
+  must have the same dimensions.<br>
+</div>
+
+<pre><span id="VALdiv"><span class="keyword">val</span> div</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">div x y</code> performs an element-wise division, so both <code class="code">x</code> and <code class="code">y</code>
+  must have the same dimensions.<br>
+</div>
+
+<pre><span id="VALdot"><span class="keyword">val</span> dot</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">dot x y</code> calculates the dot product of an <code class="code">m</code> by <code class="code">n</code> matrix <code class="code">x</code> and
+  another <code class="code">n</code> by <code class="code">p</code> matrix <code class="code">y</code>.<br>
+</div>
+
+<pre><span id="VALabs"><span class="keyword">val</span> abs</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">abs x</code> returns a new matrix where each element has the absolute value of
+  that in the original matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALneg"><span class="keyword">val</span> neg</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">neg x</code> returns a new matrix where each element has the negative value of
+  that in the original matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALpower"><span class="keyword">val</span> power</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">power x a</code> calculates the power of <code class="code">a</code> of each element in <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALadd_scalar"><span class="keyword">val</span> add_scalar</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">add_scalar x a</code> adds every element in <code class="code">x</code> by a constant factor <code class="code">a</code>.<br>
+</div>
+
+<pre><span id="VALsub_scalar"><span class="keyword">val</span> sub_scalar</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">sub_scalar x a</code> subtracts every element in <code class="code">x</code> by a constant factor <code class="code">a</code>.<br>
+</div>
+
+<pre><span id="VALmul_scalar"><span class="keyword">val</span> mul_scalar</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">mul_scalar x a</code> multiplies every element in <code class="code">x</code> by a constant factor <code class="code">a</code>.<br>
+</div>
+
+<pre><span id="VALdiv_scalar"><span class="keyword">val</span> div_scalar</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">div_scalar x a</code> divides every element in <code class="code">x</code> by a constant factor <code class="code">a</code>.<br>
+</div>
+
+<pre><span id="VALsum"><span class="keyword">val</span> sum</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float</code></pre><div class="info ">
+<code class="code">sum x</code> returns the summation of all the elements in <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALaverage"><span class="keyword">val</span> average</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float</code></pre><div class="info ">
+<code class="code">average x</code> returns the average value of all the elements in <code class="code">x</code>. It is
+  equivalent to calculate <code class="code">sum x</code> divided by <code class="code">numel x</code><br>
+</div>
+
+<pre><span id="VALmin"><span class="keyword">val</span> min</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float * int * int</code></pre><div class="info ">
+<code class="code">min x</code> returns the minimum value of all elements in <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALmax"><span class="keyword">val</span> max</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float * int * int</code></pre><div class="info ">
+<code class="code">max x</code> returns the maximum value of all elements in <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALminmax"><span class="keyword">val</span> minmax</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float * float * int * int * int * int</code></pre><div class="info ">
+<code class="code">minmax x</code> returns both the minimum and minimum values in <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALis_zero"><span class="keyword">val</span> is_zero</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">is_zero x</code> returns <code class="code"><span class="keyword">true</span></code> if all the elements in <code class="code">x</code> are zeros.<br>
+</div>
+
+<pre><span id="VALis_positive"><span class="keyword">val</span> is_positive</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">is_positive x</code> returns <code class="code"><span class="keyword">true</span></code> if all the elements in <code class="code">x</code> are positive.<br>
+</div>
+
+<pre><span id="VALis_negative"><span class="keyword">val</span> is_negative</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">is_negative x</code> returns <code class="code"><span class="keyword">true</span></code> if all the elements in <code class="code">x</code> are negative.<br>
+</div>
+
+<pre><span id="VALis_nonnegative"><span class="keyword">val</span> is_nonnegative</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+<code class="code">is_nonnegative</code> returns <code class="code"><span class="keyword">true</span></code> if all the elements in <code class="code">x</code> are non-negative.<br>
+</div>
+
+<pre><span id="VALlog"><span class="keyword">val</span> log</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">log x</code> applies <code class="code">log</code> function to each element in matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALlog10"><span class="keyword">val</span> log10</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">log10 x</code> applies <code class="code">log10</code> function to each element in matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALexp"><span class="keyword">val</span> exp</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">exp x</code> applies <code class="code">exp</code> function to each element in matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALsigmoid"><span class="keyword">val</span> sigmoid</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">sigmoid x</code> applies <code class="code">sigmoid</code> function to each element in matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALsum_rows"><span class="keyword">val</span> sum_rows</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">sum_rows x</code> returns the summation of all the row vectors in <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALsum_cols"><span class="keyword">val</span> sum_cols</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">sum_cols</code> returns the summation of all the column vectors in <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALaverage_rows"><span class="keyword">val</span> average_rows</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">average_rows x</code> returns the average value of all row vectors in <code class="code">x</code>. It is
+  equivalent to <code class="code">div_scalar (sum_rows x) (float_of_int (row_num x))</code>.<br>
+</div>
+
+<pre><span id="VALaverage_cols"><span class="keyword">val</span> average_cols</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">average_cols x</code> returns the average value of all column vectors in <code class="code">x</code>.
+  It is equivalent to <code class="code">div_scalar (sum_cols x) (float_of_int (col_num x))</code>.<br>
+</div>
+
+<pre><span id="VALmin_rows"><span class="keyword">val</span> min_rows</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> (float * int * int) array</code></pre><div class="info ">
+<code class="code">min_rows x</code> returns the minimum value in each row along with their coordinates.<br>
+</div>
+
+<pre><span id="VALmin_cols"><span class="keyword">val</span> min_cols</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> (float * int * int) array</code></pre><div class="info ">
+<code class="code">min_cols x</code> returns the minimum value in each column along with their coordinates.<br>
+</div>
+
+<pre><span id="VALmax_rows"><span class="keyword">val</span> max_rows</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> (float * int * int) array</code></pre><div class="info ">
+<code class="code">max_rows x</code> returns the maximum value in each row along with their coordinates.<br>
+</div>
+
+<pre><span id="VALmax_cols"><span class="keyword">val</span> max_cols</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> (float * int * int) array</code></pre><div class="info ">
+<code class="code">min_cols x</code> returns the minimum value in each column along with their coordinates.<br>
+</div>
+<br>
+<h6 id="6_Randomisationfunctions">Randomisation functions</h6><br>
+
+<pre><span id="VALdraw_rows"><span class="keyword">val</span> draw_rows</span> : <code class="type">?replacement:bool -><br>       <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> * int array</code></pre><div class="info ">
+<code class="code">draw_rows x m</code> draws <code class="code">m</code> rows randomly from <code class="code">x</code>. The row indices are also
+  returned in an int array along with the selected rows. The parameter
+  <code class="code">replacement</code> indicates whether the drawing is by replacement or not.<br>
+</div>
+
+<pre><span id="VALdraw_cols"><span class="keyword">val</span> draw_cols</span> : <code class="type">?replacement:bool -><br>       <a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> * int array</code></pre><div class="info ">
+<code class="code">draw_cols x m</code> draws <code class="code">m</code> cols randomly from <code class="code">x</code>. The column indices are
+  also returned in an int array along with the selected columns. The parameter
+  <code class="code">replacement</code> indicates whether the drawing is by replacement or not.<br>
+</div>
+
+<pre><span id="VALshuffle_rows"><span class="keyword">val</span> shuffle_rows</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">shuffle_rows x</code> shuffles all the rows in matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALshuffle_cols"><span class="keyword">val</span> shuffle_cols</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">shuffle_cols x</code> shuffles all the columns in matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALshuffle"><span class="keyword">val</span> shuffle</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">shuffle x</code> shuffles all the elements in <code class="code">x</code> by first shuffling along the
+  rows then shuffling along columns. It is equivalent to <code class="code">shuffle_cols (shuffle_rows x)</code>.<br>
+</div>
+<br>
+<h6 id="6_InputOutputandhelperfunctions">Input/Output and helper functions</h6><br>
+
+<pre><span id="VALto_array"><span class="keyword">val</span> to_array</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float array</code></pre><div class="info ">
+<code class="code">to_array x</code> flattens an <code class="code">m</code> by <code class="code">n</code> matrix <code class="code">x</code> then returns <code class="code">x</code> as an
+  float array of length <code class="code">(numel x)</code>.<br>
+</div>
+
+<pre><span id="VALto_arrays"><span class="keyword">val</span> to_arrays</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float array array</code></pre><div class="info ">
+<code class="code"><span class="keyword">to</span> arrays x</code> returns an array of float arrays, wherein each row in <code class="code">x</code>
+  becomes an array in the result.<br>
+</div>
+
+<pre><span id="VALof_array"><span class="keyword">val</span> of_array</span> : <code class="type">float array -> int -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">of_array x m n</code> converts a float array <code class="code">x</code> into an <code class="code">m</code> by <code class="code">n</code> matrix. Note the
+  length of <code class="code">x</code> must be equal to <code class="code">(m * n)</code>.<br>
+</div>
+
+<pre><span id="VALof_arrays"><span class="keyword">val</span> of_arrays</span> : <code class="type">float array array -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">of_arrays x</code> converts an array of <code class="code">m</code> float arrays (of length <code class="code">n</code>) in to
+  an <code class="code">m</code> by <code class="code">n</code> matrix.<br>
+</div>
+
+<pre><span id="VALprint"><span class="keyword">val</span> print</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<code class="code">print x</code> pretty prints matrix <code class="code">x</code> without headings.<br>
+</div>
+
+<pre><span id="VALpp_dsmat"><span class="keyword">val</span> pp_dsmat</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<code class="code">pp_spmat x</code> pretty prints matrix <code class="code">x</code> with headings. Toplevel uses this
+  function to print out the matrices.<br>
+</div>
+
+<pre><span id="VALsave"><span class="keyword">val</span> save</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> string -> unit</code></pre><div class="info ">
+<code class="code">save x f</code> saves the matrix <code class="code">x</code> to a file with the name <code class="code">f</code>. The format
+  is binary by using <code class="code"><span class="constructor">Marshal</span></code> module to serialise the matrix.<br>
+</div>
+
+<pre><span id="VALload"><span class="keyword">val</span> load</span> : <code class="type">string -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">load f</code> loads a sparse matrix from file <code class="code">f</code>. The file must be previously
+  saved by using <code class="code">save</code> function.<br>
+</div>
+
+<pre><span id="VALsave_txt"><span class="keyword">val</span> save_txt</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> string -> unit</code></pre><div class="info ">
+<code class="code">save_txt x f</code> save the matrix <code class="code">x</code> into a text file <code class="code">f</code>. The operation can
+  be very time consuming.<br>
+</div>
+
+<pre><span id="VALload_txt"><span class="keyword">val</span> load_txt</span> : <code class="type">string -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">load_txt f</code> load a text file <code class="code">f</code> into a matrix.<br>
+</div>
+<br>
+<h6 id="6_Shorhandinfixoperators">Shorhand infix operators</h6><br>
+
+<pre><span id="VAL(>>)"><span class="keyword">val</span> (&gt;&gt;)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+Shorthand for <code class="code">copy_to x y</code>, i.e., x &gt;&gt; y<br>
+</div>
+
+<pre><span id="VAL(<<)"><span class="keyword">val</span> (&lt;&lt;)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+Shorthand for <code class="code">copy_to y x</code>, i.e., x &lt;&lt; y<br>
+</div>
+
+<pre><span id="VAL(@=)"><span class="keyword">val</span> (@=)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">concat_vertical x y</code>, i.e., x @= y<br>
+</div>
+
+<pre><span id="VAL(@||)"><span class="keyword">val</span> (@||)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">concat_horizontal x y</code>, i.e., x @|| y<br>
+</div>
+
+<pre><span id="VAL(+@)"><span class="keyword">val</span> (+@)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">add x y</code>, i.e., <code class="code">x +@ y</code><br>
+</div>
+
+<pre><span id="VAL(-@)"><span class="keyword">val</span> (-@)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">sub x y</code>, i.e., <code class="code">x -@ y</code><br>
+</div>
+
+<pre><span id="VAL( *@ )"><span class="keyword">val</span> ( *@ )</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">mul x y</code>, i.e., <code class="code">x *@ y</code><br>
+</div>
+
+<pre><span id="VAL(/@)"><span class="keyword">val</span> (/@)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">div x y</code>, i.e., <code class="code">x /@ y</code><br>
+</div>
+
+<pre><span id="VAL($@)"><span class="keyword">val</span> ($@)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">dot x y</code>, i.e., <code class="code">x $@ y</code><br>
+</div>
+
+<pre><span id="VAL( **@ )"><span class="keyword">val</span> ( **@ )</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">power x a</code>, i.e., <code class="code">x **@ a</code><br>
+</div>
+
+<pre><span id="VAL(+$)"><span class="keyword">val</span> (+$)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">add_scalar x a</code>, i.e., <code class="code">x +$ a</code><br>
+</div>
+
+<pre><span id="VAL(-$)"><span class="keyword">val</span> (-$)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">sub_scalar x a</code>, i.e., <code class="code">x -$ a</code><br>
+</div>
+
+<pre><span id="VAL( *$ )"><span class="keyword">val</span> ( *$ )</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">mul_scalar x a</code>, i.e., <code class="code">x *$ a</code><br>
+</div>
+
+<pre><span id="VAL(/$)"><span class="keyword">val</span> (/$)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> float -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">div_scalar x a</code>, i.e., <code class="code">x /$ a</code><br>
+</div>
+
+<pre><span id="VAL($+)"><span class="keyword">val</span> ($+)</span> : <code class="type">float -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">add_scalar x a</code>, i.e., <code class="code">a $+ x</code><br>
+</div>
+
+<pre><span id="VAL($-)"><span class="keyword">val</span> ($-)</span> : <code class="type">float -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">sub_scalar x a</code>, i.e., <code class="code">a -$ x</code><br>
+</div>
+
+<pre><span id="VAL( $* )"><span class="keyword">val</span> ( $* )</span> : <code class="type">float -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">mul_scalar x a</code>, i.e., <code class="code">x $* a</code><br>
+</div>
+
+<pre><span id="VAL($/)"><span class="keyword">val</span> ($/)</span> : <code class="type">float -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">div_scalar x a</code>, i.e., <code class="code">x $/ a</code><br>
+</div>
+
+<pre><span id="VAL(=@)"><span class="keyword">val</span> (=@)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+Shorthand for <code class="code">is_equal x y</code>, i.e., <code class="code">x =@ y</code><br>
+</div>
+
+<pre><span id="VAL(>@)"><span class="keyword">val</span> (&gt;@)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+Shorthand for <code class="code">is_greater x y</code>, i.e., <code class="code">x &gt;@ y</code><br>
+</div>
+
+<pre><span id="VAL(<@)"><span class="keyword">val</span> (&lt;@)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+Shorthand for <code class="code">is_smaller x y</code>, i.e., <code class="code">x &lt;@ y</code><br>
+</div>
+
+<pre><span id="VAL(<>@)"><span class="keyword">val</span> (&lt;&gt;@)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+Shorthand for <code class="code">is_unequal x y</code>, i.e., <code class="code">x &lt;&gt;@ y</code><br>
+</div>
+
+<pre><span id="VAL(>=@)"><span class="keyword">val</span> (&gt;=@)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+Shorthand for <code class="code">equal_or_greater x y</code>, i.e., <code class="code">x &gt;=@ y</code><br>
+</div>
+
+<pre><span id="VAL(<=@)"><span class="keyword">val</span> (&lt;=@)</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
+Shorthand for <code class="code">equal_or_smaller x y</code>, i.e., <code class="code">x &lt;=@ y</code><br>
+</div>
+
+<pre><span id="VAL(@@)"><span class="keyword">val</span> (@@)</span> : <code class="type">(float -> float) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">map f x</code>, i.e., f @@ x<br>
+</div>
+
+<pre><span id="VALgsl_col"><span class="keyword">val</span> gsl_col</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre></body></html>

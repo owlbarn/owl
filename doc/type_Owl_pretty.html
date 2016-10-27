@@ -1,0 +1,183 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><title>Owl_pretty</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span>
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Context</span>&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;t
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ellipsis_default&nbsp;:&nbsp;string&nbsp;<span class="constructor">Pervasives</span>.ref
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;vertical_default&nbsp;:&nbsp;<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="constructor">Pervasives</span>.ref
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;horizontal_default&nbsp;:&nbsp;<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="constructor">Pervasives</span>.ref
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;set_dim_defaults&nbsp;:&nbsp;<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_mat_gen&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?pp_open:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?pp_close:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?pp_head:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?pp_foot:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?pp_end_row:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?pp_end_col:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;row:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;col:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?pp_left:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?pp_right:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?pad:char&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?ellipsis:string&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?vertical_context:<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;?horizontal_context:<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>el&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>a,&nbsp;<span class="constructor">Bigarray</span>.c_layout)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array2</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;<span class="keywordsign">'</span>el&nbsp;pp_el_default&nbsp;=&nbsp;(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>el&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="constructor">Pervasives</span>.ref
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_float_el_default&nbsp;:&nbsp;float&nbsp;<span class="constructor">Owl_pretty</span>.pp_el_default
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_complex_el_default&nbsp;:&nbsp;<span class="constructor">Complex</span>.t&nbsp;<span class="constructor">Owl_pretty</span>.pp_el_default
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_int32_el&nbsp;:&nbsp;<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int32&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;pp_vec&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt,&nbsp;<span class="constructor">Bigarray</span>.c_layout)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array1</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_fvec&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_vec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_cvec&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_vec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_ivec&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_vec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_rfvec&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_vec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_rcvec&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_vec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_rivec&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_vec
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;pp_mat&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt,&nbsp;<span class="constructor">Bigarray</span>.c_layout)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array2</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_fmat&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_cmat&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_imat&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_mat
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;pp_labeled_vec&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?pp_head:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?pp_foot:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?pp_left:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?pp_right:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?pad:char&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?ellipsis:string&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?vertical_context:<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?horizontal_context:<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt,&nbsp;<span class="constructor">Bigarray</span>.c_layout)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array1</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_labeled_fvec&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_labeled_vec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_labeled_cvec&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_labeled_vec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_labeled_ivec&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_labeled_vec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_labeled_rfvec&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_labeled_vec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_labeled_rcvec&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_labeled_vec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_labeled_rivec&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_labeled_vec
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;pp_lvec&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?print_head:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?print_foot:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?print_left:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?print_right:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?labels:string&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?name:string&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?pad:char&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?ellipsis:string&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?vertical_context:<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?horizontal_context:<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt,&nbsp;<span class="constructor">Bigarray</span>.c_layout)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array1</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_lfvec&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_lvec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_lcvec&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_lvec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_livec&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_lvec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_rlfvec&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_lvec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_rlcvec&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_lvec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_rlivec&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_lvec
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;pp_labeled_mat&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?pp_head:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?pp_foot:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?pp_left:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?pp_right:(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?pad:char&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?ellipsis:string&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?vertical_context:<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?horizontal_context:<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt,&nbsp;<span class="constructor">Bigarray</span>.c_layout)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array2</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_labeled_fmat&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_labeled_mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_labeled_cmat&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_labeled_mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_labeled_imat&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_labeled_mat
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;pp_lmat&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?print_head:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?print_foot:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?print_left:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?print_right:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?row_labels:string&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?col_labels:string&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?pad:char&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?ellipsis:string&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?vertical_context:<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?horizontal_context:<span class="constructor">Owl_pretty</span>.<span class="constructor">Context</span>.t&nbsp;option&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;unit&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt,&nbsp;<span class="constructor">Bigarray</span>.c_layout)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array2</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_lfmat&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_lmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_lcmat&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_lmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_limat&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_lmat
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;pp_el_ovec&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>el&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt,&nbsp;<span class="constructor">Bigarray</span>.c_layout)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array1</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_ovec&nbsp;:&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_el_ovec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_rovec&nbsp;:&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_el_ovec
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;pp_ovec&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt,&nbsp;<span class="constructor">Bigarray</span>.c_layout)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array1</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_ofvec&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_ovec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_ocvec&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_ovec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_oivec&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_ovec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_rofvec&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_ovec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_rocvec&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_ovec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_roivec&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_ovec
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_omat&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>el&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>c,&nbsp;<span class="constructor">Bigarray</span>.c_layout)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array2</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;pp_omat&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Format</span>.formatter&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>el,&nbsp;<span class="keywordsign">'</span>elt,&nbsp;<span class="constructor">Bigarray</span>.c_layout)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array2</span>.t&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_ofmat&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_omat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_ocmat&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_omat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_oimat&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_omat
+&nbsp;&nbsp;<span class="keyword">module</span>&nbsp;<span class="constructor">Toplevel</span>&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">sig</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;lsc&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_fvec&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_vec
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_cvec&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_vec
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_ivec&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_vec
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_rfvec&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_vec
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_rcvec&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_vec
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_rivec&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_vec
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_fmat&nbsp;:&nbsp;(float,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_mat
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_cmat&nbsp;:&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_mat
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_imat&nbsp;:&nbsp;(int32,&nbsp;<span class="keywordsign">'</span>elt)&nbsp;<span class="constructor">Owl_pretty</span>.pp_mat
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">end</span>
+<span class="keyword">end</span></code></body></html>

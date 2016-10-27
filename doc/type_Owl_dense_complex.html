@@ -1,0 +1,260 @@
+<html><head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><title>Owl_dense_complex</title>
+</head>
+<body>
+<code class="code"><span class="keyword">sig</span>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;mat&nbsp;=&nbsp;<span class="constructor">Gsl</span>.<span class="constructor">Matrix_complex</span>.matrix
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;elt&nbsp;=&nbsp;<span class="constructor">Complex</span>.t
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;empty&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;create&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;zeros&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ones&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eye&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sequential&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uniform_int&nbsp;:&nbsp;?a:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?b:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uniform&nbsp;:&nbsp;?scale:float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;gaussian&nbsp;:&nbsp;?sigma:float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;vector&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;vector_zeros&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;vector_ones&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;vector_uniform&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;shape&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;*&nbsp;int
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;row_num&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;col_num&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;numel&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;same_shape&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;reshape&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;set&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;row&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;col&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;rows&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cols&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;clone&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;copy_to&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;copy_row_to&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;copy_col_to&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;concat_vertical&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;concat_horizontal&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;transpose&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;diag&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;trace&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;add_diag&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;replace_row&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;replace_col&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iteri&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iter&nbsp;:&nbsp;(<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fold&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;filteri&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(int&nbsp;*&nbsp;int)&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;filter&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(int&nbsp;*&nbsp;int)&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iteri_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iter_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iteri_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iter_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;filteri_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;filter_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;filteri_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;filter_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fold_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fold_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi_by_row&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?d:int&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map_by_row&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?d:int&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi_by_col&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?d:int&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map_by_col&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?d:int&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi_at_row&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map_at_row&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi_at_col&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map_at_col&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exists&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;not_exists&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;for_all&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_equal&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_unequal&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_greater&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_smaller&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;equal_or_greater&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;equal_or_smaller&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;add&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sub&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mul&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;div&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;dot&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;abs&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;abs2&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;neg&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;power&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;add_scalar&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sub_scalar&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mul_scalar&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;div_scalar&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sum&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;average&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sum_rows&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sum_cols&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;average_rows&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;average_cols&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_zero&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_positive&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_negative&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_nonnegative&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;log&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;log10&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exp&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sin&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cos&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;draw_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?replacement:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;*&nbsp;int&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;draw_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?replacement:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;*&nbsp;int&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;shuffle_rows&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;shuffle_cols&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;shuffle&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_array&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_arrays&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;array&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;of_array&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;of_arrays&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;array&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;save&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;load&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;print&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_dsmat&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;+@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;-@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;*@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;/@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;$@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;**@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;+$&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;-$&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;*$&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;/$&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;$+&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;$-&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;$*&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;$/&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_dense_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;=@&nbsp;)&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;&gt;@&nbsp;)&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;&lt;@&nbsp;)&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;&lt;&gt;@&nbsp;)&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;&gt;=@&nbsp;)&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;&lt;=@&nbsp;)&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+<span class="keyword">end</span></code></body></html>
