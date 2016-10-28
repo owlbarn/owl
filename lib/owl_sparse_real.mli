@@ -3,7 +3,7 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Sparse matrix module *)
+(** Sparse real matrix *)
 
 type spmat
 (** Type of sparse matrices. It is defined in [types.ml] as record type. *)

@@ -4,3 +4,12 @@
  *)
 
 (** [ Complex sparse matrix ] *)
+
+type spmat
+
+
+(** {6 Create sparse matrices} *)
+
+val zeros : int -> int -> spmat
+
+val pp_spmat : spmat -> unit

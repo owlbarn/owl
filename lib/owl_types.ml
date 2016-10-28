@@ -141,7 +141,7 @@ module Sparse_real = struct
     mutable nz  : int;           (* total number of non-zero elements *)
     (* tree missing *)
     (* work missing *)
-    mutable typ : int;           (* format of the sparse matrix, 0:triplet; 1: CCS *)
+    mutable typ : int;           (* sparse matrix format, 0:triplet; 1:CCS; 2:CRS *)
     mutable ptr : spmat_struct Ctypes_static.structure Ctypes_static.ptr;
     (* pointer to the sparse metrix *)
   }
@@ -154,6 +154,17 @@ module Sparse_complex = struct
 
   type int_array = (int64, int64_elt, c_layout) Array1.t
   type elt_array = (Complex.t, complex64_elt, c_layout) Array1.t
+
+  (** record definition for sparse matrix *)
+  type spmat_record = {
+    mutable m   : int;           (* number of rows *)
+    mutable n   : int;           (* number of columns *)
+    mutable i   : int_array;     (* i index, meaning depends on the matrix format *)
+    mutable d   : elt_array;     (* where data actually stored *)
+    mutable p   : int_array;     (* p index, meaning depends on the matrix format *)
+    mutable nz  : int;           (* total number of non-zero elements *)
+    mutable typ : int;           (* sparse matrix format, 0:triplet; 1:CCS; 2:CRS *)
+  }
 
 end
 

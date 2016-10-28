@@ -524,6 +524,7 @@ let pp_spmat x =
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
 let save x f =
+  (*FIXME: outside heap*)
   let s = Marshal.to_string x [] in
   let h = open_out f in
   output_string h s;
