@@ -195,6 +195,47 @@ let row_num_nz x = 0
 
 let col_num_nz x = 0
 
+let reset x =
+  x.p <- _make_int_array (Array.length x.i);
+  x.nz <- 0;
+  x.typ <- 0;
+  Hashtbl.reset x.h
+
+
+let row x i =
+  let y = zeros 1 (col_num x) in
+  for j = 0 to (col_num x) - 1 do
+    set y 0 j (get x i j)
+  done;
+  y
+
+let col x i =
+  let y = zeros (row_num x) 1 in
+  for j = 0 to (row_num x) - 1 do
+    set y j 0 (get x j i)
+  done;
+  y
+
+let rows x l =
+  let m, n = Array.length l, col_num x in
+  let y = zeros m n in
+  Array.iteri (fun i i' ->
+    for j = 0 to n - 1 do
+      set y i j (get x i' j)
+    done
+  ) l;
+  y
+
+let cols x l =
+  let m, n = row_num x, Array.length l in
+  let y = zeros m n in
+  Array.iteri (fun j j' ->
+    for i = 0 to m - 1 do
+      set y i j (get x i j')
+    done
+  ) l;
+  y
+
 let to_dense x =
   let m, n = shape x in
   let y = Owl_dense_complex.zeros m n in

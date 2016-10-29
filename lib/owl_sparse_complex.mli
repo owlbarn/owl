@@ -35,11 +35,22 @@ val numel : spmat -> int
 
 val density : spmat -> float
 
+
 (** {6 Manipulate a matrix} *)
 
 val set : spmat -> int -> int -> elt -> unit
 
 val get : spmat -> int -> int -> elt
+
+val reset : spmat -> unit
+
+val row : spmat -> int -> spmat
+
+val col : spmat -> int -> spmat
+
+val rows : spmat -> int array -> spmat
+
+val cols : spmat -> int array -> spmat
 
 
 (** {6 Input/Output and helper functions} *)
