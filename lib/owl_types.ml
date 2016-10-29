@@ -152,7 +152,7 @@ end
 
 module Sparse_complex = struct
 
-  type int_array = (int64, int64_elt, c_layout) Array1.t
+  type int_array = int array
   type elt_array = (Complex.t, complex64_elt, c_layout) Array1.t
 
   (** record definition for sparse matrix *)
@@ -164,6 +164,7 @@ module Sparse_complex = struct
     mutable p   : int_array;     (* p index, meaning depends on the matrix format *)
     mutable nz  : int;           (* total number of non-zero elements *)
     mutable typ : int;           (* sparse matrix format, 0:triplet; 1:CCS; 2:CRS *)
+    mutable h   : (int, int) Hashtbl.t
   }
 
 end
