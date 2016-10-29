@@ -152,40 +152,9 @@ let to_dense x =
 let pp_spmat x =
   let m, n = shape x in
   let c = nnz x in
-  let y = to_dense x in
-  let _ = Owl_dense_complex.pp_dsmat y in
+  let _ = if m < 100 && n < 100 then Owl_dense_complex.pp_dsmat (to_dense x) in
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n 0 0 c 0.
 
-
-
-(*
-let get x i j =
-  if _is_triplet x then _to_csc x;
-  let a = x.p.(i) in
-  let b = x.p.(i + 1) in
-  let k = ref a in
-  while x.i.(!k) <> i && !k < b do k := !k + 1 done;
-  if !k < b then x.d.{!k}
-  else Complex.zero
-
-
-let set' x i j y =
-  let a = x.p.{i} |> Int64.to_int in
-  let b = x.p.{i + 1} |> Int64.to_int in
-  let k = ref a in
-  let i' = Int64.of_int i in
-  while x.i.{!k} <> i' && !k < b do k := !k + 1 done;
-  if !k < b then ()
-
-let get' x i j =
-  let a = x.p.{i} |> Int64.to_int in
-  let b = x.p.{i + 1} |> Int64.to_int in
-  let k = ref a in
-  let i' = Int64.of_int i in
-  while x.i.{!k} <> i' && !k < b do k := !k + 1 done;
-  if !k < b then x.d.{!k}
-  else Complex.zero
-*)
 
 
 
