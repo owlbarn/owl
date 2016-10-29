@@ -39,16 +39,43 @@ let _remove_ith_triplet x i =
     x.d.{j} <- x.d.{j + 1};
   done
 
-let _to_crs x =
+let _triplet2crs x =
+  (* TODO: can be optimised by sorting col number *)
   let i = Array.sub x.i 0 x.nz in
-  let q = Array.sub x.p 0 x.nz in
+  let q = _make_int_array x.m in
   Array.iter (fun c -> q.(c) <- q.(c) + 1) i;
   let p = _make_int_array (x.m + 1) in
   Array.iteri (fun i c -> p.(i + 1) <- p.(i) + c) q;
   let d = _make_elt_array x.nz in
-  ()
+  for j = 0 to x.nz - 1 do
+    let c = x.d.{j} in
+    let r_i = x.i.(j) in
+    let pos = p.(r_i + 1) - q.(r_i) in
+    d.{pos} <- c;
+    i.(j) <- x.p.(j);
+  done;
+  x.i <- i;
+  x.d <- d;
+  x.p <- p;
+  x.typ <- 2
+
+let _allocate_more_space x =
+  if x.nz < Array.length x.i then ()
+  else (
+    print_endline "allocate space ...";
+    x.i <- Array.append x.i (_make_int_array x.nz);
+    x.p <- Array.append x.p (_make_int_array x.nz);
+    let d = _make_elt_array (x.nz * 2) in
+    for j = 0 to x.nz - 1 do
+      d.{j} <- x.d.{j}
+    done;
+    x.d <- d
+  )
 
 let set x i j y =
+  if _is_triplet x = false then
+    failwith "only triplet format is mutable.";
+  _allocate_more_space x;
   let k = i * (x.n - 1) + j in
   match y = Complex.zero with
   | true  -> (
@@ -72,24 +99,64 @@ let set x i j y =
       )
     )
     in
-    print_int x.nz;
     x.i.(l) <- i;
     x.p.(l) <- j;
     x.d.{l} <- y;
     )
 
 let _get_triplet x i j =
-  let k = i * (x.n - 1) + j in
+  let k = i * x.n + j in
   if Hashtbl.mem x.h k then (
     let l = Hashtbl.find x.h k in
     x.d.{l}
   )
   else Complex.zero
 
+let _get_crs x i j =
+  let a = x.p.(i) in
+  let b = x.p.(i + 1) in
+  let k = ref a in
+  while !k < b && x.i.(!k) <> j do k := !k + 1 done;
+  if !k < b then x.d.{!k}
+  else Complex.zero
+
 let get x i j =
   match x.typ with
   | 0 -> _get_triplet x i j
-  | _ -> Complex.one
+  | 2 -> _get_crs x i j
+  | _ -> failwith "unsupported sparse format."
+
+let shape x = (x.m, x.n)
+
+let row_num x = x.m
+
+let col_num x = x.n
+
+let nnz x = x.nz
+
+let iteri f x =
+  for i = 0 to (row_num x) - 1 do
+    for j = 0 to (col_num x) - 1 do
+      f i j (get x i j)
+    done
+  done
+
+let iter f x = iteri (fun _ _ y -> f y) x
+
+let to_dense x =
+  let m, n = shape x in
+  let y = Owl_dense_complex.zeros m n in
+  iteri (fun i j z -> Owl_dense_complex.set y i j z) x;
+  y
+
+let pp_spmat x =
+  let m, n = shape x in
+  let c = nnz x in
+  let y = to_dense x in
+  let _ = Owl_dense_complex.pp_dsmat y in
+  Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n 0 0 c 0.
+
+
 
 (*
 let get x i j =
@@ -121,6 +188,5 @@ let get' x i j =
 *)
 
 
-let pp_spmat x = Printf.printf "print out something ..."
 
 (** ends here *)
