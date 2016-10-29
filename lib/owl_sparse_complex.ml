@@ -76,7 +76,7 @@ let set x i j y =
   if _is_triplet x = false then
     failwith "only triplet format is mutable.";
   _allocate_more_space x;
-  let k = i * (x.n - 1) + j in
+  let k = i * x.n + j in
   match y = Complex.zero with
   | true  -> (
     if Hashtbl.mem x.h k then (
@@ -132,7 +132,21 @@ let row_num x = x.m
 
 let col_num x = x.n
 
+let numel x = (row_num x) * (col_num x)
+
 let nnz x = x.nz
+
+let density x =
+  let a, b = nnz x, numel x in
+  (float_of_int a) /. (float_of_int b)
+
+let eye n =
+  let x = zeros n n in
+  for i = 0 to (row_num x) - 1 do
+      set x i i Complex.one
+  done;
+  x
+
 
 let iteri f x =
   for i = 0 to (row_num x) - 1 do
@@ -143,6 +157,10 @@ let iteri f x =
 
 let iter f x = iteri (fun _ _ y -> f y) x
 
+let row_num_nz x = 0
+
+let col_num_nz x = 0
+
 let to_dense x =
   let m, n = shape x in
   let y = Owl_dense_complex.zeros m n in
@@ -152,8 +170,10 @@ let to_dense x =
 let pp_spmat x =
   let m, n = shape x in
   let c = nnz x in
+  let p = 100. *. (density x) in
+  let mz, nz = row_num_nz x, col_num_nz x in
   let _ = if m < 100 && n < 100 then Owl_dense_complex.pp_dsmat (to_dense x) in
-  Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n 0 0 c 0.
+  Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
 
 

@@ -14,9 +14,10 @@ type elt = Complex.t
 
 val zeros : int -> int -> spmat
 
-val set : spmat -> int -> int -> elt -> unit
+val eye : int -> spmat
 
-val get : spmat -> int -> int -> elt
+
+(** {6 Obtain the basic properties of a matrix} *)
 
 val shape : spmat -> int * int
 
@@ -24,8 +25,22 @@ val row_num : spmat -> int
 
 val col_num : spmat -> int
 
+val numel : spmat -> int
+
+val density : spmat -> float
+
+(** {6 Manipulate a matrix} *)
+
+val set : spmat -> int -> int -> elt -> unit
+
+val get : spmat -> int -> int -> elt
+
+
+(** {6 Input/Output and helper functions} *)
+
 val to_dense : spmat -> Owl_dense_complex.mat
 
 val pp_spmat : spmat -> unit
+
 
 val _triplet2crs : spmat -> unit
