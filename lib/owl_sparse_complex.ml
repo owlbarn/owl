@@ -39,6 +39,14 @@ let _remove_ith_triplet x i =
     x.d.{j} <- x.d.{j + 1};
   done
 
+(* for debug purpose *)
+let _print_complex x = Printf.printf "{re = %f; im = %f} " Complex.(x.re) Complex.(x.im)
+
+(* for debug purpose *)
+let _print_array x =
+  Array.iter (fun y -> print_int y; print_char ' ') x;
+  print_endline ""
+
 let _triplet2crs x =
   (* TODO: can be optimised by sorting col number *)
   let i = Array.sub x.i 0 x.nz in
@@ -52,7 +60,8 @@ let _triplet2crs x =
     let r_i = x.i.(j) in
     let pos = p.(r_i + 1) - q.(r_i) in
     d.{pos} <- c;
-    i.(j) <- x.p.(j);
+    i.(pos) <- x.p.(j);
+    q.(r_i) <- q.(r_i) - 1;
   done;
   x.i <- i;
   x.d <- d;
@@ -147,6 +156,31 @@ let eye n =
   done;
   x
 
+let _random_basic f m n =
+  let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
+  let x = zeros m n in
+  for k = 0 to c do
+    let i = Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) () in
+    let j = Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) () in
+    set x i j (f ())
+  done;
+  x
+
+let binary m n = _random_basic (fun () -> Complex.one) m n
+
+let uniform ?(scale=1.) m n =
+  _random_basic (fun () ->
+    let re = Owl_stats.Rnd.uniform () *. scale in
+    let im = Owl_stats.Rnd.uniform () *. scale in
+    Complex.({re; im})
+  ) m n
+
+let uniform_int ?(a=0) ?(b=99) m n =
+  _random_basic (fun () ->
+    let re = Owl_stats.Rnd.uniform_int ~a ~b () |> float_of_int in
+    let im = Owl_stats.Rnd.uniform_int ~a ~b () |> float_of_int in
+    Complex.({re; im})
+  ) m n
 
 let iteri f x =
   for i = 0 to (row_num x) - 1 do
