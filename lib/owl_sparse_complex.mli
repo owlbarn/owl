@@ -53,6 +53,96 @@ val rows : spmat -> int array -> spmat
 val cols : spmat -> int array -> spmat
 
 
+(** {6 Iterate elements, columns, and rows} *)
+
+val iteri : (int -> int -> elt -> 'a) -> spmat -> unit
+
+val iter : (elt -> 'a) -> spmat -> unit
+
+val mapi : (int -> int -> elt -> elt) -> spmat -> spmat
+
+val map : (elt -> elt) -> spmat -> spmat
+
+val fold : ('a -> elt -> 'a) -> 'a -> spmat -> 'a
+
+val filteri : (int -> int -> elt -> bool) -> spmat -> (int * int) array
+
+val filter : (elt -> bool) -> spmat -> (int * int) array
+
+val iteri_rows : (int -> spmat -> unit) -> spmat -> unit
+
+val iter_rows : (spmat -> unit) -> spmat -> unit
+
+val iteri_cols : (int -> spmat -> unit) -> spmat -> unit
+
+val iter_cols : (spmat -> unit) -> spmat -> unit
+
+val mapi_rows : (int -> spmat -> 'a) -> spmat -> 'a array
+
+val map_rows : (spmat -> 'a) -> spmat -> 'a array
+
+val mapi_cols : (int -> spmat -> 'a) -> spmat -> 'a array
+
+val map_cols : (spmat -> 'a) -> spmat -> 'a array
+
+val fold_rows : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
+
+val fold_cols : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
+
+val iteri_nz : (int -> int -> elt -> 'a) -> spmat -> unit
+
+val iter_nz : (elt -> 'a) -> spmat -> unit
+
+val mapi_nz : (int -> int -> elt -> elt) -> spmat -> spmat
+
+val map_nz : (elt -> elt) -> spmat -> spmat
+
+val fold_nz : ('a -> elt -> 'a) -> 'a -> spmat -> 'a
+
+val filteri_nz : (int -> int -> elt -> bool) -> spmat -> (int * int) array
+
+val filter_nz : (elt -> bool) -> spmat -> (int * int) array
+
+val iteri_rows_nz : (int -> spmat -> unit) -> spmat -> unit
+
+val iter_rows_nz : (spmat -> unit) -> spmat -> unit
+
+val iteri_cols_nz : (int -> spmat -> unit) -> spmat -> unit
+
+val iter_cols_nz : (spmat -> unit) -> spmat -> unit
+
+val mapi_rows_nz : (int -> spmat -> 'a) -> spmat -> 'a array
+
+val map_rows_nz : (spmat -> 'a) -> spmat -> 'a array
+
+val mapi_cols_nz : (int -> spmat -> 'a) -> spmat -> 'a array
+
+val map_cols_nz : (spmat -> 'a) -> spmat -> 'a array
+
+val fold_rows_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
+
+val fold_cols_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
+
+
+(** {6 Examine the elements in a matrix} *)
+
+val exists : (elt -> bool) -> spmat -> bool
+
+val not_exists : (elt -> bool) -> spmat -> bool
+
+val for_all : (elt -> bool) -> spmat -> bool
+
+val exists_nz : (elt -> bool) -> spmat -> bool
+
+val not_exists_nz : (elt -> bool) -> spmat -> bool
+
+val for_all_nz :  (elt -> bool) -> spmat -> bool
+
+
+(** {6 Basic mathematical operations of matrices} *)
+
+
+
 (** {6 Input/Output and helper functions} *)
 
 val to_dense : spmat -> Owl_dense_complex.mat
