@@ -580,5 +580,41 @@ let load f =
   let s = really_input_string h (in_channel_length h) in
   Marshal.from_string s 0
 
+(** short-hand infix operators *)
+
+let ( +@ ) = add
+
+let ( -@ ) = sub
+
+let ( *@ ) = mul
+
+let ( /@ ) = div
+
+let ( $@ ) = dot
+
+let ( **@ ) = power
+
+let ( *$ ) x a = mul_scalar x a
+
+let ( $* ) a x = mul_scalar x a
+
+let ( /$ ) x a = div_scalar x a
+
+let ( $/ ) a x = div_scalar x a
+
+let ( =@ ) = is_equal
+
+let ( >@ ) = is_greater
+
+let ( <@ ) = is_smaller
+
+let ( <>@ ) = is_unequal
+
+let ( >=@ ) = equal_or_greater
+
+let ( <=@ ) = equal_or_smaller
+
+
+
 
 (** ends here *)

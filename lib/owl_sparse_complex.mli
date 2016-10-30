@@ -218,7 +218,6 @@ val equal_or_greater : spmat -> spmat -> bool
 val equal_or_smaller : spmat -> spmat -> bool
 
 
-
 (** {6 Input/Output and helper functions} *)
 
 val to_dense : spmat -> Owl_dense_complex.mat
@@ -232,6 +231,60 @@ val pp_spmat : spmat -> unit
 val save : spmat -> string -> unit
 
 val load : string -> spmat
+
+
+(** {6 Shorhand infix operators} *)
+
+val ( +@ ) : spmat -> spmat -> spmat
+(** Shorthand for [add x y], i.e., [x +@ y] *)
+
+val ( -@ ) : spmat -> spmat -> spmat
+(** Shorthand for [sub x y], i.e., [x -@ y] *)
+
+val ( *@ ) : spmat -> spmat -> spmat
+(** Shorthand for [mul x y], i.e., [x *@ y] *)
+
+val ( /@ ) : spmat -> spmat -> spmat
+(** Shorthand for [div x y], i.e., [x /@ y] *)
+
+val ( $@ ) : spmat -> spmat -> spmat
+(** Shorthand for [dot x y], i.e., [x $@ y] *)
+
+val ( **@ ) : spmat -> elt -> spmat
+(** Shorthand for [power x a], i.e., [x **@ a] *)
+
+val ( *$ ) : spmat -> elt -> spmat
+(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
+
+val ( /$ ) : spmat -> elt -> spmat
+(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
+
+val ( $* ) : elt -> spmat -> spmat
+(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
+
+val ( $/ ) : elt -> spmat -> spmat
+(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
+
+val ( =@ ) : spmat -> spmat -> bool
+(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
+
+val ( >@ ) : spmat -> spmat -> bool
+(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
+
+val ( <@ ) : spmat -> spmat -> bool
+(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
+
+val ( <>@ ) : spmat -> spmat -> bool
+(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
+
+val ( >=@ ) : spmat -> spmat -> bool
+(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
+
+val ( <=@ ) : spmat -> spmat -> bool
+(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
+
+(* val ( @@ ) : (float -> float) -> dsmat -> dsmat *)
+
 
 
 (* TODO: debug purpose *)
