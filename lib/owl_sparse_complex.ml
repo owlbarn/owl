@@ -580,6 +580,43 @@ let load f =
   let s = really_input_string h (in_channel_length h) in
   Marshal.from_string s 0
 
+(** permutation and draw functions *)
+
+let permutation_matrix d =
+  let l = Array.init d (fun x -> x) |> Owl_stats.shuffle in
+  let y = zeros d d in
+  let _ = Array.iteri (fun i j -> set y i j Complex.one) l in y
+
+let draw_rows ?(replacement=true) x c =
+  let m, n = shape x in
+  let a = Array.init m (fun x -> x) |> Owl_stats.shuffle in
+  let l = match replacement with
+    | true  -> Owl_stats.sample a c
+    | false -> Owl_stats.choose a c
+  in
+  let y = zeros c m in
+  let _ = Array.iteri (fun i j -> set y i j Complex.one) l in
+  dot y x, l
+
+let draw_cols ?(replacement=true) x c =
+  let m, n = shape x in
+  let a = Array.init n (fun x -> x) |> Owl_stats.shuffle in
+  let l = match replacement with
+    | true  -> Owl_stats.sample a c
+    | false -> Owl_stats.choose a c
+  in
+  let y = zeros n c in
+  let _ = Array.iteri (fun j i -> set y i j Complex.one) l in
+  dot x y, l
+
+let shuffle_rows x =
+  let y = permutation_matrix (row_num x) in dot y x
+
+let shuffle_cols x =
+  let y = permutation_matrix (col_num x) in dot x y
+
+let shuffle x = x |> shuffle_rows |> shuffle_cols
+
 (** short-hand infix operators *)
 
 let ( +@ ) = add

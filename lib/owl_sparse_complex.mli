@@ -193,7 +193,6 @@ val max : spmat -> elt
 
 val minmax : spmat -> elt * elt
 
-
 val sum_rows : spmat -> spmat
 
 val sum_cols : spmat -> spmat
@@ -216,6 +215,21 @@ val is_smaller : spmat -> spmat -> bool
 val equal_or_greater : spmat -> spmat -> bool
 
 val equal_or_smaller : spmat -> spmat -> bool
+
+
+(** {6 Randomisation functions} *)
+
+val permutation_matrix : int -> spmat
+
+val draw_rows : ?replacement:bool -> spmat -> int -> spmat * int array
+
+val draw_cols : ?replacement:bool -> spmat -> int -> spmat * int array
+
+val shuffle_rows : spmat -> spmat
+
+val shuffle_cols : spmat -> spmat
+
+val shuffle : spmat -> spmat
 
 
 (** {6 Input/Output and helper functions} *)
