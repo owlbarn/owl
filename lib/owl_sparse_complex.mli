@@ -54,6 +54,10 @@ val clone : spmat -> spmat
 
 (* val transpose : spmat -> spmat *)
 
+val diag : spmat -> spmat
+
+val trace : spmat -> elt
+
 val row : spmat -> int -> spmat
 
 val col : spmat -> int -> spmat
@@ -177,11 +181,51 @@ val power : spmat -> elt -> spmat
 
 val is_zero : spmat -> bool
 
+val is_positive : spmat -> bool
+
+val is_negative : spmat -> bool
+
+val is_nonnegative : spmat -> bool
+
+val min : spmat -> elt
+
+val max : spmat -> elt
+
+val minmax : spmat -> elt * elt
+
+(*
+val sum_rows : spmat -> spmat
+
+val sum_cols : spmat -> spmat
+
+val average_rows : spmat -> spmat
+
+val average_cols : spmat -> spmat
+*)
+
+(** {6 Compare two matrices} *)
+
+val is_equal : spmat -> spmat -> bool
+
+val is_unequal : spmat -> spmat -> bool
+
+val is_greater : spmat -> spmat -> bool
+
+val is_smaller : spmat -> spmat -> bool
+
+val equal_or_greater : spmat -> spmat -> bool
+
+val equal_or_smaller : spmat -> spmat -> bool
+
 
 
 (** {6 Input/Output and helper functions} *)
 
 val to_dense : spmat -> Owl_dense_complex.mat
+
+val of_dense : Owl_dense_complex.mat -> spmat
+
+val print : spmat -> unit
 
 val pp_spmat : spmat -> unit
 

@@ -448,13 +448,87 @@ let power x c = map_nz (fun y -> Complex.pow y c) x
 
 let is_zero x = x.nz = 0
 
+let is_positive x =
+  if x.nz < (x.m * x.n) then false
+  else for_all (( < ) Complex.zero) x
 
+let is_negative x =
+  if x.nz < (x.m * x.n) then false
+  else for_all (( > ) Complex.zero) x
+
+let is_nonnegative x =
+  for_all_nz (( <= ) Complex.zero) x
+
+let minmax x =
+  let xmin = ref Complex.({re = infinity; im = infinity}) in
+  let xmax = ref Complex.({re = neg_infinity; im = neg_infinity}) in
+  iter_nz (fun y ->
+    if y < !xmin then xmin := y;
+    if y > !xmax then xmax := y;
+  ) x;
+  match x.nz < (numel x) with
+  | true  -> (min !xmin Complex.zero), (max !xmax Complex.zero)
+  | false -> !xmin, !xmax
+
+let min x = fst (minmax x)
+
+let max x = snd (minmax x)
+
+let is_equal x1 x2 = sub x1 x2 |> is_zero
+
+let is_unequal x1 x2 = not (is_equal x1 x2)
+
+let is_greater x1 x2 = is_positive (sub x1 x2)
+
+let is_smaller x1 x2 = is_greater x2 x1
+
+let equal_or_greater x1 x2 = is_nonnegative (sub x1 x2)
+
+let equal_or_smaller x1 x2 = equal_or_greater x2 x1
+
+(** advanced matrix methematical operations *)
+
+let diag x =
+  let m = Pervasives.min (row_num x) (col_num x) in
+  let y = zeros 1 m in
+  iteri_nz (fun i j z ->
+    if i = j then set y 0 j z else ()
+  ) x; y
+
+let trace x = sum (diag x)
+
+(** transform to and from different types *)
 
 let to_dense x =
   let m, n = shape x in
   let y = Owl_dense_complex.zeros m n in
   iteri (fun i j z -> Owl_dense_complex.set y i j z) x;
   y
+
+let of_dense x =
+  let m, n = Owl_dense_complex.shape x in
+  let y = zeros m n in
+  Owl_dense_complex.iteri (fun i j z -> set y i j z) x;
+  y
+
+let sum_rows x = None
+
+let sum_cols x = None
+
+let average_rows x = None
+
+let average_cols x = None
+
+(** formatted input / output operations *)
+
+let print x =
+  for i = 0 to (row_num x) - 1 do
+    for j = 0 to (col_num x) - 1 do
+      let c = get x i j in
+      Printf.printf "(%.2f, %.2fi) " Complex.(c.re) Complex.(c.im)
+    done;
+    print_endline ""
+  done
 
 let pp_spmat x =
   let m, n = shape x in
