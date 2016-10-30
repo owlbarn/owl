@@ -369,6 +369,22 @@ let not_exists_nz f x = not (exists_nz f x)
 
 let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
 
+let clone x = None
+
+let nnz_rows x =
+  let s = Hashtbl.create 1000 in
+  let _ = iteri_nz (fun i _ _ -> if not (Hashtbl.mem s i) then Hashtbl.add s i 0) x in
+  Hashtbl.fold (fun k v l -> l @ [k]) s [] |> Array.of_list
+
+let nnz_cols x =
+  let s = Hashtbl.create 1000 in
+  let _ = iteri_nz (fun _ j _ -> if not (Hashtbl.mem s j) then Hashtbl.add s j 0) x in
+  Hashtbl.fold (fun k v l -> l @ [k]) s [] |> Array.of_list
+
+let row_num_nz x = nnz_rows x |> Array.length
+
+let col_num_nz x = nnz_cols x |> Array.length
+
 
 
 let to_dense x =
