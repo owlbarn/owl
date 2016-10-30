@@ -50,6 +50,10 @@ val get : spmat -> int -> int -> elt
 
 val reset : spmat -> unit
 
+val clone : spmat -> spmat
+
+(* val transpose : spmat -> spmat *)
+
 val row : spmat -> int -> spmat
 
 val col : spmat -> int -> spmat
@@ -146,6 +150,32 @@ val for_all_nz :  (elt -> bool) -> spmat -> bool
 
 
 (** {6 Basic mathematical operations of matrices} *)
+
+val mul_scalar : spmat -> elt -> spmat
+
+val div_scalar : spmat -> elt -> spmat
+
+val add : spmat -> spmat -> spmat
+
+val sub : spmat -> spmat -> spmat
+
+val mul : spmat -> spmat -> spmat
+
+val div : spmat -> spmat -> spmat
+
+(* val dot : spmat -> spmat -> spmat *)
+
+val abs : spmat -> spmat
+
+val neg : spmat -> spmat
+
+val sum : spmat -> elt
+
+val average : spmat -> elt
+
+val power : spmat -> elt -> spmat
+
+val is_zero : spmat -> bool
 
 
 

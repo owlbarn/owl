@@ -68,6 +68,8 @@ let _triplet2crs x =
   x.p <- p;
   x.typ <- 2
 
+let _crs2triplet x = None
+
 let _allocate_more_space x =
   if x.nz < Array.length x.i then ()
   else (
@@ -365,7 +367,19 @@ let not_exists_nz f x = not (exists_nz f x)
 
 let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
 
-let clone x = None
+let clone x =
+  let d = _make_elt_array (Array1.dim x.d) in
+  let _ = Array1.blit x.d d in
+  {
+    m   = x.m;
+    n   = x.n;
+    i   = Array.copy x.i;
+    d   = d;
+    p   = Array.copy x.p;
+    nz  = x.nz;
+    typ = x.typ;
+    h   = Hashtbl.copy x.h;
+  }
 
 let nnz_rows x =
   let s = Hashtbl.create 1000 in
@@ -380,6 +394,59 @@ let nnz_cols x =
 let row_num_nz x = nnz_rows x |> Array.length
 
 let col_num_nz x = nnz_cols x |> Array.length
+
+(** matrix mathematical operations *)
+
+let mul_scalar x y = map_nz (fun z -> Complex.(mul z y)) x
+
+let div_scalar x y = mul_scalar x (Complex.inv y)
+
+let add x1 x2 =
+  let y = zeros (row_num x1) (col_num x2) in
+  let _ = iteri_nz (fun i j a ->
+    let b = get x2 i j in
+    if b = Complex.zero then set y i j a
+  ) x1 in
+  let _ = iteri_nz (fun i j a ->
+    let b = get x1 i j in
+    set y i j Complex.(add a b)
+  ) x2 in
+  y
+
+let neg x = map_nz Complex.neg x
+
+let dot x1 x2 = None
+
+let sub x1 x2 = add x1 (neg x2)
+
+let mul x1 x2 =
+  let y = zeros (row_num x1) (col_num x2) in
+  let _ = iteri_nz (fun i j a ->
+    let b = get x2 i j in
+    if b <> Complex.zero then set y i j (Complex.mul a b)
+  ) x1 in
+  y
+
+let div x1 x2 =
+  let y = zeros (row_num x1) (col_num x2) in
+  let _ = iteri_nz (fun i j a ->
+    let b = get x2 i j in
+    if b <> Complex.zero then set y i j Complex.(mul a (inv b))
+  ) x1 in
+  y
+
+let abs x = map_nz (fun y -> Complex.({re = norm y; im = 0.})) x
+
+let sum x = fold_nz Complex.add Complex.zero x
+
+let average x =
+  let a = sum x in
+  let b = Complex.({re = float_of_int (numel x); im = 0.}) in
+  Complex.div a b
+
+let power x c = map_nz (fun y -> Complex.pow y c) x
+
+let is_zero x = x.nz = 0
 
 
 
