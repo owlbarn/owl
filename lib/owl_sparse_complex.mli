@@ -14,6 +14,8 @@ type elt = Complex.t
 
 val zeros : int -> int -> spmat
 
+val ones : int -> int -> spmat
+
 val eye : int -> spmat
 
 val binary : int -> int -> spmat
@@ -30,6 +32,10 @@ val shape : spmat -> int * int
 val row_num : spmat -> int
 
 val col_num : spmat -> int
+
+val row_num_nz : spmat -> int
+
+val col_num_nz : spmat -> int
 
 val numel : spmat -> int
 

@@ -76,6 +76,12 @@ Executable test_sparse
   MainIs:         test_sparse.ml
   BuildDepends:   Owl
 
+Executable test_sparse_complex
+  Path:           examples
+  CompiledObject: best
+  MainIs:         test_sparse_complex.ml
+  BuildDepends:   Owl
+
 AlphaFeatures: ocamlbuild_more_args
 Document owldoc
   Title:                API reference for Owl

@@ -617,6 +617,8 @@ let shuffle_cols x =
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols
 
+let ones m n = Owl_dense_complex.ones m n |> of_dense
+
 (** short-hand infix operators *)
 
 let ( +@ ) = add
