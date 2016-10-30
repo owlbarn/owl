@@ -18,7 +18,7 @@ let _make_int_array x = Array.make x 0
 let _make_elt_array x = Array1.create complex64 c_layout x
 
 let zeros m n =
-  let c = max (m * n / 100) 1024 in
+  let c = max (m * n / 100) 181024 in
   {
     m   = m;
     n   = n;
@@ -37,6 +37,7 @@ let _remove_ith_triplet x i =
     x.i.(j) <- x.i.(j + 1);
     x.p.(j) <- x.p.(j + 1);
     x.d.{j} <- x.d.{j + 1};
+    Hashtbl.replace x.h (x.i.(j) * x.n + x.p.(j)) j;
   done
 
 (* for debug purpose *)
@@ -49,6 +50,8 @@ let _print_array x =
 
 let _triplet2crs x =
   (* TODO: can be optimised by sorting col number *)
+  Log.debug "convert triplet -> crs";
+  if _is_triplet x = false then failwith "not in triplet format";
   let i = Array.sub x.i 0 x.nz in
   let q = _make_int_array x.m in
   Array.iter (fun c -> q.(c) <- q.(c) + 1) i;
@@ -73,7 +76,7 @@ let _crs2triplet x = None
 let _allocate_more_space x =
   if x.nz < Array.length x.i then ()
   else (
-    Log.info "allocate space %i" x.nz;
+    Log.debug "allocate space %i" x.nz;
     x.i <- Array.append x.i (_make_int_array x.nz);
     x.p <- Array.append x.p (_make_int_array x.nz);
     let d = _make_elt_array (x.nz * 2) in
@@ -403,7 +406,7 @@ let mul_scalar x y = map_nz (fun z -> Complex.(mul z y)) x
 let div_scalar x y = mul_scalar x (Complex.inv y)
 
 let add x1 x2 =
-  let y = zeros (row_num x1) (col_num x2) in
+  let y = zeros (row_num x1) (col_num x1) in
   let _ = iteri_nz (fun i j a ->
     let b = get x2 i j in
     if b = Complex.zero then set y i j a
@@ -421,7 +424,7 @@ let dot x1 x2 = None
 let sub x1 x2 = add x1 (neg x2)
 
 let mul x1 x2 =
-  let y = zeros (row_num x1) (col_num x2) in
+  let y = zeros (row_num x1) (col_num x1) in
   let _ = iteri_nz (fun i j a ->
     let b = get x2 i j in
     if b <> Complex.zero then set y i j (Complex.mul a b)
@@ -429,7 +432,7 @@ let mul x1 x2 =
   y
 
 let div x1 x2 =
-  let y = zeros (row_num x1) (col_num x2) in
+  let y = zeros (row_num x1) (col_num x1) in
   let _ = iteri_nz (fun i j a ->
     let b = get x2 i j in
     if b <> Complex.zero then set y i j Complex.(mul a (inv b))
@@ -535,7 +538,8 @@ let pp_spmat x =
   let m, n = shape x in
   let c = nnz x in
   let p = 100. *. (density x) in
-  let mz, nz = row_num_nz x, col_num_nz x in
+  (* let mz, nz = row_num_nz x, col_num_nz x in *)
+  let mz, nz = 0, 0 in
   let _ = if m < 100 && n < 100 then Owl_dense_complex.pp_dsmat (to_dense x) in
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 

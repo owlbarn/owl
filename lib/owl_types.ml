@@ -11,7 +11,7 @@ open Bigarray
 open Ctypes
 
 (** configure the logger *)
-let _ = Log.color_on (); Log.(set_log_level INFO)
+let _ = Log.color_on (); Log.(set_log_level DEBUG)
 
 (* struct definition for real dense matrix *)
 

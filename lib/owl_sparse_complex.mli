@@ -235,3 +235,5 @@ val load : string -> spmat
 
 
 val _triplet2crs : spmat -> unit
+
+val _is_triplet : spmat -> bool
