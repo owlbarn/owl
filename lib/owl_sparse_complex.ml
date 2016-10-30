@@ -73,14 +73,14 @@ let _crs2triplet x = None
 let _allocate_more_space x =
   if x.nz < Array.length x.i then ()
   else (
-    print_endline "allocate space ...";
+    Log.info "allocate space %i" x.nz;
     x.i <- Array.append x.i (_make_int_array x.nz);
     x.p <- Array.append x.p (_make_int_array x.nz);
     let d = _make_elt_array (x.nz * 2) in
     for j = 0 to x.nz - 1 do
       d.{j} <- x.d.{j}
     done;
-    x.d <- d
+    x.d <- d;
   )
 
 let set x i j y =
@@ -91,8 +91,9 @@ let set x i j y =
   match y = Complex.zero with
   | true  -> (
     if Hashtbl.mem x.h k then (
-      let t = x.d.{k} in
-      _remove_ith_triplet x (Hashtbl.find x.h k);
+      let l = Hashtbl.find x.h k in
+      let t = x.d.{l} in
+      _remove_ith_triplet x l;
       Hashtbl.remove x.h k;
       if t <> Complex.zero then x.nz <- x.nz - 1
     )
@@ -538,7 +539,16 @@ let pp_spmat x =
   let _ = if m < 100 && n < 100 then Owl_dense_complex.pp_dsmat (to_dense x) in
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
+let save x f =
+  let s = Marshal.to_string x [] in
+  let h = open_out f in
+  output_string h s;
+  close_out h
 
+let load f =
+  let h = open_in f in
+  let s = really_input_string h (in_channel_length h) in
+  Marshal.from_string s 0
 
 
 (** ends here *)

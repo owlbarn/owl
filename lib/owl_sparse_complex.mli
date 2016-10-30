@@ -229,5 +229,9 @@ val print : spmat -> unit
 
 val pp_spmat : spmat -> unit
 
+val save : spmat -> string -> unit
+
+val load : string -> spmat
+
 
 val _triplet2crs : spmat -> unit
