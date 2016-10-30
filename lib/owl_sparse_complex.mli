@@ -167,7 +167,7 @@ val mul : spmat -> spmat -> spmat
 
 val div : spmat -> spmat -> spmat
 
-(* val dot : spmat -> spmat -> spmat *)
+val dot : spmat -> spmat -> spmat
 
 val abs : spmat -> spmat
 
@@ -193,7 +193,7 @@ val max : spmat -> elt
 
 val minmax : spmat -> elt * elt
 
-(*
+
 val sum_rows : spmat -> spmat
 
 val sum_cols : spmat -> spmat
@@ -201,7 +201,7 @@ val sum_cols : spmat -> spmat
 val average_rows : spmat -> spmat
 
 val average_cols : spmat -> spmat
-*)
+
 
 (** {6 Compare two matrices} *)
 
@@ -233,6 +233,8 @@ val save : spmat -> string -> unit
 
 val load : string -> spmat
 
+
+(* TODO: debug purpose *)
 
 val _triplet2crs : spmat -> unit
 

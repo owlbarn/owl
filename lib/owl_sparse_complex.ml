@@ -33,6 +33,7 @@ let zeros m n =
 let _is_triplet x = x.typ = 0
 
 let _remove_ith_triplet x i =
+  Log.debug "_remove_ith_triplet";
   for j = i to x.nz - 2 do
     x.i.(j) <- x.i.(j + 1);
     x.p.(j) <- x.p.(j + 1);
@@ -419,7 +420,20 @@ let add x1 x2 =
 
 let neg x = map_nz Complex.neg x
 
-let dot x1 x2 = None
+let dot x1 x2 =
+  let m1, n1 = shape x1 in
+  let m2, n2 = shape x2 in
+  if n1 <> m2 then failwith "dimension mistach";
+  let y = zeros m1 n2 in
+  iteri_nz (fun i j a ->
+    iteri_nz (fun i' j' b ->
+      if j = i' then (
+        let c = get y i j' in
+        set y i j' Complex.(add c (mul a b))
+      )
+    ) x2
+  ) x1;
+  y
 
 let sub x1 x2 = add x1 (neg x2)
 
@@ -515,13 +529,25 @@ let of_dense x =
   Owl_dense_complex.iteri (fun i j z -> set y i j z) x;
   y
 
-let sum_rows x = None
+let sum_rows x =
+  let y = Owl_dense_complex.ones 1 (row_num x) |> of_dense in
+  dot y x
 
-let sum_cols x = None
+let sum_cols x =
+  let y = Owl_dense_complex.ones (col_num x) 1 |> of_dense in
+  dot x y
 
-let average_rows x = None
+let average_rows x =
+  let m, n = shape x in
+  let a = 1. /. (float_of_int m) in
+  let y = Owl_dense_complex.create 1 m Complex.({re = a; im = 0.}) |> of_dense in
+  dot y x
 
-let average_cols x = None
+let average_cols x =
+  let m, n = shape x in
+  let a = 1. /. (float_of_int n) in
+  let y = Owl_dense_complex.create n 1 Complex.({re = a; im = 0.}) |> of_dense in
+  dot x y
 
 (** formatted input / output operations *)
 
