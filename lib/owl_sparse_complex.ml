@@ -191,10 +191,6 @@ let iteri f x =
 
 let iter f x = iteri (fun _ _ y -> f y) x
 
-let row_num_nz x = 0
-
-let col_num_nz x = 0
-
 let reset x =
   x.p <- _make_int_array (Array.length x.i);
   x.nz <- 0;
