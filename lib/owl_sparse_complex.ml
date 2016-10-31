@@ -190,6 +190,20 @@ let uniform_int ?(a=1) ?(b=99) m n =
     Complex.({re; im})
   ) m n
 
+let clone x =
+  let d = _make_elt_array (Array1.dim x.d) in
+  let _ = Array1.blit x.d d in
+  {
+    m   = x.m;
+    n   = x.n;
+    i   = Array.copy x.i;
+    d   = d;
+    p   = Array.copy x.p;
+    nz  = x.nz;
+    typ = x.typ;
+    h   = Hashtbl.copy x.h;
+  }
+
 let iteri f x =
   for i = 0 to (row_num x) - 1 do
     for j = 0 to (col_num x) - 1 do
@@ -301,7 +315,12 @@ let mapi_nz f x =
   iteri_nz (fun i j z -> set y i j (f i j z)) x;
   y
 
-let map_nz f x = mapi_nz (fun _ _ y -> f y) x
+let map_nz f x =
+  let y = clone x in
+  for i = 0 to x.nz - 1 do
+    y.d.{i} <- f y.d.{i}
+  done;
+  y
 
 let fold_nz f a x = _fold_basic iter_nz f a x
 
@@ -376,20 +395,6 @@ let exists_nz f x = _exists_basic iter_nz f x
 let not_exists_nz f x = not (exists_nz f x)
 
 let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
-
-let clone x =
-  let d = _make_elt_array (Array1.dim x.d) in
-  let _ = Array1.blit x.d d in
-  {
-    m   = x.m;
-    n   = x.n;
-    i   = Array.copy x.i;
-    d   = d;
-    p   = Array.copy x.p;
-    nz  = x.nz;
-    typ = x.typ;
-    h   = Hashtbl.copy x.h;
-  }
 
 let nnz_rows x =
   let s = Hashtbl.create 1000 in
