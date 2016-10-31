@@ -51,7 +51,7 @@ let _print_array x =
 
 let _triplet2crs x =
   (* TODO: can be optimised by sorting col number *)
-  Log.debug "convert triplet -> crs";
+  Log.debug "triplet -> crs starts";
   if _is_triplet x = false then failwith "not in triplet format";
   let i = Array.sub x.i 0 x.nz in
   let q = _make_int_array x.m in
@@ -70,7 +70,8 @@ let _triplet2crs x =
   x.i <- i;
   x.d <- d;
   x.p <- p;
-  x.typ <- 2
+  x.typ <- 2;
+  Log.debug "triplet -> crs ends"
 
 let _crs2triplet x = None
 
