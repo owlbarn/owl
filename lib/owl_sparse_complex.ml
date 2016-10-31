@@ -311,8 +311,15 @@ let iteri_cols f x = Array.iteri (fun j y -> f j y) (_disassemble_cols x)
 let iter_cols f x = iteri_cols (fun _ y -> f y) x
 
 let mapi_nz f x =
-  let y = zeros (row_num x) (col_num x) in
-  iteri_nz (fun i j z -> set y i j (f i j z)) x;
+  if _is_triplet x then _triplet2crs x;
+  let y = clone x in
+  for i = 0 to x.m - 1 do
+    for k = x.p.(i) to x.p.(i + 1) - 1 do
+      let j = x.i.(k) in
+      let z = x.d.{k} in
+      y.d.{k} <- f i j z
+    done
+  done;
   y
 
 let map_nz f x =
