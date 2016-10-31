@@ -279,7 +279,7 @@ let iteri_nz f x =
   for i = 0 to x.m - 1 do
     for k = x.p.(i) to x.p.(i + 1) - 1 do
       let j = x.i.(k) in
-      let y = Array1.get x.d k in
+      let y = x.d.{k} in
       f i j y
     done
   done
@@ -435,7 +435,6 @@ let add x1 x2 =
   ) x2 in
   y
 
-(* TODO: optimise *)
 let neg x = map_nz Complex.neg x
 
 let dot x1 x2 =
@@ -512,7 +511,9 @@ let min x = fst (minmax x)
 
 let max x = snd (minmax x)
 
-let is_equal x1 x2 = sub x1 x2 |> is_zero
+let is_equal x1 x2 =
+  if x1.nz <> x2.nz then false
+  else (sub x1 x2 |> is_zero)
 
 let is_unequal x1 x2 = not (is_equal x1 x2)
 
