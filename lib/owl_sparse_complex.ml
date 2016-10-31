@@ -18,7 +18,7 @@ let _make_int_array x = Array.make x 0
 let _make_elt_array x = Array1.create complex64 c_layout x
 
 let zeros m n =
-  let c = max (m * n / 100) 181024 in
+  let c = max (m * n / 100) 1024 in
   {
     m   = m;
     n   = n;
@@ -272,9 +272,13 @@ let iteri_nz f x =
 let iter_nz f x = iteri_nz (fun _ _ y -> f y) x
 
 let _disassemble_rows x =
+  Log.debug "_disassemble_rows starts";
   if _is_triplet x then _triplet2crs x;
+  Log.debug "allocate space starts";
   let d = Array.init (row_num x) (fun _ -> zeros 1 (col_num x)) in
+  Log.debug "iteri_nz starts";
   let _ = iteri_nz (fun i j z -> set d.(i) 0 j z) x in
+  Log.debug "_disassemble_rows ends";
   d
 
 let _disassemble_cols x =
