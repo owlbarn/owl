@@ -183,7 +183,7 @@ let uniform ?(scale=1.) m n =
     Complex.({re; im})
   ) m n
 
-let uniform_int ?(a=0) ?(b=99) m n =
+let uniform_int ?(a=1) ?(b=99) m n =
   _random_basic (fun () ->
     let re = Owl_stats.Rnd.uniform_int ~a ~b () |> float_of_int in
     let im = Owl_stats.Rnd.uniform_int ~a ~b () |> float_of_int in
@@ -423,20 +423,23 @@ let add x1 x2 =
   ) x2 in
   y
 
+(* TODO: optimise *)
 let neg x = map_nz Complex.neg x
 
 let dot x1 x2 =
   let m1, n1 = shape x1 in
   let m2, n2 = shape x2 in
   if n1 <> m2 then failwith "dimension mistach";
+  if _is_triplet x1 then _triplet2crs x1;
+  if _is_triplet x2 then _triplet2crs x2;
   let y = zeros m1 n2 in
-  iteri_nz (fun i j a ->
-    iteri_nz (fun i' j' b ->
-      if j = i' then (
-        let c = get y i j' in
-        set y i j' Complex.(add c (mul a b))
-      )
-    ) x2
+  iteri_nz (fun i j c1 ->
+    for i' = x2.p.(j) to x2.p.(j + 1) - 1 do
+      let j' = x2.i.(i') in
+      let c2 = x2.d.{i'} in
+      let c0 = get y i j' in
+      set y i j' Complex.(add c0 (mul c1 c2))
+    done
   ) x1;
   y
 

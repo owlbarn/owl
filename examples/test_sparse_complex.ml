@@ -14,7 +14,7 @@ let test_op s c op =
 
 let _ =
   let _ = Random.self_init () in
-  let m, n = 2000, 2000 and c = 1 in
+  let m, n = 2500, 2500 and c = 1 in
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
@@ -54,7 +54,7 @@ let _ =
   test_op "sub           " c (fun () -> M.sub x y);
   test_op "mul           " c (fun () -> M.mul x y);
   test_op "div           " c (fun () -> M.div x y);
-  test_op "dot           " 0 (fun () -> M.dot x y);
+  test_op "dot           " c (fun () -> M.dot x y);
   test_op "abs           " c (fun () -> M.abs x);
   test_op "neg           " c (fun () -> M.neg x);
   test_op "sum           " c (fun () -> M.sum x);
