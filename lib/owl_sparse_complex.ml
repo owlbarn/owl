@@ -71,7 +71,7 @@ let _triplet2crs x =
   x.d <- d;
   x.p <- p;
   x.typ <- 2;
-  (*_print_array x.i;*)
+  Hashtbl.reset x.h;
   Log.debug "triplet -> crs ends"
 
 let _crs2triplet x = None
