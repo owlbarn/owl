@@ -49,64 +49,6 @@ let _print_array x =
   Array.iter (fun y -> print_int y; print_char ' ') x;
   print_endline ""
 
-(* extension of in-place quicksort: p is start pos, r is stop pos *)
-
-let _partition c l p r =
-  let i = ref (p - 1) in
-  for j = p to r - 1 do
-    if l.(j) < l.(r) then (
-      i := !i + 1;
-      let t = l.(!i) in
-      l.(!i) <- l.(j);
-      l.(j) <- t;
-      let t = c.{!i} in
-      c.{!i} <- c.{j};
-      c.{j} <- t;
-    )
-  done;
-  i := !i + 1;
-  let t = l.(!i) in
-  l.(!i) <- l.(r);
-  l.(r) <- t;
-  let t = c.{!i} in
-  c.{!i} <- c.{r};
-  c.{r} <- t;
-  !i
-
-let rec _quick_sort c l p r =
-  if p < r then (
-    let q = _partition c l p r in
-    _quick_sort c l p (q - 1);
-    _quick_sort c l (q + 1) r;
-  )
-
-let _triplet2crs' x =
-  (* NOTE: with sorting col number *)
-  Log.debug "triplet -> crs starts";
-  if _is_triplet x = false then failwith "not in triplet format";
-  let i = Array.sub x.i 0 x.nz in
-  let q = _make_int_array x.m in
-  Array.iter (fun c -> q.(c) <- q.(c) + 1) i;
-  let p = _make_int_array (x.m + 1) in
-  Array.iteri (fun i c -> p.(i + 1) <- p.(i) + c) q;
-  let d = _make_elt_array x.nz in
-  for j = 0 to x.nz - 1 do
-    let c = x.d.{j} in
-    let r_i = x.i.(j) in
-    let pos = p.(r_i + 1) - q.(r_i) in
-    d.{pos} <- c;
-    i.(pos) <- x.p.(j);
-    q.(r_i) <- q.(r_i) - 1;
-  done;
-  for j = 0 to x.m - 1 do
-    _quick_sort d i p.(j) (p.(j + 1) - 1)
-  done;
-  x.i <- i;
-  x.d <- d;
-  x.p <- p;
-  x.typ <- 2;
-  Log.debug "triplet -> crs ends"
-
 let _triplet2crs x =
   (* NOTE: without sorting col number *)
   Log.debug "triplet -> crs starts";
