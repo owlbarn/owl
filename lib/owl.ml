@@ -20,3 +20,5 @@ module Linalg = Owl_linalg
 module Regression = Owl_regression
 
 module Plot = Owl_plot
+
+module Fft = Owl_fft
