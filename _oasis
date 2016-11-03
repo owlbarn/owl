@@ -1,11 +1,18 @@
 OASISFormat: 0.4
 Name:        Owl
 Version:     0.1
-Synopsis:    Owl is an OCaml library for scientific computing
-Authors:     Liang Wang
+Description: Owl is an OCaml library for scientific computing
+Synopsis:    Scientific computing library
+Authors:     Liang Wang (ryanrhymes@gmail.com)
 License:     MIT
 Plugins:     META (0.4)
 BuildTools:  ocamlbuild
+Homepage:    https://github.com/ryanrhymes/owl
+SourceRepository master
+  Type: git
+  Location: https://github.com/ryanrhymes/owl.git
+  Branch: master
+  Browser: https://github.com/ryanrhymes/owl
 
 Library Owl
   Path:             lib
