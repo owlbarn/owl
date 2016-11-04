@@ -272,8 +272,11 @@ val print : mat -> unit
 val pp_dsmat : mat -> unit
 
 val re : mat -> Owl_dense_real.mat
+(** [re x] returns the real parts of all the elements in [x] as a separate matrix. *)
 
 val im : mat -> Owl_dense_real.mat
+(** [re x] returns the complex parts of all the elements in [x] as a separate matrix. *)
+
 
 (** {6 Shorhand infix operators} *)
 
