@@ -578,3 +578,7 @@ let print x =
   Format.printf "%a\n" Owl_pretty.pp_cmat x;;
 
 let pp_dsmat x = Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat x
+
+let re = None
+
+let im = None
