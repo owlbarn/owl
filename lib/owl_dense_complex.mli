@@ -95,6 +95,10 @@ val replace_row : mat -> mat -> int -> mat
 
 val replace_col : mat -> mat -> int -> mat
 
+val swap_rows : mat -> int -> int -> mat
+
+val swap_cols : mat -> int -> int -> mat
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 

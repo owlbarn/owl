@@ -156,11 +156,20 @@ let cols x l =
   let y = empty m n in
   Array.iteri (fun i j -> copy_col_to (col x j) y i) l; y
 
-let swap_rows = Gsl.Matrix.swap_rows
+let swap_rows x i i' =
+  let y = clone x in
+  Gsl.Matrix.swap_rows y i i';
+  y
 
-let swap_cols = Gsl.Matrix.swap_columns
+let swap_cols x j j' =
+  let y = clone x in
+  Gsl.Matrix.swap_columns y j j';
+  y
 
-let swap_rowcol = Gsl.Matrix.swap_rowcol
+let swap_rowcol x i j =
+  let y = clone x in
+  Gsl.Matrix.swap_rowcol y i j;
+  y
 
 let transpose x =
   let y = empty (col_num x) (row_num x) in
@@ -630,14 +639,14 @@ let shuffle_rows x =
   let y = clone x in
   let m, n = shape x in
   for i = 0 to m - 1 do
-    swap_rows y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
+    Gsl.Matrix.swap_rows y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
   done; y
 
 let shuffle_cols x =
   let y = clone x in
   let m, n = shape x in
   for i = 0 to n - 1 do
-    swap_cols y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
+    Gsl.Matrix.swap_columns y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
   done; y
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols

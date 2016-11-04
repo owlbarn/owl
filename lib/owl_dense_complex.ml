@@ -145,11 +145,20 @@ let cols x l =
   let y = empty m n in
   Array.iteri (fun i j -> copy_col_to (col x j) y i) l; y
 
-let swap_rows = Gsl.Matrix_complex.swap_rows
+let swap_rows x i i' =
+  let y = clone x in
+  Gsl.Matrix_complex.swap_rows y i i';
+  y
 
-let swap_cols = Gsl.Matrix_complex.swap_columns
+let swap_cols x j j' =
+  let y = clone x in
+  Gsl.Matrix_complex.swap_columns y j j';
+  y
 
-let swap_rowcol = Gsl.Matrix_complex.swap_rowcol
+let swap_rowcol x i j =
+  let y = clone x in
+  Gsl.Matrix_complex.swap_rowcol y i j;
+  y
 
 let transpose x =
   let y = empty (Array2.dim2 x) (Array2.dim1 x) in
@@ -590,3 +599,6 @@ let im x =
   let y = Owl_dense_real.empty m n in
   iteri (fun i j z -> y.{i,j} <- Complex.(z.im)) x;
   y
+
+
+(* ends here *)

@@ -204,6 +204,12 @@ val replace_col : mat -> mat -> int -> mat
   in the matrix [x].
  *)
 
+val swap_rows : mat -> int -> int -> mat
+(** [swap_rows x i i'] swaps the row [i] with row [i'] of [x]. *)
+
+val swap_cols : mat -> int -> int -> mat
+(** [swap_cols x j j'] swaps the column [j] with column [j'] of [x]. *)
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 
