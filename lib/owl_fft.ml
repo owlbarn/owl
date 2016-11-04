@@ -139,4 +139,19 @@ let fft_complex x =
   | true  -> _fft_complex_rad2 x
   | false -> _fft_complex_radn x
 
-let fft2 x = None
+let fft2 x =
+  fft x |> Owl_dense_complex.transpose |> fft_complex |> Owl_dense_complex.transpose
+
+let fft2_complex x =
+  fft_complex x |> Owl_dense_complex.transpose |> fft_complex |> Owl_dense_complex.transpose
+
+let ifft2 x =
+  Owl_dense_complex.transpose x |> ifft |> Owl_dense_complex.transpose |> ifft
+
+let fftn = None
+
+let iffn = None
+
+let fftshift = None
+
+let ifftshift = None
