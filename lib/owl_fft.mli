@@ -22,3 +22,9 @@ val fft2_complex : cmat -> cmat
 val ifft2 : cmat -> cmat
 
 val fftshift : cmat -> cmat
+
+val ifftshift : cmat -> cmat
+(** [ifftshift x] undoes the results of [fftshift x], it is the inverse operation
+  of [fftshift]. Note that calling [fftshift] twice such as [fftshift (fftshift x)]
+  will not give you the same [x] if there is an odd number of elements.
+ *)

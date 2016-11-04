@@ -152,32 +152,49 @@ let fft2_complex x =
 let ifft2 x =
   Owl_dense_complex.transpose x |> ifft |> Owl_dense_complex.transpose |> ifft
 
-let fftn = None
-
-let iffn = None
-
 (* swap the left half of a matrix with the right one in place *)
 let _swap_left_right x =
   let n = Owl_dense_complex.col_num x in
-  let b = n / 2 - 1 in
-  for a = 0 to b do
-    Gsl.Matrix_complex.swap_columns x (b - a) (n - a - 1)
-  done
+  let c = n / 2 in
+  let a = Array.init c (fun i -> i) in
+  let b = Array.init (n - c) (fun i -> c + i) in
+  Owl_dense_complex.cols x (Array.append b a)
 
 let fftshift x =
   let y = Owl_dense_complex.clone x in
   let z = match Owl_dense_complex.row_num y with
-  | 1 -> (_swap_left_right y; y)
+  | 1 -> _swap_left_right y
   | _ -> (
-    let _ = _swap_left_right y in
-    let y = Owl_dense_complex.transpose y in
-    let _ = _swap_left_right y in
-    Owl_dense_complex.transpose y
+    _swap_left_right y
+    |> Owl_dense_complex.transpose
+    |> _swap_left_right
+    |> Owl_dense_complex.transpose
   )
   in z
 
+let _swap_right_left x =
+  let n = Owl_dense_complex.col_num x in
+  let c = (n / 2) + (n mod 2) in
+  let a = Array.init c (fun i -> i) in
+  let b = Array.init (n - c) (fun i -> c + i) in
+  Owl_dense_complex.cols x (Array.append b a)
 
-let ifftshift = None
+let ifftshift x =
+  let y = Owl_dense_complex.clone x in
+  let z = match Owl_dense_complex.row_num y with
+  | 1 -> _swap_right_left y
+  | _ -> (
+    _swap_left_right y
+    |> Owl_dense_complex.transpose
+    |> _swap_left_right
+    |> Owl_dense_complex.transpose
+  )
+  in z
 
+(* place holder for ndarray fft *)
+let fftn = None
+
+(* place holder for ndarray fft inverse *)
+let iffn = None
 
 (* ends here *)
