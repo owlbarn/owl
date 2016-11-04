@@ -156,9 +156,26 @@ let fftn = None
 
 let iffn = None
 
+(* swap the left half of a matrix with the right one in place *)
+let _swap_left_right x =
+  let n = Owl_dense_complex.col_num x in
+  let b = n / 2 - 1 in
+  for a = 0 to b do
+    Gsl.Matrix_complex.swap_columns x (b - a) (n - a - 1)
+  done
 
+let fftshift x =
+  let y = Owl_dense_complex.clone x in
+  let z = match Owl_dense_complex.row_num y with
+  | 1 -> (_swap_left_right y; y)
+  | _ -> (
+    let _ = _swap_left_right y in
+    let y = Owl_dense_complex.transpose y in
+    let _ = _swap_left_right y in
+    Owl_dense_complex.transpose y
+  )
+  in z
 
-let fftshift x = None
 
 let ifftshift = None
 

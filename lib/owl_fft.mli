@@ -20,3 +20,5 @@ val fft2 : rmat -> cmat
 val fft2_complex : cmat -> cmat
 
 val ifft2 : cmat -> cmat
+
+val fftshift : cmat -> cmat
