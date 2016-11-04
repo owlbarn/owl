@@ -271,6 +271,9 @@ val print : mat -> unit
 
 val pp_dsmat : mat -> unit
 
+val re : mat -> Owl_dense_real.mat
+
+val im : mat -> Owl_dense_real.mat
 
 (** {6 Shorhand infix operators} *)
 

@@ -579,6 +579,14 @@ let print x =
 
 let pp_dsmat x = Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat x
 
-let re = None
+let re x =
+  let m, n = shape x in
+  let y = Owl_dense_real.empty m n in
+  iteri (fun i j z -> y.{i,j} <- Complex.(z.re)) x;
+  y
 
-let im = None
+let im x =
+  let m, n = shape x in
+  let y = Owl_dense_real.empty m n in
+  iteri (fun i j z -> y.{i,j} <- Complex.(z.im)) x;
+  y
