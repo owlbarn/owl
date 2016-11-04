@@ -5,6 +5,10 @@
 
 (** Fast Fourier Transforms (FFTs) *)
 
+type rmat = Owl_dense_real.mat
+
+type cmat = Owl_dense_complex.mat
+
 let _is_power_of_two x = x land (x - 1) = 0
 
 let _fft_real_rad2 x =
