@@ -197,5 +197,10 @@ let fftn = None
 (* place holder for ndarray fft inverse *)
 let iffn = None
 
+let conv = None
+
+let conv2 = None
+
+let wavelet = None
 
 (* ends here *)
