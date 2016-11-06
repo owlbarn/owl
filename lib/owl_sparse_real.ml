@@ -524,8 +524,8 @@ let pp_spmat x =
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
 let save x f =
-  (*FIXME: outside heap*)
-  let s = Marshal.to_string x [] in
+  let x = clone x in
+  let s = Marshal.to_string (x.m, x.n, x.i, x.d, x.p) [] in
   let h = open_out f in
   output_string h s;
   close_out h
@@ -533,7 +533,15 @@ let save x f =
 let load f =
   let h = open_in f in
   let s = really_input_string h (in_channel_length h) in
-  Marshal.from_string s 0
+  let m, n, i, d, p = Marshal.from_string s 0 in
+  let x = zeros m n in
+  for k = 0 to Array1.dim d - 1 do
+    let i' = Int64.to_int i.{k} in
+    let j' = Int64.to_int p.{k} in
+    set_without_update_rec x i' j' d.{k}
+  done;
+  let _ = _update_rec_from_ptr x in
+  x
 
 let save_txt = None
 
