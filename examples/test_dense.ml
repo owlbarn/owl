@@ -25,11 +25,11 @@ let _ =
   test_op "rows       " c (fun () -> M.rows x [|1;2|]);
   test_op "map        " c (fun () -> M.map (fun y -> 0.) x);
   test_op "mapi       " c (fun () -> M.mapi (fun _ _ y -> 0.) x);
-  test_op "iter       " c (fun () -> M.iter (fun y -> 0.) x);
-  test_op "iteri      " c (fun () -> M.iteri (fun _ _ y -> 0.) x);
+  test_op "iter       " c (fun () -> M.iter (fun y -> ()) x);
+  test_op "iteri      " c (fun () -> M.iteri (fun _ _ y -> ()) x);
   test_op "iter_cols  " c (fun () -> M.iter_cols (fun y -> ()) x);
   test_op "iteri_cols " c (fun () -> M.iteri_cols (fun i y -> ()) x);
-  test_op "iter_rows  " c (fun () -> M.iter_rows (fun i y -> ()) x);
+  test_op "iter_rows  " c (fun () -> M.iter_rows (fun y -> ()) x);
   test_op "iteri_rows " c (fun () -> M.iteri_rows (fun i y -> ()) x);
   test_op "filter     " c (fun () -> M.filter (fun y -> false) x);
   test_op "filteri    " c (fun () -> M.filteri (fun i j y -> false) x);

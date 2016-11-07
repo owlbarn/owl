@@ -213,13 +213,13 @@ val swap_cols : mat -> int -> int -> mat
 
 (** {6 Iterate elements, columns, and rows.} *)
 
-val iteri : (int -> int -> float -> 'a) -> mat -> unit
+val iteri : (int -> int -> float -> unit) -> mat -> unit
 (** [iteri f x] iterates all the elements in [x] and applies the user defined
   function [f : int -> int -> float -> 'a]. [f i j v] takes three parameters,
   [i] and [j] are the coordinates of current element, and [v] is its value.
   *)
 
-val iter : (float -> 'a) -> mat -> unit
+val iter : (float -> unit) -> mat -> unit
 (** [iter f x] is the same as as [iteri f x] except the coordinates of the
   current element is not passed to the function [f : float -> 'a]
  *)
@@ -252,21 +252,21 @@ val filter : (float -> bool) -> mat -> (int * int) array
   the function [f : float -> bool].
  *)
 
-val iteri_rows : (int -> mat -> 'a) -> mat -> unit
+val iteri_rows : (int -> mat -> unit) -> mat -> unit
 (** [iteri_rows f x] iterates every row in [x] and applies function
   [f : int -> mat -> unit] to each of them.
  *)
 
-val iter_rows : (mat -> 'a) -> mat -> unit
+val iter_rows : (mat -> unit) -> mat -> unit
 (** Similar to [iteri_rows] except row number is not passed to [f]. *)
 
-val iteri_cols : (int -> mat -> 'a) -> mat -> unit
+val iteri_cols : (int -> mat -> unit) -> mat -> unit
 (** [iteri_cols f x] iterates every column in [x] and applies function
   [f : int -> mat -> unit] to each of them. Column number is passed to [f] as
   the first parameter.
  *)
 
-val iter_cols : (mat -> 'a) -> mat -> unit
+val iter_cols : (mat -> unit) -> mat -> unit
 (** Similar to [iteri_cols] except col number is not passed to [f]. *)
 
 val filteri_rows : (int -> mat -> bool) -> mat -> int array

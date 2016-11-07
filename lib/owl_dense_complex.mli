@@ -102,9 +102,9 @@ val swap_cols : mat -> int -> int -> mat
 
 (** {6 Iterate elements, columns, and rows.} *)
 
-val iteri : (int -> int -> elt -> 'a) -> mat -> unit
+val iteri : (int -> int -> elt -> unit) -> mat -> unit
 
-val iter : (elt -> 'a) -> mat -> unit
+val iter : (elt -> unit) -> mat -> unit
 
 val mapi : (int -> int -> elt -> elt) -> mat -> mat
 
@@ -116,13 +116,13 @@ val filteri : (int -> int -> elt -> bool) -> mat -> (int * int) array
 
 val filter : (elt -> bool) -> mat -> (int * int) array
 
-val iteri_rows : (int -> mat -> 'a) -> mat -> unit
+val iteri_rows : (int -> mat -> unit) -> mat -> unit
 
-val iter_rows : (mat -> 'a) -> mat -> unit
+val iter_rows : (mat -> unit) -> mat -> unit
 
-val iteri_cols : (int -> mat -> 'a) -> mat -> unit
+val iteri_cols : (int -> mat -> unit) -> mat -> unit
 
-val iter_cols : (mat -> 'a) -> mat -> unit
+val iter_cols : (mat -> unit) -> mat -> unit
 
 val filteri_rows : (int -> mat -> bool) -> mat -> int array
 
