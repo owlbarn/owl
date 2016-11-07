@@ -24,6 +24,7 @@
 <link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
 <link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
 <link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_fft" rel="Chapter" href="Owl_fft.html">
 <link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
 <link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
 <link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
@@ -38,9 +39,73 @@
 
 <pre><span class="keyword">module</span> Sparse_complex: <code class="code"><span class="keyword">sig</span></code> <a href="Owl_types.Sparse_complex.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><hr width="100%">
 
-<pre><span id="TYPEint_array"><span class="keyword">type</span> <code class="type"></code>int_array</span> = <code class="type">(int64, Bigarray.int64_elt, Bigarray.c_layout) Bigarray.Array1.t</code> </pre>
+<pre><span id="TYPEint_array"><span class="keyword">type</span> <code class="type"></code>int_array</span> = <code class="type">int array</code> </pre>
 
 
 <pre><span id="TYPEelt_array"><span class="keyword">type</span> <code class="type"></code>elt_array</span> = <code class="type">(Complex.t, Bigarray.complex64_elt, Bigarray.c_layout) Bigarray.Array1.t</code> </pre>
+
+
+<pre><code><span id="TYPEspmat_record"><span class="keyword">type</span> <code class="type"></code>spmat_record</span> = {</code></pre><table class="typetable">
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span class="keyword">mutable&nbsp;</span><span id="TYPEELTspmat_record.m">m</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span class="keyword">mutable&nbsp;</span><span id="TYPEELTspmat_record.n">n</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span class="keyword">mutable&nbsp;</span><span id="TYPEELTspmat_record.i">i</span>&nbsp;: <code class="type"><a href="Owl_types.Sparse_complex.html#TYPEint_array">int_array</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span class="keyword">mutable&nbsp;</span><span id="TYPEELTspmat_record.d">d</span>&nbsp;: <code class="type"><a href="Owl_types.Sparse_complex.html#TYPEelt_array">elt_array</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span class="keyword">mutable&nbsp;</span><span id="TYPEELTspmat_record.p">p</span>&nbsp;: <code class="type"><a href="Owl_types.Sparse_complex.html#TYPEint_array">int_array</a></code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span class="keyword">mutable&nbsp;</span><span id="TYPEELTspmat_record.nz">nz</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span class="keyword">mutable&nbsp;</span><span id="TYPEELTspmat_record.typ">typ</span>&nbsp;: <code class="type">int</code>;</code></td>
+
+</tr>
+<tr>
+<td align="left" valign="top" >
+<code>&nbsp;&nbsp;</code></td>
+<td align="left" valign="top" >
+<code><span class="keyword">mutable&nbsp;</span><span id="TYPEELTspmat_record.h">h</span>&nbsp;: <code class="type">(int, int) Hashtbl.t</code>;</code></td>
+
+</tr></table>
+}
+
+<div class="info ">
+record definition for sparse matrix<br>
+</div>
 
 </body></html>

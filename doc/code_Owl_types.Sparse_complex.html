@@ -20,6 +20,7 @@
 <link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
 <link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
 <link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_fft" rel="Chapter" href="Owl_fft.html">
 <link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
 <link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
 <link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
@@ -29,7 +30,19 @@
 <body>
 <code class="code"><span class="keyword">struct</span>
 
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;int_array&nbsp;=&nbsp;(int64,&nbsp;int64_elt,&nbsp;c_layout)&nbsp;<span class="constructor">Array1</span>.t
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;int_array&nbsp;=&nbsp;int&nbsp;array
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;elt_array&nbsp;=&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;complex64_elt,&nbsp;c_layout)&nbsp;<span class="constructor">Array1</span>.t
+
+&nbsp;&nbsp;</code><table><tr><td>&nbsp;&nbsp;</td><td><span class="comment">(** record definition for sparse matrix *)</span></td></tr></table><code class="code">
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;spmat_record&nbsp;=&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;m&nbsp;&nbsp;&nbsp;:&nbsp;int;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;number&nbsp;of&nbsp;rows&nbsp;*)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;n&nbsp;&nbsp;&nbsp;:&nbsp;int;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;number&nbsp;of&nbsp;columns&nbsp;*)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;i&nbsp;&nbsp;&nbsp;:&nbsp;int_array;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;i&nbsp;index,&nbsp;meaning&nbsp;depends&nbsp;on&nbsp;the&nbsp;matrix&nbsp;format&nbsp;*)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;d&nbsp;&nbsp;&nbsp;:&nbsp;elt_array;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;where&nbsp;data&nbsp;actually&nbsp;stored&nbsp;*)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;p&nbsp;&nbsp;&nbsp;:&nbsp;int_array;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;p&nbsp;index,&nbsp;meaning&nbsp;depends&nbsp;on&nbsp;the&nbsp;matrix&nbsp;format&nbsp;*)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;nz&nbsp;&nbsp;:&nbsp;int;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;total&nbsp;number&nbsp;of&nbsp;non-zero&nbsp;elements&nbsp;*)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;typ&nbsp;:&nbsp;int;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;sparse&nbsp;matrix&nbsp;format,&nbsp;0:triplet;&nbsp;1:CCS;&nbsp;2:CRS&nbsp;*)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;h&nbsp;&nbsp;&nbsp;:&nbsp;(int,&nbsp;int)&nbsp;<span class="constructor">Hashtbl</span>.t
+&nbsp;&nbsp;}
 
 <span class="keyword">end</span></code></body></html>

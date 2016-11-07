@@ -20,6 +20,7 @@
 <link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
 <link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
 <link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_fft" rel="Chapter" href="Owl_fft.html">
 <link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
 <link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
 <link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
@@ -27,4 +28,249 @@
 <link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><title>Owl_sparse_complex</title>
 </head>
 <body>
-<code class="code"><span class="keyword">sig</span>&nbsp;&nbsp;<span class="keyword">end</span></code></body></html>
+<code class="code"><span class="keyword">sig</span>
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;spmat
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;elt&nbsp;=&nbsp;<span class="constructor">Complex</span>.t
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;zeros&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;ones&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;eye&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;binary&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uniform&nbsp;:&nbsp;?scale:float&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;uniform_int&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?a:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;?b:int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;shape&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;*&nbsp;int
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;row_num&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;col_num&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;row_num_nz&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;col_num_nz&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;numel&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;nnz&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;nnz_rows&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;nnz_cols&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;density&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;float
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;set&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;get&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;reset&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;clone&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;diag&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;trace&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;row&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;col&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;array&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iteri&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iter&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fold&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;filteri&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(int&nbsp;*&nbsp;int)&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;filter&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(int&nbsp;*&nbsp;int)&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iteri_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iter_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iteri_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iter_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fold_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fold_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iteri_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iter_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fold_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;filteri_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(int&nbsp;*&nbsp;int)&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;filter_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;(int&nbsp;*&nbsp;int)&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iteri_rows_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iter_rows_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iteri_cols_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;iter_cols_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi_rows_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map_rows_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mapi_cols_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;map_cols_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fold_rows_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;fold_cols_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keywordsign">'</span>a&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="keywordsign">'</span>a
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exists&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;not_exists&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;for_all&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;exists_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;not_exists_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;for_all_nz&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool)&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mul_scalar&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;div_scalar&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;add&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sub&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;mul&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;div&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;dot&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;abs&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;neg&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sum&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;average&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;power&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_zero&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_positive&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_negative&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_nonnegative&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;min&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;max&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;minmax&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;*&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sum_rows&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;sum_cols&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;average_rows&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;average_cols&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_equal&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_unequal&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_greater&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;is_smaller&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;equal_or_greater&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;equal_or_smaller&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;permutation_matrix&nbsp;:&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;draw_rows&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?replacement:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;*&nbsp;int&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;draw_cols&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;?replacement:bool&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;int&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;*&nbsp;int&nbsp;array
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;shuffle_rows&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;shuffle_cols&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;shuffle&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;to_dense&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_dense_complex</span>.mat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;of_dense&nbsp;:&nbsp;<span class="constructor">Owl_dense_complex</span>.mat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;print&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;pp_spmat&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;save&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;load&nbsp;:&nbsp;string&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;+@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;-@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;*@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;/@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;$@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;**@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;*$&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;/$&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;$*&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;$/&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;=@&nbsp;)&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;&gt;@&nbsp;)&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;&lt;@&nbsp;)&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;&lt;&gt;@&nbsp;)&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;&gt;=@&nbsp;)&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;&lt;=@&nbsp;)&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;bool
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;(&nbsp;@@&nbsp;)&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Owl_sparse_complex</span>.elt&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.elt)&nbsp;<span class="keywordsign">-&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat
+&nbsp;&nbsp;<span class="keyword">val</span>&nbsp;_triplet2crs&nbsp;:&nbsp;<span class="constructor">Owl_sparse_complex</span>.spmat&nbsp;<span class="keywordsign">-&gt;</span>&nbsp;unit
+<span class="keyword">end</span></code></body></html>

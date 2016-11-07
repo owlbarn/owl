@@ -25,6 +25,7 @@
 <link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
 <link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
 <link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_fft" rel="Chapter" href="Owl_fft.html">
 <link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
 <link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
 <link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
@@ -50,7 +51,15 @@
 <h1>Module <a href="type_Owl_dense_complex.html">Owl_dense_complex</a></h1>
 
 <pre><span class="keyword">module</span> Owl_dense_complex: <code class="code"><span class="keyword">sig</span></code> <a href="Owl_dense_complex.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
-Complex dense matrix module<br>
+Complex dense matrix module: this module supports operations on dense
+  matrices of complex numbers. The complex number has a record type of
+  <code class="code">{re = float; im = float}</code>.
+<p>
+
+  This page only contains detailed explanations for the operations specific to
+  Dense.Complex module. Most of the other operations are the same to those in
+  Dense.Real module, therefore please refer to the documentation of Dense.Real
+  for more information.<br>
 </div>
 <hr width="100%">
 
@@ -104,20 +113,22 @@ Complex dense matrix module<br>
 <pre><span id="VALtrace"><span class="keyword">val</span> trace</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -> <a href="Owl_dense_complex.html#TYPEelt">elt</a></code></pre>
 <pre><span id="VALadd_diag"><span class="keyword">val</span> add_diag</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -> <a href="Owl_dense_complex.html#TYPEelt">elt</a> -> <a href="Owl_dense_complex.html#TYPEmat">mat</a></code></pre>
 <pre><span id="VALreplace_row"><span class="keyword">val</span> replace_row</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -><br>       <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_complex.html#TYPEmat">mat</a></code></pre>
-<pre><span id="VALreplace_col"><span class="keyword">val</span> replace_col</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -><br>       <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_complex.html#TYPEmat">mat</a></code></pre><br>
+<pre><span id="VALreplace_col"><span class="keyword">val</span> replace_col</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -><br>       <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_complex.html#TYPEmat">mat</a></code></pre>
+<pre><span id="VALswap_rows"><span class="keyword">val</span> swap_rows</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -> int -> int -> <a href="Owl_dense_complex.html#TYPEmat">mat</a></code></pre>
+<pre><span id="VALswap_cols"><span class="keyword">val</span> swap_cols</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -> int -> int -> <a href="Owl_dense_complex.html#TYPEmat">mat</a></code></pre><br>
 <h6 id="6_Iterateelementscolumnsandrows">Iterate elements, columns, and rows.</h6><br>
 
-<pre><span id="VALiteri"><span class="keyword">val</span> iteri</span> : <code class="type">(int -> int -> <a href="Owl_dense_complex.html#TYPEelt">elt</a> -> 'a) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
-<pre><span id="VALiter"><span class="keyword">val</span> iter</span> : <code class="type">(<a href="Owl_dense_complex.html#TYPEelt">elt</a> -> 'a) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
+<pre><span id="VALiteri"><span class="keyword">val</span> iteri</span> : <code class="type">(int -> int -> <a href="Owl_dense_complex.html#TYPEelt">elt</a> -> unit) -><br>       <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
+<pre><span id="VALiter"><span class="keyword">val</span> iter</span> : <code class="type">(<a href="Owl_dense_complex.html#TYPEelt">elt</a> -> unit) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
 <pre><span id="VALmapi"><span class="keyword">val</span> mapi</span> : <code class="type">(int -> int -> <a href="Owl_dense_complex.html#TYPEelt">elt</a> -> <a href="Owl_dense_complex.html#TYPEelt">elt</a>) -><br>       <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> <a href="Owl_dense_complex.html#TYPEmat">mat</a></code></pre>
 <pre><span id="VALmap"><span class="keyword">val</span> map</span> : <code class="type">(<a href="Owl_dense_complex.html#TYPEelt">elt</a> -> <a href="Owl_dense_complex.html#TYPEelt">elt</a>) -><br>       <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> <a href="Owl_dense_complex.html#TYPEmat">mat</a></code></pre>
 <pre><span id="VALfold"><span class="keyword">val</span> fold</span> : <code class="type">('a -> <a href="Owl_dense_complex.html#TYPEelt">elt</a> -> 'a) -> 'a -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> 'a</code></pre>
 <pre><span id="VALfilteri"><span class="keyword">val</span> filteri</span> : <code class="type">(int -> int -> <a href="Owl_dense_complex.html#TYPEelt">elt</a> -> bool) -><br>       <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> (int * int) array</code></pre>
 <pre><span id="VALfilter"><span class="keyword">val</span> filter</span> : <code class="type">(<a href="Owl_dense_complex.html#TYPEelt">elt</a> -> bool) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> (int * int) array</code></pre>
-<pre><span id="VALiteri_rows"><span class="keyword">val</span> iteri_rows</span> : <code class="type">(int -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
-<pre><span id="VALiter_rows"><span class="keyword">val</span> iter_rows</span> : <code class="type">(<a href="Owl_dense_complex.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
-<pre><span id="VALiteri_cols"><span class="keyword">val</span> iteri_cols</span> : <code class="type">(int -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
-<pre><span id="VALiter_cols"><span class="keyword">val</span> iter_cols</span> : <code class="type">(<a href="Owl_dense_complex.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
+<pre><span id="VALiteri_rows"><span class="keyword">val</span> iteri_rows</span> : <code class="type">(int -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
+<pre><span id="VALiter_rows"><span class="keyword">val</span> iter_rows</span> : <code class="type">(<a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
+<pre><span id="VALiteri_cols"><span class="keyword">val</span> iteri_cols</span> : <code class="type">(int -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
+<pre><span id="VALiter_cols"><span class="keyword">val</span> iter_cols</span> : <code class="type">(<a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
 <pre><span id="VALfilteri_rows"><span class="keyword">val</span> filteri_rows</span> : <code class="type">(int -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> bool) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> int array</code></pre>
 <pre><span id="VALfilter_rows"><span class="keyword">val</span> filter_rows</span> : <code class="type">(<a href="Owl_dense_complex.html#TYPEmat">mat</a> -> bool) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> int array</code></pre>
 <pre><span id="VALfilteri_cols"><span class="keyword">val</span> filteri_cols</span> : <code class="type">(int -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> bool) -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> int array</code></pre>
@@ -195,7 +206,15 @@ Complex dense matrix module<br>
 <pre><span id="VALsave"><span class="keyword">val</span> save</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -> string -> unit</code></pre>
 <pre><span id="VALload"><span class="keyword">val</span> load</span> : <code class="type">string -> <a href="Owl_dense_complex.html#TYPEmat">mat</a></code></pre>
 <pre><span id="VALprint"><span class="keyword">val</span> print</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
-<pre><span id="VALpp_dsmat"><span class="keyword">val</span> pp_dsmat</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre><br>
+<pre><span id="VALpp_dsmat"><span class="keyword">val</span> pp_dsmat</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -> unit</code></pre>
+<pre><span id="VALre"><span class="keyword">val</span> re</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">Owl_dense_real.mat</a></code></pre><div class="info ">
+<code class="code">re x</code> returns the real parts of all the elements in <code class="code">x</code> as a separate matrix.<br>
+</div>
+
+<pre><span id="VALim"><span class="keyword">val</span> im</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">Owl_dense_real.mat</a></code></pre><div class="info ">
+<code class="code">re x</code> returns the complex parts of all the elements in <code class="code">x</code> as a separate matrix.<br>
+</div>
+<br>
 <h6 id="6_Shorhandinfixoperators">Shorhand infix operators</h6><br>
 
 <pre><span id="VAL(+@)"><span class="keyword">val</span> (+@)</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> <a href="Owl_dense_complex.html#TYPEmat">mat</a></code></pre><div class="info ">
@@ -276,5 +295,9 @@ Shorthand for <code class="code">equal_or_greater x y</code>, i.e., <code class=
 
 <pre><span id="VAL(<=@)"><span class="keyword">val</span> (&lt;=@)</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">mat</a> -> <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> bool</code></pre><div class="info ">
 Shorthand for <code class="code">equal_or_smaller x y</code>, i.e., <code class="code">x &lt;=@ y</code><br>
+</div>
+
+<pre><span id="VAL(@@)"><span class="keyword">val</span> (@@)</span> : <code class="type">(<a href="Owl_dense_complex.html#TYPEelt">elt</a> -> <a href="Owl_dense_complex.html#TYPEelt">elt</a>) -><br>       <a href="Owl_dense_complex.html#TYPEmat">mat</a> -> <a href="Owl_dense_complex.html#TYPEmat">mat</a></code></pre><div class="info ">
+Shorthand for <code class="code">map f x</code>, i.e., f @@ x<br>
 </div>
 </body></html>

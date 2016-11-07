@@ -20,6 +20,7 @@
 <link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
 <link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
 <link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_fft" rel="Chapter" href="Owl_fft.html">
 <link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
 <link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
 <link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
@@ -54,10 +55,10 @@
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;i&nbsp;&nbsp;&nbsp;:&nbsp;int_array;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;i&nbsp;index,&nbsp;meaning&nbsp;depends&nbsp;on&nbsp;the&nbsp;matrix&nbsp;format&nbsp;*)</span>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;d&nbsp;&nbsp;&nbsp;:&nbsp;elt_array;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;where&nbsp;data&nbsp;actually&nbsp;stored&nbsp;*)</span>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;p&nbsp;&nbsp;&nbsp;:&nbsp;int_array;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;p&nbsp;index,&nbsp;meaning&nbsp;depends&nbsp;on&nbsp;the&nbsp;matrix&nbsp;format&nbsp;*)</span>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;nz&nbsp;&nbsp;:&nbsp;int;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;total&nbsp;number&nbsp;of&nbsp;non-zero&nbsp;elements&nbsp;*)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;nz&nbsp;&nbsp;:&nbsp;int;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;total&nbsp;number&nbsp;of&nbsp;non-zero&nbsp;elements.&nbsp;BE&nbsp;CAREFUL!&nbsp;*)</span>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;tree&nbsp;missing&nbsp;*)</span>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;work&nbsp;missing&nbsp;*)</span>
-&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;typ&nbsp;:&nbsp;int;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;format&nbsp;of&nbsp;the&nbsp;sparse&nbsp;matrix,&nbsp;0:triplet;&nbsp;1:&nbsp;CCS&nbsp;*)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;typ&nbsp;:&nbsp;int;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;sparse&nbsp;matrix&nbsp;format,&nbsp;0:triplet;&nbsp;1:CCS;&nbsp;2:CRS&nbsp;*)</span>
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;ptr&nbsp;:&nbsp;spmat_struct&nbsp;<span class="constructor">Ctypes_static</span>.structure&nbsp;<span class="constructor">Ctypes_static</span>.ptr;
 &nbsp;&nbsp;&nbsp;&nbsp;<span class="comment">(*&nbsp;pointer&nbsp;to&nbsp;the&nbsp;sparse&nbsp;metrix&nbsp;*)</span>
 &nbsp;&nbsp;}

@@ -25,11 +25,22 @@
 <link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
 <link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
 <link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_fft" rel="Chapter" href="Owl_fft.html">
 <link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
 <link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
 <link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
 <link title="Owl_const" rel="Chapter" href="Owl_const.html">
-<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><title>Owl_sparse_complex</title>
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><link title="Create sparse matrices" rel="Section" href="#6_Createsparsematrices">
+<link title="Obtain the basic properties of a matrix" rel="Section" href="#6_Obtainthebasicpropertiesofamatrix">
+<link title="Manipulate a matrix" rel="Section" href="#6_Manipulateamatrix">
+<link title="Iterate elements, columns, and rows" rel="Section" href="#6_Iterateelementscolumnsandrows">
+<link title="Examine the elements in a matrix" rel="Section" href="#6_Examinetheelementsinamatrix">
+<link title="Basic mathematical operations of matrices" rel="Section" href="#6_Basicmathematicaloperationsofmatrices">
+<link title="Compare two matrices" rel="Section" href="#6_Comparetwomatrices">
+<link title="Randomisation functions" rel="Section" href="#6_Randomisationfunctions">
+<link title="Input/Output and helper functions" rel="Section" href="#6_InputOutputandhelperfunctions">
+<link title="Shorhand infix operators" rel="Section" href="#6_Shorhandinfixoperators">
+<title>Owl_sparse_complex</title>
 </head>
 <body>
 <div class="navbar"><a class="pre" href="Owl_sparse_real.html" title="Owl_sparse_real">Previous</a>
@@ -39,7 +50,217 @@
 <h1>Module <a href="type_Owl_sparse_complex.html">Owl_sparse_complex</a></h1>
 
 <pre><span class="keyword">module</span> Owl_sparse_complex: <code class="code"><span class="keyword">sig</span></code> <a href="Owl_sparse_complex.html">..</a> <code class="code"><span class="keyword">end</span></code></pre><div class="info module top">
-<code class="code"> <span class="constructor">Complex</span> sparse matrix </code><br>
+Complex sparse matrix: this module supports the operations on sparse
+  matrices of complex numbers. Becuase GSL does not support complex sparse
+  matrices, herein I provided a pure OCaml implementation.
+<p>
+
+  The implementation provides both triplet and compressed row storage (CRS)
+  format. Note that only triplet format allows adding and updating elements.
+  Most operations are the same to Sparse.Real module, therefore please refer to
+  the documentation of Sparse.Real module.<br>
 </div>
 <hr width="100%">
-</body></html>
+
+<pre><span id="TYPEspmat"><span class="keyword">type</span> <code class="type"></code>spmat</span> </pre>
+
+
+<pre><span id="TYPEelt"><span class="keyword">type</span> <code class="type"></code>elt</span> = <code class="type">Complex.t</code> </pre>
+
+<br>
+<h6 id="6_Createsparsematrices">Create sparse matrices</h6><br>
+
+<pre><span id="VALzeros"><span class="keyword">val</span> zeros</span> : <code class="type">int -> int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALones"><span class="keyword">val</span> ones</span> : <code class="type">int -> int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALeye"><span class="keyword">val</span> eye</span> : <code class="type">int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALbinary"><span class="keyword">val</span> binary</span> : <code class="type">int -> int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALuniform"><span class="keyword">val</span> uniform</span> : <code class="type">?scale:float -> int -> int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALuniform_int"><span class="keyword">val</span> uniform_int</span> : <code class="type">?a:int -> ?b:int -> int -> int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><br>
+<h6 id="6_Obtainthebasicpropertiesofamatrix">Obtain the basic properties of a matrix</h6><br>
+
+<pre><span id="VALshape"><span class="keyword">val</span> shape</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int * int</code></pre>
+<pre><span id="VALrow_num"><span class="keyword">val</span> row_num</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int</code></pre>
+<pre><span id="VALcol_num"><span class="keyword">val</span> col_num</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int</code></pre>
+<pre><span id="VALrow_num_nz"><span class="keyword">val</span> row_num_nz</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int</code></pre>
+<pre><span id="VALcol_num_nz"><span class="keyword">val</span> col_num_nz</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int</code></pre>
+<pre><span id="VALnumel"><span class="keyword">val</span> numel</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int</code></pre>
+<pre><span id="VALnnz"><span class="keyword">val</span> nnz</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int</code></pre>
+<pre><span id="VALnnz_rows"><span class="keyword">val</span> nnz_rows</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int array</code></pre>
+<pre><span id="VALnnz_cols"><span class="keyword">val</span> nnz_cols</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int array</code></pre>
+<pre><span id="VALdensity"><span class="keyword">val</span> density</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> float</code></pre><br>
+<h6 id="6_Manipulateamatrix">Manipulate a matrix</h6><br>
+
+<pre><span id="VALset"><span class="keyword">val</span> set</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int -> int -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> unit</code></pre>
+<pre><span id="VALget"><span class="keyword">val</span> get</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int -> int -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a></code></pre>
+<pre><span id="VALreset"><span class="keyword">val</span> reset</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALclone"><span class="keyword">val</span> clone</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALdiag"><span class="keyword">val</span> diag</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALtrace"><span class="keyword">val</span> trace</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a></code></pre>
+<pre><span id="VALrow"><span class="keyword">val</span> row</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALcol"><span class="keyword">val</span> col</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALrows"><span class="keyword">val</span> rows</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int array -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALcols"><span class="keyword">val</span> cols</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int array -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><br>
+<h6 id="6_Iterateelementscolumnsandrows">Iterate elements, columns, and rows</h6><br>
+
+<pre><span id="VALiteri"><span class="keyword">val</span> iteri</span> : <code class="type">(int -> int -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> unit) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALiter"><span class="keyword">val</span> iter</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> unit) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALmapi"><span class="keyword">val</span> mapi</span> : <code class="type">(int -> int -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a>) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALmap"><span class="keyword">val</span> map</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a>) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALfold"><span class="keyword">val</span> fold</span> : <code class="type">('a -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> 'a) -> 'a -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a</code></pre>
+<pre><span id="VALfilteri"><span class="keyword">val</span> filteri</span> : <code class="type">(int -> int -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> bool) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> (int * int) array</code></pre>
+<pre><span id="VALfilter"><span class="keyword">val</span> filter</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> bool) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> (int * int) array</code></pre>
+<pre><span id="VALiteri_rows"><span class="keyword">val</span> iteri_rows</span> : <code class="type">(int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALiter_rows"><span class="keyword">val</span> iter_rows</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALiteri_cols"><span class="keyword">val</span> iteri_cols</span> : <code class="type">(int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALiter_cols"><span class="keyword">val</span> iter_cols</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALmapi_rows"><span class="keyword">val</span> mapi_rows</span> : <code class="type">(int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a array</code></pre>
+<pre><span id="VALmap_rows"><span class="keyword">val</span> map_rows</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a array</code></pre>
+<pre><span id="VALmapi_cols"><span class="keyword">val</span> mapi_cols</span> : <code class="type">(int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a array</code></pre>
+<pre><span id="VALmap_cols"><span class="keyword">val</span> map_cols</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a array</code></pre>
+<pre><span id="VALfold_rows"><span class="keyword">val</span> fold_rows</span> : <code class="type">('a -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a) -><br>       'a -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a</code></pre>
+<pre><span id="VALfold_cols"><span class="keyword">val</span> fold_cols</span> : <code class="type">('a -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a) -><br>       'a -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a</code></pre>
+<pre><span id="VALiteri_nz"><span class="keyword">val</span> iteri_nz</span> : <code class="type">(int -> int -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> unit) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALiter_nz"><span class="keyword">val</span> iter_nz</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> unit) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALmapi_nz"><span class="keyword">val</span> mapi_nz</span> : <code class="type">(int -> int -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a>) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALmap_nz"><span class="keyword">val</span> map_nz</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a>) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALfold_nz"><span class="keyword">val</span> fold_nz</span> : <code class="type">('a -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> 'a) -> 'a -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a</code></pre>
+<pre><span id="VALfilteri_nz"><span class="keyword">val</span> filteri_nz</span> : <code class="type">(int -> int -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> bool) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> (int * int) array</code></pre>
+<pre><span id="VALfilter_nz"><span class="keyword">val</span> filter_nz</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> bool) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> (int * int) array</code></pre>
+<pre><span id="VALiteri_rows_nz"><span class="keyword">val</span> iteri_rows_nz</span> : <code class="type">(int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALiter_rows_nz"><span class="keyword">val</span> iter_rows_nz</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALiteri_cols_nz"><span class="keyword">val</span> iteri_cols_nz</span> : <code class="type">(int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALiter_cols_nz"><span class="keyword">val</span> iter_cols_nz</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALmapi_rows_nz"><span class="keyword">val</span> mapi_rows_nz</span> : <code class="type">(int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a array</code></pre>
+<pre><span id="VALmap_rows_nz"><span class="keyword">val</span> map_rows_nz</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a array</code></pre>
+<pre><span id="VALmapi_cols_nz"><span class="keyword">val</span> mapi_cols_nz</span> : <code class="type">(int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a array</code></pre>
+<pre><span id="VALmap_cols_nz"><span class="keyword">val</span> map_cols_nz</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a array</code></pre>
+<pre><span id="VALfold_rows_nz"><span class="keyword">val</span> fold_rows_nz</span> : <code class="type">('a -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a) -><br>       'a -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a</code></pre>
+<pre><span id="VALfold_cols_nz"><span class="keyword">val</span> fold_cols_nz</span> : <code class="type">('a -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a) -><br>       'a -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> 'a</code></pre><br>
+<h6 id="6_Examinetheelementsinamatrix">Examine the elements in a matrix</h6><br>
+
+<pre><span id="VALexists"><span class="keyword">val</span> exists</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> bool) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALnot_exists"><span class="keyword">val</span> not_exists</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> bool) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALfor_all"><span class="keyword">val</span> for_all</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> bool) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALexists_nz"><span class="keyword">val</span> exists_nz</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> bool) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALnot_exists_nz"><span class="keyword">val</span> not_exists_nz</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> bool) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALfor_all_nz"><span class="keyword">val</span> for_all_nz</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> bool) -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre><br>
+<h6 id="6_Basicmathematicaloperationsofmatrices">Basic mathematical operations of matrices</h6><br>
+
+<pre><span id="VALmul_scalar"><span class="keyword">val</span> mul_scalar</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALdiv_scalar"><span class="keyword">val</span> div_scalar</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALadd"><span class="keyword">val</span> add</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALsub"><span class="keyword">val</span> sub</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALmul"><span class="keyword">val</span> mul</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALdiv"><span class="keyword">val</span> div</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALdot"><span class="keyword">val</span> dot</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALabs"><span class="keyword">val</span> abs</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALneg"><span class="keyword">val</span> neg</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALsum"><span class="keyword">val</span> sum</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a></code></pre>
+<pre><span id="VALaverage"><span class="keyword">val</span> average</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a></code></pre>
+<pre><span id="VALpower"><span class="keyword">val</span> power</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALis_zero"><span class="keyword">val</span> is_zero</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALis_positive"><span class="keyword">val</span> is_positive</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALis_negative"><span class="keyword">val</span> is_negative</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALis_nonnegative"><span class="keyword">val</span> is_nonnegative</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALmin"><span class="keyword">val</span> min</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a></code></pre>
+<pre><span id="VALmax"><span class="keyword">val</span> max</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a></code></pre>
+<pre><span id="VALminmax"><span class="keyword">val</span> minmax</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a> * <a href="Owl_sparse_complex.html#TYPEelt">elt</a></code></pre>
+<pre><span id="VALsum_rows"><span class="keyword">val</span> sum_rows</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALsum_cols"><span class="keyword">val</span> sum_cols</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALaverage_rows"><span class="keyword">val</span> average_rows</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALaverage_cols"><span class="keyword">val</span> average_cols</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><br>
+<h6 id="6_Comparetwomatrices">Compare two matrices</h6><br>
+
+<pre><span id="VALis_equal"><span class="keyword">val</span> is_equal</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALis_unequal"><span class="keyword">val</span> is_unequal</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALis_greater"><span class="keyword">val</span> is_greater</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALis_smaller"><span class="keyword">val</span> is_smaller</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALequal_or_greater"><span class="keyword">val</span> equal_or_greater</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre>
+<pre><span id="VALequal_or_smaller"><span class="keyword">val</span> equal_or_smaller</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre><br>
+<h6 id="6_Randomisationfunctions">Randomisation functions</h6><br>
+
+<pre><span id="VALpermutation_matrix"><span class="keyword">val</span> permutation_matrix</span> : <code class="type">int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALdraw_rows"><span class="keyword">val</span> draw_rows</span> : <code class="type">?replacement:bool -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> * int array</code></pre>
+<pre><span id="VALdraw_cols"><span class="keyword">val</span> draw_cols</span> : <code class="type">?replacement:bool -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> int -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> * int array</code></pre>
+<pre><span id="VALshuffle_rows"><span class="keyword">val</span> shuffle_rows</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALshuffle_cols"><span class="keyword">val</span> shuffle_cols</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALshuffle"><span class="keyword">val</span> shuffle</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><br>
+<h6 id="6_InputOutputandhelperfunctions">Input/Output and helper functions</h6><br>
+
+<pre><span id="VALto_dense"><span class="keyword">val</span> to_dense</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_dense_complex.html#TYPEmat">Owl_dense_complex.mat</a></code></pre>
+<pre><span id="VALof_dense"><span class="keyword">val</span> of_dense</span> : <code class="type"><a href="Owl_dense_complex.html#TYPEmat">Owl_dense_complex.mat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre>
+<pre><span id="VALprint"><span class="keyword">val</span> print</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALpp_spmat"><span class="keyword">val</span> pp_spmat</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre>
+<pre><span id="VALsave"><span class="keyword">val</span> save</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> string -> unit</code></pre>
+<pre><span id="VALload"><span class="keyword">val</span> load</span> : <code class="type">string -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><br>
+<h6 id="6_Shorhandinfixoperators">Shorhand infix operators</h6><br>
+
+<pre><span id="VAL(+@)"><span class="keyword">val</span> (+@)</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><div class="info ">
+Shorthand for <code class="code">add x y</code>, i.e., <code class="code">x +@ y</code><br>
+</div>
+
+<pre><span id="VAL(-@)"><span class="keyword">val</span> (-@)</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><div class="info ">
+Shorthand for <code class="code">sub x y</code>, i.e., <code class="code">x -@ y</code><br>
+</div>
+
+<pre><span id="VAL( *@ )"><span class="keyword">val</span> ( *@ )</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><div class="info ">
+Shorthand for <code class="code">mul x y</code>, i.e., <code class="code">x *@ y</code><br>
+</div>
+
+<pre><span id="VAL(/@)"><span class="keyword">val</span> (/@)</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><div class="info ">
+Shorthand for <code class="code">div x y</code>, i.e., <code class="code">x /@ y</code><br>
+</div>
+
+<pre><span id="VAL($@)"><span class="keyword">val</span> ($@)</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><div class="info ">
+Shorthand for <code class="code">dot x y</code>, i.e., <code class="code">x $@ y</code><br>
+</div>
+
+<pre><span id="VAL( **@ )"><span class="keyword">val</span> ( **@ )</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><div class="info ">
+Shorthand for <code class="code">power x a</code>, i.e., <code class="code">x **@ a</code><br>
+</div>
+
+<pre><span id="VAL( *$ )"><span class="keyword">val</span> ( *$ )</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><div class="info ">
+Shorthand for <code class="code">mul_scalar x a</code>, i.e., <code class="code">x *$ a</code><br>
+</div>
+
+<pre><span id="VAL(/$)"><span class="keyword">val</span> (/$)</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -><br>       <a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><div class="info ">
+Shorthand for <code class="code">div_scalar x a</code>, i.e., <code class="code">x /$ a</code><br>
+</div>
+
+<pre><span id="VAL( $* )"><span class="keyword">val</span> ( $* )</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEelt">elt</a> -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><div class="info ">
+Shorthand for <code class="code">mul_scalar x a</code>, i.e., <code class="code">x $* a</code><br>
+</div>
+
+<pre><span id="VAL($/)"><span class="keyword">val</span> ($/)</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEelt">elt</a> -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><div class="info ">
+Shorthand for <code class="code">div_scalar x a</code>, i.e., <code class="code">x $/ a</code><br>
+</div>
+
+<pre><span id="VAL(=@)"><span class="keyword">val</span> (=@)</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre><div class="info ">
+Shorthand for <code class="code">is_equal x y</code>, i.e., <code class="code">x =@ y</code><br>
+</div>
+
+<pre><span id="VAL(>@)"><span class="keyword">val</span> (&gt;@)</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre><div class="info ">
+Shorthand for <code class="code">is_greater x y</code>, i.e., <code class="code">x &gt;@ y</code><br>
+</div>
+
+<pre><span id="VAL(<@)"><span class="keyword">val</span> (&lt;@)</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre><div class="info ">
+Shorthand for <code class="code">is_smaller x y</code>, i.e., <code class="code">x &lt;@ y</code><br>
+</div>
+
+<pre><span id="VAL(<>@)"><span class="keyword">val</span> (&lt;&gt;@)</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre><div class="info ">
+Shorthand for <code class="code">is_unequal x y</code>, i.e., <code class="code">x &lt;&gt;@ y</code><br>
+</div>
+
+<pre><span id="VAL(>=@)"><span class="keyword">val</span> (&gt;=@)</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre><div class="info ">
+Shorthand for <code class="code">equal_or_greater x y</code>, i.e., <code class="code">x &gt;=@ y</code><br>
+</div>
+
+<pre><span id="VAL(<=@)"><span class="keyword">val</span> (&lt;=@)</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> bool</code></pre><div class="info ">
+Shorthand for <code class="code">equal_or_smaller x y</code>, i.e., <code class="code">x &lt;=@ y</code><br>
+</div>
+
+<pre><span id="VAL(@@)"><span class="keyword">val</span> (@@)</span> : <code class="type">(<a href="Owl_sparse_complex.html#TYPEelt">elt</a> -> <a href="Owl_sparse_complex.html#TYPEelt">elt</a>) -><br>       <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_complex.html#TYPEspmat">spmat</a></code></pre><div class="info ">
+Shorthand for <code class="code">map f x</code>, i.e., f @@ x<br>
+</div>
+
+<pre><span id="VAL_triplet2crs"><span class="keyword">val</span> _triplet2crs</span> : <code class="type"><a href="Owl_sparse_complex.html#TYPEspmat">spmat</a> -> unit</code></pre></body></html>

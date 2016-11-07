@@ -20,6 +20,7 @@
 <link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
 <link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
 <link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_fft" rel="Chapter" href="Owl_fft.html">
 <link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
 <link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
 <link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
@@ -28,9 +29,18 @@
 </head>
 <body>
 <code class="code"><span class="keyword">sig</span>
-&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;int_array&nbsp;=
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(int64,&nbsp;<span class="constructor">Bigarray</span>.int64_elt,&nbsp;<span class="constructor">Bigarray</span>.c_layout)&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array1</span>.t
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;int_array&nbsp;=&nbsp;int&nbsp;array
 &nbsp;&nbsp;<span class="keyword">type</span>&nbsp;elt_array&nbsp;=
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span class="constructor">Complex</span>.t,&nbsp;<span class="constructor">Bigarray</span>.complex64_elt,&nbsp;<span class="constructor">Bigarray</span>.c_layout)
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="constructor">Bigarray</span>.<span class="constructor">Array1</span>.t
+&nbsp;&nbsp;<span class="keyword">type</span>&nbsp;spmat_record&nbsp;=&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;m&nbsp;:&nbsp;int;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;n&nbsp;:&nbsp;int;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;i&nbsp;:&nbsp;<span class="constructor">Owl_types</span>.<span class="constructor">Sparse_complex</span>.int_array;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;d&nbsp;:&nbsp;<span class="constructor">Owl_types</span>.<span class="constructor">Sparse_complex</span>.elt_array;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;p&nbsp;:&nbsp;<span class="constructor">Owl_types</span>.<span class="constructor">Sparse_complex</span>.int_array;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;nz&nbsp;:&nbsp;int;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;typ&nbsp;:&nbsp;int;
+&nbsp;&nbsp;&nbsp;&nbsp;<span class="keyword">mutable</span>&nbsp;h&nbsp;:&nbsp;(int,&nbsp;int)&nbsp;<span class="constructor">Hashtbl</span>.t;
+&nbsp;&nbsp;}
 <span class="keyword">end</span></code></body></html>

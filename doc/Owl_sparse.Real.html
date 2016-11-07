@@ -24,6 +24,7 @@
 <link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
 <link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
 <link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_fft" rel="Chapter" href="Owl_fft.html">
 <link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
 <link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
 <link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
@@ -193,13 +194,13 @@ Similar to <code class="code">rows</code>, <code class="code">cols x a</code> re
 <br>
 <h6 id="6_Iterateelementscolumnsandrows">Iterate elements, columns, and rows</h6><br>
 
-<pre><span id="VALiteri"><span class="keyword">val</span> iteri</span> : <code class="type">(int -> int -> float -> 'a) -> <a href="Owl_sparse_real.html#TYPEspmat">spmat</a> -> unit</code></pre><div class="info ">
+<pre><span id="VALiteri"><span class="keyword">val</span> iteri</span> : <code class="type">(int -> int -> float -> unit) -> <a href="Owl_sparse_real.html#TYPEspmat">spmat</a> -> unit</code></pre><div class="info ">
 <code class="code">iteri f x</code> iterates all the elements in <code class="code">x</code> and applies the user defined
   function <code class="code">f : int <span class="keywordsign">-&gt;</span> int <span class="keywordsign">-&gt;</span> float <span class="keywordsign">-&gt;</span> <span class="keywordsign">'</span>a</code>. <code class="code">f i j v</code> takes three parameters,
   <code class="code">i</code> and <code class="code">j</code> are the coordinates of current element, and <code class="code">v</code> is its value.<br>
 </div>
 
-<pre><span id="VALiter"><span class="keyword">val</span> iter</span> : <code class="type">(float -> 'a) -> <a href="Owl_sparse_real.html#TYPEspmat">spmat</a> -> unit</code></pre><div class="info ">
+<pre><span id="VALiter"><span class="keyword">val</span> iter</span> : <code class="type">(float -> unit) -> <a href="Owl_sparse_real.html#TYPEspmat">spmat</a> -> unit</code></pre><div class="info ">
 <code class="code">iter f x</code> is the same as as <code class="code">iteri f x</code> except the coordinates of the
   current element is not passed to the function <code class="code">f : float <span class="keywordsign">-&gt;</span> <span class="keywordsign">'</span>a</code><br>
 </div>
@@ -280,12 +281,12 @@ Similar to <code class="code">mapi_cols</code> except column number is not passe
   order of folding is from the first column to the last one.<br>
 </div>
 
-<pre><span id="VALiteri_nz"><span class="keyword">val</span> iteri_nz</span> : <code class="type">(int -> int -> float -> 'a) -> <a href="Owl_sparse_real.html#TYPEspmat">spmat</a> -> unit</code></pre><div class="info ">
+<pre><span id="VALiteri_nz"><span class="keyword">val</span> iteri_nz</span> : <code class="type">(int -> int -> float -> unit) -> <a href="Owl_sparse_real.html#TYPEspmat">spmat</a> -> unit</code></pre><div class="info ">
 <code class="code">iteri_nz f x</code> iterates all the non-zero elements in <code class="code">x</code> by applying the
   function <code class="code">f : int <span class="keywordsign">-&gt;</span> int <span class="keywordsign">-&gt;</span> float <span class="keywordsign">-&gt;</span> <span class="keywordsign">'</span>a</code>. It is much faster than <code class="code">iteri</code>.<br>
 </div>
 
-<pre><span id="VALiter_nz"><span class="keyword">val</span> iter_nz</span> : <code class="type">(float -> 'a) -> <a href="Owl_sparse_real.html#TYPEspmat">spmat</a> -> unit</code></pre><div class="info ">
+<pre><span id="VALiter_nz"><span class="keyword">val</span> iter_nz</span> : <code class="type">(float -> unit) -> <a href="Owl_sparse_real.html#TYPEspmat">spmat</a> -> unit</code></pre><div class="info ">
 Similar to <code class="code">iter_nz</code> except the coordinates of elements are not passed to <code class="code">f</code>.<br>
 </div>
 
@@ -643,5 +644,9 @@ Shorthand for <code class="code">equal_or_greater x y</code>, i.e., <code class=
 
 <pre><span id="VAL(<=@)"><span class="keyword">val</span> (&lt;=@)</span> : <code class="type"><a href="Owl_sparse_real.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_real.html#TYPEspmat">spmat</a> -> bool</code></pre><div class="info ">
 Shorthand for <code class="code">equal_or_smaller x y</code>, i.e., <code class="code">x &lt;=@ y</code><br>
+</div>
+
+<pre><span id="VAL(@@)"><span class="keyword">val</span> (@@)</span> : <code class="type">(float -> float) -> <a href="Owl_sparse_real.html#TYPEspmat">spmat</a> -> <a href="Owl_sparse_real.html#TYPEspmat">spmat</a></code></pre><div class="info ">
+Shorthand for <code class="code">map f x</code>, i.e., f @@ x<br>
 </div>
 </body></html>

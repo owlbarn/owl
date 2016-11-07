@@ -24,6 +24,7 @@
 <link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
 <link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
 <link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_fft" rel="Chapter" href="Owl_fft.html">
 <link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
 <link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
 <link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
@@ -197,13 +198,13 @@ If <code class="code">x</code> is an <code class="code">m</code> by <code class=
 
 <pre><span id="VALrows"><span class="keyword">val</span> rows</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int array -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
 <code class="code">rows x a</code> returns the rows (defined in an int array <code class="code">a</code>) of <code class="code">x</code>. The
-  returned rows will be combined into a new sparse matrix. The order of rows in
+  returned rows will be combined into a new dense matrix. The order of rows in
   the new matrix is the same as that in the array <code class="code">a</code>.<br>
 </div>
 
 <pre><span id="VALcols"><span class="keyword">val</span> cols</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int array -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
 Similar to <code class="code">rows</code>, <code class="code">cols x a</code> returns the columns (specified in array <code class="code">a</code>)
-  of x in a new sparse matrix.<br>
+  of x in a new dense matrix.<br>
 </div>
 
 <pre><span id="VALclone"><span class="keyword">val</span> clone</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
@@ -260,16 +261,24 @@ Similar to <code class="code">rows</code>, <code class="code">cols x a</code> re
 <code class="code">replace_col v x j</code> uses the column vector <code class="code">v</code> to replace the <code class="code">j</code>th column
   in the matrix <code class="code">x</code>.<br>
 </div>
+
+<pre><span id="VALswap_rows"><span class="keyword">val</span> swap_rows</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">swap_rows x i i'</code> swaps the row <code class="code">i</code> with row <code class="code">i'</code> of <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALswap_cols"><span class="keyword">val</span> swap_cols</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
+<code class="code">swap_cols x j j'</code> swaps the column <code class="code">j</code> with column <code class="code">j'</code> of <code class="code">x</code>.<br>
+</div>
 <br>
 <h6 id="6_Iterateelementscolumnsandrows">Iterate elements, columns, and rows.</h6><br>
 
-<pre><span id="VALiteri"><span class="keyword">val</span> iteri</span> : <code class="type">(int -> int -> float -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<pre><span id="VALiteri"><span class="keyword">val</span> iteri</span> : <code class="type">(int -> int -> float -> unit) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
 <code class="code">iteri f x</code> iterates all the elements in <code class="code">x</code> and applies the user defined
   function <code class="code">f : int <span class="keywordsign">-&gt;</span> int <span class="keywordsign">-&gt;</span> float <span class="keywordsign">-&gt;</span> <span class="keywordsign">'</span>a</code>. <code class="code">f i j v</code> takes three parameters,
   <code class="code">i</code> and <code class="code">j</code> are the coordinates of current element, and <code class="code">v</code> is its value.<br>
 </div>
 
-<pre><span id="VALiter"><span class="keyword">val</span> iter</span> : <code class="type">(float -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<pre><span id="VALiter"><span class="keyword">val</span> iter</span> : <code class="type">(float -> unit) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
 <code class="code">iter f x</code> is the same as as <code class="code">iteri f x</code> except the coordinates of the
   current element is not passed to the function <code class="code">f : float <span class="keywordsign">-&gt;</span> <span class="keywordsign">'</span>a</code><br>
 </div>
@@ -302,22 +311,22 @@ Similar to <code class="code">filteri</code>, but the coordinates of the element
   the function <code class="code">f : float <span class="keywordsign">-&gt;</span> bool</code>.<br>
 </div>
 
-<pre><span id="VALiteri_rows"><span class="keyword">val</span> iteri_rows</span> : <code class="type">(int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<pre><span id="VALiteri_rows"><span class="keyword">val</span> iteri_rows</span> : <code class="type">(int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
 <code class="code">iteri_rows f x</code> iterates every row in <code class="code">x</code> and applies function
   <code class="code">f : int <span class="keywordsign">-&gt;</span> mat <span class="keywordsign">-&gt;</span> unit</code> to each of them.<br>
 </div>
 
-<pre><span id="VALiter_rows"><span class="keyword">val</span> iter_rows</span> : <code class="type">(<a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<pre><span id="VALiter_rows"><span class="keyword">val</span> iter_rows</span> : <code class="type">(<a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
 Similar to <code class="code">iteri_rows</code> except row number is not passed to <code class="code">f</code>.<br>
 </div>
 
-<pre><span id="VALiteri_cols"><span class="keyword">val</span> iteri_cols</span> : <code class="type">(int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<pre><span id="VALiteri_cols"><span class="keyword">val</span> iteri_cols</span> : <code class="type">(int -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
 <code class="code">iteri_cols f x</code> iterates every column in <code class="code">x</code> and applies function
   <code class="code">f : int <span class="keywordsign">-&gt;</span> mat <span class="keywordsign">-&gt;</span> unit</code> to each of them. Column number is passed to <code class="code">f</code> as
   the first parameter.<br>
 </div>
 
-<pre><span id="VALiter_cols"><span class="keyword">val</span> iter_cols</span> : <code class="type">(<a href="Owl_dense_real.html#TYPEmat">mat</a> -> 'a) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
+<pre><span id="VALiter_cols"><span class="keyword">val</span> iter_cols</span> : <code class="type">(<a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> unit</code></pre><div class="info ">
 Similar to <code class="code">iteri_cols</code> except col number is not passed to <code class="code">f</code>.<br>
 </div>
 
@@ -778,5 +787,4 @@ Shorthand for <code class="code">equal_or_smaller x y</code>, i.e., <code class=
 <pre><span id="VAL(@@)"><span class="keyword">val</span> (@@)</span> : <code class="type">(float -> float) -> <a href="Owl_dense_real.html#TYPEmat">mat</a> -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre><div class="info ">
 Shorthand for <code class="code">map f x</code>, i.e., f @@ x<br>
 </div>
-
-<pre><span id="VALgsl_col"><span class="keyword">val</span> gsl_col</span> : <code class="type"><a href="Owl_dense_real.html#TYPEmat">mat</a> -> int -> <a href="Owl_dense_real.html#TYPEmat">mat</a></code></pre></body></html>
+</body></html>

@@ -21,6 +21,7 @@
 <link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
 <link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
 <link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_fft" rel="Chapter" href="Owl_fft.html">
 <link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
 <link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
 <link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
@@ -70,6 +71,8 @@
 <tr><td align="left"><br>F</td></tr>
 <tr><td><a href="Ffi_bindings.html">Ffi_bindings</a> </td>
 <td></td></tr>
+<tr><td><a href="Owl.Fft.html">Fft</a> [<a href="Owl.html">Owl</a>]</td>
+<td></td></tr>
 <tr><td align="left"><br>L</td></tr>
 <tr><td><a href="Owl.Linalg.html">Linalg</a> [<a href="Owl.html">Owl</a>]</td>
 <td></td></tr>
@@ -98,12 +101,19 @@ This module is extended from gsl-ocaml by including SI system.
 </td></tr>
 <tr><td><a href="Owl_dense_complex.html">Owl_dense_complex</a> </td>
 <td><div class="info">
-Complex dense matrix module
+Complex dense matrix module: this module supports operations on dense
+  matrices of complex numbers.
 </div>
 </td></tr>
 <tr><td><a href="Owl_dense_real.html">Owl_dense_real</a> </td>
 <td><div class="info">
 Real dense matrix module
+</div>
+</td></tr>
+<tr><td><a href="Owl_fft.html">Owl_fft</a> </td>
+<td><div class="info">
+Fast Fourier Transforms (FFTs) : this module implements some basic FFT
+  operations.
 </div>
 </td></tr>
 <tr><td><a href="Owl_foreign.html">Owl_foreign</a> </td>
@@ -149,12 +159,14 @@ Regression module
 </td></tr>
 <tr><td><a href="Owl_sparse_complex.html">Owl_sparse_complex</a> </td>
 <td><div class="info">
-<code class="code"> <span class="constructor">Complex</span> sparse matrix </code>
+Complex sparse matrix: this module supports the operations on sparse
+  matrices of complex numbers.
 </div>
 </td></tr>
 <tr><td><a href="Owl_sparse_real.html">Owl_sparse_real</a> </td>
 <td><div class="info">
-Sparse matrix module
+Sparse real matrix: this module supports the operations on sparse matrices
+  of real numbers.
 </div>
 </td></tr>
 <tr><td><a href="Owl_stats.html">Owl_stats</a> </td>
@@ -195,12 +207,7 @@ Helper functions used in the library
 <td></td></tr>
 <tr><td align="left"><br>S</td></tr>
 <tr><td><a href="Owl_const.SI.html">SI</a> [<a href="Owl_const.html">Owl_const</a>]</td>
-<td><div class="info">
-International System of Units (French: Système international d'unités, SI),
-   historically also called the MKSA system of units for
-   metre–kilogram–second–ampere.
-</div>
-</td></tr>
+<td></td></tr>
 <tr><td><a href="Owl_foreign.SR.html">SR</a> [<a href="Owl_foreign.html">Owl_foreign</a>]</td>
 <td></td></tr>
 <tr><td><a href="Owl.Sparse.html">Sparse</a> [<a href="Owl.html">Owl</a>]</td>

@@ -1,0 +1,87 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+<head>
+<link rel="stylesheet" href="style.css" type="text/css">
+<meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+<link rel="Start" href="index.html">
+<link rel="previous" href="Owl.Plot.html">
+<link rel="Up" href="Owl.html">
+<link title="Index of types" rel=Appendix href="index_types.html">
+<link title="Index of values" rel=Appendix href="index_values.html">
+<link title="Index of modules" rel=Appendix href="index_modules.html">
+<link title="Owl" rel="Chapter" href="Owl.html">
+<link title="Owl_types" rel="Chapter" href="Owl_types.html">
+<link title="Owl_utils" rel="Chapter" href="Owl_utils.html">
+<link title="Owl_maths" rel="Chapter" href="Owl_maths.html">
+<link title="Owl_stats" rel="Chapter" href="Owl_stats.html">
+<link title="Owl_optimise" rel="Chapter" href="Owl_optimise.html">
+<link title="Owl_dense_real" rel="Chapter" href="Owl_dense_real.html">
+<link title="Owl_dense_complex" rel="Chapter" href="Owl_dense_complex.html">
+<link title="Owl_dense" rel="Chapter" href="Owl_dense.html">
+<link title="Owl_sparse_real" rel="Chapter" href="Owl_sparse_real.html">
+<link title="Owl_sparse_complex" rel="Chapter" href="Owl_sparse_complex.html">
+<link title="Owl_sparse" rel="Chapter" href="Owl_sparse.html">
+<link title="Owl_foreign" rel="Chapter" href="Owl_foreign.html">
+<link title="Owl_linalg" rel="Chapter" href="Owl_linalg.html">
+<link title="Owl_regression" rel="Chapter" href="Owl_regression.html">
+<link title="Owl_fft" rel="Chapter" href="Owl_fft.html">
+<link title="Owl_pretty" rel="Chapter" href="Owl_pretty.html">
+<link title="Owl_plot" rel="Chapter" href="Owl_plot.html">
+<link title="Owl_toplevel" rel="Chapter" href="Owl_toplevel.html">
+<link title="Owl_const" rel="Chapter" href="Owl_const.html">
+<link title="Ffi_bindings" rel="Chapter" href="Ffi_bindings.html"><title>Owl.Fft</title>
+</head>
+<body>
+<div class="navbar"><a class="pre" href="Owl.Plot.html" title="Owl.Plot">Previous</a>
+&nbsp;<a class="up" href="Owl.html" title="Owl">Up</a>
+&nbsp;</div>
+<h1>Module <a href="type_Owl.Fft.html">Owl.Fft</a> (<a href="code_Owl.Fft.html">.ml</a>)</h1>
+
+<pre><span class="keyword">module</span> Fft: <code class="type"><a href="Owl_fft.html">Owl_fft</a></code></pre><hr width="100%">
+
+<pre><span id="TYPErmat"><span class="keyword">type</span> <code class="type"></code>rmat</span> = <code class="type"><a href="Owl_dense_real.html#TYPEmat">Owl_dense_real.mat</a></code> </pre>
+
+
+<pre><span id="TYPEcmat"><span class="keyword">type</span> <code class="type"></code>cmat</span> = <code class="type"><a href="Owl_dense_complex.html#TYPEmat">Owl_dense_complex.mat</a></code> </pre>
+
+
+<pre><span id="VALfft"><span class="keyword">val</span> fft</span> : <code class="type"><a href="Owl_fft.html#TYPErmat">rmat</a> -> <a href="Owl_fft.html#TYPEcmat">cmat</a></code></pre><div class="info ">
+<code class="code">fft x</code> performs an FFT operation on matrix <code class="code">x</code>. If <code class="code">x</code> has more than one
+  row, then one FFT operation will be performed on each of them. The input is
+  a real dense matrix, and the returned result is a complex dense matrix.<br>
+</div>
+
+<pre><span id="VALfft_complex"><span class="keyword">val</span> fft_complex</span> : <code class="type"><a href="Owl_fft.html#TYPEcmat">cmat</a> -> <a href="Owl_fft.html#TYPEcmat">cmat</a></code></pre><div class="info ">
+<code class="code">fft_complex x</code> is similar to <code class="code">fft x</code> but is performed on complex matrices.<br>
+</div>
+
+<pre><span id="VALifft"><span class="keyword">val</span> ifft</span> : <code class="type"><a href="Owl_fft.html#TYPEcmat">cmat</a> -> <a href="Owl_fft.html#TYPEcmat">cmat</a></code></pre><div class="info ">
+<code class="code">ifft x</code> performs the inverse operation of FFT on <code class="code">x</code>. Note the input <code class="code">x</code> is
+  a complex matrix, both the output from <code class="code">fft x</code> and <code class="code">fft_complex x</code> can be used
+  as the input of <code class="code">ifft</code>.<br>
+</div>
+
+<pre><span id="VALfft2"><span class="keyword">val</span> fft2</span> : <code class="type"><a href="Owl_fft.html#TYPErmat">rmat</a> -> <a href="Owl_fft.html#TYPEcmat">cmat</a></code></pre><div class="info ">
+<code class="code">fft2 x</code> performns a two-dimensional FFT on a real matrix <code class="code">x</code>.<br>
+</div>
+
+<pre><span id="VALfft2_complex"><span class="keyword">val</span> fft2_complex</span> : <code class="type"><a href="Owl_fft.html#TYPEcmat">cmat</a> -> <a href="Owl_fft.html#TYPEcmat">cmat</a></code></pre><div class="info ">
+<code class="code">fft2_complex x</code> is similar to <code class="code">fft2 x</code> but is performed on complex matrices.<br>
+</div>
+
+<pre><span id="VALifft2"><span class="keyword">val</span> ifft2</span> : <code class="type"><a href="Owl_fft.html#TYPEcmat">cmat</a> -> <a href="Owl_fft.html#TYPEcmat">cmat</a></code></pre><div class="info ">
+<code class="code">ifft2 x</code> performs the inverse operation of FFT on <code class="code">x</code>, i.e., the inverse
+  function of both <code class="code">fft2</code> and <code class="code">fft2_complex</code>.<br>
+</div>
+
+<pre><span id="VALfftshift"><span class="keyword">val</span> fftshift</span> : <code class="type"><a href="Owl_fft.html#TYPEcmat">cmat</a> -> <a href="Owl_fft.html#TYPEcmat">cmat</a></code></pre><div class="info ">
+<code class="code">fftshift x</code> shifts the zero frequency component in the middle. This is
+  especially useful when plotting the figures.<br>
+</div>
+
+<pre><span id="VALifftshift"><span class="keyword">val</span> ifftshift</span> : <code class="type"><a href="Owl_fft.html#TYPEcmat">cmat</a> -> <a href="Owl_fft.html#TYPEcmat">cmat</a></code></pre><div class="info ">
+<code class="code">ifftshift x</code> undoes the results of <code class="code">fftshift x</code>, it is the inverse operation
+  of <code class="code">fftshift</code>. Note that calling <code class="code">fftshift</code> twice such as <code class="code">fftshift (fftshift x)</code>
+  will not give you the same <code class="code">x</code> if there is an odd number of elements.<br>
+</div>
+</body></html>
