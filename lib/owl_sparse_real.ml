@@ -11,11 +11,6 @@ open Owl_types.Dense_real
 
 type spmat = spmat_record
 
-let _print_array x =
-  for i = 0 to Array1.dim x - 1 do
-    Printf.printf "%.1f " x.{i}
-  done
-
 let _empty_int_array () = Array1.create int64 c_layout 0
 
 let _of_sp_mat_ptr p =
@@ -72,9 +67,7 @@ let set x i j y =
   (* FIXME: must be in triplet form; _update_rec_after_set *)
   let open Owl_foreign.SR in
   let _ = gsl_spmatrix_set x.ptr i j y in
-  let _ = _update_rec_after_set x in
-  _print_array x.d;
-  ()
+  let _ = _update_rec_after_set x in ()
 
 let set_without_update_rec x i j y =
   let open Owl_foreign.SR in
@@ -97,7 +90,15 @@ let col_num x = x.n
 
 let numel x = (row_num x) * (col_num x)
 
-let nnz x = x.nz
+(* we don't return x.nz directly since it does not record nnz correctly
+   if you reset a non-zero element back to zero. *)
+let nnz x =
+  let c = ref 0 in
+  for i = 0 to Array1.dim x.d - 1 do
+    if x.d.{i} <> 0. then c := !c + 1
+  done;
+  !c
+
 
 let density x =
   let a, b = nnz x, numel x in
@@ -225,7 +226,7 @@ let iteri_nz f x =
     for k = Int64.to_int (Array1.get x.p j) to (Int64.to_int (Array1.get x.p (j + 1))) - 1 do
       let i = Int64.to_int (Array1.get x.i k) in
       let y = Array1.get x.d k in
-      f i j y
+      if y <> 0. then f i j y
     done
   done
 
@@ -259,7 +260,7 @@ let mapi_nz f x =
     for k = Int64.to_int (Array1.get y.p j) to (Int64.to_int (Array1.get y.p (j + 1))) - 1 do
       let i = Int64.to_int (Array1.get y.i k) in
       let z = Array1.get y.d k in
-      Array1.set y.d k (f i j z)
+      if z <> 0. then Array1.set y.d k (f i j z)
     done
   done; y
 
@@ -410,15 +411,11 @@ let average x = (sum x) /. (float_of_int (x.m * x.n))
 
 let power x c = map_nz (fun y -> y ** c) x
 
-let is_zero x = x.nz = 0
+let is_zero x = (nnz x) = 0
 
-let is_positive x =
-  if x.nz < (x.m * x.n) then false
-  else for_all (( < ) 0.) x
+let is_positive x = for_all (( < ) 0.) x
 
-let is_negative x =
-  if x.nz < (x.m * x.n) then false
-  else for_all (( > ) 0.) x
+let is_negative x = for_all (( > ) 0.) x
 
 let is_nonnegative x =
   for_all_nz (( <= ) 0.) x
@@ -533,8 +530,6 @@ let pp_spmat x =
 let save x f =
   let x = clone x in
   let s = Marshal.to_string (x.m, x.n, x.i, x.d, x.p) [] in
-  Log.info "==>";
-  Log.info "%i %i %i" (Array1.dim x.i) (Array1.dim x.d) (Array1.dim x.p);
   let h = open_out f in
   output_string h s;
   close_out h
@@ -543,7 +538,6 @@ let load f =
   let h = open_in f in
   let s = really_input_string h (in_channel_length h) in
   let m, n, i, d, p = Marshal.from_string s 0 in
-  Log.info "%i %i %i" (Array1.dim i) (Array1.dim d) (Array1.dim p);
   let x = zeros m n in
   for k = 0 to Array1.dim d - 1 do
     let i' = Int64.to_int i.{k} in

@@ -138,7 +138,7 @@ module Sparse_real = struct
     mutable i   : int_array;     (* i index, meaning depends on the matrix format *)
     mutable d   : elt_array;     (* where data actually stored *)
     mutable p   : int_array;     (* p index, meaning depends on the matrix format *)
-    mutable nz  : int;           (* total number of non-zero elements *)
+    mutable nz  : int;           (* total number of non-zero elements. BE CAREFUL! *)
     (* tree missing *)
     (* work missing *)
     mutable typ : int;           (* sparse matrix format, 0:triplet; 1:CCS; 2:CRS *)

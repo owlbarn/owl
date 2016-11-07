@@ -135,13 +135,13 @@ val cols : spmat -> int array -> spmat
 
 (** {6 Iterate elements, columns, and rows} *)
 
-val iteri : (int -> int -> float -> 'a) -> spmat -> unit
+val iteri : (int -> int -> float -> unit) -> spmat -> unit
 (** [iteri f x] iterates all the elements in [x] and applies the user defined
   function [f : int -> int -> float -> 'a]. [f i j v] takes three parameters,
   [i] and [j] are the coordinates of current element, and [v] is its value.
   *)
 
-val iter : (float -> 'a) -> spmat -> unit
+val iter : (float -> unit) -> spmat -> unit
 (** [iter f x] is the same as as [iteri f x] except the coordinates of the
   current element is not passed to the function [f : float -> 'a]
  *)
@@ -218,12 +218,12 @@ val fold_cols : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
   order of folding is from the first column to the last one.
  *)
 
-val iteri_nz : (int -> int -> float -> 'a) -> spmat -> unit
+val iteri_nz : (int -> int -> float -> unit) -> spmat -> unit
 (** [iteri_nz f x] iterates all the non-zero elements in [x] by applying the
   function [f : int -> int -> float -> 'a]. It is much faster than [iteri].
  *)
 
-val iter_nz : (float -> 'a) -> spmat -> unit
+val iter_nz : (float -> unit) -> spmat -> unit
 (** Similar to [iter_nz] except the coordinates of elements are not passed to [f]. *)
 
 val mapi_nz : (int -> int -> float -> float) -> spmat -> spmat
