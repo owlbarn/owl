@@ -542,3 +542,5 @@ val ( <=@ ) : spmat -> spmat -> bool
 (** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
 
 (* val ( @@ ) : (float -> float) -> dsmat -> dsmat *)
+
+val to_csc : spmat -> spmat

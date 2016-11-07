@@ -11,6 +11,11 @@ open Owl_types.Dense_real
 
 type spmat = spmat_record
 
+let _print_array x =
+  for i = 0 to Array1.dim x - 1 do
+    Printf.printf "%.1f " x.{i}
+  done
+
 let _empty_int_array () = Array1.create int64 c_layout 0
 
 let _of_sp_mat_ptr p =
@@ -67,7 +72,9 @@ let set x i j y =
   (* FIXME: must be in triplet form; _update_rec_after_set *)
   let open Owl_foreign.SR in
   let _ = gsl_spmatrix_set x.ptr i j y in
-  let _ = _update_rec_after_set x in ()
+  let _ = _update_rec_after_set x in
+  _print_array x.d;
+  ()
 
 let set_without_update_rec x i j y =
   let open Owl_foreign.SR in
@@ -526,6 +533,8 @@ let pp_spmat x =
 let save x f =
   let x = clone x in
   let s = Marshal.to_string (x.m, x.n, x.i, x.d, x.p) [] in
+  Log.info "==>";
+  Log.info "%i %i %i" (Array1.dim x.i) (Array1.dim x.d) (Array1.dim x.p);
   let h = open_out f in
   output_string h s;
   close_out h
@@ -534,6 +543,7 @@ let load f =
   let h = open_in f in
   let s = really_input_string h (in_channel_length h) in
   let m, n, i, d, p = Marshal.from_string s 0 in
+  Log.info "%i %i %i" (Array1.dim i) (Array1.dim d) (Array1.dim p);
   let x = zeros m n in
   for k = 0 to Array1.dim d - 1 do
     let i' = Int64.to_int i.{k} in
