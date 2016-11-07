@@ -3,7 +3,15 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** [ Complex sparse matrix ] *)
+(** Complex sparse matrix: this module supports the operations on sparse
+  matrices of complex numbers. Becuase GSL does not support complex sparse
+  matrices, herein I provided a pure OCaml implementation.
+
+  The implementation provides both triplet and compressed row storage (CRS)
+  format. Note that only triplet format allows adding and updating elements.
+  Most operations are the same to Sparse.Real module, therefore please refer to
+  the documentation of Sparse.Real module.
+ *)
 
 type spmat
 
@@ -303,12 +311,9 @@ val ( >=@ ) : spmat -> spmat -> bool
 val ( <=@ ) : spmat -> spmat -> bool
 (** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
 
-(* val ( @@ ) : (float -> float) -> dsmat -> dsmat *)
-
+val ( @@ ) : (elt -> elt) -> spmat -> spmat
+(** Shorthand for [map f x], i.e., f @@ x *)
 
 
 (* TODO: debug purpose *)
-
 val _triplet2crs : spmat -> unit
-
-val _is_triplet : spmat -> bool

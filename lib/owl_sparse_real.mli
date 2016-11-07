@@ -3,7 +3,14 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Sparse real matrix *)
+(** Sparse real matrix: this module supports the operations on sparse matrices
+  of real numbers. The module is partly built atop of GSL fucntions. Because
+  GSL only has limited support for sparse matrices. There are some hacks and
+  workarounds in the code.
+
+  In the future, I might use a pure OCaml implementation to replace the current
+  solution. At the moment, use with care and let me know if you find bugs.
+ *)
 
 type spmat
 (** Type of sparse matrices. It is defined in [types.ml] as record type. *)
@@ -541,6 +548,5 @@ val ( >=@ ) : spmat -> spmat -> bool
 val ( <=@ ) : spmat -> spmat -> bool
 (** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
 
-(* val ( @@ ) : (float -> float) -> dsmat -> dsmat *)
-
-val to_csc : spmat -> spmat
+val ( @@ ) : (float -> float) -> spmat -> spmat
+(** Shorthand for [map f x], i.e., f @@ x *)

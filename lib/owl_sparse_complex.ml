@@ -675,6 +675,7 @@ let ( >=@ ) = equal_or_greater
 
 let ( <=@ ) = equal_or_smaller
 
+let ( @@ ) f x = map f x
 
 
 
