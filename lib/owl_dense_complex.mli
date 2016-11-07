@@ -3,7 +3,15 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Complex dense matrix module *)
+(** Complex dense matrix module: this module supports operations on dense
+  matrices of complex numbers. The complex number has a record type of
+  [{re = float; im = float}].
+
+  This page only contains detailed explanations for the operations specific to
+  Dense.Complex module. Most of the other operations are the same to those in
+  Dense.Real module, therefore please refer to the documentation of Dense.Real
+  for more information.
+ *)
 
 type mat = Gsl.Matrix_complex.matrix
 
@@ -343,3 +351,6 @@ val ( >=@ ) : mat -> mat -> bool
 
 val ( <=@ ) : mat -> mat -> bool
 (** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
+
+val ( @@ ) : (elt -> elt) -> mat -> mat
+(** Shorthand for [map f x], i.e., f @@ x *)

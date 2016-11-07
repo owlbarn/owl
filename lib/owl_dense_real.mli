@@ -145,13 +145,13 @@ val col : mat -> int -> mat
 
 val rows : mat -> int array -> mat
 (** [rows x a] returns the rows (defined in an int array [a]) of [x]. The
-  returned rows will be combined into a new sparse matrix. The order of rows in
+  returned rows will be combined into a new dense matrix. The order of rows in
   the new matrix is the same as that in the array [a].
  *)
 
 val cols : mat -> int array -> mat
 (** Similar to [rows], [cols x a] returns the columns (specified in array [a])
-  of x in a new sparse matrix.
+  of x in a new dense matrix.
  *)
 
 val clone : mat -> mat
@@ -673,7 +673,3 @@ val ( <=@ ) : mat -> mat -> bool
 
 val ( @@ ) : (float -> float) -> mat -> mat
 (** Shorthand for [map f x], i.e., f @@ x *)
-
-(* TODO: for debug purpose *)
-
-val gsl_col : mat -> int -> mat

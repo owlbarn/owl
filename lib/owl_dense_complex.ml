@@ -600,5 +600,8 @@ let im x =
   iteri (fun i j z -> y.{i,j} <- Complex.(z.im)) x;
   y
 
+let ( @@ ) f x = map f x
+
+
 
 (* ends here *)

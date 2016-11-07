@@ -667,7 +667,7 @@ let meshup x y =
   let y = map_by_row (fun _ -> y) (empty xn yn) in
   x, transpose y
 
-let ( @@ ) f x = map f x  (* TODO: experimental *)
+let ( @@ ) f x = map f x
 
 (* TODO: use this to replace col function, faster *)
 let gsl_col x i =
