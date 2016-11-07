@@ -432,13 +432,7 @@ let min x = fst (minmax x)
 
 let max x = snd (minmax x)
 
-let is_equal x1 x2 =
-  let open Owl_foreign.SR in
-  let x2 = match (_is_csc_format x1), (_is_csc_format x2) with
-    | true, false -> to_csc x2
-    | false, true -> clone x2
-    | _ -> x2
-  in (gsl_spmatrix_equal x1.ptr x2.ptr) = 1
+let is_equal x1 x2 = sub x1 x2 |> is_zero
 
 let is_unequal x1 x2 = not (is_equal x1 x2)
 
@@ -542,7 +536,8 @@ let load f =
   for k = 0 to Array1.dim d - 1 do
     let i' = Int64.to_int i.{k} in
     let j' = Int64.to_int p.{k} in
-    set_without_update_rec x i' j' d.{k}
+    let d' = d.{k} in
+    if d' <> 0. then set_without_update_rec x i' j' d'
   done;
   let _ = _update_rec_from_ptr x in
   x
