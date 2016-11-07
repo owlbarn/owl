@@ -1,5 +1,5 @@
 (*
- * OWL - an OCaml math library for scientific computing
+ * OWL - an OCaml numerical library for scientific computing
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *
  *)
