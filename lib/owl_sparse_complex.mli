@@ -75,9 +75,9 @@ val cols : spmat -> int array -> spmat
 
 (** {6 Iterate elements, columns, and rows} *)
 
-val iteri : (int -> int -> elt -> 'a) -> spmat -> unit
+val iteri : (int -> int -> elt -> unit) -> spmat -> unit
 
-val iter : (elt -> 'a) -> spmat -> unit
+val iter : (elt -> unit) -> spmat -> unit
 
 val mapi : (int -> int -> elt -> elt) -> spmat -> spmat
 
@@ -109,9 +109,9 @@ val fold_rows : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
 
 val fold_cols : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
 
-val iteri_nz : (int -> int -> elt -> 'a) -> spmat -> unit
+val iteri_nz : (int -> int -> elt -> unit) -> spmat -> unit
 
-val iter_nz : (elt -> 'a) -> spmat -> unit
+val iter_nz : (elt -> unit) -> spmat -> unit
 
 val mapi_nz : (int -> int -> elt -> elt) -> spmat -> spmat
 
