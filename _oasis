@@ -1,5 +1,5 @@
 OASISFormat: 0.4
-Name:        Owl
+Name:        owl
 Version:     0.1
 Description: Owl is an OCaml library for scientific computing
 Synopsis:    Scientific computing library
@@ -14,7 +14,7 @@ SourceRepository master
   Branch: master
   Browser: https://github.com/ryanrhymes/owl
 
-Library Owl
+Library owl
   Path:             lib
   BuildTools:       ocamlbuild, ocamldoc
   Modules:          Owl, Owl_types, Owl_utils, Owl_maths, Owl_stats, Owl_optimise,
@@ -39,55 +39,55 @@ Executable ffi_stubgen
   BuildTools:     ocamlbuild
   MainIs:         ffi_stubgen.ml
   CompiledObject: byte
-  BuildDepends:   Owl, ctypes.stubs
+  BuildDepends:   owl, ctypes.stubs
 
 Executable test_sgd
   Path:           examples
   CompiledObject: best
   MainIs:         test_sgd.ml
-  BuildDepends:   Owl
+  BuildDepends:   owl
 
 Executable test_kmeans
   Path:           examples
   CompiledObject: best
   MainIs:         test_kmeans.ml
-  BuildDepends:   Owl
+  BuildDepends:   owl
 
 Executable test_log
   Path:           examples
   CompiledObject: best
   MainIs:         test_log.ml
-  BuildDepends:   Owl
+  BuildDepends:   owl
 
 Executable test_svm
   Path:           examples
   CompiledObject: best
   MainIs:         test_svm.ml
-  BuildDepends:   Owl
+  BuildDepends:   owl
 
 Executable test_operation
   Path:           examples
   CompiledObject: best
   MainIs:         test_operation.ml
-  BuildDepends:   Owl
+  BuildDepends:   owl
 
 Executable test_dense
   Path:           examples
   CompiledObject: best
   MainIs:         test_dense.ml
-  BuildDepends:   Owl
+  BuildDepends:   owl
 
 Executable test_sparse
   Path:           examples
   CompiledObject: best
   MainIs:         test_sparse.ml
-  BuildDepends:   Owl
+  BuildDepends:   owl
 
 Executable test_sparse_complex
   Path:           examples
   CompiledObject: best
   MainIs:         test_sparse_complex.ml
-  BuildDepends:   Owl
+  BuildDepends:   owl
 
 AlphaFeatures: ocamlbuild_more_args
 Document owldoc
@@ -96,5 +96,5 @@ Document owldoc
   InstallDir:           doc
   BuildTools:           ocamldoc
   XOCamlBuildPath:      .
-  XOCamlBuildLibraries: Owl
+  XOCamlBuildLibraries: owl
   XOCamlbuildExtraArgs: "-docflags '-colorize-code -keep-code -charset utf-8'"

@@ -12,7 +12,7 @@ build: [
 ]
 install: ["ocaml" "setup.ml" "-install"]
 remove: [
-  ["ocaml" "%{etc}%/Owl/_oasis_remove_.ml" "%{etc}%/Owl"]
+  ["ocaml" "%{etc}%/owl/_oasis_remove_.ml" "%{etc}%/owl"]
 ]
 build-test: [
   ["oasis" "setup"]
@@ -25,6 +25,7 @@ depends: [
   "ctypes"
   "dolog"
   "gsl"
+  "conf-gsl"
   "oasis" {build & >= "0.4"}
   "ocamlbuild" {build}
   "ocamlfind" {build}
