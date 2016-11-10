@@ -33,6 +33,12 @@ Library Ffi_bindings_base
   Modules:          Ffi_bindings_base
   BuildDepends:     ctypes.stubs
 
+Library topic
+  Install:          true
+  Path:             lib/topic
+  Modules:          Owl_lda
+  BuildDepends:     owl
+
 Executable ffi_stubgen
   Install:        false
   Path:           lib/bindings

@@ -4,7 +4,7 @@
  *)
 
 (** Complex sparse matrix: this module supports the operations on sparse
-  matrices of complex numbers. Becuase GSL does not support complex sparse
+  matrices of complex numbers. Because GSL does not support complex sparse
   matrices, herein I provided a pure OCaml implementation.
 
   The implementation provides both triplet and compressed row storage (CRS)
