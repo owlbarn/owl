@@ -21,10 +21,20 @@ let load_data f =
   close_in h;
   Array.sub !x 0 !c
 
-module SS = Set.Make (String)
+let load_stopwords f =
+  let x = Hashtbl.create (64 * 1024) in
+  let h = open_in f in
+  (
+    try while true do
+      let w = input_line h in
+      if Hashtbl.mem x w = false then Hashtbl.add x w 0
+    done with End_of_file -> ()
+  );
+  close_in h;
+  x
 
 let build_vocabuary x =
-  let h = Hashtbl.create 1024 in
+  let h = Hashtbl.create (64 * 1024) in
   Array.iter (fun l ->
     List.iter (fun w ->
       if Hashtbl.mem h w = false then Hashtbl.add h w 0
