@@ -56,12 +56,14 @@ module Model = struct
   let train () =
     for i = 0 to n_iter - 1 do
       for j = 0 to !n_d - 1 do
+        Log.debug "iteration #%i : doc#%i" i j;
         sampling j
       done
     done
 
   (* init the model based on: vocabulary, topics, tokens *)
   let init k v d =
+    Log.info "init the model";
     data := d;
     n_d  := Array.length d;
     n_v  := v;
@@ -69,9 +71,17 @@ module Model = struct
     t_dk := MS.zeros !n_d !n_k;
     t_wk := MS.zeros !n_v !n_k;
     t__k := MS.zeros 1 !n_k;
-    t__z := Array.map (fun s ->
-      Array.make (List.length s) 0
+    (* randomise the topic assignment for each token *)
+    t__z := Array.mapi (fun i s ->
+      Array.init (List.length s) (fun j ->
+        let k' = Owl_stats.Rnd.uniform_int ~a:0 ~b:(k - 1) () in
+        include_token (List.nth s j) i k';
+        k'
+      )
     ) d;
     ()
 
+  let likelihood x = None
+
+  
 end

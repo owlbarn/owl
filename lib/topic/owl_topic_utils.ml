@@ -1,12 +1,13 @@
 (** [ Topic Model Utils ]  *)
 
 let _allocate_space x =
-  Log.info "allocate more space ...";
+  Log.info "allocate more space";
   let l = Array.length x in
   let y = Array.make l [] in
   Array.append x y
 
 let load_data ?stopwords f =
+  Log.info "load text corpus";
   let t = match stopwords with
     | Some t -> t
     | None   -> Hashtbl.create 1024
@@ -28,6 +29,7 @@ let load_data ?stopwords f =
   Array.sub !x 0 !c
 
 let load_stopwords f =
+  Log.info "load stopwords";
   let x = Hashtbl.create (64 * 1024) in
   let h = open_in f in
   (
@@ -40,6 +42,7 @@ let load_stopwords f =
   x
 
 let build_vocabuary x =
+  Log.info "build up vocabulary";
   let h = Hashtbl.create (64 * 1024) in
   Array.iter (fun l ->
     List.iter (fun w ->

@@ -104,3 +104,9 @@ Document owldoc
   XOCamlBuildPath:      .
   XOCamlBuildLibraries: owl
   XOCamlbuildExtraArgs: "-docflags '-colorize-code -keep-code -charset utf-8'"
+
+Executable test_lda
+  Path:           examples
+  CompiledObject: best
+  MainIs:         test_lda.ml
+  BuildDepends:   topic
