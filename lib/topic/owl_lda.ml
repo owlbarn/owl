@@ -53,24 +53,22 @@ module Model = struct
       !t__z.(d).(i) <- !k;
     ) !data.(d)
 
-  let train () =
-    for i = 0 to n_iter - 1 do
-      for j = 0 to !n_d - 1 do
-        Log.debug "iteration #%i : doc#%i" i j;
-        sampling j
-      done
-    done
-
   (* init the model based on: vocabulary, topics, tokens *)
   let init k v d =
     Log.info "init the model";
     data := d;
+    (* set model parameters *)
     n_d  := Array.length d;
     n_v  := v;
     n_k  := k;
     t_dk := MS.zeros !n_d !n_k;
     t_wk := MS.zeros !n_v !n_k;
     t__k := MS.zeros 1 !n_k;
+    (* set model hyper-parameters *)
+    alpha := 50.;
+    alpha_k := !alpha /. (float_of_int k);
+    beta := 0.1;
+    beta_v := (float_of_int v) *. !beta;
     (* randomise the topic assignment for each token *)
     t__z := Array.mapi (fun i s ->
       Array.init (List.length s) (fun j ->
@@ -81,7 +79,35 @@ module Model = struct
     ) d;
     ()
 
-  let likelihood x = None
+  let likelihood () =
+    let _sum = ref 0. in
+    let n_token = ref 0 in
+    (* every document *)
+    for i = 0 to !n_d - 1 do
+      let dlen = Array.length !t__z.(i) in
+      n_token := !n_token + dlen;
+      let dsum = ref 0. in
+      (* every token *)
+      for j = 0 to dlen - 1 do
+        let wsum = ref 0. in
+        let w = List.nth !data.(i) j in
+        (* every topic *)
+        for k = 0 to !n_k - 1 do
+          wsum := !wsum +. (MS.get !t_dk i k +. !alpha_k) *. (MS.get !t_wk w k +. !beta) /. (MS.get !t__k 0 k +. !beta_v);
+        done;
+        dsum := !dsum +. (Owl_maths.log2 !wsum);
+      done;
+      let dlen = float_of_int dlen in
+      _sum := !_sum +. !dsum -. dlen *. (Owl_maths.log2 dlen);
+    done;
+    !_sum /. (float_of_int !n_token)
 
-  
+  let train () =
+    for i = 0 to n_iter - 1 do
+      Log.info "iteration #%i - likelihood = %.3f" i (likelihood ());
+      for j = 0 to !n_d - 1 do
+        (* Log.info "iteration #%i - doc#%i" i j; *)
+        sampling j
+      done
+    done
 end
