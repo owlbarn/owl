@@ -6,14 +6,20 @@ let _allocate_space x =
   let y = Array.make l [] in
   Array.append x y
 
-let load_data f =
+let load_data ?stopwords f =
+  let t = match stopwords with
+    | Some t -> t
+    | None   -> Hashtbl.create 1024
+  in
   let x = ref (Array.make (64 * 1024) []) in
   let c = ref 0 in
   let h = open_in f in
   (
     try while true do
       if !c = (Array.length !x) - 1 then x := _allocate_space !x;
-      let s = Str.split (Str.regexp " ") (input_line h) in
+      let s = Str.split (Str.regexp " ") (input_line h)
+        |> List.filter (fun w -> Hashtbl.mem t w = false)
+      in
       !x.(!c) <- s;
       c := !c + 1;
     done with End_of_file -> ()
@@ -47,3 +53,5 @@ let build_vocabuary x =
   Hashtbl.reset h;
   Array.iteri (fun i w -> Hashtbl.add h w i) y;
   h
+
+let tokenisation dict data = Array.map (List.map (Hashtbl.find dict)) data
