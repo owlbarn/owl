@@ -61,4 +61,8 @@ module Model = struct
       done
     done
 
+  let load_data f =
+    let x = Owl_topic_utils.load_data f in
+    x
+
 end
