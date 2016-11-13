@@ -57,6 +57,10 @@ let likelihood () =
   done;
   !_sum /. (float_of_int !n_token)
 
+let show_info i =
+  if (i mod 10 = 0) then Log.info "iteration #%i - likelihood = %.3f" i (likelihood ())
+  else Log.info "iteration #%i - t_dk:%.3f t_wk:%.3f" i (MS.density !t_dk) (MS.density !t_wk)
+
 (* implement several LDA with specific samplings *)
 
 module SimpleLDA = struct
@@ -128,8 +132,7 @@ let init k v d =
 (* general training function *)
 let train typ =
   for i = 0 to n_iter - 1 do
-    if (i mod 10 = 0) then Log.info "iteration #%i - likelihood = %.3f" i (likelihood ())
-    else Log.info "iteration #%i" i;
+    show_info i;
     for j = 0 to !n_d - 1 do
       (* Log.info "iteration #%i - doc#%i" i j; *)
       match typ with

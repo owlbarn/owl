@@ -93,12 +93,12 @@ let numel x = (row_num x) * (col_num x)
 (* we don't return x.nz directly since it does not record nnz correctly
    if you reset a non-zero element back to zero. *)
 let nnz x =
+  let _ = _update_rec_from_ptr x in
   let c = ref 0 in
   for i = 0 to Array1.dim x.d - 1 do
     if x.d.{i} <> 0. then c := !c + 1
   done;
   !c
-
 
 let density x =
   let a, b = nnz x, numel x in
@@ -359,6 +359,7 @@ let nnz_cols x =
 let row_num_nz x = nnz_rows x |> Array.length
 
 let col_num_nz x = nnz_cols x |> Array.length
+
 
 (** matrix mathematical operations *)
 
