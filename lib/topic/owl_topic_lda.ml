@@ -7,22 +7,23 @@ module MD = Dense.Real
 
 type lda_typ = SimpleLDA | FTreeLDA | LightLDA
 
-let n_d = ref 0                 (* number of documents *)
-let n_k = ref 0                 (* number of topics *)
-let n_v = ref 0                 (* number of vocabulary *)
+let n_d = ref 0                   (* number of documents *)
+let n_k = ref 0                   (* number of topics *)
+let n_v = ref 0                   (* number of vocabulary *)
 
-let alpha = ref 0.1             (* model hyper-parameters *)
-let beta = ref 0.1              (* model hyper-parameters *)
-let alpha_k = ref 0.1           (* model hyper-parameters *)
-let beta_v = ref 0.1            (* model hyper-parameters *)
+let alpha = ref 0.                (* model hyper-parameters *)
+let beta = ref 0.                 (* model hyper-parameters *)
+let alpha_k = ref 0.              (* model hyper-parameters *)
+let beta_v = ref 0.               (* model hyper-parameters *)
 
-let t_dk = ref (MS.zeros 1 1)   (* document-topic table: num of tokens assigned to each topic in each doc *)
-let t_wk = ref (MS.zeros 1 1)   (* word-topic table: num of tokens assigned to each topic for each word *)
-let t__k = ref (MD.zeros 1 1)   (* number of tokens assigned to a topic: k = sum_w t_wk = sum_d t_dk *)
-let t__z = ref [| [||] |]       (* table of topic assignment of each token in each document *)
+let t_dk = ref (MS.zeros 1 1)     (* document-topic table: num of tokens assigned to each topic in each doc *)
+let t_wk = ref (MS.zeros 1 1)     (* word-topic table: num of tokens assigned to each topic for each word *)
+let t__k = ref (MD.zeros 1 1)     (* number of tokens assigned to a topic: k = sum_w t_wk = sum_d t_dk *)
+let t__z = ref [| [||] |]         (* table of topic assignment of each token in each document *)
 
-let data = ref [| [||] |]       (* training data *)
-let n_iter = 1_000              (* number of iterations *)
+let n_iter = 1_000                (* number of iterations *)
+let data = ref [| [||] |]         (* training data, tokenised*)
+let vocb : (string, int) Hashtbl.t ref = ref (Hashtbl.create 1)    (* vocabulary, or dictionary if you prefer *)
 
 let include_token w d k =
   MD.(set !t__k 0 k (get !t__k 0 k +. 1.));
@@ -58,8 +59,11 @@ let likelihood () =
   !_sum /. (float_of_int !n_token)
 
 let show_info i =
-  if (i mod 10 = 0) then Log.info "iteration #%i - likelihood = %.3f" i (likelihood ())
-  else Log.info "iteration #%i - t_dk:%.3f t_wk:%.3f" i (MS.density !t_dk) (MS.density !t_wk)
+  let s = match i mod 10 = 0 with
+    | true  -> Printf.sprintf " likelihood:%.3f" (likelihood ())
+    | false -> ""
+  in
+  Log.info "iteration #%i - t_dk:%.3f t_wk:%.3f %s" i (MS.density !t_dk) (MS.density !t_wk) s
 
 (* implement several LDA with specific samplings *)
 
@@ -104,22 +108,23 @@ module LightLDA = struct
 
 end
 
-(* init the model based on: vocabulary, topics, tokens *)
+(* init the model based on: topics, vocabulary, tokens *)
 let init k v d =
   Log.info "init the model";
   data := d;
+  vocb := v;
   (* set model parameters *)
   n_d  := Array.length d;
-  n_v  := v;
+  n_v  := Hashtbl.length v;
   n_k  := k;
   t_dk := MS.zeros !n_d !n_k;
   t_wk := MS.zeros !n_v !n_k;
   t__k := MD.zeros 1 !n_k;
   (* set model hyper-parameters *)
   alpha := 50.;
-  alpha_k := !alpha /. (float_of_int k);
+  alpha_k := !alpha /. (float_of_int !n_k);
   beta := 0.1;
-  beta_v := (float_of_int v) *. !beta;
+  beta_v := (float_of_int !n_v) *. !beta;
   (* randomise the topic assignment for each token *)
   t__z := Array.mapi (fun i s ->
     Array.init (Array.length s) (fun j ->
@@ -131,13 +136,15 @@ let init k v d =
 
 (* general training function *)
 let train typ =
+  let sampling = match typ with
+    | SimpleLDA -> SimpleLDA.sampling
+    | FTreeLDA -> FTreeLDA.sampling
+    | LightLDA -> LightLDA.sampling
+  in
   for i = 0 to n_iter - 1 do
     show_info i;
     for j = 0 to !n_d - 1 do
       (* Log.info "iteration #%i - doc#%i" i j; *)
-      match typ with
-      | SimpleLDA -> SimpleLDA.sampling j
-      | FTreeLDA -> FTreeLDA.sampling j
-      | LightLDA -> LightLDA.sampling j
+      sampling j
     done
   done
