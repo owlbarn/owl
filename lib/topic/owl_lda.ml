@@ -5,58 +5,63 @@ open Owl
 module MS = Sparse.Real
 module MD = Dense.Real
 
+type lda_typ = SimpleLDA | FTreeLDA | LightLDA
 
-module type BaseSig = sig
+let n_d = ref 0                 (* number of documents *)
+let n_k = ref 0                 (* number of topics *)
+let n_v = ref 0                 (* number of vocabulary *)
 
-  val n_d : int ref
-  val n_k : int ref
-  val n_v : int ref
+let alpha = ref 0.1             (* model hyper-parameters *)
+let beta = ref 0.1              (* model hyper-parameters *)
+let alpha_k = ref 0.1           (* model hyper-parameters *)
+let beta_v = ref 0.1            (* model hyper-parameters *)
 
-  val alpha   : float ref
-  val beta    : float ref
-  val alpha_k : float ref
-  val beta_v  : float ref
+let t_dk = ref (MS.zeros 1 1)   (* document-topic table: num of tokens assigned to each topic in each doc *)
+let t_wk = ref (MS.zeros 1 1)   (* word-topic table: num of tokens assigned to each topic for each word *)
+let t__k = ref (MD.zeros 1 1)   (* number of tokens assigned to a topic: k = sum_w t_wk = sum_d t_dk *)
+let t__z = ref [| [||] |]       (* table of topic assignment of each token in each document *)
 
-  val t_dk : Sparse.Real.spmat ref
-  val t_wk : Sparse.Real.spmat ref
-  val t__k : Dense.Real.mat ref
-  val t__z : int array array ref
+let data = ref [| [||] |]       (* training data *)
+let n_iter = 1_000              (* number of iterations *)
 
-  val data : int array array ref
-  val n_iter : int
-end
+let include_token w d k =
+  MD.(set !t__k 0 k (get !t__k 0 k +. 1.));
+  MS.(set !t_wk w k (get !t_wk w k +. 1.));
+  MS.(set !t_dk d k (get !t_dk d k +. 1.))
 
+let exclude_token w d k =
+  MD.(set !t__k 0 k (get !t__k 0 k -. 1.));
+  MS.(set !t_wk w k (get !t_wk w k -. 1.));
+  MS.(set !t_dk d k (get !t_dk d k -. 1.))
 
-module Model = struct
+let likelihood () =
+  let _sum = ref 0. in
+  let n_token = ref 0 in
+  (* every document *)
+  for i = 0 to !n_d - 1 do
+    let dlen = Array.length !t__z.(i) in
+    n_token := !n_token + dlen;
+    let dsum = ref 0. in
+    (* every token *)
+    for j = 0 to dlen - 1 do
+      let wsum = ref 0. in
+      let w = !data.(i).(j) in
+      (* every topic *)
+      for k = 0 to !n_k - 1 do
+        wsum := !wsum +. (MS.get !t_dk i k +. !alpha_k) *. (MS.get !t_wk w k +. !beta) /. (MD.get !t__k 0 k +. !beta_v);
+      done;
+      dsum := !dsum +. (Maths.log2 !wsum);
+    done;
+    let dlen = float_of_int dlen in
+    _sum := !_sum +. !dsum -. dlen *. (Maths.log2 dlen);
+  done;
+  !_sum /. (float_of_int !n_token)
 
-  let n_d = ref 0          (* number of documents *)
-  let n_k = ref 1          (* number of topics *)
-  let n_v = ref 0          (* number of vocabulary *)
+(* implement several LDA with specific samplings *)
 
-  let alpha = ref 0.1      (* model hyper-parameters *)
-  let beta = ref 0.1       (* model hyper-parameters *)
-  let alpha_k = ref 0.1
-  let beta_v = ref 0.1
+module SimpleLDA = struct
 
-  let t_dk = ref (MS.zeros 1 1)        (* document-topic table: num of tokens assigned to each topic in each doc *)
-  let t_wk = ref (MS.zeros 1 1)        (* word-topic table: num of tokens assigned to each topic for each word *)
-  let t__k = ref (MD.zeros 1 1)        (* number of tokens assigned to a topic: k = sum_w t_wk = sum_d t_dk *)
-  let t__z = ref [| [||] |]            (* table of topic assignment of each token in each document *)
-
-  let data = ref [| [||] |]  (* training data *)
-  let n_iter = 1_000         (* number of iterations *)
-
-  let init_lda () = ()
-
-  let include_token w d k =
-    MD.(set !t__k 0 k (get !t__k 0 k +. 1.));
-    MS.(set !t_wk w k (get !t_wk w k +. 1.));
-    MS.(set !t_dk d k (get !t_dk d k +. 1.))
-
-  let exclude_token w d k =
-    MD.(set !t__k 0 k (get !t__k 0 k -. 1.));
-    MS.(set !t_wk w k (get !t_wk w k -. 1.));
-    MS.(set !t_dk d k (get !t_dk d k -. 1.))
+  let init () = ()
 
   let sampling d =
     let p = MD.zeros 1 !n_k in
@@ -77,61 +82,59 @@ module Model = struct
       !t__z.(d).(i) <- !k;
     ) !data.(d)
 
-  (* init the model based on: vocabulary, topics, tokens *)
-  let init k v d =
-    Log.info "init the model";
-    data := d;
-    (* set model parameters *)
-    n_d  := Array.length d;
-    n_v  := v;
-    n_k  := k;
-    t_dk := MS.zeros !n_d !n_k;
-    t_wk := MS.zeros !n_v !n_k;
-    t__k := MD.zeros 1 !n_k;
-    (* set model hyper-parameters *)
-    alpha := 50.;
-    alpha_k := !alpha /. (float_of_int k);
-    beta := 0.1;
-    beta_v := (float_of_int v) *. !beta;
-    (* randomise the topic assignment for each token *)
-    t__z := Array.mapi (fun i s ->
-      Array.init (Array.length s) (fun j ->
-        let k' = Stats.Rnd.uniform_int ~a:0 ~b:(k - 1) () in
-        include_token s.(j) i k';
-        k'
-      )
-    ) d;
-    ()
-
-  let likelihood () =
-    let _sum = ref 0. in
-    let n_token = ref 0 in
-    (* every document *)
-    for i = 0 to !n_d - 1 do
-      let dlen = Array.length !t__z.(i) in
-      n_token := !n_token + dlen;
-      let dsum = ref 0. in
-      (* every token *)
-      for j = 0 to dlen - 1 do
-        let wsum = ref 0. in
-        let w = !data.(i).(j) in
-        (* every topic *)
-        for k = 0 to !n_k - 1 do
-          wsum := !wsum +. (MS.get !t_dk i k +. !alpha_k) *. (MS.get !t_wk w k +. !beta) /. (MD.get !t__k 0 k +. !beta_v);
-        done;
-        dsum := !dsum +. (Maths.log2 !wsum);
-      done;
-      let dlen = float_of_int dlen in
-      _sum := !_sum +. !dsum -. dlen *. (Maths.log2 dlen);
-    done;
-    !_sum /. (float_of_int !n_token)
-
-  let train () =
-    for i = 0 to n_iter - 1 do
-      Log.info "iteration #%i - likelihood = %.3f" i (likelihood ());
-      for j = 0 to !n_d - 1 do
-        (* Log.info "iteration #%i - doc#%i" i j; *)
-        sampling j
-      done
-    done
 end
+
+module FTreeLDA = struct
+
+  let init () = ()
+
+  let sampling d = ()
+
+end
+
+module LightLDA = struct
+
+  let init () = ()
+
+  let sampling d = ()
+
+end
+
+(* init the model based on: vocabulary, topics, tokens *)
+let init k v d =
+  Log.info "init the model";
+  data := d;
+  (* set model parameters *)
+  n_d  := Array.length d;
+  n_v  := v;
+  n_k  := k;
+  t_dk := MS.zeros !n_d !n_k;
+  t_wk := MS.zeros !n_v !n_k;
+  t__k := MD.zeros 1 !n_k;
+  (* set model hyper-parameters *)
+  alpha := 50.;
+  alpha_k := !alpha /. (float_of_int k);
+  beta := 0.1;
+  beta_v := (float_of_int v) *. !beta;
+  (* randomise the topic assignment for each token *)
+  t__z := Array.mapi (fun i s ->
+    Array.init (Array.length s) (fun j ->
+      let k' = Stats.Rnd.uniform_int ~a:0 ~b:(k - 1) () in
+      include_token s.(j) i k';
+      k'
+    )
+  ) d
+
+(* general training function *)
+let train typ =
+  for i = 0 to n_iter - 1 do
+    if (i mod 10 = 0) then Log.info "iteration #%i - likelihood = %.3f" i (likelihood ())
+    else Log.info "iteration #%i" i;
+    for j = 0 to !n_d - 1 do
+      (* Log.info "iteration #%i - doc#%i" i j; *)
+      match typ with
+      | SimpleLDA -> SimpleLDA.sampling j
+      | FTreeLDA -> FTreeLDA.sampling j
+      | LightLDA -> LightLDA.sampling j
+    done
+  done
