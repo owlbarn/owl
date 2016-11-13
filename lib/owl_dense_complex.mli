@@ -152,13 +152,13 @@ val mapi_cols : (int -> mat -> 'a) -> mat -> 'a array
 
 val map_cols : (mat -> 'a) -> mat -> 'a array
 
-val mapi_by_row : ?d:int -> (int -> mat -> mat) -> mat -> mat
+val mapi_by_row : int -> (int -> mat -> mat) -> mat -> mat
 
-val map_by_row : ?d:int -> (mat -> mat) -> mat -> mat
+val map_by_row : int -> (mat -> mat) -> mat -> mat
 
-val mapi_by_col : ?d:int -> (int -> mat -> mat) -> mat -> mat
+val mapi_by_col : int -> (int -> mat -> mat) -> mat -> mat
 
-val map_by_col : ?d:int -> (mat -> mat) -> mat -> mat
+val map_by_col : int -> (mat -> mat) -> mat -> mat
 
 val mapi_at_row : (int -> int -> elt -> elt) -> mat -> int -> mat
 
