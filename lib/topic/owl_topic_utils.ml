@@ -3,7 +3,7 @@
 let _allocate_space x =
   Log.info "allocate more space";
   let l = Array.length x in
-  let y = Array.make l [] in
+  let y = Array.make l [||] in
   Array.append x y
 
 let load_data ?stopwords f =
@@ -12,7 +12,7 @@ let load_data ?stopwords f =
     | Some t -> t
     | None   -> Hashtbl.create 1024
   in
-  let x = ref (Array.make (64 * 1024) []) in
+  let x = ref (Array.make (64 * 1024) [||]) in
   let c = ref 0 in
   let h = open_in f in
   (
@@ -20,6 +20,7 @@ let load_data ?stopwords f =
       if !c = (Array.length !x) - 1 then x := _allocate_space !x;
       let s = Str.split (Str.regexp " ") (input_line h)
         |> List.filter (fun w -> Hashtbl.mem t w = false)
+        |> Array.of_list
       in
       !x.(!c) <- s;
       c := !c + 1;
@@ -45,7 +46,7 @@ let build_vocabuary x =
   Log.info "build up vocabulary";
   let h = Hashtbl.create (64 * 1024) in
   Array.iter (fun l ->
-    List.iter (fun w ->
+    Array.iter (fun w ->
       if Hashtbl.mem h w = false then Hashtbl.add h w 0
     ) l
   ) x;
@@ -57,4 +58,4 @@ let build_vocabuary x =
   Array.iteri (fun i w -> Hashtbl.add h w i) y;
   h
 
-let tokenisation dict data = Array.map (List.map (Hashtbl.find dict)) data
+let tokenisation dict data = Array.map (Array.map (Hashtbl.find dict)) data

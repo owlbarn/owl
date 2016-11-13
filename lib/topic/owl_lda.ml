@@ -1,7 +1,31 @@
 (** [ Topic Model ] Experimental for LDA model  *)
 
-module MS = Owl_sparse_real
-module MD = Owl_dense_real
+open Owl
+
+module MS = Sparse.Real
+module MD = Dense.Real
+
+
+module type BaseSig = sig
+
+  val n_d : int ref
+  val n_k : int ref
+  val n_v : int ref
+
+  val alpha   : float ref
+  val beta    : float ref
+  val alpha_k : float ref
+  val beta_v  : float ref
+
+  val t_dk : Sparse.Real.spmat ref
+  val t_wk : Sparse.Real.spmat ref
+  val t__k : Dense.Real.mat ref
+  val t__z : int array array ref
+
+  val data : int array array ref
+  val n_iter : int
+end
+
 
 module Model = struct
 
@@ -16,37 +40,37 @@ module Model = struct
 
   let t_dk = ref (MS.zeros 1 1)        (* document-topic table: num of tokens assigned to each topic in each doc *)
   let t_wk = ref (MS.zeros 1 1)        (* word-topic table: num of tokens assigned to each topic for each word *)
-  let t__k = ref (MS.zeros 1 1)        (* number of tokens assigned to a topic: k = sum_w t_wk = sum_d t_dk *)
+  let t__k = ref (MD.zeros 1 1)        (* number of tokens assigned to a topic: k = sum_w t_wk = sum_d t_dk *)
   let t__z = ref [| [||] |]            (* table of topic assignment of each token in each document *)
 
-  let data = ref [| [ ] |]  (* training data *)
-  let n_iter = 1_000        (* number of iterations *)
+  let data = ref [| [||] |]  (* training data *)
+  let n_iter = 1_000         (* number of iterations *)
 
   let init_lda () = ()
 
   let include_token w d k =
-    MS.(set !t__k 0 k (get !t__k 0 k +. 1.));
+    MD.(set !t__k 0 k (get !t__k 0 k +. 1.));
     MS.(set !t_wk w k (get !t_wk w k +. 1.));
     MS.(set !t_dk d k (get !t_dk d k +. 1.))
 
   let exclude_token w d k =
-    MS.(set !t__k 0 k (get !t__k 0 k -. 1.));
+    MD.(set !t__k 0 k (get !t__k 0 k -. 1.));
     MS.(set !t_wk w k (get !t_wk w k -. 1.));
     MS.(set !t_dk d k (get !t_dk d k -. 1.))
 
   let sampling d =
     let p = MD.zeros 1 !n_k in
-    List.iteri (fun i w ->
+    Array.iteri (fun i w ->
       let k = !t__z.(d).(i) in
       exclude_token w d k;
       (* make cdf function *)
       let x = ref 0. in
       for j = 0 to !n_k - 1 do
-        x := !x +. (MS.get !t_dk d j +. !alpha_k) *. (MS.get !t_wk w j +. !beta) /. (MS.get !t__k 0 j +. !beta_v);
+        x := !x +. (MS.get !t_dk d j +. !alpha_k) *. (MS.get !t_wk w j +. !beta) /. (MD.get !t__k 0 j +. !beta_v);
         MD.set p 0 j !x;
       done;
       (* draw a sample *)
-      let u = Owl_stats.Rnd.uniform () *. !x in
+      let u = Stats.Rnd.uniform () *. !x in
       let k = ref 0 in
       while (MD.get p 0 !k) < u do k := !k + 1 done;
       include_token w d !k;
@@ -63,7 +87,7 @@ module Model = struct
     n_k  := k;
     t_dk := MS.zeros !n_d !n_k;
     t_wk := MS.zeros !n_v !n_k;
-    t__k := MS.zeros 1 !n_k;
+    t__k := MD.zeros 1 !n_k;
     (* set model hyper-parameters *)
     alpha := 50.;
     alpha_k := !alpha /. (float_of_int k);
@@ -71,9 +95,9 @@ module Model = struct
     beta_v := (float_of_int v) *. !beta;
     (* randomise the topic assignment for each token *)
     t__z := Array.mapi (fun i s ->
-      Array.init (List.length s) (fun j ->
-        let k' = Owl_stats.Rnd.uniform_int ~a:0 ~b:(k - 1) () in
-        include_token (List.nth s j) i k';
+      Array.init (Array.length s) (fun j ->
+        let k' = Stats.Rnd.uniform_int ~a:0 ~b:(k - 1) () in
+        include_token s.(j) i k';
         k'
       )
     ) d;
@@ -90,15 +114,15 @@ module Model = struct
       (* every token *)
       for j = 0 to dlen - 1 do
         let wsum = ref 0. in
-        let w = List.nth !data.(i) j in
+        let w = !data.(i).(j) in
         (* every topic *)
         for k = 0 to !n_k - 1 do
-          wsum := !wsum +. (MS.get !t_dk i k +. !alpha_k) *. (MS.get !t_wk w k +. !beta) /. (MS.get !t__k 0 k +. !beta_v);
+          wsum := !wsum +. (MS.get !t_dk i k +. !alpha_k) *. (MS.get !t_wk w k +. !beta) /. (MD.get !t__k 0 k +. !beta_v);
         done;
-        dsum := !dsum +. (Owl_maths.log2 !wsum);
+        dsum := !dsum +. (Maths.log2 !wsum);
       done;
       let dlen = float_of_int dlen in
-      _sum := !_sum +. !dsum -. dlen *. (Owl_maths.log2 dlen);
+      _sum := !_sum +. !dsum -. dlen *. (Maths.log2 dlen);
     done;
     !_sum /. (float_of_int !n_token)
 
