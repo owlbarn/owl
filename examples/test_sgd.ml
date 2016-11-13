@@ -8,7 +8,7 @@ module LL = Owl_optimise
 let centerise x =
   let open MX in
   let v = average_rows x in
-  map_by_row (fun x -> x -@ v) x
+  map_by_row (row_num v) (fun x -> x -@ v) x
 
 let test () =
   let p = MX.uniform_int 100 10 in

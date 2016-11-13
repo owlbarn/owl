@@ -45,7 +45,7 @@ let numerical_gradient l p x y y' =
   let open MX in
   let h = 0.00001 in
   let f = l y in
-  let g = mapi_by_row ~d:(col_num p)
+  let g = mapi_by_row (col_num p)
   (fun i v ->
     let fa = f (x $@ (replace_row (v -$ h) p i)) in
     let fb = f (x $@ (replace_row (v +$ h) p i)) in

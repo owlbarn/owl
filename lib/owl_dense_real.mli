@@ -314,23 +314,25 @@ val mapi_cols : (int -> mat -> 'a) -> mat -> 'a array
 val map_cols : (mat -> 'a) -> mat -> 'a array
 (** Similar to [mapi_cols] except column number is not passed to [f]. *)
 
-val mapi_by_row : ?d:int -> (int -> mat -> mat) -> mat -> mat
-(** [mapi_by_row f x] applies [f] to each row of [x], then uses the returned
-  row vectors to assemble a new matrix.
+val mapi_by_row : int -> (int -> mat -> mat) -> mat -> mat
+(** [mapi_by_row d f x] applies [f] to each row of a [m] by [n] matrix [x],
+  then uses the returned [d] dimensional row vectors to assemble a new
+  [m] by [d] matrix.
  *)
 
-val map_by_row : ?d:int -> (mat -> mat) -> mat -> mat
-(** [map_by_row f x i] is similar to [mapi_by_row] except that the row indices
+val map_by_row : int -> (mat -> mat) -> mat -> mat
+(** [map_by_row d f x] is similar to [mapi_by_row] except that the row indices
   are not passed to [f].
  *)
 
-val mapi_by_col : ?d:int -> (int -> mat -> mat) -> mat -> mat
-(** [mapi_by_col f x] applies [f] to each column of [x], then uses the returned
-  column vectors to assemble a new matrix.
+val mapi_by_col : int -> (int -> mat -> mat) -> mat -> mat
+(** [mapi_by_col d f x] applies [f] to each column of a [m] by [n] matrix [x],
+  then uses the returned [d] dimensional column vectors to assemble a new
+  [d] by [n] matrix.
  *)
 
-val map_by_col : ?d:int -> (mat -> mat) -> mat -> mat
-(** [map_by_col f x i] is similar to [mapi_by_col] except that the column
+val map_by_col : int -> (mat -> mat) -> mat -> mat
+(** [map_by_col d f x] is similar to [mapi_by_col] except that the column
   indices are not passed to [f].
  *)
 

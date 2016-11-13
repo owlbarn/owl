@@ -3,10 +3,8 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** [
-  random generators
-  ]  *)
 
+(*random generators *)
 type t = Gsl.Rng.t
 
 
