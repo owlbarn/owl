@@ -904,13 +904,20 @@ let contour ?(h=_default_handle) x y z =
 
 (* TODO *)
 
+let normplot ?(h=_default_handle) x =
+  let x = Owl_dense_real.to_array x |> Owl_stats.sort ~inc:true in
+  let c = Array.length x |> float_of_int in
+  let y = Array.mapi (fun i _ -> (float_of_int i +. 1.) /. c) x in
+  (* TODO: missing a regression line *)
+  let x = Owl_dense_real.of_array x 1 (Array.length x) in
+  let y = Owl_dense_real.of_array y 1 (Array.length y) in
+  scatter ~h x y
+
 let qqplot = None
 
 let scatterhist = None
 
 let probplot = None
-
-let normplot = None
 
 let wblplot = None
 
