@@ -1,5 +1,5 @@
 module MX = Owl_dense_real
-module LL = Owl_optimise
+module LL = Owl_cluster
 
 let _ =
   let x = MX.load_txt "test_kmeans.data" in

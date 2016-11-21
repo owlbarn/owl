@@ -145,9 +145,10 @@ let nonlinear g p x y =
     MX.of_array (Gsl.Vector.to_array p) (Gsl.Vector.length p) 1
 
 
-(* regression functions in Optimise module *)
-let kmeans = Owl_optimise.kmeans
+(* clustering algorithms in Cluster module *)
+let kmeans = Owl_cluster.kmeans
 
+(* regression functions in Optimise module *)
 let ols = Owl_optimise.ols_regression
 
 let lasso = Owl_optimise.lasso_regression
