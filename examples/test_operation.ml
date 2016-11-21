@@ -1,5 +1,5 @@
 module M = Owl_dense_real
-module L = Owl_optimise
+module L = Owl_cluster
 
 let test_op s c op =
   let ttime = ref 0. in
