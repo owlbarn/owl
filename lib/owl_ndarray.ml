@@ -63,6 +63,18 @@ let reshape x dimension = reshape x dimension
 
 let mmap = Genarray.map_file
 
+let same_shape x y =
+  if (num_dims x) <> (num_dims y) then false
+  else (
+    let s0 = shape x in
+    let s1 = shape y in
+    let b = ref true in
+    Array.iteri (fun i d ->
+      if s0.(i) <> s1.(i) then b := false
+    ) s0;
+    !b
+  )
+
 (* advanced operations *)
 
 let create kind dimension a =
@@ -87,11 +99,37 @@ let flatten x =
   let n = numel x in
   reshape x [|1;n|]
 
-let iteri f x = None
+let iteri f x =
+  let s = shape x in
+  let d = num_dims x in
+  let i = Array.make d 0 in
+  let k = ref 0 in
+  let n = (numel x) - 1 in
+  for j = 0 to n do
+    f (Array.copy i) (get x i);
+    k := d - 1;
+    i.(!k) <- i.(!k) + 1;
+    while not (i.(!k) < s.(!k)) && j <> n do
+      i.(!k) <- 0;
+      k := !k - 1;
+      i.(!k) <- i.(!k) + 1;
+    done
+  done
 
-let mapi x f = None
+let iter f x = iteri (fun _ y -> f y) x
 
-let filteri = None
+let mapi f x = iteri (fun i y -> set x i (f i y)) x; x
+
+let map f x = mapi (fun _ y -> f y) x
+
+let filteri f x =
+  let a = ref [||] in
+  iteri (fun i y ->
+    if f i y = true then a := Array.append !a [|i|]
+  ) x;
+  !a
+
+let filter f x = filteri (fun _ y -> f y) x
 
 (* some math operations *)
 
@@ -102,3 +140,23 @@ let im = None
 let max axis x = None
 
 let min axis x = None
+
+(* some comparison functions *)
+
+let is_equal = None
+
+let is_unequal = None
+
+let is_positive = None
+
+let is_negative = None
+
+let is_zero = None
+
+let greater = None
+
+let smaller = None
+
+let for_all f x = None
+
+let exists f x = None
