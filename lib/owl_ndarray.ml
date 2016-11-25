@@ -143,19 +143,34 @@ let min axis x = None
 
 (* some comparison functions *)
 
+let _compare_element_to_zero f x =
+  let b = ref true in
+  let z = _zero (kind x) in
+  try iter (fun y ->
+    if not (f y z) then (
+      b := false;
+      failwith "found";
+    )
+  ) x; !b
+  with Failure _ -> !b
+
+let is_zero x = _compare_element_to_zero ( = ) x
+
+let is_positive x = _compare_element_to_zero ( > ) x
+
+let is_negative x = _compare_element_to_zero ( < ) x
+
+let is_nonnegative x = _compare_element_to_zero ( >= ) x
+
+let is_nonpositive x = _compare_element_to_zero ( <= ) x
+
 let is_equal = None
 
 let is_unequal = None
 
-let is_positive = None
+let is_greater = None
 
-let is_negative = None
-
-let is_zero = None
-
-let greater = None
-
-let smaller = None
+let is_smaller = None
 
 let for_all f x = None
 
