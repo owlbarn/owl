@@ -99,9 +99,24 @@ let flatten x =
   let n = numel x in
   reshape x [|1;n|]
 
-let _iteri_all_axis = None
+let _iteri_all_axis f x =
+  let s = shape x in
+  let d = num_dims x in
+  let i = Array.make d 0 in
+  let k = ref 0 in
+  let n = (numel x) - 1 in
+  for j = 0 to n do
+    f (Array.copy i) (get x i);
+    if j <> n then (
+      k := d - 1;
+      while not (i.(!k) <- i.(!k) + 1; i.(!k) < s.(!k)) do
+        i.(!k) <- 0;
+        k := !k - 1;
+      done
+    )
+  done
 
-let _iteri_fix_axis f axis x =
+let _iteri_fix_axis axis f x =
   let s = shape x in
   let n = ref (numel x) in
   let l = ref [||] in
@@ -126,22 +141,10 @@ let _iteri_fix_axis f axis x =
     )
   done
 
-let iteri f x =
-  let s = shape x in
-  let d = num_dims x in
-  let i = Array.make d 0 in
-  let k = ref 0 in
-  let n = (numel x) - 1 in
-  for j = 0 to n do
-    f (Array.copy i) (get x i);
-    if j <> n then (
-      k := d - 1;
-      while not (i.(!k) <- i.(!k) + 1; i.(!k) < s.(!k)) do
-        i.(!k) <- 0;
-        k := !k - 1;
-      done
-    )
-  done
+let iteri ?axis f x =
+  match axis with
+  | Some a -> _iteri_fix_axis a f x
+  | None   -> _iteri_all_axis f x
 
 let iter f x = iteri (fun _ y -> f y) x
 
