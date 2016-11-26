@@ -118,6 +118,25 @@ let iteri f x =
 
 let iter f x = iteri (fun _ y -> f y) x
 
+let iteri2 f x y =
+  let s = shape x in
+  let d = num_dims x in
+  let i = Array.make d 0 in
+  let k = ref 0 in
+  let n = (numel x) - 1 in
+  for j = 0 to n do
+    f (Array.copy i) (get x i) (get y i);
+    k := d - 1;
+    i.(!k) <- i.(!k) + 1;
+    while not (i.(!k) < s.(!k)) && j <> n do
+      i.(!k) <- 0;
+      k := !k - 1;
+      i.(!k) <- i.(!k) + 1;
+    done
+  done
+
+let iter2 f x y = iteri2 (fun _ a b -> f a b) x y
+
 let mapi f x = iteri (fun i y -> set x i (f i y)) x; x
 
 let map f x = mapi (fun _ y -> f y) x
@@ -164,14 +183,34 @@ let is_nonnegative x = _compare_element_to_zero ( >= ) x
 
 let is_nonpositive x = _compare_element_to_zero ( <= ) x
 
-let is_equal = None
+let _compare_elements_in_two f x y =
+  let b = ref true in
+  try iter2 (fun c d ->
+    if not (f c d) then (
+      b := false;
+      failwith "found";
+    )
+  ) x y; !b
+  with Failure _ -> !b
 
-let is_unequal = None
+let is_equal x y = _compare_elements_in_two ( = ) x y
 
-let is_greater = None
+let is_unequal x y = _compare_elements_in_two ( <> ) x y
 
-let is_smaller = None
+let is_greater x y = _compare_elements_in_two ( > ) x y
 
-let for_all f x = None
+let is_smaller x y = _compare_elements_in_two ( < ) x y
 
-let exists f x = None
+let exists f x =
+  let b = ref false in
+  try iter (fun y ->
+    if (f y) then (
+      b := true;
+      failwith "found";
+    )
+  ) x; !b
+  with Failure _ -> !b
+
+let not_exists f x = not (exists f x)
+
+let for_all f x = let g y = not (f y) in not_exists g x
