@@ -184,9 +184,9 @@ let filter ?axis f x = filteri ?axis (fun _ y -> f y) x
 
 (* some math operations *)
 
-let re = None
+let re x = None
 
-let im = None
+let im x = None
 
 let max ?axis x =
   let i = ref (Array.make (num_dims x) 0) in
