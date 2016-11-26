@@ -146,7 +146,7 @@ let iteri ?axis f x =
   | Some a -> _iteri_fix_axis a f x
   | None   -> _iteri_all_axis f x
 
-let iter f x = iteri (fun _ y -> f y) x
+let iter ?axis f x = iteri ?axis (fun _ y -> f y) x
 
 let iteri2 f x y =
   let s = shape x in
@@ -167,20 +167,20 @@ let iteri2 f x y =
 
 let iter2 f x y = iteri2 (fun _ a b -> f a b) x y
 
-let mapi f x =
+let mapi ?axis f x =
   let y = clone x in
-  iteri (fun i z -> set y i (f i z)) x; y
+  iteri ?axis (fun i z -> set y i (f i z)) x; y
 
-let map f x = mapi (fun _ y -> f y) x
+let map ?axis f x = mapi ?axis (fun _ y -> f y) x
 
-let filteri f x =
+let filteri ?axis f x =
   let a = ref [||] in
-  iteri (fun i y ->
+  iteri ?axis (fun i y ->
     if f i y = true then a := Array.append !a [|i|]
   ) x;
   !a
 
-let filter f x = filteri (fun _ y -> f y) x
+let filter ?axis f x = filteri ?axis (fun _ y -> f y) x
 
 (* some math operations *)
 
@@ -188,9 +188,21 @@ let re = None
 
 let im = None
 
-let max axis x = None
+let max ?axis x =
+  let i = ref (Array.make (num_dims x) 0) in
+  let z = ref (get x !i) in
+  iteri ?axis (fun j y ->
+    if y > !z then (z := y; i := j)
+  ) x;
+  !z, !i
 
-let min axis x = None
+let min ?axis x =
+  let i = ref (Array.make (num_dims x) 0) in
+  let z = ref (get x !i) in
+  iteri ?axis (fun j y ->
+    if y < !z then (z := y; i := j)
+  ) x;
+  !z, !i
 
 (* some comparison functions *)
 
