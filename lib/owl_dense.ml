@@ -8,3 +8,5 @@
 module Real = Owl_dense_real
 
 module Complex = Owl_dense_complex
+
+module Ndarray = Owl_dense_ndarray
