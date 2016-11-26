@@ -99,6 +99,10 @@ let flatten x =
   let n = numel x in
   reshape x [|1;n|]
 
+let _iteri_all_axis = None
+
+let _iteri_fix_axis = None
+
 let iteri f x =
   let s = shape x in
   let d = num_dims x in
@@ -137,7 +141,9 @@ let iteri2 f x y =
 
 let iter2 f x y = iteri2 (fun _ a b -> f a b) x y
 
-let mapi f x = iteri (fun i y -> set x i (f i y)) x; x
+let mapi f x =
+  let y = clone x in
+  iteri (fun i z -> set y i (f i z)) x; y
 
 let map f x = mapi (fun _ y -> f y) x
 
@@ -214,3 +220,19 @@ let exists f x =
 let not_exists f x = not (exists f x)
 
 let for_all f x = let g y = not (f y) in not_exists g x
+
+let _print_index i =
+  Printf.printf "[ ";
+  Array.iter (fun x -> Printf.printf "%i " x) i;
+  Printf.printf "] "
+
+let _print_element : type a b. (a, b) kind -> a -> unit = fun t v ->
+  match t with
+  | Float32 -> Printf.printf "%f\n" (Obj.magic v)
+  | Float64 -> Printf.printf "%f\n" (Obj.magic v)
+  | Int32 -> Printf.printf "%i\n" (Obj.magic (Int32.to_int v))
+  | Int64 -> Printf.printf "%i\n" (Obj.magic (Int64.to_int v))
+
+let print x =
+  let t = kind x in
+  iteri (fun i y -> _print_index i; _print_element t y) x
