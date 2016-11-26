@@ -101,7 +101,30 @@ let flatten x =
 
 let _iteri_all_axis = None
 
-let _iteri_fix_axis = None
+let _iteri_fix_axis f axis x =
+  let s = shape x in
+  let n = ref (numel x) in
+  let l = ref [||] in
+  let i = Array.mapi (fun i a ->
+    match a with
+    | Some a -> (n := !n / s.(i); a)
+    | None -> (l := Array.append [|i|] !l; 0)
+  ) axis
+  in
+  let n = !n - 1 in
+  let l = !l in
+  for j = 0 to n do
+    f (Array.copy i) (get x i);
+    if j <> n then (
+      let m = ref 0 in
+      let k = ref l.(!m) in
+      while not (i.(!k) <- i.(!k) + 1; i.(!k) < s.(!k)) do
+        i.(!k) <- 0;
+        m := !m + 1;
+        k := l.(!m);
+      done
+    )
+  done
 
 let iteri f x =
   let s = shape x in
@@ -111,13 +134,13 @@ let iteri f x =
   let n = (numel x) - 1 in
   for j = 0 to n do
     f (Array.copy i) (get x i);
-    k := d - 1;
-    i.(!k) <- i.(!k) + 1;
-    while not (i.(!k) < s.(!k)) && j <> n do
-      i.(!k) <- 0;
-      k := !k - 1;
-      i.(!k) <- i.(!k) + 1;
-    done
+    if j <> n then (
+      k := d - 1;
+      while not (i.(!k) <- i.(!k) + 1; i.(!k) < s.(!k)) do
+        i.(!k) <- 0;
+        k := !k - 1;
+      done
+    )
   done
 
 let iter f x = iteri (fun _ y -> f y) x
@@ -230,8 +253,9 @@ let _print_element : type a b. (a, b) kind -> a -> unit = fun t v ->
   match t with
   | Float32 -> Printf.printf "%f\n" (Obj.magic v)
   | Float64 -> Printf.printf "%f\n" (Obj.magic v)
-  | Int32 -> Printf.printf "%i\n" (Obj.magic (Int32.to_int v))
-  | Int64 -> Printf.printf "%i\n" (Obj.magic (Int64.to_int v))
+  | Int32   -> Printf.printf "%i\n" (Obj.magic (Int32.to_int v))
+  | Int64   -> Printf.printf "%i\n" (Obj.magic (Int64.to_int v))
+  | _       -> ()
 
 let print x =
   let t = kind x in
