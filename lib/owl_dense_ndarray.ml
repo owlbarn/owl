@@ -189,19 +189,23 @@ let foldi ?axis f a x =
 
 let fold ?axis f a x = foldi ?axis (fun _ y c -> f y c) a x
 
-let slice axis x = None
-
-let transpose x = None
-
-let sort axis x = None
-
 let nnz x =
   let z = _zero (kind x) in
   fold (fun y c -> if y = z then c else c + 1) 0 x
 
 let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
 
+let slice axis x = None
+
+let transpose axis x = None
+
+let sort axis x = None
+
 let swap a0 a1 x = None
+
+let diag x = None
+
+let trace x = None
 
 (* some math operations *)
 
@@ -317,6 +321,8 @@ let sum x =
 let mean x = None
 
 let std x = None
+
+let dot x = None
 
 (* some comparison functions *)
 
