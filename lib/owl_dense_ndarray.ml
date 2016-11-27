@@ -148,7 +148,7 @@ let iteri ?axis f x =
 
 let iter ?axis f x = iteri ?axis (fun _ y -> f y) x
 
-let iteri2 f x y =
+let iter2i f x y =
   let s = shape x in
   let d = num_dims x in
   let i = Array.make d 0 in
@@ -165,7 +165,7 @@ let iteri2 f x y =
     done
   done
 
-let iter2 f x y = iteri2 (fun _ a b -> f a b) x y
+let iter2 f x y = iter2i (fun _ a b -> f a b) x y
 
 let mapi ?axis f x =
   let y = clone x in
@@ -231,11 +231,20 @@ let min ?axis x =
   ) x;
   !z, !i
 
-let mean x = None
+let _add : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32 -> ( +. )
+  | Float64 -> ( +. )
+  | Int    -> ( + )
+  | Int32  -> Int32.add
+  | Int64  -> Int64.add
+  | Complex32 -> Complex.add
+  | Complex64 -> Complex.add
 
-let std x = None
-
-let add x y = None
+let add x y =
+  let z = clone x in
+  let _op = _add (kind x) in
+  iter2i (fun i a b -> set z i (_op a b)) x y;
+  z
 
 let sub x y = None
 
@@ -244,6 +253,10 @@ let mul x y = None
 let div x y = None
 
 let sum x = None
+
+let mean x = None
+
+let std x = None
 
 (* some comparison functions *)
 
