@@ -197,7 +197,28 @@ let nnz x =
 
 let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
 
-let slice axis x = None
+let slice axis x =
+  let s0 = shape x in
+  let s1 = ref [||] in
+  Array.iteri (fun i a ->
+    match a with
+    | Some _ -> ()
+    | None -> s1 := Array.append !s1 [|s0.(i)|]
+  ) axis;
+  let y = empty (kind x) !s1 in
+  let k = Array.make (num_dims y) 0 in
+  let t = ref 0 in
+  Array.iteri (fun i a ->
+    match a with
+    | Some _ -> ()
+    | None -> (k.(!t) <- i; t := !t + 1)
+  ) axis;
+  let j = Array.make (num_dims y) 0 in
+  iteri ~axis (fun i a ->
+    Array.iteri (fun m m' -> j.(m) <- i.(m')) k;
+    set y j a
+  ) x;
+  y
 
 let _transpose_check_axis axis d =
   if Array.length axis <> d then failwith "transpose: axis is not correct";
@@ -227,7 +248,13 @@ let transpose ?axis x =
 
 let sort axis x = None
 
-let swap a0 a1 x = None
+let swap a0 a1 x =
+  let d = num_dims x in
+  let a = Array.init d (fun i -> i) in
+  let t = a.(a0) in
+  a.(a0) <- a.(a1);
+  a.(a1) <- t;
+  transpose ~axis:a x
 
 let diag x = None
 

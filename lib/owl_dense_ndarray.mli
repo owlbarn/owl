@@ -48,6 +48,8 @@ val sub_left : ('a, 'b) t -> int -> int -> ('a, 'b) t
 
 val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
 
+val slice : int option array -> ('a, 'b) t -> ('a, 'b) t
+
 val blit : ('a, 'b) t -> ('a, 'b) t -> unit
 
 val fill : ('a, 'b) t -> 'a -> unit
@@ -61,6 +63,8 @@ val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
 val same_shape : ('a, 'b) t -> ('a, 'b) t -> bool
 
 val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
+
+val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
 
 (* TODO: mmap *)
 
