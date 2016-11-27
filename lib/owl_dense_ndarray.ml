@@ -207,6 +207,8 @@ let diag x = None
 
 let trace x = None
 
+let repeat x = None
+
 (* some math operations *)
 
 let re x =
