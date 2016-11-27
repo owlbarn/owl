@@ -182,6 +182,27 @@ let filteri ?axis f x =
 
 let filter ?axis f x = filteri ?axis (fun _ y -> f y) x
 
+let foldi ?axis f a x =
+  let c = ref a in
+  iteri ?axis (fun i y -> c := (f i y !c)) x;
+  !c
+
+let fold ?axis f a x = foldi ?axis (fun _ y c -> f y c) a x
+
+let slice axis x = None
+
+let transpose x = None
+
+let sort axis x = None
+
+let nnz x =
+  let z = _zero (kind x) in
+  fold (fun y c -> if y = z then c else c + 1) 0 x
+
+let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
+
+let swap a0 a1 x = None
+
 (* some math operations *)
 
 let re x = None
@@ -203,6 +224,20 @@ let min ?axis x =
     if y < !z then (z := y; i := j)
   ) x;
   !z, !i
+
+let mean x = None
+
+let std x = None
+
+let add x y = None
+
+let sub x y = None
+
+let mul x y = None
+
+let div x y = None
+
+let sum x = None
 
 (* some comparison functions *)
 
@@ -245,6 +280,10 @@ let is_greater x y = _compare_elements_in_two ( > ) x y
 
 let is_smaller x y = _compare_elements_in_two ( < ) x y
 
+let equal_or_greater x y = _compare_elements_in_two ( >= ) x y
+
+let equal_or_smaller x y = _compare_elements_in_two ( <= ) x y
+
 let exists f x =
   let b = ref false in
   try iter (fun y ->
@@ -258,6 +297,8 @@ let exists f x =
 let not_exists f x = not (exists f x)
 
 let for_all f x = let g y = not (f y) in not_exists g x
+
+(* input/output functions *)
 
 let _print_index i =
   Printf.printf "[ ";
@@ -275,3 +316,7 @@ let _print_element : type a b. (a, b) kind -> a -> unit = fun t v ->
 let print x =
   let t = kind x in
   iteri (fun i y -> _print_index i; _print_element t y) x
+
+let save x f = None
+
+let load f = None
