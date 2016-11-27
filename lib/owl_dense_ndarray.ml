@@ -307,11 +307,13 @@ let _print_index i =
 
 let _print_element : type a b. (a, b) kind -> a -> unit = fun t v ->
   match t with
-  | Float32 -> Printf.printf "%f\n" (Obj.magic v)
-  | Float64 -> Printf.printf "%f\n" (Obj.magic v)
-  | Int32   -> Printf.printf "%i\n" (Obj.magic (Int32.to_int v))
-  | Int64   -> Printf.printf "%i\n" (Obj.magic (Int64.to_int v))
-  | _       -> ()
+  | Float32   -> Printf.printf "%f\n" v
+  | Float64   -> Printf.printf "%f\n" v
+  | Int32     -> Printf.printf "%i\n" (Int32.to_int v)
+  | Int64     -> Printf.printf "%i\n" (Int64.to_int v)
+  | Complex32 -> Printf.printf "{re = %f; im = %f}\n" Complex.(v.re) Complex.(v.im)
+  | Complex64 -> Printf.printf "{re = %f; im = %f}\n" Complex.(v.re) Complex.(v.im)
+  | _         -> ()
 
 let print x =
   let t = kind x in
