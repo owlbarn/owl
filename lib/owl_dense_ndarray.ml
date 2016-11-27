@@ -7,6 +7,8 @@ open Bigarray
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 
+type ('a, 'b) kind = ('a, 'b) Bigarray.kind
+
 (* Some constants *)
 
 let _zero : type a b. (a, b) kind -> a = function
