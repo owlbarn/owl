@@ -246,8 +246,6 @@ let transpose ?axis x =
   ) x;
   y
 
-let sort axis x = None
-
 let swap a0 a1 x =
   let d = num_dims x in
   let a = Array.init d (fun i -> i) in
@@ -255,6 +253,10 @@ let swap a0 a1 x =
   a.(a0) <- a.(a1);
   a.(a1) <- t;
   transpose ~axis:a x
+
+(* TODO *)
+
+let sort axis x = None
 
 let diag x = None
 
@@ -373,11 +375,17 @@ let sum x =
   let op = _add (kind x) in
   fold op z x
 
+(* TODO *)
+
 let mean x = None
 
 let std x = None
 
 let dot x = None
+
+let tensordot x = None
+
+let prod x = None
 
 (* some comparison functions *)
 
