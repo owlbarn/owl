@@ -205,9 +205,15 @@ let swap a0 a1 x = None
 
 (* some math operations *)
 
-let re x = None
+let re x =
+  let y = empty Float64 (shape x) in
+  iteri (fun i c -> set y i Complex.(c.re) ) x;
+  y
 
-let im x = None
+let im x =
+  let y = empty Float64 (shape x) in
+  iteri (fun i c -> set y i Complex.(c.im) ) x;
+  y
 
 let max ?axis x =
   let i = ref (Array.make (num_dims x) 0) in
@@ -319,6 +325,15 @@ let print x =
   let t = kind x in
   iteri (fun i y -> _print_index i; _print_element t y) x
 
-let save x f = None
+let save x f =
+  let t = kind x in
+  let s = Marshal.to_string (t,x) [] in
+  let h = open_out f in
+  output_string h s;
+  close_out h
 
-let load f = None
+let load f =
+  let h = open_in f in
+  let s = really_input_string h (in_channel_length h) in
+  let _, x = Marshal.from_string s 0
+  in x
