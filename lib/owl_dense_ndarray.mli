@@ -60,6 +60,8 @@ val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
 
 val same_shape : ('a, 'b) t -> ('a, 'b) t -> bool
 
+val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
+
 (* TODO: mmap *)
 
 

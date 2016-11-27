@@ -199,7 +199,31 @@ let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
 
 let slice axis x = None
 
-let transpose axis x = None
+let _transpose_check_axis axis d =
+  if Array.length axis <> d then failwith "transpose: axis is not correct";
+  let h = Hashtbl.create 16 in
+  Array.iter (fun x ->
+    if x < 0 || x >= d then failwith "transpose: axis is not correct";
+    if Hashtbl.mem h x = true then failwith "transpose: axis is not correct";
+    Hashtbl.add h x 0
+  ) axis
+
+let transpose ?axis x =
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None -> Array.init d (fun i -> d - i - 1)
+  in
+  (* check if axis is a correct permutation *)
+  _transpose_check_axis a d;
+  let s0 = shape x in
+  let s1 = Array.map (fun j -> s0.(j)) a in
+  let y = empty (kind x) s1 in
+  iteri (fun i z ->
+    let i' = Array.map (fun j -> i.(j)) a in
+    set y i' z
+  ) x;
+  y
 
 let sort axis x = None
 
