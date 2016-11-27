@@ -232,27 +232,87 @@ let min ?axis x =
   !z, !i
 
 let _add : type a b. (a, b) kind -> (a -> a -> a) = function
-  | Float32 -> ( +. )
-  | Float64 -> ( +. )
-  | Int    -> ( + )
-  | Int32  -> Int32.add
-  | Int64  -> Int64.add
+  | Float32   -> ( +. )
+  | Float64   -> ( +. )
+  | Int       -> ( + )
+  | Int32     -> Int32.add
+  | Int64     -> Int64.add
   | Complex32 -> Complex.add
   | Complex64 -> Complex.add
+  | _         -> failwith "_add: unsupported operation"
 
-let add x y =
+let _sub : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32   -> ( -. )
+  | Float64   -> ( -. )
+  | Int       -> ( - )
+  | Int32     -> Int32.sub
+  | Int64     -> Int64.sub
+  | Complex32 -> Complex.sub
+  | Complex64 -> Complex.sub
+  | _         -> failwith "_sub: unsupported operation"
+
+let _mul : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32   -> ( *. )
+  | Float64   -> ( *. )
+  | Int       -> ( * )
+  | Int32     -> Int32.mul
+  | Int64     -> Int64.mul
+  | Complex32 -> Complex.mul
+  | Complex64 -> Complex.mul
+  | _         -> failwith "_mul: unsupported operation"
+
+let _div : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32   -> ( /. )
+  | Float64   -> ( /. )
+  | Int       -> ( / )
+  | Int32     -> Int32.div
+  | Int64     -> Int64.div
+  | Complex32 -> Complex.div
+  | Complex64 -> Complex.div
+  | _         -> failwith "_div: unsupported operation"
+
+let _abs : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> abs_float
+  | Float64   -> abs_float
+  | Int       -> abs
+  | Int32     -> Int32.abs
+  | Int64     -> Int64.abs
+  | Complex32 -> (fun x -> Complex.({re = norm x; im = 0.}))
+  | Complex64 -> (fun x -> Complex.({re = norm x; im = 0.}))
+  | _         -> failwith "_abs: unsupported operation"
+
+let _neg : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> ( -. ) 0.
+  | Float64   -> ( -. ) 0.
+  | Int       -> ( - ) 0
+  | Int32     -> Int32.neg
+  | Int64     -> Int64.neg
+  | Complex32 -> Complex.neg
+  | Complex64 -> Complex.neg
+  | _         -> failwith "_neg: unsupported operation"
+
+let _paired_arithmetic_op op x y =
   let z = clone x in
-  let _op = _add (kind x) in
+  let _op = op (kind x) in
   iter2i (fun i a b -> set z i (_op a b)) x y;
   z
 
-let sub x y = None
+let add x y = _paired_arithmetic_op (_add) x y
 
-let mul x y = None
+let sub x y = _paired_arithmetic_op (_sub) x y
 
-let div x y = None
+let mul x y = _paired_arithmetic_op (_mul) x y
 
-let sum x = None
+let div x y = _paired_arithmetic_op (_div) x y
+
+let abs x = map (_abs (kind x)) x
+
+let neg x = map (_neg (kind x)) x
+
+let sum x =
+  let z = _zero (kind x) in
+  let op = _add (kind x) in
+  fold op z x
 
 let mean x = None
 
