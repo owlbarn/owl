@@ -20,7 +20,8 @@ Library owl
   Modules:          Owl, Owl_types, Owl_utils, Owl_maths, Owl_stats, Owl_optimise,
                     Owl_cluster, Owl_dense_real, Owl_dense_complex, Owl_dense,
                     Owl_sparse_real, Owl_sparse_complex, Owl_sparse,
-                    Owl_foreign, Owl_linalg, Owl_regression, Owl_fft, Owl_dense_ndarray,
+                    Owl_foreign, Owl_linalg, Owl_regression, Owl_fft,
+                    Owl_dense_ndarray, Owl_dense_ndview,
                     Owl_pretty, Owl_plot, Owl_toplevel, Owl_const, Ffi_bindings
   InternalModules:  Ffi_generated
   CSources:         ffi_generated_stub.c

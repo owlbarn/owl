@@ -57,7 +57,7 @@ let slice_left = Genarray.slice_left
 
 let slice_right = Genarray.slice_right
 
-let blit = Genarray.blit
+let copy src dst = Genarray.blit src dst
 
 let fill x a = Genarray.fill x a
 
@@ -94,7 +94,7 @@ let numel x =
 
 let clone x =
   let y = empty (kind x) (shape x) in
-  blit x y;
+  Genarray.blit x y;
   y
 
 let flatten x =

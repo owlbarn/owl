@@ -29,6 +29,15 @@ let mapi_array f x =
 
 let map_array f x = mapi_array (fun _ y -> f y) x
 
+let reverse_array x =
+  let d = Array.length x - 1 in
+  let n = d / 2 in
+  for i = 0 to n do
+    let t = x.(i) in
+    x.(i) <- x.(d - i);
+    x.(d - i) <- t;
+  done
+
 (* get the suffix a file name *)
 let get_suffix s =
   let parts = Str.(split (regexp "\\.")) s in
