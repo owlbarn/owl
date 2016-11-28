@@ -112,6 +112,8 @@ val neg : ('a, 'b) t -> ('a, 'b) t
 
 val sum : ('a, 'b) t -> 'a
 
+val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
+
 
 (** {6 Examine array elements or compare two arrays } *)
 

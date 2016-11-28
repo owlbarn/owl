@@ -375,7 +375,15 @@ let sum x =
   let op = _add (kind x) in
   fold op z x
 
+let conj x = map Complex.conj x
+
 (* TODO *)
+
+let inv x = None
+
+let exp x = None
+
+let pow x = None
 
 let mean x = None
 
@@ -386,6 +394,8 @@ let dot x = None
 let tensordot x = None
 
 let prod x = None
+
+let cumsum axis x = None
 
 (* some comparison functions *)
 
