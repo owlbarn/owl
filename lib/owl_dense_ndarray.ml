@@ -43,6 +43,8 @@ let shape x = Genarray.dims x
 
 let nth_dim x i = Genarray.nth_dim x i
 
+let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
+
 let kind x = Genarray.kind x
 
 let layout x = Genarray.layout x
@@ -87,10 +89,6 @@ let create kind dimension a =
 let zeros kind dimension = create kind dimension (_zero kind)
 
 let ones kind dimension = create kind dimension (_one kind)
-
-let numel x =
-  let d = shape x in
-  Array.fold_right (fun c a -> c * a) d 1
 
 let clone x =
   let y = empty (kind x) (shape x) in
