@@ -148,11 +148,15 @@ val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
 
 (** {6 Input and output functions } *)
 
-val print : ('a, 'b) t -> unit
-
 val save : ('a, 'b) t -> string -> unit
 
 val load : string -> ('a, 'b) t
+
+val print : ('a, 'b) t -> unit
+
+val print_element : ('a, 'b) kind -> 'a -> unit
+
+val print_index : int array -> unit
 
 
 

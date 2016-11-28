@@ -456,12 +456,12 @@ let for_all f x = let g y = not (f y) in not_exists g x
 
 (* input/output functions *)
 
-let _print_index i =
+let print_index i =
   Printf.printf "[ ";
   Array.iter (fun x -> Printf.printf "%i " x) i;
   Printf.printf "] "
 
-let _print_element : type a b. (a, b) kind -> a -> unit = fun t v ->
+let print_element : type a b. (a, b) kind -> a -> unit = fun t v ->
   match t with
   | Float32   -> Printf.printf "%f\n" v
   | Float64   -> Printf.printf "%f\n" v
@@ -473,7 +473,7 @@ let _print_element : type a b. (a, b) kind -> a -> unit = fun t v ->
 
 let print x =
   let t = kind x in
-  iteri (fun i y -> _print_index i; _print_element t y) x
+  iteri (fun i y -> print_index i; print_element t y) x
 
 let save x f =
   let t = kind x in
