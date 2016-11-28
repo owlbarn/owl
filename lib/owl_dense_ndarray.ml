@@ -195,7 +195,19 @@ let nnz x =
 
 let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
 
-let check_slice_axis = None
+(* TODO *)
+
+let iteri_slice axis x = None
+
+let check_slice_axis axis s =
+  let info = "check_slice_axis fails" in
+  if Array.length axis <> Array.length s then
+    failwith info;
+  Array.iteri (fun i a ->
+    match a with
+    | Some a -> if a < 0 || a >= s.(i) then failwith info
+    | None -> ()
+  ) axis
 
 let slice axis x =
   let s0 = shape x in
@@ -221,11 +233,13 @@ let slice axis x =
   y
 
 let check_transpose_axis axis d =
-  if Array.length axis <> d then failwith "transpose: axis is not correct";
+  let info = "check_transpose_axiss fails" in
+  if Array.length axis <> d then
+    failwith info;
   let h = Hashtbl.create 16 in
   Array.iter (fun x ->
-    if x < 0 || x >= d then failwith "transpose: axis is not correct";
-    if Hashtbl.mem h x = true then failwith "transpose: axis is not correct";
+    if x < 0 || x >= d then failwith info;
+    if Hashtbl.mem h x = true then failwith info;
     Hashtbl.add h x 0
   ) axis
 
