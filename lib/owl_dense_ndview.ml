@@ -13,6 +13,8 @@ type ('a, 'b) t = {
   mutable data  : ('a, 'b) Owl_dense_ndarray.t;   (* point to the raw data set *)
 }
 
+let _create_view prev i_fun d_fun shape data = { prev; i_fun; d_fun; shape; data; }
+
 let _append_view p n =
   n.prev <- Some p;
   let f = n.i_fun in
@@ -22,13 +24,8 @@ let _append_view p n =
   let v = p.d_fun in
   n.d_fun <- (fun i d -> u i (v (f i) d))
 
-let of_ndarray x = {
-  prev  = None;
-  i_fun = (fun i -> i);
-  d_fun = (fun i d -> d);
-  shape = Owl_dense_ndarray.shape x;
-  data  = x;
-}
+let of_ndarray x =
+  _create_view None (fun i -> i) (fun i d -> d) (Owl_dense_ndarray.shape x) x
 
 let num_dims x = Array.length x.shape
 
@@ -48,10 +45,12 @@ let get x i =
       Owl_dense_ndarray.get x.data i' |> x.d_fun i'
     )
 
-let set x i =
-  match x.prev = None with
-  | true  -> Owl_dense_ndarray.set x.data i
-  | false -> Owl_dense_ndarray.set x.data (x.i_fun i)
+let set x i a =
+  let i_fun = (fun j -> j) in
+  let d_fun = (fun j d -> if i = j then a else d) in
+  let y = _create_view None i_fun d_fun (shape x) x.data in
+  _append_view x y;
+  y
 
 let transpose x =
   let i_fun = (fun i ->
@@ -61,14 +60,8 @@ let transpose x =
   ) in
   let s = shape x in
   let _ = Owl_utils.reverse_array s in
-  let y = {
-    prev  = None;
-    i_fun = i_fun;
-    d_fun = (fun i d -> d);
-    shape = s;
-    data  = x.data
-  }
-  in _append_view x y;
+  let y = _create_view None i_fun (fun i d -> d) s x.data in
+  _append_view x y;
   y
 
 let iteri f x =
@@ -110,37 +103,19 @@ let slice axis x =
     Array.iteri (fun k a -> i'.(j'.(k)) <- a) i;
     i'
   ) in
-  let y = {
-    prev  = None;
-    i_fun = i_fun;
-    d_fun = (fun i d -> d);
-    shape = s;
-    data  = x.data
-  }
-  in _append_view x y;
+  let y = _create_view None i_fun (fun i d -> d) s x.data in
+  _append_view x y;
   y
 
 let mapi f x =
-  let y = {
-    prev  = None;
-    i_fun = (fun i -> i);
-    d_fun = f;
-    shape = (shape x);
-    data  = x.data
-  }
-  in _append_view x y;
+  let y = _create_view None (fun i -> i) f (shape x) x.data in
+  _append_view x y;
   y
 
 let collapse x =
   let y = Owl_dense_ndarray.empty (kind x) (shape x) in
   iteri (fun i a -> Owl_dense_ndarray.set y i a) x;
-  {
-    prev  = None;
-    i_fun = (fun i -> i);
-    d_fun = (fun i d -> d);
-    shape = (shape x);
-    data  = y
-  }
+  _create_view None (fun i -> i) (fun i d -> d) (shape x) y
 
 let to_ndarray x =
   match x.prev = None with
