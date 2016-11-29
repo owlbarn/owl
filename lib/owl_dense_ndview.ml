@@ -7,20 +7,25 @@ open Bigarray
 
 type ('a, 'b) view = {
   mutable prev  : ('a, 'b) view option;           (* point to the previous view *)
-  mutable func  : (int array -> int array);       (* index transformation function *)
+  mutable i_fun : (int array -> int array);       (* index transformation function *)
+  mutable d_fun : (int array -> 'a -> 'a);        (* data transformation function *)
   mutable shape : int array;                      (* shape of the view, for checking boundary *)
   mutable data  : ('a, 'b) Owl_dense_ndarray.t;   (* point to the raw data set *)
 }
 
 let _append_view p n =
   n.prev <- Some p;
-  let f = n.func in
-  let g = p.func in
-  n.func <- (fun i -> g (f i))
+  let f = n.i_fun in
+  let g = p.i_fun in
+  n.i_fun <- (fun i -> g (f i));
+  let u = n.d_fun in
+  let v = p.d_fun in
+  n.d_fun <- (fun i d -> u i (v (f i) d))
 
 let create x = {
   prev  = None;
-  func  = (fun i -> i);
+  i_fun = (fun i -> i);
+  d_fun = (fun i d -> d);
   shape = Owl_dense_ndarray.shape x;
   data  = x;
 }
@@ -38,15 +43,18 @@ let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
 let get x i =
   match x.prev = None with
   | true  -> Owl_dense_ndarray.get x.data i
-  | false -> Owl_dense_ndarray.get x.data (x.func i)
+  | false -> (
+      let i' = x.i_fun i in
+      Owl_dense_ndarray.get x.data i' |> x.d_fun i'
+    )
 
 let set x i =
   match x.prev = None with
   | true  -> Owl_dense_ndarray.set x.data i
-  | false -> Owl_dense_ndarray.set x.data (x.func i)
+  | false -> Owl_dense_ndarray.set x.data (x.i_fun i)
 
 let transpose x =
-  let func = (fun i ->
+  let i_fun = (fun i ->
     let i' = Array.copy i in
     Owl_utils.reverse_array i';
     i'
@@ -54,10 +62,11 @@ let transpose x =
   let s = shape x in
   let _ = Owl_utils.reverse_array s in
   let y = {
-    prev = None;
-    func = func;
+    prev  = None;
+    i_fun = i_fun;
+    d_fun = (fun i d -> d);
     shape = s;
-    data = x.data
+    data  = x.data
   }
   in _append_view x y;
   y
@@ -80,8 +89,8 @@ let iteri f x =
   done
 
 let slice axis x =
-  (* TODO: check the validity of the axis *)
   let s0 = shape x in
+  Owl_dense_ndarray.check_slice_axis axis s0;
   let s1 = ref [||] in
   Array.iteri (fun i a ->
     match a with
@@ -97,15 +106,27 @@ let slice axis x =
     | Some a -> (i'.(i) <- a)
     | None   -> (j'.(!k) <- i; k := !k + 1)
   ) axis;
-  let func = (fun i ->
+  let i_fun = (fun i ->
     Array.iteri (fun k a -> i'.(j'.(k)) <- a) i;
     i'
   ) in
   let y = {
-    prev = None;
-    func = func;
+    prev  = None;
+    i_fun = i_fun;
+    d_fun = (fun i d -> d);
     shape = s;
-    data = x.data
+    data  = x.data
+  }
+  in _append_view x y;
+  y
+
+let mapi f x =
+  let y = {
+    prev  = None;
+    i_fun = (fun i -> i);
+    d_fun = f;
+    shape = (shape x);
+    data  = x.data
   }
   in _append_view x y;
   y
