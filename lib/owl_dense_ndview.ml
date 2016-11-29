@@ -5,8 +5,8 @@
 
 open Bigarray
 
-type ('a, 'b) view = {
-  mutable prev  : ('a, 'b) view option;           (* point to the previous view *)
+type ('a, 'b) t = {
+  mutable prev  : ('a, 'b) t option;              (* point to the previous view *)
   mutable i_fun : (int array -> int array);       (* index transformation function *)
   mutable d_fun : (int array -> 'a -> 'a);        (* data transformation function *)
   mutable shape : int array;                      (* shape of the view, for checking boundary *)
@@ -22,7 +22,7 @@ let _append_view p n =
   let v = p.d_fun in
   n.d_fun <- (fun i d -> u i (v (f i) d))
 
-let create x = {
+let of_ndarray x = {
   prev  = None;
   i_fun = (fun i -> i);
   d_fun = (fun i d -> d);
@@ -131,7 +131,21 @@ let mapi f x =
   in _append_view x y;
   y
 
-let collapse x = None
+let collapse x =
+  let y = Owl_dense_ndarray.empty (kind x) (shape x) in
+  iteri (fun i a -> Owl_dense_ndarray.set y i a) x;
+  {
+    prev  = None;
+    i_fun = (fun i -> i);
+    d_fun = (fun i d -> d);
+    shape = (shape x);
+    data  = y
+  }
+
+let to_ndarray x =
+  match x.prev = None with
+  | true  -> x.data    (* already collapsed *)
+  | false -> let y = collapse x in y.data
 
 let print x =
   let t = kind x in
@@ -139,5 +153,7 @@ let print x =
     Owl_dense_ndarray.print_index i;
     Owl_dense_ndarray.print_element t y
   ) x
+
+
 
 (* ends here *)
