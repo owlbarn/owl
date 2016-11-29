@@ -197,20 +197,21 @@ let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
 
 (* TODO *)
 
-let iteri_slice axis x = None
-
 let check_slice_axis axis s =
-  let info = "check_slice_axis fails" in
   if Array.length axis <> Array.length s then
-    failwith info;
+    failwith "check_slice_axis: length does not match";
+  let has_none = ref false in
   Array.iteri (fun i a ->
     match a with
-    | Some a -> if a < 0 || a >= s.(i) then failwith info
-    | None -> ()
-  ) axis
+    | Some a -> if a < 0 || a >= s.(i) then failwith "check_slice_axis: boundary error"
+    | None -> has_none := true
+  ) axis;
+  if !has_none = false then failwith "check_slice_axis: there should be at least one None"
 
 let slice axis x =
   let s0 = shape x in
+  (* check axis is within boundary, has at least one None *)
+  check_slice_axis axis s0;
   let s1 = ref [||] in
   Array.iteri (fun i a ->
     match a with
@@ -231,6 +232,22 @@ let slice axis x =
     set y j a
   ) x;
   y
+
+let rec _iteri_slice index axis f x =
+  if Array.length axis = 0 then (
+    f (Array.copy index) (slice index x)
+  )
+  else (
+    let s = shape x in
+    for i = 0 to s.(axis.(0)) - 1 do
+      index.(axis.(0)) <- Some i;
+      _iteri_slice index (Array.sub axis 1 (Array.length axis - 1)) f x
+    done
+  )
+
+let iteri_slice axis f x =
+  let index = Array.make (num_dims x) None in
+  _iteri_slice index axis f x
 
 let check_transpose_axis axis d =
   let info = "check_transpose_axiss fails" in
