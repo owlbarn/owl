@@ -50,6 +50,8 @@ val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
 
 val slice : int option array -> ('a, 'b) t -> ('a, 'b) t
 
+val copy_slice : int option array -> ('a, 'b) t -> ('a, 'b) t -> unit
+
 val copy : ('a, 'b) t -> ('a, 'b) t -> unit
 
 val fill : ('a, 'b) t -> 'a -> unit

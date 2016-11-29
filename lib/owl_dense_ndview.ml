@@ -66,6 +66,7 @@ let transpose x =
   _append_view x y;
   y
 
+(* TODO: need to add axis option *)
 let iteri f x =
   let s = shape x in
   let d = num_dims x in
