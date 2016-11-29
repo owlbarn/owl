@@ -249,6 +249,8 @@ let iteri_slice axis f x =
   let index = Array.make (num_dims x) None in
   _iteri_slice index axis f x
 
+let iter_slice axis f x = iteri_slice axis (fun _ y -> f y) x
+
 let check_transpose_axis axis d =
   let info = "check_transpose_axiss fails" in
   if Array.length axis <> d then
