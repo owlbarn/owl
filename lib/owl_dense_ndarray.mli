@@ -180,7 +180,3 @@ val _div : ('a, 'b) kind -> 'a -> 'a -> 'a
 val _abs : ('a, 'b) kind -> 'a -> 'a
 
 val _neg : ('a, 'b) kind -> 'a -> 'a
-
-
-
-(* ends here *)

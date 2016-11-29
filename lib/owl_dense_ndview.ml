@@ -13,6 +13,8 @@ type ('a, 'b) t = {
   mutable data  : ('a, 'b) Owl_dense_ndarray.t;   (* point to the raw data set *)
 }
 
+type ('a, 'b) kind = ('a, 'b) Bigarray.kind
+
 let _create_view prev i_fun d_fun shape data = { prev; i_fun; d_fun; shape; data; }
 
 let _append_view p n =
@@ -80,6 +82,8 @@ let iteri f x =
       done
     )
   done
+
+let iter f x = iteri (fun _ y -> f y) x
 
 let slice axis x =
   let s0 = shape x in
