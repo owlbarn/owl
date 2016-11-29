@@ -83,7 +83,7 @@ let iteri f x =
 
 let slice axis x =
   let s0 = shape x in
-  Owl_dense_ndarray.check_slice_axis axis s0;
+  Owl_dense_ndarray._check_slice_axis axis s0;
   let s1 = ref [||] in
   Array.iteri (fun i a ->
     match a with
@@ -112,10 +112,63 @@ let mapi f x =
   _append_view x y;
   y
 
+let map f x = mapi (fun _ d -> f d) x
+
+let rec _iteri_slice index axis f x =
+  if Array.length axis = 0 then (
+    f (Array.copy index) (slice index x)
+  )
+  else (
+    let s = shape x in
+    for i = 0 to s.(axis.(0)) - 1 do
+      index.(axis.(0)) <- Some i;
+      _iteri_slice index (Array.sub axis 1 (Array.length axis - 1)) f x
+    done
+  )
+
+let iteri_slice axis f x =
+  let index = Array.make (num_dims x) None in
+  _iteri_slice index axis f x
+
+let iter_slice axis f x = iteri_slice axis (fun _ y -> f y) x
+
 let collapse x =
   let y = Owl_dense_ndarray.empty (kind x) (shape x) in
   iteri (fun i a -> Owl_dense_ndarray.set y i a) x;
+  (* TODO: maybe I should also upadte the graph, better perf? *)
   _create_view None (fun i -> i) (fun i d -> d) (shape x) y
+
+let _check_paired_operands x y =
+  if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
+  if (shape x) <> (shape y) then failwith "_check_paired_operands: shape mismatch"
+
+let add x y =
+  _check_paired_operands x y;
+  let f = Owl_dense_ndarray._add (kind x) in
+  mapi (fun i d -> f d (get y i)) x
+
+let sub x y =
+  _check_paired_operands x y;
+  let f = Owl_dense_ndarray._sub (kind x) in
+  mapi (fun i d -> f d (get y i)) x
+
+let mul x y =
+  _check_paired_operands x y;
+  let f = Owl_dense_ndarray._mul (kind x) in
+  mapi (fun i d -> f d (get y i)) x
+
+let div x y =
+  _check_paired_operands x y;
+  let f = Owl_dense_ndarray._div (kind x) in
+  mapi (fun i d -> f d (get y i)) x
+
+let abs x =
+  let f = Owl_dense_ndarray._abs (kind x) in
+  map (fun d -> f d) x
+
+let neg x =
+  let f = Owl_dense_ndarray._neg (kind x) in
+  map (fun d -> f d) x
 
 let to_ndarray x =
   match x.prev = None with
@@ -128,6 +181,9 @@ let print x =
     Owl_dense_ndarray.print_index i;
     Owl_dense_ndarray.print_element t y
   ) x
+
+(* TODO *)
+let reshape x s1 = None
 
 
 

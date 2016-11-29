@@ -195,9 +195,7 @@ let nnz x =
 
 let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
 
-(* TODO *)
-
-let check_slice_axis axis s =
+let _check_slice_axis axis s =
   if Array.length axis <> Array.length s then
     failwith "check_slice_axis: length does not match";
   let has_none = ref false in
@@ -211,7 +209,7 @@ let check_slice_axis axis s =
 let slice axis x =
   let s0 = shape x in
   (* check axis is within boundary, has at least one None *)
-  check_slice_axis axis s0;
+  _check_slice_axis axis s0;
   let s1 = ref [||] in
   Array.iteri (fun i a ->
     match a with
@@ -251,7 +249,7 @@ let iteri_slice axis f x =
 
 let iter_slice axis f x = iteri_slice axis (fun _ y -> f y) x
 
-let check_transpose_axis axis d =
+let _check_transpose_axis axis d =
   let info = "check_transpose_axiss fails" in
   if Array.length axis <> d then
     failwith info;
@@ -269,7 +267,7 @@ let transpose ?axis x =
     | None -> Array.init d (fun i -> d - i - 1)
   in
   (* check if axis is a correct permutation *)
-  check_transpose_axis a d;
+  _check_transpose_axis a d;
   let s0 = shape x in
   let s1 = Array.map (fun j -> s0.(j)) a in
   let y = empty (kind x) s1 in
@@ -385,7 +383,12 @@ let _neg : type a b. (a, b) kind -> (a -> a) = function
   | Complex64 -> Complex.neg
   | _         -> failwith "_neg: unsupported operation"
 
+let _check_paired_operands x y =
+  if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
+  if (shape x) <> (shape y) then failwith "_check_paired_operands: shape mismatch"
+
 let _paired_arithmetic_op op x y =
+  _check_paired_operands x y;
   let z = clone x in
   let _op = op (kind x) in
   iter2i (fun i a b -> set z i (_op a b)) x y;

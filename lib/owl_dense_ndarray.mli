@@ -165,9 +165,21 @@ val print_element : ('a, 'b) kind -> 'a -> unit
 
 val print_index : int array -> unit
 
-val check_transpose_axis : int array -> int -> unit
+val _check_transpose_axis : int array -> int -> unit
 
-val check_slice_axis : int option array -> int array -> unit
+val _check_slice_axis : int option array -> int array -> unit
+
+val _add : ('a, 'b) kind -> 'a -> 'a -> 'a
+
+val _sub : ('a, 'b) kind -> 'a -> 'a -> 'a
+
+val _mul : ('a, 'b) kind -> 'a -> 'a -> 'a
+
+val _div : ('a, 'b) kind -> 'a -> 'a -> 'a
+
+val _abs : ('a, 'b) kind -> 'a -> 'a
+
+val _neg : ('a, 'b) kind -> 'a -> 'a
 
 
 
