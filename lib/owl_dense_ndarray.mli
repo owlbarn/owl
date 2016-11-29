@@ -87,6 +87,10 @@ val foldi : ?axis:int option array -> (int array -> 'a -> 'b -> 'b) -> 'b -> ('a
 
 val fold : ?axis:int option array -> ('a -> 'b -> 'b) -> 'b -> ('a, 'c) t -> 'b
 
+val iteri_slice : int array -> (int option array -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
+
+val iter_slice : int array -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
+
 
 (** {6 Basic mathematical operations } *)
 
@@ -154,9 +158,16 @@ val load : string -> ('a, 'b) t
 
 val print : ('a, 'b) t -> unit
 
+
+(** {6 Some helper functions } *)
+
 val print_element : ('a, 'b) kind -> 'a -> unit
 
 val print_index : int array -> unit
+
+val check_transpose_axis : int array -> int -> unit
+
+val check_slice_axis : int option array -> int array -> unit
 
 
 
