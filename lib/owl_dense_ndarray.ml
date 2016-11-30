@@ -106,7 +106,6 @@ let _iteri_all_axis f x =
   let k = ref 0 in
   let n = (numel x) - 1 in
   for j = 0 to n do
-    (* TODO: performnce can be improved without copying *)
     f (Array.copy i) (get x i);
     if j <> n then (
       k := d - 1;
@@ -147,7 +146,42 @@ let iteri ?axis f x =
   | Some a -> _iteri_fix_axis a f x
   | None   -> _iteri_all_axis f x
 
-let iter ?axis f x = iteri ?axis (fun _ y -> f y) x
+let _iter_all_axis f x =
+  let n = numel x in
+  let y = reshape_1 x n in
+  for i = 0 to n - 1 do
+    f (Array1.get y i);
+  done
+
+let _iter_fix_axis axis f x =
+  let s = shape x in
+  let n = ref (numel x) in
+  let l = ref [||] in
+  let i = Array.mapi (fun i a ->
+    match a with
+    | Some a -> (n := !n / s.(i); a)
+    | None -> (l := Array.append [|i|] !l; 0)
+  ) axis
+  in
+  let n = !n - 1 in
+  let l = !l in
+  for j = 0 to n do
+    f (get x i);
+    if j <> n then (
+      let m = ref 0 in
+      let k = ref l.(!m) in
+      while not (i.(!k) <- i.(!k) + 1; i.(!k) < s.(!k)) do
+        i.(!k) <- 0;
+        m := !m + 1;
+        k := l.(!m);
+      done
+    )
+  done
+
+let iter ?axis f x =
+  match axis with
+  | Some a -> _iter_fix_axis a f x
+  | None   -> _iter_all_axis f x
 
 let iter2i f x y =
   let s = shape x in

@@ -41,5 +41,9 @@ let _ =
   test_op "clone             " c (fun () -> M.clone x);
   test_op "copy              " c (fun () -> M.copy x y);
   test_op "iteri             " c (fun () -> M.iteri (fun i a -> ()) x);
+  test_op "iter              " c (fun () -> M.iter (fun a -> ()) x);
+  test_op "iteri (0,*,*)     " c (fun () -> M.iteri ~axis:[|Some 0; None; None|] (fun i a -> ()) x);
+  test_op "iter (0,*,*)      " c (fun () -> M.iter ~axis:[|Some 0; None; None|] (fun a -> ()) x);
   test_op "mapi              " c (fun () -> M.mapi (fun i a -> a) x);
+  test_op "map               " c (fun () -> M.map (fun a -> a) x);
   print_endline (Bytes.make 60 '+');

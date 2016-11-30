@@ -204,7 +204,7 @@ let print x =
   ) x
 
 (* TODO *)
-let reshape x s1 = None
+let reshape x s = None
 
 
 
