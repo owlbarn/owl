@@ -99,52 +99,36 @@ let flatten x =
   let n = numel x in
   reshape x [|1;n|]
 
-let _iteri_all_axis f x =
-  let s = shape x in
+let rec _iteri_axis_fun d j i l h f x =
+  if j = d - 1 then (
+    for k = l.(j) to h.(j) do
+      i.(j) <- k;
+      f (Array.copy i) (get x i);
+    done
+  )
+  else (
+    for k = l.(j) to h.(j) do
+      i.(j) <- k;
+      _iteri_axis_fun d (j + 1) i l h f x
+    done
+  )
+
+let _iteri_axis axis f x =
   let d = num_dims x in
   let i = Array.make d 0 in
-  let k = ref 0 in
-  let n = (numel x) - 1 in
-  for j = 0 to n do
-    f (Array.copy i) (get x i);
-    if j <> n then (
-      k := d - 1;
-      while not (i.(!k) <- i.(!k) + 1; i.(!k) < s.(!k)) do
-        i.(!k) <- 0;
-        k := !k - 1;
-      done
-    )
-  done
-
-let _iteri_fix_axis axis f x =
-  let s = shape x in
-  let n = ref (numel x) in
-  let l = ref [||] in
-  let i = Array.mapi (fun i a ->
+  let l = Array.make d 0 in
+  let h = shape x in
+  Array.iteri (fun j a ->
     match a with
-    | Some a -> (n := !n / s.(i); a)
-    | None -> (l := Array.append [|i|] !l; 0)
-  ) axis
-  in
-  let n = !n - 1 in
-  let l = !l in
-  for j = 0 to n do
-    f (Array.copy i) (get x i);
-    if j <> n then (
-      let m = ref 0 in
-      let k = ref l.(!m) in
-      while not (i.(!k) <- i.(!k) + 1; i.(!k) < s.(!k)) do
-        i.(!k) <- 0;
-        m := !m + 1;
-        k := l.(!m);
-      done
-    )
-  done
+    | Some b -> (l.(j) <- b; h.(j) <- b)
+    | None -> (h.(j) <- h.(j) - 1)
+  ) axis;
+  _iteri_axis_fun d 0 i l h f x
 
 let iteri ?axis f x =
   match axis with
-  | Some a -> _iteri_fix_axis a f x
-  | None   -> _iteri_all_axis f x
+  | Some a -> _iteri_axis a f x
+  | None   -> _iteri_axis (Array.make (num_dims x) None) f x
 
 let _iter_all_axis f x =
   let n = numel x in
@@ -587,3 +571,15 @@ let load f =
   let s = really_input_string h (in_channel_length h) in
   let _, x = Marshal.from_string s 0
   in x
+
+let _calc_stride s =
+  let d = Array.length s in
+  let r = Array.make d 1 in
+  for i = 1 to d - 1 do
+    r.(d - i - 1) <- s.(d - i) * r.(d - i)
+  done;
+  r
+
+
+
+(* ends here *)

@@ -73,9 +73,9 @@ val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
 
 (** {6 Iterate array elements} *)
 
-val iteri : ?axis:int option array -> (int array -> 'a -> 'b) -> ('a, 'c) t -> unit
+val iteri : ?axis:int option array -> (int array -> 'a -> unit) -> ('a, 'c) t -> unit
 
-val iter : ?axis:int option array -> ('a -> 'b) -> ('a, 'c) t -> unit
+val iter : ?axis:int option array -> ('a -> unit) -> ('a, 'b) t -> unit
 
 val mapi : ?axis:int option array -> (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
