@@ -78,28 +78,28 @@ Executable test_operation
   MainIs:         test_operation.ml
   BuildDepends:   owl
 
-Executable test_dense
-  Path:           examples
+Executable perf_dense_real
+  Path:           perftest
   CompiledObject: best
-  MainIs:         test_dense.ml
+  MainIs:         perf_dense_real.ml
   BuildDepends:   owl
 
-Executable test_sparse
-  Path:           examples
+Executable perf_sparse_real
+  Path:           perftest
   CompiledObject: best
-  MainIs:         test_sparse.ml
+  MainIs:         perf_sparse_real.ml
   BuildDepends:   owl
 
-Executable test_sparse_complex
-  Path:           examples
+Executable perf_sparse_complex
+  Path:           perftest
   CompiledObject: best
-  MainIs:         test_sparse_complex.ml
+  MainIs:         perf_sparse_complex.ml
   BuildDepends:   owl
 
-Executable test_dense_ndarray
-  Path:           examples
+Executable perf_dense_ndarray
+  Path:           perftest
   CompiledObject: best
-  MainIs:         test_dense_ndarray.ml
+  MainIs:         perf_dense_ndarray.ml
   BuildDepends:   owl
 
 AlphaFeatures: ocamlbuild_more_args
