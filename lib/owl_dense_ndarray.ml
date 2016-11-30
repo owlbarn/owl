@@ -121,7 +121,7 @@ let _iteri_axis axis f x =
   Array.iteri (fun j a ->
     match a with
     | Some b -> (l.(j) <- b; h.(j) <- b)
-    | None -> (h.(j) <- h.(j) - 1)
+    | None   -> (h.(j) <- h.(j) - 1)
   ) axis;
   _iteri_axis_fun d 0 i l h f x
 
@@ -144,7 +144,7 @@ let _iter_fix_axis axis f x =
   let i = Array.mapi (fun i a ->
     match a with
     | Some a -> (n := !n / s.(i); a)
-    | None -> (l := Array.append [|i|] !l; 0)
+    | None   -> (l := Array.append [|i|] !l; 0)
   ) axis
   in
   let n = !n - 1 in
@@ -188,9 +188,21 @@ let iter2 f x y = iter2i (fun _ a b -> f a b) x y
 
 let mapi ?axis f x =
   let y = clone x in
-  iteri ?axis (fun i z -> set y i (f i z)) x; y
+  iteri ?axis (fun i z -> set y i (f i z)) y; y
 
-let map ?axis f x = mapi ?axis (fun _ y -> f y) x
+let _map_all_axis f x =
+  let y = clone x in
+  let n = numel y in
+  let z = reshape_1 y n in
+  for i = 0 to n - 1 do
+    Array1.set z i (f (Array1.get z i));
+  done;
+  y
+
+let map ?axis f x =
+  match axis with
+  | Some a -> mapi ?axis (fun _ y -> f y) x
+  | None   -> _map_all_axis f x
 
 let filteri ?axis f x =
   let a = ref [||] in
@@ -221,7 +233,7 @@ let _check_slice_axis axis s =
   Array.iteri (fun i a ->
     match a with
     | Some a -> if a < 0 || a >= s.(i) then failwith "check_slice_axis: boundary error"
-    | None -> has_none := true
+    | None   -> has_none := true
   ) axis;
   if !has_none = false then failwith "check_slice_axis: there should be at least one None"
 
@@ -233,7 +245,7 @@ let slice axis x =
   Array.iteri (fun i a ->
     match a with
     | Some _ -> ()
-    | None -> s1 := Array.append !s1 [|s0.(i)|]
+    | None   -> s1 := Array.append !s1 [|s0.(i)|]
   ) axis;
   let y = empty (kind x) !s1 in
   let k = Array.make (num_dims y) 0 in
@@ -241,7 +253,7 @@ let slice axis x =
   Array.iteri (fun i a ->
     match a with
     | Some _ -> ()
-    | None -> (k.(!t) <- i; t := !t + 1)
+    | None   -> (k.(!t) <- i; t := !t + 1)
   ) axis;
   let j = Array.make (num_dims y) 0 in
   iteri ~axis (fun i a ->
@@ -277,7 +289,7 @@ let copy_slice i src dst =
   Array.iteri (fun n a ->
     match a with
     | Some a' -> j.(n) <- a'
-    | None -> (k := Array.append !k [|n|]; m := !m + 1)
+    | None    -> (k := Array.append !k [|n|]; m := !m + 1)
   ) i;
   let k = !k in
   iteri (fun i' a ->
