@@ -16,12 +16,30 @@ let test_op s c op =
 
 let _ =
   let _ = Random.self_init () in
-  let m, n, o = 100, 1000, 1000 and c = 1 in
+  let m, n, o = 10, 1000, 10000 and c = 1 in
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test ndarray size: %i x %i x %i    exps: %i\n" m n o c;
   print_endline (Bytes.make 60 '-');
   let x = M.create Bigarray.Float64 [|m;n;o|] 1. in
   let y = M.create Bigarray.Float64 [|m;n;o|] 2. in
   test_op "slice_left        " c (fun () -> M.slice_left x [|0|]);
-  test_op "slice             " c (fun () -> M.slice [|Some 0; None; None|] x);
+  test_op "slice (0,*.*)     " c (fun () -> M.slice [|Some 0; None; None|] x);
+  test_op "slice (*,0.*)     " c (fun () -> M.slice [|None; Some 0; None|] x);
+  test_op "slice (*,*.0)     " c (fun () -> M.slice [|None; None; Some 0|] x);
+  test_op "reshape           " c (fun () -> M.reshape x [|10000;1000;10|]);
+  test_op "flatten           " c (fun () -> M.flatten x);
+  test_op "max               " c (fun () -> M.max x);
+  test_op "abs               " c (fun () -> M.abs x);
+  test_op "neg               " c (fun () -> M.neg x);
+  test_op "sum               " c (fun () -> M.sum x);
+  test_op "add x y           " c (fun () -> M.add x y);
+  test_op "is_zero           " c (fun () -> M.is_zero x);
+  test_op "equal_or_smaller  " c (fun () -> M.equal_or_smaller x y);
+  test_op "transpose         " c (fun () -> M.transpose x);
+  test_op "swap 0 1          " c (fun () -> M.swap 0 1 x);
+  test_op "fill              " c (fun () -> M.fill x 1.5);
+  test_op "clone             " c (fun () -> M.clone x);
+  test_op "copy              " c (fun () -> M.copy x y);
+  test_op "iteri             " c (fun () -> M.iteri (fun i a -> ()) x);
+  test_op "mapi              " c (fun () -> M.mapi (fun i a -> a) x);
   print_endline (Bytes.make 60 '+');

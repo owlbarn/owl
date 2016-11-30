@@ -106,6 +106,7 @@ let _iteri_all_axis f x =
   let k = ref 0 in
   let n = (numel x) - 1 in
   for j = 0 to n do
+    (* TODO: performnce can be improved without copying *)
     f (Array.copy i) (get x i);
     if j <> n then (
       k := d - 1;
