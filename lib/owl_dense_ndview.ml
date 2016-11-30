@@ -66,6 +66,22 @@ let transpose x =
   _append_view x y;
   y
 
+let swap a0 a1 x =
+  let i_fun = (fun i ->
+    let i' = Array.copy i in
+    i'.(a0) <- i.(a1);
+    i'.(a1) <- i.(a0);
+    i'
+  ) in
+  let s = shape x in
+  let t = s.(a0) in
+  s.(a0) <- s.(a1);
+  s.(a1) <- t;
+  let d_fun = (fun i d -> d) in
+  let y = _create_view None i_fun d_fun s x.data in
+  _append_view x y;
+  y
+
 (* TODO: need to add axis option *)
 let iteri f x =
   let s = shape x in

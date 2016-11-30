@@ -43,6 +43,8 @@ val slice : int option array -> ('a, 'b) t -> ('a, 'b) t
 
 val transpose : ('a, 'b) t -> ('a, 'b) t
 
+val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
+
 
 (** {6 Iterate array elements} *)
 
