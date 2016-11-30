@@ -99,21 +99,21 @@ let flatten x =
   let n = numel x in
   reshape x [|1;n|]
 
-let rec _iteri_axis_fun d j i l h f x =
+let rec __iteri_fix_axis d j i l h f x =
   if j = d - 1 then (
     for k = l.(j) to h.(j) do
       i.(j) <- k;
-      f (Array.copy i) (get x i);
+      f i (get x i);
     done
   )
   else (
     for k = l.(j) to h.(j) do
       i.(j) <- k;
-      _iteri_axis_fun d (j + 1) i l h f x
+      __iteri_fix_axis d (j + 1) i l h f x
     done
   )
 
-let _iteri_axis axis f x =
+let _iteri_fix_axis axis f x =
   let d = num_dims x in
   let i = Array.make d 0 in
   let l = Array.make d 0 in
@@ -123,12 +123,12 @@ let _iteri_axis axis f x =
     | Some b -> (l.(j) <- b; h.(j) <- b)
     | None   -> (h.(j) <- h.(j) - 1)
   ) axis;
-  _iteri_axis_fun d 0 i l h f x
+  __iteri_fix_axis d 0 i l h f x
 
 let iteri ?axis f x =
   match axis with
-  | Some a -> _iteri_axis a f x
-  | None   -> _iteri_axis (Array.make (num_dims x) None) f x
+  | Some a -> _iteri_fix_axis a f x
+  | None   -> _iteri_fix_axis (Array.make (num_dims x) None) f x
 
 let _iter_all_axis f x =
   let n = numel x in
@@ -137,34 +137,9 @@ let _iter_all_axis f x =
     f (Array1.get y i);
   done
 
-let _iter_fix_axis axis f x =
-  let s = shape x in
-  let n = ref (numel x) in
-  let l = ref [||] in
-  let i = Array.mapi (fun i a ->
-    match a with
-    | Some a -> (n := !n / s.(i); a)
-    | None   -> (l := Array.append [|i|] !l; 0)
-  ) axis
-  in
-  let n = !n - 1 in
-  let l = !l in
-  for j = 0 to n do
-    f (get x i);
-    if j <> n then (
-      let m = ref 0 in
-      let k = ref l.(!m) in
-      while not (i.(!k) <- i.(!k) + 1; i.(!k) < s.(!k)) do
-        i.(!k) <- 0;
-        m := !m + 1;
-        k := l.(!m);
-      done
-    )
-  done
-
 let iter ?axis f x =
   match axis with
-  | Some a -> _iter_fix_axis a f x
+  | Some a -> _iteri_fix_axis a (fun _ y -> f y) x
   | None   -> _iter_all_axis f x
 
 let iter2i f x y =
@@ -174,7 +149,7 @@ let iter2i f x y =
   let k = ref 0 in
   let n = (numel x) - 1 in
   for j = 0 to n do
-    f (Array.copy i) (get x i) (get y i);
+    f i (get x i) (get y i);
     k := d - 1;
     i.(!k) <- i.(!k) + 1;
     while not (i.(!k) < s.(!k)) && j <> n do
@@ -218,7 +193,10 @@ let foldi ?axis f a x =
   iteri ?axis (fun i y -> c := (f i y !c)) x;
   !c
 
-let fold ?axis f a x = foldi ?axis (fun _ y c -> f y c) a x
+let fold ?axis f a x =
+  let c = ref a in
+  iter ?axis (fun y -> c := (f y !c)) x;
+  !c
 
 let nnz x =
   let z = _zero (kind x) in
@@ -264,7 +242,7 @@ let slice axis x =
 
 let rec _iteri_slice index axis f x =
   if Array.length axis = 0 then (
-    f (Array.copy index) (slice index x)
+    f index (slice index x)
   )
   else (
     let s = shape x in
@@ -447,9 +425,15 @@ let _check_paired_operands x y =
 
 let _paired_arithmetic_op op x y =
   _check_paired_operands x y;
-  let z = clone x in
   let _op = op (kind x) in
-  iter2i (fun i a b -> set z i (_op a b)) x y;
+  let n = numel x in
+  let z = clone x in
+  let x = reshape_1 x n in
+  let y = reshape_1 y n in
+  let r = reshape_1 z n in
+  for i = 0 to n - 1 do
+    Array1.(set r i (_op (get x i) (get y i)))
+  done;
   z
 
 let add x y = _paired_arithmetic_op (_add) x y
