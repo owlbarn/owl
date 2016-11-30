@@ -96,6 +96,12 @@ Executable test_sparse_complex
   MainIs:         test_sparse_complex.ml
   BuildDepends:   owl
 
+Executable test_dense_ndarray
+  Path:           examples
+  CompiledObject: best
+  MainIs:         test_dense_ndarray.ml
+  BuildDepends:   owl
+
 AlphaFeatures: ocamlbuild_more_args
 Document owldoc
   Title:                API reference for Owl
