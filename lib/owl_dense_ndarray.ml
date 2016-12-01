@@ -296,23 +296,6 @@ let _check_transpose_axis axis d =
     Hashtbl.add h x 0
   ) axis
 
-let transpose' ?axis x =
-  let d = num_dims x in
-  let a = match axis with
-    | Some a -> a
-    | None -> Array.init d (fun i -> d - i - 1)
-  in
-  (* check if axis is a correct permutation *)
-  _check_transpose_axis a d;
-  let s0 = shape x in
-  let s1 = Array.map (fun j -> s0.(j)) a in
-  let y = empty (kind x) s1 in
-  iteri (fun i z ->
-    let i' = Array.map (fun j -> i.(j)) a in
-    set y i' z
-  ) x;
-  y
-
 let transpose ?axis x =
   let d = num_dims x in
   let a = match axis with
