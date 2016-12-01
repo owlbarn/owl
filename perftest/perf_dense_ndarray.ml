@@ -26,7 +26,7 @@ let _ =
   test_op "slice (0,*.*)     " c (fun () -> M.slice [|Some 0; None; None|] x);
   test_op "slice (*,0.*)     " c (fun () -> M.slice [|None; Some 0; None|] x);
   test_op "slice (*,*.0)     " c (fun () -> M.slice [|None; None; Some 0|] x);
-  test_op "reshape           " c (fun () -> M.reshape x [|10000;1000;10|]);
+  test_op "reshape           " c (fun () -> M.reshape x [|o;n;m|]);
   test_op "flatten           " c (fun () -> M.flatten x);
   test_op "max               " c (fun () -> M.max x);
   test_op "abs               " c (fun () -> M.abs x);

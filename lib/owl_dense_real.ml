@@ -304,8 +304,6 @@ let mapi_at_col f x j =
 
 let map_at_col f x j = mapi_at_col (fun _ _ y -> f y) x j
 
-let inplace_map = None
-
 (* matrix mathematical operations *)
 
 let add x1 x2 =
