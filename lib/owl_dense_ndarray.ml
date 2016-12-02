@@ -446,24 +446,11 @@ let im x =
   iteri (fun i c -> set y i Complex.(c.im) ) x;
   y
 
-let max ?axis x =
-  let i = ref (Array.make (num_dims x) 0) in
-  let z = ref (get x !i) in
-  iteri ?axis (fun j y ->
-    if y > !z then (z := y; i := j)
-  ) x;
-  !z, !i
-
-let min ?axis x =
-  let i = ref (Array.make (num_dims x) 0) in
-  let z = ref (get x !i) in
-  iteri ?axis (fun j y ->
-    if y < !z then (z := y; i := j)
-  ) x;
-  !z, !i
+(* types for interfacing to lacaml *)
 
 type ('a, 'b) vec = ('a, 'b, fortran_layout) Array1.t
-type ('a, 'b) vec_unop = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
+type ('a, 'b) vec_unop0 = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
+type ('a, 'b) vec_unop1 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> 'a
 type ('a, 'b) vec_binop = (('a, 'b) vec) Lacaml.Common.Types.Vec.binop
 
 let _add_elt : type a b. (a, b) kind -> (a -> a -> a) = function
@@ -522,26 +509,84 @@ let _div : type a b. (a, b) kind -> (a, b) vec_binop = function
   | Complex64 -> Lacaml.Z.Vec.div
   | _         -> failwith "_div: unsupported operation"
 
-let _abs : type a b. (a, b) kind -> (a, b) vec_unop = function
+let _min : type a b. (a, b) kind -> (a, b) vec_unop1 = function
+  | Float32   -> Lacaml.S.Vec.min
+  | Float64   -> Lacaml.D.Vec.min
+  | Complex32 -> Lacaml.C.Vec.min
+  | Complex64 -> Lacaml.Z.Vec.min
+  | _         -> failwith "_min: unsupported operation"
+
+let _max : type a b. (a, b) kind -> (a, b) vec_unop1 = function
+  | Float32   -> Lacaml.S.Vec.max
+  | Float64   -> Lacaml.D.Vec.max
+  | Complex32 -> Lacaml.C.Vec.max
+  | Complex64 -> Lacaml.Z.Vec.max
+  | _         -> failwith "_max: unsupported operation"
+
+let _abs : type a b. (a, b) kind -> (a, b) vec_unop0 = function
   | Float32   -> Lacaml.S.Vec.abs
   | Float64   -> Lacaml.D.Vec.abs
   | Complex32 -> failwith "_abs: unsupported operation"
   | Complex64 -> failwith "_abs: unsupported operation"
   | _         -> failwith "_abs: unsupported operation"
 
-let _neg : type a b. (a, b) kind -> (a, b) vec_unop = function
+let _neg : type a b. (a, b) kind -> (a, b) vec_unop0 = function
   | Float32   -> Lacaml.S.Vec.neg
   | Float64   -> Lacaml.D.Vec.neg
   | Complex32 -> Lacaml.C.Vec.neg
   | Complex64 -> Lacaml.Z.Vec.neg
   | _         -> failwith "_abs: unsupported operation"
 
-let _add_scalar : type a b. (a, b) kind -> (a -> (a, b) vec_unop) = function
+let _sum : type a b. (a, b) kind -> (a, b) vec_unop1 = function
+  | Float32   -> Lacaml.S.Vec.sum
+  | Float64   -> Lacaml.D.Vec.sum
+  | Complex32 -> Lacaml.C.Vec.sum
+  | Complex64 -> Lacaml.Z.Vec.sum
+  | _         -> failwith "_abs: unsupported operation"
+
+let _add_scalar : type a b. (a, b) kind -> (a -> (a, b) vec_unop0) = function
   | Float32   -> Lacaml.S.Vec.add_const
   | Float64   -> Lacaml.D.Vec.add_const
   | Complex32 -> Lacaml.C.Vec.add_const
   | Complex64 -> Lacaml.Z.Vec.add_const
   | _         -> failwith "_add_scalar: unsupported operation"
+
+let max' ?axis x =
+  let i = ref (Array.make (num_dims x) 0) in
+  let z = ref (get x !i) in
+  iteri ?axis (fun j y ->
+    if y > !z then (z := y; i := j)
+  ) x;
+  !z, !i
+
+let min' ?axis x =
+  let i = ref (Array.make (num_dims x) 0) in
+  let z = ref (get x !i) in
+  iteri ?axis (fun j y ->
+    if y < !z then (z := y; i := j)
+  ) x;
+  !z, !i
+
+let minmax ?axis x =
+  let min_i = ref (Array.make (num_dims x) 0) in
+  let min_v = ref (get x !min_i) in
+  let max_i = ref (Array.make (num_dims x) 0) in
+  let max_v = ref (get x !max_i) in
+  iteri ?axis (fun j y ->
+    if y < !min_v then (min_v := y; min_i := Array.copy j);
+    if y > !max_v then (max_v := y; max_i := Array.copy j);
+  ) x;
+  !min_v, !min_i, !max_v, !max_i
+
+let min x =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  (_min (kind x)) y
+
+let max x =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  (_max (kind x)) y
 
 let _check_paired_operands x y =
   if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
@@ -638,10 +683,12 @@ let sub_scalar x a =
   let b = (_sub_elt k) (_zero k) (_one k) in
   add_scalar x ((_mul_elt k) a b)
 
+let mul_scalar x a = None
+
 let sum x =
-  let z = _zero (kind x) in
-  let op = _add_elt (kind x) in
-  fold op z x
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  (_sum (kind x)) y
 
 let conj x = map Complex.conj x
 

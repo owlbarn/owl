@@ -100,9 +100,13 @@ val re : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
 
 val im : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
 
-val max : ?axis:int option array -> ('a, 'b) t -> 'a * (int array)
+(*val max : ?axis:int option array -> ('a, 'b) t -> 'a * (int array*)
 
-val min : ?axis:int option array -> ('a, 'b) t -> 'a * (int array)
+val min : ('a, 'b) t -> 'a
+
+val max : ('a, 'b) t -> 'a
+
+val minmax : ?axis:int option array -> ('a, 'b) t -> ('a * (int array) * 'a * (int array))
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
