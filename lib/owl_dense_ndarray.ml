@@ -469,9 +469,6 @@ type ('a, 'b) vec_binop = (('a, 'b) vec) Lacaml.Common.Types.Vec.binop
 let _add_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( +. )
   | Float64   -> ( +. )
-  | Int       -> ( + )
-  | Int32     -> Int32.add
-  | Int64     -> Int64.add
   | Complex32 -> Complex.add
   | Complex64 -> Complex.add
   | _         -> failwith "_add_elt: unsupported operation"
@@ -479,9 +476,6 @@ let _add_elt : type a b. (a, b) kind -> (a -> a -> a) = function
 let _sub_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( -. )
   | Float64   -> ( -. )
-  | Int       -> ( - )
-  | Int32     -> Int32.sub
-  | Int64     -> Int64.sub
   | Complex32 -> Complex.sub
   | Complex64 -> Complex.sub
   | _         -> failwith "_sub_elt: unsupported operation"
@@ -489,9 +483,6 @@ let _sub_elt : type a b. (a, b) kind -> (a -> a -> a) = function
 let _mul_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( *. )
   | Float64   -> ( *. )
-  | Int       -> ( * )
-  | Int32     -> Int32.mul
-  | Int64     -> Int64.mul
   | Complex32 -> Complex.mul
   | Complex64 -> Complex.mul
   | _         -> failwith "_mul_elt: unsupported operation"
@@ -499,9 +490,6 @@ let _mul_elt : type a b. (a, b) kind -> (a -> a -> a) = function
 let _div_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( /. )
   | Float64   -> ( /. )
-  | Int       -> ( / )
-  | Int32     -> Int32.div
-  | Int64     -> Int64.div
   | Complex32 -> Complex.div
   | Complex64 -> Complex.div
   | _         -> failwith "_div: unsupported operation"
