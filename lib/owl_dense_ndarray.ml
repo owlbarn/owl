@@ -411,15 +411,12 @@ let _abs : type a b. (a, b) kind -> (a, b) vec_unop = function
   | Complex64 -> failwith "_abs: unsupported operation"
   | _         -> failwith "_abs: unsupported operation"
 
-let _neg : type a b. (a, b) kind -> (a -> a) = function
-  | Float32   -> ( -. ) 0.
-  | Float64   -> ( -. ) 0.
-  | Int       -> ( - ) 0
-  | Int32     -> Int32.neg
-  | Int64     -> Int64.neg
-  | Complex32 -> Complex.neg
-  | Complex64 -> Complex.neg
-  | _         -> failwith "_neg: unsupported operation"
+let _neg : type a b. (a, b) kind -> (a, b) vec_unop = function
+  | Float32   -> Lacaml.S.Vec.neg
+  | Float64   -> Lacaml.D.Vec.neg
+  | Complex32 -> Lacaml.C.Vec.neg
+  | Complex64 -> Lacaml.Z.Vec.neg
+  | _         -> failwith "_abs: unsupported operation"
 
 let _add_scalar : type a b. (a, b) kind -> (a -> (a, b) vec_unop) = function
   | Float32   -> Lacaml.S.Vec.add_const
@@ -462,7 +459,14 @@ let abs x =
   let z = Bigarray.reshape z (shape x) in
   z
 
-let neg x = map (_neg (kind x)) x
+let neg x =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  let z = (_abs (kind x)) y in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
 
 let add_scalar x a =
   let y = Genarray.change_layout x fortran_layout in
