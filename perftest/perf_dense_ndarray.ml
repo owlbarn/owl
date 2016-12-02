@@ -32,7 +32,6 @@ let _ =
   test_op "flatten           " c (fun () -> M.flatten x);
   test_op "max               " c (fun () -> M.max x);
   test_op "abs               " c (fun () -> M.abs x);
-  test_op "abs_new           " c (fun () -> M.abs_new x);
   test_op "neg               " c (fun () -> M.neg x);
   test_op "sum               " c (fun () -> M.sum x);
   test_op "add x y           " c (fun () -> M.add x y);

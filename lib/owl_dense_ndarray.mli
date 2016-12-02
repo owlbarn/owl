@@ -114,8 +114,6 @@ val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 val abs : ('a, 'b) t -> ('a, 'b) t
 
-val abs_new : ('a, 'b) t -> ('a, 'b) t
-
 val neg : ('a, 'b) t -> ('a, 'b) t
 
 val sum : ('a, 'b) t -> 'a

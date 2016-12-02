@@ -360,6 +360,10 @@ let min ?axis x =
   ) x;
   !z, !i
 
+type ('a, 'b) vec = ('a, 'b, fortran_layout) Array1.t
+type ('a, 'b) vec_unop = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
+type ('a, 'b) vec_binop = (('a, 'b) vec) Lacaml.Common.Types.Vec.binop
+
 let _add : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( +. )
   | Float64   -> ( +. )
@@ -400,14 +404,11 @@ let _div : type a b. (a, b) kind -> (a -> a -> a) = function
   | Complex64 -> Complex.div
   | _         -> failwith "_div: unsupported operation"
 
-let _abs : type a b. (a, b) kind -> (a -> a) = function
-  | Float32   -> abs_float
-  | Float64   -> abs_float
-  | Int       -> abs
-  | Int32     -> Int32.abs
-  | Int64     -> Int64.abs
-  | Complex32 -> (fun x -> Complex.({re = norm x; im = 0.}))
-  | Complex64 -> (fun x -> Complex.({re = norm x; im = 0.}))
+let _abs : type a b. (a, b) kind -> (a, b) vec_unop = function
+  | Float32   -> Lacaml.S.Vec.abs
+  | Float64   -> Lacaml.D.Vec.abs
+  | Complex32 -> failwith "_abs: unsupported operation"
+  | Complex64 -> failwith "_abs: unsupported operation"
   | _         -> failwith "_abs: unsupported operation"
 
 let _neg : type a b. (a, b) kind -> (a -> a) = function
@@ -420,24 +421,12 @@ let _neg : type a b. (a, b) kind -> (a -> a) = function
   | Complex64 -> Complex.neg
   | _         -> failwith "_neg: unsupported operation"
 
-
-type ('a, 'b) vec = ('a, 'b, fortran_layout) Array1.t
-type ('a, 'b) vec_unop = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
-type ('a, 'b) vec_binop = (('a, 'b) vec) Lacaml.Common.Types.Vec.binop
-
 let _add_scalar : type a b. (a, b) kind -> (a -> (a, b) vec_unop) = function
   | Float32   -> Lacaml.S.Vec.add_const
   | Float64   -> Lacaml.D.Vec.add_const
   | Complex32 -> Lacaml.C.Vec.add_const
   | Complex64 -> Lacaml.Z.Vec.add_const
   | _         -> failwith "_add_scalar: unsupported operation"
-
-let _abs_new : type a b. (a, b) kind -> (a, b) vec_unop = function
-  | Float32   -> Lacaml.S.Vec.abs
-  | Float64   -> Lacaml.D.Vec.abs
-  | Complex32 -> failwith "_abs: unsupported operation"
-  | Complex64 -> failwith "_abs: unsupported operation"
-  | _         -> failwith "_abs: unsupported operation"
 
 let _check_paired_operands x y =
   if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
@@ -464,12 +453,10 @@ let mul x y = _paired_arithmetic_op (_mul) x y
 
 let div x y = _paired_arithmetic_op (_div) x y
 
-let abs x = map (_abs (kind x)) x
-
-let abs_new x =
+let abs x =
   let y = Genarray.change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_abs_new (kind x)) y in
+  let z = (_abs (kind x)) y in
   let z = Bigarray.genarray_of_array1 z in
   let z = Genarray.change_layout z c_layout in
   let z = Bigarray.reshape z (shape x) in
