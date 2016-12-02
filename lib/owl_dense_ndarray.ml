@@ -332,178 +332,6 @@ let trace x = None
 
 let repeat x = None
 
-(* some math operations *)
-
-let re x =
-  let y = empty Float64 (shape x) in
-  iteri (fun i c -> set y i Complex.(c.re) ) x;
-  y
-
-let im x =
-  let y = empty Float64 (shape x) in
-  iteri (fun i c -> set y i Complex.(c.im) ) x;
-  y
-
-let max ?axis x =
-  let i = ref (Array.make (num_dims x) 0) in
-  let z = ref (get x !i) in
-  iteri ?axis (fun j y ->
-    if y > !z then (z := y; i := j)
-  ) x;
-  !z, !i
-
-let min ?axis x =
-  let i = ref (Array.make (num_dims x) 0) in
-  let z = ref (get x !i) in
-  iteri ?axis (fun j y ->
-    if y < !z then (z := y; i := j)
-  ) x;
-  !z, !i
-
-type ('a, 'b) vec = ('a, 'b, fortran_layout) Array1.t
-type ('a, 'b) vec_unop = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
-type ('a, 'b) vec_binop = (('a, 'b) vec) Lacaml.Common.Types.Vec.binop
-
-let _add : type a b. (a, b) kind -> (a -> a -> a) = function
-  | Float32   -> ( +. )
-  | Float64   -> ( +. )
-  | Int       -> ( + )
-  | Int32     -> Int32.add
-  | Int64     -> Int64.add
-  | Complex32 -> Complex.add
-  | Complex64 -> Complex.add
-  | _         -> failwith "_add: unsupported operation"
-
-let _sub : type a b. (a, b) kind -> (a -> a -> a) = function
-  | Float32   -> ( -. )
-  | Float64   -> ( -. )
-  | Int       -> ( - )
-  | Int32     -> Int32.sub
-  | Int64     -> Int64.sub
-  | Complex32 -> Complex.sub
-  | Complex64 -> Complex.sub
-  | _         -> failwith "_sub: unsupported operation"
-
-let _mul : type a b. (a, b) kind -> (a -> a -> a) = function
-  | Float32   -> ( *. )
-  | Float64   -> ( *. )
-  | Int       -> ( * )
-  | Int32     -> Int32.mul
-  | Int64     -> Int64.mul
-  | Complex32 -> Complex.mul
-  | Complex64 -> Complex.mul
-  | _         -> failwith "_mul: unsupported operation"
-
-let _div : type a b. (a, b) kind -> (a -> a -> a) = function
-  | Float32   -> ( /. )
-  | Float64   -> ( /. )
-  | Int       -> ( / )
-  | Int32     -> Int32.div
-  | Int64     -> Int64.div
-  | Complex32 -> Complex.div
-  | Complex64 -> Complex.div
-  | _         -> failwith "_div: unsupported operation"
-
-let _abs : type a b. (a, b) kind -> (a, b) vec_unop = function
-  | Float32   -> Lacaml.S.Vec.abs
-  | Float64   -> Lacaml.D.Vec.abs
-  | Complex32 -> failwith "_abs: unsupported operation"
-  | Complex64 -> failwith "_abs: unsupported operation"
-  | _         -> failwith "_abs: unsupported operation"
-
-let _neg : type a b. (a, b) kind -> (a, b) vec_unop = function
-  | Float32   -> Lacaml.S.Vec.neg
-  | Float64   -> Lacaml.D.Vec.neg
-  | Complex32 -> Lacaml.C.Vec.neg
-  | Complex64 -> Lacaml.Z.Vec.neg
-  | _         -> failwith "_abs: unsupported operation"
-
-let _add_scalar : type a b. (a, b) kind -> (a -> (a, b) vec_unop) = function
-  | Float32   -> Lacaml.S.Vec.add_const
-  | Float64   -> Lacaml.D.Vec.add_const
-  | Complex32 -> Lacaml.C.Vec.add_const
-  | Complex64 -> Lacaml.Z.Vec.add_const
-  | _         -> failwith "_add_scalar: unsupported operation"
-
-let _check_paired_operands x y =
-  if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
-  if (shape x) <> (shape y) then failwith "_check_paired_operands: shape mismatch"
-
-let _paired_arithmetic_op op x y =
-  _check_paired_operands x y;
-  let _op = op (kind x) in
-  let n = numel x in
-  let z = clone x in
-  let x = reshape_1 x n in
-  let y = reshape_1 y n in
-  let r = reshape_1 z n in
-  for i = 0 to n - 1 do
-    Array1.(set r i (_op (get x i) (get y i)))
-  done;
-  z
-
-let add x y = _paired_arithmetic_op (_add) x y
-
-let sub x y = _paired_arithmetic_op (_sub) x y
-
-let mul x y = _paired_arithmetic_op (_mul) x y
-
-let div x y = _paired_arithmetic_op (_div) x y
-
-let abs x =
-  let y = Genarray.change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_abs (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = Genarray.change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
-
-let neg x =
-  let y = Genarray.change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_abs (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = Genarray.change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
-
-let add_scalar x a =
-  let y = Genarray.change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_add_scalar (kind x)) a y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = Genarray.change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
-
-let sum x =
-  let z = _zero (kind x) in
-  let op = _add (kind x) in
-  fold op z x
-
-let conj x = map Complex.conj x
-
-(* TODO *)
-
-let inv x = None
-
-let exp x = None
-
-let pow x = None
-
-let mean x = None
-
-let std x = None
-
-let dot x = None
-
-let tensordot x = None
-
-let prod x = None
-
-let cumsum axis x = None
-
 (* some comparison functions *)
 
 let _compare_element_to_zero f x =
@@ -604,6 +432,250 @@ let _calc_stride s =
     r.(d - i - 1) <- s.(d - i) * r.(d - i)
   done;
   r
+
+
+(* many math operations. code might be verbose for performance concern. *)
+
+let re x =
+  let y = empty Float64 (shape x) in
+  iteri (fun i c -> set y i Complex.(c.re) ) x;
+  y
+
+let im x =
+  let y = empty Float64 (shape x) in
+  iteri (fun i c -> set y i Complex.(c.im) ) x;
+  y
+
+let max ?axis x =
+  let i = ref (Array.make (num_dims x) 0) in
+  let z = ref (get x !i) in
+  iteri ?axis (fun j y ->
+    if y > !z then (z := y; i := j)
+  ) x;
+  !z, !i
+
+let min ?axis x =
+  let i = ref (Array.make (num_dims x) 0) in
+  let z = ref (get x !i) in
+  iteri ?axis (fun j y ->
+    if y < !z then (z := y; i := j)
+  ) x;
+  !z, !i
+
+type ('a, 'b) vec = ('a, 'b, fortran_layout) Array1.t
+type ('a, 'b) vec_unop = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
+type ('a, 'b) vec_binop = (('a, 'b) vec) Lacaml.Common.Types.Vec.binop
+
+let _add_elt : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32   -> ( +. )
+  | Float64   -> ( +. )
+  | Int       -> ( + )
+  | Int32     -> Int32.add
+  | Int64     -> Int64.add
+  | Complex32 -> Complex.add
+  | Complex64 -> Complex.add
+  | _         -> failwith "_add_elt: unsupported operation"
+
+let _sub_elt : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32   -> ( -. )
+  | Float64   -> ( -. )
+  | Int       -> ( - )
+  | Int32     -> Int32.sub
+  | Int64     -> Int64.sub
+  | Complex32 -> Complex.sub
+  | Complex64 -> Complex.sub
+  | _         -> failwith "_sub_elt: unsupported operation"
+
+let _mul_elt : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32   -> ( *. )
+  | Float64   -> ( *. )
+  | Int       -> ( * )
+  | Int32     -> Int32.mul
+  | Int64     -> Int64.mul
+  | Complex32 -> Complex.mul
+  | Complex64 -> Complex.mul
+  | _         -> failwith "_mul_elt: unsupported operation"
+
+let _div_elt : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32   -> ( /. )
+  | Float64   -> ( /. )
+  | Int       -> ( / )
+  | Int32     -> Int32.div
+  | Int64     -> Int64.div
+  | Complex32 -> Complex.div
+  | Complex64 -> Complex.div
+  | _         -> failwith "_div: unsupported operation"
+
+let _add : type a b. (a, b) kind -> (a, b) vec_binop = function
+  | Float32   -> Lacaml.S.Vec.add
+  | Float64   -> Lacaml.D.Vec.add
+  | Complex32 -> Lacaml.C.Vec.add
+  | Complex64 -> Lacaml.Z.Vec.add
+  | _         -> failwith "_add: unsupported operation"
+
+let _sub : type a b. (a, b) kind -> (a, b) vec_binop = function
+  | Float32   -> Lacaml.S.Vec.sub
+  | Float64   -> Lacaml.D.Vec.sub
+  | Complex32 -> Lacaml.C.Vec.sub
+  | Complex64 -> Lacaml.Z.Vec.sub
+  | _         -> failwith "_sub: unsupported operation"
+
+let _mul : type a b. (a, b) kind -> (a, b) vec_binop = function
+  | Float32   -> Lacaml.S.Vec.mul
+  | Float64   -> Lacaml.D.Vec.mul
+  | Complex32 -> Lacaml.C.Vec.mul
+  | Complex64 -> Lacaml.Z.Vec.mul
+  | _         -> failwith "_mul: unsupported operation"
+
+let _div : type a b. (a, b) kind -> (a, b) vec_binop = function
+  | Float32   -> Lacaml.S.Vec.div
+  | Float64   -> Lacaml.D.Vec.div
+  | Complex32 -> Lacaml.C.Vec.div
+  | Complex64 -> Lacaml.Z.Vec.div
+  | _         -> failwith "_div: unsupported operation"
+
+let _abs : type a b. (a, b) kind -> (a, b) vec_unop = function
+  | Float32   -> Lacaml.S.Vec.abs
+  | Float64   -> Lacaml.D.Vec.abs
+  | Complex32 -> failwith "_abs: unsupported operation"
+  | Complex64 -> failwith "_abs: unsupported operation"
+  | _         -> failwith "_abs: unsupported operation"
+
+let _neg : type a b. (a, b) kind -> (a, b) vec_unop = function
+  | Float32   -> Lacaml.S.Vec.neg
+  | Float64   -> Lacaml.D.Vec.neg
+  | Complex32 -> Lacaml.C.Vec.neg
+  | Complex64 -> Lacaml.Z.Vec.neg
+  | _         -> failwith "_abs: unsupported operation"
+
+let _add_scalar : type a b. (a, b) kind -> (a -> (a, b) vec_unop) = function
+  | Float32   -> Lacaml.S.Vec.add_const
+  | Float64   -> Lacaml.D.Vec.add_const
+  | Complex32 -> Lacaml.C.Vec.add_const
+  | Complex64 -> Lacaml.Z.Vec.add_const
+  | _         -> failwith "_add_scalar: unsupported operation"
+
+let _check_paired_operands x y =
+  if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
+  if (shape x) <> (shape y) then failwith "_check_paired_operands: shape mismatch"
+
+(* TODO: although generate clean code, but seems causing significnat performance degradation *)
+let _paired_arithmetic_op (op : ('a, 'b) kind -> ('a, 'b) vec_binop) x y =
+  _check_paired_operands x y;
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  let z = (op (kind x)) x' y' in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let __investigate___add x y = _paired_arithmetic_op _add x y
+
+let add x y =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  let z = (_add (kind x)) x' y' in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let sub x y =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  let z = (_sub (kind x)) x' y' in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let mul x y =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  let z = (_mul (kind x)) x' y' in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let div x y =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  let z = (_div (kind x)) x' y' in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let abs x =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  let z = (_abs (kind x)) y in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let neg x =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  let z = (_abs (kind x)) y in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let add_scalar x a =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  let z = (_add_scalar (kind x)) a y in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let sub_scalar x a =
+  let k = kind x in
+  let b = (_sub_elt k) (_zero k) (_one k) in
+  add_scalar x ((_mul_elt k) a b)
+
+let sum x =
+  let z = _zero (kind x) in
+  let op = _add_elt (kind x) in
+  fold op z x
+
+let conj x = map Complex.conj x
+
+(* TODO *)
+
+let inv x = None
+
+let exp x = None
+
+let pow x = None
+
+let mean x = None
+
+let std x = None
+
+let dot x = None
+
+let tensordot x = None
+
+let prod x = None
+
+let cumsum axis x = None
 
 
 
