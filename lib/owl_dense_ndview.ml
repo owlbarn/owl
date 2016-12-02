@@ -159,36 +159,98 @@ let collapse x =
   (* TODO: maybe I should also upadte the graph, better perf? *)
   _create_view None (fun i -> i) (fun i d -> d) (shape x) y
 
+(* basic math operation *)
+
+let _add : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32   -> ( +. )
+  | Float64   -> ( +. )
+  | Int       -> ( + )
+  | Int32     -> Int32.add
+  | Int64     -> Int64.add
+  | Complex32 -> Complex.add
+  | Complex64 -> Complex.add
+  | _         -> failwith "_add: unsupported operation"
+
+let _sub : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32   -> ( -. )
+  | Float64   -> ( -. )
+  | Int       -> ( - )
+  | Int32     -> Int32.sub
+  | Int64     -> Int64.sub
+  | Complex32 -> Complex.sub
+  | Complex64 -> Complex.sub
+  | _         -> failwith "_sub: unsupported operation"
+
+let _mul : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32   -> ( *. )
+  | Float64   -> ( *. )
+  | Int       -> ( * )
+  | Int32     -> Int32.mul
+  | Int64     -> Int64.mul
+  | Complex32 -> Complex.mul
+  | Complex64 -> Complex.mul
+  | _         -> failwith "_mul: unsupported operation"
+
+let _div : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32   -> ( /. )
+  | Float64   -> ( /. )
+  | Int       -> ( / )
+  | Int32     -> Int32.div
+  | Int64     -> Int64.div
+  | Complex32 -> Complex.div
+  | Complex64 -> Complex.div
+  | _         -> failwith "_div: unsupported operation"
+
+let _abs : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> abs_float
+  | Float64   -> abs_float
+  | Int       -> abs
+  | Int32     -> Int32.abs
+  | Int64     -> Int64.abs
+  | Complex32 -> (fun x -> Complex.({re = norm x; im = 0.}))
+  | Complex64 -> (fun x -> Complex.({re = norm x; im = 0.}))
+  | _         -> failwith "_abs: unsupported operation"
+
+let _neg : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> ( -. ) 0.
+  | Float64   -> ( -. ) 0.
+  | Int       -> ( - ) 0
+  | Int32     -> Int32.neg
+  | Int64     -> Int64.neg
+  | Complex32 -> Complex.neg
+  | Complex64 -> Complex.neg
+  | _         -> failwith "_neg: unsupported operation"
+
 let _check_paired_operands x y =
   if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
   if (shape x) <> (shape y) then failwith "_check_paired_operands: shape mismatch"
 
 let add x y =
   _check_paired_operands x y;
-  let f = Owl_dense_ndarray._add (kind x) in
+  let f = _add (kind x) in
   mapi (fun i d -> f d (get y i)) x
 
 let sub x y =
   _check_paired_operands x y;
-  let f = Owl_dense_ndarray._sub (kind x) in
+  let f = _sub (kind x) in
   mapi (fun i d -> f d (get y i)) x
 
 let mul x y =
   _check_paired_operands x y;
-  let f = Owl_dense_ndarray._mul (kind x) in
+  let f = _mul (kind x) in
   mapi (fun i d -> f d (get y i)) x
 
 let div x y =
   _check_paired_operands x y;
-  let f = Owl_dense_ndarray._div (kind x) in
+  let f = _div (kind x) in
   mapi (fun i d -> f d (get y i)) x
 
 let abs x =
-  let f = Owl_dense_ndarray._abs (kind x) in
+  let f = _abs (kind x) in
   map (fun d -> f d) x
 
 let neg x =
-  let f = Owl_dense_ndarray._neg (kind x) in
+  let f = _neg (kind x) in
   map (fun d -> f d) x
 
 let to_ndarray x =

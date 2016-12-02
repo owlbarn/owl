@@ -432,6 +432,13 @@ let _add_scalar : type a b. (a, b) kind -> (a -> (a, b) vec_unop) = function
   | Complex64 -> Lacaml.Z.Vec.add_const
   | _         -> failwith "_add_scalar: unsupported operation"
 
+let _abs_new : type a b. (a, b) kind -> (a, b) vec_unop = function
+  | Float32   -> Lacaml.S.Vec.abs
+  | Float64   -> Lacaml.D.Vec.abs
+  | Complex32 -> failwith "_abs: unsupported operation"
+  | Complex64 -> failwith "_abs: unsupported operation"
+  | _         -> failwith "_abs: unsupported operation"
+
 let _check_paired_operands x y =
   if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
   if (shape x) <> (shape y) then failwith "_check_paired_operands: shape mismatch"
@@ -458,6 +465,15 @@ let mul x y = _paired_arithmetic_op (_mul) x y
 let div x y = _paired_arithmetic_op (_div) x y
 
 let abs x = map (_abs (kind x)) x
+
+let abs_new x =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  let z = (_abs_new (kind x)) y in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
 
 let neg x = map (_neg (kind x)) x
 

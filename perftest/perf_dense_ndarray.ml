@@ -32,10 +32,12 @@ let _ =
   test_op "flatten           " c (fun () -> M.flatten x);
   test_op "max               " c (fun () -> M.max x);
   test_op "abs               " c (fun () -> M.abs x);
+  test_op "abs_new           " c (fun () -> M.abs_new x);
   test_op "neg               " c (fun () -> M.neg x);
   test_op "sum               " c (fun () -> M.sum x);
   test_op "add x y           " c (fun () -> M.add x y);
   test_op "mul x y           " c (fun () -> M.mul x y);
+  test_op "add_scalar        " c (fun () -> M.add_scalar x 0.5);
   test_op "is_zero           " c (fun () -> M.is_zero x);
   test_op "equal_or_smaller  " c (fun () -> M.equal_or_smaller x y);
   test_op "transpose         " c (fun () -> M.transpose x);

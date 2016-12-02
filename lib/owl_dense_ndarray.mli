@@ -114,6 +114,8 @@ val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 val abs : ('a, 'b) t -> ('a, 'b) t
 
+val abs_new : ('a, 'b) t -> ('a, 'b) t
+
 val neg : ('a, 'b) t -> ('a, 'b) t
 
 val sum : ('a, 'b) t -> 'a
@@ -172,15 +174,3 @@ val print_index : int array -> unit
 val _check_transpose_axis : int array -> int -> unit
 
 val _check_slice_axis : int option array -> int array -> unit
-
-val _add : ('a, 'b) kind -> 'a -> 'a -> 'a
-
-val _sub : ('a, 'b) kind -> 'a -> 'a -> 'a
-
-val _mul : ('a, 'b) kind -> 'a -> 'a -> 'a
-
-val _div : ('a, 'b) kind -> 'a -> 'a -> 'a
-
-val _abs : ('a, 'b) kind -> 'a -> 'a
-
-val _neg : ('a, 'b) kind -> 'a -> 'a
