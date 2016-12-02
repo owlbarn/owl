@@ -420,6 +420,18 @@ let _neg : type a b. (a, b) kind -> (a -> a) = function
   | Complex64 -> Complex.neg
   | _         -> failwith "_neg: unsupported operation"
 
+
+type ('a, 'b) vec = ('a, 'b, fortran_layout) Array1.t
+type ('a, 'b) vec_unop = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
+type ('a, 'b) vec_binop = (('a, 'b) vec) Lacaml.Common.Types.Vec.binop
+
+let _add_scalar : type a b. (a, b) kind -> (a -> (a, b) vec_unop) = function
+  | Float32   -> Lacaml.S.Vec.add_const
+  | Float64   -> Lacaml.D.Vec.add_const
+  | Complex32 -> Lacaml.C.Vec.add_const
+  | Complex64 -> Lacaml.Z.Vec.add_const
+  | _         -> failwith "_add_scalar: unsupported operation"
+
 let _check_paired_operands x y =
   if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
   if (shape x) <> (shape y) then failwith "_check_paired_operands: shape mismatch"
@@ -448,6 +460,15 @@ let div x y = _paired_arithmetic_op (_div) x y
 let abs x = map (_abs (kind x)) x
 
 let neg x = map (_neg (kind x)) x
+
+let add_scalar x a =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  let z = (_add_scalar (kind x)) a y in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
 
 let sum x =
   let z = _zero (kind x) in
