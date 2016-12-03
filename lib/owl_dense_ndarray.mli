@@ -122,7 +122,7 @@ val neg : ('a, 'b) t -> ('a, 'b) t
 
 val sum : ('a, 'b) t -> 'a
 
-val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
+(* val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t *)
 
 val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 

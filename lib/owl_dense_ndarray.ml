@@ -161,24 +161,6 @@ let iter2i f x y =
 
 let iter2 f x y = iter2i (fun _ a b -> f a b) x y
 
-let mapi ?axis f x =
-  let y = clone x in
-  iteri ?axis (fun i z -> set y i (f i z)) y; y
-
-let _map_all_axis f x =
-  let y = clone x in
-  let n = numel y in
-  let z = reshape_1 y n in
-  for i = 0 to n - 1 do
-    Array1.set z i (f (Array1.get z i));
-  done;
-  y
-
-let map ?axis f x =
-  match axis with
-  | Some a -> mapi ?axis (fun _ y -> f y) x
-  | None   -> _map_all_axis f x
-
 let filteri ?axis f x =
   let a = ref [||] in
   iteri ?axis (fun i y ->
@@ -295,32 +277,6 @@ let _check_transpose_axis axis d =
     if Hashtbl.mem h x = true then failwith info;
     Hashtbl.add h x 0
   ) axis
-
-let transpose ?axis x =
-  let d = num_dims x in
-  let a = match axis with
-    | Some a -> a
-    | None -> Array.init d (fun i -> d - i - 1)
-  in
-  (* check if axis is a correct permutation *)
-  _check_transpose_axis a d;
-  let s0 = shape x in
-  let s1 = Array.map (fun j -> s0.(j)) a in
-  let i' = Array.make d 0 in
-  let y = empty (kind x) s1 in
-  iteri (fun i z ->
-    Array.iteri (fun k j -> i'.(k) <- i.(j)) a;
-    set y i' z
-  ) x;
-  y
-
-let swap a0 a1 x =
-  let d = num_dims x in
-  let a = Array.init d (fun i -> i) in
-  let t = a.(a0) in
-  a.(a0) <- a.(a1);
-  a.(a1) <- t;
-  transpose ~axis:a x
 
 (* TODO *)
 
@@ -452,6 +408,7 @@ type ('a, 'b) vec = ('a, 'b, fortran_layout) Array1.t
 type ('a, 'b) vec_unop0 = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
 type ('a, 'b) vec_unop1 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> 'a
 type ('a, 'b) vec_binop = (('a, 'b) vec) Lacaml.Common.Types.Vec.binop
+type ('a, 'b) vec_mapop = ('a -> 'a) -> ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> ('a, 'b) vec
 
 let _add_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( +. )
@@ -551,21 +508,12 @@ let _add_scalar : type a b. (a, b) kind -> (a -> (a, b) vec_unop0) = function
   | Complex64 -> Lacaml.Z.Vec.add_const
   | _         -> failwith "_add_scalar: unsupported operation"
 
-let max' ?axis x =
-  let i = ref (Array.make (num_dims x) 0) in
-  let z = ref (get x !i) in
-  iteri ?axis (fun j y ->
-    if y > !z then (z := y; i := j)
-  ) x;
-  !z, !i
-
-let min' ?axis x =
-  let i = ref (Array.make (num_dims x) 0) in
-  let z = ref (get x !i) in
-  iteri ?axis (fun j y ->
-    if y < !z then (z := y; i := j)
-  ) x;
-  !z, !i
+let _map_op : type a b. (a, b) kind -> (a, b) vec_mapop = function
+  | Float32   -> Lacaml.S.Vec.map
+  | Float64   -> Lacaml.D.Vec.map
+  | Complex32 -> Lacaml.C.Vec.map
+  | Complex64 -> Lacaml.Z.Vec.map
+  | _         -> failwith "_map_op: unsupported operation"
 
 let minmax ?axis x =
   let min_i = ref (Array.make (num_dims x) 0) in
@@ -690,7 +638,9 @@ let sum x =
   let y = Bigarray.reshape_1 y (numel x) in
   (_sum (kind x)) y
 
-let conj x = map Complex.conj x
+(* TODO *)
+(* let conj x = map Complex.conj x *)
+
 
 (* TODO *)
 
@@ -711,6 +661,59 @@ let tensordot x = None
 let prod x = None
 
 let cumsum axis x = None
+
+let mapi ?axis f x =
+  let y = clone x in
+  iteri ?axis (fun i z -> set y i (f i z)) y; y
+
+let _map_all_axis' f x =
+  let y = clone x in
+  let n = numel y in
+  let z = reshape_1 y n in
+  for i = 0 to n - 1 do
+    Array1.set z i (f (Array1.get z i));
+  done;
+  y
+
+let _map_all_axis f x =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  let z = (_map_op (kind x)) f y in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let map ?axis f x =
+  match axis with
+  | Some a -> mapi ?axis (fun _ y -> f y) x
+  | None   -> _map_all_axis f x
+
+let transpose ?axis x =
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None -> Array.init d (fun i -> d - i - 1)
+  in
+  (* check if axis is a correct permutation *)
+  _check_transpose_axis a d;
+  let s0 = shape x in
+  let s1 = Array.map (fun j -> s0.(j)) a in
+  let i' = Array.make d 0 in
+  let y = empty (kind x) s1 in
+  iteri (fun i z ->
+    Array.iteri (fun k j -> i'.(k) <- i.(j)) a;
+    set y i' z
+  ) x;
+  y
+
+let swap a0 a1 x =
+  let d = num_dims x in
+  let a = Array.init d (fun i -> i) in
+  let t = a.(a0) in
+  a.(a0) <- a.(a1);
+  a.(a1) <- t;
+  transpose ~axis:a x
 
 
 
