@@ -219,7 +219,7 @@ let _check_paired_operands x y =
   if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
   if (shape x) <> (shape y) then failwith "_check_paired_operands: shape mismatch"
 
-(* TODO: although generate clean code, but seems causing significnat performance degradation *)
+(* TODO: although generate clean code, but seems causing performance degradation *)
 let _paired_arithmetic_op (op : ('a, 'b) kind -> ('a, 'b) vec_binop) x y =
   _check_paired_operands x y;
   let x' = Genarray.change_layout x fortran_layout in
@@ -387,11 +387,9 @@ let iteri ?axis f x =
   | None   -> _iteri_fix_axis (Array.make (num_dims x) None) f x
 
 let _iter_all_axis f x =
-  let n = numel x in
-  let y = reshape_1 x n in
-  for i = 0 to n - 1 do
-    f (Array1.get y i);
-  done
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  (_iter_op (kind x)) f y
 
 let iter ?axis f x =
   match axis with
@@ -420,15 +418,6 @@ let iter2 f x y = iter2i (fun _ a b -> f a b) x y
 let mapi ?axis f x =
   let y = clone x in
   iteri ?axis (fun i z -> set y i (f i z)) y; y
-
-let _map_all_axis' f x =
-  let y = clone x in
-  let n = numel y in
-  let z = reshape_1 y n in
-  for i = 0 to n - 1 do
-    Array1.set z i (f (Array1.get z i));
-  done;
-  y
 
 let _map_all_axis f x =
   let y = Genarray.change_layout x fortran_layout in
