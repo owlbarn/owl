@@ -91,7 +91,8 @@ type ('a, 'b) vec_unop0 = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
 type ('a, 'b) vec_unop1 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> 'a
 type ('a, 'b) vec_binop = (('a, 'b) vec) Lacaml.Common.Types.Vec.binop
 type ('a, 'b) vec_mapop = ('a -> 'a) -> ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> ('a, 'b) vec
-type ('a, 'b) vec_itrop = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
+type ('a, 'b) vec_iter0 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
+type ('a, 'b) vec_iter1 = (int -> 'a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
 
 let _add_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( +. )
@@ -198,12 +199,19 @@ let _map_op : type a b. (a, b) kind -> (a, b) vec_mapop = function
   | Complex64 -> Lacaml.Z.Vec.map
   | _         -> failwith "_map_op: unsupported operation"
 
-let _iter_op : type a b. (a, b) kind -> (a, b) vec_itrop = function
+let _iter_op : type a b. (a, b) kind -> (a, b) vec_iter0 = function
   | Float32   -> Lacaml.S.Vec.iter
   | Float64   -> Lacaml.D.Vec.iter
   | Complex32 -> Lacaml.C.Vec.iter
   | Complex64 -> Lacaml.Z.Vec.iter
   | _         -> failwith "_iter_op: unsupported operation"
+
+let _iteri_op : type a b. (a, b) kind -> (a, b) vec_iter1 = function
+  | Float32   -> Lacaml.S.Vec.iteri
+  | Float64   -> Lacaml.D.Vec.iteri
+  | Complex32 -> Lacaml.C.Vec.iteri
+  | Complex64 -> Lacaml.Z.Vec.iteri
+  | _         -> failwith "_iteri_op: unsupported operation"
 
 let min x =
   let y = Genarray.change_layout x fortran_layout in
@@ -318,9 +326,6 @@ let sum x =
   (_sum (kind x)) y
 
 (* TODO *)
-(* let conj x = map Complex.conj x *)
-
-(* TODO *)
 
 let inv x = None
 
@@ -396,6 +401,7 @@ let iter ?axis f x =
   | Some a -> _iteri_fix_axis a (fun _ y -> f y) x
   | None   -> _iter_all_axis f x
 
+(* TODO: optimise *)
 let iter2i f x y =
   let s = shape x in
   let d = num_dims x in
@@ -687,8 +693,7 @@ let _calc_stride s =
   done;
   r
 
-
-(* many math operations. code might be verbose for performance concern. *)
+(* math operations. code might be verbose for performance concern. *)
 
 let re x =
   let y = empty Float64 (shape x) in
@@ -710,6 +715,10 @@ let minmax ?axis x =
     if y > !max_v then (max_v := y; max_i := Array.copy j);
   ) x;
   !min_v, !min_i, !max_v, !max_i
+
+(* TODO *)
+(*let conj x = map Complex.conj x *)
+
 
 
 (* ends here *)
