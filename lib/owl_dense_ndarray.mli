@@ -140,30 +140,90 @@ val print : ('a, 'b) t -> unit
 
 (** {6 Unary mathematical operations } *)
 
-val abs : ('a, 'b) t -> ('a, 'b) t
-
-val neg : ('a, 'b) t -> ('a, 'b) t
-
-val sum : ('a, 'b) t -> 'a
-
-val sin : ('a, 'b) t -> ('a, 'b) t
-
-val cos : ('a, 'b) t -> ('a, 'b) t
-
-
-(** {6 Binary mathematical operations } *)
-
 val re : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
 
 val im : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
 
-(*val max : ?axis:int option array -> ('a, 'b) t -> 'a * (int array*)
+val sum : ('a, 'b) t -> 'a
 
 val min : ('a, 'b) t -> 'a
 
 val max : ('a, 'b) t -> 'a
 
 val minmax : ('a, 'b) t -> ('a * (int array) * 'a * (int array))
+
+val abs : ('a, 'b) t -> ('a, 'b) t
+
+val neg : ('a, 'b) t -> ('a, 'b) t
+
+val signum : ('a, 'b) t -> ('a, 'b) t
+
+val sqr : ('a, 'b) t -> ('a, 'b) t
+
+val sqrt : ('a, 'b) t -> ('a, 'b) t
+
+val cbrt : ('a, 'b) t -> ('a, 'b) t
+
+val exp : ('a, 'b) t -> ('a, 'b) t
+
+val exp2 : ('a, 'b) t -> ('a, 'b) t
+
+val expm1 : ('a, 'b) t -> ('a, 'b) t
+
+val log : ('a, 'b) t -> ('a, 'b) t
+
+val log10 : ('a, 'b) t -> ('a, 'b) t
+
+val log2 : ('a, 'b) t -> ('a, 'b) t
+
+val log1p : ('a, 'b) t -> ('a, 'b) t
+
+val sin : ('a, 'b) t -> ('a, 'b) t
+
+val cos : ('a, 'b) t -> ('a, 'b) t
+
+val tan : ('a, 'b) t -> ('a, 'b) t
+
+val asin : ('a, 'b) t -> ('a, 'b) t
+
+val acos : ('a, 'b) t -> ('a, 'b) t
+
+val atan : ('a, 'b) t -> ('a, 'b) t
+
+val sinh : ('a, 'b) t -> ('a, 'b) t
+
+val cosh : ('a, 'b) t -> ('a, 'b) t
+
+val tanh : ('a, 'b) t -> ('a, 'b) t
+
+val asinh : ('a, 'b) t -> ('a, 'b) t
+
+val acosh : ('a, 'b) t -> ('a, 'b) t
+
+val atanh : ('a, 'b) t -> ('a, 'b) t
+
+val floor : ('a, 'b) t -> ('a, 'b) t
+
+val ceil : ('a, 'b) t -> ('a, 'b) t
+
+val round : ('a, 'b) t -> ('a, 'b) t
+
+val trunc : ('a, 'b) t -> ('a, 'b) t
+
+val erf : ('a, 'b) t -> ('a, 'b) t
+
+val erfc : ('a, 'b) t -> ('a, 'b) t
+
+val logistic : ('a, 'b) t -> ('a, 'b) t
+
+val relu : ('a, 'b) t -> ('a, 'b) t
+
+val softplus : ('a, 'b) t -> ('a, 'b) t
+
+val softsign : ('a, 'b) t -> ('a, 'b) t
+
+
+(** {6 Binary mathematical operations } *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
