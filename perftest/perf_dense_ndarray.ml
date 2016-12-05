@@ -38,6 +38,7 @@ let _ =
   test_op "add x y           " c (fun () -> M.add x y);
   test_op "mul x y           " c (fun () -> M.mul x y);
   test_op "add_scalar        " c (fun () -> M.add_scalar x 0.5);
+  test_op "mul_scalar        " c (fun () -> M.mul_scalar x 10.);
   test_op "is_zero           " c (fun () -> M.is_zero x);
   test_op "equal_or_smaller  " c (fun () -> M.equal_or_smaller x y);
   test_op "transpose         " c (fun () -> M.transpose x);

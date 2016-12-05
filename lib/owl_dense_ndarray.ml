@@ -93,6 +93,10 @@ type ('a, 'b) vec_binop = (('a, 'b) vec) Lacaml.Common.Types.Vec.binop
 type ('a, 'b) vec_mapop = ('a -> 'a) -> ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> ('a, 'b) vec
 type ('a, 'b) vec_iter0 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
 type ('a, 'b) vec_iter1 = (int -> 'a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
+type ('a, 'b) vec_maop0 = ?n:int -> 'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
+
+type ('a, 'b) mat = ('a, 'b, fortran_layout) Array2.t
+type ('a, 'b) mat_mop0 = ?m:int -> ?n:int -> 'a -> ?ar:int -> ?ac:int -> ('a, 'b) mat -> unit
 
 let _add_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( +. )
@@ -213,6 +217,23 @@ let _iteri_op : type a b. (a, b) kind -> (a, b) vec_iter1 = function
   | Complex64 -> Lacaml.Z.Vec.iteri
   | _         -> failwith "_iteri_op: unsupported operation"
 
+let _mul_scalar : type a b. (a, b) kind -> (a, b) vec_maop0 = function
+  | Float32   -> Lacaml.S.scal
+  | Float64   -> Lacaml.D.scal
+  | Complex32 -> Lacaml.C.scal
+  | Complex64 -> Lacaml.Z.scal
+  | _         -> failwith "_mul_scalar: unsupported operation"
+
+let _sin : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.sin
+  | Float64   -> Lacaml.D.Vec.sin
+  | _         -> failwith "_sin: unsupported operation"
+
+let _cos : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.cos
+  | Float64   -> Lacaml.D.Vec.cos
+  | _         -> failwith "_cos: unsupported operation"
+
 let min x =
   let y = Genarray.change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in
@@ -318,12 +339,43 @@ let sub_scalar x a =
   let b = (_sub_elt k) (_zero k) (_one k) in
   add_scalar x ((_mul_elt k) a b)
 
-let mul_scalar x a = None
+let mul_scalar x a =
+  let y = clone x in
+  let y = Genarray.change_layout y fortran_layout in
+  let z = Bigarray.reshape_1 y (numel x) in
+  let _ = (_mul_scalar (kind x)) a z in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let div_scalar x a =
+  let k = kind x in
+  let b = (_div_elt k) (_one k) a in
+  mul_scalar x b
 
 let sum x =
   let y = Genarray.change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in
   (_sum (kind x)) y
+
+let sin x =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  let z = (_sin (kind x)) y in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let cos x =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  let z = (_cos (kind x)) y in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
 
 (* TODO *)
 
@@ -740,10 +792,7 @@ let minmax x =
 let perf x y =
   let x' = Genarray.change_layout x fortran_layout in
   let x' = Bigarray.reshape_1 x' (numel x) in
-  let s = _calc_stride (shape x) in
-  let i = Array.copy s in
-  (_iteri_op (kind x)) (fun j y -> ()
-  ) x';
+  let y' = Lacaml.D.copy x' in
   ()
 
 

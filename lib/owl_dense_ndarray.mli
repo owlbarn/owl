@@ -98,41 +98,6 @@ val iter2i : (int array -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 val iter2 : ('a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 
 
-(** {6 Basic mathematical operations } *)
-
-val re : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
-
-val im : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
-
-(*val max : ?axis:int option array -> ('a, 'b) t -> 'a * (int array*)
-
-val min : ('a, 'b) t -> 'a
-
-val max : ('a, 'b) t -> 'a
-
-val minmax : ('a, 'b) t -> ('a * (int array) * 'a * (int array))
-
-val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-
-val sub : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-
-val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-
-val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-
-val abs : ('a, 'b) t -> ('a, 'b) t
-
-val neg : ('a, 'b) t -> ('a, 'b) t
-
-val sum : ('a, 'b) t -> 'a
-
-(* val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t *)
-
-val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-
-val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-
-
 (** {6 Examine array elements or compare two arrays } *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
@@ -173,6 +138,52 @@ val load : string -> ('a, 'b) t
 val print : ('a, 'b) t -> unit
 
 
+(** {6 Unary mathematical operations } *)
+
+val abs : ('a, 'b) t -> ('a, 'b) t
+
+val neg : ('a, 'b) t -> ('a, 'b) t
+
+val sum : ('a, 'b) t -> 'a
+
+val sin : ('a, 'b) t -> ('a, 'b) t
+
+val cos : ('a, 'b) t -> ('a, 'b) t
+
+
+(** {6 Binary mathematical operations } *)
+
+val re : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
+
+val im : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
+
+(*val max : ?axis:int option array -> ('a, 'b) t -> 'a * (int array*)
+
+val min : ('a, 'b) t -> 'a
+
+val max : ('a, 'b) t -> 'a
+
+val minmax : ('a, 'b) t -> ('a * (int array) * 'a * (int array))
+
+val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val sub : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+(* val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t *)
+
+val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
+val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
+val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
+val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
+
 (** {6 Some helper functions } *)
 
 val print_element : ('a, 'b) kind -> 'a -> unit
@@ -183,4 +194,4 @@ val _check_transpose_axis : int array -> int -> unit
 
 val _check_slice_axis : int option array -> int array -> unit
 
-val perf : ('a, 'b) t -> ('a, 'b) t -> unit
+val perf : (float, Bigarray.float64_elt) t -> (float, Bigarray.float64_elt) t -> unit
