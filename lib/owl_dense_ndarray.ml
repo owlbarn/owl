@@ -329,6 +329,66 @@ let _asinh : type a b. (a, b) kind -> (a, b) vec_unop0 = function
   | Float64   -> Lacaml.D.Vec.asinh
   | _         -> failwith "_asinh: unsupported operation"
 
+let _acosh : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.acosh
+  | Float64   -> Lacaml.D.Vec.acosh
+  | _         -> failwith "_acosh: unsupported operation"
+
+let _atanh : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.atanh
+  | Float64   -> Lacaml.D.Vec.atanh
+  | _         -> failwith "_atanh: unsupported operation"
+
+let _floor : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.floor
+  | Float64   -> Lacaml.D.Vec.floor
+  | _         -> failwith "_floor: unsupported operation"
+
+let _ceil : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.ceil
+  | Float64   -> Lacaml.D.Vec.ceil
+  | _         -> failwith "_ceil: unsupported operation"
+
+let _round : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.round
+  | Float64   -> Lacaml.D.Vec.round
+  | _         -> failwith "_round: unsupported operation"
+
+let _trunc : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.trunc
+  | Float64   -> Lacaml.D.Vec.trunc
+  | _         -> failwith "_trunc: unsupported operation"
+
+let _erf : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.erf
+  | Float64   -> Lacaml.D.Vec.erf
+  | _         -> failwith "_erf: unsupported operation"
+
+let _erfc : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.erfc
+  | Float64   -> Lacaml.D.Vec.erfc
+  | _         -> failwith "_erfc: unsupported operation"
+
+let _logistic : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.logistic
+  | Float64   -> Lacaml.D.Vec.logistic
+  | _         -> failwith "_logistic: unsupported operation"
+
+let _relu : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.relu
+  | Float64   -> Lacaml.D.Vec.relu
+  | _         -> failwith "_relu: unsupported operation"
+
+let _softplus : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.softplus
+  | Float64   -> Lacaml.D.Vec.softplus
+  | _         -> failwith "_softplus: unsupported operation"
+
+let _softsign : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.softsign
+  | Float64   -> Lacaml.D.Vec.softsign
+  | _         -> failwith "_softsign: unsupported operation"
+
 let min x =
   let y = Genarray.change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in
