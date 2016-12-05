@@ -514,6 +514,61 @@ let div x y =
   let z = Bigarray.reshape z (shape x) in
   z
 
+let pow x y =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  let z = (_pow (kind x)) x' y' in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let atan2 x y =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  let z = (_atan2 (kind x)) x' y' in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let hypot x y =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  let z = (_hypot (kind x)) x' y' in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let min2 x y =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  let z = (_min2 (kind x)) x' y' in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let max2 x y =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  let z = (_max2 (kind x)) x' y' in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
 let abs x =
   let y = Genarray.change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in
@@ -881,22 +936,6 @@ let cos x =
   let z = Bigarray.reshape z (shape x) in
   z
 
-(* TODO *)
-
-let inv x = None
-
-let mean x = None
-
-let std x = None
-
-let dot x = None
-
-let tensordot x = None
-
-let prod x = None
-
-let cumsum axis x = None
-
 (* advanced operations *)
 
 let create kind dimension a =
@@ -1128,26 +1167,6 @@ let copy_slice i src dst =
     set dst j a
   ) src
 
-(* TODO *)
-
-let insert_slice = None
-
-let remove_slice = None
-
-let mapi_slice = None
-
-let map_slice = None
-
-(* TODO *)
-
-let sort axis x = None
-
-let diag x = None
-
-let trace x = None
-
-let repeat x = None
-
 (* some comparison functions *)
 
 let _compare_element_to_zero f x =
@@ -1285,14 +1304,43 @@ let minmax x =
   _index_1d2nd (!max_i - 1) j s;
   !min_v, i, !max_v, j
 
+let conj x = map Complex.conj x
 
 (* TODO *)
-(*let conj x = map Complex.conj x *)
 
-let perf x y =
-  ()
+let insert_slice = None
 
+let remove_slice = None
 
+let mapi_slice = None
+
+let map_slice = None
+
+(* TODO *)
+
+let sort axis x = None
+
+let diag x = None
+
+let trace x = None
+
+let repeat x = None
+
+(* TODO *)
+
+let inv x = None
+
+let mean x = None
+
+let std x = None
+
+let dot x = None
+
+let tensordot x = None
+
+let prod x = None
+
+let cumsum axis x = None
 
 
 (* ends here *)

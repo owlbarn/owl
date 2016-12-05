@@ -22,6 +22,7 @@ let _ =
   print_endline (Bytes.make 60 '-');
   let x = M.create Bigarray.Float64 [|m;n;o|] 1. in
   let y = M.create Bigarray.Float64 [|m;n;o|] 2. in
+  let z = M.ones Bigarray.Complex64 [|m;n;o|] in
   test_op "empty             " c (fun () -> M.empty Bigarray.Float32 [|m;n;o|]);
   test_op "create            " c (fun () -> M.create Bigarray.Float32 [|m;n;o|] 1.);
   test_op "slice_left        " c (fun () -> M.slice_left x [|0|]);
@@ -39,6 +40,7 @@ let _ =
   test_op "mul x y           " c (fun () -> M.mul x y);
   test_op "add_scalar        " c (fun () -> M.add_scalar x 0.5);
   test_op "mul_scalar        " c (fun () -> M.mul_scalar x 10.);
+  test_op "max2              " c (fun () -> M.max2 x y);
   test_op "is_zero           " c (fun () -> M.is_zero x);
   test_op "equal_or_smaller  " c (fun () -> M.equal_or_smaller x y);
   test_op "transpose         " c (fun () -> M.transpose x);
@@ -55,5 +57,5 @@ let _ =
   test_op "iteri_slice 0     " c (fun () -> M.iteri_slice [|0|] (fun i s -> ()) x);
   test_op "iter2i            " c (fun () -> M.iter2i (fun i a b -> ()) x y);
   test_op "iter2             " c (fun () -> M.iter2 (fun a b -> ()) x y);
-  test_op "perf              " c (fun () -> M.perf x y);
+  test_op "conj              " c (fun () -> M.conj z);
   print_endline (Bytes.make 60 '+');

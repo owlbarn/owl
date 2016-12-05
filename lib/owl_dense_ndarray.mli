@@ -222,6 +222,8 @@ val softplus : ('a, 'b) t -> ('a, 'b) t
 
 val softsign : ('a, 'b) t -> ('a, 'b) t
 
+val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
+
 
 (** {6 Binary mathematical operations } *)
 
@@ -233,8 +235,6 @@ val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-(* val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t *)
-
 val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
 val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
@@ -242,6 +242,16 @@ val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
 val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
+val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val atan2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val hypot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val min2: ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val max2: ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 
 (** {6 Some helper functions } *)
@@ -253,5 +263,3 @@ val print_index : int array -> unit
 val _check_transpose_axis : int array -> int -> unit
 
 val _check_slice_axis : int option array -> int array -> unit
-
-val perf : (float, Bigarray.float64_elt) t -> (float, Bigarray.float64_elt) t -> unit
