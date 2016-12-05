@@ -401,7 +401,6 @@ let iter ?axis f x =
   | Some a -> _iteri_fix_axis a (fun _ y -> f y) x
   | None   -> _iter_all_axis f x
 
-(* TODO: optimise *)
 let iter2i f x y =
   let s = shape x in
   let d = num_dims x in
@@ -743,8 +742,7 @@ let perf x y =
   let x' = Bigarray.reshape_1 x' (numel x) in
   let s = _calc_stride (shape x) in
   let i = Array.copy s in
-  (_iteri_op (kind x)) (fun j y ->
-    _index_1d2nd (j - 1) i s
+  (_iteri_op (kind x)) (fun j y -> ()
   ) x';
   ()
 

@@ -93,6 +93,8 @@ val iteri_slice : int array -> (int option array -> ('a, 'b) t -> unit) -> ('a, 
 
 val iter_slice : int array -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 
+val iter2i : (int array -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
+
 val iter2 : ('a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 
 
