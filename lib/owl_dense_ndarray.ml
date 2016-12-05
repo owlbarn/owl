@@ -698,6 +698,12 @@ let _calc_stride s =
   done;
   r
 
+let _index_1d2nd i j s =
+  j.(0) <- i / s.(0);
+  for k = 1 to Array.length s - 1 do
+    j.(k) <- (i mod s.(k - 1)) / s.(k);
+  done
+
 (* math operations. code might be verbose for performance concern. *)
 
 let re x =
@@ -710,19 +716,35 @@ let im x =
   iteri (fun i c -> set y i Complex.(c.im) ) x;
   y
 
-let minmax ?axis x =
-  let min_i = ref (Array.make (num_dims x) 0) in
-  let min_v = ref (get x !min_i) in
-  let max_i = ref (Array.make (num_dims x) 0) in
-  let max_v = ref (get x !max_i) in
-  iteri ?axis (fun j y ->
-    if y < !min_v then (min_v := y; min_i := Array.copy j);
-    if y > !max_v then (max_v := y; max_i := Array.copy j);
-  ) x;
-  !min_v, !min_i, !max_v, !max_i
+let minmax x =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let min_i = ref 1 in
+  let min_v = ref (x'.{!min_i}) in
+  let max_i = ref 1 in
+  let max_v = ref (x'.{!max_i}) in
+  (_iteri_op (kind x)) (fun j y ->
+    if y < !min_v then (min_v := y; min_i := j);
+    if y > !max_v then (max_v := y; max_i := j);
+  ) x';
+  let s = _calc_stride (shape x) in
+  let i = Array.copy s in
+  let j = Array.copy s in
+  _index_1d2nd (!min_i - 1) i s;
+  _index_1d2nd (!max_i - 1) j s;
+  !min_v, i, !max_v, j
+
 
 (* TODO *)
 (*let conj x = map Complex.conj x *)
+
+let perf x y =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  ()
+
 
 
 

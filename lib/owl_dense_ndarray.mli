@@ -93,6 +93,8 @@ val iteri_slice : int array -> (int option array -> ('a, 'b) t -> unit) -> ('a, 
 
 val iter_slice : int array -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 
+val iter2 : ('a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
+
 
 (** {6 Basic mathematical operations } *)
 
@@ -106,7 +108,7 @@ val min : ('a, 'b) t -> 'a
 
 val max : ('a, 'b) t -> 'a
 
-val minmax : ?axis:int option array -> ('a, 'b) t -> ('a * (int array) * 'a * (int array))
+val minmax : ('a, 'b) t -> ('a * (int array) * 'a * (int array))
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
@@ -178,3 +180,5 @@ val print_index : int array -> unit
 val _check_transpose_axis : int array -> int -> unit
 
 val _check_slice_axis : int option array -> int array -> unit
+
+val perf : ('a, 'b) t -> ('a, 'b) t -> unit
