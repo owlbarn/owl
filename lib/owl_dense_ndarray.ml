@@ -224,6 +224,61 @@ let _mul_scalar : type a b. (a, b) kind -> (a, b) vec_maop0 = function
   | Complex64 -> Lacaml.Z.scal
   | _         -> failwith "_mul_scalar: unsupported operation"
 
+let _signum : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.signum
+  | Float64   -> Lacaml.D.Vec.signum
+  | _         -> failwith "_signum: unsupported operation"
+
+let _sqr : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.sqr
+  | Float64   -> Lacaml.D.Vec.sqr
+  | _         -> failwith "_sqr: unsupported operation"
+
+let _sqrt : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.sqrt
+  | Float64   -> Lacaml.D.Vec.sqrt
+  | _         -> failwith "_sqrt: unsupported operation"
+
+let _cbrt : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.cbrt
+  | Float64   -> Lacaml.D.Vec.cbrt
+  | _         -> failwith "_cbrt: unsupported operation"
+
+let _exp : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.exp
+  | Float64   -> Lacaml.D.Vec.exp
+  | _         -> failwith "_exp: unsupported operation"
+
+let _exp2 : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.exp2
+  | Float64   -> Lacaml.D.Vec.exp2
+  | _         -> failwith "_exp2: unsupported operation"
+
+let _expm1 : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.expm1
+  | Float64   -> Lacaml.D.Vec.expm1
+  | _         -> failwith "_expm1: unsupported operation"
+
+let _log : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.log
+  | Float64   -> Lacaml.D.Vec.log
+  | _         -> failwith "_log: unsupported operation"
+
+let _log10 : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.log10
+  | Float64   -> Lacaml.D.Vec.log10
+  | _         -> failwith "_log10: unsupported operation"
+
+let _log2 : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.log2
+  | Float64   -> Lacaml.D.Vec.log2
+  | _         -> failwith "_log2: unsupported operation"
+
+let _log1p : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.log1p
+  | Float64   -> Lacaml.D.Vec.log1p
+  | _         -> failwith "_log1p: unsupported operation"
+
 let _sin : type a b. (a, b) kind -> (a, b) vec_unop0 = function
   | Float32   -> Lacaml.S.Vec.sin
   | Float64   -> Lacaml.D.Vec.sin
@@ -233,6 +288,46 @@ let _cos : type a b. (a, b) kind -> (a, b) vec_unop0 = function
   | Float32   -> Lacaml.S.Vec.cos
   | Float64   -> Lacaml.D.Vec.cos
   | _         -> failwith "_cos: unsupported operation"
+
+let _tan : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.tan
+  | Float64   -> Lacaml.D.Vec.tan
+  | _         -> failwith "_tan: unsupported operation"
+
+let _asin : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.asin
+  | Float64   -> Lacaml.D.Vec.asin
+  | _         -> failwith "_asin: unsupported operation"
+
+let _acos : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.acos
+  | Float64   -> Lacaml.D.Vec.acos
+  | _         -> failwith "_acos: unsupported operation"
+
+let _atan : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.atan
+  | Float64   -> Lacaml.D.Vec.atan
+  | _         -> failwith "_atan: unsupported operation"
+
+let _sinh : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.sinh
+  | Float64   -> Lacaml.D.Vec.sinh
+  | _         -> failwith "_sinh: unsupported operation"
+
+let _cosh : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.cosh
+  | Float64   -> Lacaml.D.Vec.cosh
+  | _         -> failwith "_cosh: unsupported operation"
+
+let _tanh : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.tanh
+  | Float64   -> Lacaml.D.Vec.tanh
+  | _         -> failwith "_tanh: unsupported operation"
+
+let _asinh : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.asinh
+  | Float64   -> Lacaml.D.Vec.asinh
+  | _         -> failwith "_asinh: unsupported operation"
 
 let min x =
   let y = Genarray.change_layout x fortran_layout in
@@ -790,9 +885,6 @@ let minmax x =
 (*let conj x = map Complex.conj x *)
 
 let perf x y =
-  let x' = Genarray.change_layout x fortran_layout in
-  let x' = Bigarray.reshape_1 x' (numel x) in
-  let y' = Lacaml.D.copy x' in
   ()
 
 
