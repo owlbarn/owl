@@ -741,8 +741,11 @@ let minmax x =
 let perf x y =
   let x' = Genarray.change_layout x fortran_layout in
   let x' = Bigarray.reshape_1 x' (numel x) in
-  let y' = Genarray.change_layout y fortran_layout in
-  let y' = Bigarray.reshape_1 y' (numel y) in
+  let s = _calc_stride (shape x) in
+  let i = Array.copy s in
+  (_iteri_op (kind x)) (fun j y ->
+    _index_1d2nd (j - 1) i s
+  ) x';
   ()
 
 
