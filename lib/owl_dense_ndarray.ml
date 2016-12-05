@@ -298,7 +298,7 @@ let abs x =
 let neg x =
   let y = Genarray.change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_abs (kind x)) y in
+  let z = (_neg (kind x)) y in
   let z = Bigarray.genarray_of_array1 z in
   let z = Genarray.change_layout z c_layout in
   let z = Bigarray.reshape z (shape x) in
@@ -419,7 +419,12 @@ let iter2i f x y =
     done
   done
 
-let iter2 f x y = iter2i (fun _ a b -> f a b) x y
+let iter2 f x y =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  _iteri_op (kind x) (fun i a -> f a y'.{i}) x'
 
 let mapi ?axis f x =
   let y = clone x in
