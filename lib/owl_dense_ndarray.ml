@@ -89,6 +89,8 @@ let clone x =
 type ('a, 'b) vec = ('a, 'b, fortran_layout) Array1.t
 type ('a, 'b) vec_unop0 = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
 type ('a, 'b) vec_unop1 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> 'a
+type ('a, 'b) vec_unop2 = ?stable:bool -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> float
+type ('a, 'b) vec_unop3 = ?n:int -> ?c:'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> 'a
 type ('a, 'b) vec_binop = (('a, 'b) vec) Lacaml.Common.Types.Vec.binop
 type ('a, 'b) vec_mapop = ('a -> 'a) -> ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> ('a, 'b) vec
 type ('a, 'b) vec_iter0 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
@@ -188,6 +190,20 @@ let _sum : type a b. (a, b) kind -> (a, b) vec_unop1 = function
   | Complex32 -> Lacaml.C.Vec.sum
   | Complex64 -> Lacaml.Z.Vec.sum
   | _         -> failwith "_abs: unsupported operation"
+
+let _sqr_nrm2 : type a b. (a, b) kind -> (a, b) vec_unop2 = function
+  | Float32   -> Lacaml.S.Vec.sqr_nrm2
+  | Float64   -> Lacaml.D.Vec.sqr_nrm2
+  | Complex32 -> Lacaml.C.Vec.sqr_nrm2
+  | Complex64 -> Lacaml.Z.Vec.sqr_nrm2
+  | _         -> failwith "_sqr_nrm2: unsupported operation"
+
+let _ssqr : type a b. (a, b) kind -> (a, b) vec_unop3 = function
+  | Float32   -> Lacaml.S.Vec.ssqr
+  | Float64   -> Lacaml.D.Vec.ssqr
+  | Complex32 -> Lacaml.C.Vec.ssqr
+  | Complex64 -> Lacaml.Z.Vec.ssqr
+  | _         -> failwith "_ssqr: unsupported operation"
 
 let _add_scalar : type a b. (a, b) kind -> (a -> (a, b) vec_unop0) = function
   | Float32   -> Lacaml.S.Vec.add_const
@@ -388,6 +404,42 @@ let _softsign : type a b. (a, b) kind -> (a, b) vec_unop0 = function
   | Float32   -> Lacaml.S.Vec.softsign
   | Float64   -> Lacaml.D.Vec.softsign
   | _         -> failwith "_softsign: unsupported operation"
+
+let _reci : type a b. (a, b) kind -> (a, b) vec_unop0 = function
+  | Float32   -> Lacaml.S.Vec.reci
+  | Float64   -> Lacaml.D.Vec.reci
+  | Complex32 -> Lacaml.C.Vec.reci
+  | Complex64 -> Lacaml.Z.Vec.reci
+  | _         -> failwith "_reci: unsupported operation"
+
+let _pow : type a b. (a, b) kind -> (a, b) vec_binop = function
+  | Float32   -> Lacaml.S.Vec.pow
+  | Float64   -> Lacaml.D.Vec.pow
+  | _         -> failwith "_pow: unsupported operation"
+
+let _atan2 : type a b. (a, b) kind -> (a, b) vec_binop = function
+  | Float32   -> Lacaml.S.Vec.atan2
+  | Float64   -> Lacaml.D.Vec.atan2
+  | _         -> failwith "_atan2: unsupported operation"
+
+let _hypot : type a b. (a, b) kind -> (a, b) vec_binop = function
+  | Float32   -> Lacaml.S.Vec.hypot
+  | Float64   -> Lacaml.D.Vec.hypot
+  | _         -> failwith "_hypot: unsupported operation"
+
+let _min2 : type a b. (a, b) kind -> (a, b) vec_binop = function
+  | Float32   -> Lacaml.S.Vec.min2
+  | Float64   -> Lacaml.D.Vec.min2
+  | _         -> failwith "_min2: unsupported operation"
+
+let _max2 : type a b. (a, b) kind -> (a, b) vec_binop = function
+  | Float32   -> Lacaml.S.Vec.max2
+  | Float64   -> Lacaml.D.Vec.max2
+  | _         -> failwith "_max2: unsupported operation"
+
+(* TODO:
+  zpxy, zmxy, ssqr_diff
+ *)
 
 let min x =
   let y = Genarray.change_layout x fortran_layout in
