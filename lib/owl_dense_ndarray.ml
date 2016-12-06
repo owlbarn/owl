@@ -1116,6 +1116,101 @@ let _check_slice_axis axis s =
   ) axis;
   if !has_none = false then failwith "_check_slice_axis: there should be at least one None"
 
+let _calc_stride s =
+  let d = Array.length s in
+  let r = Array.make d 1 in
+  for i = 1 to d - 1 do
+    r.(d - i - 1) <- s.(d - i) * r.(d - i)
+  done;
+  r
+
+(* c layout index translation: 1d -> nd *)
+let _index_1d_nd i j s =
+  j.(0) <- i / s.(0);
+  for k = 1 to Array.length s - 1 do
+    j.(k) <- (i mod s.(k - 1)) / s.(k);
+  done
+
+(* c layout index translation: nd -> 1d *)
+let _index_nd_1d j s =
+  let i = ref 0 in
+  Array.iteri (fun k a -> i := !i + (a * s.(k))) j;
+  !i
+
+(* calculate the continuous block size based on slice definition *)
+let _slice_continuous_blksz shp axis =
+  let stride = _calc_stride shp in
+  let l = ref (Array.length shp - 1) in
+  let ssz = ref 1 in
+  while !l >= 0 && axis.(!l) = None do
+    l := !l - 1
+  done;
+  if !l = (-1) then ssz := stride.(0) * shp.(0)
+  else ssz := stride.(!l);
+  !ssz
+
+let rec __foreach_continuous_blk d j i l h f =
+  if j = d then f i
+  else (
+    for k = l.(j) to h.(j) do
+      i.(j) <- k;
+      __foreach_continuous_blk d (j + 1) i l h f
+    done
+  )
+
+let _foreach_continuous_blk axis shp f =
+  let d = Array.length shp in
+  let i = Array.make d 0 in
+  let l = Array.make d 0 in
+  let h = shp in
+  Array.iteri (fun j a ->
+    match a with
+    | Some b -> (l.(j) <- b; h.(j) <- b)
+    | None   -> (h.(j) <- h.(j) - 1)
+  ) axis;
+  let k = ref (d - 1) in
+  while !k >= 0 && axis.(!k) = None do
+    l.(!k) <- 0;
+    h.(!k) <- 0;
+    k := !k - 1
+  done;
+  __foreach_continuous_blk d 0 i l h f
+
+let slice' axis x =
+  let s0 = shape x in
+  (* check axis is within boundary, has at least one None *)
+  _check_slice_axis axis s0;
+  let s1 = ref [||] in
+  Array.iteri (fun i a ->
+    match a with
+    | Some _ -> ()
+    | None   -> s1 := Array.append !s1 [|s0.(i)|]
+  ) axis;
+  let y = empty (kind x) !s1 in
+  (* transform into 1d array *)
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  (* prepare function of copying blocks *)
+  let b = _slice_continuous_blksz s0 axis in
+  let s = _calc_stride s0 in
+  let _cp_op = _copy (kind x) in
+  let ofsy_i = ref 0 in
+  let f = fun i -> (
+    let ofsx = (_index_nd_1d i s) + 1 in
+    let ofsy = (!ofsy_i * b) + 1 in
+    let _ = _cp_op ~n:b ~ofsy ~y:y' ~ofsx x' in
+    ofsy_i := !ofsy_i + 1
+  ) in
+  (* start copying blocks *)
+  _foreach_continuous_blk axis s0 f;
+  (* reshape the ndarray *)
+  let z = Bigarray.genarray_of_array1 y' in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z !s1 in
+  z
+
 let slice axis x =
   let s0 = shape x in
   (* check axis is within boundary, has at least one None *)
@@ -1269,33 +1364,6 @@ let load f =
   let _, x = Marshal.from_string s 0
   in x
 
-let _calc_stride s =
-  let d = Array.length s in
-  let r = Array.make d 1 in
-  for i = 1 to d - 1 do
-    r.(d - i - 1) <- s.(d - i) * r.(d - i)
-  done;
-  r
-
-let _index_1d2nd i j s =
-  j.(0) <- i / s.(0);
-  for k = 1 to Array.length s - 1 do
-    j.(k) <- (i mod s.(k - 1)) / s.(k);
-  done
-
-(* TODO *)
-(* calculate the slice range based on shape and slice definition *)
-let _slice_continuous_blksz s x =
-  let stride = _calc_stride s in
-  let l = ref (Array.length s - 1) in
-  let ssz = ref 1 in
-  while !l >= 0 && x.(!l) = None do
-    l := !l - 1
-  done;
-  if !l = (-1) then ssz := stride.(0) * s.(0)
-  else ssz := stride.(!l);
-  !ssz
-
 (* math operations. code might be verbose for performance concern. *)
 
 let re x =
@@ -1322,8 +1390,8 @@ let minmax x =
   let s = _calc_stride (shape x) in
   let i = Array.copy s in
   let j = Array.copy s in
-  _index_1d2nd (!min_i - 1) i s;
-  _index_1d2nd (!max_i - 1) j s;
+  _index_1d_nd (!min_i - 1) i s;
+  _index_1d_nd (!max_i - 1) j s;
   !min_v, i, !max_v, j
 
 let conj x = map Complex.conj x

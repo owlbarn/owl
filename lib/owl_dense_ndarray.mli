@@ -263,3 +263,5 @@ val print_index : int array -> unit
 val _check_transpose_axis : int array -> int -> unit
 
 val _check_slice_axis : int option array -> int array -> unit
+
+val slice' : int option array -> ('a, 'b) t -> ('a, 'b) t
