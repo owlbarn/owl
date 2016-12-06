@@ -61,61 +61,78 @@ val nth_dim : ('a, 'b) t -> int -> int
 (** [nth_dim x] returns the size of the nth dimension of [x]. *)
 
 val numel : ('a, 'b) t -> int
-(** [] *)
+(** [numel x] returns the number of elements in [x]. *)
 
 val nnz : ('a, 'b) t -> int
-(** [] *)
+(** [nnz x] returns the number of non-zero elements in [x]. *)
 
 val density : ('a, 'b) t -> float
-(** [] *)
+(** [density x] returns the percentage of non-zero elements in [x]. *)
 
 val kind : ('a, 'b) t -> ('a, 'b) kind
-(** [] *)
+(** [kind] returns the type of ndarray [x]. It is one of the four possible
+  values: [Bigarray.Float32], [Bigarray.Float64], [Bigarray.Complex32], and
+  [Bigarray.Complex64].
+ *)
 
 
 (** {6 Manipulate a N-dimensional array} *)
 
 val get : ('a, 'b) t -> int array -> 'a
-(** [] *)
+(** [get x i] returns the value at [i] in [x]. E.g., [get x [|0;2;1|]] returns
+  the value at [[|0;2;1|]] in [x].
+ *)
 
 val set : ('a, 'b) t -> int array -> 'a -> unit
-(** [] *)
+(** [set x i a] sets the value at [i] to [a] in [x]. *)
 
 val sub_left : ('a, 'b) t -> int -> int -> ('a, 'b) t
-(** [] *)
+(** Some as [Bigarray.sub_left], please refer to Bigarray documentation. *)
 
 val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
-(** [] *)
+(** Same as [Bigarray.slice_left], please refer to Bigarray documentation. *)
 
 val slice : int option array -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
+  which is an [int option array]. E.g., for a ndarray [x] of dimension
+  [[|2; 2; 3|]], [slice [|Some 0; None; None|] x] takes the following elements
+  of index [\(0,*,*\)], i.e., [[|0;0;0|]], [[|0;0;1|]], [[|0;0;2|]] ...
+
+  There are two differences between [slice_left] and [slice]: [slice_left] does
+  not make a copy but simply moving the pointer; [slice_left] can only make a
+  slice from left-most axis whereas [slice] is much more flexible and can work
+  on arbitrary axis which need not start from left-most side.
+ *)
 
 val copy_slice : int option array -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** [] *)
+(** [copy_slice s src dst] copies a slice defined by [s] from [src] to [dst]. *)
 
 val copy : ('a, 'b) t -> ('a, 'b) t -> unit
-(** [] *)
+(** [copy src dst] copies the data from ndarray [src] to [dst]. *)
 
 val fill : ('a, 'b) t -> 'a -> unit
-(** [] *)
+(** [fill x a] assigns the value [a] to the elements in [x]. *)
 
 val clone : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [clone x] makes a copy of [x]. *)
 
 val flatten : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [flatten x] makes a copy of [x] and transforms it into a one-dimsonal array. *)
 
 val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
-(** [] *)
+(** [reshape x d] makes a copy of [x], then transforms it into the shape definted by [d]. *)
 
 val same_shape : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [] *)
+(** [same_shape x y] checks whether [x] and [y] has the same shape or not. *)
 
 val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [transpose ~axis x] makes a copy of [x], then transpose it according to
+  [~axis]. [~axis] must be a valid permutation of [x] dimension indices. E.g.,
+  for a three-dimensional ndarray, it can be [2;1;0], [0;2;1], [1;2;0], and etc.
+ *)
 
 val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [swap i j x] makes a copy of [x], then swaps the data on axis [i] and [j]. *)
 
 (* TODO: mmap *)
 
