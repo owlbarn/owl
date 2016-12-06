@@ -342,6 +342,11 @@ We take 5000 samples from the defined distribution and plot them as a scatter pl
 The future plan is to embed a small PPL (Probabilistic Programming Language) in `Stats` module.
 
 
+## N-dimensional Array
+
+Owl has a very powerful module to manipulate N-dimensional arrays ...
+
+
 ## How To Contribute
 
 Owl is under active development, and I really look forward to your comments and contributions. Besides setting up a complete development environment on your native system, the easiest way to contribute is to use the [Owl Docker Image](https://hub.docker.com/r/ryanrhymes/owl/). Just pull the image and dig into code saved in `/root/owl`, then have fun!
