@@ -3,27 +3,56 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** N-dimensional array module *)
+(** N-dimensional array module
+  This module is built atop of Genarray module in OCaml Bigarray. The module also
+  heavily relies on Lacaml to call native BLAS/LAPACK to improve the performance.
+  The documentation of some math functions is copied directly from Lacaml.
+ *)
 
 type ('a, 'b) t
+(** N-dimensional array abstract type *)
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
+(** Type of the ndarray, e.g., Bigarray.Float32, Bigarray.Complex64, and etc. *)
 
 
 (** {6 Create N-dimensional array} *)
 
 val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
+(** [empty Bigarray.Float64 [|3;4;5|]] creates a three diemensional array of
+  type [Bigarray.Float64]. Each dimension has the following size: 3, 4, and 5.
+  The elements in the array are not initialised.
+
+  The module only support the following four types of ndarray: [Bigarray.Float32],
+  [Bigarray.Float64], [Bigarray.Complex32], and [Bigarray.Complex64].
+ *)
+
 
 val create : ('a, 'b) kind -> int array -> 'a -> ('a, 'b) t
+(** [create Bigarray.Float64 [|3;4;5|] 2.] creates a three diemensional array of
+  type [Bigarray.Float64]. Each dimension has the following size: 3, 4, and 5.
+  The elements in the array are initialised to [2.]
+ *)
 
 val zeros : ('a, 'b) kind -> int array -> ('a, 'b) t
+(** [zeros Bigarray.Complex32 [|3;4;5|]] creates a three diemensional array of
+  type [Bigarray.Complex32]. Each dimension has the following size: 3, 4, and 5.
+  The elements in the array are initialised to "zero". Depending on the [kind],
+  zero can be [0.] or [Complex.zero].
+ *)
 
 val ones : ('a, 'b) kind -> int array -> ('a, 'b) t
+(** [ones Bigarray.Complex32 [|3;4;5|]] creates a three diemensional array of
+  type [Bigarray.Complex32]. Each dimension has the following size: 3, 4, and 5.
+  The elements in the array are initialised to "one". Depending on the [kind],
+  one can be [1.] or [Complex.one].
+ *)
 
 
 (** {6 Obtain basic properties of an array} *)
 
 val shape : ('a, 'b) t -> int array
+(** [shape x] returns the shape of ndarray [x]. *)
 
 val num_dims : ('a, 'b) t -> int
 
