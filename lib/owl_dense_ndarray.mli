@@ -344,85 +344,137 @@ val expm1 : ('a, 'b) t -> ('a, 'b) t
  *)
 
 val log : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [log x] computes the logarithm of the elements in [x] and returns the
+  result in a new ndarray.
+ *)
 
 val log10 : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [log10 x] computes the base-10 logarithm of the elements in [x] and returns
+  the result in a new ndarray.
+ *)
 
 val log2 : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [log2 x] computes the base-2 logarithm of the elements in [x] and returns
+  the result in a new ndarray.
+ *)
 
 val log1p : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [log1p x] computes [log (1 + x)] of the elements in [x] and returns the
+  result in a new ndarray.
+ *)
 
 val sin : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [sin x] computes the sine of the elements in [x] and returns the result in
+  a new ndarray.
+ *)
 
 val cos : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [cos x] computes the cosine of the elements in [x] and returns the result in
+  a new ndarray.
+ *)
 
 val tan : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [tan x] computes the tangent of the elements in [x] and returns the result
+  in a new ndarray.
+ *)
 
 val asin : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [asin x] computes the arc sine of the elements in [x] and returns the result
+  in a new ndarray.
+ *)
 
 val acos : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [acos x] computes the arc cosine of the elements in [x] and returns the
+  result in a new ndarray.
+ *)
 
 val atan : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [atan x] computes the arc tangent of the elements in [x] and returns the
+  result in a new ndarray.
+ *)
 
 val sinh : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [sinh x] computes the hyperbolic sine of the elements in [x] and returns
+  the result in a new ndarray.
+ *)
 
 val cosh : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [cosh x] computes the hyperbolic cosine of the elements in [x] and returns
+  the result in a new ndarray.
+ *)
 
 val tanh : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [tanh x] computes the hyperbolic tangent of the elements in [x] and returns
+  the result in a new ndarray.
+ *)
 
 val asinh : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [asinh x] computes the hyperbolic arc sine of the elements in [x] and
+  returns the result in a new ndarray.
+ *)
 
 val acosh : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [acosh x] computes the hyperbolic arc cosine of the elements in [x] and
+  returns the result in a new ndarray.
+ *)
 
 val atanh : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [atanh x] computes the hyperbolic arc tangent of the elements in [x] and
+  returns the result in a new ndarray.
+ *)
 
 val floor : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [floor x] computes the floor of the elements in [x] and returns the result
+  in a new ndarray.
+ *)
 
 val ceil : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [ceil x] computes the ceiling of the elements in [x] and returns the result
+  in a new ndarray.
+ *)
 
 val round : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [round x] rounds the elements in [x] and returns the result in a new ndarray. *)
 
 val trunc : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [trunc x] computes the truncation of the elements in [x] and returns the
+  result in a new ndarray.
+ *)
 
 val erf : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [erf x] computes the error function of the elements in [x] and returns the
+  result in a new ndarray.
+ *)
 
 val erfc : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [erfc x] computes the complementary error function of the elements in [x]
+  and returns the result in a new ndarray.
+ *)
 
 val logistic : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [logistic x] computes the logistic function [1/(1 + exp(-a)] of the elements
+  in [x] and returns the result in a new ndarray.
+ *)
 
 val relu : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [relu x] computes the rectified linear unit function [max(x, 0)] of the
+  elements in [x] and returns the result in a new ndarray.
+ *)
 
 val softplus : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [softplus x] computes the softplus function [log(1 + exp(x)] of the elements
+  in [x] and returns the result in a new ndarray.
+ *)
 
 val softsign : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [softsign x] computes the softsign function [x / (1 + abs(x))] of the
+  elements in [x] and returns the result in a new ndarray.
+ *)
 
 val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
-(** [] *)
+(** [conj x] computes the conjugate of the elements in [x] and returns the
+  result in a new ndarray.
+ *)
 
 
 (** {6 Binary mathematical operations } *)
