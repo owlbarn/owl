@@ -139,17 +139,28 @@ val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
 
 (** {6 Iterate array elements} *)
 
-val iteri : ?axis:int option array -> (int array -> 'a -> unit) -> ('a, 'c) t -> unit
-(** [] *)
+val iteri : ?axis:int option array -> (int array -> 'a -> unit) -> ('a, 'b) t -> unit
+(** [iteri ~axis f x] applies function [f] to each element in a slice defined by
+  [~axis]. If [~axis] is not passed in, then [iteri] simply iterates all the
+  elements in [x].
+ *)
 
 val iter : ?axis:int option array -> ('a -> unit) -> ('a, 'b) t -> unit
-(** [] *)
+(** [iter ~axis f x] is similar to [iteri ~axis f x], excpet the index [i] of
+  an element is not passed in [f]. Note that [iter] is much faster than [iteri].
+ *)
 
 val mapi : ?axis:int option array -> (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [mapi ~axis f x] makes a copy of [x], then applies [f] to each element in a
+  slice defined by [~axis].  If [~axis] is not passed in, then [mapi] simply
+  iterates all the elements in [x].
+ *)
 
 val map : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [map ~axis f x] is similar to [mapi ~axis f x] except the index of the
+  current element is not passed to the function [f]. Note that [map] is much
+  faster than [mapi].
+ *)
 
 val filteri : ?axis:int option array -> (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
 (** [] *)
