@@ -515,7 +515,7 @@ val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
  *)
 
 val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** [div_scalar x a] divides a scalar value [a] to all the elements in [x], and 
+(** [div_scalar x a] divides a scalar value [a] to all the elements in [x], and
   returns the result in a new ndarray.
  *)
 
@@ -547,14 +547,19 @@ val max2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 (** {6 Some helper functions } *)
 
+(** The following functions are helper functions for some other functions in
+  both Ndarray and Ndview modules. In general, you are not supposed to use
+  these functions directly.
+ *)
+
 val print_element : ('a, 'b) kind -> 'a -> unit
-(** [] *)
+(** [print_element kind a] prints the value of a single element. *)
 
 val print_index : int array -> unit
-(** [] *)
+(** [print_index i] prints out the index of an element. *)
 
 val _check_transpose_axis : int array -> int -> unit
-(** [] *)
+(** [_check_transpose_axis a d] checks whether [a] is a legitimate transpose index. *)
 
 val _check_slice_axis : int option array -> int array -> unit
-(** [] *)
+(** [_check_slice_axis axis shape] checks whether [axis] is a legitimate slice definition. *)
