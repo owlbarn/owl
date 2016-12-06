@@ -480,43 +480,69 @@ val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (** {6 Binary mathematical operations } *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [add x y] adds all the elements in [x] and [y] elementwise, and returns the
+  result in a new ndarray.
+ *)
 
 val sub : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [sub x y] subtracts all the elements in [x] and [y] elementwise, and returns
+  the result in a new ndarray.
+ *)
 
 val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [mul x y] multiplies all the elements in [x] and [y] elementwise, and
+  returns the result in a new ndarray.
+ *)
 
 val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [div x y] divides all the elements in [x] and [y] elementwise, and returns
+  the result in a new ndarray.
+ *)
 
 val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** [] *)
+(** [add_scalar x a] adds a scalar value [a] to all the elements in [x], and
+  returns the result in a new ndarray.
+ *)
 
 val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** [] *)
+(** [sub_scalar x a] subtracts a scalar value [a] to all the elements in [x],
+  and returns the result in a new ndarray.
+ *)
 
 val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** [] *)
+(** [mul_scalar x a] multiplies a scalar value [a] to all the elements in [x],
+  and returns the result in a new ndarray.
+ *)
 
 val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** [] *)
+(** [div_scalar x a] divides a scalar value [a] to all the elements in [x], and 
+  returns the result in a new ndarray.
+ *)
 
 val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
+  elementwise, and returns the result in a new ndarray.
+ *)
 
 val atan2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]
+  elementwise, and returns the result in a new ndarray.
+ *)
 
 val hypot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [hypot x y] computes [sqrt(x*x + y*y)] of all the elements in [x] and [y]
+  elementwise, and returns the result in a new ndarray.
+ *)
 
-val min2: ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+val min2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [min2 x y] computes the minimum of all the elements in [x] and [y]
+  elementwise, and returns the result in a new ndarray.
+ *)
 
-val max2: ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+val max2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [max2 x y] computes the maximum of all the elements in [x] and [y]
+  elementwise, and returns the result in a new ndarray.
+ *)
 
 
 (** {6 Some helper functions } *)
