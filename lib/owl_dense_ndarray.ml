@@ -1176,7 +1176,7 @@ let _foreach_continuous_blk axis shp f =
   done;
   __foreach_continuous_blk d 0 i l h f
 
-let slice' axis x =
+let _slice_block axis x =
   let s0 = shape x in
   (* check axis is within boundary, has at least one None *)
   _check_slice_axis axis s0;
@@ -1211,7 +1211,7 @@ let slice' axis x =
   let z = Bigarray.reshape z !s1 in
   z
 
-let slice axis x =
+let _slice_1byte axis x =
   let s0 = shape x in
   (* check axis is within boundary, has at least one None *)
   _check_slice_axis axis s0;
@@ -1235,6 +1235,16 @@ let slice axis x =
     set y j a
   ) x;
   y
+
+let slice axis x =
+  let s = shape x in
+  (* check axis is within boundary, has at least one None *)
+  _check_slice_axis axis s;
+  (* if block size is > 99 bytes, then use block copying *)
+  let threshold = 99 in
+  match _slice_continuous_blksz s axis > threshold with
+  | true  -> _slice_block axis x
+  | false -> _slice_1byte axis x
 
 let rec _iteri_slice index axis f x =
   if Array.length axis = 0 then (
