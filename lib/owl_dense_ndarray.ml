@@ -96,6 +96,7 @@ type ('a, 'b) vec_mapop = ('a -> 'a) -> ?n:int -> ?ofsy:int -> ?incy:int -> ?y:(
 type ('a, 'b) vec_iter0 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
 type ('a, 'b) vec_iter1 = (int -> 'a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
 type ('a, 'b) vec_maop0 = ?n:int -> 'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
+type ('a, 'b) vec_copy0 = ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> ('a, 'b) vec
 
 type ('a, 'b) mat = ('a, 'b, fortran_layout) Array2.t
 type ('a, 'b) mat_mop0 = ?m:int -> ?n:int -> 'a -> ?ar:int -> ?ac:int -> ('a, 'b) mat -> unit
@@ -436,6 +437,14 @@ let _max2 : type a b. (a, b) kind -> (a, b) vec_binop = function
   | Float32   -> Lacaml.S.Vec.max2
   | Float64   -> Lacaml.D.Vec.max2
   | _         -> failwith "_max2: unsupported operation"
+
+let _copy : type a b. (a, b) kind -> (a, b) vec_copy0 = function
+  | Float32   -> Lacaml.S.copy
+  | Float64   -> Lacaml.D.copy
+  | Complex32 -> Lacaml.C.copy
+  | Complex64 -> Lacaml.Z.copy
+  | _         -> failwith "_copy: unsupported operation"
+
 
 (* TODO:
   zpxy, zmxy, ssqr_diff
@@ -1102,10 +1111,10 @@ let _check_slice_axis axis s =
   let has_none = ref false in
   Array.iteri (fun i a ->
     match a with
-    | Some a -> if a < 0 || a >= s.(i) then failwith "check_slice_axis: boundary error"
+    | Some a -> if a < 0 || a >= s.(i) then failwith "_check_slice_axis: boundary error"
     | None   -> has_none := true
   ) axis;
-  if !has_none = false then failwith "check_slice_axis: there should be at least one None"
+  if !has_none = false then failwith "_check_slice_axis: there should be at least one None"
 
 let slice axis x =
   let s0 = shape x in
@@ -1273,6 +1282,19 @@ let _index_1d2nd i j s =
   for k = 1 to Array.length s - 1 do
     j.(k) <- (i mod s.(k - 1)) / s.(k);
   done
+
+(* TODO *)
+(* calculate the slice range based on shape and slice definition *)
+let _slice_continuous_blksz s x =
+  let stride = _calc_stride s in
+  let l = ref (Array.length s - 1) in
+  let ssz = ref 1 in
+  while !l >= 0 && x.(!l) = None do
+    l := !l - 1
+  done;
+  if !l = (-1) then ssz := stride.(0) * s.(0)
+  else ssz := stride.(!l);
+  !ssz
 
 (* math operations. code might be verbose for performance concern. *)
 
