@@ -267,61 +267,81 @@ val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
 (** {6 Input and output functions } *)
 
 val save : ('a, 'b) t -> string -> unit
-(** [] *)
+(** [save x s] serialises a ndarray [x] to a file of name [s]. *)
 
 val load : string -> ('a, 'b) t
-(** [] *)
+(** [load s] loads previously serialised ndarray from file [s] into memory. *)
 
 val print : ('a, 'b) t -> unit
-(** [] *)
+(** [print x] prints all the elements in [x] as well as their indices. *)
 
 
 (** {6 Unary mathematical operations } *)
 
 val re : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
-(** [] *)
+(** If [x] is a ndarray of complex numbers, [re x] returns all the real
+  components in a new ndarray of the same shape as that of [x].
+ *)
 
 val im : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
-(** [] *)
+(** If [x] is a ndarray of complex numbers, [re x] returns all the imaginary
+  components in a new ndarray of the same shape as that of [x].
+ *)
 
 val sum : ('a, 'b) t -> 'a
-(** [] *)
+(** [sum x] returns the summation of all elements in [x]. *)
 
 val min : ('a, 'b) t -> 'a
-(** [] *)
+(** [min x] returns the minimum of all elements in [x]. *)
 
 val max : ('a, 'b) t -> 'a
-(** [] *)
+(** [max x] returns the maximum of all elements in [x]. *)
 
 val minmax : ('a, 'b) t -> ('a * (int array) * 'a * (int array))
-(** [] *)
+(** [minmax x] returns both the minimum and maximum elements in [x] along with
+  their corresponding indices.
+ *)
 
 val abs : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [abs x] returns the absolute value of all elements in [x] in a new ndarray. *)
 
 val neg : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [neg x] negates the elements in [x] and returns the result in a new ndarray. *)
 
 val signum : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [signum] computes the sign value ([-1] for negative numbers, [0] (or [-0])
+  for zero, [1] for positive numbers, [nan] for [nan]).
+ *)
 
 val sqr : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [sqr x] computes the square of the elements in [x] and returns the result in
+  a new ndarray.
+ *)
 
 val sqrt : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [sqrt x] computes the square root of the elements in [x] and returns the
+  result in a new ndarray.
+ *)
 
 val cbrt : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [cbrt x] computes the cubic root of the elements in [x] and returns the
+  result in a new ndarray.
+ *)
 
 val exp : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [exp x] computes the exponential of the elements in [x] and returns the
+  result in a new ndarray.
+ *)
 
 val exp2 : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [exp2 x] computes the base-2 exponential of the elements in [x] and returns
+  the result in a new ndarray.
+ *)
 
 val expm1 : ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [expm1 x] computes [exp x -. 1.] of the elements in [x] and returns the
+  result in a new ndarray.
+ *)
 
 val log : ('a, 'b) t -> ('a, 'b) t
 (** [] *)
