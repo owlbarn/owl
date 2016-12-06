@@ -163,73 +163,105 @@ val map : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val filteri : ?axis:int option array -> (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
-(** [] *)
+(** [filteri ~axis f x] uses [f] to filter out certain elements in a slice
+  defined by [~axis]. An element will be included if [f] returns [true]. The
+  returned result is a list of indices of the selected elements.
+ *)
 
 val filter : ?axis:int option array -> ('a -> bool) -> ('a, 'b) t -> int array array
-(** [] *)
+(** Similar to [filteri], but the indices of the elements are not passed to [f]. *)
 
 val foldi : ?axis:int option array -> (int array -> 'a -> 'b -> 'b) -> 'b -> ('a, 'c) t -> 'b
-(** [] *)
+(** [foldi ~axis f a x] folds all the elements in a slice defined by [~axis]
+  with the function [f]. If [~axis] is not passed in, then [foldi] simply
+  folds all the elements in [x].
+ *)
 
 val fold : ?axis:int option array -> ('a -> 'b -> 'b) -> 'b -> ('a, 'c) t -> 'b
-(** [] *)
+(** Similar to [foldi], except that the index of an element is not passed to [f]. *)
 
 val iteri_slice : int array -> (int option array -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
-(** [] *)
+(** [iteri_slice s f x] iterates the slices along the passed in axises [s], and
+  applies the function [f] to each of them. The order of iterating slices is
+  based on the order of axis in [s].
+
+  E.g., for a three-dimensional ndarray of shape [[|2;2;2|]], [iteri_slice [|1;0|] f x]
+  will access the slices in the following order: [[|Some 0; Some 0; None|]],
+  [[|Some 1; Some 0; None|]], [[|Some 1; Some 1; None|]]. Also note the slice
+  passed in [f] is a copy of the original data.
+ *)
 
 val iter_slice : int array -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
-(** [] *)
+(** Similar to [iteri_slice], except that the index of a slice is not passed to [f]. *)
 
 val iter2i : (int array -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
-(** [] *)
+(** Similar to [iteri] but applies to two N-dimensional arrays [x] and [y]. Both
+  [x] and [y] must have the same shape.
+ *)
 
 val iter2 : ('a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
-(** [] *)
+(** Similar to [iter2i], except that the index of a slice is not passed to [f]. *)
 
 
 (** {6 Examine array elements or compare two arrays } *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
-(** [] *)
+(** [exists f x] checks all the elements in [x] using [f]. If at least one
+  element satisfies [f] then the function returns [true] otherwise [false].
+ *)
 
 val not_exists : ('a -> bool) -> ('a, 'b) t -> bool
-(** [] *)
+(** [not_exists f x] checks all the elements in [x], the function returns
+  [true] only if all the elements fail to satisfy [f : float -> bool].
+ *)
 
 val for_all : ('a -> bool) -> ('a, 'b) t -> bool
-(** [] *)
+(** [for_all f x] checks all the elements in [x], the function returns [true]
+  if and only if all the elements pass the check of function [f].
+ *)
 
 val is_zero : ('a, 'b) t -> bool
-(** [] *)
+(** [is_zero x] returns [true] if all the elements in [x] are zeros. *)
 
 val is_positive : ('a, 'b) t -> bool
-(** [] *)
+(** [is_positive x] returns [true] if all the elements in [x] are positive. *)
 
 val is_negative : ('a, 'b) t -> bool
-(** [] *)
+(** [is_negative x] returns [true] if all the elements in [x] are negative. *)
 
 val is_nonpositive : ('a, 'b) t -> bool
-(** [] *)
+(** [is_nonpositive] returns [true] if all the elements in [x] are non-positive. *)
 
 val is_nonnegative : ('a, 'b) t -> bool
-(** [] *)
+(** [is_nonnegative] returns [true] if all the elements in [x] are non-negative. *)
 
 val is_equal : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [] *)
+(** [is_equal x y] returns [true] if two matrices [x] and [y] are equal. *)
 
 val is_unequal : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [] *)
+(** [is_unequal x y] returns [true] if there is at least one element in [x] is
+  not equal to that in [y].
+ *)
 
 val is_greater : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [] *)
+(** [is_greater x y] returns [true] if all the elements in [x] are greater than
+  the corresponding elements in [y].
+ *)
 
 val is_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [] *)
+(** [is_smaller x y] returns [true] if all the elements in [x] are smaller than
+  the corresponding elements in [y].
+ *)
 
 val equal_or_greater : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [] *)
+(** [equal_or_greater x y] returns [true] if all the elements in [x] are not
+  smaller than the corresponding elements in [y].
+ *)
 
 val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [] *)
+(** [equal_or_smaller x y] returns [true] if all the elements in [x] are not
+  greater than the corresponding elements in [y].
+ *)
 
 
 (** {6 Input and output functions } *)
