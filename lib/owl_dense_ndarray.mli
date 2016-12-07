@@ -29,23 +29,29 @@ val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
 
 
 val create : ('a, 'b) kind -> int array -> 'a -> ('a, 'b) t
-(** [create Bigarray.Float64 [|3;4;5|] 2.] creates a three diemensional array of
+(** [create Bigarray.Float64 [|3;4;5|] 2.] creates a three-diemensional array of
   type [Bigarray.Float64]. Each dimension has the following size: 3, 4, and 5.
   The elements in the array are initialised to [2.]
  *)
 
 val zeros : ('a, 'b) kind -> int array -> ('a, 'b) t
-(** [zeros Bigarray.Complex32 [|3;4;5|]] creates a three diemensional array of
+(** [zeros Bigarray.Complex32 [|3;4;5|]] creates a three-diemensional array of
   type [Bigarray.Complex32]. Each dimension has the following size: 3, 4, and 5.
   The elements in the array are initialised to "zero". Depending on the [kind],
   zero can be [0.] or [Complex.zero].
  *)
 
 val ones : ('a, 'b) kind -> int array -> ('a, 'b) t
-(** [ones Bigarray.Complex32 [|3;4;5|]] creates a three diemensional array of
+(** [ones Bigarray.Complex32 [|3;4;5|]] creates a three-diemensional array of
   type [Bigarray.Complex32]. Each dimension has the following size: 3, 4, and 5.
   The elements in the array are initialised to "one". Depending on the [kind],
   one can be [1.] or [Complex.one].
+ *)
+
+val uniform : ('a, 'b) kind -> int array -> ('a, 'b) t
+(** [uniform Bigarray.Float64 [|3;4;5|] 2.] creates a three-diemensional array of
+  type [Bigarray.Float64]. Each dimension has the following size: 3, 4, and 5.
+  The elements in the array follow a uniform distribution [0,1].
  *)
 
 

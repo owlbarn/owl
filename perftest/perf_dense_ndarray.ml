@@ -55,6 +55,9 @@ let _ =
   test_op "iter (0,*,*)      " c (fun () -> M.iter ~axis:[|Some 0; None; None|] (fun a -> ()) x);
   test_op "mapi              " c (fun () -> M.mapi (fun i a -> a) x);
   test_op "map               " c (fun () -> M.map (fun a -> a) x);
+  test_op "map (sin)         " c (fun () -> M.map (fun a -> sin a) x);
+  test_op "map (+1)          " c (fun () -> M.map (fun a -> a +. 1.) x);
+  test_op "map (^2)          " c (fun () -> M.map (fun a -> a *. a) x);
   test_op "iteri_slice 0     " c (fun () -> M.iteri_slice [|0|] (fun i s -> ()) x);
   test_op "iter2i            " c (fun () -> M.iter2i (fun i a b -> ()) x y);
   test_op "iter2             " c (fun () -> M.iter2 (fun a b -> ()) x y);

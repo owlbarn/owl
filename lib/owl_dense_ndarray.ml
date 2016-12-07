@@ -91,6 +91,7 @@ type ('a, 'b) vec_unop0 = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
 type ('a, 'b) vec_unop1 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> 'a
 type ('a, 'b) vec_unop2 = ?stable:bool -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> float
 type ('a, 'b) vec_unop3 = ?n:int -> ?c:'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> 'a
+type ('a, 'b) vec_unop4 = ?rnd_state:Random.State.t -> ?from:'a -> ?range:'a -> int -> ('a, 'b) vec
 type ('a, 'b) vec_binop = (('a, 'b) vec) Lacaml.Common.Types.Vec.binop
 type ('a, 'b) vec_mapop = ('a -> 'a) -> ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> ('a, 'b) vec
 type ('a, 'b) vec_iter0 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
@@ -444,6 +445,11 @@ let _copy : type a b. (a, b) kind -> (a, b) vec_copy0 = function
   | Complex32 -> Lacaml.C.copy
   | Complex64 -> Lacaml.Z.copy
   | _         -> failwith "_copy: unsupported operation"
+
+let _uniform : type a b. (a, b) kind -> (a, b) vec_unop4 = function
+  | Float32   -> Lacaml.S.Vec.random
+  | Float64   -> Lacaml.D.Vec.random
+  | _         -> failwith "_uniform: unsupported operation"
 
 
 (* TODO:
@@ -943,6 +949,14 @@ let cos x =
   let z = Bigarray.genarray_of_array1 z in
   let z = Genarray.change_layout z c_layout in
   let z = Bigarray.reshape z (shape x) in
+  z
+
+let uniform kind dimension =
+  let n = Array.fold_right (fun c a -> c * a) dimension 1 in
+  let x = _uniform (kind) ~from:(_zero kind) ~range:(_one kind) n in
+  let z = Bigarray.genarray_of_array1 x in
+  let z = Genarray.change_layout z c_layout in
+  let z = Bigarray.reshape z dimension in
   z
 
 (* advanced operations *)
