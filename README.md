@@ -344,7 +344,88 @@ The future plan is to embed a small PPL (Probabilistic Programming Language) in 
 
 ## N-dimensional Array
 
-Owl has a very powerful module to manipulate N-dimensional arrays ...
+Owl has two very powerful modules to manipulate dense N-dimensional arrays. One is Ndarray, and the other is Ndview. Ndarray is very similar to the corresponding modules in Numpy and Julia, whereas Ndview is optimised for pipelining the operations on the ndarray.
+
+In the following, I will present a couple of examples using Ndarray module. First, we can create empty ndarrays of shape `[|3;4;5|]`. Owl supports four types of ndarrays: `Float32`, `Float64`, `Complex32`, and `Complex64`.
+
+```ocaml
+let x0 = Dense.Ndarray.empty Bigarray.Float32 [|3;4;5|];;
+let x1 = Dense.Ndarray.empty Bigarray.Float64 [|3;4;5|];;
+let x2 = Dense.Ndarray.empty Bigarray.Complex32 [|3;4;5|];;
+let x3 = Dense.Ndarray.empty Bigarray.Complex64 [|3;4;5|];;
+```
+
+You can also assign the initial values to the elements, generate a zero/one ndarray, or even a random ndarray.
+
+```ocaml
+Dense.Ndarray.zeros Bigarray.Complex32 [|3;4;5|];;
+Dense.Ndarray.ones Bigarray.Float64 [|3;4;5|];;
+Dense.Ndarray.create Bigarray.Float32 [|3;4;5|] 1.5;;
+Dense.Ndarray.create Bigarray.Complex32 [|3;4;5|] Complex.({im=1.5; re=2.5});;
+Dense.Ndarray.uniform Bigarray.Float64 [|3;4;5|];;
+```
+
+With these created ndarray, you can do some math operation as below.
+
+```ocaml
+let x = Dense.Ndarray.uniform Bigarray.Float64 [|3;4;5|];;
+let y = Dense.Ndarray.uniform Bigarray.Float64 [|3;4;5|];;
+let z = Dense.Ndarray.add x y;;
+Dense.Ndarray.print z;;
+```
+
+Owl supports many math operations and these operations have been well vectorised so they are very fast.
+
+```ocaml
+Dense.Ndarray.sin x;;
+Dense.Ndarray.tan x;;
+Dense.Ndarray.exp x;;
+Dense.Ndarray.log x;;
+Dense.Ndarray.min x;;
+Dense.Ndarray.add_scalar x 2.;;
+Dense.Ndarray.mul_scalar x 2.;;
+...
+```
+
+Examining elements and comparing two ndarrays are also very easy.
+
+```ocaml
+Dense.Ndarray.is_zero x;;
+Dense.Ndarray.is_positive x;;
+Dense.Ndarray.is_nonnegative x;;
+...
+Dense.Ndarray.is_equal x y;;
+Dense.Ndarray.is_greater x y;;
+Dense.Ndarray.equal_or_smaller x y;;
+...
+```
+
+You can certainly plugin your own functions to check each elelments.
+
+```ocaml
+Dense.Ndarray.exists ((>) 2.) x;;
+Dense.Ndarray.not_exists ((<) 2.) x;;
+Dense.Ndarray.for_all ((=) 2.) x;;
+```
+
+Most importantly, you can use Owl to iterate a ndarray in various ways. Owl provides a simple but flexible and powerful way to define a "slice" in ndarray. Comparing to the "`Bigarray.slice_left`" function, the slice in Owl does not have to start from the left-most axis. E.g., for the previously defined `[|3;4;5|]` ndarray, you can define a slice in the following ways:
+
+```ocaml
+let s0 = [|None; None; None|]      (* (*,*,*), essentially the whole ndarray as one slice *)
+let s1 = [|Some 0; None; None|]    (* (0,*,*) *)
+let s2 = [|None; Some 2; None|]    (* (*,2,*) *)
+let s3 = [|None; None; Some 1|]    (* (*,*,1) *)
+let s4 = [|Some 1; None; Some 2|]  (* (1,*,2) *)
+...
+```
+
+With the slice definition above, we can iterate and map the elements in a slice. E.g., we add one to all the elements in slice `(0,*,*)`.
+
+```ocaml
+Dense.Ndarray.map ~axis:[|Some 0; None; None|] (fun a -> a +. 1.) x;;
+```
+
+There are more functions to help you to iterate elements and slices in a ndarray: `iteri`, `iter`, `mapi`, `map`, `filteri`, `filter`, `foldi`, `fold`, `iteri_slice`, `iter_slice`, `iter2i`, `iter2`. Please refer to the documentation for their details.
 
 
 ## How To Contribute
