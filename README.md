@@ -20,7 +20,7 @@ Installation is rather trivial. First, you need to clone the repository.
 git clone git@github.com:ryanrhymes/owl.git
 ```
 
-Then you need to install all the dependencies. Owl depends on gsl, ctypes, plplot, and several other modules. Check the `_oasis` file in the `owl` folder to find out the complete list of required modules.
+Then you need to install all the dependencies. Owl depends on gsl, lacaml, ctypes, plplot, and several other modules. Check the `_oasis` file in the `owl` folder to find out the complete list of required modules.
 
 Next, you can compile and install the module with the following command.
 
