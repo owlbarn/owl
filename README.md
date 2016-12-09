@@ -3,7 +3,16 @@ Owl is an OCaml numerical library. It supports N-dimensional arrays, both dense 
 
 The full API documentation is here: [Owl Manual](http://www.cl.cam.ac.uk/~lw525/owl/)
 
-The series of tutorials is here: [How to Plot in Owl](https://github.com/ryanrhymes/owl/wiki/Tutorial:-How-to-Plot-in-Owl%3F), [Manipulate Matrices in Owl](https://github.com/ryanrhymes/owl/wiki/Manipulate-Matrices-in-Owl)
+The series of tutorials is here:
+
+[Tutorial 1: N-dimensional Array](https://github.com/ryanrhymes/owl/wiki/Tutorial:-N-Dimensional-Array)
+
+[Tutorial 2: Matrix Manipulation](https://github.com/ryanrhymes/owl/wiki/Manipulate-Matrices-in-Owl)
+
+[Tutorial 3: How to Plot in Owl?](https://github.com/ryanrhymes/owl/wiki/Tutorial:-How-to-Plot-in-Owl%3F)
+
+The roadmap and future plan of Owl can be found
+[Here](https://github.com/ryanrhymes/owl/wiki/Future-Plan), I would love to know your comments and suggestions to help me in improving Owl.
 
 [Email Me](liang.wang@cl.cam.ac.uk) or message me on:
 [Twitter](https://twitter.com/ryan_liang),
@@ -11,6 +20,7 @@ The series of tutorials is here: [How to Plot in Owl](https://github.com/ryanrhy
 [Facebook](http://www.facebook.com/ryan.liang.wang),
 [Blogger](http://ryanrhymes.blogspot.com/),
 [LinkedIn](http://uk.linkedin.com/in/liangsuomi/)
+
 
 ## Installation
 
