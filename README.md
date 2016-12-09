@@ -1,7 +1,10 @@
 # Owl - An OCaml Numerical Library
 Owl is an OCaml numerical library. It supports N-dimensional arrays, both dense and sparse matrix operations, linear algebra, regressions, fast Fourier transforms, and many advanced mathematical and statistical functions (such as Markov chain Monte Carlo methods).
 
-The full API documentation is here: [Owl Manual](http://www.cl.cam.ac.uk/~lw525/owl/)
+The full API documentation is here:
+
+* on [mirage.io](http://docs.mirage.io/owl/index.html)
+* on [cam.ac.uk](http://www.cl.cam.ac.uk/~lw525/owl/)
 
 The series of tutorials is here:
 
