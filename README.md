@@ -14,7 +14,7 @@ The series of tutorials is here: [How to Plot in Owl](https://github.com/ryanrhy
 
 ## Installation
 
-Installation is rather trivial. First, you need to clone the repository.
+Owl requires OCaml 4.04.0. The installation is rather trivial. First, you need to clone the repository.
 
 ```bash
 git clone git@github.com:ryanrhymes/owl.git
