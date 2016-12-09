@@ -400,7 +400,7 @@ Dense.Ndarray.equal_or_smaller x y;;
 ...
 ```
 
-You can certainly plugin your own functions to check each elelments.
+You can certainly plugin your own functions to check each elements.
 
 ```ocaml
 Dense.Ndarray.exists ((>) 2.) x;;
