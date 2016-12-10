@@ -6,7 +6,7 @@
 (** N-dimensional array module
   This module is built atop of Genarray module in OCaml Bigarray. The module also
   heavily relies on Lacaml to call native BLAS/LAPACK to improve the performance.
-  The documentation of some math functions is copied directly from Lacaml.
+  The documentation of some ('a, 'b) th functions is copied directly from Lacaml.
  *)
 
 type ('a, 'b) t
@@ -252,7 +252,7 @@ val is_nonnegative : ('a, 'b) t -> bool
 (** [is_nonnegative] returns [true] if all the elements in [x] are non-negative. *)
 
 val is_equal : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [is_equal x y] returns [true] if two matrices [x] and [y] are equal. *)
+(** [is_equal x y] returns [true] if two ('a, 'b) trices [x] and [y] are equal. *)
 
 val is_unequal : ('a, 'b) t -> ('a, 'b) t -> bool
 (** [is_unequal x y] returns [true] if there is at least one element in [x] is
@@ -292,7 +292,7 @@ val print : ('a, 'b) t -> unit
 (** [print x] prints all the elements in [x] as well as their indices. *)
 
 
-(** {6 Unary mathematical operations } *)
+(** {6 Unary ('a, 'b) the('a, 'b) tical operations } *)
 
 val re : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
 (** If [x] is a ndarray of complex numbers, [re x] returns all the real
@@ -305,7 +305,7 @@ val im : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
  *)
 
 val sum : ('a, 'b) t -> 'a
-(** [sum x] returns the summation of all elements in [x]. *)
+(** [sum x] returns the sum('a, 'b) tion of all elements in [x]. *)
 
 val min : ('a, 'b) t -> 'a
 (** [min x] returns the minimum of all elements in [x]. *)
@@ -493,7 +493,7 @@ val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
  *)
 
 
-(** {6 Binary mathematical operations } *)
+(** {6 Binary ('a, 'b) the('a, 'b) tical operations } *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [add x y] adds all the elements in [x] and [y] elementwise, and returns the
@@ -561,6 +561,75 @@ val max2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 
+(** {6 Shorhand infix operators} *)
+
+val ( >> ) : ('a, 'b) t -> ('a, 'b) t -> unit
+(** Shorthand for [copy_to x y], i.e., x >> y *)
+
+val ( << ) : ('a, 'b) t -> ('a, 'b) t -> unit
+(** Shorthand for [copy_to y x], i.e., x << y *)
+
+val ( +@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [add x y], i.e., [x +@ y] *)
+
+val ( -@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [sub x y], i.e., [x -@ y] *)
+
+val ( *@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [mul x y], i.e., [x *@ y] *)
+
+val ( /@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [div x y], i.e., [x /@ y] *)
+
+val ( **@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [power x a], i.e., [x **@ a] *)
+
+val ( +$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Shorthand for [add_scalar x a], i.e., [x +$ a] *)
+
+val ( -$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Shorthand for [sub_scalar x a], i.e., [x -$ a] *)
+
+val ( *$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
+
+val ( /$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
+
+val ( $+ ) : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [add_scalar x a], i.e., [a $+ x] *)
+
+val ( $- ) : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [sub_scalar x a], i.e., [a -$ x] *)
+
+val ( $* ) : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
+
+val ( $/ ) : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
+
+val ( =@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
+
+val ( >@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
+
+val ( <@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
+
+val ( <>@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
+
+val ( >=@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
+
+val ( <=@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
+
+val ( @@ ) : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [map f x], i.e., f @@ x *)
+
+
 (** {6 Some helper functions } *)
 
 (** The following functions are helper functions for some other functions in
@@ -575,7 +644,7 @@ val print_index : int array -> unit
 (** [print_index i] prints out the index of an element. *)
 
 val _check_transpose_axis : int array -> int -> unit
-(** [_check_transpose_axis a d] checks whether [a] is a legitimate transpose index. *)
+(** [_check_transpose_axis a d] checks whether [a] is a legiti('a, 'b) te transpose index. *)
 
 val _check_slice_axis : int option array -> int array -> unit
-(** [_check_slice_axis axis shape] checks whether [axis] is a legitimate slice definition. *)
+(** [_check_slice_axis axis shape] checks whether [axis] is a legiti('a, 'b) te slice definition. *)

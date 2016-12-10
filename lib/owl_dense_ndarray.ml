@@ -1459,5 +1459,51 @@ let prod x = None
 
 let cumsum axis x = None
 
+(* Shorhand infix operators *)
+
+let ( >> ) = copy
+
+let ( << ) x1 x2 = copy x2 x1
+
+let ( +@ ) = add
+
+let ( -@ ) = sub
+
+let ( *@ ) = mul
+
+let ( /@ ) = div
+
+let ( **@ ) = pow
+
+let ( =@ ) = ( = )
+
+let ( >@ ) = ( > )
+
+let ( <@ ) = ( < )
+
+let ( >=@ ) = ( >= )
+
+let ( <=@ ) = ( <= )
+
+let ( <>@ ) = ( <> )
+
+let ( +$ ) x a = add_scalar x a
+
+let ( $+ ) a x = add_scalar x a
+
+let ( -$ ) x a = sub_scalar x a
+
+let ( $- ) a x = sub_scalar x a
+
+let ( *$ ) x a = mul_scalar x a
+
+let ( $* ) a x = mul_scalar x a
+
+let ( /$ ) x a = div_scalar x a
+
+let ( $/ ) a x = div_scalar x a
+
+let ( @@ ) f x = map f x
+
 
 (* ends here *)
