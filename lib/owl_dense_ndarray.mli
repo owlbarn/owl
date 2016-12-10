@@ -149,7 +149,8 @@ val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
 (** [swap i j x] makes a copy of [x], then swaps the data on axis [i] and [j]. *)
 
-(* TODO: mmap *)
+val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -> ('a, 'b) t
+(** [mmap fd kind layout shared dims] ... *)
 
 
 (** {6 Iterate array elements} *)

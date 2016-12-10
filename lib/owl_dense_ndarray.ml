@@ -65,7 +65,7 @@ let fill x a = Genarray.fill x a
 
 let reshape x dimension = reshape x dimension
 
-let mmap = Genarray.map_file
+let mmap fd ?pos kind shared dims = Genarray.map_file fd ?pos kind c_layout shared dims
 
 let same_shape x y =
   if (num_dims x) <> (num_dims y) then false
