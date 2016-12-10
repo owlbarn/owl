@@ -49,7 +49,7 @@ let kind x = Genarray.kind x
 
 let layout x = Genarray.layout x
 
-(* let size_in_bytes x = Genarray.size_in_bytes x *)
+let size_in_bytes x = Genarray.size_in_bytes x
 
 let sub_left = Genarray.sub_left
 

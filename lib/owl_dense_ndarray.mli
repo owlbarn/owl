@@ -75,6 +75,9 @@ val nnz : ('a, 'b) t -> int
 val density : ('a, 'b) t -> float
 (** [density x] returns the percentage of non-zero elements in [x]. *)
 
+val size_in_bytes : ('a, 'b) t -> int
+(** [size_in_bytes x] returns the size of [x] in bytes in memory. *)
+
 val kind : ('a, 'b) t -> ('a, 'b) kind
 (** [kind] returns the type of ndarray [x]. It is one of the four possible
   values: [Bigarray.Float32], [Bigarray.Float64], [Bigarray.Complex32], and
