@@ -970,6 +970,19 @@ let zeros kind dimension = create kind dimension (_zero kind)
 
 let ones kind dimension = create kind dimension (_one kind)
 
+let sequential k dimension =
+  let x = empty k dimension in
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  let _op = _add_elt (kind x) in
+  let _ac = ref (_zero (kind x)) in
+  let _aa = _one (kind x) in
+  for i = 1 to (numel x) do
+    Array1.unsafe_set y i !_ac;
+    _ac := _op !_ac _aa
+  done;
+  x
+
 let flatten x =
   let n = numel x in
   reshape x [|1;n|]
