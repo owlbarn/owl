@@ -1341,6 +1341,8 @@ let _compare_elements_in_two f x y =
   ) x y; !b
   with Failure _ -> !b
 
+(* TODO: native =, >, < ... already support these, compare performance *)
+
 let is_equal x y = _compare_elements_in_two ( = ) x y
 
 let is_unequal x y = _compare_elements_in_two ( <> ) x y
