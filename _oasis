@@ -86,6 +86,12 @@ Executable test_operation
   MainIs:         test_operation.ml
   BuildDepends:   owl
 
+Executable test_parmap
+  Path:           examples
+  CompiledObject: best
+  MainIs:         test_parmap.ml
+  BuildDepends:   owl, owl_parallel
+
 Executable perf_dense_real
   Path:           perftest
   CompiledObject: best
