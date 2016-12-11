@@ -89,5 +89,4 @@ let mymap f x =
       done
     with e -> exc_handler e lo
   in
-  simplemapper 3 compute () x;
-  print_endline "done"
+  simplemapper 3 compute () x
