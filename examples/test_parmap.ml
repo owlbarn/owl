@@ -9,4 +9,4 @@ let print_array x =
 let _ =
  let x = Array.init 10 (fun i -> float_of_int i) in
  let x = Array1.of_array Float64 c_layout x in
- ()
+ Parmap.mymap (fun i a -> a) x

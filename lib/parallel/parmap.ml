@@ -94,13 +94,13 @@ let simplemapper ncores compute opid al =
   )
 
 let mymap f x =
-  let size = Array1.dim x in
-  let barr_out = init_shared_buffer x in
+  let y = init_shared_buffer x in
   let compute _ lo hi _ exc_handler =
     try
       for i=lo to hi do
-        Array1.unsafe_set barr_out i (f i (Array1.unsafe_get x i))
+        Array1.unsafe_set y i (f i (Array1.unsafe_get x i))
       done
     with e -> exc_handler e lo
   in
-  ()
+  simplemapper 3 compute () x;
+  print_endline "done"
