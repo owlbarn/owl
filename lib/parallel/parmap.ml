@@ -24,11 +24,11 @@ let log_debug fmt =
   ) fmt
 
 let init_shared_buffer x =
-  let sz = Array1.dim x in
-  let fd = Utils.tempfd () in
-  let kd = Array1.kind x in
-  let ar = Bigarray.Array1.map_file fd kd c_layout true sz in
-  Unix.close fd; ar
+  let s = Array1.dim x in
+  let f = Utils.tempfd () in
+  let k = Array1.kind x in
+  let y = Bigarray.Array1.map_file f k c_layout true s in
+  Unix.close f; y
 
 let spawn_many n ~in_subprocess =
   let rec loop i acc =
