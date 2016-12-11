@@ -25,7 +25,7 @@ let debugging b = debug_enabled:=b
 
 (* default number of cores, and a setter function *)
 
-let default_ncores=ref (max 2 (Bytearray.numcores()-1));;
+let default_ncores=ref (max 2 (Utils.numcores()-1));;
 
 let set_default_ncores n = default_ncores := n;;
 let get_default_ncores () = !default_ncores;;
@@ -234,7 +234,7 @@ type msg_to_master = Ready of int | Error of int * string
 type msg_to_worker = Finished | Task of int
 
 let setup_children_chans oc pipedown ?fdarr i =
-  Bytearray.setcore i;
+  Utils.setcore i;
   (* close the other ends of the pipe and convert my ends to ic/oc *)
   Unix.close (snd pipedown.(i));
   let pid = Unix.getpid() in

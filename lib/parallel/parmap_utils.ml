@@ -44,3 +44,7 @@ let tempfd () =
     Unix.unlink name;
     fd
   with e -> Unix.unlink name; raise e
+
+let setcore i = ()
+
+external numcores: unit -> int = "numcores"

@@ -4,3 +4,7 @@ val concat_tr : 'a list list -> 'a list
 val fold_right : ('a -> 'b -> 'b) -> 'a list -> 'b -> 'b
 val range : int -> int -> int list
 val tempfd : unit -> Unix.file_descr
+
+val numcores : unit -> int
+
+val setcore : int -> unit

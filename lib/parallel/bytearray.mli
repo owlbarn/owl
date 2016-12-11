@@ -15,10 +15,6 @@ type t =
 type tf =
   (float, Bigarray.float64_elt, Bigarray.c_layout) Bigarray.Array1.t
 
-val numcores : unit -> int
-
-val setcore : int -> unit
-
 val create : int -> t
 
 val length : t -> int
