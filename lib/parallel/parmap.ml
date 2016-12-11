@@ -23,10 +23,11 @@ let log_debug fmt =
     (fun s -> Format.eprintf "[Parmap]: %s@." s)
   ) fmt
 
-let init_shared_buffer a =
-  let sz = Array1.dim a in
+let init_shared_buffer x =
+  let sz = Array1.dim x in
   let fd = Utils.tempfd () in
-  let ar = Bigarray.Array1.map_file fd Bigarray.float64 Bigarray.c_layout true sz in
+  let kd = Array1.kind x in
+  let ar = Bigarray.Array1.map_file fd kd c_layout true sz in
   Unix.close fd; ar
 
 let spawn_many n ~in_subprocess =
