@@ -40,6 +40,14 @@ Library owl_topic
   Modules:          Owl_topic_lda, Owl_topic_lsa, Owl_topic_utils
   BuildDepends:     owl
 
+Library owl_parallel
+  Install:          true
+  Path:             lib/parallel
+  Modules:          Bytearray
+  CSources:         bytearray_stubs.c
+  CCOpt:            -D_GNU_SOURCE -fPIC
+  BuildDepends:     unix
+
 Executable ffi_stubgen
   Install:        false
   Path:           lib/bindings
