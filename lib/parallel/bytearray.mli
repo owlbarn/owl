@@ -17,6 +17,8 @@ type tf =
 
 val numcores : unit -> int
 
+val setcore : int -> unit
+
 val create : int -> t
 
 val length : t -> int

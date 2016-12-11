@@ -43,7 +43,7 @@ Library owl_topic
 Library owl_parallel
   Install:          true
   Path:             lib/parallel
-  Modules:          Bytearray
+  Modules:          Bytearray, Parmap_utils, Parmap
   CSources:         bytearray_stubs.c
   CCOpt:            -D_GNU_SOURCE -fPIC
   BuildDepends:     unix

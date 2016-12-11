@@ -35,6 +35,8 @@ let unsafe_blit_to_string a i s j l =
   done
 *)
 
+let setcore i = ()
+
 external numcores: unit -> int = "numcores"
 
 external unsafe_blit_from_string : string -> int -> t -> int -> int -> unit
