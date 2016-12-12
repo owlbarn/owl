@@ -1425,6 +1425,28 @@ let conj x = map Complex.conj x
 
 (* TODO *)
 
+let pmap f x =
+  let _op = _map_op (kind x) in
+  let x' = Bigarray.reshape_1 x (numel x) in
+  let f' lo hi x y = (
+    (* change the layout so we can call lacaml map *)
+    let x = Bigarray.genarray_of_array1 x in
+    let x = Genarray.change_layout x fortran_layout in
+    let x = Bigarray.array1_of_genarray x in
+    let y = Bigarray.genarray_of_array1 y in
+    let y = Genarray.change_layout y fortran_layout in
+    let y = Bigarray.array1_of_genarray y in
+    (* add 1 because fortran start indexing at 1 *)
+    let lo = lo + 1 in
+    let hi = hi + 1 in
+    (* drop the return since y is modified in place *)
+    ignore (_op f ~n:(hi - lo + 1) ~ofsy:lo ~y:y ~ofsx:lo x)
+  )
+  in
+  let y = Owl_parallel.map_block f' x' in
+  let y = genarray_of_array1 y in
+  reshape y (shape x)
+
 let insert_slice = None
 
 let remove_slice = None

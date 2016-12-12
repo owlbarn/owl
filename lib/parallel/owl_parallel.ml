@@ -1,3 +1,8 @@
+
+(** This module operates on Bigarray.Array1 of c_layout.
+  The source file is developed based on Parmap module.
+ *)
+
 open Bigarray
 
 module Utils = Owl_parallel_utils
@@ -5,12 +10,9 @@ module Utils = Owl_parallel_utils
 (* Exit the program with calling [at_exit] handlers *)
 external sys_exit : int -> 'a = "caml_sys_exit"
 
-let default_ncores = Utils.numcores () - 1
+let _ = Log.color_on (); Log.(set_log_level INFO)
 
-let log_debug fmt =
-  Printf.kprintf (
-    (fun s -> Format.eprintf "[Parallel]: %s@." s)
-  ) fmt
+let default_ncores = Utils.numcores () - 1
 
 let marshal fd v =
   let s = Marshal.to_string v [Marshal.Closures] in
@@ -49,7 +51,7 @@ let spawn_many n ~in_subprocess =
         in_subprocess i;
         exit 0
       | -1 ->
-        Utils.log_error "fork error: pid %d; i=%d" (Unix.getpid()) i;
+        Log.error "[Parallel]: fork error: pid %d; i=%d" (Unix.getpid()) i;
         loop (i + 1) acc
       | pid ->
         loop (i + 1) (pid :: acc)
@@ -75,7 +77,7 @@ let simplemapper ncores compute opid x =
   let ln = Array1.dim x in
   let ncores = min ln (max 1 ncores) in
   let chunksize = max 1 (ln / ncores) in
-  log_debug "parmap on %d elements, on %d cores, chunksize = %d%!" ln ncores chunksize;
+  Log.debug "[Parallel]: %d elements, on %d cores, chunksize = %d%!" ln ncores chunksize;
   (* create descriptors to mmap *)
   let fdarr=Array.init ncores (fun _ -> Utils.tempfd()) in
   (* call the GC before forking *)
@@ -85,8 +87,8 @@ let simplemapper ncores compute opid x =
     let lo = i * chunksize in
     let hi = if i = ncores - 1 then ln - 1 else (i + 1) * chunksize - 1 in
     let exc_handler e j = (* handle an exception at index j *)
-      Utils.log_error
-        "error at index j=%d in (%d,%d), chunksize=%d of a total of \
+      Log.error
+        "[Parallel]: error at index j=%d in (%d,%d), chunksize=%d of a total of \
          %d got exception %s on core %d \n%!"
         j lo hi chunksize (hi - lo + 1) (Printexc.to_string e) i;
       exit 1
@@ -108,9 +110,7 @@ let simpleiter ncores compute x =
   let ln = Array1.dim x in
   let ncores = min ln (max 1 ncores) in
   let chunksize = max 1 (ln / ncores) in
-  log_debug
-    "simplemapper on %d elements, on %d cores, chunksize = %d%!"
-    ln ncores chunksize;
+  Log.debug "[Parallel]: simpleiter on %d elements, on %d cores, chunksize = %d%!" ln ncores chunksize;
   (* call the GC before forking *)
   Gc.compact ();
   (* run children *)
@@ -118,8 +118,8 @@ let simpleiter ncores compute x =
     let lo = i * chunksize in
     let hi = if i = ncores - 1 then ln - 1 else (i + 1) * chunksize - 1 in
     let exc_handler e j = (* handle an exception at index j *)
-      Utils.log_error
-        "error at index j=%d in (%d,%d), chunksize=%d of a total of \
+      Log.error
+        "[Parallel]: error at index j=%d in (%d,%d), chunksize=%d of a total of \
          %d got exception %s on core %d \n%!"
 	      j lo hi chunksize (hi - lo + 1) (Printexc.to_string e) i;
       exit 1
@@ -127,7 +127,7 @@ let simpleiter ncores compute x =
     compute x lo hi exc_handler
   )
 
-let mymap f x =
+let map_element f x =
   let y = init_shared_buffer x in
   let compute _ lo hi _ exc_handler =
     try
@@ -139,9 +139,7 @@ let mymap f x =
   simplemapper default_ncores compute () x;
   y
 
-let map_block
-  (f : int -> int -> ('a, 'b, c_layout) Bigarray.Array1.t -> ('a, 'b, c_layout) Bigarray.Array1.t -> unit)
-  (x : ('a, 'b, c_layout) Bigarray.Array1.t) =
+let map_block f x =
   let y = init_shared_buffer x in
   let compute _ lo hi exc_handler =
     try f lo hi x y

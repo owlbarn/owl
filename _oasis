@@ -26,7 +26,8 @@ Library owl
   InternalModules:  Ffi_generated
   CSources:         ffi_generated_stub.c
   CCOpt:            -I$pkg_ctypes
-  BuildDepends:     str, gsl, ctypes, ctypes.stubs, plplot, dolog, lacaml
+  BuildDepends:     str, gsl, ctypes, ctypes.stubs, plplot, dolog, lacaml,
+                    owl_parallel
 
 Library Ffi_bindings_base
   Install:          false
@@ -46,7 +47,7 @@ Library owl_parallel
   Modules:          Bytearray, Owl_parallel, Owl_parallel_utils
   CSources:         bytearray_stubs.c
   CCOpt:            -D_GNU_SOURCE -fPIC
-  BuildDepends:     unix
+  BuildDepends:     unix, dolog
 
 Executable ffi_stubgen
   Install:        false
@@ -86,10 +87,10 @@ Executable test_operation
   MainIs:         test_operation.ml
   BuildDepends:   owl
 
-Executable test_parmap
+Executable test_parallel
   Path:           examples
   CompiledObject: best
-  MainIs:         test_parmap.ml
+  MainIs:         test_parallel.ml
   BuildDepends:   owl, owl_parallel
 
 Executable perf_dense_real

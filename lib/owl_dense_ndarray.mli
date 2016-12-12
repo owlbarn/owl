@@ -218,6 +218,9 @@ val iter2i : (int array -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 val iter2 : ('a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 (** Similar to [iter2i], except that the index of a slice is not passed to [f]. *)
 
+val pmap : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** [pmap f x] is similar to [map f x] but runs in parallel on multiple cores. *)
+
 
 (** {6 Examine array elements or compare two arrays } *)
 
