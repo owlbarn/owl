@@ -9,7 +9,7 @@ The full API documentation is here:
 The series of tutorials is here:
 
 * [Tutorial 1: N-dimensional Array](https://github.com/ryanrhymes/owl/wiki/Tutorial:-N-Dimensional-Array)
-* [Tutorial 2: Matrix Manipulation](https://github.com/ryanrhymes/owl/wiki/Manipulate-Matrices-in-Owl)
+* [Tutorial 2: Matrix Manipulation](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Matrix-Manipulation)
 * [Tutorial 3: How to Plot in Owl?](https://github.com/ryanrhymes/owl/wiki/Tutorial:-How-to-Plot-in-Owl%3F)
 
 The roadmap and future plan of Owl can be found
