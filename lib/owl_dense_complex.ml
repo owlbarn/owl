@@ -567,6 +567,10 @@ let of_array x m n = Gsl.Matrix_complex.of_array x m n
 
 let of_arrays x = Gsl.Matrix_complex.of_arrays x
 
+let to_ndarray x = Obj.magic (Bigarray.genarray_of_array2 x)
+
+let of_ndarray x = Bigarray.array2_of_genarray (Obj.magic x)
+
 let reshape m n x = of_array (to_array x) m n
 
 let save x f =

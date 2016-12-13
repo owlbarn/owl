@@ -57,6 +57,10 @@ let linspace a b n =
     x.{0,i} <- a +. c *. (float_of_int i)
   done; x
 
+let to_ndarray x = Obj.magic (Bigarray.genarray_of_array2 x)
+
+let of_ndarray x = Bigarray.array2_of_genarray (Obj.magic x)
+
 (* matrix manipulations *)
 
 let same_shape x1 x2 = shape x1 = shape x2

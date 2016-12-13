@@ -557,19 +557,29 @@ val to_array : mat -> float array
   float array of length [(numel x)].
  *)
 
-val to_arrays : mat -> float array array
-(** [to arrays x] returns an array of float arrays, wherein each row in [x]
-  becomes an array in the result.
- *)
-
 val of_array : float array -> int -> int -> mat
 (** [of_array x m n] converts a float array [x] into an [m] by [n] matrix. Note the
   length of [x] must be equal to [(m * n)].
  *)
 
+val to_arrays : mat -> float array array
+(** [to arrays x] returns an array of float arrays, wherein each row in [x]
+  becomes an array in the result.
+ *)
+
 val of_arrays : float array array -> mat
 (** [of_arrays x] converts an array of [m] float arrays (of length [n]) in to
   an [m] by [n] matrix.
+ *)
+
+val to_ndarray : mat -> (float, Bigarray.float64_elt) Owl_dense_ndarray.t
+(** [to_ndarray x] transforms a dense real matrix to [Bigarray.Genarray.t] type.
+  No copy is made by calling this function.
+ *)
+
+val of_ndarray : (float, Bigarray.float64_elt) Owl_dense_ndarray.t -> mat
+(** [of_ndarray x] transforms a ndarray of type [Bigarray.Genarray.t] to a dense
+  real matrix type. No copy is made by calling this function.
  *)
 
 val print : mat -> unit

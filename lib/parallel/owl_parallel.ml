@@ -1,6 +1,7 @@
-
 (** This module operates on Bigarray.Array1 of c_layout.
   The source file is developed based on Parmap module.
+
+  This is an experimental module ... do not expect too much :)
  *)
 
 open Bigarray

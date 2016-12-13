@@ -269,11 +269,15 @@ val shuffle: mat -> mat
 
 val to_array : mat -> elt array
 
-val to_arrays : mat -> elt array array
-
 val of_array : elt array -> int -> int -> mat
 
+val to_arrays : mat -> elt array array
+
 val of_arrays : elt array array -> mat
+
+val to_ndarray : mat -> (Complex.t, Bigarray.complex64_elt) Owl_dense_ndarray.t
+
+val of_ndarray : (Complex.t, Bigarray.complex64_elt) Owl_dense_ndarray.t -> mat
 
 val save : mat -> string -> unit
 
