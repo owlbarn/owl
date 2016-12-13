@@ -383,44 +383,29 @@ let stderr_cols = None
 
 let stderr_rows = None
 
-let is_equal x1 x2 =
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let x1 = dr_mat_to_matptr x1 in
-  let x2 = dr_mat_to_matptr x2 in
-  (gsl_matrix_equal x1 x2) = 1
+let is_equal x1 x2 = x1 = x2
 
-let ( =@ ) = is_equal
+let ( =@ ) = ( = )
 
-let is_unequal x1 x2 = not (is_equal x1 x2)
+let is_unequal x1 x2 = x2 <> x2
 
-let ( <>@ ) = is_unequal
+let ( <>@ ) = ( <> )
 
-let is_greater x1 x2 =
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let x3 = sub x1 x2 in
-  let x3 = dr_mat_to_matptr x3 in
-  (gsl_matrix_ispos x3) = 1
+let is_greater x1 x2 = x1 > x2
 
-let ( >@ ) = is_greater
+let ( >@ ) = ( > )
 
-let is_smaller x1 x2 = is_greater x2 x1
+let is_smaller x1 x2 = x1 < x2
 
-let ( <@ ) = is_smaller
+let ( <@ ) = ( < )
 
-let equal_or_greater x1 x2 =
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let x3 = sub x1 x2 in
-  let x3 = dr_mat_to_matptr x3 in
-  (gsl_matrix_isnonneg x3) = 1
+let equal_or_greater x1 x2 = x1 >= x2
 
-let ( >=@ ) = equal_or_greater
+let ( >=@ ) = ( >= )
 
-let equal_or_smaller x1 x2 = equal_or_greater x2 x1
+let equal_or_smaller x1 x2 = x1 <= x2
 
-let ( <=@ ) = equal_or_smaller
+let ( <=@ ) = ( <= )
 
 let is_zero x =
   let open Owl_foreign in
