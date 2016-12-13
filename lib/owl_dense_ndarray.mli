@@ -197,7 +197,7 @@ val fold : ?axis:int option array -> ('a -> 'b -> 'b) -> 'b -> ('a, 'c) t -> 'b
 (** Similar to [foldi], except that the index of an element is not passed to [f]. *)
 
 val iteri_slice : int array -> (int option array -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
-(** [iteri_slice s f x] iterates the slices along the passed in axises [s], and
+(** [iteri_slice s f x] iterates the slices along the passed in axes [s], and
   applies the function [f] to each of them. The order of iterating slices is
   based on the order of axis in [s].
 
