@@ -30,4 +30,5 @@ depends: [
   "ocamlbuild" {build}
   "ocamlfind" {build}
   "plplot"
+  "lacaml"
 ]
