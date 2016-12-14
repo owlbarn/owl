@@ -30,6 +30,8 @@ let fortran2c_matrix x =
 
 (* matrix creation operations *)
 
+let kind x = Array2.kind x
+
 let size_in_bytes x = Array2.size_in_bytes x
 
 let shape x = (Array2.dim1 x, Array2.dim2 x)
@@ -48,7 +50,39 @@ let zeros k m n = (_make0 k) m n |> fortran2c_matrix
 
 let create k m n a =
   let x = empty k m n in
-  fill x a;
-  x
+  fill x a; x
 
 let ones k m n = create k m n (_one k)
+
+let eye k n =
+  let x = zeros k n n in
+  let a = Owl_dense_common._one k in
+  for i = 0 to n - 1 do
+    Array2.unsafe_set x i i a
+  done; x
+
+let sequential k m n =
+  let x = empty k m n in
+  let c = ref (Owl_dense_common._zero k) in
+  let a = Owl_dense_common._one k in
+  let _op = Owl_dense_common._add_elt k in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      c := _op !c a;
+      Array2.unsafe_set x i j !c
+    done
+  done; x
+
+let vector k n = empty k 1 n
+
+let vector_ones k n = ones k 1 n
+
+let vector_zeros k n = zeros k 1 n
+
+(* FIXME *)
+let linspace a b n =
+  let x = empty Float64 1 n in
+  let c = ((b -. a) /. (float_of_int (n - 1))) in
+  for i = 0 to n - 1 do
+    x.{0,i} <- a +. c *. (float_of_int i)
+  done; x
