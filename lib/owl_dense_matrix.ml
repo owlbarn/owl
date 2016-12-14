@@ -368,8 +368,7 @@ let map_at_col f x j = mapi_at_col (fun _ _ y -> f y) x j
 let add x1 x2 =
   let y1 = to_ndarray x1 in
   let y2 = to_ndarray x2 in
-  let _op = Owl_dense_common._add (Array2.kind x1) in
-  let y3 = _op y1 y2 in
+  let y3 = Owl_dense_common.add y1 y2 in
   of_ndarray y3
 
 let ( +@ ) = add
@@ -377,8 +376,7 @@ let ( +@ ) = add
 let sub x1 x2 =
   let y1 = to_ndarray x1 in
   let y2 = to_ndarray x2 in
-  let _op = Owl_dense_common._sub (Array2.kind x1) in
-  let y3 = _op y1 y2 in
+  let y3 = Owl_dense_common.sub y1 y2 in
   of_ndarray y3
 
 let ( -@ ) = sub
@@ -386,8 +384,7 @@ let ( -@ ) = sub
 let mul x1 x2 =
   let y1 = to_ndarray x1 in
   let y2 = to_ndarray x2 in
-  let _op = Owl_dense_common._mul (Array2.kind x1) in
-  let y3 = _op y1 y2 in
+  let y3 = Owl_dense_common.mul y1 y2 in
   of_ndarray y3
 
 let ( *@ ) = mul
@@ -395,8 +392,7 @@ let ( *@ ) = mul
 let div x1 x2 =
   let y1 = to_ndarray x1 in
   let y2 = to_ndarray x2 in
-  let _op = Owl_dense_common._div (Array2.kind x1) in
-  let y3 = _op y1 y2 in
+  let y3 = Owl_dense_common.div y1 y2 in
   of_ndarray y3
 
 let ( /@ ) = div
