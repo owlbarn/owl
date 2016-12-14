@@ -1,3 +1,5 @@
+open Bigarray
+
 module M = Owl_dense_matrix
 
 let test_op s c op =

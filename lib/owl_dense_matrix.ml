@@ -368,7 +368,7 @@ let map_at_col f x j = mapi_at_col (fun _ _ y -> f y) x j
 let add x1 x2 =
   let y1 = to_ndarray x1 in
   let y2 = to_ndarray x2 in
-  let y3 = Owl_dense_common.add y1 y2 in
+  let y3 = Owl_dense_ndarray.add y1 y2 in
   of_ndarray y3
 
 let ( +@ ) = add
@@ -376,7 +376,7 @@ let ( +@ ) = add
 let sub x1 x2 =
   let y1 = to_ndarray x1 in
   let y2 = to_ndarray x2 in
-  let y3 = Owl_dense_common.sub y1 y2 in
+  let y3 = Owl_dense_ndarray.sub y1 y2 in
   of_ndarray y3
 
 let ( -@ ) = sub
@@ -384,7 +384,7 @@ let ( -@ ) = sub
 let mul x1 x2 =
   let y1 = to_ndarray x1 in
   let y2 = to_ndarray x2 in
-  let y3 = Owl_dense_common.mul y1 y2 in
+  let y3 = Owl_dense_ndarray.mul y1 y2 in
   of_ndarray y3
 
 let ( *@ ) = mul
@@ -392,7 +392,7 @@ let ( *@ ) = mul
 let div x1 x2 =
   let y1 = to_ndarray x1 in
   let y2 = to_ndarray x2 in
-  let y3 = Owl_dense_common.div y1 y2 in
+  let y3 = Owl_dense_ndarray.div y1 y2 in
   of_ndarray y3
 
 let ( /@ ) = div
@@ -405,20 +405,17 @@ let dot x1 x2 =
 
 let abs x =
   let y1 = to_ndarray x in
-  let _op = Owl_dense_common._abs (Array2.kind x) in
-  let y2 = _op y1 in
+  let y2 = Owl_dense_ndarray.abs y1 in
   of_ndarray y2
 
 let neg x =
   let y1 = to_ndarray x in
-  let _op = Owl_dense_common._neg (Array2.kind x) in
-  let y2 = _op y1 in
+  let y2 = Owl_dense_ndarray.neg y1 in
   of_ndarray y2
 
 let sum x =
   let y = to_ndarray x in
-  let _op = Owl_dense_common._sum (Array2.kind x) in
-  _op y
+  Owl_dense_ndarray.sum y
 
 let sum_cols x =
   let y = ones (Array2.kind x) (col_num x) 1 in

@@ -1,5 +1,3 @@
-open Bigarray
-
 module M = Owl_dense_real
 
 let test_op s c op =
