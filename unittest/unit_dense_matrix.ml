@@ -1,5 +1,7 @@
 (* Build with `ocamlbuild -pkg alcotest simple.byte` *)
 
+let matrix = Alcotest.testable Fmt.float Owl.Dense.Matrix.is_equal
+
 (* A module with functions to test *)
 module To_test = struct
   let capit letter = Char.uppercase letter
