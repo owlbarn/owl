@@ -23,6 +23,9 @@ type ('a, 'b) vec_copy0 = ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) vec ->
 type ('a, 'b) mat = ('a, 'b, fortran_layout) Array2.t
 type ('a, 'b) mat_mop0 = ?m:int -> ?n:int -> 'a -> ?ar:int -> ?ac:int -> ('a, 'b) mat -> unit
 
+type ('a, 'b) mat_op01 = ('a, 'b, c_layout) Array2.t -> ('a, 'b, c_layout) Array2.t -> unit
+type ('a, 'b) mat_op02 = ('a, 'b, c_layout) Array2.t -> int -> int -> unit
+
 (* Some constants *)
 
 let _zero : type a b. (a, b) kind -> a = function
@@ -398,3 +401,24 @@ let _uniform : type a b. (a, b) kind -> (a, b) vec_unop4 = function
   | Float32   -> Lacaml.S.Vec.random
   | Float64   -> Lacaml.D.Vec.random
   | _         -> failwith "_uniform: unsupported operation"
+
+let _transpose_copy : type a b. (a, b) kind -> (a, b) mat_op01 = function
+  | Float32   -> Gsl.Matrix.Single.transpose
+  | Float64   -> Gsl.Matrix.transpose
+  | Complex32 -> Gsl.Matrix_complex.Single.transpose
+  | Complex64 -> Gsl.Matrix_complex.transpose
+  | _         -> failwith "_transpose_copy: unsupported operation"
+
+let _swap_rows : type a b. (a, b) kind -> (a, b) mat_op02 = function
+  | Float32   -> Gsl.Matrix.Single.swap_rows
+  | Float64   -> Gsl.Matrix.swap_rows
+  | Complex32 -> Gsl.Matrix_complex.Single.swap_rows
+  | Complex64 -> Gsl.Matrix_complex.swap_rows
+  | _         -> failwith "_swap_rows: unsupported operation"
+
+let _swap_cols : type a b. (a, b) kind -> (a, b) mat_op02 = function
+  | Float32   -> Gsl.Matrix.Single.swap_columns
+  | Float64   -> Gsl.Matrix.swap_columns
+  | Complex32 -> Gsl.Matrix_complex.Single.swap_columns
+  | Complex64 -> Gsl.Matrix_complex.swap_columns
+  | _         -> failwith "_swap_cols: unsupported operation"

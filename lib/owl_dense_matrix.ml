@@ -12,6 +12,8 @@ type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 type area = { a : int; b : int; c : int; d : int }
 
+type mat_d = (float, Bigarray.float64_elt) mat
+
 (* transform between different format *)
 
 let to_ndarray x = Obj.magic (Bigarray.genarray_of_array2 x)
@@ -32,7 +34,7 @@ let fortran2c_matrix x =
 
 (* matrix creation operations *)
 
-let kind x = Array2.kind x
+let _kind x = Array2.kind x
 
 let size_in_bytes x = Array2.size_in_bytes x
 
@@ -46,7 +48,7 @@ let numel x = (row_num x) * (col_num x)
 
 let fill x a = Array2.fill x a
 
-let empty ?(k=Float64) m n = Array2.create k c_layout m n
+let empty k m n = Array2.create k c_layout m n
 
 (*
 let empty' : type a b . ?k : (a, b) kind -> int -> int -> (a, b) mat =
@@ -54,25 +56,34 @@ let empty' : type a b . ?k : (a, b) kind -> int -> int -> (a, b) mat =
   match k with
   | None -> Array2.create Float64 c_layout m n
   | Some k -> Array2.create k c_layout m n
+
+
+let empty' : type a b . ?k : typ -> int -> int -> (a, b) mat =
+  fun ?(k=S) m n ->
+  match k with
+  | S -> Array2.create Float32 c_layout m n
+  | D -> Array2.create Float64 c_layout m n
+  | C -> Array2.create Complex32 c_layout m n
+  | Z -> Array2.create Complex64 c_layout m n
 *)
 
-let zeros ?(k=Float64) m n = (_make0 k) m n |> fortran2c_matrix
+let zeros k m n = (_make0 k) m n |> fortran2c_matrix
 
-let create ?(k=Float64) m n a =
-  let x = empty ~k m n in
+let create k m n a =
+  let x = empty k m n in
   fill x a; x
 
-let ones ?(k=Float64) m n = create ~k m n (_one k)
+let ones k m n = create k m n (_one k)
 
-let eye ?(k=Float64) n =
-  let x = zeros ~k n n in
+let eye k n =
+  let x = zeros k n n in
   let a = Owl_dense_common._one k in
   for i = 0 to n - 1 do
     Array2.unsafe_set x i i a
   done; x
 
-let sequential ?(k=Float64) m n =
-  let x = empty ~k m n in
+let sequential k m n =
+  let x = empty k m n in
   let c = ref (Owl_dense_common._zero k) in
   let a = Owl_dense_common._one k in
   let _op = Owl_dense_common._add_elt k in
@@ -83,15 +94,15 @@ let sequential ?(k=Float64) m n =
     done
   done; x
 
-let vector ?(k=Float64) n = empty ~k 1 n
+let vector k n = empty k 1 n
 
-let vector_ones ?(k=Float64) n = ones ~k 1 n
+let vector_ones k n = ones k 1 n
 
-let vector_zeros ?(k=Float64) n = zeros ~k 1 n
+let vector_zeros k n = zeros k 1 n
 
 (* FIXME *)
 let linspace a b n =
-  let x = empty 1 n in
+  let x = empty Float64 1 n in
   let c = ((b -. a) /. (float_of_int (n - 1))) in
   for i = 0 to n - 1 do
     x.{0,i} <- a +. c *. (float_of_int i)
@@ -126,7 +137,7 @@ let row x i =
 
 let col x j =
   let m, n = shape x in
-  let y = empty ~k:(Array2.kind x) m 1 in
+  let y = empty (Array2.kind x) m 1 in
   for i = 0 to m - 1 do
     Array2.unsafe_set y i 0 (Array2.unsafe_get x i j)
   done; y
@@ -149,11 +160,11 @@ let ( >> ) = copy_to
 let ( << ) x1 x2 = copy_to x2 x1
 
 let clone_area x r =
-  let y = empty ~k:(Array2.kind x) (r.c - r.a + 1) (r.d - r.b + 1) in
+  let y = empty (Array2.kind x) (r.c - r.a + 1) (r.d - r.b + 1) in
   copy_area_to x r y (area_of y)
 
 let clone x =
-  let y = empty ~k:(Array2.kind x) (row_num x) (col_num x) in
+  let y = empty (Array2.kind x) (row_num x) (col_num x) in
   Array2.blit x y; y
 
 let copy_row_to v x i =
@@ -167,7 +178,7 @@ let copy_col_to v x i =
 let concat_vertical x1 x2 =
   let m1, m2 = row_num x1, row_num x2 in
   let n1, n2 = col_num x1, col_num x2 in
-  let x3 = empty ~k:(Array2.kind x1) (m1 + m2) (min n1 n2) in
+  let x3 = empty (Array2.kind x1) (m1 + m2) (min n1 n2) in
   for i = 0 to (m1 + m2) - 1 do
     let z = if i < m1 then row x1 i else row x2 (i - m1) in
     copy_row_to z x3 i
@@ -178,7 +189,7 @@ let ( @= ) = concat_vertical
 let concat_horizontal x1 x2 =
   let m1, m2 = row_num x1, row_num x2 in
   let n1, n2 = col_num x1, col_num x2 in
-  let x3 = empty ~k:(Array2.kind x1) (min m1 m2) (n1 + n2)  in
+  let x3 = empty (Array2.kind x1) (min m1 m2) (n1 + n2)  in
   for i = 0 to (row_num x3) - 1 do
     for j = 0 to n1 - 1 do x3.{i,j} <- x1.{i,j} done;
     for j = 0 to n2 - 1 do x3.{i,j+n1} <- x2.{i,j} done;
@@ -188,22 +199,24 @@ let ( @|| ) = concat_horizontal
 
 let rows x l =
   let m, n = Array.length (l), col_num x in
-  let y = empty ~k:(Array2.kind x) m n in
+  let y = empty (Array2.kind x) m n in
   Array.iteri (fun i j -> copy_row_to (row x j) y i) l; y
 
 let cols x l =
   let m, n = row_num x, Array.length (l) in
-  let y = empty ~k:(Array2.kind x) m n in
+  let y = empty (Array2.kind x) m n in
   Array.iteri (fun i j -> copy_col_to (col x j) y i) l; y
 
 let swap_rows x i i' =
   let y = clone x in
-  Gsl.Matrix.swap_rows y i i';
+  let _op = Owl_dense_common._swap_rows (Array2.kind x) in
+  _op y i i';
   y
 
 let swap_cols x j j' =
   let y = clone x in
-  Gsl.Matrix.swap_columns y j j';
+  let _op = Owl_dense_common._swap_cols (Array2.kind x) in
+  _op y j j';
   y
 
 let swap_rowcol x i j =
@@ -212,8 +225,9 @@ let swap_rowcol x i j =
   y
 
 let transpose x =
-  let y = empty ~k:(Array2.kind x) (col_num x) (row_num x) in
-  Gsl.Matrix.transpose y x; y
+  let y = empty (Array2.kind x) (col_num x) (row_num x) in
+  let _op = Owl_dense_common._transpose_copy (Array2.kind x) in
+  _op y x; y
 
 let replace_row v x i =
   let y = clone x in
@@ -255,7 +269,7 @@ let iteri_cols f x =
 let iter_cols f x = iteri_cols (fun _ y -> f y) x
 
 let mapi f x =
-  let y = empty ~k:(Array2.kind x) (row_num x) (col_num x) in
+  let y = empty (Array2.kind x) (row_num x) (col_num x) in
   iteri (fun i j z -> Array2.unsafe_set y i j (f i j z)) x; y
 
 let ___map_test f x =
@@ -276,7 +290,7 @@ let mapi_cols f x =
 let map_cols f x = mapi_cols (fun _ y -> f y) x
 
 let mapi_by_row d f x =
-  let y = empty ~k:(Array2.kind x) (row_num x) d in
+  let y = empty (Array2.kind x) (row_num x) d in
   iteri_rows (fun i z ->
     copy_row_to (f i z) y i
   ) x; y
@@ -284,7 +298,7 @@ let mapi_by_row d f x =
 let map_by_row d f x = mapi_by_row d (fun _ y -> f y) x
 
 let mapi_by_col d f x =
-  let y = empty ~k:(Array2.kind x) d (col_num x) in
+  let y = empty (Array2.kind x) d (col_num x) in
   iteri_cols (fun j z ->
     copy_col_to (f j z) y j
   ) x; y
@@ -390,7 +404,7 @@ let ( /@ ) = div
 (* TODO: way too slow! need to find a solution! *)
 let dot x1 x2 =
   let open Gsl.Blas in
-  let x3 = empty ~k:(Array2.kind x1) (row_num x1) (col_num x2) in
+  let x3 = empty (Array2.kind x1) (row_num x1) (col_num x2) in
   gemm ~ta:NoTrans ~tb:NoTrans ~alpha:1. ~beta:0. ~a:x1 ~b:x2 ~c:x3; x3
 
 let abs x =
@@ -411,23 +425,23 @@ let sum x =
   _op y
 
 let sum_cols x =
-  let y = ones ~k:(Array2.kind x) (col_num x) 1 in
+  let y = ones (Array2.kind x) (col_num x) 1 in
   dot x y
 
 let sum_rows x =
-  let y = ones ~k:(Array2.kind x) 1 (row_num x) in
+  let y = ones (Array2.kind x) 1 (row_num x) in
   dot y x
 
 let average x = (sum x) /. (float_of_int (numel x))
 
 let average_cols x =
   let m, n = shape x in
-  let y = create ~k:(Array2.kind x) n 1 (1. /. (float_of_int n)) in
+  let y = create (Array2.kind x) n 1 (1. /. (float_of_int n)) in
   dot x y
 
 let average_rows x =
   let m, n = shape x in
-  let y = create ~k:(Array2.kind x) 1 m (1. /. (float_of_int m)) in
+  let y = create (Array2.kind x) 1 m (1. /. (float_of_int m)) in
   dot y x
 
 let stderr = None
@@ -575,7 +589,7 @@ let sigmoid x = map (fun y -> 1. /. (1. +. (Pervasives.exp (-1. *. y)))) x
 
 let diag x =
   let m = Pervasives.min (row_num x) (col_num x) in
-  let y = empty ~k:(Array2.kind x) 1 m in
+  let y = empty (Array2.kind x) 1 m in
   for i = 0 to m - 1 do y.{0,i} <- x.{i,i} done; y
 
 let trace x = sum (diag x)
@@ -583,7 +597,10 @@ let trace x = sum (diag x)
 let add_diag x a =
   let m = Pervasives.min (row_num x) (col_num x) in
   let y = clone x in
-  for i = 0 to m - 1 do y.{i,i} <- x.{i,i} +. a done; y
+  let _op = Owl_dense_common._add_elt (Array2.kind x) in
+  for i = 0 to m - 1 do
+    y.{i,i} <- _op x.{i,i} a
+  done; y
 
 
 (* formatted input / output operations *)
@@ -611,7 +628,7 @@ let load_txt f =
   let m = ref 1 in (* counting lines in the input file *)
   let _ = try while true do ignore(input_line h); m := !m + 1
     done with End_of_file -> () in
-  let x = zeros !m n in seek_in h 0;
+  let x = zeros Float64 !m n in seek_in h 0;
   for i = 0 to !m - 1 do
     let s = Str.split (Str.regexp "\t") (input_line h) in
     List.iteri (fun j y -> x.{i,j} <- float_of_string y) s
@@ -638,13 +655,13 @@ let pp_dsmat x = let open Owl_pretty in
 (* some other uncategorised functions *)
 
 let uniform ?(scale=1.) k m n =
-  let x = empty m n in
+  let x = empty k m n in
   iteri (fun i j _ ->
     x.{i,j} <- Owl_stats.Rnd.uniform () *. scale
   ) x; x
 
 let gaussian ?(sigma=1.) k m n =
-  let x = empty m n in
+  let x = empty k m n in
   iteri (fun i j _ -> x.{i,j} <- Owl_stats.Rnd.gaussian ~sigma ()) x; x
 
 let vector_uniform k n = uniform k 1 n
@@ -683,20 +700,22 @@ let shuffle_cols x =
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols
 
-let reshape m n x = of_array (to_array x) m n
+let reshape m n x =
+  let x = genarray_of_array2 x in
+  reshape_2 x m n
 
 let meshgrid xa xb ya yb xn yn =
   let u = linspace xa xb xn in
   let v = linspace ya yb yn in
-  let x = map_by_row xn (fun _ -> u) (empty yn xn) in
-  let y = map_by_row yn (fun _ -> v) (empty xn yn) in
+  let x = map_by_row xn (fun _ -> u) (empty Float64 yn xn) in
+  let y = map_by_row yn (fun _ -> v) (empty Float64 xn yn) in
   x, transpose y
 
 let meshup x y =
   let xn = numel x in
   let yn = numel y in
-  let x = map_by_row xn (fun _ -> x) (empty yn xn) in
-  let y = map_by_row yn (fun _ -> y) (empty xn yn) in
+  let x = map_by_row xn (fun _ -> x) (empty Float64 yn xn) in
+  let y = map_by_row yn (fun _ -> y) (empty Float64 xn yn) in
   x, transpose y
 
 let ( @@ ) f x = map f x
