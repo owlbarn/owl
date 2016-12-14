@@ -273,26 +273,26 @@ val shuffle: ('a, 'b) mat -> ('a, 'b) mat
 
 (** {6 Input/Output and helper functions} *)
 
-val to_array : ('a, 'b) mat -> float array
+val to_array : mat_d -> float array
 
-val of_array : float array -> int -> int -> ('a, 'b) mat
+val of_array : float array -> int -> int -> mat_d
 
-val to_arrays : ('a, 'b) mat -> float array array
+val to_arrays : mat_d -> float array array
 
-val of_arrays : float array array -> ('a, 'b) mat
+val of_arrays : float array array -> mat_d
 
 val to_ndarray : ('a, 'b) mat -> ('a, 'b) Owl_dense_ndarray.t
 
 val of_ndarray : ('a, 'b) Owl_dense_ndarray.t -> ('a, 'b) mat
 
-val print : ('a, 'b) mat -> unit
+val print : (float, 'b) mat -> unit
 
-val pp_dsmat : ('a, 'b) mat -> unit
+val pp_dsmat : (float, 'b) mat -> unit
 
-val save : ('a, 'b) mat -> string -> unit
+val save : (float, 'b) mat -> string -> unit
 
-val load : string -> ('a, 'b) mat
+val load : string -> (float, 'b) mat
 
-val save_txt : ('a, 'b) mat -> string -> unit
+val save_txt : mat_d -> string -> unit
 
-val load_txt : string -> ('a, 'b) mat
+val load_txt : string -> mat_d
