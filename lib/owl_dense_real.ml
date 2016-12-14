@@ -12,6 +12,24 @@ type mat = Gsl.Matrix.matrix
 
 type area = { a : int; b : int; c : int; d : int }
 
+(* transform between different format *)
+
+let to_ndarray x = Obj.magic (Bigarray.genarray_of_array2 x)
+
+let of_ndarray x = Bigarray.array2_of_genarray (Obj.magic x)
+
+(* c_layout -> fortran_layout *)
+let c2fortran_matrix x =
+  let y = Bigarray.genarray_of_array2 x in
+  let y = Genarray.change_layout y fortran_layout in
+  Bigarray.array2_of_genarray y
+
+(* fortran_layout -> c_layout *)
+let fortran2c_matrix x =
+  let y = Bigarray.genarray_of_array2 x in
+  let y = Genarray.change_layout y c_layout in
+  Bigarray.array2_of_genarray y
+
 (* matrix creation operations *)
 
 let size = None
@@ -56,10 +74,6 @@ let linspace a b n =
   for i = 0 to n - 1 do
     x.{0,i} <- a +. c *. (float_of_int i)
   done; x
-
-let to_ndarray x = Obj.magic (Bigarray.genarray_of_array2 x)
-
-let of_ndarray x = Bigarray.array2_of_genarray (Obj.magic x)
 
 (* matrix manipulations *)
 
@@ -221,6 +235,11 @@ let iter_cols f x = iteri_cols (fun _ y -> f y) x
 let mapi f x =
   let y = empty (row_num x) (col_num x) in
   iteri (fun i j z -> Array2.unsafe_set y i j (f i j z)) x; y
+
+let ___map_test f x =
+  let x = c2fortran_matrix x in
+  let y = Lacaml.D.Mat.map f x in
+  fortran2c_matrix y
 
 let map f x = mapi (fun _ _ y -> f y) x
 
