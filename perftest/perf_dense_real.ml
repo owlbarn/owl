@@ -9,7 +9,7 @@ let test_op s c op =
     ttime := !ttime +. (t1 -. t0)
   done;
   let _ = ttime := !ttime /. (float_of_int c) in
-  Printf.printf "| %s :\t %.4fs \n" s !ttime;
+  Printf.printf "| %s :\t %.8fs \n" s !ttime;
   flush stdout
 
 let _ =
@@ -19,6 +19,8 @@ let _ =
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
   let x, y = (M.uniform m n), (M.uniform m n) in
+  test_op "empty      " c (fun () -> M.empty m n);
+  test_op "zeros      " c (fun () -> M.zeros m n);
   test_op "col        " c (fun () -> M.col x (n-1));
   test_op "row        " c (fun () -> M.row x (m-1));
   test_op "cols       " c (fun () -> M.cols x [|1;2|]);
