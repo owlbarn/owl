@@ -269,3 +269,30 @@ val shuffle_rows : ('a, 'b) mat -> ('a, 'b) mat
 val shuffle_cols : ('a, 'b) mat -> ('a, 'b) mat
 
 val shuffle: ('a, 'b) mat -> ('a, 'b) mat
+
+
+(** {6 Input/Output and helper functions} *)
+
+val to_array : ('a, 'b) mat -> float array
+
+val of_array : float array -> int -> int -> ('a, 'b) mat
+
+val to_arrays : ('a, 'b) mat -> float array array
+
+val of_arrays : float array array -> ('a, 'b) mat
+
+val to_ndarray : ('a, 'b) mat -> ('a, 'b) Owl_dense_ndarray.t
+
+val of_ndarray : ('a, 'b) Owl_dense_ndarray.t -> ('a, 'b) mat
+
+val print : ('a, 'b) mat -> unit
+
+val pp_dsmat : ('a, 'b) mat -> unit
+
+val save : ('a, 'b) mat -> string -> unit
+
+val load : string -> ('a, 'b) mat
+
+val save_txt : ('a, 'b) mat -> string -> unit
+
+val load_txt : string -> ('a, 'b) mat
