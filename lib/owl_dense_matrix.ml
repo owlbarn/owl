@@ -475,28 +475,24 @@ let equal_or_smaller x1 x2 = x1 <= x2
 let ( <=@ ) = ( <= )
 
 let is_zero x =
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let x = dr_mat_to_matptr x in
-  (gsl_matrix_isnull x) = 1
+  let y = to_ndarray x in
+  Owl_dense_ndarray.is_zero y
 
 let is_positive x =
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let x = dr_mat_to_matptr x in
-  (gsl_matrix_ispos x) = 1
+  let y = to_ndarray x in
+  Owl_dense_ndarray.is_positive y
 
 let is_negative x =
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let x = dr_mat_to_matptr x in
-  (gsl_matrix_isneg x) = 1
+  let y = to_ndarray x in
+  Owl_dense_ndarray.is_negative y
 
 let is_nonnegative x =
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let x = dr_mat_to_matptr x in
-  (gsl_matrix_isnonneg x) = 1
+  let y = to_ndarray x in
+  Owl_dense_ndarray.is_nonnegative y
+
+let is_nonpositive x =
+  let y = to_ndarray x in
+  Owl_dense_ndarray.is_nonpositive y
 
 let min x =
   let open Owl_foreign in
@@ -549,41 +545,58 @@ let minmax x =
   let xmax, arow, acol = max x in
   xmin, xmax, irow, icol, arow, acol
 
-let ( +$ ) x a =
-  let y = clone x in
-  Gsl.Matrix.add_constant y a; y
+let add_scalar x a =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.add_scalar y a in
+  of_ndarray y
 
-let ( $+ ) a x = ( +$ ) x a
+let sub_scalar x a =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.sub_scalar y a in
+  of_ndarray y
 
-let ( -$ ) x a = ( +$ ) x (-1. *. a)
+let mul_scalar x a =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.mul_scalar y a in
+  of_ndarray y
 
-let ( $- ) a x = ( -$ ) x a
+let div_scalar x a =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.div_scalar y a in
+  of_ndarray y
 
-let ( *$ ) x a =
-  let y = clone x in
-  Gsl.Matrix.scale y a; y
+let ( +$ ) x a = add_scalar x a
 
-let ( $* ) a x = ( *$ ) x a
+let ( $+ ) a x = add_scalar x a
 
-let ( /$ ) x a = ( *$ ) x (1. /. a)
+let ( -$ ) x a = sub_scalar x a
 
-let ( $/ ) a x = ( /$ ) x a
+let ( $- ) a x = sub_scalar x a
 
-let add_scalar = ( +$ )
+let ( *$ ) x a = mul_scalar x a
 
-let sub_scalar = ( -$ )
+let ( $* ) a x = mul_scalar x a
 
-let mul_scalar = ( *$ )
+let ( /$ ) x a = div_scalar x a
 
-let div_scalar = ( /$ )
+let ( $/ ) a x = div_scalar x a
 
 (* advanced matrix methematical operations *)
 
-let log x = map log x
+let log x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.log y in
+  of_ndarray y
 
-let log10 x = map log10 x
+let log10 x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.log10 y in
+  of_ndarray y
 
-let exp x = map exp x
+let exp x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.exp y in
+  of_ndarray y
 
 let sigmoid x = map (fun y -> 1. /. (1. +. (Pervasives.exp (-1. *. y)))) x
 
@@ -687,15 +700,17 @@ let draw_cols ?(replacement=true) x c =
 let shuffle_rows x =
   let y = clone x in
   let m, n = shape x in
+  let _op = Owl_dense_common._swap_rows (Array2.kind x) in
   for i = 0 to m - 1 do
-    Gsl.Matrix.swap_rows y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
+    _op y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
   done; y
 
 let shuffle_cols x =
   let y = clone x in
   let m, n = shape x in
+  let _op = Owl_dense_common._swap_cols (Array2.kind x) in
   for i = 0 to n - 1 do
-    Gsl.Matrix.swap_columns y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
+    _op y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
   done; y
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols

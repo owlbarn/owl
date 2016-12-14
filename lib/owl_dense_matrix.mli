@@ -102,3 +102,170 @@ val replace_col : ('a, 'b) mat -> ('a, 'b) mat -> int -> ('a, 'b) mat
 val swap_rows : ('a, 'b) mat -> int -> int -> ('a, 'b) mat
 
 val swap_cols : ('a, 'b) mat -> int -> int -> ('a, 'b) mat
+
+
+(** {6 Iterate elements, columns, and rows.} *)
+
+val iteri : (int -> int -> 'a -> unit) -> ('a, 'b) mat -> unit
+
+val iter : ('a -> unit) -> ('a, 'b) mat -> unit
+
+val mapi : (int -> int -> 'a -> 'a) -> ('a, 'b) mat -> ('a, 'b) mat
+
+val map : ('a -> 'a) -> ('a, 'b) mat -> ('a, 'b) mat
+
+val fold : ('c -> 'a -> 'c) -> 'c -> ('a, 'b) mat -> 'c
+
+val filteri : (int -> int -> 'a -> bool) -> ('a, 'b) mat -> (int * int) array
+
+val filter : ('a -> bool) -> ('a, 'b) mat -> (int * int) array
+
+val iteri_rows : (int -> ('a, 'b) mat -> unit) -> ('a, 'b) mat -> unit
+
+val iter_rows : (('a, 'b) mat -> unit) -> ('a, 'b) mat -> unit
+
+val iteri_cols : (int -> ('a, 'b) mat -> unit) -> ('a, 'b) mat -> unit
+
+val iter_cols : (('a, 'b) mat -> unit) -> ('a, 'b) mat -> unit
+
+val filteri_rows : (int -> ('a, 'b) mat -> bool) -> ('a, 'b) mat -> int array
+
+val filter_rows : (('a, 'b) mat -> bool) -> ('a, 'b) mat -> int array
+
+val filteri_cols : (int -> ('a, 'b) mat -> bool) -> ('a, 'b) mat -> int array
+
+val filter_cols : (('a, 'b) mat -> bool) -> ('a, 'b) mat -> int array
+
+val fold_rows : ('c -> ('a, 'b) mat -> 'c) -> 'c -> ('a, 'b) mat -> 'c
+
+val fold_cols : ('c -> ('a, 'b) mat -> 'c) -> 'c -> ('a, 'b) mat -> 'c
+
+val mapi_rows : (int -> ('a, 'b) mat -> 'c) -> ('a, 'b) mat -> 'c array
+
+val map_rows : (('a, 'b) mat -> 'c) -> ('a, 'b) mat -> 'c array
+
+val mapi_cols : (int -> ('a, 'b) mat -> 'c) -> ('a, 'b) mat -> 'c array
+
+val map_cols : (('a, 'b) mat -> 'c) -> ('a, 'b) mat -> 'c array
+
+val mapi_by_row : int -> (int -> ('a, 'b) mat -> ('a, 'b) mat) -> ('a, 'b) mat -> ('a, 'b) mat
+
+val map_by_row : int -> (('a, 'b) mat -> ('a, 'b) mat) -> ('a, 'b) mat -> ('a, 'b) mat
+
+val mapi_by_col : int -> (int -> ('a, 'b) mat -> ('a, 'b) mat) -> ('a, 'b) mat -> ('a, 'b) mat
+
+val map_by_col : int -> (('a, 'b) mat -> ('a, 'b) mat) -> ('a, 'b) mat -> ('a, 'b) mat
+
+val mapi_at_row : (int -> int -> 'a -> 'a) -> ('a, 'b) mat -> int -> ('a, 'b) mat
+
+val map_at_row : ('a -> 'a) -> ('a, 'b) mat -> int -> ('a, 'b) mat
+
+val mapi_at_col : (int -> int -> 'a -> 'a) -> ('a, 'b) mat -> int -> ('a, 'b) mat
+
+val map_at_col : ('a -> 'a) -> ('a, 'b) mat -> int -> ('a, 'b) mat
+
+
+(** {6 Examine the elements in a matrix} *)
+
+val exists : ('a -> bool) -> ('a, 'b) mat -> bool
+
+val not_exists : ('a -> bool) -> ('a, 'b) mat -> bool
+
+val for_all : ('a -> bool) -> ('a, 'b) mat -> bool
+
+
+(** {6 Compare two matrices} *)
+
+val is_equal : ('a, 'b) mat -> ('a, 'b) mat -> bool
+
+val is_unequal : ('a, 'b) mat -> ('a, 'b) mat -> bool
+
+val is_greater : ('a, 'b) mat -> ('a, 'b) mat -> bool
+
+val is_smaller : ('a, 'b) mat -> ('a, 'b) mat -> bool
+
+val equal_or_greater : ('a, 'b) mat -> ('a, 'b) mat -> bool
+
+val equal_or_smaller : ('a, 'b) mat -> ('a, 'b) mat -> bool
+
+
+(** {6 Basic mathematical operations of matrices} *)
+
+val add : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+
+val sub : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+
+val mul : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+
+val div : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+
+(* val dot : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat *)
+
+val abs : ('a, 'b) mat -> ('a, 'b) mat
+
+val neg : ('a, 'b) mat -> ('a, 'b) mat
+
+val add_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+
+val sub_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+
+val mul_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+
+val div_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+
+val sum : ('a, 'b) mat -> 'a
+
+val average : (float, 'b) mat -> float
+
+val min : (float, 'b) mat -> float * int * int
+
+val max : (float, 'b) mat -> float * int * int
+
+val minmax : (float, 'b) mat -> float * float * int * int * int * int
+
+val is_zero : ('a, 'b) mat -> bool
+
+val is_positive : ('a, 'b) mat -> bool
+
+val is_negative : ('a, 'b) mat -> bool
+
+val is_nonpositive : ('a, 'b) mat -> bool
+
+val is_nonnegative : ('a, 'b) mat -> bool
+
+val log : ('a, 'b) mat -> ('a, 'b) mat
+
+val log10 : ('a, 'b) mat -> ('a, 'b) mat
+
+val exp : ('a, 'b) mat -> ('a, 'b) mat
+
+val sigmoid : mat_d -> mat_d
+
+val sum_rows : mat_d -> mat_d
+
+val sum_cols : mat_d -> mat_d
+
+val average_rows : mat_d -> mat_d
+
+val average_cols : mat_d -> mat_d
+
+val min_rows : (float, 'b) mat -> (float * int * int) array
+
+val min_cols : (float, 'b) mat -> (float * int * int) array
+
+val max_rows : (float, 'b) mat -> (float * int * int) array
+
+val max_cols : (float, 'b) mat -> (float * int * int) array
+
+
+(** {6 Randomisation functions} *)
+
+val draw_rows : ?replacement:bool -> ('a, 'b) mat -> int -> ('a, 'b) mat * int array
+
+val draw_cols : ?replacement:bool -> ('a, 'b) mat -> int -> ('a, 'b) mat * int array
+
+val shuffle_rows : ('a, 'b) mat -> ('a, 'b) mat
+
+val shuffle_cols : ('a, 'b) mat -> ('a, 'b) mat
+
+val shuffle: ('a, 'b) mat -> ('a, 'b) mat
