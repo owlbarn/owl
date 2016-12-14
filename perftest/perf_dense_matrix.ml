@@ -1,4 +1,4 @@
-module M = Owl_dense_real
+module M = Owl_dense_matrix
 
 let test_op s c op =
   let ttime = ref 0. in
@@ -18,9 +18,9 @@ let _ =
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
-  let x, y = (M.uniform m n), (M.uniform m n) in
-  test_op "empty      " c (fun () -> M.empty m n);
-  test_op "zeros      " c (fun () -> M.zeros m n);
+  let x, y = (M.uniform Float64 m n), (M.uniform Float64 m n) in
+  test_op "empty      " c (fun () -> M.empty Float64 m n);
+  test_op "zeros      " c (fun () -> M.zeros Float64 m n);
   test_op "col        " c (fun () -> M.col x (n-1));
   test_op "row        " c (fun () -> M.row x (m-1));
   test_op "cols       " c (fun () -> M.cols x [|1;2|]);
@@ -43,7 +43,7 @@ let _ =
   test_op "sub        " c (fun () -> M.sub x y);
   test_op "mul        " c (fun () -> M.mul x y);
   test_op "div        " c (fun () -> M.div x y);
-  test_op "dot        " 0 (fun () -> M.dot x y);
+  test_op "dot        " 0 (fun () -> ());
   test_op "+$         " c (fun () -> M.(x +$ 1.));
   test_op "*$         " c (fun () -> M.(x *$ 1.));
   test_op "abs        " c (fun () -> M.abs x);
@@ -71,8 +71,7 @@ let _ =
   test_op "load       " c (fun () -> M.load "test_matrix0.tmp");
   test_op "save_txt   " c (fun () -> M.save_txt x "test_matrix1.tmp");
   test_op "load_txt   " c (fun () -> M.load_txt "test_matrix1.tmp");
-  test_op "uniform_int" c (fun () -> M.uniform_int m n);
-  test_op "uniform    " c (fun () -> M.uniform m n);
-  test_op "gaussian   " c (fun () -> M.gaussian m n);
-  test_op "sequential " c (fun () -> M.sequential m n);
+  test_op "uniform    " c (fun () -> M.uniform Float64 m n);
+  test_op "gaussian   " c (fun () -> M.gaussian Float64 m n);
+  test_op "sequential " c (fun () -> M.sequential Float64 m n);
   print_endline (Bytes.make 60 '+');

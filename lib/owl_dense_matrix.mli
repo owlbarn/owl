@@ -296,3 +296,75 @@ val load : string -> (float, 'b) mat
 val save_txt : mat_d -> string -> unit
 
 val load_txt : string -> mat_d
+
+
+(** {6 Shorhand infix operators} *)
+
+val ( >> ) : ('a, 'b) mat -> ('a, 'b) mat -> unit
+(** Shorthand for [copy_to x y], i.e., x >> y *)
+
+val ( << ) : ('a, 'b) mat -> ('a, 'b) mat -> unit
+(** Shorthand for [copy_to y x], i.e., x << y *)
+
+val ( @= ) : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** Shorthand for [concat_vertical x y], i.e., x @= y *)
+
+val ( @|| ) : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** Shorthand for [concat_horizontal x y], i.e., x @|| y *)
+
+val ( +@ ) : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** Shorthand for [add x y], i.e., [x +@ y] *)
+
+val ( -@ ) : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** Shorthand for [sub x y], i.e., [x -@ y] *)
+
+val ( *@ ) : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** Shorthand for [mul x y], i.e., [x *@ y] *)
+
+val ( /@ ) : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** Shorthand for [div x y], i.e., [x /@ y] *)
+
+val ( +$ ) : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+(** Shorthand for [add_scalar x a], i.e., [x +$ a] *)
+
+val ( -$ ) : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+(** Shorthand for [sub_scalar x a], i.e., [x -$ a] *)
+
+val ( *$ ) : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
+
+val ( /$ ) : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
+
+val ( $+ ) : 'a -> ('a, 'b) mat -> ('a, 'b) mat
+(** Shorthand for [add_scalar x a], i.e., [a $+ x] *)
+
+val ( $- ) : 'a -> ('a, 'b) mat -> ('a, 'b) mat
+(** Shorthand for [sub_scalar x a], i.e., [a -$ x] *)
+
+val ( $* ) : 'a -> ('a, 'b) mat -> ('a, 'b) mat
+(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
+
+val ( $/ ) : 'a -> ('a, 'b) mat -> ('a, 'b) mat
+(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
+
+val ( =@ ) : ('a, 'b) mat -> ('a, 'b) mat -> bool
+(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
+
+val ( >@ ) : ('a, 'b) mat -> ('a, 'b) mat -> bool
+(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
+
+val ( <@ ) : ('a, 'b) mat -> ('a, 'b) mat -> bool
+(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
+
+val ( <>@ ) : ('a, 'b) mat -> ('a, 'b) mat -> bool
+(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
+
+val ( >=@ ) : ('a, 'b) mat -> ('a, 'b) mat -> bool
+(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
+
+val ( <=@ ) : ('a, 'b) mat -> ('a, 'b) mat -> bool
+(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
+
+val ( @@ ) : ('a -> 'a) -> ('a, 'b) mat -> ('a, 'b) mat
+(** Shorthand for [map f x], i.e., f @@ x *)
