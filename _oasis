@@ -50,6 +50,11 @@ Library owl_parallel
   CCOpt:            -D_GNU_SOURCE -fPIC
   BuildDepends:     unix, dolog
 
+Library perf_common
+  Install:          false
+  Path:             perftest
+  Modules:          Perf_common
+
 Executable ffi_stubgen
   Install:        false
   Path:           lib/bindings
@@ -122,7 +127,7 @@ Executable perf_dense_ndarray
   Path:           perftest
   CompiledObject: best
   MainIs:         perf_dense_ndarray.ml
-  BuildDepends:   owl
+  BuildDepends:   owl, perf_common
 
 AlphaFeatures: ocamlbuild_more_args
 Document owldoc

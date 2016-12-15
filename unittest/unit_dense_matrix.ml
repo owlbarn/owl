@@ -79,6 +79,10 @@ module To_test = struct
     let y2 = M.mul x y1 in
     M.is_equal y0 y2
 
+  let min x = M.min x
+
+  let max x = M.max x
+
 end
 
 (* the tests *)
@@ -149,6 +153,12 @@ let add () =
 let mul () =
   Alcotest.(check bool) "mul" true (To_test.mul x2)
 
+let min x =
+  Alcotest.(check float) "min" 1. (To_test.min x2)
+
+let max x =
+  Alcotest.(check float) "max" 12. (To_test.max x2)
+
 
 let test_set = [
   "sequential", `Slow, sequential;
@@ -173,6 +183,8 @@ let test_set = [
   "is_smaller", `Slow, is_smaller;
   "add", `Slow, add;
   "mul", `Slow, mul;
+  "min", `Slow, min;
+  "max", `Slow, max;
 ]
 
 (* Run it *)

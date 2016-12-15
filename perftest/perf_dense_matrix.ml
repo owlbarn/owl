@@ -2,22 +2,11 @@ open Bigarray
 
 module M = Owl_dense_matrix
 
-let test_op s c op =
-  Gc.compact ();
-  let ttime = ref 0. in
-  for i = 1 to c do
-    let t0 = Unix.gettimeofday () in
-    let _ = op () in
-    let t1 = Unix.gettimeofday () in
-    ttime := !ttime +. (t1 -. t0)
-  done;
-  let _ = ttime := !ttime /. (float_of_int c) in
-  Printf.printf "| %s :\t %.4fs \n" s !ttime;
-  flush stdout
+let test_op s c op = Perf_common.test_op s c op
 
 let _ =
   let _ = Random.self_init () in
-  let m, n = 5000, 5000 and c = 1 in
+  let m, n = 5000, 20000 and c = 1 in
   print_endline (Bytes.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
   print_endline (Bytes.make 60 '-');
@@ -55,6 +44,7 @@ let _ =
   test_op "sum_cols          " c (fun () -> M.sum_cols x);
   test_op "sum_rows          " c (fun () -> M.sum_rows x);
   test_op "min               " c (fun () -> M.min x);
+  test_op "min_i             " c (fun () -> M.min_i x);
   test_op "min_cols          " c (fun () -> M.min_cols x);
   test_op "min_rows          " c (fun () -> M.min_rows x);
   test_op "average           " c (fun () -> M.average x);
@@ -72,8 +62,8 @@ let _ =
   test_op "draw_rows         " c (fun () -> M.draw_rows x 1000);
   test_op "save              " c (fun () -> M.save x "test_matrix0.tmp");
   test_op "load              " c (fun () -> M.load "test_matrix0.tmp");
-  test_op "save_txt          " c (fun () -> M.save_txt x "test_matrix1.tmp");
-  test_op "load_txt          " c (fun () -> M.load_txt "test_matrix1.tmp");
+  test_op "save_txt          " 0 (fun () -> M.save_txt x "test_matrix1.tmp");
+  test_op "load_txt          " 0 (fun () -> M.load_txt "test_matrix1.tmp");
   test_op "uniform           " c (fun () -> M.uniform Float64 m n);
   test_op "gaussian          " c (fun () -> M.gaussian Float64 m n);
   test_op "sequential        " c (fun () -> M.sequential Float64 m n);

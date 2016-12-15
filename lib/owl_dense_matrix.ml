@@ -470,22 +470,28 @@ let min x =
   let open Owl_foreign.DR in
   let open Ctypes in
   let x = dr_mat_to_matptr x in
+  gsl_matrix_min x
+
+let min_i x =
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
+  let open Ctypes in
+  let y = dr_mat_to_matptr x in
   let i = allocate size_t (Unsigned.Size_t.of_int 0) in
   let j = allocate size_t (Unsigned.Size_t.of_int 0) in
-  let r = gsl_matrix_min x in
-  let _ = gsl_matrix_min_index x i j in
+  let _ = gsl_matrix_min_index y i j in
   let i = Unsigned.Size_t.to_int !@i in
   let j = Unsigned.Size_t.to_int !@j in
-  r, i, j
+  get x i j, i, j
 
 let min_cols x =
   mapi_cols (fun j v ->
-    let r, i, _ = min v in r, i, j
+    let r, i, _ = min_i v in r, i, j
   ) x
 
 let min_rows x =
   mapi_rows (fun i v ->
-    let r, _, j = min v in r, i, j
+    let r, _, j = min_i v in r, i, j
   ) x
 
 let max x =
@@ -493,27 +499,33 @@ let max x =
   let open Owl_foreign.DR in
   let open Ctypes in
   let x = dr_mat_to_matptr x in
+  gsl_matrix_max x
+
+let max_i x =
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
+  let open Ctypes in
+  let y = dr_mat_to_matptr x in
   let i = allocate size_t (Unsigned.Size_t.of_int 0) in
   let j = allocate size_t (Unsigned.Size_t.of_int 0) in
-  let r = gsl_matrix_max x in
-  let _ = gsl_matrix_max_index x i j in
+  let _ = gsl_matrix_max_index y i j in
   let i = Unsigned.Size_t.to_int !@i in
   let j = Unsigned.Size_t.to_int !@j in
-  r, i, j
+  get x i j, i, j
 
 let max_cols x =
   mapi_cols (fun j v ->
-    let r, i, _ = max v in r, i, j
+    let r, i, _ = max_i v in r, i, j
   ) x
 
 let max_rows x =
   mapi_rows (fun i v ->
-    let r, _, j = max v in r, i, j
+    let r, _, j = max_i v in r, i, j
   ) x
 
 let minmax x =
-  let xmin, irow, icol = min x in
-  let xmax, arow, acol = max x in
+  let xmin, irow, icol = min_i x in
+  let xmax, arow, acol = max_i x in
   xmin, xmax, irow, icol, arow, acol
 
 let add_scalar x a =
