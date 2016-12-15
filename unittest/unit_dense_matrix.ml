@@ -1,23 +1,29 @@
 (* Build with `ocamlbuild -pkg alcotest simple.byte` *)
 
-let matrix = Alcotest.testable Fmt.float Owl.Dense.Matrix.is_equal
+open Bigarray
+
+(* type t = (float, float64_elt) Owl_dense_matrix.mat -> (float, float64_elt) Owl_dense_matrix.mat -> bool *)
+let matrix = Alcotest.testable Owl_pretty.pp_fmat Owl_dense_matrix.is_equal
+
+let x0 = Owl_dense_matrix.sequential Float64 3 4
 
 (* A module with functions to test *)
 module To_test = struct
-  let capit letter = Char.uppercase letter
-  let plus int_list = List.fold_left (fun a b -> a + b) 0 int_list
+  let random x = x
+  let sum x = Owl_dense_matrix.sum x
 end
 
 (* The tests *)
-let capit () =
-  Alcotest.(check char) "same chars"  'A' (To_test.capit 'a')
 
-let plus () =
-  Alcotest.(check int) "same ints" 7 (To_test.plus [1;1;2;3])
+let random () =
+  Alcotest.(check matrix) "same ints" x0 (To_test.random x0)
+
+let sum () =
+  Alcotest.(check float) "sum" 79. (To_test.sum x0)
 
 let test_set = [
-  "Capitalize" , `Quick, capit;
-  "Add entries", `Slow , plus ;
+  "random" , `Quick, random;
+  "sum", `Quick , sum;
 ]
 
 (* Run it *)
