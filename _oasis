@@ -139,3 +139,4 @@ Executable test_lda
   CompiledObject: best
   MainIs:         test_lda.ml
   BuildDepends:   owl_topic
+  CCOpt:          -g  

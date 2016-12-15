@@ -5,7 +5,7 @@ open Owl
 module MS = Sparse.Real
 module MD = Dense.Real
 
-type lda_typ = SimpleLDA | FTreeLDA | LightLDA
+type lda_typ = SimpleLDA | FTreeLDA | LightLDA | SparseLDA
 
 let n_d = ref 0                   (* number of documents *)
 let n_k = ref 0                   (* number of topics *)
@@ -107,6 +107,135 @@ module LightLDA = struct
   let sampling d = ()
 
 end
+module SparseLDA = struct
+  let s = ref 0.  (* Cache of s *)
+  let q = ref [| |] (*Cache of q*)
+  let r_non_zero :  (int, float) Hashtbl.t ref = ref (Hashtbl.create 1) (*  *)
+  let q_non_zero :  (int, bool) Hashtbl.t ref = ref (Hashtbl.create 1) (*  *)
+
+  let exclude_token_sparse w d k ~s ~r ~q =
+    let t__klocal = ref ((MD.get !t__k 0 k) )in
+    (* Reduce s, r  l*)
+    s := !s -. (!beta *. !alpha_k) /.(!t__klocal +. !beta_v);
+    r := !r -. (!beta *. (MS.get !t_dk d k)) /. (!beta_v +. !t__klocal);
+    exclude_token w d k;
+    (* add back in  s,r*)
+    t__klocal :=  (MD.get !t__k 0 k);
+    Array.set !q k ((!alpha_k +. (MS.get !t_dk d k))/.(!beta_v +. !t__klocal));
+    let r_local = (MS.get !t_dk d k) in
+    if r_local = 0. then
+      Hashtbl.remove !r_non_zero k
+    else (
+      Hashtbl.replace !r_non_zero k r_local;
+      r := !r +. (!beta *. r_local) /. (!beta_v +. !t__klocal));
+    s := !s +. (!beta *. !alpha_k) /. (!t__klocal +. !beta_v)
+
+  let include_token_sparse w d k ~s ~r ~q =
+    let t__klocal = ref (MD.get !t__k 0 k) in
+    (* Reduce s, r  l*)
+    s := !s -. (!beta *. !alpha_k)/.( !t__klocal +. !beta_v);
+    r := !r -. (!beta *. (MS.get !t_dk d k)) /. (!beta_v +. !t__klocal);
+    include_token w d k;
+    (* add back in s, r*)
+    t__klocal :=  (MD.get !t__k 0 k);
+    s := !s +. (!beta *. !alpha_k)/.(!t__klocal +. !beta_v);
+    let r_local = (MS.get !t_dk d k) in
+    if r_local = 0. then
+      Hashtbl.remove !r_non_zero k
+    else (
+      Hashtbl.replace !r_non_zero k r_local;
+      r := !r +. (!beta *. r_local) /. (!beta_v +. !t__klocal) );
+    Array.set !q k ((!alpha_k +. (MS.get !t_dk d k))/.(!beta_v +. !t__klocal))
+
+  let init () =
+    (* s is independent of document *)
+    let k = ref 0 in
+    while !k < !n_k do
+      let t__klocal = (MD.get !t__k 0 !k) in
+      s := !s +. (1. /.(!beta_v +.  t__klocal ));
+      k := !k + 1;
+    done;
+    q := (Array.make (!n_k) 0.);
+    r_non_zero := (Hashtbl.create !n_k);
+    q_non_zero := (Hashtbl.create !n_k);
+    s := !s *. (!alpha_k *. !beta)
+
+  let sampling d =
+    let k = ref 0 in
+    let r = ref 0. in (* Cache of r *)
+    (* Calculate r *)
+    Hashtbl.clear !r_non_zero;
+    while !k < !n_k do
+      let t__klocal = (MD.get !t__k 0 !k) in
+      let r_local = (MS.get !t_dk d !k) in
+      (* Sparse representation of r *)
+      if r_local != 0. then (
+        let r_val = r_local/.(!beta_v +.  t__klocal) in
+        r := !r +. r_val;
+        Hashtbl.add !r_non_zero !k r_val;
+      );
+      (* Build up our q cache *)
+      (*Printf.printf "idx: %d doc: %d n_k: %d\n" !k d !n_k;*)
+      (* TODO: handle t_dk = 0*)
+      Array.set !q !k ((!alpha_k +. (MS.get !t_dk d !k))/.(!beta_v +. t__klocal));
+      k := !k + 1;
+    done;
+    r := !r *. !beta;
+
+    (* Process the document *)
+    Array.iteri (fun i w ->
+        let k = !t__z.(d).(i) in
+        exclude_token_sparse w d k s r q;
+        (* Calculate q *)
+        let qsum = ref 0. in
+        let k_q = ref 0 in
+        Hashtbl.clear !q_non_zero;
+        (* This bit makes it (K) rather than O(K_d + K_w)*)
+        while !k_q < !n_k do
+          let q_local  =  (MS.get !t_wk w !k_q) in
+          if q_local != 0. then
+            qsum := !qsum +. (Array.get !q !k_q) *. q_local;
+            Hashtbl.add !q_non_zero !k_q true;
+          k_q := !k_q + 1;
+        done;
+        k_q := 0;
+        let u = ref (Stats.Rnd.uniform () *. (!s +. !r +. !qsum)) in
+        let k = ref 0 in
+        if !u < !s then (
+          (* sum up *)
+          u := !u /. (!alpha_k *. !beta); (* Don't need this *)
+          let slocal = ref 0. in
+          while !slocal < !u do
+            slocal := !slocal +. (1. /. (!beta_v +. (MD.get !t__k 0 !k_q) ));
+            k_q := !k_q + 1;
+          done;        
+          (* Found our topic (we went past it by one) *)
+          k := !k_q - 1;
+        )
+        else if !u < (!s +. !r) then (
+          (* Iterate over set of non-zero r *)
+          u := (!u -. !s) /. !beta; (* compare just to r and don't need !beta *)
+          let rlocal = ref 0. in
+          (* TODO: make descending *)
+          Hashtbl.iter (fun key data -> if !rlocal < !u then (
+                    rlocal := !rlocal +. (data) /. (!beta_v +. (MD.get !t__k 0 key) );
+                    k := key)
+              ) !r_non_zero
+        )
+        else (
+          u := !u -. (!s +. !r);
+          let qlocal = ref 0. in
+          (* Iterate over set of non-zero q *)
+          (* TODO: make descending *)
+          Hashtbl.iter (fun key _ -> if !qlocal < !u then (
+                    qlocal := !qlocal +. (Array.get !q key) *. (MS.get !t_wk w key);
+                    k := key)
+              ) !q_non_zero
+        );
+        include_token_sparse w d !k s r q;
+        !t__z.(d).(i) <- !k;
+      ) !data.(d)
+end
 
 (* init the model based on: topics, vocabulary, tokens *)
 let init k v d =
@@ -140,7 +269,15 @@ let train typ =
     | SimpleLDA -> SimpleLDA.sampling
     | FTreeLDA -> FTreeLDA.sampling
     | LightLDA -> LightLDA.sampling
+    | SparseLDA ->SparseLDA.sampling
   in
+  let init = match typ with
+    | SimpleLDA -> SimpleLDA.init
+    | FTreeLDA  -> FTreeLDA.init
+    | LightLDA  -> LightLDA.init
+    | SparseLDA -> SparseLDA.init
+  in
+  init ();
   for i = 0 to n_iter - 1 do
     show_info i;
     for j = 0 to !n_d - 1 do
