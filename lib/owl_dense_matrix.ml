@@ -239,7 +239,9 @@ let iteri f x =
     done
   done
 
-let iter f x = iteri (fun _ _ y -> f y) x
+let iter f x =
+  let y = to_ndarray x in
+  Owl_dense_ndarray.iter f y
 
 let iteri_rows f x =
   for i = 0 to (row_num x) - 1 do
@@ -269,7 +271,10 @@ let ___map_test f x =
   let y = Lacaml.D.Mat.map f x in
   fortran2c_matrix y
 
-let map f x = mapi (fun _ _ y -> f y) x
+let map f x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.map f y in
+  of_ndarray y
 
 let mapi_rows f x = Array.init (row_num x) (fun i -> f i (row x i))
 
@@ -466,11 +471,8 @@ let equal_or_smaller x1 x2 =
   Owl_dense_ndarray.equal_or_smaller x1 x2
 
 let min x =
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let open Ctypes in
-  let x = dr_mat_to_matptr x in
-  gsl_matrix_min x
+  let x = to_ndarray x in
+  Owl_dense_ndarray.min x
 
 let min_i x =
   let open Owl_foreign in
@@ -495,11 +497,8 @@ let min_rows x =
   ) x
 
 let max x =
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let open Ctypes in
-  let x = dr_mat_to_matptr x in
-  gsl_matrix_max x
+  let x = to_ndarray x in
+  Owl_dense_ndarray.max x
 
 let max_i x =
   let open Owl_foreign in

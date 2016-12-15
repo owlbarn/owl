@@ -5,9 +5,28 @@
 
 open Bigarray
 
+(* some transformation functions *)
+
+let matrix_to_gsl_vector = None
+
+let gsl_vector_to_matrix = None
+
+let ndarray_to_gsl_vector x =
+  let x = Genarray.change_layout x c_layout in
+  array1_of_genarray x
+
+let gsl_vector_to_ndarray = None
+
+let matrix_to_ndarray = None
+
+let ndarray_to_matrix = None
+
+
 (* types for interfacing to lacaml and gsl *)
 
 type ('a, 'b) vec = ('a, 'b, fortran_layout) Array1.t
+type ('a, 'b) mat = ('a, 'b, fortran_layout) Array2.t
+
 type ('a, 'b) vec_unop0 = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
 type ('a, 'b) vec_unop1 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> 'a
 type ('a, 'b) vec_unop2 = ?stable:bool -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> float
@@ -19,12 +38,14 @@ type ('a, 'b) vec_iter0 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('
 type ('a, 'b) vec_iter1 = (int -> 'a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
 type ('a, 'b) vec_maop0 = ?n:int -> 'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> unit
 type ('a, 'b) vec_copy0 = ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) vec -> ('a, 'b) vec
-
-type ('a, 'b) mat = ('a, 'b, fortran_layout) Array2.t
 type ('a, 'b) mat_mop0 = ?m:int -> ?n:int -> 'a -> ?ar:int -> ?ac:int -> ('a, 'b) mat -> unit
 
-type ('a, 'b) mat_op01 = ('a, 'b, c_layout) Array2.t -> ('a, 'b, c_layout) Array2.t -> unit
-type ('a, 'b) mat_op02 = ('a, 'b, c_layout) Array2.t -> int -> int -> unit
+type ('a, 'b) gsl_vec = ('a, 'b, c_layout) Array1.t
+type ('a, 'b) gsl_mat = ('a, 'b, c_layout) Array2.t
+
+type ('a, 'b) gsl_vec_op00 = ('a, 'b) gsl_vec -> 'a
+type ('a, 'b) gsl_mat_op01 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> unit
+type ('a, 'b) gsl_mat_op02 = ('a, 'b) gsl_mat -> int -> int -> unit
 
 (* call functions in lacaml *)
 
@@ -404,23 +425,28 @@ let _uniform : type a b. (a, b) kind -> (a, b) vec_unop4 = function
 
 (* call functions in gsl *)
 
-let _gsl_transpose_copy : type a b. (a, b) kind -> (a, b) mat_op01 = function
+let _gsl_transpose_copy : type a b. (a, b) kind -> (a, b) gsl_mat_op01 = function
   | Float32   -> Gsl.Matrix.Single.transpose
   | Float64   -> Gsl.Matrix.transpose
   | Complex32 -> Gsl.Matrix_complex.Single.transpose
   | Complex64 -> Gsl.Matrix_complex.transpose
   | _         -> failwith "_gsl_transpose_copy: unsupported operation"
 
-let _gsl_swap_rows : type a b. (a, b) kind -> (a, b) mat_op02 = function
+let _gsl_swap_rows : type a b. (a, b) kind -> (a, b) gsl_mat_op02 = function
   | Float32   -> Gsl.Matrix.Single.swap_rows
   | Float64   -> Gsl.Matrix.swap_rows
   | Complex32 -> Gsl.Matrix_complex.Single.swap_rows
   | Complex64 -> Gsl.Matrix_complex.swap_rows
   | _         -> failwith "_gsl_swap_rows: unsupported operation"
 
-let _gsl_swap_cols : type a b. (a, b) kind -> (a, b) mat_op02 = function
+let _gsl_swap_cols : type a b. (a, b) kind -> (a, b) gsl_mat_op02 = function
   | Float32   -> Gsl.Matrix.Single.swap_columns
   | Float64   -> Gsl.Matrix.swap_columns
   | Complex32 -> Gsl.Matrix_complex.Single.swap_columns
   | Complex64 -> Gsl.Matrix_complex.swap_columns
   | _         -> failwith "_gsl_swap_cols: unsupported operation"
+
+let _gsl_min : type a b. (a, b) kind -> (a, b) gsl_vec_op00 = function
+  | Float32   -> Gsl.Vector.Single.min
+  | Float64   -> Gsl.Vector.min
+  | _         -> failwith "_gsl_min: unsupported operation"

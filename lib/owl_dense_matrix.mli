@@ -219,11 +219,11 @@ val sum : ('a, 'b) mat -> 'a
 
 val average : (float, 'b) mat -> float
 
-val min : (float, 'b) mat -> float
+val min : ('a, 'b) mat -> 'a
 
 val min_i : (float, 'b) mat -> float * int * int
 
-val max : (float, 'b) mat -> float
+val max : ('a, 'b) mat -> 'a
 
 val max_i : (float, 'b) mat -> float * int * int
 
