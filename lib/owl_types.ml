@@ -61,6 +61,7 @@ module Dense_real_double = struct
 
 end
 
+
 module Dense_real_float = struct
 
   type int_array = (int64, int64_elt, c_layout) Array1.t
@@ -106,6 +107,7 @@ module Dense_real_float = struct
   }
 
 end
+
 
 (* struct definition for complex dense matrix *)
 
@@ -154,6 +156,54 @@ module Dense_complex_double = struct
   }
 
 end
+
+
+module Dense_complex_float = struct
+
+  type int_array = (int64, int64_elt, c_layout) Array1.t
+  type elt_array = (Complex.t, complex32_elt, c_layout) Array2.t
+
+  type mblk_struct
+
+  let mblk_struct : mblk_struct structure typ = structure "gsl_block_complex_float"
+    let msize = field mblk_struct "size" int64_t
+    let mdata = field mblk_struct "data" (ptr complex32)
+  let () = seal mblk_struct
+
+  (** structure definition for vector, refer to gsl_vector_double.h *)
+  type vec_struct
+
+  let vec_struct : vec_struct structure typ = structure "gsl_vector_complex_float"
+    let vsize  = field vec_struct "size" int64_t
+    let stride = field vec_struct "stride" int64_t
+    let vdata  = field vec_struct "data" (ptr complex32)
+    let vblock = field vec_struct "block" (ptr mblk_struct)
+    let vowner = field vec_struct "owner" int64_t
+  let () = seal vec_struct
+
+  (** structure definition for dense matrix, refer to gsl_matrix_double.h *)
+  type mat_struct
+
+  let mat_struct : mat_struct structure typ = structure "gsl_matrix_complex_float"
+    let size1 = field mat_struct "size1" int64_t
+    let size2 = field mat_struct "size2" int64_t
+    let tda   = field mat_struct "tda" int64_t
+    let data  = field mat_struct "data" (ptr complex32)
+    let block = field mat_struct "block" (ptr mblk_struct)
+    let owner = field mat_struct "owner" int64_t
+  let () = seal mat_struct
+
+  (** define the vector record *)
+  type vec_record = {
+    mutable vsize  : int;            (* size of a vector *)
+    mutable stride : int;            (* stride of a vector *)
+    mutable vdata  : elt_array;      (* actual data of a vector *)
+    mutable vptr   : vec_struct Ctypes_static.structure Ctypes_static.ptr;
+    (* pointer to a vector's memory *)
+  }
+
+end
+
 
 (* struct definition for real sparse matrix *)
 

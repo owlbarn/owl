@@ -4,6 +4,8 @@
  *
  *)
 
+(* run --> ./ffi_stubgen.byte -ml > lib/ffi_generated.ml; ./ffi_stubgen.byte -c > lib/ffi_generated_stubs.c *)
+
 open Ctypes
 
 module Bindings (F : Cstubs.FOREIGN) = struct
@@ -46,6 +48,26 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   end
 
+
+  module Dense_real_float = struct
+
+    open Owl_types.Dense_real_float
+
+    (* deal with anonymous c struct *)
+    let mat_struct = typedef mat_struct "gsl_matrix_float"
+    let vec_struct = typedef vec_struct "gsl_vector_float"
+
+    let gsl_matrix_float_isnull = foreign "gsl_matrix_float_isnull" (ptr mat_struct @-> returning int)
+
+    let gsl_matrix_float_ispos = foreign "gsl_matrix_float_ispos" (ptr mat_struct @-> returning int)
+
+    let gsl_matrix_float_isneg = foreign "gsl_matrix_float_isneg" (ptr mat_struct @-> returning int)
+
+    let gsl_matrix_float_isnonneg = foreign "gsl_matrix_float_isnonneg" (ptr mat_struct @-> returning int)
+
+  end
+
+
   (* foreign functions of dense complex matrix *)
 
   module Dense_complex_double = struct
@@ -64,6 +86,26 @@ module Bindings (F : Cstubs.FOREIGN) = struct
     let gsl_matrix_complex_isneg = foreign "gsl_matrix_complex_isneg" (ptr mat_struct @-> returning int)
 
     let gsl_matrix_complex_isnonneg = foreign "gsl_matrix_complex_isnonneg" (ptr mat_struct @-> returning int)
+
+  end
+
+
+  module Dense_complex_float = struct
+
+    open Owl_types.Dense_complex_double
+
+    let mat_struct = typedef mat_struct "gsl_matrix_complex_float"
+    let vec_struct = typedef vec_struct "gsl_vector_complex_float"
+
+    let gsl_matrix_complex_float_equal = foreign "gsl_matrix_complex_float_equal" (ptr mat_struct @-> ptr mat_struct @-> returning int)
+
+    let gsl_matrix_complex_float_isnull = foreign "gsl_matrix_complex_float_isnull" (ptr mat_struct @-> returning int)
+
+    let gsl_matrix_complex_float_ispos = foreign "gsl_matrix_complex_float_ispos" (ptr mat_struct @-> returning int)
+
+    let gsl_matrix_complex_float_isneg = foreign "gsl_matrix_complex_float_isneg" (ptr mat_struct @-> returning int)
+
+    let gsl_matrix_complex_float_isnonneg = foreign "gsl_matrix_complex_float_isnonneg" (ptr mat_struct @-> returning int)
 
   end
 

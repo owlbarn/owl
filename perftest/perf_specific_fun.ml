@@ -5,7 +5,7 @@ open Bigarray
 
 let m, n = 5000, 20000 and c = 10
 let x = Owl_dense_matrix.uniform Float64 m n
-let y = Owl_dense_matrix.uniform Float64 m n
+let y = Owl_dense_matrix.zeros Float64 m n
 
 (* test some fun *)
 
@@ -23,4 +23,7 @@ let test_04 _ =
   let x = Owl_dense_common.matrix_to_ndarray x in
   Owl_dense_ndarray.map (fun a -> 0.) x
 
-let _ = Perf_common.test_op_each c test_04
+let test_05 _ = Owl_dense_matrix.is_zero y
+
+
+let _ = Perf_common.test_op_each c test_05
