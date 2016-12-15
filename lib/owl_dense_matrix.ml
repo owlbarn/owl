@@ -201,13 +201,13 @@ let cols x l =
 
 let swap_rows x i i' =
   let y = clone x in
-  let _op = Owl_dense_common._swap_rows (Array2.kind x) in
+  let _op = Owl_dense_common._gsl_swap_rows (Array2.kind x) in
   _op y i i';
   y
 
 let swap_cols x j j' =
   let y = clone x in
-  let _op = Owl_dense_common._swap_cols (Array2.kind x) in
+  let _op = Owl_dense_common._gsl_swap_cols (Array2.kind x) in
   _op y j j';
   y
 
@@ -218,7 +218,7 @@ let swap_rowcol x i j =
 
 let transpose x =
   let y = empty (Array2.kind x) (col_num x) (row_num x) in
-  let _op = Owl_dense_common._transpose_copy (Array2.kind x) in
+  let _op = Owl_dense_common._gsl_transpose_copy (Array2.kind x) in
   _op y x; y
 
 let replace_row v x i =
@@ -667,7 +667,7 @@ let draw_cols ?(replacement=true) x c =
 let shuffle_rows x =
   let y = clone x in
   let m, n = shape x in
-  let _op = Owl_dense_common._swap_rows (Array2.kind x) in
+  let _op = Owl_dense_common._gsl_swap_rows (Array2.kind x) in
   for i = 0 to m - 1 do
     _op y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
   done; y
@@ -675,7 +675,7 @@ let shuffle_rows x =
 let shuffle_cols x =
   let y = clone x in
   let m, n = shape x in
-  let _op = Owl_dense_common._swap_cols (Array2.kind x) in
+  let _op = Owl_dense_common._gsl_swap_cols (Array2.kind x) in
   for i = 0 to n - 1 do
     _op y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
   done; y

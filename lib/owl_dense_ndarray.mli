@@ -295,7 +295,7 @@ val print : ('a, 'b) t -> unit
 (** [print x] prints all the elements in [x] as well as their indices. *)
 
 
-(** {6 Unary ('a, 'b) the('a, 'b) tical operations } *)
+(** {6 Unary mathematical operations } *)
 
 val re : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
 (** If [x] is a ndarray of complex numbers, [re x] returns all the real
@@ -496,7 +496,7 @@ val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
  *)
 
 
-(** {6 Binary ('a, 'b) the('a, 'b) tical operations } *)
+(** {6 Binary mathematical operations } *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [add x y] adds all the elements in [x] and [y] elementwise, and returns the

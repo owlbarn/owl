@@ -5,7 +5,7 @@
 
 open Bigarray
 
-(* types for interfacing to lacaml *)
+(* types for interfacing to lacaml and gsl *)
 
 type ('a, 'b) vec = ('a, 'b, fortran_layout) Array1.t
 type ('a, 'b) vec_unop0 = (('a, 'b) vec) Lacaml.Common.Types.Vec.unop
@@ -402,23 +402,23 @@ let _uniform : type a b. (a, b) kind -> (a, b) vec_unop4 = function
   | Float64   -> Lacaml.D.Vec.random
   | _         -> failwith "_uniform: unsupported operation"
 
-let _transpose_copy : type a b. (a, b) kind -> (a, b) mat_op01 = function
+let _gsl_transpose_copy : type a b. (a, b) kind -> (a, b) mat_op01 = function
   | Float32   -> Gsl.Matrix.Single.transpose
   | Float64   -> Gsl.Matrix.transpose
   | Complex32 -> Gsl.Matrix_complex.Single.transpose
   | Complex64 -> Gsl.Matrix_complex.transpose
-  | _         -> failwith "_transpose_copy: unsupported operation"
+  | _         -> failwith "_gsl_transpose_copy: unsupported operation"
 
-let _swap_rows : type a b. (a, b) kind -> (a, b) mat_op02 = function
+let _gsl_swap_rows : type a b. (a, b) kind -> (a, b) mat_op02 = function
   | Float32   -> Gsl.Matrix.Single.swap_rows
   | Float64   -> Gsl.Matrix.swap_rows
   | Complex32 -> Gsl.Matrix_complex.Single.swap_rows
   | Complex64 -> Gsl.Matrix_complex.swap_rows
-  | _         -> failwith "_swap_rows: unsupported operation"
+  | _         -> failwith "_gsl_swap_rows: unsupported operation"
 
-let _swap_cols : type a b. (a, b) kind -> (a, b) mat_op02 = function
+let _gsl_swap_cols : type a b. (a, b) kind -> (a, b) mat_op02 = function
   | Float32   -> Gsl.Matrix.Single.swap_columns
   | Float64   -> Gsl.Matrix.swap_columns
   | Complex32 -> Gsl.Matrix_complex.Single.swap_columns
   | Complex64 -> Gsl.Matrix_complex.swap_columns
-  | _         -> failwith "_swap_cols: unsupported operation"
+  | _         -> failwith "_gsl_swap_cols: unsupported operation"
