@@ -167,7 +167,7 @@ val mapi_at_col : (int -> int -> 'a -> 'a) -> ('a, 'b) mat -> int -> ('a, 'b) ma
 val map_at_col : ('a -> 'a) -> ('a, 'b) mat -> int -> ('a, 'b) mat
 
 
-(** {6 Examine the elements in a matrix} *)
+(** {6 Examin elements and compare two matrices} *)
 
 val exists : ('a -> bool) -> ('a, 'b) mat -> bool
 
@@ -175,8 +175,15 @@ val not_exists : ('a -> bool) -> ('a, 'b) mat -> bool
 
 val for_all : ('a -> bool) -> ('a, 'b) mat -> bool
 
+val is_zero : ('a, 'b) mat -> bool
 
-(** {6 Compare two matrices} *)
+val is_positive : ('a, 'b) mat -> bool
+
+val is_negative : ('a, 'b) mat -> bool
+
+val is_nonpositive : ('a, 'b) mat -> bool
+
+val is_nonnegative : ('a, 'b) mat -> bool
 
 val is_equal : ('a, 'b) mat -> ('a, 'b) mat -> bool
 
@@ -189,79 +196,6 @@ val is_smaller : ('a, 'b) mat -> ('a, 'b) mat -> bool
 val equal_or_greater : ('a, 'b) mat -> ('a, 'b) mat -> bool
 
 val equal_or_smaller : ('a, 'b) mat -> ('a, 'b) mat -> bool
-
-
-(** {6 Basic mathematical operations of matrices} *)
-
-val add : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
-
-val sub : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
-
-val mul : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
-
-val div : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
-
-(* val dot : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat *)
-
-val abs : ('a, 'b) mat -> ('a, 'b) mat
-
-val neg : ('a, 'b) mat -> ('a, 'b) mat
-
-val add_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
-
-val sub_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
-
-val mul_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
-
-val div_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
-
-val sum : ('a, 'b) mat -> 'a
-
-val average : (float, 'b) mat -> float
-
-val min : ('a, 'b) mat -> 'a
-
-val min_i : (float, 'b) mat -> float * int * int
-
-val max : ('a, 'b) mat -> 'a
-
-val max_i : (float, 'b) mat -> float * int * int
-
-val minmax : (float, 'b) mat -> float * float * int * int * int * int
-
-val is_zero : ('a, 'b) mat -> bool
-
-val is_positive : ('a, 'b) mat -> bool
-
-val is_negative : ('a, 'b) mat -> bool
-
-val is_nonpositive : ('a, 'b) mat -> bool
-
-val is_nonnegative : ('a, 'b) mat -> bool
-
-val log : ('a, 'b) mat -> ('a, 'b) mat
-
-val log10 : ('a, 'b) mat -> ('a, 'b) mat
-
-val exp : ('a, 'b) mat -> ('a, 'b) mat
-
-val sigmoid : mat_d -> mat_d
-
-val sum_rows : mat_d -> mat_d
-
-val sum_cols : mat_d -> mat_d
-
-val average_rows : mat_d -> mat_d
-
-val average_cols : mat_d -> mat_d
-
-val min_rows : (float, 'b) mat -> (float * int * int) array
-
-val min_cols : (float, 'b) mat -> (float * int * int) array
-
-val max_rows : (float, 'b) mat -> (float * int * int) array
-
-val max_cols : (float, 'b) mat -> (float * int * int) array
 
 
 (** {6 Randomisation functions} *)
@@ -302,6 +236,72 @@ val load : string -> (float, 'b) mat
 val save_txt : mat_d -> string -> unit
 
 val load_txt : string -> mat_d
+
+
+(** {6 Unary mathematical operations } *)
+
+val min : ('a, 'b) mat -> 'a
+
+val min_i : (float, 'b) mat -> float * int * int
+
+val max : ('a, 'b) mat -> 'a
+
+val max_i : (float, 'b) mat -> float * int * int
+
+val minmax : (float, 'b) mat -> float * float * int * int * int * int
+
+val sum : ('a, 'b) mat -> 'a
+
+val average : (float, 'b) mat -> float
+
+val sum_rows : mat_d -> mat_d
+
+val sum_cols : mat_d -> mat_d
+
+val average_rows : mat_d -> mat_d
+
+val average_cols : mat_d -> mat_d
+
+val min_rows : (float, 'b) mat -> (float * int * int) array
+
+val min_cols : (float, 'b) mat -> (float * int * int) array
+
+val max_rows : (float, 'b) mat -> (float * int * int) array
+
+val max_cols : (float, 'b) mat -> (float * int * int) array
+
+val abs : ('a, 'b) mat -> ('a, 'b) mat
+
+val neg : ('a, 'b) mat -> ('a, 'b) mat
+
+val log : ('a, 'b) mat -> ('a, 'b) mat
+
+val log10 : ('a, 'b) mat -> ('a, 'b) mat
+
+val exp : ('a, 'b) mat -> ('a, 'b) mat
+
+val sigmoid : mat_d -> mat_d
+
+
+(** {6 Binary mathematical operations } *)
+
+val add : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+
+val sub : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+
+val mul : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+
+val div : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+
+(* val dot : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat *)
+
+val add_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+
+val sub_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+
+val mul_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+
+val div_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
 
 
 (** {6 Shorhand infix operators} *)
