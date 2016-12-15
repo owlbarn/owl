@@ -83,6 +83,13 @@ module To_test = struct
 
   let max x = M.max x
 
+  let map () =
+    let x = M.ones Float64 3 4 in
+    let y = M.sequential Float64 3 4 in
+    let z0 = M.add x y in
+    let z1 = M.map (fun a -> a +. 1.) y in
+    M.is_equal z0 z1
+
 end
 
 (* the tests *)
@@ -159,6 +166,8 @@ let min x =
 let max x =
   Alcotest.(check float) "max" 12. (To_test.max x2)
 
+let map x =
+  Alcotest.(check bool) "map" true (To_test.map ())
 
 let test_set = [
   "sequential", `Slow, sequential;
@@ -185,6 +194,7 @@ let test_set = [
   "mul", `Slow, mul;
   "min", `Slow, min;
   "max", `Slow, max;
+  "map", `Slow, map;
 ]
 
 (* Run it *)
