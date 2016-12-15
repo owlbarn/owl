@@ -8,7 +8,7 @@
  *)
 
 open Bigarray
-open Owl_types.Sparse_complex
+open Owl_types.Sparse_complex_double
 
 type spmat = spmat_record
 

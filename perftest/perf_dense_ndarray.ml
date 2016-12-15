@@ -2,18 +2,7 @@
 
 module M = Owl_dense_ndarray
 
-let test_op s c op =
-  Gc.compact ();
-  let ttime = ref 0. in
-  for i = 1 to c do
-    let t0 = Unix.gettimeofday () in
-    let _ = op () in
-    let t1 = Unix.gettimeofday () in
-    ttime := !ttime +. (t1 -. t0)
-  done;
-  let _ = ttime := !ttime /. (float_of_int c) in
-  Printf.printf "| %s :\t %.4fs \n" s !ttime;
-  flush stdout
+let test_op s c op = Perf_common.test_op s c op
 
 let _ =
   let _ = Random.self_init () in
@@ -32,8 +21,8 @@ let _ =
   test_op "slice (*,*.0)     " c (fun () -> M.slice [|None; None; Some 0|] x);
   test_op "reshape           " c (fun () -> M.reshape x [|o;n;m|]);
   test_op "flatten           " c (fun () -> M.flatten x);
+  test_op "min               " c (fun () -> M.min x);
   test_op "minmax            " c (fun () -> M.minmax x);
-  test_op "max               " c (fun () -> M.max x);
   test_op "abs               " c (fun () -> M.abs x);
   test_op "neg               " c (fun () -> M.neg x);
   test_op "sum               " c (fun () -> M.sum x);
