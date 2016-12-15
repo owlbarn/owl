@@ -370,7 +370,7 @@ let is_equal x1 x2 = x1 = x2
 
 let ( =@ ) = ( = )
 
-let is_unequal x1 x2 = x2 <> x2
+let is_unequal x1 x2 = x1 <> x2
 
 let ( <>@ ) = ( <> )
 

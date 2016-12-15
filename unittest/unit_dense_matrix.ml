@@ -52,6 +52,14 @@ module To_test = struct
 
   let for_all x = M.for_all (fun a -> a < 12.) x
 
+  let is_equal x y = M.is_equal x y
+
+  let is_unequal x y =
+    M.print x;
+    print_endline "";
+    M.print y;
+    M.is_unequal x y
+
 end
 
 (* the tests *)
@@ -104,6 +112,13 @@ let not_exists () =
 let for_all () =
   Alcotest.(check bool) "for_all" false (To_test.for_all x2)
 
+let is_equal () =
+  Alcotest.(check bool) "is_equal" true (To_test.is_equal x1 (M.add_scalar x0 1.))
+
+let is_unequal () =
+  Alcotest.(check bool) "is_unequal" true (To_test.is_unequal x0 x1)
+
+
 let test_set = [
   "sequential", `Quick, sequential;
   "row_num", `Quick , row_num;
@@ -121,6 +136,8 @@ let test_set = [
   "exists", `Quick , exists;
   "not_exists", `Quick , not_exists;
   "for_all", `Quick , for_all;
+  "is_equal", `Quick , is_equal;
+  "is_unequal", `Quick , is_unequal;
 ]
 
 (* Run it *)
