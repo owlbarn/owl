@@ -6,7 +6,7 @@
 (** [ Real dense matrix ]  *)
 
 open Bigarray
-open Owl_types.Dense_real
+open Owl_types.Dense_real_double
 
 type mat = Gsl.Matrix.matrix
 

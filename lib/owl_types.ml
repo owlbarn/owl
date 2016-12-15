@@ -15,7 +15,7 @@ let _ = Log.color_on (); Log.(set_log_level INFO)
 
 (* struct definition for real dense matrix *)
 
-module Dense_real = struct
+module Dense_real_double = struct
 
   type int_array = (int64, int64_elt, c_layout) Array1.t
   type elt_array = (float, float64_elt, c_layout) Array2.t
@@ -63,7 +63,7 @@ end
 
 (* struct definition for complex dense matrix *)
 
-module Dense_complex = struct
+module Dense_complex_double = struct
 
   type int_array = (int64, int64_elt, c_layout) Array1.t
   type elt_array = (Complex.t, complex64_elt, c_layout) Array2.t
@@ -111,7 +111,7 @@ end
 
 (* struct definition for real sparse matrix *)
 
-module Sparse_real = struct
+module Sparse_real_double = struct
 
   type int_array = (int64, int64_elt, c_layout) Array1.t
   type elt_array = (float, float64_elt, c_layout) Array1.t
@@ -150,7 +150,7 @@ end
 
 (* struct definition for complex sparse matrix *)
 
-module Sparse_complex = struct
+module Sparse_complex_double = struct
 
   type int_array = int array
   type elt_array = (Complex.t, complex64_elt, c_layout) Array1.t

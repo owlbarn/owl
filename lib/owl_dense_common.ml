@@ -26,7 +26,7 @@ type ('a, 'b) mat_mop0 = ?m:int -> ?n:int -> 'a -> ?ar:int -> ?ac:int -> ('a, 'b
 type ('a, 'b) mat_op01 = ('a, 'b, c_layout) Array2.t -> ('a, 'b, c_layout) Array2.t -> unit
 type ('a, 'b) mat_op02 = ('a, 'b, c_layout) Array2.t -> int -> int -> unit
 
-(* Some constants *)
+(* call functions in lacaml *)
 
 let _zero : type a b. (a, b) kind -> a = function
     | Float32 -> 0.0 | Complex32 -> Complex.zero
@@ -401,6 +401,8 @@ let _uniform : type a b. (a, b) kind -> (a, b) vec_unop4 = function
   | Float32   -> Lacaml.S.Vec.random
   | Float64   -> Lacaml.D.Vec.random
   | _         -> failwith "_uniform: unsupported operation"
+
+(* call functions in gsl *)
 
 let _gsl_transpose_copy : type a b. (a, b) kind -> (a, b) mat_op01 = function
   | Float32   -> Gsl.Matrix.Single.transpose

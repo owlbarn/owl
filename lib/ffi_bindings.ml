@@ -12,9 +12,9 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   (* foreign functions of dense real matrix *)
 
-  module Dense_real = struct
+  module Dense_real_double = struct
 
-    open Owl_types.Dense_real
+    open Owl_types.Dense_real_double
 
     (* deal with anonymous c struct *)
     let mat_struct = typedef mat_struct "gsl_matrix"
@@ -48,9 +48,9 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   (* foreign functions of dense complex matrix *)
 
-  module Dense_complex = struct
+  module Dense_complex_double = struct
 
-    open Owl_types.Dense_complex
+    open Owl_types.Dense_complex_double
 
     let mat_struct = typedef mat_struct "gsl_matrix_complex"
     let vec_struct = typedef vec_struct "gsl_vector_complex"
@@ -70,9 +70,9 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   (* foreign functions of sparse real matrix *)
 
-  module Sparse_real = struct
+  module Sparse_real_double = struct
 
-    open Owl_types.Sparse_real
+    open Owl_types.Sparse_real_double
 
     let spmat_struct = typedef spmat_struct "gsl_spmatrix"
 
@@ -102,9 +102,9 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
     let gsl_spblas_dgemm = foreign "gsl_spblas_dgemm" (double @-> ptr spmat_struct @-> ptr spmat_struct @-> ptr spmat_struct @-> returning int)
 
-    let gsl_spmatrix_d2sp = foreign "gsl_spmatrix_d2sp" (ptr spmat_struct @-> ptr Dense_real.mat_struct @-> returning int)
+    let gsl_spmatrix_d2sp = foreign "gsl_spmatrix_d2sp" (ptr spmat_struct @-> ptr Dense_real_double.mat_struct @-> returning int)
 
-    let gsl_spmatrix_sp2d = foreign "gsl_spmatrix_sp2d" (ptr Dense_real.mat_struct @-> ptr spmat_struct @-> returning int)
+    let gsl_spmatrix_sp2d = foreign "gsl_spmatrix_sp2d" (ptr Dense_real_double.mat_struct @-> ptr spmat_struct @-> returning int)
 
   end
 
