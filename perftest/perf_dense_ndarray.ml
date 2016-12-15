@@ -43,7 +43,9 @@ let _ =
   test_op "sin x             " c (fun () -> M.sin x);
   test_op "max2              " c (fun () -> M.max2 x y);
   test_op "is_zero           " c (fun () -> M.is_zero x);
-  test_op "equal_or_smaller  " c (fun () -> M.equal_or_smaller x y);
+  test_op "is_equal          " c (fun () -> M.is_equal x x);
+  test_op "is_greater        " c (fun () -> M.is_greater x x);
+  test_op "equal_or_smaller  " c (fun () -> M.equal_or_smaller x x);
   test_op "transpose         " c (fun () -> M.transpose x);
   test_op "swap 0 1          " c (fun () -> M.swap 0 1 x);
   test_op "fill              " c (fun () -> M.fill x 1.5);

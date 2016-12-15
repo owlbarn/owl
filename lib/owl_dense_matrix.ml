@@ -155,10 +155,6 @@ let copy_area_to x1 r1 x2 r2 =
 
 let copy_to x1 x2 = Array2.blit x1 x2
 
-let ( >> ) = copy_to
-
-let ( << ) x1 x2 = copy_to x2 x1
-
 let clone_area x r =
   let y = empty (Array2.kind x) (r.c - r.a + 1) (r.d - r.b + 1) in
   copy_area_to x r y (area_of y)
@@ -184,8 +180,6 @@ let concat_vertical x1 x2 =
     copy_row_to z x3 i
   done; x3
 
-let ( @= ) = concat_vertical
-
 let concat_horizontal x1 x2 =
   let m1, m2 = row_num x1, row_num x2 in
   let n1, n2 = col_num x1, col_num x2 in
@@ -194,8 +188,6 @@ let concat_horizontal x1 x2 =
     for j = 0 to n1 - 1 do x3.{i,j} <- x1.{i,j} done;
     for j = 0 to n2 - 1 do x3.{i,j+n1} <- x2.{i,j} done;
   done; x3
-
-let ( @|| ) = concat_horizontal
 
 let rows x l =
   let m, n = Array.length (l), col_num x in
@@ -371,15 +363,11 @@ let add x1 x2 =
   let y3 = Owl_dense_ndarray.add y1 y2 in
   of_ndarray y3
 
-let ( +@ ) = add
-
 let sub x1 x2 =
   let y1 = to_ndarray x1 in
   let y2 = to_ndarray x2 in
   let y3 = Owl_dense_ndarray.sub y1 y2 in
   of_ndarray y3
-
-let ( -@ ) = sub
 
 let mul x1 x2 =
   let y1 = to_ndarray x1 in
@@ -387,15 +375,11 @@ let mul x1 x2 =
   let y3 = Owl_dense_ndarray.mul y1 y2 in
   of_ndarray y3
 
-let ( *@ ) = mul
-
 let div x1 x2 =
   let y1 = to_ndarray x1 in
   let y2 = to_ndarray x2 in
   let y3 = Owl_dense_ndarray.div y1 y2 in
   of_ndarray y3
-
-let ( /@ ) = div
 
 (* TODO: way too slow! need to find a solution! *)
 let dot x1 x2 =
@@ -437,36 +421,6 @@ let average_rows x =
   let y = create (Array2.kind x) 1 m (1. /. (float_of_int m)) in
   dot y x
 
-let stderr = None
-
-let stderr_cols = None
-
-let stderr_rows = None
-
-let is_equal x1 x2 = x1 = x2
-
-let ( =@ ) = ( = )
-
-let is_unequal x1 x2 = x1 <> x2
-
-let ( <>@ ) = ( <> )
-
-let is_greater x1 x2 = x1 > x2
-
-let ( >@ ) = ( > )
-
-let is_smaller x1 x2 = x1 < x2
-
-let ( <@ ) = ( < )
-
-let equal_or_greater x1 x2 = x1 >= x2
-
-let ( >=@ ) = ( >= )
-
-let equal_or_smaller x1 x2 = x1 <= x2
-
-let ( <=@ ) = ( <= )
-
 let is_zero x =
   let y = to_ndarray x in
   Owl_dense_ndarray.is_zero y
@@ -486,6 +440,30 @@ let is_nonnegative x =
 let is_nonpositive x =
   let y = to_ndarray x in
   Owl_dense_ndarray.is_nonpositive y
+
+let is_equal x1 x2 = x1 = x2
+
+let is_unequal x1 x2 = x1 <> x2
+
+let is_greater x1 x2 =
+  let x1 = to_ndarray x1 in
+  let x2 = to_ndarray x2 in
+  Owl_dense_ndarray.is_greater x1 x2
+
+let is_smaller x1 x2 =
+  let x1 = to_ndarray x1 in
+  let x2 = to_ndarray x2 in
+  Owl_dense_ndarray.is_smaller x1 x2
+
+let equal_or_greater x1 x2 =
+  let x1 = to_ndarray x1 in
+  let x2 = to_ndarray x2 in
+  Owl_dense_ndarray.equal_or_greater x1 x2
+
+let equal_or_smaller x1 x2 =
+  let x1 = to_ndarray x1 in
+  let x2 = to_ndarray x2 in
+  Owl_dense_ndarray.equal_or_smaller x1 x2
 
 let min x =
   let open Owl_foreign in
@@ -557,22 +535,6 @@ let div_scalar x a =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray.div_scalar y a in
   of_ndarray y
-
-let ( +$ ) x a = add_scalar x a
-
-let ( $+ ) a x = add_scalar x a
-
-let ( -$ ) x a = sub_scalar x a
-
-let ( $- ) a x = sub_scalar x a
-
-let ( *$ ) x a = mul_scalar x a
-
-let ( $* ) a x = mul_scalar x a
-
-let ( /$ ) x a = div_scalar x a
-
-let ( $/ ) a x = div_scalar x a
 
 (* advanced matrix methematical operations *)
 
@@ -725,5 +687,51 @@ let meshup x y =
   let x = map_by_row xn (fun _ -> x) (empty Float64 yn xn) in
   let y = map_by_row yn (fun _ -> y) (empty Float64 xn yn) in
   x, transpose y
+
+(* shorhand infix operators *)
+
+let ( @= ) = concat_vertical
+
+let ( @|| ) = concat_horizontal
+
+let ( >> ) = copy_to
+
+let ( << ) x1 x2 = copy_to x2 x1
+
+let ( +@ ) = add
+
+let ( -@ ) = sub
+
+let ( *@ ) = mul
+
+let ( /@ ) = div
+
+let ( =@ ) = ( = )
+
+let ( <>@ ) = ( <> )
+
+let ( >@ ) = is_greater
+
+let ( <@ ) = is_smaller
+
+let ( >=@ ) = equal_or_greater
+
+let ( <=@ ) = equal_or_smaller
+
+let ( +$ ) x a = add_scalar x a
+
+let ( $+ ) a x = add_scalar x a
+
+let ( -$ ) x a = sub_scalar x a
+
+let ( $- ) a x = sub_scalar x a
+
+let ( *$ ) x a = mul_scalar x a
+
+let ( $* ) a x = mul_scalar x a
+
+let ( /$ ) x a = div_scalar x a
+
+let ( $/ ) a x = div_scalar x a
 
 let ( @@ ) f x = map f x
