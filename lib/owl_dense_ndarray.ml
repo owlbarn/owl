@@ -69,6 +69,7 @@ let clone x =
   zpxy, zmxy, ssqr_diff
  *)
 
+(* TODO: add axis paramater *)
 let min x =
   let y = Genarray.change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in
@@ -95,8 +96,6 @@ let _paired_arithmetic_op (op : ('a, 'b) kind -> ('a, 'b) vec_binop) x y =
   let z = Genarray.change_layout z c_layout in
   let z = Bigarray.reshape z (shape x) in
   z
-
-let __investigate___add x y = _paired_arithmetic_op _add x y
 
 let add x y =
   let x' = Genarray.change_layout x fortran_layout in
@@ -958,6 +957,7 @@ let is_equal x y = ( = ) x y
 
 let is_unequal x y = ( <> ) x y
 
+(* TODO: optimise performance *)
 let is_greater x y = _compare_elements_in_two ( > ) x y
 
 let is_smaller x y = _compare_elements_in_two ( < ) x y

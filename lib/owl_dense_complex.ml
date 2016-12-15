@@ -374,21 +374,31 @@ let is_unequal x1 x2 = x1 <> x2
 
 let ( <>@ ) = ( <> )
 
-let is_greater x1 x2 = x1 > x2
+let is_greater x1 x2 =
+  let open Owl_foreign in
+  let open Owl_foreign.DC in
+  let x3 = sub x1 x2 in
+  let x3 = dc_mat_to_matptr x3 in
+  (gsl_matrix_complex_ispos x3) = 1
 
-let ( >@ ) = ( > )
+let ( >@ ) = is_greater
 
-let is_smaller x1 x2 = x1 < x2
+let is_smaller x1 x2 = is_greater x2 x1
 
-let ( <@ ) = ( < )
+let ( <@ ) = is_smaller
 
-let equal_or_greater x1 x2 = x1 >= x2
+let equal_or_greater x1 x2 =
+  let open Owl_foreign in
+  let open Owl_foreign.DC in
+  let x3 = sub x1 x2 in
+  let x3 = dc_mat_to_matptr x3 in
+  (gsl_matrix_complex_isnonneg x3) = 1
 
-let ( >=@ ) = ( >= )
+let ( >=@ ) = equal_or_greater
 
-let equal_or_smaller x1 x2 = x1 <= x2
+let equal_or_smaller x1 x2 = equal_or_greater x2 x1
 
-let ( <=@ ) = ( <= )
+let ( <=@ ) = equal_or_smaller
 
 let is_zero x = Gsl.Matrix_complex.is_null x
 

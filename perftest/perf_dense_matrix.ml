@@ -3,6 +3,7 @@ open Bigarray
 module M = Owl_dense_matrix
 
 let test_op s c op =
+  Gc.compact ();
   let ttime = ref 0. in
   for i = 1 to c do
     let t0 = Unix.gettimeofday () in
