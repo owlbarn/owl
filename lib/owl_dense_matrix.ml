@@ -67,7 +67,7 @@ let empty' : type a b . ?k : typ -> int -> int -> (a, b) mat =
   | Z -> Array2.create Complex64 c_layout m n
 *)
 
-let zeros k m n = (_make0 k) m n |> fortran2c_matrix
+let zeros k m n = (_make0 k) n m |> fortran2c_matrix
 
 let create k m n a =
   let x = empty k m n in
