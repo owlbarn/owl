@@ -4,7 +4,11 @@
  *
  *)
 
-(* run --> ./ffi_stubgen.byte -ml > lib/ffi_generated.ml; ./ffi_stubgen.byte -c > lib/ffi_generated_stubs.c *)
+(* run the following commands -->
+  ./ffi_stubgen.byte -ml > lib/ffi_generated.ml;
+  ./ffi_stubgen.byte -c > lib/ffi_generated_stubs.c;
+  cp ./lib/bindings/ffi_bindings_base.ml  ./lib/ffi_bindings.ml
+ *)
 
 open Ctypes
 
