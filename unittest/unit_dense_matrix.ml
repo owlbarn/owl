@@ -149,29 +149,30 @@ let add () =
 let mul () =
   Alcotest.(check bool) "mul" true (To_test.mul x2)
 
+
 let test_set = [
-  "sequential", `Quick, sequential;
-  "row_num", `Quick , row_num;
-  "col_num", `Quick , col_num;
-  "numel", `Quick , col_num;
-  "get", `Quick , get;
-  "set", `Quick , set;
-  "row", `Quick , row;
-  "col", `Quick , col;
-  "fill", `Quick , fill;
-  "trace", `Quick , trace;
-  "add_diag", `Quick , add_diag;
-  "sum", `Quick , sum;
-  "fold", `Quick , fold;
-  "exists", `Quick , exists;
-  "not_exists", `Quick , not_exists;
-  "for_all", `Quick , for_all;
-  "is_equal", `Quick , is_equal;
-  "is_unequal", `Quick , is_unequal;
-  "is_greater", `Quick , is_greater;
-  "is_smaller", `Quick , is_smaller;
-  "add", `Quick , add;
-  "mul", `Quick , mul;
+  "sequential", `Slow, sequential;
+  "row_num", `Slow, row_num;
+  "col_num", `Slow, col_num;
+  "numel", `Slow, col_num;
+  "get", `Slow, get;
+  "set", `Slow, set;
+  "row", `Slow, row;
+  "col", `Slow, col;
+  "fill", `Slow, fill;
+  "trace", `Slow, trace;
+  "add_diag", `Slow, add_diag;
+  "sum", `Slow, sum;
+  "fold", `Slow, fold;
+  "exists", `Slow, exists;
+  "not_exists", `Slow, not_exists;
+  "for_all", `Slow, for_all;
+  "is_equal", `Slow, is_equal;
+  "is_unequal", `Slow, is_unequal;
+  "is_greater", `Slow, is_greater;
+  "is_smaller", `Slow, is_smaller;
+  "add", `Slow, add;
+  "mul", `Slow, mul;
 ]
 
 (* Run it *)
