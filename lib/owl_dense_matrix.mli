@@ -75,6 +75,8 @@ val rows : ('a, 'b) mat -> int array -> ('a, 'b) mat
 
 val cols : ('a, 'b) mat -> int array -> ('a, 'b) mat
 
+val fill : ('a, 'b) mat -> 'a -> unit
+
 val clone : ('a, 'b) mat -> ('a, 'b) mat
 
 val copy_to : ('a, 'b) mat -> ('a, 'b) mat -> unit
