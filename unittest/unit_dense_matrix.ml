@@ -54,11 +54,30 @@ module To_test = struct
 
   let is_equal x y = M.is_equal x y
 
-  let is_unequal x y =
-    M.print x;
-    print_endline "";
-    M.print y;
-    M.is_unequal x y
+  let is_unequal x y = M.is_unequal x y
+
+  let is_greater () =
+    let x = M.uniform Float64 3 3 in
+    let y = M.uniform Float64 3 3 in
+    y.{2,2} <- (-99.); y.{2,1} <- 99.;
+    M.is_greater x y
+
+  let is_smaller () =
+    let x = M.uniform Float64 3 3 in
+    let y = M.neg x in
+    M.is_smaller y x
+
+  let add x =
+    let y0 = M.mul_scalar x 2. in
+    let y1 = M.add x x in
+    M.is_equal y0 y1
+
+  let mul x =
+    let y0 = M.mul_scalar x 2. in
+    let m, n = M.shape x in
+    let y1 = M.create Float64 m n 2. in
+    let y2 = M.mul x y1 in
+    M.is_equal y0 y2
 
 end
 
@@ -118,6 +137,17 @@ let is_equal () =
 let is_unequal () =
   Alcotest.(check bool) "is_unequal" true (To_test.is_unequal x0 x1)
 
+let is_greater () =
+  Alcotest.(check bool) "is_greater" false (To_test.is_greater ())
+
+let is_smaller () =
+  Alcotest.(check bool) "is_smaller" true (To_test.is_smaller ())
+
+let add () =
+  Alcotest.(check bool) "add" true (To_test.add x2)
+
+let mul () =
+  Alcotest.(check bool) "mul" true (To_test.mul x2)
 
 let test_set = [
   "sequential", `Quick, sequential;
@@ -138,6 +168,10 @@ let test_set = [
   "for_all", `Quick , for_all;
   "is_equal", `Quick , is_equal;
   "is_unequal", `Quick , is_unequal;
+  "is_greater", `Quick , is_greater;
+  "is_smaller", `Quick , is_smaller;
+  "add", `Quick , add;
+  "mul", `Quick , mul;
 ]
 
 (* Run it *)
