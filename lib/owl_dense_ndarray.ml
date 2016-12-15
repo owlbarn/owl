@@ -922,6 +922,8 @@ let copy_slice i src dst =
 
 (* some comparison functions *)
 
+(* TODO: optimise performance *)
+
 let _compare_element_to_zero f x =
   let b = ref true in
   let z = _zero (kind x) in
@@ -931,16 +933,6 @@ let _compare_element_to_zero f x =
       failwith "found";
     )
   ) x; !b
-  with Failure _ -> !b
-
-let _compare_elements_in_two f x y =
-  let b = ref true in
-  try iter2 (fun c d ->
-    if not (f c d) then (
-      b := false;
-      failwith "found";
-    )
-  ) x y; !b
   with Failure _ -> !b
 
 let is_zero x = _compare_element_to_zero ( = ) x
@@ -958,6 +950,17 @@ let is_equal x y = ( = ) x y
 let is_unequal x y = ( <> ) x y
 
 (* TODO: optimise performance *)
+
+let _compare_elements_in_two f x y =
+  let b = ref true in
+  try iter2 (fun c d ->
+    if not (f c d) then (
+      b := false;
+      failwith "found";
+    )
+  ) x y; !b
+  with Failure _ -> !b
+
 let is_greater x y = _compare_elements_in_two ( > ) x y
 
 let is_smaller x y = _compare_elements_in_two ( < ) x y

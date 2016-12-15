@@ -17,9 +17,9 @@ let ndarray_to_gsl_vector x =
 
 let gsl_vector_to_ndarray = None
 
-let matrix_to_ndarray = None
+let matrix_to_ndarray x = Obj.magic (Bigarray.genarray_of_array2 x)
 
-let ndarray_to_matrix = None
+let ndarray_to_matrix x = Bigarray.array2_of_genarray (Obj.magic x)
 
 
 (* types for interfacing to lacaml and gsl *)
@@ -450,3 +450,8 @@ let _gsl_min : type a b. (a, b) kind -> (a, b) gsl_vec_op00 = function
   | Float32   -> Gsl.Vector.Single.min
   | Float64   -> Gsl.Vector.min
   | _         -> failwith "_gsl_min: unsupported operation"
+
+let _gsl_max : type a b. (a, b) kind -> (a, b) gsl_vec_op00 = function
+  | Float32   -> Gsl.Vector.Single.max
+  | Float64   -> Gsl.Vector.max
+  | _         -> failwith "_gsl_max: unsupported operation"

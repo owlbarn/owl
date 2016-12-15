@@ -4,6 +4,8 @@
  *
  *)
 
+(* run --> ./ffi_stubgen.byte -ml > lib/ffi_generated.ml; ./ffi_stubgen.byte -c > lib/ffi_generated_stubs.c *)
+
 open Ctypes
 
 module Bindings (F : Cstubs.FOREIGN) = struct
@@ -45,6 +47,18 @@ module Bindings (F : Cstubs.FOREIGN) = struct
     let gsl_matrix_max_index = foreign "gsl_matrix_max_index" (ptr mat_struct @-> ptr size_t @-> ptr size_t @-> returning void)
 
   end
+
+
+  module Dense_real_float = struct
+
+    open Owl_types.Dense_real_float
+
+    (* deal with anonymous c struct *)
+    let mat_struct = typedef mat_struct "gsl_matrix_float"
+    let vec_struct = typedef vec_struct "gsl_vector_float"
+
+  end
+
 
   (* foreign functions of dense complex matrix *)
 
