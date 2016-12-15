@@ -36,8 +36,8 @@ let _ =
   test_op "mul               " c (fun () -> M.mul x y);
   test_op "div               " c (fun () -> M.div x y);
   test_op "dot               " 0 (fun () -> ());
-  test_op "+$                " c (fun () -> M.(x +$ 1.));
-  test_op "*$                " c (fun () -> M.(x *$ 1.));
+  test_op "add_scalar        " c (fun () -> M.add_scalar x 1.);
+  test_op "mul_scalar        " c (fun () -> M.mul_scalar x 1.);
   test_op "abs               " c (fun () -> M.abs x);
   test_op "neg               " c (fun () -> M.neg x);
   test_op "sum               " c (fun () -> M.sum x);

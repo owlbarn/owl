@@ -13,8 +13,8 @@ let _ =
   let x = M.create Bigarray.Float64 [|m;n;o|] 1. in
   let y = M.create Bigarray.Float64 [|m;n;o|] 2. in
   let z = M.ones Bigarray.Complex64 [|m;n;o|] in
-  test_op "empty             " c (fun () -> M.empty Bigarray.Float32 [|m;n;o|]);
-  test_op "create            " c (fun () -> M.create Bigarray.Float32 [|m;n;o|] 1.);
+  test_op "empty             " c (fun () -> M.empty Bigarray.Float64 [|m;n;o|]);
+  test_op "create            " c (fun () -> M.create Bigarray.Float64 [|m;n;o|] 1.);
   test_op "slice_left        " c (fun () -> M.slice_left x [|0|]);
   test_op "slice (0,*.*)     " c (fun () -> M.slice [|Some 0; None; None|] x);
   test_op "slice (*,0.*)     " c (fun () -> M.slice [|None; Some 0; None|] x);

@@ -127,7 +127,13 @@ Executable perf_dense_ndarray
   Path:           perftest
   CompiledObject: best
   MainIs:         perf_dense_ndarray.ml
-  BuildDepends:   owl, perf_common
+  BuildDepends:   owl
+
+Executable perf_specific_fun
+  Path:           perftest
+  CompiledObject: best
+  MainIs:         perf_specific_fun.ml
+  BuildDepends:   owl
 
 AlphaFeatures: ocamlbuild_more_args
 Document owldoc
