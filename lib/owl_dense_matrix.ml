@@ -77,16 +77,16 @@ let ones k m n = create k m n (_one k)
 
 let eye k n =
   let x = zeros k n n in
-  let a = Owl_dense_common._one k in
+  let a = _one k in
   for i = 0 to n - 1 do
     Array2.unsafe_set x i i a
   done; x
 
 let sequential k m n =
   let x = empty k m n in
-  let c = ref (Owl_dense_common._zero k) in
-  let a = Owl_dense_common._one k in
-  let _op = Owl_dense_common._add_elt k in
+  let c = ref (_zero k) in
+  let a = _one k in
+  let _op = _add_elt k in
   for i = 0 to m - 1 do
     for j = 0 to n - 1 do
       c := _op !c a;
@@ -201,13 +201,13 @@ let cols x l =
 
 let swap_rows x i i' =
   let y = clone x in
-  let _op = Owl_dense_common._gsl_swap_rows (Array2.kind x) in
+  let _op = _gsl_swap_rows (Array2.kind x) in
   _op y i i';
   y
 
 let swap_cols x j j' =
   let y = clone x in
-  let _op = Owl_dense_common._gsl_swap_cols (Array2.kind x) in
+  let _op = _gsl_swap_cols (Array2.kind x) in
   _op y j j';
   y
 
@@ -218,7 +218,7 @@ let swap_rowcol x i j =
 
 let transpose x =
   let y = empty (Array2.kind x) (col_num x) (row_num x) in
-  let _op = Owl_dense_common._gsl_transpose_copy (Array2.kind x) in
+  let _op = _gsl_transpose_copy (Array2.kind x) in
   _op y x; y
 
 let replace_row v x i =
@@ -427,24 +427,24 @@ let average_rows x =
   dot y x
 
 let is_zero x =
-  let _op = Owl_dense_common._gsl_isnull (Array2.kind x) in
+  let _op = _gsl_isnull (Array2.kind x) in
   _op x
 
 let is_positive x =
-  let y = to_ndarray x in
-  Owl_dense_ndarray.is_positive y
+  let _op = _gsl_ispos (Array2.kind x) in
+  _op x
 
 let is_negative x =
-  let y = to_ndarray x in
-  Owl_dense_ndarray.is_negative y
+  let _op = _gsl_isneg (Array2.kind x) in
+  _op x
 
 let is_nonnegative x =
-  let y = to_ndarray x in
-  Owl_dense_ndarray.is_nonnegative y
+  let _op = _gsl_isnonneg (Array2.kind x) in
+  _op x
 
 let is_nonpositive x =
-  let y = to_ndarray x in
-  Owl_dense_ndarray.is_nonpositive y
+  let _op = _gsl_ispos (Array2.kind x) in
+  not (_op x)
 
 let is_equal x1 x2 = x1 = x2
 
@@ -576,7 +576,7 @@ let trace x = sum (diag x)
 let add_diag x a =
   let m = Pervasives.min (row_num x) (col_num x) in
   let y = clone x in
-  let _op = Owl_dense_common._add_elt (Array2.kind x) in
+  let _op = _add_elt (Array2.kind x) in
   for i = 0 to m - 1 do
     y.{i,i} <- _op x.{i,i} a
   done; y
@@ -666,7 +666,7 @@ let draw_cols ?(replacement=true) x c =
 let shuffle_rows x =
   let y = clone x in
   let m, n = shape x in
-  let _op = Owl_dense_common._gsl_swap_rows (Array2.kind x) in
+  let _op = _gsl_swap_rows (Array2.kind x) in
   for i = 0 to m - 1 do
     _op y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
   done; y
@@ -674,7 +674,7 @@ let shuffle_rows x =
 let shuffle_cols x =
   let y = clone x in
   let m, n = shape x in
-  let _op = Owl_dense_common._gsl_swap_cols (Array2.kind x) in
+  let _op = _gsl_swap_cols (Array2.kind x) in
   for i = 0 to n - 1 do
     _op y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
   done; y

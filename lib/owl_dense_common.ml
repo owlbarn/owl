@@ -457,6 +457,27 @@ let _gsl_isnull : type a b. (a, b) kind -> (a, b) gsl_mat_op00 = function
   | Complex64 -> Owl_foreign.Dense_complex_double.ml_gsl_matrix_isnull
   | _         -> failwith "_gsl_isnull: unsupported operation"
 
+let _gsl_ispos : type a b. (a, b) kind -> (a, b) gsl_mat_op00 = function
+  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_ispos
+  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_ispos
+  | Complex32 -> Owl_foreign.Dense_complex_float.ml_gsl_matrix_ispos
+  | Complex64 -> Owl_foreign.Dense_complex_double.ml_gsl_matrix_ispos
+  | _         -> failwith "_gsl_ispos: unsupported operation"
+
+let _gsl_isneg : type a b. (a, b) kind -> (a, b) gsl_mat_op00 = function
+  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_isneg
+  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_isneg
+  | Complex32 -> Owl_foreign.Dense_complex_float.ml_gsl_matrix_isneg
+  | Complex64 -> Owl_foreign.Dense_complex_double.ml_gsl_matrix_isneg
+  | _         -> failwith "_gsl_isneg: unsupported operation"
+
+let _gsl_isnonneg : type a b. (a, b) kind -> (a, b) gsl_mat_op00 = function
+  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_isnonneg
+  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_isnonneg
+  | Complex32 -> Owl_foreign.Dense_complex_float.ml_gsl_matrix_isnonneg
+  | Complex64 -> Owl_foreign.Dense_complex_double.ml_gsl_matrix_isnonneg
+  | _         -> failwith "_gsl_isnonneg: unsupported operation"
+
 let _gsl_min : type a b. (a, b) kind -> (a, b) gsl_vec_op00 = function
   | Float32   -> Gsl.Vector.Single.min
   | Float64   -> Gsl.Vector.min

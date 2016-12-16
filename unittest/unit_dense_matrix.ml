@@ -71,6 +71,14 @@ module To_test = struct
 
   let is_zero x = M.is_zero x
 
+  let is_positive x = M.is_positive x
+
+  let is_negative x = M.is_negative x
+
+  let is_nonnegative x = M.is_nonnegative x
+
+  let is_nonpositive x = M.is_nonpositive x
+
   let add x =
     let y0 = M.mul_scalar x 2. in
     let y1 = M.add x x in
@@ -161,6 +169,18 @@ let is_smaller () =
 let is_zero () =
   Alcotest.(check bool) "is_zero" true (To_test.is_zero x0)
 
+let is_positive () =
+  Alcotest.(check bool) "is_positive" true (To_test.is_positive x1)
+
+let is_negative () =
+  Alcotest.(check bool) "is_negative" false (To_test.is_negative x1)
+
+let is_nonnegative () =
+  Alcotest.(check bool) "is_nonnegative" true (To_test.is_nonnegative x0)
+
+let is_nonpositive () =
+  Alcotest.(check bool) "is_nonpositive" true (To_test.is_nonpositive x0)
+
 let add () =
   Alcotest.(check bool) "add" true (To_test.add x2)
 
@@ -198,6 +218,10 @@ let test_set = [
   "is_greater", `Slow, is_greater;
   "is_smaller", `Slow, is_smaller;
   "is_zero", `Slow, is_zero;
+  "is_positive", `Slow, is_positive;
+  "is_negative", `Slow, is_negative;
+  "is_nonnegative", `Slow, is_nonnegative;
+  "is_nonpositive", `Slow, is_nonpositive;
   "add", `Slow, add;
   "mul", `Slow, mul;
   "min", `Slow, min;

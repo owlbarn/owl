@@ -119,6 +119,18 @@ module Dense_real_double = struct
     let y = mat_to_matptr x in
     gsl_matrix_isnull y = 1
 
+  let ml_gsl_matrix_ispos x =
+    let y = mat_to_matptr x in
+    gsl_matrix_ispos y = 1
+
+  let ml_gsl_matrix_isneg x =
+    let y = mat_to_matptr x in
+    gsl_matrix_isneg y = 1
+
+  let ml_gsl_matrix_isnonneg x =
+    let y = mat_to_matptr x in
+    gsl_matrix_isnonneg y = 1
+
 end
 
 
@@ -155,6 +167,18 @@ module Dense_real_float = struct
   let ml_gsl_matrix_isnull x =
     let y = mat_to_matptr x in
     gsl_matrix_float_isnull y = 1
+
+  let ml_gsl_matrix_ispos x =
+    let y = mat_to_matptr x in
+    gsl_matrix_float_ispos y = 1
+
+  let ml_gsl_matrix_isneg x =
+    let y = mat_to_matptr x in
+    gsl_matrix_float_isneg y = 1
+
+  let ml_gsl_matrix_isnonneg x =
+    let y = mat_to_matptr x in
+    gsl_matrix_float_isnonneg y = 1
 
 end
 
@@ -193,6 +217,18 @@ module Dense_complex_double = struct
     let y = mat_to_matptr x in
     gsl_matrix_complex_isnull y = 1
 
+  let ml_gsl_matrix_ispos x =
+    let y = mat_to_matptr x in
+    gsl_matrix_complex_ispos y = 1
+
+  let ml_gsl_matrix_isneg x =
+    let y = mat_to_matptr x in
+    gsl_matrix_complex_isneg y = 1
+
+  let ml_gsl_matrix_isnonneg x =
+    let y = mat_to_matptr x in
+    gsl_matrix_complex_isnonneg y = 1
+
 end
 
 
@@ -229,6 +265,18 @@ module Dense_complex_float = struct
   let ml_gsl_matrix_isnull x =
     let y = mat_to_matptr x in
     gsl_matrix_complex_float_isnull y = 1
+
+  let ml_gsl_matrix_ispos x =
+    let y = mat_to_matptr x in
+    gsl_matrix_complex_float_ispos y = 1
+
+  let ml_gsl_matrix_isneg x =
+    let y = mat_to_matptr x in
+    gsl_matrix_complex_float_isneg y = 1
+
+  let ml_gsl_matrix_isnonneg x =
+    let y = mat_to_matptr x in
+    gsl_matrix_complex_float_isnonneg y = 1
 
 end
 

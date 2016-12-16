@@ -922,30 +922,25 @@ let copy_slice i src dst =
 
 (* some comparison functions *)
 
-(* TODO: optimise performance *)
-
-let _compare_element_to_zero f x =
-  let b = ref true in
-  let z = _zero (kind x) in
-  try iter (fun y ->
-    if not (f y z) then (
-      b := false;
-      failwith "found";
-    )
-  ) x; !b
-  with Failure _ -> !b
-
 let is_zero x =
   let y = ndarray_to_matrix x in
   (_gsl_isnull (kind x)) y
 
-let is_positive x = _compare_element_to_zero ( > ) x
+let is_positive x =
+  let y = ndarray_to_matrix x in
+  (_gsl_ispos (kind x)) y
 
-let is_negative x = _compare_element_to_zero ( < ) x
+let is_negative x =
+  let y = ndarray_to_matrix x in
+  (_gsl_isneg (kind x)) y
 
-let is_nonnegative x = _compare_element_to_zero ( >= ) x
+let is_nonnegative x =
+  let y = ndarray_to_matrix x in
+  (_gsl_isnonneg (kind x)) y
 
-let is_nonpositive x = _compare_element_to_zero ( <= ) x
+let is_nonpositive x =
+  let y = ndarray_to_matrix x in
+  not ((_gsl_ispos (kind x)) y)
 
 let is_equal x y = ( = ) x y
 
