@@ -316,9 +316,9 @@ val min : ('a, 'b) t -> 'a
 val max : ('a, 'b) t -> 'a
 (** [max x] returns the maximum of all elements in [x]. *)
 
-val minmax : ('a, 'b) t -> ('a * (int array) * 'a * (int array))
-(** [minmax x] returns both the minimum and maximum elements in [x] along with
-  their corresponding indices.
+val minmax : ('a, 'b) t -> 'a * 'a
+(** [minmax x] returns [(min_v, max_v)], [min_v] is the minimum value in [x]
+  while [max_v] is the maximum.
  *)
 
 val min_i : ('a, 'b) t -> 'a * int array
@@ -327,7 +327,11 @@ val min_i : ('a, 'b) t -> 'a * int array
 val max_i : ('a, 'b) t -> 'a * int array
 (** [max_i x] returns the maximum of all elements in [x] along with its index. *)
 
-(* TODO: minmax_i *)
+val minmax_i : ('a, 'b) t -> ('a * (int array)) * ('a * (int array))
+(** [minmax_i x] returns [((min_v,min_i), (max_v,max_i))] where [(min_v,min_i)]
+  is the minimum value in [x] along with its index while [(max_v,max_i)] is the
+  maximum value along its index.
+ *)
 
 val abs : ('a, 'b) t -> ('a, 'b) t
 (** [abs x] returns the absolute value of all elements in [x] in a new ndarray. *)

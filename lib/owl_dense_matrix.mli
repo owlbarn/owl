@@ -242,13 +242,15 @@ val load_txt : string -> mat_d
 
 val min : ('a, 'b) mat -> 'a
 
-val min_i : (float, 'b) mat -> float * int * int
-
 val max : ('a, 'b) mat -> 'a
 
-val max_i : (float, 'b) mat -> float * int * int
+val minmax : ('a, 'b) mat -> 'a * 'a
 
-val minmax : (float, 'b) mat -> float * float * int * int * int * int
+val min_i : ('a, 'b) mat -> 'a * int * int
+
+val max_i : ('a, 'b) mat -> 'a * int * int
+
+val minmax_i : ('a, 'b) mat -> ('a * int * int) * ('a * int * int)
 
 val sum : ('a, 'b) mat -> 'a
 
@@ -303,6 +305,7 @@ val mul_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
 
 val div_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
 
+(* TODO: min2 and max2 *)
 
 (** {6 Shorhand infix operators} *)
 

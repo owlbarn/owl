@@ -145,6 +145,13 @@ module Dense_real_double = struct
     let y = mat_to_matptr x in
     gsl_matrix_max y
 
+  let ml_gsl_matrix_minmax x : float * float =
+    let y = mat_to_matptr x in
+    let min = allocate double 0. in
+    let max = allocate double 0. in
+    let _ = gsl_matrix_minmax y min max in
+    !@min, !@max
+
   let ml_gsl_matrix_min_index x =
     let y = mat_to_matptr x in
     let i = allocate size_t (Unsigned.Size_t.of_int 0) in
@@ -164,6 +171,21 @@ module Dense_real_double = struct
     let j = Unsigned.Size_t.to_int !@j in
     let a = Array2.unsafe_get x i j in
     a, i, j
+
+  let ml_gsl_matrix_minmax_index x =
+    let y = mat_to_matptr x in
+    let i = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let j = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let p = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let q = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let _ = gsl_matrix_minmax_index y i j p q in
+    let i = Unsigned.Size_t.to_int !@i in
+    let j = Unsigned.Size_t.to_int !@j in
+    let p = Unsigned.Size_t.to_int !@p in
+    let q = Unsigned.Size_t.to_int !@q in
+    let a = Array2.unsafe_get x i j in
+    let b = Array2.unsafe_get x p q in
+    (a, i, j), (b, p, q)
 
 end
 
@@ -227,6 +249,13 @@ module Dense_real_float = struct
     let y = mat_to_matptr x in
     gsl_matrix_float_max y
 
+  let ml_gsl_matrix_minmax x : float * float =
+    let y = mat_to_matptr x in
+    let min = allocate float 0. in
+    let max = allocate float 0. in
+    let _ = gsl_matrix_float_minmax y min max in
+    !@min, !@max
+
   let ml_gsl_matrix_min_index x =
     let y = mat_to_matptr x in
     let i = allocate size_t (Unsigned.Size_t.of_int 0) in
@@ -246,6 +275,21 @@ module Dense_real_float = struct
     let j = Unsigned.Size_t.to_int !@j in
     let a = Array2.unsafe_get x i j in
     a, i, j
+
+  let ml_gsl_matrix_minmax_index x =
+    let y = mat_to_matptr x in
+    let i = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let j = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let p = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let q = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let _ = gsl_matrix_float_minmax_index y i j p q in
+    let i = Unsigned.Size_t.to_int !@i in
+    let j = Unsigned.Size_t.to_int !@j in
+    let p = Unsigned.Size_t.to_int !@p in
+    let q = Unsigned.Size_t.to_int !@q in
+    let a = Array2.unsafe_get x i j in
+    let b = Array2.unsafe_get x p q in
+    (a, i, j), (b, p, q)
 
 end
 

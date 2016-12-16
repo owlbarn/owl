@@ -488,6 +488,15 @@ let min_i x = (_gsl_min_index (Array2.kind x)) x
 
 let max_i x = (_gsl_max_index (Array2.kind x)) x
 
+let minmax' x =
+  let xmin, irow, icol = min_i x in
+  let xmax, arow, acol = max_i x in
+  xmin, xmax, irow, icol, arow, acol
+
+let minmax x = (_gsl_minmax (Array2.kind x)) x
+
+let minmax_i x = (_gsl_minmax_index (Array2.kind x)) x
+
 let min_cols x =
   mapi_cols (fun j v ->
     let r, i, _ = min_i v in r, i, j
@@ -507,11 +516,6 @@ let max_rows x =
   mapi_rows (fun i v ->
     let r, _, j = max_i v in r, i, j
   ) x
-
-let minmax x =
-  let xmin, irow, icol = min_i x in
-  let xmax, arow, acol = max_i x in
-  xmin, xmax, irow, icol, arow, acol
 
 let add_scalar x a =
   let y = to_ndarray x in

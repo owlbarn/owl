@@ -83,6 +83,8 @@ type ('a, 'b) gsl_mat_op01 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> unit
 type ('a, 'b) gsl_mat_op02 = ('a, 'b) gsl_mat -> int -> int -> unit
 type ('a, 'b) gsl_mat_op03 = ('a, 'b) gsl_mat -> 'a
 type ('a, 'b) gsl_mat_op04 = ('a, 'b) gsl_mat -> 'a * int * int
+type ('a, 'b) gsl_mat_op05 = ('a, 'b) gsl_mat -> 'a * 'a
+type ('a, 'b) gsl_mat_op06 = ('a, 'b) gsl_mat -> ('a * int * int) * ('a * int * int) 
 
 (* call functions in lacaml *)
 
@@ -521,6 +523,11 @@ let _gsl_max : type a b. (a, b) kind -> (a, b) gsl_mat_op03 = function
   | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_max
   | _         -> failwith "_gsl_max: unsupported operation"
 
+let _gsl_minmax : type a b. (a, b) kind -> (a, b) gsl_mat_op05 = function
+  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_minmax
+  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_minmax
+  | _         -> failwith "_gsl_minmax: unsupported operation"
+
 let _gsl_min_index : type a b. (a, b) kind -> (a, b) gsl_mat_op04 = function
   | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_min_index
   | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_min_index
@@ -530,3 +537,8 @@ let _gsl_max_index : type a b. (a, b) kind -> (a, b) gsl_mat_op04 = function
   | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_max_index
   | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_max_index
   | _         -> failwith "_gsl_max_index: unsupported operation"
+
+let _gsl_minmax_index : type a b. (a, b) kind -> (a, b) gsl_mat_op06 = function
+  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_minmax_index
+  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_minmax_index
+  | _         -> failwith "_gsl_minmax_index: unsupported operation"

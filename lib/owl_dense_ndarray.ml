@@ -83,6 +83,11 @@ let max : type a b . (a, b) t -> a = fun x ->
   | Complex64 -> (_max k) (ndarray_to_fortran_vec x)
   | _ -> (_gsl_max k) (ndarray_to_c_mat x)
 
+let minmax x =
+  let y = ndarray_to_c_mat x in
+  let a, b = (_gsl_minmax (kind x)) y in
+  a, b
+
 let min_i x =
   let y = ndarray_to_c_mat x in
   let a, _, i = (_gsl_min_index (kind x)) y in
@@ -98,6 +103,16 @@ let max_i x =
   let j = Array.copy s in
   let _ = _index_1d_nd i j s in
   a, j
+
+let minmax_i x =
+  let y = ndarray_to_c_mat x in
+  let (a, _, i), (b, _, j) = (_gsl_minmax_index (kind x)) y in
+  let s = _calc_stride (shape x) in
+  let p = Array.copy s in
+  let q = Array.copy s in
+  let _ = _index_1d_nd i p s in
+  let _ = _index_1d_nd j q s in
+  (a, p), (b, q)
 
 let _check_paired_operands x y =
   if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
@@ -1024,7 +1039,7 @@ let im x =
   iteri (fun i c -> set y i Complex.(c.im) ) x;
   y
 
-let minmax x =
+let minmax' x =
   let x' = Genarray.change_layout x fortran_layout in
   let x' = Bigarray.reshape_1 x' (numel x) in
   let min_i = ref 1 in
