@@ -19,8 +19,6 @@ let of_ndarray x = Bigarray.array2_of_genarray (Obj.magic x)
 
 (* matrix creation operations *)
 
-let size = None
-
 let shape x = (Array2.dim1 x, Array2.dim2 x)
 
 let row_num x = fst (shape x)

@@ -114,23 +114,6 @@ let minmax_i x =
   let _ = _index_1d_nd j q s in
   (a, p), (b, q)
 
-let _check_paired_operands x y =
-  if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
-  if (shape x) <> (shape y) then failwith "_check_paired_operands: shape mismatch"
-
-(* TODO: although generate clean code, but seems causing performance degradation *)
-let _paired_arithmetic_op (op : ('a, 'b) kind -> ('a, 'b) lcm_vec_op05) x y =
-  _check_paired_operands x y;
-  let x' = Genarray.change_layout x fortran_layout in
-  let x' = Bigarray.reshape_1 x' (numel x) in
-  let y' = Genarray.change_layout y fortran_layout in
-  let y' = Bigarray.reshape_1 y' (numel y) in
-  let z = (op (kind x)) x' y' in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = Genarray.change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
-
 let add x y =
   let x' = Genarray.change_layout x fortran_layout in
   let x' = Bigarray.reshape_1 x' (numel x) in

@@ -77,6 +77,7 @@ type ('a, 'b) gsl_mat_op03 = ('a, 'b) gsl_mat -> 'a
 type ('a, 'b) gsl_mat_op04 = ('a, 'b) gsl_mat -> 'a * int * int
 type ('a, 'b) gsl_mat_op05 = ('a, 'b) gsl_mat -> 'a * 'a
 type ('a, 'b) gsl_mat_op06 = ('a, 'b) gsl_mat -> ('a * int * int) * ('a * int * int)
+type ('a, 'b) gsl_mat_op07 = ('a, 'b) gsl_mat -> unit
 
 (* call functions in lacaml *)
 
@@ -462,6 +463,13 @@ let _gsl_transpose_copy : type a b. (a, b) kind -> (a, b) gsl_mat_op01 = functio
   | Complex32 -> Gsl.Matrix_complex.Single.transpose
   | Complex64 -> Gsl.Matrix_complex.transpose
   | _         -> failwith "_gsl_transpose_copy: unsupported operation"
+
+let _gsl_transpose_in_place : type a b. (a, b) kind -> (a, b) gsl_mat_op07 = function
+  | Float32   -> Gsl.Matrix.Single.transpose_in_place
+  | Float64   -> Gsl.Matrix.transpose_in_place
+  | Complex32 -> Gsl.Matrix_complex.Single.transpose_in_place
+  | Complex64 -> Gsl.Matrix_complex.transpose_in_place
+  | _         -> failwith "_gsl_transpose_in_place: unsupported operation"
 
 let _gsl_swap_rows : type a b. (a, b) kind -> (a, b) gsl_mat_op02 = function
   | Float32   -> Gsl.Matrix.Single.swap_rows
