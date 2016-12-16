@@ -96,7 +96,7 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   module Dense_complex_float = struct
 
-    open Owl_types.Dense_complex_double
+    open Owl_types.Dense_complex_float
 
     let mat_struct = typedef mat_struct "gsl_matrix_complex_float"
     let vec_struct = typedef vec_struct "gsl_vector_complex_float"

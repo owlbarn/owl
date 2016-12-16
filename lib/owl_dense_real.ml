@@ -6,7 +6,6 @@
 (** [ Real dense matrix ]  *)
 
 open Bigarray
-open Owl_types.Dense_real_double
 
 type mat = Gsl.Matrix.matrix
 
@@ -685,6 +684,7 @@ let ( @@ ) f x = map f x
 
 (* TODO: use this to replace col function, faster *)
 let gsl_col x i =
+  let open Owl_types.Dense_real_double in
   let open Owl_foreign in
   let open Owl_foreign.DR in
   let y = dr_allocate_col_vecptr (row_num x) in

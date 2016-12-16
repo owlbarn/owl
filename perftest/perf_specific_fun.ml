@@ -27,4 +27,4 @@ let test_05 _ = Owl_dense_matrix.is_zero y
 
 let test_06 _ = Owl_dense_matrix.min x
 
-let _ = Perf_common.test_op_each c test_06
+let _ = Perf_common.test_op_each c test_05

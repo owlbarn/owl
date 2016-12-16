@@ -427,8 +427,8 @@ let average_rows x =
   dot y x
 
 let is_zero x =
-  let y = to_ndarray x in
-  Owl_dense_ndarray.is_zero y
+  let _op = Owl_dense_common._gsl_isnull (Array2.kind x) in
+  _op x
 
 let is_positive x =
   let y = to_ndarray x in

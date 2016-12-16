@@ -44,6 +44,7 @@ type ('a, 'b) gsl_vec = ('a, 'b, c_layout) Array1.t
 type ('a, 'b) gsl_mat = ('a, 'b, c_layout) Array2.t
 
 type ('a, 'b) gsl_vec_op00 = ('a, 'b) gsl_vec -> 'a
+type ('a, 'b) gsl_mat_op00 = ('a, 'b) gsl_mat -> bool
 type ('a, 'b) gsl_mat_op01 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> unit
 type ('a, 'b) gsl_mat_op02 = ('a, 'b) gsl_mat -> int -> int -> unit
 
@@ -445,6 +446,13 @@ let _gsl_swap_cols : type a b. (a, b) kind -> (a, b) gsl_mat_op02 = function
   | Complex32 -> Gsl.Matrix_complex.Single.swap_columns
   | Complex64 -> Gsl.Matrix_complex.swap_columns
   | _         -> failwith "_gsl_swap_cols: unsupported operation"
+
+let _gsl_isnull : type a b. (a, b) kind -> (a, b) gsl_mat_op00 = function
+  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_isnull
+  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_isnull
+  | Complex32 -> Owl_foreign.Dense_complex_float.ml_gsl_matrix_isnull
+  | Complex64 -> Owl_foreign.Dense_complex_double.ml_gsl_matrix_isnull
+  | _         -> failwith "_gsl_isnull: unsupported operation"
 
 let _gsl_min : type a b. (a, b) kind -> (a, b) gsl_vec_op00 = function
   | Float32   -> Gsl.Vector.Single.min

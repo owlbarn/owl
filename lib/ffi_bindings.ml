@@ -4,11 +4,11 @@
  *
  *)
 
-(* run the following commands -->
-  ./ffi_stubgen.byte -ml > lib/ffi_generated.ml;
-  ./ffi_stubgen.byte -c > lib/ffi_generated_stubs.c;
-  cp ./lib/bindings/ffi_bindings_base.ml  ./lib/ffi_bindings.ml
- *)
+ (* run the following commands -->
+   ./ffi_stubgen.byte -ml > lib/ffi_generated.ml;
+   ./ffi_stubgen.byte -c > lib/ffi_generated_stubs.c;
+   cp ./lib/bindings/ffi_bindings_base.ml  ./lib/ffi_bindings.ml
+  *)
 
 open Ctypes
 
@@ -96,7 +96,7 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   module Dense_complex_float = struct
 
-    open Owl_types.Dense_complex_double
+    open Owl_types.Dense_complex_float
 
     let mat_struct = typedef mat_struct "gsl_matrix_complex_float"
     let vec_struct = typedef vec_struct "gsl_vector_complex_float"
