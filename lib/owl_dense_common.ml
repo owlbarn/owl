@@ -5,7 +5,7 @@
 
 open Bigarray
 
-(* some transformation functions *)
+(* some transformation and helper functions *)
 
 let ndarray_to_fortran_vec x =
   let shape = Genarray.dims x in
@@ -25,6 +25,32 @@ let ndarray_to_c_mat x =
   let n = Array.fold_right (fun c a -> c * a) shape 1 in
   let y = reshape_2 x 1 n in
   y
+
+(* calculate the stride of a ndarray, s is the shape *)
+let _calc_stride s =
+  let d = Array.length s in
+  let r = Array.make d 1 in
+  for i = 1 to d - 1 do
+    r.(d - i - 1) <- s.(d - i) * r.(d - i)
+  done;
+  r
+
+(* c layout index translation: 1d -> nd
+  i is one-dimensional index; j is n-dimensional index; s is the stride.
+  the space needs to be pre-allocated *)
+let _index_1d_nd i j s =
+  j.(0) <- i / s.(0);
+  for k = 1 to Array.length s - 1 do
+    j.(k) <- (i mod s.(k - 1)) / s.(k);
+  done
+
+(* c layout index translation: nd -> 1d
+  j is n-dimensional index; s is the stride.
+  the space needs to be pre-allocated *)
+let _index_nd_1d j s =
+  let i = ref 0 in
+  Array.iteri (fun k a -> i := !i + (a * s.(k))) j;
+  !i
 
 
 (* TODO: maybe remove these two ... *)

@@ -321,6 +321,14 @@ val minmax : ('a, 'b) t -> ('a * (int array) * 'a * (int array))
   their corresponding indices.
  *)
 
+val min_i : ('a, 'b) t -> 'a * int array
+(** [min_i x] returns the minimum of all elements in [x] along with its index. *)
+
+val max_i : ('a, 'b) t -> 'a * int array
+(** [max_i x] returns the maximum of all elements in [x] along with its index. *)
+
+(* TODO: minmax_i *)
+
 val abs : ('a, 'b) t -> ('a, 'b) t
 (** [abs x] returns the absolute value of all elements in [x] in a new ndarray. *)
 

@@ -65,20 +65,9 @@ let clone x =
   Genarray.blit x y;
   y
 
-(* TODO:
-  zpxy, zmxy, ssqr_diff
- *)
+(* TODO: zpxy, zmxy, ssqr_diff *)
 
 (* TODO: add axis paramater *)
-let min' x =
-  let y = Genarray.change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  (_min (kind x)) y
-
-let max' x =
-  let y = Genarray.change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  (_max (kind x)) y
 
 let min : type a b . (a, b) t -> a = fun x ->
   let k = kind x in
@@ -93,6 +82,22 @@ let max : type a b . (a, b) t -> a = fun x ->
   | Complex32 -> (_max k) (ndarray_to_fortran_vec x)
   | Complex64 -> (_max k) (ndarray_to_fortran_vec x)
   | _ -> (_gsl_max k) (ndarray_to_c_mat x)
+
+let min_i x =
+  let y = ndarray_to_c_mat x in
+  let a, _, i = (_gsl_min_index (kind x)) y in
+  let s = _calc_stride (shape x) in
+  let j = Array.copy s in
+  let _ = _index_1d_nd i j s in
+  a, j
+
+let max_i x =
+  let y = ndarray_to_c_mat x in
+  let a, _, i = (_gsl_max_index (kind x)) y in
+  let s = _calc_stride (shape x) in
+  let j = Array.copy s in
+  let _ = _index_1d_nd i j s in
+  a, j
 
 let _check_paired_operands x y =
   if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
@@ -768,27 +773,6 @@ let _check_slice_axis axis s =
     | None   -> has_none := true
   ) axis;
   if !has_none = false then failwith "_check_slice_axis: there should be at least one None"
-
-let _calc_stride s =
-  let d = Array.length s in
-  let r = Array.make d 1 in
-  for i = 1 to d - 1 do
-    r.(d - i - 1) <- s.(d - i) * r.(d - i)
-  done;
-  r
-
-(* c layout index translation: 1d -> nd *)
-let _index_1d_nd i j s =
-  j.(0) <- i / s.(0);
-  for k = 1 to Array.length s - 1 do
-    j.(k) <- (i mod s.(k - 1)) / s.(k);
-  done
-
-(* c layout index translation: nd -> 1d *)
-let _index_nd_1d j s =
-  let i = ref 0 in
-  Array.iteri (fun k a -> i := !i + (a * s.(k))) j;
-  !i
 
 (* calculate the continuous block size based on slice definition *)
 let _slice_continuous_blksz shp axis =
