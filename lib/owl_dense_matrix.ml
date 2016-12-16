@@ -470,37 +470,23 @@ let equal_or_smaller x1 x2 =
   let x2 = to_ndarray x2 in
   Owl_dense_ndarray.equal_or_smaller x1 x2
 
-let min x =
-  let x = to_ndarray x in
-  Owl_dense_ndarray.min x
+let min : type a b . (a, b) mat -> a = fun x ->
+  let k = Array2.kind x in
+  match k with
+  | Complex32 -> Owl_dense_ndarray.min (to_ndarray x)
+  | Complex64 -> Owl_dense_ndarray.min (to_ndarray x)
+  | _ -> (_gsl_min k) x
 
-let max x =
-  let x = to_ndarray x in
-  Owl_dense_ndarray.max x
+let max : type a b . (a, b) mat -> a = fun x ->
+  let k = Array2.kind x in
+  match k with
+  | Complex32 -> Owl_dense_ndarray.max (to_ndarray x)
+  | Complex64 -> Owl_dense_ndarray.max (to_ndarray x)
+  | _ -> (_gsl_max k) x
 
-let min_i x =
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let open Ctypes in
-  let y = dr_mat_to_matptr x in
-  let i = allocate size_t (Unsigned.Size_t.of_int 0) in
-  let j = allocate size_t (Unsigned.Size_t.of_int 0) in
-  let _ = gsl_matrix_min_index y i j in
-  let i = Unsigned.Size_t.to_int !@i in
-  let j = Unsigned.Size_t.to_int !@j in
-  get x i j, i, j
+let min_i x = (_gsl_min_index (Array2.kind x)) x
 
-let max_i x =
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let open Ctypes in
-  let y = dr_mat_to_matptr x in
-  let i = allocate size_t (Unsigned.Size_t.of_int 0) in
-  let j = allocate size_t (Unsigned.Size_t.of_int 0) in
-  let _ = gsl_matrix_max_index y i j in
-  let i = Unsigned.Size_t.to_int !@i in
-  let j = Unsigned.Size_t.to_int !@j in
-  get x i j, i, j
+let max_i x = (_gsl_max_index (Array2.kind x)) x
 
 let min_cols x =
   mapi_cols (fun j v ->

@@ -26,6 +26,11 @@ let ndarray_to_c_mat x =
   let y = reshape_2 x 1 n in
   y
 
+(* TODO: maybe remove these two ... *)
+let c_mat_to_array2d x = Obj.magic (Bigarray.genarray_of_array2 x)
+
+let array2d_to_c_mat x = Bigarray.array2_of_genarray (Obj.magic x)
+
 (* calculate the stride of a ndarray, s is the shape *)
 let _calc_stride s =
   let d = Array.length s in
@@ -51,13 +56,6 @@ let _index_nd_1d j s =
   let i = ref 0 in
   Array.iteri (fun k a -> i := !i + (a * s.(k))) j;
   !i
-
-
-(* TODO: maybe remove these two ... *)
-let c_mat_to_array2d x = Obj.magic (Bigarray.genarray_of_array2 x)
-
-let array2d_to_c_mat x = Bigarray.array2_of_genarray (Obj.magic x)
-
 
 (* types for interfacing to lacaml and gsl *)
 
