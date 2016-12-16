@@ -70,15 +70,29 @@ let clone x =
  *)
 
 (* TODO: add axis paramater *)
-let min x =
+let min' x =
   let y = Genarray.change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in
   (_min (kind x)) y
 
-let max x =
+let max' x =
   let y = Genarray.change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in
   (_max (kind x)) y
+
+let min : type a b . (a, b) t -> a = fun x ->
+  let k = kind x in
+  match k with
+  | Complex32 -> (_min k) (ndarray_to_fortran_vec x)
+  | Complex64 -> (_min k) (ndarray_to_fortran_vec x)
+  | _ -> (_gsl_min k) (ndarray_to_c_mat x)
+
+let max : type a b . (a, b) t -> a = fun x ->
+  let k = kind x in
+  match k with
+  | Complex32 -> (_max k) (ndarray_to_fortran_vec x)
+  | Complex64 -> (_max k) (ndarray_to_fortran_vec x)
+  | _ -> (_gsl_max k) (ndarray_to_c_mat x)
 
 let _check_paired_operands x y =
   if (kind x) <> (kind y) then failwith "_check_paired_operands: kind mismatch";
@@ -923,23 +937,23 @@ let copy_slice i src dst =
 (* some comparison functions *)
 
 let is_zero x =
-  let y = ndarray_to_matrix x in
+  let y = ndarray_to_c_mat x in
   (_gsl_isnull (kind x)) y
 
 let is_positive x =
-  let y = ndarray_to_matrix x in
+  let y = ndarray_to_c_mat x in
   (_gsl_ispos (kind x)) y
 
 let is_negative x =
-  let y = ndarray_to_matrix x in
+  let y = ndarray_to_c_mat x in
   (_gsl_isneg (kind x)) y
 
 let is_nonnegative x =
-  let y = ndarray_to_matrix x in
+  let y = ndarray_to_c_mat x in
   (_gsl_isnonneg (kind x)) y
 
 let is_nonpositive x =
-  let y = ndarray_to_matrix x in
+  let y = ndarray_to_c_mat x in
   not ((_gsl_ispos (kind x)) y)
 
 let is_equal x y = ( = ) x y

@@ -7,23 +7,31 @@ open Bigarray
 
 (* some transformation functions *)
 
-let ndarray_to_gsl_vector x =
-  let x = Genarray.change_layout x c_layout in
-  array1_of_genarray x
+let ndarray_to_fortran_vec x =
+  let shape = Genarray.dims x in
+  let n = Array.fold_right (fun c a -> c * a) shape 1 in
+  let y = Genarray.change_layout x fortran_layout in
+  Bigarray.reshape_1 y n
 
-let gsl_vector_to_ndarray = None
+let fortran_vec_to_ndarray x shape =
+  let y = Bigarray.genarray_of_array1 x in
+  let y = Genarray.change_layout y c_layout in
+  Bigarray.reshape y shape
 
-let matrix_to_array2d x = Obj.magic (Bigarray.genarray_of_array2 x)
+let c_mat_to_ndarray x = None
 
-let array2d_to_matrix x = Bigarray.array2_of_genarray (Obj.magic x)
-
-let matrix_to_ndarray x = None
-
-let ndarray_to_matrix x =
+let ndarray_to_c_mat x =
   let shape = Genarray.dims x in
   let n = Array.fold_right (fun c a -> c * a) shape 1 in
   let y = reshape_2 x 1 n in
   y
+
+
+(* TODO: maybe remove these two ... *)
+let c_mat_to_array2d x = Obj.magic (Bigarray.genarray_of_array2 x)
+
+let array2d_to_c_mat x = Bigarray.array2_of_genarray (Obj.magic x)
+
 
 (* types for interfacing to lacaml and gsl *)
 
@@ -46,10 +54,11 @@ type ('a, 'b) mat_mop0 = ?m:int -> ?n:int -> 'a -> ?ar:int -> ?ac:int -> ('a, 'b
 type ('a, 'b) gsl_vec = ('a, 'b, c_layout) Array1.t
 type ('a, 'b) gsl_mat = ('a, 'b, c_layout) Array2.t
 
-type ('a, 'b) gsl_vec_op00 = ('a, 'b) gsl_vec -> 'a
 type ('a, 'b) gsl_mat_op00 = ('a, 'b) gsl_mat -> bool
 type ('a, 'b) gsl_mat_op01 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> unit
 type ('a, 'b) gsl_mat_op02 = ('a, 'b) gsl_mat -> int -> int -> unit
+type ('a, 'b) gsl_mat_op03 = ('a, 'b) gsl_mat -> 'a
+type ('a, 'b) gsl_mat_op04 = ('a, 'b) gsl_mat -> 'a * int * int
 
 (* call functions in lacaml *)
 
@@ -478,12 +487,22 @@ let _gsl_isnonneg : type a b. (a, b) kind -> (a, b) gsl_mat_op00 = function
   | Complex64 -> Owl_foreign.Dense_complex_double.ml_gsl_matrix_isnonneg
   | _         -> failwith "_gsl_isnonneg: unsupported operation"
 
-let _gsl_min : type a b. (a, b) kind -> (a, b) gsl_vec_op00 = function
-  | Float32   -> Gsl.Vector.Single.min
-  | Float64   -> Gsl.Vector.min
+let _gsl_min : type a b. (a, b) kind -> (a, b) gsl_mat_op03 = function
+  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_min
+  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_min
   | _         -> failwith "_gsl_min: unsupported operation"
 
-let _gsl_max : type a b. (a, b) kind -> (a, b) gsl_vec_op00 = function
-  | Float32   -> Gsl.Vector.Single.max
-  | Float64   -> Gsl.Vector.max
+let _gsl_max : type a b. (a, b) kind -> (a, b) gsl_mat_op03 = function
+  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_max
+  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_max
   | _         -> failwith "_gsl_max: unsupported operation"
+
+let _gsl_min_index : type a b. (a, b) kind -> (a, b) gsl_mat_op04 = function
+  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_min_index
+  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_min_index
+  | _         -> failwith "_gsl_min_index: unsupported operation"
+
+let _gsl_max_index : type a b. (a, b) kind -> (a, b) gsl_mat_op04 = function
+  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_max_index
+  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_max_index
+  | _         -> failwith "_gsl_max_index: unsupported operation"

@@ -474,6 +474,10 @@ let min x =
   let x = to_ndarray x in
   Owl_dense_ndarray.min x
 
+let max x =
+  let x = to_ndarray x in
+  Owl_dense_ndarray.max x
+
 let min_i x =
   let open Owl_foreign in
   let open Owl_foreign.DR in
@@ -482,6 +486,18 @@ let min_i x =
   let i = allocate size_t (Unsigned.Size_t.of_int 0) in
   let j = allocate size_t (Unsigned.Size_t.of_int 0) in
   let _ = gsl_matrix_min_index y i j in
+  let i = Unsigned.Size_t.to_int !@i in
+  let j = Unsigned.Size_t.to_int !@j in
+  get x i j, i, j
+
+let max_i x =
+  let open Owl_foreign in
+  let open Owl_foreign.DR in
+  let open Ctypes in
+  let y = dr_mat_to_matptr x in
+  let i = allocate size_t (Unsigned.Size_t.of_int 0) in
+  let j = allocate size_t (Unsigned.Size_t.of_int 0) in
+  let _ = gsl_matrix_max_index y i j in
   let i = Unsigned.Size_t.to_int !@i in
   let j = Unsigned.Size_t.to_int !@j in
   get x i j, i, j
@@ -495,22 +511,6 @@ let min_rows x =
   mapi_rows (fun i v ->
     let r, _, j = min_i v in r, i, j
   ) x
-
-let max x =
-  let x = to_ndarray x in
-  Owl_dense_ndarray.max x
-
-let max_i x =
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let open Ctypes in
-  let y = dr_mat_to_matptr x in
-  let i = allocate size_t (Unsigned.Size_t.of_int 0) in
-  let j = allocate size_t (Unsigned.Size_t.of_int 0) in
-  let _ = gsl_matrix_max_index y i j in
-  let i = Unsigned.Size_t.to_int !@i in
-  let j = Unsigned.Size_t.to_int !@j in
-  get x i j, i, j
 
 let max_cols x =
   mapi_cols (fun j v ->

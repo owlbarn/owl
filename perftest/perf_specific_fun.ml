@@ -20,15 +20,15 @@ let test_02 _ = Owl_dense_matrix.iter (fun a -> ()) x
 let test_03 _ = Owl_dense_matrix.map (fun a -> 0.) x
 
 let test_04 _ =
-  let x = Owl_dense_common.matrix_to_array2d x in
+  let x = Owl_dense_common.c_mat_to_array2d x in
   Owl_dense_ndarray.map (fun a -> 0.) x
 
 let test_05 _ = Owl_dense_matrix.is_zero y
 
 let test_06 _ =
-  let y = Owl_dense_common.matrix_to_array2d y in
+  let y = Owl_dense_common.c_mat_to_array2d y in
   Owl_dense_ndarray.is_zero y
 
 let test_07 _ = Owl_dense_matrix.min x
 
-let _ = Perf_common.test_op_each c test_06
+let _ = Perf_common.test_op_each c test_07

@@ -96,6 +96,18 @@ module To_test = struct
 
   let max x = M.max x
 
+  let min_i () =
+    let m, n = 3, 4 in
+    let x = M.sequential Float64 m n in
+    let a, i, j = M.min_i x in
+    (i, j) = (0,0)
+
+  let max_i () =
+    let m, n = 3, 4 in
+    let x = M.sequential Float64 m n in
+    let a, i, j = M.max_i x in
+    (i, j) = (m - 1, n - 1)
+
   let map () =
     let x = M.ones Float64 3 4 in
     let y = M.sequential Float64 3 4 in
@@ -194,6 +206,12 @@ let min x =
 let max x =
   Alcotest.(check float) "max" 12. (To_test.max x2)
 
+let min_i x =
+  Alcotest.(check bool) "min_i" true (To_test.min_i ())
+
+let max_i x =
+  Alcotest.(check bool) "max_i" true (To_test.max_i ())
+
 let map x =
   Alcotest.(check bool) "map" true (To_test.map ())
 
@@ -227,6 +245,8 @@ let test_set = [
   "mul", `Slow, mul;
   "min", `Slow, min;
   "max", `Slow, max;
+  "min_i", `Slow, min_i;
+  "max_i", `Slow, max_i;
   "map", `Slow, map;
 ]
 
