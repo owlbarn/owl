@@ -542,3 +542,8 @@ let _gsl_minmax_index : type a b. (a, b) kind -> (a, b) gsl_mat_op06 = function
   | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_minmax_index
   | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_minmax_index
   | _         -> failwith "_gsl_minmax_index: unsupported operation"
+
+
+(* experimental: test to interface to c *)
+
+external testfn : int -> int -> int = "testfn_stub"

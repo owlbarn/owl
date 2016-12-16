@@ -266,11 +266,6 @@ let mapi f x =
   let y = empty (Array2.kind x) (row_num x) (col_num x) in
   iteri (fun i j z -> Array2.unsafe_set y i j (f i j z)) x; y
 
-let ___map_test f x =
-  let x = c2fortran_matrix x in
-  let y = Lacaml.D.Mat.map f x in
-  fortran2c_matrix y
-
 let map f x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray.map f y in
@@ -622,6 +617,8 @@ let pp_dsmat x = let open Owl_pretty in
   Format.printf "%a\n" Toplevel.pp_fmat x;;
 
 (* some other uncategorised functions *)
+
+(* TODO : fix the folling functions use lacaml *)
 
 let uniform ?(scale=1.) k m n =
   let x = empty k m n in

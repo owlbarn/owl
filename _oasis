@@ -17,24 +17,20 @@ SourceRepository master
 Library owl
   Path:             lib
   BuildTools:       ocamlbuild, ocamldoc
-  Modules:          Owl, Owl_types, Owl_utils, Owl_maths, Owl_stats, Owl_optimise,
-                    Owl_cluster, Owl_dense_real, Owl_dense_complex, Owl_dense,
+  Modules:          Owl, Owl_types, Owl_utils, Owl_pretty, Owl_toplevel,
+                    Owl_maths, Owl_stats, Owl_optimise, Owl_regression,
+                    Owl_plot, Owl_const, Owl_foreign, Ffi_bindings,
+                    Owl_dense_real, Owl_dense_complex, Owl_dense,
                     Owl_sparse_real, Owl_sparse_complex, Owl_sparse,
-                    Owl_foreign, Owl_linalg, Owl_regression, Owl_fft,
-                    Owl_dense_ndarray, Owl_dense_ndview,
-                    Owl_dense_matrix, Owl_dense_common,
-                    Owl_pretty, Owl_plot, Owl_toplevel, Owl_const, Ffi_bindings
+                    Owl_dense_common, Owl_dense_ndarray, Owl_dense_ndview,
+                    Owl_dense_matrix, Owl_cluster, Owl_linalg,  Owl_fft
   InternalModules:  Ffi_generated
-  CSources:         ffi_generated_stub.c
+  CSources:         ffi_generated_stub.c,
+                    f2c.h, owl_utils_c.h, owl_utils_c.c,
+                    owl_macros.h, owl_dense_common_c.c
   CCOpt:            -I$pkg_ctypes
   BuildDepends:     str, gsl, ctypes, ctypes.stubs, plplot, dolog, lacaml,
                     owl_parallel
-
-Library Ffi_bindings_base
-  Install:          false
-  Path:             lib/bindings
-  Modules:          Ffi_bindings_base
-  BuildDepends:     ctypes.stubs
 
 Library owl_topic
   Install:          true
@@ -50,10 +46,50 @@ Library owl_parallel
   CCOpt:            -D_GNU_SOURCE -fPIC
   BuildDepends:     unix, dolog
 
+# Performance test
+
 Library perf_common
   Install:          false
   Path:             perftest
   Modules:          Perf_common
+
+Executable perf_dense_real
+  Path:           perftest
+  CompiledObject: best
+  MainIs:         perf_dense_real.ml
+  BuildDepends:   owl
+
+Executable perf_dense_matrix
+  Path:           perftest
+  CompiledObject: best
+  MainIs:         perf_dense_matrix.ml
+  BuildDepends:   owl
+
+Executable perf_sparse_real
+  Path:           perftest
+  CompiledObject: best
+  MainIs:         perf_sparse_real.ml
+  BuildDepends:   owl
+
+Executable perf_sparse_complex
+  Path:           perftest
+  CompiledObject: best
+  MainIs:         perf_sparse_complex.ml
+  BuildDepends:   owl
+
+Executable perf_dense_ndarray
+  Path:           perftest
+  CompiledObject: best
+  MainIs:         perf_dense_ndarray.ml
+  BuildDepends:   owl
+
+Executable perf_specific_fun
+  Path:           perftest
+  CompiledObject: best
+  MainIs:         perf_specific_fun.ml
+  BuildDepends:   owl
+
+# Examples
 
 Executable ffi_stubgen
   Install:        false
@@ -99,41 +135,14 @@ Executable test_parallel
   MainIs:         test_parallel.ml
   BuildDepends:   owl, owl_parallel
 
-Executable perf_dense_real
-  Path:           perftest
+Executable test_lda
+  Path:           examples
   CompiledObject: best
-  MainIs:         perf_dense_real.ml
-  BuildDepends:   owl
+  MainIs:         test_lda.ml
+  BuildDepends:   owl_topic
 
-Executable perf_dense_matrix
-  Path:           perftest
-  CompiledObject: best
-  MainIs:         perf_dense_matrix.ml
-  BuildDepends:   owl
 
-Executable perf_sparse_real
-  Path:           perftest
-  CompiledObject: best
-  MainIs:         perf_sparse_real.ml
-  BuildDepends:   owl
-
-Executable perf_sparse_complex
-  Path:           perftest
-  CompiledObject: best
-  MainIs:         perf_sparse_complex.ml
-  BuildDepends:   owl
-
-Executable perf_dense_ndarray
-  Path:           perftest
-  CompiledObject: best
-  MainIs:         perf_dense_ndarray.ml
-  BuildDepends:   owl
-
-Executable perf_specific_fun
-  Path:           perftest
-  CompiledObject: best
-  MainIs:         perf_specific_fun.ml
-  BuildDepends:   owl
+# Build documentation
 
 AlphaFeatures: ocamlbuild_more_args
 Document owldoc
@@ -144,9 +153,3 @@ Document owldoc
   XOCamlBuildPath:      .
   XOCamlBuildLibraries: owl
   XOCamlbuildExtraArgs: "-docflags '-colorize-code -keep-code -charset utf-8'"
-
-Executable test_lda
-  Path:           examples
-  CompiledObject: best
-  MainIs:         test_lda.ml
-  BuildDepends:   owl_topic
