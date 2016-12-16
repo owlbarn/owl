@@ -378,7 +378,7 @@ let is_greater x1 x2 =
   let open Owl_foreign in
   let open Owl_foreign.DC in
   let x3 = sub x1 x2 in
-  let x3 = dc_mat_to_matptr x3 in
+  let x3 = Dense_complex_double.mat_to_matptr x3 in
   (gsl_matrix_complex_ispos x3) = 1
 
 let ( >@ ) = is_greater
@@ -391,7 +391,7 @@ let equal_or_greater x1 x2 =
   let open Owl_foreign in
   let open Owl_foreign.DC in
   let x3 = sub x1 x2 in
-  let x3 = dc_mat_to_matptr x3 in
+  let x3 = Dense_complex_double.mat_to_matptr x3 in
   (gsl_matrix_complex_isnonneg x3) = 1
 
 let ( >=@ ) = equal_or_greater
@@ -405,19 +405,19 @@ let is_zero x = Gsl.Matrix_complex.is_null x
 let is_positive x =
   let open Owl_foreign in
   let open Owl_foreign.DC in
-  let x = dc_mat_to_matptr x in
+  let x = Dense_complex_double.mat_to_matptr x in
   (gsl_matrix_complex_ispos x) = 1
 
 let is_negative x =
   let open Owl_foreign in
   let open Owl_foreign.DC in
-  let x = dc_mat_to_matptr x in
+  let x = Dense_complex_double.mat_to_matptr x in
   (gsl_matrix_complex_isneg x) = 1
 
 let is_nonnegative x =
   let open Owl_foreign in
   let open Owl_foreign.DC in
-  let x = dc_mat_to_matptr x in
+  let x = Dense_complex_double.mat_to_matptr x in
   (gsl_matrix_complex_isnonneg x) = 1
 
 let ( +@ ) = add

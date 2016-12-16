@@ -476,13 +476,13 @@ let to_dense x =
   let n' = Unsigned.Size_t.of_int n in
   let y = gsl_matrix_alloc m' n' in
   let _ = gsl_spmatrix_sp2d y x.ptr in
-  dr_matptr_to_mat y m n
+  Dense_real_double.matptr_to_mat y m n
 
 let of_dense x =
   let open Owl_foreign in
   let open Owl_foreign.SR in
   let y = zeros (Array2.dim1 x) (Array2.dim2 x) in
-  let _ = gsl_spmatrix_d2sp y.ptr (dr_mat_to_matptr x) in
+  let _ = gsl_spmatrix_d2sp y.ptr (Dense_real_double.mat_to_matptr x) in
   _update_rec_from_ptr y
 
 let sum_rows x =

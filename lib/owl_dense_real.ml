@@ -17,18 +17,6 @@ let to_ndarray x = Obj.magic (Bigarray.genarray_of_array2 x)
 
 let of_ndarray x = Bigarray.array2_of_genarray (Obj.magic x)
 
-(* c_layout -> fortran_layout *)
-let c2fortran_matrix x =
-  let y = Bigarray.genarray_of_array2 x in
-  let y = Genarray.change_layout y fortran_layout in
-  Bigarray.array2_of_genarray y
-
-(* fortran_layout -> c_layout *)
-let fortran2c_matrix x =
-  let y = Bigarray.genarray_of_array2 x in
-  let y = Genarray.change_layout y c_layout in
-  Bigarray.array2_of_genarray y
-
 (* matrix creation operations *)
 
 let size = None
@@ -235,11 +223,6 @@ let mapi f x =
   let y = empty (row_num x) (col_num x) in
   iteri (fun i j z -> Array2.unsafe_set y i j (f i j z)) x; y
 
-let ___map_test f x =
-  let x = c2fortran_matrix x in
-  let y = Lacaml.D.Mat.map f x in
-  fortran2c_matrix y
-
 let map f x = mapi (fun _ _ y -> f y) x
 
 let mapi_rows f x = Array.init (row_num x) (fun i -> f i (row x i))
@@ -413,7 +396,7 @@ let is_greater x1 x2 =
   let open Owl_foreign in
   let open Owl_foreign.DR in
   let x3 = sub x1 x2 in
-  let x3 = dr_mat_to_matptr x3 in
+  let x3 = Dense_real_double.mat_to_matptr x3 in
   (gsl_matrix_ispos x3) = 1
 
 let ( >@ ) = is_greater
@@ -426,7 +409,7 @@ let equal_or_greater x1 x2 =
   let open Owl_foreign in
   let open Owl_foreign.DR in
   let x3 = sub x1 x2 in
-  let x3 = dr_mat_to_matptr x3 in
+  let x3 = Dense_real_double.mat_to_matptr x3 in
   (gsl_matrix_isnonneg x3) = 1
 
 let ( >=@ ) = equal_or_greater
@@ -438,32 +421,32 @@ let ( <=@ ) = equal_or_smaller
 let is_zero x =
   let open Owl_foreign in
   let open Owl_foreign.DR in
-  let x = dr_mat_to_matptr x in
+  let x = Dense_real_double.mat_to_matptr x in
   (gsl_matrix_isnull x) = 1
 
 let is_positive x =
   let open Owl_foreign in
   let open Owl_foreign.DR in
-  let x = dr_mat_to_matptr x in
+  let x = Dense_real_double.mat_to_matptr x in
   (gsl_matrix_ispos x) = 1
 
 let is_negative x =
   let open Owl_foreign in
   let open Owl_foreign.DR in
-  let x = dr_mat_to_matptr x in
+  let x = Dense_real_double.mat_to_matptr x in
   (gsl_matrix_isneg x) = 1
 
 let is_nonnegative x =
   let open Owl_foreign in
   let open Owl_foreign.DR in
-  let x = dr_mat_to_matptr x in
+  let x = Dense_real_double.mat_to_matptr x in
   (gsl_matrix_isnonneg x) = 1
 
 let min x =
   let open Owl_foreign in
   let open Owl_foreign.DR in
   let open Ctypes in
-  let x = dr_mat_to_matptr x in
+  let x = Dense_real_double.mat_to_matptr x in
   let i = allocate size_t (Unsigned.Size_t.of_int 0) in
   let j = allocate size_t (Unsigned.Size_t.of_int 0) in
   let r = gsl_matrix_min x in
@@ -486,7 +469,7 @@ let max x =
   let open Owl_foreign in
   let open Owl_foreign.DR in
   let open Ctypes in
-  let x = dr_mat_to_matptr x in
+  let x = Dense_real_double.mat_to_matptr x in
   let i = allocate size_t (Unsigned.Size_t.of_int 0) in
   let j = allocate size_t (Unsigned.Size_t.of_int 0) in
   let r = gsl_matrix_max x in
@@ -681,12 +664,3 @@ let meshup x y =
   x, transpose y
 
 let ( @@ ) f x = map f x
-
-(* TODO: use this to replace col function, faster *)
-let gsl_col x i =
-  let open Owl_types.Dense_real_double in
-  let open Owl_foreign in
-  let open Owl_foreign.DR in
-  let y = dr_allocate_col_vecptr (row_num x) in
-  let _ = gsl_matrix_get_col y.vptr (dr_mat_to_matptr x) i in
-  y.vdata

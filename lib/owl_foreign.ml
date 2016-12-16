@@ -15,7 +15,7 @@ module DC = FB.Dense_complex_double
 module SR = FB.Sparse_real_double
 
 (* some helper fucntions, e.g., for type translation and construction *)
-
+(*
 let dr_matptr_to_mat x m n =
   let open Dense_real_double in
   let raw = getf (!@ x) data in
@@ -82,7 +82,7 @@ let dc_mat_to_matptr x :
   let _ = setf z data p in
   let _ = setf z block (addr y) in
   (addr z)
-
+*)
 
 (* experimental *)
 
