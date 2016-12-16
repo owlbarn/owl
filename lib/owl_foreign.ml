@@ -116,6 +116,11 @@ module Dense_real_double = struct
     let len = getf x vsize in
     bigarray_of_ptr array2 ((Int64.to_int len),1) Bigarray.float64 raw
 
+  let ml_gsl_matrix_equal x y =
+    let x' = mat_to_matptr x in
+    let y' = mat_to_matptr y in
+    gsl_matrix_equal x' y' = 1
+
   let ml_gsl_matrix_isnull x =
     let y = mat_to_matptr x in
     gsl_matrix_isnull y = 1
@@ -192,6 +197,11 @@ module Dense_real_float = struct
     let raw = getf x vdata in
     let len = getf x vsize in
     bigarray_of_ptr array2 ((Int64.to_int len),1) Bigarray.float32 raw
+
+  let ml_gsl_matrix_equal x y =
+    let x' = mat_to_matptr x in
+    let y' = mat_to_matptr y in
+    gsl_matrix_float_equal x' y' = 1
 
   let ml_gsl_matrix_isnull x =
     let y = mat_to_matptr x in
@@ -270,6 +280,11 @@ module Dense_complex_double = struct
     let len = getf x vsize in
     bigarray_of_ptr array2 ((Int64.to_int len),1) Bigarray.complex64 raw
 
+  let ml_gsl_matrix_equal x y =
+    let x' = mat_to_matptr x in
+    let y' = mat_to_matptr y in
+    gsl_matrix_complex_equal x' y' = 1
+
   let ml_gsl_matrix_isnull x =
     let y = mat_to_matptr x in
     gsl_matrix_complex_isnull y = 1
@@ -318,6 +333,11 @@ module Dense_complex_float = struct
     let raw = getf x vdata in
     let len = getf x vsize in
     bigarray_of_ptr array2 ((Int64.to_int len),1) Bigarray.complex32 raw
+
+  let ml_gsl_matrix_equal x y =
+    let x' = mat_to_matptr x in
+    let y' = mat_to_matptr y in
+    gsl_matrix_complex_float_equal x' y' = 1
 
   let ml_gsl_matrix_isnull x =
     let y = mat_to_matptr x in
