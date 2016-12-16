@@ -6,7 +6,7 @@
 
  (* run the following commands -->
    ./ffi_stubgen.byte -ml > lib/ffi_generated.ml;
-   ./ffi_stubgen.byte -c > lib/ffi_generated_stubs.c;
+   ./ffi_stubgen.byte -c > lib/ffi_generated_stub.c;
    cp ./lib/bindings/ffi_bindings_base.ml  ./lib/ffi_bindings.ml
   *)
 
@@ -26,12 +26,6 @@ module Bindings (F : Cstubs.FOREIGN) = struct
     let mat_struct = typedef mat_struct "gsl_matrix"
     let vec_struct = typedef vec_struct "gsl_vector"
 
-    let gsl_vector_alloc = foreign "gsl_vector_alloc" (size_t @-> returning (ptr vec_struct))
-
-    let gsl_matrix_alloc = foreign "gsl_matrix_alloc" (size_t @-> size_t @-> returning (ptr mat_struct))
-
-    let gsl_matrix_get_col = foreign "gsl_matrix_get_col" (ptr vec_struct @-> ptr mat_struct @-> int @-> returning int)
-
     let gsl_matrix_equal = foreign "gsl_matrix_equal" (ptr mat_struct @-> ptr mat_struct @-> returning int)
 
     let gsl_matrix_isnull = foreign "gsl_matrix_isnull" (ptr mat_struct @-> returning int)
@@ -44,11 +38,17 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
     let gsl_matrix_min = foreign "gsl_matrix_min" (ptr mat_struct @-> returning double)
 
-    let gsl_matrix_min_index = foreign "gsl_matrix_min_index" (ptr mat_struct @-> ptr size_t @-> ptr size_t @-> returning void)
-
     let gsl_matrix_max = foreign "gsl_matrix_max" (ptr mat_struct @-> returning double)
 
+    let gsl_matrix_min_index = foreign "gsl_matrix_min_index" (ptr mat_struct @-> ptr size_t @-> ptr size_t @-> returning void)
+
     let gsl_matrix_max_index = foreign "gsl_matrix_max_index" (ptr mat_struct @-> ptr size_t @-> ptr size_t @-> returning void)
+
+    let gsl_vector_alloc = foreign "gsl_vector_alloc" (size_t @-> returning (ptr vec_struct))
+
+    let gsl_matrix_alloc = foreign "gsl_matrix_alloc" (size_t @-> size_t @-> returning (ptr mat_struct))
+
+    let gsl_matrix_get_col = foreign "gsl_matrix_get_col" (ptr vec_struct @-> ptr mat_struct @-> int @-> returning int)
 
   end
 
@@ -61,6 +61,8 @@ module Bindings (F : Cstubs.FOREIGN) = struct
     let mat_struct = typedef mat_struct "gsl_matrix_float"
     let vec_struct = typedef vec_struct "gsl_vector_float"
 
+    let gsl_matrix_float_equal = foreign "gsl_matrix_float_equal" (ptr mat_struct @-> ptr mat_struct @-> returning int)
+
     let gsl_matrix_float_isnull = foreign "gsl_matrix_float_isnull" (ptr mat_struct @-> returning int)
 
     let gsl_matrix_float_ispos = foreign "gsl_matrix_float_ispos" (ptr mat_struct @-> returning int)
@@ -68,6 +70,14 @@ module Bindings (F : Cstubs.FOREIGN) = struct
     let gsl_matrix_float_isneg = foreign "gsl_matrix_float_isneg" (ptr mat_struct @-> returning int)
 
     let gsl_matrix_float_isnonneg = foreign "gsl_matrix_float_isnonneg" (ptr mat_struct @-> returning int)
+
+    let gsl_matrix_float_min = foreign "gsl_matrix_float_min" (ptr mat_struct @-> returning float)
+
+    let gsl_matrix_float_max = foreign "gsl_matrix_float_max" (ptr mat_struct @-> returning float)
+
+    let gsl_matrix_float_min_index = foreign "gsl_matrix_float_min_index" (ptr mat_struct @-> ptr size_t @-> ptr size_t @-> returning void)
+
+    let gsl_matrix_float_max_index = foreign "gsl_matrix_float_max_index" (ptr mat_struct @-> ptr size_t @-> ptr size_t @-> returning void)
 
   end
 

@@ -17,7 +17,6 @@ let _ = Log.color_on (); Log.(set_log_level INFO)
 
 module Dense_real_double = struct
 
-  type int_array = (int64, int64_elt, c_layout) Array1.t
   type elt_array = (float, float64_elt, c_layout) Array2.t
 
   type mblk_struct
@@ -64,7 +63,6 @@ end
 
 module Dense_real_float = struct
 
-  type int_array = (int64, int64_elt, c_layout) Array1.t
   type elt_array = (float, float32_elt, c_layout) Array2.t
 
   type mblk_struct
@@ -113,7 +111,6 @@ end
 
 module Dense_complex_double = struct
 
-  type int_array = (int64, int64_elt, c_layout) Array1.t
   type elt_array = (Complex.t, complex64_elt, c_layout) Array2.t
 
   type mblk_struct
@@ -160,7 +157,6 @@ end
 
 module Dense_complex_float = struct
 
-  type int_array = (int64, int64_elt, c_layout) Array1.t
   type elt_array = (Complex.t, complex32_elt, c_layout) Array2.t
 
   type mblk_struct

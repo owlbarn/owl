@@ -15,6 +15,7 @@ let x2 = M.sequential Float64 3 4
 
 (* a module with functions to test *)
 module To_test = struct
+
   let sequential () = M.sequential Float64 3 4
 
   let row_num x = M.row_num x

@@ -5,6 +5,7 @@
 
 (* You should only use this module to call foreign functions *)
 
+open Bigarray
 open Ctypes
 open Owl_types
 
@@ -131,6 +132,34 @@ module Dense_real_double = struct
     let y = mat_to_matptr x in
     gsl_matrix_isnonneg y = 1
 
+  let ml_gsl_matrix_min x : float =
+    let y = mat_to_matptr x in
+    gsl_matrix_min y
+
+  let ml_gsl_matrix_max x : float =
+    let y = mat_to_matptr x in
+    gsl_matrix_max y
+
+  let ml_gsl_matrix_min_index x =
+    let y = mat_to_matptr x in
+    let i = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let j = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let _ = gsl_matrix_min_index y i j in
+    let i = Unsigned.Size_t.to_int !@i in
+    let j = Unsigned.Size_t.to_int !@j in
+    let a = Array2.unsafe_get x i j in
+    a, i, j
+
+  let ml_gsl_matrix_max_index x =
+    let y = mat_to_matptr x in
+    let i = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let j = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let _ = gsl_matrix_max_index y i j in
+    let i = Unsigned.Size_t.to_int !@i in
+    let j = Unsigned.Size_t.to_int !@j in
+    let a = Array2.unsafe_get x i j in
+    a, i, j
+
 end
 
 
@@ -179,6 +208,34 @@ module Dense_real_float = struct
   let ml_gsl_matrix_isnonneg x =
     let y = mat_to_matptr x in
     gsl_matrix_float_isnonneg y = 1
+
+  let ml_gsl_matrix_min x : float =
+    let y = mat_to_matptr x in
+    gsl_matrix_float_min y
+
+  let ml_gsl_matrix_max x : float =
+    let y = mat_to_matptr x in
+    gsl_matrix_float_max y
+
+  let ml_gsl_matrix_min_index x =
+    let y = mat_to_matptr x in
+    let i = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let j = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let _ = gsl_matrix_float_min_index y i j in
+    let i = Unsigned.Size_t.to_int !@i in
+    let j = Unsigned.Size_t.to_int !@j in
+    let a = Array2.unsafe_get x i j in
+    a, i, j
+
+  let ml_gsl_matrix_max_index x =
+    let y = mat_to_matptr x in
+    let i = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let j = allocate size_t (Unsigned.Size_t.of_int 0) in
+    let _ = gsl_matrix_float_max_index y i j in
+    let i = Unsigned.Size_t.to_int !@i in
+    let j = Unsigned.Size_t.to_int !@j in
+    let a = Array2.unsafe_get x i j in
+    a, i, j
 
 end
 
