@@ -935,7 +935,9 @@ let _compare_element_to_zero f x =
   ) x; !b
   with Failure _ -> !b
 
-let is_zero x = _compare_element_to_zero ( = ) x
+let is_zero x =
+  let y = ndarray_to_matrix x in
+  (_gsl_isnull (kind x)) y
 
 let is_positive x = _compare_element_to_zero ( > ) x
 

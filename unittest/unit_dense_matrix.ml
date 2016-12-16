@@ -1,4 +1,6 @@
-(* Build with `ocamlbuild -use-ocamlfind -package alcotest,owl unit_dense_matrix.native` *)
+(* Build with the following command
+  `ocamlbuild -use-ocamlfind -package alcotest,owl unit_dense_matrix.native`
+  *)
 
 open Bigarray
 module M = Owl_dense_matrix

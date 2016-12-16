@@ -7,20 +7,23 @@ open Bigarray
 
 (* some transformation functions *)
 
-let matrix_to_gsl_vector = None
-
-let gsl_vector_to_matrix = None
-
 let ndarray_to_gsl_vector x =
   let x = Genarray.change_layout x c_layout in
   array1_of_genarray x
 
 let gsl_vector_to_ndarray = None
 
-let matrix_to_ndarray x = Obj.magic (Bigarray.genarray_of_array2 x)
+let matrix_to_array2d x = Obj.magic (Bigarray.genarray_of_array2 x)
 
-let ndarray_to_matrix x = Bigarray.array2_of_genarray (Obj.magic x)
+let array2d_to_matrix x = Bigarray.array2_of_genarray (Obj.magic x)
 
+let matrix_to_ndarray x = None
+
+let ndarray_to_matrix x =
+  let shape = Genarray.dims x in
+  let n = Array.fold_right (fun c a -> c * a) shape 1 in
+  let y = reshape_2 x 1 n in
+  y
 
 (* types for interfacing to lacaml and gsl *)
 
