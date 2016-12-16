@@ -119,7 +119,7 @@ let _check_paired_operands x y =
   if (shape x) <> (shape y) then failwith "_check_paired_operands: shape mismatch"
 
 (* TODO: although generate clean code, but seems causing performance degradation *)
-let _paired_arithmetic_op (op : ('a, 'b) kind -> ('a, 'b) vec_binop) x y =
+let _paired_arithmetic_op (op : ('a, 'b) kind -> ('a, 'b) lcm_vec_op05) x y =
   _check_paired_operands x y;
   let x' = Genarray.change_layout x fortran_layout in
   let x' = Bigarray.reshape_1 x' (numel x) in
