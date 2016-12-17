@@ -52,7 +52,8 @@ let _index_nd_1d j s =
   Array.iteri (fun k a -> i := !i + (a * s.(k))) j;
   !i
 
-(* types for interfacing to lacaml and gsl *)
+
+(* interface to lacaml functions, types for interfacing to lacaml *)
 
 type ('a, 'b) lcm_vec = ('a, 'b, fortran_layout) Array1.t
 
@@ -67,17 +68,6 @@ type ('a, 'b) lcm_vec_op07 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int ->
 type ('a, 'b) lcm_vec_op08 = (int -> 'a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
 type ('a, 'b) lcm_vec_op09 = ?n:int -> 'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
 type ('a, 'b) lcm_vec_op10 = ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ('a, 'b) lcm_vec
-
-type ('a, 'b) gsl_mat = ('a, 'b, c_layout) Array2.t
-
-type ('a, 'b) gsl_mat_op00 = ('a, 'b) gsl_mat -> bool
-type ('a, 'b) gsl_mat_op01 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> unit
-type ('a, 'b) gsl_mat_op02 = ('a, 'b) gsl_mat -> int -> int -> unit
-type ('a, 'b) gsl_mat_op03 = ('a, 'b) gsl_mat -> 'a
-type ('a, 'b) gsl_mat_op04 = ('a, 'b) gsl_mat -> 'a * int * int
-type ('a, 'b) gsl_mat_op05 = ('a, 'b) gsl_mat -> 'a * 'a
-type ('a, 'b) gsl_mat_op06 = ('a, 'b) gsl_mat -> ('a * int * int) * ('a * int * int)
-type ('a, 'b) gsl_mat_op07 = ('a, 'b) gsl_mat -> unit
 
 (* call functions in lacaml *)
 
@@ -455,6 +445,20 @@ let _uniform : type a b. (a, b) kind -> (a, b) lcm_vec_op04 = function
   | Float64   -> Lacaml.D.Vec.random
   | _         -> failwith "_uniform: unsupported operation"
 
+
+(* interface to gsl functions, types for interfacing to gsl *)
+
+type ('a, 'b) gsl_mat = ('a, 'b, c_layout) Array2.t
+
+type ('a, 'b) gsl_mat_op00 = ('a, 'b) gsl_mat -> bool
+type ('a, 'b) gsl_mat_op01 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> unit
+type ('a, 'b) gsl_mat_op02 = ('a, 'b) gsl_mat -> int -> int -> unit
+type ('a, 'b) gsl_mat_op03 = ('a, 'b) gsl_mat -> 'a
+type ('a, 'b) gsl_mat_op04 = ('a, 'b) gsl_mat -> 'a * int * int
+type ('a, 'b) gsl_mat_op05 = ('a, 'b) gsl_mat -> 'a * 'a
+type ('a, 'b) gsl_mat_op06 = ('a, 'b) gsl_mat -> ('a * int * int) * ('a * int * int)
+type ('a, 'b) gsl_mat_op07 = ('a, 'b) gsl_mat -> unit
+
 (* call functions in gsl *)
 
 let _gsl_transpose_copy : type a b. (a, b) kind -> (a, b) gsl_mat_op01 = function
@@ -544,14 +548,22 @@ let _gsl_minmax_index : type a b. (a, b) kind -> (a, b) gsl_mat_op06 = function
   | _         -> failwith "_gsl_minmax_index: unsupported operation"
 
 
-(* experimental: test to interface to c *)
+(* experimental: interface to owl's native c code *)
+(* interface to owl's c functions, types for interfacing to owl *)
+
+type ('a, 'b) owl_vec = ('a, 'b, c_layout) Array1.t
+
+type ('a, 'b) owl_vec_op00 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int
+
 
 external testfn : int -> int -> int = "testfn_stub"
 
-type tmp_t = (float, float64_elt, c_layout) Array1.t
-external d_is_greater : int -> tmp_t -> tmp_t -> int = "d_is_greater"
+external owl_equal_or_greater_double : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "equal_or_greater_double"
 
-let is_greater x y =
-  let n = Array1.dim x in
-  let b = d_is_greater n x y in
-  b = 1
+external owl_equal_or_greater_float : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "equal_or_greater_float"
+
+
+let _owl_equal_or_greater : type a b. (a, b) kind -> (a, b) owl_vec_op00 = function
+  | Float32   -> owl_equal_or_greater_float
+  | Float64   -> owl_equal_or_greater_double
+  | _         -> failwith "_owl_equal_or_greater: unsupported operation"

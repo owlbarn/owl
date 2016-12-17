@@ -11,7 +11,7 @@ let test_op s c op =
     ttime := !ttime +. (t1 -. t0)
   done;
   ttime := !ttime /. (float_of_int c);
-  Printf.printf "| %s :\t %.4fs \n" s !ttime;
+  Printf.printf "| %s :\t %.8fs \n" s !ttime;
   flush stdout
 
 (* test one operation c time, output the used time in each evaluation *)
@@ -23,9 +23,9 @@ let test_op_each c op =
     let t0 = Unix.gettimeofday () in
     let _ = op () in
     let t1 = Unix.gettimeofday () in
-    Printf.printf "| #%0i\t:\t %.4fs \n" i (t1 -. t0);
+    Printf.printf "| #%0i\t:\t %.8fs \n" i (t1 -. t0);
     flush stdout;
     ttime := !ttime +. (t1 -. t0)
   done;
   ttime := !ttime /. (float_of_int c);
-  Printf.printf "| avg.\t:\t %.4fs \n" !ttime
+  Printf.printf "| avg.\t:\t %.8fs \n" !ttime

@@ -455,10 +455,19 @@ let is_smaller x1 x2 =
   let x2 = to_ndarray x2 in
   Owl_dense_ndarray.is_smaller x1 x2
 
-let equal_or_greater x1 x2 =
+let equal_or_greater' x1 x2 =
   let x1 = to_ndarray x1 in
   let x2 = to_ndarray x2 in
   Owl_dense_ndarray.equal_or_greater x1 x2
+
+let equal_or_greater x1 x2 =
+  let n = numel x1 in
+  let y1 = to_ndarray x1 in
+  let y1 = reshape y1 [|n|] |> array1_of_genarray in
+  let y2 = to_ndarray x2 in
+  let y2 = reshape y2 [|n|] |> array1_of_genarray in
+  let _op = (_owl_equal_or_greater (Array2.kind x1)) in
+  (_op) (numel x1) y1 y2 = 1
 
 let equal_or_smaller x1 x2 =
   let x1 = to_ndarray x1 in

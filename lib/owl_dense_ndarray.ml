@@ -614,7 +614,7 @@ let sequential k dimension =
 
 let flatten x =
   let n = numel x in
-  reshape x [|1;n|]
+  reshape x [|n|]
 
 let rec __iteri_fix_axis d j i l h f x =
   if j = d - 1 then (

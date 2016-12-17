@@ -18,7 +18,7 @@ CAMLprim value testfn_stub(value vX, value vY)
   CAMLreturn(Val_int(r));
 }
 
-CAMLprim value d_is_greater(value vN, value vX, value vY)
+CAMLprim value equal_or_greater_double(value vN, value vX, value vY)
 {
   CAMLparam2(vX, vY);
   integer GET_INT(N);
@@ -34,7 +34,7 @@ CAMLprim value d_is_greater(value vN, value vX, value vY)
   double *start_x, *stop_x, *start_y;
 
   caml_enter_blocking_section();  /* Allow other threads */
-
+  printf("double triggered\n");
   start_x = X_data;
   stop_x = start_x + N;
   start_y = Y_data;
@@ -44,8 +44,7 @@ CAMLprim value d_is_greater(value vN, value vX, value vY)
   while (start_x != stop_x) {
     double x = *start_x;
     double y = *start_y;
-    printf("%f, %f\n", x, y);
-    if (x <= y) {
+    if (x < y) {
       r = 0;
       break;
     }
@@ -58,47 +57,39 @@ CAMLprim value d_is_greater(value vN, value vX, value vY)
   CAMLreturn(Val_int(r));
 }
 
-// The following implementation is incorrect.
-CAMLprim value dd_is_greater(
-  value vN,
-  value vOFSX, value vINCX, value vX,
-  value vOFSY, value vINCY, value vY)
+
+CAMLprim value equal_or_greater_float(value vN, value vX, value vY)
 {
   CAMLparam2(vX, vY);
+  integer GET_INT(N);
 
-  integer GET_INT(N),
-          GET_INT(INCX),
-          GET_INT(INCY);
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused integer dim_X = *big_X->dim;
+  float *X_data = ((float *) big_X->data);
 
-  VEC_PARAMS(X);
-  VEC_PARAMS(Y);
+  struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
+  CAMLunused integer dim_Y = *big_Y->dim;
+  float *Y_data = ((float *) big_Y->data);
 
-  NUMBER *start1, *last1, *dst;
+  float *start_x, *stop_x, *start_y;
 
   caml_enter_blocking_section();  /* Allow other threads */
-
-  if (INCX > 0) {
-      start1 = X_data;
-      last1 = start1 + N*INCX;
-    } else {
-      start1 = X_data - (N - 1)*INCX;
-      last1 = X_data + INCX;
-    };
-
-    if (INCY > 0) dst = Y_data;
-    else dst = Y_data - (N - 1)*INCY;
+  printf("float triggered\n");
+  start_x = X_data;
+  stop_x = start_x + N;
+  start_y = Y_data;
 
   integer r = 1;
 
-  while (start1 != last1) {
-    NUMBER x = *start1;
-    NUMBER y = *dst;
-    if (x <= y) {
+  while (start_x != stop_x) {
+    float x = *start_x;
+    float y = *start_y;
+    if (x < y) {
       r = 0;
       break;
     }
-    start1 += INCX;
-    dst += INCY;
+    start_x += 1;
+    start_y += 1;
   };
 
   caml_leave_blocking_section();  /* Disallow other threads */
