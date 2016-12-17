@@ -558,12 +558,14 @@ type ('a, 'b) owl_vec_op00 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int
 
 external testfn : int -> int -> int = "testfn_stub"
 
-external owl_equal_or_greater_double : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "equal_or_greater_double"
-
-external owl_equal_or_greater_float : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "equal_or_greater_float"
-
+external owl_real_float_equal_or_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_equal_or_greater"
+external owl_real_double_equal_or_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_equal_or_greater"
+external owl_complex_float_equal_or_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_float_equal_or_greater"
+external owl_complex_double_equal_or_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_double_equal_or_greater"
 
 let _owl_equal_or_greater : type a b. (a, b) kind -> (a, b) owl_vec_op00 = function
-  | Float32   -> owl_equal_or_greater_float
-  | Float64   -> owl_equal_or_greater_double
+  | Float32   -> owl_real_float_equal_or_greater
+  | Float64   -> owl_real_double_equal_or_greater
+  | Complex32 -> owl_complex_float_equal_or_greater
+  | Complex64 -> owl_complex_double_equal_or_greater
   | _         -> failwith "_owl_equal_or_greater: unsupported operation"

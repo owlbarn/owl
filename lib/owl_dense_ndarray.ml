@@ -958,7 +958,11 @@ let is_greater x y = _compare_elements_in_two ( > ) x y
 
 let is_smaller x y = _compare_elements_in_two ( < ) x y
 
-let equal_or_greater x y = _compare_elements_in_two ( >= ) x y
+let equal_or_greater x y =
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let _op = _owl_equal_or_greater (kind x) in
+  _op (numel x) x' y' = 1
 
 let equal_or_smaller x y = _compare_elements_in_two ( <= ) x y
 

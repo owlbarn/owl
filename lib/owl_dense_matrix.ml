@@ -455,11 +455,6 @@ let is_smaller x1 x2 =
   let x2 = to_ndarray x2 in
   Owl_dense_ndarray.is_smaller x1 x2
 
-let ___equal_or_greater x1 x2 =
-  let x1 = to_ndarray x1 in
-  let x2 = to_ndarray x2 in
-  Owl_dense_ndarray.equal_or_greater x1 x2
-
 let equal_or_greater x1 x2 =
   let n = numel x1 in
   let y1 = to_ndarray x1 in
