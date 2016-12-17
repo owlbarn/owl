@@ -115,6 +115,8 @@ module To_test = struct
     let z1 = M.map (fun a -> a +. 1.) y in
     M.is_equal z0 z1
 
+  let equal_or_greater x = M.equal_or_greater x x
+
 end
 
 (* the tests *)
@@ -215,6 +217,9 @@ let max_i x =
 let map x =
   Alcotest.(check bool) "map" true (To_test.map ())
 
+let equal_or_greater () =
+  Alcotest.(check bool) "equal_or_greater" true (To_test.equal_or_greater x2)
+
 let test_set = [
   "sequential", `Slow, sequential;
   "row_num", `Slow, row_num;
@@ -248,6 +253,7 @@ let test_set = [
   "min_i", `Slow, min_i;
   "max_i", `Slow, max_i;
   "map", `Slow, map;
+  "equal_or_greater", `Slow, equal_or_greater;
 ]
 
 (* Run it *)
