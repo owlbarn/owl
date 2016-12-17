@@ -59,16 +59,21 @@ module To_test = struct
 
   let is_unequal x y = M.is_unequal x y
 
+  let is_smaller () =
+    let x = M.ones Float64 3 4 in
+    let y = M.ones Float64 3 4 in
+    let y = M.mul_scalar y 2. in
+    M.is_smaller x y
+
   let is_greater () =
-    let x = M.uniform Float64 3 3 in
-    let y = M.uniform Float64 3 3 in
-    y.{2,2} <- (-99.); y.{2,1} <- 99.;
+    let x = M.ones Float64 3 4 in
+    let y = M.ones Float64 3 4 in
+    y.{0,0} <- 0.; y.{0,1} <- 2.;
     M.is_greater x y
 
-  let is_smaller () =
-    let x = M.uniform Float64 3 3 in
-    let y = M.neg x in
-    M.is_smaller y x
+  let equal_or_greater x = M.equal_or_greater x x
+
+  let equal_or_smaller x = M.equal_or_smaller x x
 
   let is_zero x = M.is_zero x
 
@@ -114,8 +119,6 @@ module To_test = struct
     let z0 = M.add x y in
     let z1 = M.map (fun a -> a +. 1.) y in
     M.is_equal z0 z1
-
-  let equal_or_greater x = M.equal_or_greater x x
 
 end
 
@@ -175,11 +178,17 @@ let is_equal () =
 let is_unequal () =
   Alcotest.(check bool) "is_unequal" true (To_test.is_unequal x0 x1)
 
+let is_smaller () =
+  Alcotest.(check bool) "is_smaller" true (To_test.is_smaller ())
+
 let is_greater () =
   Alcotest.(check bool) "is_greater" false (To_test.is_greater ())
 
-let is_smaller () =
-  Alcotest.(check bool) "is_smaller" true (To_test.is_smaller ())
+let equal_or_greater () =
+  Alcotest.(check bool) "equal_or_greater" true (To_test.equal_or_greater x2)
+
+let equal_or_smaller () =
+  Alcotest.(check bool) "equal_or_smaller" true (To_test.equal_or_smaller x2)
 
 let is_zero () =
   Alcotest.(check bool) "is_zero" true (To_test.is_zero x0)
@@ -217,9 +226,6 @@ let max_i x =
 let map x =
   Alcotest.(check bool) "map" true (To_test.map ())
 
-let equal_or_greater () =
-  Alcotest.(check bool) "equal_or_greater" true (To_test.equal_or_greater x2)
-
 let test_set = [
   "sequential", `Slow, sequential;
   "row_num", `Slow, row_num;
@@ -239,8 +245,10 @@ let test_set = [
   "for_all", `Slow, for_all;
   "is_equal", `Slow, is_equal;
   "is_unequal", `Slow, is_unequal;
-  "is_greater", `Slow, is_greater;
   "is_smaller", `Slow, is_smaller;
+  "is_greater", `Slow, is_greater;
+  "equal_or_greater", `Slow, equal_or_greater;
+  "equal_or_smaller", `Slow, equal_or_smaller;
   "is_zero", `Slow, is_zero;
   "is_positive", `Slow, is_positive;
   "is_negative", `Slow, is_negative;
@@ -253,7 +261,6 @@ let test_set = [
   "min_i", `Slow, min_i;
   "max_i", `Slow, max_i;
   "map", `Slow, map;
-  "equal_or_greater", `Slow, equal_or_greater;
 ]
 
 (* Run it *)

@@ -44,6 +44,7 @@ CAMLprim value NAME(value vN, value vX, value vY)
   while (start_x != stop_x) {
     NUMBER x = *start_x;
     NUMBER y = *start_y;
+
     if (STOPFN(x, y)) {
       r = 0;
       break;

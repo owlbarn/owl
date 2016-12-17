@@ -942,21 +942,17 @@ let is_equal x y = ( = ) x y
 
 let is_unequal x y = ( <> ) x y
 
-(* TODO: optimise performance *)
+let is_greater x y =
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let _op = _owl_is_greater (kind x) in
+  _op (numel x) x' y' = 1
 
-let _compare_elements_in_two f x y =
-  let b = ref true in
-  try iter2 (fun c d ->
-    if not (f c d) then (
-      b := false;
-      failwith "found";
-    )
-  ) x y; !b
-  with Failure _ -> !b
-
-let is_greater x y = _compare_elements_in_two ( > ) x y
-
-let is_smaller x y = _compare_elements_in_two ( < ) x y
+let is_smaller x y =
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let _op = _owl_is_smaller (kind x) in
+  _op (numel x) x' y' = 1
 
 let equal_or_greater x y =
   let x' = flatten x |> array1_of_genarray in
@@ -964,7 +960,11 @@ let equal_or_greater x y =
   let _op = _owl_equal_or_greater (kind x) in
   _op (numel x) x' y' = 1
 
-let equal_or_smaller x y = _compare_elements_in_two ( <= ) x y
+let equal_or_smaller x y =
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let _op = _owl_equal_or_smaller (kind x) in
+  _op (numel x) x' y' = 1
 
 let exists f x =
   let b = ref false in
