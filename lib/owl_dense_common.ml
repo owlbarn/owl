@@ -547,3 +547,11 @@ let _gsl_minmax_index : type a b. (a, b) kind -> (a, b) gsl_mat_op06 = function
 (* experimental: test to interface to c *)
 
 external testfn : int -> int -> int = "testfn_stub"
+
+type tmp_t = (float, float64_elt, c_layout) Array1.t
+external d_is_greater : int -> tmp_t -> tmp_t -> int = "d_is_greater"
+
+let is_greater x y =
+  let n = Array1.dim x in
+  let b = d_is_greater n x y in
+  b = 1
