@@ -25,8 +25,8 @@ Library owl
                     Owl_dense_common, Owl_dense_ndarray, Owl_dense_ndview,
                     Owl_dense_matrix, Owl_cluster, Owl_linalg,  Owl_fft
   InternalModules:  Ffi_generated
-  CSources:         ffi_generated_stub.c,
-                    owl_macros.h, owl_dense_common_c.c
+  CSources:         owl_macros.h, ffi_generated_stub.c,
+                    owl_dense_common_c.c, owl_dense_common_vec_cmp.c
   CCOpt:            -I$pkg_ctypes
   BuildDepends:     str, gsl, ctypes, ctypes.stubs, plplot, dolog, lacaml,
                     owl_parallel

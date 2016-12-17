@@ -5,6 +5,19 @@
 
 #include "owl_macros.h"
 
+#ifndef NAME
+#define NAME _uninit_vec_cmp_function
+#endif /* NAME */
+
+#ifndef NUMBER
+#define NUMBER double
+#endif /* NUMBER */
+
+#ifndef STOPFN
+#define STOPFN(X, Y) (X < Y)
+#endif /* NUMBER */
+
+
 CAMLprim value NAME(value vN, value vX, value vY)
 {
   CAMLparam2(vX, vY);
@@ -31,10 +44,11 @@ CAMLprim value NAME(value vN, value vX, value vY)
   while (start_x != stop_x) {
     NUMBER x = *start_x;
     NUMBER y = *start_y;
-    if (x < y) {
+    if (STOPFN(x, y)) {
       r = 0;
       break;
     }
+
     start_x += 1;
     start_y += 1;
   };
@@ -44,5 +58,7 @@ CAMLprim value NAME(value vN, value vX, value vY)
   CAMLreturn(Val_int(r));
 }
 
-#undef NAME
+
+#undef STOPFN
 #undef NUMBER
+#undef NAME
