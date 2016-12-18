@@ -6,7 +6,7 @@
 (** N-dimensional array module
   This module is built atop of Genarray module in OCaml Bigarray. The module also
   heavily relies on Lacaml to call native BLAS/LAPACK to improve the performance.
-  The documentation of some ('a, 'b) th functions is copied directly from Lacaml.
+  The documentation of some math functions is copied directly from Lacaml.
  *)
 
 type ('a, 'b) t
