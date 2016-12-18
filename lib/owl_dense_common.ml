@@ -458,6 +458,7 @@ type ('a, 'b) gsl_mat_op04 = ('a, 'b) gsl_mat -> 'a * int * int
 type ('a, 'b) gsl_mat_op05 = ('a, 'b) gsl_mat -> 'a * 'a
 type ('a, 'b) gsl_mat_op06 = ('a, 'b) gsl_mat -> ('a * int * int) * ('a * int * int)
 type ('a, 'b) gsl_mat_op07 = ('a, 'b) gsl_mat -> unit
+type ('a, 'b) gsl_mat_op08 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat
 
 (* call functions in gsl *)
 
@@ -547,6 +548,12 @@ let _gsl_minmax_index : type a b. (a, b) kind -> (a, b) gsl_mat_op06 = function
   | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_minmax_index
   | _         -> failwith "_gsl_minmax_index: unsupported operation"
 
+let _gsl_dot : type a b. (a, b) kind -> (a, b) gsl_mat_op08 = function
+  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_dot
+  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_dot
+  | Complex32 -> Owl_foreign.Dense_complex_float.ml_gsl_dot
+  | Complex64 -> Owl_foreign.Dense_complex_double.ml_gsl_dot
+  | _         -> failwith "_gsl_dot: unsupported operation"
 
 (* experimental: interface to owl's native c code *)
 (* interface to owl's c functions, types for interfacing to owl *)

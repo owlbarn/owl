@@ -118,6 +118,13 @@ module Dense_real_double = struct
     let b = Array2.unsafe_get x p q in
     (a, i, j), (b, p, q)
 
+  let ml_gsl_dot x1 x2 =
+    let open Gsl.Blas in
+    let m, n = Array2.dim1 x1, Array2.dim2 x2 in
+    let x3 = Array2.create (Array2.kind x1) c_layout m n in
+    gemm ~ta:Gsl.Blas.NoTrans ~tb:Gsl.Blas.NoTrans ~alpha:1. ~beta:0. ~a:x1 ~b:x2 ~c:x3;
+    x3
+
 end
 
 
@@ -223,6 +230,13 @@ module Dense_real_float = struct
     let b = Array2.unsafe_get x p q in
     (a, i, j), (b, p, q)
 
+  let ml_gsl_dot x1 x2 =
+    let open Gsl.Blas.Single in
+    let m, n = Array2.dim1 x1, Array2.dim2 x2 in
+    let x3 = Array2.create (Array2.kind x1) c_layout m n in
+    gemm ~ta:Gsl.Blas.NoTrans ~tb:Gsl.Blas.NoTrans ~alpha:1. ~beta:0. ~a:x1 ~b:x2 ~c:x3;
+    x3
+
 end
 
 
@@ -278,6 +292,13 @@ module Dense_complex_double = struct
     let y = mat_to_matptr x in
     gsl_matrix_complex_isnonneg y = 1
 
+  let ml_gsl_dot x1 x2 =
+    let open Gsl.Blas.Complex in
+    let m, n = Array2.dim1 x1, Array2.dim2 x2 in
+    let x3 = Array2.create (Array2.kind x1) c_layout m n in
+    gemm ~ta:Gsl.Blas.NoTrans ~tb:Gsl.Blas.NoTrans ~alpha:Complex.one ~beta:Complex.zero ~a:x1 ~b:x2 ~c:x3;
+    x3
+
 end
 
 (* ffi for dense complex float matrix *)
@@ -331,6 +352,13 @@ module Dense_complex_float = struct
   let ml_gsl_matrix_isnonneg x =
     let y = mat_to_matptr x in
     gsl_matrix_complex_float_isnonneg y = 1
+
+  let ml_gsl_dot x1 x2 =
+    let open Gsl.Blas.Complex_Single in
+    let m, n = Array2.dim1 x1, Array2.dim2 x2 in
+    let x3 = Array2.create (Array2.kind x1) c_layout m n in
+    gemm ~ta:Gsl.Blas.NoTrans ~tb:Gsl.Blas.NoTrans ~alpha:Complex.one ~beta:Complex.zero ~a:x1 ~b:x2 ~c:x3;
+    x3
 
 end
 

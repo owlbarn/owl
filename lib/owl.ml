@@ -24,3 +24,10 @@ module Plot = Owl_plot
 module Fft = Owl_fft
 
 module Cluster = Owl_cluster
+
+
+(* So we don't have to open Bigarray all the time. *)
+let float32 = Bigarray.float32
+let float64 = Bigarray.float64
+let complex32 = Bigarray.complex32
+let complex64 = Bigarray.complex64

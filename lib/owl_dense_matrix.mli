@@ -266,9 +266,9 @@ val sum : ('a, 'b) mat -> 'a
 
 val average : (float, 'b) mat -> float
 
-val sum_rows : mat_d -> mat_d
+val sum_rows : ('a, 'b) mat -> ('a, 'b) mat
 
-val sum_cols : mat_d -> mat_d
+val sum_cols : ('a, 'b) mat -> ('a, 'b) mat
 
 val average_rows : mat_d -> mat_d
 
@@ -501,6 +501,9 @@ val div_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
   returns the result in a new matrix.
  *)
 
+val dot : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** [dot x y] returns the dot product of matrix [x] and [y]. *)
+
 val pow : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
 (** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
@@ -525,8 +528,6 @@ val max2 : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
 (** [max2 x y] computes the maximum of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
-
-(* val dot : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat *)
 
 
 (** {6 Shorhand infix operators} *)

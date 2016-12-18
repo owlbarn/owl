@@ -381,11 +381,7 @@ let div x1 x2 =
   let y3 = Owl_dense_ndarray.div y1 y2 in
   of_ndarray y3
 
-(* TODO: way too slow! need to find a solution! *)
-let dot x1 x2 =
-  let open Gsl.Blas in
-  let x3 = empty (Array2.kind x1) (row_num x1) (col_num x2) in
-  gemm ~ta:NoTrans ~tb:NoTrans ~alpha:1. ~beta:0. ~a:x1 ~b:x2 ~c:x3; x3
+let dot x1 x2 = (_gsl_dot (Array2.kind x1)) x1 x2
 
 let sum_cols x =
   let y = ones (Array2.kind x) (col_num x) 1 in
