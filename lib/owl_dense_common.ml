@@ -566,6 +566,15 @@ type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
 (* call functions in owl native c *)
 
+let _owl_elt_to_str : type a b. (a, b) kind -> (a -> bytes) = function
+  | Float32   -> fun v -> Printf.sprintf "%G" v
+  | Float64   -> fun v -> Printf.sprintf "%G" v
+  | Int32     -> fun v -> Printf.sprintf "%i" (Int32.to_int v)
+  | Int64     -> fun v -> Printf.sprintf "%i" (Int64.to_int v)
+  | Complex32 -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
+  | Complex64 -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
+  | _         -> failwith "_owl_print_elt: unsupported operation"
+
 let _owl_print_mat : type a b. (a, b) kind -> (a, b) owl_mat_op00 = function
   | Float32   -> Format.printf "%a\n" Owl_pretty.pp_fmat
   | Float64   -> Format.printf "%a\n" Owl_pretty.pp_fmat

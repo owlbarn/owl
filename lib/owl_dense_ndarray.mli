@@ -288,8 +288,10 @@ val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
 val save : ('a, 'b) t -> string -> unit
 (** [save x s] serialises a ndarray [x] to a file of name [s]. *)
 
-val load : string -> ('a, 'b) t
-(** [load s] loads previously serialised ndarray from file [s] into memory. *)
+val load : ('a, 'b) kind -> string -> ('a, 'b) t
+(** [load k s] loads previously serialised ndarray from file [s] into memory.
+  It is necesssary to specify the type of the ndarray with paramater [k].
+*)
 
 val print : ('a, 'b) t -> unit
 (** [print x] prints all the elements in [x] as well as their indices. *)

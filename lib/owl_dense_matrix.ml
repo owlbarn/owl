@@ -50,23 +50,6 @@ let fill x a = Array2.fill x a
 
 let empty k m n = Array2.create k c_layout m n
 
-(*
-let empty' : type a b . ?k : (a, b) kind -> int -> int -> (a, b) mat =
-  fun ?k m n ->
-  match k with
-  | None -> Array2.create Float64 c_layout m n
-  | Some k -> Array2.create k c_layout m n
-
-
-let empty' : type a b . ?k : typ -> int -> int -> (a, b) mat =
-  fun ?(k=S) m n ->
-  match k with
-  | S -> Array2.create Float32 c_layout m n
-  | D -> Array2.create Float64 c_layout m n
-  | C -> Array2.create Complex32 c_layout m n
-  | Z -> Array2.create Complex64 c_layout m n
-*)
-
 let zeros k m n = (_make0 k) n m |> fortran2c_matrix
 
 let create k m n a =
@@ -556,9 +539,10 @@ let of_array x m n = Gsl.Matrix.of_array x m n
 let of_arrays x = Gsl.Matrix.of_arrays x
 
 let save_txt x f =
+  let _op = _owl_elt_to_str (Array2.kind x) in
   let h = open_out f in
-  iter_rows (fun y ->  (* TODO: 64-bit -> 16 digits *)
-    iter (fun z -> Printf.fprintf h "%.8f\t" z) y;
+  iter_rows (fun y ->
+    iter (fun z -> Printf.fprintf h "%s\t" (_op z)) y;
     Printf.fprintf h "\n"
   ) x;
   close_out h
@@ -583,7 +567,7 @@ let save x f =
   output_string h s;
   close_out h
 
-let load f =
+let load : type a b . (a, b) kind -> string -> (a, b) mat = fun k f ->
   let h = open_in f in
   let s = really_input_string h (in_channel_length h) in
   Marshal.from_string s 0

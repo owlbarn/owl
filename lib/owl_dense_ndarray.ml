@@ -969,19 +969,16 @@ let print_index i =
   Array.iter (fun x -> Printf.printf "%i " x) i;
   Printf.printf "] "
 
-let print_element : type a b. (a, b) kind -> a -> unit = fun t v ->
-  match t with
-  | Float32   -> Printf.printf "%f\n" v
-  | Float64   -> Printf.printf "%f\n" v
-  | Int32     -> Printf.printf "%i\n" (Int32.to_int v)
-  | Int64     -> Printf.printf "%i\n" (Int64.to_int v)
-  | Complex32 -> Printf.printf "{re = %f; im = %f}\n" Complex.(v.re) Complex.(v.im)
-  | Complex64 -> Printf.printf "{re = %f; im = %f}\n" Complex.(v.re) Complex.(v.im)
-  | _         -> ()
+let print_element k v =
+  let s = (_owl_elt_to_str k) v in
+  Printf.printf "%s" s
 
 let print x =
-  let t = kind x in
-  iteri (fun i y -> print_index i; print_element t y) x
+  let _op = _owl_elt_to_str (kind x) in
+  iteri (fun i y ->
+    print_index i;
+    Printf.printf "%s\n" (_op y)
+  ) x
 
 let save x f =
   let t = kind x in
@@ -990,7 +987,7 @@ let save x f =
   output_string h s;
   close_out h
 
-let load f =
+let load : type a b . (a, b) kind -> string -> (a, b) t = fun k f ->
   let h = open_in f in
   let s = really_input_string h (in_channel_length h) in
   let _, x = Marshal.from_string s 0

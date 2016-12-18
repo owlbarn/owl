@@ -61,7 +61,7 @@ let _ =
   test_op "draw_cols         " c (fun () -> M.draw_cols x 1000);
   test_op "draw_rows         " c (fun () -> M.draw_rows x 1000);
   test_op "save              " c (fun () -> M.save x "test_matrix0.tmp");
-  test_op "load              " c (fun () -> M.load "test_matrix0.tmp");
+  test_op "load              " c (fun () -> M.load Float64 "test_matrix0.tmp");
   test_op "save_txt          " 0 (fun () -> M.save_txt x "test_matrix1.tmp");
   test_op "load_txt          " 0 (fun () -> M.load_txt "test_matrix1.tmp");
   test_op "uniform           " c (fun () -> M.uniform Float64 m n);

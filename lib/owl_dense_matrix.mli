@@ -229,11 +229,11 @@ val print : ('a, 'b) mat -> unit
 
 val pp_dsmat : ('a, 'b) mat -> unit
 
-val save : (float, 'b) mat -> string -> unit
+val save : ('a, 'b) mat -> string -> unit
 
-val load : string -> (float, 'b) mat
+val load : ('a, 'b) kind -> string -> ('a, 'b) mat
 
-val save_txt : mat_d -> string -> unit
+val save_txt : ('a, 'b) mat -> string -> unit
 
 val load_txt : string -> mat_d
 
