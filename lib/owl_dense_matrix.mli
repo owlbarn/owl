@@ -240,6 +240,16 @@ val load_txt : string -> mat_d
 
 (** {6 Unary mathematical operations } *)
 
+val re : (Complex.t, 'a) mat -> (float, Bigarray.float64_elt) mat
+(** If [x] is a matrix of complex numbers, [re x] returns all the real
+  components in a new matrix of the same shape as that of [x].
+ *)
+
+val im : (Complex.t, 'a) mat -> (float, Bigarray.float64_elt) mat
+(** If [x] is a matrix of complex numbers, [re x] returns all the imaginary
+  components in a new matrix of the same shape as that of [x].
+ *)
+
 val min : ('a, 'b) mat -> 'a
 
 val max : ('a, 'b) mat -> 'a
@@ -273,14 +283,178 @@ val max_rows : (float, 'b) mat -> (float * int * int) array
 val max_cols : (float, 'b) mat -> (float * int * int) array
 
 val abs : ('a, 'b) mat -> ('a, 'b) mat
+(** [abs x] returns the absolute value of all elements in [x] in a new matrix. *)
 
 val neg : ('a, 'b) mat -> ('a, 'b) mat
+(** [neg x] negates the elements in [x] and returns the result in a new matrix. *)
 
-val log : ('a, 'b) mat -> ('a, 'b) mat
+val signum : ('a, 'b) mat -> ('a, 'b) mat
+(** [signum] computes the sign value ([-1] for negative numbers, [0] (or [-0])
+  for zero, [1] for positive numbers, [nan] for [nan]).
+ *)
 
-val log10 : ('a, 'b) mat -> ('a, 'b) mat
+val sqr : ('a, 'b) mat -> ('a, 'b) mat
+(** [sqr x] computes the square of the elements in [x] and returns the result in
+  a new matrix.
+ *)
+
+val sqrt : ('a, 'b) mat -> ('a, 'b) mat
+(** [sqrt x] computes the square root of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val cbrt : ('a, 'b) mat -> ('a, 'b) mat
+(** [cbrt x] computes the cubic root of the elements in [x] and returns the
+  result in a new matrix.
+ *)
 
 val exp : ('a, 'b) mat -> ('a, 'b) mat
+(** [exp x] computes the exponential of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val exp2 : ('a, 'b) mat -> ('a, 'b) mat
+(** [exp2 x] computes the base-2 exponential of the elements in [x] and returns
+  the result in a new matrix.
+ *)
+
+val expm1 : ('a, 'b) mat -> ('a, 'b) mat
+(** [expm1 x] computes [exp x -. 1.] of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val log : ('a, 'b) mat -> ('a, 'b) mat
+(** [log x] computes the logarithm of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val log10 : ('a, 'b) mat -> ('a, 'b) mat
+(** [log10 x] computes the base-10 logarithm of the elements in [x] and returns
+  the result in a new matrix.
+ *)
+
+val log2 : ('a, 'b) mat -> ('a, 'b) mat
+(** [log2 x] computes the base-2 logarithm of the elements in [x] and returns
+  the result in a new matrix.
+ *)
+
+val log1p : ('a, 'b) mat -> ('a, 'b) mat
+(** [log1p x] computes [log (1 + x)] of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val sin : ('a, 'b) mat -> ('a, 'b) mat
+(** [sin x] computes the sine of the elements in [x] and returns the result in
+  a new matrix.
+ *)
+
+val cos : ('a, 'b) mat -> ('a, 'b) mat
+(** [cos x] computes the cosine of the elements in [x] and returns the result in
+  a new matrix.
+ *)
+
+val tan : ('a, 'b) mat -> ('a, 'b) mat
+(** [tan x] computes the tangent of the elements in [x] and returns the result
+  in a new matrix.
+ *)
+
+val asin : ('a, 'b) mat -> ('a, 'b) mat
+(** [asin x] computes the arc sine of the elements in [x] and returns the result
+  in a new matrix.
+ *)
+
+val acos : ('a, 'b) mat -> ('a, 'b) mat
+(** [acos x] computes the arc cosine of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val atan : ('a, 'b) mat -> ('a, 'b) mat
+(** [atan x] computes the arc tangent of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val sinh : ('a, 'b) mat -> ('a, 'b) mat
+(** [sinh x] computes the hyperbolic sine of the elements in [x] and returns
+  the result in a new matrix.
+ *)
+
+val cosh : ('a, 'b) mat -> ('a, 'b) mat
+(** [cosh x] computes the hyperbolic cosine of the elements in [x] and returns
+  the result in a new matrix.
+ *)
+
+val tanh : ('a, 'b) mat -> ('a, 'b) mat
+(** [tanh x] computes the hyperbolic tangent of the elements in [x] and returns
+  the result in a new matrix.
+ *)
+
+val asinh : ('a, 'b) mat -> ('a, 'b) mat
+(** [asinh x] computes the hyperbolic arc sine of the elements in [x] and
+  returns the result in a new matrix.
+ *)
+
+val acosh : ('a, 'b) mat -> ('a, 'b) mat
+(** [acosh x] computes the hyperbolic arc cosine of the elements in [x] and
+  returns the result in a new matrix.
+ *)
+
+val atanh : ('a, 'b) mat -> ('a, 'b) mat
+(** [atanh x] computes the hyperbolic arc tangent of the elements in [x] and
+  returns the result in a new matrix.
+ *)
+
+val floor : ('a, 'b) mat -> ('a, 'b) mat
+(** [floor x] computes the floor of the elements in [x] and returns the result
+  in a new matrix.
+ *)
+
+val ceil : ('a, 'b) mat -> ('a, 'b) mat
+(** [ceil x] computes the ceiling of the elements in [x] and returns the result
+  in a new matrix.
+ *)
+
+val round : ('a, 'b) mat -> ('a, 'b) mat
+(** [round x] rounds the elements in [x] and returns the result in a new matrix. *)
+
+val trunc : ('a, 'b) mat -> ('a, 'b) mat
+(** [trunc x] computes the truncation of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val erf : ('a, 'b) mat -> ('a, 'b) mat
+(** [erf x] computes the error function of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val erfc : ('a, 'b) mat -> ('a, 'b) mat
+(** [erfc x] computes the complementary error function of the elements in [x]
+  and returns the result in a new matrix.
+ *)
+
+val logistic : ('a, 'b) mat -> ('a, 'b) mat
+(** [logistic x] computes the logistic function [1/(1 + exp(-a)] of the elements
+  in [x] and returns the result in a new matrix.
+ *)
+
+val relu : ('a, 'b) mat -> ('a, 'b) mat
+(** [relu x] computes the rectified linear unit function [max(x, 0)] of the
+  elements in [x] and returns the result in a new matrix.
+ *)
+
+val softplus : ('a, 'b) mat -> ('a, 'b) mat
+(** [softplus x] computes the softplus function [log(1 + exp(x)] of the elements
+  in [x] and returns the result in a new matrix.
+ *)
+
+val softsign : ('a, 'b) mat -> ('a, 'b) mat
+(** [softsign x] computes the softsign function [x / (1 + abs(x))] of the
+  elements in [x] and returns the result in a new matrix.
+ *)
+
+val conj : (Complex.t, 'a) mat -> (Complex.t, 'a) mat
+(** [conj x] computes the conjugate of the elements in [x] and returns the
+  result in a new matrix.
+ *)
 
 val sigmoid : mat_d -> mat_d
 
@@ -288,24 +462,72 @@ val sigmoid : mat_d -> mat_d
 (** {6 Binary mathematical operations } *)
 
 val add : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** [add x y] adds all the elements in [x] and [y] elementwise, and returns the
+  result in a new matrix.
+ *)
 
 val sub : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** [sub x y] subtracts all the elements in [x] and [y] elementwise, and returns
+  the result in a new matrix.
+ *)
 
 val mul : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** [mul x y] multiplies all the elements in [x] and [y] elementwise, and
+  returns the result in a new matrix.
+ *)
 
 val div : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** [div x y] divides all the elements in [x] and [y] elementwise, and returns
+  the result in a new matrix.
+ *)
+
+val add_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+(** [add_scalar x a] adds a scalar value [a] to all the elements in [x], and
+  returns the result in a new matrix.
+ *)
+
+val sub_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+(** [sub_scalar x a] subtracts a scalar value [a] to all the elements in [x],
+  and returns the result in a new matrix.
+ *)
+
+val mul_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+(** [mul_scalar x a] multiplies a scalar value [a] to all the elements in [x],
+  and returns the result in a new matrix.
+ *)
+
+val div_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
+(** [div_scalar x a] divides a scalar value [a] to all the elements in [x], and
+  returns the result in a new matrix.
+ *)
+
+val pow : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
+  elementwise, and returns the result in a new matrix.
+ *)
+
+val atan2 : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]
+  elementwise, and returns the result in a new matrix.
+ *)
+
+val hypot : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** [hypot x y] computes [sqrt(x*x + y*y)] of all the elements in [x] and [y]
+  elementwise, and returns the result in a new matrix.
+ *)
+
+val min2 : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** [min2 x y] computes the minimum of all the elements in [x] and [y]
+  elementwise, and returns the result in a new matrix.
+ *)
+
+val max2 : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat
+(** [max2 x y] computes the maximum of all the elements in [x] and [y]
+  elementwise, and returns the result in a new matrix.
+ *)
 
 (* val dot : ('a, 'b) mat -> ('a, 'b) mat -> ('a, 'b) mat *)
 
-val add_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
-
-val sub_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
-
-val mul_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
-
-val div_scalar : ('a, 'b) mat -> 'a -> ('a, 'b) mat
-
-(* TODO: min2 and max2 *)
 
 (** {6 Shorhand infix operators} *)
 

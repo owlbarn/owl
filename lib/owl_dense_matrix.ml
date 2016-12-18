@@ -670,7 +670,6 @@ let meshup x y =
 
 (* unary matrix operation *)
 
-(* TODO *)
 let re x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray.re y in
@@ -680,6 +679,9 @@ let im x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray.im y in
   of_ndarray y
+
+(* TODO: optimise *)
+let conj x = map Complex.conj x
 
 let abs x =
   let y = to_ndarray x in
@@ -860,7 +862,35 @@ let sigmoid x = map (fun y -> 1. /. (1. +. (Pervasives.exp (-1. *. y)))) x
 
 (* binary matrix operation *)
 
+let pow x1 x2 =
+  let x1 = to_ndarray x1 in
+  let x2 = to_ndarray x2 in
+  let x3 = Owl_dense_ndarray.pow x1 x2 in
+  of_ndarray x3
 
+let atan2 x1 x2 =
+  let x1 = to_ndarray x1 in
+  let x2 = to_ndarray x2 in
+  let x3 = Owl_dense_ndarray.atan2 x1 x2 in
+  of_ndarray x3
+
+let hypot x1 x2 =
+  let x1 = to_ndarray x1 in
+  let x2 = to_ndarray x2 in
+  let x3 = Owl_dense_ndarray.hypot x1 x2 in
+  of_ndarray x3
+
+let min2 x1 x2 =
+  let x1 = to_ndarray x1 in
+  let x2 = to_ndarray x2 in
+  let x3 = Owl_dense_ndarray.min2 x1 x2 in
+  of_ndarray x3
+
+let max2 x1 x2 =
+  let x1 = to_ndarray x1 in
+  let x2 = to_ndarray x2 in
+  let x3 = Owl_dense_ndarray.max2 x1 x2 in
+  of_ndarray x3
 
 (* shorhand infix operators *)
 
