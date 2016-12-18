@@ -296,6 +296,11 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 val print : ('a, 'b) t -> unit
 (** [print x] prints all the elements in [x] as well as their indices. *)
 
+val pp_dsnda : ('a, 'b) t -> unit
+(** [pp_dsnda x] prints [x] in OCaml toplevel. If the ndarray is too long,
+  [pp_dsnda] only prints out parts of the ndarray.
+ *)
+
 
 (** {6 Unary mathematical operations } *)
 

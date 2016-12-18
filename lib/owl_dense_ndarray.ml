@@ -980,6 +980,28 @@ let print x =
     Printf.printf "%s\n" (_op y)
   ) x
 
+let pp_dsnda x =
+  let _op = _owl_elt_to_str (kind x) in
+  let k = shape x in
+  let s = _calc_stride k in
+  let _pp = fun i j -> (
+    for i' = i to j do
+      _index_1d_nd i' k s;
+      print_index k;
+      Printf.printf "%s\n" (_op (get x k))
+    done
+  )
+  in
+  let n = numel x in
+  if n <= 40 then (
+    _pp 0 (n - 1)
+  )
+  else (
+    _pp 0 19;
+    print_endline "......";
+    _pp (n - 20) (n - 1)
+  )
+
 let save x f =
   let t = kind x in
   let s = Marshal.to_string (t,x) [] in
