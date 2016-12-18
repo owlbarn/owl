@@ -97,6 +97,13 @@ module To_test = struct
     let y2 = M.mul x y1 in
     M.is_equal y0 y2
 
+  let dot () =
+    let x = M.sequential Float64 2 3 in
+    let y = M.sequential Float64 3 2 in
+    let a = M.dot x y in
+    let b = M.of_arrays [| [|22.;28.|]; [|49.;64.|] |] in
+    M.is_equal a b
+
   let min x = M.min x
 
   let max x = M.max x
@@ -211,6 +218,9 @@ let add () =
 let mul () =
   Alcotest.(check bool) "mul" true (To_test.mul x2)
 
+let dot () =
+  Alcotest.(check bool) "dot" true (To_test.dot ())
+
 let min x =
   Alcotest.(check float) "min" 1. (To_test.min x2)
 
@@ -256,6 +266,7 @@ let test_set = [
   "is_nonpositive", `Slow, is_nonpositive;
   "add", `Slow, add;
   "mul", `Slow, mul;
+  "dot", `Slow, dot;
   "min", `Slow, min;
   "max", `Slow, max;
   "min_i", `Slow, min_i;
