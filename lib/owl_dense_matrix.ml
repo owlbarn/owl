@@ -588,11 +588,9 @@ let load f =
   let s = really_input_string h (in_channel_length h) in
   Marshal.from_string s 0
 
-let print x = let open Owl_pretty in
-  Format.printf "%a\n" Owl_pretty.pp_fmat x;;
+let print x = _owl_print_mat (Array2.kind x) x
 
-let pp_dsmat x = let open Owl_pretty in
-  Format.printf "%a\n" Toplevel.pp_fmat x;;
+let pp_dsmat x = _owl_print_mat_toplevel (Array2.kind x) x
 
 (* some other uncategorised functions *)
 

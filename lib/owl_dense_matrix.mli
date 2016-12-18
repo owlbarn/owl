@@ -225,9 +225,9 @@ val to_ndarray : ('a, 'b) mat -> ('a, 'b) Owl_dense_ndarray.t
 
 val of_ndarray : ('a, 'b) Owl_dense_ndarray.t -> ('a, 'b) mat
 
-val print : (float, 'b) mat -> unit
+val print : ('a, 'b) mat -> unit
 
-val pp_dsmat : (float, 'b) mat -> unit
+val pp_dsmat : ('a, 'b) mat -> unit
 
 val save : (float, 'b) mat -> string -> unit
 

@@ -559,10 +559,26 @@ let _gsl_dot : type a b. (a, b) kind -> (a, b) gsl_mat_op08 = function
 (* interface to owl's c functions, types for interfacing to owl *)
 
 type ('a, 'b) owl_vec = ('a, 'b, c_layout) Array1.t
+type ('a, 'b) owl_mat = ('a, 'b, c_layout) Array2.t
 
 type ('a, 'b) owl_vec_op00 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int
+type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
 (* call functions in owl native c *)
+
+let _owl_print_mat : type a b. (a, b) kind -> (a, b) owl_mat_op00 = function
+  | Float32   -> Format.printf "%a\n" Owl_pretty.pp_fmat
+  | Float64   -> Format.printf "%a\n" Owl_pretty.pp_fmat
+  | Complex32 -> Format.printf "%a\n" Owl_pretty.pp_cmat
+  | Complex64 -> Format.printf "%a\n" Owl_pretty.pp_cmat
+  | _         -> failwith "_owl_print_mat: unsupported operation"
+
+let _owl_print_mat_toplevel : type a b. (a, b) kind -> (a, b) owl_mat_op00 = function
+  | Float32   -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_fmat
+  | Float64   -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_fmat
+  | Complex32 -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat
+  | Complex64 -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat
+  | _         -> failwith "_owl_print_mat_toplevel: unsupported operation"
 
 external owl_real_float_is_smaller : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_is_smaller"
 external owl_real_double_is_smaller : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_is_smaller"
