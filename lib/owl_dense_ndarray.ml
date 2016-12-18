@@ -562,24 +562,6 @@ let sum x =
   let y = Bigarray.reshape_1 y (numel x) in
   (_sum (kind x)) y
 
-let sin x =
-  let y = Genarray.change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_sin (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = Genarray.change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
-
-let cos x =
-  let y = Genarray.change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_cos (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = Genarray.change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
-
 let uniform kind dimension =
   let n = Array.fold_right (fun c a -> c * a) dimension 1 in
   let x = _uniform (kind) ~from:(_zero kind) ~range:(_one kind) n in
@@ -1025,24 +1007,6 @@ let im x =
   let y = empty Float64 (shape x) in
   iteri (fun i c -> set y i Complex.(c.im) ) x;
   y
-
-let minmax' x =
-  let x' = Genarray.change_layout x fortran_layout in
-  let x' = Bigarray.reshape_1 x' (numel x) in
-  let min_i = ref 1 in
-  let min_v = ref (x'.{!min_i}) in
-  let max_i = ref 1 in
-  let max_v = ref (x'.{!max_i}) in
-  (_iteri_op (kind x)) (fun j y ->
-    if y < !min_v then (min_v := y; min_i := j);
-    if y > !max_v then (max_v := y; max_i := j);
-  ) x';
-  let s = _calc_stride (shape x) in
-  let i = Array.copy s in
-  let j = Array.copy s in
-  _index_1d_nd (!min_i - 1) i s;
-  _index_1d_nd (!max_i - 1) j s;
-  !min_v, i, !max_v, j
 
 let conj x = map Complex.conj x
 

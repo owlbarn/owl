@@ -5,9 +5,9 @@
 
 #include "owl_macros.h"
 
-#ifndef NAME
-#define NAME _uninit_vec_cmp_function
-#endif /* NAME */
+#ifndef FUN0
+#define FUN0 _uninit_vec_cmp_function
+#endif /* FUN0 */
 
 #ifndef NUMBER
 #define NUMBER double
@@ -18,9 +18,9 @@
 #endif /* NUMBER */
 
 
-CAMLprim value NAME(value vN, value vX, value vY)
+CAMLprim value FUN0(value vN, value vX, value vY)
 {
-  CAMLparam2(vX, vY);
+  CAMLparam3(vN, vX, vY);
   int N = Long_val(vN);
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
@@ -59,7 +59,6 @@ CAMLprim value NAME(value vN, value vX, value vY)
   CAMLreturn(Val_int(r));
 }
 
-
 #undef STOPFN
 #undef NUMBER
-#undef NAME
+#undef FUN0

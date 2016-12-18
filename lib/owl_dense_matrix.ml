@@ -387,20 +387,6 @@ let dot x1 x2 =
   let x3 = empty (Array2.kind x1) (row_num x1) (col_num x2) in
   gemm ~ta:NoTrans ~tb:NoTrans ~alpha:1. ~beta:0. ~a:x1 ~b:x2 ~c:x3; x3
 
-let abs x =
-  let y1 = to_ndarray x in
-  let y2 = Owl_dense_ndarray.abs y1 in
-  of_ndarray y2
-
-let neg x =
-  let y1 = to_ndarray x in
-  let y2 = Owl_dense_ndarray.neg y1 in
-  of_ndarray y2
-
-let sum x =
-  let y = to_ndarray x in
-  Owl_dense_ndarray.sum y
-
 let sum_cols x =
   let y = ones (Array2.kind x) (col_num x) 1 in
   dot x y
@@ -408,8 +394,6 @@ let sum_cols x =
 let sum_rows x =
   let y = ones (Array2.kind x) 1 (row_num x) in
   dot y x
-
-let average x = (sum x) /. (float_of_int (numel x))
 
 let average_cols x =
   let m, n = shape x in
@@ -499,11 +483,6 @@ let min_i x = (_gsl_min_index (Array2.kind x)) x
 
 let max_i x = (_gsl_max_index (Array2.kind x)) x
 
-let minmax' x =
-  let xmin, irow, icol = min_i x in
-  let xmax, arow, acol = max_i x in
-  xmin, xmax, irow, icol, arow, acol
-
 let minmax x = (_gsl_minmax (Array2.kind x)) x
 
 let minmax_i x = (_gsl_minmax_index (Array2.kind x)) x
@@ -548,24 +527,11 @@ let div_scalar x a =
   let y = Owl_dense_ndarray.div_scalar y a in
   of_ndarray y
 
-(* advanced matrix methematical operations *)
-
-let log x =
+let sum x =
   let y = to_ndarray x in
-  let y = Owl_dense_ndarray.log y in
-  of_ndarray y
+  Owl_dense_ndarray.sum y
 
-let log10 x =
-  let y = to_ndarray x in
-  let y = Owl_dense_ndarray.log10 y in
-  of_ndarray y
-
-let exp x =
-  let y = to_ndarray x in
-  let y = Owl_dense_ndarray.exp y in
-  of_ndarray y
-
-let sigmoid x = map (fun y -> 1. /. (1. +. (Pervasives.exp (-1. *. y)))) x
+let average x = (sum x) /. (float_of_int (numel x))
 
 let diag x =
   let m = Pervasives.min (row_num x) (col_num x) in
@@ -701,6 +667,200 @@ let meshup x y =
   let x = map_by_row xn (fun _ -> x) (empty Float64 yn xn) in
   let y = map_by_row yn (fun _ -> y) (empty Float64 xn yn) in
   x, transpose y
+
+(* unary matrix operation *)
+
+(* TODO *)
+let re x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.re y in
+  of_ndarray y
+
+let im x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.im y in
+  of_ndarray y
+
+let abs x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.abs y in
+  of_ndarray y
+
+let neg x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.neg y in
+  of_ndarray y
+
+let signum x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.signum y in
+  of_ndarray y
+
+let sqr x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.sqr y in
+  of_ndarray y
+
+let sqrt x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.sqrt y in
+  of_ndarray y
+
+let cbrt x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.cbrt y in
+  of_ndarray y
+
+let exp x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.exp y in
+  of_ndarray y
+
+let exp2 x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.exp2 y in
+  of_ndarray y
+
+let expm1 x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.expm1 y in
+  of_ndarray y
+
+let log x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.log y in
+  of_ndarray y
+
+let log10 x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.log10 y in
+  of_ndarray y
+
+let log2 x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.log2 y in
+  of_ndarray y
+
+let log1p x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.log1p y in
+  of_ndarray y
+
+let sin x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.sin y in
+  of_ndarray y
+
+let cos x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.cos y in
+  of_ndarray y
+
+let tan x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.tan y in
+  of_ndarray y
+
+let asin x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.asin y in
+  of_ndarray y
+
+let acos x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.acos y in
+  of_ndarray y
+
+let atan x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.atan y in
+  of_ndarray y
+
+let sinh x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.sinh y in
+  of_ndarray y
+
+let cosh x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.cosh y in
+  of_ndarray y
+
+let tanh x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.tanh y in
+  of_ndarray y
+
+let asinh x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.asinh y in
+  of_ndarray y
+
+let acosh x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.acosh y in
+  of_ndarray y
+
+let atanh x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.atanh y in
+  of_ndarray y
+
+let floor x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.floor y in
+  of_ndarray y
+
+let ceil x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.ceil y in
+  of_ndarray y
+
+let round x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.round y in
+  of_ndarray y
+
+let trunc x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.trunc y in
+  of_ndarray y
+
+let erf x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.erf y in
+  of_ndarray y
+
+let erfc x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.erfc y in
+  of_ndarray y
+
+let logistic x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.logistic y in
+  of_ndarray y
+
+let relu x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.relu y in
+  of_ndarray y
+
+let softplus x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.softplus y in
+  of_ndarray y
+
+let softsign x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.softsign y in
+  of_ndarray y
+
+let sigmoid x = map (fun y -> 1. /. (1. +. (Pervasives.exp (-1. *. y)))) x
+
+(* binary matrix operation *)
+
+
 
 (* shorhand infix operators *)
 
