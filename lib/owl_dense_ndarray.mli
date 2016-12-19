@@ -84,8 +84,11 @@ val density : ('a, 'b) t -> float
 val size_in_bytes : ('a, 'b) t -> int
 (** [size_in_bytes x] returns the size of [x] in bytes in memory. *)
 
+val same_shape : ('a, 'b) t -> ('a, 'b) t -> bool
+(** [same_shape x y] checks whether [x] and [y] has the same shape or not. *)
+
 val kind : ('a, 'b) t -> ('a, 'b) kind
-(** [kind] returns the type of ndarray [x]. It is one of the four possible
+(** [kind x] returns the type of ndarray [x]. It is one of the four possible
   values: [Bigarray.Float32], [Bigarray.Float64], [Bigarray.Complex32], and
   [Bigarray.Complex64].
  *)
@@ -136,9 +139,6 @@ val flatten : ('a, 'b) t -> ('a, 'b) t
 
 val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
 (** [reshape x d] makes a copy of [x], then transforms it into the shape definted by [d]. *)
-
-val same_shape : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [same_shape x y] checks whether [x] and [y] has the same shape or not. *)
 
 val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** [transpose ~axis x] makes a copy of [x], then transpose it according to

@@ -6,13 +6,13 @@
 open Bigarray
 open Owl_dense_common
 
-type ('a, 'b) mat = ('a, 'b, c_layout) Array2.t
+type ('a, 'b) t = ('a, 'b, c_layout) Array2.t
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 type area = { a : int; b : int; c : int; d : int }
 
-type mat_d = (float, Bigarray.float64_elt) mat
+type mat_d = (float, Bigarray.float64_elt) t
 
 (* transform between different format *)
 
@@ -34,7 +34,7 @@ let fortran2c_matrix x =
 
 (* matrix creation operations *)
 
-let _kind x = Array2.kind x
+let kind x = Array2.kind x
 
 let size_in_bytes x = Array2.size_in_bytes x
 
@@ -438,14 +438,14 @@ let equal_or_smaller x1 x2 =
   let _op = (_owl_equal_or_smaller (Array2.kind x1)) in
   (_op) (numel x1) y1 y2 = 1
 
-let min : type a b . (a, b) mat -> a = fun x ->
+let min : type a b . (a, b) t -> a = fun x ->
   let k = Array2.kind x in
   match k with
   | Complex32 -> Owl_dense_ndarray.min (to_ndarray x)
   | Complex64 -> Owl_dense_ndarray.min (to_ndarray x)
   | _ -> (_gsl_min k) x
 
-let max : type a b . (a, b) mat -> a = fun x ->
+let max : type a b . (a, b) t -> a = fun x ->
   let k = Array2.kind x in
   match k with
   | Complex32 -> Owl_dense_ndarray.max (to_ndarray x)
@@ -561,7 +561,7 @@ let save x f =
   output_string h s;
   close_out h
 
-let load : type a b . (a, b) kind -> string -> (a, b) mat = fun k f ->
+let load : type a b . (a, b) kind -> string -> (a, b) t = fun k f ->
   let h = open_in f in
   let s = really_input_string h (in_channel_length h) in
   Marshal.from_string s 0
