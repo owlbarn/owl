@@ -5,6 +5,26 @@
 
 open Bigarray
 
+(* define constants *)
+
+let _zero : type a b. (a, b) kind -> a = function
+    | Float32 -> 0.0 | Complex32 -> Complex.zero
+    | Float64 -> 0.0 | Complex64 -> Complex.zero
+    | Int8_signed -> 0 | Int8_unsigned -> 0
+    | Int16_signed -> 0 | Int16_unsigned -> 0
+    | Int32 -> 0l | Int64 -> 0L
+    | Int -> 0 | Nativeint -> 0n
+    | Char -> '\000'
+
+let _one : type a b. (a, b) kind -> a = function
+    | Float32 -> 1.0 | Complex32 -> Complex.one
+    | Float64 -> 1.0 | Complex64 -> Complex.one
+    | Int8_signed -> 1 | Int8_unsigned -> 1
+    | Int16_signed -> 1 | Int16_unsigned -> 1
+    | Int32 -> 1l | Int64 -> 1L
+    | Int -> 1 | Nativeint -> 1n
+    | Char -> '\001'
+
 (* some transformation and helper functions *)
 
 let ndarray_to_fortran_vec x =
@@ -61,7 +81,7 @@ type ('a, 'b) lcm_vec_op00 = (('a, 'b) lcm_vec) Lacaml.Common.Types.Vec.unop
 type ('a, 'b) lcm_vec_op01 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> 'a
 type ('a, 'b) lcm_vec_op02 = ?stable:bool -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> float
 type ('a, 'b) lcm_vec_op03 = ?n:int -> ?c:'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> 'a
-type ('a, 'b) lcm_vec_op04 = ?rnd_state:Random.State.t -> ?from:'a -> ?range:'a -> int -> ('a, 'b) lcm_vec
+type ('a, 'b) lcm_vec_op04 = float -> int -> ('a, 'b) lcm_vec
 type ('a, 'b) lcm_vec_op05 = (('a, 'b) lcm_vec) Lacaml.Common.Types.Vec.binop
 type ('a, 'b) lcm_vec_op06 = ('a -> 'a) -> ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ('a, 'b) lcm_vec
 type ('a, 'b) lcm_vec_op07 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
@@ -70,24 +90,6 @@ type ('a, 'b) lcm_vec_op09 = ?n:int -> 'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) 
 type ('a, 'b) lcm_vec_op10 = ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ('a, 'b) lcm_vec
 
 (* call functions in lacaml *)
-
-let _zero : type a b. (a, b) kind -> a = function
-    | Float32 -> 0.0 | Complex32 -> Complex.zero
-    | Float64 -> 0.0 | Complex64 -> Complex.zero
-    | Int8_signed -> 0 | Int8_unsigned -> 0
-    | Int16_signed -> 0 | Int16_unsigned -> 0
-    | Int32 -> 0l | Int64 -> 0L
-    | Int -> 0 | Nativeint -> 0n
-    | Char -> '\000'
-
-let _one : type a b. (a, b) kind -> a = function
-    | Float32 -> 1.0 | Complex32 -> Complex.one
-    | Float64 -> 1.0 | Complex64 -> Complex.one
-    | Int8_signed -> 1 | Int8_unsigned -> 1
-    | Int16_signed -> 1 | Int16_unsigned -> 1
-    | Int32 -> 1l | Int64 -> 1L
-    | Int -> 1 | Nativeint -> 1n
-    | Char -> '\001'
 
 let _make0 : type a b. (a, b) kind -> (int -> int -> (a, b, fortran_layout) Array2.t) = function
   | Float32   -> Lacaml.S.Mat.make0
@@ -441,8 +443,10 @@ let _copy : type a b. (a, b) kind -> (a, b) lcm_vec_op10 = function
   | _         -> failwith "_copy: unsupported operation"
 
 let _uniform : type a b. (a, b) kind -> (a, b) lcm_vec_op04 = function
-  | Float32   -> Lacaml.S.Vec.random
-  | Float64   -> Lacaml.D.Vec.random
+  | Float32   -> fun s -> Lacaml.S.Vec.random ~rnd_state:(Random.State.make_self_init()) ~from:0. ~range:s
+  | Float64   -> fun s -> Lacaml.D.Vec.random ~rnd_state:(Random.State.make_self_init()) ~from:0. ~range:s
+  | Complex32 -> fun s -> Lacaml.C.Vec.random ~rnd_state:(Random.State.make_self_init()) ~re_from:0. ~re_range:s ~im_from:0. ~im_range:s
+  | Complex64 -> fun s -> Lacaml.Z.Vec.random ~rnd_state:(Random.State.make_self_init()) ~re_from:0. ~re_range:s ~im_from:0. ~im_range:s
   | _         -> failwith "_uniform: unsupported operation"
 
 
@@ -588,6 +592,20 @@ let _owl_print_mat_toplevel : type a b. (a, b) kind -> (a, b) owl_mat_op00 = fun
   | Complex32 -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat
   | Complex64 -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat
   | _         -> failwith "_owl_print_mat_toplevel: unsupported operation"
+
+let _owl_uniform : type a b. (a, b) kind -> (float -> a) = function
+  | Float32   -> fun s -> Owl_stats.Rnd.uniform () *. s
+  | Float64   -> fun s -> Owl_stats.Rnd.uniform () *. s
+  | Complex32 -> fun s -> Complex.({re = Owl_stats.Rnd.uniform () *. s; im = Owl_stats.Rnd.uniform () *. s})
+  | Complex64 -> fun s -> Complex.({re = Owl_stats.Rnd.uniform () *. s; im = Owl_stats.Rnd.uniform () *. s})
+  | _         -> failwith "_owl_uniform: unsupported operation"
+
+let _owl_gaussian : type a b. (a, b) kind -> (float -> a) = function
+  | Float32   -> fun s -> Owl_stats.Rnd.gaussian ~sigma:s ()
+  | Float64   -> fun s -> Owl_stats.Rnd.gaussian ~sigma:s ()
+  | Complex32 -> fun s -> Complex.({re = Owl_stats.Rnd.gaussian ~sigma:s (); im = Owl_stats.Rnd.gaussian ~sigma:s ()})
+  | Complex64 -> fun s -> Complex.({re = Owl_stats.Rnd.gaussian ~sigma:s (); im = Owl_stats.Rnd.gaussian ~sigma:s ()})
+  | _         -> failwith "_owl_gaussian: unsupported operation"
 
 external owl_real_float_is_smaller : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_is_smaller"
 external owl_real_double_is_smaller : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_is_smaller"

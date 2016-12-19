@@ -7,7 +7,7 @@ let array2d_to_c_mat x = Bigarray.array2_of_genarray (Obj.magic x)
 
 (* prepare some data *)
 
-let m, n = 5000, 20000 and c = 10
+let m, n = 5000, 20000 and c = 3
 let x = Owl_dense_matrix.uniform Float64 m n
 let y = Owl_dense_matrix.zeros Float64 m n
 
@@ -39,4 +39,8 @@ let test_08 _ = Owl_dense_matrix.minmax x
 
 let test_09 _ = Owl_dense_matrix.equal_or_greater x x
 
-let _ = Perf_common.test_op_each c test_09
+let test_10 _ = Owl_dense_matrix.uniform float64 m n
+
+let test_11 _ = Owl_dense_ndarray.uniform float64 [|10;1000;10000|]
+
+let _ = Perf_common.test_op_each c test_10

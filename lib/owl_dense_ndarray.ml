@@ -562,13 +562,14 @@ let sum x =
   let y = Bigarray.reshape_1 y (numel x) in
   (_sum (kind x)) y
 
-let uniform kind dimension =
+let uniform ?(scale=1.) kind dimension =
   let n = Array.fold_right (fun c a -> c * a) dimension 1 in
-  let x = _uniform (kind) ~from:(_zero kind) ~range:(_one kind) n in
-  let z = Bigarray.genarray_of_array1 x in
-  let z = Genarray.change_layout z c_layout in
-  let z = Bigarray.reshape z dimension in
-  z
+  let _op = _uniform (kind) in
+  let x = _op scale n in
+  let x = Bigarray.genarray_of_array1 x in
+  let x = Genarray.change_layout x c_layout in
+  Bigarray.reshape x dimension
+
 
 (* advanced operations *)
 

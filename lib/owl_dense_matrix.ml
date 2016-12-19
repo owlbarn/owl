@@ -578,17 +578,17 @@ let pp_dsmat x = _owl_print_mat_toplevel (Array2.kind x) x
 
 (* some other uncategorised functions *)
 
-(* TODO : fix the folling functions use lacaml *)
-
 let uniform ?(scale=1.) k m n =
+  let _op = _owl_uniform k in
   let x = empty k m n in
-  iteri (fun i j _ ->
-    x.{i,j} <- Owl_stats.Rnd.uniform () *. scale
-  ) x; x
+  iteri (fun i j _ -> x.{i,j} <- _op scale) x;
+  x
 
 let gaussian ?(sigma=1.) k m n =
+  let _op = _owl_gaussian k in
   let x = empty k m n in
-  iteri (fun i j _ -> x.{i,j} <- Owl_stats.Rnd.gaussian ~sigma ()) x; x
+  iteri (fun i j _ -> x.{i,j} <- _op sigma) x;
+  x
 
 let vector_uniform k n = uniform k 1 n
 
