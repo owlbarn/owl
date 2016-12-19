@@ -579,10 +579,8 @@ let pp_dsmat x = _owl_print_mat_toplevel (Array2.kind x) x
 (* some other uncategorised functions *)
 
 let uniform ?(scale=1.) k m n =
-  let _op = _owl_uniform k in
-  let x = empty k m n in
-  iteri (fun i j _ -> x.{i,j} <- _op scale) x;
-  x
+  let x = Owl_dense_ndarray.uniform ~scale k [|m; n|] in
+  of_ndarray x
 
 let gaussian ?(sigma=1.) k m n =
   let _op = _owl_gaussian k in
