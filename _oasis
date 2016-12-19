@@ -23,7 +23,8 @@ Library owl
                     Owl_dense_real, Owl_dense_complex, Owl_dense,
                     Owl_sparse_real, Owl_sparse_complex, Owl_sparse,
                     Owl_dense_common, Owl_dense_ndarray, Owl_dense_ndview,
-                    Owl_dense_matrix, Owl_cluster, Owl_linalg,  Owl_fft
+                    Owl_dense_matrix, Owl_cluster, Owl_linalg,  Owl_fft,
+                    Owl_sparse_matrix, Owl_sparse_ndarray
   InternalModules:  Ffi_generated
   CSources:         owl_macros.h, ffi_generated_stub.c,
                     owl_dense_common_c.c, owl_dense_common_vec_cmp.c

@@ -8,3 +8,7 @@
 module Real = Owl_sparse_real
 
 module Complex = Owl_sparse_complex
+
+module Matrix = Owl_sparse_matrix
+
+module Ndarray = Owl_dense_ndarray
