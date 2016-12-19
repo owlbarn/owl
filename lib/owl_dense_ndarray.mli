@@ -61,7 +61,7 @@ val sequential : ('a, 'b) kind -> int array -> ('a, 'b) t
  *)
 
 
-(** {6 Obtain basic properties of an array} *)
+(** {6 Obtain basic properties} *)
 
 val shape : ('a, 'b) t -> int array
 (** [shape x] returns the shape of ndarray [x]. *)
@@ -283,7 +283,7 @@ val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
  *)
 
 
-(** {6 Input and output functions } *)
+(** {6 Input/Output functions} *)
 
 val save : ('a, 'b) t -> string -> unit
 (** [save x s] serialises a ndarray [x] to a file of name [s]. *)

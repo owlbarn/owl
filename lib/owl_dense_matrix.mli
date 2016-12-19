@@ -35,7 +35,7 @@ val meshgrid : float -> float -> float -> float -> int -> int -> mat_d * mat_d
 val meshup : mat_d -> mat_d -> mat_d * mat_d
 
 
-(** {6 Obtain the basic properties of a matrix} *)
+(** {6 Obtain the basic properties} *)
 
 val shape : ('a, 'b) mat -> int * int
 
@@ -200,7 +200,7 @@ val shuffle_cols : ('a, 'b) mat -> ('a, 'b) mat
 val shuffle: ('a, 'b) mat -> ('a, 'b) mat
 
 
-(** {6 Input/Output and helper functions} *)
+(** {6 Input/Output functions} *)
 
 val to_array : mat_d -> float array
 

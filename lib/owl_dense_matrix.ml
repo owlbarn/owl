@@ -72,8 +72,8 @@ let sequential k m n =
   let _op = _add_elt k in
   for i = 0 to m - 1 do
     for j = 0 to n - 1 do
+      Array2.unsafe_set x i j !c;
       c := _op !c a;
-      Array2.unsafe_set x i j !c
     done
   done; x
 
