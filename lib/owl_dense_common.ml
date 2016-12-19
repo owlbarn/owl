@@ -5,6 +5,9 @@
 
 open Bigarray
 
+(* FIXME: need to unify with the Stats module in the future *)
+let rng = Random.State.make_self_init ()
+
 (* define constants *)
 
 let _zero : type a b. (a, b) kind -> a = function
@@ -443,10 +446,10 @@ let _copy : type a b. (a, b) kind -> (a, b) lcm_vec_op10 = function
   | _         -> failwith "_copy: unsupported operation"
 
 let _uniform : type a b. (a, b) kind -> (a, b) lcm_vec_op04 = function
-  | Float32   -> fun s -> Lacaml.S.Vec.random ~rnd_state:(Random.State.make_self_init()) ~from:0. ~range:s
-  | Float64   -> fun s -> Lacaml.D.Vec.random ~rnd_state:(Random.State.make_self_init()) ~from:0. ~range:s
-  | Complex32 -> fun s -> Lacaml.C.Vec.random ~rnd_state:(Random.State.make_self_init()) ~re_from:0. ~re_range:s ~im_from:0. ~im_range:s
-  | Complex64 -> fun s -> Lacaml.Z.Vec.random ~rnd_state:(Random.State.make_self_init()) ~re_from:0. ~re_range:s ~im_from:0. ~im_range:s
+  | Float32   -> fun s -> Lacaml.S.Vec.random ~rnd_state:rng ~from:0. ~range:s
+  | Float64   -> fun s -> Lacaml.D.Vec.random ~rnd_state:rng ~from:0. ~range:s
+  | Complex32 -> fun s -> Lacaml.C.Vec.random ~rnd_state:rng ~re_from:0. ~re_range:s ~im_from:0. ~im_range:s
+  | Complex64 -> fun s -> Lacaml.Z.Vec.random ~rnd_state:rng ~re_from:0. ~re_range:s ~im_from:0. ~im_range:s
   | _         -> failwith "_uniform: unsupported operation"
 
 
