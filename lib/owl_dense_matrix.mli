@@ -26,18 +26,7 @@ val uniform : ?scale:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) mat
 
 val gaussian : ?sigma:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) mat
 
-(* val semidef : (float, 'b) kind -> int -> (float, 'b) mat *)
-
-
-(** {7 Dense vectors and meshgrids} *)
-
-val vector : ('a, 'b) kind -> int -> ('a, 'b) mat
-
-val vector_zeros : ('a, 'b) kind -> int -> ('a, 'b) mat
-
-val vector_ones : ('a, 'b) kind -> int -> ('a, 'b) mat
-
-val vector_uniform : ('a, 'b) kind -> int -> ('a, 'b) mat
+val semidef : (float, 'b) kind -> int -> (float, 'b) mat
 
 val linspace : float -> float -> int -> mat_d
 

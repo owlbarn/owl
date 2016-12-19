@@ -77,12 +77,6 @@ let sequential k m n =
     done
   done; x
 
-let vector k n = empty k 1 n
-
-let vector_ones k n = ones k 1 n
-
-let vector_zeros k n = zeros k 1 n
-
 (* FIXME *)
 let linspace a b n =
   let x = empty Float64 1 n in
@@ -587,8 +581,6 @@ let gaussian ?(sigma=1.) k m n =
   let x = empty k m n in
   iteri (fun i j _ -> x.{i,j} <- _op sigma) x;
   x
-
-let vector_uniform k n = uniform k 1 n
 
 let semidef k n =
   let x = uniform k n n in
