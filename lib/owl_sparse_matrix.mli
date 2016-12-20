@@ -137,7 +137,7 @@ val fold_rows_nz : ('a -> ('a, 'b) t -> 'a) -> 'a -> ('a, 'b) t -> 'a
 val fold_cols_nz : ('a -> ('a, 'b) t -> 'a) -> 'a -> ('a, 'b) t -> 'a
 
 
-(** {6 Examine the elements in a matrix} *)
+(** {6 Examin elements and compare two matrices} *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
 
@@ -151,8 +151,13 @@ val not_exists_nz : ('a -> bool) -> ('a, 'b) t -> bool
 
 val for_all_nz :  ('a -> bool) -> ('a, 'b) t -> bool
 
+val is_zero : ('a, 'b) t -> bool
 
-(** {6 Compare two matrices} *)
+val is_positive : ('a, 'b) t -> bool
+
+val is_negative : ('a, 'b) t -> bool
+
+val is_nonnegative : ('a, 'b) t -> bool
 
 val is_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
@@ -165,6 +170,47 @@ val is_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
 val equal_or_greater : ('a, 'b) t -> ('a, 'b) t -> bool
 
 val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
+
+
+(** {6 Basic mathematical operations of matrices} *)
+
+val mul_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+
+val div_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+
+val add : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
+
+val sub : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
+
+val mul : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
+
+val div : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
+
+val dot : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
+
+val abs : ('a, 'b) t ->('a, 'b) t
+
+val neg : ('a, 'b) t ->('a, 'b) t
+
+val sum : ('a, 'b) t -> 'a
+
+(* average : ('a, 'b) t -> 'a *)
+
+(* val power : ('a, 'b) t -> 'a ->('a, 'b) t *)
+
+(* val min : ('a, 'b) t -> 'a *)
+
+(* val max : ('a, 'b) t -> 'a *)
+
+(* val minmax : ('a, 'b) t -> 'a * 'a *)
+
+(* val sum_rows : ('a, 'b) t ->('a, 'b) t *)
+
+(* val sum_cols : ('a, 'b) t ->('a, 'b) t *)
+
+(* val average_rows : ('a, 'b) t ->('a, 'b) t *)
+
+(* val average_cols : ('a, 'b) t ->('a, 'b) t *)
 
 
 (** {6 Input/Output and helper functions} *)

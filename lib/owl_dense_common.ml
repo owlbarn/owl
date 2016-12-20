@@ -136,6 +136,20 @@ let _inv_elt : type a b. (a, b) kind -> (a -> a) = function
   | Complex64 -> Complex.inv
   | _         -> failwith "_inv_elt: unsupported operation"
 
+let _neg_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> fun x -> (-.x)
+  | Float64   -> fun x -> (-.x)
+  | Complex32 -> Complex.neg
+  | Complex64 -> Complex.neg
+  | _         -> failwith "_inv_elt: unsupported operation"
+
+let _abs_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> abs_float
+  | Float64   -> abs_float
+  | Complex32 -> fun x -> Complex.({re = norm x; im = 0.})
+  | Complex64 -> fun x -> Complex.({re = norm x; im = 0.})
+  | _         -> failwith "_abs_elt: unsupported operation"
+
 let _add : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
   | Float32   -> Lacaml.S.Vec.add
   | Float64   -> Lacaml.D.Vec.add
@@ -178,6 +192,7 @@ let _max : type a b. (a, b) kind -> (a, b) lcm_vec_op01 = function
   | Complex64 -> Lacaml.Z.Vec.max
   | _         -> failwith "_max: unsupported operation"
 
+(* FIXME *)
 let _abs : type a b. (a, b) kind -> (a, b) lcm_vec_op00 = function
   | Float32   -> Lacaml.S.Vec.abs
   | Float64   -> Lacaml.D.Vec.abs
@@ -190,14 +205,14 @@ let _neg : type a b. (a, b) kind -> (a, b) lcm_vec_op00 = function
   | Float64   -> Lacaml.D.Vec.neg
   | Complex32 -> Lacaml.C.Vec.neg
   | Complex64 -> Lacaml.Z.Vec.neg
-  | _         -> failwith "_abs: unsupported operation"
+  | _         -> failwith "_neg: unsupported operation"
 
 let _sum : type a b. (a, b) kind -> (a, b) lcm_vec_op01 = function
   | Float32   -> Lacaml.S.Vec.sum
   | Float64   -> Lacaml.D.Vec.sum
   | Complex32 -> Lacaml.C.Vec.sum
   | Complex64 -> Lacaml.Z.Vec.sum
-  | _         -> failwith "_abs: unsupported operation"
+  | _         -> failwith "_sum: unsupported operation"
 
 let _sqr_nrm2 : type a b. (a, b) kind -> (a, b) lcm_vec_op02 = function
   | Float32   -> Lacaml.S.Vec.sqr_nrm2

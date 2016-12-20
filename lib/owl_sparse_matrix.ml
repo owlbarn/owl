@@ -448,7 +448,7 @@ let add x1 x2 =
   ) x2 in
   y
 
-let neg x = map_nz Complex.neg x
+let neg x = map_nz (_neg_elt (kind x)) x
 
 let dot x1 x2 =
   let m1, n1 = shape x1 in
@@ -495,7 +495,9 @@ let div x1 x2 =
   ) x1 in
   y
 
-let abs x = map_nz (fun y -> Complex.({re = norm y; im = 0.})) x
+let abs x =
+  let _op = _abs_elt (kind x) in 
+  map_nz _op x
 
 let sum x =
   let k = kind x in
@@ -511,15 +513,18 @@ let power x c = map_nz (fun y -> Complex.pow y c) x
 let is_zero x = x.nz = 0
 
 let is_positive x =
+  let _a0 = _zero (kind x) in
   if x.nz < (x.m * x.n) then false
-  else for_all (( < ) Complex.zero) x
+  else for_all (( < ) _a0) x
 
 let is_negative x =
+  let _a0 = _zero (kind x) in
   if x.nz < (x.m * x.n) then false
-  else for_all (( > ) Complex.zero) x
+  else for_all (( > ) _a0) x
 
 let is_nonnegative x =
-  for_all_nz (( <= ) Complex.zero) x
+  let _a0 = _zero (kind x) in
+  for_all_nz (( <= ) _a0) x
 
 let minmax x =
   let xmin = ref Complex.({re = infinity; im = infinity}) in
