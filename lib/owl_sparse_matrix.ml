@@ -405,3 +405,298 @@ let _exists_basic iter_fun f x =
     if (f y) = true then failwith "found"
   ) x; false
   with exn -> true
+
+let exists f x = _exists_basic iter f x
+
+let not_exists f x = not (exists f x)
+
+let for_all f x = let g y = not (f y) in not_exists g x
+
+let exists_nz f x = _exists_basic iter_nz f x
+
+let not_exists_nz f x = not (exists_nz f x)
+
+let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
+
+let nnz_rows x =
+  let s = Hashtbl.create 1000 in
+  let _ = iteri_nz (fun i _ _ -> if not (Hashtbl.mem s i) then Hashtbl.add s i 0) x in
+  Hashtbl.fold (fun k v l -> l @ [k]) s [] |> Array.of_list
+
+let nnz_cols x =
+  let s = Hashtbl.create 1000 in
+  let _ = iteri_nz (fun _ j _ -> if not (Hashtbl.mem s j) then Hashtbl.add s j 0) x in
+  Hashtbl.fold (fun k v l -> l @ [k]) s [] |> Array.of_list
+
+let row_num_nz x = nnz_rows x |> Array.length
+
+let col_num_nz x = nnz_cols x |> Array.length
+
+(** matrix mathematical operations *)
+
+let mul_scalar x y = map_nz (fun z -> Complex.(mul z y)) x
+
+let div_scalar x y = mul_scalar x (Complex.inv y)
+
+let add x1 x2 =
+  let y = zeros (kind x1) (row_num x1) (col_num x1) in
+  let _ = iteri_nz (fun i j a ->
+    let b = get x2 i j in
+    if b = Complex.zero then set y i j a
+  ) x1 in
+  let _ = iteri_nz (fun i j a ->
+    let b = get x1 i j in
+    set y i j Complex.(add a b)
+  ) x2 in
+  y
+
+let neg x = map_nz Complex.neg x
+
+let dot x1 x2 =
+  let m1, n1 = shape x1 in
+  let m2, n2 = shape x2 in
+  if n1 <> m2 then failwith "dimension mistach";
+  if _is_triplet x1 then _triplet2crs x1;
+  if _is_triplet x2 then _triplet2crs x2;
+  let y = zeros (kind x1) m1 n2 in
+  iteri_nz (fun i j c1 ->
+    for i' = x2.p.{j} to x2.p.{j + 1} - 1 do
+      let j' = x2.i.{i'} in
+      let c2 = x2.d.{i'} in
+      let c0 = get y i j' in
+      set y i j' Complex.(add c0 (mul c1 c2))
+    done
+  ) x1;
+  y
+
+let sub x1 x2 = add x1 (neg x2)
+
+let mul x1 x2 =
+  let y = zeros (kind x1) (row_num x1) (col_num x1) in
+  let _ = iteri_nz (fun i j a ->
+    let b = get x2 i j in
+    if b <> Complex.zero then set y i j (Complex.mul a b)
+  ) x1 in
+  y
+
+let div x1 x2 =
+  let y = zeros (kind x1) (row_num x1) (col_num x1) in
+  let _ = iteri_nz (fun i j a ->
+    let b = get x2 i j in
+    if b <> Complex.zero then set y i j Complex.(mul a (inv b))
+  ) x1 in
+  y
+
+let abs x = map_nz (fun y -> Complex.({re = norm y; im = 0.})) x
+
+let sum x = fold_nz Complex.add Complex.zero x
+
+let average x =
+  let a = sum x in
+  let b = Complex.({re = float_of_int (numel x); im = 0.}) in
+  Complex.div a b
+
+let power x c = map_nz (fun y -> Complex.pow y c) x
+
+let is_zero x = x.nz = 0
+
+let is_positive x =
+  if x.nz < (x.m * x.n) then false
+  else for_all (( < ) Complex.zero) x
+
+let is_negative x =
+  if x.nz < (x.m * x.n) then false
+  else for_all (( > ) Complex.zero) x
+
+let is_nonnegative x =
+  for_all_nz (( <= ) Complex.zero) x
+
+let minmax x =
+  let xmin = ref Complex.({re = infinity; im = infinity}) in
+  let xmax = ref Complex.({re = neg_infinity; im = neg_infinity}) in
+  iter_nz (fun y ->
+    if y < !xmin then xmin := y;
+    if y > !xmax then xmax := y;
+  ) x;
+  match x.nz < (numel x) with
+  | true  -> (min !xmin Complex.zero), (max !xmax Complex.zero)
+  | false -> !xmin, !xmax
+
+let min x = fst (minmax x)
+
+let max x = snd (minmax x)
+
+let is_equal x1 x2 =
+  if x1.nz <> x2.nz then false
+  else (sub x1 x2 |> is_zero)
+
+let is_unequal x1 x2 = not (is_equal x1 x2)
+
+let is_greater x1 x2 = is_positive (sub x1 x2)
+
+let is_smaller x1 x2 = is_greater x2 x1
+
+let equal_or_greater x1 x2 = is_nonnegative (sub x1 x2)
+
+let equal_or_smaller x1 x2 = equal_or_greater x2 x1
+
+(** advanced matrix methematical operations *)
+
+let diag x =
+  let m = Pervasives.min (row_num x) (col_num x) in
+  let y = zeros (kind x) 1 m in
+  iteri_nz (fun i j z ->
+    if i = j then set y 0 j z else ()
+  ) x; y
+
+let trace x = sum (diag x)
+
+(** transform to and from different types *)
+
+let to_dense x =
+  let m, n = shape x in
+  let y = Owl_dense_matrix.zeros (kind x) m n in
+  iteri (fun i j z -> Owl_dense_matrix.set y i j z) x;
+  y
+
+let of_dense x =
+  let m, n = Owl_dense_matrix.shape x in
+  let x' = genarray_of_array2 x in
+  let x' = reshape_1 x' (Owl_dense_matrix.numel x) in
+  let y = zeros (Array1.kind x') m n in
+  Owl_dense_matrix.iteri (fun i j z -> set y i j z) x;
+  y
+
+let sum_rows x =
+  let y = Owl_dense_complex.ones 1 (row_num x) |> of_dense in
+  dot y x
+
+let sum_cols x =
+  let y = Owl_dense_complex.ones (col_num x) 1 |> of_dense in
+  dot x y
+
+let average_rows x =
+  let m, n = shape x in
+  let a = 1. /. (float_of_int m) in
+  let y = Owl_dense_complex.create 1 m Complex.({re = a; im = 0.}) |> of_dense in
+  dot y x
+
+let average_cols x =
+  let m, n = shape x in
+  let a = 1. /. (float_of_int n) in
+  let y = Owl_dense_complex.create n 1 Complex.({re = a; im = 0.}) |> of_dense in
+  dot x y
+
+(** formatted input / output operations *)
+
+let print x =
+  for i = 0 to (row_num x) - 1 do
+    for j = 0 to (col_num x) - 1 do
+      let c = get x i j in
+      Printf.printf "(%.2f, %.2fi) " Complex.(c.re) Complex.(c.im)
+    done;
+    print_endline ""
+  done
+
+let pp_spmat x =
+  let m, n = shape x in
+  let c = nnz x in
+  let p = 100. *. (density x) in
+  (* let mz, nz = row_num_nz x, col_num_nz x in *)
+  let mz, nz = 0, 0 in
+  let _ = if m < 100 && n < 100 then Owl_dense_complex.pp_dsmat (to_dense x) in
+  Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
+
+let save x f =
+  let s = Marshal.to_string x [] in
+  let h = open_out f in
+  output_string h s;
+  close_out h
+
+let load f =
+  let h = open_in f in
+  let s = really_input_string h (in_channel_length h) in
+  Marshal.from_string s 0
+
+(** permutation and draw functions *)
+
+let permutation_matrix k d =
+  let l = Array.init d (fun x -> x) |> Owl_stats.shuffle in
+  let y = zeros k d d in
+  let _a1 = _one k in
+  Array.iteri (fun i j -> set y i j _a1) l;
+  y
+
+let draw_rows ?(replacement=true) x c =
+  let m, n = shape x in
+  let a = Array.init m (fun x -> x) |> Owl_stats.shuffle in
+  let l = match replacement with
+    | true  -> Owl_stats.sample a c
+    | false -> Owl_stats.choose a c
+  in
+  let y = zeros (kind x) c m in
+  let _ = Array.iteri (fun i j -> set y i j Complex.one) l in
+  dot y x, l
+
+let draw_cols ?(replacement=true) x c =
+  let m, n = shape x in
+  let a = Array.init n (fun x -> x) |> Owl_stats.shuffle in
+  let l = match replacement with
+    | true  -> Owl_stats.sample a c
+    | false -> Owl_stats.choose a c
+  in
+  let y = zeros (kind x) n c in
+  let _ = Array.iteri (fun j i -> set y i j Complex.one) l in
+  dot x y, l
+
+let shuffle_rows x =
+  let y = permutation_matrix (kind x) (row_num x) in
+  dot y x
+
+let shuffle_cols x =
+  let y = permutation_matrix (kind x) (col_num x) in
+  dot x y
+
+let shuffle x = x |> shuffle_rows |> shuffle_cols
+
+let ones m n = Owl_dense_complex.ones m n |> of_dense
+
+(** short-hand infix operators *)
+
+let ( +@ ) = add
+
+let ( -@ ) = sub
+
+let ( *@ ) = mul
+
+let ( /@ ) = div
+
+let ( $@ ) = dot
+
+let ( **@ ) = power
+
+let ( *$ ) x a = mul_scalar x a
+
+let ( $* ) a x = mul_scalar x a
+
+let ( /$ ) x a = div_scalar x a
+
+let ( $/ ) a x = div_scalar x a
+
+let ( =@ ) = is_equal
+
+let ( >@ ) = is_greater
+
+let ( <@ ) = is_smaller
+
+let ( <>@ ) = is_unequal
+
+let ( >=@ ) = equal_or_greater
+
+let ( <=@ ) = equal_or_smaller
+
+let ( @@ ) f x = map f x
+
+
+
+(** ends here *)
