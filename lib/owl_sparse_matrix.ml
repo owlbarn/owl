@@ -9,6 +9,7 @@ open Owl_dense_common
 type format_typ = TRIPLET | CCS | CRS
 type int_array = (int, int_elt, c_layout) Array1.t
 type ('a, 'b) elt_array = ('a, 'b, c_layout) Array1.t
+type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 type ('a, 'b) t = {
   mutable m   : int;                             (* number of rows *)
@@ -659,7 +660,7 @@ let shuffle_cols x =
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols
 
-let ones m n = Owl_dense_complex.ones m n |> of_dense
+let ones k m n = Owl_dense_matrix.ones k m n |> of_dense
 
 (** short-hand infix operators *)
 
