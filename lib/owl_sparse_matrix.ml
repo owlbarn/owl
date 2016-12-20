@@ -216,3 +216,192 @@ let clone x =
     typ = x.typ;
     h   = Hashtbl.copy x.h;
   }
+
+let iteri f x =
+  for i = 0 to (row_num x) - 1 do
+    for j = 0 to (col_num x) - 1 do
+      f i j (get x i j)
+    done
+  done
+
+let iter f x = iteri (fun _ _ y -> f y) x
+
+let reset x =
+  x.p <- _make_int_array (Array1.dim x.i);
+  x.nz <- 0;
+  x.typ <- TRIPLET;
+  Hashtbl.reset x.h
+
+let row x i =
+  let y = zeros (kind x) 1 (col_num x) in
+  for j = 0 to (col_num x) - 1 do
+    set y 0 j (get x i j)
+  done;
+  y
+
+let col x i =
+  let y = zeros (kind x) (row_num x) 1 in
+  for j = 0 to (row_num x) - 1 do
+    set y j 0 (get x j i)
+  done;
+  y
+
+let rows x l =
+  let m, n = Array.length l, col_num x in
+  let y = zeros (kind x) m n in
+  Array.iteri (fun i i' ->
+    for j = 0 to n - 1 do
+      set y i j (get x i' j)
+    done
+  ) l;
+  y
+
+let cols x l =
+  let m, n = row_num x, Array.length l in
+  let y = zeros (kind x) m n in
+  Array.iteri (fun j j' ->
+    for i = 0 to m - 1 do
+      set y i j (get x i j')
+    done
+  ) l;
+  y
+
+let mapi f x =
+  let y = zeros (kind x) (row_num x) (col_num x) in
+  iteri (fun i j z -> set y i j (f i j z)) x;
+  y
+
+let map f x = mapi (fun _ _ y -> f y) x
+
+let _fold_basic iter_fun f a x =
+  let r = ref a in
+  iter_fun (fun y -> r := f !r y) x; !r
+
+let fold f a x = _fold_basic iter f a x
+
+let filteri f x =
+  let r = ref [||] in
+  iteri (fun i j y ->
+    if (f i j y) then r := Array.append !r [|(i,j)|]
+  ) x; !r
+
+let filter f x = filteri (fun _ _ y -> f y) x
+
+let iteri_nz f x =
+  if _is_triplet x then _triplet2crs x;
+  for i = 0 to x.m - 1 do
+    for k = x.p.{i} to x.p.{i + 1} - 1 do
+      let j = x.i.{k} in
+      let y = x.d.{k} in
+      f i j y
+    done
+  done
+
+let iter_nz f x = iteri_nz (fun _ _ y -> f y) x
+
+let _disassemble_rows x =
+  Log.debug "_disassemble_rows: starts";
+  if _is_triplet x then _triplet2crs x;
+  let k = kind x in
+  Log.debug "_disassemble_rows :allocate space";
+  let d = Array.init (row_num x) (fun _ -> zeros k 1 (col_num x)) in
+  Log.debug "_disassemble_rows: iteri_nz";
+  let _ = iteri_nz (fun i j z -> set d.(i) 0 j z) x in
+  Log.debug "_disassemble_rows: ends";
+  d
+
+let _disassemble_cols x =
+  if _is_triplet x then _triplet2crs x;
+  let k = kind x in
+  let d = Array.init (col_num x) (fun _ -> zeros k (row_num x) 1) in
+  let _ = iteri_nz (fun i j z -> set d.(j) i 0 z) x in
+  d
+
+let iteri_rows f x = Array.iteri (fun i y -> f i y) (_disassemble_rows x)
+
+let iter_rows f x = iteri_rows (fun _ y -> f y) x
+
+let iteri_cols f x = Array.iteri (fun j y -> f j y) (_disassemble_cols x)
+
+let iter_cols f x = iteri_cols (fun _ y -> f y) x
+
+let mapi_nz f x =
+  if _is_triplet x then _triplet2crs x;
+  let y = clone x in
+  for i = 0 to x.m - 1 do
+    for k = x.p.{i} to x.p.{i + 1} - 1 do
+      let j = x.i.{k} in
+      let z = x.d.{k} in
+      y.d.{k} <- f i j z
+    done
+  done;
+  y
+
+let map_nz f x =
+  let y = clone x in
+  for i = 0 to x.nz - 1 do
+    y.d.{i} <- f y.d.{i}
+  done;
+  y
+
+let fold_nz f a x = _fold_basic iter_nz f a x
+
+let filteri_nz f x =
+  let r = ref [||] in
+  iteri_nz (fun i j y ->
+    if (f i j y) then r := Array.append !r [|(i,j)|]
+  ) x; !r
+
+let filter_nz f x = filteri_nz (fun _ _ y -> f y) x
+
+let mapi_rows f x =
+  let a = _disassemble_rows x in
+  Array.init (row_num x) (fun i -> f i a.(i))
+
+let map_rows f x = mapi_rows (fun _ y -> f y) x
+
+let mapi_cols f x =
+  let a = _disassemble_cols x in
+  Array.init (col_num x) (fun i -> f i a.(i))
+
+let map_cols f x = mapi_cols (fun _ y -> f y) x
+
+let fold_rows f a x = _fold_basic iter_rows f a x
+
+let fold_cols f a x = _fold_basic iter_cols f a x
+
+let iteri_rows_nz f x = iteri_rows (fun i y -> if y.nz != 0 then f i y) x
+
+let iter_rows_nz f x = iteri_rows_nz (fun _ y -> f y) x
+
+let iteri_cols_nz f x = iteri_cols (fun i y -> if y.nz != 0 then f i y) x
+
+let iter_cols_nz f x = iteri_cols_nz (fun _ y -> f y) x
+
+let mapi_rows_nz f x =
+  let a = _disassemble_rows x in
+  let r = ref [||] in
+  Array.iteri (fun i y ->
+    if (nnz y) != 0 then r := Array.append !r [|f i y|]
+  ) a; !r
+
+let map_rows_nz f x = mapi_rows_nz (fun _ y -> f y) x
+
+let mapi_cols_nz f x =
+  let a = _disassemble_cols x in
+  let r = ref [||] in
+  Array.iteri (fun i y ->
+    if (nnz y) != 0 then r := Array.append !r [|f i y|]
+  ) a; !r
+
+let map_cols_nz f x = mapi_cols_nz (fun _ y -> f y) x
+
+let fold_rows_nz f a x = _fold_basic iter_rows_nz f a x
+
+let fold_cols_nz f a x = _fold_basic iter_cols_nz f a x
+
+let _exists_basic iter_fun f x =
+  try iter_fun (fun y ->
+    if (f y) = true then failwith "found"
+  ) x; false
+  with exn -> true
