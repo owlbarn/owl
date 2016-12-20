@@ -62,3 +62,31 @@ let array_map2i f x y =
   Array.init c (fun i -> f i x.(i) y.(i))
 
 let array_sum x = Array.fold_left (+.) 0. x
+
+let array1_iter f x =
+  let open Bigarray in
+  for i = 0 to Array1.dim x - 1 do
+    f (Array1.unsafe_get x i)
+  done
+
+let array1_iteri f x =
+  let open Bigarray in
+  for i = 0 to Array1.dim x - 1 do
+    f i (Array1.unsafe_get x i)
+  done
+
+(* extend passed in array by appending n slots *)
+let array1_extend x n =
+  let open Bigarray in
+  let m = Array1.dim x in
+  let y = Array1.(create (kind x) c_layout (m + n)) in
+  let z = Array1.sub y 0 m in
+  Array1.blit x z;
+  y
+
+(* make a copy of the passed in array1 *)
+let array1_clone x =
+  let open Bigarray in
+  let y = Array1.(create (kind x) c_layout (dim x)) in
+  Array1.blit x y;
+  y
