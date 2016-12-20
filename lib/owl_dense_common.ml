@@ -129,6 +129,13 @@ let _div_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Complex64 -> Complex.div
   | _         -> failwith "_div: unsupported operation"
 
+let _inv_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> fun x -> 1. /. x
+  | Float64   -> fun x -> 1. /. x
+  | Complex32 -> Complex.inv
+  | Complex64 -> Complex.inv
+  | _         -> failwith "_inv_elt: unsupported operation"
+
 let _add : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
   | Float32   -> Lacaml.S.Vec.add
   | Float64   -> Lacaml.D.Vec.add

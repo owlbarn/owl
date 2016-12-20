@@ -54,14 +54,6 @@ let _remove_ith_triplet x i =
     Hashtbl.replace x.h (x.i.{j} * x.n + x.p.{j}) j;
   done
 
-(* for debug purpose *)
-let _print_complex x = Printf.printf "{re = %f; im = %f} " Complex.(x.re) Complex.(x.im)
-
-(* for debug purpose *)
-let _print_array x =
-  Array.iter (fun y -> print_int y; print_char ' ') x;
-  print_endline ""
-
 let _triplet2crs x =
   (* NOTE: without sorting col number *)
   Log.debug "triplet -> crs starts";
@@ -435,19 +427,24 @@ let col_num_nz x = nnz_cols x |> Array.length
 
 (** matrix mathematical operations *)
 
-let mul_scalar x y = map_nz (fun z -> Complex.(mul z y)) x
+let mul_scalar x y =
+  let __mul_elt = _mul_elt (kind x) in
+  map_nz (fun z -> __mul_elt z y) x
 
-let div_scalar x y = mul_scalar x (Complex.inv y)
+let div_scalar x y = mul_scalar x ((_inv_elt (kind x)) y)
 
 let add x1 x2 =
-  let y = zeros (kind x1) (row_num x1) (col_num x1) in
+  let k = kind x1 in
+  let _a0 = _zero k in
+  let __add_elt = _add_elt k in
+  let y = zeros k (row_num x1) (col_num x1) in
   let _ = iteri_nz (fun i j a ->
     let b = get x2 i j in
-    if b = Complex.zero then set y i j a
+    if b = _a0 then set y i j a
   ) x1 in
   let _ = iteri_nz (fun i j a ->
     let b = get x1 i j in
-    set y i j Complex.(add a b)
+    set y i j (__add_elt a b)
   ) x2 in
   y
 
@@ -459,13 +456,16 @@ let dot x1 x2 =
   if n1 <> m2 then failwith "dimension mistach";
   if _is_triplet x1 then _triplet2crs x1;
   if _is_triplet x2 then _triplet2crs x2;
-  let y = zeros (kind x1) m1 n2 in
+  let k = kind x1 in
+  let y = zeros k m1 n2 in
+  let __add_elt = _add_elt k in
+  let __mul_elt = _mul_elt k in
   iteri_nz (fun i j c1 ->
     for i' = x2.p.{j} to x2.p.{j + 1} - 1 do
       let j' = x2.i.{i'} in
       let c2 = x2.d.{i'} in
       let c0 = get y i j' in
-      set y i j' Complex.(add c0 (mul c1 c2))
+      set y i j' (__add_elt c0 (__mul_elt c1 c2))
     done
   ) x1;
   y
@@ -473,24 +473,33 @@ let dot x1 x2 =
 let sub x1 x2 = add x1 (neg x2)
 
 let mul x1 x2 =
+  let k = kind x1 in
+  let _a0 = _zero k in
+  let __mul_elt = _mul_elt k in
   let y = zeros (kind x1) (row_num x1) (col_num x1) in
   let _ = iteri_nz (fun i j a ->
     let b = get x2 i j in
-    if b <> Complex.zero then set y i j (Complex.mul a b)
+    if b <> _a0 then set y i j (__mul_elt a b)
   ) x1 in
   y
 
 let div x1 x2 =
+  let k = kind x1 in
+  let _a0 = _zero k in
+  let __div_elt = _div_elt k in
+  let __inv_elt = _inv_elt k in
   let y = zeros (kind x1) (row_num x1) (col_num x1) in
   let _ = iteri_nz (fun i j a ->
     let b = get x2 i j in
-    if b <> Complex.zero then set y i j Complex.(mul a (inv b))
+    if b <> _a0 then set y i j (__div_elt a (__inv_elt b))
   ) x1 in
   y
 
 let abs x = map_nz (fun y -> Complex.({re = norm y; im = 0.})) x
 
-let sum x = fold_nz Complex.add Complex.zero x
+let sum x =
+  let k = kind x in
+  fold_nz (_add_elt k) (_zero k) x
 
 let average x =
   let a = sum x in
@@ -569,11 +578,11 @@ let of_dense x =
   y
 
 let sum_rows x =
-  let y = Owl_dense_complex.ones 1 (row_num x) |> of_dense in
+  let y = Owl_dense_matrix.ones (kind x) 1 (row_num x) |> of_dense in
   dot y x
 
 let sum_cols x =
-  let y = Owl_dense_complex.ones (col_num x) 1 |> of_dense in
+  let y = Owl_dense_matrix.ones (kind x) (col_num x) 1 |> of_dense in
   dot x y
 
 let average_rows x =
@@ -591,10 +600,11 @@ let average_cols x =
 (** formatted input / output operations *)
 
 let print x =
+  let _op = _owl_elt_to_str (kind x) in
   for i = 0 to (row_num x) - 1 do
     for j = 0 to (col_num x) - 1 do
       let c = get x i j in
-      Printf.printf "(%.2f, %.2fi) " Complex.(c.re) Complex.(c.im)
+      Printf.printf "%s " (_op c)
     done;
     print_endline ""
   done
@@ -605,7 +615,7 @@ let pp_spmat x =
   let p = 100. *. (density x) in
   (* let mz, nz = row_num_nz x, col_num_nz x in *)
   let mz, nz = 0, 0 in
-  let _ = if m < 100 && n < 100 then Owl_dense_complex.pp_dsmat (to_dense x) in
+  if m < 100 && n < 100 then Owl_dense_matrix.pp_dsmat (to_dense x);
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
 let save x f =
