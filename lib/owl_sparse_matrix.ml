@@ -22,8 +22,15 @@ type ('a, 'b) t = {
   mutable h   : (int, int) Hashtbl.t
 }
 
-let _make_int_array n = Array1.create int c_layout n
-let _make_elt_array k n = Array1.create k c_layout n
+let _make_int_array n =
+  let x = Array1.create int c_layout n in
+  Array1.fill x 0;
+  x
+
+let _make_elt_array k n =
+  let x = Array1.create k c_layout n in
+  Array1.fill x (_zero k);
+  x
 
 let zeros k m n =
   let c = max (m * n / 100) 1024 in
@@ -58,7 +65,7 @@ let _triplet2crs x =
   (* NOTE: without sorting col number *)
   Log.debug "triplet -> crs starts";
   if _is_triplet x = false then failwith "not in triplet format";
-  let i = Array1.sub x.i 0 x.nz in
+  let i = Owl_utils.array1_clone (Array1.sub x.i 0 x.nz) in
   let q = _make_int_array x.m in
   Owl_utils.array1_iter (fun c -> q.{c} <- q.{c} + 1) i;
   let p = _make_int_array (x.m + 1) in
@@ -496,7 +503,7 @@ let div x1 x2 =
   y
 
 let abs x =
-  let _op = _abs_elt (kind x) in 
+  let _op = _abs_elt (kind x) in
   map_nz _op x
 
 let sum x =
@@ -651,7 +658,8 @@ let draw_rows ?(replacement=true) x c =
     | false -> Owl_stats.choose a c
   in
   let y = zeros (kind x) c m in
-  let _ = Array.iteri (fun i j -> set y i j Complex.one) l in
+  let _a1 = _one (kind x) in
+  let _ = Array.iteri (fun i j -> set y i j _a1) l in
   dot y x, l
 
 let draw_cols ?(replacement=true) x c =
@@ -662,7 +670,8 @@ let draw_cols ?(replacement=true) x c =
     | false -> Owl_stats.choose a c
   in
   let y = zeros (kind x) n c in
-  let _ = Array.iteri (fun j i -> set y i j Complex.one) l in
+  let _a1 = _one (kind x) in
+  let _ = Array.iteri (fun j i -> set y i j _a1) l in
   dot x y, l
 
 let shuffle_rows x =
