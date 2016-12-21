@@ -19,6 +19,8 @@ val eye : ('a, 'b) kind -> int -> ('a, 'b) t
 
 val binary : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
+val uniform : ?scale:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
+
 
 (** {6 Obtain the basic properties} *)
 
@@ -208,11 +210,11 @@ val sum : ('a, 'b) t -> 'a
 
 (* val power : ('a, 'b) t -> 'a ->('a, 'b) t *)
 
-(* val min : ('a, 'b) t -> 'a *)
+val min : ('a, 'b) t -> 'a
 
-(* val max : ('a, 'b) t -> 'a *)
+val max : ('a, 'b) t -> 'a
 
-(* val minmax : ('a, 'b) t -> 'a * 'a *)
+val minmax : ('a, 'b) t -> 'a * 'a
 
 (* val sum_rows : ('a, 'b) t ->('a, 'b) t *)
 

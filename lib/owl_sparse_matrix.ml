@@ -192,18 +192,8 @@ let binary k m n =
   _random_basic k (fun () -> _a1) m n
 
 let uniform ?(scale=1.) k m n =
-  _random_basic k (fun () ->
-    let re = Owl_stats.Rnd.uniform () *. scale in
-    let im = Owl_stats.Rnd.uniform () *. scale in
-    Complex.({re; im})
-  ) m n
-
-let uniform_int ?(a=1) ?(b=99) k m n =
-  _random_basic k (fun () ->
-    let re = Owl_stats.Rnd.uniform_int ~a ~b () |> float_of_int in
-    let im = Owl_stats.Rnd.uniform_int ~a ~b () |> float_of_int in
-    Complex.({re; im})
-  ) m n
+  let _op = _owl_uniform k in
+  _random_basic k (fun () -> _op scale) m n
 
 let clone x =
   {
@@ -544,14 +534,16 @@ let is_nonnegative x =
   for_all_nz (( <= ) _a0) x
 
 let minmax x =
-  let xmin = ref Complex.({re = infinity; im = infinity}) in
-  let xmax = ref Complex.({re = neg_infinity; im = neg_infinity}) in
+  let k = kind x in
+  let _a0 = _zero k in
+  let xmin = ref (_pos_inf k) in
+  let xmax = ref (_neg_inf k) in
   iter_nz (fun y ->
     if y < !xmin then xmin := y;
     if y > !xmax then xmax := y;
   ) x;
   match x.nz < (numel x) with
-  | true  -> (min !xmin Complex.zero), (max !xmax Complex.zero)
+  | true  -> (min !xmin _a0), (max !xmax _a0)
   | false -> !xmin, !xmax
 
 let min x = fst (minmax x)
