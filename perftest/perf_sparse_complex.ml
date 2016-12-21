@@ -1,4 +1,4 @@
-module M = Owl_sparse.Complex
+module M = Owl_sparse_complex
 
 let test_op s c op = Perf_common.test_op s c op
 

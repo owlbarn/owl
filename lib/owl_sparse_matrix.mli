@@ -257,3 +257,7 @@ val pp_spmat : ('a, 'b) t -> unit
 val save : ('a, 'b) t -> string -> unit
 
 val load : ('a, 'b) kind -> string -> ('a, 'b) t
+
+
+(* TODO: debug purpose *)
+val _triplet2crs : ('a, 'b) t -> unit
