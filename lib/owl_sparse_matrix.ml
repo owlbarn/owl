@@ -434,11 +434,17 @@ let col_num_nz x = nnz_cols x |> Array.length
 
 (** matrix mathematical operations *)
 
-let mul_scalar x y =
-  let __mul_elt = _mul_elt (kind x) in
-  map_nz (fun z -> __mul_elt z y) x
+let add_scalar x a =
+  let __add_elt = _add_elt (kind x) in
+  map_nz (fun z -> __add_elt z a) x
 
-let div_scalar x y = mul_scalar x ((_inv_elt (kind x)) y)
+let sub_scalar x a = add_scalar x (_neg_elt (kind x) a)
+
+let mul_scalar x a =
+  let __mul_elt = _mul_elt (kind x) in
+  map_nz (fun z -> __mul_elt z a) x
+
+let div_scalar x a = mul_scalar x ((_inv_elt (kind x)) a)
 
 let add x1 x2 =
   let k = kind x1 in
@@ -532,7 +538,7 @@ let is_negative x =
 let is_nonpositive x =
   let _a0 = _zero (kind x) in
   for_all_nz (( >= ) _a0) x
-  
+
 let is_nonnegative x =
   let _a0 = _zero (kind x) in
   for_all_nz (( <= ) _a0) x

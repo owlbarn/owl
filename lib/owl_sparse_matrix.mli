@@ -188,6 +188,10 @@ val mul : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
 
 val div : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
 
+val add_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+
+val sub_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+
 val mul_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
 
 val div_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
