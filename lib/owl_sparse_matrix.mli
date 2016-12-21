@@ -161,6 +161,8 @@ val is_positive : ('a, 'b) t -> bool
 
 val is_negative : ('a, 'b) t -> bool
 
+val is_nonpositive : ('a, 'b) t -> bool
+
 val is_nonnegative : ('a, 'b) t -> bool
 
 val is_equal : ('a, 'b) t -> ('a, 'b) t -> bool

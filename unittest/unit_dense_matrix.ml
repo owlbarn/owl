@@ -35,9 +35,9 @@ module To_test = struct
     M.set x 2 1 5.;
     M.get x 2 1
 
-  let row () = M.of_arrays [| [|5.;6.;7.;8.|] |]
+  let row () = M.of_arrays Float64 [| [|4.;5.;6.;7.|] |]
 
-  let col () = M.of_arrays [| [|2.|];[|6.|];[|10.|] |]
+  let col () = M.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |]
 
   let trace x = M.trace x
 
@@ -53,7 +53,7 @@ module To_test = struct
 
   let not_exists x = M.not_exists (fun a -> a > 13.) x
 
-  let for_all x = M.for_all (fun a -> a < 12.) x
+  let for_all x = M.for_all (fun a -> a < 11.) x
 
   let is_equal x y = M.is_equal x y
 
@@ -100,13 +100,19 @@ module To_test = struct
   let dot () =
     let x = M.sequential Float64 2 3 in
     let y = M.sequential Float64 3 2 in
+    let x = M.add_scalar x 1. in
+    let y = M.add_scalar y 1. in
     let a = M.dot x y in
-    let b = M.of_arrays [| [|22.;28.|]; [|49.;64.|] |] in
+    let b = M.of_arrays Float64 [| [|22.;28.|]; [|49.;64.|] |] in
     M.is_equal a b
 
-  let min x = M.min x
+  let min x =
+    let x = M.add_scalar x 1. in
+    M.min x
 
-  let max x = M.max x
+  let max x =
+    let x = M.add_scalar x 1. in
+    M.max x
 
   let min_i () =
     let m, n = 3, 4 in
@@ -144,7 +150,7 @@ let numel () =
   Alcotest.(check int) "numel" 12 (To_test.numel x0)
 
 let get () =
-  Alcotest.(check float) "get" 7. (To_test.get x2)
+  Alcotest.(check float) "get" 6. (To_test.get x2)
 
 let set () =
   Alcotest.(check float) "set" 5. (To_test.set x2)
@@ -159,13 +165,13 @@ let col () =
   Alcotest.(check matrix) "col" (M.col x2 1) (To_test.col ())
 
 let trace () =
-  Alcotest.(check float) "trace" 18. (To_test.trace x2)
+  Alcotest.(check float) "trace" 15. (To_test.trace x2)
 
 let add_diag () =
   Alcotest.(check matrix) "add_diag" (M.eye Float64 3) (To_test.add_diag ())
 
 let sum () =
-  Alcotest.(check float) "sum" 78. (To_test.sum x2)
+  Alcotest.(check float) "sum" 66. (To_test.sum x2)
 
 let fold () =
   Alcotest.(check float) "fold" (M.sum x2) (To_test.fold x2)

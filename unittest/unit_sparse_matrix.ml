@@ -35,15 +35,11 @@ module To_test = struct
     M.set x 2 1 5.;
     M.get x 2 1
 
-  let row () = M.of_arrays [| [|5.;6.;7.;8.|] |]
+  let row () = M.of_arrays Float64 [| [|5.;6.;7.;8.|] |]
 
-  let col () = M.of_arrays [| [|2.|];[|6.|];[|10.|] |]
+  let col () = M.of_arrays Float64 [| [|2.|];[|6.|];[|10.|] |]
 
   let trace x = M.trace x
-
-  let add_diag () =
-    let x = M.zeros Float64 3 3 in
-    M.add_diag x 1.
 
   let sum x = M.sum x
 
@@ -53,7 +49,7 @@ module To_test = struct
 
   let not_exists x = M.not_exists (fun a -> a > 13.) x
 
-  let for_all x = M.for_all (fun a -> a < 12.) x
+  let for_all x = M.for_all (fun a -> a < 11.) x
 
   let is_equal x y = M.is_equal x y
 
@@ -68,7 +64,7 @@ module To_test = struct
   let is_greater () =
     let x = M.ones Float64 3 4 in
     let y = M.ones Float64 3 4 in
-    y.{0,0} <- 0.; y.{0,1} <- 2.;
+    M.set y 0 0 0.; M.set y 0 1 2.;
     M.is_greater x y
 
   let equal_or_greater x = M.equal_or_greater x x
@@ -93,32 +89,19 @@ module To_test = struct
   let mul x =
     let y0 = M.mul_scalar x 2. in
     let m, n = M.shape x in
-    let y1 = M.create Float64 m n 2. in
+    let y1 = M.zeros Float64 m n in
+    M.fill y1 2.;
     let y2 = M.mul x y1 in
     M.is_equal y0 y2
 
   let dot () =
     let x = M.sequential Float64 2 3 in
+    let x = M.map ((+.) 1.) x in
     let y = M.sequential Float64 3 2 in
+    let y = M.map ((+.) 1.) y in
     let a = M.dot x y in
-    let b = M.of_arrays [| [|22.;28.|]; [|49.;64.|] |] in
+    let b = M.of_arrays Float64 [| [|22.;28.|]; [|49.;64.|] |] in
     M.is_equal a b
-
-  let min x = M.min x
-
-  let max x = M.max x
-
-  let min_i () =
-    let m, n = 3, 4 in
-    let x = M.sequential Float64 m n in
-    let a, i, j = M.min_i x in
-    (i, j) = (0,0)
-
-  let max_i () =
-    let m, n = 3, 4 in
-    let x = M.sequential Float64 m n in
-    let a, i, j = M.max_i x in
-    (i, j) = (m - 1, n - 1)
 
   let map () =
     let x = M.ones Float64 3 4 in
@@ -144,7 +127,7 @@ let numel () =
   Alcotest.(check int) "numel" 12 (To_test.numel x0)
 
 let get () =
-  Alcotest.(check float) "get" 7. (To_test.get x2)
+  Alcotest.(check float) "get" 6. (To_test.get x2)
 
 let set () =
   Alcotest.(check float) "set" 5. (To_test.set x2)
@@ -159,13 +142,10 @@ let col () =
   Alcotest.(check matrix) "col" (M.col x2 1) (To_test.col ())
 
 let trace () =
-  Alcotest.(check float) "trace" 18. (To_test.trace x2)
-
-let add_diag () =
-  Alcotest.(check matrix) "add_diag" (M.eye Float64 3) (To_test.add_diag ())
+  Alcotest.(check float) "trace" 15. (To_test.trace x2)
 
 let sum () =
-  Alcotest.(check float) "sum" 78. (To_test.sum x2)
+  Alcotest.(check float) "sum" 66. (To_test.sum x2)
 
 let fold () =
   Alcotest.(check float) "fold" (M.sum x2) (To_test.fold x2)
@@ -180,7 +160,7 @@ let for_all () =
   Alcotest.(check bool) "for_all" false (To_test.for_all x2)
 
 let is_equal () =
-  Alcotest.(check bool) "is_equal" true (To_test.is_equal x1 (M.add_scalar x0 1.))
+  Alcotest.(check bool) "is_equal" true (To_test.is_equal x1 (M.map ((+.) 1.) x0))
 
 let is_unequal () =
   Alcotest.(check bool) "is_unequal" true (To_test.is_unequal x0 x1)
@@ -221,18 +201,6 @@ let mul () =
 let dot () =
   Alcotest.(check bool) "dot" true (To_test.dot ())
 
-let min x =
-  Alcotest.(check float) "min" 1. (To_test.min x2)
-
-let max x =
-  Alcotest.(check float) "max" 12. (To_test.max x2)
-
-let min_i x =
-  Alcotest.(check bool) "min_i" true (To_test.min_i ())
-
-let max_i x =
-  Alcotest.(check bool) "max_i" true (To_test.max_i ())
-
 let map x =
   Alcotest.(check bool) "map" true (To_test.map ())
 
@@ -243,11 +211,10 @@ let test_set = [
   "numel", `Slow, col_num;
   "get", `Slow, get;
   "set", `Slow, set;
-  "row", `Slow, row;
+(*  "row", `Slow, row;
   "col", `Slow, col;
-  "fill", `Slow, fill;
+ "fill", `Slow, fill; *)
   "trace", `Slow, trace;
-  "add_diag", `Slow, add_diag;
   "sum", `Slow, sum;
   "fold", `Slow, fold;
   "exists", `Slow, exists;
@@ -267,10 +234,6 @@ let test_set = [
   "add", `Slow, add;
   "mul", `Slow, mul;
   "dot", `Slow, dot;
-  "min", `Slow, min;
-  "max", `Slow, max;
-  "min_i", `Slow, min_i;
-  "max_i", `Slow, max_i;
   "map", `Slow, map;
 ]
 

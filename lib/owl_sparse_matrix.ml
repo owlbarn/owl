@@ -529,6 +529,10 @@ let is_negative x =
   if x.nz < (x.m * x.n) then false
   else for_all (( > ) _a0) x
 
+let is_nonpositive x =
+  let _a0 = _zero (kind x) in
+  for_all_nz (( >= ) _a0) x
+  
 let is_nonnegative x =
   let _a0 = _zero (kind x) in
   for_all_nz (( <= ) _a0) x
