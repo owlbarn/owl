@@ -524,13 +524,13 @@ let add_diag x a =
 
 (* formatted input / output operations *)
 
-let to_array x = Gsl.Matrix.to_array x
+let to_array x = (_gsl_to_array (kind x)) x
 
-let to_arrays x = Gsl.Matrix.to_arrays x
+let of_array k x m n = (_gsl_of_array k) x m n
 
-let of_array x m n = Gsl.Matrix.of_array x m n
+let to_arrays x = (_gsl_to_arrays (kind x)) x
 
-let of_arrays x = Gsl.Matrix.of_arrays x
+let of_arrays k x = (_gsl_of_arrays k) x
 
 let save_txt x f =
   let _op = _owl_elt_to_str (Array2.kind x) in

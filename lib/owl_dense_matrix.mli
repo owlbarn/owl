@@ -208,13 +208,13 @@ val shuffle: ('a, 'b) t -> ('a, 'b) t
 
 (** {6 Input/Output functions} *)
 
-val to_array : mat_d -> float array
+val to_array : ('a, 'b) t -> 'a array
 
-val of_array : float array -> int -> int -> mat_d
+val of_array : ('a, 'b) kind -> 'a array -> int -> int -> ('a, 'b) t
 
-val to_arrays : mat_d -> float array array
+val to_arrays : ('a, 'b) t -> 'a array array
 
-val of_arrays : float array array -> mat_d
+val of_arrays : ('a, 'b) kind -> 'a array array -> ('a, 'b) t
 
 val to_ndarray : ('a, 'b) t -> ('a, 'b) Owl_dense_ndarray.t
 

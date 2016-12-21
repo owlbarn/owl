@@ -686,6 +686,21 @@ let shuffle x = x |> shuffle_rows |> shuffle_cols
 
 let ones k m n = Owl_dense_matrix.ones k m n |> of_dense
 
+let sequential k m n = Owl_dense_matrix.sequential k m n |> of_dense
+
+let fill x a =
+  let m, n = shape x in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      set x i j a
+    done
+  done
+(*
+let of_arrays x a = Owl_dense_matrix.of_arrays a |> of_dense
+
+let to_arrays x a = to_dense |> Owl_dense_matrix.to_arrays
+*)
+
 (** short-hand infix operators *)
 
 let ( +@ ) = add

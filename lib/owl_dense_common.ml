@@ -488,6 +488,10 @@ type ('a, 'b) gsl_mat_op05 = ('a, 'b) gsl_mat -> 'a * 'a
 type ('a, 'b) gsl_mat_op06 = ('a, 'b) gsl_mat -> ('a * int * int) * ('a * int * int)
 type ('a, 'b) gsl_mat_op07 = ('a, 'b) gsl_mat -> unit
 type ('a, 'b) gsl_mat_op08 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat
+type ('a, 'b) gsl_mat_op09 = 'a array array -> ('a, 'b) gsl_mat
+type ('a, 'b) gsl_mat_op10 = ('a, 'b) gsl_mat -> 'a array array
+type ('a, 'b) gsl_mat_op11 = 'a array -> int -> int -> ('a, 'b) gsl_mat
+type ('a, 'b) gsl_mat_op12 = ('a, 'b) gsl_mat -> 'a array
 
 (* call functions in gsl *)
 
@@ -518,6 +522,34 @@ let _gsl_swap_cols : type a b. (a, b) kind -> (a, b) gsl_mat_op02 = function
   | Complex32 -> Gsl.Matrix_complex.Single.swap_columns
   | Complex64 -> Gsl.Matrix_complex.swap_columns
   | _         -> failwith "_gsl_swap_cols: unsupported operation"
+
+let _gsl_of_arrays : type a b. (a, b) kind -> (a, b) gsl_mat_op09 = function
+  | Float32   -> Gsl.Matrix.Single.of_arrays
+  | Float64   -> Gsl.Matrix.of_arrays
+  | Complex32 -> Gsl.Matrix_complex.Single.of_arrays
+  | Complex64 -> Gsl.Matrix_complex.of_arrays
+  | _         -> failwith "_gsl_of_arrays: unsupported operation"
+
+let _gsl_to_arrays : type a b. (a, b) kind -> (a, b) gsl_mat_op10 = function
+  | Float32   -> Gsl.Matrix.Single.to_arrays
+  | Float64   -> Gsl.Matrix.to_arrays
+  | Complex32 -> Gsl.Matrix_complex.Single.to_arrays
+  | Complex64 -> Gsl.Matrix_complex.to_arrays
+  | _         -> failwith "_gsl_to_arrays: unsupported operation"
+
+let _gsl_of_array : type a b. (a, b) kind -> (a, b) gsl_mat_op11 = function
+  | Float32   -> Gsl.Matrix.Single.of_array
+  | Float64   -> Gsl.Matrix.of_array
+  | Complex32 -> Gsl.Matrix_complex.Single.of_array
+  | Complex64 -> Gsl.Matrix_complex.of_array
+  | _         -> failwith "_gsl_of_array: unsupported operation"
+
+let _gsl_to_array : type a b. (a, b) kind -> (a, b) gsl_mat_op12 = function
+  | Float32   -> Gsl.Matrix.Single.to_array
+  | Float64   -> Gsl.Matrix.to_array
+  | Complex32 -> Gsl.Matrix_complex.Single.to_array
+  | Complex64 -> Gsl.Matrix_complex.to_array
+  | _         -> failwith "_gsl_to_array: unsupported operation"
 
 let _gsl_isnull : type a b. (a, b) kind -> (a, b) gsl_mat_op00 = function
   | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_isnull

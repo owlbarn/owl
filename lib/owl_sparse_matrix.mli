@@ -13,6 +13,8 @@ val zeros : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
 val ones : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
+val sequential : ('a, 'b) kind -> int -> int -> ('a, 'b) t
+
 val eye : ('a, 'b) kind -> int -> ('a, 'b) t
 
 val binary : ('a, 'b) kind -> int -> int -> ('a, 'b) t
@@ -48,6 +50,8 @@ val set : ('a, 'b) t -> int -> int -> 'a -> unit
 val get : ('a, 'b) t -> int -> int -> 'a
 
 val reset : ('a, 'b) t -> unit
+
+val fill : ('a, 'b) t -> 'a -> unit
 
 val clone : ('a, 'b) t -> ('a, 'b) t
 
@@ -174,10 +178,6 @@ val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
 
 (** {6 Basic mathematical operations of matrices} *)
 
-val mul_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
-
-val div_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
-
 val add : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
 
 val sub : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
@@ -185,6 +185,10 @@ val sub : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
 val mul : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
 
 val div : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
+
+val mul_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+
+val div_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
 
 val dot : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
 

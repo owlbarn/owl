@@ -3,9 +3,7 @@
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(**
-  Define the types shared by various modules
-*)
+(** Define the types shared by various modules *)
 
 open Bigarray
 open Ctypes
