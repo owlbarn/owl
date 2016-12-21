@@ -5,8 +5,11 @@
 
 
 type ('a, 'b) t = ('a, 'b, Bigarray.c_layout) Bigarray.Array2.t
+
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
+
 type mat_d = (float, Bigarray.float64_elt) t
+
 
 (** {6 Create dense matrices} *)
 
@@ -251,11 +254,11 @@ val max : ('a, 'b) t -> 'a
 
 val minmax : ('a, 'b) t -> 'a * 'a
 
-val min_i : ('a, 'b) t -> 'a * int * int
+val min_i : (float, 'b) t -> float * int * int
 
-val max_i : ('a, 'b) t -> 'a * int * int
+val max_i : (float, 'b) t -> float * int * int
 
-val minmax_i : ('a, 'b) t -> ('a * int * int) * ('a * int * int)
+val minmax_i : (float, 'b) t -> (float * int * int) * (float * int * int)
 
 val sum : ('a, 'b) t -> 'a
 

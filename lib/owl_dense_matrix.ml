@@ -16,9 +16,9 @@ type mat_d = (float, Bigarray.float64_elt) t
 
 (* transform between different format *)
 
-let to_ndarray x = Obj.magic (Bigarray.genarray_of_array2 x)
+let to_ndarray x = Bigarray.genarray_of_array2 x
 
-let of_ndarray x = Bigarray.array2_of_genarray (Obj.magic x)
+let of_ndarray x = Bigarray.array2_of_genarray x
 
 (* c_layout -> fortran_layout *)
 let c2fortran_matrix x =

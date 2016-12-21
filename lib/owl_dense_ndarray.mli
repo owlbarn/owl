@@ -9,7 +9,7 @@
   The documentation of some math functions is copied directly from Lacaml.
  *)
 
-type ('a, 'b) t
+type ('a, 'b) t = ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t
 (** N-dimensional array abstract type *)
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
