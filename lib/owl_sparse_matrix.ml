@@ -638,7 +638,7 @@ let save x f =
   output_string h s;
   close_out h
 
-let load f =
+let load k f =
   let h = open_in f in
   let s = really_input_string h (in_channel_length h) in
   Marshal.from_string s 0

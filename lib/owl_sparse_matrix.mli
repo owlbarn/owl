@@ -44,6 +44,8 @@ val nnz_cols : ('a, 'b) t -> int array
 
 val density : ('a, 'b) t -> float
 
+val kind : ('a, 'b) t -> ('a, 'b) kind
+
 
 (** {6 Manipulate a matrix} *)
 
@@ -256,4 +258,4 @@ val pp_spmat : ('a, 'b) t -> unit
 
 val save : ('a, 'b) t -> string -> unit
 
-val load : string -> ('a, 'b) t
+val load : ('a, 'b) kind -> string -> ('a, 'b) t
