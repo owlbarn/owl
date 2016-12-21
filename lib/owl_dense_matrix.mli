@@ -259,15 +259,15 @@ val minmax_i : ('a, 'b) t -> ('a * int * int) * ('a * int * int)
 
 val sum : ('a, 'b) t -> 'a
 
-val average : (float, 'b) t -> float
+val average : ('a, 'b) t -> 'a
 
 val sum_rows : ('a, 'b) t -> ('a, 'b) t
 
 val sum_cols : ('a, 'b) t -> ('a, 'b) t
 
-val average_rows : mat_d -> mat_d
+val average_rows : ('a, 'b) t -> ('a, 'b) t
 
-val average_cols : mat_d -> mat_d
+val average_cols : ('a, 'b) t -> ('a, 'b) t
 
 val min_rows : (float, 'b) t -> (float * int * int) array
 

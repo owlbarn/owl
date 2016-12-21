@@ -216,9 +216,9 @@ val max : ('a, 'b) t -> 'a
 
 val minmax : ('a, 'b) t -> 'a * 'a
 
-(* val sum_rows : ('a, 'b) t ->('a, 'b) t *)
+val sum_rows : ('a, 'b) t ->('a, 'b) t
 
-(* val sum_cols : ('a, 'b) t ->('a, 'b) t *)
+val sum_cols : ('a, 'b) t ->('a, 'b) t
 
 (* val average_rows : ('a, 'b) t ->('a, 'b) t *)
 

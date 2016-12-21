@@ -370,12 +370,16 @@ let sum_rows x =
 
 let average_cols x =
   let m, n = shape x in
-  let y = create (Array2.kind x) n 1 (1. /. (float_of_int n)) in
+  let k = Array2.kind x in
+  let _a = (_average_elt k) (_one k) n in
+  let y = create k n 1 _a in
   dot x y
 
 let average_rows x =
   let m, n = shape x in
-  let y = create (Array2.kind x) 1 m (1. /. (float_of_int m)) in
+  let k = Array2.kind x in
+  let _a = (_average_elt k) (_one k) m in
+  let y = create k 1 m _a in
   dot y x
 
 let is_zero x =
@@ -504,7 +508,9 @@ let sum x =
   let y = to_ndarray x in
   Owl_dense_ndarray.sum y
 
-let average x = (sum x) /. (float_of_int (numel x))
+let average x =
+  let _op = _average_elt (kind x) in
+  _op (sum x) (numel x)
 
 let diag x =
   let m = Pervasives.min (row_num x) (col_num x) in

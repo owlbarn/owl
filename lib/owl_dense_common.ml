@@ -164,6 +164,13 @@ let _abs_elt : type a b. (a, b) kind -> (a -> a) = function
   | Complex64 -> fun x -> Complex.({re = norm x; im = 0.})
   | _         -> failwith "_abs_elt: unsupported operation"
 
+let _average_elt : type a b. (a, b) kind -> (a -> int -> a) = function
+  | Float32   -> fun x n -> x /. (float_of_int n)
+  | Float64   -> fun x n -> x /. (float_of_int n)
+  | Complex32 -> fun x n -> Complex.(div x {re = float_of_int n; im = 0.})
+  | Complex64 -> fun x n -> Complex.(div x {re = float_of_int n; im = 0.})
+  | _         -> failwith "_average_elt: unsupported operation"
+
 let _add : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
   | Float32   -> Lacaml.S.Vec.add
   | Float64   -> Lacaml.D.Vec.add
