@@ -234,6 +234,10 @@ val shuffle : ('a, 'b) t -> ('a, 'b) t
 
 (** {6 Input/Output and helper functions} *)
 
+val to_arrays : ('a, 'b) t -> 'a array array
+
+val of_arrays : ('a, 'b) kind -> 'a array array -> ('a, 'b) t
+
 val to_dense : ('a, 'b) t -> ('a, 'b) Owl_dense_matrix.t
 
 val of_dense : ('a, 'b) Owl_dense_matrix.t -> ('a, 'b) t

@@ -695,11 +695,11 @@ let fill x a =
       set x i j a
     done
   done
-(*
-let of_arrays x a = Owl_dense_matrix.of_arrays a |> of_dense
 
-let to_arrays x a = to_dense |> Owl_dense_matrix.to_arrays
-*)
+let of_arrays k x = Owl_dense_matrix.of_arrays k x |> of_dense
+
+let to_arrays x = to_dense x |> Owl_dense_matrix.to_arrays
+
 
 (** short-hand infix operators *)
 
