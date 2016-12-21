@@ -506,11 +506,9 @@ let sum x =
   let k = kind x in
   fold_nz (_add_elt k) (_zero k) x
 
-let average x =
-  let a = sum x in
-  let b = Complex.({re = float_of_int (numel x); im = 0.}) in
-  Complex.div a b
+let average x = (_average_elt (kind x)) (sum x) (numel x)
 
+(* FIXME: inconsistent with Dense.Matrix.pow *)
 let power x c = map_nz (fun y -> Complex.pow y c) x
 
 let is_zero x = x.nz = 0
@@ -601,14 +599,16 @@ let sum_cols x =
 
 let average_rows x =
   let m, n = shape x in
-  let a = 1. /. (float_of_int m) in
-  let y = Owl_dense_complex.create 1 m Complex.({re = a; im = 0.}) |> of_dense in
+  let k = kind x in
+  let a = (_average_elt k) (_one k) m in
+  let y = Owl_dense_matrix.create k 1 m a |> of_dense in
   dot y x
 
 let average_cols x =
   let m, n = shape x in
-  let a = 1. /. (float_of_int n) in
-  let y = Owl_dense_complex.create n 1 Complex.({re = a; im = 0.}) |> of_dense in
+  let k = kind x in
+  let a = (_average_elt k) (_one k) n in
+  let y = Owl_dense_matrix.create k n 1 a |> of_dense in
   dot x y
 
 (** formatted input / output operations *)
