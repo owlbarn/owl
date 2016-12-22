@@ -1,3 +1,4 @@
+(* Performance test of a set of specific functions *)
 
 open Bigarray
 

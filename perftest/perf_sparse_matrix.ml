@@ -1,3 +1,5 @@
+(* Performance test of Owl_sparse_matrix module *)
+
 open Bigarray
 
 module M = Owl_sparse_matrix

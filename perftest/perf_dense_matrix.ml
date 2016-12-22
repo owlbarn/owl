@@ -1,3 +1,5 @@
+(* Performance test of Owl_dense_matrix module *)
+
 open Bigarray
 
 module M = Owl_dense_matrix
