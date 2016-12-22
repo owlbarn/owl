@@ -4,6 +4,7 @@
  *)
 
 type ('a, 'b) t
+
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 
