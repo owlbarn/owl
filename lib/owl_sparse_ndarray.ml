@@ -120,6 +120,8 @@ let iteri ?axis f x =
   | Some a -> _iteri_fix_axis a f x
   | None   -> _iteri_fix_axis (Array.make (num_dims x) None) f x
 
+let iter ?axis f x = iteri ?axis (fun _ y -> f y) x
+
 
 (* input/output functions *)
 
