@@ -14,10 +14,33 @@ type ('a, 'b) t = {
   mutable d : ('a, 'b, c_layout) Array1.t;
 }
 
+let nnz x =
+  let _stats = Hashtbl.stats x.h in
+  Hashtbl.(_stats.num_bindings)
+
 let _make_elt_array k n =
   let x = Array1.create k c_layout n in
   Array1.fill x (_zero k);
   x
+
+let _allocate_more_space x =
+  let c = nnz x in
+  if  c < Array1.dim x.d then ()
+  else (
+    Log.debug "allocate space %i" c;
+    x.d <- Owl_utils.array1_extend x.d c;
+  )
+
+let _remove_ith_item x i =
+  Log.debug "_remove_ith_item";
+  for j = i to (nnz x) - 2 do
+    x.d.{j} <- x.d.{j + 1}
+  done;
+  Hashtbl.filter_map_inplace (fun k v ->
+    if v = i then None
+    else if v > i then Some (v - 1)
+    else Some v
+  ) x.h
 
 let empty k s =
   let n = Array.fold_right (fun c a -> c * a) s 1 in
@@ -36,10 +59,6 @@ let nth_dim x i = x.s.(i)
 
 let numel x = Array.fold_right (fun c a -> c * a) x.s 1
 
-let nnz x =
-  let _stats = Hashtbl.stats x.h in
-  Hashtbl.(_stats.num_bindings)
-
 let density x =
   let a = float_of_int (nnz x) in
   let b = float_of_int (numel x) in
@@ -57,14 +76,13 @@ let set x i a =
   if a = _a0 then (
     try let j = Hashtbl.find x.h i in
       Array1.unsafe_set x.d j _a0;
-      Hashtbl.remove x.h i
+      _remove_ith_item x j;
     with exn -> ()
   )
   else (
     try let j = Hashtbl.find x.h i in
       Array1.unsafe_set x.d j a;
     with exn -> (
-      (* FIXME: not correct *)
       let j = nnz x in
       Hashtbl.add x.h i j;
       Array1.unsafe_set x.d j a
