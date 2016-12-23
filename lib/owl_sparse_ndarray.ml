@@ -39,3 +39,38 @@ let numel x = Array.fold_right (fun c a -> c * a) x.s 1
 let nnz x =
   let _stats = Hashtbl.stats x.h in
   Hashtbl.(_stats.num_bindings)
+
+let density x =
+  let a = float_of_int (nnz x) in
+  let b = float_of_int (numel x) in
+  a /. b
+
+let kind x = Array1.kind (x.d)
+
+let get x i =
+  try let j = Hashtbl.find x.h i in
+    Array1.unsafe_get x.d j
+  with exn -> _zero (kind x)
+
+let set x i a =
+  let _a0 = _zero (kind x) in
+  if a = _a0 then (
+    try let j = Hashtbl.find x.h i in
+      Array1.unsafe_set x.d j _a0;
+      Hashtbl.remove x.h i
+    with exn -> ()
+  )
+  else (
+    try let j = Hashtbl.find x.h i in
+      Array1.unsafe_set x.d j a;
+    with exn -> (
+      (* FIXME: not correct *)
+      let j = nnz x in
+      Hashtbl.add x.h i j;
+      Array1.unsafe_set x.d j a
+    )
+  )
+
+
+
+(* ends here *)
