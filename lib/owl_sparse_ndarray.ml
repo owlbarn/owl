@@ -89,6 +89,76 @@ let set x i a =
     )
   )
 
+let rec __iteri_fix_axis d j i l h f x =
+  if j = d - 1 then (
+    for k = l.(j) to h.(j) do
+      i.(j) <- k;
+      f i (get x i);
+    done
+  )
+  else (
+    for k = l.(j) to h.(j) do
+      i.(j) <- k;
+      __iteri_fix_axis d (j + 1) i l h f x
+    done
+  )
 
+let _iteri_fix_axis axis f x =
+  let d = num_dims x in
+  let i = Array.make d 0 in
+  let l = Array.make d 0 in
+  let h = shape x in
+  Array.iteri (fun j a ->
+    match a with
+    | Some b -> (l.(j) <- b; h.(j) <- b)
+    | None   -> (h.(j) <- h.(j) - 1)
+  ) axis;
+  __iteri_fix_axis d 0 i l h f x
+
+let iteri ?axis f x =
+  match axis with
+  | Some a -> _iteri_fix_axis a f x
+  | None   -> _iteri_fix_axis (Array.make (num_dims x) None) f x
+
+
+(* input/output functions *)
+
+let print_index i =
+  Printf.printf "[ ";
+  Array.iter (fun x -> Printf.printf "%i " x) i;
+  Printf.printf "] "
+
+let print_element k v =
+  let s = (_owl_elt_to_str k) v in
+  Printf.printf "%s" s
+
+let print x =
+  let _op = _owl_elt_to_str (kind x) in
+  iteri (fun i y ->
+    print_index i;
+    Printf.printf "%s\n" (_op y)
+  ) x
+
+let pp_spnda x =
+  let _op = _owl_elt_to_str (kind x) in
+  let k = shape x in
+  let s = _calc_stride k in
+  let _pp = fun i j -> (
+    for i' = i to j do
+      _index_1d_nd i' k s;
+      print_index k;
+      Printf.printf "%s\n" (_op (get x k))
+    done
+  )
+  in
+  let n = numel x in
+  if n <= 40 then (
+    _pp 0 (n - 1)
+  )
+  else (
+    _pp 0 19;
+    print_endline "......";
+    _pp (n - 20) (n - 1)
+  )
 
 (* ends here *)
