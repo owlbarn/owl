@@ -66,6 +66,12 @@ let density x =
 
 let kind x = Array1.kind (x.d)
 
+let clone x = {
+  s = Array.copy x.s;
+  h = Hashtbl.copy x.h;
+  d = Owl_utils.array1_clone x.d;
+}
+
 let get x i =
   try let j = Hashtbl.find x.h i in
     Array1.unsafe_get x.d j
@@ -84,7 +90,7 @@ let set x i a =
       Array1.unsafe_set x.d j a;
     with exn -> (
       let j = nnz x in
-      Hashtbl.add x.h i j;
+      Hashtbl.add x.h (Array.copy i) j;
       Array1.unsafe_set x.d j a
     )
   )
@@ -121,6 +127,34 @@ let iteri ?axis f x =
   | None   -> _iteri_fix_axis (Array.make (num_dims x) None) f x
 
 let iter ?axis f x = iteri ?axis (fun _ y -> f y) x
+
+let mapi ?axis f x =
+  let y = clone x in
+  iteri ?axis (fun i z -> set y i (f i z)) y;
+  y
+
+let map ?axis f x =
+  let y = clone x in
+  iteri (fun i z -> set y i (f z)) y;
+  y
+
+let iteri_nz ?axis f x = None
+
+let iter_nz ?axis f x = None
+
+let _exists_basic iter_fun f x =
+  try iter_fun (fun y ->
+    if (f y) = true then failwith "found"
+  ) x; false
+  with exn -> true
+
+let exists f x = _exists_basic iter f x
+
+let not_exists f x = not (exists f x)
+
+let for_all f x = let g y = not (f y) in not_exists g x
+
+
 
 
 (* input/output functions *)
@@ -162,5 +196,6 @@ let pp_spnda x =
     print_endline "......";
     _pp (n - 20) (n - 1)
   )
+
 
 (* ends here *)
