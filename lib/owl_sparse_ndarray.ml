@@ -42,6 +42,9 @@ let _remove_ith_item x i =
     else Some v
   ) x.h
 
+(* check whether x is in slice s *)
+let _in_slice s x = None
+
 let empty k s =
   let n = Array.fold_right (fun c a -> c * a) s 1 in
   let c = max (n / 1000) 1024 in
