@@ -186,6 +186,29 @@ let not_exists f x = not (exists f x)
 
 let for_all f x = let g y = not (f y) in not_exists g x
 
+let exists_nz f x = _exists_basic iter_nz f x
+
+let not_exists_nz f x = not (exists_nz f x)
+
+let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
+
+let is_positive x =
+  let _a0 = _zero (kind x) in
+  if (nnz x) < (numel x) then false
+  else for_all (( < ) _a0) x
+
+let is_negative x =
+  let _a0 = _zero (kind x) in
+  if (nnz x) < (numel x) then false
+  else for_all (( > ) _a0) x
+
+let is_nonpositive x =
+  let _a0 = _zero (kind x) in
+  for_all_nz (( >= ) _a0) x
+
+let is_nonnegative x =
+  let _a0 = _zero (kind x) in
+  for_all_nz (( <= ) _a0) x
 
 
 
