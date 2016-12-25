@@ -43,7 +43,21 @@ let _remove_ith_item x i =
   ) x.h
 
 (* check whether x is in slice s *)
-let _in_slice s x = None
+let _in_slice s x =
+  let r = ref true in
+  (try
+    Array.iteri (fun i v ->
+      match v with
+      | Some v -> (
+        if v <> x.(i) then (
+          r := false;
+          failwith "not in the slice";
+          )
+        )
+      | None -> ()
+    ) s
+  with exn -> ());
+  !r
 
 let empty k s =
   let n = Array.fold_right (fun c a -> c * a) s 1 in
@@ -141,9 +155,24 @@ let map ?axis f x =
   iteri (fun i z -> set y i (f z)) y;
   y
 
-let iteri_nz ?axis f x = None
+let _iteri_all_axis_nz f x = Hashtbl.iter (fun i j -> f i (x.d.{j})) x.h
 
-let iter_nz ?axis f x = None
+let _iteri_fix_axis_nz axis f x =
+  Hashtbl.iter (fun i j ->
+    if _in_slice axis i = true then f i (x.d.{j})
+  ) x.h
+
+let _iter_all_axis_nz f x = Owl_utils.array1_iter (fun i y -> f y) x.d
+
+let iteri_nz ?axis f x =
+  match axis with
+  | Some a -> _iteri_fix_axis_nz a f x
+  | None   -> _iteri_all_axis_nz f x
+
+let iter_nz ?axis f x =
+  match axis with
+  | Some a -> _iteri_fix_axis_nz a (fun _ y -> f y) x
+  | None   -> _iter_all_axis_nz f x
 
 let _exists_basic iter_fun f x =
   try iter_fun (fun y ->
