@@ -100,6 +100,12 @@ val pp_spnda : ('a, 'b) t -> unit
 
 (** {6 Unary mathematical operations } *)
 
+val min : ('a, 'b) t -> 'a
+
+val max : ('a, 'b) t -> 'a
+
+val minmax : ('a, 'b) t -> 'a * 'a
+
 val neg : ('a, 'b) t -> ('a, 'b) t
 
 
@@ -112,6 +118,7 @@ val sub : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
 
 
 

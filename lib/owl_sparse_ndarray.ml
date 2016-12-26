@@ -174,7 +174,10 @@ let _iteri_fix_axis_nz axis f x =
     if _in_slice axis i = true then f i (x.d.{j})
   ) x.h
 
-let _iter_all_axis_nz f x = Owl_utils.array1_iter (fun i y -> f y) x.d
+let _iter_all_axis_nz f x =
+  for i = 0 to (nnz x) do
+    f (Array1.unsafe_get x.d i)
+  done
 
 let iteri_nz ?axis f x =
   match axis with
@@ -201,7 +204,10 @@ let map_nz ?axis f x =
   | Some a -> mapi_nz ~axis:a (fun _ z -> f z) x
   | None   -> (
     let y = clone x in
-    Owl_utils.array1_iteri (fun i z -> y.d.{i} <- (f z)) y.d;
+    for i = 0 to (nnz y) do
+      let a = f (Array1.unsafe_get y.d i) in
+      Array1.unsafe_set y.d i a
+    done;
     y
     )
 
@@ -298,6 +304,24 @@ let is_smaller x1 x2 = is_greater x2 x1
 let equal_or_greater x1 x2 = is_nonnegative (sub x1 x2)
 
 let equal_or_smaller x1 x2 = equal_or_greater x2 x1
+
+let minmax x =
+  let k = kind x in
+  let _a0 = _zero k in
+  let xmin = ref (_pos_inf k) in
+  let xmax = ref (_neg_inf k) in
+  iter_nz (fun y ->
+    if y < !xmin then xmin := y;
+    if y > !xmax then xmax := y;
+  ) x;
+  match (nnz x) < (numel x) with
+  | true  -> (min !xmin _a0), (max !xmax _a0)
+  | false -> !xmin, !xmax
+
+let min x = fst (minmax x)
+
+let max x = snd (minmax x)
+
 
 (* input/output functions *)
 
