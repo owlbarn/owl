@@ -77,7 +77,7 @@ val is_negative : ('a, 'b) t -> bool
 val is_nonpositive : ('a, 'b) t -> bool
 
 val is_nonnegative : ('a, 'b) t -> bool
-(*
+
 val is_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
 val is_unequal : ('a, 'b) t -> ('a, 'b) t -> bool
@@ -89,7 +89,6 @@ val is_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
 val equal_or_greater : ('a, 'b) t -> ('a, 'b) t -> bool
 
 val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
-*)
 
 
 (** {6 Input/Output and helper functions} *)

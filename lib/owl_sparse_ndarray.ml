@@ -285,6 +285,20 @@ let div x1 x2 =
   ) x1 in
   y
 
+let is_equal x1 x2 =
+  if (nnz x1) <> (nnz x2) then false
+  else (sub x1 x2 |> is_zero)
+
+let is_unequal x1 x2 = not (is_equal x1 x2)
+
+let is_greater x1 x2 = is_positive (sub x1 x2)
+
+let is_smaller x1 x2 = is_greater x2 x1
+
+let equal_or_greater x1 x2 = is_nonnegative (sub x1 x2)
+
+let equal_or_smaller x1 x2 = equal_or_greater x2 x1
+
 (* input/output functions *)
 
 let print_index i =
