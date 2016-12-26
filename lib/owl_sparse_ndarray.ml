@@ -243,6 +243,48 @@ let is_nonnegative x =
   let _a0 = _zero (kind x) in
   for_all_nz (( <= ) _a0) x
 
+let add x1 x2 =
+  let k = kind x1 in
+  let _a0 = _zero k in
+  let __add_elt = _add_elt k in
+  let y = empty k (shape x1) in
+  let _ = iteri_nz (fun i a ->
+    let b = get x2 i in
+    if b = _a0 then set y i a
+  ) x1 in
+  let _ = iteri_nz (fun i a ->
+    let b = get x1 i in
+    set y i (__add_elt a b)
+  ) x2 in
+  y
+
+let neg x = map_nz (_neg_elt (kind x)) x
+
+let sub x1 x2 = add x1 (neg x2)
+
+let mul x1 x2 =
+  let k = kind x1 in
+  let _a0 = _zero k in
+  let __mul_elt = _mul_elt k in
+  let y = empty (kind x1) (shape x1) in
+  let _ = iteri_nz (fun i a ->
+    let b = get x2 i in
+    if b <> _a0 then set y i (__mul_elt a b)
+  ) x1 in
+  y
+
+let div x1 x2 =
+  let k = kind x1 in
+  let _a0 = _zero k in
+  let __div_elt = _div_elt k in
+  let __inv_elt = _inv_elt k in
+  let y = empty (kind x1) (shape x1) in
+  let _ = iteri_nz (fun i a ->
+    let b = get x2 i in
+    if b <> _a0 then set y i (__div_elt a (__inv_elt b))
+  ) x1 in
+  y
+
 (* input/output functions *)
 
 let print_index i =

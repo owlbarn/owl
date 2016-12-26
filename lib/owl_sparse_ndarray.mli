@@ -99,5 +99,21 @@ val print : ('a, 'b) t -> unit
 val pp_spnda : ('a, 'b) t -> unit
 
 
+(** {6 Unary mathematical operations } *)
+
+val neg : ('a, 'b) t -> ('a, 'b) t
+
+
+(** {6 Binary mathematical operations } *)
+
+val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val sub : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+
 
 (* ends here *)
