@@ -83,6 +83,18 @@ let density x =
 
 let kind x = Array1.kind (x.d)
 
+let same_shape x y =
+  if (num_dims x) <> (num_dims y) then false
+  else (
+    let s0 = shape x in
+    let s1 = shape y in
+    let b = ref true in
+    Array.iteri (fun i d ->
+      if s0.(i) <> s1.(i) then b := false
+    ) s0;
+    !b
+  )
+
 let clone x = {
   s = Array.copy x.s;
   h = Hashtbl.copy x.h;
@@ -152,7 +164,7 @@ let mapi ?axis f x =
 
 let map ?axis f x =
   let y = clone x in
-  iteri (fun i z -> set y i (f z)) y;
+  iteri ?axis (fun i z -> set y i (f z)) y;
   y
 
 let _iteri_all_axis_nz f x = Hashtbl.iter (fun i j -> f i (x.d.{j})) x.h
@@ -174,6 +186,25 @@ let iter_nz ?axis f x =
   | Some a -> _iteri_fix_axis_nz a (fun _ y -> f y) x
   | None   -> _iter_all_axis_nz f x
 
+let mapi_nz ?axis f x =
+  let y = clone x in (
+  match axis with
+  | Some a -> Hashtbl.iter (fun i j ->
+    if _in_slice a i = true then y.d.{j} <- f i (x.d.{j})
+    ) y.h
+  | None   -> Hashtbl.iter (fun i j -> y.d.{j} <- f i (x.d.{j})) y.h
+  );
+  y
+
+let map_nz ?axis f x =
+  match axis with
+  | Some a -> mapi_nz ~axis:a (fun _ z -> f z) x
+  | None   -> (
+    let y = clone x in
+    Owl_utils.array1_iteri (fun i z -> y.d.{i} <- (f z)) y.d;
+    y
+    )
+
 let _exists_basic iter_fun f x =
   try iter_fun (fun y ->
     if (f y) = true then failwith "found"
@@ -192,6 +223,8 @@ let not_exists_nz f x = not (exists_nz f x)
 
 let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
 
+let is_zero x = (nnz x) = 0
+
 let is_positive x =
   let _a0 = _zero (kind x) in
   if (nnz x) < (numel x) then false
@@ -209,8 +242,6 @@ let is_nonpositive x =
 let is_nonnegative x =
   let _a0 = _zero (kind x) in
   for_all_nz (( <= ) _a0) x
-
-
 
 (* input/output functions *)
 
