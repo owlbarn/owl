@@ -219,4 +219,4 @@ let test_set = [
 
 (* Run it *)
 let () =
-  Alcotest.run "Test M." [ "sparse matrix", test_set; ]
+  Alcotest.run "Test M." [ "sparse ndarray", test_set; ]
