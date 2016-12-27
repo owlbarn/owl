@@ -1,12 +1,12 @@
 (* Build with the following command
-  `ocamlbuild -use-ocamlfind -package alcotest,owl unit_dense_matrix.native`
+  `ocamlbuild -use-ocamlfind -package alcotest,owl unit_sparse_matrix.native`
   *)
 
 open Bigarray
 module M = Owl_sparse_matrix
 
 (* make testable *)
-let matrix = Alcotest.testable (Obj.magic ()) M.is_equal
+let matrix = Alcotest.testable (fun p x -> ()) M.is_equal
 
 (* some test input *)
 let x0 = M.zeros Float64 3 4
@@ -35,9 +35,9 @@ module To_test = struct
     M.set x 2 1 5.;
     M.get x 2 1
 
-  let row () = M.of_arrays Float64 [| [|5.;6.;7.;8.|] |]
+  let row () = M.of_arrays Float64 [| [|4.;5.;6.;7.|] |]
 
-  let col () = M.of_arrays Float64 [| [|2.|];[|6.|];[|10.|] |]
+  let col () = M.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |]
 
   let trace x = M.trace x
 
@@ -211,9 +211,9 @@ let test_set = [
   "numel", `Slow, col_num;
   "get", `Slow, get;
   "set", `Slow, set;
-(*  "row", `Slow, row;
+  "row", `Slow, row;
   "col", `Slow, col;
- "fill", `Slow, fill; *)
+  "fill", `Slow, fill;
   "trace", `Slow, trace;
   "sum", `Slow, sum;
   "fold", `Slow, fold;
@@ -239,4 +239,4 @@ let test_set = [
 
 (* Run it *)
 let () =
-  Alcotest.run "Test M." [ "dense matrix", test_set; ]
+  Alcotest.run "Test M." [ "sparse matrix", test_set; ]
