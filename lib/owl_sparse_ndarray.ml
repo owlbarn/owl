@@ -211,6 +211,14 @@ let map_nz ?axis f x =
     y
     )
 
+let _fold_basic ?axis iter_fun f a x =
+  let r = ref a in
+  iter_fun ?axis (fun y -> r := f !r y) x; !r
+
+let fold ?axis f a x = _fold_basic ?axis iter f a x
+
+let fold_nz ?axis f a x = _fold_basic ?axis iter_nz f a x
+
 let _exists_basic iter_fun f x =
   try iter_fun (fun y ->
     if (f y) = true then failwith "found"
@@ -248,6 +256,18 @@ let is_nonpositive x =
 let is_nonnegative x =
   let _a0 = _zero (kind x) in
   for_all_nz (( <= ) _a0) x
+
+let add_scalar x a =
+  let _op = _add_elt (kind x) in
+  map_nz (fun z -> _op z a) x
+
+let sub_scalar x a = add_scalar x (_neg_elt (kind x) a)
+
+let mul_scalar x a =
+  let _op = _mul_elt (kind x) in
+  map_nz (fun z -> _op z a) x
+
+let div_scalar x a = mul_scalar x ((_inv_elt (kind x)) a)
 
 let add x1 x2 =
   let k = kind x1 in
@@ -290,6 +310,16 @@ let div x1 x2 =
     if b <> _a0 then set y i (__div_elt a (__inv_elt b))
   ) x1 in
   y
+
+let abs x =
+  let _op = _abs_elt (kind x) in
+  map_nz _op x
+
+let sum x =
+  let k = kind x in
+  fold_nz (_add_elt k) (_zero k) x
+
+let average x = (_average_elt (kind x)) (sum x) (numel x)
 
 let is_equal x1 x2 =
   if (nnz x1) <> (nnz x2) then false

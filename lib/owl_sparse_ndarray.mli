@@ -51,6 +51,8 @@ val mapi : ?axis:int option array -> (int array -> 'a -> 'a) -> ('a, 'b) t -> ('
 
 val map : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
+val fold : ?axis:int option array -> ('b -> 'a -> 'b) -> 'b -> ('a, 'c) t -> 'b
+
 val iteri_nz : ?axis:int option array -> (int array -> 'a -> unit) -> ('a, 'b) t -> unit
 
 val iter_nz : ?axis:int option array -> ('a -> unit) -> ('a, 'b) t -> unit
@@ -58,6 +60,8 @@ val iter_nz : ?axis:int option array -> ('a -> unit) -> ('a, 'b) t -> unit
 val mapi_nz : ?axis:int option array -> (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
 val map_nz : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+
+val fold_nz : ?axis:int option array -> ('b -> 'a -> 'b) -> 'b -> ('a, 'c) t -> 'b
 
 
 (** {6 Examine array elements or compare two arrays } *)
@@ -106,7 +110,13 @@ val max : ('a, 'b) t -> 'a
 
 val minmax : ('a, 'b) t -> 'a * 'a
 
-val neg : ('a, 'b) t -> ('a, 'b) t
+val abs : ('a, 'b) t ->('a, 'b) t
+
+val neg : ('a, 'b) t ->('a, 'b) t
+
+val sum : ('a, 'b) t -> 'a
+
+val average : ('a, 'b) t -> 'a
 
 
 (** {6 Binary mathematical operations } *)
@@ -119,6 +129,13 @@ val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
+val add_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+
+val sub_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+
+val mul_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+
+val div_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
 
 
 
