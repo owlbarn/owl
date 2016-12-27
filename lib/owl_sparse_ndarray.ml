@@ -176,7 +176,7 @@ let _iteri_fix_axis_nz axis f x =
   ) x.h
 
 let _iter_all_axis_nz f x =
-  for i = 0 to (nnz x) do
+  for i = 0 to (nnz x) - 1 do
     f (Array1.unsafe_get x.d i)
   done
 
