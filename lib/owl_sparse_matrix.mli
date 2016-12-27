@@ -85,7 +85,7 @@ val mapi : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
 val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
-val fold : ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> 'a
+val fold : ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 val filteri : (int -> int -> 'a -> bool) -> ('a, 'b) t -> (int * int) array
 
@@ -107,9 +107,9 @@ val mapi_cols : (int -> ('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
 
 val map_cols : (('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
 
-val fold_rows : ('a -> ('a, 'b) t -> 'a) -> 'a -> ('a, 'b) t -> 'a
+val fold_rows : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
-val fold_cols : ('a -> ('a, 'b) t -> 'a) -> 'a -> ('a, 'b) t -> 'a
+val fold_cols : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 val iteri_nz : (int -> int -> 'a -> unit) -> ('a, 'b) t -> unit
 
@@ -119,7 +119,7 @@ val mapi_nz : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
 val map_nz : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
-val fold_nz : ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> 'a
+val fold_nz : ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 val filteri_nz : (int -> int -> 'a -> bool) -> ('a, 'b) t -> (int * int) array
 
@@ -141,9 +141,9 @@ val mapi_cols_nz : (int -> ('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
 
 val map_cols_nz : (('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
 
-val fold_rows_nz : ('a -> ('a, 'b) t -> 'a) -> 'a -> ('a, 'b) t -> 'a
+val fold_rows_nz : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
-val fold_cols_nz : ('a -> ('a, 'b) t -> 'a) -> 'a -> ('a, 'b) t -> 'a
+val fold_cols_nz : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 
 (** {6 Examin elements and compare two matrices} *)

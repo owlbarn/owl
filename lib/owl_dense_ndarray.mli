@@ -187,13 +187,13 @@ val filteri : ?axis:int option array -> (int array -> 'a -> bool) -> ('a, 'b) t 
 val filter : ?axis:int option array -> ('a -> bool) -> ('a, 'b) t -> int array array
 (** Similar to [filteri], but the indices of the elements are not passed to [f]. *)
 
-val foldi : ?axis:int option array -> (int array -> 'a -> 'b -> 'b) -> 'b -> ('a, 'c) t -> 'b
+val foldi : ?axis:int option array -> (int array -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 (** [foldi ~axis f a x] folds all the elements in a slice defined by [~axis]
   with the function [f]. If [~axis] is not passed in, then [foldi] simply
   folds all the elements in [x].
  *)
 
-val fold : ?axis:int option array -> ('a -> 'b -> 'b) -> 'b -> ('a, 'c) t -> 'b
+val fold : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 (** Similar to [foldi], except that the index of an element is not passed to [f]. *)
 
 val iteri_slice : int array -> (int option array -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit

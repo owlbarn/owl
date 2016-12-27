@@ -51,7 +51,7 @@ val mapi : ?axis:int option array -> (int array -> 'a -> 'a) -> ('a, 'b) t -> ('
 
 val map : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
-val fold : ?axis:int option array -> ('b -> 'a -> 'b) -> 'b -> ('a, 'c) t -> 'b
+val fold : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 val iteri_nz : ?axis:int option array -> (int array -> 'a -> unit) -> ('a, 'b) t -> unit
 
@@ -61,7 +61,7 @@ val mapi_nz : ?axis:int option array -> (int array -> 'a -> 'a) -> ('a, 'b) t ->
 
 val map_nz : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
-val fold_nz : ?axis:int option array -> ('b -> 'a -> 'b) -> 'b -> ('a, 'c) t -> 'b
+val fold_nz : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 
 (** {6 Examine array elements or compare two arrays } *)

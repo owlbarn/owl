@@ -730,17 +730,17 @@ let filter ?axis f x = filteri ?axis (fun _ y -> f y) x
 
 let foldi ?axis f a x =
   let c = ref a in
-  iteri ?axis (fun i y -> c := (f i y !c)) x;
+  iteri ?axis (fun i y -> c := (f i !c y)) x;
   !c
 
 let fold ?axis f a x =
   let c = ref a in
-  iter ?axis (fun y -> c := (f y !c)) x;
+  iter ?axis (fun y -> c := (f !c y)) x;
   !c
 
 let nnz x =
   let z = _zero (kind x) in
-  fold (fun y c -> if y = z then c else c + 1) 0 x
+  fold (fun c y -> if y = z then c else c + 1) 0 x
 
 let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
 
