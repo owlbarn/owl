@@ -84,6 +84,12 @@ Executable perf_dense_matrix
   MainIs:         perf_dense_matrix.ml
   BuildDepends:   owl
 
+Executable perf_sparse_ndarray
+  Path:           perftest
+  CompiledObject: best
+  MainIs:         perf_sparse_ndarray.ml
+  BuildDepends:   owl
+
 Executable perf_sparse_matrix
   Path:           perftest
   CompiledObject: best

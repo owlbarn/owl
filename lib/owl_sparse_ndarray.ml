@@ -107,6 +107,7 @@ let get x i =
   with exn -> _zero (kind x)
 
 let set x i a =
+  _allocate_more_space x;
   let _a0 = _zero (kind x) in
   if a = _a0 then (
     try let j = Hashtbl.find x.h i in
@@ -393,26 +394,25 @@ let pp_spnda x =
     _pp (n - 20) (n - 1)
   )
 
-let _random_basic k f d =
+let _random_basic a k f d =
   let x = empty k d in
   let n = numel x in
-  let c = int_of_float ((float_of_int n) *. 0.15) in
+  let c = int_of_float ((float_of_int n) *. a) in
   let i = Array.copy d in
   let s = _calc_stride d in
   for k = 0 to c do
     let j = Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) () in
-    _index_1d_nd j i s;
     set x i (f ())
   done;
   x
 
-let binary k s =
+let binary ?(density=0.1) k s =
   let _a1 = _one k in
-  _random_basic k (fun () -> _a1) s
+  _random_basic density k (fun () -> _a1) s
 
-let uniform ?(scale=1.) k s =
+let uniform ?(scale=1.) ?(density=0.1) k s =
   let _op = _owl_uniform k in
-  _random_basic k (fun () -> _op scale) s
+  _random_basic density k (fun () -> _op scale) s
 
 
 (* ends here *)

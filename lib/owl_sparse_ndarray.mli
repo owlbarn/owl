@@ -12,9 +12,9 @@ type ('a, 'b) t
 
 val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
 
-val binary : ('a, 'b) kind -> int array -> ('a, 'b) t
+val binary : ?density:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
 
-val uniform : ?scale:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
+val uniform : ?scale:float -> ?density:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
 
 
 (** {6 Obtain basic properties} *)
