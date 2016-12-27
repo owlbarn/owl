@@ -54,6 +54,10 @@ module To_test = struct
 
   let clone () = (M.clone x0) = x0
 
+  let map () = M.map (fun a -> a +. 1.) x0 |> M.sum = 18.
+
+  let map_nz () = M.map_nz (fun a -> a +. 1.) x0 |> M.sum = 9.
+
   let fold () = M.fold (fun c a -> c +. a) 0. x0 = 6.
 
   let fold_nz () = M.fold ~axis:[|None; None; Some 0|] (fun c a -> c +. a) 1. x0 = 6.
@@ -75,6 +79,20 @@ module To_test = struct
   let min () = M.min x0 = 0.
 
   let max () = M.max x0 = 3.
+
+  let is_zero () = M.is_zero x0
+
+  let is_positive () = M.is_positive x0
+
+  let is_negative () = M.is_negative x0
+
+  let is_nonnegative () = M.is_nonnegative x0
+
+  let is_equal () = M.is_equal x0 x1
+
+  let is_greater () = M.is_greater x2 x0
+
+  let equal_or_greater () = M.equal_or_greater x2 x0
 
 end
 
@@ -106,6 +124,12 @@ let set () =
 
 let clone () =
   Alcotest.(check bool) "clone" true (To_test.clone ())
+
+let map () =
+  Alcotest.(check bool) "map" true (To_test.map ())
+
+let map_nz () =
+  Alcotest.(check bool) "map_nz" true (To_test.map_nz ())
 
 let fold () =
   Alcotest.(check bool) "fold" true (To_test.fold ())
@@ -140,6 +164,27 @@ let min () =
 let max () =
   Alcotest.(check bool) "max" true (To_test.max ())
 
+let is_zero () =
+  Alcotest.(check bool) "is_zero" false (To_test.is_zero ())
+
+let is_positive () =
+  Alcotest.(check bool) "is_positive" false (To_test.is_positive ())
+
+let is_negative () =
+  Alcotest.(check bool) "is_negative" false (To_test.is_negative ())
+
+let is_nonnegative () =
+  Alcotest.(check bool) "is_nonnegative" true (To_test.is_nonnegative ())
+
+let is_equal () =
+  Alcotest.(check bool) "is_equal" false (To_test.is_equal ())
+
+let is_greater () =
+  Alcotest.(check bool) "is_greater" false (To_test.is_greater ())
+
+let equal_or_greater () =
+  Alcotest.(check bool) "equal_or_greater" true (To_test.equal_or_greater ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -150,6 +195,8 @@ let test_set = [
   "get", `Slow, get;
   "set", `Slow, set;
   "clone", `Slow, clone;
+  "map", `Slow, map;
+  "map_nz", `Slow, map_nz;
   "fold", `Slow, fold;
   "fold_nz", `Slow, fold_nz;
   "add", `Slow, add;
@@ -161,6 +208,13 @@ let test_set = [
   "sum", `Slow, sum;
   "min", `Slow, min;
   "max", `Slow, max;
+  "is_zero", `Slow, is_zero;
+  "is_positive", `Slow, is_positive;
+  "is_negative", `Slow, is_negative;
+  "is_nonnegative", `Slow, is_nonnegative;
+  "is_equal", `Slow, is_equal;
+  "is_greater", `Slow, is_greater;
+  "equal_or_greater", `Slow, equal_or_greater;
 ]
 
 (* Run it *)
