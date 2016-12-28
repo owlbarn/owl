@@ -85,6 +85,8 @@ val mapi : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
 val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
+val foldi : (int -> int -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
+
 val fold : ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 val filteri : (int -> int -> 'a -> bool) -> ('a, 'b) t -> (int * int) array
@@ -216,6 +218,8 @@ val min : ('a, 'b) t -> 'a
 val max : ('a, 'b) t -> 'a
 
 val minmax : ('a, 'b) t -> 'a * 'a
+
+(* TODO: min_i; max_i ... to_array ... *)
 
 val sum_rows : ('a, 'b) t -> ('a, 'b) t
 

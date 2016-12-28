@@ -269,6 +269,11 @@ let _fold_basic iter_fun f a x =
 
 let fold f a x = _fold_basic iter f a x
 
+let foldi f a x =
+  let r = ref a in
+  iteri (fun i j y -> r := f i j !r y) x;
+  !r
+
 let filteri f x =
   let r = ref [||] in
   iteri (fun i j y ->

@@ -43,8 +43,6 @@ module To_test = struct
 
   let sum x = M.sum x
 
-  let fold x = M.fold (+.) 0. x
-
   let exists x = M.exists (fun a -> a = 6.) x
 
   let not_exists x = M.not_exists (fun a -> a > 13.) x
@@ -103,12 +101,55 @@ module To_test = struct
     let b = M.of_arrays Float64 [| [|22.;28.|]; [|49.;64.|] |] in
     M.is_equal a b
 
+  let add_scalar () = M.add_scalar x1 2. |> M.sum = 36.
+
+  let mul_scalar () = M.mul_scalar x1 2. |> M.sum = 24.
+
+  let min () =
+    let x = M.add_scalar x2 1. in
+    M.min x = 0.
+
+  let max () =
+    let x = M.add_scalar x2 1. in
+    M.max x = 12.
+
   let map () =
     let x = M.ones Float64 3 4 in
     let y = M.sequential Float64 3 4 in
     let z0 = M.add x y in
     let z1 = M.map (fun a -> a +. 1.) y in
     M.is_equal z0 z1
+
+  let fold x = M.fold (+.) 0. x
+
+  let foldi () =
+    let a = M.foldi (fun i j c a ->
+      if i <> 0 then c +. a else c
+    ) 0. x2
+    in a = 60.
+
+  let filter () = M.filter ((=) 3.) x2 = [| (0,3) |]
+
+  let fold_rows () =
+    let x = M.fold_rows (fun c a -> M.add c a) (M.zeros Float64 1 4) x2 |> M.to_arrays in
+    x = [| [|12.;15.;18.;21.|] |]
+
+  let fold_cols () =
+    let x = M.fold_cols (fun c a -> M.add c a) (M.zeros Float64 3 1) x2 |> M.to_arrays in
+    x = [| [|6.|]; [|22.|]; [|38.|] |]
+
+  let sum_rows () =
+    let x = M.sum_rows x2 |> M.to_arrays in
+    x = [| [|12.;15.;18.;21.|] |]
+
+  let sum_cols () =
+    let x = M.sum_cols x2 |> M.to_arrays in
+    x = [| [|6.|]; [|22.|]; [|38.|] |]
+
+  let save_load () =
+    M.save x2 "sp_mat.tmp";
+    let y = M.load Float64 "sp_mat.tmp" in
+    M.is_equal x2 y
 
 end
 
@@ -146,9 +187,6 @@ let trace () =
 
 let sum () =
   Alcotest.(check float) "sum" 66. (To_test.sum x2)
-
-let fold () =
-  Alcotest.(check float) "fold" (M.sum x2) (To_test.fold x2)
 
 let exists () =
   Alcotest.(check bool) "exits" true (To_test.exists x2)
@@ -201,8 +239,44 @@ let mul () =
 let dot () =
   Alcotest.(check bool) "dot" true (To_test.dot ())
 
+let add_scalar () =
+  Alcotest.(check bool) "add_scalar" true (To_test.add_scalar ())
+
+let mul_scalar () =
+  Alcotest.(check bool) "mul_scalar" true (To_test.mul_scalar ())
+
+let min x =
+  Alcotest.(check bool) "min" true (To_test.min ())
+
+let max x =
+  Alcotest.(check bool) "max" true (To_test.max ())
+
 let map x =
   Alcotest.(check bool) "map" true (To_test.map ())
+
+let fold () =
+  Alcotest.(check float) "fold" (M.sum x2) (To_test.fold x2)
+
+let foldi () =
+  Alcotest.(check bool) "foldi" true (To_test.foldi ())
+
+let filter () =
+  Alcotest.(check bool) "filter" true (To_test.filter ())
+
+let fold_rows () =
+  Alcotest.(check bool) "fold_rows" true (To_test.fold_rows ())
+
+let fold_cols () =
+  Alcotest.(check bool) "fold_cols" true (To_test.fold_cols ())
+
+let sum_rows () =
+  Alcotest.(check bool) "sum_rows" true (To_test.sum_rows ())
+
+let sum_cols () =
+  Alcotest.(check bool) "sum_cols" true (To_test.sum_cols ())
+
+let save_load () =
+  Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
 let test_set = [
   "sequential", `Slow, sequential;
@@ -216,7 +290,6 @@ let test_set = [
   "fill", `Slow, fill;
   "trace", `Slow, trace;
   "sum", `Slow, sum;
-  "fold", `Slow, fold;
   "exists", `Slow, exists;
   "not_exists", `Slow, not_exists;
   "for_all", `Slow, for_all;
@@ -234,7 +307,19 @@ let test_set = [
   "add", `Slow, add;
   "mul", `Slow, mul;
   "dot", `Slow, dot;
+  "add_scalar", `Slow, add_scalar;
+  "mul_scalar", `Slow, mul_scalar;
+  "min", `Slow, min;
+  "max", `Slow, max;
   "map", `Slow, map;
+  "fold", `Slow, fold;
+  "foldi", `Slow, foldi;
+  "filter", `Slow, filter;
+  "fold_rows", `Slow, fold_rows;
+  "fold_cols", `Slow, fold_cols;
+  "sum_rows", `Slow, sum_rows;
+  "sum_cols", `Slow, sum_cols;
+  "save_load", `Slow, save_load;
 ]
 
 (* Run it *)
