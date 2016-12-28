@@ -136,7 +136,7 @@ module To_test = struct
     M.is_equal z0 z1
 
   let fold x = M.fold (+.) 0. x
-  
+
   let foldi () =
     let a = M.foldi (fun i j c a ->
       if i <> 0 then c +. a else c
@@ -144,6 +144,22 @@ module To_test = struct
     in a = 60.
 
   let filter () = M.filter ((=) 3.) x2 = [| (0,3) |]
+
+  let fold_rows () =
+    let x = M.fold_rows (fun c a -> M.add c a) (M.zeros Float64 1 4) x2 |> M.to_arrays in
+    x = [| [|12.;15.;18.;21.|] |]
+
+  let fold_cols () =
+    let x = M.fold_cols (fun c a -> M.add c a) (M.zeros Float64 3 1) x2 |> M.to_arrays in
+    x = [| [|6.|]; [|22.|]; [|38.|] |]
+
+  let sum_rows () =
+    let x = M.sum_rows x2 |> M.to_arrays in
+    x = [| [|12.;15.;18.;21.|] |]
+
+  let sum_cols () =
+    let x = M.sum_cols x2 |> M.to_arrays in
+    x = [| [|6.|]; [|22.|]; [|38.|] |]
 
   let save_load () =
     M.save x2 "ds_mat.tmp";
@@ -271,6 +287,18 @@ let foldi () =
 let filter () =
   Alcotest.(check bool) "filter" true (To_test.filter ())
 
+let fold_rows () =
+  Alcotest.(check bool) "fold_rows" true (To_test.fold_rows ())
+
+let fold_cols () =
+  Alcotest.(check bool) "fold_cols" true (To_test.fold_cols ())
+
+let sum_rows () =
+  Alcotest.(check bool) "sum_rows" true (To_test.sum_rows ())
+
+let sum_cols () =
+  Alcotest.(check bool) "sum_cols" true (To_test.sum_cols ())
+
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
@@ -314,6 +342,10 @@ let test_set = [
   "fold", `Slow, fold;
   "foldi", `Slow, foldi;
   "filter", `Slow, filter;
+  "fold_rows", `Slow, fold_rows;
+  "fold_cols", `Slow, fold_cols;
+  "sum_rows", `Slow, sum_rows;
+  "sum_cols", `Slow, sum_cols;
   "save_load", `Slow, save_load;
 ]
 
