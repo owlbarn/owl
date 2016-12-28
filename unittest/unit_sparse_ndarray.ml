@@ -111,6 +111,22 @@ module To_test = struct
     i.(2) = 1 && a = 3.
     ) x1 = [| [|0;1;1|] |]
 
+  let transpose () =
+    let y = M.clone x0 in
+    let y = M.transpose y in
+    M.get y [|1;0;0|] = 1. &&
+    M.get y [|0;1;0|] = 2. &&
+    M.get y [|0;0;1|] = 3.
+
+  let flatten () = M.get (M.flatten x0) [|3|] = 2.
+
+  let reshape () = M.get (M.reshape x0 [|2;3;2|]) [|0;1;1|] = 2.
+
+  let save_load () =
+    M.save x0 "ds_nda.tmp";
+    let y = M.load Float64 "ds_nda.tmp" in
+    M.is_equal x0 y
+
 end
 
 (* the tests *)
@@ -214,6 +230,18 @@ let filter () =
 let filteri () =
   Alcotest.(check bool) "filteri" true (To_test.filteri ())
 
+let transpose () =
+  Alcotest.(check bool) "transpose" true (To_test.transpose ())
+
+let flatten () =
+  Alcotest.(check bool) "flatten" true (To_test.flatten ())
+
+let reshape () =
+  Alcotest.(check bool) "reshape" true (To_test.reshape ())
+
+let save_load () =
+  Alcotest.(check bool) "save_load" true (To_test.save_load ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -248,6 +276,10 @@ let test_set = [
   "equal_or_greater", `Slow, equal_or_greater;
   "filter", `Slow, filter;
   "filteri", `Slow, filteri;
+  "transpose", `Slow, transpose;
+  "flatten", `Slow, flatten;
+  "reshape", `Slow, reshape;
+  "save_load", `Slow, save_load;
 ]
 
 (* Run it *)
