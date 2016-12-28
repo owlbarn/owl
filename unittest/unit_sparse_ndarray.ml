@@ -60,7 +60,18 @@ module To_test = struct
 
   let fold () = M.fold (fun c a -> c +. a) 0. x0 = 6.
 
+  let foldi () =
+    let a = M.foldi (fun i c a ->
+      if i.(2) = 0 then c +. a else c
+    ) 0. x0
+    in a = 5.
+
   let fold_nz () = M.fold ~axis:[|None; None; Some 0|] (fun c a -> c +. a) 1. x0 = 6.
+
+  let foldi_nz () =
+    M.fold ~axis:[|None; None; Some 0|] (fun c a ->
+      if a > 2. then c +. a else c
+    ) 1. x0 = 4.
 
   let add () = M.is_equal (M.add x0 x1) x2
 
@@ -93,6 +104,8 @@ module To_test = struct
   let is_greater () = M.is_greater x2 x0
 
   let equal_or_greater () = M.equal_or_greater x2 x0
+
+  let filter () = M.filter ((=) 3.) x0 = [| [|1;0;0|] |]
 
 end
 
@@ -134,8 +147,14 @@ let map_nz () =
 let fold () =
   Alcotest.(check bool) "fold" true (To_test.fold ())
 
+let foldi () =
+  Alcotest.(check bool) "foldi" true (To_test.foldi ())
+
 let fold_nz () =
   Alcotest.(check bool) "fold_nz" true (To_test.fold_nz ())
+
+let foldi_nz () =
+  Alcotest.(check bool) "foldi_nz" true (To_test.foldi_nz ())
 
 let add () =
   Alcotest.(check bool) "add" true (To_test.add ())
@@ -185,6 +204,9 @@ let is_greater () =
 let equal_or_greater () =
   Alcotest.(check bool) "equal_or_greater" true (To_test.equal_or_greater ())
 
+let filter () =
+  Alcotest.(check bool) "filter" true (To_test.filter ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -198,7 +220,9 @@ let test_set = [
   "map", `Slow, map;
   "map_nz", `Slow, map_nz;
   "fold", `Slow, fold;
+  "foldi", `Slow, foldi;
   "fold_nz", `Slow, fold_nz;
+  "foldi_nz", `Slow, foldi_nz;
   "add", `Slow, add;
   "mul", `Slow, mul;
   "add_scalar", `Slow, add_scalar;
@@ -215,6 +239,7 @@ let test_set = [
   "is_equal", `Slow, is_equal;
   "is_greater", `Slow, is_greater;
   "equal_or_greater", `Slow, equal_or_greater;
+  "filter", `Slow, filter;
 ]
 
 (* Run it *)

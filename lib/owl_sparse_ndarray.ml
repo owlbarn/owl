@@ -220,6 +220,16 @@ let fold ?axis f a x = _fold_basic ?axis iter f a x
 
 let fold_nz ?axis f a x = _fold_basic ?axis iter_nz f a x
 
+let foldi ?axis f a x =
+  let c = ref a in
+  iteri ?axis (fun i y -> c := (f i !c y)) x;
+  !c
+
+let foldi_nz ?axis f a x =
+  let c = ref a in
+  iteri_nz ?axis (fun i y -> c := (f i !c y)) x;
+  !c
+
 let _exists_basic iter_fun f x =
   try iter_fun (fun y ->
     if (f y) = true then failwith "found"
