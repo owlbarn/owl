@@ -54,9 +54,20 @@ module To_test = struct
 
   let clone () = (M.clone x0) = x0
 
+  let fill () =
+    let y = M.empty Float64 [|2;2;3|] in
+    M.fill y 2.;
+    M.sum y = 24.
+
   let map () = M.map (fun a -> a +. 1.) x0 |> M.sum = 18.
 
   let fold () = M.fold (fun c a -> c +. a) 0. x0 = 6.
+
+  let foldi () =
+    let a = M.foldi (fun i c a ->
+      if i.(2) = 0 then c +. a else c
+    ) 0. x0
+    in a = 5.
 
   let add () = M.is_equal (M.add x0 x1) x2
 
@@ -75,6 +86,11 @@ module To_test = struct
   let min () = M.min x0 = 0.
 
   let max () = M.max x0 = 3.
+
+  let minmax_i () =
+    let (a, i), (b, j) = M.minmax_i x0 in
+    a = 0. && i = [|0;0;0|] &&
+    b = 3. && j = [|1;0;0|]
 
   let is_zero () = M.is_zero x0
 
@@ -111,6 +127,11 @@ module To_test = struct
     M.get y [|0;1;0|] = 2. &&
     M.get y [|0;0;1|] = 3.
 
+  let save_load () =
+    M.save x0 "ds_nda.tmp";
+    let y = M.load Float64 "ds_nda.tmp" in
+    M.is_equal x0 y
+
 end
 
 (* the tests *)
@@ -142,11 +163,17 @@ let set () =
 let clone () =
   Alcotest.(check bool) "clone" true (To_test.clone ())
 
+let fill () =
+  Alcotest.(check bool) "fill" true (To_test.fill ())
+
 let map () =
   Alcotest.(check bool) "map" true (To_test.map ())
 
 let fold () =
   Alcotest.(check bool) "fold" true (To_test.fold ())
+
+let foldi () =
+  Alcotest.(check bool) "foldi" true (To_test.foldi ())
 
 let add () =
   Alcotest.(check bool) "add" true (To_test.add ())
@@ -174,6 +201,9 @@ let min () =
 
 let max () =
   Alcotest.(check bool) "max" true (To_test.max ())
+
+let minmax_i () =
+  Alcotest.(check bool) "minmax_i" true (To_test.minmax_i ())
 
 let is_zero () =
   Alcotest.(check bool) "is_zero" false (To_test.is_zero ())
@@ -214,6 +244,9 @@ let filter () =
 let transpose () =
   Alcotest.(check bool) "transpose" true (To_test.transpose ())
 
+let save_load () =
+  Alcotest.(check bool) "save_load" true (To_test.save_load ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -224,8 +257,10 @@ let test_set = [
   "get", `Slow, get;
   "set", `Slow, set;
   "clone", `Slow, clone;
+  "fill", `Slow, fill;
   "map", `Slow, map;
   "fold", `Slow, fold;
+  "foldi", `Slow, foldi;
   "add", `Slow, add;
   "mul", `Slow, mul;
   "add_scalar", `Slow, add_scalar;
@@ -235,6 +270,7 @@ let test_set = [
   "sum", `Slow, sum;
   "min", `Slow, min;
   "max", `Slow, max;
+  "minmax_i", `Slow, minmax_i;
   "is_zero", `Slow, is_zero;
   "is_positive", `Slow, is_positive;
   "is_negative", `Slow, is_negative;
@@ -248,6 +284,7 @@ let test_set = [
   "for_all", `Slow, for_all;
   "filter", `Slow, filter;
   "transpose", `Slow, transpose;
+  "save_load", `Slow, save_load;
 ]
 
 (* Run it *)
