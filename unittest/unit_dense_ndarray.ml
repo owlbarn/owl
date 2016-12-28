@@ -104,6 +104,13 @@ module To_test = struct
 
   let filter () = M.filter ((=) 3.) x0 = [| [|1;0;0|] |]
 
+  let transpose () =
+    let y = M.clone x0 in
+    let y = M.transpose y in
+    M.get y [|1;0;0|] = 1. &&
+    M.get y [|0;1;0|] = 2. &&
+    M.get y [|0;0;1|] = 3.
+
 end
 
 (* the tests *)
@@ -204,6 +211,9 @@ let for_all () =
 let filter () =
   Alcotest.(check bool) "filter" true (To_test.filter ())
 
+let transpose () =
+  Alcotest.(check bool) "transpose" true (To_test.transpose ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -237,6 +247,7 @@ let test_set = [
   "not_exists", `Slow, not_exists;
   "for_all", `Slow, for_all;
   "filter", `Slow, filter;
+  "transpose", `Slow, transpose;
 ]
 
 (* Run it *)
