@@ -21,7 +21,8 @@ type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
 (** [empty Bigarray.Float64 [|3;4;5|]] creates a three diemensional array of
   type [Bigarray.Float64]. Each dimension has the following size: 3, 4, and 5.
-  The elements in the array are not initialised.
+  The elements in the array are not initialised, they can be any value. [empty]
+  is faster than [zeros] to create a ndarray.
 
   The module only support the following four types of ndarray: [Bigarray.Float32],
   [Bigarray.Float64], [Bigarray.Complex32], and [Bigarray.Complex64].

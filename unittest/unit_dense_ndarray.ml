@@ -48,7 +48,7 @@ module To_test = struct
   let get () = M.get x0 [|0;1;0|] = 2.
 
   let set () =
-    let x = M.empty Float64 [|2;2;3|] in
+    let x = M.zeros Float64 [|2;2;3|] in
     M.set x [|1;0;1|] 5.;
     M.get x [|1;0;1|] = 5.
 
@@ -92,9 +92,17 @@ module To_test = struct
 
   let slice () =
     let y = M.slice [|None; Some 0; Some 0|] x0 in
-    let z = M.empty Float64 [|2|] in
+    let z = M.zeros Float64 [|2|] in
     M.set z [|1|] 3.;
     M.is_equal y z
+
+  let exists () = M.exists ((<) 0.) x0
+
+  let not_exists () = M.not_exists ((>) 0.) x0
+
+  let for_all () = M.for_all ((<=) 0.) x0
+
+  let filter () = M.filter ((=) 3.) x0 = [| [|1;0;0|] |]
 
 end
 
@@ -184,6 +192,18 @@ let equal_or_greater () =
 let slice () =
   Alcotest.(check bool) "slice" true (To_test.slice ())
 
+let exists () =
+  Alcotest.(check bool) "exists" true (To_test.exists ())
+
+let not_exists () =
+  Alcotest.(check bool) "not_exists" true (To_test.not_exists ())
+
+let for_all () =
+  Alcotest.(check bool) "for_all" true (To_test.for_all ())
+
+let filter () =
+  Alcotest.(check bool) "filter" true (To_test.filter ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -213,6 +233,10 @@ let test_set = [
   "is_greater", `Slow, is_greater;
   "equal_or_greater", `Slow, equal_or_greater;
   "slice", `Slow, slice;
+  "exists", `Slow, exists;
+  "not_exists", `Slow, not_exists;
+  "for_all", `Slow, for_all;
+  "filter", `Slow, filter;
 ]
 
 (* Run it *)

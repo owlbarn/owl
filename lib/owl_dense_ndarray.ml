@@ -722,7 +722,9 @@ let swap a0 a1 x =
 let filteri ?axis f x =
   let a = ref [||] in
   iteri ?axis (fun i y ->
-    if f i y = true then a := Array.append !a [|i|]
+    if f i y = true then
+      let j = Array.copy i in
+      a := Array.append !a [|j|]
   ) x;
   !a
 

@@ -44,6 +44,7 @@ val set : ('a, 'b) t -> int array -> 'a -> unit
 
 val clone : ('a, 'b) t -> ('a, 'b) t
 
+(* val slice : *)
 
 (** {6 Iterate array elements} *)
 
