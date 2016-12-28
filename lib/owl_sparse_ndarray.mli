@@ -120,6 +120,10 @@ val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
 
 (** {6 Input/Output and helper functions} *)
 
+val save : ('a, 'b) t -> string -> unit
+
+val load : ('a, 'b) kind -> string -> ('a, 'b) t
+
 val print : ('a, 'b) t -> unit
 
 val pp_spnda : ('a, 'b) t -> unit

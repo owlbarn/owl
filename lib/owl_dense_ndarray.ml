@@ -1006,8 +1006,7 @@ let pp_dsnda x =
   )
 
 let save x f =
-  let t = kind x in
-  let s = Marshal.to_string (t,x) [] in
+  let s = Marshal.to_string x [] in
   let h = open_out f in
   output_string h s;
   close_out h
@@ -1015,7 +1014,7 @@ let save x f =
 let load k f =
   let h = open_in f in
   let s = really_input_string h (in_channel_length h) in
-  let _, x = Marshal.from_string s 0
+  let x = Marshal.from_string s 0
   in x
 
 (* math operations. code might be verbose for performance concern. *)
