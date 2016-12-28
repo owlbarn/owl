@@ -107,6 +107,10 @@ module To_test = struct
 
   let filter () = M.filter ((=) 3.) x0 = [| [|1;0;0|] |]
 
+  let filteri () = M.filteri (fun i a ->
+    i.(2) = 1 && a = 3.
+    ) x1 = [| [|0;1;1|] |]
+
 end
 
 (* the tests *)
@@ -207,6 +211,9 @@ let equal_or_greater () =
 let filter () =
   Alcotest.(check bool) "filter" true (To_test.filter ())
 
+let filteri () =
+  Alcotest.(check bool) "filteri" true (To_test.filteri ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -240,6 +247,7 @@ let test_set = [
   "is_greater", `Slow, is_greater;
   "equal_or_greater", `Slow, equal_or_greater;
   "filter", `Slow, filter;
+  "filteri", `Slow, filteri;
 ]
 
 (* Run it *)

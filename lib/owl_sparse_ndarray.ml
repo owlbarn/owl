@@ -212,6 +212,54 @@ let map_nz ?axis f x =
     y
     )
 
+let _check_transpose_axis axis d =
+  let info = "check_transpose_axiss fails" in
+  if Array.length axis <> d then
+    failwith info;
+  let h = Hashtbl.create 16 in
+  Array.iter (fun x ->
+    if x < 0 || x >= d then failwith info;
+    if Hashtbl.mem h x = true then failwith info;
+    Hashtbl.add h x 0
+  ) axis
+
+let transpose ?axis x =
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None -> Array.init d (fun i -> d - i - 1)
+  in
+  (* check if axis is a correct permutation *)
+  _check_transpose_axis a d;
+  let s0 = shape x in
+  let s1 = Array.map (fun j -> s0.(j)) a in
+  let i' = Array.make d 0 in
+  let y = zeros (kind x) s1 in
+  iteri (fun i z ->
+    Array.iteri (fun k j -> i'.(k) <- i.(j)) a;
+    set y i' z
+  ) x;
+  y
+
+let swap a0 a1 x =
+  let d = num_dims x in
+  let a = Array.init d (fun i -> i) in
+  let t = a.(a0) in
+  a.(a0) <- a.(a1);
+  a.(a1) <- t;
+  transpose ~axis:a x
+
+let filteri ?axis f x =
+  let a = ref [||] in
+  iteri ?axis (fun i y ->
+    if f i y = true then
+      let j = Array.copy i in
+      a := Array.append !a [|j|]
+  ) x;
+  !a
+
+let filter ?axis f x = filteri ?axis (fun _ y -> f y) x
+
 let _fold_basic ?axis iter_fun f a x =
   let r = ref a in
   iter_fun ?axis (fun y -> r := f !r y) x; !r

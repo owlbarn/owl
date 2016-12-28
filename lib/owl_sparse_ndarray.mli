@@ -46,6 +46,11 @@ val clone : ('a, 'b) t -> ('a, 'b) t
 
 (* val slice : *)
 
+val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
+
+val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
+
+
 (** {6 Iterate array elements} *)
 
 val iteri : ?axis:int option array -> (int array -> 'a -> unit) -> ('a, 'b) t -> unit
@@ -55,6 +60,10 @@ val iter : ?axis:int option array -> ('a -> unit) -> ('a, 'b) t -> unit
 val mapi : ?axis:int option array -> (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
 val map : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+
+val filteri : ?axis:int option array -> (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
+
+val filter : ?axis:int option array -> ('a -> bool) -> ('a, 'b) t -> int array array
 
 val foldi : ?axis:int option array -> (int array -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
@@ -71,6 +80,7 @@ val map_nz : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 val foldi_nz : ?axis:int option array -> (int array -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 val fold_nz : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
+
 
 
 (** {6 Examine array elements or compare two arrays } *)
