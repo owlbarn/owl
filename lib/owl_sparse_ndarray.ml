@@ -125,6 +125,31 @@ let set x i a =
     )
   )
 
+let flatten x =
+  let s = _calc_stride (shape x) in
+  let y = clone x in
+  Hashtbl.iter (fun i j ->
+    let i' = _index_nd_1d i s in
+    Hashtbl.remove y.h i;
+    Hashtbl.add y.h [|i'|] j
+  ) x.h;
+  y.s <- [|numel x|];
+  y
+
+let reshape x s =
+  let y = clone x in
+  let s0 = _calc_stride (shape x) in
+  let s1 = _calc_stride s in
+  let i1 = Array.copy s in
+  Hashtbl.iter (fun i j ->
+    let k = _index_nd_1d i s0 in
+    _index_1d_nd k i1 s1;
+    Hashtbl.remove y.h i;
+    Hashtbl.add y.h (Array.copy i1) j;
+  ) x.h;
+  y.s <- s;
+  y
+
 let rec __iteri_fix_axis d j i l h f x =
   if j = d - 1 then (
     for k = l.(j) to h.(j) do
@@ -472,6 +497,7 @@ let binary ?(density=0.1) k s =
 let uniform ?(scale=1.) ?(density=0.1) k s =
   let _op = _owl_uniform k in
   _random_basic density k (fun () -> _op scale) s
+
 
 
 (* ends here *)

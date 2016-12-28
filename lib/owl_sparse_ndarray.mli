@@ -44,6 +44,10 @@ val set : ('a, 'b) t -> int array -> 'a -> unit
 
 val clone : ('a, 'b) t -> ('a, 'b) t
 
+val flatten : ('a, 'b) t -> ('a, 'b) t
+
+val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
+
 (* val slice : *)
 
 val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
