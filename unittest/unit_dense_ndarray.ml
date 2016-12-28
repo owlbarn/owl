@@ -120,12 +120,20 @@ module To_test = struct
 
   let filter () = M.filter ((=) 3.) x0 = [| [|1;0;0|] |]
 
+  let filteri () = M.filteri (fun i a ->
+    i.(2) = 1 && a = 3.
+    ) x1 = [| [|0;1;1|] |]
+
   let transpose () =
     let y = M.clone x0 in
     let y = M.transpose y in
     M.get y [|1;0;0|] = 1. &&
     M.get y [|0;1;0|] = 2. &&
     M.get y [|0;0;1|] = 3.
+
+  let flatten () = M.get (M.flatten x0) [|3|] = 2.
+
+  let reshape () = M.get (M.reshape x0 [|2;3;2|]) [|0;1;1|] = 2.
 
   let save_load () =
     M.save x0 "ds_nda.tmp";
@@ -241,8 +249,17 @@ let for_all () =
 let filter () =
   Alcotest.(check bool) "filter" true (To_test.filter ())
 
+let filteri () =
+  Alcotest.(check bool) "filteri" true (To_test.filteri ())
+
 let transpose () =
   Alcotest.(check bool) "transpose" true (To_test.transpose ())
+
+let flatten () =
+  Alcotest.(check bool) "flatten" true (To_test.flatten ())
+
+let reshape () =
+  Alcotest.(check bool) "reshape" true (To_test.reshape ())
 
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
@@ -283,7 +300,10 @@ let test_set = [
   "not_exists", `Slow, not_exists;
   "for_all", `Slow, for_all;
   "filter", `Slow, filter;
+  "filteri", `Slow, filteri;
   "transpose", `Slow, transpose;
+  "flatten", `Slow, flatten;
+  "reshape", `Slow, reshape;
   "save_load", `Slow, save_load;
 ]
 
