@@ -1031,8 +1031,6 @@ let im x =
 
 let conj x = map Complex.conj x
 
-(* TODO *)
-
 let pmap f x =
   let _op = _map_op (kind x) in
   let x' = Bigarray.reshape_1 x (numel x) in
@@ -1055,6 +1053,8 @@ let pmap f x =
   let y = genarray_of_array1 y in
   reshape y (shape x)
 
+(* TODO *)
+
 let insert_slice = None
 
 let remove_slice = None
@@ -1062,8 +1062,6 @@ let remove_slice = None
 let mapi_slice = None
 
 let map_slice = None
-
-(* TODO *)
 
 let sort axis x = None
 
