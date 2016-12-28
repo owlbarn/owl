@@ -59,7 +59,7 @@ let _in_slice s x =
   with exn -> ());
   !r
 
-let empty k s =
+let zeros k s =
   let n = Array.fold_right (fun c a -> c * a) s 1 in
   let c = max (n / 1000) 1024 in
   {
@@ -274,7 +274,7 @@ let add x1 x2 =
   let k = kind x1 in
   let _a0 = _zero k in
   let __add_elt = _add_elt k in
-  let y = empty k (shape x1) in
+  let y = zeros k (shape x1) in
   let _ = iteri_nz (fun i a ->
     let b = get x2 i in
     if b = _a0 then set y i a
@@ -293,7 +293,7 @@ let mul x1 x2 =
   let k = kind x1 in
   let _a0 = _zero k in
   let __mul_elt = _mul_elt k in
-  let y = empty (kind x1) (shape x1) in
+  let y = zeros (kind x1) (shape x1) in
   let _ = iteri_nz (fun i a ->
     let b = get x2 i in
     if b <> _a0 then set y i (__mul_elt a b)
@@ -305,7 +305,7 @@ let div x1 x2 =
   let _a0 = _zero k in
   let __div_elt = _div_elt k in
   let __inv_elt = _inv_elt k in
-  let y = empty (kind x1) (shape x1) in
+  let y = zeros (kind x1) (shape x1) in
   let _ = iteri_nz (fun i a ->
     let b = get x2 i in
     if b <> _a0 then set y i (__div_elt a (__inv_elt b))
@@ -395,13 +395,14 @@ let pp_spnda x =
   )
 
 let _random_basic a k f d =
-  let x = empty k d in
+  let x = zeros k d in
   let n = numel x in
   let c = int_of_float ((float_of_int n) *. a) in
   let i = Array.copy d in
   let s = _calc_stride d in
-  for k = 0 to c do
+  for k = 0 to c - 1 do
     let j = Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) () in
+    _index_1d_nd j i s;
     set x i (f ())
   done;
   x

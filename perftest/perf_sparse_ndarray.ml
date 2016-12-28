@@ -15,7 +15,7 @@ let _ =
   print_endline (Bytes.make 60 '-');
   let x = M.uniform ~density Bigarray.Float64 [|m;n;o|] in
   let y = M.uniform ~density Bigarray.Float64 [|m;n;o|] in
-  test_op "empty             " c (fun () -> M.empty Bigarray.Float64 [|m;n;o|]);
+  test_op "zeros             " c (fun () -> M.zeros Bigarray.Float64 [|m;n;o|]);
   test_op "uniform           " c (fun () -> M.uniform ~density Bigarray.Float64 [|m;n;o|]);
   test_op "min               " c (fun () -> M.min x);
   test_op "minmax            " c (fun () -> M.minmax x);

@@ -10,7 +10,7 @@ type ('a, 'b) t
 
 (** {6 Create sparse ndarray} *)
 
-val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
+val zeros : ('a, 'b) kind -> int array -> ('a, 'b) t
 
 val binary : ?density:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
 

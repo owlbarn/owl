@@ -9,20 +9,20 @@ module M = Owl_dense_ndarray
 let ndarray = Alcotest.testable (fun p (x : (float, float64_elt) M.t) -> ()) M.is_equal
 
 (* some test input *)
-let x0 = M.empty Float64 [|2;2;3|]
+let x0 = M.zeros Float64 [|2;2;3|]
 let _ =
   M.set x0 [|0;0;1|] 1.;
   M.set x0 [|0;1;0|] 2.;
   M.set x0 [|1;0;0|] 3.
 
-let x1 = M.empty Float64 [|2;2;3|]
+let x1 = M.zeros Float64 [|2;2;3|]
 let _ =
   M.set x1 [|0;0;1|] 1.;
   M.set x1 [|0;0;2|] 2.;
   M.set x1 [|0;1;1|] 3.;
   M.set x1 [|1;0;0|] 4.
 
-let x2 = M.empty Float64 [|2;2;3|]
+let x2 = M.zeros Float64 [|2;2;3|]
 let _ =
   M.set x2 [|0;0;1|] 2.;
   M.set x2 [|0;0;2|] 2.;
@@ -89,6 +89,12 @@ module To_test = struct
   let is_greater () = M.is_greater x2 x0
 
   let equal_or_greater () = M.equal_or_greater x2 x0
+
+  let slice () =
+    let y = M.slice [|None; Some 0; Some 0|] x0 in
+    let z = M.empty Float64 [|2|] in
+    M.set z [|1|] 3.;
+    M.is_equal y z
 
 end
 
@@ -175,6 +181,9 @@ let is_greater () =
 let equal_or_greater () =
   Alcotest.(check bool) "equal_or_greater" true (To_test.equal_or_greater ())
 
+let slice () =
+  Alcotest.(check bool) "slice" true (To_test.slice ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -203,6 +212,7 @@ let test_set = [
   "is_equal", `Slow, is_equal;
   "is_greater", `Slow, is_greater;
   "equal_or_greater", `Slow, equal_or_greater;
+  "slice", `Slow, slice;
 ]
 
 (* Run it *)
