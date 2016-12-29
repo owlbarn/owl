@@ -718,6 +718,19 @@ let of_arrays k x = Owl_dense_matrix.of_arrays k x |> of_dense
 
 let to_arrays x = to_dense x |> Owl_dense_matrix.to_arrays
 
+let to_array x =
+  let y = Array.make (nnz x) ([||], _zero (kind x)) in
+  let k = ref 0 in
+  iteri_nz (fun i j v ->
+    y.(!k) <- ([|i;j|], v);
+    k := !k + 1;
+  ) x;
+  y
+
+let of_array k m n x =
+  let y = zeros k m n in
+  Array.iter (fun (i,v) -> set y i.(0) i.(1) v) x;
+  y
 
 (** short-hand infix operators *)
 
