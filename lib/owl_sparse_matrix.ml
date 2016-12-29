@@ -714,10 +714,6 @@ let fill x a =
     done
   done
 
-let of_arrays k x = Owl_dense_matrix.of_arrays k x |> of_dense
-
-let to_arrays x = to_dense x |> Owl_dense_matrix.to_arrays
-
 let to_array x =
   let y = Array.make (nnz x) ([||], _zero (kind x)) in
   let k = ref 0 in

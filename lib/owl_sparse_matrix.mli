@@ -208,10 +208,6 @@ val to_array : ('a, 'b) t -> (int array * 'a) array
 
 val of_array : ('a, 'b) kind -> int -> int -> (int array * 'a) array -> ('a, 'b) t
 
-val to_arrays : ('a, 'b) t -> 'a array array
-
-val of_arrays : ('a, 'b) kind -> 'a array array -> ('a, 'b) t
-
 val to_dense : ('a, 'b) t -> ('a, 'b) Owl_dense_matrix.t
 
 val of_dense : ('a, 'b) Owl_dense_matrix.t -> ('a, 'b) t
