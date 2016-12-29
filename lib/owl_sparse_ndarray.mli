@@ -136,7 +136,6 @@ val save : ('a, 'b) t -> string -> unit
 val load : ('a, 'b) kind -> string -> ('a, 'b) t
 
 
-
 (** {6 Unary mathematical operations } *)
 
 val min : ('a, 'b) t -> 'a
