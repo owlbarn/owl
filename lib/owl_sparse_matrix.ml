@@ -339,6 +339,11 @@ let map_nz f x =
   done;
   y
 
+let foldi_nz f a x =
+  let r = ref a in
+  iteri_nz (fun i j y -> r := f i j !r y) x;
+  !r
+
 let fold_nz f a x = _fold_basic iter_nz f a x
 
 let filteri_nz f x =

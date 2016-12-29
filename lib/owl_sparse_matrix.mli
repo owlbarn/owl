@@ -121,6 +121,8 @@ val mapi_nz : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
 val map_nz : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
+val foldi_nz : (int -> int -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
+
 val fold_nz : ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 val filteri_nz : (int -> int -> 'a -> bool) -> ('a, 'b) t -> (int * int) array

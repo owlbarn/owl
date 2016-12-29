@@ -128,6 +128,12 @@ module To_test = struct
     ) 0. x2
     in a = 60.
 
+  let foldi_nz () =
+    let a = M.foldi_nz (fun i j c a ->
+      if i <> 2 then c +. a else c
+    ) 0. x2
+    in a = 28.
+
   let filter () = M.filter ((=) 3.) x2 = [| (0,3) |]
 
   let fold_rows () =
@@ -260,6 +266,9 @@ let fold () =
 let foldi () =
   Alcotest.(check bool) "foldi" true (To_test.foldi ())
 
+let foldi_nz () =
+  Alcotest.(check bool) "foldi_nz" true (To_test.foldi_nz ())
+
 let filter () =
   Alcotest.(check bool) "filter" true (To_test.filter ())
 
@@ -314,6 +323,7 @@ let test_set = [
   "map", `Slow, map;
   "fold", `Slow, fold;
   "foldi", `Slow, foldi;
+  "foldi_nz", `Slow, foldi_nz;
   "filter", `Slow, filter;
   "fold_rows", `Slow, fold_rows;
   "fold_cols", `Slow, fold_cols;

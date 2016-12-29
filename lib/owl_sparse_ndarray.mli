@@ -86,7 +86,6 @@ val foldi_nz : ?axis:int option array -> (int array -> 'c -> 'a -> 'c) -> 'c -> 
 val fold_nz : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 
-
 (** {6 Examine array elements or compare two arrays } *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
