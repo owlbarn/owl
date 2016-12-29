@@ -132,6 +132,11 @@ module To_test = struct
 
   let reshape () = M.get (M.reshape x0 [|2;3;2|]) [|0;1;1|] = 2.
 
+  let of_array () =
+    let a = [| ([|0;0;1|], 1.); ([|0;1;0|], 2.); ([|1;0;0|], 3.)|] in
+    let y = M.of_array Float64 [|2;2;3|] a in
+    M.is_equal y x0
+
   let save_load () =
     M.save x0 "ds_nda.tmp";
     let y = M.load Float64 "ds_nda.tmp" in
@@ -255,6 +260,9 @@ let flatten () =
 let reshape () =
   Alcotest.(check bool) "reshape" true (To_test.reshape ())
 
+let of_array () =
+  Alcotest.(check bool) "of_array" true (To_test.of_array ())
+
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
@@ -297,6 +305,7 @@ let test_set = [
   "transpose", `Slow, transpose;
   "flatten", `Slow, flatten;
   "reshape", `Slow, reshape;
+  "of_array", `Slow, of_array;
   "save_load", `Slow, save_load;
 ]
 
