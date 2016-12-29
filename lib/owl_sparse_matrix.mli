@@ -60,7 +60,7 @@ val fill : ('a, 'b) t -> 'a -> unit
 
 val clone : ('a, 'b) t -> ('a, 'b) t
 
-(* val transpose : ('a, 'b) t -> ('a, 'b) t *)
+(* TODO: val transpose : ('a, 'b) t -> ('a, 'b) t *)
 
 val diag : ('a, 'b) t -> ('a, 'b) t
 
@@ -187,51 +187,6 @@ val equal_or_greater : ('a, 'b) t -> ('a, 'b) t -> bool
 val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
 
 
-(** {6 Basic mathematical operations of matrices} *)
-
-val add : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
-
-val sub : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
-
-val mul : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
-
-val div : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
-
-val add_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
-
-val sub_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
-
-val mul_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
-
-val div_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
-
-val dot : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
-
-val abs : ('a, 'b) t ->('a, 'b) t
-
-val neg : ('a, 'b) t ->('a, 'b) t
-
-val sum : ('a, 'b) t -> 'a
-
-val average : ('a, 'b) t -> 'a
-
-val min : ('a, 'b) t -> 'a
-
-val max : ('a, 'b) t -> 'a
-
-val minmax : ('a, 'b) t -> 'a * 'a
-
-(* TODO: min_i; max_i ... to_array ... *)
-
-val sum_rows : ('a, 'b) t -> ('a, 'b) t
-
-val sum_cols : ('a, 'b) t -> ('a, 'b) t
-
-val average_rows : ('a, 'b) t ->('a, 'b) t
-
-val average_cols : ('a, 'b) t ->('a, 'b) t
-
-
 (** {6 Randomisation functions} *)
 
 val permutation_matrix : ('a, 'b) kind -> int -> ('a, 'b) t
@@ -266,5 +221,52 @@ val save : ('a, 'b) t -> string -> unit
 val load : ('a, 'b) kind -> string -> ('a, 'b) t
 
 
-(* TODO: debug purpose *)
+(** {6 Unary mathematical operations } *)
+
+val min : ('a, 'b) t -> 'a
+
+val max : ('a, 'b) t -> 'a
+
+val minmax : ('a, 'b) t -> 'a * 'a
+
+val sum : ('a, 'b) t -> 'a
+
+val average : ('a, 'b) t -> 'a
+
+val sum_rows : ('a, 'b) t -> ('a, 'b) t
+
+val sum_cols : ('a, 'b) t -> ('a, 'b) t
+
+val average_rows : ('a, 'b) t ->('a, 'b) t
+
+val average_cols : ('a, 'b) t ->('a, 'b) t
+
+val abs : ('a, 'b) t ->('a, 'b) t
+
+val neg : ('a, 'b) t ->('a, 'b) t
+
+
+(** {6 Binary mathematical operations } *)
+
+val add : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
+
+val sub : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
+
+val mul : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
+
+val div : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
+
+val add_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+
+val sub_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+
+val mul_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+
+val div_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
+
+val dot : ('a, 'b) t ->('a, 'b) t ->('a, 'b) t
+
+
+
+(* DEBUG: for debug purpose *)
 val _triplet2crs : ('a, 'b) t -> unit

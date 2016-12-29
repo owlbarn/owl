@@ -117,6 +117,10 @@ module To_test = struct
     i.(2) = 1 && a = 3.
     ) x1 = [| [|0;1;1|] |]
 
+  let filteri_nz () = M.filteri (fun i a ->
+    i.(0) = 1 && a = 4.
+    ) x1 = [| [|1;0;0|] |]
+
   let transpose () =
     let y = M.clone x0 in
     let y = M.transpose y in
@@ -239,6 +243,9 @@ let filter () =
 let filteri () =
   Alcotest.(check bool) "filteri" true (To_test.filteri ())
 
+let filteri_nz () =
+  Alcotest.(check bool) "filteri_nz" true (To_test.filteri_nz ())
+
 let transpose () =
   Alcotest.(check bool) "transpose" true (To_test.transpose ())
 
@@ -286,6 +293,7 @@ let test_set = [
   "equal_or_greater", `Slow, equal_or_greater;
   "filter", `Slow, filter;
   "filteri", `Slow, filteri;
+  "filteri_nz", `Slow, filteri_nz;
   "transpose", `Slow, transpose;
   "flatten", `Slow, flatten;
   "reshape", `Slow, reshape;
