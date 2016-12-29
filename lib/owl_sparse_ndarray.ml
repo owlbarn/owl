@@ -95,6 +95,10 @@ let same_shape x y =
     !b
   )
 
+let _check_same_shape x y =
+  if same_shape x y = false then
+    failwith "Owl_sparse_ndarray: _check_same_shape fails."
+
 let clone x = {
   s = Array.copy x.s;
   h = Hashtbl.copy x.h;
@@ -439,16 +443,21 @@ let sum x =
 let average x = (_average_elt (kind x)) (sum x) (numel x)
 
 let is_equal x1 x2 =
+  _check_same_shape x1 x2;
   if (nnz x1) <> (nnz x2) then false
   else (sub x1 x2 |> is_zero)
 
 let is_unequal x1 x2 = not (is_equal x1 x2)
 
-let is_greater x1 x2 = is_positive (sub x1 x2)
+let is_greater x1 x2 =
+  _check_same_shape x1 x2;
+  is_positive (sub x1 x2)
 
 let is_smaller x1 x2 = is_greater x2 x1
 
-let equal_or_greater x1 x2 = is_nonnegative (sub x1 x2)
+let equal_or_greater x1 x2 =
+  _check_same_shape x1 x2;
+  is_nonnegative (sub x1 x2)
 
 let equal_or_smaller x1 x2 = equal_or_greater x2 x1
 
@@ -542,6 +551,20 @@ let binary ?(density=0.1) k s =
 let uniform ?(scale=1.) ?(density=0.1) k s =
   let _op = _owl_uniform k in
   _random_basic density k (fun () -> _op scale) s
+
+let to_array x =
+  let y = Array.make (nnz x) ([||], _zero (kind x)) in
+  let j = ref 0 in
+  iteri_nz (fun i v ->
+    y.(!j) <- (Array.copy i, v);
+    j := !j + 1;
+  ) x;
+  y
+
+let of_array k s x =
+  let y = zeros k s in
+  Array.iter (fun (i,v) -> set y i v) x;
+  y
 
 
 

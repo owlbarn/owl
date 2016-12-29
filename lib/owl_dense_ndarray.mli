@@ -286,14 +286,6 @@ val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
 
 (** {6 Input/Output functions} *)
 
-val save : ('a, 'b) t -> string -> unit
-(** [save x s] serialises a ndarray [x] to a file of name [s]. *)
-
-val load : ('a, 'b) kind -> string -> ('a, 'b) t
-(** [load k s] loads previously serialised ndarray from file [s] into memory.
-  It is necesssary to specify the type of the ndarray with paramater [k].
-*)
-
 val print : ('a, 'b) t -> unit
 (** [print x] prints all the elements in [x] as well as their indices. *)
 
@@ -301,6 +293,14 @@ val pp_dsnda : ('a, 'b) t -> unit
 (** [pp_dsnda x] prints [x] in OCaml toplevel. If the ndarray is too long,
   [pp_dsnda] only prints out parts of the ndarray.
  *)
+
+val save : ('a, 'b) t -> string -> unit
+(** [save x s] serialises a ndarray [x] to a file of name [s]. *)
+
+val load : ('a, 'b) kind -> string -> ('a, 'b) t
+(** [load k s] loads previously serialised ndarray from file [s] into memory.
+  It is necesssary to specify the type of the ndarray with paramater [k].
+*)
 
 
 (** {6 Unary mathematical operations } *)

@@ -123,13 +123,18 @@ val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
 
 (** {6 Input/Output and helper functions} *)
 
-val save : ('a, 'b) t -> string -> unit
+val to_array : ('a, 'b) t -> (int array * 'a) array
 
-val load : ('a, 'b) kind -> string -> ('a, 'b) t
+val of_array : ('a, 'b) kind -> int array -> (int array * 'a) array -> ('a, 'b) t
 
 val print : ('a, 'b) t -> unit
 
 val pp_spnda : ('a, 'b) t -> unit
+
+val save : ('a, 'b) t -> string -> unit
+
+val load : ('a, 'b) kind -> string -> ('a, 'b) t
+
 
 
 (** {6 Unary mathematical operations } *)
