@@ -52,6 +52,12 @@ module To_test = struct
     M.set x [|1;0;1|] 5.;
     M.get x [|1;0;1|] = 5.
 
+  let slice () =
+    let y = M.slice [|None; Some 0; Some 0|] x0 in
+    let z = M.zeros Float64 [|2|] in
+    M.set z [|1|] 3.;
+    M.is_equal y z
+
   let clone () = (M.clone x0) = x0
 
   let map () = M.map (fun a -> a +. 1.) x0 |> M.sum = 18.
@@ -155,6 +161,9 @@ let get () =
 let set () =
   Alcotest.(check bool) "set" true (To_test.set ())
 
+let slice () =
+  Alcotest.(check bool) "slice" true (To_test.slice ())
+
 let clone () =
   Alcotest.(check bool) "clone" true (To_test.clone ())
 
@@ -251,6 +260,7 @@ let test_set = [
   "density", `Slow, density;
   "get", `Slow, get;
   "set", `Slow, set;
+  "slice", `Slow, slice;
   "clone", `Slow, clone;
   "map", `Slow, map;
   "map_nz", `Slow, map_nz;

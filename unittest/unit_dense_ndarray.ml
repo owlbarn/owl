@@ -52,6 +52,12 @@ module To_test = struct
     M.set x [|1;0;1|] 5.;
     M.get x [|1;0;1|] = 5.
 
+  let slice () =
+    let y = M.slice [|None; Some 0; Some 0|] x0 in
+    let z = M.zeros Float64 [|2|] in
+    M.set z [|1|] 3.;
+    M.is_equal y z
+
   let clone () = (M.clone x0) = x0
 
   let fill () =
@@ -105,12 +111,6 @@ module To_test = struct
   let is_greater () = M.is_greater x2 x0
 
   let equal_or_greater () = M.equal_or_greater x2 x0
-
-  let slice () =
-    let y = M.slice [|None; Some 0; Some 0|] x0 in
-    let z = M.zeros Float64 [|2|] in
-    M.set z [|1|] 3.;
-    M.is_equal y z
 
   let exists () = M.exists ((<) 0.) x0
 
@@ -167,6 +167,9 @@ let get () =
 
 let set () =
   Alcotest.(check bool) "set" true (To_test.set ())
+
+let slice () =
+  Alcotest.(check bool) "slice" true (To_test.slice ())
 
 let clone () =
   Alcotest.(check bool) "clone" true (To_test.clone ())
@@ -234,9 +237,6 @@ let is_greater () =
 let equal_or_greater () =
   Alcotest.(check bool) "equal_or_greater" true (To_test.equal_or_greater ())
 
-let slice () =
-  Alcotest.(check bool) "slice" true (To_test.slice ())
-
 let exists () =
   Alcotest.(check bool) "exists" true (To_test.exists ())
 
@@ -273,6 +273,7 @@ let test_set = [
   "density", `Slow, density;
   "get", `Slow, get;
   "set", `Slow, set;
+  "slice", `Slow, slice;
   "clone", `Slow, clone;
   "fill", `Slow, fill;
   "map", `Slow, map;
@@ -295,7 +296,6 @@ let test_set = [
   "is_equal", `Slow, is_equal;
   "is_greater", `Slow, is_greater;
   "equal_or_greater", `Slow, equal_or_greater;
-  "slice", `Slow, slice;
   "exists", `Slow, exists;
   "not_exists", `Slow, not_exists;
   "for_all", `Slow, for_all;

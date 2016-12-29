@@ -42,7 +42,7 @@ let _remove_ith_item x i =
     else Some v
   ) x.h
 
-(* check whether x is in slice s *)
+(* check whether index x is in slice s *)
 let _in_slice s x =
   let r = ref true in
   (try
@@ -302,6 +302,28 @@ let foldi_nz ?axis f a x =
   let c = ref a in
   iteri_nz ?axis (fun i y -> c := (f i !c y)) x;
   !c
+
+let slice axis x =
+  (* make the index mapping *)
+  let m = ref [||] in
+  for i = 0 to Array.length axis - 1 do
+    match axis.(i) with
+    | Some _ -> ()
+    | None   -> m := Array.append !m [|i|]
+  done;
+  let m = !m in
+  (* create a new sparse ndarray for the slice *)
+  let s0 = shape x in
+  let s1 = Array.map (fun i -> s0.(i)) m in
+  let y = zeros (kind x) s1 in
+  (* only iterate non-zero elements *)
+  iteri_nz (fun i v ->
+    if _in_slice axis i = true then (
+      let i' = Array.map (fun j -> i.(j)) m in
+      set y i' v
+    )
+  ) x;
+  y
 
 let _exists_basic iter_fun f x =
   try iter_fun (fun y ->
