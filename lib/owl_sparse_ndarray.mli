@@ -81,6 +81,10 @@ val mapi_nz : ?axis:int option array -> (int array -> 'a -> 'a) -> ('a, 'b) t ->
 
 val map_nz : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
+val filteri_nz : ?axis:int option array -> (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
+
+val filter_nz : ?axis:int option array -> ('a -> bool) -> ('a, 'b) t -> int array array
+
 val foldi_nz : ?axis:int option array -> (int array -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 val fold_nz : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c

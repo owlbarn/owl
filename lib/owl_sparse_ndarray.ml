@@ -285,6 +285,17 @@ let filteri ?axis f x =
 
 let filter ?axis f x = filteri ?axis (fun _ y -> f y) x
 
+let filteri_nz ?axis f x =
+  let a = ref [||] in
+  iteri_nz ?axis (fun i y ->
+    if f i y = true then
+      let j = Array.copy i in
+      a := Array.append !a [|j|]
+  ) x;
+  !a
+
+let filter_nz ?axis f x = filteri_nz ?axis (fun _ y -> f y) x
+
 let _fold_basic ?axis iter_fun f a x =
   let r = ref a in
   iter_fun ?axis (fun y -> r := f !r y) x; !r
