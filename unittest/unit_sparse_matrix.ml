@@ -42,9 +42,9 @@ module To_test = struct
     M.set x 2 1 5.;
     M.get x 2 1
 
-  let row () = M.of_arrays Float64 [| [|4.;5.;6.;7.|] |]
+  let row () = Owl_dense_matrix.of_arrays Float64 [| [|4.;5.;6.;7.|] |] |> M.of_dense
 
-  let col () = M.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |]
+  let col () = Owl_dense_matrix.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |] |> M.of_dense
 
   let trace x = M.trace x
 
@@ -105,7 +105,7 @@ module To_test = struct
     let y = M.sequential Float64 3 2 in
     let y = M.map ((+.) 1.) y in
     let a = M.dot x y in
-    let b = M.of_arrays Float64 [| [|22.;28.|]; [|49.;64.|] |] in
+    let b = Owl_dense_matrix.of_arrays Float64 [| [|22.;28.|]; [|49.;64.|] |] |> M.of_dense in
     M.is_equal a b
 
   let add_scalar () = M.add_scalar x1 2. |> M.sum = 36.
@@ -144,20 +144,29 @@ module To_test = struct
   let filter () = M.filter ((=) 3.) x2 = [| (0,3) |]
 
   let fold_rows () =
-    let x = M.fold_rows (fun c a -> M.add c a) (M.zeros Float64 1 4) x2 |> M.to_arrays in
+    let x = M.fold_rows (fun c a -> M.add c a) (M.zeros Float64 1 4) x2
+    |> M.to_dense |> Owl_dense_matrix.to_arrays in
     x = [| [|12.;15.;18.;21.|] |]
 
   let fold_cols () =
-    let x = M.fold_cols (fun c a -> M.add c a) (M.zeros Float64 3 1) x2 |> M.to_arrays in
+    let x = M.fold_cols (fun c a -> M.add c a) (M.zeros Float64 3 1) x2
+    |> M.to_dense |> Owl_dense_matrix.to_arrays in
     x = [| [|6.|]; [|22.|]; [|38.|] |]
 
   let sum_rows () =
-    let x = M.sum_rows x2 |> M.to_arrays in
+    let x = M.sum_rows x2 |> M.to_dense |> Owl_dense_matrix.to_arrays in
     x = [| [|12.;15.;18.;21.|] |]
 
   let sum_cols () =
-    let x = M.sum_cols x2 |> M.to_arrays in
+    let x = M.sum_cols x2 |> M.to_dense |> Owl_dense_matrix.to_arrays in
     x = [| [|6.|]; [|22.|]; [|38.|] |]
+
+  let of_array () =
+    let a = [|([|0; 1|], 1.); ([|0; 2|], 2.); ([|0; 3|], 3.); ([|1; 0|], 4.);
+              ([|1; 1|], 5.); ([|1; 2|], 6.); ([|1; 3|], 7.); ([|2; 0|], 8.);
+              ([|2; 1|], 9.); ([|2; 2|], 10.); ([|2; 3|], 11.)|] in
+    let y = M.of_array Float64 3 4 a in
+    M.is_equal y x2
 
   let save_load () =
     M.save x2 "sp_mat.tmp";
@@ -294,6 +303,9 @@ let sum_rows () =
 let sum_cols () =
   Alcotest.(check bool) "sum_cols" true (To_test.sum_cols ())
 
+let of_array () =
+  Alcotest.(check bool) "of_array" true (To_test.of_array ())
+
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
@@ -340,6 +352,7 @@ let test_set = [
   "fold_cols", `Slow, fold_cols;
   "sum_rows", `Slow, sum_rows;
   "sum_cols", `Slow, sum_cols;
+  "of_array", `Slow, of_array;
   "save_load", `Slow, save_load;
 ]
 

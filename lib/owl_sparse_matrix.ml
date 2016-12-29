@@ -47,6 +47,12 @@ let zeros k m n =
 
 let kind x = Array1.kind x.d
 
+let same_shape x y = x.m = y.m && x.n = y.n
+
+let _check_same_shape x y =
+  if same_shape x y = false then
+    failwith "Owl_sparse_matrix: _check_same_shape fails."
+
 let _is_triplet x =
   match x.typ with
   | TRIPLET -> true
@@ -565,16 +571,21 @@ let min x = fst (minmax x)
 let max x = snd (minmax x)
 
 let is_equal x1 x2 =
+  _check_same_shape x1 x2;
   if x1.nz <> x2.nz then false
   else (sub x1 x2 |> is_zero)
 
 let is_unequal x1 x2 = not (is_equal x1 x2)
 
-let is_greater x1 x2 = is_positive (sub x1 x2)
+let is_greater x1 x2 =
+  _check_same_shape x1 x2;
+  is_positive (sub x1 x2)
 
 let is_smaller x1 x2 = is_greater x2 x1
 
-let equal_or_greater x1 x2 = is_nonnegative (sub x1 x2)
+let equal_or_greater x1 x2 =
+  _check_same_shape x1 x2;
+  is_nonnegative (sub x1 x2)
 
 let equal_or_smaller x1 x2 = equal_or_greater x2 x1
 
