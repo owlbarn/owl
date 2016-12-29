@@ -306,7 +306,7 @@ let test_set = [
   "sequential", `Slow, sequential;
   "row_num", `Slow, row_num;
   "col_num", `Slow, col_num;
-  "numel", `Slow, col_num;
+  "numel", `Slow, numel;
   "get", `Slow, get;
   "set", `Slow, set;
   "row", `Slow, row;

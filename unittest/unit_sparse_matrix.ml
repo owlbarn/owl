@@ -24,6 +24,13 @@ module To_test = struct
 
   let numel x = M.numel x
 
+  let transpose () =
+    let y = M.zeros Float64 4 3 in
+    let y = M.mapi (fun i j _ ->
+      (i + (M.row_num y) * j) |> float_of_int
+    ) y in
+    M.is_equal y (M.transpose x2)
+
   let fill () =
     let x = M.zeros Float64 3 4 in
     M.fill x 1.; x
@@ -173,6 +180,9 @@ let col_num () =
 let numel () =
   Alcotest.(check int) "numel" 12 (To_test.numel x0)
 
+let transpose () =
+  Alcotest.(check bool) "transpose" true (To_test.transpose ())
+
 let get () =
   Alcotest.(check float) "get" 6. (To_test.get x2)
 
@@ -291,7 +301,8 @@ let test_set = [
   "sequential", `Slow, sequential;
   "row_num", `Slow, row_num;
   "col_num", `Slow, col_num;
-  "numel", `Slow, col_num;
+  "numel", `Slow, numel;
+  "transpose", `Slow, transpose;
   "get", `Slow, get;
   "set", `Slow, set;
   "row", `Slow, row;

@@ -60,7 +60,7 @@ val fill : ('a, 'b) t -> 'a -> unit
 
 val clone : ('a, 'b) t -> ('a, 'b) t
 
-(* TODO: val transpose : ('a, 'b) t -> ('a, 'b) t *)
+val transpose : ('a, 'b) t -> ('a, 'b) t
 
 val diag : ('a, 'b) t -> ('a, 'b) t
 

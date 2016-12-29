@@ -432,6 +432,12 @@ let row_num_nz x = nnz_rows x |> Array.length
 
 let col_num_nz x = nnz_cols x |> Array.length
 
+let transpose x =
+  let m, n = shape x in
+  let y = zeros (kind x) n m in
+  iteri_nz (fun i j a -> set y j i a) x;
+  y
+
 (** matrix mathematical operations *)
 
 let add_scalar x a =
