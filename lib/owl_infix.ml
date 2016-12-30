@@ -23,6 +23,20 @@ module type ComputableSig = sig
 
   val div_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
 
+  val is_equal : ('a, 'b) t -> ('a, 'b) t -> bool
+
+  val is_unequal : ('a, 'b) t -> ('a, 'b) t -> bool
+
+  val is_greater : ('a, 'b) t -> ('a, 'b) t -> bool
+
+  val is_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
+
+  val equal_or_greater : ('a, 'b) t -> ('a, 'b) t -> bool
+
+  val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
+
+  val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+
 end
 
 
@@ -45,5 +59,19 @@ module Make (Computable: ComputableSig) = struct
   let ( *$ ) = Computable.mul_scalar
 
   let ( /$ ) = Computable.div_scalar
+
+  let ( =@ ) = Computable.is_equal
+
+  let ( <>@ ) = Computable.is_unequal
+
+  let ( >@ ) = Computable.is_greater
+
+  let ( <@ ) = Computable.is_smaller
+
+  let ( >=@ ) = Computable.equal_or_greater
+
+  let ( <=@ ) = Computable.equal_or_smaller
+
+  let ( @@ ) = Computable.map
 
 end
