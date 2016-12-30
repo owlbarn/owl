@@ -9,7 +9,7 @@ open Bigarray
 open Ctypes
 open Owl_types
 
-module FB = Ffi_bindings.Bindings(Ffi_generated)
+module FB = Ffi_gsl_bindings.Bindings(Ffi_gsl_generated)
 
 (* TODO: for compatibility reasons, need to be removed *)
 module DR = FB.Dense_real_double
