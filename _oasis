@@ -104,14 +104,6 @@ Executable perf_specific_fun
 
 # Examples
 
-Executable ffi_stubgen
-  Install:        false
-  Path:           lib/bindings
-  BuildTools:     ocamlbuild
-  MainIs:         ffi_stubgen.ml
-  CompiledObject: byte
-  BuildDepends:   owl, ctypes.stubs
-
 Executable test_sgd
   Path:           examples
   CompiledObject: best
