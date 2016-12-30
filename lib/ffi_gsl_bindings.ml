@@ -5,9 +5,9 @@
  *)
 
  (* run the following commands -->
-   ./ffi_stubgen.byte -ml > lib/ffi_generated.ml;
-   ./ffi_stubgen.byte -c > lib/ffi_generated_stub.c;
-   cp ./lib/bindings/ffi_bindings_base.ml  ./lib/ffi_bindings.ml
+   ./ffi_gsl_stubgen.byte -ml > lib/ffi_gsl_generated.ml;
+   ./ffi_gsl_stubgen.byte -c > lib/ffi_gsl_generated_stub.c;
+   cp ./lib/bindings/ffi_gsl_bindings.ml  ./lib/ffi_gsl_bindings.ml
   *)
 
 open Ctypes
@@ -96,6 +96,7 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
     open Owl_types.Dense_complex_double
 
+    (* deal with anonymous c struct *)
     let mat_struct = typedef mat_struct "gsl_matrix_complex"
     let vec_struct = typedef vec_struct "gsl_vector_complex"
 
@@ -116,6 +117,7 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
     open Owl_types.Dense_complex_float
 
+    (* deal with anonymous c struct *)
     let mat_struct = typedef mat_struct "gsl_matrix_complex_float"
     let vec_struct = typedef vec_struct "gsl_vector_complex_float"
 
@@ -138,6 +140,7 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
     open Owl_types.Sparse_real_double
 
+    (* deal with anonymous c struct *)
     let spmat_struct = typedef spmat_struct "gsl_spmatrix"
 
     let gsl_spmatrix_alloc = foreign "gsl_spmatrix_alloc" (int @-> int @-> returning (ptr spmat_struct))
