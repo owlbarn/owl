@@ -16,7 +16,7 @@ let _ =
   | true, true ->
     failwith "Exactly one of -ml and -c must be specified"
   | true, false ->
-    Cstubs.write_ml Format.std_formatter ~prefix (module Ffi_bindings_base.Bindings)
+    Cstubs.write_ml Format.std_formatter ~prefix (module Ffi_gsl_bindings.Bindings)
   | false, true ->
     print_endline "#include <gsl/gsl_block_double.h>";
     print_endline "#include <gsl/gsl_block_complex_double.h>";
@@ -34,4 +34,4 @@ let _ =
 
     print_endline "#include <gsl/gsl_spmatrix.h>";
     print_endline "#include <gsl/gsl_spblas.h>";
-    Cstubs.write_c Format.std_formatter ~prefix (module Ffi_bindings_base.Bindings)
+    Cstubs.write_c Format.std_formatter ~prefix (module Ffi_gsl_bindings.Bindings)
