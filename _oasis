@@ -26,8 +26,9 @@ Library owl
                     Owl_dense_matrix, Owl_cluster, Owl_linalg,  Owl_fft,
                     Owl_sparse_matrix, Owl_sparse_ndarray,
                     Owl_infix
-  InternalModules:  Ffi_gsl_generated
-  CSources:         owl_macros.h, ffi_gsl_generated_stub.c,
+  InternalModules:  Ffi_gsl_generated, Ffi_eigen_bindings
+  CSources:         owl_macros.h,
+                    ffi_gsl_generated_stub.c, ffi_eigen_generated,
                     owl_dense_common_c.c, owl_dense_common_vec_cmp.c
   CCOpt:            -I$pkg_ctypes
   BuildDepends:     str, gsl, ctypes, ctypes.stubs, plplot, dolog, lacaml,

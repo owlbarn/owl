@@ -362,6 +362,10 @@ module Dense_complex_float = struct
 
 end
 
+(* TODO: experimental, interface to eigen *)
+(* module EigenFB = Ffi_eigen_bindings.Bindings(Ffi_eigen_generated) *)
+
+
 
 
 (* ends here *)
