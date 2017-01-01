@@ -47,3 +47,8 @@ int c_eigen_spmat_d_cols(eigen_spmat_d *m)
 {
   return c_to_eigen(m).cols();
 }
+
+double c_eigen_spmat_d_get(eigen_spmat_d *m, int i, int j)
+{
+  return (c_to_eigen(m)).coeff(i,j);
+}

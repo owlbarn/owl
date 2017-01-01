@@ -1,7 +1,6 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
  * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
- *
  *)
 
 (** This module is extended from gsl-ocaml by including SI system.
