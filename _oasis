@@ -174,8 +174,8 @@ Document owldoc
 # | Misc                                                              |
 # +-------------------------------------------------------------------+
 
-SourceRepository master
+SourceRepository head
   Type: git
   Location: https://github.com/ryanrhymes/owl.git
-  Branch: master
   Browser: https://github.com/ryanrhymes/owl
+  Branch: master
