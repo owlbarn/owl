@@ -1,18 +1,22 @@
-OASISFormat: 0.4
-Name:        owl
-Version:     0.1
-Description: Owl is an OCaml library for scientific computing
-Synopsis:    Scientific computing library
-Authors:     Liang Wang (ryanrhymes@gmail.com)
-License:     MIT
-Plugins:     META (0.4)
-BuildTools:  ocamlbuild
-Homepage:    https://github.com/ryanrhymes/owl
-SourceRepository master
-  Type: git
-  Location: https://github.com/ryanrhymes/owl.git
-  Branch: master
-  Browser: https://github.com/ryanrhymes/owl
+# +-------------------------------------------------------------------+
+# | Package parameters                                                |
+# +-------------------------------------------------------------------+
+
+OASISFormat:  0.4
+Name:         owl
+Version:      0.1
+Description:  Owl is an OCaml library for scientific computing
+Synopsis:     Scientific computing library
+Authors:      Liang Wang (ryanrhymes@gmail.com)
+License:      MIT
+Plugins:      META (0.4)
+OCamlVersion: >= 4.04
+BuildTools:   ocamlbuild
+Homepage:     https://github.com/ryanrhymes/owl
+
+# +-------------------------------------------------------------------+
+# | Libraries                                                         |
+# +-------------------------------------------------------------------+
 
 Library owl
   Path:             lib
@@ -49,7 +53,9 @@ Library owl_parallel
   CCOpt:            -D_GNU_SOURCE -fPIC
   BuildDepends:     unix, dolog
 
-# Performance test
+# +-------------------------------------------------------------------+
+# | Performance tests                                                 |
+# +-------------------------------------------------------------------+
 
 Library perf_common
   Install:          false
@@ -104,7 +110,9 @@ Executable perf_specific_fun
   MainIs:         perf_specific_fun.ml
   BuildDepends:   owl
 
-# Examples
+# +-------------------------------------------------------------------+
+# | Examples                                                          |
+# +-------------------------------------------------------------------+
 
 Executable test_sgd
   Path:           examples
@@ -148,8 +156,9 @@ Executable test_lda
   MainIs:         test_lda.ml
   BuildDepends:   owl_topic
 
-
-# Documentation
+# +-------------------------------------------------------------------+
+# | Document                                                          |
+# +-------------------------------------------------------------------+
 
 AlphaFeatures: ocamlbuild_more_args
 Document owldoc
@@ -160,3 +169,13 @@ Document owldoc
   XOCamlBuildPath:      .
   XOCamlBuildLibraries: owl
   XOCamlbuildExtraArgs: "-docflags '-colorize-code -keep-code -charset utf-8'"
+
+# +-------------------------------------------------------------------+
+# | Misc                                                              |
+# +-------------------------------------------------------------------+
+
+SourceRepository master
+  Type: git
+  Location: https://github.com/ryanrhymes/owl.git
+  Branch: master
+  Browser: https://github.com/ryanrhymes/owl
