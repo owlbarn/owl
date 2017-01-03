@@ -30,8 +30,9 @@ Library owl
                     Owl_dense_matrix, Owl_cluster, Owl_linalg,  Owl_fft,
                     Owl_sparse_matrix, Owl_sparse_ndarray,
                     Owl_infix,
-                    Owl_foreign, Ffi_gsl_bindings, Ffi_eigen_bindings
-  InternalModules:  Ffi_gsl_generated, Ffi_eigen_generated
+                    Owl_foreign, Ffi_gsl_bindings, Ffi_eigen_bindings,
+                    # InternalModules?
+                    Ffi_gsl_generated, Ffi_eigen_generated
   CSources:         owl_macros.h,
                     ffi_gsl_generated_stub.c, ffi_eigen_generated_stub.c,
                     owl_dense_common_c.c, owl_dense_common_vec_cmp.c
