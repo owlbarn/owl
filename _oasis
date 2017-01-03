@@ -18,6 +18,10 @@ Homepage:     https://github.com/ryanrhymes/owl
 # | Libraries                                                         |
 # +-------------------------------------------------------------------+
 
+PreBuildCommand:    cd lib/eigen; make;
+                    cp libowl_eigen.so /usr/local/lib/;
+                    make clean; cd ../..;
+
 Library owl
   Path:             lib
   BuildTools:       ocamlbuild, ocamldoc
@@ -31,7 +35,7 @@ Library owl
                     Owl_sparse_matrix, Owl_sparse_ndarray,
                     Owl_infix,
                     Owl_foreign, Ffi_gsl_bindings, Ffi_eigen_bindings,
-                    # InternalModules?
+                    ### InternalModules? ###
                     Ffi_gsl_generated, Ffi_eigen_generated
   CSources:         owl_macros.h,
                     ffi_gsl_generated_stub.c, ffi_eigen_generated_stub.c,
