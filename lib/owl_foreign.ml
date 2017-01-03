@@ -363,7 +363,19 @@ module Dense_complex_float = struct
 end
 
 (* TODO: experimental, interface to eigen *)
-(* module EigenFB = Ffi_eigen_bindings.Bindings(Ffi_eigen_generated) *)
+module EigenFB = Ffi_eigen_bindings.Bindings(Ffi_eigen_generated)
+
+module Eigen_D = struct
+
+  open EigenFB
+
+  let create m n = EigenFB.ml_eigen_spmat_d_new m n
+
+  let rows x = EigenFB.ml_eigen_spmat_d_rows x
+
+  let cols x = EigenFB.ml_eigen_spmat_d_cols x
+
+end
 
 
 
