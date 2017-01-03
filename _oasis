@@ -38,7 +38,6 @@ Library owl
   CCOpt:            -I$pkg_ctypes
                     -I/Users/liang/code/owl/lib/eigen
   CCLib:            /usr/local/lib/libowl_eigen.so
-  DllLib:           /usr/local/lib/libowl_eigen.so
   BuildDepends:     str, gsl, ctypes, ctypes.stubs, plplot, dolog, lacaml,
                     owl_parallel
 
