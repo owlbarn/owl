@@ -382,6 +382,8 @@ module Eigen_D = struct
 
   let get x i j = ml_eigen_spmat_d_get x i j
 
+  let set x i j a = ml_eigen_spmat_d_set x i j a
+
 end
 
 

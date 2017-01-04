@@ -33,3 +33,13 @@ value owl_stub_5_c_eigen_spmat_d_get(value x21, value x20, value x19)
    double x29 = c_eigen_spmat_d_get(x22, x23, x26);
    return caml_copy_double(x29);
 }
+value owl_stub_6_c_eigen_spmat_d_set(value x33, value x32, value x31,
+                                     value x30)
+{
+   struct eigen_spmat_d* x34 = CTYPES_ADDR_OF_FATPTR(x33);
+   int x35 = Int_val(x32);
+   int x38 = Int_val(x31);
+   double x41 = Double_val(x30);
+   c_eigen_spmat_d_set(x34, x35, x38, x41);
+   return Val_unit;
+}

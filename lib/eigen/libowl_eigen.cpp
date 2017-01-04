@@ -52,3 +52,8 @@ double c_eigen_spmat_d_get(eigen_spmat_d *m, int i, int j)
 {
   return (c_to_eigen(m)).coeff(i,j);
 }
+
+void c_eigen_spmat_d_set(eigen_spmat_d *m, int i, int j, double x)
+{
+  (c_to_eigen(m)).coeffRef(i,j) = x;
+}

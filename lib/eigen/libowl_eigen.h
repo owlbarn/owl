@@ -18,6 +18,7 @@ extern "C"
   int c_eigen_spmat_d_rows(struct eigen_spmat_d *m);
   int c_eigen_spmat_d_cols(struct eigen_spmat_d *m);
   double c_eigen_spmat_d_get(struct eigen_spmat_d *m, int i, int j);
+  void c_eigen_spmat_d_set(struct eigen_spmat_d *m, int i, int j, double x);
 
 
 #ifdef __cplusplus
