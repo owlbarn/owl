@@ -392,6 +392,8 @@ module Eigen_D = struct
 
   let uncompress x = ml_eigen_spmat_d_uncompress x
 
+  let reshape x m n = ml_eigen_spmat_d_reshape x m n
+
   let print x = ml_eigen_spmat_d_print x
 
 end

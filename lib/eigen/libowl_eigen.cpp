@@ -30,7 +30,7 @@ inline eigen_spmat_d* eigen_to_c(spmat_d& ref)
 
 eigen_spmat_d* c_eigen_spmat_d_new(int rows, int cols)
 {
-  return eigen_to_c(*new spmat_d(rows,cols));
+  return eigen_to_c(*new spmat_d(rows, cols));
 }
 
 void c_eigen_spmat_d_delete(eigen_spmat_d *m)
@@ -76,6 +76,11 @@ void c_eigen_spmat_d_compress(eigen_spmat_d *m)
 void c_eigen_spmat_d_uncompress(eigen_spmat_d *m)
 {
   (c_to_eigen(m)).uncompress();
+}
+
+void c_eigen_spmat_d_reshape(eigen_spmat_d *m, int rows, int cols)
+{
+  (c_to_eigen(m)).conservativeResize(rows, cols);
 }
 
 void c_eigen_spmat_d_print(eigen_spmat_d *m)

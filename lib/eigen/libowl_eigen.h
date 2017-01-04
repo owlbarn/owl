@@ -23,6 +23,7 @@ extern "C"
   int c_eigen_spmat_d_is_compressed(struct eigen_spmat_d *m);
   void c_eigen_spmat_d_compress(struct eigen_spmat_d *m);
   void c_eigen_spmat_d_uncompress(struct eigen_spmat_d *m);
+  void c_eigen_spmat_d_reshape(struct eigen_spmat_d *m, int rows, int cols);
   void c_eigen_spmat_d_print(struct eigen_spmat_d *m);
 
 #ifdef __cplusplus
