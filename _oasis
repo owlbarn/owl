@@ -27,7 +27,6 @@ PreBuildCommand:    ${rm} ${prefix}/include/eigen;
                     cd -;
 
 PostBuildCommand:   ${rm} ${prefix}/include/eigen;
-                    ${rm} -f ${libdir}/libowl_eigen.o;
 
 Library owl
   Path:             lib
