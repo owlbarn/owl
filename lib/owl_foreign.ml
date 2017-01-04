@@ -384,6 +384,10 @@ module Eigen_D = struct
 
   let set x i j a = ml_eigen_spmat_d_set x i j a
 
+  let reset x = ml_eigen_spmat_d_reset x
+
+  let print x = ml_eigen_spmat_d_print x
+
 end
 
 

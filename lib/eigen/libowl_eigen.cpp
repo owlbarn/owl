@@ -57,3 +57,13 @@ void c_eigen_spmat_d_set(eigen_spmat_d *m, int i, int j, double x)
 {
   (c_to_eigen(m)).coeffRef(i,j) = x;
 }
+
+void c_eigen_spmat_d_reset(eigen_spmat_d *m)
+{
+  (c_to_eigen(m)).setZero();
+}
+
+void c_eigen_spmat_d_print(eigen_spmat_d *m)
+{
+  std::cout << c_to_eigen(m) << std::endl;
+}

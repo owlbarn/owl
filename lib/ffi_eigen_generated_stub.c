@@ -43,3 +43,15 @@ value owl_stub_6_c_eigen_spmat_d_set(value x33, value x32, value x31,
    c_eigen_spmat_d_set(x34, x35, x38, x41);
    return Val_unit;
 }
+value owl_stub_7_c_eigen_spmat_d_reset(value x45)
+{
+   struct eigen_spmat_d* x46 = CTYPES_ADDR_OF_FATPTR(x45);
+   c_eigen_spmat_d_reset(x46);
+   return Val_unit;
+}
+value owl_stub_8_c_eigen_spmat_d_print(value x48)
+{
+   struct eigen_spmat_d* x49 = CTYPES_ADDR_OF_FATPTR(x48);
+   c_eigen_spmat_d_print(x49);
+   return Val_unit;
+}

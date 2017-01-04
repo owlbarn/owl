@@ -24,4 +24,8 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   let ml_eigen_spmat_d_set = foreign "c_eigen_spmat_d_set" (ptr eigen_spmat_d @-> int @-> int @-> double @-> returning void)
 
+  let ml_eigen_spmat_d_reset = foreign "c_eigen_spmat_d_reset" (ptr eigen_spmat_d @-> returning void)
+
+  let ml_eigen_spmat_d_print = foreign "c_eigen_spmat_d_print" (ptr eigen_spmat_d @-> returning void)
+
 end
