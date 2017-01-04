@@ -26,3 +26,7 @@ cleanall:
 	rm -rf *.byte *.native
 	rm -rf examples/*.byte examples/*.native examples/*.tmp
 	rm -rf perftest/*.byte perftest/*.native perftest/*.tmp
+	# remove installed library files
+	ocamlfind remove owl
+	ocamlfind remove owl_topic
+	ocamlfind remove owl_parallel
