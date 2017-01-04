@@ -68,6 +68,16 @@ int c_eigen_spmat_d_is_compressed(eigen_spmat_d *m)
   return (c_to_eigen(m)).isCompressed();
 }
 
+void c_eigen_spmat_d_compress(eigen_spmat_d *m)
+{
+  (c_to_eigen(m)).makeCompressed();
+}
+
+void c_eigen_spmat_d_uncompress(eigen_spmat_d *m)
+{
+  (c_to_eigen(m)).uncompress();
+}
+
 void c_eigen_spmat_d_print(eigen_spmat_d *m)
 {
   std::cout << c_to_eigen(m) << std::endl;

@@ -388,6 +388,10 @@ module Eigen_D = struct
 
   let is_compressed x = ml_eigen_spmat_d_is_compressed x = 1
 
+  let compress x = ml_eigen_spmat_d_compress x
+
+  let uncompress x = ml_eigen_spmat_d_uncompress x
+
   let print x = ml_eigen_spmat_d_print x
 
 end

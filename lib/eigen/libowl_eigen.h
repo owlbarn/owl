@@ -21,6 +21,8 @@ extern "C"
   void c_eigen_spmat_d_set(struct eigen_spmat_d *m, int i, int j, double x);
   void c_eigen_spmat_d_reset(struct eigen_spmat_d *m);
   int c_eigen_spmat_d_is_compressed(struct eigen_spmat_d *m);
+  void c_eigen_spmat_d_compress(struct eigen_spmat_d *m);
+  void c_eigen_spmat_d_uncompress(struct eigen_spmat_d *m);
   void c_eigen_spmat_d_print(struct eigen_spmat_d *m);
 
 #ifdef __cplusplus

@@ -55,9 +55,21 @@ value owl_stub_8_c_eigen_spmat_d_is_compressed(value x48)
    int x50 = c_eigen_spmat_d_is_compressed(x49);
    return Val_int(x50);
 }
-value owl_stub_9_c_eigen_spmat_d_print(value x51)
+value owl_stub_9_c_eigen_spmat_d_compress(value x51)
 {
    struct eigen_spmat_d* x52 = CTYPES_ADDR_OF_FATPTR(x51);
-   c_eigen_spmat_d_print(x52);
+   c_eigen_spmat_d_compress(x52);
+   return Val_unit;
+}
+value owl_stub_10_c_eigen_spmat_d_uncompress(value x54)
+{
+   struct eigen_spmat_d* x55 = CTYPES_ADDR_OF_FATPTR(x54);
+   c_eigen_spmat_d_uncompress(x55);
+   return Val_unit;
+}
+value owl_stub_11_c_eigen_spmat_d_print(value x57)
+{
+   struct eigen_spmat_d* x58 = CTYPES_ADDR_OF_FATPTR(x57);
+   c_eigen_spmat_d_print(x58);
    return Val_unit;
 }
