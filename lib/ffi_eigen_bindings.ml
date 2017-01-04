@@ -20,4 +20,6 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   let ml_eigen_spmat_d_cols = foreign "c_eigen_spmat_d_cols" (ptr eigen_spmat_d @-> returning int)
 
+  let ml_eigen_spmat_d_get = foreign "c_eigen_spmat_d_get" (ptr eigen_spmat_d @-> int @-> int @-> returning double)
+
 end

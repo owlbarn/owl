@@ -8,6 +8,7 @@ extern "C"
 {
 #endif
 
+
   /**************************** SparseMatrix_D ****************************/
 
   struct eigen_spmat_d {};
@@ -16,7 +17,7 @@ extern "C"
   void c_eigen_spmat_d_delete(struct eigen_spmat_d *m);
   int c_eigen_spmat_d_rows(struct eigen_spmat_d *m);
   int c_eigen_spmat_d_cols(struct eigen_spmat_d *m);
-  double c_eigen_spmat_d_get(const struct eigen_spmat_d *m, int i, int j);
+  double c_eigen_spmat_d_get(struct eigen_spmat_d *m, int i, int j);
 
 
 #ifdef __cplusplus

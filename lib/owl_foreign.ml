@@ -369,11 +369,18 @@ module Eigen_D = struct
 
   open EigenFB
 
-  let create m n = EigenFB.ml_eigen_spmat_d_new m n
+  let create m n =
+    let x = ml_eigen_spmat_d_new m n in
+    Gc.finalise ml_eigen_spmat_d_delete x;
+    x
 
-  let rows x = EigenFB.ml_eigen_spmat_d_rows x
+  let delete x = ml_eigen_spmat_d_delete x
 
-  let cols x = EigenFB.ml_eigen_spmat_d_cols x
+  let rows x = ml_eigen_spmat_d_rows x
+
+  let cols x = ml_eigen_spmat_d_cols x
+
+  let get x i j = ml_eigen_spmat_d_get x i j
 
 end
 
