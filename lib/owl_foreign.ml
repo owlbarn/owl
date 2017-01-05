@@ -414,6 +414,10 @@ module Eigen_D = struct
 
   let div x y = ml_eigen_spmat_d_div x y
 
+  let mul_scalar x a = ml_eigen_spmat_d_mul_scalar x a
+
+  let div_scalar x a = ml_eigen_spmat_d_div_scalar x a
+
   let print x = ml_eigen_spmat_d_print x
 
 end

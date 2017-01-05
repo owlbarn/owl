@@ -54,6 +54,10 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   let ml_eigen_spmat_d_div = foreign "c_eigen_spmat_d_div" (ptr c_spmat_d @-> ptr c_spmat_d @-> returning (ptr c_spmat_d))
 
+  let ml_eigen_spmat_d_mul_scalar = foreign "c_eigen_spmat_d_mul_scalar" (ptr c_spmat_d @-> double @-> returning (ptr c_spmat_d))
+
+  let ml_eigen_spmat_d_div_scalar = foreign "c_eigen_spmat_d_div_scalar" (ptr c_spmat_d @-> double @-> returning (ptr c_spmat_d))
+
   let ml_eigen_spmat_d_print = foreign "c_eigen_spmat_d_print" (ptr c_spmat_d @-> returning void)
 
 end

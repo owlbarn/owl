@@ -147,6 +147,18 @@ c_spmat_d* c_eigen_spmat_d_div(c_spmat_d *m0, c_spmat_d *m1)
   return eigen_to_c(*new spmat_d(x0.cwiseQuotient(x1)));
 }
 
+c_spmat_d* c_eigen_spmat_d_mul_scalar(c_spmat_d *m, double a)
+{
+  spmat_d x = c_to_eigen(m);
+  return eigen_to_c(*new spmat_d(x * a));
+}
+
+c_spmat_d* c_eigen_spmat_d_div_scalar(c_spmat_d *m, double a)
+{
+  spmat_d x = c_to_eigen(m);
+  return eigen_to_c(*new spmat_d(x / a));
+}
+
 void c_eigen_spmat_d_print(c_spmat_d *m)
 {
   std::cout << c_to_eigen(m) << std::endl;
