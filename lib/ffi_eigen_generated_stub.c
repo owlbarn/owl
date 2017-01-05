@@ -141,49 +141,56 @@ value owl_stub_21_c_eigen_spmat_d_div(value x112, value x111)
    struct c_spmat_d* x115 = c_eigen_spmat_d_div(x113, x114);
    return CTYPES_FROM_PTR(x115);
 }
-value owl_stub_22_c_eigen_spmat_d_mul_scalar(value x117, value x116)
+value owl_stub_22_c_eigen_spmat_d_dot(value x117, value x116)
 {
    struct c_spmat_d* x118 = CTYPES_ADDR_OF_FATPTR(x117);
-   double x119 = Double_val(x116);
-   struct c_spmat_d* x122 = c_eigen_spmat_d_mul_scalar(x118, x119);
-   return CTYPES_FROM_PTR(x122);
+   struct c_spmat_d* x119 = CTYPES_ADDR_OF_FATPTR(x116);
+   struct c_spmat_d* x120 = c_eigen_spmat_d_dot(x118, x119);
+   return CTYPES_FROM_PTR(x120);
 }
-value owl_stub_23_c_eigen_spmat_d_div_scalar(value x124, value x123)
+value owl_stub_23_c_eigen_spmat_d_mul_scalar(value x122, value x121)
 {
-   struct c_spmat_d* x125 = CTYPES_ADDR_OF_FATPTR(x124);
-   double x126 = Double_val(x123);
-   struct c_spmat_d* x129 = c_eigen_spmat_d_div_scalar(x125, x126);
-   return CTYPES_FROM_PTR(x129);
+   struct c_spmat_d* x123 = CTYPES_ADDR_OF_FATPTR(x122);
+   double x124 = Double_val(x121);
+   struct c_spmat_d* x127 = c_eigen_spmat_d_mul_scalar(x123, x124);
+   return CTYPES_FROM_PTR(x127);
 }
-value owl_stub_24_c_eigen_spmat_d_min2(value x131, value x130)
+value owl_stub_24_c_eigen_spmat_d_div_scalar(value x129, value x128)
 {
-   struct c_spmat_d* x132 = CTYPES_ADDR_OF_FATPTR(x131);
-   struct c_spmat_d* x133 = CTYPES_ADDR_OF_FATPTR(x130);
-   struct c_spmat_d* x134 = c_eigen_spmat_d_min2(x132, x133);
+   struct c_spmat_d* x130 = CTYPES_ADDR_OF_FATPTR(x129);
+   double x131 = Double_val(x128);
+   struct c_spmat_d* x134 = c_eigen_spmat_d_div_scalar(x130, x131);
    return CTYPES_FROM_PTR(x134);
 }
-value owl_stub_25_c_eigen_spmat_d_max2(value x136, value x135)
+value owl_stub_25_c_eigen_spmat_d_min2(value x136, value x135)
 {
    struct c_spmat_d* x137 = CTYPES_ADDR_OF_FATPTR(x136);
    struct c_spmat_d* x138 = CTYPES_ADDR_OF_FATPTR(x135);
-   struct c_spmat_d* x139 = c_eigen_spmat_d_max2(x137, x138);
+   struct c_spmat_d* x139 = c_eigen_spmat_d_min2(x137, x138);
    return CTYPES_FROM_PTR(x139);
 }
-value owl_stub_26_c_eigen_spmat_d_abs(value x140)
+value owl_stub_26_c_eigen_spmat_d_max2(value x141, value x140)
 {
-   struct c_spmat_d* x141 = CTYPES_ADDR_OF_FATPTR(x140);
-   struct c_spmat_d* x142 = c_eigen_spmat_d_abs(x141);
-   return CTYPES_FROM_PTR(x142);
+   struct c_spmat_d* x142 = CTYPES_ADDR_OF_FATPTR(x141);
+   struct c_spmat_d* x143 = CTYPES_ADDR_OF_FATPTR(x140);
+   struct c_spmat_d* x144 = c_eigen_spmat_d_max2(x142, x143);
+   return CTYPES_FROM_PTR(x144);
 }
-value owl_stub_27_c_eigen_spmat_d_sqrt(value x143)
+value owl_stub_27_c_eigen_spmat_d_abs(value x145)
 {
-   struct c_spmat_d* x144 = CTYPES_ADDR_OF_FATPTR(x143);
-   struct c_spmat_d* x145 = c_eigen_spmat_d_sqrt(x144);
-   return CTYPES_FROM_PTR(x145);
+   struct c_spmat_d* x146 = CTYPES_ADDR_OF_FATPTR(x145);
+   struct c_spmat_d* x147 = c_eigen_spmat_d_abs(x146);
+   return CTYPES_FROM_PTR(x147);
 }
-value owl_stub_28_c_eigen_spmat_d_print(value x146)
+value owl_stub_28_c_eigen_spmat_d_sqrt(value x148)
 {
-   struct c_spmat_d* x147 = CTYPES_ADDR_OF_FATPTR(x146);
-   c_eigen_spmat_d_print(x147);
+   struct c_spmat_d* x149 = CTYPES_ADDR_OF_FATPTR(x148);
+   struct c_spmat_d* x150 = c_eigen_spmat_d_sqrt(x149);
+   return CTYPES_FROM_PTR(x150);
+}
+value owl_stub_29_c_eigen_spmat_d_print(value x151)
+{
+   struct c_spmat_d* x152 = CTYPES_ADDR_OF_FATPTR(x151);
+   c_eigen_spmat_d_print(x152);
    return Val_unit;
 }

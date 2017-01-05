@@ -34,6 +34,7 @@ extern "C"
   struct c_spmat_d* c_eigen_spmat_d_sub(struct c_spmat_d *m0, struct c_spmat_d *m1);
   struct c_spmat_d* c_eigen_spmat_d_mul(struct c_spmat_d *m0, struct c_spmat_d *m1);
   struct c_spmat_d* c_eigen_spmat_d_div(struct c_spmat_d *m0, struct c_spmat_d *m1);
+  struct c_spmat_d* c_eigen_spmat_d_dot(struct c_spmat_d *m0, struct c_spmat_d *m1);
   struct c_spmat_d* c_eigen_spmat_d_mul_scalar(struct c_spmat_d *m, double a);
   struct c_spmat_d* c_eigen_spmat_d_div_scalar(struct c_spmat_d *m, double a);
   struct c_spmat_d* c_eigen_spmat_d_min2(struct c_spmat_d *m0, struct c_spmat_d *m1);
