@@ -119,6 +119,34 @@ c_spmat_d* c_eigen_spmat_d_transpose(c_spmat_d *m)
   return eigen_to_c(*new spmat_d(x));
 }
 
+c_spmat_d* c_eigen_spmat_d_add(c_spmat_d *m0, c_spmat_d *m1)
+{
+  spmat_d x0 = c_to_eigen(m0);
+  spmat_d x1 = c_to_eigen(m1);
+  return eigen_to_c(*new spmat_d(x0 + x1));
+}
+
+c_spmat_d* c_eigen_spmat_d_sub(c_spmat_d *m0, c_spmat_d *m1)
+{
+  spmat_d x0 = c_to_eigen(m0);
+  spmat_d x1 = c_to_eigen(m1);
+  return eigen_to_c(*new spmat_d(x0 - x1));
+}
+
+c_spmat_d* c_eigen_spmat_d_mul(c_spmat_d *m0, c_spmat_d *m1)
+{
+  spmat_d x0 = c_to_eigen(m0);
+  spmat_d x1 = c_to_eigen(m1);
+  return eigen_to_c(*new spmat_d(x0.cwiseProduct(x1)));
+}
+
+c_spmat_d* c_eigen_spmat_d_div(c_spmat_d *m0, c_spmat_d *m1)
+{
+  spmat_d x0 = c_to_eigen(m0);
+  spmat_d x1 = c_to_eigen(m1);
+  return eigen_to_c(*new spmat_d(x0.cwiseQuotient(x1)));
+}
+
 void c_eigen_spmat_d_print(c_spmat_d *m)
 {
   std::cout << c_to_eigen(m) << std::endl;

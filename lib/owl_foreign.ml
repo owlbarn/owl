@@ -406,6 +406,14 @@ module Eigen_D = struct
 
   let transpose x = ml_eigen_spmat_d_transpose x
 
+  let add x y = ml_eigen_spmat_d_add x y
+
+  let sub x y = ml_eigen_spmat_d_sub x y
+
+  let mul x y = ml_eigen_spmat_d_mul x y
+
+  let div x y = ml_eigen_spmat_d_div x y
+
   let print x = ml_eigen_spmat_d_print x
 
 end
