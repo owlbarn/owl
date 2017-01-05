@@ -83,6 +83,12 @@ void c_eigen_spmat_d_reshape(eigen_spmat_d *m, int rows, int cols)
   (c_to_eigen(m)).conservativeResize(rows, cols);
 }
 
+eigen_spmat_d* c_eigen_spmat_d_clone(eigen_spmat_d *m)
+{
+  spmat_d x = c_to_eigen(m);
+  return eigen_to_c(*new spmat_d(x));
+}
+
 void c_eigen_spmat_d_print(eigen_spmat_d *m)
 {
   std::cout << c_to_eigen(m) << std::endl;

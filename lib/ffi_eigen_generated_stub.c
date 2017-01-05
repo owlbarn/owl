@@ -75,9 +75,15 @@ value owl_stub_11_c_eigen_spmat_d_reshape(value x59, value x58, value x57)
    c_eigen_spmat_d_reshape(x60, x61, x64);
    return Val_unit;
 }
-value owl_stub_12_c_eigen_spmat_d_print(value x68)
+value owl_stub_12_c_eigen_spmat_d_clone(value x68)
 {
    struct eigen_spmat_d* x69 = CTYPES_ADDR_OF_FATPTR(x68);
-   c_eigen_spmat_d_print(x69);
+   struct eigen_spmat_d* x70 = c_eigen_spmat_d_clone(x69);
+   return CTYPES_FROM_PTR(x70);
+}
+value owl_stub_13_c_eigen_spmat_d_print(value x71)
+{
+   struct eigen_spmat_d* x72 = CTYPES_ADDR_OF_FATPTR(x71);
+   c_eigen_spmat_d_print(x72);
    return Val_unit;
 }
