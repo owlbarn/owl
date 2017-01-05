@@ -36,6 +36,10 @@ extern "C"
   struct c_spmat_d* c_eigen_spmat_d_div(struct c_spmat_d *m0, struct c_spmat_d *m1);
   struct c_spmat_d* c_eigen_spmat_d_mul_scalar(struct c_spmat_d *m, double a);
   struct c_spmat_d* c_eigen_spmat_d_div_scalar(struct c_spmat_d *m, double a);
+  struct c_spmat_d* c_eigen_spmat_d_min2(struct c_spmat_d *m0, struct c_spmat_d *m1);
+  struct c_spmat_d* c_eigen_spmat_d_max2(struct c_spmat_d *m0, struct c_spmat_d *m1);
+  struct c_spmat_d* c_eigen_spmat_d_abs(struct c_spmat_d *m);
+  struct c_spmat_d* c_eigen_spmat_d_sqrt(struct c_spmat_d *m);
   void c_eigen_spmat_d_print(struct c_spmat_d *m);
 
 #ifdef __cplusplus

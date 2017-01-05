@@ -142,6 +142,7 @@ c_spmat_d* c_eigen_spmat_d_mul(c_spmat_d *m0, c_spmat_d *m1)
 
 c_spmat_d* c_eigen_spmat_d_div(c_spmat_d *m0, c_spmat_d *m1)
 {
+  // FIXME : div (-1)
   spmat_d x0 = c_to_eigen(m0);
   spmat_d x1 = c_to_eigen(m1);
   return eigen_to_c(*new spmat_d(x0.cwiseQuotient(x1)));
@@ -157,6 +158,32 @@ c_spmat_d* c_eigen_spmat_d_div_scalar(c_spmat_d *m, double a)
 {
   spmat_d x = c_to_eigen(m);
   return eigen_to_c(*new spmat_d(x / a));
+}
+
+c_spmat_d* c_eigen_spmat_d_min2(c_spmat_d *m0, c_spmat_d *m1)
+{
+  spmat_d x0 = c_to_eigen(m0);
+  spmat_d x1 = c_to_eigen(m1);
+  return eigen_to_c(*new spmat_d(x0.cwiseMin(x1)));
+}
+
+c_spmat_d* c_eigen_spmat_d_max2(c_spmat_d *m0, c_spmat_d *m1)
+{
+  spmat_d x0 = c_to_eigen(m0);
+  spmat_d x1 = c_to_eigen(m1);
+  return eigen_to_c(*new spmat_d(x0.cwiseMax(x1)));
+}
+
+c_spmat_d* c_eigen_spmat_d_abs(c_spmat_d *m)
+{
+  spmat_d x = (c_to_eigen(m)).cwiseAbs();
+  return eigen_to_c(*new spmat_d(x));
+}
+
+c_spmat_d* c_eigen_spmat_d_sqrt(c_spmat_d *m)
+{
+  spmat_d x = (c_to_eigen(m)).cwiseSqrt();
+  return eigen_to_c(*new spmat_d(x));
 }
 
 void c_eigen_spmat_d_print(c_spmat_d *m)
