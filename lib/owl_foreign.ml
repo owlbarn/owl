@@ -376,9 +376,13 @@ module Eigen_D = struct
 
   let delete x = ml_eigen_spmat_d_delete x
 
+  let eye m = ml_eigen_spmat_d_eye m
+
   let rows x = ml_eigen_spmat_d_rows x
 
   let cols x = ml_eigen_spmat_d_cols x
+
+  let nnz x = ml_eigen_spmat_d_nnz x
 
   let get x i j = ml_eigen_spmat_d_get x i j
 
@@ -395,6 +399,10 @@ module Eigen_D = struct
   let reshape x m n = ml_eigen_spmat_d_reshape x m n
 
   let clone x = ml_eigen_spmat_d_clone x
+
+  let row x i = ml_eigen_spmat_d_row x i
+
+  let transpose x = ml_eigen_spmat_d_transpose x
 
   let print x = ml_eigen_spmat_d_print x
 
