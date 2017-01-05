@@ -19,6 +19,7 @@ Homepage:     https://github.com/ryanrhymes/owl
 # +-------------------------------------------------------------------+
 
 PreBuildCommand:    ${rm} ${prefix}/include/eigen;
+                    ${rm} ${libdir}/libowl_eigen.o;
                     ln -s `pwd`/lib/eigen ${prefix}/include/eigen
                     cd ${prefix}/include/eigen;
                     make;

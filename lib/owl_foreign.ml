@@ -402,6 +402,8 @@ module Eigen_D = struct
 
   let row x i = ml_eigen_spmat_d_row x i
 
+  let col x i = ml_eigen_spmat_d_col x i
+
   let transpose x = ml_eigen_spmat_d_transpose x
 
   let print x = ml_eigen_spmat_d_print x

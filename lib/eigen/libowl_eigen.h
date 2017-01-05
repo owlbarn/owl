@@ -28,6 +28,7 @@ extern "C"
   void c_eigen_spmat_d_reshape(struct c_spmat_d *m, int rows, int cols);
   struct c_spmat_d* c_eigen_spmat_d_clone(struct c_spmat_d *m);
   struct c_spmat_d* c_eigen_spmat_d_row(struct c_spmat_d *m, int i);
+  struct c_spmat_d* c_eigen_spmat_d_col(struct c_spmat_d *m, int i);
   struct c_spmat_d* c_eigen_spmat_d_transpose(struct c_spmat_d *m);
   void c_eigen_spmat_d_print(struct c_spmat_d *m);
 

@@ -103,16 +103,20 @@ c_spmat_d* c_eigen_spmat_d_clone(c_spmat_d *m)
 
 c_spmat_d* c_eigen_spmat_d_row(c_spmat_d *m, int i)
 {
-  // FIXME
   spmat_d x = (c_to_eigen(m)).row(i);
-  return eigen_to_c(x);
+  return eigen_to_c(*new spmat_d(x));
+}
+
+c_spmat_d* c_eigen_spmat_d_col(c_spmat_d *m, int i)
+{
+  spmat_d x = (c_to_eigen(m)).col(i);
+  return eigen_to_c(*new spmat_d(x));
 }
 
 c_spmat_d* c_eigen_spmat_d_transpose(c_spmat_d *m)
 {
-  // FIXME
   spmat_d x = (c_to_eigen(m)).transpose();
-  return eigen_to_c(x);
+  return eigen_to_c(*new spmat_d(x));
 }
 
 void c_eigen_spmat_d_print(c_spmat_d *m)
