@@ -119,6 +119,12 @@ c_spmat_d* c_eigen_spmat_d_transpose(c_spmat_d *m)
   return eigen_to_c(*new spmat_d(x));
 }
 
+c_spmat_d* c_eigen_spmat_d_adjoint(c_spmat_d *m)
+{
+  spmat_d x = (c_to_eigen(m)).adjoint();
+  return eigen_to_c(*new spmat_d(x));
+}
+
 c_spmat_d* c_eigen_spmat_d_add(c_spmat_d *m0, c_spmat_d *m1)
 {
   spmat_d x0 = c_to_eigen(m0);

@@ -406,6 +406,8 @@ module Eigen_D = struct
 
   let transpose x = ml_eigen_spmat_d_transpose x
 
+  let adjoint x = ml_eigen_spmat_d_adjoint x
+
   let add x y = ml_eigen_spmat_d_add x y
 
   let sub x y = ml_eigen_spmat_d_sub x y
