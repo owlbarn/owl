@@ -426,6 +426,8 @@ module Eigen_D = struct
 
   let max2 x y = ml_eigen_spmat_d_max2 x y
 
+  let sum x = ml_eigen_spmat_d_sum x
+
   let abs x = ml_eigen_spmat_d_abs x
 
   let sqrt x = ml_eigen_spmat_d_sqrt x

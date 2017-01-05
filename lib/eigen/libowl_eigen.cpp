@@ -187,6 +187,11 @@ c_spmat_d* c_eigen_spmat_d_max2(c_spmat_d *m0, c_spmat_d *m1)
   return eigen_to_c(*new spmat_d(x0.cwiseMax(x1)));
 }
 
+double c_eigen_spmat_d_sum(c_spmat_d *m)
+{
+  return (c_to_eigen(m)).sum();
+}
+
 c_spmat_d* c_eigen_spmat_d_abs(c_spmat_d *m)
 {
   spmat_d x = (c_to_eigen(m)).cwiseAbs();
