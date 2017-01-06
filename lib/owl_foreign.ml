@@ -420,6 +420,10 @@ module Eigen_D = struct
 
   let dot x y = ml_eigen_spmat_d_dot x y
 
+  let add_scalar x a = ml_eigen_spmat_d_add_scalar x a
+
+  let sub_scalar x a = ml_eigen_spmat_d_sub_scalar x a
+
   let mul_scalar x a = ml_eigen_spmat_d_mul_scalar x a
 
   let div_scalar x a = ml_eigen_spmat_d_div_scalar x a
@@ -431,6 +435,8 @@ module Eigen_D = struct
   let sum x = ml_eigen_spmat_d_sum x
 
   let abs x = ml_eigen_spmat_d_abs x
+
+  let neg x = ml_eigen_spmat_d_neg x
 
   let sqrt x = ml_eigen_spmat_d_sqrt x
 

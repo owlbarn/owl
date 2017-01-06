@@ -60,6 +60,10 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   let ml_eigen_spmat_d_dot = foreign "c_eigen_spmat_d_dot" (ptr c_spmat_d @-> ptr c_spmat_d @-> returning (ptr c_spmat_d))
 
+  let ml_eigen_spmat_d_add_scalar = foreign "c_eigen_spmat_d_add_scalar" (ptr c_spmat_d @-> double @-> returning (ptr c_spmat_d))
+
+  let ml_eigen_spmat_d_sub_scalar = foreign "c_eigen_spmat_d_sub_scalar" (ptr c_spmat_d @-> double @-> returning (ptr c_spmat_d))
+
   let ml_eigen_spmat_d_mul_scalar = foreign "c_eigen_spmat_d_mul_scalar" (ptr c_spmat_d @-> double @-> returning (ptr c_spmat_d))
 
   let ml_eigen_spmat_d_div_scalar = foreign "c_eigen_spmat_d_div_scalar" (ptr c_spmat_d @-> double @-> returning (ptr c_spmat_d))
@@ -71,6 +75,8 @@ module Bindings (F : Cstubs.FOREIGN) = struct
   let ml_eigen_spmat_d_sum = foreign "c_eigen_spmat_d_sum" (ptr c_spmat_d @-> returning double)
 
   let ml_eigen_spmat_d_abs = foreign "c_eigen_spmat_d_abs" (ptr c_spmat_d @-> returning (ptr c_spmat_d))
+
+  let ml_eigen_spmat_d_neg = foreign "c_eigen_spmat_d_neg" (ptr c_spmat_d @-> returning (ptr c_spmat_d))
 
   let ml_eigen_spmat_d_sqrt = foreign "c_eigen_spmat_d_sqrt" (ptr c_spmat_d @-> returning (ptr c_spmat_d))
 

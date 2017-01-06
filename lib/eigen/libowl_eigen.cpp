@@ -165,6 +165,24 @@ c_spmat_d* c_eigen_spmat_d_dot(c_spmat_d *m0, c_spmat_d *m1)
   return eigen_to_c(*new spmat_d(x0 * x1));
 }
 
+c_spmat_d* c_eigen_spmat_d_add_scalar(c_spmat_d *m, double a)
+{
+  spmat_d* x = new spmat_d(c_to_eigen(m));
+  for (int k = 0; k < (*x).outerSize(); ++k)
+    for (spmat_d::InnerIterator it(*x,k); it; ++it)
+      it.valueRef() += a;
+  return eigen_to_c(*x);
+}
+
+c_spmat_d* c_eigen_spmat_d_sub_scalar(c_spmat_d *m, double a)
+{
+  spmat_d* x = new spmat_d(c_to_eigen(m));
+  for (int k = 0; k < (*x).outerSize(); ++k)
+    for (spmat_d::InnerIterator it(*x,k); it; ++it)
+      it.valueRef() -= a;
+  return eigen_to_c(*x);
+}
+
 c_spmat_d* c_eigen_spmat_d_mul_scalar(c_spmat_d *m, double a)
 {
   spmat_d x = c_to_eigen(m);
@@ -201,6 +219,15 @@ c_spmat_d* c_eigen_spmat_d_abs(c_spmat_d *m)
 {
   spmat_d x = (c_to_eigen(m)).cwiseAbs();
   return eigen_to_c(*new spmat_d(x));
+}
+
+c_spmat_d* c_eigen_spmat_d_neg(c_spmat_d *m)
+{
+  spmat_d* x = new spmat_d(c_to_eigen(m));
+  for (int k = 0; k < (*x).outerSize(); ++k)
+    for (spmat_d::InnerIterator it(*x,k); it; ++it)
+      it.valueRef() = -it.value();
+  return eigen_to_c(*x);
 }
 
 c_spmat_d* c_eigen_spmat_d_sqrt(c_spmat_d *m)
