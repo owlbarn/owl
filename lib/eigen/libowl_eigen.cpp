@@ -136,6 +136,22 @@ int c_eigen_spmat_d_is_zero(c_spmat_d *m)
   return ((c_to_eigen(m)).nonZeros() == 0);
 }
 
+int c_eigen_spmat_d_is_positive(c_spmat_d *m)
+{
+  spmat_d x = c_to_eigen(m);
+  x.makeCompressed();
+  double* a = x.valuePtr();
+  int b = 1;
+  for (int k = 0; k < x.data().size(); ++k)
+  {
+    if (a[k] <= 0) {
+      b = 0;
+      break;
+    }
+  }
+  return b;
+}
+
 c_spmat_d* c_eigen_spmat_d_add(c_spmat_d *m0, c_spmat_d *m1)
 {
   spmat_d x0 = c_to_eigen(m0);

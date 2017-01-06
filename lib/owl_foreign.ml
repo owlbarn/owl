@@ -412,6 +412,8 @@ module Eigen_D = struct
 
   let is_zero x = ml_eigen_spmat_d_is_zero x = 1
 
+  let is_positive x = ml_eigen_spmat_d_is_positive x = 1
+
   let add x y = ml_eigen_spmat_d_add x y
 
   let sub x y = ml_eigen_spmat_d_sub x y
