@@ -95,6 +95,11 @@ void c_eigen_spmat_d_reshape(c_spmat_d *m, int rows, int cols)
   (c_to_eigen(m)).conservativeResize(rows, cols);
 }
 
+void c_eigen_spmat_d_prune(c_spmat_d *m, double ref, double eps)
+{
+  (c_to_eigen(m)).prune(ref, eps);
+}
+
 c_spmat_d* c_eigen_spmat_d_clone(c_spmat_d *m)
 {
   spmat_d x = c_to_eigen(m);

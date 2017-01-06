@@ -398,6 +398,8 @@ module Eigen_D = struct
 
   let reshape x m n = ml_eigen_spmat_d_reshape x m n
 
+  let prune x r e = ml_eigen_spmat_d_prune x r e
+
   let clone x = ml_eigen_spmat_d_clone x
 
   let row x i = ml_eigen_spmat_d_row x i

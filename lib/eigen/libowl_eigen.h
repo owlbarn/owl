@@ -26,6 +26,7 @@ extern "C"
   void c_eigen_spmat_d_compress(struct c_spmat_d *m);
   void c_eigen_spmat_d_uncompress(struct c_spmat_d *m);
   void c_eigen_spmat_d_reshape(struct c_spmat_d *m, int rows, int cols);
+  void c_eigen_spmat_d_prune(struct c_spmat_d *m, double ref, double eps);
   struct c_spmat_d* c_eigen_spmat_d_clone(struct c_spmat_d *m);
   struct c_spmat_d* c_eigen_spmat_d_row(struct c_spmat_d *m, int i);
   struct c_spmat_d* c_eigen_spmat_d_col(struct c_spmat_d *m, int i);
