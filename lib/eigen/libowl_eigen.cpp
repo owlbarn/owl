@@ -106,7 +106,22 @@ double* c_eigen_spmat_d_valueptr(c_spmat_d *m, int *l)
   spmat_d& x = c_to_eigen(m);
   x.makeCompressed();
   *l = x.data().size();
-  return (c_to_eigen(m)).valuePtr();
+  return x.valuePtr();
+}
+
+int* c_eigen_spmat_d_innerindexptr(c_spmat_d *m)
+{
+  // FIXME
+  spmat_d& x = c_to_eigen(m);
+  x.makeCompressed();
+  return x.innerIndexPtr();
+}
+
+int* c_eigen_spmat_d_outerindexptr(c_spmat_d *m)
+{
+  spmat_d& x = c_to_eigen(m);
+  x.makeCompressed();
+  return x.outerIndexPtr();
 }
 
 c_spmat_d* c_eigen_spmat_d_clone(c_spmat_d *m)

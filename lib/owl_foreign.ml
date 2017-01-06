@@ -404,7 +404,15 @@ module Eigen_D = struct
     let l = allocate int (Signed.Int.of_int 0) in
     let raw = ml_eigen_spmat_d_valueptr x l in
     let l = Signed.Int.to_int !@l in
-    bigarray_of_ptr array1 l float64 raw
+    bigarray_of_ptr array1 l Bigarray.float64 raw
+
+  let innerindexptr x =
+    let raw = ml_eigen_spmat_d_innerindexptr x in
+    bigarray_of_ptr array1 (nnz x) Bigarray.int raw
+
+  let outerindexptr x =
+    let raw = ml_eigen_spmat_d_outerindexptr x in
+    bigarray_of_ptr array1 (rows x) Bigarray.int raw
 
   let clone x = ml_eigen_spmat_d_clone x
 
