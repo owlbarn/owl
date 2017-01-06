@@ -14,7 +14,7 @@ using namespace Eigen;
 
 /******************** SparseMatrix_D: pointer conversion  ********************/
 
-typedef SparseMatrix<double, Eigen::RowMajor> spmat_d;
+typedef SparseMatrix<double, Eigen::RowMajor, long long> spmat_d;
 
 inline spmat_d& c_to_eigen(c_spmat_d* ptr)
 {
@@ -109,7 +109,7 @@ double* c_eigen_spmat_d_valueptr(c_spmat_d *m, int *l)
   return x.valuePtr();
 }
 
-int* c_eigen_spmat_d_innerindexptr(c_spmat_d *m)
+long long* c_eigen_spmat_d_innerindexptr(c_spmat_d *m)
 {
   // FIXME
   spmat_d& x = c_to_eigen(m);
@@ -117,7 +117,7 @@ int* c_eigen_spmat_d_innerindexptr(c_spmat_d *m)
   return x.innerIndexPtr();
 }
 
-int* c_eigen_spmat_d_outerindexptr(c_spmat_d *m)
+long long* c_eigen_spmat_d_outerindexptr(c_spmat_d *m)
 {
   spmat_d& x = c_to_eigen(m);
   x.makeCompressed();

@@ -105,13 +105,13 @@ value owl_stub_15_c_eigen_spmat_d_valueptr(value x88, value x87)
 value owl_stub_16_c_eigen_spmat_d_innerindexptr(value x92)
 {
    struct c_spmat_d* x93 = CTYPES_ADDR_OF_FATPTR(x92);
-   int* x94 = c_eigen_spmat_d_innerindexptr(x93);
+   int64_t* x94 = c_eigen_spmat_d_innerindexptr(x93);
    return CTYPES_FROM_PTR(x94);
 }
 value owl_stub_17_c_eigen_spmat_d_outerindexptr(value x95)
 {
    struct c_spmat_d* x96 = CTYPES_ADDR_OF_FATPTR(x95);
-   int* x97 = c_eigen_spmat_d_outerindexptr(x96);
+   int64_t* x97 = c_eigen_spmat_d_outerindexptr(x96);
    return CTYPES_FROM_PTR(x97);
 }
 value owl_stub_18_c_eigen_spmat_d_clone(value x98)

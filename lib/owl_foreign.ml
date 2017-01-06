@@ -408,11 +408,11 @@ module Eigen_D = struct
 
   let innerindexptr x =
     let raw = ml_eigen_spmat_d_innerindexptr x in
-    bigarray_of_ptr array1 (nnz x) Bigarray.int raw
+    bigarray_of_ptr array1 (nnz x) Bigarray.int64 raw
 
   let outerindexptr x =
     let raw = ml_eigen_spmat_d_outerindexptr x in
-    bigarray_of_ptr array1 (rows x) Bigarray.int raw
+    bigarray_of_ptr array1 (rows x) Bigarray.int64 raw
 
   let clone x = ml_eigen_spmat_d_clone x
 

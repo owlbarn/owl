@@ -42,9 +42,9 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   let ml_eigen_spmat_d_valueptr = foreign "c_eigen_spmat_d_valueptr" (ptr c_spmat_d @-> ptr int @-> returning (ptr double))
 
-  let ml_eigen_spmat_d_innerindexptr = foreign "c_eigen_spmat_d_innerindexptr" (ptr c_spmat_d @-> returning (ptr int))
+  let ml_eigen_spmat_d_innerindexptr = foreign "c_eigen_spmat_d_innerindexptr" (ptr c_spmat_d @-> returning (ptr int64_t))
 
-  let ml_eigen_spmat_d_outerindexptr = foreign "c_eigen_spmat_d_outerindexptr" (ptr c_spmat_d @-> returning (ptr int))
+  let ml_eigen_spmat_d_outerindexptr = foreign "c_eigen_spmat_d_outerindexptr" (ptr c_spmat_d @-> returning (ptr int64_t))
 
   let ml_eigen_spmat_d_clone = foreign "c_eigen_spmat_d_clone" (ptr c_spmat_d @-> returning (ptr c_spmat_d))
 
