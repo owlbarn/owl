@@ -410,6 +410,8 @@ module Eigen_D = struct
 
   let adjoint x = ml_eigen_spmat_d_adjoint x
 
+  let is_zero x = ml_eigen_spmat_d_is_zero x = 1
+
   let add x y = ml_eigen_spmat_d_add x y
 
   let sub x y = ml_eigen_spmat_d_sub x y

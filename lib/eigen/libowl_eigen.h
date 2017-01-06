@@ -32,6 +32,7 @@ extern "C"
   struct c_spmat_d* c_eigen_spmat_d_col(struct c_spmat_d *m, int i);
   struct c_spmat_d* c_eigen_spmat_d_transpose(struct c_spmat_d *m);
   struct c_spmat_d* c_eigen_spmat_d_adjoint(struct c_spmat_d *m);
+  int c_eigen_spmat_d_is_zero(struct c_spmat_d *m);
   struct c_spmat_d* c_eigen_spmat_d_add(struct c_spmat_d *m0, struct c_spmat_d *m1);
   struct c_spmat_d* c_eigen_spmat_d_sub(struct c_spmat_d *m0, struct c_spmat_d *m1);
   struct c_spmat_d* c_eigen_spmat_d_mul(struct c_spmat_d *m0, struct c_spmat_d *m1);

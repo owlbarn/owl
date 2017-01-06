@@ -50,6 +50,8 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   let ml_eigen_spmat_d_adjoint = foreign "c_eigen_spmat_d_adjoint" (ptr c_spmat_d @-> returning (ptr c_spmat_d))
 
+  let ml_eigen_spmat_d_is_zero = foreign "c_eigen_spmat_d_is_zero" (ptr c_spmat_d @-> returning int)
+
   let ml_eigen_spmat_d_add = foreign "c_eigen_spmat_d_add" (ptr c_spmat_d @-> ptr c_spmat_d @-> returning (ptr c_spmat_d))
 
   let ml_eigen_spmat_d_sub = foreign "c_eigen_spmat_d_sub" (ptr c_spmat_d @-> ptr c_spmat_d @-> returning (ptr c_spmat_d))
