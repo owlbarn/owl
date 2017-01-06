@@ -74,6 +74,10 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   let ml_eigen_spmat_d_sum = foreign "c_eigen_spmat_d_sum" (ptr c_spmat_d @-> returning double)
 
+  let ml_eigen_spmat_d_min = foreign "c_eigen_spmat_d_min" (ptr c_spmat_d @-> returning double)
+
+  let ml_eigen_spmat_d_max = foreign "c_eigen_spmat_d_max" (ptr c_spmat_d @-> returning double)
+
   let ml_eigen_spmat_d_abs = foreign "c_eigen_spmat_d_abs" (ptr c_spmat_d @-> returning (ptr c_spmat_d))
 
   let ml_eigen_spmat_d_neg = foreign "c_eigen_spmat_d_neg" (ptr c_spmat_d @-> returning (ptr c_spmat_d))

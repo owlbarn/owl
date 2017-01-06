@@ -210,27 +210,39 @@ value owl_stub_31_c_eigen_spmat_d_sum(value x173)
    double x175 = c_eigen_spmat_d_sum(x174);
    return caml_copy_double(x175);
 }
-value owl_stub_32_c_eigen_spmat_d_abs(value x176)
+value owl_stub_32_c_eigen_spmat_d_min(value x176)
 {
    struct c_spmat_d* x177 = CTYPES_ADDR_OF_FATPTR(x176);
-   struct c_spmat_d* x178 = c_eigen_spmat_d_abs(x177);
-   return CTYPES_FROM_PTR(x178);
+   double x178 = c_eigen_spmat_d_min(x177);
+   return caml_copy_double(x178);
 }
-value owl_stub_33_c_eigen_spmat_d_neg(value x179)
+value owl_stub_33_c_eigen_spmat_d_max(value x179)
 {
    struct c_spmat_d* x180 = CTYPES_ADDR_OF_FATPTR(x179);
-   struct c_spmat_d* x181 = c_eigen_spmat_d_neg(x180);
-   return CTYPES_FROM_PTR(x181);
+   double x181 = c_eigen_spmat_d_max(x180);
+   return caml_copy_double(x181);
 }
-value owl_stub_34_c_eigen_spmat_d_sqrt(value x182)
+value owl_stub_34_c_eigen_spmat_d_abs(value x182)
 {
    struct c_spmat_d* x183 = CTYPES_ADDR_OF_FATPTR(x182);
-   struct c_spmat_d* x184 = c_eigen_spmat_d_sqrt(x183);
+   struct c_spmat_d* x184 = c_eigen_spmat_d_abs(x183);
    return CTYPES_FROM_PTR(x184);
 }
-value owl_stub_35_c_eigen_spmat_d_print(value x185)
+value owl_stub_35_c_eigen_spmat_d_neg(value x185)
 {
    struct c_spmat_d* x186 = CTYPES_ADDR_OF_FATPTR(x185);
-   c_eigen_spmat_d_print(x186);
+   struct c_spmat_d* x187 = c_eigen_spmat_d_neg(x186);
+   return CTYPES_FROM_PTR(x187);
+}
+value owl_stub_36_c_eigen_spmat_d_sqrt(value x188)
+{
+   struct c_spmat_d* x189 = CTYPES_ADDR_OF_FATPTR(x188);
+   struct c_spmat_d* x190 = c_eigen_spmat_d_sqrt(x189);
+   return CTYPES_FROM_PTR(x190);
+}
+value owl_stub_37_c_eigen_spmat_d_print(value x191)
+{
+   struct c_spmat_d* x192 = CTYPES_ADDR_OF_FATPTR(x191);
+   c_eigen_spmat_d_print(x192);
    return Val_unit;
 }

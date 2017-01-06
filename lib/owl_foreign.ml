@@ -434,6 +434,10 @@ module Eigen_D = struct
 
   let sum x = ml_eigen_spmat_d_sum x
 
+  let min x = ml_eigen_spmat_d_min x
+
+  let max x = ml_eigen_spmat_d_max x
+
   let abs x = ml_eigen_spmat_d_abs x
 
   let neg x = ml_eigen_spmat_d_neg x

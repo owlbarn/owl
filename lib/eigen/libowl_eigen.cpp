@@ -11,6 +11,7 @@
 
 using namespace Eigen;
 
+
 /******************** SparseMatrix_D: pointer conversion  ********************/
 
 typedef SparseMatrix<double, Eigen::RowMajor> spmat_d;
@@ -37,12 +38,12 @@ void c_eigen_spmat_d_delete(c_spmat_d *m)
 {
   delete &c_to_eigen(m);
 }
-// FIXME
+
 c_spmat_d* c_eigen_spmat_d_eye(int m)
 {
   spmat_d* x = new spmat_d(m, m);
   (*x).setIdentity();
-  return (eigen_to_c(*x));
+  return eigen_to_c(*x);
 }
 
 int c_eigen_spmat_d_rows(c_spmat_d *m)
@@ -191,9 +192,11 @@ c_spmat_d* c_eigen_spmat_d_mul_scalar(c_spmat_d *m, double a)
 
 c_spmat_d* c_eigen_spmat_d_div_scalar(c_spmat_d *m, double a)
 {
-  // FIXME : div (-1)
-  spmat_d x = c_to_eigen(m);
-  return eigen_to_c(*new spmat_d(x / a));
+  spmat_d* x = new spmat_d(c_to_eigen(m));
+  for (int k = 0; k < (*x).outerSize(); ++k)
+    for (spmat_d::InnerIterator it(*x,k); it; ++it)
+      it.valueRef() /= a;
+  return eigen_to_c(*x);
 }
 
 c_spmat_d* c_eigen_spmat_d_min2(c_spmat_d *m0, c_spmat_d *m1)
@@ -213,6 +216,36 @@ c_spmat_d* c_eigen_spmat_d_max2(c_spmat_d *m0, c_spmat_d *m1)
 double c_eigen_spmat_d_sum(c_spmat_d *m)
 {
   return (c_to_eigen(m)).sum();
+}
+
+double c_eigen_spmat_d_min(c_spmat_d *m)
+{
+  double a = std::numeric_limits<double>::infinity();
+  spmat_d x = c_to_eigen(m);
+  for (int k = 0; k < x.outerSize(); ++k)
+    for (spmat_d::InnerIterator it(x,k); it; ++it)
+    {
+      if (it.value() < a)
+        a = it.value();
+    }
+  if ((x.nonZeros() < (x.rows() * x.cols())) && (a > 0))
+    a = 0;
+  return a;
+}
+
+double c_eigen_spmat_d_max(c_spmat_d *m)
+{
+  double a = -std::numeric_limits<double>::infinity();
+  spmat_d x = c_to_eigen(m);
+  for (int k = 0; k < x.outerSize(); ++k)
+    for (spmat_d::InnerIterator it(x,k); it; ++it)
+    {
+      if (it.value() > a)
+        a = it.value();
+    }
+  if ((x.nonZeros() < (x.rows() * x.cols())) && (a < 0))
+    a = 0;
+  return a;
 }
 
 c_spmat_d* c_eigen_spmat_d_abs(c_spmat_d *m)
