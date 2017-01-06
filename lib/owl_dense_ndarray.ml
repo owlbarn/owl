@@ -919,6 +919,7 @@ let is_nonnegative x =
   let y = ndarray_to_c_mat x in
   (_gsl_isnonneg (kind x)) y
 
+(* FIXME: incorrect *)
 let is_nonpositive x =
   let y = ndarray_to_c_mat x in
   not ((_gsl_ispos (kind x)) y)

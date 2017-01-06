@@ -408,6 +408,7 @@ let is_nonnegative x =
   let _op = _gsl_isnonneg (Array2.kind x) in
   _op x
 
+(* FIXME: incorrect *)
 let is_nonpositive x =
   let _op = _gsl_ispos (Array2.kind x) in
   not (_op x)

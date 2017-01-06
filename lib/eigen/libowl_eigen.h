@@ -34,6 +34,15 @@ extern "C"
   struct c_spmat_d* c_eigen_spmat_d_adjoint(struct c_spmat_d *m);
   int c_eigen_spmat_d_is_zero(struct c_spmat_d *m);
   int c_eigen_spmat_d_is_positive(struct c_spmat_d *m);
+  int c_eigen_spmat_d_is_negative(struct c_spmat_d *m);
+  int c_eigen_spmat_d_is_nonpositive(struct c_spmat_d *m);
+  int c_eigen_spmat_d_is_nonnegative(struct c_spmat_d *m);
+  int c_eigen_spmat_d_is_equal(struct c_spmat_d *m0, struct c_spmat_d *m1);
+  int c_eigen_spmat_d_is_unequal(struct c_spmat_d *m0, struct c_spmat_d *m1);
+  int c_eigen_spmat_d_is_greater(struct c_spmat_d *m0, struct c_spmat_d *m1);
+  int c_eigen_spmat_d_is_smaller(struct c_spmat_d *m0, struct c_spmat_d *m1);
+  int c_eigen_spmat_d_equal_or_greater(struct c_spmat_d *m0, struct c_spmat_d *m1);
+  int c_eigen_spmat_d_equal_or_smaller(struct c_spmat_d *m0, struct c_spmat_d *m1);
   struct c_spmat_d* c_eigen_spmat_d_add(struct c_spmat_d *m0, struct c_spmat_d *m1);
   struct c_spmat_d* c_eigen_spmat_d_sub(struct c_spmat_d *m0, struct c_spmat_d *m1);
   struct c_spmat_d* c_eigen_spmat_d_mul(struct c_spmat_d *m0, struct c_spmat_d *m1);

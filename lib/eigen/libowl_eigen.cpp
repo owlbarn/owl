@@ -133,13 +133,29 @@ c_spmat_d* c_eigen_spmat_d_adjoint(c_spmat_d *m)
 
 int c_eigen_spmat_d_is_zero(c_spmat_d *m)
 {
-  return ((c_to_eigen(m)).nonZeros() == 0);
+  spmat_d x = c_to_eigen(m);
+  if (x.nonZeros() == 0)
+    return 1;
+
+  double* a = x.valuePtr();
+  int b = 1;
+  for (int k = 0; k < x.data().size(); ++k)
+  {
+    if (a[k] != 0) {
+      b = 0;
+      break;
+    }
+  }
+  return b;
 }
 
 int c_eigen_spmat_d_is_positive(c_spmat_d *m)
 {
   spmat_d x = c_to_eigen(m);
   x.makeCompressed();
+  if (x.nonZeros() < (x.rows() * x.cols()))
+    return 0;
+
   double* a = x.valuePtr();
   int b = 1;
   for (int k = 0; k < x.data().size(); ++k)
@@ -149,7 +165,100 @@ int c_eigen_spmat_d_is_positive(c_spmat_d *m)
       break;
     }
   }
+
   return b;
+}
+
+int c_eigen_spmat_d_is_negative(c_spmat_d *m)
+{
+  spmat_d x = c_to_eigen(m);
+  x.makeCompressed();
+  if (x.nonZeros() < (x.rows() * x.cols()))
+    return 0;
+
+  double* a = x.valuePtr();
+  int b = 1;
+  for (int k = 0; k < x.data().size(); ++k)
+  {
+    if (a[k] >= 0) {
+      b = 0;
+      break;
+    }
+  }
+
+  return b;
+}
+
+int c_eigen_spmat_d_is_nonpositive(c_spmat_d *m)
+{
+  spmat_d x = c_to_eigen(m);
+  x.makeCompressed();
+  double* a = x.valuePtr();
+  int b = 1;
+  for (int k = 0; k < x.data().size(); ++k)
+  {
+    if (a[k] > 0) {
+      b = 0;
+      break;
+    }
+  }
+
+  return b;
+}
+
+int c_eigen_spmat_d_is_nonnegative(c_spmat_d *m)
+{
+  spmat_d x = c_to_eigen(m);
+  x.makeCompressed();
+  double* a = x.valuePtr();
+  int b = 1;
+  for (int k = 0; k < x.data().size(); ++k)
+  {
+    if (a[k] < 0) {
+      b = 0;
+      break;
+    }
+  }
+
+  return b;
+}
+
+int c_eigen_spmat_d_is_equal(c_spmat_d *m0, c_spmat_d *m1)
+{
+  spmat_d x = c_to_eigen(m0) - c_to_eigen(m1);
+  x.prune(0, 0);
+  return (x.nonZeros() == 0);
+}
+
+int c_eigen_spmat_d_is_unequal(c_spmat_d *m0, c_spmat_d *m1)
+{
+  spmat_d x = c_to_eigen(m0) - c_to_eigen(m1);
+  x.prune(0, 0);
+  return (x.nonZeros() != 0);
+}
+
+int c_eigen_spmat_d_is_greater(c_spmat_d *m0, c_spmat_d *m1)
+{
+  spmat_d x = c_to_eigen(m0) - c_to_eigen(m1);
+  return c_eigen_spmat_d_is_positive(eigen_to_c(x));
+}
+
+int c_eigen_spmat_d_is_smaller(c_spmat_d *m0, c_spmat_d *m1)
+{
+  spmat_d x = c_to_eigen(m0) - c_to_eigen(m1);
+  return c_eigen_spmat_d_is_negative(eigen_to_c(x));
+}
+
+int c_eigen_spmat_d_equal_or_greater(c_spmat_d *m0, c_spmat_d *m1)
+{
+  spmat_d x = c_to_eigen(m0) - c_to_eigen(m1);
+  return c_eigen_spmat_d_is_nonnegative(eigen_to_c(x));
+}
+
+int c_eigen_spmat_d_equal_or_smaller(c_spmat_d *m0, c_spmat_d *m1)
+{
+  spmat_d x = c_to_eigen(m0) - c_to_eigen(m1);
+  return c_eigen_spmat_d_is_nonpositive(eigen_to_c(x));
 }
 
 c_spmat_d* c_eigen_spmat_d_add(c_spmat_d *m0, c_spmat_d *m1)

@@ -414,6 +414,24 @@ module Eigen_D = struct
 
   let is_positive x = ml_eigen_spmat_d_is_positive x = 1
 
+  let is_negative x = ml_eigen_spmat_d_is_negative x = 1
+
+  let is_nonpositive x = ml_eigen_spmat_d_is_nonpositive x = 1
+
+  let is_nonnegative x = ml_eigen_spmat_d_is_nonnegative x = 1
+
+  let is_equal x y = ml_eigen_spmat_d_is_equal x y = 1
+
+  let is_unequal x y = ml_eigen_spmat_d_is_unequal x y = 1
+
+  let is_greater x y = ml_eigen_spmat_d_is_greater x y = 1
+
+  let is_smaller x y = ml_eigen_spmat_d_is_smaller x y = 1
+
+  let equal_or_greater x y = ml_eigen_spmat_d_equal_or_greater x y = 1
+
+  let equal_or_smaller x y = ml_eigen_spmat_d_equal_or_smaller x y = 1
+
   let add x y = ml_eigen_spmat_d_add x y
 
   let sub x y = ml_eigen_spmat_d_sub x y
