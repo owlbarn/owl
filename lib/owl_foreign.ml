@@ -424,6 +424,10 @@ module Eigen_D = struct
 
   let adjoint x = ml_eigen_spmat_d_adjoint x
 
+  let diagonal x = ml_eigen_spmat_d_diagonal x
+
+  let trace x = ml_eigen_spmat_d_trace x
+
   let is_zero x = ml_eigen_spmat_d_is_zero x = 1
 
   let is_positive x = ml_eigen_spmat_d_is_positive x = 1

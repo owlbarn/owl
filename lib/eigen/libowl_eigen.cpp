@@ -154,6 +154,17 @@ c_spmat_d* c_eigen_spmat_d_adjoint(c_spmat_d *m)
   return eigen_to_c(*x);
 }
 
+c_spmat_d* c_eigen_spmat_d_diagonal(c_spmat_d *m)
+{
+  spmat_d& x = c_to_eigen(m);
+  return eigen_to_c(*new spmat_d(x.diagonal().sparseView()));
+}
+
+double c_eigen_spmat_d_trace(c_spmat_d *m)
+{
+  return c_to_eigen(m).diagonal().sparseView().sum();
+}
+
 int c_eigen_spmat_d_is_zero(c_spmat_d *m)
 {
   spmat_d& x = c_to_eigen(m);
