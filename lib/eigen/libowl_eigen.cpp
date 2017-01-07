@@ -93,7 +93,8 @@ void c_eigen_spmat_d_uncompress(c_spmat_d *m)
 
 void c_eigen_spmat_d_reshape(c_spmat_d *m, long long rows, long long cols)
 {
-  (c_to_eigen(m)).conservativeResize(rows, cols);
+  // FIXME: keep old data
+  (c_to_eigen(m)).resize(rows, cols);
 }
 
 void c_eigen_spmat_d_prune(c_spmat_d *m, double ref, double eps)
@@ -111,7 +112,6 @@ double* c_eigen_spmat_d_valueptr(c_spmat_d *m, long long *l)
 
 long long* c_eigen_spmat_d_innerindexptr(c_spmat_d *m)
 {
-  // FIXME
   spmat_d& x = c_to_eigen(m);
   x.makeCompressed();
   return x.innerIndexPtr();
