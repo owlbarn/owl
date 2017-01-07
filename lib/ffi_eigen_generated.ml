@@ -1,28 +1,28 @@
 module CI = Cstubs_internals
 
-external owl_stub_1_c_eigen_spmat_d_new : int -> int -> CI.voidp
+external owl_stub_1_c_eigen_spmat_d_new : int64 -> int64 -> CI.voidp
   = "owl_stub_1_c_eigen_spmat_d_new" 
 
 external owl_stub_2_c_eigen_spmat_d_delete : _ CI.fatptr -> unit
   = "owl_stub_2_c_eigen_spmat_d_delete" 
 
-external owl_stub_3_c_eigen_spmat_d_eye : int -> CI.voidp
+external owl_stub_3_c_eigen_spmat_d_eye : int64 -> CI.voidp
   = "owl_stub_3_c_eigen_spmat_d_eye" 
 
-external owl_stub_4_c_eigen_spmat_d_rows : _ CI.fatptr -> int
+external owl_stub_4_c_eigen_spmat_d_rows : _ CI.fatptr -> int64
   = "owl_stub_4_c_eigen_spmat_d_rows" 
 
-external owl_stub_5_c_eigen_spmat_d_cols : _ CI.fatptr -> int
+external owl_stub_5_c_eigen_spmat_d_cols : _ CI.fatptr -> int64
   = "owl_stub_5_c_eigen_spmat_d_cols" 
 
-external owl_stub_6_c_eigen_spmat_d_nnz : _ CI.fatptr -> int
+external owl_stub_6_c_eigen_spmat_d_nnz : _ CI.fatptr -> int64
   = "owl_stub_6_c_eigen_spmat_d_nnz" 
 
-external owl_stub_7_c_eigen_spmat_d_get : _ CI.fatptr -> int -> int -> float
-  = "owl_stub_7_c_eigen_spmat_d_get" 
+external owl_stub_7_c_eigen_spmat_d_get
+  : _ CI.fatptr -> int64 -> int64 -> float = "owl_stub_7_c_eigen_spmat_d_get" 
 
 external owl_stub_8_c_eigen_spmat_d_set
-  : _ CI.fatptr -> int -> int -> float -> unit
+  : _ CI.fatptr -> int64 -> int64 -> float -> unit
   = "owl_stub_8_c_eigen_spmat_d_set" 
 
 external owl_stub_9_c_eigen_spmat_d_reset : _ CI.fatptr -> unit
@@ -38,7 +38,8 @@ external owl_stub_12_c_eigen_spmat_d_uncompress : _ CI.fatptr -> unit
   = "owl_stub_12_c_eigen_spmat_d_uncompress" 
 
 external owl_stub_13_c_eigen_spmat_d_reshape
-  : _ CI.fatptr -> int -> int -> unit = "owl_stub_13_c_eigen_spmat_d_reshape" 
+  : _ CI.fatptr -> int64 -> int64 -> unit
+  = "owl_stub_13_c_eigen_spmat_d_reshape" 
 
 external owl_stub_14_c_eigen_spmat_d_prune
   : _ CI.fatptr -> float -> float -> unit
@@ -57,10 +58,10 @@ external owl_stub_17_c_eigen_spmat_d_outerindexptr : _ CI.fatptr -> CI.voidp
 external owl_stub_18_c_eigen_spmat_d_clone : _ CI.fatptr -> CI.voidp
   = "owl_stub_18_c_eigen_spmat_d_clone" 
 
-external owl_stub_19_c_eigen_spmat_d_row : _ CI.fatptr -> int -> CI.voidp
+external owl_stub_19_c_eigen_spmat_d_row : _ CI.fatptr -> int64 -> CI.voidp
   = "owl_stub_19_c_eigen_spmat_d_row" 
 
-external owl_stub_20_c_eigen_spmat_d_col : _ CI.fatptr -> int -> CI.voidp
+external owl_stub_20_c_eigen_spmat_d_col : _ CI.fatptr -> int64 -> CI.voidp
   = "owl_stub_20_c_eigen_spmat_d_col" 
 
 external owl_stub_21_c_eigen_spmat_d_transpose : _ CI.fatptr -> CI.voidp
@@ -344,13 +345,13 @@ let foreign : type a b. string -> (a -> b) fn -> (a -> b) =
     CI.make_ptr x113 (owl_stub_21_c_eigen_spmat_d_transpose (CI.cptr x111)))
 | Function
     (CI.Pointer x115,
-     Function (CI.Primitive CI.Int, Returns (CI.Pointer x117))),
+     Function (CI.Primitive CI.Int64_t, Returns (CI.Pointer x117))),
   "c_eigen_spmat_d_col" ->
   (fun x114 x116 ->
     CI.make_ptr x117 (owl_stub_20_c_eigen_spmat_d_col (CI.cptr x114) x116))
 | Function
     (CI.Pointer x119,
-     Function (CI.Primitive CI.Int, Returns (CI.Pointer x121))),
+     Function (CI.Primitive CI.Int64_t, Returns (CI.Pointer x121))),
   "c_eigen_spmat_d_row" ->
   (fun x118 x120 ->
     CI.make_ptr x121 (owl_stub_19_c_eigen_spmat_d_row (CI.cptr x118) x120))
@@ -385,7 +386,8 @@ let foreign : type a b. string -> (a -> b) fn -> (a -> b) =
 | Function
     (CI.Pointer x141,
      Function
-       (CI.Primitive CI.Int, Function (CI.Primitive CI.Int, Returns CI.Void))),
+       (CI.Primitive CI.Int64_t,
+        Function (CI.Primitive CI.Int64_t, Returns CI.Void))),
   "c_eigen_spmat_d_reshape" ->
   (fun x140 x142 x143 ->
     owl_stub_13_c_eigen_spmat_d_reshape (CI.cptr x140) x142 x143)
@@ -401,9 +403,9 @@ let foreign : type a b. string -> (a -> b) fn -> (a -> b) =
 | Function
     (CI.Pointer x153,
      Function
-       (CI.Primitive CI.Int,
+       (CI.Primitive CI.Int64_t,
         Function
-          (CI.Primitive CI.Int,
+          (CI.Primitive CI.Int64_t,
            Function (CI.Primitive CI.Double, Returns CI.Void)))),
   "c_eigen_spmat_d_set" ->
   (fun x152 x154 x155 x156 ->
@@ -411,28 +413,28 @@ let foreign : type a b. string -> (a -> b) fn -> (a -> b) =
 | Function
     (CI.Pointer x158,
      Function
-       (CI.Primitive CI.Int,
-        Function (CI.Primitive CI.Int, Returns (CI.Primitive CI.Double)))),
+       (CI.Primitive CI.Int64_t,
+        Function (CI.Primitive CI.Int64_t, Returns (CI.Primitive CI.Double)))),
   "c_eigen_spmat_d_get" ->
   (fun x157 x159 x160 ->
     owl_stub_7_c_eigen_spmat_d_get (CI.cptr x157) x159 x160)
-| Function (CI.Pointer x162, Returns (CI.Primitive CI.Int)),
+| Function (CI.Pointer x162, Returns (CI.Primitive CI.Int64_t)),
   "c_eigen_spmat_d_nnz" ->
   (fun x161 -> owl_stub_6_c_eigen_spmat_d_nnz (CI.cptr x161))
-| Function (CI.Pointer x164, Returns (CI.Primitive CI.Int)),
+| Function (CI.Pointer x164, Returns (CI.Primitive CI.Int64_t)),
   "c_eigen_spmat_d_cols" ->
   (fun x163 -> owl_stub_5_c_eigen_spmat_d_cols (CI.cptr x163))
-| Function (CI.Pointer x166, Returns (CI.Primitive CI.Int)),
+| Function (CI.Pointer x166, Returns (CI.Primitive CI.Int64_t)),
   "c_eigen_spmat_d_rows" ->
   (fun x165 -> owl_stub_4_c_eigen_spmat_d_rows (CI.cptr x165))
-| Function (CI.Primitive CI.Int, Returns (CI.Pointer x168)),
+| Function (CI.Primitive CI.Int64_t, Returns (CI.Pointer x168)),
   "c_eigen_spmat_d_eye" ->
   (fun x167 -> CI.make_ptr x168 (owl_stub_3_c_eigen_spmat_d_eye x167))
 | Function (CI.Pointer x170, Returns CI.Void), "c_eigen_spmat_d_delete" ->
   (fun x169 -> owl_stub_2_c_eigen_spmat_d_delete (CI.cptr x169))
 | Function
-    (CI.Primitive CI.Int,
-     Function (CI.Primitive CI.Int, Returns (CI.Pointer x173))),
+    (CI.Primitive CI.Int64_t,
+     Function (CI.Primitive CI.Int64_t, Returns (CI.Pointer x173))),
   "c_eigen_spmat_d_new" ->
   (fun x171 x172 ->
     CI.make_ptr x173 (owl_stub_1_c_eigen_spmat_d_new x171 x172))

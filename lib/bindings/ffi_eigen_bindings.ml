@@ -12,21 +12,21 @@ module Bindings (F : Cstubs.FOREIGN) = struct
   type c_spmat_d
   let c_spmat_d : c_spmat_d structure typ = structure "c_spmat_d"
 
-  let ml_eigen_spmat_d_new = foreign "c_eigen_spmat_d_new" (int @-> int @-> returning (ptr c_spmat_d))
+  let ml_eigen_spmat_d_new = foreign "c_eigen_spmat_d_new" (int64_t @-> int64_t @-> returning (ptr c_spmat_d))
 
   let ml_eigen_spmat_d_delete = foreign "c_eigen_spmat_d_delete" (ptr c_spmat_d @-> returning void)
 
-  let ml_eigen_spmat_d_eye = foreign "c_eigen_spmat_d_eye" (int @-> returning (ptr c_spmat_d))
+  let ml_eigen_spmat_d_eye = foreign "c_eigen_spmat_d_eye" (int64_t @-> returning (ptr c_spmat_d))
 
-  let ml_eigen_spmat_d_rows = foreign "c_eigen_spmat_d_rows" (ptr c_spmat_d @-> returning int)
+  let ml_eigen_spmat_d_rows = foreign "c_eigen_spmat_d_rows" (ptr c_spmat_d @-> returning int64_t)
 
-  let ml_eigen_spmat_d_cols = foreign "c_eigen_spmat_d_cols" (ptr c_spmat_d @-> returning int)
+  let ml_eigen_spmat_d_cols = foreign "c_eigen_spmat_d_cols" (ptr c_spmat_d @-> returning int64_t)
 
-  let ml_eigen_spmat_d_nnz = foreign "c_eigen_spmat_d_nnz" (ptr c_spmat_d @-> returning int)
+  let ml_eigen_spmat_d_nnz = foreign "c_eigen_spmat_d_nnz" (ptr c_spmat_d @-> returning int64_t)
 
-  let ml_eigen_spmat_d_get = foreign "c_eigen_spmat_d_get" (ptr c_spmat_d @-> int @-> int @-> returning double)
+  let ml_eigen_spmat_d_get = foreign "c_eigen_spmat_d_get" (ptr c_spmat_d @-> int64_t @-> int64_t @-> returning double)
 
-  let ml_eigen_spmat_d_set = foreign "c_eigen_spmat_d_set" (ptr c_spmat_d @-> int @-> int @-> double @-> returning void)
+  let ml_eigen_spmat_d_set = foreign "c_eigen_spmat_d_set" (ptr c_spmat_d @-> int64_t @-> int64_t @-> double @-> returning void)
 
   let ml_eigen_spmat_d_reset = foreign "c_eigen_spmat_d_reset" (ptr c_spmat_d @-> returning void)
 
@@ -36,11 +36,11 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   let ml_eigen_spmat_d_uncompress = foreign "c_eigen_spmat_d_uncompress" (ptr c_spmat_d @-> returning void)
 
-  let ml_eigen_spmat_d_reshape = foreign "c_eigen_spmat_d_reshape" (ptr c_spmat_d @-> int @-> int @-> returning void)
+  let ml_eigen_spmat_d_reshape = foreign "c_eigen_spmat_d_reshape" (ptr c_spmat_d @-> int64_t @-> int64_t @-> returning void)
 
   let ml_eigen_spmat_d_prune = foreign "c_eigen_spmat_d_prune" (ptr c_spmat_d @-> double @-> double @-> returning void)
 
-  let ml_eigen_spmat_d_valueptr = foreign "c_eigen_spmat_d_valueptr" (ptr c_spmat_d @-> ptr int @-> returning (ptr double))
+  let ml_eigen_spmat_d_valueptr = foreign "c_eigen_spmat_d_valueptr" (ptr c_spmat_d @-> ptr int64_t @-> returning (ptr double))
 
   let ml_eigen_spmat_d_innerindexptr = foreign "c_eigen_spmat_d_innerindexptr" (ptr c_spmat_d @-> returning (ptr int64_t))
 
@@ -48,9 +48,9 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   let ml_eigen_spmat_d_clone = foreign "c_eigen_spmat_d_clone" (ptr c_spmat_d @-> returning (ptr c_spmat_d))
 
-  let ml_eigen_spmat_d_row = foreign "c_eigen_spmat_d_row" (ptr c_spmat_d @-> int @-> returning (ptr c_spmat_d))
+  let ml_eigen_spmat_d_row = foreign "c_eigen_spmat_d_row" (ptr c_spmat_d @-> int64_t @-> returning (ptr c_spmat_d))
 
-  let ml_eigen_spmat_d_col = foreign "c_eigen_spmat_d_col" (ptr c_spmat_d @-> int @-> returning (ptr c_spmat_d))
+  let ml_eigen_spmat_d_col = foreign "c_eigen_spmat_d_col" (ptr c_spmat_d @-> int64_t @-> returning (ptr c_spmat_d))
 
   let ml_eigen_spmat_d_transpose = foreign "c_eigen_spmat_d_transpose" (ptr c_spmat_d @-> returning (ptr c_spmat_d))
 

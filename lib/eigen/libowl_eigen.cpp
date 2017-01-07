@@ -29,7 +29,7 @@ inline c_spmat_d* eigen_to_c(spmat_d& ref)
 
 /***************** SparseMatrix_D: c stubs for c++ functions *****************/
 
-c_spmat_d* c_eigen_spmat_d_new(int rows, int cols)
+c_spmat_d* c_eigen_spmat_d_new(long long rows, long long cols)
 {
   return eigen_to_c(*new spmat_d(rows, cols));
 }
@@ -39,34 +39,34 @@ void c_eigen_spmat_d_delete(c_spmat_d *m)
   delete &c_to_eigen(m);
 }
 
-c_spmat_d* c_eigen_spmat_d_eye(int m)
+c_spmat_d* c_eigen_spmat_d_eye(long long m)
 {
   spmat_d* x = new spmat_d(m, m);
   (*x).setIdentity();
   return eigen_to_c(*x);
 }
 
-int c_eigen_spmat_d_rows(c_spmat_d *m)
+long long c_eigen_spmat_d_rows(c_spmat_d *m)
 {
   return c_to_eigen(m).rows();
 }
 
-int c_eigen_spmat_d_cols(c_spmat_d *m)
+long long c_eigen_spmat_d_cols(c_spmat_d *m)
 {
   return c_to_eigen(m).cols();
 }
 
-int c_eigen_spmat_d_nnz(c_spmat_d *m)
+long long c_eigen_spmat_d_nnz(c_spmat_d *m)
 {
   return (c_to_eigen(m)).nonZeros();
 }
 
-double c_eigen_spmat_d_get(c_spmat_d *m, int i, int j)
+double c_eigen_spmat_d_get(c_spmat_d *m, long long i, long long j)
 {
   return (c_to_eigen(m)).coeff(i,j);
 }
 
-void c_eigen_spmat_d_set(c_spmat_d *m, int i, int j, double x)
+void c_eigen_spmat_d_set(c_spmat_d *m, long long i, long long j, double x)
 {
   (c_to_eigen(m)).coeffRef(i,j) = x;
 }
@@ -91,7 +91,7 @@ void c_eigen_spmat_d_uncompress(c_spmat_d *m)
   (c_to_eigen(m)).uncompress();
 }
 
-void c_eigen_spmat_d_reshape(c_spmat_d *m, int rows, int cols)
+void c_eigen_spmat_d_reshape(c_spmat_d *m, long long rows, long long cols)
 {
   (c_to_eigen(m)).conservativeResize(rows, cols);
 }
@@ -101,7 +101,7 @@ void c_eigen_spmat_d_prune(c_spmat_d *m, double ref, double eps)
   (c_to_eigen(m)).prune(ref, eps);
 }
 
-double* c_eigen_spmat_d_valueptr(c_spmat_d *m, int *l)
+double* c_eigen_spmat_d_valueptr(c_spmat_d *m, long long *l)
 {
   spmat_d& x = c_to_eigen(m);
   x.makeCompressed();
@@ -130,13 +130,13 @@ c_spmat_d* c_eigen_spmat_d_clone(c_spmat_d *m)
   return eigen_to_c(*new spmat_d(x));
 }
 
-c_spmat_d* c_eigen_spmat_d_row(c_spmat_d *m, int i)
+c_spmat_d* c_eigen_spmat_d_row(c_spmat_d *m, long long i)
 {
   spmat_d* x = new spmat_d((c_to_eigen(m)).row(i));
   return eigen_to_c(*x);
 }
 
-c_spmat_d* c_eigen_spmat_d_col(c_spmat_d *m, int i)
+c_spmat_d* c_eigen_spmat_d_col(c_spmat_d *m, long long i)
 {
   spmat_d* x = new spmat_d((c_to_eigen(m)).col(i));
   return eigen_to_c(*x);

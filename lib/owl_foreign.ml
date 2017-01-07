@@ -370,23 +370,23 @@ module Eigen_D = struct
   open EigenFB
 
   let create m n =
-    let x = ml_eigen_spmat_d_new m n in
+    let x = ml_eigen_spmat_d_new (Int64.of_int m) (Int64.of_int n) in
     Gc.finalise ml_eigen_spmat_d_delete x;
     x
 
   let delete x = ml_eigen_spmat_d_delete x
 
-  let eye m = ml_eigen_spmat_d_eye m
+  let eye m = ml_eigen_spmat_d_eye (Int64.of_int m)
 
-  let rows x = ml_eigen_spmat_d_rows x
+  let rows x = ml_eigen_spmat_d_rows x |> Int64.to_int
 
-  let cols x = ml_eigen_spmat_d_cols x
+  let cols x = ml_eigen_spmat_d_cols x |> Int64.to_int
 
-  let nnz x = ml_eigen_spmat_d_nnz x
+  let nnz x = ml_eigen_spmat_d_nnz x |> Int64.to_int
 
-  let get x i j = ml_eigen_spmat_d_get x i j
+  let get x i j = ml_eigen_spmat_d_get x (Int64.of_int i) (Int64.of_int j)
 
-  let set x i j a = ml_eigen_spmat_d_set x i j a
+  let set x i j a = ml_eigen_spmat_d_set x (Int64.of_int i) (Int64.of_int j) a
 
   let reset x = ml_eigen_spmat_d_reset x
 
@@ -396,14 +396,14 @@ module Eigen_D = struct
 
   let uncompress x = ml_eigen_spmat_d_uncompress x
 
-  let reshape x m n = ml_eigen_spmat_d_reshape x m n
+  let reshape x m n = ml_eigen_spmat_d_reshape x (Int64.of_int m) (Int64.of_int n)
 
   let prune x r e = ml_eigen_spmat_d_prune x r e
 
   let valueptr x =
-    let l = allocate int (Signed.Int.of_int 0) in
+    let l = allocate int64_t (Signed.Int64.of_int 0) in
     let raw = ml_eigen_spmat_d_valueptr x l in
-    let l = Signed.Int.to_int !@l in
+    let l = Signed.Int64.to_int !@l in
     bigarray_of_ptr array1 l Bigarray.float64 raw
 
   let innerindexptr x =
@@ -416,9 +416,9 @@ module Eigen_D = struct
 
   let clone x = ml_eigen_spmat_d_clone x
 
-  let row x i = ml_eigen_spmat_d_row x i
+  let row x i = ml_eigen_spmat_d_row x (Int64.of_int i)
 
-  let col x i = ml_eigen_spmat_d_col x i
+  let col x i = ml_eigen_spmat_d_col x (Int64.of_int i)
 
   let transpose x = ml_eigen_spmat_d_transpose x
 

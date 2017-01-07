@@ -13,26 +13,26 @@ extern "C"
 
   struct c_spmat_d {};
 
-  struct c_spmat_d* c_eigen_spmat_d_new(int rows, int cols);
+  struct c_spmat_d* c_eigen_spmat_d_new(long long rows, long long cols);
   void c_eigen_spmat_d_delete(struct c_spmat_d *m);
-  struct c_spmat_d* c_eigen_spmat_d_eye(int m);
-  int c_eigen_spmat_d_rows(struct c_spmat_d *m);
-  int c_eigen_spmat_d_cols(struct c_spmat_d *m);
-  int c_eigen_spmat_d_nnz(struct c_spmat_d *m);
-  double c_eigen_spmat_d_get(struct c_spmat_d *m, int i, int j);
-  void c_eigen_spmat_d_set(struct c_spmat_d *m, int i, int j, double x);
+  struct c_spmat_d* c_eigen_spmat_d_eye(long long m);
+  long long c_eigen_spmat_d_rows(struct c_spmat_d *m);
+  long long c_eigen_spmat_d_cols(struct c_spmat_d *m);
+  long long c_eigen_spmat_d_nnz(struct c_spmat_d *m);
+  double c_eigen_spmat_d_get(struct c_spmat_d *m, long long i, long long j);
+  void c_eigen_spmat_d_set(struct c_spmat_d *m, long long i, long long j, double x);
   void c_eigen_spmat_d_reset(struct c_spmat_d *m);
   int c_eigen_spmat_d_is_compressed(struct c_spmat_d *m);
   void c_eigen_spmat_d_compress(struct c_spmat_d *m);
   void c_eigen_spmat_d_uncompress(struct c_spmat_d *m);
-  void c_eigen_spmat_d_reshape(struct c_spmat_d *m, int rows, int cols);
+  void c_eigen_spmat_d_reshape(struct c_spmat_d *m, long long rows, long long cols);
   void c_eigen_spmat_d_prune(struct c_spmat_d *m, double ref, double eps);
-  double* c_eigen_spmat_d_valueptr(struct c_spmat_d *m, int *l);
+  double* c_eigen_spmat_d_valueptr(struct c_spmat_d *m, long long *l);
   long long* c_eigen_spmat_d_innerindexptr(struct c_spmat_d *m);
   long long* c_eigen_spmat_d_outerindexptr(struct c_spmat_d *m);
   struct c_spmat_d* c_eigen_spmat_d_clone(struct c_spmat_d *m);
-  struct c_spmat_d* c_eigen_spmat_d_row(struct c_spmat_d *m, int i);
-  struct c_spmat_d* c_eigen_spmat_d_col(struct c_spmat_d *m, int i);
+  struct c_spmat_d* c_eigen_spmat_d_row(struct c_spmat_d *m, long long i);
+  struct c_spmat_d* c_eigen_spmat_d_col(struct c_spmat_d *m, long long i);
   struct c_spmat_d* c_eigen_spmat_d_transpose(struct c_spmat_d *m);
   struct c_spmat_d* c_eigen_spmat_d_adjoint(struct c_spmat_d *m);
   struct c_spmat_d* c_eigen_spmat_d_diagonal(struct c_spmat_d *m);
