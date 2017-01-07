@@ -9,6 +9,11 @@ extern "C"
 #endif
 
 
+  /**************************** SparseMatrix_S ****************************/
+
+  struct c_spmat_s {};
+
+
   /**************************** SparseMatrix_D ****************************/
 
   struct c_spmat_d {};
@@ -66,6 +71,18 @@ extern "C"
   struct c_spmat_d* c_eigen_spmat_d_neg(struct c_spmat_d *m);
   struct c_spmat_d* c_eigen_spmat_d_sqrt(struct c_spmat_d *m);
   void c_eigen_spmat_d_print(struct c_spmat_d *m);
+
+
+  /**************************** SparseMatrix_C ****************************/
+
+  struct c_spmat_c {};
+
+
+  /**************************** SparseMatrix_Z ****************************/
+
+  struct c_spmat_z {};
+
+
 
 #ifdef __cplusplus
 } // end extern "C"
