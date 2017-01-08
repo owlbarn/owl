@@ -9,7 +9,6 @@ extern "C"
 #endif
 
   #define INDEX long long
-  #define ELT_S float //TODO
 
 
   /**************************** SparseMatrix_S ****************************/
