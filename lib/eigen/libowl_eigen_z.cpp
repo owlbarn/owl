@@ -6,7 +6,7 @@
 
 /******************** SparseMatrix_Z: pointer conversion  ********************/
 
-typedef std::complex< double > elt_z;
+typedef std::complex<double> elt_z;
 typedef SparseMatrix<elt_z, Eigen::RowMajor, INDEX> spmat_z;
 const elt_z zero_z = 0.;
 
