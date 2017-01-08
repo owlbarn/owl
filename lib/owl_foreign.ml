@@ -367,7 +367,7 @@ module EigenFB = Ffi_eigen_bindings.Bindings(Ffi_eigen_generated)
 
 module Eigen_D = struct
 
-  open EigenFB
+  open EigenFB.D
 
   let create m n =
     let x = ml_eigen_spmat_d_new (Int64.of_int m) (Int64.of_int n) in
