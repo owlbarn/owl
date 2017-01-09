@@ -20,8 +20,21 @@ inline c_spmat_z* eigen_to_c(spmat_z& ref)
   return reinterpret_cast<c_spmat_z*>(&ref);
 }
 
+inline CELT_Z eigen_to_c(elt_z& ref)
+{
+  return *reinterpret_cast<CELT_Z*>(&ref);
+}
+inline elt_z c_to_eigen(CELT_Z c)
+{
+  return elt_z(c.r, c.i);
+}
 
-/***************** SparseMatrix_C: c stubs for c++ functions *****************/
+inline CELT_Z* eigen_to_c_ptr(elt_z* ref)
+{
+  return reinterpret_cast<CELT_Z*>(ref);
+}
+
+/***************** SparseMatrix_Z: c stubs for c++ functions *****************/
 
 c_spmat_z* c_eigen_spmat_z_new(INDEX rows, INDEX cols)
 {
@@ -55,14 +68,15 @@ INDEX c_eigen_spmat_z_nnz(c_spmat_z *m)
   return (c_to_eigen(m)).nonZeros();
 }
 
-elt_z c_eigen_spmat_z_get(c_spmat_z *m, INDEX i, INDEX j)
+CELT_Z c_eigen_spmat_z_get(c_spmat_z *m, INDEX i, INDEX j)
 {
-  return (c_to_eigen(m)).coeff(i,j);
+  elt_z a = (c_to_eigen(m)).coeff(i,j);
+  return eigen_to_c(a);
 }
 
-void c_eigen_spmat_z_set(c_spmat_z *m, INDEX i, INDEX j, elt_z x)
+void c_eigen_spmat_z_set(c_spmat_z *m, INDEX i, INDEX j, CELT_Z x)
 {
-  (c_to_eigen(m)).coeffRef(i,j) = x;
+  (c_to_eigen(m)).coeffRef(i,j) = c_to_eigen(x);
 }
 
 void c_eigen_spmat_z_reset(c_spmat_z *m)
@@ -96,12 +110,12 @@ void c_eigen_spmat_z_prune(c_spmat_z *m, elt_z ref, float eps)
   (c_to_eigen(m)).prune(ref, eps);
 }
 
-elt_z* c_eigen_spmat_z_valueptr(c_spmat_z *m, INDEX *l)
+CELT_Z* c_eigen_spmat_z_valueptr(c_spmat_z *m, INDEX *l)
 {
   spmat_z& x = c_to_eigen(m);
   x.makeCompressed();
   *l = x.data().size();
-  return x.valuePtr();
+  return eigen_to_c_ptr(x.valuePtr());
 }
 
 INDEX* c_eigen_spmat_z_innerindexptr(c_spmat_z *m)
@@ -154,9 +168,10 @@ c_spmat_z* c_eigen_spmat_z_diagonal(c_spmat_z *m)
   return eigen_to_c(*new spmat_z(x.diagonal().sparseView()));
 }
 
-elt_z c_eigen_spmat_z_trace(c_spmat_z *m)
+CELT_Z c_eigen_spmat_z_trace(c_spmat_z *m)
 {
-  return c_to_eigen(m).diagonal().sparseView().sum();
+  elt_z a = c_to_eigen(m).diagonal().sparseView().sum();
+  return eigen_to_c(a);
 }
 
 int c_eigen_spmat_z_is_zero(c_spmat_z *m)
@@ -324,42 +339,47 @@ c_spmat_z* c_eigen_spmat_z_dot(c_spmat_z *m0, c_spmat_z *m1)
   return eigen_to_c(*new spmat_z(x0 * x1));
 }
 
-c_spmat_z* c_eigen_spmat_z_add_scalar(c_spmat_z *m, elt_z a)
+c_spmat_z* c_eigen_spmat_z_add_scalar(c_spmat_z *m, CELT_Z a)
 {
+  elt_z b = c_to_eigen(a);
   spmat_z* x = new spmat_z(c_to_eigen(m));
   for (INDEX k = 0; k < (*x).outerSize(); ++k)
     for (spmat_z::InnerIterator it(*x,k); it; ++it)
-      it.valueRef() += a;
+      it.valueRef() += b;
   return eigen_to_c(*x);
 }
 
-c_spmat_z* c_eigen_spmat_z_sub_scalar(c_spmat_z *m, elt_z a)
+c_spmat_z* c_eigen_spmat_z_sub_scalar(c_spmat_z *m, CELT_Z a)
 {
+  elt_z b = c_to_eigen(a);
   spmat_z* x = new spmat_z(c_to_eigen(m));
   for (INDEX k = 0; k < (*x).outerSize(); ++k)
     for (spmat_z::InnerIterator it(*x,k); it; ++it)
-      it.valueRef() -= a;
+      it.valueRef() -= b;
   return eigen_to_c(*x);
 }
 
-c_spmat_z* c_eigen_spmat_z_mul_scalar(c_spmat_z *m, elt_z a)
+c_spmat_z* c_eigen_spmat_z_mul_scalar(c_spmat_z *m, CELT_Z a)
 {
+  elt_z b = c_to_eigen(a);
   spmat_z& x = c_to_eigen(m);
-  return eigen_to_c(*new spmat_z(x * a));
+  return eigen_to_c(*new spmat_z(x * b));
 }
 
-c_spmat_z* c_eigen_spmat_z_div_scalar(c_spmat_z *m, elt_z a)
+c_spmat_z* c_eigen_spmat_z_div_scalar(c_spmat_z *m, CELT_Z a)
 {
+  elt_z b = c_to_eigen(a);
   spmat_z* x = new spmat_z(c_to_eigen(m));
   for (INDEX k = 0; k < (*x).outerSize(); ++k)
     for (spmat_z::InnerIterator it(*x,k); it; ++it)
-      it.valueRef() /= a;
+      it.valueRef() /= b;
   return eigen_to_c(*x);
 }
 
-elt_z c_eigen_spmat_z_sum(c_spmat_z *m)
+CELT_Z c_eigen_spmat_z_sum(c_spmat_z *m)
 {
-  return (c_to_eigen(m)).sum();
+  elt_z a = (c_to_eigen(m)).sum();
+  return eigen_to_c(a);
 }
 /*
 elt_z c_eigen_spmat_z_min(c_spmat_z *m)
