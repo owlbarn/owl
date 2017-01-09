@@ -377,21 +377,7 @@ c_spmat_c* c_eigen_spmat_c_div_scalar(c_spmat_c *m, CELT_C a)
       it.valueRef() /= b;
   return eigen_to_c(*x);
 }
-/*
-c_spmat_c* c_eigen_spmat_c_min2(c_spmat_c *m0, c_spmat_c *m1)
-{
-  spmat_c& x0 = c_to_eigen(m0);
-  spmat_c& x1 = c_to_eigen(m1);
-  return eigen_to_c(*new spmat_c(x0.cwiseMin(x1)));
-}
 
-c_spmat_c* c_eigen_spmat_c_max2(c_spmat_c *m0, c_spmat_c *m1)
-{
-  spmat_c& x0 = c_to_eigen(m0);
-  spmat_c& x1 = c_to_eigen(m1);
-  return eigen_to_c(*new spmat_c(x0.cwiseMax(x1)));
-}
-*/
 CELT_C c_eigen_spmat_c_sum(c_spmat_c *m)
 {
   elt_c a = (c_to_eigen(m)).sum();
