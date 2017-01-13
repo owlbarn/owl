@@ -19,7 +19,7 @@ clean:
 	rm -rf perftest/*.byte perftest/*.native perftest/*.tmp
 cleanall:
 	# remove intermediate files
-	rm -rf _build setup.* myocamlbuild.ml _tags
+	rm -rf _build setup.* *.odocl myocamlbuild.ml _tags
 	rm -rf `find . -name META`
 	rm -rf `find . -name *.mldylib`
 	rm -rf `find . -name *.mllib`
