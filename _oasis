@@ -65,8 +65,8 @@ Library owl
                     owl_dense_common_c.c,
                     owl_dense_common_vec_cmp.c
   CCOpt:            -I$pkg_ctypes
-  BuildDepends:     str, gsl, ctypes, ctypes.stubs, plplot, dolog, lacaml,
-                    owl_parallel
+  BuildDepends:     str, ctypes, ctypes.stubs, plplot, dolog,
+                    eigen, gsl, lacaml, owl_parallel
 
 Library owl_topic
   Install:          true
