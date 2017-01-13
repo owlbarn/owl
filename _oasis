@@ -18,16 +18,9 @@ Homepage:     https://github.com/ryanrhymes/owl
 # | Pre- & Post-build                                                 |
 # +-------------------------------------------------------------------+
 
-PreBuildCommand:    ${rm} ${prefix}/include/eigen;
-                    ${rm} ${libdir}/libowl_eigen.o;
-                    ln -s `pwd`/lib/eigen ${prefix}/include/eigen
-                    cd ${prefix}/include/eigen;
-                    make;
-                    cp libowl_eigen.o ${libdir};
-                    make clean;
-                    cd -;
+PreBuildCommand:    echo "Start compiling Owl ..."
 
-PostBuildCommand:   ${rm} ${prefix}/include/eigen;
+PostBuildCommand:   echo "Phew ... it is done!"
 
 # +-------------------------------------------------------------------+
 # | Libraries                                                         |
@@ -45,16 +38,12 @@ Library owl
                     Owl_dense_matrix, Owl_cluster, Owl_linalg,  Owl_fft,
                     Owl_sparse_matrix, Owl_sparse_ndarray,
                     Owl_infix,
-                    Owl_foreign, Ffi_gsl_bindings, Ffi_eigen_bindings,
-                    ### ?InternalModules? ###
-                    Ffi_gsl_generated, Ffi_eigen_generated
+                    Owl_foreign, Ffi_gsl_bindings,
+                    Ffi_gsl_generated
   CSources:         owl_macros.h,
-                    ffi_gsl_generated_stub.c, ffi_eigen_generated_stub.c,
+                    ffi_gsl_generated_stub.c,
                     owl_dense_common_c.c, owl_dense_common_vec_cmp.c
   CCOpt:            -I$pkg_ctypes
-                    -I${prefix}/include/eigen
-  CCLib:            ${libdir}/libowl_eigen.o
-                    -lstdc++
   BuildDepends:     str, gsl, ctypes, ctypes.stubs, plplot, dolog, lacaml,
                     owl_parallel
 
