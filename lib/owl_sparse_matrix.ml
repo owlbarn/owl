@@ -137,12 +137,125 @@ let iteri_nz f x =
   for i = 0 to x.m - 1 do
     for k = (Int64.to_int p.{i}) to (Int64.to_int p.{i + 1}) - 1 do
       let j = Int64.to_int q.{k} in
-      let y = d.{k} in
-      f i j y
+      f i j d.{k}
     done
   done
 
-let iter_nz f x = iteri_nz (fun _ _ y -> f y) x
+let iter_nz f x =
+  let _ = _eigen_compress x.d in
+  let d = _eigen_valueptr x.d in
+  for i = 0 to Array1.dim d - 1 do
+    f d.{i}
+  done
+
+let mapi_nz f x =
+  let _ = _eigen_compress x.d in
+  let d = _eigen_valueptr x.d in
+  let q = _eigen_innerindexptr x.d in
+  let p = _eigen_outerindexptr x.d in
+  let y = clone x in
+  let e = _eigen_valueptr y.d in
+  for i = 0 to x.m - 1 do
+    for k = (Int64.to_int p.{i}) to (Int64.to_int p.{i + 1}) - 1 do
+      let j = Int64.to_int q.{k} in
+      e.{k} <- f i j d.{k}
+    done
+  done;
+  y
+
+let map_nz f x =
+  let _ = _eigen_compress x.d in
+  let d = _eigen_valueptr x.d in
+  let y = clone x in
+  let e = _eigen_valueptr y.d in
+  for i = 0 to Array1.dim d - 1 do
+    e.{i} <- f d.{i}
+  done;
+  y
+
+let foldi_nz f a x =
+  let r = ref a in
+  iteri_nz (fun i j y -> r := f i j !r y) x;
+  !r
+
+let fold_nz f a x = _fold_basic iter_nz f a x
+
+let filteri_nz f x =
+  let r = ref [||] in
+  iteri_nz (fun i j y ->
+    if (f i j y) then r := Array.append !r [|(i,j)|]
+  ) x; !r
+
+let filter_nz f x = filteri_nz (fun _ _ y -> f y) x
+
+let _disassemble_rows x =
+  _eigen_compress x.d;
+  Log.debug "_disassemble_rows :allocate space";
+  let d = Array.init x.m (fun _ -> zeros x.k 1 x.n) in
+  Log.debug "_disassemble_rows: iteri_nz";
+  let _ = iteri_nz (fun i j z -> set d.(i) 0 j z) x in
+  Log.debug "_disassemble_rows: ends";
+  d
+
+let _disassemble_cols x =
+  _eigen_compress x.d;
+  let d = Array.init x.n (fun _ -> zeros x.k x.m 1) in
+  let _ = iteri_nz (fun i j z -> set d.(j) i 0 z) x in
+  d
+
+let iteri_rows f x = Array.iteri (fun i y -> f i y) (_disassemble_rows x)
+
+let iter_rows f x = iteri_rows (fun _ y -> f y) x
+
+let iteri_cols f x = Array.iteri (fun j y -> f j y) (_disassemble_cols x)
+
+let iter_cols f x = iteri_cols (fun _ y -> f y) x
+
+let mapi_rows f x =
+  let a = _disassemble_rows x in
+  Array.init (row_num x) (fun i -> f i a.(i))
+
+let map_rows f x = mapi_rows (fun _ y -> f y) x
+
+let mapi_cols f x =
+  let a = _disassemble_cols x in
+  Array.init (col_num x) (fun i -> f i a.(i))
+
+let map_cols f x = mapi_cols (fun _ y -> f y) x
+
+let fold_rows f a x = _fold_basic iter_rows f a x
+
+let fold_cols f a x = _fold_basic iter_cols f a x
+
+let iteri_rows_nz f x = iteri_rows (fun i y -> if (nnz y) != 0 then f i y) x
+
+let iter_rows_nz f x = iteri_rows_nz (fun _ y -> f y) x
+
+let iteri_cols_nz f x = iteri_cols (fun i y -> if (nnz y) != 0 then f i y) x
+
+let iter_cols_nz f x = iteri_cols_nz (fun _ y -> f y) x
+
+let mapi_rows_nz f x =
+  let a = _disassemble_rows x in
+  let r = ref [||] in
+  Array.iteri (fun i y ->
+    if (nnz y) != 0 then r := Array.append !r [|f i y|]
+  ) a; !r
+
+let map_rows_nz f x = mapi_rows_nz (fun _ y -> f y) x
+
+let mapi_cols_nz f x =
+  let a = _disassemble_cols x in
+  let r = ref [||] in
+  Array.iteri (fun i y ->
+    if (nnz y) != 0 then r := Array.append !r [|f i y|]
+  ) a; !r
+
+let map_cols_nz f x = mapi_cols_nz (fun _ y -> f y) x
+
+let fold_rows_nz f a x = _fold_basic iter_rows_nz f a x
+
+let fold_cols_nz f a x = _fold_basic iter_cols_nz f a x
 
 
 let print x = _eigen_print x.d

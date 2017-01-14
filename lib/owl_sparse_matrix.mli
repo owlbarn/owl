@@ -75,6 +75,8 @@ val rows : ('a, 'b) t -> int array -> ('a, 'b) t
 val cols : ('a, 'b) t -> int array -> ('a, 'b) t
 *)
 
+(* prune *)
+
 
 (** {6 Iterate elements, columns, and rows} *)
 
@@ -93,7 +95,7 @@ val fold : ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 val filteri : (int -> int -> 'a -> bool) -> ('a, 'b) t -> (int * int) array
 
 val filter : ('a -> bool) -> ('a, 'b) t -> (int * int) array
-(*
+
 val iteri_rows : (int -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 
 val iter_rows : (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
@@ -113,11 +115,11 @@ val map_cols : (('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
 val fold_rows : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 val fold_cols : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
-*)
+
 val iteri_nz : (int -> int -> 'a -> unit) -> ('a, 'b) t -> unit
 
 val iter_nz : ('a -> unit) -> ('a, 'b) t -> unit
-(*
+
 val mapi_nz : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
 val map_nz : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
@@ -149,7 +151,7 @@ val map_cols_nz : (('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
 val fold_rows_nz : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 val fold_cols_nz : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
-*)
+
 
 
 (** {6 Examin elements and compare two matrices} *)
