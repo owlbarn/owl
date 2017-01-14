@@ -191,7 +191,7 @@ val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
 
 
 (** {6 Randomisation functions} *)
-(*
+
 val permutation_matrix : ('a, 'b) kind -> int -> ('a, 'b) t
 
 val draw_rows : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
@@ -203,7 +203,6 @@ val shuffle_rows : ('a, 'b) t -> ('a, 'b) t
 val shuffle_cols : ('a, 'b) t -> ('a, 'b) t
 
 val shuffle : ('a, 'b) t -> ('a, 'b) t
-*)
 
 
 (** {6 Input/Output and helper functions} *)

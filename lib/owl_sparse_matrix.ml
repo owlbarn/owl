@@ -301,7 +301,6 @@ let print x = _eigen_print x.d
 
 let pp_spmat x = print x
 
-
 let add x y = {
   m = x.m;
   n = x.n;
@@ -364,6 +363,49 @@ let div_scalar x a = {
   k = x.k;
   d = _eigen_div_scalar x.d a;
 }
+
+(** permutation and draw functions *)
+
+let permutation_matrix k d =
+  let l = Array.init d (fun x -> x) |> Owl_stats.shuffle in
+  let y = zeros k d d in
+  let _a1 = Owl_types._one k in
+  Array.iteri (fun i j -> set y i j _a1) l;
+  y
+
+let draw_rows ?(replacement=true) x c =
+  let m, n = shape x in
+  let a = Array.init m (fun x -> x) |> Owl_stats.shuffle in
+  let l = match replacement with
+    | true  -> Owl_stats.sample a c
+    | false -> Owl_stats.choose a c
+  in
+  let y = zeros (kind x) c m in
+  let _a1 = Owl_types._one (kind x) in
+  let _ = Array.iteri (fun i j -> set y i j _a1) l in
+  dot y x, l
+
+let draw_cols ?(replacement=true) x c =
+  let m, n = shape x in
+  let a = Array.init n (fun x -> x) |> Owl_stats.shuffle in
+  let l = match replacement with
+    | true  -> Owl_stats.sample a c
+    | false -> Owl_stats.choose a c
+  in
+  let y = zeros (kind x) n c in
+  let _a1 = Owl_types._one (kind x) in
+  let _ = Array.iteri (fun j i -> set y i j _a1) l in
+  dot x y, l
+
+let shuffle_rows x =
+  let y = permutation_matrix (kind x) (row_num x) in
+  dot y x
+
+let shuffle_cols x =
+  let y = permutation_matrix (kind x) (col_num x) in
+  dot x y
+
+let shuffle x = x |> shuffle_rows |> shuffle_cols
 
 
 
