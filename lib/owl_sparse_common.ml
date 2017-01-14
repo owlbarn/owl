@@ -226,6 +226,68 @@ let _eigen_equal_or_smaller : type a b . (a, b) eigen_mat -> (a, b) eigen_mat ->
   | SPMAT_C x, SPMAT_C y -> Eigen.Sparse.C.equal_or_smaller x y
   | SPMAT_Z x, SPMAT_Z y -> Eigen.Sparse.Z.equal_or_smaller x y
 
+let _eigen_add : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> SPMAT_S (Eigen.Sparse.S.add x y)
+  | SPMAT_D x, SPMAT_D y -> SPMAT_D (Eigen.Sparse.D.add x y)
+  | SPMAT_C x, SPMAT_C y -> SPMAT_C (Eigen.Sparse.C.add x y)
+  | SPMAT_Z x, SPMAT_Z y -> SPMAT_Z (Eigen.Sparse.Z.add x y)
+
+let _eigen_sub : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> SPMAT_S (Eigen.Sparse.S.sub x y)
+  | SPMAT_D x, SPMAT_D y -> SPMAT_D (Eigen.Sparse.D.sub x y)
+  | SPMAT_C x, SPMAT_C y -> SPMAT_C (Eigen.Sparse.C.sub x y)
+  | SPMAT_Z x, SPMAT_Z y -> SPMAT_Z (Eigen.Sparse.Z.sub x y)
+
+let _eigen_mul : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> SPMAT_S (Eigen.Sparse.S.mul x y)
+  | SPMAT_D x, SPMAT_D y -> SPMAT_D (Eigen.Sparse.D.mul x y)
+  | SPMAT_C x, SPMAT_C y -> SPMAT_C (Eigen.Sparse.C.mul x y)
+  | SPMAT_Z x, SPMAT_Z y -> SPMAT_Z (Eigen.Sparse.Z.mul x y)
+
+let _eigen_div : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> SPMAT_S (Eigen.Sparse.S.div x y)
+  | SPMAT_D x, SPMAT_D y -> SPMAT_D (Eigen.Sparse.D.div x y)
+  | SPMAT_C x, SPMAT_C y -> SPMAT_C (Eigen.Sparse.C.div x y)
+  | SPMAT_Z x, SPMAT_Z y -> SPMAT_Z (Eigen.Sparse.Z.div x y)
+
+let _eigen_dot : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> SPMAT_S (Eigen.Sparse.S.dot x y)
+  | SPMAT_D x, SPMAT_D y -> SPMAT_D (Eigen.Sparse.D.dot x y)
+  | SPMAT_C x, SPMAT_C y -> SPMAT_C (Eigen.Sparse.C.dot x y)
+  | SPMAT_Z x, SPMAT_Z y -> SPMAT_Z (Eigen.Sparse.Z.dot x y)
+
+let _eigen_add_scalar : type a b . (a, b) eigen_mat -> a -> (a, b) eigen_mat =
+  fun x a -> match x with
+  | SPMAT_S x -> SPMAT_S (Eigen.Sparse.S.add_scalar x a)
+  | SPMAT_D x -> SPMAT_D (Eigen.Sparse.D.add_scalar x a)
+  | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.add_scalar x a)
+  | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.add_scalar x a)
+
+let _eigen_sub_scalar : type a b . (a, b) eigen_mat -> a -> (a, b) eigen_mat =
+  fun x a -> match x with
+  | SPMAT_S x -> SPMAT_S (Eigen.Sparse.S.sub_scalar x a)
+  | SPMAT_D x -> SPMAT_D (Eigen.Sparse.D.sub_scalar x a)
+  | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.sub_scalar x a)
+  | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.sub_scalar x a)
+
+let _eigen_mul_scalar : type a b . (a, b) eigen_mat -> a -> (a, b) eigen_mat =
+  fun x a -> match x with
+  | SPMAT_S x -> SPMAT_S (Eigen.Sparse.S.mul_scalar x a)
+  | SPMAT_D x -> SPMAT_D (Eigen.Sparse.D.mul_scalar x a)
+  | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.mul_scalar x a)
+  | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.mul_scalar x a)
+
+let _eigen_div_scalar : type a b . (a, b) eigen_mat -> a -> (a, b) eigen_mat =
+  fun x a -> match x with
+  | SPMAT_S x -> SPMAT_S (Eigen.Sparse.S.div_scalar x a)
+  | SPMAT_D x -> SPMAT_D (Eigen.Sparse.D.div_scalar x a)
+  | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.div_scalar x a)
+  | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.div_scalar x a)
 
 
 (* ends here *)

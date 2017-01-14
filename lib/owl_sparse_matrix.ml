@@ -297,11 +297,73 @@ let equal_or_greater x1 x2 = _eigen_equal_or_greater x1.d x2.d
 
 let equal_or_smaller x1 x2 = _eigen_equal_or_smaller x1.d x2.d
 
-
 let print x = _eigen_print x.d
 
 let pp_spmat x = print x
 
+
+let add x y = {
+  m = x.m;
+  n = x.n;
+  k = x.k;
+  d = _eigen_add x.d y.d;
+}
+
+let sub x y = {
+  m = x.m;
+  n = x.n;
+  k = x.k;
+  d = _eigen_sub x.d y.d;
+}
+
+let mul x y = {
+  m = x.m;
+  n = x.n;
+  k = x.k;
+  d = _eigen_mul x.d y.d;
+}
+
+let div x y = {
+  m = x.m;
+  n = x.n;
+  k = x.k;
+  d = _eigen_div x.d y.d;
+}
+
+let dot x y = {
+  m = x.m;
+  n = y.n;
+  k = x.k;
+  d = _eigen_dot x.d y.d;
+}
+
+let add_scalar x a = {
+  m = x.m;
+  n = x.n;
+  k = x.k;
+  d = _eigen_add_scalar x.d a;
+}
+
+let sub_scalar x a = {
+  m = x.m;
+  n = x.n;
+  k = x.k;
+  d = _eigen_sub_scalar x.d a;
+}
+
+let mul_scalar x a = {
+  m = x.m;
+  n = x.n;
+  k = x.k;
+  d = _eigen_mul_scalar x.d a;
+}
+
+let div_scalar x a = {
+  m = x.m;
+  n = x.n;
+  k = x.k;
+  d = _eigen_div_scalar x.d a;
+}
 
 
 
