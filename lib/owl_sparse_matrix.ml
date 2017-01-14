@@ -374,6 +374,8 @@ let max2 x y = _eigen_max2 x.d y.d
 
 let sum x = _eigen_sum x.d
 
+let average x = (Owl_dense_common._average_elt x.k) (sum x) (numel x)
+
 let abs x = {
   m = x.m;
   n = x.n;
@@ -431,6 +433,38 @@ let shuffle_cols x =
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols
 
+let to_dense x =
+  let y = Owl_dense_matrix.zeros x.k x.m x.n in
+  iteri_nz (fun i j z -> Owl_dense_matrix.set y i j z) x;
+  y
+
+let of_dense x =
+  let m, n = Owl_dense_matrix.shape x in
+  let y = zeros (Owl_dense_matrix.kind x) m n in
+  Owl_dense_matrix.iteri (fun i j z -> set y i j z) x;
+  y
+
+let sum_rows x =
+  let y = Owl_dense_matrix.ones x.k 1 x.m |> of_dense in
+  dot y x
+
+let sum_cols x =
+  let y = Owl_dense_matrix.ones x.k x.n 1 |> of_dense in
+  dot x y
+
+let average_rows x =
+  let m, n = shape x in
+  let k = kind x in
+  let a = (Owl_dense_common._average_elt k) (Owl_types._one k) m in
+  let y = Owl_dense_matrix.create k 1 m a |> of_dense in
+  dot y x
+
+let average_cols x =
+  let m, n = shape x in
+  let k = kind x in
+  let a = (Owl_dense_common._average_elt k) (Owl_types._one k) n in
+  let y = Owl_dense_matrix.create k n 1 a |> of_dense in
+  dot x y
 
 
 (* ends here *)

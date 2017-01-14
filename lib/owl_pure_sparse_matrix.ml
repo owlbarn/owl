@@ -605,7 +605,7 @@ let trace x = sum (diag x)
 let to_dense x =
   let m, n = shape x in
   let y = Owl_dense_matrix.zeros (kind x) m n in
-  iteri (fun i j z -> Owl_dense_matrix.set y i j z) x;
+  iteri_nz (fun i j z -> Owl_dense_matrix.set y i j z) x;
   y
 
 let of_dense x =
