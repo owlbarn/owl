@@ -129,6 +129,21 @@ let filteri f x =
 
 let filter f x = filteri (fun _ _ y -> f y) x
 
+let iteri_nz f x =
+  let _ = _eigen_compress x.d in
+  let d = _eigen_valueptr x.d in
+  let q = _eigen_innerindexptr x.d in
+  let p = _eigen_outerindexptr x.d in
+  for i = 0 to x.m - 1 do
+    for k = (Int64.to_int p.{i}) to (Int64.to_int p.{i + 1}) - 1 do
+      let j = Int64.to_int q.{k} in
+      let y = d.{k} in
+      f i j y
+    done
+  done
+
+let iter_nz f x = iteri_nz (fun _ _ y -> f y) x
+
 
 let print x = _eigen_print x.d
 

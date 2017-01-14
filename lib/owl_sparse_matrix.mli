@@ -113,11 +113,11 @@ val map_cols : (('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
 val fold_rows : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 val fold_cols : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
-
+*)
 val iteri_nz : (int -> int -> 'a -> unit) -> ('a, 'b) t -> unit
 
 val iter_nz : ('a -> unit) -> ('a, 'b) t -> unit
-
+(*
 val mapi_nz : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
 val map_nz : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
