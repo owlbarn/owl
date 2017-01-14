@@ -5,10 +5,14 @@
 
 open Bigarray
 open Eigen_types
+open Owl_types
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 type ('a, 'b) eigen_mat = ('a, 'b) spmat
+
+
+(* interface to eigen functions *)
 
 let _eigen_create : type a b . (a, b) kind -> int -> int -> (a, b) eigen_mat =
   fun k m n -> match k with
@@ -25,3 +29,77 @@ let _eigen_eye : type a b . (a, b) kind -> int -> (a, b) eigen_mat =
   | Complex32 -> SPMAT_C (Eigen.Sparse.C.eye m)
   | Complex64 -> SPMAT_Z (Eigen.Sparse.Z.eye m)
   | _         -> failwith "_eigen_create: unsupported operation"
+
+let _eigen_nnz : type a b . (a, b) eigen_mat -> int =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.(prune x (_zero Float32) 0.; nnz x)
+  | SPMAT_D x -> Eigen.Sparse.D.(prune x (_zero Float64) 0.; nnz x)
+  | SPMAT_C x -> Eigen.Sparse.C.(prune x (_zero Complex32) 0.; nnz x)
+  | SPMAT_Z x -> Eigen.Sparse.Z.(prune x (_zero Complex64) 0.; nnz x)
+
+let _eigen_set : type a b . (a, b) eigen_mat -> int -> int -> a -> unit =
+  fun x i j a -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.set x i j a
+  | SPMAT_D x -> Eigen.Sparse.D.set x i j a
+  | SPMAT_C x -> Eigen.Sparse.C.set x i j a
+  | SPMAT_Z x -> Eigen.Sparse.Z.set x i j a
+
+let _eigen_get : type a b . (a, b) eigen_mat -> int -> int -> a =
+  fun x i j -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.get x i j
+  | SPMAT_D x -> Eigen.Sparse.D.get x i j
+  | SPMAT_C x -> Eigen.Sparse.C.get x i j
+  | SPMAT_Z x -> Eigen.Sparse.Z.get x i j
+
+let _eigen_reset : type a b . (a, b) eigen_mat -> unit =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.reset x
+  | SPMAT_D x -> Eigen.Sparse.D.reset x
+  | SPMAT_C x -> Eigen.Sparse.C.reset x
+  | SPMAT_Z x -> Eigen.Sparse.Z.reset x
+
+let _eigen_clone : type a b . (a, b) eigen_mat -> (a, b) eigen_mat =
+  fun x -> match x with
+  | SPMAT_S x -> SPMAT_S (Eigen.Sparse.S.clone x)
+  | SPMAT_D x -> SPMAT_D (Eigen.Sparse.D.clone x)
+  | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.clone x)
+  | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.clone x)
+
+let _eigen_transpose : type a b . (a, b) eigen_mat -> (a, b) eigen_mat =
+  fun x -> match x with
+  | SPMAT_S x -> SPMAT_S (Eigen.Sparse.S.transpose x)
+  | SPMAT_D x -> SPMAT_D (Eigen.Sparse.D.transpose x)
+  | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.transpose x)
+  | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.transpose x)
+
+let _eigen_diagonal : type a b . (a, b) eigen_mat -> (a, b) eigen_mat =
+  fun x -> match x with
+  | SPMAT_S x -> SPMAT_S (Eigen.Sparse.S.diagonal x)
+  | SPMAT_D x -> SPMAT_D (Eigen.Sparse.D.diagonal x)
+  | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.diagonal x)
+  | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.diagonal x)
+
+let _eigen_trace : type a b . (a, b) eigen_mat -> a =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.trace x
+  | SPMAT_D x -> Eigen.Sparse.D.trace x
+  | SPMAT_C x -> Eigen.Sparse.C.trace x
+  | SPMAT_Z x -> Eigen.Sparse.Z.trace x
+
+let _eigen_row : type a b . (a, b) eigen_mat -> int -> (a, b) eigen_mat =
+  fun x i -> match x with
+  | SPMAT_S x -> SPMAT_S (Eigen.Sparse.S.row x i)
+  | SPMAT_D x -> SPMAT_D (Eigen.Sparse.D.row x i)
+  | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.row x i)
+  | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.row x i)
+
+let _eigen_col : type a b . (a, b) eigen_mat -> int -> (a, b) eigen_mat =
+  fun x j -> match x with
+  | SPMAT_S x -> SPMAT_S (Eigen.Sparse.S.col x j)
+  | SPMAT_D x -> SPMAT_D (Eigen.Sparse.D.col x j)
+  | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.col x j)
+  | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.col x j)
+
+
+
+(* ends here *)
