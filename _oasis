@@ -46,6 +46,7 @@ Library owl
                     Owl_sparse_real,
                     Owl_sparse_complex,
                     Owl_sparse,
+                    Owl_sparse_common,
                     Owl_dense_common,
                     Owl_dense_ndarray,
                     Owl_dense_ndview,
