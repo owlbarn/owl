@@ -100,6 +100,48 @@ let _eigen_col : type a b . (a, b) eigen_mat -> int -> (a, b) eigen_mat =
   | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.col x j)
   | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.col x j)
 
+let _eigen_is_compressed : type a b . (a, b) eigen_mat -> bool =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.is_compressed x
+  | SPMAT_D x -> Eigen.Sparse.D.is_compressed x
+  | SPMAT_C x -> Eigen.Sparse.C.is_compressed x
+  | SPMAT_Z x -> Eigen.Sparse.Z.is_compressed x
+
+let _eigen_compress : type a b . (a, b) eigen_mat -> unit =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.compress x
+  | SPMAT_D x -> Eigen.Sparse.D.compress x
+  | SPMAT_C x -> Eigen.Sparse.C.compress x
+  | SPMAT_Z x -> Eigen.Sparse.Z.compress x
+
+let _eigen_uncompress : type a b . (a, b) eigen_mat -> unit =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.uncompress x
+  | SPMAT_D x -> Eigen.Sparse.D.uncompress x
+  | SPMAT_C x -> Eigen.Sparse.C.uncompress x
+  | SPMAT_Z x -> Eigen.Sparse.Z.uncompress x
+
+let _eigen_valueptr : type a b . (a, b) eigen_mat -> (a, b, c_layout) Array1.t =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.valueptr x
+  | SPMAT_D x -> Eigen.Sparse.D.valueptr x
+  | SPMAT_C x -> Eigen.Sparse.C.valueptr x
+  | SPMAT_Z x -> Eigen.Sparse.Z.valueptr x
+
+let _eigen_innerindexptr : type a b . (a, b) eigen_mat -> (int64, int64_elt, c_layout) Array1.t =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.innerindexptr x
+  | SPMAT_D x -> Eigen.Sparse.D.innerindexptr x
+  | SPMAT_C x -> Eigen.Sparse.C.innerindexptr x
+  | SPMAT_Z x -> Eigen.Sparse.Z.innerindexptr x
+
+let _eigen_outerindexptr : type a b . (a, b) eigen_mat -> (int64, int64_elt, c_layout) Array1.t =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.outerindexptr x
+  | SPMAT_D x -> Eigen.Sparse.D.outerindexptr x
+  | SPMAT_C x -> Eigen.Sparse.C.outerindexptr x
+  | SPMAT_Z x -> Eigen.Sparse.Z.outerindexptr x
+
 let _eigen_print : type a b . (a, b) eigen_mat -> unit =
   fun x -> match x with
   | SPMAT_S x -> Eigen.Sparse.S.print x
