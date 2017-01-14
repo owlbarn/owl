@@ -153,9 +153,8 @@ val fold_rows_nz : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 val fold_cols_nz : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 
-
 (** {6 Examin elements and compare two matrices} *)
-(*
+
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
 
 val not_exists : ('a -> bool) -> ('a, 'b) t -> bool
@@ -189,7 +188,6 @@ val is_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
 val equal_or_greater : ('a, 'b) t -> ('a, 'b) t -> bool
 
 val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
-*)
 
 
 (** {6 Randomisation functions} *)

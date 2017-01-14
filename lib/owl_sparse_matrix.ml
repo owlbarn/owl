@@ -257,10 +257,52 @@ let fold_rows_nz f a x = _fold_basic iter_rows_nz f a x
 
 let fold_cols_nz f a x = _fold_basic iter_cols_nz f a x
 
+let _exists_basic iter_fun f x =
+  try iter_fun (fun y ->
+    if (f y) = true then failwith "found"
+  ) x; false
+  with exn -> true
+
+let exists f x = _exists_basic iter f x
+
+let not_exists f x = not (exists f x)
+
+let for_all f x = let g y = not (f y) in not_exists g x
+
+let exists_nz f x = _exists_basic iter_nz f x
+
+let not_exists_nz f x = not (exists_nz f x)
+
+let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
+
+let is_zero x = _eigen_is_zero x.d
+
+let is_positive x = _eigen_is_positive x.d
+
+let is_negative x = _eigen_is_positive x.d
+
+let is_nonpositive x = _eigen_is_nonpositive x.d
+
+let is_nonnegative x = _eigen_is_nonnegative x.d
+
+let is_equal x1 x2 = _eigen_is_equal x1.d x2.d
+
+let is_unequal x1 x2 = _eigen_is_unequal x1.d x2.d
+
+let is_greater x1 x2 = _eigen_is_greater x1.d x2.d
+
+let is_smaller x1 x2 = _eigen_is_smaller x1.d x2.d
+
+let equal_or_greater x1 x2 = _eigen_equal_or_greater x1.d x2.d
+
+let equal_or_smaller x1 x2 = _eigen_equal_or_smaller x1.d x2.d
+
 
 let print x = _eigen_print x.d
 
 let pp_spmat x = print x
+
+
 
 
 (* ends here *)

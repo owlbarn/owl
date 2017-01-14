@@ -149,5 +149,83 @@ let _eigen_print : type a b . (a, b) eigen_mat -> unit =
   | SPMAT_C x -> Eigen.Sparse.C.print x
   | SPMAT_Z x -> Eigen.Sparse.Z.print x
 
+let _eigen_is_zero : type a b . (a, b) eigen_mat -> bool =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.is_zero x
+  | SPMAT_D x -> Eigen.Sparse.D.is_zero x
+  | SPMAT_C x -> Eigen.Sparse.C.is_zero x
+  | SPMAT_Z x -> Eigen.Sparse.Z.is_zero x
+
+let _eigen_is_positive : type a b . (a, b) eigen_mat -> bool =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.is_positive x
+  | SPMAT_D x -> Eigen.Sparse.D.is_positive x
+  | SPMAT_C x -> Eigen.Sparse.C.is_positive x
+  | SPMAT_Z x -> Eigen.Sparse.Z.is_positive x
+
+let _eigen_is_negative : type a b . (a, b) eigen_mat -> bool =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.is_negative x
+  | SPMAT_D x -> Eigen.Sparse.D.is_negative x
+  | SPMAT_C x -> Eigen.Sparse.C.is_negative x
+  | SPMAT_Z x -> Eigen.Sparse.Z.is_negative x
+
+let _eigen_is_nonpositive : type a b . (a, b) eigen_mat -> bool =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.is_nonpositive x
+  | SPMAT_D x -> Eigen.Sparse.D.is_nonpositive x
+  | SPMAT_C x -> Eigen.Sparse.C.is_nonpositive x
+  | SPMAT_Z x -> Eigen.Sparse.Z.is_nonpositive x
+
+let _eigen_is_nonnegative : type a b . (a, b) eigen_mat -> bool =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.is_nonnegative x
+  | SPMAT_D x -> Eigen.Sparse.D.is_nonnegative x
+  | SPMAT_C x -> Eigen.Sparse.C.is_nonnegative x
+  | SPMAT_Z x -> Eigen.Sparse.Z.is_nonnegative x
+
+let _eigen_is_equal : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> bool =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> Eigen.Sparse.S.is_equal x y
+  | SPMAT_D x, SPMAT_D y -> Eigen.Sparse.D.is_equal x y
+  | SPMAT_C x, SPMAT_C y -> Eigen.Sparse.C.is_equal x y
+  | SPMAT_Z x, SPMAT_Z y -> Eigen.Sparse.Z.is_equal x y
+
+let _eigen_is_unequal : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> bool =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> Eigen.Sparse.S.is_unequal x y
+  | SPMAT_D x, SPMAT_D y -> Eigen.Sparse.D.is_unequal x y
+  | SPMAT_C x, SPMAT_C y -> Eigen.Sparse.C.is_unequal x y
+  | SPMAT_Z x, SPMAT_Z y -> Eigen.Sparse.Z.is_unequal x y
+
+let _eigen_is_greater : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> bool =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> Eigen.Sparse.S.is_greater x y
+  | SPMAT_D x, SPMAT_D y -> Eigen.Sparse.D.is_greater x y
+  | SPMAT_C x, SPMAT_C y -> Eigen.Sparse.C.is_greater x y
+  | SPMAT_Z x, SPMAT_Z y -> Eigen.Sparse.Z.is_greater x y
+
+let _eigen_is_smaller : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> bool =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> Eigen.Sparse.S.is_smaller x y
+  | SPMAT_D x, SPMAT_D y -> Eigen.Sparse.D.is_smaller x y
+  | SPMAT_C x, SPMAT_C y -> Eigen.Sparse.C.is_smaller x y
+  | SPMAT_Z x, SPMAT_Z y -> Eigen.Sparse.Z.is_smaller x y
+
+let _eigen_equal_or_greater : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> bool =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> Eigen.Sparse.S.equal_or_greater x y
+  | SPMAT_D x, SPMAT_D y -> Eigen.Sparse.D.equal_or_greater x y
+  | SPMAT_C x, SPMAT_C y -> Eigen.Sparse.C.equal_or_greater x y
+  | SPMAT_Z x, SPMAT_Z y -> Eigen.Sparse.Z.equal_or_greater x y
+
+let _eigen_equal_or_smaller : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> bool =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> Eigen.Sparse.S.equal_or_smaller x y
+  | SPMAT_D x, SPMAT_D y -> Eigen.Sparse.D.equal_or_smaller x y
+  | SPMAT_C x, SPMAT_C y -> Eigen.Sparse.C.equal_or_smaller x y
+  | SPMAT_Z x, SPMAT_Z y -> Eigen.Sparse.Z.equal_or_smaller x y
+
+
 
 (* ends here *)
