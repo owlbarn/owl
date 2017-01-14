@@ -17,3 +17,11 @@ let _eigen_create : type a b . (a, b) kind -> int -> int -> (a, b) eigen_mat =
   | Complex32 -> SPMAT_C (Eigen.Sparse.C.create m n)
   | Complex64 -> SPMAT_Z (Eigen.Sparse.Z.create m n)
   | _         -> failwith "_eigen_create: unsupported operation"
+
+let _eigen_eye : type a b . (a, b) kind -> int -> (a, b) eigen_mat =
+  fun k m -> match k with
+  | Float32   -> SPMAT_S (Eigen.Sparse.S.eye m)
+  | Float64   -> SPMAT_D (Eigen.Sparse.D.eye m)
+  | Complex32 -> SPMAT_C (Eigen.Sparse.C.eye m)
+  | Complex64 -> SPMAT_Z (Eigen.Sparse.Z.eye m)
+  | _         -> failwith "_eigen_create: unsupported operation"

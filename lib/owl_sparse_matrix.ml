@@ -15,9 +15,16 @@ type ('a, 'b) t = {
   mutable d : ('a, 'b) eigen_mat;              (* point to eigen struct *)
 }
 
-let create k m n = {
+let zeros k m n = {
   m = m;
   n = n;
   k = k;
   d = (_eigen_create) k m n;
+}
+
+let eye k m = {
+  m = m;
+  n = m;
+  k = k;
+  d = (_eigen_eye) k m;
 }
