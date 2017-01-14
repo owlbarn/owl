@@ -364,6 +364,30 @@ let div_scalar x a = {
   d = _eigen_div_scalar x.d a;
 }
 
+let min x = _eigen_min x.d
+
+let max x = _eigen_max x.d
+
+let min2 x y = _eigen_min2 x.d y.d
+
+let max2 x y = _eigen_max2 x.d y.d
+
+let sum x = _eigen_sum x.d
+
+let abs x = {
+  m = x.m;
+  n = x.n;
+  k = x.k;
+  d = _eigen_abs x.d;
+}
+
+let neg x = {
+  m = x.m;
+  n = x.n;
+  k = x.k;
+  d = _eigen_neg x.d;
+}
+
 (** permutation and draw functions *)
 
 let permutation_matrix k d =

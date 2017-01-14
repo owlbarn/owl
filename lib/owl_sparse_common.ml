@@ -289,5 +289,50 @@ let _eigen_div_scalar : type a b . (a, b) eigen_mat -> a -> (a, b) eigen_mat =
   | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.div_scalar x a)
   | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.div_scalar x a)
 
+let _eigen_min : type a b . (a, b) eigen_mat -> a =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.min x
+  | SPMAT_D x -> Eigen.Sparse.D.min x
+  | _         -> failwith "_eigen_min: unsupported operation"
+
+let _eigen_max : type a b . (a, b) eigen_mat -> a =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.max x
+  | SPMAT_D x -> Eigen.Sparse.D.max x
+  | _         -> failwith "_eigen_max: unsupported operation"
+
+let _eigen_min2 : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> SPMAT_S (Eigen.Sparse.S.min2 x y)
+  | SPMAT_D x, SPMAT_D y -> SPMAT_D (Eigen.Sparse.D.min2 x y)
+  | _         -> failwith "_eigen_min2: unsupported operation"
+
+let _eigen_max2 : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat =
+  fun x y -> match x, y with
+  | SPMAT_S x, SPMAT_S y -> SPMAT_S (Eigen.Sparse.S.max2 x y)
+  | SPMAT_D x, SPMAT_D y -> SPMAT_D (Eigen.Sparse.D.max2 x y)
+  | _         -> failwith "_eigen_max2: unsupported operation"
+
+let _eigen_sum : type a b . (a, b) eigen_mat -> a =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.sum x
+  | SPMAT_D x -> Eigen.Sparse.D.sum x
+  | SPMAT_C x -> Eigen.Sparse.C.sum x
+  | SPMAT_Z x -> Eigen.Sparse.Z.sum x
+
+let _eigen_abs : type a b . (a, b) eigen_mat -> (a, b) eigen_mat =
+  fun x -> match x with
+  | SPMAT_S x -> SPMAT_S (Eigen.Sparse.S.abs x)
+  | SPMAT_D x -> SPMAT_D (Eigen.Sparse.D.abs x)
+  | _         -> failwith "_eigen_abs: unsupported operation"
+
+let _eigen_neg : type a b . (a, b) eigen_mat -> (a, b) eigen_mat =
+  fun x -> match x with
+  | SPMAT_S x -> SPMAT_S (Eigen.Sparse.S.neg x)
+  | SPMAT_D x -> SPMAT_D (Eigen.Sparse.D.neg x)
+  | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.neg x)
+  | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.neg x)
+
+
 
 (* ends here *)

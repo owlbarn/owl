@@ -227,17 +227,17 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 
 
 (** {6 Unary mathematical operations } *)
-(*
+
 val min : ('a, 'b) t -> 'a
 
 val max : ('a, 'b) t -> 'a
 
-val minmax : ('a, 'b) t -> 'a * 'a
+(* val minmax : ('a, 'b) t -> 'a * 'a *)
 
 val sum : ('a, 'b) t -> 'a
 
-val average : ('a, 'b) t -> 'a
-
+(* val average : ('a, 'b) t -> 'a *)
+(*
 val sum_rows : ('a, 'b) t -> ('a, 'b) t
 
 val sum_cols : ('a, 'b) t -> ('a, 'b) t
@@ -245,11 +245,10 @@ val sum_cols : ('a, 'b) t -> ('a, 'b) t
 val average_rows : ('a, 'b) t ->('a, 'b) t
 
 val average_cols : ('a, 'b) t ->('a, 'b) t
-
+*)
 val abs : ('a, 'b) t ->('a, 'b) t
 
 val neg : ('a, 'b) t ->('a, 'b) t
-*)
 
 
 (** {6 Binary mathematical operations } *)
