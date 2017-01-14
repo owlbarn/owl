@@ -86,7 +86,53 @@ let col x j = {
   d = _eigen_col x.d j;
 }
 
+let iteri f x =
+  for i = 0 to (row_num x) - 1 do
+    for j = 0 to (col_num x) - 1 do
+      f i j (get x i j)
+    done
+  done
 
+let iter f x =
+  for i = 0 to (row_num x) - 1 do
+    for j = 0 to (col_num x) - 1 do
+      f (get x i j)
+    done
+  done
+
+let mapi f x =
+  let y = zeros (kind x) (row_num x) (col_num x) in
+  iteri (fun i j z -> set y i j (f i j z)) x;
+  y
+
+let map f x =
+  let y = zeros (kind x) (row_num x) (col_num x) in
+  iteri (fun i j z -> set y i j (f z)) x;
+  y
+
+let _fold_basic iter_fun f a x =
+  let r = ref a in
+  iter_fun (fun y -> r := f !r y) x; !r
+
+let fold f a x = _fold_basic iter f a x
+
+let foldi f a x =
+  let r = ref a in
+  iteri (fun i j y -> r := f i j !r y) x;
+  !r
+
+let filteri f x =
+  let r = ref [||] in
+  iteri (fun i j y ->
+    if (f i j y) then r := Array.append !r [|(i,j)|]
+  ) x; !r
+
+let filter f x = filteri (fun _ _ y -> f y) x
+
+
+let print x = _eigen_print x.d
+
+let pp_spmat x = print x
 
 
 (* ends here *)

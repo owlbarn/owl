@@ -100,6 +100,12 @@ let _eigen_col : type a b . (a, b) eigen_mat -> int -> (a, b) eigen_mat =
   | SPMAT_C x -> SPMAT_C (Eigen.Sparse.C.col x j)
   | SPMAT_Z x -> SPMAT_Z (Eigen.Sparse.Z.col x j)
 
+let _eigen_print : type a b . (a, b) eigen_mat -> unit =
+  fun x -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.print x
+  | SPMAT_D x -> Eigen.Sparse.D.print x
+  | SPMAT_C x -> Eigen.Sparse.C.print x
+  | SPMAT_Z x -> Eigen.Sparse.Z.print x
 
 
 (* ends here *)
