@@ -5,18 +5,17 @@
 
 #include "owl_macros.h"
 
-#ifndef FUN0
-#define FUN0 _uninit_vec_cmp_function
-#endif /* FUN0 */
-
 #ifndef NUMBER
 #define NUMBER double
+void _dumb_fn() {};  // define a dumb function to avoid warnings
 #endif /* NUMBER */
 
 #ifndef STOPFN
 #define STOPFN(X, Y) (X < Y)
-#endif /* NUMBER */
+#endif /* STOPFN */
 
+
+#ifdef FUN0
 
 CAMLprim value FUN0(value vN, value vX, value vY)
 {
@@ -59,6 +58,14 @@ CAMLprim value FUN0(value vN, value vX, value vY)
   CAMLreturn(Val_int(r));
 }
 
-#undef STOPFN
+#endif /* FUN0 */
+
+
+#ifdef FUN1
+#endif /* FUN1 */
+
+
 #undef NUMBER
+#undef STOPFN
 #undef FUN0
+#undef FUN1
