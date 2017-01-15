@@ -2,7 +2,7 @@
 
 open Bigarray
 
-module M = Owl_sparse_matrix
+module M = Owl_pure_sparse_matrix
 
 let test_op s c op = Perf_common.test_op s c op
 
@@ -48,7 +48,7 @@ let _ =
   test_op "sub               " c (fun () -> M.sub x y);
   test_op "mul               " c (fun () -> M.mul x y);
   test_op "div               " c (fun () -> M.div x y);
-  test_op "dot               " 0 (fun () -> M.dot x y);
+  test_op "dot               " c (fun () -> M.dot x y);
   test_op "abs               " c (fun () -> M.abs x);
   test_op "neg               " c (fun () -> M.neg x);
   test_op "sum               " c (fun () -> M.sum x);

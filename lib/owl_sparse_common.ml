@@ -14,12 +14,12 @@ type ('a, 'b) eigen_mat = ('a, 'b) spmat
 
 (* interface to eigen functions *)
 
-let _eigen_create : type a b . (a, b) kind -> int -> int -> (a, b) eigen_mat =
-  fun k m n -> match k with
-  | Float32   -> SPMAT_S (Eigen.Sparse.S.create m n)
-  | Float64   -> SPMAT_D (Eigen.Sparse.D.create m n)
-  | Complex32 -> SPMAT_C (Eigen.Sparse.C.create m n)
-  | Complex64 -> SPMAT_Z (Eigen.Sparse.Z.create m n)
+let _eigen_create : type a b . float -> (a, b) kind -> int -> int -> (a, b) eigen_mat =
+  fun reserve k m n -> match k with
+  | Float32   -> SPMAT_S (Eigen.Sparse.S.create ~reserve m n)
+  | Float64   -> SPMAT_D (Eigen.Sparse.D.create ~reserve m n)
+  | Complex32 -> SPMAT_C (Eigen.Sparse.C.create ~reserve m n)
+  | Complex64 -> SPMAT_Z (Eigen.Sparse.Z.create ~reserve m n)
   | _         -> failwith "_eigen_create: unsupported operation"
 
 let _eigen_eye : type a b . (a, b) kind -> int -> (a, b) eigen_mat =
@@ -50,6 +50,13 @@ let _eigen_get : type a b . (a, b) eigen_mat -> int -> int -> a =
   | SPMAT_D x -> Eigen.Sparse.D.get x i j
   | SPMAT_C x -> Eigen.Sparse.C.get x i j
   | SPMAT_Z x -> Eigen.Sparse.Z.get x i j
+
+let _eigen_insert : type a b . (a, b) eigen_mat -> int -> int -> a -> unit =
+  fun x i j a -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.insert x i j a
+  | SPMAT_D x -> Eigen.Sparse.D.insert x i j a
+  | SPMAT_C x -> Eigen.Sparse.C.insert x i j a
+  | SPMAT_Z x -> Eigen.Sparse.Z.insert x i j a
 
 let _eigen_reset : type a b . (a, b) eigen_mat -> unit =
   fun x -> match x with

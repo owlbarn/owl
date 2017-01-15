@@ -10,7 +10,7 @@ type ('a, 'b) t
 
 (** {6 Create sparse matrices} *)
 
-val zeros : ('a, 'b) kind -> int -> int -> ('a, 'b) t
+val zeros : ?density:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
 val ones : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
@@ -49,6 +49,8 @@ val kind : ('a, 'b) t -> ('a, 'b) kind
 
 
 (** {6 Manipulate a matrix} *)
+
+val insert : ('a, 'b) t -> int -> int -> 'a -> unit
 
 val set : ('a, 'b) t -> int -> int -> 'a -> unit
 

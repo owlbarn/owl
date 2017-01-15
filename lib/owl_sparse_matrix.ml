@@ -15,11 +15,11 @@ type ('a, 'b) t = {
   mutable d : ('a, 'b) eigen_mat;              (* point to eigen struct *)
 }
 
-let zeros k m n = {
+let zeros ?(density=0.01) k m n = {
   m = m;
   n = n;
   k = k;
-  d = (_eigen_create) k m n;
+  d = (_eigen_create) density k m n;
 }
 
 let eye k m = {
@@ -42,6 +42,10 @@ let nnz x = _eigen_nnz x.d
 let density x = (float_of_int (nnz x)) /. (float_of_int (numel x))
 
 let kind x = x.k
+
+let insert x i j a =
+  if a <> Owl_types._zero x.k then
+  _eigen_insert x.d i j a
 
 let set x i j a = _eigen_set x.d i j a
 
@@ -103,13 +107,15 @@ let iter f x =
   done
 
 let mapi f x =
-  let y = zeros (kind x) (row_num x) (col_num x) in
-  iteri (fun i j z -> set y i j (f i j z)) x;
+  let d = density x in
+  let y = zeros ~density:d (kind x) (row_num x) (col_num x) in
+  iteri (fun i j z -> insert y i j (f i j z)) x;
   y
 
 let map f x =
-  let y = zeros (kind x) (row_num x) (col_num x) in
-  iteri (fun i j z -> set y i j (f z)) x;
+  let d = density x in
+  let y = zeros ~density:d (kind x) (row_num x) (col_num x) in
+  iteri (fun i j z -> insert y i j (f z)) x;
   y
 
 let _fold_basic iter_fun f a x =
@@ -195,14 +201,14 @@ let _disassemble_rows x =
   Log.debug "_disassemble_rows :allocate space";
   let d = Array.init x.m (fun _ -> zeros x.k 1 x.n) in
   Log.debug "_disassemble_rows: iteri_nz";
-  let _ = iteri_nz (fun i j z -> set d.(i) 0 j z) x in
+  let _ = iteri_nz (fun i j z -> insert d.(i) 0 j z) x in
   Log.debug "_disassemble_rows: ends";
   d
 
 let _disassemble_cols x =
   _eigen_compress x.d;
   let d = Array.init x.n (fun _ -> zeros x.k x.m 1) in
-  let _ = iteri_nz (fun i j z -> set d.(j) i 0 z) x in
+  let _ = iteri_nz (fun i j z -> insert d.(j) i 0 z) x in
   d
 
 let iteri_rows f x = Array.iteri (fun i y -> f i y) (_disassemble_rows x)
@@ -394,7 +400,7 @@ let permutation_matrix k d =
   let l = Array.init d (fun x -> x) |> Owl_stats.shuffle in
   let y = zeros k d d in
   let _a1 = Owl_types._one k in
-  Array.iteri (fun i j -> set y i j _a1) l;
+  Array.iteri (fun i j -> insert y i j _a1) l;
   y
 
 let draw_rows ?(replacement=true) x c =
@@ -406,7 +412,7 @@ let draw_rows ?(replacement=true) x c =
   in
   let y = zeros (kind x) c m in
   let _a1 = Owl_types._one (kind x) in
-  let _ = Array.iteri (fun i j -> set y i j _a1) l in
+  let _ = Array.iteri (fun i j -> insert y i j _a1) l in
   dot y x, l
 
 let draw_cols ?(replacement=true) x c =
@@ -418,7 +424,7 @@ let draw_cols ?(replacement=true) x c =
   in
   let y = zeros (kind x) n c in
   let _a1 = Owl_types._one (kind x) in
-  let _ = Array.iteri (fun j i -> set y i j _a1) l in
+  let _ = Array.iteri (fun j i -> insert y i j _a1) l in
   dot x y, l
 
 let shuffle_rows x =
@@ -438,8 +444,8 @@ let to_dense x =
 
 let of_dense x =
   let m, n = Owl_dense_matrix.shape x in
-  let y = zeros (Owl_dense_matrix.kind x) m n in
-  Owl_dense_matrix.iteri (fun i j z -> set y i j z) x;
+  let y = zeros ~density:1. (Owl_dense_matrix.kind x) m n in
+  Owl_dense_matrix.iteri (fun i j z -> insert y i j z) x;
   y
 
 let sum_rows x =
@@ -489,7 +495,7 @@ let to_array x =
 
 let of_array k m n x =
   let y = zeros k m n in
-  Array.iter (fun (i,v) -> set y i.(0) i.(1) v) x;
+  Array.iter (fun (i,v) -> insert y i.(0) i.(1) v) x;
   y
 
 let ones k m n = Owl_dense_matrix.ones k m n |> of_dense
@@ -503,17 +509,18 @@ let fill x a =
   let m, n = shape x in
   for i = 0 to m - 1 do
     for j = 0 to n - 1 do
-      set x i j a
+      insert x i j a
     done
   done
 
 let _random_basic k f m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
-  let x = zeros k m n in
-  for k = 0 to c do
-    let i = Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) () in
-    let j = Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) () in
-    set x i j (f ())
+  let x = zeros ~density:0.2 k m n in
+  let l = Owl_stats.choose (Array.init (m * n) (fun i -> i)) c in
+  for k = 0 to c - 1 do
+    let i = l.(k) / n in
+    let j = l.(k) - (i * n) in
+    insert x i j (f ())
   done;
   x
 
