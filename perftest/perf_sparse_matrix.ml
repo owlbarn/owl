@@ -2,7 +2,7 @@
 
 open Bigarray
 
-module M = Owl_pure_sparse_matrix
+module M = Owl_sparse_matrix
 
 let test_op s c op = Perf_common.test_op s c op
 
@@ -21,12 +21,12 @@ let _ =
   test_op "uniform           " c (fun () -> M.uniform Float64 m n);
   test_op "nnz_rows          " c (fun () -> M.nnz_rows z);
   test_op "row_num_nz        " c (fun () -> M.row_num_nz z);
-  test_op "triplet:crs       " c (fun () -> M._triplet2crs y);
+  (* test_op "triplet:crs       " c (fun () -> M._triplet2crs y); *)
   test_op "clone             " c (fun () -> M.clone z);
   test_op "col               " c (fun () -> M.col x (n-1));
   test_op "row               " c (fun () -> M.row x (m-1));
-  test_op "cols              " c (fun () -> M.cols x [|1;2|]);
-  test_op "rows              " c (fun () -> M.rows x [|1;2|]);
+  (*test_op "cols              " c (fun () -> M.cols x [|1;2|]); *)
+  (*test_op "rows              " c (fun () -> M.rows x [|1;2|]); *)
   test_op "mapi              " c (fun () -> M.mapi (fun _ _ y -> 0.) x);
   test_op "mapi_nz           " c (fun () -> M.mapi_nz (fun _ _ y -> 1.) x);
   test_op "iteri             " c (fun () -> M.iteri (fun _ _ y -> ()) x);
@@ -55,7 +55,7 @@ let _ =
   test_op "average           " c (fun () -> M.average x);
   test_op "sum_rows          " c (fun () -> M.sum_rows x);
   test_op "average_rows      " c (fun () -> M.average_rows x);
-  test_op "minmax            " c (fun () -> M.minmax x);
+  (*test_op "minmax            " c (fun () -> M.minmax x);*)
   test_op "is_zero           " c (fun () -> M.is_zero x);
   test_op "is_negative       " c (fun () -> M.is_negative x);
   test_op "is_positive       " c (fun () -> M.is_positive x);
