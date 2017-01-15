@@ -149,6 +149,13 @@ let _eigen_print : type a b . (a, b) eigen_mat -> unit =
   | SPMAT_C x -> Eigen.Sparse.C.print x
   | SPMAT_Z x -> Eigen.Sparse.Z.print x
 
+let _eigen_prune : type a b . (a, b) eigen_mat -> a -> float -> unit =
+  fun x a b -> match x with
+  | SPMAT_S x -> Eigen.Sparse.S.prune x a b
+  | SPMAT_D x -> Eigen.Sparse.D.prune x a b
+  | SPMAT_C x -> Eigen.Sparse.C.prune x a b
+  | SPMAT_Z x -> Eigen.Sparse.Z.prune x a b
+
 let _eigen_is_zero : type a b . (a, b) eigen_mat -> bool =
   fun x -> match x with
   | SPMAT_S x -> Eigen.Sparse.S.is_zero x

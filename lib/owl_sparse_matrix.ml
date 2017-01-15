@@ -49,6 +49,8 @@ let get x i j = _eigen_get x.d i j
 
 let reset x = _eigen_reset x.d
 
+let prune x a eps = _eigen_prune x.d a eps
+
 let clone x = {
   m = x.m;
   n = x.n;
@@ -279,7 +281,7 @@ let is_zero x = _eigen_is_zero x.d
 
 let is_positive x = _eigen_is_positive x.d
 
-let is_negative x = _eigen_is_positive x.d
+let is_negative x = _eigen_is_negative x.d
 
 let is_nonpositive x = _eigen_is_nonpositive x.d
 
@@ -296,10 +298,6 @@ let is_smaller x1 x2 = _eigen_is_smaller x1.d x2.d
 let equal_or_greater x1 x2 = _eigen_equal_or_greater x1.d x2.d
 
 let equal_or_smaller x1 x2 = _eigen_equal_or_smaller x1.d x2.d
-
-let print x = _eigen_print x.d
-
-let pp_spmat x = print x
 
 let add x y = {
   m = x.m;
@@ -479,6 +477,68 @@ let nnz_cols x =
 let row_num_nz x = nnz_rows x |> Array.length
 
 let col_num_nz x = nnz_cols x |> Array.length
+
+let to_array x =
+  let y = Array.make (nnz x) ([||], Owl_types._zero x.k) in
+  let k = ref 0 in
+  iteri_nz (fun i j v ->
+    y.(!k) <- ([|i;j|], v);
+    k := !k + 1;
+  ) x;
+  y
+
+let of_array k m n x =
+  let y = zeros k m n in
+  Array.iter (fun (i,v) -> set y i.(0) i.(1) v) x;
+  y
+
+let ones k m n = Owl_dense_matrix.ones k m n |> of_dense
+
+let sequential k m n =
+  let x = Owl_dense_matrix.sequential k m n |> of_dense in
+  _eigen_prune x.d (Owl_types._zero x.k) 0.;
+  x
+
+let fill x a =
+  let m, n = shape x in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      set x i j a
+    done
+  done
+
+let _random_basic k f m n =
+  let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
+  let x = zeros k m n in
+  for k = 0 to c do
+    let i = Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) () in
+    let j = Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) () in
+    set x i j (f ())
+  done;
+  x
+
+let binary k m n =
+  let _a1 = Owl_types._one k in
+  _random_basic k (fun () -> _a1) m n
+
+let uniform ?(scale=1.) k m n =
+  let _op = Owl_dense_common._owl_uniform k in
+  _random_basic k (fun () -> _op scale) m n
+
+let print x = _eigen_print x.d
+
+let pp_spmat x = print x
+
+let save x f =
+  let s = Marshal.to_string x [] in
+  let h = open_out f in
+  output_string h s;
+  close_out h
+
+let load k f =
+  let h = open_in f in
+  let s = really_input_string h (in_channel_length h) in
+  Marshal.from_string s 0
 
 
 (* ends here *)

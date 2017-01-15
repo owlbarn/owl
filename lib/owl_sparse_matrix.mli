@@ -12,15 +12,15 @@ type ('a, 'b) t
 
 val zeros : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
-(* val ones : ('a, 'b) kind -> int -> int -> ('a, 'b) t *)
+val ones : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
-(* val sequential : ('a, 'b) kind -> int -> int -> ('a, 'b) t *)
+val sequential : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
 val eye : ('a, 'b) kind -> int -> ('a, 'b) t
 
-(* val binary : ('a, 'b) kind -> int -> int -> ('a, 'b) t *)
+val binary : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
-(* val uniform : ?scale:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t *)
+val uniform : ?scale:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
 
 (** {6 Obtain the basic properties} *)
@@ -56,7 +56,7 @@ val get : ('a, 'b) t -> int -> int -> 'a
 
 val reset : ('a, 'b) t -> unit
 
-(* val fill : ('a, 'b) t -> 'a -> unit *)
+val fill : ('a, 'b) t -> 'a -> unit
 
 val clone : ('a, 'b) t -> ('a, 'b) t
 
@@ -75,7 +75,7 @@ val rows : ('a, 'b) t -> int array -> ('a, 'b) t
 val cols : ('a, 'b) t -> int array -> ('a, 'b) t
 *)
 
-(* prune *)
+val prune : ('a, 'b) t -> 'a -> float -> unit
 
 
 (** {6 Iterate elements, columns, and rows} *)
@@ -207,11 +207,10 @@ val shuffle : ('a, 'b) t -> ('a, 'b) t
 
 (** {6 Input/Output and helper functions} *)
 
-(*
 val to_array : ('a, 'b) t -> (int array * 'a) array
 
 val of_array : ('a, 'b) kind -> int -> int -> (int array * 'a) array -> ('a, 'b) t
-*)
+
 val to_dense : ('a, 'b) t -> ('a, 'b) Owl_dense_matrix.t
 
 val of_dense : ('a, 'b) Owl_dense_matrix.t -> ('a, 'b) t
@@ -219,11 +218,10 @@ val of_dense : ('a, 'b) Owl_dense_matrix.t -> ('a, 'b) t
 val print : ('a, 'b) t -> unit
 
 val pp_spmat : ('a, 'b) t -> unit
-(*
+
 val save : ('a, 'b) t -> string -> unit
 
 val load : ('a, 'b) kind -> string -> ('a, 'b) t
-*)
 
 
 (** {6 Unary mathematical operations } *)
