@@ -2,7 +2,7 @@
 
 open Bigarray
 
-module M = Owl_pure_sparse_matrix
+module M = Owl_sparse_matrix
 
 let test_op s c op = Perf_common.test_op s c op
 
