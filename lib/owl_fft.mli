@@ -1,6 +1,6 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 (** Fast Fourier Transforms (FFTs) : this module implements some basic FFT
