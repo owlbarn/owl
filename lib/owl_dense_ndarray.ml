@@ -919,10 +919,10 @@ let is_nonnegative x =
   let y = ndarray_to_c_mat x in
   (_gsl_isnonneg (kind x)) y
 
-(* FIXME: incorrect *)
 let is_nonpositive x =
-  let y = ndarray_to_c_mat x in
-  not ((_gsl_ispos (kind x)) y)
+  let y = flatten x |> array1_of_genarray in
+  let _op = _owl_is_nonpositive (kind x) in
+  _op (numel x) y = 1
 
 let is_equal x y = ( = ) x y
 

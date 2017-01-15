@@ -44,4 +44,8 @@ let test_10 _ = Owl_dense_matrix.uniform float64 m n
 
 let test_11 _ = Owl_dense_ndarray.uniform float64 [|10;1000;10000|]
 
-let _ = Perf_common.test_op_each c test_10
+let test_12 _ = Owl_dense_matrix.is_nonnegative x
+
+let test_13 _ = Owl_dense_matrix.is_nonpositive y
+
+let _ = Perf_common.test_op_each c test_13

@@ -408,10 +408,9 @@ let is_nonnegative x =
   let _op = _gsl_isnonneg (Array2.kind x) in
   _op x
 
-(* FIXME: incorrect *)
 let is_nonpositive x =
-  let _op = _gsl_ispos (Array2.kind x) in
-  not (_op x)
+  let y = to_ndarray x in
+  Owl_dense_ndarray.is_nonpositive y
 
 let is_equal x1 x2 = x1 = x2
 

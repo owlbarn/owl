@@ -132,3 +132,25 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER complex_double
 #define STOPFN(X) (X.r == 0 && X.i == 0)
 #include "owl_dense_common_vec_cmp.c"
+
+// is_nonpositive
+
+#define FUN1 real_float_is_nonpositive
+#define NUMBER float
+#define STOPFN(X) (X > 0)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 real_double_is_nonpositive
+#define NUMBER double
+#define STOPFN(X) (X > 0)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 complex_float_is_nonpositive
+#define NUMBER complex_float
+#define STOPFN(X) (X.r > 0 || X.i > 0)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 complex_double_is_nonpositive
+#define NUMBER complex_double
+#define STOPFN(X) (X.r > 0 && X.i > 0)
+#include "owl_dense_common_vec_cmp.c"

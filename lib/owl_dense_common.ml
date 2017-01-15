@@ -644,7 +644,9 @@ type ('a, 'b) owl_vec = ('a, 'b, c_layout) Array1.t
 type ('a, 'b) owl_mat = ('a, 'b, c_layout) Array2.t
 
 type ('a, 'b) owl_vec_op00 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int
+type ('a, 'b) owl_vec_op01 = int -> ('a, 'b) owl_vec -> int
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
+
 
 (* call functions in owl native c *)
 
@@ -732,3 +734,15 @@ let _owl_equal_or_greater : type a b. (a, b) kind -> (a, b) owl_vec_op00 = funct
   | Complex32 -> owl_complex_float_equal_or_greater
   | Complex64 -> owl_complex_double_equal_or_greater
   | _         -> failwith "_owl_equal_or_greater: unsupported operation"
+
+external owl_real_float_is_nonpositive : int -> ('a, 'b) owl_vec -> int = "real_float_is_nonpositive"
+external owl_real_double_is_nonpositive : int -> ('a, 'b) owl_vec -> int = "real_double_is_nonpositive"
+external owl_complex_float_is_nonpositive : int -> ('a, 'b) owl_vec -> int = "complex_float_is_nonpositive"
+external owl_complex_double_is_nonpositive : int -> ('a, 'b) owl_vec -> int = "complex_double_is_nonpositive"
+
+let _owl_is_nonpositive : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
+  | Float32   -> owl_real_float_is_nonpositive
+  | Float64   -> owl_real_double_is_nonpositive
+  | Complex32 -> owl_complex_float_is_nonpositive
+  | Complex64 -> owl_complex_double_is_nonpositive
+  | _         -> failwith "_owl_is_nonpositive: unsupported operation"
