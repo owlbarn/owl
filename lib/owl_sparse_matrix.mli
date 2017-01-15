@@ -31,17 +31,17 @@ val row_num : ('a, 'b) t -> int
 
 val col_num : ('a, 'b) t -> int
 
-(* val row_num_nz : ('a, 'b) t -> int *)
+val row_num_nz : ('a, 'b) t -> int
 
-(* val col_num_nz : ('a, 'b) t -> int *)
+val col_num_nz : ('a, 'b) t -> int
 
 val numel : ('a, 'b) t -> int
 
 val nnz : ('a, 'b) t -> int
 
-(* val nnz_rows : ('a, 'b) t -> int array *)
+val nnz_rows : ('a, 'b) t -> int array
 
-(* val nnz_cols : ('a, 'b) t -> int array *)
+val nnz_cols : ('a, 'b) t -> int array
 
 val density : ('a, 'b) t -> float
 
