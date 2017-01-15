@@ -41,7 +41,7 @@ CAMLprim value testfn_stub(value vX, value vY)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_double_is_smaller
-#define NUMBER complex_float
+#define NUMBER complex_double
 #define STOPFN(X, Y) (X.r >= Y.r || X.i >= Y.i)
 #include "owl_dense_common_vec_cmp.c"
 
@@ -63,7 +63,7 @@ CAMLprim value testfn_stub(value vX, value vY)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_double_is_greater
-#define NUMBER complex_float
+#define NUMBER complex_double
 #define STOPFN(X, Y) (X.r <= Y.r || X.i <= Y.i)
 #include "owl_dense_common_vec_cmp.c"
 
@@ -85,7 +85,7 @@ CAMLprim value testfn_stub(value vX, value vY)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_double_equal_or_smaller
-#define NUMBER complex_float
+#define NUMBER complex_double
 #define STOPFN(X, Y) (X.r > Y.r || X.i > Y.i)
 #include "owl_dense_common_vec_cmp.c"
 
@@ -107,6 +107,28 @@ CAMLprim value testfn_stub(value vX, value vY)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_double_equal_or_greater
-#define NUMBER complex_float
+#define NUMBER complex_double
 #define STOPFN(X, Y) (X.r < Y.r || X.i < Y.i)
+#include "owl_dense_common_vec_cmp.c"
+
+// is_zero
+
+#define FUN1 real_float_is_zero
+#define NUMBER float
+#define STOPFN(X) (X != 0)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 real_double_is_zero
+#define NUMBER double
+#define STOPFN(X) (X != 0)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 complex_float_is_zero
+#define NUMBER complex_float
+#define STOPFN(X) (X.r == 0 && X.i == 0)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 complex_double_is_zero
+#define NUMBER complex_double
+#define STOPFN(X) (X.r == 0 && X.i == 0)
 #include "owl_dense_common_vec_cmp.c"
