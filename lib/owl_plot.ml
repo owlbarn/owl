@@ -531,8 +531,8 @@ let _draw_error_bar ?(w=0.) x y e =
 
 let error_bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) x y e =
   let open Plplot in
-  let ymin, _, _ = Owl_dense_real.(min(y -@ e)) in
-  let ymax, _, _ = Owl_dense_real.(max(y +@ e)) in
+  let ymin = Owl_dense_real.(min(y -@ e)) in
+  let ymax = Owl_dense_real.(max(y +@ e)) in
   let x = Owl_dense_real.to_array x in
   let y = Owl_dense_real.to_array y in
   let e = Owl_dense_real.to_array e in

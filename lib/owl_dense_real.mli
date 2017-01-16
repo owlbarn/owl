@@ -5,7 +5,7 @@
 
 (** Real dense matrix module *)
 
-type mat = Gsl.Matrix.matrix
+type mat = (float, Bigarray.float64_elt) Owl_dense_matrix.t
 (** Type of dense matrices. It is defined as [Gsl.Matrix.matrix] which is
   essentially a two dimensional array in [Bigarray] module. *)
 
@@ -462,14 +462,20 @@ val average : mat -> float
   equivalent to calculate [sum x] divided by [numel x]
  *)
 
-val min : mat -> float * int * int
+val min : mat -> float
 (** [min x] returns the minimum value of all elements in [x]. *)
 
-val max : mat -> float * int * int
+val max : mat -> float
 (** [max x] returns the maximum value of all elements in [x]. *)
 
-val minmax : mat -> float * float * int * int * int * int
+val minmax : mat -> float * float
 (** [minmax x] returns both the minimum and minimum values in [x]. *)
+
+val min_i : mat -> float * int * int
+
+val max_i : mat -> float * int * int
+
+val minmax_i : mat -> (float * int * int) * (float * int * int)
 
 val is_zero : mat -> bool
 (** [is_zero x] returns [true] if all the elements in [x] are zeros. *)

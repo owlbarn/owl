@@ -504,6 +504,8 @@ val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [dot x y] returns the dot product of matrix [x] and [y]. *)
 
+val power : (float, 'b) t -> float -> (float, 'b) t
+
 val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
@@ -579,6 +581,12 @@ val ( $* ) : 'a -> ('a, 'b) t -> ('a, 'b) t
 
 val ( $/ ) : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
+
+val ( $@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [dot x y], i.e., [x $@ y] *)
+
+val ( **@ ) : (float, 'b) t -> float -> (float, 'b) t
+(** Shorthand for [power x a], i.e., [x **@ a] *)
 
 val ( =@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
 (** Shorthand for [is_equal x y], i.e., [x =@ y] *)

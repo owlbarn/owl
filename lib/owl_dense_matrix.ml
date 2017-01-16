@@ -846,6 +846,8 @@ let sigmoid x = map (fun y -> 1. /. (1. +. (Pervasives.exp (-1. *. y)))) x
 
 (* binary matrix operation *)
 
+let power x c = map (fun y -> y ** c) x
+
 let pow x1 x2 =
   let x1 = to_ndarray x1 in
   let x2 = to_ndarray x2 in
@@ -893,6 +895,10 @@ let ( -@ ) = sub
 let ( *@ ) = mul
 
 let ( /@ ) = div
+
+let ( $@ ) = dot
+
+let ( **@ ) = power
 
 let ( =@ ) = ( = )
 
