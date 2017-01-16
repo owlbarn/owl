@@ -54,7 +54,6 @@ Library owl
                     Owl_cluster,
                     Owl_linalg,
                     Owl_fft,
-                    Owl_pure_sparse_matrix,
                     Owl_sparse_matrix,
                     Owl_sparse_ndarray,
                     Owl_infix,
