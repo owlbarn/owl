@@ -547,5 +547,19 @@ let load k f =
   let s = really_input_string h (in_channel_length h) in
   Marshal.from_string s 0
 
+(* TODO: optimise *)
+let rows x l =
+  let y = zeros x.k (Array.length l) x.n in
+  Array.iteri (fun i k ->
+    iteri_nz (fun _ j v -> set y i j v) (row x k)
+  ) l;
+  y
+
+let cols x l =
+  let y = zeros x.k x.m (Array.length l) in
+  Array.iteri (fun j k ->
+    iteri_nz (fun i _ v -> set y i j v) (col x k)
+  ) l;
+  y
 
 (* ends here *)

@@ -12,7 +12,7 @@
   solution. At the moment, use with care and let me know if you find bugs.
  *)
 
-type spmat
+type spmat = (float, Bigarray.float64_elt) Owl_sparse_matrix.t
 (** Type of sparse matrices. It is defined in [types.ml] as record type. *)
 
 
@@ -499,7 +499,7 @@ val load : string -> spmat
 
 
 (** {6 Shorhand infix operators} *)
-
+(*
 val ( +@ ) : spmat -> spmat -> spmat
 (** Shorthand for [add x y], i.e., [x +@ y] *)
 
@@ -550,3 +550,4 @@ val ( <=@ ) : spmat -> spmat -> bool
 
 val ( @@ ) : (float -> float) -> spmat -> spmat
 (** Shorthand for [map f x], i.e., f @@ x *)
+*)

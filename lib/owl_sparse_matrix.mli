@@ -71,11 +71,10 @@ val trace : ('a, 'b) t -> 'a
 val row : ('a, 'b) t -> int -> ('a, 'b) t
 
 val col : ('a, 'b) t -> int -> ('a, 'b) t
-(*
+
 val rows : ('a, 'b) t -> int array -> ('a, 'b) t
 
 val cols : ('a, 'b) t -> int array -> ('a, 'b) t
-*)
 
 val prune : ('a, 'b) t -> 'a -> float -> unit
 
@@ -106,13 +105,13 @@ val iteri_cols : (int -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 
 val iter_cols : (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 
-val mapi_rows : (int -> ('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
+val mapi_rows : (int -> ('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
 
-val map_rows : (('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
+val map_rows : (('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
 
-val mapi_cols : (int -> ('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
+val mapi_cols : (int -> ('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
 
-val map_cols : (('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
+val map_cols : (('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
 
 val fold_rows : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
@@ -142,13 +141,13 @@ val iteri_cols_nz : (int -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 
 val iter_cols_nz : (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 
-val mapi_rows_nz : (int -> ('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
+val mapi_rows_nz : (int -> ('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
 
-val map_rows_nz : (('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
+val map_rows_nz : (('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
 
-val mapi_cols_nz : (int -> ('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
+val mapi_cols_nz : (int -> ('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
 
-val map_cols_nz : (('a, 'b) t -> 'a) -> ('a, 'b) t -> 'a array
+val map_cols_nz : (('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
 
 val fold_rows_nz : ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
