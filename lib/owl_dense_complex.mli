@@ -13,7 +13,7 @@
   for more information.
  *)
 
-type mat = Gsl.Matrix_complex.matrix
+type mat = (Complex.t, Bigarray.complex64_elt) Owl_dense_matrix.t
 
 type elt = Complex.t
 
