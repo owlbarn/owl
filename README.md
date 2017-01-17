@@ -355,7 +355,7 @@ The future plan is to embed a small PPL (Probabilistic Programming Language) in 
 
 ## N-dimensional Array
 
-Owl has two very powerful modules to manipulate dense N-dimensional arrays. One is Ndarray, and the other is Ndview. Ndarray is very similar to the corresponding modules in Numpy and Julia, whereas Ndview is optimised for pipelining the operations on the ndarray. Here is an [initial evaluation](https://github.com/ryanrhymes/owl/wiki/Evaluation:-Performance-Test) on the performance of Ndarray.
+Owl has two very powerful modules to manipulate dense N-dimensional arrays. One is `Ndarray`, and the other is `Ndview`. Ndarray is very similar to the corresponding modules in Numpy and Julia, whereas Ndview is optimised for pipelining the operations on the ndarray. For sparse arrays, you can use `Sparse.Ndarray` which provides similar apis as aforementioned Ndarray. Here is an [initial evaluation](https://github.com/ryanrhymes/owl/wiki/Evaluation:-Performance-Test) on the performance of Ndarray.
 
 In the following, I will present a couple of examples using Ndarray module. First, we can create empty ndarrays of shape `[|3;4;5|]`. Owl supports four types of ndarrays: `Float32`, `Float64`, `Complex32`, and `Complex64`.
 
