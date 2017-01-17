@@ -10,39 +10,37 @@
 #include <gsl/gsl_vector_complex_float.h>
 #include <gsl/gsl_matrix_float.h>
 #include <gsl/gsl_matrix_complex_float.h>
-#include <gsl/gsl_spmatrix.h>
-#include <gsl/gsl_spblas.h>
 #include "ctypes_cstubs_internals.h"
 value owl_stub_1_gsl_matrix_equal(value x2, value x1)
 {
    gsl_matrix* x3 = CTYPES_ADDR_OF_FATPTR(x2);
    gsl_matrix* x4 = CTYPES_ADDR_OF_FATPTR(x1);
    int x5 = gsl_matrix_equal(x3, x4);
-   return Val_int(x5);
+   return Val_long(x5);
 }
 value owl_stub_2_gsl_matrix_isnull(value x6)
 {
    gsl_matrix* x7 = CTYPES_ADDR_OF_FATPTR(x6);
    int x8 = gsl_matrix_isnull(x7);
-   return Val_int(x8);
+   return Val_long(x8);
 }
 value owl_stub_3_gsl_matrix_ispos(value x9)
 {
    gsl_matrix* x10 = CTYPES_ADDR_OF_FATPTR(x9);
    int x11 = gsl_matrix_ispos(x10);
-   return Val_int(x11);
+   return Val_long(x11);
 }
 value owl_stub_4_gsl_matrix_isneg(value x12)
 {
    gsl_matrix* x13 = CTYPES_ADDR_OF_FATPTR(x12);
    int x14 = gsl_matrix_isneg(x13);
-   return Val_int(x14);
+   return Val_long(x14);
 }
 value owl_stub_5_gsl_matrix_isnonneg(value x15)
 {
    gsl_matrix* x16 = CTYPES_ADDR_OF_FATPTR(x15);
    int x17 = gsl_matrix_isnonneg(x16);
-   return Val_int(x17);
+   return Val_long(x17);
 }
 value owl_stub_6_gsl_matrix_min(value x18)
 {
@@ -108,40 +106,40 @@ value owl_stub_14_gsl_matrix_get_col(value x72, value x71, value x70)
 {
    gsl_vector* x73 = CTYPES_ADDR_OF_FATPTR(x72);
    gsl_matrix* x74 = CTYPES_ADDR_OF_FATPTR(x71);
-   int x75 = Int_val(x70);
+   int x75 = Long_val(x70);
    int x78 = gsl_matrix_get_col(x73, x74, x75);
-   return Val_int(x78);
+   return Val_long(x78);
 }
 value owl_stub_15_gsl_matrix_float_equal(value x80, value x79)
 {
    gsl_matrix_float* x81 = CTYPES_ADDR_OF_FATPTR(x80);
    gsl_matrix_float* x82 = CTYPES_ADDR_OF_FATPTR(x79);
    int x83 = gsl_matrix_float_equal(x81, x82);
-   return Val_int(x83);
+   return Val_long(x83);
 }
 value owl_stub_16_gsl_matrix_float_isnull(value x84)
 {
    gsl_matrix_float* x85 = CTYPES_ADDR_OF_FATPTR(x84);
    int x86 = gsl_matrix_float_isnull(x85);
-   return Val_int(x86);
+   return Val_long(x86);
 }
 value owl_stub_17_gsl_matrix_float_ispos(value x87)
 {
    gsl_matrix_float* x88 = CTYPES_ADDR_OF_FATPTR(x87);
    int x89 = gsl_matrix_float_ispos(x88);
-   return Val_int(x89);
+   return Val_long(x89);
 }
 value owl_stub_18_gsl_matrix_float_isneg(value x90)
 {
    gsl_matrix_float* x91 = CTYPES_ADDR_OF_FATPTR(x90);
    int x92 = gsl_matrix_float_isneg(x91);
-   return Val_int(x92);
+   return Val_long(x92);
 }
 value owl_stub_19_gsl_matrix_float_isnonneg(value x93)
 {
    gsl_matrix_float* x94 = CTYPES_ADDR_OF_FATPTR(x93);
    int x95 = gsl_matrix_float_isnonneg(x94);
-   return Val_int(x95);
+   return Val_long(x95);
 }
 value owl_stub_20_gsl_matrix_float_min(value x96)
 {
@@ -198,175 +196,60 @@ value owl_stub_26_gsl_matrix_complex_equal(value x135, value x134)
    gsl_matrix_complex* x136 = CTYPES_ADDR_OF_FATPTR(x135);
    gsl_matrix_complex* x137 = CTYPES_ADDR_OF_FATPTR(x134);
    int x138 = gsl_matrix_complex_equal(x136, x137);
-   return Val_int(x138);
+   return Val_long(x138);
 }
 value owl_stub_27_gsl_matrix_complex_isnull(value x139)
 {
    gsl_matrix_complex* x140 = CTYPES_ADDR_OF_FATPTR(x139);
    int x141 = gsl_matrix_complex_isnull(x140);
-   return Val_int(x141);
+   return Val_long(x141);
 }
 value owl_stub_28_gsl_matrix_complex_ispos(value x142)
 {
    gsl_matrix_complex* x143 = CTYPES_ADDR_OF_FATPTR(x142);
    int x144 = gsl_matrix_complex_ispos(x143);
-   return Val_int(x144);
+   return Val_long(x144);
 }
 value owl_stub_29_gsl_matrix_complex_isneg(value x145)
 {
    gsl_matrix_complex* x146 = CTYPES_ADDR_OF_FATPTR(x145);
    int x147 = gsl_matrix_complex_isneg(x146);
-   return Val_int(x147);
+   return Val_long(x147);
 }
 value owl_stub_30_gsl_matrix_complex_isnonneg(value x148)
 {
    gsl_matrix_complex* x149 = CTYPES_ADDR_OF_FATPTR(x148);
    int x150 = gsl_matrix_complex_isnonneg(x149);
-   return Val_int(x150);
+   return Val_long(x150);
 }
 value owl_stub_31_gsl_matrix_complex_float_equal(value x152, value x151)
 {
    gsl_matrix_complex_float* x153 = CTYPES_ADDR_OF_FATPTR(x152);
    gsl_matrix_complex_float* x154 = CTYPES_ADDR_OF_FATPTR(x151);
    int x155 = gsl_matrix_complex_float_equal(x153, x154);
-   return Val_int(x155);
+   return Val_long(x155);
 }
 value owl_stub_32_gsl_matrix_complex_float_isnull(value x156)
 {
    gsl_matrix_complex_float* x157 = CTYPES_ADDR_OF_FATPTR(x156);
    int x158 = gsl_matrix_complex_float_isnull(x157);
-   return Val_int(x158);
+   return Val_long(x158);
 }
 value owl_stub_33_gsl_matrix_complex_float_ispos(value x159)
 {
    gsl_matrix_complex_float* x160 = CTYPES_ADDR_OF_FATPTR(x159);
    int x161 = gsl_matrix_complex_float_ispos(x160);
-   return Val_int(x161);
+   return Val_long(x161);
 }
 value owl_stub_34_gsl_matrix_complex_float_isneg(value x162)
 {
    gsl_matrix_complex_float* x163 = CTYPES_ADDR_OF_FATPTR(x162);
    int x164 = gsl_matrix_complex_float_isneg(x163);
-   return Val_int(x164);
+   return Val_long(x164);
 }
 value owl_stub_35_gsl_matrix_complex_float_isnonneg(value x165)
 {
    gsl_matrix_complex_float* x166 = CTYPES_ADDR_OF_FATPTR(x165);
    int x167 = gsl_matrix_complex_float_isnonneg(x166);
-   return Val_int(x167);
-}
-value owl_stub_36_gsl_spmatrix_alloc(value x169, value x168)
-{
-   int x170 = Int_val(x169);
-   int x173 = Int_val(x168);
-   gsl_spmatrix* x176 = gsl_spmatrix_alloc(x170, x173);
-   return CTYPES_FROM_PTR(x176);
-}
-value owl_stub_37_gsl_spmatrix_alloc_nzmax(value x180, value x179,
-                                           value x178, value x177)
-{
-   int x181 = Int_val(x180);
-   int x184 = Int_val(x179);
-   int x187 = Int_val(x178);
-   int x190 = Int_val(x177);
-   gsl_spmatrix* x193 = gsl_spmatrix_alloc_nzmax(x181, x184, x187, x190);
-   return CTYPES_FROM_PTR(x193);
-}
-value owl_stub_38_gsl_spmatrix_set(value x197, value x196, value x195,
-                                   value x194)
-{
-   gsl_spmatrix* x198 = CTYPES_ADDR_OF_FATPTR(x197);
-   int x199 = Int_val(x196);
-   int x202 = Int_val(x195);
-   double x205 = Double_val(x194);
-   int x208 = gsl_spmatrix_set(x198, x199, x202, x205);
-   return Val_int(x208);
-}
-value owl_stub_39_gsl_spmatrix_get(value x211, value x210, value x209)
-{
-   gsl_spmatrix* x212 = CTYPES_ADDR_OF_FATPTR(x211);
-   int x213 = Int_val(x210);
-   int x216 = Int_val(x209);
-   double x219 = gsl_spmatrix_get(x212, x213, x216);
-   return caml_copy_double(x219);
-}
-value owl_stub_40_gsl_spmatrix_add(value x222, value x221, value x220)
-{
-   gsl_spmatrix* x223 = CTYPES_ADDR_OF_FATPTR(x222);
-   gsl_spmatrix* x224 = CTYPES_ADDR_OF_FATPTR(x221);
-   gsl_spmatrix* x225 = CTYPES_ADDR_OF_FATPTR(x220);
-   int x226 = gsl_spmatrix_add(x223, x224, x225);
-   return Val_int(x226);
-}
-value owl_stub_41_gsl_spmatrix_scale(value x228, value x227)
-{
-   gsl_spmatrix* x229 = CTYPES_ADDR_OF_FATPTR(x228);
-   double x230 = Double_val(x227);
-   int x233 = gsl_spmatrix_scale(x229, x230);
-   return Val_int(x233);
-}
-value owl_stub_42_gsl_spmatrix_memcpy(value x235, value x234)
-{
-   gsl_spmatrix* x236 = CTYPES_ADDR_OF_FATPTR(x235);
-   gsl_spmatrix* x237 = CTYPES_ADDR_OF_FATPTR(x234);
-   int x238 = gsl_spmatrix_memcpy(x236, x237);
-   return Val_int(x238);
-}
-value owl_stub_43_gsl_spmatrix_compcol(value x239)
-{
-   gsl_spmatrix* x240 = CTYPES_ADDR_OF_FATPTR(x239);
-   gsl_spmatrix* x241 = gsl_spmatrix_compcol(x240);
-   return CTYPES_FROM_PTR(x241);
-}
-value owl_stub_44_gsl_spmatrix_minmax(value x244, value x243, value x242)
-{
-   gsl_spmatrix* x245 = CTYPES_ADDR_OF_FATPTR(x244);
-   double* x246 = CTYPES_ADDR_OF_FATPTR(x243);
-   double* x247 = CTYPES_ADDR_OF_FATPTR(x242);
-   int x248 = gsl_spmatrix_minmax(x245, x246, x247);
-   return Val_int(x248);
-}
-value owl_stub_45_gsl_spmatrix_equal(value x250, value x249)
-{
-   gsl_spmatrix* x251 = CTYPES_ADDR_OF_FATPTR(x250);
-   gsl_spmatrix* x252 = CTYPES_ADDR_OF_FATPTR(x249);
-   int x253 = gsl_spmatrix_equal(x251, x252);
-   return Val_int(x253);
-}
-value owl_stub_46_gsl_spmatrix_transpose_memcpy(value x255, value x254)
-{
-   gsl_spmatrix* x256 = CTYPES_ADDR_OF_FATPTR(x255);
-   gsl_spmatrix* x257 = CTYPES_ADDR_OF_FATPTR(x254);
-   int x258 = gsl_spmatrix_transpose_memcpy(x256, x257);
-   return Val_int(x258);
-}
-value owl_stub_47_gsl_spmatrix_set_zero(value x259)
-{
-   gsl_spmatrix* x260 = CTYPES_ADDR_OF_FATPTR(x259);
-   int x261 = gsl_spmatrix_set_zero(x260);
-   return Val_int(x261);
-}
-value owl_stub_48_gsl_spblas_dgemm(value x265, value x264, value x263,
-                                   value x262)
-{
-   double x266 = Double_val(x265);
-   gsl_spmatrix* x269 = CTYPES_ADDR_OF_FATPTR(x264);
-   gsl_spmatrix* x270 = CTYPES_ADDR_OF_FATPTR(x263);
-   gsl_spmatrix* x271 = CTYPES_ADDR_OF_FATPTR(x262);
-   int x272 = gsl_spblas_dgemm(x266, x269, x270, x271);
-   return Val_int(x272);
-}
-value owl_stub_49_gsl_spmatrix_d2sp(value x274, value x273)
-{
-   gsl_spmatrix* x275 = CTYPES_ADDR_OF_FATPTR(x274);
-   gsl_matrix* x276 = CTYPES_ADDR_OF_FATPTR(x273);
-   int x277 = gsl_spmatrix_d2sp(x275, x276);
-   return Val_int(x277);
-}
-value owl_stub_50_gsl_spmatrix_sp2d(value x279, value x278)
-{
-   gsl_matrix* x280 = CTYPES_ADDR_OF_FATPTR(x279);
-   gsl_spmatrix* x281 = CTYPES_ADDR_OF_FATPTR(x278);
-   int x282 = gsl_spmatrix_sp2d(x280, x281);
-   return Val_int(x282);
+   return Val_long(x167);
 }

@@ -31,6 +31,4 @@ let _ =
     print_endline "#include <gsl/gsl_matrix_float.h>";
     print_endline "#include <gsl/gsl_matrix_complex_float.h>";
 
-    print_endline "#include <gsl/gsl_spmatrix.h>";
-    print_endline "#include <gsl/gsl_spblas.h>";
     Cstubs.write_c Format.std_formatter ~prefix (module Ffi_gsl_bindings.Bindings)

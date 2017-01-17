@@ -14,7 +14,6 @@ module FB = Ffi_gsl_bindings.Bindings(Ffi_gsl_generated)
 (* TODO: for compatibility reasons, need to be removed *)
 module DR = FB.Dense_real_double
 module DC = FB.Dense_complex_double
-module SR = FB.Sparse_real_double
 
 (* ffi for dense double matrix *)
 module Dense_real_double = struct
