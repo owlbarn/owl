@@ -35,7 +35,7 @@ val linspace : ('a, 'b) kind -> 'a -> 'a -> int -> ('a, 'b) t
 
 val meshgrid : ('a, 'b) kind -> 'a -> 'a -> 'a -> 'a -> int -> int -> ('a, 'b) t * ('a, 'b) t
 
-val meshup : ('a, 'b) kind -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+val meshup : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 
 
 (** {6 Obtain the basic properties} *)
@@ -509,7 +509,7 @@ val power : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   elementwise, and returns the result in a new matrix.
  *)
 
-val power_scalar : (float, 'b) t -> float -> (float, 'b) t
+val power_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
 val atan2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]
@@ -585,7 +585,7 @@ val ( $/ ) : 'a -> ('a, 'b) t -> ('a, 'b) t
 val ( $@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Shorthand for [dot x y], i.e., [x $@ y] *)
 
-val ( **@ ) : (float, 'b) t -> float -> (float, 'b) t
+val ( **@ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** Shorthand for [power x a], i.e., [x **@ a] *)
 
 val ( =@ ) : ('a, 'b) t -> ('a, 'b) t -> bool

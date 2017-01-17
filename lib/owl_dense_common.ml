@@ -171,6 +171,13 @@ let _average_elt : type a b. (a, b) kind -> (a -> int -> a) = function
   | Complex64 -> fun x n -> Complex.(div x {re = float_of_int n; im = 0.})
   | _         -> failwith "_average_elt: unsupported operation"
 
+let _power_scalar_elt : type a b. (a, b) kind -> (a -> a -> a) = function
+  | Float32   -> ( ** )
+  | Float64   -> ( ** )
+  | Complex32 -> Complex.pow
+  | Complex64 -> Complex.pow
+  | _         -> failwith "_power_scalar_elt: unsupported operation"
+
 let _add : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
   | Float32   -> Lacaml.S.Vec.add
   | Float64   -> Lacaml.D.Vec.add

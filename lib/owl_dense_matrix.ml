@@ -643,7 +643,8 @@ let meshgrid k xa xb ya yb xn yn =
   let y = map_by_row yn (fun _ -> v) (empty k xn yn) in
   x, transpose y
 
-let meshup k x y =
+let meshup x y =
+  let k = kind x in
   let xn = numel x in
   let yn = numel y in
   let x = map_by_row xn (fun _ -> x) (empty k yn xn) in
@@ -845,7 +846,9 @@ let sigmoid x = map (fun y -> 1. /. (1. +. (Pervasives.exp (-1. *. y)))) x
 (* binary matrix operation *)
 
 (* TODO: optimise *)
-let power_scalar x c = map (fun y -> y ** c) x
+let power_scalar x c =
+  let _op = _power_scalar_elt (kind x) in
+  map (fun y -> (_op) y c) x
 
 let power x1 x2 =
   let x1 = to_ndarray x1 in
