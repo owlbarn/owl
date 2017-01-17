@@ -495,6 +495,13 @@ let _uniform : type a b. (a, b) kind -> (a, b) lcm_vec_op04 = function
   | Complex64 -> fun s -> Lacaml.Z.Vec.random ~rnd_state:rng ~re_from:0. ~re_range:s ~im_from:0. ~im_range:s
   | _         -> failwith "_uniform: unsupported operation"
 
+let _linspace : type a b. (a, b) kind -> a -> a -> int -> (a, b) lcm_vec =
+  fun k a b n -> match k with
+  | Float32   -> Lacaml.S.Vec.linspace a b n
+  | Float64   -> Lacaml.D.Vec.linspace a b n
+  | Complex32 -> Lacaml.C.Vec.linspace a b n
+  | Complex64 -> Lacaml.Z.Vec.linspace a b n
+  | _         -> failwith "_linspace: unsupported operation"
 
 (* interface to gsl functions, types for interfacing to gsl *)
 

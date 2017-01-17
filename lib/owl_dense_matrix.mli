@@ -31,11 +31,11 @@ val gaussian : ?sigma:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
 val semidef : (float, 'b) kind -> int -> (float, 'b) t
 
-val linspace : float -> float -> int -> mat_d
+val linspace : ('a, 'b) kind -> 'a -> 'a -> int -> ('a, 'b) t
 
-val meshgrid : float -> float -> float -> float -> int -> int -> mat_d * mat_d
+val meshgrid : ('a, 'b) kind -> 'a -> 'a -> 'a -> 'a -> int -> int -> ('a, 'b) t * ('a, 'b) t
 
-val meshup : mat_d -> mat_d -> mat_d * mat_d
+val meshup : ('a, 'b) kind -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 
 
 (** {6 Obtain the basic properties} *)

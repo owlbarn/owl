@@ -57,6 +57,8 @@ let uniform_int ?(a=0) ?(b=99) m n =
     x.{i,j} <- Complex.({re; im})
   ) x; x
 
+let abs x = map (fun y -> Complex.({re = norm y; im = 0.})) x
+
 let abs2 x = map (fun y -> Complex.({re = norm2 y; im = 0.})) x
 
 let power_scalar x c = map (fun y -> Complex.pow y c) x

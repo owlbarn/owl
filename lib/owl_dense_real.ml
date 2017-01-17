@@ -31,6 +31,12 @@ let gaussian ?(sigma=1.) m n = Owl_dense_matrix.gaussian Float64 m n
 
 let semidef m = Owl_dense_matrix.semidef Float64 m
 
+let linspace a b n = Owl_dense_matrix.linspace Float64 a b n
+
+let meshgrid xa xb ya yb xn yn = Owl_dense_matrix.meshgrid Float64 xa xb ya yb xn yn
+
+let meshup x y = Owl_dense_matrix.meshup Float64 x y
+
 let of_array x m n = Owl_dense_matrix.of_array Float64 x m n
 
 let of_arrays x = Owl_dense_matrix.of_arrays Float64 x

@@ -78,12 +78,11 @@ let sequential k m n =
   done; x
 
 (* FIXME *)
-let linspace a b n =
-  let x = empty Float64 1 n in
-  let c = ((b -. a) /. (float_of_int (n - 1))) in
-  for i = 0 to n - 1 do
-    x.{0,i} <- a +. c *. (float_of_int i)
-  done; x
+let linspace k a b n =
+  let x = _linspace k a b n in
+  let x = Bigarray.genarray_of_array1 x in
+  let x = Genarray.change_layout x c_layout in
+  Bigarray.reshape_2 x 1 n
 
 (* matrix manipulations *)
 
@@ -638,18 +637,18 @@ let reshape m n x =
   let x = genarray_of_array2 x in
   reshape_2 x m n
 
-let meshgrid xa xb ya yb xn yn =
-  let u = linspace xa xb xn in
-  let v = linspace ya yb yn in
-  let x = map_by_row xn (fun _ -> u) (empty Float64 yn xn) in
-  let y = map_by_row yn (fun _ -> v) (empty Float64 xn yn) in
+let meshgrid k xa xb ya yb xn yn =
+  let u = linspace k xa xb xn in
+  let v = linspace k ya yb yn in
+  let x = map_by_row xn (fun _ -> u) (empty k yn xn) in
+  let y = map_by_row yn (fun _ -> v) (empty k xn yn) in
   x, transpose y
 
-let meshup x y =
+let meshup k x y =
   let xn = numel x in
   let yn = numel y in
-  let x = map_by_row xn (fun _ -> x) (empty Float64 yn xn) in
-  let y = map_by_row yn (fun _ -> y) (empty Float64 xn yn) in
+  let x = map_by_row xn (fun _ -> x) (empty k yn xn) in
+  let y = map_by_row yn (fun _ -> y) (empty k xn yn) in
   x, transpose y
 
 (* unary matrix operation *)
