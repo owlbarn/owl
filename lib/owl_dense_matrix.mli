@@ -8,8 +8,6 @@ type ('a, 'b) t = ('a, 'b, Bigarray.c_layout) Bigarray.Array2.t
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
-type mat_d = (float, Bigarray.float64_elt) t
-
 
 (** {6 Create dense matrices} *)
 
@@ -90,10 +88,6 @@ val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 val transpose : ('a, 'b) t -> ('a, 'b) t
 
 val diag : ('a, 'b) t -> ('a, 'b) t
-
-val trace : ('a, 'b) t -> 'a
-
-val add_diag : ('a, 'b) t -> 'a -> ('a, 'b) t
 
 val replace_row : ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
 
@@ -235,7 +229,7 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 
 val save_txt : ('a, 'b) t -> string -> unit
 
-val load_txt : string -> mat_d
+val load_txt : string -> (float, Bigarray.float64_elt) t
 
 
 (** {6 Unary mathematical operations } *)
@@ -261,6 +255,8 @@ val min_i : (float, 'b) t -> float * int * int
 val max_i : (float, 'b) t -> float * int * int
 
 val minmax_i : (float, 'b) t -> (float * int * int) * (float * int * int)
+
+val trace : ('a, 'b) t -> 'a
 
 val sum : ('a, 'b) t -> 'a
 
@@ -456,7 +452,7 @@ val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
   result in a new matrix.
  *)
 
-val sigmoid : mat_d -> mat_d
+val sigmoid : (float, Bigarray.float64_elt) t -> (float, Bigarray.float64_elt) t
 
 
 (** {6 Binary mathematical operations } *)
@@ -504,8 +500,10 @@ val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [dot x y] returns the dot product of matrix [x] and [y]. *)
 
+val add_diag : ('a, 'b) t -> 'a -> ('a, 'b) t
+
 val power : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
+(** [power x y] computes [pow(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
 

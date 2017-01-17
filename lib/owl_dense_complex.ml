@@ -65,9 +65,5 @@ let abs x = map (fun y -> Complex.({re = norm y; im = 0.})) x
 
 let abs2 x = map (fun y -> Complex.({re = norm2 y; im = 0.})) x
 
-let power_scalar x c = map (fun y -> Complex.pow y c) x
-
-let ( **@ ) = power_scalar
-
 
 (* ends here *)

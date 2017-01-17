@@ -59,7 +59,7 @@ val semidef : int -> mat
 (** [ semidef n ] returns an random [n] by [n] positive semi-definite matrix. *)
 
 
-(** {7 Dense vectors and meshgrids} *)
+(** {7 Dense row vectors and meshgrids} *)
 
 val vector : int -> mat
 (** [vector m] returns an [1] by [m] row vector [x] without initialising the
@@ -116,13 +116,11 @@ val numel : mat -> int
   to [(row_num x) * (col_num x)].
  *)
 
+val size_in_bytes : mat -> int
+(** [size_in_bytes x] returns the size of [x] in bytes in memory. *)
+
 val same_shape : mat -> mat -> bool
 (** [same_shape x y] returns [true] if two matrics have the same shape. *)
-
-val reshape : int -> int -> mat -> mat
-(** [reshape m n x] creates a new [m] by [n] matrix from the [m'] by [n']
-  matrix [x]. Note that [(m * n)] must be equal to [(m' * n')].
- *)
 
 
 (** {6 Manipulate a matrix} *)
@@ -153,6 +151,13 @@ val cols : mat -> int array -> mat
 (** Similar to [rows], [cols x a] returns the columns (specified in array [a])
   of x in a new dense matrix.
  *)
+
+val reshape : int -> int -> mat -> mat
+(** [reshape m n x] creates a new [m] by [n] matrix from the [m'] by [n']
+  matrix [x]. Note that [(m * n)] must be equal to [(m' * n')].
+ *)
+
+val fill : mat -> float -> unit
 
 val clone : mat -> mat
 (** [clone x] returns a copy of matrix [x]. *)
@@ -187,12 +192,6 @@ val transpose : mat -> mat
 
 val diag : mat -> mat
 (** [diag x] returns the diagonal elements of [x]. *)
-
-val trace : mat -> float
-(** [trace x] returns the sum of diagonal elements in [x]. *)
-
-val add_diag : mat -> float -> mat
-(** [add_diag x a] adds a constant [a] to all the diagonal elements in [x]. *)
 
 val replace_row : mat -> mat -> int -> mat
 (** [replace_row v x i] uses the row vector [v] to replace the [i]th row in
@@ -234,6 +233,8 @@ val map : (float -> float) -> mat -> mat
 (** [map f x] is similar to [mapi f x] except the coordinates of the
   current element is not passed to the function [f : float -> float]
  *)
+
+val foldi : (int -> int -> 'a -> float -> 'a) -> 'a -> mat -> 'a
 
 val fold : ('a -> float -> 'a) -> 'a -> mat -> 'a
 (** [fold f a x] folds all the elements in [x] with the function
@@ -357,7 +358,7 @@ val map_at_col : (float -> float) -> mat -> int -> mat
  *)
 
 
-(** {6 Examine the elements in a matrix} *)
+(** {6 Examin elements and compare two matrices} *)
 
 val exists : (float -> bool) -> mat -> bool
 (** [exists f x] checks all the elements in [x] using [f]. If at least one
@@ -374,8 +375,17 @@ val for_all : (float -> bool) -> mat -> bool
   if and only if all the elements pass the check of function [f].
  *)
 
+val is_zero : mat -> bool
+(** [is_zero x] returns [true] if all the elements in [x] are zeros. *)
 
-(** {6 Compare two matrices} *)
+val is_positive : mat -> bool
+(** [is_positive x] returns [true] if all the elements in [x] are positive. *)
+
+val is_negative : mat -> bool
+(** [is_negative x] returns [true] if all the elements in [x] are negative. *)
+
+val is_nonnegative : mat -> bool
+(** [is_nonnegative] returns [true] if all the elements in [x] are non-negative. *)
 
 val is_equal : mat -> mat -> bool
 (** [is_equal x y] returns [true] if two matrices [x] and [y] are equal. *)
@@ -404,132 +414,6 @@ val equal_or_smaller : mat -> mat -> bool
 (** [equal_or_smaller x y] returns [true] if all the elements in [x] are not
   greater than the corresponding elements in [y].
  *)
-
-
-(** {6 Basic mathematical operations of matrices} *)
-
-val add : mat -> mat -> mat
-(** [add x y] adds two matrices [x] and [y]. Both must have the same dimensions. *)
-
-val sub : mat -> mat -> mat
-(** [sub x y] subtracts the matrix [x] from [y]. Both must have the same dimensions. *)
-
-val mul : mat -> mat -> mat
-(** [mul x y] performs an element-wise multiplication, so both [x] and [y]
-  must have the same dimensions.
- *)
-
-val div : mat -> mat -> mat
-(** [div x y] performs an element-wise division, so both [x] and [y]
-  must have the same dimensions.
- *)
-
-val dot : mat -> mat -> mat
-(** [dot x y] calculates the dot product of an [m] by [n] matrix [x] and
-  another [n] by [p] matrix [y].
- *)
-
-val abs : mat -> mat
-(** [abs x] returns a new matrix where each element has the absolute value of
-  that in the original matrix [x].
- *)
-
-val neg : mat -> mat
-(** [neg x] returns a new matrix where each element has the negative value of
-  that in the original matrix [x].
- *)
-
-val power : mat -> mat -> mat
-
-val power_scalar : mat -> float -> mat
-(** [power x a] calculates the power of [a] of each element in [x]. *)
-
-val add_scalar : mat -> float -> mat
-(** [add_scalar x a] adds every element in [x] by a constant factor [a]. *)
-
-val sub_scalar : mat -> float -> mat
-(** [sub_scalar x a] subtracts every element in [x] by a constant factor [a]. *)
-
-val mul_scalar : mat -> float -> mat
-(** [mul_scalar x a] multiplies every element in [x] by a constant factor [a]. *)
-
-val div_scalar : mat -> float -> mat
-(** [div_scalar x a] divides every element in [x] by a constant factor [a]. *)
-
-val sum : mat -> float
-(** [sum x] returns the summation of all the elements in [x]. *)
-
-val average : mat -> float
-(** [average x] returns the average value of all the elements in [x]. It is
-  equivalent to calculate [sum x] divided by [numel x]
- *)
-
-val min : mat -> float
-(** [min x] returns the minimum value of all elements in [x]. *)
-
-val max : mat -> float
-(** [max x] returns the maximum value of all elements in [x]. *)
-
-val minmax : mat -> float * float
-(** [minmax x] returns both the minimum and minimum values in [x]. *)
-
-val min_i : mat -> float * int * int
-
-val max_i : mat -> float * int * int
-
-val minmax_i : mat -> (float * int * int) * (float * int * int)
-
-val is_zero : mat -> bool
-(** [is_zero x] returns [true] if all the elements in [x] are zeros. *)
-
-val is_positive : mat -> bool
-(** [is_positive x] returns [true] if all the elements in [x] are positive. *)
-
-val is_negative : mat -> bool
-(** [is_negative x] returns [true] if all the elements in [x] are negative. *)
-
-val is_nonnegative : mat -> bool
-(** [is_nonnegative] returns [true] if all the elements in [x] are non-negative. *)
-
-val log : mat -> mat
-(** [log x] applies [log] function to each element in matrix [x]. *)
-
-val log10 : mat -> mat
-(** [log10 x] applies [log10] function to each element in matrix [x]. *)
-
-val exp : mat -> mat
-(** [exp x] applies [exp] function to each element in matrix [x]. *)
-
-val sigmoid : mat -> mat
-(** [sigmoid x] applies [sigmoid] function to each element in matrix [x]. *)
-
-val sum_rows : mat -> mat
-(** [sum_rows x] returns the summation of all the row vectors in [x]. *)
-
-val sum_cols : mat -> mat
-(** [sum_cols] returns the summation of all the column vectors in [x]. *)
-
-val average_rows : mat -> mat
-(** [average_rows x] returns the average value of all row vectors in [x]. It is
-  equivalent to [div_scalar (sum_rows x) (float_of_int (row_num x))].
- *)
-
-val average_cols : mat -> mat
-(** [average_cols x] returns the average value of all column vectors in [x].
-  It is equivalent to [div_scalar (sum_cols x) (float_of_int (col_num x))].
- *)
-
-val min_rows : mat -> (float * int * int) array
-(** [min_rows x] returns the minimum value in each row along with their coordinates. *)
-
-val min_cols : mat -> (float * int * int) array
-(** [min_cols x] returns the minimum value in each column along with their coordinates. *)
-
-val max_rows : mat -> (float * int * int) array
-(** [max_rows x] returns the maximum value in each row along with their coordinates. *)
-
-val max_cols : mat -> (float * int * int) array
-(** [min_cols x] returns the minimum value in each column along with their coordinates. *)
 
 
 (** {6 Randomisation functions} *)
@@ -617,6 +501,303 @@ val load_txt : string -> mat
 (** [load_txt f] load a text file [f] into a matrix. *)
 
 
+(** {6 Unary mathematical operations } *)
+
+val min : mat -> float
+(** [min x] returns the minimum value of all elements in [x]. *)
+
+val max : mat -> float
+(** [max x] returns the maximum value of all elements in [x]. *)
+
+val minmax : mat -> float * float
+(** [minmax x] returns both the minimum and minimum values in [x]. *)
+
+val min_i : mat -> float * int * int
+
+val max_i : mat -> float * int * int
+
+val minmax_i : mat -> (float * int * int) * (float * int * int)
+
+val trace : mat -> float
+(** [trace x] returns the sum of diagonal elements in [x]. *)
+
+val sum : mat -> float
+(** [sum x] returns the summation of all the elements in [x]. *)
+
+val average : mat -> float
+(** [average x] returns the average value of all the elements in [x]. It is
+  equivalent to calculate [sum x] divided by [numel x]
+ *)
+
+val sum_rows : mat -> mat
+(** [sum_rows x] returns the summation of all the row vectors in [x]. *)
+
+val sum_cols : mat -> mat
+(** [sum_cols] returns the summation of all the column vectors in [x]. *)
+
+val average_rows : mat -> mat
+(** [average_rows x] returns the average value of all row vectors in [x]. It is
+ equivalent to [div_scalar (sum_rows x) (float_of_int (row_num x))].
+*)
+
+val average_cols : mat -> mat
+(** [average_cols x] returns the average value of all column vectors in [x].
+ It is equivalent to [div_scalar (sum_cols x) (float_of_int (col_num x))].
+*)
+
+val min_rows : mat -> (float * int * int) array
+(** [min_rows x] returns the minimum value in each row along with their coordinates. *)
+
+val min_cols : mat -> (float * int * int) array
+(** [min_cols x] returns the minimum value in each column along with their coordinates. *)
+
+val max_rows : mat -> (float * int * int) array
+(** [max_rows x] returns the maximum value in each row along with their coordinates. *)
+
+val max_cols : mat -> (float * int * int) array
+(** [min_cols x] returns the minimum value in each column along with their coordinates. *)
+
+val abs : mat -> mat
+(** [abs x] returns a new matrix where each element has the absolute value of
+  that in the original matrix [x].
+ *)
+
+val neg : mat -> mat
+(** [neg x] returns a new matrix where each element has the negative value of
+  that in the original matrix [x].
+ *)
+
+val signum : mat -> mat
+(** [signum] computes the sign value ([-1] for negative numbers, [0] (or [-0])
+  for zero, [1] for positive numbers, [nan] for [nan]).
+ *)
+
+val sqr : mat -> mat
+(** [sqr x] computes the square of the elements in [x] and returns the result in
+  a new matrix.
+ *)
+
+val sqrt : mat -> mat
+(** [sqrt x] computes the square root of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val cbrt : mat -> mat
+(** [cbrt x] computes the cubic root of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val exp : mat -> mat
+(** [exp x] computes the exponential of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val exp2 : mat -> mat
+(** [exp2 x] computes the base-2 exponential of the elements in [x] and returns
+  the result in a new matrix.
+ *)
+
+val expm1 : mat -> mat
+(** [expm1 x] computes [exp x -. 1.] of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val log : mat -> mat
+(** [log x] computes the logarithm of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val log10 : mat -> mat
+(** [log10 x] computes the base-10 logarithm of the elements in [x] and returns
+  the result in a new matrix.
+ *)
+
+val log2 : mat -> mat
+(** [log2 x] computes the base-2 logarithm of the elements in [x] and returns
+  the result in a new matrix.
+ *)
+
+val log1p : mat -> mat
+(** [log1p x] computes [log (1 + x)] of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val sin : mat -> mat
+(** [sin x] computes the sine of the elements in [x] and returns the result in
+  a new matrix.
+ *)
+
+val cos : mat -> mat
+(** [cos x] computes the cosine of the elements in [x] and returns the result in
+  a new matrix.
+ *)
+
+val tan : mat -> mat
+(** [tan x] computes the tangent of the elements in [x] and returns the result
+  in a new matrix.
+ *)
+
+val asin : mat -> mat
+(** [asin x] computes the arc sine of the elements in [x] and returns the result
+  in a new matrix.
+ *)
+
+val acos : mat -> mat
+(** [acos x] computes the arc cosine of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val atan : mat -> mat
+(** [atan x] computes the arc tangent of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val sinh : mat -> mat
+(** [sinh x] computes the hyperbolic sine of the elements in [x] and returns
+  the result in a new matrix.
+ *)
+
+val cosh : mat -> mat
+(** [cosh x] computes the hyperbolic cosine of the elements in [x] and returns
+  the result in a new matrix.
+ *)
+
+val tanh : mat -> mat
+(** [tanh x] computes the hyperbolic tangent of the elements in [x] and returns
+  the result in a new matrix.
+ *)
+
+val asinh : mat -> mat
+(** [asinh x] computes the hyperbolic arc sine of the elements in [x] and
+  returns the result in a new matrix.
+ *)
+
+val acosh : mat -> mat
+(** [acosh x] computes the hyperbolic arc cosine of the elements in [x] and
+  returns the result in a new matrix.
+ *)
+
+val atanh : mat -> mat
+(** [atanh x] computes the hyperbolic arc tangent of the elements in [x] and
+  returns the result in a new matrix.
+ *)
+
+val floor : mat -> mat
+(** [floor x] computes the floor of the elements in [x] and returns the result
+  in a new matrix.
+ *)
+
+val ceil : mat -> mat
+(** [ceil x] computes the ceiling of the elements in [x] and returns the result
+  in a new matrix.
+ *)
+
+val round : mat -> mat
+(** [round x] rounds the elements in [x] and returns the result in a new matrix. *)
+
+val trunc : mat -> mat
+(** [trunc x] computes the truncation of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val erf : mat -> mat
+(** [erf x] computes the error function of the elements in [x] and returns the
+  result in a new matrix.
+ *)
+
+val erfc : mat -> mat
+(** [erfc x] computes the complementary error function of the elements in [x]
+  and returns the result in a new matrix.
+ *)
+
+val logistic : mat -> mat
+(** [logistic x] computes the logistic function [1/(1 + exp(-a)] of the elements
+  in [x] and returns the result in a new matrix.
+ *)
+
+val relu : mat -> mat
+(** [relu x] computes the rectified linear unit function [max(x, 0)] of the
+  elements in [x] and returns the result in a new matrix.
+ *)
+
+val softplus : mat -> mat
+(** [softplus x] computes the softplus function [log(1 + exp(x)] of the elements
+  in [x] and returns the result in a new matrix.
+ *)
+
+val softsign : mat -> mat
+(** [softsign x] computes the softsign function [x / (1 + abs(x))] of the
+  elements in [x] and returns the result in a new matrix.
+ *)
+
+val sigmoid : mat -> mat
+(** [sigmoid x] applies [sigmoid] function to each element in matrix [x]. *)
+
+
+(** {6 Binary mathematical operations } *)
+
+val add : mat -> mat -> mat
+(** [add x y] adds two matrices [x] and [y]. Both must have the same dimensions. *)
+
+val sub : mat -> mat -> mat
+(** [sub x y] subtracts the matrix [x] from [y]. Both must have the same dimensions. *)
+
+val mul : mat -> mat -> mat
+(** [mul x y] performs an element-wise multiplication, so both [x] and [y]
+  must have the same dimensions.
+ *)
+
+val div : mat -> mat -> mat
+(** [div x y] performs an element-wise division, so both [x] and [y]
+  must have the same dimensions.
+ *)
+
+val add_scalar : mat -> float -> mat
+(** [add_scalar x a] adds every element in [x] by a constant factor [a]. *)
+
+val sub_scalar : mat -> float -> mat
+(** [sub_scalar x a] subtracts every element in [x] by a constant factor [a]. *)
+
+val mul_scalar : mat -> float -> mat
+(** [mul_scalar x a] multiplies every element in [x] by a constant factor [a]. *)
+
+val div_scalar : mat -> float -> mat
+(** [div_scalar x a] divides every element in [x] by a constant factor [a]. *)
+
+val dot : mat -> mat -> mat
+(** [dot x y] calculates the dot product of an [m] by [n] matrix [x] and
+  another [n] by [p] matrix [y].
+ *)
+
+val power : mat -> mat -> mat
+(** [power x y] computes [pow(a, b)] of all the elements in [x] and [y]
+  elementwise, and returns the result in a new matrix.
+ *)
+
+val power_scalar : mat -> float -> mat
+(** [power x a] calculates the power of [a] of each element in [x]. *)
+
+val atan2 : mat -> mat -> mat
+(** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]
+  elementwise, and returns the result in a new matrix.
+ *)
+
+val hypot : mat -> mat -> mat
+(** [hypot x y] computes [sqrt(x*x + y*y)] of all the elements in [x] and [y]
+  elementwise, and returns the result in a new matrix.
+ *)
+
+val min2 : mat -> mat -> mat
+(** [min2 x y] computes the minimum of all the elements in [x] and [y]
+  elementwise, and returns the result in a new matrix.
+ *)
+
+val max2 : mat -> mat -> mat
+(** [max2 x y] computes the maximum of all the elements in [x] and [y]
+  elementwise, and returns the result in a new matrix.
+ *)
+
+
 (** {6 Shorhand infix operators} *)
 
 val ( >> ) : mat -> mat -> unit
@@ -643,12 +824,6 @@ val ( *@ ) : mat -> mat -> mat
 val ( /@ ) : mat -> mat -> mat
 (** Shorthand for [div x y], i.e., [x /@ y] *)
 
-val ( $@ ) : mat -> mat -> mat
-(** Shorthand for [dot x y], i.e., [x $@ y] *)
-
-val ( **@ ) : mat -> float -> mat
-(** Shorthand for [power x a], i.e., [x **@ a] *)
-
 val ( +$ ) : mat -> float -> mat
 (** Shorthand for [add_scalar x a], i.e., [x +$ a] *)
 
@@ -672,6 +847,12 @@ val ( $* ) : float -> mat -> mat
 
 val ( $/ ) : float -> mat -> mat
 (** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
+
+val ( $@ ) : mat -> mat -> mat
+(** Shorthand for [dot x y], i.e., [x $@ y] *)
+
+val ( **@ ) : mat -> float -> mat
+(** Shorthand for [power x a], i.e., [x **@ a] *)
 
 val ( =@ ) : mat -> mat -> bool
 (** Shorthand for [is_equal x y], i.e., [x =@ y] *)

@@ -546,6 +546,7 @@ let to_arrays x = (_gsl_to_arrays (kind x)) x
 
 let of_arrays k x = (_gsl_of_arrays k) x
 
+(* FIXME *)
 let save_txt x f =
   let _op = _owl_elt_to_str (Array2.kind x) in
   let h = open_out f in
@@ -555,6 +556,7 @@ let save_txt x f =
   ) x;
   close_out h
 
+(* FIXME *)
 let load_txt f =
   let h = open_in f in
   let s = input_line h in
