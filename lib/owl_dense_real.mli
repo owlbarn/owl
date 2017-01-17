@@ -771,6 +771,9 @@ val dot : mat -> mat -> mat
   another [n] by [p] matrix [y].
  *)
 
+val add_diag : mat -> elt -> mat
+(** [add_diag x a] adds a constant [a] to all the diagonal elements in [x]. *)
+
 val power : mat -> mat -> mat
 (** [power x y] computes [pow(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
