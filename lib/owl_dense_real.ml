@@ -9,6 +9,8 @@ open Bigarray
 
 type mat = (float, float64_elt) Owl_dense_matrix.t
 
+type elt = float
+
 include Owl_dense_matrix
 
 (* overload functions in Owl_dense_matrix *)

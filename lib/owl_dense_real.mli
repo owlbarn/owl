@@ -9,6 +9,8 @@ type mat = (float, Bigarray.float64_elt) Owl_dense_matrix.t
 (** Type of dense matrices. It is defined as [Gsl.Matrix.matrix] which is
   essentially a two dimensional array in [Bigarray] module. *)
 
+type elt = float
+
 
 (** {6 Create dense matrices} *)
 
@@ -17,7 +19,7 @@ val empty : int -> int -> mat
   elements in [x].
  *)
 
-val create : int -> int -> float -> mat
+val create : int -> int -> elt -> mat
 (** [create m n a] creates an [m] by [n] matrix and all the elements of [x] are
   initialised with the value [a].
  *)
@@ -81,13 +83,13 @@ val vector_uniform : int -> mat
   drawn from the interval [(0,1)] with a uniform distribution.
  *)
 
-val linspace : float -> float -> int -> mat
+val linspace : elt -> elt -> int -> mat
 (** [linspace a b n] linearly divides the interval [[a,b]] into [n] pieces by
   creating an [m] by [1] row vector. E.g., [linspace 0. 5. 5] will create a
   row vector [[0;1;2;3;4;5]].
  *)
 
-val meshgrid : float -> float -> float -> float -> int -> int -> mat * mat
+val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat
 (** [meshgrid a1 b1 a2 b2 n1 n2] is similar to the [meshgrid] function in
   Matlab. It returns two matrices [x] and [y] where the row vectors in [x] are
   linearly spaced between [[a1,b1]] by [n1] whilst the column vectors in [y]
@@ -125,12 +127,12 @@ val same_shape : mat -> mat -> bool
 
 (** {6 Manipulate a matrix} *)
 
-val get : mat -> int -> int -> float
+val get : mat -> int -> int -> elt
 (** [get x i j] returns the value of element [(i,j)] of [x]. The shorthand
   for [get x i j] is [x.{i,j}]
  *)
 
-val set : mat -> int -> int -> float -> unit
+val set : mat -> int -> int -> elt -> unit
 (** [set x i j a] sets the element [(i,j)] of [x] to value [a]. The shorthand
   for [set x i j a] is [x.{i,j} <- a]
  *)
@@ -157,7 +159,7 @@ val reshape : int -> int -> mat -> mat
   matrix [x]. Note that [(m * n)] must be equal to [(m' * n')].
  *)
 
-val fill : mat -> float -> unit
+val fill : mat -> elt -> unit
 
 val clone : mat -> mat
 (** [clone x] returns a copy of matrix [x]. *)
@@ -212,43 +214,43 @@ val swap_cols : mat -> int -> int -> mat
 
 (** {6 Iterate elements, columns, and rows.} *)
 
-val iteri : (int -> int -> float -> unit) -> mat -> unit
+val iteri : (int -> int -> elt -> unit) -> mat -> unit
 (** [iteri f x] iterates all the elements in [x] and applies the user defined
   function [f : int -> int -> float -> 'a]. [f i j v] takes three parameters,
   [i] and [j] are the coordinates of current element, and [v] is its value.
   *)
 
-val iter : (float -> unit) -> mat -> unit
+val iter : (elt -> unit) -> mat -> unit
 (** [iter f x] is the same as as [iteri f x] except the coordinates of the
   current element is not passed to the function [f : float -> 'a]
  *)
 
-val mapi : (int -> int -> float -> float) -> mat -> mat
+val mapi : (int -> int -> elt -> elt) -> mat -> mat
 (** [mapi f x] maps each element in [x] to a new value by applying
   [f : int -> int -> float -> float]. The first two parameters are the
   coordinates of the element, and the third parameter is the value.
  *)
 
-val map : (float -> float) -> mat -> mat
+val map : (elt -> elt) -> mat -> mat
 (** [map f x] is similar to [mapi f x] except the coordinates of the
   current element is not passed to the function [f : float -> float]
  *)
 
-val foldi : (int -> int -> 'a -> float -> 'a) -> 'a -> mat -> 'a
+val foldi : (int -> int -> 'a -> elt -> 'a) -> 'a -> mat -> 'a
 
-val fold : ('a -> float -> 'a) -> 'a -> mat -> 'a
+val fold : ('a -> elt -> 'a) -> 'a -> mat -> 'a
 (** [fold f a x] folds all the elements in [x] with the function
   [f : 'a -> float -> 'a]. For an [m] by [n] matrix [x], the order of folding
   is from [(0,0)] to [(m-1,n-1)], row by row.
  *)
 
-val filteri : (int -> int -> float -> bool) -> mat -> (int * int) array
+val filteri : (int -> int -> elt -> bool) -> mat -> (int * int) array
 (** [filteri f x] uses [f : int -> int -> float -> bool] to filter out certain
   elements in [x]. An element will be included if [f] returns [true]. The
   returned result is a list of coordinates of the selected elements.
  *)
 
-val filter : (float -> bool) -> mat -> (int * int) array
+val filter : (elt -> bool) -> mat -> (int * int) array
 (** Similar to [filteri], but the coordinates of the elements are not passed to
   the function [f : float -> bool].
  *)
@@ -337,22 +339,22 @@ val map_by_col : int -> (mat -> mat) -> mat -> mat
   indices are not passed to [f].
  *)
 
-val mapi_at_row : (int -> int -> float -> float) -> mat -> int -> mat
+val mapi_at_row : (int -> int -> elt -> elt) -> mat -> int -> mat
 (** [mapi_at_row f x i] creates a new matrix by applying function [f] only to
   the [i]th row in matrix [x].
  *)
 
-val map_at_row : (float -> float) -> mat -> int -> mat
+val map_at_row : (elt -> elt) -> mat -> int -> mat
 (** [map_at_row f x i] is similar to [mapi_at_row] except that the coordinates
   of an element is not passed to [f].
  *)
 
-val mapi_at_col : (int -> int -> float -> float) -> mat -> int -> mat
+val mapi_at_col : (int -> int -> elt -> elt) -> mat -> int -> mat
 (** [mapi_at_col f x j] creates a new matrix by applying function [f] only to
   the [j]th column in matrix [x].
  *)
 
-val map_at_col : (float -> float) -> mat -> int -> mat
+val map_at_col : (elt -> elt) -> mat -> int -> mat
 (** [map_at_col f x i] is similar to [mapi_at_col] except that the coordinates
   of an element is not passed to [f].
  *)
@@ -360,17 +362,17 @@ val map_at_col : (float -> float) -> mat -> int -> mat
 
 (** {6 Examin elements and compare two matrices} *)
 
-val exists : (float -> bool) -> mat -> bool
+val exists : (elt -> bool) -> mat -> bool
 (** [exists f x] checks all the elements in [x] using [f]. If at least one
   element satisfies [f] then the function returns [true] otherwise [false].
  *)
 
-val not_exists : (float -> bool) -> mat -> bool
+val not_exists : (elt -> bool) -> mat -> bool
 (** [not_exists f x] checks all the elements in [x], the function returns
   [true] only if all the elements fail to satisfy [f : float -> bool].
  *)
 
-val for_all : (float -> bool) -> mat -> bool
+val for_all : (elt -> bool) -> mat -> bool
 (** [for_all f x] checks all the elements in [x], the function returns [true]
   if and only if all the elements pass the check of function [f].
  *)
@@ -444,22 +446,22 @@ val shuffle: mat -> mat
 
 (** {6 Input/Output and helper functions} *)
 
-val to_array : mat -> float array
+val to_array : mat -> elt array
 (** [to_array x] flattens an [m] by [n] matrix [x] then returns [x] as an
   float array of length [(numel x)].
  *)
 
-val of_array : float array -> int -> int -> mat
+val of_array : elt array -> int -> int -> mat
 (** [of_array x m n] converts a float array [x] into an [m] by [n] matrix. Note the
   length of [x] must be equal to [(m * n)].
  *)
 
-val to_arrays : mat -> float array array
+val to_arrays : mat -> elt array array
 (** [to arrays x] returns an array of float arrays, wherein each row in [x]
   becomes an array in the result.
  *)
 
-val of_arrays : float array array -> mat
+val of_arrays : elt array array -> mat
 (** [of_arrays x] converts an array of [m] float arrays (of length [n]) in to
   an [m] by [n] matrix.
  *)
@@ -503,28 +505,28 @@ val load_txt : string -> mat
 
 (** {6 Unary mathematical operations } *)
 
-val min : mat -> float
+val min : mat -> elt
 (** [min x] returns the minimum value of all elements in [x]. *)
 
-val max : mat -> float
+val max : mat -> elt
 (** [max x] returns the maximum value of all elements in [x]. *)
 
-val minmax : mat -> float * float
+val minmax : mat -> elt * elt
 (** [minmax x] returns both the minimum and minimum values in [x]. *)
 
-val min_i : mat -> float * int * int
+val min_i : mat -> elt * int * int
 
-val max_i : mat -> float * int * int
+val max_i : mat -> elt * int * int
 
-val minmax_i : mat -> (float * int * int) * (float * int * int)
+val minmax_i : mat -> (elt * int * int) * (elt * int * int)
 
-val trace : mat -> float
+val trace : mat -> elt
 (** [trace x] returns the sum of diagonal elements in [x]. *)
 
-val sum : mat -> float
+val sum : mat -> elt
 (** [sum x] returns the summation of all the elements in [x]. *)
 
-val average : mat -> float
+val average : mat -> elt
 (** [average x] returns the average value of all the elements in [x]. It is
   equivalent to calculate [sum x] divided by [numel x]
  *)
@@ -545,16 +547,16 @@ val average_cols : mat -> mat
  It is equivalent to [div_scalar (sum_cols x) (float_of_int (col_num x))].
 *)
 
-val min_rows : mat -> (float * int * int) array
+val min_rows : mat -> (elt * int * int) array
 (** [min_rows x] returns the minimum value in each row along with their coordinates. *)
 
-val min_cols : mat -> (float * int * int) array
+val min_cols : mat -> (elt * int * int) array
 (** [min_cols x] returns the minimum value in each column along with their coordinates. *)
 
-val max_rows : mat -> (float * int * int) array
+val max_rows : mat -> (elt * int * int) array
 (** [max_rows x] returns the maximum value in each row along with their coordinates. *)
 
-val max_cols : mat -> (float * int * int) array
+val max_cols : mat -> (elt * int * int) array
 (** [min_cols x] returns the minimum value in each column along with their coordinates. *)
 
 val abs : mat -> mat
@@ -752,16 +754,16 @@ val div : mat -> mat -> mat
   must have the same dimensions.
  *)
 
-val add_scalar : mat -> float -> mat
+val add_scalar : mat -> elt -> mat
 (** [add_scalar x a] adds every element in [x] by a constant factor [a]. *)
 
-val sub_scalar : mat -> float -> mat
+val sub_scalar : mat -> elt -> mat
 (** [sub_scalar x a] subtracts every element in [x] by a constant factor [a]. *)
 
-val mul_scalar : mat -> float -> mat
+val mul_scalar : mat -> elt -> mat
 (** [mul_scalar x a] multiplies every element in [x] by a constant factor [a]. *)
 
-val div_scalar : mat -> float -> mat
+val div_scalar : mat -> elt -> mat
 (** [div_scalar x a] divides every element in [x] by a constant factor [a]. *)
 
 val dot : mat -> mat -> mat
@@ -774,7 +776,7 @@ val power : mat -> mat -> mat
   elementwise, and returns the result in a new matrix.
  *)
 
-val power_scalar : mat -> float -> mat
+val power_scalar : mat -> elt -> mat
 (** [power x a] calculates the power of [a] of each element in [x]. *)
 
 val atan2 : mat -> mat -> mat
@@ -824,34 +826,34 @@ val ( *@ ) : mat -> mat -> mat
 val ( /@ ) : mat -> mat -> mat
 (** Shorthand for [div x y], i.e., [x /@ y] *)
 
-val ( +$ ) : mat -> float -> mat
+val ( +$ ) : mat -> elt -> mat
 (** Shorthand for [add_scalar x a], i.e., [x +$ a] *)
 
-val ( -$ ) : mat -> float -> mat
+val ( -$ ) : mat -> elt -> mat
 (** Shorthand for [sub_scalar x a], i.e., [x -$ a] *)
 
-val ( *$ ) : mat -> float -> mat
+val ( *$ ) : mat -> elt -> mat
 (** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
 
-val ( /$ ) : mat -> float -> mat
+val ( /$ ) : mat -> elt -> mat
 (** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
 
-val ( $+ ) : float -> mat -> mat
+val ( $+ ) : elt -> mat -> mat
 (** Shorthand for [add_scalar x a], i.e., [a $+ x] *)
 
-val ( $- ) : float -> mat -> mat
+val ( $- ) : elt -> mat -> mat
 (** Shorthand for [sub_scalar x a], i.e., [a -$ x] *)
 
-val ( $* ) : float -> mat -> mat
+val ( $* ) : elt -> mat -> mat
 (** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
 
-val ( $/ ) : float -> mat -> mat
+val ( $/ ) : elt -> mat -> mat
 (** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
 
 val ( $@ ) : mat -> mat -> mat
 (** Shorthand for [dot x y], i.e., [x $@ y] *)
 
-val ( **@ ) : mat -> float -> mat
+val ( **@ ) : mat -> elt -> mat
 (** Shorthand for [power x a], i.e., [x **@ a] *)
 
 val ( =@ ) : mat -> mat -> bool
@@ -872,5 +874,5 @@ val ( >=@ ) : mat -> mat -> bool
 val ( <=@ ) : mat -> mat -> bool
 (** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
 
-val ( @@ ) : (float -> float) -> mat -> mat
+val ( @@ ) : (elt -> elt) -> mat -> mat
 (** Shorthand for [map f x], i.e., f @@ x *)
