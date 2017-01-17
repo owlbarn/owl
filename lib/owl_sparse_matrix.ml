@@ -372,6 +372,9 @@ let min x = _eigen_min x.d
 
 let max x = _eigen_max x.d
 
+(* TODO: optimise *)
+let minmax x = _eigen_min x.d, _eigen_max x.d
+
 let min2 x y = _eigen_min2 x.d y.d
 
 let max2 x y = _eigen_max2 x.d y.d
@@ -393,6 +396,10 @@ let neg x = {
   k = x.k;
   d = _eigen_neg x.d;
 }
+
+let power_scalar x c =
+  let _op = Owl_dense_common._power_scalar_elt (kind x) in
+  map (fun y -> (_op) y c) x
 
 (** permutation and draw functions *)
 
@@ -562,4 +569,46 @@ let cols x l =
   ) l;
   y
 
-(* ends here *)
+(* shorhand infix operators *)
+
+let ( +@ ) = add
+
+let ( -@ ) = sub
+
+let ( *@ ) = mul
+
+let ( /@ ) = div
+
+let ( $@ ) = dot
+
+let ( **@ ) = power_scalar
+
+let ( =@ ) = ( = )
+
+let ( <>@ ) = ( <> )
+
+let ( >@ ) = is_greater
+
+let ( <@ ) = is_smaller
+
+let ( >=@ ) = equal_or_greater
+
+let ( <=@ ) = equal_or_smaller
+
+let ( +$ ) x a = add_scalar x a
+
+let ( $+ ) a x = add_scalar x a
+
+let ( -$ ) x a = sub_scalar x a
+
+let ( $- ) a x = sub_scalar x a
+
+let ( *$ ) x a = mul_scalar x a
+
+let ( $* ) a x = mul_scalar x a
+
+let ( /$ ) x a = div_scalar x a
+
+let ( $/ ) a x = div_scalar x a
+
+let ( @@ ) f x = map f x

@@ -191,7 +191,7 @@ val sum : spmat -> elt
 
 val average : spmat -> elt
 
-val power : spmat -> elt -> spmat
+val power_scalar : spmat -> elt -> spmat
 
 val is_zero : spmat -> bool
 

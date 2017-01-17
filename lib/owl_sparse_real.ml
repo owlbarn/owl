@@ -9,6 +9,8 @@ open Bigarray
 
 type spmat = (float, Bigarray.float64_elt) Owl_sparse_matrix.t
 
+type elt = float
+
 include Owl_sparse_matrix
 
 (* overload functions in Owl_sparse_matrix *)
@@ -23,15 +25,15 @@ let binary m n = Owl_sparse_matrix.binary Float64 m n
 
 let uniform ?(scale=1.) m n = Owl_sparse_matrix.uniform ~scale Float64 m n
 
+let sequential m n = Owl_sparse_matrix.sequential Float64 m n
+
 let permutation_matrix m = Owl_sparse_matrix.permutation_matrix Float64 m
+
+let of_array m n x = Owl_sparse_matrix.of_array Float64 m n x
 
 let load f = Owl_sparse_matrix.load Float64 f
 
 (* specific functions for float64 matrix *)
-
-let minmax x = min x, max x
-
-let power x c = map_nz (fun y -> y ** c) x
 
 let _random_basic f m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in

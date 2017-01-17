@@ -15,6 +15,8 @@
 type spmat = (float, Bigarray.float64_elt) Owl_sparse_matrix.t
 (** Type of sparse matrices. It is defined in [types.ml] as record type. *)
 
+type elt = float
+
 
 (** {6 Create sparse matrices} *)
 
@@ -48,7 +50,9 @@ val uniform_int : ?a:int -> ?b:int -> int -> int -> spmat
   [b = 100].
  *)
 
-val linspace : float -> float -> int -> spmat
+val sequential : int -> int -> spmat
+
+val linspace : elt -> elt -> int -> spmat
 (** [linspace a b n] linearly divides the interval [[a,b]] into [n] pieces by
   creating an [m] by [1] row vector. E.g., [linspace 0. 5. 5] will create a
   row vector [[0;1;2;3;4;5]].
@@ -98,14 +102,18 @@ val density : spmat -> float
 
 (** {6 Manipulate a matrix} *)
 
-val get : spmat -> int -> int -> float
+val insert : spmat -> int -> int -> elt -> unit
+
+val get : spmat -> int -> int -> elt
 (** [get x i j] returns the value of element [(i,j)] of [x]. *)
 
-val set : spmat -> int -> int -> float -> unit
+val set : spmat -> int -> int -> elt -> unit
 (** [set x i j a] sets the element [(i,j)] of [x] to value [a]. *)
 
 val reset : spmat -> unit
 (** [reset x] resets all the elements in [x] to [0]. *)
+
+val fill : spmat -> elt -> unit
 
 val clone : spmat -> spmat
 (** [clone x] makes an exact copy of matrix [x]. Note that the clone becomes
@@ -118,9 +126,6 @@ val transpose : spmat -> spmat
 
 val diag : spmat -> spmat
 (** [diag x] returns the diagonal elements of [x]. *)
-
-val trace : spmat -> float
-(** [trace x] returns the sum of diagonal elements in [x]. *)
 
 val row : spmat -> int -> spmat
 (** [row x i] returns the row [i] of [x]. *)
@@ -139,44 +144,48 @@ val cols : spmat -> int array -> spmat
   of x in a new sparse matrix.
  *)
 
+val prune : spmat -> elt -> float -> unit
+
 
 (** {6 Iterate elements, columns, and rows} *)
 
-val iteri : (int -> int -> float -> unit) -> spmat -> unit
+val iteri : (int -> int -> elt -> unit) -> spmat -> unit
 (** [iteri f x] iterates all the elements in [x] and applies the user defined
   function [f : int -> int -> float -> 'a]. [f i j v] takes three parameters,
   [i] and [j] are the coordinates of current element, and [v] is its value.
   *)
 
-val iter : (float -> unit) -> spmat -> unit
+val iter : (elt -> unit) -> spmat -> unit
 (** [iter f x] is the same as as [iteri f x] except the coordinates of the
   current element is not passed to the function [f : float -> 'a]
  *)
 
-val mapi : (int -> int -> float -> float) -> spmat -> spmat
+val mapi : (int -> int -> elt -> elt) -> spmat -> spmat
 (** [mapi f x] maps each element in [x] to a new value by applying
   [f : int -> int -> float -> float]. The first two parameters are the
   coordinates of the element, and the third parameter is the value.
  *)
 
-val map : (float -> float) -> spmat -> spmat
+val map : (elt -> elt) -> spmat -> spmat
 (** [map f x] is similar to [mapi f x] except the coordinates of the
   current element is not passed to the function [f : float -> float]
  *)
 
-val fold : ('a -> float -> 'a) -> 'a -> spmat -> 'a
+val foldi : (int -> int -> 'a -> elt -> 'a) -> 'a -> spmat -> 'a
+
+val fold : ('a -> elt -> 'a) -> 'a -> spmat -> 'a
 (** [fold f a x] folds all the elements in [x] with the function
   [f : 'a -> float -> 'a]. For an [m] by [n] matrix [x], the order of folding
   is from [(0,0)] to [(m-1,n-1)], row by row.
  *)
 
-val filteri : (int -> int -> float -> bool) -> spmat -> (int * int) array
+val filteri : (int -> int -> elt -> bool) -> spmat -> (int * int) array
 (** [filteri f x] uses [f : int -> int -> float -> bool] to filter out certain
   elements in [x]. An element will be included if [f] returns [true]. The
   returned result is a list of coordinates of the selected elements.
  *)
 
-val filter : (float -> bool) -> spmat -> (int * int) array
+val filter : (elt -> bool) -> spmat -> (int * int) array
 (** Similar to [filteri], but the coordinates of the elements are not passed to
   the function [f : float -> bool].
  *)
@@ -225,33 +234,35 @@ val fold_cols : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
   order of folding is from the first column to the last one.
  *)
 
-val iteri_nz : (int -> int -> float -> unit) -> spmat -> unit
+val iteri_nz : (int -> int -> elt -> unit) -> spmat -> unit
 (** [iteri_nz f x] iterates all the non-zero elements in [x] by applying the
   function [f : int -> int -> float -> 'a]. It is much faster than [iteri].
  *)
 
-val iter_nz : (float -> unit) -> spmat -> unit
+val iter_nz : (elt -> unit) -> spmat -> unit
 (** Similar to [iter_nz] except the coordinates of elements are not passed to [f]. *)
 
-val mapi_nz : (int -> int -> float -> float) -> spmat -> spmat
+val mapi_nz : (int -> int -> elt -> elt) -> spmat -> spmat
 (** [mapi_nz f x] is similar to [mapi f x] but only applies [f] to non-zero
   elements in [x]. The zeros in [x] will remain the same in the new matrix.
  *)
 
-val map_nz : (float -> float) -> spmat -> spmat
+val map_nz : (elt -> elt) -> spmat -> spmat
 (** Similar to [mapi_nz] except the coordinates of elements are not passed to [f]. *)
 
-val fold_nz : ('a -> float -> 'a) -> 'a -> spmat -> 'a
+val foldi_nz : (int -> int -> 'a -> elt -> 'a) -> 'a -> spmat -> 'a
+
+val fold_nz : ('a -> elt -> 'a) -> 'a -> spmat -> 'a
 (** [fold_nz f a x] is similar to [fold f a x] but only applies to non-zero
   rows in [x]. zero rows will be simply skipped in folding.
  *)
 
-val filteri_nz : (int -> int -> float -> bool) -> spmat -> (int * int) array
+val filteri_nz : (int -> int -> elt -> bool) -> spmat -> (int * int) array
 (** [filteri_nz f x] is similar to [filter f x] but only applies [f] to
   non-zero elements in [x].
  *)
 
-val filter_nz : (float -> bool) -> spmat -> (int * int) array
+val filter_nz : (elt -> bool) -> spmat -> (int * int) array
 (** [filter_nz f x] is similar to [filteri_nz] except that the coordinates of
   matrix elements are not passed to [f].
  *)
@@ -296,82 +307,31 @@ val fold_cols_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
  *)
 
 
-(** {6 Examine the elements in a matrix} *)
+(** {6 Examin elements and compare two matrices} *)
 
-val exists : (float -> bool) -> spmat -> bool
+val exists : (elt -> bool) -> spmat -> bool
 (** [exists f x] checks all the elements in [x] using [f]. If at least one
   element satisfies [f] then the function returns [true] otherwise [false].
  *)
 
-val not_exists : (float -> bool) -> spmat -> bool
+val not_exists : (elt -> bool) -> spmat -> bool
 (** [not_exists f x] checks all the elements in [x], the function returns
   [true] only if all the elements fail to satisfy [f : float -> bool].
  *)
 
-val for_all : (float -> bool) -> spmat -> bool
+val for_all : (elt -> bool) -> spmat -> bool
 (** [for_all f x] checks all the elements in [x], the function returns [true]
   if and only if all the elements pass the check of function [f].
  *)
 
-val exists_nz : (float -> bool) -> spmat -> bool
+val exists_nz : (elt -> bool) -> spmat -> bool
 (** [exists_nz f x] is similar to [exists] but only checks non-zero elements. *)
 
-val not_exists_nz : (float -> bool) -> spmat -> bool
+val not_exists_nz : (elt -> bool) -> spmat -> bool
 (** [not_exists_nz f x] is similar to [not_exists] but only checks non-zero elements. *)
 
-val for_all_nz :  (float -> bool) -> spmat -> bool
+val for_all_nz :  (elt -> bool) -> spmat -> bool
 (** [for_all_nz f x] is similar to [for_all_nz] but only checks non-zero elements. *)
-
-
-(** {6 Basic mathematical operations of matrices} *)
-
-val mul_scalar : spmat -> float -> spmat
-(** [mul_scalar x a] multiplies every element in [x] by a constant factor [a]. *)
-
-val div_scalar : spmat -> float -> spmat
-(** [div_scalar x a] divides every element in [x] by a constant factor [a]. *)
-
-val add : spmat -> spmat -> spmat
-(** [add x y] adds two matrices [x] and [y]. Both must have the same dimensions. *)
-
-val sub : spmat -> spmat -> spmat
-(** [sub x y] subtracts the matrix [x] from [y]. Both must have the same dimensions. *)
-
-val mul : spmat -> spmat -> spmat
-(** [mul x y] performs an element-wise multiplication, so both [x] and [y]
-  must have the same dimensions.
- *)
-
-val div : spmat -> spmat -> spmat
-(** [div x y] performs an element-wise division, so both [x] and [y]
-  must have the same dimensions.
- *)
-
-val dot : spmat -> spmat -> spmat
-(** [dot x y] calculates the dot product of an [m] by [n] matrix [x] and
-  another [n] by [p] matrix [y].
- *)
-
-val abs : spmat -> spmat
-(** [abs x] returns a new matrix where each element has the absolute value of
-  that in the original matrix [x].
- *)
-
-val neg : spmat -> spmat
-(** [neg x] returns a new matrix where each element has the negative value of
-  that in the original matrix [x].
- *)
-
-val sum : spmat -> float
-(** [sum x] returns the summation of all the elements in [x]. *)
-
-val average : spmat -> float
-(** [average x] returns the average value of all the elements in [x]. It is
-  equivalent to calculate [sum x] divided by [numel x]
- *)
-
-val power : spmat -> float -> spmat
-(** [power x a] calculates the power of [a] of each element in [x]. *)
 
 val is_zero : spmat -> bool
 (** [is_zero x] returns [true] if all the elements in [x] are zeros. *)
@@ -384,34 +344,6 @@ val is_negative : spmat -> bool
 
 val is_nonnegative : spmat -> bool
 (** [is_nonnegative] returns [true] if all the elements in [x] are non-negative. *)
-
-val min : spmat -> float
-(** [min x] returns the minimum value of all elements in [x]. *)
-
-val max : spmat -> float
-(** [max x] returns the maximum value of all elements in [x]. *)
-
-val minmax : spmat -> float * float
-(** [minmax x] returns both the minimum and minimum values in [x]. *)
-
-val sum_rows : spmat -> spmat
-(** [sum_rows x] returns the summation of all the row vectors in [x]. *)
-
-val sum_cols : spmat -> spmat
-(** [sum_cols] returns the summation of all the column vectors in [x]. *)
-
-val average_rows : spmat -> spmat
-(** [average_rows x] returns the average value of all row vectors in [x]. It is
-  equivalent to [div_scalar (sum_rows x) (float_of_int (row_num x))].
- *)
-
-val average_cols : spmat -> spmat
-(** [average_cols x] returns the average value of all column vectors in [x].
-  It is equivalent to [div_scalar (sum_cols x) (float_of_int (col_num x))].
- *)
-
-
-(** {6 Compare two matrices} *)
 
 val is_equal : spmat -> spmat -> bool
 (** [is_equal x y] returns [true] if two matrices [x] and [y] are equal. *)
@@ -473,6 +405,10 @@ val shuffle : spmat -> spmat
 
 (** {6 Input/Output and helper functions} *)
 
+val to_array : spmat -> (int array * elt) array
+
+val of_array : int -> int -> (int array * elt) array -> spmat
+
 val to_dense : spmat -> Owl_dense_real.mat
 (** [to_dense x] converts [x] into a dense matrix. *)
 
@@ -498,8 +434,94 @@ val load : string -> spmat
  *)
 
 
+(** {6 Unary mathematical operations } *)
+
+val min : spmat -> elt
+(** [min x] returns the minimum value of all elements in [x]. *)
+
+val max : spmat -> elt
+(** [max x] returns the maximum value of all elements in [x]. *)
+
+val minmax : spmat -> elt * elt
+(** [minmax x] returns both the minimum and minimum values in [x]. *)
+
+val trace : spmat -> elt
+(** [trace x] returns the sum of diagonal elements in [x]. *)
+
+val sum : spmat -> elt
+(** [sum x] returns the summation of all the elements in [x]. *)
+
+val average : spmat -> elt
+(** [average x] returns the average value of all the elements in [x]. It is
+  equivalent to calculate [sum x] divided by [numel x]
+ *)
+
+val sum_rows : spmat -> spmat
+(** [sum_rows x] returns the summation of all the row vectors in [x]. *)
+
+val sum_cols : spmat -> spmat
+(** [sum_cols] returns the summation of all the column vectors in [x]. *)
+
+val average_rows : spmat -> spmat
+(** [average_rows x] returns the average value of all row vectors in [x]. It is
+  equivalent to [div_scalar (sum_rows x) (float_of_int (row_num x))].
+ *)
+
+val average_cols : spmat -> spmat
+(** [average_cols x] returns the average value of all column vectors in [x].
+  It is equivalent to [div_scalar (sum_cols x) (float_of_int (col_num x))].
+ *)
+
+val abs : spmat -> spmat
+(** [abs x] returns a new matrix where each element has the absolute value of
+  that in the original matrix [x].
+ *)
+
+val neg : spmat -> spmat
+(** [neg x] returns a new matrix where each element has the negative value of
+  that in the original matrix [x].
+ *)
+
+
+(** {6 Binary mathematical operations } *)
+
+val add : spmat -> spmat -> spmat
+(** [add x y] adds two matrices [x] and [y]. Both must have the same dimensions. *)
+
+val sub : spmat -> spmat -> spmat
+(** [sub x y] subtracts the matrix [x] from [y]. Both must have the same dimensions. *)
+
+val mul : spmat -> spmat -> spmat
+(** [mul x y] performs an element-wise multiplication, so both [x] and [y]
+  must have the same dimensions.
+ *)
+
+val div : spmat -> spmat -> spmat
+(** [div x y] performs an element-wise division, so both [x] and [y]
+  must have the same dimensions.
+ *)
+
+val dot : spmat -> spmat -> spmat
+(** [dot x y] calculates the dot product of an [m] by [n] matrix [x] and
+  another [n] by [p] matrix [y].
+ *)
+
+val add_scalar : spmat -> elt -> spmat
+
+val sub_scalar : spmat -> elt -> spmat
+
+val mul_scalar : spmat -> elt -> spmat
+(** [mul_scalar x a] multiplies every element in [x] by a constant factor [a]. *)
+
+val div_scalar : spmat -> elt -> spmat
+(** [div_scalar x a] divides every element in [x] by a constant factor [a]. *)
+
+val power_scalar : spmat -> elt -> spmat
+(** [power x a] calculates the power of [a] of each element in [x]. *)
+
+
 (** {6 Shorhand infix operators} *)
-(*
+
 val ( +@ ) : spmat -> spmat -> spmat
 (** Shorthand for [add x y], i.e., [x +@ y] *)
 
@@ -515,19 +537,19 @@ val ( /@ ) : spmat -> spmat -> spmat
 val ( $@ ) : spmat -> spmat -> spmat
 (** Shorthand for [dot x y], i.e., [x $@ y] *)
 
-val ( **@ ) : spmat -> float -> spmat
+val ( **@ ) : spmat -> elt -> spmat
 (** Shorthand for [power x a], i.e., [x **@ a] *)
 
-val ( *$ ) : spmat -> float -> spmat
+val ( *$ ) : spmat -> elt -> spmat
 (** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
 
-val ( /$ ) : spmat -> float -> spmat
+val ( /$ ) : spmat -> elt -> spmat
 (** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
 
-val ( $* ) : float -> spmat -> spmat
+val ( $* ) : elt -> spmat -> spmat
 (** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
 
-val ( $/ ) : float -> spmat -> spmat
+val ( $/ ) : elt -> spmat -> spmat
 (** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
 
 val ( =@ ) : spmat -> spmat -> bool
@@ -548,6 +570,5 @@ val ( >=@ ) : spmat -> spmat -> bool
 val ( <=@ ) : spmat -> spmat -> bool
 (** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
 
-val ( @@ ) : (float -> float) -> spmat -> spmat
+val ( @@ ) : (elt -> elt) -> spmat -> spmat
 (** Shorthand for [map f x], i.e., f @@ x *)
-*)

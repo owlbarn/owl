@@ -277,8 +277,6 @@ val abs2 : mat -> mat
 val neg : mat -> mat
 
 val conj : mat -> mat
-(** [conj x] computes the conjugate of the elements in [x] and returns the
-  result in a new matrix. *)
 
 
 (** {6 Binary mathematical operations } *)

@@ -33,10 +33,6 @@ let load f = Owl_sparse_matrix.load Complex64 f
 
 (* specific functions for complex64 matrix *)
 
-let power x c = map_nz (fun y -> Complex.pow y c) x
-
-let minmax x = min x, max x
-
 let _random_basic f m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
   let x = zeros m n in

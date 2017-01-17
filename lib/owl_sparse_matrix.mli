@@ -3,9 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-type ('a, 'b) kind = ('a, 'b) Bigarray.kind
-
 type ('a, 'b) t
+
+type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 
 (** {6 Create sparse matrices} *)
@@ -14,13 +14,13 @@ val zeros : ?density:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
 val ones : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
-val sequential : ('a, 'b) kind -> int -> int -> ('a, 'b) t
-
 val eye : ('a, 'b) kind -> int -> ('a, 'b) t
 
 val binary : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
 val uniform : ?scale:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
+
+val sequential : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
 
 (** {6 Obtain the basic properties} *)
@@ -65,8 +65,6 @@ val clone : ('a, 'b) t -> ('a, 'b) t
 val transpose : ('a, 'b) t -> ('a, 'b) t
 
 val diag : ('a, 'b) t -> ('a, 'b) t
-
-val trace : ('a, 'b) t -> 'a
 
 val row : ('a, 'b) t -> int -> ('a, 'b) t
 
@@ -231,7 +229,9 @@ val min : ('a, 'b) t -> 'a
 
 val max : ('a, 'b) t -> 'a
 
-(* val minmax : ('a, 'b) t -> 'a * 'a *)
+val minmax : ('a, 'b) t -> 'a * 'a
+
+val trace : ('a, 'b) t -> 'a
 
 val sum : ('a, 'b) t -> 'a
 
@@ -248,6 +248,7 @@ val average_cols : ('a, 'b) t ->('a, 'b) t
 val abs : ('a, 'b) t ->('a, 'b) t
 
 val neg : ('a, 'b) t ->('a, 'b) t
+
 
 
 (** {6 Binary mathematical operations } *)
@@ -270,7 +271,58 @@ val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
 val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
+val power_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
 
+(** {6 Shorhand infix operators} *)
 
-(* ends here *)
+val ( +@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [add x y], i.e., [x +@ y] *)
+
+val ( -@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [sub x y], i.e., [x -@ y] *)
+
+val ( *@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [mul x y], i.e., [x *@ y] *)
+
+val ( /@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [div x y], i.e., [x /@ y] *)
+
+val ( $@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [dot x y], i.e., [x $@ y] *)
+
+val ( **@ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Shorthand for [power x a], i.e., [x **@ a] *)
+
+val ( *$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
+
+val ( /$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
+
+val ( $* ) : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
+
+val ( $/ ) : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
+
+val ( =@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
+
+val ( >@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
+
+val ( <@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
+
+val ( <>@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
+
+val ( >=@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
+
+val ( <=@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
+
+val ( @@ ) : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** Shorthand for [map f x], i.e., f @@ x *)
