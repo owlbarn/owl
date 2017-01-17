@@ -77,7 +77,6 @@ let sequential k m n =
     done
   done; x
 
-(* FIXME *)
 let linspace k a b n =
   let x = _linspace k a b n in
   let x = Bigarray.genarray_of_array1 x in

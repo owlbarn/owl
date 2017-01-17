@@ -38,6 +38,11 @@ val uniform : ?scale:float -> int -> int -> mat
 
 val gaussian : ?sigma:float -> int -> int -> mat
 
+val linspace : elt -> elt -> int -> mat
+
+val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat
+
+val meshup : mat -> mat -> mat * mat
 
 (** {7 Dense vectors and meshgrids} *)
 

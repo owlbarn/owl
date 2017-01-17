@@ -33,6 +33,12 @@ let gaussian ?(sigma=1.) m n = Owl_dense_matrix.gaussian Complex64 m n
 
 (* let semidef m = Owl_dense_matrix.semidef Complex64 m *)
 
+let linspace a b n = Owl_dense_matrix.linspace Complex64 a b n
+
+let meshgrid xa xb ya yb xn yn = Owl_dense_matrix.meshgrid Complex64 xa xb ya yb xn yn
+
+let meshup x y = Owl_dense_matrix.meshup Complex64 x y
+
 let of_array x m n = Owl_dense_matrix.of_array Complex64 x m n
 
 let of_arrays x = Owl_dense_matrix.of_arrays Complex64 x
