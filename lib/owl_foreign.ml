@@ -11,10 +11,6 @@ open Owl_types
 
 module FB = Ffi_gsl_bindings.Bindings(Ffi_gsl_generated)
 
-(* TODO: for compatibility reasons, need to be removed *)
-module DR = FB.Dense_real_double
-module DC = FB.Dense_complex_double
-
 (* ffi for dense double matrix *)
 module Dense_real_double = struct
 
