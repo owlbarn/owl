@@ -7,7 +7,7 @@
 
 open Bigarray
 
-type spmat = (float, Bigarray.float64_elt) Owl_sparse_matrix.t
+type mat = (float, Bigarray.float64_elt) Owl_sparse_matrix.t
 
 type elt = float
 

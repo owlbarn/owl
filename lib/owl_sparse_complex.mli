@@ -13,304 +13,317 @@
   the documentation of Sparse.Real module.
  *)
 
-type spmat = (Complex.t, Bigarray.complex64_elt) Owl_sparse_matrix.t
+type mat = (Complex.t, Bigarray.complex64_elt) Owl_sparse_matrix.t
 
 type elt = Complex.t
 
 
 (** {6 Create sparse matrices} *)
 
-val zeros : int -> int -> spmat
+val zeros : int -> int -> mat
 
-val ones : int -> int -> spmat
+val ones : int -> int -> mat
 
-val eye : int -> spmat
+val eye : int -> mat
 
-val binary : int -> int -> spmat
+val binary : int -> int -> mat
 
-val uniform : ?scale:float -> int -> int -> spmat
+val uniform : ?scale:float -> int -> int -> mat
 
-val uniform_int : ?a:int -> ?b:int -> int -> int -> spmat
+val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
+
+val sequential : int -> int -> mat
 
 
 (** {6 Obtain the basic properties of a matrix} *)
 
-val shape : spmat -> int * int
+val shape : mat -> int * int
 
-val row_num : spmat -> int
+val row_num : mat -> int
 
-val col_num : spmat -> int
+val col_num : mat -> int
 
-val row_num_nz : spmat -> int
+val row_num_nz : mat -> int
 
-val col_num_nz : spmat -> int
+val col_num_nz : mat -> int
 
-val numel : spmat -> int
+val numel : mat -> int
 
-val nnz : spmat -> int
+val nnz : mat -> int
 
-val nnz_rows : spmat -> int array
+val nnz_rows : mat -> int array
 
-val nnz_cols : spmat -> int array
+val nnz_cols : mat -> int array
 
-val density : spmat -> float
+val density : mat -> float
 
 
 (** {6 Manipulate a matrix} *)
 
-val set : spmat -> int -> int -> elt -> unit
+val insert : mat -> int -> int -> elt -> unit
 
-val get : spmat -> int -> int -> elt
+val set : mat -> int -> int -> elt -> unit
 
-val reset : spmat -> unit
+val get : mat -> int -> int -> elt
 
-val clone : spmat -> spmat
+val reset : mat -> unit
 
-(* val transpose : spmat -> spmat *)
+val fill : mat -> elt -> unit
 
-val diag : spmat -> spmat
+val clone : mat -> mat
 
-val trace : spmat -> elt
+val transpose : mat -> mat
 
-val row : spmat -> int -> spmat
+val diag : mat -> mat
 
-val col : spmat -> int -> spmat
+val row : mat -> int -> mat
 
-val rows : spmat -> int array -> spmat
+val col : mat -> int -> mat
 
-val cols : spmat -> int array -> spmat
+val rows : mat -> int array -> mat
+
+val cols : mat -> int array -> mat
+
+val prune : mat -> elt -> float -> unit
 
 
 (** {6 Iterate elements, columns, and rows} *)
 
-val iteri : (int -> int -> elt -> unit) -> spmat -> unit
+val iteri : (int -> int -> elt -> unit) -> mat -> unit
 
-val iter : (elt -> unit) -> spmat -> unit
+val iter : (elt -> unit) -> mat -> unit
 
-val mapi : (int -> int -> elt -> elt) -> spmat -> spmat
+val mapi : (int -> int -> elt -> elt) -> mat -> mat
 
-val map : (elt -> elt) -> spmat -> spmat
+val map : (elt -> elt) -> mat -> mat
 
-val fold : ('a -> elt -> 'a) -> 'a -> spmat -> 'a
+val foldi : (int -> int -> 'a -> elt -> 'a) -> 'a -> mat -> 'a
 
-val filteri : (int -> int -> elt -> bool) -> spmat -> (int * int) array
+val fold : ('a -> elt -> 'a) -> 'a -> mat -> 'a
 
-val filter : (elt -> bool) -> spmat -> (int * int) array
+val filteri : (int -> int -> elt -> bool) -> mat -> (int * int) array
 
-val iteri_rows : (int -> spmat -> unit) -> spmat -> unit
+val filter : (elt -> bool) -> mat -> (int * int) array
 
-val iter_rows : (spmat -> unit) -> spmat -> unit
+val iteri_rows : (int -> mat -> unit) -> mat -> unit
 
-val iteri_cols : (int -> spmat -> unit) -> spmat -> unit
+val iter_rows : (mat -> unit) -> mat -> unit
 
-val iter_cols : (spmat -> unit) -> spmat -> unit
+val iteri_cols : (int -> mat -> unit) -> mat -> unit
 
-val mapi_rows : (int -> spmat -> 'a) -> spmat -> 'a array
+val iter_cols : (mat -> unit) -> mat -> unit
 
-val map_rows : (spmat -> 'a) -> spmat -> 'a array
+val mapi_rows : (int -> mat -> 'a) -> mat -> 'a array
 
-val mapi_cols : (int -> spmat -> 'a) -> spmat -> 'a array
+val map_rows : (mat -> 'a) -> mat -> 'a array
 
-val map_cols : (spmat -> 'a) -> spmat -> 'a array
+val mapi_cols : (int -> mat -> 'a) -> mat -> 'a array
 
-val fold_rows : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
+val map_cols : (mat -> 'a) -> mat -> 'a array
 
-val fold_cols : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
+val fold_rows : ('a -> mat -> 'a) -> 'a -> mat -> 'a
 
-val iteri_nz : (int -> int -> elt -> unit) -> spmat -> unit
+val fold_cols : ('a -> mat -> 'a) -> 'a -> mat -> 'a
 
-val iter_nz : (elt -> unit) -> spmat -> unit
+val iteri_nz : (int -> int -> elt -> unit) -> mat -> unit
 
-val mapi_nz : (int -> int -> elt -> elt) -> spmat -> spmat
+val iter_nz : (elt -> unit) -> mat -> unit
 
-val map_nz : (elt -> elt) -> spmat -> spmat
+val mapi_nz : (int -> int -> elt -> elt) -> mat -> mat
 
-val fold_nz : ('a -> elt -> 'a) -> 'a -> spmat -> 'a
+val map_nz : (elt -> elt) -> mat -> mat
 
-val filteri_nz : (int -> int -> elt -> bool) -> spmat -> (int * int) array
+val foldi_nz : (int -> int -> 'a -> elt -> 'a) -> 'a -> mat -> 'a
 
-val filter_nz : (elt -> bool) -> spmat -> (int * int) array
+val fold_nz : ('a -> elt -> 'a) -> 'a -> mat -> 'a
 
-val iteri_rows_nz : (int -> spmat -> unit) -> spmat -> unit
+val filteri_nz : (int -> int -> elt -> bool) -> mat -> (int * int) array
 
-val iter_rows_nz : (spmat -> unit) -> spmat -> unit
+val filter_nz : (elt -> bool) -> mat -> (int * int) array
 
-val iteri_cols_nz : (int -> spmat -> unit) -> spmat -> unit
+val iteri_rows_nz : (int -> mat -> unit) -> mat -> unit
 
-val iter_cols_nz : (spmat -> unit) -> spmat -> unit
+val iter_rows_nz : (mat -> unit) -> mat -> unit
 
-val mapi_rows_nz : (int -> spmat -> 'a) -> spmat -> 'a array
+val iteri_cols_nz : (int -> mat -> unit) -> mat -> unit
 
-val map_rows_nz : (spmat -> 'a) -> spmat -> 'a array
+val iter_cols_nz : (mat -> unit) -> mat -> unit
 
-val mapi_cols_nz : (int -> spmat -> 'a) -> spmat -> 'a array
+val mapi_rows_nz : (int -> mat -> 'a) -> mat -> 'a array
 
-val map_cols_nz : (spmat -> 'a) -> spmat -> 'a array
+val map_rows_nz : (mat -> 'a) -> mat -> 'a array
 
-val fold_rows_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
+val mapi_cols_nz : (int -> mat -> 'a) -> mat -> 'a array
 
-val fold_cols_nz : ('a -> spmat -> 'a) -> 'a -> spmat -> 'a
+val map_cols_nz : (mat -> 'a) -> mat -> 'a array
 
+val fold_rows_nz : ('a -> mat -> 'a) -> 'a -> mat -> 'a
 
-(** {6 Examine the elements in a matrix} *)
+val fold_cols_nz : ('a -> mat -> 'a) -> 'a -> mat -> 'a
 
-val exists : (elt -> bool) -> spmat -> bool
 
-val not_exists : (elt -> bool) -> spmat -> bool
+(** {6 Examin elements and compare two matrices} *)
 
-val for_all : (elt -> bool) -> spmat -> bool
+val exists : (elt -> bool) -> mat -> bool
 
-val exists_nz : (elt -> bool) -> spmat -> bool
+val not_exists : (elt -> bool) -> mat -> bool
 
-val not_exists_nz : (elt -> bool) -> spmat -> bool
+val for_all : (elt -> bool) -> mat -> bool
 
-val for_all_nz :  (elt -> bool) -> spmat -> bool
+val exists_nz : (elt -> bool) -> mat -> bool
 
+val not_exists_nz : (elt -> bool) -> mat -> bool
 
-(** {6 Basic mathematical operations of matrices} *)
+val for_all_nz :  (elt -> bool) -> mat -> bool
 
-val mul_scalar : spmat -> elt -> spmat
+val is_zero : mat -> bool
 
-val div_scalar : spmat -> elt -> spmat
+val is_positive : mat -> bool
 
-val add : spmat -> spmat -> spmat
+val is_negative : mat -> bool
 
-val sub : spmat -> spmat -> spmat
+val is_nonnegative : mat -> bool
 
-val mul : spmat -> spmat -> spmat
+val is_equal : mat -> mat -> bool
 
-val div : spmat -> spmat -> spmat
+val is_unequal : mat -> mat -> bool
 
-val dot : spmat -> spmat -> spmat
+val is_greater : mat -> mat -> bool
 
-val abs : spmat -> spmat
+val is_smaller : mat -> mat -> bool
 
-val neg : spmat -> spmat
+val equal_or_greater : mat -> mat -> bool
 
-val sum : spmat -> elt
-
-val average : spmat -> elt
-
-val power_scalar : spmat -> elt -> spmat
-
-val is_zero : spmat -> bool
-
-val is_positive : spmat -> bool
-
-val is_negative : spmat -> bool
-
-val is_nonnegative : spmat -> bool
-
-val min : spmat -> elt
-
-val max : spmat -> elt
-
-val minmax : spmat -> elt * elt
-
-val sum_rows : spmat -> spmat
-
-val sum_cols : spmat -> spmat
-
-val average_rows : spmat -> spmat
-
-val average_cols : spmat -> spmat
-
-
-(** {6 Compare two matrices} *)
-
-val is_equal : spmat -> spmat -> bool
-
-val is_unequal : spmat -> spmat -> bool
-
-val is_greater : spmat -> spmat -> bool
-
-val is_smaller : spmat -> spmat -> bool
-
-val equal_or_greater : spmat -> spmat -> bool
-
-val equal_or_smaller : spmat -> spmat -> bool
+val equal_or_smaller : mat -> mat -> bool
 
 
 (** {6 Randomisation functions} *)
 
-val permutation_matrix : int -> spmat
+val permutation_matrix : int -> mat
 
-val draw_rows : ?replacement:bool -> spmat -> int -> spmat * int array
+val draw_rows : ?replacement:bool -> mat -> int -> mat * int array
 
-val draw_cols : ?replacement:bool -> spmat -> int -> spmat * int array
+val draw_cols : ?replacement:bool -> mat -> int -> mat * int array
 
-val shuffle_rows : spmat -> spmat
+val shuffle_rows : mat -> mat
 
-val shuffle_cols : spmat -> spmat
+val shuffle_cols : mat -> mat
 
-val shuffle : spmat -> spmat
+val shuffle : mat -> mat
 
 
 (** {6 Input/Output and helper functions} *)
 
-val to_dense : spmat -> Owl_dense_complex.mat
+val to_array : mat -> (int array * elt) array
 
-val of_dense : Owl_dense_complex.mat -> spmat
+val of_array : int -> int -> (int array * elt) array -> mat
 
-val print : spmat -> unit
+val to_dense : mat -> Owl_dense_complex.mat
 
-val pp_spmat : spmat -> unit
+val of_dense : Owl_dense_complex.mat -> mat
 
-val save : spmat -> string -> unit
+val print : mat -> unit
 
-val load : string -> spmat
+val pp_spmat : mat -> unit
+
+val save : mat -> string -> unit
+
+val load : string -> mat
+
+
+(** {6 Unary mathematical operations } *)
+
+val trace : mat -> elt
+
+val sum : mat -> elt
+
+val average : mat -> elt
+
+val sum_rows : mat -> mat
+
+val sum_cols : mat -> mat
+
+val average_rows : mat -> mat
+
+val average_cols : mat -> mat
+
+val abs : mat -> mat
+
+val neg : mat -> mat
+
+
+(** {6 Binary mathematical operations } *)
+
+val add : mat -> mat -> mat
+
+val sub : mat -> mat -> mat
+
+val mul : mat -> mat -> mat
+
+val div : mat -> mat -> mat
+
+val dot : mat -> mat -> mat
+
+val add_scalar : mat -> elt -> mat
+
+val sub_scalar : mat -> elt -> mat
+
+val mul_scalar : mat -> elt -> mat
+
+val div_scalar : mat -> elt -> mat
+
+val power_scalar : mat -> elt -> mat
 
 
 (** {6 Shorhand infix operators} *)
-(*
-val ( +@ ) : spmat -> spmat -> spmat
+
+val ( +@ ) : mat -> mat -> mat
 (** Shorthand for [add x y], i.e., [x +@ y] *)
 
-val ( -@ ) : spmat -> spmat -> spmat
+val ( -@ ) : mat -> mat -> mat
 (** Shorthand for [sub x y], i.e., [x -@ y] *)
 
-val ( *@ ) : spmat -> spmat -> spmat
+val ( *@ ) : mat -> mat -> mat
 (** Shorthand for [mul x y], i.e., [x *@ y] *)
 
-val ( /@ ) : spmat -> spmat -> spmat
+val ( /@ ) : mat -> mat -> mat
 (** Shorthand for [div x y], i.e., [x /@ y] *)
 
-val ( $@ ) : spmat -> spmat -> spmat
+val ( $@ ) : mat -> mat -> mat
 (** Shorthand for [dot x y], i.e., [x $@ y] *)
 
-val ( **@ ) : spmat -> elt -> spmat
+val ( **@ ) : mat -> elt -> mat
 (** Shorthand for [power x a], i.e., [x **@ a] *)
 
-val ( *$ ) : spmat -> elt -> spmat
+val ( *$ ) : mat -> elt -> mat
 (** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
 
-val ( /$ ) : spmat -> elt -> spmat
+val ( /$ ) : mat -> elt -> mat
 (** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
 
-val ( $* ) : elt -> spmat -> spmat
+val ( $* ) : elt -> mat -> mat
 (** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
 
-val ( $/ ) : elt -> spmat -> spmat
+val ( $/ ) : elt -> mat -> mat
 (** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
 
-val ( =@ ) : spmat -> spmat -> bool
+val ( =@ ) : mat -> mat -> bool
 (** Shorthand for [is_equal x y], i.e., [x =@ y] *)
 
-val ( >@ ) : spmat -> spmat -> bool
+val ( >@ ) : mat -> mat -> bool
 (** Shorthand for [is_greater x y], i.e., [x >@ y] *)
 
-val ( <@ ) : spmat -> spmat -> bool
+val ( <@ ) : mat -> mat -> bool
 (** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
 
-val ( <>@ ) : spmat -> spmat -> bool
+val ( <>@ ) : mat -> mat -> bool
 (** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
 
-val ( >=@ ) : spmat -> spmat -> bool
+val ( >=@ ) : mat -> mat -> bool
 (** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
 
-val ( <=@ ) : spmat -> spmat -> bool
+val ( <=@ ) : mat -> mat -> bool
 (** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
 
-val ( @@ ) : (elt -> elt) -> spmat -> spmat
+val ( @@ ) : (elt -> elt) -> mat -> mat
 (** Shorthand for [map f x], i.e., f @@ x *)
-*)

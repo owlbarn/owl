@@ -250,7 +250,6 @@ val abs : ('a, 'b) t ->('a, 'b) t
 val neg : ('a, 'b) t ->('a, 'b) t
 
 
-
 (** {6 Binary mathematical operations } *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t

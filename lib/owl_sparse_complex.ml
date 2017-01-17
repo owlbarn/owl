@@ -9,7 +9,7 @@
 
 open Bigarray
 
-type spmat = (Complex.t, Bigarray.complex64_elt) Owl_sparse_matrix.t
+type mat = (Complex.t, Bigarray.complex64_elt) Owl_sparse_matrix.t
 
 type elt = Complex.t
 
@@ -27,7 +27,11 @@ let binary m n = Owl_sparse_matrix.binary Complex64 m n
 
 let uniform ?(scale=1.) m n = Owl_sparse_matrix.uniform ~scale Complex64 m n
 
+let sequential m n = Owl_sparse_matrix.sequential Complex64 m n
+
 let permutation_matrix m = Owl_sparse_matrix.permutation_matrix Complex64 m
+
+let of_array m n x = Owl_sparse_matrix.of_array Complex64 m n x
 
 let load f = Owl_sparse_matrix.load Complex64 f
 
