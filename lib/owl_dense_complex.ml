@@ -59,9 +59,9 @@ let uniform_int ?(a=0) ?(b=99) m n =
 
 let abs2 x = map (fun y -> Complex.({re = norm2 y; im = 0.})) x
 
-let power x c = map (fun y -> Complex.pow y c) x
+let power_scalar x c = map (fun y -> Complex.pow y c) x
 
-let ( **@ ) = power
+let ( **@ ) = power_scalar
 
 
 (* ends here *)

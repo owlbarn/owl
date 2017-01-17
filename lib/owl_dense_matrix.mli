@@ -504,12 +504,12 @@ val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [dot x y] returns the dot product of matrix [x] and [y]. *)
 
-val power : (float, 'b) t -> float -> (float, 'b) t
-
-val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+val power : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
+
+val power_scalar : (float, 'b) t -> float -> (float, 'b) t
 
 val atan2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]

@@ -439,7 +439,9 @@ val neg : mat -> mat
   that in the original matrix [x].
  *)
 
-val power : mat -> float -> mat
+val power : mat -> mat -> mat
+
+val power_scalar : mat -> float -> mat
 (** [power x a] calculates the power of [a] of each element in [x]. *)
 
 val add_scalar : mat -> float -> mat

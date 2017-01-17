@@ -211,7 +211,7 @@ val abs2 : mat -> mat
 
 val neg : mat -> mat
 
-val power : mat -> elt -> mat
+val power_scalar : mat -> elt -> mat
 
 val add_scalar : mat -> elt -> mat
 
