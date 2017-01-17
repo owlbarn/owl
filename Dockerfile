@@ -7,11 +7,20 @@
 FROM ryanrhymes/owl-base
 MAINTAINER Liang Wang
 
-################## INSTALL OWL LIBRARY #####################
+##################### PREREQUISITES ########################
+
 # Set up the environment variables
-ENV OWLPATH /root/owl
+ENV EIGENPATH /root/eigen
 ENV PATH /root/.opam/4.04.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 ENV CAML_LD_LIBRARY_PATH /root/.opam/4.04.0/lib/stublibs
+
+RUN cd /root && git clone https://github.com/ryanrhymes/eigen.git
+RUN make -C $EIGENPATH oasis && make -C $EIGENPATH && make -C $EIGENPATH install
+
+################## INSTALL OWL LIBRARY #####################
+
+# Set up the environment variables
+ENV OWLPATH /root/owl
 
 # Clone the repo, compile, and install
 RUN cd /root && git clone https://github.com/ryanrhymes/owl.git
