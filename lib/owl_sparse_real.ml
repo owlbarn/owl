@@ -13,10 +13,6 @@ include Owl_sparse_matrix
 
 (* overload functions in Owl_sparse_matrix *)
 
-let minmax x = min x, max x
-
-let power x c = map_nz (fun y -> y ** c) x
-
 let zeros m n = Owl_sparse_matrix.zeros Float64 m n
 
 let ones m n = Owl_sparse_matrix.ones Float64 m n
@@ -32,6 +28,10 @@ let permutation_matrix m = Owl_sparse_matrix.permutation_matrix Float64 m
 let load f = Owl_sparse_matrix.load Float64 f
 
 (* specific functions for float64 matrix *)
+
+let minmax x = min x, max x
+
+let power x c = map_nz (fun y -> y ** c) x
 
 let _random_basic f m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in

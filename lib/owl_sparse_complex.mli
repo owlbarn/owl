@@ -13,7 +13,7 @@
   the documentation of Sparse.Real module.
  *)
 
-type spmat
+type spmat = (Complex.t, Bigarray.complex64_elt) Owl_sparse_matrix.t
 
 type elt = Complex.t
 
@@ -262,7 +262,7 @@ val load : string -> spmat
 
 
 (** {6 Shorhand infix operators} *)
-
+(*
 val ( +@ ) : spmat -> spmat -> spmat
 (** Shorthand for [add x y], i.e., [x +@ y] *)
 
@@ -313,7 +313,4 @@ val ( <=@ ) : spmat -> spmat -> bool
 
 val ( @@ ) : (elt -> elt) -> spmat -> spmat
 (** Shorthand for [map f x], i.e., f @@ x *)
-
-
-(* TODO: debug purpose *)
-val _triplet2crs : spmat -> unit
+*)
