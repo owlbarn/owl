@@ -12,6 +12,7 @@ The series of tutorials is here:
 * [Tutorial 2: N-dimensional Array](https://github.com/ryanrhymes/owl/wiki/Tutorial:-N-Dimensional-Array)
 * [Tutorial 3: Matrix Manipulation](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Matrix-Manipulation)
 * [Tutorial 4: How to Plot in Owl?](https://github.com/ryanrhymes/owl/wiki/Tutorial:-How-to-Plot-in-Owl%3F)
+* [Tutorial: Metric Systems](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Metric-Systems)
 
 Some simple evaluations can be found as follows [[Ndarray](https://github.com/ryanrhymes/owl/wiki/Evaluation:-Performance-Test)]. The roadmap and future plan of Owl can be found
 [[Here]](https://github.com/ryanrhymes/owl/wiki/Future-Plan). I would love to hear from you, and please let me know your comments and suggestions to improve Owl.
