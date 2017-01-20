@@ -39,11 +39,12 @@ let load f = Owl_sparse_matrix.load Complex64 f
 
 let _random_basic f m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
-  let x = zeros m n in
-  for k = 0 to c do
-    let i = Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) () in
-    let j = Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) () in
-    set x i j (f ())
+  let x = Owl_sparse_matrix.zeros ~density:0.2 Complex64 m n in
+  let l = Owl_stats.choose (Array.init (m * n) (fun i -> i)) c in
+  for k = 0 to c - 1 do
+    let i = l.(k) / n in
+    let j = l.(k) - (i * n) in
+    insert x i j (f ())
   done;
   x
 

@@ -541,7 +541,13 @@ let uniform ?(scale=1.) k m n =
 
 let print x = _eigen_print x.d
 
-let pp_spmat x = print x
+let pp_spmat x =
+  let m, n = shape x in
+  let c = nnz x in
+  let p = 100. *. (density x) in
+  let mz, nz = row_num_nz x, col_num_nz x in
+  if m < 100 && n < 100 then Owl_dense_matrix.pp_dsmat (to_dense x);
+  Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
 let save x f =
   let s = Marshal.to_string x [] in
