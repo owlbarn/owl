@@ -12,3 +12,5 @@ module Complex = Owl_sparse_complex
 module Matrix = Owl_sparse_matrix
 
 module Ndarray = Owl_sparse_ndarray
+
+module Dok_matrix = Owl_sparse_dok_matrix

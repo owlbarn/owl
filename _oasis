@@ -48,6 +48,7 @@ Library owl
                     Owl_sparse_matrix,
                     Owl_sparse_real,
                     Owl_sparse_complex,
+                    Owl_sparse_dok_matrix,
                     Owl_infix,
                     Owl_fft,
                     Owl_linalg,
