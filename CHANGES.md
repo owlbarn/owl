@@ -4,6 +4,7 @@
 * Support both dense and sparse n-dimensional arrays.
 * Support both real and complex numbers.
 * Support both single and double precisions.
+* Add more vectorised operation: sin, cos, ceil, and etc.
 * Add basic unit test framework for Owl.
 * Add a couple of Topic modelling algorithms.
 
