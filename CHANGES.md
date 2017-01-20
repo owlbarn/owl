@@ -1,4 +1,4 @@
-### 0.2.0 (2017-01-??)
+### 0.2.0 (2017-01-20)
 
 * Support both dense and sparse matrices.
 * Support both dense and sparse n-dimensional arrays.
