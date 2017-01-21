@@ -50,4 +50,6 @@ let test_13 _ = Owl_dense_matrix.is_nonpositive y
 
 let test_14 _ = Owl_dense_ndarray.nnz (Owl_dense_matrix.to_ndarray y)
 
-let _ = Perf_common.test_op_each c test_14
+let test_15 _ = Owl_dense_matrix.add_scalar x 2.
+
+let _ = Perf_common.test_op_each c test_15
