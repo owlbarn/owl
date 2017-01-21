@@ -68,6 +68,10 @@ Library owl
   CCOpt:            -I$pkg_ctypes
   BuildDepends:     str, ctypes, ctypes.stubs, plplot, dolog,
                     eigen, gsl, lacaml, owl_parallel
+  if system(linux) || system(linux_elf)
+    CCOpt+:          -g -O2
+  if system(macosx)
+    CCLib:          -framework Accelerate
 
 Library owl_topic
   Install:          true
