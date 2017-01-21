@@ -118,6 +118,12 @@ val numel : mat -> int
   to [(row_num x) * (col_num x)].
  *)
 
+val nnz : mat -> int
+(** [nnz x] returns the number of non-zero elements in [x]. *)
+
+val density : mat -> float
+(** [density x] returns the percentage of non-zero elements in [x]. *)
+
 val size_in_bytes : mat -> int
 (** [size_in_bytes x] returns the size of [x] in bytes in memory. *)
 

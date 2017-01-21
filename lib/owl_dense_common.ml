@@ -760,3 +760,15 @@ let _owl_is_nonpositive : type a b. (a, b) kind -> (a, b) owl_vec_op01 = functio
   | Complex32 -> owl_complex_float_is_nonpositive
   | Complex64 -> owl_complex_double_is_nonpositive
   | _         -> failwith "_owl_is_nonpositive: unsupported operation"
+
+external owl_real_float_nnz : int -> ('a, 'b) owl_vec -> int = "real_float_nnz"
+external owl_real_double_nnz : int -> ('a, 'b) owl_vec -> int = "real_double_nnz"
+external owl_complex_float_nnz : int -> ('a, 'b) owl_vec -> int = "complex_float_nnz"
+external owl_complex_double_nnz : int -> ('a, 'b) owl_vec -> int = "complex_double_nnz"
+
+let _owl_nnz : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
+  | Float32   -> owl_real_float_nnz
+  | Float64   -> owl_real_double_nnz
+  | Complex32 -> owl_complex_float_nnz
+  | Complex64 -> owl_complex_double_nnz
+  | _         -> failwith "_owl_nnz: unsupported operation"

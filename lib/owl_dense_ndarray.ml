@@ -740,12 +740,6 @@ let fold ?axis f a x =
   iter ?axis (fun y -> c := (f !c y)) x;
   !c
 
-let nnz x =
-  let z = _zero (kind x) in
-  fold (fun c y -> if y = z then c else c + 1) 0 x
-
-let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
-
 let _check_slice_axis axis s =
   if Array.length axis <> Array.length s then
     failwith "check_slice_axis: length does not match";
@@ -965,6 +959,13 @@ let exists f x =
 let not_exists f x = not (exists f x)
 
 let for_all f x = let g y = not (f y) in not_exists g x
+
+let nnz x =
+  let y = flatten x |> array1_of_genarray in
+  let _op = _owl_nnz (kind x) in
+  _op (numel x) y
+
+let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
 
 (* input/output functions *)
 

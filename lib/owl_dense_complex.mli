@@ -72,6 +72,10 @@ val col_num : mat -> int
 
 val numel : mat -> int
 
+val nnz : mat -> int
+
+val density : mat -> float
+
 val size_in_bytes : mat -> int
 
 val same_shape : mat -> mat -> bool

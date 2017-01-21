@@ -46,6 +46,10 @@ let col_num x = Array2.dim2 x
 
 let numel x = (row_num x) * (col_num x)
 
+let nnz x = Owl_dense_ndarray.nnz (to_ndarray x)
+
+let density x = Owl_dense_ndarray.density (to_ndarray x)
+
 let fill x a = Array2.fill x a
 
 let empty k m n = Array2.create k c_layout m n

@@ -46,6 +46,10 @@ val col_num : ('a, 'b) t -> int
 
 val numel : ('a, 'b) t -> int
 
+val nnz : ('a, 'b) t -> int
+
+val density : ('a, 'b) t -> float
+
 val size_in_bytes : ('a, 'b) t -> int
 (** [size_in_bytes x] returns the size of [x] in bytes in memory. *)
 

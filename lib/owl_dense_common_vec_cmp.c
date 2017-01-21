@@ -101,7 +101,44 @@ CAMLprim value FUN1(value vN, value vX)
 #endif /* FUN1 */
 
 
+// function to count number of non-zero elements
+#ifdef FUN2
+
+CAMLprim value FUN2(value vN, value vX)
+{
+  CAMLparam2(vN, vX);
+  int N = Long_val(vN);
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  NUMBER *start_x, *stop_x;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  start_x = X_data;
+  stop_x = start_x + N;
+
+  int r = 0;
+
+  while (start_x != stop_x) {
+    NUMBER x = *start_x;
+    if (CHECKFN(x)) r += 1;
+    start_x += 1;
+  };
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_int(r));
+}
+
+#endif /* FUN1 */
+
+
 #undef NUMBER
 #undef STOPFN
+#undef CHECKFN
 #undef FUN0
 #undef FUN1
+#undef FUN2
