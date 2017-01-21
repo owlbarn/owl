@@ -46,9 +46,12 @@ let density x = (float_of_int (nnz x)) /. (float_of_int (numel x))
 
 let kind x = x.k
 
-(* FIXME: check boundary in get and set *)
+let _check_boundary i j m n =
+  if i < 0 || i >= m || j < 0 || j >= n then
+    failwith "error: index beyond the boundary"
 
 let set x i j a =
+  _check_boundary i j x.m x.n;
   let _a0 = Owl_types._zero x.k in
   match Hashtbl.mem x.d (i,j) with
   | true  -> (
@@ -60,6 +63,7 @@ let set x i j a =
     )
 
 let get x i j =
+  _check_boundary i j x.m x.n;
   match Hashtbl.mem x.d (i,j) with
   | true  -> Hashtbl.find x.d (i,j)
   | false -> Owl_types._zero (x.k)

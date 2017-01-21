@@ -7,22 +7,22 @@ module MD = Dense.Real
 
 type lda_typ = SimpleLDA | FTreeLDA | LightLDA | SparseLDA
 
-let n_d = ref 0                   (* number of documents *)
-let n_k = ref 0                   (* number of topics *)
-let n_v = ref 0                   (* number of vocabulary *)
+let n_d = ref 0                        (* number of documents *)
+let n_k = ref 0                        (* number of topics *)
+let n_v = ref 0                        (* number of vocabulary *)
 
-let alpha = ref 0.                (* model hyper-parameters *)
-let beta = ref 0.                 (* model hyper-parameters *)
-let alpha_k = ref 0.              (* model hyper-parameters *)
-let beta_v = ref 0.               (* model hyper-parameters *)
+let alpha = ref 0.                     (* model hyper-parameters *)
+let beta = ref 0.                      (* model hyper-parameters *)
+let alpha_k = ref 0.                   (* model hyper-parameters *)
+let beta_v = ref 0.                    (* model hyper-parameters *)
 
-let t_dk = ref (MD.zeros 1 1)     (* document-topic table: num of tokens assigned to each topic in each doc *)
-let t_wk = ref (MS.zeros Float64 1 1)     (* word-topic table: num of tokens assigned to each topic for each word *)
-let t__k = ref (MD.zeros 1 1)     (* number of tokens assigned to a topic: k = sum_w t_wk = sum_d t_dk *)
-let t__z = ref [| [||] |]         (* table of topic assignment of each token in each document *)
+let t_dk = ref (MD.zeros 1 1)          (* document-topic table: num of tokens assigned to each topic in each doc *)
+let t_wk = ref (MS.zeros float64 1 1)  (* word-topic table: num of tokens assigned to each topic for each word *)
+let t__k = ref (MD.zeros 1 1)          (* number of tokens assigned to a topic: k = sum_w t_wk = sum_d t_dk *)
+let t__z = ref [| [||] |]              (* table of topic assignment of each token in each document *)
 
-let n_iter = 1_000                (* number of iterations *)
-let data = ref [| [||] |]         (* training data, tokenised*)
+let n_iter = 1_000                     (* number of iterations *)
+let data = ref [| [||] |]              (* training data, tokenised*)
 let vocb : (string, int) Hashtbl.t ref = ref (Hashtbl.create 1)    (* vocabulary, or dictionary if you prefer *)
 
 let include_token w d k =
@@ -248,7 +248,7 @@ let init k v d =
   n_v  := Hashtbl.length v;
   n_k  := k;
   t_dk := MD.zeros !n_d !n_k;
-  t_wk := MS.zeros Float64 !n_v !n_k;
+  t_wk := MS.zeros float64 !n_v !n_k;
   t__k := MD.zeros 1 !n_k;
   (* set model hyper-parameters *)
   alpha := 50.;
