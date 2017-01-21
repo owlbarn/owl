@@ -24,6 +24,24 @@ let zeros ?(density=0.01) k m n = {
   Hashtbl.create c;
 }
 
+let row_num x = x.m
+
+let col_num x = x.n
+
+let shape x = (x.m, x.n)
+
+let numel x = x.m * x.n
+
+let prune x r =
+  Hashtbl.filter_map_inplace (fun _ v ->
+    if v = r then None
+    else Some v
+  ) x.d
+
+let nnz x =
+  let _ = prune x (Owl_types._zero x.k) in
+  Hashtbl.((stats x.d).num_bindings)
+
 (* FIXME: check boundary in get and set *)
 
 let set x i j a =
@@ -41,13 +59,3 @@ let get x i j =
   match Hashtbl.mem x.d (i,j) with
   | true  -> Hashtbl.find x.d (i,j)
   | false -> Owl_types._zero (x.k)
-
-let prune x r =
-  Hashtbl.filter_map_inplace (fun _ v ->
-    if v = r then None
-    else Some v
-  ) x.d
-
-let nnz x =
-  let _ = prune x (Owl_types._zero x.k) in
-  Hashtbl.((stats x.d).num_bindings)
