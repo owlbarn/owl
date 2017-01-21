@@ -42,6 +42,10 @@ let nnz x =
   let _ = prune x (Owl_types._zero x.k) in
   Hashtbl.((stats x.d).num_bindings)
 
+let density x = (float_of_int (nnz x)) /. (float_of_int (numel x))
+
+let kind x = x.k
+
 (* FIXME: check boundary in get and set *)
 
 let set x i j a =
@@ -59,3 +63,12 @@ let get x i j =
   match Hashtbl.mem x.d (i,j) with
   | true  -> Hashtbl.find x.d (i,j)
   | false -> Owl_types._zero (x.k)
+
+let reset x = Hashtbl.reset x.d
+
+let clone x = {
+  m = x.m;
+  n = x.n;
+  k = x.k;
+  d = Hashtbl.copy x.d;
+}
