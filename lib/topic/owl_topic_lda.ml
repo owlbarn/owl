@@ -63,7 +63,7 @@ let show_info i =
     | true  -> Printf.sprintf " likelihood:%.3f" (likelihood ())
     | false -> ""
   in
-  Log.info "iteration #%i - t_wk:%.3f %s" i (MS.density !t_wk) s
+  Log.info "iteration #%i - t_dk:%.3f t_wk:%.3f %s" i (MD.density !t_dk) (MS.density !t_wk) s
 
 (* implement several LDA with specific samplings *)
 
