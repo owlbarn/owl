@@ -2,7 +2,7 @@
 
 open Owl
 
-module MS = Sparse.Real
+module MS = Sparse.Dok_matrix
 module MD = Dense.Real
 
 type lda_typ = SimpleLDA | FTreeLDA | LightLDA | SparseLDA
@@ -16,8 +16,8 @@ let beta = ref 0.                 (* model hyper-parameters *)
 let alpha_k = ref 0.              (* model hyper-parameters *)
 let beta_v = ref 0.               (* model hyper-parameters *)
 
-let t_dk = ref (MS.zeros 1 1)     (* document-topic table: num of tokens assigned to each topic in each doc *)
-let t_wk = ref (MS.zeros 1 1)     (* word-topic table: num of tokens assigned to each topic for each word *)
+let t_dk = ref (MD.zeros 1 1)     (* document-topic table: num of tokens assigned to each topic in each doc *)
+let t_wk = ref (MS.zeros Float64 1 1)     (* word-topic table: num of tokens assigned to each topic for each word *)
 let t__k = ref (MD.zeros 1 1)     (* number of tokens assigned to a topic: k = sum_w t_wk = sum_d t_dk *)
 let t__z = ref [| [||] |]         (* table of topic assignment of each token in each document *)
 
@@ -28,12 +28,12 @@ let vocb : (string, int) Hashtbl.t ref = ref (Hashtbl.create 1)    (* vocabulary
 let include_token w d k =
   MD.(set !t__k 0 k (get !t__k 0 k +. 1.));
   MS.(set !t_wk w k (get !t_wk w k +. 1.));
-  MS.(set !t_dk d k (get !t_dk d k +. 1.))
+  MD.(set !t_dk d k (get !t_dk d k +. 1.))
 
 let exclude_token w d k =
   MD.(set !t__k 0 k (get !t__k 0 k -. 1.));
   MS.(set !t_wk w k (get !t_wk w k -. 1.));
-  MS.(set !t_dk d k (get !t_dk d k -. 1.))
+  MD.(set !t_dk d k (get !t_dk d k -. 1.))
 
 let likelihood () =
   let _sum = ref 0. in
@@ -49,7 +49,7 @@ let likelihood () =
       let w = !data.(i).(j) in
       (* every topic *)
       for k = 0 to !n_k - 1 do
-        wsum := !wsum +. (MS.get !t_dk i k +. !alpha_k) *. (MS.get !t_wk w k +. !beta) /. (MD.get !t__k 0 k +. !beta_v);
+        wsum := !wsum +. (MD.get !t_dk i k +. !alpha_k) *. (MS.get !t_wk w k +. !beta) /. (MD.get !t__k 0 k +. !beta_v);
       done;
       dsum := !dsum +. (Maths.log2 !wsum);
     done;
@@ -63,7 +63,7 @@ let show_info i =
     | true  -> Printf.sprintf " likelihood:%.3f" (likelihood ())
     | false -> ""
   in
-  Log.info "iteration #%i - t_dk:%.3f t_wk:%.3f %s" i (MS.density !t_dk) (MS.density !t_wk) s
+  Log.info "iteration #%i - t_wk:%.3f %s" i (MS.density !t_wk) s
 
 (* implement several LDA with specific samplings *)
 
@@ -79,7 +79,7 @@ module SimpleLDA = struct
       (* make cdf function *)
       let x = ref 0. in
       for j = 0 to !n_k - 1 do
-        x := !x +. (MS.get !t_dk d j +. !alpha_k) *. (MS.get !t_wk w j +. !beta) /. (MD.get !t__k 0 j +. !beta_v);
+        x := !x +. (MD.get !t_dk d j +. !alpha_k) *. (MS.get !t_wk w j +. !beta) /. (MD.get !t__k 0 j +. !beta_v);
         MD.set p 0 j !x;
       done;
       (* draw a sample *)
@@ -117,12 +117,12 @@ module SparseLDA = struct
     let t__klocal = ref ((MD.get !t__k 0 k) )in
     (* Reduce s, r  l*)
     s := !s -. (!beta *. !alpha_k) /. (!t__klocal +. !beta_v);
-    r := !r -. (!beta *. (MS.get !t_dk d k)) /. (!beta_v +. !t__klocal);
+    r := !r -. (!beta *. (MD.get !t_dk d k)) /. (!beta_v +. !t__klocal);
     exclude_token w d k;
     (* add back in  s,r*)
     t__klocal :=  (MD.get !t__k 0 k);
-    Array.set !q k ((!alpha_k +. (MS.get !t_dk d k)) /. (!beta_v +. !t__klocal));
-    let r_local = (MS.get !t_dk d k) in
+    Array.set !q k ((!alpha_k +. (MD.get !t_dk d k)) /. (!beta_v +. !t__klocal));
+    let r_local = (MD.get !t_dk d k) in
     (match r_local with
     | 0. ->  Hashtbl.remove !r_non_zero k
     | _  -> (Hashtbl.replace !r_non_zero k r_local;
@@ -134,18 +134,18 @@ module SparseLDA = struct
     let t__klocal = ref (MD.get !t__k 0 k) in
     (* Reduce s, r  l*)
     s := !s -. (!beta *. !alpha_k)/.( !t__klocal +. !beta_v);
-    r := !r -. (!beta *. (MS.get !t_dk d k)) /. (!beta_v +. !t__klocal);
+    r := !r -. (!beta *. (MD.get !t_dk d k)) /. (!beta_v +. !t__klocal);
     include_token w d k;
     (* add back in s, r*)
     t__klocal :=  (MD.get !t__k 0 k);
     s := !s +. (!beta *. !alpha_k)/.(!t__klocal +. !beta_v);
-    let r_local = (MS.get !t_dk d k) in
+    let r_local = (MD.get !t_dk d k) in
     (match r_local with
     | 0. ->  Hashtbl.remove !r_non_zero k
     | _  -> (Hashtbl.replace !r_non_zero k r_local;
             r := !r +. (!beta *. r_local) /. (!beta_v +. !t__klocal))
     );
-    Array.set !q k ((!alpha_k +. (MS.get !t_dk d k)) /. (!beta_v +. !t__klocal))
+    Array.set !q k ((!alpha_k +. (MD.get !t_dk d k)) /. (!beta_v +. !t__klocal))
 
   let init () =
     (* s is independent of document *)
@@ -167,7 +167,7 @@ module SparseLDA = struct
     Hashtbl.clear !r_non_zero;
     while !k < !n_k do
       let t__klocal = (MD.get !t__k 0 !k) in
-      let r_local = (MS.get !t_dk d !k) in
+      let r_local = (MD.get !t_dk d !k) in
       (* Sparse representation of r *)
       if r_local != 0. then (
         let r_val = r_local /. (!beta_v +.  t__klocal) in
@@ -176,7 +176,7 @@ module SparseLDA = struct
       );
       (* Build up our q cache *)
       (* TODO: efficiently handle t_dk = 0*)
-      Array.set !q !k ((!alpha_k +. (MS.get !t_dk d !k)) /. (!beta_v +. t__klocal));
+      Array.set !q !k ((!alpha_k +. (MD.get !t_dk d !k)) /. (!beta_v +. t__klocal));
       k := !k + 1;
     done;
     r := !r *. !beta;
@@ -209,7 +209,7 @@ module SparseLDA = struct
           while !slocal < !u do
             slocal := !slocal +. (1. /. (!beta_v +. (MD.get !t__k 0 !k_q) ));
             k_q := !k_q + 1;
-          done;        
+          done;
           (* Found our topic (we went past it by one) *)
           k := !k_q - 1;
         )
@@ -247,8 +247,8 @@ let init k v d =
   n_d  := Array.length d;
   n_v  := Hashtbl.length v;
   n_k  := k;
-  t_dk := MS.zeros !n_d !n_k;
-  t_wk := MS.zeros !n_v !n_k;
+  t_dk := MD.zeros !n_d !n_k;
+  t_wk := MS.zeros Float64 !n_v !n_k;
   t__k := MD.zeros 1 !n_k;
   (* set model hyper-parameters *)
   alpha := 50.;
@@ -282,7 +282,7 @@ let train typ =
   for i = 0 to n_iter - 1 do
     show_info i;
     for j = 0 to !n_d - 1 do
-      Log.info "iteration #%i - doc#%i" i j; 
+      (* Log.info "iteration #%i - doc#%i" i j; *)
       sampling j
     done
   done

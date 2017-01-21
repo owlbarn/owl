@@ -9,4 +9,4 @@ let _ =
   let v = Owl_topic_utils.build_vocabulary x in
   let d = Owl_topic_utils.tokenisation v x in
   let _ = Owl_topic_lda.init 100 v d in
-  Owl_topic_lda.(train SimpleLDA)
+  Owl_topic_lda.(train SparseLDA)

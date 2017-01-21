@@ -16,7 +16,7 @@ type ('a, 'b) t = {
   mutable d : (int * int, 'a) Hashtbl.t;       (* hashtbl for storing data *)
 }
 
-let zeros ?(density=0.01) k m n = {
+let zeros ?(density=0.30) k m n = {
   m = m;
   n = n;
   k = k;
