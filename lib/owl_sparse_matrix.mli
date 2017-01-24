@@ -16,9 +16,9 @@ val ones : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
 val eye : ('a, 'b) kind -> int -> ('a, 'b) t
 
-val binary : ('a, 'b) kind -> int -> int -> ('a, 'b) t
+val binary : ?density:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
-val uniform : ?scale:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
+val uniform : ?density:float -> ?scale:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
 val sequential : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 

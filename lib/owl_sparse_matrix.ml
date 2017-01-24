@@ -520,9 +520,9 @@ let fill x a =
     done
   done
 
-let _random_basic k f m n =
-  let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
-  let x = zeros ~density:0.2 k m n in
+let _random_basic d k f m n =
+  let c = int_of_float ((float_of_int (m * n)) *. d) in
+  let x = zeros ~density:(d +. 0.01) k m n in
   let l = Owl_stats.choose (Array.init (m * n) (fun i -> i)) c in
   for k = 0 to c - 1 do
     let i = l.(k) / n in
@@ -531,13 +531,13 @@ let _random_basic k f m n =
   done;
   x
 
-let binary k m n =
+let binary ?(density=0.15) k m n =
   let _a1 = Owl_types._one k in
-  _random_basic k (fun () -> _a1) m n
+  _random_basic density k (fun () -> _a1) m n
 
-let uniform ?(scale=1.) k m n =
+let uniform ?(density=0.15) ?(scale=1.) k m n =
   let _op = Owl_dense_common._owl_uniform k in
-  _random_basic k (fun () -> _op scale) m n
+  _random_basic density k (fun () -> _op scale) m n
 
 let print x = _eigen_print x.d
 
