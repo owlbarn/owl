@@ -3,8 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+type op = Forward | Backward | Calculate
+
 type node = {
-  value : float;
+  mutable value : float;
+  mutable dual : float;
   func : float -> float;
   vjp : float -> float;
   mutable parent : node list;
@@ -13,36 +16,21 @@ type node = {
 
 type scalar = Float of float | Node of node
 
-let wrap_fun f g args =
-  let v, p = match args with
-  | Float v -> v, []
-  | Node p -> p.value, [p]
-  in
-  let x = {
-    value = f v;
-    func = f;
-    vjp = g;
-    parent = p;
-    progenitor = [];
-  }
-  in
-  match x.progenitor with
-  | [] -> Float x.value
-  | _  -> Node x
-
 let identity x = x
-
-let sin x = wrap_fun sin cos x
-
-let log x = wrap_fun log (fun x -> 1. /. x) x
 
 let new_node value func args parent progenitor = {
   value;
+  dual = 0.;
   func;
   vjp = identity;
   parent;
   progenitor;
 }
+
+let get_value x =
+  match x with
+  | Node x -> x.value
+  | Float x -> x
 
 let new_progenitor x =
   let n = match x with
@@ -52,26 +40,39 @@ let new_progenitor x =
   n.progenitor <- n.progenitor @ [n];
   n
 
-let wrap_fun' f g args =
+let wrap_fun f g args =
   let progenitor = ref [] in
   let parent = ref [] in
+  let argval = ref [] in
   List.iter (fun arg ->
     match arg with
     | Node x -> (
-      parent := !parent @ x.parent;
+      print_endline "+++";
       progenitor := !progenitor @ x.progenitor; (* FIXME *)
+      parent := !parent @ [x];
+      argval := !argval @ [x.value];
       )
-    | _ -> ()
-  ) args
-  (* FIXME
-  match x.progenitor with
-  | [] -> Float x.value
-  | _  -> Node x
-*)
+    | Float x -> argval := !argval @ [x]
+  ) args;
+  let v = f (List.nth !argval 0) in
+  (* FIXME *)
+  match !parent with
+  | [] -> Float v
+  | _  -> (
+    let n = new_node v identity [] !parent !progenitor in
+    n.dual <- g (List.nth !argval 0);
+    Node n
+    )
+
 let grad f =
   let f' = fun a -> (
-    let x = new_node a identity [] [] [] in
-    f (Node x)
+    let n = new_node a identity [] [] [] in
+    n.dual <- 1.0;
+    f (Node n)
   )
   in
   f'
+
+let sin x = wrap_fun sin cos [x]
+
+let log x = wrap_fun log (fun x -> 1. /. x) [x]
