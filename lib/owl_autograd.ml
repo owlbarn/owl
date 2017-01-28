@@ -27,11 +27,6 @@ let new_node value func args parent progenitor = {
   progenitor;
 }
 
-let get_value x =
-  match x with
-  | Node x -> x.value
-  | Float x -> x
-
 let new_progenitor x =
   let n = match x with
     | Float y -> new_node y identity [y] [] []
