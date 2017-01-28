@@ -50,6 +50,7 @@ Library owl
                     Owl_sparse_complex,
                     Owl_sparse_dok_matrix,
                     Owl_autograd,
+                    Owl_autograd_maths,
                     Owl_infix,
                     Owl_fft,
                     Owl_linalg,
