@@ -73,6 +73,7 @@ let grad ?(argnum=0) f =
   in
   f'
 
+let exp x = wrap_fun Owl_autograd_maths.exp Owl_autograd_maths.exp' [|x|]
 let sin x = wrap_fun Owl_autograd_maths.sin Owl_autograd_maths.sin' [|x|]
 let cos x = wrap_fun Owl_autograd_maths.cos Owl_autograd_maths.cos' [|x|]
 let log x = wrap_fun Owl_autograd_maths.log Owl_autograd_maths.log' [|x|]
