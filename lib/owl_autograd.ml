@@ -61,8 +61,7 @@ let prepare_fun f =
   | FUN04X f -> fun x -> f x.(0) x.(1) x.(2) x.(3)
 
 (* USE GADT to fix *)
-let grad ?(argnum=0) f =
-  let f = prepare_fun f in
+let forward_ad ?(argnum=0) f =
   let f' = fun args -> (
     let l = Array.mapi (fun i a ->
       let n = new_node a identity [] in
@@ -74,6 +73,16 @@ let grad ?(argnum=0) f =
   )
   in
   f'
+
+let grad ?(argnum=0) f =
+  let f = prepare_fun f in
+  let g = fun args -> (
+    match (forward_ad ~argnum f) args with
+    | Node n -> n.dual
+    | _ -> failwith "grad:g:wrong output"
+  )
+  in
+  g
 
 let exp x = wrap_fun Owl_autograd_maths.exp Owl_autograd_maths.exp' [|x|]
 let sin x = wrap_fun Owl_autograd_maths.sin Owl_autograd_maths.sin' [|x|]
