@@ -108,5 +108,9 @@ let download_data fname =
   let fn1 = local_data_path () ^ fname in
   let cmd0 = "wget " ^ fn0 ^ " -O " ^ fn1 in
   let cmd1 = "gunzip " ^ fn1 in
-  Sys.command cmd0;
-  Sys.command cmd1
+  ignore (Sys.command cmd0);
+  ignore (Sys.command cmd1)
+
+let download_all () =
+  let l = ["stopwords.txt.gz"; "enron.test.gz"; "enron.train.gz"; "nips.test.gz"; "nips.train.gz"] in
+  List.iter (fun fname -> download_data fname) l

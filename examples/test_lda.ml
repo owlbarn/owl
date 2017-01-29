@@ -3,9 +3,16 @@
   mahcine. Appologies for the temporary hard-coding path.
  *)
 
+let prepare_data () =
+  let p = Owl_utils.local_data_path () in
+  if Sys.file_exists (p ^ "stopwords.txt") = false then
+    Owl_utils.download_all ();
+  p
+
 let _ =
-  let s = Owl_topic_utils.load_stopwords "../lib/topic/stopwords.txt" in
-  let x = Owl_topic_utils.load_data ~stopwords:s "nips.test" in
+  let p = prepare_data () in
+  let s = Owl_topic_utils.load_stopwords (p ^ "stopwords.txt") in
+  let x = Owl_topic_utils.load_data ~stopwords:s (p ^ "nips.test") in
   let v = Owl_topic_utils.build_vocabulary x in
   let d = Owl_topic_utils.tokenisation v x in
   let _ = Owl_topic_lda.init 100 v d in
