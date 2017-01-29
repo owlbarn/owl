@@ -58,6 +58,7 @@ let prepare_fun f =
   | FUN03X f -> fun x -> f x.(0) x.(1) x.(2)
   | FUN04X f -> fun x -> f x.(0) x.(1) x.(2) x.(3)
 
+(* USE GADT to fix *)
 let grad ?(argnum=0) f =
   let f = prepare_fun f in
   let f' = fun args -> (
