@@ -90,3 +90,23 @@ let array1_clone x =
   let y = Array1.(create (kind x) c_layout (dim x)) in
   Array1.blit x y;
   y
+
+(* functions to download data sets *)
+
+let local_data_path () =
+  let d = Sys.getenv "HOME" ^ "/owl_dataset/" in
+  if Sys.file_exists d = false then (
+    Log.info "create %s" d;
+    Unix.mkdir d 0o755;
+  );
+  d
+
+let remote_data_path () = "https://github.com/ryanrhymes/owl_dataset/raw/master/text/"
+
+let download_data fname =
+  let fn0 = remote_data_path () ^ fname in
+  let fn1 = local_data_path () ^ fname in
+  let cmd0 = "wget " ^ fn0 ^ " -O " ^ fn1 in
+  let cmd1 = "gunzip " ^ fn1 in
+  Sys.command cmd0;
+  Sys.command cmd1
