@@ -29,13 +29,13 @@ let new_node value func args = {
 }
 
 let wrap_fun f f' args =
-  let parent = ref [] in
+  let parent = ref [||] in
   let argval = ref [||] in
   let dualval = ref [||] in
-  List.iter (fun arg ->
+  Array.iter (fun arg ->
     match arg with
     | Node x -> (
-      parent := !parent @ [x];
+      parent := Array.append !parent [|x|];
       argval := Array.append !argval [|x.value|];
       dualval := Array.append !dualval [|x.dual|];
       )
@@ -43,7 +43,7 @@ let wrap_fun f f' args =
   ) args;
   let v = f !argval in
   match !parent with
-  | [] -> Float v
+  | [||] -> Float v
   | _  -> (
     let n = new_node v identity [] in
     n.dual <- f' !dualval !argval;
@@ -73,10 +73,10 @@ let grad ?(argnum=0) f =
   in
   f'
 
-let sin x = wrap_fun Owl_autograd_maths.sin Owl_autograd_maths.sin' [x]
-let cos x = wrap_fun Owl_autograd_maths.cos Owl_autograd_maths.cos' [x]
-let log x = wrap_fun Owl_autograd_maths.log Owl_autograd_maths.log' [x]
-let ( +. ) x0 x1 = wrap_fun Owl_autograd_maths.add Owl_autograd_maths.add' [x0; x1]
-let ( -. ) x0 x1 = wrap_fun Owl_autograd_maths.sub Owl_autograd_maths.sub' [x0; x1]
-let ( *. ) x0 x1 = wrap_fun Owl_autograd_maths.mul Owl_autograd_maths.mul' [x0; x1]
-let ( /. ) x0 x1 = wrap_fun Owl_autograd_maths.div Owl_autograd_maths.div' [x0; x1]
+let sin x = wrap_fun Owl_autograd_maths.sin Owl_autograd_maths.sin' [|x|]
+let cos x = wrap_fun Owl_autograd_maths.cos Owl_autograd_maths.cos' [|x|]
+let log x = wrap_fun Owl_autograd_maths.log Owl_autograd_maths.log' [|x|]
+let ( +. ) x0 x1 = wrap_fun Owl_autograd_maths.add Owl_autograd_maths.add' [|x0; x1|]
+let ( -. ) x0 x1 = wrap_fun Owl_autograd_maths.sub Owl_autograd_maths.sub' [|x0; x1|]
+let ( *. ) x0 x1 = wrap_fun Owl_autograd_maths.mul Owl_autograd_maths.mul' [|x0; x1|]
+let ( /. ) x0 x1 = wrap_fun Owl_autograd_maths.div Owl_autograd_maths.div' [|x0; x1|]
