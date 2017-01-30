@@ -62,11 +62,11 @@ let tokenisation dict data = Array.map (Array.map (Hashtbl.find dict)) data
 
 let save_lda_model dk wk f =
   Log.info "save LDA model";
-  Owl_sparse_real.save dk (f ^ ".dk");
+  Owl_dense_real.save dk (f ^ ".dk");
   Owl_sparse_real.save wk (f ^ ".wk")
 
 let load_lda_model f =
   Log.info "load LDA model";
-  let dk = Owl_sparse_real.load (f ^ ".dk") in
+  let dk = Owl_dense_real.load (f ^ ".dk") in
   let wk = Owl_sparse_real.load (f ^ ".wk") in
   dk, wk
