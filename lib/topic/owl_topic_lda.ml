@@ -21,7 +21,7 @@ let t_wk = ref (MS.zeros float64 1 1)  (* word-topic table: num of tokens assign
 let t__k = ref (MD.zeros 1 1)          (* number of tokens assigned to a topic: k = sum_w t_wk = sum_d t_dk *)
 let t__z = ref [| [||] |]              (* table of topic assignment of each token in each document *)
 
-let n_iter = 1_000                     (* number of iterations *)
+let n_iter = ref 1_000                 (* number of iterations *)
 let data = ref [| [||] |]              (* training data, tokenised*)
 let vocb : (string, int) Hashtbl.t ref = ref (Hashtbl.create 1)    (* vocabulary, or dictionary if you prefer *)
 
@@ -59,7 +59,7 @@ let likelihood () =
   !_sum /. (float_of_int !n_token)
 
 let show_info i =
-  let s = match i mod 10 = 0 with
+  let s = match i mod 1 = 0 with
     | true  -> Printf.sprintf " likelihood:%.3f" (likelihood ())
     | false -> ""
   in
@@ -107,6 +107,7 @@ module LightLDA = struct
   let sampling d = ()
 
 end
+
 module SparseLDA = struct
   let s = ref 0.  (* Cache of s *)
   let q = ref [| |] (*Cache of q*)
@@ -239,8 +240,9 @@ module SparseLDA = struct
 end
 
 (* init the model based on: topics, vocabulary, tokens *)
-let init k v d =
+let init ?(iter=100) k v d =
   Log.info "init the model";
+  n_iter := iter;
   data := d;
   vocb := v;
   (* set model parameters *)
@@ -279,7 +281,7 @@ let train typ =
     | SparseLDA -> SparseLDA.init
   in
   init ();
-  for i = 0 to n_iter - 1 do
+  for i = 0 to !n_iter - 1 do
     show_info i;
     for j = 0 to !n_d - 1 do
       (* Log.info "iteration #%i - doc#%i" i j; *)

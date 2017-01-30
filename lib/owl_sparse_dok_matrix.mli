@@ -39,3 +39,10 @@ val get : ('a, 'b) t -> int -> int -> 'a
 val reset : ('a, 'b) t -> unit
 
 val clone : ('a, 'b) t -> ('a, 'b) t
+
+
+(** {6 Input/Output and helper functions} *)
+
+val save : ('a, 'b) t -> string -> unit
+
+val load : ('a, 'b) kind -> string -> ('a, 'b) t
