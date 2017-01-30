@@ -91,6 +91,19 @@ let array1_clone x =
   Array1.blit x y;
   y
 
+(* save a marshalled object to a file *)
+let marshal_to_file x f =
+  let s = Marshal.to_string x [] in
+  let h = open_out f in
+  output_string h s;
+  close_out h
+
+(* load a marshalled object from a file *)
+let marshal_from_file f =
+  let h = open_in f in
+  let s = really_input_string h (in_channel_length h) in
+  Marshal.from_string s 0
+
 (* functions to download data sets *)
 
 let local_data_path () =

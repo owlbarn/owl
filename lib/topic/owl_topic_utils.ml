@@ -60,6 +60,10 @@ let build_vocabulary x =
 
 let tokenisation dict data = Array.map (Array.map (Hashtbl.find dict)) data
 
+let save_vocabulary x f = Owl_utils.marshal_to_file x f
+
+let load_vocabulary f = Owl_utils.marshal_from_file f
+
 let save_lda_model dk wk f =
   Log.info "save LDA model";
   Owl_dense_real.save dk (f ^ ".dk");

@@ -519,17 +519,9 @@ let pp_spnda x =
     _pp (n - 20) (n - 1)
   )
 
-let save x f =
-  let s = Marshal.to_string x [] in
-  let h = open_out f in
-  output_string h s;
-  close_out h
+let save x f = Owl_utils.marshal_to_file x f
 
-let load k f =
-  let h = open_in f in
-  let s = really_input_string h (in_channel_length h) in
-  let x = Marshal.from_string s 0
-  in x
+let load k f = Owl_utils.marshal_from_file f
 
 let _random_basic a k f d =
   let x = zeros k d in

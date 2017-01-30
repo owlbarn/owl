@@ -575,16 +575,9 @@ let load_txt f =
   done;
   close_in h; x
 
-let save x f =
-  let s = Marshal.to_string x [] in
-  let h = open_out f in
-  output_string h s;
-  close_out h
+let save x f = Owl_utils.marshal_to_file x f
 
-let load k f =
-  let h = open_in f in
-  let s = really_input_string h (in_channel_length h) in
-  Marshal.from_string s 0
+let load k f = Owl_utils.marshal_from_file f
 
 let print x = _owl_print_mat (Array2.kind x) x
 
