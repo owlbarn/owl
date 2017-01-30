@@ -41,6 +41,11 @@ val reset : ('a, 'b) t -> unit
 val clone : ('a, 'b) t -> ('a, 'b) t
 
 
+(** {6 Iterate elements, columns, and rows} *)
+
+val iteri_nz : (int -> int -> 'a -> unit) -> ('a, 'b) t -> unit
+
+
 (** {6 Input/Output and helper functions} *)
 
 val save : ('a, 'b) t -> string -> unit

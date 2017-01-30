@@ -77,6 +77,8 @@ let clone x = {
   d = Hashtbl.copy x.d;
 }
 
+let iteri_nz f x = Hashtbl.iter (fun (i,j) v -> f i j v) x.d
+
 let save x f = Owl_utils.marshal_to_file x f
 
 let load k f = Owl_utils.marshal_from_file f
