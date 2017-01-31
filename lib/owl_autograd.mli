@@ -24,6 +24,11 @@ val forward : ?argnum:int -> (scalar array -> scalar array) -> (scalar array -> 
 val grad : ?argnum:int -> df -> (scalar array -> float)
 
 
+(** {6 Helper functions} *)
+
+val unpack : scalar array -> float array
+
+
 (** {6 Math functions} *)
 
 val ( +. ) : scalar -> scalar -> scalar
