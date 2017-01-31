@@ -3,8 +3,6 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(* experimental ... *)
-
 type node = {
   mutable v : float;
   mutable d : float;
@@ -51,8 +49,13 @@ let wrap_fun f f' args =
     )
   | false -> Float v
 
-let forward_ad ?(argnum=0) f =
+let forward ?(argnum=0) f =
   let f' = fun args -> (
+    let args = Array.map (fun a ->
+      match a with
+      | Node n -> n.v
+      | Float v -> v
+    ) args in
     let l = Array.mapi (fun i a ->
       let n = match argnum = i with
       | true  -> new_node a 1.
@@ -61,9 +64,7 @@ let forward_ad ?(argnum=0) f =
       Node n
     ) args
     in
-    Array.map (fun x -> match x with
-      | Node n -> n.d
-      | Float v -> v) (f l)
+    (f l)
   )
   in
   f'
@@ -71,8 +72,10 @@ let forward_ad ?(argnum=0) f =
 let grad ?(argnum=0) f =
   let f = prepare_fun f in
   let g = fun args -> (
-    let r = (forward_ad ~argnum f) args in
-    r.(0)
+    let r = (forward ~argnum f) args in
+    match r.(0) with
+    | Node n -> n.d
+    | Float v -> v
   )
   in
   g
