@@ -15,10 +15,10 @@ type model = {
   mutable n_k : int;                      (* number of topics *)
   mutable n_v : int;                      (* number of vocabulary *)
 
-  mutable alpha : float;                  (* model hyper-parameters *)
-  mutable beta : float;                   (* model hyper-parameters *)
+  mutable alpha   : float;                (* model hyper-parameters *)
+  mutable beta    : float;                (* model hyper-parameters *)
   mutable alpha_k : float;                (* model hyper-parameters *)
-  mutable beta_v : float;                 (* model hyper-parameters *)
+  mutable beta_v  : float;                (* model hyper-parameters *)
 
   mutable t_dk : dsmat;                   (* document-topic table: num of tokens assigned to each topic in each doc *)
   mutable t_wk : spmat;                   (* word-topic table: num of tokens assigned to each topic for each word *)
@@ -94,22 +94,6 @@ module SimpleLDA = struct
       include_token m w d !k;
       m.t__z.(d).(i) <- !k;
     ) m.data.(d)
-
-end
-
-module FTreeLDA = struct
-
-  let init m = ()
-
-  let sampling m d = ()
-
-end
-
-module LightLDA = struct
-
-  let init m = ()
-
-  let sampling m d = ()
 
 end
 
@@ -242,6 +226,22 @@ module SparseLDA = struct
         include_token_sparse m w d !k s r q;
         m.t__z.(d).(i) <- !k;
       ) m.data.(d)
+end
+
+module FTreeLDA = struct
+
+  let init m = ()
+
+  let sampling m d = ()
+
+end
+
+module LightLDA = struct
+
+  let init m = ()
+
+  let sampling m d = ()
+
 end
 
 (* init the model based on: topics, vocabulary, tokens *)
