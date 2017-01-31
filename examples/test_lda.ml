@@ -15,5 +15,5 @@ let _ =
   let x = Owl_topic_utils.load_data ~stopwords:s (p ^ "nips.test") in
   let v = Owl_topic_utils.build_vocabulary x in
   let d = Owl_topic_utils.tokenisation v x in
-  let _ = Owl_topic_lda.init ~iter:10 100 v d in
-  Owl_topic_lda.(train SparseLDA)
+  let m = Owl_topic_lda.init ~iter:10 100 v d in
+  Owl_topic_lda.(train SparseLDA m)
