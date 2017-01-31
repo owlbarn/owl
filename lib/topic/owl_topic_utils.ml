@@ -64,15 +64,10 @@ let save_vocabulary x f = Owl_utils.marshal_to_file x f
 
 let load_vocabulary f = Owl_utils.marshal_from_file f
 
-let save_lda_model vo dk wk f =
+let save_lda_model m f =
   Log.info "save LDA model";
-  Owl_dense_real.save dk (f ^ ".dk");
-  Owl_sparse_dok_matrix.save wk (f ^ ".wk");
-  save_vocabulary vo (f ^ ".vo")
+  Owl_utils.marshal_to_file m (f ^ ".model")
 
 let load_lda_model f =
   Log.info "load LDA model";
-  let dk = Owl_dense_real.load (f ^ ".dk") in
-  let wk = Owl_sparse_dok_matrix.load Owl.float64 (f ^ ".wk") in
-  let vo = load_vocabulary (f ^ ".vo") in
-  vo, dk, wk
+  Owl_utils.marshal_from_file (f ^ ".model")

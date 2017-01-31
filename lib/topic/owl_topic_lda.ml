@@ -65,10 +65,10 @@ let likelihood m =
 
 let show_info m i =
   let s = match i mod 10 = 0 with
-    | true  -> Printf.sprintf " likelihood:%.3f" (likelihood m)
+    | true  -> Printf.sprintf "likelihood:%.3f" (likelihood m)
     | false -> ""
   in
-  Log.info "iteration #%i - t_dk:%.3f t_wk:%.3f %s" i (MD.density m.t_dk) (MS.density m.t_wk) s
+  Log.info "iter#%i t_dk:%.3f t_wk:%.3f %s" i (MD.density m.t_dk) (MS.density m.t_wk) s
 
 (* implement several LDA with specific samplings *)
 
