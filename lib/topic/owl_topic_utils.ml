@@ -1,4 +1,9 @@
-(** [ Topic Model Utils ]  *)
+(*
+ * OWL - an OCaml numerical library for scientific computing
+ * Copyright (c) 2016-2017
+ *   Ben Catterall <bpwc2@cam.ac.uk>
+ *   Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
 
 let _allocate_space x =
   Log.info "allocate more space";
