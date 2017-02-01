@@ -30,19 +30,3 @@ val unpack : scalar array -> float array
 
 
 (** {6 Math functions} *)
-
-val ( +. ) : scalar -> scalar -> scalar
-
-val ( -. ) : scalar -> scalar -> scalar
-
-val ( *. ) : scalar -> scalar -> scalar
-
-val ( /. ) : scalar -> scalar -> scalar
-
-val exp : scalar -> scalar
-
-val sin : scalar -> scalar
-
-val cos : scalar -> scalar
-
-val log : scalar -> scalar

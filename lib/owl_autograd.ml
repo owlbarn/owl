@@ -86,11 +86,47 @@ let unpack x =
     | Float v -> v
   ) x
 
-let exp x = wrap_fun Owl_autograd_maths.exp Owl_autograd_maths.exp' [|x|]
-let sin x = wrap_fun Owl_autograd_maths.sin Owl_autograd_maths.sin' [|x|]
-let cos x = wrap_fun Owl_autograd_maths.cos Owl_autograd_maths.cos' [|x|]
-let log x = wrap_fun Owl_autograd_maths.log Owl_autograd_maths.log' [|x|]
-let ( +. ) x0 x1 = wrap_fun Owl_autograd_maths.add Owl_autograd_maths.add' [|x0; x1|]
-let ( -. ) x0 x1 = wrap_fun Owl_autograd_maths.sub Owl_autograd_maths.sub' [|x0; x1|]
-let ( *. ) x0 x1 = wrap_fun Owl_autograd_maths.mul Owl_autograd_maths.mul' [|x0; x1|]
-let ( /. ) x0 x1 = wrap_fun Owl_autograd_maths.div Owl_autograd_maths.div' [|x0; x1|]
+
+module type MathsSig = sig
+  val sin : scalar -> scalar
+  val cos : scalar -> scalar
+end
+
+module type DerivativeSig = sig
+  val sin' : float array -> float array -> float
+end
+
+module rec Maths : MathsSig = struct
+
+  let wrap_fun f f' args =
+    let dr_mode = ref false in
+    let argsval = ref [||] in
+    let dualval = ref [||] in
+    Array.iter (fun arg ->
+      match arg with
+      | Node x -> (
+        dr_mode := true;
+        argsval := Array.append !argsval [|x.v|];
+        dualval := Array.append !dualval [|x.d|];
+        )
+      | Float x -> argsval := Array.append !argsval [|x|]
+    ) args;
+    let v = f !argsval in
+    match !dr_mode with
+    | true -> (
+      let d = f' !dualval !argsval in
+      let n = new_node v d in
+      Node n
+      )
+    | false -> Float v
+
+  let sin x = wrap_fun Owl_autograd_maths.sin Derivative.sin' [|x|]
+
+  let cos x = wrap_fun Owl_autograd_maths.cos Derivative.sin' [|x|]
+
+end and
+Derivative : DerivativeSig = struct
+
+  let sin' g x = match Maths.cos (Float x.(0)) with Float v -> Pervasives.((g.(0) *. v))
+
+end
