@@ -22,6 +22,9 @@ let unpack x =
       )
   ) x
 
+let aggregate_dual x y =
+  None
+
 module type MathsSig = sig
   val sin : scalar -> scalar
   val cos : scalar -> scalar
@@ -67,7 +70,11 @@ module rec Maths : MathsSig = struct
         | Float a -> (
           r := !r +. a;
           )
-        | _ -> failwith "error: wrong output"
+        | Node x -> (
+          match x.v with
+          | Float a -> r := !r +. a
+          | _ -> failwith "error: wrong output"
+          )
       ) dualval;
       Node (new_node (Float v) (Float !r))
       )
