@@ -5,12 +5,13 @@
 
 type scalar = Float of float | Node of node
 and node = {
-  mutable v : float;
+  mutable v : scalar;
   mutable d : scalar;
 }
 
 let new_node v d = { v; d; }
 
+let unpack x = Array.map (fun y -> match y with Float v -> v | _ -> failwith "error") x
 
 module type MathsSig = sig
   val sin : scalar -> scalar
@@ -18,35 +19,38 @@ module type MathsSig = sig
 end
 
 module type DerivativeSig = sig
-  val sin' : int -> scalar -> float array -> scalar
-  val cos' : int -> scalar -> float array -> scalar
+  val sin' : int -> scalar -> scalar array -> scalar
+  val cos' : int -> scalar -> scalar array -> scalar
 end
 
 module rec Maths : MathsSig = struct
 
   let wrap_fun f f' args =
     let dr_mode = ref false in
-    let argsval = ref [||] in
-    let dualval = ref [||] in
-    Array.iter (fun arg ->
+    let argslen = Array.length args in
+    let argsval = Array.make argslen (Float 0.) in
+    let dualval = Array.make argslen (Float 0.) in
+    Array.iteri (fun i arg ->
       match arg with
       | Node x -> (
         dr_mode := true;
-        argsval := Array.append !argsval [|x.v|];
-        dualval := Array.append !dualval [|x.d|];
+        argsval.(i) <- x.v;
+        dualval.(i) <- x.d;
         )
-      | Float x -> argsval := Array.append !argsval [|x|]
+      | x -> argsval.(i) <- x
     ) args;
-    let v = f !argsval in
+    let v = f (argsval |> unpack) in
     match !dr_mode with
     | true -> (
       let r = ref 0. in
       Array.iteri (fun i d ->
-        match (f' i d !argsval) with
-        | Float a -> r := !r +. a
+        match (f' i d argsval) with
+        | Float a -> (
+          r := !r +. a;
+          )
         | _ -> failwith "error: wrong output"
-      ) !dualval;
-      Node (new_node v (Float !r))
+      ) dualval;
+      Node (new_node (Float v) (Float !r))
       )
     | false -> Float v
 
