@@ -11,7 +11,16 @@ and node = {
 
 let new_node v d = { v; d; }
 
-let unpack x = Array.map (fun y -> match y with Float v -> v | _ -> failwith "error") x
+let unpack x =
+  Array.map (fun y ->
+    match y with
+    | Float v -> v
+    | Node x -> (
+      match x.v with
+      | Float v -> v
+      | _ -> failwith "error"
+      )
+  ) x
 
 module type MathsSig = sig
   val sin : scalar -> scalar
@@ -42,6 +51,16 @@ module rec Maths : MathsSig = struct
     let v = f (argsval |> unpack) in
     match !dr_mode with
     | true -> (
+      let argsval = Array.map (fun x ->
+        match x with
+        | Node x -> (
+          match x.d with
+          | Node y -> Node (new_node x.v y.d)
+          | _ -> Node x
+          )
+        | a -> a
+      ) args
+      in
       let r = ref 0. in
       Array.iteri (fun i d ->
         match (f' i d argsval) with
@@ -61,8 +80,8 @@ module rec Maths : MathsSig = struct
 end and
 Derivative : DerivativeSig = struct
 
-  let sin' i g x = Maths.cos (Node(new_node x.(0) g))
+  let sin' i g x = Maths.cos x.(0)
 
-  let cos' i g x = Maths.sin (Node(new_node x.(0) g))
+  let cos' i g x = Maths.sin x.(0)
 
 end
