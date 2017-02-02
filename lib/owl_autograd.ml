@@ -56,7 +56,7 @@ module rec Maths : MathsSig = struct
         | Node x -> (
           match x.d with
           | Node y -> Node (new_node x.v y.d)
-          | _ -> Node x
+          | a -> a
           )
         | a -> a
       ) args
