@@ -9,6 +9,22 @@ and node = {
   d : scalar;
 }
 
+let rec print_node_helper x =
+  match x with
+  | Float a -> Printf.printf "%g" a
+  | Node x -> (
+    let _ = match x.v with
+    | Float a -> Printf.printf "(%g," a
+    | _ -> failwith "error in print_node 1"
+    in
+    let _ = match x.d with
+    | Float a -> Printf.printf "%g" a
+    | y -> print_node_helper y; Printf.printf ")"
+    in ()
+    )
+
+let print_node n = print_node_helper (Node n); print_endline ""
+
 let new_node v d = { v; d; }
 
 let unpack x =
@@ -85,12 +101,16 @@ Derivative : DerivativeSig = struct
 
   let mul' g x = (g.(0) *. x.(1)) +. (g.(1) *. x.(0))
 
-  let sin' g x = cos x.(0)
+  let sin' g x = g.(0) *. cos x.(0)
 
   let cos' g x =
     let a = match g.(0) with
-    | Node y -> Node (new_node (Float (-1.)) y.d) (* FIXME *)
-    | Float a -> Float Pervasives.(-1. *. a) 
+    | Node y -> (
+      match y.v with
+      | Float a -> Node (new_node (Float Pervasives.(-1. *. a)) y.d)
+      | _ -> failwith "error in cos'"
+      )
+    | Float a -> Float Pervasives.(-1. *. a)
     in
     a *. sin x.(0)
 
