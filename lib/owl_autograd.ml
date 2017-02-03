@@ -62,6 +62,7 @@ module rec Maths : MathsSig = struct
       | Node x -> dr_mode := true
       | _ -> ()
     ) args;
+    let v = f (args |> unpack) in
     match !dr_mode with
     | true -> (
       let argsval = Array.map (fun x ->
@@ -86,10 +87,9 @@ module rec Maths : MathsSig = struct
       in
       let d = f' dualval argsval in
       print_node "d:" d;
-      let v = f (args |> unpack) in
       Node (new_node (Float v) d)
       )
-    | false -> let v = f (args |> unpack) in Float v
+    | false -> Float v
 
   let ( +. ) x0 x1 = wrap_fun "add" Owl_autograd_maths.mul Derivative.mul' [|x0; x1|]
 
@@ -108,18 +108,9 @@ Derivative : DerivativeSig = struct
 
   let mul' g x = (g.(0) *. x.(1)) +. (g.(1) *. x.(0))
 
-  let sin' g x = g.(0) *. cos x.(0)
+  let sin' g x = cos x.(0)
 
-  let cos' g x =
-    let a = match g.(0) with
-    | Node y -> (
-      match y.v with
-      | Float a -> Node (new_node (Float Pervasives.(-1. *. a)) y.d)
-      | _ -> failwith "error in cos'"
-      )
-    | Float a -> Float Pervasives.(-1. *. a)
-    in
-    a *. sin x.(0)
+  let cos' g x = Float (-1.) *. sin x.(0)
 
 end
 
