@@ -18,12 +18,12 @@ let rec print_node_helper x =
     | _ -> failwith "error in print_node 1"
     in
     let _ = match x.d with
-    | Float a -> Printf.printf "%g" a
+    | Float a -> Printf.printf "%g)" a
     | y -> print_node_helper y; Printf.printf ")"
     in ()
     )
 
-let print_node n = print_node_helper (Node n); print_endline ""
+let print_node h n = Printf.printf "%s:" h; print_node_helper n; print_endline ""
 
 let new_node v d = { v; d; }
 
@@ -54,19 +54,14 @@ end
 
 module rec Maths : MathsSig = struct
 
-  let wrap_fun f f' args =
+  let wrap_fun fn f f' args =
     let dr_mode = ref false in
-    let argslen = Array.length args in
-    let dualval = Array.make argslen (Float 0.) in
     Array.iteri (fun i arg ->
+      print_node (fn ^ ":" ^ (string_of_int i)) arg;
       match arg with
-      | Node x -> (
-        dr_mode := true;
-        dualval.(i) <- x.d;
-        )
+      | Node x -> dr_mode := true
       | _ -> ()
     ) args;
-    let v = f (args |> unpack) in
     match !dr_mode with
     | true -> (
       let argsval = Array.map (fun x ->
@@ -74,23 +69,35 @@ module rec Maths : MathsSig = struct
         | Node x -> (
           match x.d with
           | Node y -> Node (new_node x.v y.d)
-          | a -> a
+          | _ -> x.v
           )
         | a -> a
       ) args
       in
+      let dualval = Array.map (fun x ->
+        match x with
+        | Node x -> (
+          match x.d with
+          | Node y -> x.v
+          | a -> a
+          )
+        | a -> Float 0.
+      ) args
+      in
       let d = f' dualval argsval in
+      print_node "d:" d;
+      let v = f (args |> unpack) in
       Node (new_node (Float v) d)
       )
-    | false -> Float v
+    | false -> let v = f (args |> unpack) in Float v
 
-  let ( +. ) x0 x1 = wrap_fun Owl_autograd_maths.mul Derivative.mul' [|x0; x1|]
+  let ( +. ) x0 x1 = wrap_fun "add" Owl_autograd_maths.mul Derivative.mul' [|x0; x1|]
 
-  let ( *. ) x0 x1 = wrap_fun Owl_autograd_maths.mul Derivative.mul' [|x0; x1|]
+  let ( *. ) x0 x1 = wrap_fun "mul" Owl_autograd_maths.mul Derivative.mul' [|x0; x1|]
 
-  let sin x = wrap_fun Owl_autograd_maths.sin Derivative.sin' [|x|]
+  let sin x = wrap_fun "sin" Owl_autograd_maths.sin Derivative.sin' [|x|]
 
-  let cos x = wrap_fun Owl_autograd_maths.cos Derivative.cos' [|x|]
+  let cos x = wrap_fun "cos" Owl_autograd_maths.cos Derivative.cos' [|x|]
 
 end and
 Derivative : DerivativeSig = struct
@@ -115,3 +122,22 @@ Derivative : DerivativeSig = struct
     a *. sin x.(0)
 
 end
+
+
+(*
+
+open Owl_autograd;;
+let n0 = {v=Float 2.; d=Float 1.};;
+let n1 = {v=Float 3.; d=Node n0};;
+let n2 = {v=Float 4.; d=Node n1};;
+let n3 = {v=Float 5.; d=Node n2};;
+Maths.sin (Node n3);;
+
+open Owl_autograd;;
+let n0 = {v=Float 1.; d=Float 1.};;
+let n1 = {v=Float 2.; d=Node n0};;
+let n2 = {v=Float 1.; d=Node n1};;
+let n3 = {v=Float 2.; d=Node n2};;
+Maths.sin (Node n1);;
+
+*)
