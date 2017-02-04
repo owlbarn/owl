@@ -25,6 +25,13 @@ let rec print_node_helper x =
 
 let print_node h n = Printf.printf "%s:" h; print_node_helper n; print_endline ""
 
+let rec _depth x i =
+  match x with
+  | Node x -> _depth x.d (i + 1)
+  | _ -> i
+
+let depth x = _depth x 0
+
 let new_node v d = { v; d; }
 
 let unpack x =
@@ -79,7 +86,7 @@ module rec Maths : MathsSig = struct
         match x with
         | Node x -> (
           match x.d with
-          | Node y -> x.v
+          | Node y -> y.v
           | a -> a
           )
         | a -> Float 0.
@@ -91,7 +98,7 @@ module rec Maths : MathsSig = struct
       )
     | false -> Float v
 
-  let ( +. ) x0 x1 = wrap_fun "add" Owl_autograd_maths.mul Derivative.mul' [|x0; x1|]
+  let ( +. ) x0 x1 = wrap_fun "add" Owl_autograd_maths.add Derivative.add' [|x0; x1|]
 
   let ( *. ) x0 x1 = wrap_fun "mul" Owl_autograd_maths.mul Derivative.mul' [|x0; x1|]
 
@@ -108,9 +115,9 @@ Derivative : DerivativeSig = struct
 
   let mul' g x = (g.(0) *. x.(1)) +. (g.(1) *. x.(0))
 
-  let sin' g x = cos x.(0)
+  let sin' g x = g.(0) *. cos x.(0)
 
-  let cos' g x = Float (-1.) *. sin x.(0)
+  let cos' g x = Float (-1.) *. g.(0) *. sin x.(0)
 
 end
 
@@ -126,9 +133,10 @@ Maths.sin (Node n3);;
 
 open Owl_autograd;;
 let n0 = {v=Float 1.; d=Float 1.};;
-let n1 = {v=Float 2.; d=Node n0};;
+let n1 = {v=Float 1.; d=Node n0};;
 let n2 = {v=Float 1.; d=Node n1};;
-let n3 = {v=Float 2.; d=Node n2};;
-Maths.sin (Node n1);;
+let n3 = {v=Float 1.; d=Node n2};;
+let n4 = {v=Float 2.; d=Node n3};;
+Maths.sin (Node n4);;
 
 *)
