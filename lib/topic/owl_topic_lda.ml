@@ -69,7 +69,7 @@ let likelihood m =
   !_sum /. (float_of_int !n_token)
 
 let show_info m i =
-  let s = match i mod 10 = 0 with
+  let s = match i mod 1 = 0 with
     | true  -> Printf.sprintf "likelihood:%.3f" (likelihood m)
     | false -> ""
   in
@@ -103,8 +103,9 @@ module SimpleLDA = struct
 end
 
 module SparseLDA = struct
+
   let s = ref 0.  (* Cache of s *)
-  let q = ref [| |] (*Cache of q*)
+  let q = ref [| |] (* Cache of q *)
   let r_non_zero :  (int, float) Hashtbl.t ref = ref (Hashtbl.create 1) (*  *)
   let q_non_zero :  (int, bool) Hashtbl.t ref = ref (Hashtbl.create 1) (*  *)
 
@@ -143,6 +144,11 @@ module SparseLDA = struct
     Array.set !q k ((m.alpha_k +. (MD.get m.t_dk d k)) /. (m.beta_v +. !t__klocal))
 
   let init m =
+    (* reset module parameters, maybe wrap into model? *)
+    s := 0.;
+    q := [| |];
+    Hashtbl.reset !r_non_zero;
+    Hashtbl.reset !q_non_zero;
     (* s is independent of document *)
     let k = ref 0 in
     while !k < m.n_k do
