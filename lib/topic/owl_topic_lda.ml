@@ -68,12 +68,12 @@ let likelihood m =
   done;
   !_sum /. (float_of_int !n_token)
 
-let show_info m i =
+let show_info m i t =
   let s = match i mod 1 = 0 with
     | true  -> Printf.sprintf "likelihood:%.3f" (likelihood m)
     | false -> ""
   in
-  Log.info "iter#%i t_dk:%.3f t_wk:%.3f %s" i (MD.density m.t_dk) (MS.density m.t_wk) s
+  Log.info "iter#%i t(s):%.1f t_dk:%.3f t_wk:%.3f %s" i t (MD.density m.t_dk) (MS.density m.t_wk) s
 
 (* implement several LDA with specific samplings *)
 
@@ -318,9 +318,11 @@ let train typ m =
   in
   init m;
   for i = 0 to m.iter - 1 do
-    show_info m i;
+    let t0 = Unix.gettimeofday () in
     for j = 0 to m.n_d - 1 do
       (* Log.info "iteration #%i - doc#%i" i j; *)
       sampling m j
-    done
+    done;
+    let t1 = Unix.gettimeofday () in
+    show_info m i (t1 -. t0);
   done
