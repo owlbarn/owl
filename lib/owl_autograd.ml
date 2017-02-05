@@ -46,12 +46,18 @@ let dual = function
 
 let rec add x0 x1 = match x0, x1 with
   | Float x0, Float x1 -> Float (x0 +. x1)
-  | Dual x0, Dual x1 -> make_dual (add x0.v x1.v) (add x0.d x1.d)
   | Float x0, Dual x1 -> make_dual (add (Float x0) x1.v) x1.d
   | Dual x0, Float x1 -> make_dual (add x0.v (Float x1)) x0.d
+  | Dual x0, Dual x1 -> make_dual (add x0.v x1.v) (add x0.d x1.d)
 
 let rec sub x0 x1 = match x0, x1 with
   | Float x0, Float x1 -> Float (x0 -. x1)
-  | Dual x0, Dual x1 -> make_dual (sub x0.v x1.v) (sub x0.d x1.d)
   | Float x0, Dual x1 -> make_dual (sub (Float x0) x1.v) x1.d
   | Dual x0, Float x1 -> make_dual (sub x0.v (Float x1)) x0.d
+  | Dual x0, Dual x1 -> make_dual (sub x0.v x1.v) (sub x0.d x1.d)
+
+let rec mul x0 x1 = match x0, x1 with
+  | Float x0, Float x1 -> Float (x0 *. x1)
+  | Float x0, Dual x1 -> make_dual (mul (Float x0) x1.v) (mul (Float x0) x1.d)
+  | Dual x0, Float x1 -> make_dual (mul x0.v (Float x1)) (mul x0.d (Float x1))
+  | Dual x0, Dual x1 -> make_dual (mul x0.v x1.v) (add (mul x0.v x1.d) (mul x0.d x1.v))
