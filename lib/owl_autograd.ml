@@ -12,8 +12,7 @@ and dual = {
 let make_dual v d = Dual { v; d }
 
 let print_dual n =
-  let rec _print_dual x =
-    match x with
+  let rec _print_dual = function
     | Float a -> Printf.printf "%g" a
     | Dual x -> (
       Printf.printf "(";
@@ -45,6 +44,14 @@ let value = function
 let dual = function
   | Float a -> Float 0.
   | Dual n -> n.d
+
+let rec zero = function
+  | Float _ -> Float 0.
+  | Dual x -> make_dual (zero x.v) (zero x.d)
+
+let rec one = function
+  | Float _ -> Float 1.
+  | Dual x -> make_dual (one x.v) (zero x.d)
 
 let rec _add x0 x1 = match x0, x1 with
   | Float x0, Float x1 -> Float (x0 +. x1)
@@ -123,3 +130,45 @@ Derivative : DerivativeSig = struct
   let cos' x = Float (-1.) *. (sin x)
 
 end
+
+
+(** for debug
+
+open Owl_autograd;;
+let n0 = Dual {v=Float 3.; d=Float 1.};;
+let n1 = Dual {v=Float 1.; d=Float 0.};;
+let n2 = Dual {v=n0; d=n1};;
+print_dual n2;;
+let x = Maths.sin n2;;
+print_dual x;;
+let x = Maths.(n2 *. n2);;
+print_dual x;;
+let x = Maths.((Float 1.) /. n2);;
+print_dual x;;
+let x = Maths.((sin n2) /. n2);;
+print_dual x;;
+
+let n3 = Dual {v=n1; d=n2};;
+let x = zero n3;;
+print_dual n3;;
+print_dual x;;
+let x = one n3;;
+print_dual x;;
+let x = one n2;;
+print_dual n2;;
+print_dual x;;
+
+open Owl_autograd;;
+let x = Float 5.;;
+let x = make_dual x (one x);;
+let x = make_dual x (one x);;
+let x = make_dual x (one x);;
+let x = make_dual x (one x);;
+let y = Maths.(sin x);;
+print_dual x;;
+print_dual y;;
+let y = Maths.(x *. x *. x);;
+print_dual x;;
+print_dual y;;
+
+**)
