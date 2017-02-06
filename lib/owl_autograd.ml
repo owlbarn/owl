@@ -16,14 +16,16 @@ let print_dual n =
     match x with
     | Float a -> Printf.printf "%g" a
     | Dual x -> (
+      Printf.printf "(";
       let _ = match x.v with
-      | Float a -> Printf.printf "(%g," a
-      | _ -> failwith "error in print_node 1"
+      | Float a -> Printf.printf "%g," a
+      | y -> _print_dual y
       in
       let _ = match x.d with
-      | Float a -> Printf.printf "%g)" a
-      | y -> _print_dual y; Printf.printf ")"
-      in ()
+      | Float a -> Printf.printf "%g" a
+      | y -> _print_dual y
+      in
+      Printf.printf ")";
       )
   in
   _print_dual n; print_endline ""
@@ -44,20 +46,48 @@ let dual = function
   | Float a -> Float 0.
   | Dual n -> n.d
 
-let rec add x0 x1 = match x0, x1 with
+let rec _add x0 x1 = match x0, x1 with
   | Float x0, Float x1 -> Float (x0 +. x1)
-  | Float x0, Dual x1 -> make_dual (add (Float x0) x1.v) x1.d
-  | Dual x0, Float x1 -> make_dual (add x0.v (Float x1)) x0.d
-  | Dual x0, Dual x1 -> make_dual (add x0.v x1.v) (add x0.d x1.d)
+  | Float x0, Dual x1 -> make_dual (_add (Float x0) x1.v) x1.d
+  | Dual x0, Float x1 -> make_dual (_add x0.v (Float x1)) x0.d
+  | Dual x0, Dual x1 -> make_dual (_add x0.v x1.v) (_add x0.d x1.d)
 
-let rec sub x0 x1 = match x0, x1 with
+let rec _sub x0 x1 = match x0, x1 with
   | Float x0, Float x1 -> Float (x0 -. x1)
-  | Float x0, Dual x1 -> make_dual (sub (Float x0) x1.v) x1.d
-  | Dual x0, Float x1 -> make_dual (sub x0.v (Float x1)) x0.d
-  | Dual x0, Dual x1 -> make_dual (sub x0.v x1.v) (sub x0.d x1.d)
+  | Float x0, Dual x1 -> make_dual (_sub (Float x0) x1.v) x1.d
+  | Dual x0, Float x1 -> make_dual (_sub x0.v (Float x1)) x0.d
+  | Dual x0, Dual x1 -> make_dual (_sub x0.v x1.v) (_sub x0.d x1.d)
 
-let rec mul x0 x1 = match x0, x1 with
+let rec _mul x0 x1 = match x0, x1 with
   | Float x0, Float x1 -> Float (x0 *. x1)
-  | Float x0, Dual x1 -> make_dual (mul (Float x0) x1.v) (mul (Float x0) x1.d)
-  | Dual x0, Float x1 -> make_dual (mul x0.v (Float x1)) (mul x0.d (Float x1))
-  | Dual x0, Dual x1 -> make_dual (mul x0.v x1.v) (add (mul x0.v x1.d) (mul x0.d x1.v))
+  | Float x0, Dual x1 -> make_dual (_mul (Float x0) x1.v) (_mul (Float x0) x1.d)
+  | Dual x0, Float x1 -> make_dual (_mul x0.v (Float x1)) (_mul x0.d (Float x1))
+  | Dual x0, Dual x1 -> make_dual (_mul x0.v x1.v) (_add (_mul x0.v x1.d) (_mul x0.d x1.v))
+
+module type MathsSig = sig
+  val ( +. ) : t -> t -> t
+  val ( *. ) : t -> t -> t
+end
+
+module type DerivativeSig = sig
+end
+
+module rec Maths : MathsSig = struct
+
+  let wrap_fun fn f f' args =
+    let argsval = Array.map value args in
+    let v = f argsval in
+    let dualval = Array.map dual args in
+    let d = f' dualval argsval in
+    make_dual v d
+
+  let ( +. ) x0 x1 = _add x0 x1
+
+  let ( *. ) x0 x1 = _mul x0 x1
+
+end and
+Derivative : DerivativeSig = struct
+
+  open Maths
+
+end
