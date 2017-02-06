@@ -29,14 +29,6 @@ let print_dual n =
   in
   _print_dual n; print_endline ""
 
-let degree x =
-  let rec _degree x i =
-    match x with
-    | Dual x -> _degree x.d (i + 1)
-    | _ -> i
-  in
-  _degree x 0
-
 let value = function
   | Float a -> Float a
   | Dual n -> n.v
@@ -131,6 +123,29 @@ Derivative : DerivativeSig = struct
 
 end
 
+
+(* helper functions and wrappers *)
+
+let degree x =
+  let rec _degree x i =
+    match x with
+    | Dual x -> _degree x.d (i + 1)
+    | _ -> i
+  in
+  _degree x 0
+
+let make_gradient ?(argnum=0) f =
+  let f' = fun args -> (
+    let args = Array.mapi (fun i x ->
+      match i = argnum with
+      | true  -> make_dual x (one x)
+      | false -> make_dual x (zero x)
+    ) args
+    in
+    f args |> dual
+  )
+  in
+  f'
 
 (** for debug
 
