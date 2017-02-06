@@ -64,10 +64,17 @@ let rec _mul x0 x1 = match x0, x1 with
   | Dual x0, Float x1 -> make_dual (_mul x0.v (Float x1)) (_mul x0.d (Float x1))
   | Dual x0, Dual x1 -> make_dual (_mul x0.v x1.v) (_add (_mul x0.v x1.d) (_mul x0.d x1.v))
 
+let rec _div x0 x1 = match x0, x1 with
+  | Float x0, Float x1 -> Float (x0 /. x1)
+  | Float x0, Dual x1 -> let y = _div (Float x0) x1.v in make_dual y (_mul (Float (-1.)) (_mul (_div y x1.v) x1.d))
+  | Dual x0, Float x1 -> make_dual (_div x0.v (Float x1)) (_div x0.d (Float x1))
+  | Dual x0, Dual x1 -> make_dual (_div x0.v x1.v) (_sub (_div x0.d x1.v) (_div (_mul x0.v x1.d) (_mul x1.v x1.v)))
+
 module type MathsSig = sig
   val ( +. ) : t -> t -> t
   val ( -. ) : t -> t -> t
   val ( *. ) : t -> t -> t
+  val ( /. ) : t -> t -> t
   val sin : t -> t
   val cos : t -> t
 end
@@ -93,6 +100,8 @@ module rec Maths : MathsSig = struct
   let ( -. ) x0 x1 = _sub x0 x1
 
   let ( *. ) x0 x1 = _mul x0 x1
+
+  let ( /. ) x0 x1 = _div x0 x1
 
   let rec sin = function
     | Float x -> Float (Pervasives.sin x)
