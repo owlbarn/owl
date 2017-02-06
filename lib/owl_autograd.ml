@@ -66,13 +66,20 @@ let rec _mul x0 x1 = match x0, x1 with
 
 module type MathsSig = sig
   val ( +. ) : t -> t -> t
+  val ( -. ) : t -> t -> t
   val ( *. ) : t -> t -> t
+  val sin : t -> t
+  val cos : t -> t
 end
 
 module type DerivativeSig = sig
+  val sin' : t -> t
+  val cos' : t -> t
 end
 
 module rec Maths : MathsSig = struct
+
+  open Derivative
 
   let wrap_fun fn f f' args =
     let argsval = Array.map value args in
@@ -83,11 +90,27 @@ module rec Maths : MathsSig = struct
 
   let ( +. ) x0 x1 = _add x0 x1
 
+  let ( -. ) x0 x1 = _sub x0 x1
+
   let ( *. ) x0 x1 = _mul x0 x1
+
+  let rec sin = function
+    | Float x -> Float (Pervasives.sin x)
+    | x -> let v = value x in
+      make_dual (sin v) ((sin' v) *. (dual x))
+
+  let rec cos = function
+    | Float x -> Float (Pervasives.cos x)
+    | x -> let v = value x in
+      make_dual (cos v) ((cos' v) *. (dual x))
 
 end and
 Derivative : DerivativeSig = struct
 
   open Maths
+
+  let sin' x = cos x
+
+  let cos' x = Float (-1.) *. (sin x)
 
 end
