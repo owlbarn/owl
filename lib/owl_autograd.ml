@@ -9,25 +9,10 @@ and dual = {
   d : t;
 }
 
-let make_dual v d = Dual { v; d }
 
-let print_dual n =
-  let rec _print_dual = function
-    | Float a -> Printf.printf "%g" a
-    | Dual x -> (
-      Printf.printf "(";
-      let _ = match x.v with
-      | Float a -> Printf.printf "%g," a
-      | y -> _print_dual y
-      in
-      let _ = match x.d with
-      | Float a -> Printf.printf "%g" a
-      | y -> _print_dual y
-      in
-      Printf.printf ")";
-      )
-  in
-  _print_dual n; print_endline ""
+(* operate on dual numbers *)
+
+let make_dual v d = Dual { v; d }
 
 let value = function
   | Float a -> Float a
@@ -44,6 +29,9 @@ let rec zero = function
 let rec one = function
   | Float _ -> Float 1.
   | Dual x -> make_dual (one x.v) (zero x.d)
+
+
+(* define arithmetic on dual numbers *)
 
 let rec _add x0 x1 = match x0, x1 with
   | Float x0, Float x1 -> Float (x0 +. x1)
@@ -68,6 +56,9 @@ let rec _div x0 x1 = match x0, x1 with
   | Float x0, Dual x1 -> let y = _div (Float x0) x1.v in make_dual y (_mul (Float (-1.)) (_mul (_div y x1.v) x1.d))
   | Dual x0, Float x1 -> make_dual (_div x0.v (Float x1)) (_div x0.d (Float x1))
   | Dual x0, Dual x1 -> make_dual (_div x0.v x1.v) (_sub (_div x0.d x1.v) (_div (_mul x0.v x1.d) (_mul x1.v x1.v)))
+
+
+(* overload operators *)
 
 module type MathsSig = sig
   val ( +. ) : t -> t -> t
@@ -126,14 +117,6 @@ end
 
 (* helper functions and wrappers *)
 
-let degree x =
-  let rec _degree x i =
-    match x with
-    | Dual x -> _degree x.d (i + 1)
-    | _ -> i
-  in
-  _degree x 0
-
 let derivative ?(argnum=0) f =
   let f' = fun args -> (
     let args = Array.mapi (fun i x ->
@@ -185,6 +168,31 @@ let laplacian f =
   )
   in
   l
+1
+let print_dual n =
+  let rec _print_dual = function
+    | Float a -> Printf.printf "%g" a
+    | Dual x -> (
+      Printf.printf "(";
+      let _ = match x.v with
+      | Float a -> Printf.printf "%g," a
+      | y -> _print_dual y
+      in
+      let _ = match x.d with
+      | Float a -> Printf.printf "%g" a
+      | y -> _print_dual y
+      in
+      Printf.printf ")";
+      )
+  in
+  _print_dual n; print_endline ""
 
+let degree x =
+  let rec _degree x i =
+    match x with
+    | Dual x -> _degree x.d (i + 1)
+    | _ -> i
+  in
+  _degree x 0
 
 (* ends here *)
