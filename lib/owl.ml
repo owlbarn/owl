@@ -25,6 +25,7 @@ module Fft = Owl_fft
 
 module Cluster = Owl_cluster
 
+module Algodiff = Owl_algodiff
 
 (* So we don't have to open Bigarray all the time. *)
 

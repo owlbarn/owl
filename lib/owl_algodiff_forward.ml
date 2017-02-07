@@ -78,13 +78,6 @@ module rec Maths : MathsSig = struct
 
   open Derivative
 
-  let wrap_fun fn f f' args =
-    let argsval = Array.map value args in
-    let v = f argsval in
-    let dualval = Array.map dual args in
-    let d = f' dualval argsval in
-    make_dual v d
-
   let ( +. ) x0 x1 = _add x0 x1
 
   let ( -. ) x0 x1 = _sub x0 x1
@@ -168,7 +161,7 @@ let laplacian f =
   )
   in
   l
-1
+
 let print_dual n =
   let rec _print_dual = function
     | Float a -> Printf.printf "%g" a
