@@ -147,50 +147,32 @@ let derivative ?(argnum=0) f =
   in
   f'
 
-let gradient f = None
+let gradient f =
+  let g = fun args -> (
+    Array.mapi (fun i _ -> (derivative ~argnum:i f) args) args
+  )
+  in
+  g
 
-let jacobian f = None
+let jacobian f =
+  let f' = fun argnum args -> (
+    let args = Array.mapi (fun i x ->
+      match i = argnum with
+      | true  -> make_dual x (one x)
+      | false -> make_dual x (zero x)
+    ) args
+    in
+    Array.map dual (f args)
+  )
+  in
+  let j = fun args -> (
+    Array.mapi (fun i _ -> f' i args) args
+  )
+  in
+  j
 
 let hessian f = None
 
+let laplacian f = None
 
-(** for debug
-
-open Owl_autograd;;
-let n0 = Dual {v=Float 3.; d=Float 1.};;
-let n1 = Dual {v=Float 1.; d=Float 0.};;
-let n2 = Dual {v=n0; d=n1};;
-print_dual n2;;
-let x = Maths.sin n2;;
-print_dual x;;
-let x = Maths.(n2 *. n2);;
-print_dual x;;
-let x = Maths.((Float 1.) /. n2);;
-print_dual x;;
-let x = Maths.((sin n2) /. n2);;
-print_dual x;;
-
-let n3 = Dual {v=n1; d=n2};;
-let x = zero n3;;
-print_dual n3;;
-print_dual x;;
-let x = one n3;;
-print_dual x;;
-let x = one n2;;
-print_dual n2;;
-print_dual x;;
-
-open Owl_autograd;;
-let x = Float 5.;;
-let x = make_dual x (one x);;
-let x = make_dual x (one x);;
-let x = make_dual x (one x);;
-let x = make_dual x (one x);;
-let y = Maths.(sin x);;
-print_dual x;;
-print_dual y;;
-let y = Maths.(x *. x *. x);;
-print_dual x;;
-print_dual y;;
-
-**)
+(* ends here *)
