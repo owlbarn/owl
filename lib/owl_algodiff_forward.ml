@@ -57,6 +57,13 @@ let rec _div x0 x1 = match x0, x1 with
   | Dual x0, Float x1 -> make_dual (_div x0.v (Float x1)) (_div x0.d (Float x1))
   | Dual x0, Dual x1 -> make_dual (_div x0.v x1.v) (_sub (_div x0.d x1.v) (_div (_mul x0.v x1.d) (_mul x1.v x1.v)))
 
+(*
+let rec _pow x0 x1 = match x0, x1 with
+  | Float x0, Float x1 -> Float (x0 ** x1)
+  | Float x0, Dual x1 ->
+  | Dual x0, Float x1 ->
+  | Dual x0, Dual x1 ->
+*)
 
 (* overload operators *)
 
@@ -65,13 +72,21 @@ module type MathsSig = sig
   val ( -. ) : t -> t -> t
   val ( *. ) : t -> t -> t
   val ( /. ) : t -> t -> t
+  val exp : t -> t
+  val log : t -> t
   val sin : t -> t
   val cos : t -> t
+  val sinh : t -> t
+  val cosh : t -> t
 end
 
 module type DerivativeSig = sig
+  val exp' : t -> t
+  val log' : t -> t
   val sin' : t -> t
   val cos' : t -> t
+  val sinh' : t -> t
+  val cosh' : t -> t
 end
 
 module rec Maths : MathsSig = struct
@@ -86,24 +101,46 @@ module rec Maths : MathsSig = struct
 
   let ( /. ) x0 x1 = _div x0 x1
 
+  let rec exp = function
+    | Float x -> Float (Pervasives.exp x)
+    | Dual x -> make_dual (exp x.v) ((exp' x.v) *. x.d)
+
+  let rec log =function
+    | Float x -> Float (Pervasives.log x)
+    | Dual x -> make_dual (log x.v) ((log' x.v) *. x.d)
+
   let rec sin = function
     | Float x -> Float (Pervasives.sin x)
-    | x -> let v = value x in
-      make_dual (sin v) ((sin' v) *. (dual x))
+    | Dual x -> make_dual (sin x.v) ((sin' x.v) *. x.d)
 
   let rec cos = function
     | Float x -> Float (Pervasives.cos x)
-    | x -> let v = value x in
-      make_dual (cos v) ((cos' v) *. (dual x))
+    | Dual x -> make_dual (cos x.v) ((cos' x.v) *. x.d)
+
+  let rec sinh = function
+    | Float x -> Float (Pervasives.sinh x)
+    | Dual x -> make_dual (sinh x.v) ((sinh' x.v) *. x.d)
+
+  let rec cosh = function
+    | Float x -> Float (Pervasives.cosh x)
+    | Dual x -> make_dual (cosh x.v) ((cosh' x.v) *. x.d)
 
 end and
 Derivative : DerivativeSig = struct
 
   open Maths
 
+  let exp' x = exp x
+
+  let log' x = Float 1. /. x
+
   let sin' x = cos x
 
   let cos' x = Float (-1.) *. (sin x)
+
+  let sinh' x = cosh x
+
+  let cosh' x = sinh x
 
 end
 

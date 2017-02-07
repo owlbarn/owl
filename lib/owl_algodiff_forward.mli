@@ -27,6 +27,22 @@ val laplacian : (t array -> t) -> (t array -> t)
 
 module Maths : sig
 
+  (** {7 Unary operators} *)
+
+  val exp : t -> t
+
+  val log : t -> t
+
+  val sin : t -> t
+
+  val cos : t -> t
+
+  val sinh : t -> t
+
+  val cosh : t -> t
+
+  (** {7 Binary operators} *)
+
   val ( +. ) : t -> t -> t
 
   val ( -. ) : t -> t -> t
@@ -34,10 +50,6 @@ module Maths : sig
   val ( *. ) : t -> t -> t
 
   val ( /. ) : t -> t -> t
-
-  val sin : t -> t
-
-  val cos : t -> t
 
 end
 
