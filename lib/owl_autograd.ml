@@ -134,7 +134,7 @@ let degree x =
   in
   _degree x 0
 
-let make_gradient ?(argnum=0) f =
+let derivative ?(argnum=0) f =
   let f' = fun args -> (
     let args = Array.mapi (fun i x ->
       match i = argnum with
@@ -146,6 +146,13 @@ let make_gradient ?(argnum=0) f =
   )
   in
   f'
+
+let gradient f = None
+
+let jacobian f = None
+
+let hessian f = None
+
 
 (** for debug
 
