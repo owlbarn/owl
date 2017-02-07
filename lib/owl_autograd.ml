@@ -171,8 +171,20 @@ let jacobian f =
   in
   j
 
-let hessian f = None
+let hessian f = jacobian (gradient f)
 
-let laplacian f = None
+let laplacian f =
+  let l = fun args -> (
+    let x = (hessian f) args in
+    let m = Array.length args in
+    let r = ref (Float 0.) in
+    for i = 0 to (m - 1) do
+      r := _add !r x.(i).(i)
+    done;
+    !r
+  )
+  in
+  l
+
 
 (* ends here *)
