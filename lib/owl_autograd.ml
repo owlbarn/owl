@@ -53,7 +53,7 @@ let rec _add x0 x1 = match x0, x1 with
 
 let rec _sub x0 x1 = match x0, x1 with
   | Float x0, Float x1 -> Float (x0 -. x1)
-  | Float x0, Dual x1 -> make_dual (_sub (Float x0) x1.v) x1.d
+  | Float x0, Dual x1 -> make_dual (_sub (Float x0) x1.v) (_sub (Float 0.) x1.d)
   | Dual x0, Float x1 -> make_dual (_sub x0.v (Float x1)) x0.d
   | Dual x0, Dual x1 -> make_dual (_sub x0.v x1.v) (_sub x0.d x1.d)
 
