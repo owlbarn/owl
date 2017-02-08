@@ -38,36 +38,36 @@ let is_zero x =
   try (_is_zero x; true)
   with exn -> false
 
-let is_const = None
+let is_const x = is_zero (dual x)
 
 (* define arithmetic on dual numbers *)
 
 let rec _add x0 x1 = match x0, x1 with
-  | Float x0, Float x1 -> Float (x0 +. x1)
+  | Float x0, Float x1 -> Float Pervasives.(x0 +. x1)
   | Float x0, Dual x1 -> make_dual (_add (Float x0) x1.v) x1.d
   | Dual x0, Float x1 -> make_dual (_add x0.v (Float x1)) x0.d
   | Dual x0, Dual x1 -> make_dual (_add x0.v x1.v) (_add x0.d x1.d)
 
 let rec _sub x0 x1 = match x0, x1 with
-  | Float x0, Float x1 -> Float (x0 -. x1)
+  | Float x0, Float x1 -> Float Pervasives.(x0 -. x1)
   | Float x0, Dual x1 -> make_dual (_sub (Float x0) x1.v) (_sub (Float 0.) x1.d)
   | Dual x0, Float x1 -> make_dual (_sub x0.v (Float x1)) x0.d
   | Dual x0, Dual x1 -> make_dual (_sub x0.v x1.v) (_sub x0.d x1.d)
 
 let rec _mul x0 x1 = match x0, x1 with
-  | Float x0, Float x1 -> Float (x0 *. x1)
+  | Float x0, Float x1 -> Float Pervasives.(x0 *. x1)
   | Float x0, Dual x1 -> make_dual (_mul (Float x0) x1.v) (_mul (Float x0) x1.d)
   | Dual x0, Float x1 -> make_dual (_mul x0.v (Float x1)) (_mul x0.d (Float x1))
   | Dual x0, Dual x1 -> make_dual (_mul x0.v x1.v) (_add (_mul x0.v x1.d) (_mul x0.d x1.v))
 
 let rec _div x0 x1 = match x0, x1 with
-  | Float x0, Float x1 -> Float (x0 /. x1)
+  | Float x0, Float x1 -> Float Pervasives.(x0 /. x1)
   | Float x0, Dual x1 -> let y = _div (Float x0) x1.v in make_dual y (_mul (Float (-1.)) (_mul (_div y x1.v) x1.d))
   | Dual x0, Float x1 -> make_dual (_div x0.v (Float x1)) (_div x0.d (Float x1))
   | Dual x0, Dual x1 -> make_dual (_div x0.v x1.v) (_sub (_div x0.d x1.v) (_div (_mul x0.v x1.d) (_mul x1.v x1.v)))
 
 (*
-let rec _pow x0 x1 = match x0, x1 with
+let rec pow x0 x1 = match x0, x1 with
   | Float x0, Float x1 -> Float (x0 ** x1)
   | Float x0, Dual x1 ->
   | Dual x0, Float x1 ->
@@ -81,6 +81,7 @@ module type MathsSig = sig
   val ( -. ) : t -> t -> t
   val ( *. ) : t -> t -> t
   val ( /. ) : t -> t -> t
+  val ( ** ) : t -> t -> t
   val exp : t -> t
   val log : t -> t
   val sin : t -> t
@@ -151,6 +152,19 @@ module rec Maths : MathsSig = struct
   let rec square = function
     | Float x -> Float Pervasives.(x *. x)
     | Dual x -> make_dual (square x.v) ((square' x.v) *. x.d)
+
+  let rec pow x0 x1 = match x0, x1 with
+    | Float x0, Float x1 -> Float Pervasives.(x0 ** x1)
+    | Float x0, Dual x1 -> let y = pow (Float x0) x1.v in make_dual y (_mul (_mul (Float Pervasives.(log x0)) y) x1.d)
+    | Dual x0, Float x1 -> make_dual (pow x0.v (Float x1)) (_mul(_mul (Float x1) (pow x0.v (Float Pervasives.(x1 -. 1.)))) x0.d)
+    | Dual x0, Dual x1 -> (
+      let y0 = pow x0.v x1.v in
+      let y1 = _mul x1.v (pow x0.v (_sub x1.v (Float 1.))) in
+      let y2 = if is_const (Dual x1) then one y0 else (_mul y0 (log x0.v)) in
+      make_dual y0 (_add (_mul x0.d y1) (_mul x1.d y2))
+      )
+
+  let ( ** ) x0 x1 = pow x0 x1
 
 end and
 Derivative : DerivativeSig = struct

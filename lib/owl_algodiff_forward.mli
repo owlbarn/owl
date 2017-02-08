@@ -55,6 +55,8 @@ module Maths : sig
 
   val ( /. ) : t -> t -> t
 
+  val ( ** ) : t -> t -> t
+  
 end
 
 
@@ -71,3 +73,5 @@ val zero : t -> t
 val one : t -> t
 
 val is_zero : t -> bool
+
+val is_const : t -> bool
