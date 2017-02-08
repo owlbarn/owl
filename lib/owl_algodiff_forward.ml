@@ -78,6 +78,7 @@ module type MathsSig = sig
   val cos : t -> t
   val sinh : t -> t
   val cosh : t -> t
+  val square : t -> t
 end
 
 module type DerivativeSig = sig
@@ -87,6 +88,7 @@ module type DerivativeSig = sig
   val cos' : t -> t
   val sinh' : t -> t
   val cosh' : t -> t
+  val square' : t -> t
 end
 
 module rec Maths : MathsSig = struct
@@ -125,6 +127,10 @@ module rec Maths : MathsSig = struct
     | Float x -> Float (Pervasives.cosh x)
     | Dual x -> make_dual (cosh x.v) ((cosh' x.v) *. x.d)
 
+  let rec square = function
+    | Float x -> Float Pervasives.(x *. x)
+    | Dual x -> make_dual (square x.v) ((square' x.v) *. x.d)
+
 end and
 Derivative : DerivativeSig = struct
 
@@ -141,6 +147,8 @@ Derivative : DerivativeSig = struct
   let sinh' x = cosh x
 
   let cosh' x = sinh x
+
+  let square' x = Float 2. *. x
 
 end
 

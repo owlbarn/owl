@@ -41,6 +41,8 @@ module Maths : sig
 
   val cosh : t -> t
 
+  val square : t -> t
+  
   (** {7 Binary operators} *)
 
   val ( +. ) : t -> t -> t
