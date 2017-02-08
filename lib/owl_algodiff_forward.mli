@@ -57,13 +57,19 @@ module Maths : sig
 
   val acos : t -> t
 
-  val atan : t -> t 
+  val atan : t -> t
 
   val sinh : t -> t
 
   val cosh : t -> t
 
   val tanh : t -> t
+
+  val asinh : t -> t
+
+  val acosh : t -> t
+
+  val atanh : t -> t
 
   val square : t -> t
 

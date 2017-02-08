@@ -70,6 +70,9 @@ module type MathsSig = sig
   val sinh : t -> t
   val cosh : t -> t
   val tanh : t -> t
+  val asinh : t -> t
+  val acosh : t -> t
+  val atanh : t -> t
   val square : t -> t
   val sqrt : t -> t
 end
@@ -93,6 +96,9 @@ module type DerivativeSig = sig
   val sinh' : t -> t
   val cosh' : t -> t
   val tanh' : t -> t
+  val asinh' : t -> t
+  val acosh' : t -> t
+  val atanh' : t -> t
   val square' : t -> t
   val sqrt' : t -> t
 end
@@ -147,7 +153,7 @@ module rec Maths : MathsSig = struct
     | Dual x -> make_dual (neg x.v) ((neg' x.v) *. x.d)
 
   let rec exp = function
-    | Float x -> Float (Pervasives.exp x)
+    | Float x -> Float Pervasives.(exp x)
     | Dual x -> make_dual (exp x.v) ((exp' x.v) *. x.d)
 
   let rec exp2 = function
@@ -159,7 +165,7 @@ module rec Maths : MathsSig = struct
     | Dual x -> make_dual (expm1 x.v) ((expm1' x.v) *. x.d)
 
   let rec log =function
-    | Float x -> Float (Pervasives.log x)
+    | Float x -> Float Pervasives.(log x)
     | Dual x -> make_dual (log x.v) ((log' x.v) *. x.d)
 
   let rec log2 =function
@@ -175,15 +181,15 @@ module rec Maths : MathsSig = struct
     | Dual x -> make_dual (log1p x.v) ((log1p' x.v) *. x.d)
 
   let rec sin = function
-    | Float x -> Float (Pervasives.sin x)
+    | Float x -> Float Pervasives.(sin x)
     | Dual x -> make_dual (sin x.v) ((sin' x.v) *. x.d)
 
   let rec cos = function
-    | Float x -> Float (Pervasives.cos x)
+    | Float x -> Float Pervasives.(cos x)
     | Dual x -> make_dual (cos x.v) ((cos' x.v) *. x.d)
 
   let rec tan = function
-    | Float x -> Float (Pervasives.tan x)
+    | Float x -> Float Pervasives.(tan x)
     | Dual x -> make_dual (tan x.v) ((tan' x.v) *. x.d)
 
   let rec asin = function
@@ -199,16 +205,28 @@ module rec Maths : MathsSig = struct
     | Dual x -> make_dual (atan x.v) ((atan' x.v) *. x.d)
 
   let rec sinh = function
-    | Float x -> Float (Pervasives.sinh x)
+    | Float x -> Float Pervasives.(sinh x)
     | Dual x -> make_dual (sinh x.v) ((sinh' x.v) *. x.d)
 
+  let rec cosh = function
+    | Float x -> Float Pervasives.(cosh x)
+    | Dual x -> make_dual (cosh x.v) ((cosh' x.v) *. x.d)
+
   let rec tanh = function
-    | Float x -> Float (Pervasives.tanh x)
+    | Float x -> Float Pervasives.(tanh x)
     | Dual x -> make_dual (tanh x.v) ((tanh' x.v) *. x.d)
 
-  let rec cosh = function
-    | Float x -> Float (Pervasives.cosh x)
-    | Dual x -> make_dual (cosh x.v) ((cosh' x.v) *. x.d)
+  let rec asinh = function
+    | Float x -> Float Owl_maths.(asinh x)
+    | Dual x -> make_dual (asinh x.v) ((asinh' x.v) *. x.d)
+
+  let rec acosh = function
+    | Float x -> Float Owl_maths.(acosh x)
+    | Dual x -> make_dual (acosh x.v) ((acosh' x.v) *. x.d)
+
+  let rec atanh = function
+    | Float x -> Float Owl_maths.(atanh x)
+    | Dual x -> make_dual (atanh x.v) ((atanh' x.v) *. x.d)
 
   let rec square = function
     | Float x -> Float Pervasives.(x *. x)
@@ -272,11 +290,15 @@ Derivative : DerivativeSig = struct
 
   let tanh' x = square (cosh x)
 
+  let asinh' x = (Float 1.) /. ((square x) +. (Float 1.))
+
+  let acosh' x = (Float 1.) /. ((square x) -. (Float 1.))
+
+  let atanh' x = (Float 1.) /. ((Float 1.) -. (square x))
+
   let square' x = Float 2. *. x
 
   let sqrt' x = Float 0.5 /. (sqrt x)
-
-
 
 end
 
