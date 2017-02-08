@@ -76,8 +76,10 @@ module type MathsSig = sig
   val log : t -> t
   val sin : t -> t
   val cos : t -> t
+  val tan : t -> t
   val sinh : t -> t
   val cosh : t -> t
+  val tanh : t -> t
   val square : t -> t
 end
 
@@ -86,8 +88,10 @@ module type DerivativeSig = sig
   val log' : t -> t
   val sin' : t -> t
   val cos' : t -> t
+  val tan' : t -> t
   val sinh' : t -> t
   val cosh' : t -> t
+  val tanh' : t -> t
   val square' : t -> t
 end
 
@@ -119,9 +123,17 @@ module rec Maths : MathsSig = struct
     | Float x -> Float (Pervasives.cos x)
     | Dual x -> make_dual (cos x.v) ((cos' x.v) *. x.d)
 
+  let rec tan = function
+    | Float x -> Float (Pervasives.tan x)
+    | Dual x -> make_dual (tan x.v) ((tan' x.v) *. x.d)
+
   let rec sinh = function
     | Float x -> Float (Pervasives.sinh x)
     | Dual x -> make_dual (sinh x.v) ((sinh' x.v) *. x.d)
+
+  let rec tanh = function
+    | Float x -> Float (Pervasives.tanh x)
+    | Dual x -> make_dual (tanh x.v) ((tanh' x.v) *. x.d)
 
   let rec cosh = function
     | Float x -> Float (Pervasives.cosh x)
@@ -144,9 +156,13 @@ Derivative : DerivativeSig = struct
 
   let cos' x = Float (-1.) *. (sin x)
 
+  let tan' x = square (cos x)
+
   let sinh' x = cosh x
 
   let cosh' x = sinh x
+
+  let tanh' x = square (cosh x)
 
   let square' x = Float 2. *. x
 
