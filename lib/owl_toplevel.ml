@@ -19,6 +19,7 @@ let printers = [
   Obj.magic (Ldot (Lident "Owl_sparse_matrix", "pp_spmat"));
   Obj.magic (Ldot (Lident "Owl_sparse_real", "pp_spmat"));
   Obj.magic (Ldot (Lident "Owl_sparse_complex", "pp_spmat"));
+  Obj.magic (Ldot (Lident "Owl_algodiff_forward", "pp_dual"));
 ]
 
 let () =

@@ -58,14 +58,16 @@ module Maths : sig
 end
 
 
-(** {6 Helper functions} *)
+(** {6 Dual number functions} *)
 
 val degree : t -> int
 
-val print_dual : t -> unit
+val pp_dual : t -> unit
 
 val make_dual : t -> t -> t
 
 val zero : t -> t
 
 val one : t -> t
+
+val is_zero : t -> bool

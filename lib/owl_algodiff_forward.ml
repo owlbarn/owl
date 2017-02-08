@@ -30,6 +30,15 @@ let rec one = function
   | Float _ -> Float 1.
   | Dual x -> make_dual (one x.v) (zero x.d)
 
+let is_zero x =
+  let rec _is_zero = function
+    | Float a -> if a <> 0. then failwith "not zero"
+    | Dual x -> (_is_zero x.v; _is_zero x.d)
+  in
+  try (_is_zero x; true)
+  with exn -> false
+
+let is_const = None
 
 (* define arithmetic on dual numbers *)
 
@@ -223,23 +232,23 @@ let laplacian f =
   in
   l
 
-let print_dual n =
-  let rec _print_dual = function
+let pp_dual n =
+  let rec _pp_dual = function
     | Float a -> Printf.printf "%g" a
     | Dual x -> (
       Printf.printf "(";
       let _ = match x.v with
       | Float a -> Printf.printf "%g," a
-      | y -> _print_dual y
+      | y -> _pp_dual y
       in
       let _ = match x.d with
       | Float a -> Printf.printf "%g" a
-      | y -> _print_dual y
+      | y -> _pp_dual y
       in
       Printf.printf ")";
       )
   in
-  _print_dual n; print_endline ""
+  _pp_dual n; print_endline ""
 
 let degree x =
   let rec _degree x i =
