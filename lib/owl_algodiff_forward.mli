@@ -29,15 +29,35 @@ module Maths : sig
 
   (** {7 Unary operators} *)
 
+  val abs : t -> t
+
   val neg : t -> t
 
   val exp : t -> t
 
+  val exp2 : t -> t
+
+  val expm1 : t -> t
+
   val log : t -> t
+
+  val log2 : t -> t
+
+  val log10 : t -> t
+
+  val log1p : t -> t
 
   val sin : t -> t
 
   val cos : t -> t
+
+  val tan : t -> t
+
+  val asin : t -> t
+
+  val acos : t -> t
+
+  val atan : t -> t 
 
   val sinh : t -> t
 
@@ -46,6 +66,8 @@ module Maths : sig
   val tanh : t -> t
 
   val square : t -> t
+
+  val sqrt : t -> t
 
   (** {7 Binary operators} *)
 
