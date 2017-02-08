@@ -288,7 +288,7 @@ Derivative : DerivativeSig = struct
 
   let cosh' x = sinh x
 
-  let tanh' x = square (cosh x)
+  let tanh' x = (Float 1.) /. square (cosh x)
 
   let asinh' x = (Float 1.) /. ((square x) +. (Float 1.))
 
@@ -357,6 +357,8 @@ let laplacian f =
   in
   l
 
+let elementwise_derivative ?(argnum=0) f = None
+
 let pp_dual n =
   let rec _pp_dual = function
     | Float a -> Printf.printf "%g" a
@@ -382,5 +384,9 @@ let degree x =
     | _ -> i
   in
   _degree x 0
+
+let of_float_array x = Array.map (fun a -> Float a) x
+
+let to_float_array x = Array.map (function Float a -> a | _ -> failwith "invalid input") x
 
 (* ends here *)

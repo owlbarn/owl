@@ -107,3 +107,7 @@ val one : t -> t
 val is_zero : t -> bool
 
 val is_const : t -> bool
+
+val of_float_array : float array -> t array
+
+val to_float_array : t array -> float array
