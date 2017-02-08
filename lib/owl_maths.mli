@@ -18,6 +18,8 @@
 
 val abs : float -> float
 
+val neg : float -> float
+
 val sqrt : float -> float
 
 val pow : float -> float -> float

@@ -40,6 +40,9 @@ let is_zero x =
 
 let is_const x = is_zero (dual x)
 
+let rec sign = function
+  | Float a -> Float (if a = 0. then 0. else if a > 0. then 1. else -1.)
+  | Dual x -> sign x.v
 
 (* overload operators, module signature *)
 
@@ -49,6 +52,8 @@ module type MathsSig = sig
   val ( *. ) : t -> t -> t
   val ( /. ) : t -> t -> t
   val ( ** ) : t -> t -> t
+  val abs : t -> t
+  val neg : t -> t
   val exp : t -> t
   val log : t -> t
   val sin : t -> t
@@ -61,6 +66,8 @@ module type MathsSig = sig
 end
 
 module type DerivativeSig = sig
+  val abs' : t -> t
+  val neg' : t -> t
   val exp' : t -> t
   val log' : t -> t
   val sin' : t -> t
@@ -112,6 +119,14 @@ module rec Maths : MathsSig = struct
   let ( *. ) x0 x1 = _mul x0 x1
 
   let ( /. ) x0 x1 = _div x0 x1
+
+  let rec abs = function
+    | Float x -> Float Pervasives.(abs_float x)
+    | Dual x -> make_dual (abs x.v) ((abs' x.v) *. x.d)
+
+  let rec neg = function
+    | Float x -> Float Pervasives.(0. -. x)
+    | Dual x -> make_dual (neg x.v) ((neg' x.v) *. x.d)
 
   let rec exp = function
     | Float x -> Float (Pervasives.exp x)
@@ -166,6 +181,10 @@ end and
 Derivative : DerivativeSig = struct
 
   open Maths
+
+  let abs' x = sign x
+
+  let neg' x = Float (-1.)
 
   let exp' x = exp x
 

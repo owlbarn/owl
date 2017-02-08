@@ -11,6 +11,8 @@ let pi = 3.141592653589793238462643383279502884197169399
 
 let abs x = if x < 0. then (0.-.x) else x
 
+let neg x = 0. -. x
+
 let sqrt x = sqrt x
 
 let pow x y = x ** y

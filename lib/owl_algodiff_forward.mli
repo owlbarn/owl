@@ -29,6 +29,8 @@ module Maths : sig
 
   (** {7 Unary operators} *)
 
+  val neg : t -> t
+
   val exp : t -> t
 
   val log : t -> t
@@ -56,11 +58,13 @@ module Maths : sig
   val ( /. ) : t -> t -> t
 
   val ( ** ) : t -> t -> t
-  
+
 end
 
 
 (** {6 Dual number functions} *)
+
+(* In general, you are not supposed to use these functions directly. *)
 
 val degree : t -> int
 
