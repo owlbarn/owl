@@ -69,11 +69,13 @@ let sinh x = sinh x
 
 let cosh x = cosh x
 
-let acosh x = Gsl.Math.acosh x
+let tanh x = tanh x
 
-let asinh x = Gsl.Math.asinh x
+let asinh x = asinh x
 
-let atanh x = Gsl.Math.atanh x
+let acosh x = acosh x
+
+let atanh x = atanh x
 
 let lnsinh x = Gsl.Sf.lnsinh x
 

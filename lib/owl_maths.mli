@@ -72,6 +72,8 @@ val sinh : float -> float
 
 val cosh : float -> float
 
+val tanh : float -> float
+
 val asinh : float -> float
 
 val acosh : float -> float
