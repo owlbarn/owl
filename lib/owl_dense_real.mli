@@ -242,6 +242,10 @@ val map : (elt -> elt) -> mat -> mat
   current element is not passed to the function [f : float -> float]
  *)
 
+val map2i : (int -> int -> elt -> elt -> elt) -> mat -> mat -> mat
+
+val map2 : (elt -> elt -> elt) -> mat -> mat -> mat
+
 val foldi : (int -> int -> 'a -> elt -> 'a) -> 'a -> mat -> 'a
 
 val fold : ('a -> elt -> 'a) -> 'a -> mat -> 'a

@@ -112,6 +112,10 @@ val mapi : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
 val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
+val map2i : (int -> int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
 val foldi : (int -> int -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 
 val fold : ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c

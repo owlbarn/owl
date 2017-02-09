@@ -250,6 +250,16 @@ let map f x =
   let y = Owl_dense_ndarray.map f y in
   of_ndarray y
 
+let map2i f x y =
+  if same_shape x y = false then failwith "error: shap mismatch";
+  let z = empty (Array2.kind x) (row_num x) (col_num x) in
+  iteri (fun i j a ->
+    let b = Array2.unsafe_get y i j in
+    Array2.unsafe_set z i j (f i j a b)
+  ) x; z
+
+let map2 f x y = map2i (fun _ _ a b -> f a b) x y
+
 let mapi_rows f x = Array.init (row_num x) (fun i -> f i (row x i))
 
 let map_rows f x = mapi_rows (fun _ y -> f y) x
