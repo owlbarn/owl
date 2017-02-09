@@ -682,6 +682,17 @@ let map ?axis f x =
   | Some a -> mapi ?axis (fun _ y -> f y) x
   | None   -> _map_all_axis f x
 
+let map2i ?axis f x y =
+  if same_shape x y = false then
+    failwith "error: dimension mismatch";
+  let z = empty (kind x) (shape x) in
+  iteri ?axis (fun i a ->
+    let b = get y i in
+    set z i (f i a b)
+  ) x; z
+
+let map2 ?axis f x y = map2i ?axis (fun _ a b -> f a b) x y
+
 let _check_transpose_axis axis d =
   let info = "check_transpose_axiss fails" in
   if Array.length axis <> d then

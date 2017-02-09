@@ -179,6 +179,18 @@ val map : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
   faster than [mapi].
  *)
 
+val map2i : ?axis:int option array -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [map2i ~axis f x y] applies [f] to two elements of the same position in a
+  slice defined by [~axis] in both [x] and [y]. If [~axis] is not passed in,
+  then [map2i] simply iterates all the elements in [x] and [y]. The two matrices
+  mush have the same shape.
+ *)
+
+val map2 : ?axis:int option array -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [map2 ~axis f x y] is similar to [map2i ~axis f x y] except the index of the
+  index of the current element is not passed to the function [f].
+ *)
+
 val filteri : ?axis:int option array -> (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
 (** [filteri ~axis f x] uses [f] to filter out certain elements in a slice
   defined by [~axis]. An element will be included if [f] returns [true]. The
