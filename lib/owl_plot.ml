@@ -423,7 +423,7 @@ let histogram ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(bin=10) x =
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
-    plhist x xmin xmax bin [ PL_HIST_DEFAULT; PL_HIST_NOSCALING ];
+    plhist x xmin xmax bin [ PL_HIST_DEFAULT; PL_HIST_NOSCALING; PL_HIST_IGNORE_OUTLIERS; PL_HIST_NOEXPAND ];
     (* restore original settings *)
     plscol0 1 r' g' b'; plcol0 1;
   ) in
