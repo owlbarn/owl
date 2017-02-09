@@ -196,13 +196,16 @@ x.(i), i, x.(j), j
 
 let histogram x n =
   let a, b = minmax x in
-  let c = (b -. a) /. (float_of_int n) in
-  let d = Array.make n 0 in
-  Array.iter (fun y ->
-    let i = int_of_float ((y -. a) /. c) in
-    let i = if y = b then i - 1 else i in
-    d.(i) <- d.(i) + 1
-  ) x; d
+  match a = b with
+  | true  -> [|1|]
+  | false -> (
+    let c = (b -. a) /. (float_of_int n) in
+    let d = Array.make n 0 in
+    Array.iter (fun y ->
+      let i = int_of_float ((y -. a) /. c) in
+      let i = if y = b then i - 1 else i in
+      d.(i) <- d.(i) + 1
+    ) x; d)
 
 let ecdf x =
   let x = sort ~inc:true x in
