@@ -5,7 +5,37 @@
 
 (** [ Mathematics Module ]  *)
 
-let pi = 3.141592653589793238462643383279502884197169399
+let e = Gsl.Math.e
+
+let euler = Gsl.Math.euler
+
+let log2e = Gsl.Math.log2e
+
+let log10e = Gsl.Math.log10e
+
+let sqrt1_2 = Gsl.Math.sqrt1_2
+
+let sqrt2 = Gsl.Math.sqrt2
+
+let sqrt3 = Gsl.Math.sqrt3
+
+let sqrtpi = Gsl.Math.sqrtpi
+
+let pi = Gsl.Math.pi
+
+let pi_2 = Gsl.Math.pi_2
+
+let pi_4 = Gsl.Math.pi_4
+
+let i_1_pi = Gsl.Math.i_1_pi
+
+let i_1_pi = Gsl.Math.i_2_pi
+
+let ln10 = Gsl.Math.ln10
+
+let ln2 = Gsl.Math.ln2
+
+let lnpi = Gsl.Math.lnpi
 
 (** [ Basic and advanced math functions ] *)
 

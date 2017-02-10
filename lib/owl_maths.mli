@@ -533,10 +533,40 @@ val eta_int : int -> float
 
 (** {6 Some constants} *)
 
+val e : float
+
+val euler : float
+
+val log2e : float
+
+val log10e : float
+
+val sqrt1_2 : float
+
+val sqrt2 : float
+
+val sqrt3 : float
+
+val sqrtpi : float
+
 val pi : float
 
+val pi_2 : float
 
-(* TODO: Wavelet function is missing; FFT function is missing *)
+val pi_4 : float
+
+val i_1_pi : float
+
+val i_1_pi : float
+
+val ln10 : float
+
+val ln2 : float
+
+val lnpi : float
+
+
+(* TODO: Waveval function is missing; FFT function is missing *)
 
 
 
