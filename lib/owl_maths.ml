@@ -25,17 +25,17 @@ let exp_mult x y = Gsl.Sf.exp_mult x y
 
 let exprel x = Gsl.Sf.exprel x
 
-let ln x = Gsl.Sf.log x
+let log x = Gsl.Sf.log x
 
-let ln1p x = Gsl.Sf.log_1plusx x
+let log1p x = Gsl.Sf.log_1plusx x
 
-let ln_abs x = Gsl.Sf.log_abs x
+let log_abs x = Gsl.Sf.log_abs x
 
-let log2 x = (ln x) /. Gsl.Math.ln2
+let log2 x = (log x) /. Gsl.Math.ln2
 
-let log10 x = (ln x) /. Gsl.Math.ln10
+let log10 x = (log x) /. Gsl.Math.ln10
 
-let log base x = (ln x) /. (ln base)
+let logN base x = (log x) /. (log base)
 
 let sigmoid x = 1. /. (exp (-.x) +. 1.)
 

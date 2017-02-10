@@ -32,17 +32,17 @@ val exp_mult : float -> float -> float
 
 val exprel : float -> float
 
-val ln : float -> float
+val log : float -> float
 
-val ln1p : float -> float
+val log1p : float -> float
 
-val ln_abs : float -> float
+val log_abs : float -> float
 
 val log2 : float -> float
 
 val log10 : float -> float
 
-val log : float -> float -> float
+val logN : float -> float -> float
 
 val sigmoid : float -> float
 
