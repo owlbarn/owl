@@ -328,7 +328,10 @@ val im : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
  *)
 
 val sum : ('a, 'b) t -> 'a
-(** [sum x] returns the sum('a, 'b) tion of all elements in [x]. *)
+(** [sum x] returns the sumtion of all elements in [x]. *)
+
+val prod : ?axis:int option array -> ('a, 'b) t -> 'a
+(** [prod x] returns the product of all elements in [x] along passed in axises. *)
 
 val min : ('a, 'b) t -> 'a
 (** [min x] returns the minimum of all elements in [x]. *)

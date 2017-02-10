@@ -268,6 +268,8 @@ val trace : ('a, 'b) t -> 'a
 
 val sum : ('a, 'b) t -> 'a
 
+val prod : ('a, 'b) t -> 'a
+
 val average : ('a, 'b) t -> 'a
 
 val sum_rows : ('a, 'b) t -> ('a, 'b) t

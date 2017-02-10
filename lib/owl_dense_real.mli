@@ -536,6 +536,9 @@ val trace : mat -> elt
 val sum : mat -> elt
 (** [sum x] returns the summation of all the elements in [x]. *)
 
+val prod : mat -> elt
+(** [sum x] returns the product of all the elements in [x]. *)
+
 val average : mat -> elt
 (** [average x] returns the average value of all the elements in [x]. It is
   equivalent to calculate [sum x] divided by [numel x]

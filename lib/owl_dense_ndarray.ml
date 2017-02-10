@@ -1036,6 +1036,7 @@ let im x =
 
 let conj x = map Complex.conj x
 
+(* NOTE: experimental feature *)
 let pmap f x =
   let _op = _map_op (kind x) in
   let x' = Bigarray.reshape_1 x (numel x) in
@@ -1057,6 +1058,11 @@ let pmap f x =
   let y = Owl_parallel.map_block f' x' in
   let y = genarray_of_array1 y in
   reshape y (shape x)
+
+let prod ?axis x =
+  let _a1 = _one (kind x) in
+  let _op = _mul_elt (kind x) in
+  fold ?axis (fun a y -> _op a y) _a1 x
 
 (* TODO *)
 
@@ -1087,8 +1093,6 @@ let std x = None
 let dot x = None
 
 let tensordot x = None
-
-let prod x = None
 
 let cumsum axis x = None
 

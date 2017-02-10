@@ -268,6 +268,8 @@ val trace : mat -> elt
 
 val sum : mat -> elt
 
+val prod : mat -> elt
+
 val average : mat -> elt
 
 val sum_rows : mat -> mat

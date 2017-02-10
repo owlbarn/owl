@@ -530,6 +530,10 @@ let sum x =
   let y = to_ndarray x in
   Owl_dense_ndarray.sum y
 
+let prod x =
+  let y = to_ndarray x in
+  Owl_dense_ndarray.prod y
+
 let average x =
   let _op = _average_elt (kind x) in
   _op (sum x) (numel x)
