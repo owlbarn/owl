@@ -417,17 +417,24 @@ val ln_factorial : int -> float
 
 val ln_double_factorial : int -> float
 
-val permutation : int -> int -> int
-
-val combination : int -> int -> int
-
-val ln_combination : int -> int -> float
-
 val taylorcoeff : int -> float -> float
 
+val permutation : int -> int -> int
+(** [permutation n k] return the number of permutations of n things taken k at a time. *)
+
+val combination : int -> int -> int
+(** [combination n k] return the number of combination of n things taken k at a time. *)
+
+val ln_combination : int -> int -> float
+(** [ln_combination n k] return the logarithm of the number of combination of n things taken k at a time. *)
+
 val combination_iterator : int -> int -> (unit -> int array)
+(** [combination_iterator n k] returns an iterator so that you can iterate all
+  the possible combinations of taking k elements from a set of n of elements. *)
 
 val permutation_iterator : int -> (unit -> int array)
+(** [permutation_iterator n] returns an iterator so that you can iterate all the
+  possible combinations of a set of n of elements. *)
 
 
 (** {6 Pochhammer Symbol} *)

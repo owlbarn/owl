@@ -33,7 +33,7 @@ let choose x n =
 let sample x n =
   let y = Array.make n x.(0) in
   Gsl.Randist.sample rng x y; y
-
+  
 
 (** [ Statistics function ]  *)
 
