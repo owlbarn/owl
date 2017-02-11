@@ -694,7 +694,7 @@ let map2i ?axis f x y =
 let map2 ?axis f x y = map2i ?axis (fun _ a b -> f a b) x y
 
 let _check_transpose_axis axis d =
-  let info = "check_transpose_axiss fails" in
+  let info = "check_transpose_axis fails" in
   if Array.length axis <> d then
     failwith info;
   let h = Hashtbl.create 16 in
@@ -1065,6 +1065,10 @@ let prod ?axis x =
   fold ?axis (fun a y -> _op a y) _a1 x
 
 (* TODO *)
+
+let tile = None
+
+let repeat = None
 
 let insert_slice = None
 
