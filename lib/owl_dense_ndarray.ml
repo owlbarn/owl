@@ -1064,9 +1064,33 @@ let prod ?axis x =
   let _op = _mul_elt (kind x) in
   fold ?axis (fun a y -> _op a y) _a1 x
 
-(* TODO *)
+let tile x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "tile: repitition must be >= 1";
+  (* align and promote the shape *)
+  let a = num_dims x in
+  let b = Array.length reps in
+  let x, reps = match a < b with
+    | true -> (
+      let d = Owl_utils.array_pad `Left (shape x) 1 (b - a) in
+      (reshape x d), reps
+      )
+    | false -> (
+      let r = Owl_utils.array_pad `Left reps 1 (a - b) in
+      x, r
+      )
+  in
+  (* tile the data from x to y *)
+  let d = Owl_utils.array_map2i (fun _ a b -> a * b) (shape x) reps in
+  let y = empty (kind x) d in
+  for i = (Array.length reps - 1) downto 0 do
+    ()
+  done;
+  y
 
-let tile = None
+
+(* TODO *)
 
 let repeat = None
 

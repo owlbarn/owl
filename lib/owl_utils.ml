@@ -75,6 +75,15 @@ let array1_iteri f x =
     f i (Array1.unsafe_get x i)
   done
 
+(* pad n value of v to the left/right of array x *)
+let array_pad s x v n =
+  let l = Array.length x in
+  let y = Array.make (l + n) v in
+  let _ = match s with
+    | `Left  -> Array.blit x 0 y n l
+    | `Right -> Array.blit x 0 y 0 l
+  in y
+
 (* extend passed in array by appending n slots *)
 let array1_extend x n =
   let open Bigarray in
