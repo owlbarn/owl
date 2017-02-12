@@ -1081,11 +1081,51 @@ let tile x reps =
       x, r
       )
   in
-  (* tile the data from x to y *)
-  let d = Owl_utils.array_map2i (fun _ a b -> a * b) (shape x) reps in
-  let y = empty (kind x) d in
+  (* calculate the smallest continuous slice dx *)
+  let sx = shape x in
+  let sy = Owl_utils.array_map2i (fun _ a b -> a * b) sx reps in
+  let i = ref (Array.length reps - 1) in
+  let dx = ref sx.(!i) in
+  let dy = ref sy.(!i) in
+  while reps.(!i) = 1 && !i - 1 >= 0 do
+    i := !i - 1;
+    dx := !dx * sx.(!i);
+    dy := !dy * sy.(!i);
+  done;
+  (* first, tile the smallest slice x -> y *)
+  let y = empty (kind x) sy in
+  let l_x = numel x in
+  let l_y = numel y in
+  let x1 = Bigarray.reshape_1 x l_x in
+  let y1 = Bigarray.reshape_1 y l_y in
+  let o_x = ref 0 in
+  let o_y = ref 0 in
+  while !o_x < l_x do
+    let src = Array1.sub x1 !o_x !dx in
+    let dst = Array1.sub y1 !o_y !dx in
+    Array1.blit src dst;
+    o_x := !o_x + !dx;
+    o_y := !o_y + !dy;
+  done;
+  (* second, tile the slice within y *)
+  let slice_sz = ref 1 in
+  let stride_sz = ref 1 in
   for i = (Array.length reps - 1) downto 0 do
-    ()
+    slice_sz := !slice_sz * sx.(i);
+    stride_sz := !stride_sz * sy.(i);
+    let o_y = ref 0 in
+    while !o_y < l_y do
+      let src = Array1.sub y1 !o_y !slice_sz in
+      let j = ref 0 in
+      while !j < (reps.(i) - 1) do
+        let ofs = !o_y + ((!j + 1) * !slice_sz) in
+        let dst = Array1.sub y1 ofs !slice_sz in
+        Array1.blit src dst;
+        j := !j + 1;
+      done;
+      o_y := !o_y + !stride_sz;
+    done;
+    slice_sz := !slice_sz * reps.(i);
   done;
   y
 
