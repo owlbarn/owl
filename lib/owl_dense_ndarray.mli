@@ -151,7 +151,10 @@ val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
 (** [swap i j x] makes a copy of [x], then swaps the data on axis [i] and [j]. *)
 
 val tile : ('a, 'b) t -> int array -> ('a, 'b) t
-(**  *)
+(** [tile x a] tiles the data in [x] according the repitition specified by [a].
+  This function provides the exact behaviour as [numpy.tile], please refer to
+  the numpy's online documentation for details.
+ *)
 
 val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -> ('a, 'b) t
 (** [mmap fd kind layout shared dims] ... *)

@@ -217,6 +217,8 @@ val swap_rows : mat -> int -> int -> mat
 val swap_cols : mat -> int -> int -> mat
 (** [swap_cols x j j'] swaps the column [j] with column [j'] of [x]. *)
 
+val tile : mat -> int array -> mat
+(** [tile x a] provides the exact behaviour as [numpy.tile] function. *)
 
 (** {6 Iterate elements, columns, and rows.} *)
 

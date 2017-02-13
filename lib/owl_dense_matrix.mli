@@ -101,6 +101,8 @@ val swap_rows : ('a, 'b) t -> int -> int -> ('a, 'b) t
 
 val swap_cols : ('a, 'b) t -> int -> int -> ('a, 'b) t
 
+val tile : ('a, 'b) t -> int array -> ('a, 'b) t
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 

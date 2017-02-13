@@ -123,6 +123,8 @@ val swap_rows : mat -> int -> int -> mat
 
 val swap_cols : mat -> int -> int -> mat
 
+val tile : mat -> int array -> mat
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 
