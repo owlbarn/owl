@@ -1065,7 +1065,7 @@ let prod ?axis x =
   fold ?axis (fun a y -> _op a y) _a1 x
 
 (* FIXME *)
-let tile x reps =
+let tile' x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
     failwith "tile: repitition must be >= 1";
@@ -1131,7 +1131,6 @@ let tile x reps =
   done;
   y
 
-(*
 let tile x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
@@ -1152,42 +1151,42 @@ let tile x reps =
   (* calculate the smallest continuous slice dx *)
   let sx = shape x in
   let sy = Owl_utils.array_map2i (fun _ a b -> a * b) sx reps in
-  let i = Array.length reps - 1 in
-  let dx = ref sx.(i) in
+  let i = ref (Array.length reps - 1) in
+  let dx = ref sx.(!i) in
+  while reps.(!i) = 1 && !i - 1 >= 0 do
+    i := !i - 1;
+    dx := !dx * sx.(!i);
+  done;
   (* first, tile the smallest slice x -> y *)
   let y = empty (kind x) sy in
-  let l_x = numel x in
-  let l_y = numel y in
-  let x1 = Bigarray.reshape_1 x l_x in
-  let y1 = Bigarray.reshape_1 y l_y in
-  let o_x = ref 0 in
-  let o_y = ref 0 in
-  while !o_x < l_x do
-    let src = Array1.sub x1 !o_x !dx in
-    for j = 0 to reps.(i) - 1 do
-      let dst = Array1.sub y1 !o_y !dx in
-      Array1.blit src dst;
-      o_y := !o_y + dx;
-    done;
-    o_x := !o_x + !dx;
-  done;
-  (* second, tile the slice within y *)
-  let slice_sz = ref 1 in
-  for i = Array.length reps - 2 downto 0 do
-    slice_sz := !slice_sz * sx.(i);
-    let o_y = ref 0 in
-      let src = Array1.sub y1 !o_y !slice_sz in
-      let j = ref 0 in
-      while !j < (reps.(i) - 1) do
-        let ofs = !o_y + ((!j + 1) * !slice_sz) in
-        let dst = Array1.sub y1 ofs !slice_sz in
+  let x1 = Bigarray.reshape_1 x (numel x) in
+  let y1 = Bigarray.reshape_1 y (numel y) in
+  let stride_x = _calc_stride (shape x) in
+  let stride_y = _calc_stride (shape y) in
+  let rec _tile ofsx ofsy lvl =
+    Printf.printf "%i ==> %i %i\n" lvl ofsx ofsy;
+    if lvl = !i then (
+      let src = Array1.sub x1 ofsx !dx in
+      for k = 0 to reps.(lvl) - 1 do
+        let ofsy' = ofsy + (k * !dx) in
+        let dst = Array1.sub y1 ofsy' !dx in
         Array1.blit src dst;
-        j := !j + 1;
       done;
-    slice_sz := !slice_sz * reps.(i);
-  done;
-  y
-*)
+    ) else (
+      for j = 0 to sx.(lvl) - 1 do
+        let ofsx' = ofsx + j * stride_x.(lvl) in
+        let ofsy' = ofsy + j * stride_y.(lvl) in
+        _tile ofsx' ofsy' (lvl + 1);
+      done;
+      let _len = stride_y.(lvl) * sx.(lvl) in
+      let src = Array1.sub y1 ofsy _len in
+      for k = 1 to reps.(lvl) - 1 do
+        let dst = Array1.sub y1 (ofsy + (k * _len)) _len in
+        Array1.blit src dst;
+      done;
+    )
+  in
+  _tile 0 0 0; y
 
 (* TODO *)
 
