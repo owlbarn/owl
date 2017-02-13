@@ -1064,6 +1064,7 @@ let prod ?axis x =
   let _op = _mul_elt (kind x) in
   fold ?axis (fun a y -> _op a y) _a1 x
 
+(* FIXME *)
 let tile x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
@@ -1113,6 +1114,7 @@ let tile x reps =
   for i = (Array.length reps - 1) downto 0 do
     slice_sz := !slice_sz * sx.(i);
     stride_sz := !stride_sz * sy.(i);
+    Printf.printf "%i ==> %i %i\n" i !slice_sz !stride_sz;
     let o_y = ref 0 in
     while !o_y < l_y do
       let src = Array1.sub y1 !o_y !slice_sz in
@@ -1129,6 +1131,63 @@ let tile x reps =
   done;
   y
 
+(*
+let tile x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "tile: repitition must be >= 1";
+  (* align and promote the shape *)
+  let a = num_dims x in
+  let b = Array.length reps in
+  let x, reps = match a < b with
+    | true -> (
+      let d = Owl_utils.array_pad `Left (shape x) 1 (b - a) in
+      (reshape x d), reps
+      )
+    | false -> (
+      let r = Owl_utils.array_pad `Left reps 1 (a - b) in
+      x, r
+      )
+  in
+  (* calculate the smallest continuous slice dx *)
+  let sx = shape x in
+  let sy = Owl_utils.array_map2i (fun _ a b -> a * b) sx reps in
+  let i = Array.length reps - 1 in
+  let dx = ref sx.(i) in
+  (* first, tile the smallest slice x -> y *)
+  let y = empty (kind x) sy in
+  let l_x = numel x in
+  let l_y = numel y in
+  let x1 = Bigarray.reshape_1 x l_x in
+  let y1 = Bigarray.reshape_1 y l_y in
+  let o_x = ref 0 in
+  let o_y = ref 0 in
+  while !o_x < l_x do
+    let src = Array1.sub x1 !o_x !dx in
+    for j = 0 to reps.(i) - 1 do
+      let dst = Array1.sub y1 !o_y !dx in
+      Array1.blit src dst;
+      o_y := !o_y + dx;
+    done;
+    o_x := !o_x + !dx;
+  done;
+  (* second, tile the slice within y *)
+  let slice_sz = ref 1 in
+  for i = Array.length reps - 2 downto 0 do
+    slice_sz := !slice_sz * sx.(i);
+    let o_y = ref 0 in
+      let src = Array1.sub y1 !o_y !slice_sz in
+      let j = ref 0 in
+      while !j < (reps.(i) - 1) do
+        let ofs = !o_y + ((!j + 1) * !slice_sz) in
+        let dst = Array1.sub y1 ofs !slice_sz in
+        Array1.blit src dst;
+        j := !j + 1;
+      done;
+    slice_sz := !slice_sz * reps.(i);
+  done;
+  y
+*)
 
 (* TODO *)
 
