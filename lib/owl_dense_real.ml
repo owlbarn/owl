@@ -29,7 +29,7 @@ let sequential m n = Owl_dense_matrix.sequential Float64 m n
 
 let uniform ?(scale=1.) m n = Owl_dense_matrix.uniform Float64 ~scale m n
 
-let gaussian ?(sigma=1.) m n = Owl_dense_matrix.gaussian Float64 m n
+let gaussian ?(sigma=1.) m n = Owl_dense_matrix.gaussian Float64 ~sigma m n
 
 let semidef m = Owl_dense_matrix.semidef Float64 m
 
