@@ -33,6 +33,7 @@ type model = {
   mutable iter : int;                     (* number of iterations *)
   mutable data : int array array;         (* training data, tokenised*)
   mutable vocb : (string, int) Hashtbl.t; (* vocabulary, or dictionary if you prefer *)
+
 }
 
 let include_token m w d k =
@@ -104,18 +105,18 @@ end
 
 module SparseLDA = struct
 
-  let s = ref 0.  (* Cache of s *)
+  let s = ref 0.    (* Cache of s *)
   let q = ref [| |] (* Cache of q *)
   let r_non_zero :  (int, float) Hashtbl.t ref = ref (Hashtbl.create 1) (*  *)
-  let q_non_zero :  (int, bool) Hashtbl.t ref = ref (Hashtbl.create 1) (*  *)
+  let q_non_zero :  (int, bool) Hashtbl.t ref = ref (Hashtbl.create 1)  (*  *)
 
   let exclude_token_sparse m w d k ~s ~r ~q =
     let t__klocal = ref ((MD.get m.t__k 0 k) )in
-    (* Reduce s, r  l*)
+    (* Reduce s, r  l *)
     s := !s -. (m.beta *. m.alpha_k) /. (!t__klocal +. m.beta_v);
     r := !r -. (m.beta *. (MD.get m.t_dk d k)) /. (m.beta_v +. !t__klocal);
     exclude_token m w d k;
-    (* add back in  s,r*)
+    (* add back in  s,r *)
     t__klocal :=  (MD.get m.t__k 0 k);
     Array.set !q k ((m.alpha_k +. (MD.get m.t_dk d k)) /. (m.beta_v +. !t__klocal));
     let r_local = (MD.get m.t_dk d k) in
@@ -128,11 +129,11 @@ module SparseLDA = struct
 
   let include_token_sparse m w d k ~s ~r ~q =
     let t__klocal = ref (MD.get m.t__k 0 k) in
-    (* Reduce s, r  l*)
+    (* Reduce s, r  l *)
     s := !s -. (m.beta *. m.alpha_k)/.( !t__klocal +. m.beta_v);
     r := !r -. (m.beta *. (MD.get m.t_dk d k)) /. (m.beta_v +. !t__klocal);
     include_token m w d k;
-    (* add back in s, r*)
+    (* add back in s, r *)
     t__klocal :=  (MD.get m.t__k 0 k);
     s := !s +. (m.beta *. m.alpha_k)/.(!t__klocal +. m.beta_v);
     let r_local = (MD.get m.t_dk d k) in
@@ -176,7 +177,7 @@ module SparseLDA = struct
         Hashtbl.add !r_non_zero !k r_val;
       );
       (* Build up our q cache *)
-      (* TODO: efficiently handle t_dk = 0*)
+      (* TODO: efficiently handle t_dk = 0 *)
       Array.set !q !k ((m.alpha_k +. (MD.get m.t_dk d !k)) /. (m.beta_v +. t__klocal));
       k := !k + 1;
     done;
@@ -190,7 +191,7 @@ module SparseLDA = struct
         let qsum = ref 0. in
         let k_q = ref 0 in
         Hashtbl.clear !q_non_zero;
-        (* This bit makes it (K) rather than O(K_d + K_w)*)
+        (* This bit makes it (K) rather than O(K_d + K_w) *)
         while !k_q < m.n_k do
           let q_local  =  (MS.get m.t_wk w !k_q) in
           if q_local != 0. then (
@@ -218,7 +219,7 @@ module SparseLDA = struct
           (* Iterate over set of non-zero r *)
           u := (!u -. !s) /. m.beta; (* compare just to r and don't need !beta *)
           let rlocal = ref 0. in
-          (* TODO: pick largest (order by decreasing) for efficiency*)
+          (* TODO: pick largest (order by decreasing) for efficiency *)
           Hashtbl.iter (fun key data -> if !rlocal < !u then (
                     rlocal := !rlocal +. (data) /. (m.beta_v +. (MD.get m.t__k 0 key) );
                     k := key)
