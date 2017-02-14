@@ -157,7 +157,10 @@ val tile : ('a, 'b) t -> int array -> ('a, 'b) t
  *)
 
 val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
-(** [repeat ~axis x a] repeats the elements along [axis] for [a] times. *)
+(** [repeat ~axis x a] repeats the elements along [axis] for [a] times. The default
+  value of [?axis] is the highest dimension of [x]. This function is similar to
+  [numpy.repeat] except that [a] is an integer instead of an array.
+ *)
 
 val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -> ('a, 'b) t
 (** [mmap fd kind layout shared dims] ... *)
