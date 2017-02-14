@@ -220,6 +220,10 @@ val swap_cols : mat -> int -> int -> mat
 val tile : mat -> int array -> mat
 (** [tile x a] provides the exact behaviour as [numpy.tile] function. *)
 
+val repeat : ?axis:int -> mat -> int -> mat
+(** [repeat ~axis x a] repeats the elements along [~axis] for [a] times. *)
+
+
 (** {6 Iterate elements, columns, and rows.} *)
 
 val iteri : (int -> int -> elt -> unit) -> mat -> unit

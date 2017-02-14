@@ -213,6 +213,11 @@ let tile x reps =
   let y = Owl_dense_ndarray.tile x reps in
   of_ndarray y
 
+let repeat ?axis x reps =
+  let x = to_ndarray x in
+  let y = Owl_dense_ndarray.repeat ?axis x reps in
+  of_ndarray y
+
 (* matrix iteration operations *)
 
 let iteri f x =
