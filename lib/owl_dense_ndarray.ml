@@ -1121,9 +1121,51 @@ let tile x reps =
   in
   _tile 0 0 0; y
 
-(* TODO *)
+let repeat ?axis x reps =
+  let highest_dim = Array.length (shape x) - 1 in
+  (* by default, repeat at the highest dimension *)
+  let axis = match axis with
+    | Some a -> a
+    | None   -> highest_dim
+  in
+  (* calculate the new shape of y based on reps *)
+  let _shape_y = shape x in
+  _shape_y.(axis) <- _shape_y.(axis) * reps;
+  let y = empty (kind x) _shape_y in
+  (* transform into genarray first *)
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  (* if repeat at the highest dimension, use this strategy *)
+  if axis = highest_dim then (
+    let _cp_op = _copy (kind x) in
+    (* be careful of the index, this is fortran layout *)
+    for i = 1 to reps do
+      ignore (_cp_op ~n:(numel x) ~ofsy:i ~incy:reps ~y:y' ~ofsx:1 ~incx:1 x')
+    done;
+  )
+  (* if repeat at another dimension, use this block copying *)
+  else (
+    let _cp_op = _copy (kind x) in
+    let _stride_x = _calc_stride (shape x) in
+    let _slice_sz = _stride_x.(axis) in
+    (* be careful of the index, this is fortran layout *)
+    for i = 0 to (numel x) / _slice_sz - 1 do
+      let ofsx = i * _slice_sz + 1 in
+      for j = 0 to reps - 1 do
+        let ofsy = (i * reps + j) * _slice_sz + 1 in
+        ignore (_cp_op ~n:_slice_sz ~ofsy ~incy:1 ~y:y' ~ofsx ~incx:1 x')
+      done;
+    done;
+  );
+  (* reshape y' back to ndarray before return result *)
+  let y' = genarray_of_array1 y' in
+  let y' = Genarray.change_layout y' c_layout in
+  reshape y' _shape_y
 
-let repeat = None
+
+(* TODO *)
 
 let insert_slice = None
 
@@ -1139,7 +1181,6 @@ let diag x = None
 
 let trace x = None
 
-let repeat x = None
 
 (* TODO *)
 
@@ -1154,6 +1195,7 @@ let dot x = None
 let tensordot x = None
 
 let cumsum axis x = None
+
 
 (* Shorhand infix operators *)
 

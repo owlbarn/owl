@@ -156,6 +156,9 @@ val tile : ('a, 'b) t -> int array -> ('a, 'b) t
   the numpy's online documentation for details.
  *)
 
+val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
+(** [repeat ~axis x a] repeats the elements along [axis] for [a] times. *)
+
 val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -> ('a, 'b) t
 (** [mmap fd kind layout shared dims] ... *)
 
