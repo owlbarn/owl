@@ -29,7 +29,6 @@ module Maths : sig
 
   (** {7 Unary operators} *)
 
-  val abs : t -> t
 
   val neg : t -> t
 
