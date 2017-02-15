@@ -39,6 +39,8 @@ let lnpi = Gsl.Math.lnpi
 
 (** [ Basic and advanced math functions ] *)
 
+let signum x = if x = 0. then 0. else if x > 0. then 1. else -1.
+
 let abs x = if x < 0. then (0.-.x) else x
 
 let neg x = 0. -. x

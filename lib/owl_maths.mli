@@ -46,6 +46,9 @@ val logN : float -> float -> float
 
 val sigmoid : float -> float
 
+val signum : float -> float
+
+
 (** {6 Trigonometric Functions} *)
 
 val sin : float -> float
