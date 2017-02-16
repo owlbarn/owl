@@ -1167,6 +1167,8 @@ let repeat ?axis x reps =
 
 (* TODO *)
 
+let squeeze = None
+
 let insert_slice = None
 
 let remove_slice = None
