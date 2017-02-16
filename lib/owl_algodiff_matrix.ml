@@ -49,11 +49,6 @@ let is_zero x =
 
 let is_const x = is_zero (dual x)
 
-let rec sign = function
-  | Float a -> Float (if a = 0. then 0. else if a > 0. then 1. else -1.)
-  | Matrix a -> failwith "Error: sign does not take matrix."
-  | Dual x -> sign x.v
-
 (* overload operators, module signature *)
 
 module type MathsSig = sig
@@ -61,11 +56,15 @@ module type MathsSig = sig
   val ( -. ) : t -> t -> t
   val ( *. ) : t -> t -> t
   val ( /. ) : t -> t -> t
+  val signum : t -> t
+  val abs : t -> t
   val sin : t -> t
   val cos : t -> t
 end
 
 module type DerivativeSig = sig
+  val signum' : t -> t
+  val abs' : t -> t
   val sin' : t -> t
   val cos' : t -> t
 end
@@ -131,6 +130,16 @@ module rec Maths : MathsSig = struct
 
   let ( /. ) x0 x1 = _div x0 x1
 
+  let rec signum = function
+    | Float x -> Float Owl_maths.(signum x)
+    | Matrix x -> Matrix M.(signum x)
+    | Dual x -> make_dual (signum x.v) (signum' x.v)
+
+  let rec abs = function
+    | Float x -> Float Pervasives.(abs_float x)
+    | Matrix x -> Matrix M.(abs x)
+    | Dual x -> make_dual (abs x.v) ((abs' x.v) *. x.d)
+
   let rec sin = function
     | Float x -> Float Pervasives.(sin x)
     | Matrix x -> Matrix M.(sin x)
@@ -145,6 +154,10 @@ end and
 Derivative : DerivativeSig = struct
 
   open Maths
+
+  let signum' x = zero x
+
+  let abs' x = signum x
 
   let sin' x = cos x
 
