@@ -9,7 +9,9 @@ let range a b =
   let r = Array.make (b - a + 1) 0 in
   for i = a to b do r.(i - a) <- i done; r
 
-let filteri_array f x =
+(* filter array, f : int -> 'a -> bool * 'b *)
+let array_filteri_v f x =
+  (* FIXME: bad idea if f is not pure *)
   let atype = snd (f 0 x.(0)) in
   let r = Array.make (Array.length x) atype and c = ref 0 in
   for i = 0 to Array.length x - 1 do
@@ -18,16 +20,31 @@ let filteri_array f x =
   done;
   Array.sub r 0 !c
 
-let filter_array f x = filteri_array (fun _ y -> f y) x
+(* filter array, f : 'a -> bool * 'b *)
+let array_filter_v f x = array_filteri_v (fun _ y -> f y) x
 
-let mapi_array f x =
+(* filter array, f : int -> 'a -> bool *)
+let array_filteri f x =
+  if Array.length x = 0 then [||]
+  else (
+    let r = Array.make (Array.length x) x.(0) and c = ref 0 in
+    for i = 0 to Array.length x - 1 do
+      if f i x.(i) then (r.(!c) <- x.(i); c := !c + 1)
+    done;
+    Array.sub r 0 !c
+  )
+
+(* filter array, f : 'a -> bool *)
+let array_filter f x = array_filteri (fun _ y -> f y) x
+
+let array_mapi f x =
   let atype = f 0 x.(0) in
   let r = Array.make (Array.length x) atype in
   for i = 0 to Array.length x - 1 do
     r.(i) <- f i x.(i)
   done; r
 
-let map_array f x = mapi_array (fun _ y -> f y) x
+let array_map f x = array_mapi (fun _ y -> f y) x
 
 let reverse_array x =
   let d = Array.length x - 1 in

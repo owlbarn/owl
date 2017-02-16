@@ -1172,8 +1172,8 @@ let squeeze ?(axis=[||]) x =
     | 0 -> Array.init (num_dims x) (fun i -> i)
     | _ -> axis
   in
-  let s = Owl_utils.filteri_array (fun i v ->
-    not (v == 1 && Array.mem i a), v
+  let s = Owl_utils.array_filteri (fun i v ->
+    not (v == 1 && Array.mem i a)
   ) (shape x)
   in
   reshape x s

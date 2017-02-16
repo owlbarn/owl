@@ -23,11 +23,10 @@ let kmeans x c = let open MX in
     ) cpts0
   ) x;
   iteri_rows (fun j u ->
-    let l = UT.filteri_array (fun i y -> fst y = j, i) assignment in
+    let l = UT.array_filteri_v (fun i y -> fst y = j, i) assignment in
     let z = average_rows (rows x l) in
     let _ = copy_row_to z cpts1 j in ()
   ) cpts0;
   if cpts0 =@ cpts1 then failwith "converged" else ignore (cpts0 << cpts1)
   done with exn -> () in
-  cpts1, UT.map_array fst assignment
-
+  cpts1, UT.array_map fst assignment
