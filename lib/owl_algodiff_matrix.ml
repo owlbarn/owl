@@ -49,6 +49,7 @@ let is_zero x =
 
 let is_const x = is_zero (dual x)
 
+
 (* overload operators, module signature *)
 
 module type MathsSig = sig
