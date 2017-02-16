@@ -61,6 +61,7 @@ module type MathsSig = sig
   val neg : t -> t
   val sin : t -> t
   val cos : t -> t
+  val sum : t -> t
 end
 
 module type DerivativeSig = sig
@@ -157,6 +158,11 @@ module rec Maths : MathsSig = struct
     | Matrix x -> Matrix M.(cos x)
     | Dual x -> make_dual (cos x.v) ((cos' x.v) *. x.d)
 
+  let rec sum = function
+    | Float x -> Float x
+    | Matrix x -> Float M.(sum x)
+    | Dual x -> make_dual (sum x.v) (sum x.d)
+
 end and
 Derivative : DerivativeSig = struct
 
@@ -176,6 +182,48 @@ end
 
 
 (* helper functions and wrappers *)
+
+let make_forward ?(argnum=0) f =
+  let f' = fun args -> (
+    let args = Array.mapi (fun i x ->
+      match i = argnum with
+      | true  -> make_dual x (one x)
+      | false -> make_dual x (zero x)
+    ) args
+    in
+    f args |> dual
+  )
+  in
+  f'
+
+(* only column vector is allowed *)
+let _check_matrix_shape x =
+  match M.col_num x with
+  | 1 -> ()
+  | _ -> failwith "Error: _check_matrix_shape"
+
+let diff f = fun x ->
+  let x = make_dual x (one x) in
+  f x |> dual
+
+let grad f =
+  let g = fun v -> (
+    _check_matrix_shape v;
+    let m, n = M.shape v in
+    let r = M.zeros m n in
+    M.iteri (fun i _ _ ->
+      let u = M.zeros m n in
+      u.{i,0} <- 1.;
+      let d = make_dual (Matrix v) (Matrix u) in
+      match f d |> dual with
+      | Float dx -> r.{i,0} <- dx
+      | _ -> failwith "Error: grad, invalid output."
+    ) v;
+    r
+  )
+  in
+  g
+
 
 
 (* ends here *)
