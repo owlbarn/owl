@@ -869,11 +869,11 @@ let sigmoid x = map (fun y -> 1. /. (1. +. (Pervasives.exp (-1. *. y)))) x
 (* binary matrix operation *)
 
 (* TODO: optimise *)
-let power_scalar x c =
+let pow_scalar x c =
   let _op = _power_scalar_elt (kind x) in
   map (fun y -> (_op) y c) x
 
-let power x1 x2 =
+let pow x1 x2 =
   let x1 = to_ndarray x1 in
   let x2 = to_ndarray x2 in
   let x3 = Owl_dense_ndarray.pow x1 x2 in
@@ -923,7 +923,7 @@ let ( /@ ) = div
 
 let ( $@ ) = dot
 
-let ( **@ ) = power_scalar
+let ( **@ ) = pow_scalar
 
 let ( =@ ) = ( = )
 

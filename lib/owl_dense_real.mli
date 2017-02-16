@@ -793,13 +793,13 @@ val dot : mat -> mat -> mat
 val add_diag : mat -> elt -> mat
 (** [add_diag x a] adds a constant [a] to all the diagonal elements in [x]. *)
 
-val power : mat -> mat -> mat
-(** [power x y] computes [pow(a, b)] of all the elements in [x] and [y]
+val pow : mat -> mat -> mat
+(** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
 
-val power_scalar : mat -> elt -> mat
-(** [power x a] calculates the power of [a] of each element in [x]. *)
+val pow_scalar : mat -> elt -> mat
+(** [pow x a] calculates the power of [a] of each element in [x]. *)
 
 val atan2 : mat -> mat -> mat
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]

@@ -516,12 +516,12 @@ val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 val add_diag : ('a, 'b) t -> 'a -> ('a, 'b) t
 
-val power : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [power x y] computes [pow(a, b)] of all the elements in [x] and [y]
+val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
 
-val power_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
 val atan2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]

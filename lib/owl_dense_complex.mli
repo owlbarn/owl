@@ -315,9 +315,9 @@ val dot : mat -> mat -> mat
 
 val add_diag : mat -> elt -> mat
 
-val power : mat -> mat -> mat
+val pow : mat -> mat -> mat
 
-val power_scalar : mat -> elt -> mat
+val pow_scalar : mat -> elt -> mat
 
 
 (** {6 Shorhand infix operators} *)
