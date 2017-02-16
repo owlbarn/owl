@@ -58,6 +58,7 @@ module type MathsSig = sig
   val ( /. ) : t -> t -> t
   val signum : t -> t
   val abs : t -> t
+  val neg : t -> t
   val sin : t -> t
   val cos : t -> t
 end
@@ -65,6 +66,7 @@ end
 module type DerivativeSig = sig
   val signum' : t -> t
   val abs' : t -> t
+  val neg' : t -> t
   val sin' : t -> t
   val cos' : t -> t
 end
@@ -140,6 +142,11 @@ module rec Maths : MathsSig = struct
     | Matrix x -> Matrix M.(abs x)
     | Dual x -> make_dual (abs x.v) ((abs' x.v) *. x.d)
 
+  let rec neg = function
+    | Float x -> Float Pervasives.(0. -. x)
+    | Matrix x -> Matrix M.(neg x)
+    | Dual x -> make_dual (neg x.v) ((neg' x.v) *. x.d)
+
   let rec sin = function
     | Float x -> Float Pervasives.(sin x)
     | Matrix x -> Matrix M.(sin x)
@@ -158,6 +165,8 @@ Derivative : DerivativeSig = struct
   let signum' x = zero x
 
   let abs' x = signum x
+
+  let neg' x = Float (-1.)
 
   let sin' x = cos x
 
