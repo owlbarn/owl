@@ -1167,7 +1167,17 @@ let repeat ?axis x reps =
 
 (* TODO *)
 
-let squeeze ?(axis=[||]) x = None
+let squeeze ?(axis=[||]) x =
+  let a = match Array.length axis with
+    | 0 -> Array.init (num_dims x) (fun i -> i)
+    | _ -> axis
+  in
+  let s = Owl_utils.filteri_array (fun i v ->
+    not (v == 1 && Array.mem i a), v
+  ) (shape x)
+  in
+  reshape x s
+
 
 let insert_slice = None
 
