@@ -1164,9 +1164,6 @@ let repeat ?axis x reps =
   let y' = Genarray.change_layout y' c_layout in
   reshape y' _shape_y
 
-
-(* TODO *)
-
 let squeeze ?(axis=[||]) x =
   let a = match Array.length axis with
     | 0 -> Array.init (num_dims x) (fun i -> i)
@@ -1178,6 +1175,8 @@ let squeeze ?(axis=[||]) x =
   in
   reshape x s
 
+
+(* TODO *)
 
 let insert_slice = None
 
