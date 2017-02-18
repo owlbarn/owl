@@ -49,11 +49,15 @@ let rec one = function
 
 module Maths = struct
 
-  let rec op_d_d a ff fd df =
+  let rec noop _ = ()
+
+  and op_d_d a ff fd df =
     match a with
     | D a -> let cp = fd a.p in make_dual cp (df cp a.p a.t)
     | A a -> failwith "error: not implemented."
     | ap -> ff ap
+
+  and op_d_d_d a b ff fd df_da df_db df_dab = None
 
   and add a b = match a, b with
     | Float a, Float b -> Float Pervasives.(a +. b)
