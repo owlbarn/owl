@@ -57,7 +57,14 @@ module Maths = struct
     | A a -> failwith "error: not implemented."
     | ap -> ff ap
 
-  and op_d_d_d a b ff fd df_da df_db df_dab = None
+  and op_d_d_d a b ff fd df_da df_db df_dab =
+    match a, b with
+    | Float ap, D b  -> let cp = fd a b.p in make_dual cp (df_db cp b.p b.t)
+    | D a, Float bp  -> let cp = fd a.p b in make_dual cp (df_da cp a.p a.t)
+    | Matrix ap, D b -> let cp = fd a b.p in make_dual cp (df_db cp b.p b.t)
+    | D a, Matrix bp -> let cp = fd a.p b in make_dual cp (df_da cp a.p a.t)
+    | D a, D b       -> let cp = fd a.p b.p in make_dual cp (df_dab cp a.p a.t b.p b.t)
+    | a, b           -> ff a b
 
   and add a b = match a, b with
     | Float a, Float b -> Float Pervasives.(a +. b)
