@@ -16,20 +16,21 @@ type t =
   | DF of t * t * int                            (* primal, tangent, tag *)
   | DR of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
 and trace_op =
-  | Add_D_D of t * t
-  | Add_D_C of t
-  | Add_C_D of t
-  | Sub_D_D of t * t
-  | Sub_D_C of t
-  | Sub_C_D of t
-  | Mul_D_D of t * t
-  | Mul_D_C of t * t
-  | Mul_C_D of t * t
-  | Div_D_D of t * t
-  | Div_D_C of t * t
-  | Div_C_D of t * t
-  | Sin_D of t
-  | Cos_D of t
+  | Noop
+  | Add_D_D  of t * t
+  | Add_D_C  of t * t
+  | Add_C_D  of t * t
+  | Sub_D_D  of t * t
+  | Sub_D_C  of t * t
+  | Sub_C_D  of t * t
+  | Mul_D_D  of t * t
+  | Mul_D_C  of t * t
+  | Mul_C_D  of t * t
+  | Div_D_D  of t * t
+  | Div_D_C  of t * t
+  | Div_C_D  of t * t
+  | Sin_D    of t
+  | Cos_D    of t
   | Signum_D of t
 
 let _global_tag = ref 0
@@ -41,12 +42,15 @@ let cmp_tag ai bi =
   else if ai < bi then -1
   else 0
 
-let make_dual p t i = DF (p, t, i)
+let primal = function
+  | DF (ap, _, _)       -> ap
+  | DR (ap, _, _, _, _) -> ap
+  | ap                  -> ap
 
-let dual = function
-  | Float a -> Float 0.
-  | Matrix a -> Float 0.
-  | DF (_, at, _) -> at
+let tangent = function
+  | DF (_, at, _)       -> at
+  | DR (_, at, _, _, _) -> !at
+  | _                   -> Float 0.
 
 let rec zero = function
   | Float _ -> Float 0.
@@ -85,13 +89,13 @@ module Maths = struct
         match cmp_tag ai bi with
         | 1  -> let cp = fd ap b in DF (cp, df_da cp ap at, ai)
         | -1 -> DR (fd a bp, ref (Float 0.), r_c_d a b, ref 0, bi)
-        | _  -> failwith "error: forward and backward clash on the same level"
+        | _  -> failwith "error: forward and reverse clash at the same level"
       )
     | DR (ap, _, _, _, ai), DF (bp, bt, bi)      -> (
         match cmp_tag ai bi with
         | -1 -> let cp = fd a bp in DF (cp, df_db cp bp bt, bi)
         | 1  -> DR (fd ap b, ref (Float 0.), r_d_c a b, ref 0, ai)
-        | _  -> failwith "error: forward and backward clash on the same level"
+        | _  -> failwith "error: forward and reverse clash at the same level"
       )
     | DF (ap, at, ai), DF (bp, bt, bi)           -> (
         match cmp_tag ai bi with
@@ -126,9 +130,9 @@ module Maths = struct
     in
     let r_d_d a b = Add_D_D (a, b)
     in
-    let r_d_c a b = Add_D_C a
+    let r_d_c a b = Add_D_C (a, b)
     in
-    let r_c_d a b = Add_C_D b
+    let r_c_d a b = Add_C_D (a, b)
     in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
@@ -151,9 +155,9 @@ module Maths = struct
     in
     let r_d_d a b = Sub_D_D (a, b)
     in
-    let r_d_c a b = Sub_D_C a
+    let r_d_c a b = Sub_D_C (a, b)
     in
-    let r_c_d a b = Sub_C_D b
+    let r_c_d a b = Sub_C_D (a, b)
     in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
@@ -251,6 +255,86 @@ end
 
 (* wrappers *)
 
+let reverse_reset x =
+  let rec reset xs =
+    match xs with
+    | [] -> ()
+    | x :: t -> (
+        match x with
+        | DR (ap, aa, ao, af, ai) -> (
+          aa := Float 0.;
+          af := !af + 1;
+          if !af = 1 then (
+            match ao with
+            | Add_D_D (a, b) -> reset (a :: b :: t)
+            | Add_D_C (a, _) -> reset (a :: t)
+            | Add_C_D (_, b) -> reset (b :: t)
+            | Sub_D_D (a, b) -> reset (a :: b :: t)
+            | Sub_D_C (a, _) -> reset (a :: t)
+            | Sub_C_D (_, b) -> reset (b :: t)
+            | Mul_D_D (a, b) -> reset (a :: b :: t)
+            | Mul_D_C (a, _) -> reset (a :: t)
+            | Mul_C_D (_, b) -> reset (b :: t)
+            | Div_D_D (a, b) -> reset (a :: b :: t)
+            | Div_D_C (a, _) -> reset (a :: t)
+            | Div_C_D (_, b) -> reset (b :: t)
+            | Sin_D a        -> reset (a :: t)
+            | Cos_D a        -> reset (a :: t)
+            | _              -> reset t
+            )
+          else reset t
+          )
+        | _ -> reset t
+      )
+  in
+  reset [x]
+
+let reverse_push v x =
+  let open Maths in
+  let rec push xs =
+    match xs with
+    | [] -> ()
+    | (v, x) :: t -> (
+        match x with
+        | DR (ap, aa, ao, af, ai) -> (
+          aa := Maths.(!aa +. v);
+          af := !af - 1;
+          if !af = 0 then (
+            match ao with
+            | Add_D_D (a, b) -> push ((!aa, a) :: (!aa, b) :: t)
+            | Add_D_C (a, _) -> push ((!aa, a) :: t)
+            | Add_C_D (_, b) -> push ((!aa, b) :: t)
+            | Sub_D_D (a, b) -> push ((!aa, a) :: (Float 0. -. !aa, b) :: t)
+            | Sub_D_C (a, _) -> push ((!aa, a) :: t)
+            | Sub_C_D (_, b) -> push ((Float 0. -. !aa, b) :: t)
+            | Mul_D_D (a, b) -> push (((!aa *. primal b), a) :: ((!aa *. primal a), b) :: t)
+            | Mul_D_C (a, b) -> push (((!aa *. b), a) :: t)
+            | Mul_C_D (a, b) -> push (((!aa *. a), b) :: t)
+            | Div_D_D (a, b) -> push (((!aa /. (primal b)), a) :: ((!aa *. ((Float 0. -. (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
+            | Div_D_C (a, b) -> push (((!aa /. b), a) :: t)
+            | Div_C_D (a, b) -> push (((!aa *. ((Float 0. -. (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
+            | Sin_D a        -> push (((!aa *. cos (primal a)), a) :: t)
+            | Cos_D a        -> push (((!aa *. (Float 0. -. sin (primal a))), a) :: t)
+            | _              -> push t
+            )
+          else push t
+          )
+        | _ -> push t
+      )
+  in
+  push [(v, x)]
+
+let make_forward p t i = DF (p, t, i)
+
+let make_reverse p i = DR (p, ref (zero p), Noop, ref 0, i)
+
 let diff f = fun x ->
-  let x = make_dual x (one x) (new_tag ()) in
-  f x |> dual
+  let x = make_forward x (one x) (new_tag ()) in
+  f x |> tangent
+
+let grad f = fun x ->
+  let x = make_reverse x (new_tag ()) in
+  let y = f x in
+  reverse_reset y;
+  reverse_push y (Float 1.);
+  y
