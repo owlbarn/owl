@@ -8,18 +8,29 @@ module M = Owl_dense_real
 
 type mat = Owl_dense_real.mat
 
+(* type definitions *)
+
 type t =
   | Float of float
   | Matrix of mat
-  | DF of t * t * int                     (* primal, tangent, tag *)
-  | DR of t * t ref * trace_op * int      (* primal, adjoint, tag *)
+  | DF of t * t * int                            (* primal, tangent, tag *)
+  | DR of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
 and trace_op =
-  | Add of t * t
-  | Sub of t * t
-  | Mul of t * t
-  | Div of t * t
-  | Sin of t
-  | Cos of t
+  | Add_D_D of t * t
+  | Add_D_C of t
+  | Add_C_D of t
+  | Sub_D_D of t * t
+  | Sub_D_C of t
+  | Sub_C_D of t
+  | Mul_D_D of t * t
+  | Mul_D_C of t * t
+  | Mul_C_D of t * t
+  | Div_D_D of t * t
+  | Div_D_C of t * t
+  | Div_C_D of t * t
+  | Sin_D of t
+  | Cos_D of t
+  | Signum_D of t
 
 let _global_tag = ref 0
 let new_tag () = _global_tag := !_global_tag + 1; !_global_tag
@@ -40,37 +51,61 @@ let dual = function
 let rec zero = function
   | Float _ -> Float 0.
   | Matrix _ -> Float 0.
-  | DF (ap, at, ai) -> make_dual (zero ap) (zero at) ai  (* need to check *)
+  | DF (ap, at, ai) -> DF ((zero ap), (zero at), ai)  (* need to check *)
 
 let rec one = function
   | Float _ -> Float 1.
   | Matrix _ -> failwith "Error: one does not take matrix."
-  | DF (ap, at, ai) -> make_dual (one ap) (zero at) ai
+  | DF (ap, at, ai) -> DF ((one ap), (zero at), ai)
 
+
+(* overload operators *)
 
 module Maths = struct
 
   let rec noop _ = ()
 
-  and op_d_d a ff fd df =
+  and op_d_d a ff fd df r =
     match a with
-    | DF (ap, at, ai) -> let cp = fd ap in make_dual cp (df cp ap at) ai
-    | DR (_, _, _, _) -> failwith "error: not implemented."
-    | ap              -> ff ap
+    | DF (ap, at, ai)      -> let cp = fd ap in DF (cp, (df cp ap at), ai)
+    | DR (ap, _, _, _, ai) -> DR (fd ap, ref (Float 0.), r a, ref 0, ai)
+    | ap                   -> ff ap
 
-  and op_d_d_d a b ff fd df_da df_db df_dab =
+  and op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d =
     match a, b with
-    | Float ap, DF (bp, bt, bi)        -> let cp = fd a bp in make_dual cp (df_db cp bp bt) bi
-    | DF (ap, at, ai), Float bp        -> let cp = fd ap b in make_dual cp (df_da cp ap at) ai
-    | Matrix ap, DF (bp, bt, bi)       -> let cp = fd a bp in make_dual cp (df_db cp bp bt) bi
-    | DF (ap, at, ai), Matrix bp       -> let cp = fd ap b in make_dual cp (df_da cp ap at) ai
-    | DF (ap, at, ai), DF (bp, bt, bi) -> (
+    | Float ap, DF (bp, bt, bi)                  -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
+    | DF (ap, at, ai), Float bp                  -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
+    | Matrix ap, DF (bp, bt, bi)                 -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
+    | DF (ap, at, ai), Matrix bp                 -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
+    | Float ap, DR (bp, _, _, _, bi)             -> DR (fd a bp, ref (Float 0.), r_c_d a b, ref 0, bi)
+    | DR (ap, _, _, _, ai), Float bp             -> DR (fd ap b, ref (Float 0.), r_d_c a b, ref 0, ai)
+    | Matrix ap, DR (bp, _, _, _, bi)            -> DR (fd a bp, ref (Float 0.), r_c_d a b, ref 0, bi)
+    | DR (ap, _, _, _, ai), Matrix bp            -> DR (fd ap b, ref (Float 0.), r_d_c a b, ref 0, ai)
+    | DF (ap, at, ai), DR (bp, _, _, _, bi)      -> (
         match cmp_tag ai bi with
-        | 0 -> let cp = fd ap bp in make_dual cp (df_dab cp ap at bp bt) ai
-        | 1 -> let cp = fd ap b in make_dual cp (df_da cp ap at) ai
-        | _ -> let cp = fd a bp in make_dual cp (df_db cp bp bt) bi
+        | 1  -> let cp = fd ap b in DF (cp, df_da cp ap at, ai)
+        | -1 -> DR (fd a bp, ref (Float 0.), r_c_d a b, ref 0, bi)
+        | _  -> failwith "error: forward and backward clash on the same level"
       )
-    | a, b                            -> ff a b
+    | DR (ap, _, _, _, ai), DF (bp, bt, bi)      -> (
+        match cmp_tag ai bi with
+        | -1 -> let cp = fd a bp in DF (cp, df_db cp bp bt, bi)
+        | 1  -> DR (fd ap b, ref (Float 0.), r_d_c a b, ref 0, ai)
+        | _  -> failwith "error: forward and backward clash on the same level"
+      )
+    | DF (ap, at, ai), DF (bp, bt, bi)           -> (
+        match cmp_tag ai bi with
+        | 0 -> let cp = fd ap bp in DF (cp, (df_dab cp ap at bp bt), ai)
+        | 1 -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
+        | _ -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
+      )
+    | DR (ap, _, _, _, ai), DR (bp, _, _, _, bi) -> (
+        match cmp_tag ai bi with
+        | 0 -> DR (fd ap bp, ref (Float 0.), r_d_d a b, ref 0, ai)
+        | 1 -> DR(fd ap b, ref (Float 0.), r_d_c a b, ref 0, ai)
+        | _ -> DR(fd a bp, ref (Float 0.), r_c_d a b, ref 0, bi)
+      )
+    | a, b                                       -> ff a b
 
   and ( +. ) a b = add a b
   and add a b =
@@ -89,7 +124,13 @@ module Maths = struct
     in
     let df_dab cp ap at bp bt = at +. bt
     in
-    op_d_d_d a b ff fd df_da df_db df_dab
+    let r_d_d a b = Add_D_D (a, b)
+    in
+    let r_d_c a b = Add_D_C a
+    in
+    let r_c_d a b = Add_C_D b
+    in
+    op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
   and ( -. ) a b = sub a b
   and sub a b =
@@ -108,7 +149,13 @@ module Maths = struct
     in
     let df_dab cp ap at bp bt = at -. bt
     in
-    op_d_d_d a b ff fd df_da df_db df_dab
+    let r_d_d a b = Sub_D_D (a, b)
+    in
+    let r_d_c a b = Sub_D_C a
+    in
+    let r_c_d a b = Sub_C_D b
+    in
+    op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
   and ( *. ) a b = mul a b
   and mul a b =
@@ -127,7 +174,13 @@ module Maths = struct
     in
     let df_dab cp ap at bp bt = (ap *. bt) +. (at *. bp)
     in
-    op_d_d_d a b ff fd df_da df_db df_dab
+    let r_d_d a b = Mul_D_D (a, b)
+    in
+    let r_d_c a b = Mul_D_C (a, b)
+    in
+    let r_c_d a b = Mul_C_D (a, b)
+    in
+    op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
   and ( /. ) a b = div a b
   and div a b =
@@ -146,85 +199,13 @@ module Maths = struct
     in
     let df_dab cp ap at bp bt = (at -. bt *. cp) /. bp
     in
-    op_d_d_d a b ff fd df_da df_db df_dab
-
-(*
-  and add a b = match a, b with
-    | Float a, Float b -> Float Pervasives.(a +. b)
-    | Float a, DF b -> make_dual (add (Float a) b.p) b.t
-    | DF a, Float b -> make_dual (add a.p (Float b)) a.t
-    | DF a, DF b -> make_dual (add a.p b.p) (add a.t b.t)
-    | Matrix a, Matrix b -> Matrix M.(a +@ b)
-    | Matrix a, Float b -> Matrix M.(a +$ b)
-    | Float a, Matrix b -> Matrix M.(a $+ b)
-    | Matrix a, DF b -> make_dual (add (Matrix a) b.p) b.t
-    | DF a, Matrix b -> make_dual (add a.p (Matrix b)) a.t
-
-  and ( +. ) a b = add a b
-
-  and add' cp ap at bp bt = at +. bt
-
-  and add'_da cp ap at = at
-
-  and add'_db cp bp bt = bt
-
-  and sub a b = match a, b with
-    | Float a, Float b -> Float Pervasives.(a -. b)
-    | Float a, DF b -> make_dual (sub (Float a) b.p) (sub (Float 0.) b.t)
-    | DF a, Float b -> make_dual (sub a.p (Float b)) a.t
-    | DF a, DF b -> make_dual (sub a.p b.p) (sub a.t b.t)
-    | Matrix a, Matrix b -> Matrix M.(a -@ b)
-    | Matrix a, Float b -> Matrix M.(a -$ b)
-    | Float a, Matrix b -> Matrix M.(a $- b)
-    | Matrix a, DF b -> make_dual (sub (Matrix a) b.p) b.t
-    | DF a, Matrix b -> make_dual (sub a.p (Matrix b)) a.t
-
-  and ( -. ) a b = sub a b
-
-  and sub' cp ap at bp bt = at -. bt
-
-  and sub'_da cp ap at = at
-
-  and sub'_db cp bp bt = Float 0. -. bt
-
-  and mul a b = match a, b with
-    | Float a, Float b -> Float Pervasives.(a *. b)
-    | Float a, DF b -> make_dual (mul (Float a) b.p) (mul (Float a) b.t)
-    | DF a, Float b -> make_dual (mul a.p (Float b)) (mul a.t (Float b))
-    | DF a, DF b -> make_dual (mul a.p b.p) (add (mul a.p b.t) (mul a.t b.p))
-    | Matrix a, Matrix b -> Matrix M.(a *@ b)
-    | Matrix a, Float b -> Matrix M.(a *$ b)
-    | Float a, Matrix b -> Matrix M.(a $* b)
-    | Matrix a, DF b -> make_dual (mul (Matrix a) b.p) (mul (Matrix a) b.t)
-    | DF a, Matrix b -> make_dual (mul a.p (Matrix b)) (mul a.t (Matrix b))
-
-  and ( *. ) a b = mul a b
-
-  and mul' cp ap at bp bt = (ap *. bt) +. (at *. bp)
-
-  and mul'_da cp ap at b = at *. b
-
-  and mul'_db cp bp bt a = a *. bt
-
-  and div a b = match a, b with
-    | Float a, Float b -> Float Pervasives.(a /. b)
-    | Float a, DF b -> let y = div (Float a) b.p in make_dual y (mul (Float (-1.)) (mul (div y b.p) b.t))
-    | DF a, Float b -> make_dual (div a.p (Float b)) (div a.t (Float b))
-    | DF a, DF b -> make_dual (div a.p b.p) (sub (div a.t b.p) (div (mul a.p b.t) (mul b.p b.p)))
-    | Matrix a, Matrix b -> Matrix M.(a /@ b)
-    | Matrix a, Float b -> Matrix M.(a /$ b)
-    | Float a, Matrix b -> Matrix M.(a $/ b)
-    | Matrix a, DF b -> let y = div (Matrix a) b.p in make_dual y (mul (Float (-1.)) (mul (div y b.p) b.t))
-    | DF a, Matrix b -> make_dual (div a.p (Matrix b)) (div a.t (Matrix b))
-
-  and ( /. ) a b = div a b
-
-  and div' cp ap at bp bt = (at -. bt *. cp) /. bp
-
-  and div'_da cp ap at b = at /. b
-
-  and div'_db cp bp bt a = Float 0. -. (bt *. cp /. bp)
-*)
+    let r_d_d a b = Div_D_D (a, b)
+    in
+    let r_d_c a b = Div_D_C (a, b)
+    in
+    let r_c_d a b = Div_C_D (a, b)
+    in
+    op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
   and signum a =
     let ff = function
@@ -235,7 +216,9 @@ module Maths = struct
     in
     let df cp ap at = zero ap
     in
-    op_d_d a ff fd df
+    let r a = Signum_D a
+    in
+    op_d_d a ff fd df r
 
   and sin a =
     let ff = function
@@ -246,7 +229,9 @@ module Maths = struct
     in
     let df cp ap at = at *. cos ap
     in
-    op_d_d a ff fd df
+    let r a = Sin_D a
+    in
+    op_d_d a ff fd df r
 
   and cos a =
     let ff = function
@@ -257,25 +242,14 @@ module Maths = struct
     in
     let df cp ap at = Float 0. -. (at *. sin ap)
     in
-    op_d_d a ff fd df
-
-(*
-  and sin = function
-    | Float a -> Float Pervasives.(sin a)
-    | Matrix a -> Matrix M.(sin a)
-    | DF a -> make_dual (sin a.p) ((sin' a.p a.p) *. a.t)
-
-  and sin' cp ap at = at *. cos ap
-
-  and cos = function
-    | Float a -> Float Pervasives.(cos a)
-    | Matrix a -> Matrix M.(cos a)
-    | DF a -> make_dual (cos a.p) ((cos' a.p) *. a.t)
-
-  and cos' cp ap at = Float 0. -. (at *. sin ap)
-*)
+    let r a = Cos_D a
+    in
+    op_d_d a ff fd df r
 
 end
+
+
+(* wrappers *)
 
 let diff f = fun x ->
   let x = make_dual x (one x) (new_tag ()) in
