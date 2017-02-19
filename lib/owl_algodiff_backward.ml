@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+module S = Pervasives
 module M = Owl_dense_real
 
 type mat = Owl_dense_real.mat
@@ -66,6 +67,83 @@ module Maths = struct
     | D a, D b       -> let cp = fd a.p b.p in make_dual cp (df_dab cp a.p a.t b.p b.t)
     | a, b           -> ff a b
 
+  and ( +. ) a b = add a b
+  and add a b =
+    let ff a b =
+      match a, b with
+      | Float a, Float b   -> Float S.(a +. b)
+      | Float a, Matrix b  -> Matrix M.(a $+ b)
+      | Matrix a, Float b  -> Matrix M.(a +$ b)
+      | Matrix a, Matrix b -> Matrix M.(a +@ b)
+    in
+    let fd a b = a +. b
+    in
+    let df_da cp ap at = at
+    in
+    let df_db cp bp bt = bt
+    in
+    let df_dab cp ap at bp bt = at +. bt
+    in
+    op_d_d_d a b ff fd df_da df_db df_dab
+
+  and ( -. ) a b = sub a b
+  and sub a b =
+    let ff a b =
+      match a, b with
+      | Float a, Float b   -> Float S.(a -. b)
+      | Float a, Matrix b  -> Matrix M.(a $- b)
+      | Matrix a, Float b  -> Matrix M.(a -$ b)
+      | Matrix a, Matrix b -> Matrix M.(a -@ b)
+    in
+    let fd a b = a -. b
+    in
+    let df_da cp ap at = at
+    in
+    let df_db cp bp bt = Float 0. -. bt
+    in
+    let df_dab cp ap at bp bt = at -. bt
+    in
+    op_d_d_d a b ff fd df_da df_db df_dab
+
+  and ( *. ) a b = mul a b
+  and mul a b =
+    let ff a b =
+      match a, b with
+      | Float a, Float b   -> Float S.(a *. b)
+      | Float a, Matrix b  -> Matrix M.(a $* b)
+      | Matrix a, Float b  -> Matrix M.(a *$ b)
+      | Matrix a, Matrix b -> Matrix M.(a *@ b)
+    in
+    let fd a b = a *. b
+    in
+    let df_da cp ap at = at *. b
+    in
+    let df_db cp bp bt = a *. bt
+    in
+    let df_dab cp ap at bp bt = (ap *. bt) +. (at *. bp)
+    in
+    op_d_d_d a b ff fd df_da df_db df_dab
+
+  and ( /. ) a b = div a b
+  and div a b =
+    let ff a b =
+      match a, b with
+      | Float a, Float b   -> Float S.(a /. b)
+      | Float a, Matrix b  -> Matrix M.(a $/ b)
+      | Matrix a, Float b  -> Matrix M.(a /$ b)
+      | Matrix a, Matrix b -> Matrix M.(a /@ b)
+    in
+    let fd a b = a /. b
+    in
+    let df_da cp ap at = at /. b
+    in
+    let df_db cp bp bt = (Float 0.) -. (bt *. cp /. bp)
+    in
+    let df_dab cp ap at bp bt = (at -. bt *. cp) /. bp
+    in
+    op_d_d_d a b ff fd df_da df_db df_dab
+
+(*
   and add a b = match a, b with
     | Float a, Float b -> Float Pervasives.(a +. b)
     | Float a, D b -> make_dual (add (Float a) b.p) b.t
@@ -141,6 +219,7 @@ module Maths = struct
   and div'_da cp ap at b = at /. b
 
   and div'_db cp bp bt a = Float 0. -. (bt *. cp /. bp)
+*)
 
   and signum a =
     let ff = function
@@ -155,7 +234,7 @@ module Maths = struct
 
   and sin a =
     let ff = function
-      | Float a -> Float Pervasives.(sin a)
+      | Float a -> Float S.(sin a)
       | Matrix a -> Matrix M.(sin a)
     in
     let fd a = sin a
@@ -166,7 +245,7 @@ module Maths = struct
 
   and cos a =
     let ff = function
-      | Float a -> Float Pervasives.(cos a)
+      | Float a -> Float S.(cos a)
       | Matrix a -> Matrix M.(cos a)
     in
     let fd a = cos a
