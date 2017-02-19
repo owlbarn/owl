@@ -11,8 +11,8 @@ type mat = Owl_dense_real.mat
 type t =
   | Float of float
   | Matrix of mat
-  | D of dual
-  | A of adjoint
+  | DF of dual
+  | DR of adjoint
 and dual = {
   p : t;       (* primal value *)
   t : t;       (* tangent value *)
@@ -30,22 +30,22 @@ and trace_op =
   | Cos of t
 
 
-let make_dual p t = D { p; t }
+let make_dual p t = DF { p; t }
 
 let dual = function
   | Float a -> Float 0.
   | Matrix a -> Float 0.
-  | D a -> a.t
+  | DF a -> a.t
 
 let rec zero = function
   | Float _ -> Float 0.
   | Matrix _ -> Float 0.
-  | D a -> make_dual (zero a.p) (zero a.t)
+  | DF a -> make_dual (zero a.p) (zero a.t)
 
 let rec one = function
   | Float _ -> Float 1.
   | Matrix _ -> failwith "Error: one does not take matrix."
-  | D a -> make_dual (one a.p) (zero a.t)
+  | DF a -> make_dual (one a.p) (zero a.t)
 
 
 module Maths = struct
@@ -54,18 +54,18 @@ module Maths = struct
 
   and op_d_d a ff fd df =
     match a with
-    | D a -> let cp = fd a.p in make_dual cp (df cp a.p a.t)
-    | A a -> failwith "error: not implemented."
-    | ap -> ff ap
+    | DF a -> let cp = fd a.p in make_dual cp (df cp a.p a.t)
+    | DR a -> failwith "error: not implemented."
+    | ap   -> ff ap
 
   and op_d_d_d a b ff fd df_da df_db df_dab =
     match a, b with
-    | Float ap, D b  -> let cp = fd a b.p in make_dual cp (df_db cp b.p b.t)
-    | D a, Float bp  -> let cp = fd a.p b in make_dual cp (df_da cp a.p a.t)
-    | Matrix ap, D b -> let cp = fd a b.p in make_dual cp (df_db cp b.p b.t)
-    | D a, Matrix bp -> let cp = fd a.p b in make_dual cp (df_da cp a.p a.t)
-    | D a, D b       -> let cp = fd a.p b.p in make_dual cp (df_dab cp a.p a.t b.p b.t)
-    | a, b           -> ff a b
+    | Float ap, DF b  -> let cp = fd a b.p in make_dual cp (df_db cp b.p b.t)
+    | DF a, Float bp  -> let cp = fd a.p b in make_dual cp (df_da cp a.p a.t)
+    | Matrix ap, DF b -> let cp = fd a b.p in make_dual cp (df_db cp b.p b.t)
+    | DF a, Matrix bp -> let cp = fd a.p b in make_dual cp (df_da cp a.p a.t)
+    | DF a, DF b      -> let cp = fd a.p b.p in make_dual cp (df_dab cp a.p a.t b.p b.t)
+    | a, b            -> ff a b
 
   and ( +. ) a b = add a b
   and add a b =
@@ -146,14 +146,14 @@ module Maths = struct
 (*
   and add a b = match a, b with
     | Float a, Float b -> Float Pervasives.(a +. b)
-    | Float a, D b -> make_dual (add (Float a) b.p) b.t
-    | D a, Float b -> make_dual (add a.p (Float b)) a.t
-    | D a, D b -> make_dual (add a.p b.p) (add a.t b.t)
+    | Float a, DF b -> make_dual (add (Float a) b.p) b.t
+    | DF a, Float b -> make_dual (add a.p (Float b)) a.t
+    | DF a, DF b -> make_dual (add a.p b.p) (add a.t b.t)
     | Matrix a, Matrix b -> Matrix M.(a +@ b)
     | Matrix a, Float b -> Matrix M.(a +$ b)
     | Float a, Matrix b -> Matrix M.(a $+ b)
-    | Matrix a, D b -> make_dual (add (Matrix a) b.p) b.t
-    | D a, Matrix b -> make_dual (add a.p (Matrix b)) a.t
+    | Matrix a, DF b -> make_dual (add (Matrix a) b.p) b.t
+    | DF a, Matrix b -> make_dual (add a.p (Matrix b)) a.t
 
   and ( +. ) a b = add a b
 
@@ -165,14 +165,14 @@ module Maths = struct
 
   and sub a b = match a, b with
     | Float a, Float b -> Float Pervasives.(a -. b)
-    | Float a, D b -> make_dual (sub (Float a) b.p) (sub (Float 0.) b.t)
-    | D a, Float b -> make_dual (sub a.p (Float b)) a.t
-    | D a, D b -> make_dual (sub a.p b.p) (sub a.t b.t)
+    | Float a, DF b -> make_dual (sub (Float a) b.p) (sub (Float 0.) b.t)
+    | DF a, Float b -> make_dual (sub a.p (Float b)) a.t
+    | DF a, DF b -> make_dual (sub a.p b.p) (sub a.t b.t)
     | Matrix a, Matrix b -> Matrix M.(a -@ b)
     | Matrix a, Float b -> Matrix M.(a -$ b)
     | Float a, Matrix b -> Matrix M.(a $- b)
-    | Matrix a, D b -> make_dual (sub (Matrix a) b.p) b.t
-    | D a, Matrix b -> make_dual (sub a.p (Matrix b)) a.t
+    | Matrix a, DF b -> make_dual (sub (Matrix a) b.p) b.t
+    | DF a, Matrix b -> make_dual (sub a.p (Matrix b)) a.t
 
   and ( -. ) a b = sub a b
 
@@ -184,14 +184,14 @@ module Maths = struct
 
   and mul a b = match a, b with
     | Float a, Float b -> Float Pervasives.(a *. b)
-    | Float a, D b -> make_dual (mul (Float a) b.p) (mul (Float a) b.t)
-    | D a, Float b -> make_dual (mul a.p (Float b)) (mul a.t (Float b))
-    | D a, D b -> make_dual (mul a.p b.p) (add (mul a.p b.t) (mul a.t b.p))
+    | Float a, DF b -> make_dual (mul (Float a) b.p) (mul (Float a) b.t)
+    | DF a, Float b -> make_dual (mul a.p (Float b)) (mul a.t (Float b))
+    | DF a, DF b -> make_dual (mul a.p b.p) (add (mul a.p b.t) (mul a.t b.p))
     | Matrix a, Matrix b -> Matrix M.(a *@ b)
     | Matrix a, Float b -> Matrix M.(a *$ b)
     | Float a, Matrix b -> Matrix M.(a $* b)
-    | Matrix a, D b -> make_dual (mul (Matrix a) b.p) (mul (Matrix a) b.t)
-    | D a, Matrix b -> make_dual (mul a.p (Matrix b)) (mul a.t (Matrix b))
+    | Matrix a, DF b -> make_dual (mul (Matrix a) b.p) (mul (Matrix a) b.t)
+    | DF a, Matrix b -> make_dual (mul a.p (Matrix b)) (mul a.t (Matrix b))
 
   and ( *. ) a b = mul a b
 
@@ -203,14 +203,14 @@ module Maths = struct
 
   and div a b = match a, b with
     | Float a, Float b -> Float Pervasives.(a /. b)
-    | Float a, D b -> let y = div (Float a) b.p in make_dual y (mul (Float (-1.)) (mul (div y b.p) b.t))
-    | D a, Float b -> make_dual (div a.p (Float b)) (div a.t (Float b))
-    | D a, D b -> make_dual (div a.p b.p) (sub (div a.t b.p) (div (mul a.p b.t) (mul b.p b.p)))
+    | Float a, DF b -> let y = div (Float a) b.p in make_dual y (mul (Float (-1.)) (mul (div y b.p) b.t))
+    | DF a, Float b -> make_dual (div a.p (Float b)) (div a.t (Float b))
+    | DF a, DF b -> make_dual (div a.p b.p) (sub (div a.t b.p) (div (mul a.p b.t) (mul b.p b.p)))
     | Matrix a, Matrix b -> Matrix M.(a /@ b)
     | Matrix a, Float b -> Matrix M.(a /$ b)
     | Float a, Matrix b -> Matrix M.(a $/ b)
-    | Matrix a, D b -> let y = div (Matrix a) b.p in make_dual y (mul (Float (-1.)) (mul (div y b.p) b.t))
-    | D a, Matrix b -> make_dual (div a.p (Matrix b)) (div a.t (Matrix b))
+    | Matrix a, DF b -> let y = div (Matrix a) b.p in make_dual y (mul (Float (-1.)) (mul (div y b.p) b.t))
+    | DF a, Matrix b -> make_dual (div a.p (Matrix b)) (div a.t (Matrix b))
 
   and ( /. ) a b = div a b
 
@@ -258,14 +258,14 @@ module Maths = struct
   and sin = function
     | Float a -> Float Pervasives.(sin a)
     | Matrix a -> Matrix M.(sin a)
-    | D a -> make_dual (sin a.p) ((sin' a.p a.p) *. a.t)
+    | DF a -> make_dual (sin a.p) ((sin' a.p a.p) *. a.t)
 
   and sin' cp ap at = at *. cos ap
 
   and cos = function
     | Float a -> Float Pervasives.(cos a)
     | Matrix a -> Matrix M.(cos a)
-    | D a -> make_dual (cos a.p) ((cos' a.p) *. a.t)
+    | DF a -> make_dual (cos a.p) ((cos' a.p) *. a.t)
 
   and cos' cp ap at = Float 0. -. (at *. sin ap)
 *)
