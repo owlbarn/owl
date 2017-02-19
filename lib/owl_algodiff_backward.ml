@@ -48,14 +48,20 @@ let primal = function
   | ap                  -> ap
 
 let tangent = function
-  | DF (_, at, _)       -> at
+  | DF (_, at, _) -> at
+  | DR _          -> failwith "error: no tangent for DR"
+  | _             -> Float 0.
+
+let adjoint = function
+  | DF _                -> failwith "error: no adjoint for DF"
   | DR (_, at, _, _, _) -> !at
   | _                   -> Float 0.
 
 let rec zero = function
   | Float _ -> Float 0.
   | Matrix _ -> Float 0.
-  | DF (ap, at, ai) -> DF ((zero ap), (zero at), ai)  (* need to check *)
+  | DF (ap, at, ai) -> DF ((zero ap), (zero at), ai)  (* FIXME: need to check *)
+  | DR (ap, at, ao, af, ai) -> DR ((zero ap), ref (zero !at), Noop, ref !af, ai)
 
 let rec one = function
   | Float _ -> Float 1.
@@ -336,5 +342,5 @@ let grad f = fun x ->
   let x = make_reverse x (new_tag ()) in
   let y = f x in
   reverse_reset y;
-  reverse_push y (Float 1.);
-  y
+  reverse_push (Float 1.) y;
+  x |> adjoint
