@@ -11,16 +11,8 @@ type mat = Owl_dense_real.mat
 type t =
   | Float of float
   | Matrix of mat
-  | DF of dual
-  | DR of adjoint
-and dual = {
-  p : t;       (* primal value *)
-  t : t;       (* tangent value *)
-}
-and adjoint = {
-  p : t;       (* primal value *)
-  a : t;       (* adjoint value *)
-}
+  | DF of t * t * int                     (* primal, tangent, tag *)
+  | DR of t * t ref * trace_op * int      (* primal, adjoint, tag *)
 and trace_op =
   | Add of t * t
   | Sub of t * t
@@ -29,23 +21,31 @@ and trace_op =
   | Sin of t
   | Cos of t
 
+let _global_tag = ref 0
+let new_tag () = _global_tag := !_global_tag + 1; !_global_tag
 
-let make_dual p t = DF { p; t }
+(* FIXME *)
+let cmp_tag ai bi =
+  if ai > bi then 1
+  else if ai < bi then -1
+  else 0
+
+let make_dual p t i = DF (p, t, i)
 
 let dual = function
   | Float a -> Float 0.
   | Matrix a -> Float 0.
-  | DF a -> a.t
+  | DF (_, at, _) -> at
 
 let rec zero = function
   | Float _ -> Float 0.
   | Matrix _ -> Float 0.
-  | DF a -> make_dual (zero a.p) (zero a.t)
+  | DF (ap, at, ai) -> make_dual (zero ap) (zero at) ai  (* need to check *)
 
 let rec one = function
   | Float _ -> Float 1.
   | Matrix _ -> failwith "Error: one does not take matrix."
-  | DF a -> make_dual (one a.p) (zero a.t)
+  | DF (ap, at, ai) -> make_dual (one ap) (zero at) ai
 
 
 module Maths = struct
@@ -54,18 +54,23 @@ module Maths = struct
 
   and op_d_d a ff fd df =
     match a with
-    | DF a -> let cp = fd a.p in make_dual cp (df cp a.p a.t)
-    | DR a -> failwith "error: not implemented."
-    | ap   -> ff ap
+    | DF (ap, at, ai) -> let cp = fd ap in make_dual cp (df cp ap at) ai
+    | DR (_, _, _, _) -> failwith "error: not implemented."
+    | ap              -> ff ap
 
   and op_d_d_d a b ff fd df_da df_db df_dab =
     match a, b with
-    | Float ap, DF b  -> let cp = fd a b.p in make_dual cp (df_db cp b.p b.t)
-    | DF a, Float bp  -> let cp = fd a.p b in make_dual cp (df_da cp a.p a.t)
-    | Matrix ap, DF b -> let cp = fd a b.p in make_dual cp (df_db cp b.p b.t)
-    | DF a, Matrix bp -> let cp = fd a.p b in make_dual cp (df_da cp a.p a.t)
-    | DF a, DF b      -> let cp = fd a.p b.p in make_dual cp (df_dab cp a.p a.t b.p b.t)
-    | a, b            -> ff a b
+    | Float ap, DF (bp, bt, bi)        -> let cp = fd a bp in make_dual cp (df_db cp bp bt) bi
+    | DF (ap, at, ai), Float bp        -> let cp = fd ap b in make_dual cp (df_da cp ap at) ai
+    | Matrix ap, DF (bp, bt, bi)       -> let cp = fd a bp in make_dual cp (df_db cp bp bt) bi
+    | DF (ap, at, ai), Matrix bp       -> let cp = fd ap b in make_dual cp (df_da cp ap at) ai
+    | DF (ap, at, ai), DF (bp, bt, bi) -> (
+        match cmp_tag ai bi with
+        | 0 -> let cp = fd ap bp in make_dual cp (df_dab cp ap at bp bt) ai
+        | 1 -> let cp = fd ap b in make_dual cp (df_da cp ap at) ai
+        | _ -> let cp = fd a bp in make_dual cp (df_db cp bp bt) bi
+      )
+    | a, b                            -> ff a b
 
   and ( +. ) a b = add a b
   and add a b =
@@ -273,5 +278,5 @@ module Maths = struct
 end
 
 let diff f = fun x ->
-  let x = make_dual x (one x) in
+  let x = make_dual x (one x) (new_tag ()) in
   f x |> dual
