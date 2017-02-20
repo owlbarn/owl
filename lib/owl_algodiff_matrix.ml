@@ -201,13 +201,13 @@ let make_forward ?(argnum=0) f =
 let _check_matrix_shape x =
   match M.col_num x with
   | 1 -> ()
-  | _ -> failwith "Error: _check_matrix_shape"
+  | _ -> failwith "error: _check_matrix_shape, only column vec is allowed"
 
 let diff f = fun x ->
   let x = make_dual x (one x) in
   f x |> dual
 
-let grad f =
+let grad' f =
   let g = fun v -> (
     _check_matrix_shape v;
     let m, n = M.shape v in
@@ -218,7 +218,7 @@ let grad f =
       let d = make_dual (Matrix v) (Matrix u) in
       match f d |> dual with
       | Float dx -> r.{i,0} <- dx
-      | _ -> failwith "Error: grad, invalid output."
+      | _ -> failwith "error: grad, invalid output."
     ) v;
     r
   )

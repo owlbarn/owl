@@ -130,7 +130,7 @@ module Maths = struct
       | Float a, Matrix b  -> Matrix M.(a $+ b)
       | Matrix a, Float b  -> Matrix M.(a +$ b)
       | Matrix a, Matrix b -> Matrix M.(a +@ b)
-      | _                 -> failwith "error: add: ff"
+      | _                  -> failwith "error: add: ff"
     in
     let fd a b = a +. b
     in
@@ -389,9 +389,11 @@ let diff f = fun x ->
   let x = make_forward x (one x) (tag ()) in
   f x |> tangent
 
-let grad f = fun x ->
+let grad' f = fun x ->
   let x = make_reverse x (tag ()) in
   let y = f x in
   reverse_reset y;
   reverse_push (Float 1.) y;
-  !(x |> adjoint)
+  primal y, !(x |> adjoint)
+
+let grad f = fun x -> grad' f x |> snd
