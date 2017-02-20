@@ -132,20 +132,13 @@ module Maths = struct
       | Matrix a, Matrix b -> Matrix M.(a +@ b)
       | _                  -> failwith "error: add: ff"
     in
-    let fd a b = a +. b
-    in
-    let df_da cp ap at = at
-    in
-    let df_db cp bp bt = bt
-    in
-    let df_dab cp ap at bp bt = at +. bt
-    in
-    let r_d_d a b = Add_D_D (a, b)
-    in
-    let r_d_c a b = Add_D_C (a, b)
-    in
-    let r_c_d a b = Add_C_D (a, b)
-    in
+    let fd a b = a +. b in
+    let df_da cp ap at = at in
+    let df_db cp bp bt = bt in
+    let df_dab cp ap at bp bt = at +. bt in
+    let r_d_d a b = Add_D_D (a, b) in
+    let r_d_c a b = Add_D_C (a, b) in
+    let r_c_d a b = Add_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
   and ( -. ) a b = sub a b
@@ -158,20 +151,13 @@ module Maths = struct
       | Matrix a, Matrix b -> Matrix M.(a -@ b)
       | _                  -> failwith "error: sub: ff"
     in
-    let fd a b = a -. b
-    in
-    let df_da cp ap at = at
-    in
-    let df_db cp bp bt = Float 0. -. bt
-    in
-    let df_dab cp ap at bp bt = at -. bt
-    in
-    let r_d_d a b = Sub_D_D (a, b)
-    in
-    let r_d_c a b = Sub_D_C (a, b)
-    in
-    let r_c_d a b = Sub_C_D (a, b)
-    in
+    let fd a b = a -. b in
+    let df_da cp ap at = at in
+    let df_db cp bp bt = Float 0. -. bt in
+    let df_dab cp ap at bp bt = at -. bt in
+    let r_d_d a b = Sub_D_D (a, b) in
+    let r_d_c a b = Sub_D_C (a, b) in
+    let r_c_d a b = Sub_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
   and ( *. ) a b = mul a b
@@ -184,20 +170,13 @@ module Maths = struct
       | Matrix a, Matrix b -> Matrix M.(a *@ b)
       | _                  -> failwith "error: mul: ff"
     in
-    let fd a b = a *. b
-    in
-    let df_da cp ap at = at *. b
-    in
-    let df_db cp bp bt = a *. bt
-    in
-    let df_dab cp ap at bp bt = (ap *. bt) +. (at *. bp)
-    in
-    let r_d_d a b = Mul_D_D (a, b)
-    in
-    let r_d_c a b = Mul_D_C (a, b)
-    in
-    let r_c_d a b = Mul_C_D (a, b)
-    in
+    let fd a b = a *. b in
+    let df_da cp ap at = at *. b in
+    let df_db cp bp bt = a *. bt in
+    let df_dab cp ap at bp bt = (ap *. bt) +. (at *. bp) in
+    let r_d_d a b = Mul_D_D (a, b) in
+    let r_d_c a b = Mul_D_C (a, b) in
+    let r_c_d a b = Mul_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
   and ( /. ) a b = div a b
@@ -210,20 +189,13 @@ module Maths = struct
       | Matrix a, Matrix b -> Matrix M.(a /@ b)
       | _                  -> failwith "error: div: ff"
     in
-    let fd a b = a /. b
-    in
-    let df_da cp ap at = at /. b
-    in
-    let df_db cp bp bt = (Float 0.) -. (bt *. cp /. bp)
-    in
-    let df_dab cp ap at bp bt = (at -. bt *. cp) /. bp
-    in
-    let r_d_d a b = Div_D_D (a, b)
-    in
-    let r_d_c a b = Div_D_C (a, b)
-    in
-    let r_c_d a b = Div_C_D (a, b)
-    in
+    let fd a b = a /. b in
+    let df_da cp ap at = at /. b in
+    let df_db cp bp bt = (Float 0.) -. (bt *. cp /. bp) in
+    let df_dab cp ap at bp bt = (at -. bt *. cp) /. bp in
+    let r_d_d a b = Div_D_D (a, b) in
+    let r_d_c a b = Div_D_C (a, b) in
+    let r_c_d a b = Div_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
   and signum a =
@@ -232,12 +204,9 @@ module Maths = struct
       | Matrix a -> Matrix M.(signum a)
       | _        -> failwith "error: signum: ff"
     in
-    let fd a = signum a
-    in
-    let df cp ap at = zero ap
-    in
-    let r a = Signum_D a
-    in
+    let fd a = signum a in
+    let df cp ap at = zero ap in
+    let r a = Signum_D a in
     op_d_d a ff fd df r
 
   and sin a =
@@ -246,12 +215,9 @@ module Maths = struct
       | Matrix a -> Matrix M.(sin a)
       | _        -> failwith "error: sin: ff"
     in
-    let fd a = sin a
-    in
-    let df cp ap at = at *. cos ap
-    in
-    let r a = Sin_D a
-    in
+    let fd a = sin a in
+    let df cp ap at = at *. cos ap in
+    let r a = Sin_D a in
     op_d_d a ff fd df r
 
   and cos a =
@@ -260,12 +226,9 @@ module Maths = struct
       | Matrix a -> Matrix M.(cos a)
       | _        -> failwith "error: cos: ff"
     in
-    let fd a = cos a
-    in
-    let df cp ap at = Float 0. -. (at *. sin ap)
-    in
-    let r a = Cos_D a
-    in
+    let fd a = cos a in
+    let df cp ap at = Float 0. -. (at *. sin ap) in
+    let r a = Cos_D a in
     op_d_d a ff fd df r
 
   and item a i j =
@@ -280,20 +243,13 @@ module Maths = struct
       | Matrix a, Float b -> let aa = M.clone a in aa.{i,j} <- S.(aa.{i,j} +. b); Matrix aa
       | _                 -> failwith "error: add_item: ff"
     in
-    let fd a b = add_item a i j b
-    in
-    let df_da cp ap at = at
-    in
-    let df_db cp bp bt = add_item (zero a) i j bt
-    in
-    let df_dab cp ap at bp bt = add_item at i j bt
-    in
-    let r_d_d a b = AddI_D_D (a, i, j, b)
-    in
-    let r_d_c a b = AddI_D_C (a, i, j, b)
-    in
-    let r_c_d a b = AddI_C_D (a, i, j, b)
-    in
+    let fd a b = add_item a i j b in
+    let df_da cp ap at = at in
+    let df_db cp bp bt = add_item (zero a) i j bt in
+    let df_dab cp ap at bp bt = add_item at i j bt in
+    let r_d_d a b = AddI_D_D (a, i, j, b) in
+    let r_d_c a b = AddI_D_C (a, i, j, b) in
+    let r_c_d a b = AddI_C_D (a, i, j, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
 end
@@ -385,15 +341,26 @@ let make_forward p t i = DF (p, t, i)
 
 let make_reverse p i = DR (p, ref (zero p), Noop, ref 0, i)
 
-let diff f = fun x ->
+let diff' f x =
   let x = make_forward x (one x) (tag ()) in
-  f x |> tangent
+  let y = f x in
+  primal y, tangent y
 
-let grad' f = fun x ->
+let diff f x = diff' f x |> snd
+
+let grad' f x =
   let x = make_reverse x (tag ()) in
   let y = f x in
   reverse_reset y;
   reverse_push (Float 1.) y;
-  primal y, !(x |> adjoint)
+  primal y, !(x |> adjoint) |> primal
 
-let grad f = fun x -> grad' f x |> snd
+let grad f x = grad' f x |> snd
+
+let jacobian f x =
+  let y = f x |> primal in y
+
+
+
+
+(* ends here *)
