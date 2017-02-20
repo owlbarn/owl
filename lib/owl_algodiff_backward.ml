@@ -73,6 +73,9 @@ let adjoint = function
   | DR (_, at, _, _, _) -> at
   | ap                  -> ref (zero ap)
 
+let shape = function
+  | Matrix ap -> M.shape ap
+  | _         -> failwith "error: shape"
 
 (* overload operators *)
 
@@ -341,13 +344,16 @@ let make_forward p t i = DF (p, t, i)
 
 let make_reverse p i = DR (p, ref (zero p), Noop, ref 0, i)
 
+(* derivative of f (scalar -> scalr) at x, forward ad *)
 let diff' f x =
   let x = make_forward x (one x) (tag ()) in
   let y = f x in
   primal y, tangent y
 
+(* derivative of f (scalar -> scalr) at x, forward ad *)
 let diff f x = diff' f x |> snd
 
+(* gradient of f (vector -> scalar) at x, reverse ad *)
 let grad' f x =
   let x = make_reverse x (tag ()) in
   let y = f x in
@@ -355,11 +361,33 @@ let grad' f x =
   reverse_push (Float 1.) y;
   primal y, !(x |> adjoint) |> primal
 
+(* gradient of f (vector -> scalar) at x, reverse ad *)
 let grad f x = grad' f x |> snd
 
-let jacobian f x =
-  let y = f x |> primal in y
+(* jacobian vector product of f (vector -> vector) at x along v, forward ad *)
+let jacobianv' f x v =
+  let x = make_forward x v (tag ()) in
+  let y = f x in
+  primal y, tangent y
 
+(* jacobian vector product of f (vector -> vector) at x along v, forward ad *)
+let jacobianv f x v = jacobianv' f x v |> snd
+
+(* jacobian of f (vector -> vector) at x *)
+let jacobian f x =
+  let y = f x |> primal in
+  let m = shape y |> fst in
+  let b = M.eye m in
+  Array.init m (fun i ->
+    let v = Matrix (M.col b i) in
+    jacobianv f x v
+  )
+  |> Array.iteri (fun i v ->
+    match v with
+    | Matrix v -> M.copy_col_to v b i
+    | _ -> failwith "error: jacobian"
+  );
+  Matrix b
 
 
 
