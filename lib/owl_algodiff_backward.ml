@@ -32,6 +32,11 @@ and trace_op =
   | Sin_D    of t
   | Cos_D    of t
   | Signum_D of t
+  | Item     of t * int * int
+  | Add_Item_D_D of t * int * int * t
+  | Add_Item_D_C of t * int * int * t
+  | Add_Item_C_D of t * int * int * t
+
 
 let _global_tag = ref 0
 let new_tag () = _global_tag := !_global_tag + 1; !_global_tag
@@ -42,6 +47,17 @@ let cmp_tag ai bi =
   else if ai < bi then -1
   else 0
 
+let rec zero = function
+  | Float _                 -> Float 0.
+  | Matrix ap               -> Matrix M.(zeros (row_num ap) (col_num ap))
+  | DF (ap, at, ai)         -> DF ((zero ap), (zero at), ai)  (* FIXME: need to check *)
+  | DR (ap, at, ao, af, ai) -> DR ((zero ap), ref (zero !at), Noop, ref !af, ai)
+
+let rec one = function
+  | Float _         -> Float 1.
+  | DF (ap, at, ai) -> DF ((one ap), (zero at), ai)
+  | _               -> failwith "error: one : unknown type"
+
 let primal = function
   | DF (ap, _, _)       -> ap
   | DR (ap, _, _, _, _) -> ap
@@ -50,23 +66,14 @@ let primal = function
 let tangent = function
   | DF (_, at, _) -> at
   | DR _          -> failwith "error: no tangent for DR"
-  | _             -> Float 0.
+  | ap            -> zero ap
 
 let adjoint = function
   | DF _                -> failwith "error: no adjoint for DF"
-  | DR (_, at, _, _, _) -> !at
-  | _                   -> Float 0.
+  | DR (_, at, _, _, _) -> at
+  | ap                  -> ref (zero ap)
 
-let rec zero = function
-  | Float _ -> Float 0.
-  | Matrix _ -> Float 0.
-  | DF (ap, at, ai) -> DF ((zero ap), (zero at), ai)  (* FIXME: need to check *)
-  | DR (ap, at, ao, af, ai) -> DR ((zero ap), ref (zero !at), Noop, ref !af, ai)
 
-let rec one = function
-  | Float _ -> Float 1.
-  | Matrix _ -> failwith "Error: one does not take matrix."
-  | DF (ap, at, ai) -> DF ((one ap), (zero at), ai)
 
 
 (* overload operators *)
@@ -78,7 +85,7 @@ module Maths = struct
   and op_d_d a ff fd df r =
     match a with
     | DF (ap, at, ai)      -> let cp = fd ap in DF (cp, (df cp ap at), ai)
-    | DR (ap, _, _, _, ai) -> DR (fd ap, ref (Float 0.), r a, ref 0, ai)
+    | DR (ap, _, _, _, ai) -> let cp = fd ap in DR (cp, ref (zero cp), r a, ref 0, ai)
     | ap                   -> ff ap
 
   and op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d =
@@ -87,33 +94,33 @@ module Maths = struct
     | DF (ap, at, ai), Float bp                  -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
     | Matrix ap, DF (bp, bt, bi)                 -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
     | DF (ap, at, ai), Matrix bp                 -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
-    | Float ap, DR (bp, _, _, _, bi)             -> DR (fd a bp, ref (Float 0.), r_c_d a b, ref 0, bi)
-    | DR (ap, _, _, _, ai), Float bp             -> DR (fd ap b, ref (Float 0.), r_d_c a b, ref 0, ai)
-    | Matrix ap, DR (bp, _, _, _, bi)            -> DR (fd a bp, ref (Float 0.), r_c_d a b, ref 0, bi)
-    | DR (ap, _, _, _, ai), Matrix bp            -> DR (fd ap b, ref (Float 0.), r_d_c a b, ref 0, ai)
+    | Float ap, DR (bp, _, _, _, bi)             -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
+    | DR (ap, _, _, _, ai), Float bp             -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
+    | Matrix ap, DR (bp, _, _, _, bi)            -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
+    | DR (ap, _, _, _, ai), Matrix bp            -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
     | DF (ap, at, ai), DR (bp, _, _, _, bi)      -> (
         match cmp_tag ai bi with
         | 1  -> let cp = fd ap b in DF (cp, df_da cp ap at, ai)
-        | -1 -> DR (fd a bp, ref (Float 0.), r_c_d a b, ref 0, bi)
+        | -1 -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
         | _  -> failwith "error: forward and reverse clash at the same level"
       )
     | DR (ap, _, _, _, ai), DF (bp, bt, bi)      -> (
         match cmp_tag ai bi with
         | -1 -> let cp = fd a bp in DF (cp, df_db cp bp bt, bi)
-        | 1  -> DR (fd ap b, ref (Float 0.), r_d_c a b, ref 0, ai)
+        | 1  -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
         | _  -> failwith "error: forward and reverse clash at the same level"
       )
     | DF (ap, at, ai), DF (bp, bt, bi)           -> (
         match cmp_tag ai bi with
         | 0 -> let cp = fd ap bp in DF (cp, (df_dab cp ap at bp bt), ai)
-        | 1 -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
-        | _ -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
+        | 1 -> let cp = fd ap b  in DF (cp, (df_da cp ap at), ai)
+        | _ -> let cp = fd a bp  in DF (cp, (df_db cp bp bt), bi)
       )
     | DR (ap, _, _, _, ai), DR (bp, _, _, _, bi) -> (
         match cmp_tag ai bi with
-        | 0 -> DR (fd ap bp, ref (Float 0.), r_d_d a b, ref 0, ai)
-        | 1 -> DR(fd ap b, ref (Float 0.), r_d_c a b, ref 0, ai)
-        | _ -> DR(fd a bp, ref (Float 0.), r_c_d a b, ref 0, bi)
+        | 0 -> let cp = fd ap bp in DR (cp, ref (zero cp), r_d_d a b, ref 0, ai)
+        | 1 -> let cp = fd ap b  in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
+        | _ -> let cp = fd a bp  in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
       )
     | a, b                                       -> ff a b
 
@@ -256,6 +263,41 @@ module Maths = struct
     in
     op_d_d a ff fd df r
 
+  and item a i j =
+    match a with
+    | Matrix ap            -> Float (M.get ap i j)
+    | DF (ap, at, ai)      -> DF (item ap i j, item at i j, ai)
+    | DR (ap, _, _, _, ai) -> DR (item ap i j, ref (Float 0.), Item (a, i, j), ref 0, ai)
+    | _                    -> failwith "error: item only applies to matrices"
+
+  and set_item a i j b =
+    match a, b with
+    | Matrix ap, Float bp -> ap.{i,j} <- bp
+    | _, _ -> failwith "error: set_item"
+
+  and add_item a i j b =
+    let ff a b = match a, b with
+      | Matrix a, Float b -> let aa = M.clone a in aa.{i,j} <- S.(aa.{i,j} +. b); Matrix aa
+      | Float a, Matrix b -> Printf.printf "%i %i %g\n" i j a; failwith "+++"
+      | Float a, Float b -> Printf.printf "%i %i %g %g\n" i j a b; failwith "==="
+      | Matrix a, Matrix b -> M.pp_dsmat a; M.pp_dsmat b; failwith "***"
+    in
+    let fd a b = add_item a i j b
+    in
+    let df_da cp ap at = at
+    in
+    let df_db cp bp bt = add_item (zero a) i j bt
+    in
+    let df_dab cp ap at bp bt = add_item at i j bt
+    in
+    let r_d_d a b = Add_Item_D_D (a, i, j, b)
+    in
+    let r_d_c a b = Add_Item_D_C (a, i, j, b)
+    in
+    let r_c_d a b = Add_Item_C_D (a, i, j, b)
+    in
+    op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
 end
 
 
@@ -268,25 +310,29 @@ let reverse_reset x =
     | x :: t -> (
         match x with
         | DR (ap, aa, ao, af, ai) -> (
-          aa := Float 0.;
+          aa := zero !aa;
           af := !af + 1;
           if !af = 1 then (
             match ao with
-            | Add_D_D (a, b) -> reset (a :: b :: t)
-            | Add_D_C (a, _) -> reset (a :: t)
-            | Add_C_D (_, b) -> reset (b :: t)
-            | Sub_D_D (a, b) -> reset (a :: b :: t)
-            | Sub_D_C (a, _) -> reset (a :: t)
-            | Sub_C_D (_, b) -> reset (b :: t)
-            | Mul_D_D (a, b) -> reset (a :: b :: t)
-            | Mul_D_C (a, _) -> reset (a :: t)
-            | Mul_C_D (_, b) -> reset (b :: t)
-            | Div_D_D (a, b) -> reset (a :: b :: t)
-            | Div_D_C (a, _) -> reset (a :: t)
-            | Div_C_D (_, b) -> reset (b :: t)
-            | Sin_D a        -> reset (a :: t)
-            | Cos_D a        -> reset (a :: t)
-            | _              -> reset t
+            | Add_D_D (a, b)            -> reset (a :: b :: t)
+            | Add_D_C (a, _)            -> reset (a :: t)
+            | Add_C_D (_, b)            -> reset (b :: t)
+            | Sub_D_D (a, b)            -> reset (a :: b :: t)
+            | Sub_D_C (a, _)            -> reset (a :: t)
+            | Sub_C_D (_, b)            -> reset (b :: t)
+            | Mul_D_D (a, b)            -> reset (a :: b :: t)
+            | Mul_D_C (a, _)            -> reset (a :: t)
+            | Mul_C_D (_, b)            -> reset (b :: t)
+            | Div_D_D (a, b)            -> reset (a :: b :: t)
+            | Div_D_C (a, _)            -> reset (a :: t)
+            | Div_C_D (_, b)            -> reset (b :: t)
+            | Sin_D a                   -> reset (a :: t)
+            | Cos_D a                   -> reset (a :: t)
+            | Item (a, _, _)            -> reset (a :: t)
+            | Add_Item_D_D (a, _, _, b) -> reset (a :: b :: t)
+            | Add_Item_D_C (a, _, _, _) -> reset (a :: t)
+            | Add_Item_C_D (_, _, _, b) -> reset (b :: t)
+            | _                         -> reset t
             )
           else reset t
           )
@@ -321,6 +367,10 @@ let reverse_push v x =
             | Div_C_D (a, b) -> push (((!aa *. ((Float 0. -. (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
             | Sin_D a        -> push (((!aa *. cos (primal a)), a) :: t)
             | Cos_D a        -> push (((!aa *. (Float 0. -. sin (primal a))), a) :: t)
+            | Item (a, i, j) -> (adjoint a) := add_item !(adjoint a) i j !aa; push ((zero a, a) :: t)
+            | Add_Item_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
+            | Add_Item_D_C (a, _, _, _) -> push ((!aa, a) :: t)
+            | Add_Item_C_D (_, i, j, b) -> push ((item !aa i j, b) :: t)
             | _              -> push t
             )
           else push t
@@ -343,4 +393,4 @@ let grad f = fun x ->
   let y = f x in
   reverse_reset y;
   reverse_push (Float 1.) y;
-  x |> adjoint
+  !(x |> adjoint)
