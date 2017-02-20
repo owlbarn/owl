@@ -32,13 +32,14 @@ and trace_op =
   | Pow_D_D  of t * t
   | Pow_D_C  of t * t
   | Pow_C_D  of t * t
+  | Neg_D    of t
+  | Abs_D    of t
   | Signum_D of t
   | Log_D    of t
   | Log10_D  of t
   | Exp_D    of t
   | Sin_D    of t
   | Cos_D    of t
-  | Neg_D    of t
   | Item     of t * int * int
   | AddI_D_D of t * int * int * t
   | AddI_D_C of t * int * int * t
@@ -227,6 +228,29 @@ module Maths = struct
     let r_c_d a b = Div_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 *)
+
+  and neg a =
+    let ff = function
+      | Float a  -> Float S.(0. -. a)
+      | Matrix a -> Matrix M.(neg a)
+      | _        -> failwith "error: neg: ff"
+    in
+    let fd a = neg a in
+    let df cp ap at = (Float 0.) -. at in
+    let r a = Neg_D a in
+    op_d_d a ff fd df r
+
+  and abs a =
+    let ff = function
+      | Float a  -> Float Owl_maths.(abs a)
+      | Matrix a -> Matrix M.(abs a)
+      | _        -> failwith "error: abs: ff"
+    in
+    let fd a = abs a in
+    let df cp ap at = at *. (signum ap) in
+    let r a = Abs_D a in
+    op_d_d a ff fd df r
+
   and signum a =
     let ff = function
       | Float a  -> Float Owl_maths.(signum a)
@@ -293,17 +317,6 @@ module Maths = struct
     let r a = Cos_D a in
     op_d_d a ff fd df r
 
-  and neg a =
-    let ff = function
-      | Float a  -> Float S.(0. -. a)
-      | Matrix a -> Matrix M.(neg a)
-      | _        -> failwith "error: neg: ff"
-    in
-    let fd a = neg a in
-    let df cp ap at = (Float 0.) -. at in
-    let r a = Neg_D a in
-    op_d_d a ff fd df r
-
   and item a i j =
     match a with
     | Matrix ap            -> Float (M.get ap i j)
@@ -353,13 +366,14 @@ let reverse_reset x =
             | Div_D_D (a, b)        -> reset (a :: b :: t)
             | Div_D_C (a, _)        -> reset (a :: t)
             | Div_C_D (_, b)        -> reset (b :: t)
+            | Neg_D a               -> reset (a :: t)
+            | Abs_D a               -> reset (a :: t)
             | Signum_D a            -> reset (a :: t)
             | Log_D a               -> reset (a :: t)
             | Log10_D a             -> reset (a :: t)
             | Exp_D a               -> reset (a :: t)
             | Sin_D a               -> reset (a :: t)
             | Cos_D a               -> reset (a :: t)
-            | Neg_D a               -> reset (a :: t)
             | Item (a, _, _)        -> reset (a :: t)
             | AddI_D_D (a, _, _, b) -> reset (a :: b :: t)
             | AddI_D_C (a, _, _, _) -> reset (a :: t)
@@ -397,12 +411,14 @@ let reverse_push v x =
             | Div_D_D (a, b)        -> push (((!aa /. (primal b)), a) :: ((!aa *. ((Float 0. -. (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
             | Div_D_C (a, b)        -> push (((!aa /. b), a) :: t)
             | Div_C_D (a, b)        -> push (((!aa *. ((Float 0. -. (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
+            | Neg_D a               -> push (((Float 0.) -. !aa, a) :: t)
+            | Abs_D a               -> push (((!aa *. signum (primal a)), a) :: t)
+            | Signum_D a            -> push ((zero a, a) :: t)
             | Log_D a               -> push (((!aa /. (primal a)), a) :: t)
             | Log10_D a             -> push (((!aa /. ((primal a) *. (Float Owl_maths.log10e))), a) :: t)
             | Exp_D a               -> push (((!aa *. ap), a) :: t)
             | Sin_D a               -> push (((!aa *. cos (primal a)), a) :: t)
             | Cos_D a               -> push (((!aa *. (Float 0. -. sin (primal a))), a) :: t)
-            | Neg_D a               -> push (((Float 0.) -. !aa, a) :: t)
             | Item (a, i, j)        -> (adjoint a) := add_item !(adjoint a) i j !aa; push ((zero a, a) :: t)
             | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
             | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)
