@@ -63,6 +63,7 @@ and trace_op =
   | AddI_D_D of t * int * int * t
   | AddI_D_C of t * int * int * t
   | AddI_C_D of t * int * int * t
+  | Sum_D    of t
 
 
 let _global_tag = ref 0
@@ -103,6 +104,18 @@ let adjoint = function
 let shape = function
   | Matrix ap -> M.shape ap
   | _         -> failwith "error: shape"
+
+let row_num x = shape x |> fst
+
+let col_num x = shape x |> snd
+
+let mat_create m n a =
+  let a = match (primal a) with
+    | Float a -> a
+    | _ -> failwith "error: mat_create"
+  in
+  Matrix (M.create m n a)
+
 
 (* overload operators *)
 
@@ -550,6 +563,17 @@ module Maths = struct
     let r_c_d a b = AddI_C_D (a, i, j, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
+  and sum a =
+    let ff = function
+      | Float a  -> Float a
+      | Matrix a -> Float M.(sum a)
+      | _        -> failwith "error: sum: ff"
+    in
+    let fd a = sum a in
+    let df cp ap at = sum at in
+    let r a = Sum_D a in
+    op_d_d a ff fd df r
+
 end
 
 
@@ -612,6 +636,7 @@ let reverse_reset x =
             | AddI_D_D (a, _, _, b) -> reset (a :: b :: t)
             | AddI_D_C (a, _, _, _) -> reset (a :: t)
             | AddI_C_D (_, _, _, b) -> reset (b :: t)
+            | Sum_D a               -> reset (a :: t)
             | _                     -> reset t
             )
           else reset t
@@ -679,6 +704,7 @@ let reverse_push v x =
             | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
             | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)
             | AddI_C_D (_, i, j, b) -> push ((item !aa i j, b) :: t)
+            | Sum_D a               -> push ((((mat_create (row_num a) (col_num a) !aa)), a) :: t)
             | _                     -> push t
             )
           else push t
