@@ -47,6 +47,12 @@ and trace_op =
   | Sinh_D   of t
   | Cosh_D   of t
   | Tanh_D   of t
+  | Asin_D   of t
+  | Acos_D   of t
+  | Atan_D   of t
+  | Asinh_D  of t
+  | Acosh_D  of t
+  | Atanh_D  of t
   | Item     of t * int * int
   | AddI_D_D of t * int * int * t
   | AddI_D_C of t * int * int * t
@@ -400,6 +406,72 @@ module Maths = struct
     let r a = Tanh_D a in
     op_d_d a ff fd df r
 
+  and asin a =
+    let ff = function
+      | Float a  -> Float S.(asin a)
+      | Matrix a -> Matrix M.(asin a)
+      | _        -> failwith "error: asin: ff"
+    in
+    let fd a = asin a in
+    let df cp ap at = at /. sqrt ((Float 1.) -. square ap) in
+    let r a = Asin_D a in
+    op_d_d a ff fd df r
+
+  and acos a =
+    let ff = function
+      | Float a  -> Float S.(acos a)
+      | Matrix a -> Matrix M.(acos a)
+      | _        -> failwith "error: acos: ff"
+    in
+    let fd a = acos a in
+    let df cp ap at = (neg at) /. sqrt ((Float 1.) -. square ap) in
+    let r a = Acos_D a in
+    op_d_d a ff fd df r
+
+  and atan a =
+    let ff = function
+      | Float a  -> Float S.(atan a)
+      | Matrix a -> Matrix M.(atan a)
+      | _        -> failwith "error: atan: ff"
+    in
+    let fd a = atan a in
+    let df cp ap at = at /. ((Float 1.) +. square ap) in
+    let r a = Atan_D a in
+    op_d_d a ff fd df r
+
+  and asinh a =
+    let ff = function
+      | Float a  -> Float Owl_maths.(asinh a)
+      | Matrix a -> Matrix M.(asinh a)
+      | _        -> failwith "error: asinh: ff"
+    in
+    let fd a = asinh a in
+    let df cp ap at = at /. sqrt ((square ap) +. (Float 1.)) in
+    let r a = Asinh_D a in
+    op_d_d a ff fd df r
+
+  and acosh a =
+    let ff = function
+      | Float a  -> Float Owl_maths.(acosh a)
+      | Matrix a -> Matrix M.(acosh a)
+      | _        -> failwith "error: acosh: ff"
+    in
+    let fd a = acosh a in
+    let df cp ap at = at /. sqrt ((square ap) -. (Float 1.)) in
+    let r a = Acosh_D a in
+    op_d_d a ff fd df r
+
+  and atanh a =
+    let ff = function
+      | Float a  -> Float Owl_maths.(atanh a)
+      | Matrix a -> Matrix M.(atanh a)
+      | _        -> failwith "error: atanh: ff"
+    in
+    let fd a = atanh a in
+    let df cp ap at = at /. ((Float 1.) -. square ap) in
+    let r a = Atanh_D a in
+    op_d_d a ff fd df r
+
   and item a i j =
     match a with
     | Matrix ap            -> Float (M.get ap i j)
@@ -467,6 +539,12 @@ let reverse_reset x =
             | Sinh_D a              -> reset (a :: t)
             | Cosh_D a              -> reset (a :: t)
             | Tanh_D a              -> reset (a :: t)
+            | Asin_D a              -> reset (a :: t)
+            | Acos_D a              -> reset (a :: t)
+            | Atan_D a              -> reset (a :: t)
+            | Asinh_D a             -> reset (a :: t)
+            | Acosh_D a             -> reset (a :: t)
+            | Atanh_D a             -> reset (a :: t)
             | Item (a, _, _)        -> reset (a :: t)
             | AddI_D_D (a, _, _, b) -> reset (a :: b :: t)
             | AddI_D_C (a, _, _, _) -> reset (a :: t)
@@ -522,6 +600,12 @@ let reverse_push v x =
             | Sinh_D a              -> push (((!aa *. (cosh (primal a))), a) :: t)
             | Cosh_D a              -> push (((!aa *. (sinh (primal a))), a) :: t)
             | Tanh_D a              -> push (((!aa /. (square (cosh (primal a)))), a) :: t)
+            | Asin_D a              -> push (((!aa /. sqrt ((Float 1.) -. square (primal a))), a) :: t)
+            | Acos_D a              -> push ((((neg !aa) /. sqrt ((Float 1.) -. square (primal a))), a) :: t)
+            | Atan_D a              -> push (((!aa /. ((Float 1.) +. square (primal a))), a) :: t)
+            | Asinh_D a             -> push (((!aa /. sqrt ((square (primal a)) +. (Float 1.))), a) :: t)
+            | Acosh_D a             -> push (((!aa /. sqrt ((square (primal a)) -. (Float 1.))), a) :: t)
+            | Atanh_D a             -> push (((!aa /. ((Float 1.) -. square (primal a))), a) :: t)
             | Item (a, i, j)        -> (adjoint a) := add_item !(adjoint a) i j !aa; push ((zero a, a) :: t)
             | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
             | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)

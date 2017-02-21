@@ -45,6 +45,17 @@ let abs x = if x < 0. then (0.-.x) else x
 
 let neg x = 0. -. x
 
+let floor x = floor x
+
+let ceil x = ceil x
+
+let round_lb = -.(2. ** 52.)
+let round_ub = 2. ** 52.
+let round t =
+  if t >= round_lb && t <= round_ub then
+    floor (t +. 0.49999999999999994)
+  else t
+
 let sqrt x = sqrt x
 
 let pow x y = x ** y

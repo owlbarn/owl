@@ -20,6 +20,12 @@ val abs : float -> float
 
 val neg : float -> float
 
+val floor : float -> float
+
+val ceil : float -> float
+
+val round : float -> float
+
 val sqrt : float -> float
 
 val pow : float -> float -> float
