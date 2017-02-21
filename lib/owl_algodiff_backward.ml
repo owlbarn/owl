@@ -68,6 +68,9 @@ and trace_op =
   | Dot_D_C   of t * t
   | Dot_C_D   of t * t
   | Trans_D   of t
+  | L1Norm_D  of t
+  | L2Norm_D  of t
+  | L2NormS_D of t
 
 
 let _global_tag = ref 0
@@ -603,6 +606,36 @@ module Maths = struct
     let r a = Trans_D a in
     op_d_d a ff fd df r
 
+  and l1norm a =
+    let ff = function
+      | Matrix a -> Float M.(l1norm a)
+      | _        -> failwith "error: l1norm: ff"
+    in
+    let fd a = l1norm a in
+    let df cp ap at = at *. (signum ap) in
+    let r a = L1Norm_D a in
+    op_d_d a ff fd df r
+
+  and l2norm a =
+    let ff = function
+      | Matrix a -> Float M.(l2norm a)
+      | _        -> failwith "error: l2norm: ff"
+    in
+    let fd a = l2norm a in
+    let df cp ap at = (ap *. at) /. cp in
+    let r a = L2Norm_D a in
+    op_d_d a ff fd df r
+
+  and l2norm_sqr a =
+    let ff = function
+      | Matrix a -> Float M.(l2norm_sqr a)
+      | _        -> failwith "error: l2norm_sqr: ff"
+    in
+    let fd a = l2norm_sqr a in
+    let df cp ap at = (Float 2.) *. (ap *. at) in
+    let r a = L2NormS_D a in
+    op_d_d a ff fd df r
+
 end
 
 
@@ -670,6 +703,9 @@ let reverse_reset x =
             | Dot_D_C (a, _)        -> reset (a :: t)
             | Dot_C_D (_, b)        -> reset (b :: t)
             | Trans_D a             -> reset (a :: t)
+            | L1Norm_D a            -> reset (a :: t)
+            | L2Norm_D a            -> reset (a :: t)
+            | L2NormS_D a           -> reset (a :: t)
             | _                     -> reset t
             )
           else reset t
@@ -742,6 +778,9 @@ let reverse_push v x =
             | Dot_D_C (a, b)        -> push (((dot !aa b), a) :: t)
             | Dot_C_D (a, b)        -> push (((dot !aa a), b) :: t)
             | Trans_D a             -> push (((transpose !aa), a) :: t)
+            | L1Norm_D a            -> push (((!aa *. (signum (primal a))), a) :: t)
+            | L2Norm_D a            -> push (((!aa *. (Float 2.) *. (primal a)), a) :: t)
+            | L2NormS_D a           -> push (((!aa /. ap *. (primal a)), a) :: t)
             | _                     -> push t
             )
           else push t
