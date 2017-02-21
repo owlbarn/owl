@@ -35,6 +35,9 @@ and trace_op =
   | Neg_D    of t
   | Abs_D    of t
   | Signum_D of t
+  | Floor_D  of t
+  | Ceil_D   of t
+  | Round_D  of t
   | Square_D of t
   | Sqrt_D   of t
   | Log_D    of t
@@ -272,6 +275,39 @@ module Maths = struct
     let fd a = signum a in
     let df cp ap at = zero ap in
     let r a = Signum_D a in
+    op_d_d a ff fd df r
+
+  and floor a =
+    let ff = function
+      | Float a  -> Float Owl_maths.(floor a)
+      | Matrix a -> Matrix M.(floor a)
+      | _        -> failwith "error: floor: ff"
+    in
+    let fd a = floor a in
+    let df cp ap at = zero ap in
+    let r a = Floor_D a in
+    op_d_d a ff fd df r
+
+  and ceil a =
+    let ff = function
+      | Float a  -> Float Owl_maths.(ceil a)
+      | Matrix a -> Matrix M.(ceil a)
+      | _        -> failwith "error: ceil: ff"
+    in
+    let fd a = ceil a in
+    let df cp ap at = zero ap in
+    let r a = Ceil_D a in
+    op_d_d a ff fd df r
+
+  and round a =
+    let ff = function
+      | Float a  -> Float Owl_maths.(round a)
+      | Matrix a -> Matrix M.(round a)
+      | _        -> failwith "error: round: ff"
+    in
+    let fd a = round a in
+    let df cp ap at = zero ap in
+    let r a = Round_D a in
     op_d_d a ff fd df r
 
   and square a =
@@ -527,6 +563,9 @@ let reverse_reset x =
             | Neg_D a               -> reset (a :: t)
             | Abs_D a               -> reset (a :: t)
             | Signum_D a            -> reset (a :: t)
+            | Floor_D a             -> reset (a :: t)
+            | Ceil_D a              -> reset (a :: t)
+            | Round_D a             -> reset (a :: t)
             | Square_D a            -> reset (a :: t)
             | Sqrt_D a              -> reset (a :: t)
             | Log_D a               -> reset (a :: t)
@@ -588,6 +627,9 @@ let reverse_push v x =
             | Neg_D a               -> push (((Float 0.) -. !aa, a) :: t)
             | Abs_D a               -> push (((!aa *. signum (primal a)), a) :: t)
             | Signum_D a            -> push ((zero a, a) :: t)
+            | Floor_D a             -> push ((zero a, a) :: t)
+            | Ceil_D a              -> push ((zero a, a) :: t)
+            | Round_D a             -> push ((zero a, a) :: t)
             | Square_D a            -> push (((!aa *. (primal a) *. (Float 2.)), a) :: t)
             | Sqrt_D a              -> push (((!aa /. ((Float 2.) *. ap)), a) :: t)
             | Log_D a               -> push (((!aa /. (primal a)), a) :: t)
