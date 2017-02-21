@@ -17,57 +17,57 @@ type t =
   | DR     of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
 and trace_op =
   | Noop
-  | Add_D_D  of t * t
-  | Add_D_C  of t * t
-  | Add_C_D  of t * t
-  | Sub_D_D  of t * t
-  | Sub_D_C  of t * t
-  | Sub_C_D  of t * t
-  | Mul_D_D  of t * t
-  | Mul_D_C  of t * t
-  | Mul_C_D  of t * t
-  | Div_D_D  of t * t
-  | Div_D_C  of t * t
-  | Div_C_D  of t * t
-  | Pow_D_D  of t * t
-  | Pow_D_C  of t * t
-  | Pow_C_D  of t * t
+  | Add_D_D   of t * t
+  | Add_D_C   of t * t
+  | Add_C_D   of t * t
+  | Sub_D_D   of t * t
+  | Sub_D_C   of t * t
+  | Sub_C_D   of t * t
+  | Mul_D_D   of t * t
+  | Mul_D_C   of t * t
+  | Mul_C_D   of t * t
+  | Div_D_D   of t * t
+  | Div_D_C   of t * t
+  | Div_C_D   of t * t
+  | Pow_D_D   of t * t
+  | Pow_D_C   of t * t
+  | Pow_C_D   of t * t
   | Atan2_D_D of t * t
   | Atan2_D_C of t * t
   | Atan2_C_D of t * t
-  | Neg_D    of t
-  | Abs_D    of t
-  | Signum_D of t
-  | Floor_D  of t
-  | Ceil_D   of t
-  | Round_D  of t
-  | Square_D of t
-  | Sqrt_D   of t
-  | Log_D    of t
-  | Log2_D   of t
-  | Log10_D  of t
-  | Exp_D    of t
-  | Sin_D    of t
-  | Cos_D    of t
-  | Tan_D    of t
-  | Sinh_D   of t
-  | Cosh_D   of t
-  | Tanh_D   of t
-  | Asin_D   of t
-  | Acos_D   of t
-  | Atan_D   of t
-  | Asinh_D  of t
-  | Acosh_D  of t
-  | Atanh_D  of t
-  | Item     of t * int * int
-  | AddI_D_D of t * int * int * t
-  | AddI_D_C of t * int * int * t
-  | AddI_C_D of t * int * int * t
-  | Sum_D    of t
-  | Dot_D_D  of t * t
-  | Dot_D_C  of t * t
-  | Dot_C_D  of t * t
-  | Trans_D  of t
+  | Neg_D     of t
+  | Abs_D     of t
+  | Signum_D  of t
+  | Floor_D   of t
+  | Ceil_D    of t
+  | Round_D   of t
+  | Sqr_D     of t
+  | Sqrt_D    of t
+  | Log_D     of t
+  | Log2_D    of t
+  | Log10_D   of t
+  | Exp_D     of t
+  | Sin_D     of t
+  | Cos_D     of t
+  | Tan_D     of t
+  | Sinh_D    of t
+  | Cosh_D    of t
+  | Tanh_D    of t
+  | Asin_D    of t
+  | Acos_D    of t
+  | Atan_D    of t
+  | Asinh_D   of t
+  | Acosh_D   of t
+  | Atanh_D   of t
+  | Item      of t * int * int
+  | AddI_D_D  of t * int * int * t
+  | AddI_D_C  of t * int * int * t
+  | AddI_C_D  of t * int * int * t
+  | Sum_D     of t
+  | Dot_D_D   of t * t
+  | Dot_D_C   of t * t
+  | Dot_C_D   of t * t
+  | Trans_D   of t
 
 
 let _global_tag = ref 0
@@ -274,9 +274,9 @@ module Maths = struct
       | _                  -> failwith "error: atan2: ff"
     in
     let fd a b = atan2 a b in
-    let df_da cp ap at = at *. b /. ((square ap) +. (square b)) in
-    let df_db cp bp bt = (neg bt) *. a /. ((square a) +. (square bp)) in
-    let df_dab cp ap at bp bt = ((at *. bp) -. (bt *. ap)) /. ((square ap) +. (square bp)) in
+    let df_da cp ap at = at *. b /. ((sqr ap) +. (sqr b)) in
+    let df_db cp bp bt = (neg bt) *. a /. ((sqr a) +. (sqr bp)) in
+    let df_dab cp ap at bp bt = ((at *. bp) -. (bt *. ap)) /. ((sqr ap) +. (sqr bp)) in
     let r_d_d a b = Atan2_D_D (a, b) in
     let r_d_c a b = Atan2_D_C (a, b) in
     let r_c_d a b = Atan2_C_D (a, b) in
@@ -348,15 +348,15 @@ module Maths = struct
     let r a = Round_D a in
     op_d_d a ff fd df r
 
-  and square a =
+  and sqr a =
     let ff = function
       | Float a  -> Float S.(a *. a)
-      | Matrix a -> Matrix M.(a *@ a)
-      | _        -> failwith "error: square: ff"
+      | Matrix a -> Matrix M.(sqr a)
+      | _        -> failwith "error: sqr: ff"
     in
-    let fd a = square a in
+    let fd a = sqr a in
     let df cp ap at = (Float 2.) *. at *. ap in
-    let r a = Square_D a in
+    let r a = Sqr_D a in
     op_d_d a ff fd df r
 
   and sqrt a =
@@ -443,7 +443,7 @@ module Maths = struct
       | _        -> failwith "error: tan: ff"
     in
     let fd a = tan a in
-    let df cp ap at = at /. (square (cos ap)) in
+    let df cp ap at = at /. (sqr (cos ap)) in
     let r a = Tan_D a in
     op_d_d a ff fd df r
 
@@ -476,7 +476,7 @@ module Maths = struct
       | _        -> failwith "error: tanh: ff"
     in
     let fd a = tanh a in
-    let df cp ap at = at /. (square (cosh ap)) in
+    let df cp ap at = at /. (sqr (cosh ap)) in
     let r a = Tanh_D a in
     op_d_d a ff fd df r
 
@@ -487,7 +487,7 @@ module Maths = struct
       | _        -> failwith "error: asin: ff"
     in
     let fd a = asin a in
-    let df cp ap at = at /. sqrt ((Float 1.) -. square ap) in
+    let df cp ap at = at /. sqrt ((Float 1.) -. sqr ap) in
     let r a = Asin_D a in
     op_d_d a ff fd df r
 
@@ -498,7 +498,7 @@ module Maths = struct
       | _        -> failwith "error: acos: ff"
     in
     let fd a = acos a in
-    let df cp ap at = (neg at) /. sqrt ((Float 1.) -. square ap) in
+    let df cp ap at = (neg at) /. sqrt ((Float 1.) -. sqr ap) in
     let r a = Acos_D a in
     op_d_d a ff fd df r
 
@@ -509,7 +509,7 @@ module Maths = struct
       | _        -> failwith "error: atan: ff"
     in
     let fd a = atan a in
-    let df cp ap at = at /. ((Float 1.) +. square ap) in
+    let df cp ap at = at /. ((Float 1.) +. sqr ap) in
     let r a = Atan_D a in
     op_d_d a ff fd df r
 
@@ -520,7 +520,7 @@ module Maths = struct
       | _        -> failwith "error: asinh: ff"
     in
     let fd a = asinh a in
-    let df cp ap at = at /. sqrt ((square ap) +. (Float 1.)) in
+    let df cp ap at = at /. sqrt ((sqr ap) +. (Float 1.)) in
     let r a = Asinh_D a in
     op_d_d a ff fd df r
 
@@ -531,7 +531,7 @@ module Maths = struct
       | _        -> failwith "error: acosh: ff"
     in
     let fd a = acosh a in
-    let df cp ap at = at /. sqrt ((square ap) -. (Float 1.)) in
+    let df cp ap at = at /. sqrt ((sqr ap) -. (Float 1.)) in
     let r a = Acosh_D a in
     op_d_d a ff fd df r
 
@@ -542,7 +542,7 @@ module Maths = struct
       | _        -> failwith "error: atanh: ff"
     in
     let fd a = atanh a in
-    let df cp ap at = at /. ((Float 1.) -. square ap) in
+    let df cp ap at = at /. ((Float 1.) -. sqr ap) in
     let r a = Atanh_D a in
     op_d_d a ff fd df r
 
@@ -643,7 +643,7 @@ let reverse_reset x =
             | Floor_D a             -> reset (a :: t)
             | Ceil_D a              -> reset (a :: t)
             | Round_D a             -> reset (a :: t)
-            | Square_D a            -> reset (a :: t)
+            | Sqr_D a               -> reset (a :: t)
             | Sqrt_D a              -> reset (a :: t)
             | Log_D a               -> reset (a :: t)
             | Log2_D a              -> reset (a :: t)
@@ -706,16 +706,16 @@ let reverse_push v x =
             | Pow_D_D (a, b)        -> push (((!aa *. ((primal a) ** ((primal b) -. (Float 1.))) *. (primal b)), a) :: ((!aa *. ((primal a) ** (primal b)) *. log (primal a)), b) :: t)
             | Pow_D_C (a, b)        -> push (((!aa *. ((primal a) ** (b -. (Float 1.))) *. b), a) :: t)
             | Pow_C_D (a, b)        -> push (((!aa *. (a ** (primal b)) *. log a), b) :: t)
-            | Atan2_D_D (a, b)      -> let d = (square (primal a)) +. (square (primal b)) in push (((!aa *. (primal b) /. d), a) :: ((!aa *. (neg (primal a)) /. d), b) :: t)
-            | Atan2_D_C (a, b)      -> push (((!aa *. b /. ((square (primal a)) +. (square b))), a) :: t)
-            | Atan2_C_D (a, b)      -> push (((!aa *. (neg a) /. ((square a) +. (square (primal b)))), b) :: t)
+            | Atan2_D_D (a, b)      -> let d = (sqr (primal a)) +. (sqr (primal b)) in push (((!aa *. (primal b) /. d), a) :: ((!aa *. (neg (primal a)) /. d), b) :: t)
+            | Atan2_D_C (a, b)      -> push (((!aa *. b /. ((sqr (primal a)) +. (sqr b))), a) :: t)
+            | Atan2_C_D (a, b)      -> push (((!aa *. (neg a) /. ((sqr a) +. (sqr (primal b)))), b) :: t)
             | Neg_D a               -> push (((Float 0.) -. !aa, a) :: t)
             | Abs_D a               -> push (((!aa *. signum (primal a)), a) :: t)
             | Signum_D a            -> push ((zero a, a) :: t)
             | Floor_D a             -> push ((zero a, a) :: t)
             | Ceil_D a              -> push ((zero a, a) :: t)
             | Round_D a             -> push ((zero a, a) :: t)
-            | Square_D a            -> push (((!aa *. (primal a) *. (Float 2.)), a) :: t)
+            | Sqr_D a               -> push (((!aa *. (primal a) *. (Float 2.)), a) :: t)
             | Sqrt_D a              -> push (((!aa /. ((Float 2.) *. ap)), a) :: t)
             | Log_D a               -> push (((!aa /. (primal a)), a) :: t)
             | Log2_D a              -> push (((!aa /. ((primal a) *. (Float Owl_maths.log2e))), a) :: t)
@@ -723,16 +723,16 @@ let reverse_push v x =
             | Exp_D a               -> push (((!aa *. ap), a) :: t)
             | Sin_D a               -> push (((!aa *. cos (primal a)), a) :: t)
             | Cos_D a               -> push (((!aa *. (Float 0. -. sin (primal a))), a) :: t)
-            | Tan_D a               -> push (((!aa /. (square (cos (primal a)))), a) :: t)
+            | Tan_D a               -> push (((!aa /. (sqr (cos (primal a)))), a) :: t)
             | Sinh_D a              -> push (((!aa *. (cosh (primal a))), a) :: t)
             | Cosh_D a              -> push (((!aa *. (sinh (primal a))), a) :: t)
-            | Tanh_D a              -> push (((!aa /. (square (cosh (primal a)))), a) :: t)
-            | Asin_D a              -> push (((!aa /. sqrt ((Float 1.) -. square (primal a))), a) :: t)
-            | Acos_D a              -> push ((((neg !aa) /. sqrt ((Float 1.) -. square (primal a))), a) :: t)
-            | Atan_D a              -> push (((!aa /. ((Float 1.) +. square (primal a))), a) :: t)
-            | Asinh_D a             -> push (((!aa /. sqrt ((square (primal a)) +. (Float 1.))), a) :: t)
-            | Acosh_D a             -> push (((!aa /. sqrt ((square (primal a)) -. (Float 1.))), a) :: t)
-            | Atanh_D a             -> push (((!aa /. ((Float 1.) -. square (primal a))), a) :: t)
+            | Tanh_D a              -> push (((!aa /. (sqr (cosh (primal a)))), a) :: t)
+            | Asin_D a              -> push (((!aa /. sqrt ((Float 1.) -. sqr (primal a))), a) :: t)
+            | Acos_D a              -> push ((((neg !aa) /. sqrt ((Float 1.) -. sqr (primal a))), a) :: t)
+            | Atan_D a              -> push (((!aa /. ((Float 1.) +. sqr (primal a))), a) :: t)
+            | Asinh_D a             -> push (((!aa /. sqrt ((sqr (primal a)) +. (Float 1.))), a) :: t)
+            | Acosh_D a             -> push (((!aa /. sqrt ((sqr (primal a)) -. (Float 1.))), a) :: t)
+            | Atanh_D a             -> push (((!aa /. ((Float 1.) -. sqr (primal a))), a) :: t)
             | Item (a, i, j)        -> (adjoint a) := add_item !(adjoint a) i j !aa; push ((zero a, a) :: t)
             | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
             | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)
