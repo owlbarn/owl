@@ -64,6 +64,10 @@ and trace_op =
   | AddI_D_C of t * int * int * t
   | AddI_C_D of t * int * int * t
   | Sum_D    of t
+  | Dot_D_D  of t * t
+  | Dot_D_C  of t * t
+  | Dot_C_D  of t * t
+  | Trans_D  of t
 
 
 let _global_tag = ref 0
@@ -565,13 +569,38 @@ module Maths = struct
 
   and sum a =
     let ff = function
-      | Float a  -> Float a
       | Matrix a -> Float M.(sum a)
       | _        -> failwith "error: sum: ff"
     in
     let fd a = sum a in
     let df cp ap at = sum at in
     let r a = Sum_D a in
+    op_d_d a ff fd df r
+
+  and ( $@ ) a b = mul a b
+  and dot a b =
+    let ff a b =
+      match a, b with
+      | Matrix a, Matrix b -> Matrix M.(a $@ b)
+      | _                  -> failwith "error: dot: ff"
+    in
+    let fd a b = a $@ b in
+    let df_da cp ap at = at $@ b in
+    let df_db cp bp bt = a $@ bt in
+    let df_dab cp ap at bp bt = (ap $@ bt) +. (at $@ bp) in
+    let r_d_d a b = Dot_D_D (a, b) in
+    let r_d_c a b = Dot_D_C (a, b) in
+    let r_c_d a b = Dot_C_D (a, b) in
+    op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+  and transpose a =
+    let ff = function
+      | Matrix a -> Matrix M.(transpose a)
+      | _        -> failwith "error: transpose: ff"
+    in
+    let fd a = transpose a in
+    let df cp ap at = transpose at in
+    let r a = Trans_D a in
     op_d_d a ff fd df r
 
 end
@@ -637,6 +666,10 @@ let reverse_reset x =
             | AddI_D_C (a, _, _, _) -> reset (a :: t)
             | AddI_C_D (_, _, _, b) -> reset (b :: t)
             | Sum_D a               -> reset (a :: t)
+            | Dot_D_D (a, b)        -> reset (a :: b :: t)
+            | Dot_D_C (a, _)        -> reset (a :: t)
+            | Dot_C_D (_, b)        -> reset (b :: t)
+            | Trans_D a             -> reset (a :: t)
             | _                     -> reset t
             )
           else reset t
@@ -705,6 +738,10 @@ let reverse_push v x =
             | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)
             | AddI_C_D (_, i, j, b) -> push ((item !aa i j, b) :: t)
             | Sum_D a               -> push ((((mat_create (row_num a) (col_num a) !aa)), a) :: t)
+            | Dot_D_D (a, b)        -> push (((dot !aa (primal b)), a) :: ((dot !aa (primal a)), b) :: t)
+            | Dot_D_C (a, b)        -> push (((dot !aa b), a) :: t)
+            | Dot_C_D (a, b)        -> push (((dot !aa a), b) :: t)
+            | Trans_D a             -> push (((transpose !aa), a) :: t)
             | _                     -> push t
             )
           else push t
@@ -750,22 +787,49 @@ let jacobianv' f x v =
 (* jacobian vector product of f (vector -> vector) at x along v, forward ad *)
 let jacobianv f x v = jacobianv' f x v |> snd
 
-(* jacobian of f (vector -> vector) at x *)
-let jacobian f x =
-  let y = f x |> primal in
-  let m = shape y |> fst in
-  let b = M.eye m in
-  Array.init m (fun i ->
-    let v = Matrix (M.col b i) in
-    jacobianv f x v
-  )
-  |> Array.iteri (fun i v ->
-    match v with
-    | Matrix v -> M.copy_col_to v b i
-    | _ -> failwith "error: jacobian"
-  );
-  Matrix b
+(* transposed jacobian vector product of f (vector -> vector) at x along v, backward ad *)
+let jacobianTv' f x v =
+  let x = make_reverse x (tag ()) in
+  let y = f x in
+  reverse_reset y;
+  reverse_push v y;
+  primal y, !(x |> adjoint) |> primal
 
+(* transposed jacobian vector product of f (vector -> vector) at x along v, backward ad *)
+let jacobianTv f x v = jacobianTv' f x v |> snd
+
+(* jacobian of f (vector -> vector) at x, x is row vector, y is column vector *)
+let jacobian f x =
+  (* FIXME *)
+  let y = f x |> primal in
+  let m = row_num y in
+  let n = col_num x in
+  let z = M.empty m n in
+  if m > n then (
+    let b = M.eye n in
+    Array.init n (fun i ->
+      let v = Matrix (M.col b i) in
+      jacobianv f x v
+    )
+    |> Array.iteri (fun i v ->
+      match v with
+      | Matrix v -> M.copy_col_to v z i
+      | _ -> failwith "error: jacobian"
+    );
+  )
+  else (
+    let b = M.eye m in
+    Array.init m (fun i ->
+      let v = Matrix (M.row b i) in
+      jacobianTv f x v
+    )
+    |> Array.iteri (fun i v ->
+      match v with
+      | Matrix v -> M.copy_row_to v z i
+      | _ -> failwith "error: jacobian"
+    );
+  );
+  z
 
 
 (* ends here *)
