@@ -35,11 +35,15 @@ and trace_op =
   | Neg_D    of t
   | Abs_D    of t
   | Signum_D of t
+  | Square_D of t
+  | Sqrt_D   of t
   | Log_D    of t
+  | Log2_D   of t
   | Log10_D  of t
   | Exp_D    of t
   | Sin_D    of t
   | Cos_D    of t
+  | Tan_D    of t
   | Item     of t * int * int
   | AddI_D_D of t * int * int * t
   | AddI_D_C of t * int * int * t
@@ -261,6 +265,28 @@ module Maths = struct
     let r a = Signum_D a in
     op_d_d a ff fd df r
 
+  and square a =
+    let ff = function
+      | Float a  -> Float S.(a *. a)
+      | Matrix a -> Matrix M.(a *@ a)
+      | _        -> failwith "error: square: ff"
+    in
+    let fd a = square a in
+    let df cp ap at = (Float 2.) *. at *. ap in
+    let r a = Square_D a in
+    op_d_d a ff fd df r
+
+  and sqrt a =
+    let ff = function
+      | Float a  -> Float S.(sqrt a)
+      | Matrix a -> Matrix M.(sqrt a)
+      | _        -> failwith "error: sqrt: ff"
+    in
+    let fd a = sqrt a in
+    let df cp ap at = at /. ((Float 2.) *. cp) in
+    let r a = Sqrt_D a in
+    op_d_d a ff fd df r
+
   and log a =
     let ff = function
       | Float a  -> Float S.(log a)
@@ -270,6 +296,17 @@ module Maths = struct
     let fd a = log a in
     let df cp ap at = at /. ap in
     let r a = Log_D a in
+    op_d_d a ff fd df r
+
+  and log2 a =
+    let ff = function
+      | Float a  -> Float Owl_maths.(log2 a)
+      | Matrix a -> Matrix M.(log2 a)
+      | _        -> failwith "error: log2: ff"
+    in
+    let fd a = log2 a in
+    let df cp ap at = at /. (ap *. (Float Owl_maths.log2e)) in
+    let r a = Log2_D a in
     op_d_d a ff fd df r
 
   and log10 a =
@@ -290,7 +327,7 @@ module Maths = struct
       | _        -> failwith "error: exp: ff"
     in
     let fd a = exp a in
-    let df cp ap at = at *. ap in
+    let df cp ap at = at *. cp in
     let r a = Exp_D a in
     op_d_d a ff fd df r
 
@@ -314,6 +351,17 @@ module Maths = struct
     let fd a = cos a in
     let df cp ap at = Float 0. -. (at *. sin ap) in
     let r a = Cos_D a in
+    op_d_d a ff fd df r
+
+  and tan a =
+    let ff = function
+      | Float a  -> Float S.(tan a)
+      | Matrix a -> Matrix M.(tan a)
+      | _        -> failwith "error: tan: ff"
+    in
+    let fd a = tan a in
+    let df cp ap at = at /. (square (cos ap)) in
+    let r a = Tan_D a in
     op_d_d a ff fd df r
 
   and item a i j =
@@ -371,11 +419,15 @@ let reverse_reset x =
             | Neg_D a               -> reset (a :: t)
             | Abs_D a               -> reset (a :: t)
             | Signum_D a            -> reset (a :: t)
+            | Square_D a            -> reset (a :: t)
+            | Sqrt_D a              -> reset (a :: t)
             | Log_D a               -> reset (a :: t)
+            | Log2_D a              -> reset (a :: t)
             | Log10_D a             -> reset (a :: t)
             | Exp_D a               -> reset (a :: t)
             | Sin_D a               -> reset (a :: t)
             | Cos_D a               -> reset (a :: t)
+            | Tan_D a               -> reset (a :: t)
             | Item (a, _, _)        -> reset (a :: t)
             | AddI_D_D (a, _, _, b) -> reset (a :: b :: t)
             | AddI_D_C (a, _, _, _) -> reset (a :: t)
@@ -419,11 +471,15 @@ let reverse_push v x =
             | Neg_D a               -> push (((Float 0.) -. !aa, a) :: t)
             | Abs_D a               -> push (((!aa *. signum (primal a)), a) :: t)
             | Signum_D a            -> push ((zero a, a) :: t)
+            | Square_D a            -> push (((!aa *. (primal a) *. (Float 2.)), a) :: t)
+            | Sqrt_D a              -> push (((!aa /. ((Float 2.) *. ap)), a) :: t)
             | Log_D a               -> push (((!aa /. (primal a)), a) :: t)
+            | Log2_D a              -> push (((!aa /. ((primal a) *. (Float Owl_maths.log2e))), a) :: t)
             | Log10_D a             -> push (((!aa /. ((primal a) *. (Float Owl_maths.log10e))), a) :: t)
             | Exp_D a               -> push (((!aa *. ap), a) :: t)
             | Sin_D a               -> push (((!aa *. cos (primal a)), a) :: t)
             | Cos_D a               -> push (((!aa *. (Float 0. -. sin (primal a))), a) :: t)
+            | Tan_D a               -> push (((!aa /. (square (cos (primal a)))), a) :: t)
             | Item (a, i, j)        -> (adjoint a) := add_item !(adjoint a) i j !aa; push ((zero a, a) :: t)
             | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
             | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)
