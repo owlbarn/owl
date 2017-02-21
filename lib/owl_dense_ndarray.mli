@@ -545,6 +545,11 @@ val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
   result in a new ndarray.
  *)
 
+val log_sum_exp : (float, 'a) t -> float
+(** [log_sum_exp x] computes the logarithm of the sum of exponentials of all
+  the elements in [x].
+ *)
+
 
 (** {6 Binary mathematical operations } *)
 

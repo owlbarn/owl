@@ -586,6 +586,11 @@ let sum x =
   let y = Bigarray.reshape_1 y (numel x) in
   (_sum (kind x)) y
 
+let log_sum_exp x =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  (_log_sum_exp (kind x)) y
+
 let uniform ?(scale=1.) kind dimension =
   let n = Array.fold_right (fun c a -> c * a) dimension 1 in
   let _op = _uniform (kind) in

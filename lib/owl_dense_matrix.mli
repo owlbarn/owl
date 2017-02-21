@@ -466,6 +466,11 @@ val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
   result in a new matrix.
  *)
 
+val log_sum_exp : (float, 'a) t -> float
+(** [log_sum_exp x] computes the logarithm of the sum of exponentials of all
+  the elements in [x].
+ *)
+
 val sigmoid : (float, Bigarray.float64_elt) t -> (float, Bigarray.float64_elt) t
 
 

@@ -751,6 +751,11 @@ val softsign : mat -> mat
   elements in [x] and returns the result in a new matrix.
  *)
 
+val log_sum_exp : mat -> elt
+(** [log_sum_exp x] computes the logarithm of the sum of exponentials of all
+  the elements in [x].
+ *)
+
 val sigmoid : mat -> mat
 (** [sigmoid x] applies [sigmoid] function to each element in matrix [x]. *)
 

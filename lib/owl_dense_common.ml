@@ -510,6 +510,12 @@ let _linspace : type a b. (a, b) kind -> a -> a -> int -> (a, b) lcm_vec =
   | Complex64 -> Lacaml.Z.Vec.linspace a b n
   | _         -> failwith "_linspace: unsupported operation"
 
+let _log_sum_exp : type a b. (a, b) kind -> (a, b) lcm_vec_op01 = function
+  | Float32   -> Lacaml.S.Vec.log_sum_exp
+  | Float64   -> Lacaml.D.Vec.log_sum_exp
+  | _         -> failwith "_log_sum_exp: unsupported operation"
+
+
 (* interface to gsl functions, types for interfacing to gsl *)
 
 type ('a, 'b) gsl_mat = ('a, 'b, c_layout) Array2.t
