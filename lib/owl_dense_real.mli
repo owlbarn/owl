@@ -838,6 +838,12 @@ val max2 : mat -> mat -> mat
   elementwise, and returns the result in a new matrix.
  *)
 
+val l1norm : mat -> elt
+
+val l2norm : mat -> elt
+
+val l2norm_sqr : mat -> elt
+
 
 (** {6 Shorhand infix operators} *)
 
