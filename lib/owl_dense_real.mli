@@ -798,8 +798,14 @@ val pow : mat -> mat -> mat
   elementwise, and returns the result in a new matrix.
  *)
 
+val pow0 : elt -> mat -> mat
+(** [pow0 a x] *)
+
+val pow1 : mat -> elt -> mat
+(** [pow1 x a] *)
+
 val pow_scalar : mat -> elt -> mat
-(** [pow x a] calculates the power of [a] of each element in [x]. *)
+(** FIXME: obsolete [pow x a] calculates the power of [a] of each element in [x]. *)
 
 val atan2 : mat -> mat -> mat
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]

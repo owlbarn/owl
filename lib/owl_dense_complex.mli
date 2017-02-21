@@ -317,6 +317,11 @@ val add_diag : mat -> elt -> mat
 
 val pow : mat -> mat -> mat
 
+val pow0 : elt -> mat -> mat
+
+val pow1 : mat -> elt -> mat
+
+(* FIXME: obsolete *)
 val pow_scalar : mat -> elt -> mat
 
 

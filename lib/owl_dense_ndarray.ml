@@ -557,6 +557,18 @@ let div_scalar x a =
   let b = (_div_elt k) (_one k) a in
   mul_scalar x b
 
+(* TODO: optimise *)
+let pow0 a x =
+  let y = empty (kind x) (shape x) in
+  fill y a;
+  pow y x
+
+(* TODO: optimise *)
+let pow1 x a =
+  let y = empty (kind x) (shape x) in
+  fill y a;
+  pow x y
+
 let sum x =
   let y = Genarray.change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in

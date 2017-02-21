@@ -521,6 +521,12 @@ val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   elementwise, and returns the result in a new matrix.
  *)
 
+val pow0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [pow0 a x] *)
+
+val pow1 : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** [pow1 x a] *)
+
 val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
 val atan2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t

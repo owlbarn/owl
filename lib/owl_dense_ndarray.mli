@@ -593,6 +593,14 @@ val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   elementwise, and returns the result in a new ndarray.
  *)
 
+val pow0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [pow0 a x] computes the power value of a scalar value [a] using the elements
+  in a ndarray [x].
+ *)
+
+val pow1 : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** [pow1 x a] computes each element in [x] power to [a]. *)
+
 val atan2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new ndarray.
