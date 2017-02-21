@@ -71,6 +71,8 @@ and trace_op =
   | L1Norm_D  of t
   | L2Norm_D  of t
   | L2NormS_D of t
+  | Sigmoid_D of t
+  | Inv_D     of t
 
 
 let _global_tag = ref 0
@@ -636,6 +638,27 @@ module Maths = struct
     let r a = L2NormS_D a in
     op_d_d a ff fd df r
 
+  and sigmoid a =
+    let ff = function
+      | Float a  -> Float Owl_maths.(sigmoid a)
+      | Matrix a -> Matrix M.(sigmoid a)
+      | _        -> failwith "error: sigmoid: ff"
+    in
+    let fd a = sigmoid a in
+    let df cp ap at = at *. cp *. (Float 1. -. cp) in
+    let r a = Sigmoid_D a in
+    op_d_d a ff fd df r
+
+  and inv a =
+    let ff = function
+      | Matrix a -> Matrix Owl_linalg.(inv a)
+      | _        -> failwith "error: inv: ff"
+    in
+    let fd a = inv a in
+    let df cp ap at = (neg cp) *. at *. cp in
+    let r a = Inv_D a in
+    op_d_d a ff fd df r
+
 end
 
 
@@ -706,6 +729,8 @@ let reverse_reset x =
             | L1Norm_D a            -> reset (a :: t)
             | L2Norm_D a            -> reset (a :: t)
             | L2NormS_D a           -> reset (a :: t)
+            | Sigmoid_D a           -> reset (a :: t)
+            | Inv_D a               -> reset (a :: t)
             | _                     -> reset t
             )
           else reset t
@@ -781,6 +806,8 @@ let reverse_push v x =
             | L1Norm_D a            -> push (((!aa *. (signum (primal a))), a) :: t)
             | L2Norm_D a            -> push (((!aa *. (Float 2.) *. (primal a)), a) :: t)
             | L2NormS_D a           -> push (((!aa /. ap *. (primal a)), a) :: t)
+            | Sigmoid_D a           -> push (((!aa *. ap *. (Float 1. -. ap)), a) :: t)
+            | Inv_D a               -> let dpt = transpose ap in push ((((neg dpt) *. !aa *. dpt), a) :: t)
             | _                     -> push t
             )
           else push t

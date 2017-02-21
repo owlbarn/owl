@@ -60,6 +60,8 @@ val softsign : float -> float
 
 val softplus : float -> float
 
+val relu : float -> float
+
 
 (** {6 Trigonometric Functions} *)
 

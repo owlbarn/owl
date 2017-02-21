@@ -49,6 +49,8 @@ let softsign x = x /. (1. +. abs x)
 
 let softplus x = log (1. +. exp x)
 
+let relu x = max 0. x
+
 let floor x = floor x
 
 let ceil x = ceil x
