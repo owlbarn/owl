@@ -72,6 +72,7 @@ and trace_op =
   | L2Norm_D  of t
   | L2NormS_D of t
   | Sigmoid_D of t
+  | Relu_D    of t
   | Inv_D     of t
 
 
@@ -649,6 +650,17 @@ module Maths = struct
     let r a = Sigmoid_D a in
     op_d_d a ff fd df r
 
+  and relu a =
+    let ff = function
+      | Float a  -> Float Owl_maths.(relu a)
+      | Matrix a -> Matrix M.(relu a)
+      | _        -> failwith "error: relu: ff"
+    in
+    let fd a = relu a in
+    let df cp ap at = at *. (Float 1. +. (signum ap)) /. (Float 2.) in
+    let r a = Relu_D a in
+    op_d_d a ff fd df r
+
   and inv a =
     let ff = function
       | Matrix a -> Matrix Owl_linalg.(inv a)
@@ -730,6 +742,7 @@ let reverse_reset x =
             | L2Norm_D a            -> reset (a :: t)
             | L2NormS_D a           -> reset (a :: t)
             | Sigmoid_D a           -> reset (a :: t)
+            | Relu_D a              -> reset (a :: t)
             | Inv_D a               -> reset (a :: t)
             | _                     -> reset t
             )
@@ -807,6 +820,7 @@ let reverse_push v x =
             | L2Norm_D a            -> push (((!aa *. (Float 2.) *. (primal a)), a) :: t)
             | L2NormS_D a           -> push (((!aa /. ap *. (primal a)), a) :: t)
             | Sigmoid_D a           -> push (((!aa *. ap *. (Float 1. -. ap)), a) :: t)
+            | Relu_D a              -> push (((!aa *. ((signum (primal a) +. Float 1.) /. (Float 2.))), a) :: t)
             | Inv_D a               -> let dpt = transpose ap in push ((((neg dpt) *. !aa *. dpt), a) :: t)
             | _                     -> push t
             )
