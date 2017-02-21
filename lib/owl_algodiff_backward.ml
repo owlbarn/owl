@@ -246,25 +246,25 @@ module Maths = struct
     let r_d_c a b = Pow_D_C (a, b) in
     let r_c_d a b = Pow_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-(*
+
   and atan2 a b =
     let ff a b =
       match a, b with
       | Float a, Float b   -> Float S.(atan2 a b)
-      | Float a, Matrix b  -> Matrix M.(pow0 a b)
-      | Matrix a, Float b  -> Matrix M.(pow1 a b)
-      | Matrix a, Matrix b -> Matrix M.(pow a b)
-      | _                  -> failwith "error: pow: ff"
+      | Float a, Matrix b  -> Matrix M.(atan20 a b)
+      | Matrix a, Float b  -> Matrix M.(atan21 a b)
+      | Matrix a, Matrix b -> Matrix M.(atan2 a b)
+      | _                  -> failwith "error: atan2: ff"
     in
-    let fd a b = a ** b in
-    let df_da cp ap at = at *. (ap ** (b -. (Float 1.))) *. b in
-    let df_db cp bp bt = bt *. cp *. (log a) in
-    let df_dab cp ap at bp bt = (ap ** (bp -. (Float 1.))) *. ((at *. bp) +. (ap *. bt *. log ap)) in
-    let r_d_d a b = Pow_D_D (a, b) in
-    let r_d_c a b = Pow_D_C (a, b) in
-    let r_c_d a b = Pow_C_D (a, b) in
+    let fd a b = atan2 a b in
+    let df_da cp ap at = at *. b /. ((square ap) +. (square b)) in
+    let df_db cp bp bt = (neg bt) *. a /. ((square a) +. (square bp)) in
+    let df_dab cp ap at bp bt = ((at *. bp) -. (bt *. ap)) /. ((square ap) +. (square bp)) in
+    let r_d_d a b = Atan2_D_D (a, b) in
+    let r_d_c a b = Atan2_D_C (a, b) in
+    let r_c_d a b = Atan2_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-*)    
+
   and neg a =
     let ff = function
       | Float a  -> Float S.(0. -. a)
@@ -581,6 +581,9 @@ let reverse_reset x =
             | Pow_D_D (a, b)        -> reset (a :: b :: t)
             | Pow_D_C (a, _)        -> reset (a :: t)
             | Pow_C_D (_, b)        -> reset (b :: t)
+            | Atan2_D_D (a, b)      -> reset (a :: b :: t)
+            | Atan2_D_C (a, _)      -> reset (a :: t)
+            | Atan2_C_D (_, b)      -> reset (b :: t)
             | Neg_D a               -> reset (a :: t)
             | Abs_D a               -> reset (a :: t)
             | Signum_D a            -> reset (a :: t)
@@ -645,6 +648,9 @@ let reverse_push v x =
             | Pow_D_D (a, b)        -> push (((!aa *. ((primal a) ** ((primal b) -. (Float 1.))) *. (primal b)), a) :: ((!aa *. ((primal a) ** (primal b)) *. log (primal a)), b) :: t)
             | Pow_D_C (a, b)        -> push (((!aa *. ((primal a) ** (b -. (Float 1.))) *. b), a) :: t)
             | Pow_C_D (a, b)        -> push (((!aa *. (a ** (primal b)) *. log a), b) :: t)
+            | Atan2_D_D (a, b)      -> let d = (square (primal a)) +. (square (primal b)) in push (((!aa *. (primal b) /. d), a) :: ((!aa *. (neg (primal a)) /. d), b) :: t)
+            | Atan2_D_C (a, b)      -> push (((!aa *. b /. ((square (primal a)) +. (square b))), a) :: t)
+            | Atan2_C_D (a, b)      -> push (((!aa *. (neg a) /. ((square a) +. (square (primal b)))), b) :: t)
             | Neg_D a               -> push (((Float 0.) -. !aa, a) :: t)
             | Abs_D a               -> push (((!aa *. signum (primal a)), a) :: t)
             | Signum_D a            -> push ((zero a, a) :: t)
