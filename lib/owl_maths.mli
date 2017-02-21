@@ -26,6 +26,8 @@ val ceil : float -> float
 
 val round : float -> float
 
+val trunc : float -> float
+
 val sqrt : float -> float
 
 val pow : float -> float -> float

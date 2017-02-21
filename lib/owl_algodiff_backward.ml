@@ -32,6 +32,9 @@ and trace_op =
   | Pow_D_D  of t * t
   | Pow_D_C  of t * t
   | Pow_C_D  of t * t
+  | Atan2_D_D of t * t
+  | Atan2_D_C of t * t
+  | Atan2_C_D of t * t
   | Neg_D    of t
   | Abs_D    of t
   | Signum_D of t
@@ -243,7 +246,25 @@ module Maths = struct
     let r_d_c a b = Pow_D_C (a, b) in
     let r_c_d a b = Pow_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-
+(*
+  and atan2 a b =
+    let ff a b =
+      match a, b with
+      | Float a, Float b   -> Float S.(atan2 a b)
+      | Float a, Matrix b  -> Matrix M.(pow0 a b)
+      | Matrix a, Float b  -> Matrix M.(pow1 a b)
+      | Matrix a, Matrix b -> Matrix M.(pow a b)
+      | _                  -> failwith "error: pow: ff"
+    in
+    let fd a b = a ** b in
+    let df_da cp ap at = at *. (ap ** (b -. (Float 1.))) *. b in
+    let df_db cp bp bt = bt *. cp *. (log a) in
+    let df_dab cp ap at bp bt = (ap ** (bp -. (Float 1.))) *. ((at *. bp) +. (ap *. bt *. log ap)) in
+    let r_d_d a b = Pow_D_D (a, b) in
+    let r_d_c a b = Pow_D_C (a, b) in
+    let r_c_d a b = Pow_C_D (a, b) in
+    op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+*)    
   and neg a =
     let ff = function
       | Float a  -> Float S.(0. -. a)

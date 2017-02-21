@@ -56,6 +56,8 @@ let round t =
     floor (t +. 0.49999999999999994)
   else t
 
+let trunc x = modf x |> snd
+
 let sqrt x = sqrt x
 
 let pow x y = x ** y
