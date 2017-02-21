@@ -53,6 +53,7 @@ Library owl
                     Owl_algodiff_forward,
                     Owl_algodiff_matrix,
                     Owl_algodiff_backward,
+                    Owl_algodiff_numerical,
                     Owl_infix,
                     Owl_fft,
                     Owl_linalg,
