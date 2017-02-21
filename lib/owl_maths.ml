@@ -39,11 +39,15 @@ let lnpi = Gsl.Math.lnpi
 
 (** [ Basic and advanced math functions ] *)
 
-let signum x = if x = 0. then 0. else if x > 0. then 1. else -1.
-
 let abs x = if x < 0. then (0.-.x) else x
 
 let neg x = 0. -. x
+
+let signum x = if x = 0. then 0. else if x > 0. then 1. else -1.
+
+let softsign x = x /. (1. +. abs x)
+
+let softplus x = log (1. +. exp x)
 
 let floor x = floor x
 
@@ -82,7 +86,7 @@ let log10 x = (log x) /. Gsl.Math.ln10
 
 let logN base x = (log x) /. (log base)
 
-let sigmoid x = 1. /. (exp (-.x) +. 1.)
+let sigmoid x = 1. /. ((exp (-.x)) +. 1.)
 
 let sin x = sin x
 

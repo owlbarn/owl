@@ -56,6 +56,10 @@ val sigmoid : float -> float
 
 val signum : float -> float
 
+val softsign : float -> float
+
+val softplus : float -> float
+
 
 (** {6 Trigonometric Functions} *)
 
