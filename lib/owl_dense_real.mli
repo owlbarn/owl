@@ -812,6 +812,12 @@ val atan2 : mat -> mat -> mat
   elementwise, and returns the result in a new matrix.
  *)
 
+val atan20 : elt -> mat -> mat
+(** [atan20 a x] *)
+
+val atan21 : mat -> elt -> mat
+(** [atan21 x a] *)
+
 val hypot : mat -> mat -> mat
 (** [hypot x y] computes [sqrt(x*x + y*y)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.

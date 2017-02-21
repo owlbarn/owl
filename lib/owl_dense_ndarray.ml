@@ -569,6 +569,18 @@ let pow1 x a =
   fill y a;
   pow x y
 
+(* TODO: optimise *)
+let atan20 a x =
+  let y = empty (kind x) (shape x) in
+  fill y a;
+  atan2 y x
+
+(* TODO: optimise *)
+let atan21 x a =
+  let y = empty (kind x) (shape x) in
+  fill y a;
+  atan2 x y
+
 let sum x =
   let y = Genarray.change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in

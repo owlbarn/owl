@@ -528,11 +528,18 @@ val pow1 : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [pow1 x a] *)
 
 val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** FIXME: obsolete *)
 
 val atan2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
+
+val atan20 : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [atan20 a x] *)
+
+val atan21 : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** [atan20 x a] *)
 
 val hypot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [hypot x y] computes [sqrt(x*x + y*y)] of all the elements in [x] and [y]

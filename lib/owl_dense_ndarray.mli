@@ -606,6 +606,12 @@ val atan2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   elementwise, and returns the result in a new ndarray.
  *)
 
+val atan20 : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [atan20 a x] *)
+
+val atan21 : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** [atan20 x a] *)
+
 val hypot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [hypot x y] computes [sqrt(x*x + y*y)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new ndarray.
