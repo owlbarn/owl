@@ -44,6 +44,9 @@ and trace_op =
   | Sin_D    of t
   | Cos_D    of t
   | Tan_D    of t
+  | Sinh_D   of t
+  | Cosh_D   of t
+  | Tanh_D   of t
   | Item     of t * int * int
   | AddI_D_D of t * int * int * t
   | AddI_D_C of t * int * int * t
@@ -364,6 +367,39 @@ module Maths = struct
     let r a = Tan_D a in
     op_d_d a ff fd df r
 
+  and sinh a =
+    let ff = function
+      | Float a  -> Float S.(sinh a)
+      | Matrix a -> Matrix M.(sinh a)
+      | _        -> failwith "error: sinh: ff"
+    in
+    let fd a = sinh a in
+    let df cp ap at = at *. (cosh ap) in
+    let r a = Sinh_D a in
+    op_d_d a ff fd df r
+
+  and cosh a =
+    let ff = function
+      | Float a  -> Float S.(cosh a)
+      | Matrix a -> Matrix M.(cosh a)
+      | _        -> failwith "error: cosh: ff"
+    in
+    let fd a = cosh a in
+    let df cp ap at = at *. (sinh ap) in
+    let r a = Cosh_D a in
+    op_d_d a ff fd df r
+
+  and tanh a =
+    let ff = function
+      | Float a  -> Float S.(tanh a)
+      | Matrix a -> Matrix M.(tanh a)
+      | _        -> failwith "error: tanh: ff"
+    in
+    let fd a = tanh a in
+    let df cp ap at = at /. (square (cosh ap)) in
+    let r a = Tanh_D a in
+    op_d_d a ff fd df r
+
   and item a i j =
     match a with
     | Matrix ap            -> Float (M.get ap i j)
@@ -428,6 +464,9 @@ let reverse_reset x =
             | Sin_D a               -> reset (a :: t)
             | Cos_D a               -> reset (a :: t)
             | Tan_D a               -> reset (a :: t)
+            | Sinh_D a              -> reset (a :: t)
+            | Cosh_D a              -> reset (a :: t)
+            | Tanh_D a              -> reset (a :: t)
             | Item (a, _, _)        -> reset (a :: t)
             | AddI_D_D (a, _, _, b) -> reset (a :: b :: t)
             | AddI_D_C (a, _, _, _) -> reset (a :: t)
@@ -480,6 +519,9 @@ let reverse_push v x =
             | Sin_D a               -> push (((!aa *. cos (primal a)), a) :: t)
             | Cos_D a               -> push (((!aa *. (Float 0. -. sin (primal a))), a) :: t)
             | Tan_D a               -> push (((!aa /. (square (cos (primal a)))), a) :: t)
+            | Sinh_D a              -> push (((!aa *. (cosh (primal a))), a) :: t)
+            | Cosh_D a              -> push (((!aa *. (sinh (primal a))), a) :: t)
+            | Tanh_D a              -> push (((!aa /. (square (cosh (primal a)))), a) :: t)
             | Item (a, i, j)        -> (adjoint a) := add_item !(adjoint a) i j !aa; push ((zero a, a) :: t)
             | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
             | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)
