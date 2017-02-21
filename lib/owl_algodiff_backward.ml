@@ -208,26 +208,26 @@ module Maths = struct
     let r_d_c a b = Div_D_C (a, b) in
     let r_c_d a b = Div_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-(*
+
   and ( ** ) a b = pow a b
   and pow a b =
     let ff a b =
       match a, b with
       | Float a, Float b   -> Float S.(a ** b)
-      | Float a, Matrix b  -> Matrix M.(a $/ b)
-      | Matrix a, Float b  -> Matrix M.(a /$ b)
-      | Matrix a, Matrix b -> Matrix M.(a ** b)
-      | _                  -> failwith "error: div: ff"
+      | Float a, Matrix b  -> Matrix M.(pow0 a b)
+      | Matrix a, Float b  -> Matrix M.(pow1 a b)
+      | Matrix a, Matrix b -> Matrix M.(pow a b)
+      | _                  -> failwith "error: pow: ff"
     in
-    let fd a b = a /. b in
-    let df_da cp ap at = at /. b in
-    let df_db cp bp bt = (Float 0.) -. (bt *. cp /. bp) in
-    let df_dab cp ap at bp bt = (at -. bt *. cp) /. bp in
-    let r_d_d a b = Div_D_D (a, b) in
-    let r_d_c a b = Div_D_C (a, b) in
-    let r_c_d a b = Div_C_D (a, b) in
+    let fd a b = a ** b in
+    let df_da cp ap at = at *. (ap ** (b -. (Float 1.))) *. b in
+    let df_db cp bp bt = bt *. cp *. (log a) in
+    let df_dab cp ap at bp bt = (ap ** (bp -. (Float 1.))) *. ((at *. bp) +. (ap *. bt *. log ap)) in
+    let r_d_d a b = Pow_D_D (a, b) in
+    let r_d_c a b = Pow_D_C (a, b) in
+    let r_c_d a b = Pow_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
-*)
+
   and neg a =
     let ff = function
       | Float a  -> Float S.(0. -. a)
@@ -365,6 +365,9 @@ let reverse_reset x =
             | Div_D_D (a, b)        -> reset (a :: b :: t)
             | Div_D_C (a, _)        -> reset (a :: t)
             | Div_C_D (_, b)        -> reset (b :: t)
+            | Pow_D_D (a, b)        -> reset (a :: b :: t)
+            | Pow_D_C (a, _)        -> reset (a :: t)
+            | Pow_C_D (_, b)        -> reset (b :: t)
             | Neg_D a               -> reset (a :: t)
             | Abs_D a               -> reset (a :: t)
             | Signum_D a            -> reset (a :: t)
@@ -410,6 +413,9 @@ let reverse_push v x =
             | Div_D_D (a, b)        -> push (((!aa /. (primal b)), a) :: ((!aa *. ((Float 0. -. (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
             | Div_D_C (a, b)        -> push (((!aa /. b), a) :: t)
             | Div_C_D (a, b)        -> push (((!aa *. ((Float 0. -. (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
+            | Pow_D_D (a, b)        -> push (((!aa *. ((primal a) ** ((primal b) -. (Float 1.))) *. (primal b)), a) :: ((!aa *. ((primal a) ** (primal b)) *. log (primal a)), b) :: t)
+            | Pow_D_C (a, b)        -> push (((!aa *. ((primal a) ** (b -. (Float 1.))) *. b), a) :: t)
+            | Pow_C_D (a, b)        -> push (((!aa *. (a ** (primal b)) *. log a), b) :: t)
             | Neg_D a               -> push (((Float 0.) -. !aa, a) :: t)
             | Abs_D a               -> push (((!aa *. signum (primal a)), a) :: t)
             | Signum_D a            -> push ((zero a, a) :: t)
