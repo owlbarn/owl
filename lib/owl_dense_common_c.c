@@ -176,3 +176,29 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER complex_double
 #define CHECKFN(X) (X.r != 0 || X.i != 0)
 #include "owl_dense_common_vec_cmp.c"
+
+// abs
+
+#define FUN4 real_float_abs
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (fabsf(X))
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN4 real_double_abs
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (fabs(X))
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN4 complex_float_abs
+#define NUMBER complex_float
+#define NUMBER1 float
+#define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN4 complex_double_abs
+#define NUMBER complex_double
+#define NUMBER1 double
+#define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
+#include "owl_dense_common_vec_cmp.c"

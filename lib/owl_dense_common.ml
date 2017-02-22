@@ -778,3 +778,17 @@ let _owl_nnz : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
   | Complex32 -> owl_complex_float_nnz
   | Complex64 -> owl_complex_double_nnz
   | _         -> failwith "_owl_nnz: unsupported operation"
+
+external owl_real_float_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_float_abs"
+external owl_real_double_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_double_abs"
+external owl_complex_float_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "complex_float_abs"
+external owl_complex_double_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "complex_double_abs"
+
+(* FIXME *)
+let _owl_abs : type a b c. (a, b) kind -> int -> (a, b) owl_vec -> int = fun k l x ->
+  match k with
+  | Float32   -> let y = Array1.create Float32 c_layout l in owl_real_float_abs l x y
+  | Float64   -> let y = Array1.create Float64 c_layout l in owl_real_double_abs l x y
+  | Complex32 -> let y = Array1.create Float32 c_layout l in owl_complex_float_abs l x y
+  | Complex64 -> let y = Array1.create Float64 c_layout l in owl_complex_double_abs l x y
+  | _         -> failwith "_owl_abs: unsupported operation"
