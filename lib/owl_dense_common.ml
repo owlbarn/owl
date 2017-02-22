@@ -779,6 +779,15 @@ let _owl_nnz : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
   | Complex64 -> owl_complex_double_nnz
   | _         -> failwith "_owl_nnz: unsupported operation"
 
+external owl_real_float_sigmoid : int -> ('a, 'b) owl_vec -> int = "real_float_sigmoid"
+external owl_real_double_sigmoid : int -> ('a, 'b) owl_vec -> int = "real_double_sigmoid"
+
+let _owl_sigmoid : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
+  | Float32   -> owl_real_float_sigmoid
+  | Float64   -> owl_real_double_sigmoid
+  | _         -> failwith "_owl_sigmoid: unsupported operation"
+
+
 external owl_real_float_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_float_abs"
 external owl_real_double_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_double_abs"
 external owl_complex_float_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "complex_float_abs"

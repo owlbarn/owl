@@ -65,6 +65,10 @@ let clone x =
   Genarray.blit x y;
   y
 
+let flatten x =
+  let n = numel x in
+  reshape x [|n|]
+
 (* TODO: zpxy, zmxy, ssqr_diff *)
 
 (* TODO: add axis paramater *)
@@ -557,6 +561,12 @@ let div_scalar x a =
   let b = (_div_elt k) (_one k) a in
   mul_scalar x b
 
+let sigmoid x =
+  let y = clone x in
+  let z = flatten y |> array1_of_genarray in
+  let _ = _owl_sigmoid (kind x) (numel y) z in
+  y
+
 (* TODO: optimise *)
 let pow0 a x =
   let y = empty (kind x) (shape x) in
@@ -623,10 +633,6 @@ let sequential k dimension =
     _ac := _op !_ac _aa
   done;
   x
-
-let flatten x =
-  let n = numel x in
-  reshape x [|n|]
 
 let rec __iteri_fix_axis d j i l h f x =
   if j = d - 1 then (

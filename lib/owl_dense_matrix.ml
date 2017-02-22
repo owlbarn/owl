@@ -864,11 +864,15 @@ let softsign x =
   let y = Owl_dense_ndarray.softsign y in
   of_ndarray y
 
+let sigmoid x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.sigmoid y in
+  of_ndarray y
+
 let log_sum_exp x =
   let y = to_ndarray x in
   Owl_dense_ndarray.log_sum_exp y
 
-let sigmoid x = map (fun y -> 1. /. (1. +. (Pervasives.exp (-1. *. y)))) x
 
 (* binary matrix operation *)
 

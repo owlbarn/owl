@@ -136,7 +136,9 @@ val clone : ('a, 'b) t -> ('a, 'b) t
 (** [clone x] makes a copy of [x]. *)
 
 val flatten : ('a, 'b) t -> ('a, 'b) t
-(** [flatten x] makes a copy of [x] and transforms it into a one-dimsonal array. *)
+(** [flatten x] transforms [x] into a one-dimsonal array without making a copy.
+  Therefore the returned value shares the same memory space with original [x].
+ *)
 
 val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
 (** [reshape x d] makes a copy of [x], then transforms it into the shape definted by [d]. *)
@@ -543,6 +545,11 @@ val softsign : ('a, 'b) t -> ('a, 'b) t
 val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (** [conj x] computes the conjugate of the elements in [x] and returns the
   result in a new ndarray.
+ *)
+
+val sigmoid : (float, 'b) t -> (float, 'b) t
+(** [sigmoid x] computes the sigmoid function [1 / (1 + exp (-x))] for each
+  element in [x].
  *)
 
 val log_sum_exp : (float, 'a) t -> float

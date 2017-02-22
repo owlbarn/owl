@@ -52,4 +52,6 @@ let test_14 _ = Owl_dense_ndarray.nnz (Owl_dense_matrix.to_ndarray y)
 
 let test_15 _ = Owl_dense_matrix.add_scalar x 2.
 
-let _ = Perf_common.test_op_each c test_15
+let test_16 _ = Owl_dense_matrix.sigmoid x
+
+let _ = Perf_common.test_op_each c test_16

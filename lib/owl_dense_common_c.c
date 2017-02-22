@@ -177,8 +177,20 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define CHECKFN(X) (X.r != 0 || X.i != 0)
 #include "owl_dense_common_vec_cmp.c"
 
-// abs
+// sigmoid
 
+#define FUN3 real_float_sigmoid
+#define NUMBER float
+#define MAPFN(X) (1 / (1 + exp(-x)))
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN3 real_double_sigmoid
+#define NUMBER double
+#define MAPFN(X) (1 / (1 + exp(-x)))
+#include "owl_dense_common_vec_cmp.c"
+
+// abs
+// note: abs has not been checked carefully
 #define FUN4 real_float_abs
 #define NUMBER float
 #define NUMBER1 float
