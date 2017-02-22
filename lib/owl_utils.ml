@@ -130,6 +130,11 @@ let marshal_from_file f =
   let s = really_input_string h (in_channel_length h) in
   Marshal.from_string s 0
 
+(* check if passed-in variable is a row vector *)
+let check_row_vector x =
+  if Bigarray.Array2.dim1 x <> 1 then
+    failwith "error: the variable is not a row vector"
+
 (* functions to download data sets *)
 
 let local_data_path () =

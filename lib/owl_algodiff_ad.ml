@@ -878,10 +878,10 @@ let jacobianTv' f x v =
 (* transposed jacobian vector product of f (vector -> vector) at x along v, backward ad *)
 let jacobianTv f x v = jacobianTv' f x v |> snd
 
-(* jacobian of f (vector -> vector) at x, x is row vector, y is column vector *)
+(* jacobian of f (vector -> vector) at x, both x and y are row vectors. *)
 let jacobian f x =
   (* FIXME *)
-  let y = f x |> primal in
+  let y = f x |> primal |> Maths.transpose in
   let m = row_num y in
   let n = col_num x in
   let z = M.empty m n in
