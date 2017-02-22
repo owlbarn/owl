@@ -8,5 +8,10 @@
   implemented in the future.
  *)
 
+(* Alias of modules of algorithmic differentiation. *)
 
 module Forward = Owl_algodiff_forward
+
+module AD = Owl_algodiff_ad
+
+module Numerical = Owl_algodiff_numerical
