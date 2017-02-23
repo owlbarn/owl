@@ -19,6 +19,7 @@ let load_data ?stopwords f =
   in
   let x = ref (Array.make (64 * 1024) [||]) in
   let c = ref 0 in
+  let w = ref 0 in
   let h = open_in f in
   (
     try while true do
@@ -29,9 +30,11 @@ let load_data ?stopwords f =
       in
       !x.(!c) <- s;
       c := !c + 1;
+      w := !w + Array.length s;
     done with End_of_file -> ()
   );
   close_in h;
+  Log.info "load %i docs, %i words" !c !w;
   Array.sub !x 0 !c
 
 let load_stopwords f =
