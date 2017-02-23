@@ -145,7 +145,7 @@ let local_data_path () =
   );
   d
 
-let remote_data_path () = "https://github.com/ryanrhymes/owl_dataset/raw/master/text/"
+let remote_data_path () = "https://github.com/ryanrhymes/owl_dataset/raw/master/"
 
 let download_data fname =
   let fn0 = remote_data_path () ^ fname in
@@ -156,5 +156,8 @@ let download_data fname =
   ignore (Sys.command cmd1)
 
 let download_all () =
-  let l = ["stopwords.txt.gz"; "enron.test.gz"; "enron.train.gz"; "nips.test.gz"; "nips.train.gz"] in
+  let l = [
+    "stopwords.txt.gz"; "enron.test.gz"; "enron.train.gz"; "nips.test.gz"; "nips.train.gz";
+    "t10k-images-idx3-ubyte.gz"; "t10k-labels-idx1-ubyte.gz"; "train-images-idx3-ubyte.gz"; "train-labels-idx1-ubyte.gz";
+    ] in
   List.iter (fun fname -> download_data fname) l
