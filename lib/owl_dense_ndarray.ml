@@ -567,6 +567,16 @@ let sigmoid x =
   let _ = _owl_sigmoid (kind x) (numel y) z in
   y
 
+let l1norm x =
+  let y = flatten x |> array1_of_genarray in
+  _owl_l1norm (kind x) (numel x) y
+
+let l2norm_sqr x =
+  let y = flatten x |> array1_of_genarray in
+  _owl_l2norm_sqr (kind x) (numel x) y
+
+let l2norm x = l2norm_sqr x |> Owl_maths.sqrt
+
 (* TODO: optimise *)
 let pow0 a x =
   let y = empty (kind x) (shape x) in

@@ -54,4 +54,6 @@ let test_15 _ = Owl_dense_matrix.add_scalar x 2.
 
 let test_16 _ = Owl_dense_matrix.sigmoid x
 
-let _ = Perf_common.test_op_each c test_16
+let test_17 _ = Owl_dense_real.l2norm x
+
+let _ = Perf_common.test_op_each c test_17

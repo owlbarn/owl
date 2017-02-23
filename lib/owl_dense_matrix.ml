@@ -873,6 +873,18 @@ let log_sum_exp x =
   let y = to_ndarray x in
   Owl_dense_ndarray.log_sum_exp y
 
+let l1norm x =
+  let y = to_ndarray x in
+  Owl_dense_ndarray.l1norm y
+
+let l2norm x =
+  let y = to_ndarray x in
+  Owl_dense_ndarray.l2norm y
+
+let l2norm_sqr x =
+  let y = to_ndarray x in
+  Owl_dense_ndarray.l2norm_sqr y
+
 
 (* binary matrix operation *)
 

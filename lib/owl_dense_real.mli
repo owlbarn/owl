@@ -761,6 +761,15 @@ val log_sum_exp : mat -> elt
   the elements in [x].
  *)
 
+val l1norm : mat -> float
+(** [l1norm x] calculates the l1-norm of all the element in [x]. *)
+
+val l2norm : mat -> float
+(** [l2norm x] calculates the l2-norm of all the element in [x]. *)
+
+val l2norm_sqr : mat -> float
+(** [l2norm_sqr x] calculates the square of l1-norm of all the element in [x]. *)
+
 
 (** {6 Binary mathematical operations } *)
 
@@ -839,12 +848,6 @@ val max2 : mat -> mat -> mat
 (** [max2 x y] computes the maximum of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
-
-val l1norm : mat -> elt
-
-val l2norm : mat -> elt
-
-val l2norm_sqr : mat -> elt
 
 
 (** {6 Shorhand infix operators} *)

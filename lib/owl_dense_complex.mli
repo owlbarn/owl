@@ -292,6 +292,12 @@ val neg : mat -> mat
 
 val conj : mat -> mat
 
+val l1norm : mat -> float
+
+val l2norm : mat -> float
+
+val l2norm_sqr : mat -> float
+
 
 (** {6 Binary mathematical operations } *)
 

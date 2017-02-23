@@ -7,6 +7,9 @@
 #include <caml/mlvalues.h>
 #include "owl_macros.h"
 
+// some helper functions
+float sqr_float(x) { return x * x; }
+double sqr_double(x) { return x * x; }
 
 CAMLprim value testfn_stub(value vX, value vY)
 {
@@ -22,6 +25,10 @@ CAMLprim value testfn_stub(value vX, value vY)
 
   CAMLreturn(Val_int(r));
 }
+
+
+//////////////////// function templates starts ////////////////////
+
 
 // is_smaller
 
@@ -214,3 +221,59 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER1 double
 #define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
 #include "owl_dense_common_vec_cmp.c"
+
+
+// l1norm
+
+#define FUN5 real_float_l1norm
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (fabsf(X))
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN5 real_double_l1norm
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (fabs(X))
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN5 complex_float_l1norm
+#define NUMBER complex_float
+#define NUMBER1 float
+#define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN5 complex_double_l1norm
+#define NUMBER complex_double
+#define NUMBER1 double
+#define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
+#include "owl_dense_common_vec_cmp.c"
+
+// l2norm
+
+#define FUN5 real_float_l2norm_sqr
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (X * X)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN5 real_double_l2norm_sqr
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (X * X)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN5 complex_float_l2norm_sqr
+#define NUMBER complex_float
+#define NUMBER1 float
+#define MAPFN(X) (sqr_float (X.r * X.r + X.i * X.i))
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN5 complex_double_l2norm_sqr
+#define NUMBER complex_double
+#define NUMBER1 double
+#define MAPFN(X) (sqr_double (X.r * X.r + X.i * X.i))
+#include "owl_dense_common_vec_cmp.c"
+
+
+//////////////////// function templates ends ////////////////////

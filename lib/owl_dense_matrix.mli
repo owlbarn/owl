@@ -476,6 +476,15 @@ val log_sum_exp : (float, 'a) t -> float
   the elements in [x].
  *)
 
+val l1norm : ('a, 'b) t -> float
+(** [l1norm x] calculates the l1-norm of all the element in [x]. *)
+
+val l2norm : ('a, 'b) t -> float
+(** [l2norm x] calculates the l2-norm of all the element in [x]. *)
+
+val l2norm_sqr : ('a, 'b) t -> float
+(** [l2norm_sqr x] calculates the square of l1-norm of all the element in [x]. *)
+
 
 (** {6 Binary mathematical operations } *)
 

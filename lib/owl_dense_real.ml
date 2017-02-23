@@ -58,9 +58,3 @@ let uniform_int ?(a=0) ?(b=99) m n =
   iteri (fun i j _ -> x.{i,j} <-
     float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ())
   ) x; x
-
-let l1norm x = abs x |> sum
-
-let l2norm x = sqr x |> sum |> Owl_maths.sqrt
-
-let l2norm_sqr x = sqr x |> sum

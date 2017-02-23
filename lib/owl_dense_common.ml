@@ -665,6 +665,7 @@ type ('a, 'b) owl_mat = ('a, 'b, c_layout) Array2.t
 
 type ('a, 'b) owl_vec_op00 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int
 type ('a, 'b) owl_vec_op01 = int -> ('a, 'b) owl_vec -> int
+type ('a, 'b) owl_vec_op02 = int -> ('a, 'b) owl_vec -> float
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
 
@@ -787,7 +788,6 @@ let _owl_sigmoid : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
   | Float64   -> owl_real_double_sigmoid
   | _         -> failwith "_owl_sigmoid: unsupported operation"
 
-
 external owl_real_float_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_float_abs"
 external owl_real_double_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_double_abs"
 external owl_complex_float_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "complex_float_abs"
@@ -801,3 +801,27 @@ let _owl_abs : type a b c. (a, b) kind -> int -> (a, b) owl_vec -> int = fun k l
   | Complex32 -> let y = Array1.create Float32 c_layout l in owl_complex_float_abs l x y
   | Complex64 -> let y = Array1.create Float64 c_layout l in owl_complex_double_abs l x y
   | _         -> failwith "_owl_abs: unsupported operation"
+
+external owl_real_float_l1norm : int -> (float, 'a) owl_vec -> float = "real_float_l1norm"
+external owl_real_double_l1norm : int -> (float, 'a) owl_vec -> float = "real_double_l1norm"
+external owl_complex_float_l1norm : int -> (Complex.t, 'a) owl_vec -> float = "complex_float_l1norm"
+external owl_complex_double_l1norm : int -> (Complex.t, 'a) owl_vec -> float = "complex_double_l1norm"
+
+let _owl_l1norm : type a b. (a, b) kind -> (a, b) owl_vec_op02 = function
+  | Float32   -> owl_real_float_l1norm
+  | Float64   -> owl_real_double_l1norm
+  | Complex32 -> owl_complex_float_l1norm
+  | Complex64 -> owl_complex_double_l1norm
+  | _         -> failwith "_owl_l1norm: unsupported operation"
+
+external owl_real_float_l2norm_sqr : int -> (float, 'a) owl_vec -> float = "real_float_l2norm_sqr"
+external owl_real_double_l2norm_sqr : int -> (float, 'a) owl_vec -> float = "real_double_l2norm_sqr"
+external owl_complex_float_l2norm_sqr : int -> (Complex.t, 'a) owl_vec -> float = "complex_float_l2norm_sqr"
+external owl_complex_double_l2norm_sqr : int -> (Complex.t, 'a) owl_vec -> float = "complex_double_l2norm_sqr"
+
+let _owl_l2norm_sqr : type a b. (a, b) kind -> (a, b) owl_vec_op02 = function
+  | Float32   -> owl_real_float_l2norm_sqr
+  | Float64   -> owl_real_double_l2norm_sqr
+  | Complex32 -> owl_complex_float_l2norm_sqr
+  | Complex64 -> owl_complex_double_l2norm_sqr
+  | _         -> failwith "_owl_l2norm_sqr: unsupported operation"
