@@ -793,7 +793,7 @@ external owl_real_double_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec ->
 external owl_complex_float_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "complex_float_abs"
 external owl_complex_double_abs : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "complex_double_abs"
 
-(* FIXME *)
+(* FIXME: return type polymorphism ... *)
 let _owl_abs : type a b c. (a, b) kind -> int -> (a, b) owl_vec -> int = fun k l x ->
   match k with
   | Float32   -> let y = Array1.create Float32 c_layout l in owl_real_float_abs l x y
@@ -814,6 +814,7 @@ let _owl_l1norm : type a b. (a, b) kind -> (a, b) owl_vec_op02 = function
   | Complex64 -> owl_complex_double_l1norm
   | _         -> failwith "_owl_l1norm: unsupported operation"
 
+(* NOTE: same as sqr_nrm2, but slower *)
 external owl_real_float_l2norm_sqr : int -> (float, 'a) owl_vec -> float = "real_float_l2norm_sqr"
 external owl_real_double_l2norm_sqr : int -> (float, 'a) owl_vec -> float = "real_double_l2norm_sqr"
 external owl_complex_float_l2norm_sqr : int -> (Complex.t, 'a) owl_vec -> float = "complex_float_l2norm_sqr"

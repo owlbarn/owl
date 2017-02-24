@@ -567,15 +567,23 @@ let sigmoid x =
   let _ = _owl_sigmoid (kind x) (numel y) z in
   y
 
+let ssqr x a =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  (_ssqr (kind x)) ~c:a y
+
+let sqr_nrm2 x =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  (_sqr_nrm2 (kind x)) ~stable:true y
+
 let l1norm x =
   let y = flatten x |> array1_of_genarray in
   _owl_l1norm (kind x) (numel x) y
 
-let l2norm_sqr x =
-  let y = flatten x |> array1_of_genarray in
-  _owl_l2norm_sqr (kind x) (numel x) y
+let l2norm_sqr x = sqr_nrm2 x
 
-let l2norm x = l2norm_sqr x |> Owl_maths.sqrt
+let l2norm x = sqr_nrm2 x |> Owl_maths.sqrt
 
 (* TODO: optimise *)
 let pow0 a x =
@@ -623,7 +631,7 @@ let softmax x =
   let y = exp x in
   let a = sum y in
   div_scalar y a
-  
+
 
 (* advanced operations *)
 

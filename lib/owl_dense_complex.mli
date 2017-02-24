@@ -292,6 +292,10 @@ val neg : mat -> mat
 
 val conj : mat -> mat
 
+val ssqr : mat -> elt -> elt
+
+val sqr_nrm2 : mat -> float
+
 val l1norm : mat -> float
 
 val l2norm : mat -> float

@@ -366,19 +366,19 @@ val minmax : ('a, 'b) t -> 'a * 'a
   while [max_v] is the maximum.
  *)
 
-val min_i : ('a, 'b) t -> 'a * int array
+val min_i : (float, 'a) t -> float * int array
 (** [min_i x] returns the minimum of all elements in [x] along with its index. *)
 
-val max_i : ('a, 'b) t -> 'a * int array
+val max_i : (float, 'a) t -> float * int array
 (** [max_i x] returns the maximum of all elements in [x] along with its index. *)
 
-val minmax_i : ('a, 'b) t -> ('a * (int array)) * ('a * (int array))
+val minmax_i : (float, 'a) t -> (float * (int array)) * (float * (int array))
 (** [minmax_i x] returns [((min_v,min_i), (max_v,max_i))] where [(min_v,min_i)]
   is the minimum value in [x] along with its index while [(max_v,max_i)] is the
   maximum value along its index.
  *)
 
-val abs : ('a, 'b) t -> ('a, 'b) t
+val abs : (float, 'a) t -> (float, 'a) t
 (** [abs x] returns the absolute value of all elements in [x] in a new ndarray. *)
 
 val neg : ('a, 'b) t -> ('a, 'b) t
@@ -562,6 +562,18 @@ val log_sum_exp : (float, 'a) t -> float
   the elements in [x].
  *)
 
+val ssqr : ('a, 'b) t -> 'a -> 'a
+(** [ssqr x a] computes the sum of squared differences of all the elements in
+  [x] from constant [a]. This function only computes the square of each element
+  rather than the conjugate transpose as {!sqr_nrm2} does.
+ *)
+
+val sqr_nrm2 : ('a, 'b) t -> float
+(** [sqr_nrm2 x] calculates the sum of 2-norm (or l2norm, Euclidean norm) of all
+  elements in [x]. The function uses conjugate transpose in the product, hence
+  it always returns a float number.
+ *)
+
 val l1norm : ('a, 'b) t -> float
 (** [l1norm x] calculates the l1-norm of all the element in [x]. *)
 
@@ -569,7 +581,9 @@ val l2norm : ('a, 'b) t -> float
 (** [l2norm x] calculates the l2-norm of all the element in [x]. *)
 
 val l2norm_sqr : ('a, 'b) t -> float
-(** [l2norm_sqr x] calculates the square of l1-norm of all the element in [x]. *)
+(** [l2norm_sqr x] calculates the square of l2-norm of all the element in [x].
+  This function is just an alias of [sqr_nrm2] function.
+ *)
 
 
 (** {6 Binary mathematical operations } *)

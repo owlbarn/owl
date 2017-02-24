@@ -868,7 +868,7 @@ let softmax x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray.softmax y in
   of_ndarray y
-  
+
 let sigmoid x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray.sigmoid y in
@@ -877,6 +877,14 @@ let sigmoid x =
 let log_sum_exp x =
   let y = to_ndarray x in
   Owl_dense_ndarray.log_sum_exp y
+
+let ssqr x =
+  let y = to_ndarray x in
+  Owl_dense_ndarray.ssqr y
+
+let sqr_nrm2 x =
+  let y = to_ndarray x in
+  Owl_dense_ndarray.sqr_nrm2 y
 
 let l1norm x =
   let y = to_ndarray x in
