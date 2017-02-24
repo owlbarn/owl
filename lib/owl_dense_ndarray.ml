@@ -575,7 +575,7 @@ let ssqr x a =
 let sqr_nrm2 x =
   let y = Genarray.change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in
-  (_sqr_nrm2 (kind x)) ~stable:true y
+  (_sqr_nrm2 (kind x)) ~stable:false y
 
 let l1norm x =
   let y = flatten x |> array1_of_genarray in

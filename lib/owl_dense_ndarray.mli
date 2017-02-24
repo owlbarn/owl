@@ -384,175 +384,175 @@ val abs : (float, 'a) t -> (float, 'a) t
 val neg : ('a, 'b) t -> ('a, 'b) t
 (** [neg x] negates the elements in [x] and returns the result in a new ndarray. *)
 
-val signum : ('a, 'b) t -> ('a, 'b) t
+val signum : (float, 'a) t -> (float, 'a) t
 (** [signum] computes the sign value ([-1] for negative numbers, [0] (or [-0])
   for zero, [1] for positive numbers, [nan] for [nan]).
  *)
 
-val sqr : ('a, 'b) t -> ('a, 'b) t
+val sqr : (float, 'a) t -> (float, 'a) t
 (** [sqr x] computes the square of the elements in [x] and returns the result in
   a new ndarray.
  *)
 
-val sqrt : ('a, 'b) t -> ('a, 'b) t
+val sqrt : (float, 'a) t -> (float, 'a) t
 (** [sqrt x] computes the square root of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val cbrt : ('a, 'b) t -> ('a, 'b) t
+val cbrt : (float, 'a) t -> (float, 'a) t
 (** [cbrt x] computes the cubic root of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val exp : ('a, 'b) t -> ('a, 'b) t
+val exp : (float, 'a) t -> (float, 'a) t
 (** [exp x] computes the exponential of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val exp2 : ('a, 'b) t -> ('a, 'b) t
+val exp2 : (float, 'a) t -> (float, 'a) t
 (** [exp2 x] computes the base-2 exponential of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val expm1 : ('a, 'b) t -> ('a, 'b) t
+val expm1 : (float, 'a) t -> (float, 'a) t
 (** [expm1 x] computes [exp x -. 1.] of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val log : ('a, 'b) t -> ('a, 'b) t
+val log : (float, 'a) t -> (float, 'a) t
 (** [log x] computes the logarithm of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val log10 : ('a, 'b) t -> ('a, 'b) t
+val log10 : (float, 'a) t -> (float, 'a) t
 (** [log10 x] computes the base-10 logarithm of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val log2 : ('a, 'b) t -> ('a, 'b) t
+val log2 : (float, 'a) t -> (float, 'a) t
 (** [log2 x] computes the base-2 logarithm of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val log1p : ('a, 'b) t -> ('a, 'b) t
+val log1p : (float, 'a) t -> (float, 'a) t
 (** [log1p x] computes [log (1 + x)] of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val sin : ('a, 'b) t -> ('a, 'b) t
+val sin : (float, 'a) t -> (float, 'a) t
 (** [sin x] computes the sine of the elements in [x] and returns the result in
   a new ndarray.
  *)
 
-val cos : ('a, 'b) t -> ('a, 'b) t
+val cos : (float, 'a) t -> (float, 'a) t
 (** [cos x] computes the cosine of the elements in [x] and returns the result in
   a new ndarray.
  *)
 
-val tan : ('a, 'b) t -> ('a, 'b) t
+val tan : (float, 'a) t -> (float, 'a) t
 (** [tan x] computes the tangent of the elements in [x] and returns the result
   in a new ndarray.
  *)
 
-val asin : ('a, 'b) t -> ('a, 'b) t
+val asin : (float, 'a) t -> (float, 'a) t
 (** [asin x] computes the arc sine of the elements in [x] and returns the result
   in a new ndarray.
  *)
 
-val acos : ('a, 'b) t -> ('a, 'b) t
+val acos : (float, 'a) t -> (float, 'a) t
 (** [acos x] computes the arc cosine of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val atan : ('a, 'b) t -> ('a, 'b) t
+val atan : (float, 'a) t -> (float, 'a) t
 (** [atan x] computes the arc tangent of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val sinh : ('a, 'b) t -> ('a, 'b) t
+val sinh : (float, 'a) t -> (float, 'a) t
 (** [sinh x] computes the hyperbolic sine of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val cosh : ('a, 'b) t -> ('a, 'b) t
+val cosh : (float, 'a) t -> (float, 'a) t
 (** [cosh x] computes the hyperbolic cosine of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val tanh : ('a, 'b) t -> ('a, 'b) t
+val tanh : (float, 'a) t -> (float, 'a) t
 (** [tanh x] computes the hyperbolic tangent of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val asinh : ('a, 'b) t -> ('a, 'b) t
+val asinh : (float, 'a) t -> (float, 'a) t
 (** [asinh x] computes the hyperbolic arc sine of the elements in [x] and
   returns the result in a new ndarray.
  *)
 
-val acosh : ('a, 'b) t -> ('a, 'b) t
+val acosh : (float, 'a) t -> (float, 'a) t
 (** [acosh x] computes the hyperbolic arc cosine of the elements in [x] and
   returns the result in a new ndarray.
  *)
 
-val atanh : ('a, 'b) t -> ('a, 'b) t
+val atanh : (float, 'a) t -> (float, 'a) t
 (** [atanh x] computes the hyperbolic arc tangent of the elements in [x] and
   returns the result in a new ndarray.
  *)
 
-val floor : ('a, 'b) t -> ('a, 'b) t
+val floor : (float, 'a) t -> (float, 'a) t
 (** [floor x] computes the floor of the elements in [x] and returns the result
   in a new ndarray.
  *)
 
-val ceil : ('a, 'b) t -> ('a, 'b) t
+val ceil : (float, 'a) t -> (float, 'a) t
 (** [ceil x] computes the ceiling of the elements in [x] and returns the result
   in a new ndarray.
  *)
 
-val round : ('a, 'b) t -> ('a, 'b) t
+val round : (float, 'a) t -> (float, 'a) t
 (** [round x] rounds the elements in [x] and returns the result in a new ndarray. *)
 
-val trunc : ('a, 'b) t -> ('a, 'b) t
+val trunc : (float, 'a) t -> (float, 'a) t
 (** [trunc x] computes the truncation of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val erf : ('a, 'b) t -> ('a, 'b) t
+val erf : (float, 'a) t -> (float, 'a) t
 (** [erf x] computes the error function of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val erfc : ('a, 'b) t -> ('a, 'b) t
+val erfc : (float, 'a) t -> (float, 'a) t
 (** [erfc x] computes the complementary error function of the elements in [x]
   and returns the result in a new ndarray.
  *)
 
-val logistic : ('a, 'b) t -> ('a, 'b) t
+val logistic : (float, 'a) t -> (float, 'a) t
 (** [logistic x] computes the logistic function [1/(1 + exp(-a)] of the elements
   in [x] and returns the result in a new ndarray.
  *)
 
-val relu : ('a, 'b) t -> ('a, 'b) t
+val relu : (float, 'a) t -> (float, 'a) t
 (** [relu x] computes the rectified linear unit function [max(x, 0)] of the
   elements in [x] and returns the result in a new ndarray.
  *)
 
-val softplus : (float, 'b) t -> (float, 'b) t
+val softplus : (float, 'a) t -> (float, 'a) t
 (** [softplus x] computes the softplus function [log(1 + exp(x)] of the elements
   in [x] and returns the result in a new ndarray.
  *)
 
-val softsign : (float, 'b) t -> (float, 'b) t
+val softsign : (float, 'a) t -> (float, 'a) t
 (** [softsign x] computes the softsign function [x / (1 + abs(x))] of the
   elements in [x] and returns the result in a new ndarray.
  *)
 
-val softmax : (float, 'b) t -> (float, 'b) t
+val softmax : (float, 'a) t -> (float, 'a) t
 (** [softmax x] computes the softmax functions [(exp x) / (sum (exp x))] of
   all the elements in [x] and returns the result in a new array.
  *)
 
-val sigmoid : (float, 'b) t -> (float, 'b) t
+val sigmoid : (float, 'a) t -> (float, 'a) t
 (** [sigmoid x] computes the sigmoid function [1 / (1 + exp (-x))] for each
   element in [x].
  *)
