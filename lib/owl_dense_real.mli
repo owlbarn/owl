@@ -751,6 +751,11 @@ val softsign : mat -> mat
   elements in [x] and returns the result in a new matrix.
  *)
 
+val softmax : mat -> mat
+(** [softmax x] computes the softmax functions [(exp x) / (sum (exp x))] of
+  all the elements in [x] and returns the result in a new array.
+ *)
+
 val sigmoid : mat -> mat
 (** [sigmoid x] computes the sigmoid function [1 / (1 + exp (-x))] for each
   element in [x].

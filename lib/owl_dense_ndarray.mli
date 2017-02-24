@@ -344,6 +344,11 @@ val im : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
   components in a new ndarray of the same shape as that of [x].
  *)
 
+val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
+(** [conj x] computes the conjugate of the elements in [x] and returns the
+  result in a new ndarray.
+ *)
+
 val sum : ('a, 'b) t -> 'a
 (** [sum x] returns the sumtion of all elements in [x]. *)
 
@@ -532,19 +537,19 @@ val relu : ('a, 'b) t -> ('a, 'b) t
   elements in [x] and returns the result in a new ndarray.
  *)
 
-val softplus : ('a, 'b) t -> ('a, 'b) t
+val softplus : (float, 'b) t -> (float, 'b) t
 (** [softplus x] computes the softplus function [log(1 + exp(x)] of the elements
   in [x] and returns the result in a new ndarray.
  *)
 
-val softsign : ('a, 'b) t -> ('a, 'b) t
+val softsign : (float, 'b) t -> (float, 'b) t
 (** [softsign x] computes the softsign function [x / (1 + abs(x))] of the
   elements in [x] and returns the result in a new ndarray.
  *)
 
-val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
-(** [conj x] computes the conjugate of the elements in [x] and returns the
-  result in a new ndarray.
+val softmax : (float, 'b) t -> (float, 'b) t
+(** [softmax x] computes the softmax functions [(exp x) / (sum (exp x))] of
+  all the elements in [x] and returns the result in a new array.
  *)
 
 val sigmoid : (float, 'b) t -> (float, 'b) t

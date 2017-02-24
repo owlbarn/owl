@@ -864,6 +864,11 @@ let softsign x =
   let y = Owl_dense_ndarray.softsign y in
   of_ndarray y
 
+let softmax x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.softmax y in
+  of_ndarray y
+  
 let sigmoid x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray.sigmoid y in

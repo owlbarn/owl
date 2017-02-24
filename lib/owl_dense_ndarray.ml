@@ -619,6 +619,11 @@ let uniform ?(scale=1.) kind dimension =
   let x = Genarray.change_layout x c_layout in
   Bigarray.reshape x dimension
 
+let softmax x =
+  let y = exp x in
+  let a = sum y in
+  div_scalar y a
+  
 
 (* advanced operations *)
 
