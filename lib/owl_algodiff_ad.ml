@@ -671,6 +671,15 @@ module Maths = struct
     let r a = Inv_D a in
     op_d_d a ff fd df r
 
+  and softplus x = log (Float 1. +. exp x)
+
+  and softsign x = x /. (Float 1. +. abs x)
+
+  and softmax x =
+    let y = exp x in
+    let a = sum y in
+    y /. a
+
 end
 
 
