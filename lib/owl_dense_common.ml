@@ -244,6 +244,13 @@ let _sum : type a b. (a, b) kind -> (a, b) lcm_vec_op01 = function
   | Complex64 -> Lacaml.Z.Vec.sum
   | _         -> failwith "_sum: unsupported operation"
 
+let _prod : type a b. (a, b) kind -> (a, b) lcm_vec_op01 = function
+  | Float32   -> Lacaml.S.Vec.prod
+  | Float64   -> Lacaml.D.Vec.prod
+  | Complex32 -> Lacaml.C.Vec.prod
+  | Complex64 -> Lacaml.Z.Vec.prod
+  | _         -> failwith "_prod: unsupported operation"
+
 let _sqr_nrm2 : type a b. (a, b) kind -> (a, b) lcm_vec_op02 = function
   | Float32   -> Lacaml.S.Vec.sqr_nrm2
   | Float64   -> Lacaml.D.Vec.sqr_nrm2
