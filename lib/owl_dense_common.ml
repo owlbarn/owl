@@ -515,6 +515,13 @@ let _log_sum_exp : type a b. (a, b) kind -> (a, b) lcm_vec_op01 = function
   | Float64   -> Lacaml.D.Vec.log_sum_exp
   | _         -> failwith "_log_sum_exp: unsupported operation"
 
+let _rev : type a b. (a, b) kind -> (a, b) lcm_vec -> (a, b) lcm_vec = function
+  | Float32   -> Lacaml.S.Vec.rev
+  | Float64   -> Lacaml.D.Vec.rev
+  | Complex32 -> Lacaml.C.Vec.rev
+  | Complex64 -> Lacaml.Z.Vec.rev
+  | _         -> failwith "_rev: unsupported operation"
+
 
 (* interface to gsl functions, types for interfacing to gsl *)
 

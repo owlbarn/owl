@@ -75,6 +75,8 @@ val cols : ('a, 'b) t -> int array -> ('a, 'b) t
 
 val reshape : int -> int -> ('a, 'b) t -> ('a, 'b) t
 
+val reverse : ('a, 'b) t -> ('a, 'b) t
+
 val fill : ('a, 'b) t -> 'a -> unit
 
 val clone : ('a, 'b) t -> ('a, 'b) t

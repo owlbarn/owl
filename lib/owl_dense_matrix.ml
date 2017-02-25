@@ -218,6 +218,11 @@ let repeat ?axis x reps =
   let y = Owl_dense_ndarray.repeat ?axis x reps in
   of_ndarray y
 
+let reverse x =
+  let x = to_ndarray x in
+  let y = Owl_dense_ndarray.reverse x in
+  of_ndarray y
+
 (* matrix iteration operations *)
 
 let iteri f x =

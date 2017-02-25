@@ -165,6 +165,11 @@ val reshape : int -> int -> mat -> mat
   matrix [x]. Note that [(m * n)] must be equal to [(m' * n')].
  *)
 
+val reverse : mat -> mat
+(** [reverse x] reverse the order of all elements in the flattened [x] and
+  returns the results in a new matrix. The original [x] remains intact.
+ *)
+
 val fill : mat -> elt -> unit
 
 val clone : mat -> mat

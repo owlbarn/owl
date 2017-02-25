@@ -143,6 +143,11 @@ val flatten : ('a, 'b) t -> ('a, 'b) t
 val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
 (** [reshape x d] makes a copy of [x], then transforms it into the shape definted by [d]. *)
 
+val reverse : ('a, 'b) t -> ('a, 'b) t
+(** [reverse x] reverse the order of all elements in the flattened [x] and
+  returns the results in a new ndarray. The original [x] remains intact.
+ *)
+
 val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** [transpose ~axis x] makes a copy of [x], then transpose it according to
   [~axis]. [~axis] must be a valid permutation of [x] dimension indices. E.g.,

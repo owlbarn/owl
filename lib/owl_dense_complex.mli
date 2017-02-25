@@ -97,6 +97,8 @@ val cols : mat -> int array -> mat
 
 val reshape : int -> int -> mat -> mat
 
+val reverse : mat -> mat
+
 val fill : mat -> elt -> unit
 
 val clone : mat -> mat
