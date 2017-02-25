@@ -78,7 +78,7 @@ let reverse x =
   let z = Bigarray.reshape z (shape x) in
   z
 
-(* TODO: zpxy, zmxy, ssqr_diff *)
+(* TODO: zpxy, zmxy ... *)
 
 (* TODO: add axis paramater *)
 
@@ -225,6 +225,13 @@ let max2 x y =
   let z = Genarray.change_layout z c_layout in
   let z = Bigarray.reshape z (shape x) in
   z
+
+let ssqr_diff x y =
+  let x' = Genarray.change_layout x fortran_layout in
+  let x' = Bigarray.reshape_1 x' (numel x) in
+  let y' = Genarray.change_layout y fortran_layout in
+  let y' = Bigarray.reshape_1 y' (numel y) in
+  (_ssqr_diff (kind x)) x' y'
 
 let abs x =
   let y = Genarray.change_layout x fortran_layout in

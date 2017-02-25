@@ -296,8 +296,6 @@ val neg : mat -> mat
 
 val reci : mat -> mat
 
-val ssqr : mat -> elt -> elt
-
 val sqr_nrm2 : mat -> float
 
 val l1norm : mat -> float
@@ -328,6 +326,10 @@ val div_scalar : mat -> elt -> mat
 val dot : mat -> mat -> mat
 
 val add_diag : mat -> elt -> mat
+
+val ssqr : mat -> elt -> elt
+
+val ssqr_diff : mat -> mat -> elt
 
 
 (** {6 Shorhand infix operators} *)

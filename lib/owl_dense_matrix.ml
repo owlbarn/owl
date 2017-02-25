@@ -966,6 +966,12 @@ let max2 x1 x2 =
   let x3 = Owl_dense_ndarray.max2 x1 x2 in
   of_ndarray x3
 
+let ssqr_diff x1 x2 =
+  let x1 = to_ndarray x1 in
+  let x2 = to_ndarray x2 in
+  Owl_dense_ndarray.ssqr_diff x1 x2
+
+
 (* shorhand infix operators *)
 
 let ( @= ) = concat_vertical

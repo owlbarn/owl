@@ -776,12 +776,6 @@ val log_sum_exp : mat -> elt
   the elements in [x].
  *)
 
-val ssqr : mat -> elt -> elt
-(** [ssqr x a] computes the sum of squared differences of all the elements in
-  [x] from constant [a]. This function only computes the square of each element
-  rather than the conjugate transpose as {!sqr_nrm2} does.
- *)
-
 val sqr_nrm2 : mat -> elt
 (** [sqr_nrm2 x] calculates the sum of 2-norm (or l2norm, Euclidean norm) of all
   elements in [x]. The function uses conjugate transpose in the product, hence
@@ -876,6 +870,17 @@ val min2 : mat -> mat -> mat
 val max2 : mat -> mat -> mat
 (** [max2 x y] computes the maximum of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
+ *)
+
+val ssqr : mat -> elt -> elt
+(** [ssqr x a] computes the sum of squared differences of all the elements in
+  [x] from constant [a]. This function only computes the square of each element
+  rather than the conjugate transpose as {!sqr_nrm2} does.
+ *)
+
+val ssqr_diff : mat -> mat -> elt
+(** [ssqr_diff x y] computes the sum of squared differences of every elements in
+  [x] and its corresponding element in [y].
  *)
 
 
