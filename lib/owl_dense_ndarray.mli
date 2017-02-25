@@ -135,18 +135,24 @@ val fill : ('a, 'b) t -> 'a -> unit
 val clone : ('a, 'b) t -> ('a, 'b) t
 (** [clone x] makes a copy of [x]. *)
 
+val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
+(** [reshape x d] transforms [x] into a new shape definted by [d]. Note the
+  [reshape] function will not make a copy of [x], the returned ndarray shares
+  the same memory with the original [x].
+ *)
+
 val flatten : ('a, 'b) t -> ('a, 'b) t
 (** [flatten x] transforms [x] into a one-dimsonal array without making a copy.
   Therefore the returned value shares the same memory space with original [x].
  *)
 
-val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
-(** [reshape x d] makes a copy of [x], then transforms it into the shape definted by [d]. *)
-
 val reverse : ('a, 'b) t -> ('a, 'b) t
 (** [reverse x] reverse the order of all elements in the flattened [x] and
   returns the results in a new ndarray. The original [x] remains intact.
  *)
+
+val sort : ?cmp:('a -> 'a -> int) -> ?inc:bool -> ('a, 'b) t -> unit
+(** [sort cmp x] performs in-place sort for the elements in [x] based on [cmp]. *)
 
 val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** [transpose ~axis x] makes a copy of [x], then transpose it according to

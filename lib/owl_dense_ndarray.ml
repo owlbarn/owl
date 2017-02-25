@@ -78,6 +78,11 @@ let reverse x =
   let z = Bigarray.reshape z (shape x) in
   z
 
+let sort ?cmp ?(inc=true) x =
+  let y = Genarray.change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  (_sort (kind x)) ?cmp ~decr:(not inc) y
+
 (* TODO: zpxy, zmxy ... *)
 
 (* TODO: add axis paramater *)
@@ -1268,8 +1273,6 @@ let remove_slice = None
 let mapi_slice = None
 
 let map_slice = None
-
-let sort axis x = None
 
 let diag x = None
 

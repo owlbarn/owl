@@ -75,7 +75,11 @@ val cols : ('a, 'b) t -> int array -> ('a, 'b) t
 
 val reshape : int -> int -> ('a, 'b) t -> ('a, 'b) t
 
+val flatten : ('a, 'b) t -> ('a, 'b) t
+
 val reverse : ('a, 'b) t -> ('a, 'b) t
+
+val sort : ?cmp:('a -> 'a -> int) -> ?inc:bool -> ('a, 'b) t -> unit
 
 val fill : ('a, 'b) t -> 'a -> unit
 

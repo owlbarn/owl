@@ -223,6 +223,11 @@ let reverse x =
   let y = Owl_dense_ndarray.reverse x in
   of_ndarray y
 
+let sort ?cmp ?inc x =
+  let x = to_ndarray x in
+  Owl_dense_ndarray.sort ?cmp ?inc x
+
+
 (* matrix iteration operations *)
 
 let iteri f x =
@@ -663,6 +668,8 @@ let shuffle x = x |> shuffle_rows |> shuffle_cols
 let reshape m n x =
   let x = genarray_of_array2 x in
   reshape_2 x m n
+
+let flatten x = reshape 1 (numel x) x
 
 let meshgrid k xa xb ya yb xn yn =
   let u = linspace k xa xb xn in

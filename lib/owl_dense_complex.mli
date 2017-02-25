@@ -97,7 +97,11 @@ val cols : mat -> int array -> mat
 
 val reshape : int -> int -> mat -> mat
 
+val flatten : mat -> mat
+
 val reverse : mat -> mat
+
+val sort : ?cmp:(elt -> elt -> int) -> ?inc:bool -> mat -> unit
 
 val fill : mat -> elt -> unit
 

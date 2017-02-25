@@ -161,14 +161,23 @@ val cols : mat -> int array -> mat
  *)
 
 val reshape : int -> int -> mat -> mat
-(** [reshape m n x] creates a new [m] by [n] matrix from the [m'] by [n']
-  matrix [x]. Note that [(m * n)] must be equal to [(m' * n')].
+(** [reshape m n x] returns a new [m] by [n] matrix from the [m'] by [n']
+  matrix [x]. Note that [(m * n)] must be equal to [(m' * n')], and the
+  returned matrix shares the same memory with the original [x].
+ *)
+
+val flatten : mat -> mat
+(** [flatten x] reshape [x] into a [1] by [n] row vector without making a copy.
+  Therefore the returned value shares the same memory space with original [x].
  *)
 
 val reverse : mat -> mat
 (** [reverse x] reverse the order of all elements in the flattened [x] and
   returns the results in a new matrix. The original [x] remains intact.
  *)
+
+val sort : ?cmp:(elt -> elt -> int) -> ?inc:bool -> mat -> unit
+(** [sort cmp x] performs in-place sort for the elements in [x] based on [cmp]. *)
 
 val fill : mat -> elt -> unit
 
