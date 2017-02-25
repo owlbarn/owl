@@ -699,6 +699,11 @@ let neg x =
   let y = Owl_dense_ndarray.neg y in
   of_ndarray y
 
+let reci x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray.reci y in
+  of_ndarray y
+
 let signum x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray.signum y in

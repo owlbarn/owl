@@ -588,6 +588,11 @@ val neg : mat -> mat
   that in the original matrix [x].
  *)
 
+val reci : mat -> mat
+(** [reci x] computes the reciprocal of every elements in [x] and returns the
+  result in a new ndarray.
+ *)
+
 val signum : mat -> mat
 (** [signum] computes the sign value ([-1] for negative numbers, [0] (or [-0])
   for zero, [1] for positive numbers, [nan] for [nan]).

@@ -268,6 +268,8 @@ val re : mat -> Owl_dense_real.mat
 val im : mat -> Owl_dense_real.mat
 (** [re x] returns the complex parts of all the elements in [x] as a separate matrix. *)
 
+val conj : mat -> mat
+
 val trace : mat -> elt
 
 val sum : mat -> elt
@@ -290,7 +292,7 @@ val abs2 : mat -> mat
 
 val neg : mat -> mat
 
-val conj : mat -> mat
+val reci : mat -> mat
 
 val ssqr : mat -> elt -> elt
 

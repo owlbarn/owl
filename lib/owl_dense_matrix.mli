@@ -303,6 +303,11 @@ val abs : (float, 'a) t -> (float, 'a) t
 val neg : ('a, 'b) t -> ('a, 'b) t
 (** [neg x] negates the elements in [x] and returns the result in a new matrix. *)
 
+val reci : ('a, 'b) t -> ('a, 'b) t
+(** [reci x] computes the reciprocal of every elements in [x] and returns the
+  result in a new ndarray.
+ *)
+
 val signum : (float, 'a) t -> (float, 'a) t
 (** [signum] computes the sign value ([-1] for negative numbers, [0] (or [-0])
   for zero, [1] for positive numbers, [nan] for [nan]).
