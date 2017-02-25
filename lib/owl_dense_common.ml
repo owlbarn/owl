@@ -105,6 +105,8 @@ type ('a, 'b) lcm_vec_op07 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int ->
 type ('a, 'b) lcm_vec_op08 = (int -> 'a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
 type ('a, 'b) lcm_vec_op09 = ?n:int -> 'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
 type ('a, 'b) lcm_vec_op10 = ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ('a, 'b) lcm_vec
+type ('a, 'b) lcm_vec_op11 = ?cmp:('a -> 'a -> int) -> ?decr:bool -> ?n:int -> ?ofsp:int -> ?incp:int -> ?p:Lacaml_common.int_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
+
 
 (* call functions in lacaml *)
 
@@ -521,6 +523,13 @@ let _rev : type a b. (a, b) kind -> (a, b) lcm_vec -> (a, b) lcm_vec = function
   | Complex32 -> Lacaml.C.Vec.rev
   | Complex64 -> Lacaml.Z.Vec.rev
   | _         -> failwith "_rev: unsupported operation"
+
+let _sort : type a b. (a, b) kind -> (a, b) lcm_vec_op11 = function
+  | Float32   -> Lacaml.S.Vec.sort
+  | Float64   -> Lacaml.D.Vec.sort
+  | Complex32 -> Lacaml.C.Vec.sort
+  | Complex64 -> Lacaml.Z.Vec.sort
+  | _         -> failwith "_sort: unsupported operation"
 
 
 (* interface to gsl functions, types for interfacing to gsl *)
