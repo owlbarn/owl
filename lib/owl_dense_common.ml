@@ -106,6 +106,7 @@ type ('a, 'b) lcm_vec_op08 = (int -> 'a -> unit) -> ?n:int -> ?ofsx:int -> ?incx
 type ('a, 'b) lcm_vec_op09 = ?n:int -> 'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
 type ('a, 'b) lcm_vec_op10 = ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ('a, 'b) lcm_vec
 type ('a, 'b) lcm_vec_op11 = ?cmp:('a -> 'a -> int) -> ?decr:bool -> ?n:int -> ?ofsp:int -> ?incp:int -> ?p:Lacaml_common.int_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
+type ('a, 'b) lcm_vec_op12 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ?ofsy:int -> ?incy:int -> ('a, 'b) lcm_vec -> 'a
 
 
 (* call functions in lacaml *)
@@ -264,6 +265,13 @@ let _ssqr : type a b. (a, b) kind -> (a, b) lcm_vec_op03 = function
   | Complex32 -> Lacaml.C.Vec.ssqr
   | Complex64 -> Lacaml.Z.Vec.ssqr
   | _         -> failwith "_ssqr: unsupported operation"
+
+let _ssqr_diff : type a b. (a, b) kind -> (a, b) lcm_vec_op12 = function
+  | Float32   -> Lacaml.S.Vec.ssqr_diff
+  | Float64   -> Lacaml.D.Vec.ssqr_diff
+  | Complex32 -> Lacaml.C.Vec.ssqr_diff
+  | Complex64 -> Lacaml.Z.Vec.ssqr_diff
+  | _         -> failwith "_ssqr_diff: unsupported operation"
 
 let _add_scalar : type a b. (a, b) kind -> (a -> (a, b) lcm_vec_op00) = function
   | Float32   -> Lacaml.S.Vec.add_const
