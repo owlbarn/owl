@@ -80,4 +80,8 @@ let _ =
   let xor_x = (M.of_arrays [|[|0.;0.|]; [|0.;1.|]; [|1.;0.|]; [|1.;1.|];|]) in
   let xor_y = (M.of_arrays [|[|0.|]; [|1.|]; [|1.|]; [|0.|];|]) in
   let net = create_network [|2;3;1|] in
-  backprop net (Float 0.9) 1000 xor_x xor_y
+  backprop net (Float 0.9) 1000 xor_x xor_y;
+  run_network (Matrix (M.row xor_x 0)) net |> _print_info;
+  run_network (Matrix (M.row xor_x 1)) net |> _print_info;
+  run_network (Matrix (M.row xor_x 2)) net |> _print_info;
+  run_network (Matrix (M.row xor_x 3)) net |> _print_info

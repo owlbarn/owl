@@ -208,7 +208,7 @@ module Maths = struct
     in
     let fd a b = a -. b in
     let df_da cp ap at = at in
-    let df_db cp bp bt = Float 0. -. bt in
+    let df_db cp bp bt = neg bt in
     let df_dab cp ap at bp bt = at -. bt in
     let r_d_d a b = Sub_D_D (a, b) in
     let r_d_c a b = Sub_D_C (a, b) in
@@ -779,9 +779,9 @@ let reverse_push v x =
             | Add_D_D (a, b)        -> push ((!aa, a) :: (!aa, b) :: t)
             | Add_D_C (a, _)        -> push ((!aa, a) :: t)
             | Add_C_D (_, b)        -> push ((!aa, b) :: t)
-            | Sub_D_D (a, b)        -> push ((!aa, a) :: (Float 0. -. !aa, b) :: t)
+            | Sub_D_D (a, b)        -> push ((!aa, a) :: (neg !aa, b) :: t)
             | Sub_D_C (a, _)        -> push ((!aa, a) :: t)
-            | Sub_C_D (_, b)        -> push ((Float 0. -. !aa, b) :: t)
+            | Sub_C_D (_, b)        -> push ((neg !aa, b) :: t)
             | Mul_D_D (a, b)        -> push (((!aa *. primal b), a) :: ((!aa *. primal a), b) :: t)
             | Mul_D_C (a, b)        -> push (((!aa *. b), a) :: t)
             | Mul_C_D (a, b)        -> push (((!aa *. a), b) :: t)
