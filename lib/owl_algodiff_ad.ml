@@ -89,7 +89,9 @@ let rec zero = function
   | Float _                 -> Float 0.
   | Matrix ap               -> Matrix M.(zeros (row_num ap) (col_num ap))
   | DF (ap, at, ai)         -> DF ((zero ap), (zero at), ai)  (* FIXME: need to check *)
-  | DR (ap, at, ao, af, ai) -> DR ((zero ap), ref (zero !at), Noop, ref !af, ai)
+  | _ -> failwith "errrrr"
+(* liang: debug *)
+(*  | DR (ap, at, ao, af, ai) -> DR ((zero ap), ref (zero !at), Noop, ref !af, ai) *)
 
 let rec one = function
   | Float _         -> Float 1.
@@ -583,7 +585,7 @@ module Maths = struct
     let r a = Sum_D a in
     op_d_d a ff fd df r
 
-  and ( $@ ) a b = mul a b
+  and ( $@ ) a b = dot a b
   and dot a b =
     let ff a b =
       match a, b with
@@ -820,14 +822,14 @@ let reverse_push v x =
             | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
             | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)
             | AddI_C_D (_, i, j, b) -> push ((item !aa i j, b) :: t)
-            | Sum_D a               -> push ((((mat_create (row_num a) (col_num a) !aa)), a) :: t)
-            | Dot_D_D (a, b)        -> push (((dot !aa (primal b)), a) :: ((dot !aa (primal a)), b) :: t)
-            | Dot_D_C (a, b)        -> push (((dot !aa b), a) :: t)
-            | Dot_C_D (a, b)        -> push (((dot !aa a), b) :: t)
+            | Sum_D a               -> push ((((mat_create (row_num (primal a)) (col_num (primal a)) !aa)), a) :: t)
+            | Dot_D_D (a, b)        -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
+            | Dot_D_C (a, b)        -> push (((dot !aa (transpose b)), a) :: t)
+            | Dot_C_D (a, b)        -> push (((dot (transpose a) !aa), b) :: t)
             | Trans_D a             -> push (((transpose !aa), a) :: t)
             | L1Norm_D a            -> push (((!aa *. (signum (primal a))), a) :: t)
-            | L2Norm_D a            -> push (((!aa *. (Float 2.) *. (primal a)), a) :: t)
-            | L2NormS_D a           -> push (((!aa /. ap *. (primal a)), a) :: t)
+            | L2Norm_D a            -> push (((!aa /. ap *. (primal a)), a) :: t)
+            | L2NormS_D a           -> push (((!aa *. (Float 2.) *. (primal a)), a) :: t)
             | Sigmoid_D a           -> push (((!aa *. ap *. (Float 1. -. ap)), a) :: t)
             | Relu_D a              -> push (((!aa *. ((signum (primal a) +. Float 1.) /. (Float 2.))), a) :: t)
             | Inv_D a               -> let dpt = transpose ap in push ((((neg dpt) *. !aa *. dpt), a) :: t)
@@ -839,6 +841,10 @@ let reverse_push v x =
       )
   in
   push [(v, x)]
+
+let reverse_prop v x =
+  reverse_reset x;
+  reverse_push v x
 
 
 (* convenient wrappers *)
