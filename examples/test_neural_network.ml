@@ -22,7 +22,7 @@ let create_network l =
   layers = Array.init (Array.length l - 1) (fun i ->
     {
       w = Matrix M.(uniform l.(i) l.(i+1) -$ 0.5);
-      b = Matrix M.(zeros 1 l.(i+1) -$ 0.5);
+      b = Matrix M.(uniform 1 l.(i+1) -$ 0.5);
       a = A.Maths.sigmoid;
     }
   )
