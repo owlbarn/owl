@@ -246,7 +246,7 @@ module Maths = struct
     in
     let fd a b = a /. b in
     let df_da cp ap at = at /. b in
-    let df_db cp bp bt = (Float 0.) -. (bt *. cp /. bp) in
+    let df_db cp bp bt = (neg bt) *. cp /. bp in
     let df_dab cp ap at bp bt = (at -. bt *. cp) /. bp in
     let r_d_d a b = Div_D_D (a, b) in
     let r_d_c a b = Div_D_C (a, b) in
@@ -652,6 +652,8 @@ module Maths = struct
     let r a = Sigmoid_D a in
     op_d_d a ff fd df r
 
+(*  and sigmoid a = (Float 1.) /. (Float 1. +. (exp (neg a))) *)
+
   and relu a =
     let ff = function
       | Float a  -> Float Owl_maths.(relu a)
@@ -785,16 +787,16 @@ let reverse_push v x =
             | Mul_D_D (a, b)        -> push (((!aa *. primal b), a) :: ((!aa *. primal a), b) :: t)
             | Mul_D_C (a, b)        -> push (((!aa *. b), a) :: t)
             | Mul_C_D (a, b)        -> push (((!aa *. a), b) :: t)
-            | Div_D_D (a, b)        -> push (((!aa /. (primal b)), a) :: ((!aa *. ((Float 0. -. (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
+            | Div_D_D (a, b)        -> push (((!aa /. (primal b)), a) :: ((!aa *. ((neg (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
             | Div_D_C (a, b)        -> push (((!aa /. b), a) :: t)
-            | Div_C_D (a, b)        -> push (((!aa *. ((Float 0. -. (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
+            | Div_C_D (a, b)        -> push (((!aa *. ((neg (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
             | Pow_D_D (a, b)        -> push (((!aa *. ((primal a) ** ((primal b) -. (Float 1.))) *. (primal b)), a) :: ((!aa *. ((primal a) ** (primal b)) *. log (primal a)), b) :: t)
             | Pow_D_C (a, b)        -> push (((!aa *. ((primal a) ** (b -. (Float 1.))) *. b), a) :: t)
             | Pow_C_D (a, b)        -> push (((!aa *. (a ** (primal b)) *. log a), b) :: t)
             | Atan2_D_D (a, b)      -> let d = (sqr (primal a)) +. (sqr (primal b)) in push (((!aa *. (primal b) /. d), a) :: ((!aa *. (neg (primal a)) /. d), b) :: t)
             | Atan2_D_C (a, b)      -> push (((!aa *. b /. ((sqr (primal a)) +. (sqr b))), a) :: t)
             | Atan2_C_D (a, b)      -> push (((!aa *. (neg a) /. ((sqr a) +. (sqr (primal b)))), b) :: t)
-            | Neg_D a               -> push (((Float 0.) -. !aa, a) :: t)
+            | Neg_D a               -> push ((neg !aa, a) :: t)
             | Abs_D a               -> push (((!aa *. signum (primal a)), a) :: t)
             | Signum_D a            -> push ((zero a, a) :: t)
             | Floor_D a             -> push ((zero a, a) :: t)
