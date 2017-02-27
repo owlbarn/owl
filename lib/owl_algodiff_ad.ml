@@ -122,11 +122,9 @@ let row_num x = shape x |> fst
 let col_num x = shape x |> snd
 
 let mat_create m n a =
-  let a = match (primal a) with
-    | Float a -> a
-    | _ -> failwith "error: mat_create"
-  in
-  Matrix (M.create m n a)
+  match (primal a) with
+  | Float a  -> Matrix (M.create m n a)
+  | _ -> failwith "error: mat_create"
 
 
 (* overload operators *)
@@ -766,14 +764,23 @@ let reverse_reset x =
   in
   reset [x]
 
+
+
 let reverse_push v x =
   let open Maths in
+  (* check the types of adjoint a and its update, transform v if necessary *)
+  let _melt a v =
+    match a, v with
+    | Float _, Matrix v -> Float (M.sum v)
+    | a, v -> v
+  in
   let rec push xs =
     match xs with
     | [] -> ()
     | (v, x) :: t -> (
         match x with
         | DR (ap, aa, ao, af, ai) -> (
+          let v = _melt !aa v in
           aa := Maths.(!aa +. v);
           af := !af - 1;
           if !af = 0 then (
@@ -928,5 +935,7 @@ let jacobian f x =
   );
   z
 
+let print_trace x =
+  None
 
 (* ends here *)
