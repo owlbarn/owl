@@ -89,9 +89,7 @@ let rec zero = function
   | Float _                 -> Float 0.
   | Matrix ap               -> Matrix M.(zeros (row_num ap) (col_num ap))
   | DF (ap, at, ai)         -> DF ((zero ap), (zero at), ai)  (* FIXME: need to check *)
-  | _ -> failwith "errrrr"
-(* liang: debug *)
-(*  | DR (ap, at, ao, af, ai) -> DR ((zero ap), ref (zero !at), Noop, ref !af, ai) *)
+  | DR (ap, at, ao, af, ai) -> DR ((zero ap), ref (zero !at), Noop, ref !af, ai)
 
 let rec one = function
   | Float _         -> Float 1.
@@ -438,7 +436,7 @@ module Maths = struct
       | _        -> failwith "error: cos: ff"
     in
     let fd a = cos a in
-    let df cp ap at = Float 0. -. (at *. sin ap) in
+    let df cp ap at = neg (at *. sin ap) in
     let r a = Cos_D a in
     op_d_d a ff fd df r
 
@@ -629,8 +627,10 @@ module Maths = struct
     let r a = L2Norm_D a in
     op_d_d a ff fd df r
 
+
   and l2norm_sqr a =
     let ff = function
+      | Float a  -> Float S.(a *. a)
       | Matrix a -> Float M.(l2norm_sqr a)
       | _        -> failwith "error: l2norm_sqr: ff"
     in
@@ -650,7 +650,7 @@ module Maths = struct
     let r a = Sigmoid_D a in
     op_d_d a ff fd df r
 
-(*  and sigmoid a = (Float 1.) /. (Float 1. +. (exp (neg a))) *)
+  (* and sigmoid a = (Float 1.) /. (Float 1. +. (exp (neg a))) *)
 
   and relu a =
     let ff = function
@@ -677,6 +677,7 @@ module Maths = struct
 
   and softsign x = x /. (Float 1. +. abs x)
 
+  (* FIXME: use numerically stable version *)
   and softmax x =
     let y = exp x in
     let a = sum y in
@@ -796,7 +797,7 @@ let reverse_push v x =
             | Mul_C_D (a, b)        -> push (((!aa *. a), b) :: t)
             | Div_D_D (a, b)        -> push (((!aa /. (primal b)), a) :: ((!aa *. ((neg (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
             | Div_D_C (a, b)        -> push (((!aa /. b), a) :: t)
-            | Div_C_D (a, b)        -> push (((!aa *. ((neg (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
+            | Div_C_D (a, b)        -> push (((!aa *. ((neg a) /. ((primal b) *. (primal b)))), b) :: t)
             | Pow_D_D (a, b)        -> push (((!aa *. ((primal a) ** ((primal b) -. (Float 1.))) *. (primal b)), a) :: ((!aa *. ((primal a) ** (primal b)) *. log (primal a)), b) :: t)
             | Pow_D_C (a, b)        -> push (((!aa *. ((primal a) ** (b -. (Float 1.))) *. b), a) :: t)
             | Pow_C_D (a, b)        -> push (((!aa *. (a ** (primal b)) *. log a), b) :: t)

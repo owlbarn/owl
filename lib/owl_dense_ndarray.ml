@@ -658,7 +658,7 @@ let uniform ?(scale=1.) kind dimension =
   Bigarray.reshape x dimension
 
 let softmax x =
-  let y = exp x in
+  let y = max x |> sub_scalar x |> exp in
   let a = sum y in
   div_scalar y a
 
