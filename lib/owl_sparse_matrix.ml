@@ -397,6 +397,11 @@ let neg x = {
   d = _eigen_neg x.d;
 }
 
+(* TODO: optimise *)
+let reci x =
+  let _op = Owl_dense_common._inv_elt (kind x) in
+  map_nz (fun a -> _op a) x
+
 let power_scalar x c =
   let _op = Owl_dense_common._power_scalar_elt (kind x) in
   map (fun y -> (_op) y c) x
@@ -606,9 +611,8 @@ let ( *$ ) x a = mul_scalar x a
 
 let ( $* ) a x = mul_scalar x a
 
-(* FIXME: wrong ... fixme *)
 let ( /$ ) x a = div_scalar x a
 
-let ( $/ ) a x = div_scalar x a
+let ( $/ ) a x = div_scalar x a |> reci
 
 let ( @@ ) f x = map f x
