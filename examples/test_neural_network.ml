@@ -23,7 +23,7 @@ let create_network l =
     {
       w = Matrix M.(uniform l.(i) l.(i+1) -$ 0.5);
       b = Matrix M.(uniform 1 l.(i+1) -$ 0.5);
-      a = A.Maths.tanh;
+      a = A.Maths.sigmoid;
     }
   )
 }

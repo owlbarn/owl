@@ -93,6 +93,7 @@ let rec zero = function
 
 let rec one = function
   | Float _         -> Float 1.
+  | Matrix ap       -> Matrix M.(ones (row_num ap) (col_num ap))
   | DF (ap, at, ai) -> DF ((one ap), (zero at), ai)
   | _               -> failwith "error: one : unknown type"
 
@@ -627,7 +628,6 @@ module Maths = struct
     let r a = L2Norm_D a in
     op_d_d a ff fd df r
 
-
   and l2norm_sqr a =
     let ff = function
       | Float a  -> Float S.(a *. a)
@@ -817,7 +817,7 @@ let reverse_push v x =
             | Log10_D a             -> push (((!aa /. ((primal a) *. (Float Owl_maths.log10e))), a) :: t)
             | Exp_D a               -> push (((!aa *. ap), a) :: t)
             | Sin_D a               -> push (((!aa *. cos (primal a)), a) :: t)
-            | Cos_D a               -> push (((!aa *. (Float 0. -. sin (primal a))), a) :: t)
+            | Cos_D a               -> push (((!aa *. (neg (sin (primal a)))), a) :: t)
             | Tan_D a               -> push (((!aa /. (sqr (cos (primal a)))), a) :: t)
             | Sinh_D a              -> push (((!aa *. (cosh (primal a))), a) :: t)
             | Cosh_D a              -> push (((!aa *. (sinh (primal a))), a) :: t)

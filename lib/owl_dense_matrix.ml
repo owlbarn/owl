@@ -1019,7 +1019,7 @@ let ( $+ ) a x = add_scalar x a
 
 let ( -$ ) x a = sub_scalar x a
 
-let ( $- ) a x = sub_scalar x a
+let ( $- ) a x = sub_scalar x a |> neg
 
 let ( *$ ) x a = mul_scalar x a
 
@@ -1027,6 +1027,6 @@ let ( $* ) a x = mul_scalar x a
 
 let ( /$ ) x a = div_scalar x a
 
-let ( $/ ) a x = div_scalar x a
+let ( $/ ) a x = div_scalar x a |> reci
 
 let ( @@ ) f x = map f x
