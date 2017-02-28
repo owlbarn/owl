@@ -5,6 +5,8 @@
 
 module M = Owl_dense_real
 
+type mat = Owl_dense_real.mat
+
 (* global epsilon value used in numerical differentiation *)
 let _eps = 0.00001
 
