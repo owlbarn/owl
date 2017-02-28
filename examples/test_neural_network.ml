@@ -26,7 +26,7 @@ let create_network l =
   )
 }
 
-let run_layer x l = Maths.((x $@ l.w) +. l.b) |> l.a
+let run_layer x l = Maths.((x $@ l.w) + l.b) |> l.a
 
 let run_layer' x l =
   _print_info x;

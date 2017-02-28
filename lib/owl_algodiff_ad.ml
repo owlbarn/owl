@@ -174,7 +174,7 @@ module Maths = struct
       )
     | a, b                                       -> ff a b
 
-  and ( +. ) a b = add a b
+  and ( + ) a b = add a b
   and add a b =
     let ff a b =
       match a, b with
@@ -184,16 +184,16 @@ module Maths = struct
       | Matrix a, Matrix b -> Matrix M.(a +@ b)
       | _                  -> failwith "error: add: ff"
     in
-    let fd a b = a +. b in
+    let fd a b = a + b in
     let df_da cp ap at = at in
     let df_db cp bp bt = bt in
-    let df_dab cp ap at bp bt = at +. bt in
+    let df_dab cp ap at bp bt = at + bt in
     let r_d_d a b = Add_D_D (a, b) in
     let r_d_c a b = Add_D_C (a, b) in
     let r_c_d a b = Add_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-  and ( -. ) a b = sub a b
+  and ( - ) a b = sub a b
   and sub a b =
     let ff a b =
       match a, b with
@@ -203,16 +203,16 @@ module Maths = struct
       | Matrix a, Matrix b -> Matrix M.(a -@ b)
       | _                  -> failwith "error: sub: ff"
     in
-    let fd a b = a -. b in
+    let fd a b = a - b in
     let df_da cp ap at = at in
     let df_db cp bp bt = neg bt in
-    let df_dab cp ap at bp bt = at -. bt in
+    let df_dab cp ap at bp bt = at - bt in
     let r_d_d a b = Sub_D_D (a, b) in
     let r_d_c a b = Sub_D_C (a, b) in
     let r_c_d a b = Sub_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-  and ( *. ) a b = mul a b
+  and ( * ) a b = mul a b
   and mul a b =
     let ff a b =
       match a, b with
@@ -222,16 +222,16 @@ module Maths = struct
       | Matrix a, Matrix b -> Matrix M.(a *@ b)
       | _                  -> failwith "error: mul: ff"
     in
-    let fd a b = a *. b in
-    let df_da cp ap at = at *. b in
-    let df_db cp bp bt = a *. bt in
-    let df_dab cp ap at bp bt = (ap *. bt) +. (at *. bp) in
+    let fd a b = a * b in
+    let df_da cp ap at = at * b in
+    let df_db cp bp bt = a * bt in
+    let df_dab cp ap at bp bt = (ap * bt) + (at * bp) in
     let r_d_d a b = Mul_D_D (a, b) in
     let r_d_c a b = Mul_D_C (a, b) in
     let r_c_d a b = Mul_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-  and ( /. ) a b = div a b
+  and ( / ) a b = div a b
   and div a b =
     let ff a b =
       match a, b with
@@ -241,10 +241,10 @@ module Maths = struct
       | Matrix a, Matrix b -> Matrix M.(a /@ b)
       | _                  -> failwith "error: div: ff"
     in
-    let fd a b = a /. b in
-    let df_da cp ap at = at /. b in
-    let df_db cp bp bt = (neg bt) *. cp /. bp in
-    let df_dab cp ap at bp bt = (at -. bt *. cp) /. bp in
+    let fd a b = a / b in
+    let df_da cp ap at = at / b in
+    let df_db cp bp bt = (neg bt) * cp / bp in
+    let df_dab cp ap at bp bt = (at - bt * cp) / bp in
     let r_d_d a b = Div_D_D (a, b) in
     let r_d_c a b = Div_D_C (a, b) in
     let r_c_d a b = Div_C_D (a, b) in
@@ -261,9 +261,9 @@ module Maths = struct
       | _                  -> failwith "error: pow: ff"
     in
     let fd a b = a ** b in
-    let df_da cp ap at = at *. (ap ** (b -. (Float 1.))) *. b in
-    let df_db cp bp bt = bt *. cp *. (log a) in
-    let df_dab cp ap at bp bt = (ap ** (bp -. (Float 1.))) *. ((at *. bp) +. (ap *. bt *. log ap)) in
+    let df_da cp ap at = at * (ap ** (b - (Float 1.))) * b in
+    let df_db cp bp bt = bt * cp * (log a) in
+    let df_dab cp ap at bp bt = (ap ** (bp - (Float 1.))) * ((at * bp) + (ap * bt * log ap)) in
     let r_d_d a b = Pow_D_D (a, b) in
     let r_d_c a b = Pow_D_C (a, b) in
     let r_c_d a b = Pow_C_D (a, b) in
@@ -279,9 +279,9 @@ module Maths = struct
       | _                  -> failwith "error: atan2: ff"
     in
     let fd a b = atan2 a b in
-    let df_da cp ap at = at *. b /. ((sqr ap) +. (sqr b)) in
-    let df_db cp bp bt = (neg bt) *. a /. ((sqr a) +. (sqr bp)) in
-    let df_dab cp ap at bp bt = ((at *. bp) -. (bt *. ap)) /. ((sqr ap) +. (sqr bp)) in
+    let df_da cp ap at = at * b / ((sqr ap) + (sqr b)) in
+    let df_db cp bp bt = (neg bt) * a / ((sqr a) + (sqr bp)) in
+    let df_dab cp ap at bp bt = ((at * bp) - (bt * ap)) / ((sqr ap) + (sqr bp)) in
     let r_d_d a b = Atan2_D_D (a, b) in
     let r_d_c a b = Atan2_D_C (a, b) in
     let r_c_d a b = Atan2_C_D (a, b) in
@@ -294,7 +294,7 @@ module Maths = struct
       | _        -> failwith "error: neg: ff"
     in
     let fd a = neg a in
-    let df cp ap at = (Float 0.) -. at in
+    let df cp ap at = (Float 0.) - at in
     let r a = Neg_D a in
     op_d_d a ff fd df r
 
@@ -305,7 +305,7 @@ module Maths = struct
       | _        -> failwith "error: abs: ff"
     in
     let fd a = abs a in
-    let df cp ap at = at *. (signum ap) in
+    let df cp ap at = at * (signum ap) in
     let r a = Abs_D a in
     op_d_d a ff fd df r
 
@@ -360,7 +360,7 @@ module Maths = struct
       | _        -> failwith "error: sqr: ff"
     in
     let fd a = sqr a in
-    let df cp ap at = (Float 2.) *. at *. ap in
+    let df cp ap at = (Float 2.) * at * ap in
     let r a = Sqr_D a in
     op_d_d a ff fd df r
 
@@ -371,7 +371,7 @@ module Maths = struct
       | _        -> failwith "error: sqrt: ff"
     in
     let fd a = sqrt a in
-    let df cp ap at = at /. ((Float 2.) *. cp) in
+    let df cp ap at = at / ((Float 2.) * cp) in
     let r a = Sqrt_D a in
     op_d_d a ff fd df r
 
@@ -382,7 +382,7 @@ module Maths = struct
       | _        -> failwith "error: log: ff"
     in
     let fd a = log a in
-    let df cp ap at = at /. ap in
+    let df cp ap at = at / ap in
     let r a = Log_D a in
     op_d_d a ff fd df r
 
@@ -393,7 +393,7 @@ module Maths = struct
       | _        -> failwith "error: log2: ff"
     in
     let fd a = log2 a in
-    let df cp ap at = at /. (ap *. (Float Owl_maths.log2e)) in
+    let df cp ap at = at / (ap * (Float Owl_maths.log2e)) in
     let r a = Log2_D a in
     op_d_d a ff fd df r
 
@@ -404,7 +404,7 @@ module Maths = struct
       | _        -> failwith "error: log10: ff"
     in
     let fd a = log10 a in
-    let df cp ap at = at /. (ap *. (Float Owl_maths.log10e)) in
+    let df cp ap at = at / (ap * (Float Owl_maths.log10e)) in
     let r a = Log10_D a in
     op_d_d a ff fd df r
 
@@ -415,7 +415,7 @@ module Maths = struct
       | _        -> failwith "error: exp: ff"
     in
     let fd a = exp a in
-    let df cp ap at = at *. cp in
+    let df cp ap at = at * cp in
     let r a = Exp_D a in
     op_d_d a ff fd df r
 
@@ -426,7 +426,7 @@ module Maths = struct
       | _        -> failwith "error: sin: ff"
     in
     let fd a = sin a in
-    let df cp ap at = at *. cos ap in
+    let df cp ap at = at * cos ap in
     let r a = Sin_D a in
     op_d_d a ff fd df r
 
@@ -437,7 +437,7 @@ module Maths = struct
       | _        -> failwith "error: cos: ff"
     in
     let fd a = cos a in
-    let df cp ap at = neg (at *. sin ap) in
+    let df cp ap at = neg (at * sin ap) in
     let r a = Cos_D a in
     op_d_d a ff fd df r
 
@@ -448,7 +448,7 @@ module Maths = struct
       | _        -> failwith "error: tan: ff"
     in
     let fd a = tan a in
-    let df cp ap at = at /. (sqr (cos ap)) in
+    let df cp ap at = at / (sqr (cos ap)) in
     let r a = Tan_D a in
     op_d_d a ff fd df r
 
@@ -459,7 +459,7 @@ module Maths = struct
       | _        -> failwith "error: sinh: ff"
     in
     let fd a = sinh a in
-    let df cp ap at = at *. (cosh ap) in
+    let df cp ap at = at * (cosh ap) in
     let r a = Sinh_D a in
     op_d_d a ff fd df r
 
@@ -470,7 +470,7 @@ module Maths = struct
       | _        -> failwith "error: cosh: ff"
     in
     let fd a = cosh a in
-    let df cp ap at = at *. (sinh ap) in
+    let df cp ap at = at * (sinh ap) in
     let r a = Cosh_D a in
     op_d_d a ff fd df r
 
@@ -481,7 +481,7 @@ module Maths = struct
       | _        -> failwith "error: tanh: ff"
     in
     let fd a = tanh a in
-    let df cp ap at = at /. (sqr (cosh ap)) in
+    let df cp ap at = at / (sqr (cosh ap)) in
     let r a = Tanh_D a in
     op_d_d a ff fd df r
 
@@ -492,7 +492,7 @@ module Maths = struct
       | _        -> failwith "error: asin: ff"
     in
     let fd a = asin a in
-    let df cp ap at = at /. sqrt ((Float 1.) -. sqr ap) in
+    let df cp ap at = at / sqrt ((Float 1.) - sqr ap) in
     let r a = Asin_D a in
     op_d_d a ff fd df r
 
@@ -503,7 +503,7 @@ module Maths = struct
       | _        -> failwith "error: acos: ff"
     in
     let fd a = acos a in
-    let df cp ap at = (neg at) /. sqrt ((Float 1.) -. sqr ap) in
+    let df cp ap at = (neg at) / sqrt ((Float 1.) - sqr ap) in
     let r a = Acos_D a in
     op_d_d a ff fd df r
 
@@ -514,7 +514,7 @@ module Maths = struct
       | _        -> failwith "error: atan: ff"
     in
     let fd a = atan a in
-    let df cp ap at = at /. ((Float 1.) +. sqr ap) in
+    let df cp ap at = at / ((Float 1.) + sqr ap) in
     let r a = Atan_D a in
     op_d_d a ff fd df r
 
@@ -525,7 +525,7 @@ module Maths = struct
       | _        -> failwith "error: asinh: ff"
     in
     let fd a = asinh a in
-    let df cp ap at = at /. sqrt ((sqr ap) +. (Float 1.)) in
+    let df cp ap at = at / sqrt ((sqr ap) + (Float 1.)) in
     let r a = Asinh_D a in
     op_d_d a ff fd df r
 
@@ -536,7 +536,7 @@ module Maths = struct
       | _        -> failwith "error: acosh: ff"
     in
     let fd a = acosh a in
-    let df cp ap at = at /. sqrt ((sqr ap) -. (Float 1.)) in
+    let df cp ap at = at / sqrt ((sqr ap) - (Float 1.)) in
     let r a = Acosh_D a in
     op_d_d a ff fd df r
 
@@ -547,7 +547,7 @@ module Maths = struct
       | _        -> failwith "error: atanh: ff"
     in
     let fd a = atanh a in
-    let df cp ap at = at /. ((Float 1.) -. sqr ap) in
+    let df cp ap at = at / ((Float 1.) - sqr ap) in
     let r a = Atanh_D a in
     op_d_d a ff fd df r
 
@@ -592,7 +592,7 @@ module Maths = struct
     let fd a b = a $@ b in
     let df_da cp ap at = at $@ b in
     let df_db cp bp bt = a $@ bt in
-    let df_dab cp ap at bp bt = (ap $@ bt) +. (at $@ bp) in
+    let df_dab cp ap at bp bt = (ap $@ bt) + (at $@ bp) in
     let r_d_d a b = Dot_D_D (a, b) in
     let r_d_c a b = Dot_D_C (a, b) in
     let r_c_d a b = Dot_C_D (a, b) in
@@ -614,7 +614,7 @@ module Maths = struct
       | _        -> failwith "error: l1norm: ff"
     in
     let fd a = l1norm a in
-    let df cp ap at = at *. (signum ap) in
+    let df cp ap at = at * (signum ap) in
     let r a = L1Norm_D a in
     op_d_d a ff fd df r
 
@@ -624,7 +624,7 @@ module Maths = struct
       | _        -> failwith "error: l2norm: ff"
     in
     let fd a = l2norm a in
-    let df cp ap at = (ap *. at) /. cp in
+    let df cp ap at = (ap * at) / cp in
     let r a = L2Norm_D a in
     op_d_d a ff fd df r
 
@@ -635,7 +635,7 @@ module Maths = struct
       | _        -> failwith "error: l2norm_sqr: ff"
     in
     let fd a = l2norm_sqr a in
-    let df cp ap at = (Float 2.) *. (ap *. at) in
+    let df cp ap at = (Float 2.) * (ap * at) in
     let r a = L2NormS_D a in
     op_d_d a ff fd df r
 
@@ -646,11 +646,9 @@ module Maths = struct
       | _        -> failwith "error: sigmoid: ff"
     in
     let fd a = sigmoid a in
-    let df cp ap at = at *. cp *. (Float 1. -. cp) in
+    let df cp ap at = at * cp * (Float 1. - cp) in
     let r a = Sigmoid_D a in
     op_d_d a ff fd df r
-
-  (* and sigmoid a = (Float 1.) /. (Float 1. +. (exp (neg a))) *)
 
   and relu a =
     let ff = function
@@ -659,7 +657,7 @@ module Maths = struct
       | _        -> failwith "error: relu: ff"
     in
     let fd a = relu a in
-    let df cp ap at = at *. (Float 1. +. (signum ap)) /. (Float 2.) in
+    let df cp ap at = at * (Float 1. + (signum ap)) / (Float 2.) in
     let r a = Relu_D a in
     op_d_d a ff fd df r
 
@@ -669,19 +667,19 @@ module Maths = struct
       | _        -> failwith "error: inv: ff"
     in
     let fd a = inv a in
-    let df cp ap at = (neg cp) *. at *. cp in
+    let df cp ap at = (neg cp) * at * cp in
     let r a = Inv_D a in
     op_d_d a ff fd df r
 
-  and softplus x = log (Float 1. +. exp x)
+  and softplus x = log (Float 1. + exp x)
 
-  and softsign x = x /. (Float 1. +. abs x)
+  and softsign x = x / (Float 1. + abs x)
 
   (* FIXME: use numerically stable version *)
   and softmax x =
     let y = exp x in
     let a = sum y in
-    y /. a
+    y / a
 
 end
 
@@ -782,8 +780,8 @@ let reverse_push v x =
         match x with
         | DR (ap, aa, ao, af, ai) -> (
           let v = _melt !aa v in
-          aa := Maths.(!aa +. v);
-          af := !af - 1;
+          aa := Maths.(!aa + v);
+          af := S.(!af - 1);
           if !af = 0 then (
             match ao with
             | Add_D_D (a, b)        -> push ((!aa, a) :: (!aa, b) :: t)
@@ -792,42 +790,42 @@ let reverse_push v x =
             | Sub_D_D (a, b)        -> push ((!aa, a) :: (neg !aa, b) :: t)
             | Sub_D_C (a, _)        -> push ((!aa, a) :: t)
             | Sub_C_D (_, b)        -> push ((neg !aa, b) :: t)
-            | Mul_D_D (a, b)        -> push (((!aa *. primal b), a) :: ((!aa *. primal a), b) :: t)
-            | Mul_D_C (a, b)        -> push (((!aa *. b), a) :: t)
-            | Mul_C_D (a, b)        -> push (((!aa *. a), b) :: t)
-            | Div_D_D (a, b)        -> push (((!aa /. (primal b)), a) :: ((!aa *. ((neg (primal a)) /. ((primal b) *. (primal b)))), b) :: t)
-            | Div_D_C (a, b)        -> push (((!aa /. b), a) :: t)
-            | Div_C_D (a, b)        -> push (((!aa *. ((neg a) /. ((primal b) *. (primal b)))), b) :: t)
-            | Pow_D_D (a, b)        -> push (((!aa *. ((primal a) ** ((primal b) -. (Float 1.))) *. (primal b)), a) :: ((!aa *. ((primal a) ** (primal b)) *. log (primal a)), b) :: t)
-            | Pow_D_C (a, b)        -> push (((!aa *. ((primal a) ** (b -. (Float 1.))) *. b), a) :: t)
-            | Pow_C_D (a, b)        -> push (((!aa *. (a ** (primal b)) *. log a), b) :: t)
-            | Atan2_D_D (a, b)      -> let d = (sqr (primal a)) +. (sqr (primal b)) in push (((!aa *. (primal b) /. d), a) :: ((!aa *. (neg (primal a)) /. d), b) :: t)
-            | Atan2_D_C (a, b)      -> push (((!aa *. b /. ((sqr (primal a)) +. (sqr b))), a) :: t)
-            | Atan2_C_D (a, b)      -> push (((!aa *. (neg a) /. ((sqr a) +. (sqr (primal b)))), b) :: t)
+            | Mul_D_D (a, b)        -> push (((!aa * primal b), a) :: ((!aa * primal a), b) :: t)
+            | Mul_D_C (a, b)        -> push (((!aa * b), a) :: t)
+            | Mul_C_D (a, b)        -> push (((!aa * a), b) :: t)
+            | Div_D_D (a, b)        -> push (((!aa / (primal b)), a) :: ((!aa * ((neg (primal a)) / ((primal b) * (primal b)))), b) :: t)
+            | Div_D_C (a, b)        -> push (((!aa / b), a) :: t)
+            | Div_C_D (a, b)        -> push (((!aa * ((neg a) / ((primal b) * (primal b)))), b) :: t)
+            | Pow_D_D (a, b)        -> push (((!aa * ((primal a) ** ((primal b) - (Float 1.))) * (primal b)), a) :: ((!aa * ((primal a) ** (primal b)) * log (primal a)), b) :: t)
+            | Pow_D_C (a, b)        -> push (((!aa * ((primal a) ** (b - (Float 1.))) * b), a) :: t)
+            | Pow_C_D (a, b)        -> push (((!aa * (a ** (primal b)) * log a), b) :: t)
+            | Atan2_D_D (a, b)      -> let d = (sqr (primal a)) + (sqr (primal b)) in push (((!aa * (primal b) / d), a) :: ((!aa * (neg (primal a)) / d), b) :: t)
+            | Atan2_D_C (a, b)      -> push (((!aa * b / ((sqr (primal a)) + (sqr b))), a) :: t)
+            | Atan2_C_D (a, b)      -> push (((!aa * (neg a) / ((sqr a) + (sqr (primal b)))), b) :: t)
             | Neg_D a               -> push ((neg !aa, a) :: t)
-            | Abs_D a               -> push (((!aa *. signum (primal a)), a) :: t)
+            | Abs_D a               -> push (((!aa * signum (primal a)), a) :: t)
             | Signum_D a            -> push ((zero a, a) :: t)
             | Floor_D a             -> push ((zero a, a) :: t)
             | Ceil_D a              -> push ((zero a, a) :: t)
             | Round_D a             -> push ((zero a, a) :: t)
-            | Sqr_D a               -> push (((!aa *. (primal a) *. (Float 2.)), a) :: t)
-            | Sqrt_D a              -> push (((!aa /. ((Float 2.) *. ap)), a) :: t)
-            | Log_D a               -> push (((!aa /. (primal a)), a) :: t)
-            | Log2_D a              -> push (((!aa /. ((primal a) *. (Float Owl_maths.log2e))), a) :: t)
-            | Log10_D a             -> push (((!aa /. ((primal a) *. (Float Owl_maths.log10e))), a) :: t)
-            | Exp_D a               -> push (((!aa *. ap), a) :: t)
-            | Sin_D a               -> push (((!aa *. cos (primal a)), a) :: t)
-            | Cos_D a               -> push (((!aa *. (neg (sin (primal a)))), a) :: t)
-            | Tan_D a               -> push (((!aa /. (sqr (cos (primal a)))), a) :: t)
-            | Sinh_D a              -> push (((!aa *. (cosh (primal a))), a) :: t)
-            | Cosh_D a              -> push (((!aa *. (sinh (primal a))), a) :: t)
-            | Tanh_D a              -> push (((!aa /. (sqr (cosh (primal a)))), a) :: t)
-            | Asin_D a              -> push (((!aa /. sqrt ((Float 1.) -. sqr (primal a))), a) :: t)
-            | Acos_D a              -> push ((((neg !aa) /. sqrt ((Float 1.) -. sqr (primal a))), a) :: t)
-            | Atan_D a              -> push (((!aa /. ((Float 1.) +. sqr (primal a))), a) :: t)
-            | Asinh_D a             -> push (((!aa /. sqrt ((sqr (primal a)) +. (Float 1.))), a) :: t)
-            | Acosh_D a             -> push (((!aa /. sqrt ((sqr (primal a)) -. (Float 1.))), a) :: t)
-            | Atanh_D a             -> push (((!aa /. ((Float 1.) -. sqr (primal a))), a) :: t)
+            | Sqr_D a               -> push (((!aa * (primal a) * (Float 2.)), a) :: t)
+            | Sqrt_D a              -> push (((!aa / ((Float 2.) * ap)), a) :: t)
+            | Log_D a               -> push (((!aa / (primal a)), a) :: t)
+            | Log2_D a              -> push (((!aa / ((primal a) * (Float Owl_maths.log2e))), a) :: t)
+            | Log10_D a             -> push (((!aa / ((primal a) * (Float Owl_maths.log10e))), a) :: t)
+            | Exp_D a               -> push (((!aa * ap), a) :: t)
+            | Sin_D a               -> push (((!aa * cos (primal a)), a) :: t)
+            | Cos_D a               -> push (((!aa * (neg (sin (primal a)))), a) :: t)
+            | Tan_D a               -> push (((!aa / (sqr (cos (primal a)))), a) :: t)
+            | Sinh_D a              -> push (((!aa * (cosh (primal a))), a) :: t)
+            | Cosh_D a              -> push (((!aa * (sinh (primal a))), a) :: t)
+            | Tanh_D a              -> push (((!aa / (sqr (cosh (primal a)))), a) :: t)
+            | Asin_D a              -> push (((!aa / sqrt ((Float 1.) - sqr (primal a))), a) :: t)
+            | Acos_D a              -> push ((((neg !aa) / sqrt ((Float 1.) - sqr (primal a))), a) :: t)
+            | Atan_D a              -> push (((!aa / ((Float 1.) + sqr (primal a))), a) :: t)
+            | Asinh_D a             -> push (((!aa / sqrt ((sqr (primal a)) + (Float 1.))), a) :: t)
+            | Acosh_D a             -> push (((!aa / sqrt ((sqr (primal a)) - (Float 1.))), a) :: t)
+            | Atanh_D a             -> push (((!aa / ((Float 1.) - sqr (primal a))), a) :: t)
             | Item (a, i, j)        -> (adjoint a) := add_item !(adjoint a) i j !aa; push ((zero a, a) :: t)
             | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
             | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)
@@ -837,12 +835,12 @@ let reverse_push v x =
             | Dot_D_C (a, b)        -> push (((dot !aa (transpose b)), a) :: t)
             | Dot_C_D (a, b)        -> push (((dot (transpose a) !aa), b) :: t)
             | Trans_D a             -> push (((transpose !aa), a) :: t)
-            | L1Norm_D a            -> push (((!aa *. (signum (primal a))), a) :: t)
-            | L2Norm_D a            -> push (((!aa /. ap *. (primal a)), a) :: t)
-            | L2NormS_D a           -> push (((!aa *. (Float 2.) *. (primal a)), a) :: t)
-            | Sigmoid_D a           -> push (((!aa *. ap *. (Float 1. -. ap)), a) :: t)
-            | Relu_D a              -> push (((!aa *. ((signum (primal a) +. Float 1.) /. (Float 2.))), a) :: t)
-            | Inv_D a               -> let dpt = transpose ap in push ((((neg dpt) *. !aa *. dpt), a) :: t)
+            | L1Norm_D a            -> push (((!aa * (signum (primal a))), a) :: t)
+            | L2Norm_D a            -> push (((!aa / ap * (primal a)), a) :: t)
+            | L2NormS_D a           -> push (((!aa * (Float 2.) * (primal a)), a) :: t)
+            | Sigmoid_D a           -> push (((!aa * ap * (Float 1. - ap)), a) :: t)
+            | Relu_D a              -> push (((!aa * ((signum (primal a) + Float 1.) / (Float 2.))), a) :: t)
+            | Inv_D a               -> let dpt = transpose ap in push ((((neg dpt) * !aa * dpt), a) :: t)
             | _                     -> push t
             )
           else push t
