@@ -33,7 +33,11 @@ Owl requires OCaml 4.04.0. The installation is rather trivial. First, you need t
 git clone git@github.com:ryanrhymes/owl.git
 ```
 
-Then you need to install all the dependencies. Owl depends on gsl, lacaml, ctypes, plplot, and several other modules. Check the `_oasis` file in the `owl` folder to find out the complete list of required modules.
+Then you need to install all the dependencies. 
+
+```bash
+opam install ctypes ctypes-foreign dolog eigen gsl lacaml oasis plplot
+```
 
 Next, you can compile and install the module with the following command.
 
