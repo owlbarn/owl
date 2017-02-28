@@ -443,4 +443,6 @@ There are more functions to help you to iterate elements and slices in a ndarray
 
 ## How To Contribute
 
-Owl is under active development, and I really look forward to your comments and contributions. Besides setting up a complete development environment on your native system, the easiest way to contribute is to use the [Owl Docker Image](https://hub.docker.com/r/ryanrhymes/owl/). Just pull the image and dig into code saved in `/root/owl`, then have fun!
+Owl is under active development, and I really look forward to your comments and contributions. Besides setting up a complete development environment on your native system, the easiest way to contribute is to use the [Owl Docker Image](https://hub.docker.com/r/ryanrhymes/owl/). Moreover, we are also building a docker image for ARM-based platform so that you can run Owl on Raspberry PI and Cubietruck. We will release the image soon.
+
+Just pull the image and dig into code saved in `/root/owl`, then have fun!
