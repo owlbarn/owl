@@ -341,10 +341,6 @@ let fold_rows f a x = _fold_basic iter_rows f a x
 
 let fold_cols f a x = _fold_basic iter_cols f a x
 
-let _fold_basic iter_fun f a x =
-  let r = ref a in
-  iter_fun (fun y -> r := f !r y) x; !r
-
 let foldi f a x =
   let r = ref a in
   iteri (fun i j y -> r := f i j !r y) x;
