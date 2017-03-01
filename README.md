@@ -36,7 +36,7 @@ git clone git@github.com:ryanrhymes/owl.git
 Then you need to install all the dependencies. 
 
 ```bash
-opam install ctypes ctypes-foreign dolog eigen gsl lacaml oasis plplot
+opam install ctypes dolog eigen gsl lacaml oasis plplot
 ```
 
 Next, you can compile and install the module with the following command.
