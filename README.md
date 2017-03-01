@@ -444,6 +444,15 @@ Dense.Ndarray.map ~axis:[|Some 0; None; None|] (fun a -> a +. 1.) x;;
 
 There are more functions to help you to iterate elements and slices in a ndarray: `iteri`, `iter`, `mapi`, `map`, `filteri`, `filter`, `foldi`, `fold`, `iteri_slice`, `iter_slice`, `iter2i`, `iter2`. Please refer to the documentation for their details.
 
+## Run Owl on Different Platforms
+
+If you want to try Owl on ARM based platforms such as Raspberry Pi rather than x86 ones, the installation are similar. A [Docker image](https://hub.docker.com/r/matrixanger/owl/) is also provided on Docker Hub specifically for ARM platform. Just pull the image, start a container, then play with it in `utop`.
+
+```
+docker run --name owl -it matrixanger/owl:arm
+```
+
+Note that after starting a new container you need to run `eval \`opam config env\`` for once before starting `utop`.
 
 ## How To Contribute
 
