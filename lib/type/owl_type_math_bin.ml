@@ -17,45 +17,53 @@ type p32 = P32
 
 type p64 = P64
 
+type dns = Dns
 
-type ms = (float, float32_elt, c_layout) Array2.t
-
-type md = (float, float64_elt, c_layout) Array2.t
-
-type mc = (Complex.t, complex32_elt, c_layout) Array2.t
-
-type mz = (Complex.t, complex64_elt, c_layout) Array2.t
-
-type ns = (float, float32_elt, c_layout) Genarray.t
-
-type nd = (float, float64_elt, c_layout) Genarray.t
-
-type nc = (Complex.t, complex32_elt, c_layout) Genarray.t
-
-type nz = (Complex.t, complex64_elt, c_layout) Genarray.t
+type sps = Sps
 
 
-type ('a, 'b, 'c) t =
-  | F : float -> (num, flt, p64) t
-  | C : Complex.t -> (num, cpx, p64) t
-  | MS : ms -> (mat, flt, p32) t
-  | MD : md -> (mat, flt, p64) t
-  | MC : mc -> (mat, cpx, p32) t
-  | MZ : mz -> (mat, cpx, p64) t
-  | NS : ns -> (arr, flt, p32) t
-  | ND : nd -> (arr, flt, p64) t
-  | NC : nc -> (arr, cpx, p32) t
-  | NZ : nz -> (arr, cpx, p64) t
+type dms = (float, float32_elt, c_layout) Array2.t
 
-let print_info : type a b c . (a, b, c) t -> unit = function
+type dmd = (float, float64_elt, c_layout) Array2.t
+
+type dmc = (Complex.t, complex32_elt, c_layout) Array2.t
+
+type dmz = (Complex.t, complex64_elt, c_layout) Array2.t
+
+type das = (float, float32_elt, c_layout) Genarray.t
+
+type dad = (float, float64_elt, c_layout) Genarray.t
+
+type dac = (Complex.t, complex32_elt, c_layout) Genarray.t
+
+type daz = (Complex.t, complex64_elt, c_layout) Genarray.t
+
+
+type ('a, 'b, 'c, 'd) t =
+  | F : float -> (num, flt, p64, dns) t
+  | C : Complex.t -> (num, cpx, p64, dns) t
+  | DMS : dms -> (mat, flt, p32, dns) t
+  | DMD : dmd -> (mat, flt, p64, dns) t
+  | DMC : dmc -> (mat, cpx, p32, dns) t
+  | DMZ : dmz -> (mat, cpx, p64, dns) t
+  | DAS : das -> (arr, flt, p32, dns) t
+  | DAD : dad -> (arr, flt, p64, dns) t
+  | DAC : dac -> (arr, cpx, p32, dns) t
+  | DAZ : daz -> (arr, cpx, p64, dns) t
+
+
+
+(** some experiment code *)
+
+let print_info : type a b c d . (a, b, c, d) t -> unit = function
   | F x -> Printf.printf "%g\n" x
   | C x -> Printf.printf "re=%g; im=%g\n" x.re x.im
-  | MS x -> Owl_dense_matrix.pp_dsmat x
-  | MD x -> Owl_dense_matrix.pp_dsmat x
+  | DMS x -> Owl_dense_matrix.pp_dsmat x
+  | DMD x -> Owl_dense_matrix.pp_dsmat x
   | _ -> failwith "unknown"
 
-let im : type a b c . (a, b, c) t -> (a, flt, c) t = function
+let im : type a b c d . (a, b, c, d) t -> (a, flt, c, d) t = function
   | F x -> F 0.
   | C x -> F x.im
-  | MZ x -> MD (Owl_dense_real.ones 3 3)
+  | DMZ x -> DMD (Owl_dense_real.ones 3 3)
   | _ -> failwith "unknown"
