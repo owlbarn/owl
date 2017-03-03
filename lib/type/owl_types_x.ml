@@ -1,5 +1,10 @@
+(*
+ * OWL - an OCaml numerical library for scientific computing
+ * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
+ *)
 
 open Bigarray
+
 
 type flt = Flt
 
@@ -56,37 +61,36 @@ type saz = (Complex.t, complex64_elt) Owl_sparse_ndarray.t
 
 
 type ('a, 'b, 'c, 'd) t =
-  | F : float -> (num, flt, p64, dns) t
-  | C : Complex.t -> (num, cpx, p64, dns) t
-  | DMS : dms -> (mat, flt, p32, dns) t
-  | DMD : dmd -> (mat, flt, p64, dns) t
-  | DMC : dmc -> (mat, cpx, p32, dns) t
-  | DMZ : dmz -> (mat, cpx, p64, dns) t
-  | DAS : das -> (arr, flt, p32, dns) t
-  | DAD : dad -> (arr, flt, p64, dns) t
-  | DAC : dac -> (arr, cpx, p32, dns) t
-  | DAZ : daz -> (arr, cpx, p64, dns) t
-  | SMS : sms -> (mat, flt, p32, sps) t
-  | SMD : smd -> (mat, flt, p64, sps) t
-  | SMC : sms -> (mat, cpx, p32, sps) t
-  | SMZ : smd -> (mat, cpx, p64, sps) t
-  | SAS : sas -> (arr, flt, p32, sps) t
-  | SAD : sad -> (arr, flt, p64, sps) t
-  | SAC : sac -> (arr, cpx, p32, sps) t
-  | SAZ : saz -> (arr, cpx, p64, sps) t
+  | F : float -> (dns, num, flt, p64) t
+  | C : Complex.t -> (dns, num, cpx, p64) t
+  | DMS : dms -> (dns, mat, flt, p32) t
+  | DMD : dmd -> (dns, mat, flt, p64) t
+  | DMC : dmc -> (dns, mat, cpx, p32) t
+  | DMZ : dmz -> (dns, mat, cpx, p64) t
+  | DAS : das -> (dns, arr, flt, p32) t
+  | DAD : dad -> (dns, arr, flt, p64) t
+  | DAC : dac -> (dns, arr, cpx, p32) t
+  | DAZ : daz -> (dns, arr, cpx, p64) t
+  | SMS : sms -> (sps, mat, flt, p32) t
+  | SMD : smd -> (sps, mat, flt, p64) t
+  | SMC : sms -> (sps, mat, cpx, p32) t
+  | SMZ : smd -> (sps, mat, cpx, p64) t
+  | SAS : sas -> (sps, arr, flt, p32) t
+  | SAD : sad -> (sps, arr, flt, p64) t
+  | SAC : sac -> (sps, arr, cpx, p32) t
+  | SAZ : saz -> (sps, arr, cpx, p64) t
+
+type ('a, 'b) elt =
+  | Flt32 : (flt, p32) elt
+  | Flt64 : (flt, p64) elt
+  | Cpx32 : (cpx, p32) elt
+  | Cpx64 : (cpx, p64) elt
+
+type ('a, 'b) box =
+  | DM : (dns, mat) box
+  | DA : (dns, mat) box
+  | SM : (sps, arr) box
+  | SA : (sps, arr) box
 
 
-(** some experiment code *)
-
-let print_info : type a b c d . (a, b, c, d) t -> unit = function
-  | F x -> Printf.printf "%g\n" x
-  | C x -> Printf.printf "re=%g; im=%g\n" x.re x.im
-  | DMS x -> Owl_dense_matrix.pp_dsmat x
-  | DMD x -> Owl_dense_matrix.pp_dsmat x
-  | _ -> failwith "unknown"
-
-let im : type a b c d . (a, b, c, d) t -> (a, flt, c, d) t = function
-  | F x -> F 0.
-  | C x -> F x.im
-  | DMZ x -> DMD (Owl_dense_real.ones 3 3)
-  | _ -> failwith "unknown"
+(* ends here *)
