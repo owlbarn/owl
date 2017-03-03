@@ -39,7 +39,16 @@ module S = struct
 
   let nth_dim x = M.nth_dim (unpack_box x)
 
+  let numel x = M.numel (unpack_box x)
 
+  let nnz x = M.nnz (unpack_box x)
+
+  let density x = M.density (unpack_box x)
+
+  let size_in_bytes x = M.size_in_bytes (unpack_box x)
+
+  let same_shape x = M.same_shape (unpack_box x)
+  
 
   let get x i = M.get (unpack_box x) i |> pack_elt
 
