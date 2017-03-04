@@ -110,18 +110,57 @@ module DAS_C = struct
 end
 
 
+module F_DMS = struct
+
+  module M = Owl_ext_dense_matrix.S
+
+  let ( + ) a x = M.add_scalar x a
+  let ( - ) a x = M.(sub_scalar x a |> neg)
+  let ( * ) a x = M.mul_scalar x a
+  let ( / ) a x = M.(mul_scalar (reci x) a)
+
+end
+
+
+module DMS_F = struct
+
+  module M = Owl_ext_dense_matrix.S
+
+  let ( + ) x a = M.add_scalar x a
+  let ( - ) x a = M.sub_scalar x a
+  let ( * ) x a = M.mul_scalar x a
+  let ( / ) x a = M.div_scalar x a
+
+end
+
+
+module DMS_DMS = struct
+
+  module M = Owl_ext_dense_matrix.S
+
+  let ( + ) x y = M.add x y
+  let ( - ) x y = M.sub x y
+  let ( * ) x y = M.mul x y
+  let ( / ) x y = M.div x y
+
+end
+
+
 (* overload binary operators *)
 
 let ( + ) x y = match x, y with
-  | F x, F y   -> F_F.(x + y)
-  | F x, C y   -> F_C.(x + y)
-  | C x, F y   -> C_F.(x + y)
-  | C x, C y   -> C_C.(x + y)
-  | F _, DAS _ -> F_DAS.(x + y)
-  | DAS _, F _ -> DAS_F.(x + y)
-  | C _, DAS _ -> C_DAS.(x + y)
-  | DAS _, C _ -> DAS_C.(x + y)
+  | F x, F y     -> F_F.(x + y)
+  | F x, C y     -> F_C.(x + y)
+  | C x, F y     -> C_F.(x + y)
+  | C x, C y     -> C_C.(x + y)
+  | F _, DAS _   -> F_DAS.(x + y)
+  | DAS _, F _   -> DAS_F.(x + y)
+  | C _, DAS _   -> C_DAS.(x + y)
+  | DAS _, C _   -> DAS_C.(x + y)
   | DAS _, DAS _ -> DAS_DAS.(x + y)
+  | F _, DMS _   -> F_DMS.(x + y)
+  | DMS _, F _   -> DMS_F.(x + y)
+  | DMS _, DMS _ -> DMS_DMS.(x + y)
   | _ -> failwith "( + ) : unknown type"
 
 

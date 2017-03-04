@@ -114,6 +114,11 @@ let repeat ?axis x reps = M.repeat ?axis (unpack_box x) reps |> pack_box
 
 
 
+let neg x = M.neg (unpack_box x) |> pack_box
+
+let reci x = M.reci (unpack_box x) |> pack_box
+
+
 
 let add x y = M.add (unpack_box x) (unpack_box y) |> pack_box
 
