@@ -78,7 +78,12 @@ Library owl
                     type/Owl_ext_dense_ndarray_s,
                     type/Owl_ext_dense_ndarray_d,
                     type/Owl_ext_dense_ndarray_c,
-                    type/Owl_ext_dense_ndarray_z
+                    type/Owl_ext_dense_ndarray_z,
+                    type/Owl_ext_dense_matrix,
+                    type/Owl_ext_dense_matrix_s,
+                    type/Owl_ext_dense_matrix_d,
+                    type/Owl_ext_dense_matrix_c,
+                    type/Owl_ext_dense_matrix_z
   CSources:         owl_macros.h,
                     ffi_gsl_generated_stub.c,
                     owl_dense_common_c.c,
