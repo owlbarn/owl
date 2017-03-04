@@ -72,7 +72,9 @@ Library owl
                     topic/Owl_topic_utils,
                     ### Experimental ###
                     type/Owl_types_x,
-                    type/Owl_dense_ndarray_x
+                    type/Owl_dense_ndarray_x,
+                    type/Owl_uniop,
+                    type/Owl_binop
   CSources:         owl_macros.h,
                     ffi_gsl_generated_stub.c,
                     owl_dense_common_c.c,
