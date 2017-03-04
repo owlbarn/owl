@@ -72,9 +72,13 @@ Library owl
                     topic/Owl_topic_utils,
                     ### Experimental ###
                     type/Owl_ext_types,
-                    type/Owl_ext_dense_ndarray,
                     type/Owl_ext_uniop,
-                    type/Owl_ext_binop
+                    type/Owl_ext_binop,
+                    type/Owl_ext_dense_ndarray,
+                    type/Owl_ext_dense_ndarray_s,
+                    type/Owl_ext_dense_ndarray_d,
+                    type/Owl_ext_dense_ndarray_c,
+                    type/Owl_ext_dense_ndarray_z
   CSources:         owl_macros.h,
                     ffi_gsl_generated_stub.c,
                     owl_dense_common_c.c,
