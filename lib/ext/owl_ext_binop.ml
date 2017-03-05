@@ -54,7 +54,7 @@ module C_C = struct
 
 end
 
-(* real numbers *)
+(* float numbers, no lift *)
 
 module F_DAS = struct
 
@@ -199,7 +199,7 @@ module DMD_DMD = struct
 
 end
 
-(* complex numbers *)
+(* complex numbers, no lift *)
 
 module C_DAC = struct
 
@@ -341,6 +341,322 @@ module DMZ_DMZ = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+
+end
+
+
+(* float/complex, lift precision *)
+
+module DAS_DAD = struct
+
+  module M = Owl_ext_dense_ndarray.D
+  let lift = Owl_ext_lifts.DAS_DAD.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DAD_DAS = struct
+
+  module M = Owl_ext_dense_ndarray.D
+  let lift = Owl_ext_lifts.DAS_DAD.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module DAC_DAZ = struct
+
+  module M = Owl_ext_dense_ndarray.Z
+  let lift = Owl_ext_lifts.DAC_DAZ.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DAZ_DAC = struct
+
+  module M = Owl_ext_dense_ndarray.Z
+  let lift = Owl_ext_lifts.DAC_DAZ.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module DMS_DMD = struct
+
+  module M = Owl_ext_dense_matrix.D
+  let lift = Owl_ext_lifts.DMS_DMD.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DMD_DMS = struct
+
+  module M = Owl_ext_dense_matrix.D
+  let lift = Owl_ext_lifts.DMS_DMD.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module DMC_DMZ = struct
+
+  module M = Owl_ext_dense_matrix.Z
+  let lift = Owl_ext_lifts.DMC_DMZ.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DMZ_DMC = struct
+
+  module M = Owl_ext_dense_matrix.Z
+  let lift = Owl_ext_lifts.DMC_DMZ.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+(* float -> complex, lift number type *)
+
+module F_DAC = struct
+
+  module M = Owl_ext_dense_ndarray.C
+  let lift = Owl_ext_lifts.F_C.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DAC_F = struct
+
+  module M = Owl_ext_dense_ndarray.C
+  let lift = Owl_ext_lifts.F_C.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module F_DAZ = struct
+
+  module M = Owl_ext_dense_ndarray.Z
+  let lift = Owl_ext_lifts.F_C.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DAZ_F = struct
+
+  module M = Owl_ext_dense_ndarray.Z
+  let lift = Owl_ext_lifts.F_C.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module DAS_DAC = struct
+
+  module M = Owl_ext_dense_ndarray.C
+  let lift = Owl_ext_lifts.DAS_DAC.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DAC_DAS = struct
+
+  module M = Owl_ext_dense_ndarray.C
+  let lift = Owl_ext_lifts.DAS_DAC.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module DAD_DAZ = struct
+
+  module M = Owl_ext_dense_ndarray.Z
+  let lift = Owl_ext_lifts.DAD_DAZ.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DAZ_DAD = struct
+
+  module M = Owl_ext_dense_ndarray.Z
+  let lift = Owl_ext_lifts.DAD_DAZ.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module F_DMC = struct
+
+  module M = Owl_ext_dense_matrix.C
+  let lift = Owl_ext_lifts.F_C.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DMC_F = struct
+
+  module M = Owl_ext_dense_matrix.C
+  let lift = Owl_ext_lifts.F_C.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module F_DMZ = struct
+
+  module M = Owl_ext_dense_matrix.Z
+  let lift = Owl_ext_lifts.F_C.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DMZ_F = struct
+
+  module M = Owl_ext_dense_matrix.Z
+  let lift = Owl_ext_lifts.F_C.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module DMS_DMC = struct
+
+  module M = Owl_ext_dense_matrix.C
+  let lift = Owl_ext_lifts.DMS_DMC.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DMC_DMS = struct
+
+  module M = Owl_ext_dense_matrix.C
+  let lift = Owl_ext_lifts.DMS_DMC.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module DMD_DMZ = struct
+
+  module M = Owl_ext_dense_matrix.Z
+  let lift = Owl_ext_lifts.DMD_DMZ.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DMZ_DMD = struct
+
+  module M = Owl_ext_dense_matrix.Z
+  let lift = Owl_ext_lifts.DMD_DMZ.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
 
 end
 

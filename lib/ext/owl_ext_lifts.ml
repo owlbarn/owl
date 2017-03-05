@@ -91,7 +91,7 @@ end
 
 module F_C = struct
 
-  let lift src = Complex.({re = src; im = 0.})
+  let lift src = Complex.({re = unpack_flt src; im = 0.}) |> pack_cpx
 
 end
 
@@ -108,7 +108,7 @@ module DAS_DAC = struct
   let lift src =
     let src = unpack_src src in
     let dst = M.(empty dst_typ (shape src)) in
-    M.iteri (fun i a -> M.set dst i (F_C.lift a)) src;
+    M.iteri (fun i a -> M.set dst i Complex.({re=a; im=0.})) src;
     pack_dst dst
 
 end
@@ -126,7 +126,7 @@ module DAD_DAZ = struct
   let lift src =
     let src = unpack_src src in
     let dst = M.(empty dst_typ (shape src)) in
-    M.iteri (fun i a -> M.set dst i (F_C.lift a)) src;
+    M.iteri (fun i a -> M.set dst i Complex.({re=a; im=0.})) src;
     pack_dst dst
 
 end
@@ -145,7 +145,7 @@ module DMS_DMC = struct
     let src = unpack_src src in
     let m, n = M.shape src in
     let dst = M.(empty dst_typ m n) in
-    M.iteri (fun i j a -> M.set dst i j (F_C.lift a)) src;
+    M.iteri (fun i j a -> M.set dst i j Complex.({re=a; im=0.})) src;
     pack_dst dst
 
 end
@@ -164,7 +164,7 @@ module DMD_DMZ = struct
     let src = unpack_src src in
     let m, n = M.shape src in
     let dst = M.(empty dst_typ m n) in
-    M.iteri (fun i j a -> M.set dst i j (F_C.lift a)) src;
+    M.iteri (fun i j a -> M.set dst i j Complex.({re=a; im=0.})) src;
     pack_dst dst
 
 end
