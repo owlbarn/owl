@@ -40,6 +40,7 @@ Library owl
                     Owl_dense_common,
                     Owl_dense_ndarray,
                     Owl_dense_matrix,
+                    Owl_dense_vector,
                     Owl_dense_real,
                     Owl_dense_complex,
                     Owl_dense_ndview,
