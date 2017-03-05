@@ -70,7 +70,7 @@ end
 
 module DMC_DMZ = struct
 
-module M = Owl_dense_matrix
+  module M = Owl_dense_matrix
 
   let src_typ = Complex32
   let dst_typ = Complex64

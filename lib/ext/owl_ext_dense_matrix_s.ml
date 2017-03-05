@@ -361,11 +361,11 @@ let div x y = M.div (unpack_box x) (unpack_box y) |> pack_box
 
 let add_scalar x a = M.add_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-let sub_scalar x a = M.add_scalar (unpack_box x) (unpack_elt a) |> pack_box
+let sub_scalar x a = M.sub_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-let mul_scalar x a = M.add_scalar (unpack_box x) (unpack_elt a) |> pack_box
+let mul_scalar x a = M.mul_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-let div_scalar x a = M.add_scalar (unpack_box x) (unpack_elt a) |> pack_box
+let div_scalar x a = M.div_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
 let pow x y = M.pow (unpack_box x) (unpack_box y) |> pack_box
 
