@@ -114,5 +114,37 @@ type ext_typ =
   | SAZ of saz
 
 
+(* pack and unpack functions *)
+
+let pack_flt x = F x
+let unpack_flt = function F x -> x | _ -> failwith "pack_flt: only apply to float."
+
+let pack_cpx x = C x
+let unpack_cpx = function C x -> x | _ -> failwith "pack_cpx: only apply to complex."
+
+let pack_das x = DAS x
+let unpack_das = function DAS x -> x | _ -> failwith "unpack_das: unknown type."
+
+let pack_dad x = DAD x
+let unpack_dad = function DAD x -> x | _ -> failwith "unpack_dad: unknown type."
+
+let pack_dac x = DAC x
+let unpack_dac = function DAC x -> x | _ -> failwith "unpack_dac: unknown type."
+
+let pack_daz x = DAZ x
+let unpack_daz = function DAZ x -> x | _ -> failwith "unpack_daz: unknown type."
+
+let pack_dms x = DMS x
+let unpack_dms = function DMS x -> x | _ -> failwith "unpack_dms: unknown type."
+
+let pack_dmd x = DMD x
+let unpack_dmd = function DMD x -> x | _ -> failwith "unpack_dmd: unknown type."
+
+let pack_dmc x = DMC x
+let unpack_dmc = function DMC x -> x | _ -> failwith "unpack_dmc: unknown type."
+
+let pack_dmz x = DMZ x
+let unpack_dmz = function DMZ x -> x | _ -> failwith "unpack_dmz: unknown type."
+
 
 (* ends here *)
