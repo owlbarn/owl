@@ -765,6 +765,60 @@ module DMZ_DMD = struct
 end
 
 
+(* float -> complex, lift both precision and number type *)
+
+module DAS_DAZ = struct
+
+  module M = Owl_ext_dense_ndarray.Z
+  let lift = Owl_ext_lifts.DAS_DAZ.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DAZ_DAS = struct
+
+  module M = Owl_ext_dense_ndarray.Z
+  let lift = Owl_ext_lifts.DAS_DAZ.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module DMS_DMZ = struct
+
+  module M = Owl_ext_dense_matrix.Z
+  let lift = Owl_ext_lifts.DMS_DMZ.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DMZ_DMS = struct
+
+  module M = Owl_ext_dense_matrix.Z
+  let lift = Owl_ext_lifts.DMS_DMZ.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
 (* overload binary operators *)
 
 let ( + ) x y = match x, y with
