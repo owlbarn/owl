@@ -505,6 +505,58 @@ module DAZ_F = struct
 end
 
 
+module C_DAS = struct
+
+  module M = Owl_ext_dense_ndarray.C
+  let lift = Owl_ext_lifts.DAS_DAC.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DAS_C = struct
+
+  module M = Owl_ext_dense_ndarray.C
+  let lift = Owl_ext_lifts.DAS_DAC.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module C_DAD = struct
+
+  module M = Owl_ext_dense_ndarray.Z
+  let lift = Owl_ext_lifts.DAD_DAZ.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DAD_C = struct
+
+  module M = Owl_ext_dense_ndarray.Z
+  let lift = Owl_ext_lifts.DAD_DAZ.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
 module DAS_DAC = struct
 
   module M = Owl_ext_dense_ndarray.C
@@ -609,6 +661,58 @@ module DMZ_F = struct
 end
 
 
+module C_DMS = struct
+
+  module M = Owl_ext_dense_matrix.C
+  let lift = Owl_ext_lifts.DMS_DMC.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DMS_C = struct
+
+  module M = Owl_ext_dense_matrix.C
+  let lift = Owl_ext_lifts.DMS_DMC.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
+module C_DMD = struct
+
+  module M = Owl_ext_dense_matrix.Z
+  let lift = Owl_ext_lifts.DMD_DMZ.lift
+
+  let ( + ) x y = M.add (lift x) y
+  let ( - ) x y = M.sub (lift x) y
+  let ( * ) x y = M.mul (lift x) y
+  let ( / ) x y = M.div (lift x) y
+
+end
+
+
+module DMD_C = struct
+
+  module M = Owl_ext_dense_matrix.Z
+  let lift = Owl_ext_lifts.DMD_DMZ.lift
+
+  let ( + ) x y = M.add x (lift y)
+  let ( - ) x y = M.sub x (lift y)
+  let ( * ) x y = M.mul x (lift y)
+  let ( / ) x y = M.div x (lift y)
+
+end
+
+
 module DMS_DMC = struct
 
   module M = Owl_ext_dense_matrix.C
@@ -693,33 +797,6 @@ let ( + ) x y = match x, y with
   | DMZ _, C _   -> DMZ_C.(x + y)
   | DMZ _, DMZ _ -> DMZ_DMZ.(x + y)
   | _ -> failwith "( + ) : unknown type"
-
-
-
-(* FIXME : lift type *)
-module C_DAS = struct
-
-  module M = Owl_ext_dense_ndarray.S
-
-  let ( + ) a x = M.add_scalar x a
-  let ( - ) a x = M.(sub_scalar x a |> neg)
-  let ( * ) a x = M.mul_scalar x a
-  let ( / ) a x = M.(mul_scalar (reci x) a)
-
-end
-
-
-(* FIXME : lift type *)
-module DAS_C = struct
-
-  module M = Owl_ext_dense_ndarray.S
-
-  let ( + ) a x = M.add_scalar x a
-  let ( - ) a x = M.(sub_scalar x a |> neg)
-  let ( * ) a x = M.mul_scalar x a
-  let ( / ) a x = M.(mul_scalar (reci x) a)
-
-end
 
 
 
