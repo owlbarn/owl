@@ -6,6 +6,14 @@
 open Owl_ext_types
 
 
+(* error handling *)
+
+let error_binop op x y =
+  let s0 = type_info x in
+  let s1 = type_info y in
+  failwith (op ^ " : " ^ s0 ^ ", " ^ s1)
+
+
 (* trivial cases *)
 
 module F_F = struct
@@ -887,7 +895,7 @@ let ( + ) x y = match x, y with
   | DAZ _, DAS _ -> DAZ_DAS.(x + y)
   | DMS _, DMZ _ -> DMS_DMZ.(x + y)
   | DMZ _, DMS _ -> DMZ_DMS.(x + y)
-  | _ -> failwith "( + ) : unknown type"
+  | _ -> error_binop "( + )" x y
 
 
 let ( - ) x y = match x, y with
@@ -955,7 +963,7 @@ let ( - ) x y = match x, y with
   | DAZ _, DAS _ -> DAZ_DAS.(x - y)
   | DMS _, DMZ _ -> DMS_DMZ.(x - y)
   | DMZ _, DMS _ -> DMZ_DMS.(x - y)
-  | _ -> failwith "( - ) : unknown type"
+  | _ -> error_binop "( - )" x y
 
 
 let ( * ) x y = match x, y with
@@ -1023,7 +1031,7 @@ let ( * ) x y = match x, y with
   | DAZ _, DAS _ -> DAZ_DAS.(x * y)
   | DMS _, DMZ _ -> DMS_DMZ.(x * y)
   | DMZ _, DMS _ -> DMZ_DMS.(x * y)
-  | _ -> failwith "( * ) : unknown type"
+  | _ -> error_binop "( * )" x y
 
 
 let ( / ) x y = match x, y with
@@ -1091,7 +1099,7 @@ let ( / ) x y = match x, y with
   | DAZ _, DAS _ -> DAZ_DAS.(x / y)
   | DMS _, DMZ _ -> DMS_DMZ.(x / y)
   | DMZ _, DMS _ -> DMZ_DMS.(x / y)
-  | _ -> failwith "( / ) : unknown type"
+  | _ -> error_binop "( / )" x y
 
 
 (* ends here *)

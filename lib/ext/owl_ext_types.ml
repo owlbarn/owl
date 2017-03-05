@@ -114,13 +114,36 @@ type ext_typ =
   | SAZ of saz
 
 
+(* constructor information *)
+
+let type_info = function
+  | F _   -> "(scalar, float)"
+  | C _   -> "(scalar, complex)"
+  | DMS _ -> "(dense, matrix, float, 32-bit)"
+  | DMD _ -> "(dense, matrix, float, 64-bit)"
+  | DMC _ -> "(dense, matrix, complex, 32-bit)"
+  | DMZ _ -> "(dense, matrix, complex, 64-bit)"
+  | DAS _ -> "(dense, ndarray, float, 32-bit)"
+  | DAD _ -> "(dense, ndarray, float, 64-bit)"
+  | DAC _ -> "(dense, ndarray, complex, 32-bit)"
+  | DAZ _ -> "(dense, ndarray, complex, 64-bit)"
+  | SMS _ -> "(sparse, matrix, float, 32-bit)"
+  | SMD _ -> "(sparse, matrix, float, 64-bit)"
+  | SMC _ -> "(sparse, matrix, complex, 32-bit)"
+  | SMZ _ -> "(sparse, matrix, complex, 64-bit)"
+  | SAS _ -> "(sparse, ndarray, float, 32-bit)"
+  | SAD _ -> "(sparse, ndarray, float, 64-bit)"
+  | SAC _ -> "(sparse, ndarray, complex, 32-bit)"
+  | SAZ _ -> "(sparse, ndarray, complex, 64-bit)"
+
+
 (* pack and unpack functions *)
 
 let pack_flt x = F x
-let unpack_flt = function F x -> x | _ -> failwith "pack_flt: only apply to float."
+let unpack_flt = function F x -> x | _ -> failwith "unpack_flt: unknown type."
 
 let pack_cpx x = C x
-let unpack_cpx = function C x -> x | _ -> failwith "pack_cpx: only apply to complex."
+let unpack_cpx = function C x -> x | _ -> failwith "unpack_cpx: unknown type."
 
 let pack_das x = DAS x
 let unpack_das = function DAS x -> x | _ -> failwith "unpack_das: unknown type."
