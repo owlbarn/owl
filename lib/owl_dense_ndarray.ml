@@ -1002,12 +1002,14 @@ let is_zero x =
   _op (numel x) y = 1
 
 let is_positive x =
-  let y = ndarray_to_c_mat x in
-  (_gsl_ispos (kind x)) y
+  let y = flatten x |> array1_of_genarray in
+  let _op = _owl_is_positive (kind x) in
+  _op (numel x) y = 1
 
 let is_negative x =
-  let y = ndarray_to_c_mat x in
-  (_gsl_isneg (kind x)) y
+  let y = flatten x |> array1_of_genarray in
+  let _op = _owl_is_negative (kind x) in
+  _op (numel x) y = 1
 
 let is_nonnegative x =
   let y = flatten x |> array1_of_genarray in
