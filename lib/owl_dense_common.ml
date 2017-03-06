@@ -787,6 +787,30 @@ let _owl_equal_or_greater : type a b. (a, b) kind -> (a, b) owl_vec_op00 = funct
   | Complex64 -> owl_complex_double_equal_or_greater
   | _         -> failwith "_owl_equal_or_greater: unsupported operation"
 
+external owl_real_float_is_zero : int -> ('a, 'b) owl_vec -> int = "real_float_is_zero"
+external owl_real_double_is_zero : int -> ('a, 'b) owl_vec -> int = "real_double_is_zero"
+external owl_complex_float_is_zero : int -> ('a, 'b) owl_vec -> int = "complex_float_is_zero"
+external owl_complex_double_is_zero : int -> ('a, 'b) owl_vec -> int = "complex_double_is_zero"
+
+let _owl_is_zero : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
+  | Float32   -> owl_real_float_is_zero
+  | Float64   -> owl_real_double_is_zero
+  | Complex32 -> owl_complex_float_is_zero
+  | Complex64 -> owl_complex_double_is_zero
+  | _         -> failwith "_owl_is_zero: unsupported operation"
+
+external owl_real_float_is_nonnegative : int -> ('a, 'b) owl_vec -> int = "real_float_is_nonnegative"
+external owl_real_double_is_nonnegative : int -> ('a, 'b) owl_vec -> int = "real_double_is_nonnegative"
+external owl_complex_float_is_nonnegative : int -> ('a, 'b) owl_vec -> int = "complex_float_is_nonnegative"
+external owl_complex_double_is_nonnegative : int -> ('a, 'b) owl_vec -> int = "complex_double_is_nonnegative"
+
+let _owl_is_nonnegative : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
+  | Float32   -> owl_real_float_is_nonnegative
+  | Float64   -> owl_real_double_is_nonnegative
+  | Complex32 -> owl_complex_float_is_nonnegative
+  | Complex64 -> owl_complex_double_is_nonnegative
+  | _         -> failwith "_owl_is_nonnegative: unsupported operation"
+
 external owl_real_float_is_nonpositive : int -> ('a, 'b) owl_vec -> int = "real_float_is_nonpositive"
 external owl_real_double_is_nonpositive : int -> ('a, 'b) owl_vec -> int = "real_double_is_nonpositive"
 external owl_complex_float_is_nonpositive : int -> ('a, 'b) owl_vec -> int = "complex_float_is_nonpositive"

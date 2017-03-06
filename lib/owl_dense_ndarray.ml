@@ -997,8 +997,9 @@ let copy_slice i src dst =
 (* some comparison functions *)
 
 let is_zero x =
-  let y = ndarray_to_c_mat x in
-  (_gsl_isnull (kind x)) y
+  let y = flatten x |> array1_of_genarray in
+  let _op = _owl_is_zero (kind x) in
+  _op (numel x) y = 1
 
 let is_positive x =
   let y = ndarray_to_c_mat x in
@@ -1009,8 +1010,9 @@ let is_negative x =
   (_gsl_isneg (kind x)) y
 
 let is_nonnegative x =
-  let y = ndarray_to_c_mat x in
-  (_gsl_isnonneg (kind x)) y
+  let y = flatten x |> array1_of_genarray in
+  let _op = _owl_is_nonnegative (kind x) in
+  _op (numel x) y = 1
 
 let is_nonpositive x =
   let y = flatten x |> array1_of_genarray in
