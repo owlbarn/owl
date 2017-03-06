@@ -87,21 +87,7 @@ let sort ?cmp ?(inc=true) x =
 
 (* TODO: add axis paramater *)
 
-let min' : type a b . (a, b) t -> a = fun x ->
-  let k = kind x in
-  match k with
-  | Complex32 -> (_min k) (ndarray_to_fortran_vec x)
-  | Complex64 -> (_min k) (ndarray_to_fortran_vec x)
-  | _ -> (_gsl_min k) (ndarray_to_c_mat x)
-
 let min x = (_min (kind x)) (ndarray_to_fortran_vec x)
-
-let max' : type a b . (a, b) t -> a = fun x ->
-  let k = kind x in
-  match k with
-  | Complex32 -> (_max k) (ndarray_to_fortran_vec x)
-  | Complex64 -> (_max k) (ndarray_to_fortran_vec x)
-  | _ -> (_gsl_max k) (ndarray_to_c_mat x)
 
 let max x = (_max (kind x)) (ndarray_to_fortran_vec x)
 
