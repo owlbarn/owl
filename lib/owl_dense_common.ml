@@ -623,64 +623,6 @@ let _gsl_to_array : type a b. (a, b) kind -> (a, b) gsl_mat_op12 = function
   | Complex64 -> Gsl.Matrix_complex.to_array
   | _         -> failwith "_gsl_to_array: unsupported operation"
 
-let _gsl_isnull : type a b. (a, b) kind -> (a, b) gsl_mat_op00 = function
-  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_isnull
-  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_isnull
-  | Complex32 -> Owl_foreign.Dense_complex_float.ml_gsl_matrix_isnull
-  | Complex64 -> Owl_foreign.Dense_complex_double.ml_gsl_matrix_isnull
-  | _         -> failwith "_gsl_isnull: unsupported operation"
-
-let _gsl_ispos : type a b. (a, b) kind -> (a, b) gsl_mat_op00 = function
-  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_ispos
-  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_ispos
-  | Complex32 -> Owl_foreign.Dense_complex_float.ml_gsl_matrix_ispos
-  | Complex64 -> Owl_foreign.Dense_complex_double.ml_gsl_matrix_ispos
-  | _         -> failwith "_gsl_ispos: unsupported operation"
-
-let _gsl_isneg : type a b. (a, b) kind -> (a, b) gsl_mat_op00 = function
-  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_isneg
-  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_isneg
-  | Complex32 -> Owl_foreign.Dense_complex_float.ml_gsl_matrix_isneg
-  | Complex64 -> Owl_foreign.Dense_complex_double.ml_gsl_matrix_isneg
-  | _         -> failwith "_gsl_isneg: unsupported operation"
-
-let _gsl_isnonneg : type a b. (a, b) kind -> (a, b) gsl_mat_op00 = function
-  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_isnonneg
-  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_isnonneg
-  | Complex32 -> Owl_foreign.Dense_complex_float.ml_gsl_matrix_isnonneg
-  | Complex64 -> Owl_foreign.Dense_complex_double.ml_gsl_matrix_isnonneg
-  | _         -> failwith "_gsl_isnonneg: unsupported operation"
-
-let _gsl_min : type a b. (a, b) kind -> (a, b) gsl_mat_op03 = function
-  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_min
-  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_min
-  | _         -> failwith "_gsl_min: unsupported operation"
-
-let _gsl_max : type a b. (a, b) kind -> (a, b) gsl_mat_op03 = function
-  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_max
-  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_max
-  | _         -> failwith "_gsl_max: unsupported operation"
-
-let _gsl_minmax : type a b. (a, b) kind -> (a, b) gsl_mat_op05 = function
-  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_minmax
-  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_minmax
-  | _         -> failwith "_gsl_minmax: unsupported operation"
-
-let _gsl_min_index : type a b. (a, b) kind -> (a, b) gsl_mat_op04 = function
-  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_min_index
-  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_min_index
-  | _         -> failwith "_gsl_min_index: unsupported operation"
-
-let _gsl_max_index : type a b. (a, b) kind -> (a, b) gsl_mat_op04 = function
-  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_max_index
-  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_max_index
-  | _         -> failwith "_gsl_max_index: unsupported operation"
-
-let _gsl_minmax_index : type a b. (a, b) kind -> (a, b) gsl_mat_op06 = function
-  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_matrix_minmax_index
-  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_matrix_minmax_index
-  | _         -> failwith "_gsl_minmax_index: unsupported operation"
-
 let _gsl_dot : type a b. (a, b) kind -> (a, b) gsl_mat_op08 = function
   | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_dot
   | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_dot
