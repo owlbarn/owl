@@ -341,5 +341,29 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define MAPFN(X) (sqr_double (X.r * X.r + X.i * X.i))
 #include "owl_dense_common_vec_cmp.c"
 
+// min_i
+
+#define FUN6 real_float_min_i
+#define NUMBER float
+#define CHECKFN(X,Y) (X > Y)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN6 real_double_min_i
+#define NUMBER double
+#define CHECKFN(X,Y) (X > Y)
+#include "owl_dense_common_vec_cmp.c"
+
+// max_i
+
+#define FUN6 real_float_max_i
+#define NUMBER float
+#define CHECKFN(X,Y) (X < Y)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN6 real_double_max_i
+#define NUMBER double
+#define CHECKFN(X,Y) (X < Y)
+#include "owl_dense_common_vec_cmp.c"
+
 
 //////////////////// function templates ends ////////////////////

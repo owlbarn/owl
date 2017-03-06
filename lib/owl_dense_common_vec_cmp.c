@@ -214,7 +214,7 @@ CAMLprim value FUN4(value vN, value vX, value vY)
 #endif /* FUN4 */
 
 
-// function to fold all the elements in x
+// function to accumulate all the elements in x
 #ifdef FUN5
 
 CAMLprim value FUN5(value vN, value vX)
@@ -249,6 +249,45 @@ CAMLprim value FUN5(value vN, value vX)
 #endif /* FUN5 */
 
 
+// function to scan all the elements in x then return index
+#ifdef FUN6
+
+CAMLprim value FUN6(value vN, value vX)
+{
+  CAMLparam2(vN, vX);
+  int N = Long_val(vN);
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  NUMBER *start_x, *stop_x;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  start_x = X_data;
+  stop_x = start_x + N;
+
+  NUMBER x = *start_x;
+  int r = 0;
+
+  for(int i = 0; i < N; i++) {
+    if (CHECKFN(x,*start_x)) {
+      x = *start_x;
+      r = i;
+    };
+    start_x += 1;
+  };
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_int(r));
+}
+
+#endif /* FUN6 */
+
+
+
 #undef NUMBER
 #undef STOPFN
 #undef CHECKFN
@@ -260,3 +299,4 @@ CAMLprim value FUN5(value vN, value vX)
 #undef FUN3
 #undef FUN4
 #undef FUN5
+#undef FUN6

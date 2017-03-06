@@ -484,13 +484,19 @@ let min x = Owl_dense_ndarray.min (to_ndarray x)
 
 let max x = Owl_dense_ndarray.max (to_ndarray x)
 
-let min_i x = (_gsl_min_index (Array2.kind x)) x
+let min_i x =
+  let a, r = Owl_dense_ndarray.min_i (to_ndarray x) in
+  a, r.(0), r.(1)
 
-let max_i x = (_gsl_max_index (Array2.kind x)) x
+let max_i x =
+  let a, p = Owl_dense_ndarray.max_i (to_ndarray x) in
+  a, p.(0), p.(1)
 
-let minmax x = (_gsl_minmax (Array2.kind x)) x
+let minmax x = Owl_dense_ndarray.minmax (to_ndarray x)
 
-let minmax_i x = (_gsl_minmax_index (Array2.kind x)) x
+let minmax_i x =
+  let (a, p), (b, q) = Owl_dense_ndarray.minmax_i (to_ndarray x) in
+  (a, p.(0), p.(1)), (b, q.(0), q.(1))
 
 let min_cols x =
   mapi_cols (fun j v ->
