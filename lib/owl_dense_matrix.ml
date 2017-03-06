@@ -421,20 +421,20 @@ let average_rows x =
   dot y x
 
 let is_zero x =
-  let _op = _gsl_isnull (Array2.kind x) in
-  _op x
+  let y = to_ndarray x in
+  Owl_dense_ndarray.is_zero y
 
 let is_positive x =
-  let _op = _gsl_ispos (Array2.kind x) in
-  _op x
+  let y = to_ndarray x in
+  Owl_dense_ndarray.is_positive y
 
 let is_negative x =
-  let _op = _gsl_isneg (Array2.kind x) in
-  _op x
+  let y = to_ndarray x in
+  Owl_dense_ndarray.is_negative y
 
 let is_nonnegative x =
-  let _op = _gsl_isnonneg (Array2.kind x) in
-  _op x
+  let y = to_ndarray x in
+  Owl_dense_ndarray.is_nonnegative y
 
 let is_nonpositive x =
   let y = to_ndarray x in
@@ -480,19 +480,9 @@ let equal_or_smaller x1 x2 =
   let _op = (_owl_equal_or_smaller (Array2.kind x1)) in
   (_op) (numel x1) y1 y2 = 1
 
-let min : type a b . (a, b) t -> a = fun x ->
-  let k = Array2.kind x in
-  match k with
-  | Complex32 -> Owl_dense_ndarray.min (to_ndarray x)
-  | Complex64 -> Owl_dense_ndarray.min (to_ndarray x)
-  | _ -> (_gsl_min k) x
+let min x = Owl_dense_ndarray.min (to_ndarray x)
 
-let max : type a b . (a, b) t -> a = fun x ->
-  let k = Array2.kind x in
-  match k with
-  | Complex32 -> Owl_dense_ndarray.max (to_ndarray x)
-  | Complex64 -> Owl_dense_ndarray.max (to_ndarray x)
-  | _ -> (_gsl_max k) x
+let max x = Owl_dense_ndarray.max (to_ndarray x)
 
 let min_i x = (_gsl_min_index (Array2.kind x)) x
 
