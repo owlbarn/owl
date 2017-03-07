@@ -64,8 +64,6 @@ Library owl
                     Owl_plot,
                     Owl_pretty,
                     Owl_toplevel,
-                    Ffi_gsl_bindings,
-                    Ffi_gsl_generated,
                     ### Topic models ###
                     topic/Owl_topic_lda,
                     topic/Owl_topic_lsa,
@@ -87,7 +85,6 @@ Library owl
                     ext/Owl_ext_dense_matrix_c,
                     ext/Owl_ext_dense_matrix_z
   CSources:         owl_macros.h,
-                    ffi_gsl_generated_stub.c,
                     owl_dense_common_c.c,
                     owl_dense_common_vec_cmp.c
   CCOpt:            -I$pkg_ctypes
