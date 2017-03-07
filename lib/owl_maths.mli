@@ -590,9 +590,4 @@ val ln2 : float
 val lnpi : float
 
 
-(* TODO: Waveval function is missing; FFT function is missing *)
-
-
-
-
 (* ends here *)
