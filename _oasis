@@ -64,7 +64,6 @@ Library owl
                     Owl_plot,
                     Owl_pretty,
                     Owl_toplevel,
-                    Owl_foreign,
                     Ffi_gsl_bindings,
                     Ffi_gsl_generated,
                     ### Topic models ###
