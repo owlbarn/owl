@@ -444,12 +444,13 @@ Dense.Ndarray.map ~axis:[|Some 0; None; None|] (fun a -> a +. 1.) x;;
 
 There are more functions to help you to iterate elements and slices in a ndarray: `iteri`, `iter`, `mapi`, `map`, `filteri`, `filter`, `foldi`, `fold`, `iteri_slice`, `iter_slice`, `iter2i`, `iter2`. Please refer to the documentation for their details.
 
+
 ## Run Owl on Different Platforms
 
 If you want to try Owl on ARM based platforms such as Raspberry Pi rather than x86 ones, the installation are similar. Just note that Owl requires Ocaml 4.04, which might not be supported on your platform's binary distribution system yet, so you might consider compiling [Ocaml sources](https://ocaml.org/releases/4.04.html). Besides, to solve a potential conflict with gsl package, after running `./configure` in the top directory, you should run:
 ```
 sed -i -e 's/#define ARCH_ALIGN_DOUBLE/#undef ARCH_ALIGN_DOUBLE/g' config/m.h config/m-templ.h
-``` 
+```
 before running `make world.opt`.
 
  A [Docker image](https://hub.docker.com/r/matrixanger/owl/) is also provided on Docker Hub specifically for ARM platform. Just pull the image, start a container, then play with it in `utop`.
@@ -464,8 +465,9 @@ eval `opam config env`
 ```
 for once before starting `utop`.
 
+
 ## How To Contribute
 
-Owl is under active development, and I really look forward to your comments and contributions. Besides setting up a complete development environment on your native system, the easiest way to contribute is to use the [Owl Docker Image](https://hub.docker.com/r/ryanrhymes/owl/). Moreover, we are also building a docker image for ARM-based platform so that you can run Owl on Raspberry PI and Cubietruck. We will release the image soon.
+Owl is under active development, and I really look forward to your comments and contributions. Besides setting up a complete development environment on your native system, the easiest way to contribute is to use the [Owl Docker Image](https://hub.docker.com/r/ryanrhymes/owl/). Moreover, we have also built a docker image for ARM-based platform so that you can run Owl on Raspberry PI and Cubietruck (see the section above).
 
 Just pull the image and dig into code saved in `/root/owl`, then have fun!
