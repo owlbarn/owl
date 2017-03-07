@@ -105,9 +105,9 @@ let replace_row v x i = M.replace_row (unpack_box v) (unpack_box x) i |> pack_bo
 
 let replace_col v x i = M.replace_col (unpack_box v) (unpack_box x) i |> pack_box
 
-let swap_rows x i i' = M.swap_rows (unpack_box x) i i' |> pack_box
+let swap_rows x i i' = M.swap_rows (unpack_box x) i i'
 
-let swap_cols x j j' = M.swap_cols (unpack_box x) j j' |> pack_box
+let swap_cols x j j' = M.swap_cols (unpack_box x) j j'
 
 let tile x reps = M.tile (unpack_box x) reps |> pack_box
 

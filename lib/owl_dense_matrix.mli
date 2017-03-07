@@ -103,9 +103,9 @@ val replace_row : ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
 
 val replace_col : ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
 
-val swap_rows : ('a, 'b) t -> int -> int -> ('a, 'b) t
+val swap_rows : ('a, 'b) t -> int -> int -> unit
 
-val swap_cols : ('a, 'b) t -> int -> int -> ('a, 'b) t
+val swap_cols : ('a, 'b) t -> int -> int -> unit
 
 val tile : ('a, 'b) t -> int array -> ('a, 'b) t
 

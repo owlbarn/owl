@@ -93,6 +93,7 @@ let _index_nd_1d j s =
 (* interface to lacaml functions, types for interfacing to lacaml *)
 
 type ('a, 'b) lcm_vec = ('a, 'b, fortran_layout) Array1.t
+type ('a, 'b) lcm_mat = ('a, 'b, fortran_layout) Array2.t
 
 type ('a, 'b) lcm_vec_op00 = (('a, 'b) lcm_vec) Lacaml.Common.Types.Vec.unop
 type ('a, 'b) lcm_vec_op01 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> 'a
@@ -108,10 +109,19 @@ type ('a, 'b) lcm_vec_op10 = ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm
 type ('a, 'b) lcm_vec_op11 = ?cmp:('a -> 'a -> int) -> ?decr:bool -> ?n:int -> ?ofsp:int -> ?incp:int -> ?p:Lacaml_common.int_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
 type ('a, 'b) lcm_vec_op12 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ?ofsy:int -> ?incy:int -> ('a, 'b) lcm_vec -> 'a
 
+type ('a, 'b) lcm_mat_op00 = ('a, 'b) lcm_mat -> 'a array array
+type ('a, 'b) lcm_mat_op01 = int -> int -> ('a, 'b) lcm_mat
 
 (* call functions in lacaml *)
 
-let _make0 : type a b. (a, b) kind -> (int -> int -> (a, b, fortran_layout) Array2.t) = function
+let _to_arrays : type a b . (a, b) kind -> (a, b) lcm_mat_op00 = function
+  | Float32   -> Lacaml.S.Mat.to_array
+  | Float64   -> Lacaml.D.Mat.to_array
+  | Complex32 -> Lacaml.C.Mat.to_array
+  | Complex64 -> Lacaml.Z.Mat.to_array
+  | _         -> failwith "_to_arrays: unsupported operation"
+
+let _make0 : type a b. (a, b) kind -> (a, b) lcm_mat_op01 = function
   | Float32   -> Lacaml.S.Mat.make0
   | Float64   -> Lacaml.D.Mat.make0
   | Complex32 -> Lacaml.C.Mat.make0
@@ -547,90 +557,45 @@ let _sort : type a b. (a, b) kind -> (a, b) lcm_vec_op11 = function
   | _         -> failwith "_sort: unsupported operation"
 
 
-(* interface to gsl functions, types for interfacing to gsl *)
+(* interface to eigen functions, types for interfacing to eigen *)
 
-type ('a, 'b) gsl_mat = ('a, 'b, c_layout) Array2.t
+type ('a, 'b) eigen_mat = ('a, 'b, c_layout) Array2.t
 
-type ('a, 'b) gsl_mat_op00 = ('a, 'b) gsl_mat -> bool
-type ('a, 'b) gsl_mat_op01 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> unit
-type ('a, 'b) gsl_mat_op02 = ('a, 'b) gsl_mat -> int -> int -> unit
-type ('a, 'b) gsl_mat_op03 = ('a, 'b) gsl_mat -> 'a
-type ('a, 'b) gsl_mat_op04 = ('a, 'b) gsl_mat -> 'a * int * int
-type ('a, 'b) gsl_mat_op05 = ('a, 'b) gsl_mat -> 'a * 'a
-type ('a, 'b) gsl_mat_op06 = ('a, 'b) gsl_mat -> ('a * int * int) * ('a * int * int)
-type ('a, 'b) gsl_mat_op07 = ('a, 'b) gsl_mat -> unit
-type ('a, 'b) gsl_mat_op08 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat
-type ('a, 'b) gsl_mat_op09 = 'a array array -> ('a, 'b) gsl_mat
-type ('a, 'b) gsl_mat_op10 = ('a, 'b) gsl_mat -> 'a array array
-type ('a, 'b) gsl_mat_op11 = 'a array -> int -> int -> ('a, 'b) gsl_mat
-type ('a, 'b) gsl_mat_op12 = ('a, 'b) gsl_mat -> 'a array
+type ('a, 'b) eigen_mat_op00 = ('a, 'b) eigen_mat -> ('a, 'b) eigen_mat
+type ('a, 'b) eigen_mat_op01 = ('a, 'b) eigen_mat -> int -> int -> unit
+type ('a, 'b) eigen_mat_op02 = ('a, 'b) eigen_mat -> ('a, 'b) eigen_mat -> ('a, 'b) eigen_mat
 
-(* call functions in gsl *)
+(* call functions in eigen *)
 
-let _gsl_transpose_copy : type a b. (a, b) kind -> (a, b) gsl_mat_op01 = function
-  | Float32   -> Gsl.Matrix.Single.transpose
-  | Float64   -> Gsl.Matrix.transpose
-  | Complex32 -> Gsl.Matrix_complex.Single.transpose
-  | Complex64 -> Gsl.Matrix_complex.transpose
-  | _         -> failwith "_gsl_transpose_copy: unsupported operation"
+let _eigen_transpose : type a b . (a, b) kind -> (a, b) eigen_mat_op00 = function
+  | Float32   -> Eigen.Dense.S.transpose
+  | Float64   -> Eigen.Dense.D.transpose
+  | Complex32 -> Eigen.Dense.C.transpose
+  | Complex64 -> Eigen.Dense.Z.transpose
+  | _         -> failwith "_eigen_transpose: unsupported operation"
 
-let _gsl_transpose_in_place : type a b. (a, b) kind -> (a, b) gsl_mat_op07 = function
-  | Float32   -> Gsl.Matrix.Single.transpose_in_place
-  | Float64   -> Gsl.Matrix.transpose_in_place
-  | Complex32 -> Gsl.Matrix_complex.Single.transpose_in_place
-  | Complex64 -> Gsl.Matrix_complex.transpose_in_place
-  | _         -> failwith "_gsl_transpose_in_place: unsupported operation"
+let _eigen_swap_rows : type a b . (a, b) kind -> (a, b) eigen_mat_op01 = function
+  | Float32   -> Eigen.Dense.S.swap_rows
+  | Float64   -> Eigen.Dense.D.swap_rows
+  | Complex32 -> Eigen.Dense.C.swap_rows
+  | Complex64 -> Eigen.Dense.Z.swap_rows
+  | _         -> failwith "_eigen_swap_rows: unsupported operation"
 
-let _gsl_swap_rows : type a b. (a, b) kind -> (a, b) gsl_mat_op02 = function
-  | Float32   -> Gsl.Matrix.Single.swap_rows
-  | Float64   -> Gsl.Matrix.swap_rows
-  | Complex32 -> Gsl.Matrix_complex.Single.swap_rows
-  | Complex64 -> Gsl.Matrix_complex.swap_rows
-  | _         -> failwith "_gsl_swap_rows: unsupported operation"
+let _eigen_swap_cols : type a b . (a, b) kind -> (a, b) eigen_mat_op01 = function
+  | Float32   -> Eigen.Dense.S.swap_cols
+  | Float64   -> Eigen.Dense.D.swap_cols
+  | Complex32 -> Eigen.Dense.C.swap_cols
+  | Complex64 -> Eigen.Dense.Z.swap_cols
+  | _         -> failwith "_eigen_swap_cols: unsupported operation"
 
-let _gsl_swap_cols : type a b. (a, b) kind -> (a, b) gsl_mat_op02 = function
-  | Float32   -> Gsl.Matrix.Single.swap_columns
-  | Float64   -> Gsl.Matrix.swap_columns
-  | Complex32 -> Gsl.Matrix_complex.Single.swap_columns
-  | Complex64 -> Gsl.Matrix_complex.swap_columns
-  | _         -> failwith "_gsl_swap_cols: unsupported operation"
+let _eigen_dot : type a b . (a, b) kind -> (a, b) eigen_mat_op02 = function
+  | Float32   -> Eigen.Dense.S.dot
+  | Float64   -> Eigen.Dense.D.dot
+  | Complex32 -> Eigen.Dense.C.dot
+  | Complex64 -> Eigen.Dense.Z.dot
+  | _         -> failwith "_eigen_dot: unsupported operation"
 
-let _gsl_of_arrays : type a b. (a, b) kind -> (a, b) gsl_mat_op09 = function
-  | Float32   -> Gsl.Matrix.Single.of_arrays
-  | Float64   -> Gsl.Matrix.of_arrays
-  | Complex32 -> Gsl.Matrix_complex.Single.of_arrays
-  | Complex64 -> Gsl.Matrix_complex.of_arrays
-  | _         -> failwith "_gsl_of_arrays: unsupported operation"
 
-let _gsl_to_arrays : type a b. (a, b) kind -> (a, b) gsl_mat_op10 = function
-  | Float32   -> Gsl.Matrix.Single.to_arrays
-  | Float64   -> Gsl.Matrix.to_arrays
-  | Complex32 -> Gsl.Matrix_complex.Single.to_arrays
-  | Complex64 -> Gsl.Matrix_complex.to_arrays
-  | _         -> failwith "_gsl_to_arrays: unsupported operation"
-
-let _gsl_of_array : type a b. (a, b) kind -> (a, b) gsl_mat_op11 = function
-  | Float32   -> Gsl.Matrix.Single.of_array
-  | Float64   -> Gsl.Matrix.of_array
-  | Complex32 -> Gsl.Matrix_complex.Single.of_array
-  | Complex64 -> Gsl.Matrix_complex.of_array
-  | _         -> failwith "_gsl_of_array: unsupported operation"
-
-let _gsl_to_array : type a b. (a, b) kind -> (a, b) gsl_mat_op12 = function
-  | Float32   -> Gsl.Matrix.Single.to_array
-  | Float64   -> Gsl.Matrix.to_array
-  | Complex32 -> Gsl.Matrix_complex.Single.to_array
-  | Complex64 -> Gsl.Matrix_complex.to_array
-  | _         -> failwith "_gsl_to_array: unsupported operation"
-
-let _gsl_dot : type a b. (a, b) kind -> (a, b) gsl_mat_op08 = function
-  | Float32   -> Owl_foreign.Dense_real_float.ml_gsl_dot
-  | Float64   -> Owl_foreign.Dense_real_double.ml_gsl_dot
-  | Complex32 -> Owl_foreign.Dense_complex_float.ml_gsl_dot
-  | Complex64 -> Owl_foreign.Dense_complex_double.ml_gsl_dot
-  | _         -> failwith "_gsl_dot: unsupported operation"
-
-(* experimental: interface to owl's native c code *)
 (* interface to owl's c functions, types for interfacing to owl *)
 
 type ('a, 'b) owl_vec = ('a, 'b, c_layout) Array1.t
@@ -640,7 +605,6 @@ type ('a, 'b) owl_vec_op00 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int
 type ('a, 'b) owl_vec_op01 = int -> ('a, 'b) owl_vec -> int
 type ('a, 'b) owl_vec_op02 = int -> ('a, 'b) owl_vec -> float
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
-
 
 (* call functions in owl native c *)
 

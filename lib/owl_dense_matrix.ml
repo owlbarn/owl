@@ -178,27 +178,11 @@ let cols x l =
   let y = empty (Array2.kind x) m n in
   Array.iteri (fun i j -> copy_col_to (col x j) y i) l; y
 
-let swap_rows x i i' =
-  let y = clone x in
-  let _op = _gsl_swap_rows (Array2.kind x) in
-  _op y i i';
-  y
+let swap_rows x i i' = _eigen_swap_rows (kind x) x i i'
 
-let swap_cols x j j' =
-  let y = clone x in
-  let _op = _gsl_swap_cols (Array2.kind x) in
-  _op y j j';
-  y
+let swap_cols x j j' = _eigen_swap_cols (kind x) x j j'
 
-let swap_rowcol x i j =
-  let y = clone x in
-  Gsl.Matrix.swap_rowcol y i j;
-  y
-
-let transpose x =
-  let y = empty (Array2.kind x) (col_num x) (row_num x) in
-  let _op = _gsl_transpose_copy (Array2.kind x) in
-  _op y x; y
+let transpose x = _eigen_transpose (kind x) x
 
 let replace_row v x i =
   let y = clone x in
@@ -396,7 +380,7 @@ let div x1 x2 =
   let y3 = Owl_dense_ndarray.div y1 y2 in
   of_ndarray y3
 
-let dot x1 x2 = (_gsl_dot (Array2.kind x1)) x1 x2
+let dot x1 x2 = _eigen_dot (kind x1) x1 x2
 
 let sum_cols x =
   let y = ones (Array2.kind x) (col_num x) 1 in
@@ -568,13 +552,21 @@ let add_diag x a =
 
 (* formatted input / output operations *)
 
-let to_array x = (_gsl_to_array (kind x)) x
+let reshape m n x =
+  let x = genarray_of_array2 x in
+  reshape_2 x m n
 
-let of_array k x m n = (_gsl_of_array k) x m n
+let flatten x = reshape 1 (numel x) x
 
-let to_arrays x = (_gsl_to_arrays (kind x)) x
+let of_arrays k x = Array2.of_array k c_layout x
 
-let of_arrays k x = (_gsl_of_arrays k) x
+let of_array k x m n = of_arrays k [|x|] |> reshape m n
+
+let to_array x =
+  let x = flatten x in
+  Array.init (numel x) (fun i -> x.{0,i})
+
+let to_arrays x = Array.init (row_num x) (fun i -> to_array (row x i))
 
 (* FIXME *)
 let save_txt x f =
@@ -642,26 +634,18 @@ let draw_cols ?(replacement=true) x c =
 let shuffle_rows x =
   let y = clone x in
   let m, n = shape x in
-  let _op = _gsl_swap_rows (Array2.kind x) in
   for i = 0 to m - 1 do
-    _op y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
+    swap_rows y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
   done; y
 
 let shuffle_cols x =
   let y = clone x in
   let m, n = shape x in
-  let _op = _gsl_swap_cols (Array2.kind x) in
   for i = 0 to n - 1 do
-    _op y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
+    swap_cols y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
   done; y
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols
-
-let reshape m n x =
-  let x = genarray_of_array2 x in
-  reshape_2 x m n
-
-let flatten x = reshape 1 (numel x) x
 
 let meshgrid k xa xb ya yb xn yn =
   let u = linspace k xa xb xn in

@@ -225,10 +225,10 @@ val replace_col : mat -> mat -> int -> mat
   in the matrix [x].
  *)
 
-val swap_rows : mat -> int -> int -> mat
+val swap_rows : mat -> int -> int -> unit
 (** [swap_rows x i i'] swaps the row [i] with row [i'] of [x]. *)
 
-val swap_cols : mat -> int -> int -> mat
+val swap_cols : mat -> int -> int -> unit
 (** [swap_cols x j j'] swaps the column [j] with column [j'] of [x]. *)
 
 val tile : mat -> int array -> mat

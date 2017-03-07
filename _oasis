@@ -95,7 +95,7 @@ Library owl
   BuildDepends:     str, ctypes, ctypes.stubs, plplot, dolog,
                     eigen, gsl, lacaml, owl_parallel
   if system(linux) || system(linux_elf)
-    CCOpt+:          -g -O2
+    CCOpt+:          -g -O3 -Ofast
   if system(macosx)
     CCLib:          -framework Accelerate
 

@@ -60,4 +60,6 @@ let test_18 _ = Owl_dense_matrix.l1norm x
 
 let test_19 _ = Owl_dense_real.softmax x
 
-let _ = Perf_common.test_op_each c test_08
+let test_20 _ = Owl_dense_real.transpose x
+
+let _ = Perf_common.test_op_each c test_20
