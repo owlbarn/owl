@@ -38,42 +38,43 @@ let uniform ?(typ=Row) ?scale k m = match typ with
 
 (* vector properties and manipulations *)
 
-let is_row_vec x = M.row_num x = 1
-
-let is_col_vec x = M.col_num x = 1
+let vec_typ x =
+  if M.row_num x = 1 then Row
+  else if M.col_num x = 1 then Col
+  else failwith "vec_typ: not a vector"
 
 let get x i =
-  match is_row_vec x with
-  | true  -> x.{0,i}
-  | false -> x.{i,0}
+  match vec_typ x with
+  | Row -> x.{0,i}
+  | Col -> x.{i,0}
 
 let set x i a =
-  match is_row_vec x with
-  | true  -> x.{0,i} <- a
-  | false -> x.{i,0} <- a
+  match vec_typ x with
+  | Row -> x.{0,i} <- a
+  | Col -> x.{i,0} <- a
 
 
 (* vector iteration operations *)
 
 let iteri f x =
-  match is_row_vec x with
-  | true  -> M.iteri (fun _ i a -> f i a) x
-  | false -> M.iteri (fun i _ a -> f i a) x
+  match vec_typ x with
+  | Row -> M.iteri (fun _ i a -> f i a) x
+  | Col -> M.iteri (fun i _ a -> f i a) x
 
 let mapi f x =
-  match is_row_vec x with
-  | true  -> M.mapi (fun _ i a -> f i a) x
-  | false -> M.mapi (fun i _ a -> f i a) x
+  match vec_typ x with
+  | Row -> M.mapi (fun _ i a -> f i a) x
+  | Col -> M.mapi (fun i _ a -> f i a) x
 
 let filteri f x =
-  match is_row_vec x with
-  | true  -> M.filteri (fun _ i a -> f i a) x
-  | false -> M.filteri (fun i _ a -> f i a) x
+  match vec_typ x with
+  | Row -> M.filteri (fun _ i a -> f i a) x
+  | Col -> M.filteri (fun i _ a -> f i a) x
 
 let foldi f a x =
-  match is_row_vec x with
-  | true  -> M.foldi (fun _ i c b -> f i c b) a x
-  | false -> M.foldi (fun i _ c b -> f i c b) a x
+  match vec_typ x with
+  | Row -> M.foldi (fun _ i c b -> f i c b) a x
+  | Col -> M.foldi (fun i _ c b -> f i c b) a x
 
 
 (* ends here *)
