@@ -17,63 +17,67 @@ type t =
   | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
 and trace_op =
   | Noop
-  | Add_D_D   of t * t
-  | Add_D_C   of t * t
-  | Add_C_D   of t * t
-  | Sub_D_D   of t * t
-  | Sub_D_C   of t * t
-  | Sub_C_D   of t * t
-  | Mul_D_D   of t * t
-  | Mul_D_C   of t * t
-  | Mul_C_D   of t * t
-  | Div_D_D   of t * t
-  | Div_D_C   of t * t
-  | Div_C_D   of t * t
-  | Pow_D_D   of t * t
-  | Pow_D_C   of t * t
-  | Pow_C_D   of t * t
-  | Atan2_D_D of t * t
-  | Atan2_D_C of t * t
-  | Atan2_C_D of t * t
-  | Neg_D     of t
-  | Abs_D     of t
-  | Signum_D  of t
-  | Floor_D   of t
-  | Ceil_D    of t
-  | Round_D   of t
-  | Sqr_D     of t
-  | Sqrt_D    of t
-  | Log_D     of t
-  | Log2_D    of t
-  | Log10_D   of t
-  | Exp_D     of t
-  | Sin_D     of t
-  | Cos_D     of t
-  | Tan_D     of t
-  | Sinh_D    of t
-  | Cosh_D    of t
-  | Tanh_D    of t
-  | Asin_D    of t
-  | Acos_D    of t
-  | Atan_D    of t
-  | Asinh_D   of t
-  | Acosh_D   of t
-  | Atanh_D   of t
-  | Item      of t * int * int
-  | AddI_D_D  of t * int * int * t
-  | AddI_D_C  of t * int * int * t
-  | AddI_C_D  of t * int * int * t
-  | Sum_D     of t
-  | Dot_D_D   of t * t
-  | Dot_D_C   of t * t
-  | Dot_C_D   of t * t
-  | Trans_D   of t
-  | L1Norm_D  of t
-  | L2Norm_D  of t
-  | L2NormS_D of t
-  | Sigmoid_D of t
-  | Relu_D    of t
-  | Inv_D     of t
+  | Add_D_D     of t * t
+  | Add_D_C     of t * t
+  | Add_C_D     of t * t
+  | Sub_D_D     of t * t
+  | Sub_D_C     of t * t
+  | Sub_C_D     of t * t
+  | Mul_D_D     of t * t
+  | Mul_D_C     of t * t
+  | Mul_C_D     of t * t
+  | Div_D_D     of t * t
+  | Div_D_C     of t * t
+  | Div_C_D     of t * t
+  | Pow_D_D     of t * t
+  | Pow_D_C     of t * t
+  | Pow_C_D     of t * t
+  | Atan2_D_D   of t * t
+  | Atan2_D_C   of t * t
+  | Atan2_C_D   of t * t
+  | Neg_D       of t
+  | Abs_D       of t
+  | Signum_D    of t
+  | Floor_D     of t
+  | Ceil_D      of t
+  | Round_D     of t
+  | Sqr_D       of t
+  | Sqrt_D      of t
+  | Log_D       of t
+  | Log2_D      of t
+  | Log10_D     of t
+  | Exp_D       of t
+  | Sin_D       of t
+  | Cos_D       of t
+  | Tan_D       of t
+  | Sinh_D      of t
+  | Cosh_D      of t
+  | Tanh_D      of t
+  | Asin_D      of t
+  | Acos_D      of t
+  | Atan_D      of t
+  | Asinh_D     of t
+  | Acosh_D     of t
+  | Atanh_D     of t
+  | Item        of t * int * int
+  | AddI_D_D    of t * int * int * t
+  | AddI_D_C    of t * int * int * t
+  | AddI_C_D    of t * int * int * t
+  | Sum_D       of t
+  | Dot_D_D     of t * t
+  | Dot_D_C     of t * t
+  | Dot_C_D     of t * t
+  | Trans_D     of t
+  | L1Norm_D    of t
+  | L2Norm_D    of t
+  | L2NormS_D   of t
+  | Sigmoid_D   of t
+  | Relu_D      of t
+  | Inv_D       of t
+  | Add_Row_D_D of t * t * int
+  | Add_Row_D_C of t * t * int
+  | Add_Row_C_D of t * t * int
+  | Get_Row_D   of t * int
 
 
 let _global_tag = ref 0
@@ -187,7 +191,7 @@ module Maths = struct
       | F a, Mat b   -> Mat M.(a $+ b)
       | Mat a, F b   -> Mat M.(a +$ b)
       | Mat a, Mat b -> Mat M.(a +@ b)
-      | _                  -> failwith "error: add: ff"
+      | _            -> failwith "error: add: ff"
     in
     let fd a b = a + b in
     let df_da cp ap at = at in
@@ -206,7 +210,7 @@ module Maths = struct
       | F a, Mat b   -> Mat M.(a $- b)
       | Mat a, F b   -> Mat M.(a -$ b)
       | Mat a, Mat b -> Mat M.(a -@ b)
-      | _                  -> failwith "error: sub: ff"
+      | _            -> failwith "error: sub: ff"
     in
     let fd a b = a - b in
     let df_da cp ap at = at in
@@ -221,11 +225,11 @@ module Maths = struct
   and mul a b =
     let ff a b =
       match a, b with
-      | F a, F b   -> F S.(a *. b)
-      | F a, Mat b  -> Mat M.(a $* b)
-      | Mat a, F b  -> Mat M.(a *$ b)
+      | F a, F b     -> F S.(a *. b)
+      | F a, Mat b   -> Mat M.(a $* b)
+      | Mat a, F b   -> Mat M.(a *$ b)
       | Mat a, Mat b -> Mat M.(a *@ b)
-      | _                  -> failwith "error: mul: ff"
+      | _            -> failwith "error: mul: ff"
     in
     let fd a b = a * b in
     let df_da cp ap at = at * b in
@@ -244,7 +248,7 @@ module Maths = struct
       | F a, Mat b   -> Mat M.(a $/ b)
       | Mat a, F b   -> Mat M.(a /$ b)
       | Mat a, Mat b -> Mat M.(a /@ b)
-      | _                  -> failwith "error: div: ff"
+      | _            -> failwith "error: div: ff"
     in
     let fd a b = a / b in
     let df_da cp ap at = at / b in
@@ -263,7 +267,7 @@ module Maths = struct
       | F a, Mat b   -> Mat M.(pow0 a b)
       | Mat a, F b   -> Mat M.(pow1 a b)
       | Mat a, Mat b -> Mat M.(pow a b)
-      | _                  -> failwith "error: pow: ff"
+      | _            -> failwith "error: pow: ff"
     in
     let fd a b = a ** b in
     let df_da cp ap at = at * (ap ** (b - (F 1.))) * b in
@@ -281,7 +285,7 @@ module Maths = struct
       | F a, Mat b   -> Mat M.(atan20 a b)
       | Mat a, F b   -> Mat M.(atan21 a b)
       | Mat a, Mat b -> Mat M.(atan2 a b)
-      | _                  -> failwith "error: atan2: ff"
+      | _            -> failwith "error: atan2: ff"
     in
     let fd a b = atan2 a b in
     let df_da cp ap at = at * b / ((sqr ap) + (sqr b)) in
@@ -579,7 +583,7 @@ module Maths = struct
 
   and sum a =
     let ff = function
-      | Mat a -> F M.(sum a)
+      | Mat a    -> F M.(sum a)
       | _        -> failwith "error: sum: ff"
     in
     let fd a = sum a in
@@ -686,6 +690,32 @@ module Maths = struct
     let a = sum y in
     y / a
 
+  and add_row a b i =
+    let ff a b =
+      match a, b with
+      | Mat a, Mat b       -> M.(copy_row_to (row a i +@ b) a i; Mat a)
+      | _                  -> failwith "error: add_row: ff"
+    in
+    let fd a b = add_row a b i in
+    let df_da cp ap at = at in
+    let df_db cp bp bt = add_row (zero a) bt i in
+    let df_dab cp ap at bp bt = add_row at bt i in
+    let r_d_d a b = Add_Row_D_D (a, b, i) in
+    let r_d_c a b = Add_Row_D_C (a, b, i) in
+    let r_c_d a b = Add_Row_C_D (a, b, i) in
+    op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+  and get_row a i =
+    let ff = function
+      | Mat a    -> Mat M.(row a i |> clone)
+      | _        -> failwith "error: get_row: ff"
+    in
+    let fd a = get_row a i in
+    let df cp ap at = get_row at i in
+    let r a = Get_Row_D (a, i) in
+    op_d_d a ff fd df r
+
+
 end
 
 
@@ -759,6 +789,10 @@ let reverse_reset x =
             | Sigmoid_D a           -> reset (a :: t)
             | Relu_D a              -> reset (a :: t)
             | Inv_D a               -> reset (a :: t)
+            | Add_Row_D_D (a, b, _) -> reset (a :: b :: t)
+            | Add_Row_D_C (a, _, _) -> reset (a :: t)
+            | Add_Row_C_D (_, b, _) -> reset (b :: t)
+            | Get_Row_D (a, _)      -> reset (a :: t)
             | _                     -> reset t
             )
           else reset t
@@ -845,6 +879,10 @@ let reverse_push v x =
             | Sigmoid_D a           -> push (((!aa * ap * (F 1. - ap)), a) :: t)
             | Relu_D a              -> push (((!aa * ((signum (primal a) + F 1.) / (F 2.))), a) :: t)
             | Inv_D a               -> let dpt = transpose ap in push ((((neg dpt) * !aa * dpt), a) :: t)
+            | Add_Row_D_D (a, b, i) -> push ((!aa, a) :: (get_row !aa i, b) :: t)
+            | Add_Row_D_C (a, b, i) -> push ((!aa, a) :: t)
+            | Add_Row_C_D (a, b, i) -> push ((get_row !aa i, b) :: t)
+            | Get_Row_D (a, i)      -> (adjref a) := add_row (adjval a) !aa i; push ((zero a, a) :: t)
             | _                     -> push t
             )
           else push t
@@ -941,6 +979,27 @@ let jacobian f x =
 let print_trace x =
   None
 
+
+(* Wrapper for the Mat module *)
+
+module Mat = struct
+
+  let pack_box x = Mat x
+
+  let unpack_box x =
+    match (primal x) with
+    | Mat x -> x
+    | _ -> failwith "error: AD.Mat.unpack"
+
+  let uniform ?scale m n = M.uniform ?scale m n |> pack_box
+
+  let row x i = Maths.get_row x i
+
+  let iteri_rows f x = M.iteri_rows (fun i v -> f i (pack_box v)) (unpack_box x)
+
+  let print x = M.print (unpack_box x)
+
+end
 
 
 

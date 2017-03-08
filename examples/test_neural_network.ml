@@ -11,16 +11,12 @@ type layer = {
 
 type network = { layers : layer array }
 
-let _print_info = function
-  | Mat x -> M.pp_dsmat x
-  | _ -> ()
-
 let create_network l =
 {
   layers = Array.init (Array.length l - 1) (fun i ->
     {
-      w = Mat M.(uniform l.(i) l.(i+1) -$ 0.5);
-      b = Mat M.(uniform 1 l.(i+1) -$ 0.5);
+      w = Mat.uniform l.(i) l.(i+1);
+      b = Mat.uniform 1 l.(i+1);
       a = Maths.sigmoid;
     }
   )
@@ -38,9 +34,8 @@ let backprop nn eta epoch x y =
       l.b <- make_reverse l.b t;
     ) nn.layers;
     let loss = ref (F 0.) in
-    M.iteri_rows (fun i u ->
-        let v = Mat (M.row y i) in
-        let u = Mat u in
+    Mat.iteri_rows (fun i u ->
+        let v = Mat.row y i in
         loss := Maths.(!loss + l2norm_sqr((run_network u nn) - v))
     ) x;
     reverse_prop (F 1.) !loss;
@@ -56,11 +51,11 @@ let backprop nn eta epoch x y =
 
 (* one example *)
 let _ =
-  let xor_x = (M.of_arrays [|[|0.;0.|]; [|0.;1.|]; [|1.;0.|]; [|1.;1.|];|]) in
-  let xor_y = (M.of_arrays [|[|0.|]; [|1.|]; [|1.|]; [|0.|];|]) in
+  let xor_x = Mat (M.of_arrays [|[|0.;0.|]; [|0.;1.|]; [|1.;0.|]; [|1.;1.|];|]) in
+  let xor_y = Mat (M.of_arrays [|[|0.|]; [|1.|]; [|1.|]; [|0.|];|]) in
   let net = create_network [|2;3;1|] in
-  backprop net (F 0.9) 10000 xor_x xor_y;
-  run_network (Mat (M.row xor_x 0)) net |> _print_info;
-  run_network (Mat (M.row xor_x 1)) net |> _print_info;
-  run_network (Mat (M.row xor_x 2)) net |> _print_info;
-  run_network (Mat (M.row xor_x 3)) net |> _print_info
+  backprop net (F 1.) 5000 xor_x xor_y;
+  run_network (Mat.row xor_x 0) net |> Mat.print;
+  run_network (Mat.row xor_x 1) net |> Mat.print;
+  run_network (Mat.row xor_x 2) net |> Mat.print;
+  run_network (Mat.row xor_x 3) net |> Mat.print
