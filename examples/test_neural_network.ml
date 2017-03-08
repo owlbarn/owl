@@ -1,6 +1,5 @@
 (* test neural networks *)
 
-module M = Owl_dense_real
 open Owl_algodiff_ad
 
 type layer = {
@@ -50,8 +49,8 @@ let backprop nn eta epoch x y =
 
 (* one example *)
 let _ =
-  let xor_x = Mat (M.of_arrays [|[|0.;0.|]; [|0.;1.|]; [|1.;0.|]; [|1.;1.|];|]) in
-  let xor_y = Mat (M.of_arrays [|[|0.|]; [|1.|]; [|1.|]; [|0.|];|]) in
+  let xor_x = Mat.of_arrays [| [|0.;0.|]; [|0.;1.|]; [|1.;0.|]; [|1.;1.|] |] in
+  let xor_y = Mat.of_arrays [| [|0.|]; [|1.|]; [|1.|]; [|0.|] |] in
   let net = create_network [|2;3;1|] in
   backprop net (F 1.) 5000 xor_x xor_y;
   run_network (Mat.row xor_x 0) net |> Mat.print;

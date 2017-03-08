@@ -995,11 +995,14 @@ module Mat = struct
 
   let row x i = Maths.get_row x i
 
+  (* FIXME: need to be call row fun *)
   let iteri_rows f x = M.iteri_rows (fun i v -> f i (pack_box v)) (unpack_box x)
 
   let iter2_rows f x y = M.iter2_rows (fun u v -> f (pack_box u) (pack_box v)) (unpack_box x) (unpack_box y)
 
   let print x = M.print (unpack_box x)
+
+  let of_arrays x = M.of_arrays x |> pack_box
 
 end
 
