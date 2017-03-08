@@ -86,14 +86,14 @@ let cmp_tag ai bi =
   else 0
 
 let rec zero = function
-  | F _                 -> F 0.
-  | Mat ap               -> Mat M.(zeros (row_num ap) (col_num ap))
+  | F _                     -> F 0.
+  | Mat ap                  -> Mat M.(zeros (row_num ap) (col_num ap))
   | DF (ap, at, ai)         -> DF ((zero ap), (zero at), ai)  (* FIXME: need to check *)
   | DR (ap, at, ao, af, ai) -> DR ((zero ap), ref (zero !at), Noop, ref !af, ai)
 
 let rec one = function
-  | F _         -> F 1.
-  | Mat ap       -> Mat M.(ones (row_num ap) (col_num ap))
+  | F _             -> F 1.
+  | Mat ap          -> Mat M.(ones (row_num ap) (col_num ap))
   | DF (ap, at, ai) -> DF ((one ap), (zero at), ai)
   | _               -> failwith "error: one : unknown type"
 
@@ -118,7 +118,7 @@ let adjval = function
   | ap                  -> zero ap
 
 let shape = function
-  | Mat ap -> M.shape ap
+  | Mat ap    -> M.shape ap
   | _         -> failwith "error: shape"
 
 let row_num x = shape x |> fst
@@ -145,21 +145,21 @@ module Maths = struct
 
   and op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d =
     match a, b with
-    | F ap, DF (bp, bt, bi)                  -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
-    | DF (ap, at, ai), F bp                  -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
-    | Mat ap, DF (bp, bt, bi)                 -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
-    | DF (ap, at, ai), Mat bp                 -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
-    | F ap, DR (bp, _, _, _, bi)             -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
-    | DR (ap, _, _, _, ai), F bp             -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
-    | Mat ap, DR (bp, _, _, _, bi)            -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
-    | DR (ap, _, _, _, ai), Mat bp            -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
+    | F ap, DF (bp, bt, bi)                      -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
+    | DF (ap, at, ai), F bp                      -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
+    | Mat ap, DF (bp, bt, bi)                    -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
+    | DF (ap, at, ai), Mat bp                    -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
+    | F ap, DR (bp, _, _, _, bi)                 -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
+    | DR (ap, _, _, _, ai), F bp                 -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
+    | Mat ap, DR (bp, _, _, _, bi)               -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
+    | DR (ap, _, _, _, ai), Mat bp               -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
     | DF (ap, at, ai), DR (bp, _, _, _, bi)      -> (
         match cmp_tag ai bi with
         | 1  -> let cp = fd ap b in DF (cp, df_da cp ap at, ai)
         | -1 -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
         | _  -> failwith "error: forward and reverse clash at the same level"
       )
-    | DR (ap, _, _, _, ai), DF (bp, bt, bi)      -> (
+    | DR (ap, _, _, _, ai), DF (bp, bt, bi)   -> (
         match cmp_tag ai bi with
         | -1 -> let cp = fd a bp in DF (cp, df_db cp bp bt, bi)
         | 1  -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
@@ -183,9 +183,9 @@ module Maths = struct
   and add a b =
     let ff a b =
       match a, b with
-      | F a, F b   -> F S.(a +. b)
-      | F a, Mat b  -> Mat M.(a $+ b)
-      | Mat a, F b  -> Mat M.(a +$ b)
+      | F a, F b     -> F S.(a +. b)
+      | F a, Mat b   -> Mat M.(a $+ b)
+      | Mat a, F b   -> Mat M.(a +$ b)
       | Mat a, Mat b -> Mat M.(a +@ b)
       | _                  -> failwith "error: add: ff"
     in
@@ -202,9 +202,9 @@ module Maths = struct
   and sub a b =
     let ff a b =
       match a, b with
-      | F a, F b   -> F S.(a -. b)
-      | F a, Mat b  -> Mat M.(a $- b)
-      | Mat a, F b  -> Mat M.(a -$ b)
+      | F a, F b     -> F S.(a -. b)
+      | F a, Mat b   -> Mat M.(a $- b)
+      | Mat a, F b   -> Mat M.(a -$ b)
       | Mat a, Mat b -> Mat M.(a -@ b)
       | _                  -> failwith "error: sub: ff"
     in
@@ -240,9 +240,9 @@ module Maths = struct
   and div a b =
     let ff a b =
       match a, b with
-      | F a, F b   -> F S.(a /. b)
-      | F a, Mat b  -> Mat M.(a $/ b)
-      | Mat a, F b  -> Mat M.(a /$ b)
+      | F a, F b     -> F S.(a /. b)
+      | F a, Mat b   -> Mat M.(a $/ b)
+      | Mat a, F b   -> Mat M.(a /$ b)
       | Mat a, Mat b -> Mat M.(a /@ b)
       | _                  -> failwith "error: div: ff"
     in
@@ -259,9 +259,9 @@ module Maths = struct
   and pow a b =
     let ff a b =
       match a, b with
-      | F a, F b   -> F S.(a ** b)
-      | F a, Mat b  -> Mat M.(pow0 a b)
-      | Mat a, F b  -> Mat M.(pow1 a b)
+      | F a, F b     -> F S.(a ** b)
+      | F a, Mat b   -> Mat M.(pow0 a b)
+      | Mat a, F b   -> Mat M.(pow1 a b)
       | Mat a, Mat b -> Mat M.(pow a b)
       | _                  -> failwith "error: pow: ff"
     in
@@ -277,9 +277,9 @@ module Maths = struct
   and atan2 a b =
     let ff a b =
       match a, b with
-      | F a, F b   -> F S.(atan2 a b)
-      | F a, Mat b  -> Mat M.(atan20 a b)
-      | Mat a, F b  -> Mat M.(atan21 a b)
+      | F a, F b     -> F S.(atan2 a b)
+      | F a, Mat b   -> Mat M.(atan20 a b)
+      | Mat a, F b   -> Mat M.(atan21 a b)
       | Mat a, Mat b -> Mat M.(atan2 a b)
       | _                  -> failwith "error: atan2: ff"
     in
@@ -294,8 +294,8 @@ module Maths = struct
 
   and neg a =
     let ff = function
-      | F a  -> F S.(0. -. a)
-      | Mat a -> Mat M.(neg a)
+      | F a      -> F S.(0. -. a)
+      | Mat a    -> Mat M.(neg a)
       | _        -> failwith "error: neg: ff"
     in
     let fd a = neg a in
@@ -305,8 +305,8 @@ module Maths = struct
 
   and abs a =
     let ff = function
-      | F a  -> F Owl_maths.(abs a)
-      | Mat a -> Mat M.(abs a)
+      | F a      -> F Owl_maths.(abs a)
+      | Mat a    -> Mat M.(abs a)
       | _        -> failwith "error: abs: ff"
     in
     let fd a = abs a in
@@ -316,8 +316,8 @@ module Maths = struct
 
   and signum a =
     let ff = function
-      | F a  -> F Owl_maths.(signum a)
-      | Mat a -> Mat M.(signum a)
+      | F a      -> F Owl_maths.(signum a)
+      | Mat a    -> Mat M.(signum a)
       | _        -> failwith "error: signum: ff"
     in
     let fd a = signum a in
@@ -327,8 +327,8 @@ module Maths = struct
 
   and floor a =
     let ff = function
-      | F a  -> F Owl_maths.(floor a)
-      | Mat a -> Mat M.(floor a)
+      | F a      -> F Owl_maths.(floor a)
+      | Mat a    -> Mat M.(floor a)
       | _        -> failwith "error: floor: ff"
     in
     let fd a = floor a in
@@ -338,8 +338,8 @@ module Maths = struct
 
   and ceil a =
     let ff = function
-      | F a  -> F Owl_maths.(ceil a)
-      | Mat a -> Mat M.(ceil a)
+      | F a      -> F Owl_maths.(ceil a)
+      | Mat a    -> Mat M.(ceil a)
       | _        -> failwith "error: ceil: ff"
     in
     let fd a = ceil a in
@@ -349,8 +349,8 @@ module Maths = struct
 
   and round a =
     let ff = function
-      | F a  -> F Owl_maths.(round a)
-      | Mat a -> Mat M.(round a)
+      | F a      -> F Owl_maths.(round a)
+      | Mat a    -> Mat M.(round a)
       | _        -> failwith "error: round: ff"
     in
     let fd a = round a in
@@ -360,8 +360,8 @@ module Maths = struct
 
   and sqr a =
     let ff = function
-      | F a  -> F S.(a *. a)
-      | Mat a -> Mat M.(sqr a)
+      | F a      -> F S.(a *. a)
+      | Mat a    -> Mat M.(sqr a)
       | _        -> failwith "error: sqr: ff"
     in
     let fd a = sqr a in
@@ -371,8 +371,8 @@ module Maths = struct
 
   and sqrt a =
     let ff = function
-      | F a  -> F S.(sqrt a)
-      | Mat a -> Mat M.(sqrt a)
+      | F a      -> F S.(sqrt a)
+      | Mat a    -> Mat M.(sqrt a)
       | _        -> failwith "error: sqrt: ff"
     in
     let fd a = sqrt a in
@@ -382,8 +382,8 @@ module Maths = struct
 
   and log a =
     let ff = function
-      | F a  -> F S.(log a)
-      | Mat a -> Mat M.(log a)
+      | F a      -> F S.(log a)
+      | Mat a    -> Mat M.(log a)
       | _        -> failwith "error: log: ff"
     in
     let fd a = log a in
@@ -393,8 +393,8 @@ module Maths = struct
 
   and log2 a =
     let ff = function
-      | F a  -> F Owl_maths.(log2 a)
-      | Mat a -> Mat M.(log2 a)
+      | F a      -> F Owl_maths.(log2 a)
+      | Mat a    -> Mat M.(log2 a)
       | _        -> failwith "error: log2: ff"
     in
     let fd a = log2 a in
@@ -404,8 +404,8 @@ module Maths = struct
 
   and log10 a =
     let ff = function
-      | F a  -> F S.(log10 a)
-      | Mat a -> Mat M.(log10 a)
+      | F a      -> F S.(log10 a)
+      | Mat a    -> Mat M.(log10 a)
       | _        -> failwith "error: log10: ff"
     in
     let fd a = log10 a in
@@ -415,8 +415,8 @@ module Maths = struct
 
   and exp a =
     let ff = function
-      | F a  -> F S.(exp a)
-      | Mat a -> Mat M.(exp a)
+      | F a      -> F S.(exp a)
+      | Mat a    -> Mat M.(exp a)
       | _        -> failwith "error: exp: ff"
     in
     let fd a = exp a in
@@ -426,8 +426,8 @@ module Maths = struct
 
   and sin a =
     let ff = function
-      | F a  -> F S.(sin a)
-      | Mat a -> Mat M.(sin a)
+      | F a      -> F S.(sin a)
+      | Mat a    -> Mat M.(sin a)
       | _        -> failwith "error: sin: ff"
     in
     let fd a = sin a in
@@ -437,8 +437,8 @@ module Maths = struct
 
   and cos a =
     let ff = function
-      | F a  -> F S.(cos a)
-      | Mat a -> Mat M.(cos a)
+      | F a      -> F S.(cos a)
+      | Mat a    -> Mat M.(cos a)
       | _        -> failwith "error: cos: ff"
     in
     let fd a = cos a in
@@ -448,8 +448,8 @@ module Maths = struct
 
   and tan a =
     let ff = function
-      | F a  -> F S.(tan a)
-      | Mat a -> Mat M.(tan a)
+      | F a      -> F S.(tan a)
+      | Mat a    -> Mat M.(tan a)
       | _        -> failwith "error: tan: ff"
     in
     let fd a = tan a in
@@ -459,8 +459,8 @@ module Maths = struct
 
   and sinh a =
     let ff = function
-      | F a  -> F S.(sinh a)
-      | Mat a -> Mat M.(sinh a)
+      | F a      -> F S.(sinh a)
+      | Mat a    -> Mat M.(sinh a)
       | _        -> failwith "error: sinh: ff"
     in
     let fd a = sinh a in
@@ -470,8 +470,8 @@ module Maths = struct
 
   and cosh a =
     let ff = function
-      | F a  -> F S.(cosh a)
-      | Mat a -> Mat M.(cosh a)
+      | F a      -> F S.(cosh a)
+      | Mat a    -> Mat M.(cosh a)
       | _        -> failwith "error: cosh: ff"
     in
     let fd a = cosh a in
@@ -481,8 +481,8 @@ module Maths = struct
 
   and tanh a =
     let ff = function
-      | F a  -> F S.(tanh a)
-      | Mat a -> Mat M.(tanh a)
+      | F a      -> F S.(tanh a)
+      | Mat a    -> Mat M.(tanh a)
       | _        -> failwith "error: tanh: ff"
     in
     let fd a = tanh a in
@@ -492,8 +492,8 @@ module Maths = struct
 
   and asin a =
     let ff = function
-      | F a  -> F S.(asin a)
-      | Mat a -> Mat M.(asin a)
+      | F a      -> F S.(asin a)
+      | Mat a    -> Mat M.(asin a)
       | _        -> failwith "error: asin: ff"
     in
     let fd a = asin a in
@@ -503,8 +503,8 @@ module Maths = struct
 
   and acos a =
     let ff = function
-      | F a  -> F S.(acos a)
-      | Mat a -> Mat M.(acos a)
+      | F a      -> F S.(acos a)
+      | Mat a    -> Mat M.(acos a)
       | _        -> failwith "error: acos: ff"
     in
     let fd a = acos a in
@@ -514,8 +514,8 @@ module Maths = struct
 
   and atan a =
     let ff = function
-      | F a  -> F S.(atan a)
-      | Mat a -> Mat M.(atan a)
+      | F a      -> F S.(atan a)
+      | Mat a    -> Mat M.(atan a)
       | _        -> failwith "error: atan: ff"
     in
     let fd a = atan a in
@@ -525,8 +525,8 @@ module Maths = struct
 
   and asinh a =
     let ff = function
-      | F a  -> F Owl_maths.(asinh a)
-      | Mat a -> Mat M.(asinh a)
+      | F a      -> F Owl_maths.(asinh a)
+      | Mat a    -> Mat M.(asinh a)
       | _        -> failwith "error: asinh: ff"
     in
     let fd a = asinh a in
@@ -536,8 +536,8 @@ module Maths = struct
 
   and acosh a =
     let ff = function
-      | F a  -> F Owl_maths.(acosh a)
-      | Mat a -> Mat M.(acosh a)
+      | F a      -> F Owl_maths.(acosh a)
+      | Mat a    -> Mat M.(acosh a)
       | _        -> failwith "error: acosh: ff"
     in
     let fd a = acosh a in
@@ -547,8 +547,8 @@ module Maths = struct
 
   and atanh a =
     let ff = function
-      | F a  -> F Owl_maths.(atanh a)
-      | Mat a -> Mat M.(atanh a)
+      | F a      -> F Owl_maths.(atanh a)
+      | Mat a    -> Mat M.(atanh a)
       | _        -> failwith "error: atanh: ff"
     in
     let fd a = atanh a in
@@ -558,14 +558,14 @@ module Maths = struct
 
   and item a i j =
     match a with
-    | Mat ap            -> F (M.get ap i j)
+    | Mat ap               -> F (M.get ap i j)
     | DF (ap, at, ai)      -> DF (item ap i j, item at i j, ai)
     | DR (ap, _, _, _, ai) -> DR (item ap i j, ref (F 0.), Item (a, i, j), ref 0, ai)
     | _                    -> failwith "error: item"
 
   and add_item a i j b =
     let ff a b = match a, b with
-      | Mat a, F b -> let aa = M.clone a in aa.{i,j} <- S.(aa.{i,j} +. b); Mat aa
+      | Mat a, F b        -> let aa = M.clone a in aa.{i,j} <- S.(aa.{i,j} +. b); Mat aa
       | _                 -> failwith "error: add_item: ff"
     in
     let fd a b = add_item a i j b in
@@ -591,7 +591,7 @@ module Maths = struct
   and dot a b =
     let ff a b =
       match a, b with
-      | Mat a, Mat b -> Mat M.(a $@ b)
+      | Mat a, Mat b       -> Mat M.(a $@ b)
       | _                  -> failwith "error: dot: ff"
     in
     let fd a b = a $@ b in
@@ -605,7 +605,7 @@ module Maths = struct
 
   and transpose a =
     let ff = function
-      | Mat a -> Mat M.(transpose a)
+      | Mat a    -> Mat M.(transpose a)
       | _        -> failwith "error: transpose: ff"
     in
     let fd a = transpose a in
@@ -615,7 +615,7 @@ module Maths = struct
 
   and l1norm a =
     let ff = function
-      | Mat a -> F M.(l1norm a)
+      | Mat a    -> F M.(l1norm a)
       | _        -> failwith "error: l1norm: ff"
     in
     let fd a = l1norm a in
@@ -625,7 +625,7 @@ module Maths = struct
 
   and l2norm a =
     let ff = function
-      | Mat a -> F M.(l2norm a)
+      | Mat a    -> F M.(l2norm a)
       | _        -> failwith "error: l2norm: ff"
     in
     let fd a = l2norm a in
@@ -635,8 +635,8 @@ module Maths = struct
 
   and l2norm_sqr a =
     let ff = function
-      | F a  -> F S.(a *. a)
-      | Mat a -> F M.(l2norm_sqr a)
+      | F a      -> F S.(a *. a)
+      | Mat a    -> F M.(l2norm_sqr a)
       | _        -> failwith "error: l2norm_sqr: ff"
     in
     let fd a = l2norm_sqr a in
@@ -646,8 +646,8 @@ module Maths = struct
 
   and sigmoid a =
     let ff = function
-      | F a  -> F Owl_maths.(sigmoid a)
-      | Mat a -> Mat M.(sigmoid a)
+      | F a      -> F Owl_maths.(sigmoid a)
+      | Mat a    -> Mat M.(sigmoid a)
       | _        -> failwith "error: sigmoid: ff"
     in
     let fd a = sigmoid a in
@@ -657,8 +657,8 @@ module Maths = struct
 
   and relu a =
     let ff = function
-      | F a  -> F Owl_maths.(relu a)
-      | Mat a -> Mat M.(relu a)
+      | F a      -> F Owl_maths.(relu a)
+      | Mat a    -> Mat M.(relu a)
       | _        -> failwith "error: relu: ff"
     in
     let fd a = relu a in
@@ -668,7 +668,7 @@ module Maths = struct
 
   and inv a =
     let ff = function
-      | Mat a -> Mat Owl_linalg.(inv a)
+      | Mat a    -> Mat Owl_linalg.(inv a)
       | _        -> failwith "error: inv: ff"
     in
     let fd a = inv a in
@@ -767,7 +767,6 @@ let reverse_reset x =
       )
   in
   reset [x]
-
 
 
 let reverse_push v x =
@@ -922,7 +921,7 @@ let jacobian f x =
     |> Array.iteri (fun i v ->
       match v with
       | Mat v -> M.copy_col_to v z i
-      | _ -> failwith "error: jacobian"
+      | _     -> failwith "error: jacobian"
     );
   )
   else (
@@ -934,7 +933,7 @@ let jacobian f x =
     |> Array.iteri (fun i v ->
       match v with
       | Mat v -> M.copy_row_to v z i
-      | _ -> failwith "error: jacobian"
+      | _     -> failwith "error: jacobian"
     );
   );
   z
