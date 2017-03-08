@@ -8,7 +8,11 @@ open Bigarray
 module V = Owl_dense_vector_generic
 include V
 
+type elt = float
+
 let empty ?typ m = V.empty ?typ Float64 m
+
+let create ?typ m a = V.create ?typ Float64 m a
 
 let zeros ?typ m = V.zeros ?typ Float64 m
 

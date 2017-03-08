@@ -4,8 +4,10 @@
  *)
 
 module M = Owl_dense_real
-
 type mat = Owl_dense_real.mat
+
+module V = Owl_dense_vector_d
+type vec = Owl_dense_vector_d.vec
 
 (* global epsilon value used in numerical differentiation *)
 let _eps = 0.00001
@@ -29,11 +31,11 @@ let diff2' f x = f x, diff2 f x
 (* gradient of f : vector -> scalar, return both function value and gradient *)
 let grad' f x =
   Owl_utils.check_row_vector x;
-  let _, n = M.shape x in
-  let g = M.create 1 n (f x) in
-  let gg = M.mapi (fun _ j xj ->
-    let x' = M.clone x in
-    x'.{0,j} <- xj +. _eps;
+  let n = V.numel x in
+  let g = V.create n (f x) in
+  let gg = V.mapi (fun i xi ->
+    let x' = V.clone x in
+    x'.{0,i} <- xi +. _eps;
     f x'
   ) x
   in
@@ -46,7 +48,7 @@ let grad f x = grad' f x |> snd
 let jacobianT' f x =
   Owl_utils.check_row_vector x;
   let y = f x in
-  let m, n = M.col_num x, M.col_num y in
+  let m, n = V.numel x, V.numel y in
   let j = M.tile y [|m; 1|] in
   let jj = M.mapi_by_row n (fun i yi ->
     let x' = M.clone x in
