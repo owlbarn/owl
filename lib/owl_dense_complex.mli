@@ -160,6 +160,10 @@ val iteri_rows : (int -> mat -> unit) -> mat -> unit
 
 val iter_rows : (mat -> unit) -> mat -> unit
 
+val iter2i_rows : (int -> mat -> mat -> unit) -> mat -> mat -> unit
+
+val iter2_rows : (mat -> mat -> unit) -> mat -> mat -> unit
+
 val iteri_cols : (int -> mat -> unit) -> mat -> unit
 
 val iter_cols : (mat -> unit) -> mat -> unit

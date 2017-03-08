@@ -34,10 +34,9 @@ let backprop nn eta epoch x y =
       l.b <- make_reverse l.b t;
     ) nn.layers;
     let loss = ref (F 0.) in
-    Mat.iteri_rows (fun i u ->
-        let v = Mat.row y i in
+    Mat.iter2_rows (fun u v ->
         loss := Maths.(!loss + l2norm_sqr((run_network u nn) - v))
-    ) x;
+    ) x y;
     reverse_prop (F 1.) !loss;
     Array.iter (fun l ->
       l.w <- Maths.(primal ((primal l.w) - (eta * (adjval l.w))));

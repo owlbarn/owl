@@ -233,6 +233,12 @@ let iteri_rows f x =
 
 let iter_rows f x = iteri_rows (fun _ y -> f y) x
 
+let iter2i_rows f x y =
+  if row_num x <> row_num y then failwith "error: iter2i_rows";
+  iteri_rows (fun i u -> f i u (row y i)) x
+
+let iter2_rows f x y = iter2i_rows (fun _ u v -> f u v) x y
+
 let _row x i =  (* get row i of x, but return as a column vector *)
   let y = Array2.slice_left x i in
   reshape_2 (genarray_of_array1 y) (col_num x) 1
@@ -255,7 +261,7 @@ let map f x =
   of_ndarray y
 
 let map2i f x y =
-  if same_shape x y = false then failwith "error: shap mismatch";
+  if same_shape x y = false then failwith "error: map2i";
   let z = empty (Array2.kind x) (row_num x) (col_num x) in
   iteri (fun i j a ->
     let b = Array2.unsafe_get y i j in

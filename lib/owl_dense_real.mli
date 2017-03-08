@@ -293,6 +293,10 @@ val iteri_rows : (int -> mat -> unit) -> mat -> unit
 val iter_rows : (mat -> unit) -> mat -> unit
 (** Similar to [iteri_rows] except row number is not passed to [f]. *)
 
+val iter2i_rows : (int -> mat -> mat -> unit) -> mat -> mat -> unit
+
+val iter2_rows : (mat -> mat -> unit) -> mat -> mat -> unit
+
 val iteri_cols : (int -> mat -> unit) -> mat -> unit
 (** [iteri_cols f x] iterates every column in [x] and applies function
   [f : int -> mat -> unit] to each of them. Column number is passed to [f] as

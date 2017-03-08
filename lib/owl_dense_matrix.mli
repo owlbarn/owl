@@ -138,6 +138,10 @@ val iteri_rows : (int -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 
 val iter_rows : (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 
+val iter2i_rows : (int -> ('a, 'b) t -> ('a, 'b) t -> unit) -> ('a, 'b) t -> ('a, 'b) t -> unit
+
+val iter2_rows : (('a, 'b) t -> ('a, 'b) t -> unit) -> ('a, 'b) t -> ('a, 'b) t -> unit
+
 val iteri_cols : (int -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 
 val iter_cols : (('a, 'b) t -> unit) -> ('a, 'b) t -> unit

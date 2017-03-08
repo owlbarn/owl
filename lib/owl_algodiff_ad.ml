@@ -997,6 +997,8 @@ module Mat = struct
 
   let iteri_rows f x = M.iteri_rows (fun i v -> f i (pack_box v)) (unpack_box x)
 
+  let iter2_rows f x y = M.iter2_rows (fun u v -> f (pack_box u) (pack_box v)) (unpack_box x) (unpack_box y)
+
   let print x = M.print (unpack_box x)
 
 end
