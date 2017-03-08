@@ -362,11 +362,32 @@ let map_at_col f x j = mapi_at_col (fun _ _ y -> f y) x j
 
 (* matrix mathematical operations *)
 
-let add x1 x2 =
+(* TODO: optimise to get rid of tiling *)
+let _broadcast_add_mat_row x1 v =
+  let x2 = tile v [|row_num x1; 1|] in
   let y1 = to_ndarray x1 in
   let y2 = to_ndarray x2 in
   let y3 = Owl_dense_ndarray.add y1 y2 in
   of_ndarray y3
+
+let _broadcast_add x1 x2 =
+  let m1, n1 = shape x1 in
+  let m2, n2 = shape x2 in
+  match m1 = m2, n1 = n2, m1 = 1, m2 = 1, n1 = 1, n2 = 1 with
+  | true, false, _, _, true, false -> failwith "not implemented: col_vec + mat"
+  | true, false, _, _, false, true -> failwith "not implemented: mat + col_vec"
+  | false, true, true, false, _, _ -> _broadcast_add_mat_row x2 x1
+  | false, true, false, true, _, _ -> _broadcast_add_mat_row x1 x2
+  | _                              -> failwith "error: _broadcast_add"
+
+let add x1 x2 =
+  if same_shape x1 x2 then (
+    let y1 = to_ndarray x1 in
+    let y2 = to_ndarray x2 in
+    let y3 = Owl_dense_ndarray.add y1 y2 in
+    of_ndarray y3
+  )
+  else _broadcast_add x1 x2
 
 let sub x1 x2 =
   let y1 = to_ndarray x1 in
