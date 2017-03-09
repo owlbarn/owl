@@ -22,11 +22,18 @@ val ones : ?typ:vec_typ -> int -> vec
 val uniform : ?typ:vec_typ -> ?scale:float -> int -> vec
 
 
-(** {6 Vector manipulations } *)
+(** {6 Vector properties } *)
 
 val shape : vec -> int * int
 
 val numel : vec -> int
+
+
+(** {6 Vector manipulations } *)
+
+val set : vec -> int -> elt -> unit
+
+val get : vec -> int -> elt
 
 val clone : vec -> vec
 

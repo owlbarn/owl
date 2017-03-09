@@ -158,6 +158,6 @@ let download_data fname =
 let download_all () =
   let l = [
     "stopwords.txt.gz"; "enron.test.gz"; "enron.train.gz"; "nips.test.gz"; "nips.train.gz";
-    "t10k-images-idx3-ubyte.gz"; "t10k-labels-idx1-ubyte.gz"; "train-images-idx3-ubyte.gz"; "train-labels-idx1-ubyte.gz";
+    "mnist-test-labels.gz"; "mnist-test-images.gz"; "mnist-train-labels.gz"; "mnist-train-images.gz";
     ] in
   List.iter (fun fname -> download_data fname) l
