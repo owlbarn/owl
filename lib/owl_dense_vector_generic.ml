@@ -35,6 +35,10 @@ let uniform ?(typ=Row) ?scale k m = match typ with
   | Row -> M.uniform ?scale k 1 m
   | Col -> M.uniform ?scale k m 1
 
+let unit_basis ?(typ=Row) k m i = match typ with
+  | Row -> let v = M.zeros k 1 m in v.{0,i} <- 1.; v
+  | Col -> let v = M.zeros k m 1 in v.{i,0} <- 1.; v
+
 
 (* vector properties and manipulations *)
 

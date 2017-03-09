@@ -217,6 +217,12 @@ Executable test_neural_network
   MainIs:         test_neural_network.ml
   BuildDepends:   owl
 
+Executable test_mnist
+  Path:           examples
+  CompiledObject: best
+  MainIs:         test_mnist.ml
+  BuildDepends:   owl
+
 # +-------------------------------------------------------------------+
 # | Document                                                          |
 # +-------------------------------------------------------------------+

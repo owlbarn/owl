@@ -918,6 +918,11 @@ let l2norm_sqr x =
   let y = to_ndarray x in
   Owl_dense_ndarray.l2norm_sqr y
 
+let cross_entropy x y =
+  let x = to_ndarray x in
+  let y = to_ndarray y in
+  Owl_dense_ndarray.cross_entropy x y
+
 
 (* binary matrix operation *)
 

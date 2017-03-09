@@ -690,6 +690,8 @@ module Maths = struct
     let a = sum y in
     y / a
 
+  and cross_entropy x y = x * log y |> sum |> neg
+
   and add_row a b i =
     let ff a b =
       match a, b with

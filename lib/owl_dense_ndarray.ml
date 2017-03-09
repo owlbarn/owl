@@ -643,6 +643,8 @@ let softmax x =
   let a = sum y in
   div_scalar y a
 
+let cross_entropy x y = (mul x (log y) |> sum) |> _neg_elt (kind x)
+
 
 (* advanced operations *)
 

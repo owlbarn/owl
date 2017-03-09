@@ -595,6 +595,9 @@ val l2norm_sqr : ('a, 'b) t -> float
   This function is just an alias of [sqr_nrm2] function.
  *)
 
+val cross_entropy : (float, 'a) t -> (float, 'a) t -> float
+(** [cross_entropy x y] calculates the cross entropy between [x] and [y] using base [e]. *)
+
 
 (** {6 Binary mathematical operations } *)
 

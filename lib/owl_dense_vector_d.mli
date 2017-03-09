@@ -21,6 +21,8 @@ val ones : ?typ:vec_typ -> int -> vec
 
 val uniform : ?typ:vec_typ -> ?scale:float -> int -> vec
 
+val unit_basis : ?typ:vec_typ -> int -> int -> vec
+
 
 (** {6 Vector properties } *)
 
@@ -153,6 +155,8 @@ val l1norm : vec -> elt
 val l2norm : vec -> elt
 
 val l2norm_sqr : vec -> elt
+
+val cross_entropy : vec -> vec -> elt
 
 
 (** {6 Shorhand infix operators} *)

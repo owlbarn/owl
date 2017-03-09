@@ -806,6 +806,9 @@ val l2norm_sqr : mat -> elt
   This function is just an alias of [sqr_nrm2] function.
  *)
 
+val cross_entropy : mat -> mat -> elt
+(** [cross_entropy x y] calculates the cross entropy between [x] and [y] using base [e]. *)
+
 
 (** {6 Binary mathematical operations } *)
 

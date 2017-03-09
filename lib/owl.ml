@@ -37,7 +37,11 @@ module Cluster = Owl_cluster
 
 module Algodiff = Owl_algodiff
 
+module Utils = Owl_utils
+
 (* shortcuts to 64-bit precision modules *)
+
+module Mat = Owl_dense_real
 
 module Vec = Owl_dense_vector_d
 
