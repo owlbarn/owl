@@ -510,6 +510,14 @@ val of_ndarray : (float, Bigarray.float64_elt) Owl_dense_ndarray.t -> mat
   real matrix type. No copy is made by calling this function.
  *)
 
+val to_rows : mat -> mat array
+
+val of_rows : mat array -> mat
+
+val to_cols : mat -> mat array
+
+val of_cols : mat array -> mat
+
 val print : mat -> unit
 (** [print x] pretty prints matrix [x] without headings. *)
 

@@ -261,6 +261,14 @@ val to_ndarray : mat -> (Complex.t, Bigarray.complex64_elt) Owl_dense_ndarray.t
 
 val of_ndarray : (Complex.t, Bigarray.complex64_elt) Owl_dense_ndarray.t -> mat
 
+val to_rows : mat -> mat array
+
+val of_rows : mat array -> mat
+
+val to_cols : mat -> mat array
+
+val of_cols : mat array -> mat
+
 val print : mat -> unit
 
 val pp_dsmat : mat -> unit

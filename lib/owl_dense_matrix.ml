@@ -595,6 +595,20 @@ let to_array x =
 
 let to_arrays x = Array.init (row_num x) (fun i -> to_array (row x i))
 
+let to_rows x = Array.init (row_num x) (fun i -> row x i)
+
+let to_cols x = Array.init (col_num x) (fun i -> col x i)
+
+let of_rows l =
+  let x = empty (kind l.(0)) (Array.length l) (col_num l.(0)) in
+  Array.iteri (fun i v -> copy_row_to v x i) l;
+  x
+
+let of_cols l =
+  let x = empty (kind l.(0)) (row_num l.(0)) (Array.length l)  in
+  Array.iteri (fun i v -> copy_col_to v x i) l;
+  x
+
 (* FIXME *)
 let save_txt x f =
   let _op = _owl_elt_to_str (Array2.kind x) in

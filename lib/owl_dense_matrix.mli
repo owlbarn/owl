@@ -241,6 +241,14 @@ val to_ndarray : ('a, 'b) t -> ('a, 'b) Owl_dense_ndarray.t
 
 val of_ndarray : ('a, 'b) Owl_dense_ndarray.t -> ('a, 'b) t
 
+val to_rows : ('a, 'b) t -> ('a, 'b) t array
+
+val of_rows : ('a, 'b) t array -> ('a, 'b) t
+
+val to_cols : ('a, 'b) t -> ('a, 'b) t array
+
+val of_cols : ('a, 'b) t array -> ('a, 'b) t
+
 val print : ('a, 'b) t -> unit
 
 val pp_dsmat : ('a, 'b) t -> unit

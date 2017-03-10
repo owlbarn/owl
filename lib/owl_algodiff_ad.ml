@@ -78,6 +78,8 @@ and trace_op =
   | Add_Row_D_C of t * t * int
   | Add_Row_C_D of t * t * int
   | Get_Row_D   of t * int
+  | Mat_To_Rows of t
+  | Mat_Of_Rows of t list
 
 
 let _global_tag = ref 0
