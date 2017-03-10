@@ -124,16 +124,17 @@ let adjval = function
 
 let shape = function
   | Mat ap    -> M.shape ap
-  | _         -> failwith "error: shape"
+  | _         -> failwith "error: AD.shape"
 
-let row_num x = shape x |> fst
+(* TODO: change to the deepest primal value? *)
+let row_num x = x |> primal |> shape |> fst
 
-let col_num x = shape x |> snd
+let col_num x = x |> primal |> shape |> snd
 
 let mat_create m n a =
   match (primal a) with
   | F a  -> Mat (M.create m n a)
-  | _ -> failwith "error: mat_create"
+  | _ -> failwith "error: AD.mat_create"
 
 let pack_mat x = Mat x
 
