@@ -104,4 +104,4 @@ let _ =
   print_endline "test MNIST";
   let x, y = load_train_data () in
   let x, y = draw_samples x y 1000 in
-  backprop' nn (F 0.01) 100 (Mat x) (Mat y)
+  backprop' nn (F 0.01) 50 (Mat x) (Mat y)
