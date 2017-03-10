@@ -23,6 +23,8 @@ val ones : ?typ:vec_typ -> int -> vec
 
 val uniform : ?typ:vec_typ -> ?scale:float -> int -> vec
 
+val sequential : ?typ:vec_typ -> int -> vec
+
 val unit_basis : ?typ:vec_typ -> int -> int -> vec
 
 

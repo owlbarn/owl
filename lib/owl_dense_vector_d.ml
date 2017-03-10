@@ -20,4 +20,6 @@ let ones ?typ m = V.ones ?typ Float64 m
 
 let uniform ?typ ?scale m = V.uniform ?typ ?scale Float64 m
 
+let sequential ?typ m = V.sequential ?typ Float64 m
+
 let unit_basis ?typ m i = V.unit_basis ?typ Float64 m i
