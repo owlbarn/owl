@@ -78,8 +78,7 @@ and trace_op =
   | Add_Row_D_C of t * t * int
   | Add_Row_C_D of t * t * int
   | Get_Row_D   of t * int
-  | Mat_To_Rows of t
-  | Mat_Of_Rows of t list
+  | Of_Rows_D   of t array
 
 
 let _global_tag = ref 0
@@ -135,6 +134,13 @@ let mat_create m n a =
   match (primal a) with
   | F a  -> Mat (M.create m n a)
   | _ -> failwith "error: mat_create"
+
+let pack_mat x = Mat x
+
+let unpack_mat x =
+  match (primal x) with
+  | Mat x -> x
+  | _ -> failwith "error: AD.unpack_mat"
 
 
 (* overload operators *)
@@ -710,6 +716,7 @@ module Maths = struct
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
   and get_row a i =
+    (* TODO: optimise, do we really need to clone? *)
     let ff = function
       | Mat a    -> Mat M.(row a i |> clone)
       | _        -> failwith "error: get_row: ff"
@@ -719,6 +726,21 @@ module Maths = struct
     let r a = Get_Row_D (a, i) in
     op_d_d a ff fd df r
 
+  and to_rows a = Array.init (row_num a) (fun i -> get_row a i)
+
+  and of_rows a =
+    (* TODO: this can be further optimised by incorporating t array type as t*)
+    match a.(0) with
+    | Mat _               -> Array.map unpack_mat a |> M.of_rows |> pack_mat
+    | DF (_, _, ai)       ->
+      let ap = a |> Array.map (fun x -> x |> primal |> unpack_mat) |> M.of_rows |> pack_mat in
+      let at = a |> Array.map (fun x -> x |> adjval |> unpack_mat) |> M.of_rows |> pack_mat in
+      DF (ap, at, ai)
+    | DR (_, _, _, _, ai) ->
+      let ap = a |> Array.map (fun x -> x |> primal) in
+      let cp = ap |> Array.map (fun x -> x |> unpack_mat) |> M.of_rows |> pack_mat in
+      DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai)
+    | _                  -> failwith "error: of_rows: AD"
 
 end
 
@@ -797,6 +819,7 @@ let reverse_reset x =
             | Add_Row_D_C (a, _, _) -> reset (a :: t)
             | Add_Row_C_D (_, b, _) -> reset (b :: t)
             | Get_Row_D (a, _)      -> reset (a :: t)
+            | Of_Rows_D a           -> reset (List.append (Array.to_list a) t)
             | _                     -> reset t
             )
           else reset t
@@ -887,6 +910,7 @@ let reverse_push v x =
             | Add_Row_D_C (a, b, i) -> push ((!aa, a) :: t)
             | Add_Row_C_D (a, b, i) -> push ((get_row !aa i, b) :: t)
             | Get_Row_D (a, i)      -> (adjref a) := add_row (adjval a) !aa i; push ((zero a, a) :: t)
+            | Of_Rows_D a           -> push (t |> List.append (a |> Array.to_list |> List.mapi (fun i v -> (get_row !aa i, v))))
             | _                     -> push t
             )
           else push t
@@ -1009,6 +1033,8 @@ module Mat = struct
   let iteri_rows f x = M.iteri_rows (fun i v -> f i (pack_box v)) (unpack_box x)
 
   let iter2_rows f x y = M.iter2_rows (fun u v -> f (pack_box u) (pack_box v)) (unpack_box x) (unpack_box y)
+
+  let map_by_row f x = x |> Maths.to_rows |> Array.map f |> Maths.of_rows
 
   let print x = M.print (unpack_box x)
 
