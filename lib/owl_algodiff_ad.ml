@@ -993,7 +993,13 @@ module Mat = struct
     | Mat x -> x
     | _ -> failwith "error: AD.Mat.unpack"
 
+  let zeros m n = M.zeros m n |> pack_box
+
   let uniform ?scale m n = M.uniform ?scale m n |> pack_box
+
+  let row_num x = M.row_num (unpack_box x)
+
+  let col_num x = M.col_num (unpack_box x)
 
   let row x i = Maths.get_row x i
 

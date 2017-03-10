@@ -8,6 +8,8 @@ open Owl_dense_vector_generic
 
 type vec = (float, float64_elt) Owl_dense_matrix.t
 type elt = float
+type vec_typ = Row | Col
+
 
 (** {6 Creation functions } *)
 
