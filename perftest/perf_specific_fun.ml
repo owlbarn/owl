@@ -62,4 +62,30 @@ let test_19 _ = Owl_dense_real.softmax x
 
 let test_20 _ = Owl_dense_real.transpose x
 
-let _ = Perf_common.test_op_each c test_20
+(* compare the speed between 21 and 22 *)
+
+let test_21 _ =
+  for i = 1 to 10000 do
+    let x = Owl.Mat.empty 1000 1000 in
+    Owl.Mat.fill x 0.;
+    Gc.compact ()
+  done
+
+let test_22 _ =
+  for i = 1 to 10000 do
+    let x = Array2.create Float32 C_layout 1000 1000 in
+    Array2.fill x 0.;
+    Gc.compact()
+  done
+
+let test_23 _ =
+  let x = ref (Array2.create Float32 C_layout 1000 1000) in
+  for i = 1 to 10000 do
+    x := Array2.create Float32 C_layout 1000 1000;
+    Array2.fill !x 0.;
+    Gc.compact()
+  done
+
+let _ = Perf_common.test_op_each c test_23
+
+(* ends here *)

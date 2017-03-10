@@ -1023,6 +1023,9 @@ module Mat = struct
 
   let row x i = Maths.get_row x i
 
+  (* FIXME: ??? *)
+  let test x = x |> primal |> unpack_mat |> M.clone |> pack_mat
+
   (* FIXME: need to be call row fun *)
   let iteri_rows f x = M.iteri_rows (fun i v -> f i (pack_mat v)) (unpack_mat x)
 
