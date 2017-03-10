@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: 4bf53300f22b735dbbf7956e6d0ce338)
+# DO NOT EDIT (digest: e8be6f2a1cbfdc34ceb5b7324523d10f)
 Owl
 Owl_const
 Owl_types
@@ -57,4 +57,5 @@ ext/Owl_ext_dense_matrix_c
 ext/Owl_ext_dense_matrix_z
 backend/Owl_backend_gsl_maths
 backend/Owl_backend_gsl_stats
+backend/Owl_backend_gsl_linalg
 # OASIS_STOP

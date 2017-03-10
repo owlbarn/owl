@@ -182,7 +182,11 @@ let swap_rows x i i' = _eigen_swap_rows (kind x) x i i'
 
 let swap_cols x j j' = _eigen_swap_cols (kind x) x j j'
 
-let transpose x = _eigen_transpose (kind x) x
+(* let transpose x = _eigen_transpose (kind x) x *)
+let transpose x =
+  let y = empty (kind x) (col_num x) (row_num x) in
+  Owl_backend_gsl_linalg._gsl_transpose_copy (kind x) y x;
+  y
 
 let replace_row v x i =
   let y = clone x in
@@ -407,7 +411,8 @@ let div x1 x2 =
   let y3 = Owl_dense_ndarray.div y1 y2 in
   of_ndarray y3
 
-let dot x1 x2 = _eigen_dot (kind x1) x1 x2
+(* let dot x1 x2 = _eigen_dot (kind x1) x1 x2 *)
+let dot x1 x2 = Owl_backend_gsl_linalg._gsl_dot (kind x1) x1 x2
 
 let sum_cols x =
   let y = ones (Array2.kind x) (col_num x) 1 in
