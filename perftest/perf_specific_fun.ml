@@ -6,6 +6,14 @@ let c_mat_to_array2d x = Obj.magic (Bigarray.genarray_of_array2 x)
 
 let array2d_to_c_mat x = Bigarray.array2_of_genarray (Obj.magic x)
 
+let _ = let conf = Gc.get () in Gc.(conf.verbose <- 0x80); Gc.set conf
+
+let print_gc_stat () =
+  Printf.printf "==================================\n";
+  Gc.print_stat stdout;
+  flush_all ()
+
+
 (* prepare some data *)
 
 let m, n = 5000, 20000 and c = 3
@@ -67,7 +75,7 @@ let test_20 _ = Owl_dense_real.transpose x
 let test_21 _ =
   for i = 1 to 10000 do
     let x = Owl.Mat.empty 1000 1000 in
-    Owl.Mat.fill x 0.;
+    Array2.fill x 0.;
     Gc.compact ()
   done
 
@@ -75,17 +83,18 @@ let test_22 _ =
   for i = 1 to 10000 do
     let x = Array2.create Float32 C_layout 1000 1000 in
     Array2.fill x 0.;
-    Gc.compact()
+    Gc.compact ()
   done
 
 let test_23 _ =
   let x = ref (Array2.create Float32 C_layout 1000 1000) in
   for i = 1 to 10000 do
+    print_gc_stat ();
     x := Array2.create Float32 C_layout 1000 1000;
     Array2.fill !x 0.;
     Gc.compact()
   done
 
-let _ = Perf_common.test_op_each c test_23
+let _ = Perf_common.test_op_each c test_22
 
 (* ends here *)

@@ -90,6 +90,12 @@ let cmp_tag ai bi =
   else if ai < bi then -1
   else 0
 
+let rec _zero = function
+  | F _                     -> F 0.
+  | Mat ap                  -> M.fill ap 0.; Mat ap
+  | DF (ap, at, ai)         -> DF ((_zero ap), (_zero at), ai)  (* FIXME: need to check *)
+  | DR (ap, at, ao, af, ai) -> DR ((_zero ap), ref (_zero !at), Noop, ref !af, ai)
+
 let rec zero = function
   | F _                     -> F 0.
   | Mat ap                  -> Mat M.(zeros (row_num ap) (col_num ap))
@@ -755,7 +761,9 @@ let reverse_reset x =
     | x :: t -> (
         match x with
         | DR (ap, aa, ao, af, ai) -> (
-          aa := zero !aa;
+          (* debug *)
+          (* aa := zero !aa; *)
+          aa := _zero !aa;
           af := !af + 1;
           if !af = 1 then (
             match ao with
