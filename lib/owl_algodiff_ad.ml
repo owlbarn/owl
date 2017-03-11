@@ -150,6 +150,13 @@ let unpack_mat x =
   | Mat x -> x
   | _ -> failwith "error: AD.unpack_mat"
 
+let pack_flt x = F x
+
+let unpack_flt x =
+  match (primal x) with
+  | F x -> x
+  | _ -> failwith "error: AD.unpack_elt"
+
 
 (* overload operators *)
 

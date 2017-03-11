@@ -39,6 +39,8 @@ module Algodiff = Owl_algodiff
 
 module Utils = Owl_utils
 
+module Dataset = Owl_dataset
+
 (* shortcuts to 64-bit precision modules *)
 
 module Mat = Owl_dense_real

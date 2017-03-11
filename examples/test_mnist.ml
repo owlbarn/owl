@@ -1,40 +1,7 @@
 (* Test neural network on MNIST *)
 
-let print_image x =
-  let open Owl in
-  let x = Mat.reshape 28 28 x in
-  Mat.iter_rows (fun v ->
-    Vec.iter (function 0. -> Printf.printf " " | _ -> Printf.printf "■") v;
-    print_endline "";
-  ) x
-
-let print_random x m =
-  let open Owl in
-  Mat.draw_rows x m |> fst |> Mat.iter_rows print_image
-
-let load_mnist_train_data () =
-  let open Owl in
-  let p = Owl_utils.local_data_path () in
-  Mat.load (p ^ "mnist-train-images"),
-  Mat.load (p ^ "mnist-train-labels")
-  |> Mat.transpose
-  |> Mat.map_by_row 10 (fun a -> Vec.unit_basis ~typ:Row 10 (int_of_float a.{0,0}))
-
-let load_mnist_test_data () =
-  let open Owl in
-  let p = Owl_utils.local_data_path () in
-  Mat.load (p ^ "mnist-test-images"),
-  Mat.load (p ^ "mnist-test-labels") |> Mat.transpose
-
-let draw_samples x y n =
-  let open Owl in
-  let x, l = Mat.draw_rows ~replacement:false x n in
-  let y = Mat.rows y l in
-  x, y
-
-(* nn related code *)
-
-open Owl_algodiff_ad
+open Owl
+open Algodiff.AD
 
 type layer = {
   mutable w : t;
@@ -62,7 +29,7 @@ let l1 = {
 
 let nn = {layers = [|l0; l1|]}
 
-let backprop nn eta epoch x y =
+let backprop nn eta x y =
   let t = tag () in
   Array.iter (fun l ->
     l.w <- make_reverse l.w t;
@@ -74,26 +41,24 @@ let backprop nn eta epoch x y =
     l.w <- Maths.((primal l.w) - (eta * (adjval l.w))) |> primal;
     l.b <- Maths.((primal l.b) - (eta * (adjval l.b))) |> primal;
   ) nn.layers;
-  match (primal loss) with
-  | F loss -> Printf.printf "#%i : loss=%g\n" epoch loss; flush_all ()
-  | _ -> print_endline "error"
+  loss |> unpack_flt
 
 let test_model nn x y =
   Mat.iter2_rows (fun u v ->
-    print_image (unpack_mat u);
+    Dataset.print_mnist_image (unpack_mat u);
     let p = run_network u nn |> unpack_mat in
     Owl.Mat.print p;
-    Printf.printf "prediction: %i\n" (let _, _, j = Owl.Mat.max_i p in j);
-    flush_all ()
+    Printf.printf "prediction: %i\n" (let _, _, j = Owl.Mat.max_i p in j)
   ) x y
 
 let _ =
-  print_endline "test MNIST";
-  let x, y = load_mnist_train_data () in
+  let x, _, y = Dataset.load_mnist_train_data () in
   for i = 1 to 500 do
-    let x', y' = draw_samples x y 100 in
-    backprop nn (F 0.01) i (Mat x') (Mat y')
+    let x', y' = Dataset.draw_samples x y 100 in
+    backprop nn (F 0.01) (Mat x') (Mat y')
+    |> Printf.printf "#%i : loss=%g\n" i
+    |> flush_all;
   done;
-  let x, y = load_mnist_test_data () in
-  let x, y = draw_samples x y 10 in
+  let x, y, _ = Dataset.load_mnist_test_data () in
+  let x, y = Dataset.draw_samples x y 10 in
   test_model nn (Mat x) (Mat y)

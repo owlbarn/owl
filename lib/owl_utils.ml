@@ -134,30 +134,3 @@ let marshal_from_file f =
 let check_row_vector x =
   if Bigarray.Array2.dim1 x <> 1 then
     failwith "error: the variable is not a row vector"
-
-(* functions to download data sets *)
-
-let local_data_path () =
-  let d = Sys.getenv "HOME" ^ "/owl_dataset/" in
-  if Sys.file_exists d = false then (
-    Log.info "create %s" d;
-    Unix.mkdir d 0o755;
-  );
-  d
-
-let remote_data_path () = "https://github.com/ryanrhymes/owl_dataset/raw/master/"
-
-let download_data fname =
-  let fn0 = remote_data_path () ^ fname in
-  let fn1 = local_data_path () ^ fname in
-  let cmd0 = "wget " ^ fn0 ^ " -O " ^ fn1 in
-  let cmd1 = "gunzip " ^ fn1 in
-  ignore (Sys.command cmd0);
-  ignore (Sys.command cmd1)
-
-let download_all () =
-  let l = [
-    "stopwords.txt.gz"; "enron.test.gz"; "enron.train.gz"; "nips.test.gz"; "nips.train.gz";
-    "mnist-test-labels.gz"; "mnist-test-images.gz"; "mnist-train-labels.gz"; "mnist-train-images.gz";
-    ] in
-  List.iter (fun fname -> download_data fname) l

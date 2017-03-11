@@ -4,9 +4,9 @@
  *)
 
 let prepare_data () =
-  let p = Owl_utils.local_data_path () in
+  let p = Owl.Dataset.local_data_path () in
   if Sys.file_exists (p ^ "stopwords.txt") = false then
-    Owl_utils.download_all ();
+    Owl.Dataset.download_all ();
   p
 
 let _ =

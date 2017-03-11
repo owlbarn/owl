@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: e8be6f2a1cbfdc34ceb5b7324523d10f)
+# DO NOT EDIT (digest: 3de81a926e2878288188beba22fff8d2)
 Owl
 Owl_const
 Owl_types
@@ -36,6 +36,7 @@ Owl_optimise
 Owl_regression
 Owl_plot
 Owl_pretty
+Owl_dataset
 Owl_toplevel
 topic/Owl_topic_lda
 topic/Owl_topic_lsa
