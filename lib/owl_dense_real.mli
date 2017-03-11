@@ -179,6 +179,8 @@ val reverse : mat -> mat
 val sort : ?cmp:(elt -> elt -> int) -> ?inc:bool -> mat -> unit
 (** [sort cmp x] performs in-place sort for the elements in [x] based on [cmp]. *)
 
+val reset : mat -> unit
+
 val fill : mat -> elt -> unit
 
 val clone : mat -> mat

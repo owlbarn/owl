@@ -46,6 +46,8 @@ let fill x a = Genarray.fill x a
 
 let reshape x dimension = reshape x dimension
 
+let reset x = Genarray.fill x (_zero (kind x))
+
 let mmap fd ?pos kind shared dims = Genarray.map_file fd ?pos kind c_layout shared dims
 
 let same_shape x y =

@@ -84,17 +84,18 @@ and trace_op =
 let _global_tag = ref 0
 let tag () = _global_tag := !_global_tag + 1; !_global_tag
 
-(* FIXME : optimise *)
+(* hepler functions of the core AD component *)
+
 let cmp_tag ai bi =
   if ai > bi then 1
   else if ai < bi then -1
   else 0
 
-let rec _zero = function
+let rec reset_zero = function
   | F _                     -> F 0.
-  | Mat ap                  -> M.fill ap 0.; Mat ap
-  | DF (ap, at, ai)         -> DF ((_zero ap), (_zero at), ai)  (* FIXME: need to check *)
-  | DR (ap, at, ao, af, ai) -> DR ((_zero ap), ref (_zero !at), Noop, ref !af, ai)
+  | Mat ap                  -> M.reset ap; Mat ap
+  | DF (ap, at, ai)         -> DF ((reset_zero ap), (reset_zero at), ai)
+  | DR (ap, at, ao, af, ai) -> DR ((reset_zero ap), ref (reset_zero !at), Noop, ref !af, ai)
 
 let rec zero = function
   | F _                     -> F 0.
@@ -723,7 +724,6 @@ module Maths = struct
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
   and get_row a i =
-    (* TODO: optimise, do we really need to clone? *)
     let ff = function
       | Mat a    -> Mat M.(row a i |> clone)
       | _        -> failwith "error: get_row: ff"
@@ -736,7 +736,7 @@ module Maths = struct
   and to_rows a = Array.init (row_num a) (fun i -> get_row a i)
 
   and of_rows a =
-    (* TODO: this can be further optimised by incorporating t array type as t*)
+    (* TODO: this can be further optimised by incorporating t array type as t *)
     match a.(0) with
     | Mat _               -> Array.map unpack_mat a |> M.of_rows |> pack_mat
     | DF (_, _, ai)       ->
@@ -761,9 +761,7 @@ let reverse_reset x =
     | x :: t -> (
         match x with
         | DR (ap, aa, ao, af, ai) -> (
-          (* debug *)
-          (* aa := zero !aa; *)
-          aa := _zero !aa;
+          aa := reset_zero !aa;
           af := !af + 1;
           if !af = 1 then (
             match ao with

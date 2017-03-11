@@ -81,6 +81,8 @@ val reverse : ('a, 'b) t -> ('a, 'b) t
 
 val sort : ?cmp:('a -> 'a -> int) -> ?inc:bool -> ('a, 'b) t -> unit
 
+val reset : ('a, 'b) t -> unit
+
 val fill : ('a, 'b) t -> 'a -> unit
 
 val clone : ('a, 'b) t -> ('a, 'b) t

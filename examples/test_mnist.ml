@@ -64,50 +64,6 @@ let nn = {layers = [|l0; l1|]}
 
 let backprop nn eta epoch x y =
   let t = tag () in
-  for i = 1 to epoch do
-    Gc.print_stat stdout;
-    Array.iter (fun l ->
-      l.w <- make_reverse l.w t;
-      l.b <- make_reverse l.b t;
-    ) nn.layers;
-    let loss = ref (F 0.) in
-    Mat.iter2_rows (fun u v ->
-      (* print_image (Mat.unpack_box u); flush_all (); *)
-      loss := Maths.(cross_entropy v (run_network u nn) + !loss)
-    ) x y;
-    loss := Maths.(!loss / F (Mat.row_num x |> float_of_int));
-    (* Printf.printf "#%i : reverse_prop" i; flush_all (); *)
-    reverse_prop (F 1.) !loss;
-    Array.iter (fun l ->
-      l.w <- Maths.(primal ((primal l.w) - (eta * (adjval l.w))));
-      l.b <- Maths.(primal ((primal l.b) - (eta * (adjval l.b))));
-    ) nn.layers;
-    match (primal !loss) with
-    | F loss -> Printf.printf "\n#%i : loss=%g\n\n" i loss; flush_all ()
-    | _ -> print_endline "error"
-  done
-
-let backprop' nn eta epoch x y =
-  let t = tag () in
-  for i = 1 to epoch do
-    Array.iter (fun l ->
-      l.w <- make_reverse l.w t;
-      l.b <- make_reverse l.b t;
-    ) nn.layers;
-    let loss = Maths.(cross_entropy y (run_network x nn) / (F (Mat.row_num x |> float_of_int))) in
-    reverse_prop (F 1.) loss;
-    Array.iter (fun l ->
-      l.w <- Maths.((primal l.w) - (eta * (adjval l.w))) |> primal;
-      l.b <- Maths.((primal l.b) - (eta * (adjval l.b))) |> primal;
-    ) nn.layers;
-    Gc.compact ();
-    match (primal loss) with
-    | F loss -> Printf.printf "#%i : loss=%g\n" i loss; flush_all ()
-    | _ -> print_endline "error"
-  done
-
-let backprop'' nn eta epoch x y =
-  let t = tag () in
   Array.iter (fun l ->
     l.w <- make_reverse l.w t;
     l.b <- make_reverse l.b t;
@@ -131,22 +87,12 @@ let test_model nn x y =
     flush_all ()
   ) x y
 
-let test_1 () =
-  print_endline "test MNIST";
-  let x, y = load_mnist_train_data () in
-  let x, y = draw_samples x y 1000 in
-  backprop' nn (F 0.01) 50 (Mat x) (Mat y);
-  let x, y = load_mnist_test_data () in
-  let x, y = draw_samples x y 10 in
-  test_model nn (Mat x) (Mat y)
-
 let _ =
   print_endline "test MNIST";
   let x, y = load_mnist_train_data () in
   for i = 1 to 500 do
     let x', y' = draw_samples x y 100 in
-    backprop'' nn (F 0.01) i (Mat x') (Mat y');
-    Gc.full_major ()
+    backprop nn (F 0.01) i (Mat x') (Mat y')
   done;
   let x, y = load_mnist_test_data () in
   let x, y = draw_samples x y 10 in

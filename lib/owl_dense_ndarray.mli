@@ -129,6 +129,9 @@ val copy_slice : int option array -> ('a, 'b) t -> ('a, 'b) t -> unit
 val copy : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [copy src dst] copies the data from ndarray [src] to [dst]. *)
 
+val reset : ('a, 'b) t -> unit
+(** [reset x] resets all the elements in [x] to zero. *)
+
 val fill : ('a, 'b) t -> 'a -> unit
 (** [fill x a] assigns the value [a] to the elements in [x]. *)
 

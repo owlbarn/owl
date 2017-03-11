@@ -52,6 +52,8 @@ let density x = Owl_dense_ndarray.density (to_ndarray x)
 
 let fill x a = Array2.fill x a
 
+let reset x = Array2.fill x (_zero (kind x))
+
 let empty k m n = Array2.create k c_layout m n
 
 let zeros k m n = (_make0 k) n m |> fortran2c_matrix
