@@ -319,6 +319,8 @@ module Maths = struct
     let r_c_d a b = Atan2_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
+  (* TODO: max function *)
+
   and neg a =
     let ff = function
       | F a      -> F S.(0. -. a)
