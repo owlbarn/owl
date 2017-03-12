@@ -138,6 +138,8 @@ let row_num x = x |> primal |> shape |> fst
 
 let col_num x = x |> primal |> shape |> snd
 
+let numel x = (row_num x) * (col_num x)
+
 let mat_create m n a =
   match (primal a) with
   | F a  -> Mat (M.create m n a)
@@ -320,7 +322,7 @@ module Maths = struct
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
   and min2 a b = ((a + b) - abs (a - b)) / F 2.
-  
+
   and max2 a b = ((a + b) + abs (b - a)) / F 2.
 
   and neg a =
@@ -617,6 +619,8 @@ module Maths = struct
     let df cp ap at = sum at in
     let r a = Sum_D a in
     op_d_d a ff fd df r
+
+  and average a = (sum a) / F (numel a |> float_of_int)
 
   and ( $@ ) a b = dot a b
   and dot a b =
@@ -1038,10 +1042,11 @@ module Mat = struct
 
   let col_num x = M.col_num (unpack_mat x)
 
-  let row x i = Maths.get_row x i
+  let numel x = numel x
 
-  (* FIXME: ??? *)
-  let test x = x |> primal |> unpack_mat |> M.clone |> pack_mat
+  let average x = Maths.average x
+
+  let row x i = Maths.get_row x i
 
   (* FIXME: need to be call row fun *)
   let iteri_rows f x = M.iteri_rows (fun i v -> f i (pack_mat v)) (unpack_mat x)
