@@ -319,7 +319,9 @@ module Maths = struct
     let r_c_d a b = Atan2_C_D (a, b) in
     op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-  (* TODO: max function *)
+  and min2 a b = ((a + b) - abs (a - b)) / F 2.
+  
+  and max2 a b = ((a + b) + abs (b - a)) / F 2.
 
   and neg a =
     let ff = function
