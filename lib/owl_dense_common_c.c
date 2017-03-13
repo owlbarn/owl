@@ -254,12 +254,12 @@ CAMLprim value testfn_stub(value vX, value vY)
 
 #define FUN3 real_float_sigmoid
 #define NUMBER float
-#define MAPFN(X) (1 / (1 + exp(-x)))
+#define MAPFN(X) (1 / (1 + exp(-X)))
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN3 real_double_sigmoid
 #define NUMBER double
-#define MAPFN(X) (1 / (1 + exp(-x)))
+#define MAPFN(X) (1 / (1 + exp(-X)))
 #include "owl_dense_common_vec_cmp.c"
 
 // abs
@@ -287,7 +287,6 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER1 double
 #define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
 #include "owl_dense_common_vec_cmp.c"
-
 
 // l1norm
 
@@ -339,6 +338,20 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER complex_double
 #define NUMBER1 double
 #define MAPFN(X) (sqr_double (X.r * X.r + X.i * X.i))
+#include "owl_dense_common_vec_cmp.c"
+
+// relu
+
+#define FUN4 real_float_relu
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (fmax(X,0))
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN4 real_double_relu
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (fmax(X,0))
 #include "owl_dense_common_vec_cmp.c"
 
 // min_i

@@ -16,7 +16,7 @@ let print_gc_stat () =
 
 (* prepare some data *)
 
-let m, n = 5000, 20000 and c = 3
+let m, n = 5000, 20000 and c = 5
 let x = Owl_dense_matrix.uniform Float64 m n
 let y = Owl_dense_matrix.zeros Float64 m n
 
@@ -95,6 +95,8 @@ let test_23 _ =
     Gc.compact()
   done
 
-let _ = Perf_common.test_op_each c test_22
+let test_24 _ = Owl_dense_matrix.relu x
+
+let _ = Perf_common.test_op_each c test_24
 
 (* ends here *)

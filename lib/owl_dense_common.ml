@@ -816,6 +816,15 @@ let _owl_l2norm_sqr : type a b. (a, b) kind -> (a, b) owl_vec_op02 = function
   | Complex64 -> owl_complex_double_l2norm_sqr
   | _         -> failwith "_owl_l2norm_sqr: unsupported operation"
 
+external owl_real_float_relu : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_float_relu"
+external owl_real_double_relu : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_double_relu"
+
+let _owl_relu : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+  match k with
+  | Float32   -> owl_real_float_relu l x y
+  | Float64   -> owl_real_double_relu l x y
+  | _         -> failwith "_owl_relu: unsupported operation"
+
 external owl_real_float_min_i : int -> ('a, 'b) owl_vec -> int = "real_float_min_i"
 external owl_real_double_min_i : int -> ('a, 'b) owl_vec -> int = "real_double_min_i"
 
