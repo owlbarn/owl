@@ -44,9 +44,15 @@ let _neg_inf : type a b. (a, b) kind -> a = function
 
 (* some transformation and helper functions *)
 
+(* FIXME
 let _change_layout = Eigen.Utils.change_layout
 
 let _size_in_bytes = Eigen.Utils.size_in_bytes
+*)
+
+let _change_layout = Bigarray.Genarray.change_layout
+
+let _size_in_bytes = Bigarray.Genarray.size_in_bytes
 
 let ndarray_to_fortran_vec x =
   let shape = Genarray.dims x in
@@ -824,6 +830,24 @@ let _owl_relu : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
   | Float32   -> owl_real_float_relu l x y
   | Float64   -> owl_real_double_relu l x y
   | _         -> failwith "_owl_relu: unsupported operation"
+
+external owl_real_float_softplus : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_float_softplus"
+external owl_real_double_softplus : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_double_softplus"
+
+let _owl_softplus : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+  match k with
+  | Float32   -> owl_real_float_softplus l x y
+  | Float64   -> owl_real_double_softplus l x y
+  | _         -> failwith "_owl_softplus: unsupported operation"
+
+external owl_real_float_softsign : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_float_softsign"
+external owl_real_double_softsign : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_double_softsign"
+
+let _owl_softsign : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+  match k with
+  | Float32   -> owl_real_float_softsign l x y
+  | Float64   -> owl_real_double_softsign l x y
+  | _         -> failwith "_owl_softsign: unsupported operation"
 
 external owl_real_float_min_i : int -> ('a, 'b) owl_vec -> int = "real_float_min_i"
 external owl_real_double_min_i : int -> ('a, 'b) owl_vec -> int = "real_double_min_i"

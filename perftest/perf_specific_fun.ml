@@ -95,7 +95,7 @@ let test_23 _ =
     Gc.compact()
   done
 
-let test_24 _ = Owl_dense_matrix.relu x
+let test_24 _ = Owl_dense_matrix.softsign x
 
 let _ = Perf_common.test_op_each c test_24
 

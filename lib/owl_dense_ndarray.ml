@@ -518,6 +518,7 @@ let logistic x =
   let z = Bigarray.reshape z (shape x) in
   z
 
+(*
 let relu x =
   let y = _change_layout x fortran_layout in
   let y = Bigarray.reshape_1 y (numel x) in
@@ -526,13 +527,6 @@ let relu x =
   let z = _change_layout z c_layout in
   let z = Bigarray.reshape z (shape x) in
   z
-
-let relu''' x =
-  let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_relu (kind x) (numel y) src dst in
-  y
 
 let softplus x =
   let y = _change_layout x fortran_layout in
@@ -551,6 +545,28 @@ let softsign x =
   let z = _change_layout z c_layout in
   let z = Bigarray.reshape z (shape x) in
   z
+*)
+
+let relu x =
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_relu (kind x) (numel y) src dst in
+  y
+
+let softplus x =
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_softplus (kind x) (numel y) src dst in
+  y
+
+let softsign x =
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_softsign (kind x) (numel y) src dst in
+  y
 
 let add_scalar x a =
   let y = _change_layout x fortran_layout in
