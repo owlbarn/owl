@@ -44,15 +44,19 @@ let _neg_inf : type a b. (a, b) kind -> a = function
 
 (* some transformation and helper functions *)
 
+let _change_layout = Eigen.Utils.change_layout
+
+let _size_in_bytes = Eigen.Utils.size_in_bytes
+
 let ndarray_to_fortran_vec x =
   let shape = Genarray.dims x in
   let n = Array.fold_right (fun c a -> c * a) shape 1 in
-  let y = Genarray.change_layout x fortran_layout in
+  let y = _change_layout x fortran_layout in
   Bigarray.reshape_1 y n
 
 let fortran_vec_to_ndarray x shape =
   let y = Bigarray.genarray_of_array1 x in
-  let y = Genarray.change_layout y c_layout in
+  let y = _change_layout y c_layout in
   Bigarray.reshape y shape
 
 let c_mat_to_ndarray x = None

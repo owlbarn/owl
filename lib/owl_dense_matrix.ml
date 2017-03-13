@@ -23,20 +23,20 @@ let of_ndarray x = Bigarray.array2_of_genarray x
 (* c_layout -> fortran_layout *)
 let c2fortran_matrix x =
   let y = Bigarray.genarray_of_array2 x in
-  let y = Genarray.change_layout y fortran_layout in
+  let y = _change_layout y fortran_layout in
   Bigarray.array2_of_genarray y
 
 (* fortran_layout -> c_layout *)
 let fortran2c_matrix x =
   let y = Bigarray.genarray_of_array2 x in
-  let y = Genarray.change_layout y c_layout in
+  let y = _change_layout y c_layout in
   Bigarray.array2_of_genarray y
 
 (* matrix creation operations *)
 
 let kind x = Array2.kind x
 
-let size_in_bytes x = Array2.size_in_bytes x
+let size_in_bytes x = x |> to_ndarray |> Owl_dense_ndarray.size_in_bytes
 
 let shape x = (Array2.dim1 x, Array2.dim2 x)
 
@@ -86,7 +86,7 @@ let sequential k m n =
 let linspace k a b n =
   let x = _linspace k a b n in
   let x = Bigarray.genarray_of_array1 x in
-  let x = Genarray.change_layout x c_layout in
+  let x = _change_layout x c_layout in
   Bigarray.reshape_2 x 1 n
 
 (* matrix manipulations *)

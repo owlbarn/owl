@@ -10,7 +10,7 @@ Synopsis:     Scientific computing library
 Authors:      Liang Wang (ryanrhymes@gmail.com)
 License:      MIT
 Plugins:      META (0.4)
-OCamlVersion: >= 4.04
+OCamlVersion: >= 4.02
 BuildTools:   ocamlbuild
 Homepage:     https://github.com/ryanrhymes/owl
 
