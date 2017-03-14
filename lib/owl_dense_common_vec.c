@@ -338,6 +338,48 @@ CAMLprim value FUN7(value vN, value vX, value vY, value vZ)
 #endif /* FUN7 */
 
 
+// function to calculate log_sum_exp specifically
+#ifdef FUN8
+
+CAMLprim value FUN8(value vN, value vX)
+{
+  CAMLparam2(vN, vX);
+  int N = Long_val(vN);
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  NUMBER *start_x, *stop_x, *max_start, max_x;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  start_x = X_data;
+  stop_x = start_x + N;
+  max_start = start_x;
+  max_x = *max_start;
+
+  for (max_start = start_x; max_start != stop_x; max_start += 1)
+      max_x = fmax(max_x, *max_start);
+
+  NUMBER1 r = 0.;
+
+  while (start_x != stop_x) {
+    NUMBER x = *start_x;
+    r += exp(x - max_x);
+    start_x += 1;
+  };
+
+  r = log(r) + max_x;
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(caml_copy_double(r ));
+}
+
+#endif /* FUN8 */
+
+
 #undef NUMBER
 #undef STOPFN
 #undef CHECKFN
@@ -352,3 +394,4 @@ CAMLprim value FUN7(value vN, value vX, value vY, value vZ)
 #undef FUN5
 #undef FUN6
 #undef FUN7
+#undef FUN8

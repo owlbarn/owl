@@ -656,7 +656,7 @@ let uniform ?(scale=1.) k m n =
   of_ndarray x
 
 let gaussian ?(sigma=1.) k m n =
-  let _op = _owl_gaussian k in
+  let _op = _owl_gaussian_fun k in
   let x = empty k m n in
   iteri (fun i j _ -> x.{i,j} <- _op sigma) x;
   x

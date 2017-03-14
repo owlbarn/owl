@@ -160,58 +160,43 @@ let div x y =
   z
 
 let pow x y =
-  let x' = _change_layout x fortran_layout in
-  let x' = Bigarray.reshape_1 x' (numel x) in
-  let y' = _change_layout y fortran_layout in
-  let y' = Bigarray.reshape_1 y' (numel y) in
-  let z = (_pow (kind x)) x' y' in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
+  let z = clone x in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  let _ = _owl_pow (kind x) (numel x) x' y' z' in
   z
 
 let atan2 x y =
-  let x' = _change_layout x fortran_layout in
-  let x' = Bigarray.reshape_1 x' (numel x) in
-  let y' = _change_layout y fortran_layout in
-  let y' = Bigarray.reshape_1 y' (numel y) in
-  let z = (_atan2 (kind x)) x' y' in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
+  let z = clone x in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  let _ = _owl_atan2 (kind x) (numel x) x' y' z' in
   z
 
 let hypot x y =
-  let x' = _change_layout x fortran_layout in
-  let x' = Bigarray.reshape_1 x' (numel x) in
-  let y' = _change_layout y fortran_layout in
-  let y' = Bigarray.reshape_1 y' (numel y) in
-  let z = (_hypot (kind x)) x' y' in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
+  let z = clone x in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  let _ = _owl_hypot (kind x) (numel x) x' y' z' in
   z
 
 let min2 x y =
-  let x' = _change_layout x fortran_layout in
-  let x' = Bigarray.reshape_1 x' (numel x) in
-  let y' = _change_layout y fortran_layout in
-  let y' = Bigarray.reshape_1 y' (numel y) in
-  let z = (_min2 (kind x)) x' y' in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
+  let z = clone x in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  let _ = _owl_min2 (kind x) (numel x) x' y' z' in
   z
 
 let max2 x y =
-  let x' = _change_layout x fortran_layout in
-  let x' = Bigarray.reshape_1 x' (numel x) in
-  let y' = _change_layout y fortran_layout in
-  let y' = Bigarray.reshape_1 y' (numel y) in
-  let z = (_max2 (kind x)) x' y' in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
+  let z = clone x in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  let _ = _owl_max2 (kind x) (numel x) x' y' z' in
   z
 
 let ssqr_diff x y =
@@ -222,330 +207,235 @@ let ssqr_diff x y =
   (_ssqr_diff (kind x)) x' y'
 
 let abs x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_abs (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_abs (kind x) (numel y) src dst in
+  y
 
 let neg x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_neg (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_neg (kind x) (numel y) src dst in
+  y
 
 let reci x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_reci (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_reci (kind x) (numel y) src dst in
+  y
 
 let signum x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_signum (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_signum (kind x) (numel y) src dst in
+  y
 
 let sqr x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_sqr (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_sqr (kind x) (numel y) src dst in
+  y
 
 let sqrt x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_sqrt (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_sqrt (kind x) (numel y) src dst in
+  y
 
 let cbrt x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_cbrt (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_cbrt (kind x) (numel y) src dst in
+  y
 
 let exp x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_exp (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_exp (kind x) (numel y) src dst in
+  y
 
 let exp2 x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_exp2 (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_exp2 (kind x) (numel y) src dst in
+  y
 
 let expm1 x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_expm1 (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_expm1 (kind x) (numel y) src dst in
+  y
 
 let log x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_log (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_log (kind x) (numel y) src dst in
+  y
 
 let log10 x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_log10 (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_log10 (kind x) (numel y) src dst in
+  y
 
 let log2 x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_log2 (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_log2 (kind x) (numel y) src dst in
+  y
 
 let log1p x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_log1p (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_log1p (kind x) (numel y) src dst in
+  y
 
 let sin x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_sin (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_sin (kind x) (numel y) src dst in
+  y
 
 let cos x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_cos (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_cos (kind x) (numel y) src dst in
+  y
 
 let tan x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_tan (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_tan (kind x) (numel y) src dst in
+  y
 
 let asin x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_asin (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_asin (kind x) (numel y) src dst in
+  y
 
 let acos x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_acos (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_acos (kind x) (numel y) src dst in
+  y
 
 let atan x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_atan (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_atan (kind x) (numel y) src dst in
+  y
 
 let sinh x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_sinh (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_sinh (kind x) (numel y) src dst in
+  y
 
 let cosh x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_cosh (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_cosh (kind x) (numel y) src dst in
+  y
 
 let tanh x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_tanh (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_tanh (kind x) (numel y) src dst in
+  y
 
 let asinh x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_asinh (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_asinh (kind x) (numel y) src dst in
+  y
 
 let acosh x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_acosh (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_acosh (kind x) (numel y) src dst in
+  y
 
 let atanh x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_atanh (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_atanh (kind x) (numel y) src dst in
+  y
 
 let floor x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_floor (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_floor (kind x) (numel y) src dst in
+  y
 
 let ceil x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_ceil (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_ceil (kind x) (numel y) src dst in
+  y
 
 let round x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_round (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_round (kind x) (numel y) src dst in
+  y
 
 let trunc x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_trunc (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_trunc (kind x) (numel y) src dst in
+  y
 
 let erf x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_erf (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_erf (kind x) (numel y) src dst in
+  y
 
 let erfc x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_erfc (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_erfc (kind x) (numel y) src dst in
+  y
 
 let logistic x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_logistic (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
-
-(*
-let relu x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_relu (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
-
-let softplus x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_softplus (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
-
-let softsign x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_softsign (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
-*)
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_logistic (kind x) (numel y) src dst in
+  y
 
 let relu x =
   let y = clone x in
@@ -621,6 +511,10 @@ let l2norm_sqr x = sqr_nrm2 x
 
 let l2norm x = sqr_nrm2 x |> Owl_maths.sqrt
 
+let log_sum_exp x =
+  let y = flatten x |> array1_of_genarray in
+  _owl_log_sum_exp (kind x) (numel x) y
+
 (* TODO: optimise *)
 let pow0 a x =
   let y = empty (kind x) (shape x) in
@@ -650,19 +544,6 @@ let sum x =
   let y = Bigarray.reshape_1 y (numel x) in
   (_sum (kind x)) y
 
-let log_sum_exp x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  (_log_sum_exp (kind x)) y
-
-let uniform ?(scale=1.) kind dimension =
-  let n = Array.fold_right (fun c a -> c * a) dimension 1 in
-  let _op = _uniform (kind) in
-  let x = _op scale n in
-  let x = Bigarray.genarray_of_array1 x in
-  let x = _change_layout x c_layout in
-  Bigarray.reshape x dimension
-
 let softmax x =
   let y = max x |> sub_scalar x |> exp in
   let a = sum y in
@@ -670,6 +551,34 @@ let softmax x =
 
 let cross_entropy x y = (mul x (log y) |> sum) |> _neg_elt (kind x)
 
+let uniform : type a b. ?scale:float -> (a, b) kind -> int array -> (a, b) t =
+  fun ?(scale=1.) kind dimension ->
+  let x = empty kind dimension in
+  let n = numel x in
+  let y = Bigarray.reshape_1 x n in
+  let _ = match kind with
+  | Float32 -> (
+    for i = 0 to n - 1 do
+      y.{i} <- Owl_stats.Rnd.uniform () *. scale
+    done
+    )
+  | Float64 -> (
+    for i = 0 to n - 1 do
+      y.{i} <- Owl_stats.Rnd.uniform () *. scale
+    done
+    )
+  | Complex32 -> (
+    for i = 0 to n - 1 do
+      y.{i} <- Complex.({ re = Owl_stats.Rnd.uniform () *. scale; im = Owl_stats.Rnd.uniform () *. scale })
+    done
+    )
+  | Complex64 -> (
+    for i = 0 to n - 1 do
+      y.{i} <- Complex.({ re = Owl_stats.Rnd.uniform () *. scale; im = Owl_stats.Rnd.uniform () *. scale })
+    done
+    )
+  | _ -> failwith "Owl_dense_ndarray.uniform: unknown type"
+  in x
 
 (* advanced operations *)
 

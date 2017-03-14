@@ -853,6 +853,18 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define MAPFN(X) (X / (1 + fabs(X)))
 #include "owl_dense_common_vec.c"
 
+// log_sum_exp
+
+#define FUN8 real_float_log_sum_exp
+#define NUMBER float
+#define NUMBER1 float
+#include "owl_dense_common_vec.c"
+
+#define FUN8 real_double_log_sum_exp
+#define NUMBER double
+#define NUMBER1 double
+#include "owl_dense_common_vec.c"
+
 
 ////// binary math operator //////
 

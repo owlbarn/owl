@@ -541,7 +541,7 @@ let binary ?(density=0.1) k s =
   _random_basic density k (fun () -> _a1) s
 
 let uniform ?(scale=1.) ?(density=0.1) k s =
-  let _op = _owl_uniform k in
+  let _op = _owl_uniform_fun k in
   _random_basic density k (fun () -> _op scale) s
 
 let to_array x =
