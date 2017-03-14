@@ -1,5 +1,5 @@
 # OASIS_START
-# DO NOT EDIT (digest: c13f5d2baaac1f9f6ba00400b93f49a0)
+# DO NOT EDIT (digest: c57b839ab6d6f117813565d126edcc64)
 owl_dense_common_c.o
-owl_dense_common_vec_cmp.o
+owl_dense_common_vec.o
 # OASIS_STOP
