@@ -325,7 +325,7 @@ val l2norm_sqr : mat -> float
 
 (** {6 Binary mathematical operations } *)
 
-val add : ?o:mat -> mat -> mat -> mat
+val add : mat -> mat -> mat
 
 val sub : mat -> mat -> mat
 

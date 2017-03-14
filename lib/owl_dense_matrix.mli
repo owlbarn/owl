@@ -529,7 +529,7 @@ val cross_entropy : (float, 'a) t -> (float, 'a) t -> float
 
 (** {6 Binary mathematical operations } *)
 
-val add : ?o:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [add x y] adds all the elements in [x] and [y] elementwise, and returns the
   result in a new matrix.
  *)

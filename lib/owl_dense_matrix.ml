@@ -386,17 +386,12 @@ let _broadcast_add x1 x2 =
   | false, true, false, true, _, _ -> _broadcast_add_mat_row x1 x2
   | _                              -> failwith "error: _broadcast_add"
 
-let add ?o x1 x2 =
+let add x1 x2 =
   if same_shape x1 x2 then (
     let y1 = to_ndarray x1 in
     let y2 = to_ndarray x2 in
-    let z = match o with
-      | Some z -> z
-      | None -> empty (kind x1) (row_num x1) (col_num x1)
-    in
-    let z' = to_ndarray z in
-    let _ = Owl_dense_ndarray.add ~o:z' y1 y2 in
-    z
+    let y3 = Owl_dense_ndarray.add y1 y2 in
+    of_ndarray y3
   )
   else _broadcast_add x1 x2
 
@@ -1023,7 +1018,7 @@ let ( >> ) = copy_to
 
 let ( << ) x1 x2 = copy_to x2 x1
 
-let ( +@ ) a b = add a b
+let ( +@ ) = add
 
 let ( -@ ) = sub
 
