@@ -59,7 +59,7 @@ val map : (elt -> elt) -> vec -> vec
 
 (** {6 Binary mathematical operations } *)
 
-val add : vec -> vec -> vec
+val add : ?o:vec -> vec -> vec -> vec
 
 val sub : vec -> vec -> vec
 

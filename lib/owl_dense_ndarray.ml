@@ -115,15 +115,18 @@ let max_i x =
 (* TODO: optimise *)
 let minmax_i x = min_i x, max_i x
 
-let add x y =
+let add ?o x y =
   let x' = _change_layout x fortran_layout in
   let x' = Bigarray.reshape_1 x' (numel x) in
   let y' = _change_layout y fortran_layout in
   let y' = Bigarray.reshape_1 y' (numel y) in
-  let z = (_add (kind x)) x' y' in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
+  let z = match o with
+    | Some z -> z
+    | None -> empty (kind x) (shape x)
+  in
+  let z' = _change_layout z fortran_layout in
+  let z' = Bigarray.reshape_1 z' (numel z) in
+  let _ = (_add (kind x)) ~z:z' x' y' in
   z
 
 let sub x y =
@@ -1221,7 +1224,7 @@ let ( >> ) = copy
 
 let ( << ) x1 x2 = copy x2 x1
 
-let ( +@ ) = add
+let ( +@ ) a b = add a b
 
 let ( -@ ) = sub
 

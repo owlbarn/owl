@@ -822,7 +822,7 @@ val cross_entropy : mat -> mat -> elt
 
 (** {6 Binary mathematical operations } *)
 
-val add : mat -> mat -> mat
+val add : ?o:mat -> mat -> mat -> mat
 (** [add x y] adds two matrices [x] and [y]. Both must have the same dimensions. *)
 
 val sub : mat -> mat -> mat
