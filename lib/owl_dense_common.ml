@@ -526,9 +526,10 @@ let _uniform : type a b. (a, b) kind -> (a, b) lcm_vec_op04 = function
   | Complex64 -> fun s -> Lacaml.Z.Vec.random ~rnd_state:rng ~re_from:0. ~re_range:s ~im_from:0. ~im_range:s
   | _         -> failwith "_uniform: unsupported operation"
 
-
-
-*)
+let _log_sum_exp : type a b. (a, b) kind -> (a, b) lcm_vec_op01 = function
+  | Float32   -> Lacaml.S.Vec.log_sum_exp
+  | Float64   -> Lacaml.D.Vec.log_sum_exp
+  | _         -> failwith "_log_sum_exp: unsupported operation"
 
 let _copy : type a b. (a, b) kind -> (a, b) lcm_vec_op10 = function
   | Float32   -> Lacaml.S.copy
@@ -536,11 +537,52 @@ let _copy : type a b. (a, b) kind -> (a, b) lcm_vec_op10 = function
   | Complex32 -> Lacaml.C.copy
   | Complex64 -> Lacaml.Z.copy
   | _         -> failwith "_copy: unsupported operation"
+  
+*)
 
-let _log_sum_exp : type a b. (a, b) kind -> (a, b) lcm_vec_op01 = function
-  | Float32   -> Lacaml.S.Vec.log_sum_exp
-  | Float64   -> Lacaml.D.Vec.log_sum_exp
-  | _         -> failwith "_log_sum_exp: unsupported operation"
+
+external scopy_stub :
+  n : int ->
+  ofsy : int ->
+  incy : int ->
+  y : ('a, 'b) lcm_vec ->
+  ofsx : int ->
+  incx : int ->
+  x : ('a, 'b) lcm_vec ->
+  unit = "s_copy_stub_bc" "s_copy_stub"
+
+external dcopy_stub :
+  n : int ->
+  ofsy : int ->
+  incy : int ->
+  y : ('a, 'b) lcm_vec ->
+  ofsx : int ->
+  incx : int ->
+  x : ('a, 'b) lcm_vec ->
+  unit = "d_copy_stub_bc" "d_copy_stub"
+
+let scopy ?(n=0) ?(ofsy=1) ?(incy=1) ?y ?(ofsx=1) ?(incx=1) x =
+  let y =
+    let min_dim_y = ofsy + (n - 1) * abs incy in
+    match y with
+    | Some y -> y
+    | None -> Array1.create Float32 Fortran_layout min_dim_y in
+  scopy_stub ~n ~ofsy ~incy ~y ~ofsx ~incx ~x;
+  y
+
+let dcopy ?(n=0) ?(ofsy=1) ?(incy=1) ?y ?(ofsx=1) ?(incx=1) x =
+  let y =
+    let min_dim_y = ofsy + (n - 1) * abs incy in
+    match y with
+    | Some y -> y
+    | None -> Array1.create Float64 Fortran_layout min_dim_y in
+  dcopy_stub ~n ~ofsy ~incy ~y ~ofsx ~incx ~x;
+  y
+
+let _copy : type a b. (a, b) kind -> (a, b) lcm_vec_op10 = function
+  | Float32   -> scopy
+  | Float64   -> dcopy
+  | _         -> failwith "_copy: unsupported operation"
 
 let _linspace : type a b. (a, b) kind -> a -> a -> int -> (a, b) lcm_vec =
   fun k a b n -> match k with

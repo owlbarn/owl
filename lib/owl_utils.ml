@@ -46,6 +46,16 @@ let array_mapi f x =
 
 let array_map f x = array_mapi (fun _ y -> f y) x
 
+(*
+let array_exists f x =
+  try Array.iter (fun a -> if f a then failwith "found") x; false
+  with exn -> true
+
+let array_mem a x =
+  try Array.iter (fun b -> if b = a then failwith "found") x; false
+  with exn -> true
+*)
+
 let reverse_array x =
   let d = Array.length x - 1 in
   let n = d / 2 in
