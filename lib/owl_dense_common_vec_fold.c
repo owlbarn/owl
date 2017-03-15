@@ -120,7 +120,7 @@ CAMLprim value FUN8(value vN, value vX)
 
   caml_leave_blocking_section();  /* Disallow other threads */
 
-  CAMLreturn(caml_copy_double(r ));
+  CAMLreturn(caml_copy_double(r));
 }
 
 #endif /* FUN8 */

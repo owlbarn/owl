@@ -300,7 +300,7 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
 #include "owl_dense_common_vec_fold.c"
 
-// l2norm
+// l2norm_sqr
 
 #define FUN5 real_float_l2norm_sqr
 #define NUMBER float
