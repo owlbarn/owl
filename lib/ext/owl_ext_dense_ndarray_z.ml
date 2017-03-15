@@ -122,8 +122,6 @@ let iter2i f x y = M.iter2i f (unpack_box x) (unpack_box y)
 
 let iter2 f x y = M.iter2 f (unpack_box x) (unpack_box y)
 
-let pmap f x = M.pmap f (unpack_box x) |> pack_box
-
 
 let exists f x = M.exists f (unpack_box x)
 

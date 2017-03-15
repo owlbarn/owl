@@ -99,19 +99,11 @@ Library owl
                     owl_dense_common_vec_combine.c
   CCOpt:            -I$pkg_ctypes
   BuildDepends:     str, ctypes, ctypes.stubs, plplot, dolog,
-                    eigen, gsl, lacaml, owl_parallel
+                    eigen, gsl, lacaml
   if system(linux) || system(linux_elf)
     CCOpt+:          -g -O3 -Ofast
   if system(macosx)
     CCLib:          -framework Accelerate
-
-Library owl_parallel
-  Install:          true
-  Path:             lib/parallel
-  Modules:          Bytearray, Owl_parallel, Owl_parallel_utils
-  CSources:         bytearray_stubs.c
-  CCOpt:            -D_GNU_SOURCE -fPIC
-  BuildDepends:     unix, dolog
 
 # +-------------------------------------------------------------------+
 # | Performance tests                                                 |
@@ -203,12 +195,6 @@ Executable test_operation
   CompiledObject: best
   MainIs:         test_operation.ml
   BuildDepends:   owl
-
-Executable test_parallel
-  Path:           examples
-  CompiledObject: best
-  MainIs:         test_parallel.ml
-  BuildDepends:   owl, owl_parallel
 
 Executable test_lda
   Path:           examples
