@@ -89,14 +89,14 @@ let sort ?cmp ?(inc=true) x =
 
 (* TODO: add axis paramater *)
 
-let min x = Owl_backend_gsl_linalg.min (kind x) (ndarray_to_c_vec x)
+let min x = x |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.min (kind x)
 
-let max x = Owl_backend_gsl_linalg.max (kind x) (ndarray_to_c_vec x)
+let max x = x |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.max (kind x)
 
-let minmax x = Owl_backend_gsl_linalg.minmax (kind x) (ndarray_to_c_vec x)
+let minmax x = x |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.minmax (kind x)
 
 let min_i x =
-  let y = ndarray_to_c_vec x in
+  let y = flatten x |> array1_of_genarray in
   let i = _owl_min_i (kind x) (numel x) y in
   let s = _calc_stride (shape x) in
   let j = Array.copy s in
@@ -104,7 +104,7 @@ let min_i x =
   y.{i}, j
 
 let max_i x =
-  let y = ndarray_to_c_vec x in
+  let y = flatten x |> array1_of_genarray in
   let i = _owl_max_i (kind x) (numel x) y in
   let s = _calc_stride (shape x) in
   let j = Array.copy s in
@@ -112,7 +112,7 @@ let max_i x =
   y.{i}, j
 
 let minmax_i x =
-  let y = ndarray_to_c_vec x in
+  let y = flatten x |> array1_of_genarray in
   let i, j = Owl_backend_gsl_linalg.minmax_i (kind x) y in
   let s = _calc_stride (shape x) in
   let p = Array.copy s in

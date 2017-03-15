@@ -53,11 +53,6 @@ let ndarray_to_c_mat x =
   let n = Array.fold_right (fun c a -> c * a) shape 1 in
   reshape_2 x 1 n
 
-let ndarray_to_c_vec x =
-  let shape = Genarray.dims x in
-  let n = Array.fold_right (fun c a -> c * a) shape 1 in
-  reshape_1 x n
-
 (* calculate the stride of a ndarray, s is the shape *)
 let _calc_stride s =
   let d = Array.length s in
