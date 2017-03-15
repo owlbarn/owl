@@ -93,7 +93,10 @@ Library owl
                     backend/Owl_backend_gsl_linalg
   CSources:         owl_macros.h,
                     owl_dense_common_c.c,
-                    owl_dense_common_vec.c
+                    owl_dense_common_vec_cmp.c,
+                    owl_dense_common_vec_map.c,
+                    owl_dense_common_vec_fold.c,
+                    owl_dense_common_vec_combine.c
   CCOpt:            -I$pkg_ctypes
   BuildDepends:     str, ctypes, ctypes.stubs, plplot, dolog,
                     eigen, gsl, lacaml, owl_parallel

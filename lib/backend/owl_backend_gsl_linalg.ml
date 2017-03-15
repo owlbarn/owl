@@ -19,7 +19,6 @@ type ('a, 'b) gsl_mat_op09 = 'a array array -> ('a, 'b) gsl_mat
 type ('a, 'b) gsl_mat_op10 = ('a, 'b) gsl_mat -> 'a array array
 type ('a, 'b) gsl_mat_op11 = 'a array -> int -> int -> ('a, 'b) gsl_mat
 type ('a, 'b) gsl_mat_op12 = ('a, 'b) gsl_mat -> 'a array
-type ('a, 'b) gsl_vec_op00 = ('a, 'b) gsl_vec -> ('a, 'b) gsl_vec -> ('a, 'b) gsl_vec
 
 
 (* call functions in gsl *)
@@ -172,11 +171,3 @@ let div : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
   | Complex32 -> let open Gsl.Matrix_complex.Single in div_elements x1 x2; x1
   | Complex64 -> let open Gsl.Matrix_complex in div_elements x1 x2; x1
   | _         -> failwith "div: unsupported operation"
-
-let vec_add : type a b. (a, b) kind -> (a, b) gsl_vec_op00 =
-  fun k x1 x2 -> match k with
-  | Float32   -> let open Gsl.Vector.Single in add x1 x2; x1
-  | Float64   -> let open Gsl.Vector in add x1 x2; x1
-  | Complex32 -> let open Gsl.Vector_complex.Single in add x1 x2; x1
-  | Complex64 -> let open Gsl.Vector_complex in add x1 x2; x1
-  | _         -> failwith "vec_add: unsupported operation"

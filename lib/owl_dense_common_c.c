@@ -35,256 +35,244 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define FUN0 real_float_is_smaller
 #define NUMBER float
 #define STOPFN(X, Y) (X >= Y)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 real_double_is_smaller
 #define NUMBER double
 #define STOPFN(X, Y) (X >= Y)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_float_is_smaller
 #define NUMBER complex_float
 #define STOPFN(X, Y) (X.r >= Y.r || X.i >= Y.i)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_double_is_smaller
 #define NUMBER complex_double
 #define STOPFN(X, Y) (X.r >= Y.r || X.i >= Y.i)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 // is_greater
 
 #define FUN0 real_float_is_greater
 #define NUMBER float
 #define STOPFN(X, Y) (X <= Y)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 real_double_is_greater
 #define NUMBER double
 #define STOPFN(X, Y) (X <= Y)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_float_is_greater
 #define NUMBER complex_float
 #define STOPFN(X, Y) (X.r <= Y.r || X.i <= Y.i)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_double_is_greater
 #define NUMBER complex_double
 #define STOPFN(X, Y) (X.r <= Y.r || X.i <= Y.i)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 // equal_or_smaller
 
 #define FUN0 real_float_equal_or_smaller
 #define NUMBER float
 #define STOPFN(X, Y) (X > Y)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 real_double_equal_or_smaller
 #define NUMBER double
 #define STOPFN(X, Y) (X > Y)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_float_equal_or_smaller
 #define NUMBER complex_float
 #define STOPFN(X, Y) (X.r > Y.r || X.i > Y.i)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_double_equal_or_smaller
 #define NUMBER complex_double
 #define STOPFN(X, Y) (X.r > Y.r || X.i > Y.i)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 // equal_or_greater
 
 #define FUN0 real_float_equal_or_greater
 #define NUMBER float
 #define STOPFN(X, Y) (X < Y)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 real_double_equal_or_greater
 #define NUMBER double
 #define STOPFN(X, Y) (X < Y)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_float_equal_or_greater
 #define NUMBER complex_float
 #define STOPFN(X, Y) (X.r < Y.r || X.i < Y.i)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_double_equal_or_greater
 #define NUMBER complex_double
 #define STOPFN(X, Y) (X.r < Y.r || X.i < Y.i)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 // is_zero
 
 #define FUN1 real_float_is_zero
 #define NUMBER float
 #define STOPFN(X) (X != 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 real_double_is_zero
 #define NUMBER double
 #define STOPFN(X) (X != 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 complex_float_is_zero
 #define NUMBER complex_float
 #define STOPFN(X) (X.r == 0 && X.i == 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 complex_double_is_zero
 #define NUMBER complex_double
 #define STOPFN(X) (X.r == 0 && X.i == 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 // is_positive
 
 #define FUN1 real_float_is_positive
 #define NUMBER float
 #define STOPFN(X) (X <= 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 real_double_is_positive
 #define NUMBER double
 #define STOPFN(X) (X <= 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 complex_float_is_positive
 #define NUMBER complex_float
 #define STOPFN(X) (X.r <= 0 || X.i <= 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 complex_double_is_positive
 #define NUMBER complex_double
 #define STOPFN(X) (X.r <= 0 || X.i <= 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 // is_negative
 
 #define FUN1 real_float_is_negative
 #define NUMBER float
 #define STOPFN(X) (X >= 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 real_double_is_negative
 #define NUMBER double
 #define STOPFN(X) (X >= 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 complex_float_is_negative
 #define NUMBER complex_float
 #define STOPFN(X) (X.r >= 0 || X.i >= 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 complex_double_is_negative
 #define NUMBER complex_double
 #define STOPFN(X) (X.r >= 0 || X.i >= 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 // is_nonnegative
 
 #define FUN1 real_float_is_nonnegative
 #define NUMBER float
 #define STOPFN(X) (X < 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 real_double_is_nonnegative
 #define NUMBER double
 #define STOPFN(X) (X < 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 complex_float_is_nonnegative
 #define NUMBER complex_float
 #define STOPFN(X) (X.r < 0 || X.i < 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 complex_double_is_nonnegative
 #define NUMBER complex_double
 #define STOPFN(X) (X.r < 0 || X.i < 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 // is_nonpositive
 
 #define FUN1 real_float_is_nonpositive
 #define NUMBER float
 #define STOPFN(X) (X > 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 real_double_is_nonpositive
 #define NUMBER double
 #define STOPFN(X) (X > 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 complex_float_is_nonpositive
 #define NUMBER complex_float
 #define STOPFN(X) (X.r > 0 || X.i > 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 complex_double_is_nonpositive
 #define NUMBER complex_double
 #define STOPFN(X) (X.r > 0 || X.i > 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 // nnz
 
 #define FUN2 real_float_nnz
 #define NUMBER float
 #define CHECKFN(X) (X != 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN2 real_double_nnz
 #define NUMBER double
 #define CHECKFN(X) (X != 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN2 complex_float_nnz
 #define NUMBER complex_float
 #define CHECKFN(X) (X.r != 0 || X.i != 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 #define FUN2 complex_double_nnz
 #define NUMBER complex_double
 #define CHECKFN(X) (X.r != 0 || X.i != 0)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_cmp.c"
 
 // min_i
 
 #define FUN6 real_float_min_i
 #define NUMBER float
 #define CHECKFN(X,Y) (X > Y)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 #define FUN6 real_double_min_i
 #define NUMBER double
 #define CHECKFN(X,Y) (X > Y)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 // max_i
 
 #define FUN6 real_float_max_i
 #define NUMBER float
 #define CHECKFN(X,Y) (X < Y)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 #define FUN6 real_double_max_i
 #define NUMBER double
 #define CHECKFN(X,Y) (X < Y)
-#include "owl_dense_common_vec.c"
-
-// sigmoid
-
-#define FUN3 real_float_sigmoid
-#define NUMBER float
-#define MAPFN(X) (1 / (1 + exp(-X)))
-#include "owl_dense_common_vec.c"
-
-#define FUN3 real_double_sigmoid
-#define NUMBER double
-#define MAPFN(X) (1 / (1 + exp(-X)))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 // l1norm
 
@@ -292,25 +280,25 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (fabsf(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 #define FUN5 real_double_l1norm
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (fabs(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 #define FUN5 complex_float_l1norm
 #define NUMBER complex_float
 #define NUMBER1 float
 #define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 #define FUN5 complex_double_l1norm
 #define NUMBER complex_double
 #define NUMBER1 double
 #define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 // l2norm
 
@@ -318,25 +306,25 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (X * X)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 #define FUN5 real_double_l2norm_sqr
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (X * X)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 #define FUN5 complex_float_l2norm_sqr
 #define NUMBER complex_float
 #define NUMBER1 float
 #define MAPFN(X) (sqr_float (X.r * X.r + X.i * X.i))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 #define FUN5 complex_double_l2norm_sqr
 #define NUMBER complex_double
 #define NUMBER1 double
 #define MAPFN(X) (sqr_double (X.r * X.r + X.i * X.i))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 // neg
 
@@ -344,13 +332,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (-X)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_neg
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (-X)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // reci
 
@@ -358,38 +346,38 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (1.0 / X)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_reci
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (1.0 / X)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // abs
 #define FUN4 real_float_abs
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (fabsf(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_abs
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (fabs(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 complex_float_abs
 #define NUMBER complex_float
 #define NUMBER1 float
 #define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 complex_double_abs
 #define NUMBER complex_double
 #define NUMBER1 double
 #define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // signum
 
@@ -397,13 +385,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) ((X > 0.0) ? 1.0 : (X < 0.0) ? -1.0 : X)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_signum
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) ((X > 0.0) ? 1.0 : (X < 0.0) ? -1.0 : X)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // sqr
 
@@ -411,13 +399,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (X * X)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_sqr
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (X * X)
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // sqrt
 
@@ -425,13 +413,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (sqrt(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_sqrt
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (sqrt(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // cbrt
 
@@ -439,13 +427,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (cbrt(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_cbrt
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (cbrt(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // exp
 
@@ -453,13 +441,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (exp(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_exp
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (exp(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // exp2
 
@@ -467,13 +455,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (exp2(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_exp2
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (exp2(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // expm1
 
@@ -481,13 +469,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (expm1(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_expm1
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (expm1(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // log
 
@@ -495,13 +483,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (log(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_log
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (log(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // log10
 
@@ -509,13 +497,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (log10(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_log10
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (log10(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // log2
 
@@ -523,13 +511,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (log2(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_log2
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (log2(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // log1p
 
@@ -537,13 +525,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (log1p(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_log1p
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (log1p(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // sin
 
@@ -551,13 +539,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (sin(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_sin
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (sin(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // cos
 
@@ -565,13 +553,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (cos(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_cos
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (cos(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // tan
 
@@ -579,13 +567,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (tan(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_tan
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (tan(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // asin
 
@@ -593,13 +581,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (asin(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_asin
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (asin(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // acos
 
@@ -607,13 +595,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (acos(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_acos
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (acos(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // atan
 
@@ -621,13 +609,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (atan(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_atan
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (atan(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // sinh
 
@@ -635,13 +623,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (sinh(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_sinh
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (sinh(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // cosh
 
@@ -649,13 +637,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (cosh(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_cosh
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (cosh(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // tanh
 
@@ -663,13 +651,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (tanh(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_tanh
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (tanh(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // asinh
 
@@ -677,13 +665,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (asinh(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_asinh
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (asinh(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // acosh
 
@@ -691,13 +679,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (acosh(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_acosh
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (acosh(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // atanh
 
@@ -705,13 +693,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (atanh(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_atanh
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (atanh(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // floor
 
@@ -719,13 +707,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (floor(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_floor
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (floor(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // ceil
 
@@ -733,13 +721,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (ceil(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_ceil
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (ceil(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // round
 
@@ -747,13 +735,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (round(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_round
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (round(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // trunc
 
@@ -761,13 +749,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (trunc(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_trunc
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (trunc(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // erf
 
@@ -775,13 +763,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (erf(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_erf
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (erf(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // erfc
 
@@ -789,13 +777,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (erfc(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_erfc
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (erfc(X))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // logistic
 
@@ -803,13 +791,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (1.0 / (1.0 + exp(-X)))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_logistic
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (1.0 / (1.0 + exp(-X)))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // relu
 
@@ -817,13 +805,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (fmax(X,0))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_relu
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (fmax(X,0))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // softplus
 
@@ -831,13 +819,13 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (log1p(exp(X)))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_softplus
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (log1p(exp(X)))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 // softsign
 
@@ -845,25 +833,39 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X) (X / (1 + fabs(X)))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_softsign
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (X / (1 + fabs(X)))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_map.c"
+
+// sigmoid
+
+#define FUN4 real_float_sigmoid
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (1 / (1 + exp(-X)))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 real_double_sigmoid
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (1 / (1 + exp(-X)))
+#include "owl_dense_common_vec_map.c"
 
 // log_sum_exp
 
 #define FUN8 real_float_log_sum_exp
 #define NUMBER float
 #define NUMBER1 float
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 #define FUN8 real_double_log_sum_exp
 #define NUMBER double
 #define NUMBER1 double
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_fold.c"
 
 
 ////// binary math operator //////
@@ -875,14 +877,14 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER1 float
 #define NUMBER2 float
 #define MAPFN(X,Y) (pow(X,Y))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_pow
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
 #define MAPFN(X,Y) (pow(X,Y))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_combine.c"
 
 // atan2
 
@@ -891,14 +893,14 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER1 float
 #define NUMBER2 float
 #define MAPFN(X,Y) (atan2(X,Y))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_atan2
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
 #define MAPFN(X,Y) (atan2(X,Y))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_combine.c"
 
 // hypot
 
@@ -907,14 +909,14 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER1 float
 #define NUMBER2 float
 #define MAPFN(X,Y) (hypot(X,Y))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_hypot
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
 #define MAPFN(X,Y) (hypot(X,Y))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_combine.c"
 
 // min2
 
@@ -923,14 +925,14 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER1 float
 #define NUMBER2 float
 #define MAPFN(X,Y) (fmin(X,Y))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_min2
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
 #define MAPFN(X,Y) (fmin(X,Y))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_combine.c"
 
 // max2
 
@@ -939,14 +941,14 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER1 float
 #define NUMBER2 float
 #define MAPFN(X,Y) (fmax(X,Y))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_max2
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
 #define MAPFN(X,Y) (fmax(X,Y))
-#include "owl_dense_common_vec.c"
+#include "owl_dense_common_vec_combine.c"
 
 
 //////////////////// function templates ends ////////////////////

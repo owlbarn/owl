@@ -154,6 +154,35 @@ let div x y =
   let _ = Owl_backend_gsl_linalg.div (kind z) x y in
   z
 
+let add_scalar x a =
+  let y = _change_layout x fortran_layout in
+  let y = Bigarray.reshape_1 y (numel x) in
+  let z = (_add_scalar (kind x)) a y in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = _change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let sub_scalar x a =
+  let k = kind x in
+  let b = (_sub_elt k) (_zero k) (_one k) in
+  add_scalar x ((_mul_elt k) a b)
+
+let mul_scalar x a =
+  let y = clone x in
+  let y = _change_layout y fortran_layout in
+  let z = Bigarray.reshape_1 y (numel x) in
+  let _ = (_mul_scalar (kind x)) a z in
+  let z = Bigarray.genarray_of_array1 z in
+  let z = _change_layout z c_layout in
+  let z = Bigarray.reshape z (shape x) in
+  z
+
+let div_scalar x a =
+  let k = kind x in
+  let b = (_div_elt k) (_one k) a in
+  mul_scalar x b
+
 let pow x y =
   let z = clone x in
   let x' = flatten x |> array1_of_genarray in
@@ -453,39 +482,11 @@ let softsign x =
   let _ = _owl_softsign (kind x) (numel y) src dst in
   y
 
-let add_scalar x a =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_add_scalar (kind x)) a y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
-
-let sub_scalar x a =
-  let k = kind x in
-  let b = (_sub_elt k) (_zero k) (_one k) in
-  add_scalar x ((_mul_elt k) a b)
-
-let mul_scalar x a =
-  let y = clone x in
-  let y = _change_layout y fortran_layout in
-  let z = Bigarray.reshape_1 y (numel x) in
-  let _ = (_mul_scalar (kind x)) a z in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
-
-let div_scalar x a =
-  let k = kind x in
-  let b = (_div_elt k) (_one k) a in
-  mul_scalar x b
-
 let sigmoid x =
   let y = clone x in
-  let z = flatten y |> array1_of_genarray in
-  let _ = _owl_sigmoid (kind x) (numel y) z in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_sigmoid (kind x) (numel y) src dst in
   y
 
 let ssqr x a =
