@@ -281,17 +281,17 @@ val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
   result in a new matrix.
  *)
 
-val min : ('a, 'b) t -> 'a
+val min : (float, 'a) t -> float
 
-val max : ('a, 'b) t -> 'a
+val max : (float, 'a) t -> float
 
-val minmax : ('a, 'b) t -> 'a * 'a
+val minmax : (float, 'a) t -> float * float
 
-val min_i : (float, 'b) t -> float * int * int
+val min_i : (float, 'a) t -> float * int * int
 
-val max_i : (float, 'b) t -> float * int * int
+val max_i : (float, 'a) t -> float * int * int
 
-val minmax_i : (float, 'b) t -> (float * int * int) * (float * int * int)
+val minmax_i : (float, 'a) t -> (float * int * int) * (float * int * int)
 
 val trace : ('a, 'b) t -> 'a
 

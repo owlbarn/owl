@@ -48,24 +48,15 @@ let _change_layout = Eigen.Utils.change_layout
 
 let _size_in_bytes = Eigen.Utils.size_in_bytes
 
-let ndarray_to_fortran_vec x =
-  let shape = Genarray.dims x in
-  let n = Array.fold_right (fun c a -> c * a) shape 1 in
-  let y = _change_layout x fortran_layout in
-  Bigarray.reshape_1 y n
-
-let fortran_vec_to_ndarray x shape =
-  let y = Bigarray.genarray_of_array1 x in
-  let y = _change_layout y c_layout in
-  Bigarray.reshape y shape
-
-let c_mat_to_ndarray x = None
-
 let ndarray_to_c_mat x =
   let shape = Genarray.dims x in
   let n = Array.fold_right (fun c a -> c * a) shape 1 in
-  let y = reshape_2 x 1 n in
-  y
+  reshape_2 x 1 n
+
+let ndarray_to_c_vec x =
+  let shape = Genarray.dims x in
+  let n = Array.fold_right (fun c a -> c * a) shape 1 in
+  reshape_1 x n
 
 (* calculate the stride of a ndarray, s is the shape *)
 let _calc_stride s =
@@ -110,7 +101,7 @@ type ('a, 'b) lcm_vec_op07 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int ->
 type ('a, 'b) lcm_vec_op08 = (int -> 'a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
 type ('a, 'b) lcm_vec_op09 = ?n:int -> 'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
 type ('a, 'b) lcm_vec_op10 = ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ('a, 'b) lcm_vec
-type ('a, 'b) lcm_vec_op11 = ?cmp:('a -> 'a -> int) -> ?decr:bool -> ?n:int -> ?ofsp:int -> ?incp:int -> ?p:Lacaml_common.int_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
+type ('a, 'b) lcm_vec_op11 = ?cmp:('a -> 'a -> int) -> ?decr:bool -> ?n:int -> ?ofsp:int -> ?incp:int -> ?p:Lacaml.Common.int_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
 type ('a, 'b) lcm_vec_op12 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ?ofsy:int -> ?incy:int -> ('a, 'b) lcm_vec -> 'a
 
 type ('a, 'b) lcm_mat_op00 = ('a, 'b) lcm_mat -> 'a array array

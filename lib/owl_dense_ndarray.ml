@@ -89,9 +89,9 @@ let sort ?cmp ?(inc=true) x =
 
 (* TODO: add axis paramater *)
 
-let min x = (_min (kind x)) (ndarray_to_fortran_vec x)
+let min x = Owl_backend_gsl_linalg._gsl_min (kind x) (ndarray_to_c_vec x)
 
-let max x = (_max (kind x)) (ndarray_to_fortran_vec x)
+let max x = Owl_backend_gsl_linalg._gsl_max (kind x) (ndarray_to_c_vec x)
 
 (* TODO: optimise *)
 let minmax x = min x, max x

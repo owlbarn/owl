@@ -3,6 +3,7 @@ open Bigarray
 
 (* interface to gsl functions, types for interfacing to gsl *)
 
+type ('a, 'b) gsl_vec = ('a, 'b, c_layout) Array1.t
 type ('a, 'b) gsl_mat = ('a, 'b, c_layout) Array2.t
 
 type ('a, 'b) gsl_mat_op00 = ('a, 'b) gsl_mat -> bool
@@ -77,6 +78,42 @@ let _gsl_to_array : type a b. (a, b) kind -> (a, b) gsl_mat_op12 = function
   | Complex32 -> Gsl.Matrix_complex.Single.to_array
   | Complex64 -> Gsl.Matrix_complex.to_array
   | _         -> failwith "_gsl_to_array: unsupported operation"
+
+let _gsl_min : type a b. (a, b) kind -> (a, b) gsl_vec -> a =
+  fun k x -> match k with
+  | Float32   -> Gsl.Vector.Single.min x
+  | Float64   -> Gsl.Vector.min x
+  | _         -> failwith "_gsl_min: unsupported operation"
+
+let _gsl_max : type a b. (a, b) kind -> (a, b) gsl_vec -> a =
+  fun k x -> match k with
+  | Float32   -> Gsl.Vector.Single.max x
+  | Float64   -> Gsl.Vector.max x
+  | _         -> failwith "_gsl_max: unsupported operation"
+
+let _gsl_minmax : type a b. (a, b) kind -> (a, b) gsl_vec -> a * a =
+  fun k x -> match k with
+  | Float32   -> Gsl.Vector.Single.minmax x
+  | Float64   -> Gsl.Vector.minmax x
+  | _         -> failwith "_gsl_minmax: unsupported operation"
+
+let _gsl_min_i : type a b. (a, b) kind -> (a, b) gsl_vec -> int =
+  fun k x -> match k with
+  | Float32   -> Gsl.Vector.Single.min_index x
+  | Float64   -> Gsl.Vector.min_index x
+  | _         -> failwith "_gsl_min_index: unsupported operation"
+
+let _gsl_max_i : type a b. (a, b) kind -> (a, b) gsl_vec -> int =
+  fun k x -> match k with
+  | Float32   -> Gsl.Vector.Single.max_index x
+  | Float64   -> Gsl.Vector.max_index x
+  | _         -> failwith "_gsl_max_index: unsupported operation"
+
+let _gsl_minmax_i : type a b. (a, b) kind -> (a, b) gsl_vec -> int * int =
+  fun k x -> match k with
+  | Float32   -> Gsl.Vector.Single.minmax_index x
+  | Float64   -> Gsl.Vector.minmax_index x
+  | _         -> failwith "_gsl_minmax_index: unsupported operation"
 
 let _gsl_dot : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
   fun k x1 x2 -> match k with

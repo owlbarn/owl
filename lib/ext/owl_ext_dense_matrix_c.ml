@@ -236,12 +236,6 @@ let save x f = M.save (unpack_box x) f
 let load f = M.load _elt f |> pack_box
 
 
-let min x = M.min (unpack_box x) |> pack_elt
-
-let max x = M.max (unpack_box x) |> pack_elt
-
-let minmax x = let (a, b) = M.minmax (unpack_box x) in (pack_elt a, pack_elt b)
-
 let trace x = M.trace (unpack_box x) |> pack_elt
 
 let sum x = M.sum (unpack_box x) |> pack_elt

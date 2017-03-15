@@ -369,13 +369,13 @@ val sum : ('a, 'b) t -> 'a
 val prod : ?axis:int option array -> ('a, 'b) t -> 'a
 (** [prod x] returns the product of all elements in [x] along passed in axises. *)
 
-val min : ('a, 'b) t -> 'a
+val min : (float, 'a) t -> float
 (** [min x] returns the minimum of all elements in [x]. *)
 
-val max : ('a, 'b) t -> 'a
+val max : (float, 'a) t -> float
 (** [max x] returns the maximum of all elements in [x]. *)
 
-val minmax : ('a, 'b) t -> 'a * 'a
+val minmax : (float, 'a) t -> float * float
 (** [minmax x] returns [(min_v, max_v)], [min_v] is the minimum value in [x]
   while [max_v] is the maximum.
  *)

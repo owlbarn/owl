@@ -167,12 +167,6 @@ let sum x = M.sum (unpack_box x) |> pack_elt
 
 let prod x = M.prod (unpack_box x) |> pack_elt
 
-let min x = M.min (unpack_box x) |> pack_elt
-
-let max x = M.max (unpack_box x) |> pack_elt
-
-let minmax x = let a, b = M.minmax (unpack_box x) in (pack_elt a, pack_elt b)
-
 let neg x = M.neg (unpack_box x) |> pack_box
 
 let reci x = M.reci (unpack_box x) |> pack_box
