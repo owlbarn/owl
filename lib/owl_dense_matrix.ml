@@ -20,18 +20,6 @@ let to_ndarray x = Bigarray.genarray_of_array2 x
 
 let of_ndarray x = Bigarray.array2_of_genarray x
 
-(* c_layout -> fortran_layout *)
-let c2fortran_matrix x =
-  let y = Bigarray.genarray_of_array2 x in
-  let y = _change_layout y fortran_layout in
-  Bigarray.array2_of_genarray y
-
-(* fortran_layout -> c_layout *)
-let fortran2c_matrix x =
-  let y = Bigarray.genarray_of_array2 x in
-  let y = _change_layout y c_layout in
-  Bigarray.array2_of_genarray y
-
 (* matrix creation operations *)
 
 let kind x = Array2.kind x
@@ -56,11 +44,11 @@ let reset x = Array2.fill x (_zero (kind x))
 
 let empty k m n = Array2.create k c_layout m n
 
-let zeros k m n = (_make0 k) n m |> fortran2c_matrix
-
 let create k m n a =
   let x = empty k m n in
   fill x a; x
+
+let zeros k m n = create k m n (_zero k)
 
 let ones k m n = create k m n (_one k)
 

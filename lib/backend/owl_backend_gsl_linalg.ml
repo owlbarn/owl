@@ -101,3 +101,35 @@ let _gsl_dot : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
     gemm ~ta:Gsl.Blas.NoTrans ~tb:Gsl.Blas.NoTrans ~alpha:Complex.one ~beta:Complex.zero ~a:x1 ~b:x2 ~c:x3;
     x3
   | _         -> failwith "_gsl_dot: unsupported operation"
+
+let _gsl_add : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
+  fun k x1 x2 -> match k with
+  | Float32   -> let open Gsl.Matrix.Single in add x1 x2; x1
+  | Float64   -> let open Gsl.Matrix in add x1 x2; x1
+  | Complex32 -> let open Gsl.Matrix_complex.Single in add x1 x2; x1
+  | Complex64 -> let open Gsl.Matrix_complex in add x1 x2; x1
+  | _         -> failwith "_gsl_add: unsupported operation"
+
+let _gsl_sub : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
+  fun k x1 x2 -> match k with
+  | Float32   -> let open Gsl.Matrix.Single in sub x1 x2; x1
+  | Float64   -> let open Gsl.Matrix in sub x1 x2; x1
+  | Complex32 -> let open Gsl.Matrix_complex.Single in sub x1 x2; x1
+  | Complex64 -> let open Gsl.Matrix_complex in sub x1 x2; x1
+  | _         -> failwith "_gsl_sub: unsupported operation"
+
+let _gsl_mul : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
+  fun k x1 x2 -> match k with
+  | Float32   -> let open Gsl.Matrix.Single in mul_elements x1 x2; x1
+  | Float64   -> let open Gsl.Matrix in mul_elements x1 x2; x1
+  | Complex32 -> let open Gsl.Matrix_complex.Single in mul_elements x1 x2; x1
+  | Complex64 -> let open Gsl.Matrix_complex in mul_elements x1 x2; x1
+  | _         -> failwith "_gsl_mul: unsupported operation"
+
+let _gsl_div : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
+  fun k x1 x2 -> match k with
+  | Float32   -> let open Gsl.Matrix.Single in div_elements x1 x2; x1
+  | Float64   -> let open Gsl.Matrix in div_elements x1 x2; x1
+  | Complex32 -> let open Gsl.Matrix_complex.Single in div_elements x1 x2; x1
+  | Complex64 -> let open Gsl.Matrix_complex in div_elements x1 x2; x1
+  | _         -> failwith "_gsl_div: unsupported operation"
