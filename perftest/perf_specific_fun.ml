@@ -97,6 +97,6 @@ let test_23 _ =
 
 let test_24 _ = Owl_dense_real.min x
 
-let _ = Perf_common.test_op_each c test_24
+let _ = Perf_common.test_op_each c test_15
 
 (* ends here *)

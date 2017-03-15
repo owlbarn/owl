@@ -155,12 +155,9 @@ let div x y =
   z
 
 let add_scalar x a =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_add_scalar (kind x)) a y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
+  let z = clone x in
+  let x = ndarray_to_c_mat z in
+  let _ = Owl_backend_gsl_linalg.add_scalar (kind z) x a in
   z
 
 let sub_scalar x a =
@@ -169,13 +166,9 @@ let sub_scalar x a =
   add_scalar x ((_mul_elt k) a b)
 
 let mul_scalar x a =
-  let y = clone x in
-  let y = _change_layout y fortran_layout in
-  let z = Bigarray.reshape_1 y (numel x) in
-  let _ = (_mul_scalar (kind x)) a z in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
+  let z = clone x in
+  let x = ndarray_to_c_mat z in
+  let _ = Owl_backend_gsl_linalg.mul_scalar (kind z) x a in
   z
 
 let div_scalar x a =

@@ -9,7 +9,7 @@ type ('a, 'b) gsl_mat = ('a, 'b, c_layout) Array2.t
 type ('a, 'b) gsl_mat_op00 = ('a, 'b) gsl_mat -> bool
 type ('a, 'b) gsl_mat_op01 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> unit
 type ('a, 'b) gsl_mat_op02 = ('a, 'b) gsl_mat -> int -> int -> unit
-type ('a, 'b) gsl_mat_op03 = ('a, 'b) gsl_mat -> 'a
+type ('a, 'b) gsl_mat_op03 = ('a, 'b) gsl_mat -> 'a -> ('a, 'b) gsl_mat
 type ('a, 'b) gsl_mat_op04 = ('a, 'b) gsl_mat -> 'a * int * int
 type ('a, 'b) gsl_mat_op05 = ('a, 'b) gsl_mat -> 'a * 'a
 type ('a, 'b) gsl_mat_op06 = ('a, 'b) gsl_mat -> ('a * int * int) * ('a * int * int)
@@ -171,3 +171,19 @@ let div : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
   | Complex32 -> let open Gsl.Matrix_complex.Single in div_elements x1 x2; x1
   | Complex64 -> let open Gsl.Matrix_complex in div_elements x1 x2; x1
   | _         -> failwith "div: unsupported operation"
+
+let add_scalar : type a b. (a, b) kind -> (a, b) gsl_mat_op03 =
+  fun k x a -> match k with
+  | Float32   -> Gsl.Matrix.Single.add_constant x a; x
+  | Float64   -> Gsl.Matrix.add_constant x a; x
+  | Complex32 -> Gsl.Matrix_complex.Single.add_constant x a; x
+  | Complex64 -> Gsl.Matrix_complex.add_constant x a; x
+  | _         -> failwith "add_scalar: unsupported operation"
+
+let mul_scalar : type a b. (a, b) kind -> (a, b) gsl_mat_op03 =
+  fun k x a -> match k with
+  | Float32   -> Gsl.Matrix.Single.scale x a; x
+  | Float64   -> Gsl.Matrix.scale x a; x
+  | Complex32 -> Gsl.Matrix_complex.Single.scale x a; x
+  | Complex64 -> Gsl.Matrix_complex.scale x a; x
+  | _         -> failwith "mul_scalar: unsupported operation"
