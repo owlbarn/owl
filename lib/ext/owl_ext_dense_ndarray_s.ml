@@ -252,8 +252,6 @@ let sigmoid x = M.sigmoid (unpack_box x) |> pack_box
 
 let log_sum_exp x = M.log_sum_exp (unpack_box x) |> pack_elt
 
-let sqr_nrm2 x = M.sqr_nrm2 (unpack_box x) |> pack_elt
-
 let l1norm x = M.l1norm (unpack_box x) |> pack_elt
 
 let l2norm x = M.l2norm (unpack_box x) |> pack_elt

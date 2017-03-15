@@ -169,8 +169,6 @@ let neg x = M.neg (unpack_box x) |> pack_box
 
 let reci x = M.reci (unpack_box x) |> pack_box
 
-let sqr_nrm2 x = M.sqr_nrm2 (unpack_box x) |> pack_elt_f
-
 let l1norm x = M.l1norm (unpack_box x) |> pack_elt_f
 
 let l2norm x = M.l2norm (unpack_box x) |> pack_elt_f

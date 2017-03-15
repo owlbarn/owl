@@ -152,8 +152,6 @@ val sigmoid : vec -> vec
 
 val log_sum_exp : vec -> elt
 
-val sqr_nrm2 : vec -> elt
-
 val l1norm : vec -> elt
 
 val l2norm : vec -> elt

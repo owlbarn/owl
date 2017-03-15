@@ -799,12 +799,6 @@ val log_sum_exp : mat -> elt
   the elements in [x].
  *)
 
-val sqr_nrm2 : mat -> elt
-(** [sqr_nrm2 x] calculates the sum of 2-norm (or l2norm, Euclidean norm) of all
-  elements in [x]. The function uses conjugate transpose in the product, hence
-  it always returns a float number.
- *)
-
 val l1norm : mat -> elt
 (** [l1norm x] calculates the l1-norm of all the element in [x]. *)
 
@@ -812,8 +806,9 @@ val l2norm : mat -> elt
 (** [l2norm x] calculates the l2-norm of all the element in [x]. *)
 
 val l2norm_sqr : mat -> elt
-(** [l2norm_sqr x] calculates the square of l2-norm of all the element in [x].
-  This function is just an alias of [sqr_nrm2] function.
+(** [l2norm_sqr x] calculates the sum of 2-norm (or l2norm, Euclidean norm) of all
+  elements in [x]. The function uses conjugate transpose in the product, hence
+  it always returns a float number.
  *)
 
 val cross_entropy : mat -> mat -> elt

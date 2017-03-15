@@ -67,18 +67,12 @@ let clone x =
   Genarray.blit x y;
   y
 
-let flatten x =
-  let n = numel x in
-  reshape x [|n|]
+let flatten x = reshape x [|numel x|]
 
 let reverse x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  let z = (_rev (kind x)) y in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
-  z
+  let y = clone x in
+  y |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.reverse (kind x);
+  y
 
 let sort ?cmp ?(inc=true) x =
   let y = _change_layout x fortran_layout in
@@ -487,18 +481,11 @@ let ssqr x a =
   let y = Bigarray.reshape_1 y (numel x) in
   (_ssqr (kind x)) ~c:a y
 
-let sqr_nrm2 x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  (_sqr_nrm2 (kind x)) ~stable:false y
+let l1norm x = flatten x |> array1_of_genarray |> _owl_l1norm (kind x) (numel x)
 
-let l1norm x =
-  let y = flatten x |> array1_of_genarray in
-  _owl_l1norm (kind x) (numel x) y
+let l2norm_sqr x = flatten x |> array1_of_genarray |> _owl_l2norm_sqr (kind x) (numel x)
 
-let l2norm_sqr x = sqr_nrm2 x
-
-let l2norm x = sqr_nrm2 x |> Owl_maths.sqrt
+let l2norm x = l2norm_sqr x |> Owl_maths.sqrt
 
 let log_sum_exp x =
   let y = flatten x |> array1_of_genarray in
@@ -586,7 +573,7 @@ let sequential k dimension =
   let _op = _add_elt (kind x) in
   let _ac = ref (_zero (kind x)) in
   let _aa = _one (kind x) in
-  for i = 1 to (numel x) do
+  for i = 0 to (numel x) - 1 do
     Array1.unsafe_set y i !_ac;
     _ac := _op !_ac _aa
   done;

@@ -6,19 +6,16 @@ open Bigarray
 type ('a, 'b) gsl_vec = ('a, 'b, c_layout) Array1.t
 type ('a, 'b) gsl_mat = ('a, 'b, c_layout) Array2.t
 
-type ('a, 'b) gsl_mat_op00 = ('a, 'b) gsl_mat -> bool
 type ('a, 'b) gsl_mat_op01 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> unit
 type ('a, 'b) gsl_mat_op02 = ('a, 'b) gsl_mat -> int -> int -> unit
 type ('a, 'b) gsl_mat_op03 = ('a, 'b) gsl_mat -> 'a -> ('a, 'b) gsl_mat
-type ('a, 'b) gsl_mat_op04 = ('a, 'b) gsl_mat -> 'a * int * int
-type ('a, 'b) gsl_mat_op05 = ('a, 'b) gsl_mat -> 'a * 'a
-type ('a, 'b) gsl_mat_op06 = ('a, 'b) gsl_mat -> ('a * int * int) * ('a * int * int)
-type ('a, 'b) gsl_mat_op07 = ('a, 'b) gsl_mat -> unit
+type ('a, 'b) gsl_mat_op04 = ('a, 'b) gsl_mat -> unit
 type ('a, 'b) gsl_mat_op08 = ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat -> ('a, 'b) gsl_mat
 type ('a, 'b) gsl_mat_op09 = 'a array array -> ('a, 'b) gsl_mat
 type ('a, 'b) gsl_mat_op10 = ('a, 'b) gsl_mat -> 'a array array
 type ('a, 'b) gsl_mat_op11 = 'a array -> int -> int -> ('a, 'b) gsl_mat
 type ('a, 'b) gsl_mat_op12 = ('a, 'b) gsl_mat -> 'a array
+type ('a, 'b) gsl_vec_op00 = ('a, 'b) gsl_vec -> unit
 
 
 (* call functions in gsl *)
@@ -31,7 +28,7 @@ let transpose_copy : type a b. (a, b) kind -> (a, b) gsl_mat_op01 =
   | Complex64 -> Gsl.Matrix_complex.transpose dst src
   | _         -> failwith "transpose_copy: unsupported operation"
 
-let transpose_in_place : type a b. (a, b) kind -> (a, b) gsl_mat_op07 = function
+let transpose_in_place : type a b. (a, b) kind -> (a, b) gsl_mat_op04 = function
   | Float32   -> Gsl.Matrix.Single.transpose_in_place
   | Float64   -> Gsl.Matrix.transpose_in_place
   | Complex32 -> Gsl.Matrix_complex.Single.transpose_in_place
@@ -142,34 +139,34 @@ let dot : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
 
 let add : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
   fun k x1 x2 -> match k with
-  | Float32   -> let open Gsl.Matrix.Single in add x1 x2; x1
-  | Float64   -> let open Gsl.Matrix in add x1 x2; x1
-  | Complex32 -> let open Gsl.Matrix_complex.Single in add x1 x2; x1
-  | Complex64 -> let open Gsl.Matrix_complex in add x1 x2; x1
+  | Float32   -> Gsl.Matrix.Single.add x1 x2; x1
+  | Float64   -> Gsl.Matrix.add x1 x2; x1
+  | Complex32 -> Gsl.Matrix_complex.Single.add x1 x2; x1
+  | Complex64 -> Gsl.Matrix_complex.add x1 x2; x1
   | _         -> failwith "add: unsupported operation"
 
 let sub : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
   fun k x1 x2 -> match k with
-  | Float32   -> let open Gsl.Matrix.Single in sub x1 x2; x1
-  | Float64   -> let open Gsl.Matrix in sub x1 x2; x1
-  | Complex32 -> let open Gsl.Matrix_complex.Single in sub x1 x2; x1
-  | Complex64 -> let open Gsl.Matrix_complex in sub x1 x2; x1
+  | Float32   -> Gsl.Matrix.Single.sub x1 x2; x1
+  | Float64   -> Gsl.Matrix.sub x1 x2; x1
+  | Complex32 -> Gsl.Matrix_complex.Single.sub x1 x2; x1
+  | Complex64 -> Gsl.Matrix_complex.sub x1 x2; x1
   | _         -> failwith "sub: unsupported operation"
 
 let mul : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
   fun k x1 x2 -> match k with
-  | Float32   -> let open Gsl.Matrix.Single in mul_elements x1 x2; x1
-  | Float64   -> let open Gsl.Matrix in mul_elements x1 x2; x1
-  | Complex32 -> let open Gsl.Matrix_complex.Single in mul_elements x1 x2; x1
-  | Complex64 -> let open Gsl.Matrix_complex in mul_elements x1 x2; x1
+  | Float32   -> Gsl.Matrix.Single.mul_elements x1 x2; x1
+  | Float64   -> Gsl.Matrix.mul_elements x1 x2; x1
+  | Complex32 -> Gsl.Matrix_complex.Single.mul_elements x1 x2; x1
+  | Complex64 -> Gsl.Matrix_complex.mul_elements x1 x2; x1
   | _         -> failwith "mul: unsupported operation"
 
 let div : type a b. (a, b) kind -> (a, b) gsl_mat_op08 =
   fun k x1 x2 -> match k with
-  | Float32   -> let open Gsl.Matrix.Single in div_elements x1 x2; x1
-  | Float64   -> let open Gsl.Matrix in div_elements x1 x2; x1
-  | Complex32 -> let open Gsl.Matrix_complex.Single in div_elements x1 x2; x1
-  | Complex64 -> let open Gsl.Matrix_complex in div_elements x1 x2; x1
+  | Float32   -> Gsl.Matrix.Single.div_elements x1 x2; x1
+  | Float64   -> Gsl.Matrix.div_elements x1 x2; x1
+  | Complex32 -> Gsl.Matrix_complex.Single.div_elements x1 x2; x1
+  | Complex64 -> Gsl.Matrix_complex.div_elements x1 x2; x1
   | _         -> failwith "div: unsupported operation"
 
 let add_scalar : type a b. (a, b) kind -> (a, b) gsl_mat_op03 =
@@ -187,3 +184,11 @@ let mul_scalar : type a b. (a, b) kind -> (a, b) gsl_mat_op03 =
   | Complex32 -> Gsl.Matrix_complex.Single.scale x a; x
   | Complex64 -> Gsl.Matrix_complex.scale x a; x
   | _         -> failwith "mul_scalar: unsupported operation"
+
+let reverse : type a b. (a, b) kind -> (a, b) gsl_vec_op00 =
+  fun k x -> match k with
+  | Float32   -> Gsl.Vector.Single.reverse x
+  | Float64   -> Gsl.Vector.reverse x
+  | Complex32 -> Gsl.Vector_complex.Single.reverse x
+  | Complex64 -> Gsl.Vector_complex.reverse x
+  | _         -> failwith "reverse: unsupported operation"

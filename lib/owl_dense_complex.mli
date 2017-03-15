@@ -314,8 +314,6 @@ val neg : mat -> mat
 
 val reci : mat -> mat
 
-val sqr_nrm2 : mat -> float
-
 val l1norm : mat -> float
 
 val l2norm : mat -> float
