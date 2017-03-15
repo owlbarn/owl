@@ -89,20 +89,14 @@ let sort ?cmp ?(inc=true) x =
 
 (* TODO: add axis paramater *)
 
-let min''' x = Owl_backend_gsl_linalg._gsl_min (kind x) (ndarray_to_c_vec x)
+let min x = Owl_backend_gsl_linalg.min (kind x) (ndarray_to_c_vec x)
 
-let min x =
-  let y = ndarray_to_c_vec x in
-  let i = _owl_min_i (kind x) (numel x) y in
-  y.{i}
+let max x = Owl_backend_gsl_linalg.max (kind x) (ndarray_to_c_vec x)
 
-
-let max x = Owl_backend_gsl_linalg._gsl_max (kind x) (ndarray_to_c_vec x)
-
-let minmax x = Owl_backend_gsl_linalg._gsl_minmax (kind x) (ndarray_to_c_vec x)
+let minmax x = Owl_backend_gsl_linalg.minmax (kind x) (ndarray_to_c_vec x)
 
 let min_i x =
-  let y = flatten x |> array1_of_genarray in
+  let y = ndarray_to_c_vec x in
   let i = _owl_min_i (kind x) (numel x) y in
   let s = _calc_stride (shape x) in
   let j = Array.copy s in
@@ -110,21 +104,28 @@ let min_i x =
   y.{i}, j
 
 let max_i x =
-  let y = flatten x |> array1_of_genarray in
+  let y = ndarray_to_c_vec x in
   let i = _owl_max_i (kind x) (numel x) y in
   let s = _calc_stride (shape x) in
   let j = Array.copy s in
   let _ = _index_1d_nd i j s in
   y.{i}, j
 
-(* TODO: optimise *)
-let minmax_i x = min_i x, max_i x
+let minmax_i x =
+  let y = ndarray_to_c_vec x in
+  let i, j = Owl_backend_gsl_linalg.minmax_i (kind x) y in
+  let s = _calc_stride (shape x) in
+  let p = Array.copy s in
+  let q = Array.copy s in
+  let _ = _index_1d_nd i p s in
+  let _ = _index_1d_nd j q s in
+  (y.{i}, p), (y.{j}, q)
 
 let add x y =
   let z = clone x in
   let x = ndarray_to_c_mat z in
   let y = ndarray_to_c_mat y in
-  let _ = Owl_backend_gsl_linalg._gsl_add (kind z) x y in
+  let _ = Owl_backend_gsl_linalg.add (kind z) x y in
   z
 
 (* FIXME: broadcast issue *)
@@ -143,14 +144,14 @@ let mul x y =
   let z = clone x in
   let x = ndarray_to_c_mat z in
   let y = ndarray_to_c_mat y in
-  let _ = Owl_backend_gsl_linalg._gsl_mul (kind z) x y in
+  let _ = Owl_backend_gsl_linalg.mul (kind z) x y in
   z
 
 let div x y =
   let z = clone x in
   let x = ndarray_to_c_mat z in
   let y = ndarray_to_c_mat y in
-  let _ = Owl_backend_gsl_linalg._gsl_div (kind z) x y in
+  let _ = Owl_backend_gsl_linalg.div (kind z) x y in
   z
 
 let pow x y =
