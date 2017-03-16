@@ -190,7 +190,11 @@ let _sort : type a b. (a, b) kind -> (a, b) lcm_vec_op11 = function
   | Complex32 -> Lacaml.C.Vec.sort
   | Complex64 -> Lacaml.Z.Vec.sort
   | _         -> failwith "_sort: unsupported operation"
-
+(*
+let __copy ?n ?(ofsy=0) ?(incy=1) ?y ?(ofsx=0) ?(incx=1) x =
+  let n = match n with
+  |
+*)
 
 (* interface to eigen functions, types for interfacing to eigen *)
 
