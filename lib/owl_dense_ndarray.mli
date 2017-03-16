@@ -61,6 +61,8 @@ val sequential : ('a, 'b) kind -> int array -> ('a, 'b) t
   and 5. The elements in the array are assigned sequential values.
  *)
 
+val linspace : ('a, 'b) kind -> 'a -> 'a -> int -> ('a, 'b) t
+(** [linspace k 0. 9. 10] ... *)
 
 (** {6 Obtain basic properties} *)
 

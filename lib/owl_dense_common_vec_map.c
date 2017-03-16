@@ -88,8 +88,39 @@ CAMLprim value FUN4(value vN, value vX, value vY)
 
 #endif /* FUN4 */
 
+
+// function to perform mapping of elements from x to y with regards to scalar values
+#ifdef FUN12
+
+CAMLprim value FUN12(value vN, value vA, value vB, value vX)
+{
+  CAMLparam1(vX);
+  int i, N = Long_val(vN);
+  INIT;
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  for (i = 1; i <= N; i++) {
+    MAPFN(*X_data);
+    X_data++;
+  }
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_unit);
+}
+
+#endif /* FUN12 */
+
+
 #undef NUMBER
 #undef NUMBER1
 #undef MAPFN
+#undef INIT
 #undef FUN3
 #undef FUN4
+#undef FUN12

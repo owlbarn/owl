@@ -1072,4 +1072,31 @@ value cp_two_doubles(double d0, double d1)
 #define COPYNUM(A) (cp_two_doubles(A.r, A.i))
 #include "owl_dense_common_vec_fold.c"
 
+// linspace
+
+#define FUN12 real_float_linspace
+#define INIT float a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), x = a
+#define NUMBER float
+#define MAPFN(X) X = x; x = a + i * h
+#include "owl_dense_common_vec_map.c"
+
+#define FUN12 real_double_linspace
+#define INIT double a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), x = a
+#define NUMBER double
+#define MAPFN(X) X = x; x = a + i * h
+#include "owl_dense_common_vec_map.c"
+
+#define FUN12 complex_float_linspace
+#define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, xr = ar, xi = ai
+#define NUMBER complex_float
+#define MAPFN(X) (X).r = xr; (X).i = xi; xr = ar + i * hr; xi = ai + i * hi
+#include "owl_dense_common_vec_map.c"
+
+#define FUN12 complex_double_linspace
+#define INIT double ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, xr = ar, xi = ai
+#define NUMBER complex_double
+#define MAPFN(X) (X).r = xr; (X).i = xi; xr = ar + i * hr; xi = ai + i * hi
+#include "owl_dense_common_vec_map.c"
+
+
 //////////////////// function templates ends ////////////////////

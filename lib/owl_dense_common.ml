@@ -184,14 +184,6 @@ let _copy : type a b. (a, b) kind -> (a, b) lcm_vec_op10 = function
   | Complex64 -> Lacaml.Z.copy
   | _         -> failwith "_copy: unsupported operation"
 
-let _linspace : type a b. (a, b) kind -> a -> a -> int -> (a, b) lcm_vec =
-  fun k a b n -> match k with
-  | Float32   -> Lacaml.S.Vec.linspace a b n
-  | Float64   -> Lacaml.D.Vec.linspace a b n
-  | Complex32 -> Lacaml.C.Vec.linspace a b n
-  | Complex64 -> Lacaml.Z.Vec.linspace a b n
-  | _         -> failwith "_linspace: unsupported operation"
-
 let _sort : type a b. (a, b) kind -> (a, b) lcm_vec_op11 = function
   | Float32   -> Lacaml.S.Vec.sort
   | Float64   -> Lacaml.D.Vec.sort
@@ -251,6 +243,7 @@ type ('a, 'b) owl_vec_op03 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a,
 type ('a, 'b) owl_vec_op04 = int -> ('a, 'b) owl_vec -> 'a
 type ('a, 'b) owl_vec_op05 = int -> 'a -> ('a, 'b) owl_vec -> 'a
 type ('a, 'b) owl_vec_op06 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a
+type ('a, 'b) owl_vec_op07 = int -> 'a -> 'a -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
 (* call functions in owl native c *)
@@ -886,5 +879,18 @@ let _owl_max2 : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
   | Float32   -> owl_real_float_max2 l x y z
   | Float64   -> owl_real_double_max2 l x y z
   | _         -> failwith "_owl_max2: unsupported operation"
+
+external owl_real_float_linspace : int -> float -> float -> (float, 'a) owl_vec -> unit = "real_float_linspace"
+external owl_real_double_linspace : int -> float -> float -> (float, 'a) owl_vec -> unit = "real_double_linspace"
+external owl_complex_float_linspace : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_vec -> unit = "complex_float_linspace"
+external owl_complex_double_linspace : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_vec -> unit = "complex_double_linspace"
+
+let _owl_linspace : type a b. (a, b) kind -> (a, b) owl_vec_op07 = function
+  | Float32   -> owl_real_float_linspace
+  | Float64   -> owl_real_double_linspace
+  | Complex32 -> owl_complex_float_linspace
+  | Complex64 -> owl_complex_double_linspace
+  | _         -> failwith "_owl_linspace: unsupported operation"
+
 
 (* ends here *)

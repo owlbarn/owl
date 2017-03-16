@@ -14,7 +14,7 @@ void __dumb_fun_vec_combine() {};  // define a dumb to avoid warnings
 // function to combine x and y and save to z
 #ifdef FUN7
 
-void FUN7(value vN, value vX, value vY, value vZ)
+CAMLprim value FUN7(value vN, value vX, value vY, value vZ)
 {
   CAMLparam4(vN, vX, vY, vZ);
   int N = Long_val(vN);
@@ -54,7 +54,7 @@ void FUN7(value vN, value vX, value vY, value vZ)
 
   caml_leave_blocking_section();  /* Disallow other threads */
 
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 
 #endif /* FUN7 */
@@ -64,7 +64,7 @@ void FUN7(value vN, value vX, value vY, value vZ)
 // NOTE: not tested yet
 #ifdef FUN10
 
-void FUN10(value vN, value vC, value vX, value vY)
+CAMLprim value FUN10(value vN, value vC, value vX, value vY)
 {
   CAMLparam4(vN, vC, vX, vY);
   int N = Long_val(vN);
@@ -97,7 +97,7 @@ void FUN10(value vN, value vC, value vX, value vY)
 
   caml_leave_blocking_section();  /* Disallow other threads */
 
-  CAMLreturn0;
+  CAMLreturn(Val_unit);
 }
 
 #endif /* FUN10 */

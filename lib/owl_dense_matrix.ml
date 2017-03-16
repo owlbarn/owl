@@ -72,10 +72,9 @@ let sequential k m n =
   done; x
 
 let linspace k a b n =
-  let x = _linspace k a b n in
-  let x = Bigarray.genarray_of_array1 x in
-  let x = _change_layout x c_layout in
-  Bigarray.reshape_2 x 1 n
+  let x = Owl_dense_ndarray.linspace k a b n in
+  let x = Owl_dense_ndarray.reshape x [|1;n|] in
+  reshape_2 x 1 n
 
 (* matrix manipulations *)
 

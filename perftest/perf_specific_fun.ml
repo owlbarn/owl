@@ -95,7 +95,7 @@ let test_23 _ =
     Gc.compact()
   done
 
-let test_24 _ = Owl_dense_real.ssqr_diff x y
+let test_24 _ = Owl_dense_real.linspace 0. 100000000. 100000000
 
 let _ = Perf_common.test_op_each c test_24
 

@@ -561,6 +561,11 @@ let uniform : type a b. ?scale:float -> (a, b) kind -> int array -> (a, b) t =
   | _ -> failwith "Owl_dense_ndarray.uniform: unknown type"
   in x
 
+let linspace k a b n =
+  let x = Array1.create k c_layout n in
+  _owl_linspace k n a b x;
+  genarray_of_array1 x
+
 (* advanced operations *)
 
 let create kind dimension a =
