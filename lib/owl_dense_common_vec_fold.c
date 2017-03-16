@@ -30,7 +30,7 @@ CAMLprim value FUN5(value vN, value vX)
   start_x = X_data;
   stop_x = start_x + N;
 
-  NUMBER1 r = INIT;
+  INIT;
 
   while (start_x != stop_x) {
     NUMBER x = *start_x;
@@ -41,7 +41,6 @@ CAMLprim value FUN5(value vN, value vX)
   caml_leave_blocking_section();  /* Disallow other threads */
 
   CAMLreturn(COPYNUM(r));
-  //CAMLreturn(caml_copy_double(r));
 }
 
 #endif /* FUN5 */
@@ -127,6 +126,40 @@ CAMLprim value FUN8(value vN, value vX)
 #endif /* FUN8 */
 
 
+// function to calculate ssqr
+#ifdef FUN9
+
+CAMLprim value FUN9(value vN, value vC, value vX)
+{
+  CAMLparam3(vN, vC, vX);
+  int N = Long_val(vN);
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  NUMBER *start_x, *stop_x;
+  INIT;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  start_x = X_data;
+  stop_x = start_x + N;
+
+  while (start_x != stop_x) {
+    NUMBER x = *start_x;
+    ACCFN(r,x);
+    start_x += 1;
+  };
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(COPYNUM(r));
+}
+
+#endif /* FUN9 */
+
+
 #undef NUMBER
 #undef NUMBER1
 #undef CHECKFN
@@ -136,3 +169,4 @@ CAMLprim value FUN8(value vN, value vX)
 #undef FUN5
 #undef FUN6
 #undef FUN8
+#undef FUN9

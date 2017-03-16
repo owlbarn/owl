@@ -476,10 +476,8 @@ let sigmoid x =
   let _ = _owl_sigmoid (kind x) (numel y) src dst in
   y
 
-let ssqr x a =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  (_ssqr (kind x)) ~c:a y
+(* TODO: optimise for a = 0 case *)
+let ssqr x a = flatten x |> array1_of_genarray |> _owl_ssqr (kind x) (numel x) a
 
 let l1norm x = flatten x |> array1_of_genarray |> _owl_l1norm (kind x) (numel x)
 

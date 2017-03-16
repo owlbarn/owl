@@ -177,13 +177,6 @@ let _sub : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
   | Complex64 -> Lacaml.Z.Vec.sub
   | _         -> failwith "_sub: unsupported operation"
 
-let _ssqr : type a b. (a, b) kind -> (a, b) lcm_vec_op03 = function
-  | Float32   -> Lacaml.S.Vec.ssqr
-  | Float64   -> Lacaml.D.Vec.ssqr
-  | Complex32 -> Lacaml.C.Vec.ssqr
-  | Complex64 -> Lacaml.Z.Vec.ssqr
-  | _         -> failwith "_ssqr: unsupported operation"
-
 let _ssqr_diff : type a b. (a, b) kind -> (a, b) lcm_vec_op12 = function
   | Float32   -> Lacaml.S.Vec.ssqr_diff
   | Float64   -> Lacaml.D.Vec.ssqr_diff
@@ -270,6 +263,7 @@ type ('a, 'b) owl_vec_op01 = int -> ('a, 'b) owl_vec -> int
 type ('a, 'b) owl_vec_op02 = int -> ('a, 'b) owl_vec -> float
 type ('a, 'b) owl_vec_op03 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int
 type ('a, 'b) owl_vec_op04 = int -> ('a, 'b) owl_vec -> 'a
+type ('a, 'b) owl_vec_op05 = int -> 'a -> ('a, 'b) owl_vec -> 'a
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
 (* call functions in owl native c *)
@@ -828,6 +822,18 @@ let _owl_prod : type a b. (a, b) kind -> (a, b) owl_vec_op04 = function
   | Complex32 -> owl_complex_float_prod
   | Complex64 -> owl_complex_double_prod
   | _         -> failwith "_owl_prod: unsupported operation"
+
+external owl_real_float_ssqr : int -> float -> (float, 'a) owl_vec -> float = "real_float_ssqr"
+external owl_real_double_ssqr : int -> float -> (float, 'a) owl_vec -> float = "real_double_ssqr"
+external owl_complex_float_ssqr : int -> Complex.t -> (Complex.t, 'a) owl_vec -> Complex.t = "complex_float_ssqr"
+external owl_complex_double_ssqr : int -> Complex.t -> (Complex.t, 'a) owl_vec -> Complex.t = "complex_double_ssqr"
+
+let _owl_ssqr : type a b. (a, b) kind -> (a, b) owl_vec_op05 = function
+  | Float32   -> owl_real_float_ssqr
+  | Float64   -> owl_real_double_ssqr
+  | Complex32 -> owl_complex_float_ssqr
+  | Complex64 -> owl_complex_double_ssqr
+  | _         -> failwith "_owl_ssqr: unsupported operation"
 
 external owl_real_float_log_sum_exp : int -> (float, 'a) owl_vec -> float = "real_float_log_sum_exp"
 external owl_real_double_log_sum_exp : int -> (float, 'a) owl_vec -> float = "real_double_log_sum_exp"
