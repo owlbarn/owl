@@ -385,7 +385,6 @@ value cp_two_doubles(double d0, double d1)
 #include "owl_dense_common_vec_fold.c"
 
 // ssqr
-// segment fault
 #define FUN9 real_float_ssqr
 #define INIT float r = 0.; float c = Double_val(vC); float diff
 #define NUMBER float
