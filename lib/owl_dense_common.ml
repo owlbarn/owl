@@ -177,13 +177,6 @@ let _sub : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
   | Complex64 -> Lacaml.Z.Vec.sub
   | _         -> failwith "_sub: unsupported operation"
 
-let _ssqr_diff : type a b. (a, b) kind -> (a, b) lcm_vec_op12 = function
-  | Float32   -> Lacaml.S.Vec.ssqr_diff
-  | Float64   -> Lacaml.D.Vec.ssqr_diff
-  | Complex32 -> Lacaml.C.Vec.ssqr_diff
-  | Complex64 -> Lacaml.Z.Vec.ssqr_diff
-  | _         -> failwith "_ssqr_diff: unsupported operation"
-
 let _copy : type a b. (a, b) kind -> (a, b) lcm_vec_op10 = function
   | Float32   -> Lacaml.S.copy
   | Float64   -> Lacaml.D.copy
@@ -198,13 +191,6 @@ let _linspace : type a b. (a, b) kind -> a -> a -> int -> (a, b) lcm_vec =
   | Complex32 -> Lacaml.C.Vec.linspace a b n
   | Complex64 -> Lacaml.Z.Vec.linspace a b n
   | _         -> failwith "_linspace: unsupported operation"
-
-let _rev : type a b. (a, b) kind -> (a, b) lcm_vec -> (a, b) lcm_vec = function
-  | Float32   -> Lacaml.S.Vec.rev
-  | Float64   -> Lacaml.D.Vec.rev
-  | Complex32 -> Lacaml.C.Vec.rev
-  | Complex64 -> Lacaml.Z.Vec.rev
-  | _         -> failwith "_rev: unsupported operation"
 
 let _sort : type a b. (a, b) kind -> (a, b) lcm_vec_op11 = function
   | Float32   -> Lacaml.S.Vec.sort
@@ -264,6 +250,7 @@ type ('a, 'b) owl_vec_op02 = int -> ('a, 'b) owl_vec -> float
 type ('a, 'b) owl_vec_op03 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_vec_op04 = int -> ('a, 'b) owl_vec -> 'a
 type ('a, 'b) owl_vec_op05 = int -> 'a -> ('a, 'b) owl_vec -> 'a
+type ('a, 'b) owl_vec_op06 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
 (* call functions in owl native c *)
@@ -834,6 +821,18 @@ let _owl_ssqr : type a b. (a, b) kind -> (a, b) owl_vec_op05 = function
   | Complex32 -> owl_complex_float_ssqr
   | Complex64 -> owl_complex_double_ssqr
   | _         -> failwith "_owl_ssqr: unsupported operation"
+
+external owl_real_float_ssqr_diff : int -> (float, 'a) owl_vec -> (float, 'a) owl_vec -> float = "real_float_ssqr_diff"
+external owl_real_double_ssqr_diff : int -> (float, 'a) owl_vec -> (float, 'a) owl_vec -> float = "real_double_ssqr_diff"
+external owl_complex_float_ssqr_diff : int -> (Complex.t, 'a) owl_vec -> (Complex.t, 'a) owl_vec -> Complex.t = "complex_float_ssqr_diff"
+external owl_complex_double_ssqr_diff : int -> (Complex.t, 'a) owl_vec -> (Complex.t, 'a) owl_vec -> Complex.t = "complex_double_ssqr_diff"
+
+let _owl_ssqr_diff : type a b. (a, b) kind -> (a, b) owl_vec_op06 = function
+  | Float32   -> owl_real_float_ssqr_diff
+  | Float64   -> owl_real_double_ssqr_diff
+  | Complex32 -> owl_complex_float_ssqr_diff
+  | Complex64 -> owl_complex_double_ssqr_diff
+  | _         -> failwith "_owl_ssqr_diff: unsupported operation"
 
 external owl_real_float_log_sum_exp : int -> (float, 'a) owl_vec -> float = "real_float_log_sum_exp"
 external owl_real_double_log_sum_exp : int -> (float, 'a) owl_vec -> float = "real_double_log_sum_exp"

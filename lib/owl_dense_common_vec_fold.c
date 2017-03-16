@@ -25,7 +25,7 @@ CAMLprim value FUN5(value vN, value vX)
 
   NUMBER *start_x, *stop_x;
   INIT;
-  
+
   caml_enter_blocking_section();  /* Allow other threads */
 
   start_x = X_data;
@@ -159,6 +159,48 @@ CAMLprim value FUN9(value vN, value vC, value vX)
 #endif /* FUN9 */
 
 
+// function to fold two vectors x and y to a scalar value r
+#ifdef FUN11
+
+CAMLprim value FUN11(value vN, value vX, value vY)
+{
+  CAMLparam3(vN, vX, vY);
+  int N = Long_val(vN);
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
+  CAMLunused int dim_Y = *big_Y->dim;
+  NUMBER1 *Y_data = ((NUMBER1 *) big_Y->data);
+
+  NUMBER *start_x, *stop_x;
+  NUMBER1 *start_y;
+  INIT;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  start_x = X_data;
+  stop_x = start_x + N;
+  start_y = Y_data;
+
+  while (start_x != stop_x) {
+    NUMBER  x = *start_x;
+    NUMBER1 y = *start_y;
+    ACCFN(r,x,y);
+    start_x += 1;
+    start_y += 1;
+  };
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(COPYNUM(r));
+}
+
+#endif /* FUN11 */
+
+
 #undef NUMBER
 #undef NUMBER1
 #undef CHECKFN
@@ -169,3 +211,4 @@ CAMLprim value FUN9(value vN, value vC, value vX)
 #undef FUN6
 #undef FUN8
 #undef FUN9
+#undef FUN11

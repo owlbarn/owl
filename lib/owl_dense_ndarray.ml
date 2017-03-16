@@ -211,11 +211,9 @@ let max2 x y =
   z
 
 let ssqr_diff x y =
-  let x' = _change_layout x fortran_layout in
-  let x' = Bigarray.reshape_1 x' (numel x) in
-  let y' = _change_layout y fortran_layout in
-  let y' = Bigarray.reshape_1 y' (numel y) in
-  (_ssqr_diff (kind x)) x' y'
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  _owl_ssqr_diff (kind x) (numel x) x' y'
 
 let abs x =
   let y = clone x in

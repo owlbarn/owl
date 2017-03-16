@@ -1038,5 +1038,38 @@ value cp_two_doubles(double d0, double d1)
 #define COPYNUM(X) (cp_two_doubles(X.r, X.i))
 #include "owl_dense_common_vec_fold.c"
 
+// ssqr_diff
+
+#define FUN11 real_float_ssqr_diff
+#define INIT float r = 0.
+#define NUMBER float
+#define NUMBER1 float
+#define ACCFN(A,X,Y) X -= Y; X *= X; A += X
+#define COPYNUM(A) (caml_copy_double(A))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN11 real_double_ssqr_diff
+#define INIT double r = 0.
+#define NUMBER double
+#define NUMBER1 double
+#define ACCFN(A,X,Y) X -= Y; X *= X; A += X
+#define COPYNUM(A) (caml_copy_double(A))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN11 complex_float_ssqr_diff
+#define INIT complex_float r = { 0.0, 0.0 }
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define ACCFN(A,X,Y) X.r -= Y.r; X.i -= Y.i; A.r += (X.r - X.i) * (X.r + X.i); A.i += 2 * A.r * A.i
+#define COPYNUM(A) (cp_two_doubles(A.r, A.i))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN11 complex_double_ssqr_diff
+#define INIT complex_double r = { 0.0, 0.0 }
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define ACCFN(A,X,Y) X.r -= Y.r; X.i -= Y.i; A.r += (X.r - X.i) * (X.r + X.i); A.i += 2 * A.r * A.i
+#define COPYNUM(A) (cp_two_doubles(A.r, A.i))
+#include "owl_dense_common_vec_fold.c"
 
 //////////////////// function templates ends ////////////////////
