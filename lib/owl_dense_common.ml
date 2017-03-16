@@ -170,68 +170,12 @@ type ('a, 'b) lcm_mat_op01 = int -> int -> ('a, 'b) lcm_mat
 
 (* call functions in lacaml *)
 
-let _add : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
-  | Float32   -> Lacaml.S.Vec.add
-  | Float64   -> Lacaml.D.Vec.add
-  | Complex32 -> Lacaml.C.Vec.add
-  | Complex64 -> Lacaml.Z.Vec.add
-  | _         -> failwith "_add: unsupported operation"
-
 let _sub : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
   | Float32   -> Lacaml.S.Vec.sub
   | Float64   -> Lacaml.D.Vec.sub
   | Complex32 -> Lacaml.C.Vec.sub
   | Complex64 -> Lacaml.Z.Vec.sub
   | _         -> failwith "_sub: unsupported operation"
-
-let _mul : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
-  | Float32   -> Lacaml.S.Vec.mul
-  | Float64   -> Lacaml.D.Vec.mul
-  | Complex32 -> Lacaml.C.Vec.mul
-  | Complex64 -> Lacaml.Z.Vec.mul
-  | _         -> failwith "_mul: unsupported operation"
-
-let _div : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
-  | Float32   -> Lacaml.S.Vec.div
-  | Float64   -> Lacaml.D.Vec.div
-  | Complex32 -> Lacaml.C.Vec.div
-  | Complex64 -> Lacaml.Z.Vec.div
-  | _         -> failwith "_div: unsupported operation"
-
-let _min : type a b. (a, b) kind -> (a, b) lcm_vec_op01 = function
-  | Float32   -> Lacaml.S.Vec.min
-  | Float64   -> Lacaml.D.Vec.min
-  | Complex32 -> Lacaml.C.Vec.min
-  | Complex64 -> Lacaml.Z.Vec.min
-  | _         -> failwith "_min: unsupported operation"
-
-let _max : type a b. (a, b) kind -> (a, b) lcm_vec_op01 = function
-  | Float32   -> Lacaml.S.Vec.max
-  | Float64   -> Lacaml.D.Vec.max
-  | Complex32 -> Lacaml.C.Vec.max
-  | Complex64 -> Lacaml.Z.Vec.max
-  | _         -> failwith "_max: unsupported operation"
-
-let _sum : type a b. (a, b) kind -> (a, b) lcm_vec_op01 = function
-  | Float32   -> Lacaml.S.Vec.sum
-  | Float64   -> Lacaml.D.Vec.sum
-  | Complex32 -> Lacaml.C.Vec.sum
-  | Complex64 -> Lacaml.Z.Vec.sum
-  | _         -> failwith "_sum: unsupported operation"
-
-let _prod : type a b. (a, b) kind -> (a, b) lcm_vec_op01 = function
-  | Float32   -> Lacaml.S.Vec.prod
-  | Float64   -> Lacaml.D.Vec.prod
-  | Complex32 -> Lacaml.C.Vec.prod
-  | Complex64 -> Lacaml.Z.Vec.prod
-  | _         -> failwith "_prod: unsupported operation"
-
-let _sqr_nrm2 : type a b. (a, b) kind -> (a, b) lcm_vec_op02 = function
-  | Float32   -> Lacaml.S.Vec.sqr_nrm2
-  | Float64   -> Lacaml.D.Vec.sqr_nrm2
-  | Complex32 -> Lacaml.C.Vec.sqr_nrm2
-  | Complex64 -> Lacaml.Z.Vec.sqr_nrm2
-  | _         -> failwith "_sqr_nrm2: unsupported operation"
 
 let _ssqr : type a b. (a, b) kind -> (a, b) lcm_vec_op03 = function
   | Float32   -> Lacaml.S.Vec.ssqr
@@ -246,41 +190,6 @@ let _ssqr_diff : type a b. (a, b) kind -> (a, b) lcm_vec_op12 = function
   | Complex32 -> Lacaml.C.Vec.ssqr_diff
   | Complex64 -> Lacaml.Z.Vec.ssqr_diff
   | _         -> failwith "_ssqr_diff: unsupported operation"
-
-let _add_scalar : type a b. (a, b) kind -> (a -> (a, b) lcm_vec_op00) = function
-  | Float32   -> Lacaml.S.Vec.add_const
-  | Float64   -> Lacaml.D.Vec.add_const
-  | Complex32 -> Lacaml.C.Vec.add_const
-  | Complex64 -> Lacaml.Z.Vec.add_const
-  | _         -> failwith "_add_scalar: unsupported operation"
-
-let _map_op : type a b. (a, b) kind -> (a, b) lcm_vec_op06 = function
-  | Float32   -> Lacaml.S.Vec.map
-  | Float64   -> Lacaml.D.Vec.map
-  | Complex32 -> Lacaml.C.Vec.map
-  | Complex64 -> Lacaml.Z.Vec.map
-  | _         -> failwith "_map_op: unsupported operation"
-
-let _iter_op : type a b. (a, b) kind -> (a, b) lcm_vec_op07 = function
-  | Float32   -> Lacaml.S.Vec.iter
-  | Float64   -> Lacaml.D.Vec.iter
-  | Complex32 -> Lacaml.C.Vec.iter
-  | Complex64 -> Lacaml.Z.Vec.iter
-  | _         -> failwith "_iter_op: unsupported operation"
-
-let _iteri_op : type a b. (a, b) kind -> (a, b) lcm_vec_op08 = function
-  | Float32   -> Lacaml.S.Vec.iteri
-  | Float64   -> Lacaml.D.Vec.iteri
-  | Complex32 -> Lacaml.C.Vec.iteri
-  | Complex64 -> Lacaml.Z.Vec.iteri
-  | _         -> failwith "_iteri_op: unsupported operation"
-
-let _mul_scalar : type a b. (a, b) kind -> (a, b) lcm_vec_op09 = function
-  | Float32   -> Lacaml.S.scal
-  | Float64   -> Lacaml.D.scal
-  | Complex32 -> Lacaml.C.scal
-  | Complex64 -> Lacaml.Z.scal
-  | _         -> failwith "_mul_scalar: unsupported operation"
 
 let _copy : type a b. (a, b) kind -> (a, b) lcm_vec_op10 = function
   | Float32   -> Lacaml.S.copy
