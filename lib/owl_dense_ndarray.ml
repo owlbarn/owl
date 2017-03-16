@@ -483,11 +483,13 @@ let _ssqr_0 x =
   let y = Owl_backend_gsl_linalg.dot (kind x) x1 x2 in
   y.{0,0}
 
-let _ssqr_1 x a = flatten x |> array1_of_genarray |> _owl_ssqr (kind x) (numel x) a
+let ssqr x a = flatten x |> array1_of_genarray |> _owl_ssqr (kind x) (numel x) a
 
+(* TODO: using Gsl.dot is not really faster
 let ssqr x a = match a = _zero (kind x) with
   | true  -> _ssqr_0 x
   | false -> _ssqr_1 x a
+*)
 
 let l1norm x = flatten x |> array1_of_genarray |> _owl_l1norm (kind x) (numel x)
 

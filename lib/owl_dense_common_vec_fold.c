@@ -24,13 +24,12 @@ CAMLprim value FUN5(value vN, value vX)
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   NUMBER *start_x, *stop_x;
-
+  INIT;
+  
   caml_enter_blocking_section();  /* Allow other threads */
 
   start_x = X_data;
   stop_x = start_x + N;
-
-  INIT;
 
   while (start_x != stop_x) {
     NUMBER x = *start_x;

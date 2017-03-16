@@ -384,35 +384,6 @@ value cp_two_doubles(double d0, double d1)
 #define COPYNUM(X) (cp_two_doubles(X.r, X.i))
 #include "owl_dense_common_vec_fold.c"
 
-// ssqr
-#define FUN9 real_float_ssqr
-#define INIT float r = 0.; float c = Double_val(vC); float diff
-#define NUMBER float
-#define ACCFN(A,X) diff = X - c; A += diff * diff
-#define COPYNUM(X) (caml_copy_double(X))
-#include "owl_dense_common_vec_fold.c"
-
-#define FUN9 real_double_ssqr
-#define INIT double r = 0.; double c = Double_val(vC); double diff
-#define NUMBER double
-#define ACCFN(A,X) diff = X - c; A += diff * diff
-#define COPYNUM(X) (caml_copy_double(X))
-#include "owl_dense_common_vec_fold.c"
-
-#define FUN9 complex_float_ssqr
-#define INIT complex_float r = { 0.0, 0.0 }; float cr = Double_field(vC, 0); float ci = Double_field(vC, 1); float diffr; float diffi
-#define NUMBER complex_float
-#define ACCFN(A,X) diffr = X.r - cr; diffi = X.i - ci; A.r += diffr * diffr - diffi * diffi; A.i += 2 * diffr * diffi
-#define COPYNUM(X) (cp_two_doubles(X.r, X.i))
-#include "owl_dense_common_vec_fold.c"
-
-#define FUN9 complex_double_ssqr
-#define INIT complex_double r = { 0.0, 0.0 }; double cr = Double_field(vC, 0); double ci = Double_field(vC, 1); double diffr; double diffi
-#define NUMBER complex_double
-#define ACCFN(A,X) diffr = X.r - cr; diffi = X.i - ci; A.r += diffr * diffr - diffi * diffi; A.i += 2 * diffr * diffi
-#define COPYNUM(X) (cp_two_doubles(X.r, X.i))
-#include "owl_dense_common_vec_fold.c"
-
 // neg
 
 #define FUN4 real_float_neg
@@ -963,14 +934,14 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y) (pow(X,Y))
+#define MAPFN(X,Y,Z) Z = pow(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_pow
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
-#define MAPFN(X,Y) (pow(X,Y))
+#define MAPFN(X,Y,Z) Z = pow(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 // atan2
@@ -979,14 +950,14 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y) (atan2(X,Y))
+#define MAPFN(X,Y,Z) Z = atan2(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_atan2
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
-#define MAPFN(X,Y) (atan2(X,Y))
+#define MAPFN(X,Y,Z) Z = atan2(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 // hypot
@@ -995,14 +966,14 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y) (hypot(X,Y))
+#define MAPFN(X,Y,Z) Z = hypot(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_hypot
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
-#define MAPFN(X,Y) (hypot(X,Y))
+#define MAPFN(X,Y,Z) Z = hypot(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 // min2
@@ -1011,14 +982,14 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y) (fmin(X,Y))
+#define MAPFN(X,Y,Z) Z = fmin(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_min2
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
-#define MAPFN(X,Y) (fmin(X,Y))
+#define MAPFN(X,Y,Z) Z = fmin(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 // max2
@@ -1027,15 +998,45 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y) (fmax(X,Y))
+#define MAPFN(X,Y,Z) Z = fmax(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_max2
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
-#define MAPFN(X,Y) (fmax(X,Y))
+#define MAPFN(X,Y,Z) Z = fmax(X,Y)
 #include "owl_dense_common_vec_combine.c"
+
+// ssqr
+
+#define FUN9 real_float_ssqr
+#define INIT float r = 0.; float c = Double_val(vC); float diff
+#define NUMBER float
+#define ACCFN(A,X) diff = X - c; A += diff * diff
+#define COPYNUM(X) (caml_copy_double(X))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN9 real_double_ssqr
+#define INIT double r = 0.; double c = Double_val(vC); double diff
+#define NUMBER double
+#define ACCFN(A,X) diff = X - c; A += diff * diff
+#define COPYNUM(X) (caml_copy_double(X))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN9 complex_float_ssqr
+#define INIT complex_float r = { 0.0, 0.0 }; float cr = Double_field(vC, 0); float ci = Double_field(vC, 1); float diffr; float diffi
+#define NUMBER complex_float
+#define ACCFN(A,X) diffr = X.r - cr; diffi = X.i - ci; A.r += diffr * diffr - diffi * diffi; A.i += 2 * diffr * diffi
+#define COPYNUM(X) (cp_two_doubles(X.r, X.i))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN9 complex_double_ssqr
+#define INIT complex_double r = { 0.0, 0.0 }; double cr = Double_field(vC, 0); double ci = Double_field(vC, 1); double diffr; double diffi
+#define NUMBER complex_double
+#define ACCFN(A,X) diffr = X.r - cr; diffi = X.i - ci; A.r += diffr * diffr - diffi * diffi; A.i += 2 * diffr * diffi
+#define COPYNUM(X) (cp_two_doubles(X.r, X.i))
+#include "owl_dense_common_vec_fold.c"
 
 
 //////////////////// function templates ends ////////////////////
