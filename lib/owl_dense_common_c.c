@@ -11,6 +11,14 @@
 float sqr_float(x) { return x * x; }
 double sqr_double(x) { return x * x; }
 
+value cp_two_doubles(double d0, double d1)
+{
+  value res = caml_alloc_small(2 * Double_wosize, Double_array_tag);
+  Store_double_field(res, 0, d0);
+  Store_double_field(res, 1, d1);
+  return res;
+}
+
 CAMLprim value testfn_stub(value vX, value vY)
 {
   CAMLparam2(vX, vY);
@@ -277,53 +285,103 @@ CAMLprim value testfn_stub(value vX, value vY)
 // l1norm
 
 #define FUN5 real_float_l1norm
+#define INIT 0.
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (fabsf(X))
+#define ACCFN(A,X) (A += fabsf(X))
+#define COPYNUM(X) (caml_copy_double(X))
 #include "owl_dense_common_vec_fold.c"
 
 #define FUN5 real_double_l1norm
+#define INIT 0.
 #define NUMBER double
 #define NUMBER1 double
-#define MAPFN(X) (fabs(X))
+#define ACCFN(A,X) (A += fabs(X))
+#define COPYNUM(X) (caml_copy_double(X))
 #include "owl_dense_common_vec_fold.c"
 
 #define FUN5 complex_float_l1norm
+#define INIT 0.
 #define NUMBER complex_float
 #define NUMBER1 float
-#define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
+#define ACCFN(A,X) (A += sqrt (X.r * X.r + X.i * X.i))
+#define COPYNUM(X) (caml_copy_double(X))
 #include "owl_dense_common_vec_fold.c"
 
 #define FUN5 complex_double_l1norm
+#define INIT 0.
 #define NUMBER complex_double
 #define NUMBER1 double
-#define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
+#define ACCFN(A,X) (A += sqrt (X.r * X.r + X.i * X.i))
+#define COPYNUM(X) (caml_copy_double(X))
 #include "owl_dense_common_vec_fold.c"
 
 // l2norm_sqr
 
 #define FUN5 real_float_l2norm_sqr
+#define INIT 0.
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (X * X)
+#define ACCFN(A,X) (A += X * X)
+#define COPYNUM(X) (caml_copy_double(X))
 #include "owl_dense_common_vec_fold.c"
 
 #define FUN5 real_double_l2norm_sqr
+#define INIT 0.
 #define NUMBER double
 #define NUMBER1 double
-#define MAPFN(X) (X * X)
+#define ACCFN(A,X) (A += X * X)
+#define COPYNUM(X) (caml_copy_double(X))
 #include "owl_dense_common_vec_fold.c"
 
 #define FUN5 complex_float_l2norm_sqr
+#define INIT 0.
 #define NUMBER complex_float
 #define NUMBER1 float
-#define MAPFN(X) (sqr_float (X.r * X.r + X.i * X.i))
+#define ACCFN(A,X) (A += X.r * X.r - X.i * X.i + 2 * X.r * X.i)
+#define COPYNUM(X) (caml_copy_double(X))
 #include "owl_dense_common_vec_fold.c"
 
 #define FUN5 complex_double_l2norm_sqr
+#define INIT 0.
 #define NUMBER complex_double
 #define NUMBER1 double
-#define MAPFN(X) (sqr_double (X.r * X.r + X.i * X.i))
+#define ACCFN(A,X) (A += X.r * X.r - X.i * X.i + 2 * X.r * X.i)
+#define COPYNUM(X) (caml_copy_double(X))
+#include "owl_dense_common_vec_fold.c"
+
+// sum
+
+#define FUN5 real_float_sum
+#define INIT 0.
+#define NUMBER float
+#define NUMBER1 float
+#define ACCFN(A,X) (A += X)
+#define COPYNUM(X) (caml_copy_double(X))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN5 real_double_sum
+#define INIT 0.
+#define NUMBER double
+#define NUMBER1 double
+#define ACCFN(A,X) (A += X)
+#define COPYNUM(X) (caml_copy_double(X))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN5 complex_float_sum
+#define INIT { 0.0, 0.0 }
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define ACCFN(A,X) A.r += X.r; A.i += X.i
+#define COPYNUM(X) (cp_two_doubles(X.r, X.i))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN5 complex_double_sum
+#define INIT { 0.0, 0.0 }
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define ACCFN(A,X) A.r += X.r; A.i += X.i
+#define COPYNUM(X) (cp_two_doubles(X.r, X.i))
 #include "owl_dense_common_vec_fold.c"
 
 // neg

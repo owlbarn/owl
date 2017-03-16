@@ -515,10 +515,7 @@ let atan21 x a =
   fill y a;
   atan2 x y
 
-let sum x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  (_sum (kind x)) y
+let sum x = flatten x |> array1_of_genarray |> _owl_sum (kind x) (numel x)
 
 let softmax x =
   let y = max x |> sub_scalar x |> exp in

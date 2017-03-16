@@ -371,6 +371,7 @@ type ('a, 'b) owl_vec_op00 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int
 type ('a, 'b) owl_vec_op01 = int -> ('a, 'b) owl_vec -> int
 type ('a, 'b) owl_vec_op02 = int -> ('a, 'b) owl_vec -> float
 type ('a, 'b) owl_vec_op03 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int
+type ('a, 'b) owl_vec_op04 = int -> ('a, 'b) owl_vec -> 'a
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
 (* call functions in owl native c *)
@@ -905,6 +906,18 @@ let _owl_l2norm_sqr : type a b. (a, b) kind -> (a, b) owl_vec_op02 = function
   | Complex32 -> owl_complex_float_l2norm_sqr
   | Complex64 -> owl_complex_double_l2norm_sqr
   | _         -> failwith "_owl_l2norm_sqr: unsupported operation"
+
+external owl_real_float_sum : int -> (float, 'a) owl_vec -> float = "real_float_sum"
+external owl_real_double_sum : int -> (float, 'a) owl_vec -> float = "real_double_sum"
+external owl_complex_float_sum : int -> (Complex.t, 'a) owl_vec -> Complex.t = "complex_float_sum"
+external owl_complex_double_sum : int -> (Complex.t, 'a) owl_vec -> Complex.t = "complex_double_sum"
+
+let _owl_sum : type a b. (a, b) kind -> (a, b) owl_vec_op04 = function
+  | Float32   -> owl_real_float_sum
+  | Float64   -> owl_real_double_sum
+  | Complex32 -> owl_complex_float_sum
+  | Complex64 -> owl_complex_double_sum
+  | _         -> failwith "_owl_sum: unsupported operation"
 
 external owl_real_float_log_sum_exp : int -> (float, 'a) owl_vec -> float = "real_float_log_sum_exp"
 external owl_real_double_log_sum_exp : int -> (float, 'a) owl_vec -> float = "real_double_log_sum_exp"

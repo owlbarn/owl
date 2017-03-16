@@ -95,7 +95,7 @@ let test_23 _ =
     Gc.compact()
   done
 
-let test_24 _ = Owl_dense_real.l2norm_sqr x
+let test_24 _ = Owl_dense_real.sum x
 
 let _ = Perf_common.test_op_each c test_24
 

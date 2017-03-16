@@ -30,17 +30,18 @@ CAMLprim value FUN5(value vN, value vX)
   start_x = X_data;
   stop_x = start_x + N;
 
-  NUMBER1 r = 0.;
+  NUMBER1 r = INIT;
 
   while (start_x != stop_x) {
     NUMBER x = *start_x;
-    r += (MAPFN(x));
+    ACCFN(r,x);
     start_x += 1;
   };
 
   caml_leave_blocking_section();  /* Disallow other threads */
 
-  CAMLreturn(caml_copy_double(r));
+  CAMLreturn(COPYNUM(r));
+  //CAMLreturn(caml_copy_double(r));
 }
 
 #endif /* FUN5 */
@@ -129,7 +130,9 @@ CAMLprim value FUN8(value vN, value vX)
 #undef NUMBER
 #undef NUMBER1
 #undef CHECKFN
-#undef MAPFN
+#undef COPYNUM
+#undef ACCFN
+#undef INIT
 #undef FUN5
 #undef FUN6
 #undef FUN8
