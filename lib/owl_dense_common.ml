@@ -80,43 +80,7 @@ let _index_nd_1d j s =
   !i
 
 
-(* interface to lacaml functions, types for interfacing to lacaml *)
-
-type ('a, 'b) lcm_vec = ('a, 'b, fortran_layout) Array1.t
-type ('a, 'b) lcm_mat = ('a, 'b, fortran_layout) Array2.t
-
-type ('a, 'b) lcm_vec_op00 = (('a, 'b) lcm_vec) Lacaml.Common.Types.Vec.unop
-type ('a, 'b) lcm_vec_op01 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> 'a
-type ('a, 'b) lcm_vec_op02 = ?stable:bool -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> float
-type ('a, 'b) lcm_vec_op03 = ?n:int -> ?c:'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> 'a
-type ('a, 'b) lcm_vec_op04 = float -> int -> ('a, 'b) lcm_vec
-type ('a, 'b) lcm_vec_op05 = (('a, 'b) lcm_vec) Lacaml.Common.Types.Vec.binop
-type ('a, 'b) lcm_vec_op06 = ('a -> 'a) -> ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ('a, 'b) lcm_vec
-type ('a, 'b) lcm_vec_op07 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
-type ('a, 'b) lcm_vec_op08 = (int -> 'a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
-type ('a, 'b) lcm_vec_op09 = ?n:int -> 'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
-type ('a, 'b) lcm_vec_op10 = ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ('a, 'b) lcm_vec
-type ('a, 'b) lcm_vec_op11 = ?cmp:('a -> 'a -> int) -> ?decr:bool -> ?n:int -> ?ofsp:int -> ?incp:int -> ?p:Lacaml.Common.int_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
-type ('a, 'b) lcm_vec_op12 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ?ofsy:int -> ?incy:int -> ('a, 'b) lcm_vec -> 'a
-
-type ('a, 'b) lcm_mat_op00 = ('a, 'b) lcm_mat -> 'a array array
-type ('a, 'b) lcm_mat_op01 = int -> int -> ('a, 'b) lcm_mat
-
-(* call functions in lacaml *)
-
-let _to_arrays : type a b . (a, b) kind -> (a, b) lcm_mat_op00 = function
-  | Float32   -> Lacaml.S.Mat.to_array
-  | Float64   -> Lacaml.D.Mat.to_array
-  | Complex32 -> Lacaml.C.Mat.to_array
-  | Complex64 -> Lacaml.Z.Mat.to_array
-  | _         -> failwith "_to_arrays: unsupported operation"
-
-let _make0 : type a b. (a, b) kind -> (a, b) lcm_mat_op01 = function
-  | Float32   -> Lacaml.S.Mat.make0
-  | Float64   -> Lacaml.D.Mat.make0
-  | Complex32 -> Lacaml.C.Mat.make0
-  | Complex64 -> Lacaml.Z.Mat.make0
-  | _         -> failwith "_make0: unsupported operation"
+(* basic operations on individual element *)
 
 let _add_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( +. )
@@ -180,6 +144,31 @@ let _power_scalar_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Complex32 -> Complex.pow
   | Complex64 -> Complex.pow
   | _         -> failwith "_power_scalar_elt: unsupported operation"
+
+
+(* interface to lacaml functions, types for interfacing to lacaml *)
+
+type ('a, 'b) lcm_vec = ('a, 'b, fortran_layout) Array1.t
+type ('a, 'b) lcm_mat = ('a, 'b, fortran_layout) Array2.t
+
+type ('a, 'b) lcm_vec_op00 = (('a, 'b) lcm_vec) Lacaml.Common.Types.Vec.unop
+type ('a, 'b) lcm_vec_op01 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> 'a
+type ('a, 'b) lcm_vec_op02 = ?stable:bool -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> float
+type ('a, 'b) lcm_vec_op03 = ?n:int -> ?c:'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> 'a
+type ('a, 'b) lcm_vec_op04 = float -> int -> ('a, 'b) lcm_vec
+type ('a, 'b) lcm_vec_op05 = (('a, 'b) lcm_vec) Lacaml.Common.Types.Vec.binop
+type ('a, 'b) lcm_vec_op06 = ('a -> 'a) -> ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ('a, 'b) lcm_vec
+type ('a, 'b) lcm_vec_op07 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
+type ('a, 'b) lcm_vec_op08 = (int -> 'a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
+type ('a, 'b) lcm_vec_op09 = ?n:int -> 'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
+type ('a, 'b) lcm_vec_op10 = ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ('a, 'b) lcm_vec
+type ('a, 'b) lcm_vec_op11 = ?cmp:('a -> 'a -> int) -> ?decr:bool -> ?n:int -> ?ofsp:int -> ?incp:int -> ?p:Lacaml.Common.int_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
+type ('a, 'b) lcm_vec_op12 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ?ofsy:int -> ?incy:int -> ('a, 'b) lcm_vec -> 'a
+
+type ('a, 'b) lcm_mat_op00 = ('a, 'b) lcm_mat -> 'a array array
+type ('a, 'b) lcm_mat_op01 = int -> int -> ('a, 'b) lcm_mat
+
+(* call functions in lacaml *)
 
 let _add : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
   | Float32   -> Lacaml.S.Vec.add
@@ -918,6 +907,18 @@ let _owl_sum : type a b. (a, b) kind -> (a, b) owl_vec_op04 = function
   | Complex32 -> owl_complex_float_sum
   | Complex64 -> owl_complex_double_sum
   | _         -> failwith "_owl_sum: unsupported operation"
+
+external owl_real_float_prod : int -> (float, 'a) owl_vec -> float = "real_float_prod"
+external owl_real_double_prod : int -> (float, 'a) owl_vec -> float = "real_double_prod"
+external owl_complex_float_prod : int -> (Complex.t, 'a) owl_vec -> Complex.t = "complex_float_prod"
+external owl_complex_double_prod : int -> (Complex.t, 'a) owl_vec -> Complex.t = "complex_double_prod"
+
+let _owl_prod : type a b. (a, b) kind -> (a, b) owl_vec_op04 = function
+  | Float32   -> owl_real_float_prod
+  | Float64   -> owl_real_double_prod
+  | Complex32 -> owl_complex_float_prod
+  | Complex64 -> owl_complex_double_prod
+  | _         -> failwith "_owl_prod: unsupported operation"
 
 external owl_real_float_log_sum_exp : int -> (float, 'a) owl_vec -> float = "real_float_log_sum_exp"
 external owl_real_double_log_sum_exp : int -> (float, 'a) owl_vec -> float = "real_double_log_sum_exp"

@@ -1018,9 +1018,12 @@ let im x =
 let conj x = map Complex.conj x
 
 let prod ?axis x =
-  let _a1 = _one (kind x) in
-  let _op = _mul_elt (kind x) in
-  fold ?axis (fun a y -> _op a y) _a1 x
+  match axis with
+  | Some axis ->
+    let _a1 = _one (kind x) in
+    let _op = _mul_elt (kind x) in
+    fold ~axis (fun a y -> _op a y) _a1 x
+  | None -> flatten x |> array1_of_genarray |> _owl_prod (kind x) (numel x)
 
 let tile x reps =
   (* check the validity of reps *)

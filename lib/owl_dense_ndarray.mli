@@ -678,7 +678,7 @@ val max2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 val ssqr : ('a, 'b) t -> 'a -> 'a
 (** [ssqr x a] computes the sum of squared differences of all the elements in
   [x] from constant [a]. This function only computes the square of each element
-  rather than the conjugate transpose as {!sqr_nrm2} does.
+  rather than the conjugate transpose as {!l2norm_sqr} does.
  *)
 
 val ssqr_diff : ('a, 'b) t -> ('a, 'b) t -> 'a

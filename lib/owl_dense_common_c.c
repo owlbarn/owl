@@ -8,8 +8,6 @@
 #include "owl_macros.h"
 
 // some helper functions
-float sqr_float(x) { return x * x; }
-double sqr_double(x) { return x * x; }
 
 value cp_two_doubles(double d0, double d1)
 {
@@ -18,22 +16,6 @@ value cp_two_doubles(double d0, double d1)
   Store_double_field(res, 1, d1);
   return res;
 }
-
-CAMLprim value testfn_stub(value vX, value vY)
-{
-  CAMLparam2(vX, vY);
-  int X = Int_val(vX);
-  int Y = Int_val(vY);
-
-  caml_enter_blocking_section();  /* Allow other threads */
-
-  int r = X + Y;
-
-  caml_leave_blocking_section();  /* Disallow other threads */
-
-  CAMLreturn(Val_int(r));
-}
-
 
 //////////////////// function templates starts ////////////////////
 
@@ -381,6 +363,40 @@ CAMLprim value testfn_stub(value vX, value vY)
 #define NUMBER complex_double
 #define NUMBER1 complex_double
 #define ACCFN(A,X) A.r += X.r; A.i += X.i
+#define COPYNUM(X) (cp_two_doubles(X.r, X.i))
+#include "owl_dense_common_vec_fold.c"
+
+// prod
+
+#define FUN5 real_float_prod
+#define INIT 1.
+#define NUMBER float
+#define NUMBER1 float
+#define ACCFN(A,X) (A = A * X)
+#define COPYNUM(X) (caml_copy_double(X))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN5 real_double_prod
+#define INIT 1.
+#define NUMBER double
+#define NUMBER1 double
+#define ACCFN(A,X) (A = A * X)
+#define COPYNUM(X) (caml_copy_double(X))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN5 complex_float_prod
+#define INIT { 1.0, 0.0 }
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define ACCFN(A,X) A.r = A.r * X.r - A.i * X.i; A.i = A.r * X.i + A.i * X.r
+#define COPYNUM(X) (cp_two_doubles(X.r, X.i))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN5 complex_double_prod
+#define INIT { 1.0, 0.0 }
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define ACCFN(A,X) A.r = A.r * X.r - A.i * X.i; A.i = A.r * X.i + A.i * X.r
 #define COPYNUM(X) (cp_two_doubles(X.r, X.i))
 #include "owl_dense_common_vec_fold.c"
 
