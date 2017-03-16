@@ -190,11 +190,8 @@ let _sort : type a b. (a, b) kind -> (a, b) lcm_vec_op11 = function
   | Complex32 -> Lacaml.C.Vec.sort
   | Complex64 -> Lacaml.Z.Vec.sort
   | _         -> failwith "_sort: unsupported operation"
-(*
-let __copy ?n ?(ofsy=0) ?(incy=1) ?y ?(ofsx=0) ?(incx=1) x =
-  let n = match n with
-  |
-*)
+
+
 
 (* interface to eigen functions, types for interfacing to eigen *)
 
@@ -251,6 +248,31 @@ type ('a, 'b) owl_vec_op07 = int -> 'a -> 'a -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
 (* call functions in owl native c *)
+
+type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
+
+let __copy : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
+  fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
+  match k with
+  | Float32   ->
+    let x = Array1.sub x ofsx (Array1.dim x - ofsx) in
+    let y = Array1.sub y ofsy (Array1.dim y - ofsy) in
+    Owl_cblas.scopy n x incx y incy
+  | Float64   ->
+    let x = Array1.sub x ofsx (Array1.dim x - ofsx) in
+    let y = Array1.sub y ofsy (Array1.dim y - ofsy) in
+    Owl_cblas.dcopy n x incx y incy
+  | Complex32 ->
+    let x = Array1.sub x ofsx (Array1.dim x - ofsx) in
+    let y = Array1.sub y ofsy (Array1.dim y - ofsy) in
+    Owl_cblas.ccopy n x incx y incy
+  | Complex64 ->
+    let x = Array1.sub x ofsx (Array1.dim x - ofsx) in
+    let y = Array1.sub y ofsy (Array1.dim y - ofsy) in
+    Owl_cblas.zcopy n x incx y incy
+  | _ -> failwith ": unsupported operation"
+
+
 
 let _owl_elt_to_str : type a b. (a, b) kind -> (a -> bytes) = function
   | Float32   -> fun v -> Printf.sprintf "%G" v
