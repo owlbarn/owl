@@ -854,7 +854,7 @@ let reverse_reset x =
 
 let reverse_push v x =
   let open Maths in
-  (* check the types of adjoint a and its update, transform v if necessary *)
+  (* check adjoint a and its update v, ensure rank a >= rank v *)
   let _melt a v =
     match a, v with
     | F _, Mat v -> F (M.sum v)
