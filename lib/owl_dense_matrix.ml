@@ -200,10 +200,6 @@ let reverse x =
   let y = Owl_dense_ndarray.reverse x in
   of_ndarray y
 
-let sort ?cmp ?inc x =
-  let x = to_ndarray x in
-  Owl_dense_ndarray.sort ?cmp ?inc x
-
 
 (* matrix iteration operations *)
 

@@ -101,8 +101,6 @@ val flatten : mat -> mat
 
 val reverse : mat -> mat
 
-val sort : ?cmp:(elt -> elt -> int) -> ?inc:bool -> mat -> unit
-
 val reset : mat -> unit
 
 val fill : mat -> elt -> unit

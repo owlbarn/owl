@@ -76,8 +76,6 @@ let flatten x = M.flatten (unpack_box x) |> pack_box
 
 let reverse x = M.reverse (unpack_box x) |> pack_box
 
-let sort ?cmp ?(inc=true) x = M.sort ?cmp ~inc (unpack_box x)
-
 let transpose ?axis x = M.transpose ?axis (unpack_box x) |> pack_box
 
 let swap a0 a1 x = M.swap a0 a1 (unpack_box x) |> pack_box

@@ -56,7 +56,7 @@ let _ =
   for i = 1 to 1000 do
     let x', y' = Dataset.draw_samples x y 100 in
     backprop nn (F 0.01) (Mat x') (Mat y')
-    |> Printf.printf "#%i : loss=%g\n" i
+    |> Printf.printf "#%i : loss = %g\n" i
     |> flush_all;
   done;
   let x, y, _ = Dataset.load_mnist_test_data () in

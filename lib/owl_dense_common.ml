@@ -177,13 +177,6 @@ let _sub : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
   | Complex64 -> Lacaml.Z.Vec.sub
   | _         -> failwith "_sub: unsupported operation"
 
-let _sort : type a b. (a, b) kind -> (a, b) lcm_vec_op11 = function
-  | Float32   -> Lacaml.S.Vec.sort
-  | Float64   -> Lacaml.D.Vec.sort
-  | Complex32 -> Lacaml.C.Vec.sort
-  | Complex64 -> Lacaml.Z.Vec.sort
-  | _         -> failwith "_sort: unsupported operation"
-
 
 
 (* interface to eigen functions, types for interfacing to eigen *)

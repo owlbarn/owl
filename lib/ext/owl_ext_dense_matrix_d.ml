@@ -80,8 +80,6 @@ let flatten x = M.flatten (unpack_box x) |> pack_box
 
 let reverse x = M.reverse (unpack_box x) |> pack_box
 
-let sort ?cmp ?inc x = M.sort ?cmp ?inc (unpack_box x)
-
 let fill x a = M.fill (unpack_box x) (unpack_elt a)
 
 let clone x = M.clone (unpack_box x) |> pack_box

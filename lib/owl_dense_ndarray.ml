@@ -74,12 +74,7 @@ let reverse x =
   y |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.reverse (kind x);
   y
 
-let sort ?cmp ?(inc=true) x =
-  let y = _change_layout x fortran_layout in
-  let y = Bigarray.reshape_1 y (numel x) in
-  (_sort (kind x)) ?cmp ~decr:(not inc) y
-
-(* TODO: zpxy, zmxy ... *)
+(* TODO: zpxy, zmxy, sort ... *)
 
 (* TODO: add axis paramater *)
 
