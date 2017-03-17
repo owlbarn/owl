@@ -803,26 +803,23 @@ let _slice_block axis x =
   ) axis;
   let y = empty (kind x) !s1 in
   (* transform into 1d array *)
-  let x' = _change_layout x fortran_layout in
-  let x' = Bigarray.reshape_1 x' (numel x) in
-  let y' = _change_layout y fortran_layout in
-  let y' = Bigarray.reshape_1 y' (numel y) in
+  let x' = Bigarray.reshape_1 x (numel x) in
+  let y' = Bigarray.reshape_1 y (numel y) in
   (* prepare function of copying blocks *)
   let b = _slice_continuous_blksz s0 axis in
   let s = _calc_stride s0 in
-  let _cp_op = _copy (kind x) in
+  let _cp_op = _owl_copy (kind x) in
   let ofsy_i = ref 0 in
   let f = fun i -> (
-    let ofsx = (_index_nd_1d i s) + 1 in
-    let ofsy = (!ofsy_i * b) + 1 in
-    let _ = _cp_op ~n:b ~ofsy ~y:y' ~ofsx x' in
+    let ofsx = _index_nd_1d i s in
+    let ofsy = !ofsy_i * b in
+    let _ = _cp_op b ~ofsy ~ofsx x' y' in
     ofsy_i := !ofsy_i + 1
   ) in
   (* start copying blocks *)
   _foreach_continuous_blk axis s0 f;
   (* reshape the ndarray *)
   let z = Bigarray.genarray_of_array1 y' in
-  let z = _change_layout z c_layout in
   let z = Bigarray.reshape z !s1 in
   z
 
@@ -1096,6 +1093,7 @@ let tile x reps =
   _tile 0 0 0; y
 
 let repeat ?axis x reps =
+  let _cp_op = _owl_copy (kind x) in
   let highest_dim = Array.length (shape x) - 1 in
   (* by default, repeat at the highest dimension *)
   let axis = match axis with
@@ -1107,35 +1105,29 @@ let repeat ?axis x reps =
   _shape_y.(axis) <- _shape_y.(axis) * reps;
   let y = empty (kind x) _shape_y in
   (* transform into genarray first *)
-  let x' = _change_layout x fortran_layout in
-  let x' = Bigarray.reshape_1 x' (numel x) in
-  let y' = _change_layout y fortran_layout in
-  let y' = Bigarray.reshape_1 y' (numel y) in
+  let x' = Bigarray.reshape_1 x (numel x) in
+  let y' = Bigarray.reshape_1 y (numel y) in
   (* if repeat at the highest dimension, use this strategy *)
   if axis = highest_dim then (
-    let _cp_op = _copy (kind x) in
-    (* be careful of the index, this is fortran layout *)
-    for i = 1 to reps do
-      ignore (_cp_op ~n:(numel x) ~ofsy:i ~incy:reps ~y:y' ~ofsx:1 ~incx:1 x')
+    for i = 0 to reps - 1 do
+      ignore (_cp_op (numel x) ~ofsx:0 ~incx:1 ~ofsy:i ~incy:reps x' y')
     done;
   )
   (* if repeat at another dimension, use this block copying *)
   else (
-    let _cp_op = _copy (kind x) in
     let _stride_x = _calc_stride (shape x) in
     let _slice_sz = _stride_x.(axis) in
     (* be careful of the index, this is fortran layout *)
     for i = 0 to (numel x) / _slice_sz - 1 do
-      let ofsx = i * _slice_sz + 1 in
+      let ofsx = i * _slice_sz in
       for j = 0 to reps - 1 do
-        let ofsy = (i * reps + j) * _slice_sz + 1 in
-        ignore (_cp_op ~n:_slice_sz ~ofsy ~incy:1 ~y:y' ~ofsx ~incx:1 x')
+        let ofsy = (i * reps + j) * _slice_sz in
+        ignore (_cp_op _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:1 x' y')
       done;
     done;
   );
   (* reshape y' back to ndarray before return result *)
   let y' = genarray_of_array1 y' in
-  let y' = _change_layout y' c_layout in
   reshape y' _shape_y
 
 let squeeze ?(axis=[||]) x =
