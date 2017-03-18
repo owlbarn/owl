@@ -101,12 +101,12 @@ let rec zero = function
   | F _                     -> F 0.
   | Mat ap                  -> Mat M.(zeros (row_num ap) (col_num ap))
   | DF (ap, at, ai)         -> DF ((zero ap), (zero at), ai)  (* FIXME: need to check *)
-  | DR (ap, at, ao, af, ai) -> DR ((zero ap), ref (zero !at), Noop, ref !af, ai)
+  | DR (ap, at, ao, af, ai) -> DR ((zero ap), ref (zero !at), Noop, ref 0, ai)
 
 let rec one = function
   | F _             -> F 1.
   | Mat ap          -> Mat M.(ones (row_num ap) (col_num ap))
-  | DF (ap, at, ai) -> DF ((one ap), (zero at), ai)
+  | DF (ap, at, ai) -> DF ((one ap), (zero at), ai)   (* FIXME: need to check *)
   | _               -> failwith "error: one : unknown type"
 
 let primal = function
@@ -859,24 +859,21 @@ let reverse_push v x =
     match a, v with
     | F _, Mat v -> F (M.sum v)
     | Mat a, Mat v -> (
-      Printf.printf "a:(%i,%i) v:(%i,%i)\n" (M.row_num a) (M.col_num a) (M.row_num v) (M.col_num v);
-      flush_all ();
+      (* FIXME *)
       match M.(shape a = shape v) with
       | true  -> Mat v
       | false -> Mat (M.sum_rows v)
       )
-    | _, Mat v -> (Printf.printf "v:(%i,%i)\n" (M.row_num v) (M.col_num v); Mat v)
-    | Mat a, v -> (Printf.printf "a:(%i,%i)\n" (M.row_num a) (M.col_num a); v)
     | a, v -> v
   in
   let rec push xs =
     match xs with
     | [] -> ()
     | (v, x) :: t -> (
-        print_endline "+++";
         match x with
         | DR (ap, aa, ao, af, ai) -> (
-          let v = _melt !aa v in
+          (* FIXME *)
+          let v = _melt !aa (primal v) in
           aa := Maths.(!aa + v);
           af := S.(!af - 1);
           if !af = 0 then (
@@ -945,9 +942,9 @@ let reverse_push v x =
             | Of_Rows_D a           -> push (t |> List.append (a |> Array.to_list |> List.mapi (fun i v -> (get_row !aa i, v))))
             | Noop                  -> push t
             )
-          else (print_endline "***"; push t)
+          else push t
           )
-        | _ -> (failwith "==="; push t)
+        | _ -> push t
       )
   in
   push [(v, x)]

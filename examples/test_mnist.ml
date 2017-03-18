@@ -37,10 +37,8 @@ let backprop nn eta x y =
   ) nn.layers;
   let loss = Maths.(cross_entropy y (run_network x nn) / (F (Mat.row_num x |> float_of_int))) in
   reverse_prop (F 1.) loss;
-  print_endline "hello";
   Array.iter (fun l ->
     l.w <- Maths.((primal l.w) - (eta * (adjval l.w))) |> primal;
-    Printf.printf "%i %i\n" (Mat.row_num (adjval l.b)) (Mat.col_num (adjval l.b));
     l.b <- Maths.((primal l.b) - (eta * (adjval l.b))) |> primal;
   ) nn.layers;
   loss |> unpack_flt
