@@ -117,16 +117,11 @@ let add x y =
   let _ = Owl_backend_gsl_linalg.add (kind z) x y in
   z
 
-(* FIXME: broadcast issue *)
 let sub x y =
-  let x' = _change_layout x fortran_layout in
-  let x' = Bigarray.reshape_1 x' (numel x) in
-  let y' = _change_layout y fortran_layout in
-  let y' = Bigarray.reshape_1 y' (numel y) in
-  let z = (_sub (kind x)) x' y' in
-  let z = Bigarray.genarray_of_array1 z in
-  let z = _change_layout z c_layout in
-  let z = Bigarray.reshape z (shape x) in
+  let z = clone x in
+  let x = ndarray_to_c_mat z in
+  let y = ndarray_to_c_mat y in
+  let _ = Owl_backend_gsl_linalg.sub (kind z) x y in
   z
 
 let mul x y =

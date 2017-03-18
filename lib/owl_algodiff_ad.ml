@@ -94,8 +94,8 @@ let cmp_tag ai bi =
 let rec reset_zero = function
   | F _                     -> F 0.
   | Mat ap                  -> M.reset ap; Mat ap
-  | DF (ap, at, ai)         -> DF ((reset_zero ap), (reset_zero at), ai)
-  | DR (ap, at, ao, af, ai) -> DR ((reset_zero ap), ref (reset_zero !at), Noop, ref !af, ai)
+  | DF (ap, at, ai)         -> DF ((reset_zero ap), (reset_zero at), ai)  (* FIXME *)
+  | DR (ap, at, ao, af, ai) -> DR ((reset_zero ap), ref (reset_zero !at), Noop, ref !af, ai)  (* FIXME *)
 
 let rec zero = function
   | F _                     -> F 0.
@@ -842,7 +842,7 @@ let reverse_reset x =
             | Add_Row_C_D (_, b, _) -> reset (b :: t)
             | Get_Row_D (a, _)      -> reset (a :: t)
             | Of_Rows_D a           -> reset (List.append (Array.to_list a) t)
-            | _                     -> reset t
+            | Noop                  -> reset t
             )
           else reset t
           )
@@ -858,12 +858,22 @@ let reverse_push v x =
   let _melt a v =
     match a, v with
     | F _, Mat v -> F (M.sum v)
+    | Mat a, Mat v -> (
+      Printf.printf "a:(%i,%i) v:(%i,%i)\n" (M.row_num a) (M.col_num a) (M.row_num v) (M.col_num v);
+      flush_all ();
+      match M.(shape a = shape v) with
+      | true  -> Mat v
+      | false -> Mat (M.sum_rows v)
+      )
+    | _, Mat v -> (Printf.printf "v:(%i,%i)\n" (M.row_num v) (M.col_num v); Mat v)
+    | Mat a, v -> (Printf.printf "a:(%i,%i)\n" (M.row_num a) (M.col_num a); v)
     | a, v -> v
   in
   let rec push xs =
     match xs with
     | [] -> ()
     | (v, x) :: t -> (
+        print_endline "+++";
         match x with
         | DR (ap, aa, ao, af, ai) -> (
           let v = _melt !aa v in
@@ -933,11 +943,11 @@ let reverse_push v x =
             | Add_Row_C_D (a, b, i) -> push ((get_row !aa i, b) :: t)
             | Get_Row_D (a, i)      -> (adjref a) := add_row (adjval a) !aa i; push ((zero a, a) :: t)
             | Of_Rows_D a           -> push (t |> List.append (a |> Array.to_list |> List.mapi (fun i v -> (get_row !aa i, v))))
-            | _                     -> push t
+            | Noop                  -> push t
             )
-          else push t
+          else (print_endline "***"; push t)
           )
-        | _ -> push t
+        | _ -> (failwith "==="; push t)
       )
   in
   push [(v, x)]
