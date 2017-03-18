@@ -92,27 +92,25 @@ let cmp_tag ai bi =
   else 0
 
 let rec reset_zero = function
-  | F _                     -> F 0.
-  | Mat ap                  -> M.reset ap; Mat ap
-  | DF (ap, at, ai)         -> DF ((reset_zero ap), (reset_zero at), ai)  (* FIXME *)
-  | DR (ap, at, ao, af, ai) -> DR ((reset_zero ap), ref (reset_zero !at), Noop, ref !af, ai)  (* FIXME *)
-
-let rec zero = function
-  | F _                     -> F 0.
-  | Mat ap                  -> Mat M.(zeros (row_num ap) (col_num ap))
-  | DF (ap, at, ai)         -> DF ((zero ap), (zero at), ai)  (* FIXME: need to check *)
-  | DR (ap, at, ao, af, ai) -> DR ((zero ap), ref (zero !at), Noop, ref 0, ai)
-
-let rec one = function
-  | F _             -> F 1.
-  | Mat ap          -> Mat M.(ones (row_num ap) (col_num ap))
-  | DF (ap, at, ai) -> DF ((one ap), (zero at), ai)   (* FIXME: need to check *)
-  | _               -> failwith "error: one : unknown type"
+  | F _    -> F 0.
+  | Mat ap -> M.reset ap; Mat ap
+  | _      -> failwith "error: reset_zero"
 
 let primal = function
   | DF (ap, _, _)       -> ap
   | DR (ap, _, _, _, _) -> ap
   | ap                  -> ap
+
+let rec primal' = function
+  | DF (ap, _, _)       -> primal' ap
+  | DR (ap, _, _, _, _) -> primal' ap
+  | ap                  -> ap
+
+let rec zero = function
+  | F _                     -> F 0.
+  | Mat ap                  -> Mat M.(zeros (row_num ap) (col_num ap))
+  | DF (ap, at, ai)         -> ap |> primal' |> zero
+  | DR (ap, at, ao, af, ai) -> ap |> primal' |> zero
 
 let tangent = function
   | DF (_, at, _) -> at
@@ -133,10 +131,9 @@ let shape = function
   | Mat ap    -> M.shape ap
   | _         -> failwith "error: AD.shape"
 
-(* TODO: change to the deepest primal value? *)
-let row_num x = x |> primal |> shape |> fst
+let row_num x = x |> primal' |> shape |> fst
 
-let col_num x = x |> primal |> shape |> snd
+let col_num x = x |> primal' |> shape |> snd
 
 let numel x = (row_num x) * (col_num x)
 
@@ -859,7 +856,7 @@ let reverse_push v x =
     match a, v with
     | F _, Mat v -> F (M.sum v)
     | Mat a, Mat v -> (
-      (* FIXME *)
+      (* FIXME: need to check full-shape, sum_cols if necessary *)
       match M.(shape a = shape v) with
       | true  -> Mat v
       | false -> Mat (M.sum_rows v)
@@ -872,8 +869,7 @@ let reverse_push v x =
     | (v, x) :: t -> (
         match x with
         | DR (ap, aa, ao, af, ai) -> (
-          (* FIXME *)
-          let v = _melt !aa (primal v) in
+          let v = _melt !aa v in
           aa := Maths.(!aa + v);
           af := S.(!af - 1);
           if !af = 0 then (
@@ -924,7 +920,7 @@ let reverse_push v x =
             | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
             | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)
             | AddI_C_D (_, i, j, b) -> push ((item !aa i j, b) :: t)
-            | Sum_D a               -> push ((((mat_create (row_num (primal a)) (col_num (primal a)) !aa)), a) :: t)  (* TODO: this can be optimised *)
+            | Sum_D a               -> push ((((mat_create (row_num (primal a)) (col_num (primal a)) !aa)), a) :: t)  (* FIXME: this can be optimised *)
             | Dot_D_D (a, b)        -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
             | Dot_D_C (a, b)        -> push (((dot !aa (transpose b)), a) :: t)
             | Dot_C_D (a, b)        -> push (((dot (transpose a) !aa), b) :: t)
@@ -962,7 +958,7 @@ let make_reverse p i = DR (p, ref (zero p), Noop, ref 0, i)
 
 (* derivative of f (scalar -> scalr) at x, forward ad *)
 let diff' f x =
-  let x = make_forward x (one x) (tag ()) in
+  let x = make_forward x (F 1.) (tag ()) in
   let y = f x in
   primal y, tangent y
 
