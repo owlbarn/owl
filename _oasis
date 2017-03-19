@@ -104,7 +104,7 @@ Library owl
                     owl_cblas_generated_stub.c
   CCOpt:            -I$pkg_ctypes
   BuildDepends:     str, ctypes, ctypes.stubs, plplot, dolog,
-                    eigen, gsl, lacaml
+                    eigen, gsl
   if system(linux) || system(linux_elf)
     CCOpt+:          -g -O3 -Ofast
   if system(macosx)

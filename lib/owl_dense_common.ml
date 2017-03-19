@@ -44,8 +44,6 @@ let _neg_inf : type a b. (a, b) kind -> a = function
 
 (* some transformation and helper functions *)
 
-let _change_layout = Eigen.Utils.change_layout
-
 let _size_in_bytes = Eigen.Utils.size_in_bytes
 
 let ndarray_to_c_mat x =
@@ -144,39 +142,6 @@ let _power_scalar_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Complex32 -> Complex.pow
   | Complex64 -> Complex.pow
   | _         -> failwith "_power_scalar_elt: unsupported operation"
-
-
-(* interface to lacaml functions, types for interfacing to lacaml *)
-
-type ('a, 'b) lcm_vec = ('a, 'b, fortran_layout) Array1.t
-type ('a, 'b) lcm_mat = ('a, 'b, fortran_layout) Array2.t
-
-type ('a, 'b) lcm_vec_op00 = (('a, 'b) lcm_vec) Lacaml.Common.Types.Vec.unop
-type ('a, 'b) lcm_vec_op01 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> 'a
-type ('a, 'b) lcm_vec_op02 = ?stable:bool -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> float
-type ('a, 'b) lcm_vec_op03 = ?n:int -> ?c:'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> 'a
-type ('a, 'b) lcm_vec_op04 = float -> int -> ('a, 'b) lcm_vec
-type ('a, 'b) lcm_vec_op05 = (('a, 'b) lcm_vec) Lacaml.Common.Types.Vec.binop
-type ('a, 'b) lcm_vec_op06 = ('a -> 'a) -> ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ('a, 'b) lcm_vec
-type ('a, 'b) lcm_vec_op07 = ('a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
-type ('a, 'b) lcm_vec_op08 = (int -> 'a -> unit) -> ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
-type ('a, 'b) lcm_vec_op09 = ?n:int -> 'a -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
-type ('a, 'b) lcm_vec_op10 = ?n:int -> ?ofsy:int -> ?incy:int -> ?y:('a, 'b) lcm_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ('a, 'b) lcm_vec
-type ('a, 'b) lcm_vec_op11 = ?cmp:('a -> 'a -> int) -> ?decr:bool -> ?n:int -> ?ofsp:int -> ?incp:int -> ?p:Lacaml.Common.int_vec -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> unit
-type ('a, 'b) lcm_vec_op12 = ?n:int -> ?ofsx:int -> ?incx:int -> ('a, 'b) lcm_vec -> ?ofsy:int -> ?incy:int -> ('a, 'b) lcm_vec -> 'a
-
-type ('a, 'b) lcm_mat_op00 = ('a, 'b) lcm_mat -> 'a array array
-type ('a, 'b) lcm_mat_op01 = int -> int -> ('a, 'b) lcm_mat
-
-(* call functions in lacaml *)
-
-let _sub : type a b. (a, b) kind -> (a, b) lcm_vec_op05 = function
-  | Float32   -> Lacaml.S.Vec.sub
-  | Float64   -> Lacaml.D.Vec.sub
-  | Complex32 -> Lacaml.C.Vec.sub
-  | Complex64 -> Lacaml.Z.Vec.sub
-  | _         -> failwith "_sub: unsupported operation"
-
 
 
 (* interface to eigen functions, types for interfacing to eigen *)
