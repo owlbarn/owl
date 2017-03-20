@@ -471,3 +471,5 @@ for once before starting `utop`.
 Owl is under active development, and I really look forward to your comments and contributions. Besides setting up a complete development environment on your native system, the easiest way to contribute is to use the [Owl Docker Image](https://hub.docker.com/r/ryanrhymes/owl/). Moreover, we have also built a docker image for ARM-based platform so that you can run Owl on Raspberry PI and Cubietruck (see the section above).
 
 Just pull the image and dig into code saved in `/root/owl`, then have fun!
+
+**Acknowledgement: Funded in part by EPSRC project - Contrive (EP/N028422/1).**
