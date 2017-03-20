@@ -196,6 +196,7 @@ type ('a, 'b) owl_vec_op04 = int -> ('a, 'b) owl_vec -> 'a
 type ('a, 'b) owl_vec_op05 = int -> 'a -> ('a, 'b) owl_vec -> 'a
 type ('a, 'b) owl_vec_op06 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a
 type ('a, 'b) owl_vec_op07 = int -> 'a -> 'a -> ('a, 'b) owl_vec -> unit
+type ('a, 'b) owl_vec_op08 = int -> float -> 'a -> 'a -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
@@ -844,6 +845,18 @@ let _owl_linspace : type a b. (a, b) kind -> (a, b) owl_vec_op07 = function
   | Complex32 -> owl_complex_float_linspace
   | Complex64 -> owl_complex_double_linspace
   | _         -> failwith "_owl_linspace: unsupported operation"
+
+external owl_real_float_logspace : int -> float -> float -> float -> (float, 'a) owl_vec -> unit = "real_float_logspace"
+external owl_real_double_logspace : int -> float -> float -> float -> (float, 'a) owl_vec -> unit = "real_double_logspace"
+external owl_complex_float_logspace : int -> float -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_vec -> unit = "complex_float_logspace"
+external owl_complex_double_logspace : int -> float -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_vec -> unit = "complex_double_logspace"
+
+let _owl_logspace : type a b. (a, b) kind -> (a, b) owl_vec_op08 = function
+  | Float32   -> owl_real_float_logspace
+  | Float64   -> owl_real_double_logspace
+  | Complex32 -> owl_complex_float_logspace
+  | Complex64 -> owl_complex_double_logspace
+  | _         -> failwith "_owl_logspace: unsupported operation"
 
 let _owl_copy : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
   fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->

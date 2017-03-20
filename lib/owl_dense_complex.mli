@@ -57,6 +57,8 @@ val vector_uniform : int -> mat
 
 val linspace : elt -> elt -> int -> mat
 
+val logspace : ?base:float -> elt -> elt -> int -> mat
+
 val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat
 
 val meshup : mat -> mat -> mat * mat

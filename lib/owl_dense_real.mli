@@ -89,6 +89,9 @@ val linspace : elt -> elt -> int -> mat
   row vector [[0;1;2;3;4;5]].
  *)
 
+val logspace : ?base:float -> elt -> elt -> int -> mat
+(** [logspace base a b n] ... the default value of base is [e]. *)
+
 val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat
 (** [meshgrid a1 b1 a2 b2 n1 n2] is similar to the [meshgrid] function in
   Matlab. It returns two matrices [x] and [y] where the row vectors in [x] are

@@ -43,6 +43,13 @@ let unit_basis ?(typ=Row) k m i = match typ with
   | Row -> let v = M.zeros k 1 m in v.{0,i} <- 1.; v
   | Col -> let v = M.zeros k m 1 in v.{i,0} <- 1.; v
 
+let linspace ?(typ=Row) k a b n = match typ with
+  | Row -> M.linspace k a b n
+  | Col -> M.linspace k a b n |> M.reshape n 1
+
+let logspace ?(typ=Row) ?base k a b n = match typ with
+  | Row -> M.logspace k ?base a b n
+  | Col -> M.logspace k ?base a b n |> M.reshape n 1
 
 (* vector properties and manipulations *)
 

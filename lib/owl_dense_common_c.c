@@ -9,6 +9,9 @@
 
 // some helper functions
 
+#define LN10 2.30258509299404568402  /* log_e 10 */
+inline double exp10 (double arg) { return exp(LN10 * arg); }
+
 value cp_two_doubles(double d0, double d1)
 {
   value res = caml_alloc_small(2 * Double_wosize, Double_array_tag);
@@ -1098,5 +1101,42 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) (X).r = xr; (X).i = xi; xr = ar + i * hr; xi = ai + i * hi
 #include "owl_dense_common_vec_map.c"
 
+// logspace
+
+#define FUN13 real_float_logspace
+#define INIT float a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), base = Double_val(vBase), x = a, log_base = log(base)
+#define NUMBER float
+#define MAPFN(X)  *X = exp2(x); x = a + i * h
+#define MAPFN1(X) *X = exp10(x); x = a + i * h
+#define MAPFN2(X) *X = exp(x); x = a + i * h
+#define MAPFN3(X) *X = exp(x * log_base); x = a + i * h
+#include "owl_dense_common_vec_map.c"
+
+#define FUN13 real_double_logspace
+#define INIT double a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), base = Double_val(vBase), x = a, log_base = log(base)
+#define NUMBER double
+#define MAPFN(X)  *X = exp2(x); x = a + i * h
+#define MAPFN1(X) *X = exp10(x); x = a + i * h
+#define MAPFN2(X) *X = exp(x); x = a + i * h
+#define MAPFN3(X) *X = exp(x * log_base); x = a + i * h
+#include "owl_dense_common_vec_map.c"
+
+#define FUN13 complex_float_logspace
+#define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, base = Double_val(vBase), xr = ar, xi = ai, log_base = log(base)
+#define NUMBER complex_float
+#define MAPFN(X)  X->r = exp2(xr); X->i = exp2(xi); xr = ar + i * hr; xi = ai + i * hi
+#define MAPFN1(X) X->r = exp10(xr); X->i = exp10(xi); xr = ar + i * hr; xi = ai + i * hi
+#define MAPFN2(X) X->r = exp(xr); X->i = exp(xi); xr = ar + i * hr; xi = ai + i * hi
+#define MAPFN3(X) X->r = exp(xr * log_base); X->i = exp(xi * log_base); xr = ar + i * hr; xi = ai + i * hi
+#include "owl_dense_common_vec_map.c"
+
+#define FUN13 complex_double_logspace
+#define INIT double ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, base = Double_val(vBase), xr = ar, xi = ai, log_base = log(base)
+#define NUMBER complex_double
+#define MAPFN(X)  X->r = exp2(xr); X->i = exp2(xi); xr = ar + i * hr; xi = ai + i * hi
+#define MAPFN1(X) X->r = exp10(xr); X->i = exp10(xi); xr = ar + i * hr; xi = ai + i * hi
+#define MAPFN2(X) X->r = exp(xr); X->i = exp(xi); xr = ar + i * hr; xi = ai + i * hi
+#define MAPFN3(X) X->r = exp(xr * log_base); X->i = exp(xi * log_base); xr = ar + i * hr; xi = ai + i * hi
+#include "owl_dense_common_vec_map.c"
 
 //////////////////// function templates ends ////////////////////

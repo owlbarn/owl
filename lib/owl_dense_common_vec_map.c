@@ -117,10 +117,59 @@ CAMLprim value FUN12(value vN, value vA, value vB, value vX)
 #endif /* FUN12 */
 
 
+// function to calculate logspace function
+#ifdef FUN13
+
+CAMLprim value FUN13(value vN, value vBase, value vA, value vB, value vX)
+{
+  CAMLparam1(vX);
+  int i, N = Long_val(vN);
+  INIT;
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  if (base == 2.0)
+    for (i = 1; i <= N; i++) {
+      MAPFN(X_data);
+      X_data++;
+    }
+  else if (base == 10.0)
+    for (i = 1; i <= N; i++) {
+      MAPFN1(X_data);
+      X_data++;
+    }
+  else if (base == 2.7182818284590452353602874713526625L)
+    for (i = 1; i <= N; i++) {
+      MAPFN2(X_data);
+      X_data++;
+    }
+  else {
+    for (i = 1; i <= N; i++) {
+      MAPFN3(X_data);
+      X_data++;
+    }
+  }
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_unit);
+}
+
+#endif /* FUN13 */
+
+
 #undef NUMBER
 #undef NUMBER1
 #undef MAPFN
+#undef MAPFN1
+#undef MAPFN2
+#undef MAPFN3
 #undef INIT
 #undef FUN3
 #undef FUN4
 #undef FUN12
+#undef FUN13

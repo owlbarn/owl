@@ -35,6 +35,8 @@ let semidef m = Owl_dense_matrix.semidef Float64 m
 
 let linspace a b n = Owl_dense_matrix.linspace Float64 a b n
 
+let logspace ?(base=Owl_maths.e) a b n = Owl_dense_matrix.logspace Float64 ~base a b n
+
 let meshgrid xa xb ya yb xn yn = Owl_dense_matrix.meshgrid Float64 xa xb ya yb xn yn
 
 let of_array x m n = Owl_dense_matrix.of_array Float64 x m n

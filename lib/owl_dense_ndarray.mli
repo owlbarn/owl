@@ -64,6 +64,10 @@ val sequential : ('a, 'b) kind -> int array -> ('a, 'b) t
 val linspace : ('a, 'b) kind -> 'a -> 'a -> int -> ('a, 'b) t
 (** [linspace k 0. 9. 10] ... *)
 
+val logspace : ('a, 'b) kind -> ?base:float -> 'a -> 'a -> int -> ('a, 'b) t
+(** [logspace k 0. 9. 10] ... *)
+
+
 (** {6 Obtain basic properties} *)
 
 val shape : ('a, 'b) t -> int array

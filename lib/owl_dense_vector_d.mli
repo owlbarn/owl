@@ -27,6 +27,10 @@ val sequential : ?typ:vec_typ -> int -> vec
 
 val unit_basis : ?typ:vec_typ -> int -> int -> vec
 
+val linspace : ?typ:vec_typ -> float -> float -> int -> vec
+
+val logspace : ?typ:vec_typ -> ?base:float -> float -> float -> int -> vec
+
 
 (** {6 Vector properties } *)
 

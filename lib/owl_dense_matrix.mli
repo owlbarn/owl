@@ -31,6 +31,8 @@ val semidef : (float, 'b) kind -> int -> (float, 'b) t
 
 val linspace : ('a, 'b) kind -> 'a -> 'a -> int -> ('a, 'b) t
 
+val logspace : ('a, 'b) kind -> ?base:float -> 'a -> 'a -> int -> ('a, 'b) t
+
 val meshgrid : ('a, 'b) kind -> 'a -> 'a -> 'a -> 'a -> int -> int -> ('a, 'b) t * ('a, 'b) t
 
 val meshup : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t

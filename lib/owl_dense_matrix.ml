@@ -76,6 +76,11 @@ let linspace k a b n =
   let x = Owl_dense_ndarray.reshape x [|1;n|] in
   reshape_2 x 1 n
 
+let logspace k ?(base=Owl_maths.e) a b n =
+  let x = Owl_dense_ndarray.logspace k ~base a b n in
+  let x = Owl_dense_ndarray.reshape x [|1;n|] in
+  reshape_2 x 1 n
+
 (* matrix manipulations *)
 
 let same_shape x1 x2 = shape x1 = shape x2

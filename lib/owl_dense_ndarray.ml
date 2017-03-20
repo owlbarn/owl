@@ -556,6 +556,11 @@ let linspace k a b n =
   _owl_linspace k n a b x;
   genarray_of_array1 x
 
+let logspace k ?(base=Owl_maths.e) a b n =
+  let x = Array1.create k c_layout n in
+  _owl_logspace k n base a b x;
+  genarray_of_array1 x
+
 (* advanced operations *)
 
 let create kind dimension a =
