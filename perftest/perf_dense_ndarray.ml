@@ -1,6 +1,6 @@
 (* Performance test of Owl_dense_ndarray module *)
 
-module M = Owl_dense_ndarray
+module M = Owl_dense_ndarray_generic
 
 let test_op s c op = Perf_common.test_op s c op
 

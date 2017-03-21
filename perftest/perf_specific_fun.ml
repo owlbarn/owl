@@ -34,13 +34,13 @@ let test_03 _ = Owl_dense_matrix_generic.map (fun a -> 0.) x
 
 let test_04 _ =
   let x = c_mat_to_array2d x in
-  Owl_dense_ndarray.map (fun a -> 0.) x
+  Owl_dense_ndarray_generic.map (fun a -> 0.) x
 
 let test_05 _ = Owl_dense_matrix_generic.is_zero y
 
 let test_06 _ =
   let y = c_mat_to_array2d y in
-  Owl_dense_ndarray.is_zero y
+  Owl_dense_ndarray_generic.is_zero y
 
 let test_07 _ = Owl_dense_matrix_generic.min x
 
@@ -50,13 +50,13 @@ let test_09 _ = Owl_dense_matrix_generic.equal_or_greater x x
 
 let test_10 _ = Owl_dense_matrix_generic.uniform float64 m n
 
-let test_11 _ = Owl_dense_ndarray.uniform float64 [|10;1000;10000|]
+let test_11 _ = Owl_dense_ndarray_generic.uniform float64 [|10;1000;10000|]
 
 let test_12 _ = Owl_dense_matrix_generic.is_nonnegative x
 
 let test_13 _ = Owl_dense_matrix_generic.is_nonpositive y
 
-let test_14 _ = Owl_dense_ndarray.nnz (Owl_dense_matrix_generic.to_ndarray y)
+let test_14 _ = Owl_dense_ndarray_generic.nnz (Owl_dense_matrix_generic.to_ndarray y)
 
 let test_15 _ = Owl_dense_matrix_generic.add_scalar x 2.
 
