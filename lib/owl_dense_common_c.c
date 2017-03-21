@@ -401,6 +401,18 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) (-X)
 #include "owl_dense_common_vec_map.c"
 
+#define FUN14 complex_float_neg
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = -(X->r); Y->i = -(X->i)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 complex_double_neg
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = -(X->r); Y->i = -(X->i)
+#include "owl_dense_common_vec_map.c"
+
 // reci
 
 #define FUN4 real_float_reci

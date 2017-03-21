@@ -162,6 +162,48 @@ CAMLprim value FUN13(value vN, value vBase, value vA, value vB, value vX)
 #endif /* FUN13 */
 
 
+// TODO: this needs to be unified with FUN4 in future
+// similar to FUN4, but mostly for complex numbers
+#ifdef FUN14
+
+CAMLprim value FUN14(value vN, value vX, value vY)
+{
+  CAMLparam3(vN, vX, vY);
+  int N = Long_val(vN);
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
+  CAMLunused int dim_Y = *big_Y->dim;
+  NUMBER1 *Y_data = ((NUMBER1 *) big_Y->data);
+
+  NUMBER *start_x, *stop_x;
+  NUMBER1 *start_y;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  start_x = X_data;
+  stop_x = start_x + N;
+  start_y = Y_data;
+
+  int r = 1;
+
+  while (start_x != stop_x) {
+    MAPFN(start_x, start_y);
+    start_x += 1;
+    start_y += 1;
+  };
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_int(r));
+}
+
+#endif /* FUN14 */
+
+
 #undef NUMBER
 #undef NUMBER1
 #undef MAPFN
@@ -173,3 +215,4 @@ CAMLprim value FUN13(value vN, value vBase, value vA, value vB, value vX)
 #undef FUN4
 #undef FUN12
 #undef FUN13
+#undef FUN14

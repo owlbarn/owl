@@ -377,11 +377,15 @@ let _owl_max_i : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
 
 external owl_real_float_neg : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_neg"
 external owl_real_double_neg : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_neg"
+external owl_complex_float_neg : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_float_neg"
+external owl_complex_double_neg : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_double_neg"
 
 let _owl_neg : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_neg l x y
   | Float64   -> owl_real_double_neg l x y
+  | Complex32 -> owl_complex_float_neg l x y
+  | Complex64 -> owl_complex_double_neg l x y
   | _         -> failwith "_owl_neg: unsupported operation"
 
 external owl_real_float_reci : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_reci"
