@@ -51,7 +51,7 @@ end
 
 module DMS_DMD = struct
 
-  module M = Owl_dense_matrix
+  module M = Owl_dense_matrix_generic
 
   let src_typ = Float32
   let dst_typ = Float64
@@ -70,7 +70,7 @@ end
 
 module DMC_DMZ = struct
 
-  module M = Owl_dense_matrix
+  module M = Owl_dense_matrix_generic
 
   let src_typ = Complex32
   let dst_typ = Complex64
@@ -134,7 +134,7 @@ end
 
 module DMS_DMC = struct
 
-  module M = Owl_dense_matrix
+  module M = Owl_dense_matrix_generic
 
   let src_typ = Float32
   let dst_typ = Complex32
@@ -153,7 +153,7 @@ end
 
 module DMD_DMZ = struct
 
-  module M = Owl_dense_matrix
+  module M = Owl_dense_matrix_generic
 
   let src_typ = Float64
   let dst_typ = Complex64

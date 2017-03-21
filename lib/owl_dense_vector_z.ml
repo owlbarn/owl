@@ -8,7 +8,7 @@ open Bigarray
 module V = Owl_dense_vector_generic
 include V
 
-type vec = (Complex.t, complex64_elt) Owl_dense_matrix.t
+type vec = (Complex.t, complex64_elt) Owl_dense_matrix_generic.t
 type elt = Complex.t
 
 let empty ?typ m = V.empty ?typ Complex64 m

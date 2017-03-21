@@ -6,7 +6,7 @@
 open Bigarray
 open Owl_dense_vector_generic
 
-type vec = (Complex.t, complex64_elt) Owl_dense_matrix.t
+type vec = (Complex.t, complex64_elt) Owl_dense_matrix_generic.t
 type elt = Complex.t
 type vec_typ = Row | Col
 

@@ -409,10 +409,10 @@ val to_array : mat -> (int array * elt) array
 
 val of_array : int -> int -> (int array * elt) array -> mat
 
-val to_dense : mat -> Owl_dense_real.mat
+val to_dense : mat -> Owl_dense_matrix_d.mat
 (** [to_dense x] converts [x] into a dense matrix. *)
 
-val of_dense : Owl_dense_real.mat -> mat
+val of_dense : Owl_dense_matrix_d.mat -> mat
 (** [of_dense x] returns a sparse matrix from the dense matrix [x]. *)
 
 val print : mat -> unit

@@ -6,7 +6,7 @@
 open Bigarray
 
 (* save some efforts, just include it *)
-module M = Owl_dense_matrix
+module M = Owl_dense_matrix_generic
 include M
 
 type vec_typ = Row | Col

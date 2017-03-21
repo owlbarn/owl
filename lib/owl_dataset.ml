@@ -33,24 +33,24 @@ let download_all () =
 
 let load_mnist_train_data () =
   let p = local_data_path () in
-  Owl_dense_real.load (p ^ "mnist-train-images"),
-  Owl_dense_real.load (p ^ "mnist-train-labels"),
-  Owl_dense_real.load (p ^ "mnist-train-lblvec")
+  Owl_dense_matrix_d.load (p ^ "mnist-train-images"),
+  Owl_dense_matrix_d.load (p ^ "mnist-train-labels"),
+  Owl_dense_matrix_d.load (p ^ "mnist-train-lblvec")
 
 let load_mnist_test_data () =
   let p = local_data_path () in
-  Owl_dense_real.load (p ^ "mnist-test-images"),
-  Owl_dense_real.load (p ^ "mnist-test-labels"),
-  Owl_dense_real.load (p ^ "mnist-test-lblvec")
+  Owl_dense_matrix_d.load (p ^ "mnist-test-images"),
+  Owl_dense_matrix_d.load (p ^ "mnist-test-labels"),
+  Owl_dense_matrix_d.load (p ^ "mnist-test-lblvec")
 
 let print_mnist_image x =
-  x |> Owl_dense_real.reshape 28 28
-  |> Owl_dense_real.iter_rows (fun v ->
+  x |> Owl_dense_matrix_d.reshape 28 28
+  |> Owl_dense_matrix_d.iter_rows (fun v ->
     Owl_dense_vector_d.iter (function 0. -> Printf.printf " " | _ -> Printf.printf "■") v;
     print_endline "";
   )
 
 let draw_samples x y n =
-  let x, l = Owl_dense_real.draw_rows ~replacement:false x n in
-  let y = Owl_dense_real.rows y l in
+  let x, l = Owl_dense_matrix_d.draw_rows ~replacement:false x n in
+  let y = Owl_dense_matrix_d.rows y l in
   x, y

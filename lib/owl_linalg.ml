@@ -3,9 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-type dsmat = Owl_dense_real.mat
+type dsmat = Owl_dense_matrix_d.mat
 
-module MX = Owl_dense_real
+module MX = Owl_dense_matrix_d
 
 (** [ Helper functions ]  *)
 

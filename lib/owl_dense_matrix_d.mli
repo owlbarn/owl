@@ -5,7 +5,7 @@
 
 (** Real dense matrix module *)
 
-type mat = (float, Bigarray.float64_elt) Owl_dense_matrix.t
+type mat = (float, Bigarray.float64_elt) Owl_dense_matrix_generic.t
 (** Type of dense matrices. It is defined as [Gsl.Matrix.matrix] which is
   essentially a two dimensional array in [Bigarray] module. *)
 

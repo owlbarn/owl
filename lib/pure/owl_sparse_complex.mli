@@ -248,9 +248,9 @@ val shuffle : spmat -> spmat
 
 (** {6 Input/Output and helper functions} *)
 
-val to_dense : spmat -> Owl_dense_complex.mat
+val to_dense : spmat -> Owl_dense_matrix_z.mat
 
-val of_dense : Owl_dense_complex.mat -> spmat
+val of_dense : Owl_dense_matrix_z.mat -> spmat
 
 val print : spmat -> unit
 

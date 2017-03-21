@@ -6,7 +6,7 @@
 open Bigarray
 open Owl_ext_types
 
-module M = Owl_dense_matrix
+module M = Owl_dense_matrix_generic
 
 
 (* module specific functions *)

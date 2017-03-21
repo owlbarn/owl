@@ -2,7 +2,7 @@
 
 open Bigarray
 
-module M = Owl_dense_matrix
+module M = Owl_dense_matrix_generic
 
 let test_op s c op = Perf_common.test_op s c op
 
@@ -65,7 +65,7 @@ let _ =
   test_op "save              " c (fun () -> M.save x "test_matrix0.tmp");
   test_op "load              " c (fun () -> M.load Float64 "test_matrix0.tmp");
   test_op "save_txt          " 0 (fun () -> M.save_txt x "test_matrix1.tmp");
-  test_op "load_txt          " 0 (fun () -> M.load_txt "test_matrix1.tmp");
+  test_op "load_txt          " 0 (fun () -> M.load_txt Float64 "test_matrix1.tmp");
   test_op "uniform           " c (fun () -> M.uniform Float64 m n);
   test_op "gaussian          " c (fun () -> M.gaussian Float64 m n);
   test_op "sequential        " c (fun () -> M.sequential Float64 m n);

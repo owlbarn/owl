@@ -13,7 +13,7 @@
   for algorithmic differentiation.
  *)
 
-type mat = Owl_dense_real.mat
+type mat = Owl_dense_matrix_d.mat
 type vec = Owl_dense_vector_d.vec
 
 (** {6 Core APIs of differentiation} *)

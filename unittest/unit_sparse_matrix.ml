@@ -42,9 +42,9 @@ module To_test = struct
     M.set x 2 1 5.;
     M.get x 2 1
 
-  let row () = Owl_dense_matrix.of_arrays Float64 [| [|4.;5.;6.;7.|] |] |> M.of_dense
+  let row () = Owl_dense_matrix_generic.of_arrays Float64 [| [|4.;5.;6.;7.|] |] |> M.of_dense
 
-  let col () = Owl_dense_matrix.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |] |> M.of_dense
+  let col () = Owl_dense_matrix_generic.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |] |> M.of_dense
 
   let trace x = M.trace x
 
@@ -105,7 +105,7 @@ module To_test = struct
     let y = M.sequential Float64 3 2 in
     let y = M.map ((+.) 1.) y in
     let a = M.dot x y in
-    let b = Owl_dense_matrix.of_arrays Float64 [| [|22.;28.|]; [|49.;64.|] |] |> M.of_dense in
+    let b = Owl_dense_matrix_generic.of_arrays Float64 [| [|22.;28.|]; [|49.;64.|] |] |> M.of_dense in
     M.is_equal a b
 
   let add_scalar () = M.add_scalar x1 2. |> M.sum = 36.
@@ -145,20 +145,20 @@ module To_test = struct
 
   let fold_rows () =
     let x = M.fold_rows (fun c a -> M.add c a) (M.zeros Float64 1 4) x2
-    |> M.to_dense |> Owl_dense_matrix.to_arrays in
+    |> M.to_dense |> Owl_dense_matrix_generic.to_arrays in
     x = [| [|12.;15.;18.;21.|] |]
 
   let fold_cols () =
     let x = M.fold_cols (fun c a -> M.add c a) (M.zeros Float64 3 1) x2
-    |> M.to_dense |> Owl_dense_matrix.to_arrays in
+    |> M.to_dense |> Owl_dense_matrix_generic.to_arrays in
     x = [| [|6.|]; [|22.|]; [|38.|] |]
 
   let sum_rows () =
-    let x = M.sum_rows x2 |> M.to_dense |> Owl_dense_matrix.to_arrays in
+    let x = M.sum_rows x2 |> M.to_dense |> Owl_dense_matrix_generic.to_arrays in
     x = [| [|12.;15.;18.;21.|] |]
 
   let sum_cols () =
-    let x = M.sum_cols x2 |> M.to_dense |> Owl_dense_matrix.to_arrays in
+    let x = M.sum_cols x2 |> M.to_dense |> Owl_dense_matrix_generic.to_arrays in
     x = [| [|6.|]; [|22.|]; [|38.|] |]
 
   let of_array () =

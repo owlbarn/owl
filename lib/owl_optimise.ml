@@ -8,7 +8,7 @@
   Note: C layout row-major matrix
   ]  *)
 
-module MX = Owl_dense_real
+module MX = Owl_dense_matrix_d
 module UT = Owl_utils
 
 (** [

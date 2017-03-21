@@ -2,7 +2,7 @@
   test stochastic gradient decent algorithm on dense metrix.
 ]  *)
 
-module MX = Owl_dense_real
+module MX = Owl_dense_matrix_d
 module LL = Owl_optimise
 
 let generate_data () =

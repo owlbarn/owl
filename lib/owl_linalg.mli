@@ -12,7 +12,7 @@
   matrices will be provided very soon.
  *)
 
-type dsmat = Owl_dense_real.mat
+type dsmat = Owl_dense_matrix_d.mat
 
 
 val inv : dsmat -> dsmat

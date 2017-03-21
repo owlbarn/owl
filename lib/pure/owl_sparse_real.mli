@@ -473,10 +473,10 @@ val shuffle : spmat -> spmat
 
 (** {6 Input/Output and helper functions} *)
 
-val to_dense : spmat -> Owl_dense_real.mat
+val to_dense : spmat -> Owl_dense_matrix_d.mat
 (** [to_dense x] converts [x] into a dense matrix. *)
 
-val of_dense : Owl_dense_real.mat -> spmat
+val of_dense : Owl_dense_matrix_d.mat -> spmat
 (** [of_dense x] returns a sparse matrix from the dense matrix [x]. *)
 
 val print : spmat -> unit

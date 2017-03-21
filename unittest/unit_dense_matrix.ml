@@ -3,7 +3,7 @@
   *)
 
 open Bigarray
-module M = Owl_dense_matrix
+module M = Owl_dense_matrix_generic
 
 (* make testable *)
 let matrix = Alcotest.testable Owl_pretty.pp_fmat M.is_equal

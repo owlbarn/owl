@@ -13,7 +13,7 @@
   for more information.
  *)
 
-type mat = Gsl.Matrix_complex.matrix
+type mat = (Complex.t, Bigarray.complex64_elt) Owl_dense_matrix_generic.t
 
 type elt = Complex.t
 
@@ -38,8 +38,14 @@ val uniform : ?scale:float -> int -> int -> mat
 
 val gaussian : ?sigma:float -> int -> int -> mat
 
+val linspace : elt -> elt -> int -> mat
 
-(** {7 Dense vectors and meshgrids} *)
+val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat
+
+val meshup : mat -> mat -> mat * mat
+
+
+(** {7 Dense row vectors and meshgrids} *)
 
 val vector : int -> mat
 
@@ -48,6 +54,14 @@ val vector_zeros : int -> mat
 val vector_ones : int -> mat
 
 val vector_uniform : int -> mat
+
+val linspace : elt -> elt -> int -> mat
+
+val logspace : ?base:float -> elt -> elt -> int -> mat
+
+val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat
+
+val meshup : mat -> mat -> mat * mat
 
 
 (** {6 Obtain the basic properties of a matrix} *)
@@ -60,9 +74,13 @@ val col_num : mat -> int
 
 val numel : mat -> int
 
-val same_shape : mat -> mat -> bool
+val nnz : mat -> int
 
-val reshape : int -> int -> mat -> mat
+val density : mat -> float
+
+val size_in_bytes : mat -> int
+
+val same_shape : mat -> mat -> bool
 
 
 (** {6 Manipulate a matrix} *)
@@ -78,6 +96,16 @@ val col : mat -> int -> mat
 val rows : mat -> int array -> mat
 
 val cols : mat -> int array -> mat
+
+val reshape : int -> int -> mat -> mat
+
+val flatten : mat -> mat
+
+val reverse : mat -> mat
+
+val reset : mat -> unit
+
+val fill : mat -> elt -> unit
 
 val clone : mat -> mat
 
@@ -95,17 +123,17 @@ val transpose : mat -> mat
 
 val diag : mat -> mat
 
-val trace : mat -> elt
-
-val add_diag : mat -> elt -> mat
-
 val replace_row : mat -> mat -> int -> mat
 
 val replace_col : mat -> mat -> int -> mat
 
-val swap_rows : mat -> int -> int -> mat
+val swap_rows : mat -> int -> int -> unit
 
-val swap_cols : mat -> int -> int -> mat
+val swap_cols : mat -> int -> int -> unit
+
+val tile : mat -> int array -> mat
+
+val repeat : ?axis:int -> mat -> int -> mat
 
 
 (** {6 Iterate elements, columns, and rows.} *)
@@ -118,6 +146,12 @@ val mapi : (int -> int -> elt -> elt) -> mat -> mat
 
 val map : (elt -> elt) -> mat -> mat
 
+val map2i : (int -> int -> elt -> elt -> elt) -> mat -> mat -> mat
+
+val map2 : (elt -> elt -> elt) -> mat -> mat -> mat
+
+val foldi : (int -> int -> 'a -> elt -> 'a) -> 'a -> mat -> 'a
+
 val fold : ('a -> elt -> 'a) -> 'a -> mat -> 'a
 
 val filteri : (int -> int -> elt -> bool) -> mat -> (int * int) array
@@ -127,6 +161,10 @@ val filter : (elt -> bool) -> mat -> (int * int) array
 val iteri_rows : (int -> mat -> unit) -> mat -> unit
 
 val iter_rows : (mat -> unit) -> mat -> unit
+
+val iter2i_rows : (int -> mat -> mat -> unit) -> mat -> mat -> unit
+
+val iter2_rows : (mat -> mat -> unit) -> mat -> mat -> unit
 
 val iteri_cols : (int -> mat -> unit) -> mat -> unit
 
@@ -169,7 +207,7 @@ val mapi_at_col : (int -> int -> elt -> elt) -> mat -> int -> mat
 val map_at_col : (elt -> elt) -> mat -> int -> mat
 
 
-(** {6 Examine the elements in a matrix} *)
+(** {6 Examin elements and compare two matrices} *)
 
 val exists : (elt -> bool) -> mat -> bool
 
@@ -177,8 +215,13 @@ val not_exists : (elt -> bool) -> mat -> bool
 
 val for_all : (elt -> bool) -> mat -> bool
 
+val is_zero : mat -> bool
 
-(** {6 Compare two matrices} *)
+val is_positive : mat -> bool
+
+val is_negative : mat -> bool
+
+val is_nonnegative : mat -> bool
 
 val is_equal : mat -> mat -> bool
 
@@ -191,65 +234,6 @@ val is_smaller : mat -> mat -> bool
 val equal_or_greater : mat -> mat -> bool
 
 val equal_or_smaller : mat -> mat -> bool
-
-
-(** {6 Basic mathematical operations of matrices} *)
-
-val add : mat -> mat -> mat
-
-val sub : mat -> mat -> mat
-
-val mul : mat -> mat -> mat
-
-val div : mat -> mat -> mat
-
-val dot : mat -> mat -> mat
-
-val abs : mat -> mat
-
-val abs2 : mat -> mat
-
-val neg : mat -> mat
-
-val power : mat -> elt -> mat
-
-val add_scalar : mat -> elt -> mat
-
-val sub_scalar : mat -> elt -> mat
-
-val mul_scalar : mat -> elt -> mat
-
-val div_scalar : mat -> elt -> mat
-
-val sum : mat -> elt
-
-val average : mat -> elt
-
-val sum_rows : mat -> mat
-
-val sum_cols : mat -> mat
-
-val average_rows : mat -> mat
-
-val average_cols : mat -> mat
-
-val is_zero : mat -> bool
-
-val is_positive : mat -> bool
-
-val is_negative : mat -> bool
-
-val is_nonnegative : mat -> bool
-
-val log : mat -> mat
-
-val log10 : mat -> mat
-
-val exp : mat -> mat
-
-val sin : mat -> mat
-
-val cos : mat -> mat
 
 
 (** {6 Randomisation functions} *)
@@ -279,13 +263,24 @@ val to_ndarray : mat -> (Complex.t, Bigarray.complex64_elt) Owl_dense_ndarray.t
 
 val of_ndarray : (Complex.t, Bigarray.complex64_elt) Owl_dense_ndarray.t -> mat
 
-val save : mat -> string -> unit
+val to_rows : mat -> mat array
 
-val load : string -> mat
+val of_rows : mat array -> mat
+
+val to_cols : mat -> mat array
+
+val of_cols : mat array -> mat
 
 val print : mat -> unit
 
 val pp_dsmat : mat -> unit
+
+val save : mat -> string -> unit
+
+val load : string -> mat
+
+
+(** {6 Unary mathematical operations } *)
 
 val re : mat -> Owl_dense_matrix_d.mat
 (** [re x] returns the real parts of all the elements in [x] as a separate matrix. *)
@@ -293,68 +288,114 @@ val re : mat -> Owl_dense_matrix_d.mat
 val im : mat -> Owl_dense_matrix_d.mat
 (** [re x] returns the complex parts of all the elements in [x] as a separate matrix. *)
 
+val conj : mat -> mat
+
+val trace : mat -> elt
+
+val sum : mat -> elt
+
+val prod : mat -> elt
+
+val average : mat -> elt
+
+val sum_rows : mat -> mat
+
+val sum_cols : mat -> mat
+
+val average_rows : mat -> mat
+
+val average_cols : mat -> mat
+
+val abs : mat -> mat
+
+val abs2 : mat -> mat
+
+val neg : mat -> mat
+
+val reci : mat -> mat
+
+val l1norm : mat -> float
+
+val l2norm : mat -> float
+
+val l2norm_sqr : mat -> float
+
+
+(** {6 Binary mathematical operations } *)
+
+val add : mat -> mat -> mat
+
+val sub : mat -> mat -> mat
+
+val mul : mat -> mat -> mat
+
+val div : mat -> mat -> mat
+
+val add_scalar : mat -> elt -> mat
+
+val sub_scalar : mat -> elt -> mat
+
+val mul_scalar : mat -> elt -> mat
+
+val div_scalar : mat -> elt -> mat
+
+val dot : mat -> mat -> mat
+
+val add_diag : mat -> elt -> mat
+
+val ssqr : mat -> elt -> elt
+
+val ssqr_diff : mat -> mat -> elt
+
 
 (** {6 Shorhand infix operators} *)
 
+val ( >> ) : mat -> mat -> unit
+
+val ( << ) : mat -> mat -> unit
+
+val ( @= ) : mat -> mat -> mat
+
+val ( @|| ) : mat -> mat -> mat
+
 val ( +@ ) : mat -> mat -> mat
-(** Shorthand for [add x y], i.e., [x +@ y] *)
 
 val ( -@ ) : mat -> mat -> mat
-(** Shorthand for [sub x y], i.e., [x -@ y] *)
 
 val ( *@ ) : mat -> mat -> mat
-(** Shorthand for [mul x y], i.e., [x *@ y] *)
 
 val ( /@ ) : mat -> mat -> mat
-(** Shorthand for [div x y], i.e., [x /@ y] *)
-
-val ( $@ ) : mat -> mat -> mat
-(** Shorthand for [dot x y], i.e., [x $@ y] *)
-
-val ( **@ ) : mat -> elt -> mat
-(** Shorthand for [power x a], i.e., [x **@ a] *)
 
 val ( +$ ) : mat -> elt -> mat
-(** Shorthand for [add_scalar x a], i.e., [x +$ a] *)
 
 val ( -$ ) : mat -> elt -> mat
-(** Shorthand for [sub_scalar x a], i.e., [x -$ a] *)
 
 val ( *$ ) : mat -> elt -> mat
-(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
 
 val ( /$ ) : mat -> elt -> mat
-(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
 
 val ( $+ ) : elt -> mat -> mat
-(** Shorthand for [add_scalar x a], i.e., [a $+ x] *)
 
 val ( $- ) : elt -> mat -> mat
-(** Shorthand for [sub_scalar x a], i.e., [a -$ x] *)
 
 val ( $* ) : elt -> mat -> mat
-(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
 
 val ( $/ ) : elt -> mat -> mat
-(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
+
+val ( $@ ) : mat -> mat -> mat
+
+val ( **@ ) : mat -> elt -> mat
 
 val ( =@ ) : mat -> mat -> bool
-(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
 
 val ( >@ ) : mat -> mat -> bool
-(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
 
 val ( <@ ) : mat -> mat -> bool
-(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
 
 val ( <>@ ) : mat -> mat -> bool
-(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
 
 val ( >=@ ) : mat -> mat -> bool
-(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
 
 val ( <=@ ) : mat -> mat -> bool
-(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
 
 val ( @@ ) : (elt -> elt) -> mat -> mat
-(** Shorthand for [map f x], i.e., f @@ x *)

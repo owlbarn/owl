@@ -13,7 +13,7 @@
   for more information.
  *)
 
-type mat = (Complex.t, Bigarray.complex64_elt) Owl_dense_matrix.t
+type mat = (Complex.t, Bigarray.complex32_elt) Owl_dense_matrix_generic.t
 
 type elt = Complex.t
 
@@ -259,9 +259,9 @@ val to_arrays : mat -> elt array array
 
 val of_arrays : elt array array -> mat
 
-val to_ndarray : mat -> (Complex.t, Bigarray.complex64_elt) Owl_dense_ndarray.t
+val to_ndarray : mat -> (Complex.t, Bigarray.complex32_elt) Owl_dense_ndarray.t
 
-val of_ndarray : (Complex.t, Bigarray.complex64_elt) Owl_dense_ndarray.t -> mat
+val of_ndarray : (Complex.t, Bigarray.complex32_elt) Owl_dense_ndarray.t -> mat
 
 val to_rows : mat -> mat array
 
@@ -282,10 +282,10 @@ val load : string -> mat
 
 (** {6 Unary mathematical operations } *)
 
-val re : mat -> Owl_dense_real.mat
+val re : mat -> Owl_dense_matrix_d.mat
 (** [re x] returns the real parts of all the elements in [x] as a separate matrix. *)
 
-val im : mat -> Owl_dense_real.mat
+val im : mat -> Owl_dense_matrix_d.mat
 (** [re x] returns the complex parts of all the elements in [x] as a separate matrix. *)
 
 val conj : mat -> mat
@@ -351,76 +351,51 @@ val ssqr_diff : mat -> mat -> elt
 (** {6 Shorhand infix operators} *)
 
 val ( >> ) : mat -> mat -> unit
-(** Shorthand for [copy_to x y], i.e., x >> y *)
 
 val ( << ) : mat -> mat -> unit
-(** Shorthand for [copy_to y x], i.e., x << y *)
 
 val ( @= ) : mat -> mat -> mat
-(** Shorthand for [concat_vertical x y], i.e., x @= y *)
 
 val ( @|| ) : mat -> mat -> mat
-(** Shorthand for [concat_horizontal x y], i.e., x @|| y *)
 
 val ( +@ ) : mat -> mat -> mat
-(** Shorthand for [add x y], i.e., [x +@ y] *)
 
 val ( -@ ) : mat -> mat -> mat
-(** Shorthand for [sub x y], i.e., [x -@ y] *)
 
 val ( *@ ) : mat -> mat -> mat
-(** Shorthand for [mul x y], i.e., [x *@ y] *)
 
 val ( /@ ) : mat -> mat -> mat
-(** Shorthand for [div x y], i.e., [x /@ y] *)
 
 val ( +$ ) : mat -> elt -> mat
-(** Shorthand for [add_scalar x a], i.e., [x +$ a] *)
 
 val ( -$ ) : mat -> elt -> mat
-(** Shorthand for [sub_scalar x a], i.e., [x -$ a] *)
 
 val ( *$ ) : mat -> elt -> mat
-(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
 
 val ( /$ ) : mat -> elt -> mat
-(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
 
 val ( $+ ) : elt -> mat -> mat
-(** Shorthand for [add_scalar x a], i.e., [a $+ x] *)
 
 val ( $- ) : elt -> mat -> mat
-(** Shorthand for [sub_scalar x a], i.e., [a -$ x] *)
 
 val ( $* ) : elt -> mat -> mat
-(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
 
 val ( $/ ) : elt -> mat -> mat
-(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
 
 val ( $@ ) : mat -> mat -> mat
-(** Shorthand for [dot x y], i.e., [x $@ y] *)
 
 val ( **@ ) : mat -> elt -> mat
-(** Shorthand for [power x a], i.e., [x **@ a] *)
 
 val ( =@ ) : mat -> mat -> bool
-(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
 
 val ( >@ ) : mat -> mat -> bool
-(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
 
 val ( <@ ) : mat -> mat -> bool
-(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
 
 val ( <>@ ) : mat -> mat -> bool
-(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
 
 val ( >=@ ) : mat -> mat -> bool
-(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
 
 val ( <=@ ) : mat -> mat -> bool
-(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
 
 val ( @@ ) : (elt -> elt) -> mat -> mat
-(** Shorthand for [map f x], i.e., f @@ x *)

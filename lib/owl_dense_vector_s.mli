@@ -6,7 +6,7 @@
 open Bigarray
 open Owl_dense_vector_generic
 
-type vec = (float, float32_elt) Owl_dense_matrix.t
+type vec = (float, float32_elt) Owl_dense_matrix_generic.t
 type elt = float
 type vec_typ = Row | Col
 

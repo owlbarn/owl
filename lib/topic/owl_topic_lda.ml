@@ -9,10 +9,10 @@ open Owl
 open Bigarray
 
 module MS = Sparse.Dok_matrix
-module MD = Dense.Real
+module MD = Owl_dense_matrix_d
 
 type lda_typ = SimpleLDA | FTreeLDA | LightLDA | SparseLDA
-type dsmat = (float, float64_elt) Owl_dense_matrix.t
+type dsmat = (float, float64_elt) Owl_dense_matrix_generic.t
 type spmat = (float, float64_elt) Owl_sparse_dok_matrix.t
 
 type model = {

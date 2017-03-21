@@ -5,10 +5,6 @@
 
 (** [ Dense matrix module ]  *)
 
-module Real = Owl_dense_real
-
-module Complex = Owl_dense_complex
-
 module Matrix = Owl_dense_matrix
 
 module Ndarray = Owl_dense_ndarray

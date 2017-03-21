@@ -218,9 +218,9 @@ val to_array : mat -> (int array * elt) array
 
 val of_array : int -> int -> (int array * elt) array -> mat
 
-val to_dense : mat -> Owl_dense_complex.mat
+val to_dense : mat -> Owl_dense_matrix_z.mat
 
-val of_dense : Owl_dense_complex.mat -> mat
+val of_dense : Owl_dense_matrix_z.mat -> mat
 
 val print : mat -> unit
 

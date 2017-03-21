@@ -1,4 +1,4 @@
-module M = Owl_dense_real
+module M = Owl_dense_matrix_d
 
 let test_op s c op = Perf_common.test_op s c op
 

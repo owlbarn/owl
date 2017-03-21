@@ -3,8 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module M = Owl_dense_real
-type mat = Owl_dense_real.mat
+module M = Owl_dense_matrix_d
+type mat = Owl_dense_matrix_d.mat
 
 module V = Owl_dense_vector_d
 type vec = Owl_dense_vector_d.vec

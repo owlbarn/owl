@@ -450,36 +450,36 @@ let shuffle_cols x =
 let shuffle x = x |> shuffle_rows |> shuffle_cols
 
 let to_dense x =
-  let y = Owl_dense_matrix.zeros x.k x.m x.n in
-  iteri_nz (fun i j z -> Owl_dense_matrix.set y i j z) x;
+  let y = Owl_dense_matrix_generic.zeros x.k x.m x.n in
+  iteri_nz (fun i j z -> Owl_dense_matrix_generic.set y i j z) x;
   y
 
 let of_dense x =
-  let m, n = Owl_dense_matrix.shape x in
-  let y = zeros ~density:1. (Owl_dense_matrix.kind x) m n in
-  Owl_dense_matrix.iteri (fun i j z -> insert y i j z) x;
+  let m, n = Owl_dense_matrix_generic.shape x in
+  let y = zeros ~density:1. (Owl_dense_matrix_generic.kind x) m n in
+  Owl_dense_matrix_generic.iteri (fun i j z -> insert y i j z) x;
   y
 
 let sum_rows x =
-  let y = Owl_dense_matrix.ones x.k 1 x.m |> of_dense in
+  let y = Owl_dense_matrix_generic.ones x.k 1 x.m |> of_dense in
   dot y x
 
 let sum_cols x =
-  let y = Owl_dense_matrix.ones x.k x.n 1 |> of_dense in
+  let y = Owl_dense_matrix_generic.ones x.k x.n 1 |> of_dense in
   dot x y
 
 let average_rows x =
   let m, n = shape x in
   let k = kind x in
   let a = (Owl_dense_common._average_elt k) (Owl_types._one k) m in
-  let y = Owl_dense_matrix.create k 1 m a |> of_dense in
+  let y = Owl_dense_matrix_generic.create k 1 m a |> of_dense in
   dot y x
 
 let average_cols x =
   let m, n = shape x in
   let k = kind x in
   let a = (Owl_dense_common._average_elt k) (Owl_types._one k) n in
-  let y = Owl_dense_matrix.create k n 1 a |> of_dense in
+  let y = Owl_dense_matrix_generic.create k n 1 a |> of_dense in
   dot x y
 
 let nnz_rows x =
@@ -510,10 +510,10 @@ let of_array k m n x =
   Array.iter (fun (i,v) -> insert y i.(0) i.(1) v) x;
   y
 
-let ones k m n = Owl_dense_matrix.ones k m n |> of_dense
+let ones k m n = Owl_dense_matrix_generic.ones k m n |> of_dense
 
 let sequential k m n =
-  let x = Owl_dense_matrix.sequential k m n |> of_dense in
+  let x = Owl_dense_matrix_generic.sequential k m n |> of_dense in
   _eigen_prune x.d (Owl_types._zero x.k) 0.;
   x
 
@@ -551,7 +551,7 @@ let pp_spmat x =
   let c = nnz x in
   let p = 100. *. (density x) in
   let mz, nz = row_num_nz x, col_num_nz x in
-  if m < 100 && n < 100 then Owl_dense_matrix.pp_dsmat (to_dense x);
+  if m < 100 && n < 100 then Owl_dense_matrix_generic.pp_dsmat (to_dense x);
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
 let save x f = Owl_utils.marshal_to_file x f

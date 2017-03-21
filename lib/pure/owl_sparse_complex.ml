@@ -541,34 +541,34 @@ let trace x = sum (diag x)
 
 let to_dense x =
   let m, n = shape x in
-  let y = Owl_dense_complex.zeros m n in
-  iteri (fun i j z -> Owl_dense_complex.set y i j z) x;
+  let y = Owl_dense_matrix_z.zeros m n in
+  iteri (fun i j z -> Owl_dense_matrix_z.set y i j z) x;
   y
 
 let of_dense x =
-  let m, n = Owl_dense_complex.shape x in
+  let m, n = Owl_dense_matrix_z.shape x in
   let y = zeros m n in
-  Owl_dense_complex.iteri (fun i j z -> set y i j z) x;
+  Owl_dense_matrix_z.iteri (fun i j z -> set y i j z) x;
   y
 
 let sum_rows x =
-  let y = Owl_dense_complex.ones 1 (row_num x) |> of_dense in
+  let y = Owl_dense_matrix_z.ones 1 (row_num x) |> of_dense in
   dot y x
 
 let sum_cols x =
-  let y = Owl_dense_complex.ones (col_num x) 1 |> of_dense in
+  let y = Owl_dense_matrix_z.ones (col_num x) 1 |> of_dense in
   dot x y
 
 let average_rows x =
   let m, n = shape x in
   let a = 1. /. (float_of_int m) in
-  let y = Owl_dense_complex.create 1 m Complex.({re = a; im = 0.}) |> of_dense in
+  let y = Owl_dense_matrix_z.create 1 m Complex.({re = a; im = 0.}) |> of_dense in
   dot y x
 
 let average_cols x =
   let m, n = shape x in
   let a = 1. /. (float_of_int n) in
-  let y = Owl_dense_complex.create n 1 Complex.({re = a; im = 0.}) |> of_dense in
+  let y = Owl_dense_matrix_z.create n 1 Complex.({re = a; im = 0.}) |> of_dense in
   dot x y
 
 (** formatted input / output operations *)
@@ -588,7 +588,7 @@ let pp_spmat x =
   let p = 100. *. (density x) in
   (* let mz, nz = row_num_nz x, col_num_nz x in *)
   let mz, nz = 0, 0 in
-  let _ = if m < 100 && n < 100 then Owl_dense_complex.pp_dsmat (to_dense x) in
+  let _ = if m < 100 && n < 100 then Owl_dense_matrix_z.pp_dsmat (to_dense x) in
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
 let save x f =
@@ -639,7 +639,7 @@ let shuffle_cols x =
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols
 
-let ones m n = Owl_dense_complex.ones m n |> of_dense
+let ones m n = Owl_dense_matrix_z.ones m n |> of_dense
 
 (** short-hand infix operators *)
 
