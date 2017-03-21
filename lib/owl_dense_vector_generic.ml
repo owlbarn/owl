@@ -9,7 +9,6 @@ open Bigarray
 module M = Owl_dense_matrix
 include M
 
-type vec = (float, float64_elt) Owl_dense_matrix.t
 type vec_typ = Row | Col
 
 
@@ -39,9 +38,11 @@ let sequential ?(typ=Row) k m = match typ with
   | Row -> M.sequential k 1 m
   | Col -> M.sequential k m 1
 
-let unit_basis ?(typ=Row) k m i = match typ with
-  | Row -> let v = M.zeros k 1 m in v.{0,i} <- 1.; v
-  | Col -> let v = M.zeros k m 1 in v.{i,0} <- 1.; v
+let unit_basis ?(typ=Row) k m i =
+  let a1 = Owl_types._one k in
+  match typ with
+  | Row -> let v = M.zeros k 1 m in v.{0,i} <- a1; v
+  | Col -> let v = M.zeros k m 1 in v.{i,0} <- a1; v
 
 let linspace ?(typ=Row) k a b n = match typ with
   | Row -> M.linspace k a b n

@@ -27,9 +27,9 @@ val sequential : ?typ:vec_typ -> int -> vec
 
 val unit_basis : ?typ:vec_typ -> int -> int -> vec
 
-val linspace : ?typ:vec_typ -> float -> float -> int -> vec
+val linspace : ?typ:vec_typ -> elt -> elt -> int -> vec
 
-val logspace : ?typ:vec_typ -> ?base:float -> float -> float -> int -> vec
+val logspace : ?typ:vec_typ -> ?base:float -> elt -> elt -> int -> vec
 
 
 (** {6 Vector properties } *)
@@ -165,79 +165,4 @@ val l2norm_sqr : vec -> elt
 val cross_entropy : vec -> vec -> elt
 
 
-(** {6 Shorhand infix operators} *)
-
-val ( >> ) : vec -> vec -> unit
-(** Shorthand for [copy_to x y], i.e., x >> y *)
-
-val ( << ) : vec -> vec -> unit
-(** Shorthand for [copy_to y x], i.e., x << y *)
-
-val ( @= ) : vec -> vec -> vec
-(** Shorthand for [concat_vertical x y], i.e., x @= y *)
-
-val ( @|| ) : vec -> vec -> vec
-(** Shorthand for [concat_horizontal x y], i.e., x @|| y *)
-
-val ( +@ ) : vec -> vec -> vec
-(** Shorthand for [add x y], i.e., [x +@ y] *)
-
-val ( -@ ) : vec -> vec -> vec
-(** Shorthand for [sub x y], i.e., [x -@ y] *)
-
-val ( *@ ) : vec -> vec -> vec
-(** Shorthand for [mul x y], i.e., [x *@ y] *)
-
-val ( /@ ) : vec -> vec -> vec
-(** Shorthand for [div x y], i.e., [x /@ y] *)
-
-val ( +$ ) : vec -> elt -> vec
-(** Shorthand for [add_scalar x a], i.e., [x +$ a] *)
-
-val ( -$ ) : vec -> elt -> vec
-(** Shorthand for [sub_scalar x a], i.e., [x -$ a] *)
-
-val ( *$ ) : vec -> elt -> vec
-(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
-
-val ( /$ ) : vec -> elt -> vec
-(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
-
-val ( $+ ) : elt -> vec -> vec
-(** Shorthand for [add_scalar x a], i.e., [a $+ x] *)
-
-val ( $- ) : elt -> vec -> vec
-(** Shorthand for [sub_scalar x a], i.e., [a -$ x] *)
-
-val ( $* ) : elt -> vec -> vec
-(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
-
-val ( $/ ) : elt -> vec -> vec
-(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
-
-val ( $@ ) : vec -> vec -> vec
-(** Shorthand for [dot x y], i.e., [x $@ y] *)
-
-val ( **@ ) : vec -> elt -> vec
-(** Shorthand for [power x a], i.e., [x **@ a] *)
-
-val ( =@ ) : vec -> vec -> bool
-(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
-
-val ( >@ ) : vec -> vec -> bool
-(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
-
-val ( <@ ) : vec -> vec -> bool
-(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
-
-val ( <>@ ) : vec -> vec -> bool
-(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
-
-val ( >=@ ) : vec -> vec -> bool
-(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
-
-val ( <=@ ) : vec -> vec -> bool
-(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
-
-val ( @@ ) : (elt -> elt) -> vec -> vec
-(** Shorthand for [map f x], i.e., f @@ x *)
+(* ends here *)
