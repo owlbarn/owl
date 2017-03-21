@@ -110,9 +110,9 @@ let atan x = atan x
 
 let acot x = (Gsl.Math.pi /. 2.) -. (atan x)
 
-let asec = None
+let asec x = acos (1. /. x)
 
-let acsc = None
+let acsc x = asin (1. /. x)
 
 let sinc x = Gsl.Sf.sinc x
 
@@ -122,13 +122,23 @@ let cosh x = cosh x
 
 let tanh x = tanh x
 
+let coth x = let a = exp (-2. *. x) in (1. +. a) /. (1. -. a)
+
 let sech x = 1. /. cosh x
+
+let csch x = 1. /. sinh x
 
 let asinh x = Gsl.Math.asinh x
 
 let acosh x = Gsl.Math.acosh x
 
 let atanh x = Gsl.Math.atanh x
+
+let acoth x = atanh (1. /. x)
+
+let asech x = acosh (1. /. x)
+
+let acsch x = asinh (1. /. x)
 
 let lnsinh x = Gsl.Sf.lnsinh x
 
