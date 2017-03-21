@@ -15,7 +15,7 @@ open Owl_ext_types
 
 module DAS_DAD = struct
 
-  module M = Owl_dense_ndarray
+  module M = Owl_dense_ndarray_generic
 
   let src_typ = Float32
   let dst_typ = Float64
@@ -33,7 +33,7 @@ end
 
 module DAC_DAZ = struct
 
-  module M = Owl_dense_ndarray
+  module M = Owl_dense_ndarray_generic
 
   let src_typ = Complex32
   let dst_typ = Complex64
@@ -98,7 +98,7 @@ end
 
 module DAS_DAC = struct
 
-  module M = Owl_dense_ndarray
+  module M = Owl_dense_ndarray_generic
 
   let src_typ = Float32
   let dst_typ = Complex32
@@ -116,7 +116,7 @@ end
 
 module DAD_DAZ = struct
 
-  module M = Owl_dense_ndarray
+  module M = Owl_dense_ndarray_generic
 
   let src_typ = Float64
   let dst_typ = Complex64

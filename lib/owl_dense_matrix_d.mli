@@ -502,12 +502,12 @@ val of_arrays : elt array array -> mat
   an [m] by [n] matrix.
  *)
 
-val to_ndarray : mat -> (float, Bigarray.float64_elt) Owl_dense_ndarray.t
+val to_ndarray : mat -> (float, Bigarray.float64_elt) Owl_dense_ndarray_generic.t
 (** [to_ndarray x] transforms a dense real matrix to [Bigarray.Genarray.t] type.
   No copy is made by calling this function.
  *)
 
-val of_ndarray : (float, Bigarray.float64_elt) Owl_dense_ndarray.t -> mat
+val of_ndarray : (float, Bigarray.float64_elt) Owl_dense_ndarray_generic.t -> mat
 (** [of_ndarray x] transforms a ndarray of type [Bigarray.Genarray.t] to a dense
   real matrix type. No copy is made by calling this function.
  *)
