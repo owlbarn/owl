@@ -91,6 +91,8 @@ val cosh : float -> float
 
 val tanh : float -> float
 
+val sech : float -> float
+
 val asinh : float -> float
 
 val acosh : float -> float

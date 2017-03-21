@@ -122,6 +122,8 @@ let cosh x = cosh x
 
 let tanh x = tanh x
 
+let sech x = 1. /. cosh x
+
 let asinh x = Gsl.Math.asinh x
 
 let acosh x = Gsl.Math.acosh x
