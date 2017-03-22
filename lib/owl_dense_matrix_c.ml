@@ -14,7 +14,7 @@ type mat = (Complex.t, Bigarray.complex32_elt) M.t
 
 type elt = Complex.t
 
-(* overload functions in Owl_dense_matrix *)
+(* overload functions in Owl_dense_matrix_generic *)
 
 let empty m n = M.empty Complex32 m n
 

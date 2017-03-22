@@ -190,24 +190,6 @@ let mul_scalar x a = M.mul_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
 let div_scalar x a = M.div_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-let pow x y = M.pow (unpack_box x) (unpack_box y) |> pack_box
-
-let pow0 a x = M.pow0 (unpack_elt a) (unpack_box x) |> pack_box
-
-let pow1 x a = M.pow1 (unpack_box x) (unpack_elt a) |> pack_box
-
-let atan2 x y = M.atan2 (unpack_box x) (unpack_box y) |> pack_box
-
-let atan20 a x = M.atan20 (unpack_elt a) (unpack_box x) |> pack_box
-
-let atan21 x a = M.atan21 (unpack_box x) (unpack_elt a) |> pack_box
-
-let hypot x y = M.hypot (unpack_box x) (unpack_box y) |> pack_box
-
-let min2 x y = M.min2 (unpack_box x) (unpack_box y) |> pack_box
-
-let max2 x y = M.max2 (unpack_box x) (unpack_box y) |> pack_box
-
 let ssqr x a = M.ssqr (unpack_box x) (unpack_elt a) |> pack_elt
 
 let ssqr_diff x y = M.ssqr_diff (unpack_box x) (unpack_box y) |> pack_elt

@@ -14,7 +14,7 @@ type mat = (float, float64_elt) M.t
 
 type elt = float
 
-(* overload functions in Owl_dense_matrix *)
+(* overload functions in Owl_dense_matrix_generic *)
 
 let empty m n = M.empty Float64 m n
 
