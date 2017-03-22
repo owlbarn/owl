@@ -217,7 +217,7 @@ val iteri : (int -> int -> 'a -> unit) -> ('a, 'b) t -> unit
 (** [iteri f x] iterates all the elements in [x] and applies the user defined
   function [f : int -> int -> float -> 'a]. [f i j v] takes three parameters,
   [i] and [j] are the coordinates of current element, and [v] is its value.
-  *)
+ *)
 
 val iter : ('a -> unit) -> ('a, 'b) t -> unit
 (** [iter f x] is the same as as [iteri f x] except the coordinates of the
