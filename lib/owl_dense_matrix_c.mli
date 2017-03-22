@@ -221,6 +221,8 @@ val is_positive : mat -> bool
 
 val is_negative : mat -> bool
 
+val is_nonpositive : mat -> bool
+
 val is_nonnegative : mat -> bool
 
 val is_equal : mat -> mat -> bool
