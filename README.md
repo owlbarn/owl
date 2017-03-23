@@ -480,10 +480,10 @@ open Algodiff.AD;;
 
 (* calculate derivatives of f0 *)
 let f0 x = Maths.(tanh x);;
-let f1 = diff f0;;
-let f2 = diff f1;;
-let f3 = diff f2;;
-let f4 = diff f3;;
+let f1 = f0 |> diff;;
+let f2 = f0 |> diff |> diff;;
+let f3 = f0 |> diff |> diff |> diff;;
+let f4 = f0 |> diff |> diff |> diff |> diff;;
 ```
 
 Quite easy, isn't it? Then we can plot the values of `tanh` and its four derivatives between interval `[-4, 4]`.
