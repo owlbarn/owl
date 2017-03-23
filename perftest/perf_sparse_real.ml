@@ -1,4 +1,4 @@
-module M = Owl_sparse_real
+module M = Owl_sparse_matrix_d
 
 let test_op s c op = Perf_common.test_op s c op
 

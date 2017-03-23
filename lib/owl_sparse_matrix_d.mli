@@ -3,19 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Complex sparse matrix: this module supports the operations on sparse
-  matrices of complex numbers. Because GSL does not support complex sparse
-  matrices, herein I provided a pure OCaml implementation.
-
-  The implementation provides both triplet and compressed row storage (CRS)
-  format. Note that only triplet format allows adding and updating elements.
-  Most operations are the same to Sparse.Real module, therefore please refer to
-  the documentation of Sparse.Real module.
- *)
-
-type mat = (Complex.t, Bigarray.complex64_elt) Owl_sparse_matrix.t
-
-type elt = Complex.t
+type elt = float
+type mat = (float, Bigarray.float64_elt) Owl_sparse_matrix_generic.t
 
 
 (** {6 Create sparse matrices} *)
@@ -33,6 +22,8 @@ val uniform : ?scale:float -> int -> int -> mat
 val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
 
 val sequential : int -> int -> mat
+
+val linspace : elt -> elt -> int -> mat
 
 
 (** {6 Obtain the basic properties of a matrix} *)
@@ -62,9 +53,9 @@ val density : mat -> float
 
 val insert : mat -> int -> int -> elt -> unit
 
-val set : mat -> int -> int -> elt -> unit
-
 val get : mat -> int -> int -> elt
+
+val set : mat -> int -> int -> elt -> unit
 
 val reset : mat -> unit
 
@@ -218,13 +209,11 @@ val to_array : mat -> (int array * elt) array
 
 val of_array : int -> int -> (int array * elt) array -> mat
 
-val to_dense : mat -> Owl_dense_matrix_z.mat
+val to_dense : mat -> Owl_dense_matrix_d.mat
 
-val of_dense : Owl_dense_matrix_z.mat -> mat
+val of_dense : Owl_dense_matrix_d.mat -> mat
 
 val print : mat -> unit
-
-val pp_spmat : mat -> unit
 
 val save : mat -> string -> unit
 
@@ -232,6 +221,12 @@ val load : string -> mat
 
 
 (** {6 Unary mathematical operations } *)
+
+val min : mat -> elt
+
+val max : mat -> elt
+
+val minmax : mat -> elt * elt
 
 val trace : mat -> elt
 
@@ -273,57 +268,3 @@ val mul_scalar : mat -> elt -> mat
 val div_scalar : mat -> elt -> mat
 
 val power_scalar : mat -> elt -> mat
-
-
-(** {6 Shorhand infix operators} *)
-
-val ( +@ ) : mat -> mat -> mat
-(** Shorthand for [add x y], i.e., [x +@ y] *)
-
-val ( -@ ) : mat -> mat -> mat
-(** Shorthand for [sub x y], i.e., [x -@ y] *)
-
-val ( *@ ) : mat -> mat -> mat
-(** Shorthand for [mul x y], i.e., [x *@ y] *)
-
-val ( /@ ) : mat -> mat -> mat
-(** Shorthand for [div x y], i.e., [x /@ y] *)
-
-val ( $@ ) : mat -> mat -> mat
-(** Shorthand for [dot x y], i.e., [x $@ y] *)
-
-val ( **@ ) : mat -> elt -> mat
-(** Shorthand for [power x a], i.e., [x **@ a] *)
-
-val ( *$ ) : mat -> elt -> mat
-(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
-
-val ( /$ ) : mat -> elt -> mat
-(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
-
-val ( $* ) : elt -> mat -> mat
-(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
-
-val ( $/ ) : elt -> mat -> mat
-(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
-
-val ( =@ ) : mat -> mat -> bool
-(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
-
-val ( >@ ) : mat -> mat -> bool
-(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
-
-val ( <@ ) : mat -> mat -> bool
-(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
-
-val ( <>@ ) : mat -> mat -> bool
-(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
-
-val ( >=@ ) : mat -> mat -> bool
-(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
-
-val ( <=@ ) : mat -> mat -> bool
-(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
-
-val ( @@ ) : (elt -> elt) -> mat -> mat
-(** Shorthand for [map f x], i.e., f @@ x *)

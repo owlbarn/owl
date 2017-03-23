@@ -13,10 +13,8 @@ type t =
 let printers = [
   Obj.magic (Ldot (Lident "Owl_dense_ndarray_generic", "pp_dsnda"));
   Obj.magic (Ldot (Lident "Owl_dense_matrix_generic", "pp_dsmat"));
-  Obj.magic (Ldot (Lident "Owl_sparse_ndarray", "pp_spnda"));
-  Obj.magic (Ldot (Lident "Owl_sparse_matrix", "pp_spmat"));
-  Obj.magic (Ldot (Lident "Owl_sparse_real", "pp_spmat"));
-  Obj.magic (Ldot (Lident "Owl_sparse_complex", "pp_spmat"));
+  Obj.magic (Ldot (Lident "Owl_sparse_ndarray_generic", "pp_spnda"));
+  Obj.magic (Ldot (Lident "Owl_sparse_matrix_generic", "pp_spmat"));
 ]
 
 let () =

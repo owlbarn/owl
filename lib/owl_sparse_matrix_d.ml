@@ -7,37 +7,38 @@
 
 open Bigarray
 
-type mat = (float, Bigarray.float64_elt) Owl_sparse_matrix.t
+module M = Owl_sparse_matrix_generic
+include M
 
 type elt = float
+type mat = (float, Bigarray.float64_elt) Owl_sparse_matrix_generic.t
 
-include Owl_sparse_matrix
 
-(* overload functions in Owl_sparse_matrix *)
+(* overload functions in Owl_sparse_matrix_generic *)
 
-let zeros m n = Owl_sparse_matrix.zeros Float64 m n
+let zeros m n = M.zeros Float64 m n
 
-let ones m n = Owl_sparse_matrix.ones Float64 m n
+let ones m n = M.ones Float64 m n
 
-let eye m = Owl_sparse_matrix.eye Float64 m
+let eye m = M.eye Float64 m
 
-let binary m n = Owl_sparse_matrix.binary Float64 m n
+let binary m n = M.binary Float64 m n
 
-let uniform ?(scale=1.) m n = Owl_sparse_matrix.uniform ~scale Float64 m n
+let uniform ?(scale=1.) m n = M.uniform ~scale Float64 m n
 
-let sequential m n = Owl_sparse_matrix.sequential Float64 m n
+let sequential m n = M.sequential Float64 m n
 
-let permutation_matrix m = Owl_sparse_matrix.permutation_matrix Float64 m
+let permutation_matrix m = M.permutation_matrix Float64 m
 
-let of_array m n x = Owl_sparse_matrix.of_array Float64 m n x
+let of_array m n x = M.of_array Float64 m n x
 
-let load f = Owl_sparse_matrix.load Float64 f
+let load f = M.load Float64 f
 
 (* specific functions for float64 matrix *)
 
 let _random_basic f m n =
   let c = int_of_float ((float_of_int (m * n)) *. 0.15) in
-  let x = Owl_sparse_matrix.zeros ~density:0.2 Float64 m n in
+  let x = M.zeros ~density:0.2 Float64 m n in
   let l = Owl_stats.choose (Array.init (m * n) (fun i -> i)) c in
   for k = 0 to c - 1 do
     let i = l.(k) / n in

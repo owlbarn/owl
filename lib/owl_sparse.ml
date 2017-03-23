@@ -5,12 +5,8 @@
 
 (** [ Sparse matrix module ]  *)
 
-module Real = Owl_sparse_real
-
-module Complex = Owl_sparse_complex
+module Ndarray = Owl_sparse_ndarray
 
 module Matrix = Owl_sparse_matrix
-
-module Ndarray = Owl_sparse_ndarray
 
 module Dok_matrix = Owl_sparse_dok_matrix

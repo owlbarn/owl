@@ -1,4 +1,4 @@
-module M = Owl_sparse_complex
+module M = Owl_sparse_matrix_z
 
 let test_op s c op = Perf_common.test_op s c op
 
@@ -44,7 +44,7 @@ let _ =
   test_op "mul           " c (fun () -> M.mul x y);
   test_op "div           " c (fun () -> M.div x y);
   test_op "dot           " 0 (fun () -> M.dot x y);
-  test_op "abs           " c (fun () -> M.abs x);
+  (* test_op "abs           " c (fun () -> M.abs x); *)
   test_op "neg           " c (fun () -> M.neg x);
   test_op "sum           " c (fun () -> M.sum x);
   test_op "average       " c (fun () -> M.average x);
