@@ -3,16 +3,6 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Complex sparse matrix: this module supports the operations on sparse
-  matrices of complex numbers. Because GSL does not support complex sparse
-  matrices, herein I provided a pure OCaml implementation.
-
-  The implementation provides both triplet and compressed row storage (CRS)
-  format. Note that only triplet format allows adding and updating elements.
-  Most operations are the same to Sparse.Real module, therefore please refer to
-  the documentation of Sparse.Real module.
- *)
-
 type elt = Complex.t
 type mat = (Complex.t, Bigarray.complex64_elt) Owl_sparse_matrix_generic.t
 
@@ -223,8 +213,6 @@ val of_dense : Owl_dense_matrix_z.mat -> mat
 
 val print : mat -> unit
 
-val pp_spmat : mat -> unit
-
 val save : mat -> string -> unit
 
 val load : string -> mat
@@ -245,8 +233,6 @@ val sum_cols : mat -> mat
 val average_rows : mat -> mat
 
 val average_cols : mat -> mat
-
-val abs : mat -> mat
 
 val neg : mat -> mat
 
@@ -272,57 +258,3 @@ val mul_scalar : mat -> elt -> mat
 val div_scalar : mat -> elt -> mat
 
 val power_scalar : mat -> elt -> mat
-
-
-(** {6 Shorhand infix operators} *)
-
-val ( +@ ) : mat -> mat -> mat
-(** Shorthand for [add x y], i.e., [x +@ y] *)
-
-val ( -@ ) : mat -> mat -> mat
-(** Shorthand for [sub x y], i.e., [x -@ y] *)
-
-val ( *@ ) : mat -> mat -> mat
-(** Shorthand for [mul x y], i.e., [x *@ y] *)
-
-val ( /@ ) : mat -> mat -> mat
-(** Shorthand for [div x y], i.e., [x /@ y] *)
-
-val ( $@ ) : mat -> mat -> mat
-(** Shorthand for [dot x y], i.e., [x $@ y] *)
-
-val ( **@ ) : mat -> elt -> mat
-(** Shorthand for [power x a], i.e., [x **@ a] *)
-
-val ( *$ ) : mat -> elt -> mat
-(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
-
-val ( /$ ) : mat -> elt -> mat
-(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
-
-val ( $* ) : elt -> mat -> mat
-(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
-
-val ( $/ ) : elt -> mat -> mat
-(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
-
-val ( =@ ) : mat -> mat -> bool
-(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
-
-val ( >@ ) : mat -> mat -> bool
-(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
-
-val ( <@ ) : mat -> mat -> bool
-(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
-
-val ( <>@ ) : mat -> mat -> bool
-(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
-
-val ( >=@ ) : mat -> mat -> bool
-(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
-
-val ( <=@ ) : mat -> mat -> bool
-(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
-
-val ( @@ ) : (elt -> elt) -> mat -> mat
-(** Shorthand for [map f x], i.e., f @@ x *)
