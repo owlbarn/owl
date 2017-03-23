@@ -51,13 +51,13 @@ type smc = (Complex.t, complex32_elt) Owl_sparse_matrix.t
 
 type smz = (Complex.t, complex64_elt) Owl_sparse_matrix.t
 
-type sas = (float, float32_elt) Owl_sparse_ndarray.t
+type sas = (float, float32_elt) Owl_sparse_ndarray_generic.t
 
-type sad = (float, float64_elt) Owl_sparse_ndarray.t
+type sad = (float, float64_elt) Owl_sparse_ndarray_generic.t
 
-type sac = (Complex.t, complex32_elt) Owl_sparse_ndarray.t
+type sac = (Complex.t, complex32_elt) Owl_sparse_ndarray_generic.t
 
-type saz = (Complex.t, complex64_elt) Owl_sparse_ndarray.t
+type saz = (Complex.t, complex64_elt) Owl_sparse_ndarray_generic.t
 
 
 type ('a, 'b, 'c, 'd) typ =

@@ -43,6 +43,8 @@ module Dataset = Owl_dataset
 
 (* shortcuts to 64-bit precision modules *)
 
+module Arr = Owl_dense_ndarray_d
+
 module Mat = Owl_dense_matrix_d
 
 module Vec = Owl_dense_vector_d
