@@ -41,6 +41,10 @@ type page = {
   mutable auto_xrange : bool;
   mutable auto_yrange : bool;
   mutable auto_zrange : bool;
+  (* control tick labels *)
+  mutable xticklabels : (float * string) list;
+  mutable yticklabels : (float * string) list;
+  mutable zticklabels : (float * string) list;
   (* control grids *)
   mutable xgrid : bool;
   mutable ygrid : bool;
@@ -82,6 +86,9 @@ let _create_page () = {
   auto_xrange = true;
   auto_yrange = true;
   auto_zrange = true;
+  xticklabels = [];
+  yticklabels = [];
+  zticklabels = [];
   xgrid = false;
   ygrid = false;
   zgrid = false;
@@ -197,6 +204,14 @@ let _calculate_paper_size m n =
   in
   int_of_float w, int_of_float h
 
+(* calculate the axis config based on a page config *)
+let _config_2d_axis p =
+  let c = 0 in
+  if p.xticklabels |> List.length > 0
+  || p.yticklabels |> List.length > 0
+  then c + 70
+  else c
+
 let _initialise h =
   let open Plplot in
   (* configure before init *)
@@ -214,8 +229,21 @@ let _initialise h =
   (* configure after init *)
   let _ = plwidth h.pensize in ()
 
+(* callback function of drawing customised tick labels *)
+let _draw_ticklabels p axis value =
+  let open Plplot in
+  let l = match axis with
+    | PL_X_AXIS -> p.xticklabels
+    | PL_Y_AXIS -> p.yticklabels
+    | PL_Z_AXIS -> p.zticklabels
+  in
+  try List.assoc value l
+  with exn -> Printf.sprintf "%g" value
+
 let _prepare_page p =
   let open Plplot in
+  (* customise tick labels if necessary *)
+  plslabelfunc (_draw_ticklabels p);
   (* configure an individual page *)
   let r, g, b = p.fgcolor in
   let _ = plscol0 1 r g b; plcol0 1 in
@@ -225,7 +253,7 @@ let _prepare_page p =
   let zmin, zmax = p.zrange in (
   if not p.is_3d then
     (* prepare a 2D plot *)
-    let _ = plenv xmin xmax ymin ymax 0 0 in
+    let _ = plenv xmin xmax ymin ymax 0 (_config_2d_axis p) in
     let _ = pllab p.xlabel p.ylabel p.title in ()
   else
     (* prepare a 3D plot *)
@@ -280,6 +308,18 @@ let set_yrange h a b =
 let set_zrange h a b =
   (h.pages.(h.current_page)).auto_zrange <- false;
   (h.pages.(h.current_page)).zrange <- (a, b)
+
+let set_xticklabels h ticks labels =
+  let l = List.map2 (fun a b -> a, b) ticks labels in
+  (h.pages.(h.current_page)).xticklabels <- l
+
+let set_yticklabels h ticks labels =
+  let l = List.map2 (fun a b -> a, b) ticks labels in
+  (h.pages.(h.current_page)).yticklabels <- l
+
+let set_zticklabels h ticks labels =
+  let l = List.map2 (fun a b -> a, b) ticks labels in
+  (h.pages.(h.current_page)).zticklabels <- l
 
 let set_foreground_color h r g b = (h.pages.(h.current_page)).fgcolor <- (r, g, b)
 
