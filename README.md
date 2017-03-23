@@ -255,9 +255,9 @@ Mat.(x @|| y);;               (* equivalent to Mat.concat_horizontal *)
 More advanced linear algebra operations such as `svd`, `qr`, and `cholesky` decomposition are included in `Linalg` module.
 
 ```ocaml
-let u,s,v = Linalg.svd x   (* singular value decomposition *)
-let q,r = Linalg.qr x      (* QR decomposition *)
-let l = Linalg.cholesky x  (* cholesky decomposition *)
+let u,s,v = Linalg.svd x;;   (* singular value decomposition *)
+let q,r = Linalg.qr x;;      (* QR decomposition *)
+let l = Linalg.cholesky x;;  (* cholesky decomposition *)
 ...
 ```
 
@@ -300,7 +300,7 @@ Herein, let's use an example to briefly show how to plot the result using `Plot`
 
 ```ocaml
 let x, y = Mat.meshgrid (-2.5) 2.5 (-2.5) 2.5 100 100 in
-let z = Mat.(Maths.sin @@ ((x **@ 2.) +@ (y **@ 2.))) in
+let z = Mat.(sin ((x **@ 2.) +@ (y **@ 2.))) in
 Plot.mesh x y z;;
 ```
 
@@ -345,7 +345,7 @@ The end result is as follows. You probably have already grasped the idea of how 
 
 ## Maths and Stats
 
-There are a lot of basic and advanced mathematical and statistical functions in `Maths` and `Stats` modules. Most of them are interfaced to Gsl directly, so you may want to read [GSL Manual](https://www.gnu.org/software/gsl/manual/html_node/) carefully before using the module.
+There are a lot of basic and advanced mathematical and statistical functions in `Maths` and `Stats` modules. Most of them are interfaced to Gsl directly, so you may want to read [GSL Manual](https://www.gnu.org/software/gsl/manual/html_node/) carefully before using the module. In the future, Owl will also supports other math library as optional backend in case you need different licence.
 
 [`Stats`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.html) has three submodules: [`Stats.Rnd`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Rnd.html) for random numbers, [`Stats.Pdf`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Pdf.html) for probability dense functions, and [`Stats.Cdf`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Cdf.html) for cumulative distribution functions. In addition, I have implemented extra functions such as two ranking correlations: `Stats.kendall_tau` and `Stats.spearman_rho`); two MCMC (Markov Chain Monte Carlo) functions in `Stats` module: Metropolis-Hastings (`Stats.metropolis_hastings`) and Gibbs sampling (`Stats.gibbs_sampling`) algorithms.
 
@@ -381,68 +381,70 @@ The future plan is to embed a small PPL (Probabilistic Programming Language) in 
 
 ## N-dimensional Array
 
-Owl has a very powerful module to manipulate dense N-dimensional arrays, i.e., `Dense.Ndarray`. Ndarray is very similar to the corresponding modules in Numpy and Julia. For sparse N-dimensional arrays, you can use `Sparse.Ndarray` which provides a similar set of APIs as aforementioned Ndarray. Here is an [initial evaluation](https://github.com/ryanrhymes/owl/wiki/Evaluation:-Performance-Test) on the performance of Ndarray.
+Owl has a very powerful module to manipulate dense N-dimensional arrays, i.e., [`Dense.Ndarray`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_dense_ndarray.ml). Ndarray is very similar to the corresponding modules in Numpy and Julia. For sparse N-dimensional arrays, you can use `Sparse.Ndarray` which provides a similar set of APIs as aforementioned Ndarray. Here is an [initial evaluation](https://github.com/ryanrhymes/owl/wiki/Evaluation:-Performance-Test) on the performance of Ndarray.
 
-In the following, I will present a couple of examples using Ndarray module. First, we can create empty ndarrays of shape `[|3;4;5|]`. Owl supports four types of ndarrays: `Float32`, `Float64`, `Complex32`, and `Complex64`.
+Similar to `Matrix` module, `Ndarray` also has five submodules `S` (for `float32`), `D` (for `float32`), `C` (for `complex32`), `Z` (for `complex64`), and `Generic` (for all types) to handle different number types. There is an alias in `Owl` for double precision float ndarray (i.e., `Dense.Ndarray.D`) which is `Arr`.
+
+In the following, I will present a couple of examples using `Dense.Ndarray` module. First, we can create empty ndarrays of shape `[|3;4;5|]`.
 
 ```ocaml
-let x0 = Dense.Ndarray.empty Bigarray.Float32 [|3;4;5|];;
-let x1 = Dense.Ndarray.empty Bigarray.Float64 [|3;4;5|];;
-let x2 = Dense.Ndarray.empty Bigarray.Complex32 [|3;4;5|];;
-let x3 = Dense.Ndarray.empty Bigarray.Complex64 [|3;4;5|];;
+let x0 = Dense.Ndarray.S.empty [|3;4;5|];;
+let x1 = Dense.Ndarray.D.empty [|3;4;5|];;
+let x2 = Dense.Ndarray.C.empty [|3;4;5|];;
+let x3 = Dense.Ndarray.Z.empty [|3;4;5|];;
 ```
 
 You can also assign the initial values to the elements, generate a zero/one ndarray, or even a random ndarray.
 
 ```ocaml
-Dense.Ndarray.zeros Bigarray.Complex32 [|3;4;5|];;
-Dense.Ndarray.ones Bigarray.Float64 [|3;4;5|];;
-Dense.Ndarray.create Bigarray.Float32 [|3;4;5|] 1.5;;
-Dense.Ndarray.create Bigarray.Complex32 [|3;4;5|] Complex.({im=1.5; re=2.5});;
-Dense.Ndarray.uniform Bigarray.Float64 [|3;4;5|];;
+Dense.Ndarray.C.zeros [|3;4;5|];;
+Dense.Ndarray.D.ones [|3;4;5|];;
+Dense.Ndarray.S.create [|3;4;5|] 1.5;;
+Dense.Ndarray.Z.create [|3;4;5|] Complex.({im=1.5; re=2.5});;
+Dense.Ndarray.D.uniform [|3;4;5|];;
 ```
 
-With these created ndarray, you can do some math operation as below.
+With these created ndarray, you can do some math operation as below. Now, let's use shortcut `Arr` module to make examples.
 
 ```ocaml
-let x = Dense.Ndarray.uniform Bigarray.Float64 [|3;4;5|];;
-let y = Dense.Ndarray.uniform Bigarray.Float64 [|3;4;5|];;
-let z = Dense.Ndarray.add x y;;
-Dense.Ndarray.print z;;
+let x = Arr.uniform [|3;4;5|];;
+let y = Arr.uniform [|3;4;5|];;
+let z = Arr.add x y;;
+Arr.print z;;
 ```
 
 Owl supports many math operations and these operations have been well vectorised so they are very fast.
 
 ```ocaml
-Dense.Ndarray.sin x;;
-Dense.Ndarray.tan x;;
-Dense.Ndarray.exp x;;
-Dense.Ndarray.log x;;
-Dense.Ndarray.min x;;
-Dense.Ndarray.add_scalar x 2.;;
-Dense.Ndarray.mul_scalar x 2.;;
+Arr.sin x;;
+Arr.tan x;;
+Arr.exp x;;
+Arr.log x;;
+Arr.min x;;
+Arr.add_scalar x 2.;;
+Arr.mul_scalar x 2.;;
 ...
 ```
 
 Examining elements and comparing two ndarrays are also very easy.
 
 ```ocaml
-Dense.Ndarray.is_zero x;;
-Dense.Ndarray.is_positive x;;
-Dense.Ndarray.is_nonnegative x;;
+Arr.is_zero x;;
+Arr.is_positive x;;
+Arr.is_nonnegative x;;
 ...
-Dense.Ndarray.is_equal x y;;
-Dense.Ndarray.is_greater x y;;
-Dense.Ndarray.equal_or_smaller x y;;
+Arr.is_equal x y;;
+Arr.is_greater x y;;
+Arr.equal_or_smaller x y;;
 ...
 ```
 
 You can certainly plugin your own functions to check each elements.
 
 ```ocaml
-Dense.Ndarray.exists ((>) 2.) x;;
-Dense.Ndarray.not_exists ((<) 2.) x;;
-Dense.Ndarray.for_all ((=) 2.) x;;
+Arr.exists ((>) 2.) x;;
+Arr.not_exists ((<) 2.) x;;
+Arr.for_all ((=) 2.) x;;
 ```
 
 Most importantly, you can use Owl to iterate a ndarray in various ways. Owl provides a simple but flexible and powerful way to define a "slice" in ndarray. Comparing to the "`Bigarray.slice_left`" function, the slice in Owl does not have to start from the left-most axis. E.g., for the previously defined `[|3;4;5|]` ndarray, you can define a slice in the following ways:
@@ -459,7 +461,7 @@ let s4 = [|Some 1; None; Some 2|]  (* (1,*,2) *)
 With the slice definition above, we can iterate and map the elements in a slice. E.g., we add one to all the elements in slice `(0,*,*)`.
 
 ```ocaml
-Dense.Ndarray.map ~axis:[|Some 0; None; None|] (fun a -> a +. 1.) x;;
+Arr.map ~axis:[|Some 0; None; None|] (fun a -> a +. 1.) x;;
 ```
 
 There are more functions to help you to iterate elements and slices in a ndarray: `iteri`, `iter`, `mapi`, `map`, `filteri`, `filter`, `foldi`, `fold`, `iteri_slice`, `iter_slice`, `iter2i`, `iter2`. Please refer to the documentation for their details.
