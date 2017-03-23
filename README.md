@@ -201,7 +201,7 @@ Mat.draw_cols x 3;;      (* draw 3 columns from x with replacement *)
 ...
 ```
 
-Practically, `Sparse.Matrix` module provides a subset of the similar operations for sparse matrices. In addition, `Sparse.Matrix` module also has extra functions such as only iterating non-zero elements `Sparse.Matrix.Generic.iter_nz`, and etc. Please read the full documentation for [`Sparse.Matrix.Generic`]() for details.
+Practically, `Sparse.Matrix` module provides a subset of the similar operations for sparse matrices. In addition, `Sparse.Matrix` module also has extra functions such as only iterating non-zero elements `Sparse.Matrix.Generic.iter_nz`, and etc. Please read the full documentation for [`Sparse.Matrix.Generic`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_sparse_matrix_generic.mli) for details.
 
 
 ## Linear Algebra
@@ -211,26 +211,37 @@ Simple matrix mathematics like add, sub, multiplication, and division are includ
 ```ocaml
 let x = Mat.uniform 6 6;;
 let y = Mat.uniform 6 6;;
-Mat.(x >@ y)                  (* is x greater than y? *)
-Mat.(x =@ y)                  (* is x equal to y? *)
+Mat.(x >@ y);;                (* is x greater than y? *)
+Mat.(x =@ y);;                (* is x equal to y? *)
 ...
 ```
 
 Some basic math operations includes:
 
 ```ocaml
-Mat.(x +@ y)                  (* add two matrices *)
-Mat.(x *@ y)                  (* multiply two matrices, element-wise *)
-Mat.(x $@ y)                  (* dot product of two matrices *)
-Mat.(x +$ 2.)                 (* add a scalar to all elements in x *)
+Mat.(x +@ y);;                (* add two matrices *)
+Mat.(x *@ y);;                (* multiply two matrices, element-wise *)
+Mat.(x $@ y);;                (* dot product of two matrices *)
+Mat.(x +$ 2.);;               (* add a scalar to all elements in x *)
 ...
 ```
 
 Apply various functions in `Maths` module to every element in x
 
 ```ocaml
-Mat.(Maths.sin @@ x);;        (* apply sine function *)
-Mat.(Maths.exp @@ x);;        (* apply exponential function *)
+Mat.(Maths.atanh @@ x);;        (* apply atanh function *)
+Mat.(Maths.airy_Ai @@ x);;      (* apply Airy function *)
+...
+```
+
+However, it is worth pointing out that `Mat` already implements many useful math functions. These functions are vectorised and are much faster than the example above which actually calls `Mat.map` for transformation.
+
+```ocaml
+Mat.sin x;;         (* call sine function *)
+Mat.erfc x;;        (* call erfc function *)
+Mat.round x;;       (* call round function *)
+Mat.signum x;;      (* call signum function *)
+Mat.sigmoid x;;     (* apply sigmoid function *)
 ...
 ```
 
