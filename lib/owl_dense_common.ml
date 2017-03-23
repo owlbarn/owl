@@ -219,6 +219,7 @@ let _owl_print_mat : type a b. (a, b) kind -> (a, b) owl_mat_op00 = function
   | _         -> failwith "_owl_print_mat: unsupported operation"
 
 let _owl_print_mat_toplevel : type a b. (a, b) kind -> (a, b) owl_mat_op00 = function
+  | Int32     -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_imat
   | Float32   -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_fmat
   | Float64   -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_fmat
   | Complex32 -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat

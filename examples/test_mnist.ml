@@ -53,7 +53,7 @@ let test_model nn x y =
 
 let _ =
   let x, _, y = Dataset.load_mnist_train_data () in
-  for i = 1 to 3000 do
+  for i = 1 to 1000 do
     let x', y' = Dataset.draw_samples x y 100 in
     backprop nn (F 0.01) (Mat x') (Mat y')
     |> Printf.printf "#%i : loss = %g\n" i
