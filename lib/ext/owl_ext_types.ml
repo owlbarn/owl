@@ -43,13 +43,13 @@ type dac = (Complex.t, complex32_elt, c_layout) Genarray.t
 
 type daz = (Complex.t, complex64_elt, c_layout) Genarray.t
 
-type sms = (float, float32_elt) Owl_sparse_matrix.t
+type sms = (float, float32_elt) Owl_sparse_matrix_generic.t
 
-type smd = (float, float64_elt) Owl_sparse_matrix.t
+type smd = (float, float64_elt) Owl_sparse_matrix_generic.t
 
-type smc = (Complex.t, complex32_elt) Owl_sparse_matrix.t
+type smc = (Complex.t, complex32_elt) Owl_sparse_matrix_generic.t
 
-type smz = (Complex.t, complex64_elt) Owl_sparse_matrix.t
+type smz = (Complex.t, complex64_elt) Owl_sparse_matrix_generic.t
 
 type sas = (float, float32_elt) Owl_sparse_ndarray_generic.t
 

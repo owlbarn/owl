@@ -13,9 +13,8 @@
   the documentation of Sparse.Real module.
  *)
 
-type mat = (Complex.t, Bigarray.complex64_elt) Owl_sparse_matrix.t
-
 type elt = Complex.t
+type mat = (Complex.t, Bigarray.complex64_elt) Owl_sparse_matrix_generic.t
 
 
 (** {6 Create sparse matrices} *)

@@ -12,10 +12,9 @@
   solution. At the moment, use with care and let me know if you find bugs.
  *)
 
-type mat = (float, Bigarray.float64_elt) Owl_sparse_matrix.t
-(** Type of sparse matrices. It is defined in [types.ml] as record type. *)
-
 type elt = float
+type mat = (float, Bigarray.float64_elt) Owl_sparse_matrix_generic.t
+(** Type of sparse matrices. It is defined in [types.ml] as record type. *)
 
 
 (** {6 Create sparse matrices} *)
