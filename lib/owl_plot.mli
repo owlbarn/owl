@@ -33,11 +33,11 @@ val set_yrange : handle -> float -> float -> unit
 
 val set_zrange : handle -> float -> float -> unit
 
-val set_xticklabels : handle -> float list -> string list -> unit
+val set_xticklabels : handle -> (float * string) list -> unit
 
-val set_yticklabels : handle -> float list -> string list -> unit
+val set_yticklabels : handle -> (float * string) list -> unit
 
-val set_zticklabels : handle -> float list -> string list -> unit
+val set_zticklabels : handle -> (float * string) list -> unit
 
 val set_foreground_color : handle -> int -> int -> int -> unit
 

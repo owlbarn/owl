@@ -309,17 +309,11 @@ let set_zrange h a b =
   (h.pages.(h.current_page)).auto_zrange <- false;
   (h.pages.(h.current_page)).zrange <- (a, b)
 
-let set_xticklabels h ticks labels =
-  let l = List.map2 (fun a b -> a, b) ticks labels in
-  (h.pages.(h.current_page)).xticklabels <- l
+let set_xticklabels h l = (h.pages.(h.current_page)).xticklabels <- l
 
-let set_yticklabels h ticks labels =
-  let l = List.map2 (fun a b -> a, b) ticks labels in
-  (h.pages.(h.current_page)).yticklabels <- l
+let set_yticklabels h l = (h.pages.(h.current_page)).yticklabels <- l
 
-let set_zticklabels h ticks labels =
-  let l = List.map2 (fun a b -> a, b) ticks labels in
-  (h.pages.(h.current_page)).zticklabels <- l
+let set_zticklabels h l = (h.pages.(h.current_page)).zticklabels <- l
 
 let set_foreground_color h r g b = (h.pages.(h.current_page)).fgcolor <- (r, g, b)
 
