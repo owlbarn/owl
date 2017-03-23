@@ -467,6 +467,55 @@ Arr.map ~axis:[|Some 0; None; None|] (fun a -> a +. 1.) x;;
 There are more functions to help you to iterate elements and slices in a ndarray: `iteri`, `iter`, `mapi`, `map`, `filteri`, `filter`, `foldi`, `fold`, `iteri_slice`, `iter_slice`, `iter2i`, `iter2`. Please refer to the documentation for their details.
 
 
+## Algorithmic Differentiation
+
+Algorithmic differentiation (AD) is another key component in Owl which can make many analytical tasks so easy to perform. It is also often referred to as Automatic differentiation. Here is a [Wikipedia article](https://en.wikipedia.org/wiki/Automatic_differentiation) to help you understand the topic if you are interested in.
+
+The AD support is provided `Algodiff` module. More precisely, `Algodiff.Numerical` provides numerical differentiation whilst `Algodiff.AD` provides algorithmic differentiation. For the detailed differences between the two, please read the wiki article as your starting point. Simply put, `Algodiff.AD` is able to provide exact result of the derivative whereas `Algodiff.Numerical` is just approximation which is subject to round and truncate errors.
+
+`Algodiff.AD` supports higher-order derivatives. Here is an example which calculates till the fourth derivative of `tanh` function.
+
+```ocaml
+open Algodiff.AD;;
+
+(* calculate derivatives of f0 *)
+let f0 x = Maths.(tanh x);;
+let f1 = diff f0;;
+let f2 = diff f1;;
+let f3 = diff f2;;
+let f4 = diff f3;;
+```
+
+Quite easy, isn't it? Then we can plot the values of `tanh` and its four derivatives between interval `[-4, 4]`.
+
+```ocaml
+let map f x = Vec.map (fun a -> a |> pack_flt |> f |> unpack_flt) x;;
+
+(* calculate point-wise values *)
+let x = Vec.linspace (-4.) 4. 200;;
+let y0 = map f0 x;;
+let y1 = map f1 x;;
+let y2 = map f2 x;;
+let y3 = map f3 x;;
+let y4 = map f4 x;;
+
+(* plot the values of all functions *)
+let h = Plot.create "plot_021.png" in
+Plot.set_foreground_color h 0 0 0;
+Plot.set_background_color h 255 255 255;
+Plot.plot ~h x y0;
+Plot.plot ~h x y1;
+Plot.plot ~h x y2;
+Plot.plot ~h x y3;
+Plot.plot ~h x y4;
+Plot.output h;;
+```
+
+Then you should be able to see a figure like this one below. For more advanced use, please see my separate tutorial.
+
+![plot021](https://raw.githubusercontent.com/wiki/ryanrhymes/owl/image/plot_021.png)
+
+
 ## Run Owl on Different Platforms
 
 If you want to try Owl on ARM based platforms such as Raspberry Pi rather than x86 ones, the installation are similar. Just note that Owl requires Ocaml 4.04, which might not be supported on your platform's binary distribution system yet, so you might consider compiling [Ocaml sources](https://ocaml.org/releases/4.04.html). Besides, to solve a potential conflict with gsl package, after running `./configure` in the top directory, you should run:
