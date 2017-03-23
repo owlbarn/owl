@@ -6,7 +6,7 @@
 module S = Pervasives
 module M = Owl_dense_matrix_d
 
-type mat = Owl_dense_matrix_d.mat
+type mat = M.mat
 
 (* type definitions *)
 
