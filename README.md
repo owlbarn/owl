@@ -1,7 +1,7 @@
 # Owl - An OCaml Numerical Library
-Owl is an OCaml numerical library. It supports N-dimensional arrays, both dense and sparse matrix operations, linear algebra, regressions, fast Fourier transforms, and many advanced mathematical and statistical functions (such as Markov chain Monte Carlo methods).
+Owl is an OCaml numerical library. It supports N-dimensional arrays, both dense and sparse matrix operations, linear algebra, regressions, fast Fourier transforms, and many advanced mathematical and statistical functions (such as Markov chain Monte Carlo methods). Recently, Owl has implemented algorithmic differentiation which essentially makes developing machine learning and neural network algorithms trivial.
 
-The full API documentation is here:
+The full API documentation is here (maybe outdated):
 
 * on [mirage.io](http://docs.mirage.io/owl/index.html)
 * on [cam.ac.uk](http://www.cl.cam.ac.uk/~lw525/owl/)
@@ -75,10 +75,18 @@ open Owl;;
 
 ## Create Matrices
 
-[`Dense`](http://www.cl.cam.ac.uk/~lw525/owl/Real.html) module supports dense matrix operations while [`Sparse`](http://www.cl.cam.ac.uk/~lw525/owl/Sparse.html) module supports sparse ones. There are two submodules in `Dense`: `Real` module supports matrices of real numbers while `Complex` supports matrices of complex numbers. To start, we can use `Dense.Real.uniform_int` to create a 5x5 random dense matrix.
+[`Dense.Matrix`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_dense_matrix.ml) module supports dense matrix operations while [`Sparse.Matrix`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_sparse_matrix.ml) module supports sparse ones. There are five submodules in `Dense.Matrix`:
+
+* `Dense.Matrix.S` module supports matrices of single precision float number `float32`;
+* `Dense.Matrix.D` module supports double precision float numbers `float64`;
+* `Dense.Matrix.C` module supports single precision complex numbers `complex32`;
+* `Dense.Matrix.Z` module supports double precision complex numbers `complex64`;
+* `Dense.Matrix.Generic` module supports all aforementioned number types via GADT.
+
+To start, we can use `Dense.Matrix.D.uniform_int` to create a 5x5 random dense matrix.
 
 ```ocaml
-let x = Dense.Real.uniform_int 5 5;;
+let x = Dense.Matrix.D.uniform_int 5 5;;
 ```
 
 You should see the following output in `utop`.
@@ -93,34 +101,33 @@ R4 99 72 78 30 11
 val x : Owl_dense_matrix_d.mat =
 ```
 
-To save some typing efforts, we open the `Dense` module by default in `utop` for the following examples using `open Dense` so that we can access `Real` module directly. `Real` module also provides other functions to create various matrices, e.g., as below.
+To save some typing efforts, we have made `Mat` as an alias of `Dense.Matrix.D` by assuming 64-bit float numbers are commonly used. Therefore, we can use `Mat` directly after open `Owl` instead of using `Dense.Matrix.D`. Similarly, there are also aliases for 64-bit float vectors and ndarrays (i.e., `Vec` and `Arr`) but we will talk about them later. `Mat` module also provides other functions to create various matrices, e.g., as below.
 
 ```ocaml
-open Dense;;
-let x = Real.eye 5;;             (* identity matrix *)
-let x = Real.zeros 5 5;;         (* all elements are zeros *)
-let x = Real.ones 5 5;;          (* all elements are ones *)
-let x = Real.uniform 5 5;;       (* random matrix of uniform distribution *)
-let x = Real.gaussian 5 5;;      (* random matrix of gaussian distribution *)
+let x = Mat.eye 5;;             (* identity matrix *)
+let x = Mat.zeros 5 5;;         (* all elements are zeros *)
+let x = Mat.ones 5 5;;          (* all elements are ones *)
+let x = Mat.uniform 5 5;;       (* random matrix of uniform distribution *)
+let x = Mat.gaussian 5 5;;      (* random matrix of gaussian distribution *)
 ...
 ```
 
 Combined with `Stats` module, you can also create any matrices of many distributions. E.g., the following code first creates an empty dense matrix, then initialise the elements with Bernoulli distribution. Test it in `utop`, you should get a dense matrix where half of the elements are zeros.
 
 ```ocaml
-let x = Real.empty 8 8 |> Real.map (fun _ -> Stats.Rnd.bernoulli 0.5 |> float_of_int);;
+let x = Mat.empty 8 8 |> Mat.map (fun _ -> Stats.Rnd.bernoulli 0.5 |> float_of_int);;
 ```
 
 Or create a matrix where the elements follow Laplace distribution.
 
 ```ocaml
-let x = Real.empty 8 8 |> Real.map (fun _ -> Stats.Rnd.laplace 0.2);;
+let x = Mat.empty 8 8 |> Mat.map (fun _ -> Stats.Rnd.laplace 0.2);;
 ```
 
 With `Dense` module, you can also generate linearly spaced interval and meshgrids, e.g.,
 
 ```ocaml
-let x = Real.linspace 0. 5. 6;;
+let x = Mat.linspace 0. 5. 6;;
 ```
 which will return a 1x5 row vector as below
 ```bash
@@ -132,67 +139,69 @@ val x : Owl_dense_matrix_d.mat =
 Matrices can be saved to and loaded from a file.
 
 ```ocaml
-Real.save x 'matrix_01.data';;  (* save the matrix to a file *)
-Real.load 'matrix_01.data';;    (* load the matrix from a file *)
+Mat.save x "matrix_01.data";;  (* save the matrix to a file *)
+Mat.load "matrix_01.data";;    (* load the matrix from a file *)
 ```
 
 
 ## Access Elements, Rows, and Columns
 
-Both `Dense` and `Sparse` modules provide a wide range of operations to access the elements, rows, and columns of a matrix. You can use `Real.set` and `Real.get` to manipulate individual element.
+Both `Dense.Matrix` and `Sparse.Matrix` modules provide a wide range of operations to access the elements, rows, and columns of a matrix. You can refer to the full document in [`Dense.Matrix.Generic`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_dense_matrix_generic.mli). Here we just gave some simple examples briefly.
+
+You can use `Mat.set` and `Mat.get` to manipulate individual element.
 
 ```ocaml
-Real.set x 0 1 2.5;;
-Real.get x 0 1;;
+Mat.set x 0 1 2.5;;
+Mat.get x 0 1;;
 ```
 
-Equivalently, there are shorthands for `Real.get` and `Real.set`.
+Equivalently, there are shorthands for `Mat.get` and `Mat.set`.
 
 ```ocaml
-x.{0,1} <- 2.5;;  (* Real.set x 0 1 2.5 *)
-x.{0,1};;         (* Real.get x 0 1 *)
+x.{0,1} <- 2.5;;  (* Mat.set x 0 1 2.5 *)
+x.{0,1};;         (* Mat.get x 0 1 *)
 ```
 
-We can use `Real.row` and `Real.col` to retrieve a specific row or column of a matrix, or use `Real.rows` and `Real.cols` to retrieve multiple of them.
+We can use `Mat.row` and `Mat.col` to retrieve a specific row or column of a matrix, or use `Mat.rows` and `Mat.cols` to retrieve multiple of them.
 
 ```ocaml
-Real.row x 5;;        (* retrieve the fifth row *)
-Real.cols x [|1;3;2|] (* retrieve the column 1, 3, and 2 *)
+Mat.row x 5;;            (* retrieve the fifth row *)
+Mat.cols x [|1;3;2|];;   (* retrieve the column 1, 3, and 2 *)
 ```
 
-E.g., the following code generates a random matrix, then scales up each element by a factor of 10 using `Real.map` function.
+E.g., the following code generates a random matrix, then scales up each element by a factor of 10 using `Mat.map` function.
 
 ```ocaml
-let x = Real.(uniform 6 6 |> map (fun x -> x *. 10.));;
+let x = Mat.(uniform 6 6 |> map (fun x -> x *. 10.));;
 ```
 
-We can iterate a matrix row by row, or column by column. The following code calculates the sum of each row by calling `Real.map_rows` function.
+We can iterate a matrix row by row, or column by column. The following code calculates the sum of each row by calling `Mat.map_rows` function.
 
 ```ocaml
-let x = Real.(uniform 6 6 |> map_rows sum);;
+let x = Mat.(uniform 6 6 |> map_rows sum);;
 ```
 
-We can fold elements by calling `Real.fold`, fold rows by calling `Real.fold_rows`. Similarly, there are also functions for `filter` operations. The following code filters out the elements not greater than 0.1 in x.
+We can fold elements by calling `Mat.fold`, fold rows by calling `Mat.fold_rows`. Similarly, there are also functions for `filter` operations. The following code filters out the elements not greater than 0.1 in x.
 
 ```ocaml
-Real.filter ((>) 0.1) x;;    (* not greater than 0.1 in x *)
+Mat.filter ((>) 0.1) x;;    (* not greater than 0.1 in x *)
 ```
 
 We can also do something more complicated, e.g., by filtering out the rows whose summation is greater than 3.
 
 ```ocaml
-Real.filter_rows (fun r -> Real.sum r > 3.) x;;
+Mat.filter_rows (fun r -> Mat.sum r > 3.) x;;
 ```
 
 Shuffle the rows and columns, or draw some of them from a matrix.
 
 ```ocaml
-Real.shuffle_rows x;;                (* shuffle the rows in x *)
-Real.draw_cols x 3;;                 (* draw 3 columns from x with replacement *)
+Mat.shuffle_rows x;;     (* shuffle the rows in x *)
+Mat.draw_cols x 3;;      (* draw 3 columns from x with replacement *)
 ...
 ```
 
-Practically, `Sparse` module provides all the similar operations for sparse matrices. In addition, `Sparse` module also has extra functions such as only iterating non-zero elements `Sparse.iter_nz`, and etc. Please read the full documentation for details.
+Practically, `Sparse.Matrix` module provides a subset of the similar operations for sparse matrices. In addition, `Sparse.Matrix` module also has extra functions such as only iterating non-zero elements `Sparse.Matrix.Generic.iter_nz`, and etc. Please read the full documentation for [`Sparse.Matrix.Generic`]() for details.
 
 
 ## Linear Algebra
@@ -200,36 +209,36 @@ Practically, `Sparse` module provides all the similar operations for sparse matr
 Simple matrix mathematics like add, sub, multiplication, and division are included in `Dense` module. Moreover, there are predefined shorthands for such operations. E.g., the following code creates two random matrices then compare which is greater.
 
 ```ocaml
-let x = Real.uniform 6 6;;
-let y = Real.uniform 6 6;;
-Real.(x >@ y)                  (* is x greater than y? *)
-Real.(x =@ y)                  (* is x equal to y? *)
+let x = Mat.uniform 6 6;;
+let y = Mat.uniform 6 6;;
+Mat.(x >@ y)                  (* is x greater than y? *)
+Mat.(x =@ y)                  (* is x equal to y? *)
 ...
 ```
 
 Some basic math operations includes:
 
 ```ocaml
-Real.(x +@ y)                  (* add two matrices *)
-Real.(x *@ y)                  (* multiply two matrices, element-wise *)
-Real.(x $@ y)                  (* dot product of two matrices *)
-Real.(x +$ 2.)                 (* add a scalar to all elements in x *)
+Mat.(x +@ y)                  (* add two matrices *)
+Mat.(x *@ y)                  (* multiply two matrices, element-wise *)
+Mat.(x $@ y)                  (* dot product of two matrices *)
+Mat.(x +$ 2.)                 (* add a scalar to all elements in x *)
 ...
 ```
 
 Apply various functions in `Maths` module to every element in x
 
 ```ocaml
-Real.(Maths.sin @@ x);;        (* apply sine function *)
-Real.(Maths.exp @@ x);;        (* apply exponential function *)
+Mat.(Maths.sin @@ x);;        (* apply sine function *)
+Mat.(Maths.exp @@ x);;        (* apply exponential function *)
 ...
 ```
 
 Concatenate two matrices, vertically or horizontally by
 
 ```ocaml
-Real.(x @= y);;                (* equivalent to Real.concat_vertical *)
-Real.(x @|| y);;               (* equivalent to Real.concat_horizontal *)
+Mat.(x @= y);;                (* equivalent to Mat.concat_vertical *)
+Mat.(x @|| y);;               (* equivalent to Mat.concat_horizontal *)
 ```
 
 More advanced linear algebra operations such as `svd`, `qr`, and `cholesky` decomposition are included in `Linalg` module.
@@ -249,19 +258,19 @@ let l = Linalg.cholesky x  (* cholesky decomposition *)
 In the following, let's use an example to illustrate the simplest linear regression in `Regression` module. First, let's generate the measurement x which is a 1000 x 3 matrix. Each row of x is an independent measurement.
 
 ```ocaml
-let x = Real.uniform 1000 3;;
+let x = Mat.uniform 1000 3;;
 ```
 
 Next let's define the parameter of a linear model, namely p, a 3 x 1 matrix.
 
 ```ocaml
-let p = Real.of_array [|0.2;0.4;0.8|] 3 1;;
+let p = Mat.of_array [|0.2;0.4;0.8|] 3 1;;
 ```
 
 Then we generate the observations y from x and p by
 
 ```ocaml
-let y = Real.(x $@ p);;
+let y = Mat.(x $@ p);;
 ```
 
 Now, assume we only know x and y, how can we fit x and y into a linear model? It is very simple.
@@ -279,8 +288,8 @@ There is another separate [Tutorial on Plotting in Owl](https://github.com/ryanr
 Herein, let's use an example to briefly show how to plot the result using `Plot` module. We first generate two mesh grids then apply sine function to them by using the operations introduced before.
 
 ```ocaml
-let x, y = Real.meshgrid (-2.5) 2.5 (-2.5) 2.5 100 100 in
-let z = Real.(Maths.sin @@ ((x **@ 2.) +@ (y **@ 2.))) in
+let x, y = Mat.meshgrid (-2.5) 2.5 (-2.5) 2.5 100 100 in
+let z = Mat.(Maths.sin @@ ((x **@ 2.) +@ (y **@ 2.))) in
 Plot.mesh x y z;;
 ```
 
@@ -295,26 +304,26 @@ let f p i = match i with
   | 0 -> Stats.Rnd.gaussian ~sigma:0.5 () +. p.(1)
   | _ -> Stats.Rnd.gaussian ~sigma:0.1 () *. p.(0)
 in
-let y = Stats.gibbs_sampling f [|0.1;0.1|] 5_000 |> Real.of_arrays in
+let y = Stats.gibbs_sampling f [|0.1;0.1|] 5_000 |> Mat.of_arrays in
 let h = Plot.create ~m:2 ~n:2 "test_plot_04.png" in
 let _ = Plot.set_background_color h 255 255 255 in
 let _ = Plot.subplot h 0 0 in
 let _ = Plot.set_title h "Bivariate model" in
-let _ = Plot.scatter ~h (Real.col y 0) (Real.col y 1) in
+let _ = Plot.scatter ~h (Mat.col y 0) (Mat.col y 1) in
 let _ = Plot.subplot h 0 1 in
 let _ = Plot.set_title h "Distribution of y" in
 let _ = Plot.set_xlabel h "y" in
 let _ = Plot.set_ylabel h "Frequency" in
-let _ = Plot.histogram ~h ~bin:50 (Real.col y 1) in
+let _ = Plot.histogram ~h ~bin:50 (Mat.col y 1) in
 let _ = Plot.subplot h 1 0 in
 let _ = Plot.set_title h "Distribution of x" in
 let _ = Plot.set_ylabel h "Frequency" in
-let _ = Plot.histogram ~h ~bin:50 (Real.col y 0) in
+let _ = Plot.histogram ~h ~bin:50 (Mat.col y 0) in
 let _ = Plot.subplot h 1 1 in
 let _ = Plot.set_foreground_color h 51  102 255 in
 let _ = Plot.set_title h "Sine function" in
 let _ = Plot.plot_fun ~h ~line_style:2 Maths.sin 0. 28. in
-let _ = Plot.autocorr ~h (Real.sequential 1 28) in
+let _ = Plot.autocorr ~h (Mat.sequential 1 28) in
 Plot.output h;;
 ```
 
@@ -333,7 +342,7 @@ E.g., the following code first defines a probability density function `f` for a 
 
 ```ocaml
 let f p = Stats.Pdf.((gaussian p.(0) 0.5) +. (gaussian (p.(0) -. 3.5) 1.)) in
-let y = Stats.metropolis_hastings f [|0.1|] 100_000 |>  Real.of_arrays in
+let y = Stats.metropolis_hastings f [|0.1|] 100_000 |>  Mat.of_arrays in
 Plot.histogram ~bin:100 y;;
 ```
 
@@ -348,8 +357,8 @@ let f p i = match i with
   | 0 -> Stats.Rnd.gaussian ~sigma:0.5 () +. p.(1)
   | _ -> Stats.Rnd.gaussian ~sigma:0.1 () *. p.(0)
 in
-let y = Stats.gibbs_sampling f [|0.1;0.1|] 5_000 |> Real.of_arrays in
-Plot.scatter (Real.col y 0) (Real.col y 1);;
+let y = Stats.gibbs_sampling f [|0.1;0.1|] 5_000 |> Mat.of_arrays in
+Plot.scatter (Mat.col y 0) (Mat.col y 1);;
 ```
 
 We take 5000 samples from the defined distribution and plot them as a scatter plot, as below.
