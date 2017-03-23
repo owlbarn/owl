@@ -77,7 +77,7 @@ open Owl;;
 
 [`Dense.Matrix`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_dense_matrix.ml) module supports dense matrix operations while [`Sparse.Matrix`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_sparse_matrix.ml) module supports sparse ones. There are five submodules in `Dense.Matrix`:
 
-* `Dense.Matrix.S` module supports matrices of single precision float number `float32`;
+* `Dense.Matrix.S` module supports single precision float numbers `float32`;
 * `Dense.Matrix.D` module supports double precision float numbers `float64`;
 * `Dense.Matrix.C` module supports single precision complex numbers `complex32`;
 * `Dense.Matrix.Z` module supports double precision complex numbers `complex64`;
