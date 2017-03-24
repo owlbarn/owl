@@ -74,6 +74,9 @@ let reverse x =
   y |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.reverse (kind x);
   y
 
+(* TODO: cast x to kind k *)
+let cast k x = None
+
 (* TODO: zpxy, zmxy, sort ... *)
 
 (* TODO: add axis paramater *)
