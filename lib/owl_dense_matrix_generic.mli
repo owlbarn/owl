@@ -523,15 +523,17 @@ val load_txt : (float, 'a) kind -> string -> (float, 'a) t
 
 (** {6 Unary mathematical operations } *)
 
-val re : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
-(** If [x] is a matrix of complex numbers, [re x] returns all the real
-  components in a new matrix of the same shape as that of [x].
- *)
+val re_c2s : (Complex.t, Bigarray.complex32_elt) t -> (float, Bigarray.float32_elt) t
+(** [re_c2s x] returns all the real components of [x] in a new ndarray of same shape. *)
 
-val im : (Complex.t, 'a) t -> (float, Bigarray.float64_elt) t
-(** If [x] is a matrix of complex numbers, [re x] returns all the imaginary
-  components in a new matrix of the same shape as that of [x].
- *)
+val re_z2d : (Complex.t, Bigarray.complex64_elt) t -> (float, Bigarray.float64_elt) t
+(** [re_d2z x] returns all the real components of [x] in a new ndarray of same shape. *)
+
+val im_c2s : (Complex.t, Bigarray.complex32_elt) t -> (float, Bigarray.float32_elt) t
+(** [im_c2s x] returns all the imaginary components of [x] in a new ndarray of same shape. *)
+
+val im_z2d : (Complex.t, Bigarray.complex64_elt) t -> (float, Bigarray.float64_elt) t
+(** [im_d2z x] returns all the imaginary components of [x] in a new ndarray of same shape. *)
 
 val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (** [conj x] computes the conjugate of the elements in [x] and returns the
@@ -899,20 +901,28 @@ val ssqr_diff : ('a, 'b) t -> ('a, 'b) t -> 'a
 (** {6 Shorhand infix operators} *)
 
 val cast_s2d : (float, Bigarray.float32_elt) t -> (float, Bigarray.float64_elt) t
+(** [cast_s2d x] casts [x] from [float32] to [float64]. *)
 
 val cast_d2s : (float, Bigarray.float64_elt) t -> (float, Bigarray.float32_elt) t
+(** [cast_d2s x] casts [x] from [float64] to [float32]. *)
 
 val cast_c2z : (Complex.t, Bigarray.complex32_elt) t -> (Complex.t, Bigarray.complex64_elt) t
+(** [cast_c2z x] casts [x] from [complex32] to [complex64]. *)
 
 val cast_z2c : (Complex.t, Bigarray.complex64_elt) t -> (Complex.t, Bigarray.complex32_elt) t
+(** [cast_z2c x] casts [x] from [complex64] to [complex32]. *)
 
 val cast_s2c : (float, Bigarray.float32_elt) t -> (Complex.t, Bigarray.complex32_elt) t
+(** [cast_s2c x] casts [x] from [float32] to [complex32]. *)
 
 val cast_d2z : (float, Bigarray.float64_elt) t -> (Complex.t, Bigarray.complex64_elt) t
+(** [cast_d2z x] casts [x] from [float64] to [complex64]. *)
 
 val cast_s2z : (float, Bigarray.float32_elt) t -> (Complex.t, Bigarray.complex64_elt) t
+(** [cast_s2z x] casts [x] from [float32] to [complex64]. *)
 
 val cast_d2c : (float, Bigarray.float64_elt) t -> (Complex.t, Bigarray.complex32_elt) t
+(** [cast_d2c x] casts [x] from [float64] to [complex32]. *)
 
 
 (** {6 Shorhand infix operators} *)

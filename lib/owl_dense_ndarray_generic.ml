@@ -1013,14 +1013,24 @@ let load k f = Owl_utils.marshal_from_file f
 
 (* math operations. code might be verbose for performance concern. *)
 
-let re x =
-  let y = empty Float64 (shape x) in
-  iteri (fun i c -> set y i Complex.(c.re) ) x;
+let re_c2s x =
+  let y = empty Float32 (shape x) in
+  _owl_re_c2s (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
   y
 
-let im x =
+let re_z2d x =
   let y = empty Float64 (shape x) in
-  iteri (fun i c -> set y i Complex.(c.im) ) x;
+  _owl_re_z2d (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  y
+
+let im_c2s x =
+  let y = empty Float32 (shape x) in
+  _owl_im_c2s (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  y
+
+let im_z2d x =
+  let y = empty Float64 (shape x) in
+  _owl_im_z2d (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
   y
 
 let conj x = map Complex.conj x

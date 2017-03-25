@@ -696,17 +696,17 @@ let meshup x y =
   let y = map_by_row yn (fun _ -> y) (empty k xn yn) in
   x, transpose y
 
+
 (* unary matrix operation *)
 
-let re x =
-  let y = to_ndarray x in
-  let y = Owl_dense_ndarray_generic.re y in
-  of_ndarray y
+let re_c2s x = x |> to_ndarray |> Owl_dense_ndarray_generic.re_c2s |> of_ndarray
 
-let im x =
-  let y = to_ndarray x in
-  let y = Owl_dense_ndarray_generic.im y in
-  of_ndarray y
+let re_z2d x = x |> to_ndarray |> Owl_dense_ndarray_generic.re_z2d |> of_ndarray
+
+let im_c2s x = x |> to_ndarray |> Owl_dense_ndarray_generic.im_c2s |> of_ndarray
+
+let im_z2d x = x |> to_ndarray |> Owl_dense_ndarray_generic.im_z2d |> of_ndarray
+
 
 (* TODO: optimise *)
 let conj x = map Complex.conj x

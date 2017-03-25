@@ -1151,6 +1151,34 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN3(X) X->r = exp(xr * log_base); X->i = exp(xi * log_base); xr = ar + i * hr; xi = ai + i * hi
 #include "owl_dense_common_vec_map.c"
 
+// re
+
+#define FUN14 re_c2s
+#define NUMBER complex_float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = X->r
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 re_z2d
+#define NUMBER complex_double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = X->r
+#include "owl_dense_common_vec_map.c"
+
+// im
+
+#define FUN14 im_c2s
+#define NUMBER complex_float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = X->i
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 im_z2d
+#define NUMBER complex_double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = X->i
+#include "owl_dense_common_vec_map.c"
+
 // cast functions
 
 #define FUN14 cast_s2d

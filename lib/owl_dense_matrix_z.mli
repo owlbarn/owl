@@ -285,10 +285,8 @@ val load : string -> mat
 (** {6 Unary mathematical operations } *)
 
 val re : mat -> Owl_dense_matrix_d.mat
-(** [re x] returns the real parts of all the elements in [x] as a separate matrix. *)
 
 val im : mat -> Owl_dense_matrix_d.mat
-(** [re x] returns the complex parts of all the elements in [x] as a separate matrix. *)
 
 val conj : mat -> mat
 
