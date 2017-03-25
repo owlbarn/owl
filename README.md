@@ -136,6 +136,13 @@ R0  0   1   2   3   4   5
 val x : Owl_dense_matrix_d.mat =
 ```
 
+The created matrices can be casted into other number types easily. For example the following code casts a `float32` matrix `x` into `complex64` matrix `y`.
+
+```ocaml
+let x = Dense.Matrix.S.uniform 3 3;;
+let y = Dense.Matrix.Generic.cast_s2z x;;
+```
+
 Matrices can be saved to and loaded from a file.
 
 ```ocaml
