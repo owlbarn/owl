@@ -30,8 +30,6 @@ CAMLprim value FUN3(value vN, value vX)
   start_x = X_data;
   stop_x = start_x + N;
 
-  int r = 0;
-
   while (start_x != stop_x) {
     NUMBER x = *start_x;
     *start_x = (MAPFN(x));
@@ -40,7 +38,7 @@ CAMLprim value FUN3(value vN, value vX)
 
   caml_leave_blocking_section();  /* Disallow other threads */
 
-  CAMLreturn(Val_int(r));
+  CAMLreturn(Val_unit);
 }
 
 #endif /* FUN3 */
@@ -71,8 +69,6 @@ CAMLprim value FUN4(value vN, value vX, value vY)
   stop_x = start_x + N;
   start_y = Y_data;
 
-  int r = 1;
-
   while (start_x != stop_x) {
     NUMBER x = *start_x;
     *start_y = (MAPFN(x));
@@ -83,7 +79,7 @@ CAMLprim value FUN4(value vN, value vX, value vY)
 
   caml_leave_blocking_section();  /* Disallow other threads */
 
-  CAMLreturn(Val_int(r));
+  CAMLreturn(Val_unit);
 }
 
 #endif /* FUN4 */
@@ -188,8 +184,6 @@ CAMLprim value FUN14(value vN, value vX, value vY)
   stop_x = start_x + N;
   start_y = Y_data;
 
-  int r = 1;
-
   while (start_x != stop_x) {
     MAPFN(start_x, start_y);
     start_x += 1;
@@ -198,7 +192,7 @@ CAMLprim value FUN14(value vN, value vX, value vY)
 
   caml_leave_blocking_section();  /* Disallow other threads */
 
-  CAMLreturn(Val_int(r));
+  CAMLreturn(Val_unit);
 }
 
 #endif /* FUN14 */

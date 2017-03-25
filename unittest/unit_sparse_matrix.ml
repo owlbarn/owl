@@ -3,7 +3,7 @@
   *)
 
 open Bigarray
-module M = Owl_sparse_matrix
+module M = Owl_sparse_matrix_generic
 
 (* make testable *)
 let matrix = Alcotest.testable (fun p x -> ()) M.is_equal

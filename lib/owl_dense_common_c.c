@@ -1151,4 +1151,8 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN3(X) X->r = exp(xr * log_base); X->i = exp(xi * log_base); xr = ar + i * hr; xi = ai + i * hi
 #include "owl_dense_common_vec_map.c"
 
+// cast functions
+
+
+
 //////////////////// function templates ends ////////////////////

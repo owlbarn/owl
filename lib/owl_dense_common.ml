@@ -197,6 +197,7 @@ type ('a, 'b) owl_vec_op05 = int -> 'a -> ('a, 'b) owl_vec -> 'a
 type ('a, 'b) owl_vec_op06 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a
 type ('a, 'b) owl_vec_op07 = int -> 'a -> 'a -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_vec_op08 = int -> float -> 'a -> 'a -> ('a, 'b) owl_vec -> unit
+type ('a, 'b) owl_vec_op09 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
@@ -376,12 +377,12 @@ let _owl_max_i : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
   | Float64   -> owl_real_double_max_i
   | _         -> failwith "_owl_max_i: unsupported operation"
 
-external owl_real_float_neg : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_neg"
-external owl_real_double_neg : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_neg"
-external owl_complex_float_neg : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_float_neg"
-external owl_complex_double_neg : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_double_neg"
+external owl_real_float_neg : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_neg"
+external owl_real_double_neg : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_neg"
+external owl_complex_float_neg : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_neg"
+external owl_complex_double_neg : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_neg"
 
-let _owl_neg : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_neg : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_neg l x y
   | Float64   -> owl_real_double_neg l x y
@@ -389,325 +390,325 @@ let _owl_neg : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
   | Complex64 -> owl_complex_double_neg l x y
   | _         -> failwith "_owl_neg: unsupported operation"
 
-external owl_real_float_reci : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_reci"
-external owl_real_double_reci : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_reci"
+external owl_real_float_reci : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_reci"
+external owl_real_double_reci : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_reci"
 
-let _owl_reci : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_reci : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_reci l x y
   | Float64   -> owl_real_double_reci l x y
   | _         -> failwith "_owl_reci: unsupported operation"
 
-external owl_real_float_abs : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_abs"
-external owl_real_double_abs : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_abs"
+external owl_real_float_abs : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_abs"
+external owl_real_double_abs : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_abs"
 
-let _owl_abs : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_abs : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_abs l x y
   | Float64   -> owl_real_double_abs l x y
   | _         -> failwith "_owl_abs: unsupported operation"
 
-external owl_real_float_signum : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_signum"
-external owl_real_double_signum : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_signum"
+external owl_real_float_signum : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_signum"
+external owl_real_double_signum : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_signum"
 
-let _owl_signum : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_signum : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_signum l x y
   | Float64   -> owl_real_double_signum l x y
   | _         -> failwith "_owl_signum: unsupported operation"
 
-external owl_real_float_sqr : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_sqr"
-external owl_real_double_sqr : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_sqr"
+external owl_real_float_sqr : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_sqr"
+external owl_real_double_sqr : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_sqr"
 
-let _owl_sqr : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_sqr : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_sqr l x y
   | Float64   -> owl_real_double_sqr l x y
   | _         -> failwith "_owl_sqr: unsupported operation"
 
-external owl_real_float_sqrt : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_sqrt"
-external owl_real_double_sqrt : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_sqrt"
+external owl_real_float_sqrt : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_sqrt"
+external owl_real_double_sqrt : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_sqrt"
 
-let _owl_sqrt : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_sqrt : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_sqrt l x y
   | Float64   -> owl_real_double_sqrt l x y
   | _         -> failwith "_owl_sqrt: unsupported operation"
 
-external owl_real_float_cbrt : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_cbrt"
-external owl_real_double_cbrt : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_cbrt"
+external owl_real_float_cbrt : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_cbrt"
+external owl_real_double_cbrt : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_cbrt"
 
-let _owl_cbrt : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_cbrt : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_cbrt l x y
   | Float64   -> owl_real_double_cbrt l x y
   | _         -> failwith "_owl_cbrt: unsupported operation"
 
-external owl_real_float_exp : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_exp"
-external owl_real_double_exp : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_exp"
+external owl_real_float_exp : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_exp"
+external owl_real_double_exp : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_exp"
 
-let _owl_exp : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_exp : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_exp l x y
   | Float64   -> owl_real_double_exp l x y
   | _         -> failwith "_owl_exp: unsupported operation"
 
-external owl_real_float_exp2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_exp2"
-external owl_real_double_exp2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_exp2"
+external owl_real_float_exp2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_exp2"
+external owl_real_double_exp2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_exp2"
 
-let _owl_exp2 : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_exp2 : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_exp2 l x y
   | Float64   -> owl_real_double_exp2 l x y
   | _         -> failwith "_owl_exp2: unsupported operation"
 
-external owl_real_float_expm1 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_expm1"
-external owl_real_double_expm1 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_expm1"
+external owl_real_float_expm1 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_expm1"
+external owl_real_double_expm1 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_expm1"
 
-let _owl_expm1 : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_expm1 : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_expm1 l x y
   | Float64   -> owl_real_double_expm1 l x y
   | _         -> failwith "_owl_expm1: unsupported operation"
 
-external owl_real_float_log : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_log"
-external owl_real_double_log : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_log"
+external owl_real_float_log : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_log"
+external owl_real_double_log : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_log"
 
-let _owl_log : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_log : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_log l x y
   | Float64   -> owl_real_double_log l x y
   | _         -> failwith "_owl_log: unsupported operation"
 
-external owl_real_float_log10 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_log10"
-external owl_real_double_log10 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_log10"
+external owl_real_float_log10 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_log10"
+external owl_real_double_log10 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_log10"
 
-let _owl_log10 : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_log10 : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_log10 l x y
   | Float64   -> owl_real_double_log10 l x y
   | _         -> failwith "_owl_log10: unsupported operation"
 
-external owl_real_float_log2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_log2"
-external owl_real_double_log2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_log2"
+external owl_real_float_log2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_log2"
+external owl_real_double_log2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_log2"
 
-let _owl_log2 : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_log2 : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_log2 l x y
   | Float64   -> owl_real_double_log2 l x y
   | _         -> failwith "_owl_log2: unsupported operation"
 
-external owl_real_float_log1p : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_log1p"
-external owl_real_double_log1p : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_log1p"
+external owl_real_float_log1p : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_log1p"
+external owl_real_double_log1p : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_log1p"
 
-let _owl_log1p : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_log1p : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_log1p l x y
   | Float64   -> owl_real_double_log1p l x y
   | _         -> failwith "_owl_log1p: unsupported operation"
 
-external owl_real_float_sin : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_sin"
-external owl_real_double_sin : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_sin"
+external owl_real_float_sin : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_sin"
+external owl_real_double_sin : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_sin"
 
-let _owl_sin : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_sin : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_sin l x y
   | Float64   -> owl_real_double_sin l x y
   | _         -> failwith "_owl_sin: unsupported operation"
 
-external owl_real_float_cos : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_cos"
-external owl_real_double_cos : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_cos"
+external owl_real_float_cos : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_cos"
+external owl_real_double_cos : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_cos"
 
-let _owl_cos : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_cos : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_cos l x y
   | Float64   -> owl_real_double_cos l x y
   | _         -> failwith "_owl_cos: unsupported operation"
 
-external owl_real_float_tan : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_tan"
-external owl_real_double_tan : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_tan"
+external owl_real_float_tan : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_tan"
+external owl_real_double_tan : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_tan"
 
-let _owl_tan : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_tan : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_tan l x y
   | Float64   -> owl_real_double_tan l x y
   | _         -> failwith "_owl_tan: unsupported operation"
 
-external owl_real_float_asin : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_asin"
-external owl_real_double_asin : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_asin"
+external owl_real_float_asin : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_asin"
+external owl_real_double_asin : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_asin"
 
-let _owl_asin : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_asin : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_asin l x y
   | Float64   -> owl_real_double_asin l x y
   | _         -> failwith "_owl_asin: unsupported operation"
 
-external owl_real_float_acos : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_acos"
-external owl_real_double_acos : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_acos"
+external owl_real_float_acos : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_acos"
+external owl_real_double_acos : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_acos"
 
-let _owl_acos : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_acos : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_acos l x y
   | Float64   -> owl_real_double_acos l x y
   | _         -> failwith "_owl_acos: unsupported operation"
 
-external owl_real_float_atan : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_atan"
-external owl_real_double_atan : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_atan"
+external owl_real_float_atan : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_atan"
+external owl_real_double_atan : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_atan"
 
-let _owl_atan : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_atan : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_atan l x y
   | Float64   -> owl_real_double_atan l x y
   | _         -> failwith "_owl_atan: unsupported operation"
 
-external owl_real_float_sinh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_sinh"
-external owl_real_double_sinh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_sinh"
+external owl_real_float_sinh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_sinh"
+external owl_real_double_sinh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_sinh"
 
-let _owl_sinh : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_sinh : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_sinh l x y
   | Float64   -> owl_real_double_sinh l x y
   | _         -> failwith "_owl_sinh: unsupported operation"
 
-external owl_real_float_cosh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_cosh"
-external owl_real_double_cosh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_cosh"
+external owl_real_float_cosh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_cosh"
+external owl_real_double_cosh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_cosh"
 
-let _owl_cosh : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_cosh : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_cosh l x y
   | Float64   -> owl_real_double_cosh l x y
   | _         -> failwith "_owl_cosh: unsupported operation"
 
-external owl_real_float_tanh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_tanh"
-external owl_real_double_tanh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_tanh"
+external owl_real_float_tanh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_tanh"
+external owl_real_double_tanh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_tanh"
 
-let _owl_tanh : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_tanh : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_tanh l x y
   | Float64   -> owl_real_double_tanh l x y
   | _         -> failwith "_owl_tanh: unsupported operation"
 
-external owl_real_float_asinh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_asinh"
-external owl_real_double_asinh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_asinh"
+external owl_real_float_asinh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_asinh"
+external owl_real_double_asinh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_asinh"
 
-let _owl_asinh : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_asinh : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_asinh l x y
   | Float64   -> owl_real_double_asinh l x y
   | _         -> failwith "_owl_asinh: unsupported operation"
 
-external owl_real_float_acosh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_acosh"
-external owl_real_double_acosh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_acosh"
+external owl_real_float_acosh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_acosh"
+external owl_real_double_acosh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_acosh"
 
-let _owl_acosh : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_acosh : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_acosh l x y
   | Float64   -> owl_real_double_acosh l x y
   | _         -> failwith "_owl_acosh: unsupported operation"
 
-external owl_real_float_atanh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_atanh"
-external owl_real_double_atanh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_atanh"
+external owl_real_float_atanh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_atanh"
+external owl_real_double_atanh : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_atanh"
 
-let _owl_atanh : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_atanh : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_atanh l x y
   | Float64   -> owl_real_double_atanh l x y
   | _         -> failwith "_owl_atanh: unsupported operation"
 
-external owl_real_float_floor : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_floor"
-external owl_real_double_floor : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_floor"
+external owl_real_float_floor : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_floor"
+external owl_real_double_floor : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_floor"
 
-let _owl_floor : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_floor : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_floor l x y
   | Float64   -> owl_real_double_floor l x y
   | _         -> failwith "_owl_floor: unsupported operation"
 
-external owl_real_float_ceil : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_ceil"
-external owl_real_double_ceil : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_ceil"
+external owl_real_float_ceil : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_ceil"
+external owl_real_double_ceil : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_ceil"
 
-let _owl_ceil : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_ceil : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_ceil l x y
   | Float64   -> owl_real_double_ceil l x y
   | _         -> failwith "_owl_ceil: unsupported operation"
 
-external owl_real_float_round : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_round"
-external owl_real_double_round : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_round"
+external owl_real_float_round : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_round"
+external owl_real_double_round : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_round"
 
-let _owl_round : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_round : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_round l x y
   | Float64   -> owl_real_double_round l x y
   | _         -> failwith "_owl_round: unsupported operation"
 
-external owl_real_float_trunc : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_trunc"
-external owl_real_double_trunc : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_trunc"
+external owl_real_float_trunc : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_trunc"
+external owl_real_double_trunc : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_trunc"
 
-let _owl_trunc : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_trunc : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_trunc l x y
   | Float64   -> owl_real_double_trunc l x y
   | _         -> failwith "_owl_trunc: unsupported operation"
 
-external owl_real_float_erf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_erf"
-external owl_real_double_erf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_erf"
+external owl_real_float_erf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_erf"
+external owl_real_double_erf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_erf"
 
-let _owl_erf : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_erf : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_erf l x y
   | Float64   -> owl_real_double_erf l x y
   | _         -> failwith "_owl_erf: unsupported operation"
 
-external owl_real_float_erfc : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_erfc"
-external owl_real_double_erfc : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_erfc"
+external owl_real_float_erfc : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_erfc"
+external owl_real_double_erfc : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_erfc"
 
-let _owl_erfc : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_erfc : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_erfc l x y
   | Float64   -> owl_real_double_erfc l x y
   | _         -> failwith "_owl_erfc: unsupported operation"
 
-external owl_real_float_logistic : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_logistic"
-external owl_real_double_logistic : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_logistic"
+external owl_real_float_logistic : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_logistic"
+external owl_real_double_logistic : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_logistic"
 
-let _owl_logistic : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_logistic : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_logistic l x y
   | Float64   -> owl_real_double_logistic l x y
   | _         -> failwith "_owl_logistic: unsupported operation"
 
-external owl_real_float_sigmoid : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_sigmoid"
-external owl_real_double_sigmoid : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_sigmoid"
+external owl_real_float_sigmoid : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_sigmoid"
+external owl_real_double_sigmoid : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_sigmoid"
 
-let _owl_sigmoid : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_sigmoid : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_sigmoid l x y
   | Float64   -> owl_real_double_sigmoid l x y
   | _         -> failwith "_owl_sigmoid: unsupported operation"
 
-external owl_real_float_relu : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_float_relu"
-external owl_real_double_relu : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_double_relu"
+external owl_real_float_relu : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_relu"
+external owl_real_double_relu : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_relu"
 
-let _owl_relu : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_relu : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_relu l x y
   | Float64   -> owl_real_double_relu l x y
   | _         -> failwith "_owl_relu: unsupported operation"
 
-external owl_real_float_softplus : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_float_softplus"
-external owl_real_double_softplus : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_double_softplus"
+external owl_real_float_softplus : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_softplus"
+external owl_real_double_softplus : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_softplus"
 
-let _owl_softplus : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_softplus : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_softplus l x y
   | Float64   -> owl_real_double_softplus l x y
   | _         -> failwith "_owl_softplus: unsupported operation"
 
-external owl_real_float_softsign : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_float_softsign"
-external owl_real_double_softsign : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> int = "real_double_softsign"
+external owl_real_float_softsign : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_softsign"
+external owl_real_double_softsign : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_softsign"
 
-let _owl_softsign : type a b. (a, b) kind -> (a, b) owl_vec_op00 = fun k l x y ->
+let _owl_softsign : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_softsign l x y
   | Float64   -> owl_real_double_softsign l x y

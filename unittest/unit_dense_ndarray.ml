@@ -3,7 +3,7 @@
   *)
 
 open Bigarray
-module M = Owl_dense_ndarray
+module M = Owl_dense_ndarray_generic
 
 (* make testable *)
 let ndarray = Alcotest.testable (fun p (x : (float, float64_elt) M.t) -> ()) M.is_equal
