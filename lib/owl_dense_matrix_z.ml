@@ -66,8 +66,6 @@ let uniform_int ?(a=0) ?(b=99) m n =
 
 let abs x = abs_z2d x
 
-let abs2 x = map (fun y -> Complex.({re = norm2 y; im = 0.})) x
-
 let re x = re_z2d x
 
 let im x = im_z2d x
