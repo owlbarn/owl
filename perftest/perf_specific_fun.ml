@@ -97,6 +97,9 @@ let test_23 _ =
 
 let test_24 _ = Owl_dense_matrix_d.linspace 0. 100000000. 100000000
 
-let _ = Perf_common.test_op_each c test_24
+let test_25 _ = Owl_dense_matrix_generic.cast_d2s x
+
+let _ = Perf_common.test_op_each c test_25
+
 
 (* ends here *)

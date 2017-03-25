@@ -41,8 +41,7 @@ module DAC_DAZ = struct
 
   let lift src =
     let src = unpack_src src in
-    let dst = M.(empty dst_typ (shape src)) in
-    M.iteri (fun i a -> M.set dst i a) src;
+    let dst = M.cast_c2z src in
     pack_dst dst
 
 end
@@ -59,9 +58,7 @@ module DMS_DMD = struct
 
   let lift src =
     let src = unpack_src src in
-    let m, n = M.shape src in
-    let dst = M.(empty dst_typ m n) in
-    M.iteri (fun i j a -> M.set dst i j a) src;
+    let dst = M.cast_s2d src in
     pack_dst dst
 
 end
@@ -78,9 +75,7 @@ module DMC_DMZ = struct
 
   let lift src =
     let src = unpack_src src in
-    let m, n = M.shape src in
-    let dst = M.(empty dst_typ m n) in
-    M.iteri (fun i j a -> M.set dst i j a) src;
+    let dst = M.cast_c2z src in
     pack_dst dst
 
 end
@@ -106,8 +101,7 @@ module DAS_DAC = struct
 
   let lift src =
     let src = unpack_src src in
-    let dst = M.(empty dst_typ (shape src)) in
-    M.iteri (fun i a -> M.set dst i Complex.({re=a; im=0.})) src;
+    let dst = M.cast_s2c src in
     pack_dst dst
 
 end
@@ -124,8 +118,7 @@ module DAD_DAZ = struct
 
   let lift src =
     let src = unpack_src src in
-    let dst = M.(empty dst_typ (shape src)) in
-    M.iteri (fun i a -> M.set dst i Complex.({re=a; im=0.})) src;
+    let dst = M.cast_d2z src in
     pack_dst dst
 
 end
@@ -142,9 +135,7 @@ module DMS_DMC = struct
 
   let lift src =
     let src = unpack_src src in
-    let m, n = M.shape src in
-    let dst = M.(empty dst_typ m n) in
-    M.iteri (fun i j a -> M.set dst i j Complex.({re=a; im=0.})) src;
+    let dst = M.cast_s2c src in
     pack_dst dst
 
 end
@@ -161,9 +152,7 @@ module DMD_DMZ = struct
 
   let lift src =
     let src = unpack_src src in
-    let m, n = M.shape src in
-    let dst = M.(empty dst_typ m n) in
-    M.iteri (fun i j a -> M.set dst i j Complex.({re=a; im=0.})) src;
+    let dst = M.cast_d2z src in
     pack_dst dst
 
 end
@@ -173,14 +162,34 @@ end
 
 module DAS_DAZ = struct
 
-  let lift src = src |> DAS_DAD.lift |> DAD_DAZ.lift
+  module M = Owl_dense_ndarray_generic
+
+  let src_typ = Float32
+  let dst_typ = Complex64
+  let unpack_src = unpack_das
+  let pack_dst = pack_daz
+
+  let lift src =
+    let src = unpack_src src in
+    let dst = M.cast_s2z src in
+    pack_dst dst
 
 end
 
 
 module DMS_DMZ = struct
 
-  let lift src = src |> DMS_DMD.lift |> DMD_DMZ.lift
+  module M = Owl_dense_matrix_generic
+
+  let src_typ = Float32
+  let dst_typ = Complex64
+  let unpack_src = unpack_dms
+  let pack_dst = pack_dmz
+
+  let lift src =
+    let src = unpack_src src in
+    let dst = M.cast_s2z src in
+    pack_dst dst
 
 end
 
