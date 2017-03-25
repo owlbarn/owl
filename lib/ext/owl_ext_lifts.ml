@@ -24,8 +24,7 @@ module DAS_DAD = struct
 
   let lift src =
     let src = unpack_src src in
-    let dst = M.(empty dst_typ (shape src)) in
-    M.iteri (fun i a -> M.set dst i a) src;
+    let dst = M.cast_s2d src in
     pack_dst dst
 
 end
