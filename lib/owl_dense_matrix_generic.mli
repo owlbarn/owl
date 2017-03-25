@@ -898,6 +898,25 @@ val ssqr_diff : ('a, 'b) t -> ('a, 'b) t -> 'a
 
 (** {6 Shorhand infix operators} *)
 
+val cast_s2d : (float, Bigarray.float32_elt) t -> (float, Bigarray.float64_elt) t
+
+val cast_d2s : (float, Bigarray.float64_elt) t -> (float, Bigarray.float32_elt) t
+
+val cast_c2z : (Complex.t, Bigarray.complex32_elt) t -> (Complex.t, Bigarray.complex64_elt) t
+
+val cast_z2c : (Complex.t, Bigarray.complex64_elt) t -> (Complex.t, Bigarray.complex32_elt) t
+
+val cast_s2c : (float, Bigarray.float32_elt) t -> (Complex.t, Bigarray.complex32_elt) t
+
+val cast_d2z : (float, Bigarray.float64_elt) t -> (Complex.t, Bigarray.complex64_elt) t
+
+val cast_s2z : (float, Bigarray.float32_elt) t -> (Complex.t, Bigarray.complex64_elt) t
+
+val cast_d2c : (float, Bigarray.float64_elt) t -> (Complex.t, Bigarray.complex32_elt) t
+
+
+(** {6 Shorhand infix operators} *)
+
 val ( >> ) : ('a, 'b) t -> ('a, 'b) t -> unit
 (** Shorthand for [copy_to x y], i.e., x >> y *)
 

@@ -1153,6 +1153,53 @@ value cp_two_doubles(double d0, double d1)
 
 // cast functions
 
+#define FUN14 cast_s2d
+#define NUMBER float
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = (double) (*X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 cast_d2s
+#define NUMBER double
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = (float) (*X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 cast_c2z
+#define NUMBER complex_float
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = (double) X->r; Y->i = (double) X->i
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 cast_z2c
+#define NUMBER complex_double
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = (float) X->r; Y->i = (float) X->i
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 cast_s2c
+#define NUMBER float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = *X; Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 cast_d2z
+#define NUMBER double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = *X; Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 cast_s2z
+#define NUMBER float
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = (double) *X; Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 cast_d2c
+#define NUMBER double
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = (float) *X; Y->i = 0.
+#include "owl_dense_common_vec_map.c"
 
 
 //////////////////// function templates ends ////////////////////

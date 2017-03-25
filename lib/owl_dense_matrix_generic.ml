@@ -990,6 +990,25 @@ let ssqr_diff x1 x2 =
   Owl_dense_ndarray_generic.ssqr_diff x1 x2
 
 
+(* cast functions *)
+
+let cast_s2d x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_s2d |> of_ndarray
+
+let cast_d2s x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_d2s |> of_ndarray
+
+let cast_c2z x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_c2z |> of_ndarray
+
+let cast_z2c x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_z2c |> of_ndarray
+
+let cast_s2c x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_s2c |> of_ndarray
+
+let cast_d2z x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_d2z |> of_ndarray
+
+let cast_s2z x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_s2z |> of_ndarray
+
+let cast_d2c x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_d2c |> of_ndarray
+
+
 (* shorhand infix operators *)
 
 let ( @= ) = concat_vertical

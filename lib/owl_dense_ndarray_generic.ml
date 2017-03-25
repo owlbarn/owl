@@ -1139,6 +1139,47 @@ let squeeze ?(axis=[||]) x =
   in
   reshape x s
 
+(* cast functions *)
+
+let cast_s2d x =
+  let y = empty Float64 (shape x) in
+  _owl_cast_s2d (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  y
+
+let cast_d2s x =
+  let y = empty Float32 (shape x) in
+  _owl_cast_d2s (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  y
+
+let cast_c2z x =
+  let y = empty Complex64 (shape x) in
+  _owl_cast_c2z (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  y
+
+let cast_z2c x =
+  let y = empty Complex32 (shape x) in
+  _owl_cast_z2c (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  y
+
+let cast_s2c x =
+  let y = empty Complex32 (shape x) in
+  _owl_cast_s2c (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  y
+
+let cast_d2z x =
+  let y = empty Complex64 (shape x) in
+  _owl_cast_d2z (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  y
+
+let cast_s2z x =
+  let y = empty Complex64 (shape x) in
+  _owl_cast_s2z (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  y
+
+let cast_d2c x =
+  let y = empty Complex32 (shape x) in
+  _owl_cast_d2c (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  y
 
 (* TODO *)
 

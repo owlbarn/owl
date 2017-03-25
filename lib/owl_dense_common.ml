@@ -885,5 +885,15 @@ let _owl_copy : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
     Owl_cblas.zcopy n x incx y incy
   | _ -> failwith "_owl_copy: unsupported operation"
 
+external _owl_cast_s2d : int -> (float, float32_elt) owl_vec -> (float, float64_elt) owl_vec -> unit = "cast_s2d"
+external _owl_cast_d2s : int -> (float, float64_elt) owl_vec -> (float, float32_elt) owl_vec -> unit = "cast_d2s"
+external _owl_cast_c2z : int -> (Complex.t, complex32_elt) owl_vec -> (Complex.t, complex64_elt) owl_vec -> unit = "cast_c2z"
+external _owl_cast_z2c : int -> (Complex.t, complex64_elt) owl_vec -> (Complex.t, complex32_elt) owl_vec -> unit = "cast_z2c"
+external _owl_cast_s2c : int -> (float, float32_elt) owl_vec -> (Complex.t, complex32_elt) owl_vec -> unit = "cast_s2c"
+external _owl_cast_d2z : int -> (float, float64_elt) owl_vec -> (Complex.t, complex64_elt) owl_vec -> unit = "cast_d2z"
+external _owl_cast_s2z : int -> (float, float32_elt) owl_vec -> (Complex.t, complex64_elt) owl_vec -> unit = "cast_s2z"
+external _owl_cast_d2c : int -> (float, float64_elt) owl_vec -> (Complex.t, complex32_elt) owl_vec -> unit = "cast_d2c"
+
+
 
 (* ends here *)
