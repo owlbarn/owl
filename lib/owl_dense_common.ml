@@ -401,6 +401,8 @@ let _owl_reci : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
 
 external owl_real_float_abs : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_abs"
 external owl_real_double_abs : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_abs"
+external owl_complex_float_abs : int -> (Complex.t, complex32_elt) owl_vec -> (float, float32_elt) owl_vec -> unit = "complex_float_abs"
+external owl_complex_double_abs : int -> (Complex.t, complex64_elt) owl_vec -> (float, float64_elt) owl_vec -> unit = "complex_double_abs"
 
 let _owl_abs : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with

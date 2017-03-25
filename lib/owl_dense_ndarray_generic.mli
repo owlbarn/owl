@@ -397,6 +397,12 @@ val minmax_i : (float, 'a) t -> (float * (int array)) * (float * (int array))
 val abs : (float, 'a) t -> (float, 'a) t
 (** [abs x] returns the absolute value of all elements in [x] in a new ndarray. *)
 
+val abs_c2s : (Complex.t, Bigarray.complex32_elt) t -> (float, Bigarray.float32_elt) t
+(** [abs_c2s x] is similar to [abs] but takes [complex32] as input. *)
+
+val abs_z2d : (Complex.t, Bigarray.complex64_elt) t -> (float, Bigarray.float64_elt) t
+(** [abs_z2d x] is similar to [abs] but takes [complex64] as input. *)
+
 val neg : ('a, 'b) t -> ('a, 'b) t
 (** [neg x] negates the elements in [x] and returns the result in a new ndarray. *)
 

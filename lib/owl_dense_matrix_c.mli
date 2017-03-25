@@ -306,7 +306,7 @@ val average_rows : mat -> mat
 
 val average_cols : mat -> mat
 
-val abs : mat -> mat
+val abs : mat -> Owl_dense_matrix_s.mat
 
 val abs2 : mat -> mat
 

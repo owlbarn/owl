@@ -215,6 +215,20 @@ let abs x =
   let _ = _owl_abs (kind x) (numel y) src dst in
   y
 
+let abs_c2s x =
+  let y = empty Float32 (shape x) in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = owl_complex_float_abs (numel y) src dst in
+  y
+
+let abs_z2d x =
+  let y = empty Float64 (shape x) in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = owl_complex_double_abs (numel y) src dst in
+  y
+
 let neg x =
   let y = clone x in
   let src = flatten x |> array1_of_genarray in
