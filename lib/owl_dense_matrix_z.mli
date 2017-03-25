@@ -308,6 +308,8 @@ val average_cols : mat -> mat
 
 val abs : mat -> Owl_dense_matrix_d.mat
 
+val conj : mat -> mat
+
 val neg : mat -> mat
 
 val reci : mat -> mat

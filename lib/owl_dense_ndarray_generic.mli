@@ -360,11 +360,6 @@ val im_c2s : (Complex.t, Bigarray.complex32_elt) t -> (float, Bigarray.float32_e
 val im_z2d : (Complex.t, Bigarray.complex64_elt) t -> (float, Bigarray.float64_elt) t
 (** [im_d2z x] returns all the imaginary components of [x] in a new ndarray of same shape. *)
 
-val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
-(** [conj x] computes the conjugate of the elements in [x] and returns the
-  result in a new ndarray.
- *)
-
 val sum : ('a, 'b) t -> 'a
 (** [sum x] returns the sumtion of all elements in [x]. *)
 
@@ -402,6 +397,9 @@ val abs_c2s : (Complex.t, Bigarray.complex32_elt) t -> (float, Bigarray.float32_
 
 val abs_z2d : (Complex.t, Bigarray.complex64_elt) t -> (float, Bigarray.float64_elt) t
 (** [abs_z2d x] is similar to [abs] but takes [complex64] as input. *)
+
+val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
+(** [conj x] returns the conjugate of the complex [x]. *)
 
 val neg : ('a, 'b) t -> ('a, 'b) t
 (** [neg x] negates the elements in [x] and returns the result in a new ndarray. *)

@@ -229,6 +229,13 @@ let abs_z2d x =
   let _ = owl_complex_double_abs (numel y) src dst in
   y
 
+let conj x =
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_conj (kind x) (numel y) src dst in
+  y
+
 let neg x =
   let y = clone x in
   let src = flatten x |> array1_of_genarray in
@@ -1046,8 +1053,6 @@ let im_z2d x =
   let y = empty Float64 (shape x) in
   _owl_im_z2d (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
   y
-
-let conj x = map Complex.conj x
 
 let prod ?axis x =
   match axis with

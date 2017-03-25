@@ -606,6 +606,9 @@ val abs_c2s : (Complex.t, Bigarray.complex32_elt) t -> (float, Bigarray.float32_
 val abs_z2d : (Complex.t, Bigarray.complex64_elt) t -> (float, Bigarray.float64_elt) t
 (** [abs_z2d x] is similar to [abs] but takes [complex64] as input. *)
 
+val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
+(** [conj x] returns the conjugate of the complex [x]. *)
+
 val neg : ('a, 'b) t -> ('a, 'b) t
 (** [neg x] negates the elements in [x] and returns the result in a new matrix. *)
 

@@ -33,3 +33,7 @@ let logspace ?base a b n = M.logspace Complex32 a b n
 let load f = M.load Complex32 f
 
 let mmap fd ?pos shared dims = Genarray.map_file fd ?pos Complex32 c_layout shared dims
+
+(* specific functions for complex32 ndarray *)
+
+let abs x = abs_c2s x

@@ -726,6 +726,11 @@ let abs_z2d x =
   let y = Owl_dense_ndarray_generic.abs_z2d y in
   of_ndarray y
 
+let conj x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.conj y in
+  of_ndarray y
+
 let neg x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray_generic.neg y in
