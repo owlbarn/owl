@@ -225,17 +225,17 @@ val is_nonpositive : mat -> bool
 
 val is_nonnegative : mat -> bool
 
-val is_equal : mat -> mat -> bool
+val equal : mat -> mat -> bool
 
-val is_unequal : mat -> mat -> bool
+val not_equal : mat -> mat -> bool
 
-val is_greater : mat -> mat -> bool
+val greater : mat -> mat -> bool
 
-val is_smaller : mat -> mat -> bool
+val less : mat -> mat -> bool
 
-val equal_or_greater : mat -> mat -> bool
+val greater_equal : mat -> mat -> bool
 
-val equal_or_smaller : mat -> mat -> bool
+val less_equal : mat -> mat -> bool
 
 
 (** {6 Randomisation functions} *)

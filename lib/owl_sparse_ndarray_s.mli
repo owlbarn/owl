@@ -107,17 +107,17 @@ val is_nonpositive : arr -> bool
 
 val is_nonnegative : arr -> bool
 
-val is_equal : arr -> arr -> bool
+val equal : arr -> arr -> bool
 
-val is_unequal : arr -> arr -> bool
+val not_equal : arr -> arr -> bool
 
-val is_greater : arr -> arr -> bool
+val greater : arr -> arr -> bool
 
-val is_smaller : arr -> arr -> bool
+val less : arr -> arr -> bool
 
-val equal_or_greater : arr -> arr -> bool
+val greater_equal : arr -> arr -> bool
 
-val equal_or_smaller : arr -> arr -> bool
+val less_equal : arr -> arr -> bool
 
 
 (** {6 Input/Output and helper functions} *)

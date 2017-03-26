@@ -413,31 +413,31 @@ val average_cols : spmat -> spmat
 
 (** {6 Compare two matrices} *)
 
-val is_equal : spmat -> spmat -> bool
-(** [is_equal x y] returns [true] if two matrices [x] and [y] are equal. *)
+val equal : spmat -> spmat -> bool
+(** [equal x y] returns [true] if two matrices [x] and [y] are equal. *)
 
-val is_unequal : spmat -> spmat -> bool
-(** [is_unequal x y] returns [true] if there is at least one element in [x] is
+val not_equal : spmat -> spmat -> bool
+(** [not_equal x y] returns [true] if there is at least one element in [x] is
   not equal to that in [y].
  *)
 
-val is_greater : spmat -> spmat -> bool
-(** [is_greater x y] returns [true] if all the elements in [x] are greater than
+val greater : spmat -> spmat -> bool
+(** [greater x y] returns [true] if all the elements in [x] are greater than
   the corresponding elements in [y].
  *)
 
-val is_smaller : spmat -> spmat -> bool
-(** [is_smaller x y] returns [true] if all the elements in [x] are smaller than
+val less : spmat -> spmat -> bool
+(** [less x y] returns [true] if all the elements in [x] are smaller than
   the corresponding elements in [y].
  *)
 
-val equal_or_greater : spmat -> spmat -> bool
-(** [equal_or_greater x y] returns [true] if all the elements in [x] are not
+val greater_equal : spmat -> spmat -> bool
+(** [greater_equal x y] returns [true] if all the elements in [x] are not
   smaller than the corresponding elements in [y].
  *)
 
-val equal_or_smaller : spmat -> spmat -> bool
-(** [equal_or_smaller x y] returns [true] if all the elements in [x] are not
+val less_equal : spmat -> spmat -> bool
+(** [less_equal x y] returns [true] if all the elements in [x] are not
   greater than the corresponding elements in [y].
  *)
 
@@ -531,22 +531,22 @@ val ( $/ ) : float -> spmat -> spmat
 (** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
 
 val ( =@ ) : spmat -> spmat -> bool
-(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
+(** Shorthand for [equal x y], i.e., [x =@ y] *)
 
 val ( >@ ) : spmat -> spmat -> bool
-(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
+(** Shorthand for [greater x y], i.e., [x >@ y] *)
 
 val ( <@ ) : spmat -> spmat -> bool
-(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
+(** Shorthand for [less x y], i.e., [x <@ y] *)
 
 val ( <>@ ) : spmat -> spmat -> bool
-(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
+(** Shorthand for [not_equal x y], i.e., [x <>@ y] *)
 
 val ( >=@ ) : spmat -> spmat -> bool
-(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
+(** Shorthand for [greater_equal x y], i.e., [x >=@ y] *)
 
 val ( <=@ ) : spmat -> spmat -> bool
-(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
+(** Shorthand for [less_equal x y], i.e., [x <=@ y] *)
 
 val ( @@ ) : (float -> float) -> spmat -> spmat
 (** Shorthand for [map f x], i.e., f @@ x *)

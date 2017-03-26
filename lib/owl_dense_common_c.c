@@ -23,90 +23,90 @@ value cp_two_doubles(double d0, double d1)
 //////////////////// function templates starts ////////////////////
 
 
-// is_smaller
+// less
 
-#define FUN0 real_float_is_smaller
+#define FUN0 real_float_less
 #define NUMBER float
 #define STOPFN(X, Y) (X >= Y)
 #include "owl_dense_common_vec_cmp.c"
 
-#define FUN0 real_double_is_smaller
+#define FUN0 real_double_less
 #define NUMBER double
 #define STOPFN(X, Y) (X >= Y)
 #include "owl_dense_common_vec_cmp.c"
 
-#define FUN0 complex_float_is_smaller
+#define FUN0 complex_float_less
 #define NUMBER complex_float
 #define STOPFN(X, Y) (X.r >= Y.r || X.i >= Y.i)
 #include "owl_dense_common_vec_cmp.c"
 
-#define FUN0 complex_double_is_smaller
+#define FUN0 complex_double_less
 #define NUMBER complex_double
 #define STOPFN(X, Y) (X.r >= Y.r || X.i >= Y.i)
 #include "owl_dense_common_vec_cmp.c"
 
-// is_greater
+// greater
 
-#define FUN0 real_float_is_greater
+#define FUN0 real_float_greater
 #define NUMBER float
 #define STOPFN(X, Y) (X <= Y)
 #include "owl_dense_common_vec_cmp.c"
 
-#define FUN0 real_double_is_greater
+#define FUN0 real_double_greater
 #define NUMBER double
 #define STOPFN(X, Y) (X <= Y)
 #include "owl_dense_common_vec_cmp.c"
 
-#define FUN0 complex_float_is_greater
+#define FUN0 complex_float_greater
 #define NUMBER complex_float
 #define STOPFN(X, Y) (X.r <= Y.r || X.i <= Y.i)
 #include "owl_dense_common_vec_cmp.c"
 
-#define FUN0 complex_double_is_greater
+#define FUN0 complex_double_greater
 #define NUMBER complex_double
 #define STOPFN(X, Y) (X.r <= Y.r || X.i <= Y.i)
 #include "owl_dense_common_vec_cmp.c"
 
-// equal_or_smaller
+// less_equal
 
-#define FUN0 real_float_equal_or_smaller
+#define FUN0 real_float_less_equal
 #define NUMBER float
 #define STOPFN(X, Y) (X > Y)
 #include "owl_dense_common_vec_cmp.c"
 
-#define FUN0 real_double_equal_or_smaller
+#define FUN0 real_double_less_equal
 #define NUMBER double
 #define STOPFN(X, Y) (X > Y)
 #include "owl_dense_common_vec_cmp.c"
 
-#define FUN0 complex_float_equal_or_smaller
+#define FUN0 complex_float_less_equal
 #define NUMBER complex_float
 #define STOPFN(X, Y) (X.r > Y.r || X.i > Y.i)
 #include "owl_dense_common_vec_cmp.c"
 
-#define FUN0 complex_double_equal_or_smaller
+#define FUN0 complex_double_less_equal
 #define NUMBER complex_double
 #define STOPFN(X, Y) (X.r > Y.r || X.i > Y.i)
 #include "owl_dense_common_vec_cmp.c"
 
-// equal_or_greater
+// greater_equal
 
-#define FUN0 real_float_equal_or_greater
+#define FUN0 real_float_greater_equal
 #define NUMBER float
 #define STOPFN(X, Y) (X < Y)
 #include "owl_dense_common_vec_cmp.c"
 
-#define FUN0 real_double_equal_or_greater
+#define FUN0 real_double_greater_equal
 #define NUMBER double
 #define STOPFN(X, Y) (X < Y)
 #include "owl_dense_common_vec_cmp.c"
 
-#define FUN0 complex_float_equal_or_greater
+#define FUN0 complex_float_greater_equal
 #define NUMBER complex_float
 #define STOPFN(X, Y) (X.r < Y.r || X.i < Y.i)
 #include "owl_dense_common_vec_cmp.c"
 
-#define FUN0 complex_double_equal_or_greater
+#define FUN0 complex_double_greater_equal
 #define NUMBER complex_double
 #define STOPFN(X, Y) (X.r < Y.r || X.i < Y.i)
 #include "owl_dense_common_vec_cmp.c"

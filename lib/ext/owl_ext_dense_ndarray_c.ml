@@ -137,17 +137,17 @@ let is_nonpositive x = M.is_nonpositive (unpack_box x)
 
 let is_nonnegative x = M.is_nonnegative (unpack_box x)
 
-let is_equal x = M.is_equal (unpack_box x)
+let equal x = M.equal (unpack_box x)
 
-let is_unequal x = M.is_unequal (unpack_box x)
+let not_equal x = M.not_equal (unpack_box x)
 
-let is_greater x = M.is_greater (unpack_box x)
+let greater x = M.greater (unpack_box x)
 
-let is_smaller x = M.is_smaller (unpack_box x)
+let less x = M.less (unpack_box x)
 
-let equal_or_greater x = M.equal_or_greater (unpack_box x)
+let greater_equal x = M.greater_equal (unpack_box x)
 
-let equal_or_smaller x = M.equal_or_smaller (unpack_box x)
+let less_equal x = M.less_equal (unpack_box x)
 
 
 let print x = M.print (unpack_box x)

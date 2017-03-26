@@ -444,44 +444,44 @@ let is_nonpositive x =
   let y = to_ndarray x in
   Owl_dense_ndarray_generic.is_nonpositive y
 
-let is_equal x1 x2 = x1 = x2
+let equal x1 x2 = x1 = x2
 
-let is_unequal x1 x2 = x1 <> x2
+let not_equal x1 x2 = x1 <> x2
 
-let is_greater x1 x2 =
+let greater x1 x2 =
   let n = numel x1 in
   let y1 = to_ndarray x1 in
   let y1 = reshape y1 [|n|] |> array1_of_genarray in
   let y2 = to_ndarray x2 in
   let y2 = reshape y2 [|n|] |> array1_of_genarray in
-  let _op = (_owl_is_greater (Array2.kind x1)) in
+  let _op = (_owl_greater (Array2.kind x1)) in
   (_op) (numel x1) y1 y2 = 1
 
-let is_smaller x1 x2 =
+let less x1 x2 =
   let n = numel x1 in
   let y1 = to_ndarray x1 in
   let y1 = reshape y1 [|n|] |> array1_of_genarray in
   let y2 = to_ndarray x2 in
   let y2 = reshape y2 [|n|] |> array1_of_genarray in
-  let _op = (_owl_is_smaller (Array2.kind x1)) in
+  let _op = (_owl_less (Array2.kind x1)) in
   (_op) (numel x1) y1 y2 = 1
 
-let equal_or_greater x1 x2 =
+let greater_equal x1 x2 =
   let n = numel x1 in
   let y1 = to_ndarray x1 in
   let y1 = reshape y1 [|n|] |> array1_of_genarray in
   let y2 = to_ndarray x2 in
   let y2 = reshape y2 [|n|] |> array1_of_genarray in
-  let _op = (_owl_equal_or_greater (Array2.kind x1)) in
+  let _op = (_owl_greater_equal (Array2.kind x1)) in
   (_op) (numel x1) y1 y2 = 1
 
-let equal_or_smaller x1 x2 =
+let less_equal x1 x2 =
   let n = numel x1 in
   let y1 = to_ndarray x1 in
   let y1 = reshape y1 [|n|] |> array1_of_genarray in
   let y2 = to_ndarray x2 in
   let y2 = reshape y2 [|n|] |> array1_of_genarray in
-  let _op = (_owl_equal_or_smaller (Array2.kind x1)) in
+  let _op = (_owl_less_equal (Array2.kind x1)) in
   (_op) (numel x1) y1 y2 = 1
 
 let min x = Owl_dense_ndarray_generic.min (to_ndarray x)
@@ -1050,13 +1050,13 @@ let ( =@ ) = ( = )
 
 let ( <>@ ) = ( <> )
 
-let ( >@ ) = is_greater
+let ( >@ ) = greater
 
-let ( <@ ) = is_smaller
+let ( <@ ) = less
 
-let ( >=@ ) = equal_or_greater
+let ( >=@ ) = greater_equal
 
-let ( <=@ ) = equal_or_smaller
+let ( <=@ ) = less_equal
 
 let ( +$ ) x a = add_scalar x a
 

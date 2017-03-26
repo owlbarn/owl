@@ -193,17 +193,17 @@ let is_nonpositive x = M.is_nonpositive (unpack_box x)
 
 let is_nonnegative x = M.is_nonnegative (unpack_box x)
 
-let is_equal x y = M.is_equal (unpack_box x) (unpack_box y)
+let equal x y = M.equal (unpack_box x) (unpack_box y)
 
-let is_unequal x y = M.is_unequal (unpack_box x) (unpack_box y)
+let not_equal x y = M.not_equal (unpack_box x) (unpack_box y)
 
-let is_greater x y = M.is_greater (unpack_box x) (unpack_box y)
+let greater x y = M.greater (unpack_box x) (unpack_box y)
 
-let is_smaller x y = M.is_smaller (unpack_box x) (unpack_box y)
+let less x y = M.less (unpack_box x) (unpack_box y)
 
-let equal_or_greater x y = M.equal_or_greater (unpack_box x) (unpack_box y)
+let greater_equal x y = M.greater_equal (unpack_box x) (unpack_box y)
 
-let equal_or_smaller x y = M.equal_or_smaller (unpack_box x) (unpack_box y)
+let less_equal x y = M.less_equal (unpack_box x) (unpack_box y)
 
 
 let draw_rows ?(replacement=true) x c = let r, i = M.draw_rows ~replacement (unpack_box x) c in (pack_box r), i

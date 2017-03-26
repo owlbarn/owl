@@ -377,31 +377,31 @@ val for_all : (float -> bool) -> mat -> bool
 
 (** {6 Compare two matrices} *)
 
-val is_equal : mat -> mat -> bool
-(** [is_equal x y] returns [true] if two matrices [x] and [y] are equal. *)
+val equal : mat -> mat -> bool
+(** [equal x y] returns [true] if two matrices [x] and [y] are equal. *)
 
-val is_unequal : mat -> mat -> bool
-(** [is_unequal x y] returns [true] if there is at least one element in [x] is
+val not_equal : mat -> mat -> bool
+(** [not_equal x y] returns [true] if there is at least one element in [x] is
   not equal to that in [y].
  *)
 
-val is_greater : mat -> mat -> bool
-(** [is_greater x y] returns [true] if all the elements in [x] are greater than
+val greater : mat -> mat -> bool
+(** [greater x y] returns [true] if all the elements in [x] are greater than
   the corresponding elements in [y].
  *)
 
-val is_smaller : mat -> mat -> bool
-(** [is_smaller x y] returns [true] if all the elements in [x] are smaller than
+val less : mat -> mat -> bool
+(** [less x y] returns [true] if all the elements in [x] are smaller than
   the corresponding elements in [y].
  *)
 
-val equal_or_greater : mat -> mat -> bool
-(** [equal_or_greater x y] returns [true] if all the elements in [x] are not
+val greater_equal : mat -> mat -> bool
+(** [greater_equal x y] returns [true] if all the elements in [x] are not
   smaller than the corresponding elements in [y].
  *)
 
-val equal_or_smaller : mat -> mat -> bool
-(** [equal_or_smaller x y] returns [true] if all the elements in [x] are not
+val less_equal : mat -> mat -> bool
+(** [less_equal x y] returns [true] if all the elements in [x] are not
   greater than the corresponding elements in [y].
  *)
 
@@ -666,22 +666,22 @@ val ( $/ ) : float -> mat -> mat
 (** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
 
 val ( =@ ) : mat -> mat -> bool
-(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
+(** Shorthand for [equal x y], i.e., [x =@ y] *)
 
 val ( >@ ) : mat -> mat -> bool
-(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
+(** Shorthand for [greater x y], i.e., [x >@ y] *)
 
 val ( <@ ) : mat -> mat -> bool
-(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
+(** Shorthand for [less x y], i.e., [x <@ y] *)
 
 val ( <>@ ) : mat -> mat -> bool
-(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
+(** Shorthand for [not_equal x y], i.e., [x <>@ y] *)
 
 val ( >=@ ) : mat -> mat -> bool
-(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
+(** Shorthand for [greater_equal x y], i.e., [x >=@ y] *)
 
 val ( <=@ ) : mat -> mat -> bool
-(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
+(** Shorthand for [less_equal x y], i.e., [x <=@ y] *)
 
 val ( @@ ) : (float -> float) -> mat -> mat
 (** Shorthand for [map f x], i.e., f @@ x *)

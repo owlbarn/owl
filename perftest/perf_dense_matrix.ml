@@ -52,9 +52,9 @@ let _ =
   test_op "average           " c (fun () -> M.average x);
   test_op "avg_col           " c (fun () -> M.average_cols x);
   test_op "avg_row           " c (fun () -> M.average_rows x);
-  test_op "is_equal          " c (fun () -> M.is_equal x x);
-  test_op "is_greater        " c (fun () -> M.is_greater x x);
-  test_op "equal_or_greater  " c (fun () -> M.equal_or_greater x x);
+  test_op "equal          " c (fun () -> M.equal x x);
+  test_op "greater        " c (fun () -> M.greater x x);
+  test_op "greater_equal  " c (fun () -> M.greater_equal x x);
   test_op "diag              " c (fun () -> M.diag x);
   test_op "transpose         " c (fun () -> M.transpose x);
   test_op "clone             " c (fun () -> M.clone x);

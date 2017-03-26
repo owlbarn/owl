@@ -241,53 +241,53 @@ let _owl_gaussian_fun : type a b. (a, b) kind -> (float -> a) = function
   | Complex64 -> fun s -> Complex.({re = Owl_stats.Rnd.gaussian ~sigma:s (); im = Owl_stats.Rnd.gaussian ~sigma:s ()})
   | _         -> failwith "_owl_gaussian: unsupported operation"
 
-external owl_real_float_is_smaller : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_is_smaller"
-external owl_real_double_is_smaller : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_is_smaller"
-external owl_complex_float_is_smaller : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_float_is_smaller"
-external owl_complex_double_is_smaller : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_double_is_smaller"
+external owl_real_float_less : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_less"
+external owl_real_double_less : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_less"
+external owl_complex_float_less : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_float_less"
+external owl_complex_double_less : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_double_less"
 
-let _owl_is_smaller : type a b. (a, b) kind -> (a, b) owl_vec_op00 = function
-  | Float32   -> owl_real_float_is_smaller
-  | Float64   -> owl_real_double_is_smaller
-  | Complex32 -> owl_complex_float_is_smaller
-  | Complex64 -> owl_complex_double_is_smaller
-  | _         -> failwith "_owl_is_smaller: unsupported operation"
+let _owl_less : type a b. (a, b) kind -> (a, b) owl_vec_op00 = function
+  | Float32   -> owl_real_float_less
+  | Float64   -> owl_real_double_less
+  | Complex32 -> owl_complex_float_less
+  | Complex64 -> owl_complex_double_less
+  | _         -> failwith "_owl_less: unsupported operation"
 
-external owl_real_float_is_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_is_greater"
-external owl_real_double_is_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_is_greater"
-external owl_complex_float_is_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_float_is_greater"
-external owl_complex_double_is_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_double_is_greater"
+external owl_real_float_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_greater"
+external owl_real_double_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_greater"
+external owl_complex_float_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_float_greater"
+external owl_complex_double_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_double_greater"
 
-let _owl_is_greater : type a b. (a, b) kind -> (a, b) owl_vec_op00 = function
-  | Float32   -> owl_real_float_is_greater
-  | Float64   -> owl_real_double_is_greater
-  | Complex32 -> owl_complex_float_is_greater
-  | Complex64 -> owl_complex_double_is_greater
-  | _         -> failwith "_owl_is_greater: unsupported operation"
+let _owl_greater : type a b. (a, b) kind -> (a, b) owl_vec_op00 = function
+  | Float32   -> owl_real_float_greater
+  | Float64   -> owl_real_double_greater
+  | Complex32 -> owl_complex_float_greater
+  | Complex64 -> owl_complex_double_greater
+  | _         -> failwith "_owl_greater: unsupported operation"
 
-external owl_real_float_equal_or_smaller : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_equal_or_smaller"
-external owl_real_double_equal_or_smaller : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_equal_or_smaller"
-external owl_complex_float_equal_or_smaller : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_float_equal_or_smaller"
-external owl_complex_double_equal_or_smaller : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_double_equal_or_smaller"
+external owl_real_float_less_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_less_equal"
+external owl_real_double_less_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_less_equal"
+external owl_complex_float_less_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_float_less_equal"
+external owl_complex_double_less_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_double_less_equal"
 
-let _owl_equal_or_smaller : type a b. (a, b) kind -> (a, b) owl_vec_op00 = function
-  | Float32   -> owl_real_float_equal_or_smaller
-  | Float64   -> owl_real_double_equal_or_smaller
-  | Complex32 -> owl_complex_float_equal_or_smaller
-  | Complex64 -> owl_complex_double_equal_or_smaller
-  | _         -> failwith "_owl_equal_or_smaller: unsupported operation"
+let _owl_less_equal : type a b. (a, b) kind -> (a, b) owl_vec_op00 = function
+  | Float32   -> owl_real_float_less_equal
+  | Float64   -> owl_real_double_less_equal
+  | Complex32 -> owl_complex_float_less_equal
+  | Complex64 -> owl_complex_double_less_equal
+  | _         -> failwith "_owl_less_equal: unsupported operation"
 
-external owl_real_float_equal_or_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_equal_or_greater"
-external owl_real_double_equal_or_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_equal_or_greater"
-external owl_complex_float_equal_or_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_float_equal_or_greater"
-external owl_complex_double_equal_or_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_double_equal_or_greater"
+external owl_real_float_greater_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_float_greater_equal"
+external owl_real_double_greater_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "real_double_greater_equal"
+external owl_complex_float_greater_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_float_greater_equal"
+external owl_complex_double_greater_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int = "complex_double_greater_equal"
 
-let _owl_equal_or_greater : type a b. (a, b) kind -> (a, b) owl_vec_op00 = function
-  | Float32   -> owl_real_float_equal_or_greater
-  | Float64   -> owl_real_double_equal_or_greater
-  | Complex32 -> owl_complex_float_equal_or_greater
-  | Complex64 -> owl_complex_double_equal_or_greater
-  | _         -> failwith "_owl_equal_or_greater: unsupported operation"
+let _owl_greater_equal : type a b. (a, b) kind -> (a, b) owl_vec_op00 = function
+  | Float32   -> owl_real_float_greater_equal
+  | Float64   -> owl_real_double_greater_equal
+  | Complex32 -> owl_complex_float_greater_equal
+  | Complex64 -> owl_complex_double_greater_equal
+  | _         -> failwith "_owl_greater_equal: unsupported operation"
 
 external owl_real_float_is_zero : int -> ('a, 'b) owl_vec -> int = "real_float_is_zero"
 external owl_real_double_is_zero : int -> ('a, 'b) owl_vec -> int = "real_double_is_zero"

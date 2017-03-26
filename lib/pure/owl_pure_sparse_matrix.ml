@@ -570,24 +570,24 @@ let min x = fst (minmax x)
 
 let max x = snd (minmax x)
 
-let is_equal x1 x2 =
+let equal x1 x2 =
   _check_same_shape x1 x2;
   if x1.nz <> x2.nz then false
   else (sub x1 x2 |> is_zero)
 
-let is_unequal x1 x2 = not (is_equal x1 x2)
+let not_equal x1 x2 = not (equal x1 x2)
 
-let is_greater x1 x2 =
+let greater x1 x2 =
   _check_same_shape x1 x2;
   is_positive (sub x1 x2)
 
-let is_smaller x1 x2 = is_greater x2 x1
+let less x1 x2 = greater x2 x1
 
-let equal_or_greater x1 x2 =
+let greater_equal x1 x2 =
   _check_same_shape x1 x2;
   is_nonnegative (sub x1 x2)
 
-let equal_or_smaller x1 x2 = equal_or_greater x2 x1
+let less_equal x1 x2 = greater_equal x2 x1
 
 (** advanced matrix methematical operations *)
 
@@ -761,17 +761,17 @@ let ( /$ ) x a = div_scalar x a
 
 let ( $/ ) a x = div_scalar x a
 
-let ( =@ ) = is_equal
+let ( =@ ) = equal
 
-let ( >@ ) = is_greater
+let ( >@ ) = greater
 
-let ( <@ ) = is_smaller
+let ( <@ ) = less
 
-let ( <>@ ) = is_unequal
+let ( <>@ ) = not_equal
 
-let ( >=@ ) = equal_or_greater
+let ( >=@ ) = greater_equal
 
-let ( <=@ ) = equal_or_smaller
+let ( <=@ ) = less_equal
 
 let ( @@ ) f x = map f x
 

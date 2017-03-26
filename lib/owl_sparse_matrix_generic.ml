@@ -293,17 +293,17 @@ let is_nonpositive x = _eigen_is_nonpositive x.d
 
 let is_nonnegative x = _eigen_is_nonnegative x.d
 
-let is_equal x1 x2 = _eigen_is_equal x1.d x2.d
+let equal x1 x2 = _eigen_equal x1.d x2.d
 
-let is_unequal x1 x2 = _eigen_is_unequal x1.d x2.d
+let not_equal x1 x2 = _eigen_not_equal x1.d x2.d
 
-let is_greater x1 x2 = _eigen_is_greater x1.d x2.d
+let greater x1 x2 = _eigen_greater x1.d x2.d
 
-let is_smaller x1 x2 = _eigen_is_smaller x1.d x2.d
+let less x1 x2 = _eigen_less x1.d x2.d
 
-let equal_or_greater x1 x2 = _eigen_equal_or_greater x1.d x2.d
+let greater_equal x1 x2 = _eigen_greater_equal x1.d x2.d
 
-let equal_or_smaller x1 x2 = _eigen_equal_or_smaller x1.d x2.d
+let less_equal x1 x2 = _eigen_less_equal x1.d x2.d
 
 let add x y = {
   m = x.m;
@@ -591,13 +591,13 @@ let ( =@ ) = ( = )
 
 let ( <>@ ) = ( <> )
 
-let ( >@ ) = is_greater
+let ( >@ ) = greater
 
-let ( <@ ) = is_smaller
+let ( <@ ) = less
 
-let ( >=@ ) = equal_or_greater
+let ( >=@ ) = greater_equal
 
-let ( <=@ ) = equal_or_smaller
+let ( <=@ ) = less_equal
 
 let ( +$ ) x a = add_scalar x a
 

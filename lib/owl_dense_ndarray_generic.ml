@@ -939,32 +939,32 @@ let is_nonpositive x =
   let _op = _owl_is_nonpositive (kind x) in
   _op (numel x) y = 1
 
-let is_equal x y = ( = ) x y
+let equal x y = ( = ) x y
 
-let is_unequal x y = ( <> ) x y
+let not_equal x y = ( <> ) x y
 
-let is_greater x y =
+let greater x y =
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
-  let _op = _owl_is_greater (kind x) in
+  let _op = _owl_greater (kind x) in
   _op (numel x) x' y' = 1
 
-let is_smaller x y =
+let less x y =
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
-  let _op = _owl_is_smaller (kind x) in
+  let _op = _owl_less (kind x) in
   _op (numel x) x' y' = 1
 
-let equal_or_greater x y =
+let greater_equal x y =
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
-  let _op = _owl_equal_or_greater (kind x) in
+  let _op = _owl_greater_equal (kind x) in
   _op (numel x) x' y' = 1
 
-let equal_or_smaller x y =
+let less_equal x y =
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
-  let _op = _owl_equal_or_smaller (kind x) in
+  let _op = _owl_less_equal (kind x) in
   _op (numel x) x' y' = 1
 
 let exists f x =
@@ -1260,13 +1260,13 @@ let ( =@ ) = ( = )
 
 let ( <>@ ) = ( <> )
 
-let ( >@ ) = is_greater
+let ( >@ ) = greater
 
-let ( <@ ) = is_smaller
+let ( <@ ) = less
 
-let ( >=@ ) = equal_or_greater
+let ( >=@ ) = greater_equal
 
-let ( <=@ ) = equal_or_smaller
+let ( <=@ ) = less_equal
 
 let ( +$ ) x a = add_scalar x a
 

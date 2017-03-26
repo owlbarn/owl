@@ -440,9 +440,9 @@ Arr.is_zero x;;
 Arr.is_positive x;;
 Arr.is_nonnegative x;;
 ...
-Arr.is_equal x y;;
-Arr.is_greater x y;;
-Arr.equal_or_smaller x y;;
+Arr.equal x y;;
+Arr.greater x y;;
+Arr.less_equal x y;;
 ...
 ```
 

@@ -213,12 +213,12 @@ module DMD_DMD = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
-  let ( > ) x y = M.is_greater x y
-  let ( < ) x y = M.is_smaller x y
-  let ( >= ) x y = M.equal_or_greater x y
-  let ( <= ) x y = M.equal_or_smaller x y
-  let ( = ) x y = M.is_equal x y
-  let ( <> ) x y = M.is_unequal x y
+  let ( > ) x y = M.greater x y
+  let ( < ) x y = M.less x y
+  let ( >= ) x y = M.greater_equal x y
+  let ( <= ) x y = M.less_equal x y
+  let ( = ) x y = M.equal x y
+  let ( <> ) x y = M.not_equal x y
 
 end
 

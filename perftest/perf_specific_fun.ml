@@ -46,7 +46,7 @@ let test_07 _ = Owl_dense_matrix_generic.min x
 
 let test_08 _ = Owl_dense_matrix_generic.minmax x
 
-let test_09 _ = Owl_dense_matrix_generic.equal_or_greater x x
+let test_09 _ = Owl_dense_matrix_generic.greater_equal x x
 
 let test_10 _ = Owl_dense_matrix_generic.uniform float64 m n
 

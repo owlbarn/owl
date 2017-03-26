@@ -174,17 +174,17 @@ val is_nonpositive : ('a, 'b) t -> bool
 
 val is_nonnegative : ('a, 'b) t -> bool
 
-val is_equal : ('a, 'b) t -> ('a, 'b) t -> bool
+val equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
-val is_unequal : ('a, 'b) t -> ('a, 'b) t -> bool
+val not_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
-val is_greater : ('a, 'b) t -> ('a, 'b) t -> bool
+val greater : ('a, 'b) t -> ('a, 'b) t -> bool
 
-val is_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
+val less : ('a, 'b) t -> ('a, 'b) t -> bool
 
-val equal_or_greater : ('a, 'b) t -> ('a, 'b) t -> bool
+val greater_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
-val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
+val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
 
 (** {6 Randomisation functions} *)

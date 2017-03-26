@@ -298,31 +298,31 @@ val is_nonpositive : ('a, 'b) t -> bool
 val is_nonnegative : ('a, 'b) t -> bool
 (** [is_nonnegative] returns [true] if all the elements in [x] are non-negative. *)
 
-val is_equal : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [is_equal x y] returns [true] if two ('a, 'b) trices [x] and [y] are equal. *)
+val equal : ('a, 'b) t -> ('a, 'b) t -> bool
+(** [equal x y] returns [true] if two ('a, 'b) trices [x] and [y] are equal. *)
 
-val is_unequal : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [is_unequal x y] returns [true] if there is at least one element in [x] is
+val not_equal : ('a, 'b) t -> ('a, 'b) t -> bool
+(** [not_equal x y] returns [true] if there is at least one element in [x] is
   not equal to that in [y].
  *)
 
-val is_greater : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [is_greater x y] returns [true] if all the elements in [x] are greater than
+val greater : ('a, 'b) t -> ('a, 'b) t -> bool
+(** [greater x y] returns [true] if all the elements in [x] are greater than
   the corresponding elements in [y].
  *)
 
-val is_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [is_smaller x y] returns [true] if all the elements in [x] are smaller than
+val less : ('a, 'b) t -> ('a, 'b) t -> bool
+(** [less x y] returns [true] if all the elements in [x] are smaller than
   the corresponding elements in [y].
  *)
 
-val equal_or_greater : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [equal_or_greater x y] returns [true] if all the elements in [x] are not
+val greater_equal : ('a, 'b) t -> ('a, 'b) t -> bool
+(** [greater_equal x y] returns [true] if all the elements in [x] are not
   smaller than the corresponding elements in [y].
  *)
 
-val equal_or_smaller : ('a, 'b) t -> ('a, 'b) t -> bool
-(** [equal_or_smaller x y] returns [true] if all the elements in [x] are not
+val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
+(** [less_equal x y] returns [true] if all the elements in [x] are not
   greater than the corresponding elements in [y].
  *)
 
@@ -771,22 +771,22 @@ val ( $/ ) : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
 
 val ( =@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
+(** Shorthand for [equal x y], i.e., [x =@ y] *)
 
 val ( >@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
+(** Shorthand for [greater x y], i.e., [x >@ y] *)
 
 val ( <@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
+(** Shorthand for [less x y], i.e., [x <@ y] *)
 
 val ( <>@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
+(** Shorthand for [not_equal x y], i.e., [x <>@ y] *)
 
 val ( >=@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
+(** Shorthand for [greater_equal x y], i.e., [x >=@ y] *)
 
 val ( <=@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
+(** Shorthand for [less_equal x y], i.e., [x <=@ y] *)
 
 val ( @@ ) : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** Shorthand for [map f x], i.e., f @@ x *)
