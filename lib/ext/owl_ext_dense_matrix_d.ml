@@ -6,12 +6,10 @@
 open Bigarray
 open Owl_ext_types
 
-module M = Owl_dense_matrix_generic
+module M = Owl_dense_matrix_d
 
 
 (* module specific functions *)
-
-let _elt = Float64
 
 let pack_elt x = F x
 let unpack_elt = function F x -> x | _ -> failwith "error: unknown type"
@@ -22,25 +20,25 @@ let unpack_box = function DMD x -> x | _ -> failwith "error: unknown type"
 
 (* wrappers to original functions *)
 
-let empty m n = M.empty _elt m n |> pack_box
+let empty m n = M.empty m n |> pack_box
 
-let zeros m n = M.zeros _elt m n |> pack_box
+let zeros m n = M.zeros m n |> pack_box
 
-let ones m n = M.ones _elt m n |> pack_box
+let ones m n = M.ones m n |> pack_box
 
-let eye m = M.eye _elt m |> pack_box
+let eye m = M.eye m |> pack_box
 
-let sequential m n = M.sequential _elt m n |> pack_box
+let sequential m n = M.sequential m n |> pack_box
 
-let uniform ?(scale=1.) m n = M.uniform ~scale _elt m n |> pack_box
+let uniform ?(scale=1.) m n = M.uniform ~scale m n |> pack_box
 
-let gaussian ?(sigma=1.) m n = M.gaussian ~sigma _elt m n |> pack_box
+let gaussian ?(sigma=1.) m n = M.gaussian ~sigma m n |> pack_box
 
-let semidef m = M.semidef _elt m |> pack_box
+let semidef m = M.semidef m |> pack_box
 
-let linspace a b n = M.linspace _elt a b n |> pack_box
+let linspace a b n = M.linspace a b n |> pack_box
 
-let meshgrid xa xb ya yb xn yn = let u, v = M.meshgrid _elt xa xb ya yb xn yn in (pack_box u, pack_box v)
+let meshgrid xa xb ya yb xn yn = let u, v = M.meshgrid xa xb ya yb xn yn in (pack_box u, pack_box v)
 
 let meshup x y = let u, v = M.meshup (unpack_box x) (unpack_box y) in (pack_box u, pack_box v)
 
@@ -230,11 +228,11 @@ let shuffle x = M.shuffle (unpack_box x)
 
 let to_array x = M.to_array (unpack_box x)
 
-let of_array x m n = M.of_array _elt x m n |> pack_box
+let of_array x m n = M.of_array x m n |> pack_box
 
 let to_arrays x = M.to_arrays (unpack_box x)
 
-let of_arrays x = M.of_arrays _elt x |> pack_box
+let of_arrays x = M.of_arrays x |> pack_box
 
 let print x = M.print (unpack_box x)
 
@@ -242,7 +240,7 @@ let pp_dsmat x = M.pp_dsmat (unpack_box x)
 
 let save x f = M.save (unpack_box x) f
 
-let load f = M.load _elt f |> pack_box
+let load f = M.load f |> pack_box
 
 
 let min x = M.min (unpack_box x) |> pack_elt
@@ -275,6 +273,8 @@ let average_cols x = M.sum_rows (unpack_box x) |> pack_box
 
 
 let abs x = M.abs (unpack_box x) |> pack_box
+
+let abs2 x = M.abs2 (unpack_box x) |> pack_box
 
 let neg x = M.neg (unpack_box x) |> pack_box
 

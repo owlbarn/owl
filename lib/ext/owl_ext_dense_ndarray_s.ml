@@ -6,12 +6,10 @@
 open Bigarray
 open Owl_ext_types
 
-module M = Owl_dense_ndarray_generic
+module M = Owl_dense_ndarray_s
 
 
 (* module specific functions *)
-
-let _elt = Float32
 
 let pack_elt x = F x
 let unpack_elt = function F x -> x | _ -> failwith "error: unknown type"
@@ -22,17 +20,17 @@ let unpack_box = function DAS x -> x | _ -> failwith "error: unknown type"
 
 (* wrappers to original functions *)
 
-let empty i = M.empty _elt i |> pack_box
+let empty i = M.empty i |> pack_box
 
-let create i a = M.create _elt i (unpack_elt a) |> pack_box
+let create i a = M.create i (unpack_elt a) |> pack_box
 
-let zeros i = M.zeros _elt i |> pack_box
+let zeros i = M.zeros i |> pack_box
 
-let ones i = M.ones _elt i |> pack_box
+let ones i = M.ones i |> pack_box
 
-let uniform ?scale i = M.uniform ?scale _elt i |> pack_box
+let uniform ?scale i = M.uniform ?scale i |> pack_box
 
-let sequential i = M.sequential _elt i |> pack_box
+let sequential i = M.sequential i |> pack_box
 
 
 let shape x = M.shape (unpack_box x)
@@ -85,8 +83,6 @@ let tile x reps = M.tile (unpack_box x) reps
 let repeat ?axis x reps = M.repeat ?axis (unpack_box x) reps
 
 let squeeze ?(axis=[||]) x = M.squeeze ~axis (unpack_box x) |> pack_box
-
-let mmap fd ?pos kind shared dims = M.mmap fd ?pos kind shared dims |> pack_box
 
 
 let iteri ?axis f x = M.iteri ?axis f (unpack_box x)
@@ -161,11 +157,9 @@ let elt_greater_equal x y = M.elt_greater_equal (unpack_box x) (unpack_box y) |>
 
 let print x = M.print (unpack_box x)
 
-let pp_dsnda x = M.pp_dsnda (unpack_box x)
-
 let save x f = M.save (unpack_box x) f
 
-let load f = M.load _elt f |> pack_box
+let load f = M.load f |> pack_box
 
 
 let sum x = M.sum (unpack_box x) |> pack_elt
@@ -185,6 +179,8 @@ let max_i x = let a, i = M.max_i (unpack_box x) in (pack_elt a, i)
 let minmax_i x = let (a,i), (b,j) = M.minmax_i (unpack_box x) in (pack_elt a,i), (pack_elt b, i)
 
 let abs x = M.abs (unpack_box x) |> pack_box
+
+let abs2 x = M.abs2 (unpack_box x) |> pack_box
 
 let neg x = M.neg (unpack_box x) |> pack_box
 

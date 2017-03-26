@@ -40,6 +40,12 @@ module DAS = struct
 
   module M = Owl_ext_dense_ndarray_s
 
+  let abs x = M.abs x
+  let abs2 x = M.abs2 x
+  let neg x = M.neg x
+  let sum x = M.sum x
+  let prod x = M.prod x
+  
 end
 
 
