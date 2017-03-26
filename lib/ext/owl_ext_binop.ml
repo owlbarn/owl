@@ -24,14 +24,12 @@ module F_F = struct
   let ( - ) x y = F M.(x -. y)
   let ( * ) x y = F M.(x *. y)
   let ( / ) x y = F M.(x /. y)
-  let ( > ) x y = x > y
-  let ( < ) x y = x < y
-  let ( >= ) x y = x >= y
-  let ( <= ) x y = x <= y
-  let ( = ) x y = x = y
-  let ( <> ) x y = x != y
-  let ( >. ) x y = x > y
-  let ( <. ) x y = x < y
+  let ( = ) x y = Pervasives.(x = y)
+  let ( <> ) x y = Pervasives.(x <> y)
+  let ( > ) x y = Pervasives.(x > y)
+  let ( < ) x y = Pervasives.(x < y)
+  let ( >= ) x y = Pervasives.(x >= y)
+  let ( <= ) x y = Pervasives.(x <= y)
 
 end
 
@@ -44,6 +42,12 @@ module F_C = struct
   let ( - ) x y = C M.(sub {re = x; im = 0.} y)
   let ( * ) x y = C M.(mul {re = x; im = 0.} y)
   let ( / ) x y = C M.(add {re = x; im = 0.} y)
+  let ( = ) x y = Pervasives.(M.({re = x; im = 0.}) = y)
+  let ( <> ) x y = Pervasives.(M.({re = x; im = 0.}) <> y)
+  let ( > ) x y = Pervasives.(M.({re = x; im = 0.}) > y)
+  let ( < ) x y = Pervasives.(M.({re = x; im = 0.}) < y)
+  let ( >= ) x y = Pervasives.(M.({re = x; im = 0.}) >= y)
+  let ( <= ) x y = Pervasives.(M.({re = x; im = 0.}) <= y)
 
 end
 
@@ -56,6 +60,12 @@ module C_F = struct
   let ( - ) x y = C M.(sub x {re = y; im = 0.})
   let ( * ) x y = C M.(mul x {re = y; im = 0.})
   let ( / ) x y = C M.(div x {re = y; im = 0.})
+  let ( = ) x y = Pervasives.(x = M.({re = y; im = 0.}))
+  let ( <> ) x y = Pervasives.(x <> M.({re = y; im = 0.}))
+  let ( > ) x y = Pervasives.(x > M.({re = y; im = 0.}))
+  let ( < ) x y = Pervasives.(x < M.({re = y; im = 0.}))
+  let ( >= ) x y = Pervasives.(x >= M.({re = y; im = 0.}))
+  let ( <= ) x y = Pervasives.(x <= M.({re = y; im = 0.}))
 
 end
 
@@ -68,6 +78,12 @@ module C_C = struct
   let ( - ) x y = C M.(sub x y)
   let ( * ) x y = C M.(mul x y)
   let ( / ) x y = C M.(div x y)
+  let ( = ) x y = Pervasives.(x = y)
+  let ( <> ) x y = Pervasives.(x <> y)
+  let ( > ) x y = Pervasives.(x > y)
+  let ( < ) x y = Pervasives.(x < y)
+  let ( >= ) x y = Pervasives.(x >= y)
+  let ( <= ) x y = Pervasives.(x <= y)
 
 end
 
@@ -105,6 +121,18 @@ module DAS_DAS = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( = ) x y = M.equal x y
+  let ( <> ) x y = M.not_equal x y
+  let ( > ) x y = M.greater x y
+  let ( < ) x y = M.less x y
+  let ( >= ) x y = M.greater_equal x y
+  let ( <= ) x y = M.less_equal x y
+  let ( =. ) x y = M.elt_equal x y
+  let ( <>. ) x y = M.elt_not_equal x y
+  let ( >. ) x y = M.elt_greater x y
+  let ( <. ) x y = M.elt_less x y
+  let ( >=. ) x y = M.elt_greater_equal x y
+  let ( <=. ) x y = M.elt_less_equal x y
 
 end
 
@@ -141,6 +169,18 @@ module DAD_DAD = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( = ) x y = M.equal x y
+  let ( <> ) x y = M.not_equal x y
+  let ( > ) x y = M.greater x y
+  let ( < ) x y = M.less x y
+  let ( >= ) x y = M.greater_equal x y
+  let ( <= ) x y = M.less_equal x y
+  let ( =. ) x y = M.elt_equal x y
+  let ( <>. ) x y = M.elt_not_equal x y
+  let ( >. ) x y = M.elt_greater x y
+  let ( <. ) x y = M.elt_less x y
+  let ( >=. ) x y = M.elt_greater_equal x y
+  let ( <=. ) x y = M.elt_less_equal x y
 
 end
 
@@ -177,6 +217,18 @@ module DMS_DMS = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( = ) x y = M.equal x y
+  let ( <> ) x y = M.not_equal x y
+  let ( > ) x y = M.greater x y
+  let ( < ) x y = M.less x y
+  let ( >= ) x y = M.greater_equal x y
+  let ( <= ) x y = M.less_equal x y
+  let ( =. ) x y = M.elt_equal x y
+  let ( <>. ) x y = M.elt_not_equal x y
+  let ( >. ) x y = M.elt_greater x y
+  let ( <. ) x y = M.elt_less x y
+  let ( >=. ) x y = M.elt_greater_equal x y
+  let ( <=. ) x y = M.elt_less_equal x y
 
 end
 
@@ -213,12 +265,18 @@ module DMD_DMD = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( = ) x y = M.equal x y
+  let ( <> ) x y = M.not_equal x y
   let ( > ) x y = M.greater x y
   let ( < ) x y = M.less x y
   let ( >= ) x y = M.greater_equal x y
   let ( <= ) x y = M.less_equal x y
-  let ( = ) x y = M.equal x y
-  let ( <> ) x y = M.not_equal x y
+  let ( =. ) x y = M.elt_equal x y
+  let ( <>. ) x y = M.elt_not_equal x y
+  let ( >. ) x y = M.elt_greater x y
+  let ( <. ) x y = M.elt_less x y
+  let ( >=. ) x y = M.elt_greater_equal x y
+  let ( <=. ) x y = M.elt_less_equal x y
 
 end
 
@@ -256,6 +314,18 @@ module DAC_DAC = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( = ) x y = M.equal x y
+  let ( <> ) x y = M.not_equal x y
+  let ( > ) x y = M.greater x y
+  let ( < ) x y = M.less x y
+  let ( >= ) x y = M.greater_equal x y
+  let ( <= ) x y = M.less_equal x y
+  let ( =. ) x y = M.elt_equal x y
+  let ( <>. ) x y = M.elt_not_equal x y
+  let ( >. ) x y = M.elt_greater x y
+  let ( <. ) x y = M.elt_less x y
+  let ( >=. ) x y = M.elt_greater_equal x y
+  let ( <=. ) x y = M.elt_less_equal x y
 
 end
 
@@ -292,6 +362,18 @@ module DAZ_DAZ = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( = ) x y = M.equal x y
+  let ( <> ) x y = M.not_equal x y
+  let ( > ) x y = M.greater x y
+  let ( < ) x y = M.less x y
+  let ( >= ) x y = M.greater_equal x y
+  let ( <= ) x y = M.less_equal x y
+  let ( =. ) x y = M.elt_equal x y
+  let ( <>. ) x y = M.elt_not_equal x y
+  let ( >. ) x y = M.elt_greater x y
+  let ( <. ) x y = M.elt_less x y
+  let ( >=. ) x y = M.elt_greater_equal x y
+  let ( <=. ) x y = M.elt_less_equal x y
 
 end
 
@@ -328,6 +410,18 @@ module DMC_DMC = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( = ) x y = M.equal x y
+  let ( <> ) x y = M.not_equal x y
+  let ( > ) x y = M.greater x y
+  let ( < ) x y = M.less x y
+  let ( >= ) x y = M.greater_equal x y
+  let ( <= ) x y = M.less_equal x y
+  let ( =. ) x y = M.elt_equal x y
+  let ( <>. ) x y = M.elt_not_equal x y
+  let ( >. ) x y = M.elt_greater x y
+  let ( <. ) x y = M.elt_less x y
+  let ( >=. ) x y = M.elt_greater_equal x y
+  let ( <=. ) x y = M.elt_less_equal x y
 
 end
 
@@ -364,6 +458,18 @@ module DMZ_DMZ = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( = ) x y = M.equal x y
+  let ( <> ) x y = M.not_equal x y
+  let ( > ) x y = M.greater x y
+  let ( < ) x y = M.less x y
+  let ( >= ) x y = M.greater_equal x y
+  let ( <= ) x y = M.less_equal x y
+  let ( =. ) x y = M.elt_equal x y
+  let ( <>. ) x y = M.elt_not_equal x y
+  let ( >. ) x y = M.elt_greater x y
+  let ( <. ) x y = M.elt_less x y
+  let ( >=. ) x y = M.elt_greater_equal x y
+  let ( <=. ) x y = M.elt_less_equal x y
 
 end
 
@@ -1115,11 +1221,163 @@ let ( / ) x y = match x, y with
   | DAZ _, DAS _ -> DAZ_DAS.(x / y)
   | DMS _, DMZ _ -> DMS_DMZ.(x / y)
   | DMZ _, DMS _ -> DMZ_DMS.(x / y)
-  | _          -> error_binop "( / )" x y
+  | _            -> error_binop "( / )" x y
+
+let ( = ) x y = match x, y with
+  | F x, F y     -> F_F.( = ) x y
+  | F x, C y     -> F_C.( = ) x y
+  | C x, F y     -> C_F.( = ) x y
+  | C x, C y     -> C_C.( = ) x y
+  | DAS _, DAS _ -> DAS_DAS.( = ) x y
+  | DAD _, DAD _ -> DAD_DAD.( = ) x y
+  | DMS _, DMS _ -> DMS_DMS.( = ) x y
+  | DMD _, DMD _ -> DMD_DMD.( = ) x y
+  | DAC _, DAC _ -> DAC_DAC.( = ) x y
+  | DAZ _, DAZ _ -> DAZ_DAZ.( = ) x y
+  | DMC _, DMC _ -> DMC_DMC.( = ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( = ) x y
+  | _            -> error_binop "( = )" x y
+
+let ( <> ) x y = match x, y with
+  | F x, F y     -> F_F.( <> ) x y
+  | F x, C y     -> F_C.( <> ) x y
+  | C x, F y     -> C_F.( <> ) x y
+  | C x, C y     -> C_C.( <> ) x y
+  | DAS _, DAS _ -> DAS_DAS.( <> ) x y
+  | DAD _, DAD _ -> DAD_DAD.( <> ) x y
+  | DMS _, DMS _ -> DMS_DMS.( <> ) x y
+  | DMD _, DMD _ -> DMD_DMD.( <> ) x y
+  | DAC _, DAC _ -> DAC_DAC.( <> ) x y
+  | DAZ _, DAZ _ -> DAZ_DAZ.( <> ) x y
+  | DMC _, DMC _ -> DMC_DMC.( <> ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( <> ) x y
+  | _            -> error_binop "( <> )" x y
 
 let ( > ) x y = match x, y with
   | F x, F y     -> F_F.( > ) x y
+  | F x, C y     -> F_C.( > ) x y
+  | C x, F y     -> C_F.( > ) x y
+  | C x, C y     -> C_C.( > ) x y
+  | DAS _, DAS _ -> DAS_DAS.( > ) x y
+  | DAD _, DAD _ -> DAD_DAD.( > ) x y
+  | DMS _, DMS _ -> DMS_DMS.( > ) x y
   | DMD _, DMD _ -> DMD_DMD.( > ) x y
+  | DAC _, DAC _ -> DAC_DAC.( > ) x y
+  | DAZ _, DAZ _ -> DAZ_DAZ.( > ) x y
+  | DMC _, DMC _ -> DMC_DMC.( > ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( > ) x y
   | _            -> error_binop "( > )" x y
+
+let ( < ) x y = match x, y with
+  | F x, F y     -> F_F.( < ) x y
+  | F x, C y     -> F_C.( < ) x y
+  | C x, F y     -> C_F.( < ) x y
+  | C x, C y     -> C_C.( < ) x y
+  | DAS _, DAS _ -> DAS_DAS.( < ) x y
+  | DAD _, DAD _ -> DAD_DAD.( < ) x y
+  | DMS _, DMS _ -> DMS_DMS.( < ) x y
+  | DMD _, DMD _ -> DMD_DMD.( < ) x y
+  | DAC _, DAC _ -> DAC_DAC.( < ) x y
+  | DAZ _, DAZ _ -> DAZ_DAZ.( < ) x y
+  | DMC _, DMC _ -> DMC_DMC.( < ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( < ) x y
+  | _            -> error_binop "( < )" x y
+
+let ( >= ) x y = match x, y with
+  | F x, F y     -> F_F.( >= ) x y
+  | F x, C y     -> F_C.( >= ) x y
+  | C x, F y     -> C_F.( >= ) x y
+  | C x, C y     -> C_C.( >= ) x y
+  | DAS _, DAS _ -> DAS_DAS.( >= ) x y
+  | DAD _, DAD _ -> DAD_DAD.( >= ) x y
+  | DMS _, DMS _ -> DMS_DMS.( >= ) x y
+  | DMD _, DMD _ -> DMD_DMD.( >= ) x y
+  | DAC _, DAC _ -> DAC_DAC.( >= ) x y
+  | DAZ _, DAZ _ -> DAZ_DAZ.( >= ) x y
+  | DMC _, DMC _ -> DMC_DMC.( >= ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( >= ) x y
+  | _            -> error_binop "( >= )" x y
+
+let ( <= ) x y = match x, y with
+  | F x, F y     -> F_F.( <= ) x y
+  | F x, C y     -> F_C.( <= ) x y
+  | C x, F y     -> C_F.( <= ) x y
+  | C x, C y     -> C_C.( <= ) x y
+  | DAS _, DAS _ -> DAS_DAS.( <= ) x y
+  | DAD _, DAD _ -> DAD_DAD.( <= ) x y
+  | DMS _, DMS _ -> DMS_DMS.( <= ) x y
+  | DMD _, DMD _ -> DMD_DMD.( <= ) x y
+  | DAC _, DAC _ -> DAC_DAC.( <= ) x y
+  | DAZ _, DAZ _ -> DAZ_DAZ.( <= ) x y
+  | DMC _, DMC _ -> DMC_DMC.( <= ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( <= ) x y
+  | _            -> error_binop "( <= )" x y
+
+let ( =. ) x y = match x, y with
+  | DAS _, DAS _ -> DAS_DAS.( =. ) x y
+  | DAD _, DAD _ -> DAD_DAD.( =. ) x y
+  | DMS _, DMS _ -> DMS_DMS.( =. ) x y
+  | DMD _, DMD _ -> DMD_DMD.( =. ) x y
+  | DAC _, DAC _ -> DAC_DAC.( =. ) x y
+  | DAZ _, DAZ _ -> DAZ_DAZ.( =. ) x y
+  | DMC _, DMC _ -> DMC_DMC.( =. ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( =. ) x y
+  | _            -> error_binop "( =. )" x y
+
+let ( <>. ) x y = match x, y with
+  | DAS _, DAS _ -> DAS_DAS.( <>. ) x y
+  | DAD _, DAD _ -> DAD_DAD.( <>. ) x y
+  | DMS _, DMS _ -> DMS_DMS.( <>. ) x y
+  | DMD _, DMD _ -> DMD_DMD.( <>. ) x y
+  | DAC _, DAC _ -> DAC_DAC.( <>. ) x y
+  | DAZ _, DAZ _ -> DAZ_DAZ.( <>. ) x y
+  | DMC _, DMC _ -> DMC_DMC.( <>. ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( <>. ) x y
+  | _            -> error_binop "( <>. )" x y
+
+let ( >. ) x y = match x, y with
+  | DAS _, DAS _ -> DAS_DAS.( >. ) x y
+  | DAD _, DAD _ -> DAD_DAD.( >. ) x y
+  | DMS _, DMS _ -> DMS_DMS.( >. ) x y
+  | DMD _, DMD _ -> DMD_DMD.( >. ) x y
+  | DAC _, DAC _ -> DAC_DAC.( >. ) x y
+  | DAZ _, DAZ _ -> DAZ_DAZ.( >. ) x y
+  | DMC _, DMC _ -> DMC_DMC.( >. ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( >. ) x y
+  | _            -> error_binop "( >. )" x y
+
+let ( <. ) x y = match x, y with
+  | DAS _, DAS _ -> DAS_DAS.( <. ) x y
+  | DAD _, DAD _ -> DAD_DAD.( <. ) x y
+  | DMS _, DMS _ -> DMS_DMS.( <. ) x y
+  | DMD _, DMD _ -> DMD_DMD.( <. ) x y
+  | DAC _, DAC _ -> DAC_DAC.( <. ) x y
+  | DAZ _, DAZ _ -> DAZ_DAZ.( <. ) x y
+  | DMC _, DMC _ -> DMC_DMC.( <. ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( <. ) x y
+  | _            -> error_binop "( <. )" x y
+
+let ( >=. ) x y = match x, y with
+  | DAS _, DAS _ -> DAS_DAS.( >=. ) x y
+  | DAD _, DAD _ -> DAD_DAD.( >=. ) x y
+  | DMS _, DMS _ -> DMS_DMS.( >=. ) x y
+  | DMD _, DMD _ -> DMD_DMD.( >=. ) x y
+  | DAC _, DAC _ -> DAC_DAC.( >=. ) x y
+  | DAZ _, DAZ _ -> DAZ_DAZ.( >=. ) x y
+  | DMC _, DMC _ -> DMC_DMC.( >=. ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( >=. ) x y
+  | _            -> error_binop "( >=. )" x y
+
+let ( <=. ) x y = match x, y with
+  | DAS _, DAS _ -> DAS_DAS.( <=. ) x y
+  | DAD _, DAD _ -> DAD_DAD.( <=. ) x y
+  | DMS _, DMS _ -> DMS_DMS.( <=. ) x y
+  | DMD _, DMD _ -> DMD_DMD.( <=. ) x y
+  | DAC _, DAC _ -> DAC_DAC.( <=. ) x y
+  | DAZ _, DAZ _ -> DAZ_DAZ.( <=. ) x y
+  | DMC _, DMC _ -> DMC_DMC.( <=. ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( <=. ) x y
+  | _            -> error_binop "( <=. )" x y
+
 
 (* ends here *)

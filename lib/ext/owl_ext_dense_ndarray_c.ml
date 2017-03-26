@@ -137,29 +137,29 @@ let is_nonpositive x = M.is_nonpositive (unpack_box x)
 
 let is_nonnegative x = M.is_nonnegative (unpack_box x)
 
-let equal x = M.equal (unpack_box x)
+let equal x y = M.equal (unpack_box x) (unpack_box y)
 
-let not_equal x = M.not_equal (unpack_box x)
+let not_equal x y = M.not_equal (unpack_box x) (unpack_box y)
 
-let greater x = M.greater (unpack_box x)
+let greater x y = M.greater (unpack_box x) (unpack_box y)
 
-let less x = M.less (unpack_box x)
+let less x y = M.less (unpack_box x) (unpack_box y)
 
-let greater_equal x = M.greater_equal (unpack_box x)
+let greater_equal x y = M.greater_equal (unpack_box x) (unpack_box y)
 
-let less_equal x = M.less_equal (unpack_box x)
+let less_equal x y = M.less_equal (unpack_box x) (unpack_box y)
 
-let elt_equal x y = M.elt_equal (unpack_box x) (unpack_box y)
+let elt_equal x y = M.elt_equal (unpack_box x) (unpack_box y) |> pack_das
 
-let elt_not_equal x y = M.elt_not_equal (unpack_box x) (unpack_box y)
+let elt_not_equal x y = M.elt_not_equal (unpack_box x) (unpack_box y) |> pack_das
 
-let elt_less x y = M.elt_less (unpack_box x) (unpack_box y)
+let elt_less x y = M.elt_less (unpack_box x) (unpack_box y) |> pack_das
 
-let elt_greater x y = M.elt_greater (unpack_box x) (unpack_box y)
+let elt_greater x y = M.elt_greater (unpack_box x) (unpack_box y) |> pack_das
 
-let elt_less_equal x y = M.elt_less_equal (unpack_box x) (unpack_box y)
+let elt_less_equal x y = M.elt_less_equal (unpack_box x) (unpack_box y) |> pack_das
 
-let elt_greater_equal x y = M.elt_greater_equal (unpack_box x) (unpack_box y)
+let elt_greater_equal x y = M.elt_greater_equal (unpack_box x) (unpack_box y) |> pack_das
 
 
 let print x = M.print (unpack_box x)
