@@ -24,6 +24,14 @@ module F_F = struct
   let ( - ) x y = F M.(x -. y)
   let ( * ) x y = F M.(x *. y)
   let ( / ) x y = F M.(x /. y)
+  let ( > ) x y = x > y
+  let ( < ) x y = x < y
+  let ( >= ) x y = x >= y
+  let ( <= ) x y = x <= y
+  let ( = ) x y = x = y
+  let ( <> ) x y = x != y
+  let ( >. ) x y = x > y
+  let ( <. ) x y = x < y
 
 end
 
@@ -205,6 +213,12 @@ module DMD_DMD = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( > ) x y = M.is_greater x y
+  let ( < ) x y = M.is_smaller x y
+  let ( >= ) x y = M.equal_or_greater x y
+  let ( <= ) x y = M.equal_or_smaller x y
+  let ( = ) x y = M.is_equal x y
+  let ( <> ) x y = M.is_unequal x y
 
 end
 
@@ -897,7 +911,7 @@ let ( + ) x y = match x, y with
   | DAZ _, DAS _ -> DAZ_DAS.(x + y)
   | DMS _, DMZ _ -> DMS_DMZ.(x + y)
   | DMZ _, DMS _ -> DMZ_DMS.(x + y)
-  | _ -> error_binop "( + )" x y
+  | _            -> error_binop "( + )" x y
 
 
 let ( - ) x y = match x, y with
@@ -965,7 +979,7 @@ let ( - ) x y = match x, y with
   | DAZ _, DAS _ -> DAZ_DAS.(x - y)
   | DMS _, DMZ _ -> DMS_DMZ.(x - y)
   | DMZ _, DMS _ -> DMZ_DMS.(x - y)
-  | _ -> error_binop "( - )" x y
+  | _            -> error_binop "( - )" x y
 
 
 let ( * ) x y = match x, y with
@@ -1033,7 +1047,7 @@ let ( * ) x y = match x, y with
   | DAZ _, DAS _ -> DAZ_DAS.(x * y)
   | DMS _, DMZ _ -> DMS_DMZ.(x * y)
   | DMZ _, DMS _ -> DMZ_DMS.(x * y)
-  | _ -> error_binop "( * )" x y
+  | _            -> error_binop "( * )" x y
 
 
 let ( / ) x y = match x, y with
@@ -1101,7 +1115,11 @@ let ( / ) x y = match x, y with
   | DAZ _, DAS _ -> DAZ_DAS.(x / y)
   | DMS _, DMZ _ -> DMS_DMZ.(x / y)
   | DMZ _, DMS _ -> DMZ_DMS.(x / y)
-  | _ -> error_binop "( / )" x y
+  | _          -> error_binop "( / )" x y
 
+let ( > ) x y = match x, y with
+  | F x, F y     -> F_F.( > ) x y
+  | DMD _, DMD _ -> DMD_DMD.( > ) x y
+  | _            -> error_binop "( > )" x y
 
 (* ends here *)
