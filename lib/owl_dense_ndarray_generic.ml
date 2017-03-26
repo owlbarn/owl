@@ -229,6 +229,27 @@ let abs_z2d x =
   let _ = owl_complex_double_abs (numel y) src dst in
   y
 
+let abs2 x =
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_abs2 (kind x) (numel y) src dst in
+  y
+
+let abs2_c2s x =
+  let y = empty Float32 (shape x) in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = owl_complex_float_abs2 (numel y) src dst in
+  y
+
+let abs2_z2d x =
+  let y = empty Float64 (shape x) in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = owl_complex_double_abs2 (numel y) src dst in
+  y
+
 let conj x =
   let y = clone x in
   let src = flatten x |> array1_of_genarray in

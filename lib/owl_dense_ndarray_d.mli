@@ -191,6 +191,8 @@ val minmax_i : arr -> (float * (int array)) * (float * (int array))
 
 val abs : arr -> arr
 
+val abs2 : arr -> arr
+
 val neg : arr -> arr
 
 val reci : arr -> arr

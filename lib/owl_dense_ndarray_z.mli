@@ -179,6 +179,8 @@ val prod : ?axis:int option array -> arr -> elt
 
 val abs : arr -> Owl_dense_ndarray_d.arr
 
+val abs2 : arr -> Owl_dense_ndarray_d.arr
+
 val conj : arr -> arr
 
 val neg : arr -> arr

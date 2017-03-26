@@ -327,6 +327,8 @@ val max_cols : mat -> (elt * int * int) array
 
 val abs : mat -> mat
 
+val abs2 : mat -> mat
+
 val neg : mat -> mat
 
 val reci : mat -> mat

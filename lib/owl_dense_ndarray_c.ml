@@ -37,3 +37,5 @@ let mmap fd ?pos shared dims = Genarray.map_file fd ?pos Complex32 c_layout shar
 (* specific functions for complex32 ndarray *)
 
 let abs x = abs_c2s x
+
+let abs2 x = abs2_c2s x

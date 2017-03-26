@@ -489,6 +489,17 @@ let _owl_abs : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   | Float64   -> owl_real_double_abs l x y
   | _         -> failwith "_owl_abs: unsupported operation"
 
+external owl_real_float_abs2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_abs2"
+external owl_real_double_abs2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_abs2"
+external owl_complex_float_abs2 : int -> (Complex.t, complex32_elt) owl_vec -> (float, float32_elt) owl_vec -> unit = "complex_float_abs2"
+external owl_complex_double_abs2 : int -> (Complex.t, complex64_elt) owl_vec -> (float, float64_elt) owl_vec -> unit = "complex_double_abs2"
+
+let _owl_abs2 : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
+  match k with
+  | Float32   -> owl_real_float_abs2 l x y
+  | Float64   -> owl_real_double_abs2 l x y
+  | _         -> failwith "_owl_abs2: unsupported operation"
+
 external owl_real_float_signum : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_signum"
 external owl_real_double_signum : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_signum"
 

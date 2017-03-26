@@ -633,6 +633,32 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
 #include "owl_dense_common_vec_map.c"
 
+// abs2
+
+#define FUN4 real_float_abs2
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (X * X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 real_double_abs2
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (X * X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_float_abs2
+#define NUMBER complex_float
+#define NUMBER1 float
+#define MAPFN(X) (X.r * X.r + X.i * X.i)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_double_abs2
+#define NUMBER complex_double
+#define NUMBER1 double
+#define MAPFN(X) (X.r * X.r + X.i * X.i)
+#include "owl_dense_common_vec_map.c"
+
 // signum
 
 #define FUN4 real_float_signum
