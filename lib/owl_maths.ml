@@ -43,6 +43,8 @@ let abs x = if x < 0. then (0.-.x) else x
 
 let neg x = 0. -. x
 
+let reci x = 1. /. x
+
 let signum x = if x = 0. then 0. else if x > 0. then 1. else -1.
 
 let softsign x = x /. (1. +. abs x)
