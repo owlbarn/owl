@@ -484,6 +484,18 @@ let less_equal x1 x2 =
   let _op = (_owl_less_equal (Array2.kind x1)) in
   (_op) (numel x1) y1 y2 = 1
 
+let elt_equal x1 x2 = Owl_dense_ndarray_generic.elt_equal (to_ndarray x1) (to_ndarray x2) |> of_ndarray
+
+let elt_not_equal x1 x2 = Owl_dense_ndarray_generic.elt_not_equal (to_ndarray x1) (to_ndarray x2) |> of_ndarray
+
+let elt_less x1 x2 = Owl_dense_ndarray_generic.elt_less (to_ndarray x1) (to_ndarray x2) |> of_ndarray
+
+let elt_greater x1 x2 = Owl_dense_ndarray_generic.elt_greater (to_ndarray x1) (to_ndarray x2) |> of_ndarray
+
+let elt_less_equal x1 x2 = Owl_dense_ndarray_generic.elt_less_equal (to_ndarray x1) (to_ndarray x2) |> of_ndarray
+
+let elt_greater_equal x1 x2 = Owl_dense_ndarray_generic.elt_greater_equal (to_ndarray x1) (to_ndarray x2) |> of_ndarray
+
 let min x = Owl_dense_ndarray_generic.min (to_ndarray x)
 
 let max x = Owl_dense_ndarray_generic.max (to_ndarray x)

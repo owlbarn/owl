@@ -3,8 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Bigarray
 
-type ('a, 'b) t = ('a, 'b, Bigarray.c_layout) Bigarray.Array2.t
+type ('a, 'b) t = ('a, 'b, c_layout) Array2.t
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
@@ -426,6 +427,24 @@ val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 (** [less_equal x y] returns [true] if all the elements in [x] are not
   greater than the corresponding elements in [y].
  *)
+
+val elt_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+(* [elt_equal x y] performs element-wise [=] comparison of [x] and [y]. *)
+
+val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+(* [elt_not_equal x y] performs element-wise [!=] comparison of [x] and [y]. *)
+
+val elt_less : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+(* [elt_less x y] performs element-wise [<] comparison of [x] and [y]. *)
+
+val elt_greater : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+(* [elt_greater x y] performs element-wise [>] comparison of [x] and [y]. *)
+
+val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+(* [elt_less_equal x y] performs element-wise [<=] comparison of [x] and [y]. *)
+
+val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+(* [elt_greater_equal x y] performs element-wise [>=] comparison of [x] and [y]. *)
 
 
 (** {6 Randomisation functions} *)

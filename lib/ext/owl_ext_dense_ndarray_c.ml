@@ -149,6 +149,18 @@ let greater_equal x = M.greater_equal (unpack_box x)
 
 let less_equal x = M.less_equal (unpack_box x)
 
+let elt_equal x y = M.elt_equal (unpack_box x) (unpack_box y)
+
+let elt_not_equal x y = M.elt_not_equal (unpack_box x) (unpack_box y)
+
+let elt_less x y = M.elt_less (unpack_box x) (unpack_box y)
+
+let elt_greater x y = M.elt_greater (unpack_box x) (unpack_box y)
+
+let elt_less_equal x y = M.elt_less_equal (unpack_box x) (unpack_box y)
+
+let elt_greater_equal x y = M.elt_greater_equal (unpack_box x) (unpack_box y)
+
 
 let print x = M.print (unpack_box x)
 

@@ -205,6 +205,18 @@ let greater_equal x y = M.greater_equal (unpack_box x) (unpack_box y)
 
 let less_equal x y = M.less_equal (unpack_box x) (unpack_box y)
 
+let elt_equal x y = M.elt_equal (unpack_box x) (unpack_box y)
+
+let elt_not_equal x y = M.elt_not_equal (unpack_box x) (unpack_box y)
+
+let elt_less x y = M.elt_less (unpack_box x) (unpack_box y)
+
+let elt_greater x y = M.elt_greater (unpack_box x) (unpack_box y)
+
+let elt_less_equal x y = M.elt_less_equal (unpack_box x) (unpack_box y)
+
+let elt_greater_equal x y = M.elt_greater_equal (unpack_box x) (unpack_box y)
+
 
 let draw_rows ?(replacement=true) x c = let r, i = M.draw_rows ~replacement (unpack_box x) c in (pack_box r), i
 

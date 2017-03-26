@@ -537,6 +537,56 @@ let atan21 x a =
   fill y a;
   atan2 x y
 
+(* element-wise comparison functions *)
+
+let elt_equal x y =
+  let z = empty Float32 (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  _owl_elt_equal (kind x) (numel z) x' y' z';
+  z
+
+let elt_not_equal x y =
+  let z = empty Float32 (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  _owl_elt_not_equal (kind x) (numel z) x' y' z';
+  z
+
+let elt_less x y =
+  let z = empty Float32 (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  _owl_elt_less (kind x) (numel z) x' y' z';
+  z
+
+let elt_greater x y =
+  let z = empty Float32 (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  _owl_elt_greater (kind x) (numel z) x' y' z';
+  z
+
+let elt_less_equal x y =
+  let z = empty Float32 (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  _owl_elt_less_equal (kind x) (numel z) x' y' z';
+  z
+
+let elt_greater_equal x y =
+  let z = empty Float32 (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  _owl_elt_greater_equal (kind x) (numel z) x' y' z';
+  z
+
 let sum x = flatten x |> array1_of_genarray |> _owl_sum (kind x) (numel x)
 
 let softmax x =

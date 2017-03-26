@@ -3,7 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-type mat = (float, Bigarray.float64_elt) Owl_dense_matrix_generic.t
+open Bigarray
+
+type mat = (float, float64_elt) Owl_dense_matrix_generic.t
 
 type elt = float
 
@@ -222,6 +224,18 @@ val less : mat -> mat -> bool
 val greater_equal : mat -> mat -> bool
 
 val less_equal : mat -> mat -> bool
+
+val elt_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+
+val elt_not_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+
+val elt_less : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+
+val elt_greater : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+
+val elt_less_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+
+val elt_greater_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
 
 
 (** {6 Randomisation functions} *)
