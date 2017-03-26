@@ -24,12 +24,15 @@ module F_F = struct
   let ( - ) x y = F M.(x -. y)
   let ( * ) x y = F M.(x *. y)
   let ( / ) x y = F M.(x /. y)
+  let ( ** ) x y = F M.( x ** y)
   let ( = ) x y = Pervasives.(x = y)
   let ( <> ) x y = Pervasives.(x <> y)
   let ( > ) x y = Pervasives.(x > y)
   let ( < ) x y = Pervasives.(x < y)
   let ( >= ) x y = Pervasives.(x >= y)
   let ( <= ) x y = Pervasives.(x <= y)
+  let min2 x y = F Pervasives.(min x y)
+  let max2 x y = F Pervasives.(max x y)
 
 end
 
@@ -42,6 +45,7 @@ module F_C = struct
   let ( - ) x y = C M.(sub {re = x; im = 0.} y)
   let ( * ) x y = C M.(mul {re = x; im = 0.} y)
   let ( / ) x y = C M.(add {re = x; im = 0.} y)
+  let ( ** ) x y = C M.(pow {re = x; im = 0.} y)
   let ( = ) x y = Pervasives.(M.({re = x; im = 0.}) = y)
   let ( <> ) x y = Pervasives.(M.({re = x; im = 0.}) <> y)
   let ( > ) x y = Pervasives.(M.({re = x; im = 0.}) > y)
@@ -60,6 +64,7 @@ module C_F = struct
   let ( - ) x y = C M.(sub x {re = y; im = 0.})
   let ( * ) x y = C M.(mul x {re = y; im = 0.})
   let ( / ) x y = C M.(div x {re = y; im = 0.})
+  let ( ** ) x y = C M.(pow x {re = y; im = 0.})
   let ( = ) x y = Pervasives.(x = M.({re = y; im = 0.}))
   let ( <> ) x y = Pervasives.(x <> M.({re = y; im = 0.}))
   let ( > ) x y = Pervasives.(x > M.({re = y; im = 0.}))
@@ -78,6 +83,7 @@ module C_C = struct
   let ( - ) x y = C M.(sub x y)
   let ( * ) x y = C M.(mul x y)
   let ( / ) x y = C M.(div x y)
+  let ( ** ) x y = C M.(pow x y)
   let ( = ) x y = Pervasives.(x = y)
   let ( <> ) x y = Pervasives.(x <> y)
   let ( > ) x y = Pervasives.(x > y)
@@ -97,6 +103,7 @@ module F_DAS = struct
   let ( - ) a x = M.(sub_scalar x a |> neg)
   let ( * ) a x = M.mul_scalar x a
   let ( / ) a x = M.(mul_scalar (reci x) a)
+  let ( ** ) a x = M.pow0 a x
 
 end
 
@@ -109,6 +116,7 @@ module DAS_F = struct
   let ( - ) x a = M.sub_scalar x a
   let ( * ) x a = M.mul_scalar x a
   let ( / ) x a = M.div_scalar x a
+  let ( ** ) x a = M.pow1 x a
 
 end
 
@@ -121,6 +129,7 @@ module DAS_DAS = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( ** ) x y = M.pow x y
   let ( = ) x y = M.equal x y
   let ( <> ) x y = M.not_equal x y
   let ( > ) x y = M.greater x y
@@ -133,6 +142,8 @@ module DAS_DAS = struct
   let ( <. ) x y = M.elt_less x y
   let ( >=. ) x y = M.elt_greater_equal x y
   let ( <=. ) x y = M.elt_less_equal x y
+  let min2 x y = M.min2 x y
+  let max2 x y = M.max2 x y
 
 end
 
@@ -145,6 +156,7 @@ module F_DAD = struct
   let ( - ) a x = M.(sub_scalar x a |> neg)
   let ( * ) a x = M.mul_scalar x a
   let ( / ) a x = M.(mul_scalar (reci x) a)
+  let ( ** ) a x = M.pow0 a x
 
 end
 
@@ -157,6 +169,7 @@ module DAD_F = struct
   let ( - ) x a = M.sub_scalar x a
   let ( * ) x a = M.mul_scalar x a
   let ( / ) x a = M.div_scalar x a
+  let ( ** ) x a = M.pow1 x a
 
 end
 
@@ -169,6 +182,7 @@ module DAD_DAD = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( ** ) x y = M.pow x y
   let ( = ) x y = M.equal x y
   let ( <> ) x y = M.not_equal x y
   let ( > ) x y = M.greater x y
@@ -181,6 +195,8 @@ module DAD_DAD = struct
   let ( <. ) x y = M.elt_less x y
   let ( >=. ) x y = M.elt_greater_equal x y
   let ( <=. ) x y = M.elt_less_equal x y
+  let min2 x y = M.min2 x y
+  let max2 x y = M.max2 x y
 
 end
 
@@ -193,6 +209,7 @@ module F_DMS = struct
   let ( - ) a x = M.(sub_scalar x a |> neg)
   let ( * ) a x = M.mul_scalar x a
   let ( / ) a x = M.(mul_scalar (reci x) a)
+  let ( ** ) a x = M.pow0 a x
 
 end
 
@@ -205,6 +222,7 @@ module DMS_F = struct
   let ( - ) x a = M.sub_scalar x a
   let ( * ) x a = M.mul_scalar x a
   let ( / ) x a = M.div_scalar x a
+  let ( ** ) x a = M.pow1 x a
 
 end
 
@@ -217,6 +235,7 @@ module DMS_DMS = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( ** ) x y = M.pow x y
   let ( = ) x y = M.equal x y
   let ( <> ) x y = M.not_equal x y
   let ( > ) x y = M.greater x y
@@ -229,6 +248,8 @@ module DMS_DMS = struct
   let ( <. ) x y = M.elt_less x y
   let ( >=. ) x y = M.elt_greater_equal x y
   let ( <=. ) x y = M.elt_less_equal x y
+  let min2 x y = M.min2 x y
+  let max2 x y = M.max2 x y
 
 end
 
@@ -241,6 +262,7 @@ module F_DMD = struct
   let ( - ) a x = M.(sub_scalar x a |> neg)
   let ( * ) a x = M.mul_scalar x a
   let ( / ) a x = M.(mul_scalar (reci x) a)
+  let ( ** ) a x = M.pow0 a x
 
 end
 
@@ -253,6 +275,7 @@ module DMD_F = struct
   let ( - ) x a = M.sub_scalar x a
   let ( * ) x a = M.mul_scalar x a
   let ( / ) x a = M.div_scalar x a
+  let ( ** ) x a = M.pow1 x a
 
 end
 
@@ -265,6 +288,7 @@ module DMD_DMD = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( ** ) x y = M.pow x y
   let ( = ) x y = M.equal x y
   let ( <> ) x y = M.not_equal x y
   let ( > ) x y = M.greater x y
@@ -277,6 +301,8 @@ module DMD_DMD = struct
   let ( <. ) x y = M.elt_less x y
   let ( >=. ) x y = M.elt_greater_equal x y
   let ( <=. ) x y = M.elt_less_equal x y
+  let min2 x y = M.min2 x y
+  let max2 x y = M.max2 x y
 
 end
 
@@ -485,6 +511,9 @@ module DAS_DAD = struct
   let ( - ) x y = M.sub (lift x) y
   let ( * ) x y = M.mul (lift x) y
   let ( / ) x y = M.div (lift x) y
+  let ( ** ) x y = M.pow (lift x) y
+  let min2 x y = M.min2 (lift x) y
+  let max2 x y = M.max2 (lift x) y
 
 end
 
@@ -498,6 +527,9 @@ module DAD_DAS = struct
   let ( - ) x y = M.sub x (lift y)
   let ( * ) x y = M.mul x (lift y)
   let ( / ) x y = M.div x (lift y)
+  let ( ** ) x y = M.pow x (lift y)
+  let min2 x y = M.min2 x (lift y)
+  let max2 x y = M.max2 x (lift y)
 
 end
 
@@ -537,6 +569,9 @@ module DMS_DMD = struct
   let ( - ) x y = M.sub (lift x) y
   let ( * ) x y = M.mul (lift x) y
   let ( / ) x y = M.div (lift x) y
+  let ( ** ) x y = M.pow (lift x) y
+  let min2 x y = M.min2 (lift x) y
+  let max2 x y = M.max2 (lift x) y
 
 end
 
@@ -550,6 +585,9 @@ module DMD_DMS = struct
   let ( - ) x y = M.sub x (lift y)
   let ( * ) x y = M.mul x (lift y)
   let ( / ) x y = M.div x (lift y)
+  let ( ** ) x y = M.pow x (lift y)
+  let min2 x y = M.min2 x (lift y)
+  let max2 x y = M.max2 x (lift y)
 
 end
 
@@ -1223,6 +1261,29 @@ let ( / ) x y = match x, y with
   | DMZ _, DMS _ -> DMZ_DMS.(x / y)
   | _            -> error_binop "( / )" x y
 
+let ( ** ) x y = match x, y with
+  | F x, F y     -> F_F.(x ** y)
+  | F x, C y     -> F_C.(x ** y)
+  | C x, F y     -> C_F.(x ** y)
+  | C x, C y     -> C_C.(x ** y)
+  | F _, DAS _   -> F_DAS.(x ** y)
+  | DAS _, F _   -> DAS_F.(x ** y)
+  | DAS _, DAS _ -> DAS_DAS.(x ** y)
+  | F _, DAD _   -> F_DAD.(x ** y)
+  | DAD _, F _   -> DAD_F.(x ** y)
+  | DAD _, DAD _ -> DAD_DAD.(x ** y)
+  | F _, DMS _   -> F_DMS.(x ** y)
+  | DMS _, F _   -> DMS_F.(x ** y)
+  | DMS _, DMS _ -> DMS_DMS.(x ** y)
+  | F _, DMD _   -> F_DMD.(x ** y)
+  | DMD _, F _   -> DMD_F.(x ** y)
+  | DMD _, DMD _ -> DMD_DMD.(x ** y)
+  | DAS _, DAD _ -> DAS_DAD.(x ** y)
+  | DAD _, DAS _ -> DAD_DAS.(x ** y)
+  | DMS _, DMD _ -> DMS_DMD.(x ** y)
+  | DMD _, DMS _ -> DMD_DMS.(x ** y)
+  | _            -> error_binop "( ** )" x y
+
 let ( = ) x y = match x, y with
   | F x, F y     -> F_F.( = ) x y
   | F x, C y     -> F_C.( = ) x y
@@ -1378,6 +1439,30 @@ let ( <=. ) x y = match x, y with
   | DMC _, DMC _ -> DMC_DMC.( <=. ) x y
   | DMZ _, DMZ _ -> DMZ_DMZ.( <=. ) x y
   | _            -> error_binop "( <=. )" x y
+
+let min2 x y = match x, y with
+  | F x, F y     -> F_F.min2 x y
+  | DAS _, DAS _ -> DAS_DAS.min2 x y
+  | DAD _, DAD _ -> DAD_DAD.min2 x y
+  | DMS _, DMS _ -> DMS_DMS.min2 x y
+  | DMD _, DMD _ -> DMD_DMD.min2 x y
+  | DAS _, DAD _ -> DAS_DAD.min2 x y
+  | DAD _, DAS _ -> DAD_DAS.min2 x y
+  | DMS _, DMD _ -> DMS_DMD.min2 x y
+  | DMD _, DMS _ -> DMD_DMS.min2 x y
+  | _            -> error_binop "min2" x y
+
+let max2 x y = match x, y with
+  | F x, F y     -> F_F.max2 x y
+  | DAS _, DAS _ -> DAS_DAS.max2 x y
+  | DAD _, DAD _ -> DAD_DAD.max2 x y
+  | DMS _, DMS _ -> DMS_DMS.max2 x y
+  | DMD _, DMD _ -> DMD_DMD.max2 x y
+  | DAS _, DAD _ -> DAS_DAD.max2 x y
+  | DAD _, DAS _ -> DAD_DAS.max2 x y
+  | DMS _, DMD _ -> DMS_DMD.max2 x y
+  | DMD _, DMS _ -> DMD_DMS.max2 x y
+  | _            -> error_binop "max2" x y
 
 
 (* ends here *)
