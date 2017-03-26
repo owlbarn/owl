@@ -261,9 +261,9 @@ val to_arrays : mat -> elt array array
 
 val of_arrays : elt array array -> mat
 
-val to_ndarray : mat -> (float, Bigarray.float64_elt) Owl_dense_ndarray_generic.t
+val to_ndarray : mat -> (float, float64_elt) Owl_dense_ndarray_generic.t
 
-val of_ndarray : (float, Bigarray.float64_elt) Owl_dense_ndarray_generic.t -> mat
+val of_ndarray : (float, float64_elt) Owl_dense_ndarray_generic.t -> mat
 
 val to_rows : mat -> mat array
 

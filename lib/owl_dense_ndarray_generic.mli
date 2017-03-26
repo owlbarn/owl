@@ -9,7 +9,9 @@
   The documentation of some math functions is copied directly from Lacaml.
  *)
 
-type ('a, 'b) t = ('a, 'b, Bigarray.c_layout) Bigarray.Genarray.t
+open Bigarray
+
+type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 (** N-dimensional array abstract type *)
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
@@ -326,22 +328,22 @@ val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
   greater than the corresponding elements in [y].
  *)
 
-val elt_equal : ('a, 'b) t -> ('a, 'b) t -> (float, Bigarray.float32_elt) t
+val elt_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
 (* [elt_equal x y] performs element-wise [=] comparison of [x] and [y]. *)
 
-val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> (float, Bigarray.float32_elt) t
+val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
 (* [elt_not_equal x y] performs element-wise [!=] comparison of [x] and [y]. *)
 
-val elt_less : ('a, 'b) t -> ('a, 'b) t -> (float, Bigarray.float32_elt) t
+val elt_less : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
 (* [elt_less x y] performs element-wise [<] comparison of [x] and [y]. *)
 
-val elt_greater : ('a, 'b) t -> ('a, 'b) t -> (float, Bigarray.float32_elt) t
+val elt_greater : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
 (* [elt_greater x y] performs element-wise [>] comparison of [x] and [y]. *)
 
-val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> (float, Bigarray.float32_elt) t
+val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
 (* [elt_less_equal x y] performs element-wise [<=] comparison of [x] and [y]. *)
 
-val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> (float, Bigarray.float32_elt) t
+val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
 (* [elt_greater_equal x y] performs element-wise [>=] comparison of [x] and [y]. *)
 
 
@@ -366,16 +368,16 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 
 (** {6 Unary mathematical operations } *)
 
-val re_c2s : (Complex.t, Bigarray.complex32_elt) t -> (float, Bigarray.float32_elt) t
+val re_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 (** [re_c2s x] returns all the real components of [x] in a new ndarray of same shape. *)
 
-val re_z2d : (Complex.t, Bigarray.complex64_elt) t -> (float, Bigarray.float64_elt) t
+val re_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [re_d2z x] returns all the real components of [x] in a new ndarray of same shape. *)
 
-val im_c2s : (Complex.t, Bigarray.complex32_elt) t -> (float, Bigarray.float32_elt) t
+val im_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 (** [im_c2s x] returns all the imaginary components of [x] in a new ndarray of same shape. *)
 
-val im_z2d : (Complex.t, Bigarray.complex64_elt) t -> (float, Bigarray.float64_elt) t
+val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [im_d2z x] returns all the imaginary components of [x] in a new ndarray of same shape. *)
 
 val sum : ('a, 'b) t -> 'a
@@ -410,10 +412,10 @@ val minmax_i : (float, 'a) t -> (float * (int array)) * (float * (int array))
 val abs : (float, 'a) t -> (float, 'a) t
 (** [abs x] returns the absolute value of all elements in [x] in a new ndarray. *)
 
-val abs_c2s : (Complex.t, Bigarray.complex32_elt) t -> (float, Bigarray.float32_elt) t
+val abs_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 (** [abs_c2s x] is similar to [abs] but takes [complex32] as input. *)
 
-val abs_z2d : (Complex.t, Bigarray.complex64_elt) t -> (float, Bigarray.float64_elt) t
+val abs_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [abs_z2d x] is similar to [abs] but takes [complex64] as input. *)
 
 val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
@@ -716,28 +718,28 @@ val ssqr_diff : ('a, 'b) t -> ('a, 'b) t -> 'a
 
 (** {6 Cast functions} *)
 
-val cast_s2d : (float, Bigarray.float32_elt) t -> (float, Bigarray.float64_elt) t
+val cast_s2d : (float, float32_elt) t -> (float, float64_elt) t
 (** [cast_s2d x] casts [x] from [float32] to [float64]. *)
 
-val cast_d2s : (float, Bigarray.float64_elt) t -> (float, Bigarray.float32_elt) t
+val cast_d2s : (float, float64_elt) t -> (float, float32_elt) t
 (** [cast_d2s x] casts [x] from [float64] to [float32]. *)
 
-val cast_c2z : (Complex.t, Bigarray.complex32_elt) t -> (Complex.t, Bigarray.complex64_elt) t
+val cast_c2z : (Complex.t, complex32_elt) t -> (Complex.t, complex64_elt) t
 (** [cast_c2z x] casts [x] from [complex32] to [complex64]. *)
 
-val cast_z2c : (Complex.t, Bigarray.complex64_elt) t -> (Complex.t, Bigarray.complex32_elt) t
+val cast_z2c : (Complex.t, complex64_elt) t -> (Complex.t, complex32_elt) t
 (** [cast_z2c x] casts [x] from [complex64] to [complex32]. *)
 
-val cast_s2c : (float, Bigarray.float32_elt) t -> (Complex.t, Bigarray.complex32_elt) t
+val cast_s2c : (float, float32_elt) t -> (Complex.t, complex32_elt) t
 (** [cast_s2c x] casts [x] from [float32] to [complex32]. *)
 
-val cast_d2z : (float, Bigarray.float64_elt) t -> (Complex.t, Bigarray.complex64_elt) t
+val cast_d2z : (float, float64_elt) t -> (Complex.t, complex64_elt) t
 (** [cast_d2z x] casts [x] from [float64] to [complex64]. *)
 
-val cast_s2z : (float, Bigarray.float32_elt) t -> (Complex.t, Bigarray.complex64_elt) t
+val cast_s2z : (float, float32_elt) t -> (Complex.t, complex64_elt) t
 (** [cast_s2z x] casts [x] from [float32] to [complex64]. *)
 
-val cast_d2c : (float, Bigarray.float64_elt) t -> (Complex.t, Bigarray.complex32_elt) t
+val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 (** [cast_d2c x] casts [x] from [float64] to [complex32]. *)
 
 
