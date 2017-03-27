@@ -226,7 +226,7 @@ let _owl_print_mat_toplevel : type a b. (a, b) kind -> (a, b) owl_mat_op00 = fun
   | Float64   -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_fmat
   | Complex32 -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat
   | Complex64 -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat
-  | _         -> failwith "_owl_print_mat_toplevel: unsupported operation"
+  | _         -> fun _ -> () (* Format.printf "I don't know how to pprint it :(\n" *)
 
 let _owl_uniform_fun : type a b. (a, b) kind -> (float -> a) = function
   | Float32   -> fun s -> Owl_stats.Rnd.uniform () *. s

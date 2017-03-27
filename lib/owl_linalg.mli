@@ -16,9 +16,13 @@ type dsmat = Owl_dense_matrix_d.mat
 
 
 val inv : dsmat -> dsmat
-(** A general square matrix A has an LU decomposition into upper and lower triangular matrices,
- [P A = L U] where P is a permutation matrix, L is unit lower triangular matrix and U is upper triangular matrix. For square matrices this decomposition can be used to convert the linear system A x = b into a pair of triangular systems (L y = P b, U x = y), which can be solved by forward and back-substitution. Note that the LU decomposition is valid for singular matrices.
-
+(** A general square matrix A has an LU decomposition into upper and lower
+  triangular matrices, [P A = L U] where P is a permutation matrix, L is unit
+  lower triangular matrix and U is upper triangular matrix. For square matrices
+  this decomposition can be used to convert the linear system A x = b into a
+  pair of triangular systems (L y = P b, U x = y), which can be solved by
+  forward and back-substitution. Note that the LU decomposition is valid for
+  singular matrices.
  *)
 
 val det : dsmat -> float
