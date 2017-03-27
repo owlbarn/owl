@@ -411,6 +411,10 @@ let sum x = match x with
   | DAD _ -> DAD.sum x
   | DMS _ -> DMS.sum x
   | DMD _ -> DMD.sum x
+  | DAC _ -> DAC.sum x
+  | DAZ _ -> DAZ.sum x
+  | DMC _ -> DMC.sum x
+  | DMZ _ -> DMZ.sum x
   | _     -> error_uniop "sum" x
 
 let prod x = match x with
@@ -418,6 +422,10 @@ let prod x = match x with
   | DAD _ -> DAD.prod x
   | DMS _ -> DMS.prod x
   | DMD _ -> DMD.prod x
+  | DAC _ -> DAC.prod x
+  | DAZ _ -> DAZ.prod x
+  | DMC _ -> DMC.prod x
+  | DMZ _ -> DMZ.prod x
   | _     -> error_uniop "prod" x
 
 let abs x = match x with
@@ -425,6 +433,10 @@ let abs x = match x with
   | DAD _ -> DAD.abs x
   | DMS _ -> DMS.abs x
   | DMD _ -> DMD.abs x
+  | DAC _ -> DAC.abs x
+  | DAZ _ -> DAZ.abs x
+  | DMC _ -> DMC.abs x
+  | DMZ _ -> DMZ.abs x
   | _     -> error_uniop "abs" x
 
 let abs2 x = match x with
@@ -432,6 +444,10 @@ let abs2 x = match x with
   | DAD _ -> DAD.abs2 x
   | DMS _ -> DMS.abs2 x
   | DMD _ -> DMD.abs2 x
+  | DAC _ -> DAC.abs2 x
+  | DAZ _ -> DAZ.abs2 x
+  | DMC _ -> DMC.abs2 x
+  | DMZ _ -> DMZ.abs2 x
   | _     -> error_uniop "abs2" x
 
 let neg x = match x with
@@ -439,6 +455,10 @@ let neg x = match x with
   | DAD _ -> DAD.neg x
   | DMS _ -> DMS.neg x
   | DMD _ -> DMD.neg x
+  | DAC _ -> DAC.neg x
+  | DAZ _ -> DAZ.neg x
+  | DMC _ -> DMC.neg x
+  | DMZ _ -> DMZ.neg x
   | _     -> error_uniop "neg" x
 
 let reci x = match x with
@@ -705,6 +725,10 @@ let l1norm x = match x with
   | DAD _ -> DAD.l1norm x
   | DMS _ -> DMS.l1norm x
   | DMD _ -> DMD.l1norm x
+  | DAC _ -> DAC.l1norm x
+  | DAZ _ -> DAZ.l1norm x
+  | DMC _ -> DMC.l1norm x
+  | DMZ _ -> DMZ.l1norm x
   | _     -> error_uniop "l1norm" x
 
 let l2norm x = match x with
@@ -712,6 +736,10 @@ let l2norm x = match x with
   | DAD _ -> DAD.l2norm x
   | DMS _ -> DMS.l2norm x
   | DMD _ -> DMD.l2norm x
+  | DAC _ -> DAC.l2norm x
+  | DAZ _ -> DAZ.l2norm x
+  | DMC _ -> DMC.l2norm x
+  | DMZ _ -> DMZ.l2norm x
   | _     -> error_uniop "l2norm" x
 
 let l2norm_sqr x = match x with
@@ -719,6 +747,10 @@ let l2norm_sqr x = match x with
   | DAD _ -> DAD.l2norm_sqr x
   | DMS _ -> DMS.l2norm_sqr x
   | DMD _ -> DMD.l2norm_sqr x
+  | DAC _ -> DAC.l2norm_sqr x
+  | DAZ _ -> DAZ.l2norm_sqr x
+  | DMC _ -> DMC.l2norm_sqr x
+  | DMZ _ -> DMZ.l2norm_sqr x
   | _     -> error_uniop "l2norm_sqr" x
 
 (* ends here *)
