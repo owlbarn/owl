@@ -261,9 +261,15 @@ let average_rows x = M.sum_rows (unpack_box x) |> pack_box
 let average_cols x = M.sum_rows (unpack_box x) |> pack_box
 
 
+let re x = M.re (unpack_box x) |> pack_dmd
+
+let im x = M.im (unpack_box x) |> pack_dmd
+
 let abs x = M.abs (unpack_box x) |> pack_dmd
 
 let abs2 x = M.abs2 (unpack_box x) |> pack_dmd
+
+let conj x = M.conj (unpack_box x) |> pack_box
 
 let neg x = M.neg (unpack_box x) |> pack_box
 

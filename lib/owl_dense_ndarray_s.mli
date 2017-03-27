@@ -275,8 +275,6 @@ val l2norm : arr -> float
 
 val l2norm_sqr : arr -> float
 
-val cross_entropy : arr -> arr -> float
-
 
 (** {6 Binary mathematical operations } *)
 
@@ -317,3 +315,5 @@ val max2 : arr -> arr -> arr
 val ssqr : arr -> elt -> elt
 
 val ssqr_diff : arr -> arr -> elt
+
+val cross_entropy : arr -> arr -> float

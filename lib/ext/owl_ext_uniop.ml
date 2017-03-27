@@ -276,12 +276,38 @@ module DAC = struct
 
   module M = Owl_ext_dense_ndarray_c
 
+  let re x = M.re x
+  let im x = M.im x
+  let sum x = M.sum x
+  let prod x = M.prod x
+  let abs x = M.abs x
+  let abs2 x = M.abs2 x
+  let conj x = M.conj x
+  let neg x = M.neg x
+  let reci x = M.reci x
+  let l1norm x = M.l1norm x
+  let l2norm x = M.l2norm x
+  let l2norm_sqr x = M.l2norm_sqr x
+
 end
 
 
 module DAZ = struct
 
   module M = Owl_ext_dense_ndarray_z
+
+  let re x = M.re x
+  let im x = M.im x
+  let sum x = M.sum x
+  let prod x = M.prod x
+  let abs x = M.abs x
+  let abs2 x = M.abs2 x
+  let conj x = M.conj x
+  let neg x = M.neg x
+  let reci x = M.reci x
+  let l1norm x = M.l1norm x
+  let l2norm x = M.l2norm x
+  let l2norm_sqr x = M.l2norm_sqr x
 
 end
 
@@ -290,12 +316,38 @@ module DMC = struct
 
   module M = Owl_ext_dense_matrix_c
 
+  let re x = M.re x
+  let im x = M.im x
+  let sum x = M.sum x
+  let prod x = M.prod x
+  let abs x = M.abs x
+  let abs2 x = M.abs2 x
+  let conj x = M.conj x
+  let neg x = M.neg x
+  let reci x = M.reci x
+  let l1norm x = M.l1norm x
+  let l2norm x = M.l2norm x
+  let l2norm_sqr x = M.l2norm_sqr x
+
 end
 
 
 module DMZ = struct
 
   module M = Owl_ext_dense_matrix_z
+
+  let re x = M.re x
+  let im x = M.im x
+  let sum x = M.sum x
+  let prod x = M.prod x
+  let abs x = M.abs x
+  let abs2 x = M.abs2 x
+  let conj x = M.conj x
+  let neg x = M.neg x
+  let reci x = M.reci x
+  let l1norm x = M.l1norm x
+  let l2norm x = M.l2norm x
+  let l2norm_sqr x = M.l2norm_sqr x
 
 end
 

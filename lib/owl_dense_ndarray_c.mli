@@ -173,6 +173,10 @@ val load : string -> arr
 
 (** {6 Unary mathematical operations } *)
 
+val re : arr -> Owl_dense_ndarray_s.arr
+
+val im : arr -> Owl_dense_ndarray_s.arr
+
 val sum : arr -> elt
 
 val prod : ?axis:int option array -> arr -> elt

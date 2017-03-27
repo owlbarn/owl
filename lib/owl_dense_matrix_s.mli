@@ -411,8 +411,6 @@ val l2norm : mat -> elt
 
 val l2norm_sqr : mat -> elt
 
-val cross_entropy : mat -> mat -> elt
-
 
 (** {6 Binary mathematical operations } *)
 
@@ -457,6 +455,8 @@ val max2 : mat -> mat -> mat
 val ssqr : mat -> elt -> elt
 
 val ssqr_diff : mat -> mat -> elt
+
+val cross_entropy : mat -> mat -> elt
 
 
 (** {6 Shorhand infix operators} *)

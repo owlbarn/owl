@@ -165,9 +165,15 @@ let save x f = M.save (unpack_box x) f
 let load f = M.load f |> pack_box
 
 
+let re x = M.re (unpack_box x) |> pack_das
+
+let im x = M.im (unpack_box x) |> pack_das
+
 let abs x = M.abs (unpack_box x) |> pack_das
 
 let abs2 x = M.abs2 (unpack_box x) |> pack_das
+
+let conj x = M.conj (unpack_box x) |> pack_box
 
 let sum x = M.sum (unpack_box x) |> pack_elt
 

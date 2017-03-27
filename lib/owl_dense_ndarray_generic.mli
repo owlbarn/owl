@@ -628,9 +628,6 @@ val l2norm_sqr : ('a, 'b) t -> float
   it always returns a float number.
  *)
 
-val cross_entropy : (float, 'a) t -> (float, 'a) t -> float
-(** [cross_entropy x y] calculates the cross entropy between [x] and [y] using base [e]. *)
-
 
 (** {6 Binary mathematical operations } *)
 
@@ -723,6 +720,9 @@ val ssqr_diff : ('a, 'b) t -> ('a, 'b) t -> 'a
 (** [ssqr_diff x y] computes the sum of squared differences of every elements in
   [x] and its corresponding element in [y].
  *)
+
+val cross_entropy : (float, 'a) t -> (float, 'a) t -> float
+(** [cross_entropy x y] calculates the cross entropy between [x] and [y] using base [e]. *)
 
 
 (** {6 Cast functions} *)
