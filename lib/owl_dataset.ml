@@ -28,6 +28,12 @@ let download_all () =
     "stopwords.txt.gz"; "enron.test.gz"; "enron.train.gz"; "nips.test.gz"; "nips.train.gz";
     "mnist-test-images.gz"; "mnist-test-labels.gz"; "mnist-test-lblvec.gz";
     "mnist-train-images.gz"; "mnist-train-labels.gz"; "mnist-train-lblvec.gz";
+    "cifar10_test_data.gz"; "cifar10_test_labels.gz"; "cifar10_test_filenames.gz";
+    "cifar10_train1_data.gz"; "cifar10_train1_labels.gz"; "cifar10_train1_filenames.gz";
+    "cifar10_train2_data.gz"; "cifar10_train2_labels.gz"; "cifar10_train2_filenames.gz";
+    "cifar10_train3_data.gz"; "cifar10_train3_labels.gz"; "cifar10_train3_filenames.gz";
+    "cifar10_train4_data.gz"; "cifar10_train4_labels.gz"; "cifar10_train4_filenames.gz";
+    "cifar10_train5_data.gz"; "cifar10_train5_labels.gz"; "cifar10_train5_filenames.gz";
     ] in
   List.iter (fun fname -> download_data fname) l
 
