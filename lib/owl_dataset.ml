@@ -60,3 +60,7 @@ let draw_samples x y n =
   let x, l = Owl_dense_matrix_d.draw_rows ~replacement:false x n in
   let y = Owl_dense_matrix_d.rows y l in
   x, y
+
+let load_cifar_train_data batch =
+  let p = local_data_path () in
+  Owl_dense_matrix_s.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_data")
