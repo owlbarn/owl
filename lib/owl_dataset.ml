@@ -37,6 +37,14 @@ let download_all () =
     ] in
   List.iter (fun fname -> download_data fname) l
 
+let draw_samples x y n =
+  let x, l = Owl_dense_matrix_d.draw_rows ~replacement:false x n in
+  let y = Owl_dense_matrix_d.rows y l in
+  x, y
+
+(* load mnist train data, the return is a triplet. The first is a 60000 x 784
+  matrix where each row represents a 28 x 28 image. The second is label and the
+  third is the corresponding unravelled row vector of the label. *)
 let load_mnist_train_data () =
   let p = local_data_path () in
   Owl_dense_matrix_d.load (p ^ "mnist-train-images"),
@@ -56,11 +64,15 @@ let print_mnist_image x =
     print_endline "";
   )
 
-let draw_samples x y n =
-  let x, l = Owl_dense_matrix_d.draw_rows ~replacement:false x n in
-  let y = Owl_dense_matrix_d.rows y l in
-  x, y
-
+(* load cifar train data, there are five batches in total. The loaded data is a
+  10000 * 3072 matrix. Each row represents a 32 x 32 image of three colour
+  channels, unravelled into a row vector. The labels are also returned. *)
 let load_cifar_train_data batch =
   let p = local_data_path () in
-  Owl_dense_matrix_s.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_data")
+  Owl_dense_matrix_s.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_data"),
+  Owl_dense_matrix_s.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_labels")
+
+let load_cifar_test_data () =
+  let p = local_data_path () in
+  Owl_dense_matrix_s.load (p ^ "cifar10_test_data"),
+  Owl_dense_matrix_s.load (p ^ "cifar10_test_labels")
