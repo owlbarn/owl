@@ -3,29 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** [
-  Machine learning library
-  Note: C layout row-major matrix
-  ]  *)
-
 module MX = Owl_dense_matrix_d
 module UT = Owl_utils
-
-(** [
-  a numberical way of calculating gradient.
-  x is a k x m matrix containing m classifiers of k features.
-]  *)
-let numerical_gradient l p x y y' =
-  let open MX in
-  let h = 0.00001 in
-  let f = l y in
-  let g = mapi_by_row (col_num p)
-  (fun i v ->
-    let fa = f (x $@ (replace_row (v -$ h) p i)) in
-    let fb = f (x $@ (replace_row (v +$ h) p i)) in
-    (fb -@ fa) /$ (2. *. h)
-  ) p in g
-
 
 (* Regularisation functions *)
 
@@ -138,7 +117,7 @@ let when_enough v c = (v < 0.00001 && c > 1000) || (c > 5000)
   i : whether to include intercept or not, default value is false
   p : model parameters (k * m), each column is a classifier. So we have m classifier of k features.
   x : data matrix (n x k), each row is a data point. So we have n datea points of k features each.
-  y : labeled data (n x m), n data points and each is labeled with m classifiers
+  y : labelled data (n x m), n data points and each is labeled with m classifiers
 ]  *)
 let _sgd_basic b s t l g r o a i p x y =
   (* check whether the intercept is needed or not *)

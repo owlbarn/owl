@@ -1041,6 +1041,8 @@ module Mat = struct
 
   let uniform ?scale m n = M.uniform ?scale m n |> pack_mat
 
+  let reset x = x |> unpack_mat |> M.reset
+
   let row_num x = M.row_num (unpack_mat x)
 
   let col_num x = M.col_num (unpack_mat x)

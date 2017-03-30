@@ -127,6 +127,12 @@ Library owl
   if system(macosx)
     CCLib:          -framework Accelerate
 
+Library owl_neural
+  Path:             lib/neural
+  BuildTools:       ocamlbuild, ocamldoc
+  Modules:          Owl_neural
+  BuildDepends:     owl
+
 # +-------------------------------------------------------------------+
 # | Performance tests                                                 |
 # +-------------------------------------------------------------------+
