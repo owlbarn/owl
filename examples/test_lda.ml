@@ -3,16 +3,9 @@
   mahcine. Appologies for the temporary hard-coding path.
  *)
 
-let prepare_data () =
-  let p = Owl.Dataset.local_data_path () in
-  if Sys.file_exists (p ^ "stopwords.txt") = false then
-    Owl.Dataset.download_all ();
-  p
-
 let _ =
-  let p = prepare_data () in
-  let s = Owl_topic_utils.load_stopwords (p ^ "stopwords.txt") in
-  let x = Owl_topic_utils.load_data ~stopwords:s (p ^ "nips.train") in
+  let s = Owl_dataset.load_stopwords () in
+  let x = Owl_dataset.load_nips_train_data s in
   let v = Owl_topic_utils.build_vocabulary x in
   let d = Owl_topic_utils.tokenisation v x in
   let m = Owl_topic_lda.init ~iter:20 10 v d in

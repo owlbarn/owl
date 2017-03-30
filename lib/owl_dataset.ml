@@ -76,3 +76,12 @@ let load_cifar_test_data () =
   let p = local_data_path () in
   Owl_dense_matrix_s.load (p ^ "cifar10_test_data"),
   Owl_dense_matrix_s.load (p ^ "cifar10_test_labels")
+
+(* load text data and stopwords *)
+let load_stopwords () =
+  let p = local_data_path () in
+  Owl_topic_utils.load_stopwords (p ^ "stopwords.txt")
+
+let load_nips_train_data stopwords =
+  let p = local_data_path () in
+  Owl_topic_utils.load_data ~stopwords (p ^ "nips.train")
