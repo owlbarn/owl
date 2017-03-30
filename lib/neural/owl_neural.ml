@@ -49,13 +49,11 @@ type network = {
 }
 
 let linear ~input ~output ~init =
-  let reset l = Mat.(reset l.w; reset l.b) in
-  let run x l = Maths.(x * l.w + l.b) in
   let l = {
     w = initialise init input output;
     b = Mat.zeros 1 output;
     init = init;
-    reset = reset;
-    run = run;
+    reset = (fun l -> Mat.reset l.w; Mat.reset l.b);
+    run = (fun x l -> Maths.(x * l.w + l.b));
   }
   in Linear l
