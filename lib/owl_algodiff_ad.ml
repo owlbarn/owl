@@ -1042,6 +1042,8 @@ let print_trace x =
 
 module Mat = struct
 
+  let empty m n = M.empty m n |> pack_mat
+  
   let zeros m n = M.zeros m n |> pack_mat
 
   let uniform ?scale m n = M.uniform ?scale m n |> pack_mat
