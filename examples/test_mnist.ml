@@ -47,8 +47,8 @@ let test_model nn x y =
   Mat.iter2_rows (fun u v ->
     Dataset.print_mnist_image (unpack_mat u);
     let p = run_network u nn |> unpack_mat in
-    Owl.Mat.print p;
-    Printf.printf "prediction: %i\n" (let _, _, j = Owl.Mat.max_i p in j)
+    Dense.Matrix.Generic.print p;
+    Printf.printf "prediction: %i\n" (let _, _, j = Dense.Matrix.Generic.max_i p in j)
   ) x y
 
 let _ =

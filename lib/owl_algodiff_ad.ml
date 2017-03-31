@@ -4,7 +4,7 @@
  *)
 
 module S = Pervasives
-module M = Owl_dense_matrix_d
+module M = Owl_dense_matrix_s
 
 type mat = M.mat
 
@@ -698,6 +698,7 @@ module Maths = struct
     let r a = Relu_D a in
     op_d_d a ff fd df r
 
+(* TODO: provide later when linalg supports single precision
   and inv a =
     let ff = function
       | Mat a    -> Mat Owl_linalg.(inv a)
@@ -707,6 +708,7 @@ module Maths = struct
     let df cp ap at = (neg cp) * at * cp in
     let r a = Inv_D a in
     op_d_d a ff fd df r
+*)
 
   and softplus x = log (F 1. + exp x)
 

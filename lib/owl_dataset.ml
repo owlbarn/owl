@@ -38,8 +38,8 @@ let download_all () =
   List.iter (fun fname -> download_data fname) l
 
 let draw_samples x y n =
-  let x, l = Owl_dense_matrix_d.draw_rows ~replacement:false x n in
-  let y = Owl_dense_matrix_d.rows y l in
+  let x, l = Owl_dense_matrix_generic.draw_rows ~replacement:false x n in
+  let y = Owl_dense_matrix_generic.rows y l in
   x, y
 
 (* load mnist train data, the return is a triplet. The first is a 60000 x 784
@@ -47,20 +47,20 @@ let draw_samples x y n =
   third is the corresponding unravelled row vector of the label. *)
 let load_mnist_train_data () =
   let p = local_data_path () in
-  Owl_dense_matrix_d.load (p ^ "mnist-train-images"),
-  Owl_dense_matrix_d.load (p ^ "mnist-train-labels"),
-  Owl_dense_matrix_d.load (p ^ "mnist-train-lblvec")
+  Owl_dense_matrix_s.load (p ^ "mnist-train-images"),
+  Owl_dense_matrix_s.load (p ^ "mnist-train-labels"),
+  Owl_dense_matrix_s.load (p ^ "mnist-train-lblvec")
 
 let load_mnist_test_data () =
   let p = local_data_path () in
-  Owl_dense_matrix_d.load (p ^ "mnist-test-images"),
-  Owl_dense_matrix_d.load (p ^ "mnist-test-labels"),
-  Owl_dense_matrix_d.load (p ^ "mnist-test-lblvec")
+  Owl_dense_matrix_s.load (p ^ "mnist-test-images"),
+  Owl_dense_matrix_s.load (p ^ "mnist-test-labels"),
+  Owl_dense_matrix_s.load (p ^ "mnist-test-lblvec")
 
 let print_mnist_image x =
-  x |> Owl_dense_matrix_d.reshape 28 28
-  |> Owl_dense_matrix_d.iter_rows (fun v ->
-    Owl_dense_vector_d.iter (function 0. -> Printf.printf " " | _ -> Printf.printf "■") v;
+  x |> Owl_dense_matrix_generic.reshape 28 28
+  |> Owl_dense_matrix_generic.iter_rows (fun v ->
+    Owl_dense_vector_generic.iter (function 0. -> Printf.printf " " | _ -> Printf.printf "■") v;
     print_endline "";
   )
 
