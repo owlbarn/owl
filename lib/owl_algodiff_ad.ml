@@ -3,6 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(* change to Owl_dense_matrix_d if you need double precision,
+  I should use functor to wrap it up in the future. *)
+
 module S = Pervasives
 module M = Owl_dense_matrix_s
 
