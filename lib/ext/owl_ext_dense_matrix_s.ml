@@ -249,11 +249,11 @@ let max x = M.max (unpack_box x) |> pack_elt
 
 let minmax x = let (a, b) = M.minmax (unpack_box x) in (pack_elt a, pack_elt b)
 
-let min_i x = let (a, i, j) = M.min_i (unpack_box x) in (pack_elt a, i, j)
+let min_i x = let (a, i, j) = M.min_i (unpack_box x) in (pack_elt a, [|i;j|])
 
-let max_i x = let (a, i, j) = M.max_i (unpack_box x) in (pack_elt a, i, j)
+let max_i x = let (a, i, j) = M.max_i (unpack_box x) in (pack_elt a, [|i;j|])
 
-let minmax_i x = let (a, i, j), (b, p, q) = M.minmax_i (unpack_box x) in (pack_elt a, i, j), (pack_elt b, p, q)
+let minmax_i x = let (a, i, j), (b, p, q) = M.minmax_i (unpack_box x) in (pack_elt a, [|i;j|]), (pack_elt b, [|p;q|])
 
 let trace x = M.trace (unpack_box x) |> pack_elt
 

@@ -25,6 +25,30 @@ module F = struct
   let signum x = F M.(signum x)
   let sqr x = F (x *. x)
   let sqrt x = F M.(sqrt x)
+  let exp x = F M.(exp x)
+  let expm1 x = F M.(expm1 x)
+  let log x = F M.(log x)
+  let log10 x = F M.(log10 x)
+  let log2 x = F M.(log2 x)
+  let log1p x = F M.(log1p x)
+  let sin x = F M.(sin x)
+  let cos x = F M.(cos x)
+  let tan x = F M.(tan x)
+  let asin x = F M.(asin x)
+  let acos x = F M.(acos x)
+  let atan x = F M.(atan x)
+  let sinh x = F M.(sinh x)
+  let cosh x = F M.(cosh x)
+  let tanh x = F M.(tanh x)
+  let asinh x = F M.(asinh x)
+  let acosh x = F M.(acosh x)
+  let atanh x = F M.(atanh x)
+  let floor x = F M.(floor x)
+  let ceil x = F M.(ceil x)
+  let round x = F M.(round x)
+  let trunc x = F M.(trunc x)
+  let relu x = F M.(relu x)
+  let sigmoid x = F M.(sigmoid x)
 
 end
 
@@ -383,7 +407,6 @@ let minmax x = match x with
   | DMD _ -> DMD.minmax x
   | _     -> error_uniop "minmax" x
 
-(* TODO: index type
 let min_i x = match x with
   | DAS _ -> DAS.min_i x
   | DAD _ -> DAD.min_i x
@@ -404,7 +427,6 @@ let minmax_i x = match x with
   | DMS _ -> DMS.minmax_i x
   | DMD _ -> DMD.minmax_i x
   | _     -> error_uniop "minmax_i" x
-*)
 
 let sum x = match x with
   | DAS _ -> DAS.sum x
@@ -429,6 +451,7 @@ let prod x = match x with
   | _     -> error_uniop "prod" x
 
 let abs x = match x with
+  | F x   -> F.abs x
   | DAS _ -> DAS.abs x
   | DAD _ -> DAD.abs x
   | DMS _ -> DMS.abs x
@@ -451,6 +474,7 @@ let abs2 x = match x with
   | _     -> error_uniop "abs2" x
 
 let neg x = match x with
+  | F x   -> F.neg x
   | DAS _ -> DAS.neg x
   | DAD _ -> DAD.neg x
   | DMS _ -> DMS.neg x
@@ -462,6 +486,7 @@ let neg x = match x with
   | _     -> error_uniop "neg" x
 
 let reci x = match x with
+  | F x   -> F.reci x
   | DAS _ -> DAS.reci x
   | DAD _ -> DAD.reci x
   | DMS _ -> DMS.reci x
@@ -469,6 +494,7 @@ let reci x = match x with
   | _     -> error_uniop "reci" x
 
 let signum x = match x with
+  | F x   -> F.signum x
   | DAS _ -> DAS.signum x
   | DAD _ -> DAD.signum x
   | DMS _ -> DMS.signum x
@@ -476,6 +502,7 @@ let signum x = match x with
   | _     -> error_uniop "signum" x
 
 let sqr x = match x with
+  | F x   -> F.sqr x
   | DAS _ -> DAS.sqr x
   | DAD _ -> DAD.sqr x
   | DMS _ -> DMS.sqr x
@@ -483,6 +510,7 @@ let sqr x = match x with
   | _     -> error_uniop "sqr" x
 
 let sqrt x = match x with
+  | F x   -> F.sqrt x
   | DAS _ -> DAS.sqrt x
   | DAD _ -> DAD.sqrt x
   | DMS _ -> DMS.sqrt x
@@ -497,6 +525,7 @@ let cbrt x = match x with
   | _     -> error_uniop "cbrt" x
 
 let exp x = match x with
+  | F x   -> F.exp x
   | DAS _ -> DAS.exp x
   | DAD _ -> DAD.exp x
   | DMS _ -> DMS.exp x
@@ -511,6 +540,7 @@ let exp2 x = match x with
   | _     -> error_uniop "exp2" x
 
 let expm1 x = match x with
+  | F x   -> F.expm1 x
   | DAS _ -> DAS.expm1 x
   | DAD _ -> DAD.expm1 x
   | DMS _ -> DMS.expm1 x
@@ -518,6 +548,7 @@ let expm1 x = match x with
   | _     -> error_uniop "expm1" x
 
 let log x = match x with
+  | F x   -> F.log x
   | DAS _ -> DAS.log x
   | DAD _ -> DAD.log x
   | DMS _ -> DMS.log x
@@ -525,6 +556,7 @@ let log x = match x with
   | _     -> error_uniop "log" x
 
 let log10 x = match x with
+  | F x   -> F.log10 x
   | DAS _ -> DAS.log10 x
   | DAD _ -> DAD.log10 x
   | DMS _ -> DMS.log10 x
@@ -532,6 +564,7 @@ let log10 x = match x with
   | _     -> error_uniop "log10" x
 
 let log2 x = match x with
+  | F x   -> F.log2 x
   | DAS _ -> DAS.log2 x
   | DAD _ -> DAD.log2 x
   | DMS _ -> DMS.log2 x
@@ -539,6 +572,7 @@ let log2 x = match x with
   | _     -> error_uniop "log2" x
 
 let log1p x = match x with
+  | F x   -> F.log1p x
   | DAS _ -> DAS.log1p x
   | DAD _ -> DAD.log1p x
   | DMS _ -> DMS.log1p x
@@ -546,6 +580,7 @@ let log1p x = match x with
   | _     -> error_uniop "log1p" x
 
 let sin x = match x with
+  | F x   -> F.sin x
   | DAS _ -> DAS.sin x
   | DAD _ -> DAD.sin x
   | DMS _ -> DMS.sin x
@@ -553,6 +588,7 @@ let sin x = match x with
   | _     -> error_uniop "sin" x
 
 let cos x = match x with
+  | F x   -> F.cos x
   | DAS _ -> DAS.cos x
   | DAD _ -> DAD.cos x
   | DMS _ -> DMS.cos x
@@ -560,6 +596,7 @@ let cos x = match x with
   | _     -> error_uniop "cos" x
 
 let tan x = match x with
+  | F x   -> F.tan x
   | DAS _ -> DAS.tan x
   | DAD _ -> DAD.tan x
   | DMS _ -> DMS.tan x
@@ -567,6 +604,7 @@ let tan x = match x with
   | _     -> error_uniop "tan" x
 
 let asin x = match x with
+  | F x   -> F.asin x
   | DAS _ -> DAS.asin x
   | DAD _ -> DAD.asin x
   | DMS _ -> DMS.asin x
@@ -574,6 +612,7 @@ let asin x = match x with
   | _     -> error_uniop "asin" x
 
 let acos x = match x with
+  | F x   -> F.acos x
   | DAS _ -> DAS.acos x
   | DAD _ -> DAD.acos x
   | DMS _ -> DMS.acos x
@@ -581,6 +620,7 @@ let acos x = match x with
   | _     -> error_uniop "acos" x
 
 let atan x = match x with
+  | F x   -> F.atan x
   | DAS _ -> DAS.atan x
   | DAD _ -> DAD.atan x
   | DMS _ -> DMS.atan x
@@ -588,6 +628,7 @@ let atan x = match x with
   | _     -> error_uniop "atan" x
 
 let sinh x = match x with
+  | F x   -> F.sinh x
   | DAS _ -> DAS.sinh x
   | DAD _ -> DAD.sinh x
   | DMS _ -> DMS.sinh x
@@ -595,6 +636,7 @@ let sinh x = match x with
   | _     -> error_uniop "sinh" x
 
 let cosh x = match x with
+  | F x   -> F.cosh x
   | DAS _ -> DAS.cosh x
   | DAD _ -> DAD.cosh x
   | DMS _ -> DMS.cosh x
@@ -602,6 +644,7 @@ let cosh x = match x with
   | _     -> error_uniop "cosh" x
 
 let tanh x = match x with
+  | F x   -> F.tanh x
   | DAS _ -> DAS.tanh x
   | DAD _ -> DAD.tanh x
   | DMS _ -> DMS.tanh x
@@ -609,6 +652,7 @@ let tanh x = match x with
   | _     -> error_uniop "tanh" x
 
 let asinh x = match x with
+  | F x   -> F.asinh x
   | DAS _ -> DAS.asinh x
   | DAD _ -> DAD.asinh x
   | DMS _ -> DMS.asinh x
@@ -616,6 +660,7 @@ let asinh x = match x with
   | _     -> error_uniop "asinh" x
 
 let acosh x = match x with
+  | F x   -> F.acosh x
   | DAS _ -> DAS.acosh x
   | DAD _ -> DAD.acosh x
   | DMS _ -> DMS.acosh x
@@ -623,6 +668,7 @@ let acosh x = match x with
   | _     -> error_uniop "acosh" x
 
 let atanh x = match x with
+  | F x   -> F.atanh x
   | DAS _ -> DAS.atanh x
   | DAD _ -> DAD.atanh x
   | DMS _ -> DMS.atanh x
@@ -630,6 +676,7 @@ let atanh x = match x with
   | _     -> error_uniop "atanh" x
 
 let floor x = match x with
+  | F x   -> F.floor x
   | DAS _ -> DAS.floor x
   | DAD _ -> DAD.floor x
   | DMS _ -> DMS.floor x
@@ -637,6 +684,7 @@ let floor x = match x with
   | _     -> error_uniop "floor" x
 
 let ceil x = match x with
+  | F x   -> F.ceil x
   | DAS _ -> DAS.ceil x
   | DAD _ -> DAD.ceil x
   | DMS _ -> DMS.ceil x
@@ -644,6 +692,7 @@ let ceil x = match x with
   | _     -> error_uniop "ceil" x
 
 let round x = match x with
+  | F x   -> F.round x
   | DAS _ -> DAS.round x
   | DAD _ -> DAD.round x
   | DMS _ -> DMS.round x
@@ -651,6 +700,7 @@ let round x = match x with
   | _     -> error_uniop "round" x
 
 let trunc x = match x with
+  | F x   -> F.trunc x
   | DAS _ -> DAS.trunc x
   | DAD _ -> DAD.trunc x
   | DMS _ -> DMS.trunc x
@@ -679,6 +729,7 @@ let logistic x = match x with
   | _     -> error_uniop "logistic" x
 
 let relu x = match x with
+  | F x   -> F.relu x
   | DAS _ -> DAS.relu x
   | DAD _ -> DAD.relu x
   | DMS _ -> DMS.relu x
@@ -707,6 +758,7 @@ let softmax x = match x with
   | _     -> error_uniop "softmax" x
 
 let sigmoid x = match x with
+  | F x   -> F.sigmoid x
   | DAS _ -> DAS.sigmoid x
   | DAD _ -> DAD.sigmoid x
   | DMS _ -> DMS.sigmoid x
