@@ -29,13 +29,13 @@ type layer =
 and linear = {
   mutable w : t;
   mutable b : t;
-  mutable init : init_typ;
-  mutable reset : linear -> unit;
-  mutable run : t -> linear -> t;
+  mutable init_typ : init_typ;
+  mutable init : layer -> unit;
+  mutable reset : layer -> unit;
+  mutable run : t -> layer -> t;
 }
 and recurrent = {
   mutable whh : t;
-  mutable run : t -> recurrent -> t;
 }
 and ltsm = {
   mutable wxi : t;
@@ -43,17 +43,81 @@ and ltsm = {
 
 type network = {
   mutable layers : layer list;
-  mutable init : unit -> unit;
-  mutable reset : unit -> unit;
-  mutable run : unit -> unit;
 }
 
-let linear ~input ~output ~init =
+let unpack_linear_layer = function Linear l -> l
+
+let unpack_recurrent_layer = function Recurrent l -> l
+
+let linear ~input ~output ~init_typ =
+  let init l =
+    let l = unpack_linear_layer l in
+    l.w <- initialise init_typ input output;
+    l.b <- Mat.zeros 1 output
+  in
+  let reset l =
+    let l = unpack_linear_layer l in
+    Mat.reset l.w;
+    Mat.reset l.b
+  in
+  let run x l =
+    let l = unpack_linear_layer l in
+    Maths.(x * l.w + l.b)
+  in
   let l = {
-    w = initialise init input output;
-    b = Mat.zeros 1 output;
+    w = Mat.zeros 1 1;
+    b = Mat.zeros 1 1;
+    init_typ = init_typ;
     init = init;
-    reset = (fun l -> Mat.reset l.w; Mat.reset l.b);
-    run = (fun x l -> Maths.(x * l.w + l.b));
+    reset = reset;
+    run = run;
   }
   in Linear l
+
+let network () = { layers = []; }
+
+let add_layer nn l = nn.layers <- nn.layers @ [l]
+
+let add_activation nn l = nn.layers <- nn.layers @ [Activate l]
+
+(* let init nn = List.iter (fun l -> l.init l) nn.layers *)
+
+let train () = None
+
+
+(* helper functions *)
+
+let _init_info = function
+  | Init_Uniform (a, b)  -> Printf.sprintf "uniform (%g, %g)" a b
+  | Init_Gaussian (a, b) -> Printf.sprintf "gaussian (%g, %g)" a b
+  | Init_Custom _        -> Printf.sprintf "customise"
+
+let _activation_info = function
+  | Sigmoid      -> "sigmoid"
+  | Tanh         -> "tanh"
+  | Custom_Act _ -> "customise"
+
+let _layer_info = function
+  | Linear l    -> (
+      let wm, wn = Mat.shape l.w in
+      let bn = Mat.col_num l.b in
+      Printf.sprintf "Linear layer:
+      init : %s
+      params : %i
+      w : %i x %i
+      b : %i
+      "
+      (_init_info l.init_typ) (wm * wn + bn) wm wn bn
+    )
+  | Recurrent _ -> "Recurrent"
+  | LTSM _      -> "LTSM"
+  | Activate a  -> Printf.sprintf "Activation layer: %s\n" (_activation_info a)
+
+let print nn =
+  Printf.printf "Neural network info\n\n";
+  List.iteri (fun i l ->
+    Printf.printf "(%i): %s\n" i (_layer_info l)
+  ) nn.layers
+
+
+(* ends here *)

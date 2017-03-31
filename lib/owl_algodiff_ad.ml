@@ -1048,6 +1048,8 @@ module Mat = struct
 
   let reset x = x |> unpack_mat |> M.reset
 
+  let shape x = M.shape (unpack_mat x)
+
   let row_num x = M.row_num (unpack_mat x)
 
   let col_num x = M.col_num (unpack_mat x)
