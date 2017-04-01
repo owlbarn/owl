@@ -27,6 +27,26 @@ module Init = struct
 end
 
 
+module Activation = struct
+
+  type typ =
+    | Sigmoid
+    | Tanh
+    | Custom of (t -> t)
+
+  let run x l = match l with
+    | Sigmoid  -> Maths.(sigmoid x)
+    | Tanh     -> Maths.(tanh x)
+    | Custom f -> f x
+
+  let to_string = function
+    | Sigmoid  -> "Activation layer: sigmoid\n"
+    | Tanh     -> "Activation layer: tanh\n"
+    | Custom _ -> "Activation layer: customise\n"
+
+end
+
+
 module Linear = struct
 
   type layer = {
@@ -112,14 +132,10 @@ end
 
 
 type layer =
-  (* neural network layer *)
-  | Linear    of Linear.layer
-  | LTSM      of LTSM.layer
-  | Recurrent of Recurrent.layer
-  (* activation layer *)
-  | Sigmoid
-  | Tanh
-  | Custom_Act of (t -> t)
+  | Linear     of Linear.layer
+  | LTSM       of LTSM.layer
+  | Recurrent  of Recurrent.layer
+  | Activation of Activation.typ
 
 type network = {
   mutable layers : layer list;
@@ -128,6 +144,8 @@ type network = {
 let network () = { layers = []; }
 
 let add_layer nn l = nn.layers <- nn.layers @ [l]
+
+let add_activation nn l = nn.layers <- nn.layers @ [Activation l]
 
 let init nn = List.iter (function
   | Linear l    -> Linear.init l
@@ -143,11 +161,12 @@ let reset nn = List.iter (function
   | _           -> ()
   ) nn.layers
 
+(* FIXME *)
 let run x nn = List.iter (function
   | Linear l    -> Linear.run x l |> ignore
   | LTSM l      -> LTSM.run x l |> ignore
   | Recurrent l -> Recurrent.run x l |> ignore
-  | _           -> () (* FIXME *)
+  | Activation l -> Activation.run x l |> ignore
   ) nn.layers
 
 let linear ~inputs ~outputs ~init_typ = Linear (Linear.create inputs outputs init_typ)
@@ -155,17 +174,11 @@ let linear ~inputs ~outputs ~init_typ = Linear (Linear.create inputs outputs ini
 
 (* helper functions *)
 
-let _activation_info = function
-  | Sigmoid      -> "sigmoid"
-  | Tanh         -> "tanh"
-  | Custom_Act _ -> "customise"
-  | _            -> failwith "owl_neural._activation_info"
-
 let _layer_info = function
-  | Linear l    -> Linear.to_string l
-  | Recurrent _ -> "Recurrent"
-  | LTSM _      -> "LTSM"
-  | act  -> Printf.sprintf "Activation layer: %s\n" (_activation_info act)
+  | Linear l     -> Linear.to_string l
+  | Recurrent l  -> "Recurrent"
+  | LTSM l       -> "LTSM"
+  | Activation l -> Activation.to_string l
 
 let print nn =
   Printf.printf "Neural network info\n\n";
