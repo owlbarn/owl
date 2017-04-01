@@ -1043,10 +1043,12 @@ let print_trace x =
 module Mat = struct
 
   let empty m n = M.empty m n |> pack_mat
-  
+
   let zeros m n = M.zeros m n |> pack_mat
 
   let uniform ?scale m n = M.uniform ?scale m n |> pack_mat
+
+  let gaussian ?sigma m n = M.gaussian ?sigma m n |> pack_mat
 
   let reset x = x |> unpack_mat |> M.reset
 
@@ -1058,14 +1060,28 @@ module Mat = struct
 
   let numel x = numel x
 
+  let row x i = Maths.get_row x i
+
+  (* unary math operators *)
+
   let average x = Maths.average x
 
-  let row x i = Maths.get_row x i
+  (* binary math operators *)
+
+  let add x y = Maths.add x y
+
+  let sub x y = Maths.sub x y
+
+  let mul x y = Maths.mul x y
+
+  let div x y = Maths.div x y
 
   (* FIXME: need to be call row fun *)
   let iteri_rows f x = M.iteri_rows (fun i v -> f i (pack_mat v)) (unpack_mat x)
 
   let iter2_rows f x y = M.iter2_rows (fun u v -> f (pack_mat u) (pack_mat v)) (unpack_mat x) (unpack_mat y)
+
+  let mapi f x = x |> unpack_mat |> M.mapi f |> pack_mat
 
   let map_by_row f x = x |> Maths.to_rows |> Array.map f |> Maths.of_rows
 
