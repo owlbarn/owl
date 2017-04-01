@@ -5,12 +5,24 @@
 
 open Owl_algodiff_ad
 
-type batch =
-  | Fullbatch
-  | Minibatch of int
-  | Stochastic
 
-type params = {
-  mutable pochs : int;
-  mutable batch : batch;
-}
+module Batch = struct
+
+  type typ =
+    | Fullbatch
+    | Minibatch of int
+    | Stochastic
+
+end
+
+
+module Params = struct
+
+  type typ = {
+    mutable pochs : int;
+    mutable batch : Batch.typ;
+  }
+
+  let default () = None
+
+end
