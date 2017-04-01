@@ -82,7 +82,7 @@ module LTSM = struct
 
   let reset l = ()
 
-  let run x l = ()
+  let run x l = F 0.
 
 end
 
@@ -106,7 +106,7 @@ module Recurrent = struct
 
   let reset l = ()
 
-  let run x l = ()
+  let run x l = F 0.
 
 end
 
@@ -134,6 +134,20 @@ let init nn = List.iter (function
   | LTSM l      -> LTSM.init l
   | Recurrent l -> Recurrent.init l
   | _           -> ()
+  ) nn.layers
+
+let reset nn = List.iter (function
+  | Linear l    -> Linear.reset l
+  | LTSM l      -> LTSM.reset l
+  | Recurrent l -> Recurrent.reset l
+  | _           -> ()
+  ) nn.layers
+
+let run x nn = List.iter (function
+  | Linear l    -> Linear.run x l |> ignore
+  | LTSM l      -> LTSM.run x l |> ignore
+  | Recurrent l -> Recurrent.run x l |> ignore
+  | _           -> () (* FIXME *)
   ) nn.layers
 
 let linear ~inputs ~outputs ~init_typ = Linear (Linear.create inputs outputs init_typ)
