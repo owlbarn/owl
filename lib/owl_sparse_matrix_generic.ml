@@ -417,7 +417,7 @@ let permutation_matrix k d =
 
 let draw_rows ?(replacement=true) x c =
   let m, n = shape x in
-  let a = Array.init m (fun x -> x) |> Owl_stats.shuffle in
+  let a = Array.init m (fun i -> i) in
   let l = match replacement with
     | true  -> Owl_stats.sample a c
     | false -> Owl_stats.choose a c
@@ -429,7 +429,7 @@ let draw_rows ?(replacement=true) x c =
 
 let draw_cols ?(replacement=true) x c =
   let m, n = shape x in
-  let a = Array.init n (fun x -> x) |> Owl_stats.shuffle in
+  let a = Array.init n (fun i -> i) in
   let l = match replacement with
     | true  -> Owl_stats.sample a c
     | false -> Owl_stats.choose a c

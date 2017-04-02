@@ -664,14 +664,14 @@ let semidef k n =
   dot (transpose x) x
 
 let draw_rows ?(replacement=true) x c =
-  let a = Array.init (row_num x - 1) (fun i -> i) in
+  let a = Array.init (row_num x) (fun i -> i) in
   let l = match replacement with
     | true  -> Owl_stats.sample a c
     | false -> Owl_stats.choose a c
   in rows x l, l
 
 let draw_cols ?(replacement=true) x c =
-  let a = Array.init (col_num x - 1) (fun i -> i) in
+  let a = Array.init (col_num x) (fun i -> i) in
   let l = match replacement with
     | true  -> Owl_stats.sample a c
     | false -> Owl_stats.choose a c
