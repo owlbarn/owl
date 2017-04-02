@@ -967,7 +967,7 @@ let diff' f x =
   let y = f x in
   primal y, tangent y
 
-(* derivative of f (scalar -> scalr) at x, forward ad *)
+(* derivative of f (scalar -> scalar) at x, forward ad *)
 let diff f x = diff' f x |> snd
 
 (* gradient of f (vector -> scalar) at x, reverse ad *)

@@ -35,7 +35,7 @@ let backprop nn eta x y =
     l.w <- make_reverse l.w t;
     l.b <- make_reverse l.b t;
   ) nn.layers;
-  let loss = Maths.(cross_entropy y (run_network x nn) / (F (Mat.row_num x |> float_of_int))) in
+  let loss = Maths.(cross_entropy y (run_network x nn) / (F (Mat.row_num y |> float_of_int))) in
   reverse_prop (F 1.) loss;
   Array.iter (fun l ->
     l.w <- Maths.((primal l.w) - (eta * (adjval l.w))) |> primal;

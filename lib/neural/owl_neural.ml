@@ -81,6 +81,18 @@ module Linear = struct
     Mat.reset l.w;
     Mat.reset l.b
 
+  let mktag t l =
+    l.w <- make_reverse l.w t;
+    l.b <- make_reverse l.b t
+
+  let mkpri l = [primal l.w; primal l.b]
+
+  let mkadj l = [adjval l.w; adjval l.b]
+
+  let update f l =
+    l.w <- f (primal l.w) (adjval l.w) |> primal';
+    l.b <- f (primal l.b) (adjval l.b) |> primal'
+
   let run x l = Maths.((x $@ l.w) + l.b)
 
   let to_string l =
@@ -114,6 +126,14 @@ module LTSM = struct
 
   let reset l = ()
 
+  let mktag t l = ()
+
+  let mkpri l = []
+
+  let mkadj l = []
+
+  let update f l = ()
+
   let run x l = F 0.
 
 end
@@ -137,6 +157,14 @@ module Recurrent = struct
   let init l = ()
 
   let reset l = ()
+
+  let mktag t l = ()
+
+  let mkpri l = []
+
+  let mkadj l = []
+
+  let update f l = ()
 
   let run x l = F 0.
 
@@ -179,6 +207,38 @@ module Feedforward = struct
     | _           -> () (* activation *)
     ) nn.layers
 
+  let mktag t nn = List.iter (function
+    | Linear l     -> Linear.mktag t l
+    | LTSM l       -> LTSM.mktag t l
+    | Recurrent l  -> Recurrent.mktag t l
+    | _            -> () (* activation *)
+    ) nn.layers
+
+  let mkpri nn = List.fold_left (fun a l ->
+    let b = match l with
+      | Linear l     -> Linear.mkpri l
+      | LTSM l       -> LTSM.mkpri l
+      | Recurrent l  -> Recurrent.mkpri l
+      | _            -> [] (* activation *)
+    in a @ b
+    ) [] nn.layers
+
+  let mkadj nn = List.fold_left (fun a l ->
+    let b = match l with
+      | Linear l     -> Linear.mkadj l
+      | LTSM l       -> LTSM.mkadj l
+      | Recurrent l  -> Recurrent.mkadj l
+      | _            -> [] (* activation *)
+    in a @ b
+    ) [] nn.layers
+
+  let update nn f = List.iter (function
+    | Linear l     -> Linear.update f l
+    | LTSM l       -> LTSM.update f l
+    | Recurrent l  -> Recurrent.update f l
+    | _            -> () (* activation *)
+    ) nn.layers
+
   let run x nn = List.fold_left (fun a l ->
     match l with
     | Linear l     -> Linear.run a l
@@ -186,6 +246,12 @@ module Feedforward = struct
     | Recurrent l  -> Recurrent.run a l
     | Activation l -> Activation.run a l
     ) x nn.layers
+
+  let train nn loss_fun x =
+    mktag (tag ()) nn;
+    let loss = loss_fun (run x nn) in
+    reverse_prop (F 1.) loss;
+    loss
 
   let to_string () = "Feedforward network"
 
@@ -245,5 +311,11 @@ let train nn x y =
   let x, y, _ = Owl_dataset.load_mnist_test_data () in
   let x, y = Owl_dataset.draw_samples x y 10 in
   test_model nn (Mat x) (Mat y)
+
+let train0 nn x y =
+  Feedforward.init nn;
+  let f = Feedforward.train nn in
+  let g = Feedforward.update nn in
+  Owl_neural_optimise.train x y f g
 
 (* ends here *)
