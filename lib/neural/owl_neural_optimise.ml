@@ -25,8 +25,13 @@ module Batch = struct
 
   let run typ x y = match typ with
     | Fullbatch   -> x, y
-    | Minibatch n -> Owl_dataset.draw_samples x y n
-    | Stochastic  -> Owl_dataset.draw_samples x y 1
+    | Minibatch c -> let x, y, _ = Mat.draw_rows2 ~replacement:false x y c in x, y
+    | Stochastic  -> let x, y, _ = Mat.draw_rows2 ~replacement:false x y 1 in x, y
+
+  let to_string = function
+    | Fullbatch   -> "full"
+    | Minibatch c -> Printf.sprintf "mini of %i" c
+    | Stochastic  -> "stochastic"
 
 end
 
@@ -59,6 +64,8 @@ module Gradient = struct
   type typ =
     | GD
     | Newton
+
+  let run typ = None
 
 end
 
@@ -93,6 +100,7 @@ let train (params : Params.typ) x y f update =
   let loss_fun = Loss.run params.loss in
   for i = 1 to params.epochs do
     let xt, yt = batch x y in
+    let loss = f (loss_fun yt) xt in
     ()
   done
 

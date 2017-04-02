@@ -38,9 +38,8 @@ let download_all () =
   List.iter (fun fname -> download_data fname) l
 
 let draw_samples x y n =
-  let x, l = Owl_dense_matrix_generic.draw_rows ~replacement:false x n in
-  let y = Owl_dense_matrix_generic.rows y l in
-  x, y
+  let x', y', _ = Owl_dense_matrix_generic.draw_rows2 ~replacement:false x y n in
+  x', y'
 
 (* load mnist train data, the return is a triplet. The first is a 60000 x 784
   matrix where each row represents a 28 x 28 image. The second is label and the

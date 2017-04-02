@@ -1085,6 +1085,16 @@ module Mat = struct
 
   let map_by_row f x = x |> Maths.to_rows |> Array.map f |> Maths.of_rows
 
+  (* FIXME: severe *)
+  let draw_rows ?replacement x c =
+    let x', l = M.draw_rows ?replacement (unpack_mat x) c in
+    pack_mat x', l
+
+  (* FIXME: severe *)
+  let draw_rows2 ?replacement x y c =
+    let x', y', l = M.draw_rows2 ?replacement (unpack_mat x) (unpack_mat y) c in
+    pack_mat x', pack_mat y', l
+
   let print x = M.print (unpack_mat x)
 
   let of_arrays x = M.of_arrays x |> pack_mat
