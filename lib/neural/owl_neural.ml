@@ -98,8 +98,7 @@ module Linear = struct
     init : %s
     params : %i
     w : %i x %i
-    b : %i
-    "
+    b : %i"
     (Init.to_string l.init_typ) (wm * wn + bn) wm wn bn
 
 end

@@ -63,9 +63,16 @@ module Gradient = struct
 
   type typ =
     | GD
+    | CG
+    | CD
     | Newton
 
-  let run typ = None
+  (* FIXME *)
+  let run typ p g g'  = function
+    | GD     -> fun _ _ w g' -> g', Maths.neg g'
+    | CG     -> fun p g w g' -> g', Maths.neg g'
+    | CD     -> fun p g w g' -> g', Maths.neg g'
+    | Newton -> fun p g w g' -> g', Maths.neg g'
 
 end
 
