@@ -677,6 +677,14 @@ let draw_cols ?(replacement=true) x c =
     | false -> Owl_stats.choose a c
   in cols x l, l
 
+let draw_rows2 ?(replacement=true) x y c =
+  let x_rows, l = draw_rows ~replacement x c in
+  x_rows, rows y l, l
+
+let draw_cols2 ?(replacement=true) x y c =
+  let x_cols, l = draw_rows ~replacement x c in
+  x_cols, cols y l, l
+
 let shuffle_rows x =
   let y = clone x in
   let m, n = shape x in

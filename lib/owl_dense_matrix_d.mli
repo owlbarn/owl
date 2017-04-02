@@ -244,6 +244,10 @@ val draw_rows : ?replacement:bool -> mat -> int -> mat * int array
 
 val draw_cols : ?replacement:bool -> mat -> int -> mat * int array
 
+val draw_rows2 : ?replacement:bool -> mat -> mat -> int -> mat * mat * int array
+
+val draw_cols2 : ?replacement:bool -> mat -> mat -> int -> mat * mat * int array
+
 val shuffle_rows : mat -> mat
 
 val shuffle_cols : mat -> mat

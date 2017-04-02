@@ -461,6 +461,12 @@ val draw_cols : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
   [replacement] indicates whether the drawing is by replacement or not.
  *)
 
+val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
+(* [draw_rows2 x y c] is similar to [draw_rows] but applies to two matrices. *)
+
+val draw_cols2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
+(* [draw_col2 x y c] is similar to [draw_cols] but applies to two matrices. *)
+
 val shuffle_rows : ('a, 'b) t -> ('a, 'b) t
 (** [shuffle_rows x] shuffles all the rows in matrix [x]. *)
 

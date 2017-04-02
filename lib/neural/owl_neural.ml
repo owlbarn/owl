@@ -85,10 +85,6 @@ module Linear = struct
     l.w <- make_reverse l.w t;
     l.b <- make_reverse l.b t
 
-  let mkpri l = [primal l.w; primal l.b]
-
-  let mkadj l = [adjval l.w; adjval l.b]
-
   let update f l =
     l.w <- f (primal l.w) (adjval l.w) |> primal';
     l.b <- f (primal l.b) (adjval l.b) |> primal'
@@ -128,13 +124,11 @@ module LTSM = struct
 
   let mktag t l = ()
 
-  let mkpri l = []
-
-  let mkadj l = []
-
   let update f l = ()
 
   let run x l = F 0.
+
+  let to_string l = "LTSM"
 
 end
 
@@ -143,8 +137,8 @@ end
 module Recurrent = struct
 
   type layer = {
-    mutable w : t;
-    mutable b : t;
+    mutable w        : t;
+    mutable b        : t;
     mutable init_typ : Init.typ;
   }
 
@@ -160,13 +154,11 @@ module Recurrent = struct
 
   let mktag t l = ()
 
-  let mkpri l = []
-
-  let mkadj l = []
-
   let update f l = ()
 
   let run x l = F 0.
+
+  let to_string l = "Recurrent"
 
 end
 
@@ -214,24 +206,6 @@ module Feedforward = struct
     | _            -> () (* activation *)
     ) nn.layers
 
-  let mkpri nn = List.fold_left (fun a l ->
-    let b = match l with
-      | Linear l     -> Linear.mkpri l
-      | LTSM l       -> LTSM.mkpri l
-      | Recurrent l  -> Recurrent.mkpri l
-      | _            -> [] (* activation *)
-    in a @ b
-    ) [] nn.layers
-
-  let mkadj nn = List.fold_left (fun a l ->
-    let b = match l with
-      | Linear l     -> Linear.mkadj l
-      | LTSM l       -> LTSM.mkadj l
-      | Recurrent l  -> Recurrent.mkadj l
-      | _            -> [] (* activation *)
-    in a @ b
-    ) [] nn.layers
-
   let update nn f = List.iter (function
     | Linear l     -> Linear.update f l
     | LTSM l       -> LTSM.update f l
@@ -253,7 +227,17 @@ module Feedforward = struct
     reverse_prop (F 1.) loss;
     loss
 
-  let to_string () = "Feedforward network"
+  let to_string nn =
+    let s = ref "Feedforward network\n\n" in
+    for i = 0 to List.length nn.layers - 1 do
+      let t = match List.nth nn.layers i with
+        | Linear l     -> Linear.to_string l
+        | LTSM l       -> LTSM.to_string l
+        | Recurrent l  -> Recurrent.to_string l
+        | Activation l -> Activation.to_string l
+      in
+      s := !s ^ (Printf.sprintf "(%i): %s\n" i t)
+    done; !s
 
 end
 
@@ -262,17 +246,7 @@ end
 
 let linear ~inputs ~outputs ~init_typ = Linear (Linear.create inputs outputs init_typ)
 
-let _layer_info = function
-  | Linear l     -> Linear.to_string l
-  | Recurrent l  -> "Recurrent"
-  | LTSM l       -> "LTSM"
-  | Activation l -> Activation.to_string l
-
-let print nn =
-  Printf.printf "%s\n\n" (Feedforward.to_string ());
-  List.iteri (fun i l ->
-    Printf.printf "(%i): %s\n" i (_layer_info l)
-  ) nn.layers
+let print nn = Feedforward.to_string nn
 
 let backprop nn eta x y =
   let t = tag () in
@@ -316,6 +290,6 @@ let train0 nn x y =
   Feedforward.init nn;
   let f = Feedforward.train nn in
   let g = Feedforward.update nn in
-  Owl_neural_optimise.train x y f g
+  Owl_neural_optimise.train0 x y f g
 
 (* ends here *)
