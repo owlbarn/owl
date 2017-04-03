@@ -278,6 +278,15 @@ let linear ~inputs ~outputs ~init_typ = Linear (Linear.create inputs outputs ini
 
 let print nn = Feedforward.to_string nn
 
+let train nn x y =
+  Feedforward.init nn;
+  let f = Feedforward.forward nn in
+  let b = Feedforward.backward nn in
+  let u = Feedforward.update nn in
+  let p = Owl_neural_optimise.Params.default () in
+  Owl_neural_optimise.train p f b u x y
+
+
 (*
 let train nn x y =
   Feedforward.init nn;

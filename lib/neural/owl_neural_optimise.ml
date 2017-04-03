@@ -97,7 +97,13 @@ module Params = struct
     mutable batch           : Batch.typ;
   }
 
-  let default () = None
+  let default () = {
+    epochs        = 10;
+    gradient      = Gradient.GD;
+    learning_rate = Learning_Rate.Const 0.01;
+    loss          = Loss.Cross_entropy;
+    batch         = Batch.Minibatch 100;
+  }
 
 end
 
@@ -135,7 +141,7 @@ let train (params : Params.typ) forward backward update x y =
     in
     (* adjust direction based on learning_rate *)
     let ps' = Array.map (fun l -> Array.map (fun t -> fst t) l) _l in
-    let u' = Array.map (fun l -> Array.map (fun p' -> Maths.(F 0.01 * p'))) ps' in
+    let u' = Array.map (fun l -> Array.map (fun p' -> Maths.(F 0.01 * p')) l) ps' in
     (* update the weight *)
     update u';
   done
