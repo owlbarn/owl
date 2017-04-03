@@ -88,6 +88,23 @@ let array_map2i f x y =
   let c = min (Array.length x) (Array.length y) in
   Array.init c (fun i -> f i x.(i) y.(i))
 
+(* map two arrays, and split into two arrays, f returns 2-tuple *)
+let array_map2i_split2 f x y =
+  let c = min (Array.length x) (Array.length y) in
+  match c with
+  | 0 -> [||], [||]
+  | _ -> (
+    let a, b = f 0 x.(0) y.(0) in
+    let z0 = Array.make c a in
+    let z1 = Array.make c b in
+    for i = 1 to c - 1 do
+      let a, b = f i x.(i) y.(i) in
+      z0.(i) <- a;
+      z1.(i) <- b;
+    done;
+    z0, z1
+  )
+
 let array_sum x = Array.fold_left (+.) 0. x
 
 let array1_iter f x =

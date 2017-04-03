@@ -89,9 +89,9 @@ module Linear = struct
 
   let mkadj l = [|adjval l.w; adjval l.b|]
 
-  let update f l =
-    l.w <- f (primal l.w) (adjval l.w) |> primal';
-    l.b <- f (primal l.b) (adjval l.b) |> primal'
+  let update l u =
+    l.w <- u.(0) |> primal';
+    l.b <- u.(1) |> primal'
 
   let run x l = Maths.((x $@ l.w) + l.b)
 
@@ -131,7 +131,7 @@ module LTSM = struct
 
   let mkadj l = [||]
 
-  let update f l = ()
+  let update l u = ()
 
   let run x l = F 0.
 
@@ -165,7 +165,7 @@ module Recurrent = struct
 
   let mkadj l = [||]
 
-  let update f l = ()
+  let update l u = ()
 
   let run x l = F 0.
 
@@ -231,12 +231,13 @@ module Feedforward = struct
     | _            -> [||] (* activation *)
     ) nn.layers
 
-  let update nn f = Array.iter (function
-    | Linear l     -> Linear.update f l
-    | LTSM l       -> LTSM.update f l
-    | Recurrent l  -> Recurrent.update f l
+  let update nn us = Array.map2 (fun l u ->
+    match l with
+    | Linear l     -> Linear.update l u
+    | LTSM l       -> LTSM.update l u
+    | Recurrent l  -> Recurrent.update l u
     | _            -> () (* activation *)
-    ) nn.layers
+    ) nn.layers us
 
   let run x nn = Array.fold_left (fun a l ->
     match l with

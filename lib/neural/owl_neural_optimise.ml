@@ -69,10 +69,10 @@ module Gradient = struct
 
   (* FIXME *)
   let run = function
-    | GD     -> fun _ _ _ g' -> F 0., F 0., Maths.neg g', g'
-    | CG     -> fun w g p g' -> F 0., F 0., Maths.neg g', g'
-    | CD     -> fun w g p g' -> F 0., F 0., Maths.neg g', g'
-    | Newton -> fun w g p g' -> F 0., F 0., Maths.neg g', g'
+    | GD     -> fun _ _ _ g' -> Maths.neg g', g'
+    | CG     -> fun w g p g' -> Maths.neg g', g'
+    | CD     -> fun w g p g' -> Maths.neg g', g'
+    | Newton -> fun w g p g' -> Maths.neg g', g'
 
 end
 
@@ -102,26 +102,42 @@ module Params = struct
 end
 
 
-let train (params : Params.typ) x y f grads =
+let train (params : Params.typ) forward backward update x y =
   let open Params in
 
   let batch = Batch.run params.batch in
   let loss_fun = Loss.run params.loss in
   let grad_fun = Gradient.run params.gradient in
-  let prev_g_p = [||] in
+
+  let iter () =
+    let xt, yt = batch x y in
+    let yt' = forward xt in
+    let loss = loss_fun yt yt' in
+    let ws, gs' = backward loss in
+    loss, ws, gs'
+  in
+
+  let gs = ref [||] in
+  let ps = ref [||] in
 
   for i = 1 to params.epochs do
     let xt, yt = batch x y in
-    (* TODO: refine ... forward, backward *)
-    let loss = f (loss_fun yt) xt in
-    let ws, gs' = grads () in
-    let l = Owl_utils.array_map2i (fun j _ws _gs' ->
-      Array.map2 (fun w g' ->
-        let g, p = prev_g_p.(j) in
-        grad_fun w g p g'
-      ) _ws _gs'
-    ) ws gs'
-    in ()
+    let yt' = forward xt in
+    let loss = loss_fun yt yt' in
+    let ws, gs' = backward loss in
+    let _l = Owl_utils.array_map2i (
+      fun j _ws _gs' ->
+        Array.map2 (fun w g' ->
+          let g, p = !gs.(j), !ps.(i) in
+          grad_fun w g p g'
+        ) _ws _gs'
+      ) ws gs'
+    in
+    (* adjust direction based on learning_rate *)
+    let ps' = Array.map (fun l -> Array.map (fun t -> fst t) l) _l in
+    let u' = Array.map (fun l -> Array.map (fun p' -> Maths.(F 0.01 * p'))) ps' in
+    (* update the weight *)
+    update u';
   done
 
 (*
