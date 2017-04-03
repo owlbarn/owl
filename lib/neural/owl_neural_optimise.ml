@@ -110,9 +110,14 @@ module Momentum = struct
     | Nesterov of float
     | None
 
+  let run = function
+    | Standard m -> fun u u' -> Maths.(F m * u + u')
+    | Nesterov m -> fun u u' -> Maths.((F m * F m * u) + (F m + F 1.) * u')
+    | None       -> fun _ u' -> u'
+
   let to_string = function
-    | Standard v -> Printf.sprintf "standard (v = %g)" v
-    | Nesterov v -> Printf.sprintf "nesterov (v = %g)" v
+    | Standard m -> Printf.sprintf "standard %g" m
+    | Nesterov m -> Printf.sprintf "nesterov %g" m
     | None       -> Printf.sprintf "none"
 
 end
@@ -147,6 +152,7 @@ module Params = struct
     mutable loss            : Loss.typ;
     mutable learning_rate   : Learning_Rate.typ;
     mutable regularisation  : Regularisation.typ;
+    mutable momentum        : Momentum.typ;
   }
 
   let default () = {
@@ -156,6 +162,7 @@ module Params = struct
     loss           = Loss.Cross_entropy;
     learning_rate  = Learning_Rate.(default (Const 0.));
     regularisation = Regularisation.None;
+    momentum       = Momentum.None;
   }
 
   let to_string p =
@@ -166,6 +173,7 @@ module Params = struct
     Printf.sprintf "    loss           : %s\n" (Loss.to_string p.loss) ^
     Printf.sprintf "    learning rate  : %s\n" (Learning_Rate.to_string p.learning_rate) ^
     Printf.sprintf "    regularisation : %s\n" (Regularisation.to_string p.regularisation) ^
+    Printf.sprintf "    momentum       : %s\n" (Momentum.to_string p.momentum) ^
     "---"
 
 end
@@ -191,6 +199,7 @@ let train params forward backward update x y =
   let grad_fun = Gradient.run params.gradient in
   let rate_fun = Learning_Rate.run params.learning_rate in
   let regl_fun = Regularisation.run params.regularisation in
+  let momt_fun = Momentum.run params.momentum in
 
   (* operations in one iteration *)
   let iterate () =
@@ -213,6 +222,7 @@ let train params forward backward update x y =
   let _loss, _ws, _gs = iterate () in
   let gs = ref _gs in
   let ps = ref (Owl_utils.aarr_map Maths.neg _gs) in
+  let us = ref (Owl_utils.aarr_map (fun _ -> F 0.) _gs) in
   update _ws;
 
   (* variables used in training process *)
@@ -233,13 +243,20 @@ let train params forward backward update x y =
         ) ws gs' in
       (* adjust direction based on learning_rate *)
       let us' = Owl_utils.aarr_map (fun p' -> Maths.(p' * rate_fun i p')) ps' in
-      let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
+      (* adjust direction based on momentum *)
+      let us' = match params.momentum <> Momentum.None with
+        | true  -> Owl_utils.aarr_map2 momt_fun !us us'
+        | false -> us'
+      in
       (* update the weight *)
+      let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
       update ws';
       (* save historical data *)
+      if params.momentum <> Momentum.None then us := us';
       gs := gs';
       ps := ps';
       loss := loss';
+
     done
   done;
 
