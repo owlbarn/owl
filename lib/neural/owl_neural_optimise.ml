@@ -124,7 +124,7 @@ module Params = struct
   }
 
   let default () = {
-    epochs        = 1000;
+    epochs        = 1;
     gradient      = Gradient.GD;
     learning_rate = Learning_Rate.Const 0.01;
     loss          = Loss.Cross_entropy;
@@ -133,7 +133,7 @@ module Params = struct
 
   let to_string p =
     "Train config\n" ^
-    Printf.sprintf "epochs        : %i\n" p.epochs ^
+    Printf.sprintf "epochs        : %i\n" (p.epochs) ^
     Printf.sprintf "batch         : %s\n" (Batch.to_string p.batch) ^
     Printf.sprintf "method        : %s\n" (Gradient.to_string p.gradient) ^
     Printf.sprintf "loss          : %s\n" (Loss.to_string p.loss) ^
@@ -143,9 +143,17 @@ module Params = struct
 end
 
 
+let _print_info e_i e_n b_i b_n l l' =
+  let l, l' = unpack_flt l, unpack_flt l' in
+  let d = l -. l' in
+  let s = if d = 0. then "-" else if d < 0. then "▲" else "▼" in
+  Log.info "%i/%i | B: %i/%i | L: %g[%s]"
+  e_i e_n b_i b_n l' s
+
+
 let train params forward backward update x y =
   let open Params in
-  Printf.printf "%s" (Params.to_string params);
+  print_endline (Params.to_string params);
 
   (* make alias functions *)
   let batch = Batch.run params.batch in
@@ -159,7 +167,7 @@ let train params forward backward update x y =
     let loss = Maths.(loss_fun yt yt') in
     let loss = Maths.(loss / (F (Mat.row_num yt |> float_of_int))) in
     let ws, gs' = backward loss in
-    loss, ws, gs' in
+    loss |> primal', ws, gs' in
 
   (* bootstrap the training *)
   let _loss, _ws, _gs = iterate () in
@@ -167,23 +175,31 @@ let train params forward backward update x y =
   let ps = ref (Owl_utils.aarr_map Maths.neg _gs) in
   update _ws;
 
-  (* iterate all the epochs *)
+  (* variables used in training process *)
+  let batches = Batch.batches params.batch x in
+  let loss = ref _loss in
+
+  (* iterate all batches in each epoch *)
   for i = 1 to params.epochs do
-    let loss, ws, gs' = iterate () in
-    (* calculate gradient descendent *)
-    let ps' = Owl_utils.aarr_map2i (
-      fun j _ w g' ->
-        let g, p = !gs.(j), !ps.(j) in
-        grad_fun w g p g'
-      ) ws gs' in
-    (* adjust direction based on learning_rate *)
-    let us' = Owl_utils.aarr_map (fun p' -> Maths.(F 0.01 * p')) ps' in
-    let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
-    (* update the weight *)
-    update ws';
-    (* save historical data *)
-    gs := gs';
-    ps := ps';
-    (* print out log info *)
-    loss |> unpack_flt |> Printf.printf "#%i : loss = %g\n" i |> flush_all;
+    for j = 1 to batches do
+      let loss', ws, gs' = iterate () in
+      (* print out the current state of training *)
+      _print_info i params.epochs j batches !loss loss';
+      (* calculate gradient descendent *)
+      let ps' = Owl_utils.aarr_map2i (
+        fun k _ w g' ->
+          let g, p = !gs.(k), !ps.(k) in
+          grad_fun w g p g'
+        ) ws gs' in
+      (* adjust direction based on learning_rate *)
+      let us' = Owl_utils.aarr_map (fun p' -> Maths.(F 0.01 * p')) ps' in
+      let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
+      (* update the weight *)
+      update ws';
+
+      (* save historical data *)
+      gs := gs';
+      ps := ps';
+      loss := loss';
+    done
   done
