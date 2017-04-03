@@ -16,7 +16,7 @@ module Learning_Rate = struct
   let run = function
     | Const a          -> fun _ _ -> F a
     | Decay (a, k)     -> fun i _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
-    | Exp_decay (a, k) -> fun _ _ -> F a
+    | Exp_decay (a, k) -> fun i _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
 
   let default = function
     | Const _     -> Const 0.001
@@ -217,7 +217,7 @@ let train params forward backward update x y =
           grad_fun w g p g'
         ) ws gs' in
       (* adjust direction based on learning_rate *)
-      let us' = Owl_utils.aarr_map (fun p' -> Maths.(p' * rate_fun j p')) ps' in
+      let us' = Owl_utils.aarr_map (fun p' -> Maths.(p' * rate_fun i p')) ps' in
       let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
       (* update the weight *)
       update ws';
