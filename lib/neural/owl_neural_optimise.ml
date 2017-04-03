@@ -108,7 +108,12 @@ module Regularisation = struct
   let run typ x = match typ with
     | L1norm a -> Maths.(F a * l1norm x)
     | L2norm a -> Maths.(F a * l2norm x)
-    | Noreg    -> x
+    | Noreg    -> F 0.
+
+  let to_string = function
+    | L1norm a -> Printf.sprintf "l1norm (alpha = %g)" a
+    | L2norm a -> Printf.sprintf "l2norm (alhpa = %g)" a
+    | Noreg    -> "none"
 
 end
 
@@ -117,28 +122,31 @@ module Params = struct
 
   type typ = {
     mutable epochs          : int;
-    mutable gradient        : Gradient.typ;
-    mutable learning_rate   : Learning_Rate.typ;
-    mutable loss            : Loss.typ;
     mutable batch           : Batch.typ;
+    mutable gradient        : Gradient.typ;
+    mutable loss            : Loss.typ;
+    mutable learning_rate   : Learning_Rate.typ;
+    mutable regularisation  : Regularisation.typ;
   }
 
   let default () = {
-    epochs        = 1;
-    gradient      = Gradient.GD;
-    learning_rate = Learning_Rate.Const 0.01;
-    loss          = Loss.Cross_entropy;
-    batch         = Batch.Minibatch 100;
+    epochs         = 1;
+    batch          = Batch.Minibatch 100;
+    gradient       = Gradient.GD;
+    loss           = Loss.Cross_entropy;
+    learning_rate  = Learning_Rate.Const 0.01;
+    regularisation = Regularisation.Noreg;
   }
 
   let to_string p =
-    "Train config\n" ^
-    Printf.sprintf "epochs        : %i\n" (p.epochs) ^
-    Printf.sprintf "batch         : %s\n" (Batch.to_string p.batch) ^
-    Printf.sprintf "method        : %s\n" (Gradient.to_string p.gradient) ^
-    Printf.sprintf "loss          : %s\n" (Loss.to_string p.loss) ^
-    Printf.sprintf "learning rate : %s\n" (Learning_Rate.to_string p.learning_rate) ^
-    ""
+    "--- Training config\n" ^
+    Printf.sprintf "epochs         : %i\n" (p.epochs) ^
+    Printf.sprintf "batch          : %s\n" (Batch.to_string p.batch) ^
+    Printf.sprintf "method         : %s\n" (Gradient.to_string p.gradient) ^
+    Printf.sprintf "loss           : %s\n" (Loss.to_string p.loss) ^
+    Printf.sprintf "learning rate  : %s\n" (Learning_Rate.to_string p.learning_rate) ^
+    Printf.sprintf "regularisation : %s\n" (Regularisation.to_string p.regularisation) ^
+    "---"
 
 end
 
@@ -159,13 +167,20 @@ let train params forward backward update x y =
   let batch = Batch.run params.batch in
   let loss_fun = Loss.run params.loss in
   let grad_fun = Gradient.run params.gradient in
+  let regl_fun = Regularisation.run params.regularisation in
 
   (* operations in one iteration *)
   let iterate () =
     let xt, yt = batch x y in
-    let yt' = forward xt in
+    let yt', ws = forward xt in
     let loss = Maths.(loss_fun yt yt') in
+    (* take the average of the loss *)
     let loss = Maths.(loss / (F (Mat.row_num yt |> float_of_int))) in
+    let reg = match params.regularisation <> Regularisation.Noreg with
+      | true  -> Owl_utils.aarr_fold (fun a w -> Maths.(a + regl_fun w)) (F 0.) ws
+      | false -> F 0.
+    in
+    let loss = Maths.(loss + reg) in
     let ws, gs' = backward loss in
     loss |> primal', ws, gs' in
 
@@ -203,3 +218,6 @@ let train params forward backward update x y =
       loss := loss';
     done
   done
+
+
+(* ends here *)

@@ -85,6 +85,8 @@ module Linear = struct
     l.w <- make_reverse l.w t;
     l.b <- make_reverse l.b t
 
+  let mkpar l = [|l.w; l.b|]
+
   let mkpri l = [|primal l.w; primal l.b|]
 
   let mkadj l = [|adjval l.w; adjval l.b|]
@@ -127,6 +129,8 @@ module LTSM = struct
 
   let mktag t l = ()
 
+  let mkpar l = [||]
+
   let mkpri l = [||]
 
   let mkadj l = [||]
@@ -160,6 +164,8 @@ module Recurrent = struct
   let reset l = ()
 
   let mktag t l = ()
+
+  let mkpar l = [||]
 
   let mkpri l = [||]
 
@@ -217,6 +223,13 @@ module Feedforward = struct
     | _            -> () (* activation *)
     ) nn.layers
 
+  let mkpar nn = Array.map (function
+    | Linear l     -> Linear.mkpar l
+    | LTSM l       -> LTSM.mkpar l
+    | Recurrent l  -> Recurrent.mkpar l
+    | _            -> [||] (* activation *)
+    ) nn.layers
+
   let mkpri nn = Array.map (function
     | Linear l     -> Linear.mkpri l
     | LTSM l       -> LTSM.mkpri l
@@ -247,7 +260,7 @@ module Feedforward = struct
     | Activation l -> Activation.run a l
     ) x nn.layers
 
-  let forward nn x = mktag (tag ()) nn; run x nn
+  let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
 
   let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
@@ -294,12 +307,5 @@ let test_model nn x y =
     Printf.printf "prediction: %i\n" (let _, _, j = Owl_dense_matrix_generic.max_i p in j)
   ) x y
 
-(*
-let train nn x y =
-  Feedforward.init nn;
-  let f = Feedforward.train nn in
-  let g = fun () -> Feedforward.mkpri nn, Feedforward.mkadj nn in
-  Owl_neural_optimise.train x y f g
-*)
 
 (* ends here *)

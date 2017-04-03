@@ -129,6 +129,12 @@ let aarr_map2i f x0 x1 =
     array_map2i (fun j z0 z1 -> f i j z0 z1) y0 y1
   ) x0 x1
 
+(* fold function for ['a array array] type, by flatten the array *)
+let aarr_fold f a x =
+  let a = ref a in
+  Array.iter (Array.iter (fun b -> a := f !a b)) x;
+  !a
+
 let array1_iter f x =
   let open Bigarray in
   for i = 0 to Array1.dim x - 1 do
