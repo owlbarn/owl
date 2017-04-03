@@ -68,11 +68,11 @@ module Gradient = struct
     | Newton
 
   (* FIXME *)
-  let run typ p g g'  = function
-    | GD     -> fun _ _ w g' -> g', Maths.neg g'
-    | CG     -> fun p g w g' -> g', Maths.neg g'
-    | CD     -> fun p g w g' -> g', Maths.neg g'
-    | Newton -> fun p g w g' -> g', Maths.neg g'
+  let run = function
+    | GD     -> fun _ _ _ g' -> F 0., F 0., Maths.neg g', g'
+    | CG     -> fun w g p g' -> F 0., F 0., Maths.neg g', g'
+    | CD     -> fun w g p g' -> F 0., F 0., Maths.neg g', g'
+    | Newton -> fun w g p g' -> F 0., F 0., Maths.neg g', g'
 
 end
 
@@ -102,16 +102,29 @@ module Params = struct
 end
 
 
-let train (params : Params.typ) x y f update =
+let train (params : Params.typ) x y f grads =
+  let open Params in
+
   let batch = Batch.run params.batch in
   let loss_fun = Loss.run params.loss in
+  let grad_fun = Gradient.run params.gradient in
+  let prev_g_p = [||] in
+
   for i = 1 to params.epochs do
     let xt, yt = batch x y in
+    (* TODO: refine ... forward, backward *)
     let loss = f (loss_fun yt) xt in
-    ()
+    let ws, gs' = grads () in
+    let l = Owl_utils.array_map2i (fun j _ws _gs' ->
+      Array.map2 (fun w g' ->
+        let g, p = prev_g_p.(j) in
+        grad_fun w g p g'
+      ) _ws _gs'
+    ) ws gs'
+    in ()
   done
 
-
+(*
 let cross_entropy_loss y y' = Maths.(cross_entropy y y' / (F (Mat.row_num y |> float_of_int)))
 
 let gd v g = Maths.(v - F 0.01 * g)
@@ -124,3 +137,4 @@ let train0 x y f update =
     update gd;
     loss |> unpack_flt |> Printf.printf "#%i : loss = %g\n" i |> flush_all;
   done
+*)

@@ -85,6 +85,10 @@ module Linear = struct
     l.w <- make_reverse l.w t;
     l.b <- make_reverse l.b t
 
+  let mkpri l = [|primal l.w; primal l.b|]
+
+  let mkadj l = [|adjval l.w; adjval l.b|]
+
   let update f l =
     l.w <- f (primal l.w) (adjval l.w) |> primal';
     l.b <- f (primal l.b) (adjval l.b) |> primal'
@@ -123,6 +127,10 @@ module LTSM = struct
 
   let mktag t l = ()
 
+  let mkpri l = [||]
+
+  let mkadj l = [||]
+
   let update f l = ()
 
   let run x l = F 0.
@@ -153,6 +161,10 @@ module Recurrent = struct
 
   let mktag t l = ()
 
+  let mkpri l = [||]
+
+  let mkadj l = [||]
+
   let update f l = ()
 
   let run x l = F 0.
@@ -171,54 +183,72 @@ type layer =
   | Activation of Activation.typ
 
 type network = {
-  mutable layers : layer list;
+  mutable layers : layer array;
 }
 
 
 (* Feedforward network module *)
 module Feedforward = struct
 
-  let create () = { layers = []; }
+  let create () = { layers = [||]; }
 
-  let add_layer nn l = nn.layers <- nn.layers @ [l]
+  let add_layer nn l = nn.layers <- Array.append nn.layers [|l|]
 
-  let add_activation nn l = nn.layers <- nn.layers @ [Activation l]
+  let add_activation nn l = nn.layers <- Array.append nn.layers [|Activation l|]
 
-  let init nn = List.iter (function
+  let init nn = Array.iter (function
     | Linear l    -> Linear.init l
     | LTSM l      -> LTSM.init l
     | Recurrent l -> Recurrent.init l
     | _           -> () (* activation *)
     ) nn.layers
 
-  let reset nn = List.iter (function
+  let reset nn = Array.iter (function
     | Linear l    -> Linear.reset l
     | LTSM l      -> LTSM.reset l
     | Recurrent l -> Recurrent.reset l
     | _           -> () (* activation *)
     ) nn.layers
 
-  let mktag t nn = List.iter (function
+  let mktag t nn = Array.iter (function
     | Linear l     -> Linear.mktag t l
     | LTSM l       -> LTSM.mktag t l
     | Recurrent l  -> Recurrent.mktag t l
     | _            -> () (* activation *)
     ) nn.layers
 
-  let update nn f = List.iter (function
+  let mkpri nn = Array.map (function
+    | Linear l     -> Linear.mkpri l
+    | LTSM l       -> LTSM.mkpri l
+    | Recurrent l  -> Recurrent.mkpri l
+    | _            -> [||] (* activation *)
+    ) nn.layers
+
+  let mkadj nn = Array.map (function
+    | Linear l     -> Linear.mkadj l
+    | LTSM l       -> LTSM.mkadj l
+    | Recurrent l  -> Recurrent.mkadj l
+    | _            -> [||] (* activation *)
+    ) nn.layers
+
+  let update nn f = Array.iter (function
     | Linear l     -> Linear.update f l
     | LTSM l       -> LTSM.update f l
     | Recurrent l  -> Recurrent.update f l
     | _            -> () (* activation *)
     ) nn.layers
 
-  let run x nn = List.fold_left (fun a l ->
+  let run x nn = Array.fold_left (fun a l ->
     match l with
     | Linear l     -> Linear.run a l
     | LTSM l       -> LTSM.run a l
     | Recurrent l  -> Recurrent.run a l
     | Activation l -> Activation.run a l
     ) x nn.layers
+
+  let forward nn x = mktag (tag ()) nn; run x nn
+
+  let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
   let train nn loss_fun x =
     mktag (tag ()) nn;
@@ -228,8 +258,8 @@ module Feedforward = struct
 
   let to_string nn =
     let s = ref "Feedforward network\n\n" in
-    for i = 0 to List.length nn.layers - 1 do
-      let t = match List.nth nn.layers i with
+    for i = 0 to Array.length nn.layers - 1 do
+      let t = match nn.layers.(i) with
         | Linear l     -> Linear.to_string l
         | LTSM l       -> LTSM.to_string l
         | Recurrent l  -> Recurrent.to_string l
@@ -247,48 +277,12 @@ let linear ~inputs ~outputs ~init_typ = Linear (Linear.create inputs outputs ini
 
 let print nn = Feedforward.to_string nn
 
-let backprop nn eta x y =
-  let t = tag () in
-  List.iter (function
-    | Linear l ->
-      l.w <- make_reverse l.w t;
-      l.b <- make_reverse l.b t;
-    | _       -> ()
-  ) nn.layers;
-  let loss = Maths.(cross_entropy y (Feedforward.run x nn) / (F (Mat.row_num x |> float_of_int))) in
-  reverse_prop (F 1.) loss;
-  List.iter (function
-    | Linear l ->
-      l.w <- Maths.((primal l.w) - (eta * (adjval l.w))) |> primal;
-      l.b <- Maths.((primal l.b) - (eta * (adjval l.b))) |> primal;
-    | _       -> ()
-  ) nn.layers;
-  loss |> unpack_flt
-
-let test_model nn x y =
-  Mat.iter2_rows (fun u v ->
-    Owl_dataset.print_mnist_image (unpack_mat u);
-    let p = Feedforward.run u nn |> unpack_mat in
-    Owl_dense_matrix_generic.print p;
-    Printf.printf "prediction: %i\n" (let _, _, j = Owl_dense_matrix_generic.max_i p in j)
-  ) x y
-
+(*
 let train nn x y =
   Feedforward.init nn;
-  for i = 1 to 1000 do
-    let x', y' = Owl_dataset.draw_samples x y 100 in
-    backprop nn (F 0.01) (Mat x') (Mat y')
-    |> Printf.printf "#%i : loss = %g\n" i
-    |> flush_all;
-  done;
-  let x, y, _ = Owl_dataset.load_mnist_test_data () in
-  let x, y = Owl_dataset.draw_samples x y 10 in
-  test_model nn (Mat x) (Mat y)
-
-let train0 nn x y =
-  Feedforward.init nn;
   let f = Feedforward.train nn in
-  let g = Feedforward.update nn in
-  Owl_neural_optimise.train0 x y f g
+  let g = fun () -> Feedforward.mkpri nn, Feedforward.mkadj nn in
+  Owl_neural_optimise.train x y f g
+*)
 
 (* ends here *)
