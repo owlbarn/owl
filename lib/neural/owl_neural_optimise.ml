@@ -13,6 +13,16 @@ module Learning_Rate = struct
     | Decay     of float * float
     | Exp_decay of float * float
 
+  let run typ g = match typ with
+    | Const a          -> F a
+    | Decay (a, k)     -> F a
+    | Exp_decay (a, k) -> F a
+
+  let to_string = function
+    | Const a          -> Printf.sprintf "constant %g" a
+    | Decay (a, k)     -> Printf.sprintf "decay (%g, %g)" a k
+    | Exp_decay (a, k) -> Printf.sprintf "exp_decay (%g, %g)" a k
+
 end
 
 
@@ -27,6 +37,11 @@ module Batch = struct
     | Fullbatch   -> x, y
     | Minibatch c -> let x, y, _ = Mat.draw_rows2 ~replacement:false x y c in x, y
     | Stochastic  -> let x, y, _ = Mat.draw_rows2 ~replacement:false x y 1 in x, y
+
+  let batches typ x = match typ with
+    | Fullbatch   -> 1
+    | Minibatch c -> Mat.row_num x / c
+    | Stochastic  -> Mat.row_num x
 
   let to_string = function
     | Fullbatch   -> "full"
@@ -74,6 +89,12 @@ module Gradient = struct
     | CD     -> fun w g p g' -> Maths.neg g'
     | Newton -> fun w g p g' -> Maths.neg g'
 
+  let to_string = function
+    | GD     -> "gradient decscendent"
+    | CG     -> "conjugate gradient"
+    | CD     -> "conjugate descendent"
+    | Newton -> "newtown"
+
 end
 
 
@@ -82,7 +103,12 @@ module Regularisation = struct
   type typ =
     | L1norm of float
     | L2norm of float
-    | NoReg
+    | Noreg
+
+  let run typ x = match typ with
+    | L1norm a -> Maths.(F a * l1norm x)
+    | L2norm a -> Maths.(F a * l2norm x)
+    | Noreg    -> x
 
 end
 
@@ -105,13 +131,21 @@ module Params = struct
     batch         = Batch.Minibatch 100;
   }
 
-  let to_string = "Params"
+  let to_string p =
+    "Train config\n" ^
+    Printf.sprintf "epochs        : %i\n" p.epochs ^
+    Printf.sprintf "batch         : %s\n" (Batch.to_string p.batch) ^
+    Printf.sprintf "method        : %s\n" (Gradient.to_string p.gradient) ^
+    Printf.sprintf "loss          : %s\n" (Loss.to_string p.loss) ^
+    Printf.sprintf "learning rate : %s\n" (Learning_Rate.to_string p.learning_rate) ^
+    ""
 
 end
 
 
-let train (params : Params.typ) forward backward update x y =
+let train params forward backward update x y =
   let open Params in
+  Printf.printf "%s" (Params.to_string params);
 
   (* make alias functions *)
   let batch = Batch.run params.batch in
