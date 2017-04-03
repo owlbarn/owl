@@ -276,7 +276,7 @@ end
 
 let linear ~inputs ~outputs ~init_typ = Linear (Linear.create inputs outputs init_typ)
 
-let print nn = Feedforward.to_string nn |> Printf.printf
+let print nn = Feedforward.to_string nn |> Printf.printf "%s"
 
 let train nn x y =
   Feedforward.init nn;
@@ -286,6 +286,13 @@ let train nn x y =
   let p = Owl_neural_optimise.Params.default () in
   Owl_neural_optimise.train p f b u x y
 
+let test_model nn x y =
+  Mat.iter2_rows (fun u v ->
+    Owl_dataset.print_mnist_image (unpack_mat u);
+    let p = Feedforward.run u nn |> unpack_mat in
+    Owl_dense_matrix_generic.print p;
+    Printf.printf "prediction: %i\n" (let _, _, j = Owl_dense_matrix_generic.max_i p in j)
+  ) x y
 
 (*
 let train nn x y =
