@@ -103,22 +103,37 @@ module Gradient = struct
 end
 
 
+module Momentum = struct
+
+  type typ =
+    | Standard of float
+    | Nesterov of float
+    | None
+
+  let to_string = function
+    | Standard v -> Printf.sprintf "standard (v = %g)" v
+    | Nesterov v -> Printf.sprintf "nesterov (v = %g)" v
+    | None       -> Printf.sprintf "none"
+
+end
+
+
 module Regularisation = struct
 
   type typ =
     | L1norm of float
     | L2norm of float
-    | Noreg
+    | None
 
   let run typ x = match typ with
     | L1norm a -> Maths.(F a * l1norm x)
     | L2norm a -> Maths.(F a * l2norm x)
-    | Noreg    -> F 0.
+    | None     -> F 0.
 
   let to_string = function
     | L1norm a -> Printf.sprintf "l1norm (alpha = %g)" a
     | L2norm a -> Printf.sprintf "l2norm (alhpa = %g)" a
-    | Noreg    -> "none"
+    | None     -> "none"
 
 end
 
@@ -140,7 +155,7 @@ module Params = struct
     gradient       = Gradient.GD;
     loss           = Loss.Cross_entropy;
     learning_rate  = Learning_Rate.(default (Const 0.));
-    regularisation = Regularisation.Noreg;
+    regularisation = Regularisation.None;
   }
 
   let to_string p =
@@ -185,7 +200,7 @@ let train params forward backward update x y =
     (* take the average of the loss *)
     let loss = Maths.(loss / (F (Mat.row_num yt |> float_of_int))) in
     (* add regularisation term if necessary *)
-    let reg = match params.regularisation <> Regularisation.Noreg with
+    let reg = match params.regularisation <> Regularisation.None with
       | true  -> Owl_utils.aarr_fold (fun a w -> Maths.(a + regl_fun w)) (F 0.) ws
       | false -> F 0.
     in
@@ -210,7 +225,7 @@ let train params forward backward update x y =
       let loss', ws, gs' = iterate () in
       (* print out the current state of training *)
       _print_info i params.epochs j batches !loss loss';
-      (* calculate gradient descendent *)
+      (* calculate gradient updates *)
       let ps' = Owl_utils.aarr_map2i (
         fun k _ w g' ->
           let g, p = !gs.(k), !ps.(k) in
