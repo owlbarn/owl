@@ -128,6 +128,13 @@ let array_pad s x v n =
     | `Right -> Array.blit x 0 y 0 l
   in y
 
+
+(* map function for ['a array array] type *)
+let arrarr_map f x = Array.map (Array.map f) x
+
+(* map2 function for ['a array array] type, x and y must have the same shape. *)
+let arrarr_map2 f x y = Array.map2 (Array.map2 f) x y
+
 (* extend passed in array by appending n slots *)
 let array1_extend x n =
   let open Bigarray in
