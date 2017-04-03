@@ -107,18 +107,6 @@ let array_map2i_split2 f x y =
 
 let array_sum x = Array.fold_left (+.) 0. x
 
-let array1_iter f x =
-  let open Bigarray in
-  for i = 0 to Array1.dim x - 1 do
-    f (Array1.unsafe_get x i)
-  done
-
-let array1_iteri f x =
-  let open Bigarray in
-  for i = 0 to Array1.dim x - 1 do
-    f i (Array1.unsafe_get x i)
-  done
-
 (* pad n value of v to the left/right of array x *)
 let array_pad s x v n =
   let l = Array.length x in
@@ -130,10 +118,28 @@ let array_pad s x v n =
 
 
 (* map function for ['a array array] type *)
-let arrarr_map f x = Array.map (Array.map f) x
+let aarr_map f x = Array.map (Array.map f) x
 
 (* map2 function for ['a array array] type, x and y must have the same shape. *)
-let arrarr_map2 f x y = Array.map2 (Array.map2 f) x y
+let aarr_map2 f x y = Array.map2 (Array.map2 f) x y
+
+(* map2i function for ['a array array] type, x and y must have the same shape. *)
+let aarr_map2i f x0 x1 =
+  array_map2i (fun i y0 y1 ->
+    array_map2i (fun j z0 z1 -> f i j z0 z1) y0 y1
+  ) x0 x1
+
+let array1_iter f x =
+  let open Bigarray in
+  for i = 0 to Array1.dim x - 1 do
+    f (Array1.unsafe_get x i)
+  done
+
+let array1_iteri f x =
+  let open Bigarray in
+  for i = 0 to Array1.dim x - 1 do
+    f i (Array1.unsafe_get x i)
+  done
 
 (* extend passed in array by appending n slots *)
 let array1_extend x n =

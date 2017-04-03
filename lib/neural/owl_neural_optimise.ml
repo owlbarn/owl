@@ -69,10 +69,10 @@ module Gradient = struct
 
   (* FIXME *)
   let run = function
-    | GD     -> fun _ _ _ g' -> Maths.neg g', g'
-    | CG     -> fun w g p g' -> Maths.neg g', g'
-    | CD     -> fun w g p g' -> Maths.neg g', g'
-    | Newton -> fun w g p g' -> Maths.neg g', g'
+    | GD     -> fun _ _ _ g' -> Maths.neg g'
+    | CG     -> fun w g p g' -> Maths.neg g'
+    | CD     -> fun w g p g' -> Maths.neg g'
+    | Newton -> fun w g p g' -> Maths.neg g'
 
 end
 
@@ -98,12 +98,14 @@ module Params = struct
   }
 
   let default () = {
-    epochs        = 10;
+    epochs        = 1000;
     gradient      = Gradient.GD;
     learning_rate = Learning_Rate.Const 0.01;
     loss          = Loss.Cross_entropy;
     batch         = Batch.Minibatch 100;
   }
+
+  let to_string = "Params"
 
 end
 
@@ -128,23 +130,21 @@ let train (params : Params.typ) forward backward update x y =
   (* bootstrap the training *)
   let _loss, _ws, _gs = iterate () in
   let gs = ref _gs in
-  let ps = ref (Owl_utils.arrarr_map Maths.neg _gs) in
+  let ps = ref (Owl_utils.aarr_map Maths.neg _gs) in
   update _ws;
 
+  (* iterate all the epochs *)
   for i = 1 to params.epochs do
     let loss, ws, gs' = iterate () in
-    let _l = Owl_utils.array_map2i (
-      fun j _ws _gs' ->
-        Array.map2 (fun w g' ->
-          let g, p = !gs.(j), !ps.(j) in
-          grad_fun w g p g'
-        ) _ws _gs'
-      ) ws gs'
-    in
+    (* calculate gradient descendent *)
+    let ps' = Owl_utils.aarr_map2i (
+      fun j _ w g' ->
+        let g, p = !gs.(j), !ps.(j) in
+        grad_fun w g p g'
+      ) ws gs' in
     (* adjust direction based on learning_rate *)
-    let ps' = Owl_utils.arrarr_map fst _l in
-    let us' = Owl_utils.arrarr_map (fun p' -> Maths.(F 0.01 * p')) ps' in
-    let ws' = Owl_utils.arrarr_map2 (fun w u -> Maths.(w + u)) ws us' in
+    let us' = Owl_utils.aarr_map (fun p' -> Maths.(F 0.01 * p')) ps' in
+    let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
     (* update the weight *)
     update ws';
     (* save historical data *)
@@ -153,18 +153,3 @@ let train (params : Params.typ) forward backward update x y =
     (* print out log info *)
     loss |> unpack_flt |> Printf.printf "#%i : loss = %g\n" i |> flush_all;
   done
-
-(*
-let cross_entropy_loss y y' = Maths.(cross_entropy y y' / (F (Mat.row_num y |> float_of_int)))
-
-let gd v g = Maths.(v - F 0.01 * g)
-
-let train0 x y f update =
-  for i = 1 to 1000 do
-    let xt, yt = Owl_dataset.draw_samples x y 100 in
-    let xt, yt = Mat xt, Mat yt in
-    let loss = f (cross_entropy_loss yt) xt in
-    update gd;
-    loss |> unpack_flt |> Printf.printf "#%i : loss = %g\n" i |> flush_all;
-  done
-*)
