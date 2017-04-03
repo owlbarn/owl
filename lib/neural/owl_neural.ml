@@ -102,7 +102,7 @@ module Linear = struct
     init : %s
     params : %i
     w : %i x %i
-    b : %i"
+    b : %i\n"
     (Init.to_string l.init_typ) (wm * wn + bn) wm wn bn
 
 end
@@ -276,7 +276,7 @@ end
 
 let linear ~inputs ~outputs ~init_typ = Linear (Linear.create inputs outputs init_typ)
 
-let print nn = Feedforward.to_string nn
+let print nn = Feedforward.to_string nn |> Printf.printf
 
 let train nn x y =
   Feedforward.init nn;

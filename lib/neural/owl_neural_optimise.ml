@@ -115,7 +115,7 @@ let train (params : Params.typ) forward backward update x y =
   let loss_fun = Loss.run params.loss in
   let grad_fun = Gradient.run params.gradient in
 
-  let iter () =
+  let iterate () =
     let xt, yt = batch x y in
     let yt' = forward xt in
     let loss = loss_fun yt yt' in
@@ -123,14 +123,13 @@ let train (params : Params.typ) forward backward update x y =
     loss, ws, gs'
   in
 
-  let gs = ref [||] in
-  let ps = ref [||] in
+  (* bootstrap the training *)
+  let _loss, _, _gs = iterate () in
+  let gs = ref _gs in
+  let ps = ref (Array.map (fun l -> Array.map (fun t -> Maths.neg t) l) _gs) in
 
   for i = 1 to params.epochs do
-    let xt, yt = batch x y in
-    let yt' = forward xt in
-    let loss = loss_fun yt yt' in
-    let ws, gs' = backward loss in
+    let loss, ws, gs' = iterate () in
     let _l = Owl_utils.array_map2i (
       fun j _ws _gs' ->
         Array.map2 (fun w g' ->
@@ -144,6 +143,8 @@ let train (params : Params.typ) forward backward update x y =
     let u' = Array.map (fun l -> Array.map (fun p' -> Maths.(F 0.01 * p')) l) ps' in
     (* update the weight *)
     update u';
+    (* print out log info *)
+    loss |> unpack_flt |> Printf.printf "#%i : loss = %g\n" i |> flush_all;
   done
 
 (*
