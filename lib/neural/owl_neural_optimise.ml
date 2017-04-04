@@ -14,6 +14,7 @@ module Learning_Rate = struct
     | Decay     of float * float
     | Exp_decay of float * float
     | RMSprop   of float * float
+    | Schedule  of float array
 
   let run = function
     | Adagrad a        -> fun _ g c -> Maths.(F a / sqrt (c + F 1e-8))
@@ -21,6 +22,7 @@ module Learning_Rate = struct
     | Decay (a, k)     -> fun i _ _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
     | Exp_decay (a, k) -> fun i _ _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
     | RMSprop (a, k)   -> fun _ g c -> Maths.(F a / sqrt (c + F 1e-6))
+    | Schedule a       -> fun i _ _ -> F a.(i mod (Array.length a))
 
   let default = function
     | Adagrad _   -> Adagrad 0.01
@@ -28,6 +30,7 @@ module Learning_Rate = struct
     | Decay _     -> Decay (0.1, 0.1)
     | Exp_decay _ -> Exp_decay (1., 0.1)
     | RMSprop _   -> RMSprop (0.001, 0.9)
+    | Schedule _  -> Schedule [|0.001|]
 
   let update_ch typ gs ch = match typ with
     | Adagrad _      -> Owl_utils.aarr_map2 (fun g c -> Maths.(c + g * g)) gs ch
@@ -40,6 +43,7 @@ module Learning_Rate = struct
     | Decay (a, k)     -> Printf.sprintf "decay (%g, %g)" a k
     | Exp_decay (a, k) -> Printf.sprintf "exp_decay (%g, %g)" a k
     | RMSprop (a, k)   -> Printf.sprintf "rmsprop (%g, %g)" a k
+    | Schedule a       -> Printf.sprintf "schedule %i" (Array.length a)
 
 end
 
