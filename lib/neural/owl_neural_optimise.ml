@@ -173,19 +173,22 @@ end
 module Regularisation = struct
 
   type typ =
-    | L1norm of float
-    | L2norm of float
+    | L1norm      of float
+    | L2norm      of float
+    | Elastic_net of float * float
     | None
 
   let run typ x = match typ with
-    | L1norm a -> Maths.(F a * l1norm x)
-    | L2norm a -> Maths.(F a * l2norm x)
-    | None     -> F 0.
+    | L1norm a           -> Maths.(F a * l1norm x)
+    | L2norm a           -> Maths.(F a * l2norm x)
+    | Elastic_net (a, b) -> Maths.(F a * l1norm x + F b * l2norm x)
+    | None               -> F 0.
 
   let to_string = function
-    | L1norm a -> Printf.sprintf "l1norm (alpha = %g)" a
-    | L2norm a -> Printf.sprintf "l2norm (alhpa = %g)" a
-    | None     -> "none"
+    | L1norm a           -> Printf.sprintf "l1norm (alpha = %g)" a
+    | L2norm a           -> Printf.sprintf "l2norm (alhpa = %g)" a
+    | Elastic_net (a, b) -> Printf.sprintf "elastic net (a = %g, b = %g)" a b
+    | None               -> "none"
 
 end
 

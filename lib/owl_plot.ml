@@ -545,6 +545,7 @@ let draw_line ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_wi
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
+(* TODO *)
 let plot_multi = None
 
 let _draw_error_bar ?(w=0.) x y e =
@@ -956,5 +957,8 @@ let probplot = None
 let wblplot = None
 
 
+(* other plots *)
+
+let image x = None
 
 (* ends here *)
