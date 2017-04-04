@@ -291,12 +291,15 @@ let linear ~inputs ~outputs ~init_typ = Linear (Linear.create inputs outputs ini
 
 let print nn = Feedforward.to_string nn |> Printf.printf "%s"
 
-let train nn x y =
+let train ?params nn x y =
   Feedforward.init nn;
   let f = Feedforward.forward nn in
   let b = Feedforward.backward nn in
   let u = Feedforward.update nn in
-  let p = Owl_neural_optimise.Params.default () in
+  let p = match params with
+    | Some p -> p
+    | None   -> Owl_neural_optimise.Params.default ()
+  in
   Owl_neural_optimise.train p f b u x y
 
 let test_model nn x y =
