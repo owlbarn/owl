@@ -9,21 +9,33 @@ open Owl_algodiff_ad
 module Learning_Rate = struct
 
   type typ =
+    | Adagrad   of float
     | Const     of float
     | Decay     of float * float
     | Exp_decay of float * float
 
   let run = function
-    | Const a          -> fun _ _ -> F a
-    | Decay (a, k)     -> fun i _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
-    | Exp_decay (a, k) -> fun i _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
+    | Adagrad a        -> fun _ g c -> Maths.(F a / sqrt (c + F 1e-8))
+    | Const a          -> fun _ _ _ -> F a
+    | Decay (a, k)     -> fun i _ _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
+    | Exp_decay (a, k) -> fun i _ _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
 
   let default = function
+    | Adagrad _   -> Adagrad 0.01
     | Const _     -> Const 0.001
     | Decay _     -> Decay (0.1, 0.1)
     | Exp_decay _ -> Exp_decay (1., 0.1)
 
+  let mk_gcache typ g = match typ with
+    | Adagrad _ -> Owl_utils.aarr_map (fun a -> F 0.) g
+    | _         -> Owl_utils.aarr_map (fun _ -> F 0.) g
+
+  let up_gcache typ gs ch = match typ with
+    | Adagrad _ -> Owl_utils.aarr_map2 (fun g c -> Maths.(c + g * g)) gs ch
+    | _         -> ch
+
   let to_string = function
+    | Adagrad a        -> Printf.sprintf "adagrad %g" a
     | Const a          -> Printf.sprintf "constant %g" a
     | Decay (a, k)     -> Printf.sprintf "decay (%g, %g)" a k
     | Exp_decay (a, k) -> Printf.sprintf "exp_decay (%g, %g)" a k
@@ -115,6 +127,11 @@ module Momentum = struct
     | Nesterov m -> fun u u' -> Maths.((F m * F m * u) + (F m + F 1.) * u')
     | None       -> fun _ u' -> u'
 
+  let default = function
+    | Standard _ -> Standard 0.9
+    | Nesterov _ -> Nesterov 0.9
+    | None       -> None
+
   let to_string = function
     | Standard m -> Printf.sprintf "standard %g" m
     | Nesterov m -> Printf.sprintf "nesterov %g" m
@@ -200,6 +217,7 @@ let train params forward backward update x y =
   let rate_fun = Learning_Rate.run params.learning_rate in
   let regl_fun = Regularisation.run params.regularisation in
   let momt_fun = Momentum.run params.momentum in
+  let upch_fun = Learning_Rate.up_gcache params.learning_rate in
 
   (* operations in one iteration *)
   let iterate () =
@@ -217,13 +235,17 @@ let train params forward backward update x y =
     let ws, gs' = backward loss in
     loss |> primal', ws, gs' in
 
-  (* bootstrap the training *)
+  (* first iteration to bootstrap the training *)
   let t0 = Unix.time () in
   let _loss, _ws, _gs = iterate () in
+  update _ws;
+
+  (* variables used for specific modules *)
   let gs = ref _gs in
   let ps = ref (Owl_utils.aarr_map Maths.neg _gs) in
   let us = ref (Owl_utils.aarr_map (fun _ -> F 0.) _gs) in
-  update _ws;
+  let ch = ref (Learning_Rate.mk_gcache params.learning_rate _gs) in
+
 
   (* variables used in training process *)
   let batches = Batch.batches params.batch x in
@@ -242,8 +264,12 @@ let train params forward backward update x y =
           let g, p = !gs.(k), !ps.(k) in
           grad_fun w g p g'
         ) ws gs' in
+      (* update gcache if necessary *)
+      ch := upch_fun gs' !ch;
       (* adjust direction based on learning_rate *)
-      let us' = Owl_utils.aarr_map (fun p' -> Maths.(p' * rate_fun i p')) ps' in
+      let us' = Owl_utils.aarr_map3 (fun p' g' c ->
+        Maths.(p' * rate_fun i g' c)
+      ) ps' gs' !ch in
       (* adjust direction based on momentum *)
       let us' = match params.momentum <> Momentum.None with
         | true  -> Owl_utils.aarr_map2 momt_fun !us us'

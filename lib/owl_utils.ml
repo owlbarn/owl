@@ -129,6 +129,22 @@ let aarr_map2i f x0 x1 =
     array_map2i (fun j z0 z1 -> f i j z0 z1) y0 y1
   ) x0 x1
 
+(* map3i function for ['a array array] type, all must have the same shape. *)
+let aarr_map3i f x0 x1 x2 =
+  Array.init (Array.length x0) (fun i ->
+    Array.init (Array.length x0.(i)) (fun j ->
+      f i j x0.(i).(j) x1.(i).(j) x2.(i).(j)
+    )
+  )
+
+(* map3 function for ['a array array] type, all must have the same shape. *)
+let aarr_map3 f x0 x1 x2 =
+  Array.init (Array.length x0) (fun i ->
+    Array.init (Array.length x0.(i)) (fun j ->
+      f x0.(i).(j) x1.(i).(j) x2.(i).(j)
+    )
+  )
+  
 (* fold function for ['a array array] type, by flatten the array *)
 let aarr_fold f a x =
   let a = ref a in
