@@ -13,32 +13,33 @@ module Learning_Rate = struct
     | Const     of float
     | Decay     of float * float
     | Exp_decay of float * float
+    | RMSprop   of float * float
 
   let run = function
     | Adagrad a        -> fun _ g c -> Maths.(F a / sqrt (c + F 1e-8))
     | Const a          -> fun _ _ _ -> F a
     | Decay (a, k)     -> fun i _ _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
     | Exp_decay (a, k) -> fun i _ _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
+    | RMSprop (a, k)   -> fun _ g c -> Maths.(F a / sqrt (c + F 1e-6))
 
   let default = function
     | Adagrad _   -> Adagrad 0.01
     | Const _     -> Const 0.001
     | Decay _     -> Decay (0.1, 0.1)
     | Exp_decay _ -> Exp_decay (1., 0.1)
+    | RMSprop _   -> RMSprop (0.001, 0.9)
 
-  let mk_gcache typ g = match typ with
-    | Adagrad _ -> Owl_utils.aarr_map (fun a -> F 0.) g
-    | _         -> Owl_utils.aarr_map (fun _ -> F 0.) g
-
-  let up_gcache typ gs ch = match typ with
-    | Adagrad _ -> Owl_utils.aarr_map2 (fun g c -> Maths.(c + g * g)) gs ch
-    | _         -> ch
+  let update_ch typ gs ch = match typ with
+    | Adagrad _      -> Owl_utils.aarr_map2 (fun g c -> Maths.(c + g * g)) gs ch
+    | RMSprop (a, k) -> Owl_utils.aarr_map2 (fun g c -> Maths.((F k * c) + (F 1. - F k) * g * g)) gs ch
+    | _              -> ch
 
   let to_string = function
     | Adagrad a        -> Printf.sprintf "adagrad %g" a
     | Const a          -> Printf.sprintf "constant %g" a
     | Decay (a, k)     -> Printf.sprintf "decay (%g, %g)" a k
     | Exp_decay (a, k) -> Printf.sprintf "exp_decay (%g, %g)" a k
+    | RMSprop (a, k)   -> Printf.sprintf "rmsprop (%g, %g)" a k
 
 end
 
@@ -217,7 +218,7 @@ let train params forward backward update x y =
   let rate_fun = Learning_Rate.run params.learning_rate in
   let regl_fun = Regularisation.run params.regularisation in
   let momt_fun = Momentum.run params.momentum in
-  let upch_fun = Learning_Rate.up_gcache params.learning_rate in
+  let upch_fun = Learning_Rate.update_ch params.learning_rate in
 
   (* operations in one iteration *)
   let iterate () =
@@ -244,7 +245,7 @@ let train params forward backward update x y =
   let gs = ref _gs in
   let ps = ref (Owl_utils.aarr_map Maths.neg _gs) in
   let us = ref (Owl_utils.aarr_map (fun _ -> F 0.) _gs) in
-  let ch = ref (Learning_Rate.mk_gcache params.learning_rate _gs) in
+  let ch = ref (Owl_utils.aarr_map (fun a -> F 0.) _gs) in
 
 
   (* variables used in training process *)
