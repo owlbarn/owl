@@ -99,23 +99,46 @@ end
 module Gradient = struct
 
   type typ =
-    | GD
-    | CG
-    | CD
-    | Newton
+    | GD          (* classic gradient descendent *)
+    | CG          (* Hestenes and Stiefel 1952 *)
+    | CD          (* Fletcher 1987 *)
+    | NonlinearCG (* Fletcher and Reeves 1964 *)
+    | DaiYuanCG   (* Dai and Yuan 1999 *)
+    | NewtonCG    (* Newton conjugate gradient *)
+    | Newton      (* Exact Newton *)
 
   (* FIXME *)
   let run = function
-    | GD     -> fun _ _ _ g' -> Maths.neg g'
-    | CG     -> fun w g p g' -> Maths.neg g'
-    | CD     -> fun w g p g' -> Maths.neg g'
-    | Newton -> fun w g p g' -> Maths.neg g'
+    | GD          -> fun _ _ _ g' -> Maths.neg g'
+    | CG          -> fun _ g p g' -> (
+        let y = Maths.(g' - g) in
+        let b = Maths.((g' $@ y) / (p $@ y)) in
+        Maths.(neg g' + (b $@ p))
+      )
+    | CD          -> fun _ g p g' -> (
+        let b = Maths.(l2norm_sqr g' / (neg p $@ g)) in
+        Maths.(neg g' + b $@ p)
+      )
+    | NonlinearCG -> fun _ g p g' -> (
+        let b = Maths.((l2norm_sqr g') / (l2norm_sqr g)) in
+        Maths.(neg g' + (b $@ p))
+      )
+    | DaiYuanCG   -> fun w g p g' -> (
+        let y = Maths.(g' - g) in
+        let b = Maths.((l2norm_sqr g') / (p $@ y)) in
+        Maths.(neg g' + (b $@ p))
+      )
+    | NewtonCG    -> fun w g p g' -> Maths.neg g' (* TODO *)
+    | Newton      -> fun w g p g' -> Maths.neg g' (* TODO *)
 
   let to_string = function
-    | GD     -> "gradient decscendent"
-    | CG     -> "conjugate gradient"
-    | CD     -> "conjugate descendent"
-    | Newton -> "newtown"
+    | GD          -> "gradient decscendent"
+    | CG          -> "conjugate gradient"
+    | CD          -> "conjugate descendent"
+    | NonlinearCG -> "nonlinear conjugate gradient"
+    | DaiYuanCG   -> "dai & yuan conjugate gradient"
+    | NewtonCG    -> "newton conjugate gradient"
+    | Newton      -> "newtown"
 
 end
 
@@ -165,6 +188,22 @@ module Regularisation = struct
 end
 
 
+module Clipping = struct
+
+  type typ = None
+
+end
+
+
+module Stopping = struct
+
+  type typ =
+    | Early
+    | None
+
+end
+
+
 module Params = struct
 
   type typ = {
@@ -201,6 +240,8 @@ module Params = struct
 end
 
 
+(* helper functions *)
+
 let _print_info e_i e_n b_i b_n l l' =
   let l, l' = unpack_flt l, unpack_flt l' in
   let d = l -. l' in
@@ -210,6 +251,8 @@ let _print_info e_i e_n b_i b_n l l' =
 
 let _print_summary t = Printf.printf "--- Training summary\n    Duration: %g s\n" t
 
+
+(* core training functions *)
 
 let train params forward backward update x y =
   let open Params in
@@ -251,7 +294,6 @@ let train params forward backward update x y =
   let us = ref (Owl_utils.aarr_map (fun _ -> F 0.) _gs) in
   let ch = ref (Owl_utils.aarr_map (fun a -> F 0.) _gs) in
 
-
   (* variables used in training process *)
   let batches = Batch.batches params.batch x in
   let loss = ref (Array.make (params.epochs * batches) (F 0.)) in
@@ -265,8 +307,8 @@ let train params forward backward update x y =
       _print_info i params.epochs j batches !loss.(!idx) loss';
       (* calculate gradient updates *)
       let ps' = Owl_utils.aarr_map2i (
-        fun k _ w g' ->
-          let g, p = !gs.(k), !ps.(k) in
+        fun k l w g' ->
+          let g, p = !gs.(k).(l), !ps.(k).(l) in
           grad_fun w g p g'
         ) ws gs' in
       (* update gcache if necessary *)
