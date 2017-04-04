@@ -227,14 +227,15 @@ let train params forward backward update x y =
 
   (* variables used in training process *)
   let batches = Batch.batches params.batch x in
-  let loss = ref _loss in
+  let loss = ref (Array.make (params.epochs * batches) (F 0.)) in
+  let idx = ref 0 in
 
   (* iterate all batches in each epoch *)
   for i = 1 to params.epochs do
     for j = 1 to batches do
       let loss', ws, gs' = iterate () in
       (* print out the current state of training *)
-      _print_info i params.epochs j batches !loss loss';
+      _print_info i params.epochs j batches !loss.(!idx) loss';
       (* calculate gradient updates *)
       let ps' = Owl_utils.aarr_map2i (
         fun k _ w g' ->
@@ -255,13 +256,16 @@ let train params forward backward update x y =
       if params.momentum <> Momentum.None then us := us';
       gs := gs';
       ps := ps';
-      loss := loss';
-
+      !loss.(!idx) <- loss';
+      idx := !idx + 1;
     done
   done;
 
   (* print training summary *)
-  _print_summary (Unix.time () -. t0)
+  _print_summary (Unix.time () -. t0);
+  (* return loss history *)
+  Array.map unpack_flt !loss
+
 
 
 (* ends here *)

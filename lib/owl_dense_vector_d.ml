@@ -28,3 +28,5 @@ let unit_basis ?typ m i = V.unit_basis ?typ Float64 m i
 let linspace ?typ a b n = V.linspace ?typ Float64 a b n
 
 let logspace ?typ ?base a b n = V.logspace ?typ ?base Float64 a b n
+
+let of_array ?typ l = V.of_array Float64 l

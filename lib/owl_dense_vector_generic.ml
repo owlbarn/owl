@@ -93,4 +93,11 @@ let foldi f a x =
   | Col -> M.foldi (fun i _ c b -> f i c b) a x
 
 
+(* to/from other types *)
+
+let of_array ?(typ=Row) k l = match typ with
+  | Row -> M.of_array k l 1 (Array.length l)
+  | Col -> M.of_array k l (Array.length l) 1
+
+
 (* ends here *)

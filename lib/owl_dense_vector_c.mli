@@ -61,6 +61,13 @@ val mapi : (int -> elt -> elt) -> vec -> vec
 val map : (elt -> elt) -> vec -> vec
 
 
+(** {6 I/O and type conversion } *)
+
+val of_array : ?typ:vec_typ -> elt array -> vec
+
+val to_array : vec -> elt array
+
+
 (** {6 Binary mathematical operations } *)
 
 val add : vec -> vec -> vec

@@ -28,3 +28,5 @@ let unit_basis ?typ m i = V.unit_basis ?typ Complex32 m i
 let linspace ?typ a b n = V.linspace ?typ Complex32 a b n
 
 let logspace ?typ ?base a b n = V.logspace ?typ ?base Complex32 a b n
+
+let of_array ?typ l = V.of_array Complex32 l

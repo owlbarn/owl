@@ -39,6 +39,13 @@ val shape : vec -> int * int
 val numel : vec -> int
 
 
+(** {6 I/O and type conversion } *)
+
+val of_array : ?typ:vec_typ -> elt array -> vec
+
+val to_array : vec -> elt array
+
+
 (** {6 Vector manipulations } *)
 
 val set : vec -> int -> elt -> unit
