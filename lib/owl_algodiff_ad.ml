@@ -1076,6 +1076,8 @@ module Mat = struct
 
   let div x y = Maths.div x y
 
+  let clip_by_l2norm t x = M.clip_by_l2norm (unpack_flt t) (unpack_mat x) |> pack_mat
+
   (* FIXME: need to be call row fun *)
   let iteri_rows f x = M.iteri_rows (fun i v -> f i (pack_mat v)) (unpack_mat x)
 

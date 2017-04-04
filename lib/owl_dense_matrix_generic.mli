@@ -940,6 +940,9 @@ val ssqr_diff : ('a, 'b) t -> ('a, 'b) t -> 'a
 val cross_entropy : (float, 'a) t -> (float, 'a) t -> float
 (** [cross_entropy x y] calculates the cross entropy between [x] and [y] using base [e]. *)
 
+val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
+(** [clip_by_l2norm t x] clips the [x] according to the threshold set by [t]. *)
+
 
 (** {6 Shorhand infix operators} *)
 

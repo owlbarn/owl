@@ -80,18 +80,21 @@ module Loss = struct
     | L2norm
     | Quadratic
     | Cross_entropy
+    | Custom of (t -> t -> t)
 
   let run typ y y' = match typ with
     | L1norm        -> Maths.(l1norm (y - y'))
     | L2norm        -> Maths.(l2norm (y - y'))
     | Quadratic     -> Maths.(l2norm_sqr (y - y'))
     | Cross_entropy -> Maths.(cross_entropy y y')
+    | Custom f      -> f y y' (* y':prediction *)
 
   let to_string = function
     | L1norm        -> "l1norm"
     | L2norm        -> "l2norm"
     | Quadratic     -> "quadratic"
     | Cross_entropy -> "cross_entropy"
+    | Custom _      -> "customise"
 
 end
 
@@ -99,15 +102,14 @@ end
 module Gradient = struct
 
   type typ =
-    | GD          (* classic gradient descendent *)
-    | CG          (* Hestenes and Stiefel 1952 *)
-    | CD          (* Fletcher 1987 *)
-    | NonlinearCG (* Fletcher and Reeves 1964 *)
-    | DaiYuanCG   (* Dai and Yuan 1999 *)
-    | NewtonCG    (* Newton conjugate gradient *)
-    | Newton      (* Exact Newton *)
+    | GD           (* classic gradient descendent *)
+    | CG           (* Hestenes and Stiefel 1952 *)
+    | CD           (* Fletcher 1987 *)
+    | NonlinearCG  (* Fletcher and Reeves 1964 *)
+    | DaiYuanCG    (* Dai and Yuan 1999 *)
+    | NewtonCG     (* Newton conjugate gradient *)
+    | Newton       (* Exact Newton *)
 
-  (* FIXME *)
   let run = function
     | GD          -> fun _ _ _ g' -> Maths.neg g'
     | CG          -> fun _ g p g' -> (
@@ -128,8 +130,8 @@ module Gradient = struct
         let b = Maths.((l2norm_sqr g') / (p $@ y)) in
         Maths.(neg g' + (b $@ p))
       )
-    | NewtonCG    -> fun w g p g' -> Maths.neg g' (* TODO *)
-    | Newton      -> fun w g p g' -> Maths.neg g' (* TODO *)
+    | NewtonCG    -> fun w g p g' -> failwith "not implemented" (* TODO *)
+    | Newton      -> fun w g p g' -> failwith "not implemented" (* TODO *)
 
   let to_string = function
     | GD          -> "gradient decscendent"
@@ -190,7 +192,25 @@ end
 
 module Clipping = struct
 
-  type typ = None
+  type typ =
+    | L2norm of float
+    | Value  of float * float  (* min, max *)
+    | None
+
+  let run typ x = match typ with
+    | L2norm t     -> Mat.clip_by_l2norm (F t) x
+    | Value (a, b) -> failwith "not implemented"  (* TODO *)
+    | None         -> x
+
+  let default = function
+    | L2norm _ -> L2norm 1.
+    | Value _  -> Value (0., 1.)
+    | None     -> None
+
+  let to_string = function
+    | L2norm t     -> Printf.sprintf "l2norm (threshold = %g)" t
+    | Value (a, b) -> Printf.sprintf "value (min = %g, max = %g)" a b
+    | None         -> "none"
 
 end
 
@@ -198,8 +218,20 @@ end
 module Stopping = struct
 
   type typ =
-    | Early
+    | Early of int * int (* stagnation patience, overfitting patience *)
     | None
+
+  let run = function
+    | Early (s, o) -> failwith "not implemented"   (* TODO *)
+    | None         -> false
+
+  let default = function
+    | Early _ -> Early (750, 10)
+    | None    -> None
+
+  let to_string = function
+    | Early (s, o) -> Printf.sprintf "early (s = %i, o = %i)" s o
+    | None         -> "none"
 
 end
 
@@ -214,6 +246,7 @@ module Params = struct
     mutable learning_rate   : Learning_Rate.typ;
     mutable regularisation  : Regularisation.typ;
     mutable momentum        : Momentum.typ;
+    mutable clipping        : Clipping.typ;
   }
 
   let default () = {
@@ -224,6 +257,7 @@ module Params = struct
     learning_rate  = Learning_Rate.(default (Const 0.));
     regularisation = Regularisation.None;
     momentum       = Momentum.None;
+    clipping       = Clipping.None;
   }
 
   let to_string p =
@@ -235,6 +269,7 @@ module Params = struct
     Printf.sprintf "    learning rate  : %s\n" (Learning_Rate.to_string p.learning_rate) ^
     Printf.sprintf "    regularisation : %s\n" (Regularisation.to_string p.regularisation) ^
     Printf.sprintf "    momentum       : %s\n" (Momentum.to_string p.momentum) ^
+    Printf.sprintf "    clipping       : %s\n" (Clipping.to_string p.clipping) ^
     "---"
 
 end
@@ -266,6 +301,7 @@ let train params forward backward update x y =
   let regl_fun = Regularisation.run params.regularisation in
   let momt_fun = Momentum.run params.momentum in
   let upch_fun = Learning_Rate.update_ch params.learning_rate in
+  let clip_fun = Clipping.run params.clipping in
 
   (* operations in one iteration *)
   let iterate () =
@@ -309,6 +345,9 @@ let train params forward backward update x y =
       let ps' = Owl_utils.aarr_map2i (
         fun k l w g' ->
           let g, p = !gs.(k).(l), !ps.(k).(l) in
+          (* clip the gradient if necessary *)
+          let g' = clip_fun g' in
+          (* calculate the descendent *)
           grad_fun w g p g'
         ) ws gs' in
       (* update gcache if necessary *)

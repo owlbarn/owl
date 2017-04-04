@@ -1281,6 +1281,16 @@ let cast_d2c x =
   _owl_cast_d2c (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
   y
 
+
+(* clipping functions *)
+
+let clip_by_l2norm t x =
+  let a = l2norm x in
+  match a > t with
+  | true  -> mul_scalar x (t /. a)
+  | false -> x
+
+
 (* TODO *)
 
 let insert_slice = None
