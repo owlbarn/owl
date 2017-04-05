@@ -119,7 +119,7 @@ module Gradient = struct
       )
     | CD          -> fun _ g p g' -> (
         let b = Maths.(l2norm_sqr g' / (neg p $@ g)) in
-        Maths.(neg g' + b $@ p)
+        Maths.(neg g' + (b $@ p))
       )
     | NonlinearCG -> fun _ g p g' -> (
         let b = Maths.((l2norm_sqr g') / (l2norm_sqr g)) in
