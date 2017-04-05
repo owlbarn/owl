@@ -12,10 +12,11 @@
   matrices will be provided very soon.
  *)
 
-type dsmat = Owl_dense_matrix_d.mat
+type mat_d = Owl_dense_matrix_d.mat
+type mat_z = Owl_dense_matrix_z.mat
 
 
-val inv : dsmat -> dsmat
+val inv : mat_d -> mat_d
 (** A general square matrix A has an LU decomposition into upper and lower
   triangular matrices, [P A = L U] where P is a permutation matrix, L is unit
   lower triangular matrix and U is upper triangular matrix. For square matrices
@@ -25,37 +26,48 @@ val inv : dsmat -> dsmat
   singular matrices.
  *)
 
-val det : dsmat -> float
+val det : mat_d -> float
 (** [det x] computes the determinant of a matrix [x] from its LU decomposition. *)
 
-val qr : dsmat -> dsmat * dsmat
+val qr : mat_d -> mat_d * mat_d
 (** [qr x] calculates QR decomposition for an [m] by [n] matrix [x] as
   [x = Q R]. [Q] is an [m] by [m] square matrix (where [Q^T Q = I]) and [R] is
   an [m] by [n] right-triangular matrix.
  *)
 
-val qr_sqsolve : dsmat -> dsmat -> dsmat
+val qr_sqsolve : mat_d -> mat_d -> mat_d
 
-val qr_lssolve : dsmat -> dsmat -> dsmat * dsmat
+val qr_lssolve : mat_d -> mat_d -> mat_d * mat_d
 
-val svd : dsmat -> dsmat * dsmat * dsmat
+val svd : mat_d -> mat_d * mat_d * mat_d
 (** [svd x] calculates the singular value decomposition of [x], and returns a
   tuple [(u,s,v)]. [u] is an [m] by [n] orthogonal matrix, [s] an [n] by [1]
   matrix of singular values, and [v] is the transpose of an [n] by [n]
   orthogonal square matrix.
  *)
 
-val cholesky : dsmat -> dsmat
+val cholesky : mat_d -> mat_d
 
-val is_posdef : dsmat -> bool
+val is_posdef : mat_d -> bool
 (** [is_posdef x] checks whether [x] is a positive semi-definite matrix. *)
 
-val symmtd : dsmat -> dsmat * dsmat * dsmat
+val symmtd : mat_d -> mat_d * mat_d * mat_d
 
-val bidiag : dsmat -> dsmat * dsmat * dsmat * dsmat
+val bidiag : mat_d -> mat_d * mat_d * mat_d * mat_d
 
-val tridiag_solve : dsmat -> dsmat -> dsmat
+val tridiag_solve : mat_d -> mat_d -> mat_d
 
-val symm_tridiag_solve : dsmat -> dsmat -> dsmat
+val symm_tridiag_solve : mat_d -> mat_d -> mat_d
 
 (* TODO: lu decomposition *)
+
+
+(** {6 Solve Eigen systems} *)
+
+val eigen_symm : mat_d -> mat_d
+
+val eigen_symmv : mat_d -> mat_d * mat_d
+
+val eigen_nonsymm : mat_d -> mat_z
+
+val eigen_nonsymmv : mat_d -> mat_z * mat_z
