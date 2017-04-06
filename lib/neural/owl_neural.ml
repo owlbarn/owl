@@ -190,22 +190,20 @@ module Recurrent = struct
     l.wxh <- make_reverse l.wxh t;
     l.why <- make_reverse l.why t;
     l.bh  <- make_reverse l.bh t;
-    l.by  <- make_reverse l.by t;
-    l.h   <- make_reverse l.h t
+    l.by  <- make_reverse l.by t
 
-  let mkpar l = [| l.whh; l.wxh; l.why; l.bh; l.by; l.h |]
+  let mkpar l = [| l.whh; l.wxh; l.why; l.bh; l.by |]
 
-  let mkpri l = [| primal l.whh; primal l.wxh; primal l.why; primal l.bh; primal l.by; primal l.h |]
+  let mkpri l = [| primal l.whh; primal l.wxh; primal l.why; primal l.bh; primal l.by |]
 
-  let mkadj l = [| adjval l.whh; adjval l.wxh; adjval l.why; adjval l.bh; adjval l.by; adjval l.h |]
+  let mkadj l = [| adjval l.whh; adjval l.wxh; adjval l.why; adjval l.bh; adjval l.by |]
 
   let update l u =
     l.whh <- u.(0) |> primal';
     l.wxh <- u.(1) |> primal';
     l.why <- u.(2) |> primal';
     l.bh  <- u.(3) |> primal';
-    l.by  <- u.(4) |> primal';
-    l.h   <- u.(5) |> primal'
+    l.by  <- u.(4) |> primal'
 
   let run x l = F 0.
 
