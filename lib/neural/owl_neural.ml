@@ -43,7 +43,7 @@ module Activation = struct
   let run x l = match l with
     | Relu     -> Maths.relu x
     | Sigmoid  -> Maths.sigmoid x
-    | Softmax  -> Mat.map_by_row Maths.softmax x
+    | Softmax  -> Mat.map_by_row Maths.softmax x  (* FIXME: this probably needs to be fixed *)
     | Tanh     -> Maths.tanh x
     | Custom f -> f x
 
@@ -101,10 +101,10 @@ module Linear = struct
     let wm, wn = Mat.shape l.w in
     let bn = Mat.col_num l.b in
     Printf.sprintf "Linear layer:
-    init : %s
+    init   : %s
     params : %i
-    w : %i x %i
-    b : %i\n"
+    w      : %i x %i
+    b      : %i\n"
     (Init.to_string l.init_typ) (wm * wn + bn) wm wn bn
 
 end
@@ -205,9 +205,32 @@ module Recurrent = struct
     l.bh  <- u.(3) |> primal';
     l.by  <- u.(4) |> primal'
 
-  let run x l = F 0.
+  let run x l =
+    let act x = Activation.run x l.act in
+    let y = Mat.map_by_row (fun x ->
+      l.h <- act Maths.((l.h $@l.whh) + (x $@ l.wxh) + l.bh);
+      Maths.((l.h $@ l.why) + l.by)
+    ) x in
+    l.h <- primal' l.h;
+    y
 
-  let to_string l = "Recurrent"
+  let to_string l =
+    let whhm, whhn = Mat.shape l.whh in
+    let wxhm, wxhn = Mat.shape l.wxh in
+    let whym, whyn = Mat.shape l.why in
+    let bhm, bhn = Mat.shape l.bh in
+    let bym, byn = Mat.shape l.by in
+    Printf.sprintf "Recurrent layer:
+    init   : %s
+    params : %i
+    whh    : %i x %i
+    wxh    : %i x %i
+    why    : %i x %i
+    bh     : %i x %i
+    by     : %i x %i
+    act    : %s\n"
+    (Init.to_string l.init_typ) (whhm * whhn + wxhm * wxhn + whym * whyn + bhm * bhn + bym * byn)
+    whhm whhn wxhm wxhn whym whyn bhm bhn bym byn (Activation.to_string l.act)
 
 end
 
