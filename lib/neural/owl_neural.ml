@@ -66,9 +66,9 @@ module Linear = struct
     mutable init_typ : Init.typ;
   }
 
-  let create m n init_typ = {
-    w = Mat.empty m n;
-    b = Mat.empty 1 n;
+  let create i o init_typ = {
+    w = Mat.empty i o;
+    b = Mat.empty 1 o;
     init_typ = init_typ;
   }
 
@@ -148,30 +148,62 @@ end
 module Recurrent = struct
 
   type layer = {
-    mutable w        : t;
-    mutable b        : t;
+    mutable whh      : t;
+    mutable wxh      : t;
+    mutable why      : t;
+    mutable bh       : t;
+    mutable by       : t;
+    mutable h        : t;
+    mutable act      : Activation.typ;
     mutable init_typ : Init.typ;
   }
 
-  let create init_typ = {
-    w = Mat.empty 1 1;
-    b = Mat.empty 1 1;
+  let create i h o act init_typ = {
+    whh = Mat.empty h h;
+    wxh = Mat.empty i h;
+    why = Mat.empty h o;
+    bh  = Mat.empty 1 h;
+    by  = Mat.empty 1 o;
+    h   = Mat.empty 1 h;
+    act = act;
     init_typ = init_typ;
   }
 
-  let init l = ()
+  let init l =
+    l.whh <- Init.run l.init_typ (Mat.row_num l.whh) (Mat.col_num l.whh);
+    l.wxh <- Init.run l.init_typ (Mat.row_num l.wxh) (Mat.col_num l.wxh);
+    l.why <- Init.run l.init_typ (Mat.row_num l.why) (Mat.col_num l.why);
+    l.bh  <- Init.run l.init_typ 1 (Mat.col_num l.bh);
+    l.by  <- Init.run l.init_typ 1 (Mat.col_num l.by);
+    l.h   <- Init.run l.init_typ 1 (Mat.col_num l.bh)
 
-  let reset l = ()
+  let reset l =
+    Mat.reset l.whh;
+    Mat.reset l.wxh;
+    Mat.reset l.why;
+    Mat.reset l.bh;
+    Mat.reset l.by;
+    Mat.reset l.h
 
-  let mktag t l = ()
+  let mktag t l =
+    l.whh <- make_reverse l.whh t;
+    l.wxh <- make_reverse l.wxh t;
+    l.why <- make_reverse l.why t;
+    l.bh  <- make_reverse l.bh t;
+    l.by  <- make_reverse l.by t
 
-  let mkpar l = [||]
+  let mkpar l = [| l.whh; l.wxh; l.why; l.bh; l.by |]
 
-  let mkpri l = [||]
+  let mkpri l = [| primal l.whh; primal l.wxh; primal l.why; primal l.bh; primal l.by |]
 
-  let mkadj l = [||]
+  let mkadj l = [| adjval l.whh; adjval l.wxh; adjval l.why; adjval l.bh; adjval l.by |]
 
-  let update l u = ()
+  let update l u =
+    l.whh <- u.(0) |> primal';
+    l.wxh <- u.(1) |> primal';
+    l.why <- u.(2) |> primal';
+    l.bh  <- u.(3) |> primal';
+    l.by  <- u.(4) |> primal'
 
   let run x l = F 0.
 
