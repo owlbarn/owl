@@ -273,20 +273,20 @@ module LSTM = struct
     let bfm, bfn = Mat.shape l.bf in
     let bom, bon = Mat.shape l.bo in
     Printf.sprintf "LSTM layer:\n" ^
-    Printf.sprintf "init   : %s\n" (Init.to_string l.init_typ) ^
-    Printf.sprintf "params : %i\n" (wxim*wxin + whim*whin + wxcm*wxcn + whcm*whcn + wxfm*wxfn + whfm*whfn + wxom*wxon + whom*whon + bim*bin + bcm*bcn + bfm*bfn + bom*bon) ^
-    Printf.sprintf "wxi    : %i x %i\n" wxim wxin ^
-    Printf.sprintf "whi    : %i x %i\n" whim whin ^
-    Printf.sprintf "wxc    : %i x %i\n" wxcm wxcn ^
-    Printf.sprintf "whc    : %i x %i\n" whcm whcn ^
-    Printf.sprintf "wxf    : %i x %i\n" wxfm wxfn ^
-    Printf.sprintf "whf    : %i x %i\n" whfm whfn ^
-    Printf.sprintf "wxo    : %i x %i\n" wxom wxon ^
-    Printf.sprintf "who    : %i x %i\n" whom whon ^
-    Printf.sprintf "bi     : %i x %i\n" bim bin ^
-    Printf.sprintf "bc     : %i x %i\n" bcm bcn ^
-    Printf.sprintf "bf     : %i x %i\n" bfm bfn ^
-    Printf.sprintf "bo     : %i x %i\n" bom bon ^
+    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params : %i\n" (wxim*wxin + whim*whin + wxcm*wxcn + whcm*whcn + wxfm*wxfn + whfm*whfn + wxom*wxon + whom*whon + bim*bin + bcm*bcn + bfm*bfn + bom*bon) ^
+    Printf.sprintf "    wxi    : %i x %i\n" wxim wxin ^
+    Printf.sprintf "    whi    : %i x %i\n" whim whin ^
+    Printf.sprintf "    wxc    : %i x %i\n" wxcm wxcn ^
+    Printf.sprintf "    whc    : %i x %i\n" whcm whcn ^
+    Printf.sprintf "    wxf    : %i x %i\n" wxfm wxfn ^
+    Printf.sprintf "    whf    : %i x %i\n" whfm whfn ^
+    Printf.sprintf "    wxo    : %i x %i\n" wxom wxon ^
+    Printf.sprintf "    who    : %i x %i\n" whom whon ^
+    Printf.sprintf "    bi     : %i x %i\n" bim bin ^
+    Printf.sprintf "    bc     : %i x %i\n" bcm bcn ^
+    Printf.sprintf "    bf     : %i x %i\n" bfm bfn ^
+    Printf.sprintf "    bo     : %i x %i\n" bom bon ^
     ""
 
 end
