@@ -65,9 +65,19 @@ val symm_tridiag_solve : mat_d -> mat_d -> mat_d
 (** {6 Solve Eigen systems} *)
 
 val eigen_symm : mat_d -> mat_d
+(* [eigen_symm x] return the eigen values of real symmetric matrix [x]. *)
 
 val eigen_symmv : mat_d -> mat_d * mat_d
+(* [eigen_symmv x] return the eigen values and vactors of real symmetric matrix [x]. *)
 
 val eigen_nonsymm : mat_d -> mat_z
+(* [eigen_nonsymm x] return the eigen values of real asymmetric matrix [x]. *)
 
 val eigen_nonsymmv : mat_d -> mat_z * mat_z
+(* [eigen_nonsymmv x] return the eigen values and vectors of real asymmetric matrix [x]. *)
+
+val eigen_herm : mat_z -> mat_d
+(* [eigen_herm x] return the eigen values of complex Hermitian matrix [x]. *)
+
+val eigen_hermv : mat_z -> mat_d * mat_z
+(* [eigen_hermv x] return the eigen values and vectors of complex Hermitian matrix [x]. *)

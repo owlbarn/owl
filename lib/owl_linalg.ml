@@ -266,9 +266,19 @@ let eigen_nonsymmv x =
   let v = MZ.of_array (Gsl.Vector_complex.to_array v) 1 m in
   v, z
 
+let eigen_herm x =
+  let m, n = MZ.shape x in
+  let y = MZ.clone x in
+  let v = Gsl.Eigen.herm (`CM y) in
+  let v = MD.of_array (Gsl.Vector.to_array v) 1 m in
+  v
 
-(* ends here *)
-
+let eigen_hermv x =
+  let m, n = MZ.shape x in
+  let y = MZ.clone x in
+  let v, z = Gsl.Eigen.hermv (`CM y) in
+  let v = MD.of_array (Gsl.Vector.to_array v) 1 m in
+  v, z
 
 
 (* ends here *)
