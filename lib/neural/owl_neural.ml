@@ -15,16 +15,19 @@ module Init = struct
   type typ =
     | Uniform  of float * float
     | Gaussian of float * float
+    | Tanh
     | Custom   of (int -> int -> float)
 
   let run t m n = match t with
     | Uniform (a, b)       -> Mat.(add (uniform ~scale:(b-.a) m n) (F a))
     | Gaussian (mu, sigma) -> Mat.(add (gaussian ~sigma m n) (F mu))
+    | Tanh                 -> let r = sqrt (6. /. float_of_int (m + n)) in Mat.(add (uniform ~scale:(2.*.r) m n) (F (-.r)))
     | Custom f             -> Mat.(empty m n |> mapi (fun i j _ -> f i j))
 
   let to_string = function
     | Uniform (a, b)  -> Printf.sprintf "uniform (%g, %g)" a b
     | Gaussian (a, b) -> Printf.sprintf "gaussian (%g, %g)" a b
+    | Tanh            -> Printf.sprintf "tanh"
     | Custom _        -> Printf.sprintf "customise"
 
 end
@@ -110,36 +113,181 @@ module Linear = struct
 end
 
 
-(* definition of LTSM layer *)
-module LTSM = struct
+(* definition of LSTM layer *)
+module LSTM = struct
 
   type layer = {
     mutable wxi : t;
+    mutable whi : t;
+    mutable wxc : t;
+    mutable whc : t;
+    mutable wxf : t;
+    mutable whf : t;
+    mutable wxo : t;
+    mutable who : t;
+    mutable bi  : t;
+    mutable bc  : t;
+    mutable bf  : t;
+    mutable bo  : t;
+    mutable c   : t;
+    mutable h   : t;
     mutable init_typ : Init.typ;
   }
 
-  let create init_typ = {
-    wxi = Mat.empty 1 1;
-    init_typ = init_typ;
+  let create i m = {
+    wxi = Mat.empty i m;
+    whi = Mat.empty m m;
+    wxc = Mat.empty i m;
+    whc = Mat.empty m m;
+    wxf = Mat.empty i m;
+    whf = Mat.empty m m;
+    wxo = Mat.empty i m;
+    who = Mat.empty m m;
+    bi  = Mat.empty 1 m;
+    bc  = Mat.empty 1 m;
+    bf  = Mat.empty 1 m;
+    bo  = Mat.empty 1 m;
+    c   = Mat.empty 1 m;
+    h   = Mat.empty 1 m;
+    init_typ = Init.Tanh;
   }
 
-  let init l = ()
+  let init l =
+    l.wxi <- Init.run l.init_typ (Mat.row_num l.wxi) (Mat.col_num l.wxi);
+    l.whi <- Init.run l.init_typ (Mat.row_num l.whi) (Mat.col_num l.whi);
+    l.wxc <- Init.run l.init_typ (Mat.row_num l.wxc) (Mat.col_num l.wxc);
+    l.whc <- Init.run l.init_typ (Mat.row_num l.whc) (Mat.col_num l.whc);
+    l.wxf <- Init.run l.init_typ (Mat.row_num l.wxf) (Mat.col_num l.wxf);
+    l.whf <- Init.run l.init_typ (Mat.row_num l.whf) (Mat.col_num l.whf);
+    l.wxo <- Init.run l.init_typ (Mat.row_num l.wxo) (Mat.col_num l.wxo);
+    l.who <- Init.run l.init_typ (Mat.row_num l.who) (Mat.col_num l.who);
+    l.bi  <- Mat.zeros 1 (Mat.col_num l.bi);
+    l.bc  <- Mat.zeros 1 (Mat.col_num l.bc);
+    l.bf  <- Mat.zeros 1 (Mat.col_num l.bf);
+    l.bo  <- Mat.zeros 1 (Mat.col_num l.bo);
+    l.c   <- Mat.zeros 1 (Mat.col_num l.c);
+    l.h   <- Mat.zeros 1 (Mat.col_num l.h)
 
-  let reset l = ()
+  let reset l =
+    Mat.reset l.c;
+    Mat.reset l.h
 
-  let mktag t l = ()
+  let mktag t l =
+    l.wxi <- make_reverse l.wxi t;
+    l.whi <- make_reverse l.whi t;
+    l.wxc <- make_reverse l.wxc t;
+    l.whc <- make_reverse l.whc t;
+    l.wxf <- make_reverse l.wxf t;
+    l.whf <- make_reverse l.whf t;
+    l.wxo <- make_reverse l.wxo t;
+    l.who <- make_reverse l.who t;
+    l.bi  <- make_reverse l.bi t;
+    l.bc  <- make_reverse l.bc t;
+    l.bf  <- make_reverse l.bf t;
+    l.bo  <- make_reverse l.bo t
 
-  let mkpar l = [||]
+  let mkpar l = [|
+    l.wxi;
+    l.whi;
+    l.wxc;
+    l.whc;
+    l.wxf;
+    l.whf;
+    l.wxo;
+    l.who;
+    l.bi;
+    l.bc;
+    l.bf;
+    l.bo
+  |]
 
-  let mkpri l = [||]
+  let mkpri l = [|
+    primal l.wxi;
+    primal l.whi;
+    primal l.wxc;
+    primal l.whc;
+    primal l.wxf;
+    primal l.whf;
+    primal l.wxo;
+    primal l.who;
+    primal l.bi;
+    primal l.bc;
+    primal l.bf;
+    primal l.bo
+  |]
 
-  let mkadj l = [||]
+  let mkadj l = [|
+    adjval l.wxi;
+    adjval l.whi;
+    adjval l.wxc;
+    adjval l.whc;
+    adjval l.wxf;
+    adjval l.whf;
+    adjval l.wxo;
+    adjval l.who;
+    adjval l.bi;
+    adjval l.bc;
+    adjval l.bf;
+    adjval l.bo
+  |]
 
-  let update l u = ()
+  let update l u =
+    l.wxi <- u.(0)  |> primal';
+    l.whi <- u.(1)  |> primal';
+    l.wxc <- u.(2)  |> primal';
+    l.whc <- u.(3)  |> primal';
+    l.wxf <- u.(4)  |> primal';
+    l.whf <- u.(5)  |> primal';
+    l.wxo <- u.(6)  |> primal';
+    l.who <- u.(7)  |> primal';
+    l.bi  <- u.(8)  |> primal';
+    l.bc  <- u.(9)  |> primal';
+    l.bf  <- u.(10) |> primal';
+    l.bo  <- u.(11) |> primal'
 
-  let run x l = F 0.
+  let run x l =
+    let y = Mat.map_by_row (fun x ->
+      let i  = Maths.(((x $@ l.wxi) + (l.h $@ l.whi) + l.bi) |> sigmoid) in
+      let c' = Maths.(((x $@ l.wxc) + (l.h $@ l.whc) + l.bc) |> tanh) in
+      let f  = Maths.(((x $@ l.wxf) + (l.h $@ l.whf) + l.bf) |> sigmoid) in
+      l.c <- Maths.((i * c') + (f * l.c));
+      let o  = Maths.(((x $@ l.wxo) + (l.h $@ l.who) + l.bo) |> sigmoid) in
+      l.h <- Maths.(o * (tanh l.c));
+      l.h
+    ) x in
+    l.c <- primal' l.c;
+    l.h <- primal' l.h;
+    y
 
-  let to_string l = "LTSM"
+  let to_string l =
+    let wxim, wxin = Mat.shape l.wxi in
+    let whim, whin = Mat.shape l.whi in
+    let wxcm, wxcn = Mat.shape l.wxc in
+    let whcm, whcn = Mat.shape l.whc in
+    let wxfm, wxfn = Mat.shape l.wxf in
+    let whfm, whfn = Mat.shape l.whf in
+    let wxom, wxon = Mat.shape l.wxo in
+    let whom, whon = Mat.shape l.who in
+    let bim, bin = Mat.shape l.bi in
+    let bcm, bcn = Mat.shape l.bc in
+    let bfm, bfn = Mat.shape l.bf in
+    let bom, bon = Mat.shape l.bo in
+    Printf.sprintf "LSTM layer:\n" ^
+    Printf.sprintf "init   : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "params : %i\n" (wxim*wxin + whim*whin + wxcm*wxcn + whcm*whcn + wxfm*wxfn + whfm*whfn + wxom*wxon + whom*whon + bim*bin + bcm*bcn + bfm*bfn + bom*bon) ^
+    Printf.sprintf "wxi    : %i x %i\n" wxim wxin ^
+    Printf.sprintf "whi    : %i x %i\n" whim whin ^
+    Printf.sprintf "wxc    : %i x %i\n" wxcm wxcn ^
+    Printf.sprintf "whc    : %i x %i\n" whcm whcn ^
+    Printf.sprintf "wxf    : %i x %i\n" wxfm wxfn ^
+    Printf.sprintf "whf    : %i x %i\n" whfm whfn ^
+    Printf.sprintf "wxo    : %i x %i\n" wxom wxon ^
+    Printf.sprintf "who    : %i x %i\n" whom whon ^
+    Printf.sprintf "bi     : %i x %i\n" bim bin ^
+    Printf.sprintf "bc     : %i x %i\n" bcm bcn ^
+    Printf.sprintf "bf     : %i x %i\n" bfm bfn ^
+    Printf.sprintf "bo     : %i x %i\n" bom bon ^
+    ""
 
 end
 
@@ -173,17 +321,11 @@ module Recurrent = struct
     l.whh <- Init.run l.init_typ (Mat.row_num l.whh) (Mat.col_num l.whh);
     l.wxh <- Init.run l.init_typ (Mat.row_num l.wxh) (Mat.col_num l.wxh);
     l.why <- Init.run l.init_typ (Mat.row_num l.why) (Mat.col_num l.why);
-    l.bh  <- Init.run l.init_typ 1 (Mat.col_num l.bh);
-    l.by  <- Init.run l.init_typ 1 (Mat.col_num l.by);
-    l.h   <- Init.run l.init_typ 1 (Mat.col_num l.bh)
+    l.bh  <- Mat.zeros 1 (Mat.col_num l.bh);
+    l.by  <- Mat.zeros 1 (Mat.col_num l.by);
+    l.h   <- Mat.zeros 1 (Mat.col_num l.h)
 
-  let reset l =
-    Mat.reset l.whh;
-    Mat.reset l.wxh;
-    Mat.reset l.why;
-    Mat.reset l.bh;
-    Mat.reset l.by;
-    Mat.reset l.h
+  let reset l = Mat.reset l.h
 
   let mktag t l =
     l.whh <- make_reverse l.whh t;
@@ -192,11 +334,29 @@ module Recurrent = struct
     l.bh  <- make_reverse l.bh t;
     l.by  <- make_reverse l.by t
 
-  let mkpar l = [| l.whh; l.wxh; l.why; l.bh; l.by |]
+  let mkpar l = [|
+    l.whh;
+    l.wxh;
+    l.why;
+    l.bh;
+    l.by
+  |]
 
-  let mkpri l = [| primal l.whh; primal l.wxh; primal l.why; primal l.bh; primal l.by |]
+  let mkpri l = [|
+    primal l.whh;
+    primal l.wxh;
+    primal l.why;
+    primal l.bh;
+    primal l.by
+  |]
 
-  let mkadj l = [| adjval l.whh; adjval l.wxh; adjval l.why; adjval l.bh; adjval l.by |]
+  let mkadj l = [|
+    adjval l.whh;
+    adjval l.wxh;
+    adjval l.why;
+    adjval l.bh;
+    adjval l.by
+  |]
 
   let update l u =
     l.whh <- u.(0) |> primal';
@@ -208,7 +368,7 @@ module Recurrent = struct
   let run x l =
     let act x = Activation.run x l.act in
     let y = Mat.map_by_row (fun x ->
-      l.h <- act Maths.((l.h $@l.whh) + (x $@ l.wxh) + l.bh);
+      l.h <- act Maths.((l.h $@ l.whh) + (x $@ l.wxh) + l.bh);
       Maths.((l.h $@ l.why) + l.by)
     ) x in
     l.h <- primal' l.h;
@@ -239,7 +399,7 @@ end
 
 type layer =
   | Linear     of Linear.layer
-  | LTSM       of LTSM.layer
+  | LSTM       of LSTM.layer
   | Recurrent  of Recurrent.layer
   | Activation of Activation.typ
 
@@ -259,42 +419,42 @@ module Feedforward = struct
 
   let init nn = Array.iter (function
     | Linear l    -> Linear.init l
-    | LTSM l      -> LTSM.init l
+    | LSTM l      -> LSTM.init l
     | Recurrent l -> Recurrent.init l
     | _           -> () (* activation *)
     ) nn.layers
 
   let reset nn = Array.iter (function
     | Linear l    -> Linear.reset l
-    | LTSM l      -> LTSM.reset l
+    | LSTM l      -> LSTM.reset l
     | Recurrent l -> Recurrent.reset l
     | _           -> () (* activation *)
     ) nn.layers
 
   let mktag t nn = Array.iter (function
     | Linear l     -> Linear.mktag t l
-    | LTSM l       -> LTSM.mktag t l
+    | LSTM l       -> LSTM.mktag t l
     | Recurrent l  -> Recurrent.mktag t l
     | _            -> () (* activation *)
     ) nn.layers
 
   let mkpar nn = Array.map (function
     | Linear l     -> Linear.mkpar l
-    | LTSM l       -> LTSM.mkpar l
+    | LSTM l       -> LSTM.mkpar l
     | Recurrent l  -> Recurrent.mkpar l
     | _            -> [||] (* activation *)
     ) nn.layers
 
   let mkpri nn = Array.map (function
     | Linear l     -> Linear.mkpri l
-    | LTSM l       -> LTSM.mkpri l
+    | LSTM l       -> LSTM.mkpri l
     | Recurrent l  -> Recurrent.mkpri l
     | _            -> [||] (* activation *)
     ) nn.layers
 
   let mkadj nn = Array.map (function
     | Linear l     -> Linear.mkadj l
-    | LTSM l       -> LTSM.mkadj l
+    | LSTM l       -> LSTM.mkadj l
     | Recurrent l  -> Recurrent.mkadj l
     | _            -> [||] (* activation *)
     ) nn.layers
@@ -302,7 +462,7 @@ module Feedforward = struct
   let update nn us = Array.map2 (fun l u ->
     match l with
     | Linear l     -> Linear.update l u
-    | LTSM l       -> LTSM.update l u
+    | LSTM l       -> LSTM.update l u
     | Recurrent l  -> Recurrent.update l u
     | _            -> () (* activation *)
     ) nn.layers us
@@ -310,7 +470,7 @@ module Feedforward = struct
   let run x nn = Array.fold_left (fun a l ->
     match l with
     | Linear l     -> Linear.run a l
-    | LTSM l       -> LTSM.run a l
+    | LSTM l       -> LSTM.run a l
     | Recurrent l  -> Recurrent.run a l
     | Activation l -> Activation.run a l
     ) x nn.layers
@@ -330,7 +490,7 @@ module Feedforward = struct
     for i = 0 to Array.length nn.layers - 1 do
       let t = match nn.layers.(i) with
         | Linear l     -> Linear.to_string l
-        | LTSM l       -> LTSM.to_string l
+        | LSTM l       -> LSTM.to_string l
         | Recurrent l  -> Recurrent.to_string l
         | Activation l -> Activation.to_string l
       in
@@ -343,6 +503,10 @@ end
 (* helper functions *)
 
 let linear ~inputs ~outputs ~init_typ = Linear (Linear.create inputs outputs init_typ)
+
+let recurrent ~inputs ~hiddens ~outputs ~act_typ ~init_typ = Recurrent (Recurrent.create inputs hiddens outputs act_typ init_typ)
+
+let lstm ~inputs ~cells = LSTM (LSTM.create inputs cells)
 
 let print nn = Feedforward.to_string nn |> Printf.printf "%s"
 
