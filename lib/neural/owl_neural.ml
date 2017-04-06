@@ -380,17 +380,15 @@ module Recurrent = struct
     let whym, whyn = Mat.shape l.why in
     let bhm, bhn = Mat.shape l.bh in
     let bym, byn = Mat.shape l.by in
-    Printf.sprintf "Recurrent layer:
-    init   : %s
-    params : %i
-    whh    : %i x %i
-    wxh    : %i x %i
-    why    : %i x %i
-    bh     : %i x %i
-    by     : %i x %i
-    act    : %s\n"
-    (Init.to_string l.init_typ) (whhm * whhn + wxhm * wxhn + whym * whyn + bhm * bhn + bym * byn)
-    whhm whhn wxhm wxhn whym whyn bhm bhn bym byn (Activation.to_string l.act)
+    Printf.sprintf "Recurrent layer:\n" ^
+    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params : %i\n" (whhm * whhn + wxhm * wxhn + whym * whyn + bhm * bhn + bym * byn) ^
+    Printf.sprintf "    whh    : %i x %i\n" whhm whhn ^
+    Printf.sprintf "    wxh    : %i x %i\n" wxhm wxhn ^
+    Printf.sprintf "    why    : %i x %i\n" whym whyn ^
+    Printf.sprintf "    bh     : %i x %i\n" bhm bhn ^
+    Printf.sprintf "    by     : %i x %i\n" bym byn ^
+    Printf.sprintf "    act    : %s\n" (Activation.to_string l.act)
 
 end
 
