@@ -561,6 +561,7 @@ module Feedforward = struct
   let init nn = Array.iter (function
     | Linear l    -> Linear.init l
     | LSTM l      -> LSTM.init l
+    | GRU l       -> GRU.init l
     | Recurrent l -> Recurrent.init l
     | _           -> () (* activation *)
     ) nn.layers
@@ -568,50 +569,57 @@ module Feedforward = struct
   let reset nn = Array.iter (function
     | Linear l    -> Linear.reset l
     | LSTM l      -> LSTM.reset l
+    | GRU l       -> GRU.reset l
     | Recurrent l -> Recurrent.reset l
     | _           -> () (* activation *)
     ) nn.layers
 
   let mktag t nn = Array.iter (function
-    | Linear l     -> Linear.mktag t l
-    | LSTM l       -> LSTM.mktag t l
-    | Recurrent l  -> Recurrent.mktag t l
-    | _            -> () (* activation *)
+    | Linear l    -> Linear.mktag t l
+    | LSTM l      -> LSTM.mktag t l
+    | GRU l       -> GRU.mktag t l
+    | Recurrent l -> Recurrent.mktag t l
+    | _           -> () (* activation *)
     ) nn.layers
 
   let mkpar nn = Array.map (function
-    | Linear l     -> Linear.mkpar l
-    | LSTM l       -> LSTM.mkpar l
-    | Recurrent l  -> Recurrent.mkpar l
-    | _            -> [||] (* activation *)
+    | Linear l    -> Linear.mkpar l
+    | LSTM l      -> LSTM.mkpar l
+    | GRU l       -> GRU.mkpar l
+    | Recurrent l -> Recurrent.mkpar l
+    | _           -> [||] (* activation *)
     ) nn.layers
 
   let mkpri nn = Array.map (function
-    | Linear l     -> Linear.mkpri l
-    | LSTM l       -> LSTM.mkpri l
-    | Recurrent l  -> Recurrent.mkpri l
-    | _            -> [||] (* activation *)
+    | Linear l    -> Linear.mkpri l
+    | LSTM l      -> LSTM.mkpri l
+    | GRU l       -> GRU.mkpri l
+    | Recurrent l -> Recurrent.mkpri l
+    | _           -> [||] (* activation *)
     ) nn.layers
 
   let mkadj nn = Array.map (function
-    | Linear l     -> Linear.mkadj l
-    | LSTM l       -> LSTM.mkadj l
-    | Recurrent l  -> Recurrent.mkadj l
-    | _            -> [||] (* activation *)
+    | Linear l    -> Linear.mkadj l
+    | LSTM l      -> LSTM.mkadj l
+    | GRU l       -> GRU.mkadj l
+    | Recurrent l -> Recurrent.mkadj l
+    | _           -> [||] (* activation *)
     ) nn.layers
 
   let update nn us = Array.map2 (fun l u ->
     match l with
-    | Linear l     -> Linear.update l u
-    | LSTM l       -> LSTM.update l u
-    | Recurrent l  -> Recurrent.update l u
-    | _            -> () (* activation *)
+    | Linear l    -> Linear.update l u
+    | LSTM l      -> LSTM.update l u
+    | GRU l       -> GRU.update l u
+    | Recurrent l -> Recurrent.update l u
+    | _           -> () (* activation *)
     ) nn.layers us
 
   let run x nn = Array.fold_left (fun a l ->
     match l with
     | Linear l     -> Linear.run a l
     | LSTM l       -> LSTM.run a l
+    | GRU l        -> GRU.run a l
     | Recurrent l  -> Recurrent.run a l
     | Activation l -> Activation.run a l
     ) x nn.layers
@@ -632,6 +640,7 @@ module Feedforward = struct
       let t = match nn.layers.(i) with
         | Linear l     -> Linear.to_string l
         | LSTM l       -> LSTM.to_string l
+        | GRU l        -> GRU.to_string l
         | Recurrent l  -> Recurrent.to_string l
         | Activation l -> Activation.to_string l
       in
