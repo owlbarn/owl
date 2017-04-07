@@ -540,6 +540,7 @@ end
 type layer =
   | Linear     of Linear.layer
   | LSTM       of LSTM.layer
+  | GRU        of GRU.layer
   | Recurrent  of Recurrent.layer
   | Activation of Activation.typ
 

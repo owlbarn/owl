@@ -14,7 +14,9 @@ open Owl_neural_layer
 module Init = Init
 module Activation = Activation
 module Feedforward = Feedforward
-
+module Params = Owl_neural_optimise.Params
+module Batch = Owl_neural_optimise.Batch
+module Learning_Rate = Owl_neural_optimise.Learning_Rate
 
 (* helper functions *)
 

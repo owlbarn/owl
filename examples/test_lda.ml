@@ -1,7 +1,4 @@
-(** [ Test Topic Module ]
-  The test only works when you have the corresponding text corpus on your
-  mahcine. Appologies for the temporary hard-coding path.
- *)
+(* Test Topic Module *)
 
 let _ =
   let s = Owl_dataset.load_stopwords () in

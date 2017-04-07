@@ -134,7 +134,7 @@ module Gradient = struct
     | Newton      -> fun w g p g' -> failwith "not implemented" (* TODO *)
 
   let to_string = function
-    | GD          -> "gradient decscendent"
+    | GD          -> "gradient descendent"
     | CG          -> "conjugate gradient"
     | CD          -> "conjugate descendent"
     | NonlinearCG -> "nonlinear conjugate gradient"
