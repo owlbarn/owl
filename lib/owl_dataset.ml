@@ -83,4 +83,4 @@ let load_stopwords () =
 
 let load_nips_train_data stopwords =
   let p = local_data_path () in
-  Owl_topic_utils.load_data ~stopwords (p ^ "nips.train")
+  Owl_topic_utils.load_from_file ~stopwords (p ^ "nips.train")

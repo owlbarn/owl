@@ -244,6 +244,12 @@ Executable test_neural
   MainIs:         test_neural.ml
   BuildDepends:   owl, owl_neural
 
+Executable test_lstm
+  Path:           examples
+  CompiledObject: best
+  MainIs:         test_lstm.ml
+  BuildDepends:   owl, owl_neural
+
 # +-------------------------------------------------------------------+
 # | Document                                                          |
 # +-------------------------------------------------------------------+

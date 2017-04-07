@@ -105,10 +105,10 @@ module Linear = struct
     let wm, wn = Mat.shape l.w in
     let bm, bn = Mat.shape l.b in
     Printf.sprintf "Linear layer:\n" ^
-    Printf.sprintf "init   : %s\n" (Init.to_string l.init_typ) ^
-    Printf.sprintf "params : %i\n" (wm * wn + bn) ^
-    Printf.sprintf "w      : %i x %i\n" wm wn ^
-    Printf.sprintf "b      : %i x %i\n" bm bn ^
+    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params : %i\n" (wm * wn + bn) ^
+    Printf.sprintf "    w      : %i x %i\n" wm wn ^
+    Printf.sprintf "    b      : %i x %i\n" bm bn ^
     ""
 
 end

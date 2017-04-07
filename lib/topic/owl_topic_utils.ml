@@ -11,11 +11,11 @@ let _allocate_space x =
   let y = Array.make l [||] in
   Array.append x y
 
-let load_data ?stopwords f =
+let load_from_file ?stopwords f =
   Log.info "load text corpus";
   let t = match stopwords with
     | Some t -> t
-    | None   -> Hashtbl.create 1024
+    | None   -> Hashtbl.create 2
   in
   let x = ref (Array.make (64 * 1024) [||]) in
   let c = ref 0 in
@@ -36,6 +36,15 @@ let load_data ?stopwords f =
   close_in h;
   Log.info "load %i docs, %i words" !c !w;
   Array.sub !x 0 !c
+
+let load_from_string ?stopwords s =
+  let t = match stopwords with
+    | Some t -> t
+    | None   -> Hashtbl.create 2
+  in
+  Str.split (Str.regexp " ") s
+  |> List.filter (fun w -> Hashtbl.mem t w = false)
+  |> Array.of_list
 
 let load_stopwords f =
   Log.info "load stopwords";
@@ -66,7 +75,9 @@ let build_vocabulary x =
   Array.iteri (fun i w -> Hashtbl.add h w i) y;
   h
 
-let tokenisation dict data = Array.map (Array.map (Hashtbl.find dict)) data
+let tokenise dict data = Array.map (Hashtbl.find dict) data
+
+let tokenise_all dict data = Array.map (Array.map (Hashtbl.find dict)) data
 
 let save_vocabulary x f = Owl_utils.marshal_to_file x f
 
