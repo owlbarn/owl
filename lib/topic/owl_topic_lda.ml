@@ -33,7 +33,6 @@ type model = {
   mutable iter : int;                     (* number of iterations *)
   mutable data : int array array;         (* training data, tokenised*)
   mutable vocb : (string, int) Hashtbl.t; (* vocabulary, or dictionary if you prefer *)
-
 }
 
 let include_token m w d k =
@@ -76,6 +75,7 @@ let show_info m i t =
   in
   Log.info "iter#%i t(s):%.1f t_dk:%.3f t_wk:%.3f %s" i t (MD.density m.t_dk) (MS.density m.t_wk) s
 
+
 (* implement several LDA with specific samplings *)
 
 module SimpleLDA = struct
@@ -102,6 +102,7 @@ module SimpleLDA = struct
     ) m.data.(d)
 
 end
+
 
 module SparseLDA = struct
 
@@ -240,6 +241,7 @@ module SparseLDA = struct
       ) m.data.(d)
 end
 
+
 module FTreeLDA = struct
 
   let init m = ()
@@ -248,6 +250,7 @@ module FTreeLDA = struct
 
 end
 
+
 module LightLDA = struct
 
   let init m = ()
@@ -255,6 +258,7 @@ module LightLDA = struct
   let sampling m d = ()
 
 end
+
 
 (* init the model based on: topics, vocabulary, tokens *)
 let init ?(iter=100) k v d =

@@ -250,6 +250,7 @@ module Params = struct
     mutable regularisation  : Regularisation.typ;
     mutable momentum        : Momentum.typ;
     mutable clipping        : Clipping.typ;
+    mutable verbosity       : bool;
   }
 
   let default () = {
@@ -261,6 +262,7 @@ module Params = struct
     regularisation = Regularisation.None;
     momentum       = Momentum.None;
     clipping       = Clipping.None;
+    verbosity      = true;
   }
 
   let to_string p =
@@ -273,6 +275,7 @@ module Params = struct
     Printf.sprintf "    regularisation : %s\n" (Regularisation.to_string p.regularisation) ^
     Printf.sprintf "    momentum       : %s\n" (Momentum.to_string p.momentum) ^
     Printf.sprintf "    clipping       : %s\n" (Clipping.to_string p.clipping) ^
+    Printf.sprintf "    verbosity      : %s\n" (if p.verbosity then "true" else "false") ^
     "---"
 
 end
@@ -294,7 +297,8 @@ let _print_summary t = Printf.printf "--- Training summary\n    Duration: %g s\n
 
 let train params forward backward update x y =
   let open Params in
-  print_endline (Params.to_string params);
+  if params.verbosity = true then
+    print_endline (Params.to_string params);
 
   (* make alias functions *)
   let batch = Batch.run params.batch in
@@ -343,7 +347,8 @@ let train params forward backward update x y =
     for j = 1 to batches do
       let loss', ws, gs' = iterate () in
       (* print out the current state of training *)
-      _print_info i params.epochs j batches !loss.(!idx) loss';
+      if params.verbosity = true then
+        _print_info i params.epochs j batches !loss.(!idx) loss';
       (* calculate gradient updates *)
       let ps' = Owl_utils.aarr_map2i (
         fun k l w g' ->
@@ -377,7 +382,8 @@ let train params forward backward update x y =
   done;
 
   (* print training summary *)
-  _print_summary (Unix.time () -. t0);
+  if params.verbosity = true then
+    _print_summary (Unix.time () -. t0);
   (* return loss history *)
   Array.map unpack_flt !loss
 

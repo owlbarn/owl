@@ -83,6 +83,14 @@ val dot : vec -> vec -> vec
 
 (** {6 Uniary mathematical operations } *)
 
+val min : vec -> elt
+
+val max : vec -> elt
+
+val min_i : vec -> elt * int
+
+val max_i : vec -> elt * int
+
 val sum : vec -> elt
 
 val abs : vec -> vec

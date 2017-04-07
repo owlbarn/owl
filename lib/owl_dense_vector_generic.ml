@@ -52,6 +52,7 @@ let logspace ?(typ=Row) ?base k a b n = match typ with
   | Row -> M.logspace k ?base a b n
   | Col -> M.logspace k ?base a b n |> M.reshape n 1
 
+
 (* vector properties and manipulations *)
 
 let vec_typ x =
@@ -92,12 +93,21 @@ let foldi f a x =
   | Row -> M.foldi (fun _ i c b -> f i c b) a x
   | Col -> M.foldi (fun i _ c b -> f i c b) a x
 
-
 (* to/from other types *)
 
 let of_array ?(typ=Row) k l = match typ with
   | Row -> M.of_array k l 1 (Array.length l)
   | Col -> M.of_array k l (Array.length l) 1
+
+(* unary math operators *)
+
+let min_i x = match vec_typ x with
+  | Row -> let a, _, i = M.min_i x in a, i
+  | Col -> let a, i, _ = M.min_i x in a, i
+
+let max_i x = match vec_typ x with
+  | Row -> let a, _, i = M.max_i x in a, i
+  | Col -> let a, i, _ = M.max_i x in a, i
 
 
 (* ends here *)
