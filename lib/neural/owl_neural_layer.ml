@@ -43,6 +43,7 @@ module Activation = struct
     | Softmax
     | Tanh
     | Custom of (t -> t)
+    | None
 
   let run x l = match l with
     | Relu     -> Maths.relu x
@@ -50,6 +51,7 @@ module Activation = struct
     | Softmax  -> Mat.map_by_row Maths.softmax x  (* FIXME: this probably needs to be fixed *)
     | Tanh     -> Maths.tanh x
     | Custom f -> f x
+    | None     -> x
 
   let to_string = function
     | Relu     -> "Activation layer: relu\n"
@@ -57,6 +59,7 @@ module Activation = struct
     | Softmax  -> "Activation layer: softmax\n"
     | Tanh     -> "Activation layer: tanh\n"
     | Custom _ -> "Activation layer: customise\n"
+    | None     -> "none"
 
 end
 
@@ -520,7 +523,7 @@ module GRU = struct
     let bhm, bhn = Mat.shape l.bh in
     Printf.sprintf "GRU layer:\n" ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-    Printf.sprintf "    params : %i\n" (0) ^
+    Printf.sprintf "    params : %i\n" (wxzm*wxzn + whzm*whzn + wxrm*wxrn + whrm*whrn + wxhm*wxhn + whhm*whhn + bzm*bzn + brm*brn + bhm*bhn) ^
     Printf.sprintf "    wxz    : %i x %i\n" wxzm wxzn ^
     Printf.sprintf "    whz    : %i x %i\n" whzm whzn ^
     Printf.sprintf "    wxr    : %i x %i\n" wxrm wxrn ^
@@ -554,9 +557,14 @@ module Feedforward = struct
 
   let create () = { layers = [||]; }
 
-  let add_layer nn l = nn.layers <- Array.append nn.layers [|l|]
+  let add_activation nn l =
+    nn.layers <- Array.append nn.layers [|Activation l|]
 
-  let add_activation nn l = nn.layers <- Array.append nn.layers [|Activation l|]
+  let add_layer ?act_typ nn l =
+    nn.layers <- Array.append nn.layers [|l|];
+    match act_typ with
+    | Some act -> add_activation nn act
+    | None     -> ()
 
   let init nn = Array.iter (function
     | Linear l    -> Linear.init l

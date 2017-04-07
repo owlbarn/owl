@@ -27,13 +27,15 @@ module Clipping       = Owl_neural_optimise.Clipping
 
 (* helper functions *)
 
-let linear ~inputs ~outputs ~init_typ = Linear (Linear.create inputs outputs init_typ)
+let linear ?(init_typ = Init.Standard) inputs outputs =
+  Linear (Linear.create inputs outputs init_typ)
 
-let recurrent ~inputs ~hiddens ~outputs ~act_typ ~init_typ = Recurrent (Recurrent.create inputs hiddens outputs act_typ init_typ)
+let recurrent ?(init_typ=Init.Standard) ~act_typ inputs outputs hiddens =
+  Recurrent (Recurrent.create inputs hiddens outputs act_typ init_typ)
 
-let lstm ~inputs ~cells = LSTM (LSTM.create inputs cells)
+let lstm inputs cells = LSTM (LSTM.create inputs cells)
 
-let gru ~inputs ~cells = GRU (GRU.create inputs cells)
+let gru inputs cells = GRU (GRU.create inputs cells)
 
 let print nn = Feedforward.to_string nn |> Printf.printf "%s"
 
@@ -46,6 +48,7 @@ let train ?params nn x y =
     | Some p -> p
     | None   -> Owl_neural_optimise.Params.default ()
   in
+  let x, y = Mat x, Mat y in
   Owl_neural_optimise.train_nn p f b u x y
 
 let test_model nn x y =
@@ -54,7 +57,7 @@ let test_model nn x y =
     let p = Feedforward.run u nn |> unpack_mat in
     Owl_dense_matrix_generic.print p;
     Printf.printf "prediction: %i\n" (let _, _, j = Owl_dense_matrix_generic.max_i p in j)
-  ) x y
+  ) (Mat x) (Mat y)
 
 
 (* ends here *)

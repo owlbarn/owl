@@ -43,9 +43,9 @@ let _ =
   let n, w2i, x, y = prepare_data s in
   let i2w = build_i2w w2i in
   let nn = Feedforward.create () in
-  let l0 = linear ~inputs:n ~outputs:20 ~init_typ:Init.(Uniform (-0.05, 0.05)) in
-  let l1 = lstm ~inputs:20 ~cells:100 in
-  let l2 = linear ~inputs:100 ~outputs:n ~init_typ:Init.(Uniform (-0.05, 0.05)) in
+  let l0 = linear n 20 in
+  let l1 = lstm 20 100 in
+  let l2 = linear 100 n in
   Feedforward.add_layer nn l0;
   Feedforward.add_layer nn l1;
   Feedforward.add_layer nn l2;
@@ -56,5 +56,5 @@ let _ =
   p.batch <- Batch.Fullbatch;
   p.epochs <- 500;
   p.learning_rate <- Learning_Rate.Adagrad 0.01;  (* this makes things really fast. *)
-  train ~params:p nn (Mat x) (Mat y);
+  train ~params:p nn x y;
   sample w2i i2w nn
