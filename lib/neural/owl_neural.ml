@@ -11,12 +11,19 @@ open Owl_neural_layer
 
 (* module aliases *)
 
-module Init = Init
-module Activation = Activation
 module Feedforward = Feedforward
-module Params = Owl_neural_optimise.Params
-module Batch = Owl_neural_optimise.Batch
-module Learning_Rate = Owl_neural_optimise.Learning_Rate
+module Init        = Owl_neural_layer.Init
+module Activation  = Owl_neural_layer.Activation
+
+module Params         = Owl_neural_optimise.Params
+module Batch          = Owl_neural_optimise.Batch
+module Learning_Rate  = Owl_neural_optimise.Learning_Rate
+module Loss           = Owl_neural_optimise.Loss
+module Gradient       = Owl_neural_optimise.Gradient
+module Momentum       = Owl_neural_optimise.Momentum
+module Regularisation = Owl_neural_optimise.Regularisation
+module Clipping       = Owl_neural_optimise.Clipping
+
 
 (* helper functions *)
 
@@ -25,6 +32,8 @@ let linear ~inputs ~outputs ~init_typ = Linear (Linear.create inputs outputs ini
 let recurrent ~inputs ~hiddens ~outputs ~act_typ ~init_typ = Recurrent (Recurrent.create inputs hiddens outputs act_typ init_typ)
 
 let lstm ~inputs ~cells = LSTM (LSTM.create inputs cells)
+
+let gru ~inputs ~cells = GRU (GRU.create inputs cells)
 
 let print nn = Feedforward.to_string nn |> Printf.printf "%s"
 
@@ -37,7 +46,7 @@ let train ?params nn x y =
     | Some p -> p
     | None   -> Owl_neural_optimise.Params.default ()
   in
-  Owl_neural_optimise.train p f b u x y
+  Owl_neural_optimise.train_nn p f b u x y
 
 let test_model nn x y =
   Mat.iter2_rows (fun u v ->

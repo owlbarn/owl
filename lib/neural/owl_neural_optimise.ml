@@ -295,7 +295,7 @@ let _print_summary t = Printf.printf "--- Training summary\n    Duration: %g s\n
 
 (* core training functions *)
 
-let train params forward backward update x y =
+let train_nn params forward backward update x y =
   let open Params in
   if params.verbosity = true then
     print_endline (Params.to_string params);

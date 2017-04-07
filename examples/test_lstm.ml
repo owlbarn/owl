@@ -3,6 +3,7 @@
 open Owl
 open Owl_algodiff_ad
 open Owl_neural
+open Owl_neural_optimise
 
 let s = "I sing of arms and the man he who exiled by fate first came from the coast of Troy to Italy and to Lavinian shores hurled about endlessly by land and sea by the will of the gods, by cruel Junos remorseless anger long suffering also in war until he founded a city and brought his gods to Latium from that the Latin people came the lords of Alba Longa the walls of noble Rome Muse tell me the cause how was she offended in her divinity how was she grieved the Queen of Heaven to drive a man noted for virtue to endure such dangers to face so many trials Can there be such anger in the minds of the gods"
 
