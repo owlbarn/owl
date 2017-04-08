@@ -11,9 +11,9 @@ open Owl_neural_layer
 
 (* module aliases *)
 
-module Feedforward = Feedforward
-module Init        = Owl_neural_layer.Init
-module Activation  = Owl_neural_layer.Activation
+module Feedforward    = Feedforward
+module Init           = Owl_neural_layer.Init
+module Activation     = Owl_neural_layer.Activation
 
 module Params         = Owl_neural_optimise.Params
 module Batch          = Owl_neural_optimise.Batch

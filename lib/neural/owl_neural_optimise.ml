@@ -51,24 +51,24 @@ end
 module Batch = struct
 
   type typ =
-    | Fullbatch
-    | Minibatch of int
+    | Full
+    | Mini of int
     | Stochastic
 
   let run typ x y = match typ with
-    | Fullbatch   -> x, y
-    | Minibatch c -> let x, y, _ = Mat.draw_rows2 ~replacement:false x y c in x, y
-    | Stochastic  -> let x, y, _ = Mat.draw_rows2 ~replacement:false x y 1 in x, y
+    | Full       -> x, y
+    | Mini c     -> let x, y, _ = Mat.draw_rows2 ~replacement:false x y c in x, y
+    | Stochastic -> let x, y, _ = Mat.draw_rows2 ~replacement:false x y 1 in x, y
 
   let batches typ x = match typ with
-    | Fullbatch   -> 1
-    | Minibatch c -> Mat.row_num x / c
-    | Stochastic  -> Mat.row_num x
+    | Full       -> 1
+    | Mini c     -> Mat.row_num x / c
+    | Stochastic -> Mat.row_num x
 
   let to_string = function
-    | Fullbatch   -> "full"
-    | Minibatch c -> Printf.sprintf "mini of %i" c
-    | Stochastic  -> "stochastic"
+    | Full       -> "full"
+    | Mini c     -> Printf.sprintf "mini of %i" c
+    | Stochastic -> "stochastic"
 
 end
 
@@ -255,7 +255,7 @@ module Params = struct
 
   let default () = {
     epochs         = 1;
-    batch          = Batch.Minibatch 100;
+    batch          = Batch.Mini 100;
     gradient       = Gradient.GD;
     loss           = Loss.Cross_entropy;
     learning_rate  = Learning_Rate.(default (Const 0.));

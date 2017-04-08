@@ -45,7 +45,7 @@ let _ =
   print nn;
 
   let p = Params.default () in
-  p.batch <- Batch.Fullbatch;
+  p.batch <- Batch.Full;
   p.epochs <- 500;
   p.learning_rate <- Learning_Rate.Adagrad 0.01;  (* this makes things much faster. *)
   train ~params:p nn x y;
