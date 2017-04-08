@@ -83,6 +83,7 @@ Library owl
                     Owl_plot,
                     Owl_pretty,
                     Owl_dataset,
+                    Owl_slicing,
                     Owl_toplevel,
                     ### Topic models ###
                     topic/Owl_topic_lda,
