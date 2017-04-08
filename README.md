@@ -523,6 +523,61 @@ Then you should be able to see a figure like this one below. For more advanced u
 ![plot021](https://raw.githubusercontent.com/wiki/ryanrhymes/owl/image/plot_021.png)
 
 
+## Machine Learning and Neural Network
+
+Even though this is still work in progress, I find it necessary to present a small neural network example to show how necessary it is to have a comprehensive numerical infrastructure. The illustration in the following is of course the classic MNIST example wherein we will train a two-layer network that can recognise hand-written digits.
+
+Currently `Neural` module is wrapped into a separate library but it will be merged into `Owl` main library in the future. First, plese start your `utop` and load the `Owl_neural` library.
+
+```ocaml
+#require "owl_neural";;
+open Owl_neural;;
+```
+
+Now, let's see how to define a two-layer neural network.
+
+```ocaml
+let nn = Feedforward.create ();;
+Feedforward.add_layer nn (linear 784 300) ~act_typ:Activation.Tanh;;
+Feedforward.add_layer nn (linear 300 10) ~act_typ:Activation.Softmax;;
+```
+
+Done! Only three lines of code, that's easy, isn't it? Owl's `Neural` module is built atop of its `Algodiff` module. I am often amazed by the power of algorithmic differentiation while developing the neural network module, it just simplifies the design so much and makes life so easy. 
+
+Let's look closer at what the code does: the first line defines a `Feedforward` neural network; the second line adds a linear layer (of shape `784 x 300`) with `Tanh` activation; the third line does the similar thing by adding another linear layer with `Softmax` activation.
+
+You can print out the summary of the neural network by calling `print nn`, then you see the following output.
+
+```bash
+Feedforward network
+
+(0): Linear layer:
+  init   : standard
+  params : 235500
+  w      : 784 x 300
+  b      : 1 x 300
+
+(1): Activation layer: tanh
+
+(2): Linear layer:
+  init   : standard
+  params : 3010
+  w      : 300 x 10
+  b      : 1 x 10
+
+(3): Activation layer: softmax
+```
+
+How to train the defined network now? You only need two lines of code to load the dataset and start training.
+
+```ocaml
+let x, _, y = Dataset.load_mnist_train_data () in
+train nn x y;;
+```
+
+You may ask "what if I want different training configuration?" Well, the training and network module is actually very flexible and highly configurable. But I will talk about these details in another separate tutorial.
+
+
 ## Run Owl on Different Platforms
 
 If you want to try Owl on ARM based platforms such as Raspberry Pi rather than x86 ones, the installation are similar. Just note that Owl requires Ocaml 4.04, which might not be supported on your platform's binary distribution system yet, so you might consider compiling [Ocaml sources](https://ocaml.org/releases/4.04.html). Besides, to solve a potential conflict with gsl package, after running `./configure` in the top directory, you should run:
