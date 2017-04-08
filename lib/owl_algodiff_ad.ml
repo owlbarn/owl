@@ -861,6 +861,7 @@ let reverse_push v x =
     match a, v with
     | F _, Mat v -> F (M.sum v)
     | Mat a, Mat v -> (
+      (* check if this is due to previous broadcast operation *)
       (* FIXME: need to check full-shape, sum_cols if necessary *)
       match M.(shape a = shape v) with
       | true  -> Mat v
@@ -925,7 +926,8 @@ let reverse_push v x =
             | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
             | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)
             | AddI_C_D (_, i, j, b) -> push ((item !aa i j, b) :: t)
-            | Sum_D a               -> push ((((mat_create (row_num (primal a)) (col_num (primal a)) !aa)), a) :: t)  (* FIXME: this can be optimised *)
+            | Sum_D a               -> push ((((mat_create (row_num (primal a)) (col_num (primal a)) !aa)), a) :: t)
+            (* TODO: SUM_D can be optimised to this | Sum_D a               -> push ((!aa, a) :: t) *)
             | Dot_D_D (a, b)        -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
             | Dot_D_C (a, b)        -> push (((dot !aa (transpose b)), a) :: t)
             | Dot_C_D (a, b)        -> push (((dot (transpose a) !aa), b) :: t)

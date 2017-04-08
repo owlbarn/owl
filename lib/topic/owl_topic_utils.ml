@@ -59,21 +59,26 @@ let load_stopwords f =
   close_in h;
   x
 
+(* return both word->index and index->word hashtbl *)
 let build_vocabulary x =
   Log.info "build up vocabulary";
-  let h = Hashtbl.create (64 * 1024) in
+  let w2i = Hashtbl.create (64 * 1024) in
   Array.iter (fun l ->
     Array.iter (fun w ->
-      if Hashtbl.mem h w = false then Hashtbl.add h w 0
+      if Hashtbl.mem w2i w = false then Hashtbl.add w2i w 0
     ) l
   ) x;
-  let y = Array.make (Hashtbl.length h) "" in
+  let y = Array.make (Hashtbl.length w2i) "" in
   let i = ref 0 in
-  Hashtbl.iter (fun w _ -> y.(!i) <- w; i := !i + 1) h;
+  Hashtbl.iter (fun w _ -> y.(!i) <- w; i := !i + 1) w2i;
   Array.sort String.compare y;
-  Hashtbl.reset h;
-  Array.iteri (fun i w -> Hashtbl.add h w i) y;
-  h
+  let i2w = Hashtbl.(create (length w2i)) in
+  Hashtbl.reset w2i;
+  Array.iteri (fun i w ->
+    Hashtbl.add w2i w i;
+    Hashtbl.add i2w i w;
+  ) y;
+  w2i, i2w
 
 let tokenise dict data = Array.map (Hashtbl.find dict) data
 
