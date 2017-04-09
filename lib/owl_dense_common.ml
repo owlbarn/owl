@@ -60,6 +60,15 @@ let _calc_stride s =
   done;
   r
 
+(* calculate the slice size in each dimension, s is the shape *)
+let _calc_slice s =
+  let d = Array.length s in
+  let r = Array.make d s.(d-1) in
+  for i = d - 2 downto 0 do
+    r.(i) <- s.(i) * r.(i+1)
+  done;
+  r
+
 (* c layout index translation: 1d -> nd
   i is one-dimensional index; j is n-dimensional index; s is the stride.
   the space needs to be pre-allocated *)
