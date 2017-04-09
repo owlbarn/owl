@@ -57,9 +57,9 @@ val sub_left : arr -> int -> int -> arr
 
 val slice_left : arr -> int array -> arr
 
-val slice : int option array -> arr -> arr
+val slice : int list list -> arr -> arr
 
-val copy_slice : int option array -> arr -> arr -> unit
+(* val copy_slice : int option array -> arr -> arr -> unit *)
 
 val copy : arr -> arr -> unit
 
@@ -110,9 +110,9 @@ val foldi : ?axis:int option array -> (int array -> 'c -> elt -> 'c) -> 'c -> ar
 
 val fold : ?axis:int option array -> ('a -> elt -> 'a) -> 'a -> arr -> 'a
 
-val iteri_slice : int array -> (int option array -> arr -> unit) -> arr -> unit
+(* val iteri_slice : int array -> (int option array -> arr -> unit) -> arr -> unit *)
 
-val iter_slice : int array -> (arr -> unit) -> arr -> unit
+(* val iter_slice : int array -> (arr -> unit) -> arr -> unit *)
 
 val iter2i : (int array -> elt -> elt -> unit) -> arr -> arr -> unit
 

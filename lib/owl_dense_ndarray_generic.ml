@@ -938,16 +938,9 @@ let _slice_1byte axis x =
   ) x;
   y
 
-let slice axis x =
-  let s = shape x in
-  (* check axis is within boundary, has at least one None *)
-  _check_slice_axis axis s;
-  (* if block size is > 99 bytes, then use block copying *)
-  let threshold = 99 in
-  match _slice_continuous_blksz s axis > threshold with
-  | true  -> _slice_block axis x
-  | false -> _slice_1byte axis x
+let slice axis x = Owl_slicing.slice axis x
 
+(* FIXME
 let rec _iteri_slice index axis f x =
   if Array.length axis = 0 then (
     f index (slice index x)
@@ -982,6 +975,7 @@ let copy_slice i src dst =
     Array.iteri (fun m n -> j.(k.(m)) <- n) i';
     set dst j a
   ) src
+*)
 
 (* some comparison functions *)
 

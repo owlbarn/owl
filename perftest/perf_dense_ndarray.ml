@@ -16,9 +16,9 @@ let _ =
   test_op "empty             " c (fun () -> M.empty Bigarray.Float64 [|m;n;o|]);
   test_op "create            " c (fun () -> M.create Bigarray.Float64 [|m;n;o|] 1.);
   test_op "slice_left        " c (fun () -> M.slice_left x [|0|]);
-  test_op "slice (0,*.*)     " c (fun () -> M.slice [|Some 0; None; None|] x);
-  test_op "slice (*,0.*)     " c (fun () -> M.slice [|None; Some 0; None|] x);
-  test_op "slice (*,*.0)     " c (fun () -> M.slice [|None; None; Some 0|] x);
+  test_op "slice (0,*.*)     " c (fun () -> M.slice [ [0]; []; [] ] x);
+  test_op "slice (*,0.*)     " c (fun () -> M.slice [ []; [0]; [] ] x);
+  test_op "slice (*,*.0)     " c (fun () -> M.slice [ []; []; [0] ] x);
   test_op "reshape           " c (fun () -> M.reshape x [|o;n;m|]);
   test_op "flatten           " c (fun () -> M.flatten x);
   test_op "min               " c (fun () -> M.min x);
@@ -50,7 +50,7 @@ let _ =
   test_op "map (sin)         " c (fun () -> M.map (fun a -> sin a) x);
   test_op "map (+1)          " c (fun () -> M.map (fun a -> a +. 1.) x);
   test_op "map (^2)          " c (fun () -> M.map (fun a -> a *. a) x);
-  test_op "iteri_slice 0     " c (fun () -> M.iteri_slice [|0|] (fun i s -> ()) x);
+  (* FIXME test_op "iteri_slice 0     " c (fun () -> M.iteri_slice [|0|] (fun i s -> ()) x); *)
   test_op "iter2i            " c (fun () -> M.iter2i (fun i a b -> ()) x y);
   test_op "iter2             " c (fun () -> M.iter2 (fun a b -> ()) x y);
   test_op "conj              " c (fun () -> M.conj z);

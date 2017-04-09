@@ -4,9 +4,16 @@
  *)
 
 open Owl_dense_common
-open Owl_dense_ndarray_generic
 
 type slice = int list list
+
+
+(* local functions, since we will not use ndarray_generic module *)
+let empty kind d = Bigarray.Genarray.create kind Bigarray.c_layout d
+let kind x = Bigarray.Genarray.kind x
+let shape x = Bigarray.Genarray.dims x
+let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
+
 
 (* check the validity of the slice definition, also re-format slice definition,
   axis: slice definition;
@@ -41,6 +48,7 @@ let check_slice_definition axis shp =
     | _ -> failwith error_msg
   ) axis shp
 
+
 (* calculate the minimum continuous block size and its corresponding dimension
   axis: slice definition;
   shp: shape of the original ndarray;
@@ -64,6 +72,7 @@ let calc_continuous_blksz axis shp =
   with exn -> ()
   in !d, !ssz
 
+
 (* calculat the shape according the slice definition
   axis: slice definition
  *)
@@ -72,6 +81,7 @@ let calc_slice_shape axis =
     let a, b, c = x.(0), x.(1), x.(2) in
     Pervasives.(abs ((b - a) / c)) + 1
   ) axis
+
 
 (* recursively copy the continuous block, stop at its corresponding dimension d
    d: the corresponding dimension of continuous block + 1
@@ -100,6 +110,7 @@ let rec __foreach_continuous_blk d j i l h s f =
       done
     )
   )
+
 
 (* d0: the total dimension of the ndarray;
    d1: the corresponding dimension of the continuous block +1

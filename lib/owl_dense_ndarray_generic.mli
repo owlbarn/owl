@@ -119,11 +119,16 @@ val sub_left : ('a, 'b) t -> int -> int -> ('a, 'b) t
 val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
 (** Same as [Bigarray.slice_left], please refer to Bigarray documentation. *)
 
-val slice : int option array -> ('a, 'b) t -> ('a, 'b) t
+val slice : int list list -> ('a, 'b) t -> ('a, 'b) t
 (** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
   which is an [int option array]. E.g., for a ndarray [x] of dimension
-  [[|2; 2; 3|]], [slice [|Some 0; None; None|] x] takes the following elements
+  [[|2; 2; 3|]], [slice [[0]; []; []] x] takes the following elements
   of index [\(0,*,*\)], i.e., [[|0;0;0|]], [[|0;0;1|]], [[|0;0;2|]] ...
+
+  Basically, [slice] function offers very much the same semantic as that in
+  numpy, i.e., start:stop:step grammar, so if you how to index and slice ndarray
+  in numpy, you should not find it difficult to use this function. Please just
+  refer to numpy documentation or my tutorial.
 
   There are two differences between [slice_left] and [slice]: [slice_left] does
   not make a copy but simply moving the pointer; [slice_left] can only make a
@@ -131,7 +136,7 @@ val slice : int option array -> ('a, 'b) t -> ('a, 'b) t
   on arbitrary axis which need not start from left-most side.
  *)
 
-val copy_slice : int option array -> ('a, 'b) t -> ('a, 'b) t -> unit
+(* val copy_slice : int option array -> ('a, 'b) t -> ('a, 'b) t -> unit *)
 (** [copy_slice s src dst] copies a slice defined by [s] from [src] to [dst]. *)
 
 val copy : ('a, 'b) t -> ('a, 'b) t -> unit
@@ -245,7 +250,7 @@ val foldi : ?axis:int option array -> (int array -> 'c -> 'a -> 'c) -> 'c -> ('a
 val fold : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 (** Similar to [foldi], except that the index of an element is not passed to [f]. *)
 
-val iteri_slice : int array -> (int option array -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
+(* val iteri_slice : int array -> (int option array -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit *)
 (** [iteri_slice s f x] iterates the slices along the passed in axes [s], and
   applies the function [f] to each of them. The order of iterating slices is
   based on the order of axis in [s].
@@ -256,7 +261,7 @@ val iteri_slice : int array -> (int option array -> ('a, 'b) t -> unit) -> ('a, 
   passed in [f] is a copy of the original data.
  *)
 
-val iter_slice : int array -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
+(* val iter_slice : int array -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit *)
 (** Similar to [iteri_slice], except that the index of a slice is not passed to [f]. *)
 
 val iter2i : (int array -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
