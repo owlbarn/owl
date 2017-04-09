@@ -8,7 +8,10 @@ open Owl_dense_ndarray_generic
 
 type slice = int list list
 
-(* check the validity of the slice definition, also re-format *)
+(* check the validity of the slice definition, also re-format slice definition,
+  axis: slice definition;
+  shp: shape of the original ndarray;
+ *)
 let check_slice_definition axis shp =
   let error_msg = "check_slice_definition: error" in
   if Array.length axis <> Array.length shp then failwith error_msg;
@@ -38,7 +41,10 @@ let check_slice_definition axis shp =
     | _ -> failwith error_msg
   ) axis shp
 
-(* calculate the smallest continuous block size and its corresponding dimension *)
+(* calculate the minimum continuous block size and its corresponding dimension
+  axis: slice definition;
+  shp: shape of the original ndarray;
+ *)
 let calc_continuous_blksz axis shp =
   let slice_sz = _calc_slice shp in
   let ssz = ref 1 in
@@ -58,7 +64,9 @@ let calc_continuous_blksz axis shp =
   with exn -> ()
   in !d, !ssz
 
-(* calculat the shape according the slice definition *)
+(* calculat the shape according the slice definition
+  axis: slice definition
+ *)
 let calc_slice_shape axis =
   Array.map (fun x ->
     let a, b, c = x.(0), x.(1), x.(2) in
@@ -72,7 +80,7 @@ let calc_slice_shape axis =
    l: lower bound of the index i
    h: higher bound of the index i
    f: copy function of the continuous block
-*)
+ *)
 let rec __foreach_continuous_blk d j i l h s f =
   if j = d then f i
   else (
@@ -97,7 +105,7 @@ let rec __foreach_continuous_blk d j i l h s f =
    d1: the corresponding dimension of the continuous block +1
    axis: slice definition
    f: the copy function for the continuous block
-*)
+ *)
 let _foreach_continuous_blk d0 d1 axis f =
   let i = Array.make d0 0 in
   let l = Array.make d0 0 in
@@ -125,6 +133,7 @@ let slice axis x =
   let sd = _calc_stride s0 in
   let _cp_op = _owl_copy (kind x) in
   let ofsy_i = ref 0 in
+  (* two copy strategy based on the size of the minimum continuous block *)
   match cb > 1 with
   | true  -> (
       (* yay, there are at least some continuous blocks *)
