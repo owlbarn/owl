@@ -119,9 +119,12 @@ let _foreach_continuous_blk d0 d1 axis f =
   __foreach_continuous_blk d1 0 i l h s f
 
 let slice axis x =
-  let s0 = shape x in
+  (* convert from array to list *)
+  let axis = Owl_utils.llss2aarr axis in
   (* check axis is within boundary then re-format *)
+  let s0 = shape x in
   let axis = check_slice_definition axis s0 in
+  (* calculate the new shape for slice *)
   let s1 = calc_slice_shape axis in
   let y = empty (kind x) s1 in
   (* transform into 1d array *)

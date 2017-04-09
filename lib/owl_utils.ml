@@ -146,7 +146,10 @@ let aarr_map3 f x0 x1 x2 =
   )
 
 (* convert array of array to list of list, shape remains the same *)
-let aarr2llss x = None
+let aarr2llss x = Array.map Array.to_list x |> Array.to_list
+
+(* convert list of list to array of array, shape remains the same *)
+let llss2aarr x = List.map Array.of_list x |> Array.of_list
 
 (* fold function for ['a array array] type, by flatten the array *)
 let aarr_fold f a x =
