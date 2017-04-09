@@ -728,7 +728,8 @@ let var_test ?(alpha=0.05) ?(side=BothSide) ~var x =
   let h = alpha > p in
   (h, p, k)
 
-let cdf ?max_prob k u v n =
+let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
+  let cdf ?max_prob k u v n =
   match max_prob with
   | None ->
     let left = max [|0.0; (float_of_int (v + n - u))|] in
@@ -745,9 +746,7 @@ let cdf ?max_prob k u v n =
     let condition = (fun x -> (x < p) || (abs_float (x -. p) < eps)) in
     let probs2 = Owl_utils.array_filter condition probs in
     Array.fold_left (+.) 0. probs2
-
-
-let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
+  in
   let n = a + b + c + d in
   let prob = Pdf.hypergeometric a n (a + b) (a + c) in
   let oddsratio = ((float_of_int a) *. (float_of_int d)) /. ((float_of_int b) *. (float_of_int c)) in
