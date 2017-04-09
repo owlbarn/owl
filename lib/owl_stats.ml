@@ -728,25 +728,26 @@ let var_test ?(alpha=0.05) ?(side=BothSide) ~var x =
   let h = alpha > p in
   (h, p, k)
 
+let cdf ?max_prob k u v n =
+  match max_prob with
+  | None ->
+    let left = max [|0.0; (float_of_int (v + n - u))|] in
+    let right = k in
+    let r = Owl_utils.range (int_of_float left) right in
+    let probs = Owl_utils.array_map (fun x -> Pdf.hypergeometric x u v n) r in
+    Array.fold_left (+.) 0. probs
+  | Some p ->
+    let left = max [|0.0; (float_of_int (v + n - u))|] in
+    let right = min [|(float_of_int n); (float_of_int v)|] in
+    let eps = 0.000000001 in
+    let r = Owl_utils.range (int_of_float left) (int_of_float right) in
+    let probs = Owl_utils.array_map (fun x -> Pdf.hypergeometric x u v n) r in
+    let condition = (fun x -> (x < p) || (abs_float (x -. p) < eps)) in
+    let probs2 = Owl_utils.array_filter condition probs in
+    Array.fold_left (+.) 0. probs2
+
+
 let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
-  let cdf ?max_prob k u v n =
-    match max_prob with
-    | None ->
-      let left = max 0 (v + n - u) in
-      let right = k in
-      let r = Owl_utils.range left right in
-      let probs = Owl_utils.array_map (fun x -> Pdf.hypergeometric_P x u v n) r in
-      Array.fold_left (+.) 0. probs
-    | Some p ->
-      let left = max 0 (v + n - u) in
-      let right = (min n v) in
-      let eps = 0.000000001 in
-      let r = Owl_utils.range left right in
-      let probs = Owl_utils.array_map (fun x -> Pdf.hypergeometric_P x u v n) r in
-      let condition = (fun x -> (x < p) || (abs_float (x -. p) < eps)) in
-      let probs2 = Owl_utils.array_filter condition probs in
-      Array.fold_left (+.) 0. probs2
-  in	
   let n = a + b + c + d in
   let prob = Pdf.hypergeometric a n (a + b) (a + c) in
   let oddsratio = ((float_of_int a) *. (float_of_int d)) /. ((float_of_int b) *. (float_of_int c)) in
