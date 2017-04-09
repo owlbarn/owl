@@ -10,7 +10,7 @@ type slice = int list list
 
 (* check the validity of the slice definition, also re-format *)
 let check_slice_definition axis shp =
-  let error_msg = "check_slice_definition: index error" in
+  let error_msg = "check_slice_definition: error" in
   if Array.length axis <> Array.length shp then failwith error_msg;
   Array.map2 (fun x n ->
     match Array.length x with
@@ -32,6 +32,7 @@ let check_slice_definition axis shp =
         let b = if x.(1) >= 0 then x.(1) else n + x.(1) in
         let c = x.(2) in
         if a >= n || b >= n || c = 0 then failwith error_msg;
+        if a < b && c < 0 then failwith error_msg;
         [|a;b;c|]
       )
     | _ -> failwith error_msg
