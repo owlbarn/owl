@@ -185,6 +185,10 @@ val jb_test : ?alpha:float -> float array -> bool * float * float
   using the Jarque-Bera test.
  *)
 
+val fisher_test : ?alpha:float -> ?side:tail -> int -> int -> int -> int -> bool * float * float
+(**some
+ *)
+
 val runs_test : ?alpha:float -> ?side:tail -> ?v:float -> float array -> bool * float * float
 (** [runs_test ~alpha ~v x] returns a test decision for the null hypothesis that
   the data [x] comes in random order, against the alternative that they do not,
