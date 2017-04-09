@@ -144,7 +144,10 @@ let aarr_map3 f x0 x1 x2 =
       f x0.(i).(j) x1.(i).(j) x2.(i).(j)
     )
   )
-  
+
+(* convert array of array to list of list, shape remains the same *)
+let aarr2llss x = None
+
 (* fold function for ['a array array] type, by flatten the array *)
 let aarr_fold f a x =
   let a = ref a in
