@@ -8,6 +8,7 @@ open Owl_dense_ndarray_generic
 
 type slice = int list list
 
+(* check the validity of the slice definition, also re-format *)
 let check_slice_definition axis shp =
   let error_msg = "check_slice_definition: index error" in
   if Array.length axis <> Array.length shp then failwith error_msg;
@@ -22,8 +23,9 @@ let check_slice_definition axis shp =
     | 2 -> (
         let a = if x.(0) >= 0 then x.(0) else n + x.(0) in
         let b = if x.(1) >= 0 then x.(1) else n + x.(1) in
+        let c = if a <= b then 1 else -1 in
         if a >= n || b >= n then failwith error_msg;
-        [|a;b;1|]
+        [|a;b;c|]
       )
     | 3 -> (
         let a = if x.(0) >= 0 then x.(0) else n + x.(0) in
@@ -35,14 +37,19 @@ let check_slice_definition axis shp =
     | _ -> failwith error_msg
   ) axis shp
 
+(* calculate the smallest continuous block size and its corresponding dimension *)
 let calc_continuous_blksz axis shp =
   let slice_sz = _calc_slice shp in
   let stride_sz = _calc_slice shp in
   let ssz = ref 1 in
   let d = ref 0 in
-  (try
-    for l = Array.length shp - 1 downto 0 do
+  let _ = try
+    for l = Array.length shp - 1 downto -1 do
+      (* note: d is actually the corresponding dimension of continuous block
+        plue one; also note the loop is down to -1 so the lowest dimension is
+        also considered, in which case the whole array is copied. *)
       d := l + 1;
+      if l < 0 then failwith "stop";
       let x = axis.(l) in
       match Array.length x with
       | 0 -> ssz := slice_sz.(l)
@@ -64,20 +71,29 @@ let calc_continuous_blksz axis shp =
         )
       | _ -> failwith "stop"
     done
-  with exn -> ());
-  !d, !ssz
+  with exn -> ()
+  in !d, !ssz
 
+(* calculat the shape according the slice definition *)
 let calc_slice_shape axis =
   Array.map (fun x ->
     let a, b, c = x.(0), x.(1), x.(2) in
     Pervasives.(abs ((b - a) / c)) + 1
   ) axis
 
+(* recursively copy the continuous block, stop at its corresponding dimension d
+   d: the corresponding dimension of continuous block + 1
+   j: current dimension index
+   i: current index of the data for copying
+   l: lower bound of the index i
+   h: higher bound of the index i
+   f: copy function of the continuous block
+*)
 let rec __foreach_continuous_blk d j i l h s f =
   if j = d then f i
   else (
+    let k = ref l.(j) in
     if s.(j) > 0 then (
-      let k = ref l.(j) in
       while !k <= h.(j)  do
         i.(j) <- !k;
         k := !k + s.(j);
@@ -85,7 +101,6 @@ let rec __foreach_continuous_blk d j i l h s f =
       done
     )
     else (
-      let k = ref l.(j) in
       while !k >= h.(j)  do
         i.(j) <- !k;
         k := !k + s.(j);
@@ -94,6 +109,11 @@ let rec __foreach_continuous_blk d j i l h s f =
     )
   )
 
+(* d0: the dimension of the ndarray;
+   d1: the corresponding dimension of the continuous block +1
+   axis: slice definition
+   f: the copy function for the continuous block
+*)
 let _foreach_continuous_blk d0 d1 axis f =
   let i = Array.make d0 0 in
   let l = Array.make d0 0 in
@@ -123,6 +143,7 @@ let slice_block axis x =
   let f = fun i -> (
     let ofsx = _index_nd_1d i s in
     let ofsy = !ofsy_i * b in
+    (* Printf.printf "%i %i\n" ofsx ofsy; *)
     let _ = _cp_op b ~ofsy ~ofsx x' y' in
     ofsy_i := !ofsy_i + 1
   ) in
@@ -140,5 +161,7 @@ let slice axis x =
   | true  -> slice_block axis x
   | false -> slice_block axis x
 
+
+(* TODO: highest dimension can still be optimised ... *)
 
 (* ends here *)
