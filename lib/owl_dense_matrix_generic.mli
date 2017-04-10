@@ -148,7 +148,7 @@ val flatten : ('a, 'b) t -> ('a, 'b) t
 
 val slice : int list list -> ('a, 'b) t -> ('a, 'b) t
 (** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
-  which is an [int option array]. Please refer to the same function in the
+  which is an [int array]. Please refer to the same function in the
   [Owl_dense_ndarray_generic] documentation for more details.
  *)
 

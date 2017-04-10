@@ -122,11 +122,11 @@ val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
 val slice : int list list -> ('a, 'b) t -> ('a, 'b) t
 (** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
   which is an [int option array]. E.g., for a ndarray [x] of dimension
-  [[|2; 2; 3|]], [slice [[0]; []; []] x] takes the following elements
-  of index [\(0,*,*\)], i.e., [[|0;0;0|]], [[|0;0;1|]], [[|0;0;2|]] ... Also
-  note that if the length of [s] is less than the number of dimensions of [x],
-  [slice] function will append slice definition to higher diemensions by
-  assuming all the elements in missing dimensions will be taken.
+  [[|2; 2; 3|]], [slice [0] x] takes the following slices of index [\(0,*,*\)],
+  i.e., [[|0;0;0|]], [[|0;0;1|]], [[|0;0;2|]] ... Also note that if the length
+  of [s] is less than the number of dimensions of [x], [slice] function will
+  append slice definition to higher diemensions by assuming all the elements in
+  missing dimensions will be taken.
 
   Basically, [slice] function offers very much the same semantic as that in
   numpy, i.e., start:stop:step grammar, so if you how to index and slice ndarray
