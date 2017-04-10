@@ -202,3 +202,41 @@ let marshal_from_file f =
 let check_row_vector x =
   if Bigarray.Array2.dim1 x <> 1 then
     failwith "error: the variable is not a row vector"
+
+
+module Stack = struct
+
+  type 'a t = {
+    mutable used : int;
+    mutable size : int;
+    mutable data : 'a array;
+  }
+
+  let allocate_space x =
+    Log.info "allocate space, size : %i" (Array.length x);
+    Array.(append x (copy x))
+
+  let make l a = {
+    used = 0;
+    size = l;
+    data = Array.make l a;
+  }
+
+  let push s x =
+    if s.used = s.size then (
+      s.data <- allocate_space s.data;
+      s.size <- Array.length s.data;
+    );
+    s.data.(s.used) <- x;
+    s.used <- s.used + 1
+
+  let pop s = match s.used with
+    | 0 -> None
+    | i -> s.used <- i - 1; Some s.data.(i)
+
+  let to_array s = Array.sub s.data 0 s.used
+
+end
+
+
+(* ends here *)
