@@ -457,18 +457,28 @@ Arr.for_all ((=) 2.) x;;
 Most importantly, you can use Owl to iterate a ndarray in various ways. Owl provides a simple but flexible and powerful way to define a "slice" in ndarray. Comparing to the "`Bigarray.slice_left`" function, the slice in Owl does not have to start from the left-most axis. E.g., for the previously defined `[|3;4;5|]` ndarray, you can define a slice in the following ways:
 
 ```ocaml
-let s0 = [|None; None; None|]      (* (*,*,*), essentially the whole ndarray as one slice *)
-let s1 = [|Some 0; None; None|]    (* (0,*,*) *)
-let s2 = [|None; Some 2; None|]    (* (*,2,*) *)
-let s3 = [|None; None; Some 1|]    (* (*,*,1) *)
-let s4 = [|Some 1; None; Some 2|]  (* (1,*,2) *)
+let s0 = [ []; []; [] ]      (* (*,*,*), essentially the whole ndarray as one slice *)
+let s1 = [ [0]; []; [] ]     (* (0,*,*) *)
+let s2 = [ []; [2]; [] ]     (* (*,2,*) *)
+let s3 = [ []; []; [1] ]     (* (*,*,1) *)
+let s4 = [ [1]; []; [2] ]    (* (1,*,2) *)
 ...
 ```
 
 With the slice definition above, we can iterate and map the elements in a slice. E.g., we add one to all the elements in slice `(0,*,*)`.
 
 ```ocaml
-Arr.map ~axis:[|Some 0; None; None|] (fun a -> a +. 1.) x;;
+Arr.map ~axis:[ [0]; []; [] ] (fun a -> a +. 1.) x;;
+```
+
+`slice` function is very flexible, it basically has the same semantic as that in numpy. So you know how to index ndarray in numpy, you should be able to do the same thing in Owl. For advanced usage of `slice` fucntion, please refer to my separate tutorial. Some examples as as below.
+
+```ocaml
+let s = [ [1]; []; [-1;0;-1]; ];;
+let s = [ [1]; [0]; [-1;0;-1]; ];;
+let s = [ [1]; [0]; [-2;0]; ];;
+let s = [ [0]; [0;1]; [-2;0;-2]; ];;
+...
 ```
 
 There are more functions to help you to iterate elements and slices in a ndarray: `iteri`, `iter`, `mapi`, `map`, `filteri`, `filter`, `foldi`, `fold`, `iteri_slice`, `iter_slice`, `iter2i`, `iter2`. Please refer to the documentation for their details.
@@ -542,7 +552,7 @@ Feedforward.add_layer nn (linear 784 300) ~act_typ:Activation.Tanh;;
 Feedforward.add_layer nn (linear 300 10) ~act_typ:Activation.Softmax;;
 ```
 
-Done! Only three lines of code, that's easy, isn't it? Owl's `Neural` module is built atop of its `Algodiff` module. I am often amazed by the power of algorithmic differentiation while developing the neural network module, it just simplifies the design so much and makes life so easy. 
+Done! Only three lines of code, that's easy, isn't it? Owl's `Neural` module is built atop of its `Algodiff` module. I am often amazed by the power of algorithmic differentiation while developing the neural network module, it just simplifies the design so much and makes life so easy.
 
 Let's look closer at what the code does: the first line defines a `Feedforward` neural network; the second line adds a linear layer (of shape `784 x 300`) with `Tanh` activation; the third line does the similar thing by adding another linear layer with `Softmax` activation.
 
