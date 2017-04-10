@@ -21,7 +21,16 @@ let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
  *)
 let check_slice_definition axis shp =
   let error_msg = "check_slice_definition: error" in
-  if Array.length axis <> Array.length shp then failwith error_msg;
+  let axis_len = Array.length axis in
+  let shp_len = Array.length shp in
+  if axis_len > shp_len then failwith error_msg;
+  (* add missing definition on higher dimensions *)
+  let axis =
+    if axis_len < shp_len then
+      let suffix = Array.make (shp_len - axis_len) [||] in
+      Array.append axis suffix
+    else axis
+  in
   Array.map2 (fun x n ->
     match Array.length x with
     | 0 -> [|0;n-1;1|]
