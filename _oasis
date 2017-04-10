@@ -56,7 +56,6 @@ Library owl
                     Owl_dense_vector_c,
                     Owl_dense_vector_z,
                     Owl_dense_vector_generic,
-                    Owl_dense_ndview,
                     Owl_sparse,
                     Owl_sparse_common,
                     Owl_sparse_ndarray,

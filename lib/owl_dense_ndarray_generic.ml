@@ -831,114 +831,7 @@ let fold ?axis f a x =
   iter ?axis (fun y -> c := (f !c y)) x;
   !c
 
-let _check_slice_axis axis s =
-  if Array.length axis <> Array.length s then
-    failwith "check_slice_axis: length does not match";
-  let has_none = ref false in
-  Array.iteri (fun i a ->
-    match a with
-    | Some a -> if a < 0 || a >= s.(i) then failwith "_check_slice_axis: boundary error"
-    | None   -> has_none := true
-  ) axis;
-  if !has_none = false then failwith "_check_slice_axis: there should be at least one None"
-
-(* calculate the continuous block size based on slice definition *)
-let _slice_continuous_blksz shp axis =
-  let stride = _calc_stride shp in
-  let l = ref (Array.length shp - 1) in
-  let ssz = ref 1 in
-  while !l >= 0 && axis.(!l) = None do
-    l := !l - 1
-  done;
-  if !l = (-1) then ssz := stride.(0) * shp.(0)
-  else ssz := stride.(!l);
-  !ssz
-
-let rec __foreach_continuous_blk d j i l h f =
-  if j = d then f i
-  else (
-    for k = l.(j) to h.(j) do
-      i.(j) <- k;
-      __foreach_continuous_blk d (j + 1) i l h f
-    done
-  )
-
-let _foreach_continuous_blk axis shp f =
-  let d = Array.length shp in
-  let i = Array.make d 0 in
-  let l = Array.make d 0 in
-  let h = shp in
-  Array.iteri (fun j a ->
-    match a with
-    | Some b -> (l.(j) <- b; h.(j) <- b)
-    | None   -> (h.(j) <- h.(j) - 1)
-  ) axis;
-  let k = ref (d - 1) in
-  while !k >= 0 && axis.(!k) = None do
-    l.(!k) <- 0;
-    h.(!k) <- 0;
-    k := !k - 1
-  done;
-  __foreach_continuous_blk d 0 i l h f
-
-let _slice_block axis x =
-  let s0 = shape x in
-  (* check axis is within boundary, has at least one None *)
-  _check_slice_axis axis s0;
-  let s1 = ref [||] in
-  Array.iteri (fun i a ->
-    match a with
-    | Some _ -> ()
-    | None   -> s1 := Array.append !s1 [|s0.(i)|]
-  ) axis;
-  let y = empty (kind x) !s1 in
-  (* transform into 1d array *)
-  let x' = Bigarray.reshape_1 x (numel x) in
-  let y' = Bigarray.reshape_1 y (numel y) in
-  (* prepare function of copying blocks *)
-  let b = _slice_continuous_blksz s0 axis in
-  let s = _calc_stride s0 in
-  let _cp_op = _owl_copy (kind x) in
-  let ofsy_i = ref 0 in
-  let f = fun i -> (
-    let ofsx = _index_nd_1d i s in
-    let ofsy = !ofsy_i * b in
-    let _ = _cp_op b ~ofsy ~ofsx x' y' in
-    ofsy_i := !ofsy_i + 1
-  ) in
-  (* start copying blocks *)
-  _foreach_continuous_blk axis s0 f;
-  (* reshape the ndarray *)
-  let z = Bigarray.genarray_of_array1 y' in
-  let z = Bigarray.reshape z !s1 in
-  z
-
-let _slice_1byte axis x =
-  let s0 = shape x in
-  (* check axis is within boundary, has at least one None *)
-  _check_slice_axis axis s0;
-  let s1 = ref [||] in
-  Array.iteri (fun i a ->
-    match a with
-    | Some _ -> ()
-    | None   -> s1 := Array.append !s1 [|s0.(i)|]
-  ) axis;
-  let y = empty (kind x) !s1 in
-  let k = Array.make (num_dims y) 0 in
-  let t = ref 0 in
-  Array.iteri (fun i a ->
-    match a with
-    | Some _ -> ()
-    | None   -> (k.(!t) <- i; t := !t + 1)
-  ) axis;
-  let j = Array.make (num_dims y) 0 in
-  iteri ~axis (fun i a ->
-    Array.iteri (fun m m' -> j.(m) <- i.(m')) k;
-    set y j a
-  ) x;
-  y
-
-let slice axis x = Owl_slicing.slice axis x
+let slice axis x = Owl_slicing.slice_list_typ axis x
 
 (* FIXME
 let rec _iteri_slice index axis f x =
@@ -959,23 +852,28 @@ let iteri_slice axis f x =
 
 let iter_slice axis f x = iteri_slice axis (fun _ y -> f y) x
 
-let copy_slice i src dst =
-  let s = shape dst in
-  _check_slice_axis i s;
-  let j = Array.make (num_dims dst) 0 in
-  let k = ref [||] in
-  let m = ref 0 in
-  Array.iteri (fun n a ->
-    match a with
-    | Some a' -> j.(n) <- a'
-    | None    -> (k := Array.append !k [|n|]; m := !m + 1)
-  ) i;
-  let k = !k in
-  iteri (fun i' a ->
-    Array.iteri (fun m n -> j.(k.(m)) <- n) i';
-    set dst j a
-  ) src
 *)
+
+let rec _iteri_slice index axis f x =
+  if Array.length axis = 0 then (
+    f index (Owl_slicing.slice_array_typ index x)
+  )
+  else (
+    let s = shape x in
+    for i = 0 to s.(axis.(0)) - 1 do
+      index.(axis.(0)) <- [|i|];
+      _iteri_slice index (Array.sub axis 1 (Array.length axis - 1)) f x
+    done
+  )
+
+let iteri_slice axis f x =
+  if Array.length axis > num_dims x then
+    failwith "iteri_slice: invalid indices";
+  let index = Array.make (num_dims x) [||] in
+  _iteri_slice index axis f x
+
+let iter_slice axis f x = iteri_slice axis (fun _ y -> f y) x
+
 
 (* some comparison functions *)
 

@@ -129,9 +129,12 @@ let _foreach_continuous_blk d0 d1 axis f =
   ) axis;
   __foreach_continuous_blk d1 0 i l h s f
 
-let slice axis x =
-  (* convert from array to list *)
-  let axis = Owl_utils.llss2aarr axis in
+
+(* core slice function
+  axis: int array array, slice definition, format [start;stop;step]
+  x: ndarray
+ *)
+let slice_array_typ axis x =
   (* check axis is within boundary then re-format *)
   let s0 = shape x in
   let axis = check_slice_definition axis s0 in
@@ -195,6 +198,10 @@ let slice axis x =
       let z = Bigarray.reshape z s1 in
       z
     )
+
+
+(* same as slice_array_typ function but take list type as slice definition *)
+let slice_list_typ axis x = slice_array_typ (Owl_utils.llss2aarr axis) x
 
 
 (* ends here *)

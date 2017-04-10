@@ -136,9 +136,6 @@ val slice : int list list -> ('a, 'b) t -> ('a, 'b) t
   on arbitrary axis which need not start from left-most side.
  *)
 
-(* val copy_slice : int option array -> ('a, 'b) t -> ('a, 'b) t -> unit *)
-(** [copy_slice s src dst] copies a slice defined by [s] from [src] to [dst]. *)
-
 val copy : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [copy src dst] copies the data from ndarray [src] to [dst]. *)
 
@@ -250,18 +247,18 @@ val foldi : ?axis:int option array -> (int array -> 'c -> 'a -> 'c) -> 'c -> ('a
 val fold : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 (** Similar to [foldi], except that the index of an element is not passed to [f]. *)
 
-(* val iteri_slice : int array -> (int option array -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit *)
+val iteri_slice : int array -> (int array array -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 (** [iteri_slice s f x] iterates the slices along the passed in axes [s], and
   applies the function [f] to each of them. The order of iterating slices is
   based on the order of axis in [s].
 
   E.g., for a three-dimensional ndarray of shape [[|2;2;2|]], [iteri_slice [|1;0|] f x]
-  will access the slices in the following order: [[|Some 0; Some 0; None|]],
-  [[|Some 1; Some 0; None|]], [[|Some 1; Some 1; None|]]. Also note the slice
-  passed in [f] is a copy of the original data.
+  will access the slices in the following order: [[ [0]; [0]; [] ]],
+  [[ [1]; [0]; [] ]], [[ [1]; [1]; [] ]]. Also note the slice passed in [f] is
+  a copy of the original data.
  *)
 
-(* val iter_slice : int array -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit *)
+val iter_slice : int array -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 (** Similar to [iteri_slice], except that the index of a slice is not passed to [f]. *)
 
 val iter2i : (int array -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
@@ -844,6 +841,3 @@ val print_index : int array -> unit
 
 val _check_transpose_axis : int array -> int -> unit
 (** [_check_transpose_axis a d] checks whether [a] is a legiti('a, 'b) te transpose index. *)
-
-val _check_slice_axis : int option array -> int array -> unit
-(** [_check_slice_axis axis shape] checks whether [axis] is a legiti('a, 'b) te slice definition. *)

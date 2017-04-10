@@ -60,8 +60,6 @@ let slice_left x i = M.slice_left (unpack_box x) i |> pack_box
 
 let slice axis x = M.slice axis (unpack_box x) |> pack_box
 
-(* let copy_slice i src dst = M.copy_slice i (unpack_box src) (unpack_box dst) *)
-
 let copy src dst = M.copy (unpack_box src) (unpack_box dst)
 
 let fill x a = M.fill (unpack_box x) (unpack_elt a)
@@ -105,9 +103,9 @@ let foldi ?axis f a x = M.foldi ?axis f a (unpack_box x)
 
 let fold f a x = M.fold f a (unpack_box x)
 
-(* let iteri_slice axis f x = M.iteri_slice axis f (unpack_box x) *)
+let iteri_slice axis f x = M.iteri_slice axis f (unpack_box x)
 
-(* let iter_slice axis f x = M.iter_slice axis f (unpack_box x) *)
+let iter_slice axis f x = M.iter_slice axis f (unpack_box x)
 
 let iter2i f x y = M.iter2i f (unpack_box x) (unpack_box y)
 
