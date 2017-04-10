@@ -159,7 +159,7 @@ let slice_array_typ axis x =
   let sd = _calc_stride s0 in
   let _cp_op = _owl_copy (kind x) in
   let ofsy_i = ref 0 in
-  (* two copy strategy based on the size of the minimum continuous block *)
+  (* two copying strategies based on the size of the minimum continuous block *)
   match cb > 1 with
   | true  -> (
       (* yay, there are at least some continuous blocks *)
