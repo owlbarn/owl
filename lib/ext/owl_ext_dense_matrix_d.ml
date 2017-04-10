@@ -76,6 +76,8 @@ let reshape m n x = M.reshape m n (unpack_box x) |> pack_box
 
 let flatten x = M.flatten (unpack_box x) |> pack_box
 
+let slice axis x = M.slice axis (unpack_box x) |> pack_box
+
 let reverse x = M.reverse (unpack_box x) |> pack_box
 
 let fill x a = M.fill (unpack_box x) (unpack_elt a)

@@ -89,6 +89,8 @@ val reshape : int -> int -> mat -> mat
 
 val flatten : mat -> mat
 
+val slice : int list list -> mat -> mat
+
 val reverse : mat -> mat
 
 val reset : mat -> unit

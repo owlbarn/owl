@@ -203,6 +203,10 @@ let reverse x =
   let y = Owl_dense_ndarray_generic.reverse x in
   of_ndarray y
 
+let slice axis x =
+  let x = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.slice axis x in
+  of_ndarray y
 
 (* matrix iteration operations *)
 

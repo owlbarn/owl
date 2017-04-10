@@ -146,6 +146,12 @@ val flatten : ('a, 'b) t -> ('a, 'b) t
   Therefore the returned value shares the same memory space with original [x].
  *)
 
+val slice : int list list -> ('a, 'b) t -> ('a, 'b) t
+(** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
+  which is an [int option array]. Please refer to the same function in the
+  [Owl_dense_ndarray_generic] documentation for more details.
+ *)
+
 val reverse : ('a, 'b) t -> ('a, 'b) t
 (** [reverse x] reverse the order of all elements in the flattened [x] and
   returns the results in a new matrix. The original [x] remains intact.
