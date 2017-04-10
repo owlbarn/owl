@@ -579,7 +579,7 @@ Feedforward network
 (3): Activation layer: softmax
 ```
 
-How to train the defined network now? You only need two lines of code to load the dataset and start training.
+How to train the defined network now? You only need two lines of code to load the dataset and start training. By the way, calling `Dataset.download_all ()` will download all the data sets used in Owl (about 1GB uncompressed data).
 
 ```ocaml
 let x, _, y = Dataset.load_mnist_train_data () in
