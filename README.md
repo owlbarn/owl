@@ -465,12 +465,6 @@ let s4 = [ [1]; []; [2] ]    (* (1,*,2) *)
 ...
 ```
 
-With the slice definition above, we can iterate and map the elements in a slice. E.g., we add one to all the elements in slice `(0,*,*)`.
-
-```ocaml
-Arr.map ~axis:[ [0]; []; [] ] (fun a -> a +. 1.) x;;
-```
-
 `slice` function is very flexible, it basically has the same semantic as that in numpy. So you know how to index ndarray in numpy, you should be able to do the same thing in Owl. For advanced usage of `slice` fucntion, please refer to my separate tutorial. Some examples as as below.
 
 ```ocaml
@@ -479,6 +473,12 @@ let s = [ [1]; [0]; [-1;0;-1]; ];;
 let s = [ [1]; [0]; [-2;0]; ];;
 let s = [ [0]; [0;1]; [-2;0;-2]; ];;
 ...
+```
+
+With the slice definition above, we can iterate and map the elements in a slice. E.g., we add one to all the elements in slice `(0,*,*)`.
+
+```ocaml
+Arr.map ~axis:[ [0]; []; [] ] (fun a -> a +. 1.) x;;
 ```
 
 There are more functions to help you to iterate elements and slices in a ndarray: `iteri`, `iter`, `mapi`, `map`, `filteri`, `filter`, `foldi`, `fold`, `iteri_slice`, `iter_slice`, `iter2i`, `iter2`. Please refer to the documentation for their details.
