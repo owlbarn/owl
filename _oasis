@@ -87,6 +87,7 @@ Library owl
                     ### Topic models ###
                     topic/Owl_topic_lda,
                     topic/Owl_topic_lsa,
+                    topic/Owl_topic_corpus,
                     topic/Owl_topic_utils,
                     ### Experimental ###
                     ext/Owl_ext,
