@@ -79,8 +79,8 @@ let load_cifar_test_data () =
 (* load text data and stopwords *)
 let load_stopwords () =
   let p = local_data_path () in
-  Owl_topic_utils.load_stopwords (p ^ "stopwords.txt")
+  Owl_nlp_utils.load_stopwords (p ^ "stopwords.txt")
 
 let load_nips_train_data stopwords =
   let p = local_data_path () in
-  Owl_topic_utils.load_from_file ~stopwords (p ^ "nips.train")
+  Owl_nlp_utils.load_from_file ~stopwords (p ^ "nips.train")

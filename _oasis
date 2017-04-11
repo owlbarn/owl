@@ -84,11 +84,10 @@ Library owl
                     Owl_dataset,
                     Owl_slicing,
                     Owl_toplevel,
-                    ### Topic models ###
-                    topic/Owl_topic_lda,
-                    topic/Owl_topic_lsa,
-                    topic/Owl_topic_corpus,
-                    topic/Owl_topic_utils,
+                    ### NLP, Topic models ###
+                    nlp/Owl_nlp_lda,
+                    nlp/Owl_nlp_corpus,
+                    nlp/Owl_nlp_utils,
                     ### Experimental ###
                     ext/Owl_ext,
                     ext/Owl_ext_types,
