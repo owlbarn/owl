@@ -212,17 +212,16 @@ module Stack = struct
     mutable data : 'a array;
   }
 
-  let allocate_space x =
-    Log.info "allocate space, size : %i" (Array.length x);
-    Array.(append x (copy x))
+  let allocate_space x = Array.(append x (copy x))
 
-  let make l a = {
+  let make () = {
     used = 0;
-    size = l;
-    data = Array.make l a;
+    size = 0;
+    data = [||];
   }
 
   let push s x =
+    if s.size = 0 then s.data <- [|x|];
     if s.used = s.size then (
       s.data <- allocate_space s.data;
       s.size <- Array.length s.data;

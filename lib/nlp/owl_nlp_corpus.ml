@@ -6,7 +6,7 @@
 let default_punctuation = [|"."; ","; ":"; ";"; "("; ")"; "!"; "?"|]
 
 type t = {
-  mutable uri = string;
+  mutable uri : string;
 }
 
 let _allocate_space x =
@@ -66,7 +66,7 @@ let iteri_lines_of_file ?(verbose=true) f fname =
 
 
 let mapi_lines_of_file f fname =
-  let stack = Owl_utils.Stack.make 1024 "" in
+  let stack = Owl_utils.Stack.make () in
   iteri_lines_of_file (fun i s ->
     Owl_utils.Stack.push stack (f i s)
   ) fname;
@@ -75,7 +75,7 @@ let mapi_lines_of_file f fname =
 
 let num_doc fname =
   let n = ref 0 in
-  iteri_lines_of_file (fun i _ -> n := i);
+  iteri_lines_of_file (fun i _ -> n := i) fname;
   !n + 1
 
 
@@ -105,9 +105,9 @@ module Vocabulary = struct
     let l0 = float_of_int n *. lo |> int_of_float in
     let h0 = float_of_int n *. hi |> int_of_float in
     let lo = all_freq.(l0) in
-    let hi = all_freq.(n - h0) in
+    let hi = all_freq.(h0) in
     Hashtbl.filter_map_inplace (fun w freq ->
-      match freq > lo, freq < hi with
+      match freq >= lo, freq <= hi with
       | true, true -> Some freq
       | _          -> None
     ) h
@@ -151,7 +151,6 @@ module Vocabulary = struct
       | None     -> ()
     );
     (* build w2i and i2w tables from trimmed w2f *)
-    Log.info "buidling ...";
     let w2i = Hashtbl.(create (length w2f)) in
     let i2w = Hashtbl.(create (length w2f)) in
     let i2f = Hashtbl.(create (length w2f)) in
@@ -162,7 +161,6 @@ module Vocabulary = struct
       Hashtbl.add i2f !i f;
       i := !i + 1;
     ) w2f;
-    Log.info "done ...";
     { w2i; i2w; i2f }
 
   let word2index d w = Hashtbl.find d.w2i w
@@ -207,6 +205,13 @@ module Vocabulary = struct
     Array.map (fun (i, freq) -> (index2word d i, freq))
 
 end
+
+
+let tokenise_all dict fname =
+  mapi_lines_of_file (fun _ s ->
+    Str.split (Str.regexp " ") s
+    |> List.map (Vocabulary.word2index dict)
+  ) fname
 
 
 
