@@ -85,7 +85,9 @@ Library owl
                     Owl_slicing,
                     Owl_toplevel,
                     ### NLP, Topic models ###
+                    nlp/Owl_nlp,
                     nlp/Owl_nlp_lda,
+                    nlp/Owl_nlp_tfidf,
                     nlp/Owl_nlp_corpus,
                     nlp/Owl_nlp_utils,
                     ### Experimental ###

@@ -5,6 +5,10 @@
 
 let default_punctuation = [|"."; ","; ":"; ";"; "("; ")"; "!"; "?"|]
 
+type t = {
+  mutable uri = string;
+}
+
 let _allocate_space x =
   Log.info "allocate more space";
   let l = Array.length x in
@@ -38,9 +42,9 @@ let load_from_file ?stopwords f =
   Array.sub !x 0 !c
 
 
-let iteri_lines_of_file ?(verbose=true) f file_name =
+let iteri_lines_of_file ?(verbose=true) f fname =
   let i = ref 0 in
-  let h = open_in file_name in
+  let h = open_in fname in
   (
     let t0 = Unix.gettimeofday () in
     let t1 = ref (Unix.gettimeofday ()) in
@@ -61,12 +65,18 @@ let iteri_lines_of_file ?(verbose=true) f file_name =
   close_in h
 
 
-let mapi_lines_of_file f file_name =
+let mapi_lines_of_file f fname =
   let stack = Owl_utils.Stack.make 1024 "" in
   iteri_lines_of_file (fun i s ->
     Owl_utils.Stack.push stack (f i s)
-  ) file_name;
+  ) fname;
   Owl_utils.Stack.to_array stack
+
+
+let num_doc fname =
+  let n = ref 0 in
+  iteri_lines_of_file (fun i _ -> n := i);
+  !n + 1
 
 
 (* module to process vocabulary in text corpus *)
@@ -115,9 +125,9 @@ module Vocabulary = struct
   (* return both word->index and index->word hashtbl
     lo: percentage of lower bound of word frequency
     hi: percentage of higher bound of word frequency
-    file_name: file name of the corpus, each line contains a doc
+    fname: file name of the corpus, each line contains a doc
    *)
-  let build_from_file ?(lo=0.) ?(hi=1.) ?stopwords file_name =
+  let build_from_file ?(lo=0.) ?(hi=1.) ?stopwords fname =
     let w2f = Hashtbl.create (64 * 1024) in
     let f s =
       Str.split (Str.regexp " ") s
@@ -130,7 +140,7 @@ module Vocabulary = struct
         | false -> Hashtbl.add w2f w 1
       )
     in
-    iteri_lines_of_file (fun _ s -> f s) file_name;
+    iteri_lines_of_file (fun _ s -> f s) fname;
     (* trim frequency if necessary *)
     if lo <> 0. || hi <> 1. then
       trim_freq lo hi w2f;
