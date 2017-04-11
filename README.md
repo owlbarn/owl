@@ -466,7 +466,7 @@ let s4 = [ [1]; []; [2] ]    (* (1,*,2) *)
 ...
 ```
 
-`slice` function is very flexible, it basically has the same semantic as that in numpy. So you know how to index ndarray in numpy, you should be able to do the same thing in Owl. For advanced usage of `slice` fucntion, please refer to my separate tutorial. Some examples as as below.
+`slice` function is very flexible, it basically has the same semantic as that in numpy. So you know how to index ndarray in numpy, you should be able to do the same thing in Owl. For advanced use of `slice` fucntion, please refer to my [separate tutorial](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Indexing-and-Slicing). Some examples as as below.
 
 ```ocaml
 let s = [ [1]; []; [-1;0;-1]; ];;
