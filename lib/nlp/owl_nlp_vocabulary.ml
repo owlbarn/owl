@@ -125,13 +125,13 @@ let sort_freq ?(inc=true) d =
   all_freq
 
 (* return k most popular words *)
-let top_k d k =
+let top d k =
   let all_freq = sort_freq ~inc:false d in
   Array.sub all_freq 0 k |>
   Array.map (fun (i, freq) -> (index2word d i, freq))
 
 (* return k least popular words *)
-let bottom_k d k =
+let bottom d k =
   let all_freq = sort_freq ~inc:true d in
   Array.sub all_freq 0 k |>
   Array.map (fun (i, freq) -> (index2word d i, freq))
