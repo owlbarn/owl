@@ -11,6 +11,10 @@ type t = {
   mutable i2f : (int, int) Hashtbl.t      (* index -> freq *)
 }
 
+let exits_w d w = Hashtbl.mem d.w2i w
+
+let exits_i d i = Hashtbl.mem d.i2w i
+
 let word2index d w = Hashtbl.find d.w2i w
 
 let index2word d i = Hashtbl.find d.i2w i

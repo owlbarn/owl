@@ -155,6 +155,14 @@ let iteri_lines_of_marshal ?(verbose=true) f fname =
   );
   close_in h
 
+(* similar to mapi_lines_of_file but for marshaled file *)
+let mapi_lines_of_marshal f fname =
+  let stack = Owl_utils.Stack.make () in
+  iteri_lines_of_marshal (fun i s ->
+    Owl_utils.Stack.push stack (f i s)
+  ) fname;
+  Owl_utils.Stack.to_array stack
+
 
 
 (* ends here *)

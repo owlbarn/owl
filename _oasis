@@ -87,6 +87,7 @@ Library owl
                     ### NLP, Topic models ###
                     nlp/Owl_nlp,
                     nlp/Owl_nlp_lda,
+                    nlp/Owl_nlp_lda0,
                     nlp/Owl_nlp_tfidf,
                     nlp/Owl_nlp_corpus,
                     nlp/Owl_nlp_vocabulary,

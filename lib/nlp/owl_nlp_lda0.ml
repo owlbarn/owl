@@ -9,11 +9,11 @@ open Owl
 open Bigarray
 
 module MS = Sparse.Dok_matrix
-module MD = Owl_dense_matrix_d
+module MD = Owl_dense_matrix_s
 
 type lda_typ = SimpleLDA | FTreeLDA | LightLDA | SparseLDA
-type dsmat = (float, float64_elt) Owl_dense_matrix_generic.t
-type spmat = (float, float64_elt) Owl_sparse_dok_matrix.t
+type dsmat = (float, float32_elt) Owl_dense_matrix_generic.t
+type spmat = (float, float32_elt) Owl_sparse_dok_matrix.t
 
 type model = {
   mutable n_d : int;                      (* number of documents *)
@@ -31,7 +31,7 @@ type model = {
   mutable t__z : int array array;         (* table of topic assignment of each token in each document *)
 
   mutable iter : int;                     (* number of iterations *)
-  mutable data : int array array;         (* training data, tokenised *)
+  mutable data : Owl_nlp_corpus.t;        (* training data, tokenised*)
   mutable vocb : (string, int) Hashtbl.t; (* vocabulary, or dictionary if you prefer *)
 }
 
@@ -45,36 +45,8 @@ let exclude_token m w d k =
   MS.(set m.t_wk w k (get m.t_wk w k -. 1.));
   MD.(set m.t_dk d k (get m.t_dk d k -. 1.))
 
-let likelihood m =
-  let _sum = ref 0. in
-  let n_token = ref 0 in
-  (* every document *)
-  for i = 0 to m.n_d - 1 do
-    let dlen = Array.length m.t__z.(i) in
-    n_token := !n_token + dlen;
-    let dsum = ref 0. in
-    (* every token *)
-    for j = 0 to dlen - 1 do
-      let wsum = ref 0. in
-      let w = m.data.(i).(j) in
-      (* every topic *)
-      for k = 0 to m.n_k - 1 do
-        wsum := !wsum +. (MD.get m.t_dk i k +. m.alpha_k) *. (MS.get m.t_wk w k +. m.beta) /. (MD.get m.t__k 0 k +. m.beta_v);
-      done;
-      dsum := !dsum +. (Maths.log2 !wsum);
-    done;
-    let dlen = float_of_int dlen in
-    _sum := !_sum +. !dsum -. dlen *. (Maths.log2 dlen);
-  done;
-  !_sum /. (float_of_int !n_token)
-
 let show_info m i t =
-  let s = match i mod 1 = 0 with
-    | true  -> Printf.sprintf "likelihood:%.3f" (likelihood m)
-    | false -> ""
-  in
-  Log.info "iter#%i t(s):%.1f t_dk:%.3f t_wk:%.3f %s" i t (MD.density m.t_dk) (MS.density m.t_wk) s
-
+  Log.info "iter#%i t(s):%.1f t_dk:%.3f t_wk:%.3f" i t (MD.density m.t_dk) (MS.density m.t_wk)
 
 (* implement several LDA with specific samplings *)
 
@@ -82,7 +54,7 @@ module SimpleLDA = struct
 
   let init m = ()
 
-  let sampling m d =
+  let sampling m d doc =
     let p = MD.zeros 1 m.n_k in
     Array.iteri (fun i w ->
       let k = m.t__z.(d).(i) in
@@ -99,7 +71,7 @@ module SimpleLDA = struct
       while (MD.get p 0 !k) < u do k := !k + 1 done;
       include_token m w d !k;
       m.t__z.(d).(i) <- !k;
-    ) m.data.(d)
+    ) doc
 
 end
 
@@ -163,7 +135,7 @@ module SparseLDA = struct
     q_non_zero := (Hashtbl.create m.n_k);
     s := !s *. (m.alpha_k *. m.beta)
 
-  let sampling m d =
+  let sampling m d doc =
     let k = ref 0 in
     let r = ref 0. in (* Cache of r *)
     (* Calculate r *)
@@ -238,7 +210,7 @@ module SparseLDA = struct
         );
         include_token_sparse m w d !k s r q;
         m.t__z.(d).(i) <- !k;
-      ) m.data.(d)
+      ) doc
 end
 
 
@@ -246,7 +218,7 @@ module FTreeLDA = struct
 
   let init m = ()
 
-  let sampling m d = ()
+  let sampling m d doc = ()
 
 end
 
@@ -255,7 +227,7 @@ module LightLDA = struct
 
   let init m = ()
 
-  let sampling m d = ()
+  let sampling m d doc = ()
 
 end
 
@@ -264,7 +236,7 @@ end
 let init ?(iter=100) k v d =
   Log.info "init the model";
   (* set basic model stats *)
-  let n_d = Array.length d in
+  let n_d = Owl_nlp_corpus.num_doc d in
   let n_v = Hashtbl.length v in
   let n_k = k in
   (* set model hyper-parameters *)
@@ -274,7 +246,7 @@ let init ?(iter=100) k v d =
   let beta_v = (float_of_int n_v) *. beta in
   (* init model parameters *)
   let t_dk = MD.zeros n_d n_k in
-  let t_wk = MS.zeros float64 n_v n_k in
+  let t_wk = MS.zeros float32 n_v n_k in
   let t__k = MD.zeros 1 n_k in
   (* set document data and vocabulary *)
   let data = d in
@@ -298,7 +270,7 @@ let init ?(iter=100) k v d =
   }
   in
   (* randomise the topic assignment for each token *)
-  m.t__z <- Array.mapi (fun i s ->
+  m.t__z <- Owl_nlp_corpus.mapi_tokenised_docs (fun i s ->
     Array.init (Array.length s) (fun j ->
       let k' = Stats.Rnd.uniform_int ~a:0 ~b:(k - 1) () in
       include_token m s.(j) i k';
@@ -324,10 +296,11 @@ let train typ m =
   init m;
   for i = 0 to m.iter - 1 do
     let t0 = Unix.gettimeofday () in
-    for j = 0 to m.n_d - 1 do
+    Owl_nlp_corpus.iteri_tokenised_docs (
+      fun j doc ->
       (* Log.info "iteration #%i - doc#%i" i j; *)
-      sampling m j
-    done;
+      sampling m j doc
+    ) m.data;
     let t1 = Unix.gettimeofday () in
     show_info m i (t1 -. t0);
   done

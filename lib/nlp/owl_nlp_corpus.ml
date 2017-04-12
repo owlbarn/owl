@@ -96,6 +96,10 @@ let iteri_docs f corpus = iteri_lines_of_file f (get_text_uri corpus)
 
 let iteri_tokenised_docs f corpus = iteri_lines_of_marshal f (get_token_uri corpus)
 
+let mapi_docs f corpus = mapi_lines_of_file f (get_text_uri corpus)
+
+let mapi_tokenised_docs f corpus = mapi_lines_of_marshal f (get_token_uri corpus)
+
 
 (* reset all the file pointers at offest 0 *)
 let reset corpus =
@@ -111,7 +115,9 @@ let reset corpus =
 let tokenise_mem dict fname =
   mapi_lines_of_file (fun _ s ->
     Str.split (Str.regexp " ") s
+    |> List.filter (Owl_nlp_vocabulary.exits_w dict)
     |> List.map (Owl_nlp_vocabulary.word2index dict)
+    |> Array.of_list
   ) fname
 
 
@@ -120,6 +126,7 @@ let tokenise_file dict fi_name fo_name =
   let fo = open_out fo_name in
   iteri_lines_of_file (fun _ s ->
     let t = Str.split (Str.regexp " ") s
+      |> List.filter (Owl_nlp_vocabulary.exits_w dict)
       |> List.map (Owl_nlp_vocabulary.word2index dict)
       |> Array.of_list
     in
