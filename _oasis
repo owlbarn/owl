@@ -89,6 +89,7 @@ Library owl
                     nlp/Owl_nlp_lda,
                     nlp/Owl_nlp_tfidf,
                     nlp/Owl_nlp_corpus,
+                    nlp/Owl_nlp_vocabulary,
                     nlp/Owl_nlp_utils,
                     ### Experimental ###
                     ext/Owl_ext,

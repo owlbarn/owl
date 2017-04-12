@@ -6,4 +6,9 @@
 
 let build_from_file file_name = None
 
-let calc_idf = None
+let doc_freq d tl =
+  let n = Owl_nlp_vocabulary.size d in
+  let df = Hashtbl.create n in
+  List.iteri (fun i tokens ->
+
+  ) tl

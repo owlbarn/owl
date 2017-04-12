@@ -95,3 +95,43 @@ let save_lda_model m f =
 let load_lda_model f =
   Log.info "load LDA model";
   Owl_utils.marshal_from_file (f ^ ".model")
+
+(* recent core functions *)
+
+
+(* iterate every doc in the corpus without loading the whole corpus in the
+  memory, then apply passed in function f. note that each line is a doc.
+ *)
+let iteri_lines_of_file ?(verbose=true) f fname =
+  let i = ref 0 in
+  let h = open_in fname in
+  (
+    let t0 = Unix.gettimeofday () in
+    let t1 = ref (Unix.gettimeofday ()) in
+    try while true do
+      f !i (input_line h);
+      i := !i + 1;
+      (* output summary if in verbose mode *)
+      if verbose = true then (
+        let t2 = Unix.gettimeofday () in
+        if t2 -. !t1 > 5. then (
+          t1 := t2;
+          let speed = float_of_int !i /. (t2 -. t0) |> int_of_float in
+          Log.info "processed %i, avg. %i docs/s" !i speed
+        )
+      )
+    done with End_of_file -> ()
+  );
+  close_in h
+
+(* map every doc in the corpus into another type *)
+let mapi_lines_of_file f fname =
+  let stack = Owl_utils.Stack.make () in
+  iteri_lines_of_file (fun i s ->
+    Owl_utils.Stack.push stack (f i s)
+  ) fname;
+  Owl_utils.Stack.to_array stack
+
+
+
+(* ends here *)
