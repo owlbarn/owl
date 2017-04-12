@@ -90,7 +90,7 @@ let num_doc corpus =
 
 let next_doc corpus : string = corpus |> get_text_h |> input_line
 
-let next_tokenised_doc corpus : int list = corpus |> get_token_h |> Marshal.from_channel
+let next_tokenised_doc corpus : int array = corpus |> get_token_h |> Marshal.from_channel
 
 let iteri_docs f corpus = iteri_lines_of_file f (get_text_uri corpus)
 
@@ -121,6 +121,7 @@ let tokenise_file dict fi_name fo_name =
   iteri_lines_of_file (fun _ s ->
     let t = Str.split (Str.regexp " ") s
       |> List.map (Owl_nlp_vocabulary.word2index dict)
+      |> Array.of_list
     in
     Marshal.to_channel fo t [];
   ) fi_name;
