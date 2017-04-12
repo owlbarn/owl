@@ -7,7 +7,6 @@
 let build_from_file file_name = None
 
 let doc_freq d tl =
-  Log.info "start doc_freq ...";
   let n = Owl_nlp_vocabulary.size d in
   let df = Hashtbl.create n in
   let _h = Hashtbl.create 1024 in
@@ -26,5 +25,4 @@ let doc_freq d tl =
       | false -> Hashtbl.add df token 0
     ) _h
   ) tl;
-  Log.info "done ...";
   df
