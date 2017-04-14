@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(* weird, I need to initialise this again? *)
 let _ = Log.color_on (); Log.(set_log_level INFO)
 
 type t = {
