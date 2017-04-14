@@ -165,6 +165,9 @@ let mapi_lines_of_marshal f fname =
   ) fname;
   Owl_utils.Stack.to_array stack
 
+(* TODO: perform simple processing of the passed in string *)
+let simple_process s = s
+
 
 
 (* ends here *)

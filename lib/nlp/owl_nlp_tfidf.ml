@@ -7,14 +7,18 @@
 let _ = Log.color_on (); Log.(set_log_level INFO)
 
 type t = {
-  mutable doc_freq : float array;      (* document frequency *)
-  mutable corpus   : Owl_nlp_corpus.t  (* corpus type *)
+  mutable model_uri : string;          (* file path of the model *)
+  mutable doc_freq  : float array;      (* document frequency *)
+  mutable corpus    : Owl_nlp_corpus.t  (* corpus type *)
 }
 
-let create corpus = {
-  doc_freq = [||];
-  corpus;
-}
+let create corpus =
+  let text_uri = Owl_nlp_corpus.get_text_uri corpus in
+  {
+    model_uri = text_uri ^ ".tfidf";
+    doc_freq = [||];
+    corpus;
+  }
 
 (* calculate document frequency of all words, also return the number of docs *)
 let doc_freq vocab fname =
@@ -57,12 +61,14 @@ let doc_freq_of m w =
   m: empty tf-idf model;
   f: function to calculate tf-idf value;
  *)
-let _build_with m f fname =
+let _build_with m f =
   let vocab = Owl_nlp_corpus.get_vocabulary m.corpus in
   let tfile = Owl_nlp_corpus.get_token_uri m.corpus in
+  let fname = m.model_uri in
 
   Log.info "calculate document frequency ...";
   let d_f, n_d = doc_freq vocab tfile in
+  Owl_nlp_corpus.set_num_doc m.corpus n_d;
   let n_d = float_of_int n_d in
   m.doc_freq <- d_f;
 
@@ -72,7 +78,6 @@ let _build_with m f fname =
   let fo = open_out fname in
 
   Owl_nlp_utils.iteri_lines_of_marshal (fun i doc ->
-
     term_freq _h doc;
     let tfs = Array.make (Hashtbl.length _h) (0,0.) in
     let i = ref 0 in
@@ -88,12 +93,36 @@ let _build_with m f fname =
   ) tfile;
   close_out fo
 
-let build m =
+let build corpus =
   let f t_f d_f n_d = t_f *. log (n_d /. (1. +. d_f))
   in
-  let corpus_name = Owl_nlp_corpus.get_text_uri m.corpus in
-  let fname = corpus_name ^ ".tfidf" in
-  _build_with m f fname
+  let m = create corpus in
+  _build_with m f;
+  m
+
+(* convert a single document according to a given model *)
+let appy m doc =
+  (* FIXME *)
+  let f t_f d_f n_d = t_f *. log (n_d /. (1. +. d_f))
+  in
+  let n_d = Owl_nlp_corpus.get_num_doc m.corpus |> float_of_int in
+  let d_f = m.doc_freq in
+  let doc = Owl_nlp_corpus.tokenise_str m.corpus doc in
+  let _h = Hashtbl.create 1024 in
+  term_freq _h doc;
+  let tfs = Array.make (Hashtbl.length _h) (0,0.) in
+  let i = ref 0 in
+  Hashtbl.iter (fun w t_f ->
+    tfs.(!i) <- w, f t_f d_f.(w) n_d;
+    i := !i + 1;
+  ) _h;
+  tfs
+
+let save m f =
+  m.corpus <- Owl_nlp_corpus.copy_model m.corpus;
+  Owl_utils.marshal_to_file m f
+
+let load f : t = Owl_utils.marshal_from_file f
 
 
 (* ends here *)
