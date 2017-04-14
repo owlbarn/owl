@@ -6,3 +6,5 @@
 module Vocabulary = Owl_nlp_vocabulary
 
 module Corpus = Owl_nlp_corpus
+
+module Tfidf = Owl_nlp_tfidf

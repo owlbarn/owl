@@ -11,6 +11,10 @@ type t = {
   mutable i2f : (int, int) Hashtbl.t      (* index -> freq *)
 }
 
+let get_w2i d = d.w2i
+
+let get_i2w d = d.i2w
+
 let exits_w d w = Hashtbl.mem d.w2i w
 
 let exits_i d i = Hashtbl.mem d.i2w i
@@ -139,6 +143,9 @@ let bottom d k =
   let all_freq = sort_freq ~inc:true d in
   Array.sub all_freq 0 k |>
   Array.map (fun (i, freq) -> (index2word d i, freq))
+
+(* convert w2i to a list of tuples *)
+let w2i_to_tuples d = Hashtbl.fold (fun w i a -> (w,i) :: a) d.w2i []
 
 
 (* ends here *)

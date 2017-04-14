@@ -6,14 +6,8 @@
  *)
 
 open Owl
-open Bigarray
-
-module MS = Sparse.Dok_matrix
-module MD = Owl_dense_matrix_s
 
 type lda_typ = SimpleLDA | FTreeLDA | LightLDA | SparseLDA
-type dsmat = (float, float32_elt) Owl_dense_matrix_generic.t
-type spmat = (float, float32_elt) Owl_sparse_dok_matrix.t
 
 type model = {
   mutable n_d : int;                      (* number of documents *)

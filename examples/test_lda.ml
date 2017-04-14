@@ -18,10 +18,10 @@ open Owl_nlp
 let test_news_lda () =
   let s = Dataset.load_stopwords () in
   let x = Corpus.create "/Users/liang/owl_dataset/news.train" in
-  let v = Corpus.build_vocabulary ~stopwords:s x in
+  let v = Corpus.build_vocabulary ~stopwords:s x |> Vocabulary.get_w2i in
   let _ = Corpus.tokenise x in
   let _ = Corpus.save x "news.corpus" in
-  let m = Owl_nlp_lda0.init ~iter:20 1000 v.w2i x in
+  let m = Owl_nlp_lda0.init ~iter:20 1000 v x in
   Owl_nlp_lda0.(train SimpleLDA m)
 
 
@@ -35,8 +35,8 @@ let test_news_vocb () =
 
 let test () =
   let x = Corpus.load "news.corpus" in
-  let v = Corpus.get_vocabulary x in
-  let m = Owl_nlp_lda0.init ~iter:20 1000 v.w2i x in
+  let v = Corpus.get_vocabulary x |> Vocabulary.get_w2i in
+  let m = Owl_nlp_lda0.init ~iter:20 1000 v x in
   Owl_nlp_lda0.(train SimpleLDA m)
 
 let _ = test ()

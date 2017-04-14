@@ -254,6 +254,12 @@ Executable test_lstm
   MainIs:         test_lstm.ml
   BuildDepends:   owl, owl_neural
 
+Executable test_tfidf
+  Path:           examples
+  CompiledObject: best
+  MainIs:         test_tfidf.ml
+  BuildDepends:   owl
+
 # +-------------------------------------------------------------------+
 # | Document                                                          |
 # +-------------------------------------------------------------------+
