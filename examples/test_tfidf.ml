@@ -9,6 +9,9 @@ let _ =
   let _ = Corpus.build_vocabulary ~stopwords:s x in
   let _ = Corpus.tokenise x in
   Corpus.save x "news.corpus" *)
-  let x = Corpus.load "news.corpus" in
+
+  (* let x = Corpus.load "news.corpus" in
   let m = Tfidf.build x in
-  Tfidf.save m "news.tfidf"
+  Tfidf.save m "news.tfidf"*)
+
+  Corpus.build "/Users/liang/owl_dataset/news.train"

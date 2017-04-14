@@ -237,7 +237,7 @@ end
 let init ?(iter=100) k v d =
   Log.info "init the model";
   (* set basic model stats *)
-  let n_d = Owl_nlp_corpus.num_doc d in
+  let n_d = Owl_nlp_corpus.count_num_doc d in
   let n_v = Hashtbl.length v in
   let n_k = k in
   (* set model hyper-parameters *)

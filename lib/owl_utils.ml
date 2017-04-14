@@ -233,6 +233,10 @@ module Stack = struct
     | 0 -> None
     | i -> s.used <- i - 1; Some s.data.(i)
 
+  let peek s = match s.used with
+    | 0 -> None
+    | i -> Some s.data.(i)
+
   let to_array s = Array.sub s.data 0 s.used
 
 end

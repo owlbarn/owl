@@ -39,4 +39,5 @@ let test () =
   let m = Owl_nlp_lda0.init ~iter:20 1000 v x in
   Owl_nlp_lda0.(train SimpleLDA m)
 
+
 let _ = test ()

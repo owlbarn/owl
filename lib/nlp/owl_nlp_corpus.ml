@@ -86,7 +86,7 @@ let get_num_doc corpus = corpus.num_doc
 
 let set_num_doc corpus n = corpus.num_doc <- n
 
-let num_doc corpus =
+let count_num_doc corpus =
   let n = ref 0 in
   let uri = get_text_uri corpus in
   Owl_nlp_utils.iteri_lines_of_file (fun i _ -> n := i) uri;
@@ -162,6 +162,53 @@ let build_vocabulary ?lo ?hi ?stopwords corpus =
   let d = Owl_nlp_vocabulary.build_from_file ?lo ?hi ?stopwords fname in
   corpus.vocabulary <- Some d;
   d
+
+
+(* convert corpus into binary format, build dictionary, tokenise *)
+let build ?lo ?hi ?stopwords fname =
+  Log.info "build up vocabulary ...";
+  let vocab = Owl_nlp_vocabulary.build_from_file ?lo ?hi ?stopwords fname in
+
+  (* prepare the output file *)
+  let bin_f = fname ^ ".bin" |> open_out in
+  let tok_f = fname ^ ".tok" |> open_out in
+  set_binary_mode_out bin_f true;
+  set_binary_mode_out tok_f true;
+
+  (* initalise the offset array *)
+  let b_ofs = Owl_utils.Stack.make () in
+  let t_ofs = Owl_utils.Stack.make () in
+  Owl_utils.Stack.push b_ofs 0;
+  Owl_utils.Stack.push t_ofs 0;
+
+  (* binarise and tokenise at the same time *)
+  Log.info "convert to binary and tokenise ...";
+  iteri_lines_of_file (fun i s ->
+
+    let t = Str.split (Str.regexp " ") s
+      |> List.filter (Owl_nlp_vocabulary.exits_w vocab)
+      |> List.map (Owl_nlp_vocabulary.word2index vocab)
+      |> Array.of_list
+    in
+    Marshal.to_channel bin_f s [];
+    Marshal.to_channel tok_f t [];
+
+    Owl_utils.Stack.push b_ofs (LargeFile.pos_out bin_f |> Int64.to_int);
+    Owl_utils.Stack.push t_ofs (LargeFile.pos_out tok_f |> Int64.to_int);
+
+  ) fname;
+
+  (* save index file *)
+  let idx_f = fname ^ ".idx" |> open_out in
+  let b_ofs = Owl_utils.Stack.to_array b_ofs in
+  let t_ofs = Owl_utils.Stack.to_array t_ofs in
+  Marshal.to_channel idx_f (b_ofs, t_ofs) [];
+
+  (* done, close the files *)
+  close_out bin_f;
+  close_out tok_f;
+  close_out idx_f
+
 
 
 (* i/o: save and load corpus *)
