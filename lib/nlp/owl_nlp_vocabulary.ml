@@ -29,9 +29,6 @@ let freq_i d i = Hashtbl.find d.i2f i
 
 let freq_w d w = w |> word2index d |> freq_i d
 
-let save d fname = Owl_utils.marshal_to_file d fname
-
-let load fname : t = Owl_utils.marshal_from_file fname
 
 (* remove extremely low and high frequency words
   lo: the percentage of lower bound
@@ -146,6 +143,23 @@ let bottom d k =
 
 (* convert w2i to a list of tuples *)
 let w2i_to_tuples d = Hashtbl.fold (fun w i a -> (w,i) :: a) d.w2i []
+
+
+(* I/O functions *)
+
+let save d fname = Owl_utils.marshal_to_file d fname
+
+let load fname : t = Owl_utils.marshal_from_file fname
+
+let save_txt d fname =
+  let fh = open_out fname in
+  let vl = w2i_to_tuples d in
+  List.fast_sort (fun x y -> String.compare (fst x) (fst y)) vl
+  |> List.iter (fun (w,i) ->
+    let s = Printf.sprintf "%s %i\n" w i in
+    output_bytes fh s
+  );
+  close_out fh
 
 
 (* ends here *)

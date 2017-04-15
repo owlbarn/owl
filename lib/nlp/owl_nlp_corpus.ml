@@ -202,6 +202,14 @@ let load f : t =
   get_vocab corpus  |> ignore;
   corpus
 
+let save_txt corpus f =
+  let fh = open_out f in
+  iteri (fun i s ->
+    output_bytes fh s;
+    output_char fh '\n';
+  ) corpus;
+  close_out fh
+
 let to_string corpus =
   Printf.sprintf "corpus info\n" ^
   Printf.sprintf "  file path  : %s\n" (corpus |> get_uri) ^

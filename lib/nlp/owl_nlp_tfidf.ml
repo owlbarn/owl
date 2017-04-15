@@ -169,7 +169,7 @@ let iteri f m = iteri_lines_of_marshal f m.uri
 
 let mapi f m = mapi_lines_of_marshal f m.uri
 
-let get m i =
+let get m i : (int * float) array =
   let fh = open_in m.uri in
   seek_in fh m.offset.(i);
   let doc =  Marshal.from_channel fh in
