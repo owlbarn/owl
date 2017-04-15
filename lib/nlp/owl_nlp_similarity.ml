@@ -22,7 +22,10 @@ let cosine_distance x y =
   let z = Vec.(dot x (transpose y)) in
   -.(Vec.get z 0)
 
-let euclidean_distance x y = Vec.(sub x y |> l2norm_sqr)
+let euclidean_distance x y =
+  let x = Vec.(div_scalar x (l2norm x)) in
+  let y = Vec.(div_scalar y (l2norm y)) in
+  Vec.(sub x y |> l2norm_sqr)
 
 let kl_distance x y = 0.
 

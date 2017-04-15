@@ -12,6 +12,7 @@ type t = {
   mutable bin_fh  : in_channel option;            (* file descriptor of the binary corpus *)
   mutable tok_fh  : in_channel option;            (* file descriptor of the tokenised corpus *)
   mutable vocab   : Owl_nlp_vocabulary.t option;  (* vocabulary of the corpus *)
+  mutable minlen  : int;                          (* minimum length of document to save *)
 }
 
 let _close_if_open = function
@@ -27,7 +28,7 @@ let cleanup x =
   _close_if_open x.bin_fh;
   _close_if_open x.tok_fh
 
-let create uri bin_ofs tok_ofs bin_fh tok_fh vocab =
+let create uri bin_ofs tok_ofs bin_fh tok_fh vocab minlen =
   let x = {
     uri;
     bin_ofs;
@@ -35,6 +36,7 @@ let create uri bin_ofs tok_ofs bin_fh tok_fh vocab =
     bin_fh;
     tok_fh;
     vocab;
+    minlen;
   }
   in
   Gc.finalise cleanup x;
@@ -120,7 +122,7 @@ let tokenise corpus s =
 
 
 (* convert corpus into binary format, build dictionary, tokenise *)
-let build ?lo ?hi ?stopwords fname =
+let build ?stopwords ?lo ?hi ?(minlen=10) fname =
   (* build and save the vocabulary *)
   Log.info "build up vocabulary ...";
   let vocab = Owl_nlp_vocabulary.build ?lo ?hi ?stopwords fname in
@@ -147,11 +149,14 @@ let build ?lo ?hi ?stopwords fname =
       |> List.map (Owl_nlp_vocabulary.word2index vocab)
       |> Array.of_list
     in
-    Marshal.to_channel bin_f s [];
-    Marshal.to_channel tok_f t [];
+    (* only save those having at least minlen words *)
+    if Array.length t >= minlen then (
+      Marshal.to_channel bin_f s [];
+      Marshal.to_channel tok_f t [];
 
-    Owl_utils.Stack.push b_ofs (LargeFile.pos_out bin_f |> Int64.to_int);
-    Owl_utils.Stack.push t_ofs (LargeFile.pos_out tok_f |> Int64.to_int);
+      Owl_utils.Stack.push b_ofs (LargeFile.pos_out bin_f |> Int64.to_int);
+      Owl_utils.Stack.push t_ofs (LargeFile.pos_out tok_f |> Int64.to_int);
+    );
 
   ) fname;
 
@@ -159,7 +164,7 @@ let build ?lo ?hi ?stopwords fname =
   let dat_f = fname ^ ".dat" |> open_out in
   let b_ofs = Owl_utils.Stack.to_array b_ofs in
   let t_ofs = Owl_utils.Stack.to_array t_ofs in
-  let corpus = create fname b_ofs t_ofs None None None in
+  let corpus = create fname b_ofs t_ofs None None None minlen in
   Marshal.to_channel dat_f corpus [];
 
   (* done, close the files *)
@@ -183,6 +188,7 @@ let reduce_model corpus = {
   bin_fh  = None;
   tok_fh  = None;
   vocab   = None;
+  minlen  = corpus.minlen;
 }
 
 let save corpus f =
@@ -198,8 +204,9 @@ let load f : t =
 
 let to_string corpus =
   Printf.sprintf "corpus info\n" ^
-  Printf.sprintf "  file path : %s\n" (corpus |> get_uri) ^
-  Printf.sprintf "  # of docs : %i\n" (corpus |> length)
+  Printf.sprintf "  file path  : %s\n" (corpus |> get_uri) ^
+  Printf.sprintf "  # of docs  : %i\n" (corpus |> length) ^
+  Printf.sprintf "  doc minlen : %i" (corpus.minlen)
 
 let print corpus = corpus |> to_string |> print_endline
 

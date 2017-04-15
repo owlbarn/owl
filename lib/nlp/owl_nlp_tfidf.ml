@@ -221,6 +221,7 @@ let doc_to_vec m x =
   Array.iter (fun (i, a) -> Vec.set v i a) x;
   v
 
+(* calculate pairwise distance for the whole model, format (id,dist) *)
 let all_pairwise_distance typ m x =
   let dist_fun = Owl_nlp_similarity.distance typ in
   let x = doc_to_vec m x in
@@ -232,6 +233,7 @@ let all_pairwise_distance typ m x =
   Array.sort (fun a b -> Pervasives.compare (fst a) (fst b)) l;
   l
 
+(* k-nearest neighbour, very slow due to linear search *)
 let linear_search ?(typ=Owl_nlp_similarity.Cosine) m x k =
   let l = all_pairwise_distance typ m x in
   Array.sub l 0 k
