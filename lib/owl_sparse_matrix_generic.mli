@@ -474,6 +474,10 @@ val neg : ('a, 'b) t ->('a, 'b) t
   that in the original matrix [x].
  *)
 
+val l1norm : (float, 'b) t -> float
+
+val l2norm : (float, 'b) t -> float
+
 
 (** {6 Binary mathematical operations } *)
 

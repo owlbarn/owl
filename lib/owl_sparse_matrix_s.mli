@@ -246,6 +246,10 @@ val abs : mat -> mat
 
 val neg : mat -> mat
 
+val l1norm : mat -> elt
+
+val l2norm : mat -> elt
+
 
 (** {6 Binary mathematical operations } *)
 

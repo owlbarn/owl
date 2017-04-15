@@ -205,16 +205,25 @@ let load f : t = Owl_utils.marshal_from_file f
 
 let to_string m =
   Printf.sprintf "TfIdf model\n" ^
-  Printf.sprintf "  uri       : %s\n" m.uri ^
-  Printf.sprintf "  tf_type   : %s\n" (m.tf_typ |> tf_typ_string) ^
-  Printf.sprintf "  df_type   : %s\n" (m.df_typ |> df_typ_string) ^
-  Printf.sprintf "  # of docs : %i" (length m) ^
+  Printf.sprintf "  uri        : %s\n" m.uri ^
+  Printf.sprintf "  tf_type    : %s\n" (m.tf_typ |> tf_typ_string) ^
+  Printf.sprintf "  df_type    : %s\n" (m.df_typ |> df_typ_string) ^
+  Printf.sprintf "  # of docs  : %i\n" (length m) ^
+  Printf.sprintf "  # of vocab : %i" (vocab_len m) ^
   ""
 
 let print m = m |> to_string |> print_endline
 
 
 (* experimental functions *)
+
+(* percentage of non-zero elements in doc-term matrix *)
+let density m =
+  let n_d = length m |> float_of_int in
+  let n_t = vocab_len m |> float_of_int in
+  let nnz = ref 0 in
+  iteri (fun _ _ -> nnz := !nnz + 1) m;
+  (float_of_int !nnz) /. (n_d *. n_t)
 
 let doc_to_vec m x =
   let v = Vec.zeros (vocab_len m) in
@@ -234,7 +243,7 @@ let all_pairwise_distance typ m x =
   l
 
 (* k-nearest neighbour, very slow due to linear search *)
-let linear_search ?(typ=Owl_nlp_similarity.Cosine) m x k =
+let nearest ?(typ=Owl_nlp_similarity.Cosine) m x k =
   let l = all_pairwise_distance typ m x in
   Array.sub l 0 k
 

@@ -406,6 +406,10 @@ let power_scalar x c =
   let _op = Owl_dense_common._power_scalar_elt (kind x) in
   map (fun y -> (_op) y c) x
 
+let l1norm x = x |> abs |> sum
+
+let l2norm x = mul x x |> sum |> sqrt
+
 (** permutation and draw functions *)
 
 let permutation_matrix k d =
