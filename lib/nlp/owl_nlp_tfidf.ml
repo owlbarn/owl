@@ -38,6 +38,16 @@ let doc_freq = function
   | Idf        -> fun dc nd -> log (nd /. dc)
   | Idf_Smooth -> fun dc nd -> log (nd /. (1. +. dc))
 
+let tf_typ_string = function
+  | Binary    -> "binary"
+  | Count     -> "raw count"
+  | Frequency -> "frequency"
+  | Log_norm  -> "log normalised count"
+
+let df_typ_string = function
+  | Unary      -> "unary"
+  | Idf        -> "inverse frequency"
+  | Idf_Smooth -> "inverse frequency smooth"
 
 let create tf_typ df_typ corpus =
   let base_uri = Owl_nlp_corpus.get_uri corpus in
@@ -50,6 +60,7 @@ let create tf_typ df_typ corpus =
     corpus;
   }
 
+let get_corpus m = m.corpus
 
 (* calculate document frequency for a given word *)
 let doc_count_of m w =
@@ -103,11 +114,12 @@ let _build_with tf_fun df_fun m =
   m.doc_freq <- d_f;
 
   Log.info "calculate tf-idf ...";
+  let fo = open_out fname in
   (* buffer for calculate term frequency *)
   let _h = Hashtbl.create 1024 in
   (* variable for tracking the offest in output model *)
   let offset = Owl_utils.Stack.make () in
-  let fo = open_out fname in
+  Owl_utils.Stack.push offset 0;
 
   Owl_nlp_utils.iteri_lines_of_marshal (fun i doc ->
     (* first count terms in one doc *)
@@ -144,12 +156,18 @@ let build ?(tf=Count) ?(df=Idf) corpus =
   m
 
 
-(* iteration function *)
+(* random access and iteration function *)
 
 let iteri f m = iteri_lines_of_marshal f m.uri
 
 let mapi f m = mapi_lines_of_marshal f m.uri
 
+let get m i =
+  let fh = open_in m.uri in
+  seek_in fh m.offset.(i);
+  let doc =  Marshal.from_channel fh in
+  close_in fh;
+  doc
 
 (* convert a single document according to a given model *)
 let apply m doc =
@@ -178,5 +196,14 @@ let save m f =
 
 let load f : t = Owl_utils.marshal_from_file f
 
+let to_string m =
+  Printf.sprintf "TfIdf model\n" ^
+  Printf.sprintf "  uri       : %s\n" m.uri ^
+  Printf.sprintf "  tf_type   : %s\n" (m.tf_typ |> tf_typ_string) ^
+  Printf.sprintf "  df_type   : %s\n" (m.df_typ |> df_typ_string) ^
+  Printf.sprintf "  # of docs : %i" (Array.length m.offset - 1) ^
+  ""
+
+let print m = m |> to_string |> print_endline
 
 (* ends here *)

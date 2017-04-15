@@ -86,7 +86,7 @@ let mapi f corpus = mapi_lines_of_marshal f (get_bin_uri corpus)
 
 let mapi_tok f corpus = mapi_lines_of_marshal f (get_tok_uri corpus)
 
-let get_doc corpus i : string =
+let get corpus i : string =
   let fh = get_bin_fh corpus in
   let old_pos = pos_in fh in
   seek_in fh corpus.bin_ofs.(i);
@@ -94,7 +94,7 @@ let get_doc corpus i : string =
   seek_in fh old_pos;
   doc
 
-let get_tok_doc corpus i : int array =
+let get_tok corpus i : int array =
   let fh = get_tok_fh corpus in
   let old_pos = pos_in fh in
   seek_in fh corpus.tok_ofs.(i);
@@ -196,10 +196,11 @@ let load f : t =
   get_vocab corpus  |> ignore;
   corpus
 
-let print corpus =
+let to_string corpus =
   Printf.sprintf "corpus info\n" ^
-  Printf.sprintf "  file path  : %s\n" (corpus |> get_uri) ^
-  Printf.sprintf "  # of docs  : %i\n" (corpus |> length)
-  |> print_endline
+  Printf.sprintf "  file path : %s\n" (corpus |> get_uri) ^
+  Printf.sprintf "  # of docs : %i\n" (corpus |> length)
+
+let print corpus = corpus |> to_string |> print_endline
 
 (* ends here *)
