@@ -13,7 +13,7 @@ type t = {
 }
 
 let create corpus =
-  let text_uri = Owl_nlp_corpus.get_text_uri corpus in
+  let text_uri = Owl_nlp_corpus.get_uri corpus in
   {
     model_uri = text_uri ^ ".tfidf";
     doc_freq = [||];
@@ -53,7 +53,7 @@ let term_freq _h doc =
 
 (* calculate document frequency for a given word *)
 let doc_freq_of m w =
-  let v = Owl_nlp_corpus.get_vocabulary m.corpus in
+  let v = Owl_nlp_corpus.get_vocab m.corpus in
   let i = Owl_nlp_vocabulary.word2index v w in
   m.doc_freq.(i)
 
@@ -62,14 +62,13 @@ let doc_freq_of m w =
   f: function to calculate tf-idf value;
  *)
 let _build_with m f =
-  let vocab = Owl_nlp_corpus.get_vocabulary m.corpus in
-  let tfile = Owl_nlp_corpus.get_token_uri m.corpus in
+  let vocab = Owl_nlp_corpus.get_vocab m.corpus in
+  let tfile = Owl_nlp_corpus.get_tok_uri m.corpus in
   let fname = m.model_uri in
 
   Log.info "calculate document frequency ...";
   let d_f, n_d = doc_freq vocab tfile in
-  Owl_nlp_corpus.set_num_doc m.corpus n_d;
-  let n_d = float_of_int n_d in
+  let n_d = Owl_nlp_corpus.length m.corpus |> float_of_int in
   m.doc_freq <- d_f;
 
   Log.info "calculate tf-idf ...";
@@ -105,9 +104,9 @@ let appy m doc =
   (* FIXME *)
   let f t_f d_f n_d = t_f *. log (n_d /. (1. +. d_f))
   in
-  let n_d = Owl_nlp_corpus.get_num_doc m.corpus |> float_of_int in
+  let n_d = Owl_nlp_corpus.length m.corpus |> float_of_int in
   let d_f = m.doc_freq in
-  let doc = Owl_nlp_corpus.tokenise_str m.corpus doc in
+  let doc = Owl_nlp_corpus.tokenise m.corpus doc in
   let _h = Hashtbl.create 1024 in
   term_freq _h doc;
   let tfs = Array.make (Hashtbl.length _h) (0,0.) in
@@ -119,7 +118,7 @@ let appy m doc =
   tfs
 
 let save m f =
-  m.corpus <- Owl_nlp_corpus.copy_model m.corpus;
+  m.corpus <- Owl_nlp_corpus.reduce_model m.corpus;
   Owl_utils.marshal_to_file m f
 
 let load f : t = Owl_utils.marshal_from_file f

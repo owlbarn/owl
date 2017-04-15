@@ -237,7 +237,7 @@ end
 let init ?(iter=100) k v d =
   Log.info "init the model";
   (* set basic model stats *)
-  let n_d = Owl_nlp_corpus.count_num_doc d in
+  let n_d = Owl_nlp_corpus.length d in
   let n_v = Hashtbl.length v in
   let n_k = k in
   (* set model hyper-parameters *)
@@ -271,7 +271,7 @@ let init ?(iter=100) k v d =
   }
   in
   (* randomise the topic assignment for each token *)
-  m.t__z <- Owl_nlp_corpus.mapi_tokenised_docs (fun i s ->
+  m.t__z <- Owl_nlp_corpus.mapi_tok_docs (fun i s ->
     Array.init (Array.length s) (fun j ->
       let k' = Stats.Rnd.uniform_int ~a:0 ~b:(k - 1) () in
       include_token m s.(j) i k';
@@ -297,7 +297,7 @@ let train typ m =
   init m;
   for i = 0 to m.iter - 1 do
     let t0 = Unix.gettimeofday () in
-    Owl_nlp_corpus.iteri_tokenised_docs (
+    Owl_nlp_corpus.iteri_tok_docs (
       fun j doc ->
       (* Log.info "iteration #%i - doc#%i" i j; *)
       sampling m j doc

@@ -6,12 +6,12 @@
 open Owl_nlp_utils
 
 type t = {
-  mutable text_uri   : string option;       (* path of the text corpus *)
-  mutable text_h     : in_channel option;   (* file handle of the corpus *)
-  mutable token_uri  : string option;       (* path of the tokenised corpus *)
-  mutable token_h    : in_channel option;   (* file handle of the tokens *)
-  mutable vocabulary : Owl_nlp_vocabulary.t option; (* vocabulary *)
-  mutable num_doc    : int;                 (* number of documents in the corpus *)
+  mutable uri     : string;                       (* path of the binary corpus *)
+  mutable bin_ofs : int array;                    (* index of the string corpus *)
+  mutable tok_ofs : int array;                    (* index of the tokenised corpus *)
+  mutable bin_fh  : in_channel option;            (* file descriptor of the binary corpus *)
+  mutable tok_fh  : in_channel option;            (* file descriptor of the tokenised corpus *)
+  mutable vocab   : Owl_nlp_vocabulary.t option;  (* vocabulary of the corpus *)
 }
 
 let _close_if_open = function
@@ -24,88 +24,67 @@ let _open_if_exists f =
   | false -> None
 
 let cleanup x =
-  _close_if_open x.text_h;
-  _close_if_open x.token_h
+  _close_if_open x.bin_fh;
+  _close_if_open x.tok_fh
 
-let empty () =
+let create uri bin_ofs tok_ofs bin_fh tok_fh vocab =
   let x = {
-    text_uri   = None;
-    text_h     = None;
-    token_uri  = None;
-    token_h    = None;
-    vocabulary = None;
-    num_doc    = 0;
+    uri;
+    bin_ofs;
+    tok_ofs;
+    bin_fh;
+    tok_fh;
+    vocab;
   }
   in
   Gc.finalise cleanup x;
   x
 
-let create fname =
-  let x = {
-    text_uri   = Some fname;
-    text_h     = _open_if_exists fname;
-    token_uri  = Some (fname ^ ".token");
-    token_h    = _open_if_exists (fname ^ ".token");
-    vocabulary = None;
-    num_doc    = 0;
-  }
-  in
-  Gc.finalise cleanup x;
-  x
+let get_uri corpus = corpus.uri
 
-let get_text_uri corpus =
-  match corpus.text_uri with
-  | Some x -> x
-  | None   -> failwith "get_uri: no text_uri has been defined"
+let get_bin_uri corpus = corpus.uri ^ ".bin"
 
-let get_text_h corpus =
-  match corpus.text_h with
+let get_bin_fh corpus =
+  match corpus.bin_fh with
   | Some x -> x
   | None   ->
-    let h = corpus |> get_text_uri |> open_in
-    in corpus.text_h <- Some h; h
+    let h = corpus |> get_bin_uri |> open_in
+    in corpus.bin_fh <- Some h; h
 
-let get_token_uri corpus =
-  match corpus.token_uri with
-  | Some x -> x
-  | None   -> failwith "get_uri: no token_uri has been defined"
+let get_tok_uri corpus = corpus.uri ^ ".tok"
 
-let get_token_h corpus =
-  match corpus.token_h with
+let get_tok_fh corpus =
+  match corpus.tok_fh with
   | Some x -> x
   | None   ->
-    let h = corpus |> get_token_uri |> open_in
-    in corpus.token_h <- Some h; h
+    let h = corpus |> get_tok_uri |> open_in
+    in corpus.tok_fh <- Some h; h
 
-let get_vocabulary corpus =
-  match corpus.vocabulary with
+let get_vocab_uri corpus = corpus.uri ^ ".voc"
+
+let get_vocab corpus =
+  match corpus.vocab with
   | Some x -> x
-  | None   -> failwith "get_vocabulary: it has not been built"
+  | None   ->
+    let h = corpus |> get_vocab_uri |> Owl_nlp_vocabulary.load
+    in corpus.vocab <- Some h; h
 
-let get_num_doc corpus = corpus.num_doc
-
-let set_num_doc corpus n = corpus.num_doc <- n
-
-let count_num_doc corpus =
-  let n = ref 0 in
-  let uri = get_text_uri corpus in
-  Owl_nlp_utils.iteri_lines_of_file (fun i _ -> n := i) uri;
-  !n + 1
+let length corpus = Array.length corpus.bin_ofs
 
 
 (* iterate docs and tokenised docs and etc. *)
 
-let next_doc corpus : string = corpus |> get_text_h |> input_line
+let next_doc corpus : string = corpus |> get_bin_fh |> Marshal.from_channel
 
-let next_tokenised_doc corpus : int array = corpus |> get_token_h |> Marshal.from_channel
+let next_tok_doc corpus : int array = corpus |> get_tok_fh |> Marshal.from_channel
 
-let iteri_docs f corpus = iteri_lines_of_file f (get_text_uri corpus)
+let iteri_docs f corpus = iteri_lines_of_marshal f (get_bin_uri corpus)
 
-let iteri_tokenised_docs f corpus = iteri_lines_of_marshal f (get_token_uri corpus)
+let iteri_tok_docs f corpus = iteri_lines_of_marshal f (get_tok_uri corpus)
 
-let mapi_docs f corpus = mapi_lines_of_file f (get_text_uri corpus)
+let mapi_docs f corpus = mapi_lines_of_marshal f (get_bin_uri corpus)
 
-let mapi_tokenised_docs f corpus = mapi_lines_of_marshal f (get_token_uri corpus)
+let mapi_tok_docs f corpus = mapi_lines_of_marshal f (get_tok_uri corpus)
 
 
 (* reset all the file pointers at offest 0 *)
@@ -114,60 +93,22 @@ let reset_iterators corpus =
     | Some h -> seek_in h 0
     | None   -> ()
   in
-  _reset_offset corpus.text_h;
-  _reset_offset corpus.token_h
+  _reset_offset corpus.bin_fh;
+  _reset_offset corpus.tok_fh
 
-
-(* tokenise a corpus and keep the tokens in memory *)
-let tokenise_mem dict fname =
-  mapi_lines_of_file (fun _ s ->
-    Str.split (Str.regexp " ") s
-    |> List.filter (Owl_nlp_vocabulary.exits_w dict)
-    |> List.map (Owl_nlp_vocabulary.word2index dict)
-    |> Array.of_list
-  ) fname
-
-
-(* tokenise a corpus and save the outcome tokens in anther file *)
-let tokenise_file dict fi_name fo_name =
-  let fo = open_out fo_name in
-  iteri_lines_of_file (fun _ s ->
-    let t = Str.split (Str.regexp " ") s
-      |> List.filter (Owl_nlp_vocabulary.exits_w dict)
-      |> List.map (Owl_nlp_vocabulary.word2index dict)
-      |> Array.of_list
-    in
-    Marshal.to_channel fo t [];
-  ) fi_name;
-  close_out fo
-
-
-let tokenise_str corpus s =
-  let dict = get_vocabulary corpus in
+let tokenise corpus s =
+  let dict = get_vocab corpus in
   Str.split (Str.regexp " ") s
   |> List.filter (Owl_nlp_vocabulary.exits_w dict)
   |> List.map (Owl_nlp_vocabulary.word2index dict)
   |> Array.of_list
 
-
-let tokenise corpus =
-  let fi_name = get_text_uri corpus in
-  let fo_name = get_token_uri corpus in
-  let dict = get_vocabulary corpus in
-  tokenise_file dict fi_name fo_name
-
-
-let build_vocabulary ?lo ?hi ?stopwords corpus =
-  let fname = corpus |> get_text_uri in
-  let d = Owl_nlp_vocabulary.build_from_file ?lo ?hi ?stopwords fname in
-  corpus.vocabulary <- Some d;
-  d
-
-
 (* convert corpus into binary format, build dictionary, tokenise *)
 let build ?lo ?hi ?stopwords fname =
+  (* build and save the vocabulary *)
   Log.info "build up vocabulary ...";
   let vocab = Owl_nlp_vocabulary.build_from_file ?lo ?hi ?stopwords fname in
+  Owl_nlp_vocabulary.save vocab (fname ^ ".voc");
 
   (* prepare the output file *)
   let bin_f = fname ^ ".bin" |> open_out in
@@ -198,51 +139,59 @@ let build ?lo ?hi ?stopwords fname =
 
   ) fname;
 
-  (* save index file *)
-  let idx_f = fname ^ ".idx" |> open_out in
+  (* save the corpus file *)
+  let dat_f = fname ^ ".dat" |> open_out in
   let b_ofs = Owl_utils.Stack.to_array b_ofs in
   let t_ofs = Owl_utils.Stack.to_array t_ofs in
-  Marshal.to_channel idx_f (b_ofs, t_ofs) [];
+  let corpus = create fname b_ofs t_ofs None None None in
+  Marshal.to_channel dat_f corpus [];
 
   (* done, close the files *)
   close_out bin_f;
   close_out tok_f;
-  close_out idx_f
-
+  close_out dat_f;
+  (* return the finished corpus *)
+  get_bin_fh corpus |> ignore;
+  get_tok_fh corpus |> ignore;
+  get_vocab corpus  |> ignore;
+  corpus
 
 
 (* i/o: save and load corpus *)
 
-(* set file handle to None so it can safely saved *)
-let copy_model corpus = {
-  text_uri   = corpus.text_uri;
-  text_h     = None;
-  token_uri  = corpus.token_uri;
-  token_h    = None;
-  vocabulary = corpus.vocabulary;
-  num_doc    = corpus.num_doc;
+(* set some fields to None so it can be safely saved *)
+let reduce_model corpus = {
+  uri     = corpus.uri;
+  bin_ofs = corpus.bin_ofs;
+  tok_ofs = corpus.tok_ofs;
+  bin_fh  = None;
+  tok_fh  = None;
+  vocab   = None;
 }
 
 let save corpus f =
-  let x = copy_model corpus in
+  let x = reduce_model corpus in
   Owl_utils.marshal_to_file x f
 
-let load f : t = Owl_utils.marshal_from_file f
+let load f : t =
+  let corpus = Owl_utils.marshal_from_file f in
+  get_bin_fh corpus |> ignore;
+  get_tok_fh corpus |> ignore;
+  get_vocab corpus  |> ignore;
+  corpus
 
 
 (* TODO: for debug atm, need to optimise *)
 
-let get_doc corpus i =
-  let doc = ref "" in
-  (
-    try iteri_lines_of_file (fun j s ->
-      if i = j then (
-        doc := s;
-        failwith "found";
-      )
-    ) (get_text_uri corpus)
-    with exn -> ()
-  );
-  !doc
+let get_doc corpus i : string =
+  let fh = get_bin_fh corpus in
+  let old_pos = pos_in fh in
+  seek_in fh corpus.bin_ofs.(i);
+  let doc =  Marshal.from_channel fh in
+  seek_in fh old_pos;
+  doc
+
+
+let print = None
 
 (* ends here *)
