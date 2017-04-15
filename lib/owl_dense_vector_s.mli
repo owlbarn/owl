@@ -80,6 +80,14 @@ val div : vec -> vec -> vec
 
 val dot : vec -> vec -> vec
 
+val add_scalar : vec -> elt -> vec
+
+val sub_scalar : vec -> elt -> vec
+
+val mul_scalar : vec -> elt -> vec
+
+val div_scalar : vec -> elt -> vec
+
 
 (** {6 Uniary mathematical operations } *)
 

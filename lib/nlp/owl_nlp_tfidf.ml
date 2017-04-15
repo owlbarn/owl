@@ -5,6 +5,9 @@
 
 open Owl_nlp_utils
 
+module Vec = Owl_dense_vector_d
+
+
 type tf_typ =
   | Binary
   | Count
@@ -61,6 +64,10 @@ let create tf_typ df_typ corpus =
   }
 
 let get_corpus m = m.corpus
+
+let length m = Array.length m.offset - 1
+
+let vocab_len m = m.corpus |> Owl_nlp_corpus.get_vocab |> Owl_nlp_vocabulary.length
 
 (* calculate document frequency for a given word *)
 let doc_count_of m w =
@@ -201,9 +208,33 @@ let to_string m =
   Printf.sprintf "  uri       : %s\n" m.uri ^
   Printf.sprintf "  tf_type   : %s\n" (m.tf_typ |> tf_typ_string) ^
   Printf.sprintf "  df_type   : %s\n" (m.df_typ |> df_typ_string) ^
-  Printf.sprintf "  # of docs : %i" (Array.length m.offset - 1) ^
+  Printf.sprintf "  # of docs : %i" (length m) ^
   ""
 
 let print m = m |> to_string |> print_endline
+
+
+(* experimental functions *)
+
+let doc_to_vec m x =
+  let v = Vec.zeros (vocab_len m) in
+  Array.iter (fun (i, a) -> Vec.set v i a) x;
+  v
+
+let all_pairwise_distance typ m x =
+  let dist_fun = Owl_nlp_similarity.distance typ in
+  let x = doc_to_vec m x in
+  let l = mapi (fun i y ->
+    let y = doc_to_vec m y in
+    dist_fun x y, i
+  ) m
+  in
+  Array.sort (fun a b -> Pervasives.compare (fst a) (fst b)) l;
+  l
+
+let linear_search ?(typ=Owl_nlp_similarity.Cosine) m x k =
+  let l = all_pairwise_distance typ m x in
+  Array.sub l 0 k
+
 
 (* ends here *)
