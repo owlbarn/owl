@@ -69,7 +69,7 @@ let get_vocab corpus =
     let h = corpus |> get_vocab_uri |> Owl_nlp_vocabulary.load
     in corpus.vocab <- Some h; h
 
-let length corpus = Array.length corpus.bin_ofs
+let length corpus = Array.length corpus.bin_ofs - 1
 
 
 (* iterate docs and tokenised docs and etc. *)
@@ -86,6 +86,21 @@ let mapi_docs f corpus = mapi_lines_of_marshal f (get_bin_uri corpus)
 
 let mapi_tok_docs f corpus = mapi_lines_of_marshal f (get_tok_uri corpus)
 
+let get_doc corpus i : string =
+  let fh = get_bin_fh corpus in
+  let old_pos = pos_in fh in
+  seek_in fh corpus.bin_ofs.(i);
+  let doc =  Marshal.from_channel fh in
+  seek_in fh old_pos;
+  doc
+
+let get_tok_doc corpus i : int array =
+  let fh = get_tok_fh corpus in
+  let old_pos = pos_in fh in
+  seek_in fh corpus.tok_ofs.(i);
+  let doc =  Marshal.from_channel fh in
+  seek_in fh old_pos;
+  doc
 
 (* reset all the file pointers at offest 0 *)
 let reset_iterators corpus =
@@ -102,6 +117,7 @@ let tokenise corpus s =
   |> List.filter (Owl_nlp_vocabulary.exits_w dict)
   |> List.map (Owl_nlp_vocabulary.word2index dict)
   |> Array.of_list
+
 
 (* convert corpus into binary format, build dictionary, tokenise *)
 let build ?lo ?hi ?stopwords fname =
@@ -180,18 +196,10 @@ let load f : t =
   get_vocab corpus  |> ignore;
   corpus
 
-
-(* TODO: for debug atm, need to optimise *)
-
-let get_doc corpus i : string =
-  let fh = get_bin_fh corpus in
-  let old_pos = pos_in fh in
-  seek_in fh corpus.bin_ofs.(i);
-  let doc =  Marshal.from_channel fh in
-  seek_in fh old_pos;
-  doc
-
-
-let print = None
+let print corpus =
+  Printf.sprintf "corpus info\n" ^
+  Printf.sprintf "  file path  : %s\n" (corpus |> get_uri) ^
+  Printf.sprintf "  # of docs  : %i\n" (corpus |> length)
+  |> print_endline
 
 (* ends here *)

@@ -23,7 +23,7 @@ let word2index d w = Hashtbl.find d.w2i w
 
 let index2word d i = Hashtbl.find d.i2w i
 
-let size d = Hashtbl.length d.w2i
+let length d = Hashtbl.length d.w2i
 
 let freq_i d i = Hashtbl.find d.i2f i
 
@@ -119,7 +119,7 @@ let build_from_file ?(lo=0.) ?(hi=1.) ?stopwords fname =
 
 (* return (index, freq) array in increasing or decreasing freq *)
 let sort_freq ?(inc=true) d =
-  let all_freq = Array.make (size d) (0, 0) in
+  let all_freq = Array.make (length d) (0, 0) in
   let i = ref 0 in
   Hashtbl.iter (fun j freq ->
     all_freq.(!i) <- (j, freq);

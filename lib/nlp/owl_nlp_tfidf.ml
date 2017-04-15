@@ -22,7 +22,7 @@ let create corpus =
 
 (* calculate document frequency of all words, also return the number of docs *)
 let doc_freq vocab fname =
-  let n_w = Owl_nlp_vocabulary.size vocab in
+  let n_w = Owl_nlp_vocabulary.length vocab in
   let d_f = Array.make n_w 0. in
   let _h = Hashtbl.create 1024 in
   let n_d = ref 0 in
