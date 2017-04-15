@@ -74,17 +74,17 @@ let length corpus = Array.length corpus.bin_ofs - 1
 
 (* iterate docs and tokenised docs and etc. *)
 
-let next_doc corpus : string = corpus |> get_bin_fh |> Marshal.from_channel
+let next corpus : string = corpus |> get_bin_fh |> Marshal.from_channel
 
-let next_tok_doc corpus : int array = corpus |> get_tok_fh |> Marshal.from_channel
+let next_tok corpus : int array = corpus |> get_tok_fh |> Marshal.from_channel
 
-let iteri_docs f corpus = iteri_lines_of_marshal f (get_bin_uri corpus)
+let iteri f corpus = iteri_lines_of_marshal f (get_bin_uri corpus)
 
-let iteri_tok_docs f corpus = iteri_lines_of_marshal f (get_tok_uri corpus)
+let iteri_tok f corpus = iteri_lines_of_marshal f (get_tok_uri corpus)
 
-let mapi_docs f corpus = mapi_lines_of_marshal f (get_bin_uri corpus)
+let mapi f corpus = mapi_lines_of_marshal f (get_bin_uri corpus)
 
-let mapi_tok_docs f corpus = mapi_lines_of_marshal f (get_tok_uri corpus)
+let mapi_tok f corpus = mapi_lines_of_marshal f (get_tok_uri corpus)
 
 let get_doc corpus i : string =
   let fh = get_bin_fh corpus in
@@ -123,7 +123,7 @@ let tokenise corpus s =
 let build ?lo ?hi ?stopwords fname =
   (* build and save the vocabulary *)
   Log.info "build up vocabulary ...";
-  let vocab = Owl_nlp_vocabulary.build_from_file ?lo ?hi ?stopwords fname in
+  let vocab = Owl_nlp_vocabulary.build ?lo ?hi ?stopwords fname in
   Owl_nlp_vocabulary.save vocab (fname ^ ".voc");
 
   (* prepare the output file *)

@@ -7,7 +7,11 @@
 
 open Owl
 
-type lda_typ = SimpleLDA | FTreeLDA | LightLDA | SparseLDA
+type lda_typ =
+  | SimpleLDA
+  | FTreeLDA
+  | LightLDA
+  | SparseLDA
 
 type model = {
   mutable n_d : int;                      (* number of documents *)
@@ -271,7 +275,7 @@ let init ?(iter=100) k v d =
   }
   in
   (* randomise the topic assignment for each token *)
-  m.t__z <- Owl_nlp_corpus.mapi_tok_docs (fun i s ->
+  m.t__z <- Owl_nlp_corpus.mapi_tok (fun i s ->
     Array.init (Array.length s) (fun j ->
       let k' = Stats.Rnd.uniform_int ~a:0 ~b:(k - 1) () in
       include_token m s.(j) i k';
@@ -297,7 +301,7 @@ let train typ m =
   init m;
   for i = 0 to m.iter - 1 do
     let t0 = Unix.gettimeofday () in
-    Owl_nlp_corpus.iteri_tok_docs (
+    Owl_nlp_corpus.iteri_tok (
       fun j doc ->
       (* Log.info "iteration #%i - doc#%i" i j; *)
       sampling m j doc

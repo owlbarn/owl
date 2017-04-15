@@ -81,7 +81,7 @@ Hashtbl.filter_map_inplace (fun w v ->
   hi: percentage of higher bound of word frequency
   fname: file name of the corpus, each line contains a doc
  *)
-let build_from_file ?(lo=0.) ?(hi=1.) ?stopwords fname =
+let build ?(lo=0.) ?(hi=1.) ?stopwords fname =
   let w2f = Hashtbl.create (64 * 1024) in
   let f s =
     Str.split (Str.regexp " ") s
