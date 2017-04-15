@@ -15,19 +15,21 @@ let _ =
 open Owl
 open Owl_nlp
 
+(*
 let test_news_lda () =
   let s = Dataset.load_stopwords () in
   let x = Corpus.build ~stopwords:s "/Users/liang/owl_dataset/news.train" in
   let v = Corpus.get_vocab x |> Vocabulary.get_w2i in
   let m = Owl_nlp_lda0.init ~iter:20 1000 v x in
   Owl_nlp_lda0.(train SimpleLDA m)
-(*
+*)
+
+
 let test () =
-  let x = Corpus.load "news.corpus" in
-  let v = Corpus.get_vocabulary x |> Vocabulary.get_w2i in
+  let x = Corpus.load "/Users/liang/owl_dataset/news.train.dat" in
+  let v = Corpus.get_vocab x |> Vocabulary.get_w2i in
   let m = Owl_nlp_lda0.init ~iter:20 1000 v x in
   Owl_nlp_lda0.(train SimpleLDA m)
 
 
 let _ = test ()
-*)
