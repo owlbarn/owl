@@ -594,6 +594,8 @@ let reshape m n x =
 
 let flatten x = reshape 1 (numel x) x
 
+(* TODO: improve performance
+
 let of_arrays k x = Array2.of_array k c_layout x
 
 let of_array k x m n = of_arrays k [|x|] |> reshape m n
@@ -603,6 +605,15 @@ let to_array x =
   Array.init (numel x) (fun i -> x.{0,i})
 
 let to_arrays x = Array.init (row_num x) (fun i -> to_array (row x i))
+*)
+
+let of_array k x m n = Owl_backend_gsl_linalg.of_array k x m n
+
+let to_array x = Owl_backend_gsl_linalg.to_array (kind x) x
+
+let of_arrays k x = Owl_backend_gsl_linalg.of_arrays k x
+
+let to_arrays x = Owl_backend_gsl_linalg.to_arrays (kind x) x
 
 let to_rows x = Array.init (row_num x) (fun i -> row x i)
 
