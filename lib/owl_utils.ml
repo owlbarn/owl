@@ -120,6 +120,9 @@ let array_pad s x v n =
 (* map function for ['a array array] type *)
 let aarr_map f x = Array.map (Array.map f) x
 
+(* mapi function for ['a array array] type *)
+let aarr_mapi f x = Array.mapi (fun i y -> Array.mapi (fun j z -> f i j z) y) x
+
 (* map2 function for ['a array array] type, x and y must have the same shape. *)
 let aarr_map2 f x y = Array.map2 (Array.map2 f) x y
 
