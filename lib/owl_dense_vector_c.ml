@@ -19,6 +19,8 @@ let zeros ?typ m = V.zeros ?typ Complex32 m
 
 let ones ?typ m = V.ones ?typ Complex32 m
 
+let gaussian ?typ ?sigma m = V.gaussian ?typ ?sigma Complex32 m
+
 let uniform ?typ ?scale m = V.uniform ?typ ?scale Complex32 m
 
 let sequential ?typ m = V.sequential ?typ Complex32 m

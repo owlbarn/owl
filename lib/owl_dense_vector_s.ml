@@ -19,6 +19,8 @@ let zeros ?typ m = V.zeros ?typ Float32 m
 
 let ones ?typ m = V.ones ?typ Float32 m
 
+let gaussian ?typ ?sigma m = V.gaussian ?typ ?sigma Float32 m
+
 let uniform ?typ ?scale m = V.uniform ?typ ?scale Float32 m
 
 let sequential ?typ m = V.sequential ?typ Float32 m

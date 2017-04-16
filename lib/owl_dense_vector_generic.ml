@@ -30,6 +30,10 @@ let create ?(typ=Row) k m a = match typ with
   | Row -> M.create k 1 m a
   | Col -> M.create k m 1 a
 
+let gaussian ?(typ=Row) ?sigma k m = match typ with
+  | Row -> M.gaussian ?sigma k 1 m
+  | Col -> M.gaussian ?sigma k m 1
+
 let uniform ?(typ=Row) ?scale k m = match typ with
   | Row -> M.uniform ?scale k 1 m
   | Col -> M.uniform ?scale k m 1
