@@ -109,8 +109,14 @@ let term_count _h doc =
   ) doc
 
 
+(* make [x] a unit vector by dividing its l2norm *)
+let normalise x =
+  let c = Array.fold_left (fun a (w, b) -> a +. b *. b) 0. x |> sqrt in
+  Array.map (fun (w, b) -> (w, b /. c)) x
+
+
 (* build TF-IDF model from an empty model, m: empty tf-idf model *)
-let _build_with tf_fun df_fun m =
+let _build_with norm tf_fun df_fun m =
   let vocab = Owl_nlp_corpus.get_vocab m.corpus in
   let tfile = Owl_nlp_corpus.get_tok_uri m.corpus in
   let fname = m.uri in
@@ -143,6 +149,13 @@ let _build_with tf_fun df_fun m =
       tfs.(!j) <- w, tf_df;
       j := !j + 1;
     ) _h;
+
+    (* check if we need to normalise *)
+    let tfs = match norm with
+      | true  -> normalise tfs
+      | false -> tfs
+    in
+    (* save to file and update offset *)
     Marshal.to_channel fo tfs [];
     Owl_utils.Stack.push offset (LargeFile.pos_out fo |> Int64.to_int);
 
@@ -155,11 +168,11 @@ let _build_with tf_fun df_fun m =
   close_out fo
 
 
-let build ?(tf=Count) ?(df=Idf) corpus =
+let build ?(norm=false) ?(tf=Count) ?(df=Idf) corpus =
   let m = create tf df corpus in
   let tf_fun = term_freq tf in
   let df_fun = doc_freq df in
-  _build_with tf_fun df_fun m;
+  _build_with norm tf_fun df_fun m;
   m
 
 
