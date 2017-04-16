@@ -732,13 +732,13 @@ let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
   let cdf ?max_prob k n1 n2 t =
   match max_prob with
   | None ->
-    let left = max [|0.0; (float_of_int (k + t - n2))|] in
+    let left = max [|0.0; (float_of_int (t - n2))|] in
     let right = k in
     let r = Owl_utils.range (int_of_float left) right in
     let probs = Owl_utils.array_map (fun x -> Pdf.hypergeometric x n1 n2 t) r in
     Array.fold_left (+.) 0. probs
   | Some p ->
-    let left = max [|0.0; (float_of_int (k + t - n2))|] in
+    let left = max [|0.0; (float_of_int (t - n2))|] in
     let right = min [|(float_of_int n1); (float_of_int t)|] in
     let eps = 0.000000001 in
     let r = Owl_utils.range (int_of_float left) (int_of_float right) in
