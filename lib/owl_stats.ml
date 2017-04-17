@@ -737,10 +737,11 @@ let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
     in
     let eps = 0.000000001 in
     let condition v = (v < max_prob) || (abs_float (v -. max_prob)) < eps in
-    Owl_utils.range_fold left (right + 1)
+    Owl_utils.range_fold left right
       ~f:(fun acc x ->
-          if (condition (Pdf.hypergeometric x n1 n2 t))
-          then (acc +. (Pdf.hypergeometric x n1 n2 t))
+          let p = Pdf.hypergeometric x n1 n2 t in
+          if condition p
+          then acc +. p
           else acc)
       ~init:0.0
   in
