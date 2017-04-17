@@ -9,6 +9,16 @@ let range a b =
   let r = Array.make (b - a + 1) 0 in
   for i = a to b do r.(i - a) <- i done; r
 
+
+(* Computes a left fold over a range of integers from a to b (inclusive) *)
+let range_fold a b ~f ~init =
+  let rec go acc x =
+    if x > b
+    then acc
+    else go (f acc x) (x + 1)
+  in go init a
+
+
 (* filter array, f : int -> 'a -> bool * 'b *)
 let array_filteri_v f x =
   (* FIXME: bad idea if f is not pure *)

@@ -33,7 +33,7 @@ let choose x n =
 let sample x n =
   let y = Array.make n x.(0) in
   Gsl.Randist.sample rng x y; y
-  
+
 
 (** [ Statistics function ]  *)
 
@@ -728,8 +728,33 @@ let var_test ?(alpha=0.05) ?(side=BothSide) ~var x =
   let h = alpha > p in
   (h, p, k)
 
-let fisher_test x = None
-(* Fisher's exact test *)
+let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
+  let cdf ?(max_prob=1.) k n1 n2 t =
+    let left = Pervasives.max 0 (t - n2) in
+    let right = match max_prob with
+      | 1. -> k
+      | _ -> Pervasives.min n1 t
+    in
+    let eps = 0.000000001 in
+    Owl_utils.range_fold left right
+      ~f:(fun acc x ->
+          let p = Pdf.hypergeometric x n1 n2 t in
+          if (p < max_prob) || (abs_float (p -. max_prob)) < eps
+          then acc +. p
+          else acc)
+      ~init:0.0
+  in
+  let n = a + b + c + d in
+  let prob = Pdf.hypergeometric a (a + b) (c + d) (a + c) in
+  let oddsratio = ((float_of_int a) *. (float_of_int d)) /. ((float_of_int b) *. (float_of_int c)) in
+  let p = match side with
+    | BothSide -> cdf a (a + b) (c + d) (a + c) ~max_prob:prob
+    | RightSide -> cdf b (b + a) (c + d) (b + d)
+    | LeftSide -> cdf a (a + b) (c + d) (a + c)
+  in
+  let h = alpha > p in
+  (h, p, oddsratio)
+
 
 let lillie_test x = None
 (* Lilliefors test *)
