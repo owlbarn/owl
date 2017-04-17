@@ -117,6 +117,12 @@ let array_pad s x v n =
   in y
 
 
+(* iter function for ['a array array] type *)
+let aarr_iter f x = Array.iter (Array.iter f) x
+
+(* iteri function for ['a array array] type *)
+let aarr_iteri f x = Array.iteri (fun i y -> Array.iteri (fun j z -> f i j z) y) x
+
 (* map function for ['a array array] type *)
 let aarr_map f x = Array.map (Array.map f) x
 
