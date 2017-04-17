@@ -736,11 +736,10 @@ let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
       | _ -> Pervasives.min n1 t
     in
     let eps = 0.000000001 in
-    let condition v = (v < max_prob) || (abs_float (v -. max_prob)) < eps in
     Owl_utils.range_fold left right
       ~f:(fun acc x ->
           let p = Pdf.hypergeometric x n1 n2 t in
-          if condition p
+          if (p < max_prob) || (abs_float (p -. max_prob)) < eps
           then acc +. p
           else acc)
       ~init:0.0

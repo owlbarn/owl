@@ -10,7 +10,7 @@ let range a b =
   for i = a to b do r.(i - a) <- i done; r
 
 
-(*Computes a left fold over a range of integers from a to b (inclusive)*)
+(* Computes a left fold over a range of integers from a to b (inclusive) *)
 let range_fold a b ~f ~init =
   let rec go acc x =
     if x > b
