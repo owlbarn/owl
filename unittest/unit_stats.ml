@@ -18,6 +18,9 @@ end
 
 
 (* The tests *)
+(* P-values computed using stats.fisher_exact from SciPy 0.18.1 *)
+
+
 let fisher_test_both_side () =
   Alcotest.(check bool)
     "fisher_test_both_side"
