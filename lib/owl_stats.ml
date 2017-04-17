@@ -736,11 +736,13 @@ let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
       | _ -> Pervasives.min n1 t
     in
     let eps = 0.000000001 in
-    let r = Array.init (right - left + 1) (fun v -> v + left) in
-    let probs = Owl_utils.array_map (fun x -> Pdf.hypergeometric x n1 n2 t) r in
-    let condition = (fun x -> (x < max_prob) || (abs_float (x -. max_prob) < eps)) in
-    let probs2 = Owl_utils.array_filter condition probs in
-    Array.fold_left (+.) 0. probs2
+    let condition v = (v < max_prob) || (abs_float (v -. max_prob)) < eps in
+    Owl_utils.range_fold left (right + 1)
+      ~f:(fun acc x ->
+          if (condition (Pdf.hypergeometric x n1 n2 t))
+          then (acc +. (Pdf.hypergeometric x n1 n2 t))
+          else acc)
+      ~init:0.0
   in
   let n = a + b + c + d in
   let prob = Pdf.hypergeometric a (a + b) (c + d) (a + c) in
@@ -752,6 +754,7 @@ let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
   in
   let h = alpha > p in
   (h, p, oddsratio)
+
 
 let lillie_test x = None
 (* Lilliefors test *)
