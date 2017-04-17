@@ -3,8 +3,6 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module Vec = Owl_dense_vector_d
-
 type t =
   | Cosine
   | Euclidean
@@ -15,19 +13,39 @@ let to_string = function
   | Euclidean -> "Euclidean"
   | KL_D      -> "Kullback–Leibler divergence"
 
-let cosine_distance x y =
-  (* TODO: need to implement inner and cross prod *)
-  let x = Vec.(div_scalar x (l2norm x)) in
-  let y = Vec.(div_scalar y (l2norm y)) in
-  let z = Vec.(dot x (transpose y)) in
-  -.(Vec.get z 0)
-
-let euclidean_distance x y =
-  let x = Vec.(div_scalar x (l2norm x)) in
-  let y = Vec.(div_scalar y (l2norm y)) in
-  Vec.(sub x y |> l2norm_sqr)
 
 let kl_distance x y = 0.
+
+
+let cosine_distance x y =
+  let hx = Hashtbl.create (Array.length x) in
+  let hy = Hashtbl.create (Array.length y) in
+  Array.iter (fun (k, v) -> Hashtbl.add hx k v) x;
+  Array.iter (fun (k, v) -> Hashtbl.add hy k v) y;
+  let z = ref 0. in
+  Hashtbl.iter (fun k v ->
+    match Hashtbl.mem hy k with
+    | true  -> z := !z +. v *. (Hashtbl.find hy k)
+    | false -> ()
+  ) hx;
+  (* return the negative since high similarity indicates small distance *)
+  -.(!z)
+
+
+let euclidean_distance x y =
+  let h = Hashtbl.create (Array.length x) in
+  Array.iter (fun (k, a) -> Hashtbl.add h k a) x;
+  Array.iter (fun (k, b) ->
+    match Hashtbl.mem h k with
+    | true  ->
+        let a = Hashtbl.find h k in
+        Hashtbl.replace h k (a -. b)
+    | false -> Hashtbl.add h k b
+  ) y;
+  let z = ref 0. in
+  Hashtbl.iter (fun k v -> z := !z +. v *. v) h;
+  sqrt !z
+
 
 let distance = function
   | Cosine    -> cosine_distance
