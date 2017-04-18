@@ -144,7 +144,7 @@ let build ?stopwords ?lo ?hi ?(minlen=10) fname =
   Log.info "convert to binary and tokenise ...";
   iteri_lines_of_file (fun i s ->
 
-    let t = Str.split (Str.regexp " ") s
+    let t = Str.split (Str.regexp "[ \t]") s
       |> List.filter (Owl_nlp_vocabulary.exits_w vocab)
       |> List.map (Owl_nlp_vocabulary.word2index vocab)
       |> Array.of_list
@@ -194,6 +194,27 @@ let unique fi_name fo_name =
   ) fi_name;
   close_out fo;
   Owl_utils.Stack.to_array rm
+
+
+(* a simple function for pre-processing a given string *)
+let simple_processing s =
+  let regexp_str = Str.regexp "[ \t;,.'!?()]+" in
+  Str.split regexp_str s
+  |> List.filter (fun x -> String.length x > 1)
+  |> String.concat " "
+  |> String.lowercase_ascii
+
+
+(* pre-process a given file with the passed in function
+  e.g., you can plug in [simple_processing] function to clean up the text.
+ *)
+let preprocessing f fi_name fo_name =
+  let fo = open_out fo_name in
+  Owl_nlp_utils.iteri_lines_of_file (fun i s ->
+    output_bytes fo (f s);
+    output_char fo '\n';
+  ) fi_name;
+  close_out fo
 
 
 (* i/o: save and load corpus *)
