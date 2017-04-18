@@ -198,7 +198,7 @@ let unique fi_name fo_name =
 
 (* a simple function for pre-processing a given string *)
 let simple_processing s =
-  let regexp_str = Str.regexp "[ \t;,.'!?()]+" in
+  let regexp_str = Str.regexp "[ \t;,.'!?()’“”—]+" in
   Str.split regexp_str s
   |> List.filter (fun x -> String.length x > 1)
   |> String.concat " "
