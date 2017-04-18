@@ -197,7 +197,7 @@ let unique fi_name fo_name =
 
 
 (* a simple function for pre-processing a given string *)
-let simple_processing s =
+let simple_process s =
   let regexp_str = Str.regexp "[ \t;,.'!?()’“”—]+" in
   Str.split regexp_str s
   |> List.filter (fun x -> String.length x > 1)
@@ -206,9 +206,9 @@ let simple_processing s =
 
 
 (* pre-process a given file with the passed in function
-  e.g., you can plug in [simple_processing] function to clean up the text.
+  e.g., you can plug in [simple_process] function to clean up the text.
  *)
-let preprocessing f fi_name fo_name =
+let preprocess f fi_name fo_name =
   let fo = open_out fo_name in
   Owl_nlp_utils.iteri_lines_of_file (fun i s ->
     output_bytes fo (f s);
