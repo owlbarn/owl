@@ -178,6 +178,24 @@ let build ?stopwords ?lo ?hi ?(minlen=10) fname =
   corpus
 
 
+(* remove duplicates in a text corpus, the ids of the removed files are returned *)
+let unique fi_name fo_name =
+  let h = Hashtbl.create 1024 in
+  let rm = Owl_utils.Stack.make () in
+  let fo = open_out fo_name in
+  Owl_nlp_utils.iteri_lines_of_file (fun i s ->
+    match Hashtbl.mem h s with
+    | true  -> Owl_utils.Stack.push rm i
+    | false -> (
+        output_bytes fo s;
+        output_char fo '\n';
+        Hashtbl.add h s None;
+      )
+  ) fi_name;
+  close_out fo;
+  Owl_utils.Stack.to_array rm
+
+
 (* i/o: save and load corpus *)
 
 (* set some fields to None so it can be safely saved *)
