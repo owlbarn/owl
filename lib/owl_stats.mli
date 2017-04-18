@@ -185,6 +185,16 @@ val jb_test : ?alpha:float -> float array -> bool * float * float
   using the Jarque-Bera test.
  *)
 
+val fisher_test : ?alpha:float -> ?side:tail -> int -> int -> int -> int -> bool * float * float
+(** [fisher_test ~alpha ~side a b c d] fisher's exact test for contingency table
+    |[a], [b]|
+    |[c], [d]|
+    .
+    The result [h,p,z]: [h] is [true] if the test rejects the null hypothesis at
+    the [alpha] significance level, and [false] otherwise. [p] is the p-value and
+    [z] is prior odds ratio.
+*)
+
 val runs_test : ?alpha:float -> ?side:tail -> ?v:float -> float array -> bool * float * float
 (** [runs_test ~alpha ~v x] returns a test decision for the null hypothesis that
   the data [x] comes in random order, against the alternative that they do not,
