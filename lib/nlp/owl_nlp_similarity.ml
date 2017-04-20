@@ -30,6 +30,34 @@ let cosine_distance x y =
   -.(!z)
 
 
+(* this function aussmes that the elements' ids have been sorted in increasing
+  order, then perform inner product operation of both passed in vectors.
+ *)
+let inner_product x y =
+  (*
+  Array.sort (fun a b -> Pervasives.compare (fst a) (fst b)) x;
+  Array.sort (fun a b -> Pervasives.compare (fst a) (fst b)) y;
+  *)
+  let xi = ref 0 in
+  let yi = ref 0 in
+  let xn = Array.length x in
+  let yn = Array.length y in
+  let z = ref 0. in
+  while !xi < xn && !yi < yn do
+    let xk, xv = x.(!xi) in
+    let yk, yv = y.(!yi) in
+    if xk = yk then (
+      z := !z +. xv *. yv;
+      xi := !xi + 1;
+      yi := !yi + 1;
+    )
+    else if xk < yk then
+      xi := !xi + 1
+    else if xk > yk then
+      yi := !yi + 1
+  done;
+  !z
+
 let euclidean_distance x y =
   let h = Hashtbl.create (Array.length x) in
   Array.iter (fun (k, a) -> Hashtbl.add h k a) x;
