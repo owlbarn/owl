@@ -18,16 +18,14 @@ let kl_distance x y = 0.
 
 
 let cosine_distance x y =
-  let hx = Hashtbl.create (Array.length x) in
   let hy = Hashtbl.create (Array.length y) in
-  Array.iter (fun (k, v) -> Hashtbl.add hx k v) x;
   Array.iter (fun (k, v) -> Hashtbl.add hy k v) y;
   let z = ref 0. in
-  Hashtbl.iter (fun k v ->
+  Array.iter (fun (k,v) ->
     match Hashtbl.mem hy k with
     | true  -> z := !z +. v *. (Hashtbl.find hy k)
     | false -> ()
-  ) hx;
+  ) x;
   (* return the negative since high similarity indicates small distance *)
   -.(!z)
 
