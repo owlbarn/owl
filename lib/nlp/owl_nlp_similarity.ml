@@ -30,10 +30,22 @@ let cosine_distance x y =
   -.(!z)
 
 
+let inner_product x y =
+  let hy = Hashtbl.create (Array.length y) in
+  Array.iter (fun (k, v) -> Hashtbl.add hy k v) y;
+  let z = ref 0. in
+  Array.iter (fun (k,v) ->
+    match Hashtbl.mem hy k with
+    | true  -> z := !z +. v *. (Hashtbl.find hy k)
+    | false -> ()
+  ) x;
+  !z
+
+
 (* this function aussmes that the elements' ids have been sorted in increasing
   order, then perform inner product operation of both passed in vectors.
  *)
-let inner_product x y =
+let inner_product_fast x y =
   (*
   Array.sort (fun a b -> Pervasives.compare (fst a) (fst b)) x;
   Array.sort (fun a b -> Pervasives.compare (fst a) (fst b)) y;

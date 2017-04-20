@@ -116,7 +116,7 @@ let normalise x =
 
 
 (* build TF-IDF model from an empty model, m: empty tf-idf model *)
-let _build_with norm tf_fun df_fun m =
+let _build_with norm sort tf_fun df_fun m =
   let vocab = Owl_nlp_corpus.get_vocab m.corpus in
   let tfile = Owl_nlp_corpus.get_tok_uri m.corpus in
   let fname = m.uri in
@@ -155,6 +155,12 @@ let _build_with norm tf_fun df_fun m =
       | true  -> normalise tfs
       | false -> tfs
     in
+    (* check if we need to sort term id in increasing order *)
+    let _ = match sort with
+      | true  -> Array.sort (fun a b -> Pervasives.compare (fst a) (fst b)) tfs
+      | false -> ()
+    in
+
     (* save to file and update offset *)
     Marshal.to_channel fo tfs [];
     Owl_utils.Stack.push offset (LargeFile.pos_out fo |> Int64.to_int);
@@ -168,11 +174,11 @@ let _build_with norm tf_fun df_fun m =
   close_out fo
 
 
-let build ?(norm=false) ?(tf=Count) ?(df=Idf) corpus =
+let build ?(norm=false) ?(sort=false) ?(tf=Count) ?(df=Idf) corpus =
   let m = create tf df corpus in
   let tf_fun = term_freq tf in
   let df_fun = doc_freq df in
-  _build_with norm tf_fun df_fun m;
+  _build_with norm sort tf_fun df_fun m;
   m
 
 
