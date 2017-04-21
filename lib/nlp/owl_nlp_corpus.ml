@@ -113,6 +113,26 @@ let reset_iterators corpus =
   _reset_offset corpus.bin_fh;
   _reset_offset corpus.tok_fh
 
+(* return a batch of documents *)
+let next_batch ?(size=100) corpus =
+  let batch = Owl_utils.Stack.make () in
+  (
+    try for i = 0 to size - 1 do
+      corpus |> next |> Owl_utils.Stack.push batch
+    done with exn -> ()
+  );
+  Owl_utils.Stack.to_array batch
+
+(* return a batch of tokenised documents *)
+let next_batch_tok ?(size=100) corpus =
+  let batch = Owl_utils.Stack.make () in
+  (
+    try for i = 0 to size - 1 do
+      corpus |> next_tok |> Owl_utils.Stack.push batch
+    done with exn -> ()
+  );
+  Owl_utils.Stack.to_array batch
+
 let tokenise corpus s =
   let dict = get_vocab corpus in
   Str.split (Str.regexp " ") s
@@ -121,12 +141,19 @@ let tokenise corpus s =
   |> Array.of_list
 
 
-(* convert corpus into binary format, build dictionary, tokenise *)
-let build ?stopwords ?lo ?hi ?(minlen=10) fname =
-  (* build and save the vocabulary *)
-  Log.info "build up vocabulary ...";
-  let vocab = Owl_nlp_vocabulary.build ?lo ?hi ?stopwords fname in
-  Owl_nlp_vocabulary.save vocab (fname ^ ".voc");
+(* convert corpus into binary format, build dictionary, tokenise
+  lo and hi will be ignored if a vocab is passed in.
+ *)
+let build ?stopwords ?lo ?hi ?vocab ?(minlen=10) fname =
+
+  (* build and save the vocabulary if necessary *)
+  let vocab = match vocab with
+    | Some vocab -> vocab
+    | None       -> (
+        Log.info "build up vocabulary ...";
+        Owl_nlp_vocabulary.build ?lo ?hi ?stopwords fname
+      )
+  in Owl_nlp_vocabulary.save vocab (fname ^ ".voc");
 
   (* prepare the output file *)
   let bin_f = fname ^ ".bin" |> open_out in

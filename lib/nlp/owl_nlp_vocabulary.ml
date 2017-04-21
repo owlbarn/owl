@@ -30,12 +30,33 @@ let freq_i d i = Hashtbl.find d.i2f i
 let freq_w d w = w |> word2index d |> freq_i d
 
 
-(* remove extremely low and high frequency words
+(* make a copy of passed in vocabulary *)
+let copy d = {
+  w2i = Hashtbl.copy d.w2i;
+  i2w = Hashtbl.copy d.i2w;
+  i2f = Hashtbl.copy d.i2f;
+}
+
+(* re-index the indices in the vocabulary *)
+let re_index d =
+  let w2i = Hashtbl.create (length d) in
+  let i2w = Hashtbl.create (length d) in
+  let i2f = Hashtbl.create (length d) in
+  let i = ref 0 in
+  Hashtbl.iter (fun w f ->
+    Hashtbl.add w2i w !i;
+    Hashtbl.add i2w !i w;
+    Hashtbl.add i2f !i f;
+    i := !i + 1;
+  ) d.w2i;
+  { w2i; i2w; i2f }
+
+(* remove extremely low and high frequency words based on percentage
   lo: the percentage of lower bound
   hi: the percentage of higher bound
   h: the hashtbl of the vocabulary (word, freq)
  *)
-let trim_freq lo hi h =
+let _trim_percent_w2f lo hi h =
   let n = Hashtbl.length h in
   let all_freq = Array.make n 0 in
   let i = ref 0 in
@@ -54,14 +75,34 @@ let trim_freq lo hi h =
     | _          -> None
   ) h
 
-(* similar to trim_freq, but trim all three hashtbls *)
-let trim lo hi d =
-  trim_freq lo hi d.i2f;
+(* similar to _trim_percent, but trim all three hashtbls in the vocabulary *)
+let trim_percent lo hi vocab =
+  let d = copy vocab in
+  _trim_percent_w2f lo hi d.i2f;
   Hashtbl.filter_map_inplace (fun i w ->
     match Hashtbl.mem d.i2f i with
     | true  -> Some w
     | false -> Hashtbl.remove d.w2i w; None
-  ) d.i2w
+  ) d.i2w;
+  re_index d
+
+(* similar to trim_percent, but according the word absolute count *)
+let _trim_count_w2f lo hi h =
+  Hashtbl.filter_map_inplace (fun _ freq ->
+    if freq >= lo && freq <= hi then Some freq
+    else None
+  ) h
+
+(* similar to trim_count but trim all three hashtbls *)
+let trim_count lo hi vocab =
+  let d = copy vocab in
+  _trim_count_w2f lo hi d.i2f;
+  Hashtbl.filter_map_inplace (fun i w ->
+    match Hashtbl.mem d.i2f i with
+    | true  -> Some w
+    | false -> Hashtbl.remove d.w2i w; None
+  ) d.i2w;
+  re_index d
 
 (* remove stopwords from vocabulary
   sw: hashtbl contains the vocabulary
@@ -94,7 +135,7 @@ let build ?(lo=0.) ?(hi=1.) ?stopwords fname =
   iteri_lines_of_file (fun _ s -> f s) fname;
   (* trim frequency if necessary *)
   if lo <> 0. || hi <> 1. then
-    trim_freq lo hi w2f;
+    _trim_percent_w2f lo hi w2f;
   (* trim stopwords if necessary *)
   (
     match stopwords with
