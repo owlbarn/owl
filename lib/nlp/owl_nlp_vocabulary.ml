@@ -81,7 +81,7 @@ Hashtbl.filter_map_inplace (fun w v ->
 let build ?(lo=0.) ?(hi=1.) ?stopwords fname =
   let w2f = Hashtbl.create (64 * 1024) in
   let f s =
-    Str.split (Str.regexp "[ \t]+") s
+    Str.split Owl_nlp_utils.regexp_split s
     |> List.iter (fun w ->
       match Hashtbl.mem w2f w with
       | true  -> (

@@ -144,7 +144,7 @@ let build ?stopwords ?lo ?hi ?(minlen=10) fname =
   Log.info "convert to binary and tokenise ...";
   iteri_lines_of_file (fun i s ->
 
-    let t = Str.split (Str.regexp "[ \t]") s
+    let t = Str.split Owl_nlp_utils.regexp_split s
       |> List.filter (Owl_nlp_vocabulary.exits_w vocab)
       |> List.map (Owl_nlp_vocabulary.word2index vocab)
       |> Array.of_list
@@ -198,8 +198,7 @@ let unique fi_name fo_name =
 
 (* a simple function for pre-processing a given string *)
 let simple_process s =
-  let regexp_str = Str.regexp "[ \t;,.'!?()’“”—]+" in
-  Str.split regexp_str s
+  Str.split Owl_nlp_utils.regexp_split s
   |> List.filter (fun x -> String.length x > 1)
   |> String.concat " "
   |> String.lowercase_ascii

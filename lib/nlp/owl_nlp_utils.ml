@@ -5,6 +5,12 @@
  *   Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+
+(* some useful regular expressions *)
+
+let regexp_split = Str.regexp "[ \t;,.'!?()’“”\\/&—\\-]+"
+
+
 let _allocate_space x =
   Log.info "allocate more space";
   let l = Array.length x in
