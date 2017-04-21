@@ -20,12 +20,13 @@ type df_typ =
   | Idf_Smooth
 
 type t = {
-  mutable uri       : string;           (* file path of the model *)
-  mutable tf_typ    : tf_typ;           (* function to calculate term freq *)
-  mutable df_typ    : df_typ;           (* function to calculate doc freq *)
-  mutable offset    : int array;        (* record the offest each document *)
-  mutable doc_freq  : float array;      (* document frequency *)
-  mutable corpus    : Owl_nlp_corpus.t  (* corpus type *)
+  mutable uri      : string;            (* file path of the model *)
+  mutable tf_typ   : tf_typ;            (* function to calculate term freq *)
+  mutable df_typ   : df_typ;            (* function to calculate doc freq *)
+  mutable offset   : int array;         (* record the offest each document *)
+  mutable doc_freq : float array;       (* document frequency *)
+  mutable corpus   : Owl_nlp_corpus.t;  (* corpus type *)
+  mutable handle   : in_channel option; (* file descriptor of the tfidf *)
 }
 
 (* variouis types of TF and IDF fucntions *)
@@ -61,7 +62,10 @@ let create tf_typ df_typ corpus =
     offset   = [||];
     doc_freq = [||];
     corpus;
+    handle   = None;
   }
+
+let get_uri m = m.uri
 
 let get_corpus m = m.corpus
 
@@ -69,12 +73,19 @@ let length m = Array.length m.offset - 1
 
 let vocab_len m = m.corpus |> Owl_nlp_corpus.get_vocab |> Owl_nlp_vocabulary.length
 
+let get_handle m =
+  match m.handle with
+  | Some x -> x
+  | None   ->
+    let h = m |> get_uri |> open_in
+    in m.handle <- Some h; h
+
+
 (* calculate document frequency for a given word *)
 let doc_count_of m w =
   let v = Owl_nlp_corpus.get_vocab m.corpus in
   let i = Owl_nlp_vocabulary.word2index v w in
   m.doc_freq.(i)
-
 
 (* count occurrency in all documents, for all words *)
 let doc_count vocab fname =
@@ -184,6 +195,17 @@ let build ?(norm=false) ?(sort=false) ?(tf=Count) ?(df=Idf) corpus =
 
 (* random access and iteration function *)
 
+let next m : (int * float) array = m |> get_handle |> Marshal.from_channel
+
+let next_batch ?(size=100) m =
+  let batch = Owl_utils.Stack.make () in
+  (
+    try for i = 0 to size - 1 do
+      m |> next |> Owl_utils.Stack.push batch
+    done with exn -> ()
+  );
+  Owl_utils.Stack.to_array batch
+
 let iteri f m = iteri_lines_of_marshal f m.uri
 
 let mapi f m = mapi_lines_of_marshal f m.uri
@@ -194,6 +216,13 @@ let get m i : (int * float) array =
   let doc =  Marshal.from_channel fh in
   close_in fh;
   doc
+
+let reset_iterators m =
+  let _reset_offset = function
+    | Some h -> seek_in h 0
+    | None   -> ()
+  in
+  _reset_offset m.handle
 
 (* convert a single document according to a given model *)
 let apply m doc =
@@ -218,6 +247,7 @@ let apply m doc =
 
 let save m f =
   m.corpus <- Owl_nlp_corpus.reduce_model m.corpus;
+  m.handle <- None;
   Owl_utils.marshal_to_file m f
 
 let load f : t = Owl_utils.marshal_from_file f
