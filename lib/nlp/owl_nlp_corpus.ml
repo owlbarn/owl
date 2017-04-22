@@ -267,9 +267,17 @@ let load f : t =
   get_vocab corpus  |> ignore;
   corpus
 
+(* convert tokenised corpus back to text file *)
 let save_txt corpus f =
   let fh = open_out f in
-  iteri (fun i s ->
+  let vocab = get_vocab corpus in
+  let i2w_f = Owl_nlp_vocabulary.index2word vocab in
+  iteri_tok (fun i t ->
+    let s = t
+      |> Array.map i2w_f
+      |> Array.to_list
+      |> String.concat " "
+    in
     output_bytes fh s;
     output_char fh '\n';
   ) corpus;
