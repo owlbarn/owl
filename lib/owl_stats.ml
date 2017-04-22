@@ -33,7 +33,7 @@ let choose x n =
 let sample x n =
   let y = Array.make n x.(0) in
   Gsl.Randist.sample rng x y; y
-  
+
 
 (** [ Statistics function ]  *)
 
@@ -733,6 +733,97 @@ let fisher_test x = None
 
 let lillie_test x = None
 (* Lilliefors test *)
+
+
+(*s*)
+let count_dup l =
+  match l with
+  | [] -> []
+  | hd::tl ->
+    let acc,x,c = List.fold_left (fun (acc,x,c) y -> if y = x then acc,x,c+1 else (x,c)::acc, y,1) ([],hd,1) tl in
+    (x,c)::acc
+
+let tiecorrect rankvals =
+  let ranks_sort = sort rankvals in
+  let counts = count_dup (Array.to_list ranks_sort) in
+  let size = (float_of_int (Array.length rankvals)) in
+  let sss = Array.of_list (List.map (fun (x, y) -> y * y * y - y) counts) in
+  let s = Array.fold_left (+) 0 sss in
+  match size with
+  | 0.0 -> 1.0
+  | 1.0 -> 1.0
+  | _ -> 1.0 -. (float_of_int s)/.(size *. size *. size -. size)
+
+
+(* Mann–Whitney U test *)
+let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
+  let n1 = float_of_int (Array.length x) in
+  let n2 = float_of_int (Array.length y) in
+  let ranked = rank (Array.append x y) in
+  let rankx = Array.fold_left (+.) 0.0 (Array.sub ranked 0 (int_of_float n1)) in
+  let u1 = n1 *. n2 +. (n1 *. (n1 +. 1.0)) /. 2.0 -. rankx in
+  let u2 = n1 *. n2 -. u1 in
+  let t = tiecorrect ranked in
+  let sd = sqrt(t *. n1 *. n2 *. (n1 +. n2 +. 1.0) /. 12.0) in
+  let mean = n1 *. n2 /. 2.0 in
+  let bigu = match side with
+    | BothSide -> max [|u1;u2|]
+    | RightSide -> u2
+    | LeftSide -> u1
+  in
+  let z = (bigu -. mean) /. sd in
+  let p = match side with
+    | BothSide -> 2.0 *. Cdf.gaussian_Q (abs_float z) 1.0
+    | RightSide -> Cdf.gaussian_Q z 1.0
+    | LeftSide -> Cdf.gaussian_Q z 1.0
+  in
+  let h = alpha > p in
+  (h, p, u2)
+
+
+let rec exact_a u n m =
+  if u < 0. then 0.
+  else if u >= m *. (n -. m) then float_of_int (Owl_maths.combination (int_of_float n) (int_of_float m))
+  else if (m = 1. || (n -. m) = 1.) then u +. 1.
+  else ((exact_a u (n -. 1.) m) +. (exact_a (u -. (n -. m)) (n -. 1.) (m -. 1.)))
+
+let mannwhitneyu_exact ?(alpha=0.05) ?(side=BothSide) x y =
+  let n1 = float_of_int (Array.length x) in
+  let n2 = float_of_int (Array.length y) in
+  let ranked = rank (Array.append x y) in
+  let rankx = Array.fold_left (+.) 0.0 (Array.sub ranked 0 (int_of_float n1)) in
+  let u1 = n1 *. n2 +. (n1 *. (n1 +. 1.0)) /. 2.0 -. rankx in
+  let u2 = n1 *. n2 -. u1 in
+  let bigu = match side with
+    | BothSide -> min [|u1;u2|]
+    | RightSide -> u1
+    | LeftSide -> u2
+  in
+  let p =
+    let a =
+      if n1 < n2 then exact_a bigu (n1 +. n2) n2
+      else exact_a bigu (n1 +. n2) n1
+    in
+    let c =
+      if n1 < n2 then float_of_int (Owl_maths.combination (int_of_float (n1 +. n2)) (int_of_float n2))
+      else float_of_int (Owl_maths.combination (int_of_float (n1 +. n2)) (int_of_float n1))
+    in
+    a /. c
+  in
+  let pv =
+    match side with
+    | BothSide -> 2. *. p
+    | _ -> p
+  in
+  let h = alpha > p in
+  (h, pv, u2)
+
+(*f*)
+
+
+
+
+
 
 let runs_test ?(alpha=0.05) ?(side=BothSide) ?v x =
 (* Run test for randomness *)

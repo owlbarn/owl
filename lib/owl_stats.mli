@@ -193,6 +193,10 @@ val runs_test : ?alpha:float -> ?side:tail -> ?v:float -> float array -> bool * 
   value, the default value is the median of [x].
  *)
 
+val mannwhitneyu : ?alpha:float -> ?side:tail -> float array -> float array -> bool * float * float
+
+val mannwhitneyu_exact : ?alpha:float -> ?side:tail -> float array -> float array -> bool * float * float
+
 
 (** {6 Random numbers, PDF, and CDF} *)
 
