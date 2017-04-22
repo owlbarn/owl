@@ -60,6 +60,17 @@ let get_suffix s =
   let parts = Str.(split (regexp "\\.")) s in
   List.(nth parts (length parts - 1))
 
+let count_dup l =
+  match l with
+  | [] -> []
+  | hd::tl -> let acc,x,c =
+                List.fold_left
+                  (fun (acc,x,c) y -> if y = x then acc,x,c+1 else (x,c)::acc, y,1)
+                  ([],hd,1)
+                  tl
+    in (x,c)::acc
+
+
 (* deal with the issue: OCaml 4.02.3 does not have Array.iter2
   eventually we need to move to OCaml 4.03.0 *)
 let array_iter2 f x y =

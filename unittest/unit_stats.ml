@@ -15,7 +15,7 @@ module To_test = struct
     p
 end
 
-(* The tests *)
+ (* The tests *)
 (* P-values computed using stats.fisher_exact from SciPy 0.18.1 *)
 let mannwhitneyu_test_both_side_asym () =
   Alcotest.(check bool)
