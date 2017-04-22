@@ -755,6 +755,13 @@ let tiecorrect rankvals =
   | _ -> 1.0 -. (float_of_int s)/.(size *. size *. size -. size)
 
 
+let rec exact_a u n m =
+  if u < 0. then 0.
+  else if u >= m *. (n -. m) then float_of_int (Owl_maths.combination (int_of_float n) (int_of_float m))
+  else if (m = 1. || (n -. m) = 1.) then u +. 1.
+  else ((exact_a u (n -. 1.) m) +. (exact_a (u -. (n -. m)) (n -. 1.) (m -. 1.)))
+
+
 (* Mann–Whitney U test *)
 let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
   let n1 = float_of_int (Array.length x) in
@@ -763,65 +770,53 @@ let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
   let rankx = Array.fold_left (+.) 0.0 (Array.sub ranked 0 (int_of_float n1)) in
   let u1 = n1 *. n2 +. (n1 *. (n1 +. 1.0)) /. 2.0 -. rankx in
   let u2 = n1 *. n2 -. u1 in
-  let t = tiecorrect ranked in
-  let sd = sqrt(t *. n1 *. n2 *. (n1 +. n2 +. 1.0) /. 12.0) in
-  let mean = n1 *. n2 /. 2.0 in
-  let bigu = match side with
-    | BothSide -> max [|u1;u2|]
-    | RightSide -> u2
-    | LeftSide -> u1
-  in
-  let z = (bigu -. mean) /. sd in
-  let p = match side with
-    | BothSide -> 2.0 *. Cdf.gaussian_Q (abs_float z) 1.0
-    | RightSide -> Cdf.gaussian_Q z 1.0
-    | LeftSide -> Cdf.gaussian_Q z 1.0
-  in
-  let h = alpha > p in
-  (h, p, u2)
-
-
-let rec exact_a u n m =
-  if u < 0. then 0.
-  else if u >= m *. (n -. m) then float_of_int (Owl_maths.combination (int_of_float n) (int_of_float m))
-  else if (m = 1. || (n -. m) = 1.) then u +. 1.
-  else ((exact_a u (n -. 1.) m) +. (exact_a (u -. (n -. m)) (n -. 1.) (m -. 1.)))
-
-let mannwhitneyu_exact ?(alpha=0.05) ?(side=BothSide) x y =
-  let n1 = float_of_int (Array.length x) in
-  let n2 = float_of_int (Array.length y) in
-  let ranked = rank (Array.append x y) in
-  let rankx = Array.fold_left (+.) 0.0 (Array.sub ranked 0 (int_of_float n1)) in
-  let u1 = n1 *. n2 +. (n1 *. (n1 +. 1.0)) /. 2.0 -. rankx in
-  let u2 = n1 *. n2 -. u1 in
-  let bigu = match side with
-    | BothSide -> min [|u1;u2|]
-    | RightSide -> u1
-    | LeftSide -> u2
-  in
-  let p =
-    let a =
-      if n1 < n2 then exact_a bigu (n1 +. n2) n2
-      else exact_a bigu (n1 +. n2) n1
+  let asymptotic v =
+    let t = tiecorrect ranked in
+    let sd = sqrt(t *. n1 *. n2 *. (n1 +. n2 +. 1.0) /. 12.0) in
+    let mean = n1 *. n2 /. 2.0 in
+    let bigu = match side with
+      | BothSide -> max [|u1;u2|]
+      | RightSide -> u2
+      | LeftSide -> u1
     in
-    let c =
-      if n1 < n2 then float_of_int (Owl_maths.combination (int_of_float (n1 +. n2)) (int_of_float n2))
-      else float_of_int (Owl_maths.combination (int_of_float (n1 +. n2)) (int_of_float n1))
+    let z = (bigu -. mean) /. sd in
+    let p = match side with
+      | BothSide -> 2.0 *. Cdf.gaussian_Q (abs_float z) 1.0
+      | RightSide -> Cdf.gaussian_Q z 1.0
+      | LeftSide -> Cdf.gaussian_Q z 1.0
     in
-    a /. c
+    let h = alpha > p in
+    (h, p, u2)
   in
-  let pv =
-    match side with
-    | BothSide -> 2. *. p
-    | _ -> p
+  let exact v =
+    let bigu = match side with
+      | BothSide -> min [|u1;u2|]
+      | RightSide -> u1
+      | LeftSide -> u2
+    in
+    let p =
+      let a =
+        if n1 < n2 then exact_a bigu (n1 +. n2) n2
+        else exact_a bigu (n1 +. n2) n1
+      in
+      let c =
+        if n1 < n2 then float_of_int (Owl_maths.combination (int_of_float (n1 +. n2)) (int_of_float n2))
+        else float_of_int (Owl_maths.combination (int_of_float (n1 +. n2)) (int_of_float n1))
+      in
+      a /. c
+    in
+    let pv =
+      match side with
+      | BothSide -> 2. *. p
+      | _ -> p
+    in
+    let h = alpha > p in
+    (h, pv, u2)
   in
-  let h = alpha > p in
-  (h, pv, u2)
+  if (max ranked) = (n1 +. n2) && (max [|n1;n2|]) < 10. then exact 1
+  else asymptotic 1
 
 (*f*)
-
-
-
 
 
 
