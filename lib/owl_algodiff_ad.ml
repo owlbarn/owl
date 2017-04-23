@@ -8,6 +8,7 @@
 
 module S = Pervasives
 module M = Owl_dense_matrix_s
+module V = Owl_dense_vector_s
 
 type mat = M.mat
 
@@ -766,6 +767,9 @@ module Maths = struct
       DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai)
     | _                  -> failwith "error: of_rows: AD"
 
+
+  (* TODO: trace and diag functions ... *)
+
 end
 
 
@@ -1013,8 +1017,7 @@ let jacobian' f x =
     match m > n with
     | true  ->  (
         Array.init n (fun i ->
-          let v = M.zeros 1 n in
-          v.{0,i} <- 1.;
+          let v = V.unit_basis n i in
           jacobianv f x (Mat v)
         )
         |> Array.iteri (fun i v ->
@@ -1025,8 +1028,7 @@ let jacobian' f x =
       )
     | false -> (
         Array.init m (fun i ->
-          let v = M.zeros 1 m in
-          v.{0,i} <- 1.;
+          let v = V.unit_basis m i in
           jacobianTv f x (Mat v)
         )
         |> Array.iteri (fun i v ->
@@ -1036,7 +1038,7 @@ let jacobian' f x =
         );
       );
   );
-  (y, z)
+  (y, Mat z)
 
 
 (* jacobian of f *)
@@ -1050,13 +1052,19 @@ let gradhessian' f x =
   let g, h = gradhessian f x in
   f x, g, h
 
-(* hessian *)
+(* hessian of f *)
 let hessian f x = (f |> grad |> jacobian) x
 
 (* original value and hessian of f *)
 let hessian' f x = f x, hessian f x
 
+(* laplacian of f *)
+let laplacian f x = F (hessian f x |> unpack_mat |> M.trace)
 
+let laplacian' f x = f x, laplacian f x
+
+
+(* TODO: consider visualisation *)
 let print_trace x =
   None
 
