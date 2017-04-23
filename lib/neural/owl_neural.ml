@@ -5,7 +5,7 @@
 
 (* NOTE: this is an experimental module being built now *)
 
-open Owl_algodiff_ad
+open Owl_algodiff.S
 open Owl_neural_layer
 
 

@@ -3,8 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_algodiff_ad
-type t = Owl_algodiff_ad.t
+open Owl_algodiff.S
+type t = Owl_algodiff.S.t
 
 
 (* module for initialising weight matrix *)

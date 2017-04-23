@@ -1,7 +1,7 @@
 (* Test neural network on MNIST *)
 
 open Owl
-open Algodiff.AD
+open Algodiff.S
 
 type layer = {
   mutable w : t;

@@ -3,13 +3,12 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Algorithmic differentiation
-  Currently, only Forward mode is implemented. Backward mode will be
-  implemented in the future.
- *)
+(** Algorithmic differentiation *)
 
 (* Alias of modules of algorithmic differentiation. *)
 
-module AD = Owl_algodiff_ad
+module S = Owl_algodiff_generic.Make (Owl_dense_matrix_s)
+
+module D = Owl_algodiff_generic.Make (Owl_dense_matrix_d)
 
 module Numerical = Owl_algodiff_numerical
