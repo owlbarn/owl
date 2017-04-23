@@ -53,7 +53,7 @@ module To_test = struct
     M.get x [|1;0;1|] = 5.
 
   let slice () =
-    let y = M.slice [|None; Some 0; Some 0|] x0 in
+    let y = M.slice [[];[0];[0]] x0 |> M.flatten in
     let z = M.zeros Float64 [|2|] in
     M.set z [|1|] 3.;
     M.equal y z

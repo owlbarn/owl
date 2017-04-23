@@ -978,7 +978,7 @@ let grad' f x =
   let y = f x in
   reverse_reset y;
   reverse_push (F 1.) y;
-  primal y, x |> adjval |> primal
+  primal y, x |> adjval
 
 (* gradient of f (vector -> scalar) at x, reverse ad *)
 let grad f x = grad' f x |> snd
@@ -1003,38 +1003,59 @@ let jacobianTv' f x v =
 (* transposed jacobian vector product of f (vector -> vector) at x along v, backward ad *)
 let jacobianTv f x v = jacobianTv' f x v |> snd
 
-(* jacobian of f (vector -> vector) at x, both x and y are row vectors. *)
-let jacobian f x =
-  (* FIXME *)
-  let y = f x |> primal |> Maths.transpose in
-  let m = row_num y in
+(* jacobian of f (vector -> vector) at x, both x and y are row vectors, also return the original value *)
+let jacobian' f x =
+  let y = f x |> primal in
+  let m = col_num y in
   let n = col_num x in
   let z = M.empty m n in
-  if m > n then (
-    let b = M.eye n in
-    Array.init n (fun i ->
-      let v = Mat (M.col b i) in
-      jacobianv f x v
-    )
-    |> Array.iteri (fun i v ->
-      match v with
-      | Mat v -> M.copy_col_to v z i
-      | _     -> failwith "error: jacobian"
-    );
-  )
-  else (
-    let b = M.eye m in
-    Array.init m (fun i ->
-      let v = Mat (M.row b i) in
-      jacobianTv f x v
-    )
-    |> Array.iteri (fun i v ->
-      match v with
-      | Mat v -> M.copy_row_to v z i
-      | _     -> failwith "error: jacobian"
-    );
+  (
+    match m > n with
+    | true  ->  (
+        Array.init n (fun i ->
+          let v = M.zeros 1 n in
+          v.{0,i} <- 1.;
+          jacobianv f x (Mat v)
+        )
+        |> Array.iteri (fun i v ->
+          match v with
+          | Mat v -> M.copy_col_to (M.transpose v) z i
+          | _     -> failwith "error: jacobian"
+        );
+      )
+    | false -> (
+        Array.init m (fun i ->
+          let v = M.zeros 1 m in
+          v.{0,i} <- 1.;
+          jacobianTv f x (Mat v)
+        )
+        |> Array.iteri (fun i v ->
+          match v with
+          | Mat v -> M.copy_row_to v z i
+          | _     -> failwith "error: jacobian"
+        );
+      );
   );
-  z
+  (y, z)
+
+
+(* jacobian of f *)
+let jacobian f x = jacobian' f x |> snd
+
+(* gradient, hessian of f (vector -> scalar) at [x] *)
+let gradhessian f x = jacobian' (grad f) x
+
+(* original value, gradient, and hessian *)
+let gradhessian' f x =
+  let g, h = gradhessian f x in
+  f x, g, h
+
+(* hessian *)
+let hessian f x = (f |> grad |> jacobian) x
+
+(* original value and hessian of f *)
+let hessian' f x = f x, hessian f x
+
 
 let print_trace x =
   None
