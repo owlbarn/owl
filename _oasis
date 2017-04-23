@@ -73,6 +73,7 @@ Library owl
                     Owl_sparse_dok_matrix,
                     Owl_algodiff,
                     Owl_algodiff_ad,
+                    Owl_algodiff_generic,
                     Owl_algodiff_numerical,
                     Owl_fft,
                     Owl_linalg,
