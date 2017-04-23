@@ -1,6 +1,6 @@
 (** Unit test for Algodiff module *)
 
-open Owl.Algodiff.AD
+open Owl.Algodiff.D
 
 (* a module with functions to test *)
 module To_test = struct
