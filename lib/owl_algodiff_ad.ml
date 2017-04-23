@@ -7,10 +7,12 @@
   I should use functor to wrap it up in the future. *)
 
 module S = Pervasives
-module M = Owl_dense_matrix_s
-module V = Owl_dense_vector_s
 
+module M = Owl_dense_matrix_s
 type mat = M.mat
+
+module V = Owl_dense_vector_s
+type vec = V.vec
 
 (* type definitions *)
 
@@ -1057,6 +1059,26 @@ let hessian f x = (f |> grad |> jacobian) x
 
 (* original value and hessian of f *)
 let hessian' f x = f x, hessian f x
+
+(* original value, gradient-vector product, hessian-vector product *)
+let gradhessianv' f x v =
+  let gv, hv = grad' (fun y -> jacobianv f y v) x in
+  f x, gv, hv
+
+(* gradient-vector product and hessian-vector product *)
+let gradhessianv f x v =
+  let _, gv, hv = gradhessianv' f x v in
+  gv, hv
+
+(* original value and hessian-vector product *)
+let hessianv' f x v =
+  let fv, _, hv = gradhessianv' f x v in
+  fv, hv
+
+(* hessian-vector *)
+let hessianv f x v =
+  let _, _, hv = gradhessianv' f x v in
+  hv
 
 (* laplacian of f *)
 let laplacian f x = F (hessian f x |> unpack_mat |> M.trace)
