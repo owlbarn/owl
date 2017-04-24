@@ -37,6 +37,7 @@ Library owl
                     Owl_stats,
                     Owl_dense,
                     ### Core components ###
+                    Owl_operator,
                     Owl_dense_common,
                     Owl_dense_ndarray,
                     Owl_dense_ndarray_s,
