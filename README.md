@@ -489,12 +489,12 @@ There are more functions to help you to iterate elements and slices in a ndarray
 
 Algorithmic differentiation (AD) is another key component in Owl which can make many analytical tasks so easy to perform. It is also often referred to as Automatic differentiation. Here is a [Wikipedia article](https://en.wikipedia.org/wiki/Automatic_differentiation) to help you understand the topic if you are interested in.
 
-The AD support is provided `Algodiff` module. More precisely, `Algodiff.Numerical` provides numerical differentiation whilst `Algodiff.AD` provides algorithmic differentiation. For the detailed differences between the two, please read the wiki article as your starting point. Simply put, `Algodiff.AD` is able to provide exact result of the derivative whereas `Algodiff.Numerical` is just approximation which is subject to round and truncate errors.
+The AD support is provided `Algodiff` module. More precisely, `Algodiff.Numerical` provides numerical differentiation whilst `Algodiff.S` and `Algodiff.D` provides algorithmic differentiation for single and double precision float numbers respectively. For the detailed differences between the two, please read the wiki article as your starting point. Simply put, `Algodiff.S/D` is able to provide exact result of the derivative whereas `Algodiff.Numerical` is just approximation which is subject to round and truncate errors.
 
-`Algodiff.AD` supports higher-order derivatives. Here is an example which calculates till the fourth derivative of `tanh` function.
+`Algodiff.S` supports higher-order derivatives. Here is an example which calculates till the fourth derivative of `tanh` function.
 
 ```ocaml
-open Algodiff.AD;;
+open Algodiff.S;;
 
 (* calculate derivatives of f0 *)
 let f0 x = Maths.(tanh x);;
