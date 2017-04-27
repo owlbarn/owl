@@ -3,6 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+
+(* To use Make functor in Algodiff, the passed in module needs to implement the
+  following functions to support necessary mathematical functions and etc.
+ *)
+
 module type MatrixSig = sig
 
   type mat
@@ -171,6 +176,11 @@ end
 
 
 
+(* The functor used to generate Algodiff module of various precisions.
+  Currently, Dense.Matrix.S and Dense.Matrix.D can be plugged in to suppport
+  32-bit and 64-bit two precisions.
+ *)
+
 module Make (M : MatrixSig) : sig
 
   type mat = M.mat
@@ -180,11 +190,13 @@ module Make (M : MatrixSig) : sig
   type trace_op
 
   type t =
-    | F   of float
-    | Mat of mat
+    | F   of float                                  (* constructor of float numbers *)
+    | Mat of mat                                    (* constructor of matrices *)
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
 
+
+  (* mathematical functions supported by Algodiff *)
 
   module Maths : sig
 
@@ -295,6 +307,10 @@ module Make (M : MatrixSig) : sig
   end
 
 
+  (* Simple wrapper of matrix module, so you don't have to pack and unpack
+    matrices all the time. Some operations also overlad with Maths module.
+  *)
+
   module Mat : sig
 
     val empty : int -> int -> t
@@ -334,6 +350,51 @@ module Make (M : MatrixSig) : sig
   end
 
 
+  (* core Algodiff functions for algorithmic differentiation *)
+
+  val diff : (t -> t) -> t -> t
+
+  val diff' : (t -> t) -> t -> t * t
+
+  val grad : (t -> t) -> t -> t
+
+  val grad' : (t -> t) -> t -> t * t
+
+  val jacobian : (t -> t) -> t -> t
+
+  val jacobian' : (t -> t) -> t -> t * t
+
+  val jacobianv : (t -> t) -> t -> t -> t
+
+  val jacobianv' : (t -> t) -> t -> t -> t * t
+
+  val jacobianTv : (t -> t) -> t -> t -> t
+
+  val jacobianTv' : (t -> t) -> t -> t -> t * t
+
+  val hessian : (t -> t) -> t -> t
+
+  val hessian' : (t -> t) -> t -> t * t
+
+  val hessianv : (t -> t) -> t -> t -> t
+
+  val hessianv' : (t -> t) -> t -> t -> t * t
+
+  val laplacian : (t -> t) -> t -> t
+
+  val laplacian' : (t -> t) -> t -> t * t
+
+  val gradhessian : (t -> t) -> t -> t * t
+
+  val gradhessian' : (t -> t) -> t -> t * t * t
+
+  val gradhessianv : (t -> t) -> t -> t -> t * t
+
+  val gradhessianv' : (t -> t) -> t -> t -> t * t * t
+
+
+  (* low-level functions, only use them if you know what you are doing. *)
+
   val unpack_flt : t -> elt
 
   val unpack_mat : t -> mat
@@ -346,8 +407,15 @@ module Make (M : MatrixSig) : sig
 
   val adjval : t -> t
 
+  val adjref : t -> t ref
+
+  val tangent : t -> t
+
+  val make_forward : t -> t -> int -> t
+
   val make_reverse : t -> int -> t
 
   val reverse_prop : t -> t -> unit
+
 
 end
