@@ -182,6 +182,8 @@ module Make (M : MatrixSig) = struct
 
   type mat = M.mat
 
+  type elt = M.elt
+
   type t =
     | F   of float
     | Mat of mat
