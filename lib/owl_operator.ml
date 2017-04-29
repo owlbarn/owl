@@ -7,108 +7,74 @@ open Bigarray
 
 (* define the functions need to be implemented *)
 
-module type Computable = sig
+module type BasicSig = sig
 
-  type mat
+  type ('a, 'b) t
 
-  type elt
+  val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  val add : mat -> mat -> mat
+  val sub : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  val sub : mat -> mat -> mat
+  val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  val mul : mat -> mat -> mat
+  val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  val div : mat -> mat -> mat
+  val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
-(*
-  val elt_mul : mat -> mat -> t
+  val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
-  val elt_div : mat -> mat -> t
-*)
+  val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
-  val add_scalar : mat -> elt -> mat
+  val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
-  val sub_scalar : mat -> elt -> mat
+  val equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
-  val mul_scalar : mat -> elt -> mat
+  val not_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
-  val div_scalar : mat -> elt -> mat
+  val greater : ('a, 'b) t -> ('a, 'b) t -> bool
 
-  val equal : mat -> mat -> bool
+  val less : ('a, 'b) t -> ('a, 'b) t -> bool
 
-  val not_equal : mat -> mat -> bool
+  val greater_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
-  val greater : mat -> mat -> bool
-
-  val less : mat -> mat -> bool
-
-  val greater_equal : mat -> mat -> bool
-
-  val less_equal : mat -> mat -> bool
-
-  val elt_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
-
-  val elt_not_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
-
-  val elt_greater : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
-
-  val elt_less : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
-
-  val elt_greater_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
-
-  val elt_less_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+  val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
 end
 
 
-(* define the operators *)
+(* define basic operators *)
 
-module Make (C : Computable) = struct
+module Make_Basic (M : BasicSig) = struct
 
-  type mat = C.mat
+  type ('a, 'b) t = ('a, 'b) M.t
 
-  type elt = C.elt
+  let ( + ) = M.add
 
-  let ( + ) = C.add
+  let ( - ) = M.sub
 
-  let ( - ) = C.sub
+  let ( * ) = M.mul
 
-  let ( * ) = C.mul
+  let ( / ) = M.div
 
-  let ( / ) = C.div
+  let ( +$ ) = M.add_scalar
 
-  let ( +$ ) = C.add_scalar
+  let ( -$ ) = M.sub_scalar
 
-  let ( -$ ) = C.sub_scalar
+  let ( *$ ) = M.mul_scalar
 
-  let ( *$ ) = C.mul_scalar
+  let ( /$ ) = M.div_scalar
 
-  let ( /$ ) = C.div_scalar
+  let ( = ) = M.equal
 
-  let ( = ) = C.equal
+  let ( <> ) = M.not_equal
 
-  let ( <> ) = C.not_equal
+  let ( > ) = M.greater
 
-  let ( > ) = C.greater
+  let ( < ) = M.less
 
-  let ( < ) = C.less
+  let ( >= ) = M.greater_equal
 
-  let ( >= ) = C.greater_equal
-
-  let ( <= ) = C.less_equal
-
-  let ( =. ) = C.elt_equal
-
-  let ( <>. ) = C.elt_not_equal
-
-  let ( >. ) = C.elt_greater
-
-  let ( <. ) = C.elt_less
-
-  let ( >=. ) = C.elt_greater_equal
-
-  let ( <=. ) = C.elt_less_equal
+  let ( <= ) = M.less_equal
 
 end
 
