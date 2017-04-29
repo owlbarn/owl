@@ -19,6 +19,8 @@ module type BasicSig = sig
 
   val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
+  val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+
   val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
   val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
@@ -26,6 +28,14 @@ module type BasicSig = sig
   val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
   val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
+  val add_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+
+  val sub_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+
+  val mul_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+
+  val div_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
 
   val equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
@@ -42,6 +52,14 @@ module type BasicSig = sig
 end
 
 
+module type ExtSig = sig
+
+  type ('a, 'b) t
+
+  val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+end
+
 (* define basic operators *)
 
 module Make_Basic (M : BasicSig) = struct
@@ -56,6 +74,8 @@ module Make_Basic (M : BasicSig) = struct
 
   let ( / ) = M.div
 
+  let ( ** ) = M.pow
+
   let ( +$ ) = M.add_scalar
 
   let ( -$ ) = M.sub_scalar
@@ -63,6 +83,14 @@ module Make_Basic (M : BasicSig) = struct
   let ( *$ ) = M.mul_scalar
 
   let ( /$ ) = M.div_scalar
+
+  let ( $+ ) = M.add_scalar0
+
+  let ( $- ) = M.sub_scalar0
+
+  let ( $* ) = M.mul_scalar0
+
+  let ( $/ ) = M.div_scalar0
 
   let ( = ) = M.equal
 
@@ -75,6 +103,16 @@ module Make_Basic (M : BasicSig) = struct
   let ( >= ) = M.greater_equal
 
   let ( <= ) = M.less_equal
+
+end
+
+
+
+module Make_Ext (M : ExtSig) = struct
+
+  type ('a, 'b) ext_t = ('a, 'b) M.t
+
+  let ( *@ ) = M.dot
 
 end
 

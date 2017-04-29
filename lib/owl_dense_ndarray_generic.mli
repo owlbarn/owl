@@ -661,20 +661,32 @@ val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
   returns the result in a new ndarray.
  *)
 
+val add_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [add_scalar0 a x] is similar to [add_scalar] but with scalar as the first parameter. *)
+
 val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [sub_scalar x a] subtracts a scalar value [a] to all the elements in [x],
   and returns the result in a new ndarray.
  *)
+
+val sub_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [sub_scalar0 a x] is similar to [sub_scalar] but with scalar as the first parameter. *)
 
 val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [mul_scalar x a] multiplies a scalar value [a] to all the elements in [x],
   and returns the result in a new ndarray.
  *)
 
+val mul_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [mul_scalar0 a x] is similar to [mul_scalar] but with scalar as the first parameter. *)
+
 val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [div_scalar x a] divides a scalar value [a] to all the elements in [x], and
   returns the result in a new ndarray.
  *)
+
+val div_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [div_scalar0 a x] is similar to [div_scalar] but with scalar as the first parameter. *)
 
 val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
@@ -758,75 +770,6 @@ val cast_s2z : (float, float32_elt) t -> (Complex.t, complex64_elt) t
 
 val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 (** [cast_d2c x] casts [x] from [float64] to [complex32]. *)
-
-
-(** {6 Shorhand infix operators} *)
-
-val ( >> ) : ('a, 'b) t -> ('a, 'b) t -> unit
-(** Shorthand for [copy_to x y], i.e., x >> y *)
-
-val ( << ) : ('a, 'b) t -> ('a, 'b) t -> unit
-(** Shorthand for [copy_to y x], i.e., x << y *)
-
-val ( +@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [add x y], i.e., [x +@ y] *)
-
-val ( -@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [sub x y], i.e., [x -@ y] *)
-
-val ( *@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [mul x y], i.e., [x *@ y] *)
-
-val ( /@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [div x y], i.e., [x /@ y] *)
-
-val ( **@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [power x a], i.e., [x **@ a] *)
-
-val ( +$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** Shorthand for [add_scalar x a], i.e., [x +$ a] *)
-
-val ( -$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** Shorthand for [sub_scalar x a], i.e., [x -$ a] *)
-
-val ( *$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
-
-val ( /$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
-
-val ( $+ ) : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [add_scalar x a], i.e., [a $+ x] *)
-
-val ( $- ) : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [sub_scalar x a], i.e., [a -$ x] *)
-
-val ( $* ) : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
-
-val ( $/ ) : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
-
-val ( =@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [equal x y], i.e., [x =@ y] *)
-
-val ( >@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [greater x y], i.e., [x >@ y] *)
-
-val ( <@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [less x y], i.e., [x <@ y] *)
-
-val ( <>@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [not_equal x y], i.e., [x <>@ y] *)
-
-val ( >=@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [greater_equal x y], i.e., [x >=@ y] *)
-
-val ( <=@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [less_equal x y], i.e., [x <=@ y] *)
-
-val ( @@ ) : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [map f x], i.e., f @@ x *)
 
 
 (** {6 Some helper functions } *)

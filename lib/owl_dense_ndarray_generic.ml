@@ -558,6 +558,31 @@ let atan21 x a =
   fill y a;
   atan2 x y
 
+let add_scalar0 a x =
+  let z = clone x in
+  let x = ndarray_to_c_mat z in
+  let _ = Owl_backend_gsl_linalg.add_scalar (kind z) x a in
+  z
+
+let sub_scalar0 a x =
+  let z = neg x in
+  let x = ndarray_to_c_mat z in
+  let _ = Owl_backend_gsl_linalg.add_scalar (kind z) x a in
+  z
+
+let mul_scalar0 a x =
+  let z = clone x in
+  let x = ndarray_to_c_mat z in
+  let _ = Owl_backend_gsl_linalg.mul_scalar (kind z) x a in
+  z
+
+let div_scalar0 a x =
+  let z = reci x in
+  let x = ndarray_to_c_mat z in
+  let _ = Owl_backend_gsl_linalg.mul_scalar (kind z) x a in
+  z
+
+
 (* element-wise comparison functions *)
 
 let elt_equal x y =
@@ -1212,52 +1237,6 @@ let tensordot x = None
 
 let cumsum axis x = None
 
-
-(* Shorhand infix operators *)
-
-let ( >> ) = copy
-
-let ( << ) x1 x2 = copy x2 x1
-
-let ( +@ ) = add
-
-let ( -@ ) = sub
-
-let ( *@ ) = mul
-
-let ( /@ ) = div
-
-let ( **@ ) = pow
-
-let ( =@ ) = ( = )
-
-let ( <>@ ) = ( <> )
-
-let ( >@ ) = greater
-
-let ( <@ ) = less
-
-let ( >=@ ) = greater_equal
-
-let ( <=@ ) = less_equal
-
-let ( +$ ) x a = add_scalar x a
-
-let ( $+ ) a x = add_scalar x a
-
-let ( -$ ) x a = sub_scalar x a
-
-let ( $- ) a x = sub_scalar x a |> neg
-
-let ( *$ ) x a = mul_scalar x a
-
-let ( $* ) a x = mul_scalar x a
-
-let ( /$ ) x a = div_scalar x a
-
-let ( $/ ) a x = div_scalar x a |> reci
-
-let ( @@ ) f x = map f x
 
 
 (* ends here *)

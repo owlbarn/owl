@@ -12,3 +12,8 @@ module C = Owl_dense_matrix_c
 module Z = Owl_dense_matrix_z
 
 module Generic = Owl_dense_matrix_generic
+
+module Operator = struct
+  include Owl_operator.Make_Basic (Generic)
+  include Owl_operator.Make_Ext (Generic)
+end

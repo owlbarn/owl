@@ -12,3 +12,5 @@ module C = Owl_dense_ndarray_c
 module Z = Owl_dense_ndarray_z
 
 module Generic = Owl_dense_ndarray_generic
+
+module Operator = Owl_operator.Make_Basic (Generic)
