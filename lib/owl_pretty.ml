@@ -42,6 +42,8 @@ let pp_end_row_newline ppf _ = pp_newline ppf
 let pp_end_row_space ppf _ = pp_space ppf
 let pp_end_col_space ppf ~row:_ ~col:_ = pp_space ppf
 
+let pp_reset ppf newline = if newline then force_newline (); pp_flush_formatter ppf
+
 let pad_str pad_c max_len str =
   let str_len = String.length str in
   let diff = max_len - str_len in
@@ -109,6 +111,10 @@ let pp_mat_gen
     ?(vertical_context = !Context.vertical_default)
     ?(horizontal_context = !Context.horizontal_default)
     pp_el ppf mat =
+
+  (* reset before pretty printing *)
+  pp_reset ppf true;
+
   let m = Array2.dim1 mat in
   if m > 0 then (
     let n = Array2.dim2 mat in
@@ -345,6 +351,9 @@ let pp_mat_gen
           | Some pp_foot ->
               pp_end_row ppf m;
               fmt_head_foot ~src_r:(m + 1) pp_foot);
+
+      (* reset after pretty printing *)
+      pp_reset ppf true;
       pp_close ppf))
 
 
@@ -788,4 +797,5 @@ module Toplevel = struct
   let pp_imat ppf mat = gen_pp_mat pp_int32_el ppf mat
 
   let lsc n = Context.set_dim_defaults (Some (Context.create n))
+
 end

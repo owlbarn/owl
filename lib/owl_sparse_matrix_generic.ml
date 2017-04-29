@@ -550,6 +550,7 @@ let uniform ?(density=0.15) ?(scale=1.) k m n =
 
 let print x = _eigen_print x.d
 
+(* TODO: improve the performance *)
 let pp_spmat x =
   let m, n = shape x in
   let c = nnz x in
