@@ -1,4 +1,4 @@
-module M = Owl_dense_matrix_d
+module M = Owl.Dense.Matrix.D
 
 let test_op s c op = Perf_common.test_op s c op
 
@@ -47,14 +47,14 @@ let _ =
   test_op "average    " c (fun () -> M.average x);
   test_op "avg_col    " c (fun () -> M.average_cols x);
   test_op "avg_row    " c (fun () -> M.average_rows x);
-  test_op "=@         " c (fun () -> M.(x =@ y));
-  test_op ">@         " c (fun () -> M.(x >@ y));
-  test_op ">=@        " c (fun () -> M.(x >=@ y));
+  test_op "=@         " c (fun () -> M.(x = y));
+  test_op ">@         " c (fun () -> M.(x > y));
+  test_op ">=@        " c (fun () -> M.(x >= y));
   test_op "diag       " c (fun () -> M.diag x);
   test_op "transpose  " c (fun () -> M.transpose x);
   test_op "clone      " c (fun () -> M.clone x);
-  test_op "@=         " c (fun () -> M.(x @= y));
-  test_op "@||        " c (fun () -> M.(x @|| y));
+  test_op "@=         " c (fun () -> M.concat_vertical x y);
+  test_op "@||        " c (fun () -> M.concat_horizontal x y);
   test_op "draw_cols  " c (fun () -> M.draw_cols x 1000);
   test_op "draw_rows  " c (fun () -> M.draw_rows x 1000);
   test_op "save       " c (fun () -> M.save x "test_matrix0.tmp");

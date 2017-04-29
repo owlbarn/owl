@@ -146,31 +146,31 @@ module type MatrixSig = sig
 
   val atan21 : mat -> elt -> mat
 
-  val ( +@ ) : mat -> mat -> mat
+  val add : mat -> mat -> mat
 
-  val ( -@ ) : mat -> mat -> mat
+  val sub : mat -> mat -> mat
 
-  val ( *@ ) : mat -> mat -> mat
+  val mul : mat -> mat -> mat
 
-  val ( /@ ) : mat -> mat -> mat
+  val div : mat -> mat -> mat
 
-  val ( +$ ) : mat -> elt -> mat
+  val add_scalar : mat -> elt -> mat
 
-  val ( $+ ) : elt -> mat -> mat
+  val sub_scalar : mat -> elt -> mat
 
-  val ( -$ ) : mat -> elt -> mat
+  val mul_scalar : mat -> elt -> mat
 
-  val ( $- ) : elt -> mat -> mat
+  val div_scalar : mat -> elt -> mat
 
-  val ( *$ ) : mat -> elt -> mat
+  val add_scalar0 : elt -> mat -> mat
 
-  val ( $* ) : elt -> mat -> mat
+  val sub_scalar0 : elt -> mat -> mat
 
-  val ( /$ ) : mat -> elt -> mat
+  val mul_scalar0 : elt -> mat -> mat
 
-  val ( $/ ) : elt -> mat -> mat
+  val div_scalar0 : elt -> mat -> mat
 
-  val ( $@ ) : mat -> mat -> mat
+  val dot : mat -> mat -> mat
 
 end
 
@@ -300,7 +300,7 @@ module Make (M : MatrixSig) : sig
 
     val ( / )  : t -> t -> t
 
-    val ( $@ )  : t -> t -> t
+    val ( *@ )  : t -> t -> t
 
     val ( ** )  : t -> t -> t
 

@@ -361,6 +361,14 @@ val mul_scalar : mat -> elt -> mat
 
 val div_scalar : mat -> elt -> mat
 
+val add_scalar0 : elt -> mat -> mat
+
+val sub_scalar0 : elt -> mat -> mat
+
+val mul_scalar0 : elt -> mat -> mat
+
+val div_scalar0 : elt -> mat -> mat
+
 val dot : mat -> mat -> mat
 
 val add_diag : mat -> elt -> mat
@@ -368,56 +376,3 @@ val add_diag : mat -> elt -> mat
 val ssqr : mat -> elt -> elt
 
 val ssqr_diff : mat -> mat -> elt
-
-
-(** {6 Shorhand infix operators} *)
-
-val ( >> ) : mat -> mat -> unit
-
-val ( << ) : mat -> mat -> unit
-
-val ( @= ) : mat -> mat -> mat
-
-val ( @|| ) : mat -> mat -> mat
-
-val ( +@ ) : mat -> mat -> mat
-
-val ( -@ ) : mat -> mat -> mat
-
-val ( *@ ) : mat -> mat -> mat
-
-val ( /@ ) : mat -> mat -> mat
-
-val ( +$ ) : mat -> elt -> mat
-
-val ( -$ ) : mat -> elt -> mat
-
-val ( *$ ) : mat -> elt -> mat
-
-val ( /$ ) : mat -> elt -> mat
-
-val ( $+ ) : elt -> mat -> mat
-
-val ( $- ) : elt -> mat -> mat
-
-val ( $* ) : elt -> mat -> mat
-
-val ( $/ ) : elt -> mat -> mat
-
-val ( $@ ) : mat -> mat -> mat
-
-val ( **@ ) : mat -> elt -> mat
-
-val ( =@ ) : mat -> mat -> bool
-
-val ( >@ ) : mat -> mat -> bool
-
-val ( <@ ) : mat -> mat -> bool
-
-val ( <>@ ) : mat -> mat -> bool
-
-val ( >=@ ) : mat -> mat -> bool
-
-val ( <=@ ) : mat -> mat -> bool
-
-val ( @@ ) : (elt -> elt) -> mat -> mat

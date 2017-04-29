@@ -11,7 +11,7 @@ type layer = {
 
 type network = { layers : layer array }
 
-let run_layer x l = Maths.((x $@ l.w) + l.b) |> l.a
+let run_layer x l = Maths.((x *@ l.w) + l.b) |> l.a
 
 let run_network x nn = Array.fold_left run_layer x nn.layers
 

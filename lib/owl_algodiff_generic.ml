@@ -145,31 +145,31 @@ module type MatrixSig = sig
 
   val atan21 : mat -> elt -> mat
 
-  val ( +@ ) : mat -> mat -> mat
+  val add : mat -> mat -> mat
 
-  val ( -@ ) : mat -> mat -> mat
+  val sub : mat -> mat -> mat
 
-  val ( *@ ) : mat -> mat -> mat
+  val mul : mat -> mat -> mat
 
-  val ( /@ ) : mat -> mat -> mat
+  val div : mat -> mat -> mat
 
-  val ( +$ ) : mat -> elt -> mat
+  val add_scalar : mat -> elt -> mat
 
-  val ( $+ ) : elt -> mat -> mat
+  val sub_scalar : mat -> elt -> mat
 
-  val ( -$ ) : mat -> elt -> mat
+  val mul_scalar : mat -> elt -> mat
 
-  val ( $- ) : elt -> mat -> mat
+  val div_scalar : mat -> elt -> mat
 
-  val ( *$ ) : mat -> elt -> mat
+  val add_scalar0 : elt -> mat -> mat
 
-  val ( $* ) : elt -> mat -> mat
+  val sub_scalar0 : elt -> mat -> mat
 
-  val ( /$ ) : mat -> elt -> mat
+  val mul_scalar0 : elt -> mat -> mat
 
-  val ( $/ ) : elt -> mat -> mat
+  val div_scalar0 : elt -> mat -> mat
 
-  val ( $@ ) : mat -> mat -> mat
+  val dot : mat -> mat -> mat
 
 end
 
@@ -384,9 +384,9 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a +. b)
-        | F a, Mat b   -> Mat M.(a $+ b)
-        | Mat a, F b   -> Mat M.(a +$ b)
-        | Mat a, Mat b -> Mat M.(a +@ b)
+        | F a, Mat b   -> Mat M.(add_scalar0 a b)
+        | Mat a, F b   -> Mat M.(add_scalar a b)
+        | Mat a, Mat b -> Mat M.(add a b)
         | _            -> failwith "error: add: ff"
       in
       let fd a b = a + b in
@@ -403,9 +403,9 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a -. b)
-        | F a, Mat b   -> Mat M.(a $- b)
-        | Mat a, F b   -> Mat M.(a -$ b)
-        | Mat a, Mat b -> Mat M.(a -@ b)
+        | F a, Mat b   -> Mat M.(sub_scalar0 a b)
+        | Mat a, F b   -> Mat M.(sub_scalar a b)
+        | Mat a, Mat b -> Mat M.(sub a b)
         | _            -> failwith "error: sub: ff"
       in
       let fd a b = a - b in
@@ -422,9 +422,9 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a *. b)
-        | F a, Mat b   -> Mat M.(a $* b)
-        | Mat a, F b   -> Mat M.(a *$ b)
-        | Mat a, Mat b -> Mat M.(a *@ b)
+        | F a, Mat b   -> Mat M.(mul_scalar0 a b)
+        | Mat a, F b   -> Mat M.(mul_scalar a b)
+        | Mat a, Mat b -> Mat M.(mul a b)
         | _            -> failwith "error: mul: ff"
       in
       let fd a b = a * b in
@@ -441,9 +441,9 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a /. b)
-        | F a, Mat b   -> Mat M.(a $/ b)
-        | Mat a, F b   -> Mat M.(a /$ b)
-        | Mat a, Mat b -> Mat M.(a /@ b)
+        | F a, Mat b   -> Mat M.(div_scalar0 a b)
+        | Mat a, F b   -> Mat M.(div_scalar a b)
+        | Mat a, Mat b -> Mat M.(div a b)
         | _            -> failwith "error: div: ff"
       in
       let fd a b = a / b in
@@ -793,17 +793,17 @@ module Make (M : MatrixSig) = struct
 
     and average a = (sum a) / F (numel a |> float_of_int)
 
-    and ( $@ ) a b = dot a b
+    and ( *@ ) a b = dot a b
     and dot a b =
       let ff a b =
         match a, b with
-        | Mat a, Mat b       -> Mat M.(a $@ b)
+        | Mat a, Mat b       -> Mat M.(dot a b)
         | _                  -> failwith "error: dot: ff"
       in
-      let fd a b = a $@ b in
-      let df_da cp ap at = at $@ b in
-      let df_db cp bp bt = a $@ bt in
-      let df_dab cp ap at bp bt = (ap $@ bt) + (at $@ bp) in
+      let fd a b = a *@ b in
+      let df_da cp ap at = at *@ b in
+      let df_db cp bp bt = a *@ bt in
+      let df_dab cp ap at bp bt = (ap *@ bt) + (at *@ bp) in
       let r_d_d a b = Dot_D_D (a, b) in
       let r_d_c a b = Dot_D_C (a, b) in
       let r_c_d a b = Dot_C_D (a, b) in
@@ -899,7 +899,7 @@ module Make (M : MatrixSig) = struct
     and add_row a b i =
       let ff a b =
         match a, b with
-        | Mat a, Mat b       -> M.(copy_row_to (row a i +@ b) a i; Mat a)
+        | Mat a, Mat b       -> M.(copy_row_to (add (row a i) b) a i; Mat a)
         | _                  -> failwith "error: add_row: ff"
       in
       let fd a b = add_row a b i in

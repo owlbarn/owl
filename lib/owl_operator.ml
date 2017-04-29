@@ -64,7 +64,7 @@ end
 
 module Make_Basic (M : BasicSig) = struct
 
-  type ('a, 'b) t = ('a, 'b) M.t
+  type ('a, 'b) op_t0 = ('a, 'b) M.t
 
   let ( + ) = M.add
 
@@ -110,7 +110,7 @@ end
 
 module Make_Ext (M : ExtSig) = struct
 
-  type ('a, 'b) ext_t = ('a, 'b) M.t
+  type ('a, 'b) op_t1 = ('a, 'b) M.t
 
   let ( *@ ) = M.dot
 

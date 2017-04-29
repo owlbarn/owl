@@ -114,21 +114,21 @@ module Gradient = struct
     | GD          -> fun _ _ _ g' -> Maths.neg g'
     | CG          -> fun _ g p g' -> (
         let y = Maths.(g' - g) in
-        let b = Maths.((g' $@ y) / (p $@ y)) in
-        Maths.(neg g' + (b $@ p))
+        let b = Maths.((g' *@ y) / (p *@ y)) in
+        Maths.(neg g' + (b *@ p))
       )
     | CD          -> fun _ g p g' -> (
-        let b = Maths.(l2norm_sqr g' / (neg p $@ g)) in
-        Maths.(neg g' + (b $@ p))
+        let b = Maths.(l2norm_sqr g' / (neg p *@ g)) in
+        Maths.(neg g' + (b *@ p))
       )
     | NonlinearCG -> fun _ g p g' -> (
         let b = Maths.((l2norm_sqr g') / (l2norm_sqr g)) in
-        Maths.(neg g' + (b $@ p))
+        Maths.(neg g' + (b *@ p))
       )
     | DaiYuanCG   -> fun w g p g' -> (
         let y = Maths.(g' - g) in
-        let b = Maths.((l2norm_sqr g') / (p $@ y)) in
-        Maths.(neg g' + (b $@ p))
+        let b = Maths.((l2norm_sqr g') / (p *@ y)) in
+        Maths.(neg g' + (b *@ p))
       )
     | NewtonCG    -> fun w g p g' -> failwith "not implemented" (* TODO *)
     | Newton      -> fun w g p g' -> failwith "not implemented" (* TODO *)

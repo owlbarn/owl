@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module MX = Owl_dense_matrix_d
+module MX = Owl_dense_matrix.D
 module UT = Owl_utils
 
 (* Regularisation functions *)
@@ -17,18 +17,18 @@ let l1_grad p =  (* TODO: I may change it to noisy unbiased subgradient in futur
   ) p
 
 (** [ L2 regularisation and its grandient ]  *)
-let l2 p = MX.(0.5 $* (average_rows (p *@ p)))
+let l2 p = MX.(0.5 $* (average_rows (p * p)))
 
 let l2_grad p = p
 
 (** [ Elastic net regularisation and its gradient
   "a" is the weight on l1 regularisation term. ]  *)
-let elastic a x = MX.(a $* (l1 x) +@ ((1. -. a) $* (l2 x)))
+let elastic a x = MX.(a $* (l1 x) + ((1. -. a) $* (l2 x)))
 
 let elastic_grad a x =
   let g1 = l1_grad x in
   let g2 = l2_grad x in
-  MX.(a $* g1 +@ (a $* g2))
+  MX.(a $* g1 + (a $* g2))
 
 (** [ No regularisation and its gradient ]  *)
 let noreg x = MX.(zeros 1 (col_num x))
@@ -39,32 +39,30 @@ let noreg_grad x = MX.(zeros (row_num x) (col_num x))
 (* Loss functions *)
 
 (** [ least square loss function ]  *)
-let square_loss y y' =
-  let open MX in
-  average_rows ((y' -@ y) **@ 2.)
+let square_loss y y' = MX.((y' - y) |> sqr |> average_rows)
 
 let square_grad x y y' =
   let open MX in
-  (transpose x) $@ (y' -@ y) /$ (float_of_int (row_num x))
+  (transpose x) *@ (y' - y) /$ (float_of_int (row_num x))
 
 (** [ hinge loss function ]  *)
 let hinge_loss y y' =
   let open MX in
-  let z = 1. $- ( y *@ y' ) in
+  let z = 1. $- ( y * y' ) in
   let z = map (Pervasives.max 0.) z in
   average_rows z
 
 let hinge_grad x y y' =
-  let open MX in
-  let z = mapi (fun i j x ->
+  let z = MX.mapi (fun i j x ->
     if x < 1. then (0. -. y.{i,j}) else 0.
-  ) (y *@ y') in
-  (transpose x) $@ z /$ (float_of_int (row_num x))
+  ) MX.(y * y')
+  in
+  MX.((transpose x) *@ z /$ (float_of_int (row_num x)))
 
 (** [ squared hinge loss function ]  *)
 let hinge2_loss y y' =
   let z = hinge_loss y y' in
-  MX.(z *@ z)
+  MX.(z * z)
 
 let hinge2_grad x y y' = None
 
@@ -80,13 +78,13 @@ let log_loss y y' =
     if x > 18. then exp (-1. *. x)
     else if x < (-18.) then (-1. *. x)
     else log (1. +. exp(-1. *. x))
-  ) MX.(y *@ y') in
+  ) MX.(y * y') in
   MX.average_rows z
 
 let log_grad x y y' =
   let open MX in
   let y' = sigmoid y' in
-  (transpose x) $@ (y' -@ y) /$ (float_of_int (row_num x))
+  (transpose x) *@ (y' - y) /$ (float_of_int (row_num x))
 
 
 (* Stochastic Gradient Descent related functions *)
@@ -122,9 +120,9 @@ let when_enough v c = (v < 0.00001 && c > 1000) || (c > 5000)
 let _sgd_basic b s t l g r o a i p x y =
   (* check whether the intercept is needed or not *)
   let p = if i = false then ref p
-    else ref MX.(p @= uniform 1 (col_num p)) in
+    else ref MX.(concat_vertical p (uniform 1 (col_num p))) in
   let x = if i = false then x
-    else MX.(x @|| ones (row_num x) 1) in
+    else MX.(concat_horizontal x (ones (row_num x) 1)) in
   let st = ref 0.1 in
   let cost = ref (Array.make 5000 0.) in
   let obj0 = ref max_float in
@@ -136,15 +134,15 @@ let _sgd_basic b s t l g r o a i p x y =
     let xt, idx = MX.draw_rows x b in
     let yt = MX.rows y idx in
     (* predict then estimate the loss and gradient *)
-    let yt' = MX.(xt $@ !p) in
+    let yt' = MX.(xt *@ !p) in
     let lt = l yt yt' in
     let dt = g xt yt yt' in
     (* check if it is regularised *)
-    let lt = if a = 0. then lt else MX.(lt +@ (a $* (r !p))) in
-    let dt = if a = 0. then dt else MX.(dt +@ (a $* (o !p))) in
+    let lt = if a = 0. then lt else MX.(lt + (a $* (r !p))) in
+    let dt = if a = 0. then dt else MX.(dt + (a $* (o !p))) in
     (* update the gradient with step size *)
     let _ = st := s a !st !counter in
-    let _ = p := MX.(!p -@ (dt *$ !st)) in
+    let _ = p := MX.(!p - (dt *$ !st)) in
     let _ = obj1 := MX.sum lt in
     let _ = if !counter < (Array.length !cost) then !cost.(!counter) <- !obj1 in
     let _ = counter := !counter + 1 in
