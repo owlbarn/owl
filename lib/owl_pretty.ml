@@ -30,6 +30,23 @@ open Format
 open Bigarray
 open Complex
 
+type basic_color =
+  | Black | Red | Green | Yellow | Blue | Magenta | Cyan | White
+
+let basic_color_to_int = function
+  | Black   -> 0
+  | Red     -> 1
+  | Green   -> 2
+  | Yellow  -> 3
+  | Blue    -> 4
+  | Magenta -> 5
+  | Cyan    -> 6
+  | White   -> 7
+
+let make_colourful color s =
+  let colour_index = basic_color_to_int color in
+  sprintf "\027[38;5;%dm%s\027[0m" colour_index s
+
 let from_col_vec v = reshape_2 (genarray_of_array1 v) (Array1.dim v) 1
 let from_row_vec v = reshape_2 (genarray_of_array1 v) 1 (Array1.dim v)
 
