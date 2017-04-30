@@ -410,6 +410,15 @@ let l1norm x = x |> abs |> sum
 
 let l2norm x = mul x x |> sum |> sqrt
 
+let add_scalar0 a x = add_scalar x a
+
+let sub_scalar0 a x = sub_scalar x a |> neg
+
+let mul_scalar0 a x = mul_scalar x a
+
+let div_scalar0 a x = div_scalar x a |> reci
+
+
 (** permutation and draw functions *)
 
 let permutation_matrix k d =

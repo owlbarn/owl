@@ -503,8 +503,10 @@ val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(* [add_scalar] only applies to non-zero elements .*)
 
 val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(* [sub_scalar] only applies to non-zero elements .*)
 
 val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [mul_scalar x a] multiplies every element in [x] by a constant factor [a]. *)
@@ -512,59 +514,13 @@ val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [div_scalar x a] divides every element in [x] by a constant factor [a]. *)
 
+val add_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+
+val sub_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+
+val mul_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+
+val div_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+
 val power_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [power x a] calculates the power of [a] of each element in [x]. *)
-
-
-(** {6 Shorhand infix operators} *)
-
-val ( +@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [add x y], i.e., [x +@ y] *)
-
-val ( -@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [sub x y], i.e., [x -@ y] *)
-
-val ( *@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [mul x y], i.e., [x *@ y] *)
-
-val ( /@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [div x y], i.e., [x /@ y] *)
-
-val ( $@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [dot x y], i.e., [x $@ y] *)
-
-val ( **@ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** Shorthand for [power x a], i.e., [x **@ a] *)
-
-val ( *$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
-
-val ( /$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
-
-val ( $* ) : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
-
-val ( $/ ) : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
-
-val ( =@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [equal x y], i.e., [x =@ y] *)
-
-val ( >@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [greater x y], i.e., [x >@ y] *)
-
-val ( <@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [less x y], i.e., [x <@ y] *)
-
-val ( <>@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [not_equal x y], i.e., [x <>@ y] *)
-
-val ( >=@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [greater_equal x y], i.e., [x >=@ y] *)
-
-val ( <=@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [less_equal x y], i.e., [x <=@ y] *)
-
-val ( @@ ) : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [map f x], i.e., f @@ x *)

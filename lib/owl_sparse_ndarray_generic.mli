@@ -171,6 +171,13 @@ val mul_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
 
 val div_scalar : ('a, 'b) t -> 'a ->('a, 'b) t
 
+val add_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+
+val sub_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+
+val mul_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+
+val div_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
 
 
 (* ends here *)

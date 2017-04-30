@@ -94,6 +94,8 @@ module Make_Basic (M : BasicSig) = struct
 
   let ( = ) = M.equal
 
+  let ( != ) = M.not_equal
+
   let ( <> ) = M.not_equal
 
   let ( > ) = M.greater
