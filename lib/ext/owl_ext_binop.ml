@@ -1314,6 +1314,8 @@ let ( <> ) x y = match x, y with
   | DMZ _, DMZ _ -> DMZ_DMZ.( <> ) x y
   | _            -> error_binop "( <> )" x y
 
+let ( != ) x y = ( <> ) x y
+
 let ( > ) x y = match x, y with
   | F x, F y     -> F_F.( > ) x y
   | F x, C y     -> F_C.( > ) x y

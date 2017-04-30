@@ -66,6 +66,8 @@ module type ExtendSig = sig
 
   val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
+  val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+
 end
 
 
@@ -74,8 +76,6 @@ module type MatrixSig = sig
   type ('a, 'b) t
 
   val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-
-  val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 
 end
 
@@ -145,6 +145,8 @@ module Make_Extend (M : ExtendSig) = struct
 
   let ( >=. ) = M.elt_greater_equal
 
+  let ( ** ) = M.pow
+
 end
 
 
@@ -153,8 +155,6 @@ module Make_Matrix (M : MatrixSig) = struct
   type ('a, 'b) op_t2 = ('a, 'b) M.t
 
   let ( *@ ) = M.dot
-
-  let ( ** ) = M.pow
 
 end
 
