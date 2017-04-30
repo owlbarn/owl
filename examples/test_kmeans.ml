@@ -1,4 +1,4 @@
-module MX = Owl_dense_real
+module MX = Owl_dense_matrix_d
 module LL = Owl_cluster
 
 let _ =

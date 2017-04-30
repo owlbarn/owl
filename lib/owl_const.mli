@@ -3,13 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** This module is extended from gsl-ocaml by including SI system.
-  CGS < MKS < SI. Read wikipedia on CGS and SI system for more details.
- *)
+ (** Values of physical constants
+   CGS < MKS < SI. Read wikipedia on CGS and SI system for more details.
 
- (** Values of physical constants *)
-
- (**
    International System of Units (French: Système international d'unités, SI),
    historically also called the MKSA system of units for
    metre–kilogram–second–ampere.

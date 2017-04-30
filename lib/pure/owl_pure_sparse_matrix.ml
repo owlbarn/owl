@@ -570,24 +570,24 @@ let min x = fst (minmax x)
 
 let max x = snd (minmax x)
 
-let is_equal x1 x2 =
+let equal x1 x2 =
   _check_same_shape x1 x2;
   if x1.nz <> x2.nz then false
   else (sub x1 x2 |> is_zero)
 
-let is_unequal x1 x2 = not (is_equal x1 x2)
+let not_equal x1 x2 = not (equal x1 x2)
 
-let is_greater x1 x2 =
+let greater x1 x2 =
   _check_same_shape x1 x2;
   is_positive (sub x1 x2)
 
-let is_smaller x1 x2 = is_greater x2 x1
+let less x1 x2 = greater x2 x1
 
-let equal_or_greater x1 x2 =
+let greater_equal x1 x2 =
   _check_same_shape x1 x2;
   is_nonnegative (sub x1 x2)
 
-let equal_or_smaller x1 x2 = equal_or_greater x2 x1
+let less_equal x1 x2 = greater_equal x2 x1
 
 (** advanced matrix methematical operations *)
 
@@ -604,38 +604,38 @@ let trace x = sum (diag x)
 
 let to_dense x =
   let m, n = shape x in
-  let y = Owl_dense_matrix.zeros (kind x) m n in
-  iteri_nz (fun i j z -> Owl_dense_matrix.set y i j z) x;
+  let y = Owl_dense_matrix_generic.zeros (kind x) m n in
+  iteri_nz (fun i j z -> Owl_dense_matrix_generic.set y i j z) x;
   y
 
 let of_dense x =
-  let m, n = Owl_dense_matrix.shape x in
+  let m, n = Owl_dense_matrix_generic.shape x in
   let x' = genarray_of_array2 x in
-  let x' = reshape_1 x' (Owl_dense_matrix.numel x) in
+  let x' = reshape_1 x' (Owl_dense_matrix_generic.numel x) in
   let y = zeros (Array1.kind x') m n in
-  Owl_dense_matrix.iteri (fun i j z -> set y i j z) x;
+  Owl_dense_matrix_generic.iteri (fun i j z -> set y i j z) x;
   y
 
 let sum_rows x =
-  let y = Owl_dense_matrix.ones (kind x) 1 (row_num x) |> of_dense in
+  let y = Owl_dense_matrix_generic.ones (kind x) 1 (row_num x) |> of_dense in
   dot y x
 
 let sum_cols x =
-  let y = Owl_dense_matrix.ones (kind x) (col_num x) 1 |> of_dense in
+  let y = Owl_dense_matrix_generic.ones (kind x) (col_num x) 1 |> of_dense in
   dot x y
 
 let average_rows x =
   let m, n = shape x in
   let k = kind x in
   let a = (_average_elt k) (_one k) m in
-  let y = Owl_dense_matrix.create k 1 m a |> of_dense in
+  let y = Owl_dense_matrix_generic.create k 1 m a |> of_dense in
   dot y x
 
 let average_cols x =
   let m, n = shape x in
   let k = kind x in
   let a = (_average_elt k) (_one k) n in
-  let y = Owl_dense_matrix.create k n 1 a |> of_dense in
+  let y = Owl_dense_matrix_generic.create k n 1 a |> of_dense in
   dot x y
 
 (** formatted input / output operations *)
@@ -656,7 +656,7 @@ let pp_spmat x =
   let p = 100. *. (density x) in
   (* let mz, nz = row_num_nz x, col_num_nz x in *)
   let mz, nz = 0, 0 in
-  if m < 100 && n < 100 then Owl_dense_matrix.pp_dsmat (to_dense x);
+  if m < 100 && n < 100 then Owl_dense_matrix_generic.pp_dsmat (to_dense x);
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
 let save x f =
@@ -713,9 +713,9 @@ let shuffle_cols x =
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols
 
-let ones k m n = Owl_dense_matrix.ones k m n |> of_dense
+let ones k m n = Owl_dense_matrix_generic.ones k m n |> of_dense
 
-let sequential k m n = Owl_dense_matrix.sequential k m n |> of_dense
+let sequential k m n = Owl_dense_matrix_generic.sequential k m n |> of_dense
 
 let fill x a =
   let m, n = shape x in
@@ -761,17 +761,17 @@ let ( /$ ) x a = div_scalar x a
 
 let ( $/ ) a x = div_scalar x a
 
-let ( =@ ) = is_equal
+let ( =@ ) = equal
 
-let ( >@ ) = is_greater
+let ( >@ ) = greater
 
-let ( <@ ) = is_smaller
+let ( <@ ) = less
 
-let ( <>@ ) = is_unequal
+let ( <>@ ) = not_equal
 
-let ( >=@ ) = equal_or_greater
+let ( >=@ ) = greater_equal
 
-let ( <=@ ) = equal_or_smaller
+let ( <=@ ) = less_equal
 
 let ( @@ ) f x = map f x
 

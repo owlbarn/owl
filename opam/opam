@@ -30,7 +30,6 @@ depends: [
   "ocamlbuild" {build}
   "ocamlfind" {build}
   "plplot"
-  "lacaml"
   "eigen"
 ]
 available: [ ocaml-version >= "4.04.0" ]

@@ -1,1 +1,0 @@
-The code in this folder use ctypes to generate c stubs to interface other libraries. These functions will be wrapped again to provide uniformed interface in Owl_foreign module. All the access to these functions should be through Owl_foreign module.

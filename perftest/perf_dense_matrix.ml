@@ -2,7 +2,7 @@
 
 open Bigarray
 
-module M = Owl_dense_matrix
+module M = Owl_dense_matrix_generic
 
 let test_op s c op = Perf_common.test_op s c op
 
@@ -52,9 +52,9 @@ let _ =
   test_op "average           " c (fun () -> M.average x);
   test_op "avg_col           " c (fun () -> M.average_cols x);
   test_op "avg_row           " c (fun () -> M.average_rows x);
-  test_op "is_equal          " c (fun () -> M.is_equal x x);
-  test_op "is_greater        " c (fun () -> M.is_greater x x);
-  test_op "equal_or_greater  " c (fun () -> M.equal_or_greater x x);
+  test_op "equal          " c (fun () -> M.equal x x);
+  test_op "greater        " c (fun () -> M.greater x x);
+  test_op "greater_equal  " c (fun () -> M.greater_equal x x);
   test_op "diag              " c (fun () -> M.diag x);
   test_op "transpose         " c (fun () -> M.transpose x);
   test_op "clone             " c (fun () -> M.clone x);
@@ -65,7 +65,7 @@ let _ =
   test_op "save              " c (fun () -> M.save x "test_matrix0.tmp");
   test_op "load              " c (fun () -> M.load Float64 "test_matrix0.tmp");
   test_op "save_txt          " 0 (fun () -> M.save_txt x "test_matrix1.tmp");
-  test_op "load_txt          " 0 (fun () -> M.load_txt "test_matrix1.tmp");
+  test_op "load_txt          " 0 (fun () -> M.load_txt Float64 "test_matrix1.tmp");
   test_op "uniform           " c (fun () -> M.uniform Float64 m n);
   test_op "gaussian          " c (fun () -> M.gaussian Float64 m n);
   test_op "sequential        " c (fun () -> M.sequential Float64 m n);

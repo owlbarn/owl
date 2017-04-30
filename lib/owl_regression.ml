@@ -9,9 +9,9 @@
   and optimisation module.
 *)
 
-module MX = Owl_dense_real
+module MX = Owl_dense_matrix_d
 
-type dsmat = Owl_dense_real.mat
+type dsmat = Owl_dense_matrix_d.mat
 type vector = Gsl.Vector.vector
 
 (** [ Linear regression with single variables ]  *)

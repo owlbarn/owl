@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module MX = Owl_dense_real
+module MX = Owl_dense_matrix_d
 module UT = Owl_utils
 
 (** [

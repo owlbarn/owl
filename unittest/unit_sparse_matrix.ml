@@ -3,10 +3,10 @@
   *)
 
 open Bigarray
-module M = Owl_sparse_matrix
+module M = Owl_sparse_matrix_generic
 
 (* make testable *)
-let matrix = Alcotest.testable (fun p x -> ()) M.is_equal
+let matrix = Alcotest.testable (fun p x -> ()) M.equal
 
 (* some test input *)
 let x0 = M.zeros Float64 3 4
@@ -29,7 +29,7 @@ module To_test = struct
     let y = M.mapi (fun i j _ ->
       (i + (M.row_num y) * j) |> float_of_int
     ) y in
-    M.is_equal y (M.transpose x2)
+    M.equal y (M.transpose x2)
 
   let fill () =
     let x = M.zeros Float64 3 4 in
@@ -42,9 +42,9 @@ module To_test = struct
     M.set x 2 1 5.;
     M.get x 2 1
 
-  let row () = Owl_dense_matrix.of_arrays Float64 [| [|4.;5.;6.;7.|] |] |> M.of_dense
+  let row () = Owl_dense_matrix_generic.of_arrays Float64 [| [|4.;5.;6.;7.|] |] |> M.of_dense
 
-  let col () = Owl_dense_matrix.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |] |> M.of_dense
+  let col () = Owl_dense_matrix_generic.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |] |> M.of_dense
 
   let trace x = M.trace x
 
@@ -56,25 +56,25 @@ module To_test = struct
 
   let for_all x = M.for_all (fun a -> a < 11.) x
 
-  let is_equal x y = M.is_equal x y
+  let equal x y = M.equal x y
 
-  let is_unequal x y = M.is_unequal x y
+  let not_equal x y = M.not_equal x y
 
-  let is_smaller () =
+  let less () =
     let x = M.ones Float64 3 4 in
     let y = M.ones Float64 3 4 in
     let y = M.mul_scalar y 2. in
-    M.is_smaller x y
+    M.less x y
 
-  let is_greater () =
+  let greater () =
     let x = M.ones Float64 3 4 in
     let y = M.ones Float64 3 4 in
     M.set y 0 0 0.; M.set y 0 1 2.;
-    M.is_greater x y
+    M.greater x y
 
-  let equal_or_greater x = M.equal_or_greater x x
+  let greater_equal x = M.greater_equal x x
 
-  let equal_or_smaller x = M.equal_or_smaller x x
+  let less_equal x = M.less_equal x x
 
   let is_zero x = M.is_zero x
 
@@ -89,7 +89,7 @@ module To_test = struct
   let add x =
     let y0 = M.mul_scalar x 2. in
     let y1 = M.add x x in
-    M.is_equal y0 y1
+    M.equal y0 y1
 
   let mul x =
     let y0 = M.mul_scalar x 2. in
@@ -97,7 +97,7 @@ module To_test = struct
     let y1 = M.zeros Float64 m n in
     M.fill y1 2.;
     let y2 = M.mul x y1 in
-    M.is_equal y0 y2
+    M.equal y0 y2
 
   let dot () =
     let x = M.sequential Float64 2 3 in
@@ -105,8 +105,8 @@ module To_test = struct
     let y = M.sequential Float64 3 2 in
     let y = M.map ((+.) 1.) y in
     let a = M.dot x y in
-    let b = Owl_dense_matrix.of_arrays Float64 [| [|22.;28.|]; [|49.;64.|] |] |> M.of_dense in
-    M.is_equal a b
+    let b = Owl_dense_matrix_generic.of_arrays Float64 [| [|22.;28.|]; [|49.;64.|] |] |> M.of_dense in
+    M.equal a b
 
   let add_scalar () = M.add_scalar x1 2. |> M.sum = 36.
 
@@ -125,7 +125,7 @@ module To_test = struct
     let y = M.sequential Float64 3 4 in
     let z0 = M.add x y in
     let z1 = M.map (fun a -> a +. 1.) y in
-    M.is_equal z0 z1
+    M.equal z0 z1
 
   let fold x = M.fold (+.) 0. x
 
@@ -145,20 +145,20 @@ module To_test = struct
 
   let fold_rows () =
     let x = M.fold_rows (fun c a -> M.add c a) (M.zeros Float64 1 4) x2
-    |> M.to_dense |> Owl_dense_matrix.to_arrays in
+    |> M.to_dense |> Owl_dense_matrix_generic.to_arrays in
     x = [| [|12.;15.;18.;21.|] |]
 
   let fold_cols () =
     let x = M.fold_cols (fun c a -> M.add c a) (M.zeros Float64 3 1) x2
-    |> M.to_dense |> Owl_dense_matrix.to_arrays in
+    |> M.to_dense |> Owl_dense_matrix_generic.to_arrays in
     x = [| [|6.|]; [|22.|]; [|38.|] |]
 
   let sum_rows () =
-    let x = M.sum_rows x2 |> M.to_dense |> Owl_dense_matrix.to_arrays in
+    let x = M.sum_rows x2 |> M.to_dense |> Owl_dense_matrix_generic.to_arrays in
     x = [| [|12.;15.;18.;21.|] |]
 
   let sum_cols () =
-    let x = M.sum_cols x2 |> M.to_dense |> Owl_dense_matrix.to_arrays in
+    let x = M.sum_cols x2 |> M.to_dense |> Owl_dense_matrix_generic.to_arrays in
     x = [| [|6.|]; [|22.|]; [|38.|] |]
 
   let of_array () =
@@ -166,12 +166,12 @@ module To_test = struct
               ([|1; 1|], 5.); ([|1; 2|], 6.); ([|1; 3|], 7.); ([|2; 0|], 8.);
               ([|2; 1|], 9.); ([|2; 2|], 10.); ([|2; 3|], 11.)|] in
     let y = M.of_array Float64 3 4 a in
-    M.is_equal y x2
+    M.equal y x2
 
   let save_load () =
     M.save x2 "sp_mat.tmp";
     let y = M.load Float64 "sp_mat.tmp" in
-    M.is_equal x2 y
+    M.equal x2 y
 
 end
 
@@ -222,23 +222,23 @@ let not_exists () =
 let for_all () =
   Alcotest.(check bool) "for_all" false (To_test.for_all x2)
 
-let is_equal () =
-  Alcotest.(check bool) "is_equal" true (To_test.is_equal x1 (M.map ((+.) 1.) x0))
+let equal () =
+  Alcotest.(check bool) "equal" true (To_test.equal x1 (M.map ((+.) 1.) x0))
 
-let is_unequal () =
-  Alcotest.(check bool) "is_unequal" true (To_test.is_unequal x0 x1)
+let not_equal () =
+  Alcotest.(check bool) "not_equal" true (To_test.not_equal x0 x1)
 
-let is_smaller () =
-  Alcotest.(check bool) "is_smaller" true (To_test.is_smaller ())
+let less () =
+  Alcotest.(check bool) "less" true (To_test.less ())
 
-let is_greater () =
-  Alcotest.(check bool) "is_greater" false (To_test.is_greater ())
+let greater () =
+  Alcotest.(check bool) "greater" false (To_test.greater ())
 
-let equal_or_greater () =
-  Alcotest.(check bool) "equal_or_greater" true (To_test.equal_or_greater x2)
+let greater_equal () =
+  Alcotest.(check bool) "greater_equal" true (To_test.greater_equal x2)
 
-let equal_or_smaller () =
-  Alcotest.(check bool) "equal_or_smaller" true (To_test.equal_or_smaller x2)
+let less_equal () =
+  Alcotest.(check bool) "less_equal" true (To_test.less_equal x2)
 
 let is_zero () =
   Alcotest.(check bool) "is_zero" true (To_test.is_zero x0)
@@ -325,12 +325,12 @@ let test_set = [
   "exists", `Slow, exists;
   "not_exists", `Slow, not_exists;
   "for_all", `Slow, for_all;
-  "is_equal", `Slow, is_equal;
-  "is_unequal", `Slow, is_unequal;
-  "is_smaller", `Slow, is_smaller;
-  "is_greater", `Slow, is_greater;
-  "equal_or_greater", `Slow, equal_or_greater;
-  "equal_or_smaller", `Slow, equal_or_smaller;
+  "equal", `Slow, equal;
+  "not_equal", `Slow, not_equal;
+  "less", `Slow, less;
+  "greater", `Slow, greater;
+  "greater_equal", `Slow, greater_equal;
+  "less_equal", `Slow, less_equal;
   "is_zero", `Slow, is_zero;
   "is_positive", `Slow, is_positive;
   "is_negative", `Slow, is_negative;

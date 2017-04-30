@@ -218,17 +218,17 @@ val average_cols : spmat -> spmat
 
 (** {6 Compare two matrices} *)
 
-val is_equal : spmat -> spmat -> bool
+val equal : spmat -> spmat -> bool
 
-val is_unequal : spmat -> spmat -> bool
+val not_equal : spmat -> spmat -> bool
 
-val is_greater : spmat -> spmat -> bool
+val greater : spmat -> spmat -> bool
 
-val is_smaller : spmat -> spmat -> bool
+val less : spmat -> spmat -> bool
 
-val equal_or_greater : spmat -> spmat -> bool
+val greater_equal : spmat -> spmat -> bool
 
-val equal_or_smaller : spmat -> spmat -> bool
+val less_equal : spmat -> spmat -> bool
 
 
 (** {6 Randomisation functions} *)
@@ -248,9 +248,9 @@ val shuffle : spmat -> spmat
 
 (** {6 Input/Output and helper functions} *)
 
-val to_dense : spmat -> Owl_dense_complex.mat
+val to_dense : spmat -> Owl_dense_matrix_z.mat
 
-val of_dense : Owl_dense_complex.mat -> spmat
+val of_dense : Owl_dense_matrix_z.mat -> spmat
 
 val print : spmat -> unit
 
@@ -294,22 +294,22 @@ val ( $/ ) : elt -> spmat -> spmat
 (** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
 
 val ( =@ ) : spmat -> spmat -> bool
-(** Shorthand for [is_equal x y], i.e., [x =@ y] *)
+(** Shorthand for [equal x y], i.e., [x =@ y] *)
 
 val ( >@ ) : spmat -> spmat -> bool
-(** Shorthand for [is_greater x y], i.e., [x >@ y] *)
+(** Shorthand for [greater x y], i.e., [x >@ y] *)
 
 val ( <@ ) : spmat -> spmat -> bool
-(** Shorthand for [is_smaller x y], i.e., [x <@ y] *)
+(** Shorthand for [less x y], i.e., [x <@ y] *)
 
 val ( <>@ ) : spmat -> spmat -> bool
-(** Shorthand for [is_unequal x y], i.e., [x <>@ y] *)
+(** Shorthand for [not_equal x y], i.e., [x <>@ y] *)
 
 val ( >=@ ) : spmat -> spmat -> bool
-(** Shorthand for [equal_or_greater x y], i.e., [x >=@ y] *)
+(** Shorthand for [greater_equal x y], i.e., [x >=@ y] *)
 
 val ( <=@ ) : spmat -> spmat -> bool
-(** Shorthand for [equal_or_smaller x y], i.e., [x <=@ y] *)
+(** Shorthand for [less_equal x y], i.e., [x <=@ y] *)
 
 val ( @@ ) : (elt -> elt) -> spmat -> spmat
 (** Shorthand for [map f x], i.e., f @@ x *)

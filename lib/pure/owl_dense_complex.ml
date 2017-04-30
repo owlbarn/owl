@@ -366,39 +366,39 @@ let average_rows x =
   let y = create 1 m Complex.({re = c; im = 0.}) in
   dot y x
 
-let is_equal x1 x2 = x1 = x2
+let equal x1 x2 = x1 = x2
 
 let ( =@ ) = ( = )
 
-let is_unequal x1 x2 = x1 <> x2
+let not_equal x1 x2 = x1 <> x2
 
 let ( <>@ ) = ( <> )
 
-let is_greater x1 x2 =
+let greater x1 x2 =
   let open Owl_foreign in
   let open Owl_foreign.DC in
   let x3 = sub x1 x2 in
   let x3 = Dense_complex_double.mat_to_matptr x3 in
   (gsl_matrix_complex_ispos x3) = 1
 
-let ( >@ ) = is_greater
+let ( >@ ) = greater
 
-let is_smaller x1 x2 = is_greater x2 x1
+let less x1 x2 = greater x2 x1
 
-let ( <@ ) = is_smaller
+let ( <@ ) = less
 
-let equal_or_greater x1 x2 =
+let greater_equal x1 x2 =
   let open Owl_foreign in
   let open Owl_foreign.DC in
   let x3 = sub x1 x2 in
   let x3 = Dense_complex_double.mat_to_matptr x3 in
   (gsl_matrix_complex_isnonneg x3) = 1
 
-let ( >=@ ) = equal_or_greater
+let ( >=@ ) = greater_equal
 
-let equal_or_smaller x1 x2 = equal_or_greater x2 x1
+let less_equal x1 x2 = greater_equal x2 x1
 
-let ( <=@ ) = equal_or_smaller
+let ( <=@ ) = less_equal
 
 let is_zero x = Gsl.Matrix_complex.is_null x
 
@@ -587,13 +587,13 @@ let pp_dsmat x = Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat x
 
 let re x =
   let m, n = shape x in
-  let y = Owl_dense_real.empty m n in
+  let y = Owl_dense_matrix_d.empty m n in
   iteri (fun i j z -> y.{i,j} <- Complex.(z.re)) x;
   y
 
 let im x =
   let m, n = shape x in
-  let y = Owl_dense_real.empty m n in
+  let y = Owl_dense_matrix_d.empty m n in
   iteri (fun i j z -> y.{i,j} <- Complex.(z.im)) x;
   y
 

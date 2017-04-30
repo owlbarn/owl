@@ -3,6 +3,16 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(* So we don't have to open Bigarray all the time. *)
+
+let float32 = Bigarray.float32
+
+let float64 = Bigarray.float64
+
+let complex32 = Bigarray.complex32
+
+let complex64 = Bigarray.complex64
+
 (** Make alias of the modules in Owl for your convenience. *)
 
 module Const = Owl_const
@@ -27,12 +37,17 @@ module Cluster = Owl_cluster
 
 module Algodiff = Owl_algodiff
 
-(* So we don't have to open Bigarray all the time. *)
+module Utils = Owl_utils
 
-let float32 = Bigarray.float32
+module Dataset = Owl_dataset
 
-let float64 = Bigarray.float64
+(* shortcuts to 64-bit precision modules *)
 
-let complex32 = Bigarray.complex32
+module Arr = Owl_dense_ndarray_d
 
-let complex64 = Bigarray.complex64
+module Mat = Owl_dense_matrix_d
+
+module Vec = Owl_dense_vector_d
+
+
+(* ends here *)

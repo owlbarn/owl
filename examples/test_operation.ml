@@ -1,4 +1,4 @@
-module M = Owl_dense_real
+module M = Owl_dense_matrix_d
 module L = Owl_cluster
 
 let test_op s c op =

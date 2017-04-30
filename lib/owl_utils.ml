@@ -9,6 +9,16 @@ let range a b =
   let r = Array.make (b - a + 1) 0 in
   for i = a to b do r.(i - a) <- i done; r
 
+
+(* Computes a left fold over a range of integers from a to b (inclusive) *)
+let range_fold a b ~f ~init =
+  let rec go acc x =
+    if x > b
+    then acc
+    else go (f acc x) (x + 1)
+  in go init a
+
+
 (* filter array, f : int -> 'a -> bool * 'b *)
 let array_filteri_v f x =
   (* FIXME: bad idea if f is not pure *)
@@ -45,6 +55,16 @@ let array_mapi f x =
   done; r
 
 let array_map f x = array_mapi (fun _ y -> f y) x
+
+(*
+let array_exists f x =
+  try Array.iter (fun a -> if f a then failwith "found") x; false
+  with exn -> true
+
+let array_mem a x =
+  try Array.iter (fun b -> if b = a then failwith "found") x; false
+  with exn -> true
+*)
 
 let reverse_array x =
   let d = Array.length x - 1 in
@@ -89,7 +109,83 @@ let array_map2i f x y =
   let c = min (Array.length x) (Array.length y) in
   Array.init c (fun i -> f i x.(i) y.(i))
 
+(* map two arrays, and split into two arrays, f returns 2-tuple *)
+let array_map2i_split2 f x y =
+  let c = min (Array.length x) (Array.length y) in
+  match c with
+  | 0 -> [||], [||]
+  | _ -> (
+    let a, b = f 0 x.(0) y.(0) in
+    let z0 = Array.make c a in
+    let z1 = Array.make c b in
+    for i = 1 to c - 1 do
+      let a, b = f i x.(i) y.(i) in
+      z0.(i) <- a;
+      z1.(i) <- b;
+    done;
+    z0, z1
+  )
+
 let array_sum x = Array.fold_left (+.) 0. x
+
+(* pad n value of v to the left/right of array x *)
+let array_pad s x v n =
+  let l = Array.length x in
+  let y = Array.make (l + n) v in
+  let _ = match s with
+    | `Left  -> Array.blit x 0 y n l
+    | `Right -> Array.blit x 0 y 0 l
+  in y
+
+
+(* iter function for ['a array array] type *)
+let aarr_iter f x = Array.iter (Array.iter f) x
+
+(* iteri function for ['a array array] type *)
+let aarr_iteri f x = Array.iteri (fun i y -> Array.iteri (fun j z -> f i j z) y) x
+
+(* map function for ['a array array] type *)
+let aarr_map f x = Array.map (Array.map f) x
+
+(* mapi function for ['a array array] type *)
+let aarr_mapi f x = Array.mapi (fun i y -> Array.mapi (fun j z -> f i j z) y) x
+
+(* map2 function for ['a array array] type, x and y must have the same shape. *)
+let aarr_map2 f x y = Array.map2 (Array.map2 f) x y
+
+(* map2i function for ['a array array] type, x and y must have the same shape. *)
+let aarr_map2i f x0 x1 =
+  array_map2i (fun i y0 y1 ->
+    array_map2i (fun j z0 z1 -> f i j z0 z1) y0 y1
+  ) x0 x1
+
+(* map3i function for ['a array array] type, all must have the same shape. *)
+let aarr_map3i f x0 x1 x2 =
+  Array.init (Array.length x0) (fun i ->
+    Array.init (Array.length x0.(i)) (fun j ->
+      f i j x0.(i).(j) x1.(i).(j) x2.(i).(j)
+    )
+  )
+
+(* map3 function for ['a array array] type, all must have the same shape. *)
+let aarr_map3 f x0 x1 x2 =
+  Array.init (Array.length x0) (fun i ->
+    Array.init (Array.length x0.(i)) (fun j ->
+      f x0.(i).(j) x1.(i).(j) x2.(i).(j)
+    )
+  )
+
+(* convert array of array to list of list, shape remains the same *)
+let aarr2llss x = Array.map Array.to_list x |> Array.to_list
+
+(* convert list of list to array of array, shape remains the same *)
+let llss2aarr x = List.map Array.of_list x |> Array.of_list
+
+(* fold function for ['a array array] type, by flatten the array *)
+let aarr_fold f a x =
+  let a = ref a in
+  Array.iter (Array.iter (fun b -> a := f !a b)) x;
+  !a
 
 let array1_iter f x =
   let open Bigarray in
@@ -102,15 +198,6 @@ let array1_iteri f x =
   for i = 0 to Array1.dim x - 1 do
     f i (Array1.unsafe_get x i)
   done
-
-(* pad n value of v to the left/right of array x *)
-let array_pad s x v n =
-  let l = Array.length x in
-  let y = Array.make (l + n) v in
-  let _ = match s with
-    | `Left  -> Array.blit x 0 y n l
-    | `Right -> Array.blit x 0 y 0 l
-  in y
 
 (* extend passed in array by appending n slots *)
 let array1_extend x n =
@@ -146,29 +233,43 @@ let check_row_vector x =
   if Bigarray.Array2.dim1 x <> 1 then
     failwith "error: the variable is not a row vector"
 
-(* functions to download data sets *)
 
-let local_data_path () =
-  let d = Sys.getenv "HOME" ^ "/owl_dataset/" in
-  if Sys.file_exists d = false then (
-    Log.info "create %s" d;
-    Unix.mkdir d 0o755;
-  );
-  d
+module Stack = struct
 
-let remote_data_path () = "https://github.com/ryanrhymes/owl_dataset/raw/master/"
+  type 'a t = {
+    mutable used : int;
+    mutable size : int;
+    mutable data : 'a array;
+  }
 
-let download_data fname =
-  let fn0 = remote_data_path () ^ fname in
-  let fn1 = local_data_path () ^ fname in
-  let cmd0 = "wget " ^ fn0 ^ " -O " ^ fn1 in
-  let cmd1 = "gunzip " ^ fn1 in
-  ignore (Sys.command cmd0);
-  ignore (Sys.command cmd1)
+  let allocate_space x = Array.(append x (copy x))
 
-let download_all () =
-  let l = [
-    "stopwords.txt.gz"; "enron.test.gz"; "enron.train.gz"; "nips.test.gz"; "nips.train.gz";
-    "t10k-images-idx3-ubyte.gz"; "t10k-labels-idx1-ubyte.gz"; "train-images-idx3-ubyte.gz"; "train-labels-idx1-ubyte.gz";
-    ] in
-  List.iter (fun fname -> download_data fname) l
+  let make () = {
+    used = 0;
+    size = 0;
+    data = [||];
+  }
+
+  let push s x =
+    if s.size = 0 then s.data <- [|x|];
+    if s.used = s.size then (
+      s.data <- allocate_space s.data;
+      s.size <- Array.length s.data;
+    );
+    s.data.(s.used) <- x;
+    s.used <- s.used + 1
+
+  let pop s = match s.used with
+    | 0 -> None
+    | i -> s.used <- i - 1; Some s.data.(i)
+
+  let peek s = match s.used with
+    | 0 -> None
+    | i -> Some s.data.(i)
+
+  let to_array s = Array.sub s.data 0 s.used
+
+end
+
+
+(* ends here *)
