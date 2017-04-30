@@ -58,6 +58,14 @@ module type ExtendSig = sig
 
   val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
+  val elt_less : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+  val elt_greater : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+  val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+  val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
 end
 
 
@@ -128,6 +136,14 @@ module Make_Extend (M : ExtendSig) = struct
   let ( !=. ) = M.elt_not_equal
 
   let ( <>. ) = M.elt_not_equal
+
+  let ( <. ) = M.elt_less
+
+  let ( >. ) = M.elt_greater
+
+  let ( <=. ) = M.elt_less_equal
+
+  let ( >=. ) = M.elt_greater_equal
 
 end
 

@@ -4,7 +4,10 @@
  *)
 
 
-module Operator = Owl_operator.Make_Basic (Owl_dense_ndarray_generic)
+module Operator = struct
+  include Owl_operator.Make_Basic (Owl_dense_ndarray_generic)
+  include Owl_operator.Make_Extend (Owl_dense_ndarray_generic)
+end
 
 
 module Generic = struct
