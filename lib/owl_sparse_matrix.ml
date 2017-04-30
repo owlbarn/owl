@@ -3,12 +3,35 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module S = Owl_sparse_matrix_s
 
-module D = Owl_sparse_matrix_d
+module Operator = Owl_operator.Make_Basic (Owl_sparse_matrix_generic)
 
-module C = Owl_sparse_matrix_c
 
-module Z = Owl_sparse_matrix_z
+module Generic = struct
+  include Owl_sparse_matrix_generic
+  include Operator
+end
 
-module Generic = Owl_sparse_matrix_generic
+
+module S = struct
+  include Owl_sparse_matrix_s
+  include Operator
+end
+
+
+module D = struct
+  include Owl_sparse_matrix_d
+  include Operator
+end
+
+
+module C = struct
+  include Owl_sparse_matrix_c
+  include Operator
+end
+
+
+module Z = struct
+  include Owl_sparse_matrix_z
+  include Operator
+end

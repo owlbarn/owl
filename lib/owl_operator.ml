@@ -19,8 +19,6 @@ module type BasicSig = sig
 
   val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
-
   val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
   val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
@@ -58,6 +56,8 @@ module type ExtSig = sig
 
   val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
+  val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+
 end
 
 (* define basic operators *)
@@ -73,8 +73,6 @@ module Make_Basic (M : BasicSig) = struct
   let ( * ) = M.mul
 
   let ( / ) = M.div
-
-  let ( ** ) = M.pow
 
   let ( +$ ) = M.add_scalar
 
@@ -116,6 +114,8 @@ module Make_Ext (M : ExtSig) = struct
 
   let ( *@ ) = M.dot
 
+  let ( ** ) = M.pow
+  
 end
 
 
