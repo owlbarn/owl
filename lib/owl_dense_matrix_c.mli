@@ -241,17 +241,17 @@ val greater_equal : mat -> mat -> bool
 
 val less_equal : mat -> mat -> bool
 
-val elt_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+val elt_equal : mat -> mat -> mat
 
-val elt_not_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+val elt_not_equal : mat -> mat -> mat
 
-val elt_less : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+val elt_less : mat -> mat -> mat
 
-val elt_greater : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+val elt_greater : mat -> mat -> mat
 
-val elt_less_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+val elt_less_equal : mat -> mat -> mat
 
-val elt_greater_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+val elt_greater_equal : mat -> mat -> mat
 
 
 (** {6 Randomisation functions} *)

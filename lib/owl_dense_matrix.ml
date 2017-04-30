@@ -6,7 +6,7 @@
 
 module Operator = struct
   include Owl_operator.Make_Basic (Owl_dense_matrix_generic)
-  include Owl_operator.Make_Ext (Owl_dense_matrix_generic)
+  include Owl_operator.Make_Matrix (Owl_dense_matrix_generic)
 end
 
 

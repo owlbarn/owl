@@ -50,7 +50,18 @@ module type BasicSig = sig
 end
 
 
-module type ExtSig = sig
+module type ExtendSig = sig
+
+  type ('a, 'b) t
+
+  val elt_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+  val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+end
+
+
+module type MatrixSig = sig
 
   type ('a, 'b) t
 
@@ -108,14 +119,27 @@ end
 
 
 
-module Make_Ext (M : ExtSig) = struct
+module Make_Extend (M : ExtendSig) = struct
 
   type ('a, 'b) op_t1 = ('a, 'b) M.t
+
+  let ( =. ) = M.elt_equal
+
+  let ( !=. ) = M.elt_not_equal
+
+  let ( <>. ) = M.elt_not_equal
+
+end
+
+
+module Make_Matrix (M : MatrixSig) = struct
+
+  type ('a, 'b) op_t2 = ('a, 'b) M.t
 
   let ( *@ ) = M.dot
 
   let ( ** ) = M.pow
-  
+
 end
 
 

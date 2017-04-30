@@ -143,17 +143,17 @@ let greater_equal x y = M.greater_equal (unpack_box x) (unpack_box y)
 
 let less_equal x y = M.less_equal (unpack_box x) (unpack_box y)
 
-let elt_equal x y = M.elt_equal (unpack_box x) (unpack_box y) |> pack_das
+let elt_equal x y = M.elt_equal (unpack_box x) (unpack_box y) |> pack_box
 
-let elt_not_equal x y = M.elt_not_equal (unpack_box x) (unpack_box y) |> pack_das
+let elt_not_equal x y = M.elt_not_equal (unpack_box x) (unpack_box y) |> pack_box
 
-let elt_less x y = M.elt_less (unpack_box x) (unpack_box y) |> pack_das
+let elt_less x y = M.elt_less (unpack_box x) (unpack_box y) |> pack_box
 
-let elt_greater x y = M.elt_greater (unpack_box x) (unpack_box y) |> pack_das
+let elt_greater x y = M.elt_greater (unpack_box x) (unpack_box y) |> pack_box
 
-let elt_less_equal x y = M.elt_less_equal (unpack_box x) (unpack_box y) |> pack_das
+let elt_less_equal x y = M.elt_less_equal (unpack_box x) (unpack_box y) |> pack_box
 
-let elt_greater_equal x y = M.elt_greater_equal (unpack_box x) (unpack_box y) |> pack_das
+let elt_greater_equal x y = M.elt_greater_equal (unpack_box x) (unpack_box y) |> pack_box
 
 
 let print x = M.print (unpack_box x)

@@ -233,22 +233,22 @@ value cp_two_doubles(double d0, double d1)
 #define FUN15 real_double_elt_equal
 #define NUMBER double
 #define NUMBER1 double
-#define NUMBER2 float
+#define NUMBER2 double
 #define MAPFN(X,Y,Z) *Z = (*X == *Y)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_float_elt_equal
 #define NUMBER complex_float
 #define NUMBER1 complex_float
-#define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (X->r == Y->r) && (X->i == Y->i)
+#define NUMBER2 complex_float
+#define MAPFN(X,Y,Z) Z->r = (X->r == Y->r) && (X->i == Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_double_elt_equal
 #define NUMBER complex_double
 #define NUMBER1 complex_double
-#define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (X->r == Y->r) && (X->i == Y->i)
+#define NUMBER2 complex_double
+#define MAPFN(X,Y,Z) Z->r = (X->r == Y->r) && (X->i == Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
 // elt_not_equal
@@ -263,22 +263,22 @@ value cp_two_doubles(double d0, double d1)
 #define FUN15 real_double_elt_not_equal
 #define NUMBER double
 #define NUMBER1 double
-#define NUMBER2 float
+#define NUMBER2 double
 #define MAPFN(X,Y,Z) *Z = (*X != *Y)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_float_elt_not_equal
 #define NUMBER complex_float
 #define NUMBER1 complex_float
-#define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (X->r != Y->r) || (X->i != Y->i)
+#define NUMBER2 complex_float
+#define MAPFN(X,Y,Z) Z->r = (X->r != Y->r) || (X->i != Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_double_elt_not_equal
 #define NUMBER complex_double
 #define NUMBER1 complex_double
-#define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (X->r != Y->r) || (X->i != Y->i)
+#define NUMBER2 complex_double
+#define MAPFN(X,Y,Z) Z->r = (X->r != Y->r) || (X->i != Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
 // elt_less
@@ -293,22 +293,22 @@ value cp_two_doubles(double d0, double d1)
 #define FUN15 real_double_elt_less
 #define NUMBER double
 #define NUMBER1 double
-#define NUMBER2 float
+#define NUMBER2 double
 #define MAPFN(X,Y,Z) *Z = (*X < *Y)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_float_elt_less
 #define NUMBER complex_float
 #define NUMBER1 complex_float
-#define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (X->r < Y->r) && (X->i < Y->i)
+#define NUMBER2 complex_float
+#define MAPFN(X,Y,Z) Z->r = (X->r < Y->r) && (X->i < Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_double_elt_less
 #define NUMBER complex_double
 #define NUMBER1 complex_double
-#define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (X->r < Y->r) && (X->i < Y->i)
+#define NUMBER2 complex_double
+#define MAPFN(X,Y,Z) Z->r = (X->r < Y->r) && (X->i < Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
 // elt_greater
@@ -323,22 +323,22 @@ value cp_two_doubles(double d0, double d1)
 #define FUN15 real_double_elt_greater
 #define NUMBER double
 #define NUMBER1 double
-#define NUMBER2 float
+#define NUMBER2 double
 #define MAPFN(X,Y,Z) *Z = (*X > *Y)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_float_elt_greater
 #define NUMBER complex_float
 #define NUMBER1 complex_float
-#define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (X->r > Y->r) && (X->i > Y->i)
+#define NUMBER2 complex_float
+#define MAPFN(X,Y,Z) Z->r = (X->r > Y->r) && (X->i > Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_double_elt_greater
 #define NUMBER complex_double
 #define NUMBER1 complex_double
-#define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (X->r > Y->r) && (X->i > Y->i)
+#define NUMBER2 complex_double
+#define MAPFN(X,Y,Z) Z->r = (X->r > Y->r) && (X->i > Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
 // elt_less_equal
@@ -353,22 +353,22 @@ value cp_two_doubles(double d0, double d1)
 #define FUN15 real_double_elt_less_equal
 #define NUMBER double
 #define NUMBER1 double
-#define NUMBER2 float
+#define NUMBER2 double
 #define MAPFN(X,Y,Z) *Z = (*X <= *Y)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_float_elt_less_equal
 #define NUMBER complex_float
 #define NUMBER1 complex_float
-#define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (X->r <= Y->r) && (X->i <= Y->i)
+#define NUMBER2 complex_float
+#define MAPFN(X,Y,Z) Z->r = (X->r <= Y->r) && (X->i <= Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_double_elt_less_equal
 #define NUMBER complex_double
 #define NUMBER1 complex_double
-#define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (X->r <= Y->r) && (X->i <= Y->i)
+#define NUMBER2 complex_double
+#define MAPFN(X,Y,Z) Z->r = (X->r <= Y->r) && (X->i <= Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
 // elt_greater_equal
@@ -383,22 +383,22 @@ value cp_two_doubles(double d0, double d1)
 #define FUN15 real_double_elt_greater_equal
 #define NUMBER double
 #define NUMBER1 double
-#define NUMBER2 float
+#define NUMBER2 double
 #define MAPFN(X,Y,Z) *Z = (*X >= *Y)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_float_elt_greater_equal
 #define NUMBER complex_float
 #define NUMBER1 complex_float
-#define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (X->r >= Y->r) && (X->i >= Y->i)
+#define NUMBER2 complex_float
+#define MAPFN(X,Y,Z) Z->r = (X->r >= Y->r) && (X->i >= Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_double_elt_greater_equal
 #define NUMBER complex_double
 #define NUMBER1 complex_double
-#define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = (X->r >= Y->r) && (X->i >= Y->i)
+#define NUMBER2 complex_double
+#define MAPFN(X,Y,Z) Z->r = (X->r >= Y->r) && (X->i >= Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
 // nnz

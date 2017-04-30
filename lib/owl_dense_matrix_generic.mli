@@ -434,22 +434,22 @@ val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
   greater than the corresponding elements in [y].
  *)
 
-val elt_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+val elt_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_equal x y] performs element-wise [=] comparison of [x] and [y]. *)
 
-val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_not_equal x y] performs element-wise [!=] comparison of [x] and [y]. *)
 
-val elt_less : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+val elt_less : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_less x y] performs element-wise [<] comparison of [x] and [y]. *)
 
-val elt_greater : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+val elt_greater : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_greater x y] performs element-wise [>] comparison of [x] and [y]. *)
 
-val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_less_equal x y] performs element-wise [<=] comparison of [x] and [y]. *)
 
-val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_greater_equal x y] performs element-wise [>=] comparison of [x] and [y]. *)
 
 

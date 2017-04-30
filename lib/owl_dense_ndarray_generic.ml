@@ -586,7 +586,7 @@ let div_scalar0 a x =
 (* element-wise comparison functions *)
 
 let elt_equal x y =
-  let z = empty Float32 (shape x) in
+  let z = empty (kind x) (shape x) in
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   let z' = flatten z |> array1_of_genarray in
@@ -594,7 +594,7 @@ let elt_equal x y =
   z
 
 let elt_not_equal x y =
-  let z = empty Float32 (shape x) in
+  let z = empty (kind x) (shape x) in
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   let z' = flatten z |> array1_of_genarray in
@@ -602,7 +602,7 @@ let elt_not_equal x y =
   z
 
 let elt_less x y =
-  let z = empty Float32 (shape x) in
+  let z = empty (kind x) (shape x) in
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   let z' = flatten z |> array1_of_genarray in
@@ -610,7 +610,7 @@ let elt_less x y =
   z
 
 let elt_greater x y =
-  let z = empty Float32 (shape x) in
+  let z = empty (kind x) (shape x) in
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   let z' = flatten z |> array1_of_genarray in
@@ -618,7 +618,7 @@ let elt_greater x y =
   z
 
 let elt_less_equal x y =
-  let z = empty Float32 (shape x) in
+  let z = empty (kind x) (shape x) in
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   let z' = flatten z |> array1_of_genarray in
@@ -626,7 +626,7 @@ let elt_less_equal x y =
   z
 
 let elt_greater_equal x y =
-  let z = empty Float32 (shape x) in
+  let z = empty (kind x) (shape x) in
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   let z' = flatten z |> array1_of_genarray in
