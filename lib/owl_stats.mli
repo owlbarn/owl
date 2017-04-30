@@ -203,6 +203,13 @@ val runs_test : ?alpha:float -> ?side:tail -> ?v:float -> float array -> bool * 
   value, the default value is the median of [x].
  *)
 
+val mannwhitneyu : ?alpha:float -> ?side:tail -> float array -> float array -> bool * float * float
+(** [mannwhitneyu ~alpha ~side x y] Computes the Mann-Whitney rank test on
+    samples x and y. If length of each sample less than 10 and no ties, then
+    using exact test (see paper Ying Kuen Cheung and Jerome H. Klotz (1997)
+    The Mann Whitney Wilcoxon distribution using linked list
+    Statistica Sinica 7 805-813), else usning asymptotic normal distribution.
+*)
 
 (** {6 Random numbers, PDF, and CDF} *)
 

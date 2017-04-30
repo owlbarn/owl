@@ -759,6 +759,73 @@ let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
 let lillie_test x = None
 (* Lilliefors test *)
 
+
+let tiecorrect rankvals =
+  let ranks_sort = sort rankvals in
+  let counts = Owl_utils.count_dup (Array.to_list ranks_sort) in
+  let size = (float_of_int (Array.length rankvals)) in
+  let numerator  = Array.fold_left (+) 0 (Array.of_list (List.map (fun (x, y) -> y * y * y - y) counts)) in
+  match size with
+  | 0.0 -> 1.0
+  | 1.0 -> 1.0
+  | _ -> 1.0 -. (float_of_int numerator)/.(size *. size *. size -. size)
+
+
+(* Mann–Whitney U test *)
+let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
+  let rec exact_a u n m =
+    if u < 0. then 0.
+    else if u >= m *. (n -. m) then float_of_int (Owl_maths.combination (int_of_float n) (int_of_float m))
+    else if (m = 1. || (n -. m) = 1.) then u +. 1.
+    else ((exact_a u (n -. 1.) m) +. (exact_a (u -. (n -. m)) (n -. 1.) (m -. 1.)))
+  in
+  let n1 = float_of_int (Array.length x) in
+  let n2 = float_of_int (Array.length y) in
+  let ranked = rank (Array.append x y) in
+  let rankx = Array.fold_left (+.) 0.0 (Array.sub ranked 0 (int_of_float n1)) in
+  let u1 = n1 *. n2 +. (n1 *. (n1 +. 1.0)) /. 2.0 -. rankx in
+  let u2 = n1 *. n2 -. u1 in
+  let asymptotic v =
+    let t = tiecorrect ranked in
+    let sd = sqrt(t *. n1 *. n2 *. (n1 +. n2 +. 1.0) /. 12.0) in
+    let mean = n1 *. n2 /. 2.0 in
+    let bigu = match side with
+      | BothSide -> Pervasives.max u1 u2
+      | RightSide -> u2
+      | LeftSide -> u1
+    in
+    let z = (bigu -. mean) /. sd in
+    let p = match side with
+      | BothSide -> 2.0 *. Cdf.gaussian_Q (abs_float z) 1.0
+      | _ -> Cdf.gaussian_Q z 1.0
+    in
+    let h = alpha > p in
+    (h, p, u2)
+  in
+  let exact v =
+    let bigu = match side with
+      | BothSide -> Pervasives.min u1 u2
+      | RightSide -> u1
+      | LeftSide -> u2
+    in
+    let p =
+      let n = n1 +. n2 in
+      let k = if n1 < n2 then n2 else n1 in
+      let z = (exact_a bigu (n1 +. n2) k) /. float_of_int (Owl_maths.combination (int_of_float n) (int_of_float k)) in
+      match side with
+      | BothSide -> 2. *. z
+      | _ -> z
+    in
+    let h = alpha > p in
+    (h, p, u2)
+  in
+  if (max ranked) = (n1 +. n2) && (max [|n1;n2|]) < 10. then exact 1
+  else asymptotic 1
+
+(*f*)
+
+
+
 let runs_test ?(alpha=0.05) ?(side=BothSide) ?v x =
 (* Run test for randomness *)
 let v = match v with
