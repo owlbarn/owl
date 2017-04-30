@@ -147,17 +147,17 @@ val greater_equal : arr -> arr -> bool
 
 val less_equal : arr -> arr -> bool
 
-val elt_equal : arr -> arr -> (float, float32_elt) Owl_dense_ndarray_generic.t
+val elt_equal : arr -> arr -> arr
 
-val elt_not_equal : arr -> arr -> (float, float32_elt) Owl_dense_ndarray_generic.t
+val elt_not_equal : arr -> arr -> arr
 
-val elt_less : arr -> arr -> (float, float32_elt) Owl_dense_ndarray_generic.t
+val elt_less : arr -> arr -> arr
 
-val elt_greater : arr -> arr -> (float, float32_elt) Owl_dense_ndarray_generic.t
+val elt_greater : arr -> arr -> arr
 
-val elt_less_equal : arr -> arr -> (float, float32_elt) Owl_dense_ndarray_generic.t
+val elt_less_equal : arr -> arr -> arr
 
-val elt_greater_equal : arr -> arr -> (float, float32_elt) Owl_dense_ndarray_generic.t
+val elt_greater_equal : arr -> arr -> arr
 
 
 (** {6 Input/Output functions} *)

@@ -3,12 +3,39 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module S = Owl_dense_matrix_s
 
-module D = Owl_dense_matrix_d
+module Operator = struct
+  include Owl_operator.Make_Basic (Owl_dense_matrix_generic)
+  include Owl_operator.Make_Extend (Owl_dense_matrix_generic)
+  include Owl_operator.Make_Matrix (Owl_dense_matrix_generic)
+end
 
-module C = Owl_dense_matrix_c
 
-module Z = Owl_dense_matrix_z
+module Generic = struct
+  include Owl_dense_matrix_generic
+  include Operator
+end
 
-module Generic = Owl_dense_matrix_generic
+
+module S = struct
+  include Owl_dense_matrix_s
+  include Operator
+end
+
+
+module D = struct
+  include Owl_dense_matrix_d
+  include Operator
+end
+
+
+module C = struct
+  include Owl_dense_matrix_c
+  include Operator
+end
+
+
+module Z = struct
+  include Owl_dense_matrix_z
+  include Operator
+end

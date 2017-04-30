@@ -29,7 +29,7 @@ let _linear_multiple_var ?(i=false) x y =
   let open Gsl.Multifit in
   let open Gsl.Vectmat in
   let x = if i = false then x
-    else MX.(ones (row_num x) 1 @|| x) in
+    else MX.(concat_horizontal (ones (row_num x) 1) x) in
   let y = Gsl.Vector.of_array (MX.to_array y) in
   let c, _, _ = Gsl.Multifit.linear (`M x) (`V y) in
   MX.of_array (Gsl.Vector.to_array c) (Gsl.Vector.length c) 1

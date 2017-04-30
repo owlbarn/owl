@@ -7,108 +7,154 @@ open Bigarray
 
 (* define the functions need to be implemented *)
 
-module type Computable = sig
+module type BasicSig = sig
 
-  type mat
+  type ('a, 'b) t
 
-  type elt
+  val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  val add : mat -> mat -> mat
+  val sub : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  val sub : mat -> mat -> mat
+  val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  val mul : mat -> mat -> mat
+  val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  val div : mat -> mat -> mat
+  val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
-(*
-  val elt_mul : mat -> mat -> t
+  val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
-  val elt_div : mat -> mat -> t
-*)
+  val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
-  val add_scalar : mat -> elt -> mat
+  val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
-  val sub_scalar : mat -> elt -> mat
+  val add_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
 
-  val mul_scalar : mat -> elt -> mat
+  val sub_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
 
-  val div_scalar : mat -> elt -> mat
+  val mul_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
 
-  val equal : mat -> mat -> bool
+  val div_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
 
-  val not_equal : mat -> mat -> bool
+  val equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
-  val greater : mat -> mat -> bool
+  val not_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
-  val less : mat -> mat -> bool
+  val greater : ('a, 'b) t -> ('a, 'b) t -> bool
 
-  val greater_equal : mat -> mat -> bool
+  val less : ('a, 'b) t -> ('a, 'b) t -> bool
 
-  val less_equal : mat -> mat -> bool
+  val greater_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
-  val elt_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
-
-  val elt_not_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
-
-  val elt_greater : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
-
-  val elt_less : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
-
-  val elt_greater_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
-
-  val elt_less_equal : mat -> mat -> (float, float32_elt) Owl_dense_matrix_generic.t
+  val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
 end
 
 
-(* define the operators *)
+module type ExtendSig = sig
 
-module Make (C : Computable) = struct
+  type ('a, 'b) t
 
-  type mat = C.mat
+  val elt_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  type elt = C.elt
+  val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  let ( + ) = C.add
+  val elt_less : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  let ( - ) = C.sub
+  val elt_greater : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  let ( * ) = C.mul
+  val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  let ( / ) = C.div
+  val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  let ( +$ ) = C.add_scalar
+  val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 
-  let ( -$ ) = C.sub_scalar
+end
 
-  let ( *$ ) = C.mul_scalar
 
-  let ( /$ ) = C.div_scalar
+module type MatrixSig = sig
 
-  let ( = ) = C.equal
+  type ('a, 'b) t
 
-  let ( <> ) = C.not_equal
+  val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  let ( > ) = C.greater
+end
 
-  let ( < ) = C.less
+(* define basic operators *)
 
-  let ( >= ) = C.greater_equal
+module Make_Basic (M : BasicSig) = struct
 
-  let ( <= ) = C.less_equal
+  type ('a, 'b) op_t0 = ('a, 'b) M.t
 
-  let ( =. ) = C.elt_equal
+  let ( + ) = M.add
 
-  let ( <>. ) = C.elt_not_equal
+  let ( - ) = M.sub
 
-  let ( >. ) = C.elt_greater
+  let ( * ) = M.mul
 
-  let ( <. ) = C.elt_less
+  let ( / ) = M.div
 
-  let ( >=. ) = C.elt_greater_equal
+  let ( +$ ) = M.add_scalar
 
-  let ( <=. ) = C.elt_less_equal
+  let ( -$ ) = M.sub_scalar
+
+  let ( *$ ) = M.mul_scalar
+
+  let ( /$ ) = M.div_scalar
+
+  let ( $+ ) = M.add_scalar0
+
+  let ( $- ) = M.sub_scalar0
+
+  let ( $* ) = M.mul_scalar0
+
+  let ( $/ ) = M.div_scalar0
+
+  let ( = ) = M.equal
+
+  let ( != ) = M.not_equal
+
+  let ( <> ) = M.not_equal
+
+  let ( > ) = M.greater
+
+  let ( < ) = M.less
+
+  let ( >= ) = M.greater_equal
+
+  let ( <= ) = M.less_equal
+
+end
+
+
+
+module Make_Extend (M : ExtendSig) = struct
+
+  type ('a, 'b) op_t1 = ('a, 'b) M.t
+
+  let ( =. ) = M.elt_equal
+
+  let ( !=. ) = M.elt_not_equal
+
+  let ( <>. ) = M.elt_not_equal
+
+  let ( <. ) = M.elt_less
+
+  let ( >. ) = M.elt_greater
+
+  let ( <=. ) = M.elt_less_equal
+
+  let ( >=. ) = M.elt_greater_equal
+
+  let ( ** ) = M.pow
+
+end
+
+
+module Make_Matrix (M : MatrixSig) = struct
+
+  type ('a, 'b) op_t2 = ('a, 'b) M.t
+
+  let ( *@ ) = M.dot
 
 end
 

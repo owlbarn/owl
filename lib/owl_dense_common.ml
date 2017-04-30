@@ -207,7 +207,6 @@ type ('a, 'b) owl_vec_op06 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a
 type ('a, 'b) owl_vec_op07 = int -> 'a -> 'a -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_vec_op08 = int -> float -> 'a -> 'a -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_vec_op09 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
-type ('a, 'b) owl_vec_op10 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> (float, float32_elt) owl_vec -> unit
 type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
@@ -363,81 +362,81 @@ let _owl_is_nonpositive : type a b. (a, b) kind -> (a, b) owl_vec_op01 = functio
   | Complex64 -> owl_complex_double_is_nonpositive
   | _         -> failwith "_owl_is_nonpositive: unsupported operation"
 
-external owl_real_float_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_float_elt_equal"
-external owl_real_double_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_double_elt_equal"
-external owl_complex_float_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "complex_float_elt_equal"
-external owl_complex_double_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "complex_double_elt_equal"
+external owl_real_float_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_elt_equal"
+external owl_real_double_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_elt_equal"
+external owl_complex_float_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_elt_equal"
+external owl_complex_double_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_elt_equal"
 
-let _owl_elt_equal : type a b. (a, b) kind -> (a, b) owl_vec_op10 = fun k l x y z ->
+let _owl_elt_equal : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
   match k with
   | Float32   -> owl_real_float_elt_equal l x y z
   | Float64   -> owl_real_double_elt_equal l x y z
-  | Complex32 -> owl_complex_double_elt_equal l x y z
+  | Complex32 -> owl_complex_float_elt_equal l x y z
   | Complex64 -> owl_complex_double_elt_equal l x y z
   | _         -> failwith "_owl_elt_equal: unsupported operation"
 
-external owl_real_float_elt_not_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_float_elt_not_equal"
-external owl_real_double_elt_not_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_double_elt_not_equal"
-external owl_complex_float_elt_not_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "complex_float_elt_not_equal"
-external owl_complex_double_elt_not_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "complex_double_elt_not_equal"
+external owl_real_float_elt_not_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_elt_not_equal"
+external owl_real_double_elt_not_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_elt_not_equal"
+external owl_complex_float_elt_not_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_elt_not_equal"
+external owl_complex_double_elt_not_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_elt_not_equal"
 
-let _owl_elt_not_equal : type a b. (a, b) kind -> (a, b) owl_vec_op10 = fun k l x y z ->
+let _owl_elt_not_equal : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
   match k with
   | Float32   -> owl_real_float_elt_not_equal l x y z
   | Float64   -> owl_real_double_elt_not_equal l x y z
-  | Complex32 -> owl_complex_double_elt_not_equal l x y z
+  | Complex32 -> owl_complex_float_elt_not_equal l x y z
   | Complex64 -> owl_complex_double_elt_not_equal l x y z
   | _         -> failwith "_owl_elt_not_equal: unsupported operation"
 
-external owl_real_float_elt_less : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_float_elt_less"
-external owl_real_double_elt_less : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_double_elt_less"
-external owl_complex_float_elt_less : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "complex_float_elt_less"
-external owl_complex_double_elt_less : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "complex_double_elt_less"
+external owl_real_float_elt_less : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_elt_less"
+external owl_real_double_elt_less : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_elt_less"
+external owl_complex_float_elt_less : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_elt_less"
+external owl_complex_double_elt_less : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_elt_less"
 
-let _owl_elt_less : type a b. (a, b) kind -> (a, b) owl_vec_op10 = fun k l x y z ->
+let _owl_elt_less : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
   match k with
   | Float32   -> owl_real_float_elt_less l x y z
   | Float64   -> owl_real_double_elt_less l x y z
-  | Complex32 -> owl_complex_double_elt_less l x y z
+  | Complex32 -> owl_complex_float_elt_less l x y z
   | Complex64 -> owl_complex_double_elt_less l x y z
   | _         -> failwith "_owl_elt_less: unsupported operation"
 
-external owl_real_float_elt_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_float_elt_greater"
-external owl_real_double_elt_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_double_elt_greater"
-external owl_complex_float_elt_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "complex_float_elt_greater"
-external owl_complex_double_elt_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "complex_double_elt_greater"
+external owl_real_float_elt_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_elt_greater"
+external owl_real_double_elt_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_elt_greater"
+external owl_complex_float_elt_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_elt_greater"
+external owl_complex_double_elt_greater : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_elt_greater"
 
-let _owl_elt_greater : type a b. (a, b) kind -> (a, b) owl_vec_op10 = fun k l x y z ->
+let _owl_elt_greater : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
   match k with
   | Float32   -> owl_real_float_elt_greater l x y z
   | Float64   -> owl_real_double_elt_greater l x y z
-  | Complex32 -> owl_complex_double_elt_greater l x y z
+  | Complex32 -> owl_complex_float_elt_greater l x y z
   | Complex64 -> owl_complex_double_elt_greater l x y z
   | _         -> failwith "_owl_elt_greater: unsupported operation"
 
-external owl_real_float_elt_less_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_float_elt_less_equal"
-external owl_real_double_elt_less_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_double_elt_less_equal"
-external owl_complex_float_elt_less_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "complex_float_elt_less_equal"
-external owl_complex_double_elt_less_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "complex_double_elt_less_equal"
+external owl_real_float_elt_less_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_elt_less_equal"
+external owl_real_double_elt_less_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_elt_less_equal"
+external owl_complex_float_elt_less_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_elt_less_equal"
+external owl_complex_double_elt_less_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_elt_less_equal"
 
-let _owl_elt_less_equal : type a b. (a, b) kind -> (a, b) owl_vec_op10 = fun k l x y z ->
+let _owl_elt_less_equal : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
   match k with
   | Float32   -> owl_real_float_elt_less_equal l x y z
   | Float64   -> owl_real_double_elt_less_equal l x y z
-  | Complex32 -> owl_complex_double_elt_less_equal l x y z
+  | Complex32 -> owl_complex_float_elt_less_equal l x y z
   | Complex64 -> owl_complex_double_elt_less_equal l x y z
   | _         -> failwith "_owl_elt_less_equal: unsupported operation"
 
-external owl_real_float_elt_greater_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_float_elt_greater_equal"
-external owl_real_double_elt_greater_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_double_elt_greater_equal"
-external owl_complex_float_elt_greater_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "complex_float_elt_greater_equal"
-external owl_complex_double_elt_greater_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "complex_double_elt_greater_equal"
+external owl_real_float_elt_greater_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_elt_greater_equal"
+external owl_real_double_elt_greater_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_elt_greater_equal"
+external owl_complex_float_elt_greater_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_elt_greater_equal"
+external owl_complex_double_elt_greater_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_elt_greater_equal"
 
-let _owl_elt_greater_equal : type a b. (a, b) kind -> (a, b) owl_vec_op10 = fun k l x y z ->
+let _owl_elt_greater_equal : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
   match k with
   | Float32   -> owl_real_float_elt_greater_equal l x y z
   | Float64   -> owl_real_double_elt_greater_equal l x y z
-  | Complex32 -> owl_complex_double_elt_greater_equal l x y z
+  | Complex32 -> owl_complex_float_elt_greater_equal l x y z
   | Complex64 -> owl_complex_double_elt_greater_equal l x y z
   | _         -> failwith "_owl_elt_greater_equal: unsupported operation"
 

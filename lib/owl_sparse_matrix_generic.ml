@@ -410,6 +410,15 @@ let l1norm x = x |> abs |> sum
 
 let l2norm x = mul x x |> sum |> sqrt
 
+let add_scalar0 a x = add_scalar x a
+
+let sub_scalar0 a x = sub_scalar x a |> neg
+
+let mul_scalar0 a x = mul_scalar x a
+
+let div_scalar0 a x = div_scalar x a |> reci
+
+
 (** permutation and draw functions *)
 
 let permutation_matrix k d =
@@ -577,47 +586,3 @@ let cols x l =
     iteri_nz (fun i _ v -> insert y i j v) (col x k)
   ) l;
   y
-
-(* shorhand infix operators *)
-
-let ( +@ ) = add
-
-let ( -@ ) = sub
-
-let ( *@ ) = mul
-
-let ( /@ ) = div
-
-let ( $@ ) = dot
-
-let ( **@ ) = power_scalar
-
-let ( =@ ) = ( = )
-
-let ( <>@ ) = ( <> )
-
-let ( >@ ) = greater
-
-let ( <@ ) = less
-
-let ( >=@ ) = greater_equal
-
-let ( <=@ ) = less_equal
-
-let ( +$ ) x a = add_scalar x a
-
-let ( $+ ) a x = add_scalar x a
-
-let ( -$ ) x a = sub_scalar x a
-
-let ( $- ) a x = sub_scalar x a |> neg
-
-let ( *$ ) x a = mul_scalar x a
-
-let ( $* ) a x = mul_scalar x a
-
-let ( /$ ) x a = div_scalar x a
-
-let ( $/ ) a x = div_scalar x a |> reci
-
-let ( @@ ) f x = map f x

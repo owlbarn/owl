@@ -434,22 +434,22 @@ val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
   greater than the corresponding elements in [y].
  *)
 
-val elt_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+val elt_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_equal x y] performs element-wise [=] comparison of [x] and [y]. *)
 
-val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_not_equal x y] performs element-wise [!=] comparison of [x] and [y]. *)
 
-val elt_less : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+val elt_less : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_less x y] performs element-wise [<] comparison of [x] and [y]. *)
 
-val elt_greater : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+val elt_greater : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_greater x y] performs element-wise [>] comparison of [x] and [y]. *)
 
-val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_less_equal x y] performs element-wise [<=] comparison of [x] and [y]. *)
 
-val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> (float, float32_elt) t
+val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_greater_equal x y] performs element-wise [>=] comparison of [x] and [y]. *)
 
 
@@ -875,20 +875,32 @@ val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
   returns the result in a new matrix.
  *)
 
+val add_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [add_scalar0 a x] is similar to [add_scalar] but with scalar as the first parameter. *)
+
 val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [sub_scalar x a] subtracts a scalar value [a] to all the elements in [x],
   and returns the result in a new matrix.
  *)
+
+val sub_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [sub_scalar0 a x] is similar to [sub_scalar] but with scalar as the first parameter. *)
 
 val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [mul_scalar x a] multiplies a scalar value [a] to all the elements in [x],
   and returns the result in a new matrix.
  *)
 
+val mul_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [mul_scalar0 a x] is similar to [mul_scalar] but with scalar as the first parameter. *)
+
 val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [div_scalar x a] divides a scalar value [a] to all the elements in [x], and
   returns the result in a new matrix.
  *)
+
+val div_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [div_scalar0 a x] is similar to [div_scalar] but with scalar as the first parameter. *)
 
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [dot x y] returns the dot product of matrix [x] and [y]. *)
@@ -975,81 +987,3 @@ val cast_s2z : (float, float32_elt) t -> (Complex.t, complex64_elt) t
 
 val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 (** [cast_d2c x] casts [x] from [float64] to [complex32]. *)
-
-
-(** {6 Shorhand infix operators} *)
-
-val ( >> ) : ('a, 'b) t -> ('a, 'b) t -> unit
-(** Shorthand for [copy_to x y], i.e., x >> y *)
-
-val ( << ) : ('a, 'b) t -> ('a, 'b) t -> unit
-(** Shorthand for [copy_to y x], i.e., x << y *)
-
-val ( @= ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [concat_vertical x y], i.e., x @= y *)
-
-val ( @|| ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [concat_horizontal x y], i.e., x @|| y *)
-
-val ( +@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [add x y], i.e., [x +@ y] *)
-
-val ( -@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [sub x y], i.e., [x -@ y] *)
-
-val ( *@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [mul x y], i.e., [x *@ y] *)
-
-val ( /@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [div x y], i.e., [x /@ y] *)
-
-val ( +$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** Shorthand for [add_scalar x a], i.e., [x +$ a] *)
-
-val ( -$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** Shorthand for [sub_scalar x a], i.e., [x -$ a] *)
-
-val ( *$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** Shorthand for [mul_scalar x a], i.e., [x *$ a] *)
-
-val ( /$ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** Shorthand for [div_scalar x a], i.e., [x /$ a] *)
-
-val ( $+ ) : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [add_scalar x a], i.e., [a $+ x] *)
-
-val ( $- ) : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [sub_scalar x a], i.e., [a -$ x] *)
-
-val ( $* ) : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [mul_scalar x a], i.e., [x $* a] *)
-
-val ( $/ ) : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [div_scalar x a], i.e., [x $/ a] *)
-
-val ( $@ ) : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [dot x y], i.e., [x $@ y] *)
-
-val ( **@ ) : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** Shorthand for [power x a], i.e., [x **@ a] *)
-
-val ( =@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [equal x y], i.e., [x =@ y] *)
-
-val ( >@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [greater x y], i.e., [x >@ y] *)
-
-val ( <@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [less x y], i.e., [x <@ y] *)
-
-val ( <>@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [not_equal x y], i.e., [x <>@ y] *)
-
-val ( >=@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [greater_equal x y], i.e., [x >=@ y] *)
-
-val ( <=@ ) : ('a, 'b) t -> ('a, 'b) t -> bool
-(** Shorthand for [less_equal x y], i.e., [x <=@ y] *)
-
-val ( @@ ) : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** Shorthand for [map f x], i.e., f @@ x *)

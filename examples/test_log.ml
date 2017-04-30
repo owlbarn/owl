@@ -2,7 +2,7 @@
   test stochastic gradient decent algorithm on dense metrix.
 ]  *)
 
-module MX = Owl_dense_matrix_d
+module MX = Owl.Dense.Matrix.D
 module LL = Owl_optimise
 
 let generate_data () =
@@ -18,8 +18,8 @@ let generate_data () =
   let x2 = map_at_col (fun x -> x -. b) x2 1 in
   let y1 = create c 1 ( 1.) in
   let y2 = create c 1 ( 0.)in
-  let x = x1 @= x2 in
-  let y = y1 @= y2 in
+  let x = concat_vertical x1 x2 in
+  let y = concat_vertical y1 y2 in
   let _ = save_txt x1 "test_log.data1.tmp" in
   let _ = save_txt x2 "test_log.data2.tmp" in
   x, y
@@ -36,10 +36,10 @@ let draw_line p =
 
 let test_log x y =
   let p = LL.logistic_regression ~i:true x y in
-  let x = MX.(x @|| ones (row_num x) 1) in
-  let y' = MX.(sigmoid (x $@ p)) in
+  let x = MX.(concat_horizontal x (ones (row_num x) 1)) in
+  let y' = MX.(sigmoid (x *@ p)) in
   let y' = MX.map (fun x -> if x > 0.5 then 1. else 0.) y' in
-  let e = MX.(average (abs (y -@ y'))) in
+  let e = MX.(average (abs (y - y'))) in
   let _ = Log.info "accuracy: %.4f" (1. -. e) in p
 
 let _ =

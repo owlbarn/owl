@@ -558,6 +558,26 @@ let div_scalar x a =
   let y = Owl_dense_ndarray_generic.div_scalar y a in
   of_ndarray y
 
+let add_scalar0 a x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.add_scalar0 a y in
+  of_ndarray y
+
+let sub_scalar0 a x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.sub_scalar0 a y in
+  of_ndarray y
+
+let mul_scalar0 a x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.mul_scalar0 a y in
+  of_ndarray y
+
+let div_scalar0 a x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.div_scalar0 a y in
+  of_ndarray y
+
 let sum x =
   let y = to_ndarray x in
   Owl_dense_ndarray_generic.sum y
@@ -1076,56 +1096,3 @@ let cast_d2z x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_d2z |> of_nda
 let cast_s2z x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_s2z |> of_ndarray
 
 let cast_d2c x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_d2c |> of_ndarray
-
-
-(* shorhand infix operators *)
-
-let ( @= ) = concat_vertical
-
-let ( @|| ) = concat_horizontal
-
-let ( >> ) = copy_to
-
-let ( << ) x1 x2 = copy_to x2 x1
-
-let ( +@ ) = add
-
-let ( -@ ) = sub
-
-let ( *@ ) = mul
-
-let ( /@ ) = div
-
-let ( $@ ) = dot
-
-let ( **@ ) = pow_scalar
-
-let ( =@ ) = ( = )
-
-let ( <>@ ) = ( <> )
-
-let ( >@ ) = greater
-
-let ( <@ ) = less
-
-let ( >=@ ) = greater_equal
-
-let ( <=@ ) = less_equal
-
-let ( +$ ) x a = add_scalar x a
-
-let ( $+ ) a x = add_scalar x a
-
-let ( -$ ) x a = sub_scalar x a
-
-let ( $- ) a x = sub_scalar x a |> neg
-
-let ( *$ ) x a = mul_scalar x a
-
-let ( $* ) a x = mul_scalar x a
-
-let ( /$ ) x a = div_scalar x a
-
-let ( $/ ) a x = div_scalar x a |> reci
-
-let ( @@ ) f x = map f x

@@ -3,11 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module M = Owl_dense_matrix_d
-type mat = Owl_dense_matrix_d.mat
+module M = Owl_dense_matrix.D
+type mat = Owl_dense_matrix.D.mat
 
-module V = Owl_dense_vector_d
-type vec = Owl_dense_vector_d.vec
+module V = Owl_dense_vector.D
+type vec = Owl_dense_vector.D.vec
 
 (* global epsilon value used in numerical differentiation *)
 let _eps = 0.00001
@@ -39,7 +39,7 @@ let grad' f x =
     f x'
   ) x
   in
-  g, M.((gg -@ g) *$ _ep1)
+  g, M.((gg - g) *$ _ep1)
 
 (* gradient of f : vector -> scalar *)
 let grad f x = grad' f x |> snd
@@ -56,7 +56,7 @@ let jacobianT' f x =
     f x'
   ) j
   in
-  y, M.((jj -@ j) *$ _ep1)
+  y, M.((jj - j) *$ _ep1)
 
 (* transposed jacobian of f : vector -> vector *)
 let jacobianT f x = jacobianT' f x |> snd

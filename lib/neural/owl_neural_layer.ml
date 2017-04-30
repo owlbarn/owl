@@ -102,7 +102,7 @@ module Linear = struct
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
 
-  let run x l = Maths.((x $@ l.w) + l.b)
+  let run x l = Maths.((x *@ l.w) + l.b)
 
   let to_string l =
     let wm, wn = Mat.shape l.w in
@@ -193,8 +193,8 @@ module Recurrent = struct
   let run x l =
     let act x = Activation.run x l.act in
     let y = Mat.map_by_row (fun x ->
-      l.h <- act Maths.((l.h $@ l.whh) + (x $@ l.wxh) + l.bh);
-      Maths.((l.h $@ l.why) + l.by)
+      l.h <- act Maths.((l.h *@ l.whh) + (x *@ l.wxh) + l.bh);
+      Maths.((l.h *@ l.why) + l.by)
     ) x in
     l.h <- primal' l.h;
     y
@@ -352,11 +352,11 @@ module LSTM = struct
 
   let run x l =
     let y = Mat.map_by_row (fun x ->
-      let i  = Maths.(((x $@ l.wxi) + (l.h $@ l.whi) + l.bi) |> sigmoid) in
-      let c' = Maths.(((x $@ l.wxc) + (l.h $@ l.whc) + l.bc) |> tanh) in
-      let f  = Maths.(((x $@ l.wxf) + (l.h $@ l.whf) + l.bf) |> sigmoid) in
+      let i  = Maths.(((x *@ l.wxi) + (l.h *@ l.whi) + l.bi) |> sigmoid) in
+      let c' = Maths.(((x *@ l.wxc) + (l.h *@ l.whc) + l.bc) |> tanh) in
+      let f  = Maths.(((x *@ l.wxf) + (l.h *@ l.whf) + l.bf) |> sigmoid) in
       l.c <- Maths.((i * c') + (f * l.c));
-      let o  = Maths.(((x $@ l.wxo) + (l.h $@ l.who) + l.bo) |> sigmoid) in
+      let o  = Maths.(((x *@ l.wxo) + (l.h *@ l.who) + l.bo) |> sigmoid) in
       l.h <- Maths.(o * (tanh l.c));
       l.h
     ) x in
@@ -502,9 +502,9 @@ module GRU = struct
 
   let run x l =
     let y = Mat.map_by_row (fun x ->
-      let z  = Maths.(((x $@ l.wxz) + (l.h $@ l.whz) + l.bz) |> sigmoid) in
-      let r  = Maths.(((x $@ l.wxr) + (l.h $@ l.whr) + l.br) |> sigmoid) in
-      let h' = Maths.(((x $@ l.wxh) + ((l.h * r) $@ l.whh))  |> tanh) in
+      let z  = Maths.(((x *@ l.wxz) + (l.h *@ l.whz) + l.bz) |> sigmoid) in
+      let r  = Maths.(((x *@ l.wxr) + (l.h *@ l.whr) + l.br) |> sigmoid) in
+      let h' = Maths.(((x *@ l.wxh) + ((l.h * r) *@ l.whh))  |> tanh) in
       l.h <- Maths.((F 1. - z) * h' + (z * l.h));
       l.h
     ) x in
