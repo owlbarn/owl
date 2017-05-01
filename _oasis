@@ -101,10 +101,6 @@ Library owl
                     ext/Owl_ext_uniop,
                     ext/Owl_ext_binop,
                     ext/Owl_ext_dense_ndarray,
-                    ext/Owl_ext_dense_ndarray_s,
-                    ext/Owl_ext_dense_ndarray_d,
-                    ext/Owl_ext_dense_ndarray_c,
-                    ext/Owl_ext_dense_ndarray_z,
                     ext/Owl_ext_dense_matrix,
                     ### Backend modules ###
                     backend/Owl_backend_gsl_maths,

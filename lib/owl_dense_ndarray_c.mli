@@ -7,6 +7,7 @@ open Bigarray
 
 type elt = Complex.t
 type arr = (Complex.t, complex32_elt, c_layout) Genarray.t
+type cast_arr = (float, float32_elt, c_layout) Genarray.t
 
 
 (** {6 Create N-dimensional array} *)
@@ -171,17 +172,17 @@ val load : string -> arr
 
 (** {6 Unary mathematical operations } *)
 
-val re : arr -> Owl_dense_ndarray_s.arr
+val re : arr -> cast_arr
 
-val im : arr -> Owl_dense_ndarray_s.arr
+val im : arr -> cast_arr
 
 val sum : arr -> elt
 
 val prod : ?axis:int option array -> arr -> elt
 
-val abs : arr -> Owl_dense_ndarray_s.arr
+val abs : arr -> cast_arr
 
-val abs2 : arr -> Owl_dense_ndarray_s.arr
+val abs2 : arr -> cast_arr
 
 val conj : arr -> arr
 

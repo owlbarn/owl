@@ -10,10 +10,8 @@ open Bigarray
 module M = Owl_dense_matrix_generic
 include M
 
-type mat = (Complex.t, Bigarray.complex32_elt) M.t
-
 type elt = Complex.t
-
+type mat = (Complex.t, Bigarray.complex32_elt) M.t
 type cast_mat = (float, float32_elt) Owl_dense_matrix_generic.t
 
 

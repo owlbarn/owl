@@ -18,7 +18,7 @@ module type PackSig = sig
   val unpack_box    : ext_typ -> arr
   val pack_elt      : elt -> ext_typ
   val unpack_elt    : ext_typ -> elt
-  val pack_cast_box : arr -> ext_typ
+  val pack_cast_box : cast_arr -> ext_typ
 
 end
 
@@ -63,7 +63,7 @@ module Pack_DAC = struct
   let unpack_box = function DAC x -> x | _ -> failwith "unpack_dac: unknown type."
   let pack_elt x = C x
   let unpack_elt = function C x -> x | _ -> failwith "unpack_elt: unknown type."
-  let pack_cast_box x = DAC x
+  let pack_cast_box x = DAS x
 
 end
 
@@ -78,12 +78,12 @@ module Pack_DAZ = struct
   let unpack_box = function DAZ x -> x | _ -> failwith "unpack_daz: unknown type."
   let pack_elt x = C x
   let unpack_elt = function C x -> x | _ -> failwith "unpack_elt: unknown type."
-  let pack_cast_box x = DAZ x
+  let pack_cast_box x = DAD x
 
 end
 
 
-(* module for basic matrix operations *)
+(* module for basic ndarray operations *)
 
 module type BasicSig = sig
 
@@ -238,6 +238,10 @@ module type BasicSig = sig
 
   val load : string -> arr
 
+
+  val sum : arr -> elt
+
+  val prod : ?axis:int option array -> arr -> elt
 
   val add : arr -> arr -> arr
 
@@ -418,6 +422,10 @@ module Make_Basic
   let load f = M.load f |> pack_box
 
 
+  let sum x = M.sum (unpack_box x) |> pack_elt
+
+  let prod x = M.prod (unpack_box x) |> pack_elt
+
   let add x y = M.add (unpack_box x) (unpack_box y) |> pack_box
 
   let sub x y = M.sub (unpack_box x) (unpack_box y) |> pack_box
@@ -445,13 +453,371 @@ module Make_Basic
 end
 
 
+(* module for float32 and float64 ndarray *)
 
-(* matrix modules of four types *)
+module type SD_Sig = sig
 
-module S = Owl_ext_dense_ndarray_s
+  type arr
+  type elt
 
-module D = Owl_ext_dense_ndarray_d
+  val min : arr -> elt
 
-module C = Owl_ext_dense_ndarray_c
+  val max : arr -> elt
 
-module Z = Owl_ext_dense_ndarray_z
+  val minmax : arr -> elt * elt
+
+  val min_i : arr -> elt * int array
+
+  val max_i : arr -> elt * int array
+
+  val minmax_i : arr -> (elt * (int array)) * (elt * (int array))
+
+  val abs : arr -> arr
+
+  val abs2 : arr -> arr
+
+  val neg : arr -> arr
+
+  val reci : arr -> arr
+
+  val signum : arr -> arr
+
+  val sqr : arr -> arr
+
+  val sqrt : arr -> arr
+
+  val cbrt : arr -> arr
+
+  val exp : arr -> arr
+
+  val exp2 : arr -> arr
+
+  val expm1 : arr -> arr
+
+  val log : arr -> arr
+
+  val log10 : arr -> arr
+
+  val log2 : arr -> arr
+
+  val log1p : arr -> arr
+
+  val sin : arr -> arr
+
+  val cos : arr -> arr
+
+  val tan : arr -> arr
+
+  val asin : arr -> arr
+
+  val acos : arr -> arr
+
+  val atan : arr -> arr
+
+  val sinh : arr -> arr
+
+  val cosh : arr -> arr
+
+  val tanh : arr -> arr
+
+  val asinh : arr -> arr
+
+  val acosh : arr -> arr
+
+  val atanh : arr -> arr
+
+  val floor : arr -> arr
+
+  val ceil : arr -> arr
+
+  val round : arr -> arr
+
+  val trunc : arr -> arr
+
+  val erf : arr -> arr
+
+  val erfc : arr -> arr
+
+  val logistic : arr -> arr
+
+  val relu : arr -> arr
+
+  val softplus : arr -> arr
+
+  val softsign : arr -> arr
+
+  val softmax : arr -> arr
+
+  val sigmoid : arr -> arr
+
+  val log_sum_exp : arr -> elt
+
+  val l1norm : arr -> elt
+
+  val l2norm : arr -> elt
+
+  val l2norm_sqr : arr -> elt
+
+  val pow : arr -> arr -> arr
+
+  val pow0 : elt -> arr -> arr
+
+  val pow1 : arr -> elt -> arr
+
+  val atan2 : arr -> arr -> arr
+
+  val atan20 : elt -> arr -> arr
+
+  val atan21 : arr -> elt -> arr
+
+  val hypot : arr -> arr -> arr
+
+  val min2 : arr -> arr -> arr
+
+  val max2 : arr -> arr -> arr
+
+  val ssqr : arr -> elt -> elt
+
+  val ssqr_diff : arr -> arr -> elt
+
+  val cross_entropy : arr -> arr -> elt
+
+end
+
+
+module Make_SD
+  (P : PackSig)
+  (M : SD_Sig with type arr := P.arr and type elt := P.elt)
+  = struct
+
+  open P
+
+  let min x = M.min (unpack_box x) |> pack_elt
+
+  let max x = M.max (unpack_box x) |> pack_elt
+
+  let minmax x = let a, b = M.minmax (unpack_box x) in (pack_elt a, pack_elt b)
+
+  let min_i x = let a, i = M.min_i (unpack_box x) in (pack_elt a, i)
+
+  let max_i x = let a, i = M.max_i (unpack_box x) in (pack_elt a, i)
+
+  let minmax_i x = let (a,i), (b,j) = M.minmax_i (unpack_box x) in (pack_elt a,i), (pack_elt b, i)
+
+  let abs x = M.abs (unpack_box x) |> pack_box
+
+  let abs2 x = M.abs2 (unpack_box x) |> pack_box
+
+  let neg x = M.neg (unpack_box x) |> pack_box
+
+  let reci x = M.reci (unpack_box x) |> pack_box
+
+  let signum x = M.signum (unpack_box x) |> pack_box
+
+  let sqr x = M.sqr (unpack_box x) |> pack_box
+
+  let sqrt x = M.sqrt (unpack_box x) |> pack_box
+
+  let cbrt x = M.cbrt (unpack_box x) |> pack_box
+
+  let exp x = M.exp (unpack_box x) |> pack_box
+
+  let exp2 x = M.exp2 (unpack_box x) |> pack_box
+
+  let expm1 x = M.expm1 (unpack_box x) |> pack_box
+
+  let log x = M.log (unpack_box x) |> pack_box
+
+  let log10 x = M.log10 (unpack_box x) |> pack_box
+
+  let log2 x = M.log2 (unpack_box x) |> pack_box
+
+  let log1p x = M.log1p (unpack_box x) |> pack_box
+
+  let sin x = M.sin (unpack_box x) |> pack_box
+
+  let cos x = M.cos (unpack_box x) |> pack_box
+
+  let tan x = M.tan (unpack_box x) |> pack_box
+
+  let asin x = M.asin (unpack_box x) |> pack_box
+
+  let acos x = M.acos (unpack_box x) |> pack_box
+
+  let atan x = M.atan (unpack_box x) |> pack_box
+
+  let sinh x = M.sinh (unpack_box x) |> pack_box
+
+  let cosh x = M.cosh (unpack_box x) |> pack_box
+
+  let tanh x = M.tanh (unpack_box x) |> pack_box
+
+  let asinh x = M.asinh (unpack_box x) |> pack_box
+
+  let acosh x = M.acosh (unpack_box x) |> pack_box
+
+  let atanh x = M.atanh (unpack_box x) |> pack_box
+
+  let floor x = M.floor (unpack_box x) |> pack_box
+
+  let ceil x = M.ceil (unpack_box x) |> pack_box
+
+  let round x = M.round (unpack_box x) |> pack_box
+
+  let trunc x = M.trunc (unpack_box x) |> pack_box
+
+  let erf x = M.erf (unpack_box x) |> pack_box
+
+  let erfc x = M.erfc (unpack_box x) |> pack_box
+
+  let logistic x = M.logistic (unpack_box x) |> pack_box
+
+  let relu x = M.relu (unpack_box x) |> pack_box
+
+  let softplus x = M.softplus (unpack_box x) |> pack_box
+
+  let softsign x = M.softsign (unpack_box x) |> pack_box
+
+  let softmax x = M.softmax (unpack_box x) |> pack_box
+
+  let sigmoid x = M.sigmoid (unpack_box x) |> pack_box
+
+  let log_sum_exp x = M.log_sum_exp (unpack_box x) |> pack_elt
+
+  let l1norm x = M.l1norm (unpack_box x) |> pack_elt
+
+  let l2norm x = M.l2norm (unpack_box x) |> pack_elt
+
+  let l2norm_sqr x = M.l2norm_sqr (unpack_box x) |> pack_elt
+
+
+  let pow x y = M.pow (unpack_box x) (unpack_box y) |> pack_box
+
+  let pow0 a x = M.pow0 (unpack_elt a) (unpack_box x) |> pack_box
+
+  let pow1 x a = M.pow1 (unpack_box x) (unpack_elt a) |> pack_box
+
+  let atan2 x y = M.atan2 (unpack_box x) (unpack_box y) |> pack_box
+
+  let atan20 a x = M.atan20 (unpack_elt a) (unpack_box x) |> pack_box
+
+  let atan21 x a = M.atan21 (unpack_box x) (unpack_elt a) |> pack_box
+
+  let hypot x y = M.hypot (unpack_box x) (unpack_box y) |> pack_box
+
+  let min2 x y = M.min2 (unpack_box x) (unpack_box y) |> pack_box
+
+  let max2 x y = M.max2 (unpack_box x) (unpack_box y) |> pack_box
+
+  let ssqr x a = M.ssqr (unpack_box x) (unpack_elt a) |> pack_elt
+
+  let ssqr_diff x y = M.ssqr_diff (unpack_box x) (unpack_box y) |> pack_elt
+
+  let cross_entropy x y = M.cross_entropy (unpack_box x) (unpack_box y) |> pack_elt
+
+end
+
+
+(* module for complex32 and complex64 ndarray *)
+
+module type CZ_Sig = sig
+
+  type arr
+  type elt
+  type cast_arr
+
+  val re : arr -> cast_arr
+
+  val im : arr -> cast_arr
+
+  val sum : arr -> elt
+
+  val prod : ?axis:int option array -> arr -> elt
+
+  val abs : arr -> cast_arr
+
+  val abs2 : arr -> cast_arr
+
+  val conj : arr -> arr
+
+  val neg : arr -> arr
+
+  val reci : arr -> arr
+
+  val l1norm : arr -> float
+
+  val l2norm : arr -> float
+
+  val l2norm_sqr : arr -> float
+
+  val ssqr : arr -> elt -> elt
+
+  val ssqr_diff : arr -> arr -> elt
+
+end
+
+
+module Make_CZ
+  (P : PackSig)
+  (M : CZ_Sig with type arr := P.arr and type elt := P.elt and type cast_arr := P.cast_arr)
+  = struct
+
+  open P
+
+  let pack_cast_elt x = F x
+
+  let re x = M.re (unpack_box x) |> pack_cast_box
+
+  let im x = M.im (unpack_box x) |> pack_cast_box
+
+  let abs x = M.abs (unpack_box x) |> pack_cast_box
+
+  let abs2 x = M.abs2 (unpack_box x) |> pack_cast_box
+
+  let conj x = M.conj (unpack_box x) |> pack_box
+
+  let sum x = M.sum (unpack_box x) |> pack_elt
+
+  let prod x = M.prod (unpack_box x) |> pack_elt
+
+  let neg x = M.neg (unpack_box x) |> pack_box
+
+  let reci x = M.reci (unpack_box x) |> pack_box
+
+  let l1norm x = M.l1norm (unpack_box x) |> pack_cast_elt
+
+  let l2norm x = M.l2norm (unpack_box x) |> pack_cast_elt
+
+  let l2norm_sqr x = M.l2norm_sqr (unpack_box x) |> pack_cast_elt
+
+  let ssqr x a = M.ssqr (unpack_box x) (unpack_elt a) |> pack_elt
+
+  let ssqr_diff x y = M.ssqr_diff (unpack_box x) (unpack_box y) |> pack_elt
+
+end
+
+
+(* ndarray modules of four types *)
+
+module S = struct
+  include Make_Basic (Pack_DAS) (Owl_dense_ndarray.S)
+  include Make_SD (Pack_DAS) (Owl_dense_ndarray.S)
+end
+
+
+module D = struct
+  include Make_Basic (Pack_DAD) (Owl_dense_ndarray.D)
+  include Make_SD (Pack_DAD) (Owl_dense_ndarray.D)
+end
+
+
+module C = struct
+  include Make_Basic (Pack_DAC) (Owl_dense_ndarray.C)
+  include Make_CZ (Pack_DAC) (Owl_dense_ndarray.C)
+end
+
+
+module Z = struct
+  include Make_Basic (Pack_DAZ) (Owl_dense_ndarray.Z)
+  include Make_CZ (Pack_DAZ) (Owl_dense_ndarray.Z) 
+end

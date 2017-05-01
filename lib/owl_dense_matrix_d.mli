@@ -5,9 +5,8 @@
 
 open Bigarray
 
-type mat = (float, float64_elt) Owl_dense_matrix_generic.t
-
 type elt = float
+type mat = (float, float64_elt) Owl_dense_matrix_generic.t
 
 
 (** {6 Create dense matrices} *)

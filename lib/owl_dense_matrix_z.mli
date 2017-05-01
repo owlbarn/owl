@@ -15,10 +15,8 @@
 
 open Bigarray
 
-type mat = (Complex.t, complex64_elt) Owl_dense_matrix_generic.t
-
 type elt = Complex.t
-
+type mat = (Complex.t, complex64_elt) Owl_dense_matrix_generic.t
 type cast_mat = (float, float64_elt) Owl_dense_matrix_generic.t
 
 

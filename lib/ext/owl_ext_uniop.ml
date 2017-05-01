@@ -70,7 +70,7 @@ end
 
 module DAS = struct
 
-  module M = Owl_ext_dense_ndarray_s
+  module M = Owl_ext_dense_ndarray.S
 
   let min x = M.min x
   let max x = M.max x
@@ -129,7 +129,7 @@ end
 
 module DAD = struct
 
-  module M = Owl_ext_dense_ndarray_d
+  module M = Owl_ext_dense_ndarray.D
 
   let min x = M.min x
   let max x = M.max x
@@ -306,7 +306,7 @@ end
 
 module DAC = struct
 
-  module M = Owl_ext_dense_ndarray_c
+  module M = Owl_ext_dense_ndarray.C
 
   let re x = M.re x
   let im x = M.im x
@@ -326,7 +326,7 @@ end
 
 module DAZ = struct
 
-  module M = Owl_ext_dense_ndarray_z
+  module M = Owl_ext_dense_ndarray.Z
 
   let re x = M.re x
   let im x = M.im x
