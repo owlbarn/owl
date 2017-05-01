@@ -4,7 +4,10 @@
  *)
 
 
-module Operator = Owl_operator.Make_Basic (Owl_sparse_matrix_generic)
+module Operator = struct
+  include Owl_operator.Make_Basic (Owl_sparse_matrix_generic)
+  include Owl_operator.Make_Matrix (Owl_sparse_matrix_generic)
+end
 
 
 module Generic = struct

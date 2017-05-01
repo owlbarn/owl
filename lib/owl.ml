@@ -41,6 +41,8 @@ module Utils = Owl_utils
 
 module Dataset = Owl_dataset
 
+module Ext = Owl_ext
+
 (* shortcuts to 64-bit precision modules *)
 
 module Arr = Owl_dense_ndarray.D
