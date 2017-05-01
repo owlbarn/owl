@@ -30,9 +30,9 @@ module Pack_DAS = struct
   type cast_arr = das
 
   let pack_box x = DAS x
-  let unpack_box = function DAS x -> x | _ -> failwith "unpack_das: unknown type."
+  let unpack_box = function DAS x -> x | _ -> failwith "Pack_DAS:unpack_das"
   let pack_elt x = F x
-  let unpack_elt = function F x -> x | _ -> failwith "unpack_elt: unknown type."
+  let unpack_elt = function F x -> x | _ -> failwith "Pack_DAS:unpack_elt"
   let pack_cast_box x = DAS x
 
 end
@@ -45,9 +45,9 @@ module Pack_DAD = struct
   type cast_arr = dad
 
   let pack_box x = DAD x
-  let unpack_box = function DAD x -> x | _ -> failwith "unpack_dad: unknown type."
+  let unpack_box = function DAD x -> x | _ -> failwith "Pack_DAD:unpack_dad"
   let pack_elt x = F x
-  let unpack_elt = function F x -> x | _ -> failwith "unpack_elt: unknown type."
+  let unpack_elt = function F x -> x | _ -> failwith "Pack_DAD:unpack_elt"
   let pack_cast_box x = DAD x
 
 end
@@ -60,9 +60,9 @@ module Pack_DAC = struct
   type cast_arr = das
 
   let pack_box x = DAC x
-  let unpack_box = function DAC x -> x | _ -> failwith "unpack_dac: unknown type."
+  let unpack_box = function DAC x -> x | _ -> failwith "Pack_DAC:unpack_dac"
   let pack_elt x = C x
-  let unpack_elt = function C x -> x | _ -> failwith "unpack_elt: unknown type."
+  let unpack_elt = function C x -> x | _ -> failwith "Pack_DAC:unpack_elt"
   let pack_cast_box x = DAS x
 
 end
@@ -75,9 +75,9 @@ module Pack_DAZ = struct
   type cast_arr = dad
 
   let pack_box x = DAZ x
-  let unpack_box = function DAZ x -> x | _ -> failwith "unpack_daz: unknown type."
+  let unpack_box = function DAZ x -> x | _ -> failwith "Pack_DAZ:unpack_daz"
   let pack_elt x = C x
-  let unpack_elt = function C x -> x | _ -> failwith "unpack_elt: unknown type."
+  let unpack_elt = function C x -> x | _ -> failwith "Pack_DAZ:unpack_elt"
   let pack_cast_box x = DAD x
 
 end
@@ -819,5 +819,5 @@ end
 
 module Z = struct
   include Make_Basic (Pack_DAZ) (Owl_dense_ndarray.Z)
-  include Make_CZ (Pack_DAZ) (Owl_dense_ndarray.Z) 
+  include Make_CZ (Pack_DAZ) (Owl_dense_ndarray.Z)
 end

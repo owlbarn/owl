@@ -15,10 +15,8 @@ open Owl_ext_types
 
 module DAS_DAD = struct
 
-  module M = Owl_dense_ndarray_generic
+  module M = Owl_dense_ndarray.Generic
 
-  let src_typ = Float32
-  let dst_typ = Float64
   let unpack_src = unpack_das
   let pack_dst = pack_dad
 
@@ -32,10 +30,8 @@ end
 
 module DAC_DAZ = struct
 
-  module M = Owl_dense_ndarray_generic
+  module M = Owl_dense_ndarray.Generic
 
-  let src_typ = Complex32
-  let dst_typ = Complex64
   let unpack_src = unpack_dac
   let pack_dst = pack_daz
 
@@ -49,10 +45,8 @@ end
 
 module DMS_DMD = struct
 
-  module M = Owl_dense_matrix_generic
+  module M = Owl_dense_matrix.Generic
 
-  let src_typ = Float32
-  let dst_typ = Float64
   let unpack_src = unpack_dms
   let pack_dst = pack_dmd
 
@@ -66,10 +60,8 @@ end
 
 module DMC_DMZ = struct
 
-  module M = Owl_dense_matrix_generic
+  module M = Owl_dense_matrix.Generic
 
-  let src_typ = Complex32
-  let dst_typ = Complex64
   let unpack_src = unpack_dmc
   let pack_dst = pack_dmz
 
@@ -92,10 +84,8 @@ end
 
 module DAS_DAC = struct
 
-  module M = Owl_dense_ndarray_generic
+  module M = Owl_dense_ndarray.Generic
 
-  let src_typ = Float32
-  let dst_typ = Complex32
   let unpack_src = unpack_das
   let pack_dst = pack_dac
 
@@ -109,10 +99,8 @@ end
 
 module DAD_DAZ = struct
 
-  module M = Owl_dense_ndarray_generic
+  module M = Owl_dense_ndarray.Generic
 
-  let src_typ = Float64
-  let dst_typ = Complex64
   let unpack_src = unpack_dad
   let pack_dst = pack_daz
 
@@ -126,10 +114,8 @@ end
 
 module DMS_DMC = struct
 
-  module M = Owl_dense_matrix_generic
+  module M = Owl_dense_matrix.Generic
 
-  let src_typ = Float32
-  let dst_typ = Complex32
   let unpack_src = unpack_dms
   let pack_dst = pack_dmc
 
@@ -143,10 +129,8 @@ end
 
 module DMD_DMZ = struct
 
-  module M = Owl_dense_matrix_generic
+  module M = Owl_dense_matrix.Generic
 
-  let src_typ = Float64
-  let dst_typ = Complex64
   let unpack_src = unpack_dmd
   let pack_dst = pack_dmz
 
@@ -162,10 +146,8 @@ end
 
 module DAS_DAZ = struct
 
-  module M = Owl_dense_ndarray_generic
+  module M = Owl_dense_ndarray.Generic
 
-  let src_typ = Float32
-  let dst_typ = Complex64
   let unpack_src = unpack_das
   let pack_dst = pack_daz
 
@@ -179,10 +161,8 @@ end
 
 module DMS_DMZ = struct
 
-  module M = Owl_dense_matrix_generic
+  module M = Owl_dense_matrix.Generic
 
-  let src_typ = Float32
-  let dst_typ = Complex64
   let unpack_src = unpack_dms
   let pack_dst = pack_dmz
 
@@ -190,6 +170,42 @@ module DMS_DMZ = struct
     let src = unpack_src src in
     let dst = M.cast_s2z src in
     pack_dst dst
+
+end
+
+
+module DAC_DAD = struct
+
+  module M = Owl_dense_ndarray.Generic
+
+  let unpack_src0 = unpack_dac
+  let unpack_src1 = unpack_dad
+  let pack_dst = pack_daz
+
+  let lift src0 src1 =
+    let src0 = unpack_src0 src0 in
+    let dst0 = M.cast_c2z src0 in
+    let src1 = unpack_src1 src1 in
+    let dst1 = M.cast_d2z src1 in
+    pack_dst dst0, pack_dst dst1
+
+end
+
+
+module DMC_DMD = struct
+
+  module M = Owl_dense_matrix.Generic
+
+  let unpack_src0 = unpack_dmc
+  let unpack_src1 = unpack_dmd
+  let pack_dst = pack_dmz
+
+  let lift src0 src1 =
+    let src0 = unpack_src0 src0 in
+    let dst0 = M.cast_c2z src0 in
+    let src1 = unpack_src1 src1 in
+    let dst1 = M.cast_d2z src1 in
+    pack_dst dst0, pack_dst dst1
 
 end
 

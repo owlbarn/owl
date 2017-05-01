@@ -29,9 +29,9 @@ module Pack_DMS = struct
   type cast_mat = dms
 
   let pack_box x = DMS x
-  let unpack_box = function DMS x -> x | _ -> failwith "unpack_dms: unknown type."
+  let unpack_box = function DMS x -> x | _ -> failwith "Pack_DMS:unpack_box"
   let pack_elt x = F x
-  let unpack_elt = function F x -> x | _ -> failwith "unpack_elt: unknown type."
+  let unpack_elt = function F x -> x | _ -> failwith "Pack_DMS:unpack_elt"
   let pack_cast_box x = DMS x
 
 end
@@ -44,9 +44,9 @@ module Pack_DMD = struct
   type cast_mat = dmd
 
   let pack_box x = DMD x
-  let unpack_box = function DMD x -> x | _ -> failwith "unpack_dmd: unknown type."
+  let unpack_box = function DMD x -> x | _ -> failwith "Pack_DMD:unpack_dmd:"
   let pack_elt x = F x
-  let unpack_elt = function F x -> x | _ -> failwith "unpack_elt: unknown type."
+  let unpack_elt = function F x -> x | _ -> failwith "Pack_DMD:unpack_elt"
   let pack_cast_box x = DMD x
 
 end
@@ -59,9 +59,9 @@ module Pack_DMC = struct
   type cast_mat = dms
 
   let pack_box x = DMC x
-  let unpack_box = function DMC x -> x | _ -> failwith "unpack_dmc: unknown type."
+  let unpack_box = function DMC x -> x | _ -> failwith "Pack_DMC:unpack_dmc"
   let pack_elt x = C x
-  let unpack_elt = function C x -> x | _ -> failwith "unpack_elt: unknown type."
+  let unpack_elt = function C x -> x | _ -> failwith "Pack_DMC:unpack_elt"
   let pack_cast_box x = DMS x
 
 end
@@ -74,9 +74,9 @@ module Pack_DMZ = struct
   type cast_mat = dmd
 
   let pack_box x = DMZ x
-  let unpack_box = function DMZ x -> x | _ -> failwith "unpack_dmz: unknown type."
+  let unpack_box = function DMZ x -> x | _ -> failwith "Pack_DMZ:unpack_dmz"
   let pack_elt x = C x
-  let unpack_elt = function C x -> x | _ -> failwith "unpack_elt: unknown type."
+  let unpack_elt = function C x -> x | _ -> failwith "Pack_DMZ:unpack_elt"
   let pack_cast_box x = DMD x
 
 end
