@@ -5,9 +5,8 @@
 
 open Bigarray
 
-type mat = (float, float64_elt) Owl_dense_matrix_generic.t
-
 type elt = float
+type mat = (float, float64_elt) Owl_dense_matrix_generic.t
 
 
 (** {6 Create dense matrices} *)
@@ -436,13 +435,13 @@ val mul_scalar : mat -> elt -> mat
 
 val div_scalar : mat -> elt -> mat
 
-val add_scalar0 : elt -> mat -> mat
+val scalar_add : elt -> mat -> mat
 
-val sub_scalar0 : elt -> mat -> mat
+val scalar_sub : elt -> mat -> mat
 
-val mul_scalar0 : elt -> mat -> mat
+val scalar_mul : elt -> mat -> mat
 
-val div_scalar0 : elt -> mat -> mat
+val scalar_div : elt -> mat -> mat
 
 val dot : mat -> mat -> mat
 

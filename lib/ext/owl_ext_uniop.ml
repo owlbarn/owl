@@ -20,6 +20,7 @@ module F = struct
   module M = Owl_maths
 
   let abs x = F M.(abs x)
+  let abs2 x = F M.(x *. x)
   let neg x = F M.(neg x)
   let reci x = F M.(reci x)
   let signum x = F M.(signum x)
@@ -59,18 +60,18 @@ module C = struct
 
   let re x = F M.(x.re)
   let im x = F M.(x.im)
-  let abs x = M.norm x
-  let abs2 x = M.norm2 x
-  let conj x = M.conj x
-  let neg x = M.neg x
-  let reci x = M.inv x
+  let abs x = F M.(norm x)
+  let abs2 x = F M.(norm2 x)
+  let conj x = C M.(conj x)
+  let neg x = C M.(neg x)
+  let reci x = C M.(inv x)
 
 end
 
 
 module DAS = struct
 
-  module M = Owl_ext_dense_ndarray_s
+  module M = Owl_ext_dense_ndarray.S
 
   let min x = M.min x
   let max x = M.max x
@@ -129,7 +130,7 @@ end
 
 module DAD = struct
 
-  module M = Owl_ext_dense_ndarray_d
+  module M = Owl_ext_dense_ndarray.D
 
   let min x = M.min x
   let max x = M.max x
@@ -188,7 +189,7 @@ end
 
 module DMS = struct
 
-  module M = Owl_ext_dense_matrix_s
+  module M = Owl_ext_dense_matrix.S
 
   let min x = M.min x
   let max x = M.max x
@@ -247,7 +248,7 @@ end
 
 module DMD = struct
 
-  module M = Owl_ext_dense_matrix_d
+  module M = Owl_ext_dense_matrix.D
 
   let min x = M.min x
   let max x = M.max x
@@ -306,7 +307,7 @@ end
 
 module DAC = struct
 
-  module M = Owl_ext_dense_ndarray_c
+  module M = Owl_ext_dense_ndarray.C
 
   let re x = M.re x
   let im x = M.im x
@@ -326,7 +327,7 @@ end
 
 module DAZ = struct
 
-  module M = Owl_ext_dense_ndarray_z
+  module M = Owl_ext_dense_ndarray.Z
 
   let re x = M.re x
   let im x = M.im x
@@ -346,7 +347,7 @@ end
 
 module DMC = struct
 
-  module M = Owl_ext_dense_matrix_c
+  module M = Owl_ext_dense_matrix.C
 
   let re x = M.re x
   let im x = M.im x
@@ -366,7 +367,7 @@ end
 
 module DMZ = struct
 
-  module M = Owl_ext_dense_matrix_z
+  module M = Owl_ext_dense_matrix.Z
 
   let re x = M.re x
   let im x = M.im x
@@ -452,6 +453,7 @@ let prod x = match x with
 
 let abs x = match x with
   | F x   -> F.abs x
+  | C x   -> C.abs x
   | DAS _ -> DAS.abs x
   | DAD _ -> DAD.abs x
   | DMS _ -> DMS.abs x
@@ -463,6 +465,8 @@ let abs x = match x with
   | _     -> error_uniop "abs" x
 
 let abs2 x = match x with
+  | F x   -> F.abs2 x
+  | C x   -> C.abs2 x
   | DAS _ -> DAS.abs2 x
   | DAD _ -> DAD.abs2 x
   | DMS _ -> DMS.abs2 x
@@ -475,6 +479,7 @@ let abs2 x = match x with
 
 let neg x = match x with
   | F x   -> F.neg x
+  | C x   -> C.neg x
   | DAS _ -> DAS.neg x
   | DAD _ -> DAD.neg x
   | DMS _ -> DMS.neg x
@@ -487,6 +492,7 @@ let neg x = match x with
 
 let reci x = match x with
   | F x   -> F.reci x
+  | C x   -> C.reci x
   | DAS _ -> DAS.reci x
   | DAD _ -> DAD.reci x
   | DMS _ -> DMS.reci x

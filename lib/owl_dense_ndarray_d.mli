@@ -292,6 +292,14 @@ val mul_scalar : arr -> elt -> arr
 
 val div_scalar : arr -> elt -> arr
 
+val scalar_add : elt -> arr -> arr
+
+val scalar_sub : elt -> arr -> arr
+
+val scalar_mul : elt -> arr -> arr
+
+val scalar_div : elt -> arr -> arr
+
 val pow : arr -> arr -> arr
 
 val pow0 : elt -> arr -> arr

@@ -558,24 +558,24 @@ let div_scalar x a =
   let y = Owl_dense_ndarray_generic.div_scalar y a in
   of_ndarray y
 
-let add_scalar0 a x =
+let scalar_add a x =
   let y = to_ndarray x in
-  let y = Owl_dense_ndarray_generic.add_scalar0 a y in
+  let y = Owl_dense_ndarray_generic.scalar_add a y in
   of_ndarray y
 
-let sub_scalar0 a x =
+let scalar_sub a x =
   let y = to_ndarray x in
-  let y = Owl_dense_ndarray_generic.sub_scalar0 a y in
+  let y = Owl_dense_ndarray_generic.scalar_sub a y in
   of_ndarray y
 
-let mul_scalar0 a x =
+let scalar_mul a x =
   let y = to_ndarray x in
-  let y = Owl_dense_ndarray_generic.mul_scalar0 a y in
+  let y = Owl_dense_ndarray_generic.scalar_mul a y in
   of_ndarray y
 
-let div_scalar0 a x =
+let scalar_div a x =
   let y = to_ndarray x in
-  let y = Owl_dense_ndarray_generic.div_scalar0 a y in
+  let y = Owl_dense_ndarray_generic.scalar_div a y in
   of_ndarray y
 
 let sum x =

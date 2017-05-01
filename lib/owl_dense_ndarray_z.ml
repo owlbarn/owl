@@ -10,6 +10,7 @@ include M
 
 type elt = Complex.t
 type arr = (Complex.t, complex64_elt, c_layout) Genarray.t
+type cast_arr = (float, float64_elt, c_layout) Genarray.t
 
 
 (* overload functions in Owl_dense_ndarray_generic *)
