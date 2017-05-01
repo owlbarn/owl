@@ -1,3 +1,11 @@
+### 0.3.0 (in progress)
+
+* Add more hypothesis test function in Owl.Stats module.
+* Add Algodiff module to support both numerical and algorithmic differentiation.
+* Re-design operators, add Ext module to support interoperation of different number types.
+* Add more flexible slicing function.
+
+
 ### 0.2.0 (2017-01-20)
 
 * Support both dense and sparse matrices.
