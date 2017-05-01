@@ -182,12 +182,15 @@ module DAC_DAD = struct
   let unpack_src1 = unpack_dad
   let pack_dst = pack_daz
 
-  let lift src0 src1 =
-    let src0 = unpack_src0 src0 in
-    let dst0 = M.cast_c2z src0 in
-    let src1 = unpack_src1 src1 in
-    let dst1 = M.cast_d2z src1 in
-    pack_dst dst0, pack_dst dst1
+  let lift0 src =
+    let src = unpack_src0 src in
+    let dst = M.cast_c2z src in
+    pack_dst dst
+
+  let lift1 src =
+    let src = unpack_src1 src in
+    let dst = M.cast_d2z src in
+    pack_dst dst
 
 end
 
@@ -200,12 +203,15 @@ module DMC_DMD = struct
   let unpack_src1 = unpack_dmd
   let pack_dst = pack_dmz
 
-  let lift src0 src1 =
-    let src0 = unpack_src0 src0 in
-    let dst0 = M.cast_c2z src0 in
-    let src1 = unpack_src1 src1 in
-    let dst1 = M.cast_d2z src1 in
-    pack_dst dst0, pack_dst dst1
+  let lift0 src =
+    let src = unpack_src0 src in
+    let dst = M.cast_c2z src in
+    pack_dst dst
+
+  let lift1 src =
+    let src = unpack_src1 src in
+    let dst = M.cast_d2z src in
+    pack_dst dst
 
 end
 

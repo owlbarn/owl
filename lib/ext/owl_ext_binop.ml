@@ -99,10 +99,10 @@ module F_DAS = struct
 
   module M = Owl_ext_dense_ndarray.S
 
-  let ( + ) a x = M.add_scalar x a
-  let ( - ) a x = M.(sub_scalar x a |> neg)
-  let ( * ) a x = M.mul_scalar x a
-  let ( / ) a x = M.(mul_scalar (reci x) a)
+  let ( + ) a x = M.add_scalar0 a x
+  let ( - ) a x = M.sub_scalar0 a x
+  let ( * ) a x = M.mul_scalar0 a x
+  let ( / ) a x = M.div_scalar0 a x
   let ( ** ) a x = M.pow0 a x
 
 end
@@ -152,10 +152,10 @@ module F_DAD = struct
 
   module M = Owl_ext_dense_ndarray.D
 
-  let ( + ) a x = M.add_scalar x a
-  let ( - ) a x = M.(sub_scalar x a |> neg)
-  let ( * ) a x = M.mul_scalar x a
-  let ( / ) a x = M.(mul_scalar (reci x) a)
+  let ( + ) a x = M.add_scalar0 a x
+  let ( - ) a x = M.sub_scalar0 a x
+  let ( * ) a x = M.mul_scalar0 a x
+  let ( / ) a x = M.div_scalar0 a x
   let ( ** ) a x = M.pow0 a x
 
 end
@@ -205,10 +205,10 @@ module F_DMS = struct
 
   module M = Owl_ext_dense_matrix.S
 
-  let ( + ) a x = M.add_scalar x a
-  let ( - ) a x = M.(sub_scalar x a |> neg)
-  let ( * ) a x = M.mul_scalar x a
-  let ( / ) a x = M.(mul_scalar (reci x) a)
+  let ( + ) a x = M.add_scalar0 a x
+  let ( - ) a x = M.sub_scalar0 a x
+  let ( * ) a x = M.mul_scalar0 a x
+  let ( / ) a x = M.div_scalar0 a x
   let ( ** ) a x = M.pow0 a x
 
 end
@@ -258,10 +258,10 @@ module F_DMD = struct
 
   module M = Owl_ext_dense_matrix.D
 
-  let ( + ) a x = M.add_scalar x a
-  let ( - ) a x = M.(sub_scalar x a |> neg)
-  let ( * ) a x = M.mul_scalar x a
-  let ( / ) a x = M.(mul_scalar (reci x) a)
+  let ( + ) a x = M.add_scalar0 a x
+  let ( - ) a x = M.sub_scalar0 a x
+  let ( * ) a x = M.mul_scalar0 a x
+  let ( / ) a x = M.div_scalar0 a x
   let ( ** ) a x = M.pow0 a x
 
 end
@@ -312,10 +312,10 @@ module C_DAC = struct
 
   module M = Owl_ext_dense_ndarray.C
 
-  let ( + ) a x = M.add_scalar x a
-  let ( - ) a x = M.(sub_scalar x a |> neg)
-  let ( * ) a x = M.mul_scalar x a
-  let ( / ) a x = M.(mul_scalar (reci x) a)
+  let ( + ) a x = M.add_scalar0 a x
+  let ( - ) a x = M.sub_scalar0 a x
+  let ( * ) a x = M.mul_scalar0 a x
+  let ( / ) a x = M.div_scalar0 a x
 
 end
 
@@ -360,10 +360,10 @@ module C_DAZ = struct
 
   module M = Owl_ext_dense_ndarray.Z
 
-  let ( + ) a x = M.add_scalar x a
-  let ( - ) a x = M.(sub_scalar x a |> neg)
-  let ( * ) a x = M.mul_scalar x a
-  let ( / ) a x = M.(mul_scalar (reci x) a)
+  let ( + ) a x = M.add_scalar0 a x
+  let ( - ) a x = M.sub_scalar0 a x
+  let ( * ) a x = M.mul_scalar0 a x
+  let ( / ) a x = M.div_scalar0 a x
 
 end
 
@@ -408,10 +408,10 @@ module C_DMC = struct
 
   module M = Owl_ext_dense_matrix.C
 
-  let ( + ) a x = M.add_scalar x a
-  let ( - ) a x = M.(sub_scalar x a |> neg)
-  let ( * ) a x = M.mul_scalar x a
-  let ( / ) a x = M.(mul_scalar (reci x) a)
+  let ( + ) a x = M.add_scalar0 a x
+  let ( - ) a x = M.sub_scalar0 a x
+  let ( * ) a x = M.mul_scalar0 a x
+  let ( / ) a x = M.div_scalar0 a x
 
 end
 
@@ -456,10 +456,10 @@ module C_DMZ = struct
 
   module M = Owl_ext_dense_matrix.Z
 
-  let ( + ) a x = M.add_scalar x a
-  let ( - ) a x = M.(sub_scalar x a |> neg)
-  let ( * ) a x = M.mul_scalar x a
-  let ( / ) a x = M.(mul_scalar (reci x) a)
+  let ( + ) a x = M.add_scalar0 a x
+  let ( - ) a x = M.sub_scalar0 a x
+  let ( * ) a x = M.mul_scalar0 a x
+  let ( / ) a x = M.div_scalar0 a x
 
 end
 
@@ -651,10 +651,10 @@ module F_DAZ = struct
   module M = Owl_ext_dense_ndarray.Z
   let lift = Owl_ext_lifts.F_C.lift
 
-  let ( + ) a x = M.add_scalar x (lift a)
-  let ( - ) a x = M.(sub_scalar x (lift a) |> neg)
-  let ( * ) a x = M.mul_scalar x (lift a)
-  let ( / ) a x = M.(mul_scalar (reci x) (lift a))
+  let ( + ) a x = M.add_scalar0 (lift a) x
+  let ( - ) a x = M.sub_scalar0 (lift a) x
+  let ( * ) a x = M.mul_scalar0 (lift a) x
+  let ( / ) a x = M.div_scalar0 (lift a) x
 
 end
 
@@ -677,10 +677,10 @@ module C_DAS = struct
   module M = Owl_ext_dense_ndarray.C
   let lift = Owl_ext_lifts.DAS_DAC.lift
 
-  let ( + ) a x = M.add_scalar (lift x) a
-  let ( - ) a x = M.(sub_scalar (lift x) a |> neg)
-  let ( * ) a x = M.mul_scalar (lift x) a
-  let ( / ) a x = M.(mul_scalar (reci (lift x)) a)
+  let ( + ) a x = M.add_scalar0 a (lift x)
+  let ( - ) a x = M.sub_scalar0 a (lift x)
+  let ( * ) a x = M.mul_scalar0 a (lift x)
+  let ( / ) a x = M.div_scalar0 a (lift x)
 
 end
 
@@ -703,10 +703,10 @@ module C_DAD = struct
   module M = Owl_ext_dense_ndarray.Z
   let lift = Owl_ext_lifts.DAD_DAZ.lift
 
-  let ( + ) a x = M.add_scalar (lift x) a
-  let ( - ) a x = M.(sub_scalar (lift x) a |> neg)
-  let ( * ) a x = M.mul_scalar (lift x) a
-  let ( / ) a x = M.(mul_scalar (reci (lift x)) a)
+  let ( + ) a x = M.add_scalar0 a (lift x)
+  let ( - ) a x = M.sub_scalar0 a (lift x)
+  let ( * ) a x = M.mul_scalar0 a (lift x)
+  let ( / ) a x = M.div_scalar0 a (lift x)
 
 end
 
@@ -781,10 +781,10 @@ module F_DMC = struct
   module M = Owl_ext_dense_matrix.C
   let lift = Owl_ext_lifts.F_C.lift
 
-  let ( + ) a x = M.add_scalar x (lift a)
-  let ( - ) a x = M.(sub_scalar x (lift a) |> neg)
-  let ( * ) a x = M.mul_scalar x (lift a)
-  let ( / ) a x = M.(mul_scalar (reci x) (lift a))
+  let ( + ) a x = M.add_scalar0 (lift a) x
+  let ( - ) a x = M.sub_scalar0 (lift a) x
+  let ( * ) a x = M.mul_scalar0 (lift a) x
+  let ( / ) a x = M.div_scalar0 (lift a) x
 
 end
 
@@ -807,10 +807,10 @@ module F_DMZ = struct
   module M = Owl_ext_dense_matrix.Z
   let lift = Owl_ext_lifts.F_C.lift
 
-  let ( + ) a x = M.add_scalar x (lift a)
-  let ( - ) a x = M.(sub_scalar x (lift a) |> neg)
-  let ( * ) a x = M.mul_scalar x (lift a)
-  let ( / ) a x = M.(mul_scalar (reci x) (lift a))
+  let ( + ) a x = M.add_scalar0 (lift a) x
+  let ( - ) a x = M.sub_scalar0 (lift a) x
+  let ( * ) a x = M.mul_scalar0 (lift a) x
+  let ( / ) a x = M.div_scalar0 (lift a) x
 
 end
 
@@ -833,10 +833,10 @@ module C_DMS = struct
   module M = Owl_ext_dense_matrix.C
   let lift = Owl_ext_lifts.DMS_DMC.lift
 
-  let ( + ) a x = M.add_scalar (lift x) a
-  let ( - ) a x = M.(sub_scalar (lift x) a |> neg)
-  let ( * ) a x = M.mul_scalar (lift x) a
-  let ( / ) a x = M.(mul_scalar (reci (lift x)) a)
+  let ( + ) a x = M.add_scalar0 a (lift x)
+  let ( - ) a x = M.sub_scalar0 a (lift x)
+  let ( * ) a x = M.mul_scalar0 a (lift x)
+  let ( / ) a x = M.div_scalar0 a (lift x)
 
 end
 
@@ -859,10 +859,10 @@ module C_DMD = struct
   module M = Owl_ext_dense_matrix.Z
   let lift = Owl_ext_lifts.DMD_DMZ.lift
 
-  let ( + ) a x = M.add_scalar (lift x) a
-  let ( - ) a x = M.(sub_scalar (lift x) a |> neg)
-  let ( * ) a x = M.mul_scalar (lift x) a
-  let ( / ) a x = M.(mul_scalar (reci (lift x)) a)
+  let ( + ) a x = M.add_scalar0 a (lift x)
+  let ( - ) a x = M.sub_scalar0 a (lift x)
+  let ( * ) a x = M.mul_scalar0 a (lift x)
+  let ( / ) a x = M.div_scalar0 a (lift x)
 
 end
 
@@ -985,7 +985,61 @@ module DMZ_DMS = struct
 
 end
 
-(* TODO: DMC_DMD ... *)
+
+module DAC_DAD = struct
+
+  module M = Owl_ext_dense_ndarray.Z
+  let lift0 = Owl_ext_lifts.DAC_DAD.lift0
+  let lift1 = Owl_ext_lifts.DAC_DAD.lift1
+
+  let ( + ) x y = M.add (lift0 x) (lift1 y)
+  let ( - ) x y = M.sub (lift0 x) (lift1 y)
+  let ( * ) x y = M.mul (lift0 x) (lift1 y)
+  let ( / ) x y = M.div (lift0 x) (lift1 y)
+
+end
+
+
+module DAD_DAC = struct
+
+  module M = Owl_ext_dense_ndarray.Z
+  let lift0 = Owl_ext_lifts.DAC_DAD.lift0
+  let lift1 = Owl_ext_lifts.DAC_DAD.lift1
+
+  let ( + ) x y = M.add (lift1 x) (lift0 y)
+  let ( - ) x y = M.sub (lift1 x) (lift0 y)
+  let ( * ) x y = M.mul (lift1 x) (lift0 y)
+  let ( / ) x y = M.div (lift1 x) (lift0 y)
+
+end
+
+
+module DMC_DMD = struct
+
+  module M = Owl_ext_dense_matrix.Z
+  let lift0 = Owl_ext_lifts.DMC_DMD.lift0
+  let lift1 = Owl_ext_lifts.DMC_DMD.lift1
+
+  let ( + ) x y = M.add (lift0 x) (lift1 y)
+  let ( - ) x y = M.sub (lift0 x) (lift1 y)
+  let ( * ) x y = M.mul (lift0 x) (lift1 y)
+  let ( / ) x y = M.div (lift0 x) (lift1 y)
+
+end
+
+
+module DMD_DMC = struct
+
+  module M = Owl_ext_dense_matrix.Z
+  let lift0 = Owl_ext_lifts.DMC_DMD.lift0
+  let lift1 = Owl_ext_lifts.DMC_DMD.lift1
+
+  let ( + ) x y = M.add (lift1 x) (lift0 y)
+  let ( - ) x y = M.sub (lift1 x) (lift0 y)
+  let ( * ) x y = M.mul (lift1 x) (lift0 y)
+  let ( / ) x y = M.div (lift1 x) (lift0 y)
+
+end
 
 
 (* overload binary operators *)
