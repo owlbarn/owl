@@ -235,6 +235,7 @@ module DMS_DMS = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( *@ ) x y = M.dot x y
   let ( ** ) x y = M.pow x y
   let ( = ) x y = M.equal x y
   let ( <> ) x y = M.not_equal x y
@@ -288,6 +289,7 @@ module DMD_DMD = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( *@ ) x y = M.dot x y
   let ( ** ) x y = M.pow x y
   let ( = ) x y = M.equal x y
   let ( <> ) x y = M.not_equal x y
@@ -436,6 +438,7 @@ module DMC_DMC = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( *@ ) x y = M.dot x y
   let ( = ) x y = M.equal x y
   let ( <> ) x y = M.not_equal x y
   let ( > ) x y = M.greater x y
@@ -484,6 +487,7 @@ module DMZ_DMZ = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( *@ ) x y = M.dot x y
   let ( = ) x y = M.equal x y
   let ( <> ) x y = M.not_equal x y
   let ( > ) x y = M.greater x y
@@ -617,6 +621,7 @@ module DMS_DMD = struct
   let ( - ) x y = M.sub (lift x) y
   let ( * ) x y = M.mul (lift x) y
   let ( / ) x y = M.div (lift x) y
+  let ( *@ ) x y = M.dot (lift x) y
   let ( ** ) x y = M.pow (lift x) y
   let ( = ) x y = M.equal (lift x) y
   let ( <> ) x y = M.not_equal (lift x) y
@@ -645,6 +650,7 @@ module DMD_DMS = struct
   let ( - ) x y = M.sub x (lift y)
   let ( * ) x y = M.mul x (lift y)
   let ( / ) x y = M.div x (lift y)
+  let ( *@ ) x y = M.dot x (lift y)
   let ( ** ) x y = M.pow x (lift y)
   let ( = ) x y = M.equal x (lift y)
   let ( <> ) x y = M.not_equal x (lift y)
@@ -673,6 +679,7 @@ module DMC_DMZ = struct
   let ( - ) x y = M.sub (lift x) y
   let ( * ) x y = M.mul (lift x) y
   let ( / ) x y = M.div (lift x) y
+  let ( *@ ) x y = M.dot (lift x) y
   let ( = ) x y = M.equal (lift x) y
   let ( <> ) x y = M.not_equal (lift x) y
   let ( > ) x y = M.greater (lift x) y
@@ -698,6 +705,7 @@ module DMZ_DMC = struct
   let ( - ) x y = M.sub x (lift y)
   let ( * ) x y = M.mul x (lift y)
   let ( / ) x y = M.div x (lift y)
+  let ( *@ ) x y = M.dot x (lift y)
   let ( = ) x y = M.equal x (lift y)
   let ( <> ) x y = M.not_equal x (lift y)
   let ( > ) x y = M.greater x (lift y)
@@ -1033,6 +1041,7 @@ module DMS_DMC = struct
   let ( - ) x y = M.sub (lift x) y
   let ( * ) x y = M.mul (lift x) y
   let ( / ) x y = M.div (lift x) y
+  let ( *@ ) x y = M.dot (lift x) y
   let ( = ) x y = M.equal (lift x) y
   let ( <> ) x y = M.not_equal (lift x) y
   let ( > ) x y = M.greater (lift x) y
@@ -1058,6 +1067,7 @@ module DMC_DMS = struct
   let ( - ) x y = M.sub x (lift y)
   let ( * ) x y = M.mul x (lift y)
   let ( / ) x y = M.div x (lift y)
+  let ( *@ ) x y = M.dot x (lift y)
   let ( = ) x y = M.equal x (lift y)
   let ( <> ) x y = M.not_equal x (lift y)
   let ( > ) x y = M.greater x (lift y)
@@ -1083,6 +1093,7 @@ module DMD_DMZ = struct
   let ( - ) x y = M.sub (lift x) y
   let ( * ) x y = M.mul (lift x) y
   let ( / ) x y = M.div (lift x) y
+  let ( *@ ) x y = M.dot (lift x) y
   let ( = ) x y = M.equal (lift x) y
   let ( <> ) x y = M.not_equal (lift x) y
   let ( > ) x y = M.greater (lift x) y
@@ -1108,6 +1119,7 @@ module DMZ_DMD = struct
   let ( - ) x y = M.sub x (lift y)
   let ( * ) x y = M.mul x (lift y)
   let ( / ) x y = M.div x (lift y)
+  let ( *@ ) x y = M.dot x (lift y)
   let ( = ) x y = M.equal x (lift y)
   let ( <> ) x y = M.not_equal x (lift y)
   let ( > ) x y = M.greater x (lift y)
@@ -1185,6 +1197,7 @@ module DMS_DMZ = struct
   let ( - ) x y = M.sub (lift x) y
   let ( * ) x y = M.mul (lift x) y
   let ( / ) x y = M.div (lift x) y
+  let ( *@ ) x y = M.dot (lift x) y
   let ( = ) x y = M.equal (lift x) y
   let ( <> ) x y = M.not_equal (lift x) y
   let ( > ) x y = M.greater (lift x) y
@@ -1210,6 +1223,7 @@ module DMZ_DMS = struct
   let ( - ) x y = M.sub x (lift y)
   let ( * ) x y = M.mul x (lift y)
   let ( / ) x y = M.div x (lift y)
+  let ( *@ ) x y = M.dot x (lift y)
   let ( = ) x y = M.equal x (lift y)
   let ( <> ) x y = M.not_equal x (lift y)
   let ( > ) x y = M.greater x (lift y)
@@ -1288,6 +1302,7 @@ module DMC_DMD = struct
   let ( - ) x y = M.sub (lift0 x) (lift1 y)
   let ( * ) x y = M.mul (lift0 x) (lift1 y)
   let ( / ) x y = M.div (lift0 x) (lift1 y)
+  let ( *@ ) x y = M.dot (lift0 x) (lift1 y)
   let ( = ) x y = M.equal (lift0 x) (lift1 y)
   let ( <> ) x y = M.not_equal (lift0 x) (lift1 y)
   let ( > ) x y = M.greater (lift0 x) (lift1 y)
@@ -1314,6 +1329,7 @@ module DMD_DMC = struct
   let ( - ) x y = M.sub (lift1 x) (lift0 y)
   let ( * ) x y = M.mul (lift1 x) (lift0 y)
   let ( / ) x y = M.div (lift1 x) (lift0 y)
+  let ( *@ ) x y = M.dot (lift1 x) (lift0 y)
   let ( = ) x y = M.equal (lift1 x) (lift0 y)
   let ( <> ) x y = M.not_equal (lift1 x) (lift0 y)
   let ( > ) x y = M.greater (lift1 x) (lift0 y)
@@ -2110,6 +2126,24 @@ let max2 x y = match x, y with
   | DMD _, DMS _ -> DMD_DMS.max2 x y
   | _            -> error_binop "max2" x y
 
+let ( *@ ) x y = match x, y with
+  | DMS _, DMS _ -> DMS_DMS.( *@ ) x y
+  | DMD _, DMD _ -> DMD_DMD.( *@ ) x y
+  | DMC _, DMC _ -> DMC_DMC.( *@ ) x y
+  | DMZ _, DMZ _ -> DMZ_DMZ.( *@ ) x y
+  | DMS _, DMD _ -> DMS_DMD.( *@ ) x y
+  | DMD _, DMS _ -> DMD_DMS.( *@ ) x y
+  | DMC _, DMZ _ -> DMC_DMZ.( *@ ) x y
+  | DMZ _, DMC _ -> DMZ_DMC.( *@ ) x y
+  | DMS _, DMC _ -> DMS_DMC.( *@ ) x y
+  | DMC _, DMS _ -> DMC_DMS.( *@ ) x y
+  | DMD _, DMZ _ -> DMD_DMZ.( *@ ) x y
+  | DMZ _, DMD _ -> DMZ_DMD.( *@ ) x y
+  | DMS _, DMZ _ -> DMS_DMZ.( *@ ) x y
+  | DMZ _, DMS _ -> DMZ_DMS.( *@ ) x y
+  | DMC _, DMD _ -> DMC_DMD.( *@ ) x y
+  | DMD _, DMC _ -> DMD_DMC.( *@ ) x y
+  | _            -> error_binop "( *@ )" x y
 
 let ( != ) x y = ( <> ) x y
 

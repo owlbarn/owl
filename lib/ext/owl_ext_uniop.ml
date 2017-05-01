@@ -387,6 +387,30 @@ end
 
 (* overload uniary operators *)
 
+let re x = match x with
+  | C x   -> C.re x
+  | DAC _ -> DAC.re x
+  | DAZ _ -> DAZ.re x
+  | DMC _ -> DMC.re x
+  | DMZ _ -> DMZ.re x
+  | _     -> error_uniop "re" x
+
+let im x = match x with
+  | C x   -> C.im x
+  | DAC _ -> DAC.im x
+  | DAZ _ -> DAZ.im x
+  | DMC _ -> DMC.im x
+  | DMZ _ -> DMZ.im x
+  | _     -> error_uniop "im" x
+
+let conj x = match x with
+  | C x   -> C.conj x
+  | DAC _ -> DAC.conj x
+  | DAZ _ -> DAZ.conj x
+  | DMC _ -> DMC.conj x
+  | DMZ _ -> DMZ.conj x
+  | _     -> error_uniop "conj" x
+
 let min x = match x with
   | DAS _ -> DAS.min x
   | DAD _ -> DAD.min x
