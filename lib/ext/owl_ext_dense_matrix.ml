@@ -364,13 +364,13 @@ module type BasicSig = sig
 
   val div_scalar : mat -> elt -> mat
 
-  val add_scalar0 : elt -> mat -> mat
+  val scalar_add : elt -> mat -> mat
 
-  val sub_scalar0 : elt -> mat -> mat
+  val scalar_sub : elt -> mat -> mat
 
-  val mul_scalar0 : elt -> mat -> mat
+  val scalar_mul : elt -> mat -> mat
 
-  val div_scalar0 : elt -> mat -> mat
+  val scalar_div : elt -> mat -> mat
 
   val dot : mat -> mat -> mat
 
@@ -640,13 +640,13 @@ module Make_Basic
 
   let div_scalar x a = M.div_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
-  let add_scalar0 a x = M.add_scalar0 (unpack_elt a) (unpack_box x) |> pack_box
+  let scalar_add a x = M.scalar_add (unpack_elt a) (unpack_box x) |> pack_box
 
-  let sub_scalar0 a x = M.sub_scalar0 (unpack_elt a) (unpack_box x) |> pack_box
+  let scalar_sub a x = M.scalar_sub (unpack_elt a) (unpack_box x) |> pack_box
 
-  let mul_scalar0 a x = M.mul_scalar0 (unpack_elt a) (unpack_box x) |> pack_box
+  let scalar_mul a x = M.scalar_mul (unpack_elt a) (unpack_box x) |> pack_box
 
-  let div_scalar0 a x = M.div_scalar0 (unpack_elt a) (unpack_box x) |> pack_box
+  let scalar_div a x = M.scalar_div (unpack_elt a) (unpack_box x) |> pack_box
 
   let dot x y = M.dot (unpack_box x) (unpack_box y) |> pack_box
 

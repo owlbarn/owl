@@ -558,25 +558,25 @@ let atan21 x a =
   fill y a;
   atan2 x y
 
-let add_scalar0 a x =
+let scalar_add a x =
   let z = clone x in
   let x = ndarray_to_c_mat z in
   let _ = Owl_backend_gsl_linalg.add_scalar (kind z) x a in
   z
 
-let sub_scalar0 a x =
+let scalar_sub a x =
   let z = neg x in
   let x = ndarray_to_c_mat z in
   let _ = Owl_backend_gsl_linalg.add_scalar (kind z) x a in
   z
 
-let mul_scalar0 a x =
+let scalar_mul a x =
   let z = clone x in
   let x = ndarray_to_c_mat z in
   let _ = Owl_backend_gsl_linalg.mul_scalar (kind z) x a in
   z
 
-let div_scalar0 a x =
+let scalar_div a x =
   let z = reci x in
   let x = ndarray_to_c_mat z in
   let _ = Owl_backend_gsl_linalg.mul_scalar (kind z) x a in

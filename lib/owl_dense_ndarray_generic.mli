@@ -661,32 +661,32 @@ val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
   returns the result in a new ndarray.
  *)
 
-val add_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** [add_scalar0 a x] is similar to [add_scalar] but with scalar as the first parameter. *)
-
 val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [sub_scalar x a] subtracts a scalar value [a] to all the elements in [x],
   and returns the result in a new ndarray.
  *)
-
-val sub_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** [sub_scalar0 a x] is similar to [sub_scalar] but with scalar as the first parameter. *)
 
 val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [mul_scalar x a] multiplies a scalar value [a] to all the elements in [x],
   and returns the result in a new ndarray.
  *)
 
-val mul_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** [mul_scalar0 a x] is similar to [mul_scalar] but with scalar as the first parameter. *)
-
 val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [div_scalar x a] divides a scalar value [a] to all the elements in [x], and
   returns the result in a new ndarray.
  *)
 
-val div_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** [div_scalar0 a x] is similar to [div_scalar] but with scalar as the first parameter. *)
+val scalar_add : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [scalar_add a x] is similar to [add_scalar] but with scalar as the first parameter. *)
+
+val scalar_sub : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [scalar_sub a x] is similar to [sub_scalar] but with scalar as the first parameter. *)
+
+val scalar_mul : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [scalar_mul a x] is similar to [mul_scalar] but with scalar as the first parameter. *)
+
+val scalar_div : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [scalar_div a x] is similar to [div_scalar] but with scalar as the first parameter. *)
 
 val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]

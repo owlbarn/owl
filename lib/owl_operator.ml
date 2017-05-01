@@ -27,13 +27,13 @@ module type BasicSig = sig
 
   val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
-  val add_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+  val scalar_add : 'a -> ('a, 'b) t -> ('a, 'b) t
 
-  val sub_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+  val scalar_sub : 'a -> ('a, 'b) t -> ('a, 'b) t
 
-  val mul_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+  val scalar_mul : 'a -> ('a, 'b) t -> ('a, 'b) t
 
-  val div_scalar0 : 'a -> ('a, 'b) t -> ('a, 'b) t
+  val scalar_div : 'a -> ('a, 'b) t -> ('a, 'b) t
 
   val equal : ('a, 'b) t -> ('a, 'b) t -> bool
 
@@ -101,13 +101,13 @@ module Make_Basic (M : BasicSig) = struct
 
   let ( /$ ) = M.div_scalar
 
-  let ( $+ ) = M.add_scalar0
+  let ( $+ ) = M.scalar_add
 
-  let ( $- ) = M.sub_scalar0
+  let ( $- ) = M.scalar_sub
 
-  let ( $* ) = M.mul_scalar0
+  let ( $* ) = M.scalar_mul
 
-  let ( $/ ) = M.div_scalar0
+  let ( $/ ) = M.scalar_div
 
   let ( = ) = M.equal
 

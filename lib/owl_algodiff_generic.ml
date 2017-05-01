@@ -161,13 +161,13 @@ module type MatrixSig = sig
 
   val div_scalar : mat -> elt -> mat
 
-  val add_scalar0 : elt -> mat -> mat
+  val scalar_add : elt -> mat -> mat
 
-  val sub_scalar0 : elt -> mat -> mat
+  val scalar_sub : elt -> mat -> mat
 
-  val mul_scalar0 : elt -> mat -> mat
+  val scalar_mul : elt -> mat -> mat
 
-  val div_scalar0 : elt -> mat -> mat
+  val scalar_div : elt -> mat -> mat
 
   val dot : mat -> mat -> mat
 
@@ -384,7 +384,7 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a +. b)
-        | F a, Mat b   -> Mat M.(add_scalar0 a b)
+        | F a, Mat b   -> Mat M.(scalar_add a b)
         | Mat a, F b   -> Mat M.(add_scalar a b)
         | Mat a, Mat b -> Mat M.(add a b)
         | _            -> failwith "error: add: ff"
@@ -403,7 +403,7 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a -. b)
-        | F a, Mat b   -> Mat M.(sub_scalar0 a b)
+        | F a, Mat b   -> Mat M.(scalar_sub a b)
         | Mat a, F b   -> Mat M.(sub_scalar a b)
         | Mat a, Mat b -> Mat M.(sub a b)
         | _            -> failwith "error: sub: ff"
@@ -422,7 +422,7 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a *. b)
-        | F a, Mat b   -> Mat M.(mul_scalar0 a b)
+        | F a, Mat b   -> Mat M.(scalar_mul a b)
         | Mat a, F b   -> Mat M.(mul_scalar a b)
         | Mat a, Mat b -> Mat M.(mul a b)
         | _            -> failwith "error: mul: ff"
@@ -441,7 +441,7 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a /. b)
-        | F a, Mat b   -> Mat M.(div_scalar0 a b)
+        | F a, Mat b   -> Mat M.(scalar_div a b)
         | Mat a, F b   -> Mat M.(div_scalar a b)
         | Mat a, Mat b -> Mat M.(div a b)
         | _            -> failwith "error: div: ff"

@@ -162,13 +162,13 @@ module type MatrixSig = sig
 
   val div_scalar : mat -> elt -> mat
 
-  val add_scalar0 : elt -> mat -> mat
+  val scalar_add : elt -> mat -> mat
 
-  val sub_scalar0 : elt -> mat -> mat
+  val scalar_sub : elt -> mat -> mat
 
-  val mul_scalar0 : elt -> mat -> mat
+  val scalar_mul : elt -> mat -> mat
 
-  val div_scalar0 : elt -> mat -> mat
+  val scalar_div : elt -> mat -> mat
 
   val dot : mat -> mat -> mat
 

@@ -215,13 +215,13 @@ val mul_scalar : arr -> elt -> arr
 
 val div_scalar : arr -> elt -> arr
 
-val add_scalar0 : elt -> arr -> arr
+val scalar_add : elt -> arr -> arr
 
-val sub_scalar0 : elt -> arr -> arr
+val scalar_sub : elt -> arr -> arr
 
-val mul_scalar0 : elt -> arr -> arr
+val scalar_mul : elt -> arr -> arr
 
-val div_scalar0 : elt -> arr -> arr
+val scalar_div : elt -> arr -> arr
 
 val ssqr : arr -> elt -> elt
 

@@ -390,19 +390,19 @@ let mul_scalar x a =
 
 let div_scalar x a = mul_scalar x ((_inv_elt (kind x)) a)
 
-let add_scalar0 a x =
+let scalar_add a x =
   let _op = _add_elt (kind x) in
   map_nz (fun z -> _op a z) x
 
-let sub_scalar0 a x =
+let scalar_sub a x =
   let _op = _sub_elt (kind x) in
   map_nz (fun z -> _op a z) x
 
-let mul_scalar0 a x =
+let scalar_mul a x =
   let _op = _mul_elt (kind x) in
   map_nz (fun z -> _op a z) x
 
-let div_scalar0 a x =
+let scalar_div a x =
   let _op = _div_elt (kind x) in
   map_nz (fun z -> _op a z) x
 
