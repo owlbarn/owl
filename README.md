@@ -220,18 +220,19 @@ Simple matrix mathematics like add, sub, multiplication, and division are includ
 ```ocaml
 let x = Mat.uniform 6 6;;
 let y = Mat.uniform 6 6;;
-Mat.(x >@ y);;                (* is x greater than y? *)
-Mat.(x =@ y);;                (* is x equal to y? *)
+Mat.(x > y);;                (* is x greater than y? return boolean *)
+Mat.(x = y);;                (* is x equal to y? *)
+Mat.(x <. y);;               (* is x smaller than y? return 0/1 matrix *)
 ...
 ```
 
 Some basic math operations includes:
 
 ```ocaml
-Mat.(x +@ y);;                (* add two matrices *)
-Mat.(x *@ y);;                (* multiply two matrices, element-wise *)
-Mat.(x $@ y);;                (* dot product of two matrices *)
-Mat.(x +$ 2.);;               (* add a scalar to all elements in x *)
+Mat.(x + y);;                (* addition of two matrices *)
+Mat.(x * y);;                (* element-wise multiplication *)
+Mat.(x *@ y);;               (* matrix multiplication of two matrices *)
+Mat.(x +$ 2.);;              (* add a scalar to all elements in x *)
 ...
 ```
 
@@ -290,7 +291,7 @@ let p = Mat.of_array [|0.2;0.4;0.8|] 3 1;;
 Then we generate the observations y from x and p by
 
 ```ocaml
-let y = Mat.(x $@ p);;
+let y = Mat.(x *@ p);;
 ```
 
 Now, assume we only know x and y, how can we fit x and y into a linear model? It is very simple.
@@ -309,7 +310,7 @@ Herein, let's use an example to briefly show how to plot the result using `Plot`
 
 ```ocaml
 let x, y = Mat.meshgrid (-2.5) 2.5 (-2.5) 2.5 100 100 in
-let z = Mat.(sin ((x **@ 2.) +@ (y **@ 2.))) in
+let z = Mat.(sin ((x * x) + (y * y))) in
 Plot.mesh x y z;;
 ```
 
