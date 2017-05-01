@@ -19,6 +19,8 @@ type mat = (Complex.t, complex64_elt) Owl_dense_matrix_generic.t
 
 type elt = Complex.t
 
+type cast_mat = (float, float64_elt) Owl_dense_matrix_generic.t
+
 
 (** {6 Create dense matrices} *)
 
@@ -304,11 +306,9 @@ val load : string -> mat
 
 (** {6 Unary mathematical operations } *)
 
-val re : mat -> Owl_dense_matrix_d.mat
+val re : mat -> cast_mat
 
-val im : mat -> Owl_dense_matrix_d.mat
-
-val conj : mat -> mat
+val im : mat -> cast_mat
 
 val trace : mat -> elt
 
@@ -326,9 +326,9 @@ val average_rows : mat -> mat
 
 val average_cols : mat -> mat
 
-val abs : mat -> Owl_dense_matrix_d.mat
+val abs : mat -> cast_mat
 
-val abs2 : mat -> Owl_dense_matrix_d.mat
+val abs2 : mat -> cast_mat
 
 val conj : mat -> mat
 

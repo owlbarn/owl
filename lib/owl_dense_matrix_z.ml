@@ -14,6 +14,9 @@ type mat = (Complex.t, Bigarray.complex64_elt) M.t
 
 type elt = Complex.t
 
+type cast_mat = (float, float64_elt) Owl_dense_matrix_generic.t
+
+
 (* overload functions in Owl_dense_matrix_generic *)
 
 let empty m n = M.empty Complex64 m n

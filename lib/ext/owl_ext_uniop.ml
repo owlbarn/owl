@@ -188,7 +188,7 @@ end
 
 module DMS = struct
 
-  module M = Owl_ext_dense_matrix_s
+  module M = Owl_ext_dense_matrix.S
 
   let min x = M.min x
   let max x = M.max x
@@ -247,7 +247,7 @@ end
 
 module DMD = struct
 
-  module M = Owl_ext_dense_matrix_d
+  module M = Owl_ext_dense_matrix.D
 
   let min x = M.min x
   let max x = M.max x
@@ -346,7 +346,7 @@ end
 
 module DMC = struct
 
-  module M = Owl_ext_dense_matrix_c
+  module M = Owl_ext_dense_matrix.C
 
   let re x = M.re x
   let im x = M.im x
@@ -366,7 +366,7 @@ end
 
 module DMZ = struct
 
-  module M = Owl_ext_dense_matrix_z
+  module M = Owl_ext_dense_matrix.Z
 
   let re x = M.re x
   let im x = M.im x

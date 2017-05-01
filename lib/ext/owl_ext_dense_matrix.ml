@@ -5,16 +5,20 @@
 
 open Owl_ext_types
 
+(* modules for packing and unpacking *)
 
 module type PackSig = sig
 
   type mat
   type elt
+  type cast_mat
 
-  val pack_box : mat -> ext_typ
-  val unpack_box : ext_typ -> mat
-  val pack_elt : elt -> ext_typ
-  val unpack_elt : ext_typ -> elt
+  val pack_box      : mat -> ext_typ
+  val unpack_box    : ext_typ -> mat
+  val pack_elt      : elt -> ext_typ
+  val unpack_elt    : ext_typ -> elt
+  val pack_cast_box : cast_mat -> ext_typ
+
 end
 
 
@@ -22,11 +26,13 @@ module Pack_DMS = struct
 
   type mat = dms
   type elt = float
+  type cast_mat = dms
 
   let pack_box x = DMS x
   let unpack_box = function DMS x -> x | _ -> failwith "unpack_dms: unknown type."
   let pack_elt x = F x
   let unpack_elt = function F x -> x | _ -> failwith "unpack_elt: unknown type."
+  let pack_cast_box x = DMS x
 
 end
 
@@ -35,11 +41,13 @@ module Pack_DMD = struct
 
   type mat = dmd
   type elt = float
+  type cast_mat = dmd
 
   let pack_box x = DMD x
   let unpack_box = function DMD x -> x | _ -> failwith "unpack_dmd: unknown type."
   let pack_elt x = F x
   let unpack_elt = function F x -> x | _ -> failwith "unpack_elt: unknown type."
+  let pack_cast_box x = DMD x
 
 end
 
@@ -48,11 +56,13 @@ module Pack_DMC = struct
 
   type mat = dmc
   type elt = Complex.t
+  type cast_mat = dms
 
   let pack_box x = DMC x
   let unpack_box = function DMC x -> x | _ -> failwith "unpack_dmc: unknown type."
   let pack_elt x = C x
   let unpack_elt = function C x -> x | _ -> failwith "unpack_elt: unknown type."
+  let pack_cast_box x = DMS x
 
 end
 
@@ -61,14 +71,18 @@ module Pack_DMZ = struct
 
   type mat = dmz
   type elt = Complex.t
+  type cast_mat = dmd
 
   let pack_box x = DMZ x
   let unpack_box = function DMZ x -> x | _ -> failwith "unpack_dmz: unknown type."
   let pack_elt x = C x
   let unpack_elt = function C x -> x | _ -> failwith "unpack_elt: unknown type."
+  let pack_cast_box x = DMD x
 
 end
 
+
+(* module for basic matrix operations *)
 
 module type BasicSig = sig
 
@@ -363,7 +377,10 @@ module type BasicSig = sig
 end
 
 
-module Make_Basic (P : PackSig) (M : BasicSig with type mat := P.mat and type elt := P.elt) = struct
+module Make_Basic
+  (P : PackSig)
+  (M : BasicSig with type mat := P.mat and type elt := P.elt)
+  = struct
 
   open P
 
@@ -636,6 +653,8 @@ module Make_Basic (P : PackSig) (M : BasicSig with type mat := P.mat and type el
 end
 
 
+(* module for float32 and float64 matrices *)
+
 module type SD_Sig = sig
 
   type mat
@@ -766,7 +785,10 @@ module type SD_Sig = sig
 end
 
 
-module Make_SD (P : PackSig) (M : SD_Sig with type mat := P.mat and type elt := P.elt) = struct
+module Make_SD
+  (P : PackSig)
+  (M : SD_Sig with type mat := P.mat and type elt := P.elt)
+  = struct
 
   open P
 
@@ -894,27 +916,98 @@ module Make_SD (P : PackSig) (M : SD_Sig with type mat := P.mat and type elt := 
 end
 
 
+(* module for complex32 and complex64 matrices *)
+
 module type CZ_Sig = sig
 
   type mat
   type elt
+  type cast_mat
+
+  val re : mat -> cast_mat
+
+  val im : mat -> cast_mat
+
+  val abs : mat -> cast_mat
+
+  val abs2 : mat -> cast_mat
+
+  val conj : mat -> mat
+
+  val neg : mat -> mat
+
+  val reci : mat -> mat
+
+  val l1norm : mat -> float
+
+  val l2norm : mat -> float
+
+  val l2norm_sqr : mat -> float
+
+  val ssqr : mat -> elt -> elt
+
+  val ssqr_diff : mat -> mat -> elt
 
 end
 
 
-module Make_CZ (P : PackSig) (M : CZ_Sig with type mat := P.mat and type elt := P.elt) = struct
+module Make_CZ
+  (P : PackSig)
+  (M : CZ_Sig with type mat := P.mat and type elt := P.elt and type cast_mat := P.cast_mat)
+  = struct
 
   open P
 
+  let pack_cast_elt x = F x
+
+  let re x = M.re (unpack_box x) |> pack_cast_box
+
+  let im x = M.im (unpack_box x) |> pack_cast_box
+
+  let abs x = M.abs (unpack_box x) |> pack_cast_box
+
+  let abs2 x = M.abs2 (unpack_box x) |> pack_cast_box
+
+  let conj x = M.conj (unpack_box x) |> pack_box
+
+  let neg x = M.neg (unpack_box x) |> pack_box
+
+  let reci x = M.reci (unpack_box x) |> pack_box
+
+  let l1norm x = M.l1norm (unpack_box x) |> pack_cast_elt
+
+  let l2norm x = M.l2norm (unpack_box x) |> pack_cast_elt
+
+  let l2norm_sqr x = M.l2norm_sqr (unpack_box x) |> pack_cast_elt
+
+  let ssqr x a = M.ssqr (unpack_box x) (unpack_elt a) |> pack_elt
+
+  let ssqr_diff x y = M.ssqr_diff (unpack_box x) (unpack_box y) |> pack_elt
+
 end
 
 
-(* FIXME *)
+(* matrix modules of four types *)
 
-module S = Owl_ext_dense_matrix_s
+module S = struct
+  include Make_Basic (Pack_DMS) (Owl_dense_matrix.S)
+  include Make_SD (Pack_DMS) (Owl_dense_matrix.S)
+end
 
-module D = Owl_ext_dense_matrix_d
 
-module C = Owl_ext_dense_matrix_c
+module D = struct
+  include Make_Basic (Pack_DMD) (Owl_dense_matrix.D)
+  include Make_SD (Pack_DMD) (Owl_dense_matrix.D)
+end
 
-module Z = Owl_ext_dense_matrix_z
+
+module C = struct
+  include Make_Basic (Pack_DMC) (Owl_dense_matrix.C)
+  include Make_CZ (Pack_DMC) (Owl_dense_matrix.C)
+end
+
+
+module Z = struct
+  include Make_Basic (Pack_DMZ) (Owl_dense_matrix.Z)
+  include Make_CZ (Pack_DMZ) (Owl_dense_matrix.Z)
+end
