@@ -231,6 +231,30 @@ module type BasicSig = sig
 
   val elt_greater_equal : arr -> arr -> arr
 
+  val equal_scalar : arr -> elt -> bool
+
+  val not_equal_scalar : arr -> elt -> bool
+
+  val less_scalar : arr -> elt -> bool
+
+  val greater_scalar : arr -> elt -> bool
+
+  val less_equal_scalar : arr -> elt -> bool
+
+  val greater_equal_scalar : arr -> elt -> bool
+
+  val elt_equal_scalar : arr -> elt -> arr
+
+  val elt_not_equal_scalar : arr -> elt -> arr
+
+  val elt_less_scalar : arr -> elt -> arr
+
+  val elt_greater_scalar : arr -> elt -> arr
+
+  val elt_less_equal_scalar : arr -> elt -> arr
+
+  val elt_greater_equal_scalar : arr -> elt -> arr
+
 
   val print : arr -> unit
 
@@ -413,6 +437,30 @@ module Make_Basic
   let elt_less_equal x y = M.elt_less_equal (unpack_box x) (unpack_box y) |> pack_box
 
   let elt_greater_equal x y = M.elt_greater_equal (unpack_box x) (unpack_box y) |> pack_box
+
+  let equal_scalar x a = M.equal_scalar (unpack_box x) (unpack_elt a)
+
+  let not_equal_scalar x a = M.not_equal_scalar (unpack_box x) (unpack_elt a)
+
+  let less_scalar x a = M.less_scalar (unpack_box x) (unpack_elt a)
+
+  let greater_scalar x a = M.greater_scalar (unpack_box x) (unpack_elt a)
+
+  let less_equal_scalar x a = M.less_equal_scalar (unpack_box x) (unpack_elt a)
+
+  let greater_equal_scalar x a = M.greater_equal_scalar (unpack_box x) (unpack_elt a)
+
+  let elt_equal_scalar x a = M.elt_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+  let elt_not_equal_scalar x a = M.elt_not_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+  let elt_less_scalar x a = M.elt_less_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+  let elt_greater_scalar x a = M.elt_greater_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+  let elt_less_equal_scalar x a = M.elt_less_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+  let elt_greater_equal_scalar x a = M.elt_greater_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
 
   let print x = M.print (unpack_box x)

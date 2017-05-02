@@ -291,6 +291,31 @@ module type BasicSig = sig
 
   val elt_greater_equal : mat -> mat -> mat
 
+  val equal_scalar : mat -> elt -> bool
+
+  val not_equal_scalar : mat -> elt -> bool
+
+  val less_scalar : mat -> elt -> bool
+
+  val greater_scalar : mat -> elt -> bool
+
+  val less_equal_scalar : mat -> elt -> bool
+
+  val greater_equal_scalar : mat -> elt -> bool
+
+  val elt_equal_scalar : mat -> elt -> mat
+
+  val elt_not_equal_scalar : mat -> elt -> mat
+
+  val elt_less_scalar : mat -> elt -> mat
+
+  val elt_greater_scalar : mat -> elt -> mat
+
+  val elt_less_equal_scalar : mat -> elt -> mat
+
+  val elt_greater_equal_scalar : mat -> elt -> mat
+
+
   val draw_rows : ?replacement:bool -> mat -> int -> mat * int array
 
   val draw_cols : ?replacement:bool -> mat -> int -> mat * int array
@@ -577,6 +602,30 @@ module Make_Basic
   let elt_less_equal x y = M.elt_less_equal (unpack_box x) (unpack_box y) |> pack_box
 
   let elt_greater_equal x y = M.elt_greater_equal (unpack_box x) (unpack_box y) |> pack_box
+
+  let equal_scalar x a = M.equal_scalar (unpack_box x) (unpack_elt a)
+
+  let not_equal_scalar x a = M.not_equal_scalar (unpack_box x) (unpack_elt a)
+
+  let less_scalar x a = M.less_scalar (unpack_box x) (unpack_elt a)
+
+  let greater_scalar x a = M.greater_scalar (unpack_box x) (unpack_elt a)
+
+  let less_equal_scalar x a = M.less_equal_scalar (unpack_box x) (unpack_elt a)
+
+  let greater_equal_scalar x a = M.greater_equal_scalar (unpack_box x) (unpack_elt a)
+
+  let elt_equal_scalar x a = M.elt_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+  let elt_not_equal_scalar x a = M.elt_not_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+  let elt_less_scalar x a = M.elt_less_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+  let elt_greater_scalar x a = M.elt_greater_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+  let elt_less_equal_scalar x a = M.elt_less_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+  let elt_greater_equal_scalar x a = M.elt_greater_equal_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
 
   let draw_rows ?(replacement=true) x c = let r, i = M.draw_rows ~replacement (unpack_box x) c in (pack_box r), i
