@@ -208,6 +208,7 @@ type ('a, 'b) owl_vec_op07 = int -> 'a -> 'a -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_vec_op08 = int -> float -> 'a -> 'a -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_vec_op09 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_vec_op10 = int -> ('a, 'b) owl_vec -> 'a -> int
+type ('a, 'b) owl_vec_op11 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit
 type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
@@ -512,6 +513,78 @@ let _owl_greater_equal_scalar : type a b. (a, b) kind -> (a, b) owl_vec_op10 = f
   | Complex32 -> owl_complex_float_greater_equal_scalar
   | Complex64 -> owl_complex_double_greater_equal_scalar
   | _         -> failwith "_owl_greater_equal_scalar: unsupported operation"
+
+external owl_real_float_elt_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_elt_equal_scalar"
+external owl_real_double_elt_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_elt_equal_scalar"
+external owl_complex_float_elt_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_float_elt_equal_scalar"
+external owl_complex_double_elt_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_double_elt_equal_scalar"
+
+let _owl_elt_equal_scalar : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
+  | Float32   -> owl_real_float_elt_equal_scalar
+  | Float64   -> owl_real_double_elt_equal_scalar
+  | Complex32 -> owl_complex_float_elt_equal_scalar
+  | Complex64 -> owl_complex_double_elt_equal_scalar
+  | _         -> failwith "_owl_elt_equal_scalar: unsupported operation"
+
+external owl_real_float_elt_not_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_elt_not_equal_scalar"
+external owl_real_double_elt_not_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_elt_not_equal_scalar"
+external owl_complex_float_elt_not_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_float_elt_not_equal_scalar"
+external owl_complex_double_elt_not_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_double_elt_not_equal_scalar"
+
+let _owl_elt_not_equal_scalar : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
+  | Float32   -> owl_real_float_elt_not_equal_scalar
+  | Float64   -> owl_real_double_elt_not_equal_scalar
+  | Complex32 -> owl_complex_float_elt_not_equal_scalar
+  | Complex64 -> owl_complex_double_elt_not_equal_scalar
+  | _         -> failwith "_owl_elt_not_equal_scalar: unsupported operation"
+
+external owl_real_float_elt_less_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_elt_less_scalar"
+external owl_real_double_elt_less_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_elt_less_scalar"
+external owl_complex_float_elt_less_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_float_elt_less_scalar"
+external owl_complex_double_elt_less_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_double_elt_less_scalar"
+
+let _owl_elt_less_scalar : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
+  | Float32   -> owl_real_float_elt_less_scalar
+  | Float64   -> owl_real_double_elt_less_scalar
+  | Complex32 -> owl_complex_float_elt_less_scalar
+  | Complex64 -> owl_complex_double_elt_less_scalar
+  | _         -> failwith "_owl_elt_less_scalar: unsupported operation"
+
+external owl_real_float_elt_greater_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_elt_greater_scalar"
+external owl_real_double_elt_greater_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_elt_greater_scalar"
+external owl_complex_float_elt_greater_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_float_elt_greater_scalar"
+external owl_complex_double_elt_greater_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_double_elt_greater_scalar"
+
+let _owl_elt_greater_scalar : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
+  | Float32   -> owl_real_float_elt_greater_scalar
+  | Float64   -> owl_real_double_elt_greater_scalar
+  | Complex32 -> owl_complex_float_elt_greater_scalar
+  | Complex64 -> owl_complex_double_elt_greater_scalar
+  | _         -> failwith "_owl_elt_greater_scalar: unsupported operation"
+
+external owl_real_float_elt_less_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_elt_less_equal_scalar"
+external owl_real_double_elt_less_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_elt_less_equal_scalar"
+external owl_complex_float_elt_less_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_float_elt_less_equal_scalar"
+external owl_complex_double_elt_less_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_double_elt_less_equal_scalar"
+
+let _owl_elt_less_equal_scalar : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
+  | Float32   -> owl_real_float_elt_less_equal_scalar
+  | Float64   -> owl_real_double_elt_less_equal_scalar
+  | Complex32 -> owl_complex_float_elt_less_equal_scalar
+  | Complex64 -> owl_complex_double_elt_less_equal_scalar
+  | _         -> failwith "_owl_elt_less_equal_scalar: unsupported operation"
+
+external owl_real_float_elt_greater_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_elt_greater_equal_scalar"
+external owl_real_double_elt_greater_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_elt_greater_equal_scalar"
+external owl_complex_float_elt_greater_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_float_elt_greater_equal_scalar"
+external owl_complex_double_elt_greater_equal_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_double_elt_greater_equal_scalar"
+
+let _owl_elt_greater_equal_scalar : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
+  | Float32   -> owl_real_float_elt_greater_equal_scalar
+  | Float64   -> owl_real_double_elt_greater_equal_scalar
+  | Complex32 -> owl_complex_float_elt_greater_equal_scalar
+  | Complex64 -> owl_complex_double_elt_greater_equal_scalar
+  | _         -> failwith "_owl_elt_greater_equal_scalar: unsupported operation"
 
 external owl_real_float_nnz : int -> ('a, 'b) owl_vec -> int = "real_float_nnz"
 external owl_real_double_nnz : int -> ('a, 'b) owl_vec -> int = "real_double_nnz"

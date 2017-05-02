@@ -369,6 +369,24 @@ val less_equal_scalar : ('a, 'b) t -> 'a -> bool
 val greater_equal_scalar : ('a, 'b) t -> 'a -> bool
 (* [greater_equal_scalar x a] checks if all the elements in [x] are greater or equal to [a]. *)
 
+val elt_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(* [elt_equal_scalar x a] performs element-wise [=] comparison of [x] and [a]. *)
+
+val elt_not_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(* [elt_not_equal_scalar x a] performs element-wise [!=] comparison of [x] and [a]. *)
+
+val elt_less_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(* [elt_less_scalar x a] performs element-wise [<] comparison of [x] and [a]. *)
+
+val elt_greater_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(* [elt_greater_scalar x a] performs element-wise [>] comparison of [x] and [a]. *)
+
+val elt_less_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(* [elt_less_equal_scalar x a] performs element-wise [<=] comparison of [x] and [a]. *)
+
+val elt_greater_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(* [elt_greater_equal_scalar x a] performs element-wise [>=] comparison of [x] and [a]. *)
+
 
 (** {6 Input/Output functions} *)
 

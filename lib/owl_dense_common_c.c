@@ -422,7 +422,7 @@ value cp_two_doubles(double d0, double d1)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_double_equal_scalar
-#define INIT double ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
 #define NUMBER complex_double
 #define STOPFN(X) X.r != ar || X.i != ai
 #include "owl_dense_common_vec_cmp.c"
@@ -448,7 +448,7 @@ value cp_two_doubles(double d0, double d1)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_double_not_equal_scalar
-#define INIT double ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
 #define NUMBER complex_double
 #define STOPFN(X) X.r == ar && X.i == ai
 #include "owl_dense_common_vec_cmp.c"
@@ -474,7 +474,7 @@ value cp_two_doubles(double d0, double d1)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_double_less_scalar
-#define INIT double ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
 #define NUMBER complex_double
 #define STOPFN(X) X.r >= ar || X.i >= ai
 #include "owl_dense_common_vec_cmp.c"
@@ -500,7 +500,7 @@ value cp_two_doubles(double d0, double d1)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_double_greater_scalar
-#define INIT double ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
 #define NUMBER complex_double
 #define STOPFN(X) X.r <= ar || X.i <= ai
 #include "owl_dense_common_vec_cmp.c"
@@ -526,7 +526,7 @@ value cp_two_doubles(double d0, double d1)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_double_less_equal_scalar
-#define INIT double ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
 #define NUMBER complex_double
 #define STOPFN(X) X.r > ar || X.i > ai
 #include "owl_dense_common_vec_cmp.c"
@@ -552,10 +552,190 @@ value cp_two_doubles(double d0, double d1)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_double_greater_equal_scalar
-#define INIT double ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
 #define NUMBER complex_double
 #define STOPFN(X) X.r < ar || X.i < ai
 #include "owl_dense_common_vec_cmp.c"
+
+// elt_equal_scalar
+
+#define FUN17 real_float_elt_equal_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = (*X == a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_elt_equal_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = (*X == a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_elt_equal_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = (X->r == ar) && (X->i == ai); Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_elt_equal_scalar
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = (X->r == ar) && (X->i == ai); Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+// elt_not_equal_scalar
+
+#define FUN17 real_float_elt_not_equal_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = (*X != a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_elt_not_equal_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = (*X != a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_elt_not_equal_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = (X->r != ar) || (X->i != ai); Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_elt_not_equal_scalar
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = (X->r != ar) || (X->i != ai); Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+// elt_less_scalar
+
+#define FUN17 real_float_elt_less_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = (*X < a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_elt_less_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = (*X < a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_elt_less_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = (X->r < ar) && (X->i < ai); Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_elt_less_scalar
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = (X->r < ar) && (X->i < ai); Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+// elt_greater_scalar
+
+#define FUN17 real_float_elt_greater_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = (*X > a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_elt_greater_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = (*X > a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_elt_greater_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = (X->r > ar) && (X->i > ai); Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_elt_greater_scalar
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = (X->r > ar) && (X->i > ai); Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+// elt_less_equal_scalar
+
+#define FUN17 real_float_elt_less_equal_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = (*X <= a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_elt_less_equal_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = (*X <= a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_elt_less_equal_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = (X->r <= ar) && (X->i <= ai); Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_elt_less_equal_scalar
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = (X->r <= ar) && (X->i <= ai); Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+// elt_greater_equal_scalar
+
+#define FUN17 real_float_elt_greater_equal_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = (*X >= a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_elt_greater_equal_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = (*X >= a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_elt_greater_equal_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = (X->r >= ar) && (X->i >= ai); Y->i = 0.
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_elt_greater_equal_scalar
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = (X->r >= ar) && (X->i >= ai); Y->i = 0.
+#include "owl_dense_common_vec_map.c"
 
 // nnz
 

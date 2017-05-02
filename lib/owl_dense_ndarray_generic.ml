@@ -633,6 +633,48 @@ let elt_greater_equal x y =
   _owl_elt_greater_equal (kind x) (numel z) x' y' z';
   z
 
+let elt_equal_scalar x a =
+  let y = empty (kind x) (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  _owl_elt_equal_scalar (kind x) (numel x) x' y' a;
+  y
+
+let elt_not_equal_scalar x a =
+  let y = empty (kind x) (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  _owl_elt_not_equal_scalar (kind x) (numel x) x' y' a;
+  y
+
+let elt_less_scalar x a =
+  let y = empty (kind x) (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  _owl_elt_less_scalar (kind x) (numel x) x' y' a;
+  y
+
+let elt_greater_scalar x a =
+  let y = empty (kind x) (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  _owl_elt_greater_scalar (kind x) (numel x) x' y' a;
+  y
+
+let elt_less_equal_scalar x a =
+  let y = empty (kind x) (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  _owl_elt_less_equal_scalar (kind x) (numel x) x' y' a;
+  y
+
+let elt_greater_equal_scalar x a =
+  let y = empty (kind x) (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  _owl_elt_greater_equal_scalar (kind x) (numel x) x' y' a;
+  y
+
 let sum x = flatten x |> array1_of_genarray |> _owl_sum (kind x) (numel x)
 
 let softmax x =
