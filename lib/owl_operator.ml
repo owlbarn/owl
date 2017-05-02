@@ -54,6 +54,18 @@ module type ExtendSig = sig
 
   type ('a, 'b) t
 
+  val equal_scalar : ('a, 'b) t -> 'a -> bool
+
+  val not_equal_scalar : ('a, 'b) t -> 'a -> bool
+
+  val less_scalar : ('a, 'b) t -> 'a -> bool
+
+  val greater_scalar : ('a, 'b) t -> 'a -> bool
+
+  val less_equal_scalar : ('a, 'b) t -> 'a -> bool
+
+  val greater_equal_scalar : ('a, 'b) t -> 'a -> bool
+
   val elt_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
   val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -65,6 +77,18 @@ module type ExtendSig = sig
   val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
   val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+  val elt_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
+  val elt_not_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
+  val elt_less_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
+  val elt_greater_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
+  val elt_less_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+
+  val elt_greater_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
   val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 
@@ -131,6 +155,20 @@ module Make_Extend (M : ExtendSig) = struct
 
   type ('a, 'b) op_t1 = ('a, 'b) M.t
 
+  let ( =$ ) = M.equal_scalar
+
+  let ( !=$ ) = M.not_equal_scalar
+
+  let ( <>$ ) = M.not_equal_scalar
+
+  let ( <$ ) = M.less_scalar
+
+  let ( >$ ) = M.greater_scalar
+
+  let ( <=$ ) = M.less_equal_scalar
+
+  let ( >=$ ) = M.greater_equal_scalar
+
   let ( =. ) = M.elt_equal
 
   let ( !=. ) = M.elt_not_equal
@@ -144,6 +182,20 @@ module Make_Extend (M : ExtendSig) = struct
   let ( <=. ) = M.elt_less_equal
 
   let ( >=. ) = M.elt_greater_equal
+
+  let ( =.$ ) = M.elt_equal_scalar
+
+  let ( !=.$ ) = M.elt_not_equal_scalar
+
+  let ( <>.$ ) = M.elt_not_equal_scalar
+
+  let ( <.$ ) = M.elt_less_scalar
+
+  let ( >.$ ) = M.elt_greater_scalar
+
+  let ( <=.$ ) = M.elt_less_equal_scalar
+
+  let ( >=.$ ) = M.elt_greater_equal_scalar
 
   let ( ** ) = M.pow
 
