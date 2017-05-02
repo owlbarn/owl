@@ -401,6 +401,162 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X,Y,Z) Z->r = (X->r >= Y->r) && (X->i >= Y->i); Z->i = 0.
 #include "owl_dense_common_vec_map.c"
 
+// equal_scalar
+
+#define FUN16 real_float_equal_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define STOPFN(X) X != a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 real_double_equal_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define STOPFN(X) X != a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 complex_float_equal_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define STOPFN(X) X.r != ar || X.i != ai
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 complex_double_equal_scalar
+#define INIT double ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define STOPFN(X) X.r != ar || X.i != ai
+#include "owl_dense_common_vec_cmp.c"
+
+// not_equal_scalar
+
+#define FUN16 real_float_not_equal_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define STOPFN(X) X == a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 real_double_not_equal_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define STOPFN(X) X == a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 complex_float_not_equal_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define STOPFN(X) X.r == ar && X.i == ai
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 complex_double_not_equal_scalar
+#define INIT double ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define STOPFN(X) X.r == ar && X.i == ai
+#include "owl_dense_common_vec_cmp.c"
+
+// less_scalar
+
+#define FUN16 real_float_less_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define STOPFN(X) X >= a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 real_double_less_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define STOPFN(X) X >= a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 complex_float_less_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define STOPFN(X) X.r >= ar || X.i >= ai
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 complex_double_less_scalar
+#define INIT double ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define STOPFN(X) X.r >= ar || X.i >= ai
+#include "owl_dense_common_vec_cmp.c"
+
+// greater_scalar
+
+#define FUN16 real_float_greater_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define STOPFN(X) X <= a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 real_double_greater_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define STOPFN(X) X <= a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 complex_float_greater_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define STOPFN(X) X.r <= ar || X.i <= ai
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 complex_double_greater_scalar
+#define INIT double ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define STOPFN(X) X.r <= ar || X.i <= ai
+#include "owl_dense_common_vec_cmp.c"
+
+// less_equal_scalar
+
+#define FUN16 real_float_less_equal_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define STOPFN(X) X > a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 real_double_less_equal_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define STOPFN(X) X > a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 complex_float_less_equal_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define STOPFN(X) X.r > ar || X.i > ai
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 complex_double_less_equal_scalar
+#define INIT double ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define STOPFN(X) X.r > ar || X.i > ai
+#include "owl_dense_common_vec_cmp.c"
+
+// greater_equal_scalar
+
+#define FUN16 real_float_greater_equal_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define STOPFN(X) X < a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 real_double_greater_equal_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define STOPFN(X) X < a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 complex_float_greater_equal_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define STOPFN(X) X.r < ar || X.i < ai
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN16 complex_double_greater_equal_scalar
+#define INIT double ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define STOPFN(X) X.r < ar || X.i < ai
+#include "owl_dense_common_vec_cmp.c"
+
 // nnz
 
 #define FUN2 real_float_nnz

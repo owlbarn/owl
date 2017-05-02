@@ -500,6 +500,18 @@ let elt_less_equal x1 x2 = Owl_dense_ndarray_generic.elt_less_equal (to_ndarray 
 
 let elt_greater_equal x1 x2 = Owl_dense_ndarray_generic.elt_greater_equal (to_ndarray x1) (to_ndarray x2) |> of_ndarray
 
+let equal_scalar x a = Owl_dense_ndarray_generic.equal_scalar (to_ndarray x) a
+
+let not_equal_scalar x a = Owl_dense_ndarray_generic.not_equal_scalar (to_ndarray x) a
+
+let less_scalar x a = Owl_dense_ndarray_generic.less_scalar (to_ndarray x) a
+
+let greater_scalar x a = Owl_dense_ndarray_generic.greater_scalar (to_ndarray x) a
+
+let less_equal_scalar x a = Owl_dense_ndarray_generic.less_equal_scalar (to_ndarray x) a
+
+let greater_equal_scalar x a = Owl_dense_ndarray_generic.greater_equal_scalar (to_ndarray x) a
+
 let min x = Owl_dense_ndarray_generic.min (to_ndarray x)
 
 let max x = Owl_dense_ndarray_generic.max (to_ndarray x)

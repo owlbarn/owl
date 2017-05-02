@@ -137,10 +137,53 @@ CAMLprim value FUN2(value vN, value vX)
 #endif /* FUN2 */
 
 
+// function to compare an array to a specific value
+#ifdef FUN16
+
+CAMLprim value FUN16(value vN, value vX, value vA)
+{
+  CAMLparam3(vN, vX, vA);
+  int N = Long_val(vN);
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  NUMBER *start_x, *stop_x;
+  INIT;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  start_x = X_data;
+  stop_x = start_x + N;
+
+  int r = 1;
+
+  while (start_x != stop_x) {
+    NUMBER x = *start_x;
+
+    if (STOPFN(x)) {
+      r = 0;
+      break;
+    }
+
+    start_x += 1;
+  };
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_int(r));
+}
+
+#endif /* FUN16 */
+
+
 #undef NUMBER
 #undef STOPFN
 #undef CHECKFN
 #undef MAPFN
+#undef INIT
 #undef FUN0
 #undef FUN1
 #undef FUN2
+#undef FUN16

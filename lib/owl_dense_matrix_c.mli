@@ -253,6 +253,18 @@ val elt_less_equal : mat -> mat -> mat
 
 val elt_greater_equal : mat -> mat -> mat
 
+val equal_scalar : mat -> elt -> bool
+
+val not_equal_scalar : mat -> elt -> bool
+
+val less_scalar : mat -> elt -> bool
+
+val greater_scalar : mat -> elt -> bool
+
+val less_equal_scalar : mat -> elt -> bool
+
+val greater_equal_scalar : mat -> elt -> bool
+
 
 (** {6 Randomisation functions} *)
 

@@ -955,6 +955,36 @@ let less_equal x y =
   let _op = _owl_less_equal (kind x) in
   _op (numel x) x' y' = 1
 
+let equal_scalar x a =
+  let x' = flatten x |> array1_of_genarray in
+  let _op = _owl_equal_scalar (kind x) in
+  _op (numel x) x' a = 1
+
+let not_equal_scalar x a =
+  let x' = flatten x |> array1_of_genarray in
+  let _op = _owl_not_equal_scalar (kind x) in
+  _op (numel x) x' a = 1
+
+let less_scalar x a =
+  let x' = flatten x |> array1_of_genarray in
+  let _op = _owl_less_scalar (kind x) in
+  _op (numel x) x' a = 1
+
+let greater_scalar x a =
+  let x' = flatten x |> array1_of_genarray in
+  let _op = _owl_greater_scalar (kind x) in
+  _op (numel x) x' a = 1
+
+let less_equal_scalar x a =
+  let x' = flatten x |> array1_of_genarray in
+  let _op = _owl_less_equal_scalar (kind x) in
+  _op (numel x) x' a = 1
+
+let greater_equal_scalar x a =
+  let x' = flatten x |> array1_of_genarray in
+  let _op = _owl_greater_equal_scalar (kind x) in
+  _op (numel x) x' a = 1
+
 let exists f x =
   let b = ref false in
   try iter (fun y ->

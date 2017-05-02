@@ -159,6 +159,18 @@ val elt_less_equal : arr -> arr -> arr
 
 val elt_greater_equal : arr -> arr -> arr
 
+val equal_scalar : arr -> elt -> bool
+
+val not_equal_scalar : arr -> elt -> bool
+
+val less_scalar : arr -> elt -> bool
+
+val greater_scalar : arr -> elt -> bool
+
+val less_equal_scalar : arr -> elt -> bool
+
+val greater_equal_scalar : arr -> elt -> bool
+
 
 (** {6 Input/Output functions} *)
 
