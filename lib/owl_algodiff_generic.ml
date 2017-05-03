@@ -233,7 +233,7 @@ module Make (M : MatrixSig) = struct
     | Asinh_D     of t
     | Acosh_D     of t
     | Atanh_D     of t
-    | Item        of t * int * int
+    | Get_Item    of t * int * int
     | AddI_D_D    of t * int * int * t
     | AddI_D_C    of t * int * int * t
     | AddI_C_D    of t * int * int * t
@@ -764,7 +764,7 @@ module Make (M : MatrixSig) = struct
       match a with
       | Mat ap               -> F (M.get ap i j)
       | DF (ap, at, ai)      -> DF (item ap i j, item at i j, ai)
-      | DR (ap, _, _, _, ai) -> DR (item ap i j, ref (F 0.), Item (a, i, j), ref 0, ai)
+      | DR (ap, _, _, _, ai) -> DR (item ap i j, ref (F 0.), Get_Item (a, i, j), ref 0, ai)
       | _                    -> failwith "error: item"
 
     and add_item a i j b =
@@ -998,7 +998,7 @@ module Make (M : MatrixSig) = struct
               | Asinh_D a             -> reset (a :: t)
               | Acosh_D a             -> reset (a :: t)
               | Atanh_D a             -> reset (a :: t)
-              | Item (a, _, _)        -> reset (a :: t)
+              | Get_Item (a, _, _)    -> reset (a :: t)
               | AddI_D_D (a, _, _, b) -> reset (a :: b :: t)
               | AddI_D_C (a, _, _, _) -> reset (a :: t)
               | AddI_C_D (_, _, _, b) -> reset (b :: t)
@@ -1096,7 +1096,7 @@ module Make (M : MatrixSig) = struct
               | Asinh_D a             -> push (((!aa / sqrt ((sqr (primal a)) + (F 1.))), a) :: t)
               | Acosh_D a             -> push (((!aa / sqrt ((sqr (primal a)) - (F 1.))), a) :: t)
               | Atanh_D a             -> push (((!aa / ((F 1.) - sqr (primal a))), a) :: t)
-              | Item (a, i, j)        -> (adjref a) := add_item (adjval a) i j !aa; push ((zero a, a) :: t)
+              | Get_Item (a, i, j)    -> (adjref a) := add_item (adjval a) i j !aa; push ((zero a, a) :: t)
               | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
               | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)
               | AddI_C_D (_, i, j, b) -> push ((item !aa i j, b) :: t)
@@ -1298,6 +1298,8 @@ module Make (M : MatrixSig) = struct
     let mul x y = Maths.mul x y
 
     let div x y = Maths.div x y
+
+    let dot x y = Maths.dot x y
 
     let clip_by_l2norm t x = M.clip_by_l2norm (unpack_flt t) (unpack_mat x) |> pack_mat
 
