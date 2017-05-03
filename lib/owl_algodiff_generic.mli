@@ -328,6 +328,16 @@ module Make (M : MatrixSig) : sig
 
     val set : t -> int -> int -> t -> t
 
+    val add : t -> t -> t
+
+    val sub : t -> t -> t
+
+    val mul : t -> t -> t
+
+    val div : t -> t -> t
+
+    val dot : t -> t -> t
+
     val clip_by_l2norm : t -> t -> t
 
     val mapi : (int -> int -> elt -> elt) -> t -> t
