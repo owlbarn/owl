@@ -424,6 +424,10 @@ module Make (M : MatrixSig) : sig
 
   (* low-level functions, only use them if you know what you are doing. *)
 
+  val pack_flt : elt -> t
+
+  val pack_mat : mat -> t
+
   val unpack_flt : t -> elt
 
   val unpack_mat : t -> mat

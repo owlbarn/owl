@@ -15,6 +15,7 @@ The series of tutorials is here (more is coming):
 * [Tutorial 5: Metric Systems](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Metric-Systems)
 * [Tutorial 6: Indexing and Slicing](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Indexing-and-Slicing)
 * [Tutorial 7: Operators and Ext Module](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Operators-and-Ext-Module)
+* [Tutorial 8: Algorithmic Differentiation](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Algorithmic-Differentiation)
 
 Some simple evaluations can be found as follows [[Ndarray](https://github.com/ryanrhymes/owl/wiki/Evaluation:-Performance-Test)]. The roadmap and future plan of Owl can be found
 [[Here]](https://github.com/ryanrhymes/owl/wiki/Future-Plan). I would love to hear from you, and please let me know your comments and suggestions to improve Owl.
