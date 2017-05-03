@@ -266,8 +266,6 @@ module Make (M : MatrixSig) : sig
 
     val atanh : t -> t
 
-    val item : t -> int -> int -> t
-
     val sum : t -> t
 
     val average : t -> t
@@ -326,17 +324,11 @@ module Make (M : MatrixSig) : sig
 
     val reset : t -> unit
 
+    val get : t -> int -> int -> t
+
+    val set : t -> int -> int -> t -> t
+
     val clip_by_l2norm : t -> t -> t
-
-    val add : t -> t -> t
-
-    val sub : t -> t -> t
-
-    val mul : t -> t -> t
-
-    val div : t -> t -> t
-
-    val dot : t -> t -> t
 
     val mapi : (int -> int -> elt -> elt) -> t -> t
 

@@ -234,6 +234,9 @@ module Make (M : MatrixSig) = struct
     | Acosh_D     of t
     | Atanh_D     of t
     | Get_Item    of t * int * int
+    | SetI_D_D    of t * int * int * t
+    | SetI_D_C    of t * int * int * t
+    | SetI_C_D    of t * int * int * t
     | AddI_D_D    of t * int * int * t
     | AddI_D_C    of t * int * int * t
     | AddI_C_D    of t * int * int * t
@@ -760,12 +763,26 @@ module Make (M : MatrixSig) = struct
       let r a = Atanh_D a in
       op_d_d a ff fd df r
 
-    and item a i j =
+    and get_item a i j =
       match a with
       | Mat ap               -> F (M.get ap i j)
-      | DF (ap, at, ai)      -> DF (item ap i j, item at i j, ai)
-      | DR (ap, _, _, _, ai) -> DR (item ap i j, ref (F 0.), Get_Item (a, i, j), ref 0, ai)
-      | _                    -> failwith "error: item"
+      | DF (ap, at, ai)      -> DF (get_item ap i j, get_item at i j, ai)
+      | DR (ap, _, _, _, ai) -> DR (get_item ap i j, ref (F 0.), Get_Item (a, i, j), ref 0, ai)
+      | _                    -> failwith "error: get_item"
+
+    and set_item a i j b =
+      let ff a b = match a, b with
+        | Mat a, F b        -> let aa = M.clone a in M.set aa i j b; Mat aa
+        | _                 -> failwith "error: set_item: ff"
+      in
+      let fd a b = set_item a i j b in
+      let df_da cp ap at = set_item at i j (F 0.) in
+      let df_db cp bp bt = add_item (zero a) i j bt in
+      let df_dab cp ap at bp bt = set_item at i j bt in
+      let r_d_d a b = SetI_D_D (a, i, j, b) in
+      let r_d_c a b = SetI_D_C (a, i, j, b) in
+      let r_c_d a b = SetI_C_D (a, i, j, b) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
     and add_item a i j b =
       let ff a b = match a, b with
@@ -999,6 +1016,9 @@ module Make (M : MatrixSig) = struct
               | Acosh_D a             -> reset (a :: t)
               | Atanh_D a             -> reset (a :: t)
               | Get_Item (a, _, _)    -> reset (a :: t)
+              | SetI_D_D (a, _, _, b) -> reset (a :: b :: t)
+              | SetI_D_C (a, _, _, _) -> reset (a :: t)
+              | SetI_C_D (_, _, _, b) -> reset (b :: t)
               | AddI_D_D (a, _, _, b) -> reset (a :: b :: t)
               | AddI_D_C (a, _, _, _) -> reset (a :: t)
               | AddI_C_D (_, _, _, b) -> reset (b :: t)
@@ -1097,9 +1117,12 @@ module Make (M : MatrixSig) = struct
               | Acosh_D a             -> push (((!aa / sqrt ((sqr (primal a)) - (F 1.))), a) :: t)
               | Atanh_D a             -> push (((!aa / ((F 1.) - sqr (primal a))), a) :: t)
               | Get_Item (a, i, j)    -> (adjref a) := add_item (adjval a) i j !aa; push ((zero a, a) :: t)
-              | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (item !aa i j, b) :: t)
+              | SetI_D_D (a, i, j, b) -> push ((set_item !aa i j (F 0.), a) :: (get_item !aa i j, b) :: t)
+              | SetI_D_C (a, i, j, _) -> push ((set_item !aa i j (F 0.), a) :: t)
+              | SetI_C_D (_, i, j, b) -> push ((get_item !aa i j, b) :: t)
+              | AddI_D_D (a, i, j, b) -> push ((!aa, a) :: (get_item !aa i j, b) :: t)
               | AddI_D_C (a, _, _, _) -> push ((!aa, a) :: t)
-              | AddI_C_D (_, i, j, b) -> push ((item !aa i j, b) :: t)
+              | AddI_C_D (_, i, j, b) -> push ((get_item !aa i j, b) :: t)
               | Sum_D a               -> push ((((mat_create (row_num (primal a)) (col_num (primal a)) !aa)), a) :: t)
               (* TODO: SUM_D can be optimised to this | Sum_D a               -> push ((!aa, a) :: t) *)
               | Dot_D_D (a, b)        -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
@@ -1284,6 +1307,10 @@ module Make (M : MatrixSig) = struct
     let numel x = numel x
 
     let row x i = Maths.get_row x i
+
+    let get x i j = Maths.get_item x i j
+
+    let set x i j a = Maths.set_item x i j a
 
     (* unary math operators *)
 
