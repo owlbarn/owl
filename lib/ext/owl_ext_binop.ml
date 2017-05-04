@@ -24,15 +24,16 @@ module F_F = struct
   let ( - ) x y = F M.(x -. y)
   let ( * ) x y = F M.(x *. y)
   let ( / ) x y = F M.(x /. y)
-  let ( ** ) x y = F M.( x ** y)
-  let ( = ) x y = Pervasives.(x = y)
-  let ( <> ) x y = Pervasives.(x <> y)
-  let ( > ) x y = Pervasives.(x > y)
-  let ( < ) x y = Pervasives.(x < y)
-  let ( >= ) x y = Pervasives.(x >= y)
-  let ( <= ) x y = Pervasives.(x <= y)
-  let min2 x y = F Pervasives.(min x y)
-  let max2 x y = F Pervasives.(max x y)
+  let ( % ) x y = F M.(mod_float x y)
+  let ( ** ) x y = F M.(x ** y)
+  let ( = ) x y = M.(x = y)
+  let ( <> ) x y = M.(x <> y)
+  let ( > ) x y = M.(x > y)
+  let ( < ) x y = M.(x < y)
+  let ( >= ) x y = M.(x >= y)
+  let ( <= ) x y = M.(x <= y)
+  let min2 x y = F M.(min x y)
+  let max2 x y = F M.(max x y)
 
 end
 
@@ -103,6 +104,7 @@ module F_DAS = struct
   let ( - ) a x = M.scalar_sub a x
   let ( * ) a x = M.scalar_mul a x
   let ( / ) a x = M.scalar_div a x
+  let ( % ) a x = M.scalar_fmod a x
   let ( ** ) a x = M.pow0 a x
   let ( = ) a x = M.equal_scalar x a
   let ( <> ) a x = M.not_equal_scalar x a
@@ -128,6 +130,7 @@ module DAS_F = struct
   let ( - ) x a = M.sub_scalar x a
   let ( * ) x a = M.mul_scalar x a
   let ( / ) x a = M.div_scalar x a
+  let ( % ) x a = M.fmod_scalar x a
   let ( ** ) x a = M.pow1 x a
   let ( = ) x a = M.equal_scalar x a
   let ( <> ) x a = M.not_equal_scalar x a
@@ -153,6 +156,7 @@ module DAS_DAS = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( % ) x y = M.fmod x y
   let ( ** ) x y = M.pow x y
   let ( = ) x y = M.equal x y
   let ( <> ) x y = M.not_equal x y
@@ -180,6 +184,7 @@ module F_DAD = struct
   let ( - ) a x = M.scalar_sub a x
   let ( * ) a x = M.scalar_mul a x
   let ( / ) a x = M.scalar_div a x
+  let ( % ) a x = M.scalar_fmod a x
   let ( ** ) a x = M.pow0 a x
   let ( = ) a x = M.equal_scalar x a
   let ( <> ) a x = M.not_equal_scalar x a
@@ -205,6 +210,7 @@ module DAD_F = struct
   let ( - ) x a = M.sub_scalar x a
   let ( * ) x a = M.mul_scalar x a
   let ( / ) x a = M.div_scalar x a
+  let ( % ) x a = M.fmod_scalar a x
   let ( ** ) x a = M.pow1 x a
   let ( = ) x a = M.equal_scalar x a
   let ( <> ) x a = M.not_equal_scalar x a
@@ -230,6 +236,7 @@ module DAD_DAD = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( % ) x y = M.fmod x y
   let ( ** ) x y = M.pow x y
   let ( = ) x y = M.equal x y
   let ( <> ) x y = M.not_equal x y
@@ -257,6 +264,7 @@ module F_DMS = struct
   let ( - ) a x = M.scalar_sub a x
   let ( * ) a x = M.scalar_mul a x
   let ( / ) a x = M.scalar_div a x
+  let ( % ) a x = M.scalar_fmod a x
   let ( ** ) a x = M.pow0 a x
   let ( = ) a x = M.equal_scalar x a
   let ( <> ) a x = M.not_equal_scalar x a
@@ -282,6 +290,7 @@ module DMS_F = struct
   let ( - ) x a = M.sub_scalar x a
   let ( * ) x a = M.mul_scalar x a
   let ( / ) x a = M.div_scalar x a
+  let ( % ) x a = M.fmod_scalar x a
   let ( ** ) x a = M.pow1 x a
   let ( = ) x a = M.equal_scalar x a
   let ( <> ) x a = M.not_equal_scalar x a
@@ -307,6 +316,7 @@ module DMS_DMS = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( % ) x y = M.fmod x y
   let ( *@ ) x y = M.dot x y
   let ( ** ) x y = M.pow x y
   let ( = ) x y = M.equal x y
@@ -335,6 +345,7 @@ module F_DMD = struct
   let ( - ) a x = M.scalar_sub a x
   let ( * ) a x = M.scalar_mul a x
   let ( / ) a x = M.scalar_div a x
+  let ( % ) a x = M.scalar_fmod a x
   let ( ** ) a x = M.pow0 a x
   let ( = ) a x = M.equal_scalar x a
   let ( <> ) a x = M.not_equal_scalar x a
@@ -360,6 +371,7 @@ module DMD_F = struct
   let ( - ) x a = M.sub_scalar x a
   let ( * ) x a = M.mul_scalar x a
   let ( / ) x a = M.div_scalar x a
+  let ( % ) x a = M.fmod_scalar x a
   let ( ** ) x a = M.pow1 x a
   let ( = ) x a = M.equal_scalar x a
   let ( <> ) x a = M.not_equal_scalar x a
@@ -385,6 +397,7 @@ module DMD_DMD = struct
   let ( - ) x y = M.sub x y
   let ( * ) x y = M.mul x y
   let ( / ) x y = M.div x y
+  let ( % ) x y = M.fmod x y
   let ( *@ ) x y = M.dot x y
   let ( ** ) x y = M.pow x y
   let ( = ) x y = M.equal x y
@@ -707,6 +720,7 @@ module DAS_DAD = struct
   let ( - ) x y = M.sub (lift x) y
   let ( * ) x y = M.mul (lift x) y
   let ( / ) x y = M.div (lift x) y
+  let ( % ) x y = M.fmod (lift x) y
   let ( ** ) x y = M.pow (lift x) y
   let ( = ) x y = M.equal (lift x) y
   let ( <> ) x y = M.not_equal (lift x) y
@@ -735,6 +749,7 @@ module DAD_DAS = struct
   let ( - ) x y = M.sub x (lift y)
   let ( * ) x y = M.mul x (lift y)
   let ( / ) x y = M.div x (lift y)
+  let ( % ) x y = M.fmod x (lift y)
   let ( ** ) x y = M.pow x (lift y)
   let ( = ) x y = M.equal x (lift y)
   let ( <> ) x y = M.not_equal x (lift y)
@@ -813,6 +828,7 @@ module DMS_DMD = struct
   let ( - ) x y = M.sub (lift x) y
   let ( * ) x y = M.mul (lift x) y
   let ( / ) x y = M.div (lift x) y
+  let ( % ) x y = M.fmod (lift x) y
   let ( *@ ) x y = M.dot (lift x) y
   let ( ** ) x y = M.pow (lift x) y
   let ( = ) x y = M.equal (lift x) y
@@ -842,6 +858,7 @@ module DMD_DMS = struct
   let ( - ) x y = M.sub x (lift y)
   let ( * ) x y = M.mul x (lift y)
   let ( / ) x y = M.div x (lift y)
+  let ( % ) x y = M.fmod x (lift y)
   let ( *@ ) x y = M.dot x (lift y)
   let ( ** ) x y = M.pow x (lift y)
   let ( = ) x y = M.equal x (lift y)
@@ -2018,6 +2035,27 @@ let ( / ) x y = match x, y with
   | DMC _, DMD _ -> DMC_DMD.(x / y)
   | DMD _, DMC _ -> DMD_DMC.(x / y)
   | _            -> error_binop "( / )" x y
+
+
+let ( % ) x y = match x, y with
+  | F x, F y     -> F_F.(x % y)
+  | F _, DAS _   -> F_DAS.(x % y)
+  | DAS _, F _   -> DAS_F.(x % y)
+  | DAS _, DAS _ -> DAS_DAS.(x % y)
+  | F _, DAD _   -> F_DAD.(x % y)
+  | DAD _, F _   -> DAD_F.(x % y)
+  | DAD _, DAD _ -> DAD_DAD.(x % y)
+  | F _, DMS _   -> F_DMS.(x % y)
+  | DMS _, F _   -> DMS_F.(x % y)
+  | DMS _, DMS _ -> DMS_DMS.(x % y)
+  | F _, DMD _   -> F_DMD.(x % y)
+  | DMD _, F _   -> DMD_F.(x % y)
+  | DMD _, DMD _ -> DMD_DMD.(x % y)
+  | DAS _, DAD _ -> DAS_DAD.(x % y)
+  | DAD _, DAS _ -> DAD_DAS.(x % y)
+  | DMS _, DMD _ -> DMS_DMD.(x % y)
+  | DMD _, DMS _ -> DMD_DMS.(x % y)
+  | _            -> error_binop "( % )" x y
 
 
 let ( ** ) x y = match x, y with

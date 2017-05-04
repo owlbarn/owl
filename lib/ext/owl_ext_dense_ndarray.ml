@@ -624,6 +624,12 @@ module type SD_Sig = sig
 
   val max2 : arr -> arr -> arr
 
+  val fmod : arr -> arr -> arr
+
+  val fmod_scalar : arr -> elt -> arr
+
+  val scalar_fmod : elt -> arr -> arr
+
   val ssqr : arr -> elt -> elt
 
   val ssqr_diff : arr -> arr -> elt
@@ -756,6 +762,12 @@ module Make_SD
   let min2 x y = M.min2 (unpack_box x) (unpack_box y) |> pack_box
 
   let max2 x y = M.max2 (unpack_box x) (unpack_box y) |> pack_box
+
+  let fmod x y = M.fmod (unpack_box x) (unpack_box y) |> pack_box
+
+  let fmod_scalar x a = M.fmod_scalar (unpack_box x) (unpack_elt a) |> pack_box
+
+  let scalar_fmod a x = M.scalar_fmod (unpack_elt a) (unpack_box x) |> pack_box
 
   let ssqr x a = M.ssqr (unpack_box x) (unpack_elt a) |> pack_elt
 

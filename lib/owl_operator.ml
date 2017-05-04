@@ -90,6 +90,10 @@ module type ExtendSig = sig
 
   val elt_greater_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
+  val fmod : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+
+  val fmod_scalar : (float, 'a) t -> float -> (float, 'a) t
+
   val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 
 end
@@ -102,6 +106,7 @@ module type MatrixSig = sig
   val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 end
+
 
 (* define basic operators *)
 
@@ -196,6 +201,10 @@ module Make_Extend (M : ExtendSig) = struct
   let ( <=.$ ) = M.elt_less_equal_scalar
 
   let ( >=.$ ) = M.elt_greater_equal_scalar
+
+  let ( % ) = M.fmod
+
+  let ( %$ ) = M.fmod_scalar
 
   let ( ** ) = M.pow
 
