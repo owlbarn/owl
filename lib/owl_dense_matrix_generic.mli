@@ -980,6 +980,9 @@ val max2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
   elementwise, and returns the result in a new matrix.
  *)
 
+val fmod : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+(** [fmod x y] performs float mod division. *)
+
 val ssqr : ('a, 'b) t -> 'a -> 'a
 (** [ssqr x a] computes the sum of squared differences of all the elements in
   [x] from constant [a]. This function only computes the square of each element

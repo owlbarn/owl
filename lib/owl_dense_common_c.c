@@ -1566,6 +1566,22 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X,Y,Z) Z = fmax(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
+// mod
+
+#define FUN15 real_float_mod
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 float
+#define MAPFN(X,Y,Z) *Z = fmod(*X, *Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 real_double_mod
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 double
+#define MAPFN(X,Y,Z) *Z = fmod(*X, *Y)
+#include "owl_dense_common_vec_map.c"
+
 // ssqr
 
 #define FUN9 real_float_ssqr

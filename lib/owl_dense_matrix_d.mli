@@ -489,6 +489,8 @@ val min2 : mat -> mat -> mat
 
 val max2 : mat -> mat -> mat
 
+val fmod : mat -> mat -> mat
+
 val ssqr : mat -> elt -> elt
 
 val ssqr_diff : mat -> mat -> elt

@@ -1093,6 +1093,12 @@ let max2 x1 x2 =
   let x3 = Owl_dense_ndarray_generic.max2 x1 x2 in
   of_ndarray x3
 
+let fmod x1 x2 =
+  let x1 = to_ndarray x1 in
+  let x2 = to_ndarray x2 in
+  let x3 = Owl_dense_ndarray_generic.fmod x1 x2 in
+  of_ndarray x3
+  
 let ssqr_diff x1 x2 =
   let x1 = to_ndarray x1 in
   let x2 = to_ndarray x2 in

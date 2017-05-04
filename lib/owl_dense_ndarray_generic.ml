@@ -203,6 +203,14 @@ let max2 x y =
   let _ = _owl_max2 (kind x) (numel x) x' y' z' in
   z
 
+let fmod x y =
+  let z = empty (kind x) (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  _owl_mod (kind x) (numel z) x' y' z';
+  z
+
 let ssqr_diff x y =
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in

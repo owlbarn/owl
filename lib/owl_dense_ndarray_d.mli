@@ -342,6 +342,8 @@ val min2 : arr -> arr -> arr
 
 val max2 : arr -> arr -> arr
 
+val fmod : arr -> arr -> arr
+
 val ssqr : arr -> elt -> elt
 
 val ssqr_diff : arr -> arr -> elt
