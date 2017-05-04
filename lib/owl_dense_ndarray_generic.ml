@@ -208,8 +208,22 @@ let fmod x y =
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   let z' = flatten z |> array1_of_genarray in
-  _owl_mod (kind x) (numel z) x' y' z';
+  _owl_fmod (kind x) (numel z) x' y' z';
   z
+
+let fmod_scalar x a =
+  let y = empty (kind x) (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  _owl_fmod_scalar (kind x) (numel y) x' y' a;
+  y
+
+let scalar_fmod a x =
+  let y = empty (kind x) (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  _owl_scalar_fmod (kind x) (numel y) x' y' a;
+  y
 
 let ssqr_diff x y =
   let x' = flatten x |> array1_of_genarray in

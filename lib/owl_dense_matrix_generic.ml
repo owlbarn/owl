@@ -1098,7 +1098,17 @@ let fmod x1 x2 =
   let x2 = to_ndarray x2 in
   let x3 = Owl_dense_ndarray_generic.fmod x1 x2 in
   of_ndarray x3
-  
+
+let fmod_scalar x a =
+  let x = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.fmod_scalar x a in
+  of_ndarray y
+
+let scalar_fmod a x =
+  let x = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.scalar_fmod a x in
+  of_ndarray y
+
 let ssqr_diff x1 x2 =
   let x1 = to_ndarray x1 in
   let x2 = to_ndarray x2 in

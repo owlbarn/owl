@@ -1090,14 +1090,30 @@ let _owl_max2 : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
   | Float64   -> owl_real_double_max2 l x y z
   | _         -> failwith "_owl_max2: unsupported operation"
 
-external owl_real_float_mod : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_mod"
-external owl_real_double_mod : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_mod"
+external owl_real_float_fmod : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_fmod"
+external owl_real_double_fmod : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_fmod"
 
-let _owl_mod : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
+let _owl_fmod : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
   match k with
-  | Float32   -> owl_real_float_mod l x y z
-  | Float64   -> owl_real_double_mod l x y z
-  | _         -> failwith "_owl_mod: unsupported operation"
+  | Float32   -> owl_real_float_fmod l x y z
+  | Float64   -> owl_real_double_fmod l x y z
+  | _         -> failwith "_owl_fmod: unsupported operation"
+
+external owl_real_float_fmod_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_fmod_scalar"
+external owl_real_double_fmod_scalar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_fmod_scalar"
+
+let _owl_fmod_scalar : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
+  | Float32   -> owl_real_float_fmod_scalar
+  | Float64   -> owl_real_double_fmod_scalar
+  | _         -> failwith "_owl_fmod_scalar: unsupported operation"
+
+external owl_real_float_scalar_fmod : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_scalar_fmod"
+external owl_real_double_scalar_fmod : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_scalar_fmod"
+
+let _owl_scalar_fmod : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
+  | Float32   -> owl_real_float_scalar_fmod
+  | Float64   -> owl_real_double_scalar_fmod
+  | _         -> failwith "_owl_scalar_fmod: unsupported operation"
 
 external owl_real_float_linspace : int -> float -> float -> (float, 'a) owl_vec -> unit = "real_float_linspace"
 external owl_real_double_linspace : int -> float -> float -> (float, 'a) owl_vec -> unit = "real_double_linspace"

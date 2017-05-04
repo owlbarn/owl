@@ -1566,20 +1566,52 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X,Y,Z) Z = fmax(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
-// mod
+// fmod
 
-#define FUN15 real_float_mod
+#define FUN15 real_float_fmod
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
 #define MAPFN(X,Y,Z) *Z = fmod(*X, *Y)
 #include "owl_dense_common_vec_map.c"
 
-#define FUN15 real_double_mod
+#define FUN15 real_double_fmod
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
 #define MAPFN(X,Y,Z) *Z = fmod(*X, *Y)
+#include "owl_dense_common_vec_map.c"
+
+// fmod_scalar
+
+#define FUN17 real_float_fmod_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = fmod(*X,a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_fmod_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = fmod(*X,a)
+#include "owl_dense_common_vec_map.c"
+
+// scalar_fmod
+
+#define FUN17 real_float_scalar_fmod
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = fmod(a,*X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_scalar_fmod
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = fmod(a,*X)
 #include "owl_dense_common_vec_map.c"
 
 // ssqr

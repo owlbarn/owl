@@ -491,6 +491,10 @@ val max2 : mat -> mat -> mat
 
 val fmod : mat -> mat -> mat
 
+val fmod_scalar : mat -> elt -> mat
+
+val scalar_fmod : elt -> mat -> mat
+
 val ssqr : mat -> elt -> elt
 
 val ssqr_diff : mat -> mat -> elt

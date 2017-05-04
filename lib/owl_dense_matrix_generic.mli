@@ -983,6 +983,12 @@ val max2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 val fmod : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (** [fmod x y] performs float mod division. *)
 
+val fmod_scalar : (float, 'a) t -> float -> (float, 'a) t
+(** [fmod_scalar x a] performs mod division between [x] and scalar [a]. *)
+
+val scalar_fmod : float -> (float, 'a) t -> (float, 'a) t
+(** [scalar_fmod x a] performs mod division between scalar [a] and [x]. *)
+
 val ssqr : ('a, 'b) t -> 'a -> 'a
 (** [ssqr x a] computes the sum of squared differences of all the elements in
   [x] from constant [a]. This function only computes the square of each element
