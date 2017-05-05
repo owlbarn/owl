@@ -268,12 +268,12 @@ let _eigen_div : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen
   | SPMAT_C x, SPMAT_C y -> SPMAT_C (Eigen.Sparse.C.div x y)
   | SPMAT_Z x, SPMAT_Z y -> SPMAT_Z (Eigen.Sparse.Z.div x y)
 
-let _eigen_dot : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat =
+let _eigen_gemm : type a b . (a, b) eigen_mat -> (a, b) eigen_mat -> (a, b) eigen_mat =
   fun x y -> match x, y with
-  | SPMAT_S x, SPMAT_S y -> SPMAT_S (Eigen.Sparse.S.dot x y)
-  | SPMAT_D x, SPMAT_D y -> SPMAT_D (Eigen.Sparse.D.dot x y)
-  | SPMAT_C x, SPMAT_C y -> SPMAT_C (Eigen.Sparse.C.dot x y)
-  | SPMAT_Z x, SPMAT_Z y -> SPMAT_Z (Eigen.Sparse.Z.dot x y)
+  | SPMAT_S x, SPMAT_S y -> SPMAT_S (Eigen.Sparse.S.gemm x y)
+  | SPMAT_D x, SPMAT_D y -> SPMAT_D (Eigen.Sparse.D.gemm x y)
+  | SPMAT_C x, SPMAT_C y -> SPMAT_C (Eigen.Sparse.C.gemm x y)
+  | SPMAT_Z x, SPMAT_Z y -> SPMAT_Z (Eigen.Sparse.Z.gemm x y)
 
 let _eigen_add_scalar : type a b . (a, b) eigen_mat -> a -> (a, b) eigen_mat =
   fun x a -> match x with

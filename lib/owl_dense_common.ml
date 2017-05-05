@@ -184,12 +184,12 @@ let _eigen_swap_cols : type a b . (a, b) kind -> (a, b) eigen_mat_op01 = functio
   | Complex64 -> Eigen.Dense.Z.swap_cols
   | _         -> failwith "_eigen_swap_cols: unsupported operation"
 
-let _eigen_dot : type a b . (a, b) kind -> (a, b) eigen_mat_op02 = function
-  | Float32   -> Eigen.Dense.S.dot
-  | Float64   -> Eigen.Dense.D.dot
-  | Complex32 -> Eigen.Dense.C.dot
-  | Complex64 -> Eigen.Dense.Z.dot
-  | _         -> failwith "_eigen_dot: unsupported operation"
+let _eigen_gemm : type a b . (a, b) kind -> (a, b) eigen_mat_op02 = function
+  | Float32   -> Eigen.Dense.S.gemm
+  | Float64   -> Eigen.Dense.D.gemm
+  | Complex32 -> Eigen.Dense.C.gemm
+  | Complex64 -> Eigen.Dense.Z.gemm
+  | _         -> failwith "_eigen_gemm: unsupported operation"
 
 let _eigen_inv : type a b . (a, b) kind -> (a, b) eigen_mat_op00 = function
   | Float32   -> Eigen.Dense.S.inv

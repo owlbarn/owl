@@ -337,7 +337,7 @@ let dot x y = {
   m = x.m;
   n = y.n;
   k = x.k;
-  d = _eigen_dot x.d y.d;
+  d = _eigen_gemm x.d y.d;
 }
 
 let add_scalar x a = {
