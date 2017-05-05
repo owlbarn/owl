@@ -117,6 +117,48 @@ module Linear = struct
 end
 
 
+(* definition of linear no bias layer *)
+module LinearNoBias = struct
+
+  type layer = {
+    mutable w : t;
+    mutable init_typ : Init.typ;
+  }
+
+  let create i o init_typ = {
+    w = Mat.empty i o;
+    init_typ = init_typ;
+  }
+
+  let init l =
+    let m, n = Mat.shape l.w in
+    l.w <- Init.run l.init_typ m n
+
+  let reset l = Mat.reset l.w
+
+  let mktag t l = l.w <- make_reverse l.w t
+
+  let mkpar l = [|l.w|]
+
+  let mkpri l = [|primal l.w|]
+
+  let mkadj l = [|adjval l.w|]
+
+  let update l u = l.w <- u.(0) |> primal'
+
+  let run x l = Maths.(x *@ l.w)
+
+  let to_string l =
+    let wm, wn = Mat.shape l.w in
+    Printf.sprintf "Linear layer:\n" ^
+    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params : %i\n" (wm * wn) ^
+    Printf.sprintf "    w      : %i x %i\n" wm wn ^
+    ""
+
+end
+
+
 (* definition of recurrent layer *)
 module Recurrent = struct
 
@@ -541,11 +583,12 @@ end
 (* type and functions of neural network *)
 
 type layer =
-  | Linear     of Linear.layer
-  | LSTM       of LSTM.layer
-  | GRU        of GRU.layer
-  | Recurrent  of Recurrent.layer
-  | Activation of Activation.typ
+  | Linear       of Linear.layer
+  | LinearNoBias of LinearNoBias.layer
+  | LSTM         of LSTM.layer
+  | GRU          of GRU.layer
+  | Recurrent    of Recurrent.layer
+  | Activation   of Activation.typ
 
 type network = {
   mutable layers : layer array;
@@ -567,69 +610,77 @@ module Feedforward = struct
     | None     -> ()
 
   let init nn = Array.iter (function
-    | Linear l    -> Linear.init l
-    | LSTM l      -> LSTM.init l
-    | GRU l       -> GRU.init l
-    | Recurrent l -> Recurrent.init l
-    | _           -> () (* activation *)
+    | Linear l       -> Linear.init l
+    | LinearNoBias l -> LinearNoBias.init l
+    | LSTM l         -> LSTM.init l
+    | GRU l          -> GRU.init l
+    | Recurrent l    -> Recurrent.init l
+    | _              -> () (* activation *)
     ) nn.layers
 
   let reset nn = Array.iter (function
-    | Linear l    -> Linear.reset l
-    | LSTM l      -> LSTM.reset l
-    | GRU l       -> GRU.reset l
-    | Recurrent l -> Recurrent.reset l
-    | _           -> () (* activation *)
+    | Linear l       -> Linear.reset l
+    | LinearNoBias l -> LinearNoBias.reset l
+    | LSTM l         -> LSTM.reset l
+    | GRU l          -> GRU.reset l
+    | Recurrent l    -> Recurrent.reset l
+    | _              -> () (* activation *)
     ) nn.layers
 
   let mktag t nn = Array.iter (function
-    | Linear l    -> Linear.mktag t l
-    | LSTM l      -> LSTM.mktag t l
-    | GRU l       -> GRU.mktag t l
-    | Recurrent l -> Recurrent.mktag t l
-    | _           -> () (* activation *)
+    | Linear l       -> Linear.mktag t l
+    | LinearNoBias l -> LinearNoBias.mktag t l
+    | LSTM l         -> LSTM.mktag t l
+    | GRU l          -> GRU.mktag t l
+    | Recurrent l    -> Recurrent.mktag t l
+    | _              -> () (* activation *)
     ) nn.layers
 
   let mkpar nn = Array.map (function
-    | Linear l    -> Linear.mkpar l
-    | LSTM l      -> LSTM.mkpar l
-    | GRU l       -> GRU.mkpar l
-    | Recurrent l -> Recurrent.mkpar l
-    | _           -> [||] (* activation *)
+    | Linear l       -> Linear.mkpar l
+    | LinearNoBias l -> LinearNoBias.mkpar l
+    | LSTM l         -> LSTM.mkpar l
+    | GRU l          -> GRU.mkpar l
+    | Recurrent l    -> Recurrent.mkpar l
+    | _              -> [||] (* activation *)
     ) nn.layers
 
   let mkpri nn = Array.map (function
-    | Linear l    -> Linear.mkpri l
-    | LSTM l      -> LSTM.mkpri l
-    | GRU l       -> GRU.mkpri l
-    | Recurrent l -> Recurrent.mkpri l
-    | _           -> [||] (* activation *)
+    | Linear l       -> Linear.mkpri l
+    | LinearNoBias l -> LinearNoBias.mkpri l
+    | LSTM l         -> LSTM.mkpri l
+    | GRU l          -> GRU.mkpri l
+    | Recurrent l    -> Recurrent.mkpri l
+    | _              -> [||] (* activation *)
     ) nn.layers
 
   let mkadj nn = Array.map (function
-    | Linear l    -> Linear.mkadj l
-    | LSTM l      -> LSTM.mkadj l
-    | GRU l       -> GRU.mkadj l
-    | Recurrent l -> Recurrent.mkadj l
-    | _           -> [||] (* activation *)
+    | Linear l       -> Linear.mkadj l
+    | LinearNoBias l -> LinearNoBias.mkadj l
+    | LSTM l         -> LSTM.mkadj l
+    | GRU l          -> GRU.mkadj l
+    | Recurrent l    -> Recurrent.mkadj l
+    | _              -> [||] (* activation *)
     ) nn.layers
 
   let update nn us = Array.map2 (fun l u ->
     match l with
-    | Linear l    -> Linear.update l u
-    | LSTM l      -> LSTM.update l u
-    | GRU l       -> GRU.update l u
-    | Recurrent l -> Recurrent.update l u
-    | _           -> () (* activation *)
+    | Linear l       -> Linear.update l u
+    | LinearNoBias l -> LinearNoBias.update l u
+    | LSTM l         -> LSTM.update l u
+    | GRU l          -> GRU.update l u
+    | Recurrent l    -> Recurrent.update l u
+    | _              -> () (* activation *)
     ) nn.layers us
 
   let run x nn = Array.fold_left (fun a l ->
     match l with
-    | Linear l     -> Linear.run a l
-    | LSTM l       -> LSTM.run a l
-    | GRU l        -> GRU.run a l
-    | Recurrent l  -> Recurrent.run a l
-    | Activation l -> Activation.run a l
+    | Linear l       -> Linear.run a l
+    | LinearNoBias l -> LinearNoBias.run a l
+    | LSTM l         -> LSTM.run a l
+    | GRU l          -> GRU.run a l
+    | Recurrent l    -> Recurrent.run a l
+    | Activation l   -> Activation.run a l
     ) x nn.layers
 
   let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
@@ -646,11 +697,12 @@ module Feedforward = struct
     let s = ref "Feedforward network\n\n" in
     for i = 0 to Array.length nn.layers - 1 do
       let t = match nn.layers.(i) with
-        | Linear l     -> Linear.to_string l
-        | LSTM l       -> LSTM.to_string l
-        | GRU l        -> GRU.to_string l
-        | Recurrent l  -> Recurrent.to_string l
-        | Activation l -> Activation.to_string l
+        | Linear l       -> Linear.to_string l
+        | LinearNoBias l -> LinearNoBias.to_string l
+        | LSTM l         -> LSTM.to_string l
+        | GRU l          -> GRU.to_string l
+        | Recurrent l    -> Recurrent.to_string l
+        | Activation l   -> Activation.to_string l
       in
       s := !s ^ (Printf.sprintf "(%i): %s\n" i t)
     done; !s

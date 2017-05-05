@@ -87,7 +87,7 @@ module Loss = struct
     | L2norm        -> Maths.(l2norm (y - y'))
     | Quadratic     -> Maths.(l2norm_sqr (y - y'))
     | Cross_entropy -> Maths.(cross_entropy y y')
-    | Custom f      -> f y y' (* y':prediction *)
+    | Custom f      -> f y y' (* y': prediction *)
 
   let to_string = function
     | L1norm        -> "l1norm"
