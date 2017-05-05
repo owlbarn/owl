@@ -265,6 +265,18 @@ module Params = struct
     verbosity      = true;
   }
 
+  let config ?batch ?gradient ?loss ?learning_rate ?regularisation ?momentum ?clipping ?verbosity ~epochs =
+    let p = default () in
+    (match batch with Some x -> p.batch <- x | None -> ());
+    (match gradient with Some x -> p.gradient <- x | None -> ());
+    (match loss with Some x -> p.loss <- x | None -> ());
+    (match learning_rate with Some x -> p.learning_rate <- x | None -> ());
+    (match regularisation with Some x -> p.regularisation <- x | None -> ());
+    (match momentum with Some x -> p.momentum <- x | None -> ());
+    (match clipping with Some x -> p.clipping <- x | None -> ());
+    (match verbosity with Some x -> p.verbosity <- x | None -> ());
+    p.epochs <- epochs; p
+
   let to_string p =
     Printf.sprintf "--- Training config\n" ^
     Printf.sprintf "    epochs         : %i\n" (p.epochs) ^
@@ -293,7 +305,7 @@ let _print_info e_i e_n b_i b_n l l' =
 let _print_summary t = Printf.printf "--- Training summary\n    Duration: %g s\n" t
 
 
-(* core training functions *)
+(* core training functions for feedforward networks *)
 
 let train_nn params forward backward update x y =
   let open Params in
@@ -301,7 +313,7 @@ let train_nn params forward backward update x y =
     print_endline (Params.to_string params);
 
   (* make alias functions *)
-  let batch = Batch.run params.batch in
+  let batch    = Batch.run params.batch in
   let loss_fun = Loss.run params.loss in
   let grad_fun = Gradient.run params.gradient in
   let rate_fun = Learning_Rate.run params.learning_rate in

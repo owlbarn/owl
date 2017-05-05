@@ -25,10 +25,13 @@ module Regularisation = Owl_neural_optimise.Regularisation
 module Clipping       = Owl_neural_optimise.Clipping
 
 
-(* helper functions *)
+(* core functions *)
 
 let linear ?(init_typ = Init.Standard) inputs outputs =
   Linear (Linear.create inputs outputs init_typ)
+
+let linear_nobias ?(init_typ = Init.Standard) inputs outputs =
+  LinearNoBias (LinearNoBias.create inputs outputs init_typ)
 
 let recurrent ?(init_typ=Init.Standard) ~act_typ inputs outputs hiddens =
   Recurrent (Recurrent.create inputs hiddens outputs act_typ init_typ)
@@ -36,8 +39,6 @@ let recurrent ?(init_typ=Init.Standard) ~act_typ inputs outputs hiddens =
 let lstm inputs cells = LSTM (LSTM.create inputs cells)
 
 let gru inputs cells = GRU (GRU.create inputs cells)
-
-let print nn = Feedforward.to_string nn |> Printf.printf "%s"
 
 let train ?params nn x y =
   Feedforward.init nn;
@@ -58,6 +59,15 @@ let test_model nn x y =
     Owl_dense_matrix_generic.print p;
     Printf.printf "prediction: %i\n" (let _, _, j = Owl_dense_matrix_generic.max_i p in j)
   ) (Mat x) (Mat y)
+
+
+(* I/O functions *)
+
+let print nn = Feedforward.to_string nn |> Printf.printf "%s"
+
+let save nn f = Owl_utils.marshal_to_file nn f
+
+let load f : network = Owl_utils.marshal_from_file f
 
 
 (* ends here *)
