@@ -14,6 +14,7 @@
 
 type mat_d = Owl_dense_matrix_d.mat
 type mat_z = Owl_dense_matrix_z.mat
+type ('a, 'b) t = ('a, 'b) Owl_dense_matrix_generic.t
 
 
 val inv : mat_d -> mat_d

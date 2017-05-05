@@ -332,6 +332,8 @@ val re : mat -> cast_mat
 
 val im : mat -> cast_mat
 
+val inv : mat -> mat
+
 val trace : mat -> elt
 
 val sum : mat -> elt

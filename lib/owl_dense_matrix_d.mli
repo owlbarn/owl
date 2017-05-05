@@ -330,6 +330,8 @@ val max_i : mat -> elt * int * int
 
 val minmax_i : mat -> (elt * int * int) * (elt * int * int)
 
+val inv : mat -> mat
+
 val trace : mat -> elt
 
 val sum : mat -> elt

@@ -356,6 +356,8 @@ module type BasicSig = sig
   val load : string -> mat
 
 
+  val inv : mat -> mat
+
   val trace : mat -> elt
 
   val sum : mat -> elt
@@ -656,6 +658,8 @@ module Make_Basic
   let load f = M.load f |> pack_box
 
 
+  let inv x = M.inv (unpack_box x) |> pack_box
+  
   let trace x = M.trace (unpack_box x) |> pack_elt
 
   let sum x = M.sum (unpack_box x) |> pack_elt

@@ -191,6 +191,13 @@ let _eigen_dot : type a b . (a, b) kind -> (a, b) eigen_mat_op02 = function
   | Complex64 -> Eigen.Dense.Z.dot
   | _         -> failwith "_eigen_dot: unsupported operation"
 
+let _eigen_inv : type a b . (a, b) kind -> (a, b) eigen_mat_op00 = function
+  | Float32   -> Eigen.Dense.S.inv
+  | Float64   -> Eigen.Dense.D.inv
+  | Complex32 -> Eigen.Dense.C.inv
+  | Complex64 -> Eigen.Dense.Z.inv
+  | _         -> failwith "_eigen_inv: unsupported operation"
+
 
 (* interface to owl's c functions, types for interfacing to owl *)
 
@@ -211,6 +218,7 @@ type ('a, 'b) owl_vec_op10 = int -> ('a, 'b) owl_vec -> 'a -> int
 type ('a, 'b) owl_vec_op11 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit
 type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
+
 
 (* call functions in owl native c *)
 

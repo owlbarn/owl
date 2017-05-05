@@ -109,6 +109,8 @@ module type MatrixSig = sig
 
   val atanh : mat -> mat
 
+  val inv : mat -> mat
+
   val trace : mat -> elt
 
   val sum : mat -> elt

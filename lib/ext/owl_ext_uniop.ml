@@ -197,6 +197,8 @@ module DMS = struct
   let min_i x = M.min_i x
   let max_i x = M.max_i x
   let minmax_i x = M.minmax_i x
+  let inv x = M.inv x
+  let trace x = M.trace x
   let sum x = M.sum x
   let prod x = M.prod x
   let abs x = M.abs x
@@ -256,6 +258,8 @@ module DMD = struct
   let min_i x = M.min_i x
   let max_i x = M.max_i x
   let minmax_i x = M.minmax_i x
+  let inv x = M.inv x
+  let trace x = M.trace x
   let sum x = M.sum x
   let prod x = M.prod x
   let abs x = M.abs x
@@ -351,6 +355,8 @@ module DMC = struct
 
   let re x = M.re x
   let im x = M.im x
+  let inv x = M.inv x
+  let trace x = M.trace x
   let sum x = M.sum x
   let prod x = M.prod x
   let abs x = M.abs x
@@ -371,6 +377,8 @@ module DMZ = struct
 
   let re x = M.re x
   let im x = M.im x
+  let inv x = M.inv x
+  let trace x = M.trace x
   let sum x = M.sum x
   let prod x = M.prod x
   let abs x = M.abs x
@@ -452,6 +460,20 @@ let minmax_i x = match x with
   | DMS _ -> DMS.minmax_i x
   | DMD _ -> DMD.minmax_i x
   | _     -> error_uniop "minmax_i" x
+
+let inv x = match x with
+  | DMS _ -> DMS.inv x
+  | DMD _ -> DMD.inv x
+  | DMC _ -> DMC.inv x
+  | DMZ _ -> DMZ.inv x
+  | _     -> error_uniop "inv" x
+
+let trace x = match x with
+  | DMS _ -> DMS.trace x
+  | DMD _ -> DMD.trace x
+  | DMC _ -> DMC.trace x
+  | DMZ _ -> DMZ.trace x
+  | _     -> error_uniop "trace" x
 
 let sum x = match x with
   | DAS _ -> DAS.sum x

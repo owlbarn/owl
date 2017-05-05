@@ -622,6 +622,9 @@ val max_i : (float, 'a) t -> float * int * int
 
 val minmax_i : (float, 'a) t -> (float * int * int) * (float * int * int)
 
+val inv : ('a, 'b) t -> ('a, 'b) t
+(** [inv x] returns the inverse of a square matrix [x]. *)
+
 val trace : ('a, 'b) t -> 'a
 (** [trace x] returns the sum of diagonal elements in [x]. *)
 

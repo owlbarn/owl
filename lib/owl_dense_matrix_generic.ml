@@ -406,6 +406,8 @@ let div x1 x2 =
 (* let dot x1 x2 = _eigen_dot (kind x1) x1 x2 *)
 let dot x1 x2 = Owl_backend_gsl_linalg.dot (kind x1) x1 x2
 
+let inv x = Owl_dense_common._eigen_inv (kind x) x
+
 let sum_cols x =
   let y = ones (Array2.kind x) (col_num x) 1 in
   dot x y
