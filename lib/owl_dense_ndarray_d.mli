@@ -83,6 +83,8 @@ val repeat : ?axis:int -> arr -> int -> arr
 
 val squeeze : ?axis:int array -> arr -> arr
 
+val pad : ?v:elt -> int list list -> arr -> arr
+
 val mmap : Unix.file_descr -> ?pos:int64 -> bool -> int array -> arr
 
 

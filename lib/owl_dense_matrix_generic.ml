@@ -208,6 +208,9 @@ let slice axis x =
   let y = Owl_dense_ndarray_generic.slice axis x in
   of_ndarray y
 
+let pad ?v d x = Owl_dense_ndarray_generic.pad ?v d (to_ndarray x) |> of_ndarray
+
+
 (* matrix iteration operations *)
 
 let iteri f x =

@@ -217,6 +217,9 @@ val tile : ('a, 'b) t -> int array -> ('a, 'b) t
 val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
 (** [repeat ~axis x a] repeats the elements along [~axis] for [a] times. *)
 
+val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
+(** [padd ~v:0. [[1;1]] x] *)
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 

@@ -1302,6 +1302,87 @@ let clip_by_l2norm t x =
   | false -> x
 
 
+(* padding and its helper functions *)
+
+let _expand_padding_index d s =
+  let ls = Array.length s in
+  let ld = Array.length d in
+  let d = Owl_utils.(array_pad `Right d [|0;0|] (ls - ld)) in
+  Array.map (function
+    | [||]  -> [|0;0|]
+    | [|x|] -> [|x;x|]
+    | x     -> x
+  ) d
+
+(*
+  k : kind of the source
+  p1: padding index
+  ls: slice size of the source
+  l0: stride size of the source
+  l1: stride size of the destination
+  i0: current source nd index
+  i1: current destination nd index
+  d0: current depth of index
+  d1: depth threshold
+  s0: shape of the source
+  s1: shape of the destination
+  x0: source
+  x1: destination
+ *)
+let rec _copy_to_padding k p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1 =
+  if d0 < d1 then (
+    (* Printf.printf "+++ %i\n" d0; *)
+    for i = 0 to s0.(d0) - 1 do
+      i0.(d0) <- i;
+      i1.(d0) <- i + p1.(d0).(0);
+      _copy_to_padding k p1 ls l0 l1 i0 i1 (d0 + 1) d1 s0 s1 x0 x1;
+      i0.(d0) <- 0;
+      i1.(d0) <- p1.(d0).(0);
+    done
+  )
+  else (
+    (* print_index i0; Printf.printf " === "; print_index i1; print_endline ""; *)
+    let j0 = _index_nd_1d i0 l0 in
+    let j1 = _index_nd_1d i1 l1 in
+    _owl_copy k ls.(d0) ~ofsx:j0 ~incx:1 ~ofsy:j1 ~incy:1 x0 x1
+  )
+
+(* according to the expanded padding index, calcuate the highest dimension
+  with padding, so we can figure out the minimum continuous block size.
+ *)
+let _highest_padding_dimension p =
+  let l = Array.length p - 1 in
+  let d = ref l in
+  (try for i = l downto 0 do
+    d := i;
+    if p.(i) <> [|0;0|] then failwith "stop"
+  done with exn -> ());
+  !d
+
+let pad ?v d x =
+  let k = kind x in
+  let v = match v with
+    | Some v -> v
+    | None   -> _zero k
+  in
+  let s0 = shape x in
+  let p1 = _expand_padding_index (Owl_utils.llss2aarr d) s0 in
+  let s1 = Array.map2 (fun m n -> m + n.(0) + n.(1)) s0 p1 in
+  let y = create k s1 v in
+  (* prepare variables for block copying *)
+  let ls = _calc_slice s0 in
+  let l0 = _calc_stride s0 in
+  let l1 = _calc_stride s1 in
+  let i0 = Array.make (num_dims x) 0 in
+  let i1 = Array.map (fun a -> a.(0)) p1 in
+  let d0 = 0 in
+  let d1 = _highest_padding_dimension p1 in
+  let x0 = Bigarray.reshape_1 x (numel x) in
+  let x1 = Bigarray.reshape_1 y (numel y) in
+  _copy_to_padding k p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1;
+  y
+
+
 (* TODO *)
 
 let insert_slice = None

@@ -191,6 +191,9 @@ val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
 val squeeze : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** [squeeze ~axis x] removes single-dimensional entries from the shape of [x]. *)
 
+val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
+(** [padd ~v:0. [[1;1]] x] *)
+
 val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -> ('a, 'b) t
 (** [mmap fd kind layout shared dims] ... *)
 
