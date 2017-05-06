@@ -1415,6 +1415,22 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) (1.0 / (1.0 + exp(-X)))
 #include "owl_dense_common_vec_map.c"
 
+// elu
+
+#define FUN17 real_float_elu
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = (*X >= 0. ? *X : (a * (exp(*X) - 1.)))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_elu
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = (*X >= 0. ? *X : (a * (exp(*X) - 1.)))
+#include "owl_dense_common_vec_map.c"
+
 // relu
 
 #define FUN4 real_float_relu
@@ -1427,6 +1443,22 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (fmax(X,0))
+#include "owl_dense_common_vec_map.c"
+
+// leaky_relu
+
+#define FUN17 real_float_leaky_relu
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = (*X >= 0. ? *X : (*X * a))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_leaky_relu
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = (*X >= 0. ? *X : (*X * a))
 #include "owl_dense_common_vec_map.c"
 
 // softplus

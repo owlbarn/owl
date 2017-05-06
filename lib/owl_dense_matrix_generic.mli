@@ -852,6 +852,12 @@ val relu : (float, 'a) t -> (float, 'a) t
   elements in [x] and returns the result in a new matrix.
  *)
 
+val elu : ?alpha:float -> (float, 'a) t -> (float, 'a) t
+(** refer to [Owl_dense_ndarray_generic.elu] *)
+
+val leaky_relu : ?alpha:float -> (float, 'a) t -> (float, 'a) t
+(** refer to [Owl_dense_ndarray_generic.leaky_relu] *)
+
 val softplus : (float, 'a) t -> (float, 'a) t
 (** [softplus x] computes the softplus function [log(1 + exp(x)] of the elements
   in [x] and returns the result in a new matrix.

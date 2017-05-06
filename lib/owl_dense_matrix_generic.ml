@@ -995,6 +995,16 @@ let relu x =
   let y = Owl_dense_ndarray_generic.relu y in
   of_ndarray y
 
+let elu ?alpha x =
+  to_ndarray x
+  |> Owl_dense_ndarray_generic.elu ?alpha
+  |> of_ndarray
+
+let leaky_relu ?alpha x =
+  to_ndarray x
+  |> Owl_dense_ndarray_generic.leaky_relu ?alpha
+  |> of_ndarray
+
 let softplus x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray_generic.softplus y in

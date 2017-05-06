@@ -945,6 +945,14 @@ let _owl_sigmoid : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   | Float64   -> owl_real_double_sigmoid l x y
   | _         -> failwith "_owl_sigmoid: unsupported operation"
 
+external owl_real_float_elu : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_elu"
+external owl_real_double_elu : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_elu"
+
+let _owl_elu : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
+  | Float32   -> owl_real_float_elu
+  | Float64   -> owl_real_double_elu
+  | _         -> failwith "_owl_elu: unsupported operation"
+
 external owl_real_float_relu : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_relu"
 external owl_real_double_relu : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_relu"
 
@@ -953,6 +961,14 @@ let _owl_relu : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   | Float32   -> owl_real_float_relu l x y
   | Float64   -> owl_real_double_relu l x y
   | _         -> failwith "_owl_relu: unsupported operation"
+
+external owl_real_float_leaky_relu : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_leaky_relu"
+external owl_real_double_leaky_relu : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_leaky_relu"
+
+let _owl_leaky_relu : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
+  | Float32   -> owl_real_float_leaky_relu
+  | Float64   -> owl_real_double_leaky_relu
+  | _         -> failwith "_owl_leaky_relu: unsupported operation"
 
 external owl_real_float_softplus : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_softplus"
 external owl_real_double_softplus : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_softplus"

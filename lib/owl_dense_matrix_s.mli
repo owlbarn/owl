@@ -428,6 +428,10 @@ val logistic : mat -> mat
 
 val relu : mat -> mat
 
+val elu : ?alpha:elt -> mat -> mat
+
+val leaky_relu : ?alpha:elt -> mat -> mat
+
 val softplus : mat -> mat
 
 val softsign : mat -> mat

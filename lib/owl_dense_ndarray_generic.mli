@@ -635,6 +635,18 @@ val relu : (float, 'a) t -> (float, 'a) t
   elements in [x] and returns the result in a new ndarray.
  *)
 
+val elu : ?alpha:float -> (float, 'a) t -> (float, 'a) t
+(** [elu alpha x] computes the exponential linear unit function
+  [x >= 0. ? x : (alpha * (exp(x) - 1))]  of the elements in [x] and returns
+  the result in a new ndarray.
+ *)
+
+val leaky_relu : ?alpha:float -> (float, 'a) t -> (float, 'a) t
+(** [leaky_relu alpha x] computes the leaky rectified linear unit function
+  [x >= 0. ? x : (alpha * x)] of the elements in [x] and returns the result
+  in a new ndarray.
+ *)
+
 val softplus : (float, 'a) t -> (float, 'a) t
 (** [softplus x] computes the softplus function [log(1 + exp(x)] of the elements
   in [x] and returns the result in a new ndarray.

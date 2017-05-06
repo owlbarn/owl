@@ -510,6 +510,20 @@ let relu x =
   let _ = _owl_relu (kind x) (numel y) src dst in
   y
 
+let elu ?(alpha=1.0) x =
+  let y = empty (kind x) (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  _owl_elu (kind x) (numel x) x' y' alpha;
+  y
+
+let leaky_relu ?(alpha=0.2) x =
+  let y = empty (kind x) (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  _owl_leaky_relu (kind x) (numel x) x' y' alpha;
+  y
+
 let softplus x =
   let y = clone x in
   let src = flatten x |> array1_of_genarray in

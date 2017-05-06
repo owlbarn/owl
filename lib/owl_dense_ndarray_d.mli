@@ -283,6 +283,10 @@ val logistic : arr -> arr
 
 val relu : arr -> arr
 
+val elu : ?alpha:elt -> arr -> arr
+
+val leaky_relu : ?alpha:elt -> arr -> arr
+
 val softplus : arr -> arr
 
 val softsign : arr -> arr
