@@ -282,8 +282,8 @@ let doc_to_vec m x =
 (* calculate pairwise distance for the whole model, format (id,dist) *)
 let all_pairwise_distance typ m x =
   let dist_fun = Owl_nlp_similarity.distance typ in
-  let l = mapi (fun i y -> dist_fun x y, i) m in
-  Array.sort (fun a b -> Pervasives.compare (fst a) (fst b)) l;
+  let l = mapi (fun i y -> i, dist_fun x y) m in
+  Array.sort (fun a b -> Pervasives.compare (snd a) (snd b)) l;
   l
 
 (* k-nearest neighbour, very slow due to linear search *)
