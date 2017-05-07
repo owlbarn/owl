@@ -187,6 +187,9 @@ let aarr_fold f a x =
   Array.iter (Array.iter (fun b -> a := f !a b)) x;
   !a
 
+(* make a matrix of array array type, fill with value a *)
+let aarr_matrix m n a = Array.init m (fun _ -> Array.make n a)
+
 let array1_iter f x =
   let open Bigarray in
   for i = 0 to Array1.dim x - 1 do
