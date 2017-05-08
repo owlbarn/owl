@@ -153,7 +153,9 @@ let build ?stopwords ?lo ?hi ?vocab ?(minlen=10) fname =
         Log.info "build up vocabulary ...";
         Owl_nlp_vocabulary.build ?lo ?hi ?stopwords fname
       )
-  in Owl_nlp_vocabulary.save vocab (fname ^ ".voc");
+  in
+  Owl_nlp_vocabulary.save vocab (fname ^ ".voc");
+  Owl_nlp_vocabulary.save_txt vocab (fname ^ ".voc.txt");
 
   (* prepare the output file *)
   let bin_f = fname ^ ".bin" |> open_out in
