@@ -797,7 +797,33 @@ let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
   if (max ranked) = (n1 +. n2) && (max [|n1;n2|]) < 10. then exact 1
   else asymptotic 1
 
-(*f*)
+(* wilcoxon *)
+let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
+  let d = Array.map2 (fun a b -> a -. b) x y in
+  let d = Owl_utils.array_filter (fun a -> a <> 0.) d in
+  let n = float_of_int (Array.length d) in
+  let rankval = rank (Array.map abs_float d) in
+  let rp = Array.map2 (fun a b -> (if a > 0.0 then 1. else 0.) *. b) d rankval in
+  let rm = Array.map2 (fun a b -> (if a < 0.0 then 1. else 0.) *. b) d rankval in
+  let rp = Array.fold_left (+.) 0. rp in
+  let rm = Array.fold_left (+.) 0. rm in
+  let t = Pervasives.max rp rm in
+  let mn = n *. (n +. 1.) *. 0.25 in
+  let se = n *. (n +. 1.) *. (2. *. n +. 1.) in
+  let t_correction rankvals =
+    let ranks_sort = sort rankvals in
+    let counts = Owl_utils.count_dup (Array.to_list ranks_sort) in
+    let size = (float_of_int (Array.length rankvals)) in
+    Array.fold_left (+) 0 (Array.of_list (List.map (fun (x, y) -> y * y * y - y) counts))
+  in
+  let corr = float_of_int (t_correction rankval) in
+  let se = -0.5 *. corr in
+  let se = sqrt(se /. 24.) in
+  let z = (t -. mn) /. se in
+  let p = 2.0 *. Cdf.gaussian_Q (abs_float z) 1.0 in
+  let h = alpha > p in
+  (h, p, t)
+
 
 
 
