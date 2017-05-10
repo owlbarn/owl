@@ -89,6 +89,34 @@ let conv2d ?(format=NHWC) ?(padding=true) input filter stride =
 
   let output = empty (kind input) [|batch; out_h; out_w; out_c|] in
   let filter' = reshape_filter filter in
+
+  (* iterate all the point to convolve *)
+  for b = 0 to batch - 1 do
+    for i = 0 to out_h - 1 do
+      let h0 = i * stride.(0) in
+      let h1 = h0 + ft_h in
+      for j = 0 to out_w - 1 do
+        let w0 = j * stride.(1) in
+        let w1 = j + ft_w in
+        let s = slice [[b];[h0;h1];[w0;w1];[]] input in
+        ()
+      done;
+    done;
+  done;
+  (* let i = ref 0 in
+  let j = ref 0 in
+  for b = 0 to batch - 1 do
+    while !i + ft_h <= in_h do
+      while !j + ft_w <= in_w do
+
+      j := !j + stride.(2);
+      done;
+
+      i := !i + stride.(1);
+    done;
+  done;
+  *)
+
   ()
 
 (* ends here *)
