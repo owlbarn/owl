@@ -8,8 +8,7 @@ open Owl_dense_ndarray_generic
 type data_format = NHWC | NCHW
 
 
-(* FIXME: obsolete fun *)
-let reshape_filter filter =
+let reshape_filter_2D filter =
   let shp = shape filter in
   let m = shp.(0) * shp.(1) * shp.(2) in
   let n = shp.(3) in
@@ -22,7 +21,6 @@ let pad2d input filter stride =
   let in_shp = shape input in
   let in_h = in_shp.(1) in
   let in_w = in_shp.(2) in
-  let in_c = in_shp.(3) in
 
   let ft_shp = shape filter in
   let ft_h = ft_shp.(0) in
@@ -47,11 +45,10 @@ let pad2d input filter stride =
   let pad_right = pad_w - pad_left in
 
   (* padding then return a new array *)
-  Log.info "+++ %i %i %i %i" pad_top pad_bottom pad_left pad_right;
   pad [[]; [pad_top; pad_bottom]; [pad_left; pad_right]; []] input
 
 
-let conv2d ?(format=NHWC) ?(padding=true) input filter stride =
+let conv2d ?(format=NHWC) ?(padding=false) input filter stride =
   (* TODO: convert to default NHWC if needed *)
   let input = match format with
     | NHWC -> input
@@ -124,6 +121,13 @@ let conv2d ?(format=NHWC) ?(padding=true) input filter stride =
 
   (* return the output tensor *)
   output
+
+
+(* calculate the gradient of conv2d function *)
+let conv2d_backprop input filter stride = None
+
+(* similar to im2col, but convert a tensor to a row-based matrix *)
+let im2row x = None
 
 
 

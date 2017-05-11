@@ -580,6 +580,52 @@ module GRU = struct
 end
 
 
+(* definition of Conv2D layer *)
+module Conv2D = struct
+
+  type layer = {
+    mutable w        : t;
+    mutable b        : t;
+    mutable w_shp    : int array;
+    mutable init_typ : Init.typ;
+  }
+
+  let create h w i o =
+  {
+    w        = Mat.empty (h * w * i) o;
+    b        = Mat.empty 1 o;
+    w_shp    = [|h; w; i; o|];
+    init_typ = Init.Standard;
+  }
+
+  let init l =
+    l.w <- Init.run l.init_typ (Mat.row_num l.w) (Mat.col_num l.w);
+    l.b <- Mat.zeros (Mat.row_num l.b) (Mat.col_num l.b)
+
+  let reset l =
+    Mat.reset l.w;
+    Mat.reset l.b
+
+  let mktag t l =
+    l.w <- make_reverse l.w t;
+    l.b <- make_reverse l.b t
+
+  let mkpar l = [|l.w; l.b|]
+
+  let mkpri l = [|primal l.w; primal l.b|]
+
+  let mkadj l = [|adjval l.w; adjval l.b|]
+
+  let update l u =
+    l.w <- u.(0) |> primal';
+    l.b <- u.(1) |> primal'
+
+  (* FIXME: this is just place holder atm. *)
+  let run x l = Maths.((x *@ l.w) + l.b)
+
+end
+
+
 (* type and functions of neural network *)
 
 type layer =
