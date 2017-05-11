@@ -807,7 +807,7 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
   let rm = Array.map2 (fun a b -> (if a < 0.0 then 1. else 0.) *. b) d rankval in
   let rp = Array.fold_left (+.) 0. rp in
   let rm = Array.fold_left (+.) 0. rm in
-  let t = Pervasives.max rp rm in
+  let t = Pervasives.min rp rm in
   let mn = n *. (n +. 1.) *. 0.25 in
   let se = n *. (n +. 1.) *. (2. *. n +. 1.) in
   let t_correction rankvals =
@@ -817,12 +817,15 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
     Array.fold_left (+) 0 (Array.of_list (List.map (fun (x, y) -> y * y * y - y) counts))
   in
   let corr = float_of_int (t_correction rankval) in
-  let se = -0.5 *. corr in
+  let se = se -. 0.5 *. corr in
   let se = sqrt(se /. 24.) in
   let z = (t -. mn) /. se in
-  let p = 2.0 *. Cdf.gaussian_Q (abs_float z) 1.0 in
+  let p = 2.0 *. Cdf.gaussian_Q (abs_float z) 1. in
   let h = alpha > p in
-  (h, p, t)
+  match side with
+  | BothSide -> (h, p, t)
+  | RightSide -> (h, (1. -. p /. 2.), t)
+  | LeftSide -> (h, p /. 2., t)
 
 
 

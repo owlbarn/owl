@@ -201,6 +201,9 @@ val mannwhitneyu : ?alpha:float -> ?side:tail -> float array -> float array -> b
     Statistica Sinica 7 805-813), else usning asymptotic normal distribution.
 *)
 
+val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> bool * float * float
+
+
 (** {6 Random numbers, PDF, and CDF} *)
 
 module Rnd : sig
