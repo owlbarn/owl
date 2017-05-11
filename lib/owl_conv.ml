@@ -8,6 +8,7 @@ open Owl_dense_ndarray_generic
 type data_format = NHWC | NCHW
 
 
+(* FIXME: obsolete fun *)
 let reshape_filter filter =
   let shp = shape filter in
   let m = shp.(0) * shp.(1) * shp.(2) in
@@ -19,7 +20,6 @@ let reshape_filter filter =
 let pad2d input filter stride =
   (* assume input has NHWC format *)
   let in_shp = shape input in
-  let batch = in_shp.(0) in
   let in_h = in_shp.(1) in
   let in_w = in_shp.(2) in
   let in_c = in_shp.(3) in
@@ -47,10 +47,8 @@ let pad2d input filter stride =
   let pad_right = pad_w - pad_left in
 
   (* padding then return a new array *)
+  Log.info "+++ %i %i %i %i" pad_top pad_bottom pad_left pad_right;
   pad [[]; [pad_top; pad_bottom]; [pad_left; pad_right]; []] input
-
-
-let virtual_patch input = None
 
 
 let conv2d ?(format=NHWC) ?(padding=true) input filter stride =
@@ -78,45 +76,55 @@ let conv2d ?(format=NHWC) ?(padding=true) input filter stride =
 
   (* calculate output shape *)
   let out_h = match padding with
-    | true  -> (float_of_int in_h /. float_of_int stride.(1)) |> Owl_maths.ceil |> int_of_float
+    | true  -> (float_of_int (in_h - ft_h) /. float_of_int stride.(1)) |> Owl_maths.ceil |> int_of_float
     | false -> (float_of_int (in_h - ft_h + 1) /. float_of_int stride.(1)) |> Owl_maths.ceil |> int_of_float
   in
   let out_w = match padding with
-    | true  -> (float_of_int in_w /. float_of_int stride.(2)) |> Owl_maths.ceil |> int_of_float
+    | true  -> (float_of_int (in_w - ft_w) /. float_of_int stride.(2)) |> Owl_maths.ceil |> int_of_float
     | false -> (float_of_int (in_w - ft_w + 1) /. float_of_int stride.(2)) |> Owl_maths.ceil |> int_of_float
   in
   let out_c = ft_shp.(3) in
-
   let output = empty (kind input) [|batch; out_h; out_w; out_c|] in
-  let filter' = reshape_filter filter in
+
+  (* prepare some temp variables *)
+  let filter' = reshape filter [|ft_h * ft_w * in_c; out_c|]
+    |> Owl_dense_matrix_generic.of_ndarray
+  in
+  let output' = reshape output [|batch * out_h * out_w; out_c|]
+    |> Owl_dense_matrix_generic.of_ndarray
+  in
+  let row_i = ref 0 in
 
   (* iterate all the point to convolve *)
   for b = 0 to batch - 1 do
+
     for i = 0 to out_h - 1 do
       let h0 = i * stride.(0) in
-      let h1 = h0 + ft_h in
+      let h1 = h0 + ft_h - 1 in
+
       for j = 0 to out_w - 1 do
         let w0 = j * stride.(1) in
-        let w1 = j + ft_w in
+        let w1 = w0 + ft_w - 1 in
+
         let s = slice [[b];[h0;h1];[w0;w1];[]] input in
-        ()
+        let u = reshape s [|1;numel s|]
+          |> Owl_dense_matrix_generic.of_ndarray
+        in
+        (*
+        Printf.printf "+++ %i %i\n" (Owl_dense_matrix_generic.row_num u) (Owl_dense_matrix_generic.col_num u);
+        Printf.printf "--- %i %i\n" (Owl_dense_matrix_generic.row_num filter') (Owl_dense_matrix_generic.col_num filter');
+        *)
+        let v = Owl_dense_matrix_generic.dot u filter' in
+        Owl_dense_matrix_generic.copy_row_to v output' !row_i;
+        row_i := !row_i + 1;
       done;
+      (* Log.info "==> b:%i h:%i row:%i" b i !row_i; *)
     done;
   done;
-  (* let i = ref 0 in
-  let j = ref 0 in
-  for b = 0 to batch - 1 do
-    while !i + ft_h <= in_h do
-      while !j + ft_w <= in_w do
 
-      j := !j + stride.(2);
-      done;
+  (* return the output tensor *)
+  output
 
-      i := !i + stride.(1);
-    done;
-  done;
-  *)
 
-  ()
 
 (* ends here *)
