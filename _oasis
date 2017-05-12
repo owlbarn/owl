@@ -122,8 +122,9 @@ Library owl
   BuildDepends:     str, ctypes, ctypes.stubs, plplot, dolog,
                     eigen, gsl
   if system(linux) || system(linux_elf)
-    CCOpt+:          -g -O3 -Ofast
+    CCOpt+:         -g -O3 -Ofast
   if system(macosx)
+    CCOpt+:         -O3
     CCLib:          -framework Accelerate
 
 Library owl_neural
