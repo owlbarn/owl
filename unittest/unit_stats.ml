@@ -100,7 +100,7 @@ let wilcoxon_test_left_side_asymp () =
   Alcotest.(check bool)
     "wilcoxon_test_left_side_asymp"
     true
-    (abs_float((To_test.wilcoxon_left_side [|10.;9.;8.;7.;6.|] [|10.; 3.; 1.; 3.; 2.|]) -. 0.0328) < 0.001)
+     (abs_float((To_test.wilcoxon_left_side [|10.;9.;8.;7.;6.|] [|10.; 3.; 1.; 3.; 2.|]) -. 0.0328) < 0.001)
 
 
 

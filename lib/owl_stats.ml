@@ -818,8 +818,7 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
       Array.fold_left (+) 0 (Array.of_list (List.map (fun (x, y) -> y * y * y - y) counts))
     in
     let corr = float_of_int (t_correction rankval) in
-    let se = se -. 0.5 *. corr in
-    let se = sqrt(se /. 24.) in
+    let se = sqrt((se -. 0.5 *. corr)/. 24.) in
     let z = (t -. mn) /. se in
     let p = 2.0 *. Cdf.gaussian_Q (abs_float z) 1. in
     match side with
@@ -829,11 +828,8 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
   in
   let exact v =
     let rec f w n =
-      if w = n *. (n +. 1.) /. 2. then 1.
-      else if w = 0. && n >= 0. then 1.
-      else if w < 0. && n > 0. then 0.
-      else if w > 0. && n = 0. then 0.
-      else if n < 0. then 0.
+      if (w = n *. (n +. 1.) /. 2.)  || (w = 0. && n >= 0.) then 1.
+      else if (w < 0. && n > 0.) || (w > 0. && n = 0.)  || (n < 0.) then 0.
       else f w (n -. 1.) +. f (w -. n) (n -. 1.)
     in
     let n1 = float_of_int (Array.length x) in
