@@ -797,7 +797,7 @@ let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
   if (max ranked) = (n1 +. n2) && (max [|n1;n2|]) < 10. then exact 1
   else asymptotic 1
 
-(* wilcoxon *)
+(* wilcoxon paired*)
 let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
   let d = Array.map2 (fun a b -> a -. b) x y in
   let d = Owl_utils.array_filter (fun a -> a <> 0.) d in
@@ -808,25 +808,58 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
   let rp = Array.fold_left (+.) 0. rp in
   let rm = Array.fold_left (+.) 0. rm in
   let t = Pervasives.min rp rm in
-  let mn = n *. (n +. 1.) *. 0.25 in
-  let se = n *. (n +. 1.) *. (2. *. n +. 1.) in
-  let t_correction rankvals =
-    let ranks_sort = sort rankvals in
-    let counts = Owl_utils.count_dup (Array.to_list ranks_sort) in
-    let size = (float_of_int (Array.length rankvals)) in
-    Array.fold_left (+) 0 (Array.of_list (List.map (fun (x, y) -> y * y * y - y) counts))
+  let asymptotic v =
+    let mn = n *. (n +. 1.) *. 0.25 in
+    let se = n *. (n +. 1.) *. (2. *. n +. 1.) in
+    let t_correction rankvals =
+      let ranks_sort = sort rankvals in
+      let counts = Owl_utils.count_dup (Array.to_list ranks_sort) in
+      let size = (float_of_int (Array.length rankvals)) in
+      Array.fold_left (+) 0 (Array.of_list (List.map (fun (x, y) -> y * y * y - y) counts))
+    in
+    let corr = float_of_int (t_correction rankval) in
+    let se = se -. 0.5 *. corr in
+    let se = sqrt(se /. 24.) in
+    let z = (t -. mn) /. se in
+    let p = 2.0 *. Cdf.gaussian_Q (abs_float z) 1. in
+    match side with
+    | BothSide -> p
+    | RightSide -> (1. -. p /. 2.)
+    | LeftSide -> p /. 2.
   in
-  let corr = float_of_int (t_correction rankval) in
-  let se = se -. 0.5 *. corr in
-  let se = sqrt(se /. 24.) in
-  let z = (t -. mn) /. se in
-  let p = 2.0 *. Cdf.gaussian_Q (abs_float z) 1. in
+  let exact v =
+    let rec f w n =
+      if w = n *. (n +. 1.) /. 2. then 1.
+      else if w = 0. && n >= 0. then 1.
+      else if w < 0. && n > 0. then 0.
+      else if w > 0. && n = 0. then 0.
+      else if n < 0. then 0.
+      else f w (n -. 1.) +. f (w -. n) (n -. 1.)
+    in
+    let n1 = float_of_int (Array.length x) in
+    let v =
+      match side with
+      | RightSide -> v -. 1.
+      | _ -> v
+    in
+    let p =
+      if v < 0. then 0.
+      else Array.fold_left (+.) 0. (Owl_utils.array_map (fun i -> f (float_of_int i) n1) (Owl_utils.range 0 (int_of_float v)))
+    in
+    match side with
+    | BothSide -> 2. *. p /. (2. ** n1)
+    | RightSide -> 1. -. (p /. (2. ** n1))
+    | LeftSide -> p /. (2. ** n1)
+  in
+  let p =
+    if (Array.length d) = (Array.length x) && n < 10. then exact t
+    else asymptotic 1
+  in
   let h = alpha > p in
   match side with
   | BothSide -> (h, p, t)
-  | RightSide -> (h, (1. -. p /. 2.), t)
-  | LeftSide -> (h, p /. 2., t)
-
+  | RightSide -> (h, p, t)
+  | LeftSide -> (h, p, t)
 
 
 
