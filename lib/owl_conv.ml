@@ -123,13 +123,11 @@ let owl_conv2d ?(format=NHWC) ?(padding=false) input kernel stride =
   (* return the output tensor *)
   output
 
-
-
 (* similar to im2col, but convert a tensor to a row-based matrix *)
 let im2row x = None
 
 
-
+(* calculate the output shape given input and kernel and stride *)
 let calc_output_2dshape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride =
   let output_cols = match padding with
     | SAME  -> (float_of_int input_cols /. float_of_int col_stride) |> Owl_maths.ceil |> int_of_float
@@ -142,6 +140,11 @@ let calc_output_2dshape padding input_cols input_rows kernel_cols kernel_rows ro
   (output_cols, output_rows)
 
 
+(* conv2d: 4d input and 4d kernel, refer to tensorlfow doc
+  input : [batch; column; row; in_channel]
+  kernel: [columns; rows; in_channel; out_channel]
+  output: [batch; column; row; out_channel]
+ *)
 let conv2d ?(padding=VALID) input kernel stride =
   let input_shp = shape input in
   let batches = input_shp.(0) in
@@ -177,8 +180,75 @@ let conv2d ?(padding=VALID) input kernel stride =
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride pad_typ row_in_stride col_in_stride;
 
-  (* return the output *)
   output
+
+
+(* gradient of conv2d w.r.t the input *)
+let conv2d_backward_input input kernel stride output' =
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+
+  let row_stride = stride.(0) in
+  let col_stride = stride.(1) in
+  let row_in_stride = 1 in
+  let col_in_stride = 1 in
+
+  let input' = clone input in
+
+  Eigen.Tensor.S.spatial_conv_backward_input
+    input' kernel output' batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride row_in_stride col_in_stride;
+
+  input'
+
+
+(* gradient of conv2d w.r.t the kernel *)
+let conv2d_backward_kernel input kernel stride output' =
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let out_channel = kernel_shp.(3) in
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+
+  let row_stride = stride.(0) in
+  let col_stride = stride.(1) in
+  let row_in_stride = 1 in
+  let col_in_stride = 1 in
+
+  let kernel' = clone kernel in
+
+  Eigen.Tensor.S.spatial_conv_backward_kernel
+    input kernel' output' batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows out_channel
+    row_stride col_stride row_in_stride col_in_stride;
+
+  kernel'
+
+
+(* conv3d: 5d input and 4d kernel, refer to tensorflow doc *)
+let conv3d = None
 
 
 (* ends here *)
