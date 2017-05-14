@@ -21,7 +21,7 @@ let create dimension a = M.create Complex64 dimension a
 
 let zeros dimension = M.zeros Complex64 dimension
 
-let ones dimension = M.zeros Complex64 dimension
+let ones dimension = M.ones Complex64 dimension
 
 let uniform ?scale dimension = M.uniform ?scale Complex64 dimension
 

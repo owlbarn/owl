@@ -20,7 +20,7 @@ let create dimension a = M.create Float32 dimension a
 
 let zeros dimension = M.zeros Float32 dimension
 
-let ones dimension = M.zeros Float32 dimension
+let ones dimension = M.ones Float32 dimension
 
 let uniform ?scale dimension = M.uniform ?scale Float32 dimension
 

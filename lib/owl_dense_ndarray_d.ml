@@ -20,7 +20,7 @@ let create dimension a = M.create Float64 dimension a
 
 let zeros dimension = M.zeros Float64 dimension
 
-let ones dimension = M.zeros Float64 dimension
+let ones dimension = M.ones Float64 dimension
 
 let uniform ?scale dimension = M.uniform ?scale Float64 dimension
 
