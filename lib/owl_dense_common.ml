@@ -156,10 +156,15 @@ let _power_scalar_elt : type a b. (a, b) kind -> (a -> a -> a) = function
 (* interface to eigen functions, types for interfacing to eigen *)
 
 type ('a, 'b) eigen_mat = ('a, 'b, c_layout) Array2.t
+type ('a, 'b) eigen_arr = ('a, 'b, c_layout) Genarray.t
 
 type ('a, 'b) eigen_mat_op00 = ('a, 'b) eigen_mat -> ('a, 'b) eigen_mat
 type ('a, 'b) eigen_mat_op01 = ('a, 'b) eigen_mat -> int -> int -> unit
 type ('a, 'b) eigen_mat_op02 = ('a, 'b) eigen_mat -> ('a, 'b) eigen_mat -> ('a, 'b) eigen_mat
+type ('a, 'b) eigen_arr_op00 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
+type ('a, 'b) eigen_arr_op01 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
+type ('a, 'b) eigen_arr_op02 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
+type ('a, 'b) eigen_arr_op03 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
 
 (* call functions in eigen *)
 
@@ -197,6 +202,36 @@ let _eigen_inv : type a b . (a, b) kind -> (a, b) eigen_mat_op00 = function
   | Complex32 -> Eigen.Dense.C.inv
   | Complex64 -> Eigen.Dense.Z.inv
   | _         -> failwith "_eigen_inv: unsupported operation"
+
+let _eigen_spatial_conv : type a b . (a, b) kind -> (a, b) eigen_arr_op00 = function
+  | Float32   -> Eigen.Tensor.S.spatial_conv
+  | Float64   -> Eigen.Tensor.D.spatial_conv
+  | _         -> failwith "_eigen_spatial_conv: unsupported operation"
+
+let _eigen_spatial_conv_backward_input : type a b . (a, b) kind -> (a, b) eigen_arr_op01 = function
+  | Float32   -> Eigen.Tensor.S.spatial_conv_backward_input
+  | Float64   -> Eigen.Tensor.D.spatial_conv_backward_input
+  | _         -> failwith "_eigen_spatial_conv_backward_input: unsupported operation"
+
+let _eigen_spatial_conv_backward_kernel : type a b . (a, b) kind -> (a, b) eigen_arr_op01 = function
+  | Float32   -> Eigen.Tensor.S.spatial_conv_backward_kernel
+  | Float64   -> Eigen.Tensor.D.spatial_conv_backward_kernel
+  | _         -> failwith "_eigen_spatial_conv_backward_kernel: unsupported operation"
+
+let _eigen_cuboid_conv : type a b . (a, b) kind -> (a, b) eigen_arr_op02 = function
+  | Float32   -> Eigen.Tensor.S.cuboid_conv
+  | Float64   -> Eigen.Tensor.D.cuboid_conv
+  | _         -> failwith "_eigen_cuboid_conv: unsupported operation"
+
+let _eigen_cuboid_conv_backward_input : type a b . (a, b) kind -> (a, b) eigen_arr_op03 = function
+  | Float32   -> Eigen.Tensor.S.cuboid_conv_backward_input
+  | Float64   -> Eigen.Tensor.D.cuboid_conv_backward_input
+  | _         -> failwith "cuboid_conv_backward_input: unsupported operation"
+
+let _eigen_cuboid_conv_backward_kernel : type a b . (a, b) kind -> (a, b) eigen_arr_op03 = function
+  | Float32   -> Eigen.Tensor.S.cuboid_conv_backward_kernel
+  | Float64   -> Eigen.Tensor.D.cuboid_conv_backward_kernel
+  | _         -> failwith "_eigen_cuboid_conv_backward_kernel: unsupported operation"
 
 
 (* interface to owl's c functions, types for interfacing to owl *)

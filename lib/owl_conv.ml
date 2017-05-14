@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Owl_dense_common
 open Owl_dense_ndarray_generic
 
 type data_format = NHWC | NCHW
@@ -185,7 +186,7 @@ let conv2d ?(padding=SAME) input kernel stride =
   Printf.printf "output:\t [ b:%i, c:%i, r:%i, o:%i ]\n" batches output_cols output_rows out_channel;
   flush_all ();
 
-  Eigen.Tensor.S.spatial_conv
+  _eigen_spatial_conv (kind input)
     input kernel output batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride pad_typ row_in_stride col_in_stride;
@@ -218,9 +219,9 @@ let conv2d_backward_input input kernel stride output' =
   let col_in_stride = 1 in
   let row_in_stride = 1 in
 
-  let input' = clone input in
+  let input' = empty (kind input) (shape input) in
 
-  Eigen.Tensor.S.spatial_conv_backward_input
+  _eigen_spatial_conv_backward_input (kind input')
     input' kernel output' batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride row_in_stride col_in_stride;
@@ -253,9 +254,9 @@ let conv2d_backward_kernel input kernel stride output' =
   let col_in_stride = 1 in
   let row_in_stride = 1 in
 
-  let kernel' = clone kernel in
+  let kernel' = empty (kind kernel) (shape kernel) in
 
-  Eigen.Tensor.S.spatial_conv_backward_kernel
+  _eigen_spatial_conv_backward_kernel (kind input)
     input kernel' output' batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride row_in_stride col_in_stride;
@@ -331,7 +332,7 @@ let conv3d ?(padding=SAME) input kernel stride =
   Printf.printf "output:\t [ b:%i, c:%i, r:%i, d:%i, o:%i ]\n" batches output_cols output_rows output_dpts out_channel;
   flush_all ();
 
-  Eigen.Tensor.S.cuboid_conv
+  _eigen_cuboid_conv (kind input)
     input kernel output batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -370,7 +371,7 @@ let conv3d_backward_input input kernel stride output' =
 
   let input' = empty (kind input) (shape input) in
 
-  Eigen.Tensor.S.cuboid_conv_backward_input
+  _eigen_cuboid_conv_backward_input (kind input')
     input' kernel output' batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -409,7 +410,7 @@ let conv3d_backward_kernel input kernel stride output' =
 
   let kernel' = empty (kind kernel) (shape kernel) in
 
-  Eigen.Tensor.S.cuboid_conv_backward_kernel
+  _eigen_cuboid_conv_backward_kernel (kind input)
     input kernel' output' batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
