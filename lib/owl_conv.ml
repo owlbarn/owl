@@ -164,9 +164,8 @@ let conv2d ?(padding=SAME) input kernel stride =
   let kernel_shp = shape kernel in
   let kernel_cols = kernel_shp.(0) in
   let kernel_rows = kernel_shp.(1) in
-  let in_channelk = kernel_shp.(2) in
   let out_channel = kernel_shp.(3) in
-  assert (in_channel = in_channelk);
+  assert (in_channel = kernel_shp.(2));
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -180,7 +179,7 @@ let conv2d ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  (* DEBUG *)
+  (* FIXME: DEBUG *)
   Printf.printf "input:\t [ b:%i, c:%i, r:%i, i:%i ]\n" batches input_cols input_rows in_channel;
   Printf.printf "kernel:\t [ c:%i, r:%i, i:%i, o:%i ]\n" kernel_cols kernel_rows in_channel out_channel;
   Printf.printf "output:\t [ b:%i, c:%i, r:%i, o:%i ]\n" batches output_cols output_rows out_channel;
@@ -205,13 +204,14 @@ let conv2d_backward_input input kernel stride output' =
   let kernel_shp = shape kernel in
   let kernel_cols = kernel_shp.(0) in
   let kernel_rows = kernel_shp.(1) in
-  let in_channelk = kernel_shp.(2) in
   let out_channel = kernel_shp.(3) in
-  assert (in_channel = in_channelk);
+  assert (in_channel = kernel_shp.(2));
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -239,13 +239,14 @@ let conv2d_backward_kernel input kernel stride output' =
   let kernel_shp = shape kernel in
   let kernel_cols = kernel_shp.(0) in
   let kernel_rows = kernel_shp.(1) in
-  let in_channelk = kernel_shp.(2) in
   let out_channel = kernel_shp.(3) in
-  assert (in_channel = in_channelk);
+  assert (in_channel = kernel_shp.(2));
 
   let output_shp = shape output' in
   let output_cols = output_shp.(1) in
   let output_rows = output_shp.(2) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(3));
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -310,9 +311,8 @@ let conv3d ?(padding=SAME) input kernel stride =
   let kernel_cols = kernel_shp.(0) in
   let kernel_rows = kernel_shp.(1) in
   let kernel_dpts = kernel_shp.(2) in
-  let in_channelk = kernel_shp.(3) in
   let out_channel = kernel_shp.(4) in
-  assert (in_channel = in_channelk);
+  assert (in_channel = kernel_shp.(3));
 
   let col_stride = stride.(0) in
   let row_stride = stride.(1) in
@@ -325,7 +325,7 @@ let conv3d ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  (* DEBUG *)
+  (* FIXME: DEBUG *)
   Printf.printf "input:\t [ b:%i, c:%i, r:%i, d:%i, i:%i ]\n" batches input_cols input_rows input_dpts in_channel;
   Printf.printf "kernel:\t [ c:%i, r:%i, d:%i, i:%i, o:%i ]\n" kernel_cols kernel_rows kernel_dpts in_channel out_channel;
   Printf.printf "output:\t [ b:%i, c:%i, r:%i, d:%i, o:%i ]\n" batches output_cols output_rows output_dpts out_channel;
@@ -339,6 +339,85 @@ let conv3d ?(padding=SAME) input kernel stride =
     dpt_stride row_stride col_stride pad_typ;
 
   output
+
+
+(* gradient of conv3d w.r.t the input *)
+let conv3d_backward_input input kernel stride output' =
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let kernel_dpts = kernel_shp.(2) in
+  let out_channel = kernel_shp.(4) in
+  assert (in_channel = kernel_shp.(3));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  let output_dpts =  output_shp.(3) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(4));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let input' = empty (kind input) (shape input) in
+
+  Eigen.Tensor.S.cuboid_conv_backward_input
+    input' kernel output' batches
+    input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts out_channel
+    dpt_stride row_stride col_stride;
+
+  input'
+
+
+(* gradient of conv3d w.r.t the kernel *)
+let conv3d_backward_kernel input kernel stride output' =
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let kernel_rows = kernel_shp.(1) in
+  let kernel_dpts = kernel_shp.(2) in
+  let out_channel = kernel_shp.(4) in
+  assert (in_channel = kernel_shp.(3));
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  let output_dpts =  output_shp.(3) in
+  assert (batches = output_shp.(0));
+  assert (out_channel = output_shp.(4));
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let kernel' = empty (kind kernel) (shape kernel) in
+
+  Eigen.Tensor.S.cuboid_conv_backward_kernel
+    input kernel' output' batches
+    input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts out_channel
+    dpt_stride row_stride col_stride;
+
+  kernel'
+
 
 
 (* ends here *)
