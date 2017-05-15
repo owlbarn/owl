@@ -749,6 +749,35 @@ let uniform : type a b. ?scale:float -> (a, b) kind -> int array -> (a, b) t =
   | _ -> failwith "Owl_dense_ndarray_generic.uniform: unknown type"
   in x
 
+let gaussian : type a b. ?sigma:float -> (a, b) kind -> int array -> (a, b) t =
+  fun ?(sigma=1.) kind dimension ->
+  let x = empty kind dimension in
+  let n = numel x in
+  let y = Bigarray.reshape_1 x n in
+  let _ = match kind with
+  | Float32 -> (
+    for i = 0 to n - 1 do
+      y.{i} <- Owl_stats.Rnd.gaussian ~sigma ()
+    done
+    )
+  | Float64 -> (
+    for i = 0 to n - 1 do
+      y.{i} <- Owl_stats.Rnd.gaussian ~sigma ()
+    done
+    )
+  | Complex32 -> (
+    for i = 0 to n - 1 do
+      y.{i} <- Complex.({ re = Owl_stats.Rnd.gaussian ~sigma (); im = Owl_stats.Rnd.gaussian ~sigma () })
+    done
+    )
+  | Complex64 -> (
+    for i = 0 to n - 1 do
+      y.{i} <- Complex.({ re = Owl_stats.Rnd.gaussian ~sigma (); im = Owl_stats.Rnd.gaussian ~sigma () })
+    done
+    )
+  | _ -> failwith "Owl_dense_ndarray_generic.gaussian: unknown type"
+  in x
+
 let linspace k a b n =
   let x = Array1.create k c_layout n in
   _owl_linspace k n a b x;

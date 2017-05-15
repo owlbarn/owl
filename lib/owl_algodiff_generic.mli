@@ -184,7 +184,13 @@ module type NdarraySig = sig
 
   (* creation and operation functions *)
 
+  val empty : int array -> arr
+
   val zeros : int array -> arr
+
+  val uniform : ?scale:elt -> int array -> arr
+
+  val gaussian : ?sigma:elt -> int array -> arr
 
   val shape : arr -> int array
 
@@ -294,7 +300,7 @@ module type NdarraySig = sig
 
   (** {6 Neural network related functions} *)
 
-  type padding = SAME | VALID
+  type padding
 
   val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
 
@@ -320,6 +326,7 @@ module Make (M : MatrixSig) (A : NdarraySig) : sig
   type arr = A.arr
   type mat = M.mat
   type elt = M.elt
+  type padding = A.padding
 
   type trace_op
 
@@ -437,11 +444,14 @@ module Make (M : MatrixSig) (A : NdarraySig) : sig
 
     val ( ** )  : t -> t -> t
 
+    val conv2d : ?padding:padding -> t -> t -> int array -> t
+
   end
 
 
-  (** {Simple wrapper of matrix module, so you don't have to pack and unpack
-    matrices all the time. Some operations also overlad with Maths module.} *)
+  (** {Simple wrappers of matrix and ndarray module, so you don't have to pack
+    and unpack stuff all the time. Some operations just interface to those
+    already defined in the Maths module.} *)
 
   module Mat : sig
 
@@ -484,6 +494,23 @@ module Make (M : MatrixSig) (A : NdarraySig) : sig
     val map_by_row : (t -> t) -> t -> t
 
     val draw_rows2 : ?replacement:bool -> t -> t -> int -> t * t * int array
+
+  end
+
+
+  module Arr : sig
+
+    val empty : int array -> t
+
+    val zeros : int array -> t
+
+    val uniform : ?scale:float -> int array -> t
+
+    val gaussian : ?sigma:float -> int array -> t
+
+    val shape : t -> int array
+
+    val reset : t -> unit
 
   end
 
@@ -588,6 +615,6 @@ module Make (M : MatrixSig) (A : NdarraySig) : sig
   val reverse_prop : t -> t -> unit
 
   val type_info : t -> string
-  
+
 
 end

@@ -24,6 +24,8 @@ let ones dimension = M.ones Float32 dimension
 
 let uniform ?scale dimension = M.uniform ?scale Float32 dimension
 
+let gaussian ?sigma dimension = M.gaussian ?sigma Float32 dimension
+
 let sequential dimension = M.sequential Float32 dimension
 
 let linspace a b n = M.linspace Float32 a b n

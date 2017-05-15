@@ -21,6 +21,8 @@ val ones : int array -> arr
 
 val uniform : ?scale:float -> int array -> arr
 
+val gaussian : ?sigma:float -> int array -> arr
+
 val sequential : int array -> arr
 
 val linspace : elt -> elt -> int -> arr
@@ -365,7 +367,7 @@ val clip_by_l2norm : float -> arr -> arr
 
 (** {6 Neural network related functions} *)
 
-type padding = SAME | VALID
+type padding = Owl_dense_ndarray_generic.padding
 
 val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
 

@@ -25,6 +25,8 @@ let ones dimension = M.ones Complex32 dimension
 
 let uniform ?scale dimension = M.uniform ?scale Complex32 dimension
 
+let gaussian ?sigma dimension = M.gaussian ?sigma Complex32 dimension
+
 let sequential dimension = M.sequential Complex32 dimension
 
 let linspace a b n = M.linspace Complex32 a b n

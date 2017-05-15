@@ -22,6 +22,8 @@ val ones : int array -> arr
 
 val uniform : ?scale:float -> int array -> arr
 
+val gaussian : ?sigma:float -> int array -> arr
+
 val sequential : int array -> arr
 
 val linspace : elt -> elt -> int -> arr

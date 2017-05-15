@@ -52,10 +52,13 @@ val ones : ('a, 'b) kind -> int array -> ('a, 'b) t
  *)
 
 val uniform : ?scale:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
-(** [uniform Bigarray.Float64 [|3;4;5|] 2.] creates a three-diemensional array
+(** [uniform Bigarray.Float64 [|3;4;5|]] creates a three-diemensional array
   of type [Bigarray.Float64]. Each dimension has the following size: 3, 4,
   and 5. The elements in the array follow a uniform distribution [0,1].
  *)
+
+val gaussian : ?sigma:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
+(** [gaussian Float64 [|3;4;5|]] ... *)
 
 val sequential : ('a, 'b) kind -> int array -> ('a, 'b) t
 (** [sequential Bigarray.Float64 [|3;4;5|] 2.] creates a three-diemensional

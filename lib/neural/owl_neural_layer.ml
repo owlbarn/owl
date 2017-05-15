@@ -586,25 +586,27 @@ module Conv2D = struct
   type layer = {
     mutable w        : t;
     mutable b        : t;
-    mutable w_shp    : int array;
+    mutable s        : int array;
+    mutable padding  : padding;
     mutable init_typ : Init.typ;
   }
 
-  let create h w i o =
+  let create padding w h i o s =
   {
-    w        = Mat.empty (h * w * i) o;
-    b        = Mat.empty 1 o;
-    w_shp    = [|h; w; i; o|];
+    w        = Arr.empty [|w;h;i;o|];
+    b        = Arr.empty [|1;1;1;o|];
+    s        = s;
+    padding  = padding;
     init_typ = Init.Standard;
   }
 
   let init l =
-    l.w <- Init.run l.init_typ (Mat.row_num l.w) (Mat.col_num l.w);
-    l.b <- Mat.zeros (Mat.row_num l.b) (Mat.col_num l.b)
+    l.w <- Arr.(uniform (shape l.w));
+    l.b <- Arr.(zeros (shape l.b))
 
   let reset l =
-    Mat.reset l.w;
-    Mat.reset l.b
+    Arr.reset l.w;
+    Arr.reset l.b
 
   let mktag t l =
     l.w <- make_reverse l.w t;
@@ -621,7 +623,7 @@ module Conv2D = struct
     l.b <- u.(1) |> primal'
 
   (* FIXME: this is just place holder atm. *)
-  let run x l = Maths.((x *@ l.w) + l.b)
+  let run x l = Maths.((conv2d ~padding:l.padding x l.w l.s) + l.b)
 
 end
 

@@ -185,7 +185,13 @@ module type NdarraySig = sig
 
   (* creation and operation functions *)
 
+  val empty : int array -> arr
+
   val zeros : int array -> arr
+
+  val uniform : ?scale:elt -> int array -> arr
+
+  val gaussian : ?sigma:elt -> int array -> arr
 
   val shape : arr -> int array
 
@@ -295,7 +301,7 @@ module type NdarraySig = sig
 
   (** {6 Neural network related functions} *)
 
-  type padding = SAME | VALID
+  type padding
 
   val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
 
@@ -324,6 +330,7 @@ module Make
   type arr = A.arr
   type mat = M.mat
   type elt = M.elt
+  type padding = A.padding
 
   type t =
     | F   of float
@@ -1557,11 +1564,6 @@ module Make
   let laplacian' f x = f x, laplacian f x
 
 
-  (* TODO: consider visualisation *)
-  let print_trace x =
-    None
-
-
   (* Wrapper for the Mat module *)
 
   module Mat = struct
@@ -1632,6 +1634,30 @@ module Make
     let of_arrays x = M.of_arrays x |> pack_mat
 
   end
+
+
+  (* Wrapper for the Arr module *)
+
+  module Arr = struct
+
+    let empty d = A.empty d |> pack_arr
+
+    let zeros d = A.zeros d |> pack_arr
+
+    let uniform ?scale d = A.uniform ?scale d |> pack_arr
+
+    let gaussian ?sigma d = A.gaussian ?sigma d |> pack_arr
+
+    let reset x = x |> unpack_arr |> A.reset
+
+    let shape x = A.shape (unpack_arr x)
+
+  end
+
+
+  (* TODO: consider visualisation *)
+  let print_trace x =
+    None
 
 
 end
