@@ -361,3 +361,20 @@ val ssqr_diff : arr -> arr -> elt
 val cross_entropy : arr -> arr -> float
 
 val clip_by_l2norm : float -> arr -> arr
+
+
+(** {6 Neural network related functions} *)
+
+type padding = SAME | VALID
+
+val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
+
+val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
+
+val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
+
+val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
+
+val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr

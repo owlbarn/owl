@@ -832,6 +832,30 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 (** [cast_d2c x] casts [x] from [float64] to [complex32]. *)
 
 
+
+(** {6 Neural network related functions} *)
+
+type padding = SAME | VALID
+
+val conv2d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** [] *)
+
+val conv2d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
+val conv2d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
+val conv3d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** [] *)
+
+val conv3d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
+val conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
+
 (** {6 Some helper functions } *)
 
 (** The following functions are helper functions for some other functions in

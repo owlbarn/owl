@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(* signatures of module parameters used in Make functor *)
 
 module S = Pervasives
 
@@ -30,6 +31,8 @@ module type MatrixSig = sig
   val row_num : mat -> int
 
   val col_num : mat -> int
+
+  val numel : mat -> int
 
   val get : mat -> int -> int -> elt
 
@@ -117,8 +120,6 @@ module type MatrixSig = sig
 
   val sum_rows : mat -> mat
 
-  val average : mat -> elt
-
   val signum : mat -> mat
 
   val transpose : mat -> mat
@@ -176,16 +177,152 @@ module type MatrixSig = sig
 end
 
 
+module type NdarraySig = sig
+
+  type arr
+
+  type elt = float
+
+  (* creation and operation functions *)
+
+  val zeros : int array -> arr
+
+  val shape : arr -> int array
+
+  val numel : arr -> int
+
+  val reset : arr -> unit
+
+  (* mathematical functions *)
+
+  val abs : arr -> arr
+
+  val neg : arr -> arr
+
+  val floor : arr -> arr
+
+  val ceil : arr -> arr
+
+  val round : arr -> arr
+
+  val sqr : arr -> arr
+
+  val sqrt : arr -> arr
+
+  val log : arr -> arr
+
+  val log2 : arr -> arr
+
+  val log10 : arr -> arr
+
+  val exp : arr -> arr
+
+  val sin : arr -> arr
+
+  val cos : arr -> arr
+
+  val tan : arr -> arr
+
+  val sinh : arr -> arr
+
+  val cosh : arr -> arr
+
+  val tanh : arr -> arr
+
+  val asin : arr -> arr
+
+  val acos : arr -> arr
+
+  val atan : arr -> arr
+
+  val asinh : arr -> arr
+
+  val acosh : arr -> arr
+
+  val atanh : arr -> arr
+
+  val sum : arr -> elt
+
+  val signum : arr -> arr
+
+  val l1norm : arr -> elt
+
+  val l2norm : arr -> elt
+
+  val l2norm_sqr : arr -> elt
+
+  val sigmoid : arr -> arr
+
+  val relu : arr -> arr
+
+  val clip_by_l2norm : elt -> arr -> arr
+
+  val pow : arr -> arr -> arr
+
+  val pow0 : elt -> arr -> arr
+
+  val pow1 : arr -> elt -> arr
+
+  val atan2 : arr -> arr -> arr
+
+  val atan20 : elt -> arr -> arr
+
+  val atan21 : arr -> elt -> arr
+
+  val add : arr -> arr -> arr
+
+  val sub : arr -> arr -> arr
+
+  val mul : arr -> arr -> arr
+
+  val div : arr -> arr -> arr
+
+  val add_scalar : arr -> elt -> arr
+
+  val sub_scalar : arr -> elt -> arr
+
+  val mul_scalar : arr -> elt -> arr
+
+  val div_scalar : arr -> elt -> arr
+
+  val scalar_add : elt -> arr -> arr
+
+  val scalar_sub : elt -> arr -> arr
+
+  val scalar_mul : elt -> arr -> arr
+
+  val scalar_div : elt -> arr -> arr
+
+  (** {6 Neural network related functions} *)
+
+  type padding = SAME | VALID
+
+  val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
+
+  val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+  val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
+
+  val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+end
+
+
 (* Functor of making AD module of different precisions *)
 
-module Make (M : MatrixSig) = struct
+module Make
+  (M : MatrixSig)
+  (A : NdarraySig with type elt := M.elt)
+  = struct
 
   (* type definitions *)
 
-  type arr = Owl_dense_ndarray_s.arr
-
+  type arr = A.arr
   type mat = M.mat
-
   type elt = M.elt
 
   type t =
@@ -266,8 +403,10 @@ module Make (M : MatrixSig) = struct
     | Conv2D_C_D  of t * t * int array
 
 
+  (* generate global tags *)
   let _global_tag = ref 0
   let tag () = _global_tag := !_global_tag + 1; !_global_tag
+
 
   (* hepler functions of the core AD component *)
 
@@ -278,6 +417,7 @@ module Make (M : MatrixSig) = struct
 
   let rec reset_zero = function
     | F _    -> F 0.
+    | Arr ap -> A.reset ap; Arr ap
     | Mat ap -> M.reset ap; Mat ap
     | _      -> failwith "error: reset_zero"
 
@@ -293,6 +433,7 @@ module Make (M : MatrixSig) = struct
 
   let rec zero = function
     | F _                     -> F 0.
+    | Arr ap                  -> Arr A.(zeros (shape ap))
     | Mat ap                  -> Mat M.(zeros (row_num ap) (col_num ap))
     | DF (ap, at, ai)         -> ap |> primal' |> zero
     | DR (ap, at, ao, af, ai) -> ap |> primal' |> zero
@@ -312,20 +453,31 @@ module Make (M : MatrixSig) = struct
     | DR (_, at, _, _, _) -> !at
     | ap                  -> zero ap
 
-  let shape = function
+  let mat_shape = function
     | Mat ap    -> M.shape ap
-    | _         -> failwith "error: AD.shape"
+    | _         -> failwith "error: AD.mat_shape"
 
-  let row_num x = x |> primal' |> shape |> fst
+  let row_num x = x |> primal' |> mat_shape |> fst
 
-  let col_num x = x |> primal' |> shape |> snd
+  let col_num x = x |> primal' |> mat_shape |> snd
 
-  let numel x = (row_num x) * (col_num x)
+  let numel x =
+    match primal' x with
+    | Arr x -> A.numel x
+    | Mat x -> M.numel x
+    | _     -> failwith "error: AD.numel"
 
   let mat_create m n a =
     match (primal a) with
     | F a  -> Mat (M.create m n a)
     | _ -> failwith "error: AD.mat_create"
+
+  let pack_arr x = Arr x
+
+  let unpack_arr x =
+    match (primal x) with
+    | Arr x -> x
+    | _ -> failwith "error: AD.unpack_arr"
 
   let pack_mat x = Mat x
 
@@ -340,6 +492,32 @@ module Make (M : MatrixSig) = struct
     match (primal x) with
     | F x -> x
     | _ -> failwith "error: AD.unpack_elt"
+
+
+  (* functions to report errors, help in debugging *)
+
+  let type_info x =
+    let idx2str idx = Array.(map string_of_int idx |> to_list) |> String.concat ","
+    in
+    let deep_info x = match primal' x with
+      | F a   -> Printf.sprintf "(F %g)" a
+      | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> idx2str)
+      | Mat a -> Printf.sprintf "Mat(%i,%i)" (M.row_num a) (M.col_num a)
+      | _     -> "you should not have reached here!"
+    in
+    match x with
+    | DF (ap, at, ai)         -> Printf.sprintf "[DF tag:%i ap:%s]" ai (deep_info ap)
+    | DR (ap, at, ao, af, ai) -> Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
+    | _                       -> Printf.sprintf "[%s]" (deep_info x)
+
+  let error_binop op a b =
+    let s0 = "#0:" ^ (type_info a) in
+    let s1 = "#1:" ^ (type_info b) in
+    failwith (op ^ " : " ^ s0 ^ ", " ^ s1)
+
+  let error_uniop op a =
+    let s = type_info a in
+    failwith (op ^ " : " ^ s)
 
 
   (* overload operators *)
@@ -358,10 +536,14 @@ module Make (M : MatrixSig) = struct
       match a, b with
       | F ap, DF (bp, bt, bi)                      -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
       | DF (ap, at, ai), F bp                      -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
+      | Arr ap, DF (bp, bt, bi)                    -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
+      | DF (ap, at, ai), Arr bp                    -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
       | Mat ap, DF (bp, bt, bi)                    -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
       | DF (ap, at, ai), Mat bp                    -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
       | F ap, DR (bp, _, _, _, bi)                 -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
       | DR (ap, _, _, _, ai), F bp                 -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
+      | Arr ap, DR (bp, _, _, _, bi)               -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
+      | DR (ap, _, _, _, ai), Arr bp               -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
       | Mat ap, DR (bp, _, _, _, bi)               -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
       | DR (ap, _, _, _, ai), Mat bp               -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
       | DF (ap, at, ai), DR (bp, _, _, _, bi)      -> (
@@ -395,10 +577,13 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a +. b)
+        | F a, Arr b   -> Arr A.(scalar_add a b)
+        | Arr a, F b   -> Arr A.(add_scalar a b)
+        | Arr a, Arr b -> Arr A.(add a b)
         | F a, Mat b   -> Mat M.(scalar_add a b)
         | Mat a, F b   -> Mat M.(add_scalar a b)
         | Mat a, Mat b -> Mat M.(add a b)
-        | _            -> failwith "error: add: ff"
+        | _            -> error_binop "( + )" a b
       in
       let fd a b = a + b in
       let df_da cp ap at = at in
@@ -414,10 +599,13 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a -. b)
+        | F a, Arr b   -> Arr A.(scalar_sub a b)
+        | Arr a, F b   -> Arr A.(sub_scalar a b)
+        | Arr a, Arr b -> Arr A.(sub a b)
         | F a, Mat b   -> Mat M.(scalar_sub a b)
         | Mat a, F b   -> Mat M.(sub_scalar a b)
         | Mat a, Mat b -> Mat M.(sub a b)
-        | _            -> failwith "error: sub: ff"
+        | _            -> error_binop "( - )" a b
       in
       let fd a b = a - b in
       let df_da cp ap at = at in
@@ -433,10 +621,13 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a *. b)
+        | F a, Arr b   -> Arr A.(scalar_mul a b)
+        | Arr a, F b   -> Arr A.(mul_scalar a b)
+        | Arr a, Arr b -> Arr A.(mul a b)
         | F a, Mat b   -> Mat M.(scalar_mul a b)
         | Mat a, F b   -> Mat M.(mul_scalar a b)
         | Mat a, Mat b -> Mat M.(mul a b)
-        | _            -> failwith "error: mul: ff"
+        | _            -> error_binop "( * )" a b
       in
       let fd a b = a * b in
       let df_da cp ap at = at * b in
@@ -452,10 +643,13 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a /. b)
+        | F a, Arr b   -> Arr A.(scalar_div a b)
+        | Arr a, F b   -> Arr A.(div_scalar a b)
+        | Arr a, Arr b -> Arr A.(div a b)
         | F a, Mat b   -> Mat M.(scalar_div a b)
         | Mat a, F b   -> Mat M.(div_scalar a b)
         | Mat a, Mat b -> Mat M.(div a b)
-        | _            -> failwith "error: div: ff"
+        | _            -> error_binop "( / )" a b
       in
       let fd a b = a / b in
       let df_da cp ap at = at / b in
@@ -471,10 +665,13 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a ** b)
+        | F a, Arr b   -> Arr A.(pow0 a b)
+        | Arr a, F b   -> Arr A.(pow1 a b)
+        | Arr a, Arr b -> Arr A.(pow a b)
         | F a, Mat b   -> Mat M.(pow0 a b)
         | Mat a, F b   -> Mat M.(pow1 a b)
         | Mat a, Mat b -> Mat M.(pow a b)
-        | _            -> failwith "error: pow: ff"
+        | _            -> error_binop "( ** )" a b
       in
       let fd a b = a ** b in
       let df_da cp ap at = at * (ap ** (b - (F 1.))) * b in
@@ -489,10 +686,13 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(atan2 a b)
+        | F a, Arr b   -> Arr A.(atan20 a b)
+        | Arr a, F b   -> Arr A.(atan21 a b)
+        | Arr a, Arr b -> Arr A.(atan2 a b)
         | F a, Mat b   -> Mat M.(atan20 a b)
         | Mat a, F b   -> Mat M.(atan21 a b)
         | Mat a, Mat b -> Mat M.(atan2 a b)
-        | _            -> failwith "error: atan2: ff"
+        | _            -> error_binop "atan2" a b
       in
       let fd a b = atan2 a b in
       let df_da cp ap at = at * b / ((sqr ap) + (sqr b)) in
@@ -510,8 +710,9 @@ module Make (M : MatrixSig) = struct
     and neg a =
       let ff = function
         | F a      -> F S.(0. -. a)
+        | Arr a    -> Arr A.(neg a)
         | Mat a    -> Mat M.(neg a)
-        | _        -> failwith "error: neg: ff"
+        | _        -> error_uniop "neg" a
       in
       let fd a = neg a in
       let df cp ap at = (F 0.) - at in
@@ -521,8 +722,9 @@ module Make (M : MatrixSig) = struct
     and abs a =
       let ff = function
         | F a      -> F Owl_maths.(abs a)
+        | Arr a    -> Arr A.(abs a)
         | Mat a    -> Mat M.(abs a)
-        | _        -> failwith "error: abs: ff"
+        | _        -> error_uniop "abs" a
       in
       let fd a = abs a in
       let df cp ap at = at * (signum ap) in
@@ -532,8 +734,9 @@ module Make (M : MatrixSig) = struct
     and signum a =
       let ff = function
         | F a      -> F Owl_maths.(signum a)
+        | Arr a    -> Arr A.(signum a)
         | Mat a    -> Mat M.(signum a)
-        | _        -> failwith "error: signum: ff"
+        | _        -> error_uniop "signum" a
       in
       let fd a = signum a in
       let df cp ap at = zero ap in
@@ -543,8 +746,9 @@ module Make (M : MatrixSig) = struct
     and floor a =
       let ff = function
         | F a      -> F Owl_maths.(floor a)
+        | Arr a    -> Arr A.(floor a)
         | Mat a    -> Mat M.(floor a)
-        | _        -> failwith "error: floor: ff"
+        | _        -> error_uniop "floor" a
       in
       let fd a = floor a in
       let df cp ap at = zero ap in
@@ -554,8 +758,9 @@ module Make (M : MatrixSig) = struct
     and ceil a =
       let ff = function
         | F a      -> F Owl_maths.(ceil a)
+        | Arr a    -> Arr A.(ceil a)
         | Mat a    -> Mat M.(ceil a)
-        | _        -> failwith "error: ceil: ff"
+        | _        -> error_uniop "ceil" a
       in
       let fd a = ceil a in
       let df cp ap at = zero ap in
@@ -565,8 +770,9 @@ module Make (M : MatrixSig) = struct
     and round a =
       let ff = function
         | F a      -> F Owl_maths.(round a)
+        | Arr a    -> Arr A.(round a)
         | Mat a    -> Mat M.(round a)
-        | _        -> failwith "error: round: ff"
+        | _        -> error_uniop "round" a
       in
       let fd a = round a in
       let df cp ap at = zero ap in
@@ -576,8 +782,9 @@ module Make (M : MatrixSig) = struct
     and sqr a =
       let ff = function
         | F a      -> F S.(a *. a)
+        | Arr a    -> Arr A.(sqr a)
         | Mat a    -> Mat M.(sqr a)
-        | _        -> failwith "error: sqr: ff"
+        | _        -> error_uniop "sqr" a
       in
       let fd a = sqr a in
       let df cp ap at = (F 2.) * at * ap in
@@ -587,8 +794,9 @@ module Make (M : MatrixSig) = struct
     and sqrt a =
       let ff = function
         | F a      -> F S.(sqrt a)
+        | Arr a    -> Arr A.(sqrt a)
         | Mat a    -> Mat M.(sqrt a)
-        | _        -> failwith "error: sqrt: ff"
+        | _        -> error_uniop "sqrt" a
       in
       let fd a = sqrt a in
       let df cp ap at = at / ((F 2.) * cp) in
@@ -598,8 +806,9 @@ module Make (M : MatrixSig) = struct
     and log a =
       let ff = function
         | F a      -> F S.(log a)
+        | Arr a    -> Arr A.(log a)
         | Mat a    -> Mat M.(log a)
-        | _        -> failwith "error: log: ff"
+        | _        -> error_uniop "log" a
       in
       let fd a = log a in
       let df cp ap at = at / ap in
@@ -609,8 +818,9 @@ module Make (M : MatrixSig) = struct
     and log2 a =
       let ff = function
         | F a      -> F Owl_maths.(log2 a)
+        | Arr a    -> Arr A.(log2 a)
         | Mat a    -> Mat M.(log2 a)
-        | _        -> failwith "error: log2: ff"
+        | _        -> error_uniop "log2" a
       in
       let fd a = log2 a in
       let df cp ap at = at / (ap * (F Owl_maths.log2e)) in
@@ -620,8 +830,9 @@ module Make (M : MatrixSig) = struct
     and log10 a =
       let ff = function
         | F a      -> F S.(log10 a)
+        | Arr a    -> Arr A.(log10 a)
         | Mat a    -> Mat M.(log10 a)
-        | _        -> failwith "error: log10: ff"
+        | _        -> error_uniop "log10" a
       in
       let fd a = log10 a in
       let df cp ap at = at / (ap * (F Owl_maths.log10e)) in
@@ -631,8 +842,9 @@ module Make (M : MatrixSig) = struct
     and exp a =
       let ff = function
         | F a      -> F S.(exp a)
+        | Arr a    -> Arr A.(exp a)
         | Mat a    -> Mat M.(exp a)
-        | _        -> failwith "error: exp: ff"
+        | _        -> error_uniop "exp" a
       in
       let fd a = exp a in
       let df cp ap at = at * cp in
@@ -642,8 +854,9 @@ module Make (M : MatrixSig) = struct
     and sin a =
       let ff = function
         | F a      -> F S.(sin a)
+        | Arr a    -> Arr A.(sin a)
         | Mat a    -> Mat M.(sin a)
-        | _        -> failwith "error: sin: ff"
+        | _        -> error_uniop "sin" a
       in
       let fd a = sin a in
       let df cp ap at = at * cos ap in
@@ -653,8 +866,9 @@ module Make (M : MatrixSig) = struct
     and cos a =
       let ff = function
         | F a      -> F S.(cos a)
+        | Arr a    -> Arr A.(cos a)
         | Mat a    -> Mat M.(cos a)
-        | _        -> failwith "error: cos: ff"
+        | _        -> error_uniop "cos" a
       in
       let fd a = cos a in
       let df cp ap at = neg (at * sin ap) in
@@ -664,8 +878,9 @@ module Make (M : MatrixSig) = struct
     and tan a =
       let ff = function
         | F a      -> F S.(tan a)
+        | Arr a    -> Arr A.(tan a)
         | Mat a    -> Mat M.(tan a)
-        | _        -> failwith "error: tan: ff"
+        | _        -> error_uniop "tan" a
       in
       let fd a = tan a in
       let df cp ap at = at / (sqr (cos ap)) in
@@ -675,8 +890,9 @@ module Make (M : MatrixSig) = struct
     and sinh a =
       let ff = function
         | F a      -> F S.(sinh a)
+        | Arr a    -> Arr A.(sinh a)
         | Mat a    -> Mat M.(sinh a)
-        | _        -> failwith "error: sinh: ff"
+        | _        -> error_uniop "sinh" a
       in
       let fd a = sinh a in
       let df cp ap at = at * (cosh ap) in
@@ -686,8 +902,9 @@ module Make (M : MatrixSig) = struct
     and cosh a =
       let ff = function
         | F a      -> F S.(cosh a)
+        | Arr a    -> Arr A.(cosh a)
         | Mat a    -> Mat M.(cosh a)
-        | _        -> failwith "error: cosh: ff"
+        | _        -> error_uniop "cosh" a
       in
       let fd a = cosh a in
       let df cp ap at = at * (sinh ap) in
@@ -697,8 +914,9 @@ module Make (M : MatrixSig) = struct
     and tanh a =
       let ff = function
         | F a      -> F S.(tanh a)
+        | Arr a    -> Arr A.(tanh a)
         | Mat a    -> Mat M.(tanh a)
-        | _        -> failwith "error: tanh: ff"
+        | _        -> error_uniop "tanh" a
       in
       let fd a = tanh a in
       let df cp ap at = at / (sqr (cosh ap)) in
@@ -708,8 +926,9 @@ module Make (M : MatrixSig) = struct
     and asin a =
       let ff = function
         | F a      -> F S.(asin a)
+        | Arr a    -> Arr A.(asin a)
         | Mat a    -> Mat M.(asin a)
-        | _        -> failwith "error: asin: ff"
+        | _        -> error_uniop "asin" a
       in
       let fd a = asin a in
       let df cp ap at = at / sqrt ((F 1.) - sqr ap) in
@@ -719,8 +938,9 @@ module Make (M : MatrixSig) = struct
     and acos a =
       let ff = function
         | F a      -> F S.(acos a)
+        | Arr a    -> Arr A.(acos a)
         | Mat a    -> Mat M.(acos a)
-        | _        -> failwith "error: acos: ff"
+        | _        -> error_uniop "acos" a
       in
       let fd a = acos a in
       let df cp ap at = (neg at) / sqrt ((F 1.) - sqr ap) in
@@ -730,8 +950,9 @@ module Make (M : MatrixSig) = struct
     and atan a =
       let ff = function
         | F a      -> F S.(atan a)
+        | Arr a    -> Arr A.(atan a)
         | Mat a    -> Mat M.(atan a)
-        | _        -> failwith "error: atan: ff"
+        | _        -> error_uniop "atan" a
       in
       let fd a = atan a in
       let df cp ap at = at / ((F 1.) + sqr ap) in
@@ -741,8 +962,9 @@ module Make (M : MatrixSig) = struct
     and asinh a =
       let ff = function
         | F a      -> F Owl_maths.(asinh a)
+        | Arr a    -> Arr A.(asinh a)
         | Mat a    -> Mat M.(asinh a)
-        | _        -> failwith "error: asinh: ff"
+        | _        -> error_uniop "asinh" a
       in
       let fd a = asinh a in
       let df cp ap at = at / sqrt ((sqr ap) + (F 1.)) in
@@ -752,8 +974,9 @@ module Make (M : MatrixSig) = struct
     and acosh a =
       let ff = function
         | F a      -> F Owl_maths.(acosh a)
+        | Arr a    -> Arr A.(acosh a)
         | Mat a    -> Mat M.(acosh a)
-        | _        -> failwith "error: acosh: ff"
+        | _        -> error_uniop "acosh" a
       in
       let fd a = acosh a in
       let df cp ap at = at / sqrt ((sqr ap) - (F 1.)) in
@@ -763,8 +986,9 @@ module Make (M : MatrixSig) = struct
     and atanh a =
       let ff = function
         | F a      -> F Owl_maths.(atanh a)
+        | Arr a    -> Arr A.(atanh a)
         | Mat a    -> Mat M.(atanh a)
-        | _        -> failwith "error: atanh: ff"
+        | _        -> error_uniop "atanh" a
       in
       let fd a = atanh a in
       let df cp ap at = at / ((F 1.) - sqr ap) in
@@ -776,12 +1000,12 @@ module Make (M : MatrixSig) = struct
       | Mat ap               -> F (M.get ap i j)
       | DF (ap, at, ai)      -> DF (get_item ap i j, get_item at i j, ai)
       | DR (ap, _, _, _, ai) -> DR (get_item ap i j, ref (F 0.), Get_Item (a, i, j), ref 0, ai)
-      | _                    -> failwith "error: get_item"
+      | _                    -> error_uniop "get_item" a
 
     and set_item a i j b =
       let ff a b = match a, b with
         | Mat a, F b        -> let aa = M.clone a in M.set aa i j b; Mat aa
-        | _                 -> failwith "error: set_item: ff"
+        | _                 -> error_uniop "set_item" a
       in
       let fd a b = set_item a i j b in
       let df_da cp ap at = set_item at i j (F 0.) in
@@ -795,7 +1019,7 @@ module Make (M : MatrixSig) = struct
     and add_item a i j b =
       let ff a b = match a, b with
         | Mat a, F b        -> let aa = M.clone a in M.set aa i j S.((M.get aa i j) +. b); Mat aa
-        | _                 -> failwith "error: add_item: ff"
+        | _                 -> error_binop "add_item" a b
       in
       let fd a b = add_item a i j b in
       let df_da cp ap at = at in
@@ -808,8 +1032,9 @@ module Make (M : MatrixSig) = struct
 
     and sum a =
       let ff = function
+        | Arr a    -> F A.(sum a)
         | Mat a    -> F M.(sum a)
-        | _        -> failwith "error: sum: ff"
+        | _        -> error_uniop "sum" a
       in
       let fd a = sum a in
       let df cp ap at = sum at in
@@ -823,7 +1048,7 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | Mat a, Mat b       -> Mat M.(dot a b)
-        | _                  -> failwith "error: dot: ff"
+        | _                  -> error_binop "( *@ )" a b
       in
       let fd a b = a *@ b in
       let df_da cp ap at = at *@ b in
@@ -837,7 +1062,7 @@ module Make (M : MatrixSig) = struct
     and transpose a =
       let ff = function
         | Mat a    -> Mat M.(transpose a)
-        | _        -> failwith "error: transpose: ff"
+        | _        -> error_uniop "transpose" a
       in
       let fd a = transpose a in
       let df cp ap at = transpose at in
@@ -846,8 +1071,9 @@ module Make (M : MatrixSig) = struct
 
     and l1norm a =
       let ff = function
+        | Arr a    -> F A.(l1norm a)
         | Mat a    -> F M.(l1norm a)
-        | _        -> failwith "error: l1norm: ff"
+        | _        -> error_uniop "l1norm" a
       in
       let fd a = l1norm a in
       let df cp ap at = at * (signum ap) in
@@ -856,8 +1082,9 @@ module Make (M : MatrixSig) = struct
 
     and l2norm a =
       let ff = function
+        | Arr a    -> F A.(l2norm a)
         | Mat a    -> F M.(l2norm a)
-        | _        -> failwith "error: l2norm: ff"
+        | _        -> error_uniop "l2norm" a
       in
       let fd a = l2norm a in
       let df cp ap at = (ap * at) / cp in
@@ -867,8 +1094,9 @@ module Make (M : MatrixSig) = struct
     and l2norm_sqr a =
       let ff = function
         | F a      -> F S.(a *. a)
+        | Arr a    -> F A.(l2norm_sqr a)
         | Mat a    -> F M.(l2norm_sqr a)
-        | _        -> failwith "error: l2norm_sqr: ff"
+        | _        -> error_uniop "l2norm_sqr" a
       in
       let fd a = l2norm_sqr a in
       let df cp ap at = (F 2.) * (ap * at) in
@@ -878,8 +1106,9 @@ module Make (M : MatrixSig) = struct
     and sigmoid a =
       let ff = function
         | F a      -> F Owl_maths.(sigmoid a)
+        | Arr a    -> Arr A.(sigmoid a)
         | Mat a    -> Mat M.(sigmoid a)
-        | _        -> failwith "error: sigmoid: ff"
+        | _        -> error_uniop "sigmoid" a
       in
       let fd a = sigmoid a in
       let df cp ap at = at * cp * (F 1. - cp) in
@@ -889,8 +1118,9 @@ module Make (M : MatrixSig) = struct
     and relu a =
       let ff = function
         | F a      -> F Owl_maths.(relu a)
+        | Arr a    -> Arr A.(relu a)
         | Mat a    -> Mat M.(relu a)
-        | _        -> failwith "error: relu: ff"
+        | _        -> error_uniop "relu" a
       in
       let fd a = relu a in
       let df cp ap at = at * (F 1. + (signum ap)) / (F 2.) in
@@ -900,7 +1130,7 @@ module Make (M : MatrixSig) = struct
     and inv a =
       let ff = function
         | Mat a    -> Mat M.(inv a)
-        | _        -> failwith "error: inv: ff"
+        | _        -> error_uniop "inv" a
       in
       let fd a = inv a in
       let df cp ap at = (neg cp) * at * cp in
@@ -923,7 +1153,7 @@ module Make (M : MatrixSig) = struct
       let ff a b =
         match a, b with
         | Mat a, Mat b       -> M.(copy_row_to (add (row a i) b) a i; Mat a)
-        | _                  -> failwith "error: add_row: ff"
+        | _                  -> error_binop "add_row" a b
       in
       let fd a b = add_row a b i in
       let df_da cp ap at = at in
@@ -937,7 +1167,7 @@ module Make (M : MatrixSig) = struct
     and get_row a i =
       let ff = function
         | Mat a    -> Mat M.(row a i |> clone)
-        | _        -> failwith "error: get_row: ff"
+        | _        -> error_uniop "get_row" a
       in
       let fd a = get_row a i in
       let df cp ap at = get_row at i in
@@ -958,7 +1188,7 @@ module Make (M : MatrixSig) = struct
         let ap = a |> Array.map (fun x -> x |> primal) in
         let cp = ap |> Array.map (fun x -> x |> unpack_mat) |> M.of_rows |> pack_mat in
         DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai)
-      | _                  -> failwith "error: of_rows: AD"
+      | _                  -> error_uniop "of_rows a.(0)" a.(0)
 
     (* NOTE: these fucntions are for neural network. I might introduce Arr as a
       type constructor in the future to support ndarray natively in Algodiff. *)
@@ -967,8 +1197,8 @@ module Make (M : MatrixSig) = struct
     and conv2d ?padding a b s =
       let ff a b =
         match a, b with
-        | Arr a, Arr b -> Arr (Owl_conv.conv2d ?padding a b s)
-        | _            -> failwith "error: conv2d: ff"
+        | Arr a, Arr b -> Arr A.(conv2d ?padding a b s)
+        | _            -> error_binop "conv2d" a b
       in
       let fd a b = conv2d ?padding a b s in
       (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
@@ -979,6 +1209,23 @@ module Make (M : MatrixSig) = struct
       let r_d_c a b = Conv2D_D_C (a, b, s) in
       let r_c_d a b = Conv2D_C_D (a, b, s) in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and conv2d_backward_input a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.conv2d_backward_input a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and conv2d_backward_kernel a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.conv2d_backward_kernel a b s o
+      |> pack_arr
+
 
     (* TODO: trace and diag functions ... *)
 
@@ -1169,9 +1416,9 @@ module Make (M : MatrixSig) = struct
               | Add_Row_C_D (a, b, i) -> push ((get_row !aa i, b) :: t)
               | Get_Row_D (a, i)      -> (adjref a) := add_row (adjval a) !aa i; push ((zero a, a) :: t)
               | Of_Rows_D a           -> push (t |> List.append (a |> Array.to_list |> List.mapi (fun i v -> (get_row !aa i, v))))
-              | Conv2D_D_D (a, b, s)  -> push ((!aa, a) :: (!aa, b) :: t)
-              | Conv2D_D_C (a, b, s)  -> push ((!aa, a) :: t)
-              | Conv2D_C_D (a, b, s)  -> push ((!aa, b) :: t)
+              | Conv2D_D_D (a, b, s)  -> push ((conv2d_backward_input a b s !aa, a) :: (conv2d_backward_kernel a b s !aa, b) :: t)
+              | Conv2D_D_C (a, b, s)  -> push ((conv2d_backward_input a b s !aa, a) :: t)
+              | Conv2D_C_D (a, b, s)  -> push ((conv2d_backward_kernel a b s !aa, b) :: t)
               )
             else push t
             )
@@ -1388,5 +1635,7 @@ module Make (M : MatrixSig) = struct
 
 
 end
+
+
 
 (* ends here *)

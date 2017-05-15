@@ -31,6 +31,8 @@ module type MatrixSig = sig
 
   val col_num : mat -> int
 
+  val numel : mat -> int
+
   val get : mat -> int -> int -> elt
 
   val set : mat -> int -> int -> elt -> unit
@@ -117,8 +119,6 @@ module type MatrixSig = sig
 
   val sum_rows : mat -> mat
 
-  val average : mat -> elt
-
   val signum : mat -> mat
 
   val transpose : mat -> mat
@@ -176,24 +176,156 @@ module type MatrixSig = sig
 end
 
 
+module type NdarraySig = sig
+
+  type arr
+
+  type elt = float
+
+  (* creation and operation functions *)
+
+  val zeros : int array -> arr
+
+  val shape : arr -> int array
+
+  val numel : arr -> int
+
+  val reset : arr -> unit
+
+  (* mathematical functions *)
+
+  val abs : arr -> arr
+
+  val neg : arr -> arr
+
+  val floor : arr -> arr
+
+  val ceil : arr -> arr
+
+  val round : arr -> arr
+
+  val sqr : arr -> arr
+
+  val sqrt : arr -> arr
+
+  val log : arr -> arr
+
+  val log2 : arr -> arr
+
+  val log10 : arr -> arr
+
+  val exp : arr -> arr
+
+  val sin : arr -> arr
+
+  val cos : arr -> arr
+
+  val tan : arr -> arr
+
+  val sinh : arr -> arr
+
+  val cosh : arr -> arr
+
+  val tanh : arr -> arr
+
+  val asin : arr -> arr
+
+  val acos : arr -> arr
+
+  val atan : arr -> arr
+
+  val asinh : arr -> arr
+
+  val acosh : arr -> arr
+
+  val atanh : arr -> arr
+
+  val sum : arr -> elt
+
+  val signum : arr -> arr
+
+  val l1norm : arr -> elt
+
+  val l2norm : arr -> elt
+
+  val l2norm_sqr : arr -> elt
+
+  val sigmoid : arr -> arr
+
+  val relu : arr -> arr
+
+  val clip_by_l2norm : elt -> arr -> arr
+
+  val pow : arr -> arr -> arr
+
+  val pow0 : elt -> arr -> arr
+
+  val pow1 : arr -> elt -> arr
+
+  val atan2 : arr -> arr -> arr
+
+  val atan20 : elt -> arr -> arr
+
+  val atan21 : arr -> elt -> arr
+
+  val add : arr -> arr -> arr
+
+  val sub : arr -> arr -> arr
+
+  val mul : arr -> arr -> arr
+
+  val div : arr -> arr -> arr
+
+  val add_scalar : arr -> elt -> arr
+
+  val sub_scalar : arr -> elt -> arr
+
+  val mul_scalar : arr -> elt -> arr
+
+  val div_scalar : arr -> elt -> arr
+
+  val scalar_add : elt -> arr -> arr
+
+  val scalar_sub : elt -> arr -> arr
+
+  val scalar_mul : elt -> arr -> arr
+
+  val scalar_div : elt -> arr -> arr
+
+  (** {6 Neural network related functions} *)
+
+  type padding = SAME | VALID
+
+  val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
+
+  val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+  val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
+
+  val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+end
+
 
 (** {The functor used to generate Algodiff module of various precisions.
   Currently, Dense.Matrix.S and Dense.Matrix.D can be plugged in to suppport
   32-bit and 64-bit two precisions.} *)
 
-module Make (M : MatrixSig) : sig
+module Make (M : MatrixSig) (A : NdarraySig) : sig
 
-  type arr = Owl_dense_ndarray_s.arr
-
+  type arr = A.arr
   type mat = M.mat
-
   type elt = M.elt
 
   type trace_op
 
   type t =
     | F   of float                                  (* constructor of float numbers *)
-    | Arr of arr
+    | Arr of arr                                    (* constructor of ndarrays *)
     | Mat of mat                                    (* constructor of matrices *)
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
@@ -455,5 +587,7 @@ module Make (M : MatrixSig) : sig
 
   val reverse_prop : t -> t -> unit
 
+  val type_info : t -> string
+  
 
 end
