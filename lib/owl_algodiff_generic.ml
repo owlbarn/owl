@@ -954,6 +954,10 @@ module Make (M : MatrixSig) = struct
         DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai)
       | _                  -> failwith "error: of_rows: AD"
 
+    (* NOTE: these fucntions are for neural network. I might introduce Arr as a
+      type constructor in the future to support ndarray natively in Algodiff. *)
+
+    and nn_conv2d a b = None
 
     (* TODO: trace and diag functions ... *)
 
