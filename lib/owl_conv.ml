@@ -420,5 +420,18 @@ let conv3d_backward_kernel input kernel stride output' =
   kernel'
 
 
+(* Following functions are used to deal with the fact that Algodiff module does
+  not support ndarray natively at the moment. So it translates between row matrices
+  and ndarray. In the future, these functions will become obsolete.
+ *)
+
+let algodiff_conv2d ?padding input kernel stride input_shp kernel_shp =
+  let input = Bigarray.genarray_of_array2 input in
+  let input = reshape input input_shp in
+  let kernel = Bigarray.genarray_of_array2 kernel in
+  let kernel = reshape kernel kernel_shp in
+  let output = conv2d ?padding input kernel stride in
+  reshape output [|1;numel output|] |> Bigarray.array2_of_genarray
+
 
 (* ends here *)

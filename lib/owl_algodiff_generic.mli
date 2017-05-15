@@ -183,6 +183,8 @@ end
 
 module Make (M : MatrixSig) : sig
 
+  type arr = Owl_dense_ndarray_s.arr
+
   type mat = M.mat
 
   type elt = M.elt
@@ -191,6 +193,7 @@ module Make (M : MatrixSig) : sig
 
   type t =
     | F   of float                                  (* constructor of float numbers *)
+    | Arr of arr
     | Mat of mat                                    (* constructor of matrices *)
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)

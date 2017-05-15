@@ -182,12 +182,15 @@ module Make (M : MatrixSig) = struct
 
   (* type definitions *)
 
+  type arr = Owl_dense_ndarray_s.arr
+
   type mat = M.mat
 
   type elt = M.elt
 
   type t =
     | F   of float
+    | Arr of arr
     | Mat of mat
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
@@ -258,6 +261,9 @@ module Make (M : MatrixSig) = struct
     | Add_Row_C_D of t * t * int
     | Get_Row_D   of t * int
     | Of_Rows_D   of t array
+    | Conv2D_D_D  of t * t * int array
+    | Conv2D_D_C  of t * t * int array
+    | Conv2D_C_D  of t * t * int array
 
 
   let _global_tag = ref 0
@@ -364,7 +370,7 @@ module Make (M : MatrixSig) = struct
           | -1 -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
           | _  -> failwith "error: forward and reverse clash at the same level"
         )
-      | DR (ap, _, _, _, ai), DF (bp, bt, bi)   -> (
+      | DR (ap, _, _, _, ai), DF (bp, bt, bi)      -> (
           match cmp_tag ai bi with
           | -1 -> let cp = fd a bp in DF (cp, df_db cp bp bt, bi)
           | 1  -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
@@ -957,7 +963,22 @@ module Make (M : MatrixSig) = struct
     (* NOTE: these fucntions are for neural network. I might introduce Arr as a
       type constructor in the future to support ndarray natively in Algodiff. *)
 
-    and nn_conv2d a b = None
+    (* a:input; b:kernel; s:stride *)
+    and conv2d ?padding a b s =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> Arr (Owl_conv.conv2d ?padding a b s)
+        | _            -> failwith "error: conv2d: ff"
+      in
+      let fd a b = conv2d ?padding a b s in
+      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+      let df_da cp ap at = at in
+      let df_db cp bp bt = bt in
+      let df_dab cp ap at bp bt = at + bt in
+      let r_d_d a b = Conv2D_D_D (a, b, s) in
+      let r_d_c a b = Conv2D_D_C (a, b, s) in
+      let r_c_d a b = Conv2D_C_D (a, b, s) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
     (* TODO: trace and diag functions ... *)
 
@@ -977,6 +998,7 @@ module Make (M : MatrixSig) = struct
             af := !af + 1;
             if !af = 1 then (
               match ao with
+              | Noop                  -> reset t
               | Add_D_D (a, b)        -> reset (a :: b :: t)
               | Add_D_C (a, _)        -> reset (a :: t)
               | Add_C_D (_, b)        -> reset (b :: t)
@@ -1042,7 +1064,9 @@ module Make (M : MatrixSig) = struct
               | Add_Row_C_D (_, b, _) -> reset (b :: t)
               | Get_Row_D (a, _)      -> reset (a :: t)
               | Of_Rows_D a           -> reset (List.append (Array.to_list a) t)
-              | Noop                  -> reset t
+              | Conv2D_D_D (a, b, _)  -> reset (a :: b :: t)
+              | Conv2D_D_C (a, _, _)  -> reset (a :: t)
+              | Conv2D_C_D (_, b, _)  -> reset (b :: t)
               )
             else reset t
             )
@@ -1078,6 +1102,7 @@ module Make (M : MatrixSig) = struct
             af := S.(!af - 1);
             if !af = 0 then (
               match ao with
+              | Noop                  -> push t
               | Add_D_D (a, b)        -> push ((!aa, a) :: (!aa, b) :: t)
               | Add_D_C (a, _)        -> push ((!aa, a) :: t)
               | Add_C_D (_, b)        -> push ((!aa, b) :: t)
@@ -1144,7 +1169,9 @@ module Make (M : MatrixSig) = struct
               | Add_Row_C_D (a, b, i) -> push ((get_row !aa i, b) :: t)
               | Get_Row_D (a, i)      -> (adjref a) := add_row (adjval a) !aa i; push ((zero a, a) :: t)
               | Of_Rows_D a           -> push (t |> List.append (a |> Array.to_list |> List.mapi (fun i v -> (get_row !aa i, v))))
-              | Noop                  -> push t
+              | Conv2D_D_D (a, b, s)  -> push ((!aa, a) :: (!aa, b) :: t)
+              | Conv2D_D_C (a, b, s)  -> push ((!aa, a) :: t)
+              | Conv2D_C_D (a, b, s)  -> push ((!aa, b) :: t)
               )
             else push t
             )
