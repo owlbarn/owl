@@ -594,7 +594,7 @@ module Conv2D = struct
   let create padding w h i o s =
   {
     w        = Arr.empty [|w;h;i;o|];
-    b        = Arr.empty [|1;1;1;o|];
+    b        = Arr.empty [|o|];
     s        = s;
     padding  = padding;
     init_typ = Init.Standard;
@@ -622,8 +622,18 @@ module Conv2D = struct
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
 
-  (* FIXME: this is just place holder atm. *)
   let run x l = Maths.((conv2d ~padding:l.padding x l.w l.s) + l.b)
+
+  let to_string l =
+    let ws = Arr.shape l.w in
+    let bn = Arr.shape l.b in
+    Printf.sprintf "Conv2D layer:\n" ^
+    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3) + bn.(0)) ^
+    Printf.sprintf "    kernel : %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3) ^
+    Printf.sprintf "    b      : %i\n" bn.(0) ^
+    Printf.sprintf "    stride : [%i; %i]\n" l.s.(0) l.s.(1) ^
+    ""
 
 end
 
@@ -636,6 +646,7 @@ type layer =
   | LSTM         of LSTM.layer
   | GRU          of GRU.layer
   | Recurrent    of Recurrent.layer
+  | Conv2D       of Conv2D.layer
   | Activation   of Activation.typ
 
 type network = {
@@ -663,6 +674,7 @@ module Feedforward = struct
     | LSTM l         -> LSTM.init l
     | GRU l          -> GRU.init l
     | Recurrent l    -> Recurrent.init l
+    | Conv2D l       -> Conv2D.init l
     | _              -> () (* activation *)
     ) nn.layers
 
@@ -672,6 +684,7 @@ module Feedforward = struct
     | LSTM l         -> LSTM.reset l
     | GRU l          -> GRU.reset l
     | Recurrent l    -> Recurrent.reset l
+    | Conv2D l       -> Conv2D.reset l
     | _              -> () (* activation *)
     ) nn.layers
 
@@ -681,6 +694,7 @@ module Feedforward = struct
     | LSTM l         -> LSTM.mktag t l
     | GRU l          -> GRU.mktag t l
     | Recurrent l    -> Recurrent.mktag t l
+    | Conv2D l       -> Conv2D.mktag t l
     | _              -> () (* activation *)
     ) nn.layers
 
@@ -690,6 +704,7 @@ module Feedforward = struct
     | LSTM l         -> LSTM.mkpar l
     | GRU l          -> GRU.mkpar l
     | Recurrent l    -> Recurrent.mkpar l
+    | Conv2D l       -> Conv2D.mkpar l
     | _              -> [||] (* activation *)
     ) nn.layers
 
@@ -699,6 +714,7 @@ module Feedforward = struct
     | LSTM l         -> LSTM.mkpri l
     | GRU l          -> GRU.mkpri l
     | Recurrent l    -> Recurrent.mkpri l
+    | Conv2D l       -> Conv2D.mkpri l
     | _              -> [||] (* activation *)
     ) nn.layers
 
@@ -708,6 +724,7 @@ module Feedforward = struct
     | LSTM l         -> LSTM.mkadj l
     | GRU l          -> GRU.mkadj l
     | Recurrent l    -> Recurrent.mkadj l
+    | Conv2D l       -> Conv2D.mkadj l
     | _              -> [||] (* activation *)
     ) nn.layers
 
@@ -718,6 +735,7 @@ module Feedforward = struct
     | LSTM l         -> LSTM.update l u
     | GRU l          -> GRU.update l u
     | Recurrent l    -> Recurrent.update l u
+    | Conv2D l       -> Conv2D.update l u
     | _              -> () (* activation *)
     ) nn.layers us
 
@@ -728,6 +746,7 @@ module Feedforward = struct
     | LSTM l         -> LSTM.run a l
     | GRU l          -> GRU.run a l
     | Recurrent l    -> Recurrent.run a l
+    | Conv2D l       -> Conv2D.run a l
     | Activation l   -> Activation.run a l
     ) x nn.layers
 
@@ -750,6 +769,7 @@ module Feedforward = struct
         | LSTM l         -> LSTM.to_string l
         | GRU l          -> GRU.to_string l
         | Recurrent l    -> Recurrent.to_string l
+        | Conv2D l       -> Conv2D.to_string l
         | Activation l   -> Activation.to_string l
       in
       s := !s ^ (Printf.sprintf "(%i): %s\n" i t)
