@@ -44,6 +44,8 @@ module type MatrixSig = sig
 
   val reset : mat -> unit
 
+  val reshape : int -> int -> mat -> mat
+
   val copy_row_to : mat -> mat -> int -> unit
 
   val copy_col_to : mat -> mat -> int -> unit
@@ -198,6 +200,8 @@ module type NdarraySig = sig
   val numel : arr -> int
 
   val reset : arr -> unit
+
+  val reshape : arr -> int array -> arr
 
   (* mathematical functions *)
 
@@ -408,6 +412,7 @@ module Make
     | Conv2D_D_D  of t * t * int array
     | Conv2D_D_C  of t * t * int array
     | Conv2D_C_D  of t * t * int array
+    | Reshape_D   of t
 
 
   (* generate global tags *)
@@ -459,6 +464,11 @@ module Make
     | DF _                -> failwith "error: no adjval for DF"
     | DR (_, at, _, _, _) -> !at
     | ap                  -> zero ap
+
+  let shape = function
+    | Arr ap -> A.shape ap
+    | Mat ap -> [|M.row_num ap; M.col_num ap|]
+    | _      -> failwith "error: AD.shape"
 
   let mat_shape = function
     | Mat ap    -> M.shape ap
@@ -1234,6 +1244,17 @@ module Make
       |> pack_arr
 
 
+    and reshape a s =
+      let ff = function
+        | Arr a    -> Arr A.(reshape a s)
+        | Mat a    -> Mat M.(reshape s.(0) s.(1) a)
+        | _        -> error_uniop "reshape" a
+      in
+      let fd a = reshape a s in
+      let df cp ap at = reshape at s in
+      let r a = Reshape_D a in
+      op_d_d a ff fd df r
+
     (* TODO: trace and diag functions ... *)
 
   end
@@ -1321,6 +1342,7 @@ module Make
               | Conv2D_D_D (a, b, _)  -> reset (a :: b :: t)
               | Conv2D_D_C (a, _, _)  -> reset (a :: t)
               | Conv2D_C_D (_, b, _)  -> reset (b :: t)
+              | Reshape_D a           -> reset (a :: t)
               )
             else reset t
             )
@@ -1426,6 +1448,7 @@ module Make
               | Conv2D_D_D (a, b, s)  -> push ((conv2d_backward_input a b s !aa, a) :: (conv2d_backward_kernel a b s !aa, b) :: t)
               | Conv2D_D_C (a, b, s)  -> push ((conv2d_backward_input a b s !aa, a) :: t)
               | Conv2D_C_D (a, b, s)  -> push ((conv2d_backward_kernel a b s !aa, b) :: t)
+              | Reshape_D a           -> push ((reshape !aa (shape (primal a)), a) :: t)
               )
             else push t
             )
@@ -1578,6 +1601,8 @@ module Make
 
     let reset x = x |> unpack_mat |> M.reset
 
+    let reshape m n x = Maths.reshape x [|m;n|]
+
     let shape x = M.shape (unpack_mat x)
 
     let row_num x = M.row_num (unpack_mat x)
@@ -1649,6 +1674,8 @@ module Make
     let gaussian ?sigma d = A.gaussian ?sigma d |> pack_arr
 
     let reset x = x |> unpack_arr |> A.reset
+
+    let reshape x s = Maths.reshape x s
 
     let shape x = A.shape (unpack_arr x)
 

@@ -43,6 +43,8 @@ module type MatrixSig = sig
 
   val reset : mat -> unit
 
+  val reshape : int -> int -> mat -> mat
+
   val copy_row_to : mat -> mat -> int -> unit
 
   val copy_col_to : mat -> mat -> int -> unit
@@ -197,6 +199,8 @@ module type NdarraySig = sig
   val numel : arr -> int
 
   val reset : arr -> unit
+
+  val reshape : arr -> int array -> arr
 
   (* mathematical functions *)
 
@@ -471,6 +475,8 @@ module Make (M : MatrixSig) (A : NdarraySig) : sig
 
     val reset : t -> unit
 
+    val reshape : int -> int -> t -> t
+
     val get : t -> int -> int -> t
 
     val set : t -> int -> int -> t -> t
@@ -511,6 +517,8 @@ module Make (M : MatrixSig) (A : NdarraySig) : sig
     val shape : t -> int array
 
     val reset : t -> unit
+
+    val reshape : t -> int array -> t
 
   end
 
