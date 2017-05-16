@@ -1793,6 +1793,32 @@ let conv3d_backward_kernel input kernel stride output' =
   kernel'
 
 
+(* simiar to sum_rows in matrix, sum all the slices along an axis.
+  The default [axis] is the highest dimension. E.g., for [x] of [|2;3;4;5|],
+  [sum_slices ~axis:2] returns an ndarray of shape [|4;5|].
+
+  currently, the operation is done using [gemm], fast but uses more memory.
+ *)
+let sum_slices ?axis x =
+  let axis = match axis with
+    | Some a -> a
+    | None   -> num_dims x - 1
+  in
+  (* reshape into 2d matrix *)
+  let s = shape x in
+  let n = (_calc_slice s).(axis) in
+  let m = (numel x) / n in
+  let y = reshape x [|m;n|] |> array2_of_genarray in
+  (* create a row vector of all ones *)
+  let v = ones (kind x) [|1;m|] |> array2_of_genarray in
+  (* sum all the rows using gemm operation *)
+  let y = Owl_backend_gsl_linalg.dot (kind x) v y in
+  (* reshape back into ndarray *)
+  let s = Array.(sub s axis (length s - axis)) in
+  reshape (genarray_of_array2 y) s
+
+
+
 (* TODO *)
 
 let insert_slice = None

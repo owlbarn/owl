@@ -51,7 +51,9 @@ let ndarray_to_c_mat x =
   let n = Array.fold_right (fun c a -> c * a) shape 1 in
   reshape_2 x 1 n
 
-(* calculate the stride of a ndarray, s is the shape *)
+(* calculate the stride of a ndarray, s is the shape
+  for [x] of shape [|2;3;4|], the return is [|12;4;1|]
+ *)
 let _calc_stride s =
   let d = Array.length s in
   let r = Array.make d 1 in
@@ -60,7 +62,9 @@ let _calc_stride s =
   done;
   r
 
-(* calculate the slice size in each dimension, s is the shape *)
+(* calculate the slice size in each dimension, s is the shape.
+  for [x] of shape [|2;3;4|], the return is [|24;12;4|]
+*)
 let _calc_slice s =
   let d = Array.length s in
   let r = Array.make d s.(d-1) in

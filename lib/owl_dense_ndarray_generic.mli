@@ -876,9 +876,16 @@ val _check_transpose_axis : int array -> int -> unit
 (** [_check_transpose_axis a d] checks whether [a] is a legiti('a, 'b) te transpose index. *)
 
 val expand : ('a, 'b) t -> int -> ('a, 'b) t
-(* [expand x d] reshape x by increasing its rank from [num_dims x] to [d]. The
+(** [expand x d] reshapes x by increasing its rank from [num_dims x] to [d]. The
   opposite operation is [squeeze x].
  *)
+
+val sum_slices : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [sum_slices ~axis:2 x] for [x] of [|2;3;4;5|], it returns an ndarray of
+  shape [|4;5|]. Currently, the operation is done using [gemm], fast but uses
+  more memory.
+ *)
+
 
 
 (* ends ehre *)
