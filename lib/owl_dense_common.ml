@@ -161,6 +161,7 @@ type ('a, 'b) eigen_arr = ('a, 'b, c_layout) Genarray.t
 type ('a, 'b) eigen_mat_op00 = ('a, 'b) eigen_mat -> ('a, 'b) eigen_mat
 type ('a, 'b) eigen_mat_op01 = ('a, 'b) eigen_mat -> int -> int -> unit
 type ('a, 'b) eigen_mat_op02 = ('a, 'b) eigen_mat -> ('a, 'b) eigen_mat -> ('a, 'b) eigen_mat
+type ('a, 'b) eigen_mat_op03 = int -> ('a, 'b) eigen_mat -> ('a, 'b) eigen_mat -> unit
 type ('a, 'b) eigen_arr_op00 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
 type ('a, 'b) eigen_arr_op01 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
 type ('a, 'b) eigen_arr_op02 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
@@ -232,6 +233,20 @@ let _eigen_cuboid_conv_backward_kernel : type a b . (a, b) kind -> (a, b) eigen_
   | Float32   -> Eigen.Tensor.S.cuboid_conv_backward_kernel
   | Float64   -> Eigen.Tensor.D.cuboid_conv_backward_kernel
   | _         -> failwith "_eigen_cuboid_conv_backward_kernel: unsupported operation"
+
+let _eigen_rowwise_op : type a b . (a, b) kind -> (a, b) eigen_mat_op03 = function
+  | Float32   -> Eigen.Dense.S.rowwise_op
+  | Float64   -> Eigen.Dense.D.rowwise_op
+  | Complex32 -> Eigen.Dense.C.rowwise_op
+  | Complex64 -> Eigen.Dense.Z.rowwise_op
+  | _         -> failwith "_eigen_rowwise_op: unsupported operation"
+
+let _eigen_colwise_op : type a b . (a, b) kind -> (a, b) eigen_mat_op03 = function
+  | Float32   -> Eigen.Dense.S.colwise_op
+  | Float64   -> Eigen.Dense.D.colwise_op
+  | Complex32 -> Eigen.Dense.C.colwise_op
+  | Complex64 -> Eigen.Dense.Z.colwise_op
+  | _         -> failwith "_eigen_colwise_op: unsupported operation"
 
 
 (* interface to owl's c functions, types for interfacing to owl *)

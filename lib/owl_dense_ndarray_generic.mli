@@ -859,7 +859,7 @@ val conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (flo
 (** [] *)
 
 
-(** {6 Some helper functions } *)
+(** {6 Some helper and experimental functions } *)
 
 (** The following functions are helper functions for some other functions in
   both Ndarray and Ndview modules. In general, you are not supposed to use
@@ -874,3 +874,11 @@ val print_index : int array -> unit
 
 val _check_transpose_axis : int array -> int -> unit
 (** [_check_transpose_axis a d] checks whether [a] is a legiti('a, 'b) te transpose index. *)
+
+val expand : ('a, 'b) t -> int -> ('a, 'b) t
+(* [expand x d] reshape x by increasing its rank from [num_dims x] to [d]. The
+  opposite operation is [squeeze x].
+ *)
+
+
+(* ends ehre *)

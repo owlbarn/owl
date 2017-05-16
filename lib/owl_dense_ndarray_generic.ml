@@ -1293,6 +1293,13 @@ let squeeze ?(axis=[||]) x =
   in
   reshape x s
 
+let expand x d =
+  let d0 = d - (num_dims x) in
+  match d0 > 0 with
+  | true  -> Array.(append (make d0 1) (shape x)) |> reshape x
+  | false -> x
+
+
 (* cast functions *)
 
 let cast_s2d x =
