@@ -50,6 +50,7 @@ let reset x = Genarray.fill x (_zero (kind x))
 
 let mmap fd ?pos kind shared dims = Genarray.map_file fd ?pos kind c_layout shared dims
 
+(* FIXME: optimise, no need to iterate all dimension *)
 let same_shape x y =
   if (num_dims x) <> (num_dims y) then false
   else (
@@ -74,12 +75,165 @@ let reverse x =
   y |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.reverse (kind x);
   y
 
-(* TODO: cast x to kind k *)
-let cast k x = None
+let tile x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "tile: repitition must be >= 1";
+  (* align and promote the shape *)
+  let a = num_dims x in
+  let b = Array.length reps in
+  let x, reps = match a < b with
+    | true -> (
+      let d = Owl_utils.array_pad `Left (shape x) 1 (b - a) in
+      (reshape x d), reps
+      )
+    | false -> (
+      let r = Owl_utils.array_pad `Left reps 1 (a - b) in
+      x, r
+      )
+  in
+  (* calculate the smallest continuous slice dx *)
+  let i = ref (Array.length reps - 1) in
+  let sx = shape x in
+  let dx = ref sx.(!i) in
+  while reps.(!i) = 1 && !i - 1 >= 0 do
+    i := !i - 1;
+    dx := !dx * sx.(!i);
+  done;
+  (* project x and y to 1-dimensional array s*)
+  let sy = Owl_utils.array_map2i (fun _ a b -> a * b) sx reps in
+  let y = empty (kind x) sy in
+  let x1 = Bigarray.reshape_1 x (numel x) in
+  let y1 = Bigarray.reshape_1 y (numel y) in
+  let stride_x = _calc_stride (shape x) in
+  let stride_y = _calc_stride (shape y) in
+  (* recursively tile the data within y *)
+  let rec _tile ofsx ofsy lvl =
+    if lvl = !i then (
+      let src = Array1.sub x1 ofsx !dx in
+      for k = 0 to reps.(lvl) - 1 do
+        let ofsy' = ofsy + (k * !dx) in
+        let dst = Array1.sub y1 ofsy' !dx in
+        Array1.blit src dst;
+      done;
+    ) else (
+      for j = 0 to sx.(lvl) - 1 do
+        let ofsx' = ofsx + j * stride_x.(lvl) in
+        let ofsy' = ofsy + j * stride_y.(lvl) in
+        _tile ofsx' ofsy' (lvl + 1);
+      done;
+      let _len = stride_y.(lvl) * sx.(lvl) in
+      let src = Array1.sub y1 ofsy _len in
+      for k = 1 to reps.(lvl) - 1 do
+        let dst = Array1.sub y1 (ofsy + (k * _len)) _len in
+        Array1.blit src dst;
+      done;
+    )
+  in
+  _tile 0 0 0; y
+
+let repeat ?axis x reps =
+  let _cp_op = _owl_copy (kind x) in
+  let highest_dim = Array.length (shape x) - 1 in
+  (* by default, repeat at the highest dimension *)
+  let axis = match axis with
+    | Some a -> a
+    | None   -> highest_dim
+  in
+  (* calculate the new shape of y based on reps *)
+  let _shape_y = shape x in
+  _shape_y.(axis) <- _shape_y.(axis) * reps;
+  let y = empty (kind x) _shape_y in
+  (* transform into genarray first *)
+  let x' = Bigarray.reshape_1 x (numel x) in
+  let y' = Bigarray.reshape_1 y (numel y) in
+  (* if repeat at the highest dimension, use this strategy *)
+  if axis = highest_dim then (
+    for i = 0 to reps - 1 do
+      ignore (_cp_op (numel x) ~ofsx:0 ~incx:1 ~ofsy:i ~incy:reps x' y')
+    done;
+  )
+  (* if repeat at another dimension, use this block copying *)
+  else (
+    let _stride_x = _calc_stride (shape x) in
+    let _slice_sz = _stride_x.(axis) in
+    (* be careful of the index, this is fortran layout *)
+    for i = 0 to (numel x) / _slice_sz - 1 do
+      let ofsx = i * _slice_sz in
+      for j = 0 to reps - 1 do
+        let ofsy = (i * reps + j) * _slice_sz in
+        ignore (_cp_op _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:1 x' y')
+      done;
+    done;
+  );
+  (* reshape y' back to ndarray before return result *)
+  let y' = genarray_of_array1 y' in
+  reshape y' _shape_y
+
+let squeeze ?(axis=[||]) x =
+  let a = match Array.length axis with
+    | 0 -> Array.init (num_dims x) (fun i -> i)
+    | _ -> axis
+  in
+  let s = Owl_utils.array_filteri (fun i v ->
+    not (v == 1 && Array.mem i a)
+  ) (shape x)
+  in
+  reshape x s
+
+let expand x d =
+  let d0 = d - (num_dims x) in
+  match d0 > 0 with
+  | true  -> Owl_utils.array_pad `Left (shape x) 1 d0 |> reshape x
+  | false -> x
+
 
 (* TODO: zpxy, zmxy, sort ... *)
 
 (* TODO: add axis paramater *)
+
+
+(* general broadcast operation for add/sub/mul/div and etc.
+  This function compares the dimension element-wise from the highest to the
+  lowest with the following broadcast rules (same as numpy):
+  1. equal; 2. either is 1.
+ *)
+let broadcast_op op x0 x1 =
+  (* align the rank of inputs *)
+  let d0 = num_dims x0 in
+  let d1 = num_dims x1 in
+  let d3 = max d0 d1 in
+  let y0 = expand x0 d3 in
+  let y1 = expand x1 d3 in
+  (* check whether the shape is valid *)
+  let sy0 = shape y0 in
+  let sy1 = shape y1 in
+  Array.iter2 (fun a b ->
+    if a <> 1 && b <> 1 && a <> b then
+      failwith "broadcast_op: slice not aligned"
+  ) sy0 sy1;
+  (* calculate the output shape *)
+  let s3 = Array.map2 max sy0 sy1 in
+  (* tile y0, i.e. x0 as output *)
+  let st = Array.map2 (fun a b -> a / b) s3 sy0 in
+  let x3 = tile y0 st in
+  (* tile x1 as x4 with orginal rank *)
+  let s1 = shape x1 in
+  let s4 = Array.sub s3 (d3-d1) d1 in
+  let st = Array.map2 (fun a b -> a / b) s4 s1 in
+  let x4 = tile x1 st in
+  (* reshape both into 2d matrices *)
+  let k = kind x4 in
+  let n = numel x4 in
+  let m = numel x3 / n in
+  let y4 = reshape x4 [|1;n|] |> array2_of_genarray in
+  let y3 = reshape x3 [|m;n|] |> array2_of_genarray in
+  (* call broadcast in eigen, return the tiled x3 *)
+  (_eigen_rowwise_op k) op y3 y4;
+  x3
+
+
+(* mathematical functions *)
 
 let min x = x |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.min (kind x)
 
@@ -114,32 +268,48 @@ let minmax_i x =
   (y.{i}, p), (y.{j}, q)
 
 let add x y =
-  let z = clone x in
-  let x = ndarray_to_c_mat z in
-  let y = ndarray_to_c_mat y in
-  let _ = Owl_backend_gsl_linalg.add (kind z) x y in
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = clone x in
+      let x = ndarray_to_c_mat z in
+      let y = ndarray_to_c_mat y in
+      let _ = Owl_backend_gsl_linalg.add (kind z) x y in
+      z
+    )
+  | false -> broadcast_op 0 x y
 
 let sub x y =
-  let z = clone x in
-  let x = ndarray_to_c_mat z in
-  let y = ndarray_to_c_mat y in
-  let _ = Owl_backend_gsl_linalg.sub (kind z) x y in
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = clone x in
+      let x = ndarray_to_c_mat z in
+      let y = ndarray_to_c_mat y in
+      let _ = Owl_backend_gsl_linalg.sub (kind z) x y in
+      z
+    )
+  | false -> broadcast_op 1 x y
 
 let mul x y =
-  let z = clone x in
-  let x = ndarray_to_c_mat z in
-  let y = ndarray_to_c_mat y in
-  let _ = Owl_backend_gsl_linalg.mul (kind z) x y in
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = clone x in
+      let x = ndarray_to_c_mat z in
+      let y = ndarray_to_c_mat y in
+      let _ = Owl_backend_gsl_linalg.mul (kind z) x y in
+      z
+    )
+  | false -> broadcast_op 2 x y
 
 let div x y =
-  let z = clone x in
-  let x = ndarray_to_c_mat z in
-  let y = ndarray_to_c_mat y in
-  let _ = Owl_backend_gsl_linalg.div (kind z) x y in
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = clone x in
+      let x = ndarray_to_c_mat z in
+      let y = ndarray_to_c_mat y in
+      let _ = Owl_backend_gsl_linalg.div (kind z) x y in
+      z
+  )
+  | false -> broadcast_op 3 x y
 
 let add_scalar x a =
   let z = clone x in
@@ -1186,118 +1356,6 @@ let prod ?axis x =
     let _op = _mul_elt (kind x) in
     fold ~axis (fun a y -> _op a y) _a1 x
   | None -> flatten x |> array1_of_genarray |> _owl_prod (kind x) (numel x)
-
-let tile x reps =
-  (* check the validity of reps *)
-  if Array.exists ((>) 1) reps then
-    failwith "tile: repitition must be >= 1";
-  (* align and promote the shape *)
-  let a = num_dims x in
-  let b = Array.length reps in
-  let x, reps = match a < b with
-    | true -> (
-      let d = Owl_utils.array_pad `Left (shape x) 1 (b - a) in
-      (reshape x d), reps
-      )
-    | false -> (
-      let r = Owl_utils.array_pad `Left reps 1 (a - b) in
-      x, r
-      )
-  in
-  (* calculate the smallest continuous slice dx *)
-  let i = ref (Array.length reps - 1) in
-  let sx = shape x in
-  let dx = ref sx.(!i) in
-  while reps.(!i) = 1 && !i - 1 >= 0 do
-    i := !i - 1;
-    dx := !dx * sx.(!i);
-  done;
-  (* project x and y to 1-dimensional array s*)
-  let sy = Owl_utils.array_map2i (fun _ a b -> a * b) sx reps in
-  let y = empty (kind x) sy in
-  let x1 = Bigarray.reshape_1 x (numel x) in
-  let y1 = Bigarray.reshape_1 y (numel y) in
-  let stride_x = _calc_stride (shape x) in
-  let stride_y = _calc_stride (shape y) in
-  (* recursively tile the data within y *)
-  let rec _tile ofsx ofsy lvl =
-    if lvl = !i then (
-      let src = Array1.sub x1 ofsx !dx in
-      for k = 0 to reps.(lvl) - 1 do
-        let ofsy' = ofsy + (k * !dx) in
-        let dst = Array1.sub y1 ofsy' !dx in
-        Array1.blit src dst;
-      done;
-    ) else (
-      for j = 0 to sx.(lvl) - 1 do
-        let ofsx' = ofsx + j * stride_x.(lvl) in
-        let ofsy' = ofsy + j * stride_y.(lvl) in
-        _tile ofsx' ofsy' (lvl + 1);
-      done;
-      let _len = stride_y.(lvl) * sx.(lvl) in
-      let src = Array1.sub y1 ofsy _len in
-      for k = 1 to reps.(lvl) - 1 do
-        let dst = Array1.sub y1 (ofsy + (k * _len)) _len in
-        Array1.blit src dst;
-      done;
-    )
-  in
-  _tile 0 0 0; y
-
-let repeat ?axis x reps =
-  let _cp_op = _owl_copy (kind x) in
-  let highest_dim = Array.length (shape x) - 1 in
-  (* by default, repeat at the highest dimension *)
-  let axis = match axis with
-    | Some a -> a
-    | None   -> highest_dim
-  in
-  (* calculate the new shape of y based on reps *)
-  let _shape_y = shape x in
-  _shape_y.(axis) <- _shape_y.(axis) * reps;
-  let y = empty (kind x) _shape_y in
-  (* transform into genarray first *)
-  let x' = Bigarray.reshape_1 x (numel x) in
-  let y' = Bigarray.reshape_1 y (numel y) in
-  (* if repeat at the highest dimension, use this strategy *)
-  if axis = highest_dim then (
-    for i = 0 to reps - 1 do
-      ignore (_cp_op (numel x) ~ofsx:0 ~incx:1 ~ofsy:i ~incy:reps x' y')
-    done;
-  )
-  (* if repeat at another dimension, use this block copying *)
-  else (
-    let _stride_x = _calc_stride (shape x) in
-    let _slice_sz = _stride_x.(axis) in
-    (* be careful of the index, this is fortran layout *)
-    for i = 0 to (numel x) / _slice_sz - 1 do
-      let ofsx = i * _slice_sz in
-      for j = 0 to reps - 1 do
-        let ofsy = (i * reps + j) * _slice_sz in
-        ignore (_cp_op _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:1 x' y')
-      done;
-    done;
-  );
-  (* reshape y' back to ndarray before return result *)
-  let y' = genarray_of_array1 y' in
-  reshape y' _shape_y
-
-let squeeze ?(axis=[||]) x =
-  let a = match Array.length axis with
-    | 0 -> Array.init (num_dims x) (fun i -> i)
-    | _ -> axis
-  in
-  let s = Owl_utils.array_filteri (fun i v ->
-    not (v == 1 && Array.mem i a)
-  ) (shape x)
-  in
-  reshape x s
-
-let expand x d =
-  let d0 = d - (num_dims x) in
-  match d0 > 0 with
-  | true  -> Array.(append (make d0 1) (shape x)) |> reshape x
-  | false -> x
 
 
 (* cast functions *)

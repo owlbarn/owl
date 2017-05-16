@@ -362,6 +362,7 @@ let map_at_col f x j = mapi_at_col (fun _ _ y -> f y) x j
 (* matrix mathematical operations *)
 
 (* TODO: optimise to get rid of tiling *)
+(*
 let _broadcast_add_mat_row x1 v =
   let x2 = tile v [|row_num x1; 1|] in
   let y1 = to_ndarray x1 in
@@ -369,7 +370,7 @@ let _broadcast_add_mat_row x1 v =
   let y3 = Owl_dense_ndarray_generic.add y1 y2 in
   of_ndarray y3
 
-let _broadcast_add x1 x2 =
+let _broadcast_add' x1 x2 =
   let m1, n1 = shape x1 in
   let m2, n2 = shape x2 in
   match m1 = m2, n1 = n2, m1 = 1, m2 = 1, n1 = 1, n2 = 1 with
@@ -379,14 +380,35 @@ let _broadcast_add x1 x2 =
   | false, true, false, true, _, _ -> _broadcast_add_mat_row x1 x2
   | _                              -> failwith "error: _broadcast_add"
 
-let add x1 x2 =
+let add' x1 x2 =
   if same_shape x1 x2 then (
     let y1 = to_ndarray x1 in
     let y2 = to_ndarray x2 in
     let y3 = Owl_dense_ndarray_generic.add y1 y2 in
     of_ndarray y3
   )
-  else _broadcast_add x1 x2
+  else _broadcast_add' x1 x2
+*)
+
+let _broadcast_add k x1 x2 m1 n1 m2 n2 =
+  match m1 = m2, n1 = n2, m1 = 1, m2 = 1, n1 = 1, n2 = 1 with
+  | true, false, _, _, true, false -> let y = clone x2 in (_eigen_colwise_op k) 0 y x1; y
+  | true, false, _, _, false, true -> let y = clone x1 in (_eigen_colwise_op k) 0 y x2; y
+  | false, true, true, false, _, _ -> let y = clone x2 in (_eigen_rowwise_op k) 0 y x1; y
+  | false, true, false, true, _, _ -> let y = clone x1 in (_eigen_rowwise_op k) 0 y x2; y
+  | _                              -> failwith "error: _broadcast_add"
+
+let add x1 x2 =
+  let m1, n1 = shape x1 in
+  let m2, n2 = shape x2 in
+  match m1 = m2, n1 = n2 with
+  | true, true -> (
+      let y1 = to_ndarray x1 in
+      let y2 = to_ndarray x2 in
+      let y3 = Owl_dense_ndarray_generic.add y1 y2 in
+      of_ndarray y3
+    )
+  | _, _      -> _broadcast_add (kind x1) x1 x2 m1 n1 m2 n2
 
 let sub x1 x2 =
   let y1 = to_ndarray x1 in
