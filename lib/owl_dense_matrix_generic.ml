@@ -359,44 +359,21 @@ let mapi_at_col f x j =
 
 let map_at_col f x j = mapi_at_col (fun _ _ y -> f y) x j
 
+
 (* matrix mathematical operations *)
 
-(* TODO: optimise to get rid of tiling *)
-(*
-let _broadcast_add_mat_row x1 v =
-  let x2 = tile v [|row_num x1; 1|] in
-  let y1 = to_ndarray x1 in
-  let y2 = to_ndarray x2 in
-  let y3 = Owl_dense_ndarray_generic.add y1 y2 in
-  of_ndarray y3
-
-let _broadcast_add' x1 x2 =
-  let m1, n1 = shape x1 in
-  let m2, n2 = shape x2 in
+(* general broadcast operations for add/sub/mul/div and etc.
+  s: string of operation
+  mv: operation index for [mat op vec]
+  vm: operation index for [vec op mat]
+ *)
+let _broadcast_op s k mv vm x1 x2 m1 n1 m2 n2 =
   match m1 = m2, n1 = n2, m1 = 1, m2 = 1, n1 = 1, n2 = 1 with
-  | true, false, _, _, true, false -> failwith "not implemented: col_vec + mat"
-  | true, false, _, _, false, true -> failwith "not implemented: mat + col_vec"
-  | false, true, true, false, _, _ -> _broadcast_add_mat_row x2 x1
-  | false, true, false, true, _, _ -> _broadcast_add_mat_row x1 x2
-  | _                              -> failwith "error: _broadcast_add"
-
-let add' x1 x2 =
-  if same_shape x1 x2 then (
-    let y1 = to_ndarray x1 in
-    let y2 = to_ndarray x2 in
-    let y3 = Owl_dense_ndarray_generic.add y1 y2 in
-    of_ndarray y3
-  )
-  else _broadcast_add' x1 x2
-*)
-
-let _broadcast_add k x1 x2 m1 n1 m2 n2 =
-  match m1 = m2, n1 = n2, m1 = 1, m2 = 1, n1 = 1, n2 = 1 with
-  | true, false, _, _, true, false -> let y = clone x2 in (_eigen_colwise_op k) 0 y x1; y
-  | true, false, _, _, false, true -> let y = clone x1 in (_eigen_colwise_op k) 0 y x2; y
-  | false, true, true, false, _, _ -> let y = clone x2 in (_eigen_rowwise_op k) 0 y x1; y
-  | false, true, false, true, _, _ -> let y = clone x1 in (_eigen_rowwise_op k) 0 y x2; y
-  | _                              -> failwith "error: _broadcast_add"
+  | true, false, _, _, true, false -> let y = clone x2 in (_eigen_colwise_op k) vm y x1; y
+  | true, false, _, _, false, true -> let y = clone x1 in (_eigen_colwise_op k) mv y x2; y
+  | false, true, true, false, _, _ -> let y = clone x2 in (_eigen_rowwise_op k) vm y x1; y
+  | false, true, false, true, _, _ -> let y = clone x1 in (_eigen_rowwise_op k) mv y x2; y
+  | _                              -> failwith ("_broadcast_op: " ^ s)
 
 let add x1 x2 =
   let m1, n1 = shape x1 in
@@ -408,25 +385,43 @@ let add x1 x2 =
       let y3 = Owl_dense_ndarray_generic.add y1 y2 in
       of_ndarray y3
     )
-  | _, _      -> _broadcast_add (kind x1) x1 x2 m1 n1 m2 n2
+  | _, _      -> _broadcast_op "( + )" (kind x1) 0 0 x1 x2 m1 n1 m2 n2
 
 let sub x1 x2 =
-  let y1 = to_ndarray x1 in
-  let y2 = to_ndarray x2 in
-  let y3 = Owl_dense_ndarray_generic.sub y1 y2 in
-  of_ndarray y3
+  let m1, n1 = shape x1 in
+  let m2, n2 = shape x2 in
+  match m1 = m2, n1 = n2 with
+  | true, true -> (
+      let y1 = to_ndarray x1 in
+      let y2 = to_ndarray x2 in
+      let y3 = Owl_dense_ndarray_generic.sub y1 y2 in
+      of_ndarray y3
+    )
+  | _, _      -> _broadcast_op "( - )" (kind x1) 1 4 x1 x2 m1 n1 m2 n2
 
 let mul x1 x2 =
-  let y1 = to_ndarray x1 in
-  let y2 = to_ndarray x2 in
-  let y3 = Owl_dense_ndarray_generic.mul y1 y2 in
-  of_ndarray y3
+  let m1, n1 = shape x1 in
+  let m2, n2 = shape x2 in
+  match m1 = m2, n1 = n2 with
+  | true, true -> (
+      let y1 = to_ndarray x1 in
+      let y2 = to_ndarray x2 in
+      let y3 = Owl_dense_ndarray_generic.mul y1 y2 in
+      of_ndarray y3
+    )
+  | _, _      -> _broadcast_op "( * )" (kind x1) 2 2 x1 x2 m1 n1 m2 n2
 
 let div x1 x2 =
-  let y1 = to_ndarray x1 in
-  let y2 = to_ndarray x2 in
-  let y3 = Owl_dense_ndarray_generic.div y1 y2 in
-  of_ndarray y3
+  let m1, n1 = shape x1 in
+  let m2, n2 = shape x2 in
+  match m1 = m2, n1 = n2 with
+  | true, true -> (
+      let y1 = to_ndarray x1 in
+      let y2 = to_ndarray x2 in
+      let y3 = Owl_dense_ndarray_generic.div y1 y2 in
+      of_ndarray y3
+    )
+  | _, _      -> _broadcast_op "( / )" (kind x1) 3 5 x1 x2 m1 n1 m2 n2
 
 (* let dot x1 x2 = _eigen_dot (kind x1) x1 x2 *)
 let dot x1 x2 = Owl_backend_gsl_linalg.dot (kind x1) x1 x2
