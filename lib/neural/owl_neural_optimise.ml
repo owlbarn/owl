@@ -6,6 +6,29 @@
 open Owl_algodiff.S
 
 
+(* This module contains the helper fucntions used by other sub-modules. They are
+  useful but not general enough to be included in Algodiff.[S|D].Maths module. *)
+module Utils = struct
+
+  let draw_samples x y n =
+    match x, y with
+    | Arr x, Mat y -> (
+        let x, i = Owl_dense_ndarray_generic.draw_along_dim0 x n in
+        let y = Owl_dense_matrix_generic.rows y i in
+        Arr x, Mat y
+      )
+    | Mat x, Mat y -> let x, y, _ = Owl_dense_matrix_generic.draw_rows2 ~replacement:false x y n in Mat x, Mat y
+    | x, y         -> failwith ("Owl_neural_optimise.Utils.draw_samples:" ^ (type_info x))
+
+  let sample_num x =
+    match x with
+    | Arr _ -> Arr.(shape x).(0)
+    | Mat _ -> Mat.row_num x
+    | x     -> failwith ("Owl_neural_optimise.Utils.sample_num:" ^ (type_info x))
+
+end
+
+
 module Learning_Rate = struct
 
   type typ =
@@ -57,13 +80,13 @@ module Batch = struct
 
   let run typ x y = match typ with
     | Full       -> x, y
-    | Mini c     -> let x, y, _ = Mat.draw_rows2 ~replacement:false x y c in x, y
-    | Stochastic -> let x, y, _ = Mat.draw_rows2 ~replacement:false x y 1 in x, y
+    | Mini c     -> Utils.draw_samples x y c
+    | Stochastic -> Utils.draw_samples x y 1
 
   let batches typ x = match typ with
     | Full       -> 1
-    | Mini c     -> Mat.row_num x / c
-    | Stochastic -> Mat.row_num x
+    | Mini c     -> Utils.sample_num x / c
+    | Stochastic -> Utils.sample_num x
 
   let to_string = function
     | Full       -> "full"
@@ -201,7 +224,7 @@ module Clipping = struct
     | None
 
   let run typ x = match typ with
-    | L2norm t     -> Mat.clip_by_l2norm (F t) x
+    | L2norm t     -> clip_by_l2norm t x
     | Value (a, b) -> failwith "not implemented"  (* TODO *)
     | None         -> x
 
@@ -327,6 +350,12 @@ let train_nn params forward backward update x y =
     let xt, yt = batch x y in
     let yt', ws = forward xt in
     let loss = Maths.(loss_fun yt yt') in
+    (* DEBUG *)
+    Printf.printf "===> %g \n" (unpack_flt loss);
+    Owl_dense_matrix_generic.print (unpack_mat yt);
+    Owl_dense_matrix_generic.print (unpack_mat yt');
+    flush_all ();
+    exit 0;
     (* take the average of the loss *)
     let loss = Maths.(loss / (F (Mat.row_num yt |> float_of_int))) in
     (* add regularisation term if necessary *)
@@ -336,7 +365,8 @@ let train_nn params forward backward update x y =
     in
     let loss = Maths.(loss + reg) in
     let ws, gs' = backward loss in
-    loss |> primal', ws, gs' in
+    loss |> primal', ws, gs'
+  in
 
   (* first iteration to bootstrap the training *)
   let t0 = Unix.time () in

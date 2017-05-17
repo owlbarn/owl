@@ -494,6 +494,15 @@ module Make
     | F a  -> Mat (M.create m n a)
     | _ -> failwith "error: AD.mat_create"
 
+  let clip_by_l2norm a x =
+    match primal' x with
+    | Arr x -> Arr A.(clip_by_l2norm a x)
+    | Mat x -> Mat M.(clip_by_l2norm a x)
+    | _     -> failwith "error: AD.clip_by_l2norm"
+
+
+  (* packing and unpacking functions *)
+
   let pack_arr x = Arr x
 
   let unpack_arr x =
@@ -1708,6 +1717,8 @@ module Make
     let reshape x s = Maths.reshape x s
 
     let shape x = A.shape (unpack_arr x)
+
+    let numel x = numel x
 
   end
 

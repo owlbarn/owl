@@ -67,6 +67,19 @@ let test_model nn x y =
   ) (Mat x) (Mat y)
 
 
+let train_cnn ?params nn x y =
+  Feedforward.init nn;
+  let f = Feedforward.forward nn in
+  let b = Feedforward.backward nn in
+  let u = Feedforward.update nn in
+  let p = match params with
+    | Some p -> p
+    | None   -> Owl_neural_optimise.Params.default ()
+  in
+  let x, y = Arr x, Mat y in
+  Owl_neural_optimise.train_nn p f b u x y
+
+
 (* I/O functions *)
 
 let print nn = Feedforward.to_string nn |> Printf.printf "%s"

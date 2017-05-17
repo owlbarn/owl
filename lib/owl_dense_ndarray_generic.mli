@@ -886,6 +886,12 @@ val sum_slices : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
   more memory.
  *)
 
+(* val draw_slices : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array array *)
+(** [] *)
+
+val slice_along_dim0 : ('a, 'b) t -> int array -> ('a, 'b) t
+
+val draw_along_dim0 : ('a, 'b) t -> int -> ('a, 'b) t * int array
 
 
 (* ends ehre *)

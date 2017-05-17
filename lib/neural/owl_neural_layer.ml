@@ -597,7 +597,7 @@ module Conv2D = struct
     b        = Arr.empty [|o|];
     s        = s;
     padding  = padding;
-    init_typ = Init.Standard;
+    init_typ = Init.Uniform (0.,0.01);
   }
 
   let init l =
@@ -677,8 +677,12 @@ module FullyConnected = struct
     l.b <- u.(1) |> primal'
 
   let run x l =
-    let x = Maths.(x |> flatten |> arr_to_mat) in
-    Maths.((x *@ l.w) + l.b)
+    let m = Mat.row_num l.w in
+    let n = Arr.numel x / m in
+    let x = Maths.(reshape x [|n;m|] |> arr_to_mat) in
+    let y = Maths.((x *@ l.w) + l.b) in
+    (* Owl_dense_matrix_generic.print (unpack_mat y); flush_all (); *)
+    y
 
   let to_string l =
     let wm, wn = Mat.shape l.w in

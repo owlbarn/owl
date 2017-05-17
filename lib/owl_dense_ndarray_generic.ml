@@ -1554,10 +1554,12 @@ let conv2d ?(padding=SAME) input kernel stride =
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
   (* FIXME: DEBUG *)
+  (*
   Printf.printf "input:\t [ b:%i, c:%i, r:%i, i:%i ]\n" batches input_cols input_rows in_channel;
   Printf.printf "kernel:\t [ c:%i, r:%i, i:%i, o:%i ]\n" kernel_cols kernel_rows in_channel out_channel;
   Printf.printf "output:\t [ b:%i, c:%i, r:%i, o:%i ]\n" batches output_cols output_rows out_channel;
   flush_all ();
+  *)
 
   _eigen_spatial_conv (kind input)
     input kernel output batches input_cols input_rows in_channel
@@ -1700,10 +1702,12 @@ let conv3d ?(padding=SAME) input kernel stride =
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
   (* FIXME: DEBUG *)
+  (*
   Printf.printf "input:\t [ b:%i, c:%i, r:%i, d:%i, i:%i ]\n" batches input_cols input_rows input_dpts in_channel;
   Printf.printf "kernel:\t [ c:%i, r:%i, d:%i, i:%i, o:%i ]\n" kernel_cols kernel_rows kernel_dpts in_channel out_channel;
   Printf.printf "output:\t [ b:%i, c:%i, r:%i, d:%i, o:%i ]\n" batches output_cols output_rows output_dpts out_channel;
   flush_all ();
+  *)
 
   _eigen_cuboid_conv (kind input)
     input kernel output batches
@@ -1816,6 +1820,51 @@ let sum_slices ?axis x =
   (* reshape back into ndarray *)
   let s = Array.(sub s axis (length s - axis)) in
   reshape (genarray_of_array2 y) s
+
+
+(* FIXME: experimental *)
+let draw_slices ?(axis=0) x n =
+  let shp = shape x in
+  let pre = Array.sub shp 0 axis in
+  let pad_len = num_dims x - axis - 1 in
+  let indices = Array.init n (fun _ ->
+    let idx_pre = Array.map (fun b -> Owl_stats.Rnd.uniform_int ~a:0 ~b:(b-1) ()) pre in
+    Owl_utils.(array_pad `Right idx_pre 0 pad_len)
+  ) in
+  (* copy slices to the output array *)
+  let sfx = Array.sub shp axis (num_dims x - axis) in
+  let y = empty (kind x) Array.(append [|n|] sfx) in
+  let jdx = Array.make (num_dims y) 0 in
+  Array.iteri (fun i idx ->
+    let s = Genarray.slice_left x idx in
+    let src = reshape s sfx in
+    jdx.(0) <- i;
+    let s = Genarray.slice_left y jdx in
+    let dst = reshape s sfx in
+    Genarray.blit src dst;
+  ) indices;
+  y, indices
+
+(* FIXME: experimental *)
+let slice_along_dim0 x indices =
+  let shp = shape x in
+  let n = Array.length indices in
+  shp.(0) <- n;
+  let y = empty (kind x) shp in
+
+  Array.iteri (fun dst_idx src_idx ->
+    let src = Genarray.slice_left x [|src_idx|] in
+    let dst = Genarray.slice_left y [|dst_idx|] in
+    Genarray.blit src dst;
+  ) indices;
+  y
+
+
+(* FIXME: experimental *)
+let draw_along_dim0 x n =
+  let all_indices = Array.init (shape x).(0) (fun i -> i) in
+  let indices = Owl_stats.choose all_indices n in
+  (slice_along_dim0 x indices), indices
 
 
 

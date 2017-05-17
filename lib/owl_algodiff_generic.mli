@@ -484,6 +484,8 @@ module Make
 
     val shape : t -> int * int
 
+    val numel : t -> int
+
     val row_num : t -> int
 
     val col_num : t -> int
@@ -530,6 +532,8 @@ module Make
     val gaussian : ?sigma:float -> int array -> t
 
     val shape : t -> int array
+
+    val numel : t -> int
 
     val reset : t -> unit
 
@@ -613,9 +617,13 @@ module Make
 
   val pack_flt : elt -> t
 
-  val pack_mat : mat -> t
-
   val unpack_flt : t -> elt
+
+  val pack_arr : arr -> t
+
+  val unpack_arr : t -> arr
+
+  val pack_mat : mat -> t
 
   val unpack_mat : t -> mat
 
@@ -638,6 +646,11 @@ module Make
   val reverse_prop : t -> t -> unit
 
   val type_info : t -> string
+
+
+  (* other functions, without tracking gradient *)
+
+  val clip_by_l2norm : elt -> t -> t
 
 
 end
