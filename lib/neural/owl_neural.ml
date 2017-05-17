@@ -43,6 +43,9 @@ let gru inputs cells = GRU (GRU.create inputs cells)
 let conv2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel_width kernel_height in_chanel out_channel strides =
   Conv2D (Conv2D.create padding kernel_width kernel_height in_chanel out_channel strides)
 
+let fully_connected ?(init_typ = Init.Standard) inputs outputs =
+  FullyConnected (FullyConnected.create inputs outputs init_typ )
+
 let train ?params nn x y =
   Feedforward.init nn;
   let f = Feedforward.forward nn in

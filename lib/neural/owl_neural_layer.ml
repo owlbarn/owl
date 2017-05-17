@@ -638,16 +638,72 @@ module Conv2D = struct
 end
 
 
+(* definition of FullyConnected layer *)
+module FullyConnected = struct
+
+  type layer = {
+    mutable w : t;
+    mutable b : t;
+    mutable init_typ : Init.typ;
+  }
+
+  let create i o init_typ = {
+    w = Mat.empty i o;
+    b = Mat.empty 1 o;
+    init_typ = init_typ;
+  }
+
+  let init l =
+    let m, n = Mat.shape l.w in
+    l.w <- Init.run l.init_typ m n;
+    l.b <- Mat.zeros 1 n
+
+  let reset l =
+    Mat.reset l.w;
+    Mat.reset l.b
+
+  let mktag t l =
+    l.w <- make_reverse l.w t;
+    l.b <- make_reverse l.b t
+
+  let mkpar l = [|l.w; l.b|]
+
+  let mkpri l = [|primal l.w; primal l.b|]
+
+  let mkadj l = [|adjval l.w; adjval l.b|]
+
+  let update l u =
+    l.w <- u.(0) |> primal';
+    l.b <- u.(1) |> primal'
+
+  let run x l =
+    let x = Maths.(x |> flatten |> arr_to_mat) in
+    Maths.((x *@ l.w) + l.b)
+
+  let to_string l =
+    let wm, wn = Mat.shape l.w in
+    let bm, bn = Mat.shape l.b in
+    Printf.sprintf "FullyConnected layer:\n" ^
+    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params : %i\n" (wm * wn + bn) ^
+    Printf.sprintf "    w      : %i x %i\n" wm wn ^
+    Printf.sprintf "    b      : %i x %i\n" bm bn ^
+    ""
+
+end
+
+
 (* type and functions of neural network *)
 
 type layer =
-  | Linear       of Linear.layer
-  | LinearNoBias of LinearNoBias.layer
-  | LSTM         of LSTM.layer
-  | GRU          of GRU.layer
-  | Recurrent    of Recurrent.layer
-  | Conv2D       of Conv2D.layer
-  | Activation   of Activation.typ
+  | Linear         of Linear.layer
+  | LinearNoBias   of LinearNoBias.layer
+  | LSTM           of LSTM.layer
+  | GRU            of GRU.layer
+  | Recurrent      of Recurrent.layer
+  | Conv2D         of Conv2D.layer
+  | FullyConnected of FullyConnected.layer
+  | Activation     of Activation.typ
 
 type network = {
   mutable layers : layer array;
@@ -669,85 +725,93 @@ module Feedforward = struct
     | None     -> ()
 
   let init nn = Array.iter (function
-    | Linear l       -> Linear.init l
-    | LinearNoBias l -> LinearNoBias.init l
-    | LSTM l         -> LSTM.init l
-    | GRU l          -> GRU.init l
-    | Recurrent l    -> Recurrent.init l
-    | Conv2D l       -> Conv2D.init l
-    | _              -> () (* activation *)
+    | Linear l         -> Linear.init l
+    | LinearNoBias l   -> LinearNoBias.init l
+    | LSTM l           -> LSTM.init l
+    | GRU l            -> GRU.init l
+    | Recurrent l      -> Recurrent.init l
+    | Conv2D l         -> Conv2D.init l
+    | FullyConnected l -> FullyConnected.init l
+    | _                -> () (* activation *)
     ) nn.layers
 
   let reset nn = Array.iter (function
-    | Linear l       -> Linear.reset l
-    | LinearNoBias l -> LinearNoBias.reset l
-    | LSTM l         -> LSTM.reset l
-    | GRU l          -> GRU.reset l
-    | Recurrent l    -> Recurrent.reset l
-    | Conv2D l       -> Conv2D.reset l
-    | _              -> () (* activation *)
+    | Linear l          -> Linear.reset l
+    | LinearNoBias l   -> LinearNoBias.reset l
+    | LSTM l           -> LSTM.reset l
+    | GRU l            -> GRU.reset l
+    | Recurrent l      -> Recurrent.reset l
+    | Conv2D l         -> Conv2D.reset l
+    | FullyConnected l -> FullyConnected.reset l
+    | _                -> () (* activation *)
     ) nn.layers
 
   let mktag t nn = Array.iter (function
-    | Linear l       -> Linear.mktag t l
-    | LinearNoBias l -> LinearNoBias.mktag t l
-    | LSTM l         -> LSTM.mktag t l
-    | GRU l          -> GRU.mktag t l
-    | Recurrent l    -> Recurrent.mktag t l
-    | Conv2D l       -> Conv2D.mktag t l
-    | _              -> () (* activation *)
+    | Linear l         -> Linear.mktag t l
+    | LinearNoBias l   -> LinearNoBias.mktag t l
+    | LSTM l           -> LSTM.mktag t l
+    | GRU l            -> GRU.mktag t l
+    | Recurrent l      -> Recurrent.mktag t l
+    | Conv2D l         -> Conv2D.mktag t l
+    | FullyConnected l -> FullyConnected.mktag t l
+    | _                -> () (* activation *)
     ) nn.layers
 
   let mkpar nn = Array.map (function
-    | Linear l       -> Linear.mkpar l
-    | LinearNoBias l -> LinearNoBias.mkpar l
-    | LSTM l         -> LSTM.mkpar l
-    | GRU l          -> GRU.mkpar l
-    | Recurrent l    -> Recurrent.mkpar l
-    | Conv2D l       -> Conv2D.mkpar l
-    | _              -> [||] (* activation *)
+    | Linear l         -> Linear.mkpar l
+    | LinearNoBias l   -> LinearNoBias.mkpar l
+    | LSTM l           -> LSTM.mkpar l
+    | GRU l            -> GRU.mkpar l
+    | Recurrent l      -> Recurrent.mkpar l
+    | Conv2D l         -> Conv2D.mkpar l
+    | FullyConnected l -> FullyConnected.mkpar l
+    | _                -> [||] (* activation *)
     ) nn.layers
 
   let mkpri nn = Array.map (function
-    | Linear l       -> Linear.mkpri l
-    | LinearNoBias l -> LinearNoBias.mkpri l
-    | LSTM l         -> LSTM.mkpri l
-    | GRU l          -> GRU.mkpri l
-    | Recurrent l    -> Recurrent.mkpri l
-    | Conv2D l       -> Conv2D.mkpri l
-    | _              -> [||] (* activation *)
+    | Linear l         -> Linear.mkpri l
+    | LinearNoBias l   -> LinearNoBias.mkpri l
+    | LSTM l           -> LSTM.mkpri l
+    | GRU l            -> GRU.mkpri l
+    | Recurrent l      -> Recurrent.mkpri l
+    | Conv2D l         -> Conv2D.mkpri l
+    | FullyConnected l -> FullyConnected.mkpri l
+    | _                -> [||] (* activation *)
     ) nn.layers
 
   let mkadj nn = Array.map (function
-    | Linear l       -> Linear.mkadj l
-    | LinearNoBias l -> LinearNoBias.mkadj l
-    | LSTM l         -> LSTM.mkadj l
-    | GRU l          -> GRU.mkadj l
-    | Recurrent l    -> Recurrent.mkadj l
-    | Conv2D l       -> Conv2D.mkadj l
-    | _              -> [||] (* activation *)
+    | Linear l         -> Linear.mkadj l
+    | LinearNoBias l   -> LinearNoBias.mkadj l
+    | LSTM l           -> LSTM.mkadj l
+    | GRU l            -> GRU.mkadj l
+    | Recurrent l      -> Recurrent.mkadj l
+    | Conv2D l         -> Conv2D.mkadj l
+    | FullyConnected l -> FullyConnected.mkadj l
+    | _                -> [||] (* activation *)
     ) nn.layers
 
   let update nn us = Array.map2 (fun l u ->
     match l with
-    | Linear l       -> Linear.update l u
-    | LinearNoBias l -> LinearNoBias.update l u
-    | LSTM l         -> LSTM.update l u
-    | GRU l          -> GRU.update l u
-    | Recurrent l    -> Recurrent.update l u
-    | Conv2D l       -> Conv2D.update l u
-    | _              -> () (* activation *)
+    | Linear l         -> Linear.update l u
+    | LinearNoBias l   -> LinearNoBias.update l u
+    | LSTM l           -> LSTM.update l u
+    | GRU l            -> GRU.update l u
+    | Recurrent l      -> Recurrent.update l u
+    | Conv2D l         -> Conv2D.update l u
+    | FullyConnected l -> FullyConnected.update l u
+    | _                -> () (* activation *)
     ) nn.layers us
 
   let run x nn = Array.fold_left (fun a l ->
     match l with
-    | Linear l       -> Linear.run a l
-    | LinearNoBias l -> LinearNoBias.run a l
-    | LSTM l         -> LSTM.run a l
-    | GRU l          -> GRU.run a l
-    | Recurrent l    -> Recurrent.run a l
-    | Conv2D l       -> Conv2D.run a l
-    | Activation l   -> Activation.run a l
+    | Linear l         -> Linear.run a l
+    | LinearNoBias l   -> LinearNoBias.run a l
+    | LSTM l           -> LSTM.run a l
+    | GRU l            -> GRU.run a l
+    | Recurrent l      -> Recurrent.run a l
+    | Conv2D l         -> Conv2D.run a l
+    | FullyConnected l -> FullyConnected.run a l
+    | Activation l     -> Activation.run a l
     ) x nn.layers
 
   let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
@@ -764,13 +828,14 @@ module Feedforward = struct
     let s = ref "Feedforward network\n\n" in
     for i = 0 to Array.length nn.layers - 1 do
       let t = match nn.layers.(i) with
-        | Linear l       -> Linear.to_string l
-        | LinearNoBias l -> LinearNoBias.to_string l
-        | LSTM l         -> LSTM.to_string l
-        | GRU l          -> GRU.to_string l
-        | Recurrent l    -> Recurrent.to_string l
-        | Conv2D l       -> Conv2D.to_string l
-        | Activation l   -> Activation.to_string l
+        | Linear l         -> Linear.to_string l
+        | LinearNoBias l   -> LinearNoBias.to_string l
+        | LSTM l           -> LSTM.to_string l
+        | GRU l            -> GRU.to_string l
+        | Recurrent l      -> Recurrent.to_string l
+        | Conv2D l         -> Conv2D.to_string l
+        | FullyConnected l -> FullyConnected.to_string l
+        | Activation l     -> Activation.to_string l
       in
       s := !s ^ (Printf.sprintf "(%i): %s\n" i t)
     done; !s

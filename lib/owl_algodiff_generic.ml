@@ -329,7 +329,7 @@ end
 
 module Make
   (M : MatrixSig)
-  (A : NdarraySig)
+  (A : NdarraySig with type elt = M.elt and type arr = M.arr)
   = struct
 
   (* type definitions *)
@@ -416,6 +416,8 @@ module Make
     | Conv2D_D_C  of t * t * int array
     | Conv2D_C_D  of t * t * int array
     | Reshape_D   of t
+    | Mat2Arr_D   of t
+    | Arr2Mat_D   of t
 
 
   (* generate global tags *)
@@ -1246,7 +1248,6 @@ module Make
       A.conv2d_backward_kernel a b s o
       |> pack_arr
 
-
     and reshape a s =
       let ff = function
         | Arr a    -> Arr A.(reshape a s)
@@ -1256,6 +1257,28 @@ module Make
       let fd a = reshape a s in
       let df cp ap at = reshape at s in
       let r a = Reshape_D a in
+      op_d_d a ff fd df r
+
+    and flatten a = reshape a [|1; numel a|]
+
+    and mat_to_arr a =
+      let ff = function
+        | Mat a    -> Arr M.(to_ndarray a)
+        | _        -> error_uniop "mat_to_arr" a
+      in
+      let fd a = mat_to_arr a in
+      let df cp ap at = mat_to_arr at in
+      let r a = Mat2Arr_D a in
+      op_d_d a ff fd df r
+
+    and arr_to_mat a =
+      let ff = function
+        | Arr a    -> Mat M.(of_ndarray a)
+        | _        -> error_uniop "arr_to_mat" a
+      in
+      let fd a = arr_to_mat a in
+      let df cp ap at = arr_to_mat at in
+      let r a = Arr2Mat_D a in
       op_d_d a ff fd df r
 
     (* TODO: trace and diag functions ... *)
@@ -1346,6 +1369,8 @@ module Make
               | Conv2D_D_C (a, _, _)  -> reset (a :: t)
               | Conv2D_C_D (_, b, _)  -> reset (b :: t)
               | Reshape_D a           -> reset (a :: t)
+              | Mat2Arr_D a           -> reset (a :: t)
+              | Arr2Mat_D a           -> reset (a :: t)
               )
             else reset t
             )
@@ -1452,6 +1477,8 @@ module Make
               | Conv2D_D_C (a, b, s)  -> push ((conv2d_backward_input a b s !aa, a) :: t)
               | Conv2D_C_D (a, b, s)  -> push ((conv2d_backward_kernel a b s !aa, b) :: t)
               | Reshape_D a           -> push ((reshape !aa (shape (primal a)), a) :: t)
+              | Mat2Arr_D a           -> push ((arr_to_mat !aa, a) :: t)
+              | Arr2Mat_D a           -> push ((mat_to_arr !aa, a) :: t)
               )
             else push t
             )

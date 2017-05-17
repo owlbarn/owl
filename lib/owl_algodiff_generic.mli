@@ -329,7 +329,10 @@ end
   Currently, Dense.Matrix.S and Dense.Matrix.D can be plugged in to suppport
   32-bit and 64-bit two precisions.} *)
 
-module Make (M : MatrixSig) (A : NdarraySig with type elt = M.elt and type arr = M.arr) : sig
+module Make
+  (M : MatrixSig)
+  (A : NdarraySig with type elt = M.elt and type arr = M.arr)
+  : sig
 
   type arr = A.arr
   type mat = M.mat
@@ -453,6 +456,14 @@ module Make (M : MatrixSig) (A : NdarraySig with type elt = M.elt and type arr =
     val ( ** )  : t -> t -> t
 
     val conv2d : ?padding:padding -> t -> t -> int array -> t
+
+    val reshape : t -> int array -> t
+
+    val flatten : t -> t
+
+    val mat_to_arr : t -> t
+
+    val arr_to_mat : t -> t
 
   end
 
