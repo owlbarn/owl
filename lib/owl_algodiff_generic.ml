@@ -11,7 +11,7 @@ module S = Pervasives
 module type MatrixSig = sig
 
   type mat
-
+  type arr
   type elt = float
 
   (* creation and operation functions *)
@@ -63,6 +63,10 @@ module type MatrixSig = sig
   val of_arrays : elt array array -> mat
 
   val of_rows: mat array -> mat
+
+  val to_ndarray : mat -> arr
+
+  val of_ndarray : arr -> mat
 
   val print : mat -> unit
 
@@ -182,7 +186,6 @@ end
 module type NdarraySig = sig
 
   type arr
-
   type elt = float
 
   (* creation and operation functions *)
@@ -326,7 +329,7 @@ end
 
 module Make
   (M : MatrixSig)
-  (A : NdarraySig with type elt := M.elt)
+  (A : NdarraySig)
   = struct
 
   (* type definitions *)

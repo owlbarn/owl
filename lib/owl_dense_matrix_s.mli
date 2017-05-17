@@ -7,6 +7,7 @@ open Bigarray
 
 type elt = float
 type mat = (float, float32_elt) Owl_dense_matrix_generic.t
+type arr = (float, float32_elt) Owl_dense_ndarray_generic.t
 
 
 (** {6 Create dense matrices} *)
@@ -292,9 +293,9 @@ val to_arrays : mat -> elt array array
 
 val of_arrays : elt array array -> mat
 
-val to_ndarray : mat -> (float, float32_elt) Owl_dense_ndarray_generic.t
+val to_ndarray : mat -> arr
 
-val of_ndarray : (float, float32_elt) Owl_dense_ndarray_generic.t -> mat
+val of_ndarray : arr -> mat
 
 val to_rows : mat -> mat array
 

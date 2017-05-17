@@ -10,7 +10,7 @@
 module type MatrixSig = sig
 
   type mat
-
+  type arr
   type elt = float
 
   (* creation and operation functions *)
@@ -62,6 +62,10 @@ module type MatrixSig = sig
   val of_arrays : elt array array -> mat
 
   val of_rows: mat array -> mat
+
+  val to_ndarray : mat -> arr
+
+  val of_ndarray : arr -> mat
 
   val print : mat -> unit
 
@@ -325,7 +329,7 @@ end
   Currently, Dense.Matrix.S and Dense.Matrix.D can be plugged in to suppport
   32-bit and 64-bit two precisions.} *)
 
-module Make (M : MatrixSig) (A : NdarraySig) : sig
+module Make (M : MatrixSig) (A : NdarraySig with type elt = M.elt and type arr = M.arr) : sig
 
   type arr = A.arr
   type mat = M.mat
