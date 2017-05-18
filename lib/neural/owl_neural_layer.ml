@@ -597,11 +597,11 @@ module Conv2D = struct
     b        = Arr.empty [|o|];
     s        = s;
     padding  = padding;
-    init_typ = Init.Uniform (0.,0.01);
+    init_typ = Init.Uniform (0.,1.);
   }
 
   let init l =
-    l.w <- Arr.(uniform (shape l.w));
+    l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
     l.b <- Arr.(zeros (shape l.b))
 
   let reset l =
@@ -619,6 +619,11 @@ module Conv2D = struct
   let mkadj l = [|adjval l.w; adjval l.b|]
 
   let update l u =
+    (* DEBUG
+    let x = u.(0) |> primal' |> unpack_arr in
+    let a = Owl_dense_ndarray_generic.sum x in
+    Printf.printf "===> %g\n" a;
+    flush_all (); exit 0; *)
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
 
@@ -673,6 +678,9 @@ module FullyConnected = struct
   let mkadj l = [|adjval l.w; adjval l.b|]
 
   let update l u =
+    (* DEBUG
+    let x = u.(1) |> primal' |> unpack_mat in
+    Owl_dense_matrix_generic.print x; flush_all (); exit 0; *)
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
 
@@ -680,6 +688,7 @@ module FullyConnected = struct
     let m = Mat.row_num l.w in
     let n = Arr.numel x / m in
     let x = Maths.(reshape x [|n;m|] |> arr_to_mat) in
+    (* Owl_dense_matrix_generic.print (unpack_mat x); *)
     let y = Maths.((x *@ l.w) + l.b) in
     (* Owl_dense_matrix_generic.print (unpack_mat y); flush_all (); *)
     y

@@ -350,12 +350,12 @@ let train_nn params forward backward update x y =
     let xt, yt = batch x y in
     let yt', ws = forward xt in
     let loss = Maths.(loss_fun yt yt') in
-    (* DEBUG *)
+    (* DEBUG
     Printf.printf "===> %g \n" (unpack_flt loss);
     Owl_dense_matrix_generic.print (unpack_mat yt);
     Owl_dense_matrix_generic.print (unpack_mat yt');
     flush_all ();
-    exit 0;
+    exit 0; *)
     (* take the average of the loss *)
     let loss = Maths.(loss / (F (Mat.row_num yt |> float_of_int))) in
     (* add regularisation term if necessary *)

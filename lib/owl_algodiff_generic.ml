@@ -72,6 +72,8 @@ module type MatrixSig = sig
 
   (* mathematical functions *)
 
+  val max : mat -> elt
+
   val abs : mat -> mat
 
   val neg : mat -> mat
@@ -205,6 +207,8 @@ module type NdarraySig = sig
   val reset : arr -> unit
 
   val reshape : arr -> int array -> arr
+
+  val sum_slices : ?axis:int -> arr -> arr
 
   (* mathematical functions *)
 
@@ -1174,7 +1178,8 @@ module Make
 
     (* FIXME: use numerically stable version *)
     and softmax x =
-      let y = exp x in
+      let c = F M.(max (unpack_mat x)) in
+      let y = exp (x - c) in
       let a = sum y in
       y / a
 
@@ -1396,11 +1401,16 @@ module Make
       match a, v with
       | F _, Mat v -> F (M.sum v)
       | Mat a, Mat v -> (
-        (* check if this is due to previous broadcast operation *)
-        (* FIXME: need to check full-shape, sum_cols if necessary *)
-        match M.(shape a = shape v) with
-        | true  -> Mat v
-        | false -> Mat (M.sum_rows v)
+          (* check if this is due to previous broadcast operation *)
+          (* FIXME: need to check full-shape, sum_cols if necessary *)
+          match M.(shape a = shape v) with
+          | true  -> Mat v
+          | false -> Mat (M.sum_rows v)
+        )
+      | Arr a, Arr v -> (
+          match A.(shape a = shape v) with
+          | true  -> Arr v
+          | false -> Arr (A.sum_slices v)
         )
       | a, v -> v
     in

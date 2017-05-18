@@ -380,3 +380,8 @@ val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
 val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
 
 val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+
+(** {6 Experimental functions} *)
+
+val sum_slices : ?axis:int -> arr -> arr

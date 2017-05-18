@@ -254,3 +254,8 @@ val scalar_div : elt -> arr -> arr
 val ssqr : arr -> elt -> elt
 
 val ssqr_diff : arr -> arr -> elt
+
+
+(** {6 Experimental functions} *)
+
+val sum_slices : ?axis:int -> arr -> arr

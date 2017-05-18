@@ -71,6 +71,8 @@ module type MatrixSig = sig
 
   (* mathematical functions *)
 
+  val max : mat -> elt
+
   val abs : mat -> mat
 
   val neg : mat -> mat
@@ -205,6 +207,8 @@ module type NdarraySig = sig
   val reset : arr -> unit
 
   val reshape : arr -> int array -> arr
+
+  val sum_slices : ?axis:int -> arr -> arr
 
   (* mathematical functions *)
 
