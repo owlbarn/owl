@@ -170,6 +170,8 @@ type ('a, 'b) eigen_arr_op00 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 
 type ('a, 'b) eigen_arr_op01 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
 type ('a, 'b) eigen_arr_op02 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
 type ('a, 'b) eigen_arr_op03 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
+type ('a, 'b) eigen_arr_op04 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
+type ('a, 'b) eigen_arr_op05 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
 
 (* call functions in eigen *)
 
@@ -237,6 +239,26 @@ let _eigen_cuboid_conv_backward_kernel : type a b . (a, b) kind -> (a, b) eigen_
   | Float32   -> Eigen.Tensor.S.cuboid_conv_backward_kernel
   | Float64   -> Eigen.Tensor.D.cuboid_conv_backward_kernel
   | _         -> failwith "_eigen_cuboid_conv_backward_kernel: unsupported operation"
+
+let _eigen_spatial_max_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op04 = function
+  | Float32   -> Eigen.Tensor.S.spatial_max_pooling
+  | Float64   -> Eigen.Tensor.D.spatial_max_pooling
+  | _         -> failwith "_eigen_spatial_max_pooling: unsupported operation"
+
+let _eigen_spatial_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op04 = function
+  | Float32   -> Eigen.Tensor.S.spatial_avg_pooling
+  | Float64   -> Eigen.Tensor.D.spatial_avg_pooling
+  | _         -> failwith "_eigen_spatial_avg_pooling: unsupported operation"
+
+let _eigen_cuboid_max_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 = function
+  | Float32   -> Eigen.Tensor.S.cuboid_max_pooling
+  | Float64   -> Eigen.Tensor.D.cuboid_max_pooling
+  | _         -> failwith "_eigen_cuboid_max_pooling: unsupported operation"
+
+let _eigen_cuboid_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 = function
+  | Float32   -> Eigen.Tensor.S.cuboid_avg_pooling
+  | Float64   -> Eigen.Tensor.D.cuboid_avg_pooling
+  | _         -> failwith "_eigen_cuboid_avg_pooling: unsupported operation"
 
 let _eigen_rowwise_op : type a b . (a, b) kind -> (a, b) eigen_mat_op03 = function
   | Float32   -> Eigen.Dense.S.rowwise_op

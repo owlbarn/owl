@@ -1797,6 +1797,145 @@ let conv3d_backward_kernel input kernel stride output' =
   kernel'
 
 
+(* max_pool: 4d input and 4d kernel, refer to tensorlfow doc
+  input : [batch; input_column; input_row; input_channel]
+  kernel: [kernel_column; kernel_row]
+  stride: [column_stride; row_stride]
+  output: [batch; output_column; output_row; input_channel]
+ *)
+let max_pool ?(padding=SAME) input kernel stride =
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let output_cols, output_rows =
+    calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let output = empty (kind input) [|batches; output_cols; output_rows; in_channel|] in
+
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _eigen_spatial_max_pooling (kind input)
+    input output batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows
+    row_stride col_stride pad_typ row_in_stride col_in_stride;
+
+  output
+
+(* similar to max_pool *)
+let avg_pool ?(padding=SAME) input kernel stride =
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let col_in_stride = 1 in
+  let row_in_stride = 1 in
+
+  let output_cols, output_rows =
+    calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let output = empty (kind input) [|batches; output_cols; output_rows; in_channel|] in
+
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _eigen_spatial_avg_pooling (kind input)
+    input output batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows
+    row_stride col_stride pad_typ row_in_stride col_in_stride;
+
+  output
+
+
+(* max_pool3d: 5d input and 5d kernel, refer to tensorflow doc
+  input : [batch; input_column; input_row; input_depth; input_channel]
+  kernel: [kernel_column; kernel_row; kernel_depth]
+  stride: [column_stride; row_stride; depth_stride]
+  output: [batch; output_column; output_row; output_dpts; input_channel]
+ *)
+let max_pool3d ?(padding=SAME) input kernel stride =
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+  let kernel_dpts = kernel.(2) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let output_cols, output_rows, output_dpts =
+    calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+  in
+  let output = empty (kind input) [|batches; output_cols; output_rows; output_dpts; in_channel|] in
+
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _eigen_cuboid_max_pooling (kind input)
+    input output batches
+    input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts
+    dpt_stride row_stride col_stride pad_typ;
+
+  output
+
+
+(* simiar to max_pool3d *)
+let avg_pool3d ?(padding=SAME) input kernel stride =
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+  let kernel_dpts = kernel.(2) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let output_cols, output_rows, output_dpts =
+    calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+  in
+  let output = empty (kind input) [|batches; output_cols; output_rows; output_dpts; in_channel|] in
+
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+
+  _eigen_cuboid_avg_pooling (kind input)
+    input output batches
+    input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts
+    dpt_stride row_stride col_stride pad_typ;
+
+  output
+
+
 (* simiar to sum_rows in matrix, sum all the slices along an axis.
   The default [axis] is the highest dimension. E.g., for [x] of [|2;3;4;5|],
   [sum_slices ~axis:2] returns an ndarray of shape [|4;5|].
