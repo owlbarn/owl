@@ -27,7 +27,7 @@ let test_cnn nn x y =
     Printf.printf "prediction: %i\n" (let _, _, j = Owl_dense_matrix_generic.max_i p in j)
   done
 
-let test_minist_with_cnn () =
+let test_minist_with_cnn0 () =
   let nn = Feedforward.create () in
 
   (*
@@ -59,4 +59,29 @@ let test_minist_with_cnn () =
   test_cnn nn (Algodiff.S.unpack_arr x) (Algodiff.S.unpack_mat y)
 
 
-let _ = test_minist_with_cnn ()
+let test_minist_with_cnn1 () =
+  let nn = Feedforward.create () in
+
+  Feedforward.add_layer nn (conv2d ~padding:VALID 8 8 1 200 [|1;1|]);
+  Feedforward.add_activation nn Activation.Relu;
+  Feedforward.add_layer nn (conv2d ~padding:VALID 8 8 200 100 [|1;1|]);
+  Feedforward.add_layer nn (fully_connected 196 10);
+  Feedforward.add_activation nn Activation.Softmax;
+
+  print nn;
+
+  let x, _, y = Dataset.load_mnist_train_data () in
+  let m = Dense.Matrix.S.row_num x in
+  let x = Dense.Matrix.S.to_ndarray x in
+  let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
+
+  let params = Owl_neural_optimise.Params.default () in
+  params.batch <- Batch.Mini 100;
+  params.learning_rate <- Learning_Rate.Const 0.00001;
+  train_cnn ~params nn x y;
+
+  let x, y = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) 10 in
+  test_cnn nn (Algodiff.S.unpack_arr x) (Algodiff.S.unpack_mat y)
+
+
+let _ = test_minist_with_cnn1 ()
