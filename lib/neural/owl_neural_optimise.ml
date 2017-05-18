@@ -348,7 +348,9 @@ let train_nn params forward backward update x y =
   (* operations in one iteration *)
   let iterate () =
     let xt, yt = batch x y in
+    Log.info "forward start ...";
     let yt', ws = forward xt in
+    Log.info "forward done ...";
     let loss = Maths.(loss_fun yt yt') in
     (* DEBUG
     Printf.printf "===> %g \n" (unpack_flt loss);
@@ -364,7 +366,9 @@ let train_nn params forward backward update x y =
       | false -> F 0.
     in
     let loss = Maths.(loss + reg) in
+    Log.info "backward start ...";
     let ws, gs' = backward loss in
+    Log.info "backward done ...";
     loss |> primal', ws, gs'
   in
 

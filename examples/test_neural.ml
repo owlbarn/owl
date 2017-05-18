@@ -62,10 +62,13 @@ let test_minist_with_cnn0 () =
 let test_minist_with_cnn1 () =
   let nn = Feedforward.create () in
 
-  Feedforward.add_layer nn (conv2d ~padding:VALID 8 8 1 200 [|1;1|]);
+  Feedforward.add_layer nn (conv2d ~padding:VALID 8 8 1 50 [|1;1|]);
   Feedforward.add_activation nn Activation.Relu;
-  Feedforward.add_layer nn (conv2d ~padding:VALID 8 8 200 100 [|1;1|]);
-  Feedforward.add_layer nn (fully_connected 196 10);
+  Feedforward.add_layer nn (conv2d ~padding:VALID 8 8 50 50 [|2;2|]);
+  Feedforward.add_activation nn Activation.Relu;
+  Feedforward.add_layer nn (conv2d ~padding:VALID 7 7 50 50 [|1;1|]);
+  Feedforward.add_activation nn Activation.Relu;
+  Feedforward.add_layer nn (fully_connected 50 10);
   Feedforward.add_activation nn Activation.Softmax;
 
   print nn;

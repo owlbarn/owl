@@ -687,9 +687,11 @@ module FullyConnected = struct
   let run x l =
     let m = Mat.row_num l.w in
     let n = Arr.numel x / m in
+    (* Log.info "===> %i %i\n" n m; flush_all(); *)
     let x = Maths.(reshape x [|n;m|] |> arr_to_mat) in
     (* Owl_dense_matrix_generic.print (unpack_mat x); *)
     let y = Maths.((x *@ l.w) + l.b) in
+    (* Log.info "done!"; flush_all (); *)
     (* Owl_dense_matrix_generic.print (unpack_mat y); flush_all (); *)
     y
 
