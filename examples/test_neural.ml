@@ -80,7 +80,7 @@ let test_minist_with_cnn1 () =
 
   let params = Owl_neural_optimise.Params.default () in
   params.batch <- Batch.Mini 100;
-  params.learning_rate <- Learning_Rate.Const 0.00001;
+  params.learning_rate <- Learning_Rate.Const 0.01;
   train_cnn ~params nn x y;
 
   let x, y = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) 10 in
