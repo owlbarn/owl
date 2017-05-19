@@ -1541,6 +1541,10 @@ let calc_conv2d_padding
   output: [batch; output_column; output_row; output_channel]
  *)
 let conv2d ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (Array.length stride = 2);
+
   let input_shp = shape input in
   let batches = input_shp.(0) in
   let input_cols = input_shp.(1) in
@@ -1583,6 +1587,11 @@ let conv2d ?(padding=SAME) input kernel stride =
 
 (* gradient of conv2d w.r.t the input *)
 let conv2d_backward_input input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+
   let input_shp = shape input in
   let batches = input_shp.(0) in
   let input_cols = input_shp.(1) in
@@ -1618,6 +1627,11 @@ let conv2d_backward_input input kernel stride output' =
 
 (* gradient of conv2d w.r.t the kernel *)
 let conv2d_backward_kernel input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (num_dims kernel = 4);
+  assert (num_dims output' = 4);
+  assert (Array.length stride = 2);
+
   let input_shp = shape input in
   let batches = input_shp.(0) in
   let input_cols = input_shp.(1) in
@@ -1688,6 +1702,10 @@ let calc_conv3d_output_shape
   output: [batch; output_column; output_row; output_dpts; output_channel]
  *)
 let conv3d ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 5);
+  assert (num_dims kernel = 5);
+  assert (Array.length stride = 3);
+
   let input_shp = shape input in
   let batches = input_shp.(0) in
   let input_cols = input_shp.(1) in
@@ -1733,6 +1751,11 @@ let conv3d ?(padding=SAME) input kernel stride =
 
 (* gradient of conv3d w.r.t the input *)
 let conv3d_backward_input input kernel stride output' =
+  assert (num_dims input = 5);
+  assert (num_dims kernel = 5);
+  assert (num_dims output' = 5);
+  assert (Array.length stride = 3);
+
   let input_shp = shape input in
   let batches = input_shp.(0) in
   let input_cols = input_shp.(1) in
@@ -1772,6 +1795,11 @@ let conv3d_backward_input input kernel stride output' =
 
 (* gradient of conv3d w.r.t the kernel *)
 let conv3d_backward_kernel input kernel stride output' =
+  assert (num_dims input = 5);
+  assert (num_dims kernel = 5);
+  assert (num_dims output' = 5);
+  assert (Array.length stride = 3);
+
   let input_shp = shape input in
   let batches = input_shp.(0) in
   let input_cols = input_shp.(1) in
@@ -1816,6 +1844,10 @@ let conv3d_backward_kernel input kernel stride output' =
   output: [batch; output_column; output_row; input_channel]
  *)
 let max_pool ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 4);
+  assert (Array.length kernel = 2);
+  assert (Array.length stride = 2);
+
   let input_shp = shape input in
   let batches = input_shp.(0) in
   let input_cols = input_shp.(1) in
@@ -1846,6 +1878,10 @@ let max_pool ?(padding=SAME) input kernel stride =
 
 (* similar to max_pool *)
 let avg_pool ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 4);
+  assert (Array.length kernel = 2);
+  assert (Array.length stride = 2);
+
   let input_shp = shape input in
   let batches = input_shp.(0) in
   let input_cols = input_shp.(1) in
@@ -1882,6 +1918,10 @@ let avg_pool ?(padding=SAME) input kernel stride =
   output: [batch; output_column; output_row; output_dpts; input_channel]
  *)
 let max_pool3d ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 5);
+  assert (Array.length kernel = 3);
+  assert (Array.length stride = 3);
+
   let input_shp = shape input in
   let batches = input_shp.(0) in
   let input_cols = input_shp.(1) in
@@ -1916,6 +1956,10 @@ let max_pool3d ?(padding=SAME) input kernel stride =
 
 (* simiar to max_pool3d *)
 let avg_pool3d ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 5);
+  assert (Array.length kernel = 3);
+  assert (Array.length stride = 3);
+
   let input_shp = shape input in
   let batches = input_shp.(0) in
   let input_cols = input_shp.(1) in
@@ -1950,6 +1994,10 @@ let avg_pool3d ?(padding=SAME) input kernel stride =
 
 (* similar to max_pool, but also return the flatten indices of the max values *)
 let max_pool_argmax ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 4);
+  assert (Array.length kernel = 2);
+  assert (Array.length stride = 2);
+
   let input_shp = shape input in
   let batches = input_shp.(0) in
   let input_cols = input_shp.(1) in
@@ -1979,6 +2027,41 @@ let max_pool_argmax ?(padding=SAME) input kernel stride =
     row_stride col_stride pad_top pad_left;
 
   output, argmax
+
+
+(* calculate the gradient of max_pool *)
+let max_pool_backward padding input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (Array.length kernel = 2);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+
+  let output_cols, output_rows =
+    calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let pad_top, pad_left, _, _ =
+    calc_conv2d_padding input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
+  in
+  let input' = empty (kind input) (shape input) in
+
+  _eigen_spatial_max_pooling_backward (kind input)
+    input output' input'
+    batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows
+    row_stride col_stride pad_top pad_left;
+
+  input'
 
 
 (* simiar to sum_rows in matrix, sum all the slices along an axis.
