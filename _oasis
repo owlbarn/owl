@@ -238,17 +238,17 @@ Executable test_mnist
   MainIs:         test_mnist.ml
   BuildDepends:   owl
 
-Executable test_neural
-  Path:           examples
-  CompiledObject: best
-  MainIs:         test_neural.ml
-  BuildDepends:   owl, owl_neural
+# Executable test_neural
+#  Path:           examples
+#  CompiledObject: best
+#  MainIs:         test_neural.ml
+#  BuildDepends:   owl, owl_neural
 
-Executable test_lstm
-  Path:           examples
-  CompiledObject: best
-  MainIs:         test_lstm.ml
-  BuildDepends:   owl, owl_neural
+# Executable test_lstm
+#  Path:           examples
+#  CompiledObject: best
+#  MainIs:         test_lstm.ml
+#  BuildDepends:   owl, owl_neural
 
 Executable test_tfidf
   Path:           examples

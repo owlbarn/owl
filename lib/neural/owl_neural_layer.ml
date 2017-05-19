@@ -708,6 +708,37 @@ module FullyConnected = struct
 end
 
 
+(* definition of MaxPool layer *)
+module MaxPool = struct
+
+  type layer = {
+    mutable padding : padding;
+    mutable kernel : int array;
+    mutable stride : int array;
+  }
+
+  let create padding kernel stride = {
+    padding;
+    kernel;
+    stride;
+  }
+
+  let run x l = Maths.(max_pool l.padding x l.kernel l.stride)
+
+  let to_string l =
+    let padding_s = match l.padding with
+      | Owl_dense_ndarray_generic.SAME  -> "SAME"
+      | Owl_dense_ndarray_generic.VALID -> "VALID"
+    in
+    Printf.sprintf "MaxPool layer:\n" ^
+    Printf.sprintf "    padding : %s\n" padding_s ^
+    Printf.sprintf "    patch   : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
+    Printf.sprintf "    stride  : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
+    ""
+
+end
+
+
 (* type and functions of neural network *)
 
 type layer =
@@ -718,6 +749,7 @@ type layer =
   | Recurrent      of Recurrent.layer
   | Conv2D         of Conv2D.layer
   | FullyConnected of FullyConnected.layer
+  | MaxPool        of MaxPool.layer
   | Activation     of Activation.typ
 
 type network = {
@@ -826,6 +858,7 @@ module Feedforward = struct
     | Recurrent l      -> Recurrent.run a l
     | Conv2D l         -> Conv2D.run a l
     | FullyConnected l -> FullyConnected.run a l
+    | MaxPool l        -> MaxPool.run a l
     | Activation l     -> Activation.run a l
     ) x nn.layers
 
@@ -850,6 +883,7 @@ module Feedforward = struct
         | Recurrent l      -> Recurrent.to_string l
         | Conv2D l         -> Conv2D.to_string l
         | FullyConnected l -> FullyConnected.to_string l
+        | MaxPool l        -> MaxPool.to_string l
         | Activation l     -> Activation.to_string l
       in
       s := !s ^ (Printf.sprintf "(%i): %s\n" i t)

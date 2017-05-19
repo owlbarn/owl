@@ -46,6 +46,9 @@ let conv2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel_width kernel_heigh
 let fully_connected ?(init_typ = Init.Standard) inputs outputs =
   FullyConnected (FullyConnected.create inputs outputs init_typ )
 
+let max_pool ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
+  MaxPool (MaxPool.create padding kernel stride)
+
 let train ?params nn x y =
   Feedforward.init nn;
   let f = Feedforward.forward nn in
