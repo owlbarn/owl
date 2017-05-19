@@ -861,6 +861,8 @@ val conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (flo
 val max_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** [] *)
 
+val max_pool_argmax : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t * (int64, int64_elt) t
+
 
 (** {6 Some helper and experimental functions } *)
 

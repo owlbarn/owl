@@ -1521,6 +1521,18 @@ let calc_conv2d_output_shape
   in
   (output_cols, output_rows)
 
+(* calculate the padding size along width and height *)
+let calc_conv2d_padding
+  input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
+  =
+  let pad_along_height = Pervasives.max ((output_rows - 1) * row_stride + kernel_rows - input_rows) 0 in
+  let pad_along_width = Pervasives.max ((output_cols - 1) * col_stride + kernel_cols - input_cols) 0 in
+  let pad_top = pad_along_height / 2 in
+  let pad_bottom = pad_along_height - pad_top in
+  let pad_left = pad_along_width / 2 in
+  let pad_right = pad_along_width - pad_left in
+  pad_top, pad_left, pad_bottom, pad_right
+
 
 (* conv2d: 4d input and 4d kernel, refer to tensorlfow doc
   input : [batch; input_column; input_row; input_channel]
@@ -1934,6 +1946,39 @@ let avg_pool3d ?(padding=SAME) input kernel stride =
     dpt_stride row_stride col_stride pad_typ;
 
   output
+
+
+(* similar to max_pool, but also return the flatten indices of the max values *)
+let max_pool_argmax ?(padding=SAME) input kernel stride =
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+
+  let output_cols, output_rows =
+    calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let output = empty (kind input) [|batches; output_cols; output_rows; in_channel|] in
+  let argmax = Genarray.create int64 c_layout [|batches; output_cols; output_rows; in_channel|] in
+
+  let pad_top, pad_left, _, _ =
+    calc_conv2d_padding input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
+  in
+
+  _eigen_spatial_max_pooling_argmax (kind input)
+    input output argmax
+    batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows
+    row_stride col_stride pad_top pad_left;
+
+  output, argmax
 
 
 (* simiar to sum_rows in matrix, sum all the slices along an axis.
