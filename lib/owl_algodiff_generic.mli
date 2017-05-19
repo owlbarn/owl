@@ -326,6 +326,16 @@ module type NdarraySig = sig
 
   val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
 
+  val max_pool : ?padding:padding -> arr -> int array -> int array -> arr
+
+  val max_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
+
+  val avg_pool : ?padding:padding -> arr -> int array -> int array -> arr
+
+  val avg_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
+
+  val max_pool_backward : padding -> arr -> int array -> int array -> arr -> arr
+
 end
 
 
@@ -460,6 +470,8 @@ module Make
     val ( ** )  : t -> t -> t
 
     val conv2d : ?padding:padding -> t -> t -> int array -> t
+
+    val max_pool : padding -> t -> int array -> int array -> t
 
     val reshape : t -> int array -> t
 

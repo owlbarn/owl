@@ -1168,3 +1168,20 @@ let cast_d2z x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_d2z |> of_nda
 let cast_s2z x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_s2z |> of_ndarray
 
 let cast_d2c x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_d2c |> of_ndarray
+
+
+(* experimental functions *)
+
+let max_pool ?padding x kernel stride =
+  let m, n = shape x in
+  let x = to_ndarray x in
+  let x = Owl_dense_ndarray_generic.reshape x [|1;m;n;1|] in
+  let y = Owl_dense_ndarray_generic.max_pool ?padding x kernel stride in
+  let s = Owl_dense_ndarray_generic.shape y in
+  let m, n = s.(1), s.(2) in
+  let y = Owl_dense_ndarray_generic.reshape y [|m;n|] in
+  of_ndarray y
+
+
+
+(* end here *)

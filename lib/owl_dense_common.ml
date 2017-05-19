@@ -271,12 +271,12 @@ let _eigen_rowwise_op : type a b . (a, b) kind -> (a, b) eigen_mat_op03 = functi
 
 let _eigen_spatial_max_pooling_argmax : type a b . (a, b) kind -> (a, b) eigen_arr_op06 = function
   | Float32   -> Eigen.Tensor.S.spatial_max_pooling_argmax
-  (* | Float64   -> Eigen.Tensor.D.spatial_max_pooling *)
+  | Float64   -> Eigen.Tensor.D.spatial_max_pooling_argmax
   | _         -> failwith "_eigen_spatial_max_pooling_argmax: unsupported operation"
 
 let _eigen_spatial_max_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op07 = function
   | Float32   -> Eigen.Tensor.S.spatial_max_pooling_backward
-  (* | Float64   -> Eigen.Tensor.D.spatial_max_pooling_backward *)
+  | Float64   -> Eigen.Tensor.D.spatial_max_pooling_backward
   | _         -> failwith "_eigen_spatial_max_pooling_backward: unsupported operation"
 
 let _eigen_colwise_op : type a b . (a, b) kind -> (a, b) eigen_mat_op03 = function

@@ -449,6 +449,8 @@ val l2norm : mat -> elt
 
 val l2norm_sqr : mat -> elt
 
+val max_pool : ?padding:Owl_dense_ndarray_generic.padding -> mat -> int array -> int array -> mat
+
 
 (** {6 Binary mathematical operations } *)
 
