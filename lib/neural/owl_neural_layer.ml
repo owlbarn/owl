@@ -68,15 +68,19 @@ end
 module Linear = struct
 
   type layer = {
-    mutable w : t;
-    mutable b : t;
-    mutable init_typ : Init.typ;
+    mutable w         : t;
+    mutable b         : t;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
   }
 
   let create i o init_typ = {
-    w = Mat.empty i o;
-    b = Mat.empty 1 o;
-    init_typ = init_typ;
+    w         = Mat.empty i o;
+    b         = Mat.empty 1 o;
+    init_typ  = init_typ;
+    in_shape  = [|i|];
+    out_shape = [|o|];
   }
 
   let init l =
@@ -107,7 +111,7 @@ module Linear = struct
   let to_string l =
     let wm, wn = Mat.shape l.w in
     let bm, bn = Mat.shape l.b in
-    Printf.sprintf "Linear layer:\n" ^
+    Printf.sprintf "Linear layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wm * wn + bn) ^
     Printf.sprintf "    w      : %i x %i\n" wm wn ^
@@ -121,13 +125,17 @@ end
 module LinearNoBias = struct
 
   type layer = {
-    mutable w : t;
-    mutable init_typ : Init.typ;
+    mutable w         : t;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
   }
 
   let create i o init_typ = {
-    w = Mat.empty i o;
-    init_typ = init_typ;
+    w         = Mat.empty i o;
+    init_typ  = init_typ;
+    in_shape  = [|i|];
+    out_shape = [|o|];
   }
 
   let init l =
@@ -150,7 +158,7 @@ module LinearNoBias = struct
 
   let to_string l =
     let wm, wn = Mat.shape l.w in
-    Printf.sprintf "Linear layer:\n" ^
+    Printf.sprintf "LinearNoBias layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wm * wn) ^
     Printf.sprintf "    w      : %i x %i\n" wm wn ^
@@ -163,25 +171,29 @@ end
 module Recurrent = struct
 
   type layer = {
-    mutable whh      : t;
-    mutable wxh      : t;
-    mutable why      : t;
-    mutable bh       : t;
-    mutable by       : t;
-    mutable h        : t;
-    mutable act      : Activation.typ;
-    mutable init_typ : Init.typ;
+    mutable whh       : t;
+    mutable wxh       : t;
+    mutable why       : t;
+    mutable bh        : t;
+    mutable by        : t;
+    mutable h         : t;
+    mutable act       : Activation.typ;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
   }
 
   let create i h o act init_typ = {
-    whh = Mat.empty h h;
-    wxh = Mat.empty i h;
-    why = Mat.empty h o;
-    bh  = Mat.empty 1 h;
-    by  = Mat.empty 1 o;
-    h   = Mat.empty 1 h;
-    act = act;
-    init_typ = init_typ;
+    whh       = Mat.empty h h;
+    wxh       = Mat.empty i h;
+    why       = Mat.empty h o;
+    bh        = Mat.empty 1 h;
+    by        = Mat.empty 1 o;
+    h         = Mat.empty 1 h;
+    act       = act;
+    init_typ  = init_typ;
+    in_shape  = [|i|];
+    out_shape = [|o|];
   }
 
   let init l =
@@ -247,7 +259,7 @@ module Recurrent = struct
     let whym, whyn = Mat.shape l.why in
     let bhm, bhn = Mat.shape l.bh in
     let bym, byn = Mat.shape l.by in
-    Printf.sprintf "Recurrent layer:\n" ^
+    Printf.sprintf "Recurrent layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (whhm * whhn + wxhm * wxhn + whym * whyn + bhm * bhn + bym * byn) ^
     Printf.sprintf "    whh    : %i x %i\n" whhm whhn ^
@@ -264,21 +276,23 @@ end
 module LSTM = struct
 
   type layer = {
-    mutable wxi : t;
-    mutable whi : t;
-    mutable wxc : t;
-    mutable whc : t;
-    mutable wxf : t;
-    mutable whf : t;
-    mutable wxo : t;
-    mutable who : t;
-    mutable bi  : t;
-    mutable bc  : t;
-    mutable bf  : t;
-    mutable bo  : t;
-    mutable c   : t;
-    mutable h   : t;
-    mutable init_typ : Init.typ;
+    mutable wxi       : t;
+    mutable whi       : t;
+    mutable wxc       : t;
+    mutable whc       : t;
+    mutable wxf       : t;
+    mutable whf       : t;
+    mutable wxo       : t;
+    mutable who       : t;
+    mutable bi        : t;
+    mutable bc        : t;
+    mutable bf        : t;
+    mutable bo        : t;
+    mutable c         : t;
+    mutable h         : t;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
   }
 
   let create i m = {
@@ -297,6 +311,8 @@ module LSTM = struct
     c   = Mat.empty 1 m;
     h   = Mat.empty 1 m;
     init_typ = Init.Tanh;
+    in_shape  = [|i|];
+    out_shape = [|m|];
   }
 
   let init l =
@@ -419,7 +435,7 @@ module LSTM = struct
     let bcm, bcn = Mat.shape l.bc in
     let bfm, bfn = Mat.shape l.bf in
     let bom, bon = Mat.shape l.bo in
-    Printf.sprintf "LSTM layer:\n" ^
+    Printf.sprintf "LSTM layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wxim*wxin + whim*whin + wxcm*wxcn + whcm*whcn + wxfm*wxfn + whfm*whfn + wxom*wxon + whom*whon + bim*bin + bcm*bcn + bfm*bfn + bom*bon) ^
     Printf.sprintf "    wxi    : %i x %i\n" wxim wxin ^
@@ -443,17 +459,19 @@ end
 module GRU = struct
 
   type layer = {
-    mutable wxz : t;
-    mutable whz : t;
-    mutable wxr : t;
-    mutable whr : t;
-    mutable wxh : t;
-    mutable whh : t;
-    mutable bz  : t;
-    mutable br  : t;
-    mutable bh  : t;
-    mutable h   : t;
-    mutable init_typ : Init.typ;
+    mutable wxz       : t;
+    mutable whz       : t;
+    mutable wxr       : t;
+    mutable whr       : t;
+    mutable wxh       : t;
+    mutable whh       : t;
+    mutable bz        : t;
+    mutable br        : t;
+    mutable bh        : t;
+    mutable h         : t;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
   }
 
   let create i m = {
@@ -468,6 +486,8 @@ module GRU = struct
     bh  = Mat.empty 1 m;
     h   = Mat.empty 1 m;
     init_typ = Init.Standard;
+    in_shape  = [|i|];
+    out_shape = [|m|];
   }
 
   let init l =
@@ -563,7 +583,7 @@ module GRU = struct
     let bzm, bzn = Mat.shape l.bz in
     let brm, brn = Mat.shape l.br in
     let bhm, bhn = Mat.shape l.bh in
-    Printf.sprintf "GRU layer:\n" ^
+    Printf.sprintf "GRU layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wxzm*wxzn + whzm*whzn + wxrm*wxrn + whrm*whrn + wxhm*wxhn + whhm*whhn + bzm*bzn + brm*brn + bhm*bhn) ^
     Printf.sprintf "    wxz    : %i x %i\n" wxzm wxzn ^
@@ -584,20 +604,24 @@ end
 module Conv2D = struct
 
   type layer = {
-    mutable w        : t;
-    mutable b        : t;
-    mutable s        : int array;
-    mutable padding  : padding;
-    mutable init_typ : Init.typ;
+    mutable w         : t;
+    mutable b         : t;
+    mutable s         : int array;
+    mutable padding   : padding;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
   }
 
   let create padding w h i o s =
   {
-    w        = Arr.empty [|w;h;i;o|];
-    b        = Arr.empty [|o|];
-    s        = s;
-    padding  = padding;
-    init_typ = Init.Uniform (0.,1.);
+    w         = Arr.empty [|w;h;i;o|];
+    b         = Arr.empty [|o|];
+    s         = s;
+    padding   = padding;
+    init_typ  = Init.Uniform (0.,1.);
+    in_shape  = [||];
+    out_shape = [||];
   }
 
   let init l =
@@ -647,15 +671,19 @@ end
 module FullyConnected = struct
 
   type layer = {
-    mutable w : t;
-    mutable b : t;
-    mutable init_typ : Init.typ;
+    mutable w         : t;
+    mutable b         : t;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
   }
 
   let create i o init_typ = {
-    w = Mat.empty i o;
-    b = Mat.empty 1 o;
-    init_typ = init_typ;
+    w         = Mat.empty i o;
+    b         = Mat.empty 1 o;
+    init_typ  = init_typ;
+    in_shape  = [||];
+    out_shape = [||];
   }
 
   let init l =
@@ -712,15 +740,19 @@ end
 module MaxPool = struct
 
   type layer = {
-    mutable padding : padding;
-    mutable kernel : int array;
-    mutable stride : int array;
+    mutable padding   : padding;
+    mutable kernel    : int array;
+    mutable stride    : int array;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
   }
 
   let create padding kernel stride = {
     padding;
     kernel;
     stride;
+    in_shape  = [||];
+    out_shape = [||];
   }
 
   let run x l = Maths.(max_pool l.padding x l.kernel l.stride)
@@ -739,6 +771,30 @@ module MaxPool = struct
 end
 
 
+(* definition of Lambda layer *)
+module Lambda = struct
+
+  type layer = {
+    mutable lambda    : t -> t;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create lambda = {
+    lambda;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let run x l = l.lambda x
+
+  let to_string l =
+    Printf.sprintf "Lambda layer: t -> t\n" ^
+    ""
+
+end
+
+
 (* type and functions of neural network *)
 
 type layer =
@@ -750,6 +806,7 @@ type layer =
   | Conv2D         of Conv2D.layer
   | FullyConnected of FullyConnected.layer
   | MaxPool        of MaxPool.layer
+  | Lambda         of Lambda.layer
   | Activation     of Activation.typ
 
 type network = {
@@ -859,6 +916,7 @@ module Feedforward = struct
     | Conv2D l         -> Conv2D.run a l
     | FullyConnected l -> FullyConnected.run a l
     | MaxPool l        -> MaxPool.run a l
+    | Lambda l         -> Lambda.run a l
     | Activation l     -> Activation.run a l
     ) x nn.layers
 
@@ -884,6 +942,7 @@ module Feedforward = struct
         | Conv2D l         -> Conv2D.to_string l
         | FullyConnected l -> FullyConnected.to_string l
         | MaxPool l        -> MaxPool.to_string l
+        | Lambda l         -> Lambda.to_string l
         | Activation l     -> Activation.to_string l
       in
       s := !s ^ (Printf.sprintf "(%i): %s\n" i t)

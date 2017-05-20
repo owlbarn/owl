@@ -49,6 +49,8 @@ let fully_connected ?(init_typ = Init.Standard) inputs outputs =
 let max_pool ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
   MaxPool (MaxPool.create padding kernel stride)
 
+let lambda lambda = Lambda (Lambda.create lambda)
+
 let train ?params nn x y =
   Feedforward.init nn;
   let f = Feedforward.forward nn in
