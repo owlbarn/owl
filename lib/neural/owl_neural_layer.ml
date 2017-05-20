@@ -48,8 +48,17 @@ module Input = struct
   }
 
   let run x l =
-    (* TODO: check the input shape *)
-    x
+    (* check the input shape, a bit overhead but worth it *)
+    let check_shape = function
+      | Arr _ -> (
+          let in_shape = Arr.shape x in
+          let in_shape = Array.(sub in_shape 1 (length in_shape - 1)) in
+          assert (in_shape = l.in_shape)
+        )
+      | Mat _ -> assert (Mat.col_num x = l.in_shape.(0))
+      | _     -> failwith "Owl_neural:Input:run:check_shape"
+    in
+    check_shape x; x
 
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
@@ -1010,6 +1019,10 @@ module Feedforward = struct
     | Activation l     -> Activation.connect out_shape l
 
   let rec add_layer ?act_typ nn l =
+    (* check whether it is input layer *)
+    let not_input_layer =
+      function Input _ -> false | _ -> true
+    in
     (* insert input layer as the first one given an empty nn *)
     if layer_num nn = 0 then (
       let in_shape = l |> get_in_out_shape |> fst in
@@ -1018,9 +1031,11 @@ module Feedforward = struct
       nn.layers <- [|Input Input.(create in_shape)|];
     );
     (* retrieve the previous layer and attach the new one *)
-    let prev_l = get_layer nn (-1) in
-    connect_layer prev_l l;
-    nn.layers <- Array.append nn.layers [|l|];
+    if not_input_layer l then (
+      let prev_l = get_layer nn (-1) in
+      connect_layer prev_l l;
+      nn.layers <- Array.append nn.layers [|l|];
+    );
     (* if activation is specified, recursively add_layer *)
     match act_typ with
     | Some act -> add_layer nn (Activation (Activation.create act))

@@ -1,6 +1,8 @@
 (* Test neural network module *)
 open Owl
 open Owl_neural
+open Algodiff.S
+open Owl_neural_layer
 
 
 let test_minist_with_linear () =
@@ -62,7 +64,8 @@ let test_minist_with_cnn0 () =
 let test_minist_with_cnn1 () =
   let nn = Feedforward.create () in
 
-  Feedforward.add_layer nn (conv2d ~padding:VALID ~inputs:[|28;28;1|] 8 8 1 50 [|1;1|]);
+  Feedforward.add_layer nn (input [|28;28;1|]);
+  Feedforward.add_layer nn (conv2d ~padding:VALID 8 8 1 50 [|1;1|]);
   Feedforward.add_layer nn (activation Activation.Relu);
   Feedforward.add_layer nn (conv2d ~padding:VALID 8 8 50 50 [|2;2|]);
   Feedforward.add_layer nn (activation Activation.Relu);
