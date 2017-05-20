@@ -11,7 +11,7 @@ let test_minist_with_linear () =
   Feedforward.add_layer nn l0 ~act_typ:Activation.Tanh;
   Feedforward.add_layer nn l1 ~act_typ:Activation.Softmax;
   print nn;
-
+  
   let x, _, y = Dataset.load_mnist_train_data () in
   train nn x y
 
@@ -41,7 +41,7 @@ let test_minist_with_cnn0 () =
   Feedforward.add_layer nn (conv2d ~padding:VALID 28 28 1 300 [|1;1|]);
   (* Feedforward.add_activation nn Activation.Tanh; *)
   Feedforward.add_layer nn (fully_connected 300 10);
-  Feedforward.add_activation nn Activation.Softmax;
+  Feedforward.add_layer nn (activation Activation.Softmax);
 
   print nn;
 
@@ -63,13 +63,13 @@ let test_minist_with_cnn1 () =
   let nn = Feedforward.create () in
 
   Feedforward.add_layer nn (conv2d ~padding:VALID 8 8 1 50 [|1;1|]);
-  Feedforward.add_activation nn Activation.Relu;
+  Feedforward.add_layer nn (activation Activation.Relu);
   Feedforward.add_layer nn (conv2d ~padding:VALID 8 8 50 50 [|2;2|]);
-  Feedforward.add_activation nn Activation.Relu;
+  Feedforward.add_layer nn (activation Activation.Relu);
   Feedforward.add_layer nn (conv2d ~padding:VALID 7 7 50 50 [|1;1|]);
-  Feedforward.add_activation nn Activation.Relu;
+  Feedforward.add_layer nn (activation Activation.Relu);
   Feedforward.add_layer nn (fully_connected 50 10);
-  Feedforward.add_activation nn Activation.Softmax;
+  Feedforward.add_layer nn (activation Activation.Softmax);
 
   print nn;
 
@@ -87,4 +87,4 @@ let test_minist_with_cnn1 () =
   test_cnn nn (Algodiff.S.unpack_arr x) (Algodiff.S.unpack_mat y)
 
 
-let _ = test_minist_with_cnn1 ()
+let _ = test_minist_with_linear ()

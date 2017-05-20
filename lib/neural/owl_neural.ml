@@ -27,6 +27,8 @@ module Clipping       = Owl_neural_optimise.Clipping
 
 (* core functions *)
 
+let activation act_typ = Activation (Activation.create act_typ)
+
 let linear ?(init_typ = Init.Standard) inputs outputs =
   Linear (Linear.create inputs outputs init_typ)
 

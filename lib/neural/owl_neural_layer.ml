@@ -45,7 +45,24 @@ module Activation = struct
     | Custom of (t -> t)
     | None
 
-  let run x l = match l with
+  type layer = {
+    mutable activation : typ;
+    mutable in_shape   : int array;
+    mutable out_shape  : int array;
+  }
+
+  let create activation = {
+    activation;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let run_activation x activation =
+    match activation with
     | Relu     -> Maths.relu x
     | Sigmoid  -> Maths.sigmoid x
     | Softmax  -> Mat.map_by_row Maths.softmax x  (* FIXME: this probably needs to be fixed *)
@@ -53,13 +70,21 @@ module Activation = struct
     | Custom f -> f x
     | None     -> x
 
-  let to_string = function
-    | Relu     -> "Activation layer: relu\n"
-    | Sigmoid  -> "Activation layer: sigmoid\n"
-    | Softmax  -> "Activation layer: softmax\n"
-    | Tanh     -> "Activation layer: tanh\n"
-    | Custom _ -> "Activation layer: customise\n"
+  let run x l = run_activation x l.activation
+
+  let activation_to_string = function
+    | Relu     -> "relu"
+    | Sigmoid  -> "sigmoid"
+    | Softmax  -> "softmax"
+    | Tanh     -> "tanh"
+    | Custom _ -> "customise"
     | None     -> "none"
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let act_str = activation_to_string l.activation in
+    Printf.sprintf "Activation layer: %s in/out:[*,%s]\n" act_str in_str ^
+    ""
 
 end
 
@@ -82,6 +107,10 @@ module Linear = struct
     in_shape  = [|i|];
     out_shape = [|o|];
   }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0)
 
   let init l =
     let m, n = Mat.shape l.w in
@@ -137,6 +166,10 @@ module LinearNoBias = struct
     in_shape  = [|i|];
     out_shape = [|o|];
   }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0)
 
   let init l =
     let m, n = Mat.shape l.w in
@@ -196,6 +229,10 @@ module Recurrent = struct
     out_shape = [|o|];
   }
 
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0)
+
   let init l =
     l.whh <- Init.run l.init_typ (Mat.row_num l.whh) (Mat.col_num l.whh);
     l.wxh <- Init.run l.init_typ (Mat.row_num l.wxh) (Mat.col_num l.wxh);
@@ -245,7 +282,7 @@ module Recurrent = struct
     l.by  <- u.(4) |> primal'
 
   let run x l =
-    let act x = Activation.run x l.act in
+    let act x = Activation.run_activation x l.act in
     let y = Mat.map_by_row (fun x ->
       l.h <- act Maths.((l.h *@ l.whh) + (x *@ l.wxh) + l.bh);
       Maths.((l.h *@ l.why) + l.by)
@@ -267,7 +304,7 @@ module Recurrent = struct
     Printf.sprintf "    why    : %i x %i\n" whym whyn ^
     Printf.sprintf "    bh     : %i x %i\n" bhm bhn ^
     Printf.sprintf "    by     : %i x %i\n" bym byn ^
-    Printf.sprintf "    act    : %s\n" (Activation.to_string l.act)
+    Printf.sprintf "    act    : %s\n" (Activation.activation_to_string l.act)
 
 end
 
@@ -314,6 +351,10 @@ module LSTM = struct
     in_shape  = [|i|];
     out_shape = [|m|];
   }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0)
 
   let init l =
     l.wxi <- Init.run l.init_typ (Mat.row_num l.wxi) (Mat.col_num l.wxi);
@@ -490,6 +531,10 @@ module GRU = struct
     out_shape = [|m|];
   }
 
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0)
+
   let init l =
     l.wxz <- Init.run l.init_typ (Mat.row_num l.wxz) (Mat.col_num l.wxz);
     l.whz <- Init.run l.init_typ (Mat.row_num l.whz) (Mat.col_num l.whz);
@@ -620,9 +665,21 @@ module Conv2D = struct
     s         = s;
     padding   = padding;
     init_typ  = Init.Uniform (0.,1.);
-    in_shape  = [||];
-    out_shape = [||];
+    in_shape  = [|-1;-1;i|];
+    out_shape = [|-1;-1;o|];
   }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    assert (out_shape.(2) = l.in_shape.(2));
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    let kernel_shape = Arr.shape l.w in
+    let out_cols, out_rows = Owl_dense_ndarray_generic.calc_conv2d_output_shape
+      l.padding l.in_shape.(0) l.in_shape.(1) kernel_shape.(0) kernel_shape.(1) l.s.(0) l.s.(1)
+    in
+    l.out_shape.(0) <- out_cols;
+    l.out_shape.(1) <- out_rows
 
   let init l =
     l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
@@ -656,7 +713,8 @@ module Conv2D = struct
   let to_string l =
     let ws = Arr.shape l.w in
     let bn = Arr.shape l.b in
-    Printf.sprintf "Conv2D layer:\n" ^
+    Printf.sprintf "Conv2D layer:" ^
+    Printf.sprintf " tensor in:[*;%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3) + bn.(0)) ^
     Printf.sprintf "    kernel : %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3) ^
@@ -683,8 +741,14 @@ module FullyConnected = struct
     b         = Mat.empty 1 o;
     init_typ  = init_typ;
     in_shape  = [||];
-    out_shape = [||];
+    out_shape = [|o|];
   }
+
+  let connect out_shape l =
+    let m0 = Array.fold_left (fun a b -> a * b) 1 out_shape in
+    let m1 = Mat.row_num l.w in
+    assert (m0 = m1);
+    l.in_shape <- Array.copy out_shape
 
   let init l =
     let m, n = Mat.shape l.w in
@@ -726,7 +790,9 @@ module FullyConnected = struct
   let to_string l =
     let wm, wn = Mat.shape l.w in
     let bm, bn = Mat.shape l.b in
-    Printf.sprintf "FullyConnected layer:\n" ^
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    Printf.sprintf "FullyConnected layer:" ^
+    Printf.sprintf " tensor in:[*,%s] matrix out:(*,%i)\n" in_str l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wm * wn + bn) ^
     Printf.sprintf "    w      : %i x %i\n" wm wn ^
@@ -751,9 +817,22 @@ module MaxPool = struct
     padding;
     kernel;
     stride;
-    in_shape  = [||];
-    out_shape = [||];
+    in_shape  = [|-1;-1;-1|];
+    out_shape = [|-1;-1;-1|];
   }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    l.in_shape.(2) <- out_shape.(2);
+    let out_cols, out_rows = Owl_dense_ndarray_generic.calc_conv2d_output_shape
+      l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1) l.stride.(0) l.stride.(1)
+    in
+    l.out_shape.(0) <- out_cols;
+    l.out_shape.(1) <- out_rows;
+    l.out_shape.(2) <- out_shape.(2)
+
 
   let run x l = Maths.(max_pool l.padding x l.kernel l.stride)
 
@@ -762,7 +841,8 @@ module MaxPool = struct
       | Owl_dense_ndarray_generic.SAME  -> "SAME"
       | Owl_dense_ndarray_generic.VALID -> "VALID"
     in
-    Printf.sprintf "MaxPool layer:\n" ^
+    Printf.sprintf "MaxPool layer:" ^
+    Printf.sprintf " tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
     Printf.sprintf "    padding : %s\n" padding_s ^
     Printf.sprintf "    patch   : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
     Printf.sprintf "    stride  : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
@@ -786,10 +866,17 @@ module Lambda = struct
     out_shape = [||];
   }
 
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
   let run x l = l.lambda x
 
   let to_string l =
-    Printf.sprintf "Lambda layer: t -> t\n" ^
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "Lambda layer: in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "  customised f : t -> t\n" ^
     ""
 
 end
@@ -807,7 +894,7 @@ type layer =
   | FullyConnected of FullyConnected.layer
   | MaxPool        of MaxPool.layer
   | Lambda         of Lambda.layer
-  | Activation     of Activation.typ
+  | Activation     of Activation.layer
 
 type network = {
   mutable layers : layer array;
@@ -819,13 +906,54 @@ module Feedforward = struct
 
   let create () = { layers = [||]; }
 
-  let add_activation nn l =
-    nn.layers <- Array.append nn.layers [|Activation l|]
+  let layer_num nn = Array.length nn.layers
 
-  let add_layer ?act_typ nn l =
+  let get_layer nn i =
+    let c = layer_num nn in
+    match i < 0 with
+    | true  -> nn.layers.(c + i)
+    | false -> nn.layers.(i)
+
+  let get_in_out_shape = function
+    | Linear l         -> Linear.(l.in_shape, l.out_shape)
+    | LinearNoBias l   -> LinearNoBias.(l.in_shape, l.out_shape)
+    | LSTM l           -> LSTM.(l.in_shape, l.out_shape)
+    | GRU l            -> GRU.(l.in_shape, l.out_shape)
+    | Recurrent l      -> Recurrent.(l.in_shape, l.out_shape)
+    | Conv2D l         -> Conv2D.(l.in_shape, l.out_shape)
+    | FullyConnected l -> FullyConnected.(l.in_shape, l.out_shape)
+    | MaxPool l        -> MaxPool.(l.in_shape, l.out_shape)
+    | Lambda l         -> Lambda.(l.in_shape, l.out_shape)
+    | Activation l     -> Activation.(l.in_shape, l.out_shape)
+
+  let connect_layer prev_l next_l =
+    let out_shape = prev_l |> get_in_out_shape |> snd in
+    match next_l with
+    | Linear l         -> Linear.connect out_shape l
+    | LinearNoBias l   -> LinearNoBias.connect out_shape l
+    | LSTM l           -> LSTM.connect out_shape l
+    | GRU l            -> GRU.connect out_shape l
+    | Recurrent l      -> Recurrent.connect out_shape l
+    | Conv2D l         -> Conv2D.connect out_shape l
+    | FullyConnected l -> FullyConnected.connect out_shape l
+    | MaxPool l        -> MaxPool.connect out_shape l
+    | Lambda l         -> Lambda.connect out_shape l
+    | Activation l     -> Activation.connect out_shape l
+
+  let rec add_layer ?act_typ nn l =
+    let _ = match layer_num nn = 0 with
+      | true  -> (
+          let in_shape = l |> get_in_out_shape |> fst in
+          assert (Array.length in_shape <> 0);
+        )
+      | false -> (
+          let prev_l = get_layer nn (-1) in
+          connect_layer prev_l l;
+        )
+    in
     nn.layers <- Array.append nn.layers [|l|];
     match act_typ with
-    | Some act -> add_activation nn act
+    | Some act -> add_layer nn (Activation (Activation.create act))
     | None     -> ()
 
   let init nn = Array.iter (function

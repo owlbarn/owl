@@ -137,6 +137,10 @@ let array_pad s x v n =
     | `Right -> Array.blit x 0 y 0 l
   in y
 
+(* pretty-print an array to string *)
+let string_of_array ?(sep=",") string_of_x x =
+  x |> Array.to_list |> List.map string_of_x |> String.concat sep
+
 
 (* iter function for ['a array array] type *)
 let aarr_iter f x = Array.iter (Array.iter f) x
