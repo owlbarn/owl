@@ -34,6 +34,30 @@ module Init = struct
 end
 
 
+(* definition of Input layer *)
+module Input = struct
+
+  type layer = {
+    mutable in_shape : int array;
+    mutable out_shape : int array;
+  }
+
+  let create inputs = {
+    in_shape  = Array.copy inputs;
+    out_shape = Array.copy inputs;
+  }
+
+  let run x l =
+    (* TODO: check the input shape *)
+    x
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    Printf.sprintf "Input layer: in/out:[*,%s]\n" in_str
+
+end
+
+
 (* module for various activation functions *)
 module Activation = struct
 
@@ -100,20 +124,26 @@ module Linear = struct
     mutable out_shape : int array;
   }
 
-  let create i o init_typ = {
-    w         = Mat.empty i o;
-    b         = Mat.empty 1 o;
-    init_typ  = init_typ;
-    in_shape  = [|i|];
-    out_shape = [|o|];
-  }
+  let create ?inputs o init_typ =
+    let in_shape = match inputs with
+      | Some i -> [|i|]
+      | None   -> [|0|]
+    in
+    {
+      w         = Mat.empty 0 0;
+      b         = Mat.empty 0 0;
+      init_typ  = init_typ;
+      in_shape  = in_shape;
+      out_shape = [|o|];
+    }
 
   let connect out_shape l =
     assert Array.(length out_shape = length l.in_shape);
     l.in_shape.(0) <- out_shape.(0)
 
   let init l =
-    let m, n = Mat.shape l.w in
+    let m = l.in_shape.(0) in
+    let n = l.out_shape.(0) in
     l.w <- Init.run l.init_typ m n;
     l.b <- Mat.zeros 1 n
 
@@ -160,19 +190,25 @@ module LinearNoBias = struct
     mutable out_shape : int array;
   }
 
-  let create i o init_typ = {
-    w         = Mat.empty i o;
-    init_typ  = init_typ;
-    in_shape  = [|i|];
-    out_shape = [|o|];
-  }
+  let create ?inputs o init_typ =
+    let in_shape = match inputs with
+      | Some i -> [|i|]
+      | None   -> [|0|]
+    in
+    {
+      w         = Mat.empty 0 0;
+      init_typ  = init_typ;
+      in_shape  = in_shape;
+      out_shape = [|o|];
+    }
 
   let connect out_shape l =
     assert Array.(length out_shape = length l.in_shape);
     l.in_shape.(0) <- out_shape.(0)
 
   let init l =
-    let m, n = Mat.shape l.w in
+    let m = l.in_shape.(0) in
+    let n = l.out_shape.(0) in
     l.w <- Init.run l.init_typ m n
 
   let reset l = Mat.reset l.w
@@ -216,30 +252,38 @@ module Recurrent = struct
     mutable out_shape : int array;
   }
 
-  let create i h o act init_typ = {
-    whh       = Mat.empty h h;
-    wxh       = Mat.empty i h;
-    why       = Mat.empty h o;
-    bh        = Mat.empty 1 h;
-    by        = Mat.empty 1 o;
-    h         = Mat.empty 1 h;
-    act       = act;
-    init_typ  = init_typ;
-    in_shape  = [|i|];
-    out_shape = [|o|];
-  }
+  let create ?inputs h o act init_typ =
+    let in_shape = match inputs with
+      | Some i -> [|i|]
+      | None   -> [|0|]
+    in
+    {
+      whh       = Mat.empty h h;
+      wxh       = Mat.empty 0 h;
+      why       = Mat.empty h o;
+      bh        = Mat.empty 1 h;
+      by        = Mat.empty 1 o;
+      h         = Mat.empty 1 h;
+      act       = act;
+      init_typ  = init_typ;
+      in_shape  = in_shape;
+      out_shape = [|o|];
+    }
 
   let connect out_shape l =
     assert Array.(length out_shape = length l.in_shape);
     l.in_shape.(0) <- out_shape.(0)
 
   let init l =
-    l.whh <- Init.run l.init_typ (Mat.row_num l.whh) (Mat.col_num l.whh);
-    l.wxh <- Init.run l.init_typ (Mat.row_num l.wxh) (Mat.col_num l.wxh);
-    l.why <- Init.run l.init_typ (Mat.row_num l.why) (Mat.col_num l.why);
-    l.bh  <- Mat.zeros 1 (Mat.col_num l.bh);
-    l.by  <- Mat.zeros 1 (Mat.col_num l.by);
-    l.h   <- Mat.zeros 1 (Mat.col_num l.h)
+    let i = l.in_shape.(0) in
+    let o = l.out_shape.(0) in
+    let h = Mat.row_num l.whh in
+    l.whh <- Init.run l.init_typ h h;
+    l.wxh <- Init.run l.init_typ i h;
+    l.why <- Init.run l.init_typ h o;
+    l.bh  <- Mat.zeros 1 h;
+    l.by  <- Mat.zeros 1 o;
+    l.h   <- Mat.zeros 1 h
 
   let reset l = Mat.reset l.h
 
@@ -332,45 +376,52 @@ module LSTM = struct
     mutable out_shape : int array;
   }
 
-  let create i m = {
-    wxi = Mat.empty i m;
-    whi = Mat.empty m m;
-    wxc = Mat.empty i m;
-    whc = Mat.empty m m;
-    wxf = Mat.empty i m;
-    whf = Mat.empty m m;
-    wxo = Mat.empty i m;
-    who = Mat.empty m m;
-    bi  = Mat.empty 1 m;
-    bc  = Mat.empty 1 m;
-    bf  = Mat.empty 1 m;
-    bo  = Mat.empty 1 m;
-    c   = Mat.empty 1 m;
-    h   = Mat.empty 1 m;
-    init_typ = Init.Tanh;
-    in_shape  = [|i|];
-    out_shape = [|m|];
-  }
+  let create ?inputs o =
+    let in_shape = match inputs with
+      | Some i -> [|i|]
+      | None   -> [|0|]
+    in
+    {
+      wxi = Mat.empty 0 o;
+      whi = Mat.empty o o;
+      wxc = Mat.empty 0 o;
+      whc = Mat.empty o o;
+      wxf = Mat.empty 0 o;
+      whf = Mat.empty o o;
+      wxo = Mat.empty 0 o;
+      who = Mat.empty o o;
+      bi  = Mat.empty 1 o;
+      bc  = Mat.empty 1 o;
+      bf  = Mat.empty 1 o;
+      bo  = Mat.empty 1 o;
+      c   = Mat.empty 1 o;
+      h   = Mat.empty 1 o;
+      init_typ = Init.Tanh;
+      in_shape  = in_shape;
+      out_shape = [|o|];
+    }
 
   let connect out_shape l =
     assert Array.(length out_shape = length l.in_shape);
     l.in_shape.(0) <- out_shape.(0)
 
   let init l =
-    l.wxi <- Init.run l.init_typ (Mat.row_num l.wxi) (Mat.col_num l.wxi);
-    l.whi <- Init.run l.init_typ (Mat.row_num l.whi) (Mat.col_num l.whi);
-    l.wxc <- Init.run l.init_typ (Mat.row_num l.wxc) (Mat.col_num l.wxc);
-    l.whc <- Init.run l.init_typ (Mat.row_num l.whc) (Mat.col_num l.whc);
-    l.wxf <- Init.run l.init_typ (Mat.row_num l.wxf) (Mat.col_num l.wxf);
-    l.whf <- Init.run l.init_typ (Mat.row_num l.whf) (Mat.col_num l.whf);
-    l.wxo <- Init.run l.init_typ (Mat.row_num l.wxo) (Mat.col_num l.wxo);
-    l.who <- Init.run l.init_typ (Mat.row_num l.who) (Mat.col_num l.who);
-    l.bi  <- Mat.zeros 1 (Mat.col_num l.bi);
-    l.bc  <- Mat.zeros 1 (Mat.col_num l.bc);
-    l.bf  <- Mat.zeros 1 (Mat.col_num l.bf);
-    l.bo  <- Mat.zeros 1 (Mat.col_num l.bo);
-    l.c   <- Mat.zeros 1 (Mat.col_num l.c);
-    l.h   <- Mat.zeros 1 (Mat.col_num l.h)
+    let i = l.in_shape.(0) in
+    let o = l.out_shape.(0) in
+    l.wxi <- Init.run l.init_typ i o;
+    l.whi <- Init.run l.init_typ o o;
+    l.wxc <- Init.run l.init_typ i o;
+    l.whc <- Init.run l.init_typ o o;
+    l.wxf <- Init.run l.init_typ i o;
+    l.whf <- Init.run l.init_typ o o;
+    l.wxo <- Init.run l.init_typ i o;
+    l.who <- Init.run l.init_typ o o;
+    l.bi  <- Mat.zeros 1 o;
+    l.bc  <- Mat.zeros 1 o;
+    l.bf  <- Mat.zeros 1 o;
+    l.bo  <- Mat.zeros 1 o;
+    l.c   <- Mat.zeros 1 o;
+    l.h   <- Mat.zeros 1 o
 
   let reset l =
     Mat.reset l.c;
@@ -515,37 +566,44 @@ module GRU = struct
     mutable out_shape : int array;
   }
 
-  let create i m = {
-    wxz = Mat.empty i m;
-    whz = Mat.empty m m;
-    wxr = Mat.empty i m;
-    whr = Mat.empty m m;
-    wxh = Mat.empty i m;
-    whh = Mat.empty m m;
-    bz  = Mat.empty 1 m;
-    br  = Mat.empty 1 m;
-    bh  = Mat.empty 1 m;
-    h   = Mat.empty 1 m;
-    init_typ = Init.Standard;
-    in_shape  = [|i|];
-    out_shape = [|m|];
-  }
+  let create ?inputs o =
+    let in_shape = match inputs with
+      | Some i -> [|i|]
+      | None   -> [|0|]
+    in
+    {
+      wxz = Mat.empty 0 o;
+      whz = Mat.empty o o;
+      wxr = Mat.empty 0 o;
+      whr = Mat.empty o o;
+      wxh = Mat.empty 0 o;
+      whh = Mat.empty o o;
+      bz  = Mat.empty 1 o;
+      br  = Mat.empty 1 o;
+      bh  = Mat.empty 1 o;
+      h   = Mat.empty 1 o;
+      init_typ = Init.Standard;
+      in_shape  = in_shape;
+      out_shape = [|o|];
+    }
 
   let connect out_shape l =
     assert Array.(length out_shape = length l.in_shape);
     l.in_shape.(0) <- out_shape.(0)
 
   let init l =
-    l.wxz <- Init.run l.init_typ (Mat.row_num l.wxz) (Mat.col_num l.wxz);
-    l.whz <- Init.run l.init_typ (Mat.row_num l.whz) (Mat.col_num l.whz);
-    l.wxr <- Init.run l.init_typ (Mat.row_num l.wxr) (Mat.col_num l.wxr);
-    l.whr <- Init.run l.init_typ (Mat.row_num l.whr) (Mat.col_num l.whr);
-    l.wxh <- Init.run l.init_typ (Mat.row_num l.wxh) (Mat.col_num l.wxh);
-    l.whh <- Init.run l.init_typ (Mat.row_num l.whh) (Mat.col_num l.whh);
-    l.bz  <- Mat.zeros 1 (Mat.col_num l.bz);
-    l.br  <- Mat.zeros 1 (Mat.col_num l.br);
-    l.bh  <- Mat.zeros 1 (Mat.col_num l.bh);
-    l.h   <- Mat.zeros 1 (Mat.col_num l.h)
+    let i = l.in_shape.(0) in
+    let o = l.out_shape.(0) in
+    l.wxz <- Init.run l.init_typ i o;
+    l.whz <- Init.run l.init_typ o o;
+    l.wxr <- Init.run l.init_typ i o;
+    l.whr <- Init.run l.init_typ o o;
+    l.wxh <- Init.run l.init_typ i o;
+    l.whh <- Init.run l.init_typ o o;
+    l.bz  <- Mat.zeros 1 o;
+    l.br  <- Mat.zeros 1 o;
+    l.bh  <- Mat.zeros 1 o;
+    l.h   <- Mat.zeros 1 o
 
   let reset l = Mat.reset l.h
 
@@ -658,16 +716,20 @@ module Conv2D = struct
     mutable out_shape : int array;
   }
 
-  let create padding w h i o s =
-  {
-    w         = Arr.empty [|w;h;i;o|];
-    b         = Arr.empty [|o|];
-    s         = s;
-    padding   = padding;
-    init_typ  = Init.Uniform (0.,1.);
-    in_shape  = [|-1;-1;i|];
-    out_shape = [|-1;-1;o|];
-  }
+  let create padding ?inputs w h i o s =
+    let in_shape = match inputs with
+      | Some s -> assert (i = s.(2)); s
+      | None   -> [|0;0;i|]
+    in
+    {
+      w         = Arr.empty [|w;h;i;o|];
+      b         = Arr.empty [|o|];
+      s         = s;
+      padding   = padding;
+      init_typ  = Init.Uniform (0.,1.);
+      in_shape  = in_shape;
+      out_shape = [|0;0;o|];
+    }
 
   let connect out_shape l =
     assert Array.(length out_shape = length l.in_shape);
@@ -736,22 +798,26 @@ module FullyConnected = struct
     mutable out_shape : int array;
   }
 
-  let create i o init_typ = {
-    w         = Mat.empty i o;
-    b         = Mat.empty 1 o;
-    init_typ  = init_typ;
-    in_shape  = [||];
-    out_shape = [|o|];
-  }
+  let create ?inputs o init_typ =
+    let in_shape = match inputs with
+      | Some i -> [|i|]
+      | None   -> [|0|]
+    in
+    {
+      w         = Mat.empty 0 o;
+      b         = Mat.empty 1 o;
+      init_typ  = init_typ;
+      in_shape  = in_shape;
+      out_shape = [|o|];
+    }
 
   let connect out_shape l =
-    let m0 = Array.fold_left (fun a b -> a * b) 1 out_shape in
-    let m1 = Mat.row_num l.w in
-    assert (m0 = m1);
+    assert (Array.length out_shape > 0);
     l.in_shape <- Array.copy out_shape
 
   let init l =
-    let m, n = Mat.shape l.w in
+    let m = Array.fold_left (fun a b -> a * b) 1 l.in_shape in
+    let n = l.out_shape.(0) in
     l.w <- Init.run l.init_typ m n;
     l.b <- Mat.zeros 1 n
 
@@ -817,8 +883,8 @@ module MaxPool = struct
     padding;
     kernel;
     stride;
-    in_shape  = [|-1;-1;-1|];
-    out_shape = [|-1;-1;-1|];
+    in_shape  = [|0;0;0|];
+    out_shape = [|0;0;0|];
   }
 
   let connect out_shape l =
@@ -885,6 +951,7 @@ end
 (* type and functions of neural network *)
 
 type layer =
+  | Input          of Input.layer
   | Linear         of Linear.layer
   | LinearNoBias   of LinearNoBias.layer
   | LSTM           of LSTM.layer
@@ -915,6 +982,7 @@ module Feedforward = struct
     | false -> nn.layers.(i)
 
   let get_in_out_shape = function
+    | Input l          -> Input.(l.in_shape, l.out_shape)
     | Linear l         -> Linear.(l.in_shape, l.out_shape)
     | LinearNoBias l   -> LinearNoBias.(l.in_shape, l.out_shape)
     | LSTM l           -> LSTM.(l.in_shape, l.out_shape)
@@ -929,6 +997,7 @@ module Feedforward = struct
   let connect_layer prev_l next_l =
     let out_shape = prev_l |> get_in_out_shape |> snd in
     match next_l with
+    | Input l          -> () (* always the first layer *)
     | Linear l         -> Linear.connect out_shape l
     | LinearNoBias l   -> LinearNoBias.connect out_shape l
     | LSTM l           -> LSTM.connect out_shape l
@@ -941,17 +1010,18 @@ module Feedforward = struct
     | Activation l     -> Activation.connect out_shape l
 
   let rec add_layer ?act_typ nn l =
-    let _ = match layer_num nn = 0 with
-      | true  -> (
-          let in_shape = l |> get_in_out_shape |> fst in
-          assert (Array.length in_shape <> 0);
-        )
-      | false -> (
-          let prev_l = get_layer nn (-1) in
-          connect_layer prev_l l;
-        )
-    in
+    (* insert input layer as the first one given an empty nn *)
+    if layer_num nn = 0 then (
+      let in_shape = l |> get_in_out_shape |> fst in
+      assert (Array.length in_shape > 0);
+      assert (Array.exists ((<>)0) in_shape);
+      nn.layers <- [|Input Input.(create in_shape)|];
+    );
+    (* retrieve the previous layer and attach the new one *)
+    let prev_l = get_layer nn (-1) in
+    connect_layer prev_l l;
     nn.layers <- Array.append nn.layers [|l|];
+    (* if activation is specified, recursively add_layer *)
     match act_typ with
     | Some act -> add_layer nn (Activation (Activation.create act))
     | None     -> ()
@@ -964,7 +1034,7 @@ module Feedforward = struct
     | Recurrent l      -> Recurrent.init l
     | Conv2D l         -> Conv2D.init l
     | FullyConnected l -> FullyConnected.init l
-    | _                -> () (* activation *)
+    | _                -> () (* activation, etc. *)
     ) nn.layers
 
   let reset nn = Array.iter (function
@@ -975,7 +1045,7 @@ module Feedforward = struct
     | Recurrent l      -> Recurrent.reset l
     | Conv2D l         -> Conv2D.reset l
     | FullyConnected l -> FullyConnected.reset l
-    | _                -> () (* activation *)
+    | _                -> () (* activation, etc. *)
     ) nn.layers
 
   let mktag t nn = Array.iter (function
@@ -986,7 +1056,7 @@ module Feedforward = struct
     | Recurrent l      -> Recurrent.mktag t l
     | Conv2D l         -> Conv2D.mktag t l
     | FullyConnected l -> FullyConnected.mktag t l
-    | _                -> () (* activation *)
+    | _                -> () (* activation, etc. *)
     ) nn.layers
 
   let mkpar nn = Array.map (function
@@ -997,7 +1067,7 @@ module Feedforward = struct
     | Recurrent l      -> Recurrent.mkpar l
     | Conv2D l         -> Conv2D.mkpar l
     | FullyConnected l -> FullyConnected.mkpar l
-    | _                -> [||] (* activation *)
+    | _                -> [||] (* activation, etc. *)
     ) nn.layers
 
   let mkpri nn = Array.map (function
@@ -1008,7 +1078,7 @@ module Feedforward = struct
     | Recurrent l      -> Recurrent.mkpri l
     | Conv2D l         -> Conv2D.mkpri l
     | FullyConnected l -> FullyConnected.mkpri l
-    | _                -> [||] (* activation *)
+    | _                -> [||] (* activation, etc. *)
     ) nn.layers
 
   let mkadj nn = Array.map (function
@@ -1019,7 +1089,7 @@ module Feedforward = struct
     | Recurrent l      -> Recurrent.mkadj l
     | Conv2D l         -> Conv2D.mkadj l
     | FullyConnected l -> FullyConnected.mkadj l
-    | _                -> [||] (* activation *)
+    | _                -> [||] (* activation, etc. *)
     ) nn.layers
 
   let update nn us = Array.map2 (fun l u ->
@@ -1031,11 +1101,12 @@ module Feedforward = struct
     | Recurrent l      -> Recurrent.update l u
     | Conv2D l         -> Conv2D.update l u
     | FullyConnected l -> FullyConnected.update l u
-    | _                -> () (* activation *)
+    | _                -> () (* activation, etc. *)
     ) nn.layers us
 
   let run x nn = Array.fold_left (fun a l ->
     match l with
+    | Input l          -> Input.run a l
     | Linear l         -> Linear.run a l
     | LinearNoBias l   -> LinearNoBias.run a l
     | LSTM l           -> LSTM.run a l
@@ -1062,6 +1133,7 @@ module Feedforward = struct
     let s = ref "Feedforward network\n\n" in
     for i = 0 to Array.length nn.layers - 1 do
       let t = match nn.layers.(i) with
+        | Input l          -> Input.to_string l
         | Linear l         -> Linear.to_string l
         | LinearNoBias l   -> LinearNoBias.to_string l
         | LSTM l           -> LSTM.to_string l

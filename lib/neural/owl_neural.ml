@@ -29,24 +29,24 @@ module Clipping       = Owl_neural_optimise.Clipping
 
 let activation act_typ = Activation (Activation.create act_typ)
 
-let linear ?(init_typ = Init.Standard) inputs outputs =
-  Linear (Linear.create inputs outputs init_typ)
+let linear ?(init_typ = Init.Standard) ?inputs outputs =
+  Linear (Linear.create ?inputs outputs init_typ)
 
-let linear_nobias ?(init_typ = Init.Standard) inputs outputs =
-  LinearNoBias (LinearNoBias.create inputs outputs init_typ)
+let linear_nobias ?(init_typ = Init.Standard) ?inputs outputs =
+  LinearNoBias (LinearNoBias.create ?inputs outputs init_typ)
 
-let recurrent ?(init_typ=Init.Standard) ~act_typ inputs outputs hiddens =
-  Recurrent (Recurrent.create inputs hiddens outputs act_typ init_typ)
+let recurrent ?(init_typ=Init.Standard) ~act_typ ?inputs outputs hiddens =
+  Recurrent (Recurrent.create ?inputs hiddens outputs act_typ init_typ)
 
-let lstm inputs cells = LSTM (LSTM.create inputs cells)
+let lstm ?inputs cells = LSTM (LSTM.create ?inputs cells)
 
-let gru inputs cells = GRU (GRU.create inputs cells)
+let gru ?inputs cells = GRU (GRU.create ?inputs cells)
 
-let conv2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel_width kernel_height in_chanel out_channel strides =
-  Conv2D (Conv2D.create padding kernel_width kernel_height in_chanel out_channel strides)
+let conv2d ?(padding = Owl_dense_ndarray_generic.SAME) ?inputs kernel_width kernel_height in_chanel out_channel strides =
+  Conv2D (Conv2D.create padding ?inputs kernel_width kernel_height in_chanel out_channel strides)
 
-let fully_connected ?(init_typ = Init.Standard) inputs outputs =
-  FullyConnected (FullyConnected.create inputs outputs init_typ )
+let fully_connected ?(init_typ = Init.Standard) ?inputs outputs =
+  FullyConnected (FullyConnected.create ?inputs outputs init_typ )
 
 let max_pool ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
   MaxPool (MaxPool.create padding kernel stride)
