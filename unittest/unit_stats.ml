@@ -13,6 +13,14 @@ module To_test = struct
   let mannwhitneyu_left_side x y =
     let (_, p, _) = M.mannwhitneyu ~side:M.LeftSide x y in
     p
+  let wilcoxon_both_side x y =
+    let (_, p, _) = M.wilcoxon x y in
+    p
+  let wilcoxon_right_side x y =
+    let (_, p, _) = M.wilcoxon ~side:M.RightSide x y in
+    p
+  let wilcoxon_left_side x y =
+    let (_, p, _) = M.wilcoxon ~side:M.LeftSide x y in
   let fisher_test_both_side a b c d =
     let (_, p, _) = M.fisher_test a b c d in
     p
@@ -84,6 +92,47 @@ let fisher_test_left_side () =
     (abs_float((To_test.fisher_test_left_side 45 25 10 15) -. 0.990376800656) < eps)
 
 
+(* P-values computed using wilcox.test from R 3.2.3 *)
+let wilcoxon_test_both_side_exact () =
+  Alcotest.(check bool)
+    "wilcoxon_test_both_side_exact"
+    true
+    (abs_float((To_test.wilcoxon_both_side [|1.;2.;3.;4.;5.|] [|10.; 9.; 8.; 7.; 6.|]) -. 0.0625) < 0.001)
+
+let wilcoxon_test_right_side_exact () =
+  Alcotest.(check bool)
+    "wilcoxon_test_right_side_exact"
+    true
+    (abs_float((To_test.wilcoxon_right_side [|1.;2.;3.;4.;5.|] [|10.; 9.; 8.; 7.; 6.|]) -. 1.) < 0.001)
+
+let wilcoxon_test_left_side_exact () =
+  Alcotest.(check bool)
+    "wilcoxon_test_left_side_exact"
+    true
+    (abs_float((To_test.wilcoxon_left_side [|1.;2.;3.;4.;5.|] [|10.; 9.; 8.; 7.; 6.|]) -. 0.03125) < 0.001)
+
+(* P-values computed using wilcox.test from R 3.2.3 *)
+let wilcoxon_test_both_side_asymp () =
+  Alcotest.(check bool)
+    "wilcoxon_test_both_side_asymp"
+    true
+    (abs_float((To_test.wilcoxon_both_side [|10.;9.;8.;7.;6.|] [|10.; 3.; 1.; 3.; 2.|]) -. 0.0656) < 0.001)
+
+let wilcoxon_test_right_side_asymp () =
+  Alcotest.(check bool)
+    "wilcoxon_test_right_side_asymp"
+    true
+    (abs_float((To_test.wilcoxon_right_side [|10.;9.;8.;7.;6.|] [|10.; 3.; 1.; 3.; 2.|]) -. 0.9672) < 0.001)
+
+let wilcoxon_test_left_side_asymp () =
+  Alcotest.(check bool)
+    "wilcoxon_test_left_side_asymp"
+    true
+     (abs_float((To_test.wilcoxon_left_side [|10.;9.;8.;7.;6.|] [|10.; 3.; 1.; 3.; 2.|]) -. 0.0328) < 0.001)
+
+
+
+
 (* The tests *)
 let test_set = [
   "mannwhitneyu_test_left_side_asym" , `Slow, mannwhitneyu_test_left_side_asym;
@@ -92,6 +141,12 @@ let test_set = [
   "mannwhitneyu_test_both_side_exact" , `Slow, mannwhitneyu_test_both_side_exact;
   "mannwhitneyu_test_right_side_exact" , `Slow, mannwhitneyu_test_right_side_exact;
   "mannwhitneyu_test_left_side_exact" , `Slow, mannwhitneyu_test_left_side_exact;
+  "wilcoxon_test_both_side_exact" , `Slow, wilcoxon_test_both_side_exact;
+  "wilcoxon_test_right_side_exact" , `Slow, wilcoxon_test_right_side_exact;
+  "wilcoxon_test_left_side_exact" , `Slow, wilcoxon_test_left_side_exact;
+  "wilcoxon_test_both_side_asymp" , `Slow, wilcoxon_test_both_side_asymp;
+  "wilcoxon_test_right_side_asymp" , `Slow, wilcoxon_test_right_side_asymp;
+  "wilcoxon_test_left_side_asymp" , `Slow, wilcoxon_test_left_side_asymp;
   "fisher_test_both_side" , `Slow, fisher_test_both_side;
   "fisher_test_right_side", `Slow , fisher_test_right_side ;
   "fisher_test_left_side", `Slow, fisher_test_left_side;
