@@ -288,7 +288,7 @@ module Params = struct
     verbosity      = true;
   }
 
-  let config ?batch ?gradient ?loss ?learning_rate ?regularisation ?momentum ?clipping ?verbosity ~epochs =
+  let config ?batch ?gradient ?loss ?learning_rate ?regularisation ?momentum ?clipping ?verbosity epochs =
     let p = default () in
     (match batch with Some x -> p.batch <- x | None -> ());
     (match gradient with Some x -> p.gradient <- x | None -> ());

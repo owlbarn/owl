@@ -53,9 +53,8 @@ let test_minist_with_cnn () =
   let x = Dense.Matrix.S.to_ndarray x in
   let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
 
-  let params = Owl_neural_optimise.Params.default () in
-  params.batch <- Batch.Mini 100;
-  params.learning_rate <- Learning_Rate.Adagrad 0.01;
+  let params = Params.config
+    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 1 in
   train_cnn ~params nn x y;
 
   let x, y = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) 10 in
