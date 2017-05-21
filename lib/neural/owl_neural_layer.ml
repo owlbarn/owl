@@ -177,8 +177,8 @@ module Linear = struct
   let run x l = Maths.((x *@ l.w) + l.b)
 
   let to_string l =
-    let wm, wn = Mat.shape l.w in
-    let bm, bn = Mat.shape l.b in
+    let wm, wn = l.in_shape.(0), l.out_shape.(0) in
+    let bm, bn = 1, l.out_shape.(0) in
     Printf.sprintf "Linear layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wm * wn + bn) ^
@@ -235,7 +235,7 @@ module LinearNoBias = struct
   let run x l = Maths.(x *@ l.w)
 
   let to_string l =
-    let wm, wn = Mat.shape l.w in
+    let wm, wn = l.in_shape.(0), l.out_shape.(0) in
     Printf.sprintf "LinearNoBias layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wm * wn) ^
@@ -727,7 +727,7 @@ module Conv2D = struct
 
   let create padding ?inputs w h i o s =
     let in_shape = match inputs with
-      | Some s -> assert (i = s.(2)); s
+      | Some a -> assert (i = a.(2)); a
       | None   -> [|0;0;i|]
     in
     {
@@ -746,12 +746,15 @@ module Conv2D = struct
     l.in_shape.(0) <- out_shape.(0);
     l.in_shape.(1) <- out_shape.(1);
     let kernel_shape = Arr.shape l.w in
-    let out_cols, out_rows = Owl_dense_ndarray_generic.calc_conv2d_output_shape
-      l.padding l.in_shape.(0) l.in_shape.(1) kernel_shape.(0) kernel_shape.(1) l.s.(0) l.s.(1)
+    let out_cols, out_rows =
+      Owl_dense_ndarray_generic.calc_conv2d_output_shape
+      l.padding l.in_shape.(0) l.in_shape.(1) kernel_shape.(0) kernel_shape.(1)
+      l.s.(0) l.s.(1)
     in
     l.out_shape.(0) <- out_cols;
     l.out_shape.(1) <- out_rows
 
+  (* FIXME *)
   let init l =
     l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
     l.b <- Arr.(zeros (shape l.b))
@@ -784,13 +787,102 @@ module Conv2D = struct
   let to_string l =
     let ws = Arr.shape l.w in
     let bn = Arr.shape l.b in
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
     Printf.sprintf "Conv2D layer:" ^
-    Printf.sprintf " tensor in:[*;%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
+    Printf.sprintf " tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3) + bn.(0)) ^
     Printf.sprintf "    kernel : %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3) ^
     Printf.sprintf "    b      : %i\n" bn.(0) ^
     Printf.sprintf "    stride : [%i; %i]\n" l.s.(0) l.s.(1) ^
+    ""
+
+end
+
+
+(* definition of Conv2D layer *)
+module Conv3D = struct
+
+  type layer = {
+    mutable w         : t;
+    mutable b         : t;
+    mutable s         : int array;
+    mutable padding   : padding;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create padding ?inputs w h d i o s =
+    let in_shape = match inputs with
+      | Some a -> assert (i = a.(3)); a
+      | None   -> [|0;0;0;i|]
+    in
+    {
+      w         = Arr.empty [|w;h;d;i;o|];
+      b         = Arr.empty [|o|];
+      s         = s;
+      padding   = padding;
+      init_typ  = Init.Uniform (0.,1.);
+      in_shape  = in_shape;
+      out_shape = [|0;0;0;o|];
+    }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    assert (out_shape.(3) = l.in_shape.(3));
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    l.in_shape.(2) <- out_shape.(2);
+    let kernel_shape = Arr.shape l.w in
+    let out_cols, out_rows, out_dpts =
+      Owl_dense_ndarray_generic.calc_conv3d_output_shape
+      l.padding l.in_shape.(0) l.in_shape.(1) l.in_shape.(2)
+      kernel_shape.(0) kernel_shape.(1) kernel_shape.(2)
+      l.s.(0) l.s.(1) l.s.(2)
+    in
+    l.out_shape.(0) <- out_cols;
+    l.out_shape.(1) <- out_rows;
+    l.out_shape.(2) <- out_dpts
+
+  (* FIXME *)
+  let init l =
+    l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
+    l.b <- Arr.(zeros (shape l.b))
+
+  let reset l =
+    Arr.reset l.w;
+    Arr.reset l.b
+
+  let mktag t l =
+    l.w <- make_reverse l.w t;
+    l.b <- make_reverse l.b t
+
+  let mkpar l = [|l.w; l.b|]
+
+  let mkpri l = [|primal l.w; primal l.b|]
+
+  let mkadj l = [|adjval l.w; adjval l.b|]
+
+  let update l u =
+    l.w <- u.(0) |> primal';
+    l.b <- u.(1) |> primal'
+
+  let run x l = Maths.((conv3d ~padding:l.padding x l.w l.s) + l.b)
+
+  let to_string l =
+    let ws = Arr.shape l.w in
+    let bn = Arr.shape l.b in
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "Conv3D layer:" ^
+    Printf.sprintf " tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3)*ws.(4) + bn.(0)) ^
+    Printf.sprintf "    kernel : %i x %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3)  ws.(4) ^
+    Printf.sprintf "    b      : %i\n" bn.(0) ^
+    Printf.sprintf "    stride : [%i; %i; %i]\n" l.s.(0) l.s.(1) l.s.(2) ^
     ""
 
 end
@@ -967,6 +1059,7 @@ type layer =
   | GRU            of GRU.layer
   | Recurrent      of Recurrent.layer
   | Conv2D         of Conv2D.layer
+  | Conv3D         of Conv3D.layer
   | FullyConnected of FullyConnected.layer
   | MaxPool        of MaxPool.layer
   | Lambda         of Lambda.layer
@@ -998,6 +1091,7 @@ module Feedforward = struct
     | GRU l            -> GRU.(l.in_shape, l.out_shape)
     | Recurrent l      -> Recurrent.(l.in_shape, l.out_shape)
     | Conv2D l         -> Conv2D.(l.in_shape, l.out_shape)
+    | Conv3D l         -> Conv3D.(l.in_shape, l.out_shape)
     | FullyConnected l -> FullyConnected.(l.in_shape, l.out_shape)
     | MaxPool l        -> MaxPool.(l.in_shape, l.out_shape)
     | Lambda l         -> Lambda.(l.in_shape, l.out_shape)
@@ -1013,6 +1107,7 @@ module Feedforward = struct
     | GRU l            -> GRU.connect out_shape l
     | Recurrent l      -> Recurrent.connect out_shape l
     | Conv2D l         -> Conv2D.connect out_shape l
+    | Conv3D l         -> Conv3D.connect out_shape l
     | FullyConnected l -> FullyConnected.connect out_shape l
     | MaxPool l        -> MaxPool.connect out_shape l
     | Lambda l         -> Lambda.connect out_shape l
@@ -1048,6 +1143,7 @@ module Feedforward = struct
     | GRU l            -> GRU.init l
     | Recurrent l      -> Recurrent.init l
     | Conv2D l         -> Conv2D.init l
+    | Conv3D l         -> Conv3D.init l
     | FullyConnected l -> FullyConnected.init l
     | _                -> () (* activation, etc. *)
     ) nn.layers
@@ -1059,6 +1155,7 @@ module Feedforward = struct
     | GRU l            -> GRU.reset l
     | Recurrent l      -> Recurrent.reset l
     | Conv2D l         -> Conv2D.reset l
+    | Conv3D l         -> Conv3D.reset l
     | FullyConnected l -> FullyConnected.reset l
     | _                -> () (* activation, etc. *)
     ) nn.layers
@@ -1070,6 +1167,7 @@ module Feedforward = struct
     | GRU l            -> GRU.mktag t l
     | Recurrent l      -> Recurrent.mktag t l
     | Conv2D l         -> Conv2D.mktag t l
+    | Conv3D l         -> Conv3D.mktag t l
     | FullyConnected l -> FullyConnected.mktag t l
     | _                -> () (* activation, etc. *)
     ) nn.layers
@@ -1081,6 +1179,7 @@ module Feedforward = struct
     | GRU l            -> GRU.mkpar l
     | Recurrent l      -> Recurrent.mkpar l
     | Conv2D l         -> Conv2D.mkpar l
+    | Conv3D l         -> Conv3D.mkpar l
     | FullyConnected l -> FullyConnected.mkpar l
     | _                -> [||] (* activation, etc. *)
     ) nn.layers
@@ -1092,6 +1191,7 @@ module Feedforward = struct
     | GRU l            -> GRU.mkpri l
     | Recurrent l      -> Recurrent.mkpri l
     | Conv2D l         -> Conv2D.mkpri l
+    | Conv3D l         -> Conv3D.mkpri l
     | FullyConnected l -> FullyConnected.mkpri l
     | _                -> [||] (* activation, etc. *)
     ) nn.layers
@@ -1103,6 +1203,7 @@ module Feedforward = struct
     | GRU l            -> GRU.mkadj l
     | Recurrent l      -> Recurrent.mkadj l
     | Conv2D l         -> Conv2D.mkadj l
+    | Conv3D l         -> Conv3D.mkadj l
     | FullyConnected l -> FullyConnected.mkadj l
     | _                -> [||] (* activation, etc. *)
     ) nn.layers
@@ -1115,6 +1216,7 @@ module Feedforward = struct
     | GRU l            -> GRU.update l u
     | Recurrent l      -> Recurrent.update l u
     | Conv2D l         -> Conv2D.update l u
+    | Conv3D l         -> Conv3D.update l u
     | FullyConnected l -> FullyConnected.update l u
     | _                -> () (* activation, etc. *)
     ) nn.layers us
@@ -1128,6 +1230,7 @@ module Feedforward = struct
     | GRU l            -> GRU.run a l
     | Recurrent l      -> Recurrent.run a l
     | Conv2D l         -> Conv2D.run a l
+    | Conv3D l         -> Conv3D.run a l
     | FullyConnected l -> FullyConnected.run a l
     | MaxPool l        -> MaxPool.run a l
     | Lambda l         -> Lambda.run a l
@@ -1155,6 +1258,7 @@ module Feedforward = struct
         | GRU l            -> GRU.to_string l
         | Recurrent l      -> Recurrent.to_string l
         | Conv2D l         -> Conv2D.to_string l
+        | Conv3D l         -> Conv3D.to_string l
         | FullyConnected l -> FullyConnected.to_string l
         | MaxPool l        -> MaxPool.to_string l
         | Lambda l         -> Lambda.to_string l

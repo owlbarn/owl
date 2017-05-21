@@ -471,6 +471,8 @@ module Make
 
     val conv2d : ?padding:padding -> t -> t -> int array -> t
 
+    val conv3d : ?padding:padding -> t -> t -> int array -> t
+
     val max_pool : padding -> t -> int array -> int array -> t
 
     val reshape : t -> int array -> t

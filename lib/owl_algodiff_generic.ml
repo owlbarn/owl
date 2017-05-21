@@ -429,6 +429,9 @@ module Make
     | Conv2D_D_D  of t * t * int array
     | Conv2D_D_C  of t * t * int array
     | Conv2D_C_D  of t * t * int array
+    | Conv3D_D_D  of t * t * int array
+    | Conv3D_D_C  of t * t * int array
+    | Conv3D_C_D  of t * t * int array
     | Reshape_D   of t
     | Mat2Arr_D   of t
     | Arr2Mat_D   of t
@@ -1273,6 +1276,39 @@ module Make
       A.conv2d_backward_kernel a b s o
       |> pack_arr
 
+    (* a:input; b:kernel; s:stride *)
+    and conv3d ?padding a b s =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> Arr A.(conv3d ?padding a b s)
+        | _            -> error_binop "conv3d" a b
+      in
+      let fd a b = conv3d ?padding a b s in
+      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+      let df_da cp ap at = at in
+      let df_db cp bp bt = bt in
+      let df_dab cp ap at bp bt = at + bt in
+      let r_d_d a b = Conv3D_D_D (a, b, s) in
+      let r_d_c a b = Conv3D_D_C (a, b, s) in
+      let r_c_d a b = Conv3D_C_D (a, b, s) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and conv3d_backward_input a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.conv3d_backward_input a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and conv3d_backward_kernel a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.conv3d_backward_kernel a b s o
+      |> pack_arr
+
     and reshape a s =
       let ff = function
         | Arr a    -> Arr A.(reshape a s)
@@ -1411,6 +1447,9 @@ module Make
               | Conv2D_D_D (a, b, _)   -> reset (a :: b :: t)
               | Conv2D_D_C (a, _, _)   -> reset (a :: t)
               | Conv2D_C_D (_, b, _)   -> reset (b :: t)
+              | Conv3D_D_D (a, b, _)   -> reset (a :: b :: t)
+              | Conv3D_D_C (a, _, _)   -> reset (a :: t)
+              | Conv3D_C_D (_, b, _)   -> reset (b :: t)
               | Reshape_D a            -> reset (a :: t)
               | Mat2Arr_D a            -> reset (a :: t)
               | Arr2Mat_D a            -> reset (a :: t)
@@ -1525,6 +1564,9 @@ module Make
               | Conv2D_D_D (a, b, s)   -> push ((conv2d_backward_input a b s !aa, a) :: (conv2d_backward_kernel a b s !aa, b) :: t)
               | Conv2D_D_C (a, b, s)   -> push ((conv2d_backward_input a b s !aa, a) :: t)
               | Conv2D_C_D (a, b, s)   -> push ((conv2d_backward_kernel a b s !aa, b) :: t)
+              | Conv3D_D_D (a, b, s)   -> push ((conv3d_backward_input a b s !aa, a) :: (conv3d_backward_kernel a b s !aa, b) :: t)
+              | Conv3D_D_C (a, b, s)   -> push ((conv3d_backward_input a b s !aa, a) :: t)
+              | Conv3D_C_D (a, b, s)   -> push ((conv3d_backward_kernel a b s !aa, b) :: t)
               | Reshape_D a            -> push ((reshape !aa (shape (primal a)), a) :: t)
               | Mat2Arr_D a            -> push ((arr_to_mat !aa, a) :: t)
               | Arr2Mat_D a            -> push ((mat_to_arr !aa, a) :: t)
