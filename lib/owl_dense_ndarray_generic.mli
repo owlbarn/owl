@@ -861,10 +861,16 @@ val conv3d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (floa
 val conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
 (** [] *)
 
+val max_pool1d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+(** [] *)
+
 val max_pool2d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** [] *)
 
 val max_pool3d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+(** [] *)
+
+val avg_pool1d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** [] *)
 
 val avg_pool2d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t

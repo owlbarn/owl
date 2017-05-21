@@ -1909,7 +1909,38 @@ let max_pool2d ?(padding=SAME) input kernel stride =
 
   output
 
-(* similar to max_pool *)
+
+(* max_pool1d: 3d input and 3d kernel, refer to tensorlfow doc
+  input : [batch; input_column; input_channel]
+  kernel: [kernel_column]
+  stride: [column_stride]
+  output: [batch; output_column; input_channel]
+ *)
+let max_pool1d ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 3);
+  assert (Array.length kernel = 1);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input = reshape input [|batches; 1; input_cols; in_channel|] in
+
+  let kernel_cols = kernel.(0) in
+  let kernel = [|1; kernel_cols|] in
+
+  let col_stride = stride.(0) in
+  let stride = [|1; col_stride|] in
+
+  let output = max_pool2d ~padding input kernel stride in
+  let output_shp = shape output in
+  let output_cols = output_shp.(2) in
+  let output = reshape output [|batches; output_cols; in_channel|] in
+  output
+
+
+(* similar to max_pool2d *)
 let avg_pool2d ?(padding=SAME) input kernel stride =
   assert (num_dims input = 4);
   assert (Array.length kernel = 2);
@@ -1941,6 +1972,31 @@ let avg_pool2d ?(padding=SAME) input kernel stride =
     kernel_cols kernel_rows output_cols output_rows
     row_stride col_stride pad_typ row_in_stride col_in_stride;
 
+  output
+
+
+(* similar to max_pool1d *)
+let avg_pool1d ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 3);
+  assert (Array.length kernel = 1);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input = reshape input [|batches; 1; input_cols; in_channel|] in
+
+  let kernel_cols = kernel.(0) in
+  let kernel = [|1; kernel_cols|] in
+
+  let col_stride = stride.(0) in
+  let stride = [|1; col_stride|] in
+
+  let output = avg_pool2d ~padding input kernel stride in
+  let output_shp = shape output in
+  let output_cols = output_shp.(2) in
+  let output = reshape output [|batches; output_cols; in_channel|] in
   output
 
 
