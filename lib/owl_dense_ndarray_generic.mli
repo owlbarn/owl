@@ -840,6 +840,9 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 
 type padding = SAME | VALID
 
+val conv1d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
+(** [] *)
+
 val conv2d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
 (** [] *)
 
@@ -858,22 +861,22 @@ val conv3d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (floa
 val conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
 (** [] *)
 
-val max_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val max_pool2d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** [] *)
 
 val max_pool3d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** [] *)
 
-val avg_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val avg_pool2d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** [] *)
 
 val avg_pool3d : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** [] *)
 
-val max_pool_argmax : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t * (int64, int64_elt) t
+val max_pool2d_argmax : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t * (int64, int64_elt) t
 (** [] *)
 
-val max_pool_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+val max_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
 (** [] *)
 
 

@@ -1837,13 +1837,46 @@ let conv3d_backward_kernel input kernel stride output' =
   kernel'
 
 
-(* max_pool: 4d input and 4d kernel, refer to tensorlfow doc
+(* conv1d: 3d input and 3d kernel, refer to tensorlfow doc
+  input : [batch; input_column; input_channel]
+  kernel: [kernel_column; input_channel; output_channel]
+  stride: [column_stride]
+  output: [batch; output_column; output_channel]
+ *)
+let conv1d ?(padding=SAME) input kernel stride =
+  assert (num_dims input = 3);
+  assert (num_dims kernel = 3);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input = reshape input [|batches; 1; input_cols; in_channel|] in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let out_channel = kernel_shp.(2) in
+  assert (in_channel = kernel_shp.(1));
+  let kernel = reshape kernel [|1;kernel_cols; in_channel; out_channel|] in
+
+  let col_stride = stride.(0) in
+  let stride = [|1; col_stride|] in
+
+  let output = conv2d ~padding input kernel stride in
+  let output_shp = shape output in
+  let output_cols = output_shp.(2) in
+  let output = reshape output [|batches; output_cols; out_channel|] in
+  output
+
+
+(* max_pool2d: 4d input and 4d kernel, refer to tensorlfow doc
   input : [batch; input_column; input_row; input_channel]
   kernel: [kernel_column; kernel_row]
   stride: [column_stride; row_stride]
   output: [batch; output_column; output_row; input_channel]
  *)
-let max_pool ?(padding=SAME) input kernel stride =
+let max_pool2d ?(padding=SAME) input kernel stride =
   assert (num_dims input = 4);
   assert (Array.length kernel = 2);
   assert (Array.length stride = 2);
@@ -1877,7 +1910,7 @@ let max_pool ?(padding=SAME) input kernel stride =
   output
 
 (* similar to max_pool *)
-let avg_pool ?(padding=SAME) input kernel stride =
+let avg_pool2d ?(padding=SAME) input kernel stride =
   assert (num_dims input = 4);
   assert (Array.length kernel = 2);
   assert (Array.length stride = 2);
@@ -1992,8 +2025,8 @@ let avg_pool3d ?(padding=SAME) input kernel stride =
   output
 
 
-(* similar to max_pool, but also return the flatten indices of the max values *)
-let max_pool_argmax ?(padding=SAME) input kernel stride =
+(* similar to max_pool2d, but also return the flatten indices of the max values *)
+let max_pool2d_argmax ?(padding=SAME) input kernel stride =
   assert (num_dims input = 4);
   assert (Array.length kernel = 2);
   assert (Array.length stride = 2);
@@ -2029,8 +2062,8 @@ let max_pool_argmax ?(padding=SAME) input kernel stride =
   output, argmax
 
 
-(* calculate the gradient of max_pool *)
-let max_pool_backward padding input kernel stride output' =
+(* calculate the gradient of max_pool2d *)
+let max_pool2d_backward padding input kernel stride output' =
   assert (num_dims input = 4);
   assert (Array.length kernel = 2);
   assert (Array.length stride = 2);

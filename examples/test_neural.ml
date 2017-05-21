@@ -90,4 +90,4 @@ let test_minist_with_cnn1 () =
   test_cnn nn (Algodiff.S.unpack_arr x) (Algodiff.S.unpack_mat y)
 
 
-let _ = test_minist_with_linear ()
+let _ = test_minist_with_cnn1 ()

@@ -969,8 +969,8 @@ module FullyConnected = struct
 end
 
 
-(* definition of MaxPool layer *)
-module MaxPool = struct
+(* definition of MaxPool2D layer *)
+module MaxPool2D = struct
 
   type layer = {
     mutable padding   : padding;
@@ -1001,14 +1001,14 @@ module MaxPool = struct
     l.out_shape.(2) <- out_shape.(2)
 
 
-  let run x l = Maths.(max_pool l.padding x l.kernel l.stride)
+  let run x l = Maths.(max_pool2d l.padding x l.kernel l.stride)
 
   let to_string l =
     let padding_s = match l.padding with
       | Owl_dense_ndarray_generic.SAME  -> "SAME"
       | Owl_dense_ndarray_generic.VALID -> "VALID"
     in
-    Printf.sprintf "MaxPool layer:" ^
+    Printf.sprintf "MaxPool2D layer:" ^
     Printf.sprintf " tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
     Printf.sprintf "    padding : %s\n" padding_s ^
     Printf.sprintf "    patch   : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
@@ -1061,7 +1061,7 @@ type layer =
   | Conv2D         of Conv2D.layer
   | Conv3D         of Conv3D.layer
   | FullyConnected of FullyConnected.layer
-  | MaxPool        of MaxPool.layer
+  | MaxPool2D      of MaxPool2D.layer
   | Lambda         of Lambda.layer
   | Activation     of Activation.layer
 
@@ -1093,7 +1093,7 @@ module Feedforward = struct
     | Conv2D l         -> Conv2D.(l.in_shape, l.out_shape)
     | Conv3D l         -> Conv3D.(l.in_shape, l.out_shape)
     | FullyConnected l -> FullyConnected.(l.in_shape, l.out_shape)
-    | MaxPool l        -> MaxPool.(l.in_shape, l.out_shape)
+    | MaxPool2D l      -> MaxPool2D.(l.in_shape, l.out_shape)
     | Lambda l         -> Lambda.(l.in_shape, l.out_shape)
     | Activation l     -> Activation.(l.in_shape, l.out_shape)
 
@@ -1109,7 +1109,7 @@ module Feedforward = struct
     | Conv2D l         -> Conv2D.connect out_shape l
     | Conv3D l         -> Conv3D.connect out_shape l
     | FullyConnected l -> FullyConnected.connect out_shape l
-    | MaxPool l        -> MaxPool.connect out_shape l
+    | MaxPool2D l      -> MaxPool2D.connect out_shape l
     | Lambda l         -> Lambda.connect out_shape l
     | Activation l     -> Activation.connect out_shape l
 
@@ -1232,7 +1232,7 @@ module Feedforward = struct
     | Conv2D l         -> Conv2D.run a l
     | Conv3D l         -> Conv3D.run a l
     | FullyConnected l -> FullyConnected.run a l
-    | MaxPool l        -> MaxPool.run a l
+    | MaxPool2D l      -> MaxPool2D.run a l
     | Lambda l         -> Lambda.run a l
     | Activation l     -> Activation.run a l
     ) x nn.layers
@@ -1260,7 +1260,7 @@ module Feedforward = struct
         | Conv2D l         -> Conv2D.to_string l
         | Conv3D l         -> Conv3D.to_string l
         | FullyConnected l -> FullyConnected.to_string l
-        | MaxPool l        -> MaxPool.to_string l
+        | MaxPool2D l      -> MaxPool2D.to_string l
         | Lambda l         -> Lambda.to_string l
         | Activation l     -> Activation.to_string l
       in

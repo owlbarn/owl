@@ -326,15 +326,15 @@ module type NdarraySig = sig
 
   val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
 
-  val max_pool : ?padding:padding -> arr -> int array -> int array -> arr
+  val max_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
 
   val max_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
 
-  val avg_pool : ?padding:padding -> arr -> int array -> int array -> arr
+  val avg_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
 
   val avg_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
 
-  val max_pool_backward : padding -> arr -> int array -> int array -> arr -> arr
+  val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
 end
 
@@ -1343,21 +1343,21 @@ module Make
       op_d_d a ff fd df r
 
     (* a:input; b:kernel; s:stride *)
-    and max_pool padding a b s =
+    and max_pool2d padding a b s =
       let ff = function
-        | Arr a    -> Arr A.(max_pool ~padding a b s)
-        | _        -> error_uniop "max_pool" a
+        | Arr a    -> Arr A.(max_pool2d ~padding a b s)
+        | _        -> error_uniop "max_pool2d" a
       in
-      let fd a = max_pool padding a b s in
-      let df cp ap at = max_pool padding at b s in
+      let fd a = max_pool2d padding a b s in
+      let df cp ap at = max_pool2d padding at b s in
       let r a = Maxpool_D (a, padding, b, s) in
       op_d_d a ff fd df r
 
     (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
-    and max_pool_backward p a b s o =
+    and max_pool2d_backward p a b s o =
       let a = unpack_arr a in
       let o = unpack_arr o in
-      A.max_pool_backward p a b s o
+      A.max_pool2d_backward p a b s o
       |> pack_arr
 
     (* TODO: trace and diag functions ... *)
@@ -1570,7 +1570,7 @@ module Make
               | Reshape_D a            -> push ((reshape !aa (shape (primal a)), a) :: t)
               | Mat2Arr_D a            -> push ((arr_to_mat !aa, a) :: t)
               | Arr2Mat_D a            -> push ((mat_to_arr !aa, a) :: t)
-              | Maxpool_D (a, p, d, s) -> push ((max_pool_backward p (primal a) d s !aa, a) :: t)
+              | Maxpool_D (a, p, d, s) -> push ((max_pool2d_backward p (primal a) d s !aa, a) :: t)
               )
             else push t
             )

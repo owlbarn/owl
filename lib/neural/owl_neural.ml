@@ -25,7 +25,7 @@ module Regularisation = Owl_neural_optimise.Regularisation
 module Clipping       = Owl_neural_optimise.Clipping
 
 
-(* core functions *)
+(* core layer functions *)
 
 let input inputs = Input (Input.create inputs)
 
@@ -53,10 +53,13 @@ let conv3d ?(padding = Owl_dense_ndarray_generic.SAME) ?inputs kernel_width kern
 let fully_connected ?(init_typ = Init.Standard) ?inputs outputs =
   FullyConnected (FullyConnected.create ?inputs outputs init_typ )
 
-let max_pool ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
-  MaxPool (MaxPool.create padding kernel stride)
+let max_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
+  MaxPool2D (MaxPool2D.create padding kernel stride)
 
 let lambda lambda = Lambda (Lambda.create lambda)
+
+
+(* training functions *)
 
 let train ?params nn x y =
   Feedforward.init nn;
