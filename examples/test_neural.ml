@@ -29,49 +29,21 @@ let test_cnn nn x y =
     Printf.printf "prediction: %i\n" (let _, _, j = Owl_dense_matrix_generic.max_i p in j)
   done
 
-let test_minist_with_cnn0 () =
-  let nn = Feedforward.create () in
 
-  (*
-  Feedforward.add_layer nn (conv2d 3 3 1 32 [|3;3|]);
-  Feedforward.add_activation nn Activation.Relu;
-  Feedforward.add_layer nn (conv2d 3 3 32 8 [|3;3|]);
-  Feedforward.add_activation nn Activation.Relu;
-  Feedforward.add_layer nn (fully_connected 128 10 ~init_typ:Init.(Uniform (0.,0.1)));
-  Feedforward.add_activation nn Activation.Softmax; *)
-
-  Feedforward.add_layer nn (conv2d ~padding:VALID 28 28 1 300 [|1;1|]);
-  (* Feedforward.add_activation nn Activation.Tanh; *)
-  Feedforward.add_layer nn (fully_connected 10);
-  Feedforward.add_layer nn (activation Activation.Softmax);
-
-  print nn;
-
-  let x, _, y = Dataset.load_mnist_train_data () in
-  let m = Dense.Matrix.S.row_num x in
-  let x = Dense.Matrix.S.to_ndarray x in
-  let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
-
-  let params = Owl_neural_optimise.Params.default () in
-  params.batch <- Batch.Mini 100;
-  params.learning_rate <- Learning_Rate.Const 0.00001;
-  train_cnn ~params nn x y;
-
-  let x, y = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) 10 in
-  test_cnn nn (Algodiff.S.unpack_arr x) (Algodiff.S.unpack_mat y)
-
-
-let test_minist_with_cnn1 () =
+let test_minist_with_cnn () =
   let nn = Feedforward.create () in
 
   Feedforward.add_layer nn (input [|28;28;1|]);
-  Feedforward.add_layer nn (conv2d ~padding:VALID 8 8 1 50 [|1;1|]);
+  Feedforward.add_layer nn (conv2d [|5;5;1;32|] [|1;1|]);
   Feedforward.add_layer nn (activation Activation.Relu);
-  Feedforward.add_layer nn (conv2d ~padding:VALID 8 8 50 50 [|2;2|]);
+  Feedforward.add_layer nn (max_pool2d [|2;2|] [|2;2|]);
+  Feedforward.add_layer nn (conv2d [|5;5;32;64|] [|1;1|]);
   Feedforward.add_layer nn (activation Activation.Relu);
-  Feedforward.add_layer nn (conv2d ~padding:VALID 7 7 50 50 [|1;1|]);
+  Feedforward.add_layer nn (max_pool2d [|2;2|] [|2;2|]);
+  (* missing dropout layer *)
+  Feedforward.add_layer nn (fully_connected 1024);
   Feedforward.add_layer nn (activation Activation.Relu);
-  Feedforward.add_layer nn (fully_connected 10);
+  Feedforward.add_layer nn (linear 10);
   Feedforward.add_layer nn (activation Activation.Softmax);
 
   print nn;
@@ -83,11 +55,11 @@ let test_minist_with_cnn1 () =
 
   let params = Owl_neural_optimise.Params.default () in
   params.batch <- Batch.Mini 100;
-  params.learning_rate <- Learning_Rate.Const 0.01;
+  params.learning_rate <- Learning_Rate.Adagrad 0.01;
   train_cnn ~params nn x y;
 
   let x, y = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) 10 in
   test_cnn nn (Algodiff.S.unpack_arr x) (Algodiff.S.unpack_mat y)
 
 
-let _ = test_minist_with_cnn1 ()
+let _ = test_minist_with_cnn ()

@@ -725,7 +725,8 @@ module Conv2D = struct
     mutable out_shape : int array;
   }
 
-  let create padding ?inputs w h i o s =
+  let create padding ?inputs kernel stride =
+    let w, h, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3) in
     let in_shape = match inputs with
       | Some a -> assert (i = a.(2)); a
       | None   -> [|0;0;i|]
@@ -733,7 +734,7 @@ module Conv2D = struct
     {
       w         = Arr.empty [|w;h;i;o|];
       b         = Arr.empty [|o|];
-      s         = s;
+      s         = stride;
       padding   = padding;
       init_typ  = Init.Uniform (0.,1.);
       in_shape  = in_shape;
@@ -814,7 +815,8 @@ module Conv3D = struct
     mutable out_shape : int array;
   }
 
-  let create padding ?inputs w h d i o s =
+  let create padding ?inputs kernel stride =
+    let w, h, d, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3), kernel.(4) in
     let in_shape = match inputs with
       | Some a -> assert (i = a.(3)); a
       | None   -> [|0;0;0;i|]
@@ -822,7 +824,7 @@ module Conv3D = struct
     {
       w         = Arr.empty [|w;h;d;i;o|];
       b         = Arr.empty [|o|];
-      s         = s;
+      s         = stride;
       padding   = padding;
       init_typ  = Init.Uniform (0.,1.);
       in_shape  = in_shape;
@@ -955,15 +957,16 @@ module FullyConnected = struct
     y
 
   let to_string l =
-    let wm, wn = Mat.shape l.w in
-    let bm, bn = Mat.shape l.b in
+    let wm = Array.fold_left (fun a b -> a * b) 1 l.in_shape in
+    let wn = l.out_shape.(0) in
+    let bn = l.out_shape.(0) in
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     Printf.sprintf "FullyConnected layer:" ^
     Printf.sprintf " tensor in:[*,%s] matrix out:(*,%i)\n" in_str l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wm * wn + bn) ^
     Printf.sprintf "    w      : %i x %i\n" wm wn ^
-    Printf.sprintf "    b      : %i x %i\n" bm bn ^
+    Printf.sprintf "    b      : %i x %i\n" 1 bn ^
     ""
 
 end
