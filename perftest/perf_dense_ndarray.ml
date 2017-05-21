@@ -1,6 +1,6 @@
 (* Performance test of Owl_dense_ndarray module *)
 
-module M = Owl_dense_ndarray
+module M = Owl_dense_ndarray_generic
 
 let test_op s c op = Perf_common.test_op s c op
 
@@ -16,9 +16,9 @@ let _ =
   test_op "empty             " c (fun () -> M.empty Bigarray.Float64 [|m;n;o|]);
   test_op "create            " c (fun () -> M.create Bigarray.Float64 [|m;n;o|] 1.);
   test_op "slice_left        " c (fun () -> M.slice_left x [|0|]);
-  test_op "slice (0,*.*)     " c (fun () -> M.slice [|Some 0; None; None|] x);
-  test_op "slice (*,0.*)     " c (fun () -> M.slice [|None; Some 0; None|] x);
-  test_op "slice (*,*.0)     " c (fun () -> M.slice [|None; None; Some 0|] x);
+  test_op "slice (0,*.*)     " c (fun () -> M.slice [ [0]; []; [] ] x);
+  test_op "slice (*,0.*)     " c (fun () -> M.slice [ []; [0]; [] ] x);
+  test_op "slice (*,*.0)     " c (fun () -> M.slice [ []; []; [0] ] x);
   test_op "reshape           " c (fun () -> M.reshape x [|o;n;m|]);
   test_op "flatten           " c (fun () -> M.flatten x);
   test_op "min               " c (fun () -> M.min x);
@@ -33,9 +33,9 @@ let _ =
   test_op "sin x             " c (fun () -> M.sin x);
   test_op "max2              " c (fun () -> M.max2 x y);
   test_op "is_zero           " c (fun () -> M.is_zero x);
-  test_op "is_equal          " c (fun () -> M.is_equal x x);
-  test_op "is_greater        " c (fun () -> M.is_greater x x);
-  test_op "equal_or_greater  " c (fun () -> M.equal_or_greater x x);
+  test_op "equal          " c (fun () -> M.equal x x);
+  test_op "greater        " c (fun () -> M.greater x x);
+  test_op "greater_equal  " c (fun () -> M.greater_equal x x);
   test_op "transpose         " c (fun () -> M.transpose x);
   test_op "swap 0 1          " c (fun () -> M.swap 0 1 x);
   test_op "fill              " c (fun () -> M.fill x 1.5);
@@ -48,11 +48,9 @@ let _ =
   test_op "mapi              " c (fun () -> M.mapi (fun i a -> a) x);
   test_op "map               " c (fun () -> M.map (fun a -> a) x);
   test_op "map (sin)         " c (fun () -> M.map (fun a -> sin a) x);
-  test_op "pmap (sin)        " c (fun () -> M.pmap (fun a -> sin a) x);
   test_op "map (+1)          " c (fun () -> M.map (fun a -> a +. 1.) x);
-  test_op "pmap (+1)         " c (fun () -> M.pmap (fun a -> a +. 1.) x);
   test_op "map (^2)          " c (fun () -> M.map (fun a -> a *. a) x);
-  test_op "iteri_slice 0     " c (fun () -> M.iteri_slice [|0|] (fun i s -> ()) x);
+  (* FIXME test_op "iteri_slice 0     " c (fun () -> M.iteri_slice [|0|] (fun i s -> ()) x); *)
   test_op "iter2i            " c (fun () -> M.iter2i (fun i a b -> ()) x y);
   test_op "iter2             " c (fun () -> M.iter2 (fun a b -> ()) x y);
   test_op "conj              " c (fun () -> M.conj z);

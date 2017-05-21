@@ -13,9 +13,9 @@ type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 (** {6 Create N-dimensional view} *)
 
-val of_ndarray : ('a, 'b) Owl_dense_ndarray.t -> ('a, 'b) t
+val of_ndarray : ('a, 'b) Owl_dense_ndarray_generic.t -> ('a, 'b) t
 
-val to_ndarray : ('a, 'b) t -> ('a, 'b) Owl_dense_ndarray.t
+val to_ndarray : ('a, 'b) t -> ('a, 'b) Owl_dense_ndarray_generic.t
 
 val collapse : ('a, 'b) t -> ('a, 'b) t
 

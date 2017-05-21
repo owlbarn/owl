@@ -10,7 +10,7 @@ type ('a, 'b) t = {
   mutable i_fun : (int array -> int array);       (* index transformation function *)
   mutable d_fun : (int array -> 'a -> 'a);        (* data transformation function *)
   mutable shape : int array;                      (* shape of the view, for checking boundary *)
-  mutable data  : ('a, 'b) Owl_dense_ndarray.t;   (* point to the raw data set *)
+  mutable data  : ('a, 'b) Owl_dense_ndarray_generic.t;   (* point to the raw data set *)
 }
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
@@ -27,7 +27,7 @@ let _append_view p n =
   n.d_fun <- (fun i d -> u i (v (f i) d))
 
 let of_ndarray x =
-  _create_view None (fun i -> i) (fun i d -> d) (Owl_dense_ndarray.shape x) x
+  _create_view None (fun i -> i) (fun i d -> d) (Owl_dense_ndarray_generic.shape x) x
 
 let num_dims x = Array.length x.shape
 
@@ -35,16 +35,16 @@ let shape x = Array.copy x.shape
 
 let nth_dim x i = Array.get x.shape i
 
-let kind x = Owl_dense_ndarray.kind x.data
+let kind x = Owl_dense_ndarray_generic.kind x.data
 
 let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
 
 let get x i =
   match x.prev = None with
-  | true  -> Owl_dense_ndarray.get x.data i
+  | true  -> Owl_dense_ndarray_generic.get x.data i
   | false -> (
       let i' = x.i_fun i in
-      Owl_dense_ndarray.get x.data i' |> x.d_fun i'
+      Owl_dense_ndarray_generic.get x.data i' |> x.d_fun i'
     )
 
 let set x i a =
@@ -104,7 +104,7 @@ let iter f x = iteri (fun _ y -> f y) x
 
 let slice axis x =
   let s0 = shape x in
-  Owl_dense_ndarray._check_slice_axis axis s0;
+  Owl_dense_ndarray_generic._check_slice_axis axis s0;
   let s1 = ref [||] in
   Array.iteri (fun i a ->
     match a with
@@ -154,8 +154,8 @@ let iteri_slice axis f x =
 let iter_slice axis f x = iteri_slice axis (fun _ y -> f y) x
 
 let collapse x =
-  let y = Owl_dense_ndarray.empty (kind x) (shape x) in
-  iteri (fun i a -> Owl_dense_ndarray.set y i a) x;
+  let y = Owl_dense_ndarray_generic.empty (kind x) (shape x) in
+  iteri (fun i a -> Owl_dense_ndarray_generic.set y i a) x;
   (* TODO: maybe I should also upadte the graph, better perf? *)
   _create_view None (fun i -> i) (fun i d -> d) (shape x) y
 
@@ -261,8 +261,8 @@ let to_ndarray x =
 let print x =
   let t = kind x in
   iteri (fun i y ->
-    Owl_dense_ndarray.print_index i;
-    Owl_dense_ndarray.print_element t y
+    Owl_dense_ndarray_generic.print_index i;
+    Owl_dense_ndarray_generic.print_element t y
   ) x
 
 (* TODO *)

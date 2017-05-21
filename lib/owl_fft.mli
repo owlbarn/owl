@@ -8,9 +8,9 @@
   you will find it very easy to use in case you are familiar with Matlab.
  *)
 
-type rmat = Owl_dense_real.mat
+type rmat = Owl_dense_matrix_d.mat
 
-type cmat = Owl_dense_complex.mat
+type cmat = Owl_dense_matrix_z.mat
 
 val fft : rmat -> cmat
 (** [fft x] performs an FFT operation on matrix [x]. If [x] has more than one

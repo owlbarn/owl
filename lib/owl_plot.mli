@@ -2,7 +2,7 @@
   The input to a plot function is supposed to be a row-based matrix.
  *)
 
-type dsmat = Owl_dense_real.mat
+type dsmat = Owl_dense_matrix_d.mat
 
 type handle
 
@@ -32,6 +32,12 @@ val set_xrange : handle -> float -> float -> unit
 val set_yrange : handle -> float -> float -> unit
 
 val set_zrange : handle -> float -> float -> unit
+
+val set_xticklabels : handle -> (float * string) list -> unit
+
+val set_yticklabels : handle -> (float * string) list -> unit
+
+val set_zticklabels : handle -> (float * string) list -> unit
 
 val set_foreground_color : handle -> int -> int -> int -> unit
 
@@ -99,3 +105,7 @@ val heatmap : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 (** Advanced statistical plot *)
 
 val normplot : ?h:handle -> dsmat -> unit
+
+
+
+(** Other plots *)

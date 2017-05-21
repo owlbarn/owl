@@ -3,9 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module M = Owl_dense_real
+module M = Owl_dense_matrix.D
+type mat = Owl_dense_matrix.D.mat
 
-type mat = Owl_dense_real.mat
+module V = Owl_dense_vector.D
+type vec = Owl_dense_vector.D.vec
 
 (* global epsilon value used in numerical differentiation *)
 let _eps = 0.00001
@@ -29,15 +31,15 @@ let diff2' f x = f x, diff2 f x
 (* gradient of f : vector -> scalar, return both function value and gradient *)
 let grad' f x =
   Owl_utils.check_row_vector x;
-  let _, n = M.shape x in
-  let g = M.create 1 n (f x) in
-  let gg = M.mapi (fun _ j xj ->
-    let x' = M.clone x in
-    x'.{0,j} <- xj +. _eps;
+  let n = V.numel x in
+  let g = V.create n (f x) in
+  let gg = V.mapi (fun i xi ->
+    let x' = V.clone x in
+    x'.{0,i} <- xi +. _eps;
     f x'
   ) x
   in
-  g, M.((gg -@ g) *$ _ep1)
+  g, M.((gg - g) *$ _ep1)
 
 (* gradient of f : vector -> scalar *)
 let grad f x = grad' f x |> snd
@@ -46,7 +48,7 @@ let grad f x = grad' f x |> snd
 let jacobianT' f x =
   Owl_utils.check_row_vector x;
   let y = f x in
-  let m, n = M.col_num x, M.col_num y in
+  let m, n = V.numel x, V.numel y in
   let j = M.tile y [|m; 1|] in
   let jj = M.mapi_by_row n (fun i yi ->
     let x' = M.clone x in
@@ -54,7 +56,7 @@ let jacobianT' f x =
     f x'
   ) j
   in
-  y, M.((jj -@ j) *$ _ep1)
+  y, M.((jj - j) *$ _ep1)
 
 (* transposed jacobian of f : vector -> vector *)
 let jacobianT f x = jacobianT' f x |> snd

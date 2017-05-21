@@ -13,7 +13,8 @@
   for algorithmic differentiation.
  *)
 
-type mat = Owl_dense_real.mat
+type mat = Owl_dense_matrix_d.mat
+type vec = Owl_dense_vector_d.vec
 
 (** {6 Core APIs of differentiation} *)
 
@@ -30,14 +31,14 @@ val diff : (float -> float) -> (float -> float)
 val diff2 : (float -> float) -> (float -> float)
 (** [diff2 f x] returns second-order derivative of [f : float -> float] at [x]. *)
 
-val grad : (mat -> float) -> (mat -> mat)
+val grad : (vec -> float) -> (vec -> vec)
 (** [grad f x] returns the gradient of [f] at point [x]. Note the type of the
   function is [f : mat -> float], i.e. [f] takes an one-row matrix as input and
   outputs a float scalar. An exception will be raised if the passed in paramter
   is not an one-row matrix.
  *)
 
-val jacobian : (mat -> mat) -> (mat -> mat)
+val jacobian : (vec -> vec) -> (vec -> mat)
 (** [jacobian f x] returns the jacobian of [f] at point [x]. Again, the [mat]
   type here refers to one-row matrix. I am still thinking maybe it is necessary
   to introduce vector as a separate type in Owl? Currently, the returned result
@@ -45,7 +46,7 @@ val jacobian : (mat -> mat) -> (mat -> mat)
   then the returned jacobian is an [m x n] matrix.
  *)
 
-val jacobianT : (mat -> mat) -> (mat -> mat)
+val jacobianT : (vec -> vec) -> (vec -> mat)
 (** [jacobianT f] returns the transposed jacobian of [f] at point [x]. *)
 
 
@@ -57,11 +58,11 @@ val diff' : (float -> float) -> float -> float * float
 val diff2' : (float -> float) -> float -> float * float
 (** [diff2' f x] is similar to [diff2] but also returns the function value [f x]. *)
 
-val grad' : (mat -> float) -> mat -> mat * mat
+val grad' : (vec -> float) -> vec -> vec * vec
 (** [grad' f x] is similar to [grad] but also returns the function value [f x]. *)
 
-val jacobian' : (mat -> mat) -> mat -> mat * mat
+val jacobian' : (vec -> vec) -> vec -> vec * mat
 (** [jacobian' f x] is similar to [jacobian] but also returns the function value [f x]. *)
 
-val jacobianT' : (mat -> mat) -> mat -> mat * mat
+val jacobianT' : (vec -> vec) -> vec -> vec * mat
 (** [jacobianT' f x] is similar to [jacobianT] but also returns the function value [f x]. *)

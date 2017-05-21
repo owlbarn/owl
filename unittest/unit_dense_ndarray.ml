@@ -3,10 +3,10 @@
   *)
 
 open Bigarray
-module M = Owl_dense_ndarray
+module M = Owl_dense_ndarray_generic
 
 (* make testable *)
-let ndarray = Alcotest.testable (fun p (x : (float, float64_elt) M.t) -> ()) M.is_equal
+let ndarray = Alcotest.testable (fun p (x : (float, float64_elt) M.t) -> ()) M.equal
 
 (* some test input *)
 let x0 = M.zeros Float64 [|2;2;3|]
@@ -53,10 +53,10 @@ module To_test = struct
     M.get x [|1;0;1|] = 5.
 
   let slice () =
-    let y = M.slice [|None; Some 0; Some 0|] x0 in
+    let y = M.slice [[];[0];[0]] x0 |> M.flatten in
     let z = M.zeros Float64 [|2|] in
     M.set z [|1|] 3.;
-    M.is_equal y z
+    M.equal y z
 
   let clone () = (M.clone x0) = x0
 
@@ -75,7 +75,7 @@ module To_test = struct
     ) 0. x0
     in a = 5.
 
-  let add () = M.is_equal (M.add x0 x1) x2
+  let add () = M.equal (M.add x0 x1) x2
 
   let mul () = M.mul x0 x1 |> M.sum = 13.
 
@@ -83,9 +83,9 @@ module To_test = struct
 
   let mul_scalar () = M.mul_scalar x0 2. |> M.sum = 12.
 
-  let abs () = M.is_equal (M.abs x0) x0
+  let abs () = M.equal (M.abs x0) x0
 
-  let neg () = M.is_equal (M.map (fun a -> (-1.) *. a) x0) (M.neg x0)
+  let neg () = M.equal (M.map (fun a -> (-1.) *. a) x0) (M.neg x0)
 
   let sum () = M.sum x0 = 6.
 
@@ -106,11 +106,11 @@ module To_test = struct
 
   let is_nonnegative () = M.is_nonnegative x0
 
-  let is_equal () = M.is_equal x0 x1
+  let equal () = M.equal x0 x1
 
-  let is_greater () = M.is_greater x2 x0
+  let greater () = M.greater x2 x0
 
-  let equal_or_greater () = M.equal_or_greater x2 x0
+  let greater_equal () = M.greater_equal x2 x0
 
   let exists () = M.exists ((<) 0.) x0
 
@@ -138,7 +138,7 @@ module To_test = struct
   let save_load () =
     M.save x0 "ds_nda.tmp";
     let y = M.load Float64 "ds_nda.tmp" in
-    M.is_equal x0 y
+    M.equal x0 y
 
 end
 
@@ -228,14 +228,14 @@ let is_negative () =
 let is_nonnegative () =
   Alcotest.(check bool) "is_nonnegative" true (To_test.is_nonnegative ())
 
-let is_equal () =
-  Alcotest.(check bool) "is_equal" false (To_test.is_equal ())
+let equal () =
+  Alcotest.(check bool) "equal" false (To_test.equal ())
 
-let is_greater () =
-  Alcotest.(check bool) "is_greater" false (To_test.is_greater ())
+let greater () =
+  Alcotest.(check bool) "greater" false (To_test.greater ())
 
-let equal_or_greater () =
-  Alcotest.(check bool) "equal_or_greater" true (To_test.equal_or_greater ())
+let greater_equal () =
+  Alcotest.(check bool) "greater_equal" true (To_test.greater_equal ())
 
 let exists () =
   Alcotest.(check bool) "exists" true (To_test.exists ())
@@ -293,9 +293,9 @@ let test_set = [
   "is_positive", `Slow, is_positive;
   "is_negative", `Slow, is_negative;
   "is_nonnegative", `Slow, is_nonnegative;
-  "is_equal", `Slow, is_equal;
-  "is_greater", `Slow, is_greater;
-  "equal_or_greater", `Slow, equal_or_greater;
+  "equal", `Slow, equal;
+  "greater", `Slow, greater;
+  "greater_equal", `Slow, greater_equal;
   "exists", `Slow, exists;
   "not_exists", `Slow, not_exists;
   "for_all", `Slow, for_all;

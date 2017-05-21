@@ -2,7 +2,7 @@
   test stochastic gradient decent algorithm on dense metrix.
 ]  *)
 
-module MX = Owl_dense_real
+module MX = Owl.Dense.Matrix.D
 module LL = Owl_optimise
 
 let generate_data () =
@@ -18,8 +18,8 @@ let generate_data () =
   let x2 = map_at_col (fun x -> x +. b) x2 1 in
   let y1 = create c 1 ( 1.) in
   let y2 = create c 1 ( -1.)in
-  let x = x1 @= x2 in
-  let y = y1 @= y2 in
+  let x = concat_vertical x1 x2 in
+  let y = concat_vertical y1 y2 in
   let _ = save_txt x1 "test_svm.data1.tmp" in
   let _ = save_txt x2 "test_svm.data2.tmp" in
   x, y

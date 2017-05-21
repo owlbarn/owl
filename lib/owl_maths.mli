@@ -20,6 +20,8 @@ val abs : float -> float
 
 val neg : float -> float
 
+val reci : float -> float
+
 val floor : float -> float
 
 val ceil : float -> float
@@ -63,7 +65,7 @@ val softplus : float -> float
 val relu : float -> float
 
 
-(** {6 Trigonometric Functions} *)
+(** {6 Trigonometric and hyperbolic functions} *)
 
 val sin : float -> float
 
@@ -85,17 +87,33 @@ val atan : float -> float
 
 val acot : float -> float
 
+val asec : float -> float
+
+val acsc : float -> float
+
 val sinh : float -> float
 
 val cosh : float -> float
 
 val tanh : float -> float
 
+val coth : float -> float
+
+val sech : float -> float
+
+val csch : float -> float
+
 val asinh : float -> float
 
 val acosh : float -> float
 
 val atanh : float -> float
+
+val acoth : float -> float
+
+val asech : float -> float
+
+val acsch : float -> float
 
 val sinc : float -> float
 
@@ -588,11 +606,6 @@ val ln10 : float
 val ln2 : float
 
 val lnpi : float
-
-
-(* TODO: Waveval function is missing; FFT function is missing *)
-
-
 
 
 (* ends here *)

@@ -30,6 +30,23 @@ open Format
 open Bigarray
 open Complex
 
+type basic_color =
+  | Black | Red | Green | Yellow | Blue | Magenta | Cyan | White
+
+let basic_color_to_int = function
+  | Black   -> 0
+  | Red     -> 1
+  | Green   -> 2
+  | Yellow  -> 3
+  | Blue    -> 4
+  | Magenta -> 5
+  | Cyan    -> 6
+  | White   -> 7
+
+let make_colourful color s =
+  let colour_index = basic_color_to_int color in
+  sprintf "\027[38;5;%dm%s\027[0m" colour_index s
+
 let from_col_vec v = reshape_2 (genarray_of_array1 v) (Array1.dim v) 1
 let from_row_vec v = reshape_2 (genarray_of_array1 v) 1 (Array1.dim v)
 
@@ -41,6 +58,8 @@ let pp_space ppf = pp_print_string ppf " "
 let pp_end_row_newline ppf _ = pp_newline ppf
 let pp_end_row_space ppf _ = pp_space ppf
 let pp_end_col_space ppf ~row:_ ~col:_ = pp_space ppf
+
+let pp_reset ppf newline = if newline then force_newline (); pp_flush_formatter ppf
 
 let pad_str pad_c max_len str =
   let str_len = String.length str in
@@ -109,6 +128,10 @@ let pp_mat_gen
     ?(vertical_context = !Context.vertical_default)
     ?(horizontal_context = !Context.horizontal_default)
     pp_el ppf mat =
+
+  (* reset before pretty printing *)
+  pp_reset ppf true;
+
   let m = Array2.dim1 mat in
   if m > 0 then (
     let n = Array2.dim2 mat in
@@ -345,6 +368,9 @@ let pp_mat_gen
           | Some pp_foot ->
               pp_end_row ppf m;
               fmt_head_foot ~src_r:(m + 1) pp_foot);
+
+      (* reset after pretty printing *)
+      pp_reset ppf true;
       pp_close ppf))
 
 
@@ -788,4 +814,5 @@ module Toplevel = struct
   let pp_imat ppf mat = gen_pp_mat pp_int32_el ppf mat
 
   let lsc n = Context.set_dim_defaults (Some (Context.create n))
+
 end
