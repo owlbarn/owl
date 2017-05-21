@@ -2153,6 +2153,41 @@ let max_pool2d_backward padding input kernel stride output' =
   input'
 
 
+(* calculate the gradient of avg_pool2d *)
+let avg_pool2d_backward padding input kernel stride output' =
+  assert (num_dims input = 4);
+  assert (Array.length kernel = 2);
+  assert (Array.length stride = 2);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let in_channel = input_shp.(3) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+
+  let output_cols, output_rows =
+    calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  in
+  let pad_top, pad_left, _, _ =
+    calc_conv2d_padding input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
+  in
+  let input' = empty (kind input) (shape input) in
+
+  _eigen_spatial_avg_pooling_backward (kind input)
+    input' output'
+    batches input_cols input_rows in_channel
+    kernel_cols kernel_rows output_cols output_rows
+    row_stride col_stride pad_top pad_left;
+
+  input'
+
+
 (* simiar to sum_rows in matrix, sum all the slices along an axis.
   The default [axis] is the highest dimension. E.g., for [x] of [|2;3;4;5|],
   [sum_slices ~axis:2] returns an ndarray of shape [|4;5|].

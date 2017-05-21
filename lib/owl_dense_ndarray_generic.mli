@@ -885,6 +885,9 @@ val conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (flo
 val max_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
 (** [] *)
 
+val avg_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
 
 (** {6 Some helper and experimental functions } *)
 
