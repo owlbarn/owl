@@ -32,6 +32,8 @@ val gaussian : ?sigma:float -> int -> int -> mat
 
 val semidef : int -> mat
 
+val bernoulli : ?p:float -> ?seed:int -> int -> int -> mat
+
 
 (** {7 Dense row vectors and meshgrids} *)
 

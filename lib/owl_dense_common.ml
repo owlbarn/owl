@@ -310,6 +310,7 @@ type ('a, 'b) owl_vec_op08 = int -> float -> 'a -> 'a -> ('a, 'b) owl_vec -> uni
 type ('a, 'b) owl_vec_op09 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_vec_op10 = int -> ('a, 'b) owl_vec -> 'a -> int
 type ('a, 'b) owl_vec_op11 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit
+type ('a, 'b) owl_vec_op12 = int -> ('a, 'b) owl_vec -> float -> int -> unit
 type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
@@ -1301,6 +1302,17 @@ external _owl_cast_d2z : int -> (float, float64_elt) owl_vec -> (Complex.t, comp
 external _owl_cast_s2z : int -> (float, float32_elt) owl_vec -> (Complex.t, complex64_elt) owl_vec -> unit = "cast_s2z"
 external _owl_cast_d2c : int -> (float, float64_elt) owl_vec -> (Complex.t, complex32_elt) owl_vec -> unit = "cast_d2c"
 
+external owl_real_float_bernoulli : int -> ('a, 'b) owl_vec -> float -> int -> unit = "real_float_bernoulli"
+external owl_real_double_bernoulli : int -> ('a, 'b) owl_vec -> float -> int -> unit = "real_double_bernoulli"
+external owl_complex_float_bernoulli : int -> ('a, 'b) owl_vec -> float -> int -> unit = "complex_float_bernoulli"
+external owl_complex_double_bernoulli : int -> ('a, 'b) owl_vec -> float -> int -> unit = "complex_double_bernoulli"
+
+let _owl_bernoulli : type a b. (a, b) kind -> (a, b) owl_vec_op12 = function
+  | Float32   -> owl_real_float_bernoulli
+  | Float64   -> owl_real_double_bernoulli
+  | Complex32 -> owl_complex_float_bernoulli
+  | Complex64 -> owl_complex_double_bernoulli
+  | _         -> failwith "_owl_bernoulli: unsupported operation"
 
 
 (* ends here *)

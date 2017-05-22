@@ -46,6 +46,8 @@ val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat
 
 val meshup : mat -> mat -> mat * mat
 
+val bernoulli : ?p:float -> ?seed:int -> int -> int -> mat
+
 
 (** {7 Dense row vectors and meshgrids} *)
 

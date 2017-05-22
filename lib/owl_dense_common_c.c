@@ -1866,5 +1866,30 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X,Y) Y->r = (float) *X; Y->i = 0.
 #include "owl_dense_common_vec_map.c"
 
+// bernoulli
+
+#define FUN18 real_float_bernoulli
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER float
+#define MAPFN(X) *X = (rand() < a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 real_double_bernoulli
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER double
+#define MAPFN(X) *X = (rand() < a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 complex_float_bernoulli
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER complex_float
+#define MAPFN(X) X->r = (rand() < a); X->i = 0
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 complex_double_bernoulli
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER complex_double
+#define MAPFN(X) X->r = (rand() < a); X->i = 0
+#include "owl_dense_common_vec_map.c"
 
 //////////////////// function templates ends ////////////////////

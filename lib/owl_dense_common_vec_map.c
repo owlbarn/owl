@@ -284,6 +284,39 @@ CAMLprim value FUN17(value vN, value vX, value vY, value vA)
 #endif /* FUN17 */
 
 
+// function of a and b then save results to x
+#ifdef FUN18
+
+CAMLprim value FUN18(value vN, value vX, value vA, value vB)
+{
+  CAMLparam4(vN, vX, vA, vB);
+  int N = Long_val(vN);
+  INIT;
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  NUMBER *start_x, *stop_x;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  start_x = X_data;
+  stop_x = start_x + N;
+
+  while (start_x != stop_x) {
+    MAPFN(start_x);
+    start_x += 1;
+  };
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_unit);
+}
+
+#endif /* FUN18 */
+
+
 #undef NUMBER
 #undef NUMBER1
 #undef NUMBER2
@@ -299,3 +332,4 @@ CAMLprim value FUN17(value vN, value vX, value vY, value vA)
 #undef FUN14
 #undef FUN15
 #undef FUN17
+#undef FUN18

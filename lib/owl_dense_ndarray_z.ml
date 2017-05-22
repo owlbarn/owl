@@ -33,6 +33,8 @@ let linspace a b n = M.linspace Complex64 a b n
 
 let logspace ?base a b n = M.logspace Complex64 a b n
 
+let bernoulli ?p ?seed d = M.bernoulli Complex64 ?p ?seed d
+
 let load f = M.load Complex64 f
 
 let mmap fd ?pos shared dims = Genarray.map_file fd ?pos Complex64 c_layout shared dims

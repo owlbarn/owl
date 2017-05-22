@@ -740,6 +740,10 @@ let gaussian ?(sigma=1.) k m n =
   iteri (fun i j _ -> x.{i,j} <- _op sigma) x;
   x
 
+let bernoulli k ?p ?seed m n =
+  let x = Owl_dense_ndarray_generic.bernoulli k ?p ?seed [|m; n|] in
+  of_ndarray x
+
 let semidef k n =
   let x = uniform k n n in
   dot (transpose x) x

@@ -71,6 +71,9 @@ val meshgrid : ('a, 'b) kind -> 'a -> 'a -> 'a -> 'a -> int -> int -> ('a, 'b) t
 val meshup : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** [meshup x y] creates mesh grids by using two row vectors [x] and [y]. *)
 
+val bernoulli : ('a, 'b) kind -> ?p:float -> ?seed:int -> int -> int -> ('a, 'b) t
+(** [bernoulli k ~p:0.3 m n]*)
+
 
 (** {6 Obtain the basic properties} *)
 

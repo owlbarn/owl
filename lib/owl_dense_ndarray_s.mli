@@ -29,6 +29,8 @@ val linspace : elt -> elt -> int -> arr
 
 val logspace : ?base:float -> elt -> elt -> int -> arr
 
+val bernoulli : ?p:float -> ?seed:int -> int array -> arr
+
 
 (** {6 Obtain basic properties} *)
 

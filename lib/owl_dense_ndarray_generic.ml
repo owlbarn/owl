@@ -958,7 +958,15 @@ let logspace k ?(base=Owl_maths.e) a b n =
   _owl_logspace k n base a b x;
   genarray_of_array1 x
 
-(* advanced operations *)
+let bernoulli k ?(p=0.5) ?seed d =
+  let seed = match seed with
+    | Some a -> a
+    | None   -> Owl_stats.Rnd.uniform_int ()
+  in
+  let x = empty k d in
+  let y = x |> flatten |> array1_of_genarray in
+  (_owl_bernoulli k) (numel x) y p seed;
+  x
 
 let create kind dimension a =
   let x = empty kind dimension in
@@ -980,6 +988,8 @@ let sequential k dimension =
     _ac := _op !_ac _aa
   done;
   x
+
+(* advanced operations *)
 
 let rec __iteri_fix_axis d j i l h f x =
   if j = d - 1 then (

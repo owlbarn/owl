@@ -41,6 +41,8 @@ let logspace ?(base=Owl_maths.e) a b n = M.logspace Float64 ~base a b n
 
 let meshgrid xa xb ya yb xn yn = M.meshgrid Float64 xa xb ya yb xn yn
 
+let bernoulli ?p ?seed d = M.bernoulli Float64 ?p ?seed d
+
 let of_array x m n = M.of_array Float64 x m n
 
 let of_arrays x = M.of_arrays Float64 x

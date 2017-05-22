@@ -32,6 +32,8 @@ let linspace a b n = M.linspace Float32 a b n
 
 let logspace ?base a b n = M.logspace Float32 a b n
 
+let bernoulli ?p ?seed d = M.bernoulli Float32 ?p ?seed d
+
 let load f = M.load Float32 f
 
 let mmap fd ?pos shared dims = Genarray.map_file fd ?pos Float32 c_layout shared dims
