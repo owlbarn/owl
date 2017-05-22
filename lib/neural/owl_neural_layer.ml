@@ -1021,6 +1021,55 @@ module MaxPool2D = struct
 end
 
 
+(* definition of AvgPool2D layer *)
+module AvgPool2D = struct
+
+  type layer = {
+    mutable padding   : padding;
+    mutable kernel    : int array;
+    mutable stride    : int array;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create padding kernel stride = {
+    padding;
+    kernel;
+    stride;
+    in_shape  = [|0;0;0|];
+    out_shape = [|0;0;0|];
+  }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    l.in_shape.(2) <- out_shape.(2);
+    let out_cols, out_rows = Owl_dense_ndarray_generic.calc_conv2d_output_shape
+      l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1) l.stride.(0) l.stride.(1)
+    in
+    l.out_shape.(0) <- out_cols;
+    l.out_shape.(1) <- out_rows;
+    l.out_shape.(2) <- out_shape.(2)
+
+
+  let run x l = Maths.(avg_pool2d l.padding x l.kernel l.stride)
+
+  let to_string l =
+    let padding_s = match l.padding with
+      | Owl_dense_ndarray_generic.SAME  -> "SAME"
+      | Owl_dense_ndarray_generic.VALID -> "VALID"
+    in
+    Printf.sprintf "AvgPool2D layer:" ^
+    Printf.sprintf " tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
+    Printf.sprintf "    padding : %s\n" padding_s ^
+    Printf.sprintf "    patch   : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
+    Printf.sprintf "    stride  : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
+    ""
+
+end
+
+
 (* definition of Lambda layer *)
 module Lambda = struct
 
@@ -1065,6 +1114,7 @@ type layer =
   | Conv3D         of Conv3D.layer
   | FullyConnected of FullyConnected.layer
   | MaxPool2D      of MaxPool2D.layer
+  | AvgPool2D      of AvgPool2D.layer
   | Lambda         of Lambda.layer
   | Activation     of Activation.layer
 
@@ -1097,6 +1147,7 @@ module Feedforward = struct
     | Conv3D l         -> Conv3D.(l.in_shape, l.out_shape)
     | FullyConnected l -> FullyConnected.(l.in_shape, l.out_shape)
     | MaxPool2D l      -> MaxPool2D.(l.in_shape, l.out_shape)
+    | AvgPool2D l      -> AvgPool2D.(l.in_shape, l.out_shape)
     | Lambda l         -> Lambda.(l.in_shape, l.out_shape)
     | Activation l     -> Activation.(l.in_shape, l.out_shape)
 
@@ -1113,6 +1164,7 @@ module Feedforward = struct
     | Conv3D l         -> Conv3D.connect out_shape l
     | FullyConnected l -> FullyConnected.connect out_shape l
     | MaxPool2D l      -> MaxPool2D.connect out_shape l
+    | AvgPool2D l      -> AvgPool2D.connect out_shape l
     | Lambda l         -> Lambda.connect out_shape l
     | Activation l     -> Activation.connect out_shape l
 
@@ -1236,6 +1288,7 @@ module Feedforward = struct
     | Conv3D l         -> Conv3D.run a l
     | FullyConnected l -> FullyConnected.run a l
     | MaxPool2D l      -> MaxPool2D.run a l
+    | AvgPool2D l      -> AvgPool2D.run a l
     | Lambda l         -> Lambda.run a l
     | Activation l     -> Activation.run a l
     ) x nn.layers
@@ -1264,6 +1317,7 @@ module Feedforward = struct
         | Conv3D l         -> Conv3D.to_string l
         | FullyConnected l -> FullyConnected.to_string l
         | MaxPool2D l      -> MaxPool2D.to_string l
+        | AvgPool2D l      -> AvgPool2D.to_string l
         | Lambda l         -> Lambda.to_string l
         | Activation l     -> Activation.to_string l
       in

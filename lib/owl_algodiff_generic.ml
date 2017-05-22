@@ -336,6 +336,8 @@ module type NdarraySig = sig
 
   val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
+  val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
 end
 
 
@@ -436,6 +438,7 @@ module Make
     | Mat2Arr_D   of t
     | Arr2Mat_D   of t
     | Maxpool_D   of t * padding * int array * int array
+    | Avgpool_D   of t * padding * int array * int array
 
 
   (* generate global tags *)
@@ -1360,6 +1363,24 @@ module Make
       A.max_pool2d_backward p a b s o
       |> pack_arr
 
+    (* a:input; b:kernel; s:stride *)
+    and avg_pool2d padding a b s =
+      let ff = function
+        | Arr a    -> Arr A.(avg_pool2d ~padding a b s)
+        | _        -> error_uniop "avg_pool2d" a
+      in
+      let fd a = avg_pool2d padding a b s in
+      let df cp ap at = avg_pool2d padding at b s in
+      let r a = Avgpool_D (a, padding, b, s) in
+      op_d_d a ff fd df r
+
+    (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
+    and avg_pool2d_backward p a b s o =
+      let a = unpack_arr a in
+      let o = unpack_arr o in
+      A.avg_pool2d_backward p a b s o
+      |> pack_arr
+
     (* TODO: trace and diag functions ... *)
 
   end
@@ -1454,6 +1475,7 @@ module Make
               | Mat2Arr_D a            -> reset (a :: t)
               | Arr2Mat_D a            -> reset (a :: t)
               | Maxpool_D (a, _, _, _) -> reset (a :: t)
+              | Avgpool_D (a, _, _, _) -> reset (a :: t)
               )
             else reset t
             )
@@ -1571,6 +1593,7 @@ module Make
               | Mat2Arr_D a            -> push ((arr_to_mat !aa, a) :: t)
               | Arr2Mat_D a            -> push ((mat_to_arr !aa, a) :: t)
               | Maxpool_D (a, p, d, s) -> push ((max_pool2d_backward p (primal a) d s !aa, a) :: t)
+              | Avgpool_D (a, p, d, s) -> push ((avg_pool2d_backward p (primal a) d s !aa, a) :: t)
               )
             else push t
             )

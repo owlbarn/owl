@@ -56,6 +56,9 @@ let fully_connected ?(init_typ = Init.Standard) ?inputs outputs =
 let max_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
   MaxPool2D (MaxPool2D.create padding kernel stride)
 
+let avg_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
+  AvgPool2D (AvgPool2D.create padding kernel stride)
+
 let lambda lambda = Lambda (Lambda.create lambda)
 
 

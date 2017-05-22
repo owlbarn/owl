@@ -336,6 +336,8 @@ module type NdarraySig = sig
 
   val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
+  val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
 end
 
 
@@ -474,6 +476,8 @@ module Make
     val conv3d : ?padding:padding -> t -> t -> int array -> t
 
     val max_pool2d : padding -> t -> int array -> int array -> t
+
+    val avg_pool2d : padding -> t -> int array -> int array -> t
 
     val reshape : t -> int array -> t
 
