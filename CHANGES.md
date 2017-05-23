@@ -2,8 +2,10 @@
 
 * Support more hypothesis test function in Owl.Stats module.
 * Support both numerical and algorithmic differentiation in Algodiff.
+* Support both matrices and n-dimensional arrays in Algodiff module.
 * Support interoperation of different number types in Ext and new operators.
-* Support more flexible slicing function.
+* Support more flexible slicing, tile, repeat, and concatenate functions.
+* Support simple feedforward and convolutional neural networks.
 
 
 ### 0.2.0 (2017-01-20)
