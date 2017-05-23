@@ -192,6 +192,13 @@ val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   therefore their row numbers must be the same.
  *)
 
+val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
+(** [concatenate ~axis:1 x] concatenates an array of matrices along the second
+  dimension. For the matrices in [x], they must have the same shape except the
+  dimension specified by [axis]. The default value of [axis] is 0, i.e., the
+  lowest dimension on a marix, i.e., rows.
+ *)
+
 val transpose : ('a, 'b) t -> ('a, 'b) t
 (** [transpose x] transposes an [m] by [n] matrix to [n] by [m] one. *)
 

@@ -160,6 +160,12 @@ let concat_horizontal x1 x2 =
     for j = 0 to n2 - 1 do x3.{i,j+n1} <- x2.{i,j} done;
   done; x3
 
+let concatenate ?(axis=0) xs =
+  assert (axis = 0 || axis = 1);
+  let xs = Array.map to_ndarray xs in
+  Owl_dense_ndarray_generic.concatenate ~axis xs
+  |> of_ndarray
+
 let rows x l =
   let m, n = Array.length (l), col_num x in
   let y = empty (Array2.kind x) m n in

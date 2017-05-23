@@ -86,7 +86,11 @@ val tile : arr -> int array -> arr
 
 val repeat : ?axis:int -> arr -> int -> arr
 
+val concatenate : ?axis:int -> arr array -> arr
+
 val squeeze : ?axis:int array -> arr -> arr
+
+val expand : arr -> int -> arr
 
 val pad : ?v:elt -> int list list -> arr -> arr
 

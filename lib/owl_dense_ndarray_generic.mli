@@ -194,8 +194,20 @@ val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
   [numpy.repeat] except that [a] is an integer instead of an array.
  *)
 
+val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
+(** [concatenate ~axis:2 x] concatenates an array of ndarrays along the third
+  dimension. For the ndarrays in [x], they must have the same shape except the
+  dimension specified by [axis]. The default value of [axis] is 0, i.e., the
+  lowest dimension on an ndarray.
+ *)
+
 val squeeze : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** [squeeze ~axis x] removes single-dimensional entries from the shape of [x]. *)
+
+val expand : ('a, 'b) t -> int -> ('a, 'b) t
+(** [expand x d] reshapes x by increasing its rank from [num_dims x] to [d]. The
+  opposite operation is [squeeze x].
+ *)
 
 val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 (** [pad ~v:0. [[1;1]] x] *)
@@ -912,11 +924,6 @@ val print_index : int array -> unit
 
 val _check_transpose_axis : int array -> int -> unit
 (** [_check_transpose_axis a d] checks whether [a] is a legiti('a, 'b) te transpose index. *)
-
-val expand : ('a, 'b) t -> int -> ('a, 'b) t
-(** [expand x d] reshapes x by increasing its rank from [num_dims x] to [d]. The
-  opposite operation is [squeeze x].
- *)
 
 val sum_slices : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** [sum_slices ~axis:2 x] for [x] of [|2;3;4;5|], it returns an ndarray of

@@ -75,6 +75,7 @@ let reverse x =
   y |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.reverse (kind x);
   y
 
+
 let tile x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
@@ -132,6 +133,7 @@ let tile x reps =
   in
   _tile 0 0 0; y
 
+
 let repeat ?axis x reps =
   let _cp_op = _owl_copy (kind x) in
   let highest_dim = Array.length (shape x) - 1 in
@@ -169,6 +171,46 @@ let repeat ?axis x reps =
   (* reshape y' back to ndarray before return result *)
   let y' = genarray_of_array1 y' in
   reshape y' _shape_y
+
+
+let concatenate ?(axis=0) xs =
+  (* get the shapes of all inputs and etc. *)
+  let shapes = Array.map shape xs in
+  let shape0 = Array.copy shapes.(0) in
+  shape0.(axis) <- 0;
+  let acc_dim = ref 0 in
+  (* validate all the input shapes; update step_sz *)
+  let step_sz = Array.(make (length xs) 0) in
+  Array.iteri (fun i shape1 ->
+    step_sz.(i) <- (_calc_slice shape1).(axis);
+    acc_dim := !acc_dim + shape1.(axis);
+    shape1.(axis) <- 0;
+    assert (shape0 = shape1);
+  ) shapes;
+  (* allocalte space for new array *)
+  shape0.(axis) <- !acc_dim;
+  let y = empty (kind xs.(0)) shape0 in
+  (* flatten y then calculate the number of copies *)
+  let z = Bigarray.reshape_1 y (numel y) in
+  let slice_sz = (_calc_slice shape0).(axis) in
+  let m = numel y / slice_sz in
+  let n = Array.length xs in
+  (* flatten all the inputs and init the copy location *)
+  let x_flt = Array.map (fun x -> Bigarray.reshape_1 x (numel x)) xs in
+  let x_ofs = Array.make n 0 in
+  (* copy data in the flattened space *)
+  let z_ofs = ref 0 in
+  let _cp_op = _owl_copy (kind y) in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      ignore(_cp_op step_sz.(j) ~ofsx:x_ofs.(j) ~incx:1 ~ofsy:!z_ofs ~incy:1 x_flt.(j) z);
+      x_ofs.(j) <- x_ofs.(j) + step_sz.(j);
+      z_ofs := !z_ofs + step_sz.(j);
+    done;
+  done;
+  (* all done, return the combined result *)
+  y
+
 
 let squeeze ?(axis=[||]) x =
   let a = match Array.length axis with

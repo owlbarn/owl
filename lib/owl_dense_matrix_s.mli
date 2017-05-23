@@ -111,6 +111,8 @@ val concat_vertical : mat -> mat -> mat
 
 val concat_horizontal : mat -> mat -> mat
 
+val concatenate : ?axis:int -> mat array -> mat
+
 val transpose : mat -> mat
 
 val diag : mat -> mat
