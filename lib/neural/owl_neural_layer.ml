@@ -1101,6 +1101,36 @@ module Lambda = struct
 end
 
 
+(* definition of Dropout layer *)
+module Dropout = struct
+
+  type layer = {
+    mutable rate      : float;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create rate = {
+    rate;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let run x l = Maths.(dropout ~rate:l.rate x)
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "Dropout layer: in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    rate : %g\n" l.rate
+
+end
+
+
 (* type and functions of neural network *)
 
 type layer =
@@ -1115,6 +1145,7 @@ type layer =
   | FullyConnected of FullyConnected.layer
   | MaxPool2D      of MaxPool2D.layer
   | AvgPool2D      of AvgPool2D.layer
+  | Dropout        of Dropout.layer
   | Lambda         of Lambda.layer
   | Activation     of Activation.layer
 
@@ -1148,6 +1179,7 @@ module Feedforward = struct
     | FullyConnected l -> FullyConnected.(l.in_shape, l.out_shape)
     | MaxPool2D l      -> MaxPool2D.(l.in_shape, l.out_shape)
     | AvgPool2D l      -> AvgPool2D.(l.in_shape, l.out_shape)
+    | Dropout l        -> Dropout.(l.in_shape, l.out_shape)
     | Lambda l         -> Lambda.(l.in_shape, l.out_shape)
     | Activation l     -> Activation.(l.in_shape, l.out_shape)
 
@@ -1165,6 +1197,7 @@ module Feedforward = struct
     | FullyConnected l -> FullyConnected.connect out_shape l
     | MaxPool2D l      -> MaxPool2D.connect out_shape l
     | AvgPool2D l      -> AvgPool2D.connect out_shape l
+    | Dropout l        -> Dropout.connect out_shape l
     | Lambda l         -> Lambda.connect out_shape l
     | Activation l     -> Activation.connect out_shape l
 
@@ -1289,6 +1322,7 @@ module Feedforward = struct
     | FullyConnected l -> FullyConnected.run a l
     | MaxPool2D l      -> MaxPool2D.run a l
     | AvgPool2D l      -> AvgPool2D.run a l
+    | Dropout l        -> Dropout.run a l
     | Lambda l         -> Lambda.run a l
     | Activation l     -> Activation.run a l
     ) x nn.layers
@@ -1318,6 +1352,7 @@ module Feedforward = struct
         | FullyConnected l -> FullyConnected.to_string l
         | MaxPool2D l      -> MaxPool2D.to_string l
         | AvgPool2D l      -> AvgPool2D.to_string l
+        | Dropout l        -> Dropout.to_string l
         | Lambda l         -> Lambda.to_string l
         | Activation l     -> Activation.to_string l
       in

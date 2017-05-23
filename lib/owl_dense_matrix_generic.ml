@@ -801,6 +801,10 @@ let meshup x y =
   let y = map_by_row yn (fun _ -> y) (empty k xn yn) in
   x, transpose y
 
+let dropout ?rate ?seed x =
+  let x = to_ndarray x in
+  let x = Owl_dense_ndarray_generic.dropout ?rate ?seed x in
+  of_ndarray x
 
 (* unary matrix operation *)
 

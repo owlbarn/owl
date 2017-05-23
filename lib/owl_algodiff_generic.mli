@@ -25,6 +25,8 @@ module type MatrixSig = sig
 
   val gaussian : ?sigma:elt -> int -> int -> mat
 
+  val bernoulli : ?p:float -> ?seed:int -> int -> int -> mat
+
   val shape : mat -> int * int
 
   val row_num : mat -> int
@@ -199,6 +201,8 @@ module type NdarraySig = sig
   val uniform : ?scale:elt -> int array -> arr
 
   val gaussian : ?sigma:elt -> int array -> arr
+
+  val bernoulli : ?p:float -> ?seed:int -> int array -> arr
 
   val shape : arr -> int array
 
@@ -486,6 +490,8 @@ module Make
     val mat_to_arr : t -> t
 
     val arr_to_mat : t -> t
+
+    val dropout : ?rate:float -> ?seed:int -> t -> t
 
   end
 

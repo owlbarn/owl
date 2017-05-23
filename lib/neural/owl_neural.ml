@@ -59,6 +59,8 @@ let max_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
 let avg_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
   AvgPool2D (AvgPool2D.create padding kernel stride)
 
+let dropout rate = Dropout (Dropout.create rate)
+
 let lambda lambda = Lambda (Lambda.create lambda)
 
 

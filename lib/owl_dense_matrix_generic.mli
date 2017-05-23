@@ -223,6 +223,11 @@ val repeat : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t
 val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 (** [padd ~v:0. [[1;1]] x] *)
 
+val dropout : ?rate:float -> ?seed:int -> ('a, 'b) t -> ('a, 'b) t
+(** [dropout ~rate:0.3 x] drops out 30% of the elements in [x], in other words,
+  by setting their values to zeros.
+ *)
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 

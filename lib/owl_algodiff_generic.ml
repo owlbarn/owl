@@ -26,6 +26,8 @@ module type MatrixSig = sig
 
   val gaussian : ?sigma:elt -> int -> int -> mat
 
+  val bernoulli : ?p:float -> ?seed:int -> int -> int -> mat
+
   val shape : mat -> int * int
 
   val row_num : mat -> int
@@ -199,6 +201,8 @@ module type NdarraySig = sig
   val uniform : ?scale:elt -> int array -> arr
 
   val gaussian : ?sigma:elt -> int array -> arr
+
+  val bernoulli : ?p:float -> ?seed:int -> int array -> arr
 
   val shape : arr -> int array
 
@@ -1381,6 +1385,14 @@ module Make
       A.avg_pool2d_backward p a b s o
       |> pack_arr
 
+    and dropout ?(rate=0.5) ?seed a =
+      let b = match (primal' a) with
+        | Arr a -> Arr (A.bernoulli ~p:(1. -. rate) ?seed (A.shape a))
+        | Mat a -> Mat (M.bernoulli ~p:(1. -. rate) ?seed (M.row_num a) (M.col_num a))
+        | _     -> error_uniop "dropout" a
+      in
+      a * b
+
     (* TODO: trace and diag functions ... *)
 
   end
@@ -1499,6 +1511,7 @@ module Make
           | false -> Mat (M.sum_rows v)
         )
       | Arr a, Arr v -> (
+          (* FIXME: only for simple case where broadcast at highest dimension *)
           match A.(shape a = shape v) with
           | true  -> Arr v
           | false -> Arr (A.sum_slices v)

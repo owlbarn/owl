@@ -959,6 +959,7 @@ let logspace k ?(base=Owl_maths.e) a b n =
   genarray_of_array1 x
 
 let bernoulli k ?(p=0.5) ?seed d =
+  assert (p >= 0. && p <= 1.);
   let seed = match seed with
     | Some a -> a
     | None   -> Owl_stats.Rnd.uniform_int ()
@@ -988,6 +989,11 @@ let sequential k dimension =
     _ac := _op !_ac _aa
   done;
   x
+
+let dropout ?(rate=0.5) ?seed x =
+  let y = bernoulli ~p:(1. -. rate) ?seed (kind x) (shape x) in
+  mul x y
+
 
 (* advanced operations *)
 

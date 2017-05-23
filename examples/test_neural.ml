@@ -40,7 +40,7 @@ let test_minist_with_cnn () =
   Feedforward.add_layer nn (conv2d [|5;5;32;64|] [|1;1|]);
   Feedforward.add_layer nn (activation Activation.Relu);
   Feedforward.add_layer nn (max_pool2d [|2;2|] [|2;2|]);
-  (* missing dropout layer *)
+  Feedforward.add_layer nn (dropout 0.2);
   Feedforward.add_layer nn (fully_connected 1024);
   Feedforward.add_layer nn (activation Activation.Relu);
   Feedforward.add_layer nn (linear 10);
