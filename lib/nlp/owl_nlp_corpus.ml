@@ -13,6 +13,7 @@ type t = {
   mutable tok_fh  : in_channel option;            (* file descriptor of the tokenised corpus *)
   mutable vocab   : Owl_nlp_vocabulary.t option;  (* vocabulary of the corpus *)
   mutable minlen  : int;                          (* minimum length of document to save *)
+  mutable docid   : int array;                    (* document id, can refer to original data *)
 }
 
 let _close_if_open = function
@@ -28,7 +29,7 @@ let cleanup x =
   _close_if_open x.bin_fh;
   _close_if_open x.tok_fh
 
-let create uri bin_ofs tok_ofs bin_fh tok_fh vocab minlen =
+let create uri bin_ofs tok_ofs bin_fh tok_fh vocab minlen docid =
   let x = {
     uri;
     bin_ofs;
@@ -37,6 +38,7 @@ let create uri bin_ofs tok_ofs bin_fh tok_fh vocab minlen =
     tok_fh;
     vocab;
     minlen;
+    docid;
   }
   in
   Gc.finalise cleanup x;
@@ -70,6 +72,8 @@ let get_vocab corpus =
   | None   ->
     let h = corpus |> get_vocab_uri |> Owl_nlp_vocabulary.load
     in corpus.vocab <- Some h; h
+
+let get_docid corpus = corpus.docid
 
 let length corpus = Array.length corpus.bin_ofs - 1
 
@@ -143,8 +147,11 @@ let tokenise corpus s =
 
 (* convert corpus into binary format, build dictionary, tokenise
   lo and hi will be ignored if a vocab is passed in.
+
+  The passed in docid can be used for tracking back to the original corpus, but
+  this is not compulsory.
  *)
-let build ?stopwords ?lo ?hi ?vocab ?(minlen=10) fname =
+let build ?docid ?stopwords ?lo ?hi ?vocab ?(minlen=10) fname =
 
   (* build and save the vocabulary if necessary *)
   let vocab = match vocab with
@@ -169,6 +176,9 @@ let build ?stopwords ?lo ?hi ?vocab ?(minlen=10) fname =
   Owl_utils.Stack.push b_ofs 0;
   Owl_utils.Stack.push t_ofs 0;
 
+  (* initalise the doc_id stack *)
+  let doc_s = Owl_utils.Stack.make () in
+
   (* binarise and tokenise at the same time *)
   Log.info "convert to binary and tokenise ...";
   iteri_lines_of_file (fun i s ->
@@ -183,6 +193,11 @@ let build ?stopwords ?lo ?hi ?vocab ?(minlen=10) fname =
       Marshal.to_channel bin_f s [];
       Marshal.to_channel tok_f t [];
 
+      (* keep tracking of doc id *)
+      let id = match docid with Some d -> d.(i) | None -> i in
+      Owl_utils.Stack.push doc_s id;
+
+      (* keep tracking of doc offset *)
       Owl_utils.Stack.push b_ofs (LargeFile.pos_out bin_f |> Int64.to_int);
       Owl_utils.Stack.push t_ofs (LargeFile.pos_out tok_f |> Int64.to_int);
     );
@@ -190,16 +205,17 @@ let build ?stopwords ?lo ?hi ?vocab ?(minlen=10) fname =
   ) fname;
 
   (* save the corpus file *)
-  let dat_f = fname ^ ".dat" |> open_out in
+  let mdl_f = fname ^ ".mdl" |> open_out in
   let b_ofs = Owl_utils.Stack.to_array b_ofs in
   let t_ofs = Owl_utils.Stack.to_array t_ofs in
-  let corpus = create fname b_ofs t_ofs None None None minlen in
-  Marshal.to_channel dat_f corpus [];
+  let doc_s = Owl_utils.Stack.to_array doc_s in
+  let corpus = create fname b_ofs t_ofs None None None minlen doc_s in
+  Marshal.to_channel mdl_f corpus [];
 
   (* done, close the files *)
   close_out bin_f;
   close_out tok_f;
-  close_out dat_f;
+  close_out mdl_f;
   (* return the finished corpus *)
   get_bin_fh corpus |> ignore;
   get_tok_fh corpus |> ignore;
@@ -256,6 +272,7 @@ let reduce_model corpus = {
   tok_fh  = None;
   vocab   = None;
   minlen  = corpus.minlen;
+  docid   = corpus.docid;
 }
 
 let save corpus f =
