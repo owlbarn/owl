@@ -61,6 +61,11 @@ let avg_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
 
 let dropout rate = Dropout (Dropout.create rate)
 
+let reshape ?conv_typ ?inputs outputs =
+  Reshape (Reshape.create ?conv_typ ?inputs outputs)
+
+let flatten ?conv_typ () = Flatten (Flatten.create ?conv_typ ())
+
 let lambda lambda = Lambda (Lambda.create lambda)
 
 

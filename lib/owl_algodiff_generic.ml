@@ -214,6 +214,8 @@ module type NdarraySig = sig
 
   val sum_slices : ?axis:int -> arr -> arr
 
+  val print : arr -> unit
+
   (* mathematical functions *)
 
   val abs : arr -> arr
@@ -495,18 +497,20 @@ module Make
     | DR (_, at, _, _, _) -> !at
     | ap                  -> zero ap
 
-  let shape = function
+  let shape x =
+    match (primal' x) with
     | Arr ap -> A.shape ap
     | Mat ap -> [|M.row_num ap; M.col_num ap|]
     | _      -> failwith "error: AD.shape"
 
-  let mat_shape = function
+  let mat_shape x =
+    match (primal' x) with
     | Mat ap    -> M.shape ap
     | _         -> failwith "error: AD.mat_shape"
 
-  let row_num x = x |> primal' |> mat_shape |> fst
+  let row_num x = x |> mat_shape |> fst
 
-  let col_num x = x |> primal' |> mat_shape |> snd
+  let col_num x = x |> mat_shape |> snd
 
   let numel x =
     match primal' x with

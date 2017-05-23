@@ -40,7 +40,7 @@ let test_minist_with_cnn () =
   Feedforward.add_layer nn (conv2d [|5;5;32;64|] [|1;1|]);
   Feedforward.add_layer nn (activation Activation.Relu);
   Feedforward.add_layer nn (max_pool2d [|2;2|] [|2;2|]);
-  Feedforward.add_layer nn (dropout 0.2);
+  Feedforward.add_layer nn (dropout 0.1);
   Feedforward.add_layer nn (fully_connected 1024);
   Feedforward.add_layer nn (activation Activation.Relu);
   Feedforward.add_layer nn (linear 10);
@@ -54,7 +54,7 @@ let test_minist_with_cnn () =
   let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
 
   let params = Params.config
-    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 1 in
+    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 1 in
   train_cnn ~params nn x y;
 
   let x, y = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) 10 in

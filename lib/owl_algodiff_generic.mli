@@ -214,6 +214,8 @@ module type NdarraySig = sig
 
   val sum_slices : ?axis:int -> arr -> arr
 
+  val print : arr -> unit
+
   (* mathematical functions *)
 
   val abs : arr -> arr
@@ -674,6 +676,8 @@ module Make
   val reverse_prop : t -> t -> unit
 
   val type_info : t -> string
+
+  val shape : t -> int array
 
 
   (* other functions, without tracking gradient *)

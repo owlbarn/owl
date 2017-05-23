@@ -1131,6 +1131,94 @@ module Dropout = struct
 end
 
 
+(* definition of Reshape layer *)
+module Reshape = struct
+
+  type layer = {
+    mutable conv_typ  : bool;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create ?(conv_typ=false) ?inputs o =
+    let in_shape = match inputs with
+      | Some i -> i
+      | None   -> [||]
+    in
+    {
+      conv_typ  = conv_typ;
+      in_shape  = in_shape;
+      out_shape = o;
+    }
+
+  let connect out_shape l =
+    let m = Array.fold_left (fun a b -> a * b) 1 out_shape in
+    let n = Array.fold_left (fun a b -> a * b) 1 l.out_shape in
+    assert (m = n);
+    l.in_shape <- Array.copy out_shape
+
+  let run x l =
+    let x_shape = shape x in
+    let out_shape = Array.append [|x_shape.(0)|] l.out_shape in
+    let x = Maths.reshape x out_shape in
+    match l.conv_typ with
+    | true  -> (
+        match (primal' x) with
+        | Arr _ -> Maths.arr_to_mat x
+        | Mat _ -> Maths.mat_to_arr x
+        | _     -> failwith "Owl_neural:Reshape:run"
+      )
+    | false -> x
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "Reshape layer: in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    conv_typ : %s\n" (string_of_bool l.conv_typ)
+
+end
+
+
+(* definition of Flatten layer *)
+module Flatten = struct
+
+  type layer = {
+    mutable conv_typ  : bool;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create ?(conv_typ=false) () = {
+      conv_typ  = conv_typ;
+      in_shape  = [||];
+      out_shape = [||];
+    }
+
+  let connect out_shape l =
+    let o = Array.fold_left (fun a b -> a * b) 1 out_shape in
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- [|o|]
+
+  let run x l =
+    let x = Maths.reshape x [|(shape x).(0); l.out_shape.(0)|] in
+    match l.conv_typ with
+    | true  -> (
+        match (primal' x) with
+        | Arr _ -> Maths.arr_to_mat x
+        | Mat _ -> Maths.mat_to_arr x
+        | _     -> failwith "Owl_neural:Flatten:run"
+      )
+    | false -> x
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    Printf.sprintf "Flatten layer: in:[*,%s] out:[*,%i]\n" in_str l.out_shape.(0) ^
+    Printf.sprintf "    conv_typ : %s\n" (string_of_bool l.conv_typ)
+
+
+end
+
+
 (* type and functions of neural network *)
 
 type layer =
@@ -1146,6 +1234,8 @@ type layer =
   | MaxPool2D      of MaxPool2D.layer
   | AvgPool2D      of AvgPool2D.layer
   | Dropout        of Dropout.layer
+  | Reshape        of Reshape.layer
+  | Flatten        of Flatten.layer
   | Lambda         of Lambda.layer
   | Activation     of Activation.layer
 
@@ -1180,6 +1270,8 @@ module Feedforward = struct
     | MaxPool2D l      -> MaxPool2D.(l.in_shape, l.out_shape)
     | AvgPool2D l      -> AvgPool2D.(l.in_shape, l.out_shape)
     | Dropout l        -> Dropout.(l.in_shape, l.out_shape)
+    | Reshape l        -> Reshape.(l.in_shape, l.out_shape)
+    | Flatten l        -> Flatten.(l.in_shape, l.out_shape)
     | Lambda l         -> Lambda.(l.in_shape, l.out_shape)
     | Activation l     -> Activation.(l.in_shape, l.out_shape)
 
@@ -1198,6 +1290,8 @@ module Feedforward = struct
     | MaxPool2D l      -> MaxPool2D.connect out_shape l
     | AvgPool2D l      -> AvgPool2D.connect out_shape l
     | Dropout l        -> Dropout.connect out_shape l
+    | Reshape l        -> Reshape.connect out_shape l
+    | Flatten l        -> Flatten.connect out_shape l
     | Lambda l         -> Lambda.connect out_shape l
     | Activation l     -> Activation.connect out_shape l
 
@@ -1323,6 +1417,8 @@ module Feedforward = struct
     | MaxPool2D l      -> MaxPool2D.run a l
     | AvgPool2D l      -> AvgPool2D.run a l
     | Dropout l        -> Dropout.run a l
+    | Reshape l        -> Reshape.run a l
+    | Flatten l        -> Flatten.run a l
     | Lambda l         -> Lambda.run a l
     | Activation l     -> Activation.run a l
     ) x nn.layers
@@ -1353,6 +1449,8 @@ module Feedforward = struct
         | MaxPool2D l      -> MaxPool2D.to_string l
         | AvgPool2D l      -> AvgPool2D.to_string l
         | Dropout l        -> Dropout.to_string l
+        | Reshape l        -> Reshape.to_string l
+        | Flatten l        -> Flatten.to_string l
         | Lambda l         -> Lambda.to_string l
         | Activation l     -> Activation.to_string l
       in
