@@ -1219,6 +1219,41 @@ module Flatten = struct
 end
 
 
+(* definition of Add layer *)
+module Add = struct
+
+  type layer = {
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create () = {
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let run x l =
+    let n = Array.length x in
+    (* at least two inputs *)
+    assert (n > 1);
+    let acc = ref x.(0) in
+    for i = 1 to n - 1 do
+      acc := Maths.(!acc + x.(i))
+    done;
+    !acc
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "Add layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+
+end
+
+
 (* type and functions of neural network *)
 
 type layer =
