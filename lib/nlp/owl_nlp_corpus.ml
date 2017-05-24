@@ -251,6 +251,7 @@ let simple_process s =
 
 (* pre-process a given file with the passed in function
   e.g., you can plug in [simple_process] function to clean up the text.
+  Note this function will not change the number of lines in a corpus.
  *)
 let preprocess f fi_name fo_name =
   let fo = open_out fo_name in
