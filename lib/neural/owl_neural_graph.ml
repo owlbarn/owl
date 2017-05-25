@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(* Experimental module, working in progress *)
+
 open Owl_neural_layer
 
 type layer =
