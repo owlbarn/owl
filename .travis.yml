@@ -1,0 +1,10 @@
+language: c
+sudo: required
+install:
+  - brew install eigen
+  - wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh
+script: bash -ex .travis-opam.sh
+env:
+  - OCAML_VERSION=4.04 EXTRA_DEPS="oasis alcotest" INSTALL=false
+os:
+  - osx
