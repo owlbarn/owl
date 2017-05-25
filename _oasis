@@ -257,6 +257,25 @@ Executable test_mnist
 #  BuildDepends:   owl
 
 # +-------------------------------------------------------------------+
+# | Test                                                              |
+# +-------------------------------------------------------------------+
+
+Executable test_runner
+  Path:           unittest
+  MainIs:         test_runner.ml
+  Build$:         flag(tests)
+  Custom:         true
+  CompiledObject: best
+  Install:        false
+  BuildDepends:   owl,
+                  alcotest
+
+Test lib_test
+  Run$:             flag(tests)
+  Command:          $test_runner
+  WorkingDirectory: unittest
+
+# +-------------------------------------------------------------------+
 # | Document                                                          |
 # +-------------------------------------------------------------------+
 

@@ -1,7 +1,3 @@
-(* Build with the following command
-  `ocamlbuild -use-ocamlfind -package alcotest,owl unit_sparse_matrix.native`
-  *)
-
 open Bigarray
 module M = Owl_sparse_matrix_generic
 
@@ -355,7 +351,3 @@ let test_set = [
   "of_array", `Slow, of_array;
   "save_load", `Slow, save_load;
 ]
-
-(* Run it *)
-let () =
-  Alcotest.run "Test M." [ "sparse matrix", test_set; ]

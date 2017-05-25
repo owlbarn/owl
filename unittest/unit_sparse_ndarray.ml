@@ -1,7 +1,3 @@
-(* Build with the following command
-  `ocamlbuild -use-ocamlfind -package alcotest,owl unit_sparse_ndarray.native`
-  *)
-
 open Bigarray
 module M = Owl_sparse_ndarray_generic
 
@@ -308,7 +304,3 @@ let test_set = [
   "of_array", `Slow, of_array;
   "save_load", `Slow, save_load;
 ]
-
-(* Run it *)
-let () =
-  Alcotest.run "Test M." [ "sparse ndarray", test_set; ]

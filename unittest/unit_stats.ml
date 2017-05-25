@@ -21,6 +21,7 @@ module To_test = struct
     p
   let wilcoxon_left_side x y =
     let (_, p, _) = M.wilcoxon ~side:M.LeftSide x y in
+    p
   let fisher_test_both_side a b c d =
     let (_, p, _) = M.fisher_test a b c d in
     p
@@ -150,10 +151,4 @@ let test_set = [
   "fisher_test_both_side" , `Slow, fisher_test_both_side;
   "fisher_test_right_side", `Slow , fisher_test_right_side ;
   "fisher_test_left_side", `Slow, fisher_test_left_side;
-  ]
-
-(* Run it *)
-let () =
-  Alcotest.run "Test M." [
-    "stats", test_set;
   ]
