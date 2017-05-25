@@ -348,7 +348,3 @@ let test_set = [
   "sum_cols", `Slow, sum_cols;
   "save_load", `Slow, save_load;
 ]
-
-(* Run it *)
-let () =
-  Alcotest.run "Test M." [ "dense matrix", test_set; ]
