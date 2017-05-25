@@ -98,10 +98,24 @@ val minmax_i : float array -> float * int * float * int
 
 val sort : ?inc:bool -> float array -> float array
 
-val rank : float array -> float array
-(** [ rank x ] translates each element in [x] to its ranking. The ranking Order
-  is from the smallest one to the largest. E.g., [rank [|54.; 74.; 55.; 86.; 56.|]]
-  returns [[|1.; 4.; 2.; 5.; 3.|]]. Note that the ranking starts with one!
+val argsort : ?inc:bool -> float array -> int array
+
+val rank
+  : ?ties_strategy:[`Average | `Min | `Max]
+  -> float array
+  -> float array
+(** Computes sample's ranks.
+
+    The ranking order is from the smallest one to the largest. For example
+    [rank [|54.; 74.; 55.; 86.; 56.|]] returns [[|1.; 4.; 2.; 5.; 3.|]].
+    Note that the ranking starts with one!
+
+    [ties_strategy] controls which ranks are assigned to equal values:
+
+    - [`Average] the average of ranks should be assigned to each value.
+      {b Default}.
+    - [`Min] the minimum of ranks is assigned to each value.
+    - [`Max] the maximum of ranks is assigned to each value.
  *)
 
 val histogram : float array -> int -> int array
