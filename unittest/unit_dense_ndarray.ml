@@ -1,7 +1,3 @@
-(* Build with the following command
-  `ocamlbuild -use-ocamlfind -package alcotest,owl unit_dense_ndarray.native`
-  *)
-
 open Bigarray
 module M = Owl_dense_ndarray_generic
 
@@ -306,7 +302,3 @@ let test_set = [
   "reshape", `Slow, reshape;
   "save_load", `Slow, save_load;
 ]
-
-(* Run it *)
-let () =
-  Alcotest.run "Test M." [ "dense ndarray", test_set; ]

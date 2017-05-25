@@ -99,8 +99,3 @@ let test_set = [
   "poly8", `Slow, poly8;
   "poly9", `Slow, poly9;
 ]
-
-
-(* Run it *)
-let () =
-  Alcotest.run "Test M." [ "Algodiff.AD", test_set; ]
