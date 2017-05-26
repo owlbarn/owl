@@ -84,20 +84,37 @@ let sort ?(inc=true) x =
     else 0
   ) y; y
 
-let rank x =
-  let _index a x =
-    let y = ref [||] in
-    let _ = Array.iteri (fun i z ->
-      if z = a then y := Array.append !y [|float_of_int (i + 1)|]
-    ) x in !y
-  in
-  let y = sort ~inc:true x in
-  let y = Array.map (fun z ->
-    let i = _index z y in
-    let a = Array.fold_left (+.) 0. i in
-    let b = float_of_int (Array.length i) in
-    a /. b
-  ) x in y
+let argsort ?(inc=true) x =
+  let n = Array.length x in
+  let dir = if inc then 1 else (-1) in
+  let order = Array.init n (fun i -> i) in begin
+    Array.sort (fun i j -> dir * compare x.(i) x.(j)) order;
+    order
+  end
+
+let _resolve_ties next d = function
+  | `Average    -> float_of_int next -. float_of_int d /. 2.
+  | `Min        -> float_of_int (next - d)
+  | `Max        -> float_of_int next
+
+let rank ?(ties_strategy=`Average) vs =
+  let n = Array.length vs in
+  let order = argsort vs in
+  let ranks = Array.make n 0. in
+  let d = ref 0 in begin
+    for i = 0 to n - 1 do
+      if i == n - 1 || compare vs.(order.(i)) vs.(order.(i + 1)) <> 0
+      then
+        let tie_rank = _resolve_ties (i + 1) !d ties_strategy in
+        for j = i - !d to i do
+          ranks.(order.(j)) <- tie_rank
+        done;
+        d := 0
+      else
+        incr d  (* Found a duplicate! *)
+    done;
+  end; ranks
+
 
 let autocorrelation ?(lag=1) x =
   let n = Array.length x in
