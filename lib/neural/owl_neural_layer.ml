@@ -38,7 +38,7 @@ end
 module Input = struct
 
   type layer = {
-    mutable in_shape : int array;
+    mutable in_shape  : int array;
     mutable out_shape : int array;
   }
 
