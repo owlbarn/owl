@@ -35,41 +35,73 @@ let connect prev next =
   prev.next <- Array.append prev.next [|next|]
 
 
-(* traverse the nodes in BFS way, apply [f : node -> unit] to each node *)
-let rec bfs_traverse f = function
+(* BFS iterate the nodes, apply [f : node -> unit] to each node *)
+let rec bfs_iter f x =
+  match x with
   | []     -> ()
   | hd::tl -> (
       let _ = f hd in
       let new_tl = tl @ (Array.to_list hd.next) in
-      bfs_traverse f new_tl
+      bfs_iter f new_tl
     )
 
-let init nn =
-  let init_f hd =
-    match hd.neuron with
-    | Linear n       -> Linear.init n
-    | LinearNoBias n -> LinearNoBias.init n
-    | _              -> ()
-  in
-  bfs_traverse init_f [ nn.root ]
+
+(* BFS map the nodes, apply [f : node -> 'a] then return ['a array] *)
+let bfs_map f x =
+  let stack = Owl_utils.Stack.make () in
+  bfs_iter (fun n ->
+    Owl_utils.Stack.push stack (f n)
+  ) x;
+  Owl_utils.Stack.to_array stack
+
+
+let init nn = bfs_iter (fun x ->
+  match x.neuron with
+  | Linear n       -> Linear.init n
+  | LinearNoBias n -> LinearNoBias.init n
+  | _              -> () (* activation, etc. *)
+  ) [ nn.root ]
+
+
+let reset nn = bfs_iter (fun x ->
+  match x.neuron with
+  | Linear n       -> Linear.reset n
+  | LinearNoBias n -> LinearNoBias.reset n
+  | _              -> () (* activation, etc. *)
+  ) [ nn.root ]
+
+
+let mktag t nn = bfs_iter (fun x ->
+  match x.neuron with
+  | Linear n         -> Linear.mktag t n
+  | LinearNoBias n   -> LinearNoBias.mktag t n
+  | _                -> () (* activation, etc. *)
+  ) [ nn.root ]
+
+
+let mkpar nn = bfs_map (fun x ->
+  match x.neuron with
+  | Linear n         -> Linear.mkpri n
+  | LinearNoBias n   -> LinearNoBias.mkpri n
+  | _                -> [||] (* activation, etc. *)
+  ) [ nn.root ]
+
 
 let run x nn =
-  let run_f hd =
-    let input = Array.map (fun n -> n.output) hd.prev in
+  (* init the first input to bootstrap *)
+  nn.root.output <- x;
+  bfs_iter (fun x ->
+    let input = Array.map (fun n -> n.output) x.prev in
     (* process the current neuron *)
     let output =
-      match hd.neuron with
+      match x.neuron with
       | Input n        -> Input.run input.(0) n
       | Linear n       -> Linear.run input.(0) n
       | LinearNoBias n -> LinearNoBias.run input.(0) n
     in
     (* save current neuron's output *)
-    hd.output <- output
-  in
-  (* bootstrap the run *)
-  nn.root.output <- x;
-  Array.to_list nn.root.next
-  |> bfs_traverse run_f
+    x.output <- output
+  ) (Array.to_list nn.root.next)
 
 
 (* may become obsolete *)
