@@ -5,6 +5,7 @@
 
 (* Experimental module, working in progress *)
 
+open Owl_algodiff.S
 open Owl_neural_layer
 
 
@@ -28,13 +29,6 @@ type network = {
 }
 
 
-let connect prev next =
-  assert (Array.mem prev next.prev = false);
-  assert (Array.mem next prev.next = false);
-  next.prev <- Array.append next.prev [|prev|];
-  prev.next <- Array.append prev.next [|next|]
-
-
 (* BFS iterate the nodes, apply [f : node -> unit] to each node *)
 let rec bfs_iter f x =
   match x with
@@ -53,6 +47,17 @@ let bfs_map f x =
     Owl_utils.Stack.push stack (f n)
   ) x;
   Owl_utils.Stack.to_array stack
+
+
+(* convert nn to array, the order is in BFS order *)
+let to_array x = bfs_map (fun n -> n) x
+
+
+let connect prev next =
+  assert (Array.mem prev next.prev = false);
+  assert (Array.mem next prev.next = false);
+  next.prev <- Array.append next.prev [|prev|];
+  prev.next <- Array.append prev.next [|next|]
 
 
 let init nn = bfs_iter (fun x ->
@@ -95,6 +100,22 @@ let mkpri nn = bfs_map (fun x ->
   ) [ nn.root ]
 
 
+let mkadj nn = bfs_map (fun x ->
+  match x.neuron with
+  | Linear n         -> Linear.mkadj n
+  | LinearNoBias n   -> LinearNoBias.mkadj n
+  | _                -> [||] (* activation, etc. *)
+  ) [ nn.root ]
+
+
+let update nn us = Array.iter2 (fun x u ->
+  match x.neuron with
+  | Linear n         -> Linear.update n u
+  | LinearNoBias n   -> LinearNoBias.update n u
+  | _                -> () (* activation, etc. *)
+  ) (to_array nn) us
+
+
 let run x nn =
   (* init the first input to bootstrap *)
   nn.root.output <- x;
@@ -110,6 +131,13 @@ let run x nn =
     (* save current neuron's output *)
     x.output <- output
   ) (Array.to_list nn.root.next)
+
+
+let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
+
+let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
+
+let to_string nn = None
 
 
 (* may become obsolete *)
@@ -136,13 +164,6 @@ let run0 x nn =
   nn.root.output <- x;
   Array.to_list nn.root.next
   |> _traverse
-
-
-let create () =  None
-
-let forward = None
-
-let backward = None
 
 
 (*

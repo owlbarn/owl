@@ -55,7 +55,7 @@ let test_minist_with_cnn () =
 
   let params = Params.config
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 1 in
-  train_cnn ~params nn x y;
+  train_cnn ~params nn x y |> ignore;
 
   let x, y = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) 10 in
   test_cnn nn (Algodiff.S.unpack_arr x) (Algodiff.S.unpack_mat y)

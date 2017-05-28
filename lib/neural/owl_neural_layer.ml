@@ -1425,7 +1425,7 @@ module Feedforward = struct
     | _                -> [||] (* activation, etc. *)
     ) nn.layers
 
-  let update nn us = Array.map2 (fun l u ->
+  let update nn us = Array.iter2 (fun l u ->
     match l with
     | Linear l         -> Linear.update l u
     | LinearNoBias l   -> LinearNoBias.update l u
@@ -1462,11 +1462,13 @@ module Feedforward = struct
 
   let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
+(*
   let train nn loss_fun x =
     mktag (tag ()) nn;
     let loss = loss_fun (run x nn) in
     reverse_prop (F 1.) loss;
     loss
+*)
 
   let to_string nn =
     let s = ref "Feedforward network\n\n" in
