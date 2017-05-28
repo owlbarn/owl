@@ -81,6 +81,14 @@ let mktag t nn = bfs_iter (fun x ->
 
 let mkpar nn = bfs_map (fun x ->
   match x.neuron with
+  | Linear n         -> Linear.mkpar n
+  | LinearNoBias n   -> LinearNoBias.mkpar n
+  | _                -> [||] (* activation, etc. *)
+  ) [ nn.root ]
+
+
+let mkpri nn = bfs_map (fun x ->
+  match x.neuron with
   | Linear n         -> Linear.mkpri n
   | LinearNoBias n   -> LinearNoBias.mkpri n
   | _                -> [||] (* activation, etc. *)
