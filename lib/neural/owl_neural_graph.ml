@@ -35,6 +35,45 @@ let connect prev next =
   prev.next <- Array.append prev.next [|next|]
 
 
+(* traverse the nodes in BFS way, apply [f : node -> unit] to each node *)
+let rec bfs_traverse f = function
+  | []     -> ()
+  | hd::tl -> (
+      let _ = f hd in
+      let new_tl = tl @ (Array.to_list hd.next) in
+      bfs_traverse f new_tl
+    )
+
+let init nn =
+  let init_f hd =
+    match hd.neuron with
+    | Linear n       -> Linear.init n
+    | LinearNoBias n -> LinearNoBias.init n
+    | _              -> ()
+  in
+  bfs_traverse init_f [ nn.root ]
+
+let run x nn =
+  let run_f hd =
+    let input = Array.map (fun n -> n.output) hd.prev in
+    (* process the current neuron *)
+    let output =
+      match hd.neuron with
+      | Input n        -> Input.run input.(0) n
+      | Linear n       -> Linear.run input.(0) n
+      | LinearNoBias n -> LinearNoBias.run input.(0) n
+    in
+    (* save current neuron's output *)
+    hd.output <- output
+  in
+  (* bootstrap the run *)
+  nn.root.output <- x;
+  Array.to_list nn.root.next
+  |> bfs_traverse run_f
+
+
+(* may become obsolete *)
+
 let rec _traverse = function
   | []     -> ()
   | hd::tl -> (
@@ -53,10 +92,13 @@ let rec _traverse = function
       _traverse new_tl
     )
 
-let run x nn =
+let run0 x nn =
   nn.root.output <- x;
   Array.to_list nn.root.next
   |> _traverse
+
+
+let create () =  None
 
 let forward = None
 
