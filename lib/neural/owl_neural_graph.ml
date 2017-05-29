@@ -20,12 +20,13 @@ type node = {
   mutable neuron : neuron;
   mutable prev   : node array;
   mutable next   : node array;
-  mutable output : t;
+  mutable output : t option;
 }
 
 
 type network = {
   mutable root : node;
+  mutable size : int;
 }
 
 
@@ -53,11 +54,17 @@ let bfs_map f x =
 let to_array x = bfs_map (fun n -> n) x
 
 
-let connect prev next =
+let connect_pair prev next =
   assert (Array.mem prev next.prev = false);
   assert (Array.mem next prev.next = false);
   next.prev <- Array.append next.prev [|prev|];
   prev.next <- Array.append prev.next [|next|]
+
+let connect_multi parents child =
+  Array.iter (fun p -> connect_pair p child) parents
+
+
+let connect = None
 
 
 let init nn = bfs_iter (fun x ->
@@ -69,6 +76,7 @@ let init nn = bfs_iter (fun x ->
 
 
 let reset nn = bfs_iter (fun x ->
+  x.output <- None;
   match x.neuron with
   | Linear n       -> Linear.reset n
   | LinearNoBias n -> LinearNoBias.reset n
@@ -118,9 +126,14 @@ let update nn us = Array.iter2 (fun x u ->
 
 let run x nn =
   (* init the first input to bootstrap *)
-  nn.root.output <- x;
+  nn.root.output <- Some x;
   bfs_iter (fun x ->
-    let input = Array.map (fun n -> n.output) x.prev in
+    (* collect the inputs from parents' output *)
+    let input = Array.map (fun n ->
+      match n.output with
+      | Some o -> o
+      | None   -> failwith "Owl_neural_graph:run"
+    ) x.prev in
     (* process the current neuron *)
     let output =
       match x.neuron with
@@ -129,7 +142,7 @@ let run x nn =
       | LinearNoBias n -> LinearNoBias.run input.(0) n
     in
     (* save current neuron's output *)
-    x.output <- output
+    x.output <- Some output
   ) (Array.to_list nn.root.next)
 
 
@@ -141,7 +154,7 @@ let to_string nn = None
 
 
 (* may become obsolete *)
-
+(*
 let rec _traverse = function
   | []     -> ()
   | hd::tl -> (
@@ -164,7 +177,7 @@ let run0 x nn =
   nn.root.output <- x;
   Array.to_list nn.root.next
   |> _traverse
-
+*)
 
 (*
 let linear ?(init_typ = Init.Standard) ?inputs outputs =
