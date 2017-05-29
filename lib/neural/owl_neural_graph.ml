@@ -8,12 +8,6 @@
 open Owl_algodiff.S
 open Owl_neural_neuron
 
-(*
-type neuron =
-  | Input          of Input.neuron_typ
-  | Linear         of Linear.neuron_typ
-  | LinearNoBias   of LinearNoBias.neuron_typ
-*)
 
 type node = {
   mutable id     : int;
@@ -25,9 +19,14 @@ type node = {
 
 
 type network = {
-  mutable root : node;
-  mutable size : int;
+  mutable root : node;       (* root of the graph network, i.e. input *)
+  mutable size : int;        (* size of the graph network *)
+  mutable topo : node array; (* nodes sorted in topological order *)
 }
+
+
+(* sort the nodes in a graph network into topological order *)
+let topological_sort nn = None
 
 
 (* BFS iterate the nodes, apply [f : node -> unit] to each node *)
@@ -53,15 +52,6 @@ let bfs_map f x =
 (* convert nn to array, the order is in BFS order *)
 let to_array x = bfs_map (fun n -> n) x
 
-
-let get_in_out_shape = function
-  | Input l          -> Input.(l.in_shape, l.out_shape)
-  | Linear l         -> Linear.(l.in_shape, l.out_shape)
-  | LinearNoBias l   -> LinearNoBias.(l.in_shape, l.out_shape)
-
-let get_in_shape x = x |> get_in_out_shape |> fst
-
-let get_out_shape x = x |> get_in_out_shape |> snd
 
 let update_out_shape out_shape x =
   match x.neuron with

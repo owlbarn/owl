@@ -23,26 +23,8 @@ let get_layer nn i =
   | true  -> nn.layers.(c + i)
   | false -> nn.layers.(i)
 
-let get_in_out_shape = function
-  | Input l          -> Input.(l.in_shape, l.out_shape)
-  | Linear l         -> Linear.(l.in_shape, l.out_shape)
-  | LinearNoBias l   -> LinearNoBias.(l.in_shape, l.out_shape)
-  | LSTM l           -> LSTM.(l.in_shape, l.out_shape)
-  | GRU l            -> GRU.(l.in_shape, l.out_shape)
-  | Recurrent l      -> Recurrent.(l.in_shape, l.out_shape)
-  | Conv2D l         -> Conv2D.(l.in_shape, l.out_shape)
-  | Conv3D l         -> Conv3D.(l.in_shape, l.out_shape)
-  | FullyConnected l -> FullyConnected.(l.in_shape, l.out_shape)
-  | MaxPool2D l      -> MaxPool2D.(l.in_shape, l.out_shape)
-  | AvgPool2D l      -> AvgPool2D.(l.in_shape, l.out_shape)
-  | Dropout l        -> Dropout.(l.in_shape, l.out_shape)
-  | Reshape l        -> Reshape.(l.in_shape, l.out_shape)
-  | Flatten l        -> Flatten.(l.in_shape, l.out_shape)
-  | Lambda l         -> Lambda.(l.in_shape, l.out_shape)
-  | Activation l     -> Activation.(l.in_shape, l.out_shape)
-
 let connect_layer prev_l next_l =
-  let out_shape = prev_l |> get_in_out_shape |> snd in
+  let out_shape = get_out_shape prev_l in
   match next_l with
   | Input l          -> () (* always the first layer *)
   | Linear l         -> Linear.connect out_shape l
@@ -68,7 +50,7 @@ let rec add_layer ?act_typ nn l =
   in
   (* insert input layer as the first one given an empty nn *)
   if layer_num nn = 0 then (
-    let in_shape = l |> get_in_out_shape |> fst in
+    let in_shape = get_in_shape l in
     assert (Array.length in_shape > 0);
     assert (Array.exists ((<>)0) in_shape);
     nn.layers <- [|Input Input.(create in_shape)|];
@@ -224,3 +206,7 @@ let to_string nn =
     in
     s := !s ^ (Printf.sprintf "(%i): %s\n" i t)
   done; !s
+
+
+
+(* ends here *)

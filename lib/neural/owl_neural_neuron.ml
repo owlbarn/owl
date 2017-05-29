@@ -1254,7 +1254,7 @@ module Add = struct
 end
 
 
-(* type and functions of neural network *)
+(* type and functions of basic neurons *)
 
 type neuron =
   | Input          of Input.neuron_typ
@@ -1273,6 +1273,29 @@ type neuron =
   | Flatten        of Flatten.neuron_typ
   | Lambda         of Lambda.neuron_typ
   | Activation     of Activation.neuron_typ
+
+
+let get_in_out_shape = function
+  | Input l          -> Input.(l.in_shape, l.out_shape)
+  | Linear l         -> Linear.(l.in_shape, l.out_shape)
+  | LinearNoBias l   -> LinearNoBias.(l.in_shape, l.out_shape)
+  | LSTM l           -> LSTM.(l.in_shape, l.out_shape)
+  | GRU l            -> GRU.(l.in_shape, l.out_shape)
+  | Recurrent l      -> Recurrent.(l.in_shape, l.out_shape)
+  | Conv2D l         -> Conv2D.(l.in_shape, l.out_shape)
+  | Conv3D l         -> Conv3D.(l.in_shape, l.out_shape)
+  | FullyConnected l -> FullyConnected.(l.in_shape, l.out_shape)
+  | MaxPool2D l      -> MaxPool2D.(l.in_shape, l.out_shape)
+  | AvgPool2D l      -> AvgPool2D.(l.in_shape, l.out_shape)
+  | Dropout l        -> Dropout.(l.in_shape, l.out_shape)
+  | Reshape l        -> Reshape.(l.in_shape, l.out_shape)
+  | Flatten l        -> Flatten.(l.in_shape, l.out_shape)
+  | Lambda l         -> Lambda.(l.in_shape, l.out_shape)
+  | Activation l     -> Activation.(l.in_shape, l.out_shape)
+
+let get_in_shape x = x |> get_in_out_shape |> fst
+
+let get_out_shape x = x |> get_in_out_shape |> snd
 
 
 
