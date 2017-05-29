@@ -131,8 +131,9 @@ Library owl_neural
   Path:             lib/neural
   BuildTools:       ocamlbuild, ocamldoc
   Modules:          Owl_neural,
-                    Owl_neural_layer,
+                    Owl_neural_neuron,
                     Owl_neural_graph,
+                    Owl_neural_feedforward,
                     Owl_neural_optimise
   BuildDepends:     owl
 

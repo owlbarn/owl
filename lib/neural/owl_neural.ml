@@ -6,14 +6,14 @@
 (* NOTE: this is an experimental module being built now *)
 
 open Owl_algodiff.S
-open Owl_neural_layer
+open Owl_neural_neuron
 
 
 (* module aliases *)
 
-module Feedforward    = Feedforward
-module Init           = Owl_neural_layer.Init
-module Activation     = Owl_neural_layer.Activation
+module Feedforward    = Owl_neural_feedforward
+module Init           = Owl_neural_neuron.Init
+module Activation     = Owl_neural_neuron.Activation
 
 module Params         = Owl_neural_optimise.Params
 module Batch          = Owl_neural_optimise.Batch
@@ -111,7 +111,7 @@ let print nn = Feedforward.to_string nn |> Printf.printf "%s"
 
 let save nn f = Owl_utils.marshal_to_file nn f
 
-let load f : network = Owl_utils.marshal_from_file f
+let load f : Feedforward.network = Owl_utils.marshal_from_file f
 
 
 (* ends here *)

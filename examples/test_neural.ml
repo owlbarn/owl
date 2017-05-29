@@ -2,7 +2,7 @@
 open Owl
 open Owl_neural
 open Algodiff.S
-open Owl_neural_layer
+open Owl_neural_neuron
 
 
 let test_minist_with_linear () =

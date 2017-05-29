@@ -6,14 +6,14 @@
 (* Experimental module, working in progress *)
 
 open Owl_algodiff.S
-open Owl_neural_layer
+open Owl_neural_neuron
 
-
+(*
 type neuron =
-  | Input          of Input.layer
-  | Linear         of Linear.layer
-  | LinearNoBias   of LinearNoBias.layer
-
+  | Input          of Input.neuron_typ
+  | Linear         of Linear.neuron_typ
+  | LinearNoBias   of LinearNoBias.neuron_typ
+*)
 
 type node = {
   mutable id     : int;
@@ -54,18 +54,68 @@ let bfs_map f x =
 let to_array x = bfs_map (fun n -> n) x
 
 
+let get_in_out_shape = function
+  | Input l          -> Input.(l.in_shape, l.out_shape)
+  | Linear l         -> Linear.(l.in_shape, l.out_shape)
+  | LinearNoBias l   -> LinearNoBias.(l.in_shape, l.out_shape)
+
+let get_in_shape x = x |> get_in_out_shape |> fst
+
+let get_out_shape x = x |> get_in_out_shape |> snd
+
+let update_out_shape out_shape x =
+  match x.neuron with
+  | Input n          -> () (* always the first layer *)
+  | Linear n         -> Linear.connect out_shape n
+  | LinearNoBias n   -> LinearNoBias.connect out_shape n
+
+
+(* collect the outputs of a given set of nodes *)
+let collect_output nodes =
+  Array.map (fun n ->
+    match n.output with
+    | Some o -> o
+    | None   -> failwith "Owl_neural_graph:collect_output"
+  ) nodes
+
+
 let connect_pair prev next =
   assert (Array.mem prev next.prev = false);
   assert (Array.mem next prev.next = false);
   next.prev <- Array.append next.prev [|prev|];
   prev.next <- Array.append prev.next [|next|]
 
-let connect_multi parents child =
-  Array.iter (fun p -> connect_pair p child) parents
+let connect parents child =
+  (* check all the inputs have the same shape *)
+  let shp = parents.(0).neuron |> get_out_shape in
+  Array.iter (fun n ->
+    let shp' = n.neuron |> get_out_shape in
+    assert (shp = shp');
+  ) parents;
+  (* update the child's output shape *)
+  update_out_shape shp child;
+  (* connect the child to the parents *)
+  Array.iter (fun p ->
+    connect_pair p child
+  ) parents
 
 
-let connect = None
+(* add child node to nn and connect to parents *)
+let add_node nn parents child =
+  nn.size <- nn.size + 1;
+  child.id <- nn.size;
+  connect parents child
 
+
+(* create an empty neuron network *)
+(*
+let create in_shape =
+  let n = Input (Input.create in_shape) in
+  {
+    root = n;
+    size = 1;
+  }
+*)
 
 let init nn = bfs_iter (fun x ->
   match x.neuron with
@@ -129,11 +179,7 @@ let run x nn =
   nn.root.output <- Some x;
   bfs_iter (fun x ->
     (* collect the inputs from parents' output *)
-    let input = Array.map (fun n ->
-      match n.output with
-      | Some o -> o
-      | None   -> failwith "Owl_neural_graph:run"
-    ) x.prev in
+    let input = collect_output x.prev in
     (* process the current neuron *)
     let output =
       match x.neuron with
