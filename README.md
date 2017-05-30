@@ -547,14 +547,15 @@ Currently `Neural` module is wrapped into a separate library but it will be merg
 ```ocaml
 #require "owl_neural";;
 open Owl_neural;;
+open Feedforward;;
 ```
 
 Now, let's see how to define a two-layer neural network.
 
 ```ocaml
 let nn = Feedforward.create ();;
-Feedforward.add_layer nn (linear 784 300) ~act_typ:Activation.Tanh;;
-Feedforward.add_layer nn (linear 300 10) ~act_typ:Activation.Softmax;;
+Feedforward.add_layer nn (linear ~inputs:784 300) ~act_typ:Activation.Tanh;;
+Feedforward.add_layer nn (linear ~inputs:300 10) ~act_typ:Activation.Softmax;;
 ```
 
 Done! Only three lines of code, that's easy, isn't it? Owl's `Neural` module is built atop of its `Algodiff` module. I am often amazed by the power of algorithmic differentiation while developing the neural network module, it just simplifies the design so much and makes life so easy.

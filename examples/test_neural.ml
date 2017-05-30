@@ -3,6 +3,7 @@ open Owl
 open Owl_neural
 open Algodiff.S
 open Owl_neural_neuron
+open Owl_neural_feedforward
 
 
 let test_minist_with_linear () =
@@ -12,7 +13,7 @@ let test_minist_with_linear () =
   let nn = Feedforward.create () in
   Feedforward.add_layer nn l0 ~act_typ:Activation.Tanh;
   Feedforward.add_layer nn l1 ~act_typ:Activation.Softmax;
-  print nn;
+  Feedforward.print nn;
 
   let x, _, y = Dataset.load_mnist_train_data () in
   train nn x y
