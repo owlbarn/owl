@@ -10,24 +10,22 @@ open Owl_neural_neuron
 
 
 type node = {
-  mutable id     : int;
-  mutable neuron : neuron;
-  mutable prev   : node array;
-  mutable next   : node array;
-  mutable output : t option;
+  mutable id      : int;
+  mutable neuron  : neuron;
+  mutable prev    : node array;
+  mutable next    : node array;
+  mutable output  : t option;
+  mutable network : network;
 }
-
-
-type network = {
-  mutable root : node;       (* root of the graph network, i.e. input *)
-  mutable size : int;        (* size of the graph network *)
-  mutable topo : node array; (* nodes sorted in topological order *)
+and network = {
+  mutable size : int;         (* size of the graph network *)
+  mutable root : node option; (* root of the graph network, i.e. input *)
+  mutable topo : node array;  (* nodes sorted in topological order *)
 }
 
 
 (* sort the nodes in a graph network into topological order *)
 let topological_sort nn = None
-
 
 (* BFS iterate the nodes, apply [f : node -> unit] to each node *)
 let rec bfs_iter f x =
@@ -50,6 +48,13 @@ let bfs_map f x =
 (* convert nn to array, the order is in BFS order *)
 let bfs_array x = bfs_map (fun n -> n) x
 
+let get_root nn =
+  match nn.root with
+  | Some n -> n
+  | None   -> failwith "Owl_neural_graph:get_root"
+
+let get_network n = n.network
+
 (* collect the outputs of a given set of nodes *)
 let collect_output nodes =
   Array.map (fun n ->
@@ -57,7 +62,6 @@ let collect_output nodes =
     | Some o -> o
     | None   -> failwith "Owl_neural_graph:collect_output"
   ) nodes
-
 
 let connect_pair prev next =
   assert (Array.mem prev next.prev = false);
@@ -84,18 +88,9 @@ let connect_to_parents parents child =
 let add_node nn parents child =
   nn.size <- nn.size + 1;
   child.id <- nn.size;
-  connect_to_parents parents child
-
-
-(* create an empty neuron network *)
-(*
-let create in_shape =
-  let n = Input (Input.create in_shape) in
-  {
-    root = n;
-    size = 1;
-  }
-*)
+  connect_to_parents parents child;
+  nn.topo <- Array.append nn.topo [|child|];
+  child.network <- nn
 
 let init nn = Array.iter (fun n -> init n.neuron) nn.topo
 
@@ -113,19 +108,96 @@ let update nn us = Array.iter2 (fun n u -> update n.neuron u) nn.topo us
 
 let run x nn =
   (* init the first input to bootstrap *)
-  nn.root.output <- Some x;
-  Array.iter (fun x ->
+  (get_root nn).output <- Some x;
+  Array.iter (fun n ->
     (* collect the inputs from parents' output *)
-    let input = collect_output x.prev in
+    let input = match n.neuron with
+      | Input _ -> [|x|]
+      | _       -> collect_output n.prev
+    in
     (* process the current neuron *)
-    let output = run_array input x.neuron in
+    let output = run_array input n.neuron in
     (* save current neuron's output *)
-    x.output <- Some output
-  ) nn.topo
+    n.output <- Some output
+  ) nn.topo;
+  (collect_output [|nn.topo.(Array.length nn.topo - 1)|]).(0)
 
 let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
 
 let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
+
+
+(* creation function of various nodes *)
+
+let empty_network () = {
+  size = 0;
+  root = None;
+  topo = [||];
+}
+
+let empty_node nn neuron = {
+  id = -1;
+  neuron;
+  prev = [||];
+  next = [||];
+  output = None;
+  network = nn;
+}
+
+let input inputs =
+  let neuron = Input (Input.create inputs) in
+  let nn = {
+    size = 1;
+    root = None;
+    topo = [||];
+  }
+  in
+  let n = {
+    id = 1;
+    neuron;
+    prev = [||];
+    next = [||];
+    output = None;
+    network = nn;
+  }
+  in
+  nn.root <- Some n;
+  nn.topo <- [|n|];
+  n
+
+let linear ?(init_typ = Init.Standard) outputs input_node =
+  let nn = get_network input_node in
+  let neuron = Linear (Linear.create outputs init_typ) in
+  let n = empty_node nn neuron in
+  add_node nn [|input_node|] n;
+  n
+
+let activation act_typ input_node =
+  let nn = get_network input_node in
+  let neuron = Activation (Activation.create act_typ) in
+  let n = empty_node nn neuron in
+  add_node nn [|input_node|] n;
+  n
+
+let to_string nn =
+  let s = ref "Graphical network\n\n" in
+  for i = 0 to Array.length nn.topo - 1 do
+    let t = to_string nn.topo.(i).neuron in
+    s := !s ^ (Printf.sprintf "(%i): %s\n" i t)
+  done; !s
+
+
+let train ?params nn x y =
+  init nn;
+  let f = forward nn in
+  let b = backward nn in
+  let u = update nn in
+  let p = match params with
+    | Some p -> p
+    | None   -> Owl_neural_optimise.Params.default ()
+  in
+  let x, y = Mat x, Mat y in
+  Owl_neural_optimise.train_nn p f b u x y
 
 (*
 let init nn = bfs_iter (fun x ->
