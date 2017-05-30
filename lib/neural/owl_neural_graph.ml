@@ -39,7 +39,6 @@ let rec bfs_iter f x =
       bfs_iter f new_tl
     )
 
-
 (* BFS map the nodes, apply [f : node -> 'a] then return ['a array] *)
 let bfs_map f x =
   let stack = Owl_utils.Stack.make () in
@@ -48,9 +47,8 @@ let bfs_map f x =
   ) x;
   Owl_utils.Stack.to_array stack
 
-
 (* convert nn to array, the order is in BFS order *)
-let to_array x = bfs_map (fun n -> n) x
+let bfs_array x = bfs_map (fun n -> n) x
 
 (* collect the outputs of a given set of nodes *)
 let collect_output nodes =
