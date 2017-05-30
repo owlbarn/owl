@@ -1410,6 +1410,24 @@ let run a l = match l with
   | Lambda l         -> Lambda.run a l
   | Activation l     -> Activation.run a l
 
+let run_array a l = match l with
+  | Input l          -> Input.run a.(0) l
+  | Linear l         -> Linear.run a.(0) l
+  | LinearNoBias l   -> LinearNoBias.run a.(0) l
+  | LSTM l           -> LSTM.run a.(0) l
+  | GRU l            -> GRU.run a.(0) l
+  | Recurrent l      -> Recurrent.run a.(0) l
+  | Conv2D l         -> Conv2D.run a.(0) l
+  | Conv3D l         -> Conv3D.run a.(0) l
+  | FullyConnected l -> FullyConnected.run a.(0) l
+  | MaxPool2D l      -> MaxPool2D.run a.(0) l
+  | AvgPool2D l      -> AvgPool2D.run a.(0) l
+  | Dropout l        -> Dropout.run a.(0) l
+  | Reshape l        -> Reshape.run a.(0) l
+  | Flatten l        -> Flatten.run a.(0) l
+  | Lambda l         -> Lambda.run a.(0) l
+  | Activation l     -> Activation.run a.(0) l
+
 let to_string = function
   | Input l          -> Input.to_string l
   | Linear l         -> Linear.to_string l

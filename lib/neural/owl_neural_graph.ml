@@ -52,14 +52,6 @@ let bfs_map f x =
 (* convert nn to array, the order is in BFS order *)
 let to_array x = bfs_map (fun n -> n) x
 
-
-let update_out_shape out_shape x =
-  match x.neuron with
-  | Input n          -> () (* always the first layer *)
-  | Linear n         -> Linear.connect out_shape n
-  | LinearNoBias n   -> LinearNoBias.connect out_shape n
-
-
 (* collect the outputs of a given set of nodes *)
 let collect_output nodes =
   Array.map (fun n ->
@@ -75,7 +67,7 @@ let connect_pair prev next =
   next.prev <- Array.append next.prev [|prev|];
   prev.next <- Array.append prev.next [|next|]
 
-let connect parents child =
+let connect_to_parents parents child =
   (* check all the inputs have the same shape *)
   let shp = parents.(0).neuron |> get_out_shape in
   Array.iter (fun n ->
@@ -83,7 +75,7 @@ let connect parents child =
     assert (shp = shp');
   ) parents;
   (* update the child's output shape *)
-  update_out_shape shp child;
+  connect shp child.neuron;
   (* connect the child to the parents *)
   Array.iter (fun p ->
     connect_pair p child
@@ -94,7 +86,7 @@ let connect parents child =
 let add_node nn parents child =
   nn.size <- nn.size + 1;
   child.id <- nn.size;
-  connect parents child
+  connect_to_parents parents child
 
 
 (* create an empty neuron network *)
@@ -107,6 +99,37 @@ let create in_shape =
   }
 *)
 
+let init nn = Array.iter (fun n -> init n.neuron) nn.topo
+
+let reset nn = Array.iter (fun n -> reset n.neuron) nn.topo
+
+let mktag t nn = Array.iter (fun n -> mktag t n.neuron) nn.topo
+
+let mkpar nn = Array.map (fun n -> mkpar n.neuron) nn.topo
+
+let mkpri nn = Array.map (fun n -> mkpri n.neuron) nn.topo
+
+let mkadj nn = Array.map (fun n -> mkadj n.neuron) nn.topo
+
+let update nn us = Array.iter2 (fun n u -> update n.neuron u) nn.topo us
+
+let run x nn =
+  (* init the first input to bootstrap *)
+  nn.root.output <- Some x;
+  Array.iter (fun x ->
+    (* collect the inputs from parents' output *)
+    let input = collect_output x.prev in
+    (* process the current neuron *)
+    let output = run_array input x.neuron in
+    (* save current neuron's output *)
+    x.output <- Some output
+  ) nn.topo
+
+let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
+
+let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
+
+(*
 let init nn = bfs_iter (fun x ->
   match x.neuron with
   | Linear n       -> Linear.init n
@@ -187,42 +210,6 @@ let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
 let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
 let to_string nn = None
-
-
-(* may become obsolete *)
-(*
-let rec _traverse = function
-  | []     -> ()
-  | hd::tl -> (
-      let input = Array.map (fun n -> n.output) hd.prev in
-      (* process the current neuron *)
-      let output =
-        match hd.neuron with
-        | Input n        -> Input.run input.(0) n
-        | Linear n       -> Linear.run input.(0) n
-        | LinearNoBias n -> LinearNoBias.run input.(0) n
-      in
-      (* save current neuron's output *)
-      hd.output <- output;
-      (* traverse next node in BFS way *)
-      let new_tl = tl @ (Array.to_list hd.next) in
-      _traverse new_tl
-    )
-
-let run0 x nn =
-  nn.root.output <- x;
-  Array.to_list nn.root.next
-  |> _traverse
 *)
 
-(*
-let linear ?(init_typ = Init.Standard) ?inputs outputs =
-  let neuron = Linear (Linear.create ?inputs outputs init_typ) in
-  let output = {
-    id     = 0;
-    neuron = neuron;
-    prec   = [||];
-  }
-  in
-  output
-*)
+(* ends here *)
