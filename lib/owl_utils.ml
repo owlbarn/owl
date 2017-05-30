@@ -274,6 +274,8 @@ module Stack = struct
     | 0 -> None
     | i -> Some s.data.(i)
 
+  let is_empty s = s.size = 0
+
   let to_array s = Array.sub s.data 0 s.used
 
 end

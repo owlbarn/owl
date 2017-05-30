@@ -3,11 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(* Experimental module, working in progress *)
-
 open Owl_algodiff.S
 open Owl_neural_neuron
 
+
+(* graph network and node definition *)
 
 type node = {
   mutable id      : int;
@@ -27,8 +27,17 @@ and network = {
 (* functions to manipulate the network *)
 
 
-(* topological sort the nodes in a graph network, Kahn's algorithm *)
-let topological_sort nn = None
+(* TODO: topological sort the nodes in a graph network, Kahn's algorithm *)
+let topological_sort n =
+  let l = Owl_utils.Stack.make () in
+  let s = Owl_utils.Stack.make () in
+  Owl_utils.Stack.push s n;
+  while Owl_utils.Stack.is_empty s = false do
+    let n = Owl_utils.Stack.pop s in
+    Owl_utils.Stack.push l n;
+    (* TODO *)
+  done;
+  Owl_utils.Stack.to_array l
 
 
 (* BFS iterate the nodes, apply [f : node -> unit] to each node *)
@@ -104,6 +113,19 @@ let add_node nn parents child =
   child.network <- nn
 
 
+let make_network size root topo = { size; root; topo; }
+
+
+let make_node id prev next neuron output network = {
+  id;
+  prev;
+  next;
+  neuron;
+  output;
+  network;
+}
+
+
 (* functions to interface to optimisation engine *)
 
 let init nn = Array.iter (fun n -> init n.neuron) nn.topo
@@ -150,18 +172,6 @@ let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
 
 (* functions to create functional nodes *)
-
-let make_network size root topo = { size; root; topo; }
-
-
-let make_node id prev next neuron output network = {
-  id;
-  prev;
-  next;
-  neuron;
-  output;
-  network;
-}
 
 
 let input inputs =
@@ -293,6 +303,38 @@ let lambda lambda input_node =
   n
 
 
+let add input_node =
+  let neuron = Add (Add.create ()) in
+  let nn = get_network input_node.(0) in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn input_node n;
+  n
+
+
+let mul input_node =
+  let neuron = Mul (Mul.create ()) in
+  let nn = get_network input_node.(0) in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn input_node n;
+  n
+
+
+let max input_node =
+  let neuron = Max (Max.create ()) in
+  let nn = get_network input_node.(0) in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn input_node n;
+  n
+
+
+let average input_node =
+  let neuron = Average (Average.create ()) in
+  let nn = get_network input_node.(0) in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn input_node n;
+  n
+
+
 (* training functions *)
 
 let train ?params nn x y =
@@ -336,6 +378,12 @@ let to_string nn =
     s := !s ^ (Printf.sprintf "(%i): %s" n.id t) ^
       (Printf.sprintf "    prev:[%s] next:[%s]\n\n" prev next)
   ) nn.topo; !s
+
+let print nn = to_string nn |> Printf.printf "%s"
+
+let save nn f = Owl_utils.marshal_to_file nn f
+
+let load f : network = Owl_utils.marshal_from_file f
 
 
 

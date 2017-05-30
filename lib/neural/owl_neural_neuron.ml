@@ -1254,6 +1254,111 @@ module Add = struct
 end
 
 
+(* definition of Multiply layer *)
+module Mul = struct
+
+  type neuron_typ = {
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create () = {
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let run x l =
+    let n = Array.length x in
+    (* at least two inputs *)
+    assert (n > 1);
+    let acc = ref x.(0) in
+    for i = 1 to n - 1 do
+      acc := Maths.(!acc * x.(i))
+    done;
+    !acc
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "Multiply layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+
+end
+
+
+(* definition of Max layer *)
+module Max = struct
+
+  type neuron_typ = {
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create () = {
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let run x l =
+    let n = Array.length x in
+    (* at least two inputs *)
+    assert (n > 1);
+    let acc = ref x.(0) in
+    for i = 1 to n - 1 do
+      acc := Maths.(max2 !acc x.(i))
+    done;
+    !acc
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "Max layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+
+end
+
+
+(* definition of Average layer *)
+module Average = struct
+
+  type neuron_typ = {
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create () = {
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let run x l =
+    let n = Array.length x in
+    (* at least two inputs *)
+    assert (n > 1);
+    let acc = ref x.(0) in
+    for i = 1 to n - 1 do
+      acc := Maths.(!acc + x.(i))
+    done;
+    Maths.(!acc / F (float_of_int n))
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "Average layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+
+end
+
+
 (* type definition and basic functions of neurons *)
 
 type neuron =
@@ -1273,6 +1378,10 @@ type neuron =
   | Flatten        of Flatten.neuron_typ
   | Lambda         of Lambda.neuron_typ
   | Activation     of Activation.neuron_typ
+  | Add            of Add.neuron_typ
+  | Mul            of Mul.neuron_typ
+  | Max            of Max.neuron_typ
+  | Average        of Average.neuron_typ
 
 
 let get_in_out_shape = function
@@ -1292,6 +1401,10 @@ let get_in_out_shape = function
   | Flatten l        -> Flatten.(l.in_shape, l.out_shape)
   | Lambda l         -> Lambda.(l.in_shape, l.out_shape)
   | Activation l     -> Activation.(l.in_shape, l.out_shape)
+  | Add l            -> Add.(l.in_shape, l.out_shape)
+  | Mul l            -> Mul.(l.in_shape, l.out_shape)
+  | Max l            -> Max.(l.in_shape, l.out_shape)
+  | Average l        -> Average.(l.in_shape, l.out_shape)
 
 let get_in_shape x = x |> get_in_out_shape |> fst
 
@@ -1314,6 +1427,10 @@ let connect out_shape l = match l with
   | Flatten l        -> Flatten.connect out_shape l
   | Lambda l         -> Lambda.connect out_shape l
   | Activation l     -> Activation.connect out_shape l
+  | Add l            -> Add.connect out_shape l
+  | Mul l            -> Mul.connect out_shape l
+  | Max l            -> Max.connect out_shape l
+  | Average l        -> Average.connect out_shape l
 
 let init = function
   | Linear l         -> Linear.init l
@@ -1409,6 +1526,7 @@ let run a l = match l with
   | Flatten l        -> Flatten.run a l
   | Lambda l         -> Lambda.run a l
   | Activation l     -> Activation.run a l
+  | _                -> failwith "Owl_neural_neuron:run"
 
 let run_array a l = match l with
   | Input l          -> Input.run a.(0) l
@@ -1427,6 +1545,10 @@ let run_array a l = match l with
   | Flatten l        -> Flatten.run a.(0) l
   | Lambda l         -> Lambda.run a.(0) l
   | Activation l     -> Activation.run a.(0) l
+  | Add l            -> Add.run a l
+  | Mul l            -> Mul.run a l
+  | Max l            -> Max.run a l
+  | Average l        -> Average.run a l
 
 let to_string = function
   | Input l          -> Input.to_string l
@@ -1445,6 +1567,10 @@ let to_string = function
   | Flatten l        -> Flatten.to_string l
   | Lambda l         -> Lambda.to_string l
   | Activation l     -> Activation.to_string l
+  | Add l            -> Add.to_string l
+  | Mul l            -> Mul.to_string l
+  | Max l            -> Max.to_string l
+  | Average l        -> Average.to_string l
 
 
 
