@@ -128,7 +128,7 @@ let conv3d ?(padding = Owl_dense_ndarray_generic.SAME) ?inputs kernel_width kern
 
 
 let fully_connected ?(init_typ = Init.Standard) ?inputs outputs =
-  FullyConnected (FullyConnected.create ?inputs outputs init_typ )
+  FullyConnected (FullyConnected.create ?inputs outputs init_typ)
 
 
 let max_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
@@ -142,11 +142,11 @@ let avg_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
 let dropout rate = Dropout (Dropout.create rate)
 
 
-let reshape ?conv_typ ?inputs outputs =
-  Reshape (Reshape.create ?conv_typ ?inputs outputs)
+let reshape ?convert ?inputs outputs =
+  Reshape (Reshape.create ?convert ?inputs outputs)
 
 
-let flatten ?conv_typ () = Flatten (Flatten.create ?conv_typ ())
+let flatten ?convert () = Flatten (Flatten.create ?convert ())
 
 
 let lambda lambda = Lambda (Lambda.create lambda)

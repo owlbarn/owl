@@ -168,6 +168,14 @@ let input inputs =
   n
 
 
+let activation act_typ input_node =
+  let neuron = Activation (Activation.create act_typ) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
 let linear ?(init_typ = Init.Standard) outputs input_node =
   let neuron = Linear (Linear.create outputs init_typ) in
   let nn = get_network input_node in
@@ -176,8 +184,104 @@ let linear ?(init_typ = Init.Standard) outputs input_node =
   n
 
 
-let activation act_typ input_node =
-  let neuron = Activation (Activation.create act_typ) in
+let linear_nobias ?(init_typ = Init.Standard) outputs input_node =
+  let neuron = LinearNoBias (LinearNoBias.create outputs init_typ) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
+let recurrent ?(init_typ=Init.Standard) ~act_typ outputs hiddens input_node =
+  let neuron = Recurrent (Recurrent.create hiddens outputs act_typ init_typ) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
+let lstm cells input_node =
+  let neuron = LSTM (LSTM.create cells) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
+let gru cells input_node =
+  let neuron = GRU (GRU.create cells) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
+let conv2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel strides input_node =
+  let neuron = Conv2D (Conv2D.create padding kernel strides) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
+let conv3d ?(padding = Owl_dense_ndarray_generic.SAME) kernel_width kernel strides input_node =
+  let neuron = Conv3D (Conv3D.create padding kernel strides) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
+let fully_connected ?(init_typ = Init.Standard) outputs input_node =
+  let neuron = FullyConnected (FullyConnected.create outputs init_typ) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
+let max_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride input_node =
+  let neuron = MaxPool2D (MaxPool2D.create padding kernel stride) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
+let avg_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride input_node =
+  let neuron = AvgPool2D (AvgPool2D.create padding kernel stride) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
+let dropout rate input_node =
+  let neuron = Dropout (Dropout.create rate) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
+let reshape ?convert outputs input_node=
+  let neuron = Reshape (Reshape.create ?convert outputs) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
+let flatten ?convert input_node =
+  let neuron = Flatten (Flatten.create ?convert ()) in
+  let nn = get_network input_node in
+  let n = make_node 0 [||] [||] neuron None nn in
+  add_node nn [|input_node|] n;
+  n
+
+
+let lambda lambda input_node =
+  let neuron = Lambda (Lambda.create lambda) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
   add_node nn [|input_node|] n;
@@ -199,6 +303,8 @@ let to_string nn =
   ) nn.topo; !s
 
 
+(* training functions *)
+
 let train ?params nn x y =
   init nn;
   let f = forward nn in
@@ -209,6 +315,19 @@ let train ?params nn x y =
     | None   -> Owl_neural_optimise.Params.default ()
   in
   let x, y = Mat x, Mat y in
+  Owl_neural_optimise.train_nn p f b u x y
+
+
+let train_cnn ?params nn x y =
+  init nn;
+  let f = forward nn in
+  let b = backward nn in
+  let u = update nn in
+  let p = match params with
+    | Some p -> p
+    | None   -> Owl_neural_optimise.Params.default ()
+  in
+  let x, y = Arr x, Mat y in
   Owl_neural_optimise.train_nn p f b u x y
 
 

@@ -1135,18 +1135,18 @@ end
 module Reshape = struct
 
   type neuron_typ = {
-    mutable conv_typ  : bool;
+    mutable convert   : bool;
     mutable in_shape  : int array;
     mutable out_shape : int array;
   }
 
-  let create ?(conv_typ=false) ?inputs o =
+  let create ?(convert=false) ?inputs o =
     let in_shape = match inputs with
       | Some i -> i
       | None   -> [||]
     in
     {
-      conv_typ  = conv_typ;
+      convert   = convert;
       in_shape  = in_shape;
       out_shape = o;
     }
@@ -1161,7 +1161,7 @@ module Reshape = struct
     let x_shape = shape x in
     let out_shape = Array.append [|x_shape.(0)|] l.out_shape in
     let x = Maths.reshape x out_shape in
-    match l.conv_typ with
+    match l.convert with
     | true  -> (
         match (primal' x) with
         | Arr _ -> Maths.arr_to_mat x
@@ -1174,7 +1174,7 @@ module Reshape = struct
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
     Printf.sprintf "Reshape layer: in:[*,%s] out:[*,%s]\n" in_str out_str ^
-    Printf.sprintf "    conv_typ : %s\n" (string_of_bool l.conv_typ)
+    Printf.sprintf "    convert  : %s\n" (string_of_bool l.convert)
 
 end
 
@@ -1183,13 +1183,13 @@ end
 module Flatten = struct
 
   type neuron_typ = {
-    mutable conv_typ  : bool;
+    mutable convert   : bool;
     mutable in_shape  : int array;
     mutable out_shape : int array;
   }
 
-  let create ?(conv_typ=false) () = {
-      conv_typ  = conv_typ;
+  let create ?(convert=false) () = {
+      convert   = convert;
       in_shape  = [||];
       out_shape = [||];
     }
@@ -1201,7 +1201,7 @@ module Flatten = struct
 
   let run x l =
     let x = Maths.reshape x [|(shape x).(0); l.out_shape.(0)|] in
-    match l.conv_typ with
+    match l.convert with
     | true  -> (
         match (primal' x) with
         | Arr _ -> Maths.arr_to_mat x
@@ -1213,7 +1213,7 @@ module Flatten = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     Printf.sprintf "Flatten layer: in:[*,%s] out:[*,%i]\n" in_str l.out_shape.(0) ^
-    Printf.sprintf "    conv_typ : %s\n" (string_of_bool l.conv_typ)
+    Printf.sprintf "    convert  : %s\n" (string_of_bool l.convert)
 
 
 end
