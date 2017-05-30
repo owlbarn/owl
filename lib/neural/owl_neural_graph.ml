@@ -24,7 +24,10 @@ and network = {
 }
 
 
-(* sort the nodes in a graph network into topological order *)
+(* functions to manipulate the network *)
+
+
+(* topological sort the nodes in a graph network, Kahn's algorithm *)
 let topological_sort nn = None
 
 
@@ -101,6 +104,8 @@ let add_node nn parents child =
   child.network <- nn
 
 
+(* functions to interface to optimisation engine *)
+
 let init nn = Array.iter (fun n -> init n.neuron) nn.topo
 
 
@@ -144,7 +149,7 @@ let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
 let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
 
-(* creation function of various nodes *)
+(* functions to create functional nodes *)
 
 let make_network size root topo = { size; root; topo; }
 
@@ -288,21 +293,6 @@ let lambda lambda input_node =
   n
 
 
-let to_string nn =
-  let s = ref "Graphical network\n\n" in
-  Array.iter (fun n ->
-    let t = to_string n.neuron in
-    let prev = Array.map (fun n -> n.id) n.prev
-      |> Owl_utils.string_of_array string_of_int
-    in
-    let next = Array.map (fun n -> n.id) n.next
-      |> Owl_utils.string_of_array string_of_int
-    in
-    s := !s ^ (Printf.sprintf "(%i): %s" n.id t) ^
-      (Printf.sprintf "    prev:[%s] next:[%s]\n\n" prev next)
-  ) nn.topo; !s
-
-
 (* training functions *)
 
 let train ?params nn x y =
@@ -329,6 +319,23 @@ let train_cnn ?params nn x y =
   in
   let x, y = Arr x, Mat y in
   Owl_neural_optimise.train_nn p f b u x y
+
+
+(* I/O functions *)
+
+let to_string nn =
+  let s = ref "Graphical network\n\n" in
+  Array.iter (fun n ->
+    let t = to_string n.neuron in
+    let prev = Array.map (fun n -> n.id) n.prev
+      |> Owl_utils.string_of_array string_of_int
+    in
+    let next = Array.map (fun n -> n.id) n.next
+      |> Owl_utils.string_of_array string_of_int
+    in
+    s := !s ^ (Printf.sprintf "(%i): %s" n.id t) ^
+      (Printf.sprintf "    prev:[%s] next:[%s]\n\n" prev next)
+  ) nn.topo; !s
 
 
 

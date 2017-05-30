@@ -13,6 +13,8 @@ type network = {
 }
 
 
+(* functions to manipulate the network *)
+
 let create () = { layers = [||]; }
 
 
@@ -55,6 +57,8 @@ let rec add_layer ?act_typ nn l =
   | None     -> ()
 
 
+(* functions to interface to optimisation engine *)
+
 let init nn = Array.iter init nn.layers
 
 
@@ -85,15 +89,7 @@ let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
 let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
 
-let to_string nn =
-  let s = ref "Feedforward network\n\n" in
-  for i = 0 to Array.length nn.layers - 1 do
-    let t = to_string nn.layers.(i) in
-    s := !s ^ (Printf.sprintf "(%i): %s\n" i t)
-  done; !s
-
-
-(* core layer functions *)
+(* functions to create stand-alone layers *)
 
 let input inputs = Input (Input.create inputs)
 
@@ -152,6 +148,10 @@ let flatten ?convert () = Flatten (Flatten.create ?convert ())
 let lambda lambda = Lambda (Lambda.create lambda)
 
 
+(* functions to create functional layers *)
+
+
+
 (* training functions *)
 
 let train ?params nn x y =
@@ -189,6 +189,13 @@ let train_cnn ?params nn x y =
 
 
 (* I/O functions *)
+
+let to_string nn =
+  let s = ref "Feedforward network\n\n" in
+  for i = 0 to Array.length nn.layers - 1 do
+    let t = to_string nn.layers.(i) in
+    s := !s ^ (Printf.sprintf "(%i): %s\n" i t)
+  done; !s
 
 let print nn = to_string nn |> Printf.printf "%s"
 
