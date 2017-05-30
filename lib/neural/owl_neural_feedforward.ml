@@ -89,7 +89,7 @@ let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
 let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
 
-(* functions to create stand-alone layers *)
+(* functions to create standalone layers *)
 
 let input inputs = Input (Input.create inputs)
 
@@ -150,6 +150,100 @@ let lambda lambda = Lambda (Lambda.create lambda)
 
 (* functions to create functional layers *)
 
+let input' inputs =
+  let nn = create () in
+  let n = Input (Input.create inputs) in
+  add_layer nn n;
+  nn
+
+
+let activation' act_typ nn =
+  Activation (Activation.create act_typ)
+  |> add_layer nn;
+  nn
+
+
+let linear' ?(init_typ = Init.Standard) outputs nn =
+  Linear (Linear.create outputs init_typ)
+  |> add_layer nn;
+  nn
+
+
+let linear_nobias' ?(init_typ = Init.Standard) outputs nn =
+  LinearNoBias (LinearNoBias.create outputs init_typ)
+  |> add_layer nn;
+  nn
+
+
+let recurrent' ?(init_typ=Init.Standard) ~act_typ outputs hiddens nn =
+  Recurrent (Recurrent.create hiddens outputs act_typ init_typ)
+  |> add_layer nn;
+  nn
+
+
+let lstm' cells nn =
+  LSTM (LSTM.create cells)
+  |> add_layer nn;
+  nn
+
+
+let gru' cells nn =
+  GRU (GRU.create cells)
+  |> add_layer nn;
+  nn
+
+
+let conv2d' ?(padding = Owl_dense_ndarray_generic.SAME) kernel strides nn =
+  Conv2D (Conv2D.create padding kernel strides)
+  |> add_layer nn;
+  nn
+
+
+let conv3d' ?(padding = Owl_dense_ndarray_generic.SAME) kernel_width kernel strides nn =
+  Conv3D (Conv3D.create padding kernel strides)
+  |> add_layer nn;
+  nn
+
+
+let fully_connected' ?(init_typ = Init.Standard) outputs nn =
+  FullyConnected (FullyConnected.create outputs init_typ)
+  |> add_layer nn;
+  nn
+
+
+let max_pool2d' ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride nn =
+  MaxPool2D (MaxPool2D.create padding kernel stride)
+  |> add_layer nn;
+  nn
+
+
+let avg_pool2d' ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride nn =
+  AvgPool2D (AvgPool2D.create padding kernel stride)
+  |> add_layer nn;
+  nn
+
+
+let dropout' rate nn =
+  Dropout (Dropout.create rate)
+  |> add_layer nn;
+  nn
+
+
+let reshape' ?convert outputs nn =
+  Reshape (Reshape.create ?convert outputs)
+  |> add_layer nn;
+  nn
+
+
+let flatten' ?convert nn =
+  Flatten (Flatten.create ?convert ())
+  |> add_layer nn;
+  nn
+
+let lambda' lambda nn =
+  Lambda (Lambda.create lambda)
+  |> add_layer nn;
+  nn
 
 
 (* training functions *)
