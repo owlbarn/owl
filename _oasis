@@ -198,41 +198,41 @@ Executable perf_specific_fun
 # | Examples                                                          |
 # +-------------------------------------------------------------------+
 
-Executable test_sgd
-  Path:           examples
-  CompiledObject: best
-  MainIs:         test_sgd.ml
-  BuildDepends:   owl
+# Executable test_sgd
+#   Path:           examples
+#   CompiledObject: best
+#   MainIs:         test_sgd.ml
+#   BuildDepends:   owl
 
-Executable test_kmeans
-  Path:           examples
-  CompiledObject: best
-  MainIs:         test_kmeans.ml
-  BuildDepends:   owl
+# Executable test_kmeans
+#   Path:           examples
+#   CompiledObject: best
+#   MainIs:         test_kmeans.ml
+#   BuildDepends:   owl
 
-Executable test_log
-  Path:           examples
-  CompiledObject: best
-  MainIs:         test_log.ml
-  BuildDepends:   owl
+# Executable test_log
+#   Path:           examples
+#   CompiledObject: best
+#   MainIs:         test_log.ml
+#   BuildDepends:   owl
 
-Executable test_svm
-  Path:           examples
-  CompiledObject: best
-  MainIs:         test_svm.ml
-  BuildDepends:   owl
+# Executable test_svm
+#   Path:           examples
+#   CompiledObject: best
+#   MainIs:         test_svm.ml
+#   BuildDepends:   owl
 
-Executable test_lda
-  Path:           examples
-  CompiledObject: best
-  MainIs:         test_lda.ml
-  BuildDepends:   owl
+# Executable test_lda
+#   Path:           examples
+#   CompiledObject: best
+#   MainIs:         test_lda.ml
+#   BuildDepends:   owl
 
-Executable test_mnist
-  Path:           examples
-  CompiledObject: best
-  MainIs:         test_mnist.ml
-  BuildDepends:   owl
+# Executable test_mnist
+#   Path:           examples
+#   CompiledObject: best
+#   MainIs:         test_mnist.ml
+#   BuildDepends:   owl
 
 Executable test_neural
   Path:           examples
@@ -246,7 +246,7 @@ Executable test_neural
 #  MainIs:         test_lstm.ml
 #  BuildDepends:   owl, owl_neural
 
-#Executable test_tfidf
+# Executable test_tfidf
 #  Path:           examples
 #  CompiledObject: best
 #  MainIs:         test_tfidf.ml

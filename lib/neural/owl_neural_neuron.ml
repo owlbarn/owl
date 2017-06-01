@@ -1106,6 +1106,24 @@ module UpSampling3D = struct
 end
 
 
+(* TODO: definition of Padding1D layer *)
+module Padding1D = struct
+
+end
+
+
+(* TODO: definition of Padding2D layer *)
+module Padding2D = struct
+
+end
+
+
+(* TODO: definition of Padding3D layer *)
+module Padding3D = struct
+
+end
+
+
 (* definition of Lambda layer *)
 module Lambda = struct
 
@@ -1508,6 +1526,7 @@ let get_in_shape x = x |> get_in_out_shape |> fst
 
 let get_out_shape x = x |> get_in_out_shape |> snd
 
+
 let connect out_shape l = match l with
   | Input l          -> () (* always the first layer *)
   | Linear l         -> Linear.connect out_shape l
@@ -1531,6 +1550,7 @@ let connect out_shape l = match l with
   | Max l            -> Max.connect out_shape l
   | Average l        -> Average.connect out_shape l
 
+
 let init = function
   | Linear l         -> Linear.init l
   | LinearNoBias l   -> LinearNoBias.init l
@@ -1541,6 +1561,7 @@ let init = function
   | Conv3D l         -> Conv3D.init l
   | FullyConnected l -> FullyConnected.init l
   | _                -> () (* activation, etc. *)
+
 
 let reset = function
   | Linear l          -> Linear.reset l
@@ -1564,6 +1585,7 @@ let mktag t = function
   | FullyConnected l -> FullyConnected.mktag t l
   | _                -> () (* activation, etc. *)
 
+
 let mkpar = function
   | Linear l         -> Linear.mkpar l
   | LinearNoBias l   -> LinearNoBias.mkpar l
@@ -1574,6 +1596,7 @@ let mkpar = function
   | Conv3D l         -> Conv3D.mkpar l
   | FullyConnected l -> FullyConnected.mkpar l
   | _                -> [||] (* activation, etc. *)
+
 
 let mkpri = function
   | Linear l         -> Linear.mkpri l
@@ -1586,6 +1609,7 @@ let mkpri = function
   | FullyConnected l -> FullyConnected.mkpri l
   | _                -> [||] (* activation, etc. *)
 
+
 let mkadj = function
   | Linear l         -> Linear.mkadj l
   | LinearNoBias l   -> LinearNoBias.mkadj l
@@ -1597,6 +1621,7 @@ let mkadj = function
   | FullyConnected l -> FullyConnected.mkadj l
   | _                -> [||] (* activation, etc. *)
 
+
 let update l u = match l with
   | Linear l         -> Linear.update l u
   | LinearNoBias l   -> LinearNoBias.update l u
@@ -1607,6 +1632,7 @@ let update l u = match l with
   | Conv3D l         -> Conv3D.update l u
   | FullyConnected l -> FullyConnected.update l u
   | _                -> () (* activation, etc. *)
+
 
 let run a l = match l with
   | Input l          -> Input.run a l
@@ -1626,6 +1652,7 @@ let run a l = match l with
   | Lambda l         -> Lambda.run a l
   | Activation l     -> Activation.run a l
   | _                -> failwith "Owl_neural_neuron:run"
+
 
 let run_array a l = match l with
   | Input l          -> Input.run a.(0) l
@@ -1649,6 +1676,7 @@ let run_array a l = match l with
   | Dot l            -> Dot.run a l
   | Max l            -> Max.run a l
   | Average l        -> Average.run a l
+
 
 let to_string = function
   | Input l          -> Input.to_string l
