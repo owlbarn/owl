@@ -1289,6 +1289,35 @@ module Mul = struct
 end
 
 
+(* definition of Dot layer *)
+module Dot = struct
+
+  type neuron_typ = {
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create () = {
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- [|out_shape.(1)|]
+
+  let run x l =
+    assert (Array.length x = 2);
+    Maths.(x.(0) *@ x.(1))
+
+  let to_string l =
+    let m = l.in_shape.(0) in
+    let n = l.in_shape.(1) in
+    Printf.sprintf "Dot layer: in:[*,%i] [%i,%i] out:[*,%i]\n" m m n n
+
+end
+
+
 (* definition of Max layer *)
 module Max = struct
 
@@ -1380,6 +1409,7 @@ type neuron =
   | Activation     of Activation.neuron_typ
   | Add            of Add.neuron_typ
   | Mul            of Mul.neuron_typ
+  | Dot            of Dot.neuron_typ
   | Max            of Max.neuron_typ
   | Average        of Average.neuron_typ
 
@@ -1403,6 +1433,7 @@ let get_in_out_shape = function
   | Activation l     -> Activation.(l.in_shape, l.out_shape)
   | Add l            -> Add.(l.in_shape, l.out_shape)
   | Mul l            -> Mul.(l.in_shape, l.out_shape)
+  | Dot l            -> Dot.(l.in_shape, l.out_shape)
   | Max l            -> Max.(l.in_shape, l.out_shape)
   | Average l        -> Average.(l.in_shape, l.out_shape)
 
@@ -1429,6 +1460,7 @@ let connect out_shape l = match l with
   | Activation l     -> Activation.connect out_shape l
   | Add l            -> Add.connect out_shape l
   | Mul l            -> Mul.connect out_shape l
+  | Dot l            -> Dot.connect out_shape l
   | Max l            -> Max.connect out_shape l
   | Average l        -> Average.connect out_shape l
 
@@ -1547,6 +1579,7 @@ let run_array a l = match l with
   | Activation l     -> Activation.run a.(0) l
   | Add l            -> Add.run a l
   | Mul l            -> Mul.run a l
+  | Dot l            -> Dot.run a l
   | Max l            -> Max.run a l
   | Average l        -> Average.run a l
 
@@ -1569,6 +1602,7 @@ let to_string = function
   | Activation l     -> Activation.to_string l
   | Add l            -> Add.to_string l
   | Mul l            -> Mul.to_string l
+  | Dot l            -> Dot.to_string l
   | Max l            -> Max.to_string l
   | Average l        -> Average.to_string l
 
