@@ -98,4 +98,27 @@ let test_mnist_linear_graph () =
   train nn x y
 
 
-let _ = test_mnist_linear_graph ()
+let test_mnist_cnn_graph () =
+  let open Owl_neural_graph in
+  let nn = input [|28;28;1|]
+    |> conv2d [|5;5;1;32|] [|1;1|] ~act_typ:Activation.Relu
+    |> max_pool2d [|2;2|] [|2;2|]
+    |> conv2d [|5;5;32;64|] [|1;1|] ~act_typ:Activation.Relu
+    |> max_pool2d [|2;2|] [|2;2|]
+    |> dropout 0.1
+    |> fully_connected 1024 ~act_typ:Activation.Relu
+    |> linear 10 ~act_typ:Activation.Softmax
+    |> get_network
+  in print nn;
+
+  let x, _, y = Dataset.load_mnist_train_data () in
+  let m = Dense.Matrix.S.row_num x in
+  let x = Dense.Matrix.S.to_ndarray x in
+  let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
+
+  let params = Params.config
+    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 1 in
+  train_cnn ~params nn x y |> ignore
+
+
+let _ = test_mnist_cnn_graph ()
