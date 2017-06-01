@@ -712,6 +712,12 @@ module GRU = struct
 end
 
 
+(* TODO: definition of Conv1D layer *)
+module Conv1D = struct
+
+end
+
+
 (* definition of Conv2D layer *)
 module Conv2D = struct
 
@@ -972,6 +978,18 @@ module FullyConnected = struct
 end
 
 
+(* TODO: definition of MaxPool1D layer *)
+module MaxPool1D = struct
+
+end
+
+
+(* TODO: definition of AvgPool1D layer *)
+module AvgPool1D = struct
+
+end
+
+
 (* definition of MaxPool2D layer *)
 module MaxPool2D = struct
 
@@ -1066,6 +1084,24 @@ module AvgPool2D = struct
     Printf.sprintf "    patch   : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
     Printf.sprintf "    stride  : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
     ""
+
+end
+
+
+(* TODO: definition of UpSampling1D layer *)
+module UpSampling1D = struct
+
+end
+
+
+(* TODO: definition of UpSampling2D layer *)
+module UpSampling2D = struct
+
+end
+
+
+(* TODO: definition of UpSampling3D layer *)
+module UpSampling3D = struct
 
 end
 
@@ -1384,6 +1420,37 @@ module Average = struct
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
     Printf.sprintf "Average layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+
+end
+
+
+(* TODO: definition of Concatenate layer *)
+module Concatenate = struct
+
+end
+
+
+
+(* TODO: definition of Normalisation layer *)
+module Normalisation = struct
+
+end
+
+
+(* TODO: definition of GaussianNoise layer *)
+module GaussianNoise = struct
+
+end
+
+
+(* TODO: definition of GaussianDropout layer *)
+module GaussianDropout = struct
+
+end
+
+
+(* TODO: definition of Masking layer *)
+module Masking = struct
 
 end
 
