@@ -381,8 +381,9 @@ let train_nn params forward backward update x y =
 
   (* variables used in training process *)
   let batches = Batch.batches params.batch x in
-  let loss = ref (Array.make (params.epochs * batches) (F 0.)) in
-  let idx = ref 0 in
+  let loss = ref (Array.make (params.epochs * batches + 1) (F 0.)) in
+  let idx = ref 1 in
+  !loss.(0) <- _loss;
 
   (* iterate all batches in each epoch *)
   for i = 1 to params.epochs do
@@ -390,7 +391,7 @@ let train_nn params forward backward update x y =
       let loss', ws, gs' = iterate () in
       (* print out the current state of training *)
       if params.verbosity = true then
-        _print_info i params.epochs j batches !loss.(!idx) loss';
+        _print_info i params.epochs j batches !loss.(!idx - 1) loss';
       (* calculate gradient updates *)
       let ps' = Owl_utils.aarr_map2i (
         fun k l w g' ->

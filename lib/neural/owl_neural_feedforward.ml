@@ -91,158 +91,158 @@ let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
 (* functions to create standalone layers *)
 
-let input inputs = Input (Input.create inputs)
+let input_layer inputs = Input (Input.create inputs)
 
 
-let activation act_typ = Activation (Activation.create act_typ)
+let activation_layer act_typ = Activation (Activation.create act_typ)
 
 
-let linear ?(init_typ = Init.Standard) ?inputs outputs =
+let linear_layer ?(init_typ = Init.Standard) ?inputs outputs =
   Linear (Linear.create ?inputs outputs init_typ)
 
 
-let linear_nobias ?(init_typ = Init.Standard) ?inputs outputs =
+let linear_nobias_layer ?(init_typ = Init.Standard) ?inputs outputs =
   LinearNoBias (LinearNoBias.create ?inputs outputs init_typ)
 
 
-let recurrent ?(init_typ=Init.Standard) ~act_typ ?inputs outputs hiddens =
+let recurrent_layer ?(init_typ=Init.Standard) ~act_typ ?inputs outputs hiddens =
   Recurrent (Recurrent.create ?inputs hiddens outputs act_typ init_typ)
 
 
-let lstm ?inputs cells = LSTM (LSTM.create ?inputs cells)
+let lstm_layer ?inputs cells = LSTM (LSTM.create ?inputs cells)
 
 
-let gru ?inputs cells = GRU (GRU.create ?inputs cells)
+let gru_layer ?inputs cells = GRU (GRU.create ?inputs cells)
 
 
-let conv2d ?(padding = Owl_dense_ndarray_generic.SAME) ?inputs kernel strides =
+let conv2d_layer ?(padding = Owl_dense_ndarray_generic.SAME) ?inputs kernel strides =
   Conv2D (Conv2D.create padding ?inputs kernel strides)
 
 
-let conv3d ?(padding = Owl_dense_ndarray_generic.SAME) ?inputs kernel_width kernel strides =
+let conv3d_layer ?(padding = Owl_dense_ndarray_generic.SAME) ?inputs kernel_width kernel strides =
   Conv3D (Conv3D.create padding ?inputs kernel strides)
 
 
-let fully_connected ?(init_typ = Init.Standard) ?inputs outputs =
+let fully_connected_layer ?(init_typ = Init.Standard) ?inputs outputs =
   FullyConnected (FullyConnected.create ?inputs outputs init_typ)
 
 
-let max_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
+let max_pool2d_layer ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
   MaxPool2D (MaxPool2D.create padding kernel stride)
 
 
-let avg_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
+let avg_pool2d_layer ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride =
   AvgPool2D (AvgPool2D.create padding kernel stride)
 
 
-let dropout rate = Dropout (Dropout.create rate)
+let dropout_layer rate = Dropout (Dropout.create rate)
 
 
-let reshape ?convert ?inputs outputs =
+let reshape_layer ?convert ?inputs outputs =
   Reshape (Reshape.create ?convert ?inputs outputs)
 
 
-let flatten ?convert () = Flatten (Flatten.create ?convert ())
+let flatten_layer ?convert () = Flatten (Flatten.create ?convert ())
 
 
-let lambda lambda = Lambda (Lambda.create lambda)
+let lambda_layer lambda = Lambda (Lambda.create lambda)
 
 
 (* functions to create functional layers *)
 
-let input' inputs =
+let input inputs =
   let nn = create () in
-  let n = Input (Input.create inputs) in
-  add_layer nn n;
+  Input (Input.create inputs)
+  |> add_layer nn;
   nn
 
 
-let activation' act_typ nn =
+let activation act_typ nn =
   Activation (Activation.create act_typ)
   |> add_layer nn;
   nn
 
 
-let linear' ?(init_typ = Init.Standard) outputs nn =
+let linear ?(init_typ = Init.Standard) ?act_typ outputs nn =
   Linear (Linear.create outputs init_typ)
-  |> add_layer nn;
+  |> add_layer ?act_typ nn;
   nn
 
 
-let linear_nobias' ?(init_typ = Init.Standard) outputs nn =
+let linear_nobias ?(init_typ = Init.Standard) ?act_typ outputs nn =
   LinearNoBias (LinearNoBias.create outputs init_typ)
-  |> add_layer nn;
+  |> add_layer ?act_typ nn;
   nn
 
 
-let recurrent' ?(init_typ=Init.Standard) ~act_typ outputs hiddens nn =
+let recurrent ?(init_typ=Init.Standard) ~act_typ outputs hiddens nn =
   Recurrent (Recurrent.create hiddens outputs act_typ init_typ)
   |> add_layer nn;
   nn
 
 
-let lstm' cells nn =
+let lstm cells nn =
   LSTM (LSTM.create cells)
   |> add_layer nn;
   nn
 
 
-let gru' cells nn =
+let gru cells nn =
   GRU (GRU.create cells)
   |> add_layer nn;
   nn
 
 
-let conv2d' ?(padding = Owl_dense_ndarray_generic.SAME) kernel strides nn =
+let conv2d ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel strides nn =
   Conv2D (Conv2D.create padding kernel strides)
-  |> add_layer nn;
+  |> add_layer ?act_typ nn;
   nn
 
 
-let conv3d' ?(padding = Owl_dense_ndarray_generic.SAME) kernel_width kernel strides nn =
+let conv3d ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel_width kernel strides nn =
   Conv3D (Conv3D.create padding kernel strides)
-  |> add_layer nn;
+  |> add_layer ?act_typ nn;
   nn
 
 
-let fully_connected' ?(init_typ = Init.Standard) outputs nn =
+let fully_connected ?(init_typ = Init.Standard) ?act_typ outputs nn =
   FullyConnected (FullyConnected.create outputs init_typ)
-  |> add_layer nn;
+  |> add_layer ?act_typ nn;
   nn
 
 
-let max_pool2d' ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride nn =
+let max_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride nn =
   MaxPool2D (MaxPool2D.create padding kernel stride)
-  |> add_layer nn;
+  |> add_layer ?act_typ nn;
   nn
 
 
-let avg_pool2d' ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride nn =
+let avg_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride nn =
   AvgPool2D (AvgPool2D.create padding kernel stride)
-  |> add_layer nn;
+  |> add_layer ?act_typ nn;
   nn
 
 
-let dropout' rate nn =
+let dropout rate nn =
   Dropout (Dropout.create rate)
   |> add_layer nn;
   nn
 
 
-let reshape' ?convert outputs nn =
+let reshape ?convert outputs nn =
   Reshape (Reshape.create ?convert outputs)
   |> add_layer nn;
   nn
 
 
-let flatten' ?convert nn =
+let flatten ?convert nn =
   Flatten (Flatten.create ?convert ())
   |> add_layer nn;
   nn
 
-let lambda' lambda nn =
+let lambda ?act_typ lambda nn =
   Lambda (Lambda.create lambda)
-  |> add_layer nn;
+  |> add_layer ?act_typ nn;
   nn
 
 
