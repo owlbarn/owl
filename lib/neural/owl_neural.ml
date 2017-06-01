@@ -9,13 +9,19 @@ open Owl_algodiff.S
 open Owl_neural_neuron
 
 
-(* module aliases *)
+(* module aliases: two types of neural networks *)
 
 module Feedforward    = Owl_neural_feedforward
 module Graph          = Owl_neural_graph
 
+
+(* module aliases: weight init and activation *)
+
 module Init           = Owl_neural_neuron.Init
 module Activation     = Owl_neural_neuron.Activation
+
+
+(* module aliases: optimisation configuration *)
 
 module Params         = Owl_neural_optimise.Params
 module Batch          = Owl_neural_optimise.Batch

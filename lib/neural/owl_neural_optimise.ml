@@ -431,5 +431,41 @@ let train_nn params forward backward update x y =
   Array.map unpack_flt !loss
 
 
+(* generic training functions for both feedforward and graph module
+  init: function to initialise the weights in the network
+  forward: fucntion to run the forward pass
+  backward: function to run the backward pass
+  update: function to update the weights according to the gradient
+ *)
+let train_nn_generic ?params init forward backward update nn x y =
+  init nn;
+  let f = forward nn in
+  let b = backward nn in
+  let u = update nn in
+  let p = match params with
+    | Some p -> p
+    | None   -> Params.default ()
+  in
+  train_nn p f b u x y
+
+
+(* generic function to test the neural network, for both feedforward and graph
+  f : the passed in function applies to every x
+  forward: fucntion to run the forward pass
+  TODO :
+ *)
+let test_nn_generic f forward nn x y =
+  match x, y with
+  | Mat _, Mat _ -> (
+      Mat.iter2_rows (fun u v ->
+        forward u nn |> unpack_mat |> f
+      ) x y
+    )
+  | Arr _, Mat _ -> (
+      failwith "not implemented yet"
+    )
+  | _, _         -> failwith "Owl_neural_optimise:test_nn_generic"
+
+
 
 (* ends here *)

@@ -222,12 +222,6 @@ Executable test_svm
   MainIs:         test_svm.ml
   BuildDepends:   owl
 
-Executable test_operation
-  Path:           examples
-  CompiledObject: best
-  MainIs:         test_operation.ml
-  BuildDepends:   owl
-
 Executable test_lda
   Path:           examples
   CompiledObject: best

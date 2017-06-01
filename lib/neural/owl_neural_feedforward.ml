@@ -249,16 +249,12 @@ let lambda ?act_typ lambda nn =
 (* training functions *)
 
 let train ?params nn x y =
-  init nn;
-  let f = forward nn in
-  let b = backward nn in
-  let u = update nn in
-  let p = match params with
-    | Some p -> p
-    | None   -> Owl_neural_optimise.Params.default ()
-  in
-  let x, y = Mat x, Mat y in
-  Owl_neural_optimise.train_nn p f b u x y
+  Owl_neural_optimise.train_nn_generic
+    ?params init forward backward update nn (Mat x) (Mat y)
+
+let train_cnn ?params nn x y =
+  Owl_neural_optimise.train_nn_generic
+    ?params init forward backward update nn (Arr x) (Mat y)
 
 let test_model nn x y =
   Mat.iter2_rows (fun u v ->
@@ -267,19 +263,6 @@ let test_model nn x y =
     Owl_dense_matrix_generic.print p;
     Printf.printf "prediction: %i\n" (let _, _, j = Owl_dense_matrix_generic.max_i p in j)
   ) (Mat x) (Mat y)
-
-
-let train_cnn ?params nn x y =
-  init nn;
-  let f = forward nn in
-  let b = backward nn in
-  let u = update nn in
-  let p = match params with
-    | Some p -> p
-    | None   -> Owl_neural_optimise.Params.default ()
-  in
-  let x, y = Arr x, Mat y in
-  Owl_neural_optimise.train_nn p f b u x y
 
 
 (* I/O functions *)
