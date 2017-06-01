@@ -64,6 +64,19 @@ let bfs_map f x =
 let bfs_array x = bfs_map (fun n -> n) x
 
 
+let make_network size root topo = { size; root; topo; }
+
+
+let make_node id prev next neuron output network = {
+  id;
+  prev;
+  next;
+  neuron;
+  output;
+  network;
+}
+
+
 let get_root nn =
   match nn.root with
   | Some n -> n
@@ -105,25 +118,20 @@ let connect_to_parents parents child =
 
 
 (* add child node to nn and connect to parents *)
-let add_node nn parents child =
+let rec add_node ?act_typ nn parents child =
   child.id <- nn.size;
   nn.size <- nn.size + 1;
   connect_to_parents parents child;
   nn.topo <- Array.append nn.topo [|child|];
-  child.network <- nn
-
-
-let make_network size root topo = { size; root; topo; }
-
-
-let make_node id prev next neuron output network = {
-  id;
-  prev;
-  next;
-  neuron;
-  output;
-  network;
-}
+  child.network <- nn;
+  (* if activation is specified, recursively add_node *)
+  match act_typ with
+  | Some act -> (
+      let neuron = Activation (Activation.create act) in
+      let child_of_child = make_node 0 [||] [||] neuron None nn in
+      add_node nn [|child|] child_of_child
+    )
+  | None     -> child
 
 
 (* functions to interface to optimisation engine *)
@@ -187,152 +195,133 @@ let activation act_typ input_node =
   let neuron = Activation (Activation.create act_typ) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node nn [|input_node|] n
 
 
-let linear ?(init_typ = Init.Standard) outputs input_node =
+let linear ?(init_typ = Init.Standard) ?act_typ outputs input_node =
   let neuron = Linear (Linear.create outputs init_typ) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node ?act_typ nn [|input_node|] n
 
 
-let linear_nobias ?(init_typ = Init.Standard) outputs input_node =
+let linear_nobias ?(init_typ = Init.Standard) ?act_typ outputs input_node =
   let neuron = LinearNoBias (LinearNoBias.create outputs init_typ) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node ?act_typ nn [|input_node|] n
 
 
 let recurrent ?(init_typ=Init.Standard) ~act_typ outputs hiddens input_node =
   let neuron = Recurrent (Recurrent.create hiddens outputs act_typ init_typ) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node nn [|input_node|] n
 
 
 let lstm cells input_node =
   let neuron = LSTM (LSTM.create cells) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node nn [|input_node|] n
 
 
 let gru cells input_node =
   let neuron = GRU (GRU.create cells) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node nn [|input_node|] n
 
 
-let conv2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel strides input_node =
+let conv2d ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel strides input_node =
   let neuron = Conv2D (Conv2D.create padding kernel strides) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node ?act_typ nn [|input_node|] n
 
 
-let conv3d ?(padding = Owl_dense_ndarray_generic.SAME) kernel_width kernel strides input_node =
+let conv3d ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel_width kernel strides input_node =
   let neuron = Conv3D (Conv3D.create padding kernel strides) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node ?act_typ nn [|input_node|] n
 
 
-let fully_connected ?(init_typ = Init.Standard) outputs input_node =
+let fully_connected ?(init_typ = Init.Standard) ?act_typ outputs input_node =
   let neuron = FullyConnected (FullyConnected.create outputs init_typ) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node ?act_typ nn [|input_node|] n
 
 
-let max_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride input_node =
+let max_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride input_node =
   let neuron = MaxPool2D (MaxPool2D.create padding kernel stride) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node ?act_typ nn [|input_node|] n
 
 
-let avg_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) kernel stride input_node =
+let avg_pool2d ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride input_node =
   let neuron = AvgPool2D (AvgPool2D.create padding kernel stride) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node ?act_typ nn [|input_node|] n
 
 
 let dropout rate input_node =
   let neuron = Dropout (Dropout.create rate) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node nn [|input_node|] n
 
 
 let reshape ?convert outputs input_node=
   let neuron = Reshape (Reshape.create ?convert outputs) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node nn [|input_node|] n
 
 
 let flatten ?convert input_node =
   let neuron = Flatten (Flatten.create ?convert ()) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node nn [|input_node|] n
 
 
-let lambda lambda input_node =
+let lambda ?act_typ lambda input_node =
   let neuron = Lambda (Lambda.create lambda) in
   let nn = get_network input_node in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn [|input_node|] n;
-  n
+  add_node ?act_typ nn [|input_node|] n
 
 
-let add input_node =
+let add ?act_typ input_node =
   let neuron = Add (Add.create ()) in
   let nn = get_network input_node.(0) in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn input_node n;
-  n
+  add_node ?act_typ nn input_node n
 
 
-let mul input_node =
+let mul ?act_typ input_node =
   let neuron = Mul (Mul.create ()) in
   let nn = get_network input_node.(0) in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn input_node n;
-  n
+  add_node ?act_typ nn input_node n
 
 
-let max input_node =
+let max ?act_typ input_node =
   let neuron = Max (Max.create ()) in
   let nn = get_network input_node.(0) in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn input_node n;
-  n
+  add_node ?act_typ nn input_node n
 
 
-let average input_node =
+let average ?act_typ input_node =
   let neuron = Average (Average.create ()) in
   let nn = get_network input_node.(0) in
   let n = make_node 0 [||] [||] neuron None nn in
-  add_node nn input_node n;
-  n
+  add_node ?act_typ nn input_node n
 
 
 (* training functions *)

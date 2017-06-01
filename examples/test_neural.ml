@@ -86,4 +86,16 @@ let test_mnist_cnn_functional () =
   test_cnn nn (Algodiff.S.unpack_arr x) (Algodiff.S.unpack_mat y)
 
 
-let _ = test_mnist_cnn_functional ()
+let test_mnist_linear_graph () =
+  let open Owl_neural_graph in
+  let nn = input [|784|]
+    |> linear 300 ~act_typ:Activation.Tanh
+    |> linear 10 ~act_typ:Activation.Softmax
+    |> get_network
+  in print nn;
+
+  let x, _, y = Dataset.load_mnist_train_data () in
+  train nn x y
+
+
+let _ = test_mnist_linear_graph ()

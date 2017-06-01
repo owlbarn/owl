@@ -553,9 +553,10 @@ open Feedforward;;
 Now, let's see how to define a two-layer neural network.
 
 ```ocaml
-let nn = Feedforward.create ();;
-Feedforward.add_layer nn (linear ~inputs:784 300) ~act_typ:Activation.Tanh;;
-Feedforward.add_layer nn (linear ~inputs:300 10) ~act_typ:Activation.Softmax;;
+let nn = input [|784|]
+  |> linear 300 ~act_typ:Activation.Tanh
+  |> linear 10  ~act_typ:Activation.Softmax
+;;
 ```
 
 Done! Only three lines of code, that's easy, isn't it? Owl's `Neural` module is built atop of its `Algodiff` module. I am often amazed by the power of algorithmic differentiation while developing the neural network module, it just simplifies the design so much and makes life so easy.
@@ -567,21 +568,23 @@ You can print out the summary of the neural network by calling `print nn`, then 
 ```bash
 Feedforward network
 
-(0): Linear layer:
-  init   : standard
-  params : 235500
-  w      : 784 x 300
-  b      : 1 x 300
+(0): Input layer: in/out:[*,784]
 
-(1): Activation layer: tanh
+(1): Linear layer: matrix in:(*,784) out:(*,300)
+    init   : standard
+    params : 235500
+    w      : 784 x 300
+    b      : 1 x 300
 
-(2): Linear layer:
-  init   : standard
-  params : 3010
-  w      : 300 x 10
-  b      : 1 x 10
+(2): Activation layer: tanh in/out:[*,300]
 
-(3): Activation layer: softmax
+(3): Linear layer: matrix in:(*,300) out:(*,10)
+    init   : standard
+    params : 3010
+    w      : 300 x 10
+    b      : 1 x 10
+
+(4): Activation layer: softmax in/out:[*,10]
 ```
 
 How to train the defined network now? You only need two lines of code to load the dataset and start training. By the way, calling `Dataset.download_all ()` will download all the data sets used in Owl (about 1GB uncompressed data).
