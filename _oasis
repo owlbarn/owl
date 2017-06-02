@@ -40,6 +40,7 @@ Library owl
                     Owl_operator,
                     Owl_dense_common,
                     Owl_dense_ndarray,
+                    Owl_dense_ndarray_a,
                     Owl_dense_ndarray_s,
                     Owl_dense_ndarray_d,
                     Owl_dense_ndarray_c,
