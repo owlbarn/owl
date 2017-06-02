@@ -104,6 +104,7 @@ Library owl
                     ext/Owl_ext_binop,
                     ext/Owl_ext_dense_ndarray,
                     ext/Owl_ext_dense_matrix,
+                    Owl_parallel,
                     ### Backend modules ###
                     backend/Owl_backend_gsl_maths,
                     backend/Owl_backend_gsl_stats,

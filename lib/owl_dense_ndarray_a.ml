@@ -57,6 +57,31 @@ let clone x = {
 
 let same_shape x y = x.shape = y.shape
 
+let iter f x =
+  for i = 0 to (numel x) - 1 do
+    f x.data.(i)
+  done
+
+let iteri f x =
+  for i = 0 to (numel x) - 1 do
+    f i x.data.(i)
+  done
+
+let map f x =
+  let y = clone x in
+  for i = 0 to (numel x) - 1 do
+    y.data.(i) <- f y.data.(i)
+  done;
+  y
+
+let mapi f x =
+  let y = clone x in
+  for i = 0 to (numel x) - 1 do
+    y.data.(i) <- f i y.data.(i)
+  done;
+  y
+
+
 
 
 (* ends here *)
