@@ -55,7 +55,7 @@ let test_mnist_cnn_imperative () =
   let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
 
   let params = Params.config
-    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 1 in
+    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 1. in
   train_cnn ~params nn x y |> ignore;
 
   let x, y = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) 10 in
@@ -79,7 +79,7 @@ let test_mnist_cnn_functional () =
   let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
 
   let params = Params.config
-    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 1 in
+    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 1. in
   train_cnn ~params nn x y |> ignore;
 
   let x, y = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) 10 in
@@ -117,7 +117,7 @@ let test_mnist_cnn_graph () =
   let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
 
   let params = Params.config
-    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 1 in
+    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 0.1 in
   train_cnn ~params nn x y |> ignore
 
 

@@ -265,7 +265,7 @@ end
 module Params = struct
 
   type typ = {
-    mutable epochs          : int;
+    mutable epochs          : float;
     mutable batch           : Batch.typ;
     mutable gradient        : Gradient.typ;
     mutable loss            : Loss.typ;
@@ -277,7 +277,7 @@ module Params = struct
   }
 
   let default () = {
-    epochs         = 1;
+    epochs         = 1.;
     batch          = Batch.Mini 100;
     gradient       = Gradient.GD;
     loss           = Loss.Cross_entropy;
@@ -302,7 +302,7 @@ module Params = struct
 
   let to_string p =
     Printf.sprintf "--- Training config\n" ^
-    Printf.sprintf "    epochs         : %i\n" (p.epochs) ^
+    Printf.sprintf "    epochs         : %g\n" (p.epochs) ^
     Printf.sprintf "    batch          : %s\n" (Batch.to_string p.batch) ^
     Printf.sprintf "    method         : %s\n" (Gradient.to_string p.gradient) ^
     Printf.sprintf "    loss           : %s\n" (Loss.to_string p.loss) ^
@@ -318,12 +318,11 @@ end
 
 (* helper functions *)
 
-let _print_info e_i e_n b_i b_n l l' =
+let _print_info b_i b_n l l' =
   let l, l' = unpack_flt l, unpack_flt l' in
   let d = l -. l' in
   let s = if d = 0. then "-" else if d < 0. then "▲" else "▼" in
-  Log.info "%i/%i | B: %i/%i | L: %g[%s]"
-  e_i e_n b_i b_n l' s
+  Log.info "B: %i/%i | L: %g[%s]" b_i b_n l' s
 
 let _print_summary t = Printf.printf "--- Training summary\n    Duration: %g s\n" t
 
@@ -380,48 +379,47 @@ let train_nn params forward backward update x y =
   let ch = ref (Owl_utils.aarr_map (fun a -> F 0.) _gs) in
 
   (* variables used in training process *)
-  let batches = Batch.batches params.batch x in
-  let loss = ref (Array.make (params.epochs * batches + 1) (F 0.)) in
+  let batches_per_epoch = Batch.batches params.batch x |> float_of_int in
+  let batches = (batches_per_epoch *. params.epochs) |> int_of_float in
+  let loss = ref (Array.make (batches + 1) (F 0.)) in
   let idx = ref 1 in
   !loss.(0) <- _loss;
 
   (* iterate all batches in each epoch *)
-  for i = 1 to params.epochs do
-    for j = 1 to batches do
-      let loss', ws, gs' = iterate () in
-      (* print out the current state of training *)
-      if params.verbosity = true then
-        _print_info i params.epochs j batches !loss.(!idx - 1) loss';
-      (* calculate gradient updates *)
-      let ps' = Owl_utils.aarr_map2i (
-        fun k l w g' ->
-          let g, p = !gs.(k).(l), !ps.(k).(l) in
-          (* clip the gradient if necessary *)
-          let g' = clip_fun g' in
-          (* calculate the descendent *)
-          grad_fun w g p g'
-        ) ws gs' in
-      (* update gcache if necessary *)
-      ch := upch_fun gs' !ch;
-      (* adjust direction based on learning_rate *)
-      let us' = Owl_utils.aarr_map3 (fun p' g' c ->
-        Maths.(p' * rate_fun i g' c)
-      ) ps' gs' !ch in
-      (* adjust direction based on momentum *)
-      let us' = match params.momentum <> Momentum.None with
-        | true  -> Owl_utils.aarr_map2 momt_fun !us us'
-        | false -> us'
-      in
-      (* update the weight *)
-      let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
-      update ws';
-      (* save historical data *)
-      if params.momentum <> Momentum.None then us := us';
-      gs := gs';
-      ps := ps';
-      !loss.(!idx) <- loss';
-      idx := !idx + 1;
-    done
+  for i = 1 to batches do
+    let loss', ws, gs' = iterate () in
+    (* print out the current state of training *)
+    if params.verbosity = true then
+      _print_info i batches !loss.(!idx - 1) loss';
+    (* calculate gradient updates *)
+    let ps' = Owl_utils.aarr_map2i (
+      fun k l w g' ->
+        let g, p = !gs.(k).(l), !ps.(k).(l) in
+        (* clip the gradient if necessary *)
+        let g' = clip_fun g' in
+        (* calculate the descendent *)
+        grad_fun w g p g'
+      ) ws gs' in
+    (* update gcache if necessary *)
+    ch := upch_fun gs' !ch;
+    (* adjust direction based on learning_rate *)
+    let us' = Owl_utils.aarr_map3 (fun p' g' c ->
+      Maths.(p' * rate_fun i g' c)
+    ) ps' gs' !ch in
+    (* adjust direction based on momentum *)
+    let us' = match params.momentum <> Momentum.None with
+      | true  -> Owl_utils.aarr_map2 momt_fun !us us'
+      | false -> us'
+    in
+    (* update the weight *)
+    let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
+    update ws';
+    (* save historical data *)
+    if params.momentum <> Momentum.None then us := us';
+    gs := gs';
+    ps := ps';
+    !loss.(!idx) <- loss';
+    idx := !idx + 1;
   done;
 
   (* print training summary *)
