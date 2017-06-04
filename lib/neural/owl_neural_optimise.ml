@@ -273,6 +273,7 @@ module Params = struct
     mutable regularisation  : Regularisation.typ;
     mutable momentum        : Momentum.typ;
     mutable clipping        : Clipping.typ;
+    mutable checkpoint      : float;
     mutable verbosity       : bool;
   }
 
@@ -285,10 +286,11 @@ module Params = struct
     regularisation = Regularisation.None;
     momentum       = Momentum.None;
     clipping       = Clipping.None;
+    checkpoint     = infinity;
     verbosity      = true;
   }
 
-  let config ?batch ?gradient ?loss ?learning_rate ?regularisation ?momentum ?clipping ?verbosity epochs =
+  let config ?batch ?gradient ?loss ?learning_rate ?regularisation ?momentum ?clipping ?checkpoint ?verbosity epochs =
     let p = default () in
     (match batch with Some x -> p.batch <- x | None -> ());
     (match gradient with Some x -> p.gradient <- x | None -> ());
@@ -297,6 +299,7 @@ module Params = struct
     (match regularisation with Some x -> p.regularisation <- x | None -> ());
     (match momentum with Some x -> p.momentum <- x | None -> ());
     (match clipping with Some x -> p.clipping <- x | None -> ());
+    (match checkpoint with Some x -> p.checkpoint <- x | None -> ());
     (match verbosity with Some x -> p.verbosity <- x | None -> ());
     p.epochs <- epochs; p
 
@@ -310,6 +313,7 @@ module Params = struct
     Printf.sprintf "    regularisation : %s\n" (Regularisation.to_string p.regularisation) ^
     Printf.sprintf "    momentum       : %s\n" (Momentum.to_string p.momentum) ^
     Printf.sprintf "    clipping       : %s\n" (Clipping.to_string p.clipping) ^
+    Printf.sprintf "    checkpoint     : %g\n" (p.checkpoint) ^
     Printf.sprintf "    verbosity      : %s\n" (if p.verbosity then "true" else "false") ^
     "---"
 
@@ -330,7 +334,7 @@ let _print_summary t = Printf.printf "--- Training summary\n    Duration: %g s\n
 
 (* core training functions for feedforward networks *)
 
-let train_nn params forward backward update x y =
+let train_nn params forward backward update save x y =
   let open Params in
   if params.verbosity = true then
     print_endline (Params.to_string params);
@@ -421,6 +425,16 @@ let train_nn params forward backward update x y =
     ps := ps';
     !loss.(!idx) <- loss';
     idx := !idx + 1;
+    (* checkpoint current model if necessary *)
+    let _check = params.checkpoint *. batches_per_epoch |> int_of_float in
+    match (i mod _check = 0) && (i < batches) with
+    | true  -> (
+        let file_name = Printf.sprintf "%s/%s.%i"
+          (Sys.getcwd ()) "model" (Unix.time () |> int_of_float) in
+        Log.info "#%i | checkpoint => %s" (Unix.getpid()) file_name;
+        save file_name;
+      )
+    | false -> ()
   done;
 
   (* print training summary *)
@@ -434,16 +448,18 @@ let train_nn params forward backward update x y =
   forward: fucntion to run the forward pass
   backward: function to run the backward pass
   update: function to update the weights according to the gradient
+  save: function to save the model for checkpoint
  *)
-let train_nn_generic ?params forward backward update nn x y =
+let train_nn_generic ?params forward backward update save nn x y =
   let f = forward nn in
   let b = backward nn in
   let u = update nn in
+  let s = save nn in
   let p = match params with
     | Some p -> p
     | None   -> Params.default ()
   in
-  train_nn p f b u x y
+  train_nn p f b u s x y
 
 
 (* generic function to test the neural network, for both feedforward and graph

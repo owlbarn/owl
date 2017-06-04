@@ -246,28 +246,6 @@ let lambda ?act_typ lambda nn =
   nn
 
 
-(* training functions *)
-
-let train_generic ?params ?(init_model=true) nn x y =
-  if init_model = true then init nn;
-  Owl_neural_optimise.train_nn_generic
-    ?params forward backward update nn x y
-
-let train ?params ?init_model nn x y =
-  train_generic ?params ?init_model nn (Mat x) (Mat y)
-
-let train_cnn ?params ?init_model nn x y =
-  train_generic ?params ?init_model nn (Arr x) (Mat y)
-
-let test_model nn x y =
-  Mat.iter2_rows (fun u v ->
-    Owl_dataset.print_mnist_image (unpack_mat u);
-    let p = run u nn |> unpack_mat in
-    Owl_dense_matrix_generic.print p;
-    Printf.printf "prediction: %i\n" (let _, _, j = Owl_dense_matrix_generic.max_i p in j)
-  ) (Mat x) (Mat y)
-
-
 (* I/O functions *)
 
 let to_string nn =
@@ -282,6 +260,28 @@ let print nn = to_string nn |> Printf.printf "%s"
 let save nn f = Owl_utils.marshal_to_file nn f
 
 let load f : network = Owl_utils.marshal_from_file f
+
+
+(* training functions *)
+
+let train_generic ?params ?(init_model=true) nn x y =
+  if init_model = true then init nn;
+  Owl_neural_optimise.train_nn_generic
+    ?params forward backward update save nn x y
+
+let train ?params ?init_model nn x y =
+  train_generic ?params ?init_model nn (Mat x) (Mat y)
+
+let train_cnn ?params ?init_model nn x y =
+  train_generic ?params ?init_model nn (Arr x) (Mat y)
+
+let test_model nn x y =
+  Mat.iter2_rows (fun u v ->
+    Owl_dataset.print_mnist_image (unpack_mat u);
+    let p = run u nn |> unpack_mat in
+    Owl_dense_matrix_generic.print p;
+    Printf.printf "prediction: %i\n" (let _, _, j = Owl_dense_matrix_generic.max_i p in j)
+  ) (Mat x) (Mat y)
 
 
 

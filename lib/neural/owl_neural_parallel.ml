@@ -140,6 +140,9 @@ module Make (E : EngineSig) (M : ModelSig) = struct
     updates
 
 
+  let stop task context = true
+
+
   let train_generic ?params nn x y jid url =
     (* prepare params and make task *)
     let params = match params with
@@ -148,10 +151,11 @@ module Make (E : EngineSig) (M : ModelSig) = struct
     in
     let id = Owl_stats.Rnd.uniform_int () in
     let task = make_task id params nn x y in
-    (* register sched/push/pull/barrier fun *)
+    (* register sched/push/pull/stop/barrier *)
     E.register_schedule (schedule task);
     E.register_pull (pull task);
     E.register_push (push task);
+    E.register_stop (stop task);
     E.start ~barrier:E.ASP jid url
 
   let train ?params nn x y jid url = train_generic ?params nn (Mat x) (Mat y) jid url
