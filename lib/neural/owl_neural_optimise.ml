@@ -322,7 +322,8 @@ let _print_info b_i b_n l l' =
   let l, l' = unpack_flt l, unpack_flt l' in
   let d = l -. l' in
   let s = if d = 0. then "-" else if d < 0. then "▲" else "▼" in
-  Log.info "B: %i/%i | L: %g[%s]" b_i b_n l' s
+  let pid = Unix.getpid () in
+  Log.info "#%i | B: %i/%i | L: %g[%s]" pid b_i b_n l' s
 
 let _print_summary t = Printf.printf "--- Training summary\n    Duration: %g s\n" t
 

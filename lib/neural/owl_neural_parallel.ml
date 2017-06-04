@@ -16,11 +16,13 @@ module type EngineSig = sig
   type param_context
   type barrier = ASP | BSP | SSP | PSP
 
-  (* functions to hook into parameter server *)
+  (* functions of parameter server engine *)
 
   val get : 'a -> 'b * int
 
   val set : 'a -> 'b -> unit
+
+  val worker_num : unit -> int
 
   val start : ?barrier:barrier -> string -> string -> unit
 
@@ -59,6 +61,7 @@ end
 module Make (E : EngineSig) (M : ModelSig) = struct
 
   type task = {
+    mutable id     : int;
     mutable params : Params.typ;
     mutable model  : M.network;
     mutable data_x : t;
@@ -66,7 +69,8 @@ module Make (E : EngineSig) (M : ModelSig) = struct
   }
 
 
-  let make_task params model data_x data_y = {
+  let make_task id params model data_x data_y = {
+    id;
     params;
     model;
     data_x;
@@ -84,12 +88,12 @@ module Make (E : EngineSig) (M : ModelSig) = struct
 
   (* retrieve local model at parameter server, init if none *)
   let local_model task =
-    try E.get "model" |> fst
+    try E.get task.id |> fst
     with Not_found -> (
       Log.warn "set up first model";
       M.init task.model;
-      E.set "model" task.model;
-      E.get "model" |> fst;
+      E.set task.id task.model;
+      E.get task.id |> fst;
     )
 
 
@@ -97,14 +101,14 @@ module Make (E : EngineSig) (M : ModelSig) = struct
     (* get model, if none then init locally *)
     let model = local_model task in
     let tasks = List.map (fun x ->
-      (x, [("model", model)])
+      (x, [(task.id, model)])
     ) workers
     in tasks
 
 
   let pull task vars =
-    (* FIXME: average over number of workers *)
-    let n = 2. in
+    let n = E.worker_num () |> float_of_int in
+    assert (n >= 1.); (* at least one worker *)
     let w_old = F ((n -. 1.) /. n) in
     let w_new = F (1. /. n) in
     (* there should be only one item in list *)
@@ -113,24 +117,11 @@ module Make (E : EngineSig) (M : ModelSig) = struct
       let par0 = M.mkpar model0 in
       let par1 = M.mkpar model1 in
       Owl_utils.aarr_map2 (fun a0 a1 ->
-        (* DEBUG *)
-        (*
-        (match a0 with
-        | F x   -> Printf.printf "a0 : f\t"
-        | Mat x -> let s = a0 |> shape |> Owl_utils.string_of_array string_of_int in Printf.printf "a0 : m %s\t" s
-        | Arr x -> Printf.printf "a0 : a\t");
-        (match a1 with
-        | F x   -> Printf.printf "a1 : f\t"
-        | Mat x -> let s = a1 |> shape |> Owl_utils.string_of_array string_of_int in Printf.printf "a1 : m %s\t" s
-        | Arr x -> Printf.printf "a1 : a\t");
-        print_endline "";
-        flush_all();
-        *)
         Maths.(w_old * a0 + w_new * a1)
       ) par0 par1
       |> M.update model0;
       task.model <- model0;
-      E.set "model" task.model;
+      E.set task.id task.model;
       (k, model0)
     ) vars
 
@@ -149,17 +140,23 @@ module Make (E : EngineSig) (M : ModelSig) = struct
     updates
 
 
-  let train ?params nn x y jid url =
+  let train_generic ?params nn x y jid url =
     (* prepare params and make task *)
     let params = match params with
       | Some p -> p
       | None   -> Params.default ()
     in
-    let task = make_task params nn x y in
+    let id = Owl_stats.Rnd.uniform_int () in
+    let task = make_task id params nn x y in
     (* register sched/push/pull/barrier fun *)
     E.register_schedule (schedule task);
     E.register_pull (pull task);
     E.register_push (push task);
     E.start ~barrier:E.ASP jid url
+
+  let train ?params nn x y jid url = train_generic ?params nn (Mat x) (Mat y) jid url
+
+  let train_cnn ?params nn x y jid url = train_generic ?params nn (Arr x) (Mat y) jid url
+
 
 end
