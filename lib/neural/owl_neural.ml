@@ -9,10 +9,11 @@ open Owl_algodiff.S
 open Owl_neural_neuron
 
 
-(* module aliases: two types of neural networks *)
+(* module aliases: two network types & parallel *)
 
 module Feedforward    = Owl_neural_feedforward
 module Graph          = Owl_neural_graph
+module Parallel       = Owl_neural_parallel
 
 
 (* module aliases: weight init and activation *)

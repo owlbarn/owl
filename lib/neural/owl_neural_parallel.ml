@@ -3,10 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(* Experimental module, do not use now *)
-
-open Owl_neural
 open Owl_algodiff.S
+open Owl_neural_optimise
 
 
 (* module signature of model parallel engine *)
@@ -158,7 +156,9 @@ module Make (E : EngineSig) (M : ModelSig) = struct
     E.register_stop (stop task);
     E.start ~barrier:E.ASP jid url
 
+
   let train ?params nn x y jid url = train_generic ?params nn (Mat x) (Mat y) jid url
+
 
   let train_cnn ?params nn x y jid url = train_generic ?params nn (Arr x) (Mat y) jid url
 

@@ -6,7 +6,7 @@
 (* Experimental module, do not use now *)
 
 
-module type EngineSig = sig
+module type MapreEngineSig = sig
 
   val load : string -> string
 
@@ -19,7 +19,7 @@ module type EngineSig = sig
 end
 
 
-module Make (E : EngineSig) = struct
+module MakeDistributed (E : MapreEngineSig) = struct
 
   let map f x = E.map f x
 
