@@ -248,6 +248,10 @@ let lambda ?act_typ lambda nn =
 
 (* training functions *)
 
+let train_generic ?params nn x y =
+  Owl_neural_optimise.train_nn_generic
+    ?params init forward backward update nn x y
+
 let train ?params nn x y =
   Owl_neural_optimise.train_nn_generic
     ?params init forward backward update nn (Mat x) (Mat y)

@@ -136,7 +136,8 @@ Library owl_neural
                     Owl_neural_neuron,
                     Owl_neural_graph,
                     Owl_neural_feedforward,
-                    Owl_neural_optimise
+                    Owl_neural_optimise,
+                    Owl_neural_parallel
   BuildDepends:     owl
 
 # +-------------------------------------------------------------------+
