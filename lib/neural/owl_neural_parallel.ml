@@ -6,6 +6,7 @@
 (* Experimental module, do not use now *)
 
 open Owl_neural
+open Owl_algodiff.S
 
 
 (* module signature of model parallel engine *)
@@ -13,12 +14,15 @@ open Owl_neural
 module type EngineSig = sig
 
   type param_context
+  type barrier = ASP | BSP | SSP | PSP
 
   (* functions to hook into parameter server *)
 
   val get : 'a -> 'b * int
 
   val set : 'a -> 'b -> unit
+
+  val start : ?barrier:barrier -> string -> string -> unit
 
   val register_barrier : (param_context ref -> int * (string list)) -> unit
 
@@ -39,7 +43,11 @@ module type ModelSig = sig
 
   type network
 
-  val train_generic : ?params:Params.typ -> network -> Owl_algodiff.S.t -> Owl_algodiff.S.t -> float array
+  val mkpar : network -> t array array
+
+  val update : network -> t array array -> t array array
+
+  val train_generic : ?params:Params.typ -> network -> t -> t -> float array
 
 end
 
@@ -49,53 +57,65 @@ end
 module Make (E : EngineSig) (M : ModelSig) = struct
 
   type task = {
-    mutable params : Owl_neural.Params.typ;
-    mutable model  : Owl_neural_feedforward.network;
-    mutable data_x : Owl_algodiff.S.t;
-    mutable data_y : Owl_algodiff.S.t;
+    mutable params : Params.typ;
+    mutable model  : M.network;
+    mutable data_x : t;
+    mutable data_y : t;
   }
 
-  let register_stop = E.register_stop
 
-  let pull = None
+  let make_task params model data_x data_y = {
+    params;
+    model;
+    data_x;
+    data_y;
+  }
 
-  let push = None
-
-  let retrieve_model () =
-    let open Owl_neural_feedforward in
-    (* model has been initialised *)
-    try E.get "model" |> fst
-    (* model does not exist, init *)
-    with Not_found -> (
-      Log.warn "model does not exists, init now ...";
-      let nn = input [|28;28;1|]
-        |> conv2d [|5;5;1;32|] [|1;1|] ~act_typ:Activation.Relu
-        |> max_pool2d [|2;2|] [|2;2|]
-        |> conv2d [|5;5;32;64|] [|1;1|] ~act_typ:Activation.Relu
-        |> max_pool2d [|2;2|] [|2;2|]
-        |> dropout 0.1
-        |> fully_connected 1024 ~act_typ:Activation.Relu
-        |> linear 10 ~act_typ:Activation.Softmax
-      in
-      E.set "model" nn;
-      E.get "model" |> fst
-    )
-
-  let schedule workers =
-    let model = retrieve_model () in
+  let schedule task workers =
+    (* get model, if none then init locally *)
+    let model = try E.get "model" |> fst
+      with Not_found -> (
+        E.set "model" task.model;
+        E.get "model" |> fst;
+      )
+    in
     let tasks = List.map (fun x ->
       (x, [("model", model)])
     ) workers
     in tasks
 
 
+  let pull task vars =
+    (* FIXME: average over number of workers *)
+    let n = 2 in
+    (* there should be only one item in list *)
+    List.map (fun (k, model) ->
+      (k, model)
+    ) vars
+
+
   let push task id vars =
+    (* there should be only one item in list *)
     let updates = List.map (fun (k, model) ->
       let params = task.params in
       let x = task.data_x in
       let y = task.data_y in
-      Feedforward.train_generic ~params model x y |> ignore;
+      M.train_generic ~params model x y |> ignore;
       (k, model) ) vars in
     updates
+
+
+  let train ?params nn x y jid url =
+    (* prepare params and make task *)
+    let params = match params with
+      | Some p -> p
+      | None   -> Params.default ()
+    in
+    let task = make_task params nn x y in
+    (* register sched/push/pull/barrier fun *)
+    E.register_schedule (schedule task);
+    E.register_pull (pull task);
+    E.register_push (push task);
+    E.start ~barrier:E.ASP jid url
 
 end
