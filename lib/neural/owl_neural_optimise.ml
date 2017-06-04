@@ -426,7 +426,8 @@ let train_nn params forward backward update save x y =
     !loss.(!idx) <- loss';
     idx := !idx + 1;
     (* checkpoint current model if necessary *)
-    let _check = params.checkpoint *. batches_per_epoch |> int_of_float in
+    let _a = params.checkpoint *. batches_per_epoch in
+    let _check = if _a = infinity then max_int else int_of_float _a in
     match (i mod _check = 0) && (i < batches) with
     | true  -> (
         let file_name = Printf.sprintf "%s/%s.%i"

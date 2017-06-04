@@ -138,7 +138,8 @@ module Make (E : EngineSig) (M : ModelSig) = struct
     updates
 
 
-  let stop task context = true
+  (* FIXME: currently running forever *)
+  let stop task context = false
 
 
   let train_generic ?params nn x y jid url =
