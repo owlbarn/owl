@@ -337,17 +337,16 @@ let average ?act_typ input_node =
 
 (* training functions *)
 
-let train_generic ?params nn x y =
+let train_generic ?params ?(init_model=true) nn x y =
+  if init_model = true then init nn;
   Owl_neural_optimise.train_nn_generic
-    ?params init forward backward update nn x y
+    ?params forward backward update nn x y
 
-let train ?params nn x y =
-  Owl_neural_optimise.train_nn_generic
-    ?params init forward backward update nn (Mat x) (Mat y)
+let train ?params ?init_model nn x y =
+  train_generic ?params ?init_model nn (Mat x) (Mat y)
 
-let train_cnn ?params nn x y =
-  Owl_neural_optimise.train_nn_generic
-    ?params init forward backward update nn (Arr x) (Mat y)
+let train_cnn ?params ?init_model nn x y =
+  train_generic ?params ?init_model nn (Arr x) (Mat y)
 
 
 (* I/O functions *)

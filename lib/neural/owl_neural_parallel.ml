@@ -45,9 +45,11 @@ module type ModelSig = sig
 
   val mkpar : network -> t array array
 
-  val update : network -> t array array -> t array array
+  val init : network -> unit
 
-  val train_generic : ?params:Params.typ -> network -> t -> t -> float array
+  val update : network -> t array array -> unit
+
+  val train_generic : ?params:Params.typ -> ?init_model:bool -> network -> t -> t -> float array
 
 end
 
@@ -71,14 +73,29 @@ module Make (E : EngineSig) (M : ModelSig) = struct
     data_y;
   }
 
+
+  (* calculate \delta model = model1 - model0, save the result in model0 *)
+  let delta_model model1 model0 =
+    let par0 = M.mkpar model0 in
+    let par1 = M.mkpar model1 in
+    let delta = Owl_utils.aarr_map2 (fun a0 a1 -> Maths.(a0 - a1)) par0 par1 in
+    M.update model0 delta
+
+
+  (* retrieve local model at parameter server, init if none *)
+  let local_model task =
+    try E.get "model" |> fst
+    with Not_found -> (
+      Log.warn "set up first model";
+      M.init task.model;
+      E.set "model" task.model;
+      E.get "model" |> fst;
+    )
+
+
   let schedule task workers =
     (* get model, if none then init locally *)
-    let model = try E.get "model" |> fst
-      with Not_found -> (
-        E.set "model" task.model;
-        E.get "model" |> fst;
-      )
-    in
+    let model = local_model task in
     let tasks = List.map (fun x ->
       (x, [("model", model)])
     ) workers
@@ -87,20 +104,47 @@ module Make (E : EngineSig) (M : ModelSig) = struct
 
   let pull task vars =
     (* FIXME: average over number of workers *)
-    let n = 2 in
+    let n = 2. in
+    let w_old = F ((n -. 1.) /. n) in
+    let w_new = F (1. /. n) in
     (* there should be only one item in list *)
-    List.map (fun (k, model) ->
-      (k, model)
+    List.map (fun (k, model1) ->
+      let model0 = local_model task in
+      let par0 = M.mkpar model0 in
+      let par1 = M.mkpar model1 in
+      Owl_utils.aarr_map2 (fun a0 a1 ->
+        (* DEBUG *)
+        (*
+        (match a0 with
+        | F x   -> Printf.printf "a0 : f\t"
+        | Mat x -> let s = a0 |> shape |> Owl_utils.string_of_array string_of_int in Printf.printf "a0 : m %s\t" s
+        | Arr x -> Printf.printf "a0 : a\t");
+        (match a1 with
+        | F x   -> Printf.printf "a1 : f\t"
+        | Mat x -> let s = a1 |> shape |> Owl_utils.string_of_array string_of_int in Printf.printf "a1 : m %s\t" s
+        | Arr x -> Printf.printf "a1 : a\t");
+        print_endline "";
+        flush_all();
+        *)
+        Maths.(w_old * a0 + w_new * a1)
+      ) par0 par1
+      |> M.update model0;
+      task.model <- model0;
+      E.set "model" task.model;
+      (k, model0)
     ) vars
 
 
   let push task id vars =
     (* there should be only one item in list *)
     let updates = List.map (fun (k, model) ->
+      task.model <- model;
+      (* start local training *)
       let params = task.params in
       let x = task.data_x in
       let y = task.data_y in
-      M.train_generic ~params model x y |> ignore;
+      M.train_generic ~params ~init_model:false model x y |> ignore;
+      (* TODO: only send out delta model in future *)
       (k, model) ) vars in
     updates
 

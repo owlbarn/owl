@@ -430,13 +430,11 @@ let train_nn params forward backward update x y =
 
 
 (* generic training functions for both feedforward and graph module
-  init: function to initialise the weights in the network
   forward: fucntion to run the forward pass
   backward: function to run the backward pass
   update: function to update the weights according to the gradient
  *)
-let train_nn_generic ?params init forward backward update nn x y =
-  init nn;
+let train_nn_generic ?params forward backward update nn x y =
   let f = forward nn in
   let b = backward nn in
   let u = update nn in
