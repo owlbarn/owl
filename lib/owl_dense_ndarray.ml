@@ -38,3 +38,6 @@ module Z = struct
   include Owl_dense_ndarray_z
   include Operator
 end
+
+
+module Any = Owl_dense_ndarray_a
