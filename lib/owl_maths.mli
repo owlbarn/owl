@@ -460,6 +460,12 @@ val permutation : int -> int -> int
 val combination : int -> int -> int
 (** [combination n k] return the number of combination of n things taken k at a time. *)
 
+val combination_float : int -> int -> float
+(** [combination_float n k] return the number of combination of n things taken
+  k at a time. This function can handle the result in a much larger range from
+  [[-.max_float, max_float]] comparing to [combination n k].
+*)
+
 val ln_combination : int -> int -> float
 (** [ln_combination n k] return the logarithm of the number of combination of n things taken k at a time. *)
 

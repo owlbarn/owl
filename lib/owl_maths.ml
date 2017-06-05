@@ -418,6 +418,8 @@ let ln_double_factorial x = Gsl.Sf.lndoublefact x
 
 let combination n x = int_of_float (Gsl.Sf.choose n x)
 
+let combination_float n x = Gsl.Sf.choose n x
+
 let ln_combination n x = Gsl.Sf.lnchoose n x
 
 let taylorcoeff n x = Gsl.Sf.taylorcoeff n x
