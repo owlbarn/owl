@@ -105,19 +105,56 @@ let iteri f x =
   done
 
 let map f x =
-  let y = clone x in
-  for i = 0 to (numel x) - 1 do
-    y.data.(i) <- f y.data.(i)
-  done;
-  y
+  make_arr x.shape x.stride (
+  Array.init (numel x) (fun i ->
+    f x.data.(i)
+  ))
 
 let mapi f x =
-  let y = clone x in
-  for i = 0 to (numel x) - 1 do
-    y.data.(i) <- f i y.data.(i)
-  done;
-  y
+  make_arr x.shape x.stride (
+  Array.init (numel x) (fun i ->
+    f i x.data.(i)
+  ))
 
+let iter2 f x y =
+  assert (x.shape = y.shape);
+  for i = 0 to (numel x) - 1 do
+    f x.data.(i) y.data.(i)
+  done
+
+let iter2i f x y =
+  assert (x.shape = y.shape);
+  for i = 0 to (numel x) - 1 do
+    f i x.data.(i) y.data.(i)
+  done
+
+let map2 f x y =
+  assert (x.shape = y.shape);
+  make_arr x.shape x.stride (
+  Array.init (numel x) (fun i ->
+    f x.data.(i) y.data.(i)
+  ))
+
+let map2i f x y =
+  assert (x.shape = y.shape);
+  make_arr x.shape x.stride (
+  Array.init (numel x) (fun i ->
+    f i x.data.(i) y.data.(i)
+  ))
+
+let exists f x =
+  let b = ref false in
+  try iter (fun y ->
+    if (f y) then (
+      b := true;
+      failwith "found";
+    )
+  ) x; !b
+  with Failure _ -> !b
+
+let not_exists f x = not (exists f x)
+
+let for_all f x = let g y = not (f y) in not_exists g x
 
 
 
