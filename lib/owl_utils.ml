@@ -240,6 +240,15 @@ let check_row_vector x =
   if Bigarray.Array2.dim1 x <> 1 then
     failwith "error: the variable is not a row vector"
 
+(* search the list given a value, return the postion of its first occurrence *)
+let list_search x l =
+  let rec _search x l c =
+    match l with
+    | []     -> raise Not_found
+    | hd::tl -> if hd = x then c else _search x tl (c + 1)
+  in
+  _search x l 0
+
 
 module Stack = struct
 

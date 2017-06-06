@@ -8,7 +8,9 @@
 
 module type Mapre_Engine = sig
 
-  val worker_num : unit -> int
+  val workers : unit -> string list
+
+  val myself : unit -> string
 
   val load : string -> string
 
@@ -28,6 +30,8 @@ module type Ndarray = sig
   val shape : arr -> int array
 
   val zeros : int array -> arr
+
+  val uniform : ?scale:float -> int array -> arr
 
   val numel : arr -> int
 
@@ -67,12 +71,30 @@ module Make_Distributed (E : Mapre_Engine) (M : Ndarray) = struct
       )
 
   let zeros d =
-    let n = E.worker_num () in
-    let chunks = divide_to_chunks d n in
+    let workers = E.workers () in
+    let chunks = divide_to_chunks d (List.length workers) in
     let c_start = Array.map fst chunks in
     let c_len = Array.map snd chunks in
-    (* let id = E.map () *)
-    make_distr_arr "" d c_start c_len
+    let id = E.map (fun _ ->
+      let me = E.myself () in
+      let pos = Owl_utils.list_search me workers in
+      me, M.zeros [|c_len.(pos)|]
+    ) ""
+    in
+    make_distr_arr id d c_start c_len
+
+  let uniform ?scale d =
+    let workers = E.workers () in
+    let chunks = divide_to_chunks d (List.length workers) in
+    let c_start = Array.map fst chunks in
+    let c_len = Array.map snd chunks in
+    let id = E.map (fun _ ->
+      let me = E.myself () in
+      let pos = Owl_utils.list_search me workers in
+      me, M.uniform ?scale [|c_len.(pos)|]
+    ) ""
+    in
+    make_distr_arr id d c_start c_len
 
 
 end
