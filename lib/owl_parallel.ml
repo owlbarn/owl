@@ -54,6 +54,10 @@ module type Ndarray = sig
 
   val sin : arr -> arr
 
+  val cos : arr -> arr
+
+  val sum : arr -> elt
+
   val add : arr -> arr -> arr
 
   val sub : arr -> arr -> arr
@@ -72,14 +76,22 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     mutable shape   : int array;
     mutable c_start : int array;
     mutable c_len   : int array;
+    mutable workers : string array;
   }
 
-  let make_distr_arr id shape c_start c_len = {
+  let make_distr_arr id shape c_start c_len workers = {
     id;
     shape;
     c_start;
     c_len;
+    workers;
   }
+
+  let shape x = x.shape
+
+  let num_dims x = Array.length x.shape
+
+  let numel x = Array.fold_left (fun a b -> a * b) 1 x.shape
 
   let divide_to_chunks shape n =
     let total_sz = Array.fold_left (fun a b -> a * b) 1 shape in
@@ -110,7 +122,67 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
       me, create_fun [|c_len.(pos)|]
     ) ""
     in
-    make_distr_arr id d c_start c_len
+    make_distr_arr id d c_start c_len (Array.of_list workers)
+
+  let of_ndarray x = None
+
+  let to_ndarray x = None
+
+  (* given 1d index, calculate its owner *)
+  let calc_index_owner i_1d c_start c_len =
+    let i = ref 0 in
+    try
+      for j = 0 to Array.length c_start - 1 do
+        i := j;
+        let a = c_start.(j) in
+        let b = c_start.(j) + c_len.(j) in
+        if a <= i_1d && i_1d < b then failwith "found"
+      done;
+      !i
+    with exn -> !i
+
+  let get x i_nd =
+    let stride = Owl_dense_common._calc_stride x.shape in
+    let i_1d = Owl_dense_common._index_nd_1d i_nd stride in
+    assert (numel x > i_1d);
+    let pos = calc_index_owner i_1d x.c_start x.c_len in
+    let owner_id = x.workers.(pos) in
+    (* the offset in the owner's chunk *)
+    let j_1d = i_1d - x.c_start.(pos) in
+    let y_id = E.map_partition (fun l ->
+      match E.myself () = owner_id with
+      | true  -> (
+          let arr = List.nth l 0 |> snd in
+          [ M.get arr [|j_1d|] ]
+        )
+      | false -> []
+    ) x.id
+    in
+    let l = E.collect y_id
+      |> List.filter (fun l -> List.length l > 0)
+    in
+    List.(nth (nth l 0) 0)
+
+  let set x i_nd a =
+    let stride = Owl_dense_common._calc_stride x.shape in
+    let i_1d = Owl_dense_common._index_nd_1d i_nd stride in
+    assert (numel x > i_1d);
+    let pos = calc_index_owner i_1d x.c_start x.c_len in
+    let owner_id = x.workers.(pos) in
+    (* the offset in the owner's chunk *)
+    let j_1d = i_1d - x.c_start.(pos) in
+    let y_id = E.map_partition (fun l ->
+      match E.myself () = owner_id with
+      | true  -> (
+          let arr = List.nth l 0 |> snd in
+          [ M.set arr [|j_1d|] a ]
+        )
+      | false -> []
+    ) x.id
+    in
+    E.collect y_id |> ignore
+
+  let init d = None
 
   let zeros d =
     let create_fun d = M.zeros d in
@@ -120,9 +192,13 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     let create_fun d = M.ones d in
     distributed_create create_fun d
 
+  let sequential d = None
+
   let uniform ?scale d =
     let create_fun d = M.uniform ?scale d in
     distributed_create create_fun d
+
+  let gaussian d = None
 
   let map_chunk f x =
     let y_id = E.map (fun (node_id, arr) ->
@@ -132,7 +208,8 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     let shape = Array.copy x.shape in
     let c_start = Array.copy x.c_start in
     let c_len = Array.copy x.c_len in
-    make_distr_arr y_id shape c_start c_len
+    let workers = Array.copy x.workers in
+    make_distr_arr y_id shape c_start c_len workers
 
   let map f x = map_chunk (M.map f) x
 
@@ -148,7 +225,8 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     let shape = Array.copy x.shape in
     let c_start = Array.copy x.c_start in
     let c_len = Array.copy x.c_len in
-    make_distr_arr z_id shape c_start c_len
+    let workers = Array.copy x.workers in
+    make_distr_arr z_id shape c_start c_len workers
 
   let map2 f x y = map2_chunk (M.map2 f) x y
 
@@ -165,6 +243,22 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
 
   let sin x = map_chunk M.sin x
 
+  let cos x = map_chunk M.cos x
+
+  (* TODO: need to implement add_elt to support complex number *)
+  let sum x =
+    let y = map_chunk M.sum x in
+    let l = E.collect y.id |> List.map (fun l' -> List.nth l' 0 |> snd) in
+    let a = ref (List.nth l 0) in
+    for i = 1 to List.length l - 1 do
+      a := !a +. (List.nth l i)
+    done;
+    !a
+
+  let min x = None
+
+  let max x = None
+
   let add x y = map2_chunk M.add x y
 
   let sub x y = map2_chunk M.sub x y
@@ -172,6 +266,8 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
   let mul x y = map2_chunk M.mul x y
 
   let div x y = map2_chunk M.div x y
+
+  (* TODO: distributed garbage collection is not implemented yet. *)
 
 end
 
@@ -204,13 +300,15 @@ module Make_Distributed_Any (M : Ndarray_Any) (E : Mapre_Engine) = struct
     mutable shape   : int array;
     mutable c_start : int array;
     mutable c_len   : int array;
+    mutable workers : string array;
   }
 
-  let make_distr_arr id shape c_start c_len = {
+  let make_distr_arr id shape c_start c_len workers = {
     id;
     shape;
     c_start;
     c_len;
+    workers;
   }
 
   let divide_to_chunks shape n =
@@ -240,6 +338,6 @@ module Make_Distributed_Any (M : Ndarray_Any) (E : Mapre_Engine) = struct
       me, create_fun [|c_len.(pos)|]
     ) ""
     in
-    make_distr_arr id d c_start c_len
+    make_distr_arr id d c_start c_len (Array.of_list workers)
 
 end

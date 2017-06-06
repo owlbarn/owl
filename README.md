@@ -597,6 +597,11 @@ train nn x y;;
 You may ask "what if I want different training configuration?" Well, the training and network module is actually very flexible and highly configurable. But I will talk about these details in another separate tutorial.
 
 
+## Distributed & Parallel Computing
+
+Owl's distributed and parallel computing relies on my another research prototype - Actor System. Actor is a specialised distributed data processing framework. I will introduce this exciting feature very soon.
+
+
 ## Run Owl on Different Platforms
 
 If you want to try Owl on ARM based platforms such as Raspberry Pi rather than x86 ones, the installation are similar. Just note that Owl requires OCaml 4.04, which might not be supported on your platform's binary distribution system yet, so you might consider compiling [OCaml sources](https://ocaml.org/releases/4.04.html). Besides, to solve a potential conflict with gsl package, after running `./configure` in the top directory, you should run:
