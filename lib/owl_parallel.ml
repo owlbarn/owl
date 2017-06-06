@@ -18,6 +18,10 @@ module type Mapre_Engine = sig
 
   val map : ('a -> 'b) -> string -> string
 
+  val map_partition: ('a list -> 'b list) -> string -> string
+
+  val union : string -> string -> string
+
   val reduce : ('a -> 'a -> 'a) -> string -> 'a option
 
   val collect : string -> 'a list
@@ -46,7 +50,17 @@ module type Ndarray = sig
 
   val map : ?axis:int option array -> (elt -> elt) -> arr -> arr
 
-  val print : arr -> unit
+  val map2 : ?axis:int option array -> (elt -> elt -> elt) -> arr -> arr -> arr
+
+  val sin : arr -> arr
+
+  val add : arr -> arr -> arr
+
+  val sub : arr -> arr -> arr
+
+  val mul : arr -> arr -> arr
+
+  val div : arr -> arr -> arr
 
 end
 
@@ -110,27 +124,53 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     let create_fun d = M.uniform ?scale d in
     distributed_create create_fun d
 
-  let map f x =
-    let id = E.map (fun (node_id, arr) ->
-      (* NOTE: keep node_id as the consistent format! *)
-      node_id, M.map f arr
-    ) x.id in
+  let map_chunk f x =
+    let y_id = E.map (fun (node_id, arr) ->
+      node_id, f arr
+    ) x.id
+    in
     let shape = Array.copy x.shape in
     let c_start = Array.copy x.c_start in
     let c_len = Array.copy x.c_len in
-    make_distr_arr id shape c_start c_len
+    make_distr_arr y_id shape c_start c_len
+
+  let map f x = map_chunk (M.map f) x
+
+  let map2_chunk f x y =
+    assert (x.shape = y.shape);
+    let z_id = E.union x.id y.id in
+    let z_id = E.map_partition (fun l ->
+      let x_node_id, x_arr = List.nth l 0 in
+      let y_node_id, y_arr = List.nth l 1 in
+      [ (x_node_id, f x_arr y_arr) ]
+    ) z_id
+    in
+    let shape = Array.copy x.shape in
+    let c_start = Array.copy x.c_start in
+    let c_len = Array.copy x.c_len in
+    make_distr_arr z_id shape c_start c_len
+
+  let map2 f x y = map2_chunk (M.map2 f) x y
 
   let fold f x a =
-    let id = E.map (fun (node_id, arr) ->
+    let y_id = E.map (fun (node_id, arr) ->
       let b = ref M.(get arr [|0|]) in
       for i = 1 to M.numel arr - 1 do
         b := f !b M.(get arr [|i|])
       done;
       !b
     ) x.id in
-    E.collect id
+    E.collect y_id
     |> List.fold_left (fun b c -> f b (List.nth c 0)) a
 
+  let sin x = map_chunk M.sin x
 
+  let add x y = map2_chunk M.add x y
+
+  let sub x y = map2_chunk M.sub x y
+
+  let mul x y = map2_chunk M.mul x y
+
+  let div x y = map2_chunk M.div x y
 
 end
