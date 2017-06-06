@@ -20,25 +20,38 @@ module type Mapre_Engine = sig
 
   val reduce : ('a -> 'a -> 'a) -> string -> 'a option
 
+  val collect : string -> 'a list
+
 end
 
 
 module type Ndarray = sig
 
   type arr
+  type elt
 
   val shape : arr -> int array
 
   val zeros : int array -> arr
 
+  val ones  : int array -> arr
+
   val uniform : ?scale:float -> int array -> arr
 
   val numel : arr -> int
 
+  val get : arr -> int array -> elt
+
+  val set : arr -> int array -> elt -> unit
+
+  val map : ?axis:int option array -> (elt -> elt) -> arr -> arr
+
+  val print : arr -> unit
+
 end
 
 
-module Make_Distributed (E : Mapre_Engine) (M : Ndarray) = struct
+module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
 
   type distr_arr = {
     mutable id      : string;
@@ -70,7 +83,9 @@ module Make_Distributed (E : Mapre_Engine) (M : Ndarray) = struct
         )
       )
 
-  let zeros d =
+  (* make a distributed version of [create_fun d], the elements will be
+  distributed among the working nodes. *)
+  let distributed_create create_fun d =
     let workers = E.workers () in
     let chunks = divide_to_chunks d (List.length workers) in
     let c_start = Array.map fst chunks in
@@ -78,23 +93,44 @@ module Make_Distributed (E : Mapre_Engine) (M : Ndarray) = struct
     let id = E.map (fun _ ->
       let me = E.myself () in
       let pos = Owl_utils.list_search me workers in
-      me, M.zeros [|c_len.(pos)|]
+      me, create_fun [|c_len.(pos)|]
     ) ""
     in
     make_distr_arr id d c_start c_len
 
+  let zeros d =
+    let create_fun d = M.zeros d in
+    distributed_create create_fun d
+
+  let ones d =
+    let create_fun d = M.ones d in
+    distributed_create create_fun d
+
   let uniform ?scale d =
-    let workers = E.workers () in
-    let chunks = divide_to_chunks d (List.length workers) in
-    let c_start = Array.map fst chunks in
-    let c_len = Array.map snd chunks in
-    let id = E.map (fun _ ->
-      let me = E.myself () in
-      let pos = Owl_utils.list_search me workers in
-      me, M.uniform ?scale [|c_len.(pos)|]
-    ) ""
-    in
-    make_distr_arr id d c_start c_len
+    let create_fun d = M.uniform ?scale d in
+    distributed_create create_fun d
+
+  let map f x =
+    let id = E.map (fun (node_id, arr) ->
+      (* NOTE: keep node_id as the consistent format! *)
+      node_id, M.map f arr
+    ) x.id in
+    let shape = Array.copy x.shape in
+    let c_start = Array.copy x.c_start in
+    let c_len = Array.copy x.c_len in
+    make_distr_arr id shape c_start c_len
+
+  let fold f x a =
+    let id = E.map (fun (node_id, arr) ->
+      let b = ref M.(get arr [|0|]) in
+      for i = 1 to M.numel arr - 1 do
+        b := f !b M.(get arr [|i|])
+      done;
+      !b
+    ) x.id in
+    E.collect id
+    |> List.fold_left (fun b c -> f b (List.nth c 0)) a
+
 
 
 end

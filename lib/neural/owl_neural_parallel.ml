@@ -56,7 +56,7 @@ end
 
 (* implementation of parallel neural network training *)
 
-module Make (E : EngineSig) (M : ModelSig) = struct
+module Make (M : ModelSig) (E : EngineSig) = struct
 
   type task = {
     mutable id     : int;
