@@ -8,14 +8,6 @@
 
 module type Mapre_Engine = sig
 
-  val workers : unit -> string list
-
-  val myself : unit -> string
-
-  val load : string -> string
-
-  val save : string -> string -> int
-
   val map : ('a -> 'b) -> string -> string
 
   val map_partition: ('a list -> 'b list) -> string -> string
@@ -25,6 +17,14 @@ module type Mapre_Engine = sig
   val reduce : ('a -> 'a -> 'a) -> string -> 'a option
 
   val collect : string -> 'a list
+
+  val workers : unit -> string list
+
+  val myself : unit -> string
+
+  val load : string -> string
+
+  val save : string -> string -> int
 
 end
 
@@ -172,5 +172,74 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
   let mul x y = map2_chunk M.mul x y
 
   let div x y = map2_chunk M.div x y
+
+end
+
+
+
+module Make_Shared (M : Ndarray) (E : Mapre_Engine) = struct
+
+
+end
+
+
+
+module type Ndarray_Any = sig
+
+  type 'a arr
+
+  val shape : 'a arr -> int array
+
+  val numel : 'a arr -> int
+
+  val create : int array -> 'a -> 'a arr
+
+end
+
+
+module Make_Distributed_Any (M : Ndarray_Any) (E : Mapre_Engine) = struct
+
+  type distr_arr = {
+    mutable id      : string;
+    mutable shape   : int array;
+    mutable c_start : int array;
+    mutable c_len   : int array;
+  }
+
+  let make_distr_arr id shape c_start c_len = {
+    id;
+    shape;
+    c_start;
+    c_len;
+  }
+
+  let divide_to_chunks shape n =
+    let total_sz = Array.fold_left (fun a b -> a * b) 1 shape in
+    let chunk_sz = total_sz / n in
+    match chunk_sz = 0 with
+    | true  -> [| (0, total_sz) |]
+    | false -> (
+        Array.init n (fun i ->
+          let c_start = i * chunk_sz in
+          let c_len = match i = n - 1 with
+            | true  -> total_sz - c_start
+            | false -> chunk_sz
+          in
+          c_start, c_len
+        )
+      )
+
+  let distributed_create create_fun d =
+    let workers = E.workers () in
+    let chunks = divide_to_chunks d (List.length workers) in
+    let c_start = Array.map fst chunks in
+    let c_len = Array.map snd chunks in
+    let id = E.map (fun _ ->
+      let me = E.myself () in
+      let pos = Owl_utils.list_search me workers in
+      me, create_fun [|c_len.(pos)|]
+    ) ""
+    in
+    make_distr_arr id d c_start c_len
 
 end
