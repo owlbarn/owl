@@ -16,6 +16,10 @@ val empty : int array -> arr
 
 val create : int array -> elt -> arr
 
+val init : int array -> (int -> elt) -> arr
+
+val init_nd : int array -> (int array -> elt) -> arr
+
 val zeros : int array -> arr
 
 val ones : int array -> arr

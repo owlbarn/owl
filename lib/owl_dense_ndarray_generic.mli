@@ -37,6 +37,19 @@ val create : ('a, 'b) kind -> int array -> 'a -> ('a, 'b) t
   The elements in the array are initialised to [2.]
  *)
 
+val init : ('a, 'b) kind -> int array -> (int -> 'a) -> ('a, 'b) t
+(** [init Bigarray.Float64 d f] creates a ndarray [x] of shape [d], then using
+  [f] to initialise the elements in [x]. The input of [f] is 1-dimensional
+  index of the ndarray. You need to explicitly convert it if you need N-dimensional
+  index. The function [Owl_utils._index_1d_nd] can help you.
+ *)
+
+val init_nd : ('a, 'b) kind -> int array -> (int array -> 'a) -> ('a, 'b) t
+(** [init_nd] is almost the same as [init] but [f] receives n-dimensional index
+  as input. It is more convenient since you don't have to convert the index by
+  yourself, but this also means [init_nd] is slower than [init].
+ *)
+
 val zeros : ('a, 'b) kind -> int array -> ('a, 'b) t
 (** [zeros Bigarray.Complex32 [|3;4;5|]] creates a three-diemensional array of
   type [Bigarray.Complex32]. Each dimension has the following size: 3, 4, and 5.

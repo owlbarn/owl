@@ -46,6 +46,17 @@ let create k m n a =
   let x = empty k m n in
   fill x a; x
 
+let init k m n f = Owl_dense_ndarray_generic.init k [|m;n|] f |> of_ndarray
+
+let init_nd k m n f =
+  let x = empty k m n in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      Array2.unsafe_set x i j (f i j)
+    done;
+  done;
+  x
+
 let zeros k m n = create k m n (_zero k)
 
 let ones k m n = create k m n (_one k)

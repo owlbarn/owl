@@ -83,8 +83,7 @@ let _index_1d_nd i j s =
   done
 
 (* c layout index translation: nd -> 1d
-  j is n-dimensional index; s is the stride.
-  the space of j needs to be pre-allocated *)
+  j is n-dimensional index; s is the stride. *)
 let _index_nd_1d j s =
   let i = ref 0 in
   Array.iteri (fun k a -> i := !i + (a * s.(k))) j;

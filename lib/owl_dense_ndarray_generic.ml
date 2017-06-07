@@ -50,6 +50,29 @@ let reset x = Genarray.fill x (_zero (kind x))
 
 let mmap fd ?pos kind shared dims = Genarray.map_file fd ?pos kind c_layout shared dims
 
+let flatten x = reshape x [|numel x|]
+
+let init k d f =
+  let x = empty k d in
+  let y = array1_of_genarray (flatten x) in
+  let n = numel x in
+  for i = 0 to n - 1 do
+    Array1.unsafe_set y i (f i)
+  done;
+  x
+
+let init_nd k d f =
+  let x = empty k d in
+  let y = array1_of_genarray (flatten x) in
+  let n = numel x in
+  let s = shape x in
+  let j = Array.copy s in
+  for i = 0 to n - 1 do
+    Owl_dense_common._index_1d_nd i j s;
+    Array1.unsafe_set y i (f j)
+  done;
+  x
+
 (* FIXME: optimise, no need to iterate all dimension *)
 let same_shape x y =
   if (num_dims x) <> (num_dims y) then false
@@ -67,8 +90,6 @@ let clone x =
   let y = empty (kind x) (shape x) in
   Genarray.blit x y;
   y
-
-let flatten x = reshape x [|numel x|]
 
 let reverse x =
   let y = clone x in

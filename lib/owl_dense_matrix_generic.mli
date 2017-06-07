@@ -22,6 +22,18 @@ val create : ('a, 'b) kind -> int -> int -> 'a -> ('a, 'b) t
   initialised with the value [a].
 *)
 
+val init : ('a, 'b) kind -> int -> int -> (int -> 'a) -> ('a, 'b) t
+(** [init m n f] creates a matrix [x] of shape [m x n], then using
+  [f] to initialise the elements in [x]. The input of [f] is 1-dimensional
+  index of the matrix. You need to explicitly convert it if you need 2D
+  index. The function [Owl_utils._index_1d_nd] can help you.
+ *)
+
+val init_nd : ('a, 'b) kind -> int -> int -> (int -> int -> 'a) -> ('a, 'b) t
+(* [init_nd m n f] s almost the same as [init] but [f] receives 2D index
+  as input. It is more convenient since you don't have to convert the index by
+  yourself, but this also means [init_nd] is slower than [init]. *)
+
 val zeros : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 (** [zeros m n] creates an [m] by [n] matrix where all the elements are
   initialised to zeros.
@@ -163,8 +175,10 @@ val reverse : ('a, 'b) t -> ('a, 'b) t
  *)
 
 val reset : ('a, 'b) t -> unit
+(* [reset x] resets all the elements of [x] to zero value. *)
 
 val fill : ('a, 'b) t -> 'a -> unit
+(** [fill x a] fills the [x] with value [a]. *)
 
 val clone : ('a, 'b) t -> ('a, 'b) t
 (** [clone x] returns a copy of matrix [x]. *)

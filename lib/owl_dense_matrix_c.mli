@@ -24,6 +24,10 @@ type cast_mat = (float, float32_elt) Owl_dense_matrix_generic.t
 
 val empty : int -> int -> mat
 
+val init : int -> int -> (int -> elt) -> mat
+
+val init_nd : int -> int -> (int -> int -> elt) -> mat
+
 val create : int -> int -> elt -> mat
 
 val zeros : int -> int -> mat

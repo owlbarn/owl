@@ -21,6 +21,10 @@ let empty m n = M.empty Complex32 m n
 
 let create m n a = M.create Complex32 m n a
 
+let init m n f = M.init Complex32 m n f
+
+let init_nd m n f = M.init_nd Complex32 m n f
+
 let zeros m n = M.zeros Complex32 m n
 
 let ones m n = M.ones Complex32 m n

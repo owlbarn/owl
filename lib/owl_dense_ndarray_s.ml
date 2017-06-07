@@ -18,6 +18,10 @@ let empty dimension = M.empty Float32 dimension
 
 let create dimension a = M.create Float32 dimension a
 
+let init dimension f = M.init Float32 dimension f
+
+let init_nd dimension f = M.init_nd Float32 dimension f
+
 let zeros dimension = M.zeros Float32 dimension
 
 let ones dimension = M.ones Float32 dimension

@@ -249,6 +249,14 @@ let list_search x l =
   in
   _search x l 0
 
+(* measure the time spent in a function in millisecond *)
+let time f =
+  let t = Unix.gettimeofday () in
+  f ();
+  (Unix.gettimeofday () -. t) *. 1000.
+
+
+(* A simple stack implementation *)
 
 module Stack = struct
 
