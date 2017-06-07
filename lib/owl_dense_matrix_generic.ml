@@ -57,7 +57,8 @@ let eye k n =
     Array2.unsafe_set x i i a
   done; x
 
-let sequential k m n =
+(* FIXME: remove obsolete function *)
+let sequential_obsolete k m n =
   let x = empty k m n in
   let c = ref (_zero k) in
   let a = _one k in
@@ -68,6 +69,10 @@ let sequential k m n =
       c := _op !c a;
     done
   done; x
+
+let sequential k ?a ?step m n =
+  Owl_dense_ndarray_generic.sequential k ?a ?step [|m;n|]
+  |> of_ndarray
 
 let linspace k a b n =
   let x = Owl_dense_ndarray_generic.linspace k a b n in

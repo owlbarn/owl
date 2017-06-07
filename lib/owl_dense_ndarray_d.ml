@@ -26,7 +26,7 @@ let uniform ?scale dimension = M.uniform ?scale Float64 dimension
 
 let gaussian ?sigma dimension = M.gaussian ?sigma Float64 dimension
 
-let sequential dimension = M.sequential Float64 dimension
+let sequential ?a ?step dimension = M.sequential Float64 ?a ?step dimension
 
 let linspace a b n = M.linspace Float64 a b n
 

@@ -60,10 +60,13 @@ val uniform : ?scale:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
 val gaussian : ?sigma:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
 (** [gaussian Float64 [|3;4;5|]] ... *)
 
-val sequential : ('a, 'b) kind -> int array -> ('a, 'b) t
+val sequential : ('a, 'b) kind -> ?a:'a -> ?step:'a -> int array -> ('a, 'b) t
 (** [sequential Bigarray.Float64 [|3;4;5|] 2.] creates a three-diemensional
   array of type [Bigarray.Float64]. Each dimension has the following size: 3, 4,
   and 5. The elements in the array are assigned sequential values.
+
+  [?a] specifies the starting value and the default value is zero; whilst
+  [?step] specifies the step size with default value one.
  *)
 
 val linspace : ('a, 'b) kind -> 'a -> 'a -> int -> ('a, 'b) t

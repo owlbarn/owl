@@ -27,7 +27,7 @@ let ones m n = M.ones Float32 m n
 
 let eye m = M.eye Float32 m
 
-let sequential m n = M.sequential Float32 m n
+let sequential ?a ?step m n = M.sequential Float32 ?a ?step m n
 
 let uniform ?(scale=1.) m n = M.uniform Float32 ~scale m n
 

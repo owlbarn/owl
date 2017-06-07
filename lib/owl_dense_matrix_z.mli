@@ -32,7 +32,7 @@ val ones : int -> int -> mat
 
 val eye : int -> mat
 
-val sequential : int -> int -> mat
+val sequential : ?a:elt -> ?step:elt -> int -> int -> mat
 
 val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
 

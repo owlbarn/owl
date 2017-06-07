@@ -99,7 +99,7 @@ module type BasicSig = sig
 
   val eye : int -> mat
 
-  val sequential : int -> int -> mat
+  val sequential : ?a:elt -> ?step:elt -> int -> int -> mat
 
   val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
 
@@ -419,7 +419,7 @@ module Make_Basic
 
   let eye m = M.eye m |> pack_box
 
-  let sequential m n = M.sequential m n |> pack_box
+  let sequential ?a ?step m n = M.sequential ?a ?step m n |> pack_box
 
   let uniform ?(scale=1.) m n = M.uniform ~scale m n |> pack_box
 
@@ -659,7 +659,7 @@ module Make_Basic
 
 
   let inv x = M.inv (unpack_box x) |> pack_box
-  
+
   let trace x = M.trace (unpack_box x) |> pack_elt
 
   let sum x = M.sum (unpack_box x) |> pack_elt

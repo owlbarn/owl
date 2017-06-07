@@ -27,7 +27,7 @@ let ones m n = M.ones Complex64 m n
 
 let eye m = M.eye Complex64 m
 
-let sequential m n = M.sequential Complex64 m n
+let sequential ?a ?step m n = M.sequential Complex64 ?a ?step m n
 
 let uniform ?(scale=1.) m n = M.uniform Complex64 ~scale m n
 

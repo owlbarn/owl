@@ -311,6 +311,7 @@ type ('a, 'b) owl_vec_op09 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_vec_op10 = int -> ('a, 'b) owl_vec -> 'a -> int
 type ('a, 'b) owl_vec_op11 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit
 type ('a, 'b) owl_vec_op12 = int -> ('a, 'b) owl_vec -> float -> int -> unit
+type ('a, 'b) owl_vec_op13 = int -> ('a, 'b) owl_vec -> 'a -> 'a -> unit
 type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
@@ -1314,5 +1315,16 @@ let _owl_bernoulli : type a b. (a, b) kind -> (a, b) owl_vec_op12 = function
   | Complex64 -> owl_complex_double_bernoulli
   | _         -> failwith "_owl_bernoulli: unsupported operation"
 
+external owl_real_float_sequential : int -> ('a, 'b) owl_vec -> 'a -> 'a -> unit = "real_float_sequential"
+external owl_real_double_sequential : int -> ('a, 'b) owl_vec -> 'a -> 'a -> unit = "real_double_sequential"
+external owl_complex_float_sequential : int -> ('a, 'b) owl_vec -> 'a -> 'a -> unit = "complex_float_sequential"
+external owl_complex_double_sequential : int -> ('a, 'b) owl_vec -> 'a -> 'a -> unit = "complex_double_sequential"
+
+let _owl_sequential : type a b. (a, b) kind -> (a, b) owl_vec_op13 = function
+  | Float32   -> owl_real_float_sequential
+  | Float64   -> owl_real_double_sequential
+  | Complex32 -> owl_complex_float_sequential
+  | Complex64 -> owl_complex_double_sequential
+  | _         -> failwith "_owl_sequential: unsupported operation"
 
 (* ends here *)

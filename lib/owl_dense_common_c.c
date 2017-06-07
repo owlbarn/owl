@@ -1892,4 +1892,30 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) X->r = (rand() < a); X->i = 0
 #include "owl_dense_common_vec_map.c"
 
+// sequential
+
+#define FUN18 real_float_sequential
+#define INIT float a = Double_val(vA); float b = Double_val(vB)
+#define NUMBER float
+#define MAPFN(X) *X = a; a += b
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 real_double_sequential
+#define INIT double a = Double_val(vA); double b = Double_val(vB)
+#define NUMBER double
+#define MAPFN(X) *X = a; a += b
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 complex_float_sequential
+#define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1); float br = Double_field(vB, 0), bi = Double_field(vB, 1)
+#define NUMBER complex_float
+#define MAPFN(X) X->r = ar; X->i = ai; ar += br; ai += bi
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 complex_double_sequential
+#define INIT double ar = Double_field(vA, 0), ai = Double_field(vA, 1); double br = Double_field(vB, 0), bi = Double_field(vB, 1)
+#define NUMBER complex_double
+#define MAPFN(X) X->r = ar; X->i = ai; ar += br; ai += bi
+#include "owl_dense_common_vec_map.c"
+
 //////////////////// function templates ends ////////////////////

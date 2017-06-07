@@ -102,7 +102,7 @@ module type BasicSig = sig
 
   val uniform : ?scale:float -> int array -> arr
 
-  val sequential : int array -> arr
+  val sequential : ?a:elt -> ?step:elt -> int array -> arr
 
   val linspace : elt -> elt -> int -> arr
 
@@ -311,7 +311,7 @@ module Make_Basic
 
   let uniform ?scale i = M.uniform ?scale i |> pack_box
 
-  let sequential i = M.sequential i |> pack_box
+  let sequential ?a ?step i = M.sequential ?a ?step i |> pack_box
 
   let linspace a b n = M.linspace a b n |> pack_box
 

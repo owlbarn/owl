@@ -33,9 +33,11 @@ val ones : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 val eye : ('a, 'b) kind -> int -> ('a, 'b) t
 (** [eye m] creates an [m] by [m] identity matrix. *)
 
-val sequential : ('a, 'b) kind -> int -> int -> ('a, 'b) t
-(** [sequential m n] creates an [m] by [n] matrix. The elements in [x] are
-  initialised sequentiallly from [0] to [(m * n - 1)].
+val sequential : ('a, 'b) kind -> ?a:'a -> ?step:'a -> int -> int -> ('a, 'b) t
+(** [sequential ~a ~step m n] creates an [m] by [n] matrix. The elements in [x]
+  are initialised sequentiallly from [~a] and is increased by [~step].
+
+  The default value of [~a] is zero whilst the default value of [~step] is one.
  *)
 
 val uniform : ?scale:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
