@@ -203,6 +203,10 @@ val elt_greater_equal_scalar : arr -> elt -> arr
 
 (** {6 Input/Output functions} *)
 
+val of_array : elt array -> int array -> arr
+
+val to_array : arr -> elt array
+
 val print : arr -> unit
 
 val save : arr -> string -> unit

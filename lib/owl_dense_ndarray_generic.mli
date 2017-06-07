@@ -432,6 +432,16 @@ val elt_greater_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
 (** {6 Input/Output functions} *)
 
+val of_array : ('a, 'b) kind -> 'a array -> int array -> ('a, 'b) t
+(** [of_array k x d] takes an array [x] and converts it into an ndarray of type
+  [k] and shape [d].
+ *)
+
+val to_array : ('a, 'b) t -> 'a array
+(** [to_array x] converts an ndarray [x] to OCaml's array type. Note the ndarray
+  [x] is flattened before convertion.
+ *)
+
 val print : ('a, 'b) t -> unit
 (** [print x] prints all the elements in [x] as well as their indices. *)
 

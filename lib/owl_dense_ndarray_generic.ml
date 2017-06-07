@@ -1421,6 +1421,18 @@ let save x f = Owl_utils.marshal_to_file x f
 
 let load k f = Owl_utils.marshal_from_file f
 
+let of_array k x d =
+  let n = Array.fold_left (fun a b -> a * b) 1 d in
+  assert (Array.length x = n);
+  let y = Array1.of_array k C_layout x |> genarray_of_array1 in
+  reshape y d
+
+let to_array x =
+  let y = reshape x [|1;numel x|] |> array2_of_genarray in
+  Owl_backend_gsl_linalg.to_array (kind x) y
+
+
+
 (* math operations. code might be verbose for performance concern. *)
 
 let re_c2s x =

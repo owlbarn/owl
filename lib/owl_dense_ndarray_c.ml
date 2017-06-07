@@ -41,6 +41,8 @@ let bernoulli ?p ?seed d = M.bernoulli Complex32 ?p ?seed d
 
 let load f = M.load Complex32 f
 
+let of_array x d = M.of_array Complex32 x d
+
 let mmap fd ?pos shared dims = Genarray.map_file fd ?pos Complex32 c_layout shared dims
 
 (* specific functions for complex32 ndarray *)

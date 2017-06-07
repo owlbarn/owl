@@ -41,6 +41,8 @@ let bernoulli ?p ?seed d = M.bernoulli Complex64 ?p ?seed d
 
 let load f = M.load Complex64 f
 
+let of_array x d = M.of_array Complex64 x d
+
 let mmap fd ?pos shared dims = Genarray.map_file fd ?pos Complex64 c_layout shared dims
 
 (* specific functions for complex64 ndarray *)
