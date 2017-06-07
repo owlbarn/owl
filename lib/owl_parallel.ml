@@ -36,6 +36,10 @@ module type Ndarray = sig
 
   val shape : arr -> int array
 
+  val empty : int array -> arr
+
+  val create : int array -> elt -> arr
+
   val zeros : int array -> arr
 
   val ones  : int array -> arr
@@ -47,6 +51,12 @@ module type Ndarray = sig
   val get : arr -> int array -> elt
 
   val set : arr -> int array -> elt -> unit
+
+  val fill : arr -> elt -> unit
+
+  val concatenate : ?axis:int -> arr array -> arr
+
+  val reshape : arr -> int array -> arr
 
   val map : ?axis:int option array -> (elt -> elt) -> arr -> arr
 
@@ -110,8 +120,12 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
       )
 
   (* make a distributed version of [create_fun d], the elements will be
-  distributed among the working nodes. *)
-  let distributed_create create_fun d =
+    distributed among the working nodes.
+
+    [create_fun] receives three paramaters: shape, starting pos (1d), and
+    length of the chunk (1d).
+   *)
+  let distributed_create_basic create_fun d =
     let workers = E.workers () in
     let chunks = divide_to_chunks d (List.length workers) in
     let c_start = Array.map fst chunks in
@@ -119,14 +133,46 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     let id = E.map (fun _ ->
       let me = E.myself () in
       let pos = Owl_utils.list_search me workers in
-      me, create_fun [|c_len.(pos)|]
+      me, create_fun d c_start.(pos) c_len.(pos)
     ) ""
     in
     make_distr_arr id d c_start c_len (Array.of_list workers)
 
-  let of_ndarray x = None
+  let distributed_create create_fun d =
+    let f _ _ len = create_fun [|len|] in
+    distributed_create_basic f d
 
-  let to_ndarray x = None
+  (* init function [f] receives 1d index *)
+  let init d f =
+    let create_fun _ c_start c_len =
+      let x = M.empty [|c_len|] in
+      for i = 0 to c_len - 1 do
+        let j = c_start + i in
+        M.set x [|i|] (f j)
+      done;
+      x
+    in
+    distributed_create_basic create_fun d
+
+  let create d a =
+    let create_fun d = M.create d a in
+    distributed_create create_fun d
+
+  let zeros d =
+    let create_fun d = M.zeros d in
+    distributed_create create_fun d
+
+  let ones d =
+    let create_fun d = M.ones d in
+    distributed_create create_fun d
+
+  let sequential ?a ?step d = None
+
+  let uniform ?scale d =
+    let create_fun d = M.uniform ?scale d in
+    distributed_create create_fun d
+
+  let gaussian d = None
 
   (* given 1d index, calculate its owner *)
   let calc_index_owner i_1d c_start c_len =
@@ -182,24 +228,6 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     in
     E.collect y_id |> ignore
 
-  let init d = None
-
-  let zeros d =
-    let create_fun d = M.zeros d in
-    distributed_create create_fun d
-
-  let ones d =
-    let create_fun d = M.ones d in
-    distributed_create create_fun d
-
-  let sequential d = None
-
-  let uniform ?scale d =
-    let create_fun d = M.uniform ?scale d in
-    distributed_create create_fun d
-
-  let gaussian d = None
-
   let map_chunk f x =
     let y_id = E.map (fun (node_id, arr) ->
       node_id, f arr
@@ -241,6 +269,24 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     E.collect y_id
     |> List.fold_left (fun b c -> f b (List.nth c 0)) a
 
+  let fill x a = map_chunk (fun y -> M.fill y a) |> ignore
+
+
+  (* of_ndarray and to_ndarray convert between distributed ndarray and local
+    ndarray. They are equivalent to [distribute] and [collect] in some other
+    distributed data processing frameworks. *)
+
+  let of_ndarray x = None
+
+  let to_ndarray x =
+    let l = E.collect x.id
+      |> List.map (fun l' -> List.nth l' 0 |> snd)
+      |> Array.of_list
+    in
+    let y = M.concatenate ~axis:0 l in
+    M.reshape y x.shape
+
+
   let sin x = map_chunk M.sin x
 
   let cos x = map_chunk M.cos x
@@ -272,12 +318,10 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
 end
 
 
-
 module Make_Shared (M : Ndarray) (E : Mapre_Engine) = struct
 
 
 end
-
 
 
 module type Ndarray_Any = sig
