@@ -6,6 +6,7 @@
 * Support interoperation of different number types in Ext and new operators.
 * Support more flexible slicing, tile, repeat, and concatenate functions.
 * Support simple feedforward and convolutional neural networks.
+* Support experimental distributed and parallel computing.
 
 
 ### 0.2.0 (2017-01-20)
