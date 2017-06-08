@@ -596,6 +596,14 @@ let slice axis x =
     )
 
 
+let swap a0 a1 x =
+  let d = num_dims x in
+  let a = Array.init d (fun i -> i) in
+  let t = a.(a0) in
+  a.(a0) <- a.(a1);
+  a.(a1) <- t;
+  transpose ~axis:a x
+
 
 (* input/output functions *)
 

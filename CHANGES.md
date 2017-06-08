@@ -5,6 +5,7 @@
 * Support both matrices and n-dimensional arrays in Algodiff module.
 * Support interoperation of different number types in Ext and new operators.
 * Support more flexible slicing, tile, repeat, and concatenate functions.
+* Support n-dimensional array of any types in Dense.Ndarray.Any module.
 * Support simple feedforward and convolutional neural networks.
 * Support experimental distributed and parallel computing.
 
