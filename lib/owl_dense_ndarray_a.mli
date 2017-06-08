@@ -85,6 +85,14 @@ val map : ('a -> 'b) -> 'a arr -> 'b arr
 
 val mapi : (int -> 'a -> 'b) -> 'a arr -> 'b arr
 
+val filter : ('a -> bool) -> 'a arr -> int array
+
+val filteri : (int -> 'a -> bool) -> 'a arr -> int array
+
+val fold : ('a -> 'b -> 'a) -> 'a -> 'b arr -> 'a
+
+val foldi : (int -> 'a -> 'b -> 'a) -> 'a -> 'b arr -> 'a
+
 val iter2 : ('a -> 'b -> unit) -> 'a arr -> 'b arr -> unit
 
 val iter2i : (int -> 'a -> 'b -> unit) -> 'a arr -> 'b arr -> unit
@@ -92,12 +100,6 @@ val iter2i : (int -> 'a -> 'b -> unit) -> 'a arr -> 'b arr -> unit
 val map2 : ('a -> 'b -> 'c) -> 'a arr -> 'b arr -> 'c arr
 
 val map2i : (int -> 'a -> 'b -> 'c) -> 'a arr -> 'b arr -> 'c arr
-
-val filteri : (int -> 'a -> bool) -> 'a arr -> int array
-
-val filter : ('a -> bool) -> 'a arr -> int array
-
-val fold : ('a -> 'b -> 'a) -> 'a -> 'b arr -> 'a
 
 
 (** {6 Examine array elements or compare two arrays } *)

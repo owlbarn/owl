@@ -194,6 +194,13 @@ let filter f x = filteri (fun _ y -> f y) x
 
 let fold f a x = Array.fold_left f a x.data
 
+let foldi f a x =
+  let a = ref a in
+  for i = 0 to numel x - 1 do
+    a := f i !a x.data.(i)
+  done;
+  !a
+
 let exists f x = Array.exists f x.data
 
 let not_exists f x = not (exists f x)
