@@ -118,6 +118,13 @@ let expand x d =
   | true  -> Owl_utils.array_pad `Left (shape x) 1 d0 |> reshape x
   | false -> x
 
+let reverse x =
+  let y = clone x in
+  Owl_utils.array_reverse y.data;
+  y
+
+
+(* iteration functions *)
 
 let iter f x =
   for i = 0 to (numel x) - 1 do
@@ -172,6 +179,9 @@ let exists f x = Array.exists f x.data
 let not_exists f x = not (exists f x)
 
 let for_all f x = Array.for_all f x.data
+
+
+(* some comparison functions *)
 
 let is_equal ?(cmp=Pervasives.compare) x y =
   assert (x.shape = y.shape);
@@ -264,6 +274,39 @@ let elt_greater_equal_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a
 let elt_less_equal_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b <> 1) x
 
 
+(* operational functions *)
+
+let _check_transpose_axis axis d =
+  assert (Array.length axis = d);
+  let h = Hashtbl.create 16 in
+  Array.iter (fun x ->
+    assert (0 <= x && x < d);
+    assert (Hashtbl.mem h x = false);
+    Hashtbl.add h x 0
+  ) axis
+
+let transpose ?axis x =
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None -> Array.init d (fun i -> d - i - 1)
+  in
+  (* check if axis is a correct permutation *)
+  _check_transpose_axis a d;
+  let s0 = shape x in
+  let s1 = Array.map (fun j -> s0.(j)) a in
+  let i' = Array.make d 0 in
+  let i = Array.make d 0 in
+  let y = make_arr s1 (_calc_stride s1) (Array.copy x.data) in
+  iteri (fun i_1d z ->
+    Owl_dense_common._index_1d_nd i_1d i x.stride;
+    Array.iteri (fun k j -> i'.(k) <- i.(j)) a;
+    set y i' z
+  ) x;
+  y
+
+
+(* input/output functions *)
 
 let of_array x d = make_arr d (_calc_stride d) x
 

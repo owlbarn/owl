@@ -60,6 +60,10 @@ val squeeze : ?axis:int array -> 'a arr -> 'a arr
 
 val expand : 'a arr -> int -> 'a arr
 
+val reverse : 'a arr -> 'a arr
+
+val transpose : ?axis:int array -> 'a arr -> 'a arr
+
 
 (** {6 Iterate array elements} *)
 

@@ -66,7 +66,7 @@ let array_mem a x =
   with exn -> true
 *)
 
-let reverse_array x =
+let array_reverse x =
   let d = Array.length x - 1 in
   let n = d / 2 in
   for i = 0 to n do

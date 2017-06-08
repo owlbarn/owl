@@ -57,11 +57,11 @@ let set x i a =
 let transpose x =
   let i_fun = (fun i ->
     let i' = Array.copy i in
-    Owl_utils.reverse_array i';
+    Owl_utils.array_reverse i';
     i'
   ) in
   let s = shape x in
-  let _ = Owl_utils.reverse_array s in
+  let _ = Owl_utils.array_reverse s in
   let y = _create_view None i_fun (fun i d -> d) s x.data in
   _append_view x y;
   y
