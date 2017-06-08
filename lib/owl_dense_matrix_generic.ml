@@ -1111,14 +1111,14 @@ let pow x1 x2 =
   let x3 = Owl_dense_ndarray_generic.pow x1 x2 in
   of_ndarray x3
 
-let pow0 a x =
+let scalar_pow a x =
   let x = to_ndarray x in
-  let y = Owl_dense_ndarray_generic.pow0 a x in
+  let y = Owl_dense_ndarray_generic.scalar_pow a x in
   of_ndarray y
 
-let pow1 x a =
+let pow_scalar x a =
   let x = to_ndarray x in
-  let y = Owl_dense_ndarray_generic.pow1 x a in
+  let y = Owl_dense_ndarray_generic.pow_scalar x a in
   of_ndarray y
 
 let atan2 x1 x2 =
@@ -1127,14 +1127,14 @@ let atan2 x1 x2 =
   let x3 = Owl_dense_ndarray_generic.atan2 x1 x2 in
   of_ndarray x3
 
-let atan20 a x =
+let scalar_atan2 a x =
   let x = to_ndarray x in
-  let y = Owl_dense_ndarray_generic.atan20 a x in
+  let y = Owl_dense_ndarray_generic.scalar_atan2 a x in
   of_ndarray y
 
-let atan21 x a =
+let atan2_scalar x a =
   let x = to_ndarray x in
-  let y = Owl_dense_ndarray_generic.atan21 x a in
+  let y = Owl_dense_ndarray_generic.atan2_scalar x a in
   of_ndarray y
 
 let hypot x1 x2 =

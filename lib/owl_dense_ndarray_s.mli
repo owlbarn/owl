@@ -350,15 +350,15 @@ val scalar_div : elt -> arr -> arr
 
 val pow : arr -> arr -> arr
 
-val pow0 : elt -> arr -> arr
+val scalar_pow : elt -> arr -> arr
 
-val pow1 : arr -> elt -> arr
+val pow_scalar : arr -> elt -> arr
 
 val atan2 : arr -> arr -> arr
 
-val atan20 : elt -> arr -> arr
+val scalar_atan2 : elt -> arr -> arr
 
-val atan21 : arr -> elt -> arr
+val atan2_scalar : arr -> elt -> arr
 
 val hypot : arr -> arr -> arr
 

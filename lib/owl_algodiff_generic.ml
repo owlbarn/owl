@@ -148,15 +148,15 @@ module type MatrixSig = sig
 
   val pow : mat -> mat -> mat
 
-  val pow0 : elt -> mat -> mat
+  val scalar_pow : elt -> mat -> mat
 
-  val pow1 : mat -> elt -> mat
+  val pow_scalar : mat -> elt -> mat
 
   val atan2 : mat -> mat -> mat
 
-  val atan20 : elt -> mat -> mat
+  val scalar_atan2 : elt -> mat -> mat
 
-  val atan21 : mat -> elt -> mat
+  val atan2_scalar : mat -> elt -> mat
 
   val add : mat -> mat -> mat
 
@@ -282,15 +282,15 @@ module type NdarraySig = sig
 
   val pow : arr -> arr -> arr
 
-  val pow0 : elt -> arr -> arr
+  val scalar_pow : elt -> arr -> arr
 
-  val pow1 : arr -> elt -> arr
+  val pow_scalar : arr -> elt -> arr
 
   val atan2 : arr -> arr -> arr
 
-  val atan20 : elt -> arr -> arr
+  val scalar_atan2 : elt -> arr -> arr
 
-  val atan21 : arr -> elt -> arr
+  val atan2_scalar : arr -> elt -> arr
 
   val add : arr -> arr -> arr
 
@@ -725,11 +725,11 @@ module Make
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(a ** b)
-        | F a, Arr b   -> Arr A.(pow0 a b)
-        | Arr a, F b   -> Arr A.(pow1 a b)
+        | F a, Arr b   -> Arr A.(scalar_pow a b)
+        | Arr a, F b   -> Arr A.(pow_scalar a b)
         | Arr a, Arr b -> Arr A.(pow a b)
-        | F a, Mat b   -> Mat M.(pow0 a b)
-        | Mat a, F b   -> Mat M.(pow1 a b)
+        | F a, Mat b   -> Mat M.(scalar_pow a b)
+        | Mat a, F b   -> Mat M.(pow_scalar a b)
         | Mat a, Mat b -> Mat M.(pow a b)
         | _            -> error_binop "( ** )" a b
       in
@@ -746,11 +746,11 @@ module Make
       let ff a b =
         match a, b with
         | F a, F b     -> F S.(atan2 a b)
-        | F a, Arr b   -> Arr A.(atan20 a b)
-        | Arr a, F b   -> Arr A.(atan21 a b)
+        | F a, Arr b   -> Arr A.(scalar_atan2 a b)
+        | Arr a, F b   -> Arr A.(atan2_scalar a b)
         | Arr a, Arr b -> Arr A.(atan2 a b)
-        | F a, Mat b   -> Mat M.(atan20 a b)
-        | Mat a, F b   -> Mat M.(atan21 a b)
+        | F a, Mat b   -> Mat M.(scalar_atan2 a b)
+        | Mat a, F b   -> Mat M.(atan2_scalar a b)
         | Mat a, Mat b -> Mat M.(atan2 a b)
         | _            -> error_binop "atan2" a b
       in

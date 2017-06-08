@@ -96,6 +96,10 @@ module type ExtendSig = sig
 
   val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 
+  val scalar_pow : float -> (float, 'a) t -> (float, 'a) t
+
+  val pow_scalar : (float, 'a) t -> float -> (float, 'a) t
+
 end
 
 
@@ -207,6 +211,10 @@ module Make_Extend (M : ExtendSig) = struct
   let ( %$ ) = M.fmod_scalar
 
   let ( ** ) = M.pow
+
+  let ( $** ) = M.scalar_pow
+
+  let ( **$ ) = M.pow_scalar
 
 end
 

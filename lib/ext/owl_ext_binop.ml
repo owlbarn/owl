@@ -34,6 +34,7 @@ module F_F = struct
   let ( <= ) x y = M.(x <= y)
   let min2 x y = F M.(min x y)
   let max2 x y = F M.(max x y)
+  let atan2 x y = F M.(atan2 x y)
 
 end
 
@@ -105,7 +106,7 @@ module F_DAS = struct
   let ( * ) a x = M.scalar_mul a x
   let ( / ) a x = M.scalar_div a x
   let ( % ) a x = M.scalar_fmod a x
-  let ( ** ) a x = M.pow0 a x
+  let ( ** ) a x = M.scalar_pow a x
   let ( = ) a x = M.equal_scalar x a
   let ( <> ) a x = M.not_equal_scalar x a
   let ( < ) a x = M.greater_scalar x a
@@ -118,6 +119,7 @@ module F_DAS = struct
   let ( >. ) a x = M.elt_less_scalar x a
   let ( <=. ) a x = M.elt_greater_equal_scalar x a
   let ( >=. ) a x = M.elt_less_equal_scalar x a
+  let atan2 a x = M.scalar_atan2 a x
 
 end
 
@@ -131,7 +133,7 @@ module DAS_F = struct
   let ( * ) x a = M.mul_scalar x a
   let ( / ) x a = M.div_scalar x a
   let ( % ) x a = M.fmod_scalar x a
-  let ( ** ) x a = M.pow1 x a
+  let ( ** ) x a = M.pow_scalar x a
   let ( = ) x a = M.equal_scalar x a
   let ( <> ) x a = M.not_equal_scalar x a
   let ( < ) x a = M.less_scalar x a
@@ -144,6 +146,7 @@ module DAS_F = struct
   let ( >. ) x a = M.elt_greater_scalar x a
   let ( <=. ) x a = M.elt_less_equal_scalar x a
   let ( >=. ) x a = M.elt_greater_equal_scalar x a
+  let atan2 x a = M.atan2_scalar x a
 
 end
 
@@ -172,6 +175,7 @@ module DAS_DAS = struct
   let ( <=. ) x y = M.elt_less_equal x y
   let min2 x y = M.min2 x y
   let max2 x y = M.max2 x y
+  let atan2 x y = M.atan2 x y
 
 end
 
@@ -185,7 +189,7 @@ module F_DAD = struct
   let ( * ) a x = M.scalar_mul a x
   let ( / ) a x = M.scalar_div a x
   let ( % ) a x = M.scalar_fmod a x
-  let ( ** ) a x = M.pow0 a x
+  let ( ** ) a x = M.scalar_pow a x
   let ( = ) a x = M.equal_scalar x a
   let ( <> ) a x = M.not_equal_scalar x a
   let ( < ) a x = M.greater_scalar x a
@@ -198,6 +202,7 @@ module F_DAD = struct
   let ( >. ) a x = M.elt_less_scalar x a
   let ( <=. ) a x = M.elt_greater_equal_scalar x a
   let ( >=. ) a x = M.elt_less_equal_scalar x a
+  let atan2 a x = M.scalar_atan2 a x
 
 end
 
@@ -211,7 +216,7 @@ module DAD_F = struct
   let ( * ) x a = M.mul_scalar x a
   let ( / ) x a = M.div_scalar x a
   let ( % ) x a = M.fmod_scalar a x
-  let ( ** ) x a = M.pow1 x a
+  let ( ** ) x a = M.pow_scalar x a
   let ( = ) x a = M.equal_scalar x a
   let ( <> ) x a = M.not_equal_scalar x a
   let ( < ) x a = M.less_scalar x a
@@ -224,6 +229,7 @@ module DAD_F = struct
   let ( >. ) x a = M.elt_greater_scalar x a
   let ( <=. ) x a = M.elt_less_equal_scalar x a
   let ( >=. ) x a = M.elt_greater_equal_scalar x a
+  let atan2 x a = M.atan2_scalar x a
 
 end
 
@@ -252,6 +258,7 @@ module DAD_DAD = struct
   let ( <=. ) x y = M.elt_less_equal x y
   let min2 x y = M.min2 x y
   let max2 x y = M.max2 x y
+  let atan2 x y = M.atan2 x y
 
 end
 
@@ -265,7 +272,7 @@ module F_DMS = struct
   let ( * ) a x = M.scalar_mul a x
   let ( / ) a x = M.scalar_div a x
   let ( % ) a x = M.scalar_fmod a x
-  let ( ** ) a x = M.pow0 a x
+  let ( ** ) a x = M.scalar_pow a x
   let ( = ) a x = M.equal_scalar x a
   let ( <> ) a x = M.not_equal_scalar x a
   let ( < ) a x = M.greater_scalar x a
@@ -278,6 +285,7 @@ module F_DMS = struct
   let ( >. ) a x = M.elt_less_scalar x a
   let ( <=. ) a x = M.elt_greater_equal_scalar x a
   let ( >=. ) a x = M.elt_less_equal_scalar x a
+  let atan2 a x = M.scalar_atan2 a x
 
 end
 
@@ -291,7 +299,7 @@ module DMS_F = struct
   let ( * ) x a = M.mul_scalar x a
   let ( / ) x a = M.div_scalar x a
   let ( % ) x a = M.fmod_scalar x a
-  let ( ** ) x a = M.pow1 x a
+  let ( ** ) x a = M.pow_scalar x a
   let ( = ) x a = M.equal_scalar x a
   let ( <> ) x a = M.not_equal_scalar x a
   let ( < ) x a = M.less_scalar x a
@@ -304,6 +312,7 @@ module DMS_F = struct
   let ( >. ) x a = M.elt_greater_scalar x a
   let ( <=. ) x a = M.elt_less_equal_scalar x a
   let ( >=. ) x a = M.elt_greater_equal_scalar x a
+  let atan2 x a = M.atan2_scalar x a
 
 end
 
@@ -333,6 +342,7 @@ module DMS_DMS = struct
   let ( <=. ) x y = M.elt_less_equal x y
   let min2 x y = M.min2 x y
   let max2 x y = M.max2 x y
+  let atan2 x y = M.atan2 x y
 
 end
 
@@ -346,7 +356,7 @@ module F_DMD = struct
   let ( * ) a x = M.scalar_mul a x
   let ( / ) a x = M.scalar_div a x
   let ( % ) a x = M.scalar_fmod a x
-  let ( ** ) a x = M.pow0 a x
+  let ( ** ) a x = M.scalar_pow a x
   let ( = ) a x = M.equal_scalar x a
   let ( <> ) a x = M.not_equal_scalar x a
   let ( < ) a x = M.greater_scalar x a
@@ -359,6 +369,7 @@ module F_DMD = struct
   let ( >. ) a x = M.elt_less_scalar x a
   let ( <=. ) a x = M.elt_greater_equal_scalar x a
   let ( >=. ) a x = M.elt_less_equal_scalar x a
+  let atan2 a x = M.scalar_atan2 a x
 
 end
 
@@ -372,7 +383,7 @@ module DMD_F = struct
   let ( * ) x a = M.mul_scalar x a
   let ( / ) x a = M.div_scalar x a
   let ( % ) x a = M.fmod_scalar x a
-  let ( ** ) x a = M.pow1 x a
+  let ( ** ) x a = M.pow_scalar x a
   let ( = ) x a = M.equal_scalar x a
   let ( <> ) x a = M.not_equal_scalar x a
   let ( < ) x a = M.less_scalar x a
@@ -385,6 +396,7 @@ module DMD_F = struct
   let ( >. ) x a = M.elt_greater_scalar x a
   let ( <=. ) x a = M.elt_less_equal_scalar x a
   let ( >=. ) x a = M.elt_greater_equal_scalar x a
+  let atan2 x a = M.atan2_scalar x a
 
 end
 
@@ -414,6 +426,7 @@ module DMD_DMD = struct
   let ( <=. ) x y = M.elt_less_equal x y
   let min2 x y = M.min2 x y
   let max2 x y = M.max2 x y
+  let atan2 x y = M.atan2 x y
 
 end
 
@@ -736,6 +749,7 @@ module DAS_DAD = struct
   let ( <=. ) x y = M.elt_less_equal (lift x) y
   let min2 x y = M.min2 (lift x) y
   let max2 x y = M.max2 (lift x) y
+  let atan2 x y = M.atan2 (lift x) y
 
 end
 
@@ -765,6 +779,7 @@ module DAD_DAS = struct
   let ( <=. ) x y = M.elt_less_equal x (lift y)
   let min2 x y = M.min2 x (lift y)
   let max2 x y = M.max2 x (lift y)
+  let atan2 x y = M.atan2 x (lift y)
 
 end
 
@@ -845,6 +860,7 @@ module DMS_DMD = struct
   let ( <=. ) x y = M.elt_less_equal (lift x) y
   let min2 x y = M.min2 (lift x) y
   let max2 x y = M.max2 (lift x) y
+  let atan2 x y = M.atan2 (lift x) y
 
 end
 
@@ -875,6 +891,7 @@ module DMD_DMS = struct
   let ( <=. ) x y = M.elt_less_equal x (lift y)
   let min2 x y = M.min2 x (lift y)
   let max2 x y = M.max2 x (lift y)
+  let atan2 x y = M.atan2 x (lift y)
 
 end
 
@@ -2934,6 +2951,7 @@ let min2 x y = match x, y with
   | DMD _, DMS _ -> DMD_DMS.min2 x y
   | _            -> error_binop "min2" x y
 
+
 let max2 x y = match x, y with
   | F x, F y     -> F_F.max2 x y
   | DAS _, DAS _ -> DAS_DAS.max2 x y
@@ -2945,6 +2963,7 @@ let max2 x y = match x, y with
   | DMS _, DMD _ -> DMS_DMD.max2 x y
   | DMD _, DMS _ -> DMD_DMS.max2 x y
   | _            -> error_binop "max2" x y
+
 
 let ( *@ ) x y = match x, y with
   | DMS _, DMS _ -> DMS_DMS.( *@ ) x y
@@ -2964,6 +2983,27 @@ let ( *@ ) x y = match x, y with
   | DMC _, DMD _ -> DMC_DMD.( *@ ) x y
   | DMD _, DMC _ -> DMD_DMC.( *@ ) x y
   | _            -> error_binop "( *@ )" x y
+
+
+let atan2 x y = match x, y with
+  | F x, F y     -> F_F.(atan2 x y)
+  | F _, DAS _   -> F_DAS.(atan2 x y)
+  | DAS _, F _   -> DAS_F.(atan2 x y)
+  | DAS _, DAS _ -> DAS_DAS.(atan2 x y)
+  | F _, DAD _   -> F_DAD.(atan2 x y)
+  | DAD _, F _   -> DAD_F.(atan2 x y)
+  | DAD _, DAD _ -> DAD_DAD.(atan2 x y)
+  | F _, DMS _   -> F_DMS.(atan2 x y)
+  | DMS _, F _   -> DMS_F.(atan2 x y)
+  | DMS _, DMS _ -> DMS_DMS.(atan2 x y)
+  | F _, DMD _   -> F_DMD.(atan2 x y)
+  | DMD _, F _   -> DMD_F.(atan2 x y)
+  | DMD _, DMD _ -> DMD_DMD.(atan2 x y)
+  | DAS _, DAD _ -> DAS_DAD.(atan2 x y)
+  | DAD _, DAS _ -> DAD_DAS.(atan2 x y)
+  | DMS _, DMD _ -> DMS_DMD.(atan2 x y)
+  | DMD _, DMS _ -> DMD_DMS.(atan2 x y)
+  | _            -> error_binop "( atan2 )" x y
 
 
 let ( != ) x y = ( <> ) x y

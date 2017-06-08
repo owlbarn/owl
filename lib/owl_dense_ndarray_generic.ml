@@ -804,25 +804,25 @@ let log_sum_exp x =
   _owl_log_sum_exp (kind x) (numel x) y
 
 (* TODO: optimise *)
-let pow0 a x =
+let scalar_pow a x =
   let y = empty (kind x) (shape x) in
   fill y a;
   pow y x
 
 (* TODO: optimise *)
-let pow1 x a =
+let pow_scalar x a =
   let y = empty (kind x) (shape x) in
   fill y a;
   pow x y
 
 (* TODO: optimise *)
-let atan20 a x =
+let scalar_atan2 a x =
   let y = empty (kind x) (shape x) in
   fill y a;
   atan2 y x
 
 (* TODO: optimise *)
-let atan21 x a =
+let atan2_scalar x a =
   let y = empty (kind x) (shape x) in
   fill y a;
   atan2 x y

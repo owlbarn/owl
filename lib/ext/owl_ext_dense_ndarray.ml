@@ -608,15 +608,15 @@ module type SD_Sig = sig
 
   val pow : arr -> arr -> arr
 
-  val pow0 : elt -> arr -> arr
+  val scalar_pow : elt -> arr -> arr
 
-  val pow1 : arr -> elt -> arr
+  val pow_scalar : arr -> elt -> arr
 
   val atan2 : arr -> arr -> arr
 
-  val atan20 : elt -> arr -> arr
+  val scalar_atan2 : elt -> arr -> arr
 
-  val atan21 : arr -> elt -> arr
+  val atan2_scalar : arr -> elt -> arr
 
   val hypot : arr -> arr -> arr
 
@@ -747,15 +747,15 @@ module Make_SD
 
   let pow x y = M.pow (unpack_box x) (unpack_box y) |> pack_box
 
-  let pow0 a x = M.pow0 (unpack_elt a) (unpack_box x) |> pack_box
+  let scalar_pow a x = M.scalar_pow (unpack_elt a) (unpack_box x) |> pack_box
 
-  let pow1 x a = M.pow1 (unpack_box x) (unpack_elt a) |> pack_box
+  let pow_scalar x a = M.pow_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
   let atan2 x y = M.atan2 (unpack_box x) (unpack_box y) |> pack_box
 
-  let atan20 a x = M.atan20 (unpack_elt a) (unpack_box x) |> pack_box
+  let scalar_atan2 a x = M.scalar_atan2 (unpack_elt a) (unpack_box x) |> pack_box
 
-  let atan21 x a = M.atan21 (unpack_box x) (unpack_elt a) |> pack_box
+  let atan2_scalar x a = M.atan2_scalar (unpack_box x) (unpack_elt a) |> pack_box
 
   let hypot x y = M.hypot (unpack_box x) (unpack_box y) |> pack_box
 

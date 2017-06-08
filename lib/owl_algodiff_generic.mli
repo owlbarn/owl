@@ -147,15 +147,15 @@ module type MatrixSig = sig
 
   val pow : mat -> mat -> mat
 
-  val pow0 : elt -> mat -> mat
+  val scalar_pow : elt -> mat -> mat
 
-  val pow1 : mat -> elt -> mat
+  val pow_scalar : mat -> elt -> mat
 
   val atan2 : mat -> mat -> mat
 
-  val atan20 : elt -> mat -> mat
+  val scalar_atan2 : elt -> mat -> mat
 
-  val atan21 : mat -> elt -> mat
+  val atan2_scalar : mat -> elt -> mat
 
   val add : mat -> mat -> mat
 
@@ -282,15 +282,15 @@ module type NdarraySig = sig
 
   val pow : arr -> arr -> arr
 
-  val pow0 : elt -> arr -> arr
+  val scalar_pow : elt -> arr -> arr
 
-  val pow1 : arr -> elt -> arr
+  val pow_scalar : arr -> elt -> arr
 
   val atan2 : arr -> arr -> arr
 
-  val atan20 : elt -> arr -> arr
+  val scalar_atan2 : elt -> arr -> arr
 
-  val atan21 : arr -> elt -> arr
+  val atan2_scalar : arr -> elt -> arr
 
   val add : arr -> arr -> arr
 

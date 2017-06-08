@@ -793,24 +793,24 @@ val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
   elementwise, and returns the result in a new ndarray.
  *)
 
-val pow0 : float -> (float, 'a) t -> (float, 'a) t
-(** [pow0 a x] computes the power value of a scalar value [a] using the elements
+val scalar_pow : float -> (float, 'a) t -> (float, 'a) t
+(** [scalar_pow a x] computes the power value of a scalar value [a] using the elements
   in a ndarray [x].
  *)
 
-val pow1 : (float, 'a) t -> float -> (float, 'a) t
-(** [pow1 x a] computes each element in [x] power to [a]. *)
+val pow_scalar : (float, 'a) t -> float -> (float, 'a) t
+(** [pow_scalar x a] computes each element in [x] power to [a]. *)
 
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new ndarray.
  *)
 
-val atan20 : float -> (float, 'a) t -> (float, 'a) t
-(** [atan20 a x] *)
+val scalar_atan2 : float -> (float, 'a) t -> (float, 'a) t
+(** [scalar_atan2 a x] *)
 
-val atan21 : (float, 'a) t -> float -> (float, 'a) t
-(** [atan20 x a] *)
+val atan2_scalar : (float, 'a) t -> float -> (float, 'a) t
+(** [scalar_atan2 x a] *)
 
 val hypot : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (** [hypot x y] computes [sqrt(x*x + y*y)] of all the elements in [x] and [y]
