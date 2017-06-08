@@ -181,6 +181,19 @@ let map2i f x y =
     f i x.data.(i) y.data.(i)
   ))
 
+let filteri f x =
+  let s = Owl_utils.Stack.make () in
+  iteri (fun i y ->
+    match f i y with
+    | true  -> Owl_utils.Stack.push s i
+    | false -> ()
+  ) x;
+  Owl_utils.Stack.to_array s
+
+let filter f x = filteri (fun _ y -> f y) x
+
+let fold f a x = Array.fold_left f a x.data
+
 let exists f x = Array.exists f x.data
 
 let not_exists f x = not (exists f x)

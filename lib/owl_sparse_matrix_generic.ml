@@ -130,10 +130,11 @@ let foldi f a x =
   !r
 
 let filteri f x =
-  let r = ref [||] in
+  let s = Owl_utils.Stack.make () in
   iteri (fun i j y ->
-    if (f i j y) then r := Array.append !r [|(i,j)|]
-  ) x; !r
+    if (f i j y) then Owl_utils.Stack.push s (i,j)
+  ) x;
+  Owl_utils.Stack.to_array s
 
 let filter f x = filteri (fun _ _ y -> f y) x
 
@@ -189,10 +190,11 @@ let foldi_nz f a x =
 let fold_nz f a x = _fold_basic iter_nz f a x
 
 let filteri_nz f x =
-  let r = ref [||] in
+  let s = Owl_utils.Stack.make () in
   iteri_nz (fun i j y ->
-    if (f i j y) then r := Array.append !r [|(i,j)|]
-  ) x; !r
+    if (f i j y) then Owl_utils.Stack.push s (i,j)
+  ) x;
+  Owl_utils.Stack.to_array s
 
 let filter_nz f x = filteri_nz (fun _ _ y -> f y) x
 
@@ -245,19 +247,21 @@ let iter_cols_nz f x = iteri_cols_nz (fun _ y -> f y) x
 
 let mapi_rows_nz f x =
   let a = _disassemble_rows x in
-  let r = ref [||] in
+  let s = Owl_utils.Stack.make () in
   Array.iteri (fun i y ->
-    if (nnz y) != 0 then r := Array.append !r [|f i y|]
-  ) a; !r
+    if (nnz y) != 0 then Owl_utils.Stack.push s (f i y)
+  ) a;
+  Owl_utils.Stack.to_array s
 
 let map_rows_nz f x = mapi_rows_nz (fun _ y -> f y) x
 
 let mapi_cols_nz f x =
   let a = _disassemble_cols x in
-  let r = ref [||] in
+  let s = Owl_utils.Stack.make () in
   Array.iteri (fun i y ->
-    if (nnz y) != 0 then r := Array.append !r [|f i y|]
-  ) a; !r
+    if (nnz y) != 0 then Owl_utils.Stack.push s (f i y)
+  ) a;
+  Owl_utils.Stack.to_array s
 
 let map_cols_nz f x = mapi_cols_nz (fun _ y -> f y) x
 

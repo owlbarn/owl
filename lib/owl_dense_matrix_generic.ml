@@ -318,26 +318,29 @@ let mapi_by_col d f x =
 let map_by_col d f x = mapi_by_col d (fun _ y -> f y) x
 
 let filteri f x =
-  let r = ref [||] in
+  let s = Owl_utils.Stack.make () in
   iteri (fun i j y ->
-    if (f i j y) then r := Array.append !r [|(i,j)|]
-  ) x; !r
+    if (f i j y) then Owl_utils.Stack.push s (i,j)
+  ) x;
+  Owl_utils.Stack.to_array s
 
 let filter f x = filteri (fun _ _ y -> f y) x
 
 let filteri_rows f x =
-  let r = ref [||] in
-  let _ = iteri_rows (fun i v ->
-    if (f i v) then r := Array.append !r [|i|]
-  ) x in !r
+  let s = Owl_utils.Stack.make () in
+  iteri_rows (fun i v ->
+    if (f i v) then Owl_utils.Stack.push s i
+  ) x;
+  Owl_utils.Stack.to_array s
 
 let filter_rows f x = filteri_rows (fun _ v -> f v) x
 
 let filteri_cols f x =
-  let r = ref [||] in
-  let _ = iteri_cols (fun i v ->
-    if (f i v) then r := Array.append !r [|i|]
-  ) x in !r
+  let s = Owl_utils.Stack.make () in
+  iteri_cols (fun i v ->
+    if (f i v) then Owl_utils.Stack.push s i
+  ) x;
+  Owl_utils.Stack.to_array s
 
 let filter_cols f x = filteri_cols (fun _ v -> f v) x
 

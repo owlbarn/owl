@@ -93,6 +93,12 @@ val map2 : ('a -> 'b -> 'c) -> 'a arr -> 'b arr -> 'c arr
 
 val map2i : (int -> 'a -> 'b -> 'c) -> 'a arr -> 'b arr -> 'c arr
 
+val filteri : (int -> 'a -> bool) -> 'a arr -> int array
+
+val filter : ('a -> bool) -> 'a arr -> int array
+
+val fold : ('a -> 'b -> 'a) -> 'a -> 'b arr -> 'a
+
 
 (** {6 Examine array elements or compare two arrays } *)
 

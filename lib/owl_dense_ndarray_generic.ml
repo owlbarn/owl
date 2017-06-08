@@ -1207,13 +1207,13 @@ let swap a0 a1 x =
   transpose ~axis:a x
 
 let filteri ?axis f x =
-  let a = ref [||] in
+  let s = Owl_utils.Stack.make () in
   iteri ?axis (fun i y ->
     if f i y = true then
       let j = Array.copy i in
-      a := Array.append !a [|j|]
+      Owl_utils.Stack.push s j
   ) x;
-  !a
+  Owl_utils.Stack.to_array s
 
 let filter ?axis f x = filteri ?axis (fun _ y -> f y) x
 

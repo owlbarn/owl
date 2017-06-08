@@ -279,24 +279,24 @@ let swap a0 a1 x =
   transpose ~axis:a x
 
 let filteri ?axis f x =
-  let a = ref [||] in
+  let s = Owl_utils.Stack.make () in
   iteri ?axis (fun i y ->
     if f i y = true then
       let j = Array.copy i in
-      a := Array.append !a [|j|]
+      Owl_utils.Stack.push s j
   ) x;
-  !a
+  Owl_utils.Stack.to_array s
 
 let filter ?axis f x = filteri ?axis (fun _ y -> f y) x
 
 let filteri_nz ?axis f x =
-  let a = ref [||] in
+  let s = Owl_utils.Stack.make () in
   iteri_nz ?axis (fun i y ->
     if f i y = true then
       let j = Array.copy i in
-      a := Array.append !a [|j|]
+      Owl_utils.Stack.push s j
   ) x;
-  !a
+  Owl_utils.Stack.to_array s
 
 let filter_nz ?axis f x = filteri_nz ?axis (fun _ y -> f y) x
 
@@ -320,13 +320,13 @@ let foldi_nz ?axis f a x =
 
 let slice axis x =
   (* make the index mapping *)
-  let m = ref [||] in
+  let s = Owl_utils.Stack.make () in
   for i = 0 to Array.length axis - 1 do
     match axis.(i) with
     | Some _ -> ()
-    | None   -> m := Array.append !m [|i|]
+    | None   -> Owl_utils.Stack.push s i
   done;
-  let m = !m in
+  let m = Owl_utils.Stack.to_array s in
   (* create a new sparse ndarray for the slice *)
   let s0 = shape x in
   let s1 = Array.map (fun i -> s0.(i)) m in
