@@ -3,6 +3,13 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(* This is the module to support N-dimensional array of any types. In order to
+  differentiate from others supporting numerical types, I made this module
+  mostly self-contained. That means, I don't intend to make the code in this
+  module reused by other modules, and some functions are copied from other
+  files then locally adapted to provide the needed functionality.
+ *)
+
 open Owl_dense_common
 
 type 'a arr = {
@@ -503,6 +510,70 @@ let pad v d x =
   let x1 = y.data in
   _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1;
   y
+
+
+(* refer to Owl_slicing module for more information *)
+let slice axis x =
+  let axis = Owl_utils.llss2aarr axis in
+  (* check axis is within boundary then re-format *)
+  let s0 = shape x in
+  let axis = Owl_slicing.check_slice_definition axis s0 in
+  (* calculate the new shape for slice *)
+  let s1 = Owl_slicing.calc_slice_shape axis in
+  let y_data = Array.make (_calc_numel_from_shape s1) x.data.(0) in
+  let y = make_arr s1 (_calc_stride s1) y_data in
+  (* transform into 1d array *)
+  let x' = x.data in
+  let y' = y.data in
+  (* prepare function of copying blocks *)
+  let d0 = Array.length s1 in
+  let d1, cb = Owl_slicing.calc_continuous_blksz axis s0 in
+  let sd = _calc_stride s0 in
+  let ofsy_i = ref 0 in
+  (* two copying strategies based on the size of the minimum continuous block *)
+  match cb > 1 with
+  | true  -> (
+      (* yay, there are at least some continuous blocks *)
+      let b = cb in
+      let f = fun i -> (
+        let ofsx = _index_nd_1d i sd in
+        let ofsy = !ofsy_i * b in
+        Array.blit x' ofsx y' ofsy b;
+        ofsy_i := !ofsy_i + 1
+      )
+      in
+      (* start copying blocks *)
+      Owl_slicing._foreach_continuous_blk d0 d1 axis f;
+      (* all done, return the result *)
+      y
+    )
+  | false -> (
+      (* copy happens at the highest dimension, no continuous block *)
+      let b = s1.(d0 - 1) in
+      let c = axis.(d0 - 1).(2) in
+      let cx = if c > 0 then c else -c in
+      let cy = if c > 0 then 1 else -1 in
+      let dd =
+        if c > 0 then axis.(d0 - 1).(0)
+        else axis.(d0 - 1).(0) + (b - 1) * c
+      in
+      let f = fun i -> (
+        let ofsx = ref (_index_nd_1d i sd + dd) in
+        let ofsy = ref (!ofsy_i * b) in
+        (* TODO: blit cannot be used, have to copy one by one *)
+        for i = 0 to b - 1 do
+          y'.(!ofsy) <- x'.(!ofsx);
+          ofsx := !ofsx + cx;
+          ofsy := !ofsy + cy;
+        done;
+        ofsy_i := !ofsy_i + 1
+      )
+      in
+      (* start copying blocks *)
+      Owl_slicing._foreach_continuous_blk d0 (d1 - 1) axis f;
+      (* all done, return the result *)
+      y
+    )
 
 
 
