@@ -306,6 +306,46 @@ let transpose ?axis x =
   y
 
 
+let concatenate ?(axis=0) xs =
+  (* get the shapes of all inputs and etc. *)
+  let shapes = Array.map shape xs in
+  let shape0 = Array.copy shapes.(0) in
+  shape0.(axis) <- 0;
+  let acc_dim = ref 0 in
+  (* validate all the input shapes; update step_sz *)
+  let step_sz = Array.(make (length xs) 0) in
+  Array.iteri (fun i shape1 ->
+    step_sz.(i) <- (_calc_slice shape1).(axis);
+    acc_dim := !acc_dim + shape1.(axis);
+    shape1.(axis) <- 0;
+    assert (shape0 = shape1);
+  ) shapes;
+  (* allocalte space for new array *)
+  shape0.(axis) <- !acc_dim;
+  let y_data = Array.make (_calc_numel_from_shape shape0) xs.(0).data.(0) in
+  let y = make_arr shape0 (_calc_stride shape0) y_data in
+  (* flatten y then calculate the number of copies *)
+  let z = y.data in
+  let slice_sz = (_calc_slice shape0).(axis) in
+  let m = numel y / slice_sz in
+  let n = Array.length xs in
+  (* flatten all the inputs and init the copy location *)
+  let x_flt = Array.map (fun x -> x.data) xs in
+  let x_ofs = Array.make n 0 in
+  (* copy data in the flattened space *)
+  let z_ofs = ref 0 in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      (* ignore(_cp_op step_sz.(j) ~ofsx:x_ofs.(j) ~incx:1 ~ofsy:!z_ofs ~incy:1 x_flt.(j) z); *)
+      Array.blit x_flt.(j) x_ofs.(j) z !z_ofs step_sz.(j);
+      x_ofs.(j) <- x_ofs.(j) + step_sz.(j);
+      z_ofs := !z_ofs + step_sz.(j);
+    done;
+  done;
+  (* all done, return the combined result *)
+  y
+
+
 (* input/output functions *)
 
 let of_array x d = make_arr d (_calc_stride d) x
