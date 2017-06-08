@@ -306,6 +306,63 @@ let transpose ?axis x =
   y
 
 
+let tile x reps =
+  (* check the validity of reps *)
+  if Array.exists ((>) 1) reps then
+    failwith "tile: repitition must be >= 1";
+  (* align and promote the shape *)
+  let a = num_dims x in
+  let b = Array.length reps in
+  let x, reps = match a < b with
+    | true -> (
+      let d = Owl_utils.array_pad `Left (shape x) 1 (b - a) in
+      (reshape x d), reps
+      )
+    | false -> (
+      let r = Owl_utils.array_pad `Left reps 1 (a - b) in
+      x, r
+      )
+  in
+  (* calculate the smallest continuous slice dx *)
+  let i = ref (Array.length reps - 1) in
+  let sx = shape x in
+  let dx = ref sx.(!i) in
+  while reps.(!i) = 1 && !i - 1 >= 0 do
+    i := !i - 1;
+    dx := !dx * sx.(!i);
+  done;
+  (* make the array to store the result *)
+  let sy = Owl_utils.array_map2i (fun _ a b -> a * b) sx reps in
+  let y_data = Array.make (_calc_numel_from_shape sy) x.data.(0) in
+  let y = make_arr sy (_calc_stride sy) y_data in
+  (* project x and y to 1-dimensional arrays *)
+  let x1 = x.data in
+  let y1 = y.data in
+  let stride_x = _calc_stride (shape x) in
+  let stride_y = _calc_stride (shape y) in
+  (* recursively tile the data within y *)
+  let rec _tile ofsx ofsy lvl =
+    if lvl = !i then (
+      for k = 0 to reps.(lvl) - 1 do
+        let ofsy' = ofsy + (k * !dx) in
+        Array.blit x1 ofsx y1 ofsy' !dx;
+      done;
+    ) else (
+      for j = 0 to sx.(lvl) - 1 do
+        let ofsx' = ofsx + j * stride_x.(lvl) in
+        let ofsy' = ofsy + j * stride_y.(lvl) in
+        _tile ofsx' ofsy' (lvl + 1);
+      done;
+      let _len = stride_y.(lvl) * sx.(lvl) in
+      for k = 1 to reps.(lvl) - 1 do
+        let ofsy' = ofsy + (k * _len) in
+        Array.blit y1 ofsy y1 ofsy' _len
+      done
+    )
+  in
+  _tile 0 0 0; y
+
+
 let repeat ?axis x reps =
   let highest_dim = Array.length (shape x) - 1 in
   (* by default, repeat at the highest dimension *)
@@ -318,17 +375,18 @@ let repeat ?axis x reps =
   _shape_y.(axis) <- _shape_y.(axis) * reps;
   let y_data = Array.make (_calc_numel_from_shape _shape_y) x.data.(0) in
   let y = make_arr _shape_y (_calc_stride _shape_y) y_data in
-  (* transform into genarray first *)
+  (* transform into a flat array first *)
   let x' = x.data in
   let y' = y.data in
   (* if repeat at the highest dimension, use this strategy *)
   if axis = highest_dim then (
+    (* TODO: omg, cannot use blit, so have to copy one by one, I need to fiugre
+      out a more efficient way to copy at the highest dimension. *)
     let ofsy = ref 0 in
     for i = 0 to numel x - 1 do
       for j = 0 to reps - 1 do
-        (* FIXME: weird ... make compiler happy *)
         y'.(!ofsy) <- x'.(i);
-        ofsy := !ofsy + 1
+        ofsy := !ofsy + 1;
       done
     done
   )
@@ -342,8 +400,8 @@ let repeat ?axis x reps =
       for j = 0 to reps - 1 do
         let ofsy = (i * reps + j) * _slice_sz in
         Array.blit x' ofsx y' ofsy _slice_sz;
-      done;
-    done;
+      done
+    done
   );
   (* all done, return the result *)
   y

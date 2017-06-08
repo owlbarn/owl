@@ -122,7 +122,7 @@ let tile x reps =
     i := !i - 1;
     dx := !dx * sx.(!i);
   done;
-  (* project x and y to 1-dimensional array s*)
+  (* project x and y to 1-dimensional arrays *)
   let sy = Owl_utils.array_map2i (fun _ a b -> a * b) sx reps in
   let y = empty (kind x) sy in
   let x1 = Bigarray.reshape_1 x (numel x) in

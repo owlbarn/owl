@@ -66,6 +66,8 @@ val transpose : ?axis:int array -> 'a arr -> 'a arr
 
 val repeat : ?axis:int -> 'a arr -> int -> 'a arr
 
+val tile : 'a arr -> int array -> 'a arr
+
 val concatenate : ?axis:int -> 'a arr array -> 'a arr
 
 
