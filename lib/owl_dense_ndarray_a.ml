@@ -23,30 +23,55 @@ let create d a =
   let n = _calc_numel_from_shape d in
   make_arr d (_calc_stride d) (Array.make n a)
 
-let sequential d =
+let init d f =
   let n = _calc_numel_from_shape d in
-  let data = Array.init n (fun i -> i) in
+  let data = Array.init n (fun i -> f i) in
   make_arr d (_calc_stride d) data
 
-let get x i = x.data.(_index_nd_1d i x.stride)
+let init_nd d f =
+  let n = _calc_numel_from_shape d in
+  let j = Array.copy d in
+  let s = _calc_stride d in
+  let data = Array.init n (fun i ->
+    Owl_dense_common._index_1d_nd i j s;
+    f j;
+  )
+  in
+  make_arr d (_calc_stride d) data
 
-let set x i a = x.data.(_index_nd_1d i x.stride) <- a
+let sequential ?(a=0.) ?(step=1.) d =
+  let n = _calc_numel_from_shape d in
+  let a = ref (a -. step) in
+  let data = Array.init n (fun _ ->
+    a := !a +. step;
+    !a
+  ) in
+  make_arr d (_calc_stride d) data
+
+let zeros d = create d 0.
+
+let ones d = create d 1.
 
 let num_dims x = Array.length x.shape
 
-let shape x = x.shape
+let shape x = Array.copy x.shape
 
 let nth_dim x i = x.shape.(i)
 
 let numel x = _calc_numel_from_shape x.shape
 
-let sub_left = None
+
+let get x i = x.data.(_index_nd_1d i x.stride)
+
+let set x i a = x.data.(_index_nd_1d i x.stride) <- a
 
 let slice_left = None
 
-let copy src dst = None
+let copy src dst =
+  assert (src.shape = dst.shape);
+  Array.blit src.data 0 dst.data 0 (numel src)
 
-let fill x a = x.data <- Array.(make (length x.data) a)
+let fill x a = Array.fill x.data 0 (numel x) a
 
 let reshape x d =
   let m = _calc_numel_from_shape x.shape in
@@ -54,7 +79,7 @@ let reshape x d =
   assert (m = n);
   make_arr d x.stride x.data
 
-let flatten x = x.shape <- [|Array.length x.data|]
+let flatten x = make_arr [|Array.length x.data|] [|1|] x.data
 
 let clone x = {
   shape  = Array.copy x.shape;
@@ -96,12 +121,12 @@ let expand x d =
 
 let iter f x =
   for i = 0 to (numel x) - 1 do
-    f x.data.(i)
+    f x.data.(i) |> ignore
   done
 
 let iteri f x =
   for i = 0 to (numel x) - 1 do
-    f i x.data.(i)
+    f i x.data.(i) |> ignore
   done
 
 let map f x =
@@ -119,13 +144,13 @@ let mapi f x =
 let iter2 f x y =
   assert (x.shape = y.shape);
   for i = 0 to (numel x) - 1 do
-    f x.data.(i) y.data.(i)
+    f x.data.(i) y.data.(i) |> ignore
   done
 
 let iter2i f x y =
   assert (x.shape = y.shape);
   for i = 0 to (numel x) - 1 do
-    f i x.data.(i) y.data.(i)
+    f i x.data.(i) y.data.(i) |> ignore
   done
 
 let map2 f x y =
@@ -142,19 +167,107 @@ let map2i f x y =
     f i x.data.(i) y.data.(i)
   ))
 
-let exists f x =
-  let b = ref false in
-  try iter (fun y ->
-    if (f y) then (
-      b := true;
-      failwith "found";
-    )
-  ) x; !b
-  with Failure _ -> !b
+let exists f x = Array.exists f x.data
 
 let not_exists f x = not (exists f x)
 
-let for_all f x = let g y = not (f y) in not_exists g x
+let for_all f x = Array.for_all f x.data
+
+let is_equal ?(cmp=Pervasives.compare) x y =
+  assert (x.shape = y.shape);
+  let r = ref true in
+  try iter2 (fun a b ->
+    if (cmp a b) <> 0 then (
+      r := false;
+      failwith "found";
+    )
+  ) x y; !r
+  with Failure _ -> !r
+
+let not_equal ?(cmp=Pervasives.compare) x y =
+  assert (x.shape = y.shape);
+  let r = ref true in
+  try iter2 (fun a b ->
+    if (cmp a b) = 0 then (
+      r := false;
+      failwith "found";
+    )
+  ) x y; !r
+  with Failure _ -> !r
+
+let greater ?(cmp=Pervasives.compare) x y =
+  assert (x.shape = y.shape);
+  let r = ref true in
+  try iter2 (fun a b ->
+    if (cmp a b) <> 1 then (
+      r := false;
+      failwith "found";
+    )
+  ) x y; !r
+  with Failure _ -> !r
+
+let less ?(cmp=Pervasives.compare) x y =
+  assert (x.shape = y.shape);
+  let r = ref true in
+  try iter2 (fun a b ->
+    if (cmp a b) <> (-1) then (
+      r := false;
+      failwith "found";
+    )
+  ) x y; !r
+  with Failure _ -> !r
+
+let greater_equal ?(cmp=Pervasives.compare) x y =
+  assert (x.shape = y.shape);
+  let r = ref true in
+  try iter2 (fun a b ->
+    if (cmp a b) = (-1) then (
+      r := false;
+      failwith "found";
+    )
+  ) x y; !r
+  with Failure _ -> !r
+
+let less_equal ?(cmp=Pervasives.compare) x y =
+  assert (x.shape = y.shape);
+  let r = ref true in
+  try iter2 (fun a b ->
+    if (cmp a b) = 1 then (
+      r := false;
+      failwith "found";
+    )
+  ) x y; !r
+  with Failure _ -> !r
+
+let elt_equal ?(cmp=Pervasives.compare) x y = map2 (fun a b -> cmp a b = 0) x y
+
+let elt_not_equal ?(cmp=Pervasives.compare) x y = map2 (fun a b -> cmp a b <> 0) x y
+
+let elt_greater ?(cmp=Pervasives.compare) x y = map2 (fun a b -> cmp a b = 1) x y
+
+let elt_less ?(cmp=Pervasives.compare) x y = map2 (fun a b -> cmp a b = (-1)) x y
+
+let elt_greater_equal ?(cmp=Pervasives.compare) x y = map2 (fun a b -> cmp a b <> (-1)) x y
+
+let elt_less_equal ?(cmp=Pervasives.compare) x y = map2 (fun a b -> cmp a b <> 1) x y
+
+let elt_equal_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b = 0) x
+
+let elt_not_equal_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b <> 0) x
+
+let elt_greater_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b = 1) x
+
+let elt_less_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b = (-1)) x
+
+let elt_greater_equal_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b <> (-1)) x
+
+let elt_less_equal_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b <> 1) x
+
+
+
+let of_array x d = make_arr d (_calc_stride d) x
+
+let to_array x = x.data
 
 
 
