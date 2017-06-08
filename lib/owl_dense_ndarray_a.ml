@@ -306,6 +306,49 @@ let transpose ?axis x =
   y
 
 
+let repeat ?axis x reps =
+  let highest_dim = Array.length (shape x) - 1 in
+  (* by default, repeat at the highest dimension *)
+  let axis = match axis with
+    | Some a -> a
+    | None   -> highest_dim
+  in
+  (* calculate the new shape of y based on reps *)
+  let _shape_y = shape x in
+  _shape_y.(axis) <- _shape_y.(axis) * reps;
+  let y_data = Array.make (_calc_numel_from_shape _shape_y) x.data.(0) in
+  let y = make_arr _shape_y (_calc_stride _shape_y) y_data in
+  (* transform into genarray first *)
+  let x' = x.data in
+  let y' = y.data in
+  (* if repeat at the highest dimension, use this strategy *)
+  if axis = highest_dim then (
+    let ofsy = ref 0 in
+    for i = 0 to numel x - 1 do
+      for j = 0 to reps - 1 do
+        (* FIXME: weird ... make compiler happy *)
+        y'.(!ofsy) <- x'.(i);
+        ofsy := !ofsy + 1
+      done
+    done
+  )
+  (* if repeat at another dimension, use this block copying *)
+  else (
+    let _stride_x = _calc_stride (shape x) in
+    let _slice_sz = _stride_x.(axis) in
+    (* be careful of the index, this is fortran layout *)
+    for i = 0 to (numel x) / _slice_sz - 1 do
+      let ofsx = i * _slice_sz in
+      for j = 0 to reps - 1 do
+        let ofsy = (i * reps + j) * _slice_sz in
+        Array.blit x' ofsx y' ofsy _slice_sz;
+      done;
+    done;
+  );
+  (* all done, return the result *)
+  y
+
+
 let concatenate ?(axis=0) xs =
   (* get the shapes of all inputs and etc. *)
   let shapes = Array.map shape xs in
@@ -336,7 +379,6 @@ let concatenate ?(axis=0) xs =
   let z_ofs = ref 0 in
   for i = 0 to m - 1 do
     for j = 0 to n - 1 do
-      (* ignore(_cp_op step_sz.(j) ~ofsx:x_ofs.(j) ~incx:1 ~ofsy:!z_ofs ~incy:1 x_flt.(j) z); *)
       Array.blit x_flt.(j) x_ofs.(j) z !z_ofs step_sz.(j);
       x_ofs.(j) <- x_ofs.(j) + step_sz.(j);
       z_ofs := !z_ofs + step_sz.(j);
