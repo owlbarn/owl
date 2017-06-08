@@ -70,6 +70,8 @@ val tile : 'a arr -> int array -> 'a arr
 
 val concatenate : ?axis:int -> 'a arr array -> 'a arr
 
+val pad : 'a -> int list list -> 'a arr -> 'a arr
+
 
 (** {6 Iterate array elements} *)
 

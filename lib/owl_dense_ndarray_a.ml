@@ -446,6 +446,66 @@ let concatenate ?(axis=0) xs =
   y
 
 
+(* the following four padding related functions, they are simply the replica
+  from Owl_dense_ndarray_generic module, so please refer to that module. *)
+
+let _expand_padding_index d s =
+  let ls = Array.length s in
+  let ld = Array.length d in
+  let d = Owl_utils.(array_pad `Right d [|0;0|] (ls - ld)) in
+  Array.map (function
+    | [||]  -> [|0;0|]
+    | [|x|] -> [|x;x|]
+    | x     -> x
+  ) d
+
+let rec _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1 =
+  if d0 < d1 then (
+    for i = 0 to s0.(d0) - 1 do
+      i0.(d0) <- i;
+      i1.(d0) <- i + p1.(d0).(0);
+      _copy_to_padding p1 ls l0 l1 i0 i1 (d0 + 1) d1 s0 s1 x0 x1;
+      i0.(d0) <- 0;
+      i1.(d0) <- p1.(d0).(0);
+    done
+  )
+  else (
+    let j0 = _index_nd_1d i0 l0 in
+    let j1 = _index_nd_1d i1 l1 in
+    Array.blit x0 j0 x1 j1 ls.(d0)
+  )
+
+let _highest_padding_dimension p =
+  let l = Array.length p - 1 in
+  let d = ref l in
+  (try for i = l downto 0 do
+    d := i;
+    if p.(i) <> [|0;0|] then failwith "stop"
+  done with exn -> ());
+  !d
+
+let pad v d x =
+  let s0 = shape x in
+  let p1 = _expand_padding_index (Owl_utils.llss2aarr d) s0 in
+  let s1 = Array.map2 (fun m n -> m + n.(0) + n.(1)) s0 p1 in
+  (* create ndarray y for storing the result *)
+  let y_data = Array.make (_calc_numel_from_shape s1) v in
+  let y = make_arr s1 (_calc_stride s1) y_data in
+  (* prepare variables for block copying *)
+  let ls = _calc_slice s0 in
+  let l0 = _calc_stride s0 in
+  let l1 = _calc_stride s1 in
+  let i0 = Array.make (num_dims x) 0 in
+  let i1 = Array.map (fun a -> a.(0)) p1 in
+  let d0 = 0 in
+  let d1 = _highest_padding_dimension p1 in
+  let x0 = x.data in
+  let x1 = y.data in
+  _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1;
+  y
+
+
+
 (* input/output functions *)
 
 let of_array x d = make_arr d (_calc_stride d) x
