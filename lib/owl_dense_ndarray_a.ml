@@ -300,6 +300,26 @@ let elt_greater_equal_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a
 
 let elt_less_equal_scalar ?(cmp=Pervasives.compare) x b = map (fun a -> cmp a b <> 1) x
 
+let sort ?(cmp=Pervasives.compare) x = Array.sort cmp x.data
+
+let max ?(cmp=Pervasives.compare) x =
+  let r = ref x.data.(0) in
+  iter (fun a ->
+    match cmp a !r with
+    | 1 -> r := a
+    | _ -> ()
+  ) x;
+  !r
+
+let min ?(cmp=Pervasives.compare) x =
+  let r = ref x.data.(0) in
+  iter (fun a ->
+    match cmp !r a with
+    | 1 -> r := a
+    | _ -> ()
+  ) x;
+  !r
+
 
 (* operational functions *)
 

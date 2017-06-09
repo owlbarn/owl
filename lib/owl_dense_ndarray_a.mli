@@ -148,6 +148,12 @@ val elt_greater_equal_scalar : ?cmp:('a -> 'a -> int) -> 'a arr -> 'a -> bool ar
 
 val elt_less_equal_scalar : ?cmp:('a -> 'a -> int) -> 'a arr -> 'a -> bool arr
 
+val sort : ?cmp:('a -> 'a -> int) -> 'a arr -> unit
+
+val min : ?cmp:('a -> 'a -> int) -> 'a arr -> 'a
+
+val max : ?cmp:('a -> 'a -> int) -> 'a arr -> 'a
+
 
 (** {6 Input/Output functions} *)
 
