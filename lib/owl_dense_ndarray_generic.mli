@@ -757,6 +757,12 @@ val l2norm_sqr : ('a, 'b) t -> float
   it always returns a float number.
  *)
 
+val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [cumsum ~axis x] : performs cumulative sum of the elements along the given
+  axis [~axis]. If [~axis] is [None], then the [cumsum] is performed over the
+  flattened [x]. The returned result however always remains the same shape.
+ *)
+
 
 (** {6 Binary mathematical operations } *)
 

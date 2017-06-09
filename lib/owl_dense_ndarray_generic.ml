@@ -2376,6 +2376,42 @@ let draw_along_dim0 x n =
   (slice_along_dim0 x indices), indices
 
 
+let cumsum ?axis x =
+  let y = clone x in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  match axis with
+  | Some a -> (
+      let ndim = num_dims x in
+      assert (0 <= a && a < ndim);
+
+      let _stride = strides x in
+      let _slicez = slice_size x in
+      let m = (numel x) / _slicez.(a) in
+      let n = _stride.(a) in
+      let incx_m = _slicez.(a) in
+      let incx_n = 1 in
+      let incy_m = _slicez.(a) in
+      let incy_n = 1 in
+
+      let ofsx = ref 0 in
+      let ofsy = ref 0 in
+      let incx = _stride.(a) in
+      let incy = _stride.(a) in
+
+      for i = 0 to (shape x).(a) - 1 do
+        _owl_cumsum (kind x) m n x' !ofsx incx_m incx_n y' !ofsy incy_m incy_n;
+        ofsx := !ofsx + incx;
+        ofsy := !ofsy + incy;
+      done;
+      y
+    )
+  | None -> (
+      let n = numel x in
+      _owl_cumsum (kind x) 1 n x' 0 0 1 y' 0 0 1;
+      y
+    )
+
 
 (* TODO *)
 
@@ -2403,8 +2439,6 @@ let std x = None
 let dot x = None
 
 let tensordot x = None
-
-let cumsum axis x = None
 
 
 

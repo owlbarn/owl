@@ -311,6 +311,7 @@ type ('a, 'b) owl_vec_op10 = int -> ('a, 'b) owl_vec -> 'a -> int
 type ('a, 'b) owl_vec_op11 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit
 type ('a, 'b) owl_vec_op12 = int -> ('a, 'b) owl_vec -> float -> int -> unit
 type ('a, 'b) owl_vec_op13 = int -> ('a, 'b) owl_vec -> 'a -> 'a -> unit
+type ('a, 'b) owl_vec_op14 = int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit
 type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
@@ -1325,5 +1326,18 @@ let _owl_sequential : type a b. (a, b) kind -> (a, b) owl_vec_op13 = function
   | Complex32 -> owl_complex_float_sequential
   | Complex64 -> owl_complex_double_sequential
   | _         -> failwith "_owl_sequential: unsupported operation"
+
+external owl_real_float_cumsum : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "real_float_cumsum" "real_float_cumsum_impl"
+external owl_real_double_cumsum : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "real_double_cumsum" "real_double_cumsum_impl"
+external owl_complex_float_cumsum : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex_float_cumsum" "complex_float_cumsum_impl"
+external owl_complex_double_cumsum : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex_double_cumsum" "complex_double_cumsum_impl"
+
+let _owl_cumsum : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
+  | Float32   -> owl_real_float_cumsum
+  | Float64   -> owl_real_double_cumsum
+  | Complex32 -> owl_complex_float_cumsum
+  | Complex64 -> owl_complex_double_cumsum
+  | _         -> failwith "_owl_cumsum: unsupported operation"
+
 
 (* ends here *)

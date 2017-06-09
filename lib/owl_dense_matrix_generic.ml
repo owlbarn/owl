@@ -1095,18 +1095,18 @@ let l2norm_sqr x =
   let y = to_ndarray x in
   Owl_dense_ndarray_generic.l2norm_sqr y
 
-let cross_entropy x y =
-  let x = to_ndarray x in
-  let y = to_ndarray y in
-  Owl_dense_ndarray_generic.cross_entropy x y
+let cumsum ?axis x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.cumsum ?axis y in
+  of_ndarray y
 
 
 (* binary matrix operation *)
 
-(* FIXME: obsolete *)
-let pow_scalar x c =
-  let _op = _power_scalar_elt (kind x) in
-  map (fun y -> (_op) y c) x
+let cross_entropy x y =
+  let x = to_ndarray x in
+  let y = to_ndarray y in
+  Owl_dense_ndarray_generic.cross_entropy x y
 
 let pow x1 x2 =
   let x1 = to_ndarray x1 in

@@ -329,6 +329,8 @@ val l2norm : arr -> float
 
 val l2norm_sqr : arr -> float
 
+val cumsum : ?axis:int -> arr -> arr
+
 
 (** {6 Binary mathematical operations } *)
 

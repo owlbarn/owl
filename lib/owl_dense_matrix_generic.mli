@@ -932,6 +932,10 @@ val max_pool : ?padding:Owl_dense_ndarray_generic.padding -> (float, 'a) t -> in
 val avg_pool : ?padding:Owl_dense_ndarray_generic.padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** [] *)
 
+val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(* [cumsum ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
+ *)
+
 
 (** {6 Binary mathematical operations } *)
 
