@@ -1339,5 +1339,17 @@ let _owl_cumsum : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
   | Complex64 -> owl_complex_double_cumsum
   | _         -> failwith "_owl_cumsum: unsupported operation"
 
+external owl_real_float_cumprod : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "real_float_cumprod" "real_float_cumprod_impl"
+external owl_real_double_cumprod : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "real_double_cumprod" "real_double_cumprod_impl"
+external owl_complex_float_cumprod : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex_float_cumprod" "complex_float_cumprod_impl"
+external owl_complex_double_cumprod : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex_double_cumprod" "complex_double_cumprod_impl"
+
+let _owl_cumprod : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
+  | Float32   -> owl_real_float_cumprod
+  | Float64   -> owl_real_double_cumprod
+  | Complex32 -> owl_complex_float_cumprod
+  | Complex64 -> owl_complex_double_cumprod
+  | _         -> failwith "_owl_cumprod: unsupported operation"
+
 
 (* ends here *)

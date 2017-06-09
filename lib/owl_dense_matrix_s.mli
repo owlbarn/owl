@@ -465,6 +465,8 @@ val avg_pool : ?padding:Owl_dense_ndarray_generic.padding -> mat -> int array ->
 
 val cumsum : ?axis:int -> mat -> mat
 
+val cumprod : ?axis:int -> mat -> mat
+
 
 (** {6 Binary mathematical operations } *)
 

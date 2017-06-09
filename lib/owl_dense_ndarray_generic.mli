@@ -763,6 +763,11 @@ val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
   flattened [x]. The returned result however always remains the same shape.
  *)
 
+val cumprod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [cumprod ~axis x] : similar to [cumsum] but performs cumulative product of
+  the elements along the given [~axis].
+ *)
+
 
 (** {6 Binary mathematical operations } *)
 

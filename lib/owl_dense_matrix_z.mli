@@ -380,6 +380,8 @@ val l2norm_sqr : mat -> float
 
 val cumsum : ?axis:int -> mat -> mat
 
+val cumprod : ?axis:int -> mat -> mat
+
 
 (** {6 Binary mathematical operations } *)
 

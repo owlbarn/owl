@@ -936,6 +936,10 @@ val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (* [cumsum ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
  *)
 
+val cumprod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(* [cumprod ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
+ *)
+
 
 (** {6 Binary mathematical operations } *)
 

@@ -2376,7 +2376,7 @@ let draw_along_dim0 x n =
   (slice_along_dim0 x indices), indices
 
 
-let cumsum ?axis x =
+let cumulative_op ?axis _cumop x =
   let y = clone x in
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
@@ -2400,7 +2400,7 @@ let cumsum ?axis x =
       let incy = _stride.(a) in
 
       for i = 0 to (shape x).(a) - 1 do
-        _owl_cumsum (kind x) m n x' !ofsx incx_m incx_n y' !ofsy incy_m incy_n;
+        _cumop m n x' !ofsx incx_m incx_n y' !ofsy incy_m incy_n;
         ofsx := !ofsx + incx;
         ofsy := !ofsy + incy;
       done;
@@ -2408,9 +2408,17 @@ let cumsum ?axis x =
     )
   | None -> (
       let n = numel x in
-      _owl_cumsum (kind x) 1 n x' 0 0 1 y' 0 0 1;
+      _cumop 1 n x' 0 0 1 y' 0 0 1;
       y
     )
+
+let cumsum ?axis x =
+  let _cumop = _owl_cumsum (kind x) in
+  cumulative_op ?axis _cumop x
+
+let cumprod ?axis x =
+  let _cumop = _owl_cumprod (kind x) in
+  cumulative_op ?axis _cumop x
 
 
 (* TODO *)

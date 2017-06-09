@@ -1100,6 +1100,11 @@ let cumsum ?axis x =
   let y = Owl_dense_ndarray_generic.cumsum ?axis y in
   of_ndarray y
 
+let cumprod ?axis x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.cumprod ?axis y in
+  of_ndarray y
+
 
 (* binary matrix operation *)
 
