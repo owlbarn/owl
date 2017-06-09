@@ -320,6 +320,26 @@ let min ?(cmp=Pervasives.compare) x =
   ) x;
   !r
 
+let max_i ?(cmp=Pervasives.compare) x =
+  let r = ref x.data.(0) in
+  let j = ref 0 in
+  iteri (fun i a ->
+    match cmp a !r with
+    | 1 -> r := a; j := i
+    | _ -> ()
+  ) x;
+  !r, !j
+
+let min_i ?(cmp=Pervasives.compare) x =
+  let r = ref x.data.(0) in
+  let j = ref 0 in
+  iteri (fun i a ->
+    match cmp !r a with
+    | 1 -> r := a; j := i
+    | _ -> ()
+  ) x;
+  !r, !j
+
 
 (* operational functions *)
 
@@ -623,6 +643,18 @@ let swap a0 a1 x =
   a.(a0) <- a.(a1);
   a.(a1) <- t;
   transpose ~axis:a x
+
+let strides x = x |> shape |> Owl_dense_common._calc_stride
+
+let slice_size x = x |> shape |> Owl_dense_common._calc_slice
+
+let index_nd_1d i_nd _stride =
+  Owl_dense_common._index_nd_1d i_nd _stride
+
+let index_1d_nd i_1d _stride =
+  let i_nd = Array.copy _stride in
+  Owl_dense_common._index_1d_nd i_1d i_nd _stride;
+  i_nd
 
 
 (* input/output functions *)

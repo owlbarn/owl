@@ -124,6 +124,30 @@ val kind : ('a, 'b) t -> ('a, 'b) kind
   [Bigarray.Complex64].
  *)
 
+val strides : ('a, 'b) t -> int array
+(** [strides x] calcuates the strides of [x]. E.g., if [x] is of shape [[|3;4;5|]],
+  the returned strides will be [[|20;5;1|]].
+ *)
+
+val slice_size : ('a, 'b) t -> int array
+(* [slice_size] calculates the slice size in each dimension, E.g., if [x] is of
+  shape [[|3;4;5|]], the returned slice size will be [|60; 20; 5|].
+ *)
+
+val index_1d_nd : int -> int array -> int array
+(** [index_1d_nd i stride] converts one-dimensional index [i] to n-dimensional
+  index according to the passed in [stride].
+
+  NOTE: you need to pass in stride, not the shape of [x]!
+ *)
+
+val index_nd_1d : int array -> int array -> int
+(** [index_nd_1d i shp] converts n-dimensional index [i] to one-dimensional
+  index according to the passed in [stride].
+
+  NOTE: you need to pass in stride, not the shape of [x]!
+ *)
+
 
 (** {6 Manipulate a N-dimensional array} *)
 

@@ -250,6 +250,18 @@ let expand x d =
   | true  -> Owl_utils.array_pad `Left (shape x) 1 d0 |> reshape x
   | false -> x
 
+let strides x = x |> shape |> Owl_dense_common._calc_stride
+
+let slice_size x = x |> shape |> Owl_dense_common._calc_slice
+
+let index_nd_1d i_nd _stride =
+  Owl_dense_common._index_nd_1d i_nd _stride
+
+let index_1d_nd i_1d _stride =
+  let i_nd = Array.copy _stride in
+  Owl_dense_common._index_1d_nd i_1d i_nd _stride;
+  i_nd
+
 
 (* TODO: zpxy, zmxy, sort ... *)
 

@@ -55,6 +55,14 @@ val size_in_bytes : arr -> int
 
 val same_shape : arr -> arr -> bool
 
+val strides : arr -> int array
+
+val slice_size : arr -> int array
+
+val index_1d_nd : int -> int array -> int array
+
+val index_nd_1d : int array -> int array -> int
+
 
 (** {6 Manipulate a N-dimensional array} *)
 

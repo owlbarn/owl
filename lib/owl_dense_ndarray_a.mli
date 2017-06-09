@@ -37,6 +37,14 @@ val numel : 'a arr -> int
 
 val same_shape : 'a arr -> 'a arr -> bool
 
+val strides : 'a arr -> int array
+
+val slice_size : 'a arr -> int array
+
+val index_1d_nd : int -> int array -> int array
+
+val index_nd_1d : int array -> int array -> int
+
 
 (** {6 Manipulate a N-dimensional array} *)
 
@@ -153,6 +161,10 @@ val sort : ?cmp:('a -> 'a -> int) -> 'a arr -> unit
 val min : ?cmp:('a -> 'a -> int) -> 'a arr -> 'a
 
 val max : ?cmp:('a -> 'a -> int) -> 'a arr -> 'a
+
+val min_i : ?cmp:('a -> 'a -> int) -> 'a arr -> 'a * int
+
+val max_i : ?cmp:('a -> 'a -> int) -> 'a arr -> 'a * int
 
 
 (** {6 Input/Output functions} *)
