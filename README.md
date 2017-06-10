@@ -629,4 +629,4 @@ Owl is under active development, and I really look forward to your comments and 
 
 Just pull the image and dig into code saved in `/root/owl`, then have fun!
 
-**Acknowledgement: Funded in part by EPSRC project - Contrive (EP/N028422/1).**
+**Acknowledgement: Funded in part by EPSRC project - Contrive (EP/N028422/1).** Please refer to the [full acknowledgement](https://github.com/ryanrhymes/owl/blob/master/ACKNOWLEDGEMENT.md) for more details.
