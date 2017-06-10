@@ -845,26 +845,21 @@ val atanh : (float, 'a) t -> (float, 'a) t
   returns the result in a new matrix.
  *)
 
-val floor : (float, 'a) t -> (float, 'a) t
+val floor : ('a, 'b) t -> ('a, 'b) t
 (** [floor x] computes the floor of the elements in [x] and returns the result
   in a new matrix.
  *)
 
-val ceil : (float, 'a) t -> (float, 'a) t
+val ceil : ('a, 'b) t -> ('a, 'b) t
 (** [ceil x] computes the ceiling of the elements in [x] and returns the result
   in a new matrix.
  *)
 
-val round : (float, 'a) t -> (float, 'a) t
+val round : ('a, 'b) t -> ('a, 'b) t
 (** [round x] rounds the elements in [x] and returns the result in a new matrix. *)
 
-val trunc : (float, 'a) t -> (float, 'a) t
+val trunc : ('a, 'b) t -> ('a, 'b) t
 (** [trunc x] computes the truncation of the elements in [x] and returns the
-  result in a new matrix.
- *)
-
-val erf : (float, 'a) t -> (float, 'a) t
-(** [erf x] computes the error function of the elements in [x] and returns the
   result in a new matrix.
  *)
 
@@ -872,6 +867,11 @@ val modf : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** [modf x] performs [modf] over all the elements in [x], the fractal part is
   saved in the first element of the returned tuple whereas the integer part is
   saved in the second element.
+ *)
+
+val erf : (float, 'a) t -> (float, 'a) t
+(** [erf x] computes the error function of the elements in [x] and returns the
+  result in a new matrix.
  *)
 
 val erfc : (float, 'a) t -> (float, 'a) t

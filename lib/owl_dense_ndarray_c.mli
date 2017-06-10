@@ -252,6 +252,14 @@ val cumsum : ?axis:int -> arr -> arr
 
 val cumprod : ?axis:int -> arr -> arr
 
+val floor : arr -> arr
+
+val ceil : arr -> arr
+
+val round : arr -> arr
+
+val trunc : arr -> arr
+
 val modf : arr -> arr * arr
 
 

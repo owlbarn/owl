@@ -382,6 +382,14 @@ val cumsum : ?axis:int -> mat -> mat
 
 val cumprod : ?axis:int -> mat -> mat
 
+val floor : mat -> mat
+
+val ceil : mat -> mat
+
+val round : mat -> mat
+
+val trunc : mat -> mat
+
 val modf : mat -> mat * mat
 
 

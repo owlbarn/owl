@@ -1319,58 +1319,106 @@ value cp_two_doubles(double d0, double d1)
 
 // floor
 
-#define FUN4 real_float_floor
+#define FUN14 real_float_floor
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (floor(X))
+#define MAPFN(X,Y) *Y = floorf(*X)
 #include "owl_dense_common_vec_map.c"
 
-#define FUN4 real_double_floor
+#define FUN14 real_double_floor
 #define NUMBER double
 #define NUMBER1 double
-#define MAPFN(X) (floor(X))
+#define MAPFN(X,Y) *Y = floor(*X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 complex_float_floor
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = floorf(X->r); Y->i = floorf(X->i)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 complex_double_floor
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = floor(X->r); Y->i = floor(X->i)
 #include "owl_dense_common_vec_map.c"
 
 // ceil
 
-#define FUN4 real_float_ceil
+#define FUN14 real_float_ceil
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (ceil(X))
+#define MAPFN(X,Y) *Y = ceilf(*X)
 #include "owl_dense_common_vec_map.c"
 
-#define FUN4 real_double_ceil
+#define FUN14 real_double_ceil
 #define NUMBER double
 #define NUMBER1 double
-#define MAPFN(X) (ceil(X))
+#define MAPFN(X,Y) *Y = ceil(*X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 complex_float_ceil
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = ceilf(X->r); Y->i = ceilf(X->i)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 complex_double_ceil
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = ceil(X->r); Y->i = ceil(X->i)
 #include "owl_dense_common_vec_map.c"
 
 // round
 
-#define FUN4 real_float_round
+#define FUN14 real_float_round
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (round(X))
+#define MAPFN(X,Y) *Y = roundf(*X)
 #include "owl_dense_common_vec_map.c"
 
-#define FUN4 real_double_round
+#define FUN14 real_double_round
 #define NUMBER double
 #define NUMBER1 double
-#define MAPFN(X) (round(X))
+#define MAPFN(X,Y) *Y = round(*X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 complex_float_round
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = roundf(X->r); Y->i = roundf(X->i)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 complex_double_round
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = round(X->r); Y->i = round(X->i)
 #include "owl_dense_common_vec_map.c"
 
 // trunc
 
-#define FUN4 real_float_trunc
+#define FUN14 real_float_trunc
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (trunc(X))
+#define MAPFN(X,Y) *Y = truncf(*X)
 #include "owl_dense_common_vec_map.c"
 
-#define FUN4 real_double_trunc
+#define FUN14 real_double_trunc
 #define NUMBER double
 #define NUMBER1 double
-#define MAPFN(X) (trunc(X))
+#define MAPFN(X,Y) *Y = trunc(*X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 complex_float_trunc
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = truncf(X->r); Y->i = truncf(X->i)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 complex_double_trunc
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = trunc(X->r); Y->i = trunc(X->i)
 #include "owl_dense_common_vec_map.c"
 
 // erf
