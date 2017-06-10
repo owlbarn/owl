@@ -585,6 +585,11 @@ val exp2 : (float, 'a) t -> (float, 'a) t
   the result in a new ndarray.
  *)
 
+val exp10 : (float, 'a) t -> (float, 'a) t
+(** [exp10 x] computes the base-10 exponential of the elements in [x] and returns
+  the result in a new ndarray.
+ *)
+
 val expm1 : (float, 'a) t -> (float, 'a) t
 (** [expm1 x] computes [exp x -. 1.] of the elements in [x] and returns the
   result in a new ndarray.

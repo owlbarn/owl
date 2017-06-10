@@ -259,6 +259,8 @@ val exp : arr -> arr
 
 val exp2 : arr -> arr
 
+val exp10 : arr -> arr
+
 val expm1 : arr -> arr
 
 val log : arr -> arr

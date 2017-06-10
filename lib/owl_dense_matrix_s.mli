@@ -389,6 +389,8 @@ val exp : mat -> mat
 
 val exp2 : mat -> mat
 
+val exp10 : mat -> mat
+
 val expm1 : mat -> mat
 
 val log : mat -> mat

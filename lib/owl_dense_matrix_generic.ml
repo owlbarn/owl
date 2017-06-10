@@ -920,6 +920,11 @@ let exp2 x =
   let y = Owl_dense_ndarray_generic.exp2 y in
   of_ndarray y
 
+let exp10 x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.exp10 y in
+  of_ndarray y
+
 let expm1 x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray_generic.expm1 y in

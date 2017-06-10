@@ -802,7 +802,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN5 complex_float_l1norm
 #define INIT float r = 0.
 #define NUMBER complex_float
-#define ACCFN(A,X) (A += sqrt (X.r * X.r + X.i * X.i))
+#define ACCFN(A,X) (A += sqrtf (X.r * X.r + X.i * X.i))
 #define COPYNUM(X) (caml_copy_double(X))
 #include "owl_dense_common_vec_fold.c"
 
@@ -960,7 +960,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 complex_float_abs
 #define NUMBER complex_float
 #define NUMBER1 float
-#define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
+#define MAPFN(X) (sqrtf (X.r * X.r + X.i * X.i))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 complex_double_abs
@@ -1028,7 +1028,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_sqrt
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (sqrt(X))
+#define MAPFN(X) (sqrtf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_sqrt
@@ -1042,7 +1042,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_cbrt
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (cbrt(X))
+#define MAPFN(X) (cbrtf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_cbrt
@@ -1056,7 +1056,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_exp
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (exp(X))
+#define MAPFN(X) (expf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_exp
@@ -1070,7 +1070,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_exp2
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (exp2(X))
+#define MAPFN(X) (exp2f(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_exp2
@@ -1079,12 +1079,26 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) (exp2(X))
 #include "owl_dense_common_vec_map.c"
 
+// exp10
+
+#define FUN4 real_float_exp10
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X) (exp10(X))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 real_double_exp10
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X) (exp10(X))
+#include "owl_dense_common_vec_map.c"
+
 // expm1
 
 #define FUN4 real_float_expm1
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (expm1(X))
+#define MAPFN(X) (expm1f(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_expm1
@@ -1098,7 +1112,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_log
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (log(X))
+#define MAPFN(X) (logf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_log
@@ -1112,7 +1126,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_log10
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (log10(X))
+#define MAPFN(X) (log10f(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_log10
@@ -1126,7 +1140,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_log2
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (log2(X))
+#define MAPFN(X) (log2f(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_log2
@@ -1140,7 +1154,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_log1p
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (log1p(X))
+#define MAPFN(X) (log1pf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_log1p
@@ -1154,7 +1168,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_sin
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (sin(X))
+#define MAPFN(X) (sinf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_sin
@@ -1168,7 +1182,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_cos
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (cos(X))
+#define MAPFN(X) (cosf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_cos
@@ -1182,7 +1196,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_tan
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (tan(X))
+#define MAPFN(X) (tanf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_tan
@@ -1196,7 +1210,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_asin
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (asin(X))
+#define MAPFN(X) (asinf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_asin
@@ -1210,7 +1224,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_acos
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (acos(X))
+#define MAPFN(X) (acosf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_acos
@@ -1224,7 +1238,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_atan
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (atan(X))
+#define MAPFN(X) (atanf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_atan
@@ -1238,7 +1252,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_sinh
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (sinh(X))
+#define MAPFN(X) (sinhf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_sinh
@@ -1252,7 +1266,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_cosh
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (cosh(X))
+#define MAPFN(X) (coshf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_cosh
@@ -1266,7 +1280,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_tanh
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (tanh(X))
+#define MAPFN(X) (tanhf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_tanh
@@ -1280,7 +1294,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_asinh
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (asinh(X))
+#define MAPFN(X) (asinhf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_asinh
@@ -1294,7 +1308,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_acosh
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (acosh(X))
+#define MAPFN(X) (acoshf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_acosh
@@ -1308,7 +1322,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_atanh
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (atanh(X))
+#define MAPFN(X) (atanhf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_atanh
@@ -1426,7 +1440,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_erf
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (erf(X))
+#define MAPFN(X) (erff(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_erf
@@ -1440,7 +1454,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_erfc
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (erfc(X))
+#define MAPFN(X) (erfcf(X))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_erfc
@@ -1454,7 +1468,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_logistic
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (1.0 / (1.0 + exp(-X)))
+#define MAPFN(X) (1.0 / (1.0 + expf(-X)))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_logistic
@@ -1469,7 +1483,7 @@ value cp_two_doubles(double d0, double d1)
 #define INIT float a = Double_val(vA)
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X,Y) *Y = (*X >= 0. ? *X : (a * (exp(*X) - 1.)))
+#define MAPFN(X,Y) *Y = (*X >= 0. ? *X : (a * (expf(*X) - 1.)))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 real_double_elu
@@ -1484,7 +1498,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_relu
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (fmax(X,0))
+#define MAPFN(X) (fmaxf(X,0))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_relu
@@ -1514,7 +1528,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_softplus
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (log1p(exp(X)))
+#define MAPFN(X) (log1pf(expf(X)))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_softplus
@@ -1528,7 +1542,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_softsign
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (X / (1 + fabs(X)))
+#define MAPFN(X) (X / (1 + fabsf(X)))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_softsign
@@ -1542,7 +1556,7 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_sigmoid
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (1 / (1 + exp(-X)))
+#define MAPFN(X) (1 / (1 + expf(-X)))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_sigmoid
@@ -1572,7 +1586,7 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) Z = pow(X,Y)
+#define MAPFN(X,Y,Z) Z = powf(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_pow
@@ -1588,7 +1602,7 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) Z = atan2(X,Y)
+#define MAPFN(X,Y,Z) Z = atan2f(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_atan2
@@ -1604,7 +1618,7 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) Z = hypot(X,Y)
+#define MAPFN(X,Y,Z) Z = hypotf(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_hypot
@@ -1620,7 +1634,7 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) Z = fmin(X,Y)
+#define MAPFN(X,Y,Z) Z = fminf(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_min2
@@ -1636,7 +1650,7 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) Z = fmax(X,Y)
+#define MAPFN(X,Y,Z) Z = fmaxf(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
 #define FUN7 real_double_max2
@@ -1652,7 +1666,7 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) *Z = fmod(*X, *Y)
+#define MAPFN(X,Y,Z) *Z = fmodf(*X, *Y)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 real_double_fmod
@@ -1668,7 +1682,7 @@ value cp_two_doubles(double d0, double d1)
 #define INIT float a = Double_val(vA)
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X,Y) *Y = fmod(*X,a)
+#define MAPFN(X,Y) *Y = fmodf(*X,a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 real_double_fmod_scalar
@@ -1684,7 +1698,7 @@ value cp_two_doubles(double d0, double d1)
 #define INIT float a = Double_val(vA)
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X,Y) *Y = fmod(a,*X)
+#define MAPFN(X,Y) *Y = fmodf(a,*X)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 real_double_scalar_fmod
@@ -1789,10 +1803,10 @@ value cp_two_doubles(double d0, double d1)
 #define FUN13 real_float_logspace
 #define INIT float a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), base = Double_val(vBase), x = a, log_base = log(base)
 #define NUMBER float
-#define MAPFN(X)  *X = exp2(x); x = a + i * h
+#define MAPFN(X)  *X = exp2f(x); x = a + i * h
 #define MAPFN1(X) *X = exp10(x); x = a + i * h
-#define MAPFN2(X) *X = exp(x); x = a + i * h
-#define MAPFN3(X) *X = exp(x * log_base); x = a + i * h
+#define MAPFN2(X) *X = expf(x); x = a + i * h
+#define MAPFN3(X) *X = expf(x * log_base); x = a + i * h
 #include "owl_dense_common_vec_map.c"
 
 #define FUN13 real_double_logspace
@@ -1807,10 +1821,10 @@ value cp_two_doubles(double d0, double d1)
 #define FUN13 complex_float_logspace
 #define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, base = Double_val(vBase), xr = ar, xi = ai, log_base = log(base)
 #define NUMBER complex_float
-#define MAPFN(X)  X->r = exp2(xr); X->i = exp2(xi); xr = ar + i * hr; xi = ai + i * hi
+#define MAPFN(X)  X->r = exp2f(xr); X->i = exp2f(xi); xr = ar + i * hr; xi = ai + i * hi
 #define MAPFN1(X) X->r = exp10(xr); X->i = exp10(xi); xr = ar + i * hr; xi = ai + i * hi
-#define MAPFN2(X) X->r = exp(xr); X->i = exp(xi); xr = ar + i * hr; xi = ai + i * hi
-#define MAPFN3(X) X->r = exp(xr * log_base); X->i = exp(xi * log_base); xr = ar + i * hr; xi = ai + i * hi
+#define MAPFN2(X) X->r = expf(xr); X->i = expf(xi); xr = ar + i * hr; xi = ai + i * hi
+#define MAPFN3(X) X->r = expf(xr * log_base); X->i = expf(xi * log_base); xr = ar + i * hr; xi = ai + i * hi
 #include "owl_dense_common_vec_map.c"
 
 #define FUN13 complex_double_logspace

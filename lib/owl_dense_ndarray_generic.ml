@@ -580,6 +580,13 @@ let exp2 x =
   let _ = _owl_exp2 (kind x) (numel y) src dst in
   y
 
+let exp10 x =
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_exp10 (kind x) (numel y) src dst in
+  y
+
 let expm1 x =
   let y = clone x in
   let src = flatten x |> array1_of_genarray in

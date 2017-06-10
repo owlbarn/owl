@@ -816,6 +816,15 @@ let _owl_exp2 : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   | Float64   -> owl_real_double_exp2 l x y
   | _         -> failwith "_owl_exp2: unsupported operation"
 
+external owl_real_float_exp10 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_exp10"
+external owl_real_double_exp10 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_exp10"
+
+let _owl_exp10 : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
+  match k with
+  | Float32   -> owl_real_float_exp10 l x y
+  | Float64   -> owl_real_double_exp10 l x y
+  | _         -> failwith "_owl_exp10: unsupported operation"
+
 external owl_real_float_expm1 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_expm1"
 external owl_real_double_expm1 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_expm1"
 
