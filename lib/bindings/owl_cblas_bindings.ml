@@ -283,4 +283,14 @@ module Bindings (F : Cstubs.FOREIGN) = struct
   let cblas_zgemm = foreign "cblas_zgemm" (int @-> int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
 
 
+  let cblas_ssymm = foreign "cblas_ssymm" (int @-> int @-> int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> float @-> ptr float @-> int @-> returning void)
+
+  let cblas_dsymm = foreign "cblas_dsymm" (int @-> int @-> int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> int @-> double @-> ptr double @-> int @-> returning void)
+
+  let cblas_csymm = foreign "cblas_csymm" (int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zsymm = foreign "cblas_zsymm" (int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
+
+
+
 end
