@@ -14,6 +14,8 @@ Because Owl is always under active development, there might be a lag between the
 
 - [Ben Catterall](https://www.linkedin.com/in/ben-catterall-38643287/?ppe=1) did excellent theoretical work for Owl's underlying distributed computation engine. He also contributed to the NLP module.
 
+- Interfacing to other C/C++ libraries (e.g., BLAS and Eigen) relies on [Jeremy Yallop](https://www.cl.cam.ac.uk/~jdy22/)'s [ocaml-ctypes](https://github.com/ocamllabs/ocaml-ctypes).
+
 - The plot module is built on top of [Hezekiah M. Carty](https://github.com/hcarty)'s project: [ocmal-plplot](https://github.com/hcarty/ocaml-plplot).
 
 - The [Algodiff] module partly uses the design of [DiffSharp](http://diffsharp.github.io/DiffSharp/) by [Atilim Gunes Baydin](http://www.cs.nuim.ie/~gunes/), [Barak A. Pearlmutter](http://www.bcl.hamilton.ie/~barak/), and et al., [[techreport]](https://arxiv.org/abs/1502.05767).
@@ -22,4 +24,4 @@ Because Owl is always under active development, there might be a lag between the
 
 - Many functions rely on [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) and its [OCaml binding](https://github.com/ryanrhymes/eigen). The binding also contains some functions (e.g., convolution functions) from Google's [Tensorflow](https://www.tensorflow.org/).
 
-- Other projects which have been providing useful insights: [ocaml-ctypes](https://github.com/ocamllabs/ocaml-ctypes), [Oml](https://github.com/hammerlab/oml), [pareto](https://github.com/superbobry/pareto).
+- Other projects which have been providing useful insights: [Oml](https://github.com/hammerlab/oml), [pareto](https://github.com/superbobry/pareto).
