@@ -1105,6 +1105,10 @@ let cumprod ?axis x =
   let y = Owl_dense_ndarray_generic.cumprod ?axis y in
   of_ndarray y
 
+let modf x =
+  let y = to_ndarray x in
+  let x, y = Owl_dense_ndarray_generic.modf y in
+  of_ndarray x, of_ndarray y
 
 (* binary matrix operation *)
 

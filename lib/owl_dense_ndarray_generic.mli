@@ -688,6 +688,12 @@ val trunc : (float, 'a) t -> (float, 'a) t
   result in a new ndarray.
  *)
 
+val modf : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(** [modf x] performs [modf] over all the elements in [x], the fractal part is
+  saved in the first element of the returned tuple whereas the integer part is
+  saved in the second element.
+ *)
+
 val erf : (float, 'a) t -> (float, 'a) t
 (** [erf x] computes the error function of the elements in [x] and returns the
   result in a new ndarray.

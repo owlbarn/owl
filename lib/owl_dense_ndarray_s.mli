@@ -301,6 +301,8 @@ val round : arr -> arr
 
 val trunc : arr -> arr
 
+val modf : arr -> arr * arr
+
 val erf : arr -> arr
 
 val erfc : arr -> arr

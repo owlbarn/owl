@@ -431,6 +431,8 @@ val round : mat -> mat
 
 val trunc : mat -> mat
 
+val modf : mat -> mat * mat
+
 val erf : mat -> mat
 
 val erfc : mat -> mat

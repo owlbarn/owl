@@ -1986,4 +1986,34 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X,Y) Y->r = (ar * X->r) - (ai * X->i); Y->i = (ar * X->i) + (ai * X->r); ar = Y->r; ai = Y->i
 #include "owl_dense_common_vec_map.c"
 
+// modf
+
+#define FUN17 real_float_modf
+#define NUMBER float
+#define NUMBER1 float
+#define INIT float a, b;
+#define MAPFN(X,Y) a = modff(*X,&b); *X = a; *Y = b
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_modf
+#define NUMBER double
+#define NUMBER1 double
+#define INIT double a, b;
+#define MAPFN(X,Y) a = modf(*X,&b); *X = a; *Y = b
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_modf
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define INIT float a, b;
+#define MAPFN(X,Y) a = modff(X->r,&b); X->r = a; Y->r = b; a = modff(X->i,&b); X->i = a; Y->i = b
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_modf
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define INIT double a, b;
+#define MAPFN(X,Y) a = modf(X->r,&b); X->r = a; Y->r = b; a = modf(X->i,&b); X->i = a; Y->i = b
+#include "owl_dense_common_vec_map.c"
+
 //////////////////// function templates ends ////////////////////

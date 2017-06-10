@@ -252,6 +252,8 @@ val cumsum : ?axis:int -> arr -> arr
 
 val cumprod : ?axis:int -> arr -> arr
 
+val modf : arr -> arr * arr
+
 
 (** {6 Binary mathematical operations } *)
 

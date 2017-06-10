@@ -382,6 +382,8 @@ val cumsum : ?axis:int -> mat -> mat
 
 val cumprod : ?axis:int -> mat -> mat
 
+val modf : mat -> mat * mat
+
 
 (** {6 Binary mathematical operations } *)
 

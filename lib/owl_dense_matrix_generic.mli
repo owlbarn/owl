@@ -868,6 +868,12 @@ val erf : (float, 'a) t -> (float, 'a) t
   result in a new matrix.
  *)
 
+val modf : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(** [modf x] performs [modf] over all the elements in [x], the fractal part is
+  saved in the first element of the returned tuple whereas the integer part is
+  saved in the second element.
+ *)
+
 val erfc : (float, 'a) t -> (float, 'a) t
 (** [erfc x] computes the complementary error function of the elements in [x]
   and returns the result in a new matrix.

@@ -1351,5 +1351,17 @@ let _owl_cumprod : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
   | Complex64 -> owl_complex_double_cumprod
   | _         -> failwith "_owl_cumprod: unsupported operation"
 
+external owl_real_float_modf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_modf"
+external owl_real_double_modf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_modf"
+external owl_complex_float_modf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_float_modf"
+external owl_complex_double_modf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_double_modf"
+
+let _owl_modf : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
+  | Float32   -> owl_real_float_modf
+  | Float64   -> owl_real_double_modf
+  | Complex32 -> owl_complex_float_modf
+  | Complex64 -> owl_complex_double_modf
+  | _         -> failwith "_owl_modf: unsupported operation"
+
 
 (* ends here *)

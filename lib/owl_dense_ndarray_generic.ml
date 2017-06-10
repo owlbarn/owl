@@ -2420,6 +2420,15 @@ let cumprod ?axis x =
   let _cumop = _owl_cumprod (kind x) in
   cumulative_op ?axis _cumop x
 
+let modf x =
+  let x = clone x in
+  let y = empty (kind x) (shape x) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  (* the last parameter zero is just a dummy parameter *)
+  _owl_modf (kind x) (numel x) x' y' (_zero (kind x));
+  x, y
+
 
 (* TODO *)
 
