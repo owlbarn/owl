@@ -6,7 +6,7 @@ In designing and developing the various components in Owl, we have been studying
 
 Because Owl is always under active development, there might be a lag between the development code and the list here. In case you think there is something/someone missing in the list, please do contact me. I will try to make this list up-to-date.
 
-- Tremendous support and help from my colleagues in [OCaml Labs](http://ocamllabs.io/).
+- Tremendous support and help from my [colleagues](http://ocamllabs.io/people/) in [OCaml Labs](http://ocamllabs.io/).
 
 - The interface design are heavily influenced by [Numpy](http://www.numpy.org/), [SciPy](https://www.scipy.org/), [Julia](https://julialang.org/), [Matlab](https://www.mathworks.com/products/matlab.html).
 
@@ -22,4 +22,4 @@ Because Owl is always under active development, there might be a lag between the
 
 - Many functions rely on [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) and its [OCaml binding](https://github.com/ryanrhymes/eigen). The binding also contains some functions (e.g., convolution functions) from Google's [Tensorflow](https://www.tensorflow.org/).
 
-- Other projects which have been providing useful insights: [Oml](https://github.com/hammerlab/oml), [pareto](https://github.com/superbobry/pareto).
+- Other projects which have been providing useful insights: [ocaml-ctypes](https://github.com/ocamllabs/ocaml-ctypes), [Oml](https://github.com/hammerlab/oml), [pareto](https://github.com/superbobry/pareto).
