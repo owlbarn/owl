@@ -363,7 +363,7 @@ CAMLprim value FUN19_IMPL(
   CAMLreturn(Val_unit);
 }
 
-CAMLprim value FUN19(value *argv, int __unused argn)
+CAMLprim value FUN19(value *argv, int __unused_argn)
 {
   return FUN19_IMPL(argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6]);
 }
@@ -433,7 +433,7 @@ CAMLprim value FUN20_IMPL(
   CAMLreturn(Val_unit);
 }
 
-CAMLprim value FUN20(value *argv, int __unused argn)
+CAMLprim value FUN20(value *argv, int __unused_argn)
 {
   return FUN20_IMPL(
     argv[0], argv[1], argv[2], argv[3], argv[4],

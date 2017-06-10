@@ -57,12 +57,11 @@ CAMLprim value FUN6(value vN, value vX)
   CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
-  NUMBER *start_x, *stop_x;
+  NUMBER *start_x;
 
   caml_enter_blocking_section();  /* Allow other threads */
 
   start_x = X_data;
-  stop_x = start_x + N;
 
   NUMBER x = *start_x;
   int r = 0;

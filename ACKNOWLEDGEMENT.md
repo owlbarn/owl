@@ -8,7 +8,7 @@ Because Owl is always under active development, there might be a lag between the
 
 - Tremendous support and help from my colleagues in [OCaml Labs](http://ocamllabs.io/).
 
-- The interface design are heavily influenced by [Numpy](http://www.numpy.org/), [Scipy](https://www.scipy.org/), [julia](https://julialang.org/), [Matlab](https://www.mathworks.com/products/matlab.html).
+- The interface design are heavily influenced by [Numpy](http://www.numpy.org/), [SciPy](https://www.scipy.org/), [Julia](https://julialang.org/), [Matlab](https://www.mathworks.com/products/matlab.html).
 
 - The early versions heavily relied on [Markus Mottl's](http://www.ocaml.info/) projects: [Lacaml](https://github.com/mmottl/lacaml), [Gsl](https://github.com/mmottl/gsl-ocaml). Even now, the pretty printing function of matrices still uses Markus' code.
 
