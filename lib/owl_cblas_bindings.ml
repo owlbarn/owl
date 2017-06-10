@@ -9,7 +9,8 @@ module Bindings (F : Cstubs.FOREIGN) = struct
 
   open F
 
-  (* Level 1 *)
+
+  (* Level 1 BLAS *)
 
   let cblas_srotg = foreign "cblas_srotg" (ptr float @-> ptr float @-> ptr float @-> ptr float @-> returning void)
 
@@ -110,7 +111,8 @@ module Bindings (F : Cstubs.FOREIGN) = struct
   let cblas_izamax = foreign "cblas_izamax" (int @-> ptr complex64 @-> int @-> returning size_t)
 
 
-  (* Level 2 *)
+
+  (* Level 2 BLAS *)
 
   let cblas_sgemv = foreign "cblas_sgemv" (int @-> int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> float @-> ptr float @-> int @-> returning void)
 
@@ -119,6 +121,166 @@ module Bindings (F : Cstubs.FOREIGN) = struct
   let cblas_cgemv = foreign "cblas_cgemv" (int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> returning void)
 
   let cblas_zgemv = foreign "cblas_zgemv" (int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_sgbmv = foreign "cblas_sgbmv" (int @-> int @-> int @-> int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> float @-> ptr float @-> int @-> returning void)
+
+  let cblas_dgbmv = foreign "cblas_dgbmv" (int @-> int @-> int @-> int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> int @-> double @-> ptr double @-> int @-> returning void)
+
+  let cblas_cgbmv = foreign "cblas_cgbmv" (int @-> int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zgbmv = foreign "cblas_zgbmv" (int @-> int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_strmv = foreign "cblas_strmv" (int @-> int @-> int @-> int @-> int @-> ptr float @-> int @-> ptr float @-> int @-> returning void)
+
+  let cblas_dtrmv = foreign "cblas_dtrmv" (int @-> int @-> int @-> int @-> int @-> ptr double @-> int @-> ptr double @-> int @-> returning void)
+
+  let cblas_ctrmv = foreign "cblas_ctrmv" (int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_ztrmv = foreign "cblas_ztrmv" (int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_stbmv = foreign "cblas_stbmv" (int @-> int @-> int @-> int @-> int @-> int @-> ptr float @-> int @-> ptr float @-> int @-> returning void)
+
+  let cblas_dtbmv = foreign "cblas_dtbmv" (int @-> int @-> int @-> int @-> int @-> int @-> ptr double @-> int @-> ptr double @-> int @-> returning void)
+
+  let cblas_ctbmv = foreign "cblas_ctbmv" (int @-> int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_ztbmv = foreign "cblas_ztbmv" (int @-> int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_stpmv = foreign "cblas_stpmv" (int @-> int @-> int @-> int @-> int @-> ptr float @-> ptr float @-> int @-> returning void)
+
+  let cblas_dtpmv = foreign "cblas_dtpmv" (int @-> int @-> int @-> int @-> int @-> ptr double @-> ptr double @-> int @-> returning void)
+
+  let cblas_ctpmv = foreign "cblas_ctpmv" (int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_ztpmv = foreign "cblas_ztpmv" (int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_strsv = foreign "cblas_strsv" (int @-> int @-> int @-> int @-> int @-> ptr float @-> int @-> ptr float @-> int @-> returning void)
+
+  let cblas_dtrsv = foreign "cblas_dtrsv" (int @-> int @-> int @-> int @-> int @-> ptr double @-> int @-> ptr double @-> int @-> returning void)
+
+  let cblas_ctrsv = foreign "cblas_ctrsv" (int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_ztrsv = foreign "cblas_ztrsv" (int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_stbsv = foreign "cblas_stbsv" (int @-> int @-> int @-> int @-> int @-> int @-> ptr float @-> int @-> ptr float @-> int @-> returning void)
+
+  let cblas_dtbsv = foreign "cblas_dtbsv" (int @-> int @-> int @-> int @-> int @-> int @-> ptr double @-> int @-> ptr double @-> int @-> returning void)
+
+  let cblas_ctbsv = foreign "cblas_ctbsv" (int @-> int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_ztbsv = foreign "cblas_ztbsv" (int @-> int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_stpsv = foreign "cblas_stpsv" (int @-> int @-> int @-> int @-> int @-> ptr float @-> ptr float @-> int @-> returning void)
+
+  let cblas_dtpsv = foreign "cblas_dtpsv" (int @-> int @-> int @-> int @-> int @-> ptr double @-> ptr double @-> int @-> returning void)
+
+  let cblas_ctpsv = foreign "cblas_ctpsv" (int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_ztpsv = foreign "cblas_ztpsv" (int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_ssymv = foreign "cblas_ssymv" (int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> float @-> ptr float @-> int @-> returning void)
+
+  let cblas_dsymv = foreign "cblas_dsymv" (int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> int @-> double @-> ptr double @-> int @-> returning void)
+
+
+  let cblas_ssbmv = foreign "cblas_ssbmv" (int @-> int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> float @-> ptr float @-> int @-> returning void)
+
+  let cblas_dsbmv = foreign "cblas_dsbmv" (int @-> int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> int @-> double @-> ptr double @-> int @-> returning void)
+
+
+  let cblas_sspmv = foreign "cblas_sspmv" (int @-> int @-> int @-> float @-> ptr float @-> ptr float @-> int @-> float @-> ptr float @-> int @-> returning void)
+
+  let cblas_dspmv = foreign "cblas_dspmv" (int @-> int @-> int @-> double @-> ptr double @-> ptr double @-> int @-> double @-> ptr double @-> int @-> returning void)
+
+
+  let cblas_sger = foreign "cblas_sger" (int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> ptr float @-> int @-> returning void)
+
+  let cblas_dger = foreign "cblas_dger" (int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> int @-> ptr double @-> int @-> returning void)
+
+
+  let cblas_ssyr = foreign "cblas_ssyr" (int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> returning void)
+
+  let cblas_dsyr = foreign "cblas_dsyr" (int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> int @-> returning void)
+
+
+  let cblas_sspr = foreign "cblas_sspr" (int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> returning void)
+
+  let cblas_dspr = foreign "cblas_dspr" (int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> returning void)
+
+
+  let cblas_ssyr2 = foreign "cblas_ssyr2" (int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> ptr float @-> int @-> returning void)
+
+  let cblas_dsyr2 = foreign "cblas_dsyr2" (int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> int @-> ptr double @-> int @-> returning void)
+
+
+  let cblas_sspr2 = foreign "cblas_sspr2" (int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> ptr float @-> returning void)
+
+  let cblas_dspr2 = foreign "cblas_dspr2" (int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> int @-> ptr double @-> returning void)
+
+
+  let cblas_chemv = foreign "cblas_chemv" (int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zhemv = foreign "cblas_zhemv" (int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_chbmv = foreign "cblas_chbmv" (int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zhbmv = foreign "cblas_zhbmv" (int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_chpmv = foreign "cblas_chpmv" (int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zhpmv = foreign "cblas_zhpmv" (int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_cgeru = foreign "cblas_cgeru" (int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zgeru = foreign "cblas_zgeru" (int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_cgerc = foreign "cblas_cgerc" (int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zgerc = foreign "cblas_zgerc" (int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_cher = foreign "cblas_cher" (int @-> int @-> int @-> float @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zher = foreign "cblas_zher" (int @-> int @-> int @-> float @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_chpr = foreign "cblas_chpr" (int @-> int @-> int @-> float @-> ptr complex32 @-> int @-> ptr complex32 @-> returning void)
+
+  let cblas_zhpr = foreign "cblas_zhpr" (int @-> int @-> int @-> float @-> ptr complex64 @-> int @-> ptr complex64 @-> returning void)
+
+
+  let cblas_cher2 = foreign "cblas_cher2" (int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zher2 = foreign "cblas_zher2" (int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_chpr2 = foreign "cblas_chpr2" (int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> returning void)
+
+  let cblas_zhpr2 = foreign "cblas_zhpr2" (int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> returning void)
+
+
+
+  (* Level 3 BLAS *)
+
+  let cblas_sgemm = foreign "cblas_sgemm" (int @-> int @-> int @-> int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> float @-> ptr float @-> int @-> returning void)
+
+  let cblas_dgemm = foreign "cblas_dgemm" (int @-> int @-> int @-> int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> int @-> double @-> ptr double @-> int @-> returning void)
+
+  let cblas_cgemm = foreign "cblas_cgemm" (int @-> int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zgemm = foreign "cblas_zgemm" (int @-> int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
 
 
 end
