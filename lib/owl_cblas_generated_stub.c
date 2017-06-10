@@ -3141,3 +3141,881 @@ value owl_stub_118_cblas_zsymm_byte13(value* argv, int argc)
                               x4140, x4139, x4138, x4137, x4136, x4135,
                               x4134);
 }
+value owl_stub_119_cblas_ssyrk(value x4157, value x4156, value x4155,
+                               value x4154, value x4153, value x4152,
+                               value x4151, value x4150, value x4149,
+                               value x4148, value x4147)
+{
+   int x4158 = Long_val(x4157);
+   int x4161 = Long_val(x4156);
+   int x4164 = Long_val(x4155);
+   int x4167 = Long_val(x4154);
+   int x4170 = Long_val(x4153);
+   double x4173 = Double_val(x4152);
+   float* x4176 = CTYPES_ADDR_OF_FATPTR(x4151);
+   int x4177 = Long_val(x4150);
+   double x4180 = Double_val(x4149);
+   float* x4183 = CTYPES_ADDR_OF_FATPTR(x4148);
+   int x4184 = Long_val(x4147);
+   cblas_ssyrk(x4158, x4161, x4164, x4167, x4170, (float)x4173, x4176, 
+               x4177, (float)x4180, x4183, x4184);
+   return Val_unit;
+}
+value owl_stub_119_cblas_ssyrk_byte11(value* argv, int argc)
+{
+   value x4188 = argv[10];
+   value x4189 = argv[9];
+   value x4190 = argv[8];
+   value x4191 = argv[7];
+   value x4192 = argv[6];
+   value x4193 = argv[5];
+   value x4194 = argv[4];
+   value x4195 = argv[3];
+   value x4196 = argv[2];
+   value x4197 = argv[1];
+   value x4198 = argv[0];
+   return
+     owl_stub_119_cblas_ssyrk(x4198, x4197, x4196, x4195, x4194, x4193,
+                              x4192, x4191, x4190, x4189, x4188);
+}
+value owl_stub_120_cblas_dsyrk(value x4209, value x4208, value x4207,
+                               value x4206, value x4205, value x4204,
+                               value x4203, value x4202, value x4201,
+                               value x4200, value x4199)
+{
+   int x4210 = Long_val(x4209);
+   int x4213 = Long_val(x4208);
+   int x4216 = Long_val(x4207);
+   int x4219 = Long_val(x4206);
+   int x4222 = Long_val(x4205);
+   double x4225 = Double_val(x4204);
+   double* x4228 = CTYPES_ADDR_OF_FATPTR(x4203);
+   int x4229 = Long_val(x4202);
+   double x4232 = Double_val(x4201);
+   double* x4235 = CTYPES_ADDR_OF_FATPTR(x4200);
+   int x4236 = Long_val(x4199);
+   cblas_dsyrk(x4210, x4213, x4216, x4219, x4222, x4225, x4228, x4229, 
+               x4232, x4235, x4236);
+   return Val_unit;
+}
+value owl_stub_120_cblas_dsyrk_byte11(value* argv, int argc)
+{
+   value x4240 = argv[10];
+   value x4241 = argv[9];
+   value x4242 = argv[8];
+   value x4243 = argv[7];
+   value x4244 = argv[6];
+   value x4245 = argv[5];
+   value x4246 = argv[4];
+   value x4247 = argv[3];
+   value x4248 = argv[2];
+   value x4249 = argv[1];
+   value x4250 = argv[0];
+   return
+     owl_stub_120_cblas_dsyrk(x4250, x4249, x4248, x4247, x4246, x4245,
+                              x4244, x4243, x4242, x4241, x4240);
+}
+value owl_stub_121_cblas_csyrk(value x4261, value x4260, value x4259,
+                               value x4258, value x4257, value x4256,
+                               value x4255, value x4254, value x4253,
+                               value x4252, value x4251)
+{
+   int x4262 = Long_val(x4261);
+   int x4265 = Long_val(x4260);
+   int x4268 = Long_val(x4259);
+   int x4271 = Long_val(x4258);
+   int x4274 = Long_val(x4257);
+   float _Complex* x4277 = CTYPES_ADDR_OF_FATPTR(x4256);
+   float _Complex* x4278 = CTYPES_ADDR_OF_FATPTR(x4255);
+   int x4279 = Long_val(x4254);
+   float _Complex* x4282 = CTYPES_ADDR_OF_FATPTR(x4253);
+   float _Complex* x4283 = CTYPES_ADDR_OF_FATPTR(x4252);
+   int x4284 = Long_val(x4251);
+   cblas_csyrk(x4262, x4265, x4268, x4271, x4274, x4277, x4278, x4279, 
+               x4282, x4283, x4284);
+   return Val_unit;
+}
+value owl_stub_121_cblas_csyrk_byte11(value* argv, int argc)
+{
+   value x4288 = argv[10];
+   value x4289 = argv[9];
+   value x4290 = argv[8];
+   value x4291 = argv[7];
+   value x4292 = argv[6];
+   value x4293 = argv[5];
+   value x4294 = argv[4];
+   value x4295 = argv[3];
+   value x4296 = argv[2];
+   value x4297 = argv[1];
+   value x4298 = argv[0];
+   return
+     owl_stub_121_cblas_csyrk(x4298, x4297, x4296, x4295, x4294, x4293,
+                              x4292, x4291, x4290, x4289, x4288);
+}
+value owl_stub_122_cblas_zsyrk(value x4309, value x4308, value x4307,
+                               value x4306, value x4305, value x4304,
+                               value x4303, value x4302, value x4301,
+                               value x4300, value x4299)
+{
+   int x4310 = Long_val(x4309);
+   int x4313 = Long_val(x4308);
+   int x4316 = Long_val(x4307);
+   int x4319 = Long_val(x4306);
+   int x4322 = Long_val(x4305);
+   double _Complex* x4325 = CTYPES_ADDR_OF_FATPTR(x4304);
+   double _Complex* x4326 = CTYPES_ADDR_OF_FATPTR(x4303);
+   int x4327 = Long_val(x4302);
+   double _Complex* x4330 = CTYPES_ADDR_OF_FATPTR(x4301);
+   double _Complex* x4331 = CTYPES_ADDR_OF_FATPTR(x4300);
+   int x4332 = Long_val(x4299);
+   cblas_zsyrk(x4310, x4313, x4316, x4319, x4322, x4325, x4326, x4327, 
+               x4330, x4331, x4332);
+   return Val_unit;
+}
+value owl_stub_122_cblas_zsyrk_byte11(value* argv, int argc)
+{
+   value x4336 = argv[10];
+   value x4337 = argv[9];
+   value x4338 = argv[8];
+   value x4339 = argv[7];
+   value x4340 = argv[6];
+   value x4341 = argv[5];
+   value x4342 = argv[4];
+   value x4343 = argv[3];
+   value x4344 = argv[2];
+   value x4345 = argv[1];
+   value x4346 = argv[0];
+   return
+     owl_stub_122_cblas_zsyrk(x4346, x4345, x4344, x4343, x4342, x4341,
+                              x4340, x4339, x4338, x4337, x4336);
+}
+value owl_stub_123_cblas_ssyr2k(value x4359, value x4358, value x4357,
+                                value x4356, value x4355, value x4354,
+                                value x4353, value x4352, value x4351,
+                                value x4350, value x4349, value x4348,
+                                value x4347)
+{
+   int x4360 = Long_val(x4359);
+   int x4363 = Long_val(x4358);
+   int x4366 = Long_val(x4357);
+   int x4369 = Long_val(x4356);
+   int x4372 = Long_val(x4355);
+   double x4375 = Double_val(x4354);
+   float* x4378 = CTYPES_ADDR_OF_FATPTR(x4353);
+   int x4379 = Long_val(x4352);
+   float* x4382 = CTYPES_ADDR_OF_FATPTR(x4351);
+   int x4383 = Long_val(x4350);
+   double x4386 = Double_val(x4349);
+   float* x4389 = CTYPES_ADDR_OF_FATPTR(x4348);
+   int x4390 = Long_val(x4347);
+   cblas_ssyr2k(x4360, x4363, x4366, x4369, x4372, (float)x4375, x4378,
+                x4379, x4382, x4383, (float)x4386, x4389, x4390);
+   return Val_unit;
+}
+value owl_stub_123_cblas_ssyr2k_byte13(value* argv, int argc)
+{
+   value x4394 = argv[12];
+   value x4395 = argv[11];
+   value x4396 = argv[10];
+   value x4397 = argv[9];
+   value x4398 = argv[8];
+   value x4399 = argv[7];
+   value x4400 = argv[6];
+   value x4401 = argv[5];
+   value x4402 = argv[4];
+   value x4403 = argv[3];
+   value x4404 = argv[2];
+   value x4405 = argv[1];
+   value x4406 = argv[0];
+   return
+     owl_stub_123_cblas_ssyr2k(x4406, x4405, x4404, x4403, x4402, x4401,
+                               x4400, x4399, x4398, x4397, x4396, x4395,
+                               x4394);
+}
+value owl_stub_124_cblas_dsyr2k(value x4419, value x4418, value x4417,
+                                value x4416, value x4415, value x4414,
+                                value x4413, value x4412, value x4411,
+                                value x4410, value x4409, value x4408,
+                                value x4407)
+{
+   int x4420 = Long_val(x4419);
+   int x4423 = Long_val(x4418);
+   int x4426 = Long_val(x4417);
+   int x4429 = Long_val(x4416);
+   int x4432 = Long_val(x4415);
+   double x4435 = Double_val(x4414);
+   double* x4438 = CTYPES_ADDR_OF_FATPTR(x4413);
+   int x4439 = Long_val(x4412);
+   double* x4442 = CTYPES_ADDR_OF_FATPTR(x4411);
+   int x4443 = Long_val(x4410);
+   double x4446 = Double_val(x4409);
+   double* x4449 = CTYPES_ADDR_OF_FATPTR(x4408);
+   int x4450 = Long_val(x4407);
+   cblas_dsyr2k(x4420, x4423, x4426, x4429, x4432, x4435, x4438, x4439,
+                x4442, x4443, x4446, x4449, x4450);
+   return Val_unit;
+}
+value owl_stub_124_cblas_dsyr2k_byte13(value* argv, int argc)
+{
+   value x4454 = argv[12];
+   value x4455 = argv[11];
+   value x4456 = argv[10];
+   value x4457 = argv[9];
+   value x4458 = argv[8];
+   value x4459 = argv[7];
+   value x4460 = argv[6];
+   value x4461 = argv[5];
+   value x4462 = argv[4];
+   value x4463 = argv[3];
+   value x4464 = argv[2];
+   value x4465 = argv[1];
+   value x4466 = argv[0];
+   return
+     owl_stub_124_cblas_dsyr2k(x4466, x4465, x4464, x4463, x4462, x4461,
+                               x4460, x4459, x4458, x4457, x4456, x4455,
+                               x4454);
+}
+value owl_stub_125_cblas_csyr2k(value x4479, value x4478, value x4477,
+                                value x4476, value x4475, value x4474,
+                                value x4473, value x4472, value x4471,
+                                value x4470, value x4469, value x4468,
+                                value x4467)
+{
+   int x4480 = Long_val(x4479);
+   int x4483 = Long_val(x4478);
+   int x4486 = Long_val(x4477);
+   int x4489 = Long_val(x4476);
+   int x4492 = Long_val(x4475);
+   float _Complex* x4495 = CTYPES_ADDR_OF_FATPTR(x4474);
+   float _Complex* x4496 = CTYPES_ADDR_OF_FATPTR(x4473);
+   int x4497 = Long_val(x4472);
+   float _Complex* x4500 = CTYPES_ADDR_OF_FATPTR(x4471);
+   int x4501 = Long_val(x4470);
+   float _Complex* x4504 = CTYPES_ADDR_OF_FATPTR(x4469);
+   float _Complex* x4505 = CTYPES_ADDR_OF_FATPTR(x4468);
+   int x4506 = Long_val(x4467);
+   cblas_csyr2k(x4480, x4483, x4486, x4489, x4492, x4495, x4496, x4497,
+                x4500, x4501, x4504, x4505, x4506);
+   return Val_unit;
+}
+value owl_stub_125_cblas_csyr2k_byte13(value* argv, int argc)
+{
+   value x4510 = argv[12];
+   value x4511 = argv[11];
+   value x4512 = argv[10];
+   value x4513 = argv[9];
+   value x4514 = argv[8];
+   value x4515 = argv[7];
+   value x4516 = argv[6];
+   value x4517 = argv[5];
+   value x4518 = argv[4];
+   value x4519 = argv[3];
+   value x4520 = argv[2];
+   value x4521 = argv[1];
+   value x4522 = argv[0];
+   return
+     owl_stub_125_cblas_csyr2k(x4522, x4521, x4520, x4519, x4518, x4517,
+                               x4516, x4515, x4514, x4513, x4512, x4511,
+                               x4510);
+}
+value owl_stub_126_cblas_zsyr2k(value x4535, value x4534, value x4533,
+                                value x4532, value x4531, value x4530,
+                                value x4529, value x4528, value x4527,
+                                value x4526, value x4525, value x4524,
+                                value x4523)
+{
+   int x4536 = Long_val(x4535);
+   int x4539 = Long_val(x4534);
+   int x4542 = Long_val(x4533);
+   int x4545 = Long_val(x4532);
+   int x4548 = Long_val(x4531);
+   double _Complex* x4551 = CTYPES_ADDR_OF_FATPTR(x4530);
+   double _Complex* x4552 = CTYPES_ADDR_OF_FATPTR(x4529);
+   int x4553 = Long_val(x4528);
+   double _Complex* x4556 = CTYPES_ADDR_OF_FATPTR(x4527);
+   int x4557 = Long_val(x4526);
+   double _Complex* x4560 = CTYPES_ADDR_OF_FATPTR(x4525);
+   double _Complex* x4561 = CTYPES_ADDR_OF_FATPTR(x4524);
+   int x4562 = Long_val(x4523);
+   cblas_zsyr2k(x4536, x4539, x4542, x4545, x4548, x4551, x4552, x4553,
+                x4556, x4557, x4560, x4561, x4562);
+   return Val_unit;
+}
+value owl_stub_126_cblas_zsyr2k_byte13(value* argv, int argc)
+{
+   value x4566 = argv[12];
+   value x4567 = argv[11];
+   value x4568 = argv[10];
+   value x4569 = argv[9];
+   value x4570 = argv[8];
+   value x4571 = argv[7];
+   value x4572 = argv[6];
+   value x4573 = argv[5];
+   value x4574 = argv[4];
+   value x4575 = argv[3];
+   value x4576 = argv[2];
+   value x4577 = argv[1];
+   value x4578 = argv[0];
+   return
+     owl_stub_126_cblas_zsyr2k(x4578, x4577, x4576, x4575, x4574, x4573,
+                               x4572, x4571, x4570, x4569, x4568, x4567,
+                               x4566);
+}
+value owl_stub_127_cblas_strmm(value x4590, value x4589, value x4588,
+                               value x4587, value x4586, value x4585,
+                               value x4584, value x4583, value x4582,
+                               value x4581, value x4580, value x4579)
+{
+   int x4591 = Long_val(x4590);
+   int x4594 = Long_val(x4589);
+   int x4597 = Long_val(x4588);
+   int x4600 = Long_val(x4587);
+   int x4603 = Long_val(x4586);
+   int x4606 = Long_val(x4585);
+   int x4609 = Long_val(x4584);
+   double x4612 = Double_val(x4583);
+   float* x4615 = CTYPES_ADDR_OF_FATPTR(x4582);
+   int x4616 = Long_val(x4581);
+   float* x4619 = CTYPES_ADDR_OF_FATPTR(x4580);
+   int x4620 = Long_val(x4579);
+   cblas_strmm(x4591, x4594, x4597, x4600, x4603, x4606, x4609, (float)x4612,
+               x4615, x4616, x4619, x4620);
+   return Val_unit;
+}
+value owl_stub_127_cblas_strmm_byte12(value* argv, int argc)
+{
+   value x4624 = argv[11];
+   value x4625 = argv[10];
+   value x4626 = argv[9];
+   value x4627 = argv[8];
+   value x4628 = argv[7];
+   value x4629 = argv[6];
+   value x4630 = argv[5];
+   value x4631 = argv[4];
+   value x4632 = argv[3];
+   value x4633 = argv[2];
+   value x4634 = argv[1];
+   value x4635 = argv[0];
+   return
+     owl_stub_127_cblas_strmm(x4635, x4634, x4633, x4632, x4631, x4630,
+                              x4629, x4628, x4627, x4626, x4625, x4624);
+}
+value owl_stub_128_cblas_dtrmm(value x4647, value x4646, value x4645,
+                               value x4644, value x4643, value x4642,
+                               value x4641, value x4640, value x4639,
+                               value x4638, value x4637, value x4636)
+{
+   int x4648 = Long_val(x4647);
+   int x4651 = Long_val(x4646);
+   int x4654 = Long_val(x4645);
+   int x4657 = Long_val(x4644);
+   int x4660 = Long_val(x4643);
+   int x4663 = Long_val(x4642);
+   int x4666 = Long_val(x4641);
+   double x4669 = Double_val(x4640);
+   double* x4672 = CTYPES_ADDR_OF_FATPTR(x4639);
+   int x4673 = Long_val(x4638);
+   double* x4676 = CTYPES_ADDR_OF_FATPTR(x4637);
+   int x4677 = Long_val(x4636);
+   cblas_dtrmm(x4648, x4651, x4654, x4657, x4660, x4663, x4666, x4669, 
+               x4672, x4673, x4676, x4677);
+   return Val_unit;
+}
+value owl_stub_128_cblas_dtrmm_byte12(value* argv, int argc)
+{
+   value x4681 = argv[11];
+   value x4682 = argv[10];
+   value x4683 = argv[9];
+   value x4684 = argv[8];
+   value x4685 = argv[7];
+   value x4686 = argv[6];
+   value x4687 = argv[5];
+   value x4688 = argv[4];
+   value x4689 = argv[3];
+   value x4690 = argv[2];
+   value x4691 = argv[1];
+   value x4692 = argv[0];
+   return
+     owl_stub_128_cblas_dtrmm(x4692, x4691, x4690, x4689, x4688, x4687,
+                              x4686, x4685, x4684, x4683, x4682, x4681);
+}
+value owl_stub_129_cblas_ctrmm(value x4704, value x4703, value x4702,
+                               value x4701, value x4700, value x4699,
+                               value x4698, value x4697, value x4696,
+                               value x4695, value x4694, value x4693)
+{
+   int x4705 = Long_val(x4704);
+   int x4708 = Long_val(x4703);
+   int x4711 = Long_val(x4702);
+   int x4714 = Long_val(x4701);
+   int x4717 = Long_val(x4700);
+   int x4720 = Long_val(x4699);
+   int x4723 = Long_val(x4698);
+   float _Complex* x4726 = CTYPES_ADDR_OF_FATPTR(x4697);
+   float _Complex* x4727 = CTYPES_ADDR_OF_FATPTR(x4696);
+   int x4728 = Long_val(x4695);
+   float _Complex* x4731 = CTYPES_ADDR_OF_FATPTR(x4694);
+   int x4732 = Long_val(x4693);
+   cblas_ctrmm(x4705, x4708, x4711, x4714, x4717, x4720, x4723, x4726, 
+               x4727, x4728, x4731, x4732);
+   return Val_unit;
+}
+value owl_stub_129_cblas_ctrmm_byte12(value* argv, int argc)
+{
+   value x4736 = argv[11];
+   value x4737 = argv[10];
+   value x4738 = argv[9];
+   value x4739 = argv[8];
+   value x4740 = argv[7];
+   value x4741 = argv[6];
+   value x4742 = argv[5];
+   value x4743 = argv[4];
+   value x4744 = argv[3];
+   value x4745 = argv[2];
+   value x4746 = argv[1];
+   value x4747 = argv[0];
+   return
+     owl_stub_129_cblas_ctrmm(x4747, x4746, x4745, x4744, x4743, x4742,
+                              x4741, x4740, x4739, x4738, x4737, x4736);
+}
+value owl_stub_130_cblas_ztrmm(value x4759, value x4758, value x4757,
+                               value x4756, value x4755, value x4754,
+                               value x4753, value x4752, value x4751,
+                               value x4750, value x4749, value x4748)
+{
+   int x4760 = Long_val(x4759);
+   int x4763 = Long_val(x4758);
+   int x4766 = Long_val(x4757);
+   int x4769 = Long_val(x4756);
+   int x4772 = Long_val(x4755);
+   int x4775 = Long_val(x4754);
+   int x4778 = Long_val(x4753);
+   double _Complex* x4781 = CTYPES_ADDR_OF_FATPTR(x4752);
+   double _Complex* x4782 = CTYPES_ADDR_OF_FATPTR(x4751);
+   int x4783 = Long_val(x4750);
+   double _Complex* x4786 = CTYPES_ADDR_OF_FATPTR(x4749);
+   int x4787 = Long_val(x4748);
+   cblas_ztrmm(x4760, x4763, x4766, x4769, x4772, x4775, x4778, x4781, 
+               x4782, x4783, x4786, x4787);
+   return Val_unit;
+}
+value owl_stub_130_cblas_ztrmm_byte12(value* argv, int argc)
+{
+   value x4791 = argv[11];
+   value x4792 = argv[10];
+   value x4793 = argv[9];
+   value x4794 = argv[8];
+   value x4795 = argv[7];
+   value x4796 = argv[6];
+   value x4797 = argv[5];
+   value x4798 = argv[4];
+   value x4799 = argv[3];
+   value x4800 = argv[2];
+   value x4801 = argv[1];
+   value x4802 = argv[0];
+   return
+     owl_stub_130_cblas_ztrmm(x4802, x4801, x4800, x4799, x4798, x4797,
+                              x4796, x4795, x4794, x4793, x4792, x4791);
+}
+value owl_stub_131_cblas_strsm(value x4814, value x4813, value x4812,
+                               value x4811, value x4810, value x4809,
+                               value x4808, value x4807, value x4806,
+                               value x4805, value x4804, value x4803)
+{
+   int x4815 = Long_val(x4814);
+   int x4818 = Long_val(x4813);
+   int x4821 = Long_val(x4812);
+   int x4824 = Long_val(x4811);
+   int x4827 = Long_val(x4810);
+   int x4830 = Long_val(x4809);
+   int x4833 = Long_val(x4808);
+   double x4836 = Double_val(x4807);
+   float* x4839 = CTYPES_ADDR_OF_FATPTR(x4806);
+   int x4840 = Long_val(x4805);
+   float* x4843 = CTYPES_ADDR_OF_FATPTR(x4804);
+   int x4844 = Long_val(x4803);
+   cblas_strsm(x4815, x4818, x4821, x4824, x4827, x4830, x4833, (float)x4836,
+               x4839, x4840, x4843, x4844);
+   return Val_unit;
+}
+value owl_stub_131_cblas_strsm_byte12(value* argv, int argc)
+{
+   value x4848 = argv[11];
+   value x4849 = argv[10];
+   value x4850 = argv[9];
+   value x4851 = argv[8];
+   value x4852 = argv[7];
+   value x4853 = argv[6];
+   value x4854 = argv[5];
+   value x4855 = argv[4];
+   value x4856 = argv[3];
+   value x4857 = argv[2];
+   value x4858 = argv[1];
+   value x4859 = argv[0];
+   return
+     owl_stub_131_cblas_strsm(x4859, x4858, x4857, x4856, x4855, x4854,
+                              x4853, x4852, x4851, x4850, x4849, x4848);
+}
+value owl_stub_132_cblas_dtrsm(value x4871, value x4870, value x4869,
+                               value x4868, value x4867, value x4866,
+                               value x4865, value x4864, value x4863,
+                               value x4862, value x4861, value x4860)
+{
+   int x4872 = Long_val(x4871);
+   int x4875 = Long_val(x4870);
+   int x4878 = Long_val(x4869);
+   int x4881 = Long_val(x4868);
+   int x4884 = Long_val(x4867);
+   int x4887 = Long_val(x4866);
+   int x4890 = Long_val(x4865);
+   double x4893 = Double_val(x4864);
+   double* x4896 = CTYPES_ADDR_OF_FATPTR(x4863);
+   int x4897 = Long_val(x4862);
+   double* x4900 = CTYPES_ADDR_OF_FATPTR(x4861);
+   int x4901 = Long_val(x4860);
+   cblas_dtrsm(x4872, x4875, x4878, x4881, x4884, x4887, x4890, x4893, 
+               x4896, x4897, x4900, x4901);
+   return Val_unit;
+}
+value owl_stub_132_cblas_dtrsm_byte12(value* argv, int argc)
+{
+   value x4905 = argv[11];
+   value x4906 = argv[10];
+   value x4907 = argv[9];
+   value x4908 = argv[8];
+   value x4909 = argv[7];
+   value x4910 = argv[6];
+   value x4911 = argv[5];
+   value x4912 = argv[4];
+   value x4913 = argv[3];
+   value x4914 = argv[2];
+   value x4915 = argv[1];
+   value x4916 = argv[0];
+   return
+     owl_stub_132_cblas_dtrsm(x4916, x4915, x4914, x4913, x4912, x4911,
+                              x4910, x4909, x4908, x4907, x4906, x4905);
+}
+value owl_stub_133_cblas_ctrsm(value x4928, value x4927, value x4926,
+                               value x4925, value x4924, value x4923,
+                               value x4922, value x4921, value x4920,
+                               value x4919, value x4918, value x4917)
+{
+   int x4929 = Long_val(x4928);
+   int x4932 = Long_val(x4927);
+   int x4935 = Long_val(x4926);
+   int x4938 = Long_val(x4925);
+   int x4941 = Long_val(x4924);
+   int x4944 = Long_val(x4923);
+   int x4947 = Long_val(x4922);
+   float _Complex* x4950 = CTYPES_ADDR_OF_FATPTR(x4921);
+   float _Complex* x4951 = CTYPES_ADDR_OF_FATPTR(x4920);
+   int x4952 = Long_val(x4919);
+   float _Complex* x4955 = CTYPES_ADDR_OF_FATPTR(x4918);
+   int x4956 = Long_val(x4917);
+   cblas_ctrsm(x4929, x4932, x4935, x4938, x4941, x4944, x4947, x4950, 
+               x4951, x4952, x4955, x4956);
+   return Val_unit;
+}
+value owl_stub_133_cblas_ctrsm_byte12(value* argv, int argc)
+{
+   value x4960 = argv[11];
+   value x4961 = argv[10];
+   value x4962 = argv[9];
+   value x4963 = argv[8];
+   value x4964 = argv[7];
+   value x4965 = argv[6];
+   value x4966 = argv[5];
+   value x4967 = argv[4];
+   value x4968 = argv[3];
+   value x4969 = argv[2];
+   value x4970 = argv[1];
+   value x4971 = argv[0];
+   return
+     owl_stub_133_cblas_ctrsm(x4971, x4970, x4969, x4968, x4967, x4966,
+                              x4965, x4964, x4963, x4962, x4961, x4960);
+}
+value owl_stub_134_cblas_ztrsm(value x4983, value x4982, value x4981,
+                               value x4980, value x4979, value x4978,
+                               value x4977, value x4976, value x4975,
+                               value x4974, value x4973, value x4972)
+{
+   int x4984 = Long_val(x4983);
+   int x4987 = Long_val(x4982);
+   int x4990 = Long_val(x4981);
+   int x4993 = Long_val(x4980);
+   int x4996 = Long_val(x4979);
+   int x4999 = Long_val(x4978);
+   int x5002 = Long_val(x4977);
+   double _Complex* x5005 = CTYPES_ADDR_OF_FATPTR(x4976);
+   double _Complex* x5006 = CTYPES_ADDR_OF_FATPTR(x4975);
+   int x5007 = Long_val(x4974);
+   double _Complex* x5010 = CTYPES_ADDR_OF_FATPTR(x4973);
+   int x5011 = Long_val(x4972);
+   cblas_ztrsm(x4984, x4987, x4990, x4993, x4996, x4999, x5002, x5005, 
+               x5006, x5007, x5010, x5011);
+   return Val_unit;
+}
+value owl_stub_134_cblas_ztrsm_byte12(value* argv, int argc)
+{
+   value x5015 = argv[11];
+   value x5016 = argv[10];
+   value x5017 = argv[9];
+   value x5018 = argv[8];
+   value x5019 = argv[7];
+   value x5020 = argv[6];
+   value x5021 = argv[5];
+   value x5022 = argv[4];
+   value x5023 = argv[3];
+   value x5024 = argv[2];
+   value x5025 = argv[1];
+   value x5026 = argv[0];
+   return
+     owl_stub_134_cblas_ztrsm(x5026, x5025, x5024, x5023, x5022, x5021,
+                              x5020, x5019, x5018, x5017, x5016, x5015);
+}
+value owl_stub_135_cblas_chemm(value x5039, value x5038, value x5037,
+                               value x5036, value x5035, value x5034,
+                               value x5033, value x5032, value x5031,
+                               value x5030, value x5029, value x5028,
+                               value x5027)
+{
+   int x5040 = Long_val(x5039);
+   int x5043 = Long_val(x5038);
+   int x5046 = Long_val(x5037);
+   int x5049 = Long_val(x5036);
+   int x5052 = Long_val(x5035);
+   float _Complex* x5055 = CTYPES_ADDR_OF_FATPTR(x5034);
+   float _Complex* x5056 = CTYPES_ADDR_OF_FATPTR(x5033);
+   int x5057 = Long_val(x5032);
+   float _Complex* x5060 = CTYPES_ADDR_OF_FATPTR(x5031);
+   int x5061 = Long_val(x5030);
+   float _Complex* x5064 = CTYPES_ADDR_OF_FATPTR(x5029);
+   float _Complex* x5065 = CTYPES_ADDR_OF_FATPTR(x5028);
+   int x5066 = Long_val(x5027);
+   cblas_chemm(x5040, x5043, x5046, x5049, x5052, x5055, x5056, x5057, 
+               x5060, x5061, x5064, x5065, x5066);
+   return Val_unit;
+}
+value owl_stub_135_cblas_chemm_byte13(value* argv, int argc)
+{
+   value x5070 = argv[12];
+   value x5071 = argv[11];
+   value x5072 = argv[10];
+   value x5073 = argv[9];
+   value x5074 = argv[8];
+   value x5075 = argv[7];
+   value x5076 = argv[6];
+   value x5077 = argv[5];
+   value x5078 = argv[4];
+   value x5079 = argv[3];
+   value x5080 = argv[2];
+   value x5081 = argv[1];
+   value x5082 = argv[0];
+   return
+     owl_stub_135_cblas_chemm(x5082, x5081, x5080, x5079, x5078, x5077,
+                              x5076, x5075, x5074, x5073, x5072, x5071,
+                              x5070);
+}
+value owl_stub_136_cblas_zhemm(value x5095, value x5094, value x5093,
+                               value x5092, value x5091, value x5090,
+                               value x5089, value x5088, value x5087,
+                               value x5086, value x5085, value x5084,
+                               value x5083)
+{
+   int x5096 = Long_val(x5095);
+   int x5099 = Long_val(x5094);
+   int x5102 = Long_val(x5093);
+   int x5105 = Long_val(x5092);
+   int x5108 = Long_val(x5091);
+   double _Complex* x5111 = CTYPES_ADDR_OF_FATPTR(x5090);
+   double _Complex* x5112 = CTYPES_ADDR_OF_FATPTR(x5089);
+   int x5113 = Long_val(x5088);
+   double _Complex* x5116 = CTYPES_ADDR_OF_FATPTR(x5087);
+   int x5117 = Long_val(x5086);
+   double _Complex* x5120 = CTYPES_ADDR_OF_FATPTR(x5085);
+   double _Complex* x5121 = CTYPES_ADDR_OF_FATPTR(x5084);
+   int x5122 = Long_val(x5083);
+   cblas_zhemm(x5096, x5099, x5102, x5105, x5108, x5111, x5112, x5113, 
+               x5116, x5117, x5120, x5121, x5122);
+   return Val_unit;
+}
+value owl_stub_136_cblas_zhemm_byte13(value* argv, int argc)
+{
+   value x5126 = argv[12];
+   value x5127 = argv[11];
+   value x5128 = argv[10];
+   value x5129 = argv[9];
+   value x5130 = argv[8];
+   value x5131 = argv[7];
+   value x5132 = argv[6];
+   value x5133 = argv[5];
+   value x5134 = argv[4];
+   value x5135 = argv[3];
+   value x5136 = argv[2];
+   value x5137 = argv[1];
+   value x5138 = argv[0];
+   return
+     owl_stub_136_cblas_zhemm(x5138, x5137, x5136, x5135, x5134, x5133,
+                              x5132, x5131, x5130, x5129, x5128, x5127,
+                              x5126);
+}
+value owl_stub_137_cblas_cherk(value x5149, value x5148, value x5147,
+                               value x5146, value x5145, value x5144,
+                               value x5143, value x5142, value x5141,
+                               value x5140, value x5139)
+{
+   int x5150 = Long_val(x5149);
+   int x5153 = Long_val(x5148);
+   int x5156 = Long_val(x5147);
+   int x5159 = Long_val(x5146);
+   int x5162 = Long_val(x5145);
+   double x5165 = Double_val(x5144);
+   float _Complex* x5168 = CTYPES_ADDR_OF_FATPTR(x5143);
+   int x5169 = Long_val(x5142);
+   double x5172 = Double_val(x5141);
+   float _Complex* x5175 = CTYPES_ADDR_OF_FATPTR(x5140);
+   int x5176 = Long_val(x5139);
+   cblas_cherk(x5150, x5153, x5156, x5159, x5162, (float)x5165, x5168, 
+               x5169, (float)x5172, x5175, x5176);
+   return Val_unit;
+}
+value owl_stub_137_cblas_cherk_byte11(value* argv, int argc)
+{
+   value x5180 = argv[10];
+   value x5181 = argv[9];
+   value x5182 = argv[8];
+   value x5183 = argv[7];
+   value x5184 = argv[6];
+   value x5185 = argv[5];
+   value x5186 = argv[4];
+   value x5187 = argv[3];
+   value x5188 = argv[2];
+   value x5189 = argv[1];
+   value x5190 = argv[0];
+   return
+     owl_stub_137_cblas_cherk(x5190, x5189, x5188, x5187, x5186, x5185,
+                              x5184, x5183, x5182, x5181, x5180);
+}
+value owl_stub_138_cblas_zherk(value x5201, value x5200, value x5199,
+                               value x5198, value x5197, value x5196,
+                               value x5195, value x5194, value x5193,
+                               value x5192, value x5191)
+{
+   int x5202 = Long_val(x5201);
+   int x5205 = Long_val(x5200);
+   int x5208 = Long_val(x5199);
+   int x5211 = Long_val(x5198);
+   int x5214 = Long_val(x5197);
+   double x5217 = Double_val(x5196);
+   double _Complex* x5220 = CTYPES_ADDR_OF_FATPTR(x5195);
+   int x5221 = Long_val(x5194);
+   double x5224 = Double_val(x5193);
+   double _Complex* x5227 = CTYPES_ADDR_OF_FATPTR(x5192);
+   int x5228 = Long_val(x5191);
+   cblas_zherk(x5202, x5205, x5208, x5211, x5214, x5217, x5220, x5221, 
+               x5224, x5227, x5228);
+   return Val_unit;
+}
+value owl_stub_138_cblas_zherk_byte11(value* argv, int argc)
+{
+   value x5232 = argv[10];
+   value x5233 = argv[9];
+   value x5234 = argv[8];
+   value x5235 = argv[7];
+   value x5236 = argv[6];
+   value x5237 = argv[5];
+   value x5238 = argv[4];
+   value x5239 = argv[3];
+   value x5240 = argv[2];
+   value x5241 = argv[1];
+   value x5242 = argv[0];
+   return
+     owl_stub_138_cblas_zherk(x5242, x5241, x5240, x5239, x5238, x5237,
+                              x5236, x5235, x5234, x5233, x5232);
+}
+value owl_stub_139_cblas_cher2k(value x5255, value x5254, value x5253,
+                                value x5252, value x5251, value x5250,
+                                value x5249, value x5248, value x5247,
+                                value x5246, value x5245, value x5244,
+                                value x5243)
+{
+   int x5256 = Long_val(x5255);
+   int x5259 = Long_val(x5254);
+   int x5262 = Long_val(x5253);
+   int x5265 = Long_val(x5252);
+   int x5268 = Long_val(x5251);
+   float _Complex* x5271 = CTYPES_ADDR_OF_FATPTR(x5250);
+   float _Complex* x5272 = CTYPES_ADDR_OF_FATPTR(x5249);
+   int x5273 = Long_val(x5248);
+   float _Complex* x5276 = CTYPES_ADDR_OF_FATPTR(x5247);
+   int x5277 = Long_val(x5246);
+   double x5280 = Double_val(x5245);
+   float _Complex* x5283 = CTYPES_ADDR_OF_FATPTR(x5244);
+   int x5284 = Long_val(x5243);
+   cblas_cher2k(x5256, x5259, x5262, x5265, x5268, x5271, x5272, x5273,
+                x5276, x5277, (float)x5280, x5283, x5284);
+   return Val_unit;
+}
+value owl_stub_139_cblas_cher2k_byte13(value* argv, int argc)
+{
+   value x5288 = argv[12];
+   value x5289 = argv[11];
+   value x5290 = argv[10];
+   value x5291 = argv[9];
+   value x5292 = argv[8];
+   value x5293 = argv[7];
+   value x5294 = argv[6];
+   value x5295 = argv[5];
+   value x5296 = argv[4];
+   value x5297 = argv[3];
+   value x5298 = argv[2];
+   value x5299 = argv[1];
+   value x5300 = argv[0];
+   return
+     owl_stub_139_cblas_cher2k(x5300, x5299, x5298, x5297, x5296, x5295,
+                               x5294, x5293, x5292, x5291, x5290, x5289,
+                               x5288);
+}
+value owl_stub_140_cblas_zher2k(value x5313, value x5312, value x5311,
+                                value x5310, value x5309, value x5308,
+                                value x5307, value x5306, value x5305,
+                                value x5304, value x5303, value x5302,
+                                value x5301)
+{
+   int x5314 = Long_val(x5313);
+   int x5317 = Long_val(x5312);
+   int x5320 = Long_val(x5311);
+   int x5323 = Long_val(x5310);
+   int x5326 = Long_val(x5309);
+   double _Complex* x5329 = CTYPES_ADDR_OF_FATPTR(x5308);
+   double _Complex* x5330 = CTYPES_ADDR_OF_FATPTR(x5307);
+   int x5331 = Long_val(x5306);
+   double _Complex* x5334 = CTYPES_ADDR_OF_FATPTR(x5305);
+   int x5335 = Long_val(x5304);
+   double x5338 = Double_val(x5303);
+   double _Complex* x5341 = CTYPES_ADDR_OF_FATPTR(x5302);
+   int x5342 = Long_val(x5301);
+   cblas_zher2k(x5314, x5317, x5320, x5323, x5326, x5329, x5330, x5331,
+                x5334, x5335, (float)x5338, x5341, x5342);
+   return Val_unit;
+}
+value owl_stub_140_cblas_zher2k_byte13(value* argv, int argc)
+{
+   value x5346 = argv[12];
+   value x5347 = argv[11];
+   value x5348 = argv[10];
+   value x5349 = argv[9];
+   value x5350 = argv[8];
+   value x5351 = argv[7];
+   value x5352 = argv[6];
+   value x5353 = argv[5];
+   value x5354 = argv[4];
+   value x5355 = argv[3];
+   value x5356 = argv[2];
+   value x5357 = argv[1];
+   value x5358 = argv[0];
+   return
+     owl_stub_140_cblas_zher2k(x5358, x5357, x5356, x5355, x5354, x5353,
+                               x5352, x5351, x5350, x5349, x5348, x5347,
+                               x5346);
+}

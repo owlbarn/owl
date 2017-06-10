@@ -292,5 +292,56 @@ module Bindings (F : Cstubs.FOREIGN) = struct
   let cblas_zsymm = foreign "cblas_zsymm" (int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
 
 
+  let cblas_ssyrk = foreign "cblas_ssyrk" (int @-> int @-> int @-> int @-> int @-> float @-> ptr float @-> int @-> float @-> ptr float @-> int @-> returning void)
+
+  let cblas_dsyrk = foreign "cblas_dsyrk" (int @-> int @-> int @-> int @-> int @-> double @-> ptr double @-> int @-> double @-> ptr double @-> int @-> returning void)
+
+  let cblas_csyrk = foreign "cblas_csyrk" (int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zsyrk = foreign "cblas_zsyrk" (int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_ssyr2k = foreign "cblas_ssyr2k" (int @-> int @-> int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> float @-> ptr float @-> int @-> returning void)
+
+  let cblas_dsyr2k = foreign "cblas_dsyr2k" (int @-> int @-> int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> int @-> double @-> ptr double @-> int @-> returning void)
+
+  let cblas_csyr2k = foreign "cblas_csyr2k" (int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zsyr2k = foreign "cblas_zsyr2k" (int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_strmm = foreign "cblas_strmm" (int @-> int @-> int @-> int @-> int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> returning void)
+
+  let cblas_dtrmm = foreign "cblas_dtrmm" (int @-> int @-> int @-> int @-> int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> int @-> returning void)
+
+  let cblas_ctrmm = foreign "cblas_ctrmm" (int @-> int @-> int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_ztrmm = foreign "cblas_ztrmm" (int @-> int @-> int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_strsm = foreign "cblas_strsm" (int @-> int @-> int @-> int @-> int @-> int @-> int @-> float @-> ptr float @-> int @-> ptr float @-> int @-> returning void)
+
+  let cblas_dtrsm = foreign "cblas_dtrsm" (int @-> int @-> int @-> int @-> int @-> int @-> int @-> double @-> ptr double @-> int @-> ptr double @-> int @-> returning void)
+
+  let cblas_ctrsm = foreign "cblas_ctrsm" (int @-> int @-> int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_ztrsm = foreign "cblas_ztrsm" (int @-> int @-> int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_chemm = foreign "cblas_chemm" (int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zhemm = foreign "cblas_zhemm" (int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_cherk = foreign "cblas_cherk" (int @-> int @-> int @-> int @-> int @-> float @-> ptr complex32 @-> int @-> float @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zherk = foreign "cblas_zherk" (int @-> int @-> int @-> int @-> int @-> double @-> ptr complex64 @-> int @-> double @-> ptr complex64 @-> int @-> returning void)
+
+
+  let cblas_cher2k = foreign "cblas_cher2k" (int @-> int @-> int @-> int @-> int @-> ptr complex32 @-> ptr complex32 @-> int @-> ptr complex32 @-> int @-> float @-> ptr complex32 @-> int @-> returning void)
+
+  let cblas_zher2k = foreign "cblas_zher2k" (int @-> int @-> int @-> int @-> int @-> ptr complex64 @-> ptr complex64 @-> int @-> ptr complex64 @-> int @-> float @-> ptr complex64 @-> int @-> returning void)
+
+
 
 end
