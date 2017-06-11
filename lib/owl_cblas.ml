@@ -1044,9 +1044,356 @@ let zhpr2 layout uplo n alpha x incx y incy ap =
 (* Level 3 BLAS *)
 
 
+(* Computes a matrix-matrix product with general matrices. *)
+
+let sgemm layout transa transb m n k alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _transa = cblas_transpose transa in
+  let _transb = cblas_transpose transb in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_sgemm _layout _transa _transb m n k alpha _a lda _b ldb beta _c ldc
+  |> ignore
+
+let dgemm layout transa transb m n k alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _transa = cblas_transpose transa in
+  let _transb = cblas_transpose transb in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_dgemm _layout _transa _transb m n k alpha _a lda _b ldb beta _c ldc
+  |> ignore
+
+let cgemm layout transa transb m n k alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _transa = cblas_transpose transa in
+  let _transb = cblas_transpose transb in
+  let _alpha = allocate complex32 alpha in
+  let _beta = allocate complex32 beta in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_cgemm _layout _transa _transb m n k _alpha _a lda _b ldb _beta _c ldc
+  |> ignore
+
+let zgemm layout transa transb m n k alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _transa = cblas_transpose transa in
+  let _transb = cblas_transpose transb in
+  let _alpha = allocate complex64 alpha in
+  let _beta = allocate complex64 beta in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_zgemm _layout _transa _transb m n k _alpha _a lda _b ldb _beta _c ldc
+  |> ignore
 
 
+(* Computes a matrix-matrix product where one input matrix is symmetric. *)
+
+let ssymm layout side uplo m n alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_ssymm _layout _side _uplo m n alpha _a lda _b ldb beta _c ldc
+  |> ignore
+
+let dsymm layout side uplo m n alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_dsymm _layout _side _uplo m n alpha _a lda _b ldb beta _c ldc
+  |> ignore
+
+let csymm layout side uplo m n alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _alpha = allocate complex32 alpha in
+  let _beta = allocate complex32 beta in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_csymm _layout _side _uplo m n _alpha _a lda _b ldb _beta _c ldc
+  |> ignore
+
+let zsymm layout side uplo m n alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _alpha = allocate complex64 alpha in
+  let _beta = allocate complex64 beta in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_zsymm _layout _side _uplo m n _alpha _a lda _b ldb _beta _c ldc
+  |> ignore
 
 
+(* Performs a symmetric rank-k update. *)
 
-(* ends here *)
+let ssyrk layout uplo trans n k alpha a lda beta c ldc =
+  let _layout = cblas_layout layout in
+  let _uplo = cblas_uplo uplo in
+  let _trans = cblas_transpose trans in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_ssyrk _layout _uplo _trans n k alpha _a lda beta _c ldc
+  |> ignore
+
+let dsyrk layout uplo trans n k alpha a lda beta c ldc =
+  let _layout = cblas_layout layout in
+  let _uplo = cblas_uplo uplo in
+  let _trans = cblas_transpose trans in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_dsyrk _layout _uplo _trans n k alpha _a lda beta _c ldc
+  |> ignore
+
+let csyrk layout uplo trans n k alpha a lda beta c ldc =
+  let _layout = cblas_layout layout in
+  let _uplo = cblas_uplo uplo in
+  let _trans = cblas_transpose trans in
+  let _alpha = allocate complex32 alpha in
+  let _beta = allocate complex32 beta in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_csyrk _layout _uplo _trans n k _alpha _a lda _beta _c ldc
+  |> ignore
+
+let zsyrk layout uplo trans n k alpha a lda beta c ldc =
+  let _layout = cblas_layout layout in
+  let _uplo = cblas_uplo uplo in
+  let _trans = cblas_transpose trans in
+  let _alpha = allocate complex64 alpha in
+  let _beta = allocate complex64 beta in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_zsyrk _layout _uplo _trans n k _alpha _a lda _beta _c ldc
+  |> ignore
+
+
+(* Performs a symmetric rank-2k update. *)
+
+let ssyr2k layout uplo trans n k alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _uplo = cblas_uplo uplo in
+  let _trans = cblas_transpose trans in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_ssyr2k _layout _uplo _trans n k alpha _a lda _b ldb beta _c ldc
+  |> ignore
+
+let dsyr2k layout uplo trans n k alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _uplo = cblas_uplo uplo in
+  let _trans = cblas_transpose trans in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_dsyr2k _layout _uplo _trans n k alpha _a lda _b ldb beta _c ldc
+  |> ignore
+
+let csyr2k layout uplo trans n k alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _uplo = cblas_uplo uplo in
+  let _trans = cblas_transpose trans in
+  let _alpha = allocate complex32 alpha in
+  let _beta = allocate complex32 beta in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_csyr2k _layout _uplo _trans n k _alpha _a lda _b ldb _beta _c ldc
+  |> ignore
+
+let zsyr2k layout uplo trans n k alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _uplo = cblas_uplo uplo in
+  let _trans = cblas_transpose trans in
+  let _alpha = allocate complex64 alpha in
+  let _beta = allocate complex64 beta in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_zsyr2k _layout _uplo _trans n k _alpha _a lda _b ldb _beta _c ldc
+  |> ignore
+
+
+(* Computes a matrix-matrix product where one input matrix is triangular. *)
+
+let strmm layout side uplo transa diag m n alpha a lda b ldb =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _transa = cblas_transpose transa in
+  let _diag = cblas_diag diag in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  C.cblas_strmm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
+  |> ignore
+
+let dtrmm layout side uplo transa diag m n alpha a lda b ldb =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _transa = cblas_transpose transa in
+  let _diag = cblas_diag diag in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  C.cblas_dtrmm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
+  |> ignore
+
+let ctrmm layout side uplo transa diag m n alpha a lda b ldb =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _transa = cblas_transpose transa in
+  let _diag = cblas_diag diag in
+  let _alpha = allocate complex32 alpha in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  C.cblas_ctrmm _layout _side _uplo _transa _diag m n _alpha _a lda _b ldb
+  |> ignore
+
+let ztrmm layout side uplo transa diag m n alpha a lda b ldb =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _transa = cblas_transpose transa in
+  let _diag = cblas_diag diag in
+  let _alpha = allocate complex64 alpha in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  C.cblas_ztrmm _layout _side _uplo _transa _diag m n _alpha _a lda _b ldb
+  |> ignore
+
+
+(* Solves a triangular matrix equation. *)
+
+let strsm layout side uplo transa diag m n alpha a lda b ldb =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _transa = cblas_transpose transa in
+  let _diag = cblas_diag diag in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  C.cblas_strsm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
+  |> ignore
+
+let dtrsm layout side uplo transa diag m n alpha a lda b ldb =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _transa = cblas_transpose transa in
+  let _diag = cblas_diag diag in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  C.cblas_dtrsm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
+  |> ignore
+
+let ctrsm layout side uplo transa diag m n alpha a lda b ldb =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _transa = cblas_transpose transa in
+  let _diag = cblas_diag diag in
+  let _alpha = allocate complex32 alpha in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  C.cblas_ctrsm _layout _side _uplo _transa _diag m n _alpha _a lda _b ldb
+  |> ignore
+
+let ztrsm layout side uplo transa diag m n alpha a lda b ldb =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _transa = cblas_transpose transa in
+  let _diag = cblas_diag diag in
+  let _alpha = allocate complex64 alpha in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  C.cblas_ztrsm _layout _side _uplo _transa _diag m n _alpha _a lda _b ldb
+  |> ignore
+
+
+(* Computes a matrix-matrix product where one input matrix is Hermitian. *)
+
+let chemm layout side uplo m n alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _alpha = allocate complex32 alpha in
+  let _beta = allocate complex32 beta in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_chemm _layout _side _uplo m n _alpha _a lda _b ldb _beta _c ldc
+  |> ignore
+
+let zhemm layout side uplo m n alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _side = cblas_side side in
+  let _uplo = cblas_uplo uplo in
+  let _alpha = allocate complex64 alpha in
+  let _beta = allocate complex64 beta in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_zhemm _layout _side _uplo m n _alpha _a lda _b ldb _beta _c ldc
+  |> ignore
+
+
+(* Performs a Hermitian rank-k update. *)
+
+let cherk layout uplo trans n k alpha a lda beta c ldc =
+  let _layout = cblas_layout layout in
+  let _uplo = cblas_uplo uplo in
+  let _trans = cblas_transpose trans in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_cherk _layout _uplo _trans n k alpha _a lda beta _c ldc
+  |> ignore
+
+let zherk layout uplo trans n k alpha a lda beta c ldc =
+  let _layout = cblas_layout layout in
+  let _uplo = cblas_uplo uplo in
+  let _trans = cblas_transpose trans in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_zherk _layout _uplo _trans n k alpha _a lda beta _c ldc
+  |> ignore
+
+
+(* Performs a Hermitian rank-2k update. *)
+
+let cher2k layout uplo trans n k alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _uplo = cblas_uplo uplo in
+  let _trans = cblas_transpose trans in
+  let _alpha = allocate complex32 alpha in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_cher2k _layout _uplo _trans n k _alpha _a lda _b ldb beta _c ldc
+  |> ignore
+
+let zher2k layout uplo trans n k alpha a lda b ldb beta c ldc =
+  let _layout = cblas_layout layout in
+  let _uplo = cblas_uplo uplo in
+  let _trans = cblas_transpose trans in
+  let _alpha = allocate complex64 alpha in
+  let _a = bigarray_start Ctypes_static.Array1 a in
+  let _b = bigarray_start Ctypes_static.Array1 b in
+  let _c = bigarray_start Ctypes_static.Array1 c in
+  C.cblas_zher2k _layout _uplo _trans n k _alpha _a lda _b ldb beta _c ldc
+  |> ignore
