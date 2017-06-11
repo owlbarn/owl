@@ -176,6 +176,209 @@ val cgemv : cblas_layout -> cblas_transpose -> int -> int -> Complex.t -> c_t ->
 val zgemv : cblas_layout -> cblas_transpose -> int -> int -> Complex.t -> z_t -> int -> z_t -> int -> Complex.t -> z_t -> int -> unit
 
 
+(* Computes a matrix-vector product using a general band matrix *)
+
+val sgbmv : cblas_layout -> cblas_transpose -> int -> int -> int -> int -> float -> s_t -> int -> s_t -> int -> float -> s_t -> int -> unit
+
+val dgbmv : cblas_layout -> cblas_transpose -> int -> int -> int -> int -> float -> d_t -> int -> d_t -> int -> float -> d_t -> int -> unit
+
+val cgbmv : cblas_layout -> cblas_transpose -> int -> int -> int -> int -> Complex.t -> c_t -> int -> c_t -> int -> Complex.t -> c_t -> int -> unit
+
+val zgbmv : cblas_layout -> cblas_transpose -> int -> int -> int -> int -> Complex.t -> z_t -> int -> z_t -> int -> Complex.t -> z_t -> int -> unit
+
+
+(* Computes a matrix-vector product using a triangular matrix. *)
+
+val strmv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> s_t -> int -> s_t -> int -> unit
+
+val dtrmv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> d_t -> int -> d_t -> int -> unit
+
+val ctrmv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> c_t -> int -> c_t -> int -> unit
+
+val ztrmv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> z_t -> int -> z_t -> int -> unit
+
+
+(* Computes a matrix-vector product using a triangular band matrix. *)
+
+val stbmv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> s_t -> int -> s_t -> int -> unit
+
+val dtbmv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> d_t -> int -> d_t -> int -> unit
+
+val ctbmv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> c_t -> int -> c_t -> int -> unit
+
+val ztbmv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> z_t -> int -> z_t -> int -> unit
+
+
+(* Computes a matrix-vector product using a triangular packed matrix. *)
+
+val stpmv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> s_t -> s_t -> int -> unit
+
+val dtpmv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> d_t -> d_t -> int -> unit
+
+val ctpmv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> c_t -> c_t -> int -> unit
+
+val ztpmv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> z_t -> z_t -> int -> unit
+
+
+(* Solves a system of linear equations whose coefficients are in a triangular matrix. *)
+
+val strsv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> s_t -> int -> s_t -> int -> unit
+
+val dtrsv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> d_t -> int -> d_t -> int -> unit
+
+val ctrsv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> c_t -> int -> c_t -> int -> unit
+
+val ztrsv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> z_t -> int -> z_t -> int -> unit
+
+
+(* Solves a system of linear equations whose coefficients are in a triangular band matrix. *)
+
+val stbsv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> s_t -> int -> s_t -> int -> unit
+
+val dtbsv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> d_t -> int -> d_t -> int -> unit
+
+val ctbsv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> c_t -> int -> c_t -> int -> unit
+
+val ztbsv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> z_t -> int -> z_t -> int -> unit
+
+
+(* Solves a system of linear equations whose coefficients are in a triangular packed matrix. *)
+
+val stpsv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> s_t -> s_t -> int -> unit
+
+val dtpsv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> d_t -> d_t -> int -> unit
+
+val ctpsv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> c_t -> c_t -> int -> unit
+
+val ztpsv : cblas_layout -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> z_t -> z_t -> int -> unit
+
+
+
+(* Computes a matrix-vector product for a symmetric matrix. *)
+
+val ssymv : cblas_layout -> cblas_uplo -> int -> float -> s_t -> int -> s_t -> int -> float -> s_t -> int -> unit
+
+val dsymv : cblas_layout -> cblas_uplo -> int -> float -> d_t -> int -> d_t -> int -> float -> d_t -> int -> unit
+
+
+(* Computes a matrix-vector product using a symmetric band matrix. *)
+
+val ssbmv : cblas_layout -> cblas_uplo -> int -> int -> float -> s_t -> int -> s_t -> int -> float -> s_t -> int -> unit
+
+val dsbmv : cblas_layout -> cblas_uplo -> int -> int -> float -> d_t -> int -> d_t -> int -> float -> d_t -> int -> unit
+
+
+(* Computes a matrix-vector product using a symmetric packed matrix. *)
+
+val sspmv : cblas_layout -> cblas_uplo -> int -> int -> float -> s_t -> s_t -> int -> float -> s_t -> int -> unit
+
+val dspmv : cblas_layout -> cblas_uplo -> int -> int -> float -> d_t -> d_t -> int -> float -> d_t -> int -> unit
+
+
+(* Performs a rank-1 update of a general matrix. *)
+
+val sger : cblas_layout -> int -> int -> float -> s_t -> int -> s_t -> int -> s_t -> int -> unit
+
+val dger : cblas_layout -> int -> int -> float -> d_t -> int -> d_t -> int -> d_t -> int -> unit
+
+
+(* Performs a rank-1 update of a symmetric matrix. *)
+
+val ssyr : cblas_layout -> cblas_uplo -> int -> float -> s_t -> int -> s_t -> int -> unit
+
+val dsyr : cblas_layout -> cblas_uplo -> int -> float -> d_t -> int -> d_t -> int -> unit
+
+
+(* Performs a rank-1 update of a symmetric packed matrix. *)
+
+val sspr : cblas_layout -> cblas_uplo -> int -> float -> s_t -> int -> s_t -> unit
+
+val dspr : cblas_layout -> cblas_uplo -> int -> float -> d_t -> int -> d_t -> unit
+
+
+(* Performs a rank-2 update of symmetric matrix. *)
+
+val ssyr2 : cblas_layout -> cblas_uplo -> int -> float -> s_t -> int -> s_t -> int -> s_t -> int -> unit
+
+val dsyr2 : cblas_layout -> cblas_uplo -> int -> float -> d_t -> int -> d_t -> int -> d_t -> int -> unit
+
+
+(* Performs a rank-2 update of a symmetric packed matrix. *)
+
+val sspr2 : cblas_layout -> cblas_uplo -> int -> float -> s_t -> int -> s_t -> int -> s_t -> unit
+
+val dspr2 : cblas_layout -> cblas_uplo -> int -> float -> d_t -> int -> d_t -> int -> d_t -> unit
+
+
+(* Computes a matrix-vector product using a Hermitian matrix. *)
+
+val chemv : cblas_layout -> cblas_uplo -> int -> Complex.t -> c_t -> int -> c_t -> int -> Complex.t -> c_t -> int -> unit
+
+val zhemv : cblas_layout -> cblas_uplo -> int -> Complex.t -> z_t -> int -> z_t -> int -> Complex.t -> z_t -> int -> unit
+
+
+(* Computes a matrix-vector product using a Hermitian band matrix. *)
+
+val chbmv : cblas_layout -> cblas_uplo -> int -> int -> Complex.t -> c_t -> int -> c_t -> int -> Complex.t -> c_t -> int -> unit
+
+val zhbmv : cblas_layout -> cblas_uplo -> int -> int -> Complex.t -> z_t -> int -> z_t -> int -> Complex.t -> z_t -> int -> unit
+
+
+(* Computes a matrix-vector product using a Hermitian packed matrix. *)
+
+val chpmv : cblas_layout -> cblas_uplo -> int -> Complex.t -> c_t -> c_t -> int -> Complex.t -> c_t -> int -> unit
+
+val zhpmv : cblas_layout -> cblas_uplo -> int -> Complex.t -> z_t -> z_t -> int -> Complex.t -> z_t -> int -> unit
+
+
+(* Performs a rank-1 update (unconjugated) of a general matrix. *)
+
+val cgeru : cblas_layout -> int -> int -> Complex.t -> c_t -> int -> c_t -> int -> c_t -> int -> unit
+
+val zgeru : cblas_layout -> int -> int -> Complex.t -> z_t -> int -> z_t -> int -> z_t -> int -> unit
+
+
+(* Performs a rank-1 update (conjugated) of a general matrix. *)
+
+val cgerc : cblas_layout -> int -> int -> Complex.t -> c_t -> int -> c_t -> int -> c_t -> int -> unit
+
+val zgerc : cblas_layout -> int -> int -> Complex.t -> z_t -> int -> z_t -> int -> z_t -> int -> unit
+
+
+(* Performs a rank-1 update of a Hermitian matrix. *)
+
+val cher : cblas_layout -> cblas_uplo -> int -> float -> c_t -> int -> c_t -> int -> unit
+
+val zher : cblas_layout -> cblas_uplo -> int -> float -> z_t -> int -> z_t -> int -> unit
+
+
+(* Performs a rank-1 update of a Hermitian packed matrix. *)
+
+val chpr : cblas_layout -> cblas_uplo -> int -> float -> c_t -> int -> c_t -> unit
+
+val zhpr : cblas_layout -> cblas_uplo -> int -> float -> z_t -> int -> z_t -> unit
+
+
+(* Performs a rank-2 update of a Hermitian matrix. *)
+
+val cher2 : cblas_layout -> cblas_uplo -> int -> Complex.t -> c_t -> int -> c_t -> int -> c_t -> int -> unit
+
+val zher2 : cblas_layout -> cblas_uplo -> int -> Complex.t -> z_t -> int -> z_t -> int -> z_t -> int -> unit
+
+
+(* Performs a rank-2 update of a Hermitian packed matrix. *)
+
+val chpr2 : cblas_layout -> cblas_uplo -> int -> Complex.t -> c_t -> int -> c_t -> int -> c_t -> unit
+
+val zhpr2 : cblas_layout -> cblas_uplo -> int -> Complex.t -> z_t -> int -> z_t -> int -> z_t -> unit
+
+
+
+(** {6 Level 3 BLAS: matrix-matrix operations} *)
+
+
+
+
 
 
 

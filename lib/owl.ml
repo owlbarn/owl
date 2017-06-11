@@ -13,6 +13,7 @@ let complex32 = Bigarray.complex32
 
 let complex64 = Bigarray.complex64
 
+
 (** Make alias of the modules in Owl for your convenience. *)
 
 module Const = Owl_const
@@ -42,6 +43,12 @@ module Utils = Owl_utils
 module Dataset = Owl_dataset
 
 module Ext = Owl_ext
+
+
+(* backend modules *)
+
+module Cblas = Owl_cblas
+
 
 (* shortcuts to 64-bit precision modules *)
 
