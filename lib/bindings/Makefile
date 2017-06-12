@@ -1,4 +1,5 @@
 all:
+	ocamlfind ocamlc -linkpkg -package str owl_lapacke_parser.ml -o owl_lapacke_parser.native
 	ocamlfind ocamlc -c -linkpkg -package ctypes.stubs owl_cblas_bindings.ml
 	ocamlfind ocamlc -linkpkg -package ctypes.stubs owl_cblas_bindings.cmo owl_cblas_stubgen.ml -o owl_cblas_stubgen.byte
 	ocamlfind ocamlc -c -linkpkg -package ctypes.stubs owl_lapacke_bindings.ml
