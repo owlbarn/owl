@@ -522,3 +522,89 @@ Plot.output h;;
 结果如下图所示。如果对详细内容感兴趣，请参见教程。
 
 ![plot021](https://raw.githubusercontent.com/wiki/ryanrhymes/owl/image/plot_021.png)
+
+## 机器学习与神经网络
+
+该部分内容还在开发中。当前的`Neural`模块被包裹在一个单独的库中，但很快就会被整合至 `Owl`的主库中。
+
+下面展示了一个景点的MNIST实例，其中，我们训练了一个双层的神经网络，用于识别手写数字。首先，打开`utop`并加载`Owl_neural`库。
+
+```ocaml
+#require "owl_neural";;
+open Owl_neural;;
+open Feedforward;;
+```
+
+现在，定义一个双层的神经网络。
+
+```ocaml
+let nn = input [|784|]                      (* 定义一个 Feedforward 神经网络*)
+  |> linear 300 ~act_typ:Activation.Tanh    (* 用Tanh activation 添加一个784x300的线性层 *)
+  |> linear 10  ~act_typ:Activation.Softmax (* 用Softmax添加另一个300x10的线性层 *)
+;;
+```
+
+仅仅三行代码，我们就完成了对该网络的定义。`Owl`的`Neural`模块建立在`Algodiff`模块之上，我认为后者是支持神经网络计算的一个非常强有力的工具。通过调用`print nn`，可以输出该神经网络的基本信息。
+
+```bash
+Feedforward network
+
+(0): Input layer: in/out:[*,784]
+
+(1): Linear layer: matrix in:(*,784) out:(*,300)
+    init   : standard
+    params : 235500
+    w      : 784 x 300
+    b      : 1 x 300
+
+(2): Activation layer: tanh in/out:[*,300]
+
+(3): Linear layer: matrix in:(*,300) out:(*,10)
+    init   : standard
+    params : 3010
+    w      : 300 x 10
+    b      : 1 x 10
+
+(4): Activation layer: softmax in/out:[*,10]
+```
+
+怎样训练该网络？仅仅只需要两行代码来加载数据集并且开始训练。这里`Dataset.download_all ()`可以下载Owl示例中所需的所有的数据集，未解压时大概共1GB。
+
+```ocaml
+let x, _, y = Dataset.load_mnist_train_data () in
+train nn x y;;
+```
+
+如果用户想要不一样的训练设置怎么办？在这里，训练和网络模块都是十分灵活且高度可定制的。我将在相关教程中讲述进一步的细节。
+
+## 分布式和并行计算
+
+Owl的分布式很并行计算依赖于我的另一个研究原型 —— Actor系统，一个专用于分布式数据处理的框架。我很快将介绍这一非常有趣的功能。
+
+## 在不同的平台上运行Owl
+
+如果你想在ARM平台（而非传统的x86平台）上运行Owl，安装过程是非常相似的。只是需要注意一点：Owl当前需要Ocaml 4.04版本，而这一版本在目前的流行ARM机器，比如Raspberry Pi上，可能是不支持的。因此，你可能需要直接编译Ocaml的[源代码](https://ocaml.org/releases/4.04.html)。此外，编译过程中，为了解决可能的gsl包兼容问题，在运行完`./configure`命令之后、 `make world.opt`命令之前，你需要运行命令：
+
+```bash
+sed -i -e 's/#define ARCH_ALIGN_DOUBLE/#undef ARCH_ALIGN_DOUBLE/g' config/m.h config/m-templ.h
+```
+
+同样，我们也提供了ARM平台上的[Docker映像文件](https://hub.docker.com/r/matrixanger/owl/)，方面用户快速熟悉该平台。直接运行：
+
+```bash
+docker run --name owl -it matrixanger/owl:arm
+```
+
+注意，在打开一个新的Container之后、打开`utop`之前，用户需要首先运行：
+
+```bash
+eval `opam config env`
+```
+
+## 如何加入
+
+Owl现在正在积极开发中。我衷心期待来自各方的评论建议和代码贡献。除了在你的本地系统设立一个完整的开发系统之外，最容易的加入Owl的方法就是使用Owl的Docker映像（[x86](https://hub.docker.com/r/ryanrhymes/owl/)，[ARM](https://hub.docker.com/r/matrixanger/owl/)）。直接把文件pull到本地，然后就可以从`/root/owl`入手，尽情探索了！
+
+祝您玩得愉快！
+
+**致谢: 本系统部分地由EPSRC项目Contrive (EP/N028422/1)提供支持。**
