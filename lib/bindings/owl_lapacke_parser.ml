@@ -31,14 +31,15 @@ let convert_typ_to_ctyp = function
   | "lapack_logical*"        -> "ptr int"
   | "lapack_complex_float*"  -> "ptr complex32"
   | "lapack_complex_double*" -> "ptr complex64"
-  | "LAPACK_C_SELECT1"       -> "???"
-  | "LAPACK_Z_SELECT1"       -> "???"
-  | "LAPACK_S_SELECT2"       -> "???"
-  | "LAPACK_D_SELECT2"       -> "???"
-  | "LAPACK_C_SELECT2"       -> "???"
-  | "LAPACK_Z_SELECT2"       -> "???"
-  | "LAPACK_S_SELECT3"       -> "???"
-  | "LAPACK_D_SELECT3"       -> "???"
+  (* FIXME *)
+  | "LAPACK_C_SELECT1"       -> "ptr void"
+  | "LAPACK_Z_SELECT1"       -> "ptr void"
+  | "LAPACK_S_SELECT2"       -> "ptr void"
+  | "LAPACK_D_SELECT2"       -> "ptr void"
+  | "LAPACK_C_SELECT2"       -> "ptr void"
+  | "LAPACK_Z_SELECT2"       -> "ptr void"
+  | "LAPACK_S_SELECT3"       -> "ptr void"
+  | "LAPACK_D_SELECT3"       -> "ptr void"
   | _                        -> failwith "convert_typ_to_ctyp"
 
 
@@ -87,6 +88,7 @@ let parse_lapacke_header fname =
         )
     done with exn -> ()
   );
+  (* funs := Array.sub !funs 0 100; *)
   !funs
 
 
@@ -132,7 +134,7 @@ let convert_to_ctypes_fun funs =
 
 
 let convert_lapacke_header funs =
-  Printf.printf "(* generated lapacke interface file *)\n\n";
+  Printf.printf "(* auto-generated lapacke interface file *)\n\n";
   Printf.printf "open Ctypes\n\n";
   Printf.printf "module Bindings (F : Cstubs.FOREIGN) = struct\n\n";
   Printf.printf "  open F\n\n";
