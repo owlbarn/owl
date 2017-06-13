@@ -16,6 +16,9 @@ install:
 	cp owl_cblas_generated* ../
 	cp owl_lapacke.ml ../
 	cp owl_lapacke_generated_stub.c ../
+test:
+	#ocamlfind ocamlc -c -linkpkg -package ctypes.stubs owl_lapacke_generated.ml
+	ocamlfind ocamlc -c -linkpkg -package ctypes.stubs owl_cblas_generated.ml
 clean:
 	rm -rf _build *.cmo *.cmi *.byte *.so
 	rm -rf owl_cblas_generated* owl_lapacke_generated*
