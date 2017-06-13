@@ -11,11 +11,11 @@ type arg = {
 let make_arg typ name = { typ; name }
 
 
-let print_help () = print_endline "Usage: EXE lapacke.h"
+let print_help () = print_endline "Usage: EXE lapacke.h ctypes_output_file binding_output_file"
 
 
 (* convert c types to corresponding types in ctypes *)
-let convert_typ_to_ctyp = function
+let convert_typ_to_ctypes = function
   | "int"                    -> "int"
   | "char"                   -> "char"
   | "float"                  -> "float"
@@ -31,7 +31,7 @@ let convert_typ_to_ctyp = function
   | "lapack_logical*"        -> "ptr int"
   | "lapack_complex_float*"  -> "ptr complex32"
   | "lapack_complex_double*" -> "ptr complex64"
-  (* FIXME *)
+  (* FIXME ? *)
   | "LAPACK_C_SELECT1"       -> "ptr void"
   | "LAPACK_Z_SELECT1"       -> "ptr void"
   | "LAPACK_S_SELECT2"       -> "ptr void"
@@ -40,7 +40,36 @@ let convert_typ_to_ctyp = function
   | "LAPACK_Z_SELECT2"       -> "ptr void"
   | "LAPACK_S_SELECT3"       -> "ptr void"
   | "LAPACK_D_SELECT3"       -> "ptr void"
-  | _                        -> failwith "convert_typ_to_ctyp"
+  | _                        -> failwith "convert_typ_to_ctypes"
+
+
+(* convert c types to corresponding types in extern *)
+let convert_typ_to_extern = function
+  | "int"                    -> "int"
+  | "char"                   -> "char"
+  | "float"                  -> "float"
+  | "double"                 -> "float"
+  | "lapack_int"             -> "int"
+  | "lapack_logical"         -> "int"
+  | "lapack_complex_float"   -> "Complex.t"
+  | "lapack_complex_double"  -> "Complex.t"
+  | "char*"                  -> "char ptr"
+  | "float*"                 -> "float ptr"
+  | "double*"                -> "float ptr"
+  | "lapack_int*"            -> "int ptr"
+  | "lapack_logical*"        -> "int ptr"
+  | "lapack_complex_float*"  -> "Complex.t ptr"
+  | "lapack_complex_double*" -> "Complex.t ptr"
+  (* FIXME ? *)
+  | "LAPACK_C_SELECT1"       -> "unit ptr"
+  | "LAPACK_Z_SELECT1"       -> "unit ptr"
+  | "LAPACK_S_SELECT2"       -> "unit ptr"
+  | "LAPACK_D_SELECT2"       -> "unit ptr"
+  | "LAPACK_C_SELECT2"       -> "unit ptr"
+  | "LAPACK_Z_SELECT2"       -> "unit ptr"
+  | "LAPACK_S_SELECT3"       -> "unit ptr"
+  | "LAPACK_D_SELECT3"       -> "unit ptr"
+  | _                        -> failwith "convert_typ_to_extern"
 
 
 let _get_content h =
@@ -106,10 +135,14 @@ let process_args_to_argrec s =
   |> Array.of_list
 
 
+
+(* FOR CTYPES INTERFACE FILE *)
+
+
 (* convert argrec to ctype string, also append returning value *)
 let convert_argrec_to_ctypes args =
   let s = Array.fold_left (fun a arg ->
-    let ctyp = convert_typ_to_ctyp arg.typ in
+    let ctyp = convert_typ_to_ctypes arg.typ in
     a ^ ctyp ^ " @-> ") "" args in
   "( " ^ s ^ "returning int )"
 
@@ -118,7 +151,7 @@ let convert_argrec_to_ctypes args =
 let convert_to_ctypes_fun funs =
   let regex = Str.regexp "^lapack_int LAPACKE_\\([^(]+\\)(\\([^;]+\\));" in
 
-  Array.iter (fun s ->
+  Array.map (fun s ->
     let _ = Str.search_forward regex s 0 in
     let _fun_name = Str.matched_group 1 s in
     let _fun_args = Str.matched_group 2 s in
@@ -129,24 +162,98 @@ let convert_to_ctypes_fun funs =
     let fun_s = Printf.sprintf
       "  let %s = foreign \"LAPACKE_%s\" %s\n" _fun_name _fun_name args
     in
-    print_endline fun_s
+    fun_s
   ) funs
 
 
-let convert_lapacke_header funs =
-  Printf.printf "(* auto-generated lapacke interface file *)\n\n";
-  Printf.printf "open Ctypes\n\n";
-  Printf.printf "module Bindings (F : Cstubs.FOREIGN) = struct\n\n";
-  Printf.printf "  open F\n\n";
-  convert_to_ctypes_fun funs;
-  Printf.printf "end"
+(* convert the list of functions into extern c interfaces *)
+let convert_to_ctypes_fun funs =
+  let regex = Str.regexp "^lapack_int LAPACKE_\\([^(]+\\)(\\([^;]+\\));" in
+
+  Array.map (fun s ->
+    let _ = Str.search_forward regex s 0 in
+    let _fun_name = Str.matched_group 1 s in
+    let _fun_args = Str.matched_group 2 s in
+    let args = process_args_to_argrec _fun_args in
+    let args_s = convert_argrec_to_ctypes args in
+
+    (* assemble the function string *)
+    let fun_s = Printf.sprintf
+      "  let %s = foreign \"LAPACKE_%s\" %s\n" _fun_name _fun_name args_s
+    in
+    fun_s
+  ) funs
+
+
+let convert_lapacke_header_to_ctypes fname funs =
+  let h = open_out fname in
+  Printf.fprintf h "(* auto-generated lapacke interface file, timestamp:%.0f *)\n\n" (Unix.gettimeofday ());
+  Printf.fprintf h "open Ctypes\n\n";
+  Printf.fprintf h "module Bindings (F : Cstubs.FOREIGN) = struct\n\n";
+  Printf.fprintf h "  open F\n\n";
+  Array.iter (fun s ->
+    Printf.fprintf h "%s\n" s;
+  ) (convert_to_ctypes_fun funs);
+  Printf.fprintf h "end";
+  close_out h
+
+
+
+(* FOR EXTERN INTERFACE FILE *)
+
+let convert_argrec_to_extern args =
+  let s = Array.fold_left (fun a arg ->
+    let ctyp = convert_typ_to_extern arg.typ in
+    a ^ ctyp ^ " -> ") "" args in
+    s ^ "unit "
+
+
+let convert_to_extern_fun funs =
+  let regex = Str.regexp "^lapack_int LAPACKE_\\([^(]+\\)(\\([^;]+\\));" in
+
+  Array.mapi (fun i s ->
+    let _ = Str.search_forward regex s 0 in
+    let _fun_name = Str.matched_group 1 s in
+    let _fun_args = Str.matched_group 2 s in
+    let args = process_args_to_argrec _fun_args in
+    let args_s = convert_argrec_to_extern args in
+
+    (* assemble the function string *)
+    let fun_native_s = Printf.sprintf "owl_stub_%i_LAPACKE_%s" (i + 1) _fun_name in
+    let fun_byte_s = Printf.sprintf "owl_stub_%i_LAPACKE_%s_byte%i" (i + 1) _fun_name (Array.length args) in
+    let fun_extern_s =
+      match Array.length args < 6 with
+      | true  -> Printf.sprintf "\"%s\"" fun_native_s
+      | false -> Printf.sprintf "\"%s\" \"%s\"" fun_byte_s fun_native_s
+    in
+    let fun_s = Printf.sprintf
+      "external %s\n  : %s\n = %s\n" _fun_name args_s fun_extern_s
+    in
+    fun_s
+  ) funs
+
+
+let convert_lapacke_header_to_extern fname funs =
+  let h = open_out fname in
+  Printf.fprintf h "(* auto-generated lapacke interface file, timestamp:%.0f *)\n\n" (Unix.gettimeofday ());
+  Printf.fprintf h "open Ctypes\n\n";
+
+  Array.iter (fun s ->
+    Printf.fprintf h "%s\n" s;
+  ) (convert_to_extern_fun funs);
+
+  close_out h
 
 
 let _ =
   if Array.length Sys.argv = 1 then
     print_help ()
   else (
-    let fname = Sys.argv.(1) in
-    let funs = parse_lapacke_header fname in
-    convert_lapacke_header funs
+    let header_file = Sys.argv.(1) in
+    let ctypes_file = Sys.argv.(2) in
+    let binding_file = Sys.argv.(3) in
+
+    let funs = parse_lapacke_header header_file in
+    convert_lapacke_header_to_ctypes ctypes_file funs;
+    convert_lapacke_header_to_extern binding_file funs;
 )
