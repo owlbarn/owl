@@ -109,7 +109,8 @@ Library owl
                     backend/Owl_backend_gsl_maths,
                     backend/Owl_backend_gsl_stats,
                     backend/Owl_backend_gsl_linalg,
-                    Owl_cblas
+                    Owl_cblas,
+                    Owl_lapacke
   InternalModules:  Owl_cblas_bindings,
                     Owl_cblas_generated
   CSources:         owl_macros.h,

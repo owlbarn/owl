@@ -118,7 +118,7 @@ let parse_lapacke_header fname =
     done with exn -> ()
   );
   (* FIXME : DEBUG *)
-  funs := Array.sub !funs 0 5;
+  funs := Array.sub !funs 0 1;
   !funs
 
 
