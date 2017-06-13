@@ -1,4 +1,4 @@
-# Owl - Ocaml 数值计算库
+# Owl - OCaml 数值计算库
 
 Owl 是一个数值计算库。 它支持稠密或稀疏矩阵操作，线性代数，回归，快速傅里叶变换，以及许多高级数学和统计功能（比如马尔可夫链和蒙特卡洛方法）。Owl实现了算法微分，在其基础上开发机器学习及神经网络算法将会非常简便。[![Travis build 状态](https://travis-ci.org/ryanrhymes/owl.svg?branch=master)](https://travis-ci.org/ryanrhymes/owl)
 
@@ -28,7 +28,7 @@ Owl 是一个数值计算库。 它支持稠密或稀疏矩阵操作，线性代
 
 ## 安装
 
-Owl的安装需要 Ocaml 4.04.0 版本。安装过程相对简单。首先，通过git下载当前repository。
+Owl的安装需要 OCaml 4.04.0 版本。安装过程相对简单。首先，通过git下载当前repository。
 
 ```bash
 git clone git@github.com:ryanrhymes/owl.git
@@ -583,7 +583,7 @@ Owl的分布式很并行计算依赖于我的另一个研究原型 —— Actor�
 
 ## 在不同的平台上运行Owl
 
-如果你想在ARM平台（而非传统的x86平台）上运行Owl，安装过程是非常相似的。只是需要注意一点：Owl当前需要Ocaml 4.04版本，而这一版本在目前的流行ARM机器，比如Raspberry Pi上，可能是不支持的。因此，你可能需要直接编译Ocaml的[源代码](https://ocaml.org/releases/4.04.html)。此外，编译过程中，为了解决可能的gsl包兼容问题，在运行完`./configure`命令之后、 `make world.opt`命令之前，你需要运行命令：
+如果你想在ARM平台（而非传统的x86平台）上运行Owl，安装过程是非常相似的。只是需要注意一点：Owl当前需要OCaml 4.04版本，而这一版本在目前的流行ARM机器，比如Raspberry Pi上，可能是不支持的。因此，你可能需要直接编译OCaml的[源代码](https://ocaml.org/releases/4.04.html)。此外，编译过程中，为了解决可能的gsl包兼容问题，在运行完`./configure`命令之后、 `make world.opt`命令之前，你需要运行命令：
 
 ```bash
 sed -i -e 's/#define ARCH_ALIGN_DOUBLE/#undef ARCH_ALIGN_DOUBLE/g' config/m.h config/m-templ.h
