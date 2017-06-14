@@ -129,11 +129,12 @@ Library owl
   CCOpt:            -I$pkg_ctypes
   BuildDepends:     str, ctypes, ctypes.stubs, plplot, dolog,
                     eigen, gsl
+  CCLib:            -L${libdir} -lopenblas
   if system(linux) || system(linux_elf)
     CCOpt+:         -g -O3 -Ofast
   if system(macosx)
     CCOpt+:         -O3
-    CCLib:          -framework Accelerate
+    CCLib+:         -framework Accelerate
 
 Library owl_neural
   Path:             lib/neural
