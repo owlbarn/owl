@@ -109,8 +109,7 @@ Library owl
                     backend/Owl_backend_gsl_maths,
                     backend/Owl_backend_gsl_stats,
                     backend/Owl_backend_gsl_linalg,
-                    Owl_cblas,
-                    Owl_lapacke
+                    Owl_cblas
   InternalModules:  Owl_cblas_bindings,
                     Owl_cblas_generated
   CSources:         owl_macros.h,
@@ -120,12 +119,7 @@ Library owl
                     owl_dense_common_vec_fold.c,
                     owl_dense_common_vec_combine.c,
                     owl_cblas.h,
-                    owl_cblas_generated_stub.c,
-                    lapacke.h,
-                    lapacke_config.h,
-                    lapacke_mangling.h,
-                    lapacke_utils.h,
-                    owl_lapacke_generated_stub.c
+                    owl_cblas_generated_stub.c
   CCOpt:            -I$pkg_ctypes
   BuildDepends:     str, ctypes, ctypes.stubs, plplot, dolog,
                     eigen, gsl
