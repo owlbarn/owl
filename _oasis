@@ -78,6 +78,7 @@ Library owl
                     Owl_algodiff_numerical,
                     Owl_conv,
                     Owl_fft,
+                    Owl_cblas,
                     Owl_linalg,
                     Owl_cluster,
                     Owl_optimise,
@@ -108,8 +109,7 @@ Library owl
                     ### Backend modules ###
                     backend/Owl_backend_gsl_maths,
                     backend/Owl_backend_gsl_stats,
-                    backend/Owl_backend_gsl_linalg,
-                    Owl_cblas
+                    backend/Owl_backend_gsl_linalg
   InternalModules:  Owl_cblas_bindings,
                     Owl_cblas_generated
   CSources:         owl_macros.h,
@@ -118,7 +118,7 @@ Library owl
                     owl_dense_common_vec_map.c,
                     owl_dense_common_vec_fold.c,
                     owl_dense_common_vec_combine.c,
-                    owl_cblas.h,
+                    cblas.h,
                     owl_cblas_generated_stub.c
   CCOpt:            -I$pkg_ctypes
   BuildDepends:     str, ctypes, ctypes.stubs, plplot, dolog,
