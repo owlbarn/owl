@@ -68,7 +68,6 @@ let srotmg d1 d2 b1 b2 =
   C.srotmg d1 d2 b1 b2 _p;
   !@d1, !@d2, !@b1, p
 
-
 let drotmg d1 d2 b1 b2 =
   let d1 = allocate double d1 in
   let d2 = allocate double d2 in
@@ -77,6 +76,23 @@ let drotmg d1 d2 b1 b2 =
   let _p = bigarray_start Ctypes_static.Array1 p in
   C.drotmg d1 d2 b1 b2 _p;
   !@d1, !@d2, !@b1, p
+
+
+(* Performs modified Givens rotation of points in the plane *)
+
+let srotm n x incx y incy p =
+  let _x = bigarray_start Ctypes_static.Array1 x in
+  let _y = bigarray_start Ctypes_static.Array1 y in
+  let _p = bigarray_start Ctypes_static.Array1 p in
+  C.srotm n _x incx _y incy _p
+  |> ignore
+
+let drotm n x incx y incy p =
+  let _x = bigarray_start Ctypes_static.Array1 x in
+  let _y = bigarray_start Ctypes_static.Array1 y in
+  let _p = bigarray_start Ctypes_static.Array1 p in
+  C.drotm n _x incx _y incy _p
+  |> ignore
 
 
 (* Performs rotation of points in the plane. *)

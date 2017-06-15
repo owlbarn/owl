@@ -53,6 +53,13 @@ val srot : int -> s_t -> int -> s_t -> int -> float -> float -> unit
 val drot : int -> d_t -> int -> d_t -> int -> float -> float -> unit
 
 
+(* Performs modified Givens rotation of points in the plane *)
+
+val srotm : int -> s_t -> int -> s_t -> int -> s_t -> unit
+
+val drotm : int -> d_t -> int -> d_t -> int -> d_t -> unit
+
+
 (* Swaps a vector with another vector. *)
 
 val sswap : int -> s_t -> int -> s_t -> int -> unit
