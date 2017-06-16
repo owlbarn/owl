@@ -1053,17 +1053,5 @@ clagsy
 dlagsy
 slagsy
 zlagsy
-cggsvp
-dggsvp
-sggsvp
-zggsvp
-cggsvd
-dggsvd
-sggsvd
-zggsvd
-cgeqpf
-dgeqpf
-sgeqpf
-zgeqpf
 lsame
 xerbla
