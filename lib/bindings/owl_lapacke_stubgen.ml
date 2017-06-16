@@ -18,5 +18,4 @@ let _ =
     Cstubs.write_ml Format.std_formatter ~prefix (module Owl_lapacke_bindings.Bindings)
   | false, true ->
     print_endline "#include \"lapacke.h\"";
-
     Cstubs.write_c Format.std_formatter ~prefix (module Owl_lapacke_bindings.Bindings)

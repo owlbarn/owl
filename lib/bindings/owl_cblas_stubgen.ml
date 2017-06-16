@@ -17,6 +17,5 @@ let _ =
   | true, false ->
     Cstubs.write_ml Format.std_formatter ~prefix (module Owl_cblas_bindings.Bindings)
   | false, true ->
-    print_endline "#include \"owl_cblas.h\"";
-
+    print_endline "#include \"cblas.h\"";
     Cstubs.write_c Format.std_formatter ~prefix (module Owl_cblas_bindings.Bindings)
