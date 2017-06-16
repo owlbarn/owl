@@ -4,7 +4,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Please refer to: Intel Math Kernel Library implements the BLAS
+(** Please refer to: Intel Math Kernel Library in the CBLAS interface
   url: https://software.intel.com/en-us/mkl-developer-reference-c
  *)
 
