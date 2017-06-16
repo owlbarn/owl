@@ -1,8 +1,7 @@
-(* auto-generated lapacke interface file, timestamp:1497381661 *)
+(*
+ * OWL - an OCaml numerical library for scientific computing
+ * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.caMD.ac.uk>
+ *)
+
 
 open Ctypes
-
-external sbdsdc
-  : int -> char -> char -> int -> float ptr -> float ptr -> float ptr -> int -> float ptr -> int -> float ptr -> int ptr -> unit 
- = "owl_stub_1_LAPACKE_sbdsdc_byte12" "owl_stub_1_LAPACKE_sbdsdc"
-
