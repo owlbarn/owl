@@ -1,9 +1,13 @@
 language: c
+
 sudo: required
+
 env: OCAML_VERSION=4.04 EXTRA_DEPS="oasis alcotest" INSTALL=false
 
 matrix:
   include:
+    - os: osx
+      osx_image: xcode7.3
     - os: osx
       osx_image: xcode8.2
     - os: linux
