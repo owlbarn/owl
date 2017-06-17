@@ -2,7 +2,7 @@
 
 open Owl.Algodiff.D
 
-let approx_equal a b = Pervasives.abs_float (a -. b) < 1e-10
+let approx_equal a b = Pervasives.abs_float (a -. b) < 1e-16
 
 (* a module with functions to test *)
 module To_test = struct
