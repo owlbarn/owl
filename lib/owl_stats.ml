@@ -761,7 +761,7 @@ let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
           else acc)
       ~init:0.0
   in
-  let n = a + b + c + d in
+  (* let n = a + b + c + d in *)
   let prob = Pdf.hypergeometric a (a + b) (c + d) (a + c) in
   let oddsratio = ((float_of_int a) *. (float_of_int d)) /. ((float_of_int b) *. (float_of_int c)) in
   let p = match side with
@@ -856,7 +856,7 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
     let t_correction rankvals =
       let ranks_sort = sort rankvals in
       let counts = Owl_utils.count_dup (Array.to_list ranks_sort) in
-      let size = (float_of_int (Array.length rankvals)) in
+      (* let size = (float_of_int (Array.length rankvals)) in *)
       Array.fold_left (+) 0 (Array.of_list (List.map (fun (x, y) -> y * y * y - y) counts))
     in
     let corr = float_of_int (t_correction rankval) in
