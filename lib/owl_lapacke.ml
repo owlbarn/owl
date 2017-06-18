@@ -85,6 +85,8 @@ let cast_d2z
 let gesvd
   : type a b c. jobu:char -> jobvt:char -> a:(a, b, c) mat -> (a, b, c) mat * (a, b, c) mat *  (a, b, c) mat
   = fun ~jobu ~jobvt ~a ->
+  assert (jobu = 'A' || jobu = 'S' || jobu = 'O' || jobu = 'N');
+  assert (jobvt = 'A' || jobvt = 'S' || jobvt = 'O' || jobvt = 'N');
 
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
@@ -330,7 +332,10 @@ let ggsvd3
   check_lapack_error ret;
 
   (* make R *)
-
+  let r = match m - !@_k - !@_l >= 0 with
+    | true  -> ()
+    | false -> ()
+  in
   u, v, q, !alpha, !beta, !@_k, !@_l
 
 
