@@ -85,6 +85,7 @@ let cast_d2z
 let gesvd
   : type a b c. jobu:char -> jobvt:char -> a:(a, b, c) mat -> (a, b, c) mat * (a, b, c) mat *  (a, b, c) mat
   = fun ~jobu ~jobvt ~a ->
+
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
   let minmn = Pervasives.min m n in
@@ -95,7 +96,7 @@ let gesvd
   assert (jobu <> 'O' || jobvt <> 'O');
   assert (m > 0 && n > 0);
 
-  let s_ref = ref (Array2.create _kind _layout 0 0) in
+  let s = ref (Array2.create _kind _layout 0 0) in
   let u = match jobu with
     | 'A' -> Array2.create _kind _layout m m
     | 'S' -> Array2.create _kind _layout m minmn
@@ -114,44 +115,44 @@ let gesvd
   let _vt = bigarray_start Ctypes_static.Array2 vt in
 
   let ret = match _kind with
-    | Float32 -> (
-        let s = Array2.create float32 _layout 1 minmn in
-        let _s = bigarray_start Ctypes_static.Array2 s in
+    | Float32   -> (
+        let s' = Array2.create float32 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s' in
         let superb = Array1.create float32 _layout (minmn - 1)
           |> bigarray_start Ctypes_static.Array1
         in
         let r = L.sgesvd layout jobu jobvt m n _a lda _s _u ldu _vt ldvt superb in
-        s_ref := s;
+        s := s';
         r
       )
-    | Float64 -> (
-        let s = Array2.create float64 _layout 1 minmn in
-        let _s = bigarray_start Ctypes_static.Array2 s in
+    | Float64   -> (
+        let s' = Array2.create float64 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s' in
         let superb = Array1.create float64 _layout (minmn - 1)
           |> bigarray_start Ctypes_static.Array1
         in
         let r = L.dgesvd layout jobu jobvt m n _a lda _s _u ldu _vt ldvt superb in
-        s_ref := s;
+        s := s';
         r
       )
     | Complex32 -> (
-        let s = Array2.create float32 _layout 1 minmn in
-        let _s = bigarray_start Ctypes_static.Array2 s in
+        let s' = Array2.create float32 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s' in
         let superb = Array1.create float32 _layout (minmn - 1)
           |> bigarray_start Ctypes_static.Array1
         in
         let r = L.cgesvd layout jobu jobvt m n _a lda _s _u ldu _vt ldvt superb in
-        s_ref := cast_s2c s;
+        s := cast_s2c s';
         r
       )
     | Complex64 -> (
-        let s = Array2.create float64 _layout 1 minmn in
-        let _s = bigarray_start Ctypes_static.Array2 s in
+        let s' = Array2.create float64 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s' in
         let superb = Array1.create float64 _layout (minmn - 1)
           |> bigarray_start Ctypes_static.Array1
         in
         let r = L.zgesvd layout jobu jobvt m n _a lda _s _u ldu _vt ldvt superb in
-        s_ref := cast_d2z s;
+        s := cast_d2z s';
         r
       )
     | _        -> failwith "lapacke:gesvd"
@@ -159,14 +160,15 @@ let gesvd
   check_lapack_error ret;
 
   match jobu, jobvt with
-  | 'O', _ -> a, !s_ref, vt
-  | _, 'O' -> u, !s_ref, a
-  | _, _   -> u, !s_ref, vt
+  | 'O', _ -> a, !s, vt
+  | _, 'O' -> u, !s, a
+  | _, _   -> u, !s, vt
 
 
 let gesdd
   : type a b c. jobz:char -> a:(a, b, c) mat -> (a, b, c) mat * (a, b, c) mat *  (a, b, c) mat
   = fun ~jobz ~a ->
+
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
   let minmn = Pervasives.min m n in
@@ -176,7 +178,7 @@ let gesdd
 
   assert (m > 0 && n > 0);
 
-  let s_ref = ref (Array2.create _kind _layout 0 0) in
+  let s = ref (Array2.create _kind _layout 0 0) in
   let u = match jobz with
     | 'A' -> Array2.create _kind _layout m m
     | 'S' -> Array2.create _kind _layout m minmn
@@ -197,32 +199,32 @@ let gesdd
   let _vt = bigarray_start Ctypes_static.Array2 vt in
 
   let ret = match _kind with
-    | Float32 -> (
-        let s = Array2.create float32 _layout 1 minmn in
-        let _s = bigarray_start Ctypes_static.Array2 s in
+    | Float32   -> (
+        let s' = Array2.create float32 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s' in
         let r = L.sgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
-        s_ref := s;
+        s := s';
         r
       )
-    | Float64 -> (
-        let s = Array2.create float64 _layout 1 minmn in
-        let _s = bigarray_start Ctypes_static.Array2 s in
+    | Float64   -> (
+        let s' = Array2.create float64 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s' in
         let r = L.dgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
-        s_ref := s;
+        s := s';
         r
       )
     | Complex32 -> (
-        let s = Array2.create float32 _layout 1 minmn in
-        let _s = bigarray_start Ctypes_static.Array2 s in
+        let s' = Array2.create float32 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s' in
         let r = L.cgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
-        s_ref := cast_s2c s;
+        s := cast_s2c s';
         r
       )
     | Complex64 -> (
-        let s = Array2.create float64 _layout 1 minmn in
-        let _s = bigarray_start Ctypes_static.Array2 s in
+        let s' = Array2.create float64 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s' in
         let r = L.zgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
-        s_ref := cast_d2z s;
+        s := cast_d2z s';
         r
       )
     | _        -> failwith "lapacke:gesdd"
@@ -230,10 +232,105 @@ let gesdd
   check_lapack_error ret;
 
   match jobz, m >= n with
-  | 'O', true  -> a, !s_ref, vt
-  | 'O', false -> u, !s_ref, a
-  | _, _       -> u, !s_ref, vt
+  | 'O', true  -> a, !s, vt
+  | 'O', false -> u, !s, a
+  | _, _       -> u, !s, vt
 
+
+let ggsvd3
+  : type a b c. jobu:char -> jobv:char -> jobq:char -> a:(a, b, c) mat -> b:(a, b, c) mat
+    -> (a, b, c) mat * (a, b, c) mat * (a, b, c) mat * (a, b, c) mat * (a, b, c) mat * int * int
+  = fun ~jobu ~jobv ~jobq ~a ~b ->
+  assert (jobu = 'U' || jobu = 'N');
+  assert (jobv = 'V' || jobu = 'N');
+  assert (jobq = 'Q' || jobu = 'N');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let p = Array2.dim1 b in
+  assert (n = Array2.dim2 b);
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+  let ldu = Pervasives.max 1 m in
+  let ldv = Pervasives.max 1 p in
+  let ldq = Pervasives.max 1 n in
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let alpha = ref (Array2.create _kind _layout 0 0) in
+  let beta = ref (Array2.create _kind _layout 0 0) in
+  let u = match jobu with
+    | 'U' -> Array2.create _kind _layout ldu m
+    | _   -> Array2.create _kind _layout 0 m
+  in
+  let v = match jobv with
+    | 'V' -> Array2.create _kind _layout ldv p
+    | _   -> Array2.create _kind _layout 0 p
+  in
+  let q = match jobq with
+    | 'Q' -> Array2.create _kind _layout ldq n
+    | _   -> Array2.create _kind _layout 0 n
+  in
+  let iwork = Array1.create Int _layout n in
+
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let _u = bigarray_start Ctypes_static.Array2 u in
+  let _v = bigarray_start Ctypes_static.Array2 v in
+  let _q = bigarray_start Ctypes_static.Array2 q in
+  let _iwork = bigarray_start Ctypes_static.Array1 iwork in
+  let _k = Ctypes.(allocate int 0) in
+  let _l = Ctypes.(allocate int 0) in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let alpha' = Array2.create float32 _layout 1 n in
+        let beta' = Array2.create float32 _layout 1 n in
+        let _alpha = bigarray_start Ctypes_static.Array2 alpha' in
+        let _beta = bigarray_start Ctypes_static.Array2 beta' in
+        let r = L.sggsvd3 layout jobu jobv jobq m n p _k _l _a lda _b ldb _alpha _beta _u ldu _v ldv _q ldq _iwork in
+        alpha := alpha';
+        beta := beta';
+        r
+      )
+    | Float64   -> (
+        let alpha' = Array2.create float64 _layout 1 n in
+        let beta' = Array2.create float64 _layout 1 n in
+        let _alpha = bigarray_start Ctypes_static.Array2 alpha' in
+        let _beta = bigarray_start Ctypes_static.Array2 beta' in
+        let r = L.dggsvd3 layout jobu jobv jobq m n p _k _l _a lda _b ldb _alpha _beta _u ldu _v ldv _q ldq _iwork in
+        alpha := alpha';
+        beta := beta';
+        r
+      )
+    | Complex32 -> (
+        let alpha' = Array2.create float32 _layout 1 n in
+        let beta' = Array2.create float32 _layout 1 n in
+        let _alpha = bigarray_start Ctypes_static.Array2 alpha' in
+        let _beta = bigarray_start Ctypes_static.Array2 beta' in
+        let r = L.cggsvd3 layout jobu jobv jobq m n p _k _l _a lda _b ldb _alpha _beta _u ldu _v ldv _q ldq _iwork in
+        alpha := cast_s2c alpha';
+        beta := cast_s2c beta';
+        r
+      )
+    | Complex64 -> (
+        let alpha' = Array2.create float64 _layout 1 n in
+        let beta' = Array2.create float64 _layout 1 n in
+        let _alpha = bigarray_start Ctypes_static.Array2 alpha' in
+        let _beta = bigarray_start Ctypes_static.Array2 beta' in
+        let r = L.zggsvd3 layout jobu jobv jobq m n p _k _l _a lda _b ldb _alpha _beta _u ldu _v ldv _q ldq _iwork in
+        alpha := cast_d2z alpha';
+        beta := cast_d2z beta';
+        r
+      )
+    | _         -> failwith "lapacke:ggsvd3"
+  in
+  check_lapack_error ret;
+
+  (* make R *)
+
+  u, v, q, !alpha, !beta, !@_k, !@_l
 
 
 (*
