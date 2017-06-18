@@ -95,6 +95,22 @@ let logspace k ?(base=Owl_maths.e) a b n =
   let x = Owl_dense_ndarray_generic.reshape x [|1;n|] in
   reshape_2 x 1 n
 
+let diagmat ?(k=0) v =
+  let n = numel v in
+  let u = genarray_of_array2 v in
+  let u = reshape u [|n|] in
+  let u = array1_of_genarray u in
+  let x = zeros (kind v) (n + abs k) (n + abs k) in
+  let i, j =
+    match k < 0 with
+    | true  -> abs k, 0
+    | false -> 0, abs k
+  in
+  for k = 0 to n - 1 do
+    x.{i+k, j+k} <- u.{k}
+  done;
+  x
+
 (* matrix manipulations *)
 
 let same_shape x1 x2 = shape x1 = shape x2
