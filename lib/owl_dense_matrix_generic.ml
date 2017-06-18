@@ -174,6 +174,7 @@ let copy_col_to v x i =
   let r1 = area_of v and r2 = area_of_col x i in
   copy_area_to v r1 x r2
 
+(* TODO: improve the performance *)
 let concat_vertical x1 x2 =
   let m1, m2 = row_num x1, row_num x2 in
   let n1, n2 = col_num x1, col_num x2 in
@@ -183,6 +184,7 @@ let concat_vertical x1 x2 =
     copy_row_to z x3 i
   done; x3
 
+(* TODO: improve the performance *)
 let concat_horizontal x1 x2 =
   let m1, m2 = row_num x1, row_num x2 in
   let n1, n2 = col_num x1, col_num x2 in

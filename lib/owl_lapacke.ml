@@ -168,6 +168,7 @@ let gesvd
 let gesdd
   : type a b c. jobz:char -> a:(a, b, c) mat -> (a, b, c) mat * (a, b, c) mat *  (a, b, c) mat
   = fun ~jobz ~a ->
+  assert (jobz = 'A' || jobz = 'S' || jobz = 'O' || jobz = 'N');
 
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
