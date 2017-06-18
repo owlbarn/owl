@@ -99,12 +99,12 @@ let gesvd
   let u = match jobu with
     | 'A' -> Array2.create _kind _layout m m
     | 'S' -> Array2.create _kind _layout m minmn
-    | _   -> Array2.create _kind _layout 0 0
+    | _   -> Array2.create _kind _layout m 0
   in
   let vt = match jobvt with
     | 'A' -> Array2.create _kind _layout n n
     | 'S' -> Array2.create _kind _layout minmn n
-    | _   -> Array2.create _kind _layout 0 0
+    | _   -> Array2.create _kind _layout 0 n
   in
   let lda = Pervasives.max 1 (_stride a) in
   let ldu = Pervasives.max 1 (_stride u) in
@@ -159,15 +159,81 @@ let gesvd
   check_lapack_error ret;
 
   match jobu, jobvt with
-  | 'O', _ -> (
-      a, !s_ref, vt
-    )
-  | _, 'O' -> (
-      u, !s_ref, a
-    )
-  | _, _   -> (
-      u, !s_ref, vt
-    )
+  | 'O', _ -> a, !s_ref, vt
+  | _, 'O' -> u, !s_ref, a
+  | _, _   -> u, !s_ref, vt
+
+
+let gesdd
+  : type a b c. jobz:char -> a:(a, b, c) mat -> (a, b, c) mat * (a, b, c) mat *  (a, b, c) mat
+  = fun ~jobz ~a ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let minmn = Pervasives.min m n in
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  assert (m > 0 && n > 0);
+
+  let s_ref = ref (Array2.create _kind _layout 0 0) in
+  let u = match jobz with
+    | 'A' -> Array2.create _kind _layout m m
+    | 'S' -> Array2.create _kind _layout m minmn
+    | 'O' -> Array2.create _kind _layout m (if m >=n then 0 else m)
+    | _   -> Array2.create _kind _layout m 0
+  in
+  let vt = match jobz with
+    | 'A' -> Array2.create _kind _layout n n
+    | 'S' -> Array2.create _kind _layout minmn n
+    | 'O' -> Array2.create _kind _layout n (if m >=n then n else 0)
+    | _   -> Array2.create _kind _layout 0 n
+  in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldu = Pervasives.max 1 (_stride u) in
+  let ldvt = Pervasives.max 1 (_stride vt) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _u = bigarray_start Ctypes_static.Array2 u in
+  let _vt = bigarray_start Ctypes_static.Array2 vt in
+
+  let ret = match _kind with
+    | Float32 -> (
+        let s = Array2.create float32 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s in
+        let r = L.sgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
+        s_ref := s;
+        r
+      )
+    | Float64 -> (
+        let s = Array2.create float64 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s in
+        let r = L.dgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
+        s_ref := s;
+        r
+      )
+    | Complex32 -> (
+        let s = Array2.create float32 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s in
+        let r = L.cgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
+        s_ref := cast_s2c s;
+        r
+      )
+    | Complex64 -> (
+        let s = Array2.create float64 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s in
+        let r = L.zgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
+        s_ref := cast_d2z s;
+        r
+      )
+    | _        -> failwith "lapacke:gesdd"
+  in
+  check_lapack_error ret;
+
+  match jobz, m >= n with
+  | 'O', true  -> a, !s_ref, vt
+  | 'O', false -> u, !s_ref, a
+  | _, _       -> u, !s_ref, vt
+
 
 
 (*
