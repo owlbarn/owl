@@ -38,7 +38,7 @@ val semidef : int -> mat
 
 val bernoulli : ?p:float -> ?seed:int -> int -> int -> mat
 
-val diagmat : ?k:int -> mat -> mat
+val diagonal : ?k:int -> mat -> mat
 
 
 (** {7 Dense row vectors and meshgrids} *)

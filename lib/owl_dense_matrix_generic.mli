@@ -88,8 +88,8 @@ val meshup : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 val bernoulli : ('a, 'b) kind -> ?p:float -> ?seed:int -> int -> int -> ('a, 'b) t
 (** [bernoulli k ~p:0.3 m n]*)
 
-val diagmat : ?k:int -> ('a, 'b) t -> ('a, 'b) t
-(** [diagmat k v] creates a diagonal matrix using the elements in [v] as
+val diagonal : ?k:int -> ('a, 'b) t -> ('a, 'b) t
+(** [diagonal k v] creates a diagonal matrix using the elements in [v] as
   diagonal values. [k] specifies the main diagonal index. If [k > 0] then it is
   above the main diagonal, if [k < 0] then it is below the main diagonal.
   This function is the same as the [diag] function in Matlab.

@@ -95,7 +95,7 @@ let logspace k ?(base=Owl_maths.e) a b n =
   let x = Owl_dense_ndarray_generic.reshape x [|1;n|] in
   reshape_2 x 1 n
 
-let diagmat ?(k=0) v =
+let diagonal ?(k=0) v =
   let n = numel v in
   let u = genarray_of_array2 v in
   let u = reshape u [|n|] in
