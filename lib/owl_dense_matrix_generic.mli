@@ -225,8 +225,10 @@ val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 val transpose : ('a, 'b) t -> ('a, 'b) t
 (** [transpose x] transposes an [m] by [n] matrix to [n] by [m] one. *)
 
-val diag : ('a, 'b) t -> ('a, 'b) t
-(** [diag x] returns the diagonal elements of [x]. *)
+val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t
+(** [diag k x] returns the [k]th diagonal elements of [x]. [k > 0] means above
+  the main diagonal and [k < 0] means the below the main diagonal.
+ *)
 
 val replace_row : ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
 (** [replace_row v x i] uses the row vector [v] to replace the [i]th row in

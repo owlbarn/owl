@@ -726,10 +726,21 @@ let average x =
   let _op = _average_elt (kind x) in
   _op (sum x) (numel x)
 
-let diag x =
-  let m = Pervasives.min (row_num x) (col_num x) in
-  let y = empty (Array2.kind x) 1 m in
-  for i = 0 to m - 1 do y.{0,i} <- x.{i,i} done; y
+let diag ?(k=0) x =
+  let m, n = shape x in
+  let l = match k >= 0 with
+    | true  -> Pervasives.(max 0 (min m (n - k)))
+    | false -> Pervasives.(max 0 (min n (m + k)))
+  in
+  let i, j = match k >= 0 with
+    | true  -> 0, k
+    | false -> abs k, 0
+  in
+  let y = empty (Array2.kind x) 1 l in
+  for k = 0 to l - 1 do
+    y.{0,k} <- x.{i + k, j + k}
+  done;
+  y
 
 let trace x = sum (diag x)
 
