@@ -248,6 +248,55 @@ let slice axis x =
 
 let pad ?v d x = Owl_dense_ndarray_generic.pad ?v d (to_ndarray x) |> of_ndarray
 
+let triu ?(k=0) x =
+  let m, n = shape x in
+  let c = numel x in
+  let y = zeros (kind x) m n in
+  let _x = to_ndarray x in
+  let _x = reshape _x [|c|] |> array1_of_genarray in
+  let _y = to_ndarray y in
+  let _y = reshape _y [|c|] |> array1_of_genarray in
+
+  let _cp_op = _owl_copy (kind x) in
+  let ofs = ref (Pervasives.(min n (max 0 k))) in
+  let len = ref (Pervasives.(max 0 (min n (n - k)))) in
+  let loops = Pervasives.(max 0 (min m (n - k))) in
+
+  for i = 0 to loops - 1 do
+    _cp_op !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 _x _y;
+    if i + k >= 0 then (
+      ofs := !ofs + n + 1;
+      len := !len - 1
+    )
+    else ofs := !ofs + n
+  done;
+  (* return the final upper triangular matrix *)
+  y
+
+
+let tril ?(k=0) x =
+  let m, n = shape x in
+  let c = numel x in
+  let y = zeros (kind x) m n in
+  let _x = to_ndarray x in
+  let _x = reshape _x [|c|] |> array1_of_genarray in
+  let _y = to_ndarray y in
+  let _y = reshape _y [|c|] |> array1_of_genarray in
+
+  let _cp_op = _owl_copy (kind x) in
+  let row_i = Pervasives.(min m (abs (min 0 k))) in
+  let len = ref (Pervasives.(min n ((max 0 k) + 1))) in
+  let ofs = ref (row_i * n) in
+
+  for i = row_i to m - 1 do
+    _cp_op !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 _x _y;
+    ofs := !ofs + n;
+    if !len < n then
+      len := !len + 1
+  done;
+  (* return the final lower triangular matrix *)
+  y
+
 
 (* matrix iteration operations *)
 

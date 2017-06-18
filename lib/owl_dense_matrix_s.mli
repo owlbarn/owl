@@ -139,6 +139,10 @@ val pad : ?v:elt -> int list list -> mat -> mat
 
 val dropout : ?rate:float -> ?seed:int -> mat -> mat
 
+val triu : ?k:int -> mat -> mat
+
+val tril : ?k:int -> mat -> mat
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 

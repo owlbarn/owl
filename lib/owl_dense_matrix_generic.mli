@@ -258,6 +258,19 @@ val dropout : ?rate:float -> ?seed:int -> ('a, 'b) t -> ('a, 'b) t
   by setting their values to zeros.
  *)
 
+val triu : ?k:int -> ('a, 'b) t -> ('a, 'b) t
+(** [triu k x] returns the element on and above the [k]th diagonal of [x].
+  [k = 0] is the main diagonal, [k > 0] is above the main diagonal, and
+  [k < 0] is below the main diagonal.
+ *)
+
+
+val tril : ?k:int -> ('a, 'b) t -> ('a, 'b) t
+(** [tril k x] returns the element on and below the [k]th diagonal of [x].
+  [k = 0] is the main diagonal, [k > 0] is above the main diagonal, and
+  [k < 0] is below the main diagonal.
+ *)
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 
