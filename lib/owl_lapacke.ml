@@ -14,17 +14,16 @@ open Bigarray
 module L = Owl_lapacke_generated
 
 
-type ('a, 'b) t = ('a, 'b, Bigarray.c_layout) Array1.t
+type ('a, 'b, 'c) t = ('a, 'b, 'c) Array1.t
+type ('a, 'b, 'c) mat = ('a, 'b, 'c) Array2.t
 
-type s_t = (float, Bigarray.float32_elt) t
-type d_t = (float, Bigarray.float64_elt) t
-type c_t = (Complex.t, Bigarray.complex32_elt) t
-type z_t = (Complex.t, Bigarray.complex64_elt) t
+type 'c s_t = (float, Bigarray.float32_elt, 'c) t
+type 'c d_t = (float, Bigarray.float64_elt, 'c) t
+type 'c c_t = (Complex.t, Bigarray.complex32_elt, 'c) t
+type 'c z_t = (Complex.t, Bigarray.complex64_elt, 'c) t
 
 type lapacke_layout = RowMajor | ColMajor
-let lapacke_layout
-  : type a. a layout -> int
-  = function
+let lapacke_layout : type a. a layout -> int = function
   | C_layout       -> 101
   | Fortran_layout -> 102
 
@@ -47,33 +46,93 @@ let check_lapack_error ret =
   else
     failwith (Printf.sprintf "LAPACKE: %i" ret)
 
+(* calculate the leading dimension of a matrix *)
+let _stride : type a b c. (a, b, c) mat -> int = fun x ->
+  match (Array2.layout x) with
+  | C_layout       -> Array2.dim2 x
+  | Fortran_layout -> Array2.dim1 x
 
-let gesvd ~jobu ~jobvt ~a ~lda ~s ~u ~ldu ~vt ~ldvt ~superb =
+
+
+let gesvd
+  : type a b c. jobu:char -> jobvt:char -> a:(a, b, c) mat -> unit
+  = fun ~jobu ~jobvt ~a ->
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
+  let minmn = Pervasives.min m n in
+  let _kind = Array2.kind a in
   let _layout = Array2.layout a in
   let layout = lapacke_layout _layout in
-  let kind = Array2.kind a in
-  let minmn = Pervasives.min m n in
 
-  let s = Array1.create kind _layout minmn in
+  assert (jobu <> 'O' || jobvt <> 'O');
+  assert (m > 0 && n > 0);
+
   let u = match jobu with
-    | 'A' -> Array2.create kind _layout m m
-    | 'S' -> Array2.create kind _layout m minmn
-    | _   -> Array2.create kind _layout 0 0
+    | 'A' -> Array2.create _kind _layout m m
+    | 'S' -> Array2.create _kind _layout m minmn
+    | _   -> Array2.create _kind _layout 0 0
   in
   let vt = match jobvt with
-    | 'A' -> Array2.create kind _layout n n
-    | 'S' -> Array2.create kind _layout minmn n
-    | _   -> Array2.create kind _layout 0 0
+    | 'A' -> Array2.create _kind _layout n n
+    | 'S' -> Array2.create _kind _layout minmn n
+    | _   -> Array2.create _kind _layout 0 0
   in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldu = Pervasives.max 1 (_stride u) in
+  let ldvt = Pervasives.max 1 (_stride vt) in
   let a = bigarray_start Ctypes_static.Array2 a in
-  let s = bigarray_start Ctypes_static.Array1 s in
   let u = bigarray_start Ctypes_static.Array2 u in
   let vt = bigarray_start Ctypes_static.Array2 vt in
-  let superb = bigarray_start Ctypes_static.Array1 superb in
 
-  let lapacke_fun = L.dgesvd
+  let ret = match _kind with
+    | Float32 -> (
+        let s = Array1.create float32 _layout minmn
+          |> bigarray_start Ctypes_static.Array1
+        in
+        let superb = Array1.create float32 _layout (minmn - 1)
+          |> bigarray_start Ctypes_static.Array1
+        in
+        L.sgesvd ~layout ~jobu ~jobvt ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt ~superb
+      )
+    | Float64 -> (
+        let s = Array1.create float64 _layout minmn
+          |> bigarray_start Ctypes_static.Array1
+        in
+        let superb = Array1.create float64 _layout (minmn - 1)
+          |> bigarray_start Ctypes_static.Array1
+        in
+        L.dgesvd ~layout ~jobu ~jobvt ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt ~superb
+      )
+    | Complex32 -> (
+        let s = Array1.create float32 _layout minmn
+          |> bigarray_start Ctypes_static.Array1
+        in
+        let superb = Array1.create float32 _layout (minmn - 1)
+          |> bigarray_start Ctypes_static.Array1
+        in
+        L.cgesvd ~layout ~jobu ~jobvt ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt ~superb
+      )
+    | Complex64 -> (
+        let s = Array1.create float64 _layout minmn
+          |> bigarray_start Ctypes_static.Array1
+        in
+        let superb = Array1.create float64 _layout (minmn - 1)
+          |> bigarray_start Ctypes_static.Array1
+        in
+        L.zgesvd ~layout ~jobu ~jobvt ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt ~superb
+      )
+    | _        -> failwith "lapacke:gesvd"
   in
-  lapacke_fun ~layout ~jobu ~jobvt ~m ~n ~a ~lda ~s ~u ~ldu ~vt ~ldvt ~superb
-  |> check_lapack_error
+  check_lapack_error ret
+
+
+(*
+let gesvd : type a b. (a, b) kind -> layout:int -> jobu:char -> jobvt:char -> m:int -> n:int -> a:(a ptr) -> lda:int
+-> s:(float ptr) -> u:(a ptr) -> ldu:int -> vt:(a ptr) -> ldvt:int -> superb:(float ptr) -> int
+  = function
+  | Float32 -> L.sgesvd
+  | Float64 -> L.dgesvd
+  | Complex32 -> L.cgesvd
+  | Complex64 -> L.zgesvd
+  | _         -> failwith "lapacke:gesvd"
+*)
