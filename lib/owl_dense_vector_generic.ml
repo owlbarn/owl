@@ -38,9 +38,9 @@ let uniform ?(typ=Row) ?scale k m = match typ with
   | Row -> M.uniform ?scale k 1 m
   | Col -> M.uniform ?scale k m 1
 
-let sequential ?(typ=Row) k m = match typ with
-  | Row -> M.sequential k 1 m
-  | Col -> M.sequential k m 1
+let sequential ?(typ=Row) ?a ?step k m = match typ with
+  | Row -> M.sequential ?a ?step k 1 m
+  | Col -> M.sequential ?a ?step k m 1
 
 let unit_basis ?(typ=Row) k m i =
   let a1 = Owl_types._one k in

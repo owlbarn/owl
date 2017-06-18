@@ -23,7 +23,7 @@ let gaussian ?typ ?sigma m = V.gaussian ?typ ?sigma Float32 m
 
 let uniform ?typ ?scale m = V.uniform ?typ ?scale Float32 m
 
-let sequential ?typ m = V.sequential ?typ Float32 m
+let sequential ?typ ?a ?step m = V.sequential ?typ ?a ?step Float32 m
 
 let unit_basis ?typ m i = V.unit_basis ?typ Float32 m i
 

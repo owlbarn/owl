@@ -25,7 +25,7 @@ val gaussian : ?typ:vec_typ -> ?sigma:float -> int -> vec
 
 val uniform : ?typ:vec_typ -> ?scale:float -> int -> vec
 
-val sequential : ?typ:vec_typ -> int -> vec
+val sequential : ?typ:vec_typ -> ?a:elt -> ?step:elt -> int -> vec
 
 val unit_basis : ?typ:vec_typ -> int -> int -> vec
 
