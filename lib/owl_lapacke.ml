@@ -110,6 +110,83 @@ let gbtrs
     check_lapack_error ret
 
 
+let gebal
+  : type a b. ?job:char -> a:(a, b) mat -> int * int * (a, b) mat
+  = fun ?(job='B') ~a ->
+  assert (job = 'N' || job = 'P' || job = 'S' || job = 'B');
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = _stride a in
+  let _ilo = Ctypes.(allocate int 0) in
+  let _ihi = Ctypes.(allocate int 0) in
+  let scale = ref (Array2.create _kind _layout 0 0) in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let scale' = Array2.create float32 _layout 1 n in
+        let _scale = bigarray_start Ctypes_static.Array2 scale' in
+        let r = L.sgebal layout job n _a lda _ilo _ihi _scale in
+        scale := scale';
+        r
+      )
+    | Float64   -> (
+        let scale' = Array2.create float64 _layout 1 n in
+        let _scale = bigarray_start Ctypes_static.Array2 scale' in
+        let r = L.dgebal layout job n _a lda _ilo _ihi _scale in
+        scale := scale';
+        r
+      )
+    | Complex32 -> (
+        let scale' = Array2.create float32 _layout 1 n in
+        let _scale = bigarray_start Ctypes_static.Array2 scale' in
+        let r = L.cgebal layout job n _a lda _ilo _ihi _scale in
+        scale := Owl_dense_matrix_generic.cast_s2c scale';
+        r
+      )
+    | Complex64 -> (
+        let scale' = Array2.create float64 _layout 1 n in
+        let _scale = bigarray_start Ctypes_static.Array2 scale' in
+        let r = L.zgebal layout job n _a lda _ilo _ihi _scale in
+        scale := Owl_dense_matrix_generic.cast_d2z scale';
+        r
+      )
+    | _         -> failwith "lapacke:gebal"
+  in
+  check_lapack_error ret;
+  !@_ilo, !@_ihi, !scale
+
+
+(* TODO: need a solution for scale parameter *)
+let gebak
+  : type a b. job:char -> side:char -> ilo:int -> ihi:int -> scale:(float ptr) -> v:(a, b) mat -> unit
+  = fun ~job ~side ~ilo ~ihi ~scale ~v ->
+  assert (side = 'L' || side = 'R');
+  assert (job = 'N' || job = 'P' || job = 'S' || job = 'B');
+  let m = Array2.dim1 v in
+  let n = Array2.dim2 v in
+  assert (m = n);
+  let _kind = Array2.kind v in
+  let _layout = Array2.layout v in
+  let layout = lapacke_layout _layout in
+
+  let _v = bigarray_start Ctypes_static.Array2 v in
+  let ldv = _stride v in
+
+  let ret = match _kind with
+    | Float32   -> L.sgebak layout job side n ilo ihi scale m _v ldv
+    | Float64   -> L.dgebak layout job side n ilo ihi scale m _v ldv
+    | Complex32 -> L.cgebak layout job side n ilo ihi scale m _v ldv
+    | Complex64 -> L.zgebak layout job side n ilo ihi scale m _v ldv
+    | _         -> failwith "lapacke:gebak"
+  in
+  check_lapack_error ret
+
 
 let gesvd
   : type a b. ?jobu:char -> ?jobvt:char -> a:(a, b) mat -> (a, b) mat * (a, b) mat *  (a, b) mat
