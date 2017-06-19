@@ -4,7 +4,9 @@
  *)
 
 
-(** Please refer to: Intel Math Kernel Library on the LAPACKE Interface
+(** Please refer to the documentation of Intel Math Kernel Library on the
+  LAPACKE Interface. The interface implemented here is compatible the those
+  documented on their website.
   url: https://software.intel.com/en-us/mkl-developer-reference-c
  *)
 
@@ -53,35 +55,37 @@ let _stride : type a b c. (a, b, c) Array2.t -> int = fun x ->
   | Fortran_layout -> Array2.dim1 x
 
 
-let cast_s2c
-  : type a. (float, float32_elt, a) Array2.t -> (Complex.t, complex32_elt, a) Array2.t
-  = fun x ->
-  match (Array2.layout x) with
-  | C_layout -> (
-      Owl_dense_matrix_generic.cast_s2c x
-    )
-  | Fortran_layout -> (
-      let x = genarray_of_array2 x in
-      let x = Genarray.change_layout x C_layout in
-      let x = Owl_dense_ndarray_generic.cast_s2c x in
-      let x = Genarray.change_layout x Fortran_layout in
-      array2_of_genarray x
-    )
+let gbtrf
+  : type a b. kl:int -> ku:int -> m:int -> ab:(a, b) mat -> (a, b) mat * (int, int_elt) t
+  = fun ~kl ~ku ~m ~ab ->
+  let n = Array2.dim2 ab in
+  let minmn = Pervasives.min m n in
+  let _kind = Array2.kind ab in
+  let _layout = Array2.layout ab in
+  let layout = lapacke_layout _layout in
 
-let cast_d2z
-  : type a. (float, float64_elt, a) Array2.t -> (Complex.t, complex64_elt, a) Array2.t
-  = fun x ->
-  match (Array2.layout x) with
-  | C_layout -> (
-      Owl_dense_matrix_generic.cast_d2z x
-    )
-  | Fortran_layout -> (
-      let x = genarray_of_array2 x in
-      let x = Genarray.change_layout x C_layout in
-      let x = Owl_dense_ndarray_generic.cast_d2z x in
-      let x = Genarray.change_layout x Fortran_layout in
-      array2_of_genarray x
-    )
+  assert (kl >= 0 && ku >=0 && m >= 0 && n >= 0);
+
+  let ldab = _stride ab in
+  let ipiv = Array1.create Int _layout minmn in
+  let _ipiv = bigarray_start Ctypes_static.Array1 ipiv in
+  let _ab = bigarray_start Ctypes_static.Array2 ab in
+
+  let ret = match _kind with
+    | Float32   -> L.sgbtrf layout m n kl ku _ab ldab _ipiv
+    | Float64   -> L.dgbtrf layout m n kl ku _ab ldab _ipiv
+    | Complex32 -> L.cgbtrf layout m n kl ku _ab ldab _ipiv
+    | Complex64 -> L.zgbtrf layout m n kl ku _ab ldab _ipiv
+    | _         -> failwith "lapacke:gbtrf"
+  in
+  check_lapack_error ret;
+  ab, ipiv
+
+
+let gbtrs
+  : type a b. trans:lapacke_transpose -> kl:int -> ku:int -> nrhs:int -> ab:(a, b) mat -> ipiv:(int, int_elt) t -> b:(a, b) mat -> unit
+  = fun ~trans ~kl ~ku ~nrhs ~ab ~ipiv ~b ->
+    ()
 
 
 let gesvd
@@ -146,7 +150,7 @@ let gesvd
           |> bigarray_start Ctypes_static.Array1
         in
         let r = L.cgesvd layout jobu jobvt m n _a lda _s _u ldu _vt ldvt superb in
-        s := cast_s2c s';
+        s := Owl_dense_matrix_generic.cast_s2c s';
         r
       )
     | Complex64 -> (
@@ -156,7 +160,7 @@ let gesvd
           |> bigarray_start Ctypes_static.Array1
         in
         let r = L.zgesvd layout jobu jobvt m n _a lda _s _u ldu _vt ldvt superb in
-        s := cast_d2z s';
+        s := Owl_dense_matrix_generic.cast_d2z s';
         r
       )
     | _        -> failwith "lapacke:gesvd"
@@ -222,14 +226,14 @@ let gesdd
         let s' = Array2.create float32 _layout 1 minmn in
         let _s = bigarray_start Ctypes_static.Array2 s' in
         let r = L.cgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
-        s := cast_s2c s';
+        s := Owl_dense_matrix_generic.cast_s2c s';
         r
       )
     | Complex64 -> (
         let s' = Array2.create float64 _layout 1 minmn in
         let _s = bigarray_start Ctypes_static.Array2 s' in
         let r = L.zgesdd layout jobz m n _a lda _s _u ldu _vt ldvt in
-        s := cast_d2z s';
+        s := Owl_dense_matrix_generic.cast_d2z s';
         r
       )
     | _        -> failwith "lapacke:gesdd"
@@ -315,8 +319,8 @@ let ggsvd3
         let _alpha = bigarray_start Ctypes_static.Array2 alpha' in
         let _beta = bigarray_start Ctypes_static.Array2 beta' in
         let r = L.cggsvd3 layout jobu jobv jobq m n p _k _l _a lda _b ldb _alpha _beta _u ldu _v ldv _q ldq _iwork in
-        alpha := cast_s2c alpha';
-        beta := cast_s2c beta';
+        alpha := Owl_dense_matrix_generic.cast_s2c alpha';
+        beta := Owl_dense_matrix_generic.cast_s2c beta';
         r
       )
     | Complex64 -> (
@@ -325,8 +329,8 @@ let ggsvd3
         let _alpha = bigarray_start Ctypes_static.Array2 alpha' in
         let _beta = bigarray_start Ctypes_static.Array2 beta' in
         let r = L.zggsvd3 layout jobu jobv jobq m n p _k _l _a lda _b ldb _alpha _beta _u ldu _v ldv _q ldq _iwork in
-        alpha := cast_d2z alpha';
-        beta := cast_d2z beta';
+        alpha := Owl_dense_matrix_generic.cast_d2z alpha';
+        beta := Owl_dense_matrix_generic.cast_d2z beta';
         r
       )
     | _         -> failwith "lapacke:ggsvd3"
