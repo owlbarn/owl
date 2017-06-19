@@ -395,6 +395,9 @@ let geqp3
   a, jpvt, tau
 
 
+(* TODO: geqrt *)
+
+
 let gesvd
   : type a b. ?jobu:char -> ?jobvt:char -> a:(a, b) mat -> (a, b) mat * (a, b) mat *  (a, b) mat
   = fun ?(jobu='A') ?(jobvt='A') ~a ->
