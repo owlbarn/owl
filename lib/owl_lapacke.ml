@@ -358,6 +358,43 @@ let gerqf
   a, tau
 
 
+let geqp3
+  : type a b. ?jpvt:(int, int_elt) mat -> a:(a, b) mat -> (a, b) mat * (int, int_elt) mat * (a, b) mat
+  = fun ?jpvt ~a ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let k = Pervasives.min m n in
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let jpvt = match jpvt with
+    | Some jpvt -> jpvt
+    | None      -> (
+        let jpvt = Array2.create int _layout 1 n in
+        Array2.fill jpvt 0;
+        jpvt
+      )
+  in
+  assert (n = Array2.dim2 jpvt);
+
+  let tau = Array2.create _kind _layout 1 k in
+  let _tau = bigarray_start Ctypes_static.Array2 tau in
+  let _jpvt = bigarray_start Ctypes_static.Array2 jpvt in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = _stride a in
+
+  let ret = match _kind with
+    | Float32   -> L.sgeqp3 layout m n _a lda _jpvt _tau
+    | Float64   -> L.dgeqp3 layout m n _a lda _jpvt _tau
+    | Complex32 -> L.cgeqp3 layout m n _a lda _jpvt _tau
+    | Complex64 -> L.zgeqp3 layout m n _a lda _jpvt _tau
+    | _         -> failwith "lapacke:geqp3"
+  in
+  check_lapack_error ret;
+  a, jpvt, tau
+
+
 let gesvd
   : type a b. ?jobu:char -> ?jobvt:char -> a:(a, b) mat -> (a, b) mat * (a, b) mat *  (a, b) mat
   = fun ?(jobu='A') ?(jobvt='A') ~a ->
@@ -625,13 +662,4 @@ let ggsvd3
 
 
 
-(*
-let gesvd : type a b. (a, b) kind -> layout:int -> jobu:char -> jobvt:char -> m:int -> n:int -> a:(a ptr) -> lda:int
--> s:(float ptr) -> u:(a ptr) -> ldu:int -> vt:(a ptr) -> ldvt:int -> superb:(float ptr) -> int
-  = function
-  | Float32 -> L.sgesvd
-  | Float64 -> L.dgesvd
-  | Complex32 -> L.cgesvd
-  | Complex64 -> L.zgesvd
-  | _         -> failwith "lapacke:gesvd"
-*)
+(* ends here *)
