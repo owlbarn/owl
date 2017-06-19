@@ -157,6 +157,8 @@ val triu : ?k:int -> mat -> mat
 
 val tril : ?k:int -> mat -> mat
 
+val symmetric : ?upper:bool -> mat -> mat
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 
