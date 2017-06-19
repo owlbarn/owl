@@ -136,8 +136,10 @@ Library owl
   if system(macosx)
     CCOpt+:         -O3
     CCLib+:         -L/usr/local/opt/openblas/lib
+                    -L/usr/local/lib/gcc/7
                     -framework Accelerate
                     -lopenblas
+                    -lgfortran
 
 Library owl_neural
   Path:             lib/neural
