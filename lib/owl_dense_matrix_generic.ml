@@ -220,6 +220,8 @@ let transpose x =
   Owl_backend_gsl_linalg.transpose_copy (kind x) y x;
   y
 
+(* TODO: conjugate transpose *)
+
 let replace_row v x i =
   let y = clone x in
   copy_row_to v y i; y
@@ -321,6 +323,10 @@ let symmetric ?(upper=true) x =
   done;
   (* return the symmetric matrix *)
   y
+
+
+(* TODO: hermitian *)
+
 
 
 (* matrix iteration operations *)

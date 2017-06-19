@@ -30,7 +30,7 @@ let lapacke_layout : type a. a layout -> int = function
   | Fortran_layout -> 102
 
 type lapacke_transpose = NoTrans | Trans | ConjTrans
-let lapacke_transpose = function NoTrans -> 111 | Trans -> 112 | ConjTrans -> 113
+let lapacke_transpose = function NoTrans -> 'N' | Trans -> 'T' | ConjTrans -> 'C'
 
 type lapacke_uplo = Upper | Lower
 let lapacke_uplo = function Upper -> 121 | Lower -> 122
@@ -66,10 +66,10 @@ let gbtrf
 
   assert (kl >= 0 && ku >=0 && m >= 0 && n >= 0);
 
-  let ldab = _stride ab in
   let ipiv = Array1.create Int _layout minmn in
   let _ipiv = bigarray_start Ctypes_static.Array1 ipiv in
   let _ab = bigarray_start Ctypes_static.Array2 ab in
+  let ldab = _stride ab in
 
   let ret = match _kind with
     | Float32   -> L.sgbtrf layout m n kl ku _ab ldab _ipiv
@@ -83,9 +83,32 @@ let gbtrf
 
 
 let gbtrs
-  : type a b. trans:lapacke_transpose -> kl:int -> ku:int -> nrhs:int -> ab:(a, b) mat -> ipiv:(int, int_elt) t -> b:(a, b) mat -> unit
-  = fun ~trans ~kl ~ku ~nrhs ~ab ~ipiv ~b ->
-    ()
+  : type a b. trans:lapacke_transpose -> kl:int -> ku:int -> n:int
+  -> ab:(a, b) mat -> ipiv:(int, int_elt) t -> b:(a, b) mat -> unit
+  = fun ~trans ~kl ~ku ~n ~ab ~ipiv ~b ->
+    let m = Array2.dim2 ab in
+    assert (n = m && n = Array2.dim1 b);
+    let nrhs = Array2.dim2 b in
+    let _kind = Array2.kind ab in
+    let _layout = Array2.layout ab in
+    let layout = lapacke_layout _layout in
+    let trans = lapacke_transpose trans in
+
+    let _ipiv = bigarray_start Ctypes_static.Array1 ipiv in
+    let _ab = bigarray_start Ctypes_static.Array2 ab in
+    let _b = bigarray_start Ctypes_static.Array2 b in
+    let ldab = _stride ab in
+    let ldb = _stride b in
+
+    let ret = match _kind with
+      | Float32   -> L.sgbtrs layout trans n kl ku nrhs _ab ldab _ipiv _b ldb
+      | Float64   -> L.dgbtrs layout trans n kl ku nrhs _ab ldab _ipiv _b ldb
+      | Complex32 -> L.cgbtrs layout trans n kl ku nrhs _ab ldab _ipiv _b ldb
+      | Complex64 -> L.zgbtrs layout trans n kl ku nrhs _ab ldab _ipiv _b ldb
+      | _         -> failwith "lapacke:gbtrs"
+    in
+    check_lapack_error ret
+
 
 
 let gesvd
