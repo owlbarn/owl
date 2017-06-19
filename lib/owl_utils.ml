@@ -256,6 +256,15 @@ let time f =
   (Unix.gettimeofday () -. t) *. 1000.
 
 
+(* flatten an array2 then convert to array1 *)
+let array2_to_array1 x =
+  let open Bigarray in
+  let m = Array2.dim1 x in
+  let n = Array2.dim2 x in
+  let c = m * n in
+  let x = genarray_of_array2 x in
+  reshape_1 x c
+
 (* A simple stack implementation *)
 
 module Stack = struct

@@ -135,15 +135,21 @@ let set = Array2.unsafe_set
 let get = Array2.unsafe_get
 
 let row x i =
+  let m, n = shape x in
+  assert (i < m);
   let y = Array2.slice_left x i in
-  reshape_2 (genarray_of_array1 y) 1 (col_num x)
+  reshape_2 (genarray_of_array1 y) 1 n
 
 let col x j =
   let m, n = shape x in
-  let y = empty (Array2.kind x) m 1 in
-  for i = 0 to m - 1 do
-    Array2.unsafe_set y i 0 (Array2.unsafe_get x i j)
-  done; y
+  assert (j < n);
+  let k = Array2.kind x in
+  let y = empty k m 1 in
+  let _cp_op = _owl_copy k in
+  let _x = Owl_utils.array2_to_array1 x in
+  let _y = Owl_utils.array2_to_array1 y in
+  _cp_op m ~ofsx:j ~incx:n ~ofsy:0 ~incy:1 _x _y;
+  y
 
 let copy_area_to x1 r1 x2 r2 =
   if not (equal_area r1 r2) then
@@ -174,25 +180,45 @@ let copy_col_to v x i =
   let r1 = area_of v and r2 = area_of_col x i in
   copy_area_to v r1 x r2
 
-(* TODO: improve the performance *)
 let concat_vertical x1 x2 =
-  let m1, m2 = row_num x1, row_num x2 in
-  let n1, n2 = col_num x1, col_num x2 in
-  let x3 = empty (Array2.kind x1) (m1 + m2) (min n1 n2) in
-  for i = 0 to (m1 + m2) - 1 do
-    let z = if i < m1 then row x1 i else row x2 (i - m1) in
-    copy_row_to z x3 i
-  done; x3
+  let m1, n1 = shape x1 in
+  let m2, n2 = shape x2 in
+  assert (n1 = n2);
+  let m3 = m1 + m2 in
+  let k = kind x1 in
+  let x3 = empty k m3 n1 in
+  let _cp_op = _owl_copy k in
+  let _x1 = Owl_utils.array2_to_array1 x1 in
+  let _x2 = Owl_utils.array2_to_array1 x2 in
+  let _x3 = Owl_utils.array2_to_array1 x3 in
+  let num1 = numel x1 in
+  let num2 = numel x2 in
+  _cp_op num1 ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 _x1 _x3;
+  _cp_op num2 ~ofsx:0 ~incx:1 ~ofsy:num1 ~incy:1 _x2 _x3;
+  x3
 
-(* TODO: improve the performance *)
 let concat_horizontal x1 x2 =
-  let m1, m2 = row_num x1, row_num x2 in
-  let n1, n2 = col_num x1, col_num x2 in
-  let x3 = empty (Array2.kind x1) (min m1 m2) (n1 + n2)  in
-  for i = 0 to (row_num x3) - 1 do
-    for j = 0 to n1 - 1 do x3.{i,j} <- x1.{i,j} done;
-    for j = 0 to n2 - 1 do x3.{i,j+n1} <- x2.{i,j} done;
-  done; x3
+  let m1, n1 = shape x1 in
+  let m2, n2 = shape x2 in
+  assert (m1 = m2);
+  let n3 = n1 + n2 in
+  let k = kind x1 in
+  let x3 = empty k m1 n3 in
+  let _cp_op = _owl_copy k in
+  let _x1 = Owl_utils.array2_to_array1 x1 in
+  let _x2 = Owl_utils.array2_to_array1 x2 in
+  let _x3 = Owl_utils.array2_to_array1 x3 in
+  let ofs1 = ref 0 in
+  let ofs2 = ref 0 in
+  let ofs3 = ref 0 in
+  for i = 0 to m1 - 1 do
+    _cp_op n1 ~ofsx:!ofs1 ~incx:1 ~ofsy:!ofs3 ~incy:1 _x1 _x3;
+    _cp_op n2 ~ofsx:!ofs2 ~incx:1 ~ofsy:(!ofs3 + n1) ~incy:1 _x2 _x3;
+    ofs1 := !ofs1 + n1;
+    ofs2 := !ofs2 + n2;
+    ofs3 := !ofs3 + n3;
+  done;
+  x3
 
 let concatenate ?(axis=0) xs =
   assert (axis = 0 || axis = 1);
@@ -203,12 +229,24 @@ let concatenate ?(axis=0) xs =
 let rows x l =
   let m, n = Array.length (l), col_num x in
   let y = empty (Array2.kind x) m n in
-  Array.iteri (fun i j -> copy_row_to (row x j) y i) l; y
+  Array.iteri (fun i j ->
+    copy_row_to (row x j) y i
+  ) l;
+  y
 
 let cols x l =
-  let m, n = row_num x, Array.length (l) in
-  let y = empty (Array2.kind x) m n in
-  Array.iteri (fun i j -> copy_col_to (col x j) y i) l; y
+  let m, n = shape x in
+  let nl = Array.length (l) in
+  let k = kind x in
+  let y = empty k m nl in
+  let _cp_op = _owl_copy k in
+  let _x = Owl_utils.array2_to_array1 x in
+  let _y = Owl_utils.array2_to_array1 y in
+  Array.iteri (fun i j ->
+    assert (i < nl && j < n);
+    _cp_op m ~ofsx:j ~incx:n ~ofsy:i ~incy:nl _x _y;
+  ) l;
+  y
 
 let swap_rows x i i' = _eigen_swap_rows (kind x) x i i'
 
