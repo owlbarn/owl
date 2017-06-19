@@ -188,6 +188,72 @@ let gebak
   check_lapack_error ret
 
 
+let gebrd
+  : type a b. a:(a, b) mat -> (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat
+  = fun ~a ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let k = Pervasives.min m n in
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let d = ref (Array2.create _kind _layout 0 k) in
+  let e = ref (Array2.create _kind _layout 0 k) in
+  let tauq = Array2.create _kind _layout 1 k in
+  let taup = Array2.create _kind _layout 1 k in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _tauq = bigarray_start Ctypes_static.Array2 tauq in
+  let _taup = bigarray_start Ctypes_static.Array2 taup in
+  let lda = _stride a in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let d' = Array2.create float32 _layout 1 k in
+        let _d = bigarray_start Ctypes_static.Array2 d' in
+        let e' = Array2.create float32 _layout 1 k in
+        let _e = bigarray_start Ctypes_static.Array2 e' in
+        let r = L.sgebrd layout m n _a lda _d _e _tauq _taup in
+        d := d';
+        e := e';
+        r
+      )
+    | Float64   -> (
+        let d' = Array2.create float64 _layout 1 k in
+        let _d = bigarray_start Ctypes_static.Array2 d' in
+        let e' = Array2.create float64 _layout 1 k in
+        let _e = bigarray_start Ctypes_static.Array2 e' in
+        let r = L.dgebrd layout m n _a lda _d _e _tauq _taup in
+        d := d';
+        e := e';
+        r
+      )
+    | Complex32 -> (
+        let d' = Array2.create float32 _layout 1 k in
+        let _d = bigarray_start Ctypes_static.Array2 d' in
+        let e' = Array2.create float32 _layout 1 k in
+        let _e = bigarray_start Ctypes_static.Array2 e' in
+        let r = L.cgebrd layout m n _a lda _d _e _tauq _taup in
+        d := Owl_dense_matrix_generic.cast_s2c d';
+        e := Owl_dense_matrix_generic.cast_s2c e';
+        r
+      )
+    | Complex64 -> (
+        let d' = Array2.create float64 _layout 1 k in
+        let _d = bigarray_start Ctypes_static.Array2 d' in
+        let e' = Array2.create float64 _layout 1 k in
+        let _e = bigarray_start Ctypes_static.Array2 e' in
+        let r = L.zgebrd layout m n _a lda _d _e _tauq _taup in
+        d := Owl_dense_matrix_generic.cast_d2z d';
+        e := Owl_dense_matrix_generic.cast_d2z e';
+        r
+      )
+    | _         -> failwith "lapacke:gebrd"
+  in
+  check_lapack_error ret;
+  a, !d, !e, tauq, taup
+
+
 let gesvd
   : type a b. ?jobu:char -> ?jobvt:char -> a:(a, b) mat -> (a, b) mat * (a, b) mat *  (a, b) mat
   = fun ?(jobu='A') ?(jobvt='A') ~a ->
