@@ -273,6 +273,8 @@ val tril : ?k:int -> ('a, 'b) t -> ('a, 'b) t
   [k < 0] is below the main diagonal.
  *)
 
+val symmetric : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 

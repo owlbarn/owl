@@ -300,6 +300,29 @@ let tril ?(k=0) x =
   y
 
 
+let symmetric ?(upper=true) x =
+  let m, n = shape x in
+  assert (m = n);
+  let y = clone x in
+  let _y = to_ndarray y in
+  let _y = reshape _y [|numel x|] |> array1_of_genarray in
+
+  let _cp_op = _owl_copy (kind x) in
+  let ofs = ref 0 in
+
+  let incx, incy =
+    match upper with
+    | true  -> 1, m
+    | false -> m, 1
+  in
+  for i = 0 to m - 1 do
+    _cp_op (m - i) ~ofsx:!ofs ~incx ~ofsy:!ofs ~incy _y _y;
+    ofs := !ofs + n + 1
+  done;
+  (* return the symmetric matrix *)
+  y
+
+
 (* matrix iteration operations *)
 
 let iteri f x =
