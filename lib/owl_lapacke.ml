@@ -14,13 +14,13 @@ open Bigarray
 module L = Owl_lapacke_generated
 
 
-type ('a, 'b, 'c) t = ('a, 'b, 'c) Array1.t
-type ('a, 'b, 'c) mat = ('a, 'b, 'c) Array2.t
+type ('a, 'b) t = ('a, 'b, c_layout) Array1.t
+type ('a, 'b) mat = ('a, 'b, c_layout) Array2.t
 
-type 'c s_t = (float, Bigarray.float32_elt, 'c) t
-type 'c d_t = (float, Bigarray.float64_elt, 'c) t
-type 'c c_t = (Complex.t, Bigarray.complex32_elt, 'c) t
-type 'c z_t = (Complex.t, Bigarray.complex64_elt, 'c) t
+type s_t = (float, Bigarray.float32_elt) t
+type d_t = (float, Bigarray.float64_elt) t
+type c_t = (Complex.t, Bigarray.complex32_elt) t
+type z_t = (Complex.t, Bigarray.complex64_elt) t
 
 type lapacke_layout = RowMajor | ColMajor
 let lapacke_layout : type a. a layout -> int = function
@@ -47,14 +47,15 @@ let check_lapack_error ret =
     failwith (Printf.sprintf "LAPACKE: %i" ret)
 
 (* calculate the leading dimension of a matrix *)
-let _stride : type a b c. (a, b, c) mat -> int = fun x ->
+let _stride : type a b c. (a, b, c) Array2.t -> int = fun x ->
   match (Array2.layout x) with
   | C_layout       -> Array2.dim2 x
   | Fortran_layout -> Array2.dim1 x
 
 
 let cast_s2c
-  : type a. (float, float32_elt, a) mat -> (Complex.t, complex32_elt, a) mat = fun x ->
+  : type a. (float, float32_elt, a) Array2.t -> (Complex.t, complex32_elt, a) Array2.t
+  = fun x ->
   match (Array2.layout x) with
   | C_layout -> (
       Owl_dense_matrix_generic.cast_s2c x
@@ -68,7 +69,8 @@ let cast_s2c
     )
 
 let cast_d2z
-  : type a. (float, float64_elt, a) mat -> (Complex.t, complex64_elt, a) mat = fun x ->
+  : type a. (float, float64_elt, a) Array2.t -> (Complex.t, complex64_elt, a) Array2.t
+  = fun x ->
   match (Array2.layout x) with
   | C_layout -> (
       Owl_dense_matrix_generic.cast_d2z x
@@ -83,8 +85,8 @@ let cast_d2z
 
 
 let gesvd
-  : type a b c. jobu:char -> jobvt:char -> a:(a, b, c) mat -> (a, b, c) mat * (a, b, c) mat *  (a, b, c) mat
-  = fun ~jobu ~jobvt ~a ->
+  : type a b. ?jobu:char -> ?jobvt:char -> a:(a, b) mat -> (a, b) mat * (a, b) mat *  (a, b) mat
+  = fun ?(jobu='A') ?(jobvt='A') ~a ->
   assert (jobu = 'A' || jobu = 'S' || jobu = 'O' || jobu = 'N');
   assert (jobvt = 'A' || jobvt = 'S' || jobvt = 'O' || jobvt = 'N');
 
@@ -168,8 +170,8 @@ let gesvd
 
 
 let gesdd
-  : type a b c. jobz:char -> a:(a, b, c) mat -> (a, b, c) mat * (a, b, c) mat *  (a, b, c) mat
-  = fun ~jobz ~a ->
+  : type a b. ?jobz:char -> a:(a, b) mat -> (a, b) mat * (a, b) mat *  (a, b) mat
+  = fun ?(jobz='A') ~a ->
   assert (jobz = 'A' || jobz = 'S' || jobz = 'O' || jobz = 'N');
 
   let m = Array2.dim1 a in
@@ -241,9 +243,9 @@ let gesdd
 
 
 let ggsvd3
-  : type a b c. jobu:char -> jobv:char -> jobq:char -> a:(a, b, c) mat -> b:(a, b, c) mat
-    -> (a, b, c) mat * (a, b, c) mat * (a, b, c) mat * (a, b, c) mat * (a, b, c) mat * int * int
-  = fun ~jobu ~jobv ~jobq ~a ~b ->
+  : type a b. ?jobu:char -> ?jobv:char -> ?jobq:char -> a:(a, b) mat -> b:(a, b) mat
+    -> (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat * int * int * (a, b) mat
+  = fun ?(jobu='U') ?(jobv='V') ?(jobq='Q') ~a ~b ->
   assert (jobu = 'U' || jobu = 'N');
   assert (jobv = 'V' || jobu = 'N');
   assert (jobq = 'Q' || jobu = 'N');
@@ -331,12 +333,22 @@ let ggsvd3
   in
   check_lapack_error ret;
 
-  (* make R *)
+  (* construct R from a and b *)
   let r = match m - !@_k - !@_l >= 0 with
-    | true  -> ()
-    | false -> ()
+    | true  -> (
+        let r = Owl_dense_matrix_generic.slice [[0; !@_k + !@_l - 1]; [n - !@_k - !@_l; n - 1]] a in
+        Owl_dense_matrix_generic.triu r
+      )
+    | false -> (
+        let ra = Owl_dense_matrix_generic.slice [[]; [n - !@_k - !@_l; n - 1]] a in
+        let rb = Owl_dense_matrix_generic.slice [[m - !@_k; !@_l - 1]; [n - !@_k - !@_l; n - 1]] b in
+        let r = Owl_dense_matrix_generic.concat_vertical ra rb in
+        Owl_dense_matrix_generic.triu r
+      )
   in
-  u, v, q, !alpha, !beta, !@_k, !@_l
+  u, v, q, !alpha, !beta, !@_k, !@_l, r
+
+
 
 
 (*
