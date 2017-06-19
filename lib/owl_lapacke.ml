@@ -280,6 +280,32 @@ let gelqf
   a, tau
 
 
+let geqlf
+  : type a b. a:(a, b) mat -> (a, b) mat * (a, b) mat
+  = fun ~a ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let k = Pervasives.min m n in
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let tau = Array2.create _kind _layout 1 k in
+  let _tau = bigarray_start Ctypes_static.Array2 tau in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = _stride a in
+
+  let ret = match _kind with
+    | Float32   -> L.sgeqlf layout m n _a lda _tau
+    | Float64   -> L.dgeqlf layout m n _a lda _tau
+    | Complex32 -> L.cgeqlf layout m n _a lda _tau
+    | Complex64 -> L.zgeqlf layout m n _a lda _tau
+    | _         -> failwith "lapacke:geqlf"
+  in
+  check_lapack_error ret;
+  a, tau
+
+
 let gesvd
   : type a b. ?jobu:char -> ?jobvt:char -> a:(a, b) mat -> (a, b) mat * (a, b) mat *  (a, b) mat
   = fun ?(jobu='A') ?(jobvt='A') ~a ->
