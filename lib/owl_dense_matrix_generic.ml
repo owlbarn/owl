@@ -344,8 +344,7 @@ let symmetric ?(upper=true) x =
   let m, n = shape x in
   assert (m = n);
   let y = clone x in
-  let _y = to_ndarray y in
-  let _y = reshape _y [|numel x|] |> array1_of_genarray in
+  let _y = Owl_utils.array2_to_array1 y in
 
   let _cp_op = _owl_copy (kind x) in
   let ofs = ref 0 in
@@ -366,8 +365,26 @@ let symmetric ?(upper=true) x =
 (* TODO: hermitian *)
 
 
-let bidiagonal ?(upper=true) dv ev = None
+let bidiagonal ?(upper=true) dv ev =
+  let m = numel dv in
+  let n = numel ev in
+  assert (m - n = 1);
 
+  let k = kind dv in
+  let x = zeros k m m in
+  let _dv = Owl_utils.array2_to_array1 dv in
+  let _ev = Owl_utils.array2_to_array1 ev in
+
+  let i, j = match upper with
+    | true  -> 0, 1
+    | false -> 1, 0
+  in
+  for k = 0 to m - 2 do
+    x.{k, k} <- _dv.{k};
+    x.{k+i, k+j} <- _ev.{k}
+  done;
+  x.{m-1, m-1} <- _dv.{m-1};
+  x
 
 
 (* matrix iteration operations *)

@@ -274,6 +274,18 @@ val tril : ?k:int -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val symmetric : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
+(** [symmetric ~upper x] creates a symmetric matrix using either upper or lower
+  triangular part of [x]. If [upper] is [true] then it uses the upper part, if
+  [upper] is [false], then [symmetric] uses the lower part. By default [upper]
+  is true.
+ *)
+
+val bidiagonal : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [bidiagonal upper dv ev] creates a bidiagonal matrix using [dv] and [ev].
+  Both [dv] and [ev] are row vectors. [dv] is the main diagonal. If [upper] is
+  [true] then [ev] is superdiagonal; if [upper] is [false] then [ev] is
+  subdiagonal. By default, [upper] is [true].
+ *)
 
 
 (** {6 Iterate elements, columns, and rows.} *)
