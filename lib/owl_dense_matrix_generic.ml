@@ -290,6 +290,7 @@ let slice axis x =
 
 let pad ?v d x = Owl_dense_ndarray_generic.pad ?v d (to_ndarray x) |> of_ndarray
 
+
 let triu ?(k=0) x =
   let m, n = shape x in
   let c = numel x in
