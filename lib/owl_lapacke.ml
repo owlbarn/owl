@@ -395,7 +395,32 @@ let geqp3
   a, jpvt, tau
 
 
-(* TODO: geqrt *)
+let geqrt
+  : type a b. nb:int -> a:(a, b) mat -> (a, b) mat * (a, b) mat
+  = fun ~nb ~a ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let minmn = Pervasives.min m n in
+  assert (nb <= minmn);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let t = Array2.create _kind _layout nb minmn in
+  let _t = bigarray_start Ctypes_static.Array2 t in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldt = Pervasives.max 1 (_stride t) in
+
+  let ret = match _kind with
+    | Float32   -> L.sgeqrt layout m n nb _a lda _t ldt
+    | Float64   -> L.dgeqrt layout m n nb _a lda _t ldt
+    | Complex32 -> L.cgeqrt layout m n nb _a lda _t ldt
+    | Complex64 -> L.zgeqrt layout m n nb _a lda _t ldt
+    | _         -> failwith "lapacke:geqrt"
+  in
+  check_lapack_error ret;
+  a, t
 
 
 let gesvd

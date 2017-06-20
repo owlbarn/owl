@@ -365,6 +365,10 @@ let symmetric ?(upper=true) x =
 
 (* TODO: hermitian *)
 
+(* TODO: toeplitz *)
+
+(* TODO: hankel *)
+
 
 let bidiagonal ?(upper=true) dv ev =
   let m = numel dv in
