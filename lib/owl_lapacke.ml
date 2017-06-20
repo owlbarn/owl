@@ -516,6 +516,69 @@ let tzrzf
   a, tau
 
 
+let ormrz
+  : type a. side:char -> trans:char -> a:(float, a) mat -> tau:(float, a) mat
+  -> c:(float, a) mat -> (float, a) mat
+  = fun ~side ~trans ~a ~tau ~c ->
+  assert (side = 'L' || side = 'R');
+  assert (trans = 'N' || trans = 'T');
+
+  let m = Array2.dim1 c in
+  let n = Array2.dim2 c in
+  let k = Array2.((dim1 tau) * (dim2 tau)) in
+  let l = Array2.((dim2 a) - (dim1 a)) in
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _c = bigarray_start Ctypes_static.Array2 c in
+  let _tau = bigarray_start Ctypes_static.Array2 tau in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldc = Pervasives.max 1 (_stride c) in
+
+  let ret = match _kind with
+    | Float32   -> L.sormrz layout side trans m n k l _a lda _tau _c ldc
+    | Float64   -> L.dormrz layout side trans m n k l _a lda _tau _c ldc
+    | _         -> failwith "lapacke:ormrz"
+  in
+  check_lapack_error ret;
+  c
+
+
+let gels
+  : type a b. trans:char -> a:(a, b) mat -> (a, b) mat ->
+  = fun ~layout ~trans ~m ~n ~nrhs ~a ~lda ~b ~ldb ->
+  assert (trans = 'N' || trans = 'T' || trans = 'C');
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let minmn = Pervasives.min m n in
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  if trans = 'N' then assert (Array2.dim1 b = n)
+  else assert (Array2.dim1 b = m);
+
+  let nrhs = Array2.dim2 b in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+
+  let ret = match _kind with
+    | Float32   -> L.sgels layout trans m n nrhs _a lda _b ldb
+    | Float64   -> L.dgels layout trans m n nrhs _a lda _b ldb
+    | Complex32 -> L.cgels layout trans m n nrhs _a lda _b ldb
+    | Complex64 -> L.zgels layout trans m n nrhs _a lda _b ldb
+    | _         -> failwith "lapacke:gels"
+  in
+  check_lapack_error ret;
+
+  
+
+
+
 let gesvd
   : type a b. ?jobu:char -> ?jobvt:char -> a:(a, b) mat -> (a, b) mat * (a, b) mat *  (a, b) mat
   = fun ?(jobu='A') ?(jobvt='A') ~a ->
