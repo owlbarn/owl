@@ -159,6 +159,10 @@ val cols : ('a, 'b) t -> int array -> ('a, 'b) t
   of x in a new dense matrix.
  *)
 
+val resize : int -> int -> ('a, 'b) t -> ('a, 'b) t
+(* [resize m n x] please refer to the Ndarray document.
+ *)
+
 val reshape : int -> int -> ('a, 'b) t -> ('a, 'b) t
 (** [reshape m n x] returns a new [m] by [n] matrix from the [m'] by [n']
   matrix [x]. Note that [(m * n)] must be equal to [(m' * n')], and the

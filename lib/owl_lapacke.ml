@@ -56,7 +56,7 @@ let _stride : type a b c. (a, b, c) Array2.t -> int = fun x ->
 
 
 let gbtrf
-  : type a b. kl:int -> ku:int -> m:int -> ab:(a, b) mat -> (a, b) mat * (int, int_elt) t
+  : type a b. kl:int -> ku:int -> m:int -> ab:(a, b) mat -> (a, b) mat * (int32, int32_elt) t
   = fun ~kl ~ku ~m ~ab ->
   let n = Array2.dim2 ab in
   let minmn = Pervasives.min m n in
@@ -66,7 +66,7 @@ let gbtrf
 
   assert (kl >= 0 && ku >=0 && m >= 0 && n >= 0);
 
-  let ipiv = Array1.create Int _layout minmn in
+  let ipiv = Array1.create int32 _layout minmn in
   let _ipiv = bigarray_start Ctypes_static.Array1 ipiv in
   let _ab = bigarray_start Ctypes_static.Array2 ab in
   let ldab = _stride ab in
@@ -84,7 +84,7 @@ let gbtrf
 
 let gbtrs
   : type a b. trans:lapacke_transpose -> kl:int -> ku:int -> n:int
-  -> ab:(a, b) mat -> ipiv:(int, int_elt) t -> b:(a, b) mat -> unit
+  -> ab:(a, b) mat -> ipiv:(int32, int32_elt) t -> b:(a, b) mat -> unit
   = fun ~trans ~kl ~ku ~n ~ab ~ipiv ~b ->
     let m = Array2.dim2 ab in
     assert (n = m && n = Array2.dim1 b);
@@ -121,10 +121,11 @@ let gebal
   let _layout = Array2.layout a in
   let layout = lapacke_layout _layout in
 
+  let _ilo = Ctypes.(allocate int32_t 0l) in
+  let _ihi = Ctypes.(allocate int32_t 0l) in
   let _a = bigarray_start Ctypes_static.Array2 a in
   let lda = _stride a in
-  let _ilo = Ctypes.(allocate int 0) in
-  let _ihi = Ctypes.(allocate int 0) in
+
   let scale = ref (Array2.create _kind _layout 0 0) in
 
   let ret = match _kind with
@@ -159,7 +160,9 @@ let gebal
     | _         -> failwith "lapacke:gebal"
   in
   check_lapack_error ret;
-  !@_ilo, !@_ihi, !scale
+  let ilo = Int32.to_int !@_ilo in
+  let ihi = Int32.to_int !@_ihi in
+  ilo, ihi, !scale
 
 
 (* TODO: need a solution for scale parameter *)
@@ -359,7 +362,8 @@ let gerqf
 
 
 let geqp3
-  : type a b. ?jpvt:(int, int_elt) mat -> a:(a, b) mat -> (a, b) mat * (int, int_elt) mat * (a, b) mat
+  : type a b. ?jpvt:(int32, int32_elt) mat -> a:(a, b) mat
+  -> (a, b) mat * (int32, int32_elt) mat * (a, b) mat
   = fun ?jpvt ~a ->
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
@@ -371,8 +375,8 @@ let geqp3
   let jpvt = match jpvt with
     | Some jpvt -> jpvt
     | None      -> (
-        let jpvt = Array2.create int _layout 1 n in
-        Array2.fill jpvt 0;
+        let jpvt = Array2.create int32 _layout 1 n in
+        Array2.fill jpvt 0l;
         jpvt
       )
   in
@@ -395,7 +399,6 @@ let geqp3
   a, jpvt, tau
 
 
-(* FIXME: buggy *)
 let geqrt
   : type a b. nb:int -> a:(a, b) mat -> (a, b) mat * (a, b) mat
   = fun ~nb ~a ->
@@ -408,7 +411,13 @@ let geqrt
   let layout = lapacke_layout _layout in
 
   let _a = bigarray_start Ctypes_static.Array2 a in
-  let t = Array2.create _kind _layout nb minmn in
+  (* FIXME: there might be something wrong with the lapacke interface. The
+    behaviour of this function is not consistent with what has been documented
+    on Intel's MKL website. I.e., if we allocate [nb x minmn] space for t, it
+    is likely there will be memory fault. The lapacke code turns out to use
+    [minmn x minmn] space actually.
+  *)
+  let t = Array2.create _kind _layout minmn minmn in
   let _t = bigarray_start Ctypes_static.Array2 t in
   let lda = Pervasives.max 1 (_stride a) in
   let ldt = Pervasives.max 1 (_stride t) in
@@ -416,13 +425,15 @@ let geqrt
   let ret = match _kind with
     | Float32   -> L.sgeqrt layout m n nb _a lda _t ldt
     | Float64   -> (
-        Array2.fill t 0.;
+        Array2.fill t 0.7;
         L.dgeqrt layout m n nb _a lda _t ldt)
     | Complex32 -> L.cgeqrt layout m n nb _a lda _t ldt
     | Complex64 -> L.zgeqrt layout m n nb _a lda _t ldt
     | _         -> failwith "lapacke:geqrt"
   in
   check_lapack_error ret;
+  (* resize to the shape of [t] to that is supposed to be *)
+  let t = Owl_dense_matrix_generic.resize nb minmn t in
   a, t
 
 
@@ -451,6 +462,32 @@ let geqrt3
   in
   check_lapack_error ret;
   a, t
+
+
+let getrf
+  : type a b. a:(a, b) mat -> (a, b) mat * (int32, int32_elt) mat
+  = fun ~a ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let minmn = Pervasives.min m n in
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let ipiv = Array2.create int32 _layout 1 minmn in
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Float32   -> L.sgetrf layout m n _a lda _ipiv
+    | Float64   -> L.dgetrf layout m n _a lda _ipiv
+    | Complex32 -> L.cgetrf layout m n _a lda _ipiv
+    | Complex64 -> L.zgetrf layout m n _a lda _ipiv
+    | _         -> failwith "lapacke:getrf"
+  in
+  check_lapack_error ret;
+  a, ipiv
 
 
 let gesvd
@@ -646,7 +683,7 @@ let ggsvd3
     | 'Q' -> Array2.create _kind _layout ldq n
     | _   -> Array2.create _kind _layout 0 n
   in
-  let iwork = Array1.create Int _layout n in
+  let iwork = Array1.create int32 _layout n in
 
   let _a = bigarray_start Ctypes_static.Array2 a in
   let _b = bigarray_start Ctypes_static.Array2 b in
@@ -654,8 +691,8 @@ let ggsvd3
   let _v = bigarray_start Ctypes_static.Array2 v in
   let _q = bigarray_start Ctypes_static.Array2 q in
   let _iwork = bigarray_start Ctypes_static.Array1 iwork in
-  let _k = Ctypes.(allocate int 0) in
-  let _l = Ctypes.(allocate int 0) in
+  let _k = Ctypes.(allocate int32_t 0l) in
+  let _l = Ctypes.(allocate int32_t 0l) in
 
   let ret = match _kind with
     | Float32   -> (
@@ -703,19 +740,21 @@ let ggsvd3
   check_lapack_error ret;
 
   (* construct R from a and b *)
-  let r = match m - !@_k - !@_l >= 0 with
+  let k = Int32.to_int !@_k in
+  let l = Int32.to_int !@_l in
+  let r = match m - k -l >= 0 with
     | true  -> (
-        let r = Owl_dense_matrix_generic.slice [[0; !@_k + !@_l - 1]; [n - !@_k - !@_l; n - 1]] a in
+        let r = Owl_dense_matrix_generic.slice [[0; k + l - 1]; [n - k - l; n - 1]] a in
         Owl_dense_matrix_generic.triu r
       )
     | false -> (
-        let ra = Owl_dense_matrix_generic.slice [[]; [n - !@_k - !@_l; n - 1]] a in
-        let rb = Owl_dense_matrix_generic.slice [[m - !@_k; !@_l - 1]; [n - !@_k - !@_l; n - 1]] b in
+        let ra = Owl_dense_matrix_generic.slice [[]; [n - k - l; n - 1]] a in
+        let rb = Owl_dense_matrix_generic.slice [[m - k; l - 1]; [n - k - l; n - 1]] b in
         let r = Owl_dense_matrix_generic.concat_vertical ra rb in
         Owl_dense_matrix_generic.triu r
       )
   in
-  u, v, q, !alpha, !beta, !@_k, !@_l, r
+  u, v, q, !alpha, !beta, k, l, r
 
 
 

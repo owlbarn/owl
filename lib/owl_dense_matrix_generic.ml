@@ -855,6 +855,12 @@ let reshape m n x =
 
 let flatten x = reshape 1 (numel x) x
 
+let resize m n x =
+  let x = to_ndarray x in
+  Owl_dense_ndarray_generic.resize x [|m;n|]
+  |> of_ndarray
+
+
 (* TODO: improve performance
 
 let of_arrays k x = Array2.of_array k c_layout x

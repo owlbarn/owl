@@ -197,6 +197,16 @@ val fill : ('a, 'b) t -> 'a -> unit
 val clone : ('a, 'b) t -> ('a, 'b) t
 (** [clone x] makes a copy of [x]. *)
 
+val resize : ('a, 'b) t -> int array -> ('a, 'b) t
+(** [resize x d] resizes the ndarray [x]. If there are less number of elelments
+  in the new shape than the old one, the new ndarray share part of the memeory
+  with the old [x].
+
+  If there are more elements in the new shape [d]. Then new memeory space will
+  be allocated and the content of [x] will be copied to the new memory. The rest
+  of the allocated space will be filled with zeros. 
+ *)
+
 val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
 (** [reshape x d] transforms [x] into a new shape definted by [d]. Note the
   [reshape] function will not make a copy of [x], the returned ndarray shares
