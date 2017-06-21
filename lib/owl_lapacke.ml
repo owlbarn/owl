@@ -667,6 +667,36 @@ let getrs
   b
 
 
+let getri
+  : type a b. a:(a, b) mat -> ipiv:(int32, int32_elt) mat -> (a, b) mat
+  = fun ~a ~ipiv ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let k = Array2.((dim1 ipiv) * (dim2 ipiv)) in
+  assert (m = n && n = k);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Float32   -> L.sgetri layout n _a lda _ipiv
+    | Float64   -> L.dgetri layout n _a lda _ipiv
+    | Complex32 -> L.cgetri layout n _a lda _ipiv
+    | Complex64 -> L.zgetri layout n _a lda _ipiv
+    | _         -> failwith "lapacke:getri"
+  in
+  check_lapack_error ret;
+  a
+
+
+
+
+
+
 let gesvd
   : type a b. ?jobu:char -> ?jobvt:char -> a:(a, b) mat -> (a, b) mat * (a, b) mat *  (a, b) mat
   = fun ?(jobu='A') ?(jobvt='A') ~a ->
