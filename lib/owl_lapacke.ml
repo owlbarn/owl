@@ -636,6 +636,8 @@ let gesv
   a, b, ipiv
 
 
+let getrs = None
+
 
 
 let gesvd
