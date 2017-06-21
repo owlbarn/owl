@@ -93,7 +93,7 @@ val rows : mat -> int array -> mat
 
 val cols : mat -> int array -> mat
 
-val resize : int -> int -> mat -> mat
+val resize : ?head:bool -> int -> int -> mat -> mat
 
 val reshape : int -> int -> mat -> mat
 

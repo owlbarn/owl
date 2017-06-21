@@ -83,7 +83,7 @@ val fill : arr -> elt -> unit
 
 val clone : arr -> arr
 
-val resize : arr -> int array -> arr
+val resize : ?head:bool -> arr -> int array -> arr
 
 val reshape : arr -> int array -> arr
 

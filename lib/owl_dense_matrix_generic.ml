@@ -855,9 +855,9 @@ let reshape m n x =
 
 let flatten x = reshape 1 (numel x) x
 
-let resize m n x =
+let resize ?head m n x =
   let x = to_ndarray x in
-  Owl_dense_ndarray_generic.resize x [|m;n|]
+  Owl_dense_ndarray_generic.resize ?head x [|m;n|]
   |> of_ndarray
 
 

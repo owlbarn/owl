@@ -252,21 +252,28 @@ let expand x d =
   | false -> x
 
 
-let resize x d =
+let resize ?(head=true) x d =
   let n0 = numel x in
   let n1 = Array.fold_left (fun a b -> a * b) 1 d in
   let _x = reshape_1 x n0 in
+  let ofsx, ofsy =
+    match head, n0 < n1 with
+    | true, true   -> 0, 0
+    | true, false  -> 0, 0
+    | false, true  -> 0, (n1 - n0)
+    | false, false -> (n0 - n1), 0
+  in
   match n0 < n1 with
   | true  -> (
       let k = kind x in
       let y = empty k d in
       fill y (_zero k);
       let _y = reshape_1 y n1 in
-      _owl_copy k n0 ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 _x _y;
+      _owl_copy k n0 ~ofsx ~incx:1 ~ofsy ~incy:1 _x _y;
       y
     )
   | false -> (
-      let _y = Array1.sub _x 0 n1 |> genarray_of_array1 in
+      let _y = Array1.sub _x ofsx n1 |> genarray_of_array1 in
       reshape _y d
     )
 

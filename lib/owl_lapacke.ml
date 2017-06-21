@@ -540,27 +540,34 @@ let ormrz
   let ret = match _kind with
     | Float32   -> L.sormrz layout side trans m n k l _a lda _tau _c ldc
     | Float64   -> L.dormrz layout side trans m n k l _a lda _tau _c ldc
-    | _         -> failwith "lapacke:ormrz"
   in
   check_lapack_error ret;
   c
 
 
 let gels
-  : type a b. trans:char -> a:(a, b) mat -> (a, b) mat ->
-  = fun ~layout ~trans ~m ~n ~nrhs ~a ~lda ~b ~ldb ->
+  : type a b. trans:char -> a:(a, b) mat -> b:(a, b) mat
+  -> (a, b) mat * (a, b) mat * (a, b) mat
+  = fun ~trans ~a ~b ->
   assert (trans = 'N' || trans = 'T' || trans = 'C');
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
-  let minmn = Pervasives.min m n in
+  let mb = Array2.dim1 b in
+  let nb = Array2.dim2 b in
   let _kind = Array2.kind a in
   let _layout = Array2.layout a in
   let layout = lapacke_layout _layout in
 
-  if trans = 'N' then assert (Array2.dim1 b = n)
-  else assert (Array2.dim1 b = m);
+  if trans = 'N' then assert (mb = m)
+  else assert (mb = n);
 
-  let nrhs = Array2.dim2 b in
+  let l = Pervasives.max m n in
+  let b = match mb < l with
+    | true  -> Owl_dense_matrix_generic.resize l nb b
+    | false -> b
+  in
+
+  let nrhs = nb in
   let _a = bigarray_start Ctypes_static.Array2 a in
   let _b = bigarray_start Ctypes_static.Array2 b in
   let lda = Pervasives.max 1 (_stride a) in
@@ -575,7 +582,29 @@ let gels
   in
   check_lapack_error ret;
 
-  
+  let k = Pervasives.min m n in
+  let a' = Owl_dense_matrix_generic.slice [[0;k-1]; [0;k-1]] a in
+  let f = match m < n with
+    | true  -> Owl_dense_matrix_generic.tril a'
+    | false -> Owl_dense_matrix_generic.triu a'
+  in
+  let sol = match trans = 'N' with
+    | true  -> Owl_dense_matrix_generic.resize n nb b
+    | false -> Owl_dense_matrix_generic.resize m nb b
+  in
+  let ssr = match trans = 'N' with
+    | true  ->
+        if mb > n then
+          Owl_dense_matrix_generic.resize ~head:false (mb - n) nb b
+        else Array2.create _kind _layout 0 0
+    | false ->
+        if mb > m then
+          Owl_dense_matrix_generic.resize ~head:false (mb - m) nb b
+        else Array2.create _kind _layout 0 0
+  in
+  f, sol, ssr
+
+
 
 
 

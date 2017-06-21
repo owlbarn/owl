@@ -159,7 +159,7 @@ val cols : ('a, 'b) t -> int array -> ('a, 'b) t
   of x in a new dense matrix.
  *)
 
-val resize : int -> int -> ('a, 'b) t -> ('a, 'b) t
+val resize : ?head:bool -> int -> int -> ('a, 'b) t -> ('a, 'b) t
 (* [resize m n x] please refer to the Ndarray document.
  *)
 
