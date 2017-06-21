@@ -830,6 +830,66 @@ let gesvx
   x, !@_equed, !r_ref, !c_ref, b, !rcond.{0,0}, !ferr, !berr, !rpivot.{0,0}
 
 
+let gelsd
+  : type a b.
+  = fun ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~s ~rcond ~rank ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let minmn = Pervasives.min m n in
+  let mb = Array2.dim1 b in
+  let nrhs = Array2.dim2 b in
+  assert (mb = m);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let b = match mb < n with
+    | true  -> Owl_dense_matrix_generic.resize n nrhs b
+    | false -> b
+  in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let _rank = Ctypes.(allocate int32_t 0l) in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let _rcond = Ctypes.(allocate float rcond) in
+        let s = Array2.create float32 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s in
+        L.sgelsd layout m n nrhs _a lda _b ldb _s _rcond _rank
+      )
+    | Float64   -> (
+        let _rcond = Ctypes.(allocate double rcond) in
+        let s = Array2.create float64 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s in
+        L.dgelsd layout m n nrhs _a lda _b ldb _s _rcond _rank
+      )
+    | Complex32 -> (
+        let _rcond = Ctypes.(allocate float rcond) in
+        let s = Array2.create float32 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s in
+        L.cgelsd layout m n nrhs _a lda _b ldb _s _rcond _rank
+      )
+    | Complex64 -> (
+        let _rcond = Ctypes.(allocate double rcond) in
+        let s = Array2.create float64 _layout 1 minmn in
+        let _s = bigarray_start Ctypes_static.Array2 s in
+        L.zgelsd layout m n nrhs _a lda _b ldb _s _rcond _rank
+      )
+    | _         -> failwith "lapacke:getri"
+  in
+  check_lapack_error ret;
+  a
+
+
+
+
+
+
+
+
 
 let gesvd
   : type a b. ?jobu:char -> ?jobvt:char -> a:(a, b) mat -> (a, b) mat * (a, b) mat *  (a, b) mat
