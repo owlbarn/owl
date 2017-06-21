@@ -881,9 +881,42 @@ let gelsd
   b, Int32.to_int !@_rank
 
 
+let gelsy
+  : type a b. a:(a, b) mat -> b:(a, b) mat -> rcond:float -> (a, b) mat * int
+  = fun ~a ~b ~rcond ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let mb = Array2.dim1 b in
+  let nrhs = Array2.dim2 b in
+  assert (mb = m);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
 
+  let b = match mb < n with
+    | true  -> Owl_dense_matrix_generic.resize n nrhs b
+    | false -> b
+  in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let _rank = Ctypes.(allocate int32_t 0l) in
 
+  let jpvt = Array2.create int32 _layout 1 n in
+  Array2.fill jpvt 0l;
+  let _jpvt = bigarray_start Ctypes_static.Array2 jpvt in
 
+  let ret = match _kind with
+    | Float32   -> L.sgelsy layout m n nrhs _a lda _b ldb _jpvt rcond _rank
+    | Float64   -> L.dgelsy layout m n nrhs _a lda _b ldb _jpvt rcond _rank
+    | Complex32 -> L.cgelsy layout m n nrhs _a lda _b ldb _jpvt rcond _rank
+    | Complex64 -> L.zgelsy layout m n nrhs _a lda _b ldb _jpvt rcond _rank
+    | _         -> failwith "lapacke:gelsy"
+  in
+  check_lapack_error ret;
+  let b = Owl_dense_matrix_generic.resize n nrhs b in
+  b, Int32.to_int !@_rank
 
 
 
