@@ -636,8 +636,35 @@ let gesv
   a, b, ipiv
 
 
-let getrs = None
+let getrs
+  : type a b. trans:char -> a:(a, b) mat -> ipiv:(int32, int32_elt) mat -> b:(a, b) mat -> (a, b) mat
+  = fun ~trans ~a ~ipiv ~b ->
+  assert (trans = 'N' || trans = 'T' || trans = 'C');
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let mb = Array2.dim1 b in
+  let nb = Array2.dim2 b in
+  assert (m = n && mb = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
 
+  let nrhs = nb in
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+
+  let ret = match _kind with
+    | Float32   -> L.sgetrs layout trans n nrhs _a lda _ipiv _b ldb
+    | Float64   -> L.dgetrs layout trans n nrhs _a lda _ipiv _b ldb
+    | Complex32 -> L.cgetrs layout trans n nrhs _a lda _ipiv _b ldb
+    | Complex64 -> L.zgetrs layout trans n nrhs _a lda _ipiv _b ldb
+    | _         -> failwith "lapacke:getrs"
+  in
+  check_lapack_error ret;
+  b
 
 
 let gesvd
