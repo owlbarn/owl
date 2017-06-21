@@ -919,6 +919,45 @@ let gelsy
   b, Int32.to_int !@_rank
 
 
+let gglse
+  : type a b. a:(a, b) mat -> b:(a, b) mat -> c:(a, b) mat -> d:(a, b) mat
+  -> (a, b) mat * a
+  = fun ~a ~b ~c ~d ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let p = Array2.dim1 b in
+  assert (n = Array2.dim2 b);
+  assert (m = Array2.((dim1 c) * (dim2 c)));
+  assert (p = Array2.((dim1 d) * (dim2 d)));
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let x = Array2.create _kind _layout 1 n in
+  let _x = bigarray_start Ctypes_static.Array2 x in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let _c = bigarray_start Ctypes_static.Array2 c in
+  let _d = bigarray_start Ctypes_static.Array2 d in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+
+  let ret = match _kind with
+    | Float32   -> L.sgglse layout m n p _a lda _b ldb _c _d _x
+    | Float64   -> L.dgglse layout m n p _a lda _b ldb _c _d _x
+    | Complex32 -> L.cgglse layout m n p _a lda _b ldb _c _d _x
+    | Complex64 -> L.zgglse layout m n p _a lda _b ldb _c _d _x
+    | _         -> failwith "lapacke:gglse"
+  in
+  check_lapack_error ret;
+
+  let c' = Owl_dense_matrix_generic.resize ~head:false 1 (m - n + p) c in
+  let res = Owl_dense_matrix_generic.(mul c' c' |> sum) in
+  x, res
+
+
+
+(* ======= *)
 
 let gesvd
   : type a b. ?jobu:char -> ?jobvt:char -> a:(a, b) mat -> (a, b) mat * (a, b) mat *  (a, b) mat
