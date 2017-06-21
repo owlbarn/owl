@@ -605,6 +605,36 @@ let gels
   f, sol, ssr
 
 
+let gesv
+  : type a b. a:(a, b) mat -> b:(a, b) mat -> (a, b) mat * (a, b) mat * (int32, int32_elt) mat
+  = fun ~a ~b ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let mb = Array2.dim1 b in
+  let nb = Array2.dim2 b in
+  assert (m = n && mb = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let nrhs = nb in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+  let ipiv = Array2.create int32 _layout 1 n in
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+
+  let ret = match _kind with
+    | Float32   -> L.sgesv layout n nrhs _a lda _ipiv _b ldb
+    | Float64   -> L.dgesv layout n nrhs _a lda _ipiv _b ldb
+    | Complex32 -> L.cgesv layout n nrhs _a lda _ipiv _b ldb
+    | Complex64 -> L.zgesv layout n nrhs _a lda _ipiv _b ldb
+    | _         -> failwith "lapacke:gesv"
+  in
+  check_lapack_error ret;
+  a, b, ipiv
+
 
 
 
