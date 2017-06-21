@@ -956,6 +956,86 @@ let gglse
   x, res
 
 
+let geev
+  : type a b. jobvl:char -> jobvr:char -> a:(a, b) mat
+  -> (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat
+  = fun ~jobvl ~jobvr ~a ->
+  assert (jobvl = 'N' || jobvl = 'V');
+  assert (jobvr = 'N' || jobvr = 'V');
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let vl = match jobvl with
+    | 'V' -> Array2.create _kind _layout n n
+    | _   -> Array2.create _kind _layout 0 n
+  in
+  let vr = match jobvr with
+    | 'V' -> Array2.create _kind _layout n n
+    | _   -> Array2.create _kind _layout 0 n
+  in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _vl = bigarray_start Ctypes_static.Array2 vl in
+  let _vr = bigarray_start Ctypes_static.Array2 vr in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldvl = Pervasives.max 1 (_stride vl) in
+  let ldvr = Pervasives.max 1 (_stride vr) in
+
+  let wr = ref (Array2.create _kind _layout 0 0) in
+  let wi = ref (Array2.create _kind _layout 0 0) in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let wr' = Array2.create _kind _layout 1 n in
+        let wi' = Array2.create _kind _layout 1 n in
+        let _wr = bigarray_start Ctypes_static.Array2 wr' in
+        let _wi = bigarray_start Ctypes_static.Array2 wi' in
+        let r = L.sgeev layout jobvl jobvr n _a lda _wr _wi _vl ldvl _vr ldvr in
+        wr := wr';
+        wi := wi';
+        r
+      )
+    | Float64   -> (
+        let wr' = Array2.create _kind _layout 1 n in
+        let wi' = Array2.create _kind _layout 1 n in
+        let _wr = bigarray_start Ctypes_static.Array2 wr' in
+        let _wi = bigarray_start Ctypes_static.Array2 wi' in
+        let r = L.dgeev layout jobvl jobvr n _a lda _wr _wi _vl ldvl _vr ldvr in
+        wr := wr';
+        wi := wi';
+        r
+      )
+    | Complex32 -> (
+        let w' = Array2.create _kind _layout 1 n in
+        let _w = bigarray_start Ctypes_static.Array2 w' in
+        let r = L.cgeev layout jobvl jobvr n _a lda _w _vl ldvl _vr ldvr in
+        wr := w';
+        wi := w';
+        r
+      )
+    | Complex64 -> (
+        let w' = Array2.create _kind _layout 1 n in
+        let _w = bigarray_start Ctypes_static.Array2 w' in
+        let r = L.cgeev layout jobvl jobvr n _a lda _w _vl ldvl _vr ldvr in
+        wr := w';
+        wi := w';
+        r
+      )
+    | _         -> failwith "lapacke:geev"
+  in
+  check_lapack_error ret;
+  !wr, !wi, vl, vr
+
+
+
+
+
+
+
+
 
 (* ======= *)
 
