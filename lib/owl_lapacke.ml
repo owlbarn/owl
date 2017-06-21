@@ -831,8 +831,8 @@ let gesvx
 
 
 let gelsd
-  : type a b.
-  = fun ~layout ~m ~n ~nrhs ~a ~lda ~b ~ldb ~s ~rcond ~rank ->
+  : type a b. a:(a, b) mat -> b:(a, b) mat -> rcond:float -> (a, b) mat * int
+  = fun ~a ~b ~rcond ->
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
   let minmn = Pervasives.min m n in
@@ -855,34 +855,30 @@ let gelsd
 
   let ret = match _kind with
     | Float32   -> (
-        let _rcond = Ctypes.(allocate float rcond) in
         let s = Array2.create float32 _layout 1 minmn in
         let _s = bigarray_start Ctypes_static.Array2 s in
-        L.sgelsd layout m n nrhs _a lda _b ldb _s _rcond _rank
+        L.sgelsd layout m n nrhs _a lda _b ldb _s rcond _rank
       )
     | Float64   -> (
-        let _rcond = Ctypes.(allocate double rcond) in
         let s = Array2.create float64 _layout 1 minmn in
         let _s = bigarray_start Ctypes_static.Array2 s in
-        L.dgelsd layout m n nrhs _a lda _b ldb _s _rcond _rank
+        L.dgelsd layout m n nrhs _a lda _b ldb _s rcond _rank
       )
     | Complex32 -> (
-        let _rcond = Ctypes.(allocate float rcond) in
         let s = Array2.create float32 _layout 1 minmn in
         let _s = bigarray_start Ctypes_static.Array2 s in
-        L.cgelsd layout m n nrhs _a lda _b ldb _s _rcond _rank
+        L.cgelsd layout m n nrhs _a lda _b ldb _s rcond _rank
       )
     | Complex64 -> (
-        let _rcond = Ctypes.(allocate double rcond) in
         let s = Array2.create float64 _layout 1 minmn in
         let _s = bigarray_start Ctypes_static.Array2 s in
-        L.zgelsd layout m n nrhs _a lda _b ldb _s _rcond _rank
+        L.zgelsd layout m n nrhs _a lda _b ldb _s rcond _rank
       )
-    | _         -> failwith "lapacke:getri"
+    | _         -> failwith "lapacke:gelsd"
   in
   check_lapack_error ret;
-  a
-
+  let b = Owl_dense_matrix_generic.resize n nrhs b in
+  b, Int32.to_int !@_rank
 
 
 
