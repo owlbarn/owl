@@ -693,7 +693,141 @@ let getri
   a
 
 
+let gesvx
+  : type a b. fact:char -> trans:char -> a:(a, b) mat -> af:(a, b) mat
+  -> ipiv:(int32, int32_elt) mat -> equed:char -> r:(a, b) mat -> c:(a, b) mat -> b:(a, b) mat
+  -> (a, b) mat * char * (a, b) mat * (a, b) mat * (a, b) mat * a * (a, b) mat * (a, b) mat * a
+  = fun ~fact ~trans ~a ~af ~ipiv ~equed ~r ~c ~b ->
+  assert (fact = 'E' || fact = 'N' || fact = 'T' || fact = 'C');
+  assert (trans = 'N' || trans = 'T' || trans = 'C');
+  assert (equed = 'N' || equed = 'R' || equed = 'C' || equed = 'B');
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  assert (Array2.dim1 af = n && Array2.dim2 af = n);
+  let nrhs = Array2.dim2 b in
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
 
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+  let ldaf = Pervasives.max 1 (_stride af) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let _af = bigarray_start Ctypes_static.Array2 af in
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+  let _equed = Ctypes.(allocate char equed) in
+  let x = Array2.create _kind _layout n nrhs in
+  let _x = bigarray_start Ctypes_static.Array2 x in
+  let ldx = Pervasives.max 1 (_stride x) in
+
+  let r_ref = ref (Array2.create _kind _layout 0 0) in
+  let c_ref = ref (Array2.create _kind _layout 0 0) in
+  let rcond = ref (Array2.create _kind _layout 0 0) in
+  let ferr = ref (Array2.create _kind _layout 0 0) in
+  let berr = ref (Array2.create _kind _layout 0 0) in
+  let rpivot = ref (Array2.create _kind _layout 0 0) in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let rcond' = Array2.create float32 _layout 1 1 in
+        let ferr' = Array2.create float32 _layout 1 nrhs in
+        let berr' = Array2.create float32 _layout 1 nrhs in
+        let rpivot' = Array2.create float32 _layout 1 1 in
+        let _rcond = bigarray_start Ctypes_static.Array2 rcond' in
+        let _ferr = bigarray_start Ctypes_static.Array2 ferr' in
+        let _berr = bigarray_start Ctypes_static.Array2 berr' in
+        let _rpivot = bigarray_start Ctypes_static.Array2 rpivot' in
+
+        let _r = bigarray_start Ctypes_static.Array2 r in
+        let _c = bigarray_start Ctypes_static.Array2 c in
+
+        let ret = L.sgesvx layout fact trans n nrhs _a lda _af ldaf _ipiv _equed _r _c _b ldb _x ldx _rcond _ferr _berr _rpivot in
+        r_ref := r;
+        c_ref := c;
+        rcond := rcond';
+        ferr := ferr';
+        berr := berr';
+        rpivot := rpivot';
+        ret
+      )
+    | Float64   -> (
+        let rcond' = Array2.create float64 _layout 1 1 in
+        let ferr' = Array2.create float64 _layout 1 nrhs in
+        let berr' = Array2.create float64 _layout 1 nrhs in
+        let rpivot' = Array2.create float64 _layout 1 1 in
+        let _rcond = bigarray_start Ctypes_static.Array2 rcond' in
+        let _ferr = bigarray_start Ctypes_static.Array2 ferr' in
+        let _berr = bigarray_start Ctypes_static.Array2 berr' in
+        let _rpivot = bigarray_start Ctypes_static.Array2 rpivot' in
+
+        let _r = bigarray_start Ctypes_static.Array2 r in
+        let _c = bigarray_start Ctypes_static.Array2 c in
+
+        let ret = L.dgesvx layout fact trans n nrhs _a lda _af ldaf _ipiv _equed _r _c _b ldb _x ldx _rcond _ferr _berr _rpivot in
+        r_ref := r;
+        c_ref := c;
+        rcond := rcond';
+        ferr := ferr';
+        berr := berr';
+        rpivot := rpivot';
+        ret
+      )
+    | Complex32 -> (
+        let rcond' = Array2.create float32 _layout 1 1 in
+        let ferr' = Array2.create float32 _layout 1 nrhs in
+        let berr' = Array2.create float32 _layout 1 nrhs in
+        let rpivot' = Array2.create float32 _layout 1 1 in
+        let _rcond = bigarray_start Ctypes_static.Array2 rcond' in
+        let _ferr = bigarray_start Ctypes_static.Array2 ferr' in
+        let _berr = bigarray_start Ctypes_static.Array2 berr' in
+        let _rpivot = bigarray_start Ctypes_static.Array2 rpivot' in
+
+        let r' = Owl_dense_matrix_c.re r in
+        let c' = Owl_dense_matrix_c.re c in
+        let _r = bigarray_start Ctypes_static.Array2 r' in
+        let _c = bigarray_start Ctypes_static.Array2 c' in
+
+        let ret = L.cgesvx layout fact trans n nrhs _a lda _af ldaf _ipiv _equed _r _c _b ldb _x ldx _rcond _ferr _berr _rpivot in
+        r_ref := Owl_dense_matrix_generic.cast_s2c r';
+        c_ref := Owl_dense_matrix_generic.cast_s2c c';
+        rcond := Owl_dense_matrix_generic.cast_s2c rcond';
+        ferr := Owl_dense_matrix_generic.cast_s2c ferr';
+        berr := Owl_dense_matrix_generic.cast_s2c berr';
+        rpivot := Owl_dense_matrix_generic.cast_s2c rpivot';
+        ret
+      )
+    | Complex64 -> (
+        let _rpivot = Ctypes.(allocate double 0.) in
+        let rcond' = Array2.create float64 _layout 1 1 in
+        let ferr' = Array2.create float64 _layout 1 nrhs in
+        let berr' = Array2.create float64 _layout 1 nrhs in
+        let rpivot' = Array2.create float64 _layout 1 1 in
+        let _rcond = bigarray_start Ctypes_static.Array2 rcond' in
+        let _ferr = bigarray_start Ctypes_static.Array2 ferr' in
+        let _berr = bigarray_start Ctypes_static.Array2 berr' in
+        let _rpivot = bigarray_start Ctypes_static.Array2 rpivot' in
+
+        let r' = Owl_dense_matrix_z.re r in
+        let c' = Owl_dense_matrix_z.re c in
+        let _r = bigarray_start Ctypes_static.Array2 r' in
+        let _c = bigarray_start Ctypes_static.Array2 c' in
+
+        let ret = L.zgesvx layout fact trans n nrhs _a lda _af ldaf _ipiv _equed _r _c _b ldb _x ldx _rcond _ferr _berr _rpivot in
+        r_ref := Owl_dense_matrix_generic.cast_d2z r';
+        c_ref := Owl_dense_matrix_generic.cast_d2z c';
+        rcond := Owl_dense_matrix_generic.cast_d2z rcond';
+        ferr := Owl_dense_matrix_generic.cast_d2z ferr';
+        berr := Owl_dense_matrix_generic.cast_d2z berr';
+        rpivot := Owl_dense_matrix_generic.cast_d2z rpivot';
+        ret
+      )
+    | _         -> failwith "lapacke:gesvx"
+  in
+  check_lapack_error ret;
+  if ret = n + 1 then Log.warn "matrix is singular to working precision.";
+  x, !@_equed, !r_ref, !c_ref, b, !rcond.{0,0}, !ferr, !berr, !rpivot.{0,0}
 
 
 
