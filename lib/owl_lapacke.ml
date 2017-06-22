@@ -558,8 +558,10 @@ let gels
   let _layout = Array2.layout a in
   let layout = lapacke_layout _layout in
 
-  if trans = 'N' then assert (mb = m)
-  else assert (mb = n);
+  if trans = 'N' then
+    assert (mb = m)
+  else
+    assert (mb = n);
 
   let l = Pervasives.max m n in
   let b = match mb < l with
@@ -596,11 +598,13 @@ let gels
     | true  ->
         if mb > n then
           Owl_dense_matrix_generic.resize ~head:false (mb - n) nb b
-        else Array2.create _kind _layout 0 0
+        else
+          Array2.create _kind _layout 0 0
     | false ->
         if mb > m then
           Owl_dense_matrix_generic.resize ~head:false (mb - m) nb b
-        else Array2.create _kind _layout 0 0
+        else
+          Array2.create _kind _layout 0 0
   in
   f, sol, ssr
 
@@ -1732,6 +1736,43 @@ let orgrq
   match minmn < n with
   | true  -> Owl_dense_matrix_generic.slice [[]; [0;minmn-1]] a
   | false -> a
+
+
+let ormlq
+  : type a. side:char -> trans:char -> a:(float, a) mat -> tau:(float, a) mat
+  -> c:(float, a) mat -> (float, a) mat
+  = fun ~side ~trans ~a ~tau ~c ->
+  assert (side = 'L' || side = 'R');
+  assert (trans = 'N' || trans = 'T');
+
+  let m = Array2.dim1 c in
+  let n = Array2.dim2 c in
+  let ma = Array2.dim1 a in
+  let na = Array2.dim2 a in
+  let k = Owl_dense_matrix_generic.numel tau in
+  if side = 'L' then
+    assert (m = na && k <= m)
+  else
+    assert (n = ma && k <= n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldc = Pervasives.max 1 (_stride c) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _c = bigarray_start Ctypes_static.Array2 c in
+  let _tau = bigarray_start Ctypes_static.Array2 tau in
+
+  let ret = match _kind with
+    | Float32   -> L.sormlq layout side trans m n k _a lda _tau _c ldc
+    | Float64   -> L.dormlq layout side trans m n k _a lda _tau _c ldc
+  in
+  check_lapack_error ret;
+  c
+
+
+
 
 
 
