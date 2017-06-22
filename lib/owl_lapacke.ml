@@ -2022,6 +2022,34 @@ let potrs
   b
 
 
+let pstrf
+  : type a b. uplo:char -> a:(a, b) mat -> tol:a -> (a, b) mat * (int32, int32_elt) mat * int * int
+  = fun ~uplo ~a ~tol ->
+  assert (uplo = 'U' || uplo = 'L');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let lda = Pervasives.max 1 (_stride a) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let piv = Array2.create int32 _layout 1 n in
+  let _piv = bigarray_start Ctypes_static.Array2 piv in
+  let _rank = Ctypes.(allocate int32_t 0l) in
+
+  let ret = match _kind with
+    | Float32   -> L.spstrf layout uplo n _a lda _piv _rank tol
+    | Float64   -> L.dpstrf layout uplo n _a lda _piv _rank tol
+    | Complex32 -> L.cpstrf layout uplo n _a lda _piv _rank Complex.(tol.re)
+    | Complex64 -> L.zpstrf layout uplo n _a lda _piv _rank Complex.(tol.re)
+    | _         -> failwith "lapacke:pstrf"
+  in
+  check_lapack_error ret;
+  let rank = Int32.to_int !@_rank in
+  a, piv, rank, ret
 
 
 
