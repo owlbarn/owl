@@ -1316,11 +1316,11 @@ let geevx
 
   let ldvl = match jobvl with
     | 'V' -> n
-    | _   -> 0
+    | _   -> 1
   in
   let ldvr = match jobvr with
     | 'V' -> n
-    | _   -> 0
+    | _   -> 1
   in
   let vl = Array2.create _kind _layout n ldvl in
   let vr = Array2.create _kind _layout n ldvr in
@@ -1426,6 +1426,94 @@ let geevx
   let ilo = Int32.to_int !@_ilo in
   let ihi = Int32.to_int !@_ihi in
   a, !wr, !wi, vl, vr, ilo, ihi, !scale, !abnrm, !rconde, !rcondv
+
+
+let ggev
+  : type a b. jobvl:char -> jobvr:char -> a:(a, b) mat -> b:(a, b) mat
+  -> (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat
+  = fun ~jobvl ~jobvr ~a ~b ->
+  assert (jobvl = 'N' || jobvl = 'V');
+  assert (jobvr = 'N' || jobvr = 'V');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let mb = Array2.dim1 b in
+  let nb = Array2.dim2 b in
+  assert (m = n && mb = n && mb = nb);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let ldvl = match jobvl with
+    | 'V' -> n
+    | _   -> 1
+  in
+  let ldvr = match jobvr with
+    | 'V' -> n
+    | _   -> 1
+  in
+  let vl = Array2.create _kind _layout n ldvl in
+  let vr = Array2.create _kind _layout n ldvr in
+
+  let alphar = ref (Array2.create _kind _layout 0 0) in
+  let alphai = ref (Array2.create _kind _layout 0 0) in
+  let beta = Array2.create _kind _layout 1 n in
+
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let _vl = bigarray_start Ctypes_static.Array2 vl in
+  let _vr = bigarray_start Ctypes_static.Array2 vr in
+  let _beta = bigarray_start Ctypes_static.Array2 beta in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let alphar' = Array2.create _kind _layout 1 n in
+        let _alphar = bigarray_start Ctypes_static.Array2 alphar' in
+        let alphai' = Array2.create _kind _layout 1 n in
+        let _alphai = bigarray_start Ctypes_static.Array2 alphai' in
+        let r = L.sggev layout jobvl jobvr n _a lda _b ldb _alphar _alphai _beta _vl ldvl _vr ldvr in
+        alphar := alphar';
+        alphai := alphai';
+        r
+      )
+    | Float64   -> (
+        let alphar' = Array2.create _kind _layout 1 n in
+        let _alphar = bigarray_start Ctypes_static.Array2 alphar' in
+        let alphai' = Array2.create _kind _layout 1 n in
+        let _alphai = bigarray_start Ctypes_static.Array2 alphai' in
+        let r = L.dggev layout jobvl jobvr n _a lda _b ldb _alphar _alphai _beta _vl ldvl _vr ldvr in
+        alphar := alphar';
+        alphai := alphai';
+        r
+      )
+    | Complex32 -> (
+        let alpha' = Array2.create _kind _layout 1 n in
+        let _alpha = bigarray_start Ctypes_static.Array2 alpha' in
+        let r = L.cggev layout jobvl jobvr n _a lda _b ldb _alpha _beta _vl ldvl _vr ldvr in
+        alphar := alpha';
+        alphai := alpha';
+        r
+      )
+    | Complex64 -> (
+        let alpha' = Array2.create _kind _layout 1 n in
+        let _alpha = bigarray_start Ctypes_static.Array2 alpha' in
+        let r = L.cggev layout jobvl jobvr n _a lda _b ldb _alpha _beta _vl ldvl _vr ldvr in
+        alphar := alpha';
+        alphai := alpha';
+        r
+      )
+    | _         -> failwith "lapacke:ggev"
+  in
+  check_lapack_error ret;
+  (* note alphar and alphai are the same for complex flavour *)
+  !alphar, !alphai, beta, vl, vr
+
+
+
+
+
 
 
 
