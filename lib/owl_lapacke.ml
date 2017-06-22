@@ -2450,11 +2450,42 @@ let stev
   check_lapack_error ret;
   d, z
 
+(*
+let stebz
+  : type a b.
+  = fun ~range ~order ~vl ~vu ~il ~iu ~abstol ~d ~e ->
+  assert (range = 'A' || range = 'V' && range = 'I');
+  assert (order = 'B' || order = 'E');
 
+  let n = Owl_dense_matrix_generic.numel d in
+  let n_e = Owl_dense_matrix_generic.numel e in
+  assert (n_e = n - 1);
+  let _kind = Array2.kind d in
+  let _layout = Array2.layout d in
+  let layout = lapacke_layout _layout in
 
+  let _m = Ctype.(allocate int32_t 0l) in
+  let _nsplit = Ctype.(allocate int32_t 0l) in
+  let w = Array2.create _kind _layout 1 n in
+  let iblock = Array2.create int32 _layout 1 n in
+  let isplit = Array2.create int32 _layout 1 n in
 
+  let _d = bigarray_start Ctypes_static.Array2 d in
+  let _e = bigarray_start Ctypes_static.Array2 e in
+  let _w = bigarray_start Ctypes_static.Array2 w in
+  let _vl = bigarray_start Ctypes_static.Array2 vl in
+  let _vu = bigarray_start Ctypes_static.Array2 vu in
+  let _iblock = bigarray_start Ctypes_static.Array2 iblock in
+  let _isplit = bigarray_start Ctypes_static.Array2 isplit in
 
-
+  let ret = match _kind with
+    | Float32   -> L.sstebz range order n _vl _vu il iu abstol _d _e _m _nsplit _w _iblock _isplit
+    | Float64   -> L.dstebz range order n _vl _vu il iu abstol _d _e _m _nsplit _w _iblock _isplit
+  in
+  check_lapack_error ret;
+  let m = Int32.to_int !@_m in
+  let w = Array
+*)
 
 
 
