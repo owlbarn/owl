@@ -2348,6 +2348,79 @@ let trevc
   )
 
 
+let trrfs
+  : type a b. uplo:char -> trans:char -> diag:char -> a:(a, b) mat -> b:(a, b) mat
+  -> x:(a, b) mat -> (a, b) mat * (a, b) mat
+  = fun ~uplo ~trans ~diag ~a ~b ~x ->
+  assert (uplo = 'U' || uplo = 'L');
+  assert (diag = 'N' || diag = 'U');
+  assert (trans = 'N' || trans = 'T' || trans = 'C');
+
+  let n = Array2.dim2 a in
+  assert (Array2.dim1 b = n);
+  let nrhs = Array2.dim2 b in
+  assert (Array2.dim2 x = nrhs);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+  let ldx = Pervasives.max 1 (_stride x) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let _x = bigarray_start Ctypes_static.Array2 x in
+
+  let ferr = ref (Array2.create _kind _layout 0 0) in
+  let berr = ref (Array2.create _kind _layout 0 0) in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let ferr' = Array2.create _kind _layout 1 nrhs in
+        let _ferr = bigarray_start Ctypes_static.Array2 ferr' in
+        let berr' = Array2.create _kind _layout 1 nrhs in
+        let _berr = bigarray_start Ctypes_static.Array2 berr' in
+        let r = L.strrfs layout uplo trans diag n nrhs _a lda _b ldb _x ldx _ferr _berr in
+        ferr := ferr';
+        berr := berr';
+        r
+      )
+    | Float64   -> (
+        let ferr' = Array2.create _kind _layout 1 nrhs in
+        let _ferr = bigarray_start Ctypes_static.Array2 ferr' in
+        let berr' = Array2.create _kind _layout 1 nrhs in
+        let _berr = bigarray_start Ctypes_static.Array2 berr' in
+        let r = L.dtrrfs layout uplo trans diag n nrhs _a lda _b ldb _x ldx _ferr _berr in
+        ferr := ferr';
+        berr := berr';
+        r
+      )
+    | Complex32 -> (
+        let ferr' = Array2.create float32 _layout 1 nrhs in
+        let _ferr = bigarray_start Ctypes_static.Array2 ferr' in
+        let berr' = Array2.create float32 _layout 1 nrhs in
+        let _berr = bigarray_start Ctypes_static.Array2 berr' in
+        let r = L.ctrrfs layout uplo trans diag n nrhs _a lda _b ldb _x ldx _ferr _berr in
+        ferr := Owl_dense_matrix_generic.cast_s2c ferr';
+        berr := Owl_dense_matrix_generic.cast_s2c berr';
+        r
+      )
+    | Complex64 -> (
+        let ferr' = Array2.create float64 _layout 1 nrhs in
+        let _ferr = bigarray_start Ctypes_static.Array2 ferr' in
+        let berr' = Array2.create float64 _layout 1 nrhs in
+        let _berr = bigarray_start Ctypes_static.Array2 berr' in
+        let r = L.ctrrfs layout uplo trans diag n nrhs _a lda _b ldb _x ldx _ferr _berr in
+        ferr := Owl_dense_matrix_generic.cast_d2z ferr';
+        berr := Owl_dense_matrix_generic.cast_d2z berr';
+        r
+      )
+    | _         -> failwith "lapacke:trrfs"
+  in
+  check_lapack_error ret;
+  !ferr, !berr
+
+
 
 
 
