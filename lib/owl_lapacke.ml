@@ -1942,6 +1942,35 @@ let posv
   a, b
 
 
+let potrf
+  : type a b. uplo:char -> a:(a, b) mat -> (a, b) mat
+  = fun ~uplo ~a ->
+  assert (uplo = 'U' || uplo = 'L');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let lda = Pervasives.max 1 (_stride a) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+
+  let ret = match _kind with
+    | Float32   -> L.spotrf layout uplo n _a lda
+    | Float64   -> L.dpotrf layout uplo n _a lda
+    | Complex32 -> L.cpotrf layout uplo n _a lda
+    | Complex64 -> L.zpotrf layout uplo n _a lda
+    | _         -> failwith "lapacke:potrf"
+  in
+  check_lapack_error ret;
+  a
+
+
+
+
+
 
 
 
