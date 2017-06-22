@@ -1550,6 +1550,7 @@ let gttrf
   let n = Owl_dense_matrix_generic.numel d in
   let n_dl = Owl_dense_matrix_generic.numel dl in
   let n_du = Owl_dense_matrix_generic.numel du in
+  assert (n_dl = n - 1 && n_du = n - 1);
   let _kind = Array2.kind d in
   let _layout = Array2.layout d in
 
@@ -1570,6 +1571,46 @@ let gttrf
   in
   check_lapack_error ret;
   dl, d, du, du2, ipiv
+
+
+let gttrs
+  : type a b. trans:char -> dl:(a, b) mat -> d:(a, b) mat -> du:(a, b) mat
+  -> du2:(a, b) mat -> ipiv:(int32, int32_elt) mat -> b:(a, b) mat -> (a, b) mat
+  = fun ~trans ~dl ~d ~du ~du2 ~ipiv ~b ->
+  assert (trans = 'N' || trans = 'T' || trans = 'C');
+
+  let n = Owl_dense_matrix_generic.numel d in
+  let n_dl = Owl_dense_matrix_generic.numel dl in
+  let n_du = Owl_dense_matrix_generic.numel du in
+  assert (n_dl = n - 1 && n_du = n - 1);
+  let mb = Array2.dim1 b in
+  let nrhs = Array2.dim2 b in
+  assert (mb = n);
+  let _kind = Array2.kind d in
+  let _layout = Array2.layout d in
+  let layout = lapacke_layout _layout in
+
+  let ipiv = Array2.create int32 _layout 1 n in
+  let ldb = Pervasives.max 1 (_stride b) in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let _d = bigarray_start Ctypes_static.Array2 d in
+  let _dl = bigarray_start Ctypes_static.Array2 dl in
+  let _du = bigarray_start Ctypes_static.Array2 du in
+  let _du2 = bigarray_start Ctypes_static.Array2 du2 in
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+
+  let ret = match _kind with
+    | Float32   -> L.sgttrs layout trans n nrhs _dl _d _du _du2 _ipiv _b ldb
+    | Float64   -> L.dgttrs layout trans n nrhs _dl _d _du _du2 _ipiv _b ldb
+    | Complex32 -> L.cgttrs layout trans n nrhs _dl _d _du _du2 _ipiv _b ldb
+    | Complex64 -> L.zgttrs layout trans n nrhs _dl _d _du _du2 _ipiv _b ldb
+    | _         -> failwith "lapacke:gttrs"
+  in
+  check_lapack_error ret;
+  b
+
+
+
 
 
 
