@@ -2289,6 +2289,65 @@ let trcon
   !rcond
 
 
+let trevc
+  : type a b. side:char -> howmny:char -> select:(int32, int32_elt) mat -> t:(a, b) mat
+  -> (int32, int32_elt) mat * (a, b) mat * (a, b) mat
+  = fun ~side ~howmny ~select ~t ->
+  assert (side = 'L' || side = 'R' || side = 'B');
+  assert (howmny = 'A' || howmny = 'B' || howmny = 'S');
+
+  let mt = Array2.dim1 t in
+  let n = Array2.dim2 t in
+  assert (mt = n);
+  let _kind = Array2.kind t in
+  let _layout = Array2.layout t in
+  let layout = lapacke_layout _layout in
+
+  (* NOTE: I might allocate too much memory for vl and vr, please refer to Intel
+    MKL documentation for more detailed memory allocation strategy. Fix later.
+    url: https://software.intel.com/en-us/mkl-developer-reference-c-trevc
+  *)
+  let vl = Array2.create _kind _layout n n in
+  let vr = Array2.create _kind _layout n n in
+  let mm = Array2.dim2 vl in
+  let ldt = _stride t in
+  let ldvl = _stride vl in
+  let ldvr = _stride vr in
+  let _m = Ctypes.(allocate int32_t 0l) in
+  let _t = bigarray_start Ctypes_static.Array2 t in
+  let _vl = bigarray_start Ctypes_static.Array2 vl in
+  let _vr = bigarray_start Ctypes_static.Array2 vr in
+  let _select = bigarray_start Ctypes_static.Array2 select in
+
+  let ret = match _kind with
+    | Float32   -> L.strevc layout side howmny _select n _t ldt _vl ldvl _vr ldvr mm _m
+    | Float64   -> L.dtrevc layout side howmny _select n _t ldt _vl ldvl _vr ldvr mm _m
+    | Complex32 -> L.ctrevc layout side howmny _select n _t ldt _vl ldvl _vr ldvr mm _m
+    | Complex64 -> L.ztrevc layout side howmny _select n _t ldt _vl ldvl _vr ldvr mm _m
+    | _         -> failwith "lapacke:trevc"
+  in
+  check_lapack_error ret;
+
+  let m = Int32.to_int !@_m in
+  let _empty = Array2.create _kind _layout 0 0 in
+  if howmny = 'S' then (      (* return selected eigenvectors *)
+    if side = 'L' then        (* left eigenvectors only *)
+      select, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vl, _empty
+    else if side = 'R' then   (* right eigenvectors only *)
+      select, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vr, _empty
+    else                      (* both eigenvectors *)
+      select, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vl, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vr
+  )
+  else (                      (* return all eigenvectors *)
+    if side = 'L' then        (* left eigenvectors only *)
+      select, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vl, _empty
+    else if side = 'R' then   (* right eigenvectors only *)
+      select, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vr, _empty
+    else                      (* both eigenvectors *)
+      select, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vl, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vr
+  )
+
+
 
 
 
