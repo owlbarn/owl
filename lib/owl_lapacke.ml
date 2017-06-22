@@ -1511,7 +1511,65 @@ let ggev
   !alphar, !alphai, beta, vl, vr
 
 
+let gtsv
+  : type a b. dl:(a, b) mat -> d:(a, b) mat -> du:(a, b) mat -> b:(a, b) mat -> (a, b) mat
+  = fun ~dl ~d ~du ~b ->
+  let n = Owl_dense_matrix_generic.numel d in
+  let n_dl = Owl_dense_matrix_generic.numel dl in
+  let n_du = Owl_dense_matrix_generic.numel du in
+  assert (n_dl = n || n_dl = n - 1);
+  assert (n_du = n || n_du = n - 1);
+  let mb = Array2.dim1 b in
+  let nrhs = Array2.dim2 b in
+  assert (mb = n);
+  let _kind = Array2.kind b in
+  let _layout = Array2.layout b in
+  let layout = lapacke_layout _layout in
 
+  let ldb = Pervasives.max 1 (_stride b) in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let _d = bigarray_start Ctypes_static.Array2 d in
+  let _dl = bigarray_start Ctypes_static.Array2 dl in
+  let _du = bigarray_start Ctypes_static.Array2 du in
+
+  let ret = match _kind with
+    | Float32   -> L.sgtsv layout n nrhs _dl _d _du _b ldb
+    | Float64   -> L.dgtsv layout n nrhs _dl _d _du _b ldb
+    | Complex32 -> L.cgtsv layout n nrhs _dl _d _du _b ldb
+    | Complex64 -> L.zgtsv layout n nrhs _dl _d _du _b ldb
+    | _         -> failwith "lapacke:gtsv"
+  in
+  check_lapack_error ret;
+  b
+
+
+let gttrf
+  : type a b. dl:(a, b) mat -> d:(a, b) mat -> du:(a, b) mat
+  -> (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat * (int32, int32_elt) mat
+  = fun ~dl ~d ~du ->
+  let n = Owl_dense_matrix_generic.numel d in
+  let n_dl = Owl_dense_matrix_generic.numel dl in
+  let n_du = Owl_dense_matrix_generic.numel du in
+  let _kind = Array2.kind d in
+  let _layout = Array2.layout d in
+
+  let du2 = Array2.create _kind _layout 1 (n - 2) in
+  let ipiv = Array2.create int32 _layout 1 n in
+  let _d = bigarray_start Ctypes_static.Array2 d in
+  let _dl = bigarray_start Ctypes_static.Array2 dl in
+  let _du = bigarray_start Ctypes_static.Array2 du in
+  let _du2 = bigarray_start Ctypes_static.Array2 du2 in
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+
+  let ret = match _kind with
+    | Float32   -> L.sgttrf n _dl _d _du _du2 _ipiv
+    | Float64   -> L.dgttrf n _dl _d _du _du2 _ipiv
+    | Complex32 -> L.cgttrf n _dl _d _du _du2 _ipiv
+    | Complex64 -> L.zgttrf n _dl _d _du _du2 _ipiv
+    | _         -> failwith "lapacke:gttrf"
+  in
+  check_lapack_error ret;
+  dl, d, du, du2, ipiv
 
 
 
