@@ -1703,6 +1703,36 @@ let orgql
   | false -> a
 
 
+let orgrq
+  : type a. ?k:int -> a:(float, a) mat -> tau:(float, a) mat -> (float, a) mat
+  = fun ?k ~a ~tau ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let minmn = Pervasives.min m n in
+  let k = match k with
+    | Some k -> k
+    | None   -> Owl_dense_matrix_generic.numel tau
+  in
+  assert (k <= minmn);
+  assert (k <= Owl_dense_matrix_generic.numel tau);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let lda = Pervasives.max 1 (_stride a) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _tau = bigarray_start Ctypes_static.Array2 tau in
+
+  let ret = match _kind with
+    | Float32   -> L.sorgrq layout m minmn k _a lda _tau
+    | Float64   -> L.dorgrq layout m minmn k _a lda _tau
+  in
+  check_lapack_error ret;
+  (* extract the first leading columns if necessary *)
+  match minmn < n with
+  | true  -> Owl_dense_matrix_generic.slice [[]; [0;minmn-1]] a
+  | false -> a
+
 
 
 
