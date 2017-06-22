@@ -2421,6 +2421,35 @@ let trrfs
   !ferr, !berr
 
 
+let stev
+  : type a. jobz:char -> d:(float, a) mat -> e:(float, a) mat
+  -> (float, a) mat * (float, a) mat
+  = fun ~jobz ~d ~e ->
+  assert (jobz = 'N' && jobz = 'V');
+
+  let n = Owl_dense_matrix_generic.numel d in
+  let n_e = Owl_dense_matrix_generic.numel e in
+  assert (n_e = n - 1);
+  let _kind = Array2.kind d in
+  let _layout = Array2.layout d in
+  let layout = lapacke_layout _layout in
+
+  let z = match jobz with
+    | 'V' -> Array2.create _kind _layout n n
+    | _   -> Array2.create _kind _layout 0 n
+  in
+  let ldz = Pervasives.max 1 (_stride z) in
+  let _d = bigarray_start Ctypes_static.Array2 d in
+  let _e = bigarray_start Ctypes_static.Array2 e in
+  let _z = bigarray_start Ctypes_static.Array2 z in
+
+  let ret = match _kind with
+    | Float32   -> L.sstev layout jobz n _d _e _z ldz
+    | Float64   -> L.dstev layout jobz n _d _e _z ldz
+  in
+  check_lapack_error ret;
+  d, z
+
 
 
 
