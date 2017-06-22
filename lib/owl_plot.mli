@@ -43,6 +43,10 @@ val set_foreground_color : handle -> int -> int -> int -> unit
 
 val set_background_color : handle -> int -> int -> int -> unit
 
+val set_altitude : handle -> float -> unit
+
+val set_altitude : handle -> float -> unit
+
 val set_font_size : handle -> float -> unit
 
 val set_pen_size : handle -> float -> unit

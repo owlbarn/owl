@@ -49,6 +49,10 @@ type page = {
   mutable xgrid : bool;
   mutable ygrid : bool;
   mutable zgrid : bool;
+  (* viewing perspective for 3D plots 
+   * http://plplot.sourceforge.net/docbook-manual/plplot-html-5.12.0/plw3d.html *)
+  mutable altitude : float;
+  mutable azimuth : float;
   (* control legend *)
   mutable legend : bool;
   mutable legend_position : legend_position;
@@ -92,6 +96,8 @@ let _create_page () = {
   xgrid = false;
   ygrid = false;
   zgrid = false;
+  altitude = 33.;
+  azimuth = 115.;
   legend = false;
   legend_position = NorthEast;
   legend_items = [||];
@@ -250,7 +256,8 @@ let _prepare_page p =
   let _ = if p.fontsize > 0. then plschr p.fontsize 1.0 in
   let xmin, xmax = p.xrange in
   let ymin, ymax = p.yrange in
-  let zmin, zmax = p.zrange in (
+  let zmin, zmax = p.zrange in 
+  let alt, az = p.altitude, p.azimuth in (
   if not p.is_3d then
     (* prepare a 2D plot *)
     let _ = plenv xmin xmax ymin ymax 0 (_config_2d_axis p) in
@@ -260,7 +267,7 @@ let _prepare_page p =
     let _ = pladv 0 in
     let _ = plvpor 0.0 1.0 0.0 0.9 in
     let _ = plwind (-1.0) 1.0 (-1.0) 1.5 in
-    let _ = plw3d 1.0 1.0 1.2 xmin xmax ymin ymax zmin zmax 33. 115. in
+    let _ = plw3d 1.0 1.0 1.2 xmin xmax ymin ymax zmin zmax alt az in
     let _ = plbox3 "bntu" p.xlabel 0.0 0
                    "bntu" p.ylabel 0.0 0
                    "bcdfntu" p.zlabel 0.0 4
@@ -318,6 +325,10 @@ let set_zticklabels h l = (h.pages.(h.current_page)).zticklabels <- l
 let set_foreground_color h r g b = (h.pages.(h.current_page)).fgcolor <- (r, g, b)
 
 let set_background_color h r g b = h.bgcolor <- (r, g, b)
+
+let set_altitude h a = (h.pages.(h.current_page)).altitude <- a
+
+let set_azimuth h a = (h.pages.(h.current_page)).azimuth <- a
 
 let set_font_size h x = (h.pages.(h.current_page)).fontsize <- x
 
