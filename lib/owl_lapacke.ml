@@ -2130,6 +2130,63 @@ let pttrf
   d, e
 
 
+let pttrs
+: type a b. ?uplo:char -> d:(a, b) mat -> e:(a, b) mat -> b:(a, b) mat -> (a, b) mat
+= fun ?uplo ~d ~e ~b ->
+  (* NOTE: uplo is only for complex flavour *)
+  let uplo = match uplo with
+    | Some uplo -> uplo
+    | None      -> 'U'
+  in
+  assert (uplo = 'U' || uplo = 'L');
+
+  let n = Owl_dense_matrix_generic.numel d in
+  let n_e = Owl_dense_matrix_generic.numel e in
+  let mb = Array2.dim1 b in
+  let nrhs = Array2.dim2 b in
+  assert (n_e = n - 1);
+  assert (mb = n);
+  let _kind = Array2.kind d in
+  let _layout = Array2.layout d in
+  let layout = lapacke_layout _layout in
+
+  let ldb = Pervasives.max 1 (_stride b) in
+  let _e = bigarray_start Ctypes_static.Array2 e in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+
+  (* NOTE: only use the real part of d *)
+  let ret = match _kind with
+    | Float32   -> (
+        let _d = bigarray_start Ctypes_static.Array2 d in
+        L.spttrs layout n nrhs _d _e _b ldb
+      )
+    | Float64   -> (
+        let _d = bigarray_start Ctypes_static.Array2 d in
+        L.dpttrs layout n nrhs _d _e _b ldb
+      )
+    | Complex32 -> (
+        let d' = Owl_dense_matrix_c.re d in
+        let _d = bigarray_start Ctypes_static.Array2 d' in
+        L.cpttrs layout uplo n nrhs _d _e _b ldb
+      )
+    | Complex64 -> (
+        let d' = Owl_dense_matrix_z.re d in
+        let _d = bigarray_start Ctypes_static.Array2 d' in
+        L.zpttrs layout uplo n nrhs _d _e _b ldb
+      )
+    | _         -> failwith "lapacke:pttrs"
+  in
+  check_lapack_error ret;
+  b
+
+
+
+
+
+
+
+
+
 
 
 
