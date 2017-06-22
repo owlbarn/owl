@@ -1610,8 +1610,27 @@ let gttrs
   b
 
 
+let orglq
+  : type a b. k:int -> a:(a, b) mat -> tau:(a, b) mat -> (a, b) mat
+  = fun ~k ~a ~tau ->
+  let n = Array2.dim2 a in
+  let m = Pervasives.min n (Array2.dim1 a) in
+  assert (k <= m);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+  assert (k <= Owl_dense_matrix_generic.numel tau);
 
+  let lda = Pervasives.max 1 (_stride a) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _tau = bigarray_start Ctypes_static.Array2 tau in
 
+  let ret = match _kind with
+    | Float32   -> L.sorglq layout m n k _a lda _tau
+    | Float64   -> L.dorglq layout m n k _a lda _tau
+  in
+  check_lapack_error ret;
+  a
 
 
 
