@@ -45,7 +45,7 @@ val set_background_color : handle -> int -> int -> int -> unit
 
 val set_altitude : handle -> float -> unit
 
-val set_altitude : handle -> float -> unit
+val set_azimuth : handle -> float -> unit
 
 val set_font_size : handle -> float -> unit
 
@@ -95,12 +95,12 @@ val pie : ?h:handle -> ?color:int * int * int -> ?fill:bool -> dsmat -> unit
 
 (** Plot 3D figures *)
 
-val plot3d : ?h:handle -> ?contour:bool -> dsmat -> dsmat -> dsmat -> unit
+val plot3d : ?h:handle -> ?contour:bool -> ?altitude:float -> ?azimuth:float -> dsmat -> dsmat -> dsmat -> unit
 (** [plot3d] is just an alias of [surf] function. *)
 
-val surf : ?h:handle -> ?contour:bool -> dsmat -> dsmat -> dsmat -> unit
+val surf : ?h:handle -> ?contour:bool -> ?altitude:float -> ?azimuth:float -> dsmat -> dsmat -> dsmat -> unit
 
-val mesh : ?h:handle -> ?contour:bool -> dsmat -> dsmat -> dsmat -> unit
+val mesh : ?h:handle -> ?contour:bool -> ?altitude:float -> ?azimuth:float -> dsmat -> dsmat -> dsmat -> unit
 
 val contour : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 

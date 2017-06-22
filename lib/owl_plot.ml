@@ -840,7 +840,7 @@ let pie ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(fill=false) x =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let surf ?(h=_default_handle) ?(contour=false) x y z =
+let surf ?(h=_default_handle) ?(contour=false) ?altitude ?azimuth x y z =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.(transpose y |> to_array) in
@@ -855,6 +855,8 @@ let surf ?(h=_default_handle) ?(contour=false) x y z =
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.is_3d <- true in
+  let _ = match altitude with Some a -> p.altitude <- a | None -> () in
+  let _ = match azimuth with Some a -> p.azimuth <- a | None -> () in
   let opt = match contour with
     | true  -> [ PL_FACETED; PL_MAG_COLOR; PL_BASE_CONT; PL_SURF_CONT ]
     | false -> [ PL_FACETED; PL_MAG_COLOR ]
@@ -869,7 +871,7 @@ let surf ?(h=_default_handle) ?(contour=false) x y z =
 
 let plot3d = surf
 
-let mesh ?(h=_default_handle) ?(contour=false) x y z =
+let mesh ?(h=_default_handle) ?(contour=false) ?altitude ?azimuth x y z =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.(transpose y |> to_array) in
@@ -884,6 +886,8 @@ let mesh ?(h=_default_handle) ?(contour=false) x y z =
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.is_3d <- true in
+  let _ = match altitude with Some a -> p.altitude <- a | None -> () in
+  let _ = match azimuth with Some a -> p.azimuth <- a | None -> () in
   let opt0 = [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH; PL_BASE_CONT; PL_SURF_CONT ] in
   let opt1 = [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
   let f = (fun () ->
