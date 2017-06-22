@@ -855,8 +855,8 @@ let surf ?(h=_default_handle) ?(contour=false) ?altitude ?azimuth x y z =
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.is_3d <- true in
-  let _ = match altitude with Some a -> p.altitude <- a | None -> () in
-  let _ = match azimuth with Some a -> p.azimuth <- a | None -> () in
+  let _ = match altitude with None -> () | Some a -> p.altitude <- a in
+  let _ = match azimuth with None -> () | Some a -> p.azimuth <- a in
   let opt = match contour with
     | true  -> [ PL_FACETED; PL_MAG_COLOR; PL_BASE_CONT; PL_SURF_CONT ]
     | false -> [ PL_FACETED; PL_MAG_COLOR ]
@@ -886,8 +886,8 @@ let mesh ?(h=_default_handle) ?(contour=false) ?altitude ?azimuth x y z =
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.is_3d <- true in
-  let _ = match altitude with Some a -> p.altitude <- a | None -> () in
-  let _ = match azimuth with Some a -> p.azimuth <- a | None -> () in
+  let _ = match altitude with None -> () | Some a -> p.altitude <- a in
+  let _ = match azimuth with None -> () | Some a -> p.azimuth <- a in
   let opt0 = [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH; PL_BASE_CONT; PL_SURF_CONT ] in
   let opt1 = [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
   let f = (fun () ->
