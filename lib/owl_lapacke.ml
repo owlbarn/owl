@@ -1611,15 +1611,19 @@ let gttrs
 
 
 let orglq
-  : type a b. k:int -> a:(a, b) mat -> tau:(a, b) mat -> (a, b) mat
-  = fun ~k ~a ~tau ->
+  : type a. ?k:int -> a:(float, a) mat -> tau:(float, a) mat -> (float, a) mat
+  = fun ?k ~a ~tau ->
   let n = Array2.dim2 a in
   let m = Pervasives.min n (Array2.dim1 a) in
+  let k = match k with
+    | Some k -> k
+    | None   -> Owl_dense_matrix_generic.numel tau
+  in
   assert (k <= m);
+  assert (k <= Owl_dense_matrix_generic.numel tau);
   let _kind = Array2.kind a in
   let _layout = Array2.layout a in
   let layout = lapacke_layout _layout in
-  assert (k <= Owl_dense_matrix_generic.numel tau);
 
   let lda = Pervasives.max 1 (_stride a) in
   let _a = bigarray_start Ctypes_static.Array2 a in
@@ -1631,6 +1635,58 @@ let orglq
   in
   check_lapack_error ret;
   a
+
+
+let orgqr
+  : type a. ?k:int -> a:(float, a) mat -> tau:(float, a) mat -> (float, a) mat
+  = fun ?k ~a ~tau ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let minmn = Pervasives.min m n in
+  let k = match k with
+    | Some k -> k
+    | None   -> Owl_dense_matrix_generic.numel tau
+  in
+  assert (k <= m);
+  assert (k <= Owl_dense_matrix_generic.numel tau);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let lda = Pervasives.max 1 (_stride a) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _tau = bigarray_start Ctypes_static.Array2 tau in
+
+  let ret = match _kind with
+    | Float32   -> L.sorgqr layout m n k _a lda _tau
+    | Float64   -> L.dorgqr layout m n k _a lda _tau
+  in
+  check_lapack_error ret;
+  (* extract the first leading columns *)
+  Owl_dense_matrix_generic.slice [[]; [0;minmn-1]] a
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
