@@ -2240,6 +2240,54 @@ let trtrs
   b
 
 
+let trcon
+  : type a b. norm:char -> uplo:char -> diag:char -> a:(a, b) mat -> float
+  = fun ~norm ~uplo ~diag ~a ->
+  assert (uplo = 'U' || uplo = 'L');
+  assert (diag = 'N' || diag = 'U');
+  assert (norm = '1' || norm = 'O' || norm = 'I');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let lda = Pervasives.max 1 (_stride a) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let rcond = ref 0. in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let _rcond = Ctypes.(allocate float 0.) in
+        let r = L.strcon layout norm uplo diag n _a lda _rcond in
+        rcond := !@_rcond;
+        r
+      )
+    | Float64   -> (
+        let _rcond = Ctypes.(allocate double 0.) in
+        let r = L.dtrcon layout norm uplo diag n _a lda _rcond in
+        rcond := !@_rcond;
+        r
+      )
+    | Complex32 -> (
+        let _rcond = Ctypes.(allocate float 0.) in
+        let r = L.ctrcon layout norm uplo diag n _a lda _rcond in
+        rcond := !@_rcond;
+        r
+      )
+    | Complex64 -> (
+        let _rcond = Ctypes.(allocate double 0.) in
+        let r = L.ztrcon layout norm uplo diag n _a lda _rcond in
+        rcond := !@_rcond;
+        r
+      )
+    | _         -> failwith "lapacke:trcon"
+  in
+  check_lapack_error ret;
+  !rcond
+
 
 
 
