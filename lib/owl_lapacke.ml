@@ -2095,6 +2095,39 @@ let ptsv
   b
 
 
+let pttrf
+  : type a b. d:(a, b) mat -> e:(a, b) mat -> (a, b) mat * (a, b) mat
+  = fun ~d ~e ->
+  let n = Owl_dense_matrix_generic.numel d in
+  let n_e = Owl_dense_matrix_generic.numel e in
+  assert (n_e = n - 1);
+  let _kind = Array2.kind d in
+  let _e = bigarray_start Ctypes_static.Array2 e in
+
+  (* NOTE: only use the real part of d *)
+  let ret = match _kind with
+    | Float32   -> (
+        let _d = bigarray_start Ctypes_static.Array2 d in
+        L.spttrf n _d _e
+      )
+    | Float64   -> (
+        let _d = bigarray_start Ctypes_static.Array2 d in
+        L.dpttrf n _d _e
+      )
+    | Complex32 -> (
+        let d' = Owl_dense_matrix_c.re d in
+        let _d = bigarray_start Ctypes_static.Array2 d' in
+        L.cpttrf n _d _e
+      )
+    | Complex64 -> (
+        let d' = Owl_dense_matrix_z.re d in
+        let _d = bigarray_start Ctypes_static.Array2 d' in
+        L.zpttrf n _d _e
+      )
+    | _         -> failwith "lapacke:pttrf"
+  in
+  check_lapack_error ret;
+  d, e
 
 
 
