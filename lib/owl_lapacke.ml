@@ -2180,8 +2180,31 @@ let pttrs
   b
 
 
+let trtri
+  : type a b. uplo:char -> diag:char -> a:(a, b) mat -> (a, b) mat
+  = fun ~uplo ~diag ~a ->
+  assert (uplo = 'U' || uplo = 'L');
+  assert (diag = 'N' || diag = 'U');
 
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
 
+  let lda = Pervasives.max 1 (_stride a) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+
+  let ret = match _kind with
+    | Float32   -> L.strtri layout uplo diag n _a lda
+    | Float64   -> L.dtrtri layout uplo diag n _a lda
+    | Complex32 -> L.ctrtri layout uplo diag n _a lda
+    | Complex64 -> L.ztrtri layout uplo diag n _a lda
+    | _         -> failwith "lapacke:trtri"
+  in
+  check_lapack_error ret;
+  a
 
 
 
