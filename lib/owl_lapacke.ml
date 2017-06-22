@@ -1993,6 +1993,33 @@ let potri
   a
 
 
+let potrs
+  : type a b. uplo:char -> a:(a, b) mat -> b:(a, b) mat -> (a, b) mat
+  = fun ~uplo ~a ~b ->
+  assert (uplo = 'U' || uplo = 'L');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let nrhs = _stride b in
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+
+  let ret = match _kind with
+    | Float32   -> L.spotrs layout uplo n nrhs _a lda _b ldb
+    | Float64   -> L.dpotrs layout uplo n nrhs _a lda _b ldb
+    | Complex32 -> L.cpotrs layout uplo n nrhs _a lda _b ldb
+    | Complex64 -> L.zpotrs layout uplo n nrhs _a lda _b ldb
+    | _         -> failwith "lapacke:potrs"
+  in
+  check_lapack_error ret;
+  b
 
 
 
