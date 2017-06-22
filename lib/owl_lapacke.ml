@@ -2052,6 +2052,47 @@ let pstrf
   a, piv, rank, ret
 
 
+let ptsv
+  : type a b. d:(a, b) mat -> e:(a, b) mat -> b:(a, b) mat -> (a, b) mat
+  = fun ~d ~e ~b ->
+  let n = Owl_dense_matrix_generic.numel d in
+  let n_e = Owl_dense_matrix_generic.numel e in
+  let mb = Array2.dim1 b in
+  let nrhs = Array2.dim2 b in
+  assert (n_e = n - 1);
+  assert (mb = n);
+  let _kind = Array2.kind d in
+  let _layout = Array2.layout d in
+  let layout = lapacke_layout _layout in
+
+  let ldb = Pervasives.max 1 (_stride b) in
+  let _e = bigarray_start Ctypes_static.Array2 e in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+
+  (* NOTE: only use the real part of d *)
+  let ret = match _kind with
+    | Float32   -> (
+        let _d = bigarray_start Ctypes_static.Array2 d in
+        L.sptsv layout n nrhs _d _e _b ldb
+      )
+    | Float64   -> (
+        let _d = bigarray_start Ctypes_static.Array2 d in
+        L.dptsv layout n nrhs _d _e _b ldb
+      )
+    | Complex32 -> (
+        let d' = Owl_dense_matrix_c.re d in
+        let _d = bigarray_start Ctypes_static.Array2 d' in
+        L.cptsv layout n nrhs _d _e _b ldb
+      )
+    | Complex64 -> (
+        let d' = Owl_dense_matrix_z.re d in
+        let _d = bigarray_start Ctypes_static.Array2 d' in
+        L.zptsv layout n nrhs _d _e _b ldb
+      )
+    | _         -> failwith "lapacke:ptsv"
+  in
+  check_lapack_error ret;
+  b
 
 
 
