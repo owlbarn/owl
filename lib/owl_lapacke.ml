@@ -1920,7 +1920,6 @@ let posv
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
   assert (m = n);
-  let mb = Array2.dim1 b in
   let nrhs = _stride b in
   let _kind = Array2.kind a in
   let _layout = Array2.layout a in
@@ -1966,6 +1965,38 @@ let potrf
   in
   check_lapack_error ret;
   a
+
+
+let potri
+  : type a b. uplo:char -> a:(a, b) mat -> (a, b) mat
+  = fun ~uplo ~a ->
+  assert (uplo = 'U' || uplo = 'L');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let lda = Pervasives.max 1 (_stride a) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+
+  let ret = match _kind with
+    | Float32   -> L.spotri layout uplo n _a lda
+    | Float64   -> L.dpotri layout uplo n _a lda
+    | Complex32 -> L.cpotri layout uplo n _a lda
+    | Complex64 -> L.zpotri layout uplo n _a lda
+    | _         -> failwith "lapacke:potri"
+  in
+  check_lapack_error ret;
+  a
+
+
+
+
+
+
 
 
 
