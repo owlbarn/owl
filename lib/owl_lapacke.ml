@@ -1752,7 +1752,7 @@ let ormlq
   let k = Owl_dense_matrix_generic.numel tau in
   if side = 'L' then
     assert (ma = k && na = m && k <= m)
-  else
+  else (* if side = 'R' *)
     assert (ma = k && na = n && k <= n);
   let _kind = Array2.kind a in
   let _layout = Array2.layout a in
@@ -1786,7 +1786,7 @@ let ormqr
   let k = Owl_dense_matrix_generic.numel tau in
   if side = 'L' then
     assert (ma = m && na = k && k <= m)
-  else
+  else (* if side = 'R' *)
     assert (ma = n && na = k && k <= n);
   let _kind = Array2.kind a in
   let _layout = Array2.layout a in
@@ -1820,7 +1820,7 @@ let ormql
   let k = Owl_dense_matrix_generic.numel tau in
   if side = 'L' then
     assert (ma = m && na = k && k <= m)
-  else
+  else (* if side = 'R' *)
     assert (ma = n && na = k && k <= n);
   let _kind = Array2.kind a in
   let _layout = Array2.layout a in
@@ -1854,7 +1854,7 @@ let ormrq
   let k = Owl_dense_matrix_generic.numel tau in
   if side = 'L' then
     assert (ma = k && na = m && k <= m)
-  else
+  else (* if side = 'R' *)
     assert (ma = k && na = n && k <= n);
   let _kind = Array2.kind a in
   let _layout = Array2.layout a in
@@ -1874,9 +1874,42 @@ let ormrq
   c
 
 
+let gemqrt
+  : type a b. side:char -> trans:char -> v:(a, b) mat -> t:(a, b) mat -> c:(a, b) mat -> (a, b) mat
+  = fun ~side ~trans ~v ~t ~c ->
+  assert (side = 'L' || side = 'R');
+  assert (trans = 'N' || trans = 'T' || trans = 'C');
 
+  let m = Array2.dim1 c in
+  let n = Array2.dim2 c in
+  let nb = Array2.dim1 t in
+  let k = Array2.dim2 t in
+  let mv = Array2.dim1 v in
+  let ldv = Pervasives.max 1 (_stride v) in
+  assert (k >= nb);
+  if side = 'L' then
+    assert (mv = m && ldv = k && k <= m)
+  else (* if side = 'R' *)
+    assert (mv = n && ldv = k && k <= n);
+  let _kind = Array2.kind c in
+  let _layout = Array2.layout c in
+  let layout = lapacke_layout _layout in
 
+  let ldt = Pervasives.max 1 (_stride t) in
+  let ldc = Pervasives.max 1 (_stride c) in
+  let _v = bigarray_start Ctypes_static.Array2 v in
+  let _t = bigarray_start Ctypes_static.Array2 t in
+  let _c = bigarray_start Ctypes_static.Array2 c in
 
+  let ret = match _kind with
+    | Float32   -> L.sgemqrt layout side trans m n k nb _v ldv _t ldt _c ldc
+    | Float64   -> L.dgemqrt layout side trans m n k nb _v ldv _t ldt _c ldc
+    | Complex32 -> L.cgemqrt layout side trans m n k nb _v ldv _t ldt _c ldc
+    | Complex64 -> L.zgemqrt layout side trans m n k nb _v ldv _t ldt _c ldc
+    | _         -> failwith "lapacke:gemqrt"
+  in
+  check_lapack_error ret;
+  c
 
 
 
