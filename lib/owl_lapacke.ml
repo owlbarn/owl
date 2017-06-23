@@ -3095,6 +3095,35 @@ let gehrd
   a, tau
 
 
+let orghr
+  : type a. ilo:int -> ihi:int -> a:(float, a) mat -> tau:(float, a) mat -> (float, a) mat
+  = fun ~ilo ~ihi ~a ~tau ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let n_tau = Owl_dense_matrix_generic.numel tau in
+  assert (n_tau = n - 1);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let _tau = bigarray_start Ctypes_static.Array2 tau in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Float32   -> L.sorghr layout n ilo ihi _a lda _tau
+    | Float64   -> L.dorghr layout n ilo ihi _a lda _tau
+  in
+  check_lapack_error ret;
+  a
+
+
+
+
+
+
+
 
 
 
