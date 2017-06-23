@@ -2810,6 +2810,27 @@ let hetrf
   a, ipiv
 
 
+let hetri
+  : type a. uplo:char -> a:(Complex.t, a) mat -> ipiv:(int32, int32_elt) mat
+  -> (Complex.t, a) mat
+  = fun ~uplo ~a ~ipiv ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Complex32 -> L.chetri layout uplo n _a lda _ipiv
+    | Complex64 -> L.zhetri layout uplo n _a lda _ipiv
+  in
+  check_lapack_error ret;
+  a
 
 
 
