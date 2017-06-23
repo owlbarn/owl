@@ -3503,12 +3503,64 @@ let tgsen
   a, b, !alphar, !alphai, beta, q, z
 
 
+let trsyl
+  : type a b. trana:char -> tranb:char -> isgn:int -> a:(a, b) mat
+  -> b:(a, b) mat -> c:(a, b) mat -> (a, b) mat * float
+  = fun ~trana ~tranb ~isgn ~a ~b ~c ->
+  assert (trana = 'N' || trana = 'T' || trana = 'C');
+  assert (tranb = 'N' || tranb = 'T' || tranb = 'C');
+  assert (isgn = -1 || isgn = +1);
 
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let mb = Array2.dim1 b in
+  let nb = Array2.dim2 b in
+  let mc = Array2.dim1 c in
+  let nc = Array2.dim2 c in
+  assert (m = n);
+  assert (mb = nb);
+  assert (mc = m && nc = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
 
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+  let ldc = Pervasives.max 1 (_stride c) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let _c = bigarray_start Ctypes_static.Array2 c in
+  let scale = ref 0. in
 
-
-
-
+  let ret = match _kind with
+    | Float32   -> (
+        let _scale = Ctypes.(allocate float 0.) in
+        let r = L.strsyl layout trana tranb isgn m n _a lda _b ldb _c ldc _scale in
+        scale := !@_scale;
+        r
+      )
+    | Float64   -> (
+        let _scale = Ctypes.(allocate double 0.) in
+        let r = L.dtrsyl layout trana tranb isgn m n _a lda _b ldb _c ldc _scale in
+        scale := !@_scale;
+        r
+      )
+    | Complex32 -> (
+        let _scale = Ctypes.(allocate float 0.) in
+        let r = L.ctrsyl layout trana tranb isgn m n _a lda _b ldb _c ldc _scale in
+        scale := !@_scale;
+        r
+      )
+    | Complex64 -> (
+        let _scale = Ctypes.(allocate double 0.) in
+        let r = L.ztrsyl layout trana tranb isgn m n _a lda _b ldb _c ldc _scale in
+        scale := !@_scale;
+        r
+      )
+    | _         -> failwith "lapacke:trsyl"
+  in
+  check_lapack_error ret;
+  c, !scale
 
 
 
