@@ -2814,6 +2814,8 @@ let hetri
   : type a. uplo:char -> a:(Complex.t, a) mat -> ipiv:(int32, int32_elt) mat
   -> (Complex.t, a) mat
   = fun ~uplo ~a ~ipiv ->
+  assert (uplo = 'U' || uplo = 'L');
+
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
   assert (m = n);
@@ -2837,6 +2839,8 @@ let hetrs
   : type a. uplo:char -> a:(Complex.t, a) mat -> ipiv:(int32, int32_elt) mat
   -> b:(Complex.t, a) mat -> (Complex.t, a) mat
   = fun ~uplo ~a ~ipiv ~b ->
+  assert (uplo = 'U' || uplo = 'L');
+
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
   assert (m = n);
@@ -2860,6 +2864,33 @@ let hetrs
   b
 
 
+let syev
+  : type a. jobz:char -> uplo:char -> a:(float, a) mat -> (float, a) mat * (float, a) mat
+  = fun ~jobz ~uplo ~a ->
+  assert (jobz = 'N' || jobz = 'V');
+  assert (uplo = 'U' || uplo = 'L');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let w = Array2.create _kind _layout 1 n in
+  let _w = bigarray_start Ctypes_static.Array2 w in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Float32   -> L.ssyev layout jobz uplo n _a lda _w
+    | Float64   -> L.dsyev layout jobz uplo n _a lda _w
+  in
+  check_lapack_error ret;
+
+  match jobz with
+  | 'V' -> w, a
+  | _   -> w, Array2.create _kind _layout 0 0
 
 
 
