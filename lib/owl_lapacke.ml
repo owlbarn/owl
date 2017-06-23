@@ -2511,7 +2511,7 @@ let stegr
     | _   -> Array2.create _kind _layout n ldz
   in
   let isuppz = Array2.create int32 _layout 1 (Array2.dim1 z) in
-  
+
   let w = ref (Array2.create _kind _layout 0 0) in
   let _m = Ctypes.(allocate int32_t 0l) in
   let _d = bigarray_start Ctypes_static.Array2 d in
@@ -2564,10 +2564,45 @@ let stegr
   w, z
 
 
+let stein
+  : type a b. kind:(a, b) kind -> d:(float, b) mat -> e:(float, b) mat
+  -> w:(float, b) mat -> iblock:(int32, int32_elt) mat -> isplit:(int32, int32_elt) mat
+  -> (a, b) mat * (int32, int32_elt) mat
+  = fun ~kind ~d ~e ~w ~iblock ~isplit ->
+  let n = Owl_dense_matrix_generic.numel d in
+  let n_e = Owl_dense_matrix_generic.numel e in
+  assert (n_e = n - 1);
+  let m = Owl_dense_matrix_generic.numel w in
+  assert (n <= m);
+  let _kind = kind in
+  let _layout = Array2.layout d in
+  let layout = lapacke_layout _layout in
 
+  let e = Owl_dense_matrix_generic.resize 1 n e in
+  let ldz = Pervasives.max 1 m in
+  let z = Array2.create _kind _layout n m in
+  let ifailv = Array2.create int32 _layout 1 m in
+  (* TODO: cases where inputs are invalid, refer to julia implementation *)
+  let iblock = Array2.create int32 _layout 1 n in
+  let isplit = Array2.create int32 _layout 1 n in
 
+  let _w = bigarray_start Ctypes_static.Array2 w in
+  let _d = bigarray_start Ctypes_static.Array2 d in
+  let _e = bigarray_start Ctypes_static.Array2 e in
+  let _z = bigarray_start Ctypes_static.Array2 z in
+  let _iblock = bigarray_start Ctypes_static.Array2 iblock in
+  let _isplit = bigarray_start Ctypes_static.Array2 isplit in
+  let _ifailv = bigarray_start Ctypes_static.Array2 ifailv in
 
-
+  let ret = match _kind with
+    | Float32   -> L.sstein layout n _d _e m _w _iblock _isplit _z ldz _ifailv
+    | Float64   -> L.dstein layout n _d _e m _w _iblock _isplit _z ldz _ifailv
+    | Complex32 -> L.cstein layout n _d _e m _w _iblock _isplit _z ldz _ifailv
+    | Complex64 -> L.zstein layout n _d _e m _w _iblock _isplit _z ldz _ifailv
+    | _         -> failwith "lapacke:stein"
+  in
+  check_lapack_error ret;
+  z, ifailv
 
 
 
