@@ -3069,6 +3069,30 @@ let gecon
   !rcond
 
 
+let gehrd
+  : type a b. ilo:int -> ihi:int -> a:(a, b) mat -> (a, b) mat * (a, b) mat
+  = fun ~ilo ~ihi ~a ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let tau = Array2.create _kind _layout 1 (Pervasives.max 1 (n - 1)) in
+  let _tau = bigarray_start Ctypes_static.Array2 tau in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Float32   -> L.sgehrd layout n ilo ihi _a lda _tau
+    | Float64   -> L.dgehrd layout n ilo ihi _a lda _tau
+    | Complex32 -> L.cgehrd layout n ilo ihi _a lda _tau
+    | Complex64 -> L.zgehrd layout n ilo ihi _a lda _tau
+    | _         -> failwith "lapacke:gehrd"
+  in
+  check_lapack_error ret;
+  a, tau
 
 
 
