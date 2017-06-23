@@ -3159,7 +3159,6 @@ let gees
         r
       )
     | Float64   -> (
-        Array2.fill vs 1.;
         let wr' = Array2.create _kind _layout 1 n in
         let _wr = bigarray_start Ctypes_static.Array2 wr' in
         let wi' = Array2.create _kind _layout 1 n in
@@ -3192,16 +3191,90 @@ let gees
   a, vs, !wr, !wi
 
 
+let gges
+  : type a b. jobvsl:char -> jobvsr:char -> a:(a, b) mat -> b:(a, b) mat
+  -> (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat
+  = fun ~jobvsl ~jobvsr ~a ~b ->
+  let sort = 'N' in
+  assert (jobvsl = 'N' || jobvsl = 'V');
+  assert (jobvsr = 'N' || jobvsr = 'V');
+  assert (sort = 'N' || sort = 'S');
 
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let mb = Array2.dim1 b in
+  let nb = Array2.dim2 b in
+  assert (m = n && n = mb && mb = nb);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
 
+  let vsl = match jobvsl with
+    | 'V' -> Array2.create _kind _layout n n
+    | _   -> Array2.create _kind _layout 0 n
+  in
+  let vsr = match jobvsr with
+    | 'V' -> Array2.create _kind _layout n n
+    | _   -> Array2.create _kind _layout 0 n
+  in
+  let ldvsl = Pervasives.max 1 (_stride vsl) in
+  let ldvsr = Pervasives.max 1 (_stride vsr) in
+  let alphar = ref (Array2.create _kind _layout 0 0) in
+  let alphai = ref (Array2.create _kind _layout 0 0) in
+  let beta = Array2.create _kind _layout 1 n in
 
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let _vsl = bigarray_start Ctypes_static.Array2 vsl in
+  let _vsr = bigarray_start Ctypes_static.Array2 vsr in
+  let _beta = bigarray_start Ctypes_static.Array2 beta in
+  let _selctg = Ctypes.null in
+  let _sdim = Ctypes.(allocate int32_t 0l) in
 
-
-
-
-
-
-
+  let ret = match _kind with
+    | Float32   -> (
+        let alphar' = Array2.create _kind _layout 1 n in
+        let _alphar = bigarray_start Ctypes_static.Array2 alphar' in
+        let alphai' = Array2.create _kind _layout 1 n in
+        let _alphai = bigarray_start Ctypes_static.Array2 alphai' in
+        let r = L.sgges layout jobvsl jobvsr sort _selctg n _a lda _b ldb _sdim _alphar _alphai _beta _vsl ldvsl _vsr ldvsr in
+        alphar := alphar';
+        alphai := alphai';
+        r
+      )
+    | Float64   -> (
+        let alphar' = Array2.create _kind _layout 1 n in
+        let _alphar = bigarray_start Ctypes_static.Array2 alphar' in
+        let alphai' = Array2.create _kind _layout 1 n in
+        let _alphai = bigarray_start Ctypes_static.Array2 alphai' in
+        let r = L.dgges layout jobvsl jobvsr sort _selctg n _a lda _b ldb _sdim _alphar _alphai _beta _vsl ldvsl _vsr ldvsr in
+        alphar := alphar';
+        alphai := alphai';
+        r
+      )
+    | Complex32 -> (
+        let alpha' = Array2.create _kind _layout 1 n in
+        let _alpha = bigarray_start Ctypes_static.Array2 alpha' in
+        let r = L.cgges layout jobvsl jobvsr sort _selctg n _a lda _b ldb _sdim _alpha _beta _vsl ldvsl _vsr ldvsr in
+        alphar := alpha';
+        alphai := alpha';
+        r
+      )
+    | Complex64 -> (
+        let alpha' = Array2.create _kind _layout 1 n in
+        let _alpha = bigarray_start Ctypes_static.Array2 alpha' in
+        let r = L.zgges layout jobvsl jobvsr sort _selctg n _a lda _b ldb _sdim _alpha _beta _vsl ldvsl _vsr ldvsr in
+        alphar := alpha';
+        alphai := alpha';
+        r
+      )
+    | _         -> failwith "lapacke:gges"
+  in
+  check_lapack_error ret;
+  (* NOTE: alphar and alphai are the same for complex flavour *)
+  a, b, !alphar, !alphai, beta, vsl, vsr
 
 
 
