@@ -2755,6 +2755,38 @@ let sytrs
   b
 
 
+let hesv
+  : type a. uplo:char -> a:(Complex.t, a) mat -> b:(Complex.t, a) mat
+  -> (Complex.t, a) mat * (Complex.t, a) mat * (int32, int32_elt) mat
+  = fun ~uplo ~a ~b ->
+  assert (uplo = 'U' || uplo = 'L');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  assert (n = Array2.dim1 b);
+  let nrhs = Array2.dim2 b in
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let ipiv = Array2.create int32 _layout 1 n in
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+
+  let ret = match _kind with
+    | Complex32 -> L.chesv layout uplo n nrhs _a lda _ipiv _b ldb
+    | Complex64 -> L.zhesv layout uplo n nrhs _a lda _ipiv _b ldb
+  in
+  check_lapack_error ret;
+  b, a, ipiv
+
+
+
+
 
 
 
