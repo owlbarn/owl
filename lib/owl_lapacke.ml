@@ -2725,6 +2725,37 @@ let sytri
   a
 
 
+let sytrs
+  : type a b. uplo:char -> a:(a, b) mat -> ipiv:(int32, int32_elt) mat -> b:(a, b) mat
+  -> (a, b) mat
+  = fun ~uplo ~a ~ipiv ~b ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  assert (n = Array2.dim1 b);
+  let nrhs = Array2.dim2 b in
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+
+  let ret = match _kind with
+    | Float32   -> L.ssytrs layout uplo n nrhs _a lda _ipiv _b ldb
+    | Float64   -> L.dsytrs layout uplo n nrhs _a lda _ipiv _b ldb
+    | Complex32 -> L.csytrs layout uplo n nrhs _a lda _ipiv _b ldb
+    | Complex64 -> L.zsytrs layout uplo n nrhs _a lda _ipiv _b ldb
+    | _         -> failwith "lapacke:sytrs"
+  in
+  check_lapack_error ret;
+  b
+
+
+
 
 
 
