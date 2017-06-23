@@ -3014,6 +3014,62 @@ let bdsqr
   d, vt, u, c
 
 
+(* TODO
+let bdsdc
+  : type a b.
+  = fun ~layout ~uplo ~compq ~n ~d ~e ~u ~ldu ~vt ~ldvt ~q ~iq ->
+
+*)
+
+
+let gecon
+  : type a b. norm:char -> a:(a, b) mat -> anorm:float -> float
+  = fun ~norm ~a ~anorm ->
+  assert (norm = '1' || norm = 'O' || norm = 'I');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let lda = Pervasives.max 1 (_stride a) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let rcond = ref 0. in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let _rcond = Ctypes.(allocate float 0.) in
+        let r = L.sgecon layout norm n _a lda anorm _rcond in
+        rcond := !@_rcond;
+        r
+      )
+    | Float64   -> (
+        let _rcond = Ctypes.(allocate double 0.) in
+        let r = L.dgecon layout norm n _a lda anorm _rcond in
+        rcond := !@_rcond;
+        r
+      )
+    | Complex32 -> (
+        let _rcond = Ctypes.(allocate float 0.) in
+        let r = L.cgecon layout norm n _a lda anorm _rcond in
+        rcond := !@_rcond;
+        r
+      )
+    | Complex64 -> (
+        let _rcond = Ctypes.(allocate double 0.) in
+        let r = L.zgecon layout norm n _a lda anorm _rcond in
+        rcond := !@_rcond;
+        r
+      )
+    | _         -> failwith "lapacke:gecon"
+  in
+  check_lapack_error ret;
+  !rcond
+
+
+
 
 
 
