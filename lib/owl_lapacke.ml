@@ -2941,9 +2941,36 @@ let syevr
   | _   -> w, Array2.create _kind _layout 0 0
 
 
+let sygvd
+  : type a. ityp:int -> jobz:char -> uplo:char -> a:(float, a) mat -> b:(float, a) mat
+  -> (float, a) mat * (float, a) mat * (float, a) mat
+  = fun ~ityp ~jobz ~uplo ~a ~b ->
+  assert (ityp > 0 && ityp < 4);
+  assert (jobz = 'N' || jobz = 'V');
+  assert (uplo = 'U' || uplo = 'L' );
 
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let mb = Array2.dim1 b in
+  let nb = Array2.dim2 b in
+  assert (m = n && n = mb && n = nb);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
 
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+  let w = Array2.create _kind _layout 1 n in
+  let _w = bigarray_start Ctypes_static.Array2 w in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
 
+  let ret = match _kind with
+    | Float32   -> L.ssygvd layout ityp jobz uplo n _a lda _b ldb _w
+    | Float64   -> L.dsygvd layout ityp jobz uplo n _a lda _b ldb _w
+  in
+  check_lapack_error ret;
+  w, a, b
 
 
 
