@@ -2450,9 +2450,11 @@ let stev
   check_lapack_error ret;
   d, z
 
-(*
+
 let stebz
-  : type a b.
+  : type a. range:char -> order:char -> vl:float -> vu:float -> il:int -> iu:int
+  -> abstol:float -> d:(float, a) mat -> e:(float, a) mat
+  -> (float, a) mat * (int32, int32_elt) mat * (int32, int32_elt) mat
   = fun ~range ~order ~vl ~vu ~il ~iu ~abstol ~d ~e ->
   assert (range = 'A' || range = 'V' && range = 'I');
   assert (order = 'B' || order = 'E');
@@ -2462,10 +2464,9 @@ let stebz
   assert (n_e = n - 1);
   let _kind = Array2.kind d in
   let _layout = Array2.layout d in
-  let layout = lapacke_layout _layout in
 
-  let _m = Ctype.(allocate int32_t 0l) in
-  let _nsplit = Ctype.(allocate int32_t 0l) in
+  let _m = Ctypes.(allocate int32_t 0l) in
+  let _nsplit = Ctypes.(allocate int32_t 0l) in
   let w = Array2.create _kind _layout 1 n in
   let iblock = Array2.create int32 _layout 1 n in
   let isplit = Array2.create int32 _layout 1 n in
@@ -2473,19 +2474,99 @@ let stebz
   let _d = bigarray_start Ctypes_static.Array2 d in
   let _e = bigarray_start Ctypes_static.Array2 e in
   let _w = bigarray_start Ctypes_static.Array2 w in
-  let _vl = bigarray_start Ctypes_static.Array2 vl in
-  let _vu = bigarray_start Ctypes_static.Array2 vu in
   let _iblock = bigarray_start Ctypes_static.Array2 iblock in
   let _isplit = bigarray_start Ctypes_static.Array2 isplit in
 
   let ret = match _kind with
-    | Float32   -> L.sstebz range order n _vl _vu il iu abstol _d _e _m _nsplit _w _iblock _isplit
-    | Float64   -> L.dstebz range order n _vl _vu il iu abstol _d _e _m _nsplit _w _iblock _isplit
+    | Float32   -> L.sstebz range order n vl vu il iu abstol _d _e _m _nsplit _w _iblock _isplit
+    | Float64   -> L.dstebz range order n vl vu il iu abstol _d _e _m _nsplit _w _iblock _isplit
   in
   check_lapack_error ret;
   let m = Int32.to_int !@_m in
-  let w = Array
-*)
+  let w = Owl_dense_matrix_generic.resize 1 m w in
+  let iblock = Owl_dense_matrix_generic.resize 1 m iblock in
+  let isplit = Owl_dense_matrix_generic.resize 1 m isplit in
+  w, iblock, isplit
+
+
+let stegr
+  : type a b. kind:(a, b) kind -> jobz:char -> range:char -> d:(float, b) mat
+  -> e:(float, b) mat -> vl:float -> vu:float -> il:int -> iu:int -> (a, b) mat *(a, b) mat
+  = fun ~kind ~jobz ~range ~d ~e ~vl ~vu ~il ~iu ->
+  assert (jobz = 'N' && jobz = 'V');
+  assert (range = 'A' || range = 'V' && range = 'I');
+
+  let n = Owl_dense_matrix_generic.numel d in
+  let n_e = Owl_dense_matrix_generic.numel e in
+  assert (n_e = n - 1);
+  let _kind = kind in
+  let _layout = Array2.layout d in
+  let layout = lapacke_layout _layout in
+
+  let abstol = 1. in  (* note that abstol is unused. *)
+  let e = Owl_dense_matrix_generic.resize 1 n e in
+  let ldz = match jobz with 'N' -> 1 | _ -> n in
+  let z = match range with
+    | 'I' -> Array2.create _kind _layout (iu - il + 1) ldz
+    | _   -> Array2.create _kind _layout n ldz
+  in
+  let isuppz = Array2.create int32 _layout 1 (Array2.dim1 z) in
+  
+  let w = ref (Array2.create _kind _layout 0 0) in
+  let _m = Ctypes.(allocate int32_t 0l) in
+  let _d = bigarray_start Ctypes_static.Array2 d in
+  let _e = bigarray_start Ctypes_static.Array2 e in
+  let _z = bigarray_start Ctypes_static.Array2 z in
+  let _isuppz = bigarray_start Ctypes_static.Array2 isuppz in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let w' = Array2.create float32 _layout 1 n in
+        let _w = bigarray_start Ctypes_static.Array2 w' in
+        let r = L.sstegr layout jobz range n _d _e vl vu il iu abstol _m _w _z ldz _isuppz in
+        w := w';
+        r
+      )
+    | Float64   -> (
+        let w' = Array2.create float64 _layout 1 n in
+        let _w = bigarray_start Ctypes_static.Array2 w' in
+        let r = L.dstegr layout jobz range n _d _e vl vu il iu abstol _m _w _z ldz _isuppz in
+        w := w';
+        r
+      )
+    | Complex32 -> (
+        let w' = Array2.create float32 _layout 1 n in
+        let _w = bigarray_start Ctypes_static.Array2 w' in
+        let r = L.cstegr layout jobz range n _d _e vl vu il iu abstol _m _w _z ldz _isuppz in
+        w := Owl_dense_matrix_generic.cast_s2c w';
+        r
+      )
+    | Complex64 -> (
+        let w' = Array2.create float64 _layout 1 n in
+        let _w = bigarray_start Ctypes_static.Array2 w' in
+        let r = L.zstegr layout jobz range n _d _e vl vu il iu abstol _m _w _z ldz _isuppz in
+        w := Owl_dense_matrix_generic.cast_d2z w';
+        r
+      )
+    | _         -> failwith "lapacke:stegr"
+  in
+  check_lapack_error ret;
+
+  let m = Int32.to_int !@_m in
+  let w = match m < Array2.dim2 !w with
+    | true  -> Owl_dense_matrix_generic.resize 1 m !w
+    | false -> !w
+  in
+  let z = match m < Array2.dim2 z with
+    | true  -> Owl_dense_matrix_generic.slice [[]; [0;m-1]] z
+    | false -> z
+  in
+  w, z
+
+
+
+
+
 
 
 
