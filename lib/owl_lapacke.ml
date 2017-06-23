@@ -3310,6 +3310,91 @@ let trexc
   t, q
 
 
+let trsen
+  : type a b. job:char -> compq:char -> select:(int32, int32_elt) mat -> t:(a, b) mat
+  -> q:(a, b) mat -> (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat
+  = fun ~job ~compq ~select ~t ~q ->
+  assert (job = 'N' || job = 'E' || job = 'V' || job = 'B');
+  assert (compq = 'N' || compq = 'V');
+
+  let mt = Array2.dim1 t in
+  let n = Array2.dim2 t in
+  assert (mt = n);
+  let _kind = Array2.kind t in
+  let _layout = Array2.layout t in
+  let layout = lapacke_layout _layout in
+
+  let ldt = Pervasives.max 1 (_stride t) in
+  let ldq = Pervasives.max 1 (_stride q) in
+  let _t = bigarray_start Ctypes_static.Array2 t in
+  let _q = bigarray_start Ctypes_static.Array2 q in
+  let wr = ref (Array2.create _kind _layout 0 0) in
+  let wi = ref (Array2.create _kind _layout 0 0) in
+  let _select = bigarray_start Ctypes_static.Array2 select in
+
+  (* FIXME: not sure summation is really needed *)
+  let m = ref 0l in
+  for i = 0 to Array2.dim2 select - 1 do
+    m := Int32.add !m select.{0,i}
+  done;
+  let _m = Ctypes.(allocate int32_t !m) in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let wr' = Array2.create _kind _layout 1 n in
+        let _wr = bigarray_start Ctypes_static.Array2 wr' in
+        let wi' = Array2.create _kind _layout 1 n in
+        let _wi = bigarray_start Ctypes_static.Array2 wi' in
+        let _s = Ctypes.(allocate float 0.) in
+        let _sep = Ctypes.(allocate float 0.) in
+        let r = L.strsen layout job compq _select n _t ldt _q ldq _wr _wi _m _s _sep in
+        wr := wr';
+        wi := wi';
+        r
+      )
+    | Float64   -> (
+        let wr' = Array2.create _kind _layout 1 n in
+        let _wr = bigarray_start Ctypes_static.Array2 wr' in
+        let wi' = Array2.create _kind _layout 1 n in
+        let _wi = bigarray_start Ctypes_static.Array2 wi' in
+        let _s = Ctypes.(allocate double 0.) in
+        let _sep = Ctypes.(allocate double 0.) in
+        let r = L.dtrsen layout job compq _select n _t ldt _q ldq _wr _wi _m _s _sep in
+        wr := wr';
+        wi := wi';
+        r
+      )
+    | Complex32 -> (
+        let w' = Array2.create _kind _layout 1 n in
+        let _w = bigarray_start Ctypes_static.Array2 w' in
+        let _s = Ctypes.(allocate float 0.) in
+        let _sep = Ctypes.(allocate float 0.) in
+        let r = L.ctrsen layout job compq _select n _t ldt _q ldq _w _m _s _sep in
+        wr := w';
+        wi := w';
+        r
+      )
+    | Complex64 -> (
+        let w' = Array2.create _kind _layout 1 n in
+        let _w = bigarray_start Ctypes_static.Array2 w' in
+        let _s = Ctypes.(allocate float 0.) in
+        let _sep = Ctypes.(allocate float 0.) in
+        let r = L.ztrsen layout job compq _select n _t ldt _q ldq _w _m _s _sep in
+        wr := w';
+        wi := w';
+        r
+      )
+    | _         -> failwith "lapacke:trsen"
+  in
+  check_lapack_error ret;
+  (* NOTE: wr and wi are the same for complex flavour *)
+  t, q, !wr, !wi
+
+
+
+
+
+
 
 
 
