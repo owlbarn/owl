@@ -3119,6 +3119,77 @@ let orghr
   a
 
 
+let gees
+  : type a b. jobvs:char -> a:(a, b) mat -> (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat
+  = fun ~jobvs ~a ->
+  let sort = 'N' in
+  assert (jobvs = 'N' || jobvs = 'V');
+  assert (sort = 'N' || sort = 'S');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let vs = match jobvs with
+    | 'V' -> Array2.create _kind _layout n n
+    | _   -> Array2.create _kind _layout 0 n
+  in
+  let ldvs = Pervasives.max 1 (_stride vs) in
+  let wr = ref (Array2.create _kind _layout 0 0) in
+  let wi = ref (Array2.create _kind _layout 0 0) in
+
+  let _select = Ctypes.null in
+  let _sdim = Ctypes.(allocate int32_t 0l) in
+  let _vs = bigarray_start Ctypes_static.Array2 vs in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let wr' = Array2.create _kind _layout 1 n in
+        let _wr = bigarray_start Ctypes_static.Array2 wr' in
+        let wi' = Array2.create _kind _layout 1 n in
+        let _wi = bigarray_start Ctypes_static.Array2 wi' in
+        let r = L.sgees layout jobvs sort _select n _a lda _sdim _wr _wi _vs ldvs in
+        wr := wr';
+        wi := wi';
+        r
+      )
+    | Float64   -> (
+        Array2.fill vs 1.;
+        let wr' = Array2.create _kind _layout 1 n in
+        let _wr = bigarray_start Ctypes_static.Array2 wr' in
+        let wi' = Array2.create _kind _layout 1 n in
+        let _wi = bigarray_start Ctypes_static.Array2 wi' in
+        let r = L.dgees layout jobvs sort _select n _a lda _sdim _wr _wi _vs ldvs in
+        wr := wr';
+        wi := wi';
+        r
+      )
+    | Complex32 -> (
+        let w' = Array2.create _kind _layout 1 n in
+        let _w = bigarray_start Ctypes_static.Array2 w' in
+        let r = L.cgees layout jobvs sort _select n _a lda _sdim _w _vs ldvs in
+        wr := w';
+        wi := w';
+        r
+      )
+    | Complex64 -> (
+        let w' = Array2.create _kind _layout 1 n in
+        let _w = bigarray_start Ctypes_static.Array2 w' in
+        let r = L.zgees layout jobvs sort _select n _a lda _sdim _w _vs ldvs in
+        wr := w';
+        wi := w';
+        r
+      )
+    | _         -> failwith "lapacke:gees"
+  in
+  check_lapack_error ret;
+  (* NOTE: wr and wi are the same for complex flavour *)
+  a, vs, !wr, !wi
 
 
 
