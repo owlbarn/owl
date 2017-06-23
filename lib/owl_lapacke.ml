@@ -3014,12 +3014,60 @@ let bdsqr
   d, vt, u, c
 
 
-(* TODO
 let bdsdc
-  : type a b.
-  = fun ~layout ~uplo ~compq ~n ~d ~e ~u ~ldu ~vt ~ldvt ~q ~iq ->
+  : type a. uplo:char -> compq:char -> d:(float, a) mat -> e:(float, a) mat
+  -> (float, a) mat * (float, a) mat * (float, a) mat * (float, a) mat * (float, a) mat * (int32, int32_elt) mat
+  = fun ~uplo ~compq ~d ~e ->
+  assert (uplo = 'U' || uplo = 'L');
+  assert (compq = 'N' || compq = 'P' || compq = 'I');
 
-*)
+  let n = Owl_dense_matrix_generic.numel d in
+  let _kind = Array2.kind d in
+  let _layout = Array2.layout d in
+  let layout = lapacke_layout _layout in
+
+  let u = match compq with
+    | 'I' -> Array2.create _kind _layout n n
+    | _   -> Array2.create _kind _layout 0 n
+  in
+  let vt = match compq with
+    | 'I' -> Array2.create _kind _layout n n
+    | _   -> Array2.create _kind _layout 0 n
+  in
+  let q = match compq with
+    | 'P' -> (
+      let smlsiz = 100. in
+      let n = float_of_int n in
+      let ldq = Owl_maths.(n *. (11. +. 2. *. smlsiz +. 8. *. round (log ((n /. (smlsiz +. 1.))) /. (log 2.)))) in
+      Array2.create _kind _layout 1 (Pervasives.max 0 (int_of_float ldq))
+      )
+    | _   -> Array2.create _kind _layout 0 n
+  in
+  let iq = match compq with
+    | 'P' -> (
+      let smlsiz = 100. in
+      let n = float_of_int n in
+      let ldiq = Owl_maths.(n *. (3. +. 3. *. round (log (n /. (smlsiz +. 1.)) /. (log 2.)))) in
+      Array2.create int32 _layout 1 (Pervasives.max 0 (int_of_float ldiq))
+      )
+    | _   -> Array2.create int32 _layout 0 n
+  in
+  let ldu = Pervasives.max 1 (_stride u) in
+  let ldvt = Pervasives.max 1 (_stride vt) in
+
+  let _d = bigarray_start Ctypes_static.Array2 d in
+  let _e = bigarray_start Ctypes_static.Array2 e in
+  let _u = bigarray_start Ctypes_static.Array2 u in
+  let _vt = bigarray_start Ctypes_static.Array2 vt in
+  let _q = bigarray_start Ctypes_static.Array2 q in
+  let _iq = bigarray_start Ctypes_static.Array2 iq in
+
+  let ret = match _kind with
+    | Float32   -> L.sbdsdc layout uplo compq n _d _e _u ldu _vt ldvt _q _iq
+    | Float64   -> L.dbdsdc layout uplo compq n _d _e _u ldu _vt ldvt _q _iq
+  in
+  check_lapack_error ret;
+  d, e, u, vt, q, iq
 
 
 let gecon
