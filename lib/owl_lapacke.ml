@@ -2893,7 +2893,52 @@ let syev
   | _   -> w, Array2.create _kind _layout 0 0
 
 
+let syevr
+  : type a. jobz:char -> range:char -> uplo:char -> a:(float, a) mat -> vl:float
+  -> vu:float -> il:int -> iu:int -> abstol:float -> (float, a) mat * (float, a) mat
+  = fun ~jobz ~range ~uplo ~a ~vl ~vu ~il ~iu ~abstol ->
+  assert (jobz = 'N' || jobz = 'V');
+  assert (range = 'A' || range = 'V' && range = 'I');
+  assert (uplo = 'U' || uplo = 'L' );
 
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let _ = match range with
+    | 'I' -> assert (1 <= il && il <= iu && iu <= n)
+    | 'V' -> assert (vu <= vl)
+    | _   -> ()
+  in
+  let lda = Pervasives.max 1 n in
+  let ldz = match jobz with
+    | 'V' -> Pervasives.max 1 m
+    | _   -> 1
+  in
+  let z = Array2.create _kind _layout n ldz in
+  let w = Array2.create _kind _layout 1 n in
+  let isuppz = Array2.create int32 _layout 1 (2 * m) in
+
+  let _m = Ctypes.(allocate int32_t 0l) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _z = bigarray_start Ctypes_static.Array2 z in
+  let _w = bigarray_start Ctypes_static.Array2 w in
+  let _isuppz = bigarray_start Ctypes_static.Array2 isuppz in
+
+  let ret = match _kind with
+    | Float32   -> L.ssyevr layout jobz range uplo n _a lda vl vu il iu abstol _m _w _z ldz _isuppz
+    | Float64   -> L.dsyevr layout jobz range uplo n _a lda vl vu il iu abstol _m _w _z ldz _isuppz
+  in
+  check_lapack_error ret;
+
+  let m = Int32.to_int !@_m in
+  let w = Owl_dense_matrix_generic.resize 1 m w in
+  match jobz with
+  | 'V' -> w, Owl_dense_matrix_generic.slice [[]; [0;m-1]] z
+  | _   -> w, Array2.create _kind _layout 0 0
 
 
 
