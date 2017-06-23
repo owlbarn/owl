@@ -2605,6 +2605,44 @@ let stein
   z, ifailv
 
 
+let syconv
+  : type a b. uplo:char -> way:char -> a:(a, b) mat -> ipiv:(int32, int32_elt) mat
+  -> (a, b) mat
+  = fun ~uplo ~way ~a ~ipiv ->
+  assert (uplo = 'U' || uplo = 'L');
+  assert (way = 'C' || way = 'R');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let e = Array2.create _kind _layout 1 n in
+  let _e = bigarray_start Ctypes_static.Array2 e in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Float32   -> L.ssyconv layout uplo way n _a lda _ipiv _e
+    | Float64   -> L.dsyconv layout uplo way n _a lda _ipiv _e
+    | Complex32 -> L.csyconv layout uplo way n _a lda _ipiv _e
+    | Complex64 -> L.zsyconv layout uplo way n _a lda _ipiv _e
+    | _         -> failwith "lapacke:syconv"
+  in
+  check_lapack_error ret;
+  e
+
+
+
+
+
+
+
+
+
 
 
 
