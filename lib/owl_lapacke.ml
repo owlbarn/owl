@@ -2973,7 +2973,45 @@ let sygvd
   w, a, b
 
 
+let bdsqr
+  : type a b. uplo:char -> d:(float, b) mat -> e:(float, b) mat -> vt:(a, b) mat
+  -> u:(a, b) mat -> c:(a, b) mat -> (float, b) mat * (a, b) mat * (a, b) mat * (a, b) mat
+  = fun  ~uplo ~d ~e ~vt ~u ~c ->
+  assert (uplo = 'U' || uplo = 'L' );
 
+  let n = Owl_dense_matrix_generic.numel d in
+  let ncvt = Array2.dim2 vt in
+  let nru = Array2.dim1 u in
+  let ncc = Array2.dim2 c in
+  assert (Array2.dim1 vt = n);
+  assert (Array2.dim1 c = n);
+  let n_e = Owl_dense_matrix_generic.numel e in
+  assert (n_e = n - 1);
+  let _kind = Array2.kind vt in
+  let _layout = Array2.layout vt in
+  let layout = lapacke_layout _layout in
+
+  let ldvt = Pervasives.max 1 (_stride vt) in
+  let ldu = Pervasives.max 1 (_stride u) in
+  let ldc = Pervasives.max 1 ncc in
+  assert (ldvt >= ncvt);
+  assert (ldu >= n);
+  assert (ldc >= ncc);
+  let _d = bigarray_start Ctypes_static.Array2 d in
+  let _e = bigarray_start Ctypes_static.Array2 e in
+  let _vt = bigarray_start Ctypes_static.Array2 vt in
+  let _u = bigarray_start Ctypes_static.Array2 u in
+  let _c = bigarray_start Ctypes_static.Array2 c in
+
+  let ret = match _kind with
+    | Float32   -> L.sbdsqr layout uplo n ncvt nru ncc _d _e _vt ldvt _u ldu _c ldc
+    | Float64   -> L.dbdsqr layout uplo n ncvt nru ncc _d _e _vt ldvt _u ldu _c ldc
+    | Complex32 -> L.cbdsqr layout uplo n ncvt nru ncc _d _e _vt ldvt _u ldu _c ldc
+    | Complex64 -> L.zbdsqr layout uplo n ncvt nru ncc _d _e _vt ldvt _u ldu _c ldc
+    | _         -> failwith "lapacke:bdsqr"
+  in
+  check_lapack_error ret;
+  d, vt, u, c
 
 
 
