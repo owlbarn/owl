@@ -3277,6 +3277,49 @@ let gges
   a, b, !alphar, !alphai, beta, vsl, vsr
 
 
+let trexc
+  : type a b. compq:char -> t:(a, b) mat -> q:(a, b) mat -> ifst:int -> ilst:int
+  -> (a, b) mat * (a, b) mat
+  = fun ~compq ~t ~q ~ifst ~ilst ->
+  assert (compq = 'N' || compq = 'V');
+
+  let m = Array2.dim1 t in
+  let n = Array2.dim2 t in
+  assert (m = n);
+  assert (1 <= ifst && ifst <= n);
+  assert (1 <= ilst && ilst <= n);
+  let _kind = Array2.kind t in
+  let _layout = Array2.layout t in
+  let layout = lapacke_layout _layout in
+
+  let ldt = Pervasives.max 1 (_stride t) in
+  let ldq = Pervasives.max 1 (_stride q) in
+  let _t = bigarray_start Ctypes_static.Array2 t in
+  let _q = bigarray_start Ctypes_static.Array2 q in
+  let _ifst = Ctypes.(allocate int32_t (Int32.of_int ifst)) in
+  let _ilst = Ctypes.(allocate int32_t (Int32.of_int ilst)) in
+
+  let ret = match _kind with
+    | Float32   -> L.strexc layout compq n _t ldt _q ldq _ifst _ilst
+    | Float64   -> L.dtrexc layout compq n _t ldt _q ldq _ifst _ilst
+    | Complex32 -> L.ctrexc layout compq n _t ldt _q ldq ifst ilst
+    | Complex64 -> L.ztrexc layout compq n _t ldt _q ldq ifst ilst
+    | _         -> failwith "lapacke:trexc"
+  in
+  check_lapack_error ret;
+  t, q
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
