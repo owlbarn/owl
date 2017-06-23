@@ -3391,9 +3391,116 @@ let trsen
   t, q, !wr, !wi
 
 
+let tgsen
+  : type a b. select:(int32, int32_elt) mat -> a:(a, b) mat -> b:(a, b) mat -> q:(a, b) mat -> z:(a, b) mat
+  -> (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat * (a, b) mat
+  = fun ~select ~a ~b ~q ~z ->
+  (* set these values by default *)
+  let ijob = 0 in
+  let wantq = 1 in
+  let wantz = 1 in
+  assert (0 <= ijob && ijob <= 5);
+  assert (wantq = 0 || wantq = 1);
+  assert (wantz = 0 || wantz = 1);
 
+  let ma = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (ma = n);
+  let mb = Array2.dim1 b in
+  let nb = Array2.dim2 b in
+  assert (mb = nb);
+  let mq = Array2.dim1 q in
+  let nq = Array2.dim2 q in
+  assert (mq = nq);
+  let mz = Array2.dim1 z in
+  let nz = Array2.dim2 z in
+  assert (mz = nz);
+  assert (n = nb);
+  assert (n = nq);
+  assert (n = nz);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
 
+  let lda = Pervasives.max 1 (_stride a) in
+  let ldb = Pervasives.max 1 (_stride b) in
+  let ldq = Pervasives.max 1 (_stride q) in
+  let ldz = Pervasives.max 1 (_stride z) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _b = bigarray_start Ctypes_static.Array2 b in
+  let _q = bigarray_start Ctypes_static.Array2 q in
+  let _z = bigarray_start Ctypes_static.Array2 z in
+  let alphar = ref (Array2.create _kind _layout 0 0) in
+  let alphai = ref (Array2.create _kind _layout 0 0) in
+  let beta = Array2.create _kind _layout 1 n in
+  let _beta = bigarray_start Ctypes_static.Array2 beta in
+  let _select = bigarray_start Ctypes_static.Array2 select in
 
+  (* FIXME: not sure summation is really needed *)
+  let m = ref 0l in
+  for i = 0 to Array2.dim2 select - 1 do
+    m := Int32.add !m select.{0,i}
+  done;
+  let _m = Ctypes.(allocate int32_t !m) in
+
+  let ret = match _kind with
+    | Float32   -> (
+        let alphar' = Array2.create _kind _layout 1 n in
+        let _alphar = bigarray_start Ctypes_static.Array2 alphar' in
+        let alphai' = Array2.create _kind _layout 1 n in
+        let _alphai = bigarray_start Ctypes_static.Array2 alphai' in
+        let _pl = Ctypes.(allocate float 0.) in
+        let _pr = Ctypes.(allocate float 0.) in
+        let dif = Array2.create float32 _layout 1 2 in
+        let _dif = bigarray_start Ctypes_static.Array2 dif in
+        let r = L.stgsen layout ijob wantq wantz _select n _a lda _b ldb _alphar _alphai _beta _q ldq _z ldz _m _pl _pr _dif in
+        alphar := alphar';
+        alphai := alphai';
+        r
+      )
+    | Float64   -> (
+        let alphar' = Array2.create _kind _layout 1 n in
+        let _alphar = bigarray_start Ctypes_static.Array2 alphar' in
+        let alphai' = Array2.create _kind _layout 1 n in
+        let _alphai = bigarray_start Ctypes_static.Array2 alphai' in
+        let _pl = Ctypes.(allocate double 0.) in
+        let _pr = Ctypes.(allocate double 0.) in
+        let dif = Array2.create float64 _layout 1 2 in
+        let _dif = bigarray_start Ctypes_static.Array2 dif in
+        let r = L.dtgsen layout ijob wantq wantz _select n _a lda _b ldb _alphar _alphai _beta _q ldq _z ldz _m _pl _pr _dif in
+        alphar := alphar';
+        alphai := alphai';
+        r
+      )
+    | Complex32 -> (
+        let alpha' = Array2.create _kind _layout 1 n in
+        let _alpha = bigarray_start Ctypes_static.Array2 alpha' in
+        let _pl = Ctypes.(allocate float 0.) in
+        let _pr = Ctypes.(allocate float 0.) in
+        let dif = Array2.create float32 _layout 1 2 in
+        let _dif = bigarray_start Ctypes_static.Array2 dif in
+        let r = L.ctgsen layout ijob wantq wantz _select n _a lda _b ldb _alpha _beta _q ldq _z ldz _m _pl _pr _dif in
+        alphar := alpha';
+        alphai := alpha';
+        r
+      )
+    | Complex64 -> (
+        let alpha' = Array2.create _kind _layout 1 n in
+        let _alpha = bigarray_start Ctypes_static.Array2 alpha' in
+        let _pl = Ctypes.(allocate double 0.) in
+        let _pr = Ctypes.(allocate double 0.) in
+        let dif = Array2.create float64 _layout 1 2 in
+        let _dif = bigarray_start Ctypes_static.Array2 dif in
+        let r = L.ztgsen layout ijob wantq wantz _select n _a lda _b ldb _alpha _beta _q ldq _z ldz _m _pl _pr _dif in
+        alphar := alpha';
+        alphai := alpha';
+        r
+      )
+    | _         -> failwith "lapacke:tgsen"
+  in
+  check_lapack_error ret;
+  (* NOTE: alphar and alphai are the same for complex flavour *)
+  a, b, !alphar, !alphai, beta, q, z
 
 
 
