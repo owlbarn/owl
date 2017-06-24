@@ -614,4 +614,14 @@ val ln2 : float
 val lnpi : float
 
 
+(** {6 Some utility functions} *)
+
+val is_odd : int -> bool
+
+val is_even : int -> bool
+
+val is_pow2 : int -> bool
+
+
+
 (* ends here *)

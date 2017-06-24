@@ -1455,6 +1455,10 @@ let hankel ?r c =
   x
 
 
+(* TODO: Hadamard Matrix *)
+
+
+
 (* experimental functions *)
 
 let max_pool ?padding x kernel stride =
