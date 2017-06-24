@@ -304,6 +304,17 @@ val toeplitz : ?c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   have different length, then the result is a rectangular matrix.
  *)
 
+val hankel : ?r:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [hankel ~r c] generates a hankel matrix using [r] and [c]. [c] will be the
+  first column and [r] will be the last row of the returned matrix.
+
+  Note: 1) If only [c] is passed in, the elelments below the anti-diagnoal are
+  zero. 2) If the last element of [c] is different from the first element of [r]
+  then the first element of [c] prevails. 3) [c] and [r] can have different
+  length, the return will be an rectangular matrix.
+ *)
+
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 

@@ -384,9 +384,6 @@ let symmetric ?(upper=true) x =
   y
 
 
-(* TODO: hankel *)
-
-
 let bidiagonal ?(upper=true) dv ev =
   let m = numel dv in
   let n = numel ev in
@@ -1430,6 +1427,30 @@ let toeplitz ?c r =
     _op (n - i) ~ofsx:0 ~incx:1 _r ~ofsy:!ofs ~incy:1 _x;
     _op (m - i) ~ofsx:0 ~incx:1 _c ~ofsy:!ofs ~incy:n _x;
     ofs := !ofs + n + 1;
+  done;
+  x
+
+
+let hankel ?r c =
+  let m = col_num c in
+  let r = match r with
+    | Some r -> r
+    | None   -> zeros (kind c) 1 m
+  in
+  let n = col_num r in
+  r.{0,0} <- c.{0,m-1};
+  let x = empty (kind r) m n in
+  let _x = Owl_utils.array2_to_array1 x in
+  let _r = Owl_utils.array2_to_array1 r in
+  let _c = Owl_utils.array2_to_array1 c in
+  let _op = _owl_copy (kind r) in
+  let ofs = ref ( (m - 1) * n ) in
+  let loops = Pervasives.min m n in
+
+  for i = 0 to loops - 1 do
+    _op (n - i) ~ofsx:0 ~incx:1 _r ~ofsy:!ofs ~incy:1 _x;
+    _op (m - i) ~ofsx:i ~incx:1 _c ~ofsy:i ~incy:n _x;
+    ofs := !ofs - n + 1;
   done;
   x
 
