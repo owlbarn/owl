@@ -556,7 +556,7 @@ val abs2_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val abs2_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [abs2_z2d x] is similar to [abs2] but takes [complex64] as input. *)
 
-val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
+val conj : ('a, 'b) t -> ('a, 'b) t
 (** [conj x] returns the conjugate of the complex [x]. *)
 
 val neg : ('a, 'b) t -> ('a, 'b) t

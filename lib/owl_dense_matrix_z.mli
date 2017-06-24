@@ -165,6 +165,8 @@ val symmetric : ?upper:bool -> mat -> mat
 
 val bidiagonal : ?upper:bool -> mat -> mat -> mat
 
+val toeplitz : ?c:mat -> mat -> mat
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 

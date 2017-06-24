@@ -294,6 +294,15 @@ val bidiagonal : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   subdiagonal. By default, [upper] is [true].
  *)
 
+val toeplitz : ?c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [toeplitz ~c r] generates a toeplitz matrix using [r] and [c]. Both [r] and
+  [c] are row vectors of the same length. If the first elements of [c] is
+  different from that of [r], [r]'s first element will be used.
+
+  Note: 1) If [c] is not passed in, then [c = r] will be used. 2) If [c] is not
+  passed in and [r] is complex, the [c = conj r] will be used.
+ *)
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 
@@ -679,11 +688,6 @@ val im_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [im_d2z x] returns all the imaginary components of [x] in a new ndarray of same shape. *)
 
-val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
-(** [conj x] computes the conjugate of the elements in [x] and returns the
-  result in a new matrix.
- *)
-
 val min : (float, 'a) t -> float
 (** [min x] returns the minimum value of all elements in [x]. *)
 
@@ -762,8 +766,11 @@ val abs2_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val abs2_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [abs2_z2d x] is similar to [abs2] but takes [complex64] as input. *)
 
-val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
-(** [conj x] returns the conjugate of the complex [x]. *)
+val conj : ('a, 'b) t -> ('a, 'b) t
+(** [conj x] computes the conjugate of the elements in [x] and returns the
+  result in a new matrix. If the passed in [x] is a real matrix, the function
+  simply returns a copy of the original [x].
+ *)
 
 val neg : ('a, 'b) t -> ('a, 'b) t
 (** [neg x] negates the elements in [x] and returns the result in a new matrix. *)
