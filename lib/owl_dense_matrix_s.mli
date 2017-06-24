@@ -153,6 +153,8 @@ val toeplitz : ?c:mat -> mat -> mat
 
 val hankel : ?r:mat -> mat -> mat
 
+val hadamard : int -> mat
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 

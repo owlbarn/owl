@@ -1457,6 +1457,42 @@ let hankel ?r c =
 
 (* TODO: Hadamard Matrix *)
 
+let rec _hadamard_2
+  (cp_op : ('a, 'b) Owl_dense_common.owl_vec_op99)
+  (neg_op : ('a, 'b) Owl_dense_common.owl_vec_op99)
+  a1 len n x =
+  if len = 1 then x.{0} <- a1
+  else (
+    let len' = len / 2 in
+    _hadamard_2 cp_op neg_op a1 len' n x;
+    let ofsx = ref 0 in
+    for i = 0 to len' - 1 do
+      let x1_ofs = !ofsx + len' in
+      let x2_ofs = !ofsx + len' * n in
+      let x3_ofs = x2_ofs + len' in
+      cp_op len' ~ofsx:!ofsx ~incx:1 ~ofsy:x1_ofs ~incy:1 x x;
+      cp_op len' ~ofsx:!ofsx ~incx:1 ~ofsy:x2_ofs ~incy:1 x x;
+      cp_op len' ~ofsx:!ofsx ~incx:1 ~ofsy:x3_ofs ~incy:1 x x;
+      (* negate the bottom right block *)
+      (*let x3 = Array1.sub x (!ofsx+blklen+len') len' in *)
+      neg_op len' ~ofsx:x3_ofs ~incx:1 ~ofsy:x3_ofs ~incy:1 x x;
+      ofsx := !ofsx + n;
+    done;
+  )
+
+let hadamard k n =
+  if Owl_maths.is_pow2 n then (
+    let x = empty k n n in
+    let _x = Owl_utils.array2_to_array1 x in
+    let cp_op = _owl_copy k in
+    let neg_op = _owl_neg k in
+    let a1 = _one k in
+    _hadamard_2 cp_op neg_op a1 n n _x;
+    x
+  )
+  else
+    failwith "Owl_dense_matrix_generic:hadamard"
+
 
 
 (* experimental functions *)

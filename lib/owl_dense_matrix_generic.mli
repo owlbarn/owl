@@ -314,6 +314,8 @@ val hankel : ?r:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   length, the return will be an rectangular matrix.
  *)
 
+val hadamard : ('a, 'b) kind -> int -> ('a, 'b) t
+(** [hadamard k n] *)
 
 
 (** {6 Iterate elements, columns, and rows.} *)

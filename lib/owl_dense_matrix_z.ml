@@ -47,6 +47,8 @@ let meshgrid xa xb ya yb xn yn = M.meshgrid Complex64 xa xb ya yb xn yn
 
 let bernoulli ?p ?seed d = M.bernoulli Complex64 ?p ?seed d
 
+let hadamard n = M.hadamard Complex64 n
+
 let of_array x m n = M.of_array Complex64 x m n
 
 let of_arrays x = M.of_arrays Complex64 x
