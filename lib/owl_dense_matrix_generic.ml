@@ -1415,19 +1415,20 @@ let toeplitz ?c r =
     | Some c -> c
     | None   -> conj r
   in
+  let m = col_num c in
   let n = col_num r in
-  assert (n = col_num c);
   c.{0,0} <- r.{0,0};
-  let x = empty (kind r) n n in
+  let x = empty (kind r) m n in
   let _x = Owl_utils.array2_to_array1 x in
   let _r = Owl_utils.array2_to_array1 r in
   let _c = Owl_utils.array2_to_array1 c in
   let _op = _owl_copy (kind r) in
   let ofs = ref 0 in
+  let loops = Pervasives.min m n in
 
-  for i = 0 to n - 1 do
+  for i = 0 to loops - 1 do
     _op (n - i) ~ofsx:0 ~incx:1 _r ~ofsy:!ofs ~incy:1 _x;
-    _op (n - i) ~ofsx:0 ~incx:1 _c ~ofsy:!ofs ~incy:n _x;
+    _op (m - i) ~ofsx:0 ~incx:1 _c ~ofsy:!ofs ~incy:n _x;
     ofs := !ofs + n + 1;
   done;
   x

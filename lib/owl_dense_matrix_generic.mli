@@ -300,7 +300,8 @@ val toeplitz : ?c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   different from that of [r], [r]'s first element will be used.
 
   Note: 1) If [c] is not passed in, then [c = r] will be used. 2) If [c] is not
-  passed in and [r] is complex, the [c = conj r] will be used.
+  passed in and [r] is complex, the [c = conj r] will be used. 3) If [r] and [c]
+  have different length, then the result is a rectangular matrix.
  *)
 
 
