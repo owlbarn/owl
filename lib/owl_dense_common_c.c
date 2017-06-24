@@ -1866,15 +1866,19 @@ value cp_two_doubles(double d0, double d1)
 
 // conj
 
-#define FUN14 complex_float_conj
+#define FUN19 complex_float_conj
+#define FUN19_IMPL complex_float_conj_impl
 #define NUMBER complex_float
 #define NUMBER1 complex_float
+#define INIT
 #define MAPFN(X,Y) Y->r = X->r; Y->i = -X->i
 #include "owl_dense_common_vec_map.c"
 
-#define FUN14 complex_double_conj
+#define FUN19 complex_double_conj
+#define FUN19_IMPL complex_double_conj_impl
 #define NUMBER complex_double
 #define NUMBER1 complex_double
+#define INIT
 #define MAPFN(X,Y) Y->r = X->r; Y->i = -X->i
 #include "owl_dense_common_vec_map.c"
 

@@ -1018,9 +1018,6 @@ let im_c2s x = x |> to_ndarray |> Owl_dense_ndarray_generic.im_c2s |> of_ndarray
 let im_z2d x = x |> to_ndarray |> Owl_dense_ndarray_generic.im_z2d |> of_ndarray
 
 
-(* TODO: optimise *)
-let conj x = map Complex.conj x
-
 let abs x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray_generic.abs y in

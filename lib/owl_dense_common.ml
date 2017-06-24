@@ -1284,13 +1284,14 @@ let _owl_logspace : type a b. (a, b) kind -> (a, b) owl_vec_op08 = function
   | Complex64 -> owl_complex_double_logspace
   | _         -> failwith "_owl_logspace: unsupported operation"
 
-external owl_complex_float_conj : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_conj"
-external owl_complex_double_conj : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_conj"
+external owl_complex_float_conj : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "complex_float_conj" "complex_float_conj_impl"
+external owl_complex_double_conj : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "complex_double_conj" "complex_double_conj_impl" 
 
-let _owl_conj : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
+let _owl_conj : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
+  fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
   match k with
-  | Complex32   -> owl_complex_float_conj l x y
-  | Complex64   -> owl_complex_double_conj l x y
+  | Complex32   -> owl_complex_float_conj n x ofsx incx y ofsy incy
+  | Complex64   -> owl_complex_double_conj n x ofsx incx y ofsy incy
   | _         -> failwith "_owl_conj: unsupported operation"
 
 let _owl_copy : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
