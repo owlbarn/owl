@@ -260,6 +260,27 @@ let transpose x =
 
 (* TODO: conjugate transpose *)
 
+let ctranspose x =
+  let m, n = shape x in
+  let y = empty (kind x) n m in
+  let _x = Owl_utils.array2_to_array1 x in
+  let _y = Owl_utils.array2_to_array1 y in
+  let len, incx, incy, iofx, iofy, loops =
+    match m <= n with
+    | true  -> n, 1, m, n, 1, m
+    | false -> m, n, 1, 1, m, n
+  in
+  let _op = _owl_conj (kind x) in
+  let ofsx = ref 0 in
+  let ofsy = ref 0 in
+  for i = 0 to loops - 1 do
+    _op len ~ofsx:!ofsx ~incx ~ofsy:!ofsy ~incy _x _y;
+    ofsx := !ofsx + iofx;
+    ofsy := !ofsy + iofy;
+  done;
+  y
+
+
 let replace_row v x i =
   let y = clone x in
   copy_row_to v y i; y
@@ -362,8 +383,6 @@ let symmetric ?(upper=true) x =
   (* return the symmetric matrix *)
   y
 
-
-(* TODO: hermitian *)
 
 (* TODO: toeplitz *)
 
