@@ -49,6 +49,10 @@ type page = {
   mutable xgrid : bool;
   mutable ygrid : bool;
   mutable zgrid : bool;
+  (* viewing perspective for 3D plots 
+   * http://plplot.sourceforge.net/docbook-manual/plplot-html-5.12.0/plw3d.html *)
+  mutable altitude : float;
+  mutable azimuth : float;
   (* control legend *)
   mutable legend : bool;
   mutable legend_position : legend_position;
@@ -92,6 +96,8 @@ let _create_page () = {
   xgrid = false;
   ygrid = false;
   zgrid = false;
+  altitude = 33.;
+  azimuth = 115.;
   legend = false;
   legend_position = NorthEast;
   legend_items = [||];
@@ -250,7 +256,8 @@ let _prepare_page p =
   let _ = if p.fontsize > 0. then plschr p.fontsize 1.0 in
   let xmin, xmax = p.xrange in
   let ymin, ymax = p.yrange in
-  let zmin, zmax = p.zrange in (
+  let zmin, zmax = p.zrange in 
+  let alt, az = p.altitude, p.azimuth in (
   if not p.is_3d then
     (* prepare a 2D plot *)
     let _ = plenv xmin xmax ymin ymax 0 (_config_2d_axis p) in
@@ -260,7 +267,7 @@ let _prepare_page p =
     let _ = pladv 0 in
     let _ = plvpor 0.0 1.0 0.0 0.9 in
     let _ = plwind (-1.0) 1.0 (-1.0) 1.5 in
-    let _ = plw3d 1.0 1.0 1.2 xmin xmax ymin ymax zmin zmax 33. 115. in
+    let _ = plw3d 1.0 1.0 1.2 xmin xmax ymin ymax zmin zmax alt az in
     let _ = plbox3 "bntu" p.xlabel 0.0 0
                    "bntu" p.ylabel 0.0 0
                    "bcdfntu" p.zlabel 0.0 4
@@ -318,6 +325,10 @@ let set_zticklabels h l = (h.pages.(h.current_page)).zticklabels <- l
 let set_foreground_color h r g b = (h.pages.(h.current_page)).fgcolor <- (r, g, b)
 
 let set_background_color h r g b = h.bgcolor <- (r, g, b)
+
+let set_altitude h a = (h.pages.(h.current_page)).altitude <- a
+
+let set_azimuth h a = (h.pages.(h.current_page)).azimuth <- a
 
 let set_font_size h x = (h.pages.(h.current_page)).fontsize <- x
 
@@ -829,7 +840,7 @@ let pie ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(fill=false) x =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let surf ?(h=_default_handle) ?(contour=false) x y z =
+let surf ?(h=_default_handle) ?(contour=false) ?altitude ?azimuth x y z =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.(transpose y |> to_array) in
@@ -844,6 +855,8 @@ let surf ?(h=_default_handle) ?(contour=false) x y z =
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.is_3d <- true in
+  let _ = match altitude with None -> () | Some a -> p.altitude <- a in
+  let _ = match azimuth with None -> () | Some a -> p.azimuth <- a in
   let opt = match contour with
     | true  -> [ PL_FACETED; PL_MAG_COLOR; PL_BASE_CONT; PL_SURF_CONT ]
     | false -> [ PL_FACETED; PL_MAG_COLOR ]
@@ -858,7 +871,7 @@ let surf ?(h=_default_handle) ?(contour=false) x y z =
 
 let plot3d = surf
 
-let mesh ?(h=_default_handle) ?(contour=false) x y z =
+let mesh ?(h=_default_handle) ?(contour=false) ?altitude ?azimuth x y z =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.(transpose y |> to_array) in
@@ -873,6 +886,8 @@ let mesh ?(h=_default_handle) ?(contour=false) x y z =
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.is_3d <- true in
+  let _ = match altitude with None -> () | Some a -> p.altitude <- a in
+  let _ = match azimuth with None -> () | Some a -> p.azimuth <- a in
   let opt0 = [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH; PL_BASE_CONT; PL_SURF_CONT ] in
   let opt1 = [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
   let f = (fun () ->
