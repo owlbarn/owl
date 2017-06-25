@@ -5,6 +5,9 @@
  *   Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** NLP: LDA module *)
+
+
 open Owl
 open Bigarray
 

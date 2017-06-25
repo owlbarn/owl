@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Matrix functions including creation, manipulation, and various vectorised
+(** Matrix module: including creation, manipulation, and various vectorised
   mathematical operations.
  *)
 

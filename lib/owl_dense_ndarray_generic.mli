@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** N-dimensional array functions including creation, manipulation, and various
+(** N-dimensional array module: including creation, manipulation, and various
   vectorised mathematical operations.
 *)
 
@@ -25,7 +25,7 @@ val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
   The elements in the array are not initialised, they can be any value. [empty]
   is faster than [zeros] to create a ndarray.
 
-  The module only support the following four types of ndarray: [Bigarray.Float32],
+  The module only supports the following four types of ndarray: [Bigarray.Float32],
   [Bigarray.Float64], [Bigarray.Complex32], and [Bigarray.Complex64].
  *)
 

@@ -3,7 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(* NOTE: this is an experimental module being built now *)
+
+(** Neural network: module aliases *)
+
+(** NOTE: this is an experimental module being built now *)
+
 
 open Owl_algodiff.S
 open Owl_neural_neuron

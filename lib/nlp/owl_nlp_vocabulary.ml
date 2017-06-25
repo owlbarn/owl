@@ -3,6 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** NLP: Vocabulary module *)
+
+
 open Owl_nlp_utils
 
 type t = {
