@@ -3,11 +3,10 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** N-dimensional array module
-  This module is built atop of Genarray module in OCaml Bigarray. The module also
-  heavily relies on Lacaml to call native BLAS/LAPACK to improve the performance.
-  The documentation of some math functions is copied directly from Lacaml.
- *)
+(** N-dimensional array functions including creation, manipulation, and various
+  vectorised mathematical operations.
+*)
+
 
 open Bigarray
 

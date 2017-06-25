@@ -3,6 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Sparse N-dimensional array module *)
+
+
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 type ('a, 'b) t

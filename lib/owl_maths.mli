@@ -3,9 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Mathematics module including various fundamental and advanced mathematical
+  functions.
+ *)
 
-(** Mathematics module
-
+(**
   This module contains some basic and advanced mathematical operations.
   If you cannot find some function in this module, try Stats module.
 

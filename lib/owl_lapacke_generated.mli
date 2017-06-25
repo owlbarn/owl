@@ -3,7 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(* auto-generated lapacke interface file, timestamp:1497983363 *)
+(** LAPACKE interface: low-level interface to the LAPACKE functions *) 
+
+(** auto-generated lapacke interface file, timestamp:1498396312 *)
 
 open Ctypes
 

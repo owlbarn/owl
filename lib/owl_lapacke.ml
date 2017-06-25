@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** LAPACKE interface: high-level interface between Owl and LAPACKE *)
 
 (** Please refer to the documentation of Intel Math Kernel Library on the
   LAPACKE Interface. The interface implemented here is compatible the those

@@ -11,9 +11,12 @@ DOCS=\
 	${DIR}/owl_maths.mli \
 	${DIR}/owl_stats.mli \
 	${DIR}/owl_algodiff_generic.mli \
+	${DIR}/owl_algodiff_numerical.mli \
 	${DIR}/neural/owl_neural_neuron.ml \
 	${DIR}/neural/owl_neural_feedforward.ml \
 	${DIR}/neural/owl_neural_graph.ml \
+	${DIR}/owl_plot.mli \
+	${DIR}/owl_operator.ml \
 	${DIR}/owl_const.mli
 INCDIR=\
 	-I ../_build/lib \

@@ -184,7 +184,7 @@ let convert_to_ctypes_fun funs =
 let convert_cblas_header_to_ctypes fname funs =
   let h_ml = open_out fname in
   Printf.fprintf h_ml "%s\n" copyright;
-  Printf.fprintf h_ml "(* auto-generated cblas interface file, timestamp:%.0f *)\n\n" (Unix.gettimeofday ());
+  Printf.fprintf h_ml "(** auto-generated cblas interface file, timestamp:%.0f *)\n\n" (Unix.gettimeofday ());
   Printf.fprintf h_ml "open Ctypes\n\n";
   Printf.fprintf h_ml "module Bindings (F : Cstubs.FOREIGN) = struct\n\n  open F\n\n";
 
@@ -263,7 +263,7 @@ let convert_to_extern_fun funs =
 let convert_cblas_header_to_extern fname funs =
   let h_ml = open_out fname in
   Printf.fprintf h_ml "%s\n" copyright;
-  Printf.fprintf h_ml "(* auto-generated cblas interface file, timestamp:%.0f *)\n\n" (Unix.gettimeofday ());
+  Printf.fprintf h_ml "(** auto-generated cblas interface file, timestamp:%.0f *)\n\n" (Unix.gettimeofday ());
   Printf.fprintf h_ml "open Ctypes\n\n";
   Printf.fprintf h_ml "module CI = Cstubs_internals\n\n";
 
@@ -279,7 +279,7 @@ let convert_cblas_header_to_extern fname funs =
 
   let h_mli = open_out (fname ^ "i") in
   Printf.fprintf h_mli "%s\n" copyright;
-  Printf.fprintf h_mli "(* auto-generated cblas interface file, timestamp:%.0f *)\n\n" (Unix.gettimeofday ());
+  Printf.fprintf h_mli "(** auto-generated cblas interface file, timestamp:%.0f *)\n\n" (Unix.gettimeofday ());
   Printf.fprintf h_mli "open Ctypes\n\n";
 
   Array.iter (fun (fun_caml, fun_stub_s, args, fun_rval) ->
