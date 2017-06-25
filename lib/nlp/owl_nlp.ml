@@ -11,4 +11,4 @@ module Corpus = Owl_nlp_corpus
 
 module Tfidf = Owl_nlp_tfidf
 
-module Lda = Owl_nlp_lda0
+module Lda = Owl_nlp_lda
