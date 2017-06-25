@@ -37,5 +37,6 @@ INCDIR=\
 DOCFLAGS=-html -d .
 all:
 	ocamldoc ${INCDIR} ${DOCFLAGS} ${DOCS}
+	odig odoc owl && odig doc owl
 clean:
 	rm -rf *.html *.css
