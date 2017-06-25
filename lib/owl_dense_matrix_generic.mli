@@ -315,7 +315,10 @@ val hankel : ?r:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val hadamard : ('a, 'b) kind -> int -> ('a, 'b) t
-(** [hadamard k n] *)
+(** [hadamard k n] construct a hadamard matrix of order [n]. For a hadamard [H],
+  we have [H'*H = n*I]. Currrently, this function handles only the cases where
+  [n], [n/12], or [n/20] is a power of 2.
+ *)
 
 
 (** {6 Iterate elements, columns, and rows.} *)

@@ -1455,39 +1455,107 @@ let hankel ?r c =
   x
 
 
-(* TODO: Hadamard Matrix *)
+(* Hadamard Matrix *)
 
-let rec _hadamard_2
-  (cp_op : ('a, 'b) Owl_dense_common.owl_vec_op99)
-  (neg_op : ('a, 'b) Owl_dense_common.owl_vec_op99)
-  a1 len n x =
-  if len = 1 then x.{0} <- a1
-  else (
-    let len' = len / 2 in
-    _hadamard_2 cp_op neg_op a1 len' n x;
-    let ofsx = ref 0 in
-    for i = 0 to len' - 1 do
-      let x1_ofs = !ofsx + len' in
-      let x2_ofs = !ofsx + len' * n in
-      let x3_ofs = x2_ofs + len' in
-      cp_op len' ~ofsx:!ofsx ~incx:1 ~ofsy:x1_ofs ~incy:1 x x;
-      cp_op len' ~ofsx:!ofsx ~incx:1 ~ofsy:x2_ofs ~incy:1 x x;
-      cp_op len' ~ofsx:!ofsx ~incx:1 ~ofsy:x3_ofs ~incy:1 x x;
-      (* negate the bottom right block *)
-      (*let x3 = Array1.sub x (!ofsx+blklen+len') len' in *)
-      neg_op len' ~ofsx:x3_ofs ~incx:1 ~ofsy:x3_ofs ~incy:1 x x;
-      ofsx := !ofsx + n;
-    done;
-  )
+let _hadamard_12 = Array.map float_of_int
+  [|
+    1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1;
+    1;-1; 1;-1; 1; 1; 1;-1;-1;-1; 1;-1;
+    1;-1;-1; 1;-1; 1; 1; 1;-1;-1;-1; 1;
+    1; 1;-1;-1; 1;-1; 1; 1; 1;-1;-1;-1;
+    1;-1; 1;-1;-1; 1;-1; 1; 1; 1;-1;-1;
+    1;-1;-1; 1;-1;-1; 1;-1; 1; 1; 1;-1;
+    1;-1;-1;-1; 1;-1;-1; 1;-1; 1; 1; 1;
+    1; 1;-1;-1;-1; 1;-1;-1; 1;-1; 1; 1;
+    1; 1; 1;-1;-1;-1; 1;-1;-1; 1;-1; 1;
+    1; 1; 1; 1;-1;-1;-1; 1;-1;-1; 1;-1;
+    1;-1; 1; 1; 1;-1;-1;-1; 1;-1;-1; 1;
+    1; 1;-1; 1; 1; 1;-1;-1;-1; 1;-1;-1;
+  |]
+
+
+let _hadamard_20 = Array.map float_of_int
+  [|
+    1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1;
+    1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;
+    1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;
+    1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1;
+    1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1;
+    1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;
+    1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;
+    1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;
+    1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;
+    1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1;
+    1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;
+    1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1;
+    1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;
+    1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1;
+    1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1;
+    1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1;
+    1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1;
+    1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;
+    1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;
+    1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1;
+  |]
+
 
 let hadamard k n =
+  (* function to build up hadamard matrix recursively *)
+  let rec _make_hadamard
+    (cp_op : ('a, 'b) Owl_dense_common.owl_vec_op99)
+    (neg_op : ('a, 'b) Owl_dense_common.owl_vec_op99)
+    len n base x =
+    if len = base then ()
+    else (
+      let len' = len / 2 in
+      _make_hadamard cp_op neg_op len' n base x;
+      let ofsx = ref 0 in
+      for i = 0 to len' - 1 do
+        let x1_ofs = !ofsx + len' in
+        let x2_ofs = !ofsx + len' * n in
+        let x3_ofs = x2_ofs + len' in
+        cp_op len' ~ofsx:!ofsx ~incx:1 ~ofsy:x1_ofs ~incy:1 x x;
+        cp_op len' ~ofsx:!ofsx ~incx:1 ~ofsy:x2_ofs ~incy:1 x x;
+        cp_op len' ~ofsx:!ofsx ~incx:1 ~ofsy:x3_ofs ~incy:1 x x;
+        (* negate the bottom right block *)
+        neg_op len' ~ofsx:x3_ofs ~incx:1 ~ofsy:x3_ofs ~incy:1 x x;
+        ofsx := !ofsx + n;
+      done;
+    )
+  in
+  (* function to convert the pre-calculated hadamard array into type k *)
+  let _float_array_to_k : type a b. (a, b) kind -> float array -> a array =
+    fun k a -> match k with
+    | Float32  -> a
+    | Float64  -> a
+    | Complex32 -> Array.map (fun b -> Complex.({re=b; im=0.})) a
+    | Complex64 -> Array.map (fun b -> Complex.({re=b; im=0.})) a
+    | _         -> failwith "Owl_dense_matrix_generic.hadamard"
+  in
+  (* start building, only deal with pow2 of n, n/12, n/20. *)
+  let x = empty k n n in
+  let _x = Owl_utils.array2_to_array1 x in
+  let cp_op = _owl_copy k in
+  let neg_op = _owl_neg k in
   if Owl_maths.is_pow2 n then (
-    let x = empty k n n in
-    let _x = Owl_utils.array2_to_array1 x in
-    let cp_op = _owl_copy k in
-    let neg_op = _owl_neg k in
-    let a1 = _one k in
-    _hadamard_2 cp_op neg_op a1 n n _x;
+    x.{0,0} <- (_one k);
+    _make_hadamard cp_op neg_op n n 1 _x;
+    x
+  )
+  else if Owl_maths.is_pow2 (n / 12) && Pervasives.(n mod 12) = 0 then (
+    let y = _float_array_to_k k _hadamard_12 in
+    let y = of_array k y 12 12 in
+    let _area = area 0 0 11 11 in
+    copy_area_to y _area x _area;
+    _make_hadamard cp_op neg_op n n 12 _x;
+    x
+  )
+  else if Owl_maths.is_pow2 (n / 20) && Pervasives.(n mod 20) = 0 then (
+    let y = _float_array_to_k k _hadamard_20 in
+    let y = of_array k y 20 20 in
+    let _area = area 0 0 19 19 in
+    copy_area_to y _area x _area;
+    _make_hadamard cp_op neg_op n n 20 _x;
     x
   )
   else
