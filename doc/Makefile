@@ -38,5 +38,7 @@ DOCFLAGS=-html -d .
 all:
 	ocamldoc ${INCDIR} ${DOCFLAGS} ${DOCS}
 	odig odoc owl && odig doc owl
+install:
+	scp -i ~/.ssh/id_cam * lw525@slogin.cl.cam.ac.uk:~/public_html/owl/
 clean:
 	rm -rf *.html *.css
