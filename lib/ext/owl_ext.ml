@@ -3,6 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Extension: interoperation on different number types *)
+
+
 include Owl_ext_types
 
 include Owl_ext_uniop

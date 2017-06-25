@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Vector: module aliases *)
+
 
 module Generic = struct
   include Owl_dense_vector_generic

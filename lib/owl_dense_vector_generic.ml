@@ -3,6 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Vector module: various functions of vectors *)
+
+
 open Bigarray
 
 (* save some efforts, just include it *)

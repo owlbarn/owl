@@ -3,9 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Algodiff: algorithmic differentiation (or automatic differentiation) of any
-  functions.
- *)
+(** Algodiff: algorithmic differentiation module *)
 
 (** To use Make functor in Algodiff, the passed in module needs to implement the
   following functions to support necessary mathematical functions and etc. *)

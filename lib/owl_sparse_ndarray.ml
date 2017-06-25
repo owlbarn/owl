@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Sparse ndarray: module aliases *)
+
 
 module Operator = Owl_operator.Make_Basic (Owl_sparse_ndarray_generic)
 

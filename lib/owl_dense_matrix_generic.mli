@@ -482,7 +482,7 @@ val map_at_col : ('a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
  *)
 
 
-(** {6 Examin elements and compare two matrices} *)
+(** {6 Examine elements and compare two matrices} *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
 (** [exists f x] checks all the elements in [x] using [f]. If at least one

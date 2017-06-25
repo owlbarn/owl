@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Sparse matrix: module aliases *)
+
 
 module Operator = struct
   include Owl_operator.Make_Basic (Owl_sparse_matrix_generic)
@@ -37,4 +39,9 @@ end
 module Z = struct
   include Owl_sparse_matrix_z
   include Operator
+end
+
+
+module DOK = struct
+  include Owl_sparse_dok_matrix
 end
