@@ -100,6 +100,59 @@ val diagm : ?k:int -> ('a, 'b) t -> ('a, 'b) t
   This function is the same as the [diag] function in Matlab.
  *)
 
+val triu : ?k:int -> ('a, 'b) t -> ('a, 'b) t
+(** [triu k x] returns the element on and above the [k]th diagonal of [x].
+  [k = 0] is the main diagonal, [k > 0] is above the main diagonal, and
+  [k < 0] is below the main diagonal.
+ *)
+
+
+val tril : ?k:int -> ('a, 'b) t -> ('a, 'b) t
+(** [tril k x] returns the element on and below the [k]th diagonal of [x].
+  [k = 0] is the main diagonal, [k > 0] is above the main diagonal, and
+  [k < 0] is below the main diagonal.
+ *)
+
+val symmetric : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
+(** [symmetric ~upper x] creates a symmetric matrix using either upper or lower
+  triangular part of [x]. If [upper] is [true] then it uses the upper part, if
+  [upper] is [false], then [symmetric] uses the lower part. By default [upper]
+  is true.
+ *)
+
+val bidiagonal : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [bidiagonal upper dv ev] creates a bidiagonal matrix using [dv] and [ev].
+  Both [dv] and [ev] are row vectors. [dv] is the main diagonal. If [upper] is
+  [true] then [ev] is superdiagonal; if [upper] is [false] then [ev] is
+  subdiagonal. By default, [upper] is [true].
+ *)
+
+val toeplitz : ?c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [toeplitz ~c r] generates a toeplitz matrix using [r] and [c]. Both [r] and
+  [c] are row vectors of the same length. If the first elements of [c] is
+  different from that of [r], [r]'s first element will be used.
+
+  Note: 1) If [c] is not passed in, then [c = r] will be used. 2) If [c] is not
+  passed in and [r] is complex, the [c = conj r] will be used. 3) If [r] and [c]
+  have different length, then the result is a rectangular matrix.
+ *)
+
+val hankel : ?r:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [hankel ~r c] generates a hankel matrix using [r] and [c]. [c] will be the
+  first column and [r] will be the last row of the returned matrix.
+
+  Note: 1) If only [c] is passed in, the elelments below the anti-diagnoal are
+  zero. 2) If the last element of [c] is different from the first element of [r]
+  then the first element of [c] prevails. 3) [c] and [r] can have different
+  length, the return will be an rectangular matrix.
+ *)
+
+val hadamard : ('a, 'b) kind -> int -> ('a, 'b) t
+(** [hadamard k n] construct a hadamard matrix of order [n]. For a hadamard [H],
+  we have [H'*H = n*I]. Currrently, this function handles only the cases where
+  [n], [n/12], or [n/20] is a power of 2.
+ *)
+
 
 (** {6 Obtain the basic properties} *)
 
@@ -270,59 +323,6 @@ val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 val dropout : ?rate:float -> ?seed:int -> ('a, 'b) t -> ('a, 'b) t
 (** [dropout ~rate:0.3 x] drops out 30% of the elements in [x], in other words,
   by setting their values to zeros.
- *)
-
-val triu : ?k:int -> ('a, 'b) t -> ('a, 'b) t
-(** [triu k x] returns the element on and above the [k]th diagonal of [x].
-  [k = 0] is the main diagonal, [k > 0] is above the main diagonal, and
-  [k < 0] is below the main diagonal.
- *)
-
-
-val tril : ?k:int -> ('a, 'b) t -> ('a, 'b) t
-(** [tril k x] returns the element on and below the [k]th diagonal of [x].
-  [k = 0] is the main diagonal, [k > 0] is above the main diagonal, and
-  [k < 0] is below the main diagonal.
- *)
-
-val symmetric : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
-(** [symmetric ~upper x] creates a symmetric matrix using either upper or lower
-  triangular part of [x]. If [upper] is [true] then it uses the upper part, if
-  [upper] is [false], then [symmetric] uses the lower part. By default [upper]
-  is true.
- *)
-
-val bidiagonal : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [bidiagonal upper dv ev] creates a bidiagonal matrix using [dv] and [ev].
-  Both [dv] and [ev] are row vectors. [dv] is the main diagonal. If [upper] is
-  [true] then [ev] is superdiagonal; if [upper] is [false] then [ev] is
-  subdiagonal. By default, [upper] is [true].
- *)
-
-val toeplitz : ?c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [toeplitz ~c r] generates a toeplitz matrix using [r] and [c]. Both [r] and
-  [c] are row vectors of the same length. If the first elements of [c] is
-  different from that of [r], [r]'s first element will be used.
-
-  Note: 1) If [c] is not passed in, then [c = r] will be used. 2) If [c] is not
-  passed in and [r] is complex, the [c = conj r] will be used. 3) If [r] and [c]
-  have different length, then the result is a rectangular matrix.
- *)
-
-val hankel : ?r:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [hankel ~r c] generates a hankel matrix using [r] and [c]. [c] will be the
-  first column and [r] will be the last row of the returned matrix.
-
-  Note: 1) If only [c] is passed in, the elelments below the anti-diagnoal are
-  zero. 2) If the last element of [c] is different from the first element of [r]
-  then the first element of [c] prevails. 3) [c] and [r] can have different
-  length, the return will be an rectangular matrix.
- *)
-
-val hadamard : ('a, 'b) kind -> int -> ('a, 'b) t
-(** [hadamard k n] construct a hadamard matrix of order [n]. For a hadamard [H],
-  we have [H'*H = n*I]. Currrently, this function handles only the cases where
-  [n], [n/12], or [n/20] is a power of 2.
  *)
 
 

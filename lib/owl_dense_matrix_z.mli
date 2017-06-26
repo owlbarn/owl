@@ -54,6 +54,20 @@ val bernoulli : ?p:float -> ?seed:int -> int -> int -> mat
 
 val diagm : ?k:int -> mat -> mat
 
+val triu : ?k:int -> mat -> mat
+
+val tril : ?k:int -> mat -> mat
+
+val symmetric : ?upper:bool -> mat -> mat
+
+val bidiagonal : ?upper:bool -> mat -> mat -> mat
+
+val toeplitz : ?c:mat -> mat -> mat
+
+val hankel : ?r:mat -> mat -> mat
+
+val hadamard : int -> mat
+
 
 (** {7 Dense row vectors and meshgrids} *)
 
@@ -156,20 +170,6 @@ val repeat : ?axis:int -> mat -> int -> mat
 val pad : ?v:elt -> int list list -> mat -> mat
 
 val dropout : ?rate:float -> ?seed:int -> mat -> mat
-
-val triu : ?k:int -> mat -> mat
-
-val tril : ?k:int -> mat -> mat
-
-val symmetric : ?upper:bool -> mat -> mat
-
-val bidiagonal : ?upper:bool -> mat -> mat -> mat
-
-val toeplitz : ?c:mat -> mat -> mat
-
-val hankel : ?r:mat -> mat -> mat
-
-val hadamard : int -> mat
 
 
 (** {6 Iterate elements, columns, and rows.} *)
