@@ -178,6 +178,54 @@ CAMLprim value FUN16(value vN, value vX, value vA)
 #endif /* FUN16 */
 
 
+// function to compare two arrays with regard to a scalar
+#ifdef FUN21
+
+CAMLprim value FUN21(value vN, value vX, value vY, value vA)
+{
+  CAMLparam4(vN, vX, vY, vA);
+  int N = Long_val(vN);
+  INIT;
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
+  CAMLunused int dim_Y = *big_Y->dim;
+  NUMBER *Y_data = ((NUMBER *) big_Y->data);
+
+  NUMBER *start_x, *stop_x, *start_y;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  start_x = X_data;
+  stop_x = start_x + N;
+  start_y = Y_data;
+
+  int r = 1;
+
+  while (start_x != stop_x) {
+    NUMBER x = *start_x;
+    NUMBER y = *start_y;
+
+    if (STOPFN(x, y)) {
+      r = 0;
+      break;
+    }
+
+    start_x += 1;
+    start_y += 1;
+  };
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_int(r));
+}
+
+#endif /* FUN21 */
+
+
 #undef NUMBER
 #undef STOPFN
 #undef CHECKFN
@@ -187,3 +235,4 @@ CAMLprim value FUN16(value vN, value vX, value vA)
 #undef FUN1
 #undef FUN2
 #undef FUN16
+#undef FUN21

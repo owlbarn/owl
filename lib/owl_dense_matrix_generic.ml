@@ -720,6 +720,11 @@ let less_equal x1 x2 =
   let _op = (_owl_less_equal (Array2.kind x1)) in
   (_op) (numel x1) y1 y2 = 1
 
+let approx_equal ?eps x1 x2 =
+  let y1 = to_ndarray x1 in
+  let y2 = to_ndarray x2 in
+  Owl_dense_ndarray_generic.approx_equal ?eps y1 y2
+
 let elt_equal x1 x2 = Owl_dense_ndarray_generic.elt_equal (to_ndarray x1) (to_ndarray x2) |> of_ndarray
 
 let elt_not_equal x1 x2 = Owl_dense_ndarray_generic.elt_not_equal (to_ndarray x1) (to_ndarray x2) |> of_ndarray

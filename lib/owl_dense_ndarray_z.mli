@@ -180,6 +180,8 @@ val greater_equal : arr -> arr -> bool
 
 val less_equal : arr -> arr -> bool
 
+val approx_equal : ?eps:float -> arr -> arr -> bool
+
 val elt_equal : arr -> arr -> arr
 
 val elt_not_equal : arr -> arr -> arr

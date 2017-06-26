@@ -263,6 +263,8 @@ val greater_equal : mat -> mat -> bool
 
 val less_equal : mat -> mat -> bool
 
+val approx_equal : ?eps:float -> mat -> mat -> bool
+
 val elt_equal : mat -> mat -> mat
 
 val elt_not_equal : mat -> mat -> mat

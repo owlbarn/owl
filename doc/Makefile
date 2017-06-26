@@ -3,6 +3,7 @@ DOCS=\
 	${DIR}/owl_cblas.mli \
 	${DIR}/owl_lapacke.ml \
 	${DIR}/owl_lapacke_generated.mli \
+	${DIR}/owl_dense_matrix.ml \
 	${DIR}/owl_dense_matrix_generic.mli \
 	${DIR}/owl_dense_ndarray_generic.mli \
 	${DIR}/owl_sparse_matrix_generic.mli \

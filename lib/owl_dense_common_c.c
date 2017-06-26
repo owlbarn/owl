@@ -2156,5 +2156,34 @@ value cp_two_doubles(double d0, double d1)
 #define STOPFN(X) (fpclassify(X.r) != FP_NORMAL || fpclassify(X.i) != FP_NORMAL)
 #include "owl_dense_common_vec_cmp.c"
 
+// approx_equal
+
+#define FUN21 real_float_approx_equal
+#define NUMBER float
+#define INIT float a = Double_val(vA)
+#define STOPFN(X,Y) fabsf(X - Y) >= a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN21 real_double_approx_equal
+#define NUMBER double
+#define INIT double a = Double_val(vA)
+#define STOPFN(X,Y) fabs(X - Y) >= a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN21 complex_float_approx_equal
+#define NUMBER complex_float
+#define INIT float a = Double_val(vA)
+#define STOPFN(X,Y) fabsf(X.r - Y.r) >= a || fabsf(X.i - Y.i) >= a
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN21 complex_double_approx_equal
+#define NUMBER complex_double
+#define INIT double a = Double_val(vA)
+#define STOPFN(X,Y) fabs(X.r - Y.r) >= a || fabs(X.i - Y.i) >= a
+#include "owl_dense_common_vec_cmp.c"
+
+
+// sort
+
 
 //////////////////// function templates ends ////////////////////

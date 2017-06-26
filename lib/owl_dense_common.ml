@@ -312,6 +312,7 @@ type ('a, 'b) owl_vec_op11 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -
 type ('a, 'b) owl_vec_op12 = int -> ('a, 'b) owl_vec -> float -> int -> unit
 type ('a, 'b) owl_vec_op13 = int -> ('a, 'b) owl_vec -> 'a -> 'a -> unit
 type ('a, 'b) owl_vec_op14 = int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit
+type ('a, 'b) owl_vec_op15 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> float -> int
 type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
@@ -1427,6 +1428,18 @@ let _owl_modf : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
   | Complex32 -> owl_complex_float_modf
   | Complex64 -> owl_complex_double_modf
   | _         -> failwith "_owl_modf: unsupported operation"
+
+external owl_real_float_approx_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> float -> int = "real_float_approx_equal"
+external owl_real_double_approx_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> float -> int = "real_double_approx_equal"
+external owl_complex_float_approx_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> float -> int = "complex_float_approx_equal"
+external owl_complex_double_approx_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> float -> int = "complex_double_approx_equal"
+
+let _owl_approx_equal : type a b. (a, b) kind -> (a, b) owl_vec_op15 = function
+  | Float32   -> owl_real_float_approx_equal
+  | Float64   -> owl_real_double_approx_equal
+  | Complex32 -> owl_complex_float_approx_equal
+  | Complex64 -> owl_complex_double_approx_equal
+  | _         -> failwith "_owl_approx_equal: unsupported operation"
 
 
 (* ends here *)

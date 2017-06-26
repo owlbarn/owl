@@ -560,6 +560,14 @@ val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
   greater than the corresponding elements in [y].
  *)
 
+val approx_equal : ?eps:float -> ('a, 'b) t -> ('a, 'b) t -> bool
+(** [approx_equal ~eps x y] returns [true] if [x] and [y] are approximately
+  equal, i.e., for any two elements [a] from [x] and [b] from [y], we have
+  [abs (a - b) < eps].
+
+  Note: the threshold check is exclusive for passed in [eps].
+ *)
+
 val elt_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_equal x y] performs element-wise [=] comparison of [x] and [y]. *)
 
