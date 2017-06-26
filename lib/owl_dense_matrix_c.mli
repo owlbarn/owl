@@ -261,6 +261,10 @@ val is_nonpositive : mat -> bool
 
 val is_nonnegative : mat -> bool
 
+val not_nan : mat -> bool
+
+val not_inf : mat -> bool
+
 val equal : mat -> mat -> bool
 
 val not_equal : mat -> mat -> bool

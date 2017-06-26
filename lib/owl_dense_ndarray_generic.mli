@@ -382,6 +382,16 @@ val is_nonpositive : ('a, 'b) t -> bool
 val is_nonnegative : ('a, 'b) t -> bool
 (** [is_nonnegative] returns [true] if all the elements in [x] are non-negative. *)
 
+val not_nan : ('a, 'b) t -> bool
+(** [not_nan x] returns [false] if there is any [NaN] element in [x]. Otherwise,
+  the function returns [true] indicating all the numbers in [x] are not [NaN].
+ *)
+
+val not_inf : ('a, 'b) t -> bool
+(** [not_inf x] returns [false] if there is any positive or negative [INF]
+  element in [x]. Otherwise, the function returns [true].
+ *)
+
 val equal : ('a, 'b) t -> ('a, 'b) t -> bool
 (** [equal x y] returns [true] if two ('a, 'b) trices [x] and [y] are equal. *)
 

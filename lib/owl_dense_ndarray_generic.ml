@@ -1348,6 +1348,16 @@ let is_nonpositive x =
   let _op = _owl_is_nonpositive (kind x) in
   _op (numel x) y = 1
 
+let not_nan x =
+  let y = flatten x |> array1_of_genarray in
+  let _op = _owl_not_nan (kind x) in
+  _op (numel x) y = 1
+
+let not_inf x =
+  let y = flatten x |> array1_of_genarray in
+  let _op = _owl_not_inf (kind x) in
+  _op (numel x) y = 1
+
 let equal x y = ( = ) x y
 
 let not_equal x y = ( <> ) x y

@@ -125,12 +125,12 @@ value cp_two_doubles(double d0, double d1)
 
 #define FUN1 complex_float_is_zero
 #define NUMBER complex_float
-#define STOPFN(X) (X.r == 0 && X.i == 0)
+#define STOPFN(X) (X.r != 0 || X.i != 0)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN1 complex_double_is_zero
 #define NUMBER complex_double
-#define STOPFN(X) (X.r == 0 && X.i == 0)
+#define STOPFN(X) (X.r != 0 || X.i != 0)
 #include "owl_dense_common_vec_cmp.c"
 
 // is_positive
@@ -2089,5 +2089,49 @@ value cp_two_doubles(double d0, double d1)
 #define INIT double a, b;
 #define MAPFN(X,Y) a = modf(X->r,&b); X->r = a; Y->r = b; a = modf(X->i,&b); X->i = a; Y->i = b
 #include "owl_dense_common_vec_map.c"
+
+// not_nan
+
+#define FUN1 real_float_not_nan
+#define NUMBER float
+#define STOPFN(X) fpclassify(X) == FP_NAN
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 real_double_not_nan
+#define NUMBER double
+#define STOPFN(X) fpclassify(X) == FP_NAN
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 complex_float_not_nan
+#define NUMBER complex_float
+#define STOPFN(X) (fpclassify(X.r) == FP_NAN || fpclassify(X.i) == FP_NAN)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 complex_double_not_nan
+#define NUMBER complex_double
+#define STOPFN(X) (fpclassify(X.r) == FP_NAN || fpclassify(X.i) == FP_NAN)
+#include "owl_dense_common_vec_cmp.c"
+
+// not_inf
+
+#define FUN1 real_float_not_inf
+#define NUMBER float
+#define STOPFN(X) fpclassify(X) == FP_INFINITE
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 real_double_not_inf
+#define NUMBER double
+#define STOPFN(X) fpclassify(X) == FP_INFINITE
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 complex_float_not_inf
+#define NUMBER complex_float
+#define STOPFN(X) (fpclassify(X.r) == FP_INFINITE || fpclassify(X.i) == FP_INFINITE)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 complex_double_not_inf
+#define NUMBER complex_double
+#define STOPFN(X) (fpclassify(X.r) == FP_INFINITE || fpclassify(X.i) == FP_INFINITE)
+#include "owl_dense_common_vec_cmp.c"
 
 //////////////////// function templates ends ////////////////////

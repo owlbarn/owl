@@ -468,6 +468,30 @@ let _owl_is_nonpositive : type a b. (a, b) kind -> (a, b) owl_vec_op01 = functio
   | Complex64 -> owl_complex_double_is_nonpositive
   | _         -> failwith "_owl_is_nonpositive: unsupported operation"
 
+external owl_real_float_not_nan : int -> ('a, 'b) owl_vec -> int = "real_float_not_nan"
+external owl_real_double_not_nan : int -> ('a, 'b) owl_vec -> int = "real_double_not_nan"
+external owl_complex_float_not_nan : int -> ('a, 'b) owl_vec -> int = "complex_float_not_nan"
+external owl_complex_double_not_nan : int -> ('a, 'b) owl_vec -> int = "complex_double_not_nan"
+
+let _owl_not_nan : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
+  | Float32   -> owl_real_float_not_nan
+  | Float64   -> owl_real_double_not_nan
+  | Complex32 -> owl_complex_float_not_nan
+  | Complex64 -> owl_complex_double_not_nan
+  | _         -> failwith "_owl_not_nan: unsupported operation"
+
+external owl_real_float_not_inf : int -> ('a, 'b) owl_vec -> int = "real_float_not_inf"
+external owl_real_double_not_inf : int -> ('a, 'b) owl_vec -> int = "real_double_not_inf"
+external owl_complex_float_not_inf : int -> ('a, 'b) owl_vec -> int = "complex_float_not_inf"
+external owl_complex_double_not_inf : int -> ('a, 'b) owl_vec -> int = "complex_double_not_inf"
+
+let _owl_not_inf : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
+  | Float32   -> owl_real_float_not_inf
+  | Float64   -> owl_real_double_not_inf
+  | Complex32 -> owl_complex_float_not_inf
+  | Complex64 -> owl_complex_double_not_inf
+  | _         -> failwith "_owl_not_inf: unsupported operation"
+
 external owl_real_float_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_elt_equal"
 external owl_real_double_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_elt_equal"
 external owl_complex_float_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_elt_equal"

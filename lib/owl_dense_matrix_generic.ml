@@ -668,6 +668,14 @@ let is_nonpositive x =
   let y = to_ndarray x in
   Owl_dense_ndarray_generic.is_nonpositive y
 
+let not_nan x =
+  let y = to_ndarray x in
+  Owl_dense_ndarray_generic.not_nan y
+
+let not_inf x =
+  let y = to_ndarray x in
+  Owl_dense_ndarray_generic.not_inf y
+
 let equal x1 x2 = x1 = x2
 
 let not_equal x1 x2 = x1 <> x2
