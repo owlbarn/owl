@@ -226,6 +226,47 @@ CAMLprim value FUN21(value vN, value vX, value vY, value vA)
 #endif /* FUN21 */
 
 
+// function to compare an array to a specific value A w.r.t to B
+#ifdef FUN22
+
+CAMLprim value FUN22(value vN, value vX, value vA, value vB)
+{
+  CAMLparam4(vN, vX, vA, vB);
+  int N = Long_val(vN);
+  INIT;
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  NUMBER *start_x, *stop_x;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  start_x = X_data;
+  stop_x = start_x + N;
+
+  int r = 1;
+
+  while (start_x != stop_x) {
+    NUMBER x = *start_x;
+
+    if (STOPFN(x)) {
+      r = 0;
+      break;
+    }
+
+    start_x += 1;
+  };
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_int(r));
+}
+
+#endif /* FUN22 */
+
+
 #undef NUMBER
 #undef STOPFN
 #undef CHECKFN
@@ -236,3 +277,4 @@ CAMLprim value FUN21(value vN, value vX, value vY, value vA)
 #undef FUN2
 #undef FUN16
 #undef FUN21
+#undef FUN22

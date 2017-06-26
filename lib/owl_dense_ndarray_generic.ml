@@ -1427,6 +1427,11 @@ let approx_equal ?(eps=1e-6) x y =
   let _op = _owl_approx_equal (kind x) in
   _op (numel x) x' y' eps = 1
 
+let approx_equal_scalar ?(eps=1e-6) x a =
+  let x' = flatten x |> array1_of_genarray in
+  let _op = _owl_approx_equal_scalar (kind x) in
+  _op (numel x) x' a eps = 1
+
 let exists f x =
   let b = ref false in
   try iter (fun y ->

@@ -305,6 +305,8 @@ val less_equal_scalar : mat -> elt -> bool
 
 val greater_equal_scalar : mat -> elt -> bool
 
+val approx_equal_scalar : ?eps:float -> mat -> elt -> bool
+
 val elt_equal_scalar : mat -> elt -> mat
 
 val elt_not_equal_scalar : mat -> elt -> mat

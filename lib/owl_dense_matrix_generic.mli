@@ -604,6 +604,14 @@ val less_equal_scalar : ('a, 'b) t -> 'a -> bool
 val greater_equal_scalar : ('a, 'b) t -> 'a -> bool
 (* [greater_equal_scalar x a] checks if all the elements in [x] are greater or equal to [a]. *)
 
+val approx_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> bool
+(** [approx_equal_scalar ~eps x a] returns [true] all the elements in [x] are
+  approximately equal to [a], i.e., [abs (x - a) < eps]. For complex numbers,
+  the [eps] applies to both real and imaginary part.
+
+  Note: the threshold check is exclusive for the passed in [eps].
+ *)
+
 val elt_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (* [elt_equal_scalar x a] performs element-wise [=] comparison of [x] and [a]. *)
 

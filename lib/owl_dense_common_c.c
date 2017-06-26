@@ -2182,6 +2182,31 @@ value cp_two_doubles(double d0, double d1)
 #define STOPFN(X,Y) fabs(X.r - Y.r) >= a || fabs(X.i - Y.i) >= a
 #include "owl_dense_common_vec_cmp.c"
 
+// approx_equal_scalar
+
+#define FUN22 real_float_approx_equal_scalar
+#define INIT float a = Double_val(vA); float b = Double_val(vB)
+#define NUMBER float
+#define STOPFN(X) fabsf(X - a) >= b
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN22 real_double_approx_equal_scalar
+#define INIT double a = Double_val(vA); double b = Double_val(vB)
+#define NUMBER double
+#define STOPFN(X) fabs(X - a) >= b
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN22 complex_float_approx_equal_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1); float b = Double_val(vB)
+#define NUMBER complex_float
+#define STOPFN(X) (fabsf(X.r - ar) >= b) || (fabsf(X.i - ai) >= b)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN22 complex_double_approx_equal_scalar
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1); double b = Double_val(vB)
+#define NUMBER complex_double
+#define STOPFN(X) (fabs(X.r - ar) >= b) || (fabs(X.i - ai) >= b)
+#include "owl_dense_common_vec_cmp.c"
 
 // sort
 
