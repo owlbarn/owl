@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Metric system including CGS, MKS, SI, and various physical constants. *)
+(** Metric system: CGS, MKS, SI, and physical constants. *)
 
 (** Values of physical constants
   CGS < MKS < SI. Read wikipedia on CGS and SI system for more details.

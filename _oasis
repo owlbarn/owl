@@ -65,10 +65,16 @@ Library owl
                     ### NLP, Topic models ###
                     nlp/Owl_nlp,
                     nlp/Owl_nlp_lda,
-                    #nlp/Owl_nlp_lda0,
                     nlp/Owl_nlp_tfidf,
                     nlp/Owl_nlp_corpus,
                     nlp/Owl_nlp_vocabulary,
+                    ### Neural network ###
+                    neural/Owl_neural,
+                    neural/Owl_neural_neuron,
+                    neural/Owl_neural_graph,
+                    neural/Owl_neural_feedforward,
+                    neural/Owl_neural_optimise,
+                    neural/Owl_neural_parallel,
                     ### Experimental ###
                     ext/Owl_ext,
                     Owl_parallel
@@ -141,17 +147,6 @@ Library owl
                     -framework Accelerate
                     -lopenblas
                     -lgfortran
-
-Library owl_neural
-  Path:             lib/neural
-  BuildTools:       ocamlbuild, ocamldoc
-  Modules:          Owl_neural,
-                    Owl_neural_neuron,
-                    Owl_neural_graph,
-                    Owl_neural_feedforward,
-                    Owl_neural_optimise,
-                    Owl_neural_parallel
-  BuildDepends:     owl
 
 # +-------------------------------------------------------------------+
 # | Performance tests                                                 |
@@ -254,13 +249,13 @@ Executable test_neural
   Path:           examples
   CompiledObject: best
   MainIs:         test_neural.ml
-  BuildDepends:   owl, owl_neural
+  BuildDepends:   owl
 
 # Executable test_lstm
 #  Path:           examples
 #  CompiledObject: best
 #  MainIs:         test_lstm.ml
-#  BuildDepends:   owl, owl_neural
+#  BuildDepends:   owl
 
 # Executable test_tfidf
 #  Path:           examples

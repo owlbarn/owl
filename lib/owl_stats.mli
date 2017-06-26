@@ -3,8 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Statistics module including varoius random number generators, PDF and CDF
-  functions, and hypothesis tests.
+(** Statistics: random number generators, PDF and CDF functions, and hypothesis
+  tests.
  *)
 
 (**

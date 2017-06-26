@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Parallel & distributed computing: engine interface *)
+
 (* Experimental module, do not use now *)
 
 

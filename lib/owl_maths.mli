@@ -3,9 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Mathematics module including various fundamental and advanced mathematical
-  functions.
- *)
+(** Maths: fundamental and advanced mathematical functions. *)
 
 (**
   This module contains some basic and advanced mathematical operations.

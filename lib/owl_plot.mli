@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Plot module supports many high-level plotting functions. *)
+(** Plot: high-level plotting functions. *)
 
 (** The input to a plot function is supposed to be a row-based matrix/vector.
   The functions in this module are built atop of Plplot library.
