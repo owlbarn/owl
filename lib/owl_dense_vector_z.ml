@@ -23,7 +23,7 @@ let gaussian ?typ ?sigma m = V.gaussian ?typ ?sigma Complex64 m
 
 let uniform ?typ ?scale m = V.uniform ?typ ?scale Complex64 m
 
-let sequential ?typ m = V.sequential ?typ Complex64 m
+let sequential ?typ ?a ?step m = V.sequential ?typ ?a ?step Complex64 m
 
 let unit_basis ?typ m i = V.unit_basis ?typ Complex64 m i
 

@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** NLP: TFIDF module *)
+
 open Owl_nlp_utils
 
 module Vec = Owl_dense_vector_d

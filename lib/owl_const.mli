@@ -3,21 +3,23 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
- (** Values of physical constants
-   CGS < MKS < SI. Read wikipedia on CGS and SI system for more details.
+(** Metric system: CGS, MKS, SI, and physical constants. *)
 
-   International System of Units (French: Système international d'unités, SI),
-   historically also called the MKSA system of units for
-   metre–kilogram–second–ampere.
+(** Values of physical constants
+  CGS < MKS < SI. Read wikipedia on CGS and SI system for more details.
 
-   The SI system of units extends the MKS system and has 7 base units, by
-   expressing any measurement of physical quantities using fundamental units
-   of Length, Mass, Time, Electric Current, Thermodynamic Temperature, Amount
-   of substance and Luminous Intensity, which are Metre, Kilogram, Second,
-   Ampere, Kelvin, Mole and Candela respectively.
+  International System of Units (French: Système international d'unités, SI),
+  historically also called the MKSA system of units for
+  metre–kilogram–second–ampere.
 
-   http://www.npl.co.uk/upload/pdf/units-of-measurement-poster.pdf
-  *)
+  The SI system of units extends the MKS system and has 7 base units, by
+  expressing any measurement of physical quantities using fundamental units
+  of Length, Mass, Time, Electric Current, Thermodynamic Temperature, Amount
+  of substance and Luminous Intensity, which are Metre, Kilogram, Second,
+  Ampere, Kelvin, Mole and Candela respectively.
+
+  http://www.npl.co.uk/upload/pdf/units-of-measurement-poster.pdf
+*)
 
 module SI : sig
   val speed_of_light : float

@@ -3,10 +3,15 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+
+(** Neural network: Feedforward neural network *)
+
+
 open Owl_algodiff.S
 open Owl_neural_neuron
 
-(* Simple Feedforward neural network module *)
+
+(* definition of Feedforward neural network *)
 
 type network = {
   mutable layers : neuron array;

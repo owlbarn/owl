@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Algorithmic differentiation *)
+(** Algorithmic & numerical differentiation *)
 
 (* Alias modules of algorithmic differentiation. *)
 

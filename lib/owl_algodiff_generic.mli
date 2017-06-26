@@ -3,9 +3,10 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Algodiff: algorithmic differentiation module *)
 
-(** {6 To use Make functor in Algodiff, the passed in module needs to implement the
-  following functions to support necessary mathematical functions and etc.} *)
+(** To use Make functor in Algodiff, the passed in module needs to implement the
+  following functions to support necessary mathematical functions and etc. *)
 
 module type MatrixSig = sig
 

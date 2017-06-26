@@ -5,15 +5,16 @@
  *   Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** NLP: LDA module *)
+
+
 open Owl
-open Bigarray
 
-module MS = Sparse.Dok_matrix
-module MD = Owl_dense_matrix_d
-
-type lda_typ = SimpleLDA | FTreeLDA | LightLDA | SparseLDA
-type dsmat = (float, float64_elt) Owl_dense_matrix_generic.t
-type spmat = (float, float64_elt) Owl_sparse_dok_matrix.t
+type lda_typ =
+  | SimpleLDA
+  | FTreeLDA
+  | LightLDA
+  | SparseLDA
 
 type model = {
   mutable n_d : int;                      (* number of documents *)
@@ -25,56 +26,28 @@ type model = {
   mutable alpha_k : float;                (* model hyper-parameters *)
   mutable beta_v  : float;                (* model hyper-parameters *)
 
-  mutable t_dk : dsmat;                   (* document-topic table: num of tokens assigned to each topic in each doc *)
-  mutable t_wk : spmat;                   (* word-topic table: num of tokens assigned to each topic for each word *)
-  mutable t__k : dsmat;                   (* number of tokens assigned to a topic: k = sum_w t_wk = sum_d t_dk *)
+  mutable t_dk : float array array;       (* document-topic table: num of tokens assigned to each topic in each doc *)
+  mutable t_wk : float array array;       (* word-topic table: num of tokens assigned to each topic for each word *)
+  mutable t__k : float array;             (* number of tokens assigned to a topic: k = sum_w t_wk = sum_d t_dk *)
   mutable t__z : int array array;         (* table of topic assignment of each token in each document *)
 
   mutable iter : int;                     (* number of iterations *)
-  mutable data : int array array;         (* training data, tokenised *)
+  mutable data : Owl_nlp_corpus.t;        (* training data, tokenised*)
   mutable vocb : (string, int) Hashtbl.t; (* vocabulary, or dictionary if you prefer *)
 }
 
 let include_token m w d k =
-  MD.(set m.t__k 0 k (get m.t__k 0 k +. 1.));
-  MS.(set m.t_wk w k (get m.t_wk w k +. 1.));
-  MD.(set m.t_dk d k (get m.t_dk d k +. 1.))
+  m.t__k.(k) <- (m.t__k.(k) +. 1.);
+  m.t_wk.(w).(k) <- (m.t_wk.(w).(k) +. 1.);
+  m.t_dk.(d).(k) <- (m.t_dk.(d).(k) +. 1.)
 
 let exclude_token m w d k =
-  MD.(set m.t__k 0 k (get m.t__k 0 k -. 1.));
-  MS.(set m.t_wk w k (get m.t_wk w k -. 1.));
-  MD.(set m.t_dk d k (get m.t_dk d k -. 1.))
-
-let likelihood m =
-  let _sum = ref 0. in
-  let n_token = ref 0 in
-  (* every document *)
-  for i = 0 to m.n_d - 1 do
-    let dlen = Array.length m.t__z.(i) in
-    n_token := !n_token + dlen;
-    let dsum = ref 0. in
-    (* every token *)
-    for j = 0 to dlen - 1 do
-      let wsum = ref 0. in
-      let w = m.data.(i).(j) in
-      (* every topic *)
-      for k = 0 to m.n_k - 1 do
-        wsum := !wsum +. (MD.get m.t_dk i k +. m.alpha_k) *. (MS.get m.t_wk w k +. m.beta) /. (MD.get m.t__k 0 k +. m.beta_v);
-      done;
-      dsum := !dsum +. (Maths.log2 !wsum);
-    done;
-    let dlen = float_of_int dlen in
-    _sum := !_sum +. !dsum -. dlen *. (Maths.log2 dlen);
-  done;
-  !_sum /. (float_of_int !n_token)
+  m.t__k.(k) <- (m.t__k.(k) -. 1.);
+  m.t_wk.(w).(k) <- (m.t_wk.(w).(k) -. 1.);
+  m.t_dk.(d).(k) <- (m.t_dk.(d).(k) -. 1.)
 
 let show_info m i t =
-  let s = match i mod 1 = 0 with
-    | true  -> Printf.sprintf "likelihood:%.3f" (likelihood m)
-    | false -> ""
-  in
-  Log.info "iter#%i t(s):%.1f t_dk:%.3f t_wk:%.3f %s" i t (MD.density m.t_dk) (MS.density m.t_wk) s
-
+  Log.info "iter#%i t(s):%.1f t_dk:%.3f t_wk:%.3f" i t 0. 0.
 
 (* implement several LDA with specific samplings *)
 
@@ -82,24 +55,24 @@ module SimpleLDA = struct
 
   let init m = ()
 
-  let sampling m d =
-    let p = MD.zeros 1 m.n_k in
+  let sampling m d doc =
+    let p = Array.make m.n_k 0. in
     Array.iteri (fun i w ->
       let k = m.t__z.(d).(i) in
       exclude_token m w d k;
       (* make cdf function *)
       let x = ref 0. in
       for j = 0 to m.n_k - 1 do
-        x := !x +. (MD.get m.t_dk d j +. m.alpha_k) *. (MS.get m.t_wk w j +. m.beta) /. (MD.get m.t__k 0 j +. m.beta_v);
-        MD.set p 0 j !x;
+        x := !x +. (m.t_dk.(d).(j) +. m.alpha_k) *. (m.t_wk.(w).(j) +. m.beta) /. (m.t__k.(j) +. m.beta_v);
+        p.(j) <- !x;
       done;
       (* draw a sample *)
       let u = Stats.Rnd.uniform () *. !x in
       let k = ref 0 in
-      while (MD.get p 0 !k) < u do k := !k + 1 done;
+      while p.(!k) < u do k := !k + 1 done;
       include_token m w d !k;
       m.t__z.(d).(i) <- !k;
-    ) m.data.(d)
+    ) doc
 
 end
 
@@ -108,42 +81,46 @@ module SparseLDA = struct
 
   let s = ref 0.    (* Cache of s *)
   let q = ref [| |] (* Cache of q *)
-  let r_non_zero :  (int, float) Hashtbl.t ref = ref (Hashtbl.create 1) (*  *)
-  let q_non_zero :  (int, bool) Hashtbl.t ref = ref (Hashtbl.create 1)  (*  *)
+  let r_non_zero : (int, float) Hashtbl.t ref = ref (Hashtbl.create 1) (*  *)
+  let q_non_zero : (int, bool)  Hashtbl.t ref = ref (Hashtbl.create 1) (*  *)
 
   let exclude_token_sparse m w d k ~s ~r ~q =
-    let t__klocal = ref ((MD.get m.t__k 0 k) )in
+    let t__klocal = ref m.t__k.(k) in
     (* Reduce s, r  l *)
     s := !s -. (m.beta *. m.alpha_k) /. (!t__klocal +. m.beta_v);
-    r := !r -. (m.beta *. (MD.get m.t_dk d k)) /. (m.beta_v +. !t__klocal);
+    r := !r -. (m.beta *. m.t_dk.(d).(k)) /. (m.beta_v +. !t__klocal);
     exclude_token m w d k;
     (* add back in  s,r *)
-    t__klocal :=  (MD.get m.t__k 0 k);
-    Array.set !q k ((m.alpha_k +. (MD.get m.t_dk d k)) /. (m.beta_v +. !t__klocal));
-    let r_local = (MD.get m.t_dk d k) in
+    t__klocal :=  m.t__k.(k);
+    Array.set !q k ((m.alpha_k +. m.t_dk.(d).(k)) /. (m.beta_v +. !t__klocal));
+    let r_local = m.t_dk.(d).(k) in
     (match r_local with
     | 0. ->  Hashtbl.remove !r_non_zero k
-    | _  -> (Hashtbl.replace !r_non_zero k r_local;
-      r := !r +. (m.beta *. r_local) /. (m.beta_v +. !t__klocal)
-    ));
+    | _  -> (
+        Hashtbl.replace !r_non_zero k r_local;
+        r := !r +. (m.beta *. r_local) /. (m.beta_v +. !t__klocal)
+      )
+    );
     s := !s +. (m.beta *. m.alpha_k) /. (!t__klocal +. m.beta_v)
 
   let include_token_sparse m w d k ~s ~r ~q =
-    let t__klocal = ref (MD.get m.t__k 0 k) in
+    let t__klocal = ref m.t__k.(k) in
     (* Reduce s, r  l *)
-    s := !s -. (m.beta *. m.alpha_k)/.( !t__klocal +. m.beta_v);
-    r := !r -. (m.beta *. (MD.get m.t_dk d k)) /. (m.beta_v +. !t__klocal);
+    s := !s -. (m.beta *. m.alpha_k) /. (!t__klocal +. m.beta_v);
+    r := !r -. (m.beta *. m.t_dk.(d).(k)) /. (m.beta_v +. !t__klocal);
     include_token m w d k;
     (* add back in s, r *)
-    t__klocal :=  (MD.get m.t__k 0 k);
-    s := !s +. (m.beta *. m.alpha_k)/.(!t__klocal +. m.beta_v);
-    let r_local = (MD.get m.t_dk d k) in
+    t__klocal :=  m.t__k.(k);
+    s := !s +. (m.beta *. m.alpha_k) /. (!t__klocal +. m.beta_v);
+    let r_local = m.t_dk.(d).(k) in
     (match r_local with
     | 0. ->  Hashtbl.remove !r_non_zero k
-    | _  -> (Hashtbl.replace !r_non_zero k r_local;
-            r := !r +. (m.beta *. r_local) /. (m.beta_v +. !t__klocal))
+    | _  -> (
+        Hashtbl.replace !r_non_zero k r_local;
+        r := !r +. (m.beta *. r_local) /. (m.beta_v +. !t__klocal)
+      )
     );
-    Array.set !q k ((m.alpha_k +. (MD.get m.t_dk d k)) /. (m.beta_v +. !t__klocal))
+    Array.set !q k ((m.alpha_k +. m.t_dk.(d).(k)) /. (m.beta_v +. !t__klocal))
 
   let init m =
     (* reset module parameters, maybe wrap into model? *)
@@ -154,7 +131,7 @@ module SparseLDA = struct
     (* s is independent of document *)
     let k = ref 0 in
     while !k < m.n_k do
-      let t__klocal = (MD.get m.t__k 0 !k) in
+      let t__klocal = m.t__k.(!k) in
       s := !s +. (1. /. (m.beta_v +. t__klocal));
       k := !k + 1;
     done;
@@ -163,14 +140,14 @@ module SparseLDA = struct
     q_non_zero := (Hashtbl.create m.n_k);
     s := !s *. (m.alpha_k *. m.beta)
 
-  let sampling m d =
+  let sampling m d doc =
     let k = ref 0 in
     let r = ref 0. in (* Cache of r *)
     (* Calculate r *)
     Hashtbl.clear !r_non_zero;
     while !k < m.n_k do
-      let t__klocal = (MD.get m.t__k 0 !k) in
-      let r_local = (MD.get m.t_dk d !k) in
+      let t__klocal = m.t__k.(!k) in
+      let r_local = m.t_dk.(d).(!k) in
       (* Sparse representation of r *)
       if r_local != 0. then (
         let r_val = r_local /. (m.beta_v +.  t__klocal) in
@@ -179,7 +156,7 @@ module SparseLDA = struct
       );
       (* Build up our q cache *)
       (* TODO: efficiently handle t_dk = 0 *)
-      Array.set !q !k ((m.alpha_k +. (MD.get m.t_dk d !k)) /. (m.beta_v +. t__klocal));
+      Array.set !q !k ((m.alpha_k +. m.t_dk.(d).(!k)) /. (m.beta_v +. t__klocal));
       k := !k + 1;
     done;
     r := !r *. m.beta;
@@ -194,9 +171,9 @@ module SparseLDA = struct
         Hashtbl.clear !q_non_zero;
         (* This bit makes it (K) rather than O(K_d + K_w) *)
         while !k_q < m.n_k do
-          let q_local  =  (MS.get m.t_wk w !k_q) in
+          let q_local = m.t_wk.(w).(!k_q) in
           if q_local != 0. then (
-            qsum := !qsum +. (Array.get !q !k_q) *. q_local;
+            qsum := !qsum +. !q.(!k_q) *. q_local;
             Hashtbl.add !q_non_zero !k_q true;
           );
           k_q := !k_q + 1;
@@ -210,7 +187,7 @@ module SparseLDA = struct
           u := !u /. (m.alpha_k *. m.beta); (* Don't need this *)
           let slocal = ref 0. in
           while !slocal < !u do
-            slocal := !slocal +. (1. /. (m.beta_v +. (MD.get m.t__k 0 !k_q) ));
+            slocal := !slocal +. ( 1. /. (m.beta_v +. m.t__k.(!k_q)) );
             k_q := !k_q + 1;
           done;
           (* Found our topic (we went past it by one) *)
@@ -222,7 +199,7 @@ module SparseLDA = struct
           let rlocal = ref 0. in
           (* TODO: pick largest (order by decreasing) for efficiency *)
           Hashtbl.iter (fun key data -> if !rlocal < !u then (
-                    rlocal := !rlocal +. (data) /. (m.beta_v +. (MD.get m.t__k 0 key) );
+                    rlocal := !rlocal +. (data) /. ( m.beta_v +. m.t__k.(key) );
                     k := key)
               ) !r_non_zero
         )
@@ -231,14 +208,17 @@ module SparseLDA = struct
           let qlocal = ref 0. in
           (* Iterate over set of non-zero q *)
           (* TODO: make descending *)
-          Hashtbl.iter (fun key _ -> if !qlocal < !u then (
-                    qlocal := !qlocal +. (Array.get !q key) *. (MS.get m.t_wk w key);
-                    k := key)
-              ) !q_non_zero
+          Hashtbl.iter (fun key _ ->
+            if !qlocal < !u then (
+              qlocal := !qlocal +. !q.(key) *. m.t_wk.(w).(key);
+              k := key
+            )
+          ) !q_non_zero
         );
         include_token_sparse m w d !k s r q;
         m.t__z.(d).(i) <- !k;
-      ) m.data.(d)
+      ) doc
+
 end
 
 
@@ -246,7 +226,7 @@ module FTreeLDA = struct
 
   let init m = ()
 
-  let sampling m d = ()
+  let sampling m d doc = ()
 
 end
 
@@ -255,7 +235,7 @@ module LightLDA = struct
 
   let init m = ()
 
-  let sampling m d = ()
+  let sampling m d doc = ()
 
 end
 
@@ -264,7 +244,7 @@ end
 let init ?(iter=100) k v d =
   Log.info "init the model";
   (* set basic model stats *)
-  let n_d = Array.length d in
+  let n_d = Owl_nlp_corpus.length d in
   let n_v = Hashtbl.length v in
   let n_k = k in
   (* set model hyper-parameters *)
@@ -273,9 +253,9 @@ let init ?(iter=100) k v d =
   let alpha_k = alpha /. (float_of_int n_k) in
   let beta_v = (float_of_int n_v) *. beta in
   (* init model parameters *)
-  let t_dk = MD.zeros n_d n_k in
-  let t_wk = MS.zeros float64 n_v n_k in
-  let t__k = MD.zeros 1 n_k in
+  let t_dk = Array.init n_d (fun _ -> Array.make n_k 0.) in
+  let t_wk = Array.init n_v (fun _ -> Array.make n_k 0.) in
+  let t__k = Array.make n_k 0. in
   (* set document data and vocabulary *)
   let data = d in
   let vocb = v in
@@ -298,7 +278,7 @@ let init ?(iter=100) k v d =
   }
   in
   (* randomise the topic assignment for each token *)
-  m.t__z <- Array.mapi (fun i s ->
+  m.t__z <- Owl_nlp_corpus.mapi_tok (fun i s ->
     Array.init (Array.length s) (fun j ->
       let k' = Stats.Rnd.uniform_int ~a:0 ~b:(k - 1) () in
       include_token m s.(j) i k';
@@ -324,10 +304,11 @@ let train typ m =
   init m;
   for i = 0 to m.iter - 1 do
     let t0 = Unix.gettimeofday () in
-    for j = 0 to m.n_d - 1 do
+    Owl_nlp_corpus.iteri_tok (
+      fun j doc ->
       (* Log.info "iteration #%i - doc#%i" i j; *)
-      sampling m j
-    done;
+      sampling m j doc
+    ) m.data;
     let t1 = Unix.gettimeofday () in
     show_info m i (t1 -. t0);
   done

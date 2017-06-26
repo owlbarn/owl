@@ -1,12 +1,14 @@
-
 (*
  * OWL - an OCaml numerical library for scientific computing
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Please refer to: Intel Math Kernel Library implements the BLAS
-  url: https://software.intel.com/en-us/mkl-developer-reference-c
+(** CBLAS interface: high-level interface  beween Owl and level-1, level-2,
+  level-3 BLAS functions.
  *)
+
+(** Please refer to: Intel Math Kernel Library in the CBLAS interface
+  url: https://software.intel.com/en-us/mkl-developer-reference-c *)
 
 
 (** {6 Definition of basic types} *)
@@ -29,7 +31,7 @@ type cblas_diag = CblasNonUnit | CblasUnit
 type cblas_side = CblasLeft | CblasRight
 
 
-(** {6 Level 1 BLAS: vector-vector operations} *)
+(** {6 Level-1 BLAS: vector-vector operations} *)
 
 
 (* Computes the parameters for a Givens rotation. *)
@@ -51,6 +53,13 @@ val drotmg : float -> float -> float -> float -> float * float * float * d_t
 val srot : int -> s_t -> int -> s_t -> int -> float -> float -> unit
 
 val drot : int -> d_t -> int -> d_t -> int -> float -> float -> unit
+
+
+(* Performs modified Givens rotation of points in the plane *)
+
+val srotm : int -> s_t -> int -> s_t -> int -> s_t -> unit
+
+val drotm : int -> d_t -> int -> d_t -> int -> d_t -> unit
 
 
 (* Swaps a vector with another vector. *)
@@ -162,7 +171,7 @@ val icamax : int -> c_t -> int -> int
 val izamax : int -> z_t -> int -> int
 
 
-(** {6 Level 2 BLAS: matrix-vector operations} *)
+(** {6 Level-2 BLAS: matrix-vector operations} *)
 
 
 (* Computes a matrix-vector product using a general matrix *)
@@ -374,7 +383,7 @@ val zhpr2 : cblas_layout -> cblas_uplo -> int -> Complex.t -> z_t -> int -> z_t 
 
 
 
-(** {6 Level 3 BLAS: matrix-matrix operations} *)
+(** {6 Level-3 BLAS: matrix-matrix operations} *)
 
 
 (* Computes a matrix-matrix product with general matrices. *)

@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** [ Dense matrix module ]  *)
+(** Dense data structures: matrix & ndarray  *)
 
 module Ndarray = Owl_dense_ndarray
 

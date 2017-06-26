@@ -3,12 +3,29 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module S = Owl_dense_vector_s
+(** Vector: module aliases *)
 
-module D = Owl_dense_vector_d
 
-module C = Owl_dense_vector_c
+module Generic = struct
+  include Owl_dense_vector_generic
+end
 
-module Z = Owl_dense_vector_z
 
-module Generic = Owl_dense_vector_generic
+module S = struct
+  include Owl_dense_vector_s
+end
+
+
+module D = struct
+  include Owl_dense_vector_d
+end
+
+
+module C = struct
+  include Owl_dense_vector_c
+end
+
+
+module Z = struct
+  include Owl_dense_vector_z
+end

@@ -3,8 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Statistics module
+(** Statistics: random number generators, PDF and CDF functions, and hypothesis
+  tests.
+ *)
 
+(**
   The module includes some basic statistical functions such as mean, variance,
   skew, and etc. It also includes the following three submodules.
 

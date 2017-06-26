@@ -4,7 +4,6 @@ Owl is an OCaml numerical library. It supports N-dimensional arrays, both dense 
 
 The full API documentation is here (maybe outdated):
 
-* on [mirage.io](http://docs.mirage.io/owl/index.html)
 * on [cam.ac.uk](http://www.cl.cam.ac.uk/~lw525/owl/)
 
 The series of tutorials is here (more is coming):

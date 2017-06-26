@@ -3,9 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Maths: fundamental and advanced mathematical functions. *)
 
-(** Mathematics module
-
+(**
   This module contains some basic and advanced mathematical operations.
   If you cannot find some function in this module, try Stats module.
 
@@ -612,6 +612,16 @@ val ln10 : float
 val ln2 : float
 
 val lnpi : float
+
+
+(** {6 Some utility functions} *)
+
+val is_odd : int -> bool
+
+val is_even : int -> bool
+
+val is_pow2 : int -> bool
+
 
 
 (* ends here *)

@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Matrix: module aliases *)
+
 
 module Operator = struct
   include Owl_operator.Make_Basic (Owl_dense_matrix_generic)

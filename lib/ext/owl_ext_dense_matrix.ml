@@ -167,7 +167,7 @@ module type BasicSig = sig
 
   val transpose : mat -> mat
 
-  val diag : mat -> mat
+  val diag : ?k:int -> mat -> mat
 
   val replace_row : mat -> mat -> int -> mat
 

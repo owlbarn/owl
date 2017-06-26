@@ -3,6 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Vector module: various functions of vectors *)
+
+
 open Bigarray
 
 (* save some efforts, just include it *)
@@ -38,9 +41,9 @@ let uniform ?(typ=Row) ?scale k m = match typ with
   | Row -> M.uniform ?scale k 1 m
   | Col -> M.uniform ?scale k m 1
 
-let sequential ?(typ=Row) k m = match typ with
-  | Row -> M.sequential k 1 m
-  | Col -> M.sequential k m 1
+let sequential ?(typ=Row) ?a ?step k m = match typ with
+  | Row -> M.sequential ?a ?step k 1 m
+  | Col -> M.sequential ?a ?step k m 1
 
 let unit_basis ?(typ=Row) k m i =
   let a1 = Owl_types._one k in

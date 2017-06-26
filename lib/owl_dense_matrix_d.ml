@@ -47,6 +47,8 @@ let meshgrid xa xb ya yb xn yn = M.meshgrid Float64 xa xb ya yb xn yn
 
 let bernoulli ?p ?seed d = M.bernoulli Float64 ?p ?seed d
 
+let hadamard n = M.hadamard Float64 n
+
 let of_array x m n = M.of_array Float64 x m n
 
 let of_arrays x = M.of_arrays Float64 x

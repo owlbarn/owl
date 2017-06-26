@@ -536,4 +536,14 @@ let permutation_iterator n =
   in f
 
 
+let is_odd x = ((Pervasives.abs x) mod 2) = 1
+
+
+let is_even x = (x mod 2) = 0
+
+
+let is_pow2 x = (x <> 0) && (x land (x - 1) = 0)
+
+
+
 (* ends here *)

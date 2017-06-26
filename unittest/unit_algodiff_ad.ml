@@ -2,6 +2,8 @@
 
 open Owl.Algodiff.D
 
+let approx_equal a b = Pervasives.abs_float (a -. b) < 1e-16
+
 (* a module with functions to test *)
 module To_test = struct
 
@@ -38,7 +40,7 @@ module To_test = struct
 
   let poly8 x = x |> diff (diff pfunc) |> unpack_flt
 
-  let poly9 x = x |> diff (diff (diff pfunc)) |> unpack_flt
+  let poly9 x = x |> diff (diff (diff pfunc)) |> unpack_flt |> approx_equal 0.00636573616030225702
 
 
 end
@@ -82,7 +84,7 @@ let poly8 () =
   Alcotest.(check float) "poly8" (-0.25 /. (4. ** 1.5) +. 2. *. (Owl.Maths.tanh 4.) *. ((Owl.Maths.sech 4.) ** 2.) +. 4.) (To_test.poly8 (F 4.))
 
 let poly9 () =
-  Alcotest.(check float) "poly9" 0.00636573616030225702 (To_test.poly9 (F 4.))
+  Alcotest.(check bool) "poly9" true (To_test.poly9 (F 4.))
 
 let test_set = [
   "dumb", `Slow, dumb;

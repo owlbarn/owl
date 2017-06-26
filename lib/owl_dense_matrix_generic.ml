@@ -95,6 +95,22 @@ let logspace k ?(base=Owl_maths.e) a b n =
   let x = Owl_dense_ndarray_generic.reshape x [|1;n|] in
   reshape_2 x 1 n
 
+let diagm ?(k=0) v =
+  let n = numel v in
+  let u = genarray_of_array2 v in
+  let u = reshape u [|n|] in
+  let u = array1_of_genarray u in
+  let x = zeros (kind v) (n + abs k) (n + abs k) in
+  let i, j =
+    match k < 0 with
+    | true  -> abs k, 0
+    | false -> 0, abs k
+  in
+  for k = 0 to n - 1 do
+    x.{i+k, j+k} <- u.{k}
+  done;
+  x
+
 (* matrix manipulations *)
 
 let same_shape x1 x2 = shape x1 = shape x2
@@ -119,15 +135,21 @@ let set = Array2.unsafe_set
 let get = Array2.unsafe_get
 
 let row x i =
+  let m, n = shape x in
+  assert (i < m);
   let y = Array2.slice_left x i in
-  reshape_2 (genarray_of_array1 y) 1 (col_num x)
+  reshape_2 (genarray_of_array1 y) 1 n
 
 let col x j =
   let m, n = shape x in
-  let y = empty (Array2.kind x) m 1 in
-  for i = 0 to m - 1 do
-    Array2.unsafe_set y i 0 (Array2.unsafe_get x i j)
-  done; y
+  assert (j < n);
+  let k = Array2.kind x in
+  let y = empty k m 1 in
+  let _cp_op = _owl_copy k in
+  let _x = Owl_utils.array2_to_array1 x in
+  let _y = Owl_utils.array2_to_array1 y in
+  _cp_op m ~ofsx:j ~incx:n ~ofsy:0 ~incy:1 _x _y;
+  y
 
 let copy_area_to x1 r1 x2 r2 =
   if not (equal_area r1 r2) then
@@ -159,22 +181,44 @@ let copy_col_to v x i =
   copy_area_to v r1 x r2
 
 let concat_vertical x1 x2 =
-  let m1, m2 = row_num x1, row_num x2 in
-  let n1, n2 = col_num x1, col_num x2 in
-  let x3 = empty (Array2.kind x1) (m1 + m2) (min n1 n2) in
-  for i = 0 to (m1 + m2) - 1 do
-    let z = if i < m1 then row x1 i else row x2 (i - m1) in
-    copy_row_to z x3 i
-  done; x3
+  let m1, n1 = shape x1 in
+  let m2, n2 = shape x2 in
+  assert (n1 = n2);
+  let m3 = m1 + m2 in
+  let k = kind x1 in
+  let x3 = empty k m3 n1 in
+  let _cp_op = _owl_copy k in
+  let _x1 = Owl_utils.array2_to_array1 x1 in
+  let _x2 = Owl_utils.array2_to_array1 x2 in
+  let _x3 = Owl_utils.array2_to_array1 x3 in
+  let num1 = numel x1 in
+  let num2 = numel x2 in
+  _cp_op num1 ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 _x1 _x3;
+  _cp_op num2 ~ofsx:0 ~incx:1 ~ofsy:num1 ~incy:1 _x2 _x3;
+  x3
 
 let concat_horizontal x1 x2 =
-  let m1, m2 = row_num x1, row_num x2 in
-  let n1, n2 = col_num x1, col_num x2 in
-  let x3 = empty (Array2.kind x1) (min m1 m2) (n1 + n2)  in
-  for i = 0 to (row_num x3) - 1 do
-    for j = 0 to n1 - 1 do x3.{i,j} <- x1.{i,j} done;
-    for j = 0 to n2 - 1 do x3.{i,j+n1} <- x2.{i,j} done;
-  done; x3
+  let m1, n1 = shape x1 in
+  let m2, n2 = shape x2 in
+  assert (m1 = m2);
+  let n3 = n1 + n2 in
+  let k = kind x1 in
+  let x3 = empty k m1 n3 in
+  let _cp_op = _owl_copy k in
+  let _x1 = Owl_utils.array2_to_array1 x1 in
+  let _x2 = Owl_utils.array2_to_array1 x2 in
+  let _x3 = Owl_utils.array2_to_array1 x3 in
+  let ofs1 = ref 0 in
+  let ofs2 = ref 0 in
+  let ofs3 = ref 0 in
+  for i = 0 to m1 - 1 do
+    _cp_op n1 ~ofsx:!ofs1 ~incx:1 ~ofsy:!ofs3 ~incy:1 _x1 _x3;
+    _cp_op n2 ~ofsx:!ofs2 ~incx:1 ~ofsy:(!ofs3 + n1) ~incy:1 _x2 _x3;
+    ofs1 := !ofs1 + n1;
+    ofs2 := !ofs2 + n2;
+    ofs3 := !ofs3 + n3;
+  done;
+  x3
 
 let concatenate ?(axis=0) xs =
   assert (axis = 0 || axis = 1);
@@ -185,12 +229,24 @@ let concatenate ?(axis=0) xs =
 let rows x l =
   let m, n = Array.length (l), col_num x in
   let y = empty (Array2.kind x) m n in
-  Array.iteri (fun i j -> copy_row_to (row x j) y i) l; y
+  Array.iteri (fun i j ->
+    copy_row_to (row x j) y i
+  ) l;
+  y
 
 let cols x l =
-  let m, n = row_num x, Array.length (l) in
-  let y = empty (Array2.kind x) m n in
-  Array.iteri (fun i j -> copy_col_to (col x j) y i) l; y
+  let m, n = shape x in
+  let nl = Array.length (l) in
+  let k = kind x in
+  let y = empty k m nl in
+  let _cp_op = _owl_copy k in
+  let _x = Owl_utils.array2_to_array1 x in
+  let _y = Owl_utils.array2_to_array1 y in
+  Array.iteri (fun i j ->
+    assert (i < nl && j < n);
+    _cp_op m ~ofsx:j ~incx:n ~ofsy:i ~incy:nl _x _y;
+  ) l;
+  y
 
 let swap_rows x i i' = _eigen_swap_rows (kind x) x i i'
 
@@ -201,6 +257,29 @@ let transpose x =
   let y = empty (kind x) (col_num x) (row_num x) in
   Owl_backend_gsl_linalg.transpose_copy (kind x) y x;
   y
+
+
+let ctranspose x =
+  let m, n = shape x in
+  let y = empty (kind x) n m in
+  let _x = Owl_utils.array2_to_array1 x in
+  let _y = Owl_utils.array2_to_array1 y in
+  (* different strategies depends on row/col ratio *)
+  let len, incx, incy, iofx, iofy, loops =
+    match m <= n with
+    | true  -> n, 1, m, n, 1, m
+    | false -> m, n, 1, 1, m, n
+  in
+  let _op = _owl_conj (kind x) in
+  let ofsx = ref 0 in
+  let ofsy = ref 0 in
+  for i = 0 to loops - 1 do
+    _op len ~ofsx:!ofsx ~incx ~ofsy:!ofsy ~incy _x _y;
+    ofsx := !ofsx + iofx;
+    ofsy := !ofsy + iofy;
+  done;
+  y
+
 
 let replace_row v x i =
   let y = clone x in
@@ -231,6 +310,100 @@ let slice axis x =
   of_ndarray y
 
 let pad ?v d x = Owl_dense_ndarray_generic.pad ?v d (to_ndarray x) |> of_ndarray
+
+
+let triu ?(k=0) x =
+  let m, n = shape x in
+  let c = numel x in
+  let y = zeros (kind x) m n in
+  let _x = to_ndarray x in
+  let _x = reshape _x [|c|] |> array1_of_genarray in
+  let _y = to_ndarray y in
+  let _y = reshape _y [|c|] |> array1_of_genarray in
+
+  let _cp_op = _owl_copy (kind x) in
+  let ofs = ref (Pervasives.(min n (max 0 k))) in
+  let len = ref (Pervasives.(max 0 (min n (n - k)))) in
+  let loops = Pervasives.(max 0 (min m (n - k))) in
+
+  for i = 0 to loops - 1 do
+    _cp_op !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 _x _y;
+    if i + k >= 0 then (
+      ofs := !ofs + n + 1;
+      len := !len - 1
+    )
+    else ofs := !ofs + n
+  done;
+  (* return the final upper triangular matrix *)
+  y
+
+
+let tril ?(k=0) x =
+  let m, n = shape x in
+  let c = numel x in
+  let y = zeros (kind x) m n in
+  let _x = to_ndarray x in
+  let _x = reshape _x [|c|] |> array1_of_genarray in
+  let _y = to_ndarray y in
+  let _y = reshape _y [|c|] |> array1_of_genarray in
+
+  let _cp_op = _owl_copy (kind x) in
+  let row_i = Pervasives.(min m (abs (min 0 k))) in
+  let len = ref (Pervasives.(min n ((max 0 k) + 1))) in
+  let ofs = ref (row_i * n) in
+
+  for i = row_i to m - 1 do
+    _cp_op !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 _x _y;
+    ofs := !ofs + n;
+    if !len < n then
+      len := !len + 1
+  done;
+  (* return the final lower triangular matrix *)
+  y
+
+
+let symmetric ?(upper=true) x =
+  let m, n = shape x in
+  assert (m = n);
+  let y = clone x in
+  let _y = Owl_utils.array2_to_array1 y in
+
+  let _cp_op = _owl_copy (kind x) in
+  let ofs = ref 0 in
+
+  let incx, incy =
+    match upper with
+    | true  -> 1, m
+    | false -> m, 1
+  in
+  for i = 0 to m - 1 do
+    _cp_op (m - i) ~ofsx:!ofs ~incx ~ofsy:!ofs ~incy _y _y;
+    ofs := !ofs + n + 1
+  done;
+  (* return the symmetric matrix *)
+  y
+
+
+let bidiagonal ?(upper=true) dv ev =
+  let m = numel dv in
+  let n = numel ev in
+  assert (m - n = 1);
+
+  let k = kind dv in
+  let x = zeros k m m in
+  let _dv = Owl_utils.array2_to_array1 dv in
+  let _ev = Owl_utils.array2_to_array1 ev in
+
+  let i, j = match upper with
+    | true  -> 0, 1
+    | false -> 1, 0
+  in
+  for k = 0 to m - 2 do
+    x.{k, k} <- _dv.{k};
+    x.{k+i, k+j} <- _ev.{k}
+  done;
+  x.{m-1, m-1} <- _dv.{m-1};
+  x
 
 
 (* matrix iteration operations *)
@@ -661,10 +834,21 @@ let average x =
   let _op = _average_elt (kind x) in
   _op (sum x) (numel x)
 
-let diag x =
-  let m = Pervasives.min (row_num x) (col_num x) in
-  let y = empty (Array2.kind x) 1 m in
-  for i = 0 to m - 1 do y.{0,i} <- x.{i,i} done; y
+let diag ?(k=0) x =
+  let m, n = shape x in
+  let l = match k >= 0 with
+    | true  -> Pervasives.(max 0 (min m (n - k)))
+    | false -> Pervasives.(max 0 (min n (m + k)))
+  in
+  let i, j = match k >= 0 with
+    | true  -> 0, k
+    | false -> abs k, 0
+  in
+  let y = empty (Array2.kind x) 1 l in
+  for k = 0 to l - 1 do
+    y.{0,k} <- x.{i + k, j + k}
+  done;
+  y
 
 let trace x = sum (diag x)
 
@@ -684,6 +868,12 @@ let reshape m n x =
   reshape_2 x m n
 
 let flatten x = reshape 1 (numel x) x
+
+let resize ?head m n x =
+  let x = to_ndarray x in
+  Owl_dense_ndarray_generic.resize ?head x [|m;n|]
+  |> of_ndarray
+
 
 (* TODO: improve performance
 
@@ -841,9 +1031,6 @@ let im_c2s x = x |> to_ndarray |> Owl_dense_ndarray_generic.im_c2s |> of_ndarray
 
 let im_z2d x = x |> to_ndarray |> Owl_dense_ndarray_generic.im_z2d |> of_ndarray
 
-
-(* TODO: optimise *)
-let conj x = map Complex.conj x
 
 let abs x =
   let y = to_ndarray x in
@@ -1215,6 +1402,165 @@ let cast_d2z x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_d2z |> of_nda
 let cast_s2z x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_s2z |> of_ndarray
 
 let cast_d2c x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_d2c |> of_ndarray
+
+
+(* other functions *)
+
+
+let toeplitz ?c r =
+  let c = match c with
+    | Some c -> c
+    | None   -> conj r
+  in
+  let m = col_num c in
+  let n = col_num r in
+  c.{0,0} <- r.{0,0};
+  let x = empty (kind r) m n in
+  let _x = Owl_utils.array2_to_array1 x in
+  let _r = Owl_utils.array2_to_array1 r in
+  let _c = Owl_utils.array2_to_array1 c in
+  let _op = _owl_copy (kind r) in
+  let ofs = ref 0 in
+  let loops = Pervasives.min m n in
+
+  for i = 0 to loops - 1 do
+    _op (n - i) ~ofsx:0 ~incx:1 _r ~ofsy:!ofs ~incy:1 _x;
+    _op (m - i) ~ofsx:0 ~incx:1 _c ~ofsy:!ofs ~incy:n _x;
+    ofs := !ofs + n + 1;
+  done;
+  x
+
+
+let hankel ?r c =
+  let m = col_num c in
+  let r = match r with
+    | Some r -> r
+    | None   -> zeros (kind c) 1 m
+  in
+  let n = col_num r in
+  r.{0,0} <- c.{0,m-1};
+  let x = empty (kind r) m n in
+  let _x = Owl_utils.array2_to_array1 x in
+  let _r = Owl_utils.array2_to_array1 r in
+  let _c = Owl_utils.array2_to_array1 c in
+  let _op = _owl_copy (kind r) in
+  let ofs = ref ( (m - 1) * n ) in
+  let loops = Pervasives.min m n in
+
+  for i = 0 to loops - 1 do
+    _op (n - i) ~ofsx:0 ~incx:1 _r ~ofsy:!ofs ~incy:1 _x;
+    _op (m - i) ~ofsx:i ~incx:1 _c ~ofsy:i ~incy:n _x;
+    ofs := !ofs - n + 1;
+  done;
+  x
+
+
+(* Hadamard Matrix *)
+
+let _hadamard_12 = Array.map float_of_int
+  [|
+    1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1;
+    1;-1; 1;-1; 1; 1; 1;-1;-1;-1; 1;-1;
+    1;-1;-1; 1;-1; 1; 1; 1;-1;-1;-1; 1;
+    1; 1;-1;-1; 1;-1; 1; 1; 1;-1;-1;-1;
+    1;-1; 1;-1;-1; 1;-1; 1; 1; 1;-1;-1;
+    1;-1;-1; 1;-1;-1; 1;-1; 1; 1; 1;-1;
+    1;-1;-1;-1; 1;-1;-1; 1;-1; 1; 1; 1;
+    1; 1;-1;-1;-1; 1;-1;-1; 1;-1; 1; 1;
+    1; 1; 1;-1;-1;-1; 1;-1;-1; 1;-1; 1;
+    1; 1; 1; 1;-1;-1;-1; 1;-1;-1; 1;-1;
+    1;-1; 1; 1; 1;-1;-1;-1; 1;-1;-1; 1;
+    1; 1;-1; 1; 1; 1;-1;-1;-1; 1;-1;-1;
+  |]
+
+
+let _hadamard_20 = Array.map float_of_int
+  [|
+    1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1; 1;
+    1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;
+    1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;
+    1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1;
+    1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1;
+    1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;
+    1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;
+    1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;
+    1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;
+    1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1;
+    1;-1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;
+    1; 1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1;
+    1;-1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;
+    1; 1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1;
+    1; 1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1;
+    1; 1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1;
+    1; 1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1;
+    1;-1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;
+    1;-1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;
+    1; 1;-1;-1; 1; 1;-1;-1;-1;-1; 1;-1; 1;-1; 1; 1; 1; 1;-1;-1;
+  |]
+
+
+let hadamard k n =
+  (* function to build up hadamard matrix recursively *)
+  let rec _make_hadamard
+    (cp_op : ('a, 'b) Owl_dense_common.owl_vec_op99)
+    (neg_op : ('a, 'b) Owl_dense_common.owl_vec_op99)
+    len n base x =
+    if len = base then ()
+    else (
+      let len' = len / 2 in
+      _make_hadamard cp_op neg_op len' n base x;
+      let ofsx = ref 0 in
+      for i = 0 to len' - 1 do
+        let x1_ofs = !ofsx + len' in
+        let x2_ofs = !ofsx + len' * n in
+        let x3_ofs = x2_ofs + len' in
+        cp_op len' ~ofsx:!ofsx ~incx:1 ~ofsy:x1_ofs ~incy:1 x x;
+        cp_op len' ~ofsx:!ofsx ~incx:1 ~ofsy:x2_ofs ~incy:1 x x;
+        cp_op len' ~ofsx:!ofsx ~incx:1 ~ofsy:x3_ofs ~incy:1 x x;
+        (* negate the bottom right block *)
+        neg_op len' ~ofsx:x3_ofs ~incx:1 ~ofsy:x3_ofs ~incy:1 x x;
+        ofsx := !ofsx + n;
+      done;
+    )
+  in
+  (* function to convert the pre-calculated hadamard array into type k *)
+  let _float_array_to_k : type a b. (a, b) kind -> float array -> a array =
+    fun k a -> match k with
+    | Float32  -> a
+    | Float64  -> a
+    | Complex32 -> Array.map (fun b -> Complex.({re=b; im=0.})) a
+    | Complex64 -> Array.map (fun b -> Complex.({re=b; im=0.})) a
+    | _         -> failwith "Owl_dense_matrix_generic.hadamard"
+  in
+  (* start building, only deal with pow2 of n, n/12, n/20. *)
+  let x = empty k n n in
+  let _x = Owl_utils.array2_to_array1 x in
+  let cp_op = _owl_copy k in
+  let neg_op = _owl_neg k in
+  if Owl_maths.is_pow2 n then (
+    x.{0,0} <- (_one k);
+    _make_hadamard cp_op neg_op n n 1 _x;
+    x
+  )
+  else if Owl_maths.is_pow2 (n / 12) && Pervasives.(n mod 12) = 0 then (
+    let y = _float_array_to_k k _hadamard_12 in
+    let y = of_array k y 12 12 in
+    let _area = area 0 0 11 11 in
+    copy_area_to y _area x _area;
+    _make_hadamard cp_op neg_op n n 12 _x;
+    x
+  )
+  else if Owl_maths.is_pow2 (n / 20) && Pervasives.(n mod 20) = 0 then (
+    let y = _float_array_to_k k _hadamard_20 in
+    let y = of_array k y 20 20 in
+    let _area = area 0 0 19 19 in
+    copy_area_to y _area x _area;
+    _make_hadamard cp_op neg_op n n 20 _x;
+    x
+  )
+  else
+    failwith "Owl_dense_matrix_generic:hadamard"
+
 
 
 (* experimental functions *)

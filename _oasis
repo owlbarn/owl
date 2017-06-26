@@ -38,107 +38,115 @@ Library owl
                     Owl_dense,
                     ### Core components ###
                     Owl_operator,
-                    Owl_dense_common,
                     Owl_dense_ndarray,
-                    Owl_dense_ndarray_a,
-                    Owl_dense_ndarray_s,
-                    Owl_dense_ndarray_d,
-                    Owl_dense_ndarray_c,
-                    Owl_dense_ndarray_z,
                     Owl_dense_ndarray_generic,
                     Owl_dense_matrix,
-                    Owl_dense_matrix_s,
-                    Owl_dense_matrix_d,
-                    Owl_dense_matrix_c,
-                    Owl_dense_matrix_z,
                     Owl_dense_matrix_generic,
                     Owl_dense_vector,
-                    Owl_dense_vector_s,
-                    Owl_dense_vector_d,
-                    Owl_dense_vector_c,
-                    Owl_dense_vector_z,
                     Owl_dense_vector_generic,
                     Owl_sparse,
-                    Owl_sparse_common,
                     Owl_sparse_ndarray,
-                    Owl_sparse_ndarray_s,
-                    Owl_sparse_ndarray_d,
-                    Owl_sparse_ndarray_c,
-                    Owl_sparse_ndarray_z,
                     Owl_sparse_ndarray_generic,
                     Owl_sparse_matrix,
-                    Owl_sparse_matrix_s,
-                    Owl_sparse_matrix_d,
-                    Owl_sparse_matrix_c,
-                    Owl_sparse_matrix_z,
                     Owl_sparse_matrix_generic,
-                    Owl_sparse_dok_matrix,
                     Owl_algodiff,
                     Owl_algodiff_generic,
                     Owl_algodiff_numerical,
-                    Owl_conv,
                     Owl_fft,
+                    Owl_cblas,
+                    Owl_lapacke,
                     Owl_linalg,
                     Owl_cluster,
                     Owl_optimise,
                     Owl_regression,
                     Owl_plot,
-                    Owl_pretty,
                     Owl_dataset,
-                    Owl_slicing,
                     Owl_toplevel,
                     ### NLP, Topic models ###
                     nlp/Owl_nlp,
                     nlp/Owl_nlp_lda,
-                    nlp/Owl_nlp_lda0,
                     nlp/Owl_nlp_tfidf,
                     nlp/Owl_nlp_corpus,
                     nlp/Owl_nlp_vocabulary,
-                    nlp/Owl_nlp_utils,
-                    nlp/Owl_nlp_similarity,
+                    ### Neural network ###
+                    neural/Owl_neural,
+                    neural/Owl_neural_neuron,
+                    neural/Owl_neural_graph,
+                    neural/Owl_neural_feedforward,
+                    neural/Owl_neural_optimise,
+                    neural/Owl_neural_parallel,
                     ### Experimental ###
                     ext/Owl_ext,
+                    Owl_parallel
+  InternalModules:  Owl_cblas_generated,
+                    Owl_lapacke_generated,
+                    Owl_conv,
+                    Owl_dense_common,
+                    Owl_dense_ndarray_a,
+                    Owl_dense_ndarray_s,
+                    Owl_dense_ndarray_d,
+                    Owl_dense_ndarray_c,
+                    Owl_dense_ndarray_z,
+                    Owl_dense_matrix_s,
+                    Owl_dense_matrix_d,
+                    Owl_dense_matrix_c,
+                    Owl_dense_matrix_z,
+                    Owl_dense_vector_s,
+                    Owl_dense_vector_d,
+                    Owl_dense_vector_c,
+                    Owl_dense_vector_z,
+                    Owl_sparse_common,
+                    Owl_sparse_ndarray_s,
+                    Owl_sparse_ndarray_d,
+                    Owl_sparse_ndarray_c,
+                    Owl_sparse_ndarray_z,
+                    Owl_sparse_matrix_s,
+                    Owl_sparse_matrix_d,
+                    Owl_sparse_matrix_c,
+                    Owl_sparse_matrix_z,
+                    Owl_sparse_dok_matrix,
+                    Owl_pretty,
+                    Owl_slicing,
                     ext/Owl_ext_types,
                     ext/Owl_ext_lifts,
                     ext/Owl_ext_uniop,
                     ext/Owl_ext_binop,
                     ext/Owl_ext_dense_ndarray,
                     ext/Owl_ext_dense_matrix,
-                    Owl_parallel,
                     ### Backend modules ###
                     backend/Owl_backend_gsl_maths,
                     backend/Owl_backend_gsl_stats,
                     backend/Owl_backend_gsl_linalg,
-                    Owl_cblas
-  InternalModules:  Owl_cblas_bindings,
-                    Owl_cblas_generated
+                    # Others
+                    nlp/Owl_nlp_utils,
+                    nlp/Owl_nlp_similarity
   CSources:         owl_macros.h,
                     owl_dense_common_c.c,
                     owl_dense_common_vec_cmp.c,
                     owl_dense_common_vec_map.c,
                     owl_dense_common_vec_fold.c,
                     owl_dense_common_vec_combine.c,
-                    owl_cblas.h,
-                    owl_cblas_generated_stub.c
+                    cblas.h,
+                    lapacke.h,
+                    lapacke_config.h,
+                    lapacke_mangling.h,
+                    owl_cblas_generated_stub.c,
+                    owl_lapacke_generated_stub.c
   CCOpt:            -I$pkg_ctypes
   BuildDepends:     str, ctypes, ctypes.stubs, plplot, dolog,
                     eigen, gsl
   if system(linux) || system(linux_elf)
     CCOpt+:         -g -O3 -Ofast
+    CCLib+:         -L/usr/lib
+                    -lopenblas
+                    -llapacke
   if system(macosx)
     CCOpt+:         -O3
-    CCLib:          -framework Accelerate
-
-Library owl_neural
-  Path:             lib/neural
-  BuildTools:       ocamlbuild, ocamldoc
-  Modules:          Owl_neural,
-                    Owl_neural_neuron,
-                    Owl_neural_graph,
-                    Owl_neural_feedforward,
-                    Owl_neural_optimise,
-                    Owl_neural_parallel
-  BuildDepends:     owl
+    CCLib+:         -L/usr/local/opt/openblas/lib
+                    -L/usr/local/lib/gcc/7
+                    -framework Accelerate
+                    -lopenblas
+                    -lgfortran
 
 # +-------------------------------------------------------------------+
 # | Performance tests                                                 |
@@ -241,13 +249,13 @@ Executable test_neural
   Path:           examples
   CompiledObject: best
   MainIs:         test_neural.ml
-  BuildDepends:   owl, owl_neural
+  BuildDepends:   owl
 
 # Executable test_lstm
 #  Path:           examples
 #  CompiledObject: best
 #  MainIs:         test_lstm.ml
-#  BuildDepends:   owl, owl_neural
+#  BuildDepends:   owl
 
 # Executable test_tfidf
 #  Path:           examples

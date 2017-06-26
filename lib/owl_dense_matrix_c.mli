@@ -52,6 +52,8 @@ val meshup : mat -> mat -> mat * mat
 
 val bernoulli : ?p:float -> ?seed:int -> int -> int -> mat
 
+val diagm : ?k:int -> mat -> mat
+
 
 (** {7 Dense row vectors and meshgrids} *)
 
@@ -105,6 +107,8 @@ val rows : mat -> int array -> mat
 
 val cols : mat -> int array -> mat
 
+val resize : ?head:bool -> int -> int -> mat -> mat
+
 val reshape : int -> int -> mat -> mat
 
 val flatten : mat -> mat
@@ -133,7 +137,9 @@ val concatenate : ?axis:int -> mat array -> mat
 
 val transpose : mat -> mat
 
-val diag : mat -> mat
+val ctranspose : mat -> mat
+
+val diag : ?k:int -> mat -> mat
 
 val replace_row : mat -> mat -> int -> mat
 
@@ -150,6 +156,20 @@ val repeat : ?axis:int -> mat -> int -> mat
 val pad : ?v:elt -> int list list -> mat -> mat
 
 val dropout : ?rate:float -> ?seed:int -> mat -> mat
+
+val triu : ?k:int -> mat -> mat
+
+val tril : ?k:int -> mat -> mat
+
+val symmetric : ?upper:bool -> mat -> mat
+
+val bidiagonal : ?upper:bool -> mat -> mat -> mat
+
+val toeplitz : ?c:mat -> mat -> mat
+
+val hankel : ?r:mat -> mat -> mat
+
+val hadamard : int -> mat
 
 
 (** {6 Iterate elements, columns, and rows.} *)

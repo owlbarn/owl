@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Sparse matrix module *)
+
 (** Sparse real matrix: this module supports the operations on sparse matrices
   of real numbers. The module is partly built atop of GSL fucntions. Because
   GSL only has limited support for sparse matrices. There are some hacks and

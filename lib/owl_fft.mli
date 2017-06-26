@@ -3,10 +3,13 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Fast Fourier Transforms (FFTs) : this module implements some basic FFT
-  operations. Most of them are similar to the same funcitons in Matlab, and
-  you will find it very easy to use in case you are familiar with Matlab.
+(** Fast Fourier Transforms (FFTs) *)
+
+(** This module implements some basic FFT operations. Most of them are similar
+  to the same funcitons in Matlab, and you will find it very easy to use in
+  case you are familiar with Matlab.
  *)
+
 
 type rmat = Owl_dense_matrix_d.mat
 

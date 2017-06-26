@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Ndarray: module aliases *)
+
 
 module Operator = struct
   include Owl_operator.Make_Basic (Owl_dense_ndarray_generic)
@@ -40,4 +42,6 @@ module Z = struct
 end
 
 
-module Any = Owl_dense_ndarray_a
+module Any = struct
+  include Owl_dense_ndarray_a
+end

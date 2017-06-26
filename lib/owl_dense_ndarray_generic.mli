@@ -3,11 +3,10 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** N-dimensional array module
-  This module is built atop of Genarray module in OCaml Bigarray. The module also
-  heavily relies on Lacaml to call native BLAS/LAPACK to improve the performance.
-  The documentation of some math functions is copied directly from Lacaml.
- *)
+(** N-dimensional array module: including creation, manipulation, and various
+  vectorised mathematical operations.
+*)
+
 
 open Bigarray
 
@@ -26,7 +25,7 @@ val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
   The elements in the array are not initialised, they can be any value. [empty]
   is faster than [zeros] to create a ndarray.
 
-  The module only support the following four types of ndarray: [Bigarray.Float32],
+  The module only supports the following four types of ndarray: [Bigarray.Float32],
   [Bigarray.Float64], [Bigarray.Complex32], and [Bigarray.Complex64].
  *)
 
@@ -196,6 +195,18 @@ val fill : ('a, 'b) t -> 'a -> unit
 
 val clone : ('a, 'b) t -> ('a, 'b) t
 (** [clone x] makes a copy of [x]. *)
+
+val resize : ?head:bool -> ('a, 'b) t -> int array -> ('a, 'b) t
+(** [resize ~head x d] resizes the ndarray [x]. If there are less number of
+  elelments in the new shape than the old one, the new ndarray shares part of
+  the memeory with the old [x]. [head] indicates the alignment between the new
+  and old data, either from head or from tail. Note the data is flattened
+  before the operation.
+
+  If there are more elements in the new shape [d]. Then new memeory space will
+  be allocated and the content of [x] will be copied to the new memory. The rest
+  of the allocated space will be filled with zeros.
+ *)
 
 val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
 (** [reshape x d] transforms [x] into a new shape definted by [d]. Note the
@@ -544,7 +555,7 @@ val abs2_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val abs2_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [abs2_z2d x] is similar to [abs2] but takes [complex64] as input. *)
 
-val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
+val conj : ('a, 'b) t -> ('a, 'b) t
 (** [conj x] returns the conjugate of the complex [x]. *)
 
 val neg : ('a, 'b) t -> ('a, 'b) t

@@ -3,8 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Linalg module
+(** Linear algebra module including high-level functions to solve linear
+  systems, factorisation, and etc.
+ *)
 
+(**
   The module includes a set of advanced linear algebra operations such as
   singular value decomposition, and etc.
 

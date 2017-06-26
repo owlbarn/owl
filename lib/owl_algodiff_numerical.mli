@@ -3,7 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Numerical differentiation module
+(** Algodiff: numerical differentiation module *)
+
+(**
   This module provides APIs for performing numerical differentiation of any
   user defined functions. The module is part of Algodiff module, and only
   supports float numbers at the moment.
@@ -13,8 +15,10 @@
   for algorithmic differentiation.
  *)
 
+
 type mat = Owl_dense_matrix_d.mat
 type vec = Owl_dense_vector_d.vec
+
 
 (** {6 Core APIs of differentiation} *)
 

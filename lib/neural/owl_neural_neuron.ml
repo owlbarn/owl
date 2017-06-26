@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Neural network: Neuron definitions *)
+
 open Owl_algodiff.S
 type t = Owl_algodiff.S.t
 

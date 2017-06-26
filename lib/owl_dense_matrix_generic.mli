@@ -3,6 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Matrix module: including creation, manipulation, and various vectorised
+  mathematical operations.
+ *)
+
+
 open Bigarray
 
 type ('a, 'b) t = ('a, 'b, c_layout) Array2.t
@@ -88,6 +93,13 @@ val meshup : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 val bernoulli : ('a, 'b) kind -> ?p:float -> ?seed:int -> int -> int -> ('a, 'b) t
 (** [bernoulli k ~p:0.3 m n]*)
 
+val diagm : ?k:int -> ('a, 'b) t -> ('a, 'b) t
+(** [diagm k v] creates a diagonal matrix using the elements in [v] as
+  diagonal values. [k] specifies the main diagonal index. If [k > 0] then it is
+  above the main diagonal, if [k < 0] then it is below the main diagonal.
+  This function is the same as the [diag] function in Matlab.
+ *)
+
 
 (** {6 Obtain the basic properties} *)
 
@@ -150,6 +162,10 @@ val rows : ('a, 'b) t -> int array -> ('a, 'b) t
 val cols : ('a, 'b) t -> int array -> ('a, 'b) t
 (** Similar to [rows], [cols x a] returns the columns (specified in array [a])
   of x in a new dense matrix.
+ *)
+
+val resize : ?head:bool -> int -> int -> ('a, 'b) t -> ('a, 'b) t
+(* [resize m n x] please refer to the Ndarray document.
  *)
 
 val reshape : int -> int -> ('a, 'b) t -> ('a, 'b) t
@@ -218,8 +234,13 @@ val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 val transpose : ('a, 'b) t -> ('a, 'b) t
 (** [transpose x] transposes an [m] by [n] matrix to [n] by [m] one. *)
 
-val diag : ('a, 'b) t -> ('a, 'b) t
-(** [diag x] returns the diagonal elements of [x]. *)
+val ctranspose : (Complex.t, 'a) t -> (Complex.t, 'a) t
+(** [ctranspose x] performs conjugate transpose of a complex matrix [x]. *)
+
+val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t
+(** [diag k x] returns the [k]th diagonal elements of [x]. [k > 0] means above
+  the main diagonal and [k < 0] means the below the main diagonal.
+ *)
 
 val replace_row : ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
 (** [replace_row v x i] uses the row vector [v] to replace the [i]th row in
@@ -249,6 +270,59 @@ val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 val dropout : ?rate:float -> ?seed:int -> ('a, 'b) t -> ('a, 'b) t
 (** [dropout ~rate:0.3 x] drops out 30% of the elements in [x], in other words,
   by setting their values to zeros.
+ *)
+
+val triu : ?k:int -> ('a, 'b) t -> ('a, 'b) t
+(** [triu k x] returns the element on and above the [k]th diagonal of [x].
+  [k = 0] is the main diagonal, [k > 0] is above the main diagonal, and
+  [k < 0] is below the main diagonal.
+ *)
+
+
+val tril : ?k:int -> ('a, 'b) t -> ('a, 'b) t
+(** [tril k x] returns the element on and below the [k]th diagonal of [x].
+  [k = 0] is the main diagonal, [k > 0] is above the main diagonal, and
+  [k < 0] is below the main diagonal.
+ *)
+
+val symmetric : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
+(** [symmetric ~upper x] creates a symmetric matrix using either upper or lower
+  triangular part of [x]. If [upper] is [true] then it uses the upper part, if
+  [upper] is [false], then [symmetric] uses the lower part. By default [upper]
+  is true.
+ *)
+
+val bidiagonal : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [bidiagonal upper dv ev] creates a bidiagonal matrix using [dv] and [ev].
+  Both [dv] and [ev] are row vectors. [dv] is the main diagonal. If [upper] is
+  [true] then [ev] is superdiagonal; if [upper] is [false] then [ev] is
+  subdiagonal. By default, [upper] is [true].
+ *)
+
+val toeplitz : ?c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [toeplitz ~c r] generates a toeplitz matrix using [r] and [c]. Both [r] and
+  [c] are row vectors of the same length. If the first elements of [c] is
+  different from that of [r], [r]'s first element will be used.
+
+  Note: 1) If [c] is not passed in, then [c = r] will be used. 2) If [c] is not
+  passed in and [r] is complex, the [c = conj r] will be used. 3) If [r] and [c]
+  have different length, then the result is a rectangular matrix.
+ *)
+
+val hankel : ?r:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [hankel ~r c] generates a hankel matrix using [r] and [c]. [c] will be the
+  first column and [r] will be the last row of the returned matrix.
+
+  Note: 1) If only [c] is passed in, the elelments below the anti-diagnoal are
+  zero. 2) If the last element of [c] is different from the first element of [r]
+  then the first element of [c] prevails. 3) [c] and [r] can have different
+  length, the return will be an rectangular matrix.
+ *)
+
+val hadamard : ('a, 'b) kind -> int -> ('a, 'b) t
+(** [hadamard k n] construct a hadamard matrix of order [n]. For a hadamard [H],
+  we have [H'*H = n*I]. Currrently, this function handles only the cases where
+  [n], [n/12], or [n/20] is a power of 2.
  *)
 
 
@@ -408,7 +482,7 @@ val map_at_col : ('a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
  *)
 
 
-(** {6 Examin elements and compare two matrices} *)
+(** {6 Examine elements and compare two matrices} *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
 (** [exists f x] checks all the elements in [x] using [f]. If at least one
@@ -636,11 +710,6 @@ val im_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [im_d2z x] returns all the imaginary components of [x] in a new ndarray of same shape. *)
 
-val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
-(** [conj x] computes the conjugate of the elements in [x] and returns the
-  result in a new matrix.
- *)
-
 val min : (float, 'a) t -> float
 (** [min x] returns the minimum value of all elements in [x]. *)
 
@@ -719,8 +788,11 @@ val abs2_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val abs2_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [abs2_z2d x] is similar to [abs2] but takes [complex64] as input. *)
 
-val conj : (Complex.t, 'a) t -> (Complex.t, 'a) t
-(** [conj x] returns the conjugate of the complex [x]. *)
+val conj : ('a, 'b) t -> ('a, 'b) t
+(** [conj x] computes the conjugate of the elements in [x] and returns the
+  result in a new matrix. If the passed in [x] is a real matrix, the function
+  simply returns a copy of the original [x].
+ *)
 
 val neg : ('a, 'b) t -> ('a, 'b) t
 (** [neg x] negates the elements in [x] and returns the result in a new matrix. *)

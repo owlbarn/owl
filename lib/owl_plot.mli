@@ -1,6 +1,14 @@
-(** Plot module
-  The input to a plot function is supposed to be a row-based matrix.
+(*
+ * OWL - an OCaml numerical library for scientific computing
+ * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
+
+(** Plot: high-level plotting functions. *)
+
+(** The input to a plot function is supposed to be a row-based matrix/vector.
+  The functions in this module are built atop of Plplot library.
+ *)
+
 
 type dsmat = Owl_dense_matrix_d.mat
 
