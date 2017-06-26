@@ -2134,4 +2134,27 @@ value cp_two_doubles(double d0, double d1)
 #define STOPFN(X) (fpclassify(X.r) == FP_INFINITE || fpclassify(X.i) == FP_INFINITE)
 #include "owl_dense_common_vec_cmp.c"
 
+// is_normal
+
+#define FUN1 real_float_is_normal
+#define NUMBER float
+#define STOPFN(X) fpclassify(X) != FP_NORMAL
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 real_double_is_normal
+#define NUMBER double
+#define STOPFN(X) fpclassify(X) != FP_NORMAL
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 complex_float_is_normal
+#define NUMBER complex_float
+#define STOPFN(X) (fpclassify(X.r) != FP_NORMAL || fpclassify(X.i) != FP_NORMAL)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN1 complex_double_is_normal
+#define NUMBER complex_double
+#define STOPFN(X) (fpclassify(X.r) != FP_NORMAL || fpclassify(X.i) != FP_NORMAL)
+#include "owl_dense_common_vec_cmp.c"
+
+
 //////////////////// function templates ends ////////////////////

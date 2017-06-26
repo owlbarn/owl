@@ -514,6 +514,14 @@ val is_nonpositive : ('a, 'b) t -> bool
 val is_nonnegative : ('a, 'b) t -> bool
 (** [is_nonnegative] returns [true] if all the elements in [x] are non-negative. *)
 
+val is_normal : ('a, 'b) t -> bool
+(** [is_normal x] returns [true] if all the elelments in [x] are normal float
+  numbers, i.e., not [NaN], not [INF], not [SUBNORMAL]. Please refer to
+
+  https://www.gnu.org/software/libc/manual/html_node/Floating-Point-Classes.html
+  https://www.gnu.org/software/libc/manual/html_node/Infinity-and-NaN.html#Infinity-and-NaN
+ *)
+
 val not_nan : ('a, 'b) t -> bool
 (** [not_nan x] returns [false] if there is any [NaN] element in [x]. Otherwise,
   the function returns [true] indicating all the numbers in [x] are not [NaN].

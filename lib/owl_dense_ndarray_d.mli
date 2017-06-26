@@ -161,6 +161,8 @@ val is_nonpositive : arr -> bool
 
 val is_nonnegative : arr -> bool
 
+val is_normal : arr -> bool
+
 val not_nan : arr -> bool
 
 val not_inf : arr -> bool
