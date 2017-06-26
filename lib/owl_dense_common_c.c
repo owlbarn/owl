@@ -2208,7 +2208,4 @@ value cp_two_doubles(double d0, double d1)
 #define STOPFN(X) (fabs(X.r - ar) >= b) || (fabs(X.i - ai) >= b)
 #include "owl_dense_common_vec_cmp.c"
 
-// sort
-
-
 //////////////////// function templates ends ////////////////////
