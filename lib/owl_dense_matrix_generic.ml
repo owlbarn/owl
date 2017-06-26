@@ -737,6 +737,8 @@ let elt_less_equal x1 x2 = Owl_dense_ndarray_generic.elt_less_equal (to_ndarray 
 
 let elt_greater_equal x1 x2 = Owl_dense_ndarray_generic.elt_greater_equal (to_ndarray x1) (to_ndarray x2) |> of_ndarray
 
+let approx_elt_equal ?eps x1 x2 = Owl_dense_ndarray_generic.approx_elt_equal ?eps (to_ndarray x1) (to_ndarray x2) |> of_ndarray
+
 let equal_scalar x a = Owl_dense_ndarray_generic.equal_scalar (to_ndarray x) a
 
 let not_equal_scalar x a = Owl_dense_ndarray_generic.not_equal_scalar (to_ndarray x) a

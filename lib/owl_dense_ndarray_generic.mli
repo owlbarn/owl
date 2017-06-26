@@ -428,15 +428,6 @@ val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
   greater than the corresponding elements in [y].
  *)
 
-val approx_equal : ?eps:float -> ('a, 'b) t -> ('a, 'b) t -> bool
-(** [approx_equal ~eps x y] returns [true] if [x] and [y] are approximately
-  equal, i.e., for any two elements [a] from [x] and [b] from [y], we have
-  [abs (a - b) < eps]. For complex numbers, the [eps] applies to both real
-  and imaginary part.
-
-  Note: the threshold check is exclusive for passed in [eps].
- *)
-
 val elt_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (* [elt_equal x y] performs element-wise [=] comparison of [x] and [y]. *)
 
@@ -473,14 +464,6 @@ val less_equal_scalar : ('a, 'b) t -> 'a -> bool
 val greater_equal_scalar : ('a, 'b) t -> 'a -> bool
 (* [greater_equal_scalar x a] checks if all the elements in [x] are greater or equal to [a]. *)
 
-val approx_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> bool
-(** [approx_equal_scalar ~eps x a] returns [true] all the elements in [x] are
-  approximately equal to [a], i.e., [abs (x - a) < eps]. For complex numbers,
-  the [eps] applies to both real and imaginary part.
-
-  Note: the threshold check is exclusive for the passed in [eps].
- *)
-
 val elt_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (* [elt_equal_scalar x a] performs element-wise [=] comparison of [x] and [a]. *)
 
@@ -498,6 +481,26 @@ val elt_less_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 
 val elt_greater_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (* [elt_greater_equal_scalar x a] performs element-wise [>=] comparison of [x] and [a]. *)
+
+val approx_equal : ?eps:float -> ('a, 'b) t -> ('a, 'b) t -> bool
+(** [approx_equal ~eps x y] returns [true] if [x] and [y] are approximately
+  equal, i.e., for any two elements [a] from [x] and [b] from [y], we have
+  [abs (a - b) < eps]. For complex numbers, the [eps] applies to both real
+  and imaginary part.
+
+  Note: the threshold check is exclusive for passed in [eps].
+ *)
+
+val approx_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> bool
+(** [approx_equal_scalar ~eps x a] returns [true] all the elements in [x] are
+  approximately equal to [a], i.e., [abs (x - a) < eps]. For complex numbers,
+  the [eps] applies to both real and imaginary part.
+
+  Note: the threshold check is exclusive for the passed in [eps].
+ *)
+
+val approx_elt_equal : ?eps:float -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [approx_elt_equal ~eps x y] *)
 
 
 (** {6 Input/Output functions} *)

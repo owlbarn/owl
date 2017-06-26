@@ -179,8 +179,6 @@ val greater_equal : arr -> arr -> bool
 
 val less_equal : arr -> arr -> bool
 
-val approx_equal : ?eps:float -> arr -> arr -> bool
-
 val elt_equal : arr -> arr -> arr
 
 val elt_not_equal : arr -> arr -> arr
@@ -205,8 +203,6 @@ val less_equal_scalar : arr -> elt -> bool
 
 val greater_equal_scalar : arr -> elt -> bool
 
-val approx_equal_scalar : ?eps:float -> arr -> elt -> bool
-
 val elt_equal_scalar : arr -> elt -> arr
 
 val elt_not_equal_scalar : arr -> elt -> arr
@@ -218,6 +214,12 @@ val elt_greater_scalar : arr -> elt -> arr
 val elt_less_equal_scalar : arr -> elt -> arr
 
 val elt_greater_equal_scalar : arr -> elt -> arr
+
+val approx_equal : ?eps:float -> arr -> arr -> bool
+
+val approx_equal_scalar : ?eps:float -> arr -> elt -> bool
+
+val approx_elt_equal : ?eps:float -> arr -> arr -> arr
 
 
 (** {6 Input/Output functions} *)

@@ -263,8 +263,6 @@ val greater_equal : mat -> mat -> bool
 
 val less_equal : mat -> mat -> bool
 
-val approx_equal : ?eps:float -> mat -> mat -> bool
-
 val elt_equal : mat -> mat -> mat
 
 val elt_not_equal : mat -> mat -> mat
@@ -289,8 +287,6 @@ val less_equal_scalar : mat -> elt -> bool
 
 val greater_equal_scalar : mat -> elt -> bool
 
-val approx_equal_scalar : ?eps:float -> mat -> elt -> bool
-
 val elt_equal_scalar : mat -> elt -> mat
 
 val elt_not_equal_scalar : mat -> elt -> mat
@@ -302,6 +298,12 @@ val elt_greater_scalar : mat -> elt -> mat
 val elt_less_equal_scalar : mat -> elt -> mat
 
 val elt_greater_equal_scalar : mat -> elt -> mat
+
+val approx_equal : ?eps:float -> mat -> mat -> bool
+
+val approx_equal_scalar : ?eps:float -> mat -> elt -> bool
+
+val approx_elt_equal : ?eps:float -> mat -> mat -> mat
 
 
 (** {6 Randomisation functions} *)

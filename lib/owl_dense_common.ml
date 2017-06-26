@@ -1454,4 +1454,17 @@ let _owl_approx_equal_scalar : type a b. (a, b) kind -> (a, b) owl_vec_op16 = fu
   | Complex64 -> owl_complex_double_approx_equal_scalar
   | _         -> failwith "_owl_approx_equal_scalar: unsupported operation"
 
+external owl_real_float_approx_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_approx_elt_equal"
+external owl_real_double_approx_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_approx_elt_equal"
+external owl_complex_float_approx_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_approx_elt_equal"
+external owl_complex_double_approx_elt_equal : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_approx_elt_equal"
+
+let _owl_approx_elt_equal : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
+  match k with
+  | Float32   -> owl_real_float_approx_elt_equal l x y z
+  | Float64   -> owl_real_double_approx_elt_equal l x y z
+  | Complex32 -> owl_complex_float_approx_elt_equal l x y z
+  | Complex64 -> owl_complex_double_approx_elt_equal l x y z
+  | _         -> failwith "_owl_approx_elt_equal: unsupported operation"
+
 (* ends here *)
