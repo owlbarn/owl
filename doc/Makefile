@@ -1,3 +1,4 @@
+ODIGDOC=/Users/liang/.opam/4.04.0/var/cache/odig/odoc/owl
 DIR="../lib"
 DOCS=\
 	${DIR}/owl_cblas.mli \
@@ -37,9 +38,11 @@ INCDIR=\
 	-I `ocamlfind query dolog`
 DOCFLAGS=-html -d .
 all:
-	ocamldoc ${INCDIR} ${DOCFLAGS} ${DOCS}
+	### ocamldoc ${INCDIR} ${DOCFLAGS} ${DOCS}
 	odig odoc owl && odig doc owl
 install:
-	scp -i ~/.ssh/id_cam * lw525@slogin.cl.cam.ac.uk:~/public_html/owl/
+	### scp -i ~/.ssh/id_cam * lw525@slogin.cl.cam.ac.uk:~/public_html/owl/
+	### scp -r -i ~/.ssh/id_cam /Users/liang/.opam/4.04.0/var/cache/odig/odoc/odoc.css lw525@slogin.cl.cam.ac.uk:~/public_html/
+	scp -r -i ~/.ssh/id_cam ${ODIGDOC} lw525@slogin.cl.cam.ac.uk:~/public_html/
 clean:
 	rm -rf *.html *.css
