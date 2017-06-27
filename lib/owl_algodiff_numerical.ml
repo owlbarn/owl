@@ -3,11 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module M = Owl_dense_matrix.D
-type mat = Owl_dense_matrix.D.mat
+module M = Owl_dense.Matrix.D
+type mat = Owl_dense.Matrix.D.mat
 
-module V = Owl_dense_vector.D
-type vec = Owl_dense_vector.D.vec
+module V = Owl_dense.Vector.D
+type vec = Owl_dense.Vector.D.vec
 
 (* global epsilon value used in numerical differentiation *)
 let _eps = 0.00001

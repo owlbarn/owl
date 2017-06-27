@@ -3,8 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.caMD.ac.uk>
  *)
 
-type mat_d = Owl_dense_matrix_d.mat
-type mat_z = Owl_dense_matrix_z.mat
+type mat_d = Owl_dense.Matrix.D.mat
+type mat_z = Owl_dense.Matrix.Z.mat
 type ('a, 'b) t = ('a, 'b) Owl_dense_matrix_generic.t
 
 module MD = Owl_dense_matrix_d

@@ -5,9 +5,9 @@
 
 (** Fast Fourier Transforms (FFTs) *)
 
-type rmat = Owl_dense_matrix_d.mat
+type rmat = Owl_dense.Matrix.D.mat
 
-type cmat = Owl_dense_matrix_z.mat
+type cmat = Owl_dense.Matrix.Z.mat
 
 let _is_power_of_two x = x land (x - 1) = 0
 

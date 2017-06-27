@@ -16,8 +16,8 @@
  *)
 
 
-type mat = Owl_dense_matrix_d.mat
-type vec = Owl_dense_vector_d.vec
+type mat = Owl_dense.Matrix.D.mat
+type vec = Owl_dense.Vector.D.vec
 
 
 (** {6 Core APIs of differentiation} *)
