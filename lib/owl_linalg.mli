@@ -39,6 +39,9 @@ val qr : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
   an [n] by [n] upper-triangular matrix.
  *)
 
+val qr_pivot : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
+
+
 val qr_sqsolve : mat_d -> mat_d -> mat_d
 
 val qr_lssolve : mat_d -> mat_d -> mat_d * mat_d

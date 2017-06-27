@@ -85,6 +85,15 @@ let qr x =
   q, r
 
 
+let qr_pivot x =
+  let x = M.clone x in
+  let m, n = M.shape x in
+  let a, jpvt, tau = Owl_lapacke.geqp3 x in
+  let r = M.resize ~head:true n n (M.triu a) in
+  let q = _get_q (M.kind x) a tau in
+  q, r, jpvt
+
+
 let qrfact x = None
 
 
