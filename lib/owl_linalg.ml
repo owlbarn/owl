@@ -3,12 +3,17 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.caMD.ac.uk>
  *)
 
+open Bigarray
+
 type mat_d = Owl_dense.Matrix.D.mat
 type mat_z = Owl_dense.Matrix.Z.mat
-type ('a, 'b) t = ('a, 'b) Owl_dense_matrix_generic.t
+type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
 
 module MD = Owl_dense_matrix_d
 module MZ = Owl_dense_matrix_z
+
+module M = Owl_dense.Matrix.Generic
+
 
 (** [ Helper functions ]  *)
 
@@ -59,16 +64,29 @@ let lu_solve = None
 
 (** [ QR decomposition ]  *)
 
+
+let _get_q
+  : type a b. (a, b) kind -> (a, b) t -> (a, b) t -> (a, b) t
+  = fun k a tau ->
+  match k with
+  | Float32   -> Owl_lapacke.orgqr a tau
+  | Float64   -> Owl_lapacke.orgqr a tau
+  | Complex32 -> Owl_lapacke.ungqr a tau
+  | Complex64 -> Owl_lapacke.ungqr a tau
+  | _         -> failwith "owl_linalg:_get_q"
+
+
 let qr x =
-  let open Gsl.Vectmat in
-  let m, n = MD.shape x in
-  let y = MD.clone x in
-  let v = Gsl.Vector.create (min m n) in
-  let _ = Gsl.Linalg._QR_decomp (`M y) (`V v) in
-  let q = MD.empty m m in
-  let r = MD.empty m n in
-  let _ = Gsl.Linalg._QR_unpack (`M y) (`V v) (`M q) (`M r) in
+  let x = M.clone x in
+  let m, n = M.shape x in
+  let a, tau = Owl_lapacke.geqrf x in
+  let r = M.resize ~head:true n n (M.triu a) in
+  let q = _get_q (M.kind x) a tau in
   q, r
+
+
+let qrfact x = None
+
 
 let qr_sqsolve a b =
   let open Gsl.Vectmat in

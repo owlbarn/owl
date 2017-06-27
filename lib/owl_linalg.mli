@@ -17,7 +17,7 @@
 
 type mat_d = Owl_dense.Matrix.D.mat
 type mat_z = Owl_dense.Matrix.Z.mat
-type ('a, 'b) t = ('a, 'b) Owl_dense_matrix_generic.t
+type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
 
 
 val inv : mat_d -> mat_d
@@ -33,10 +33,10 @@ val inv : mat_d -> mat_d
 val det : mat_d -> float
 (** [det x] computes the determinant of a matrix [x] from its LU decomposition. *)
 
-val qr : mat_d -> mat_d * mat_d
+val qr : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** [qr x] calculates QR decomposition for an [m] by [n] matrix [x] as
-  [x = Q R]. [Q] is an [m] by [m] square matrix (where [Q^T Q = I]) and [R] is
-  an [m] by [n] right-triangular matrix.
+  [x = Q R]. [Q] is an [m] by [n] matrix (where [Q^T Q = I]) and [R] is
+  an [n] by [n] upper-triangular matrix.
  *)
 
 val qr_sqsolve : mat_d -> mat_d -> mat_d
