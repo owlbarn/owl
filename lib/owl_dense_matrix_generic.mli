@@ -35,7 +35,7 @@ val init : ('a, 'b) kind -> int -> int -> (int -> 'a) -> ('a, 'b) t
  *)
 
 val init_nd : ('a, 'b) kind -> int -> int -> (int -> int -> 'a) -> ('a, 'b) t
-(* [init_nd m n f] s almost the same as [init] but [f] receives 2D index
+(** [init_nd m n f] s almost the same as [init] but [f] receives 2D index
   as input. It is more convenient since you don't have to convert the index by
   yourself, but this also means [init_nd] is slower than [init]. *)
 
@@ -218,7 +218,7 @@ val cols : ('a, 'b) t -> int array -> ('a, 'b) t
  *)
 
 val resize : ?head:bool -> int -> int -> ('a, 'b) t -> ('a, 'b) t
-(* [resize m n x] please refer to the Ndarray document.
+(** [resize m n x] please refer to the Ndarray document.
  *)
 
 val reshape : int -> int -> ('a, 'b) t -> ('a, 'b) t
@@ -244,7 +244,7 @@ val reverse : ('a, 'b) t -> ('a, 'b) t
  *)
 
 val reset : ('a, 'b) t -> unit
-(* [reset x] resets all the elements of [x] to zero value. *)
+(** [reset x] resets all the elements of [x] to zero value. *)
 
 val fill : ('a, 'b) t -> 'a -> unit
 (** [fill x a] fills the [x] with value [a]. *)
@@ -561,58 +561,119 @@ val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
  *)
 
 val elt_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(* [elt_equal x y] performs element-wise [=] comparison of [x] and [y]. *)
+(** [elt_equal x y] performs element-wise [=] comparison of [x] and [y]. Assume
+  that [a] is from [x] and [b] is the corresponding element of [a] from [y] of
+  the same position. The function returns another binary ([0] and [1])
+  ndarray/matrix wherein [1] indicates [a = b].
+ *)
 
 val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(* [elt_not_equal x y] performs element-wise [!=] comparison of [x] and [y]. *)
+(** [elt_not_equal x y] performs element-wise [!=] comparison of [x] and [y].
+  Assume that [a] is from [x] and [b] is the corresponding element of [a] from
+  [y] of the same position. The function returns another binary ([0] and [1])
+  ndarray/matrix wherein [1] indicates [a <> b].
+*)
 
 val elt_less : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(* [elt_less x y] performs element-wise [<] comparison of [x] and [y]. *)
+(** [elt_less x y] performs element-wise [<] comparison of [x] and [y]. Assume
+  that [a] is from [x] and [b] is the corresponding element of [a] from [y] of
+  the same position. The function returns another binary ([0] and [1])
+  ndarray/matrix wherein [1] indicates [a < b].
+ *)
 
 val elt_greater : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(* [elt_greater x y] performs element-wise [>] comparison of [x] and [y]. *)
+(** [elt_greater x y] performs element-wise [>] comparison of [x] and [y].
+  Assume that [a] is from [x] and [b] is the corresponding element of [a] from
+  [y] of the same position. The function returns another binary ([0] and [1])
+  ndarray/matrix wherein [1] indicates [a > b].
+ *)
 
 val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(* [elt_less_equal x y] performs element-wise [<=] comparison of [x] and [y]. *)
+(** [elt_less_equal x y] performs element-wise [<=] comparison of [x] and [y].
+  Assume that [a] is from [x] and [b] is the corresponding element of [a] from
+  [y] of the same position. The function returns another binary ([0] and [1])
+  ndarray/matrix wherein [1] indicates [a <= b].
+ *)
 
 val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(* [elt_greater_equal x y] performs element-wise [>=] comparison of [x] and [y]. *)
+(** [elt_greater_equal x y] performs element-wise [>=] comparison of [x] and [y].
+  Assume that [a] is from [x] and [b] is the corresponding element of [a] from
+  [y] of the same position. The function returns another binary ([0] and [1])
+  ndarray/matrix wherein [1] indicates [a >= b].
+ *)
 
 val equal_scalar : ('a, 'b) t -> 'a -> bool
-(* [equal_scalar x a] checks if all the elements in [x] are equal to [a]. *)
+(** [equal_scalar x a] checks if all the elements in [x] are equal to [a]. The
+  function returns [true] iff for every element [b] in [x], [b = a].
+ *)
 
 val not_equal_scalar : ('a, 'b) t -> 'a -> bool
-(* [not_equal_scalar x a] checks if all the elements in [x] are not equal to [a]. *)
+(** [not_equal_scalar x a] checks if all the elements in [x] are not equal to [a].
+  The function returns [true] iff for every element [b] in [x], [b <> a].
+ *)
 
 val less_scalar : ('a, 'b) t -> 'a -> bool
-(* [less_scalar x a] checks if all the elements in [x] are less than [a]. *)
+(** [less_scalar x a] checks if all the elements in [x] are less than [a].
+  The function returns [true] iff for every element [b] in [x], [b < a].
+ *)
 
 val greater_scalar : ('a, 'b) t -> 'a -> bool
-(* [greater_scalar x a] checks if all the elements in [x] are greater than [a]. *)
+(** [greater_scalar x a] checks if all the elements in [x] are greater than [a].
+  The function returns [true] iff for every element [b] in [x], [b > a].
+ *)
 
 val less_equal_scalar : ('a, 'b) t -> 'a -> bool
-(* [less_equal_scalar x a] checks if all the elements in [x] are less or equal to [a]. *)
+(** [less_equal_scalar x a] checks if all the elements in [x] are less or equal
+  to [a]. The function returns [true] iff for every element [b] in [x], [b <= a].
+ *)
 
 val greater_equal_scalar : ('a, 'b) t -> 'a -> bool
-(* [greater_equal_scalar x a] checks if all the elements in [x] are greater or equal to [a]. *)
+(** [greater_equal_scalar x a] checks if all the elements in [x] are greater or
+  equal to [a]. The function returns [true] iff for every element [b] in [x],
+  [b >= a].
+ *)
 
 val elt_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(* [elt_equal_scalar x a] performs element-wise [=] comparison of [x] and [a]. *)
+(** [elt_equal_scalar x a] performs element-wise [=] comparison of [x] and [a].
+  Assume that [b] is one element from [x] The function returns another binary
+  ([0] and [1]) ndarray/matrix wherein [1] of the corresponding position
+  indicates [a = b], otherwise [0].
+ *)
 
 val elt_not_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(* [elt_not_equal_scalar x a] performs element-wise [!=] comparison of [x] and [a]. *)
+(** [elt_not_equal_scalar x a] performs element-wise [!=] comparison of [x] and
+  [a]. Assume that [b] is one element from [x] The function returns another
+  binary ([0] and [1]) ndarray/matrix wherein [1] of the corresponding position
+  indicates [a <> b], otherwise [0].
+ *)
 
 val elt_less_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(* [elt_less_scalar x a] performs element-wise [<] comparison of [x] and [a]. *)
+(** [elt_less_scalar x a] performs element-wise [<] comparison of [x] and [a].
+  Assume that [b] is one element from [x] The function returns another binary
+  ([0] and [1]) ndarray/matrix wherein [1] of the corresponding position
+  indicates [a < b], otherwise [0].
+ *)
 
 val elt_greater_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(* [elt_greater_scalar x a] performs element-wise [>] comparison of [x] and [a]. *)
+(** [elt_greater_scalar x a] performs element-wise [>] comparison of [x] and [a].
+  Assume that [b] is one element from [x] The function returns another binary
+  ([0] and [1]) ndarray/matrix wherein [1] of the corresponding position
+  indicates [a > b], otherwise [0].
+ *)
 
 val elt_less_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(* [elt_less_equal_scalar x a] performs element-wise [<=] comparison of [x] and [a]. *)
+(** [elt_less_equal_scalar x a] performs element-wise [<=] comparison of [x] and
+  [a]. Assume that [b] is one element from [x] The function returns another
+  binary ([0] and [1]) ndarray/matrix wherein [1] of the corresponding position
+  indicates [a <= b], otherwise [0].
+ *)
 
 val elt_greater_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(* [elt_greater_equal_scalar x a] performs element-wise [>=] comparison of [x] and [a]. *)
+(** [elt_greater_equal_scalar x a] performs element-wise [>=] comparison of [x]
+  and [a]. Assume that [b] is one element from [x] The function returns
+  another binary ([0] and [1]) ndarray/matrix wherein [1] of the corresponding
+  position indicates [a >= b], otherwise [0].
+ *)
 
 val approx_equal : ?eps:float -> ('a, 'b) t -> ('a, 'b) t -> bool
 (** [approx_equal ~eps x y] returns [true] if [x] and [y] are approximately
@@ -631,10 +692,18 @@ val approx_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> bool
  *)
 
 val approx_elt_equal : ?eps:float -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [approx_elt_equal ~eps x y] *)
+(** [approx_elt_equal ~eps x y] compares the element-wise equality of [x] and
+  [y], then returns another binary (i.e., [0] and [1]) ndarray/matrix wherein
+  [1] indicates that two corresponding elements [a] from [x] and [b] from [y]
+  are considered as approximately equal, namely [abs (a - b) < eps].
+ *)
 
 val approx_elt_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> ('a, 'b) t
-(** [approx_elt_equal_scalar ~eps x a] *)
+(** [approx_elt_equal_scalar ~eps x a] compares all the elements of [x] to a
+  scalar value [a], then returns another binary (i.e., [0] and [1])
+  ndarray/matrix wherein [1] indicates that the element [b] from [x] is
+  considered as approximately equal to [a], namely [abs (a - b) < eps].
+ *)
 
 
 (** {6 Randomisation functions} *)
@@ -652,10 +721,10 @@ val draw_cols : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
  *)
 
 val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
-(* [draw_rows2 x y c] is similar to [draw_rows] but applies to two matrices. *)
+(** [draw_rows2 x y c] is similar to [draw_rows] but applies to two matrices. *)
 
 val draw_cols2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
-(* [draw_col2 x y c] is similar to [draw_cols] but applies to two matrices. *)
+(** [draw_col2 x y c] is similar to [draw_cols] but applies to two matrices. *)
 
 val shuffle_rows : ('a, 'b) t -> ('a, 'b) t
 (** [shuffle_rows x] shuffles all the rows in matrix [x]. *)
@@ -1056,11 +1125,11 @@ val avg_pool : ?padding:Owl_dense_ndarray_generic.padding -> (float, 'a) t -> in
 (** [] *)
 
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
-(* [cumsum ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
+(** [cumsum ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
  *)
 
 val cumprod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
-(* [cumprod ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
+(** [cumprod ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
  *)
 
 
@@ -1187,7 +1256,7 @@ val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 (** [clip_by_l2norm t x] clips the [x] according to the threshold set by [t]. *)
 
 
-(** {6 Shorhand infix operators} *)
+(** {6 Cast functions to different number types} *)
 
 val cast_s2d : (float, float32_elt) t -> (float, float64_elt) t
 (** [cast_s2d x] casts [x] from [float32] to [float64]. *)

@@ -2,7 +2,7 @@
 Owl is an OCaml numerical library. It supports N-dimensional arrays, both dense and sparse matrix operations, linear algebra, regressions, fast Fourier transforms, and many advanced mathematical and statistical functions (such as Markov chain Monte Carlo methods). Recently, Owl has implemented algorithmic differentiation which essentially makes developing machine learning and neural network algorithms trivial. [![Travis build Status](https://travis-ci.org/ryanrhymes/owl.svg?branch=master)](https://travis-ci.org/ryanrhymes/owl)
 
 
-The full API documentation is here (built on 27th June, 2017):
+The full API documentation is here (built on 28th June, 2017):
 
 * on [cl.cam.ac.uk](http://www.cl.cam.ac.uk/~lw525/owl/)
 
