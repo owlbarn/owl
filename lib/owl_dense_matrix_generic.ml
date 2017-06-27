@@ -765,6 +765,8 @@ let elt_less_equal_scalar x a = Owl_dense_ndarray_generic.elt_less_equal_scalar 
 
 let elt_greater_equal_scalar x a = Owl_dense_ndarray_generic.elt_greater_equal_scalar (to_ndarray x) a |> of_ndarray
 
+let approx_elt_equal_scalar ?eps x a = Owl_dense_ndarray_generic.approx_elt_equal_scalar ?eps (to_ndarray x) a |> of_ndarray
+
 let min x = Owl_dense_ndarray_generic.min (to_ndarray x)
 
 let max x = Owl_dense_ndarray_generic.max (to_ndarray x)

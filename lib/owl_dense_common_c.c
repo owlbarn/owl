@@ -2228,17 +2228,46 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER complex_float
 #define NUMBER1 complex_float
 #define NUMBER2 complex_float
-#define MAPFN(X,Y,Z) Z->r = (fabsf(X->r - Y->r) < Z->r) && (fabsf(X->i - Y->i) < Z->r)
+#define MAPFN(X,Y,Z) Z->r = ((fabsf(X->r - Y->r) < Z->r) && (fabsf(X->i - Y->i) < Z->r))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_double_approx_elt_equal
 #define NUMBER complex_double
 #define NUMBER1 complex_double
 #define NUMBER2 complex_double
-#define MAPFN(X,Y,Z) Z->r = (fabs(X->r - Y->r) < Z->r) && (fabs(X->i - Y->i) < Z->r)
+#define MAPFN(X,Y,Z) Z->r = ((fabs(X->r - Y->r) < Z->r) && (fabs(X->i - Y->i) < Z->r))
+#include "owl_dense_common_vec_map.c"
+
+// approx_elt_equal_scalar
+
+#define FUN17 real_float_approx_elt_equal_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = (fabsf(*X - a) < *Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_approx_elt_equal_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = (fabs(*X - a) < *Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_approx_elt_equal_scalar
+#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = ((fabsf(X->r - ar) < Y->r) && (fabsf(X->i - ai) < Y->r))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_approx_elt_equal_scalar
+#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = ((fabs(X->r - ar) < Y->r) && (fabs(X->i - ai) < Y->r))
 #include "owl_dense_common_vec_map.c"
 
 // sort
-
 
 //////////////////// function templates ends ////////////////////

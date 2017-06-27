@@ -502,6 +502,9 @@ val approx_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> bool
 val approx_elt_equal : ?eps:float -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [approx_elt_equal ~eps x y] *)
 
+val approx_elt_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> ('a, 'b) t
+(** [approx_elt_equal_scalar ~eps x a] *)
+
 
 (** {6 Input/Output functions} *)
 

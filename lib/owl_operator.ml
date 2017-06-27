@@ -111,6 +111,8 @@ module type ExtendSig = sig
 
   val approx_elt_equal : ?eps:float -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
+  val approx_elt_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> ('a, 'b) t
+
 end
 
 
@@ -222,6 +224,8 @@ module Make_Extend (M : ExtendSig) = struct
   let ( =~$ ) = M.approx_equal_scalar
 
   let ( =~. ) = M.approx_elt_equal
+
+  let ( =~.$ ) = M.approx_elt_equal_scalar
 
   let ( % ) = M.fmod
 

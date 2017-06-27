@@ -1449,6 +1449,22 @@ let approx_elt_equal ?(eps=1e-6) x y =
   _owl_approx_elt_equal k (numel z) x' y' z';
   z
 
+let approx_elt_equal_scalar ?(eps=1e-6) x a =
+  let _eps : type a b. (a, b) kind -> float -> a =
+    fun k a -> match k with
+    | Float32   -> a
+    | Float64   -> a
+    | Complex32 -> Complex.({re = a; im = 0.})
+    | Complex64 -> Complex.({re = a; im = 0.})
+    | _         -> failwith "Owl_dense_ndarray_generic:approx_elt_equal"
+  in
+  let k = kind x in
+  let y = create k (shape x) (_eps k eps) in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  _owl_approx_elt_equal_scalar k (numel y) x' y' a;
+  y
+
 let exists f x =
   let b = ref false in
   try iter (fun y ->

@@ -321,6 +321,8 @@ val approx_equal_scalar : ?eps:float -> mat -> elt -> bool
 
 val approx_elt_equal : ?eps:float -> mat -> mat -> mat
 
+val approx_elt_equal_scalar : ?eps:float -> mat -> elt -> mat
+
 
 (** {6 Randomisation functions} *)
 

@@ -222,6 +222,8 @@ val approx_equal_scalar : ?eps:float -> arr -> elt -> bool
 
 val approx_elt_equal : ?eps:float -> arr -> arr -> arr
 
+val approx_elt_equal_scalar : ?eps:float -> arr -> elt -> arr
+
 
 (** {6 Input/Output functions} *)
 
