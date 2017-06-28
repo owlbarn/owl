@@ -11,8 +11,9 @@
   The module includes a set of advanced linear algebra operations such as
   singular value decomposition, and etc.
 
-  Currently, Linalg module only supports dense matrix. The support for sparse
-  matrices will be provided very soon.
+  Currently, Linalg module supports dense matrix of four different number types,
+  including [float32], [float64], [complex32], and [complex64]. The support for
+  sparse matrices will be provided in future.
  *)
 
 open Bigarray
@@ -43,6 +44,12 @@ val lu : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_el
   indices are not adjusted to 0-based C layout.
  *)
 
+val lq : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(** [lq x -> (l, q)] calculates the LQ decomposition of [x]. By default, the
+  reduced LQ decomposition is performed. But you can get full [Q] by setting
+  parameter [thin = false].
+ *)
+
 val qr : ?thin:bool -> ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
 (** [qr x] calculates QR decomposition for an [m] by [n] matrix [x] as
   [x = Q R]. [Q] is an [m] by [n] matrix (where [Q^T Q = I]) and [R] is
@@ -64,25 +71,29 @@ val chol : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
   parameter [upper = false].
  *)
 
-val lq : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
-(** [lq x -> (l, q)] calculates the LQ decomposition of [x]. By default, the
-  reduced LQ decomposition is performed. But you can get full [Q] by setting
-  parameter [thin = false].
+val svd : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
+(** [svd x -> (u, s, vt)] calculates the singular value decomposition of [x],
+  and returns a 3-tuple [(u,s,vt)]. By default, a reduced svd is performed: [u]
+  is an [m] by [n] orthogonal matrix, [s] an [1] by [n] row vector of singular
+  values, and [vt] is the transpose of an [n] by [n] orthogonal square matrix.
+
+  The full svd can be performed by setting [thin = false]. Note that for complex
+  numbers, the type of returned singular values are also complex, the imaginary
+  part is zero.
+ *)
+
+val svdvals : ('a, 'b) t -> ('a, 'b) t
+(** [svdvals x -> s] performs the singular value decomposition of [x] like
+  [svd x], but the function only returns the singular values without [u] and
+  [vt]. Note that for complex numbers, the return is also complex type.
  *)
 
 
-
+(** {6 Soon will be obsoleted } *)
 
 val qr_sqsolve : mat_d -> mat_d -> mat_d
 
 val qr_lssolve : mat_d -> mat_d -> mat_d * mat_d
-
-val svd : mat_d -> mat_d * mat_d * mat_d
-(** [svd x] calculates the singular value decomposition of [x], and returns a
-  tuple [(u,s,v)]. [u] is an [m] by [n] orthogonal matrix, [s] an [n] by [1]
-  matrix of singular values, and [v] is the transpose of an [n] by [n]
-  orthogonal square matrix.
- *)
 
 val is_posdef : mat_d -> bool
 (** [is_posdef x] checks whether [x] is a positive semi-definite matrix. *)
@@ -94,8 +105,6 @@ val bidiag : mat_d -> mat_d * mat_d * mat_d * mat_d
 val tridiag_solve : mat_d -> mat_d -> mat_d
 
 val symm_tridiag_solve : mat_d -> mat_d -> mat_d
-
-(* TODO: lu decomposition *)
 
 
 (** {6 Solve Eigen systems} *)

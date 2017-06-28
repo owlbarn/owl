@@ -228,45 +228,20 @@ let rank = None
 
 (** [ Sigular Value decomposition ]  *)
 
-let _svd_decomp x =
-  let open Gsl.Vectmat in
-  let m, n = MD.shape x in
-  let u = MD.clone x in
-  let v = MD.empty n n in
-  let s = Gsl.Vector.create n in
-  let w = Gsl.Vector.create n in
-  let _ = Gsl.Linalg._SV_decomp (`M u) (`M v) (`V s) (`V w) in
-  let s = MD.of_array (Gsl.Vector.to_array s) n 1 in
-  u, s, v
+let svd ?(thin=true) x =
+  let x = M.clone x in
+  let jobz = match thin with
+    | true  -> 'S'
+    | false -> 'A'
+  in
+  let u, s, vt = Owl_lapacke.gesdd ~jobz ~a:x in
+  u, s, vt
 
-let _svd_jacobi x =
-  let open Gsl.Vectmat in
-  let m, n = MD.shape x in
-  let u = MD.clone x in
-  let v = MD.empty n n in
-  let s = Gsl.Vector.create n in
-  let _ = Gsl.Linalg._SV_decomp_jacobi (`M u) (`M v) (`V s) in
-  let s = MD.of_array (Gsl.Vector.to_array s) n 1 in
-  u, s, v
 
-let _svd_mod x =
-  let open Gsl.Vectmat in
-  let m, n = MD.shape x in
-  let u = MD.clone x in
-  let v = MD.empty n n in
-  let s = Gsl.Vector.create n in
-  let w = Gsl.Vector.create n in
-  let y = MD.empty n n in
-  let _ = Gsl.Linalg._SV_decomp_mod (`M u) (`M y) (`M v) (`V s) (`V w) in
-  let s = MD.of_array (Gsl.Vector.to_array s) n 1 in
-  u, s, v
-
-let svd x = (* v is in un-transposed form *)
-  let _f =
-    if MD.numel x < 10_000 then _svd_jacobi
-    else if (MD.row_num x) > (3 * (MD.col_num x)) then _svd_mod
-    else _svd_decomp in
-    _f x
+let svdvals x =
+  let x = M.clone x in
+  let _, s, _ = Owl_lapacke.gesdd ~jobz:'N' ~a:x in
+  s
 
 
 (** [ Cholesky Decomposition ]  *)
