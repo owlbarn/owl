@@ -65,7 +65,12 @@ val chol : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val lq : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
-(** [lq x -> (l, q)] calculates the LQ decomposition of [x] *)
+(** [lq x -> (l, q)] calculates the LQ decomposition of [x]. By default, the
+  reduced LQ decomposition is performed. But you can get full [Q] by setting
+  parameter [thin = false].
+ *)
+
+
 
 
 val qr_sqsolve : mat_d -> mat_d -> mat_d
