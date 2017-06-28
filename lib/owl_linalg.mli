@@ -15,6 +15,8 @@
   matrices will be provided very soon.
  *)
 
+open Bigarray
+
 type mat_d = Owl_dense.Matrix.D.mat
 type mat_z = Owl_dense.Matrix.Z.mat
 type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
