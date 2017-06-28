@@ -35,7 +35,7 @@ val inv : mat_d -> mat_d
 val det : mat_d -> float
 (** [det x] computes the determinant of a matrix [x] from its LU decomposition. *)
 
-val qr : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+val qr : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** [qr x] calculates QR decomposition for an [m] by [n] matrix [x] as
   [x = Q R]. [Q] is an [m] by [n] matrix (where [Q^T Q = I]) and [R] is
   an [n] by [n] upper-triangular matrix.

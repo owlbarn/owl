@@ -76,11 +76,20 @@ let _get_q
   | _         -> failwith "owl_linalg:_get_q"
 
 
-let qr x =
+let qr ?(thin=true) x =
   let x = M.clone x in
   let m, n = M.shape x in
   let a, tau = Owl_lapacke.geqrf x in
   let r = M.resize ~head:true n n (M.triu a) in
+  let a = match thin with
+    | true  -> a
+    | false ->
+        if m <= n then a
+        else (
+          let a' = M.empty (M.kind x) m (m - n) in
+          M.concat_horizontal a a'
+        )
+  in
   let q = _get_q (M.kind x) a tau in
   q, r
 
