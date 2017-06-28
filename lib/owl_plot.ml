@@ -49,7 +49,7 @@ type page = {
   mutable xgrid : bool;
   mutable ygrid : bool;
   mutable zgrid : bool;
-  (* viewing perspective for 3D plots 
+  (* viewing perspective for 3D plots
    * http://plplot.sourceforge.net/docbook-manual/plplot-html-5.12.0/plw3d.html *)
   mutable altitude : float;
   mutable azimuth : float;
@@ -256,7 +256,7 @@ let _prepare_page p =
   let _ = if p.fontsize > 0. then plschr p.fontsize 1.0 in
   let xmin, xmax = p.xrange in
   let ymin, ymax = p.yrange in
-  let zmin, zmax = p.zrange in 
+  let zmin, zmax = p.zrange in
   let alt, az = p.altitude, p.azimuth in (
   if not p.is_3d then
     (* prepare a 2D plot *)
@@ -346,13 +346,14 @@ let legend_off h = (h.pages.(h.current_page)).legend <- false
 (* TODO *)
 let rgb = None
 
-(*FIXME: plptex3d*)
+(*FIXME: plptex3 to write text inside the viewport of a 3D plot*)
 let text ?(h=_default_handle) ?(color=(-1,-1,-1)) x y ?(dx=0.) ?(dy=0.) s =
   let open Plplot in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
   let f = (fun () ->
+    (*save original color index*)
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
     let _ = plptex x y dx dy 0. s in
@@ -963,7 +964,12 @@ let normplot ?(h=_default_handle) x =
   let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
   scatter ~h x y
 
-let qqplot = None
+let qqplot ?(h=_default_handle) x y =
+  let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
+  let y = Owl_dense_matrix.D.to_array y |> Owl_stats.sort ~inc:true in
+  let x = Owl_dense_matrix.D.of_array x 1 (Array.length x) in
+  let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
+  scatter ~h x y
 
 let scatterhist = None
 
