@@ -244,6 +244,16 @@ let svdvals x =
   s
 
 
+let gsvd x y =
+  let x = M.clone x in
+  let y = M.clone y in
+  let u, v, q, alpha, beta, _, _, r =
+    Owl_lapacke.ggsvd3 ~jobu:'U' ~jobv:'V' ~jobq:'Q' ~a:x ~b:y
+  in
+  u, v, q, alpha, beta, r
+
+
+
 (** [ Cholesky Decomposition ]  *)
 
 

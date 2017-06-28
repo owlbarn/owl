@@ -88,6 +88,23 @@ val svdvals : ('a, 'b) t -> ('a, 'b) t
   [vt]. Note that for complex numbers, the return is also complex type.
  *)
 
+val gsvd : ('a, 'b) t -> ('a, 'b) t ->
+  ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
+(** [gsvd x y -> (u, v, q, d0, d1, r)] computes the generalized singular value
+  decomposition of a pair of general rectangular matrices [x] and [y]. [d0] and
+  [d1] contain the generalized singular value pairs of [x] and [y]. The shape
+  of [x] is [m x n] and the shape of [y] is [p x n].
+
+  [let x = Mat.uniform 5 5;;]
+  [let y = Mat.uniform 2 5;;]
+  [let u, v, q, d0, d1, r = Linalg.gsvd x y;;]
+  [let d0 = Mat.diagm d0;;]
+  [Mat.(u *@ d0 *@ r *@ transpose q =~ x);;]
+
+  Please refer to:
+  https://software.intel.com/en-us/mkl-developer-reference-c-ggsvd3
+ *)
+
 
 (** {6 Soon will be obsoleted } *)
 
