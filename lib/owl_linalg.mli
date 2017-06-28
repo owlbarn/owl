@@ -22,6 +22,14 @@ type mat_z = Owl_dense.Matrix.Z.mat
 type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
 
 
+val inv : ('a, 'b) t -> ('a, 'b) t
+(** [inv x] calculates the inverse of a square matrix [x] such that
+  [x *@ x = I] wherein [I] is an identity matrix.
+ *)
+
+val det : ('a, 'b) t -> 'a
+(** [det x] computes the determinant of a square matrix [x]. *)
+
 val lu : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
 (** [lu x -> (l, u, ipiv)] calculates LU decomposition of a general [m x n]
   matrix. The function uses partial pivoting, with row interchanges.
@@ -29,21 +37,6 @@ val lu : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_el
   [ipiv] is a row vector shows row [i] was interchanged with row [ipiv(i)]. The
   indices are not adjusted to 0-based C layout.
  *)
-
-
-val inv : mat_d -> mat_d
-(**
- *)
-
-
-val inv' : ('a, 'b) t -> ('a, 'b) t
-(**
- *)
-
-
-
-val det : mat_d -> float
-(** [det x] computes the determinant of a matrix [x] from its LU decomposition. *)
 
 val qr : ?thin:bool -> ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
 (** [qr x] calculates QR decomposition for an [m] by [n] matrix [x] as

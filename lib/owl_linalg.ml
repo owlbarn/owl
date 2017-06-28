@@ -41,28 +41,6 @@ let vecs_to_tridiag d e f =
 
 (** [ LU decomposition ]  *)
 
-let inv x =
-  let open Gsl.Vectmat in
-  let y = Gsl.Linalg.invert_LU (`M x) in
-  match y with
-    | `M y -> y
-    | _ -> MD.empty 0 0
-
-let det x =
-  let open Gsl.Vectmat in
-  Gsl.Linalg.det_LU (`M x)
-
-(*
-let lu x =
-  let open Gsl.Vectmat in
-  let y = Gsl.Linalg.decomp_LU (`M x) in
-  match y with
-    | `M a, b, c -> a, b, c
-    | _, b, c -> MD.empty 0 0, b, c
-
-let lu_solve = None
-*)
-
 
 let lu ?(pivot=true) x =
   let x = M.clone x in
@@ -81,13 +59,32 @@ let lu ?(pivot=true) x =
   l, u, ipiv
 
 
-let inv' x =
+let inv x =
   let x = M.clone x in
-  let m, n = M.shape x in
-  let minmn = Pervasives.min m n in
-
   let a, ipiv = Owl_lapacke.getrf x in
   Owl_lapacke.getri a ipiv
+
+
+let det x =
+  let x = M.clone x in
+  let m, n = M.shape x in
+  assert (m = n);
+
+  let a, ipiv = Owl_lapacke.getrf x in
+  let d = ref (Owl_dense_common._one (M.kind x)) in
+  let c = ref 0 in
+
+  let _mul_op = Owl_dense_common._mul_elt (M.kind x) in
+  for i = 0 to m - 1 do
+    d := _mul_op !d a.{i,i};
+    (* NOTE: +1 to adjust to Fortran index *)
+    if ipiv.{0,i} <> Int32.of_int (i + 1) then
+      c := !c + 1
+  done;
+
+  match Owl_maths.is_odd !c with
+  | true  -> Owl_dense_common._neg_elt (M.kind x) !d
+  | false -> !d
 
 
 (** [ QR decomposition ]  *)
