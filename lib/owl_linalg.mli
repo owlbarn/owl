@@ -35,14 +35,19 @@ val inv : mat_d -> mat_d
 val det : mat_d -> float
 (** [det x] computes the determinant of a matrix [x] from its LU decomposition. *)
 
-val qr : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+val qr : ?thin:bool -> ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
 (** [qr x] calculates QR decomposition for an [m] by [n] matrix [x] as
   [x = Q R]. [Q] is an [m] by [n] matrix (where [Q^T Q = I]) and [R] is
   an [n] by [n] upper-triangular matrix.
+
+  The function returns a 3-tuple, the first two are [q] and [r], and the thrid
+  is the permutation vector of columns. The default value of [pivot] is [false],
+  setting [pivot = true] lets [qr] performs pivoted factorisation. Note that
+  the returned indices are not adjusted to 0-based C layout.
+
+  By default, [qr] performs a reduced QR factorisation, full factorisation can
+  be enabled by setting [thin] parameter to [false].
  *)
-
-val qr_pivot : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
-
 
 val qr_sqsolve : mat_d -> mat_d -> mat_d
 

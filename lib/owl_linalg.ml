@@ -76,11 +76,18 @@ let _get_q
   | _         -> failwith "owl_linalg:_get_q"
 
 
-let qr ?(thin=true) x =
+let qr ?(thin=true) ?(pivot=false) x =
   let x = M.clone x in
   let m, n = M.shape x in
   let minmn = Pervasives.min m n in
-  let a, tau = Owl_lapacke.geqrf x in
+  let a, tau, jpvt = match pivot with
+    | true  -> Owl_lapacke.geqp3 x
+    | false -> (
+        let jpvt = M.empty int32 0 0 in
+        let a, tau = Owl_lapacke.geqrf x in
+        a, tau, jpvt
+      )
+  in
   let r = match thin with
     | true  -> M.resize ~head:true minmn n (M.triu a)
     | false -> M.resize ~head:true m n (M.triu a)
@@ -95,9 +102,9 @@ let qr ?(thin=true) x =
         )
   in
   let q = _get_q (M.kind x) a tau in
-  q, r
+  q, r, jpvt
 
-
+(*
 let qr_pivot x =
   let x = M.clone x in
   let m, n = M.shape x in
@@ -105,7 +112,7 @@ let qr_pivot x =
   let r = M.resize ~head:true n n (M.triu a) in
   let q = _get_q (M.kind x) a tau in
   q, r, jpvt
-
+*)
 
 let qrfact x = None
 

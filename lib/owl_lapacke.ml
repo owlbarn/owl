@@ -364,7 +364,7 @@ let gerqf
 
 let geqp3
   : type a b. ?jpvt:(int32, int32_elt) mat -> a:(a, b) mat
-  -> (a, b) mat * (int32, int32_elt) mat * (a, b) mat
+  -> (a, b) mat * (a, b) mat * (int32, int32_elt) mat
   = fun ?jpvt ~a ->
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
@@ -397,7 +397,7 @@ let geqp3
     | _         -> failwith "lapacke:geqp3"
   in
   check_lapack_error ret;
-  a, jpvt, tau
+  a, tau, jpvt
 
 
 let geqrt
