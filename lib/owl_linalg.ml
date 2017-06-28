@@ -176,10 +176,21 @@ let lq ?(thin=true) x =
   let m, n = M.shape x in
   let minmn = Pervasives.min m n in
   let a, tau = Owl_lapacke.gelqf x in
-  let l = M.tril a in
+  let l = match thin with
+    | true  ->
+        if m < n then
+          M.slice [[]; [0; minmn-1]] (M.tril a)
+        else M.tril a
+    | false -> M.tril a
+  in
+  let a = match thin with
+    | true  -> a
+    | false ->
+        if m >= n then a
+        else M.resize ~head:true n n a
+  in
   let q = _get_lq_q (M.kind x) a tau in
   l, q
-
 
 
 let qr_sqsolve a b =
