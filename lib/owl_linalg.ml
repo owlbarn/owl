@@ -117,7 +117,7 @@ let logdet x =
 (** [ QR decomposition ]  *)
 
 
-let _get_q
+let _get_qr_q
   : type a b. (a, b) kind -> (a, b) t -> (a, b) t -> (a, b) t
   = fun k a tau ->
   match k with
@@ -125,7 +125,7 @@ let _get_q
   | Float64   -> Owl_lapacke.orgqr a tau
   | Complex32 -> Owl_lapacke.ungqr a tau
   | Complex64 -> Owl_lapacke.ungqr a tau
-  | _         -> failwith "owl_linalg:_get_q"
+  | _         -> failwith "owl_linalg:_get_qr_q"
 
 
 let qr ?(thin=true) ?(pivot=false) x =
@@ -153,11 +153,33 @@ let qr ?(thin=true) ?(pivot=false) x =
           M.concat_horizontal a a'
         )
   in
-  let q = _get_q (M.kind x) a tau in
+  let q = _get_qr_q (M.kind x) a tau in
   q, r, jpvt
 
 
 let qrfact x = None
+
+
+let _get_lq_q
+  : type a b. (a, b) kind -> (a, b) t -> (a, b) t -> (a, b) t
+  = fun k a tau ->
+  match k with
+  | Float32   -> Owl_lapacke.orglq a tau
+  | Float64   -> Owl_lapacke.orglq a tau
+  | Complex32 -> Owl_lapacke.unglq a tau
+  | Complex64 -> Owl_lapacke.unglq a tau
+  | _         -> failwith "owl_linalg:_get_lq_q"
+
+
+let lq ?(thin=true) x =
+  let x = M.clone x in
+  let m, n = M.shape x in
+  let minmn = Pervasives.min m n in
+  let a, tau = Owl_lapacke.gelqf x in
+  let l = M.tril a in
+  let q = _get_lq_q (M.kind x) a tau in
+  l, q
+
 
 
 let qr_sqsolve a b =
@@ -238,18 +260,16 @@ let svd x = (* v is in un-transposed form *)
 
 (** [ Cholesky Decomposition ]  *)
 
-let cholesky x =
-  let open Gsl.Vectmat in
-  let y = MD.clone x in
-  let _ = Gsl.Linalg.cho_decomp (`M y) in
-  for i = 0 to (MD.row_num y) - 1 do
-    for j = 0 to (MD.col_num y) - 1 do
-      if i > j then y.{i,j} <- 0.
-    done
-  done; y
+
+let chol ?(upper=true) x =
+  let x = M.clone x in
+  match upper with
+  | true  -> Owl_lapacke.potrf 'U' x |> M.triu
+  | false -> Owl_lapacke.potrf 'L' x |> M.tril
+
 
 let is_posdef x =
-  try ignore (cholesky x); true
+  try ignore (chol x); true
   with exn -> false
 
 

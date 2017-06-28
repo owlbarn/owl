@@ -57,6 +57,17 @@ val qr : ?thin:bool -> ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (i
   be enabled by setting [thin] parameter to [false].
  *)
 
+val chol : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
+(** [chol x -> u] calculates the Cholesky factorisation of a positive definite
+  matrix [x] such that [x = u' *@ u]. By default, the upper triangular matrix
+  is returned. The lower triangular part can be obtained by setting the
+  parameter [upper = false].
+ *)
+
+val lq : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(** [lq x -> (l, q)] calculates the LQ decomposition of [x] *)
+
+
 val qr_sqsolve : mat_d -> mat_d -> mat_d
 
 val qr_lssolve : mat_d -> mat_d -> mat_d * mat_d
@@ -67,8 +78,6 @@ val svd : mat_d -> mat_d * mat_d * mat_d
   matrix of singular values, and [v] is the transpose of an [n] by [n]
   orthogonal square matrix.
  *)
-
-val cholesky : mat_d -> mat_d
 
 val is_posdef : mat_d -> bool
 (** [is_posdef x] checks whether [x] is a positive semi-definite matrix. *)
