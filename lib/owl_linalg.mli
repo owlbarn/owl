@@ -30,6 +30,11 @@ val inv : ('a, 'b) t -> ('a, 'b) t
 val det : ('a, 'b) t -> 'a
 (** [det x] computes the determinant of a square matrix [x]. *)
 
+val logdet : ('a, 'b) t -> 'a
+(** [logdet x] computes the log of the determinant of a square matrix [x]. It is
+  equivalent to [log (det x)] but may provide more accuracy and efficiency.
+ *)
+
 val lu : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
 (** [lu x -> (l, u, ipiv)] calculates LU decomposition of a general [m x n]
   matrix. The function uses partial pivoting, with row interchanges.

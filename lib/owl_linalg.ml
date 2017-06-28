@@ -87,6 +87,33 @@ let det x =
   | false -> !d
 
 
+(* FIXME: need to check ... *)
+let logdet x =
+  let x = M.clone x in
+  let m, n = M.shape x in
+  assert (m = n);
+
+  let _kind = M.kind x in
+  let a, ipiv = Owl_lapacke.getrf x in
+  let d = ref (Owl_dense_common._zero _kind) in
+  let c = ref 0 in
+
+  let _add_op = Owl_dense_common._add_elt _kind in
+  let _log_op = Owl_dense_common._log_elt _kind in
+  let _neg_op = Owl_dense_common._neg_elt _kind in
+
+  for i = 0 to m - 1 do
+    d := _add_op !d (_log_op a.{i,i});
+    (* NOTE: +1 to adjust to Fortran index *)
+    if ipiv.{0,i} <> Int32.of_int (i + 1) then
+      c := !c + 1
+  done;
+
+  match Owl_maths.is_odd !c with
+  | true  -> Owl_dense_common._neg_elt _kind !d
+  | false -> !d
+
+
 (** [ QR decomposition ]  *)
 
 
