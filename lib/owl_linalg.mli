@@ -22,15 +22,25 @@ type mat_z = Owl_dense.Matrix.Z.mat
 type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
 
 
-val inv : mat_d -> mat_d
-(** A general square matrix A has an LU decomposition into upper and lower
-  triangular matrices, [P A = L U] where P is a permutation matrix, L is unit
-  lower triangular matrix and U is upper triangular matrix. For square matrices
-  this decomposition can be used to convert the linear system A x = b into a
-  pair of triangular systems (L y = P b, U x = y), which can be solved by
-  forward and back-substitution. Note that the LU decomposition is valid for
-  singular matrices.
+val lu : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
+(** [lu x -> (l, u, ipiv)] calculates LU decomposition of a general [m x n]
+  matrix. The function uses partial pivoting, with row interchanges.
+
+  [ipiv] is a row vector shows row [i] was interchanged with row [ipiv(i)]. The
+  indices are not adjusted to 0-based C layout.
  *)
+
+
+val inv : mat_d -> mat_d
+(**
+ *)
+
+
+val inv' : ('a, 'b) t -> ('a, 'b) t
+(**
+ *)
+
+
 
 val det : mat_d -> float
 (** [det x] computes the determinant of a matrix [x] from its LU decomposition. *)

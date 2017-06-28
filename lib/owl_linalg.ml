@@ -52,6 +52,7 @@ let det x =
   let open Gsl.Vectmat in
   Gsl.Linalg.det_LU (`M x)
 
+(*
 let lu x =
   let open Gsl.Vectmat in
   let y = Gsl.Linalg.decomp_LU (`M x) in
@@ -60,6 +61,33 @@ let lu x =
     | _, b, c -> MD.empty 0 0, b, c
 
 let lu_solve = None
+*)
+
+
+let lu ?(pivot=true) x =
+  let x = M.clone x in
+  let m, n = M.shape x in
+  let minmn = Pervasives.min m n in
+
+  let a, ipiv = Owl_lapacke.getrf x in
+  let l = M.tril a in
+  let u = M.resize n n (M.triu a) in
+
+  let _a1 = Owl_dense_common._one (M.kind x) in
+  for i = 0 to minmn - 1 do
+    l.{i,i} <- _a1
+  done;
+
+  l, u, ipiv
+
+
+let inv' x =
+  let x = M.clone x in
+  let m, n = M.shape x in
+  let minmn = Pervasives.min m n in
+
+  let a, ipiv = Owl_lapacke.getrf x in
+  Owl_lapacke.getri a ipiv
 
 
 (** [ QR decomposition ]  *)
@@ -104,15 +132,6 @@ let qr ?(thin=true) ?(pivot=false) x =
   let q = _get_q (M.kind x) a tau in
   q, r, jpvt
 
-(*
-let qr_pivot x =
-  let x = M.clone x in
-  let m, n = M.shape x in
-  let a, jpvt, tau = Owl_lapacke.geqp3 x in
-  let r = M.resize ~head:true n n (M.triu a) in
-  let q = _get_q (M.kind x) a tau in
-  q, r, jpvt
-*)
 
 let qrfact x = None
 
