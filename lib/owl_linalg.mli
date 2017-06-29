@@ -23,6 +23,14 @@ type mat_z = Owl_dense.Matrix.Z.mat
 type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
 
 
+(** {6 Basic functions} *)
+
+
+
+
+
+(** {6 Factorisation} *)
+
 val inv : ('a, 'b) t -> ('a, 'b) t
 (** [inv x] calculates the inverse of a square matrix [x] such that
   [x *@ x = I] wherein [I] is an identity matrix.
@@ -172,7 +180,14 @@ val eigen_herm : mat_z -> mat_d
 val eigen_hermv : mat_z -> mat_d * mat_z
 (* [eigen_hermv x] return the eigen values and vectors of complex Hermitian matrix [x]. *)
 
+val eigvals : ?permute:bool -> ?scale:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(** [eigvals x -> (wr, wi)] *)
+
 
 (** {6 Some helper functions} *)
 
 val peakflops : ?n:int -> unit -> float
+(** [peakflops ()] returns the peak number of float point operations using
+  [Owl_cblas.dgemm] function. The default matrix size is [2000 x 2000], but you
+  change this by setting [n] to other numbers.
+ *)

@@ -1319,16 +1319,17 @@ let geevx
   let _layout = Array2.layout a in
   let layout = lapacke_layout _layout in
 
-  let ldvl = match jobvl with
-    | 'V' -> n
-    | _   -> 1
+  let vl = match jobvl with
+    | 'V' -> Array2.create _kind _layout n n
+    | _   -> Array2.create _kind _layout 0 n
   in
-  let ldvr = match jobvr with
-    | 'V' -> n
-    | _   -> 1
+  let vr = match jobvl with
+    | 'V' -> Array2.create _kind _layout n n
+    | _   -> Array2.create _kind _layout 0 n
   in
-  let vl = Array2.create _kind _layout n ldvl in
-  let vr = Array2.create _kind _layout n ldvr in
+  let ldvl = Pervasives.max 1 (_stride vl) in
+  let ldvr = Pervasives.max 1 (_stride vr) in
+
   let _ilo = Ctypes.(allocate int32_t 0l) in
   let _ihi = Ctypes.(allocate int32_t 0l) in
   let lda = Pervasives.max 1 (_stride a) in

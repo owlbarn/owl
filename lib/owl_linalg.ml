@@ -388,9 +388,9 @@ let symm_cyc_tridiag_solve x = None
 
 
 (* Check matrix properties *)
+(* TODO: need to implement in C for better performance *)
 
-
-let is_triu = None
+let is_triu x = None
 
 
 let is_tril = None
@@ -453,6 +453,36 @@ let eigen_hermv x =
   let v, z = Gsl.Eigen.hermv (`CM y) in
   let v = MD.of_array (Gsl.Vector.to_array v) 1 m in
   v, z
+
+
+let eig ?(permute=true) ?(scale=true) x =
+  let x = M.clone x in
+  let balanc = match permute, scale with
+    | true, true   -> 'B'
+    | true, false  -> 'P'
+    | false, true  -> 'S'
+    | false, false -> 'N'
+  in
+  let a, wr, wi, _, vr, _, _, _, _, _, _ =
+    Owl_lapacke.geevx ~balanc ~jobvl:'N' ~jobvr:'V' ~sense:'N' ~a:x
+  in
+  ()
+
+
+let eigvals ?(permute=true) ?(scale=true) x =
+  let x = M.clone x in
+  let balanc = match permute, scale with
+    | true, true   -> 'B'
+    | true, false  -> 'P'
+    | false, true  -> 'S'
+    | false, false -> 'N'
+  in
+  let _, wr, wi, _, _, _, _, _, _, _, _ =
+    Owl_lapacke.geevx ~balanc ~jobvl:'N' ~jobvr:'N' ~sense:'N' ~a:x
+  in
+  wr, wi
+
+
 
 
 (* Helper functions *)
