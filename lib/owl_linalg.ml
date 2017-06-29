@@ -288,10 +288,10 @@ let rank ?tol x =
     | Float64   -> M.elt_greater_scalar sv dtol |> M.sum |> int_of_float
     | Complex32 ->
         let a = M.elt_greater_scalar sv ztol |> M.sum in
-        int_of_float a.re
+        int_of_float Complex.(a.re)
     | Complex64 ->
         let a = M.elt_greater_scalar sv ztol |> M.sum in
-        int_of_float a.re
+        int_of_float Complex.(a.re)
     | _         -> failwith "owl_linalg:rank"
   in
   _count (M.kind sv) sv
@@ -310,6 +310,12 @@ let chol ?(upper=true) x =
 let is_posdef x =
   try ignore (chol x); true
   with exn -> false
+
+
+let schur x =
+  let x = M.clone x in
+  let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
+  t, z, wr, wi
 
 
 (** [ Symmetric tridiagonal decomposition ]  *)

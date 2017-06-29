@@ -121,6 +121,16 @@ val gsvdvals : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   values of the generalised singular value decomposition of [x] and [y].
  *)
 
+val schur : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(** [schur x -> (t, z, wr, wi)] calculates Schur factorisation of [x]. [t] is
+  (quasi) triangular Schur factor, [z] is orthogonal/unitary Schur vectors.
+
+  Both [wr] and [wi] eigen values: for real numbers, the eigen values are
+  splitted into real and imaginary parts, therefore you need to assemble them
+  together to get complex eigen values. For complex numbers, [wr] and [wi] are
+  the same.
+ *)
+
 
 (** {6 Soon will be obsoleted } *)
 
