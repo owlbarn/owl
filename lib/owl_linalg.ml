@@ -247,10 +247,17 @@ let svdvals x =
 let gsvd x y =
   let x = M.clone x in
   let y = M.clone y in
-  let u, v, q, alpha, beta, _, _, r =
+  let m, n = M.shape x in
+  let p, _ = M.shape y in
+  let u, v, q, alpha, beta, k, l, r =
     Owl_lapacke.ggsvd3 ~jobu:'U' ~jobv:'V' ~jobq:'Q' ~a:x ~b:y
   in
-  u, v, q, alpha, beta, r
+  let alpha = M.resize ~head:true 1 (k + l) alpha in
+  let d1 = M.resize ~head:true m (k + l) (M.diagm alpha) in
+  let beta = M.resize ~head:true 1 (k + l) beta in
+  let beta = M.resize ~head:false 1 l beta in
+  let d2 = M.resize p (k + l) (M.diagm ~k beta) in
+  u, v, q, d1, d2, r
 
 
 
