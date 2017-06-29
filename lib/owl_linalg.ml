@@ -271,6 +271,32 @@ let gsvdvals x y =
   M.(div alpha beta)
 
 
+let rank ?tol x =
+  let sv = svdvals x in
+  let m, n = M.shape x in
+  let maxmn = Pervasives.max m n in
+  let eps = 1e-10 in
+  let tol = match tol with
+    | Some tol -> tol
+    | None     -> (float_of_int maxmn) *. eps
+  in
+  let dtol = tol in
+  let ztol = Complex.({re = tol; im = neg_infinity}) in
+  let _count : type a b. (a, b) kind -> (a, b) t -> int =
+    fun _kind sv -> match _kind with
+    | Float32   -> M.elt_greater_scalar sv dtol |> M.sum |> int_of_float
+    | Float64   -> M.elt_greater_scalar sv dtol |> M.sum |> int_of_float
+    | Complex32 ->
+        let a = M.elt_greater_scalar sv ztol |> M.sum in
+        int_of_float a.re
+    | Complex64 ->
+        let a = M.elt_greater_scalar sv ztol |> M.sum in
+        int_of_float a.re
+    | _         -> failwith "owl_linalg:rank"
+  in
+  _count (M.kind sv) sv
+
+
 (** [ Cholesky Decomposition ]  *)
 
 

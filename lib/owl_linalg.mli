@@ -36,6 +36,13 @@ val logdet : ('a, 'b) t -> 'a
   equivalent to [log (det x)] but may provide more accuracy and efficiency.
  *)
 
+val rank : ?tol:float -> ('a, 'b) t -> int
+(** [rank x] calculates the rank of a rectangular matrix [x] of shape [m x n].
+  The function does so by counting the number of singular values of [x] which
+  are beyond a pre-defined threshold [tol]. By default, [tol = max(m,n) * eps]
+  where [eps = 1e-10].
+ *)
+
 val lu : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
 (** [lu x -> (l, u, ipiv)] calculates LU decomposition of a general [m x n]
   matrix. The function uses partial pivoting, with row interchanges.
