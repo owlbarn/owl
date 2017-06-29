@@ -455,4 +455,24 @@ let eigen_hermv x =
   v, z
 
 
+(* Helper functions *)
+
+
+let peakflops ?(n=2000) () =
+  let x = M.ones float64 n n |> Owl_utils.array2_to_array1 in
+  let z = M.ones float64 n n |> Owl_utils.array2_to_array1 in
+  let layout = Owl_cblas.CblasRowMajor in
+  let transa = Owl_cblas.CblasNoTrans in
+  let transb = Owl_cblas.CblasNoTrans in
+
+  let t0 = Unix.gettimeofday () in
+  Owl_cblas.dgemm layout transa transb n n n 1.0 x n x n 0.0 z n;
+  let t1 = Unix.gettimeofday () in
+
+  let flops = 2. *. (float_of_int n) ** 3. /. (t1 -. t0) in
+  flops
+
+
+
+
 (* ends here *)

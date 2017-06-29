@@ -249,12 +249,6 @@ let list_search x l =
   in
   _search x l 0
 
-(* measure the time spent in a function in millisecond *)
-let time f =
-  let t = Unix.gettimeofday () in
-  f ();
-  (Unix.gettimeofday () -. t) *. 1000.
-
 
 (* flatten an array2 then convert to array1 *)
 let array2_to_array1 x =
@@ -305,6 +299,17 @@ module Stack = struct
   let to_array s = Array.sub s.data 0 s.used
 
 end
+
+
+(** The following function relates to performance measurement *)
+
+
+(* measure the time spent in a function in millisecond *)
+let time f =
+  let t = Unix.gettimeofday () in
+  f ();
+  (Unix.gettimeofday () -. t) *. 1000.
+
 
 
 (* ends here *)

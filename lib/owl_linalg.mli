@@ -121,7 +121,7 @@ val gsvdvals : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   values of the generalised singular value decomposition of [x] and [y].
  *)
 
-val schur : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+val schur : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
 (** [schur x -> (t, z, wr, wi)] calculates Schur factorisation of [x]. [t] is
   (quasi) triangular Schur factor, [z] is orthogonal/unitary Schur vectors. The
   eigen values are not sorted, they have the same order as that they appear on
@@ -171,3 +171,8 @@ val eigen_herm : mat_z -> mat_d
 
 val eigen_hermv : mat_z -> mat_d * mat_z
 (* [eigen_hermv x] return the eigen values and vectors of complex Hermitian matrix [x]. *)
+
+
+(** {6 Some helper functions} *)
+
+val peakflops : ?n:int -> unit -> float
