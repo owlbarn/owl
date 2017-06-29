@@ -964,12 +964,21 @@ let normplot ?(h=_default_handle) x =
   let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
   scatter ~h x y
 
-let qqplot ?(h=_default_handle) x y =
+let qqplot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_size=4.)
+  ?(pd=Stats.Rnd.gaussian) ?(pd_params = ()) ?y x =
   let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
-  let y = Owl_dense_matrix.D.to_array y |> Owl_stats.sort ~inc:true in
+  let y = match y with
+    | None -> Array.init (Array.length x) (fun _ -> pd pd_params) |> Owl_stats.sort ~inc:true
+    | Some arr -> Owl_dense_matrix.D.to_array arr |> Owl_stats.sort ~inc:true
+  in
+  let l, u = Owl_stats.minmax x in
   let x = Owl_dense_matrix.D.of_array x 1 (Array.length x) in
   let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
-  scatter ~h x y
+  let p' = Owl_regression.linear (Mat.transpose x) (Mat.transpose y) ~i:true in
+  let p = Owl_dense_matrix.D.to_array p' in
+  let f a = a *. p.(1) +. p.(0) in
+  let _ = plot_fun ~h f l u in
+  scatter ~h ~color:color ~marker:marker ~marker_size:marker_size x y;;
 
 let scatterhist = None
 
