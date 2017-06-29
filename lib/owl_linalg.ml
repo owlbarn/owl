@@ -260,6 +260,16 @@ let gsvd x y =
   u, v, q, d1, d2, r
 
 
+let gsvdvals x y =
+  let x = M.clone x in
+  let y = M.clone y in
+  let _, _, _, alpha, beta, k, l, _ =
+    Owl_lapacke.ggsvd3 ~jobu:'N' ~jobv:'N' ~jobq:'N' ~a:x ~b:y
+  in
+  let alpha = M.resize ~head:true 1 (k + l) alpha in
+  let beta = M.resize ~head:true 1 (k + l) beta in
+  M.(div alpha beta)
+
 
 (** [ Cholesky Decomposition ]  *)
 
