@@ -307,11 +307,6 @@ let chol ?(upper=true) x =
   | false -> Owl_lapacke.potrf 'L' x |> M.tril
 
 
-let is_posdef x =
-  try ignore (chol x); true
-  with exn -> false
-
-
 let schur x =
   let x = M.clone x in
   let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
@@ -390,6 +385,29 @@ let symm_tridiag_solve a b =
 let cyc_tridiag_solve x = None
 
 let symm_cyc_tridiag_solve x = None
+
+
+(* Check matrix properties *)
+
+
+let is_triu = None
+
+
+let is_tril = None
+
+
+let is_symmetric = None
+
+
+let is_hermitian = None
+
+
+let is_diag = None
+
+
+let is_posdef x =
+  try ignore (chol x); true
+  with exn -> false
 
 
 (* Eigenvalues & Eigenvectors *)
