@@ -1378,9 +1378,7 @@ let geevx
         let rcondv' = Array2.create _kind _layout 1 n in
         let _rcondv = bigarray_start Ctypes_static.Array2 rcondv' in
         let _abnrm = Ctypes.(allocate double 0.) in
-        Log.info "here";
         let r = L.dgeevx layout balanc jobvl jobvr sense n _a lda _wr _wi _vl ldvl _vr ldvr _ilo _ihi _scale _abnrm _rconde _rcondv in
-        Log.info "there";
         wr := wr';
         wi := wi';
         scale := scale';
