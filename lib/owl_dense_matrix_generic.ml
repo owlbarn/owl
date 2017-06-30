@@ -899,7 +899,7 @@ let resize ?head m n x =
 
 
 let complex
-  : type a b. (float, a) kind -> (Complex.t, b) kind -> (float, a) t -> (float, a) t -> (Complex.t, b) t
+  : type a b c d. (a, b) kind -> (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
   = fun real_kind complex_kind re im ->
   let re = to_ndarray re in
   let im = to_ndarray im in

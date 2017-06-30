@@ -2284,6 +2284,19 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X,Y,Z) Z->r = *X; Z->i = *Y
 #include "owl_dense_common_vec_map.c"
 
+#define FUN15 complex_float_to_complex
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define NUMBER2 complex_float
+#define MAPFN(X,Y,Z) Z->r = X->r; Z->i = Y->i
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 complex_double_to_complex
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define NUMBER2 complex_double
+#define MAPFN(X,Y,Z) Z->r = X->r; Z->i = Y->i
+#include "owl_dense_common_vec_map.c"
 
 // sort
 

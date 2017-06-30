@@ -50,9 +50,13 @@ val ones : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 val eye : ('a, 'b) kind -> int -> ('a, 'b) t
 (** [eye m] creates an [m] by [m] identity matrix. *)
 
-val complex : (float, 'a) kind -> (Complex.t, 'b) kind -> (float, 'a) t -> (float, 'a) t -> (Complex.t, 'b) t
+val complex : ('a, 'b) kind -> ('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('c, 'd) t
 (** [complex re im] constructs a complex ndarray/matrix from [re] and [im].
   [re] and [im] contain the real and imaginary part of [x] respectively.
+
+  Note that both [re] and [im] can be complex but must have same type. The real
+  part of [re] will be the real part of [x] and the imaginary part of [im] will
+  be the imaginary part of [x].
  *)
 
 val sequential : ('a, 'b) kind -> ?a:'a -> ?step:'a -> int -> int -> ('a, 'b) t

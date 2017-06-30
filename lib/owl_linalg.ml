@@ -223,7 +223,6 @@ let qr_solve a b =
   | true -> qr_sqsolve a b, MD.empty 0 0
   | false -> qr_lssolve a b
 
-let rank = None
 
 
 (** [ Sigular Value decomposition ]  *)
@@ -307,10 +306,18 @@ let chol ?(upper=true) x =
   | false -> Owl_lapacke.potrf 'L' x |> M.tril
 
 
-let schur x =
+let schur
+  : type a b c d. otyp:(a, b) kind -> (c, d) t -> (c, d) t * (c, d) t * (a, b) t
+  = fun ~otyp x ->
   let x = M.clone x in
   let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
-  t, z, wr, wi
+  let w = match (M.kind x) with
+    | Float32   -> M.complex float32 complex32 wr wi |> Obj.magic
+    | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
+    | Complex32 -> Obj.magic wr
+    | Complex64 -> Obj.magic wr
+  in
+  t, z, w
 
 
 (** [ Symmetric tridiagonal decomposition ]  *)
@@ -455,7 +462,9 @@ let eigen_hermv x =
   v, z
 
 
-let eig ?(permute=true) ?(scale=true) x =
+let eig
+  : type a b c d. ?permute:bool -> ?scale:bool -> (a, b) kind -> (c, d) t -> (a, b) t
+  = fun ?(permute=true) ?(scale=true) complex_kind x ->
   let x = M.clone x in
   let balanc = match permute, scale with
     | true, true   -> 'B'
@@ -466,7 +475,14 @@ let eig ?(permute=true) ?(scale=true) x =
   let a, wr, wi, _, vr, _, _, _, _, _, _ =
     Owl_lapacke.geevx ~balanc ~jobvl:'N' ~jobvr:'V' ~sense:'N' ~a:x
   in
-  ()
+  let m, n = M.shape wr in
+  let w = match (M.kind x) with
+    | Float32   -> M.complex float32 complex32 wr wi |> Obj.magic
+    | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
+    | Complex32 -> Obj.magic wr
+    | Complex64 -> Obj.magic wr
+  in
+  w
 
 
 let eigvals ?(permute=true) ?(scale=true) x =
