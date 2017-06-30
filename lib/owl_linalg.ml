@@ -3,6 +3,21 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.caMD.ac.uk>
  *)
 
+
+module Generic = struct
+
+  include Owl_linalg_generic
+
+end
+
+
+module D = struct
+
+  include Owl_linalg_d
+
+end
+
+
 open Bigarray
 
 type mat_d = Owl_dense.Matrix.D.mat

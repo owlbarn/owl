@@ -123,15 +123,15 @@ val gsvdvals : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val schur : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
-(** [schur x -> (t, z, wr, wi)] calculates Schur factorisation of [x]. [t] is
+(** [schur x -> (t, z, w)] calculates Schur factorisation of [x]. [t] is
   (quasi) triangular Schur factor, [z] is orthogonal/unitary Schur vectors. The
   eigen values are not sorted, they have the same order as that they appear on
   the diagonal of the output real-Schur form t.
 
-  Both [wr] and [wi] eigen values: for real numbers, the eigen values are
-  splitted into real and imaginary parts, therefore you need to assemble them
-  together to get complex eigen values. For complex numbers, [wr] and [wi] are
-  the same.
+  [w] contains the eigen values. [otyp] is used to specify the type of [w]. It
+  needs to be consistent with input type. E.g., if the input [x] is [float32]
+  then [otyp] must be [complex32]. However, if you use S, D, C, Z module, then
+  you do not need to worry about [otyp].
  *)
 
 

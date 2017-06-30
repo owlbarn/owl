@@ -247,7 +247,7 @@ let chol ?(upper=true) x =
 
 
 let schur
-  : type a b c d. otyp:(a, b) kind -> (c, d) t -> (c, d) t * (c, d) t * (a, b) t
+  : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x ->
   let x = M.clone x in
   let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
@@ -256,11 +256,13 @@ let schur
     | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
     | Complex32 -> Obj.magic wr
     | Complex64 -> Obj.magic wr
+    | _         -> failwith "owl_linalg_generic:schur"
   in
   t, z, w
 
 
 (* Eigenvalue problem *)
+
 
 let eig
   : type a b c d. ?permute:bool -> ?scale:bool -> (a, b) kind -> (c, d) t -> (a, b) t

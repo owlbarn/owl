@@ -77,6 +77,7 @@ Library owl
                     neural/Owl_neural_parallel,
                     ### Experimental ###
                     Owl_linalg_generic,
+                    Owl_linalg_d,
                     ext/Owl_ext,
                     Owl_parallel
   InternalModules:  Owl_cblas_generated,
