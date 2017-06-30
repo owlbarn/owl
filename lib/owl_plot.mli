@@ -118,6 +118,8 @@ val heatmap : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 
 val normplot : ?h:handle -> dsmat -> unit
 
-
+val qqplot :
+  ?h:handle -> ?color:int * int * int -> ?marker_size:float ->
+  ?pd:(float -> float) -> ?y:dsmat -> dsmat -> unit
 
 (** Other plots *)

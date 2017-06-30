@@ -955,6 +955,17 @@ let contour ?(h=_default_handle) x y z =
 
 (* TODO *)
 
+let _draw_extended_line ?(h=_default_handle) x0 y0 x1 y1 l r u d =
+    (*Specify two points, draw a line between them, and extend on both ends with dash line*)
+    let x0, y0, x1, y1 = if x0 > x1 then x1, y1, x0, y0 else x0, y0, x1, y1 in
+    let yl = if x0 = x1 then u else y0 -. (y1 -. y0) /. (x1 -. x0) *. (x0 -. l) in
+    let yr = if x0 = x1 then d else y1 +. (y1 -. y0) /. (x1 -. x0) *. (r -. x1) in
+    let xl = if x0 = x1 then x0 else l in
+    let xr = if x0 = x1 then x0 else r in
+    let _ = draw_line ~h ~line_style:1 x0 y0 x1 y1 in
+    let _ = draw_line ~h ~line_style:3 xl yl x0 y0 in
+    draw_line ~h ~line_style:3 x1 y1 xr yr
+
 let normplot ?(h=_default_handle) x =
   let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
   let c = Array.length x |> float_of_int in
@@ -964,21 +975,29 @@ let normplot ?(h=_default_handle) x =
   let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
   scatter ~h x y
 
-let qqplot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_size=4.)
-  ?(pd=Stats.Rnd.gaussian) ?(pd_params = ()) ?y x =
+let qqplot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker_size=4.)
+  ?(pd=(fun i -> Owl_stats.Cdf.gaussian_Pinv i 1.)) ?y x =
+  (* Note: data in x are actually plotted along y-axis *)
+  (* TODO: support matrix input; remove the condition that both vectors be of same lengths;
+    add support for `pvec` argument *)
   let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
   let y = match y with
-    | None -> Array.init (Array.length x) (fun _ -> pd pd_params) |> Owl_stats.sort ~inc:true
     | Some arr -> Owl_dense_matrix.D.to_array arr |> Owl_stats.sort ~inc:true
+    | None     -> let n = Array.length x in
+                    let qth = Owl_dense_matrix.D.linspace ((1. -. 0.5) /. float_of_int n)
+                              (( float_of_int n-. 0.5) /. float_of_int n) n in
+                    let q = Owl_dense_matrix.D.map pd qth in
+                    Owl_dense_matrix.D.to_array q
   in
-  let l, u = Owl_stats.minmax x in
+  (*A line joining the first and third quartiles of each distribution*)
+  let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
+  let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
+  let l, r = Owl_stats.minmax y in
+  let u, d = Owl_stats.minmax x in
   let x = Owl_dense_matrix.D.of_array x 1 (Array.length x) in
   let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
-  let p' = Owl_regression.linear (Mat.transpose x) (Mat.transpose y) ~i:true in
-  let p = Owl_dense_matrix.D.to_array p' in
-  let f a = a *. p.(1) +. p.(0) in
-  let _ = plot_fun ~h f l u in
-  scatter ~h ~color:color ~marker:marker ~marker_size:marker_size x y;;
+  let _ = scatter ~h ~color:color ~marker:"#[0x002b]" ~marker_size:marker_size y x in
+  _draw_extended_line ~h p1y p1x p3y p3x l r u d
 
 let scatterhist = None
 
