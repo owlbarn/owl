@@ -81,5 +81,7 @@ let re x = re_c2s x
 
 let im x = im_c2s x
 
+let to_complex = to_complex Float32 Complex32
+
 
 (* ends here *)

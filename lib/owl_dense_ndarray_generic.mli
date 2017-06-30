@@ -583,8 +583,13 @@ val of_array : ('a, 'b) kind -> 'a array -> int array -> ('a, 'b) t
  *)
 
 val to_array : ('a, 'b) t -> 'a array
-(** [to_array x] converts an ndarray [x] to OCaml's array type. Note the ndarray
-  [x] is flattened before convertion.
+(** [to_array x] converts an ndarray [x] to OCaml's array type. Note that the
+  ndarray [x] is flattened before convertion.
+ *)
+
+val to_complex : (float, 'a) kind -> (Complex.t, 'b) kind -> (float, 'a) t -> (float, 'a) t -> (Complex.t, 'b) t
+(** [to_complex re im] constructs a complex ndarray/matrix from [re] and [im].
+  [re] and [im] contain the real and imaginary part of [x] respectively.
  *)
 
 val print : ('a, 'b) t -> unit

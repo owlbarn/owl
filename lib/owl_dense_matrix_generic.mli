@@ -770,6 +770,11 @@ val of_ndarray : ('a, 'b) Owl_dense_ndarray_generic.t -> ('a, 'b) t
   real matrix type. No copy is made by calling this function.
  *)
 
+val to_complex : (float, 'a) kind -> (Complex.t, 'b) kind -> (float, 'a) t -> (float, 'a) t -> (Complex.t, 'b) t
+(** [to_complex re im] constructs a complex ndarray/matrix from [re] and [im].
+  [re] and [im] contain the real and imaginary part of [x] respectively.
+ *)
+
 val to_rows : ('a, 'b) t -> ('a, 'b) t array
 
 val of_rows : ('a, 'b) t array -> ('a, 'b) t

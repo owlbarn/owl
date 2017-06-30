@@ -321,6 +321,7 @@ type ('a, 'b) owl_vec_op13 = int -> ('a, 'b) owl_vec -> 'a -> 'a -> unit
 type ('a, 'b) owl_vec_op14 = int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit
 type ('a, 'b) owl_vec_op15 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> float -> int
 type ('a, 'b) owl_vec_op16 = int -> ('a, 'b) owl_vec -> 'a -> float -> int
+type ('a, 'b) owl_vec_op17 = int -> (float, 'a) owl_vec -> (float, 'a) owl_vec -> (Complex.t, 'b) owl_vec -> unit
 type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
@@ -1485,6 +1486,15 @@ let _owl_approx_elt_equal_scalar : type a b. (a, b) kind -> (a, b) owl_vec_op11 
   | Complex32 -> owl_complex_float_approx_elt_equal_scalar
   | Complex64 -> owl_complex_double_approx_elt_equal_scalar
   | _         -> failwith "_owl_approx_elt_equal_scalar: unsupported operation"
+
+external owl_real_float_to_complex : int -> (float, 'a) owl_vec -> (float, 'a) owl_vec -> (Complex.t, 'b) owl_vec -> unit = "real_float_to_complex"
+external owl_real_double_to_complex : int -> (float, 'a) owl_vec -> (float, 'a) owl_vec -> (Complex.t, 'b) owl_vec -> unit = "real_double_to_complex"
+
+let _owl_to_complex : type a b. (float, a) kind -> (Complex.t, b) kind -> (a, b) owl_vec_op17 =
+  fun real_kind complex_kind l x y z ->
+  match real_kind with
+  | Float32   -> owl_real_float_to_complex l x y z
+  | Float64   -> owl_real_double_to_complex l x y z
 
 
 

@@ -355,6 +355,8 @@ val to_ndarray : mat -> (Complex.t, complex32_elt) Owl_dense_ndarray_generic.t
 
 val of_ndarray : (Complex.t, complex32_elt) Owl_dense_ndarray_generic.t -> mat
 
+val to_complex : cast_mat -> cast_mat -> mat
+
 val to_rows : mat -> mat array
 
 val of_rows : mat array -> mat

@@ -2268,6 +2268,23 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X,Y) Y->r = ((fabs(X->r - ar) < Y->r) && (fabs(X->i - ai) < Y->r))
 #include "owl_dense_common_vec_map.c"
 
+// to_complex
+
+#define FUN15 real_float_to_complex
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 complex_float
+#define MAPFN(X,Y,Z) Z->r = *X; Z->i = *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 real_double_to_complex
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 complex_double
+#define MAPFN(X,Y,Z) Z->r = *X; Z->i = *Y
+#include "owl_dense_common_vec_map.c"
+
+
 // sort
 
 //////////////////// function templates ends ////////////////////

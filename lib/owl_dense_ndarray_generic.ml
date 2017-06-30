@@ -1541,6 +1541,19 @@ let to_array x =
   Owl_backend_gsl_linalg.to_array (kind x) y
 
 
+let to_complex
+  : type a b. (float, a) kind -> (Complex.t, b) kind -> (float, a) t -> (float, a) t -> (Complex.t, b) t
+  = fun real_kind complex_kind re im ->
+  assert (shape re = shape im);
+  let _re = flatten re |> array1_of_genarray in
+  let _im = flatten im |> array1_of_genarray in
+  let x = empty complex_kind (shape re) in
+  let _x = flatten x |> array1_of_genarray in
+  _owl_to_complex real_kind complex_kind (numel re) _re _im _x;
+  x
+
+
+
 
 (* math operations. code might be verbose for performance concern. *)
 

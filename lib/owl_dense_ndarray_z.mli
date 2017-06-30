@@ -231,6 +231,8 @@ val of_array : elt array -> int array -> arr
 
 val to_array : arr -> elt array
 
+val to_complex : cast_arr -> cast_arr -> arr
+
 val print : arr -> unit
 
 val save : arr -> string -> unit

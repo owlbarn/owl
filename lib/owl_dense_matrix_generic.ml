@@ -898,6 +898,15 @@ let resize ?head m n x =
   |> of_ndarray
 
 
+let to_complex
+  : type a b. (float, a) kind -> (Complex.t, b) kind -> (float, a) t -> (float, a) t -> (Complex.t, b) t
+  = fun real_kind complex_kind re im ->
+  let re = to_ndarray re in
+  let im = to_ndarray im in
+  Owl_dense_ndarray_generic.to_complex real_kind complex_kind re im
+  |> of_ndarray
+
+
 (* TODO: improve performance
 
 let of_arrays k x = Array2.of_array k c_layout x
