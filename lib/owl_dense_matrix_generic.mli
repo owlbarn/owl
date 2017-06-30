@@ -50,6 +50,11 @@ val ones : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 val eye : ('a, 'b) kind -> int -> ('a, 'b) t
 (** [eye m] creates an [m] by [m] identity matrix. *)
 
+val complex : (float, 'a) kind -> (Complex.t, 'b) kind -> (float, 'a) t -> (float, 'a) t -> (Complex.t, 'b) t
+(** [complex re im] constructs a complex ndarray/matrix from [re] and [im].
+  [re] and [im] contain the real and imaginary part of [x] respectively.
+ *)
+
 val sequential : ('a, 'b) kind -> ?a:'a -> ?step:'a -> int -> int -> ('a, 'b) t
 (** [sequential ~a ~step m n] creates an [m] by [n] matrix. The elements in [x]
   are initialised sequentiallly from [~a] and is increased by [~step].
@@ -768,11 +773,6 @@ val to_ndarray : ('a, 'b) t -> ('a, 'b) Owl_dense_ndarray_generic.t
 val of_ndarray : ('a, 'b) Owl_dense_ndarray_generic.t -> ('a, 'b) t
 (** [of_ndarray x] transforms a ndarray of type [Bigarray.Genarray.t] to a dense
   real matrix type. No copy is made by calling this function.
- *)
-
-val to_complex : (float, 'a) kind -> (Complex.t, 'b) kind -> (float, 'a) t -> (float, 'a) t -> (Complex.t, 'b) t
-(** [to_complex re im] constructs a complex ndarray/matrix from [re] and [im].
-  [re] and [im] contain the real and imaginary part of [x] respectively.
  *)
 
 val to_rows : ('a, 'b) t -> ('a, 'b) t array

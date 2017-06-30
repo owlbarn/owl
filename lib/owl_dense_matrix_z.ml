@@ -81,7 +81,7 @@ let re x = re_z2d x
 
 let im x = im_z2d x
 
-let to_complex = to_complex Float64 Complex64
+let complex = complex Float64 Complex64
 
 
 (* ends here *)

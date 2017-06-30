@@ -55,4 +55,4 @@ let abs x = abs_z2d x
 
 let abs2 x = abs2_z2d x
 
-let to_complex = to_complex Float64 Complex64
+let complex = complex Float64 Complex64

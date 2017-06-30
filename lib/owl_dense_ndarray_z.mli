@@ -36,6 +36,8 @@ val logspace : ?base:float -> elt -> elt -> int -> arr
 
 val bernoulli : ?p:float -> ?seed:int -> int array -> arr
 
+val complex : cast_arr -> cast_arr -> arr
+
 
 (** {6 Obtain basic properties} *)
 
@@ -230,8 +232,6 @@ val approx_elt_equal_scalar : ?eps:float -> arr -> elt -> arr
 val of_array : elt array -> int array -> arr
 
 val to_array : arr -> elt array
-
-val to_complex : cast_arr -> cast_arr -> arr
 
 val print : arr -> unit
 

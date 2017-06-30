@@ -55,4 +55,4 @@ let abs x = abs_c2s x
 
 let abs2 x = abs2_c2s x
 
-let to_complex = to_complex Float32 Complex32
+let complex = complex Float32 Complex32

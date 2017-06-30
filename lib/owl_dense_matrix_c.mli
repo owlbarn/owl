@@ -36,6 +36,8 @@ val ones : int -> int -> mat
 
 val eye : int -> mat
 
+val complex : cast_mat -> cast_mat -> mat
+
 val sequential : ?a:elt -> ?step:elt -> int -> int -> mat
 
 val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
@@ -354,8 +356,6 @@ val of_arrays : elt array array -> mat
 val to_ndarray : mat -> (Complex.t, complex32_elt) Owl_dense_ndarray_generic.t
 
 val of_ndarray : (Complex.t, complex32_elt) Owl_dense_ndarray_generic.t -> mat
-
-val to_complex : cast_mat -> cast_mat -> mat
 
 val to_rows : mat -> mat array
 
