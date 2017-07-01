@@ -966,6 +966,7 @@ let _draw_extended_line ?(h=_default_handle) x0 y0 x1 y1 l r u d =
     let _ = draw_line ~h ~line_style:3 xl yl x0 y0 in
     draw_line ~h ~line_style:3 x1 y1 xr yr
 
+(*
 let normplot ?(h=_default_handle) x =
   let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
   let c = Array.length x |> float_of_int in
@@ -974,6 +975,37 @@ let normplot ?(h=_default_handle) x =
   let x = Owl_dense_matrix.D.of_array x 1 (Array.length x) in
   let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
   scatter ~h x y
+*)
+
+let normplot ?(h=_default_handle) x =
+    (*Inputs*)
+    let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
+    let norminv = fun q -> Owl_stats.Cdf.gaussian_Pinv q 1. in
+    let y = let n = Array.length x in
+            let qth = Owl_dense_matrix.D.linspace ((1. -. 0.5) /. float_of_int n)
+                (( float_of_int n-. 0.5) /. float_of_int n) n in
+            let q = Owl_dense_matrix.D.map norminv qth in
+            Owl_dense_matrix.D.to_array q
+    in
+    (*Parameters to draw the line*)
+    let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
+    let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
+    let l, r = Owl_stats.minmax x in
+    let u, d = Owl_stats.minmax y in
+    (*Parameters to replace the yticks*)
+    let ticks_perc = [1.; 5.; 10.; 20.; 50.; 80.; 90.; 95.; 99.] in
+    let ps = List.map (fun i -> i /. 100.) ticks_perc in
+    let ticks_quan = List.map norminv ps in
+    let ticks_perc = List.map string_of_float ticks_perc in
+    let yticks = List.combine ticks_quan ticks_perc in
+    (*Array to matrix*)
+    let x = Owl_dense_matrix.D.of_array x 1 (Array.length x) in
+    let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
+    (*Plots*)
+    (*TODO: make set_yticklabels to change unseen tick labels*)
+    let _ = set_yticklabels h yticks in
+    let _ = scatter ~h ~color:(-1, -1, -1) ~marker:"#[0x002b]" ~marker_size:3. x y in
+    _draw_extended_line ~h p1x p1y p3x p3y l r u d
 
 let qqplot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker_size=4.)
   ?(pd=(fun i -> Owl_stats.Cdf.gaussian_Pinv i 1.)) ?y x =
