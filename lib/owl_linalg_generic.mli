@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.caMD.ac.uk>
  *)
 
-(** Linear algebra module including high-level functions to solve linear
+(** Linear algebra module: including high-level functions to solve linear
   systems, factorisation, and etc.
  *)
 
@@ -103,15 +103,13 @@ val gsvd : ('a, 'b) t -> ('a, 'b) t ->
   [d2] contain the generalised singular value pairs of [x] and [y]. The shape
   of [x] is [m x n] and the shape of [y] is [p x n].
 
-  [let x = Mat.uniform 5 5;;]
-
-  [let y = Mat.uniform 2 5;;]
-
-  [let u, v, q, d1, d2, r = Linalg.gsvd x y;;]
-
-  [Mat.(u *@ d1 *@ r *@ transpose q =~ x);;]
-
-  [Mat.(v *@ d2 *@ r *@ transpose q =~ y);;]
+  [
+    let x = Mat.uniform 5 5;;
+    let y = Mat.uniform 2 5;;]
+    let u, v, q, d1, d2, r = Linalg.gsvd x y;;
+    Mat.(u *@ d1 *@ r *@ transpose q =~ x);;
+    Mat.(v *@ d2 *@ r *@ transpose q =~ y);;
+  ]
 
   Please refer to:
   https://software.intel.com/en-us/mkl-developer-reference-c-ggsvd3

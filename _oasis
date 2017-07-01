@@ -56,6 +56,7 @@ Library owl
                     Owl_cblas,
                     Owl_lapacke,
                     Owl_linalg,
+                    Owl_linalg_generic,
                     Owl_cluster,
                     Owl_optimise,
                     Owl_regression,
@@ -76,8 +77,6 @@ Library owl
                     neural/Owl_neural_optimise,
                     neural/Owl_neural_parallel,
                     ### Experimental ###
-                    Owl_linalg_generic,
-                    Owl_linalg_d,
                     ext/Owl_ext,
                     Owl_parallel
   InternalModules:  Owl_cblas_generated,
@@ -109,6 +108,10 @@ Library owl
                     Owl_sparse_dok_matrix,
                     Owl_pretty,
                     Owl_slicing,
+                    Owl_linalg_s,
+                    Owl_linalg_d,
+                    Owl_linalg_c,
+                    Owl_linalg_z,
                     ext/Owl_ext_types,
                     ext/Owl_ext_lifts,
                     ext/Owl_ext_uniop,
