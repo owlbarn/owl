@@ -68,19 +68,6 @@ let eye k n =
     Array2.unsafe_set x i i a
   done; x
 
-(* FIXME: remove obsolete function *)
-let sequential_obsolete k m n =
-  let x = empty k m n in
-  let c = ref (_zero k) in
-  let a = _one k in
-  let _op = _add_elt k in
-  for i = 0 to m - 1 do
-    for j = 0 to n - 1 do
-      Array2.unsafe_set x i j !c;
-      c := _op !c a;
-    done
-  done; x
-
 let sequential k ?a ?step m n =
   Owl_dense_ndarray_generic.sequential k ?a ?step [|m;n|]
   |> of_ndarray
@@ -404,6 +391,34 @@ let bidiagonal ?(upper=true) dv ev =
   done;
   x.{m-1, m-1} <- _dv.{m-1};
   x
+
+
+let hermitian ?(upper=true) x =
+  let m, n = shape x in
+  assert (m = n);
+
+  let y = clone x in
+  let _y = Owl_utils.array2_to_array1 y in
+
+  let _conj_op = _owl_conj (kind x) in
+  let ofs = ref 0 in
+
+  let incx, incy =
+    match upper with
+    | true  -> 1, m
+    | false -> m, 1
+  in
+  for i = 0 to m - 1 do
+    (* copy and conjugate *)
+    _conj_op (m - i) ~ofsx:!ofs ~incx ~ofsy:!ofs ~incy _y _y;
+    (* set the imaginary part to zero by default. *)
+    let a = _y.{!ofs} in
+    _y.{!ofs} <- Complex.( {re = a.re; im = 0.} );
+
+    ofs := !ofs + n + 1
+  done;
+  (* return the symmetric matrix *)
+  y
 
 
 (* matrix iteration operations *)

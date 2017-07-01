@@ -134,6 +134,9 @@ val schur : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('c, '
   you do not need to worry about [otyp].
  *)
 
+val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(** [hess x -> (h, q)] *)
+
 
 (** {6 Solve Eigen systems} *)
 

@@ -356,6 +356,31 @@ let eigvals
   w
 
 
+(* Hessenberg form of matrix *)
+
+
+let _get_hess_q
+  : type a b. (a, b) kind -> int -> int -> (a, b) t -> (a, b) t -> (a, b) t
+  = fun k ilo ihi a tau ->
+  match k with
+  | Float32   -> Owl_lapacke.orghr ilo ihi a tau
+  | Float64   -> Owl_lapacke.orghr ilo ihi a tau
+  | Complex32 -> Owl_lapacke.unghr ilo ihi a tau
+  | Complex64 -> Owl_lapacke.unghr ilo ihi a tau
+  | _         -> failwith "owl_linalg:_get_hess_q"
+
+
+let hess x =
+  let x = M.clone x in
+  let _, n = M.shape x in
+  let ilo = 1 in
+  let ihi = n in
+  let a, tau = Owl_lapacke.gehrd ~ilo ~ihi ~a:x in
+  let q = _get_hess_q (M.kind x) ilo ihi a tau in
+  let h = M.triu ~k:(-1) a in
+  h, q
+
+
 (* helper functions *)
 
 

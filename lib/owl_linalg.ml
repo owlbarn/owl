@@ -24,8 +24,8 @@ type mat_d = Owl_dense.Matrix.D.mat
 type mat_z = Owl_dense.Matrix.Z.mat
 type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
 
-module MD = Owl_dense_matrix_d
-module MZ = Owl_dense_matrix_z
+module MD = Owl_dense.Matrix.D
+module MZ = Owl_dense.Matrix.Z
 
 module M = Owl_dense.Matrix.Generic
 

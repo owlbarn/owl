@@ -129,11 +129,22 @@ val symmetric : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
   is true.
  *)
 
+val hermitian : ?upper:bool -> (Complex.t, 'a) t -> (Complex.t, 'a) t
+(** [hermitian ~upper x] creates a hermitian matrix based on [x]. By default,
+  the upper triangular part is used for creating the hermitian matrix, but you
+  use the lower part by setting [upper=false]
+ *)
+
 val bidiagonal : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [bidiagonal upper dv ev] creates a bidiagonal matrix using [dv] and [ev].
   Both [dv] and [ev] are row vectors. [dv] is the main diagonal. If [upper] is
   [true] then [ev] is superdiagonal; if [upper] is [false] then [ev] is
   subdiagonal. By default, [upper] is [true].
+
+  NOTE: because the diagonal elements in a hermitian matrix must be real, the
+  function set the imaginary part of the diagonal elements to zero by default.
+  In other words, if the diagonal elements of [x] have non-zero imaginary parts,
+  the imaginary parts will be dropped without a warning. 
  *)
 
 val toeplitz : ?c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t

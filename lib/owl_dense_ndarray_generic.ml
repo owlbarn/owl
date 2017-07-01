@@ -1091,19 +1091,6 @@ let zeros kind dimension = create kind dimension (_zero kind)
 
 let ones kind dimension = create kind dimension (_one kind)
 
-(* FIXME: remove obsolete function *)
-let sequential_obsolete k dimension =
-  let x = empty k dimension in
-  let y = flatten x |> array1_of_genarray in
-  let _op = _add_elt (kind x) in
-  let _ac = ref (_zero (kind x)) in
-  let _aa = _one (kind x) in
-  for i = 0 to (numel x) - 1 do
-    Array1.unsafe_set y i !_ac;
-    _ac := _op !_ac _aa
-  done;
-  x
-
 let sequential k ?a ?step dimension =
   let a = match a with
     | Some a -> a
