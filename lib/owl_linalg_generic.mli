@@ -135,7 +135,10 @@ val schur : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('c, '
  *)
 
 val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
-(** [hess x -> (h, q)] *)
+(** [hess x -> (h, q)] calculates the Hessenberg form of a given matrix [x].
+  Both Hessenberg matrix [h] and unitary matrix [q] is returned, such that
+  [x = q *@ h *@ (transpose q)].
+ *)
 
 
 (** {6 Solve Eigen systems} *)

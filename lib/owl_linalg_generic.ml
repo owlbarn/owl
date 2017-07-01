@@ -376,8 +376,8 @@ let hess x =
   let ilo = 1 in
   let ihi = n in
   let a, tau = Owl_lapacke.gehrd ~ilo ~ihi ~a:x in
-  let q = _get_hess_q (M.kind x) ilo ihi a tau in
   let h = M.triu ~k:(-1) a in
+  let q = _get_hess_q (M.kind x) ilo ihi a tau in
   h, q
 
 

@@ -47,6 +47,8 @@ val gsvdvals : mat -> mat -> mat
 
 val schur : mat -> mat * mat * complex_mat
 
+val hess : mat -> mat * mat
+
 
 (** {6 Solve Eigen systems} *)
 
