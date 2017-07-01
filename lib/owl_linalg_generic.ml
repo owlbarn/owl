@@ -387,19 +387,65 @@ let hess x =
 (* Check matrix properties *)
 (* TODO: need to implement in C for better performance *)
 
-let is_triu x = None
+let is_triu x =
+  let m, n = M.shape x in
+  let k = Pervasives.min m n in
+  let _a0 = Owl_dense_common._zero (M.kind x) in
+  try
+    for i = 0 to k - 1 do
+      for j = 0 to i - 1 do
+        assert (x.{i,j} = _a0)
+      done
+    done;
+    true
+  with exn -> false
 
 
-let is_tril = None
+let is_tril x =
+  let m, n = M.shape x in
+  let k = Pervasives.min m n in
+  let _a0 = Owl_dense_common._zero (M.kind x) in
+  try
+    for i = 0 to k - 1 do
+      for j = i + 1 to k - 1 do
+        assert (x.{i,j} = _a0)
+      done
+    done;
+    true
+  with exn -> false
 
 
-let is_symmetric = None
+let is_symmetric x =
+  let m, n = M.shape x in
+  if m <> n then false
+  else (
+    try
+      for i = 0 to n - 1 do
+        for j = (i + 1) to n - 1 do
+          assert (x.{j,i} = x.{i,j})
+        done
+      done;
+      true
+    with exn -> false
+  )
 
 
-let is_hermitian = None
+let is_hermitian x =
+  let m, n = M.shape x in
+  if m <> n then false
+  else (
+    try
+      for i = 0 to n - 1 do
+        for j = i to n - 1 do
+          assert (x.{j,i} = Complex.conj x.{i,j})
+        done
+      done;
+      true
+    with exn -> false
+  )
 
 
-let is_diag = None
+let is_diag x = is_triu x && is_tril x
 
 
 let is_posdef x =

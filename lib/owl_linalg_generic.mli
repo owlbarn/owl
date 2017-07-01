@@ -45,6 +45,21 @@ val rank : ?tol:float -> ('a, 'b) t -> int
   where [eps = 1e-10].
  *)
 
+val is_triu : ('a, 'b) t -> bool
+(** [is_triu x] returns [true] if [x] is upper triangular otherwise [false]. *)
+
+val is_tril : ('a, 'b) t -> bool
+(** [is_tril x] returns [true] if [x] is lower triangular otherwise [false]. *)
+
+val is_symmetric : ('a, 'b) t -> bool
+(** [is_symmetric x] returns [true] if [x] is symmetric otherwise [false]. *)
+
+val is_hermitian : (Complex.t, 'a) t -> bool
+(** [is_hermitian x] returns [true] if [x] is hermitian otherwise [false]. *)
+
+val is_diag : ('a, 'b) t -> bool
+(** [is_diag x] returns [true] if [x] is diagonal otherwise [false]. *)
+
 val is_posdef : ('a, 'b) t -> bool
 (** [is_posdef x] checks whether [x] is a positive semi-definite matrix. *)
 

@@ -25,6 +25,14 @@ val logdet : mat -> elt
 
 val rank : ?tol:float -> mat -> int
 
+val is_triu : mat -> bool
+
+val is_tril : mat -> bool
+
+val is_symmetric : mat -> bool
+
+val is_diag : mat -> bool
+
 val is_posdef : mat -> bool
 
 
