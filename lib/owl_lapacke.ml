@@ -2761,6 +2761,34 @@ let sytrf
   a, ipiv, ret
 
 
+let sytrf_rook
+  : type a b. uplo:char -> a:(a, b) mat -> (a, b) mat * (int32, int32_elt) mat * int
+  = fun ~uplo ~a ->
+  assert (uplo = 'U' || uplo = 'L');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let ipiv = Array2.create int32 _layout 1 n in
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Float32   -> L.ssytrf_rook layout uplo n _a lda _ipiv
+    | Float64   -> L.dsytrf_rook layout uplo n _a lda _ipiv
+    | Complex32 -> L.csytrf_rook layout uplo n _a lda _ipiv
+    | Complex64 -> L.zsytrf_rook layout uplo n _a lda _ipiv
+    | _         -> failwith "lapacke:sytrf_rook"
+  in
+  check_lapack_error ret;
+  a, ipiv, ret
+
+
 let sytri
   : type a b. uplo:char -> a:(a, b) mat -> (a, b) mat
   = fun ~uplo ~a ->
@@ -2850,7 +2878,7 @@ let hesv
 
 
 let hetrf
-  : type a. uplo:char -> a:(Complex.t, a) mat -> (Complex.t, a) mat * (int32, int32_elt) mat
+  : type a b. uplo:char -> a:(a, b) mat -> (a, b) mat * (int32, int32_elt) mat * int
   = fun ~uplo ~a ->
   assert (uplo = 'U' || uplo = 'L');
 
@@ -2869,9 +2897,36 @@ let hetrf
   let ret = match _kind with
     | Complex32 -> L.chetrf layout uplo n _a lda _ipiv
     | Complex64 -> L.zhetrf layout uplo n _a lda _ipiv
+    | _         -> failwith "lapacke:hetrf"
   in
   check_lapack_error ret;
-  a, ipiv
+  a, ipiv, ret
+
+
+let hetrf_rook
+  : type a b. uplo:char -> a:(a, b) mat -> (a, b) mat * (int32, int32_elt) mat * int
+  = fun ~uplo ~a ->
+  assert (uplo = 'U' || uplo = 'L');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let ipiv = Array2.create int32 _layout 1 n in
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Complex32 -> L.chetrf_rook layout uplo n _a lda _ipiv
+    | Complex64 -> L.zhetrf_rook layout uplo n _a lda _ipiv
+    | _         -> failwith "lapacke:hetrf_rook"
+  in
+  check_lapack_error ret;
+  a, ipiv, ret
 
 
 let hetri

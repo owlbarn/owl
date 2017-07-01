@@ -381,6 +381,30 @@ let hess x =
   h, q
 
 
+(* Bunch-Kaufman [Bunch1977] factorization *)
+
+let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
+  let x = M.clone x in
+  let uplo = match upper with
+    | true  -> 'U'
+    | false -> 'L'
+  in
+  let a, ipiv, ret =
+    match rook with
+    | true  -> (
+        match symmetric with
+        | true  -> Owl_lapacke.sytrf_rook uplo x
+        | false -> Owl_lapacke.hetrf_rook uplo x
+      )
+    | false -> (
+        match symmetric with
+        | true  -> Owl_lapacke.sytrf uplo x
+        | false -> Owl_lapacke.hetrf uplo x
+      )
+  in
+  a, ipiv
+
+
 (* helper functions *)
 
 

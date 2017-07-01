@@ -156,7 +156,7 @@ val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
  *)
 
 
-(** {6 Solve Eigen systems} *)
+(** {6 Eigenvalues & eigenvectors} *)
 
 val eig : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t * ('a, 'b) t
 (** [eig x -> v, w] computes the right eigenvectors [v] and eigenvalues [w]
@@ -175,11 +175,33 @@ val eigvals : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -
 
 
 
+(** {6 Low-level factorisation functions} *)
+
+
+val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
+(** [bk x -> (a, ipiv)] calculates Bunch-Kaufman factorization of [x].
+  If [symmetric = true] then [x] is symmetric, if [symmetric = false] then [x]
+  is hermitian. If [rook = true] the function performs bounded Bunch-Kaufman
+  ("rook") diagonal pivoting method, if [rook = false] then Bunch-Kaufman
+  diagonal pivoting method is used. [a] contains details of the block-diagonal
+  matrix [d] and the multipliers used to obtain the factor [u] (or [l]).
+
+  The [upper] indicates whether the upper or lower triangular part of [x] is
+  stored and how [x] is factored. If [upper = true] then upper triangular part
+  is stored: [x = u*d*u'] else [x = l*d*l'].
+
+  For [ipiv], it indicates the details of the interchanges and the block
+  structure of [d]. Please refer to the function [sytrf], [hetrf] in MKL
+  documentation for more details.
+ *)
+
+
+
 (** {6 Helper functions} *)
 
 
 val peakflops : ?n:int -> unit -> float
 (** [peakflops ()] returns the peak number of float point operations using
   [Owl_cblas.dgemm] function. The default matrix size is [2000 x 2000], but you
-  can change this by setting [n] to other numbers.
+  can change this by setting [n] to other numbers as you like.
  *)
