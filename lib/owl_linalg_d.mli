@@ -51,6 +51,6 @@ val schur : mat -> mat * mat * complex_mat
 (** {6 Solve Eigen systems} *)
 
 
-val eigvals : ?permute:bool -> ?scale:bool -> mat -> mat * mat
+val eig : ?permute:bool -> ?scale:bool -> mat -> complex_mat * complex_mat
 
-(* val eig : ?permute:bool -> ?scale:bool -> ('a, 'b) kind -> ('c, 'd) t -> mat *)
+val eigvals : ?permute:bool -> ?scale:bool -> mat -> complex_mat

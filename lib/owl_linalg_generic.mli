@@ -126,7 +126,7 @@ val schur : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('c, '
 (** [schur x -> (t, z, w)] calculates Schur factorisation of [x]. [t] is
   (quasi) triangular Schur factor, [z] is orthogonal/unitary Schur vectors. The
   eigen values are not sorted, they have the same order as that they appear on
-  the diagonal of the output real-Schur form t.
+  the diagonal of the output of Schur form [t].
 
   [w] contains the eigen values. [otyp] is used to specify the type of [w]. It
   needs to be consistent with input type. E.g., if the input [x] is [float32]
@@ -137,11 +137,20 @@ val schur : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('c, '
 
 (** {6 Solve Eigen systems} *)
 
+val eig : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t * ('a, 'b) t
+(** [eig x -> v, w] computes the right eigenvectors [v] and eigenvalues [w]
+  of an arbitrary square matrix [x]. The eigenvectors are column vectors in
+  [v], their corresponding eigenvalues have the same order in [w] as that in
+  [v].
 
-val eigvals : ?permute:bool -> ?scale:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
-(** [eigvals x -> (wr, wi)] *)
+  Note that [otyp] specifies the complex type of the output, but you do not
+  need worry about this parameter if you use S, D, C, Z modules in Linalg.
+ *)
 
-val eig : ?permute:bool -> ?scale:bool -> ('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
+val eigvals : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
+(** [eigvals x -> w] is similar to [eig] but only computes the eigenvalues of
+  an arbitrary square matrix [x].
+ *)
 
 
 

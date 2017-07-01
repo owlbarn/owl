@@ -1323,7 +1323,7 @@ let geevx
     | 'V' -> Array2.create _kind _layout n n
     | _   -> Array2.create _kind _layout 0 n
   in
-  let vr = match jobvl with
+  let vr = match jobvr with
     | 'V' -> Array2.create _kind _layout n n
     | _   -> Array2.create _kind _layout 0 n
   in

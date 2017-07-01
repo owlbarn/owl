@@ -251,6 +251,7 @@ let schur
   = fun ~otyp x ->
   let x = M.clone x in
   let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
+
   let w = match (M.kind x) with
     | Float32   -> M.complex float32 complex32 wr wi |> Obj.magic
     | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
@@ -265,8 +266,8 @@ let schur
 
 
 let eig
-  : type a b c d. ?permute:bool -> ?scale:bool -> (a, b) kind -> (c, d) t -> (a, b) t
-  = fun ?(permute=true) ?(scale=true) complex_kind x ->
+  : type a b c d. ?permute:bool -> ?scale:bool -> otyp:(a, b) kind -> (c, d) t -> (a, b) t * (a, b) t
+  = fun ?(permute=true) ?(scale=true) ~otyp x ->
   let x = M.clone x in
   let balanc = match permute, scale with
     | true, true   -> 'B'
@@ -277,18 +278,64 @@ let eig
   let a, wr, wi, _, vr, _, _, _, _, _, _ =
     Owl_lapacke.geevx ~balanc ~jobvl:'N' ~jobvr:'V' ~sense:'N' ~a:x
   in
-  let m, n = M.shape wr in
+
+  (* TODO: optimise the performance by writing in c *)
+  (* construct eigen vectors from real wr and wi *)
+  let _construct_v
+    : type a b. (float, a) kind -> (Complex.t, b) kind -> (float, a) t -> (float, a) t -> (float, a) t -> (Complex.t, b) t -> unit
+    = fun k0 k1 wr wi vr v ->
+    let _a0 = Owl_dense_common._zero (M.kind wi) in
+    let _, n = M.shape v in
+    let j = ref 0 in
+
+    while !j < n do
+      if wi.{0,!j} = _a0 then (
+        for k = 0 to n - 1 do
+          v.{k,!j} <- Complex.({re=vr.{k,!j}; im=0.})
+        done
+      )
+      else (
+        for k = 0 to n - 1 do
+          v.{k,!j}   <- Complex.( {re = vr.{k,!j}; im = vr.{k,!j+1}} );
+          v.{k,!j+1} <- Complex.( {re = vr.{k,!j}; im = 0. -. vr.{k,!j+1}} );
+        done;
+        j := !j + 1
+      );
+      j := !j + 1
+    done;
+  in
+
+  (* process eigen vectors *)
+  let m, n = M.shape vr in
+  let v = match (M.kind x) with
+    | Float32   -> (
+        let v = M.empty complex32 m n in
+        _construct_v float32 complex32 wr wi vr v;
+        Obj.magic v
+      )
+    | Float64   -> (
+        let v = M.empty complex64 m n in
+        _construct_v float64 complex64 wr wi vr v;
+        Obj.magic v
+      )
+    | Complex32 -> Obj.magic vr
+    | Complex64 -> Obj.magic vr
+    | _         -> failwith "owl_linalg_generic:eig"
+  in
+  (* process eigen values *)
   let w = match (M.kind x) with
     | Float32   -> M.complex float32 complex32 wr wi |> Obj.magic
     | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
     | Complex32 -> Obj.magic wr
     | Complex64 -> Obj.magic wr
-    | _         -> failwith "owl_linalg_generic:eig"
+    | _         -> failwith "owl_linalg_generic:eigvals"
   in
-  w
+  v, w
 
 
-let eigvals ?(permute=true) ?(scale=true) x =
+let eigvals
+  : type a b c d. ?permute:bool -> ?scale:bool -> otyp:(a, b) kind -> (c, d) t -> (a, b) t
+  = fun ?(permute=true) ?(scale=true) ~otyp x ->
   let x = M.clone x in
   let balanc = match permute, scale with
     | true, true   -> 'B'
@@ -299,7 +346,14 @@ let eigvals ?(permute=true) ?(scale=true) x =
   let _, wr, wi, _, _, _, _, _, _, _, _ =
     Owl_lapacke.geevx ~balanc ~jobvl:'N' ~jobvr:'N' ~sense:'N' ~a:x
   in
-  wr, wi
+  let w = match (M.kind x) with
+    | Float32   -> M.complex float32 complex32 wr wi |> Obj.magic
+    | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
+    | Complex32 -> Obj.magic wr
+    | Complex64 -> Obj.magic wr
+    | _         -> failwith "owl_linalg_generic:eigvals"
+  in
+  w
 
 
 (* helper functions *)
