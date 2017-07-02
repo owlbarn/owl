@@ -432,6 +432,52 @@ val cumsum : ?axis:int -> mat -> mat
 
 val cumprod : ?axis:int -> mat -> mat
 
+val sqr : mat -> mat
+
+val sqrt : mat -> mat
+
+val cbrt : mat -> mat
+
+val exp : mat -> mat
+
+val exp2 : mat -> mat
+
+val exp10 : mat -> mat
+
+val expm1 : mat -> mat
+
+val log : mat -> mat
+
+val log10 : mat -> mat
+
+val log2 : mat -> mat
+
+val log1p : mat -> mat
+
+val sin : mat -> mat
+
+val cos : mat -> mat
+
+val tan : mat -> mat
+
+val asin : mat -> mat
+
+val acos : mat -> mat
+
+val atan : mat -> mat
+
+val sinh : mat -> mat
+
+val cosh : mat -> mat
+
+val tanh : mat -> mat
+
+val asinh : mat -> mat
+
+val acosh : mat -> mat
+
+val atanh : mat -> mat
+
 val floor : mat -> mat
 
 val ceil : mat -> mat
@@ -476,3 +522,13 @@ val add_diag : mat -> elt -> mat
 val ssqr : mat -> elt -> elt
 
 val ssqr_diff : mat -> mat -> elt
+
+val min2 : mat -> mat -> mat
+
+val max2 : mat -> mat -> mat
+
+val pow : mat -> mat -> mat
+
+val scalar_pow : elt -> mat -> mat
+
+val pow_scalar : mat -> elt -> mat

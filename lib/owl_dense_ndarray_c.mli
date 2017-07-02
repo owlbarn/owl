@@ -369,6 +369,16 @@ val ssqr : arr -> elt -> elt
 
 val ssqr_diff : arr -> arr -> elt
 
+val min2 : arr -> arr -> arr
+
+val max2 : arr -> arr -> arr
+
+val pow : arr -> arr -> arr
+
+val scalar_pow : elt -> arr -> arr
+
+val pow_scalar : arr -> elt -> arr
+
 
 (** {6 Experimental functions} *)
 

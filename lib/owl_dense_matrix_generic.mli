@@ -948,117 +948,117 @@ val signum : (float, 'a) t -> (float, 'a) t
   for zero, [1] for positive numbers, [nan] for [nan]).
  *)
 
-val sqr : (float, 'a) t -> (float, 'a) t
+val sqr : ('a, 'b) t -> ('a, 'b) t
 (** [sqr x] computes the square of the elements in [x] and returns the result in
   a new matrix.
  *)
 
-val sqrt : (float, 'a) t -> (float, 'a) t
+val sqrt : ('a, 'b) t -> ('a, 'b) t
 (** [sqrt x] computes the square root of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val cbrt : (float, 'a) t -> (float, 'a) t
+val cbrt : ('a, 'b) t -> ('a, 'b) t
 (** [cbrt x] computes the cubic root of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val exp : (float, 'a) t -> (float, 'a) t
+val exp : ('a, 'b) t -> ('a, 'b) t
 (** [exp x] computes the exponential of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val exp2 : (float, 'a) t -> (float, 'a) t
+val exp2 : ('a, 'b) t -> ('a, 'b) t
 (** [exp2 x] computes the base-2 exponential of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val exp10 : (float, 'a) t -> (float, 'a) t
+val exp10 : ('a, 'b) t -> ('a, 'b) t
 (** [exp2 x] computes the base-10 exponential of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val expm1 : (float, 'a) t -> (float, 'a) t
+val expm1 : ('a, 'b) t -> ('a, 'b) t
 (** [expm1 x] computes [exp x -. 1.] of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val log : (float, 'a) t -> (float, 'a) t
+val log : ('a, 'b) t -> ('a, 'b) t
 (** [log x] computes the logarithm of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val log10 : (float, 'a) t -> (float, 'a) t
+val log10 : ('a, 'b) t -> ('a, 'b) t
 (** [log10 x] computes the base-10 logarithm of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val log2 : (float, 'a) t -> (float, 'a) t
+val log2 : ('a, 'b) t -> ('a, 'b) t
 (** [log2 x] computes the base-2 logarithm of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val log1p : (float, 'a) t -> (float, 'a) t
+val log1p : ('a, 'b) t -> ('a, 'b) t
 (** [log1p x] computes [log (1 + x)] of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val sin : (float, 'a) t -> (float, 'a) t
+val sin : ('a, 'b) t -> ('a, 'b) t
 (** [sin x] computes the sine of the elements in [x] and returns the result in
   a new matrix.
  *)
 
-val cos : (float, 'a) t -> (float, 'a) t
+val cos : ('a, 'b) t -> ('a, 'b) t
 (** [cos x] computes the cosine of the elements in [x] and returns the result in
   a new matrix.
  *)
 
-val tan : (float, 'a) t -> (float, 'a) t
+val tan : ('a, 'b) t -> ('a, 'b) t
 (** [tan x] computes the tangent of the elements in [x] and returns the result
   in a new matrix.
  *)
 
-val asin : (float, 'a) t -> (float, 'a) t
+val asin : ('a, 'b) t -> ('a, 'b) t
 (** [asin x] computes the arc sine of the elements in [x] and returns the result
   in a new matrix.
  *)
 
-val acos : (float, 'a) t -> (float, 'a) t
+val acos : ('a, 'b) t -> ('a, 'b) t
 (** [acos x] computes the arc cosine of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val atan : (float, 'a) t -> (float, 'a) t
+val atan : ('a, 'b) t -> ('a, 'b) t
 (** [atan x] computes the arc tangent of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val sinh : (float, 'a) t -> (float, 'a) t
+val sinh : ('a, 'b) t -> ('a, 'b) t
 (** [sinh x] computes the hyperbolic sine of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val cosh : (float, 'a) t -> (float, 'a) t
+val cosh : ('a, 'b) t -> ('a, 'b) t
 (** [cosh x] computes the hyperbolic cosine of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val tanh : (float, 'a) t -> (float, 'a) t
+val tanh : ('a, 'b) t -> ('a, 'b) t
 (** [tanh x] computes the hyperbolic tangent of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val asinh : (float, 'a) t -> (float, 'a) t
+val asinh : ('a, 'b) t -> ('a, 'b) t
 (** [asinh x] computes the hyperbolic arc sine of the elements in [x] and
   returns the result in a new matrix.
  *)
 
-val acosh : (float, 'a) t -> (float, 'a) t
+val acosh : ('a, 'b) t -> ('a, 'b) t
 (** [acosh x] computes the hyperbolic arc cosine of the elements in [x] and
   returns the result in a new matrix.
  *)
 
-val atanh : (float, 'a) t -> (float, 'a) t
+val atanh : ('a, 'b) t -> ('a, 'b) t
 (** [atanh x] computes the hyperbolic arc tangent of the elements in [x] and
   returns the result in a new matrix.
  *)
@@ -1224,15 +1224,15 @@ val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 val add_diag : ('a, 'b) t -> 'a -> ('a, 'b) t
 
-val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
 
-val scalar_pow : float -> (float, 'a) t -> (float, 'a) t
+val scalar_pow : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** [scalar_pow a x] *)
 
-val pow_scalar : (float, 'a) t -> float -> (float, 'a) t
+val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [pow_scalar x a] *)
 
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
@@ -1251,12 +1251,12 @@ val hypot : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
   elementwise, and returns the result in a new matrix.
  *)
 
-val min2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val min2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [min2 x y] computes the minimum of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
 
-val max2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val max2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [max2 x y] computes the maximum of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
