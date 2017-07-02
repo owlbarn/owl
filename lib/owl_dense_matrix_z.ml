@@ -83,5 +83,7 @@ let im x = im_z2d x
 
 let complex = complex Float64 Complex64
 
+let polar = polar Float64 Complex64
+
 
 (* ends here *)

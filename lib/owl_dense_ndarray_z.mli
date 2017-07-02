@@ -38,6 +38,8 @@ val bernoulli : ?p:float -> ?seed:int -> int array -> arr
 
 val complex : cast_arr -> cast_arr -> arr
 
+val polar : cast_arr -> cast_arr -> arr
+
 
 (** {6 Obtain basic properties} *)
 

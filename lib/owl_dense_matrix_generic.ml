@@ -922,6 +922,15 @@ let complex
   |> of_ndarray
 
 
+let polar
+  : type a b c d. (a, b) kind -> (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
+  = fun real_kind complex_kind rho theta ->
+  let rho = to_ndarray rho in
+  let theta = to_ndarray theta in
+  Owl_dense_ndarray_generic.complex real_kind complex_kind rho theta
+  |> of_ndarray
+
+
 (* TODO: improve performance
 
 let of_arrays k x = Array2.of_array k c_layout x

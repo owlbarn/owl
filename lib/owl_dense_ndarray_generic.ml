@@ -1547,7 +1547,16 @@ let complex
   _owl_to_complex real_kind complex_kind (numel re) _re _im _x;
   x
 
-
+let polar
+  : type a b c d. (a, b) kind -> (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
+  = fun real_kind complex_kind rho theta ->
+  assert (shape rho = shape theta);
+  let _rho = flatten rho |> array1_of_genarray in
+  let _theta = flatten theta |> array1_of_genarray in
+  let x = empty complex_kind (shape rho) in
+  let _x = flatten x |> array1_of_genarray in
+  _owl_polar real_kind complex_kind (numel rho) _rho _theta _x;
+  x
 
 
 (* math operations. code might be verbose for performance concern. *)

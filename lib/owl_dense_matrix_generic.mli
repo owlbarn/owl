@@ -59,6 +59,13 @@ val complex : ('a, 'b) kind -> ('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('c,
   be the imaginary part of [x].
  *)
 
+val polar : ('a, 'b) kind -> ('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('c, 'd) t
+(** [complex rho theta] constructs a complex ndarray/matrix from polar
+  coordinates [rho] and [theta]. [rho] contains the magnitudes and [theta]
+  contains phase angles. Note that the behaviour is undefined if [rho] has
+  negative elelments or [theta] has infinity elelments.
+ *)
+
 val sequential : ('a, 'b) kind -> ?a:'a -> ?step:'a -> int -> int -> ('a, 'b) t
 (** [sequential ~a ~step m n] creates an [m] by [n] matrix. The elements in [x]
   are initialised sequentiallly from [~a] and is increased by [~step].

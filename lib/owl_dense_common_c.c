@@ -2686,6 +2686,22 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X,Y,Z) Z->r = X->r; Z->i = Y->i
 #include "owl_dense_common_vec_map.c"
 
+// polar
+
+#define FUN15 real_float_polar
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 complex_float
+#define MAPFN(X,Y,Z) Z->r = *X * cosf(*Y); Z->i = *X * sinf(*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 real_double_polar
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 complex_double
+#define MAPFN(X,Y,Z) Z->r = *X * cos(*Y); Z->i = *X * sin(*Y)
+#include "owl_dense_common_vec_map.c"
+
 // angle
 
 #define FUN4 complex_float_angle

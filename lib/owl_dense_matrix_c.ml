@@ -83,5 +83,6 @@ let im x = im_c2s x
 
 let complex = complex Float32 Complex32
 
+let polar = polar Float32 Complex32
 
 (* ends here *)

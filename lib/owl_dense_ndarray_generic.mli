@@ -108,6 +108,13 @@ val complex : ('a, 'b) kind -> ('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('c,
   be the imaginary part of [x].
  *)
 
+val polar : ('a, 'b) kind -> ('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('c, 'd) t
+(** [complex rho theta] constructs a complex ndarray/matrix from polar
+  coordinates [rho] and [theta]. [rho] contains the magnitudes and [theta]
+  contains phase angles. Note that the behaviour is undefined if [rho] has
+  negative elelments or [theta] has infinity elelments.
+ *)
+
 
 (** {6 Obtain basic properties} *)
 

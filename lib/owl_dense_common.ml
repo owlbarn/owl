@@ -1635,5 +1635,14 @@ let _owl_to_complex : type a b c d. (a, b) kind -> (c, d) kind -> (a, b, c, d) o
   | Complex64 -> owl_complex_double_to_complex l x y z
   | _         -> failwith "_owl_to_complex: unsupported operation"
 
+external owl_real_float_polar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_float_polar"
+external owl_real_double_polar : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit = "real_double_polar"
+
+let _owl_polar : type a b c d. (a, b) kind -> (c, d) kind -> (a, b, c, d) owl_vec_op17 =
+  fun real_kind complex_kind l x y z ->
+  match real_kind with
+  | Float32   -> owl_real_float_polar l x y z
+  | Float64   -> owl_real_double_polar l x y z
+  | _         -> failwith "_owl_polar: unsupported operation"
 
 (* ends here *)

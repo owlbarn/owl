@@ -38,6 +38,8 @@ val eye : int -> mat
 
 val complex : cast_mat -> cast_mat -> mat
 
+val polar : cast_mat -> cast_mat -> mat
+
 val sequential : ?a:elt -> ?step:elt -> int -> int -> mat
 
 val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
