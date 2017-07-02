@@ -24,57 +24,21 @@ value cp_two_doubles(double d0, double d1)
 
 // compare two complex numbers
 
-inline int cltf (_Complex float x, _Complex float y) {
-  float x_mag = cabsf(x);
-  float y_mag = cabsf(y);
-  float x_pha = cargf(x);
-  float y_pha = cargf(y);
-  if ((x_mag < y_mag) || ((x_mag == y_mag) && (x_pha < y_pha)))
-    return 1;
-  else
-    return 0;
-}
+#define cltf(x,y) ((cabsf(x) < cabsf(y)) || ((cabsf(x) == cabsf(y)) && (cargf(x) < cargf(y))))
 
-inline int cgtf (_Complex float x, _Complex float y) {
-  float x_mag = cabsf(x);
-  float y_mag = cabsf(y);
-  float x_pha = cargf(x);
-  float y_pha = cargf(y);
-  if ((x_mag > y_mag) || ((x_mag == y_mag) && (x_pha > y_pha)))
-    return 1;
-  else
-    return 0;
-}
+#define cgtf(x,y) ((cabsf(x) > cabsf(y)) || ((cabsf(x) == cabsf(y)) && (cargf(x) > cargf(y))))
 
-inline int clef (_Complex float x, _Complex float y) { return !cgtf(x, y); }
+#define clef(x,y) !cgtf(x,y)
 
-inline int cgef (_Complex float x, _Complex float y) { return !cltf(x, y); }
+#define cgef(x,y) !cltf(x,y)
 
-inline int clt (_Complex double x, _Complex double y) {
-  float x_mag = cabs(x);
-  float y_mag = cabs(y);
-  float x_pha = carg(x);
-  float y_pha = carg(y);
-  if ((x_mag < y_mag) || ((x_mag == y_mag) && (x_pha < y_pha)))
-    return 1;
-  else
-    return 0;
-}
+#define clt(x,y) ((cabs(x) < cabs(y)) || ((cabs(x) == cabs(y)) && (carg(x) < carg(y))))
 
-inline int cgt (_Complex double x, _Complex double y) {
-  float x_mag = cabs(x);
-  float y_mag = cabs(y);
-  float x_pha = carg(x);
-  float y_pha = carg(y);
-  if ((x_mag > y_mag) || ((x_mag == y_mag) && (x_pha > y_pha)))
-    return 1;
-  else
-    return 0;
-}
+#define cgt(x,y) ((cabs(x) > cabs(y)) || ((cabs(x) == cabs(y)) && (carg(x) > carg(y))))
 
-inline int cle (_Complex float x, _Complex float y) { return !cgt(x, y); }
+#define cle(x,y) !cgt(x,y)
 
-inline int cge (_Complex float x, _Complex float y) { return !clt(x, y); }
+#define cge(x,y) !clt(x,y)
 
 
 //////////////////// function templates starts ////////////////////
@@ -817,7 +781,6 @@ inline int cge (_Complex float x, _Complex float y) { return !clt(x, y); }
 #include "owl_dense_common_vec_cmp.c"
 
 // min_i
-// TODO: a lot of redundant computation in complex case
 
 #define FUN6 real_float_min_i
 #define NUMBER float
@@ -831,16 +794,15 @@ inline int cge (_Complex float x, _Complex float y) { return !clt(x, y); }
 
 #define FUN6 complex_float_min_i
 #define NUMBER _Complex float
-#define CHECKFN(X,Y) (cabsf(X) > cabsf(Y)) || ((cabsf(X) == cabsf(Y)) && (cargf(X) > cargf(Y)))
+#define CHECKFN(X,Y) cgtf(X,Y)
 #include "owl_dense_common_vec_fold.c"
 
 #define FUN6 complex_double_min_i
 #define NUMBER _Complex double
-#define CHECKFN(X,Y) (cabs(X) > cabs(Y)) || ((cabs(X) == cabs(Y)) && (carg(X) > carg(Y)))
+#define CHECKFN(X,Y) cgt(X,Y)
 #include "owl_dense_common_vec_fold.c"
 
 // max_i
-// TODO: a lot of redundant computation in complex case
 
 #define FUN6 real_float_max_i
 #define NUMBER float
@@ -854,12 +816,12 @@ inline int cge (_Complex float x, _Complex float y) { return !clt(x, y); }
 
 #define FUN6 complex_float_max_i
 #define NUMBER _Complex float
-#define CHECKFN(X,Y) (cabsf(X) < cabsf(Y)) || ((cabsf(X) == cabsf(Y)) && (cargf(X) < cargf(Y)))
+#define CHECKFN(X,Y) cltf(X,Y)
 #include "owl_dense_common_vec_fold.c"
 
 #define FUN6 complex_double_max_i
 #define NUMBER _Complex double
-#define CHECKFN(X,Y) (cabs(X) < cabs(Y)) || ((cabs(X) == cabs(Y)) && (carg(X) < carg(Y)))
+#define CHECKFN(X,Y) clt(X,Y)
 #include "owl_dense_common_vec_fold.c"
 
 // minmax_i
