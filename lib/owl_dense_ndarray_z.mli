@@ -338,6 +338,10 @@ val trunc : arr -> arr
 
 val modf : arr -> arr * arr
 
+val angle : arr -> arr
+
+val proj : arr -> arr
+
 
 (** {6 Binary mathematical operations } *)
 

@@ -1264,6 +1264,16 @@ let trunc x =
   let y = Owl_dense_ndarray_generic.trunc y in
   of_ndarray y
 
+let angle x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.angle y in
+  of_ndarray y
+
+let proj x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.proj y in
+  of_ndarray y
+
 let erf x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray_generic.erf y in

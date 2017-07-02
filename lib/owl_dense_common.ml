@@ -788,11 +788,15 @@ let _owl_neg : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
 
 external owl_real_float_reci : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_reci"
 external owl_real_double_reci : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_reci"
+external owl_complex_float_reci : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_reci"
+external owl_complex_double_reci : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_reci"
 
 let _owl_reci : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_real_float_reci l x y
   | Float64   -> owl_real_double_reci l x y
+  | Complex32 -> owl_complex_float_reci l x y
+  | Complex64 -> owl_complex_double_reci l x y
   | _         -> failwith "_owl_reci: unsupported operation"
 
 external owl_real_float_abs : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_abs"
@@ -1176,6 +1180,24 @@ let _owl_trunc : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   | Complex32 -> owl_complex_float_trunc l x y
   | Complex64 -> owl_complex_double_trunc l x y
   | _         -> failwith "_owl_trunc: unsupported operation"
+
+external owl_complex_float_angle : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_angle"
+external owl_complex_double_angle : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_angle"
+
+let _owl_angle : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
+  match k with
+  | Complex32 -> owl_complex_float_angle l x y
+  | Complex64 -> owl_complex_double_angle l x y
+  | _         -> failwith "_owl_angle: unsupported operation"
+
+external owl_complex_float_proj : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_proj"
+external owl_complex_double_proj : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_proj"
+
+let _owl_proj : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
+  match k with
+  | Complex32 -> owl_complex_float_proj l x y
+  | Complex64 -> owl_complex_double_proj l x y
+  | _         -> failwith "_owl_proj: unsupported operation"
 
 external owl_real_float_erf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_erf"
 external owl_real_double_erf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_erf"

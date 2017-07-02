@@ -1003,6 +1003,18 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) (1.0 / X)
 #include "owl_dense_common_vec_map.c"
 
+#define FUN4 complex_float_reci
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X) (1. / X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_double_reci
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X) (1. / X)
+#include "owl_dense_common_vec_map.c"
+
 // abs
 
 #define FUN4 real_float_abs
@@ -2672,6 +2684,34 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER1 complex_double
 #define NUMBER2 complex_double
 #define MAPFN(X,Y,Z) Z->r = X->r; Z->i = Y->i
+#include "owl_dense_common_vec_map.c"
+
+// angle
+
+#define FUN4 complex_float_angle
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X) (cargf(X))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_double_angle
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X) (carg(X))
+#include "owl_dense_common_vec_map.c"
+
+// proj
+
+#define FUN4 complex_float_proj
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X) (cprojf(X))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_double_proj
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X) (cproj(X))
 #include "owl_dense_common_vec_map.c"
 
 // sort

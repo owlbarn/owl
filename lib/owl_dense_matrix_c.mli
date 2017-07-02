@@ -488,6 +488,10 @@ val trunc : mat -> mat
 
 val modf : mat -> mat * mat
 
+val angle : mat -> mat
+
+val proj : mat -> mat
+
 
 (** {6 Binary mathematical operations } *)
 

@@ -1164,6 +1164,12 @@ val cumprod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** [cumprod ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
  *)
 
+val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t
+(** [angle x] calculates the phase angle of all complex numbers in [x]. *)
+
+val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
+(** [proj x] computes the projection on Riemann sphere of all elelments in [x]. *)
+
 
 (** {6 Binary mathematical operations } *)
 

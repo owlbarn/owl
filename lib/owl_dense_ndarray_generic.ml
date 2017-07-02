@@ -759,6 +759,20 @@ let trunc x =
   let _ = _owl_trunc (kind x) (numel y) src dst in
   y
 
+let angle x =
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_angle (kind x) (numel y) src dst in
+  y
+
+let proj x =
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_proj (kind x) (numel y) src dst in
+  y
+
 let erf x =
   let y = clone x in
   let src = flatten x |> array1_of_genarray in
