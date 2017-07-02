@@ -45,6 +45,28 @@ val rank : ?tol:float -> ('a, 'b) t -> int
   where [eps = 1e-10].
  *)
 
+val norm : ?p:float -> ('a, 'b) t -> float
+(** [nomr ~p x] computes the p-norm of the passed in matrix [x].
+
+  If [p = 1], then [n] is the maximum absolute column sum of the matrix.
+
+  If [p = 2], then [n] is approximately [max (svd x)]. This is equivalent to norm(X).
+
+  If [p = infinity], then [n] is the maximum absolute row sum of the matrix.
+ *)
+
+val cond : ?p:float -> ('a, 'b) t -> float
+(** [cond ~p x] computes the p-norm condition number of matrix [x].
+
+  [cond ~p:1. x] returns the 1-norm condition number;
+
+  [cond ~p:2. x] or [cond x] returns the 2-norm condition number.
+
+  [cond ~p:infinity x] returns the infinity norm condition number.
+
+  The default value of [p] is [2.]
+ *)
+
 val is_triu : ('a, 'b) t -> bool
 (** [is_triu x] returns [true] if [x] is upper triangular otherwise [false]. *)
 
@@ -177,9 +199,12 @@ val eigvals : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -
 
 (** {6 Low-level factorisation functions} *)
 
+val lufact : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
+(** [lufact x -> (a, ipiv)] calculates LU factorisation of [x]
+ *)
 
 val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
-(** [bk x -> (a, ipiv)] calculates Bunch-Kaufman factorization of [x].
+(** [bk x -> (a, ipiv)] calculates Bunch-Kaufman factorisation of [x].
   If [symmetric = true] then [x] is symmetric, if [symmetric = false] then [x]
   is hermitian. If [rook = true] the function performs bounded Bunch-Kaufman
   ("rook") diagonal pivoting method, if [rook = false] then Bunch-Kaufman

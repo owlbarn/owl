@@ -30,6 +30,13 @@ let lu ?(pivot=true) x =
   l, u, ipiv
 
 
+let lufact ?(pivot=true) x =
+  let m, n = M.shape x in
+  let minmn = Pervasives.min m n in
+  let a, ipiv = Owl_lapacke.getrf x in
+  a, ipiv
+
+
 let inv x =
   let x = M.clone x in
   let a, ipiv = Owl_lapacke.getrf x in
@@ -475,6 +482,54 @@ let is_diag x = is_triu x && is_tril x
 let is_posdef x =
   try ignore (chol x); true
   with exn -> false
+
+
+let _minmax
+  : type a b. (a, b) kind -> (a, b) t -> float * float
+  = fun k v ->
+    match (M.kind v) with
+    | Float32   -> M.minmax v
+    | Float64   -> M.minmax v
+    | Complex32 -> M.re_c2s v |> M.minmax
+    | Complex64 -> M.re_z2d v |> M.minmax
+    | _         -> failwith "owl_linalg_generic:_minmax"
+
+
+(* local abs function, bear with obj.magic *)
+let _abs
+  : type a b c. (a, b) kind -> (a, b) t -> (float, c) t
+  = fun k x -> match k with
+    | Float32   -> M.abs x     |> Obj.magic
+    | Float64   -> M.abs x     |> Obj.magic
+    | Complex32 -> M.abs_c2s x |> Obj.magic
+    | Complex64 -> M.abs_z2d x |> Obj.magic
+    | _         -> failwith "owl_linalg_generic:_abs"
+
+
+let norm ?(p=2.) x =
+  let k = M.kind x in
+  if p = 1. then x |> _abs k |> M.sum_rows |> M.max
+  else if p = 2. then x |> svdvals |> _minmax k |> snd
+  else if p = infinity then x |> _abs k |> M.sum_cols |> M.max
+  else failwith "owl_linalg_generic:norm:p=1|2|inf"
+
+
+let cond ?(p=2.) x =
+  if p = 2. then (
+    let v = svdvals x in
+    let minv, maxv = _minmax (M.kind v) v in
+    if maxv = 0. then infinity else maxv /. minv
+  )
+  else if p = 1. || p = infinity then (
+    assert (M.row_num x = M.col_num x);
+    let x = M.clone x in
+    let a, ipiv = lufact x in
+    let anorm = norm ~p x in
+    let norm = if p = 1. then '1' else 'I' in
+    let rcond = Owl_lapacke.gecon norm a anorm in
+    1. /. rcond
+  )
+  else failwith "owl_linalg_generic:cond:p=1|2|inf"
 
 
 let peakflops ?(n=2000) () =
