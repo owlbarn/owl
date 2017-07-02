@@ -927,7 +927,7 @@ let polar
   = fun real_kind complex_kind rho theta ->
   let rho = to_ndarray rho in
   let theta = to_ndarray theta in
-  Owl_dense_ndarray_generic.complex real_kind complex_kind rho theta
+  Owl_dense_ndarray_generic.polar real_kind complex_kind rho theta
   |> of_ndarray
 
 
