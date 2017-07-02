@@ -67,6 +67,12 @@ val cond : ?p:float -> ('a, 'b) t -> float
   The default value of [p] is [2.]
  *)
 
+val rcond : ('a, 'b) t -> float
+(** [rcond x] returns an estimate for the reciprocal condition of [x] in 1-norm.
+  If [x] is well conditioned, the returned result is near [1.0]. If [x] is badly
+  conditioned, the result is near [0.]
+ *)
+
 val is_triu : ('a, 'b) t -> bool
 (** [is_triu x] returns [true] if [x] is upper triangular otherwise [false]. *)
 

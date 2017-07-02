@@ -532,6 +532,9 @@ let cond ?(p=2.) x =
   else failwith "owl_linalg_generic:cond:p=1|2|inf"
 
 
+let rcond x = 1. /. (cond ~p:1. x)
+
+
 let peakflops ?(n=2000) () =
   let x = M.ones float64 n n |> Owl_utils.array2_to_array1 in
   let z = M.ones float64 n n |> Owl_utils.array2_to_array1 in
