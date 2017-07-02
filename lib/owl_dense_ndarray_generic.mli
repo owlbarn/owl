@@ -701,7 +701,7 @@ val sqr : (float, 'a) t -> (float, 'a) t
   a new ndarray.
  *)
 
-val sqrt : (float, 'a) t -> (float, 'a) t
+val sqrt : ('a, 'b) t -> ('a, 'b) t
 (** [sqrt x] computes the square root of the elements in [x] and returns the
   result in a new ndarray.
  *)
@@ -711,7 +711,7 @@ val cbrt : (float, 'a) t -> (float, 'a) t
   result in a new ndarray.
  *)
 
-val exp : (float, 'a) t -> (float, 'a) t
+val exp : ('a, 'b) t -> ('a, 'b) t
 (** [exp x] computes the exponential of the elements in [x] and returns the
   result in a new ndarray.
  *)
@@ -731,7 +731,7 @@ val expm1 : (float, 'a) t -> (float, 'a) t
   result in a new ndarray.
  *)
 
-val log : (float, 'a) t -> (float, 'a) t
+val log : ('a, 'b) t -> ('a, 'b) t
 (** [log x] computes the logarithm of the elements in [x] and returns the
   result in a new ndarray.
  *)
@@ -751,62 +751,62 @@ val log1p : (float, 'a) t -> (float, 'a) t
   result in a new ndarray.
  *)
 
-val sin : (float, 'a) t -> (float, 'a) t
+val sin : ('a, 'b) t -> ('a, 'b) t
 (** [sin x] computes the sine of the elements in [x] and returns the result in
   a new ndarray.
  *)
 
-val cos : (float, 'a) t -> (float, 'a) t
+val cos : ('a, 'b) t -> ('a, 'b) t
 (** [cos x] computes the cosine of the elements in [x] and returns the result in
   a new ndarray.
  *)
 
-val tan : (float, 'a) t -> (float, 'a) t
+val tan : ('a, 'b) t -> ('a, 'b) t
 (** [tan x] computes the tangent of the elements in [x] and returns the result
   in a new ndarray.
  *)
 
-val asin : (float, 'a) t -> (float, 'a) t
+val asin : ('a, 'b) t -> ('a, 'b) t
 (** [asin x] computes the arc sine of the elements in [x] and returns the result
   in a new ndarray.
  *)
 
-val acos : (float, 'a) t -> (float, 'a) t
+val acos : ('a, 'b) t -> ('a, 'b) t
 (** [acos x] computes the arc cosine of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val atan : (float, 'a) t -> (float, 'a) t
+val atan : ('a, 'b) t -> ('a, 'b) t
 (** [atan x] computes the arc tangent of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val sinh : (float, 'a) t -> (float, 'a) t
+val sinh : ('a, 'b) t -> ('a, 'b) t
 (** [sinh x] computes the hyperbolic sine of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val cosh : (float, 'a) t -> (float, 'a) t
+val cosh : ('a, 'b) t -> ('a, 'b) t
 (** [cosh x] computes the hyperbolic cosine of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val tanh : (float, 'a) t -> (float, 'a) t
+val tanh : ('a, 'b) t -> ('a, 'b) t
 (** [tanh x] computes the hyperbolic tangent of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val asinh : (float, 'a) t -> (float, 'a) t
+val asinh : ('a, 'b) t -> ('a, 'b) t
 (** [asinh x] computes the hyperbolic arc sine of the elements in [x] and
   returns the result in a new ndarray.
  *)
 
-val acosh : (float, 'a) t -> (float, 'a) t
+val acosh : ('a, 'b) t -> ('a, 'b) t
 (** [acosh x] computes the hyperbolic arc cosine of the elements in [x] and
   returns the result in a new ndarray.
  *)
 
-val atanh : (float, 'a) t -> (float, 'a) t
+val atanh : ('a, 'b) t -> ('a, 'b) t
 (** [atanh x] computes the hyperbolic arc tangent of the elements in [x] and
   returns the result in a new ndarray.
  *)
@@ -970,7 +970,7 @@ val scalar_mul : 'a -> ('a, 'b) t -> ('a, 'b) t
 val scalar_div : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** [scalar_div a x] is similar to [div_scalar] but with scalar as the first parameter. *)
 
-val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new ndarray.
  *)
