@@ -24,7 +24,7 @@ value cp_two_doubles(double d0, double d1)
 
 // compare two complex numbers
 
-int cltf (_Complex float x, _Complex float y) {
+inline int cltf (_Complex float x, _Complex float y) {
   float x_mag = cabsf(x);
   float y_mag = cabsf(y);
   float x_pha = cargf(x);
@@ -35,7 +35,7 @@ int cltf (_Complex float x, _Complex float y) {
     return 0;
 }
 
-int cgtf (_Complex float x, _Complex float y) {
+inline int cgtf (_Complex float x, _Complex float y) {
   float x_mag = cabsf(x);
   float y_mag = cabsf(y);
   float x_pha = cargf(x);
@@ -46,7 +46,11 @@ int cgtf (_Complex float x, _Complex float y) {
     return 0;
 }
 
-int clt (_Complex double x, _Complex double y) {
+inline int clef (_Complex float x, _Complex float y) { return !cgtf(x, y); }
+
+inline int cgef (_Complex float x, _Complex float y) { return !cltf(x, y); }
+
+inline int clt (_Complex double x, _Complex double y) {
   float x_mag = cabs(x);
   float y_mag = cabs(y);
   float x_pha = carg(x);
@@ -57,7 +61,7 @@ int clt (_Complex double x, _Complex double y) {
     return 0;
 }
 
-int cgt (_Complex double x, _Complex double y) {
+inline int cgt (_Complex double x, _Complex double y) {
   float x_mag = cabs(x);
   float y_mag = cabs(y);
   float x_pha = carg(x);
@@ -67,6 +71,11 @@ int cgt (_Complex double x, _Complex double y) {
   else
     return 0;
 }
+
+inline int cle (_Complex float x, _Complex float y) { return !cgt(x, y); }
+
+inline int cge (_Complex float x, _Complex float y) { return !clt(x, y); }
+
 
 //////////////////// function templates starts ////////////////////
 
@@ -84,13 +93,13 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_float_less
-#define NUMBER complex_float
-#define STOPFN(X, Y) (X.r >= Y.r || X.i >= Y.i)
+#define NUMBER _Complex float
+#define STOPFN(X, Y) cgef(X,Y)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_double_less
-#define NUMBER complex_double
-#define STOPFN(X, Y) (X.r >= Y.r || X.i >= Y.i)
+#define NUMBER _Complex double
+#define STOPFN(X, Y) cge(X,Y)
 #include "owl_dense_common_vec_cmp.c"
 
 // greater
@@ -106,13 +115,13 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_float_greater
-#define NUMBER complex_float
-#define STOPFN(X, Y) (X.r <= Y.r || X.i <= Y.i)
+#define NUMBER _Complex float
+#define STOPFN(X, Y) clef(X,Y)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_double_greater
-#define NUMBER complex_double
-#define STOPFN(X, Y) (X.r <= Y.r || X.i <= Y.i)
+#define NUMBER _Complex double
+#define STOPFN(X, Y) cle(X,Y)
 #include "owl_dense_common_vec_cmp.c"
 
 // less_equal
@@ -128,13 +137,13 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_float_less_equal
-#define NUMBER complex_float
-#define STOPFN(X, Y) (X.r > Y.r || X.i > Y.i)
+#define NUMBER _Complex float
+#define STOPFN(X, Y) cgtf(X,Y)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_double_less_equal
-#define NUMBER complex_double
-#define STOPFN(X, Y) (X.r > Y.r || X.i > Y.i)
+#define NUMBER _Complex double
+#define STOPFN(X, Y) cgt(X,Y)
 #include "owl_dense_common_vec_cmp.c"
 
 // greater_equal
@@ -150,13 +159,13 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_float_greater_equal
-#define NUMBER complex_float
-#define STOPFN(X, Y) (X.r < Y.r || X.i < Y.i)
+#define NUMBER _Complex float
+#define STOPFN(X, Y) cltf(X,Y)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN0 complex_double_greater_equal
-#define NUMBER complex_double
-#define STOPFN(X, Y) (X.r < Y.r || X.i < Y.i)
+#define NUMBER _Complex double
+#define STOPFN(X, Y) clt(X,Y)
 #include "owl_dense_common_vec_cmp.c"
 
 // is_zero
@@ -346,17 +355,17 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_float_elt_less
-#define NUMBER complex_float
-#define NUMBER1 complex_float
-#define NUMBER2 complex_float
-#define MAPFN(X,Y,Z) Z->r = (X->r < Y->r) && (X->i < Y->i); Z->i = 0.
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define NUMBER2 _Complex float
+#define MAPFN(X,Y,Z) *Z = cltf(*X,*Y) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_double_elt_less
-#define NUMBER complex_double
-#define NUMBER1 complex_double
-#define NUMBER2 complex_double
-#define MAPFN(X,Y,Z) Z->r = (X->r < Y->r) && (X->i < Y->i); Z->i = 0.
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define NUMBER2 _Complex double
+#define MAPFN(X,Y,Z) *Z = clt(*X,*Y) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 // elt_greater
@@ -376,17 +385,17 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_float_elt_greater
-#define NUMBER complex_float
-#define NUMBER1 complex_float
-#define NUMBER2 complex_float
-#define MAPFN(X,Y,Z) Z->r = (X->r > Y->r) && (X->i > Y->i); Z->i = 0.
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define NUMBER2 _Complex float
+#define MAPFN(X,Y,Z) *Z = cgtf(*X,*Y) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_double_elt_greater
-#define NUMBER complex_double
-#define NUMBER1 complex_double
-#define NUMBER2 complex_double
-#define MAPFN(X,Y,Z) Z->r = (X->r > Y->r) && (X->i > Y->i); Z->i = 0.
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define NUMBER2 _Complex double
+#define MAPFN(X,Y,Z) *Z = cgt(*X,*Y) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 // elt_less_equal
@@ -406,17 +415,17 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_float_elt_less_equal
-#define NUMBER complex_float
-#define NUMBER1 complex_float
-#define NUMBER2 complex_float
-#define MAPFN(X,Y,Z) Z->r = (X->r <= Y->r) && (X->i <= Y->i); Z->i = 0.
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define NUMBER2 _Complex float
+#define MAPFN(X,Y,Z) *Z = clef(*X,*Y) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_double_elt_less_equal
-#define NUMBER complex_double
-#define NUMBER1 complex_double
-#define NUMBER2 complex_double
-#define MAPFN(X,Y,Z) Z->r = (X->r <= Y->r) && (X->i <= Y->i); Z->i = 0.
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define NUMBER2 _Complex double
+#define MAPFN(X,Y,Z) *Z = cle(*X,*Y) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 // elt_greater_equal
@@ -436,17 +445,17 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_float_elt_greater_equal
-#define NUMBER complex_float
-#define NUMBER1 complex_float
-#define NUMBER2 complex_float
-#define MAPFN(X,Y,Z) Z->r = (X->r >= Y->r) && (X->i >= Y->i); Z->i = 0.
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define NUMBER2 _Complex float
+#define MAPFN(X,Y,Z) *Z = cgef(*X,*Y) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 #define FUN15 complex_double_elt_greater_equal
-#define NUMBER complex_double
-#define NUMBER1 complex_double
-#define NUMBER2 complex_double
-#define MAPFN(X,Y,Z) Z->r = (X->r >= Y->r) && (X->i >= Y->i); Z->i = 0.
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define NUMBER2 _Complex double
+#define MAPFN(X,Y,Z) *Z = cge(*X,*Y) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 // equal_scalar
@@ -516,15 +525,15 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_float_less_scalar
-#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
-#define NUMBER complex_float
-#define STOPFN(X) X.r >= ar || X.i >= ai
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define STOPFN(X) cgef(X,a)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_double_less_scalar
-#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
-#define NUMBER complex_double
-#define STOPFN(X) X.r >= ar || X.i >= ai
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define STOPFN(X) cge(X,a)
 #include "owl_dense_common_vec_cmp.c"
 
 // greater_scalar
@@ -542,15 +551,15 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_float_greater_scalar
-#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
-#define NUMBER complex_float
-#define STOPFN(X) X.r <= ar || X.i <= ai
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define STOPFN(X) clef(X,a)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_double_greater_scalar
-#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
-#define NUMBER complex_double
-#define STOPFN(X) X.r <= ar || X.i <= ai
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define STOPFN(X) cle(X,a)
 #include "owl_dense_common_vec_cmp.c"
 
 // less_equal_scalar
@@ -568,15 +577,15 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_float_less_equal_scalar
-#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
-#define NUMBER complex_float
-#define STOPFN(X) X.r > ar || X.i > ai
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define STOPFN(X) cgtf(X,a)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_double_less_equal_scalar
-#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
-#define NUMBER complex_double
-#define STOPFN(X) X.r > ar || X.i > ai
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define STOPFN(X) cgt(X,a)
 #include "owl_dense_common_vec_cmp.c"
 
 // greater_equal_scalar
@@ -594,15 +603,15 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_float_greater_equal_scalar
-#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
-#define NUMBER complex_float
-#define STOPFN(X) X.r < ar || X.i < ai
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define STOPFN(X) cltf(X,a)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 complex_double_greater_equal_scalar
-#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
-#define NUMBER complex_double
-#define STOPFN(X) X.r < ar || X.i < ai
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define STOPFN(X) clt(X,a)
 #include "owl_dense_common_vec_cmp.c"
 
 // elt_equal_scalar
@@ -682,17 +691,17 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 complex_float_elt_less_scalar
-#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
-#define NUMBER complex_float
-#define NUMBER1 complex_float
-#define MAPFN(X,Y) Y->r = (X->r < ar) && (X->i < ai); Y->i = 0.
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = cltf(*X,a) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 complex_double_elt_less_scalar
-#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
-#define NUMBER complex_double
-#define NUMBER1 complex_double
-#define MAPFN(X,Y) Y->r = (X->r < ar) && (X->i < ai); Y->i = 0.
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = clt(*X,a) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 // elt_greater_scalar
@@ -712,17 +721,17 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 complex_float_elt_greater_scalar
-#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
-#define NUMBER complex_float
-#define NUMBER1 complex_float
-#define MAPFN(X,Y) Y->r = (X->r > ar) && (X->i > ai); Y->i = 0.
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = cgtf(*X,a) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 complex_double_elt_greater_scalar
-#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
-#define NUMBER complex_double
-#define NUMBER1 complex_double
-#define MAPFN(X,Y) Y->r = (X->r > ar) && (X->i > ai); Y->i = 0.
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = cgt(*X,a) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 // elt_less_equal_scalar
@@ -742,17 +751,17 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 complex_float_elt_less_equal_scalar
-#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
-#define NUMBER complex_float
-#define NUMBER1 complex_float
-#define MAPFN(X,Y) Y->r = (X->r <= ar) && (X->i <= ai); Y->i = 0.
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = clef(*X,a) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 complex_double_elt_less_equal_scalar
-#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
-#define NUMBER complex_double
-#define NUMBER1 complex_double
-#define MAPFN(X,Y) Y->r = (X->r <= ar) && (X->i <= ai); Y->i = 0.
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) cle(*X,a) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 // elt_greater_equal_scalar
@@ -772,17 +781,17 @@ int cgt (_Complex double x, _Complex double y) {
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 complex_float_elt_greater_equal_scalar
-#define INIT float ar = Double_field(vA, 0); float ai = Double_field(vA, 1)
-#define NUMBER complex_float
-#define NUMBER1 complex_float
-#define MAPFN(X,Y) Y->r = (X->r >= ar) && (X->i >= ai); Y->i = 0.
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = cgef(*X,a) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 complex_double_elt_greater_equal_scalar
-#define INIT double ar = Double_field(vA, 0); double ai = Double_field(vA, 1)
-#define NUMBER complex_double
-#define NUMBER1 complex_double
-#define MAPFN(X,Y) Y->r = (X->r >= ar) && (X->i >= ai); Y->i = 0.
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = cge(*X,a) + 0*I
 #include "owl_dense_common_vec_map.c"
 
 // nnz
