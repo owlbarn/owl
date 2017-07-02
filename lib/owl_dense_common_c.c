@@ -1065,6 +1065,18 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) (X * X)
 #include "owl_dense_common_vec_map.c"
 
+#define FUN4 complex_float_sqr
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X) (X * X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_double_sqr
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X) (X * X)
+#include "owl_dense_common_vec_map.c"
+
 // sqrt
 
 #define FUN4 real_float_sqrt
@@ -1103,6 +1115,20 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (cbrt(X))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_float_cbrt
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define INIT float _a = 1. / 3.
+#define MAPFN(X) (cpowf(X,_a))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_double_cbrt
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define INIT double _a = 1. / 3.
+#define MAPFN(X) (cpow(X,_a))
 #include "owl_dense_common_vec_map.c"
 
 // exp
@@ -1145,6 +1171,18 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) (exp2(X))
 #include "owl_dense_common_vec_map.c"
 
+#define FUN4 complex_float_exp2
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X) (cpowf(2.,X))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_double_exp2
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X) (cpow(2.,X))
+#include "owl_dense_common_vec_map.c"
+
 // exp10
 
 #define FUN4 real_float_exp10
@@ -1159,6 +1197,18 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) (exp10(X))
 #include "owl_dense_common_vec_map.c"
 
+#define FUN4 complex_float_exp10
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X) (cpowf(10.,X))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_double_exp10
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X) (cpow(10.,X))
+#include "owl_dense_common_vec_map.c"
+
 // expm1
 
 #define FUN4 real_float_expm1
@@ -1171,6 +1221,18 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (expm1(X))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_float_expm1
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X) (cexpf(X) - 1)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_double_expm1
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X) (cexp(X) - 1)
 #include "owl_dense_common_vec_map.c"
 
 // log
@@ -1213,6 +1275,20 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) (log10(X))
 #include "owl_dense_common_vec_map.c"
 
+#define FUN4 complex_float_log10
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define INIT float _log10 = logf(10)
+#define MAPFN(X) (clogf(X) / _log10)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_double_log10
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define INIT double _log10 = log(10)
+#define MAPFN(X) (clog(X) / _log10)
+#include "owl_dense_common_vec_map.c"
+
 // log2
 
 #define FUN4 real_float_log2
@@ -1227,6 +1303,20 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) (log2(X))
 #include "owl_dense_common_vec_map.c"
 
+#define FUN4 complex_float_log2
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define INIT float _log2 = logf(2)
+#define MAPFN(X) (clogf(X) / _log2)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_double_log2
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define INIT double _log2 = log(2)
+#define MAPFN(X) (clog(X) / _log2)
+#include "owl_dense_common_vec_map.c"
+
 // log1p
 
 #define FUN4 real_float_log1p
@@ -1239,6 +1329,18 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X) (log1p(X))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_float_log1p
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X) (clogf(X + 1))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN4 complex_double_log1p
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X) (clog(X + 1))
 #include "owl_dense_common_vec_map.c"
 
 // sin

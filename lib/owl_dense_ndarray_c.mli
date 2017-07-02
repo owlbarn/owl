@@ -282,6 +282,52 @@ val cumsum : ?axis:int -> arr -> arr
 
 val cumprod : ?axis:int -> arr -> arr
 
+val sqr : arr -> arr
+
+val sqrt : arr -> arr
+
+val cbrt : arr -> arr
+
+val exp : arr -> arr
+
+val exp2 : arr -> arr
+
+val exp10 : arr -> arr
+
+val expm1 : arr -> arr
+
+val log : arr -> arr
+
+val log10 : arr -> arr
+
+val log2 : arr -> arr
+
+val log1p : arr -> arr
+
+val sin : arr -> arr
+
+val cos : arr -> arr
+
+val tan : arr -> arr
+
+val asin : arr -> arr
+
+val acos : arr -> arr
+
+val atan : arr -> arr
+
+val sinh : arr -> arr
+
+val cosh : arr -> arr
+
+val tanh : arr -> arr
+
+val asinh : arr -> arr
+
+val acosh : arr -> arr
+
+val atanh : arr -> arr
+
 val floor : arr -> arr
 
 val ceil : arr -> arr

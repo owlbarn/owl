@@ -696,7 +696,7 @@ val signum : (float, 'a) t -> (float, 'a) t
   for zero, [1] for positive numbers, [nan] for [nan]).
  *)
 
-val sqr : (float, 'a) t -> (float, 'a) t
+val sqr : ('a, 'b) t -> ('a, 'b) t
 (** [sqr x] computes the square of the elements in [x] and returns the result in
   a new ndarray.
  *)
@@ -706,7 +706,7 @@ val sqrt : ('a, 'b) t -> ('a, 'b) t
   result in a new ndarray.
  *)
 
-val cbrt : (float, 'a) t -> (float, 'a) t
+val cbrt : ('a, 'b) t -> ('a, 'b) t
 (** [cbrt x] computes the cubic root of the elements in [x] and returns the
   result in a new ndarray.
  *)
@@ -716,17 +716,17 @@ val exp : ('a, 'b) t -> ('a, 'b) t
   result in a new ndarray.
  *)
 
-val exp2 : (float, 'a) t -> (float, 'a) t
+val exp2 : ('a, 'b) t -> ('a, 'b) t
 (** [exp2 x] computes the base-2 exponential of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val exp10 : (float, 'a) t -> (float, 'a) t
+val exp10 : ('a, 'b) t -> ('a, 'b) t
 (** [exp10 x] computes the base-10 exponential of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val expm1 : (float, 'a) t -> (float, 'a) t
+val expm1 : ('a, 'b) t -> ('a, 'b) t
 (** [expm1 x] computes [exp x -. 1.] of the elements in [x] and returns the
   result in a new ndarray.
  *)
@@ -736,17 +736,17 @@ val log : ('a, 'b) t -> ('a, 'b) t
   result in a new ndarray.
  *)
 
-val log10 : (float, 'a) t -> (float, 'a) t
+val log10 : ('a, 'b) t -> ('a, 'b) t
 (** [log10 x] computes the base-10 logarithm of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val log2 : (float, 'a) t -> (float, 'a) t
+val log2 : ('a, 'b) t -> ('a, 'b) t
 (** [log2 x] computes the base-2 logarithm of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val log1p : (float, 'a) t -> (float, 'a) t
+val log1p : ('a, 'b) t -> ('a, 'b) t
 (** [log1p x] computes [log (1 + x)] of the elements in [x] and returns the
   result in a new ndarray.
  *)

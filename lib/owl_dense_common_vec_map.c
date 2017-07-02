@@ -10,6 +10,10 @@
 void __dumb_fun_vec_map() {};  // define a dumb to avoid warnings
 #endif /* NUMBER */
 
+#ifndef INIT
+#define INIT
+#endif /* INIT */
+
 
 // function to perform in-place mapping of elements in x
 #ifdef FUN3
@@ -51,6 +55,7 @@ CAMLprim value FUN4(value vN, value vX, value vY)
 {
   CAMLparam3(vN, vX, vY);
   int N = Long_val(vN);
+  INIT;
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
   CAMLunused int dim_X = *big_X->dim;
