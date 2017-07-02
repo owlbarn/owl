@@ -975,12 +975,12 @@ val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   elementwise, and returns the result in a new ndarray.
  *)
 
-val scalar_pow : float -> (float, 'a) t -> (float, 'a) t
+val scalar_pow : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** [scalar_pow a x] computes the power value of a scalar value [a] using the elements
   in a ndarray [x].
  *)
 
-val pow_scalar : (float, 'a) t -> float -> (float, 'a) t
+val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [pow_scalar x a] computes each element in [x] power to [a]. *)
 
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
@@ -999,12 +999,12 @@ val hypot : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
   elementwise, and returns the result in a new ndarray.
  *)
 
-val min2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val min2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [min2 x y] computes the minimum of all the elements in [x] and [y]
   elementwise, and returns the result in a new ndarray.
  *)
 
-val max2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val max2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [max2 x y] computes the maximum of all the elements in [x] and [y]
   elementwise, and returns the result in a new ndarray.
  *)

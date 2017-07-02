@@ -21,6 +21,53 @@ value cp_two_doubles(double d0, double d1)
   return res;
 }
 
+
+// compare two complex numbers
+
+int cltf (_Complex float x, _Complex float y) {
+  float x_mag = cabsf(x);
+  float y_mag = cabsf(y);
+  float x_pha = cargf(x);
+  float y_pha = cargf(y);
+  if ((x_mag < y_mag) || ((x_mag == y_mag) && (x_pha < y_pha)))
+    return 1;
+  else
+    return 0;
+}
+
+int cgtf (_Complex float x, _Complex float y) {
+  float x_mag = cabsf(x);
+  float y_mag = cabsf(y);
+  float x_pha = cargf(x);
+  float y_pha = cargf(y);
+  if ((x_mag > y_mag) || ((x_mag == y_mag) && (x_pha > y_pha)))
+    return 1;
+  else
+    return 0;
+}
+
+int clt (_Complex double x, _Complex double y) {
+  float x_mag = cabs(x);
+  float y_mag = cabs(y);
+  float x_pha = carg(x);
+  float y_pha = carg(y);
+  if ((x_mag < y_mag) || ((x_mag == y_mag) && (x_pha < y_pha)))
+    return 1;
+  else
+    return 0;
+}
+
+int cgt (_Complex double x, _Complex double y) {
+  float x_mag = cabs(x);
+  float y_mag = cabs(y);
+  float x_pha = carg(x);
+  float y_pha = carg(y);
+  if ((x_mag > y_mag) || ((x_mag == y_mag) && (x_pha > y_pha)))
+    return 1;
+  else
+    return 0;
+}
+
 //////////////////// function templates starts ////////////////////
 
 
@@ -1982,6 +2029,20 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X,Y,Z) Z = fmin(X,Y)
 #include "owl_dense_common_vec_combine.c"
 
+#define FUN7 complex_float_min2
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define NUMBER2 _Complex float
+#define MAPFN(X,Y,Z) Z = cltf(X,Y) ? X : Y
+#include "owl_dense_common_vec_combine.c"
+
+#define FUN7 complex_double_min2
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define NUMBER2 _Complex double
+#define MAPFN(X,Y,Z) Z = clt(X,Y) ? X : Y
+#include "owl_dense_common_vec_combine.c"
+
 // max2
 
 #define FUN7 real_float_max2
@@ -1996,6 +2057,20 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER1 double
 #define NUMBER2 double
 #define MAPFN(X,Y,Z) Z = fmax(X,Y)
+#include "owl_dense_common_vec_combine.c"
+
+#define FUN7 complex_float_max2
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define NUMBER2 _Complex float
+#define MAPFN(X,Y,Z) Z = cgtf(X,Y) ? X : Y
+#include "owl_dense_common_vec_combine.c"
+
+#define FUN7 complex_double_max2
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define NUMBER2 _Complex double
+#define MAPFN(X,Y,Z) Z = cgt(X,Y) ? X : Y
 #include "owl_dense_common_vec_combine.c"
 
 // fmod

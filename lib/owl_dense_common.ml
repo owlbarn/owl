@@ -1368,22 +1368,30 @@ let _owl_hypot : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
   | Float64   -> owl_real_double_hypot l x y z
   | _         -> failwith "_owl_hypot: unsupported operation"
 
-external owl_real_float_min2 : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> (float, 'c) owl_vec -> unit = "real_float_min2"
-external owl_real_double_min2 : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> (float, 'c) owl_vec -> unit = "real_double_min2"
+external owl_real_float_min2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_min2"
+external owl_real_double_min2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_min2"
+external owl_complex_float_min2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_min2"
+external owl_complex_double_min2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_min2"
 
 let _owl_min2 : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
   match k with
   | Float32   -> owl_real_float_min2 l x y z
   | Float64   -> owl_real_double_min2 l x y z
+  | Complex32 -> owl_complex_float_min2 l x y z
+  | Complex64 -> owl_complex_double_min2 l x y z
   | _         -> failwith "_owl_min2: unsupported operation"
 
-external owl_real_float_max2 : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> (float, 'c) owl_vec -> unit = "real_float_max2"
-external owl_real_double_max2 : int -> ('a, 'b) owl_vec -> (float, 'c) owl_vec -> (float, 'c) owl_vec -> unit = "real_double_max2"
+external owl_real_float_max2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_max2"
+external owl_real_double_max2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_max2"
+external owl_complex_float_max2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_max2"
+external owl_complex_double_max2 : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_max2"
 
 let _owl_max2 : type a b. (a, b) kind -> (a, b) owl_vec_op03 = fun k l x y z ->
   match k with
   | Float32   -> owl_real_float_max2 l x y z
   | Float64   -> owl_real_double_max2 l x y z
+  | Complex32 -> owl_complex_float_max2 l x y z
+  | Complex64 -> owl_complex_double_max2 l x y z
   | _         -> failwith "_owl_max2: unsupported operation"
 
 external owl_real_float_fmod : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_fmod"
