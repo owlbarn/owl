@@ -243,17 +243,17 @@ val sum : arr -> elt
 
 val prod : ?axis:int option array -> arr -> elt
 
-val min : arr -> float
+val min : arr -> elt
 
-val max : arr -> float
+val max : arr -> elt
 
-val minmax : arr -> float * float
+val minmax : arr -> elt * elt
 
-val min_i : arr -> float * int array
+val min_i : arr -> elt * int array
 
-val max_i : arr -> float * int array
+val max_i : arr -> elt * int array
 
-val minmax_i : arr -> (float * (int array)) * (float * (int array))
+val minmax_i : arr -> (elt * (int array)) * (elt * (int array))
 
 val abs : arr -> arr
 

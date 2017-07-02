@@ -750,18 +750,26 @@ let _owl_nnz : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
 
 external owl_real_float_min_i : int -> ('a, 'b) owl_vec -> int = "real_float_min_i"
 external owl_real_double_min_i : int -> ('a, 'b) owl_vec -> int = "real_double_min_i"
+external owl_complex_float_min_i : int -> ('a, 'b) owl_vec -> int = "complex_float_min_i"
+external owl_complex_double_min_i : int -> ('a, 'b) owl_vec -> int = "complex_double_min_i"
 
 let _owl_min_i : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
   | Float32   -> owl_real_float_min_i
   | Float64   -> owl_real_double_min_i
+  | Complex32 -> owl_complex_float_min_i
+  | Complex64 -> owl_complex_double_min_i
   | _         -> failwith "_owl_min_i: unsupported operation"
 
 external owl_real_float_max_i : int -> ('a, 'b) owl_vec -> int = "real_float_max_i"
 external owl_real_double_max_i : int -> ('a, 'b) owl_vec -> int = "real_double_max_i"
+external owl_complex_float_max_i : int -> ('a, 'b) owl_vec -> int = "complex_float_max_i"
+external owl_complex_double_max_i : int -> ('a, 'b) owl_vec -> int = "complex_double_max_i"
 
 let _owl_max_i : type a b. (a, b) kind -> (a, b) owl_vec_op01 = function
   | Float32   -> owl_real_float_max_i
   | Float64   -> owl_real_double_max_i
+  | Complex32 -> owl_complex_float_max_i
+  | Complex64 -> owl_complex_double_max_i
   | _         -> failwith "_owl_max_i: unsupported operation"
 
 external owl_real_float_neg : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "real_float_neg" "real_float_neg_impl"

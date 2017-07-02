@@ -4,6 +4,7 @@
  */
 
 #include <math.h>
+#include <complex.h>
 #include <caml/mlvalues.h>
 #include "owl_macros.h"
 
@@ -760,6 +761,7 @@ value cp_two_doubles(double d0, double d1)
 #include "owl_dense_common_vec_cmp.c"
 
 // min_i
+// TODO: a lot of redundant computation in complex case
 
 #define FUN6 real_float_min_i
 #define NUMBER float
@@ -771,7 +773,18 @@ value cp_two_doubles(double d0, double d1)
 #define CHECKFN(X,Y) (X > Y)
 #include "owl_dense_common_vec_fold.c"
 
+#define FUN6 complex_float_min_i
+#define NUMBER _Complex float
+#define CHECKFN(X,Y) (cabsf(X) > cabsf(Y)) || ((cabsf(X) == cabsf(Y)) && (cargf(X) > cargf(Y)))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 complex_double_min_i
+#define NUMBER _Complex double
+#define CHECKFN(X,Y) (cabs(X) > cabs(Y)) || ((cabs(X) == cabs(Y)) && (carg(X) > carg(Y)))
+#include "owl_dense_common_vec_fold.c"
+
 // max_i
+// TODO: a lot of redundant computation in complex case
 
 #define FUN6 real_float_max_i
 #define NUMBER float
@@ -782,6 +795,27 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER double
 #define CHECKFN(X,Y) (X < Y)
 #include "owl_dense_common_vec_fold.c"
+
+#define FUN6 complex_float_max_i
+#define NUMBER _Complex float
+#define CHECKFN(X,Y) (cabsf(X) < cabsf(Y)) || ((cabsf(X) == cabsf(Y)) && (cargf(X) < cargf(Y)))
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 complex_double_max_i
+#define NUMBER _Complex double
+#define CHECKFN(X,Y) (cabs(X) < cabs(Y)) || ((cabs(X) == cabs(Y)) && (carg(X) < carg(Y)))
+#include "owl_dense_common_vec_fold.c"
+
+// minmax_i
+// TODO
+//#define FUN23 real_float_minmax_i
+//#define NUMBER float
+//#define INIT
+//#define BFCHKFN
+//#define CHECKFN(X,Y) X < Y
+//#define AFCHKFN
+//#include "owl_dense_common_vec_fold.c"
+
 
 // l1norm
 

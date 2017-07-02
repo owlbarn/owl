@@ -633,24 +633,30 @@ val sum : ('a, 'b) t -> 'a
 val prod : ?axis:int option array -> ('a, 'b) t -> 'a
 (** [prod x] returns the product of all elements in [x] along passed in axises. *)
 
-val min : (float, 'a) t -> float
-(** [min x] returns the minimum of all elements in [x]. *)
+val min : ('a, 'b) t -> 'a
+(** [min x] returns the minimum of all elements in [x]. For two complex numbers,
+  the one with the smaller magnitude will be selected. If two magnitudes are
+  the same, the one with the smaller phase will be selected.
+ *)
 
-val max : (float, 'a) t -> float
-(** [max x] returns the maximum of all elements in [x]. *)
+val max : ('a, 'b) t -> 'a
+(** [max x] returns the maximum of all elements in [x]. For two complex numbers,
+  the one with the greater magnitude will be selected. If two magnitudes are
+  the same, the one with the greater phase will be selected.
+ *)
 
-val minmax : (float, 'a) t -> float * float
+val minmax : ('a, 'b) t -> 'a * 'a
 (** [minmax x] returns [(min_v, max_v)], [min_v] is the minimum value in [x]
   while [max_v] is the maximum.
  *)
 
-val min_i : (float, 'a) t -> float * int array
-(** [min_i x] returns the minimum of all elements in [x] along with its index. *)
+val min_i : ('a, 'b) t -> 'a * int array
+(** [min_i x] returns the minimum of all elements in [x] as well as its index. *)
 
-val max_i : (float, 'a) t -> float * int array
-(** [max_i x] returns the maximum of all elements in [x] along with its index. *)
+val max_i : ('a, 'b) t -> 'a * int array
+(** [max_i x] returns the maximum of all elements in [x] as well as its index. *)
 
-val minmax_i : (float, 'a) t -> (float * (int array)) * (float * (int array))
+val minmax_i : ('a, 'b) t -> ('a * (int array)) * ('a * (int array))
 (** [minmax_i x] returns [((min_v,min_i), (max_v,max_i))] where [(min_v,min_i)]
   is the minimum value in [x] along with its index while [(max_v,max_i)] is the
   maximum value along its index.

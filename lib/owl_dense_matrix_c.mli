@@ -378,6 +378,18 @@ val load : string -> mat
 
 (** {6 Unary mathematical operations } *)
 
+val min : mat -> elt
+
+val max : mat -> elt
+
+val minmax : mat -> elt * elt
+
+val min_i : mat -> elt * int * int
+
+val max_i : mat -> elt * int * int
+
+val minmax_i : mat -> (elt * int * int) * (elt * int * int)
+
 val re : mat -> cast_mat
 
 val im : mat -> cast_mat

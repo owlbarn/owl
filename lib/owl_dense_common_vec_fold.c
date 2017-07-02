@@ -200,9 +200,45 @@ CAMLprim value FUN11(value vN, value vX, value vY)
 #endif /* FUN11 */
 
 
+// function to fold all the elements in x with extra paramaters A and B
+#ifdef FUN23
+
+CAMLprim value FUN23(value vN, value vX, value vA, vB)
+{
+  CAMLparam4(vN, vX, vA, vB);
+  int N = Long_val(vN);
+  INIT;
+
+  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
+  CAMLunused int dim_X = *big_X->dim;
+  NUMBER *X_data = ((NUMBER *) big_X->data);
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  NUMBER *start_x;
+  start_x = X_data;
+
+  for(int i = 0; i < N; i++) {
+    BFCHKFN;
+    if (CHECKFN) {
+      AFCHKFN;
+    };
+    start_x += 1;
+  };
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_unit);
+}
+
+#endif /* FUN23 */
+
+
 #undef NUMBER
 #undef NUMBER1
 #undef CHECKFN
+#undef BFCHKFN
+#undef AFCHKFN
 #undef COPYNUM
 #undef ACCFN
 #undef INIT
@@ -211,3 +247,4 @@ CAMLprim value FUN11(value vN, value vX, value vY)
 #undef FUN8
 #undef FUN9
 #undef FUN11
+#undef FUN23

@@ -242,6 +242,18 @@ val load : string -> arr
 
 (** {6 Unary mathematical operations } *)
 
+val min : arr -> elt
+
+val max : arr -> elt
+
+val minmax : arr -> elt * elt
+
+val min_i : arr -> elt * int array
+
+val max_i : arr -> elt * int array
+
+val minmax_i : arr -> (elt * (int array)) * (elt * (int array))
+
 val re : arr -> cast_arr
 
 val im : arr -> cast_arr

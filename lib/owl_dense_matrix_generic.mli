@@ -144,7 +144,7 @@ val bidiagonal : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   NOTE: because the diagonal elements in a hermitian matrix must be real, the
   function set the imaginary part of the diagonal elements to zero by default.
   In other words, if the diagonal elements of [x] have non-zero imaginary parts,
-  the imaginary parts will be dropped without a warning. 
+  the imaginary parts will be dropped without a warning.
  *)
 
 val toeplitz : ?c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -839,20 +839,32 @@ val im_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [im_d2z x] returns all the imaginary components of [x] in a new ndarray of same shape. *)
 
-val min : (float, 'a) t -> float
-(** [min x] returns the minimum value of all elements in [x]. *)
+val min : ('a, 'b) t -> 'a
+(** [min x] returns the minimum of all elements in [x]. For two complex numbers,
+  the one with the smaller magnitude will be selected. If two magnitudes are
+  the same, the one with the smaller phase will be selected.
+ *)
 
-val max : (float, 'a) t -> float
-(** [max x] returns the maximum value of all elements in [x]. *)
+val max : ('a, 'b) t -> 'a
+(** [max x] returns the maximum of all elements in [x]. For two complex numbers,
+  the one with the greater magnitude will be selected. If two magnitudes are
+  the same, the one with the greater phase will be selected.
+ *)
 
-val minmax : (float, 'a) t -> float * float
+val minmax : ('a, 'b) t -> 'a * 'a
 (** [minmax x] returns both the minimum and minimum values in [x]. *)
 
-val min_i : (float, 'a) t -> float * int * int
+val min_i : ('a, 'b) t -> 'a * int * int
+(** [min_i x] returns the minimum of all elements in [x] as well as its index. *)
 
-val max_i : (float, 'a) t -> float * int * int
+val max_i : ('a, 'b) t -> 'a * int * int
+(** [max_i x] returns the maximum of all elements in [x] as well as its index. *)
 
-val minmax_i : (float, 'a) t -> (float * int * int) * (float * int * int)
+val minmax_i : ('a, 'b) t -> ('a * int * int) * ('a * int * int)
+(** [minmax_i x] returns [((min_v,min_i), (max_v,max_i))] where [(min_v,min_i)]
+  is the minimum value in [x] along with its index while [(max_v,max_i)] is the
+  maximum value along its index.
+ *)
 
 val inv : ('a, 'b) t -> ('a, 'b) t
 (** [inv x] returns the inverse of a square matrix [x]. *)

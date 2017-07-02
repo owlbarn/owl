@@ -341,12 +341,6 @@ let broadcast_op op x0 x1 =
 
 (* mathematical functions *)
 
-let min x = x |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.min (kind x)
-
-let max x = x |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.max (kind x)
-
-let minmax x = x |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.minmax (kind x)
-
 let min_i x =
   let y = flatten x |> array1_of_genarray in
   let i = _owl_min_i (kind x) (numel x) y in
@@ -363,15 +357,15 @@ let max_i x =
   let _ = _index_1d_nd i j s in
   y.{i}, j
 
-let minmax_i x =
-  let y = flatten x |> array1_of_genarray in
-  let i, j = Owl_backend_gsl_linalg.minmax_i (kind x) y in
-  let s = _calc_stride (shape x) in
-  let p = Array.copy s in
-  let q = Array.copy s in
-  let _ = _index_1d_nd i p s in
-  let _ = _index_1d_nd j q s in
-  (y.{i}, p), (y.{j}, q)
+let minmax_i x = min_i x, max_i x
+
+let min x = x |> min_i |> fst
+
+let max x = x |> max_i |> fst
+
+let minmax x =
+  let minx_i, maxx_i = minmax_i x in
+  fst minx_i, fst maxx_i
 
 let add x y =
   match same_shape x y with
