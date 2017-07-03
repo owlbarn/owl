@@ -186,6 +186,7 @@ val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 
 (** {6 Eigenvalues & eigenvectors} *)
 
+
 val eig : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t * ('a, 'b) t
 (** [eig x -> v, w] computes the right eigenvectors [v] and eigenvalues [w]
   of an arbitrary square matrix [x]. The eigenvectors are column vectors in
@@ -202,8 +203,8 @@ val eigvals : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -
  *)
 
 
-
 (** {6 Low-level factorisation functions} *)
+
 
 val lufact : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
 (** [lufact x -> (a, ipiv)] calculates LU factorisation of [x]
@@ -226,6 +227,16 @@ val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> ('a, 'b) t -> ('a, 
   documentation for more details.
  *)
 
+
+(** {6 Solve linear systems} *)
+
+
+val null : ('a, 'b) t -> ('a, 'b) t
+(** [null a -> x] computes an orthonormal basis [x] for the null space of [a]
+  obtained from the singular value decomposition. Namely, [a *@ x] has
+  negligible elements, [M.col_num x] is the nullity of [a], and
+  [transpose x *@ x = I].
+ *)
 
 
 (** {6 Helper functions} *)

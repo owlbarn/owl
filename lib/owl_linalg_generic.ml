@@ -484,7 +484,7 @@ let is_posdef x =
   with exn -> false
 
 
-let _minmax
+let _minmax_real
   : type a b. (a, b) kind -> (a, b) t -> float * float
   = fun k v ->
     match (M.kind v) with
@@ -492,7 +492,7 @@ let _minmax
     | Float64   -> M.minmax v
     | Complex32 -> M.re_c2s v |> M.minmax
     | Complex64 -> M.re_z2d v |> M.minmax
-    | _         -> failwith "owl_linalg_generic:_minmax"
+    | _         -> failwith "owl_linalg_generic:_minmax_real"
 
 
 (* local abs function, bear with obj.magic *)
@@ -509,7 +509,7 @@ let _abs
 let norm ?(p=2.) x =
   let k = M.kind x in
   if p = 1. then x |> _abs k |> M.sum_rows |> M.max
-  else if p = 2. then x |> svdvals |> _minmax k |> snd
+  else if p = 2. then x |> svdvals |> _minmax_real k |> snd
   else if p = infinity then x |> _abs k |> M.sum_cols |> M.max
   else failwith "owl_linalg_generic:norm:p=1|2|inf"
 
@@ -517,7 +517,7 @@ let norm ?(p=2.) x =
 let cond ?(p=2.) x =
   if p = 2. then (
     let v = svdvals x in
-    let minv, maxv = _minmax (M.kind v) v in
+    let minv, maxv = _minmax_real (M.kind v) v in
     if maxv = 0. then infinity else maxv /. minv
   )
   else if p = 1. || p = infinity then (
@@ -533,6 +533,28 @@ let cond ?(p=2.) x =
 
 
 let rcond x = 1. /. (cond ~p:1. x)
+
+
+(* solve linear systems *)
+
+
+let null x =
+  (* FIXME : eps *)
+  let eps = 1e-10 in
+  let m, n = M.shape x in
+  if m = 0 || n = 0 then M.eye (M.kind x) n
+  else (
+    let _, s, vt = svd ~thin:false x in
+    let s = _abs (M.kind s) s in
+    let maxsv = M.max s in
+    let maxmn = Pervasives.max m n |> float_of_int in
+    let i = M.elt_greater_scalar s (maxmn *. maxsv *. eps) |> M.sum |> int_of_float in
+    let vt = M.resize ~head:false (M.row_num vt - i) (M.col_num vt) vt in
+    M.transpose vt
+  )
+
+
+(* helper functions *)
 
 
 let peakflops ?(n=2000) () =
