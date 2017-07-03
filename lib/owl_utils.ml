@@ -301,15 +301,28 @@ module Stack = struct
 end
 
 
-(** The following function relates to performance measurement *)
+(* The following function relates to performance measurement *)
 
 
-(* measure the time spent in a function in millisecond *)
+(** measure the time spent in a function in millisecond *)
 let time f =
   let t = Unix.gettimeofday () in
   f ();
   (Unix.gettimeofday () -. t) *. 1000.
 
+
+(** TODO: return the the distance between [1.0] and the next larger representable
+  floating-point value. *)
+let eps
+  : type a b. (a, b) Bigarray.kind -> float
+  =
+  let open Bigarray in
+  function
+  | Float32   -> 2. ** (-23.)
+  | Float64   -> 2. ** (-52.)
+  | Complex32 -> 2. ** (-23.)
+  | Complex64 -> 2. ** (-52.)
+  | _         -> failwith "owl_utils:eps"
 
 
 (* ends here *)

@@ -221,7 +221,7 @@ let rank ?tol x =
   let sv = svdvals x in
   let m, n = M.shape x in
   let maxmn = Pervasives.max m n in
-  let eps = 1e-10 in
+  let eps = Owl_utils.eps Float32 in
   let tol = match tol with
     | Some tol -> tol
     | None     -> (float_of_int maxmn) *. eps
@@ -539,8 +539,7 @@ let rcond x = 1. /. (cond ~p:1. x)
 
 
 let null x =
-  (* FIXME : eps *)
-  let eps = 1e-10 in
+  let eps = Owl_utils.eps (M.kind x) in
   let m, n = M.shape x in
   if m = 0 || n = 0 then M.eye (M.kind x) n
   else (
