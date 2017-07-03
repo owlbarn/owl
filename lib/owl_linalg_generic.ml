@@ -13,7 +13,7 @@ module M = Owl_dense.Matrix.Generic
 (* LU decomposition *)
 
 
-let lu ?(pivot=true) x =
+let lu x =
   let x = M.clone x in
   let m, n = M.shape x in
   let minmn = Pervasives.min m n in
@@ -30,7 +30,7 @@ let lu ?(pivot=true) x =
   l, u, ipiv
 
 
-let lufact ?(pivot=true) x =
+let lufact x =
   let m, n = M.shape x in
   let minmn = Pervasives.min m n in
   let a, ipiv = Owl_lapacke.getrf x in
@@ -135,7 +135,18 @@ let qr ?(thin=true) ?(pivot=false) x =
   q, r, jpvt
 
 
-let qrfact x = None
+let qrfact ?(pivot=false) x =
+  let m, n = M.shape x in
+  let minmn = Pervasives.min m n in
+  let a, tau, jpvt = match pivot with
+    | true  -> Owl_lapacke.geqp3 x
+    | false -> (
+        let jpvt = M.empty int32 0 0 in
+        let a, tau = Owl_lapacke.geqrf x in
+        a, tau, jpvt
+      )
+  in
+  a, tau, jpvt
 
 
 let _get_lq_q
@@ -221,6 +232,7 @@ let rank ?tol x =
   let sv = svdvals x in
   let m, n = M.shape x in
   let maxmn = Pervasives.max m n in
+  (* by default using float32 eps *)
   let eps = Owl_utils.eps Float32 in
   let tol = match tol with
     | Some tol -> tol
@@ -535,7 +547,7 @@ let cond ?(p=2.) x =
 let rcond x = 1. /. (cond ~p:1. x)
 
 
-(* solve linear systems *)
+(* solve linear system of equations *)
 
 
 let null x =
@@ -551,6 +563,20 @@ let null x =
     let vt = M.resize ~head:false (M.row_num vt - i) (M.col_num vt) vt in
     M.transpose vt
   )
+
+
+(* TODO: add opt parameter to specify the matrix properties so that we can
+  choose the best solver for better performance.
+ *)
+let linsolve a b =
+  let ma, na = M.shape a in
+  let mb, nb = M.shape b in
+  assert (ma = mb);
+
+  match ma = na with
+  | true  -> ()
+  | false -> ()
+
 
 
 (* helper functions *)

@@ -95,6 +95,11 @@ val is_posdef : ('a, 'b) t -> bool
 (** {6 Factorisation} *)
 
 
+val lu : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
+(** [lu x -> (l, u, ipiv) calculates LU decomposition of [x]. The pivoting is
+  used by default. 
+ *)
+
 val lq : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** [lq x -> (l, q)] calculates the LQ decomposition of [x]. By default, the
   reduced LQ decomposition is performed. But you can get full [Q] by setting
@@ -206,8 +211,13 @@ val eigvals : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -
 (** {6 Low-level factorisation functions} *)
 
 
-val lufact : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
-(** [lufact x -> (a, ipiv)] calculates LU factorisation of [x]
+val qrfact : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
+(** [qrfact x -> (a, tau, jpvt)] calculates QR factorisation of a general
+  matrix [x].
+ *)
+
+val lufact : ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
+(** [lufact x -> (a, ipiv)] calculates LU factorisation of a general matrix [x].
  *)
 
 val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t

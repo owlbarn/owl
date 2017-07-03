@@ -39,6 +39,8 @@ val is_posdef : mat -> bool
 (** {6 Factorisation} *)
 
 
+val lu : mat -> mat * mat * int32_mat
+
 val lq : ?thin:bool -> mat -> mat * mat
 
 val qr : ?thin:bool -> ?pivot:bool -> mat -> mat * mat * int32_mat
