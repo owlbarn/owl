@@ -1033,10 +1033,38 @@ let qqplot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker_size=4.)
 
 let scatterhist = None
 
-let probplot = None
+let probplot ?(h=_default_handle) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q 1.)) ?(noref=false) y =
+    (*
+    In our implementation of probplot, we choose a Matlab-like definition: for the i-th point on the figure,
+    x-axis is the sorted input sample data x[i], and y-axis is the inverseCDF (for different distribution type) of
+    meadian (i - 0.5)/n, where n is the length of input data, and the y-axis is then shown as corrsponding
+    probability p = cdf(y) * 100%.
+    The same definition also applies to normplot and wblplot.
+    *)
+
+    (*TODO: support for censor data, frequency, noref, and additional lines*)
+    (*Inputs*)
+    let y = Owl_dense_matrix.D.to_array y |> Owl_stats.sort ~inc:true in
+    let x = let n = Array.length y in
+            let qth = Owl_dense_matrix.D.linspace ((1. -. 0.5) /. float_of_int n)
+                (( float_of_int n-. 0.5) /. float_of_int n) n in
+            let q = Owl_dense_matrix.D.map dist qth in
+            Owl_dense_matrix.D.to_array q
+    in
+    (*Parameters to draw the line*)
+    let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
+    let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
+    let l, r = Owl_stats.minmax y in
+    let u, d = Owl_stats.minmax x in
+    (*TODO: Choose suitable ticks for different distribution*)
+    (*Array to matrix*)
+    let x = Owl_dense_matrix.D.of_array x 1 (Array.length x) in
+    let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
+    (*Plots*)
+    let _ = if noref then () else _draw_extended_line ~h p1y p1x p3y p3x l r u d in
+    scatter ~h ~color:(-1, -1, -1) ~marker:"#[0x002b]" ~marker_size:3. y x
 
 let wblplot = None
-
 
 (* other plots *)
 
