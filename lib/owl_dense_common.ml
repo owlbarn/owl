@@ -1465,18 +1465,6 @@ let _owl_logspace : type a b. (a, b) kind -> (a, b) owl_vec_op08 = function
   | Complex64 -> owl_complex_double_logspace
   | _         -> failwith "_owl_logspace: unsupported operation"
 
-external owl_complex_float_conj : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "complex_float_conj" "complex_float_conj_impl"
-external owl_complex_double_conj : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "complex_double_conj" "complex_double_conj_impl"
-
-let _owl_conj : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
-  fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
-  match k with
-  | Float32     -> ()
-  | Float64     -> ()
-  | Complex32   -> owl_complex_float_conj n x ofsx incx y ofsy incy
-  | Complex64   -> owl_complex_double_conj n x ofsx incx y ofsy incy
-  | _         -> failwith "_owl_conj: unsupported operation"
-
 let _owl_copy : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
   fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
   match k with
@@ -1497,6 +1485,18 @@ let _owl_copy : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
     let y = Array1.sub y ofsy (Array1.dim y - ofsy) in
     Owl_cblas.zcopy n x incx y incy
   | _ -> failwith "_owl_copy: unsupported operation"
+
+external owl_complex_float_conj : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "complex_float_conj" "complex_float_conj_impl"
+external owl_complex_double_conj : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "complex_double_conj" "complex_double_conj_impl"
+
+let _owl_conj : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
+  fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
+  match k with
+  | Float32     -> _owl_copy k n ~ofsx ~incx ~ofsy ~incy x y
+  | Float64     -> _owl_copy k n ~ofsx ~incx ~ofsy ~incy x y
+  | Complex32   -> owl_complex_float_conj n x ofsx incx y ofsy incy
+  | Complex64   -> owl_complex_double_conj n x ofsx incx y ofsy incy
+  | _         -> failwith "_owl_conj: unsupported operation"
 
 external _owl_re_c2s : int -> (Complex.t, complex32_elt) owl_vec -> (float, float32_elt) owl_vec -> unit = "re_c2s"
 external _owl_re_z2d : int -> (Complex.t, complex64_elt) owl_vec -> (float, float64_elt) owl_vec -> unit = "re_z2d"

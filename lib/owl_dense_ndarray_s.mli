@@ -259,6 +259,8 @@ val abs : arr -> arr
 
 val abs2 : arr -> arr
 
+val conj : arr -> arr
+
 val neg : arr -> arr
 
 val reci : arr -> arr

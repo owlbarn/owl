@@ -137,6 +137,8 @@ val concatenate : ?axis:int -> mat array -> mat
 
 val transpose : mat -> mat
 
+val ctranspose : mat -> mat
+
 val diag : ?k:int -> mat -> mat
 
 val replace_row : mat -> mat -> int -> mat
@@ -404,6 +406,8 @@ val max_cols : mat -> (elt * int * int) array
 val abs : mat -> mat
 
 val abs2 : mat -> mat
+
+val conj : mat -> mat
 
 val neg : mat -> mat
 

@@ -43,3 +43,5 @@ let load f = M.load Float64 f
 let of_array x d = M.of_array Float64 x d
 
 let mmap fd ?pos shared dims = Genarray.map_file fd ?pos Float64 c_layout shared dims
+
+let conj x = clone x

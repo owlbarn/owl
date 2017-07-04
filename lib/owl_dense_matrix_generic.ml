@@ -1631,6 +1631,7 @@ let hadamard k n =
 
 (* experimental functions *)
 
+
 let max_pool ?padding x kernel stride =
   let m, n = shape x in
   let x = to_ndarray x in
@@ -1641,6 +1642,7 @@ let max_pool ?padding x kernel stride =
   let y = Owl_dense_ndarray_generic.reshape y [|m;n|] in
   of_ndarray y
 
+
 let avg_pool ?padding x kernel stride =
   let m, n = shape x in
   let x = to_ndarray x in
@@ -1650,6 +1652,18 @@ let avg_pool ?padding x kernel stride =
   let m, n = s.(1), s.(2) in
   let y = Owl_dense_ndarray_generic.reshape y [|m;n|] in
   of_ndarray y
+
+
+let cov ?b ~a =
+  let c = match b with
+    | Some b -> (
+        b
+      )
+    | None   -> (
+        a
+      )
+  in
+  ()
 
 
 (* end here *)

@@ -323,8 +323,10 @@ val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 val transpose : ('a, 'b) t -> ('a, 'b) t
 (** [transpose x] transposes an [m] by [n] matrix to [n] by [m] one. *)
 
-val ctranspose : (Complex.t, 'a) t -> (Complex.t, 'a) t
-(** [ctranspose x] performs conjugate transpose of a complex matrix [x]. *)
+val ctranspose : ('a, 'b) t -> ('a, 'b) t
+(** [ctranspose x] performs conjugate transpose of a complex matrix [x]. If [x]
+  is a real matrix, then [ctranspose x] is equivalent to [transpose x].
+ *)
 
 val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t
 (** [diag k x] returns the [k]th diagonal elements of [x]. [k > 0] means above

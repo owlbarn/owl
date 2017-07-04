@@ -598,6 +598,10 @@ let linsolve ?(trans=false) a b =
     )
 
 
+let linreg x y = None
+
+
+
 (* helper functions *)
 
 
