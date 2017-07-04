@@ -953,32 +953,76 @@ let contour ?(h=_default_handle) x y z =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-(* TODO *)
-
-let _draw_extended_line ?(h=_default_handle) x0 y0 x1 y1 l r u d =
-    (*Specify two points, draw a line between them, and extend on both ends with dash line*)
+let _draw_extended_line x0 y0 x1 y1 l r u d =
+    (* Specify two points, draw a line between them, and extend on both ends with dash line *)
+    let open Plplot in
     let x0, y0, x1, y1 = if x0 > x1 then x1, y1, x0, y0 else x0, y0, x1, y1 in
     let yl = if x0 = x1 then u else y0 -. (y1 -. y0) /. (x1 -. x0) *. (x0 -. l) in
     let yr = if x0 = x1 then d else y1 +. (y1 -. y0) /. (x1 -. x0) *. (r -. x1) in
     let xl = if x0 = x1 then x0 else l in
     let xr = if x0 = x1 then x0 else r in
-    let _ = draw_line ~h ~line_style:1 x0 y0 x1 y1 in
-    let _ = draw_line ~h ~line_style:3 xl yl x0 y0 in
-    draw_line ~h ~line_style:3 x1 y1 xr yr
+    let _ = pllsty 1; pljoin x0 y0 x1 y1 in
+    let _ = pllsty 3; pljoin xl yl x0 y0 in
+    let _ = pllsty 3; pljoin x1 y1 xr yr in ()
 
-(*
-let normplot ?(h=_default_handle) x =
-  let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
-  let c = Array.length x |> float_of_int in
-  let y = Array.mapi (fun i _ -> (float_of_int i +. 1.) /. c) x in
-  (* TODO: missing a regression line *)
-  let x = Owl_dense_matrix.D.of_array x 1 (Array.length x) in
-  let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
-  scatter ~h x y
-*)
+let probplot ?(h=_default_handle) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q 1.))
+    ?(noref=false) x =
+    (*
+    In our implementation of probplot, we choose a Matlab-like definition: for the i-th point on the figure,
+    x-axis is the sorted input sample data x[i], and y-axis is the inverseCDF (for different distribution type) of
+    meadian (i - 0.5)/n, where n is the length of input data, and the y-axis is then shown as corrsponding
+    probability p = cdf(y) * 100%.
+    The same definition also applies to normplot and wblplot.
+    *)
+
+    (* TODO: show y-axis as probability instead of invcdf; Choose suitable yticks
+    for different distribution; support for censor data, frequency *)
+
+    (* Inputs *)
+    let open Plplot in
+    let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
+    let y = let n = Array.length x in
+            let qth = Owl_dense_matrix.D.linspace ((1. -. 0.5) /. float_of_int n)
+                (( float_of_int n-. 0.5) /. float_of_int n) n in
+            let q = Owl_dense_matrix.D.map dist qth in
+            Owl_dense_matrix.D.to_array q
+    in
+    let _ = _adjust_range h x `X in
+    let _ = _adjust_range h y `Y in
+    (* default settings *)
+    let marker = "#[0x002b]" in
+    let color  = (-1,-1,-1) in
+    (* Parameters to draw the reference line *)
+    let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
+    let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
+    let left, right = Owl_stats.minmax x in
+    let up, down = Owl_stats.minmax y in
+    (* Prepare the closure *)
+    let p = h.pages.(h.current_page) in
+    let color = if color = (-1,-1,-1) then p.fgcolor else color in
+    let r, g, b = color in
+    let f = (fun () ->
+        let r', g', b' = plgcol0 1 in
+        let _ = plscol0 1 r g b; plcol0 1 in
+        let c' = plgchr () |> fst in
+        let marker_size = 3. in
+        let _ = plschr marker_size 1. in
+        let _ = if not noref then _draw_extended_line p1x p1y p3x p3y left right up down in
+        let _ = plstring x y marker in
+        (* restore original settings *)
+        let _ = plschr c' 1. in
+        plscol0 1 r' g' b'; plcol0 1
+    ) in
+    (* add closure as a layer *)
+    p.plots <- Array.append p.plots [|f|];
+    (* add legend item to page *)
+    _add_legend_item p SCATTER 0 color marker color 0 color;
+    if not h.holdon then output h
+
+(* TODO *)
 
 let normplot ?(h=_default_handle) x =
-    (*Inputs*)
+    (* inputs *)
     let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
     let norminv = fun q -> Owl_stats.Cdf.gaussian_Pinv q 1. in
     let y = let n = Array.length x in
@@ -987,25 +1031,27 @@ let normplot ?(h=_default_handle) x =
             let q = Owl_dense_matrix.D.map norminv qth in
             Owl_dense_matrix.D.to_array q
     in
-    (*Parameters to draw the line*)
+    (* Parameters to draw the line *)
     let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
     let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
     let l, r = Owl_stats.minmax x in
     let u, d = Owl_stats.minmax y in
-    (*Parameters to replace the yticks*)
+    (* Parameters to replace the yticks *)
     let ticks_perc = [1.; 5.; 10.; 20.; 50.; 80.; 90.; 95.; 99.] in
     let ps = List.map (fun i -> i /. 100.) ticks_perc in
     let ticks_quan = List.map norminv ps in
     let ticks_perc = List.map string_of_float ticks_perc in
     let yticks = List.combine ticks_quan ticks_perc in
-    (*Array to matrix*)
+    (* Array to matrix *)
     let x = Owl_dense_matrix.D.of_array x 1 (Array.length x) in
     let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
-    (*Plots*)
-    (*TODO: make set_yticklabels to change unseen tick labels*)
+    (* Plots *)
+    (* TODO: make set_yticklabels to change unseen tick labels *)
     let _ = set_yticklabels h yticks in
-    let _ = scatter ~h ~color:(-1, -1, -1) ~marker:"#[0x002b]" ~marker_size:3. x y in
-    _draw_extended_line ~h p1x p1y p3x p3y l r u d
+    let _ = _draw_extended_line p1x p1y p3x p3y l r u d in
+    scatter ~h ~color:(-1, -1, -1) ~marker:"#[0x002b]" ~marker_size:3. x y
+
+let wblplot = None
 
 let qqplot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker_size=4.)
   ?(pd=(fun i -> Owl_stats.Cdf.gaussian_Pinv i 1.)) ?y x =
@@ -1028,43 +1074,10 @@ let qqplot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker_size=4.)
   let u, d = Owl_stats.minmax x in
   let x = Owl_dense_matrix.D.of_array x 1 (Array.length x) in
   let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
-  let _ = scatter ~h ~color:color ~marker:"#[0x002b]" ~marker_size:marker_size y x in
-  _draw_extended_line ~h p1y p1x p3y p3x l r u d
+  let _ =   _draw_extended_line p1y p1x p3y p3x l r u d in
+  scatter ~h ~color:color ~marker:"#[0x002b]" ~marker_size:marker_size y x
 
 let scatterhist = None
-
-let probplot ?(h=_default_handle) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q 1.)) ?(noref=false) y =
-    (*
-    In our implementation of probplot, we choose a Matlab-like definition: for the i-th point on the figure,
-    x-axis is the sorted input sample data x[i], and y-axis is the inverseCDF (for different distribution type) of
-    meadian (i - 0.5)/n, where n is the length of input data, and the y-axis is then shown as corrsponding
-    probability p = cdf(y) * 100%.
-    The same definition also applies to normplot and wblplot.
-    *)
-
-    (*TODO: support for censor data, frequency, noref, and additional lines*)
-    (*Inputs*)
-    let y = Owl_dense_matrix.D.to_array y |> Owl_stats.sort ~inc:true in
-    let x = let n = Array.length y in
-            let qth = Owl_dense_matrix.D.linspace ((1. -. 0.5) /. float_of_int n)
-                (( float_of_int n-. 0.5) /. float_of_int n) n in
-            let q = Owl_dense_matrix.D.map dist qth in
-            Owl_dense_matrix.D.to_array q
-    in
-    (*Parameters to draw the line*)
-    let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
-    let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
-    let l, r = Owl_stats.minmax y in
-    let u, d = Owl_stats.minmax x in
-    (*TODO: Choose suitable ticks for different distribution*)
-    (*Array to matrix*)
-    let x = Owl_dense_matrix.D.of_array x 1 (Array.length x) in
-    let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
-    (*Plots*)
-    let _ = if noref then () else _draw_extended_line ~h p1y p1x p3y p3x l r u d in
-    scatter ~h ~color:(-1, -1, -1) ~marker:"#[0x002b]" ~marker_size:3. y x
-
-let wblplot = None
 
 (* other plots *)
 
