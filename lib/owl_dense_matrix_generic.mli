@@ -1188,7 +1188,7 @@ val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t
 val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (** [proj x] computes the projection on Riemann sphere of all elelments in [x]. *)
 
-val var : ('a, 'b) t -> ('a, 'b) t
+val var : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** [var x] computes the variance of [x]. *)
 
 

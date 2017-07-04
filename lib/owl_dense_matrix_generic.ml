@@ -1655,6 +1655,33 @@ let avg_pool ?padding x kernel stride =
 
 
 (* TODO: can be certianly optimised, currently much slower than julia *)
+let cov' ?b ~a =
+  let a = match b with
+    | Some b -> (
+        let na = numel a in
+        let nb = numel b in
+        assert (na = nb);
+        let a = reshape na 1 a in
+        let b = reshape nb 1 b in
+        concat_horizontal a b
+      )
+    | None   -> a
+  in
+
+  let mu = average_rows a in
+  let a = sub a mu in
+  let a' = ctranspose a in
+  let c = dot a' a in
+
+  let n = row_num a - 1
+    |> Pervasives.max 1
+    |> float_of_int
+    |> Owl_dense_common._float_typ_elt (kind a)
+  in
+
+  div_scalar c n
+
+
 let cov ?b ~a =
   let a = match b with
     | Some b -> (
@@ -1682,19 +1709,27 @@ let cov ?b ~a =
   div_scalar c n
 
 
-let var a =
-  let mu = average_rows a in
-  let aa = sub a mu |> sqr |> sum_rows in
+let var ?(axis=0) a =
+  let aa, n = match axis = 0 with
+    | true  -> (
+        let mu = average_rows a in
+        let aa = sub a mu |> sqr |> sum_rows in
+        aa, row_num a
+      )
+    | false -> (
+        let mu = average_cols a in
+        let aa = sub a mu |> sqr |> sum_cols in
+        aa, col_num a
+      )
+  in
 
-  let n = row_num a - 1
+  let n = n - 1
     |> Pervasives.max 1
     |> float_of_int
     |> Owl_dense_common._float_typ_elt (kind a)
   in
 
   div_scalar aa n
-
-
 
 
 

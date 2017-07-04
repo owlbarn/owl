@@ -607,7 +607,7 @@ let linreg x y =
   let y = M.reshape ny 1 y in
 
   let k = M.kind x in
-  let b = Owl_dense_common._div_elt k (M.cov ~a:x ~b:y).{0,1} (M.var x).{0,0} in
+  let b = Owl_dense_common._div_elt k (M.cov ~a:x ~b:y).{0,1} (M.var ~axis:0 x).{0,0} in
   let c = Owl_dense_common._mul_elt k b (M.average x) in
   let a = Owl_dense_common._sub_elt k (M.average y) c in
   a, b

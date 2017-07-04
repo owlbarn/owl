@@ -507,7 +507,7 @@ val cumsum : ?axis:int -> mat -> mat
 
 val cumprod : ?axis:int -> mat -> mat
 
-val var : mat -> mat
+val var : ?axis:int -> mat -> mat
 
 
 (** {6 Binary mathematical operations } *)
