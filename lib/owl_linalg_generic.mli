@@ -97,7 +97,7 @@ val is_posdef : ('a, 'b) t -> bool
 
 val lu : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
 (** [lu x -> (l, u, ipiv) calculates LU decomposition of [x]. The pivoting is
-  used by default. 
+  used by default.
  *)
 
 val lq : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
@@ -211,13 +211,14 @@ val eigvals : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -
 (** {6 Low-level factorisation functions} *)
 
 
-val qrfact : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
-(** [qrfact x -> (a, tau, jpvt)] calculates QR factorisation of a general
+val lufact : ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
+(** [lufact x -> (a, ipiv)] calculates LU factorisation with pivot of a general
   matrix [x].
  *)
 
-val lufact : ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
-(** [lufact x -> (a, ipiv)] calculates LU factorisation of a general matrix [x].
+val qrfact : ?pivot:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
+(** [qrfact x -> (a, tau, jpvt)] calculates QR factorisation of a general
+  matrix [x].
  *)
 
 val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
@@ -246,6 +247,17 @@ val null : ('a, 'b) t -> ('a, 'b) t
   obtained from the singular value decomposition. Namely, [a *@ x] has
   negligible elements, [M.col_num x] is the nullity of [a], and
   [transpose x *@ x = I].
+ *)
+
+val linsolve : ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [linsolve a b -> x] solves a linear system of equations [A * x = b]. The
+  function uses LU factorisation with partial pivoting when [a] is square and
+  QR factorisation with column pivoting otherwise. The number of rows of [a]
+  must equal the number of rows of [b].
+
+  By default, [trans = false] indicates no transpose. If [trans = true], then
+  function will solve [A^T * x = b] for real matrices; [A^H * x = b] for
+  complex matrices.
  *)
 
 

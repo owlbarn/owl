@@ -1416,18 +1416,30 @@ let greater_equal_scalar x a =
   let _op = _owl_greater_equal_scalar (kind x) in
   _op (numel x) x' a = 1
 
-let approx_equal ?(eps=1e-6) x y =
+let approx_equal ?eps x y =
+  let eps = match eps with
+    | Some eps -> eps
+    | None     -> Owl_utils.eps Float32
+  in
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   let _op = _owl_approx_equal (kind x) in
   _op (numel x) x' y' eps = 1
 
-let approx_equal_scalar ?(eps=1e-6) x a =
+let approx_equal_scalar ?eps x a =
+  let eps = match eps with
+    | Some eps -> eps
+    | None     -> Owl_utils.eps Float32
+  in
   let x' = flatten x |> array1_of_genarray in
   let _op = _owl_approx_equal_scalar (kind x) in
   _op (numel x) x' a eps = 1
 
-let approx_elt_equal ?(eps=1e-6) x y =
+let approx_elt_equal ?eps x y =
+  let eps = match eps with
+    | Some eps -> eps
+    | None     -> Owl_utils.eps Float32
+  in
   let _eps : type a b. (a, b) kind -> float -> a =
     fun k a -> match k with
     | Float32   -> a
@@ -1444,7 +1456,11 @@ let approx_elt_equal ?(eps=1e-6) x y =
   _owl_approx_elt_equal k (numel z) x' y' z';
   z
 
-let approx_elt_equal_scalar ?(eps=1e-6) x a =
+let approx_elt_equal_scalar ?eps x a =
+  let eps = match eps with
+    | Some eps -> eps
+    | None     -> Owl_utils.eps Float32
+  in
   let _eps : type a b. (a, b) kind -> float -> a =
     fun k a -> match k with
     | Float32   -> a

@@ -31,8 +31,6 @@ let lu x =
 
 
 let lufact x =
-  let m, n = M.shape x in
-  let minmn = Pervasives.min m n in
   let a, ipiv = Owl_lapacke.getrf x in
   a, ipiv
 
@@ -136,8 +134,6 @@ let qr ?(thin=true) ?(pivot=false) x =
 
 
 let qrfact ?(pivot=false) x =
-  let m, n = M.shape x in
-  let minmn = Pervasives.min m n in
   let a, tau, jpvt = match pivot with
     | true  -> Owl_lapacke.geqp3 x
     | false -> (
@@ -565,17 +561,41 @@ let null x =
   )
 
 
+let _get_trans_code
+  : type a b. (a, b) kind -> char
+  = function
+  | Float32   -> 'T'
+  | Float64   -> 'T'
+  | Complex32 -> 'C'
+  | Complex64 -> 'C'
+  | _         -> failwith "owl_linalg_generic:_get_trans_code"
+
+
 (* TODO: add opt parameter to specify the matrix properties so that we can
   choose the best solver for better performance.
  *)
-let linsolve a b =
+let linsolve ?(trans=false) a b =
   let ma, na = M.shape a in
   let mb, nb = M.shape b in
   assert (ma = mb);
+  let a = M.clone a in
+  let b = M.clone b in
+
+  let trans = match trans with
+    | true  -> _get_trans_code (M.kind a)
+    | false -> 'N'
+  in
 
   match ma = na with
-  | true  -> ()
-  | false -> ()
+  | true  -> (
+      let a, ipiv = lufact a in
+      let x = Owl_lapacke.getrs trans a ipiv b in
+      x
+    )
+  | false -> (
+      let _, x, _ = Owl_lapacke.gels trans a b in
+      x
+    )
 
 
 

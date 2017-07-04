@@ -574,7 +574,8 @@ val approx_equal : ?eps:float -> ('a, 'b) t -> ('a, 'b) t -> bool
   [abs (a - b) < eps]. For complex numbers, the [eps] applies to both real
   and imaginary part.
 
-  Note: the threshold check is exclusive for passed in [eps].
+  Note: the threshold check is exclusive for passed in [eps], i.e., the
+  threshold interval is [(a-eps, a+eps)].
  *)
 
 val approx_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> bool
