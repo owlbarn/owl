@@ -1041,7 +1041,7 @@ let wblplot ?(h=_default_handle) ?(lambda=1.) ?(k=1.) x =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
   (* manually change the x data to log10-based *)
-  let x = Array.map Maths.log10 x in
+  let x = Array.map Owl_maths.log10 x in
   let dist = (fun q -> Owl_stats.Cdf.weibull_Pinv q lambda k) in
   let y = let n = Array.length x in
           let qth = Owl_dense_matrix.D.linspace ((1. -. 0.5) /. float_of_int n)
@@ -1054,6 +1054,7 @@ let wblplot ?(h=_default_handle) ?(lambda=1.) ?(k=1.) x =
   (* default settings *)
   let marker = "#[0x002b]" in
   let color  = (-1,-1,-1) in
+  let marker_size = 3. in
   (* Parameters to draw the reference line *)
   let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
   let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
@@ -1068,7 +1069,6 @@ let wblplot ?(h=_default_handle) ?(lambda=1.) ?(k=1.) x =
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
     let c' = plgchr () |> fst in
-    let marker_size = 3. in
     let _ = plschr marker_size 1. in
     let _ = _draw_extended_line p1x p1y p3x p3y left right up down in
     let _ = plstring x y marker in
@@ -1082,31 +1082,73 @@ let wblplot ?(h=_default_handle) ?(lambda=1.) ?(k=1.) x =
   _add_legend_item p SCATTER 0 color marker color 0 color;
   if not h.holdon then output h
 
-(* TODO *)
+let _ecdf_dist a b p =
+  (*Find the ecdf value of probability value p; (a, b) is the output of Stats.ecdf*)
+  let rec _find_rec x lst i = match lst with
+    | hd::tl -> if (hd > x) then i - 1  else _find_rec x tl (i+1)
+    | _ -> (Array.length b) - 1
+  in
+  let ticks = Array.to_list b in
+  let i = _find_rec p ticks 1 in
+  a.(i)
 
 let qqplot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker_size=4.)
-  ?(pd=(fun i -> Owl_stats.Cdf.gaussian_Pinv i 1.)) ?y x =
-  (* Note: data in x are actually plotted along y-axis *)
-  (* TODO: support matrix input; remove the condition that both vectors be of
-  the same lengths; add support for `pvec` argument *)
-  let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
-  let y = match y with
-    | Some arr -> Owl_dense_matrix.D.to_array arr |> Owl_stats.sort ~inc:true
-    | None     -> let n = Array.length x in
-                    let qth = Owl_dense_matrix.D.linspace ((1. -. 0.5) /. float_of_int n)
-                              (( float_of_int n-. 0.5) /. float_of_int n) n in
-                    let q = Owl_dense_matrix.D.map pd qth in
-                    Owl_dense_matrix.D.to_array q
+  ?(pd=(fun i -> Owl_stats.Cdf.gaussian_Pinv i 1.)) ?x y =
+  (* If the second argument x is a vector, the empirical CDF of it is used as distribtion;
+    else the qqplot is similar to probplot.
+    If both vectors are not of the same length, users are explected to input the
+    longer one as x, and the shorter one y.*)
+
+  (* TODO: support matrix input; add support for `pvec` argument;
+    plot the larger data input on x-axis *)
+  let open Plplot in
+  let y = Owl_dense_matrix.D.to_array y |> Owl_stats.sort ~inc:true in
+  let n = Array.length y in
+  let dist = match x with
+    | Some arr ->
+      (* If the second argument is a vector*)
+      let x = Owl_dense_matrix.D.to_array arr in
+      (* The empirical CDF of it is used as dist. *)
+      let a, b = Owl_stats.ecdf x in
+      (fun p -> _ecdf_dist a b p)
+    | None     -> pd
   in
-  (*A line joining the first and third quartiles of each distribution*)
+  let qth = Owl_dense_matrix.D.linspace ((1. -. 0.5) /. float_of_int n)
+      (( float_of_int n-. 0.5) /. float_of_int n) n in
+  let q = Owl_dense_matrix.D.map dist qth in
+  let x = Owl_dense_matrix.D.to_array q in
+  (*draw the figure*)
+  let _ = _adjust_range h x `X in
+  let _ = _adjust_range h y `Y in
+  (* default settings *)
+  let marker = "#[0x002b]" in
+  (* Parameters to draw the reference line *)
   let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
   let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
-  let l, r = Owl_stats.minmax y in
-  let u, d = Owl_stats.minmax x in
-  let x = Owl_dense_matrix.D.of_array x 1 (Array.length x) in
-  let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
-  let _ =   _draw_extended_line p1y p1x p3y p3x l r u d in
-  scatter ~h ~color:color ~marker:"#[0x002b]" ~marker_size:marker_size y x
+  let left, right = Owl_stats.minmax x in
+  let up, down = Owl_stats.minmax y in
+  (* Prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let r, g, b = color in
+  let f = (fun () ->
+      let r', g', b' = plgcol0 1 in
+      let _ = plscol0 1 r g b; plcol0 1 in
+      let c' = plgchr () |> fst in
+      let _ = plschr marker_size 1. in
+      let _ = _draw_extended_line p1x p1y p3x p3y left right up down in
+      let _ = plstring x y marker in
+      (* restore original settings *)
+      let _ = plschr c' 1. in
+      plscol0 1 r' g' b'; plcol0 1
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  (* add legend item to page *)
+  _add_legend_item p SCATTER 0 color marker color 0 color;
+  if not h.holdon then output h
+
+(* TODO *)
 
 let scatterhist = None
 
