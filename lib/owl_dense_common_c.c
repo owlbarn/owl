@@ -2382,32 +2382,32 @@ value cp_two_doubles(double d0, double d1)
 
 // cumsum
 
-#define FUN20 real_float_cumsum
-#define FUN20_IMPL real_float_cumsum_impl
+#define FUN19 real_float_cumsum
+#define FUN19_IMPL real_float_cumsum_impl
 #define INIT float a = 0.
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X,Y) *Y = a + *X; a = *Y
 #include "owl_dense_common_vec_map.c"
 
-#define FUN20 real_double_cumsum
-#define FUN20_IMPL real_double_cumsum_impl
+#define FUN19 real_double_cumsum
+#define FUN19_IMPL real_double_cumsum_impl
 #define INIT double a = 0.
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X,Y) *Y = a + *X; a = *Y
 #include "owl_dense_common_vec_map.c"
 
-#define FUN20 complex_float_cumsum
-#define FUN20_IMPL complex_float_cumsum_impl
+#define FUN19 complex_float_cumsum
+#define FUN19_IMPL complex_float_cumsum_impl
 #define INIT float ar = 0.; float ai = 0.
 #define NUMBER complex_float
 #define NUMBER1 complex_float
 #define MAPFN(X,Y) Y->r = ar + X->r; Y->i = ai + X->i; ar = Y->r; ai = Y->i
 #include "owl_dense_common_vec_map.c"
 
-#define FUN20 complex_double_cumsum
-#define FUN20_IMPL complex_double_cumsum_impl
+#define FUN19 complex_double_cumsum
+#define FUN19_IMPL complex_double_cumsum_impl
 #define INIT double ar = 0.; double ai = 0.
 #define NUMBER complex_double
 #define NUMBER1 complex_double
@@ -2416,32 +2416,32 @@ value cp_two_doubles(double d0, double d1)
 
 // cumprod
 
-#define FUN20 real_float_cumprod
-#define FUN20_IMPL real_float_cumprod_impl
+#define FUN19 real_float_cumprod
+#define FUN19_IMPL real_float_cumprod_impl
 #define INIT float a = 1.
 #define NUMBER float
 #define NUMBER1 float
 #define MAPFN(X,Y) *Y = a * *X; a = *Y
 #include "owl_dense_common_vec_map.c"
 
-#define FUN20 real_double_cumprod
-#define FUN20_IMPL real_double_cumprod_impl
+#define FUN19 real_double_cumprod
+#define FUN19_IMPL real_double_cumprod_impl
 #define INIT double a = 1.
 #define NUMBER double
 #define NUMBER1 double
 #define MAPFN(X,Y) *Y = a * *X; a = *Y
 #include "owl_dense_common_vec_map.c"
 
-#define FUN20 complex_float_cumprod
-#define FUN20_IMPL complex_float_cumprod_impl
+#define FUN19 complex_float_cumprod
+#define FUN19_IMPL complex_float_cumprod_impl
 #define INIT float ar = 1.; float ai = 0.
 #define NUMBER complex_float
 #define NUMBER1 complex_float
 #define MAPFN(X,Y) Y->r = (ar * X->r) - (ai * X->i); Y->i = (ar * X->i) + (ai * X->r); ar = Y->r; ai = Y->i
 #include "owl_dense_common_vec_map.c"
 
-#define FUN20 complex_double_cumprod
-#define FUN20_IMPL complex_double_cumprod_impl
+#define FUN19 complex_double_cumprod
+#define FUN19_IMPL complex_double_cumprod_impl
 #define INIT double ar = 0.; double ai = 0.
 #define NUMBER complex_double
 #define NUMBER1 complex_double
