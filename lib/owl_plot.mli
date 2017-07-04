@@ -117,7 +117,10 @@ val heatmap : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 (** Advanced statistical plot *)
 
 val probplot : ?h:handle -> ?dist:(float -> float) -> ?noref:bool -> dsmat -> unit
+
 val normplot : ?h:handle -> dsmat -> unit
+
+val wblplot : ?h:handle -> ?lambda:float -> ?k:float -> dsmat -> unit
 
 val qqplot :
   ?h:handle -> ?color:int * int * int -> ?marker_size:float ->

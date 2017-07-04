@@ -45,6 +45,9 @@ type page = {
   mutable xticklabels : (float * string) list;
   mutable yticklabels : (float * string) list;
   mutable zticklabels : (float * string) list;
+  (* control axis log scale *)
+  mutable xlogscale : bool;
+  mutable ylogscale : bool;
   (* control grids *)
   mutable xgrid : bool;
   mutable ygrid : bool;
@@ -93,6 +96,8 @@ let _create_page () = {
   xticklabels = [];
   yticklabels = [];
   zticklabels = [];
+  xlogscale = false;
+  ylogscale = false;
   xgrid = false;
   ygrid = false;
   zgrid = false;
@@ -212,11 +217,16 @@ let _calculate_paper_size m n =
 
 (* calculate the axis config based on a page config *)
 let _config_2d_axis p =
-  let c = 0 in
-  if p.xticklabels |> List.length > 0
-  || p.yticklabels |> List.length > 0
-  then c + 70
-  else c
+  let base = 0 in
+  let residual =
+    if (p.xlogscale, p.ylogscale) = (true, false) then 10 else
+    if (p.xlogscale, p.ylogscale) = (false, true) then 20 else
+    if (p.xlogscale, p.ylogscale) = (true, true)  then 30 else
+    if p.xticklabels |> List.length > 0
+    || p.yticklabels |> List.length > 0
+    then 70
+    else 0
+  in base + residual
 
 let _initialise h =
   let open Plplot in
@@ -954,16 +964,16 @@ let contour ?(h=_default_handle) x y z =
   if not h.holdon then output h
 
 let _draw_extended_line x0 y0 x1 y1 l r u d =
-    (* Specify two points, draw a line between them, and extend on both ends with dash line *)
-    let open Plplot in
-    let x0, y0, x1, y1 = if x0 > x1 then x1, y1, x0, y0 else x0, y0, x1, y1 in
-    let yl = if x0 = x1 then u else y0 -. (y1 -. y0) /. (x1 -. x0) *. (x0 -. l) in
-    let yr = if x0 = x1 then d else y1 +. (y1 -. y0) /. (x1 -. x0) *. (r -. x1) in
-    let xl = if x0 = x1 then x0 else l in
-    let xr = if x0 = x1 then x0 else r in
-    let _ = pllsty 1; pljoin x0 y0 x1 y1 in
-    let _ = pllsty 3; pljoin xl yl x0 y0 in
-    let _ = pllsty 3; pljoin x1 y1 xr yr in ()
+  (* Specify two points, draw a line between them, and extend on both ends with dash line *)
+  let open Plplot in
+  let x0, y0, x1, y1 = if x0 > x1 then x1, y1, x0, y0 else x0, y0, x1, y1 in
+  let yl = if x0 = x1 then u else y0 -. (y1 -. y0) /. (x1 -. x0) *. (x0 -. l) in
+  let yr = if x0 = x1 then d else y1 +. (y1 -. y0) /. (x1 -. x0) *. (r -. x1) in
+  let xl = if x0 = x1 then x0 else l in
+  let xr = if x0 = x1 then x0 else r in
+  let _ = pllsty 1; pljoin x0 y0 x1 y1 in
+  let _ = pllsty 3; pljoin xl yl x0 y0 in
+  let _ = pllsty 3; pljoin x1 y1 xr yr in ()
 
 let probplot ?(h=_default_handle) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q 1.))
     ?(noref=false) x =
@@ -1019,45 +1029,66 @@ let probplot ?(h=_default_handle) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q
     _add_legend_item p SCATTER 0 color marker color 0 color;
     if not h.holdon then output h
 
-(* TODO *)
-
 let normplot ?(h=_default_handle) x =
-    (* inputs *)
-    let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
-    let norminv = fun q -> Owl_stats.Cdf.gaussian_Pinv q 1. in
-    let y = let n = Array.length x in
-            let qth = Owl_dense_matrix.D.linspace ((1. -. 0.5) /. float_of_int n)
-                (( float_of_int n-. 0.5) /. float_of_int n) n in
-            let q = Owl_dense_matrix.D.map norminv qth in
-            Owl_dense_matrix.D.to_array q
-    in
-    (* Parameters to draw the line *)
-    let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
-    let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
-    let l, r = Owl_stats.minmax x in
-    let u, d = Owl_stats.minmax y in
-    (* Parameters to replace the yticks *)
-    let ticks_perc = [1.; 5.; 10.; 20.; 50.; 80.; 90.; 95.; 99.] in
-    let ps = List.map (fun i -> i /. 100.) ticks_perc in
-    let ticks_quan = List.map norminv ps in
-    let ticks_perc = List.map string_of_float ticks_perc in
-    let yticks = List.combine ticks_quan ticks_perc in
-    (* Array to matrix *)
-    let x = Owl_dense_matrix.D.of_array x 1 (Array.length x) in
-    let y = Owl_dense_matrix.D.of_array y 1 (Array.length y) in
-    (* Plots *)
-    (* TODO: make set_yticklabels to change unseen tick labels *)
-    let _ = set_yticklabels h yticks in
-    let _ = _draw_extended_line p1x p1y p3x p3y l r u d in
-    scatter ~h ~color:(-1, -1, -1) ~marker:"#[0x002b]" ~marker_size:3. x y
+  (* TODO: replace yticklabels, including unseen tick labels,  with user-defined labels *)
+  probplot ~h x
 
-let wblplot = None
+let wblplot ?(h=_default_handle) ?(lambda=1.) ?(k=1.) x =
+  (* Currently user need to specify the weibull distribution parameters lambda
+  and k explicitly. By default, (lambda, k) = (1., 1.) *)
+
+  (* inputs *)
+  let open Plplot in
+  let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
+  (* manually change the x data to log10-based *)
+  let x = Array.map Maths.log10 x in
+  let dist = (fun q -> Owl_stats.Cdf.weibull_Pinv q lambda k) in
+  let y = let n = Array.length x in
+          let qth = Owl_dense_matrix.D.linspace ((1. -. 0.5) /. float_of_int n)
+              (( float_of_int n-. 0.5) /. float_of_int n) n in
+          let q = Owl_dense_matrix.D.map dist qth in
+          Owl_dense_matrix.D.to_array q
+  in
+  let _ = _adjust_range h x `X in
+  let _ = _adjust_range h y `Y in
+  (* default settings *)
+  let marker = "#[0x002b]" in
+  let color  = (-1,-1,-1) in
+  (* Parameters to draw the reference line *)
+  let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
+  let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
+  let left, right = Owl_stats.minmax x in
+  let up, down = Owl_stats.minmax y in
+  (* Prepare the closure; note the change to log sacle *)
+  let p = h.pages.(h.current_page) in
+  let _ = p.xlogscale <- true in
+  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let r, g, b = color in
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    let c' = plgchr () |> fst in
+    let marker_size = 3. in
+    let _ = plschr marker_size 1. in
+    let _ = _draw_extended_line p1x p1y p3x p3y left right up down in
+    let _ = plstring x y marker in
+    (* restore original settings *)
+    let _ = plschr c' 1. in
+    plscol0 1 r' g' b'; plcol0 1
+  ) in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  (* add legend item to page *)
+  _add_legend_item p SCATTER 0 color marker color 0 color;
+  if not h.holdon then output h
+
+(* TODO *)
 
 let qqplot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker_size=4.)
   ?(pd=(fun i -> Owl_stats.Cdf.gaussian_Pinv i 1.)) ?y x =
   (* Note: data in x are actually plotted along y-axis *)
-  (* TODO: support matrix input; remove the condition that both vectors be of same lengths;
-    add support for `pvec` argument *)
+  (* TODO: support matrix input; remove the condition that both vectors be of
+  the same lengths; add support for `pvec` argument *)
   let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
   let y = match y with
     | Some arr -> Owl_dense_matrix.D.to_array arr |> Owl_stats.sort ~inc:true
