@@ -1669,11 +1669,33 @@ let cov ?b ~a =
   in
 
   let mu = average_rows a in
-  let a' = sub a mu |> ctranspose in
+  let a = sub a mu in
+  let a' = ctranspose a in
   let c = dot a' a in
 
-  let n = row_num a - 1 |> float_of_int |> Owl_dense_common._float_typ_elt (kind a) in
+  let n = row_num a - 1
+    |> Pervasives.max 1
+    |> float_of_int
+    |> Owl_dense_common._float_typ_elt (kind a)
+  in
+
   div_scalar c n
+
+
+let var a =
+  let mu = average_rows a in
+  let aa = sub a mu |> sqr |> sum_rows in
+
+  let n = row_num a - 1
+    |> Pervasives.max 1
+    |> float_of_int
+    |> Owl_dense_common._float_typ_elt (kind a)
+  in
+
+  div_scalar aa n
+
+
+
 
 
 

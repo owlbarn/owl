@@ -229,6 +229,10 @@ val linsolve : ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   complex matrices.
  *)
 
+val linreg : ('a, 'b) t -> ('a, 'b) t -> 'a * 'a
+(** [linreg x y -> (a, b)] solves [y = a + b*x] using Ordinary Least Squares.
+ *)
+
 
 (** {6 Low-level factorisation functions} *)
 

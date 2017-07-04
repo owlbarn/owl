@@ -494,6 +494,8 @@ val angle : mat -> mat
 
 val proj : mat -> mat
 
+val var : mat -> mat
+
 
 (** {6 Binary mathematical operations } *)
 

@@ -598,7 +598,19 @@ let linsolve ?(trans=false) a b =
     )
 
 
-let linreg x y = None
+let linreg x y =
+  let nx = M.numel x in
+  let ny = M.numel y in
+  assert (nx = ny);
+
+  let x = M.reshape nx 1 x in
+  let y = M.reshape ny 1 y in
+
+  let k = M.kind x in
+  let b = Owl_dense_common._div_elt k (M.cov ~a:x ~b:y).{0,1} (M.var x).{0,0} in
+  let c = Owl_dense_common._mul_elt k b (M.average x) in
+  let a = Owl_dense_common._sub_elt k (M.average y) c in
+  a, b
 
 
 

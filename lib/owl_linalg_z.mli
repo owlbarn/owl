@@ -81,6 +81,8 @@ val null : mat -> mat
 
 val linsolve : ?trans:bool -> mat -> mat -> mat
 
+val linreg : mat -> mat -> elt * elt
+
 
 (** {6 Low-level factorisation functions} *)
 
