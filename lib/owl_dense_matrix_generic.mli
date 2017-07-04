@@ -1311,6 +1311,9 @@ val cross_entropy : (float, 'a) t -> (float, 'a) t -> float
 val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 (** [clip_by_l2norm t x] clips the [x] according to the threshold set by [t]. *)
 
+val cov : ?b:('a, 'b) t -> a:('a, 'b) t -> ('a, 'b) t
+(** [cov ~a ~b] *)
+
 
 (** {6 Cast functions to different number types} *)
 

@@ -1660,7 +1660,15 @@ let cov ?b ~a =
         b
       )
     | None   -> (
-        a
+        let mu = average_rows a in
+        let a = sub a mu in
+        let a' = ctranspose a in
+        let c = dot a' a in
+
+        (* let n = col_num a |> float_of_int in
+        let n = Owl_dense_common.mul_scalar
+        div_scalar c n *)
+        c
       )
   in
   ()
