@@ -598,7 +598,6 @@ let linsolve ?(trans=false) a b =
     )
 
 
-
 (* helper functions *)
 
 

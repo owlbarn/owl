@@ -208,6 +208,28 @@ val eigvals : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -
  *)
 
 
+(** {6 Linear system of equations} *)
+
+
+val null : ('a, 'b) t -> ('a, 'b) t
+(** [null a -> x] computes an orthonormal basis [x] for the null space of [a]
+  obtained from the singular value decomposition. Namely, [a *@ x] has
+  negligible elements, [M.col_num x] is the nullity of [a], and
+  [transpose x *@ x = I].
+ *)
+
+val linsolve : ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [linsolve a b -> x] solves a linear system of equations [A * x = b]. The
+  function uses LU factorisation with partial pivoting when [a] is square and
+  QR factorisation with column pivoting otherwise. The number of rows of [a]
+  must equal the number of rows of [b].
+
+  By default, [trans = false] indicates no transpose. If [trans = true], then
+  function will solve [A^T * x = b] for real matrices; [A^H * x = b] for
+  complex matrices.
+ *)
+
+
 (** {6 Low-level factorisation functions} *)
 
 
@@ -236,28 +258,6 @@ val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> ('a, 'b) t -> ('a, 
   For [ipiv], it indicates the details of the interchanges and the block
   structure of [d]. Please refer to the function [sytrf], [hetrf] in MKL
   documentation for more details.
- *)
-
-
-(** {6 Solve linear systems} *)
-
-
-val null : ('a, 'b) t -> ('a, 'b) t
-(** [null a -> x] computes an orthonormal basis [x] for the null space of [a]
-  obtained from the singular value decomposition. Namely, [a *@ x] has
-  negligible elements, [M.col_num x] is the nullity of [a], and
-  [transpose x *@ x = I].
- *)
-
-val linsolve : ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [linsolve a b -> x] solves a linear system of equations [A * x = b]. The
-  function uses LU factorisation with partial pivoting when [a] is square and
-  QR factorisation with column pivoting otherwise. The number of rows of [a]
-  must equal the number of rows of [b].
-
-  By default, [trans = false] indicates no transpose. If [trans = true], then
-  function will solve [A^T * x = b] for real matrices; [A^H * x = b] for
-  complex matrices.
  *)
 
 

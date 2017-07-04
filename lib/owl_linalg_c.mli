@@ -23,6 +23,12 @@ val logdet : mat -> elt
 
 val rank : ?tol:float -> mat -> int
 
+val norm : ?p:float -> mat -> float
+
+val cond : ?p:float -> mat -> float
+
+val rcond : mat -> float
+
 val is_triu : mat -> bool
 
 val is_tril : mat -> bool
@@ -60,9 +66,27 @@ val schur : mat -> mat * mat * mat
 val hess : mat -> mat * mat
 
 
-(** {6 Solve Eigen systems} *)
+(** {6 Eigenvalues & eigenvectors} *)
 
 
 val eig : ?permute:bool -> ?scale:bool -> mat -> mat * mat
 
 val eigvals : ?permute:bool -> ?scale:bool -> mat -> mat
+
+
+(** {6 Linear system of equations} *)
+
+
+val null : mat -> mat
+
+val linsolve : ?trans:bool -> mat -> mat -> mat
+
+
+(** {6 Low-level factorisation functions} *)
+
+
+val lufact : mat -> mat * int32_mat
+
+val qrfact : ?pivot:bool -> mat -> mat * mat * int32_mat
+
+val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> mat -> mat * int32_mat
