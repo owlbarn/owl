@@ -1312,7 +1312,15 @@ val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 (** [clip_by_l2norm t x] clips the [x] according to the threshold set by [t]. *)
 
 val cov : ?b:('a, 'b) t -> a:('a, 'b) t -> ('a, 'b) t
-(** [cov ~a ~b] *)
+(** [cov ~a] calculates the covariance matrix of [a] wherein each row represents
+  one observation and each column represents one random variable. [a] is
+  normalised by the number of observations-1. If there is only one observation,
+  it is normalised by [1].
+
+  [cov ~a ~b] takes two matrices as inputs. The functions flatten [a] and [b]
+  first then returns a [2 x 2] matrix, so two must have the same number of
+  elements.
+ *)
 
 
 (** {6 Cast functions to different number types} *)

@@ -162,6 +162,20 @@ let _power_scalar_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Complex64 -> Complex.pow
   | _         -> failwith "_power_scalar_elt: unsupported operation"
 
+let _scale_elt : type a b. (a, b) kind -> (float -> a -> a) = function
+  | Float32   -> fun a b -> a *. b
+  | Float64   -> fun a b -> a *. b
+  | Complex32 -> fun a b -> Complex.({re = a *. b.re; im = a *. b.im})
+  | Complex64 -> fun a b -> Complex.({re = a *. b.re; im = a *. b.im})
+  | _         -> failwith "_scale_elt: unsupported operation"
+
+let _float_typ_elt : type a b. (a, b) kind -> (float -> a) = function
+  | Float32   -> fun a -> a
+  | Float64   -> fun a -> a
+  | Complex32 -> fun a -> Complex.({re = a; im = 0.})
+  | Complex64 -> fun a -> Complex.({re = a; im = 0.})
+  | _         -> failwith "_float_typ_elt: unsupported operation"
+
 
 (* interface to eigen functions, types for interfacing to eigen *)
 

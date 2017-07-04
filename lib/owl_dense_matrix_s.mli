@@ -569,3 +569,5 @@ val ssqr_diff : mat -> mat -> elt
 val cross_entropy : mat -> mat -> elt
 
 val clip_by_l2norm : elt -> mat -> mat
+
+val cov : ?b:mat -> a:mat -> mat
