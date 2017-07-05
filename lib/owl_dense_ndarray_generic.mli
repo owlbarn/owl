@@ -7,6 +7,15 @@
   vectorised mathematical operations.
 *)
 
+(**
+  About the comparison of two complex numbers [x] and [y], Owl uses the
+  following conventions: 1) [x] and [y] are equal iff both real and imaginary
+  parts are equal; 2) [x] is less than [y] if the magnitude of [x] is less than
+  the magnitude of [x]; in case both [x] and [y] have the same magnitudes, [x]
+  is less than [x] if the phase of [x] is less than the phase of [y]; 3) less or
+  equal, greater, greater or equal relation can be further defined atop of the
+  aforementioned conventions.
+ *)
 
 open Bigarray
 
@@ -89,6 +98,22 @@ val logspace : ('a, 'b) kind -> ?base:float -> 'a -> 'a -> int -> ('a, 'b) t
 
 val bernoulli : ('a, 'b) kind -> ?p:float -> ?seed:int -> int array -> ('a, 'b) t
 (** [bernoulli k ~p:0.3 [|2;3;4|]] *)
+
+val complex : ('a, 'b) kind -> ('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('c, 'd) t
+(** [complex re im] constructs a complex ndarray/matrix from [re] and [im].
+  [re] and [im] contain the real and imaginary part of [x] respectively.
+
+  Note that both [re] and [im] can be complex but must have same type. The real
+  part of [re] will be the real part of [x] and the imaginary part of [im] will
+  be the imaginary part of [x].
+ *)
+
+val polar : ('a, 'b) kind -> ('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('c, 'd) t
+(** [complex rho theta] constructs a complex ndarray/matrix from polar
+  coordinates [rho] and [theta]. [rho] contains the magnitudes and [theta]
+  contains phase angles. Note that the behaviour is undefined if [rho] has
+  negative elelments or [theta] has infinity elelments.
+ *)
 
 
 (** {6 Obtain basic properties} *)
@@ -549,7 +574,8 @@ val approx_equal : ?eps:float -> ('a, 'b) t -> ('a, 'b) t -> bool
   [abs (a - b) < eps]. For complex numbers, the [eps] applies to both real
   and imaginary part.
 
-  Note: the threshold check is exclusive for passed in [eps].
+  Note: the threshold check is exclusive for passed in [eps], i.e., the
+  threshold interval is [(a-eps, a+eps)].
  *)
 
 val approx_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> bool
@@ -583,8 +609,8 @@ val of_array : ('a, 'b) kind -> 'a array -> int array -> ('a, 'b) t
  *)
 
 val to_array : ('a, 'b) t -> 'a array
-(** [to_array x] converts an ndarray [x] to OCaml's array type. Note the ndarray
-  [x] is flattened before convertion.
+(** [to_array x] converts an ndarray [x] to OCaml's array type. Note that the
+  ndarray [x] is flattened before convertion.
  *)
 
 val print : ('a, 'b) t -> unit
@@ -624,24 +650,30 @@ val sum : ('a, 'b) t -> 'a
 val prod : ?axis:int option array -> ('a, 'b) t -> 'a
 (** [prod x] returns the product of all elements in [x] along passed in axises. *)
 
-val min : (float, 'a) t -> float
-(** [min x] returns the minimum of all elements in [x]. *)
+val min : ('a, 'b) t -> 'a
+(** [min x] returns the minimum of all elements in [x]. For two complex numbers,
+  the one with the smaller magnitude will be selected. If two magnitudes are
+  the same, the one with the smaller phase will be selected.
+ *)
 
-val max : (float, 'a) t -> float
-(** [max x] returns the maximum of all elements in [x]. *)
+val max : ('a, 'b) t -> 'a
+(** [max x] returns the maximum of all elements in [x]. For two complex numbers,
+  the one with the greater magnitude will be selected. If two magnitudes are
+  the same, the one with the greater phase will be selected.
+ *)
 
-val minmax : (float, 'a) t -> float * float
+val minmax : ('a, 'b) t -> 'a * 'a
 (** [minmax x] returns [(min_v, max_v)], [min_v] is the minimum value in [x]
   while [max_v] is the maximum.
  *)
 
-val min_i : (float, 'a) t -> float * int array
-(** [min_i x] returns the minimum of all elements in [x] along with its index. *)
+val min_i : ('a, 'b) t -> 'a * int array
+(** [min_i x] returns the minimum of all elements in [x] as well as its index. *)
 
-val max_i : (float, 'a) t -> float * int array
-(** [max_i x] returns the maximum of all elements in [x] along with its index. *)
+val max_i : ('a, 'b) t -> 'a * int array
+(** [max_i x] returns the maximum of all elements in [x] as well as its index. *)
 
-val minmax_i : (float, 'a) t -> (float * (int array)) * (float * (int array))
+val minmax_i : ('a, 'b) t -> ('a * (int array)) * ('a * (int array))
 (** [minmax_i x] returns [((min_v,min_i), (max_v,max_i))] where [(min_v,min_i)]
   is the minimum value in [x] along with its index while [(max_v,max_i)] is the
   maximum value along its index.
@@ -681,117 +713,117 @@ val signum : (float, 'a) t -> (float, 'a) t
   for zero, [1] for positive numbers, [nan] for [nan]).
  *)
 
-val sqr : (float, 'a) t -> (float, 'a) t
+val sqr : ('a, 'b) t -> ('a, 'b) t
 (** [sqr x] computes the square of the elements in [x] and returns the result in
   a new ndarray.
  *)
 
-val sqrt : (float, 'a) t -> (float, 'a) t
+val sqrt : ('a, 'b) t -> ('a, 'b) t
 (** [sqrt x] computes the square root of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val cbrt : (float, 'a) t -> (float, 'a) t
+val cbrt : ('a, 'b) t -> ('a, 'b) t
 (** [cbrt x] computes the cubic root of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val exp : (float, 'a) t -> (float, 'a) t
+val exp : ('a, 'b) t -> ('a, 'b) t
 (** [exp x] computes the exponential of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val exp2 : (float, 'a) t -> (float, 'a) t
+val exp2 : ('a, 'b) t -> ('a, 'b) t
 (** [exp2 x] computes the base-2 exponential of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val exp10 : (float, 'a) t -> (float, 'a) t
+val exp10 : ('a, 'b) t -> ('a, 'b) t
 (** [exp10 x] computes the base-10 exponential of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val expm1 : (float, 'a) t -> (float, 'a) t
+val expm1 : ('a, 'b) t -> ('a, 'b) t
 (** [expm1 x] computes [exp x -. 1.] of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val log : (float, 'a) t -> (float, 'a) t
+val log : ('a, 'b) t -> ('a, 'b) t
 (** [log x] computes the logarithm of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val log10 : (float, 'a) t -> (float, 'a) t
+val log10 : ('a, 'b) t -> ('a, 'b) t
 (** [log10 x] computes the base-10 logarithm of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val log2 : (float, 'a) t -> (float, 'a) t
+val log2 : ('a, 'b) t -> ('a, 'b) t
 (** [log2 x] computes the base-2 logarithm of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val log1p : (float, 'a) t -> (float, 'a) t
+val log1p : ('a, 'b) t -> ('a, 'b) t
 (** [log1p x] computes [log (1 + x)] of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val sin : (float, 'a) t -> (float, 'a) t
+val sin : ('a, 'b) t -> ('a, 'b) t
 (** [sin x] computes the sine of the elements in [x] and returns the result in
   a new ndarray.
  *)
 
-val cos : (float, 'a) t -> (float, 'a) t
+val cos : ('a, 'b) t -> ('a, 'b) t
 (** [cos x] computes the cosine of the elements in [x] and returns the result in
   a new ndarray.
  *)
 
-val tan : (float, 'a) t -> (float, 'a) t
+val tan : ('a, 'b) t -> ('a, 'b) t
 (** [tan x] computes the tangent of the elements in [x] and returns the result
   in a new ndarray.
  *)
 
-val asin : (float, 'a) t -> (float, 'a) t
+val asin : ('a, 'b) t -> ('a, 'b) t
 (** [asin x] computes the arc sine of the elements in [x] and returns the result
   in a new ndarray.
  *)
 
-val acos : (float, 'a) t -> (float, 'a) t
+val acos : ('a, 'b) t -> ('a, 'b) t
 (** [acos x] computes the arc cosine of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val atan : (float, 'a) t -> (float, 'a) t
+val atan : ('a, 'b) t -> ('a, 'b) t
 (** [atan x] computes the arc tangent of the elements in [x] and returns the
   result in a new ndarray.
  *)
 
-val sinh : (float, 'a) t -> (float, 'a) t
+val sinh : ('a, 'b) t -> ('a, 'b) t
 (** [sinh x] computes the hyperbolic sine of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val cosh : (float, 'a) t -> (float, 'a) t
+val cosh : ('a, 'b) t -> ('a, 'b) t
 (** [cosh x] computes the hyperbolic cosine of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val tanh : (float, 'a) t -> (float, 'a) t
+val tanh : ('a, 'b) t -> ('a, 'b) t
 (** [tanh x] computes the hyperbolic tangent of the elements in [x] and returns
   the result in a new ndarray.
  *)
 
-val asinh : (float, 'a) t -> (float, 'a) t
+val asinh : ('a, 'b) t -> ('a, 'b) t
 (** [asinh x] computes the hyperbolic arc sine of the elements in [x] and
   returns the result in a new ndarray.
  *)
 
-val acosh : (float, 'a) t -> (float, 'a) t
+val acosh : ('a, 'b) t -> ('a, 'b) t
 (** [acosh x] computes the hyperbolic arc cosine of the elements in [x] and
   returns the result in a new ndarray.
  *)
 
-val atanh : (float, 'a) t -> (float, 'a) t
+val atanh : ('a, 'b) t -> ('a, 'b) t
 (** [atanh x] computes the hyperbolic arc tangent of the elements in [x] and
   returns the result in a new ndarray.
  *)
@@ -900,6 +932,12 @@ val cumprod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
   the elements along the given [~axis].
  *)
 
+val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t
+(** [angle x] calculates the phase angle of all complex numbers in [x]. *)
+
+val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
+(** [proj x] computes the projection on Riemann sphere of all elelments in [x]. *)
+
 
 (** {6 Binary mathematical operations } *)
 
@@ -955,17 +993,17 @@ val scalar_mul : 'a -> ('a, 'b) t -> ('a, 'b) t
 val scalar_div : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** [scalar_div a x] is similar to [div_scalar] but with scalar as the first parameter. *)
 
-val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new ndarray.
  *)
 
-val scalar_pow : float -> (float, 'a) t -> (float, 'a) t
+val scalar_pow : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** [scalar_pow a x] computes the power value of a scalar value [a] using the elements
   in a ndarray [x].
  *)
 
-val pow_scalar : (float, 'a) t -> float -> (float, 'a) t
+val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [pow_scalar x a] computes each element in [x] power to [a]. *)
 
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
@@ -984,12 +1022,12 @@ val hypot : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
   elementwise, and returns the result in a new ndarray.
  *)
 
-val min2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val min2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [min2 x y] computes the minimum of all the elements in [x] and [y]
   elementwise, and returns the result in a new ndarray.
  *)
 
-val max2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val max2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [max2 x y] computes the maximum of all the elements in [x] and [y]
   elementwise, and returns the result in a new ndarray.
  *)

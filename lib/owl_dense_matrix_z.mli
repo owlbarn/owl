@@ -36,6 +36,10 @@ val ones : int -> int -> mat
 
 val eye : int -> mat
 
+val complex : cast_mat -> cast_mat -> mat
+
+val polar : cast_mat -> cast_mat -> mat
+
 val sequential : ?a:elt -> ?step:elt -> int -> int -> mat
 
 val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
@@ -59,6 +63,8 @@ val triu : ?k:int -> mat -> mat
 val tril : ?k:int -> mat -> mat
 
 val symmetric : ?upper:bool -> mat -> mat
+
+val hermitian : ?upper:bool -> mat -> mat
 
 val bidiagonal : ?upper:bool -> mat -> mat -> mat
 
@@ -374,6 +380,18 @@ val load : string -> mat
 
 (** {6 Unary mathematical operations } *)
 
+val min : mat -> elt
+
+val max : mat -> elt
+
+val minmax : mat -> elt * elt
+
+val min_i : mat -> elt * int * int
+
+val max_i : mat -> elt * int * int
+
+val minmax_i : mat -> (elt * int * int) * (elt * int * int)
+
 val re : mat -> cast_mat
 
 val im : mat -> cast_mat
@@ -416,6 +434,52 @@ val cumsum : ?axis:int -> mat -> mat
 
 val cumprod : ?axis:int -> mat -> mat
 
+val sqr : mat -> mat
+
+val sqrt : mat -> mat
+
+val cbrt : mat -> mat
+
+val exp : mat -> mat
+
+val exp2 : mat -> mat
+
+val exp10 : mat -> mat
+
+val expm1 : mat -> mat
+
+val log : mat -> mat
+
+val log10 : mat -> mat
+
+val log2 : mat -> mat
+
+val log1p : mat -> mat
+
+val sin : mat -> mat
+
+val cos : mat -> mat
+
+val tan : mat -> mat
+
+val asin : mat -> mat
+
+val acos : mat -> mat
+
+val atan : mat -> mat
+
+val sinh : mat -> mat
+
+val cosh : mat -> mat
+
+val tanh : mat -> mat
+
+val asinh : mat -> mat
+
+val acosh : mat -> mat
+
+val atanh : mat -> mat
+
 val floor : mat -> mat
 
 val ceil : mat -> mat
@@ -425,6 +489,12 @@ val round : mat -> mat
 val trunc : mat -> mat
 
 val modf : mat -> mat * mat
+
+val angle : mat -> mat
+
+val proj : mat -> mat
+
+val var : ?axis:int -> mat -> mat
 
 
 (** {6 Binary mathematical operations } *)
@@ -460,3 +530,15 @@ val add_diag : mat -> elt -> mat
 val ssqr : mat -> elt -> elt
 
 val ssqr_diff : mat -> mat -> elt
+
+val min2 : mat -> mat -> mat
+
+val max2 : mat -> mat -> mat
+
+val pow : mat -> mat -> mat
+
+val scalar_pow : elt -> mat -> mat
+
+val pow_scalar : mat -> elt -> mat
+
+val cov : ?b:mat -> a:mat -> mat

@@ -68,19 +68,6 @@ let eye k n =
     Array2.unsafe_set x i i a
   done; x
 
-(* FIXME: remove obsolete function *)
-let sequential_obsolete k m n =
-  let x = empty k m n in
-  let c = ref (_zero k) in
-  let a = _one k in
-  let _op = _add_elt k in
-  for i = 0 to m - 1 do
-    for j = 0 to n - 1 do
-      Array2.unsafe_set x i j !c;
-      c := _op !c a;
-    done
-  done; x
-
 let sequential k ?a ?step m n =
   Owl_dense_ndarray_generic.sequential k ?a ?step [|m;n|]
   |> of_ndarray
@@ -404,6 +391,34 @@ let bidiagonal ?(upper=true) dv ev =
   done;
   x.{m-1, m-1} <- _dv.{m-1};
   x
+
+
+let hermitian ?(upper=true) x =
+  let m, n = shape x in
+  assert (m = n);
+
+  let y = clone x in
+  let _y = Owl_utils.array2_to_array1 y in
+
+  let _conj_op = _owl_conj (kind x) in
+  let ofs = ref 0 in
+
+  let incx, incy =
+    match upper with
+    | true  -> 1, m
+    | false -> m, 1
+  in
+  for i = 0 to m - 1 do
+    (* copy and conjugate *)
+    _conj_op (m - i) ~ofsx:!ofs ~incx ~ofsy:!ofs ~incy _y _y;
+    (* set the imaginary part to zero by default. *)
+    let a = _y.{!ofs} in
+    _y.{!ofs} <- Complex.( {re = a.re; im = 0.} );
+
+    ofs := !ofs + n + 1
+  done;
+  (* return the symmetric matrix *)
+  y
 
 
 (* matrix iteration operations *)
@@ -898,6 +913,24 @@ let resize ?head m n x =
   |> of_ndarray
 
 
+let complex
+  : type a b c d. (a, b) kind -> (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
+  = fun real_kind complex_kind re im ->
+  let re = to_ndarray re in
+  let im = to_ndarray im in
+  Owl_dense_ndarray_generic.complex real_kind complex_kind re im
+  |> of_ndarray
+
+
+let polar
+  : type a b c d. (a, b) kind -> (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
+  = fun real_kind complex_kind rho theta ->
+  let rho = to_ndarray rho in
+  let theta = to_ndarray theta in
+  Owl_dense_ndarray_generic.polar real_kind complex_kind rho theta
+  |> of_ndarray
+
+
 (* TODO: improve performance
 
 let of_arrays k x = Array2.of_array k c_layout x
@@ -1238,6 +1271,16 @@ let round x =
 let trunc x =
   let y = to_ndarray x in
   let y = Owl_dense_ndarray_generic.trunc y in
+  of_ndarray y
+
+let angle x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.angle y in
+  of_ndarray y
+
+let proj x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.proj y in
   of_ndarray y
 
 let erf x =
@@ -1588,6 +1631,7 @@ let hadamard k n =
 
 (* experimental functions *)
 
+
 let max_pool ?padding x kernel stride =
   let m, n = shape x in
   let x = to_ndarray x in
@@ -1598,6 +1642,7 @@ let max_pool ?padding x kernel stride =
   let y = Owl_dense_ndarray_generic.reshape y [|m;n|] in
   of_ndarray y
 
+
 let avg_pool ?padding x kernel stride =
   let m, n = shape x in
   let x = to_ndarray x in
@@ -1607,6 +1652,86 @@ let avg_pool ?padding x kernel stride =
   let m, n = s.(1), s.(2) in
   let y = Owl_dense_ndarray_generic.reshape y [|m;n|] in
   of_ndarray y
+
+
+(* TODO: can be certianly optimised, currently much slower than julia *)
+let cov' ?b ~a =
+  let a = match b with
+    | Some b -> (
+        let na = numel a in
+        let nb = numel b in
+        assert (na = nb);
+        let a = reshape na 1 a in
+        let b = reshape nb 1 b in
+        concat_horizontal a b
+      )
+    | None   -> a
+  in
+
+  let mu = average_rows a in
+  let a = sub a mu in
+  let a' = ctranspose a in
+  let c = dot a' a in
+
+  let n = row_num a - 1
+    |> Pervasives.max 1
+    |> float_of_int
+    |> Owl_dense_common._float_typ_elt (kind a)
+  in
+
+  div_scalar c n
+
+
+let cov ?b ~a =
+  let a = match b with
+    | Some b -> (
+        let na = numel a in
+        let nb = numel b in
+        assert (na = nb);
+        let a = reshape na 1 a in
+        let b = reshape nb 1 b in
+        concat_horizontal a b
+      )
+    | None   -> a
+  in
+
+  let mu = average_rows a in
+  let a = sub a mu in
+  let a' = ctranspose a in
+  let c = dot a' a in
+
+  let n = row_num a - 1
+    |> Pervasives.max 1
+    |> float_of_int
+    |> Owl_dense_common._float_typ_elt (kind a)
+  in
+
+  div_scalar c n
+
+
+let var ?(axis=0) a =
+  let aa, n = match axis = 0 with
+    | true  -> (
+        let mu = average_rows a in
+        let aa = sub a mu |> sqr |> sum_rows in
+        aa, row_num a
+      )
+    | false -> (
+        let mu = average_cols a in
+        let aa = sub a mu |> sqr |> sum_cols in
+        aa, col_num a
+      )
+  in
+
+  let n = n - 1
+    |> Pervasives.max 1
+    |> float_of_int
+    |> Owl_dense_common._float_typ_elt (kind a)
+  in
+
+  div_scalar aa n
+
+
 
 
 (* end here *)

@@ -137,6 +137,8 @@ val concatenate : ?axis:int -> mat array -> mat
 
 val transpose : mat -> mat
 
+val ctranspose : mat -> mat
+
 val diag : ?k:int -> mat -> mat
 
 val replace_row : mat -> mat -> int -> mat
@@ -405,6 +407,8 @@ val abs : mat -> mat
 
 val abs2 : mat -> mat
 
+val conj : mat -> mat
+
 val neg : mat -> mat
 
 val reci : mat -> mat
@@ -503,6 +507,8 @@ val cumsum : ?axis:int -> mat -> mat
 
 val cumprod : ?axis:int -> mat -> mat
 
+val var : ?axis:int -> mat -> mat
+
 
 (** {6 Binary mathematical operations } *)
 
@@ -565,3 +571,5 @@ val ssqr_diff : mat -> mat -> elt
 val cross_entropy : mat -> mat -> elt
 
 val clip_by_l2norm : elt -> mat -> mat
+
+val cov : ?b:mat -> a:mat -> mat
