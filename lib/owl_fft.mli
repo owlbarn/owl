@@ -11,9 +11,9 @@
  *)
 
 
-type rmat = Owl_dense_matrix_d.mat
+type rmat = Owl_dense.Matrix.D.mat
 
-type cmat = Owl_dense_matrix_z.mat
+type cmat = Owl_dense.Matrix.Z.mat
 
 val fft : rmat -> cmat
 (** [fft x] performs an FFT operation on matrix [x]. If [x] has more than one

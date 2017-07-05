@@ -341,12 +341,6 @@ let broadcast_op op x0 x1 =
 
 (* mathematical functions *)
 
-let min x = x |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.min (kind x)
-
-let max x = x |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.max (kind x)
-
-let minmax x = x |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.minmax (kind x)
-
 let min_i x =
   let y = flatten x |> array1_of_genarray in
   let i = _owl_min_i (kind x) (numel x) y in
@@ -363,15 +357,15 @@ let max_i x =
   let _ = _index_1d_nd i j s in
   y.{i}, j
 
-let minmax_i x =
-  let y = flatten x |> array1_of_genarray in
-  let i, j = Owl_backend_gsl_linalg.minmax_i (kind x) y in
-  let s = _calc_stride (shape x) in
-  let p = Array.copy s in
-  let q = Array.copy s in
-  let _ = _index_1d_nd i p s in
-  let _ = _index_1d_nd j q s in
-  (y.{i}, p), (y.{j}, q)
+let minmax_i x = min_i x, max_i x
+
+let min x = x |> min_i |> fst
+
+let max x = x |> max_i |> fst
+
+let minmax x =
+  let minx_i, maxx_i = minmax_i x in
+  fst minx_i, fst maxx_i
 
 let add x y =
   match same_shape x y with
@@ -765,6 +759,20 @@ let trunc x =
   let _ = _owl_trunc (kind x) (numel y) src dst in
   y
 
+let angle x =
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_angle (kind x) (numel y) src dst in
+  y
+
+let proj x =
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_proj (kind x) (numel y) src dst in
+  y
+
 let erf x =
   let y = clone x in
   let src = flatten x |> array1_of_genarray in
@@ -1091,19 +1099,6 @@ let zeros kind dimension = create kind dimension (_zero kind)
 
 let ones kind dimension = create kind dimension (_one kind)
 
-(* FIXME: remove obsolete function *)
-let sequential_obsolete k dimension =
-  let x = empty k dimension in
-  let y = flatten x |> array1_of_genarray in
-  let _op = _add_elt (kind x) in
-  let _ac = ref (_zero (kind x)) in
-  let _aa = _one (kind x) in
-  for i = 0 to (numel x) - 1 do
-    Array1.unsafe_set y i !_ac;
-    _ac := _op !_ac _aa
-  done;
-  x
-
 let sequential k ?a ?step dimension =
   let a = match a with
     | Some a -> a
@@ -1421,18 +1416,30 @@ let greater_equal_scalar x a =
   let _op = _owl_greater_equal_scalar (kind x) in
   _op (numel x) x' a = 1
 
-let approx_equal ?(eps=1e-6) x y =
+let approx_equal ?eps x y =
+  let eps = match eps with
+    | Some eps -> eps
+    | None     -> Owl_utils.eps Float32
+  in
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   let _op = _owl_approx_equal (kind x) in
   _op (numel x) x' y' eps = 1
 
-let approx_equal_scalar ?(eps=1e-6) x a =
+let approx_equal_scalar ?eps x a =
+  let eps = match eps with
+    | Some eps -> eps
+    | None     -> Owl_utils.eps Float32
+  in
   let x' = flatten x |> array1_of_genarray in
   let _op = _owl_approx_equal_scalar (kind x) in
   _op (numel x) x' a eps = 1
 
-let approx_elt_equal ?(eps=1e-6) x y =
+let approx_elt_equal ?eps x y =
+  let eps = match eps with
+    | Some eps -> eps
+    | None     -> Owl_utils.eps Float32
+  in
   let _eps : type a b. (a, b) kind -> float -> a =
     fun k a -> match k with
     | Float32   -> a
@@ -1449,7 +1456,11 @@ let approx_elt_equal ?(eps=1e-6) x y =
   _owl_approx_elt_equal k (numel z) x' y' z';
   z
 
-let approx_elt_equal_scalar ?(eps=1e-6) x a =
+let approx_elt_equal_scalar ?eps x a =
+  let eps = match eps with
+    | Some eps -> eps
+    | None     -> Owl_utils.eps Float32
+  in
   let _eps : type a b. (a, b) kind -> float -> a =
     fun k a -> match k with
     | Float32   -> a
@@ -1540,6 +1551,28 @@ let to_array x =
   let y = reshape x [|1;numel x|] |> array2_of_genarray in
   Owl_backend_gsl_linalg.to_array (kind x) y
 
+
+let complex
+  : type a b c d. (a, b) kind -> (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
+  = fun real_kind complex_kind re im ->
+  assert (shape re = shape im);
+  let _re = flatten re |> array1_of_genarray in
+  let _im = flatten im |> array1_of_genarray in
+  let x = empty complex_kind (shape re) in
+  let _x = flatten x |> array1_of_genarray in
+  _owl_to_complex real_kind complex_kind (numel re) _re _im _x;
+  x
+
+let polar
+  : type a b c d. (a, b) kind -> (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
+  = fun real_kind complex_kind rho theta ->
+  assert (shape rho = shape theta);
+  let _rho = flatten rho |> array1_of_genarray in
+  let _theta = flatten theta |> array1_of_genarray in
+  let x = empty complex_kind (shape rho) in
+  let _x = flatten x |> array1_of_genarray in
+  _owl_polar real_kind complex_kind (numel rho) _rho _theta _x;
+  x
 
 
 (* math operations. code might be verbose for performance concern. *)
@@ -2473,7 +2506,10 @@ let draw_along_dim0 x n =
   (slice_along_dim0 x indices), indices
 
 
-let cumulative_op ?axis _cumop x =
+(* TODO: optimise performance, slow along the low dimension *)
+let cumulative_op
+  : type a b. ?axis:int -> (a, b) Owl_dense_common.owl_vec_op99 -> (a, b) t -> (a, b) t
+  = fun ?axis _cumop x ->
   let y = clone x in
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
@@ -2486,36 +2522,37 @@ let cumulative_op ?axis _cumop x =
       let _slicez = slice_size x in
       let m = (numel x) / _slicez.(a) in
       let n = _stride.(a) in
-      let incx_m = _slicez.(a) in
-      let incx_n = 1 in
-      let incy_m = _slicez.(a) in
-      let incy_n = 1 in
+      let k = (shape x).(a) in
 
-      let ofsx = ref 0 in
-      let ofsy = ref 0 in
+      let ofsm = ref 0 in
       let incx = _stride.(a) in
       let incy = _stride.(a) in
+      let incm = _slicez.(a) in
 
-      for i = 0 to (shape x).(a) - 1 do
-        _cumop m n x' !ofsx incx_m incx_n y' !ofsy incy_m incy_n;
-        ofsx := !ofsx + incx;
-        ofsy := !ofsy + incy;
+      for i = 0 to m - 1 do
+        for j = 0 to n - 1 do
+          _cumop k ~ofsx:(!ofsm+j) ~incx ~ofsy:(!ofsm+j) ~incy x' y'
+        done;
+        ofsm := !ofsm + incm
       done;
       y
     )
   | None -> (
-      let n = numel x in
-      _cumop 1 n x' 0 0 1 y' 0 0 1;
+      let k = numel x in
+      _cumop k ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 x' y';
       y
     )
+
 
 let cumsum ?axis x =
   let _cumop = _owl_cumsum (kind x) in
   cumulative_op ?axis _cumop x
 
+
 let cumprod ?axis x =
   let _cumop = _owl_cumprod (kind x) in
   cumulative_op ?axis _cumop x
+
 
 let modf x =
   let x = clone x in

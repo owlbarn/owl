@@ -7,6 +7,15 @@
   mathematical operations.
  *)
 
+(**
+  About the comparison of two complex numbers [x] and [y], Owl uses the
+  following conventions: 1) [x] and [y] are equal iff both real and imaginary
+  parts are equal; 2) [x] is less than [y] if the magnitude of [x] is less than
+  the magnitude of [x]; in case both [x] and [y] have the same magnitudes, [x]
+  is less than [x] if the phase of [x] is less than the phase of [y]; 3) less or
+  equal, greater, greater or equal relation can be further defined atop of the
+  aforementioned conventions.
+ *)
 
 open Bigarray
 
@@ -35,7 +44,7 @@ val init : ('a, 'b) kind -> int -> int -> (int -> 'a) -> ('a, 'b) t
  *)
 
 val init_nd : ('a, 'b) kind -> int -> int -> (int -> int -> 'a) -> ('a, 'b) t
-(* [init_nd m n f] s almost the same as [init] but [f] receives 2D index
+(** [init_nd m n f] s almost the same as [init] but [f] receives 2D index
   as input. It is more convenient since you don't have to convert the index by
   yourself, but this also means [init_nd] is slower than [init]. *)
 
@@ -49,6 +58,22 @@ val ones : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 
 val eye : ('a, 'b) kind -> int -> ('a, 'b) t
 (** [eye m] creates an [m] by [m] identity matrix. *)
+
+val complex : ('a, 'b) kind -> ('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('c, 'd) t
+(** [complex re im] constructs a complex ndarray/matrix from [re] and [im].
+  [re] and [im] contain the real and imaginary part of [x] respectively.
+
+  Note that both [re] and [im] can be complex but must have same type. The real
+  part of [re] will be the real part of [x] and the imaginary part of [im] will
+  be the imaginary part of [x].
+ *)
+
+val polar : ('a, 'b) kind -> ('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('c, 'd) t
+(** [complex rho theta] constructs a complex ndarray/matrix from polar
+  coordinates [rho] and [theta]. [rho] contains the magnitudes and [theta]
+  contains phase angles. Note that the behaviour is undefined if [rho] has
+  negative elelments or [theta] has infinity elelments.
+ *)
 
 val sequential : ('a, 'b) kind -> ?a:'a -> ?step:'a -> int -> int -> ('a, 'b) t
 (** [sequential ~a ~step m n] creates an [m] by [n] matrix. The elements in [x]
@@ -120,11 +145,22 @@ val symmetric : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
   is true.
  *)
 
+val hermitian : ?upper:bool -> (Complex.t, 'a) t -> (Complex.t, 'a) t
+(** [hermitian ~upper x] creates a hermitian matrix based on [x]. By default,
+  the upper triangular part is used for creating the hermitian matrix, but you
+  use the lower part by setting [upper=false]
+ *)
+
 val bidiagonal : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [bidiagonal upper dv ev] creates a bidiagonal matrix using [dv] and [ev].
   Both [dv] and [ev] are row vectors. [dv] is the main diagonal. If [upper] is
   [true] then [ev] is superdiagonal; if [upper] is [false] then [ev] is
   subdiagonal. By default, [upper] is [true].
+
+  NOTE: because the diagonal elements in a hermitian matrix must be real, the
+  function set the imaginary part of the diagonal elements to zero by default.
+  In other words, if the diagonal elements of [x] have non-zero imaginary parts,
+  the imaginary parts will be dropped without a warning.
  *)
 
 val toeplitz : ?c:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -218,7 +254,7 @@ val cols : ('a, 'b) t -> int array -> ('a, 'b) t
  *)
 
 val resize : ?head:bool -> int -> int -> ('a, 'b) t -> ('a, 'b) t
-(* [resize m n x] please refer to the Ndarray document.
+(** [resize m n x] please refer to the Ndarray document.
  *)
 
 val reshape : int -> int -> ('a, 'b) t -> ('a, 'b) t
@@ -244,7 +280,7 @@ val reverse : ('a, 'b) t -> ('a, 'b) t
  *)
 
 val reset : ('a, 'b) t -> unit
-(* [reset x] resets all the elements of [x] to zero value. *)
+(** [reset x] resets all the elements of [x] to zero value. *)
 
 val fill : ('a, 'b) t -> 'a -> unit
 (** [fill x a] fills the [x] with value [a]. *)
@@ -287,8 +323,10 @@ val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 val transpose : ('a, 'b) t -> ('a, 'b) t
 (** [transpose x] transposes an [m] by [n] matrix to [n] by [m] one. *)
 
-val ctranspose : (Complex.t, 'a) t -> (Complex.t, 'a) t
-(** [ctranspose x] performs conjugate transpose of a complex matrix [x]. *)
+val ctranspose : ('a, 'b) t -> ('a, 'b) t
+(** [ctranspose x] performs conjugate transpose of a complex matrix [x]. If [x]
+  is a real matrix, then [ctranspose x] is equivalent to [transpose x].
+ *)
 
 val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t
 (** [diag k x] returns the [k]th diagonal elements of [x]. [k > 0] means above
@@ -561,58 +599,119 @@ val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
  *)
 
 val elt_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(* [elt_equal x y] performs element-wise [=] comparison of [x] and [y]. *)
+(** [elt_equal x y] performs element-wise [=] comparison of [x] and [y]. Assume
+  that [a] is from [x] and [b] is the corresponding element of [a] from [y] of
+  the same position. The function returns another binary ([0] and [1])
+  ndarray/matrix wherein [1] indicates [a = b].
+ *)
 
 val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(* [elt_not_equal x y] performs element-wise [!=] comparison of [x] and [y]. *)
+(** [elt_not_equal x y] performs element-wise [!=] comparison of [x] and [y].
+  Assume that [a] is from [x] and [b] is the corresponding element of [a] from
+  [y] of the same position. The function returns another binary ([0] and [1])
+  ndarray/matrix wherein [1] indicates [a <> b].
+*)
 
 val elt_less : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(* [elt_less x y] performs element-wise [<] comparison of [x] and [y]. *)
+(** [elt_less x y] performs element-wise [<] comparison of [x] and [y]. Assume
+  that [a] is from [x] and [b] is the corresponding element of [a] from [y] of
+  the same position. The function returns another binary ([0] and [1])
+  ndarray/matrix wherein [1] indicates [a < b].
+ *)
 
 val elt_greater : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(* [elt_greater x y] performs element-wise [>] comparison of [x] and [y]. *)
+(** [elt_greater x y] performs element-wise [>] comparison of [x] and [y].
+  Assume that [a] is from [x] and [b] is the corresponding element of [a] from
+  [y] of the same position. The function returns another binary ([0] and [1])
+  ndarray/matrix wherein [1] indicates [a > b].
+ *)
 
 val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(* [elt_less_equal x y] performs element-wise [<=] comparison of [x] and [y]. *)
+(** [elt_less_equal x y] performs element-wise [<=] comparison of [x] and [y].
+  Assume that [a] is from [x] and [b] is the corresponding element of [a] from
+  [y] of the same position. The function returns another binary ([0] and [1])
+  ndarray/matrix wherein [1] indicates [a <= b].
+ *)
 
 val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(* [elt_greater_equal x y] performs element-wise [>=] comparison of [x] and [y]. *)
+(** [elt_greater_equal x y] performs element-wise [>=] comparison of [x] and [y].
+  Assume that [a] is from [x] and [b] is the corresponding element of [a] from
+  [y] of the same position. The function returns another binary ([0] and [1])
+  ndarray/matrix wherein [1] indicates [a >= b].
+ *)
 
 val equal_scalar : ('a, 'b) t -> 'a -> bool
-(* [equal_scalar x a] checks if all the elements in [x] are equal to [a]. *)
+(** [equal_scalar x a] checks if all the elements in [x] are equal to [a]. The
+  function returns [true] iff for every element [b] in [x], [b = a].
+ *)
 
 val not_equal_scalar : ('a, 'b) t -> 'a -> bool
-(* [not_equal_scalar x a] checks if all the elements in [x] are not equal to [a]. *)
+(** [not_equal_scalar x a] checks if all the elements in [x] are not equal to [a].
+  The function returns [true] iff for every element [b] in [x], [b <> a].
+ *)
 
 val less_scalar : ('a, 'b) t -> 'a -> bool
-(* [less_scalar x a] checks if all the elements in [x] are less than [a]. *)
+(** [less_scalar x a] checks if all the elements in [x] are less than [a].
+  The function returns [true] iff for every element [b] in [x], [b < a].
+ *)
 
 val greater_scalar : ('a, 'b) t -> 'a -> bool
-(* [greater_scalar x a] checks if all the elements in [x] are greater than [a]. *)
+(** [greater_scalar x a] checks if all the elements in [x] are greater than [a].
+  The function returns [true] iff for every element [b] in [x], [b > a].
+ *)
 
 val less_equal_scalar : ('a, 'b) t -> 'a -> bool
-(* [less_equal_scalar x a] checks if all the elements in [x] are less or equal to [a]. *)
+(** [less_equal_scalar x a] checks if all the elements in [x] are less or equal
+  to [a]. The function returns [true] iff for every element [b] in [x], [b <= a].
+ *)
 
 val greater_equal_scalar : ('a, 'b) t -> 'a -> bool
-(* [greater_equal_scalar x a] checks if all the elements in [x] are greater or equal to [a]. *)
+(** [greater_equal_scalar x a] checks if all the elements in [x] are greater or
+  equal to [a]. The function returns [true] iff for every element [b] in [x],
+  [b >= a].
+ *)
 
 val elt_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(* [elt_equal_scalar x a] performs element-wise [=] comparison of [x] and [a]. *)
+(** [elt_equal_scalar x a] performs element-wise [=] comparison of [x] and [a].
+  Assume that [b] is one element from [x] The function returns another binary
+  ([0] and [1]) ndarray/matrix wherein [1] of the corresponding position
+  indicates [a = b], otherwise [0].
+ *)
 
 val elt_not_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(* [elt_not_equal_scalar x a] performs element-wise [!=] comparison of [x] and [a]. *)
+(** [elt_not_equal_scalar x a] performs element-wise [!=] comparison of [x] and
+  [a]. Assume that [b] is one element from [x] The function returns another
+  binary ([0] and [1]) ndarray/matrix wherein [1] of the corresponding position
+  indicates [a <> b], otherwise [0].
+ *)
 
 val elt_less_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(* [elt_less_scalar x a] performs element-wise [<] comparison of [x] and [a]. *)
+(** [elt_less_scalar x a] performs element-wise [<] comparison of [x] and [a].
+  Assume that [b] is one element from [x] The function returns another binary
+  ([0] and [1]) ndarray/matrix wherein [1] of the corresponding position
+  indicates [a < b], otherwise [0].
+ *)
 
 val elt_greater_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(* [elt_greater_scalar x a] performs element-wise [>] comparison of [x] and [a]. *)
+(** [elt_greater_scalar x a] performs element-wise [>] comparison of [x] and [a].
+  Assume that [b] is one element from [x] The function returns another binary
+  ([0] and [1]) ndarray/matrix wherein [1] of the corresponding position
+  indicates [a > b], otherwise [0].
+ *)
 
 val elt_less_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(* [elt_less_equal_scalar x a] performs element-wise [<=] comparison of [x] and [a]. *)
+(** [elt_less_equal_scalar x a] performs element-wise [<=] comparison of [x] and
+  [a]. Assume that [b] is one element from [x] The function returns another
+  binary ([0] and [1]) ndarray/matrix wherein [1] of the corresponding position
+  indicates [a <= b], otherwise [0].
+ *)
 
 val elt_greater_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(* [elt_greater_equal_scalar x a] performs element-wise [>=] comparison of [x] and [a]. *)
+(** [elt_greater_equal_scalar x a] performs element-wise [>=] comparison of [x]
+  and [a]. Assume that [b] is one element from [x] The function returns
+  another binary ([0] and [1]) ndarray/matrix wherein [1] of the corresponding
+  position indicates [a >= b], otherwise [0].
+ *)
 
 val approx_equal : ?eps:float -> ('a, 'b) t -> ('a, 'b) t -> bool
 (** [approx_equal ~eps x y] returns [true] if [x] and [y] are approximately
@@ -631,10 +730,18 @@ val approx_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> bool
  *)
 
 val approx_elt_equal : ?eps:float -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [approx_elt_equal ~eps x y] *)
+(** [approx_elt_equal ~eps x y] compares the element-wise equality of [x] and
+  [y], then returns another binary (i.e., [0] and [1]) ndarray/matrix wherein
+  [1] indicates that two corresponding elements [a] from [x] and [b] from [y]
+  are considered as approximately equal, namely [abs (a - b) < eps].
+ *)
 
 val approx_elt_equal_scalar : ?eps:float -> ('a, 'b) t -> 'a -> ('a, 'b) t
-(** [approx_elt_equal_scalar ~eps x a] *)
+(** [approx_elt_equal_scalar ~eps x a] compares all the elements of [x] to a
+  scalar value [a], then returns another binary (i.e., [0] and [1])
+  ndarray/matrix wherein [1] indicates that the element [b] from [x] is
+  considered as approximately equal to [a], namely [abs (a - b) < eps].
+ *)
 
 
 (** {6 Randomisation functions} *)
@@ -652,10 +759,10 @@ val draw_cols : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
  *)
 
 val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
-(* [draw_rows2 x y c] is similar to [draw_rows] but applies to two matrices. *)
+(** [draw_rows2 x y c] is similar to [draw_rows] but applies to two matrices. *)
 
 val draw_cols2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
-(* [draw_col2 x y c] is similar to [draw_cols] but applies to two matrices. *)
+(** [draw_col2 x y c] is similar to [draw_cols] but applies to two matrices. *)
 
 val shuffle_rows : ('a, 'b) t -> ('a, 'b) t
 (** [shuffle_rows x] shuffles all the rows in matrix [x]. *)
@@ -750,20 +857,32 @@ val im_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [im_d2z x] returns all the imaginary components of [x] in a new ndarray of same shape. *)
 
-val min : (float, 'a) t -> float
-(** [min x] returns the minimum value of all elements in [x]. *)
+val min : ('a, 'b) t -> 'a
+(** [min x] returns the minimum of all elements in [x]. For two complex numbers,
+  the one with the smaller magnitude will be selected. If two magnitudes are
+  the same, the one with the smaller phase will be selected.
+ *)
 
-val max : (float, 'a) t -> float
-(** [max x] returns the maximum value of all elements in [x]. *)
+val max : ('a, 'b) t -> 'a
+(** [max x] returns the maximum of all elements in [x]. For two complex numbers,
+  the one with the greater magnitude will be selected. If two magnitudes are
+  the same, the one with the greater phase will be selected.
+ *)
 
-val minmax : (float, 'a) t -> float * float
+val minmax : ('a, 'b) t -> 'a * 'a
 (** [minmax x] returns both the minimum and minimum values in [x]. *)
 
-val min_i : (float, 'a) t -> float * int * int
+val min_i : ('a, 'b) t -> 'a * int * int
+(** [min_i x] returns the minimum of all elements in [x] as well as its index. *)
 
-val max_i : (float, 'a) t -> float * int * int
+val max_i : ('a, 'b) t -> 'a * int * int
+(** [max_i x] returns the maximum of all elements in [x] as well as its index. *)
 
-val minmax_i : (float, 'a) t -> (float * int * int) * (float * int * int)
+val minmax_i : ('a, 'b) t -> ('a * int * int) * ('a * int * int)
+(** [minmax_i x] returns [((min_v,min_i), (max_v,max_i))] where [(min_v,min_i)]
+  is the minimum value in [x] along with its index while [(max_v,max_i)] is the
+  maximum value along its index.
+ *)
 
 val inv : ('a, 'b) t -> ('a, 'b) t
 (** [inv x] returns the inverse of a square matrix [x]. *)
@@ -847,117 +966,117 @@ val signum : (float, 'a) t -> (float, 'a) t
   for zero, [1] for positive numbers, [nan] for [nan]).
  *)
 
-val sqr : (float, 'a) t -> (float, 'a) t
+val sqr : ('a, 'b) t -> ('a, 'b) t
 (** [sqr x] computes the square of the elements in [x] and returns the result in
   a new matrix.
  *)
 
-val sqrt : (float, 'a) t -> (float, 'a) t
+val sqrt : ('a, 'b) t -> ('a, 'b) t
 (** [sqrt x] computes the square root of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val cbrt : (float, 'a) t -> (float, 'a) t
+val cbrt : ('a, 'b) t -> ('a, 'b) t
 (** [cbrt x] computes the cubic root of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val exp : (float, 'a) t -> (float, 'a) t
+val exp : ('a, 'b) t -> ('a, 'b) t
 (** [exp x] computes the exponential of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val exp2 : (float, 'a) t -> (float, 'a) t
+val exp2 : ('a, 'b) t -> ('a, 'b) t
 (** [exp2 x] computes the base-2 exponential of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val exp10 : (float, 'a) t -> (float, 'a) t
+val exp10 : ('a, 'b) t -> ('a, 'b) t
 (** [exp2 x] computes the base-10 exponential of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val expm1 : (float, 'a) t -> (float, 'a) t
+val expm1 : ('a, 'b) t -> ('a, 'b) t
 (** [expm1 x] computes [exp x -. 1.] of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val log : (float, 'a) t -> (float, 'a) t
+val log : ('a, 'b) t -> ('a, 'b) t
 (** [log x] computes the logarithm of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val log10 : (float, 'a) t -> (float, 'a) t
+val log10 : ('a, 'b) t -> ('a, 'b) t
 (** [log10 x] computes the base-10 logarithm of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val log2 : (float, 'a) t -> (float, 'a) t
+val log2 : ('a, 'b) t -> ('a, 'b) t
 (** [log2 x] computes the base-2 logarithm of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val log1p : (float, 'a) t -> (float, 'a) t
+val log1p : ('a, 'b) t -> ('a, 'b) t
 (** [log1p x] computes [log (1 + x)] of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val sin : (float, 'a) t -> (float, 'a) t
+val sin : ('a, 'b) t -> ('a, 'b) t
 (** [sin x] computes the sine of the elements in [x] and returns the result in
   a new matrix.
  *)
 
-val cos : (float, 'a) t -> (float, 'a) t
+val cos : ('a, 'b) t -> ('a, 'b) t
 (** [cos x] computes the cosine of the elements in [x] and returns the result in
   a new matrix.
  *)
 
-val tan : (float, 'a) t -> (float, 'a) t
+val tan : ('a, 'b) t -> ('a, 'b) t
 (** [tan x] computes the tangent of the elements in [x] and returns the result
   in a new matrix.
  *)
 
-val asin : (float, 'a) t -> (float, 'a) t
+val asin : ('a, 'b) t -> ('a, 'b) t
 (** [asin x] computes the arc sine of the elements in [x] and returns the result
   in a new matrix.
  *)
 
-val acos : (float, 'a) t -> (float, 'a) t
+val acos : ('a, 'b) t -> ('a, 'b) t
 (** [acos x] computes the arc cosine of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val atan : (float, 'a) t -> (float, 'a) t
+val atan : ('a, 'b) t -> ('a, 'b) t
 (** [atan x] computes the arc tangent of the elements in [x] and returns the
   result in a new matrix.
  *)
 
-val sinh : (float, 'a) t -> (float, 'a) t
+val sinh : ('a, 'b) t -> ('a, 'b) t
 (** [sinh x] computes the hyperbolic sine of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val cosh : (float, 'a) t -> (float, 'a) t
+val cosh : ('a, 'b) t -> ('a, 'b) t
 (** [cosh x] computes the hyperbolic cosine of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val tanh : (float, 'a) t -> (float, 'a) t
+val tanh : ('a, 'b) t -> ('a, 'b) t
 (** [tanh x] computes the hyperbolic tangent of the elements in [x] and returns
   the result in a new matrix.
  *)
 
-val asinh : (float, 'a) t -> (float, 'a) t
+val asinh : ('a, 'b) t -> ('a, 'b) t
 (** [asinh x] computes the hyperbolic arc sine of the elements in [x] and
   returns the result in a new matrix.
  *)
 
-val acosh : (float, 'a) t -> (float, 'a) t
+val acosh : ('a, 'b) t -> ('a, 'b) t
 (** [acosh x] computes the hyperbolic arc cosine of the elements in [x] and
   returns the result in a new matrix.
  *)
 
-val atanh : (float, 'a) t -> (float, 'a) t
+val atanh : ('a, 'b) t -> ('a, 'b) t
 (** [atanh x] computes the hyperbolic arc tangent of the elements in [x] and
   returns the result in a new matrix.
  *)
@@ -1056,12 +1175,21 @@ val avg_pool : ?padding:Owl_dense_ndarray_generic.padding -> (float, 'a) t -> in
 (** [] *)
 
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
-(* [cumsum ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
+(** [cumsum ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
  *)
 
 val cumprod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
-(* [cumprod ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
+(** [cumprod ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
  *)
+
+val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t
+(** [angle x] calculates the phase angle of all complex numbers in [x]. *)
+
+val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
+(** [proj x] computes the projection on Riemann sphere of all elelments in [x]. *)
+
+val var : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [var x] computes the variance of [x]. *)
 
 
 (** {6 Binary mathematical operations } *)
@@ -1123,15 +1251,15 @@ val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 val add_diag : ('a, 'b) t -> 'a -> ('a, 'b) t
 
-val pow : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
 
-val scalar_pow : float -> (float, 'a) t -> (float, 'a) t
+val scalar_pow : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** [scalar_pow a x] *)
 
-val pow_scalar : (float, 'a) t -> float -> (float, 'a) t
+val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [pow_scalar x a] *)
 
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
@@ -1150,12 +1278,12 @@ val hypot : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
   elementwise, and returns the result in a new matrix.
  *)
 
-val min2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val min2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [min2 x y] computes the minimum of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
 
-val max2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+val max2 : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [max2 x y] computes the maximum of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
  *)
@@ -1186,8 +1314,19 @@ val cross_entropy : (float, 'a) t -> (float, 'a) t -> float
 val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 (** [clip_by_l2norm t x] clips the [x] according to the threshold set by [t]. *)
 
+val cov : ?b:('a, 'b) t -> a:('a, 'b) t -> ('a, 'b) t
+(** [cov ~a] calculates the covariance matrix of [a] wherein each row represents
+  one observation and each column represents one random variable. [a] is
+  normalised by the number of observations-1. If there is only one observation,
+  it is normalised by [1].
 
-(** {6 Shorhand infix operators} *)
+  [cov ~a ~b] takes two matrices as inputs. The functions flatten [a] and [b]
+  first then returns a [2 x 2] matrix, so two must have the same number of
+  elements.
+ *)
+
+
+(** {6 Cast functions to different number types} *)
 
 val cast_s2d : (float, float32_elt) t -> (float, float64_elt) t
 (** [cast_s2d x] casts [x] from [float32] to [float64]. *)

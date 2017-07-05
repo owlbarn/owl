@@ -99,7 +99,11 @@ let test_24 _ = Owl_dense_matrix_d.linspace 0. 100000000. 100000000
 
 let test_25 _ = Owl_dense_matrix_generic.cast_d2s x
 
-let _ = Perf_common.test_op_each c test_25
+let test_26 _ =
+  let x = Owl.Mat.uniform 1000 1000 in
+  Owl.Linalg.D.eig x
+
+let _ = Perf_common.test_op_each c test_26
 
 
 (* ends here *)

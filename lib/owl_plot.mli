@@ -10,7 +10,7 @@
  *)
 
 
-type dsmat = Owl_dense_matrix_d.mat
+type dsmat = Owl_dense_matrix.D.mat
 
 type handle
 

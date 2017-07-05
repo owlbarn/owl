@@ -364,7 +364,7 @@ let gerqf
 
 let geqp3
   : type a b. ?jpvt:(int32, int32_elt) mat -> a:(a, b) mat
-  -> (a, b) mat * (int32, int32_elt) mat * (a, b) mat
+  -> (a, b) mat * (a, b) mat * (int32, int32_elt) mat
   = fun ?jpvt ~a ->
   let m = Array2.dim1 a in
   let n = Array2.dim2 a in
@@ -397,7 +397,7 @@ let geqp3
     | _         -> failwith "lapacke:geqp3"
   in
   check_lapack_error ret;
-  a, jpvt, tau
+  a, tau, jpvt
 
 
 let geqrt
@@ -1319,16 +1319,17 @@ let geevx
   let _layout = Array2.layout a in
   let layout = lapacke_layout _layout in
 
-  let ldvl = match jobvl with
-    | 'V' -> n
-    | _   -> 1
+  let vl = match jobvl with
+    | 'V' -> Array2.create _kind _layout n n
+    | _   -> Array2.create _kind _layout 0 n
   in
-  let ldvr = match jobvr with
-    | 'V' -> n
-    | _   -> 1
+  let vr = match jobvr with
+    | 'V' -> Array2.create _kind _layout n n
+    | _   -> Array2.create _kind _layout 0 n
   in
-  let vl = Array2.create _kind _layout n ldvl in
-  let vr = Array2.create _kind _layout n ldvr in
+  let ldvl = Pervasives.max 1 (_stride vl) in
+  let ldvr = Pervasives.max 1 (_stride vr) in
+
   let _ilo = Ctypes.(allocate int32_t 0l) in
   let _ihi = Ctypes.(allocate int32_t 0l) in
   let lda = Pervasives.max 1 (_stride a) in
@@ -1646,6 +1647,37 @@ let orglq
   | false -> a
 
 
+let unglq
+  : type a. ?k:int -> a:(Complex.t, a) mat -> tau:(Complex.t, a) mat -> (Complex.t, a) mat
+  = fun ?k ~a ~tau ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let minmn = Pervasives.min m n in
+  let k = match k with
+    | Some k -> k
+    | None   -> Owl_dense_matrix_generic.numel tau
+  in
+  assert (k <= minmn);
+  assert (k <= Owl_dense_matrix_generic.numel tau);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let lda = Pervasives.max 1 (_stride a) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _tau = bigarray_start Ctypes_static.Array2 tau in
+
+  let ret = match _kind with
+    | Complex32 -> L.cunglq layout minmn n k _a lda _tau
+    | Complex64 -> L.zunglq layout minmn n k _a lda _tau
+  in
+  check_lapack_error ret;
+  (* extract the first leading rows if necessary *)
+  match minmn < m with
+  | true  -> Owl_dense_matrix_generic.slice [[0;minmn-1]; []] a
+  | false -> a
+
+
 let orgqr
   : type a. ?k:int -> a:(float, a) mat -> tau:(float, a) mat -> (float, a) mat
   = fun ?k ~a ~tau ->
@@ -1669,6 +1701,37 @@ let orgqr
   let ret = match _kind with
     | Float32   -> L.sorgqr layout m minmn k _a lda _tau
     | Float64   -> L.dorgqr layout m minmn k _a lda _tau
+  in
+  check_lapack_error ret;
+  (* extract the first leading columns if necessary *)
+  match minmn < n with
+  | true  -> Owl_dense_matrix_generic.slice [[]; [0;minmn-1]] a
+  | false -> a
+
+
+let ungqr
+  : type a. ?k:int -> a:(Complex.t, a) mat -> tau:(Complex.t, a) mat -> (Complex.t, a) mat
+  = fun ?k ~a ~tau ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  let minmn = Pervasives.min m n in
+  let k = match k with
+    | Some k -> k
+    | None   -> Owl_dense_matrix_generic.numel tau
+  in
+  assert (k <= minmn);
+  assert (k <= Owl_dense_matrix_generic.numel tau);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let lda = Pervasives.max 1 (_stride a) in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let _tau = bigarray_start Ctypes_static.Array2 tau in
+
+  let ret = match _kind with
+    | Complex32   -> L.cungqr layout m minmn k _a lda _tau
+    | Complex64   -> L.zungqr layout m minmn k _a lda _tau
   in
   check_lapack_error ret;
   (* extract the first leading columns if necessary *)
@@ -2698,6 +2761,34 @@ let sytrf
   a, ipiv, ret
 
 
+let sytrf_rook
+  : type a b. uplo:char -> a:(a, b) mat -> (a, b) mat * (int32, int32_elt) mat * int
+  = fun ~uplo ~a ->
+  assert (uplo = 'U' || uplo = 'L');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let ipiv = Array2.create int32 _layout 1 n in
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Float32   -> L.ssytrf_rook layout uplo n _a lda _ipiv
+    | Float64   -> L.dsytrf_rook layout uplo n _a lda _ipiv
+    | Complex32 -> L.csytrf_rook layout uplo n _a lda _ipiv
+    | Complex64 -> L.zsytrf_rook layout uplo n _a lda _ipiv
+    | _         -> failwith "lapacke:sytrf_rook"
+  in
+  check_lapack_error ret;
+  a, ipiv, ret
+
+
 let sytri
   : type a b. uplo:char -> a:(a, b) mat -> (a, b) mat
   = fun ~uplo ~a ->
@@ -2787,7 +2878,7 @@ let hesv
 
 
 let hetrf
-  : type a. uplo:char -> a:(Complex.t, a) mat -> (Complex.t, a) mat * (int32, int32_elt) mat
+  : type a b. uplo:char -> a:(a, b) mat -> (a, b) mat * (int32, int32_elt) mat * int
   = fun ~uplo ~a ->
   assert (uplo = 'U' || uplo = 'L');
 
@@ -2806,9 +2897,36 @@ let hetrf
   let ret = match _kind with
     | Complex32 -> L.chetrf layout uplo n _a lda _ipiv
     | Complex64 -> L.zhetrf layout uplo n _a lda _ipiv
+    | _         -> failwith "lapacke:hetrf"
   in
   check_lapack_error ret;
-  a, ipiv
+  a, ipiv, ret
+
+
+let hetrf_rook
+  : type a b. uplo:char -> a:(a, b) mat -> (a, b) mat * (int32, int32_elt) mat * int
+  = fun ~uplo ~a ->
+  assert (uplo = 'U' || uplo = 'L');
+
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let ipiv = Array2.create int32 _layout 1 n in
+  let _ipiv = bigarray_start Ctypes_static.Array2 ipiv in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Complex32 -> L.chetrf_rook layout uplo n _a lda _ipiv
+    | Complex64 -> L.zhetrf_rook layout uplo n _a lda _ipiv
+    | _         -> failwith "lapacke:hetrf_rook"
+  in
+  check_lapack_error ret;
+  a, ipiv, ret
 
 
 let hetri
@@ -3163,6 +3281,30 @@ let orghr
   let ret = match _kind with
     | Float32   -> L.sorghr layout n ilo ihi _a lda _tau
     | Float64   -> L.dorghr layout n ilo ihi _a lda _tau
+  in
+  check_lapack_error ret;
+  a
+
+
+let unghr
+  : type a. ilo:int -> ihi:int -> a:(Complex.t, a) mat -> tau:(Complex.t, a) mat -> (Complex.t, a) mat
+  = fun ~ilo ~ihi ~a ~tau ->
+  let m = Array2.dim1 a in
+  let n = Array2.dim2 a in
+  assert (m = n);
+  let n_tau = Owl_dense_matrix_generic.numel tau in
+  assert (n_tau = n - 1);
+  let _kind = Array2.kind a in
+  let _layout = Array2.layout a in
+  let layout = lapacke_layout _layout in
+
+  let _tau = bigarray_start Ctypes_static.Array2 tau in
+  let _a = bigarray_start Ctypes_static.Array2 a in
+  let lda = Pervasives.max 1 (_stride a) in
+
+  let ret = match _kind with
+    | Complex32 -> L.cunghr layout n ilo ihi _a lda _tau
+    | Complex64 -> L.zunghr layout n ilo ihi _a lda _tau
   in
   check_lapack_error ret;
   a

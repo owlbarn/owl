@@ -36,6 +36,10 @@ val logspace : ?base:float -> elt -> elt -> int -> arr
 
 val bernoulli : ?p:float -> ?seed:int -> int array -> arr
 
+val complex : cast_arr -> cast_arr -> arr
+
+val polar : cast_arr -> cast_arr -> arr
+
 
 (** {6 Obtain basic properties} *)
 
@@ -240,6 +244,18 @@ val load : string -> arr
 
 (** {6 Unary mathematical operations } *)
 
+val min : arr -> elt
+
+val max : arr -> elt
+
+val minmax : arr -> elt * elt
+
+val min_i : arr -> elt * int array
+
+val max_i : arr -> elt * int array
+
+val minmax_i : arr -> (elt * (int array)) * (elt * (int array))
+
 val re : arr -> cast_arr
 
 val im : arr -> cast_arr
@@ -268,6 +284,52 @@ val cumsum : ?axis:int -> arr -> arr
 
 val cumprod : ?axis:int -> arr -> arr
 
+val sqr : arr -> arr
+
+val sqrt : arr -> arr
+
+val cbrt : arr -> arr
+
+val exp : arr -> arr
+
+val exp2 : arr -> arr
+
+val exp10 : arr -> arr
+
+val expm1 : arr -> arr
+
+val log : arr -> arr
+
+val log10 : arr -> arr
+
+val log2 : arr -> arr
+
+val log1p : arr -> arr
+
+val sin : arr -> arr
+
+val cos : arr -> arr
+
+val tan : arr -> arr
+
+val asin : arr -> arr
+
+val acos : arr -> arr
+
+val atan : arr -> arr
+
+val sinh : arr -> arr
+
+val cosh : arr -> arr
+
+val tanh : arr -> arr
+
+val asinh : arr -> arr
+
+val acosh : arr -> arr
+
+val atanh : arr -> arr
+
 val floor : arr -> arr
 
 val ceil : arr -> arr
@@ -277,6 +339,10 @@ val round : arr -> arr
 val trunc : arr -> arr
 
 val modf : arr -> arr * arr
+
+val angle : arr -> arr
+
+val proj : arr -> arr
 
 
 (** {6 Binary mathematical operations } *)
@@ -308,6 +374,16 @@ val scalar_div : elt -> arr -> arr
 val ssqr : arr -> elt -> elt
 
 val ssqr_diff : arr -> arr -> elt
+
+val min2 : arr -> arr -> arr
+
+val max2 : arr -> arr -> arr
+
+val pow : arr -> arr -> arr
+
+val scalar_pow : elt -> arr -> arr
+
+val pow_scalar : arr -> elt -> arr
 
 
 (** {6 Experimental functions} *)

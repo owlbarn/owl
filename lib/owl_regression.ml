@@ -11,7 +11,7 @@
 
 module MX = Owl_dense_matrix_d
 
-type dsmat = Owl_dense_matrix_d.mat
+type dsmat = Owl_dense.Matrix.D.mat
 type vector = Gsl.Vector.vector
 
 (** [ Linear regression with single variables ]  *)
