@@ -975,18 +975,9 @@ let _draw_extended_line x0 y0 x1 y1 l r u d =
   let _ = pllsty 3; pljoin xl yl x0 y0 in
   let _ = pllsty 3; pljoin x1 y1 xr yr in ()
 
-let probplot ?(h=_default_handle) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q 1.))
-    ?(noref=false) x =
-    (*
-    In our implementation of probplot, we choose a Matlab-like definition: for the i-th point on the figure,
-    x-axis is the sorted input sample data x[i], and y-axis is the inverseCDF (for different distribution type) of
-    meadian (i - 0.5)/n, where n is the length of input data, and the y-axis is then shown as corrsponding
-    probability p = cdf(y) * 100%.
-    The same definition also applies to normplot and wblplot.
-    *)
+let probplot ?(h=_default_handle) ?(marker="#[0x002b]") ?(color=(-1, -1, -1))  ?(marker_size = 3.) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q 1.)) ?(noref=false) x =
 
-    (* TODO: show y-axis as probability instead of invcdf; Choose suitable yticks
-    for different distribution; support for censor data, frequency *)
+    (* TODO: show y-axis as probability instead of invcdf; Choose suitable yticks for different distribution; support for censor data, frequency *)
 
     (* Inputs *)
     let open Plplot in
@@ -999,9 +990,6 @@ let probplot ?(h=_default_handle) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q
     in
     let _ = _adjust_range h x `X in
     let _ = _adjust_range h y `Y in
-    (* default settings *)
-    let marker = "#[0x002b]" in
-    let color  = (-1,-1,-1) in
     (* Parameters to draw the reference line *)
     let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
     let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
@@ -1015,7 +1003,6 @@ let probplot ?(h=_default_handle) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q
         let r', g', b' = plgcol0 1 in
         let _ = plscol0 1 r g b; plcol0 1 in
         let c' = plgchr () |> fst in
-        let marker_size = 3. in
         let _ = plschr marker_size 1. in
         let _ = if not noref then _draw_extended_line p1x p1y p3x p3y left right up down in
         let _ = plstring x y marker in
@@ -1029,14 +1016,12 @@ let probplot ?(h=_default_handle) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q
     _add_legend_item p SCATTER 0 color marker color 0 color;
     if not h.holdon then output h
 
-let normplot ?(h=_default_handle) x =
+let normplot ?(h=_default_handle) ?(marker="#[0x002b]") ?(color=(-1, -1, -1))  ?(marker_size = 3.) ?(sigma=1.) x =
   (* TODO: replace yticklabels, including unseen tick labels,  with user-defined labels *)
-  probplot ~h x
+  let dist = fun q -> Owl_stats.Cdf.gaussian_Pinv q sigma in
+  probplot ~h ~marker:marker ~color:color ~marker_size:marker_size ~dist:dist x
 
-let wblplot ?(h=_default_handle) ?(lambda=1.) ?(k=1.) x =
-  (* Currently user need to specify the weibull distribution parameters lambda
-  and k explicitly. By default, (lambda, k) = (1., 1.) *)
-
+let wblplot ?(h=_default_handle) ?(marker="#[0x002b]") ?(color=(-1, -1, -1))  ?(marker_size = 3.) ?(lambda=1.) ?(k=1.) x =
   (* inputs *)
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
@@ -1051,10 +1036,6 @@ let wblplot ?(h=_default_handle) ?(lambda=1.) ?(k=1.) x =
   in
   let _ = _adjust_range h x `X in
   let _ = _adjust_range h y `Y in
-  (* default settings *)
-  let marker = "#[0x002b]" in
-  let color  = (-1,-1,-1) in
-  let marker_size = 3. in
   (* Parameters to draw the reference line *)
   let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
   let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
@@ -1094,11 +1075,6 @@ let _ecdf_dist a b p =
 
 let qqplot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker_size=4.)
   ?(pd=(fun i -> Owl_stats.Cdf.gaussian_Pinv i 1.)) ?x y =
-  (* If the second argument x is a vector, the empirical CDF of it is used as distribtion;
-    else the qqplot is similar to probplot.
-    If both vectors are not of the same length, users are explected to input the
-    longer one as x, and the shorter one y.*)
-
   (* TODO: support matrix input; add support for `pvec` argument;
     plot the larger data input on x-axis *)
   let open Plplot in
