@@ -18,3 +18,16 @@ _build/
 # oasis generated files
 setup.data
 setup.log
+
+# Other files
+setup.ml
+owldoc.odocl
+myocamlbuild.ml
+_tags
+lib/libowl_stubs.clib
+lib/META
+lib/owl.mldylib
+lib/owl.mllib
+perftest/META
+perftest/perf_common.mldylib
+perftest/perf_common.mllib
