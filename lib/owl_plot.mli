@@ -116,8 +116,36 @@ val heatmap : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 
 (** Advanced statistical plot *)
 
-val normplot : ?h:handle -> dsmat -> unit
+val probplot :
+  ?h:handle ->
+  ?marker:string -> ?color:int * int * int -> ?marker_size:float ->
+  ?dist:(float -> float) -> ?noref:bool -> dsmat -> unit
+(**
+  [probplot dist x] creates a probability plot comparing the distribution of the data in [x] to the given distribution. The [dist] is set to standard normal distribution by default.
 
+  Note that in our implementation of probplot, we choose a Matlab-like definition: for the i-th point on the figure, x-axis is the sorted input sample data x.(i), and y-axis is the inverseCDF (for different [dist]) of meadian [(i - 0.5)/n], where n is the length of input data,
 
+  The y-axis is to be updated to corrsponding probability p = cdf(y) * 100%.
+
+  The same definition also applies to normplot and wblplot.
+*)
+
+val normplot : ?h:handle -> ?marker:string -> ?color:int * int * int -> ?marker_size:float -> ?sigma:float -> dsmat -> unit
+(**
+  [normalplot sigma x] is probplot with normal distribution. User need to specify the [sigma] of distribution or the default value 1 will be used.
+*)
+
+val wblplot : ?h:handle -> ?marker:string -> ?color:int * int * int -> ?marker_size:float -> ?lambda:float -> ?k:float -> dsmat -> unit
+(**
+  [wblplot lambda k x] is probplot with weibull distribution. Currently user need to specify the weibull distribution parameters [lambda] and [k] explicitly. By default, (lambda, k) = (1., 1.). [wblplot] applies log-scale on x-axis.
+*)
+
+val qqplot : ?h:handle -> ?color:int * int * int -> ?marker_size:float ->   ?pd:(float -> float) -> ?x:dsmat -> dsmat -> unit
+(**
+  [qqplot y dist] displays a quantile-quantile plot of the quantiles of the sample data x versus the theoretical quantiles values from [dist], which by default is standard normal distribution. If the second argument [x] is a vector, the empirical CDF of it is used as the distribtion of x-axis data, otherwise the qqplot is similar to [probplot], showing the inverseCDF of meadian [(i - 0.5)/n] on x-axis.
+
+  If input vectors are not of the same length, users are explected to input the
+  longer one as x, and the shorter one y.
+*)
 
 (** Other plots *)
