@@ -1,6 +1,8 @@
 ### 0.3.0 (in progress)
 
-* Support more hypothesis test function in Owl.Stats module.
+* Enhance basic math operations for complex numbers.
+* Add more plotting functions.
+* Add more hypothesis test functions in Owl.Stats module.
 * Support both numerical and algorithmic differentiation in Algodiff.
 * Support both matrices and n-dimensional arrays in Algodiff module.
 * Support interoperation of different number types in Ext and new operators.
@@ -8,7 +10,6 @@
 * Support n-dimensional array of any types in Dense.Ndarray.Any module.
 * Support simple feedforward and convolutional neural networks.
 * Support experimental distributed and parallel computing.
-
 
 ### 0.2.0 (2017-01-20)
 

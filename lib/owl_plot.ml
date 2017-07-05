@@ -975,7 +975,7 @@ let _draw_extended_line x0 y0 x1 y1 l r u d =
   let _ = pllsty 3; pljoin xl yl x0 y0 in
   let _ = pllsty 3; pljoin x1 y1 xr yr in ()
 
-let probplot ?(h=_default_handle) ?(marker="#[0x002b]") ?(color=(-1, -1, -1))  ?(marker_size = 3.) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q 1.)) ?(noref=false) x =
+let probplot ?(h=_default_handle) ?(marker="#[0x002b]") ?(color=(-1, -1, -1)) ?(marker_size = 3.) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q 1.)) ?(noref=false) x =
 
     (* TODO: show y-axis as probability instead of invcdf; Choose suitable yticks for different distribution; support for censor data, frequency *)
 
@@ -1016,12 +1016,12 @@ let probplot ?(h=_default_handle) ?(marker="#[0x002b]") ?(color=(-1, -1, -1))  ?
     _add_legend_item p SCATTER 0 color marker color 0 color;
     if not h.holdon then output h
 
-let normplot ?(h=_default_handle) ?(marker="#[0x002b]") ?(color=(-1, -1, -1))  ?(marker_size = 3.) ?(sigma=1.) x =
+let normplot ?(h=_default_handle) ?(marker="#[0x002b]") ?(color=(-1, -1, -1)) ?(marker_size = 3.) ?(sigma=1.) x =
   (* TODO: replace yticklabels, including unseen tick labels,  with user-defined labels *)
   let dist = fun q -> Owl_stats.Cdf.gaussian_Pinv q sigma in
   probplot ~h ~marker:marker ~color:color ~marker_size:marker_size ~dist:dist x
 
-let wblplot ?(h=_default_handle) ?(marker="#[0x002b]") ?(color=(-1, -1, -1))  ?(marker_size = 3.) ?(lambda=1.) ?(k=1.) x =
+let wblplot ?(h=_default_handle) ?(marker="#[0x002b]") ?(color=(-1, -1, -1)) ?(marker_size = 3.) ?(lambda=1.) ?(k=1.) x =
   (* inputs *)
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in

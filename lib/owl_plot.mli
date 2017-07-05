@@ -19,6 +19,10 @@ type color = RED | GREEN | BLUE
 type legend_position = North | South | West | East | NorthWest | NorthEast | SouthWest | SouthEast
 
 
+
+(** {6 Config functions} *)
+
+
 val create : ?m:int -> ?n:int -> string -> handle
 
 val subplot : handle -> int -> int -> unit
@@ -65,6 +69,9 @@ val legend_on : handle -> ?position:legend_position -> string array -> unit
 
 val legend_off : handle -> unit
 
+
+(** {6 Basic plot functions} *)
+
 (** Line style is an integer ranging from 1 to 8. *)
 
 val plot : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> unit
@@ -101,7 +108,9 @@ val boxplot : ?h:handle -> ?color:int * int * int -> dsmat -> unit
 
 val pie : ?h:handle -> ?color:int * int * int -> ?fill:bool -> dsmat -> unit
 
-(** Plot 3D figures *)
+
+(** {6 3D plot functions} *)
+
 
 val plot3d : ?h:handle -> ?contour:bool -> ?altitude:float -> ?azimuth:float -> dsmat -> dsmat -> dsmat -> unit
 (** [plot3d] is just an alias of [surf] function. *)
@@ -114,7 +123,9 @@ val contour : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 
 val heatmap : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 
-(** Advanced statistical plot *)
+
+(** {6 Advanced statistical plot} *)
+
 
 val probplot :
   ?h:handle ->
@@ -147,5 +158,3 @@ val qqplot : ?h:handle -> ?color:int * int * int -> ?marker_size:float ->   ?pd:
   If input vectors are not of the same length, users are explected to input the
   longer one as x, and the shorter one y.
 *)
-
-(** Other plots *)
