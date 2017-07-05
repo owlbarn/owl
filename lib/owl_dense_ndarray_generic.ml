@@ -2507,41 +2507,29 @@ let draw_along_dim0 x n =
 
 
 (* TODO: optimise performance, slow along the low dimension *)
-let cumulative_op
-  : type a b. ?axis:int -> (a, b) Owl_dense_common.owl_vec_op99 -> (a, b) t -> (a, b) t
-  = fun ?axis _cumop x ->
+let cumulative_op ?axis _cumop x =
   let y = clone x in
-  let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
-  match axis with
-  | Some a -> (
-      let ndim = num_dims x in
-      assert (0 <= a && a < ndim);
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None   -> d - 1
+  in
+  assert (0 <= a && a < d);
 
-      let _stride = strides x in
-      let _slicez = slice_size x in
-      let m = (numel x) / _slicez.(a) in
-      let n = _stride.(a) in
-      let k = (shape x).(a) in
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = _slicez.(a) - _stride.(a) in
+  let incx_m = _slicez.(a) in
+  let incx_n = 1 in
+  let incy_m = _slicez.(a) in
+  let incy_n = 1 in
+  let ofsx = 0 in
+  let ofsy = _stride.(a) in
 
-      let ofsm = ref 0 in
-      let incx = _stride.(a) in
-      let incy = _stride.(a) in
-      let incm = _slicez.(a) in
-
-      for i = 0 to m - 1 do
-        for j = 0 to n - 1 do
-          _cumop k ~ofsx:(!ofsm+j) ~incx ~ofsy:(!ofsm+j) ~incy x' y'
-        done;
-        ofsm := !ofsm + incm
-      done;
-      y
-    )
-  | None -> (
-      let k = numel x in
-      _cumop k ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 x' y';
-      y
-    )
+  _cumop m n y' ofsx incx_m incx_n y' ofsy incy_m incy_n;
+  y
 
 
 let cumsum ?axis x =
