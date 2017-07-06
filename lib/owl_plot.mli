@@ -186,55 +186,86 @@ val boxplot : ?h:handle -> ?spec:spec list -> dsmat -> unit
 val pie : ?h:handle -> ?spec:spec list -> dsmat -> unit
 (** [pie x] generates a pie chart of [x].
 
-  Parameters: [RGB], [Fill]
+  Parameters: [RGB], [Fill].
  *)
 
 
 (** {6 3D plot functions} *)
 
 
-val plot3d : ?h:handle -> ?contour:bool -> ?altitude:float -> ?azimuth:float -> dsmat -> dsmat -> dsmat -> unit
+val plot3d : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 (** [plot3d] is just an alias of [surf] function. *)
 
-val surf : ?h:handle -> ?contour:bool -> ?altitude:float -> ?azimuth:float -> dsmat -> dsmat -> dsmat -> unit
 
-val mesh : ?h:handle -> ?contour:bool -> ?altitude:float -> ?azimuth:float -> dsmat -> dsmat -> dsmat -> unit
+val surf : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
+(** [surf x y z] generates a surface plot defined by [x], [y], and [z].
+
+  Parameters: [Contour], [Altitude], [Azimuth].
+ *)
+
+val mesh : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
+(** [mesh x y z] generates a mesh plot defined by [x], [y], and [z].
+
+  Parameters: [Contour], [Altitude], [Azimuth].
+ *)
 
 val contour : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
+(** [contour x y z] generates a contour plot defined by [x], [y], and [z].
+ *)
+
 
 val heatmap : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
+(** [heatmap x y z] generates a heatmap defined by [x], [y], and [z].
+ *)
 
 
 (** {6 Advanced statistical plot} *)
 
 
-val probplot :
-  ?h:handle ->
-  ?marker:string -> ?color:int * int * int -> ?marker_size:float ->
-  ?dist:(float -> float) -> ?noref:bool -> dsmat -> unit
+val probplot : ?h:handle -> ?spec:spec list -> ?dist:(float -> float) -> ?noref:bool -> dsmat -> unit
 (**
-  [probplot dist x] creates a probability plot comparing the distribution of the data in [x] to the given distribution. The [dist] is set to standard normal distribution by default.
+  [probplot dist x] creates a probability plot comparing the distribution of
+  the data in [x] to the given distribution. The [dist] is set to standard
+  normal distribution by default.
 
-  Note that in our implementation of probplot, we choose a Matlab-like definition: for the i-th point on the figure, x-axis is the sorted input sample data x.(i), and y-axis is the inverseCDF (for different [dist]) of meadian [(i - 0.5)/n], where n is the length of input data,
+  Note that in our implementation of probplot, we choose a Matlab-like
+  definition: for the i-th point on the figure, x-axis is the sorted input
+  sample data x.(i), and y-axis is the inverseCDF (for different [dist]) of
+  meadian [(i - 0.5)/n], where n is the length of input data,
 
-  The y-axis is to be updated to corrsponding probability p = cdf(y) * 100%.
+  The y-axis is to be updated to corrsponding probability [p = cdf(y) * 100%].
 
   The same definition also applies to normplot and wblplot.
+
+  Parameters: [RGB], [Marker], [MarkerSize].
 *)
 
-val normplot : ?h:handle -> ?marker:string -> ?color:int * int * int -> ?marker_size:float -> ?sigma:float -> dsmat -> unit
+val normplot : ?h:handle -> ?spec:spec list -> ?sigma:float -> dsmat -> unit
 (**
-  [normalplot sigma x] is probplot with normal distribution. User need to specify the [sigma] of distribution or the default value 1 will be used.
+  [normalplot sigma x] is probplot with normal distribution. User need to
+  specify the [sigma] of distribution or the default value 1 will be used.
+
+  Parameters: [RGB], [Marker], [MarkerSize].
 *)
 
-val wblplot : ?h:handle -> ?marker:string -> ?color:int * int * int -> ?marker_size:float -> ?lambda:float -> ?k:float -> dsmat -> unit
+val wblplot : ?h:handle -> ?spec:spec list -> ?lambda:float -> ?k:float -> dsmat -> unit
 (**
-  [wblplot lambda k x] is probplot with weibull distribution. Currently user need to specify the weibull distribution parameters [lambda] and [k] explicitly. By default, (lambda, k) = (1., 1.). [wblplot] applies log-scale on x-axis.
+  [wblplot lambda k x] is probplot with weibull distribution. Currently user
+  need to specify the weibull distribution parameters [lambda] and [k]
+  explicitly. By default, (lambda, k) = (1., 1.). [wblplot] applies log-scale
+  on x-axis.
+
+  Parameters: [RGB], [Marker], [MarkerSize].
 *)
 
-val qqplot : ?h:handle -> ?color:int * int * int -> ?marker_size:float ->   ?pd:(float -> float) -> ?x:dsmat -> dsmat -> unit
+val qqplot : ?h:handle -> ?spec:spec list -> ?pd:(float -> float) -> ?x:dsmat -> dsmat -> unit
 (**
-  [qqplot y dist] displays a quantile-quantile plot of the quantiles of the sample data x versus the theoretical quantiles values from [dist], which by default is standard normal distribution. If the second argument [x] is a vector, the empirical CDF of it is used as the distribtion of x-axis data, otherwise the qqplot is similar to [probplot], showing the inverseCDF of meadian [(i - 0.5)/n] on x-axis.
+  [qqplot y dist] displays a quantile-quantile plot of the quantiles of the
+  sample data x versus the theoretical quantiles values from [dist], which by
+  default is standard normal distribution. If the second argument [x] is a
+  vector, the empirical CDF of it is used as the distribtion of x-axis data,
+  otherwise the qqplot is similar to [probplot], showing the inverseCDF of
+  meadian [(i - 0.5)/n] on x-axis.
 
   If input vectors are not of the same length, users are explected to input the
   longer one as x, and the shorter one y.
