@@ -85,20 +85,34 @@ val legend_off : handle -> unit
 
 (** Line style is an integer ranging from 1 to 8. *)
 
-val plot : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> unit
+val plot : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> unit
+(** [plot x y] plots [y] as a function of [x].
 
-val plot' : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> unit
-(** [plot ] *)
+  Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
+ *)
 
-val plot_fun : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> ?line_style:int -> ?line_width:float -> (float -> float) -> float -> float -> unit
+val plot_fun : ?h:handle -> ?spec:spec list -> (float -> float) -> float -> float -> unit
+(** [plot_fun f a b] generates a line plot for function [f : float -> float]
+  in the interval [a, b].
+
+  Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
+ *)
 
 val scatter : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> dsmat -> dsmat -> unit
 
 val histogram : ?h:handle -> ?color:int * int * int -> ?bin:int -> dsmat -> unit
 
-val ecdf : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_width:float -> dsmat -> unit
+val ecdf : ?h:handle -> ?spec:spec list -> dsmat -> unit
+(** [ecdf x]
 
-val stairs : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> unit
+  Parameters: [RGB], [LineStyle], [LineWidth].
+ *)
+
+val stairs : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> unit
+(** [stairs x y]
+
+  Parameters: [RGB], [LineStyle], [LineWidth].
+ *)
 
 val stem : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> unit
 

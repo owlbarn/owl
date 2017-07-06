@@ -455,47 +455,8 @@ let _adjust_range ?(margin=0.) h d axis =
   | `Y -> if p.auto_yrange then p.yrange <- _union_range margin p.yrange d
   | `Z -> if p.auto_zrange then p.zrange <- _union_range margin p.zrange d
 
-let plot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) x y =
-  let open Plplot in
-  let x = Owl_dense_matrix.D.to_array x in
-  let y = Owl_dense_matrix.D.to_array y in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
-  (* prepare the closure *)
-  let p = h.pages.(h.current_page) in
-  let color = if color = (-1,-1,-1) then p.fgcolor else color in
-  let r, g, b = color in
-  let old_pensize = h.pensize in
-  let f = (fun () ->
-    let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
-    let _ = if line_width > (-1.) then plwidth line_width in
-    let c' = plgchr () |> fst in
-    let _ = plschr marker_size 1. in
-    let _ = match line_style > 0 && line_style < 9 with
-      | true  -> pllsty line_style; plline x y
-      | false -> ()
-    in
-    let _ = match marker = "" with
-      | true  -> ()
-      | false -> (
-          let x', y' = _thinning x, _thinning y in
-          plstring x' y' marker )
-    in
-    (* restore original settings *)
-    let _ = plschr c' 1. in
-    let _ = plwidth old_pensize in
-    let _ = pllsty 1 in
-    plscol0 1 r' g' b'; plcol0 1
-  ) in
-  (* add closure as a layer *)
-  p.plots <- Array.append p.plots [|f|];
-  (* add legend item to page *)
-  _add_legend_item p LINE line_style color marker color 0 color;
-  if not h.holdon then output h
 
-
-let plot' ?(h=_default_handle) ?(spec=[]) x y =
+let plot ?(h=_default_handle) ?(spec=[]) x y =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
@@ -541,10 +502,11 @@ let plot' ?(h=_default_handle) ?(spec=[]) x y =
   if not h.holdon then output h
 
 
-let plot_fun ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) f a b =
+let plot_fun ?(h=_default_handle) ?(spec=[]) f a b =
   let x = Owl_dense_matrix.D.linspace a b 100 in
   let y = Owl_dense_matrix.D.map f x in
-  plot ~h ~color ~marker ~marker_size ~line_style ~line_width x y
+  plot ~h ~spec x y
+
 
 let scatter ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_size=4.) x y =
   let open Plplot in
@@ -571,6 +533,7 @@ let scatter ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_si
   (* add legend item to page *)
   _add_legend_item p SCATTER 0 color marker color 0 color;
   if not h.holdon then output h
+
 
 let histogram ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(bin=10) x =
   let open Plplot in
@@ -867,7 +830,7 @@ let _ecdf_interleave x i =
   ) x
   in y
 
-let ecdf ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) x =
+let ecdf ?(h=_default_handle) ?(spec=[]) x =
   let x0 = Owl_dense_matrix.D.to_array x in
   let x, y = Owl_stats.ecdf x0 in
   let x = _ecdf_interleave x 0 in
@@ -875,9 +838,9 @@ let ecdf ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(
   let n = Array.length x in
   let x = Owl_dense_matrix.D.of_array x n 1 in
   let y = Owl_dense_matrix.D.of_array y n 1 in
-  plot ~h ~color ~line_style ~line_width x y
+  plot ~h ~spec x y
 
-let stairs ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) x y =
+let stairs ?(h=_default_handle) ?(spec=[]) x y =
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
   let x = _ecdf_interleave x 0 in
@@ -887,7 +850,7 @@ let stairs ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width
   let n = Array.length x in
   let x = Owl_dense_matrix.D.of_array x n 1 in
   let y = Owl_dense_matrix.D.of_array y n 1 in
-  plot ~h ~color ~line_style ~line_width x y
+  plot ~h ~spec x y
 
 let draw_circle ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) ?(fill_pattern=0) x y rr =
   let open Plplot in
