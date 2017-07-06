@@ -98,9 +98,17 @@ val plot_fun : ?h:handle -> ?spec:spec list -> (float -> float) -> float -> floa
   Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
  *)
 
-val scatter : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> dsmat -> dsmat -> unit
+val scatter : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> unit
+(** [scatter x y] generates a scatter plot of [y] as a function of [x].
 
-val histogram : ?h:handle -> ?color:int * int * int -> ?bin:int -> dsmat -> unit
+  Parameters: [RGB], [Marker], [MarkerSize].
+ *)
+
+val histogram : ?h:handle -> ?spec:spec list -> ?bin:int -> dsmat -> unit
+(** [histogram x] generates a histogram of [x] with the number [bin].
+
+  Parameters: [RGB].
+ *)
 
 val ecdf : ?h:handle -> ?spec:spec list -> dsmat -> unit
 (** [ecdf x]
@@ -114,27 +122,72 @@ val stairs : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> unit
   Parameters: [RGB], [LineStyle], [LineWidth].
  *)
 
-val stem : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> unit
+val stem : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> unit
+(** [stem x] generates a stem plot of [y] as a function of [x].
 
-val autocorr : ?h:handle -> ?marker:string -> ?marker_size:float -> dsmat -> unit
+  Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
+ *)
 
-val text : ?h:handle -> ?color:int * int * int -> float -> float -> ?dx:float -> ?dy:float -> string -> unit
+val autocorr : ?h:handle -> ?spec:spec list -> dsmat -> unit
+(** [autocorr x] generates an autocorrelation plot of [x].
 
-val draw_line: ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_width:float -> float -> float -> float -> float -> unit
+  Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
+ *)
 
-val draw_rect : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?fill_pattern:int -> float -> float -> float -> float -> unit
+val text : ?h:handle -> ?spec:spec list -> float -> float -> ?dx:float -> ?dy:float -> string -> unit
+(** [text x y s] draws a text string at [(x,y)]. [dx] and [dy] indicate ...
 
-val draw_circle : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_width:float -> ?fill_pattern:int -> float -> float -> float -> unit
+  Parameters: [RGB].
+ *)
 
-val bar : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?fill_pattern:int -> dsmat -> unit
+val draw_line: ?h:handle -> ?spec:spec list -> float -> float -> float -> float -> unit
+(** [draw_line x0 y0 x1 y0] draws a straight line from [(x0,y0)] to [(x1,y1)].
 
-val area : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?fill_pattern:int -> dsmat -> dsmat -> unit
+  Parameters: [RGB], [LineStyle], [LineWidth].
+ *)
 
-val error_bar : ?h:handle -> ?color:int * int * int -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> dsmat -> unit
+val draw_rect : ?h:handle -> ?spec:spec list -> float -> float -> float -> float -> unit
+(** [draw_rect x0 y0 x1 y1] draws a rectangle with top-left point at [(x0,y0)]
+  and bottom-right point at [(x1,y1)].
 
-val boxplot : ?h:handle -> ?color:int * int * int -> dsmat -> unit
+  Parameters: [RGB], [LineStyle], [FillPattern].
+ *)
 
-val pie : ?h:handle -> ?color:int * int * int -> ?fill:bool -> dsmat -> unit
+val draw_circle : ?h:handle -> ?spec:spec list -> float -> float -> float -> unit
+(** [draw_circle x y r] draws a circle at point [(x,y)] of radius [r].
+
+  Parameters: [RGB], [LineStyle], [LineWidth], [FillPattern].
+ *)
+
+val bar : ?h:handle -> ?spec:spec list -> dsmat -> unit
+(** [bar x] draws a bar chart of [x].
+
+  Parameters: [RGB], [LineStyle], [FillPattern].
+ *)
+
+val area : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> unit
+(** [area x y] fills the area specified by [x] and [y].
+
+  Parameters: [RGB], [LineStyle], [FillPattern].
+ *)
+
+val error_bar : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
+(** [error_bar x y] generates a line plot of [x] and [y] with error bars.
+
+  Parameters: [RGB], [LineStyle], [LineWidth].
+ *)
+
+val boxplot : ?h:handle -> ?spec:spec list -> dsmat -> unit
+(** [boxplot x] generates a box plot of [x].
+
+  Parameters: [RGB].
+ *)
+
+val pie : ?h:handle -> ?spec:spec list -> dsmat -> unit
+(** [pie x] generates a pie chart of [x].
+
+  Parameters: [RGB], [Fill]
+ *)
 
 
 (** {6 3D plot functions} *)

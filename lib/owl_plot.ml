@@ -138,6 +138,24 @@ let _get_marker_size l default_val =
   if k = 0 then default_val else List.nth l (k - 1)
 
 
+let _get_fill l default_val =
+  let l = l
+    |> List.filter (function Fill -> true | _ -> false)
+    |> List.map (function Fill -> true | _ -> default_val)
+  in
+  let k = List.length l in
+  if k = 0 then default_val else List.nth l (k - 1)
+
+
+let _get_fill_pattern l default_val =
+  let l = l
+    |> List.filter (function FillPattern _ -> true | _ -> false)
+    |> List.map (function FillPattern x -> x | _ -> default_val)
+  in
+  let k = List.length l in
+  if k = 0 then default_val else List.nth l (k - 1)
+
+
 (* module functions to simplify plotting *)
 
 let _create_page () = {
@@ -418,11 +436,13 @@ let legend_off h = (h.pages.(h.current_page)).legend <- false
 let rgb = None
 
 (*FIXME: plptex3 to write text inside the viewport of a 3D plot*)
-let text ?(h=_default_handle) ?(color=(-1,-1,-1)) x y ?(dx=0.) ?(dy=0.) s =
+let text ?(h=_default_handle) ?(spec=[]) x y ?(dx=0.) ?(dy=0.) s =
   let open Plplot in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = _get_rgb spec p.fgcolor in
+  let r, g, b = color in
+  (* drawing function *)
   let f = (fun () ->
     (*save original color index*)
     let r', g', b' = plgcol0 1 in
@@ -508,7 +528,7 @@ let plot_fun ?(h=_default_handle) ?(spec=[]) f a b =
   plot ~h ~spec x y
 
 
-let scatter ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_size=4.) x y =
+let scatter ?(h=_default_handle) ?(spec=[]) x y =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
@@ -516,8 +536,11 @@ let scatter ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_si
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = _get_rgb spec p.fgcolor in
   let r, g, b = color in
+  let marker = _get_marker spec "•" in
+  let marker_size = _get_marker_size spec 4. in
+  (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -535,7 +558,7 @@ let scatter ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="•") ?(marker_si
   if not h.holdon then output h
 
 
-let histogram ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(bin=10) x =
+let histogram ?(h=_default_handle) ?(spec=[]) ?(bin=10) x =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let _ = _adjust_range h x `X in
@@ -545,8 +568,9 @@ let histogram ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(bin=10) x =
   let _ = _adjust_range h [|ymin; ymax|] `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = _get_rgb spec p.fgcolor in
   let r, g, b = color in
+  (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -564,7 +588,7 @@ let subplot h i j =
   let _, n = h.shape in
   h.current_page <- (n * i + j)
 
-let stem ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="#[0x2299]") ?(marker_size=4.) ?(line_style=2) ?(line_width=(-1.)) x y =
+let stem ?(h=_default_handle) ?(spec=[]) x y =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
@@ -572,9 +596,14 @@ let stem ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="#[0x2299]") ?(marker
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = _get_rgb spec p.fgcolor in
   let r, g, b = color in
+  let marker = _get_marker spec "#[0x2299]" in
+  let marker_size = _get_marker_size spec 4. in
+  let line_style = _get_line_style spec 2 in
+  let line_width = _get_line_width spec (-1.) in
   let old_pensize = h.pensize in
+  (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -601,7 +630,7 @@ let stem ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="#[0x2299]") ?(marker
   _add_legend_item p LINE line_style color marker color 0 color;
   if not h.holdon then output h
 
-let autocorr ?(h=_default_handle) ?(marker="•") ?(marker_size=4.) x =
+let autocorr ?(h=_default_handle) ?(spec=[]) x =
   let z = Owl_dense_matrix.D.to_array x in
   let x' = Array.init (Array.length z) (fun i -> float_of_int i) in
   let y' = Array.mapi (fun i _ -> Owl_stats.autocorrelation ~lag:i z) x' in
@@ -609,9 +638,19 @@ let autocorr ?(h=_default_handle) ?(marker="•") ?(marker_size=4.) x =
   let y' = Owl_dense_matrix.D.of_arrays [|y'|] in
   let _ = set_xlabel h "Lag" in
   let _ = set_ylabel h "Autocorrelation" in
-  stem ~h ~marker ~marker_size ~line_style:1 x' y'
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let r, g, b = _get_rgb spec p.fgcolor in
+  let color = RGB (r, g, b) in
+  let marker = Marker (_get_marker spec "•") in
+  let marker_size = MarkerSize (_get_marker_size spec 4.) in
+  let line_style = LineStyle (_get_line_style spec 1) in
+  let line_width = LineWidth (_get_line_width spec (-1.)) in
+  let spec = [ color; marker; marker_size; line_style; line_width ] in
+  (* drawing function *)
+  stem ~h ~spec x' y'
 
-let draw_line ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) x0 y0 x1 y1 =
+let draw_line ?(h=_default_handle) ?(spec=[]) x0 y0 x1 y1 =
   let open Plplot in
   let x = [|x0; x1|] in
   let y = [|y0; y1|] in
@@ -619,8 +658,12 @@ let draw_line ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_wi
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = _get_rgb spec p.fgcolor in
+  let r, g, b = color in
+  let line_style = _get_line_style spec 1 in
+  let line_width = _get_line_width spec (-1.) in
   let old_pensize = h.pensize in
+  (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -638,8 +681,10 @@ let draw_line ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_wi
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
+
 (* TODO *)
 let plot_multi = None
+
 
 let _draw_error_bar ?(w=0.) x y e =
   let open Plplot in
@@ -657,7 +702,8 @@ let _draw_error_bar ?(w=0.) x y e =
   let y' = [|y-.e; y-.e|] in
   let _ = plline x' y' in ()
 
-let error_bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) x y e =
+
+let error_bar ?(h=_default_handle) ?(spec=[]) x y e =
   let open Plplot in
   let ymin = Owl_dense_matrix.D.(min(y - e)) in
   let ymax = Owl_dense_matrix.D.(max(y + e)) in
@@ -668,9 +714,13 @@ let error_bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_wi
   let _ = _adjust_range h [|ymin; ymax|] `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = _get_rgb spec p.fgcolor in
+  let r, g, b = color in
+  let line_style = _get_line_style spec 1 in
+  let line_width = _get_line_width spec (-1.) in
   let old_pensize = h.pensize in
   let w = let a, b = Owl_stats.minmax x in (a -. b) *. 0.02 in
+  (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -687,6 +737,7 @@ let error_bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_wi
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
+
 
 let _draw_whiskers_box w x y =
   let open Plplot in
@@ -706,7 +757,8 @@ let _draw_whiskers_box w x y =
   let y' = [|y3rd; ymax|] in
   let _ = pllsty 1; plline x' y' in ()
 
-let boxplot ?(h=_default_handle) ?(color=(-1,-1,-1)) y =
+
+let boxplot ?(h=_default_handle) ?(spec=[]) y =
   let open Plplot in
   let m, _ = Owl_dense_matrix.D.shape y in
   let x = Array.init m (fun i -> float_of_int i +. 1.) in
@@ -718,7 +770,9 @@ let boxplot ?(h=_default_handle) ?(color=(-1,-1,-1)) y =
   let _ = _adjust_range h ~margin:0.1 y0 `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = _get_rgb spec p.fgcolor in
+  let r, g, b = color in
+  (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -731,6 +785,7 @@ let boxplot ?(h=_default_handle) ?(color=(-1,-1,-1)) y =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
+
 let _draw_bar w x0 y0 =
   let open Plplot in
   let x = [|x0-.w; x0-.w; x0+.w; x0+.w|] in
@@ -738,7 +793,8 @@ let _draw_bar w x0 y0 =
   let _ = plfill x y in
   let _ = pllsty 1; plline x y in ()
 
-let draw_rect ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=0) x0 y0 x1 y1 =
+
+let draw_rect ?(h=_default_handle) ?(spec=[]) x0 y0 x1 y1 =
   let open Plplot in
   let x = [|x0; x0; x1; x1|] in
   let y = [|y1; y0; y0; y1|] in
@@ -746,7 +802,11 @@ let draw_rect ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pa
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = _get_rgb spec p.fgcolor in
+  let r, g, b = color in
+  let line_style = _get_line_style spec 1 in
+  let fill_pattern = _get_fill_pattern spec 0 in
+  (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -761,7 +821,8 @@ let draw_rect ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pa
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=0) y =
+
+let bar ?(h=_default_handle) ?(spec=[]) y =
   let open Plplot in
   let w = 0.4 in
   let y = Owl_dense_matrix.D.to_array y in
@@ -771,8 +832,11 @@ let bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = _get_rgb spec p.fgcolor in
   let r, g, b = color in
+  let line_style = _get_line_style spec 1 in
+  let fill_pattern = _get_fill_pattern spec 0 in
+  (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -789,7 +853,8 @@ let bar ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=
   _add_legend_item p BOX line_style color "" color fill_pattern color;
   if not h.holdon then output h
 
-let area ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern=0) x y=
+
+let area ?(h=_default_handle) ?(spec=[]) x y=
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
@@ -800,8 +865,11 @@ let area ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern
   let _ = _adjust_range h y `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let color = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = _get_rgb spec p.fgcolor in
   let r, g, b = color in
+  let line_style = _get_line_style spec 1 in
+  let fill_pattern = _get_fill_pattern spec 0 in
+  (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -819,6 +887,7 @@ let area ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(fill_pattern
   _add_legend_item p BOX line_style color "" color fill_pattern color;
   if not h.holdon then output h
 
+
 let _ecdf_interleave x i =
   let m = Array.length x in
   let n = 2 * m in
@@ -830,6 +899,7 @@ let _ecdf_interleave x i =
   ) x
   in y
 
+
 let ecdf ?(h=_default_handle) ?(spec=[]) x =
   let x0 = Owl_dense_matrix.D.to_array x in
   let x, y = Owl_stats.ecdf x0 in
@@ -839,6 +909,7 @@ let ecdf ?(h=_default_handle) ?(spec=[]) x =
   let x = Owl_dense_matrix.D.of_array x n 1 in
   let y = Owl_dense_matrix.D.of_array y n 1 in
   plot ~h ~spec x y
+
 
 let stairs ?(h=_default_handle) ?(spec=[]) x y =
   let x = Owl_dense_matrix.D.to_array x in
@@ -852,7 +923,8 @@ let stairs ?(h=_default_handle) ?(spec=[]) x y =
   let y = Owl_dense_matrix.D.of_array y n 1 in
   plot ~h ~spec x y
 
-let draw_circle ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_width=(-1.)) ?(fill_pattern=0) x y rr =
+
+let draw_circle ?(h=_default_handle) ?(spec=[]) x y rr =
   let open Plplot in
   let n = 1000 in
   let theta = (2. *. Owl_maths.pi) /. (float_of_int n) in
@@ -862,8 +934,13 @@ let draw_circle ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_
   let _ = _adjust_range h ~margin:0.05 y' `Y in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = _get_rgb spec p.fgcolor in
+  let r, g, b = color in
+  let line_style = _get_line_style spec 1 in
+  let line_width = _get_line_width spec (-1.) in
+  let fill_pattern = _get_fill_pattern spec 0 in
   let old_pensize = h.pensize in
+  (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -881,6 +958,7 @@ let draw_circle ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(line_style=1) ?(line_
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
+
 let _draw_arc fill n x =
   let open Plplot in
   let a = 2. *. Owl_maths.pi in
@@ -896,7 +974,8 @@ let _draw_arc fill n x =
     i := !i +. c;
   ) x
 
-let pie ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(fill=false) x =
+
+let pie ?(h=_default_handle) ?(spec=[]) x =
   let open Plplot in
   let _ = _adjust_range h ~margin:0.1 [|-1.; 1.|] `X in
   let _ = _adjust_range h ~margin:0.1 [|-1.; 1.|] `Y in
@@ -904,8 +983,11 @@ let pie ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(fill=false) x =
   let x = Owl_stats.normlise_pdf x in
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let r, g, b = if color = (-1,-1,-1) then p.fgcolor else color in
+  let color = _get_rgb spec p.fgcolor in
+  let r, g, b = color in
+  let fill = _get_fill spec false in
   let old_pensize = h.pensize in
+  (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
     let _ = plscol0 1 r g b; plcol0 1 in
@@ -917,10 +999,12 @@ let pie ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(fill=false) x =
     plscol0 1 r' g' b'; plcol0 1;
     plwidth old_pensize;
     pllsty 1
-  ) in
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
+
 
 let surf ?(h=_default_handle) ?(contour=false) ?altitude ?azimuth x y z =
   let open Plplot in
