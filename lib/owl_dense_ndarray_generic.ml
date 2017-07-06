@@ -2541,6 +2541,13 @@ let cumprod ?axis x =
   let _cumop = _owl_cumprod (kind x) in
   cumulative_op ?axis _cumop x
 
+let cummin ?axis x =
+  let _cumop = _owl_cummin (kind x) in
+  cumulative_op ?axis _cumop x
+
+let cummax ?axis x =
+  let _cumop = _owl_cummax (kind x) in
+  cumulative_op ?axis _cumop x
 
 let modf x =
   let x = clone x in

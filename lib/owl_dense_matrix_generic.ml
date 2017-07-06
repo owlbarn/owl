@@ -1363,6 +1363,16 @@ let cumprod ?axis x =
   let y = Owl_dense_ndarray_generic.cumprod ?axis y in
   of_ndarray y
 
+let cummin ?axis x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.cummin ?axis y in
+  of_ndarray y
+
+let cummax ?axis x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.cummax ?axis y in
+  of_ndarray y
+
 let modf x =
   let y = to_ndarray x in
   let x, y = Owl_dense_ndarray_generic.modf y in

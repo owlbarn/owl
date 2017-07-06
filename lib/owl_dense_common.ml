@@ -1574,6 +1574,30 @@ let _owl_cumprod : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
   | Complex64 -> owl_complex_double_cumprod
   | _         -> failwith "_owl_cumprod: unsupported operation"
 
+external owl_real_float_cummin : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "real_float_cummin" "real_float_cummin_impl"
+external owl_real_double_cummin : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "real_double_cummin" "real_double_cummin_impl"
+external owl_complex_float_cummin : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex_float_cummin" "complex_float_cummin_impl"
+external owl_complex_double_cummin : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex_double_cummin" "complex_double_cummin_impl"
+
+let _owl_cummin : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
+  | Float32   -> owl_real_float_cummin
+  | Float64   -> owl_real_double_cummin
+  | Complex32 -> owl_complex_float_cummin
+  | Complex64 -> owl_complex_double_cummin
+  | _         -> failwith "_owl_cummin: unsupported operation"
+
+external owl_real_float_cummax : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "real_float_cummax" "real_float_cummax_impl"
+external owl_real_double_cummax : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "real_double_cummax" "real_double_cummax_impl"
+external owl_complex_float_cummax : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex_float_cummax" "complex_float_cummax_impl"
+external owl_complex_double_cummax : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex_double_cummax" "complex_double_cummax_impl"
+
+let _owl_cummax : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
+  | Float32   -> owl_real_float_cummax
+  | Float64   -> owl_real_double_cummax
+  | Complex32 -> owl_complex_float_cummax
+  | Complex64 -> owl_complex_double_cummax
+  | _         -> failwith "_owl_cummax: unsupported operation"
+
 external owl_real_float_modf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_modf"
 external owl_real_double_modf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_modf"
 external owl_complex_float_modf : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_float_modf"

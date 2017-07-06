@@ -2440,6 +2440,66 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X,Y) Y->r = (Y->r * X->r) - (Y->i * X->i); Y->i = (Y->r * X->i) + (Y->i * X->r)
 #include "owl_dense_common_vec_map.c"
 
+// cummin
+
+#define FUN20 real_float_cummin
+#define FUN20_IMPL real_float_cummin_impl
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = fminf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN20 real_double_cummin
+#define FUN20_IMPL real_double_cummin_impl
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = fmin(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN20 complex_float_cummin
+#define FUN20_IMPL complex_float_cummin_impl
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = CLTF(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN20 complex_double_cummin
+#define FUN20_IMPL complex_double_cummin_impl
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = CLT(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+// cummax
+
+#define FUN20 real_float_cummax
+#define FUN20_IMPL real_float_cummax_impl
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = fmaxf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN20 real_double_cummax
+#define FUN20_IMPL real_double_cummax_impl
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = fmax(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN20 complex_float_cummax
+#define FUN20_IMPL complex_float_cummax_impl
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = CGTF(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN20 complex_double_cummax
+#define FUN20_IMPL complex_double_cummax_impl
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = CGT(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
 // modf
 
 #define FUN17 real_float_modf

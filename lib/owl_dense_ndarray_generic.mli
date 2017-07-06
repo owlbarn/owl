@@ -923,14 +923,20 @@ val l2norm_sqr : ('a, 'b) t -> float
 
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** [cumsum ~axis x] : performs cumulative sum of the elements along the given
-  axis [~axis]. If [~axis] is [None], then the [cumsum] is performed over the
-  flattened [x]. The returned result however always remains the same shape.
+  axis [~axis]. If [~axis] is [None], then the [cumsum] is performed along the
+  lowest dimension. The returned result however always remains the same shape.
  *)
 
 val cumprod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** [cumprod ~axis x] : similar to [cumsum] but performs cumulative product of
   the elements along the given [~axis].
  *)
+
+val cummin : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [cummin ~axis x] : performs cumulative [min] along [axis] dimension. *)
+
+val cummax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [cummax ~axis x] : performs cumulative [max] along [axis] dimension. *)
 
 val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (** [angle x] calculates the phase angle of all complex numbers in [x]. *)

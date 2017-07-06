@@ -1182,6 +1182,13 @@ val cumprod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** [cumprod ~axis x], refer to the documentation in [Owl_dense_ndarray_generic].
  *)
 
+val cummin : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [cummin ~axis x] : performs cumulative [min] along [axis] dimension. *)
+
+val cummax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [cummax ~axis x] : performs cumulative [max] along [axis] dimension. *)
+
+
 val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (** [angle x] calculates the phase angle of all complex numbers in [x]. *)
 

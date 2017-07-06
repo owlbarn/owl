@@ -434,6 +434,10 @@ val cumsum : ?axis:int -> mat -> mat
 
 val cumprod : ?axis:int -> mat -> mat
 
+val cummin : ?axis:int -> mat -> mat
+
+val cummax : ?axis:int -> mat -> mat
+
 val sqr : mat -> mat
 
 val sqrt : mat -> mat

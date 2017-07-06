@@ -284,6 +284,10 @@ val cumsum : ?axis:int -> arr -> arr
 
 val cumprod : ?axis:int -> arr -> arr
 
+val cummin : ?axis:int -> arr -> arr
+
+val cummax : ?axis:int -> arr -> arr
+
 val sqr : arr -> arr
 
 val sqrt : arr -> arr
