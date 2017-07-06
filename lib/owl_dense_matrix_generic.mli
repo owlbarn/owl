@@ -1196,7 +1196,14 @@ val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (** [proj x] computes the projection on Riemann sphere of all elelments in [x]. *)
 
 val var : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
-(** [var x] computes the variance of [x]. *)
+(** [var x] computes the variance of [x] along the [axis] dimension. By default,
+  [axis] is set to the lowest dimension.
+ *)
+
+val std : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [std x] computes the standard deviation of [x] along the [axis] dimension.
+  By default, [axis] is set to the lowest dimension.
+ *)
 
 
 (** {6 Binary mathematical operations } *)

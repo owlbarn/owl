@@ -1720,17 +1720,17 @@ let cov ?b ~a =
 
 
 let var ?(axis=0) a =
-  let aa, n = match axis = 0 with
-    | true  -> (
-        let mu = average_rows a in
-        let aa = sub a mu |> sqr |> sum_rows in
-        aa, row_num a
-      )
-    | false -> (
-        let mu = average_cols a in
-        let aa = sub a mu |> sqr |> sum_cols in
-        aa, col_num a
-      )
+  let aa, n =
+    if axis = 0 then (
+      let mu = average_rows a in
+      let aa = sub a mu |> sqr |> sum_rows in
+      aa, row_num a
+    )
+    else (
+      let mu = average_cols a in
+      let aa = sub a mu |> sqr |> sum_cols in
+      aa, col_num a
+    )
   in
 
   let n = n - 1
@@ -1742,6 +1742,27 @@ let var ?(axis=0) a =
   div_scalar aa n
 
 
+let std ?(axis=0) a =
+  let aa, n =
+    if axis = 0 then (
+      let mu = average_rows a in
+      let aa = sub a mu |> sqr |> sum_rows in
+      sqrt aa, row_num a
+    )
+    else (
+      let mu = average_cols a in
+      let aa = sub a mu |> sqr |> sum_cols in
+      sqrt aa, col_num a
+    )
+  in
+
+  let n = n - 1
+    |> Pervasives.max 1
+    |> float_of_int
+    |> Owl_dense_common._float_typ_elt (kind a)
+  in
+
+  div_scalar aa n
 
 
 (* end here *)

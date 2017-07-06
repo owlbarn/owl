@@ -500,6 +500,8 @@ val proj : mat -> mat
 
 val var : ?axis:int -> mat -> mat
 
+val std : ?axis:int -> mat -> mat
+
 
 (** {6 Binary mathematical operations } *)
 
