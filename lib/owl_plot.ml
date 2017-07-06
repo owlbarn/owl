@@ -77,6 +77,67 @@ type handle = {
   mutable current_page : int;
 }
 
+
+(* Specification to configure a plot *)
+
+type spec =
+  | RGB         of int * int * int
+  | LineStyle   of int
+  | LineWidth   of float
+  | Marker      of string
+  | MarkerSize  of float
+  | Fill
+  | FillPattern of int
+  | Contour
+  | Altitude    of float
+  | Azimuth     of float
+
+
+let _get_rgb l default_val =
+  let l = l
+    |> List.filter (function RGB _ -> true | _ -> false)
+    |> List.map (function RGB (r,g,b) -> (r,g,b) | _ -> default_val)
+  in
+  let k = List.length l in
+  if k = 0 then default_val else List.nth l (k - 1)
+
+
+let _get_line_style l default_val =
+  let l = l
+    |> List.filter (function LineStyle _ -> true | _ -> false)
+    |> List.map (function LineStyle x -> x | _ -> default_val)
+  in
+  let k = List.length l in
+  if k = 0 then default_val else List.nth l (k - 1)
+
+
+let _get_line_width l default_val =
+  let l = l
+    |> List.filter (function LineWidth _ -> true | _ -> false)
+    |> List.map (function LineWidth x -> x | _ -> default_val)
+  in
+  let k = List.length l in
+  if k = 0 then default_val else List.nth l (k - 1)
+
+
+let _get_marker l default_val =
+  let l = l
+    |> List.filter (function Marker _ -> true | _ -> false)
+    |> List.map (function Marker x -> x | _ -> default_val)
+  in
+  let k = List.length l in
+  if k = 0 then default_val else List.nth l (k - 1)
+
+
+let _get_marker_size l default_val =
+  let l = l
+    |> List.filter (function MarkerSize _ -> true | _ -> false)
+    |> List.map (function MarkerSize x -> x | _ -> default_val)
+  in
+  let k = List.length l in
+  if k = 0 then default_val else List.nth l (k - 1)
+
+
 (* module functions to simplify plotting *)
 
 let _create_page () = {
@@ -432,6 +493,53 @@ let plot ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.)
   (* add legend item to page *)
   _add_legend_item p LINE line_style color marker color 0 color;
   if not h.holdon then output h
+
+
+let plot' ?(h=_default_handle) ?(spec=[]) x y =
+  let open Plplot in
+  let x = Owl_dense_matrix.D.to_array x in
+  let y = Owl_dense_matrix.D.to_array y in
+  let _ = _adjust_range h x `X in
+  let _ = _adjust_range h y `Y in
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let color = _get_rgb spec p.fgcolor in
+  let r, g, b = color in
+  let marker = _get_marker spec "" in
+  let marker_size = _get_marker_size spec 4. in
+  let line_style = _get_line_style spec 1 in
+  let line_width = _get_line_width spec (-1.) in
+  let old_pensize = h.pensize in
+  (* drawing function *)
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    let _ = plscol0 1 r g b; plcol0 1 in
+    let _ = if line_width > (-1.) then plwidth line_width in
+    let c' = plgchr () |> fst in
+    let _ = plschr marker_size 1. in
+    let _ = match line_style > 0 && line_style < 9 with
+      | true  -> pllsty line_style; plline x y
+      | false -> ()
+    in
+    let _ = match marker = "" with
+      | true  -> ()
+      | false -> (
+          let x', y' = _thinning x, _thinning y in
+          plstring x' y' marker )
+    in
+    (* restore original settings *)
+    let _ = plschr c' 1. in
+    let _ = plwidth old_pensize in
+    let _ = pllsty 1 in
+    plscol0 1 r' g' b'; plcol0 1
+  )
+  in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  (* add legend item to page *)
+  _add_legend_item p LINE line_style color marker color 0 color;
+  if not h.holdon then output h
+
 
 let plot_fun ?(h=_default_handle) ?(color=(-1,-1,-1)) ?(marker="") ?(marker_size=4.) ?(line_style=1) ?(line_width=(-1.)) f a b =
   let x = Owl_dense_matrix.D.linspace a b 100 in

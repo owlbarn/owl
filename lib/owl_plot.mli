@@ -18,6 +18,17 @@ type color = RED | GREEN | BLUE
 
 type legend_position = North | South | West | East | NorthWest | NorthEast | SouthWest | SouthEast
 
+type spec =
+  | RGB         of int * int * int
+  | LineStyle   of int
+  | LineWidth   of float
+  | Marker      of string
+  | MarkerSize  of float
+  | Fill
+  | FillPattern of int
+  | Contour
+  | Altitude    of float
+  | Azimuth     of float
 
 
 (** {6 Config functions} *)
@@ -75,6 +86,9 @@ val legend_off : handle -> unit
 (** Line style is an integer ranging from 1 to 8. *)
 
 val plot : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> ?line_style:int -> ?line_width:float -> dsmat -> dsmat -> unit
+
+val plot' : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> unit
+(** [plot ] *)
 
 val plot_fun : ?h:handle -> ?color:int * int * int -> ?marker:string -> ?marker_size:float -> ?line_style:int -> ?line_width:float -> (float -> float) -> float -> float -> unit
 
