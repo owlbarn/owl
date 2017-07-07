@@ -16,64 +16,64 @@ type legend_typ = LINE | SCATTER | BOX
 type legend_position = North | South | West | East | NorthWest | NorthEast | SouthWest | SouthEast
 
 type legend_item = {
-  mutable plot_type : legend_typ;
-  mutable line_style : int;
-  mutable line_color : int * int * int;
-  mutable marker : string;
+  mutable plot_type    : legend_typ;
+  mutable line_style   : int;
+  mutable line_color   : int * int * int;
+  mutable marker       : string;
   mutable marker_color : int * int * int;
   mutable fill_pattern : int;
-  mutable fill_color : int * int * int;
+  mutable fill_color   : int * int * int;
 }
 
 type page = {
-  mutable title : string;
-  mutable fgcolor : int * int * int;
-  mutable fontsize : float;
-  mutable is_3d : bool;
+  mutable title           : string;
+  mutable fgcolor         : int * int * int;
+  mutable fontsize        : float;
+  mutable is_3d           : bool;
   (* control axis labels *)
-  mutable xlabel : string;
-  mutable ylabel : string;
-  mutable zlabel : string;
+  mutable xlabel          : string;
+  mutable ylabel          : string;
+  mutable zlabel          : string;
   (* control axis ranges *)
-  mutable xrange : float * float;
-  mutable yrange : float * float;
-  mutable zrange : float * float;
-  mutable auto_xrange : bool;
-  mutable auto_yrange : bool;
-  mutable auto_zrange : bool;
+  mutable xrange          : float * float;
+  mutable yrange          : float * float;
+  mutable zrange          : float * float;
+  mutable auto_xrange     : bool;
+  mutable auto_yrange     : bool;
+  mutable auto_zrange     : bool;
   (* control tick labels *)
-  mutable xticklabels : (float * string) list;
-  mutable yticklabels : (float * string) list;
-  mutable zticklabels : (float * string) list;
+  mutable xticklabels     : (float * string) list;
+  mutable yticklabels     : (float * string) list;
+  mutable zticklabels     : (float * string) list;
   (* control axis log scale *)
-  mutable xlogscale : bool;
-  mutable ylogscale : bool;
+  mutable xlogscale       : bool;
+  mutable ylogscale       : bool;
   (* control grids *)
-  mutable xgrid : bool;
-  mutable ygrid : bool;
-  mutable zgrid : bool;
+  mutable xgrid           : bool;
+  mutable ygrid           : bool;
+  mutable zgrid           : bool;
   (* viewing perspective for 3D plots
    * http://plplot.sourceforge.net/docbook-manual/plplot-html-5.12.0/plw3d.html *)
-  mutable altitude : float;
-  mutable azimuth : float;
+  mutable altitude        : float;
+  mutable azimuth         : float;
   (* control legend *)
-  mutable legend : bool;
+  mutable legend          : bool;
   mutable legend_position : legend_position;
-  mutable legend_items : legend_item array;
-  mutable legend_names : string array;
+  mutable legend_items    : legend_item array;
+  mutable legend_names    : string array;
   (* cache the plot operations *)
-  mutable plots : (unit -> unit) array;
+  mutable plots           : (unit -> unit) array;
 }
 
 type handle = {
-  mutable holdon : bool;
-  mutable output : string;
-  mutable bgcolor : int * int * int;
-  mutable pensize : float;
-  mutable page_size : int * int;
+  mutable holdon       : bool;
+  mutable output       : string;
+  mutable bgcolor      : int * int * int;
+  mutable pensize      : float;
+  mutable page_size    : int * int;
   (* control the sub plots *)
-  mutable shape : int * int;
-  mutable pages : page array;
+  mutable shape        : int * int;
+  mutable pages        : page array;
   mutable current_page : int;
 }
 
@@ -187,64 +187,70 @@ let _get_azimuth l default_val =
 
 
 let _create_page () = {
-  title = "";
-  fgcolor = (255, 0, 0);
-  fontsize = -1.;
-  is_3d = false;
-  xlabel = "x";
-  ylabel = "y";
-  zlabel = "z";
-  xrange = (infinity, neg_infinity);
-  yrange = (infinity, neg_infinity);
-  zrange = (infinity, neg_infinity);
-  auto_xrange = true;
-  auto_yrange = true;
-  auto_zrange = true;
-  xticklabels = [];
-  yticklabels = [];
-  zticklabels = [];
-  xlogscale = false;
-  ylogscale = false;
-  xgrid = false;
-  ygrid = false;
-  zgrid = false;
-  altitude = 33.;
-  azimuth = 115.;
-  legend = false;
+  title           = "";
+  fgcolor         = (255, 0, 0);
+  fontsize        = -1.;
+  is_3d           = false;
+  xlabel          = "x";
+  ylabel          = "y";
+  zlabel          = "z";
+  xrange          = (infinity, neg_infinity);
+  yrange          = (infinity, neg_infinity);
+  zrange          = (infinity, neg_infinity);
+  auto_xrange     = true;
+  auto_yrange     = true;
+  auto_zrange     = true;
+  xticklabels     = [];
+  yticklabels     = [];
+  zticklabels     = [];
+  xlogscale       = false;
+  ylogscale       = false;
+  xgrid           = false;
+  ygrid           = false;
+  zgrid           = false;
+  altitude        = 33.;
+  azimuth         = 115.;
+  legend          = false;
   legend_position = NorthEast;
-  legend_items = [||];
-  legend_names = [||];
-  plots = [||];
+  legend_items    = [||];
+  legend_names    = [||];
+  plots           = [||];
 }
 
 
 let _create_handle () = {
-  holdon = true;
-  output = "";
-  bgcolor = (0, 0, 0);
-  pensize = 0.;
-  page_size = (0,0);
-  shape = (1, 1);
+  holdon       = true;
+  output       = "";
+  bgcolor      = (0, 0, 0);
+  pensize      = 0.;
+  page_size    = (0,0);
+  shape        = (1, 1);
   current_page = 0;
-  pages = [|_create_page ()|];
+  pages        = [|_create_page ()|];
 }
 
 
 let create ?(m=1) ?(n=1) s =
   let pages = Array.make (m * n) None |> Array.map (fun _ -> _create_page ()) in
   let h = _create_handle () in
-  let _ = h.shape <- (m, n) in
-  let _ = h.pages <- pages in
-  let _ = h.output <- s in h
+  h.shape <- (m, n);
+  h.pages <- pages;
+  h.output <- s;
+  h
 
 
 let _default_handle =
   let h = _create_handle () in
-  let _ = h.holdon <- false in h
+  h.holdon <- false;
+  h
 
 
-let _supported_device = ["aqt"; "xwin"; "pdf"; "ps"; "psc"; "png"; "svg"; "xfig"; "psttf"; "psttc";
-  "xcairo"; "pdfcairo"; "epscairo"; "pscairo"; "svgcairo"; "pngcairo"; "memcairo"; "extcairo"]
+let _supported_device = [
+    "aqt"; "xwin"; "pdf"; "ps"; "psc";
+    "png"; "svg"; "xfig"; "psttf"; "psttc";
+    "xcairo"; "pdfcairo"; "epscairo"; "pscairo"; "svgcairo";
+    "pngcairo"; "memcairo"; "extcairo"
+  ]
 
 
 let _set_device h =
@@ -256,13 +262,13 @@ let _set_device h =
 
 let _add_legend_item p plot_type line_style line_color marker marker_color fill_pattern fill_color =
   let item = {
-    plot_type = plot_type;
-    line_style = line_style;
-    line_color = line_color;
-    marker = marker;
+    plot_type    = plot_type;
+    line_style   = line_style;
+    line_color   = line_color;
+    marker       = marker;
     marker_color = marker_color;
     fill_pattern = fill_pattern;
-    fill_color = fill_color;
+    fill_color   = fill_color;
   }
   in
   p.legend_items <- Array.append p.legend_items [|item|]
@@ -349,19 +355,20 @@ let _config_2d_axis p =
 let _initialise h =
   let open Plplot in
   (* configure before init *)
-  let _ = _set_device h in
-  let _ = (let r, g, b = h.bgcolor in plscolbg r g b) in
+  _set_device h;
+  let r, g, b = h.bgcolor in
+  plscolbg r g b;
   (* init the plot *)
   let m, n = h.shape in
-  let _ = if not (h.shape = (1,1)) then plssub n m in
+  if not (h.shape = (1,1)) then plssub n m;
   let x, y = match h.page_size = (0, 0) with
     | true  -> _calculate_paper_size m n
     | false -> h.page_size
   in
-  let _ = plspage 0. 0. x y 0 0 in
-  let _ = plinit () in
+  plspage 0. 0. x y 0 0;
+  plinit ();
   (* configure after init *)
-  let _ = plwidth h.pensize in ()
+  plwidth h.pensize
 
 
 (* callback function of drawing customised tick labels *)
@@ -382,26 +389,27 @@ let _prepare_page p =
   plslabelfunc (_draw_ticklabels p);
   (* configure an individual page *)
   let r, g, b = p.fgcolor in
-  let _ = plscol0 1 r g b; plcol0 1 in
-  let _ = if p.fontsize > 0. then plschr p.fontsize 1.0 in
+  plscol0 1 r g b;
+  plcol0 1;
+  if p.fontsize > 0. then plschr p.fontsize 1.0;
   let xmin, xmax = p.xrange in
   let ymin, ymax = p.yrange in
   let zmin, zmax = p.zrange in
-  let alt, az = p.altitude, p.azimuth in (
-  if not p.is_3d then
+  let alt, az = p.altitude, p.azimuth in
+  if not p.is_3d then (
     (* prepare a 2D plot *)
-    let _ = plenv xmin xmax ymin ymax 0 (_config_2d_axis p) in
-    let _ = pllab p.xlabel p.ylabel p.title in ()
-  else
+    plenv xmin xmax ymin ymax 0 (_config_2d_axis p);
+    pllab p.xlabel p.ylabel p.title
+  )
+  else (
     (* prepare a 3D plot *)
-    let _ = pladv 0 in
-    let _ = plvpor 0.0 1.0 0.0 0.9 in
-    let _ = plwind (-1.0) 1.0 (-1.0) 1.5 in
-    let _ = plw3d 1.0 1.0 1.2 xmin xmax ymin ymax zmin zmax alt az in
-    let _ = plbox3 "bntu" p.xlabel 0.0 0
-                   "bntu" p.ylabel 0.0 0
-                   "bcdfntu" p.zlabel 0.0 4
-    in ()
+    pladv 0;
+    plvpor 0.0 1.0 0.0 0.9;
+    plwind (-1.0) 1.0 (-1.0) 1.5;
+    plw3d 1.0 1.0 1.2 xmin xmax ymin ymax zmin zmax alt az;
+    plbox3 "bntu" p.xlabel 0.0 0
+           "bntu" p.ylabel 0.0 0
+           "bcdfntu" p.zlabel 0.0 4
   );
   if p.legend then _draw_legend p
 
@@ -511,11 +519,12 @@ let text ?(h=_default_handle) ?(spec=[]) x y ?(dx=0.) ?(dy=0.) s =
   let f = (fun () ->
     (*save original color index*)
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
-    let _ = plptex x y dx dy 0. s in
+    plscol0 1 r g b; plcol0 1;
+    plptex x y dx dy 0. s;
     (* restore original settings *)
     plscol0 1 r' g' b'; plcol0 1
-  ) in
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
@@ -548,8 +557,8 @@ let plot ?(h=_default_handle) ?(spec=[]) x y =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
+  _adjust_range h x `X;
+  _adjust_range h y `Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -562,24 +571,19 @@ let plot ?(h=_default_handle) ?(spec=[]) x y =
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
-    let _ = if line_width > (-1.) then plwidth line_width in
+    plscol0 1 r g b; plcol0 1;
+    if line_width > (-1.) then plwidth line_width;
     let c' = plgchr () |> fst in
-    let _ = plschr marker_size 1. in
-    let _ = match line_style > 0 && line_style < 9 with
-      | true  -> pllsty line_style; plline x y
-      | false -> ()
-    in
-    let _ = match marker = "" with
-      | true  -> ()
-      | false -> (
-          let x', y' = _thinning x, _thinning y in
-          plstring x' y' marker )
-    in
+    plschr marker_size 1.;
+    if line_style > 0 && line_style < 9 then
+      pllsty line_style; plline x y;
+    if marker <> "" then
+      let x', y' = _thinning x, _thinning y in
+      plstring x' y' marker;
     (* restore original settings *)
-    let _ = plschr c' 1. in
-    let _ = plwidth old_pensize in
-    let _ = pllsty 1 in
+    plschr c' 1.;
+    plwidth old_pensize;
+    pllsty 1;
     plscol0 1 r' g' b'; plcol0 1
   )
   in
@@ -600,8 +604,8 @@ let scatter ?(h=_default_handle) ?(spec=[]) x y =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
+  _adjust_range h x `X;
+  _adjust_range h y `Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -611,14 +615,17 @@ let scatter ?(h=_default_handle) ?(spec=[]) x y =
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
+    plscol0 1 r g b;
+    plcol0 1;
     let c' = plgchr () |> fst in
-    let _ = plschr marker_size 1. in
-    let _ = plstring x y marker in
+    plschr marker_size 1.;
+    plstring x y marker;
     (* restore original settings *)
-    let _ = plschr c' 1. in
-    plscol0 1 r' g' b'; plcol0 1
-  ) in
+    plschr c' 1.;
+    plscol0 1 r' g' b';
+    plcol0 1
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   (* add legend item to page *)
@@ -629,11 +636,11 @@ let scatter ?(h=_default_handle) ?(spec=[]) x y =
 let histogram ?(h=_default_handle) ?(spec=[]) ?(bin=10) x =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
-  let _ = _adjust_range h x `X in
+  _adjust_range h x `X;
   let xmin, xmax = Owl_stats.minmax x in
   let ymin, ymax = 0., Owl_stats.(histogram x bin |> Array.map float_of_int |> max)  *. 1.1 in
-  let _ = _adjust_range h [|xmin; xmax|] `X in
-  let _ = _adjust_range h [|ymin; ymax|] `Y in
+  _adjust_range h [|xmin; xmax|] `X;
+  _adjust_range h [|ymin; ymax|] `Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -645,7 +652,8 @@ let histogram ?(h=_default_handle) ?(spec=[]) ?(bin=10) x =
     plhist x xmin xmax bin [ PL_HIST_DEFAULT; PL_HIST_NOSCALING; PL_HIST_NOEXPAND ];
     (* restore original settings *)
     plscol0 1 r' g' b'; plcol0 1;
-  ) in
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   (* add legend item to page *)
@@ -662,8 +670,8 @@ let stem ?(h=_default_handle) ?(spec=[]) x y =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
+  _adjust_range h x `X;
+  _adjust_range h y `Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -676,24 +684,23 @@ let stem ?(h=_default_handle) ?(spec=[]) x y =
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
-    let _ = if line_width > (-1.) then plwidth line_width in
+    plscol0 1 r g b; plcol0 1;
+    if line_width > (-1.) then plwidth line_width;
     let c' = plgchr () |> fst in
-    let _ = plschr marker_size 1. in
-    let _ = match line_style > 0 && line_style < 9 with
-      | true  -> (
-          pllsty line_style;
-          Owl_utils.array_iter2 (fun x' y' -> pljoin x' 0. x' y') x y
-        )
-      | false -> ()
-    in
-    let _ = if not (marker = "") then plstring x y marker in
+    plschr marker_size 1.;
+    if line_style > 0 && line_style < 9 then (
+      pllsty line_style;
+      Owl_utils.array_iter2 (fun x' y' -> pljoin x' 0. x' y') x y
+    );
+    if not (marker = "") then plstring x y marker;
     (* restore original settings *)
-    let _ = plschr c' 1. in
-    let _ = plwidth old_pensize in
-    let _ = pllsty 1 in
-    plscol0 1 r' g' b'; plcol0 1
-  ) in
+    plschr c' 1.;
+    plwidth old_pensize;
+    pllsty 1;
+    plscol0 1 r' g' b';
+    plcol0 1
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   (* add legend item to page *)
@@ -707,8 +714,8 @@ let autocorr ?(h=_default_handle) ?(spec=[]) x =
   let y' = Array.mapi (fun i _ -> Owl_stats.autocorrelation ~lag:i z) x' in
   let x' = Owl_dense_matrix.D.of_arrays [|x'|] in
   let y' = Owl_dense_matrix.D.of_arrays [|y'|] in
-  let _ = set_xlabel h "Lag" in
-  let _ = set_ylabel h "Autocorrelation" in
+  set_xlabel h "Lag";
+  set_ylabel h "Autocorrelation";
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let r, g, b = _get_rgb spec p.fgcolor in
@@ -726,8 +733,8 @@ let draw_line ?(h=_default_handle) ?(spec=[]) x0 y0 x1 y1 =
   let open Plplot in
   let x = [|x0; x1|] in
   let y = [|y0; y1|] in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
+  _adjust_range h x `X;
+  _adjust_range h y `Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -738,17 +745,20 @@ let draw_line ?(h=_default_handle) ?(spec=[]) x0 y0 x1 y1 =
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
-    let _ = if line_width > (-1.) then plwidth line_width in
-    let _ = match line_style > 0 && line_style < 9 with
-      | true  -> pllsty line_style; pljoin x0 y0 x1 y1
-      | false -> ()
-    in
+    plscol0 1 r g b;
+    plcol0 1;
+    if line_width > (-1.) then plwidth line_width;
+    if line_style > 0 && line_style < 9 then (
+      pllsty line_style;
+      pljoin x0 y0 x1 y1
+    );
     (* restore original settings *)
-    let _ = plwidth old_pensize in
-    let _ = pllsty 1 in
-    plscol0 1 r' g' b'; plcol0 1
-  ) in
+    plwidth old_pensize;
+    pllsty 1;
+    plscol0 1 r' g' b';
+    plcol0 1
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
@@ -764,15 +774,15 @@ let _draw_error_bar ?(w=0.) x y e =
   (* draw vertical line *)
   let x' = [|x; x|] in
   let y' = [|y-.e; y+.e|] in
-  let _ = plline x' y' in
+  plline x' y';
   (* draw upper bar *)
   let x' = [|x-.w; x+.w|] in
   let y' = [|y+.e; y+.e|] in
-  let _ = plline x' y' in
+  plline x' y';
   (* draw lower line *)
   let x' = [|x-.w; x+.w|] in
   let y' = [|y-.e; y-.e|] in
-  let _ = plline x' y' in ()
+  plline x' y'
 
 
 let error_bar ?(h=_default_handle) ?(spec=[]) x y e =
@@ -782,8 +792,8 @@ let error_bar ?(h=_default_handle) ?(spec=[]) x y e =
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
   let e = Owl_dense_matrix.D.to_array e in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h [|ymin; ymax|] `Y in
+  _adjust_range h x `X;
+  _adjust_range h [|ymin; ymax|] `Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -795,16 +805,18 @@ let error_bar ?(h=_default_handle) ?(spec=[]) x y e =
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
-    let _ = if line_width > (-1.) then plwidth line_width in
-    let _ = pllsty line_style in
-    let _ = Owl_utils.array_iter3 (fun x0 y0 e0 ->
+    plscol0 1 r g b;
+    plcol0 1;
+    if line_width > (-1.) then plwidth line_width;
+    pllsty line_style;
+    Owl_utils.array_iter3 (fun x0 y0 e0 ->
       _draw_error_bar ~w x0 y0 e0
-    ) x y e in
+    ) x y e;
     (* restore original settings *)
-    let _ = plwidth old_pensize in
-    let _ = pllsty 1 in
-    plscol0 1 r' g' b'; plcol0 1
+    plwidth old_pensize;
+    pllsty 1;
+    plscol0 1 r' g' b';
+    plcol0 1
   ) in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
@@ -817,17 +829,17 @@ let _draw_whiskers_box w x y =
   let w = w /. 2. in
   let x' = [|x-.w; x-.w; x+.w; x+.w; x-.w|] in
   let y' = [|y1st; y3rd; y3rd; y1st; y1st|] in
-  let _ = pllsty 1; plline x' y' in
+  pllsty 1; plline x' y';
   let x' = [|x-.w; x+.w|] in
   let y' = [|ymed; ymed|] in
-  let _ = pllsty 1; plline x' y' in
+  pllsty 1; plline x' y';
   let ymin, ymax = Owl_stats.minmax y in
   let x' = [|x; x|] in
   let y' = [|ymin; y1st|] in
-  let _ = pllsty 1; plline x' y' in
+  pllsty 1; plline x' y';
   let x' = [|x; x|] in
   let y' = [|y3rd; ymax|] in
-  let _ = pllsty 1; plline x' y' in ()
+  pllsty 1; plline x' y'
 
 
 let boxplot ?(h=_default_handle) ?(spec=[]) y =
@@ -838,8 +850,8 @@ let boxplot ?(h=_default_handle) ?(spec=[]) y =
   let w = 0.4 in
   let y0 = Owl_dense_matrix.D.to_array y in
   let y1 = Owl_dense_matrix.D.to_arrays y in
-  let _ = _adjust_range h [|xmin-.w; xmax+.w|] `X in
-  let _ = _adjust_range h ~margin:0.1 y0 `Y in
+  _adjust_range h [|xmin-.w; xmax+.w|] `X;
+  _adjust_range h ~margin:0.1 y0 `Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -847,12 +859,15 @@ let boxplot ?(h=_default_handle) ?(spec=[]) y =
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
+    plscol0 1 r g b;
+    plcol0 1;
     Owl_utils.array_iter2 (fun x' y' -> _draw_whiskers_box w x' y') x y1;
     (* restore original settings *)
-    plscol0 1 r' g' b'; plcol0 1;
+    plscol0 1 r' g' b';
+    plcol0 1;
     pllsty 1
-  ) in
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
@@ -862,16 +877,17 @@ let _draw_bar w x0 y0 =
   let open Plplot in
   let x = [|x0-.w; x0-.w; x0+.w; x0+.w|] in
   let y = [|0.; y0; y0; 0.|] in
-  let _ = plfill x y in
-  let _ = pllsty 1; plline x y in ()
+  plfill x y;
+  pllsty 1;
+  plline x y
 
 
 let draw_rect ?(h=_default_handle) ?(spec=[]) x0 y0 x1 y1 =
   let open Plplot in
   let x = [|x0; x0; x1; x1|] in
   let y = [|y1; y0; y0; y1|] in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
+  _adjust_range h x `X;
+  _adjust_range h y `Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -881,14 +897,17 @@ let draw_rect ?(h=_default_handle) ?(spec=[]) x0 y0 x1 y1 =
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
-    let _ = pllsty line_style in
-    let _ = plpsty fill_pattern in
-    let _ = plfill x y in
+    plscol0 1 r g b;
+    plcol0 1;
+    pllsty line_style;
+    plpsty fill_pattern;
+    plfill x y;
     (* restore original settings *)
-    plscol0 1 r' g' b'; plcol0 1;
+    plscol0 1 r' g' b';
+    plcol0 1;
     pllsty 1
-  ) in
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
@@ -900,8 +919,8 @@ let bar ?(h=_default_handle) ?(spec=[]) y =
   let y = Owl_dense_matrix.D.to_array y in
   let x = Array.mapi (fun i _ -> float_of_int i +. 1.) y in
   let xmin, xmax = Owl_stats.minmax x in
-  let _ = _adjust_range h [|xmin-.w; xmax+.w|] `X in
-  let _ = _adjust_range h y `Y in
+  _adjust_range h [|xmin-.w; xmax+.w|] `X;
+  _adjust_range h y `Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -911,14 +930,17 @@ let bar ?(h=_default_handle) ?(spec=[]) y =
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
-    let _ = pllsty line_style in
-    let _ = plpsty fill_pattern in
+    plscol0 1 r g b;
+    plcol0 1;
+    pllsty line_style;
+    plpsty fill_pattern;
     Owl_utils.array_iter2 (fun x0 y0 -> _draw_bar w x0 y0) x y;
     (* restore original settings *)
-    plscol0 1 r' g' b'; plcol0 1;
+    plscol0 1 r' g' b';
+    plcol0 1;
     pllsty 1
-  ) in
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   (* add legend item to page *)
@@ -933,8 +955,8 @@ let area ?(h=_default_handle) ?(spec=[]) x y=
   let xmin, xmax = Owl_stats.minmax x in
   let x = Array.(append (append [|xmin|] x) [|xmax|]) in
   let y = Array.(append (append [|0.|] y) [|0.|]) in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
+  _adjust_range h x `X;
+  _adjust_range h y `Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -944,15 +966,18 @@ let area ?(h=_default_handle) ?(spec=[]) x y=
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
-    let _ = pllsty line_style in
-    let _ = plline x y in
-    let _ = plpsty fill_pattern in
-    let _ = plfill x y in
+    plscol0 1 r g b;
+    plcol0 1;
+    pllsty line_style;
+    plline x y;
+    plpsty fill_pattern;
+    plfill x y;
     (* restore original settings *)
-    plscol0 1 r' g' b'; plcol0 1;
+    plscol0 1 r' g' b';
+    plcol0 1;
     pllsty 1
-  ) in
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   (* add legend item to page *)
@@ -964,12 +989,12 @@ let _ecdf_interleave x i =
   let m = Array.length x in
   let n = 2 * m in
   let y = Array.make n 0. in
-  let _ = Array.iteri (fun j z ->
+  Array.iteri (fun j z ->
     let k = 2 * j + i in
     if k < n then y.(k) <- z;
     if k < n - 1 then y.(k + 1) <- z
-  ) x
-  in y
+  ) x;
+  y
 
 
 let ecdf ?(h=_default_handle) ?(spec=[]) x =
@@ -1002,8 +1027,8 @@ let draw_circle ?(h=_default_handle) ?(spec=[]) x y rr =
   let theta = (2. *. Owl_maths.pi) /. (float_of_int n) in
   let x' = Array.init (n + 1) (fun i -> x +. Owl_maths.(sin (float_of_int i *. theta)) *. rr) in
   let y' = Array.init (n + 1) (fun i -> y +. Owl_maths.(cos (float_of_int i *. theta)) *. rr) in
-  let _ = _adjust_range h ~margin:0.05 x' `X in
-  let _ = _adjust_range h ~margin:0.05 y' `Y in
+  _adjust_range h ~margin:0.05 x' `X;
+  _adjust_range h ~margin:0.05 y' `Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -1015,17 +1040,20 @@ let draw_circle ?(h=_default_handle) ?(spec=[]) x y rr =
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
-    let _ = if line_width > (-1.) then plwidth line_width in
-    let _ = pllsty line_style in
-    let _ = plpsty fill_pattern in
-    let _ = plfill x' y' in
-    let _ = plline x' y' in
+    plscol0 1 r g b;
+    plcol0 1;
+    if line_width > (-1.) then plwidth line_width;
+    pllsty line_style;
+    plpsty fill_pattern;
+    plfill x' y';
+    plline x' y';
     (* restore original settings *)
-    plscol0 1 r' g' b'; plcol0 1;
+    plscol0 1 r' g' b';
+    plcol0 1;
     plwidth old_pensize;
     pllsty 1
-  ) in
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
@@ -1050,8 +1078,8 @@ let _draw_arc fill n x =
 (* FIXME: fill not done ... *)
 let pie ?(h=_default_handle) ?(spec=[]) x =
   let open Plplot in
-  let _ = _adjust_range h ~margin:0.1 [|-1.; 1.|] `X in
-  let _ = _adjust_range h ~margin:0.1 [|-1.; 1.|] `Y in
+  _adjust_range h ~margin:0.1 [|-1.; 1.|] `X;
+  _adjust_range h ~margin:0.1 [|-1.; 1.|] `Y;
   let x = Owl_dense_matrix.D.to_array x in
   let x = Owl_stats.normlise_pdf x in
   (* prepare the closure *)
@@ -1063,11 +1091,12 @@ let pie ?(h=_default_handle) ?(spec=[]) x =
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
-    let _ = plwidth 1. in
-    let _ = pllsty 1 in
-    let _ = plpsty 0 in
-    let _ = _draw_arc fill 1000. x in
+    plscol0 1 r g b;
+    plcol0 1;
+    plwidth 1.;
+    pllsty 1;
+    plpsty 0;
+    _draw_arc fill 1000. x;
     (* restore original settings *)
     plscol0 1 r' g' b'; plcol0 1;
     plwidth old_pensize;
@@ -1085,9 +1114,9 @@ let surf ?(h=_default_handle) ?(spec=[]) x y z =
   let y = Owl_dense_matrix.D.(transpose y |> to_array) in
   let z0 = Owl_dense_matrix.D.to_arrays z in
   let z1 = Owl_dense_matrix.D.to_array z in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
-  let _ = _adjust_range h z1 `Z in
+  _adjust_range h x `X;
+  _adjust_range h y `Y;
+  _adjust_range h z1 `Z;
   (* construct contour level *)
   let zmin, zmax = Owl_stats.minmax z1 in
   let clvl = Owl_dense_matrix.D.(linspace zmin zmax 10 |> to_array) in
@@ -1121,9 +1150,9 @@ let mesh ?(h=_default_handle) ?(spec=[]) x y z =
   let y = Owl_dense_matrix.D.(transpose y |> to_array) in
   let z0 = Owl_dense_matrix.D.to_arrays z in
   let z1 = Owl_dense_matrix.D.to_array z in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
-  let _ = _adjust_range h z1 `Z in
+  _adjust_range h x `X;
+  _adjust_range h y `Y;
+  _adjust_range h z1 `Z;
   (* construct contour level *)
   let zmin, zmax = Owl_stats.minmax z1 in
   let clvl = Owl_dense_matrix.D.(linspace zmin zmax 10 |> to_array) in
@@ -1154,9 +1183,9 @@ let heatmap ?(h=_default_handle) x y z =
   let y = Owl_dense_matrix.D.(transpose y |> to_array) in
   let z0 = Owl_dense_matrix.D.to_arrays z in
   let z1 = Owl_dense_matrix.D.to_array z in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
-  let _ = _adjust_range h z1 `Z in
+  _adjust_range h x `X;
+  _adjust_range h y `Y;
+  _adjust_range h z1 `Z;
   (* construct contour level *)
   let xmin, xmax = Owl_stats.minmax x in
   let ymin, ymax = Owl_stats.minmax y in
@@ -1184,8 +1213,8 @@ let contour ?(h=_default_handle) x y z =
   let y1 = Owl_dense_matrix.D.to_array y in
   let z0 = Owl_dense_matrix.D.to_arrays z in
   let z1 = Owl_dense_matrix.D.to_array z in
-  let _ = _adjust_range h x1 `X in
-  let _ = _adjust_range h y1 `Y in
+  _adjust_range h x1 `X;
+  _adjust_range h y1 `Y;
   (* construct contour level *)
   let zmin, zmax = Owl_stats.minmax z1 in
   let clvl = Owl_dense_matrix.D.(linspace zmin zmax 10 |> to_array) in
@@ -1196,7 +1225,8 @@ let contour ?(h=_default_handle) x y z =
     plcont z0 1 m 1 n clvl;
     plunset_pltr ()
     (* restore original settings, if any *)
-  ) in
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
@@ -1210,9 +1240,9 @@ let _draw_extended_line x0 y0 x1 y1 l r u d =
   let yr = if x0 = x1 then d else y1 +. (y1 -. y0) /. (x1 -. x0) *. (r -. x1) in
   let xl = if x0 = x1 then x0 else l in
   let xr = if x0 = x1 then x0 else r in
-  let _ = pllsty 1; pljoin x0 y0 x1 y1 in
-  let _ = pllsty 3; pljoin xl yl x0 y0 in
-  let _ = pllsty 3; pljoin x1 y1 xr yr in ()
+  pllsty 1; pljoin x0 y0 x1 y1;
+  pllsty 3; pljoin xl yl x0 y0;
+  pllsty 3; pljoin x1 y1 xr yr
 
 
 let probplot ?(h=_default_handle) ?(spec=[]) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q 1.)) ?(noref=false) x =
@@ -1230,8 +1260,8 @@ let probplot ?(h=_default_handle) ?(spec=[]) ?(dist=(fun q -> Owl_stats.Cdf.gaus
       let q = Owl_dense_matrix.D.map dist qth in
       Owl_dense_matrix.D.to_array q
     in
-    let _ = _adjust_range h x `X in
-    let _ = _adjust_range h y `Y in
+    _adjust_range h x `X;
+    _adjust_range h y `Y;
     (* parameters to draw the reference line *)
     let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
     let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
@@ -1246,14 +1276,16 @@ let probplot ?(h=_default_handle) ?(spec=[]) ?(dist=(fun q -> Owl_stats.Cdf.gaus
     (* drawing function *)
     let f = (fun () ->
       let r', g', b' = plgcol0 1 in
-      let _ = plscol0 1 r g b; plcol0 1 in
+      plscol0 1 r g b;
+      plcol0 1;
       let c' = plgchr () |> fst in
-      let _ = plschr marker_size 1. in
-      let _ = if not noref then _draw_extended_line p1x p1y p3x p3y left right up down in
-      let _ = plstring x y marker in
+      plschr marker_size 1.;
+      if not noref then _draw_extended_line p1x p1y p3x p3y left right up down;
+      plstring x y marker;
       (* restore original settings *)
-      let _ = plschr c' 1. in
-      plscol0 1 r' g' b'; plcol0 1
+      plschr c' 1.;
+      plscol0 1 r' g' b';
+      plcol0 1
     )
     in
     (* add closure as a layer *)
@@ -1283,8 +1315,8 @@ let wblplot ?(h=_default_handle) ?(spec=[]) ?(lambda=1.) ?(k=1.) x =
     let q = Owl_dense_matrix.D.map dist qth in
     Owl_dense_matrix.D.to_array q
   in
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
+  _adjust_range h x `X;
+  _adjust_range h y `Y;
   (* parameters to draw the reference line *)
   let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
   let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
@@ -1299,15 +1331,18 @@ let wblplot ?(h=_default_handle) ?(spec=[]) ?(lambda=1.) ?(k=1.) x =
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
+    plscol0 1 r g b;
+    plcol0 1;
     let c' = plgchr () |> fst in
-    let _ = plschr marker_size 1. in
-    let _ = _draw_extended_line p1x p1y p3x p3y left right up down in
-    let _ = plstring x y marker in
+    plschr marker_size 1.;
+    _draw_extended_line p1x p1y p3x p3y left right up down;
+    plstring x y marker;
     (* restore original settings *)
-    let _ = plschr c' 1. in
-    plscol0 1 r' g' b'; plcol0 1
-  ) in
+    plschr c' 1.;
+    plscol0 1 r' g' b';
+    plcol0 1
+  )
+  in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   (* add legend item to page *)
@@ -1347,8 +1382,8 @@ let qqplot ?(h=_default_handle) ?(spec=[]) ?(pd=(fun i -> Owl_stats.Cdf.gaussian
   let q = Owl_dense_matrix.D.map dist qth in
   let x = Owl_dense_matrix.D.to_array q in
   (*draw the figure*)
-  let _ = _adjust_range h x `X in
-  let _ = _adjust_range h y `Y in
+  _adjust_range h x `X;
+  _adjust_range h y `Y;
   (* Parameters to draw the reference line *)
   let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
   let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
@@ -1363,14 +1398,16 @@ let qqplot ?(h=_default_handle) ?(spec=[]) ?(pd=(fun i -> Owl_stats.Cdf.gaussian
   (* drawing function *)
   let f = (fun () ->
     let r', g', b' = plgcol0 1 in
-    let _ = plscol0 1 r g b; plcol0 1 in
+    plscol0 1 r g b;
+    plcol0 1;
     let c' = plgchr () |> fst in
-    let _ = plschr marker_size 1. in
-    let _ = _draw_extended_line p1x p1y p3x p3y left right up down in
-    let _ = plstring x y marker in
+    plschr marker_size 1.;
+    _draw_extended_line p1x p1y p3x p3y left right up down;
+    plstring x y marker;
     (* restore original settings *)
-    let _ = plschr c' 1. in
-    plscol0 1 r' g' b'; plcol0 1
+    plschr c' 1.;
+    plscol0 1 r' g' b';
+    plcol0 1
   )
   in
   (* add closure as a layer *)
