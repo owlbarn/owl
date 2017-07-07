@@ -327,25 +327,30 @@ let f p i = match i with
   | _ -> Stats.Rnd.gaussian ~sigma:0.1 () *. p.(0)
 in
 let y = Stats.gibbs_sampling f [|0.1;0.1|] 5_000 |> Mat.of_arrays in
-let h = Plot.create ~m:2 ~n:2 "test_plot_04.png" in
-let _ = Plot.set_background_color h 255 255 255 in
-let _ = Plot.subplot h 0 0 in
-let _ = Plot.set_title h "Bivariate model" in
-let _ = Plot.scatter ~h (Mat.col y 0) (Mat.col y 1) in
-let _ = Plot.subplot h 0 1 in
-let _ = Plot.set_title h "Distribution of y" in
-let _ = Plot.set_xlabel h "y" in
-let _ = Plot.set_ylabel h "Frequency" in
-let _ = Plot.histogram ~h ~bin:50 (Mat.col y 1) in
-let _ = Plot.subplot h 1 0 in
-let _ = Plot.set_title h "Distribution of x" in
-let _ = Plot.set_ylabel h "Frequency" in
-let _ = Plot.histogram ~h ~bin:50 (Mat.col y 0) in
-let _ = Plot.subplot h 1 1 in
-let _ = Plot.set_foreground_color h 51  102 255 in
-let _ = Plot.set_title h "Sine function" in
-let _ = Plot.plot_fun ~h ~line_style:2 Maths.sin 0. 28. in
-let _ = Plot.autocorr ~h (Mat.sequential 1 28) in
+let h = Plot.create ~m:2 ~n:2 "" in
+Plot.set_background_color h 255 255 255;
+
+Plot.subplot h 0 0;
+Plot.set_title h "Bivariate model";
+Plot.scatter ~h (Mat.col y 0) (Mat.col y 1);
+
+Plot.subplot h 0 1;
+Plot.set_title h "Distribution of y";
+Plot.set_xlabel h "y";
+Plot.set_ylabel h "Frequency";
+Plot.histogram ~h ~bin:50 (Mat.col y 1);
+
+Plot.subplot h 1 0;
+Plot.set_title h "Distribution of x";
+Plot.set_ylabel h "Frequency";
+Plot.histogram ~h ~bin:50 (Mat.col y 0);
+
+Plot.subplot h 1 1;
+Plot.set_foreground_color h 0 50 255;
+Plot.set_title h "Sine function";
+Plot.(plot_fun ~h ~spec:[ LineStyle 2 ] Maths.sin 0. 28.);
+Plot.autocorr ~h (Mat.sequential 1 28);
+
 Plot.output h;;
 ```
 
