@@ -211,7 +211,17 @@ val surf : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 val mesh : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 (** [mesh x y z] generates a mesh plot defined by [x], [y], and [z].
 
-  Parameters: [Contour], [Altitude], [Azimuth].
+  Parameters: [Contour], [Altitude], [Azimuth], [Style3D].
+ *)
+
+val plots2d3d : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
+(** [plots2d3d] is a convenience function that treats [x] as indexes to
+    different 2D plots with domain in [y] and range in [z].  This allows 
+    one to display related 2D plots separated in space rather than overlaid
+    on a plane.  Can be recreated by adding [Style3D Plplot.([PL_DRAW_LINEY])] 
+    to [mesh]'s [spec] argument. 
+  
+    Parameters: [Contour], [Altitude], [Azimuth], [Style3D].
  *)
 
 val contour : ?h:handle -> dsmat -> dsmat -> dsmat -> unit

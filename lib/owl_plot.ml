@@ -1201,6 +1201,11 @@ let mesh ?(h=_default_handle) ?(spec=[]) x y z =
   if not h.holdon then output h
 
 
+let plots2d3d ?(h=_default_handle) ?(spec=[]) x y z =
+  let new_spec = (Style3D [Plplot.PL_DRAW_LINEY])::spec in
+  mesh ~h ~spec:new_spec x y z
+
+
 let heatmap ?(h=_default_handle) x y z =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
