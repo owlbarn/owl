@@ -31,6 +31,9 @@ type spec =
   | Contour
   | Altitude    of float
   | Azimuth     of float
+  | Style3D     of Plplot.plplot3d_style
+(** Style3D is a list of values for the opt argument of plplot 3D plotting 
+ * functions. *)
 
 
 (** {6 Config functions} *)
