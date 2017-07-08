@@ -186,7 +186,7 @@ val boxplot : ?h:handle -> ?spec:spec list -> dsmat -> unit
  *)
 
 val pie : ?h:handle -> ?spec:spec list -> dsmat -> unit
-(** [pie x] generates a pie chart of [x].
+(** [pie x] generates a simple pie chart of [x].
 
   Parameters: [RGB], [Fill].
  *)

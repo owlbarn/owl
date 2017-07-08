@@ -1089,7 +1089,7 @@ let _draw_arc fill n x =
   ) x
 
 
-(* FIXME: fill not done ... *)
+(* TODO: improve the filling ... *)
 let pie ?(h=_default_handle) ?(spec=[]) x =
   let open Plplot in
   _adjust_range h ~margin:0.1 [|-1.; 1.|] `X;
