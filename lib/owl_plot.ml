@@ -531,7 +531,8 @@ let text ?(h=_default_handle) ?(spec=[]) x y ?(dx=0.) ?(dy=0.) s =
 
 
 let _thinning x =
-  let n = min ((float_of_int (Array.length x)) *. 0.1 ) 15. in
+  let l = float_of_int (Array.length x) in
+  let n = if l < 16. then l else 16. in
   let c = float_of_int (Array.length x) /. n in
   Array.init (int_of_float n) (fun i -> x.(int_of_float (float_of_int i *. c)))
 

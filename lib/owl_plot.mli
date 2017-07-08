@@ -10,6 +10,8 @@
  *)
 
 
+(** {6 Type definition} *)
+
 type dsmat = Owl_dense_matrix.D.mat
 
 type handle
