@@ -1065,13 +1065,26 @@ let _draw_arc fill n x =
   let a = 2. *. Owl_maths.pi in
   let theta = a /. n in
   let i = ref 0. in
+
   Array.iter (fun y ->
     let c = n *. y in
     let x' = Array.init (int_of_float c + 1) (fun j -> Owl_maths.(sin ((float_of_int j +. !i) *. theta))) in
     let y' = Array.init (int_of_float c + 1) (fun j -> Owl_maths.(cos ((float_of_int j +. !i) *. theta))) in
     let x' = Array.(append [|0.|] x') in
     let y' = Array.(append [|0.|] y') in
-    let _ = plline x' y' in
+    plline x' y';
+
+    (* generates a color theme *)
+    let r', g', b' = plgcol0 1 in
+    let rgb = mod_float ((!i +. 1.) *. 50.) 256. |> int_of_float in
+    plscol0 1 rgb rgb rgb;
+    plcol0 1;
+    plpsty 3;
+    plfill x' y';
+    (* restore original settings *)
+    plscol0 1 r' g' b';
+    plcol0 1;
+
     i := !i +. c;
   ) x
 
