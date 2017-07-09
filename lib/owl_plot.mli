@@ -31,6 +31,7 @@ type spec =
   | Contour
   | Altitude    of float
   | Azimuth     of float
+  | Style3D     of Plplot.plplot3d_style
 
 
 (** {6 Config functions} *)
@@ -202,13 +203,25 @@ val plot3d : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 val surf : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 (** [surf x y z] generates a surface plot defined by [x], [y], and [z].
 
-  Parameters: [Contour], [Altitude], [Azimuth].
+  Parameters: [Contour], [Altitude], [Azimuth], [Style3D].
+
+  [Style3D] should contain a list of Plplot options, possibly including:
+  PL_FACETED, PL_MAG_COLOR, PL_BASE_CONT, PL_SURF_CONT, PL_DRAW_SIDES, 
+  PL_DIFFUSE.
+  Please see documentation for the [opt] argument to the [plotsurf3d] 
+  function in the PLplot library and example 08 there for more information.
  *)
 
 val mesh : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 (** [mesh x y z] generates a mesh plot defined by [x], [y], and [z].
 
-  Parameters: [Contour], [Altitude], [Azimuth].
+  Parameters: [Contour], [Altitude], [Azimuth], [Style3D].
+
+  [Style3D] should contain a list of Plplot options, possibly including:
+  PL_DRAW_LINEXY, PL_DRAW_LINEX, PL_DRAW_LINEY, PL_MAG_COLOR, PL_MESH, 
+  PL_BASE_CONT, PL_SURF_CONT.
+  Please see documentation for the [opt] argument to the [plmesh] and
+  [plmeshc] functions in the PLplot library for more information.
  *)
 
 val contour : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
