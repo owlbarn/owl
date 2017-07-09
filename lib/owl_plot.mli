@@ -36,7 +36,7 @@ type spec =
   | ZLine       of axis
   | NoMagColor
   | Curtain
-  | Style3D     of Plplot.plplot3d_style
+  | Faceted
 
 
 (** {6 Config functions} *)
@@ -202,19 +202,17 @@ val pie : ?h:handle -> ?spec:spec list -> dsmat -> unit
 
 
 val plot3d : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
-(** [plot3d] is just an alias of [surf] function. *)
+(** TODO: [plot3d] is just an alias of [surf] function. 
+ *)
 
 
 val surf : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 (** [surf x y z] generates a surface plot defined by [x], [y], and [z].
 
-  Parameters: [Contour], [Altitude], [Azimuth], [Style3D].
+  Parameters: [Altitude], [Azimuth], [Contour], [NoMagColor], [Curtain].
 
-  [Style3D] should contain a list of Plplot options, possibly including:
-  PL_FACETED, PL_MAG_COLOR, PL_BASE_CONT, PL_SURF_CONT, PL_DRAW_SIDES,
-  PL_DIFFUSE.
-  Please see documentation for the [opt] argument to the [plotsurf3d]
-  function in the PLplot library and example 08 there for more information.
+  Please refer to [plotsurf3d] functions in the PLplot library for more
+  information.
  *)
 
 val mesh : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit

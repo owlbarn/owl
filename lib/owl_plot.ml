@@ -100,7 +100,7 @@ type spec =
   | ZLine       of axis
   | NoMagColor
   | Curtain
-  | Style3D     of Plplot.plplot3d_style
+  | Faceted
 
 
 let _get_rgb l default_val =
@@ -225,10 +225,10 @@ let _get_curtain l default_val =
   if k = 0 then default_val else List.nth l (k - 1)
 
 
-let _get_style3d l default_val =
+let _get_faceted l default_val =
   let l = l
-    |> List.filter (function Style3D _ -> true | _ -> false)
-    |> List.map (function Style3D x -> x | _ -> default_val)
+    |> List.filter (function Faceted -> true | _ -> false)
+    |> List.map (function Faceted -> true | _ -> false)
   in
   let k = List.length l in
   if k = 0 then default_val else List.nth l (k - 1)
@@ -1190,12 +1190,16 @@ let surf ?(h=_default_handle) ?(spec=[]) x y z =
   p.is_3d <- true;
   p.altitude <- _get_altitude spec 33.;
   p.azimuth <- _get_azimuth spec 115.;
+  (* assemble the specifications *)
+  let mag_color = _get_mag_color spec true in
   let contour = _get_contour spec false in
-  let opt0 = match contour with
-    | true  -> [ PL_FACETED; PL_MAG_COLOR; PL_BASE_CONT; PL_SURF_CONT ]
-    | false -> [ PL_FACETED; PL_MAG_COLOR ]
-  in
-  let opt = _get_style3d spec opt0 in
+  let curtain = _get_curtain spec false in
+  let faceted = _get_faceted spec false in
+  let opt = [ PL_DIFFUSE ] in
+  let opt = opt @ if mag_color then [ PL_MAG_COLOR ] else [] in
+  let opt = opt @ if contour then [ PL_BASE_CONT; PL_SURF_CONT ] else [] in
+  let opt = opt @ if curtain then [ PL_DRAW_SIDES ] else [] in
+  let opt = opt @ if faceted then [ PL_FACETED ] else [] in
   (* drawing function *)
   let f = (fun () ->
     plsurf3d x y z0 opt clvl;
