@@ -15,6 +15,7 @@ type legend_typ = LINE | SCATTER | BOX
 
 type legend_position = North | South | West | East | NorthWest | NorthEast | SouthWest | SouthEast
 
+
 type legend_item = {
   mutable plot_type    : legend_typ;
   mutable line_style   : int;
@@ -24,6 +25,7 @@ type legend_item = {
   mutable fill_pattern : int;
   mutable fill_color   : int * int * int;
 }
+
 
 type page = {
   mutable title           : string;
@@ -65,6 +67,7 @@ type page = {
   mutable plots           : (unit -> unit) array;
 }
 
+
 type handle = {
   mutable holdon       : bool;
   mutable output       : string;
@@ -76,6 +79,9 @@ type handle = {
   mutable pages        : page array;
   mutable current_page : int;
 }
+
+
+type axis = X | Y | Z | XY | XZ | YZ
 
 
 (* Specification to configure a plot *)
@@ -91,6 +97,9 @@ type spec =
   | Contour
   | Altitude    of float
   | Azimuth     of float
+  | ZLine       of axis
+  | NoMagColor
+  | Curtain
   | Style3D     of Plplot.plplot3d_style
 
 
@@ -179,6 +188,38 @@ let _get_azimuth l default_val =
   let l = l
     |> List.filter (function Azimuth _ -> true | _ -> false)
     |> List.map (function Azimuth x -> x | _ -> default_val)
+  in
+  let k = List.length l in
+  if k = 0 then default_val else List.nth l (k - 1)
+
+
+let _get_zline l default_val =
+  let l = l
+    |> List.filter (function ZLine _ -> true | _ -> false)
+    |> List.map (function
+        | ZLine X  -> Plplot.PL_DRAW_LINEX
+        | ZLine Y  -> Plplot.PL_DRAW_LINEY
+        | ZLine XY -> Plplot.PL_DRAW_LINEXY
+        | _        -> default_val
+      )
+  in
+  let k = List.length l in
+  if k = 0 then default_val else List.nth l (k - 1)
+
+
+let _get_mag_color l default_val =
+  let l = l
+    |> List.filter (function NoMagColor -> true | _ -> false)
+    |> List.map (function NoMagColor -> false | _ -> true)
+  in
+  let k = List.length l in
+  if k = 0 then default_val else List.nth l (k - 1)
+
+
+let _get_curtain l default_val =
+  let l = l
+    |> List.filter (function Curtain -> true | _ -> false)
+    |> List.map (function Curtain -> true | _ -> false)
   in
   let k = List.length l in
   if k = 0 then default_val else List.nth l (k - 1)
@@ -1186,14 +1227,20 @@ let mesh ?(h=_default_handle) ?(spec=[]) x y z =
   p.is_3d <- true;
   p.altitude <- _get_altitude spec 33.;
   p.azimuth <- _get_azimuth spec 115.;
+  (* assemble the specifications *)
+  let mag_color = _get_mag_color spec true in
   let contour = _get_contour spec false in
-  let opt0 = [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH; PL_BASE_CONT; PL_SURF_CONT ] in
-  let opt1 = [ PL_DRAW_LINEXY; PL_MAG_COLOR; PL_MESH ] in
+  let curtain = _get_curtain spec false in
+  let opt = [ PL_MESH ] in
+  let opt = opt @ [ _get_zline spec PL_DRAW_LINEXY ] in
+  let opt = opt @ if mag_color then [ PL_MAG_COLOR ] else [] in
+  let opt = opt @ if contour then [ PL_BASE_CONT; PL_SURF_CONT ] else [] in
+  let opt = opt @ if curtain then [ PL_DRAW_SIDES ] else [] in
   (* drawing function *)
   let f = (fun () ->
     match contour with
-    | true  -> plmeshc x y z0 (_get_style3d spec opt0) clvl
-    | false -> plmesh x y z0 (_get_style3d spec opt1)
+    | true  -> plmeshc x y z0 opt clvl
+    | false -> plmesh x y z0 opt
     (* restore original settings, if any *)
   )
   in

@@ -20,6 +20,8 @@ type color = RED | GREEN | BLUE
 
 type legend_position = North | South | West | East | NorthWest | NorthEast | SouthWest | SouthEast
 
+type axis = X | Y | Z | XY | XZ | YZ
+
 type spec =
   | RGB         of int * int * int
   | LineStyle   of int
@@ -31,6 +33,9 @@ type spec =
   | Contour
   | Altitude    of float
   | Azimuth     of float
+  | ZLine       of axis
+  | NoMagColor
+  | Curtain
   | Style3D     of Plplot.plplot3d_style
 
 
@@ -206,22 +211,20 @@ val surf : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
   Parameters: [Contour], [Altitude], [Azimuth], [Style3D].
 
   [Style3D] should contain a list of Plplot options, possibly including:
-  PL_FACETED, PL_MAG_COLOR, PL_BASE_CONT, PL_SURF_CONT, PL_DRAW_SIDES, 
+  PL_FACETED, PL_MAG_COLOR, PL_BASE_CONT, PL_SURF_CONT, PL_DRAW_SIDES,
   PL_DIFFUSE.
-  Please see documentation for the [opt] argument to the [plotsurf3d] 
+  Please see documentation for the [opt] argument to the [plotsurf3d]
   function in the PLplot library and example 08 there for more information.
  *)
 
 val mesh : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 (** [mesh x y z] generates a mesh plot defined by [x], [y], and [z].
 
-  Parameters: [Contour], [Altitude], [Azimuth], [Style3D].
+  Parameters: [Altitude], [Azimuth], [Contour], [NoMagColor], [ZLine],
+  [Curtain].
 
-  [Style3D] should contain a list of Plplot options, possibly including:
-  PL_DRAW_LINEXY, PL_DRAW_LINEX, PL_DRAW_LINEY, PL_MAG_COLOR, PL_MESH, 
-  PL_BASE_CONT, PL_SURF_CONT.
-  Please see documentation for the [opt] argument to the [plmesh] and
-  [plmeshc] functions in the PLplot library for more information.
+  Please refer to [plmesh] and [plmeshc] functions in the PLplot library for
+  more information.
  *)
 
 val contour : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
