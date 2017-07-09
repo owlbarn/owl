@@ -91,7 +91,6 @@ type spec =
   | Contour
   | Altitude    of float
   | Azimuth     of float
-  | Style3D     of Plplot.plplot3d_style
 
 
 let _get_rgb l default_val =
@@ -179,15 +178,6 @@ let _get_azimuth l default_val =
   let l = l
     |> List.filter (function Azimuth _ -> true | _ -> false)
     |> List.map (function Azimuth x -> x | _ -> default_val)
-  in
-  let k = List.length l in
-  if k = 0 then default_val else List.nth l (k - 1)
-
-
-let _get_style3d l default_val =
-  let l = l
-    |> List.filter (function Style3D _ -> true | _ -> false)
-    |> List.map (function Style3D x -> x | _ -> default_val)
   in
   let k = List.length l in
   if k = 0 then default_val else List.nth l (k - 1)
@@ -1191,19 +1181,14 @@ let mesh ?(h=_default_handle) ?(spec=[]) x y z =
   (* drawing function *)
   let f = (fun () ->
     match contour with
-    | true  -> plmeshc x y z0 (_get_style3d spec opt0) clvl
-    | false -> plmesh x y z0 (_get_style3d spec opt1)
+    | true  -> plmeshc x y z0 opt0 clvl
+    | false -> plmesh x y z0 opt1
     (* restore original settings, if any *)
   )
   in
   (* add closure as a layer *)
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
-
-
-let plots2d3d ?(h=_default_handle) ?(spec=[]) x y z =
-  let new_spec = (Style3D [Plplot.PL_DRAW_LINEY])::spec in
-  mesh ~h ~spec:new_spec x y z
 
 
 let heatmap ?(h=_default_handle) x y z =
