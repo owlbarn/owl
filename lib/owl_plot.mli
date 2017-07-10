@@ -214,7 +214,7 @@ val surf : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 val mesh : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 (** [mesh x y z] generates a mesh plot defined by [x], [y], and [z].
 
-  Parameters: [Altitude], [Azimuth], [Contour], [NoMagColor], [ZLine],
+  Parameters: [RGB], [Altitude], [Azimuth], [Contour], [NoMagColor], [ZLine],
   [Curtain].
 
   Please refer to [plmesh] and [plmeshc] functions in the PLplot library for

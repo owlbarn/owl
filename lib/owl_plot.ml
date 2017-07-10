@@ -440,8 +440,8 @@ let _prepare_page p =
   plslabelfunc (_draw_ticklabels p);
   (* configure an individual page *)
   let r, g, b = p.fgcolor in
-  plscol0 1 r g b;
-  plcol0 1;
+  plscol0 2 r g b;
+  plcol0 2;
   if p.fontsize > 0. then plschr p.fontsize 1.0;
   let xmin, xmax = p.xrange in
   let ymin, ymax = p.yrange in
@@ -462,6 +462,8 @@ let _prepare_page p =
            "bntu" p.ylabel 0.0 0
            "bcdfntu" p.zlabel 0.0 4
   );
+  (* reset foreground colour to index 1 *)
+  plcol0 1;
   if p.legend then _draw_legend p
 
 
@@ -1228,6 +1230,8 @@ let mesh ?(h=_default_handle) ?(spec=[]) x y z =
   p.is_3d <- true;
   p.altitude <- _get_altitude spec 33.;
   p.azimuth <- _get_azimuth spec 45.;
+  let color = _get_rgb spec p.fgcolor in
+  let r, g, b = color in
   (* assemble the specifications *)
   let mag_color = _get_mag_color spec true in
   let contour = _get_contour spec false in
@@ -1239,10 +1243,17 @@ let mesh ?(h=_default_handle) ?(spec=[]) x y z =
   let opt = opt @ if curtain then [ PL_DRAW_SIDES ] else [] in
   (* drawing function *)
   let f = (fun () ->
+    (* only takes effect when NoMagColor is set *)
+    let r', g', b' = plgcol0 1 in
+    plscol0 1 r g b;
+    plcol0 1;
     match contour with
     | true  -> plmeshc x y z0 opt clvl
     | false -> plmesh x y z0 opt
+    ;
     (* restore original settings, if any *)
+    plscol0 1 r' g' b';
+    plcol0 1
   )
   in
   (* add closure as a layer *)
