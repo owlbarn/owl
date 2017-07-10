@@ -74,10 +74,6 @@ val set_foreground_color : handle -> int -> int -> int -> unit
 
 val set_background_color : handle -> int -> int -> int -> unit
 
-val set_altitude : handle -> float -> unit
-
-val set_azimuth : handle -> float -> unit
-
 val set_font_size : handle -> float -> unit
 
 val set_pen_size : handle -> float -> unit
@@ -202,7 +198,7 @@ val pie : ?h:handle -> ?spec:spec list -> dsmat -> unit
 
 
 val plot3d : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
-(** TODO: [plot3d] is just an alias of [surf] function. 
+(** TODO: [plot3d] is just an alias of [surf] function.
  *)
 
 

@@ -531,12 +531,6 @@ let set_foreground_color h r g b = (h.pages.(h.current_page)).fgcolor <- (r, g, 
 let set_background_color h r g b = h.bgcolor <- (r, g, b)
 
 
-let set_altitude h a = (h.pages.(h.current_page)).altitude <- a
-
-
-let set_azimuth h a = (h.pages.(h.current_page)).azimuth <- a
-
-
 let set_font_size h x = (h.pages.(h.current_page)).fontsize <- x
 
 
