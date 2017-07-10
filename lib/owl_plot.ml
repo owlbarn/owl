@@ -449,8 +449,7 @@ let _prepare_page p =
   let alt, az = p.altitude, p.azimuth in
   if not p.is_3d then (
     (* prepare a 2D plot *)
-    plenv xmin xmax ymin ymax 0 (_config_2d_axis p);
-    pllab p.xlabel p.ylabel p.title
+    plenv xmin xmax ymin ymax 0 (_config_2d_axis p)
   )
   else (
     (* prepare a 3D plot *)
@@ -462,6 +461,8 @@ let _prepare_page p =
            "bntu" p.ylabel 0.0 0
            "bcdfntu" p.zlabel 0.0 4
   );
+  (* set x-label, y-label, and title *)
+  pllab p.xlabel p.ylabel p.title;
   (* reset foreground colour to index 1 *)
   plcol0 1;
   if p.legend then _draw_legend p
