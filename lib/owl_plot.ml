@@ -260,7 +260,7 @@ let _create_page () = {
   ygrid           = false;
   zgrid           = false;
   altitude        = 33.;
-  azimuth         = 115.;
+  azimuth         = 45.;
   legend          = false;
   legend_position = NorthEast;
   legend_items    = [||];
@@ -600,17 +600,18 @@ let _union_range p r x =
 let _adjust_range ?(margin=0.) h d axis =
   let p = h.pages.(h.current_page) in
   match axis with
-  | `X -> if p.auto_xrange then p.xrange <- _union_range margin p.xrange d
-  | `Y -> if p.auto_yrange then p.yrange <- _union_range margin p.yrange d
-  | `Z -> if p.auto_zrange then p.zrange <- _union_range margin p.zrange d
+  | X -> if p.auto_xrange then p.xrange <- _union_range margin p.xrange d
+  | Y -> if p.auto_yrange then p.yrange <- _union_range margin p.yrange d
+  | Z -> if p.auto_zrange then p.zrange <- _union_range margin p.zrange d
+  | _ -> failwith "owl_plot:_adjust_range"
 
 
 let plot ?(h=_default_handle) ?(spec=[]) x y =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
-  _adjust_range h x `X;
-  _adjust_range h y `Y;
+  _adjust_range h x X;
+  _adjust_range h y Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -656,8 +657,8 @@ let scatter ?(h=_default_handle) ?(spec=[]) x y =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
-  _adjust_range h x `X;
-  _adjust_range h y `Y;
+  _adjust_range h x X;
+  _adjust_range h y Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -688,11 +689,11 @@ let scatter ?(h=_default_handle) ?(spec=[]) x y =
 let histogram ?(h=_default_handle) ?(spec=[]) ?(bin=10) x =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
-  _adjust_range h x `X;
+  _adjust_range h x X;
   let xmin, xmax = Owl_stats.minmax x in
   let ymin, ymax = 0., Owl_stats.(histogram x bin |> Array.map float_of_int |> max)  *. 1.1 in
-  _adjust_range h [|xmin; xmax|] `X;
-  _adjust_range h [|ymin; ymax|] `Y;
+  _adjust_range h [|xmin; xmax|] X;
+  _adjust_range h [|ymin; ymax|] Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -722,8 +723,8 @@ let stem ?(h=_default_handle) ?(spec=[]) x y =
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
-  _adjust_range h x `X;
-  _adjust_range h y `Y;
+  _adjust_range h x X;
+  _adjust_range h y Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -785,8 +786,8 @@ let draw_line ?(h=_default_handle) ?(spec=[]) x0 y0 x1 y1 =
   let open Plplot in
   let x = [|x0; x1|] in
   let y = [|y0; y1|] in
-  _adjust_range h x `X;
-  _adjust_range h y `Y;
+  _adjust_range h x X;
+  _adjust_range h y Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -844,8 +845,8 @@ let error_bar ?(h=_default_handle) ?(spec=[]) x y e =
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
   let e = Owl_dense_matrix.D.to_array e in
-  _adjust_range h x `X;
-  _adjust_range h [|ymin; ymax|] `Y;
+  _adjust_range h x X;
+  _adjust_range h [|ymin; ymax|] Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -902,8 +903,8 @@ let boxplot ?(h=_default_handle) ?(spec=[]) y =
   let w = 0.4 in
   let y0 = Owl_dense_matrix.D.to_array y in
   let y1 = Owl_dense_matrix.D.to_arrays y in
-  _adjust_range h [|xmin-.w; xmax+.w|] `X;
-  _adjust_range h ~margin:0.1 y0 `Y;
+  _adjust_range h [|xmin-.w; xmax+.w|] X;
+  _adjust_range h ~margin:0.1 y0 Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -938,8 +939,8 @@ let draw_rect ?(h=_default_handle) ?(spec=[]) x0 y0 x1 y1 =
   let open Plplot in
   let x = [|x0; x0; x1; x1|] in
   let y = [|y1; y0; y0; y1|] in
-  _adjust_range h x `X;
-  _adjust_range h y `Y;
+  _adjust_range h x X;
+  _adjust_range h y Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -971,8 +972,8 @@ let bar ?(h=_default_handle) ?(spec=[]) y =
   let y = Owl_dense_matrix.D.to_array y in
   let x = Array.mapi (fun i _ -> float_of_int i +. 1.) y in
   let xmin, xmax = Owl_stats.minmax x in
-  _adjust_range h [|xmin-.w; xmax+.w|] `X;
-  _adjust_range h y `Y;
+  _adjust_range h [|xmin-.w; xmax+.w|] X;
+  _adjust_range h y Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -1007,8 +1008,8 @@ let area ?(h=_default_handle) ?(spec=[]) x y=
   let xmin, xmax = Owl_stats.minmax x in
   let x = Array.(append (append [|xmin|] x) [|xmax|]) in
   let y = Array.(append (append [|0.|] y) [|0.|]) in
-  _adjust_range h x `X;
-  _adjust_range h y `Y;
+  _adjust_range h x X;
+  _adjust_range h y Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -1079,8 +1080,8 @@ let draw_circle ?(h=_default_handle) ?(spec=[]) x y rr =
   let theta = (2. *. Owl_maths.pi) /. (float_of_int n) in
   let x' = Array.init (n + 1) (fun i -> x +. Owl_maths.(sin (float_of_int i *. theta)) *. rr) in
   let y' = Array.init (n + 1) (fun i -> y +. Owl_maths.(cos (float_of_int i *. theta)) *. rr) in
-  _adjust_range h ~margin:0.05 x' `X;
-  _adjust_range h ~margin:0.05 y' `Y;
+  _adjust_range h ~margin:0.05 x' X;
+  _adjust_range h ~margin:0.05 y' Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
@@ -1143,8 +1144,8 @@ let _draw_arc fill n x =
 (* TODO: improve the filling ... *)
 let pie ?(h=_default_handle) ?(spec=[]) x =
   let open Plplot in
-  _adjust_range h ~margin:0.1 [|-1.; 1.|] `X;
-  _adjust_range h ~margin:0.1 [|-1.; 1.|] `Y;
+  _adjust_range h ~margin:0.1 [|-1.; 1.|] X;
+  _adjust_range h ~margin:0.1 [|-1.; 1.|] Y;
   let x = Owl_dense_matrix.D.to_array x in
   let x = Owl_stats.normlise_pdf x in
   (* prepare the closure *)
@@ -1180,9 +1181,9 @@ let surf ?(h=_default_handle) ?(spec=[]) x y z =
   let z = Owl_dense_matrix.D.transpose z in
   let z0 = Owl_dense_matrix.D.to_arrays z in
   let z1 = Owl_dense_matrix.D.to_array z in
-  _adjust_range h x `X;
-  _adjust_range h y `Y;
-  _adjust_range h z1 `Z;
+  _adjust_range h x X;
+  _adjust_range h y Y;
+  _adjust_range h z1 Z;
   (* construct contour level *)
   let zmin, zmax = Owl_stats.minmax z1 in
   let clvl = Owl_dense_matrix.D.(linspace zmin zmax 10 |> to_array) in
@@ -1190,7 +1191,7 @@ let surf ?(h=_default_handle) ?(spec=[]) x y z =
   let p = h.pages.(h.current_page) in
   p.is_3d <- true;
   p.altitude <- _get_altitude spec 33.;
-  p.azimuth <- _get_azimuth spec 115.;
+  p.azimuth <- _get_azimuth spec 45.;
   (* assemble the specifications *)
   let mag_color = _get_mag_color spec true in
   let contour = _get_contour spec false in
@@ -1222,9 +1223,9 @@ let mesh ?(h=_default_handle) ?(spec=[]) x y z =
   let z = Owl_dense_matrix.D.transpose z in
   let z0 = Owl_dense_matrix.D.to_arrays z in
   let z1 = Owl_dense_matrix.D.to_array z in
-  _adjust_range h x `X;
-  _adjust_range h y `Y;
-  _adjust_range h z1 `Z;
+  _adjust_range h x X;
+  _adjust_range h y Y;
+  _adjust_range h z1 Z;
   (* construct contour level *)
   let zmin, zmax = Owl_stats.minmax z1 in
   let clvl = Owl_dense_matrix.D.(linspace zmin zmax 10 |> to_array) in
@@ -1232,7 +1233,7 @@ let mesh ?(h=_default_handle) ?(spec=[]) x y z =
   let p = h.pages.(h.current_page) in
   p.is_3d <- true;
   p.altitude <- _get_altitude spec 33.;
-  p.azimuth <- _get_azimuth spec 115.;
+  p.azimuth <- _get_azimuth spec 45.;
   (* assemble the specifications *)
   let mag_color = _get_mag_color spec true in
   let contour = _get_contour spec false in
@@ -1262,9 +1263,9 @@ let heatmap ?(h=_default_handle) x y z =
   let z = Owl_dense_matrix.D.transpose z in
   let z0 = Owl_dense_matrix.D.to_arrays z in
   let z1 = Owl_dense_matrix.D.to_array z in
-  _adjust_range h x `X;
-  _adjust_range h y `Y;
-  _adjust_range h z1 `Z;
+  _adjust_range h x X;
+  _adjust_range h y Y;
+  _adjust_range h z1 Z;
   (* construct contour level *)
   let xmin, xmax = Owl_stats.minmax x in
   let ymin, ymax = Owl_stats.minmax y in
@@ -1281,8 +1282,6 @@ let heatmap ?(h=_default_handle) x y z =
   if not h.holdon then output h
 
 
-(* FIXME: something wrong with Plplot callback function. The contour function
-  may cause segmentation fault. I suspect plset_pltr and plunset_pltr functions. *)
 let contour ?(h=_default_handle) x y z =
   let open Plplot in
   let m, n = Owl_dense_matrix.D.shape z in
@@ -1292,8 +1291,8 @@ let contour ?(h=_default_handle) x y z =
   let y1 = Owl_dense_matrix.D.to_array y in
   let z0 = Owl_dense_matrix.D.to_arrays z in
   let z1 = Owl_dense_matrix.D.to_array z in
-  _adjust_range h x1 `X;
-  _adjust_range h y1 `Y;
+  _adjust_range h x1 X;
+  _adjust_range h y1 Y;
   (* construct contour level *)
   let zmin, zmax = Owl_stats.minmax z1 in
   let clvl = Owl_dense_matrix.D.(linspace zmin zmax 10 |> to_array) in
@@ -1339,8 +1338,8 @@ let probplot ?(h=_default_handle) ?(spec=[]) ?(dist=(fun q -> Owl_stats.Cdf.gaus
       let q = Owl_dense_matrix.D.map dist qth in
       Owl_dense_matrix.D.to_array q
     in
-    _adjust_range h x `X;
-    _adjust_range h y `Y;
+    _adjust_range h x X;
+    _adjust_range h y Y;
     (* parameters to draw the reference line *)
     let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
     let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
@@ -1394,8 +1393,8 @@ let wblplot ?(h=_default_handle) ?(spec=[]) ?(lambda=1.) ?(k=1.) x =
     let q = Owl_dense_matrix.D.map dist qth in
     Owl_dense_matrix.D.to_array q
   in
-  _adjust_range h x `X;
-  _adjust_range h y `Y;
+  _adjust_range h x X;
+  _adjust_range h y Y;
   (* parameters to draw the reference line *)
   let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
   let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
@@ -1461,8 +1460,8 @@ let qqplot ?(h=_default_handle) ?(spec=[]) ?(pd=(fun i -> Owl_stats.Cdf.gaussian
   let q = Owl_dense_matrix.D.map dist qth in
   let x = Owl_dense_matrix.D.to_array q in
   (*draw the figure*)
-  _adjust_range h x `X;
-  _adjust_range h y `Y;
+  _adjust_range h x X;
+  _adjust_range h y Y;
   (* Parameters to draw the reference line *)
   let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
   let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
