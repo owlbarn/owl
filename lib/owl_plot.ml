@@ -1175,8 +1175,9 @@ let pie ?(h=_default_handle) ?(spec=[]) x =
 
 let surf ?(h=_default_handle) ?(spec=[]) x y z =
   let open Plplot in
-  let x = Owl_dense_matrix.D.to_array x in
-  let y = Owl_dense_matrix.D.(transpose y |> to_array) in
+  let x = Owl_dense_matrix.D.(row x 0 |> to_array) in
+  let y = Owl_dense_matrix.D.(col y 0 |> to_array) in
+  let z = Owl_dense_matrix.D.transpose z in
   let z0 = Owl_dense_matrix.D.to_arrays z in
   let z1 = Owl_dense_matrix.D.to_array z in
   _adjust_range h x `X;
@@ -1216,8 +1217,9 @@ let plot3d = surf
 
 let mesh ?(h=_default_handle) ?(spec=[]) x y z =
   let open Plplot in
-  let x = Owl_dense_matrix.D.to_array x in
-  let y = Owl_dense_matrix.D.(transpose y |> to_array) in
+  let x = Owl_dense_matrix.D.(row x 0 |> to_array) in
+  let y = Owl_dense_matrix.D.(col y 0 |> to_array) in
+  let z = Owl_dense_matrix.D.transpose z in
   let z0 = Owl_dense_matrix.D.to_arrays z in
   let z1 = Owl_dense_matrix.D.to_array z in
   _adjust_range h x `X;
@@ -1255,8 +1257,9 @@ let mesh ?(h=_default_handle) ?(spec=[]) x y z =
 
 let heatmap ?(h=_default_handle) x y z =
   let open Plplot in
-  let x = Owl_dense_matrix.D.to_array x in
-  let y = Owl_dense_matrix.D.(transpose y |> to_array) in
+  let x = Owl_dense_matrix.D.(row x 0 |> to_array) in
+  let y = Owl_dense_matrix.D.(col y 0 |> to_array) in
+  let z = Owl_dense_matrix.D.transpose z in
   let z0 = Owl_dense_matrix.D.to_arrays z in
   let z1 = Owl_dense_matrix.D.to_array z in
   _adjust_range h x `X;
@@ -1282,7 +1285,7 @@ let heatmap ?(h=_default_handle) x y z =
   may cause segmentation fault. I suspect plset_pltr and plunset_pltr functions. *)
 let contour ?(h=_default_handle) x y z =
   let open Plplot in
-  let m, n = Owl_dense_matrix.D.shape x in
+  let m, n = Owl_dense_matrix.D.shape z in
   let x0 = Owl_dense_matrix.D.to_arrays x in
   let x1 = Owl_dense_matrix.D.to_array x in
   let y0 = Owl_dense_matrix.D.to_arrays y in
