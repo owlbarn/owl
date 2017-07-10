@@ -1186,8 +1186,8 @@ let surf ?(h=_default_handle) ?(spec=[]) x y z =
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   p.is_3d <- true;
-  p.altitude <- _get_altitude spec 33.;
-  p.azimuth <- _get_azimuth spec 45.;
+  p.altitude <- _get_altitude spec p.altitude;
+  p.azimuth <- _get_azimuth spec p.azimuth;
   (* assemble the specifications *)
   let mag_color = _get_mag_color spec true in
   let contour = _get_contour spec false in
@@ -1228,8 +1228,8 @@ let mesh ?(h=_default_handle) ?(spec=[]) x y z =
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   p.is_3d <- true;
-  p.altitude <- _get_altitude spec 33.;
-  p.azimuth <- _get_azimuth spec 45.;
+  p.altitude <- _get_altitude spec p.altitude;
+  p.azimuth <- _get_azimuth spec p.azimuth;
   let color = _get_rgb spec p.fgcolor in
   let r, g, b = color in
   (* assemble the specifications *)
