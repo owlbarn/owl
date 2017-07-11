@@ -12,7 +12,6 @@ matrix:
       osx_image: xcode8.2
     - os: linux
       dist: trusty
-      group: deprecated-2017Q2
       addons:
         apt:
           packages:
