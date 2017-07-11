@@ -1,7 +1,7 @@
 ### 0.3.0 (in progress)
 
 * Enhance basic math operations for complex numbers.
-* Add more plotting functions.
+* Redesign Plot module and add more plotting functions.
 * Add more hypothesis test functions in Owl.Stats module.
 * Support both numerical and algorithmic differentiation in Algodiff.
 * Support both matrices and n-dimensional arrays in Algodiff module.
