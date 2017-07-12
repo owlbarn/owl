@@ -289,6 +289,7 @@ let l,u,_ = Linalg.D.lu x;;      (* LU decomposition *)
 let l = Linalg.D.chol x;;        (* cholesky decomposition *)
 ...
 let e, v = Linalg.D.eig x;;      (* Eigenvectors and eigenvalues *)
+let x = Linalg.D.null a;;        (* Solve A*x = 0, null space *)
 let x = Linalg.D.linsolve a b;;  (* Solve A*x = B *)
 let a, b = Linalg.D.linreg x y;; (* Simple linear regression y = a*x + b *)
 ...
@@ -297,6 +298,8 @@ let a, b = Linalg.D.linreg x y;; (* Simple linear regression y = a*x + b *)
 `Linalg` module offers additional functions to check the properties of a matrix. For example,
 
 ```ocaml
+Linalg.D.cond x;;          (* condition number of x *)
+Linalg.D.rank x;;          (* rank of x *)
 Linalg.D.is_diag x;;       (* is it diagonal *)
 Linalg.D.is_triu x;;       (* is it upper triangular *)
 Linalg.D.is_tril x;;       (* is it lower triangular *)
