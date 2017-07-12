@@ -20,7 +20,7 @@ The series of tutorials is here (more is coming):
 Some simple evaluations can be found as follows [[Ndarray](https://github.com/ryanrhymes/owl/wiki/Evaluation:-Performance-Test)]. The roadmap and future plan of Owl can be found
 [[Here]](https://github.com/ryanrhymes/owl/wiki/Future-Plan). I would love to hear from you, and please let me know your comments and suggestions to improve Owl.
 
-[Email Me](liang.wang@cl.cam.ac.uk) or message me on:
+[Email Me](mailto:liang.wang@cl.cam.ac.uk) or message me on:
 [Twitter](https://twitter.com/ryan_liang),
 [Google+](https://www.google.com/+RyanLiang),
 [Facebook](http://www.facebook.com/ryan.liang.wang),
@@ -485,7 +485,7 @@ let s4 = [ [1]; []; [2] ]    (* (1,*,2) *)
 ...
 ```
 
-`slice` function is very flexible, it basically has the same semantic as that in numpy. So you know how to index ndarray in numpy, you should be able to do the same thing in Owl. For advanced use of `slice` fucntion, please refer to my [separate tutorial](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Indexing-and-Slicing). Some examples as as below.
+`slice` function is very flexible, it basically has the same semantic as that in numpy. So you know how to index ndarray in numpy, you should be able to do the same thing in Owl. For advanced use of `slice` function, please refer to my [separate tutorial](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Indexing-and-Slicing). Some examples as as below.
 
 ```ocaml
 let s = [ [1]; []; [-1;0;-1]; ];;
@@ -557,7 +557,7 @@ Then you should be able to see a figure like this one below. For more advanced u
 
 Even though this is still work in progress, I find it necessary to present a small neural network example to show how necessary it is to have a comprehensive numerical infrastructure. The illustration in the following is of course the classic MNIST example wherein we will train a two-layer network that can recognise hand-written digits.
 
-Currently `Neural` module is wrapped into a separate library but it will be merged into `Owl` main library in the future. First, plese start your `utop` and load the `Owl_neural` library.
+Currently `Neural` module is wrapped into a separate library but it will be merged into `Owl` main library in the future. First, please start your `utop` and load the `Owl_neural` library.
 
 ```ocaml
 #require "owl_neural";;
