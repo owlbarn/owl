@@ -644,4 +644,6 @@ Owl is under active development, and I really look forward to your comments and 
 
 Just pull the image and dig into code saved in `/root/owl`, then have fun!
 
+**Student Project:** If you happen to be a student in the [Computer Lab](http://www.cl.cam.ac.uk/) and want to do some challenging development and design, here are some [Part II Projects](http://www.cl.cam.ac.uk/research/srg/netos/stud-projs/studproj-17/#owl0). If you are interested in more researchy topics, I also offer Part III Projects and please contact me directly via [Email](mailto:liang.wang@cl.cam.ac.uk).
+
 **Acknowledgement: Funded in part by EPSRC project - Contrive (EP/N028422/1).** Please refer to the [full acknowledgement](https://github.com/ryanrhymes/owl/blob/master/ACKNOWLEDGEMENT.md) for more details.
