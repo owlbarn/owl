@@ -271,8 +271,9 @@ Mat.sigmoid x;;     (* apply sigmoid function *)
 Concatenate two matrices, vertically or horizontally by
 
 ```ocaml
-Mat.(x @= y);;                (* equivalent to Mat.concat_vertical *)
-Mat.(x @|| y);;               (* equivalent to Mat.concat_horizontal *)
+Mat.(x @= y);;              (* equivalent to Mat.concat_vertical *)
+Mat.(x @|| y);;             (* equivalent to Mat.concat_horizontal *)
+Mat.concatenate [|x;...|];; (* concatenate a list of matrices along rows *)
 ```
 
 More advanced linear algebra operations such as `svd`, `qr`, and `cholesky` decomposition are included in `Linalg` module. `Linalg` module also supports both real and complex number of single and double precision.

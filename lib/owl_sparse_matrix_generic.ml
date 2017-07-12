@@ -590,3 +590,9 @@ let cols x l =
     iteri_nz (fun i _ v -> insert y i j v) (col x k)
   ) l;
   y
+
+let concat_vertical x y =
+  failwith "owl_sparse_matrix_generic:concat_vertical:not implemented"
+
+let concat_horizontal x y =
+  failwith "owl_sparse_matrix_generic:concat_horizontal:not implemented"
