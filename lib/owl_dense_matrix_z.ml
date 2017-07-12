@@ -49,6 +49,8 @@ let bernoulli ?p ?seed d = M.bernoulli Complex64 ?p ?seed d
 
 let hadamard n = M.hadamard Complex64 n
 
+let magic n = M.magic Complex64 n
+
 let of_array x m n = M.of_array Complex64 x m n
 
 let of_arrays x = M.of_arrays Complex64 x

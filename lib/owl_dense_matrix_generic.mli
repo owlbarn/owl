@@ -184,9 +184,15 @@ val hankel : ?r:('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val hadamard : ('a, 'b) kind -> int -> ('a, 'b) t
-(** [hadamard k n] construct a hadamard matrix of order [n]. For a hadamard [H],
+(** [hadamard k n] constructs a hadamard matrix of order [n]. For a hadamard [H],
   we have [H'*H = n*I]. Currrently, this function handles only the cases where
   [n], [n/12], or [n/20] is a power of 2.
+ *)
+
+val magic : ('a, 'b) kind -> int -> ('a, 'b) t
+(** [magic k n] constructs a [n x n] magic square matrix [x]. The elements in
+  [x] are consecutive numbers increasing from [1] to [n^2]. Currently, [n] must
+  be odd numbers and [n >= 3].
  *)
 
 

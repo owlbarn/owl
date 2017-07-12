@@ -54,6 +54,8 @@ val hankel : ?r:mat -> mat -> mat
 
 val hadamard : int -> mat
 
+val magic : int -> mat
+
 
 (** {7 Dense row vectors and meshgrids} *)
 
