@@ -30,7 +30,7 @@ Some simple evaluations can be found as follows [[Ndarray](https://github.com/ry
 
 ## Installation
 
-Owl requires OCaml `>=4.04.0`. The installation is rather trivial. You can simply use `opam install owl` to start. Owl's current version on OPAM is `0.2.6`, but it lags behind the master branch on the github and misses many features. If you want to try the newest version, I recommend installing Owl from the source and I will briefly show you how to do that in the following.
+Owl requires OCaml `>=4.04.0`. The installation is rather trivial. You can simply use `opam install owl` to start. Owl's current version on OPAM is `0.2.6`, and it lags behind the master branch and misses many new features. If you want to try the newest version, I recommend installing Owl from the source and I will briefly show you how to do that in the following.
 
 First, you need to clone the repository.
 
@@ -50,7 +50,7 @@ The most important dependency is [OpenBLAS](https://github.com/xianyi/OpenBLAS).
 brew install homebrew/science/openblas
 ```
 
-However, installing from the source code leads to way better performance in my own experiment. In future, the dependency on OpenBLAS should also be resolved by `opam` automatically.
+However, installing from OpenBLAS source code leads to way better performance in my own experiment. In future, the dependency on OpenBLAS should also be resolved by `opam` automatically.
 
 
 Finally, you can compile and install the module with the following command.
