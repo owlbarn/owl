@@ -234,6 +234,7 @@ let x = Mat.uniform 6 6;;
 let y = Mat.uniform 6 6;;
 Mat.(x > y);;                (* is x greater than y? return boolean *)
 Mat.(x = y);;                (* is x equal to y? *)
+Mat.(x =~ y);;               (* is x approximately equal to y? *)
 Mat.(x <. y);;               (* is x smaller than y? return 0/1 matrix *)
 ...
 ```
@@ -274,14 +275,33 @@ Mat.(x @= y);;                (* equivalent to Mat.concat_vertical *)
 Mat.(x @|| y);;               (* equivalent to Mat.concat_horizontal *)
 ```
 
-More advanced linear algebra operations such as `svd`, `qr`, and `cholesky` decomposition are included in `Linalg` module.
+More advanced linear algebra operations such as `svd`, `qr`, and `cholesky` decomposition are included in `Linalg` module. `Linalg` module also supports both real and complex number of single and double precision.
 
 ```ocaml
-let u,s,v = Linalg.svd x;;   (* singular value decomposition *)
-let q,r = Linalg.qr x;;      (* QR decomposition *)
-let l = Linalg.cholesky x;;  (* cholesky decomposition *)
+let u,s,v = Linalg.D.svd x;;     (* singular value decomposition *)
+let q,r = Linalg.D.qr x;;        (* QR decomposition *)
+let l,u,_ = Linalg.D.lu x;;      (* LU decomposition *)
+let l = Linalg.D.chol x;;        (* cholesky decomposition *)
+...
+let e, v = Linalg.D.eig x;;      (* Eigenvectors and eigenvalues *)
+let x = Linalg.D.linsolve a b;;  (* Solve A*x = B *)
+let a, b = Linalg.D.linreg x y;; (* Simple linear regression y = a*x + b *)
 ...
 ```
+
+`Linalg` module offers additional functions to check the properties of a matrix. For example,
+
+```ocaml
+Linalg.D.is_diag x;;       (* is it diagonal *)
+Linalg.D.is_triu x;;       (* is it upper triangular *)
+Linalg.D.is_tril x;;       (* is it lower triangular *)
+Linalg.D.is_posdef x;;     (* is it positive definite *)
+Linalg.D.is_symmetric x;;  (* is it symmetric *)
+...
+```
+
+Owl has implemented a complete set of OCaml interface to [`CBLAS`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_cblas_generated.mli) and [`LAPACKE`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_lapacke_generated.mli) libraries. You can utilise these highly optimised functions to achieve the best performance. However in most cases, you should only use the high-level functions in `Linalg` module rather than dealing with these low-level interface.
+
 
 
 ## Regression
