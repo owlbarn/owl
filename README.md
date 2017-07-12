@@ -123,6 +123,10 @@ let x = Mat.zeros 5 5;;         (* all elements are zeros *)
 let x = Mat.ones 5 5;;          (* all elements are ones *)
 let x = Mat.uniform 5 5;;       (* random matrix of uniform distribution *)
 let x = Mat.gaussian 5 5;;      (* random matrix of gaussian distribution *)
+let x = Mat.triu x;;            (* Upper triangular matrix *)
+let x = Mat.toeplitz v;;        (* Toeplitz matrix *)
+let x = Mat.hankel v;;          (* Hankel matrix *)
+let x = Mat.hadamard 8;;        (* Hadamard matrix *)
 ...
 ```
 
