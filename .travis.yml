@@ -10,16 +10,18 @@ matrix:
       osx_image: xcode7.3
     - os: osx
       osx_image: xcode8.2
-    - os: linux
-      dist: trusty
-      addons:
-        apt:
-          packages:
-            - gcc
-            - gfortran
-            - cmake
-            - libopenblas-dev
-            - liblapacke-dev
+    # temporarily removed because ubuntu 14 uses outdated openblas
+    # which will further causes building failure
+    # - os: linux
+    #   dist: trusty
+    #   addons:
+    #     apt:
+    #       packages:
+    #         - gcc
+    #         - gfortran
+    #         - cmake
+    #         - libopenblas-dev
+    #         - liblapacke-dev
 
 install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
