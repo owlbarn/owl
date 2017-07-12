@@ -204,11 +204,11 @@ Library perf_common
 #   MainIs:         perf_sparse_matrix.ml
 #   BuildDepends:   owl
 
-# Executable perf_specific_fun
-#   Path:           perftest
-#   CompiledObject: best
-#   MainIs:         perf_specific_fun.ml
-#   BuildDepends:   owl
+Executable perf_specific_fun
+  Path:           perftest
+  CompiledObject: best
+  MainIs:         perf_specific_fun.ml
+  BuildDepends:   owl
 
 # +-------------------------------------------------------------------+
 # | Examples                                                          |
