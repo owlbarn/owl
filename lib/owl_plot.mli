@@ -212,16 +212,8 @@ val surf : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 
   Parameters: [Altitude], [Azimuth], [Contour], [NoMagColor], [Curtain].
 
-<<<<<<< HEAD
-  [Style3D] should contain a list of Plplot options, possibly including:
-  PL_FACETED, PL_MAG_COLOR, PL_BASE_CONT, PL_SURF_CONT, PL_DRAW_SIDES,
-  PL_DIFFUSE.
-  Please see documentation for the [opt] argument to the [plotsurf3d]
-  function in the PLplot library and example 08 there for more information.
-=======
   Please refer to [plotsurf3d] functions in the PLplot library for more
   information.
->>>>>>> upstream/master
  *)
 
 val mesh : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
@@ -230,16 +222,8 @@ val mesh : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
   Parameters: [RGB], [Altitude], [Azimuth], [Contour], [NoMagColor], [ZLine],
   [Curtain].
 
-<<<<<<< HEAD
-  [Style3D] should contain a list of Plplot options, possibly including:
-  PL_DRAW_LINEXY, PL_DRAW_LINEX, PL_DRAW_LINEY, PL_MAG_COLOR, PL_MESH,
-  PL_BASE_CONT, PL_SURF_CONT.
-  Please see documentation for the [opt] argument to the [plmesh] and
-  [plmeshc] functions in the PLplot library for more information.
-=======
   Please refer to [plmesh] and [plmeshc] functions in the PLplot library for
   more information.
->>>>>>> upstream/master
  *)
 
 val contour : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
