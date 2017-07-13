@@ -1507,6 +1507,6 @@ let scatterhist = None
 
 (* other plots *)
 
-let image = None
+let image x = None
 
 (* ends here *)
