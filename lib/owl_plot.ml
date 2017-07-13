@@ -1189,8 +1189,8 @@ let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
   in
   let x = Array.map Owl_maths.log10 x in
   let y = Array.map Owl_maths.log10 y in
-  _adjust_range h x `X;
-  _adjust_range h y `Y;
+  _adjust_range h x X;
+  _adjust_range h y Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.xlogscale <- true in
