@@ -642,7 +642,23 @@ You may ask "what if I want different training configuration?" Well, the trainin
 
 ## Distributed & Parallel Computing
 
-Owl's distributed and parallel computing relies on my another research prototype - Actor System. Actor is a specialised distributed data processing framework. I will introduce this exciting feature very soon.
+Owl's distributed and parallel computing relies on my another research prototype - Actor System. Actor is a specialised distributed data processing framework. Please do not get confused with [Actor Model](https://en.wikipedia.org/wiki/Actor_model) since Owl's Actor system actually implements three engines: MapReduce, Parameter Server, and Peer-to-Peer.
+
+My design principle of distributed analytics is: Owl handles "analytics" whilst Actor deals with "distribution" with a suitable engine. Two systems can be composed through functors just like we play LEGO. This composition includes both low-level data structures and high-level models.
+
+For example, the following one-line code composes Owl's Ndarray with Actor's MapReduce engine to provide us a distributed Ndarray module `M1`.
+
+```ocaml
+module M1 = Owl_parallel.Make_Distributed (Dense.Ndarray.D) (Actor_mapre)
+```
+
+Similarly, for high-level neural network models, we only need to add one extra line of code to transform a single-node training model to a distributed training model. Note that we have composed Owl's Feedforward neural network with Actor's Parameter Server engine.
+
+```ocaml
+module M2 = Owl_neural_parallel.Make (Owl_neural_feedforward) (Actor_param)
+```
+
+Actor system is currently in a closed repository (due to my techreport writing). I will introduce this exciting feature very soon (in September).
 
 
 ## Run Owl on Different Platforms
