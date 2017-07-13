@@ -1507,18 +1507,6 @@ let scatterhist = None
 
 (* other plots *)
 
-let image ?(h=_default_handle) ?(num_col=255) img width height =
-  let open Plplot in
-  let p = h.pages.(h.current_page) in
-  let f = (fun () ->
-    gray_cmap num_col;
-    plimage img 1.0 width 1.0 height 0.0 0.0 1.0 width 1.0 height;
-    (* restore original settings *)
-  )
-  in
-  (* add closure as a layer *)
-  p.plots <- Array.append p.plots [|f|];
-  (* add legend item to page *)
-  if not h.holdon then output h
+let image = None
 
 (* ends here *)
