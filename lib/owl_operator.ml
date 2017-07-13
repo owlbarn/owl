@@ -122,6 +122,10 @@ module type MatrixSig = sig
 
   val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
+  val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+  val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
 end
 
 
@@ -245,6 +249,10 @@ module Make_Matrix (M : MatrixSig) = struct
   type ('a, 'b) op_t2 = ('a, 'b) M.t
 
   let ( *@ ) = M.dot
+
+  let ( @= ) = M.concat_vertical
+
+  let ( @|| ) = M.concat_horizontal
 
 end
 

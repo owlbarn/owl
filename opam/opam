@@ -31,5 +31,6 @@ depends: [
   "ocamlfind" {build}
   "plplot"
   "eigen"
+  "conf-openblas"
 ]
 available: [ ocaml-version >= "4.04.0" ]

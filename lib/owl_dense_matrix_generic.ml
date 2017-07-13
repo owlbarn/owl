@@ -1638,6 +1638,37 @@ let hadamard k n =
     failwith "Owl_dense_matrix_generic:hadamard"
 
 
+let magic k n =
+  assert (n >= 3);
+  let x = zeros k n n in
+  let a0 = _zero k in
+  let a1 = _one k in
+  let ac = ref a1 in
+  let m = n * n |> float_of_int |> _float_typ_elt k in
+
+  if Owl_maths.is_odd n then (
+    let i = ref 0 in
+    let j = ref (n / 2) in
+
+    while !ac <= m do
+      if x.{!i,!j} = a0 then (
+        x.{!i,!j} <- !ac;
+        ac := _add_elt k !ac a1
+      )
+      else (
+        let i' = (!i - 1 + n) mod n in
+        let j' = (!j + 1) mod n in
+        if x.{i',j'} = a0 then (
+          i := i';
+          j := j'
+        )
+        else i := (!i + 1) mod n
+      )
+    done;
+    x
+  )
+  else failwith "Owl_dense_matrix_generic:magic"
+
 
 (* experimental functions *)
 

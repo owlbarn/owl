@@ -20,7 +20,7 @@ The series of tutorials is here (more is coming):
 Some simple evaluations can be found as follows [[Ndarray](https://github.com/ryanrhymes/owl/wiki/Evaluation:-Performance-Test)]. The roadmap and future plan of Owl can be found
 [[Here]](https://github.com/ryanrhymes/owl/wiki/Future-Plan). I would love to hear from you, and please let me know your comments and suggestions to improve Owl.
 
-[Email Me](liang.wang@cl.cam.ac.uk) or message me on:
+[Email Me](mailto:liang.wang@cl.cam.ac.uk) or message me on:
 [Twitter](https://twitter.com/ryan_liang),
 [Google+](https://www.google.com/+RyanLiang),
 [Facebook](http://www.facebook.com/ryan.liang.wang),
@@ -30,19 +30,30 @@ Some simple evaluations can be found as follows [[Ndarray](https://github.com/ry
 
 ## Installation
 
-Owl requires OCaml 4.04.0. The installation is rather trivial. First, you need to clone the repository.
+Owl requires OCaml `>=4.04.0`. The installation is rather trivial. You can simply use `opam install owl` to start. Owl's current version on OPAM is `0.2.6`, and it lags behind the master branch and misses many new features. If you want to try the newest version, I recommend installing Owl from the source and I will briefly show you how to do that in the following.
+
+First, you need to clone the repository.
 
 ```bash
 git clone git@github.com:ryanrhymes/owl.git
 ```
 
-Then you need to install all the dependencies.
+Then you need to install all the dependencies. The following dependencies may require you to install extra system libraries (e.g., Plplot) but `opam depext` can help you sort that out automatically.
 
 ```bash
 opam install ctypes dolog eigen gsl oasis plplot
 ```
 
-Next, you can compile and install the module with the following command.
+The most important dependency is [OpenBLAS](https://github.com/xianyi/OpenBLAS). Linking to the correct OpenBLAS is the key to achieve the best performance. Depending on the specific platform, you can use `yum`, `apt-get`, `brew` to install the binary format. For example on Mac OSX,
+
+```bash
+brew install homebrew/science/openblas
+```
+
+However, installing from OpenBLAS source code leads to way better performance in my own experiment. In future, the dependency on OpenBLAS should also be resolved by `opam` automatically.
+
+
+Finally, you can compile and install the module with the following command.
 
 ```bash
 make oasis
@@ -112,6 +123,10 @@ let x = Mat.zeros 5 5;;         (* all elements are zeros *)
 let x = Mat.ones 5 5;;          (* all elements are ones *)
 let x = Mat.uniform 5 5;;       (* random matrix of uniform distribution *)
 let x = Mat.gaussian 5 5;;      (* random matrix of gaussian distribution *)
+let x = Mat.triu x;;            (* Upper triangular matrix *)
+let x = Mat.toeplitz v;;        (* Toeplitz matrix *)
+let x = Mat.hankel v;;          (* Hankel matrix *)
+let x = Mat.hadamard 8;;        (* Hadamard matrix *)
 ...
 ```
 
@@ -223,6 +238,7 @@ let x = Mat.uniform 6 6;;
 let y = Mat.uniform 6 6;;
 Mat.(x > y);;                (* is x greater than y? return boolean *)
 Mat.(x = y);;                (* is x equal to y? *)
+Mat.(x =~ y);;               (* is x approximately equal to y? *)
 Mat.(x <. y);;               (* is x smaller than y? return 0/1 matrix *)
 ...
 ```
@@ -259,18 +275,41 @@ Mat.sigmoid x;;     (* apply sigmoid function *)
 Concatenate two matrices, vertically or horizontally by
 
 ```ocaml
-Mat.(x @= y);;                (* equivalent to Mat.concat_vertical *)
-Mat.(x @|| y);;               (* equivalent to Mat.concat_horizontal *)
+Mat.(x @= y);;              (* equivalent to Mat.concat_vertical *)
+Mat.(x @|| y);;             (* equivalent to Mat.concat_horizontal *)
+Mat.concatenate [|x;...|];; (* concatenate a list of matrices along rows *)
 ```
 
-More advanced linear algebra operations such as `svd`, `qr`, and `cholesky` decomposition are included in `Linalg` module.
+More advanced linear algebra operations such as `svd`, `qr`, and `cholesky` decomposition are included in `Linalg` module. `Linalg` module also supports both real and complex number of single and double precision.
 
 ```ocaml
-let u,s,v = Linalg.svd x;;   (* singular value decomposition *)
-let q,r = Linalg.qr x;;      (* QR decomposition *)
-let l = Linalg.cholesky x;;  (* cholesky decomposition *)
+let u,s,v = Linalg.D.svd x;;     (* singular value decomposition *)
+let q,r = Linalg.D.qr x;;        (* QR decomposition *)
+let l,u,_ = Linalg.D.lu x;;      (* LU decomposition *)
+let l = Linalg.D.chol x;;        (* cholesky decomposition *)
+...
+let e, v = Linalg.D.eig x;;      (* Eigenvectors and eigenvalues *)
+let x = Linalg.D.null a;;        (* Solve A*x = 0, null space *)
+let x = Linalg.D.linsolve a b;;  (* Solve A*x = B *)
+let a, b = Linalg.D.linreg x y;; (* Simple linear regression y = a*x + b *)
 ...
 ```
+
+`Linalg` module offers additional functions to check the properties of a matrix. For example,
+
+```ocaml
+Linalg.D.cond x;;          (* condition number of x *)
+Linalg.D.rank x;;          (* rank of x *)
+Linalg.D.is_diag x;;       (* is it diagonal *)
+Linalg.D.is_triu x;;       (* is it upper triangular *)
+Linalg.D.is_tril x;;       (* is it lower triangular *)
+Linalg.D.is_posdef x;;     (* is it positive definite *)
+Linalg.D.is_symmetric x;;  (* is it symmetric *)
+...
+```
+
+Owl has implemented a complete set of OCaml interface to [`CBLAS`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_cblas_generated.mli) and [`LAPACKE`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_lapacke_generated.mli) libraries. You can utilise these highly optimised functions to achieve the best performance. However in most cases, you should only use the high-level functions in `Linalg` module rather than dealing with these low-level interface.
+
 
 
 ## Regression
@@ -474,7 +513,7 @@ let s4 = [ [1]; []; [2] ]    (* (1,*,2) *)
 ...
 ```
 
-`slice` function is very flexible, it basically has the same semantic as that in numpy. So you know how to index ndarray in numpy, you should be able to do the same thing in Owl. For advanced use of `slice` fucntion, please refer to my [separate tutorial](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Indexing-and-Slicing). Some examples as as below.
+`slice` function is very flexible, it basically has the same semantic as that in numpy. So you know how to index ndarray in numpy, you should be able to do the same thing in Owl. For advanced use of `slice` function, please refer to my [separate tutorial](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Indexing-and-Slicing). Some examples as as below.
 
 ```ocaml
 let s = [ [1]; []; [-1;0;-1]; ];;
@@ -546,7 +585,7 @@ Then you should be able to see a figure like this one below. For more advanced u
 
 Even though this is still work in progress, I find it necessary to present a small neural network example to show how necessary it is to have a comprehensive numerical infrastructure. The illustration in the following is of course the classic MNIST example wherein we will train a two-layer network that can recognise hand-written digits.
 
-Currently `Neural` module is wrapped into a separate library but it will be merged into `Owl` main library in the future. First, plese start your `utop` and load the `Owl_neural` library.
+Currently `Neural` module is wrapped into a separate library but it will be merged into `Owl` main library in the future. First, please start your `utop` and load the `Owl_neural` library.
 
 ```ocaml
 #require "owl_neural";;
@@ -603,7 +642,23 @@ You may ask "what if I want different training configuration?" Well, the trainin
 
 ## Distributed & Parallel Computing
 
-Owl's distributed and parallel computing relies on my another research prototype - Actor System. Actor is a specialised distributed data processing framework. I will introduce this exciting feature very soon.
+Owl's distributed and parallel computing relies on my another research prototype - Actor System. Actor is a specialised distributed data processing framework. Please do not get confused with [Actor Model](https://en.wikipedia.org/wiki/Actor_model) since Owl's Actor system actually implements three engines: MapReduce, Parameter Server, and Peer-to-Peer.
+
+My design principle of distributed analytics is: Owl handles "analytics" whilst Actor deals with "distribution" with a suitable engine. Two systems can be composed through functors just like we play LEGO. This composition includes both low-level data structures and high-level models.
+
+For example, the following one-line code composes Owl's Ndarray with Actor's MapReduce engine to provide us a distributed Ndarray module `M1`.
+
+```ocaml
+module M1 = Owl_parallel.Make_Distributed (Dense.Ndarray.D) (Actor_mapre)
+```
+
+Similarly, for high-level neural network models, we only need to add one extra line of code to transform a single-node training model to a distributed training model. Note that we have composed Owl's Feedforward neural network with Actor's Parameter Server engine.
+
+```ocaml
+module M2 = Owl_neural_parallel.Make (Owl_neural_feedforward) (Actor_param)
+```
+
+Actor system is currently in a closed repository (due to my techreport writing). I will introduce this exciting feature very soon (in September).
 
 
 ## Run Owl on Different Platforms
@@ -632,5 +687,7 @@ for once before starting `utop`.
 Owl is under active development, and I really look forward to your comments and contributions. Besides setting up a complete development environment on your native system, the easiest way to contribute is to use the [Owl Docker Image](https://hub.docker.com/r/ryanrhymes/owl/). Moreover, we have also built a docker image for ARM-based platform so that you can run Owl on Raspberry PI and Cubietruck (see the section above).
 
 Just pull the image and dig into code saved in `/root/owl`, then have fun!
+
+**Student Project:** If you happen to be a student in the [Computer Lab](http://www.cl.cam.ac.uk/) and want to do some challenging development and design, here are some [Part II Projects](http://www.cl.cam.ac.uk/research/srg/netos/stud-projs/studproj-17/#owl0). If you are interested in more researchy topics, I also offer Part III Projects and please contact me directly via [Email](mailto:liang.wang@cl.cam.ac.uk).
 
 **Acknowledgement: Funded in part by EPSRC project - Contrive (EP/N028422/1).** Please refer to the [full acknowledgement](https://github.com/ryanrhymes/owl/blob/master/ACKNOWLEDGEMENT.md) for more details.

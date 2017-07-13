@@ -137,6 +137,13 @@ val cols : ('a, 'b) t -> int array -> ('a, 'b) t
  *)
 
 val prune : ('a, 'b) t -> 'a -> float -> unit
+(** [prune x ...] *)
+
+val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [concat_vertical x y] not implemented yet *)
+
+val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [concat_horizontal x y] not implemented yet *)
 
 
 (** {6 Iterate elements, columns, and rows} *)
