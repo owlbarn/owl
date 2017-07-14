@@ -47,15 +47,15 @@ let draw_samples x y n =
   third is the corresponding unravelled row vector of the label. *)
 let load_mnist_train_data () =
   let p = local_data_path () in
-  Owl_dense_matrix_s.load (p ^ "mnist-train-images"),
-  Owl_dense_matrix_s.load (p ^ "mnist-train-labels"),
-  Owl_dense_matrix_s.load (p ^ "mnist-train-lblvec")
+  Owl_dense_matrix.S.load (p ^ "mnist-train-images"),
+  Owl_dense_matrix.S.load (p ^ "mnist-train-labels"),
+  Owl_dense_matrix.S.load (p ^ "mnist-train-lblvec")
 
 let load_mnist_test_data () =
   let p = local_data_path () in
-  Owl_dense_matrix_s.load (p ^ "mnist-test-images"),
-  Owl_dense_matrix_s.load (p ^ "mnist-test-labels"),
-  Owl_dense_matrix_s.load (p ^ "mnist-test-lblvec")
+  Owl_dense_matrix.S.load (p ^ "mnist-test-images"),
+  Owl_dense_matrix.S.load (p ^ "mnist-test-labels"),
+  Owl_dense_matrix.S.load (p ^ "mnist-test-lblvec")
 
 let print_mnist_image x =
   x |> Owl_dense_matrix_generic.reshape 28 28
@@ -69,13 +69,13 @@ let print_mnist_image x =
   channels, unravelled into a row vector. The labels are also returned. *)
 let load_cifar_train_data batch =
   let p = local_data_path () in
-  Owl_dense_matrix_s.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_data"),
-  Owl_dense_matrix_s.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_labels")
+  Owl_dense_matrix.S.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_data"),
+  Owl_dense_matrix.S.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_labels")
 
 let load_cifar_test_data () =
   let p = local_data_path () in
-  Owl_dense_matrix_s.load (p ^ "cifar10_test_data"),
-  Owl_dense_matrix_s.load (p ^ "cifar10_test_labels")
+  Owl_dense_matrix.S.load (p ^ "cifar10_test_data"),
+  Owl_dense_matrix.S.load (p ^ "cifar10_test_labels")
 
 (* load text data and stopwords *)
 let load_stopwords () =
