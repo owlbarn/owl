@@ -1170,12 +1170,6 @@ let pie ?(h=_default_handle) ?(spec=[]) x =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
-let _range_ i j =
-  (* Generate a list of consecutive integer from i to j *)
-  let rec aux n acc =
-    if n < i then acc else aux (n - 1) (n :: acc)
-  in aux j []
-
 let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
   (* TODO: specify one axis *)
   let open Plplot in
@@ -1446,8 +1440,6 @@ let wblplot ?(h=_default_handle) ?(spec=[]) ?(lambda=1.) ?(k=1.) x =
   (* inputs *)
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
-  (* manually change the x data to log10-based *)
-  (* let x = Array.map Owl_maths.log10 x in *)
   let dist = (fun q -> Owl_stats.Cdf.weibull_Pinv q lambda k) in
   let y =
     let n = Array.length x in
@@ -1465,7 +1457,6 @@ let wblplot ?(h=_default_handle) ?(spec=[]) ?(lambda=1.) ?(k=1.) x =
   let up, down = Owl_stats.minmax y in
   (* prepare the closure; note the change to log sacle *)
   let p = h.pages.(h.current_page) in
-  (* let _ = p.xlogscale <- true in *)
   let color = _get_rgb spec p.fgcolor in
   let r, g, b = color in
   let marker = _get_marker spec "#[0x002b]" in
