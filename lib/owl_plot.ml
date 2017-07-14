@@ -1170,15 +1170,17 @@ let pie ?(h=_default_handle) ?(spec=[]) x =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
+
 let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
-  (* TODO: specify one axis *)
+  (* TODO: specify one axis, consider using spec parameter*)
   let open Plplot in
   let y = Owl_dense_matrix.D.to_array y in
   let n = Array.length y in
   let x = match x with
     | Some mtx -> Owl_dense_matrix.D.to_array mtx
     (* The range is [1..n] instead of [0..(n-1)] *)
-    | None     -> Owl_dense_matrix.D.linspace 1. (float_of_int n) n
+    | None     ->
+      Owl_dense_matrix.D.linspace 1. (float_of_int n) n
       |> Owl_dense_matrix.D.to_array
   in
   let x = Array.map Owl_maths.log10 x in
@@ -1187,8 +1189,8 @@ let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
   _adjust_range h y Y;
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let _ = p.xlogscale <- true in
-  let _ = p.ylogscale <- true in
+  p.xlogscale <- true;
+  p.ylogscale <- true;
   let color = _get_rgb spec p.fgcolor in
   let r, g, b = color in
   let marker = _get_marker spec "" in
@@ -1220,6 +1222,7 @@ let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
   (* add legend item to page *)
   _add_legend_item p LINE line_style color marker color 0 color;
   if not h.holdon then output h
+
 
 let surf ?(h=_default_handle) ?(spec=[]) x y z =
   let open Plplot in
