@@ -1172,7 +1172,7 @@ let pie ?(h=_default_handle) ?(spec=[]) x =
 
 
 let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
-  (* TODO: specify one axis, consider using spec parameter*)
+  (* TODO: specify one axis, consider using spec parameter *)
   let open Plplot in
   let y = Owl_dense_matrix.D.to_array y in
   let n = Array.length y in
