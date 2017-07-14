@@ -1646,6 +1646,7 @@ let magic k n =
   let ac = ref a1 in
   let m = n * n |> float_of_int |> _float_typ_elt k in
 
+  (* n is odd *)
   if Owl_maths.is_odd n then (
     let i = ref 0 in
     let j = ref (n / 2) in
@@ -1667,6 +1668,13 @@ let magic k n =
     done;
     x
   )
+  (* n is doubly even *)
+  else if n mod 4 = 0 then (
+    let _sequential a m0 n0 m1 n1 =
+      ()
+    in failwith "not implemented yet"
+  )
+  (* n is singly even *)
   else failwith "Owl_dense_matrix_generic:magic"
 
 
