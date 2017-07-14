@@ -193,6 +193,12 @@ val pie : ?h:handle -> ?spec:spec list -> dsmat -> unit
   Parameters: [RGB], [Fill].
  *)
 
+val loglog : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
+(** [log x y]  plots all y versus x pairs with log-log scale.
+[log y] plots data in y versus their indices.
+
+  Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
+  *)
 
 (** {6 3D plot functions} *)
 
