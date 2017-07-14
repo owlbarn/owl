@@ -1223,6 +1223,103 @@ let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
   _add_legend_item p LINE line_style color marker color 0 color;
   if not h.holdon then output h
 
+  let semilogx ?(h=_default_handle) ?(spec=[]) ?x y =
+    (* TODO: express semilogx and semilogy with loglog *)
+    let open Plplot in
+    let y = Owl_dense_matrix.D.to_array y in
+    let n = Array.length y in
+    let x = match x with
+      | Some mtx -> Owl_dense_matrix.D.to_array mtx
+      | None     ->
+        Owl_dense_matrix.D.linspace 1. (float_of_int n) n
+        |> Owl_dense_matrix.D.to_array
+    in
+    let x = Array.map Owl_maths.log10 x in
+    _adjust_range h x X;
+    _adjust_range h y Y;
+    (* prepare the closure *)
+    let p = h.pages.(h.current_page) in
+    p.xlogscale <- true;
+    let color = _get_rgb spec p.fgcolor in
+    let r, g, b = color in
+    let marker = _get_marker spec "" in
+    let marker_size = _get_marker_size spec 4. in
+    let line_style = _get_line_style spec 1 in
+    let line_width = _get_line_width spec (-1.) in
+    let old_pensize = h.pensize in
+    (* drawing function *)
+    let f = (fun () ->
+      let r', g', b' = plgcol0 1 in
+      plscol0 1 r g b; plcol0 1;
+      if line_width > (-1.) then plwidth line_width;
+      let c' = plgchr () |> fst in
+      plschr marker_size 1.;
+      if line_style > 0 && line_style < 9 then
+        pllsty line_style; plline x y;
+      if marker <> "" then
+        let x', y' = _thinning x, _thinning y in
+        plstring x' y' marker;
+      (* restore original settings *)
+      plschr c' 1.;
+      plwidth old_pensize;
+      pllsty 1;
+      plscol0 1 r' g' b'; plcol0 1
+    )
+    in
+    (* add closure as a layer *)
+    p.plots <- Array.append p.plots [|f|];
+    (* add legend item to page *)
+    _add_legend_item p LINE line_style color marker color 0 color;
+    if not h.holdon then output h
+
+let semilogy ?(h=_default_handle) ?(spec=[]) ?x y =
+  let open Plplot in
+  let y = Owl_dense_matrix.D.to_array y in
+  let n = Array.length y in
+  let x = match x with
+    | Some mtx -> Owl_dense_matrix.D.to_array mtx
+    (* The range is [1..n] instead of [0..(n-1)] *)
+    | None     ->
+      Owl_dense_matrix.D.linspace 1. (float_of_int n) n
+      |> Owl_dense_matrix.D.to_array
+  in
+  let y = Array.map Owl_maths.log10 y in
+  _adjust_range h x X;
+  _adjust_range h y Y;
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  p.ylogscale <- true;
+  let color = _get_rgb spec p.fgcolor in
+  let r, g, b = color in
+  let marker = _get_marker spec "" in
+  let marker_size = _get_marker_size spec 4. in
+  let line_style = _get_line_style spec 1 in
+  let line_width = _get_line_width spec (-1.) in
+  let old_pensize = h.pensize in
+  (* drawing function *)
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    plscol0 1 r g b; plcol0 1;
+    if line_width > (-1.) then plwidth line_width;
+    let c' = plgchr () |> fst in
+    plschr marker_size 1.;
+    if line_style > 0 && line_style < 9 then
+      pllsty line_style; plline x y;
+    if marker <> "" then
+      let x', y' = _thinning x, _thinning y in
+      plstring x' y' marker;
+    (* restore original settings *)
+    plschr c' 1.;
+    plwidth old_pensize;
+    pllsty 1;
+    plscol0 1 r' g' b'; plcol0 1
+  )
+  in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  (* add legend item to page *)
+  _add_legend_item p LINE line_style color marker color 0 color;
+  if not h.holdon then output h
 
 let surf ?(h=_default_handle) ?(spec=[]) x y z =
   let open Plplot in
