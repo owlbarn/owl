@@ -1643,13 +1643,13 @@ let magic k n =
   let x = zeros k n n in
   let a0 = _zero k in
   let a1 = _one k in
-  let ac = ref a1 in
-  let m = n * n |> float_of_int |> _float_typ_elt k in
 
   (* n is odd *)
   if Owl_maths.is_odd n then (
     let i = ref 0 in
     let j = ref (n / 2) in
+    let ac = ref a1 in
+    let m = n * n |> float_of_int |> _float_typ_elt k in
 
     while !ac <= m do
       if x.{!i,!j} = a0 then (
@@ -1670,9 +1670,34 @@ let magic k n =
   )
   (* n is doubly even *)
   else if n mod 4 = 0 then (
-    let _sequential a m0 n0 m1 n1 =
-      ()
-    in failwith "not implemented yet"
+    let _seq_inc x i0 j0 i1 j1 =
+      for i = i0 to i1 do
+        let ac = ref (n * i + j0 + 1 |> float_of_int |> _float_typ_elt k) in
+        for j = j0 to j1 do
+          x.{i,j} <- !ac;
+          ac := _add_elt k !ac a1
+        done
+      done
+    in
+
+    let _seq_dec x i0 j0 i1 j1 =
+      let ac = ref (n * n |> float_of_int |> _float_typ_elt k) in
+      for i = i0 to i1 do
+        for j = j0 to j1 do
+          if x.{i,j} = a0 then x.{i,j} <- !ac;
+          ac := _sub_elt k !ac a1
+        done
+      done
+    in
+
+    let m = n / 4 in
+    _seq_inc x 0 0 (m - 1) (m - 1);
+    _seq_inc x 0 (3 * m) (m - 1) (4 * m - 1);
+    _seq_inc x m m (3 * m - 1) (3 * m - 1);
+    _seq_inc x (3 * m) 0 (4 * m - 1) (m - 1);
+    _seq_inc x (3 * m) (3 * m) (4 * m - 1) (4 * m - 1);
+    _seq_dec x 0 0 (n - 1) (n - 1);
+    x
   )
   (* n is singly even *)
   else failwith "Owl_dense_matrix_generic:magic"
