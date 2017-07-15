@@ -191,8 +191,10 @@ val hadamard : ('a, 'b) kind -> int -> ('a, 'b) t
 
 val magic : ('a, 'b) kind -> int -> ('a, 'b) t
 (** [magic k n] constructs a [n x n] magic square matrix [x]. The elements in
-  [x] are consecutive numbers increasing from [1] to [n^2]. Currently, [n] must
-  be odd numbers and [n >= 3].
+  [x] are consecutive numbers increasing from [1] to [n^2]. [n] must [n >= 3].
+
+  There are three different algorithms to deal with [n] is odd, singly even,
+  and doubly even respectively.
  *)
 
 
