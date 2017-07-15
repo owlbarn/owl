@@ -193,12 +193,25 @@ val pie : ?h:handle -> ?spec:spec list -> dsmat -> unit
   Parameters: [RGB], [Fill].
  *)
 
-val loglog : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
-(** [log x y]  plots all y versus x pairs with log-log scale.
-[log y] plots data in y versus their indices.
+val loglog : ?h:handle -> ?spec:spec list -> ?axis:axis -> ?x:dsmat -> dsmat -> unit
+(** [loglog x y]  plots all y versus x pairs with log-log scale.
+[loglog y] plots data in y versus their indices. If [axis] is specified as X or Y, plot logarithmic scales only for x-axis or y-axis.
 
   Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
   *)
+
+val semilogx : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
+(**
+  [semilogx] is similar with [loglog]. Plot data as logarithmic scales for the x-axis.
+
+  Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
+  *)
+val semilogy : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
+  (**
+    [semilogy] is similar with [loglog]. Plot data as logarithmic scales for the y-axis.
+
+    Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
+    *)
 
 (** {6 3D plot functions} *)
 
