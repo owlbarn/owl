@@ -1702,12 +1702,28 @@ let magic k n =
 
   let _magic_singly_even n =
     let m = n / 2 in
-    let xa = zeros k m m in
-    let xb = zeros k m m in
-    let xc = zeros k m m in
-    let xd = zeros k m m in
+    let m2 = m * m in
+    let xa = _magic_odd m 1 in
+    let xb = _magic_odd m (m2 + 1) in
+    let xc = _magic_odd m (2 * m2 + 1) in
+    let xd = _magic_odd m (3 * m2 + 1) in
 
-    
+    let m3 = m / 2 in
+    let xa' = concat_horizontal (slice [[];[0;m3-1]] xd) (slice [[];[m3;-1]] xa) in
+    let xd' = concat_horizontal (slice [[];[0;m3-1]] xa) (slice [[];[m3;-1]] xd) in
+    let xb' =
+      if m3 - 1 = 0 then xb
+      else concat_horizontal (slice [[];[0;m-m3]] xb) (slice [[];[1-m3;-1]] xc)
+    in
+    let xc' =
+      if m3 - 1 = 0 then xc
+      else concat_horizontal (slice [[];[0;m-m3]] xc) (slice [[];[1-m3;-1]] xb)
+    in
+    xa'.{m3,0} <- xa.{m3,0};
+    xa'.{m3,m3} <- xd.{m3,m3};
+    xd'.{m3,0} <- xd.{m3,0};
+    xd'.{m3,m3} <- xa.{m3,m3};
+    concat_horizontal (concat_vertical xa' xd') (concat_vertical xc' xb')
   in
 
   (* n is odd *)
