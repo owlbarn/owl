@@ -1640,16 +1640,15 @@ let hadamard k n =
 
 let magic k n =
   assert (n >= 3);
-  let x = zeros k n n in
   let a0 = _zero k in
   let a1 = _one k in
 
-  (* n is odd *)
-  if Owl_maths.is_odd n then (
+  let _magic_odd n a =
+    let x = zeros k n n in
     let i = ref 0 in
     let j = ref (n / 2) in
-    let ac = ref a1 in
-    let m = n * n |> float_of_int |> _float_typ_elt k in
+    let ac = ref (float_of_int a |> _float_typ_elt k) in
+    let m = n * n + a - 1 |> float_of_int |> _float_typ_elt k in
 
     while !ac <= m do
       if x.{!i,!j} = a0 then (
@@ -1667,9 +1666,11 @@ let magic k n =
       )
     done;
     x
-  )
-  (* n is doubly even *)
-  else if n mod 4 = 0 then (
+  in
+
+  let _magic_doubly_even n =
+    let x = zeros k n n in
+
     let _seq_inc x i0 j0 i1 j1 =
       for i = i0 to i1 do
         let ac = ref (n * i + j0 + 1 |> float_of_int |> _float_typ_elt k) in
@@ -1679,7 +1680,6 @@ let magic k n =
         done
       done
     in
-
     let _seq_dec x i0 j0 i1 j1 =
       let ac = ref (n * n |> float_of_int |> _float_typ_elt k) in
       for i = i0 to i1 do
@@ -1698,9 +1698,24 @@ let magic k n =
     _seq_inc x (3 * m) (3 * m) (4 * m - 1) (4 * m - 1);
     _seq_dec x 0 0 (n - 1) (n - 1);
     x
-  )
+  in
+
+  let _magic_singly_even n =
+    let m = n / 2 in
+    let xa = zeros k m m in
+    let xb = zeros k m m in
+    let xc = zeros k m m in
+    let xd = zeros k m m in
+
+    
+  in
+
+  (* n is odd *)
+  if Owl_maths.is_odd n then _magic_odd n 1
+  (* n is doubly even *)
+  else if n mod 4 = 0 then _magic_doubly_even n
   (* n is singly even *)
-  else failwith "Owl_dense_matrix_generic:magic"
+  else _magic_singly_even n
 
 
 (* experimental functions *)
