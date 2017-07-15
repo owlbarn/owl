@@ -127,6 +127,7 @@ let x = Mat.triu x;;            (* Upper triangular matrix *)
 let x = Mat.toeplitz v;;        (* Toeplitz matrix *)
 let x = Mat.hankel v;;          (* Hankel matrix *)
 let x = Mat.hadamard 8;;        (* Hadamard matrix *)
+let x = Mat.magic 8;;           (* Magic square matrix *)
 ...
 ```
 
