@@ -296,7 +296,7 @@ val qqplot : ?h:handle -> ?spec:spec list -> ?pd:(float -> float) -> ?x:dsmat ->
   default is standard normal distribution. If the second argument [x] is a
   vector, the empirical CDF of it is used as the distribtion of x-axis data,
   otherwise the qqplot is similar to [probplot], showing the inverseCDF of
-  meadian [(i - 0.5)/n] on x-axis.
+  meadian \[(i - 0.5)/n\] on x-axis.
 
   If input vectors are not of the same length, users are explected to input the
   longer one as x, and the shorter one y.
@@ -304,7 +304,7 @@ val qqplot : ?h:handle -> ?spec:spec list -> ?pd:(float -> float) -> ?x:dsmat ->
   Parameters: [RGB], [Marker], [MarkerSize].
 *)
 
-val image : ?h:handle -> ?num_col:int -> float array array -> float -> float -> unit
+val image : ?h:handle -> dsmat -> unit
 (**
-
+  [image mat] display a m * n matrix as image. Each element in the matrix is of range 0 ~ 255. 
   *)

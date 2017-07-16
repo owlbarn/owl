@@ -1578,8 +1578,15 @@ let scatterhist = None
 
 (* other plots *)
 
-let image ?(h=_default_handle) ?(num_col=255) img width height =
+let image ?(h=_default_handle) mat=
   let open Plplot in
+  (* compute necessary parameters *)
+  let width, height = Owl_dense_matrix.D.shape mat in
+  let num_col = Owl_dense_matrix.D.max mat in
+  let img = Owl_dense_matrix.D.to_arrays mat in
+  let width = float_of_int width in
+  let height = float_of_int height in
+  let num_col = int_of_float num_col in
   (* specify the boundary of imageplot*)
   let x = [|1.0; width|]  in
   let y = [|1.0; height|] in
