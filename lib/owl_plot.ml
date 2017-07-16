@@ -1575,6 +1575,26 @@ let scatterhist = None
 
 (* other plots *)
 
-let image x = None
+let image ?(h=_default_handle) ?(num_col=255) img width height =
+  let open Plplot in
+  let x = [|1.0; width|]  in
+  let y = [|1.0; height|] in
+  _adjust_range h x X;
+  _adjust_range h y Y;
+  let p = h.pages.(h.current_page) in
+  let f = (fun () ->
+    (*set gray_cmap *)
+    let r = [|0.0; 1.0|] in
+    let g = [|0.0; 1.0|] in
+    let b = [|0.0; 1.0|] in
+    let pos = [|0.0; 1.0|] in
+    plscmap1n num_col;
+    plscmap1l true pos r g b None;
+    plimage img 1.0 width 1.0 height 0.0 0.0 1.0 width 1.0 height;
+    (* possibly need to restore original settings *)
+  )
+  in
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
 
 (* ends here *)
