@@ -300,4 +300,11 @@ val qqplot : ?h:handle -> ?spec:spec list -> ?pd:(float -> float) -> ?x:dsmat ->
 
   If input vectors are not of the same length, users are explected to input the
   longer one as x, and the shorter one y.
+
+  Parameters: [RGB], [Marker], [MarkerSize].
 *)
+
+val image : ?h:handle -> ?num_col:int -> float array array -> float -> float -> unit
+(**
+
+  *)

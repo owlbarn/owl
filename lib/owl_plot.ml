@@ -32,6 +32,7 @@ type page = {
   mutable fgcolor         : int * int * int;
   mutable fontsize        : float;
   mutable is_3d           : bool;
+  mutable is_image        : bool;
   (* control axis labels *)
   mutable xlabel          : string;
   mutable ylabel          : string;
@@ -242,6 +243,7 @@ let _create_page () = {
   fgcolor         = (255, 0, 0);
   fontsize        = -1.;
   is_3d           = false;
+  is_image        = false;
   xlabel          = "x";
   ylabel          = "y";
   zlabel          = "z";
@@ -392,6 +394,7 @@ let _calculate_paper_size m n =
 (* calculate the axis config based on a page config *)
 let _config_2d_axis p =
   let base = 0 in
+  if p.is_image then -1 else
   let residual =
     if (p.xlogscale, p.ylogscale) = (true, false) then 10 else
     if (p.xlogscale, p.ylogscale) = (false, true) then 20 else
@@ -1577,11 +1580,16 @@ let scatterhist = None
 
 let image ?(h=_default_handle) ?(num_col=255) img width height =
   let open Plplot in
+  (* specify the boundary of imageplot*)
   let x = [|1.0; width|]  in
   let y = [|1.0; height|] in
   _adjust_range h x X;
   _adjust_range h y Y;
+  (* keep the scale of original image instead of 4:3 *)
+  h.page_size <- (int_of_float width, int_of_float height);
+  (* Prepare the closure *)
   let p = h.pages.(h.current_page) in
+  let _ = p.is_image <- true in
   let f = (fun () ->
     (*set gray_cmap *)
     let r = [|0.0; 1.0|] in
