@@ -1596,19 +1596,17 @@ let scatterhist = None
 let image ?(h=_default_handle) x =
   let open Plplot in
   (* compute necessary parameters *)
-  let height, width = Owl_dense_matrix.D.shape x in
+  let width, height = Owl_dense_matrix.D.shape x in
   let num_col = Owl_dense_matrix.D.max x in
-  let img = x |> Owl_dense_matrix.D.transpose
-              |> Owl_dense_matrix.D.to_arrays
-  in
+  let img = Owl_dense_matrix.D.to_arrays x in
   let width = float_of_int width in
   let height = float_of_int height in
   let num_col = int_of_float num_col in
   (* specify the boundary of imageplot *)
-  let xlim = [|1.0; width|]  in
-  let ylim = [|1.0; height|] in
-  _adjust_range h xlim X;
-  _adjust_range h ylim Y;
+  let x = [|1.0; width|]  in
+  let y = [|1.0; height|] in
+  _adjust_range h x X;
+  _adjust_range h y Y;
   (* keep the scale of original image instead of 4:3 *)
   h.page_size <- (int_of_float width, int_of_float height);
   (* prepare the closure *)
