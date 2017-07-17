@@ -1589,7 +1589,7 @@ let image ?(h=_default_handle) mat=
   let width = float_of_int width in
   let height = float_of_int height in
   let num_col = int_of_float num_col in
-  (* specify the boundary of imageplot*)
+  (* specify the boundary of imageplot *)
   let x = [|1.0; width|]  in
   let y = [|1.0; height|] in
   _adjust_range h x X;
@@ -1600,7 +1600,7 @@ let image ?(h=_default_handle) mat=
   let p = h.pages.(h.current_page) in
   let _ = p.is_image <- true in
   let f = (fun () ->
-    (*set gray_cmap *)
+    (* set gray_cmap *)
     let r = [|0.0; 1.0|] in
     let g = [|0.0; 1.0|] in
     let b = [|0.0; 1.0|] in
@@ -1613,5 +1613,7 @@ let image ?(h=_default_handle) mat=
   in
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
+
+
 
 (* ends here *)
