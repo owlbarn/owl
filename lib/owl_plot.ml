@@ -1593,14 +1593,24 @@ let scatterhist = None
 
 (* other plots *)
 
+let _rotate270_ x =
+  let w, h = Owl_dense_matrix.D.shape x in
+  let mat = Owl_dense_matrix.D.zeros h w in
+  for i = 0 to w - 1 do
+    for j = 0 to h - 1 do
+      Owl_dense_matrix.D.set mat j (w - 1 - i) (Owl_dense_matrix.D.get x i j)
+    done
+  done;
+  mat
+
 let image ?(h=_default_handle) x =
   let open Plplot in
+  (* rotate the matrix 90 degree clockwise to be shown correctly as image *)
+  let x = _rotate270_ x in
   (* compute necessary parameters *)
-  let height, width = Owl_dense_matrix.D.shape x in
+  let width, height = Owl_dense_matrix.D.shape x in
   let num_col = Owl_dense_matrix.D.max x in
-  let img = x |> Owl_dense_matrix.D.transpose
-              |> Owl_dense_matrix.D.to_arrays
-  in
+  let img = Owl_dense_matrix.D.to_arrays x in
   let width = float_of_int width in
   let height = float_of_int height in
   let num_col = int_of_float num_col in
