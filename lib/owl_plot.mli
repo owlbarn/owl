@@ -310,5 +310,5 @@ val qqplot : ?h:handle -> ?spec:spec list -> ?pd:(float -> float) -> ?x:dsmat ->
 
 val image : ?h:handle -> dsmat -> unit
 (**
-  [image mat] display a m * n matrix as image. Each element in the matrix is of range 0 ~ 255.
+  [image x] display a [m x n] matrix [x] as image. Each element in the matrix is of range 0 ~ 255.
  *)
