@@ -1526,7 +1526,7 @@ let qqplot ?(h=_default_handle) ?(spec=[]) ?(pd=(fun i -> Owl_stats.Cdf.gaussian
   let n = Array.length y in
   let dist = match x with
     | Some arr ->
-      (* If the second argument is a vector*)
+      (* if the second argument is a vector *)
       let x = Owl_dense_matrix.D.to_array arr in
       (* The empirical CDF of it is used as dist. *)
       let a, b = Owl_stats.ecdf x in
@@ -1537,15 +1537,15 @@ let qqplot ?(h=_default_handle) ?(spec=[]) ?(pd=(fun i -> Owl_stats.Cdf.gaussian
       (( float_of_int n-. 0.5) /. float_of_int n) n in
   let q = Owl_dense_matrix.D.map dist qth in
   let x = Owl_dense_matrix.D.to_array q in
-  (*draw the figure*)
+  (* draw the figure *)
   _adjust_range h x X;
   _adjust_range h y Y;
-  (* Parameters to draw the reference line *)
+  (* parameters to draw the reference line *)
   let p1y, p1x = (Owl_stats.first_quartile y, Owl_stats.first_quartile x) in
   let p3y, p3x = (Owl_stats.third_quartile y, Owl_stats.third_quartile x) in
   let left, right = Owl_stats.minmax x in
   let up, down = Owl_stats.minmax y in
-  (* Prepare the closure *)
+  (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let color = _get_rgb spec p.fgcolor in
   let r, g, b = color in
@@ -1596,7 +1596,7 @@ let image ?(h=_default_handle) mat=
   _adjust_range h y Y;
   (* keep the scale of original image instead of 4:3 *)
   h.page_size <- (int_of_float width, int_of_float height);
-  (* Prepare the closure *)
+  (* prepare the closure *)
   let p = h.pages.(h.current_page) in
   let _ = p.is_image <- true in
   let f = (fun () ->
