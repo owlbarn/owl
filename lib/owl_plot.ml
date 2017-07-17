@@ -32,6 +32,7 @@ type page = {
   mutable fgcolor         : int * int * int;
   mutable fontsize        : float;
   mutable is_3d           : bool;
+  mutable is_image        : bool;
   (* control axis labels *)
   mutable xlabel          : string;
   mutable ylabel          : string;
@@ -242,6 +243,7 @@ let _create_page () = {
   fgcolor         = (255, 0, 0);
   fontsize        = -1.;
   is_3d           = false;
+  is_image        = false;
   xlabel          = "x";
   ylabel          = "y";
   zlabel          = "z";
@@ -392,6 +394,7 @@ let _calculate_paper_size m n =
 (* calculate the axis config based on a page config *)
 let _config_2d_axis p =
   let base = 0 in
+  if p.is_image then -1 else
   let residual =
     if (p.xlogscale, p.ylogscale) = (true, false) then 10 else
     if (p.xlogscale, p.ylogscale) = (false, true) then 20 else
@@ -1171,8 +1174,8 @@ let pie ?(h=_default_handle) ?(spec=[]) x =
   if not h.holdon then output h
 
 
-let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
-  (* TODO: specify one axis, consider using spec parameter *)
+let loglog ?(h=_default_handle) ?(spec=[]) ?(axis=XY) ?x y =
+
   let open Plplot in
   let y = Owl_dense_matrix.D.to_array y in
   let n = Array.length y in
@@ -1183,14 +1186,22 @@ let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
       Owl_dense_matrix.D.linspace 1. (float_of_int n) n
       |> Owl_dense_matrix.D.to_array
   in
-  let x = Array.map Owl_maths.log10 x in
-  let y = Array.map Owl_maths.log10 y in
+  let x, y = match axis with
+    | X -> (Array.map Owl_maths.log10 x, y)
+    | Y -> (x, Array.map Owl_maths.log10 y)
+    | _ -> (Array.map Owl_maths.log10 x,
+            Array.map Owl_maths.log10 y)
+  in
   _adjust_range h x X;
   _adjust_range h y Y;
-  (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  p.xlogscale <- true;
-  p.ylogscale <- true;
+  let _ = match axis with
+    | X -> p.xlogscale <- true
+    | Y -> p.ylogscale <- true
+    | _ -> p.xlogscale <- true;
+            p.ylogscale <- true
+  in
+  (* prepare the closure *)
   let color = _get_rgb spec p.fgcolor in
   let r, g, b = color in
   let marker = _get_marker spec "" in
@@ -1223,6 +1234,15 @@ let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
   _add_legend_item p LINE line_style color marker color 0 color;
   if not h.holdon then output h
 
+let semilogx ?(h=_default_handle) ?(spec=[]) ?x y =
+  match x with
+  | Some arr -> loglog ~h ~spec ~axis:X ~x:arr y
+  | None     -> loglog ~h ~spec ~axis:X y
+
+let semilogy ?(h=_default_handle) ?(spec=[]) ?x y =
+  match x with
+  | Some arr -> loglog ~h ~spec ~axis:Y ~x:arr y
+  | None     -> loglog ~h ~spec ~axis:Y y
 
 let surf ?(h=_default_handle) ?(spec=[]) x y z =
   let open Plplot in
@@ -1560,6 +1580,38 @@ let scatterhist = None
 
 (* other plots *)
 
-let image x = None
+let image ?(h=_default_handle) mat=
+  let open Plplot in
+  (* compute necessary parameters *)
+  let width, height = Owl_dense_matrix.D.shape mat in
+  let num_col = Owl_dense_matrix.D.max mat in
+  let img = Owl_dense_matrix.D.to_arrays mat in
+  let width = float_of_int width in
+  let height = float_of_int height in
+  let num_col = int_of_float num_col in
+  (* specify the boundary of imageplot*)
+  let x = [|1.0; width|]  in
+  let y = [|1.0; height|] in
+  _adjust_range h x X;
+  _adjust_range h y Y;
+  (* keep the scale of original image instead of 4:3 *)
+  h.page_size <- (int_of_float width, int_of_float height);
+  (* Prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let _ = p.is_image <- true in
+  let f = (fun () ->
+    (*set gray_cmap *)
+    let r = [|0.0; 1.0|] in
+    let g = [|0.0; 1.0|] in
+    let b = [|0.0; 1.0|] in
+    let pos = [|0.0; 1.0|] in
+    plscmap1n num_col;
+    plscmap1l true pos r g b None;
+    plimage img 1.0 width 1.0 height 0.0 0.0 1.0 width 1.0 height;
+    (* possibly need to restore original settings *)
+  )
+  in
+  p.plots <- Array.append p.plots [|f|];
+  if not h.holdon then output h
 
 (* ends here *)
