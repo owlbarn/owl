@@ -1640,16 +1640,15 @@ let hadamard k n =
 
 let magic k n =
   assert (n >= 3);
-  let x = zeros k n n in
   let a0 = _zero k in
   let a1 = _one k in
-  let ac = ref a1 in
-  let m = n * n |> float_of_int |> _float_typ_elt k in
 
-  (* n is odd *)
-  if Owl_maths.is_odd n then (
+  let _magic_odd n a =
+    let x = zeros k n n in
     let i = ref 0 in
     let j = ref (n / 2) in
+    let ac = ref (float_of_int a |> _float_typ_elt k) in
+    let m = n * n + a - 1 |> float_of_int |> _float_typ_elt k in
 
     while !ac <= m do
       if x.{!i,!j} = a0 then (
@@ -1667,15 +1666,72 @@ let magic k n =
       )
     done;
     x
-  )
+  in
+
+  let _magic_doubly_even n =
+    let x = zeros k n n in
+
+    let _seq_inc x i0 j0 i1 j1 =
+      for i = i0 to i1 do
+        let ac = ref (n * i + j0 + 1 |> float_of_int |> _float_typ_elt k) in
+        for j = j0 to j1 do
+          x.{i,j} <- !ac;
+          ac := _add_elt k !ac a1
+        done
+      done
+    in
+    let _seq_dec x i0 j0 i1 j1 =
+      let ac = ref (n * n |> float_of_int |> _float_typ_elt k) in
+      for i = i0 to i1 do
+        for j = j0 to j1 do
+          if x.{i,j} = a0 then x.{i,j} <- !ac;
+          ac := _sub_elt k !ac a1
+        done
+      done
+    in
+
+    let m = n / 4 in
+    _seq_inc x 0 0 (m - 1) (m - 1);
+    _seq_inc x 0 (3 * m) (m - 1) (4 * m - 1);
+    _seq_inc x m m (3 * m - 1) (3 * m - 1);
+    _seq_inc x (3 * m) 0 (4 * m - 1) (m - 1);
+    _seq_inc x (3 * m) (3 * m) (4 * m - 1) (4 * m - 1);
+    _seq_dec x 0 0 (n - 1) (n - 1);
+    x
+  in
+
+  let _magic_singly_even n =
+    let m = n / 2 in
+    let m2 = m * m in
+    let xa = _magic_odd m 1 in
+    let xb = _magic_odd m (m2 + 1) in
+    let xc = _magic_odd m (2 * m2 + 1) in
+    let xd = _magic_odd m (3 * m2 + 1) in
+
+    let m3 = m / 2 in
+    let xa' = concat_horizontal (slice [[];[0;m3-1]] xd) (slice [[];[m3;-1]] xa) in
+    let xd' = concat_horizontal (slice [[];[0;m3-1]] xa) (slice [[];[m3;-1]] xd) in
+    let xb' =
+      if m3 - 1 = 0 then xb
+      else concat_horizontal (slice [[];[0;m-m3]] xb) (slice [[];[1-m3;-1]] xc)
+    in
+    let xc' =
+      if m3 - 1 = 0 then xc
+      else concat_horizontal (slice [[];[0;m-m3]] xc) (slice [[];[1-m3;-1]] xb)
+    in
+    xa'.{m3,0} <- xa.{m3,0};
+    xa'.{m3,m3} <- xd.{m3,m3};
+    xd'.{m3,0} <- xd.{m3,0};
+    xd'.{m3,m3} <- xa.{m3,m3};
+    concat_horizontal (concat_vertical xa' xd') (concat_vertical xc' xb')
+  in
+
+  (* n is odd *)
+  if Owl_maths.is_odd n then _magic_odd n 1
   (* n is doubly even *)
-  else if n mod 4 = 0 then (
-    let _sequential a m0 n0 m1 n1 =
-      ()
-    in failwith "not implemented yet"
-  )
+  else if n mod 4 = 0 then _magic_doubly_even n
   (* n is singly even *)
-  else failwith "Owl_dense_matrix_generic:magic"
+  else _magic_singly_even n
 
 
 (* experimental functions *)
@@ -1701,34 +1757,6 @@ let avg_pool ?padding x kernel stride =
   let m, n = s.(1), s.(2) in
   let y = Owl_dense_ndarray_generic.reshape y [|m;n|] in
   of_ndarray y
-
-
-(* TODO: can be certianly optimised, currently much slower than julia *)
-let cov' ?b ~a =
-  let a = match b with
-    | Some b -> (
-        let na = numel a in
-        let nb = numel b in
-        assert (na = nb);
-        let a = reshape na 1 a in
-        let b = reshape nb 1 b in
-        concat_horizontal a b
-      )
-    | None   -> a
-  in
-
-  let mu = average_rows a in
-  let a = sub a mu in
-  let a' = ctranspose a in
-  let c = dot a' a in
-
-  let n = row_num a - 1
-    |> Pervasives.max 1
-    |> float_of_int
-    |> Owl_dense_common._float_typ_elt (kind a)
-  in
-
-  div_scalar c n
 
 
 let cov ?b ~a =

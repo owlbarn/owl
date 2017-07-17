@@ -1173,7 +1173,9 @@ let pie ?(h=_default_handle) ?(spec=[]) x =
   p.plots <- Array.append p.plots [|f|];
   if not h.holdon then output h
 
+
 let loglog ?(h=_default_handle) ?(spec=[]) ?(axis=XY) ?x y =
+
   let open Plplot in
   let y = Owl_dense_matrix.D.to_array y in
   let n = Array.length y in
