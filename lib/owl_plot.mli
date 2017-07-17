@@ -193,12 +193,25 @@ val pie : ?h:handle -> ?spec:spec list -> dsmat -> unit
   Parameters: [RGB], [Fill].
  *)
 
-val loglog : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
-(** [log x y]  plots all y versus x pairs with log-log scale.
-[log y] plots data in y versus their indices.
+val loglog : ?h:handle -> ?spec:spec list -> ?axis:axis -> ?x:dsmat -> dsmat -> unit
+(** [loglog x y]  plots all y versus x pairs with log-log scale.
+[loglog y] plots data in y versus their indices. If [axis] is specified as X or Y, plot logarithmic scales only for x-axis or y-axis.
 
   Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
   *)
+
+val semilogx : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
+(**
+  [semilogx] is similar with [loglog]. Plot data as logarithmic scales for the x-axis.
+
+  Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
+  *)
+val semilogy : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
+  (**
+    [semilogy] is similar with [loglog]. Plot data as logarithmic scales for the y-axis.
+
+    Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
+    *)
 
 (** {6 3D plot functions} *)
 
@@ -283,8 +296,15 @@ val qqplot : ?h:handle -> ?spec:spec list -> ?pd:(float -> float) -> ?x:dsmat ->
   default is standard normal distribution. If the second argument [x] is a
   vector, the empirical CDF of it is used as the distribtion of x-axis data,
   otherwise the qqplot is similar to [probplot], showing the inverseCDF of
-  meadian [(i - 0.5)/n] on x-axis.
+  meadian \[(i - 0.5)/n\] on x-axis.
 
   If input vectors are not of the same length, users are explected to input the
   longer one as x, and the shorter one y.
+
+  Parameters: [RGB], [Marker], [MarkerSize].
 *)
+
+val image : ?h:handle -> dsmat -> unit
+(**
+  [image mat] display a m * n matrix as image. Each element in the matrix is of range 0 ~ 255. 
+  *)
