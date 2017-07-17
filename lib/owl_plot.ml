@@ -1593,12 +1593,12 @@ let scatterhist = None
 
 (* other plots *)
 
-let image ?(h=_default_handle) mat =
+let image ?(h=_default_handle) x =
   let open Plplot in
   (* compute necessary parameters *)
-  let width, height = Owl_dense_matrix.D.shape mat in
-  let num_col = Owl_dense_matrix.D.max mat in
-  let img = Owl_dense_matrix.D.to_arrays mat in
+  let width, height = Owl_dense_matrix.D.shape x in
+  let num_col = Owl_dense_matrix.D.max x in
+  let img = Owl_dense_matrix.D.to_arrays x in
   let width = float_of_int width in
   let height = float_of_int height in
   let num_col = int_of_float num_col in
