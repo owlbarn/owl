@@ -32,7 +32,7 @@ type page = {
   mutable fgcolor         : int * int * int;
   mutable fontsize        : float;
   mutable is_3d           : bool;
-  mutable is_image        : bool;
+  mutable no_axes         : bool;
   (* control axis labels *)
   mutable xlabel          : string;
   mutable ylabel          : string;
@@ -82,7 +82,7 @@ type handle = {
 }
 
 
-type axis = X | Y | Z | XY | XZ | YZ
+type axis = X | Y | Z | XY | XZ | YZ | XYZ
 
 
 (* Specification to configure a plot *)
@@ -102,6 +102,7 @@ type spec =
   | NoMagColor
   | Curtain
   | Faceted
+  | Axis        of axis
 
 
 let _get_rgb l default_val =
@@ -235,6 +236,15 @@ let _get_faceted l default_val =
   if k = 0 then default_val else List.nth l (k - 1)
 
 
+let _get_axis l default_val =
+  let l = l
+    |> List.filter (function Axis _ -> true | _ -> false)
+    |> List.map (function Axis x -> x | _ -> default_val)
+  in
+  let k = List.length l in
+  if k = 0 then default_val else List.nth l (k - 1)
+
+
 (* module functions to simplify plotting *)
 
 
@@ -243,7 +253,7 @@ let _create_page () = {
   fgcolor         = (255, 0, 0);
   fontsize        = -1.;
   is_3d           = false;
-  is_image        = false;
+  no_axes         = false;
   xlabel          = "x";
   ylabel          = "y";
   zlabel          = "z";
@@ -394,7 +404,7 @@ let _calculate_paper_size m n =
 (* calculate the axis config based on a page config *)
 let _config_2d_axis p =
   let base = 0 in
-  if p.is_image then -1 else
+  if p.no_axes then -1 else
   let residual =
     if (p.xlogscale, p.ylogscale) = (true, false) then 10 else
     if (p.xlogscale, p.ylogscale) = (false, true) then 20 else
@@ -1174,8 +1184,7 @@ let pie ?(h=_default_handle) ?(spec=[]) x =
   if not h.holdon then output h
 
 
-let loglog ?(h=_default_handle) ?(spec=[]) ?(axis=XY) ?x y =
-
+let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
   let open Plplot in
   let y = Owl_dense_matrix.D.to_array y in
   let n = Array.length y in
@@ -1186,11 +1195,11 @@ let loglog ?(h=_default_handle) ?(spec=[]) ?(axis=XY) ?x y =
       Owl_dense_matrix.D.linspace 1. (float_of_int n) n
       |> Owl_dense_matrix.D.to_array
   in
+  let axis = _get_axis spec XY in
   let x, y = match axis with
     | X -> (Array.map Owl_maths.log10 x, y)
     | Y -> (x, Array.map Owl_maths.log10 y)
-    | _ -> (Array.map Owl_maths.log10 x,
-            Array.map Owl_maths.log10 y)
+    | _ -> (Array.map Owl_maths.log10 x, Array.map Owl_maths.log10 y)
   in
   _adjust_range h x X;
   _adjust_range h y Y;
@@ -1198,8 +1207,7 @@ let loglog ?(h=_default_handle) ?(spec=[]) ?(axis=XY) ?x y =
   let _ = match axis with
     | X -> p.xlogscale <- true
     | Y -> p.ylogscale <- true
-    | _ -> p.xlogscale <- true;
-            p.ylogscale <- true
+    | _ -> (p.xlogscale <- true; p.ylogscale <- true)
   in
   (* prepare the closure *)
   let color = _get_rgb spec p.fgcolor in
@@ -1234,15 +1242,20 @@ let loglog ?(h=_default_handle) ?(spec=[]) ?(axis=XY) ?x y =
   _add_legend_item p LINE line_style color marker color 0 color;
   if not h.holdon then output h
 
+
 let semilogx ?(h=_default_handle) ?(spec=[]) ?x y =
+  let spec = spec @ [Axis X] in
   match x with
-  | Some arr -> loglog ~h ~spec ~axis:X ~x:arr y
-  | None     -> loglog ~h ~spec ~axis:X y
+  | Some arr -> loglog ~h ~spec ~x:arr y
+  | None     -> loglog ~h ~spec y
+
 
 let semilogy ?(h=_default_handle) ?(spec=[]) ?x y =
+  let spec = spec @ [Axis Y] in
   match x with
-  | Some arr -> loglog ~h ~spec ~axis:Y ~x:arr y
-  | None     -> loglog ~h ~spec ~axis:Y y
+  | Some arr -> loglog ~h ~spec ~x:arr y
+  | None     -> loglog ~h ~spec y
+
 
 let surf ?(h=_default_handle) ?(spec=[]) x y z =
   let open Plplot in
@@ -1580,7 +1593,7 @@ let scatterhist = None
 
 (* other plots *)
 
-let image ?(h=_default_handle) mat=
+let image ?(h=_default_handle) mat =
   let open Plplot in
   (* compute necessary parameters *)
   let width, height = Owl_dense_matrix.D.shape mat in
@@ -1598,7 +1611,7 @@ let image ?(h=_default_handle) mat=
   h.page_size <- (int_of_float width, int_of_float height);
   (* prepare the closure *)
   let p = h.pages.(h.current_page) in
-  let _ = p.is_image <- true in
+  let _ = p.no_axes <- true in
   let f = (fun () ->
     (* set gray_cmap *)
     let r = [|0.0; 1.0|] in

@@ -20,7 +20,7 @@ type color = RED | GREEN | BLUE
 
 type legend_position = North | South | West | East | NorthWest | NorthEast | SouthWest | SouthEast
 
-type axis = X | Y | Z | XY | XZ | YZ
+type axis = X | Y | Z | XY | XZ | YZ | XYZ
 
 type spec =
   | RGB         of int * int * int
@@ -37,6 +37,7 @@ type spec =
   | NoMagColor
   | Curtain
   | Faceted
+  | Axis        of axis
 
 
 (** {6 Config functions} *)
@@ -193,33 +194,37 @@ val pie : ?h:handle -> ?spec:spec list -> dsmat -> unit
   Parameters: [RGB], [Fill].
  *)
 
-val loglog : ?h:handle -> ?spec:spec list -> ?axis:axis -> ?x:dsmat -> dsmat -> unit
-(** [loglog x y]  plots all y versus x pairs with log-log scale.
-[loglog y] plots data in y versus their indices. If [axis] is specified as X or Y, plot logarithmic scales only for x-axis or y-axis.
+val loglog : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
+(** [loglog x y]  plots all [y] versus [x] pairs with log-log scale.
+  [loglog y] plots data in [y] versus their indices. If [Axis X] or [Axis Y] is
+  specified in [spec], plot logarithmic scales only for x-axis or y-axis
+  respectively.
 
-  Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
+  Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth], [Axis].
  *)
 
 val semilogx : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
 (**
-  [semilogx] is similar with [loglog]. Plot data as logarithmic scales for the x-axis.
+  [semilogx] is similar to [loglog]. Plot data as logarithmic scales for the
+  x-axis.
 
   Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
-  *)
-val semilogy : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
-  (**
-    [semilogy] is similar with [loglog]. Plot data as logarithmic scales for the y-axis.
+ *)
 
-    Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
-    *)
+val semilogy : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
+(**
+  [semilogy] is similar to [loglog]. Plot data as logarithmic scales for the
+  y-axis.
+
+  Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
+ *)
+
 
 (** {6 3D plot functions} *)
-
 
 val plot3d : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 (** TODO: [plot3d] is just an alias of [surf] function.
  *)
-
 
 val surf : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 (** [surf x y z] generates a surface plot defined by [x], [y], and [z].
@@ -243,7 +248,6 @@ val mesh : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 val contour : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 (** [contour x y z] generates a contour plot defined by [x], [y], and [z].
  *)
-
 
 val heatmap : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 (** [heatmap x y z] generates a heatmap defined by [x], [y], and [z].
