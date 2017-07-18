@@ -119,6 +119,8 @@ val slice : int list list -> mat -> mat
 
 val reverse : mat -> mat
 
+val flip : ?axis:int -> mat -> mat
+
 val reset : mat -> unit
 
 val fill : mat -> elt -> unit

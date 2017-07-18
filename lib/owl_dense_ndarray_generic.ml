@@ -1318,6 +1318,11 @@ let iteri_slice axis f x =
 
 let iter_slice axis f x = iteri_slice axis (fun _ y -> f y) x
 
+let flip ?(axis=0) x =
+  let a = Array.init (num_dims x) (fun _ -> [||]) in
+  a.(axis) <- [|-1;0|];
+  Owl_slicing.slice_array_typ a x
+
 
 (* some comparison functions *)
 

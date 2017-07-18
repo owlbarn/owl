@@ -96,6 +96,8 @@ val flatten : arr -> arr
 
 val reverse : arr -> arr
 
+val flip : ?axis:int -> arr -> arr
+
 val transpose : ?axis:int array -> arr -> arr
 
 val swap : int -> int -> arr -> arr

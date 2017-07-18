@@ -287,6 +287,12 @@ val reverse : ('a, 'b) t -> ('a, 'b) t
   returns the results in a new matrix. The original [x] remains intact.
  *)
 
+val flip : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [flip ~axis x] flips a matrix/ndarray along [axis]. By default [axis = 0].
+  The result is returned in a new matrix/ndarray, so the original [x] remains
+  intact.
+ *)
+
 val reset : ('a, 'b) t -> unit
 (** [reset x] resets all the elements of [x] to zero value. *)
 
