@@ -93,9 +93,12 @@ let clone x =
 
 let reverse x =
   let y = clone x in
-  y |> flatten |> array1_of_genarray |> Owl_backend_gsl_linalg.reverse (kind x);
+  let x' = x |> flatten |> array1_of_genarray in
+  let y' = y |> flatten |> array1_of_genarray in
+  let k = kind x in
+  let n = numel x in
+  _owl_copy k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:(-1) x' y';
   y
-
 
 let tile x reps =
   (* check the validity of reps *)
