@@ -1412,8 +1412,9 @@ let _draw_extended_line x0 y0 x1 y1 l r u d =
   let xr = if x0 = x1 then x0 else r in
   pllsty 1; pljoin x0 y0 x1 y1;
   pllsty 3; pljoin xl yl x0 y0;
-  pllsty 3; pljoin x1 y1 xr yr
-
+  pllsty 3; pljoin x1 y1 xr yr;
+  (* restore line style *)
+  pllsty 1
 
 let probplot ?(h=_default_handle) ?(spec=[]) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q 1.)) ?(noref=false) x =
 
