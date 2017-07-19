@@ -141,6 +141,8 @@ val reverse : mat -> mat
 
 val flip : ?axis:int -> mat -> mat
 
+val rotate : mat -> int -> mat
+
 val reset : mat -> unit
 
 val fill : mat -> elt -> unit

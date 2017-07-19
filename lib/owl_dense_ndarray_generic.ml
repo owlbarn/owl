@@ -1324,6 +1324,98 @@ let flip ?(axis=0) x =
   Owl_slicing.slice_array_typ a x
 
 
+let rotate x degree =
+  assert (degree mod 90 = 0);
+  let k = (degree mod 360) / 90 in
+  let _cp_op = _owl_copy (kind x) in
+
+  if num_dims x < 2 || k = 0 then
+    clone x
+  else if k = 1 then (
+    let sx = shape x in
+    let sy = Array.copy sx in
+    sy.(0) <- sx.(1);
+    sy.(1) <- sx.(0);
+
+    let y = empty (kind x) sy in
+    let x' = flatten x |> array1_of_genarray in
+    let y' = flatten y |> array1_of_genarray in
+
+    let m = sx.(0) in
+    let n = (numel x) / m in
+    let ofsx = ref 0 in
+    let ofsy = ref 0 in
+
+    if m <= n then (
+      for i = 1 to m do
+        _cp_op n ~ofsx:!ofsx ~incx:1 ~ofsy:(m - i) ~incy:m x' y';
+        ofsx := !ofsx + n
+      done
+    )
+    else (
+      for i = 0 to n - 1 do
+        _cp_op m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:(-1) x' y';
+        ofsy := !ofsy + m
+      done
+    );
+    y
+  )
+  else if k = 2 then (
+    let sx = shape x in
+    let y = empty (kind x) sx in
+    let x' = flatten x |> array1_of_genarray in
+    let y' = flatten y |> array1_of_genarray in
+
+    let m = sx.(0) in
+    let n = (numel x) / m in
+
+    if m <= n then (
+      let ofsx = ref 0 in
+      let ofsy = ref ((m - 1) * n) in
+      for i = 0 to m - 1 do
+        _cp_op n ~ofsx:!ofsx ~incx:1 ~ofsy:!ofsy ~incy:(-1) x' y';
+        ofsx := !ofsx + n;
+        ofsy := !ofsy - n
+      done
+    )
+    else (
+      for i = 0 to n - 1 do
+        _cp_op m ~ofsx:i ~incx:n ~ofsy:(n - i - 1) ~incy:(-n) x' y'
+      done
+    );
+    y
+  )
+  else (
+    let sx = shape x in
+    let sy = Array.copy sx in
+    sy.(0) <- sx.(1);
+    sy.(1) <- sx.(0);
+
+    let y = empty (kind x) sy in
+    let x' = flatten x |> array1_of_genarray in
+    let y' = flatten y |> array1_of_genarray in
+
+    let m = sx.(0) in
+    let n = (numel x) / m in
+    let ofsx = ref 0 in
+    let ofsy = ref ((n - 1) * m) in
+
+    if m <= n then (
+      for i = 0 to m - 1 do
+        _cp_op n ~ofsx:!ofsx ~incx:1 ~ofsy:i ~incy:(-m) x' y';
+        ofsx := !ofsx + n
+      done
+    )
+    else (
+      for i = 0 to n - 1 do
+        _cp_op m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:1 x' y';
+        ofsy := !ofsy - m
+      done
+    );
+    y
+  )
+
+
 (* some comparison functions *)
 
 let is_zero x =

@@ -1596,7 +1596,7 @@ let scatterhist = None
 let image ?(h=_default_handle) x =
   let open Plplot in
   (* rotate the matrix 90 degree clockwise to be shown correctly as image *)
-  let x = Owl_dense_matrix.D.(transpose x |> slice [[]; [-1;0]]) in
+  let x = Owl_dense_matrix.D.rotate x 90 in
   (* compute necessary parameters *)
   let width, height = Owl_dense_matrix.D.shape x in
   let num_col = Owl_dense_matrix.D.max x in

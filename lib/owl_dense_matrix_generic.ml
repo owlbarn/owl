@@ -296,6 +296,11 @@ let flip ?axis x =
   let y = Owl_dense_ndarray_generic.flip ?axis x in
   of_ndarray y
 
+let rotate x degree =
+  let x = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.rotate x degree in
+  of_ndarray y
+
 let slice axis x =
   let x = to_ndarray x in
   let y = Owl_dense_ndarray_generic.slice axis x in

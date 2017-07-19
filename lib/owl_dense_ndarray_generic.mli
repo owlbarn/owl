@@ -255,6 +255,12 @@ val flip : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
   intact.
  *)
 
+val rotate : ('a, 'b) t -> int -> ('a, 'b) t
+(** [rotate x d] rotates [x] clockwise [d] degrees. [d] must be multiple times
+  of [90], otherwise the function will fail. If [x] is an n-dimensional array,
+  then the function rotates the plane formed by the first and second dimensions.
+ *)
+
 val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (** [transpose ~axis x] makes a copy of [x], then transpose it according to
   [~axis]. [~axis] must be a valid permutation of [x] dimension indices. E.g.,
