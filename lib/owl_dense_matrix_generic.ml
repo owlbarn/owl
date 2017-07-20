@@ -430,6 +430,25 @@ let hermitian ?(upper=true) x =
   (* return the symmetric matrix *)
   y
 
+let kron a b =
+  (* Kronecker product according to https://en.wikipedia.org/wiki/Kronecker_product *)
+  let nra, nca = Mat.shape a in
+  let nrb, ncb = Mat.shape b in
+  let nrk, nck = ((nra*nrb), (nca*ncb)) in
+  let k = Mat.create nrk nck 0.0
+  in
+  for i = 1 to nrk do
+    for j = 1 to nck do
+(* The index generation is 1-indexed, which is why we subtract 1 in the addressing *)
+      let ai = (int_floor (i-1) nrb) + 1 in
+      let aj = (int_floor (j-1) ncb) + 1 in
+      let bi = ((i-1) mod nrb) + 1 in
+      let bj = ((j-1) mod ncb) + 1
+      in
+      k.{i-1,j-1} <- ( *. ) a.{ai-1,aj-1} b.{bi-1,bj-1};
+    done
+  done
+  k
 
 (* matrix iteration operations *)
 
