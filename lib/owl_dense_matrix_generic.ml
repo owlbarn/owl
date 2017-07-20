@@ -435,16 +435,16 @@ let kron a b =
   let nra, nca = shape a in
   let nrb, ncb = shape b in
   let nrk, nck = ((nra*nrb), (nca*ncb)) in
-  let k = zeros (kind a) nrk nck
-  in
+  let k = empty (kind a) nrk nck in
+  let _mul_op = _mul_elt (kind a) in
+
   for i = 1 to nrk do
     for j = 1 to nck do
       let ai = (int_floor (i-1) nrb) + 1 in
       let aj = (int_floor (j-1) ncb) + 1 in
       let bi = ((i-1) mod nrb) + 1 in
-      let bj = ((j-1) mod ncb) + 1
-      in
-      k.{i-1,j-1} <- ( *. ) a.{ai-1,aj-1} b.{bi-1,bj-1}
+      let bj = ((j-1) mod ncb) + 1 in
+      k.{i-1,j-1} <- _mul_op a.{ai-1,aj-1} b.{bi-1,bj-1}
     done
   done;
   k

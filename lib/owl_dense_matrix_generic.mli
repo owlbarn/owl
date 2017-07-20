@@ -383,10 +383,6 @@ val dropout : ?rate:float -> ?seed:int -> ('a, 'b) t -> ('a, 'b) t
   by setting their values to zeros.
  *)
 
-val kron : (float, 'a, 'b) Array2.t -> (float, 'a, 'b) Array2.t -> (float, 'a, c_layout) Array2.t
-(** [kron a b] calculates the Kronecker product between the matrices [a]
-  and [b]
- *)
 
 (** {6 Iterate elements, columns, and rows.} *)
 
@@ -1361,6 +1357,13 @@ val cov : ?b:('a, 'b) t -> a:('a, 'b) t -> ('a, 'b) t
   [cov ~a ~b] takes two matrices as inputs. The functions flatten [a] and [b]
   first then returns a [2 x 2] matrix, so two must have the same number of
   elements.
+ *)
+
+val kron : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [kron a b] calculates the Kronecker product between the matrices [a]
+  and [b]. If [a] is an [m x n] matrix and [b] is a [p x q] matrix, then
+  [kron(a,b)] is an [m*p x n*q] matrix formed by taking all possible products
+  between the elements of [a] and the matrix [b].
  *)
 
 
