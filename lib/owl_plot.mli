@@ -204,19 +204,24 @@ val loglog : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
  *)
 
 val semilogx : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
-(**
-  [semilogx] is similar to [loglog]. Plot data as logarithmic scales for the
+(** [semilogx] is similar to [loglog]. Plot data as logarithmic scales for the
   x-axis.
 
   Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
  *)
 
 val semilogy : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
-(**
-  [semilogy] is similar to [loglog]. Plot data as logarithmic scales for the
+(** [semilogy] is similar to [loglog]. Plot data as logarithmic scales for the
   y-axis.
 
   Parameters: [RGB], [Marker], [MarkerSize], [LineStyle], [LineWidth].
+ *)
+
+val spy : ?h:handle -> ?spec:spec list -> dsmat -> unit
+(** [spy x] visualise the sparsity of the matrix [x] using scatter plot. The
+  non-zero elements will be plotted as dots.
+
+  Parameters: [RGB], [Marker], [MarkerSize].
  *)
 
 

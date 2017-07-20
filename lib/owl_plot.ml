@@ -1631,5 +1631,21 @@ let image ?(h=_default_handle) x =
   if not h.holdon then output h
 
 
+let spy ?(h=_default_handle) ?(spec=[]) x =
+  let xs = Owl_utils.Stack.make () in
+  let ys = Owl_utils.Stack.make () in
+  Owl_dense_matrix.D.iteri (fun i j a ->
+    if a <> 0. then (
+      Owl_utils.Stack.push xs (float_of_int i);
+      Owl_utils.Stack.push ys (float_of_int j);
+    )
+  ) x;
+  let x = Owl_utils.Stack.to_array xs in
+  let y = Owl_utils.Stack.to_array ys in
+  let x = Owl_dense_matrix.D.of_arrays [|x|] in
+  let y = Owl_dense_matrix.D.of_arrays [|y|] in
+  scatter ~h ~spec x y
+
+
 
 (* ends here *)
