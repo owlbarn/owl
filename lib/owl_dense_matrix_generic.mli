@@ -383,6 +383,10 @@ val dropout : ?rate:float -> ?seed:int -> ('a, 'b) t -> ('a, 'b) t
   by setting their values to zeros.
  *)
 
+val kron : (float, 'a, 'b) Array2.t -> (float, 'a, 'b) Array2.t -> (float, 'a, c_layout) Array2.t
+(** [kron a b] calculates the Kronecker product between the matrices [a]
+  and [b]
+ *)
 
 (** {6 Iterate elements, columns, and rows.} *)
 

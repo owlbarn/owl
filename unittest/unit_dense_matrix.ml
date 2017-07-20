@@ -104,6 +104,12 @@ module To_test = struct
     let b = M.of_arrays Float64 [| [|22.;28.|]; [|49.;64.|] |] in
     M.equal a b
 
+   let kron () =
+     let a = M.sequential Float64 2 2 in
+     let b = M.eye Float64 2 in
+     let c = M.of_arrays Float64 [| [|0.;1.;0.;0.|]; [|2.;3.;0.;0.|]; [|0.;0.;0.;1.|]; [|0.;0.;2.;3.|] |] in
+     M.equal (M.kron b a) c
+
   let add_scalar () = M.add_scalar x1 2. |> M.sum = 36.
 
   let mul_scalar () = M.mul_scalar x1 2. |> M.sum = 24.
@@ -257,6 +263,9 @@ let mul () =
 let dot () =
   Alcotest.(check bool) "dot" true (To_test.dot ())
 
+let kron () =
+  Alcotest.(check bool) "kron" true (To_test.kron ())
+
 let add_scalar () =
   Alcotest.(check bool) "add_scalar" true (To_test.add_scalar ())
 
@@ -332,6 +341,7 @@ let test_set = [
   "add", `Slow, add;
   "mul", `Slow, mul;
   "dot", `Slow, dot;
+  "kron", `Slow, kron;
   "add_scalar", `Slow, add_scalar;
   "mul_scalar", `Slow, mul_scalar;
   "min", `Slow, min;
