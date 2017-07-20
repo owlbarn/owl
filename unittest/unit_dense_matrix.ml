@@ -341,6 +341,7 @@ let test_set = [
   "add", `Slow, add;
   "mul", `Slow, mul;
   "dot", `Slow, dot;
+  "kron", `Slow, kron;
   "add_scalar", `Slow, add_scalar;
   "mul_scalar", `Slow, mul_scalar;
   "min", `Slow, min;
