@@ -107,8 +107,8 @@ module To_test = struct
    let kron () =
      let a = M.sequential Float64 2 2 in
      let b = M.eye Float64 2 in
-     let c = M.of_arrays Float64 [| [|0.;1;0.;0.|]; [|2.;3.;0.;0;|];[|0.;0.;0.;1;|]; [|0.;0.;2.;3.|] |] in
-     let M.equal (M.kron b a) c
+     let c = M.of_arrays Float64 [| [|0.;1.;0.;0.|]; [|2.;3.;0.;0.|]; [|0.;0.;0.;1.|]; [|0.;0.;2.;3.|] |] in
+     M.equal (M.kron b a) c
 
   let add_scalar () = M.add_scalar x1 2. |> M.sum = 36.
 
