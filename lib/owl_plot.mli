@@ -218,8 +218,8 @@ val semilogy : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
  *)
 
 val spy : ?h:handle -> ?spec:spec list -> dsmat -> unit
-(** [spy x] visualise the sparsity of the matrix [x] using scatter plot. The
-  non-zero elements will be plotted as dots.
+(** [spy x] visualises the sparsity of the matrix [x] using scatter plot. The
+  non-zero elements are plotted as dots, and zeros are ignored.
 
   Parameters: [RGB], [Marker], [MarkerSize].
  *)
