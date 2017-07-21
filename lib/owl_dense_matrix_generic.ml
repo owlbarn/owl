@@ -1484,6 +1484,11 @@ let ssqr_diff x1 x2 =
   let x2 = to_ndarray x2 in
   Owl_dense_ndarray_generic.ssqr_diff x1 x2
 
+let clip_by_value ?amin ?amax x =
+  let x = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.clip_by_value ?amin ?amax x in
+  of_ndarray y
+  
 let clip_by_l2norm t x =
   let x = to_ndarray x in
   let y = Owl_dense_ndarray_generic.clip_by_l2norm t x in

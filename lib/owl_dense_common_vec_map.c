@@ -90,7 +90,7 @@ CAMLprim value FUN4(value vN, value vX, value vY)
 #endif /* FUN4 */
 
 
-// function to perform mapping of elements from x to y with regards to scalar values
+// function to perform mapping of elements in x with regards to scalar values
 #ifdef FUN12
 
 CAMLprim value FUN12(value vN, value vA, value vB, value vX)

@@ -393,6 +393,8 @@ val scalar_pow : elt -> arr -> arr
 
 val pow_scalar : arr -> elt -> arr
 
+val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
+
 
 (** {6 Experimental functions} *)
 

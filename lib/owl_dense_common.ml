@@ -1683,4 +1683,17 @@ let _owl_polar : type a b c d. (a, b) kind -> (c, d) kind -> (a, b, c, d) owl_ve
   | Float64   -> owl_real_double_polar l x y z
   | _         -> failwith "_owl_polar: unsupported operation"
 
+external owl_real_float_clip_by_value : int -> float -> float -> (float, 'a) owl_vec -> unit = "real_float_clip_by_value"
+external owl_real_double_clip_by_value : int -> float -> float -> (float, 'a) owl_vec -> unit = "real_double_clip_by_value"
+external owl_complex_float_clip_by_value : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_vec -> unit = "complex_float_clip_by_value"
+external owl_complex_double_clip_by_value : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_vec -> unit = "complex_double_clip_by_value"
+
+let _owl_clip_by_value : type a b. (a, b) kind -> (a, b) owl_vec_op07 = function
+  | Float32   -> owl_real_float_clip_by_value
+  | Float64   -> owl_real_double_clip_by_value
+  | Complex32 -> owl_complex_float_clip_by_value
+  | Complex64 -> owl_complex_double_clip_by_value
+  | _         -> failwith "_owl_clip_by_value: unsupported operation"
+
+
 (* ends here *)

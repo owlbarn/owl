@@ -556,3 +556,5 @@ val pow_scalar : mat -> elt -> mat
 val cov : ?b:mat -> a:mat -> mat
 
 val kron : mat -> mat -> mat
+
+val clip_by_value : ?amin:elt -> ?amax:elt -> mat -> mat

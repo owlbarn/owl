@@ -1345,6 +1345,12 @@ val ssqr_diff : ('a, 'b) t -> ('a, 'b) t -> 'a
 val cross_entropy : (float, 'a) t -> (float, 'a) t -> float
 (** [cross_entropy x y] calculates the cross entropy between [x] and [y] using base [e]. *)
 
+val clip_by_value : ?amin:'a -> ?amax:'a -> ('a, 'b) t -> ('a, 'b) t
+(** [clip_by_value ~amin ~amax x] clips the elements in [x] based on [amin] and
+  [amax]. The elements smaller than [amin] will be set to [amin], and the
+  elements greater than [amax] will be set to [amax].
+ *)
+
 val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 (** [clip_by_l2norm t x] clips the [x] according to the threshold set by [t]. *)
 

@@ -2782,6 +2782,32 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X) (cproj(X))
 #include "owl_dense_common_vec_map.c"
 
+// clip_by_value
+
+#define FUN12 real_float_clip_by_value
+#define INIT float a = Double_val(vA), b = Double_val(vB)
+#define NUMBER float
+#define MAPFN(X) X = X < a ? a : (X > b ? b : X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN12 real_double_clip_by_value
+#define INIT double a = Double_val(vA), b = Double_val(vB)
+#define NUMBER double
+#define MAPFN(X) X = X < a ? a : (X > b ? b : X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN12 complex_float_clip_by_value
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I, b = Double_field(vB, 0) + Double_field(vB, 1)*I
+#define NUMBER _Complex float
+#define MAPFN(X) CLTF(X,a) ? a : (CGTF(X,b) ? b : X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN12 complex_double_clip_by_value
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I, b = Double_field(vB, 0) + Double_field(vB, 1)*I
+#define NUMBER _Complex double
+#define MAPFN(X) CLT(X,a) ? a : (CGT(X,b) ? b : X)
+#include "owl_dense_common_vec_map.c"
+
 // sort
 
 //////////////////// function templates ends ////////////////////

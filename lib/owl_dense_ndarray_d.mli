@@ -420,6 +420,8 @@ val ssqr_diff : arr -> arr -> elt
 
 val cross_entropy : arr -> arr -> float
 
+val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
+
 val clip_by_l2norm : float -> arr -> arr
 
 

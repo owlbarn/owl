@@ -1751,6 +1751,21 @@ let cast_d2c x =
 
 (* clipping functions *)
 
+let clip_by_value ?amin ?amax x =
+  let k = kind x in
+  let amin = match amin with
+    | Some a -> a
+    | None   -> _neg_inf k
+  in
+  let amax = match amax with
+    | Some a -> a
+    | None   -> _pos_inf k
+  in
+  let y = clone x in
+  let z = flatten y |> array1_of_genarray in
+  _owl_clip_by_value k (numel x) amin amax z;
+  y
+
 let clip_by_l2norm t x =
   let a = l2norm x in
   match a > t with
