@@ -508,6 +508,8 @@ val var : ?axis:int -> mat -> mat
 
 val std : ?axis:int -> mat -> mat
 
+val mat2gray : ?amin:elt -> ?amax:elt -> mat -> mat
+
 
 (** {6 Binary mathematical operations } *)
 

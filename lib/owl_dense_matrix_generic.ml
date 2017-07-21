@@ -1488,7 +1488,7 @@ let clip_by_value ?amin ?amax x =
   let x = to_ndarray x in
   let y = Owl_dense_ndarray_generic.clip_by_value ?amin ?amax x in
   of_ndarray y
-  
+
 let clip_by_l2norm t x =
   let x = to_ndarray x in
   let y = Owl_dense_ndarray_generic.clip_by_l2norm t x in
@@ -1863,6 +1863,20 @@ let std ?(axis=0) a =
   in
 
   div_scalar aa n
+
+
+let mat2gray ?amin ?amax x =
+  let amin = match amin with
+    | Some a -> a
+    | None   -> min x
+  in
+  let amax = match amax with
+    | Some a -> a
+    | None   -> max x
+  in
+  let x = clip_by_value ~amin ~amax x in
+  let x = sub_scalar x amin in
+  div_scalar x (_sub_elt (kind x) amax amin)
 
 
 

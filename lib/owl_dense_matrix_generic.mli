@@ -1225,6 +1225,12 @@ val std : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
   By default, [axis] is set to the lowest dimension.
  *)
 
+val mat2gray : ?amin:'a -> ?amax:'a -> ('a, 'b) t -> ('a, 'b) t
+(** [mat2gray ~amin ~amax x] converts the matrix [x] to the intensity image.
+  The elements in [x] are clipped by [amin] and [amax], and they will be between
+  [0.] and [1.] after conversion to represents the intensity.
+ *)
+
 
 (** {6 Binary mathematical operations } *)
 
