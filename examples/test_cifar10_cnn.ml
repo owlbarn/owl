@@ -3,10 +3,10 @@ open Owl_neural_graph
 open Algodiff.S
 open Owl_neural_neuron
 
-let model_name = "cifar10.model" 
+let model_name = "cifar10.model"
 let test_batch = 10
 
-let model () = 
+let model () =
   let open Owl_neural_graph in
   let nn = input [|32;32;3|]
     |> conv2d [|3;3;3;32|] [|1;1|] ~act_typ:Activation.Relu
@@ -20,33 +20,33 @@ let model () =
     |> fully_connected 512 ~act_typ:Activation.Relu
     |> linear 10 ~act_typ:Activation.Softmax
     |> get_network
-  in 
+  in
   print nn;
   nn
 
+(* Problem: the training phase won't converge, with different learning_rate settings *)
 let train_cifar () =
   let x, y = Dataset.load_cifar_train_data 1 in
-  let m = Dense.Matrix.S.row_num x in 
+  let m = Dense.Matrix.S.row_num x in
   let x = Dense.Matrix.S.to_ndarray x in
   let x = Dense.Ndarray.S.reshape x [|m;32;32;3|] in
   let nn = model () in
   let params = Params.config
-    ~batch:(Batch.Mini 50) ~learning_rate:(Learning_Rate.RMSprop (0.0001, 1e-6)) 10.0 in (* epochs: 0.2 *)
+    ~batch:(Batch.Mini 50) ~learning_rate:(Learning_Rate.RMSprop (0.0001, 1e-6)) 10.0 in
   train_cnn ~params nn x y |> ignore;
   Owl_neural_graph.save nn model_name
 
 
 let inference_cifar nn x y num_inf =
-  let images = Algodiff.S.unpack_arr x in 
-  let labels = Algodiff.S.unpack_mat y in 
-  let images = Dense.Ndarray.S.reshape images [|num_inf;32;32;3|] in 
-  let p = Graph.run (Arr images) nn |> Algodiff.S.unpack_mat in 
-  (* Owl_dense_matrix_generic.print p; *)
-  let mat2num mat = 
-    mat |> Dense.Matrix.Generic.max_rows 
+  let images = Algodiff.S.unpack_arr x in
+  let labels = Algodiff.S.unpack_mat y in
+  let images = Dense.Ndarray.S.reshape images [|num_inf;32;32;3|] in
+  let p = Graph.run (Arr images) nn |> Algodiff.S.unpack_mat in
+  let mat2num mat =
+    mat |> Dense.Matrix.Generic.max_rows
         |> Array.map (fun tp -> let _, _, num = tp in num)
   in
-  let p = mat2num p in 
+  let p = mat2num p in
   Printf.printf "Expectation: ";
   Dense.Matrix.S.(print (transpose labels));
   Printf.printf "\nPrediction: \n";
@@ -55,59 +55,25 @@ let inference_cifar nn x y num_inf =
 
 let test_cifar () = None
 
-let start_inference () = 
-(* let _ = train_mnist_keras_cnn_graph () in *)
+let start_inference () =
   let x, y = Dataset.load_cifar_train_data 1 in
   let m = Dense.Matrix.S.row_num x in
   let x = Dense.Matrix.S.to_ndarray x in
   let x = Dense.Ndarray.S.reshape x [|m;32;32;3|] in
-  (* draw 10 samples *)
-  let num_test = 9 in 
-  let a, b = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) num_test in 
-  (* visualize dataset *)
+  let num_test = 9 in
+  let a, b = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) num_test in
   (* load model *)
-  let nn = Owl_neural_graph.load model_name in 
+  let nn = Owl_neural_graph.load model_name in
   inference_cifar nn a b num_test
 
 let start_test () = None
 
-let _ = 
-  try 
-    start_inference () 
-  with 
+(* TODO: visualize color pictures *)
+let show_cifar () = None
+
+let _ =
+  try
+    start_inference ()
+  with
     (* model file not found *)
-    _ -> train_cifar (); start_inference () 
-  
-
-(* 
-
-========
-
-
-
-let test_batch = 10
-
-let x, y = Dataset.load_cifar_train_data 1
-let m = Dense.Matrix.S.row_num x
-let x = Dense.Matrix.S.to_ndarray x
-let x = Dense.Ndarray.S.reshape x [|m;32;32;3|]
-let a, b = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) 10
-let a, b = (Algodiff.S.unpack_arr a), (Algodiff.S.unpack_mat b)
-(* let u = Dense.Ndarray.S.slice [[0]] a *)
-let u = Dense.Ndarray.S.reshape a [|10;32;32;3|]
-Graph.run (Arr u) nn;; (* a matrix *)
-
-
-
-let x, y = Dataset.load_cifar_train_data 1
-let m = Dense.Matrix.S.row_num x 
-let x = Dense.Matrix.S.to_ndarray x
-let x = Dense.Ndarray.S.reshape x [|m;32;32;3|]
-let nn = model ()
-let params = Params.config
-  ~batch:(Batch.Mini 32) ~learning_rate:(Learning_Rate.RMSprop (0.0001, 1e-6)) ~checkpoint:0.1 0.2
-train_cnn ~params nn x y |> ignore
-
-I can also Graph.run on multiple pictures, which yields a matrix *)
-
-(* let nn = Graph.load *)
+    _ -> train_cifar (); start_inference ()
