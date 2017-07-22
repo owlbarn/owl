@@ -1,0 +1,42 @@
+
+type neuron = [
+  | Input
+  | Linear
+  | LinearNoBias
+  | LSTM
+  | GRU
+  | Recurrent
+  | Conv2D
+  | Conv3D
+  | FullyConnected
+  | MaxPool2D
+  | AvgPool2D
+  | Dropout
+  | Reshape
+  | Flatten
+  | Lambda
+  | Activation
+  | Add
+  | Mul
+  | Dot
+  | Max
+  | Average
+]
+
+
+type param = {
+  name : string;
+}
+
+
+type layer = {
+  name   : string;
+  neuron : neuron;
+  param  : param;
+}
+
+
+type feedforward = {
+  name   : string;
+  layers : layer list;
+}
