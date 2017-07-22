@@ -66,7 +66,7 @@ let show_mnist ?(num=9) imgs  =
                           @= (mats.(3) @|| mats.(4) @|| mats.(5)) 
                           @= (mats.(6) @|| mats.(7) @|| mats.(8)))
 
-let test_mnist = None
+let test_mnist () = None
 
 let _ = 
   (* let _ = train_mnist_keras_cnn_graph () in *)
