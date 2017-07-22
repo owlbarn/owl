@@ -23,9 +23,17 @@ type neuron = [
   | Average
 ]
 
+type activation_typ = [
+  | Relu
+  | Sigmoid
+  | Softmax
+  | Tanh
+]
 
 type param = {
-  name : string;
+  ?in_shape : int list option;
+  ?out_shape : int list option;
+  ?activation_typ : activation_typ option;
 }
 
 

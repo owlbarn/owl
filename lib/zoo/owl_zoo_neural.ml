@@ -13,9 +13,18 @@ module ST = Owl_zoo_specs_neural_t
 module SJ = Owl_zoo_specs_neural_j
 
 
+let _get_activation_typ neuron =
+  let open NN.Activation in
+  match neuron.activation with
+  | Relu -> ST.(`Relu)
+  | Sigmoid -> ST.(`Sigmoid)
+  | Softmax -> ST.(`Softmax)
+  | Tanh -> ST.(`Tanh)
+
+
 let _create_layer name neuron param =
   let open Owl_zoo_specs_neural_t in
-  let param = { name = param } in
+  let param = { in_shape = None; out_shape = None; activation_typ = Some `Tanh } in
   { name; neuron; param }
 
 let _layer_to_specs x =
