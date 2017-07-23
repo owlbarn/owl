@@ -31,19 +31,25 @@ type activation_typ = [
   | None
 ]
 
+type init_typ = [
+  | Uniform  of (float * float)
+  | Gaussian of (float * float)
+  | Standard
+  | Tanh
+]
+
 type param = {
-  ?in_shape : int list option;
-  ?out_shape : int list option;
+  ?in_shape       : int list option;
+  ?out_shape      : int list option;
+  ?init_typ       : init_typ option;
   ?activation_typ : activation_typ option;
 }
-
 
 type layer = {
   name   : string;
   neuron : neuron;
   param  : param;
 }
-
 
 type feedforward = {
   name   : string;
