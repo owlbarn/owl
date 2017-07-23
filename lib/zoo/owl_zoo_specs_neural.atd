@@ -28,6 +28,7 @@ type activation_typ = [
   | Sigmoid
   | Softmax
   | Tanh
+  | None
 ]
 
 type param = {
