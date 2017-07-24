@@ -26,6 +26,26 @@ module ST = struct
       activation_typ;
     }
 
+  let get_param_in_shape x =
+    match x.in_shape with
+    | Some a -> a
+    | None   -> failwith "owl_zoo_specs_neural:get_param_in_shape"
+
+  let get_param_out_shape x =
+    match x.out_shape with
+    | Some a -> a
+    | None   -> failwith "owl_zoo_specs_neural:get_param_out_shape"
+
+  let get_param_init_typ x =
+    match x.init_typ with
+    | Some a -> a
+    | None   -> failwith "owl_zoo_specs_neural:get_param_init_typ"
+
+  let get_param_activation_typ x =
+    match x.activation_typ with
+    | Some a -> a
+    | None   -> failwith "owl_zoo_specs_neural:get_param_activation_typ"
+
 end
 
 
@@ -40,7 +60,14 @@ module Init = struct
     | Tanh                 -> ST.(`Tanh)
     | _                    -> failwith "owl_zoo_specs_neural:init:to_specs"
 
-  let of_specs spec = None
+  let of_specs x =
+    let open ST in
+    match x with
+    | `Uniform (a, b)       -> NN.Init.(Uniform (a, b))
+    | `Gaussian (mu, sigma) -> NN.Init.(Gaussian (mu, sigma))
+    | `Standard             -> NN.Init.(Standard)
+    | `Tanh                 -> NN.Init.(Tanh)
+    | _                     -> failwith "owl_zoo_specs_neural:of_specs"
 
 end
 
@@ -53,7 +80,43 @@ module Input = struct
     let param = ST.make_param ~in_shape in
     typ, param ()
 
-  let of_specs spec = None
+  let of_specs x =
+    let in_shape = ST.get_param_in_shape x |> Array.of_list in
+    let neuron = NN.Input.create in_shape in
+    NN.(Input neuron)
+
+end
+
+
+module Activation = struct
+
+  let to_specs x =
+    let open NN.Activation in
+    let typ = ST.(`Activation) in
+    let in_shape = x.in_shape |> Array.to_list in
+    let out_shape = x.out_shape |> Array.to_list in
+    let param = match x.activation with
+      | Relu    -> ST.(make_param ~in_shape ~out_shape ~activation_typ:`Relu)
+      | Sigmoid -> ST.(make_param ~in_shape ~out_shape ~activation_typ:`Sigmoid)
+      | Softmax -> ST.(make_param ~in_shape ~out_shape ~activation_typ:`Softmax)
+      | Tanh    -> ST.(make_param ~in_shape ~out_shape ~activation_typ:`Tanh)
+      | None    -> ST.(make_param ~in_shape ~out_shape ~activation_typ:`None)
+      | _       -> failwith "owl_zoo_specs_neural:activation:to_specs"
+    in
+    typ, param ()
+
+  let of_specs x =
+    let open ST in
+    let activation_typ = ST.get_param_activation_typ x in
+    let activation = match activation_typ with
+      | `Relu    -> NN.Activation.Relu
+      | `Sigmoid -> NN.Activation.Sigmoid
+      | `Softmax -> NN.Activation.Softmax
+      | `Tanh    -> NN.Activation.Tanh
+      | `None    -> NN.Activation.None
+    in
+    let neuron = NN.Activation.create activation in
+    NN.(Activation neuron)
 
 end
 
@@ -68,47 +131,35 @@ module Linear = struct
     let param = ST.make_param ~in_shape ~out_shape ~init_typ in
     typ, param ()
 
-  let of_specs spec = None
+  let of_specs x =
+    let out_shape = ST.get_param_out_shape x |> Array.of_list in
+    let init_typ = ST.get_param_init_typ x |> Init.of_specs in
+    let neuron = NN.Linear.create out_shape.(0) init_typ in
+    NN.(Linear neuron)
 
 end
-
-
-module Activation = struct
-
-  let to_specs x =
-    let open NN.Activation in
-    let typ = ST.(`Activation) in
-    let in_shape = x.in_shape |> Array.to_list in
-    let out_shape = x.out_shape |> Array.to_list in
-    let param =
-      match x.activation with
-      | Relu    -> ST.(make_param ~in_shape ~out_shape ~activation_typ:`Relu)
-      | Sigmoid -> ST.(make_param ~in_shape ~out_shape ~activation_typ:`Sigmoid)
-      | Softmax -> ST.(make_param ~in_shape ~out_shape ~activation_typ:`Softmax)
-      | Tanh    -> ST.(make_param ~in_shape ~out_shape ~activation_typ:`Tanh)
-      | None    -> ST.(make_param ~in_shape ~out_shape ~activation_typ:`None)
-      | _       -> failwith "owl_zoo_specs_neural:activation:to_specs"
-    in
-    typ, param ()
-
-  let of_specs spec = None
-
-end
-
 
 
 module Neuron = struct
 
   let to_specs = function
     | NN.Input x      -> Input.to_specs x
-    | NN.Linear x     -> Linear.to_specs x
     | NN.Activation x -> Activation.to_specs x
+    | NN.Linear x     -> Linear.to_specs x
     | _               -> failwith "owl_zoo_specs_neural:neuron:to_specs"
+
+  let of_specs x =
+    let open ST in
+    match x.neuron with
+    | `Input      -> Input.of_specs x.param
+    | `Activation -> Activation.of_specs x.param
+    | `Linear     -> Linear.of_specs x.param
+    | _           -> failwith "owl_zoo_specs_neural:neuron:of_specs"
 
   let to_string = function
     | NN.Input x      -> "input"
-    | NN.Linear x     -> "linear"
     | NN.Activation x -> "activation"
+    | NN.Linear x     -> "linear"
     | _               -> failwith "owl_zoo_specs_neural:neuron:to_string"
 
 end
@@ -127,9 +178,17 @@ module Feedforward = struct
     in
     ST.({ name = "Feedforward"; layers })
 
+  let of_specs x = None
+
+  let to_json x = x
+    |> to_specs
+    |> SJ.string_of_feedforward
+    |> Yojson.Safe.prettify
+
 end
 
 
+(* FIXME: for debug purpose *)
 let make_example_network () =
   let open Owl_neural in
   let open Feedforward in
@@ -142,6 +201,4 @@ let make_example_network () =
 
 let _ =
   let nn = make_example_network () in
-  let nn = Feedforward.to_specs nn in
-  let s = SJ.string_of_feedforward nn in
-  print_endline (Yojson.Safe.prettify s)
+  print_endline (Feedforward.to_json nn)
