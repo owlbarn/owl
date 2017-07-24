@@ -3,11 +3,16 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+
+(* Module aliases *)
+
 module NN = Owl_neural_neuron
 module FN = Owl_neural_feedforward
 module GN = Owl_neural_graph
 module SJ = Owl_zoo_specs_neural_j
 
+
+(* Enhanced Specs T module *)
 
 module ST = struct
 
@@ -18,12 +23,14 @@ module ST = struct
     ?out_shape
     ?init_typ
     ?activation_typ
+    ?hidden_units
     ()
     = {
       in_shape;
       out_shape;
       init_typ;
       activation_typ;
+      hidden_units;
     }
 
   let get_param_in_shape x =
@@ -46,8 +53,15 @@ module ST = struct
     | Some a -> a
     | None   -> failwith "owl_zoo_specs_neural:get_param_activation_typ"
 
+  let get_param_hidden_units x =
+    match x.hidden_units with
+    | Some a -> a
+    | None   -> failwith "owl_zoo_specs_neural:get_param_hidden_units"
+
 end
 
+
+(* Modules to convert between Owl's and Spec's types *)
 
 module Init = struct
 
@@ -140,6 +154,44 @@ module Linear = struct
 end
 
 
+module LinearNoBias = struct
+
+  let to_specs x =
+    let typ = ST.(`LinearNoBias) in
+    let in_shape = NN.LinearNoBias.(x.in_shape) |> Array.to_list in
+    let out_shape = NN.LinearNoBias.(x.out_shape) |> Array.to_list in
+    let init_typ = NN.LinearNoBias.(x.init_typ) |> Init.to_specs in
+    let param = ST.make_param ~in_shape ~out_shape ~init_typ in
+    typ, param ()
+
+  let of_specs x =
+    let out_shape = ST.get_param_out_shape x |> Array.of_list in
+    let init_typ = ST.get_param_init_typ x |> Init.of_specs in
+    let neuron = NN.LinearNoBias.create out_shape.(0) init_typ in
+    NN.(LinearNoBias neuron)
+
+end
+
+(*
+module Recurrent = struct
+
+  let to_specs x =
+    let typ = ST.(`Recurrent) in
+    let in_shape = NN.Recurrent.(x.in_shape) |> Array.to_list in
+    let out_shape = NN.Recurrent.(x.out_shape) |> Array.to_list in
+    let init_typ = NN.Recurrent.(x.init_typ) |> Init.to_specs in
+    let param = ST.make_param ~in_shape ~out_shape ~init_typ in
+    typ, param ()
+
+  let of_specs x =
+    let out_shape = ST.get_param_out_shape x |> Array.of_list in
+    let init_typ = ST.get_param_init_typ x |> Init.of_specs in
+    let neuron = NN.Recurrent.create out_shape.(0) init_typ in
+    NN.(Recurrent neuron)
+
+end
+*)
+
 module Neuron = struct
 
   let to_specs = function
@@ -178,12 +230,24 @@ module Feedforward = struct
     in
     ST.({ name = "Feedforward"; layers })
 
-  let of_specs x = None
+  let of_specs x =
+    let network = FN.create () in
+    ST.(x.layers)
+    |> Array.of_list
+    |> Array.iter (fun l ->
+        let l' = Neuron.of_specs l in
+        FN.add_layer network l'
+      );
+    network
 
   let to_json x = x
     |> to_specs
     |> SJ.string_of_feedforward
     |> Yojson.Safe.prettify
+
+  let of_json x = x
+    |> SJ.feedforward_of_string
+    |> of_specs
 
 end
 
@@ -201,4 +265,7 @@ let make_example_network () =
 
 let _ =
   let nn = make_example_network () in
-  print_endline (Feedforward.to_json nn)
+  let s = Feedforward.to_json nn in
+  print_endline s;
+  let nn = Feedforward.of_json s in
+  FN.print nn
