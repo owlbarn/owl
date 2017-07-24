@@ -257,17 +257,19 @@ module Recurrent = struct
     mutable bh        : t;
     mutable by        : t;
     mutable h         : t;
+    mutable hiddens   : int;
     mutable act       : Activation.typ;
     mutable init_typ  : Init.typ;
     mutable in_shape  : int array;
     mutable out_shape : int array;
   }
 
-  let create ?inputs h o act init_typ =
+  let create ?inputs hiddens o act init_typ =
     let in_shape = match inputs with
       | Some i -> [|i|]
       | None   -> [|0|]
     in
+    let h = hiddens in
     {
       whh       = Mat.empty h h;
       wxh       = Mat.empty 0 h;
@@ -275,6 +277,7 @@ module Recurrent = struct
       bh        = Mat.empty 1 h;
       by        = Mat.empty 1 o;
       h         = Mat.empty 1 h;
+      hiddens   = hiddens;
       act       = act;
       init_typ  = init_typ;
       in_shape  = in_shape;
@@ -288,7 +291,7 @@ module Recurrent = struct
   let init l =
     let i = l.in_shape.(0) in
     let o = l.out_shape.(0) in
-    let h = Mat.row_num l.whh in
+    let h = l.hiddens in
     l.whh <- Init.run l.init_typ h h;
     l.wxh <- Init.run l.init_typ i h;
     l.why <- Init.run l.init_typ h o;

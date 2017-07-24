@@ -43,7 +43,7 @@ type param = {
   ?out_shape      : int list option;
   ?init_typ       : init_typ option;
   ?activation_typ : activation_typ option;
-  ?hidden_units   : int option;
+  ?hiddens        : int option;
 }
 
 type layer = {

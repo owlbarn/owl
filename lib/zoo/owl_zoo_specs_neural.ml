@@ -23,14 +23,14 @@ module ST = struct
     ?out_shape
     ?init_typ
     ?activation_typ
-    ?hidden_units
+    ?hiddens
     ()
     = {
       in_shape;
       out_shape;
       init_typ;
       activation_typ;
-      hidden_units;
+      hiddens;
     }
 
   let get_param_in_shape x =
@@ -53,10 +53,10 @@ module ST = struct
     | Some a -> a
     | None   -> failwith "owl_zoo_specs_neural:get_param_activation_typ"
 
-  let get_param_hidden_units x =
-    match x.hidden_units with
+  let get_param_hiddens x =
+    match x.hiddens with
     | Some a -> a
-    | None   -> failwith "owl_zoo_specs_neural:get_param_hidden_units"
+    | None   -> failwith "owl_zoo_specs_neural:get_param_hiddens"
 
 end
 
@@ -180,17 +180,37 @@ module Recurrent = struct
     let in_shape = NN.Recurrent.(x.in_shape) |> Array.to_list in
     let out_shape = NN.Recurrent.(x.out_shape) |> Array.to_list in
     let init_typ = NN.Recurrent.(x.init_typ) |> Init.to_specs in
-    let param = ST.make_param ~in_shape ~out_shape ~init_typ in
+    let hiddens = NN.Recurrent.(x.hiddens) in
+    let param = ST.make_param ~in_shape ~out_shape ~init_typ ~hiddens in
     typ, param ()
 
   let of_specs x =
     let out_shape = ST.get_param_out_shape x |> Array.of_list in
     let init_typ = ST.get_param_init_typ x |> Init.of_specs in
-    let neuron = NN.Recurrent.create out_shape.(0) init_typ in
+    let hiddens = ST.get_param_hiddens x in
+    let activation_typ = ST.get_param_activation_typ x in
+    let neuron = NN.Recurrent.create hiddens out_shape.(0) activation_typ init_typ in
     NN.(Recurrent neuron)
 
 end
 *)
+
+module LSTM = struct
+
+  let to_specs x =
+    let typ = ST.(`LSTM) in
+    let in_shape = NN.LSTM.(x.in_shape) |> Array.to_list in
+    let out_shape = NN.LSTM.(x.out_shape) |> Array.to_list in
+    let param = ST.make_param ~in_shape ~out_shape in
+    typ, param ()
+
+  let of_specs x =
+    let out_shape = ST.get_param_out_shape x |> Array.of_list in
+    let neuron = NN.LSTM.create out_shape.(0) in
+    NN.(LSTM neuron)
+
+end
+
 
 module Neuron = struct
 
