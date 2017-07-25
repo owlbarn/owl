@@ -26,6 +26,11 @@ let _ =
   M.set x2 [|0;1;1|] 3.;
   M.set x2 [|1;0;0|] 7.
 
+let vec = M.zeros Complex32 [|2;1|]
+let _ =
+   M.set vec [|0;0|] {Complex.re=0.0;im=3.0};
+   M.set vec [|1;0|] {Complex.re=0.0;im=(-4.0)}
+
 (* a module with functions to test *)
 module To_test = struct
 
@@ -130,6 +135,8 @@ module To_test = struct
   let flatten () = M.get (M.flatten x0) [|3|] = 2.
 
   let reshape () = M.get (M.reshape x0 [|2;3;2|]) [|0;1;1|] = 2.
+
+  let l2norm () = M.l2norm vec = 5.
 
   let save_load () =
     M.save x0 "ds_nda.tmp";
@@ -257,6 +264,9 @@ let flatten () =
 let reshape () =
   Alcotest.(check bool) "reshape" true (To_test.reshape ())
 
+let l2norm () =
+  Alcotest.(check bool) "l2norm" true (To_test.l2norm ())
+
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
@@ -300,5 +310,6 @@ let test_set = [
   "transpose", `Slow, transpose;
   "flatten", `Slow, flatten;
   "reshape", `Slow, reshape;
+  "l2norm", `Slow, l2norm;
   "save_load", `Slow, save_load;
 ]
