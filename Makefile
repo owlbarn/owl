@@ -14,6 +14,8 @@ uninstall:
 oasis:
 	oasis setup
 	ocaml setup.ml -configure
+test:
+	ocaml setup.ml -test
 doc:
 	ocaml setup.ml -doc
 clean:

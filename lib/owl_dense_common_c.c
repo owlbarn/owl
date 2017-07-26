@@ -884,14 +884,14 @@ value cp_two_doubles(double d0, double d1)
 #define FUN5 complex_float_l2norm_sqr
 #define INIT float r = 0.
 #define NUMBER complex_float
-#define ACCFN(A,X) (A += X.r * X.r - X.i * X.i + 2 * X.r * X.i)
+#define ACCFN(A,X) (A += X.r * X.r + X.i * X.i)
 #define COPYNUM(X) (caml_copy_double(X))
 #include "owl_dense_common_vec_fold.c"
 
 #define FUN5 complex_double_l2norm_sqr
 #define INIT double r = 0.
 #define NUMBER complex_double
-#define ACCFN(A,X) (A += X.r * X.r - X.i * X.i + 2 * X.r * X.i)
+#define ACCFN(A,X) (A += X.r * X.r + X.i * X.i)
 #define COPYNUM(X) (caml_copy_double(X))
 #include "owl_dense_common_vec_fold.c"
 
