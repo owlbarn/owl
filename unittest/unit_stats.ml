@@ -1,6 +1,7 @@
 module M = Owl_stats
 
-let eps = 0.0000000001
+(* define the test error *)
+let eps = 1e-10
 
 (* a module with functions to test *)
 module To_test = struct

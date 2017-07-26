@@ -5,6 +5,9 @@
 open Bigarray
 module M = Owl_dense_matrix_generic
 
+(* define the test error *)
+let eps = 1e-16
+
 (* make testable *)
 let matrix = Alcotest.testable Owl_pretty.pp_fmat M.equal
 
@@ -189,10 +192,10 @@ let numel () =
   Alcotest.(check int) "numel" 12 (To_test.numel x0)
 
 let get () =
-  Alcotest.(check (float 0.)) "get" 6. (To_test.get x2)
+  Alcotest.(check (float eps)) "get" 6. (To_test.get x2)
 
 let set () =
-  Alcotest.(check (float 0.)) "set" 5. (To_test.set x2)
+  Alcotest.(check (float eps)) "set" 5. (To_test.set x2)
 
 let fill () =
   Alcotest.(check matrix) "fill" x1 (To_test.fill ())
@@ -204,13 +207,13 @@ let col () =
   Alcotest.(check matrix) "col" (M.col x2 1) (To_test.col ())
 
 let trace () =
-  Alcotest.(check (float 0.)) "trace" 15. (To_test.trace x2)
+  Alcotest.(check (float eps)) "trace" 15. (To_test.trace x2)
 
 let add_diag () =
   Alcotest.(check matrix) "add_diag" (M.eye Float64 3) (To_test.add_diag ())
 
 let sum () =
-  Alcotest.(check (float 0.)) "sum" 66. (To_test.sum x2)
+  Alcotest.(check (float eps)) "sum" 66. (To_test.sum x2)
 
 let exists () =
   Alcotest.(check bool) "exits" true (To_test.exists x2)
@@ -273,10 +276,10 @@ let mul_scalar () =
   Alcotest.(check bool) "mul_scalar" true (To_test.mul_scalar ())
 
 let min x =
-  Alcotest.(check (float 0.)) "min" 1. (To_test.min x2)
+  Alcotest.(check (float eps)) "min" 1. (To_test.min x2)
 
 let max x =
-  Alcotest.(check (float 0.)) "max" 12. (To_test.max x2)
+  Alcotest.(check (float eps)) "max" 12. (To_test.max x2)
 
 let min_i x =
   Alcotest.(check bool) "min_i" true (To_test.min_i ())
@@ -288,7 +291,7 @@ let map x =
   Alcotest.(check bool) "map" true (To_test.map ())
 
 let fold () =
-  Alcotest.(check (float 0.)) "fold" (M.sum x2) (To_test.fold x2)
+  Alcotest.(check (float eps)) "fold" (M.sum x2) (To_test.fold x2)
 
 let foldi () =
   Alcotest.(check bool) "foldi" true (To_test.foldi ())
