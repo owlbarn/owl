@@ -25,7 +25,6 @@ if [ ! -f $GISTFILE ]; then
 
     echo "Uploading new gist"
     INFO=`gist -p -d "$NAME" $FILES $GISTFILE`
-    echo $INFO
 
     GIST=`echo $INFO | sed -n 's/^https:\/\/gist.github.com\/*//p'`
     echo $GIST > $GISTFILE
@@ -38,7 +37,8 @@ fi
 
 RESULT=$?
 if [ $RESULT -eq 0 ]; then
-    echo "Succeed! Share your gist at https://???"
+    echo "Gist url: $INFO"
+    echo "Share your gist ($GIST) at https://???"
 else
     echo "Failed!"
 fi
