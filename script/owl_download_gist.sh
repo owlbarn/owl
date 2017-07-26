@@ -3,6 +3,13 @@
 GIST=$1
 DIRNAME=$2
 
+if [ -z $DIRNAME ]; then
+  DIRNAME="$HOME/.owl/zoo"
+fi
+if [ -d $DIRNAME ]; then
+  mkdir -p $DIRNAME
+fi
+
 if [ -z $GIST ]; then
   echo "usage: `basename $0` <gist_id> <dirname>"
   exit 1
