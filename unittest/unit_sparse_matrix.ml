@@ -189,10 +189,10 @@ let transpose () =
   Alcotest.(check bool) "transpose" true (To_test.transpose ())
 
 let get () =
-  Alcotest.(check float) "get" 6. (To_test.get x2)
+  Alcotest.(check (float 0.)) "get" 6. (To_test.get x2)
 
 let set () =
-  Alcotest.(check float) "set" 5. (To_test.set x2)
+  Alcotest.(check (float 0.)) "set" 5. (To_test.set x2)
 
 let fill () =
   Alcotest.(check matrix) "fill" x1 (To_test.fill ())
@@ -204,10 +204,10 @@ let col () =
   Alcotest.(check matrix) "col" (M.col x2 1) (To_test.col ())
 
 let trace () =
-  Alcotest.(check float) "trace" 15. (To_test.trace x2)
+  Alcotest.(check (float 0.)) "trace" 15. (To_test.trace x2)
 
 let sum () =
-  Alcotest.(check float) "sum" 66. (To_test.sum x2)
+  Alcotest.(check (float 0.)) "sum" 66. (To_test.sum x2)
 
 let exists () =
   Alcotest.(check bool) "exits" true (To_test.exists x2)
@@ -276,7 +276,7 @@ let map x =
   Alcotest.(check bool) "map" true (To_test.map ())
 
 let fold () =
-  Alcotest.(check float) "fold" (M.sum x2) (To_test.fold x2)
+  Alcotest.(check (float 0.)) "fold" (M.sum x2) (To_test.fold x2)
 
 let foldi () =
   Alcotest.(check bool) "foldi" true (To_test.foldi ())

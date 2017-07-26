@@ -51,37 +51,37 @@ let dumb () =
   Alcotest.(check bool) "dumb" true (To_test.dumb ())
 
 let sin1 () =
-  Alcotest.(check float) "sin1" (cos 1.) (To_test.sin1 (F 1.))
+  Alcotest.(check (float 0.)) "sin1" (cos 1.) (To_test.sin1 (F 1.))
 
 let sin2 () =
-  Alcotest.(check float) "sin2" (-.(sin 1.)) (To_test.sin2 (F 1.))
+  Alcotest.(check (float 0.)) "sin2" (-.(sin 1.)) (To_test.sin2 (F 1.))
 
 let sin3 () =
-  Alcotest.(check float) "sin3" (-.(cos 1.)) (To_test.sin3 (F 1.))
+  Alcotest.(check (float 0.)) "sin3" (-.(cos 1.)) (To_test.sin3 (F 1.))
 
 let poly1 () =
-  Alcotest.(check float) "poly1" 31. (To_test.poly1 (F 2.))
+  Alcotest.(check (float 0.)) "poly1" 31. (To_test.poly1 (F 2.))
 
 let poly2 () =
-  Alcotest.(check float) "poly2" 30. (To_test.poly2 (F 2.))
+  Alcotest.(check (float 0.)) "poly2" 30. (To_test.poly2 (F 2.))
 
 let poly3 () =
-  Alcotest.(check float) "poly3" 12. (To_test.poly3 (F 2.))
+  Alcotest.(check (float 0.)) "poly3" 12. (To_test.poly3 (F 2.))
 
 let poly4 () =
-  Alcotest.(check float) "poly4" (12. +. 3. *. cos 3. +. 1. /. 9.) (To_test.poly4 (F 3.))
+  Alcotest.(check (float 0.)) "poly4" (12. +. 3. *. cos 3. +. 1. /. 9.) (To_test.poly4 (F 3.))
 
 let poly5 () =
-  Alcotest.(check float) "poly5" (4. -. 3. *. sin 3. -. 2. /. 27.) (To_test.poly5 (F 3.))
+  Alcotest.(check (float 0.)) "poly5" (4. -. 3. *. sin 3. -. 2. /. 27.) (To_test.poly5 (F 3.))
 
 let poly6 () =
-  Alcotest.(check float) "poly6" (-3. *. cos 3. +. 6. /. 81.) (To_test.poly6 (F 3.))
+  Alcotest.(check (float 0.)) "poly6" (-3. *. cos 3. +. 6. /. 81.) (To_test.poly6 (F 3.))
 
 let poly7 () =
-  Alcotest.(check float) "poly7" (16. +. 0.25 -. (Owl.Maths.sech 4.) ** 2.) (To_test.poly7 (F 4.))
+  Alcotest.(check (float 0.)) "poly7" (16. +. 0.25 -. (Owl.Maths.sech 4.) ** 2.) (To_test.poly7 (F 4.))
 
 let poly8 () =
-  Alcotest.(check float) "poly8" (-0.25 /. (4. ** 1.5) +. 2. *. (Owl.Maths.tanh 4.) *. ((Owl.Maths.sech 4.) ** 2.) +. 4.) (To_test.poly8 (F 4.))
+  Alcotest.(check (float 0.)) "poly8" (-0.25 /. (4. ** 1.5) +. 2. *. (Owl.Maths.tanh 4.) *. ((Owl.Maths.sech 4.) ** 2.) +. 4.) (To_test.poly8 (F 4.))
 
 let poly9 () =
   Alcotest.(check bool) "poly9" true (To_test.poly9 (F 4.))
