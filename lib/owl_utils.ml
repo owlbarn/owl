@@ -75,6 +75,15 @@ let array_reverse x =
     x.(d - i) <- t;
   done
 
+(* insert element [a] at position [i] in [x] *)
+let array_insert x i a =
+  let n = Array.length x in
+  assert (i <= n);
+  let y = Array.make (n + 1) a in
+  Array.blit x 0 y 0 i;
+  Array.blit x i y (i + 1) (n - i);
+  y
+
 (* get the suffix a file name *)
 let get_suffix s =
   let parts = Str.(split (regexp "\\.")) s in
@@ -240,7 +249,7 @@ let check_row_vector x =
   if Bigarray.Array2.dim1 x <> 1 then
     failwith "error: the variable is not a row vector"
 
-(* search the list given a value, return the postion of its first occurrence *)
+(* search the list given a value, return the position of its first occurrence *)
 let list_search x l =
   let rec _search x l c =
     match l with

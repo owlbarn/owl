@@ -24,14 +24,17 @@ let write_file f s =
 
 let preprocess script =
   let lines = read_file script in
+  (* FIXME: drop the first line *)
+  let lines = Array.(sub lines 1 (length lines - 1)) in
   (* insert default configurations *)
-  
+  let lines = Array.append [| "#require \"owl\"" |] lines in
+  let lines = Array.append [| "#use \"topfind\"" |] lines in
   (* join all the lines *)
   let s = Array.fold_left (fun a l -> a ^ l ^ "\n") "" lines in
   print_endline s;
   let new_script = "_" ^ (Filename.basename script) in
   write_file new_script s;
-  script
+  new_script
 
 let run script =
   let cmd = "ocaml " ^ script in
