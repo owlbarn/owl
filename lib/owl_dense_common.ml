@@ -813,6 +813,18 @@ let _owl_reci : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   | Complex64 -> owl_complex_double_reci l x y
   | _         -> failwith "_owl_reci: unsupported operation"
 
+external owl_real_float_reci_tol : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_float_reci_tol"
+external owl_real_double_reci_tol : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "real_double_reci_tol"
+external owl_complex_float_reci_tol : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_float_reci_tol"
+external owl_complex_double_reci_tol : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> 'a -> unit = "complex_double_reci_tol"
+
+let _owl_reci_tol : type a b. (a, b) kind -> (a, b) owl_vec_op11 = function
+  | Float32   -> owl_real_float_reci_tol
+  | Float64   -> owl_real_double_reci_tol
+  | Complex32 -> owl_complex_float_reci_tol
+  | Complex64 -> owl_complex_double_reci_tol
+  | _         -> failwith "_owl_reci_tol: unsupported operation"
+
 external owl_real_float_abs : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_abs"
 external owl_real_double_abs : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_abs"
 external owl_complex_float_abs : int -> (Complex.t, complex32_elt) owl_vec -> (float, float32_elt) owl_vec -> unit = "complex_float_abs"

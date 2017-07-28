@@ -278,6 +278,8 @@ val neg : arr -> arr
 
 val reci : arr -> arr
 
+val reci_tol : ?tol:elt -> arr -> arr
+
 val l1norm : arr -> float
 
 val l2norm : arr -> float

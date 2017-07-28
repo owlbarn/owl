@@ -981,6 +981,13 @@ val reci : ('a, 'b) t -> ('a, 'b) t
   result in a new ndarray.
  *)
 
+val reci_tol : ?tol:'a -> ('a, 'b) t -> ('a, 'b) t
+(** [reci_tol ~tol x] computes the reciprocal of every element in [x]. Different
+  from [reci], [reci_tol] sets the elements whose [abs] value smaller than [tol]
+  to zeros. If [tol] is not specified, the defautl [Owl_utils.eps Float32] will
+  be used. For complex numbers, refer to Owl's doc to see how to compare.
+ *)
+
 val signum : (float, 'a) t -> (float, 'a) t
 (** [signum] computes the sign value ([-1] for negative numbers, [0] (or [-0])
   for zero, [1] for positive numbers, [nan] for [nan]).

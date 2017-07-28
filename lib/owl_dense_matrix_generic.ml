@@ -1406,6 +1406,11 @@ let modf x =
   let x, y = Owl_dense_ndarray_generic.modf y in
   of_ndarray x, of_ndarray y
 
+let reci_tol ?tol x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.reci_tol ?tol y in
+  of_ndarray y
+
 (* binary matrix operation *)
 
 let cross_entropy x y =

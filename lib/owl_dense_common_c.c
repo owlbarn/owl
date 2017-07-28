@@ -994,13 +994,13 @@ value cp_two_doubles(double d0, double d1)
 #define FUN4 real_float_reci
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (1.0 / X)
+#define MAPFN(X) (1. / X)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 real_double_reci
 #define NUMBER double
 #define NUMBER1 double
-#define MAPFN(X) (1.0 / X)
+#define MAPFN(X) (1. / X)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 complex_float_reci
@@ -1013,6 +1013,36 @@ value cp_two_doubles(double d0, double d1)
 #define NUMBER _Complex double
 #define NUMBER1 _Complex double
 #define MAPFN(X) (1. / X)
+#include "owl_dense_common_vec_map.c"
+
+// reci_tol
+
+#define FUN17 real_float_reci_tol
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = (fabsf(*X) < a ? 0. : 1. / *X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_reci_tol
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = (fabs(*X) < a ? 0. : 1. / *X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_reci_tol
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = (CLTF(*X,a) ? 0. : 1. / *X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_reci_tol
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = (CLT(*X,a) ? 0. : 1. / *X)
 #include "owl_dense_common_vec_map.c"
 
 // abs

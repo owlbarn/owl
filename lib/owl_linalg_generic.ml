@@ -613,6 +613,23 @@ let linreg x y =
   a, b
 
 
+let pinv ?tol x =
+  let u, s, vt = svd x in
+  (* by default using float32 eps *)
+  let eps = Owl_utils.eps Float32 in
+  let m, n = M.shape x in
+  let a = float_of_int (Pervasives.max m n) in
+  let b = _minmax_real (M.kind x) s |> snd in
+  let tol = match tol with
+    | Some tol -> tol
+    | None     -> eps *. a *. b
+  in
+  (* TODO: use tol *)
+  let s' = M.(reci s |> diagm) in
+  let ut = M.transpose u in
+  let v = M.transpose vt in
+  M.(v *@ s' *@ ut)
+
 
 (* helper functions *)
 

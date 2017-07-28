@@ -430,6 +430,8 @@ val neg : mat -> mat
 
 val reci : mat -> mat
 
+val reci_tol : ?tol:elt -> mat -> mat
+
 val l1norm : mat -> float
 
 val l2norm : mat -> float

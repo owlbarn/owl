@@ -912,6 +912,16 @@ let scalar_div a x =
   let _ = Owl_backend_gsl_linalg.mul_scalar (kind z) x a in
   z
 
+let reci_tol ?tol x =
+  let tol = match tol with
+    | Some t -> t
+    | None   -> _float_typ_elt (kind x) (Owl_utils.eps Float32)
+  in
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_reci_tol (kind x) (numel y) src dst tol in
+  y
 
 (* element-wise comparison functions *)
 

@@ -269,6 +269,8 @@ val neg : arr -> arr
 
 val reci : arr -> arr
 
+val reci_tol : ?tol:elt -> arr -> arr
+
 val signum : arr -> arr
 
 val sqr : arr -> arr

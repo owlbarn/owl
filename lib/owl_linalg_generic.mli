@@ -30,6 +30,9 @@ val inv : ('a, 'b) t -> ('a, 'b) t
   [x *@ x = I] wherein [I] is an identity matrix.
  *)
 
+val pinv : ?tol:float -> ('a, 'b) t -> ('a, 'b) t
+(** [pinv x] *)
+
 val det : ('a, 'b) t -> 'a
 (** [det x] computes the determinant of a square matrix [x]. *)
 

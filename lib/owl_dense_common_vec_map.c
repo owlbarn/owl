@@ -249,7 +249,7 @@ CAMLprim value FUN15(value vN, value vX, value vY, value vZ)
 #endif /* FUN15 */
 
 
-// function to map all elements in x in relation to a then save results to y
+// function to map all elements in [x] w.r.t to [a] then save results to [y]
 #ifdef FUN17
 
 CAMLprim value FUN17(value vN, value vX, value vY, value vA)

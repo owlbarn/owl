@@ -419,6 +419,8 @@ val neg : mat -> mat
 
 val reci : mat -> mat
 
+val reci_tol : ?tol:elt -> mat -> mat
+
 val signum : mat -> mat
 
 val sqr : mat -> mat
