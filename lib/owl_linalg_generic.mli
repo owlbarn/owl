@@ -31,7 +31,10 @@ val inv : ('a, 'b) t -> ('a, 'b) t
  *)
 
 val pinv : ?tol:float -> ('a, 'b) t -> ('a, 'b) t
-(** [pinv x] *)
+(** [pinv x] computes Moore-Penrose pseudoinverse of matrix [x]. [tol] specifies
+  the tolerance, the absolute value of the elements smaller than [tol] will be
+  set to zeros.
+ *)
 
 val det : ('a, 'b) t -> 'a
 (** [det x] computes the determinant of a square matrix [x]. *)

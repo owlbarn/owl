@@ -19,6 +19,8 @@ type int32_mat = (int32, int32_elt) Owl_dense.Matrix.Generic.t
 
 val inv : mat -> mat
 
+val pinv : ?tol:float -> mat -> mat
+
 val det : mat -> elt
 
 val logdet : mat -> elt

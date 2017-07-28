@@ -620,14 +620,14 @@ let pinv ?tol x =
   let m, n = M.shape x in
   let a = float_of_int (Pervasives.max m n) in
   let b = _minmax_real (M.kind x) s |> snd in
-  let tol = match tol with
+  let t = match tol with
     | Some tol -> tol
     | None     -> eps *. a *. b
   in
-  (* TODO: use tol *)
-  let s' = M.(reci s |> diagm) in
-  let ut = M.transpose u in
-  let v = M.transpose vt in
+  let tol = Owl_dense_common._float_typ_elt (M.kind x) t in
+  let s' = M.(reci_tol ~tol s |> diagm) in
+  let ut = M.ctranspose u in
+  let v = M.ctranspose vt in
   M.(v *@ s' *@ ut)
 
 
