@@ -15,7 +15,7 @@ open Owl_neural_graph
 let model_name = "basic_lstm.model"
 let maxlen = 40
 let step = 3
-let fname = "sherlock.txt" (* https://sherlock-holm.es/ascii/ *)
+let fname = "sherlock_short.txt" (* https://sherlock-holm.es/ascii/ *)
 
 (* On 32-bit machine this function can load at most 16M text. For loading
 larger file, see https://rosettacode.org/wiki/Read_entire_file#OCaml *)
@@ -77,40 +77,45 @@ let _ = List.iteri (fun i c ->
 
 (* Generate Dataset *)
 
-let sentences  = [] (* each element is of length maxlen *)
-let next_chars = [] (* each element is the next char of the elem in sentences *)
+let sentences  = ref [] (* each element is of length maxlen *)
+let next_chars = ref []; (* each element is the next char of the elem in sentences *)
 
-(* WARNING: this part AGES. Need a new implementaion *)
+(* Possible inefficiency? *)
 let i = ref 0 in
-while i < (text_len - maxlen) do
-  List.append sentences  [ String.sub text i (i + maxlen - 1) ]
-  List.append next_chars [ String.get text i + maxlen ]
-  i := i + step
-done
+while !i < (text_len - maxlen) do
+  sentences  := List.append !sentences  [ String.sub text !i maxlen ];
+  next_chars := List.append !next_chars [ String.get text (!i + maxlen) ];
+  i := !i + step;
+done;
 
-let sent_len = List.length next_chars
+let sentences = !sentences;
+let next_chars = !next_chars;
+let sent_len = List.length next_chars;
 
 (* Vectorization *)
-Log.info "Vectorization..."
-let X = Dense.Ndarray.S.zeros [|sent_len; maxlen; chars_len|] (* we just need each elem to be bool *)
-let y = Dense.Matrix.S.zeros  sent_len chars_len
+Log.info "Vectorization...";
+let x = Dense.Ndarray.S.zeros [|sent_len; maxlen; chars_len|]; (* we just need each elem to be bool *)
+let y = Dense.Matrix.S.zeros  sent_len chars_len;
 
-List.iteri (fun i, s ->
-    Array.iteri (fun j c ->
-      X.{i, j, Hashtbl.find c2i c} <- 1.
-    ) s;
+List.iteri (fun i s ->
+  String.iteri (fun j c ->
+    (* x.(i, j, (Hashtbl.find c2i c)) <- 1. *)
+    Dense.Ndarray.S.set x [|i; j; (Hashtbl.find c2i c)|] 1.;
+  ) s;
 
-    let ch = List.nth next_chars i in
-    let c_ind = Hashtbl.find c2i ch in
-    y.{i, c_ind } <- 1.
-  ) sentences;
+  let ch = List.nth next_chars i in
+  let c_ind = Hashtbl.find c2i ch in
+  y.{i, c_ind } <- 1.
+) sentences;
+
+(* assert  Dense.Matrix.S.sum = sent_len *)
 
 (* Build a simple LSTM model *)
 
 let nn = input [|maxlen; chars_len|]
-  |> lstm 1208
+  |> lstm 128
   |> fully_connected chars_len ~act_typ:Activation.Softmax
-  |> get_network
+  |> get_network;
 print nn;
 
 (* add an optimizer RMSprop(lr=0.01) ? *)
