@@ -477,6 +477,8 @@ val round : mat -> mat
 
 val trunc : mat -> mat
 
+val fix : mat -> mat
+
 val modf : mat -> mat * mat
 
 val erf : mat -> mat

@@ -1207,6 +1207,19 @@ let _owl_trunc : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
   | Complex64 -> owl_complex_double_trunc l x y
   | _         -> failwith "_owl_trunc: unsupported operation"
 
+external owl_real_float_fix : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_float_fix"
+external owl_real_double_fix : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "real_double_fix"
+external owl_complex_float_fix : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_fix"
+external owl_complex_double_fix : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_fix"
+
+let _owl_fix : type a b. (a, b) kind -> (a, b) owl_vec_op09 = fun k l x y ->
+  match k with
+  | Float32   -> owl_real_float_fix l x y
+  | Float64   -> owl_real_double_fix l x y
+  | Complex32 -> owl_complex_float_fix l x y
+  | Complex64 -> owl_complex_double_fix l x y
+  | _         -> failwith "_owl_fix: unsupported operation"
+
 external owl_complex_float_angle : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_float_angle"
 external owl_complex_double_angle : int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit = "complex_double_angle"
 

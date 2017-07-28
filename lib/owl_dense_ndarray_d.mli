@@ -327,6 +327,8 @@ val round : arr -> arr
 
 val trunc : arr -> arr
 
+val fix : arr -> arr
+
 val modf : arr -> arr * arr
 
 val erf : arr -> arr

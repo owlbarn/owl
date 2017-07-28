@@ -1126,6 +1126,12 @@ val trunc : ('a, 'b) t -> ('a, 'b) t
   result in a new matrix.
  *)
 
+val fix : ('a, 'b) t -> ('a, 'b) t
+(** [fix x]  rounds each element of [x] to the nearest integer toward zero.
+  For positive elements, the behavior is the same as [floor]. For negative ones,
+  the behavior is the same as [ceil].
+ *)
+
 val modf : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** [modf x] performs [modf] over all the elements in [x], the fractal part is
   saved in the first element of the returned tuple whereas the integer part is

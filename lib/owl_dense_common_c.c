@@ -1819,6 +1819,32 @@ value cp_two_doubles(double d0, double d1)
 #define MAPFN(X,Y) Y->r = trunc(X->r); Y->i = trunc(X->i)
 #include "owl_dense_common_vec_map.c"
 
+// fix
+
+#define FUN14 real_float_fix
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = (*X < 0. ? ceilf(*X) : floorf(*X))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 real_double_fix
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = (*X < 0. ? ceil(*X) : floor(*X))
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 complex_float_fix
+#define NUMBER complex_float
+#define NUMBER1 complex_float
+#define MAPFN(X,Y) Y->r = X->r < 0. ? ceilf(X->r) : floorf(X->r); Y->i = X->i < 0. ? ceilf(X->i) : floorf(X->i)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN14 complex_double_fix
+#define NUMBER complex_double
+#define NUMBER1 complex_double
+#define MAPFN(X,Y) Y->r = X->r < 0. ? ceil(X->r) : floor(X->r); Y->i = X->i < 0. ? ceil(X->i) : floor(X->i)
+#include "owl_dense_common_vec_map.c"
+
 // erf
 
 #define FUN4 real_float_erf

@@ -762,6 +762,13 @@ let trunc x =
   let _ = _owl_trunc (kind x) (numel y) src dst in
   y
 
+let fix x =
+  let y = clone x in
+  let src = flatten x |> array1_of_genarray in
+  let dst = flatten y |> array1_of_genarray in
+  let _ = _owl_fix (kind x) (numel y) src dst in
+  y
+
 let angle x =
   let y = clone x in
   let src = flatten x |> array1_of_genarray in
