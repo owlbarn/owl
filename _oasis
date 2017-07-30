@@ -23,7 +23,7 @@ PreBuildCommand:    echo "Start compiling Owl ..."
 PostBuildCommand:   echo "Phew ... it is done!"
 
 # +-------------------------------------------------------------------+
-# | Libraries                                                         |
+# | Core library                                                      |
 # +-------------------------------------------------------------------+
 
 Library owl
@@ -154,6 +154,10 @@ Library owl
                     -lgfortran
 
 
+# +-------------------------------------------------------------------+
+# | Zoo system                                                        |
+# +-------------------------------------------------------------------+
+
 Library owl_zoo
   Path:             zoo
   BuildTools:       ocamlbuild, ocamldoc
@@ -219,7 +223,7 @@ Executable perf_specific_fun
   BuildDepends:   owl
 
 # +-------------------------------------------------------------------+
-# | Examples                                                          |
+# | Executables                                                       |
 # +-------------------------------------------------------------------+
 
 Executable owl
