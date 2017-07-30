@@ -3,6 +3,46 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+
+let write_file f s =
+  let h = open_out f in
+  Printf.fprintf h "%s" s;
+  close_out h
+
+
+let preprocess script =
+  let new_script = "." ^ (Filename.basename script) in
+  let content =
+    "#require \"owl\"\n" ^
+    "#require \"owl_zoo\"\n" ^
+    Printf.sprintf "#use \"%s\"\n" script
+  in
+  write_file new_script content;
+  new_script
+
+
+let run script =
+  let new_script = preprocess script in
+  let cmd = "utop " ^ new_script in
+  Sys.command cmd
+
+
+(*
+let run script =
+  Toploop.initialize_toplevel_env ();
+  Topdirs.dir_use Format.std_formatter "/Users/liang/Desktop/tmp/yyy/a.ml";
+  Toploop.use_file Format.std_formatter script
+  if (Toploop.run_script Format.std_formatter script [|""|]) then
+    print_endline "true"
+  else
+    print_endline "false"
+  let cmd = "ocaml " ^ script in
+  Sys.command cmd *)
+
+
+let _ = run Sys.argv.(1)
+
+(*
 open Owl
 
 let read_file f =
@@ -68,3 +108,4 @@ let _ =
   print_endline "Owl's Zoo System";
   let processed = preprocess Sys.argv.(1) in
   run processed
+*)

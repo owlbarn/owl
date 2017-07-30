@@ -9,8 +9,7 @@ install:
 	ocaml setup.ml -install
 uninstall:
 	ocamlfind remove owl
-	ocamlfind remove owl_topic
-	ocamlfind remove owl_neural
+	ocamlfind remove owl_zoo
 oasis:
 	oasis setup
 	ocaml setup.ml -configure
