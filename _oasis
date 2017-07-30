@@ -158,7 +158,7 @@ Library owl_zoo
   Path:             zoo
   BuildTools:       ocamlbuild, ocamldoc
   Modules:          Owl_zoo_toplevel
-  BuildDepends:     owl, ocaml-compiler-libs.toplevel, findlib
+  BuildDepends:     owl, ocaml-compiler-libs.toplevel
 
 
 # +-------------------------------------------------------------------+
