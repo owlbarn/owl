@@ -22,6 +22,25 @@ let preprocess script =
   tmp_script
 
 
+let remove_gist gist =
+  Log.info "owl_zoo: %s removed" gist;
+  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" ^ gist in
+  let cmd = Printf.sprintf "rm -rf %s" dir in
+  Sys.command cmd |> ignore
+
+
+let upload_gist gist =
+  Log.info "owl_zoo: %s uploading" gist;
+  let cmd = Printf.sprintf "owl_upload_gist.sh %s" gist in
+  Sys.command cmd |> ignore
+
+
+let download_gist gist =
+  Log.info "owl_zoo: %s downloading" gist;
+  let cmd = Printf.sprintf "owl_download_gist.sh %s" gist in
+  Sys.command cmd |> ignore
+
+
 let run args script =
   let new_script = preprocess script in
   let cmd = Printf.sprintf "utop %s %s" args new_script in
@@ -30,8 +49,12 @@ let run args script =
 
 let print_info () =
   let info =
-    "Owl's Zoo System (atop of utop)\n" ^
-    "Usage: owl [options] [script-file]"
+    "Owl's Zoo System\n\n" ^
+    "Usage: \n" ^
+    "\towl [toplevel options] [script-file]\n" ^
+    "\towl -upload [gist-directory]\n" ^
+    "\towl -download [gist-id]\n" ^
+    "\towl -remove [gist-id]\n"
   in
   print_endline info
 

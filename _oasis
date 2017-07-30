@@ -20,7 +20,8 @@ Homepage:     https://github.com/ryanrhymes/owl
 
 PreBuildCommand:    echo "Start compiling Owl ..."
 
-PostBuildCommand:   echo "Phew ... it is done!"
+PostBuildCommand:   cp script/owl_* ${bindir};
+                    echo "Phew ... it is done!"
 
 # +-------------------------------------------------------------------+
 # | Core library                                                      |
@@ -162,7 +163,8 @@ Library owl_zoo
   Path:             zoo
   BuildTools:       ocamlbuild, ocamldoc
   Modules:          Owl_zoo_toplevel
-  BuildDepends:     owl, ocaml-compiler-libs, ocaml-compiler-libs.toplevel
+  BuildDepends:     owl, ocaml-compiler-libs, ocaml-compiler-libs.toplevel,
+                    dolog
 
 
 # +-------------------------------------------------------------------+
