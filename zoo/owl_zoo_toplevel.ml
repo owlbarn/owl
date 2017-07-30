@@ -4,6 +4,9 @@
  *)
 
 
+let deploy_new_gist gist = ()
+
+
 let process_dir_zoo gist =
   let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" ^ gist in
   (* only include ml files *)
