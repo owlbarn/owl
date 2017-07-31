@@ -15,6 +15,8 @@ for DIR in $DIRS; do
   ID=`basename $DIR`
   if [ -f $DIR/readme.md ]; then
     INFO=`head -n 1 $DIR/readme.md`
+  else
+    INFO=""
   fi
   echo -e "$ID\t$INFO"
 done
