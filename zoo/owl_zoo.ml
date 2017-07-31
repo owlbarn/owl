@@ -61,6 +61,20 @@ let update_gist gists =
   ) gists
 
 
+let show_info gist =
+  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" ^ gist in
+  let files = Sys.readdir dir
+    |> Array.fold_left (fun a s -> a ^ s ^ " ") ""
+  in
+  let info =
+    Printf.sprintf "[id]    %s\n" gist ^
+    Printf.sprintf "[path]  %s\n" dir ^
+    Printf.sprintf "[url]   %s\n" ("https://gist.github.com/" ^ gist) ^
+    Printf.sprintf "[files] %s" files
+  in
+  print_endline info
+
+
 let run args script =
   let new_script = preprocess script in
   let cmd = Printf.sprintf "utop %s %s" args new_script in
@@ -76,6 +90,7 @@ let print_info () =
     "  owl -download [gist-id]\t\tdownload code snippet from gist\n" ^
     "  owl -remove [gist-id]\t\t\tremove a cached gist\n" ^
     "  owl -update [gist-ids]\t\tupdate (all if not specified) gists\n" ^
+    "  owl -info [gist-ids]\t\t\tshow the basic information of a gist\n" ^
     "  owl -list\t\t\t\tlist all the cached gists\n" ^
     "  owl -help\t\t\t\tprint out help information\n"
   in
@@ -93,6 +108,8 @@ let _ =
     download_gist Sys.argv.(2)
   else if Sys.argv.(1) = "-remove" then
     remove_gist Sys.argv.(2)
+  else if Sys.argv.(1) = "-info" then
+    show_info Sys.argv.(2)
   else if Sys.argv.(1) = "-list" then
     list_gist ()
   else if Sys.argv.(1) = "-help" then
@@ -110,19 +127,3 @@ let _ =
     in
     run args script |> ignore
   )
-
-
-(*
-let read_file f =
-  let h = open_in f in
-  let s = Utils.Stack.make () in
-  (
-    try while true do
-      let l = input_line h |> String.trim in
-      Utils.Stack.push s l;
-    done with End_of_file -> ()
-  );
-  close_in h;
-  Utils.Stack.to_array s
-
-*)
