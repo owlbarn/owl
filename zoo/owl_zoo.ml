@@ -48,6 +48,19 @@ let list_gist () =
   Sys.command cmd |> ignore
 
 
+let update_gist gists =
+  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
+  let gists =
+    if Array.length gists = 0 then Sys.readdir dir
+    else gists
+  in
+  Log.debug "owl_zoo: updating %i gists" Array.(length gists);
+  Array.iter (fun gist ->
+    let cmd = Printf.sprintf "owl_download_gist.sh %s" gist in
+    Sys.command cmd |> ignore
+  ) gists
+
+
 let run args script =
   let new_script = preprocess script in
   let cmd = Printf.sprintf "utop %s %s" args new_script in
@@ -62,6 +75,7 @@ let print_info () =
     "  owl -upload [gist-directory]\t\tupload code snippet to gist\n" ^
     "  owl -download [gist-id]\t\tdownload code snippet from gist\n" ^
     "  owl -remove [gist-id]\t\t\tremove a cached gist\n" ^
+    "  owl -update [gist-ids]\t\tupdate (all if not specified) gists\n" ^
     "  owl -list\t\t\t\tlist all the cached gists\n" ^
     "  owl -help\t\t\t\tprint out help information\n"
   in
@@ -83,6 +97,11 @@ let _ =
     list_gist ()
   else if Sys.argv.(1) = "-help" then
     print_info ()
+  else if Sys.argv.(1) = "-update" then (
+    let len = Array.length Sys.argv in
+    let args = Array.sub Sys.argv 2 (len - 2) in
+    update_gist args
+  )
   else (
     let len = Array.length Sys.argv in
     let script = Sys.argv.(len - 1) in

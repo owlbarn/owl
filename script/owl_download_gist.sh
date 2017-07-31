@@ -25,6 +25,6 @@ fi
 echo "Downloading the gist to $MODEL_DIR ..."
 mkdir -p $MODEL_DIR
 wget https://gist.github.com/$GIST/download -O $MODEL_DIR/gist.zip
-unzip -j $MODEL_DIR/gist.zip -d $MODEL_DIR
+unzip -o -j $MODEL_DIR/gist.zip -d $MODEL_DIR
 rm $MODEL_DIR/gist.zip
 echo "Succeed!"
