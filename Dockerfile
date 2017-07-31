@@ -17,6 +17,7 @@ ENV CAML_LD_LIBRARY_PATH /root/.opam/4.04.0/lib/stublibs
 
 RUN cd /root && git clone https://github.com/ryanrhymes/eigen.git
 RUN make -C $EIGENPATH oasis && make -C $EIGENPATH && make -C $EIGENPATH install
+RUN opam install ocaml-compiler-libs
 
 RUN apt-get -y install libopenblas-dev liblapacke-dev
 
