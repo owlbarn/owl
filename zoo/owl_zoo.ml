@@ -3,6 +3,21 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Owl
+
+
+let read_file f =
+  let h = open_in f in
+  let s = Utils.Stack.make () in
+  (
+    try while true do
+      let l = input_line h |> String.trim in
+      Utils.Stack.push s l;
+    done with End_of_file -> ()
+  );
+  close_in h;
+  Utils.Stack.to_array s
+
 
 let write_file f s =
   let h = open_out f in
@@ -66,11 +81,20 @@ let show_info gist =
   let files = Sys.readdir dir
     |> Array.fold_left (fun a s -> a ^ s ^ " ") ""
   in
+  let readme = dir ^ "/readme.md" in
+  let info_s =
+    if Sys.file_exists readme then (
+      read_file readme
+      |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
+    )
+    else "missing readme.md"
+  in
   let info =
     Printf.sprintf "[id]    %s\n" gist ^
     Printf.sprintf "[path]  %s\n" dir ^
     Printf.sprintf "[url]   %s\n" ("https://gist.github.com/" ^ gist) ^
-    Printf.sprintf "[files] %s" files
+    Printf.sprintf "[files] %s\n" files ^
+    Printf.sprintf "[info]  %s" info_s
   in
   print_endline info
 
