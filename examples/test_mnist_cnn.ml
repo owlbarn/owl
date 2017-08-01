@@ -105,10 +105,9 @@ let _ =
   try
     start_inference ();
     (* comment out the test phase as you need since it takes some time *)
-    test_mnist ();
+    test_mnist ()
   with
     (* when model file not found *)
     Sys_error _ ->
       Log.info "Pretrained model not found. Start to train.";
-      train_mnist ();
-      start_inference (); (* test_mnist (); *)
+      train_mnist (); start_inference (); test_mnist ()

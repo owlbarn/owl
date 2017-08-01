@@ -71,5 +71,5 @@ let _ =
     inference_lstm ()
   with
     Sys_error _ ->
-    Log.info "Pretrained model not found. Start to train.";
-    train_lstm (); inference_lstm ()
+      Log.info "Pretrained model not found. Start to train.";
+      train_lstm (); inference_lstm ()
