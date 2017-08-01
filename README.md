@@ -6,7 +6,7 @@ The full API documentation is here (built on 1st August, 2017):
 
 * on [cl.cam.ac.uk](http://www.cl.cam.ac.uk/~lw525/owl/)
 
-This [How-To?](https://github.com/ryanrhymes/owl/wiki/How-To%3F) maintains a list of practical tips. The series of tutorials is here (more is coming):
+This [How-To?](https://github.com/ryanrhymes/owl/wiki/How-To%3F) maintains a list of practical tips. The series of tutorials is here (more are coming):
 
 * [Tutorial 1: Basic Data Types](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Basic-Data-Types)
 * [Tutorial 2: N-dimensional Array](https://github.com/ryanrhymes/owl/wiki/Tutorial:-N-Dimensional-Array)
