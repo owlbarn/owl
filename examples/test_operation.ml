@@ -1,4 +1,6 @@
-module M = Owl_dense_matrix_d
+#!/usr/bin/env owl
+
+module M = Owl.Dense.Matrix.D
 module L = Owl_cluster
 
 let test_op s c op =

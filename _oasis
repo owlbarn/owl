@@ -70,6 +70,7 @@ Library owl
                     nlp/Owl_nlp_tfidf,
                     nlp/Owl_nlp_corpus,
                     nlp/Owl_nlp_vocabulary,
+                    nlp/Owl_nlp_utils,
                     ### Neural network ###
                     neural/Owl_neural,
                     neural/Owl_neural_neuron,
@@ -124,7 +125,6 @@ Library owl
                     backend/Owl_backend_gsl_stats,
                     backend/Owl_backend_gsl_linalg,
                     # Others
-                    nlp/Owl_nlp_utils,
                     nlp/Owl_nlp_similarity
   CSources:         owl_macros.h,
                     owl_dense_common_c.c,
@@ -154,7 +154,6 @@ Library owl
                     -lopenblas
                     -lgfortran
 
-
 # +-------------------------------------------------------------------+
 # | Zoo system                                                        |
 # +-------------------------------------------------------------------+
@@ -165,7 +164,6 @@ Library owl_zoo
   Modules:          Owl_zoo_toplevel
   BuildDepends:     owl, ocaml-compiler-libs, ocaml-compiler-libs.toplevel,
                     dolog
-
 
 # +-------------------------------------------------------------------+
 # | Performance tests                                                 |
@@ -233,60 +231,6 @@ Executable owl
   CompiledObject: byte
   MainIs:         owl_zoo.ml
   BuildDepends:   owl, owl_zoo
-
-# Executable test_sgd
-#   Path:           examples
-#   CompiledObject: best
-#   MainIs:         test_sgd.ml
-#   BuildDepends:   owl
-
-# Executable test_kmeans
-#   Path:           examples
-#   CompiledObject: best
-#   MainIs:         test_kmeans.ml
-#   BuildDepends:   owl
-
-# Executable test_log
-#   Path:           examples
-#   CompiledObject: best
-#   MainIs:         test_log.ml
-#   BuildDepends:   owl
-
-# Executable test_svm
-#   Path:           examples
-#   CompiledObject: best
-#   MainIs:         test_svm.ml
-#   BuildDepends:   owl
-
-# Executable test_lda
-#   Path:           examples
-#   CompiledObject: best
-#   MainIs:         test_lda.ml
-#   BuildDepends:   owl
-
-# Executable test_mnist
-#   Path:           examples
-#   CompiledObject: best
-#   MainIs:         test_mnist.ml
-#   BuildDepends:   owl
-
-Executable test_neural
-  Path:           examples
-  CompiledObject: best
-  MainIs:         test_neural.ml
-  BuildDepends:   owl
-
-# Executable test_lstm
-#  Path:           examples
-#  CompiledObject: best
-#  MainIs:         test_lstm.ml
-#  BuildDepends:   owl
-
-# Executable test_tfidf
-#  Path:           examples
-#  CompiledObject: best
-#  MainIs:         test_tfidf.ml
-#  BuildDepends:   owl
 
 # +-------------------------------------------------------------------+
 # | Test                                                              |

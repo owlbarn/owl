@@ -38,7 +38,7 @@ fi
 RESULT=$?
 if [ $RESULT -eq 0 ]; then
     echo "Gist url: $INFO"
-    echo "Share your gist ($GIST) at https://???"
+    echo "Share your gist ($GIST) at https://github.com/ryanrhymes/owl"
 else
     echo "Failed!"
 fi

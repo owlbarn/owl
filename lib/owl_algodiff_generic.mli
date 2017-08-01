@@ -529,6 +529,8 @@ module Make
 
     val set : t -> int -> int -> t -> t
 
+    val row : t -> int -> t
+
     val add : t -> t -> t
 
     val sub : t -> t -> t
@@ -548,6 +550,10 @@ module Make
     val map_by_row : (t -> t) -> t -> t
 
     val draw_rows2 : ?replacement:bool -> t -> t -> int -> t * t * int array
+
+    val of_arrays : elt array array -> t
+
+    val print : t -> unit
 
   end
 

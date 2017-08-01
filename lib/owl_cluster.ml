@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-module MX = Owl_dense_matrix_d
+module MX = Owl_dense.Matrix.D
 module UT = Owl_utils
 
 let _ = Log.color_on (); Log.(set_log_level INFO)
@@ -23,11 +23,12 @@ let kmeans x c =
       iteri_rows (fun i v ->
         iteri_rows (fun j u ->
           let e = sum(pow_scalar (sub v u) 2.) in
-          if e < snd assignment.(i) then assignment.(i) <- (j, e)
+          if Pervasives.(e < snd assignment.(i)) then
+            assignment.(i) <- (j, e)
         ) cpts0
       ) x;
       iteri_rows (fun j u ->
-        let l = UT.array_filteri_v (fun i y -> fst y = j, i) assignment in
+        let l = UT.array_filteri_v (fun i y -> Pervasives.(fst y = j), i) assignment in
         let z = average_rows (rows x l) in
         let _ = copy_row_to z cpts1 j in ()
       ) cpts0;

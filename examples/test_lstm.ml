@@ -1,5 +1,7 @@
+#!/usr/bin/env owl
 (* Test recurrent neural network LSTM *)
 
+open Owl
 open Algodiff.S
 open Owl_neural
 open Owl_neural_graph

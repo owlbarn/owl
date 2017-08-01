@@ -1,3 +1,4 @@
+#!/usr/bin/env owl
 (* Test Topic Module *)
 
 (*
@@ -26,10 +27,10 @@ let test_news_lda () =
 
 
 let test () =
-  let x = Corpus.load "/Users/liang/owl_dataset/news.train.clean.dat" in
+  let x = Corpus.load "/Users/liang/.owl/dataset/news.train.clean.dat" in
   let v = Corpus.get_vocab x |> Vocabulary.get_w2i in
-  let m = Owl_nlp_lda0.init ~iter:20 500 v x in
-  Owl_nlp_lda0.(train SimpleLDA m)
+  let m = Owl_nlp_lda.init ~iter:20 500 v x in
+  Owl_nlp_lda.(train SimpleLDA m)
 
 
 let _ = test ()

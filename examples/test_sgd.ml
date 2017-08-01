@@ -1,6 +1,5 @@
-(** [
-  test stochastic gradient decent algorithm on dense metrix.
-]  *)
+#!/usr/bin/env owl
+(* test stochastic gradient decent algorithm on dense metrix. *)
 
 module MX = Owl.Dense.Matrix.D
 module LL = Owl_optimise

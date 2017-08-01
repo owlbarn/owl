@@ -1,4 +1,5 @@
-(* Test neural network module *)
+#!/usr/bin/env owl
+
 open Owl
 open Owl_neural
 open Algodiff.S

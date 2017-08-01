@@ -1,6 +1,7 @@
+#!/usr/bin/env owl
 (* test neural networks *)
 
-open Owl_algodiff_ad
+open Owl.Algodiff.D
 
 type layer = {
   mutable w : t;
@@ -21,7 +22,7 @@ let create_network l =
   )
 }
 
-let run_layer x l = Maths.((x $@ l.w) + l.b) |> l.a
+let run_layer x l = Maths.((x *@ l.w) + l.b) |> l.a
 
 let run_network x nn = Array.fold_left run_layer x nn.layers
 

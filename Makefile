@@ -2,7 +2,6 @@ all:
 	ocaml setup.ml -build
 	rm -rf examples/*.byte examples/*.native examples/*.tmp
 	rm -rf perftest/*.byte perftest/*.native perftest/*.tmp
-	mv test_* examples/
 	mv perf_* perftest/
 install:
 	ocaml setup.ml -uninstall

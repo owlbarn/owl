@@ -1,4 +1,4 @@
-(* Test neural network on MNIST *)
+#!/usr/bin/env owl
 
 open Owl
 open Algodiff.S

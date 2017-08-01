@@ -1,7 +1,10 @@
+#!/usr/bin/env owl
+
 (* Trains a simple convnet on the MNIST dataset. Network structure adapted from
  * Keras example: https://github.com/fchollet/keras/blob/master/examples/mnist_cnn.py
 *)
 
+open Owl
 open Owl_neural
 open Algodiff.S
 open Owl_neural_neuron
