@@ -7,7 +7,7 @@ open Algodiff.S
 open Owl_neural_neuron
 
 
-let model_name = "mnist2.model"
+let model_name = "mnist.model"
 
 let train_mnist () =
   let open Owl_neural_graph in
@@ -107,7 +107,7 @@ let _ =
     (* comment out the test phase as you need since it takes some time *)
     test_mnist ();
   with
-    (* model file not found *)
+    (* when model file not found *)
     Sys_error _ ->
       Log.info "Pretrained model not found. Start to train.";
       train_mnist ();

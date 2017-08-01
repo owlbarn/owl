@@ -55,7 +55,7 @@ let train_lstm () =
     |> get_network
   in
   print nn;
-  (* using this learning_rate to makes things much faster. *)
+  (* Using this learning_rate to makes things much faster. *)
   let params = Params.config
     ~batch:Batch.Full ~learning_rate:(Learning_Rate.Adagrad 0.01) 500. in
   train ~params nn x y;
@@ -70,4 +70,6 @@ let _ =
   try
     inference_lstm ()
   with
-    _ -> train_lstm (); inference_lstm ()
+    Sys_error _ ->
+    Log.info "Pretrained model not found. Start to train.";
+    train_lstm (); inference_lstm ()
