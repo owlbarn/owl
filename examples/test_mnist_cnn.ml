@@ -1,14 +1,14 @@
 (* Trains a simple convnet on the MNIST dataset. Network structure adapted from
- * Keras example: https://github.com/fchollet/keras/blob/master/examples/mnist_cnn.py*)
+ * Keras example: https://github.com/fchollet/keras/blob/master/examples/mnist_cnn.py
+*)
 
 open Owl_neural
 open Algodiff.S
 open Owl_neural_neuron
 
 
-let model_name = "mnist.model"
+let model_name = "mnist2.model"
 
-(* This training part works pretty well*)
 let train_mnist () =
   let open Owl_neural_graph in
   let nn = input [|28;28;1|]
@@ -66,7 +66,6 @@ let show_mnist ?(num=9) imgs  =
                           @= (mats.(6) @|| mats.(7) @|| mats.(8)))
 
 let start_inference () =
-  (* let _ = train_mnist_keras_cnn_graph () in *)
   let x, _, y = Dataset.load_mnist_test_data () in
   let m = Dense.Matrix.S.row_num x in
   let x = Dense.Matrix.S.to_ndarray x in
@@ -104,8 +103,12 @@ let test_mnist () =
 
 let _ =
   try
-    start_inference (); (* test_mnist (); *)
+    start_inference ();
+    (* comment out the test phase as you need since it takes some time *)
+    test_mnist ();
   with
     (* model file not found *)
-    _ -> train_mnist ();
-        start_inference (); (* test_mnist (); *)
+    Sys_error _ ->
+      Log.info "Pretrained model not found. Start to train.";
+      train_mnist ();
+      start_inference (); (* test_mnist (); *)
