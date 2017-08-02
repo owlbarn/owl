@@ -1,3 +1,6 @@
+#!/usr/bin/env owl
+#mod_use "perf_common.ml"
+
 (* Performance test of a set of specific functions *)
 
 open Bigarray

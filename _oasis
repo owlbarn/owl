@@ -166,63 +166,6 @@ Library owl_zoo
                     dolog
 
 # +-------------------------------------------------------------------+
-# | Performance tests                                                 |
-# +-------------------------------------------------------------------+
-
-Library perf_common
-  Install:          false
-  Path:             perftest
-  Modules:          Perf_common
-
-# Executable perf_dense_real
-#   Path:           perftest
-#   CompiledObject: best
-#   MainIs:         perf_dense_real.ml
-#   BuildDepends:   owl
-
-# Executable perf_sparse_real
-#   Path:           perftest
-#   CompiledObject: best
-#   MainIs:         perf_sparse_real.ml
-#   BuildDepends:   owl
-
-# Executable perf_sparse_complex
-#   Path:           perftest
-#   CompiledObject: best
-#   MainIs:         perf_sparse_complex.ml
-#   BuildDepends:   owl
-
-# Executable perf_dense_ndarray
-#   Path:           perftest
-#   CompiledObject: best
-#   MainIs:         perf_dense_ndarray.ml
-#   BuildDepends:   owl
-
-# Executable perf_dense_matrix
-#   Path:           perftest
-#   CompiledObject: best
-#   MainIs:         perf_dense_matrix.ml
-#   BuildDepends:   owl
-
-# Executable perf_sparse_ndarray
-#   Path:           perftest
-#   CompiledObject: best
-#   MainIs:         perf_sparse_ndarray.ml
-#   BuildDepends:   owl
-
-# Executable perf_sparse_matrix
-#   Path:           perftest
-#   CompiledObject: best
-#   MainIs:         perf_sparse_matrix.ml
-#   BuildDepends:   owl
-
-Executable perf_specific_fun
-  Path:           perftest
-  CompiledObject: best
-  MainIs:         perf_specific_fun.ml
-  BuildDepends:   owl
-
-# +-------------------------------------------------------------------+
 # | Executables                                                       |
 # +-------------------------------------------------------------------+
 

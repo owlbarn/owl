@@ -1,3 +1,6 @@
+#!/usr/bin/env owl
+#mod_use "perf_common.ml"
+
 module M = Owl_sparse_matrix_z
 
 let test_op s c op = Perf_common.test_op s c op

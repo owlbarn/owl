@@ -1,3 +1,6 @@
+#!/usr/bin/env owl
+#mod_use "perf_common.ml"
+
 (* Performance test of Owl_sparse_matrix module *)
 
 open Bigarray

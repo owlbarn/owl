@@ -1,3 +1,5 @@
+#!/usr/bin/env owl
+#mod_use "perf_common.ml"
 (* Performance test of Owl_dense_ndarray module *)
 
 module M = Owl_dense_ndarray_generic
