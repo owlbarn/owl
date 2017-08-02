@@ -1,5 +1,5 @@
 #!/usr/bin/env owl
-#mod_use "perf_common.ml"
+#zoo "5ca2fdebb0ccb9ecee6f4331972a9087"
 
 (* Performance test of a set of specific functions *)
 
@@ -69,9 +69,9 @@ let test_17 _ = Owl_dense_matrix_generic.l2norm x
 
 let test_18 _ = Owl_dense_matrix_generic.l1norm x
 
-let test_19 _ = Owl_dense_matrix_d.softmax x
+let test_19 _ = Owl.Dense.Matrix.D.softmax x
 
-let test_20 _ = Owl_dense_matrix_d.transpose x
+let test_20 _ = Owl.Dense.Matrix.D.transpose x
 
 (* compare the speed between 21 and 22 *)
 
@@ -98,7 +98,7 @@ let test_23 _ =
     Gc.compact()
   done
 
-let test_24 _ = Owl_dense_matrix_d.linspace 0. 100000000. 100000000
+let test_24 _ = Owl.Dense.Matrix.D.linspace 0. 100000000. 100000000
 
 let test_25 _ = Owl_dense_matrix_generic.cast_d2s x
 

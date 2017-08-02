@@ -1,5 +1,5 @@
 #!/usr/bin/env owl
-#mod_use "perf_common.ml"
+#zoo "5ca2fdebb0ccb9ecee6f4331972a9087"
 
 (* Performance test of Owl_sparse_ndarray module *)
 
