@@ -30,9 +30,9 @@ let _ =
   test_op "add_scalar        " c (fun () -> M.add_scalar x 0.5);
   test_op "mul_scalar        " c (fun () -> M.mul_scalar x 10.);
   test_op "is_zero           " c (fun () -> M.is_zero x);
-  test_op "equal          " c (fun () -> M.equal x x);
-  test_op "greater        " c (fun () -> M.greater x x);
-  test_op "greater_equal  " c (fun () -> M.greater_equal x x);
+  test_op "equal             " c (fun () -> M.equal x x);
+  test_op "greater           " c (fun () -> M.greater x x);
+  test_op "greater_equal     " c (fun () -> M.greater_equal x x);
   test_op "clone             " c (fun () -> M.clone x);
   test_op "iteri             " c (fun () -> M.iteri (fun i a -> ()) x);
   test_op "iter              " c (fun () -> M.iter (fun a -> ()) x);

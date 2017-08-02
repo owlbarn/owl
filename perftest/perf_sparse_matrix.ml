@@ -62,9 +62,9 @@ let _ =
   test_op "is_zero           " c (fun () -> M.is_zero x);
   test_op "is_negative       " c (fun () -> M.is_negative x);
   test_op "is_positive       " c (fun () -> M.is_positive x);
-  test_op "equal          " c (fun () -> M.equal x x);
-  test_op "greater_equal  " c (fun () -> M.greater_equal x x);
-  test_op "greater        " c (fun () -> M.greater x x);
+  test_op "equal             " c (fun () -> M.equal x x);
+  test_op "greater_equal     " c (fun () -> M.greater_equal x x);
+  test_op "greater           " c (fun () -> M.greater x x);
   test_op "to_dense          " c (fun () -> M.to_dense x);
   test_op "draw_rows         " c (fun () -> M.draw_rows x 1000);
   test_op "draw_cols         " c (fun () -> M.draw_cols x 1000);
