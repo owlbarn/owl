@@ -27,7 +27,7 @@ let write_file f s =
 
 let preprocess script =
   let prefix = "." ^ (Filename.basename script) in
-  let tmp_script = Filename.temp_file prefix "ml" in
+  let tmp_script = Filename.temp_file prefix ".ml" in
   let content =
     "#require \"owl\"\n" ^
     "#require \"owl_zoo\"\n" ^
@@ -105,6 +105,13 @@ let run args script =
   Sys.command cmd
 
 
+let run_gist gist =
+  let tmp_script = Filename.temp_file gist ".ml" in
+  let content = Printf.sprintf "#zoo \"%s\"\n" gist in
+  write_file tmp_script content;
+  run "" tmp_script |> ignore
+
+
 let print_info () =
   let info =
     "Owl's Zoo System\n\n" ^
@@ -114,6 +121,7 @@ let print_info () =
     "  owl -download [gist-id]\t\tdownload code snippet from gist\n" ^
     "  owl -remove [gist-id]\t\t\tremove a cached gist\n" ^
     "  owl -update [gist-ids]\t\tupdate (all if not specified) gists\n" ^
+    "  owl -run [gist-id]\t\t\trun a self-contained gist\n" ^
     "  owl -info [gist-ids]\t\t\tshow the basic information of a gist\n" ^
     "  owl -list\t\t\t\tlist all the cached gists\n" ^
     "  owl -help\t\t\t\tprint out help information\n"
@@ -134,6 +142,8 @@ let _ =
     remove_gist Sys.argv.(2)
   else if Sys.argv.(1) = "-info" then
     show_info Sys.argv.(2)
+  else if Sys.argv.(1) = "-run" then
+    run_gist Sys.argv.(2)
   else if Sys.argv.(1) = "-list" then
     list_gist ()
   else if Sys.argv.(1) = "-help" then
