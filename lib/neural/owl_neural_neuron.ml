@@ -33,6 +33,8 @@ module Init = struct
     | Tanh            -> Printf.sprintf "tanh"
     | Custom _        -> Printf.sprintf "customise"
 
+    let to_name () = "init"
+
 end
 
 
@@ -64,7 +66,9 @@ module Input = struct
 
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-    Printf.sprintf "Input layer: in/out:[*,%s]\n" in_str
+    Printf.sprintf "    Input : in/out:[*,%s]\n" in_str
+
+  let to_name () = "input"
 
 end
 
@@ -118,8 +122,10 @@ module Activation = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let act_str = activation_to_string l.activation in
-    Printf.sprintf "Activation layer: %s in/out:[*,%s]\n" act_str in_str ^
+    Printf.sprintf "    Activation : %s in/out:[*,%s]\n" act_str in_str ^
     ""
+
+  let to_name () = "activation"
 
 end
 
@@ -181,12 +187,14 @@ module Linear = struct
   let to_string l =
     let wm, wn = l.in_shape.(0), l.out_shape.(0) in
     let bm, bn = 1, l.out_shape.(0) in
-    Printf.sprintf "Linear layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    Printf.sprintf "    Linear : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wm * wn + bn) ^
     Printf.sprintf "    w      : %i x %i\n" wm wn ^
     Printf.sprintf "    b      : %i x %i\n" bm bn ^
     ""
+
+  let to_name () = "linear"
 
 end
 
@@ -238,11 +246,13 @@ module LinearNoBias = struct
 
   let to_string l =
     let wm, wn = l.in_shape.(0), l.out_shape.(0) in
-    Printf.sprintf "LinearNoBias layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
-    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-    Printf.sprintf "    params : %i\n" (wm * wn) ^
-    Printf.sprintf "    w      : %i x %i\n" wm wn ^
+    Printf.sprintf "    LinearNoBias : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    Printf.sprintf "    init         : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params       : %i\n" (wm * wn) ^
+    Printf.sprintf "    w            : %i x %i\n" wm wn ^
     ""
+
+  let to_name () = "linearnobias"
 
 end
 
@@ -354,15 +364,17 @@ module Recurrent = struct
     let whym, whyn = Mat.shape l.why in
     let bhm, bhn = Mat.shape l.bh in
     let bym, byn = Mat.shape l.by in
-    Printf.sprintf "Recurrent layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
-    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-    Printf.sprintf "    params : %i\n" (whhm * whhn + wxhm * wxhn + whym * whyn + bhm * bhn + bym * byn) ^
-    Printf.sprintf "    whh    : %i x %i\n" whhm whhn ^
-    Printf.sprintf "    wxh    : %i x %i\n" wxhm wxhn ^
-    Printf.sprintf "    why    : %i x %i\n" whym whyn ^
-    Printf.sprintf "    bh     : %i x %i\n" bhm bhn ^
-    Printf.sprintf "    by     : %i x %i\n" bym byn ^
-    Printf.sprintf "    act    : %s\n" (Activation.activation_to_string l.act)
+    Printf.sprintf "    Recurrent : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    Printf.sprintf "    init      : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params    : %i\n" (whhm * whhn + wxhm * wxhn + whym * whyn + bhm * bhn + bym * byn) ^
+    Printf.sprintf "    whh       : %i x %i\n" whhm whhn ^
+    Printf.sprintf "    wxh       : %i x %i\n" wxhm wxhn ^
+    Printf.sprintf "    why       : %i x %i\n" whym whyn ^
+    Printf.sprintf "    bh        : %i x %i\n" bhm bhn ^
+    Printf.sprintf "    by        : %i x %i\n" bym byn ^
+    Printf.sprintf "    act       : %s\n" (Activation.activation_to_string l.act)
+
+  let to_name () = "recurrent"
 
 end
 
@@ -541,7 +553,7 @@ module LSTM = struct
     let bcm, bcn = Mat.shape l.bc in
     let bfm, bfn = Mat.shape l.bf in
     let bom, bon = Mat.shape l.bo in
-    Printf.sprintf "LSTM layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    Printf.sprintf "    LSTM   : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wxim*wxin + whim*whin + wxcm*wxcn + whcm*whcn + wxfm*wxfn + whfm*whfn + wxom*wxon + whom*whon + bim*bin + bcm*bcn + bfm*bfn + bom*bon) ^
     Printf.sprintf "    wxi    : %i x %i\n" wxim wxin ^
@@ -557,6 +569,8 @@ module LSTM = struct
     Printf.sprintf "    bf     : %i x %i\n" bfm bfn ^
     Printf.sprintf "    bo     : %i x %i\n" bom bon ^
     ""
+
+  let to_name () = "lstm"
 
 end
 
@@ -700,7 +714,7 @@ module GRU = struct
     let bzm, bzn = Mat.shape l.bz in
     let brm, brn = Mat.shape l.br in
     let bhm, bhn = Mat.shape l.bh in
-    Printf.sprintf "GRU layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    Printf.sprintf "    GRU    : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wxzm*wxzn + whzm*whzn + wxrm*wxrn + whrm*whrn + wxhm*wxhn + whhm*whhn + bzm*bzn + brm*brn + bhm*bhn) ^
     Printf.sprintf "    wxz    : %i x %i\n" wxzm wxzn ^
@@ -713,6 +727,8 @@ module GRU = struct
     Printf.sprintf "    br     : %i x %i\n" brm brn ^
     Printf.sprintf "    bh     : %i x %i\n" bhm bhn ^
     ""
+
+  let to_name () = "gru"
 
 end
 
@@ -801,14 +817,15 @@ module Conv2D = struct
     let bn = Arr.shape l.b in
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Conv2D layer:" ^
-    Printf.sprintf " tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    Conv2D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3) + bn.(0)) ^
     Printf.sprintf "    kernel : %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3) ^
     Printf.sprintf "    b      : %i\n" bn.(0) ^
     Printf.sprintf "    stride : [%i; %i]\n" l.s.(0) l.s.(1) ^
     ""
+
+  let to_name () = "conv2d"
 
 end
 
@@ -889,14 +906,15 @@ module Conv3D = struct
     let bn = Arr.shape l.b in
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Conv3D layer:" ^
-    Printf.sprintf " tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    Conv3D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3)*ws.(4) + bn.(0)) ^
     Printf.sprintf "    kernel : %i x %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3)  ws.(4) ^
     Printf.sprintf "    b      : %i\n" bn.(0) ^
     Printf.sprintf "    stride : [%i; %i; %i]\n" l.s.(0) l.s.(1) l.s.(2) ^
     ""
+
+  let to_name () = "conv3d"
 
 end
 
@@ -972,13 +990,14 @@ module FullyConnected = struct
     let wn = l.out_shape.(0) in
     let bn = l.out_shape.(0) in
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-    Printf.sprintf "FullyConnected layer:" ^
-    Printf.sprintf " tensor in:[*,%s] matrix out:(*,%i)\n" in_str l.out_shape.(0) ^
-    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-    Printf.sprintf "    params : %i\n" (wm * wn + bn) ^
-    Printf.sprintf "    w      : %i x %i\n" wm wn ^
-    Printf.sprintf "    b      : %i x %i\n" 1 bn ^
+    Printf.sprintf "    FullyConnected : tensor in:[*,%s] matrix out:(*,%i)\n" in_str l.out_shape.(0) ^
+    Printf.sprintf "    init           : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params         : %i\n" (wm * wn + bn) ^
+    Printf.sprintf "    w              : %i x %i\n" wm wn ^
+    Printf.sprintf "    b              : %i x %i\n" 1 bn ^
     ""
+
+  let to_name () = "conv3d"
 
 end
 
@@ -1034,12 +1053,13 @@ module MaxPool2D = struct
       | Owl_dense_ndarray_generic.SAME  -> "SAME"
       | Owl_dense_ndarray_generic.VALID -> "VALID"
     in
-    Printf.sprintf "MaxPool2D layer:" ^
-    Printf.sprintf " tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
-    Printf.sprintf "    padding : %s\n" padding_s ^
-    Printf.sprintf "    patch   : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
-    Printf.sprintf "    stride  : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
+    Printf.sprintf "    MaxPool2D : tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
+    Printf.sprintf "    padding   : %s\n" padding_s ^
+    Printf.sprintf "    patch     : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
+    Printf.sprintf "    stride    : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
     ""
+
+  let to_name () = "maxpool2d"
 
 end
 
@@ -1083,12 +1103,13 @@ module AvgPool2D = struct
       | Owl_dense_ndarray_generic.SAME  -> "SAME"
       | Owl_dense_ndarray_generic.VALID -> "VALID"
     in
-    Printf.sprintf "AvgPool2D layer:" ^
-    Printf.sprintf " tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
-    Printf.sprintf "    padding : %s\n" padding_s ^
-    Printf.sprintf "    patch   : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
-    Printf.sprintf "    stride  : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
+    Printf.sprintf "    AvgPool2D : tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
+    Printf.sprintf "    padding   : %s\n" padding_s ^
+    Printf.sprintf "    patch     : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
+    Printf.sprintf "    stride    : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
     ""
+
+  let to_name () = "avgpool2d"
 
 end
 
@@ -1153,9 +1174,11 @@ module Lambda = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Lambda layer: in:[*,%s] out:[*,%s]\n" in_str out_str ^
-    Printf.sprintf "  customised f : t -> t\n" ^
+    Printf.sprintf "    Lambda       : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    customised f : t -> t\n" ^
     ""
+
+  let to_name () = "lambda"
 
 end
 
@@ -1184,8 +1207,10 @@ module Dropout = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Dropout layer: in:[*,%s] out:[*,%s]\n" in_str out_str ^
-    Printf.sprintf "    rate : %g\n" l.rate
+    Printf.sprintf "    Dropout : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    rate    : %g\n" l.rate
+
+  let to_name () = "dropout"
 
 end
 
@@ -1232,8 +1257,10 @@ module Reshape = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Reshape layer: in:[*,%s] out:[*,%s]\n" in_str out_str ^
-    Printf.sprintf "    convert  : %s\n" (string_of_bool l.convert)
+    Printf.sprintf "    Reshape : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    convert : %s\n" (string_of_bool l.convert)
+
+  let to_name () = "reshape"
 
 end
 
@@ -1271,9 +1298,10 @@ module Flatten = struct
 
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-    Printf.sprintf "Flatten layer: in:[*,%s] out:[*,%i]\n" in_str l.out_shape.(0) ^
-    Printf.sprintf "    convert  : %s\n" (string_of_bool l.convert)
+    Printf.sprintf "    Flatten : in:[*,%s] out:[*,%i]\n" in_str l.out_shape.(0) ^
+    Printf.sprintf "    convert : %s\n" (string_of_bool l.convert)
 
+  let to_name () = "flatten"
 
 end
 
@@ -1308,7 +1336,9 @@ module Add = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Add layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+    Printf.sprintf "    Add : in:[*,%s] out:[*,%s]\n" in_str out_str
+
+  let to_name () = "add"
 
 end
 
@@ -1343,7 +1373,9 @@ module Mul = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Multiply layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+    Printf.sprintf "    Multiply : in:[*,%s] out:[*,%s]\n" in_str out_str
+
+  let to_name () = "mul"
 
 end
 
@@ -1372,7 +1404,9 @@ module Dot = struct
   let to_string l =
     let m = l.in_shape.(0) in
     let n = l.in_shape.(1) in
-    Printf.sprintf "Dot layer: in:[*,%i] [%i,%i] out:[*,%i]\n" m m n n
+    Printf.sprintf "    Dot : in:[*,%i] [%i,%i] out:[*,%i]\n" m m n n
+
+  let to_name () = "dot"
 
 end
 
@@ -1407,7 +1441,9 @@ module Max = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Max layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+    Printf.sprintf "    Max : in:[*,%s] out:[*,%s]\n" in_str out_str
+
+  let to_name () = "max"
 
 end
 
@@ -1442,7 +1478,9 @@ module Average = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Average layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+    Printf.sprintf "    Average : in:[*,%s] out:[*,%s]\n" in_str out_str
+
+  let to_name () = "average"
 
 end
 
@@ -1705,6 +1743,30 @@ let to_string = function
   | Dot l            -> Dot.to_string l
   | Max l            -> Max.to_string l
   | Average l        -> Average.to_string l
+
+
+let to_name = function
+  | Input _          -> Input.to_name ()
+  | Linear _         -> Linear.to_name ()
+  | LinearNoBias _   -> LinearNoBias.to_name ()
+  | LSTM _           -> LSTM.to_name ()
+  | GRU _            -> GRU.to_name ()
+  | Recurrent _      -> Recurrent.to_name ()
+  | Conv2D _         -> Conv2D.to_name ()
+  | Conv3D _         -> Conv3D.to_name ()
+  | FullyConnected _ -> FullyConnected.to_name ()
+  | MaxPool2D _      -> MaxPool2D.to_name ()
+  | AvgPool2D _      -> AvgPool2D.to_name ()
+  | Dropout _        -> Dropout.to_name ()
+  | Reshape _        -> Reshape.to_name ()
+  | Flatten _        -> Flatten.to_name ()
+  | Lambda _         -> Lambda.to_name ()
+  | Activation _     -> Activation.to_name ()
+  | Add _            -> Add.to_name ()
+  | Mul _            -> Mul.to_name ()
+  | Dot _            -> Dot.to_name ()
+  | Max _            -> Max.to_name ()
+  | Average _        -> Average.to_name ()
 
 
 
