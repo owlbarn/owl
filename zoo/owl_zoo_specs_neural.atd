@@ -53,6 +53,7 @@ type layer = {
 }
 
 type feedforward = {
-  name   : string;
-  layers : layer list;
+  nnid     : string;
+  layers   : layer list;
+  ?weights : string option;
 }

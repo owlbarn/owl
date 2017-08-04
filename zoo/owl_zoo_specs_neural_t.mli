@@ -26,4 +26,8 @@ type neuron = [
 
 type layer = { name: string; neuron: neuron; param: param }
 
-type feedforward = { name: string; layers: layer list }
+type feedforward = {
+  nnid: string;
+  layers: layer list;
+  weights: string option
+}

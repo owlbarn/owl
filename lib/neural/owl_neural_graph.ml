@@ -22,6 +22,7 @@ type node = {
   mutable network : network;
 }
 and network = {
+  mutable nnid : string;      (* name of the graph network *)
   mutable size : int;         (* size of the graph network *)
   mutable root : node option; (* root of the graph network, i.e. input *)
   mutable topo : node array;  (* nodes sorted in topological order *)
@@ -68,7 +69,12 @@ let bfs_map f x =
 let bfs_array x = bfs_map (fun n -> n) x
 
 
-let make_network size root topo = { size; root; topo; }
+let make_network ?nnid size root topo =
+  let nnid = match nnid with
+    | Some s -> s
+    | None   -> "Graphical network"
+  in
+  { nnid; size; root; topo; }
 
 
 let make_node ?name prev next neuron output network =
@@ -346,7 +352,7 @@ let average ?act_typ input_node =
 (* I/O functions *)
 
 let to_string nn =
-  let s = ref "Graphical network\n\n" in
+  let s = ref (nn.nnid ^ "\n\n") in
   Array.iter (fun n ->
     let t = to_string n.neuron in
     let prev = Array.map (fun n -> n.name) n.prev
@@ -359,11 +365,31 @@ let to_string nn =
       (Printf.sprintf "    prev:[%s] next:[%s]\n\n" prev next)
   ) nn.topo; !s
 
+
 let print nn = to_string nn |> Printf.printf "%s"
+
 
 let save nn f = Owl_utils.marshal_to_file nn f
 
+
 let load f : network = Owl_utils.marshal_from_file f
+
+
+let save_weights nn f =
+  let h = Hashtbl.create nn.size in
+  Array.iter (fun n ->
+    let ws = Owl_neural_neuron.mkpar n.neuron in
+    Hashtbl.add h n.name ws
+  ) nn.topo;
+  Owl_utils.marshal_to_file h f
+
+
+let load_weights nn f =
+  let h = Owl_utils.marshal_from_file f in
+  Array.iter (fun n ->
+    let ws = Hashtbl.find h n.name in
+    Owl_neural_neuron.update n.neuron ws
+  ) nn.topo
 
 
 (* training functions *)
@@ -373,8 +399,10 @@ let train_generic ?params ?(init_model=true) nn x y =
   Owl_neural_optimise.train_nn_generic
     ?params forward backward update save nn x y
 
+
 let train ?params ?init_model nn x y =
   train_generic ?params ?init_model nn (Mat x) (Mat y)
+
 
 let train_cnn ?params ?init_model nn x y =
   train_generic ?params ?init_model nn (Arr x) (Mat y)

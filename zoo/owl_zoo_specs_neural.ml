@@ -242,22 +242,35 @@ module Feedforward = struct
   let to_specs x =
     let layers = FN.(x.layers)
       |> Array.to_list
-      |> List.mapi (fun i l ->
-          let neuron, param = Neuron.to_specs l in
-          let name = Printf.sprintf "%s_%i" (Neuron.to_string l) i in
+      |> List.map (fun l -> FN.(l.neuron))
+      |> List.mapi (fun i n ->
+          let neuron, param = Neuron.to_specs n in
+          let name = Printf.sprintf "%s_%i" (Neuron.to_string n) i in
           ST.({ name; neuron; param })
         )
     in
-    ST.({ name = "Feedforward"; layers })
+    let nnid = FN.(x.nnid) in
+    let weights = Some "" in
+    ST.({ nnid; layers; weights })
 
   let of_specs x =
-    let network = FN.create () in
+    let network = FN.make_network ~nnid:ST.(x.nnid) () in
     ST.(x.layers)
     |> Array.of_list
     |> Array.iter (fun l ->
-        let l' = Neuron.of_specs l in
+        let n' = Neuron.of_specs l in
+        let l' = FN.make_layer ~name:ST.(l.name) network n' in
         FN.add_layer network l'
       );
+    let weights_url =
+      match ST.(x.weights) with
+      | Some s -> s
+      | None   -> ""
+    in
+    if weights_url <> "" then (
+      (* TODO: download the file *)
+      FN.load_weights network weights_url
+    );
     network
 
   let to_json x = x

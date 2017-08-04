@@ -22,8 +22,9 @@ type layer = Owl_zoo_specs_neural_t.layer = {
 }
 
 type feedforward = Owl_zoo_specs_neural_t.feedforward = {
-  name: string;
-  layers: layer list
+  nnid: string;
+  layers: layer list;
+  weights: string option
 }
 
 val write_init_typ :

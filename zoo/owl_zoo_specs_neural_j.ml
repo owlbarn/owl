@@ -22,8 +22,9 @@ type layer = Owl_zoo_specs_neural_t.layer = {
 }
 
 type feedforward = Owl_zoo_specs_neural_t.feedforward = {
-  name: string;
-  layers: layer list
+  nnid: string;
+  layers: layer list;
+  weights: string option
 }
 
 let write_init_typ = (
@@ -2360,6 +2361,136 @@ let read_layer = (
 )
 let layer_of_string s =
   read_layer (Yojson.Safe.init_lexer ()) (Lexing.from_string s)
+let write__7 = (
+  Ag_oj_run.write_option (
+    Yojson.Safe.write_string
+  )
+)
+let string_of__7 ?(len = 1024) x =
+  let ob = Bi_outbuf.create len in
+  write__7 ob x;
+  Bi_outbuf.contents ob
+let read__7 = (
+  fun p lb ->
+    Yojson.Safe.read_space p lb;
+    
+    match Yojson.Safe.start_any_variant p lb with
+      | `Edgy_bracket -> (
+          Yojson.Safe.read_space p lb;
+          let f =
+            fun s pos len ->
+              if pos < 0 || len < 0 || pos + len > String.length s then
+                invalid_arg "out-of-bounds substring position or length";
+              try
+                if len = 4 then (
+                  match String.unsafe_get s pos with
+                    | 'N' -> (
+                        if String.unsafe_get s (pos+1) = 'o' && String.unsafe_get s (pos+2) = 'n' && String.unsafe_get s (pos+3) = 'e' then (
+                          0
+                        )
+                        else (
+                          raise (Exit)
+                        )
+                      )
+                    | 'S' -> (
+                        if String.unsafe_get s (pos+1) = 'o' && String.unsafe_get s (pos+2) = 'm' && String.unsafe_get s (pos+3) = 'e' then (
+                          1
+                        )
+                        else (
+                          raise (Exit)
+                        )
+                      )
+                    | _ -> (
+                        raise (Exit)
+                      )
+                )
+                else (
+                  raise (Exit)
+                )
+              with Exit -> (
+                  Ag_oj_run.invalid_variant_tag p (String.sub s pos len)
+                )
+          in
+          let i = Yojson.Safe.map_ident p f lb in
+          match i with
+            | 0 ->
+              Yojson.Safe.read_space p lb;
+              Yojson.Safe.read_gt p lb;
+              (None : _ option)
+            | 1 ->
+              Ag_oj_run.read_until_field_value p lb;
+              let x = (
+                  Ag_oj_run.read_string
+                ) p lb
+              in
+              Yojson.Safe.read_space p lb;
+              Yojson.Safe.read_gt p lb;
+              (Some x : _ option)
+            | _ -> (
+                assert false
+              )
+        )
+      | `Double_quote -> (
+          let f =
+            fun s pos len ->
+              if pos < 0 || len < 0 || pos + len > String.length s then
+                invalid_arg "out-of-bounds substring position or length";
+              try
+                if len = 4 && String.unsafe_get s pos = 'N' && String.unsafe_get s (pos+1) = 'o' && String.unsafe_get s (pos+2) = 'n' && String.unsafe_get s (pos+3) = 'e' then (
+                  0
+                )
+                else (
+                  raise (Exit)
+                )
+              with Exit -> (
+                  Ag_oj_run.invalid_variant_tag p (String.sub s pos len)
+                )
+          in
+          let i = Yojson.Safe.map_string p f lb in
+          match i with
+            | 0 ->
+              (None : _ option)
+            | _ -> (
+                assert false
+              )
+        )
+      | `Square_bracket -> (
+          Yojson.Safe.read_space p lb;
+          let f =
+            fun s pos len ->
+              if pos < 0 || len < 0 || pos + len > String.length s then
+                invalid_arg "out-of-bounds substring position or length";
+              try
+                if len = 4 && String.unsafe_get s pos = 'S' && String.unsafe_get s (pos+1) = 'o' && String.unsafe_get s (pos+2) = 'm' && String.unsafe_get s (pos+3) = 'e' then (
+                  0
+                )
+                else (
+                  raise (Exit)
+                )
+              with Exit -> (
+                  Ag_oj_run.invalid_variant_tag p (String.sub s pos len)
+                )
+          in
+          let i = Yojson.Safe.map_ident p f lb in
+          match i with
+            | 0 ->
+              Yojson.Safe.read_space p lb;
+              Yojson.Safe.read_comma p lb;
+              Yojson.Safe.read_space p lb;
+              let x = (
+                  Ag_oj_run.read_string
+                ) p lb
+              in
+              Yojson.Safe.read_space p lb;
+              Yojson.Safe.read_rbr p lb;
+              (Some x : _ option)
+            | _ -> (
+                assert false
+              )
+        )
+)
+let _7_of_string s =
+  read__7 (Yojson.Safe.init_lexer ()) (Lexing.from_string s)
 let write__6 = (
   Ag_oj_run.write_list (
     write_layer
@@ -2384,11 +2515,11 @@ let write_feedforward : _ -> feedforward -> _ = (
       is_first := false
     else
       Bi_outbuf.add_char ob ',';
-    Bi_outbuf.add_string ob "\"name\":";
+    Bi_outbuf.add_string ob "\"nnid\":";
     (
       Yojson.Safe.write_string
     )
-      ob x.name;
+      ob x.nnid;
     if !is_first then
       is_first := false
     else
@@ -2398,6 +2529,17 @@ let write_feedforward : _ -> feedforward -> _ = (
       write__6
     )
       ob x.layers;
+    (match x.weights with None -> () | Some x ->
+      if !is_first then
+        is_first := false
+      else
+        Bi_outbuf.add_char ob ',';
+      Bi_outbuf.add_string ob "\"weights\":";
+      (
+        Yojson.Safe.write_string
+      )
+        ob x;
+    );
     Bi_outbuf.add_char ob '}';
 )
 let string_of_feedforward ?(len = 1024) x =
@@ -2408,8 +2550,9 @@ let read_feedforward = (
   fun p lb ->
     Yojson.Safe.read_space p lb;
     Yojson.Safe.read_lcurl p lb;
-    let field_name = ref (Obj.magic (Sys.opaque_identity 0.0)) in
+    let field_nnid = ref (Obj.magic (Sys.opaque_identity 0.0)) in
     let field_layers = ref (Obj.magic (Sys.opaque_identity 0.0)) in
+    let field_weights = ref (None) in
     let bits0 = ref 0 in
     try
       Yojson.Safe.read_space p lb;
@@ -2421,7 +2564,7 @@ let read_feedforward = (
             invalid_arg "out-of-bounds substring position or length";
           match len with
             | 4 -> (
-                if String.unsafe_get s pos = 'n' && String.unsafe_get s (pos+1) = 'a' && String.unsafe_get s (pos+2) = 'm' && String.unsafe_get s (pos+3) = 'e' then (
+                if String.unsafe_get s pos = 'n' && String.unsafe_get s (pos+1) = 'n' && String.unsafe_get s (pos+2) = 'i' && String.unsafe_get s (pos+3) = 'd' then (
                   0
                 )
                 else (
@@ -2436,6 +2579,14 @@ let read_feedforward = (
                   -1
                 )
               )
+            | 7 -> (
+                if String.unsafe_get s pos = 'w' && String.unsafe_get s (pos+1) = 'e' && String.unsafe_get s (pos+2) = 'i' && String.unsafe_get s (pos+3) = 'g' && String.unsafe_get s (pos+4) = 'h' && String.unsafe_get s (pos+5) = 't' && String.unsafe_get s (pos+6) = 's' then (
+                  2
+                )
+                else (
+                  -1
+                )
+              )
             | _ -> (
                 -1
               )
@@ -2445,7 +2596,7 @@ let read_feedforward = (
       (
         match i with
           | 0 ->
-            field_name := (
+            field_nnid := (
               (
                 Ag_oj_run.read_string
               ) p lb
@@ -2458,6 +2609,16 @@ let read_feedforward = (
               ) p lb
             );
             bits0 := !bits0 lor 0x2;
+          | 2 ->
+            if not (Yojson.Safe.read_null_if_possible p lb) then (
+              field_weights := (
+                Some (
+                  (
+                    Ag_oj_run.read_string
+                  ) p lb
+                )
+              );
+            )
           | _ -> (
               Yojson.Safe.skip_json p lb
             )
@@ -2472,7 +2633,7 @@ let read_feedforward = (
               invalid_arg "out-of-bounds substring position or length";
             match len with
               | 4 -> (
-                  if String.unsafe_get s pos = 'n' && String.unsafe_get s (pos+1) = 'a' && String.unsafe_get s (pos+2) = 'm' && String.unsafe_get s (pos+3) = 'e' then (
+                  if String.unsafe_get s pos = 'n' && String.unsafe_get s (pos+1) = 'n' && String.unsafe_get s (pos+2) = 'i' && String.unsafe_get s (pos+3) = 'd' then (
                     0
                   )
                   else (
@@ -2487,6 +2648,14 @@ let read_feedforward = (
                     -1
                   )
                 )
+              | 7 -> (
+                  if String.unsafe_get s pos = 'w' && String.unsafe_get s (pos+1) = 'e' && String.unsafe_get s (pos+2) = 'i' && String.unsafe_get s (pos+3) = 'g' && String.unsafe_get s (pos+4) = 'h' && String.unsafe_get s (pos+5) = 't' && String.unsafe_get s (pos+6) = 's' then (
+                    2
+                  )
+                  else (
+                    -1
+                  )
+                )
               | _ -> (
                   -1
                 )
@@ -2496,7 +2665,7 @@ let read_feedforward = (
         (
           match i with
             | 0 ->
-              field_name := (
+              field_nnid := (
                 (
                   Ag_oj_run.read_string
                 ) p lb
@@ -2509,6 +2678,16 @@ let read_feedforward = (
                 ) p lb
               );
               bits0 := !bits0 lor 0x2;
+            | 2 ->
+              if not (Yojson.Safe.read_null_if_possible p lb) then (
+                field_weights := (
+                  Some (
+                    (
+                      Ag_oj_run.read_string
+                    ) p lb
+                  )
+                );
+              )
             | _ -> (
                 Yojson.Safe.skip_json p lb
               )
@@ -2516,11 +2695,12 @@ let read_feedforward = (
       done;
       assert false;
     with Yojson.End_of_object -> (
-        if !bits0 <> 0x3 then Ag_oj_run.missing_fields p [| !bits0 |] [| "name"; "layers" |];
+        if !bits0 <> 0x3 then Ag_oj_run.missing_fields p [| !bits0 |] [| "nnid"; "layers" |];
         (
           {
-            name = !field_name;
+            nnid = !field_nnid;
             layers = !field_layers;
+            weights = !field_weights;
           }
          : feedforward)
       )

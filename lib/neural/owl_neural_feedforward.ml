@@ -19,13 +19,19 @@ type layer = {
 }
 
 type network = {
+  mutable nnid   : string;
   mutable layers : layer array;
 }
 
 
 (* functions to manipulate the network *)
 
-let create () = { layers = [||]; }
+let make_network ?nnid () =
+  let nnid = match nnid with
+    | Some s -> s
+    | None   -> "Feedforward network"
+  in
+  { nnid; layers = [||]; }
 
 
 let layer_num nn = Array.length nn.layers
@@ -175,7 +181,7 @@ let lambda_layer lambda = Lambda (Lambda.create lambda)
 (* functions to create functional layers *)
 
 let input ?name inputs =
-  let nn = create () in
+  let nn = make_network () in
   Input (Input.create inputs)
   |> make_layer ?name nn
   |> add_layer nn;
@@ -289,7 +295,7 @@ let lambda ?name ?act_typ lambda nn =
 (* I/O functions *)
 
 let to_string nn =
-  let s = ref "Feedforward network\n\n" in
+  let s = ref (nn.nnid ^ "\n\n") in
   for i = 0 to Array.length nn.layers - 1 do
     let name = nn.layers.(i).name in
     let neuron = to_string nn.layers.(i).neuron in
@@ -306,6 +312,23 @@ let save nn f = Owl_utils.marshal_to_file nn f
 let load f : network = Owl_utils.marshal_from_file f
 
 
+let save_weights nn f =
+  let h = Hashtbl.create (layer_num nn) in
+  Array.iter (fun l ->
+    let ws = Owl_neural_neuron.mkpar l.neuron in
+    Hashtbl.add h l.name ws
+  ) nn.layers;
+  Owl_utils.marshal_to_file h f
+
+
+let load_weights nn f =
+  let h = Owl_utils.marshal_from_file f in
+  Array.iter (fun l ->
+    let ws = Hashtbl.find h l.name in
+    Owl_neural_neuron.update l.neuron ws
+  ) nn.layers
+
+
 (* training functions *)
 
 let train_generic ?params ?(init_model=true) nn x y =
@@ -313,11 +336,14 @@ let train_generic ?params ?(init_model=true) nn x y =
   Owl_neural_optimise.train_nn_generic
     ?params forward backward update save nn x y
 
+
 let train ?params ?init_model nn x y =
   train_generic ?params ?init_model nn (Mat x) (Mat y)
 
+
 let train_cnn ?params ?init_model nn x y =
   train_generic ?params ?init_model nn (Arr x) (Mat y)
+
 
 let test_model nn x y =
   Mat.iter2_rows (fun u v ->
