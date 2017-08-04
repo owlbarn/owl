@@ -27,43 +27,16 @@ let _dir_zoo_ocaml dir =
     )
 
 let _dir_zoo_other dir =
+  let _tmp_f = Filename.temp_file _fbase ".ml" in
   Sys.readdir (dir)
-  |> Array.to_list
-  |> List.iter (fun l ->
+  |> Array.map (fun l ->
       let _fpath = Printf.sprintf "%s/%s" dir l in
       let _fbase = Filename.basename _fpath in
-      let _tmp_f = Filename.temp_file _fbase ".ml" in
-      let s =
-        Printf.sprintf "Hashtbl.add Owl_zoo_toplevel._owl_zoo_files \"%s\" \"%s\";;\n" _fbase _fpath
-      in
-      Owl_utils.write_file _tmp_f s;
-      Toploop.use_file Format.std_formatter _tmp_f |> ignore
+      Printf.sprintf "Hashtbl.add Owl_zoo_toplevel._owl_zoo_files \"%s\" \"%s\";\n" _fbase _fpath
     )
-
-
-(* TODO: experimental *)
-let _dir_zoo_json dir =
-  Sys.readdir (dir)
-  |> Array.to_list
-  |> List.filter (fun s -> Filename.check_suffix s "json")
-  |> List.iter (fun l ->
-      let json_f = Printf.sprintf "%s/%s" dir l in
-      let prefix = ".json"
-        |> Filename.(chop_suffix (basename json_f))
-        |> String.uppercase_ascii
-      in
-      let nn_f = Filename.temp_file prefix ".ml" in
-      let s =
-        Printf.sprintf "module %s = struct\n" prefix ^
-        Printf.sprintf "  let load () =\n" ^
-        Printf.sprintf "    let s0 = Owl.Utils.read_file \"%s\" in\n" json_f ^
-        Printf.sprintf "    let s1 = Array.fold_left (fun a s -> a ^ s ^ \"\\n\") \"\" s0 in\n" ^
-        Printf.sprintf "    Owl_zoo_specs_neural.Feedforward.of_json s1\n" ^
-        Printf.sprintf "end\n"
-      in
-      Owl_utils.write_file nn_f s;
-      Toploop.use_file Format.std_formatter nn_f |> ignore
-    )
+  |> Array.fold_left (fun a s -> a ^ s)
+  |> Owl_utils.write_file _tmp_f;
+  Toploop.mod_use_file Format.std_formatter _tmp_f
 
 
 let process_dir_zoo gist =
