@@ -282,6 +282,11 @@ module Feedforward = struct
     |> SJ.feedforward_of_string
     |> of_specs
 
+  let load f =
+    Owl.Utils.read_file f
+    |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
+    |> of_json
+
 end
 
 

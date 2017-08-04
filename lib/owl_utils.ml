@@ -326,6 +326,12 @@ let read_file f =
   Stack.to_array s
 
 
+(* TODO: optimise - read file into a string *)
+let read_file_string f =
+  read_file f
+  |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
+
+
 (* write a file of a given path *)
 let write_file f s =
   let h = open_out f in

@@ -12,6 +12,8 @@ let preprocess script =
   let content =
     "#require \"owl\"\n" ^
     "#require \"owl_zoo\"\n" ^
+    "let _owl_zoo_files = Owl_zoo_toplevel._owl_zoo_files;;\n" ^
+    "let _zoo_load = Owl_zoo_toplevel._zoo_load;;\n" ^
     Printf.sprintf "#use \"%s\"\n" script
   in
   Utils.write_file tmp_script content;
