@@ -16,34 +16,40 @@ let deploy_new_gist dir gist =
   )
 
 
-let _dir_zoo_ocaml dir =
-  Sys.readdir (dir)
+let _dir_zoo_ocaml dir gist =
+  let dir_gist = dir ^ gist in
+  Sys.readdir (dir_gist)
   |> Array.to_list
   |> List.filter (fun s -> Filename.check_suffix s "ml")
   |> List.iter (fun l ->
-      let f = Printf.sprintf "%s/%s" dir l in
+      let f = Printf.sprintf "%s/%s" dir_gist l in
       Toploop.mod_use_file Format.std_formatter f
       |> ignore
     )
 
-let _dir_zoo_other dir =
-  let _tmp_f = Filename.temp_file _fbase ".ml" in
-  Sys.readdir (dir)
+
+let _dir_zoo_other dir gist =
+  let dir_gist = dir ^ gist in
+  let _tmp_f = Filename.temp_file "_dir_zoo_" ".ml" in
+  Sys.readdir (dir_gist)
   |> Array.map (fun l ->
-      let _fpath = Printf.sprintf "%s/%s" dir l in
+      let _fpath = Printf.sprintf "%s/%s" dir_gist l in
       let _fbase = Filename.basename _fpath in
-      Printf.sprintf "Hashtbl.add Owl_zoo_toplevel._owl_zoo_files \"%s\" \"%s\";\n" _fbase _fpath
+      (* add two mappings: "basename" and "gist/basename" *)
+      Printf.sprintf "Hashtbl.add Owl_zoo_toplevel._owl_zoo_files \"%s\" \"%s\";;\n" _fbase _fpath ^
+      Printf.sprintf "Hashtbl.add Owl_zoo_toplevel._owl_zoo_files \"%s/%s\" \"%s\";;\n" gist _fbase _fpath
     )
-  |> Array.fold_left (fun a s -> a ^ s)
+  |> Array.fold_left (fun a s -> a ^ s) ""
   |> Owl_utils.write_file _tmp_f;
   Toploop.mod_use_file Format.std_formatter _tmp_f
+  |> ignore
 
 
 let process_dir_zoo gist =
-  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" ^ gist in
+  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
   deploy_new_gist dir gist;
-  _dir_zoo_ocaml dir;
-  _dir_zoo_other dir
+  _dir_zoo_ocaml dir gist;
+  _dir_zoo_other dir gist
 
 
 let add_dir_zoo () =
@@ -60,8 +66,9 @@ let add_dir_zoo () =
 (* global variable to save zoo file mappings *)
 let _owl_zoo_files : (string, string) Hashtbl.t = Hashtbl.create 512
 
+
 let _zoo_load f = Owl_utils.read_file_string (Hashtbl.find _owl_zoo_files f)
 
 
 (* register zoo directive *)
-let _ = add_dir_zoo (); Hashtbl.add _owl_zoo_files "aaa" "bbb"
+let _ = add_dir_zoo ()
