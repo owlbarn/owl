@@ -16,10 +16,7 @@ let deploy_new_gist dir gist =
   )
 
 
-let process_dir_zoo gist =
-  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" ^ gist in
-  deploy_new_gist dir gist;
-  (* only include ml files *)
+let _dir_zoo_caml dir =
   Sys.readdir (dir)
   |> Array.to_list
   |> List.filter (fun s -> Filename.check_suffix s "ml")
@@ -28,6 +25,40 @@ let process_dir_zoo gist =
       Toploop.mod_use_file Format.std_formatter f
       |> ignore
     )
+
+(* TODO: support other types of network *)
+let _dir_zoo_json dir =
+  Sys.readdir (dir)
+  |> Array.to_list
+  |> List.filter (fun s -> Filename.check_suffix s "json")
+  |> List.iter (fun l ->
+      let json_f = Printf.sprintf "%s/%s" dir l in
+      let prefix = ".json"
+        |> Filename.(chop_suffix (basename json_f))
+        |> String.uppercase_ascii
+      in
+      let nn_f = Filename.temp_file prefix ".ml" in
+      let s =
+        Printf.sprintf "module %s = struct\n" prefix ^
+        Printf.sprintf "  let load () =\n" ^
+        Printf.sprintf "    let s0 = Owl.Utils.read_file \"%s\" in\n" json_f ^
+        Printf.sprintf "    let s1 = Array.fold_left (fun a s -> a ^ s ^ \"\\n\") \"\" s0 in\n" ^
+        Printf.sprintf "    Owl_zoo_specs_neural.Feedforward.of_json s1\n" ^
+        Printf.sprintf "end\n"
+      in
+      Owl_utils.write_file nn_f s;
+      (* print_endline s; *)
+      Toploop.use_file Format.std_formatter nn_f |> ignore
+    )
+
+
+let process_dir_zoo gist =
+  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" ^ gist in
+  deploy_new_gist dir gist;
+  (* include only ml & json files *)
+  _dir_zoo_caml dir;
+  _dir_zoo_json dir
+
 
 
 let add_dir_zoo () =

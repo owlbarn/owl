@@ -83,7 +83,6 @@ Library owl
                     Owl_parallel
   InternalModules:  Owl_cblas_generated,
                     Owl_lapacke_generated,
-                    Owl_conv,
                     Owl_dense_common,
                     Owl_dense_ndarray_a,
                     Owl_dense_ndarray_s,
@@ -161,8 +160,14 @@ Library owl
 Library owl_zoo
   Path:             zoo
   BuildTools:       ocamlbuild, ocamldoc
-  Modules:          Owl_zoo_toplevel
-  BuildDepends:     owl, ocaml-compiler-libs, ocaml-compiler-libs.toplevel,
+  Modules:          Owl_zoo_specs_neural_t,
+                    Owl_zoo_specs_neural_j,
+                    Owl_zoo_specs_neural,
+                    Owl_zoo_toplevel
+  BuildDepends:     owl,
+                    atdgen,
+                    ocaml-compiler-libs,
+                    ocaml-compiler-libs.toplevel,
                     dolog
 
 # +-------------------------------------------------------------------+

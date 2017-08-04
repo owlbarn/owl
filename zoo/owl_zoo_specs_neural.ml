@@ -285,7 +285,7 @@ module Feedforward = struct
 end
 
 
-(* FIXME: for debug purpose *)
+(* FIXME: for debug purpose
 let make_example_network () =
   let open Owl_neural in
   let open Feedforward in
@@ -302,3 +302,4 @@ let _ =
   print_endline s;
   let nn = Feedforward.of_json s in
   FN.print nn
+*)

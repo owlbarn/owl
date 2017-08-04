@@ -6,25 +6,6 @@
 open Owl
 
 
-let read_file f =
-  let h = open_in f in
-  let s = Utils.Stack.make () in
-  (
-    try while true do
-      let l = input_line h |> String.trim in
-      Utils.Stack.push s l;
-    done with End_of_file -> ()
-  );
-  close_in h;
-  Utils.Stack.to_array s
-
-
-let write_file f s =
-  let h = open_out f in
-  Printf.fprintf h "%s" s;
-  close_out h
-
-
 let preprocess script =
   let prefix = "." ^ (Filename.basename script) in
   let tmp_script = Filename.temp_file prefix ".ml" in
@@ -33,7 +14,7 @@ let preprocess script =
     "#require \"owl_zoo\"\n" ^
     Printf.sprintf "#use \"%s\"\n" script
   in
-  write_file tmp_script content;
+  Utils.write_file tmp_script content;
   tmp_script
 
 
@@ -84,7 +65,7 @@ let show_info gist =
   let readme = dir ^ "/readme.md" in
   let info_s =
     if Sys.file_exists readme then (
-      read_file readme
+      Utils.read_file readme
       |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
     )
     else "missing readme.md"
@@ -108,7 +89,7 @@ let run args script =
 let run_gist gist =
   let tmp_script = Filename.temp_file gist ".ml" in
   let content = Printf.sprintf "#zoo \"%s\"\n" gist in
-  write_file tmp_script content;
+  Utils.write_file tmp_script content;
   run "" tmp_script |> ignore
 
 
