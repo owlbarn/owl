@@ -448,21 +448,18 @@ module Graph = struct
     let weights = Some "" in
     ST.({ nnid; root; topo; weights })
 
-  let to_json x = x
-    |> to_specs
-    |> SJ.string_of_graph
-    |> Yojson.Safe.prettify
-
-(*
   let of_specs x =
-    let network = GN.make_network ~nnid:ST.(x.nnid) () in
+    let network = GN.make_network ~nnid:ST.(x.nnid) 0 None [||] in
     ST.(x.topo)
     |> Array.of_list
-    |> Array.iter (fun l ->
-        let n' = Neuron.of_specs l in
-        let l' = GN.make_layer ~name:ST.(l.name) network n' in
-        GN.add_layer network l'
+    |> Array.iter (fun n ->
+        let neuron = Neuron.of_specs n in
+        let prev = ST.(n.prev) |> List.map (GN.get_node network) |> Array.of_list in
+        let name = ST.(n.name) in
+        let node = GN.make_node ~name [||] [||] neuron None network in
+        GN.add_node network prev node |> ignore
       );
+    GN.(network.root <- Some (get_node network ST.(x.root)));
     let weights_url =
       match ST.(x.weights) with
       | Some s -> s
@@ -476,16 +473,11 @@ module Graph = struct
 
   let to_json x = x
     |> to_specs
-    |> SJ.string_of_feedforward
+    |> SJ.string_of_graph
     |> Yojson.Safe.prettify
 
   let of_json x = x
-    |> SJ.feedforward_of_string
+    |> SJ.graph_of_string
     |> of_specs
 
-  let load f =
-    Owl.Utils.read_file f
-    |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
-    |> of_json
-*)
 end

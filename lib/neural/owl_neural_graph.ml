@@ -99,6 +99,12 @@ let get_root nn =
   | None   -> failwith "Owl_neural_graph:get_root"
 
 
+let get_node nn name =
+  let x = Owl_utils.array_filter (fun n -> n.name = name) nn.topo in
+  if Array.length x = 0 then failwith "Owl_neural_graph:get_node"
+  else x.(0)
+
+
 let get_network n = n.network
 
 
@@ -129,14 +135,16 @@ let connect_to_parents parents child =
       connect [|shp0.(0); shp1.(1)|] child.neuron;
     )
   | _     -> (
-      (* for other cases, all inputs must have the same shape *)
-      let shp = parents.(0).neuron |> get_out_shape in
-      Array.iter (fun n ->
-        let shp' = n.neuron |> get_out_shape in
-        assert (shp = shp');
-      ) parents;
-      (* update the child's output shape *)
-      connect shp child.neuron;
+      if Array.length parents > 0 then (
+        (* for other cases, all inputs must have the same shape *)
+        let shp = parents.(0).neuron |> get_out_shape in
+        Array.iter (fun n ->
+          let shp' = n.neuron |> get_out_shape in
+          assert (shp = shp');
+        ) parents;
+        (* update the child's output shape *)
+        connect shp child.neuron
+      )
     ));
   (* connect the child to the parents *)
   Array.iter (fun p ->
@@ -211,11 +219,10 @@ let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
 let input ?name inputs =
   let neuron = Input (Input.create inputs) in
-  let nn = make_network 1 None [||] in
+  let nn = make_network 0 None [||] in
   let n = make_node ?name [||] [||] neuron None nn in
   nn.root <- Some n;
-  nn.topo <- [|n|];
-  n
+  add_node nn [||] n
 
 
 let activation ?name act_typ input_node =
