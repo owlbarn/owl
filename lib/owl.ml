@@ -59,4 +59,19 @@ module Mat = Owl_dense_matrix.D
 module Vec = Owl_dense_vector.D
 
 
+(* set up owl's folder *)
+
+let _ =
+  let home = Sys.getenv "HOME" ^ "/.owl" in
+  let dir_dataset = home ^ "/dataset" in
+  let dir_zoo = home ^ "/zoo" in
+  if Sys.file_exists home = false then
+    Unix.mkdir home 0o755;
+  if Sys.file_exists dir_dataset = false then
+    Unix.mkdir dir_dataset 0o755;
+  if Sys.file_exists dir_zoo = false then
+    Unix.mkdir dir_zoo 0o755
+
+
+
 (* ends here *)

@@ -4,15 +4,13 @@
  *)
 
 
-let deploy_new_gist dir gist =
-  if Sys.file_exists dir = true then (
+let _deploy_gist dir gist =
+  if Sys.file_exists (dir ^ gist) = true then (
     Log.info "owl_zoo: %s cached" gist
   )
   else (
     Log.info "owl_zoo: %s missing" gist;
-    Log.info "owl_zoo: %s downloading" gist;
-    let cmd = Printf.sprintf "owl_download_gist.sh %s" gist in
-    Sys.command cmd |> ignore
+    Owl_zoo_cmd.download_gist gist
   )
 
 
@@ -28,28 +26,10 @@ let _dir_zoo_ocaml dir gist =
     )
 
 
-let _dir_zoo_other dir gist =
-  let dir_gist = dir ^ gist in
-  let _tmp_f = Filename.temp_file "_dir_zoo_" ".ml" in
-  Sys.readdir (dir_gist)
-  |> Array.map (fun l ->
-      let _fpath = Printf.sprintf "%s/%s" dir_gist l in
-      let _fbase = Filename.basename _fpath in
-      (* add two mappings: "basename" and "gist/basename" *)
-      Printf.sprintf "Hashtbl.add Owl_zoo_toplevel._owl_zoo_files \"%s\" \"%s\";;\n" _fbase _fpath ^
-      Printf.sprintf "Hashtbl.add Owl_zoo_toplevel._owl_zoo_files \"%s/%s\" \"%s\";;\n" gist _fbase _fpath
-    )
-  |> Array.fold_left (fun a s -> a ^ s) ""
-  |> Owl_utils.write_file _tmp_f;
-  Toploop.mod_use_file Format.std_formatter _tmp_f
-  |> ignore
-
-
 let process_dir_zoo gist =
   let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
-  deploy_new_gist dir gist;
-  _dir_zoo_ocaml dir gist;
-  _dir_zoo_other dir gist
+  _deploy_gist dir gist;
+  _dir_zoo_ocaml dir gist
 
 
 let add_dir_zoo () =
@@ -61,13 +41,6 @@ let add_dir_zoo () =
   let info = Toploop.({ section; doc }) in
   let dir_fun = Toploop.Directive_string process_dir_zoo in
   Toploop.add_directive "zoo" dir_fun info
-
-
-(* global variable to save zoo file mappings *)
-let _owl_zoo_files : (string, string) Hashtbl.t = Hashtbl.create 512
-
-
-let _zoo_load f = Owl_utils.read_file_string (Hashtbl.find _owl_zoo_files f)
 
 
 (* register zoo directive *)
