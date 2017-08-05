@@ -1,6 +1,8 @@
 (* Auto-generated from "owl_zoo_specs_neural.atd" *)
 
 
+type padding = [ `SAME | `VALID ]
+
 type init_typ = [
     `Uniform of (float * float)
   | `Gaussian of (float * float)
@@ -15,7 +17,11 @@ type param = {
   out_shape: int list option;
   init_typ: init_typ option;
   activation_typ: activation_typ option;
-  hiddens: int option
+  hiddens: int option;
+  padding: padding option;
+  kernel: int list option;
+  stride: int list option;
+  rate: float option
 }
 
 type neuron = [
@@ -24,10 +30,17 @@ type neuron = [
   | `Flatten | `Lambda | `Activation | `Add | `Mul | `Dot | `Max | `Average
 ]
 
-type layer = { name: string; neuron: neuron; param: param }
+type node = {
+  name: string;
+  neuron: neuron;
+  param: param;
+  prev: string list;
+  next: string list
+}
 
-type feedforward = {
+type graph = {
   nnid: string;
-  layers: layer list;
+  root: string;
+  topo: node list;
   weights: string option
 }

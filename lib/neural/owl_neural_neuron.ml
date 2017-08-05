@@ -745,7 +745,8 @@ module Conv2D = struct
   type neuron_typ = {
     mutable w         : t;
     mutable b         : t;
-    mutable s         : int array;
+    mutable kernel    : int array;
+    mutable stride    : int array;
     mutable padding   : padding;
     mutable init_typ  : Init.typ;
     mutable in_shape  : int array;
@@ -761,7 +762,8 @@ module Conv2D = struct
     {
       w         = Arr.empty [|w;h;i;o|];
       b         = Arr.empty [|o|];
-      s         = stride;
+      kernel    = kernel;
+      stride    = stride;
       padding   = padding;
       init_typ  = Init.Uniform (0.,1.);
       in_shape  = in_shape;
@@ -773,11 +775,11 @@ module Conv2D = struct
     assert (out_shape.(2) = l.in_shape.(2));
     l.in_shape.(0) <- out_shape.(0);
     l.in_shape.(1) <- out_shape.(1);
-    let kernel_shape = Arr.shape l.w in
+    let kernel_shape = l.kernel in
     let out_cols, out_rows =
       Owl_dense_ndarray_generic.calc_conv2d_output_shape
       l.padding l.in_shape.(0) l.in_shape.(1) kernel_shape.(0) kernel_shape.(1)
-      l.s.(0) l.s.(1)
+      l.stride.(0) l.stride.(1)
     in
     l.out_shape.(0) <- out_cols;
     l.out_shape.(1) <- out_rows
@@ -810,7 +812,7 @@ module Conv2D = struct
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
 
-  let run x l = Maths.((conv2d ~padding:l.padding x l.w l.s) + l.b)
+  let run x l = Maths.((conv2d ~padding:l.padding x l.w l.stride) + l.b)
 
   let to_string l =
     let ws = Arr.shape l.w in
@@ -822,7 +824,7 @@ module Conv2D = struct
     Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3) + bn.(0)) ^
     Printf.sprintf "    kernel : %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3) ^
     Printf.sprintf "    b      : %i\n" bn.(0) ^
-    Printf.sprintf "    stride : [%i; %i]\n" l.s.(0) l.s.(1) ^
+    Printf.sprintf "    stride : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
     ""
 
   let to_name () = "conv2d"
@@ -836,7 +838,8 @@ module Conv3D = struct
   type neuron_typ = {
     mutable w         : t;
     mutable b         : t;
-    mutable s         : int array;
+    mutable kernel    : int array;
+    mutable stride    : int array;
     mutable padding   : padding;
     mutable init_typ  : Init.typ;
     mutable in_shape  : int array;
@@ -852,7 +855,8 @@ module Conv3D = struct
     {
       w         = Arr.empty [|w;h;d;i;o|];
       b         = Arr.empty [|o|];
-      s         = stride;
+      kernel    = kernel;
+      stride    = stride;
       padding   = padding;
       init_typ  = Init.Uniform (0.,1.);
       in_shape  = in_shape;
@@ -865,12 +869,12 @@ module Conv3D = struct
     l.in_shape.(0) <- out_shape.(0);
     l.in_shape.(1) <- out_shape.(1);
     l.in_shape.(2) <- out_shape.(2);
-    let kernel_shape = Arr.shape l.w in
+    let kernel_shape = l.kernel in
     let out_cols, out_rows, out_dpts =
       Owl_dense_ndarray_generic.calc_conv3d_output_shape
       l.padding l.in_shape.(0) l.in_shape.(1) l.in_shape.(2)
       kernel_shape.(0) kernel_shape.(1) kernel_shape.(2)
-      l.s.(0) l.s.(1) l.s.(2)
+      l.stride.(0) l.stride.(1) l.stride.(2)
     in
     l.out_shape.(0) <- out_cols;
     l.out_shape.(1) <- out_rows;
@@ -899,7 +903,7 @@ module Conv3D = struct
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
 
-  let run x l = Maths.((conv3d ~padding:l.padding x l.w l.s) + l.b)
+  let run x l = Maths.((conv3d ~padding:l.padding x l.w l.stride) + l.b)
 
   let to_string l =
     let ws = Arr.shape l.w in
@@ -911,7 +915,7 @@ module Conv3D = struct
     Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3)*ws.(4) + bn.(0)) ^
     Printf.sprintf "    kernel : %i x %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3)  ws.(4) ^
     Printf.sprintf "    b      : %i\n" bn.(0) ^
-    Printf.sprintf "    stride : [%i; %i; %i]\n" l.s.(0) l.s.(1) l.s.(2) ^
+    Printf.sprintf "    stride : [%i; %i; %i]\n" l.stride.(0) l.stride.(1) l.stride.(2) ^
     ""
 
   let to_name () = "conv3d"
@@ -997,7 +1001,7 @@ module FullyConnected = struct
     Printf.sprintf "    b              : %i x %i\n" 1 bn ^
     ""
 
-  let to_name () = "conv3d"
+  let to_name () = "fullyconnected"
 
 end
 
@@ -1055,7 +1059,7 @@ module MaxPool2D = struct
     in
     Printf.sprintf "    MaxPool2D : tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
     Printf.sprintf "    padding   : %s\n" padding_s ^
-    Printf.sprintf "    patch     : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
+    Printf.sprintf "    kernel    : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
     Printf.sprintf "    stride    : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
     ""
 
@@ -1105,7 +1109,7 @@ module AvgPool2D = struct
     in
     Printf.sprintf "    AvgPool2D : tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
     Printf.sprintf "    padding   : %s\n" padding_s ^
-    Printf.sprintf "    patch     : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
+    Printf.sprintf "    kernel    : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
     Printf.sprintf "    stride    : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
     ""
 

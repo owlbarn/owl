@@ -161,10 +161,10 @@ Library owl_zoo
   Path:             zoo
   BuildTools:       ocamlbuild, ocamldoc
   Modules:          Owl_zoo_cmd,
+                    Owl_zoo_toplevel,
                     Owl_zoo_specs_neural_t,
                     Owl_zoo_specs_neural_j,
-                    Owl_zoo_specs_neural,
-                    Owl_zoo_toplevel
+                    Owl_zoo_specs_neural
   BuildDepends:     owl,
                     atdgen,
                     ocaml-compiler-libs,

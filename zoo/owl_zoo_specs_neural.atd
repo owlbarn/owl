@@ -1,3 +1,4 @@
+(* basic type definition of neurons *)
 
 type neuron = [
   | Input
@@ -38,22 +39,34 @@ type init_typ = [
   | Tanh
 ]
 
+type padding = [ SAME | VALID ]
+
 type param = {
   ?in_shape       : int list option;
   ?out_shape      : int list option;
   ?init_typ       : init_typ option;
   ?activation_typ : activation_typ option;
   ?hiddens        : int option;
+  ?padding        : padding option;
+  ?kernel         : int list option;
+  ?stride         : int list option;
+  ?rate           : float option;
 }
 
-type layer = {
+
+(* definition of graphical network *)
+
+type node = {
   name   : string;
   neuron : neuron;
   param  : param;
+  prev   : string list;
+  next   : string list;
 }
 
-type feedforward = {
+type graph = {
   nnid     : string;
-  layers   : layer list;
+  root     : string;
+  topo     : node list;
   ?weights : string option;
 }

@@ -7,7 +7,6 @@
 (* Module aliases *)
 
 module NN = Owl_neural_neuron
-module FN = Owl_neural_feedforward
 module GN = Owl_neural_graph
 module SJ = Owl_zoo_specs_neural_j
 
@@ -24,6 +23,10 @@ module ST = struct
     ?init_typ
     ?activation_typ
     ?hiddens
+    ?padding
+    ?kernel
+    ?stride
+    ?rate
     ()
     = {
       in_shape;
@@ -31,6 +34,10 @@ module ST = struct
       init_typ;
       activation_typ;
       hiddens;
+      padding;
+      kernel;
+      stride;
+      rate;
     }
 
   let get_param_in_shape x =
@@ -58,10 +65,50 @@ module ST = struct
     | Some a -> a
     | None   -> failwith "owl_zoo_specs_neural:get_param_hiddens"
 
+  let get_param_padding x =
+    match x.padding with
+    | Some a -> a
+    | None   -> failwith "owl_zoo_specs_neural:get_param_padding"
+
+  let get_param_kernel x =
+    match x.kernel with
+    | Some a -> a
+    | None   -> failwith "owl_zoo_specs_neural:get_param_kernel"
+
+  let get_param_stride x =
+    match x.stride with
+    | Some a -> a
+    | None   -> failwith "owl_zoo_specs_neural:get_param_stride"
+
+  let get_param_rate x =
+    match x.rate with
+    | Some a -> a
+    | None   -> failwith "owl_zoo_specs_neural:get_param_rate"
+
 end
 
 
 (* Modules to convert between Owl's and Spec's types *)
+
+
+module Padding = struct
+
+  let to_specs x =
+    let open Owl_dense.Ndarray.Generic in
+    match x with
+    | SAME   -> ST.(`SAME)
+    | VALID -> ST.(`VALID)
+
+
+  let of_specs x =
+    let open Owl_dense.Ndarray.Generic in
+    match x with
+    | ST.(`SAME)  -> SAME
+    | ST.(`VALID) -> VALID
+    | _           -> failwith "owl_zoo_specs_neural:padding:of_specs"
+
+end
+
 
 module Init = struct
 
@@ -212,55 +259,209 @@ module LSTM = struct
 end
 
 
+module GRU = struct
+
+  let to_specs x =
+    let typ = ST.(`GRU) in
+    let in_shape = NN.GRU.(x.in_shape) |> Array.to_list in
+    let out_shape = NN.GRU.(x.out_shape) |> Array.to_list in
+    let param = ST.make_param ~in_shape ~out_shape in
+    typ, param ()
+
+  let of_specs x =
+    let out_shape = ST.get_param_out_shape x |> Array.of_list in
+    let neuron = NN.GRU.create out_shape.(0) in
+    NN.(GRU neuron)
+
+end
+
+
+module Conv2D = struct
+
+  let to_specs x =
+    let typ = ST.(`Conv2D) in
+    let init_typ = NN.Conv2D.(x.init_typ) |> Init.to_specs in
+    let in_shape = NN.Conv2D.(x.in_shape) |> Array.to_list in
+    let out_shape = NN.Conv2D.(x.out_shape) |> Array.to_list in
+    let padding = NN.Conv2D.(x.padding) |> Padding.to_specs in
+    let kernel = NN.Conv2D.(x.kernel) |> Array.to_list in
+    let stride = NN.Conv2D.(x.stride) |> Array.to_list in
+    let param = ST.make_param ~init_typ ~in_shape ~out_shape ~padding ~kernel ~stride in
+    typ, param ()
+
+  let of_specs x =
+    let padding = ST.get_param_padding x |> Padding.of_specs in
+    let kernel = ST.get_param_kernel x |> Array.of_list in
+    let stride = ST.get_param_stride x |> Array.of_list in
+    let neuron = NN.Conv2D.create padding kernel stride in
+    NN.(Conv2D neuron)
+
+end
+
+
+module Conv3D = struct
+
+  let to_specs x =
+    let typ = ST.(`Conv3D) in
+    let init_typ = NN.Conv3D.(x.init_typ) |> Init.to_specs in
+    let in_shape = NN.Conv3D.(x.in_shape) |> Array.to_list in
+    let out_shape = NN.Conv3D.(x.out_shape) |> Array.to_list in
+    let padding = NN.Conv3D.(x.padding) |> Padding.to_specs in
+    let kernel = NN.Conv3D.(x.kernel) |> Array.to_list in
+    let stride = NN.Conv3D.(x.stride) |> Array.to_list in
+    let param = ST.make_param ~init_typ ~in_shape ~out_shape ~padding ~kernel ~stride in
+    typ, param ()
+
+  let of_specs x =
+    let padding = ST.get_param_padding x |> Padding.of_specs in
+    let kernel = ST.get_param_kernel x |> Array.of_list in
+    let stride = ST.get_param_stride x |> Array.of_list in
+    let neuron = NN.Conv3D.create padding kernel stride in
+    NN.(Conv3D neuron)
+
+end
+
+
+module FullyConnected = struct
+
+  let to_specs x =
+    let typ = ST.(`FullyConnected) in
+    let init_typ = NN.FullyConnected.(x.init_typ) |> Init.to_specs in
+    let in_shape = NN.FullyConnected.(x.in_shape) |> Array.to_list in
+    let out_shape = NN.FullyConnected.(x.out_shape) |> Array.to_list in
+    let param = ST.make_param ~init_typ ~in_shape ~out_shape in
+    typ, param ()
+
+  let of_specs x =
+    let out_shape = ST.get_param_out_shape x |> Array.of_list in
+    let init_typ = ST.get_param_init_typ x |> Init.of_specs in
+    let neuron = NN.FullyConnected.create out_shape.(0) init_typ in
+    NN.(FullyConnected neuron)
+
+end
+
+
+module MaxPool2D = struct
+
+  let to_specs x =
+    let typ = ST.(`MaxPool2D) in
+    let in_shape = NN.MaxPool2D.(x.in_shape) |> Array.to_list in
+    let out_shape = NN.MaxPool2D.(x.out_shape) |> Array.to_list in
+    let padding = NN.MaxPool2D.(x.padding) |> Padding.to_specs in
+    let kernel = NN.MaxPool2D.(x.kernel) |> Array.to_list in
+    let stride = NN.MaxPool2D.(x.stride) |> Array.to_list in
+    let param = ST.make_param ~in_shape ~out_shape ~padding ~kernel ~stride in
+    typ, param ()
+
+  let of_specs x =
+    let padding = ST.get_param_padding x |> Padding.of_specs in
+    let kernel = ST.get_param_kernel x |> Array.of_list in
+    let stride = ST.get_param_stride x |> Array.of_list in
+    let neuron = NN.MaxPool2D.create padding kernel stride in
+    NN.(MaxPool2D neuron)
+
+end
+
+
+module Dropout = struct
+
+  let to_specs x =
+    let typ = ST.(`Dropout) in
+    let rate = NN.Dropout.(x.rate) in
+    let in_shape = NN.Dropout.(x.in_shape) |> Array.to_list in
+    let out_shape = NN.Dropout.(x.out_shape) |> Array.to_list in
+    let param = ST.make_param ~rate ~in_shape ~out_shape in
+    typ, param ()
+
+  let of_specs x =
+    let rate = ST.get_param_rate x in
+    let neuron = NN.Dropout.create rate in
+    NN.(Dropout neuron)
+
+end
+
+
 module Neuron = struct
 
   let to_specs = function
-    | NN.Input x      -> Input.to_specs x
-    | NN.Activation x -> Activation.to_specs x
-    | NN.Linear x     -> Linear.to_specs x
-    | _               -> failwith "owl_zoo_specs_neural:neuron:to_specs"
+    | NN.Input x          -> Input.to_specs x
+    | NN.Activation x     -> Activation.to_specs x
+    | NN.Linear x         -> Linear.to_specs x
+    | NN.LinearNoBias x   -> LinearNoBias.to_specs x
+    | NN.LSTM x           -> LSTM.to_specs x
+    | NN.GRU x            -> GRU.to_specs x
+    | NN.Conv2D x         -> Conv2D.to_specs x
+    | NN.Conv3D x         -> Conv3D.to_specs x
+    | NN.FullyConnected x -> FullyConnected.to_specs x
+    | NN.MaxPool2D x      -> MaxPool2D.to_specs x
+    | NN.Dropout x        -> Dropout.to_specs x
+    | _                   -> failwith "owl_zoo_specs_neural:neuron:to_specs"
 
   let of_specs x =
     let open ST in
     match x.neuron with
-    | `Input      -> Input.of_specs x.param
-    | `Activation -> Activation.of_specs x.param
-    | `Linear     -> Linear.of_specs x.param
-    | _           -> failwith "owl_zoo_specs_neural:neuron:of_specs"
+    | `Input          -> Input.of_specs x.param
+    | `Activation     -> Activation.of_specs x.param
+    | `Linear         -> Linear.of_specs x.param
+    | `LinearNoBias   -> LinearNoBias.of_specs x.param
+    | `LSTM           -> LSTM.of_specs x.param
+    | `GRU            -> GRU.of_specs x.param
+    | `Conv2D         -> Conv2D.of_specs x.param
+    | `Conv3D         -> Conv3D.of_specs x.param
+    | `FullyConnected -> FullyConnected.of_specs x.param
+    | `MaxPool2D      -> MaxPool2D.of_specs x.param
+    | `Dropout        -> Dropout.of_specs x.param
+    | _               -> failwith "owl_zoo_specs_neural:neuron:of_specs"
 
   let to_string = function
-    | NN.Input x      -> "input"
-    | NN.Activation x -> "activation"
-    | NN.Linear x     -> "linear"
+    | NN.Input x          -> "input"
+    | NN.Activation x     -> "activation"
+    | NN.Linear x         -> "linear"
+    | NN.LinearNoBias x   -> "linearnobias"
+    | NN.LSTM x           -> "lstm"
+    | NN.GRU x            -> "gru"
+    | NN.Conv2D x         -> "conv2d"
+    | NN.Conv3D x         -> "conv3d"
+    | NN.FullyConnected x -> "fullyconnected"
+    | NN.MaxPool2D x      -> "maxpool2d"
+    | NN.Dropout x        -> "dropout"
     | _               -> failwith "owl_zoo_specs_neural:neuron:to_string"
 
 end
 
 
-module Feedforward = struct
+module Graph = struct
 
   let to_specs x =
-    let layers = FN.(x.layers)
+    let topo = GN.(x.topo)
       |> Array.to_list
-      |> List.map (fun l -> FN.(l.neuron))
-      |> List.mapi (fun i n ->
-          let neuron, param = Neuron.to_specs n in
-          let name = Printf.sprintf "%s_%i" (Neuron.to_string n) i in
-          ST.({ name; neuron; param })
+      |> List.map (fun n ->
+          let neuron, param = Neuron.to_specs GN.(n.neuron) in
+          let name = GN.(n.name) in
+          let prev = GN.(n.prev) |> Array.map (fun m -> GN.(m.name)) |> Array.to_list in
+          let next = GN.(n.next) |> Array.map (fun m -> GN.(m.name)) |> Array.to_list in
+          ST.({ name; neuron; param; prev; next })
         )
     in
-    let nnid = FN.(x.nnid) in
+    let nnid = GN.(x.nnid) in
+    let root = GN.((get_root x).name) in
     let weights = Some "" in
-    ST.({ nnid; layers; weights })
+    ST.({ nnid; root; topo; weights })
 
+  let to_json x = x
+    |> to_specs
+    |> SJ.string_of_graph
+    |> Yojson.Safe.prettify
+
+(*
   let of_specs x =
-    let network = FN.make_network ~nnid:ST.(x.nnid) () in
-    ST.(x.layers)
+    let network = GN.make_network ~nnid:ST.(x.nnid) () in
+    ST.(x.topo)
     |> Array.of_list
     |> Array.iter (fun l ->
         let n' = Neuron.of_specs l in
-        let l' = FN.make_layer ~name:ST.(l.name) network n' in
-        FN.add_layer network l'
+        let l' = GN.make_layer ~name:ST.(l.name) network n' in
+        GN.add_layer network l'
       );
     let weights_url =
       match ST.(x.weights) with
@@ -269,7 +470,7 @@ module Feedforward = struct
     in
     if weights_url <> "" then (
       (* TODO: download the file *)
-      FN.load_weights network weights_url
+      GN.load_weights network weights_url
     );
     network
 
@@ -286,25 +487,5 @@ module Feedforward = struct
     Owl.Utils.read_file f
     |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
     |> of_json
-
-end
-
-
-(* FIXME: for debug purpose
-let make_example_network () =
-  let open Owl_neural in
-  let open Feedforward in
-  let nn = input [|784|]
-    |> linear 300 ~act_typ:Activation.Tanh
-    |> linear 10  ~act_typ:Activation.Softmax
-  in
-  nn
-
-
-let _ =
-  let nn = make_example_network () in
-  let s = Feedforward.to_json nn in
-  print_endline s;
-  let nn = Feedforward.of_json s in
-  FN.print nn
 *)
+end
