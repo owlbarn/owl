@@ -20,6 +20,7 @@ RUN make -C $EIGENPATH oasis && make -C $EIGENPATH && make -C $EIGENPATH install
 
 RUN opam update
 RUN opam install ocaml-compiler-libs
+RUN opam install atdgen
 
 RUN apt-get -y install libopenblas-dev liblapacke-dev
 
