@@ -320,27 +320,41 @@ module type NdarraySig = sig
 
   type padding
 
+  val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
+
   val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
-
-  val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
-
-  val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
 
   val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
 
-  val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
-
-  val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
+  val max_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
 
   val max_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
 
   val max_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
 
+  val avg_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
+
   val avg_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
 
   val avg_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
 
+  val conv1d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val conv1d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+  val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+  val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+  val max_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
   val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+  val avg_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
   val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
@@ -434,6 +448,9 @@ module Make
     | Add_Row_C_D of t * t * int
     | Get_Row_D   of t * int
     | Of_Rows_D   of t array
+    | Conv1D_D_D  of t * t * int array
+    | Conv1D_D_C  of t * t * int array
+    | Conv1D_C_D  of t * t * int array
     | Conv2D_D_D  of t * t * int array
     | Conv2D_D_C  of t * t * int array
     | Conv2D_C_D  of t * t * int array
@@ -443,8 +460,10 @@ module Make
     | Reshape_D   of t
     | Mat2Arr_D   of t
     | Arr2Mat_D   of t
-    | Maxpool_D   of t * padding * int array * int array
-    | Avgpool_D   of t * padding * int array * int array
+    | Maxpool1D_D   of t * padding * int array * int array
+    | Maxpool2D_D   of t * padding * int array * int array
+    | Avgpool1D_D   of t * padding * int array * int array
+    | Avgpool2D_D   of t * padding * int array * int array
 
 
   (* generate global tags *)
@@ -1251,8 +1270,43 @@ module Make
         DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai)
       | _                  -> error_uniop "of_rows a.(0)" a.(0)
 
-    (* NOTE: these fucntions are for neural network. I might introduce Arr as a
-      type constructor in the future to support ndarray natively in Algodiff. *)
+    (* NOTE: these fucntions are for neural network. There are many restrictions
+      at the moment. E.g. they do not support higher-order derivatives, and some
+      do not support forward mode, so use them when you know what you are doing.
+     *)
+
+    (* a:input; b:kernel; s:stride *)
+    and conv1d ?padding a b s =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> Arr A.(conv1d ?padding a b s)
+        | _            -> error_binop "conv1d" a b
+      in
+      let fd a b = conv1d ?padding a b s in
+      (* FIXME: df_da, df_db, df_dab are not correct ... do not use *)
+      let df_da cp ap at = failwith "conv1d:df_da" in
+      let df_db cp bp bt = failwith "conv1d:df_db" in
+      let df_dab cp ap at bp bt = failwith "conv1d:df_dab" in
+      let r_d_d a b = Conv1D_D_D (a, b, s) in
+      let r_d_c a b = Conv1D_D_C (a, b, s) in
+      let r_c_d a b = Conv1D_C_D (a, b, s) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and conv1d_backward_input a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.conv1d_backward_input a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride; o:output' *)
+    and conv1d_backward_kernel a b s o =
+      let a = unpack_arr a in
+      let b = unpack_arr b in
+      let o = unpack_arr o in
+      A.conv1d_backward_kernel a b s o
+      |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
     and conv2d ?padding a b s =
@@ -1354,14 +1408,32 @@ module Make
       op_d_d a ff fd df r
 
     (* a:input; b:kernel; s:stride *)
+    and max_pool1d padding a b s =
+      let ff = function
+        | Arr a    -> Arr A.(max_pool1d ~padding a b s)
+        | _        -> error_uniop "max_pool1d" a
+      in
+      let fd a = max_pool1d padding a b s in
+      let df cp ap at = failwith "max_pool1d:df" in
+      let r a = Maxpool1D_D (a, padding, b, s) in
+      op_d_d a ff fd df r
+
+    (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
+    and max_pool1d_backward p a b s o =
+      let a = unpack_arr a in
+      let o = unpack_arr o in
+      A.max_pool1d_backward p a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride *)
     and max_pool2d padding a b s =
       let ff = function
         | Arr a    -> Arr A.(max_pool2d ~padding a b s)
         | _        -> error_uniop "max_pool2d" a
       in
       let fd a = max_pool2d padding a b s in
-      let df cp ap at = max_pool2d padding at b s in
-      let r a = Maxpool_D (a, padding, b, s) in
+      let df cp ap at = failwith "max_pool2d:df" in
+      let r a = Maxpool2D_D (a, padding, b, s) in
       op_d_d a ff fd df r
 
     (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
@@ -1372,14 +1444,32 @@ module Make
       |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
+    and avg_pool1d padding a b s =
+      let ff = function
+        | Arr a    -> Arr A.(avg_pool1d ~padding a b s)
+        | _        -> error_uniop "avg_pool1d" a
+      in
+      let fd a = avg_pool1d padding a b s in
+      let df cp ap at = failwith "avg_pool1d:df" in
+      let r a = Avgpool2D_D (a, padding, b, s) in
+      op_d_d a ff fd df r
+
+    (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
+    and avg_pool1d_backward p a b s o =
+      let a = unpack_arr a in
+      let o = unpack_arr o in
+      A.avg_pool1d_backward p a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride *)
     and avg_pool2d padding a b s =
       let ff = function
         | Arr a    -> Arr A.(avg_pool2d ~padding a b s)
         | _        -> error_uniop "avg_pool2d" a
       in
       let fd a = avg_pool2d padding a b s in
-      let df cp ap at = avg_pool2d padding at b s in
-      let r a = Avgpool_D (a, padding, b, s) in
+      let df cp ap at = failwith "avg_pool2d:df" in
+      let r a = Avgpool2D_D (a, padding, b, s) in
       op_d_d a ff fd df r
 
     (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
@@ -1415,83 +1505,88 @@ module Make
             af := !af + 1;
             if !af = 1 then (
               match ao with
-              | Noop                   -> reset t
-              | Add_D_D (a, b)         -> reset (a :: b :: t)
-              | Add_D_C (a, _)         -> reset (a :: t)
-              | Add_C_D (_, b)         -> reset (b :: t)
-              | Sub_D_D (a, b)         -> reset (a :: b :: t)
-              | Sub_D_C (a, _)         -> reset (a :: t)
-              | Sub_C_D (_, b)         -> reset (b :: t)
-              | Mul_D_D (a, b)         -> reset (a :: b :: t)
-              | Mul_D_C (a, _)         -> reset (a :: t)
-              | Mul_C_D (_, b)         -> reset (b :: t)
-              | Div_D_D (a, b)         -> reset (a :: b :: t)
-              | Div_D_C (a, _)         -> reset (a :: t)
-              | Div_C_D (_, b)         -> reset (b :: t)
-              | Pow_D_D (a, b)         -> reset (a :: b :: t)
-              | Pow_D_C (a, _)         -> reset (a :: t)
-              | Pow_C_D (_, b)         -> reset (b :: t)
-              | Atan2_D_D (a, b)       -> reset (a :: b :: t)
-              | Atan2_D_C (a, _)       -> reset (a :: t)
-              | Atan2_C_D (_, b)       -> reset (b :: t)
-              | Neg_D a                -> reset (a :: t)
-              | Abs_D a                -> reset (a :: t)
-              | Signum_D a             -> reset (a :: t)
-              | Floor_D a              -> reset (a :: t)
-              | Ceil_D a               -> reset (a :: t)
-              | Round_D a              -> reset (a :: t)
-              | Sqr_D a                -> reset (a :: t)
-              | Sqrt_D a               -> reset (a :: t)
-              | Log_D a                -> reset (a :: t)
-              | Log2_D a               -> reset (a :: t)
-              | Log10_D a              -> reset (a :: t)
-              | Exp_D a                -> reset (a :: t)
-              | Sin_D a                -> reset (a :: t)
-              | Cos_D a                -> reset (a :: t)
-              | Tan_D a                -> reset (a :: t)
-              | Sinh_D a               -> reset (a :: t)
-              | Cosh_D a               -> reset (a :: t)
-              | Tanh_D a               -> reset (a :: t)
-              | Asin_D a               -> reset (a :: t)
-              | Acos_D a               -> reset (a :: t)
-              | Atan_D a               -> reset (a :: t)
-              | Asinh_D a              -> reset (a :: t)
-              | Acosh_D a              -> reset (a :: t)
-              | Atanh_D a              -> reset (a :: t)
-              | Get_Item (a, _, _)     -> reset (a :: t)
-              | SetI_D_D (a, _, _, b)  -> reset (a :: b :: t)
-              | SetI_D_C (a, _, _, _)  -> reset (a :: t)
-              | SetI_C_D (_, _, _, b)  -> reset (b :: t)
-              | AddI_D_D (a, _, _, b)  -> reset (a :: b :: t)
-              | AddI_D_C (a, _, _, _)  -> reset (a :: t)
-              | AddI_C_D (_, _, _, b)  -> reset (b :: t)
-              | Sum_D a                -> reset (a :: t)
-              | Dot_D_D (a, b)         -> reset (a :: b :: t)
-              | Dot_D_C (a, _)         -> reset (a :: t)
-              | Dot_C_D (_, b)         -> reset (b :: t)
-              | Trans_D a              -> reset (a :: t)
-              | L1Norm_D a             -> reset (a :: t)
-              | L2Norm_D a             -> reset (a :: t)
-              | L2NormS_D a            -> reset (a :: t)
-              | Sigmoid_D a            -> reset (a :: t)
-              | Relu_D a               -> reset (a :: t)
-              | Inv_D a                -> reset (a :: t)
-              | Add_Row_D_D (a, b, _)  -> reset (a :: b :: t)
-              | Add_Row_D_C (a, _, _)  -> reset (a :: t)
-              | Add_Row_C_D (_, b, _)  -> reset (b :: t)
-              | Get_Row_D (a, _)       -> reset (a :: t)
-              | Of_Rows_D a            -> reset (List.append (Array.to_list a) t)
-              | Conv2D_D_D (a, b, _)   -> reset (a :: b :: t)
-              | Conv2D_D_C (a, _, _)   -> reset (a :: t)
-              | Conv2D_C_D (_, b, _)   -> reset (b :: t)
-              | Conv3D_D_D (a, b, _)   -> reset (a :: b :: t)
-              | Conv3D_D_C (a, _, _)   -> reset (a :: t)
-              | Conv3D_C_D (_, b, _)   -> reset (b :: t)
-              | Reshape_D a            -> reset (a :: t)
-              | Mat2Arr_D a            -> reset (a :: t)
-              | Arr2Mat_D a            -> reset (a :: t)
-              | Maxpool_D (a, _, _, _) -> reset (a :: t)
-              | Avgpool_D (a, _, _, _) -> reset (a :: t)
+              | Noop                     -> reset t
+              | Add_D_D (a, b)           -> reset (a :: b :: t)
+              | Add_D_C (a, _)           -> reset (a :: t)
+              | Add_C_D (_, b)           -> reset (b :: t)
+              | Sub_D_D (a, b)           -> reset (a :: b :: t)
+              | Sub_D_C (a, _)           -> reset (a :: t)
+              | Sub_C_D (_, b)           -> reset (b :: t)
+              | Mul_D_D (a, b)           -> reset (a :: b :: t)
+              | Mul_D_C (a, _)           -> reset (a :: t)
+              | Mul_C_D (_, b)           -> reset (b :: t)
+              | Div_D_D (a, b)           -> reset (a :: b :: t)
+              | Div_D_C (a, _)           -> reset (a :: t)
+              | Div_C_D (_, b)           -> reset (b :: t)
+              | Pow_D_D (a, b)           -> reset (a :: b :: t)
+              | Pow_D_C (a, _)           -> reset (a :: t)
+              | Pow_C_D (_, b)           -> reset (b :: t)
+              | Atan2_D_D (a, b)         -> reset (a :: b :: t)
+              | Atan2_D_C (a, _)         -> reset (a :: t)
+              | Atan2_C_D (_, b)         -> reset (b :: t)
+              | Neg_D a                  -> reset (a :: t)
+              | Abs_D a                  -> reset (a :: t)
+              | Signum_D a               -> reset (a :: t)
+              | Floor_D a                -> reset (a :: t)
+              | Ceil_D a                 -> reset (a :: t)
+              | Round_D a                -> reset (a :: t)
+              | Sqr_D a                  -> reset (a :: t)
+              | Sqrt_D a                 -> reset (a :: t)
+              | Log_D a                  -> reset (a :: t)
+              | Log2_D a                 -> reset (a :: t)
+              | Log10_D a                -> reset (a :: t)
+              | Exp_D a                  -> reset (a :: t)
+              | Sin_D a                  -> reset (a :: t)
+              | Cos_D a                  -> reset (a :: t)
+              | Tan_D a                  -> reset (a :: t)
+              | Sinh_D a                 -> reset (a :: t)
+              | Cosh_D a                 -> reset (a :: t)
+              | Tanh_D a                 -> reset (a :: t)
+              | Asin_D a                 -> reset (a :: t)
+              | Acos_D a                 -> reset (a :: t)
+              | Atan_D a                 -> reset (a :: t)
+              | Asinh_D a                -> reset (a :: t)
+              | Acosh_D a                -> reset (a :: t)
+              | Atanh_D a                -> reset (a :: t)
+              | Get_Item (a, _, _)       -> reset (a :: t)
+              | SetI_D_D (a, _, _, b)    -> reset (a :: b :: t)
+              | SetI_D_C (a, _, _, _)    -> reset (a :: t)
+              | SetI_C_D (_, _, _, b)    -> reset (b :: t)
+              | AddI_D_D (a, _, _, b)    -> reset (a :: b :: t)
+              | AddI_D_C (a, _, _, _)    -> reset (a :: t)
+              | AddI_C_D (_, _, _, b)    -> reset (b :: t)
+              | Sum_D a                  -> reset (a :: t)
+              | Dot_D_D (a, b)           -> reset (a :: b :: t)
+              | Dot_D_C (a, _)           -> reset (a :: t)
+              | Dot_C_D (_, b)           -> reset (b :: t)
+              | Trans_D a                -> reset (a :: t)
+              | L1Norm_D a               -> reset (a :: t)
+              | L2Norm_D a               -> reset (a :: t)
+              | L2NormS_D a              -> reset (a :: t)
+              | Sigmoid_D a              -> reset (a :: t)
+              | Relu_D a                 -> reset (a :: t)
+              | Inv_D a                  -> reset (a :: t)
+              | Add_Row_D_D (a, b, _)    -> reset (a :: b :: t)
+              | Add_Row_D_C (a, _, _)    -> reset (a :: t)
+              | Add_Row_C_D (_, b, _)    -> reset (b :: t)
+              | Get_Row_D (a, _)         -> reset (a :: t)
+              | Of_Rows_D a              -> reset (List.append (Array.to_list a) t)
+              | Conv1D_D_D (a, b, _)     -> reset (a :: b :: t)
+              | Conv1D_D_C (a, _, _)     -> reset (a :: t)
+              | Conv1D_C_D (_, b, _)     -> reset (b :: t)
+              | Conv2D_D_D (a, b, _)     -> reset (a :: b :: t)
+              | Conv2D_D_C (a, _, _)     -> reset (a :: t)
+              | Conv2D_C_D (_, b, _)     -> reset (b :: t)
+              | Conv3D_D_D (a, b, _)     -> reset (a :: b :: t)
+              | Conv3D_D_C (a, _, _)     -> reset (a :: t)
+              | Conv3D_C_D (_, b, _)     -> reset (b :: t)
+              | Reshape_D a              -> reset (a :: t)
+              | Mat2Arr_D a              -> reset (a :: t)
+              | Arr2Mat_D a              -> reset (a :: t)
+              | Maxpool1D_D (a, _, _, _) -> reset (a :: t)
+              | Maxpool2D_D (a, _, _, _) -> reset (a :: t)
+              | Avgpool1D_D (a, _, _, _) -> reset (a :: t)
+              | Avgpool2D_D (a, _, _, _) -> reset (a :: t)
               )
             else reset t
             )
@@ -1533,84 +1628,89 @@ module Make
             af := S.(!af - 1);
             if !af = 0 then (
               match ao with
-              | Noop                   -> push t
-              | Add_D_D (a, b)         -> push ((!aa, a) :: (!aa, b) :: t)
-              | Add_D_C (a, _)         -> push ((!aa, a) :: t)
-              | Add_C_D (_, b)         -> push ((!aa, b) :: t)
-              | Sub_D_D (a, b)         -> push ((!aa, a) :: (neg !aa, b) :: t)
-              | Sub_D_C (a, _)         -> push ((!aa, a) :: t)
-              | Sub_C_D (_, b)         -> push ((neg !aa, b) :: t)
-              | Mul_D_D (a, b)         -> push (((!aa * primal b), a) :: ((!aa * primal a), b) :: t)
-              | Mul_D_C (a, b)         -> push (((!aa * b), a) :: t)
-              | Mul_C_D (a, b)         -> push (((!aa * a), b) :: t)
-              | Div_D_D (a, b)         -> push (((!aa / (primal b)), a) :: ((!aa * ((neg (primal a)) / ((primal b) * (primal b)))), b) :: t)
-              | Div_D_C (a, b)         -> push (((!aa / b), a) :: t)
-              | Div_C_D (a, b)         -> push (((!aa * ((neg a) / ((primal b) * (primal b)))), b) :: t)
-              | Pow_D_D (a, b)         -> push (((!aa * ((primal a) ** ((primal b) - (F 1.))) * (primal b)), a) :: ((!aa * ((primal a) ** (primal b)) * log (primal a)), b) :: t)
-              | Pow_D_C (a, b)         -> push (((!aa * ((primal a) ** (b - (F 1.))) * b), a) :: t)
-              | Pow_C_D (a, b)         -> push (((!aa * (a ** (primal b)) * log a), b) :: t)
-              | Atan2_D_D (a, b)       -> let d = (sqr (primal a)) + (sqr (primal b)) in push (((!aa * (primal b) / d), a) :: ((!aa * (neg (primal a)) / d), b) :: t)
-              | Atan2_D_C (a, b)       -> push (((!aa * b / ((sqr (primal a)) + (sqr b))), a) :: t)
-              | Atan2_C_D (a, b)       -> push (((!aa * (neg a) / ((sqr a) + (sqr (primal b)))), b) :: t)
-              | Neg_D a                -> push ((neg !aa, a) :: t)
-              | Abs_D a                -> push (((!aa * signum (primal a)), a) :: t)
-              | Signum_D a             -> push ((zero a, a) :: t)
-              | Floor_D a              -> push ((zero a, a) :: t)
-              | Ceil_D a               -> push ((zero a, a) :: t)
-              | Round_D a              -> push ((zero a, a) :: t)
-              | Sqr_D a                -> push (((!aa * (primal a) * (F 2.)), a) :: t)
-              | Sqrt_D a               -> push (((!aa / ((F 2.) * ap)), a) :: t)
-              | Log_D a                -> push (((!aa / (primal a)), a) :: t)
-              | Log2_D a               -> push (((!aa / ((primal a) * (F Owl_maths.log2e))), a) :: t)
-              | Log10_D a              -> push (((!aa / ((primal a) * (F Owl_maths.log10e))), a) :: t)
-              | Exp_D a                -> push (((!aa * ap), a) :: t)
-              | Sin_D a                -> push (((!aa * cos (primal a)), a) :: t)
-              | Cos_D a                -> push (((!aa * (neg (sin (primal a)))), a) :: t)
-              | Tan_D a                -> push (((!aa / (sqr (cos (primal a)))), a) :: t)
-              | Sinh_D a               -> push (((!aa * (cosh (primal a))), a) :: t)
-              | Cosh_D a               -> push (((!aa * (sinh (primal a))), a) :: t)
-              | Tanh_D a               -> push (((!aa / (sqr (cosh (primal a)))), a) :: t)
-              | Asin_D a               -> push (((!aa / sqrt ((F 1.) - sqr (primal a))), a) :: t)
-              | Acos_D a               -> push ((((neg !aa) / sqrt ((F 1.) - sqr (primal a))), a) :: t)
-              | Atan_D a               -> push (((!aa / ((F 1.) + sqr (primal a))), a) :: t)
-              | Asinh_D a              -> push (((!aa / sqrt ((sqr (primal a)) + (F 1.))), a) :: t)
-              | Acosh_D a              -> push (((!aa / sqrt ((sqr (primal a)) - (F 1.))), a) :: t)
-              | Atanh_D a              -> push (((!aa / ((F 1.) - sqr (primal a))), a) :: t)
-              | Get_Item (a, i, j)     -> (adjref a) := add_item (adjval a) i j !aa; push ((zero a, a) :: t)
-              | SetI_D_D (a, i, j, b)  -> push ((set_item !aa i j (F 0.), a) :: (get_item !aa i j, b) :: t)
-              | SetI_D_C (a, i, j, _)  -> push ((set_item !aa i j (F 0.), a) :: t)
-              | SetI_C_D (_, i, j, b)  -> push ((get_item !aa i j, b) :: t)
-              | AddI_D_D (a, i, j, b)  -> push ((!aa, a) :: (get_item !aa i j, b) :: t)
-              | AddI_D_C (a, _, _, _)  -> push ((!aa, a) :: t)
-              | AddI_C_D (_, i, j, b)  -> push ((get_item !aa i j, b) :: t)
-              | Sum_D a                -> push ((((mat_create (row_num (primal a)) (col_num (primal a)) !aa)), a) :: t)
+              | Noop                     -> push t
+              | Add_D_D (a, b)           -> push ((!aa, a) :: (!aa, b) :: t)
+              | Add_D_C (a, _)           -> push ((!aa, a) :: t)
+              | Add_C_D (_, b)           -> push ((!aa, b) :: t)
+              | Sub_D_D (a, b)           -> push ((!aa, a) :: (neg !aa, b) :: t)
+              | Sub_D_C (a, _)           -> push ((!aa, a) :: t)
+              | Sub_C_D (_, b)           -> push ((neg !aa, b) :: t)
+              | Mul_D_D (a, b)           -> push (((!aa * primal b), a) :: ((!aa * primal a), b) :: t)
+              | Mul_D_C (a, b)           -> push (((!aa * b), a) :: t)
+              | Mul_C_D (a, b)           -> push (((!aa * a), b) :: t)
+              | Div_D_D (a, b)           -> push (((!aa / (primal b)), a) :: ((!aa * ((neg (primal a)) / ((primal b) * (primal b)))), b) :: t)
+              | Div_D_C (a, b)           -> push (((!aa / b), a) :: t)
+              | Div_C_D (a, b)           -> push (((!aa * ((neg a) / ((primal b) * (primal b)))), b) :: t)
+              | Pow_D_D (a, b)           -> push (((!aa * ((primal a) ** ((primal b) - (F 1.))) * (primal b)), a) :: ((!aa * ((primal a) ** (primal b)) * log (primal a)), b) :: t)
+              | Pow_D_C (a, b)           -> push (((!aa * ((primal a) ** (b - (F 1.))) * b), a) :: t)
+              | Pow_C_D (a, b)           -> push (((!aa * (a ** (primal b)) * log a), b) :: t)
+              | Atan2_D_D (a, b)         -> let d = (sqr (primal a)) + (sqr (primal b)) in push (((!aa * (primal b) / d), a) :: ((!aa * (neg (primal a)) / d), b) :: t)
+              | Atan2_D_C (a, b)         -> push (((!aa * b / ((sqr (primal a)) + (sqr b))), a) :: t)
+              | Atan2_C_D (a, b)         -> push (((!aa * (neg a) / ((sqr a) + (sqr (primal b)))), b) :: t)
+              | Neg_D a                  -> push ((neg !aa, a) :: t)
+              | Abs_D a                  -> push (((!aa * signum (primal a)), a) :: t)
+              | Signum_D a               -> push ((zero a, a) :: t)
+              | Floor_D a                -> push ((zero a, a) :: t)
+              | Ceil_D a                 -> push ((zero a, a) :: t)
+              | Round_D a                -> push ((zero a, a) :: t)
+              | Sqr_D a                  -> push (((!aa * (primal a) * (F 2.)), a) :: t)
+              | Sqrt_D a                 -> push (((!aa / ((F 2.) * ap)), a) :: t)
+              | Log_D a                  -> push (((!aa / (primal a)), a) :: t)
+              | Log2_D a                 -> push (((!aa / ((primal a) * (F Owl_maths.log2e))), a) :: t)
+              | Log10_D a                -> push (((!aa / ((primal a) * (F Owl_maths.log10e))), a) :: t)
+              | Exp_D a                  -> push (((!aa * ap), a) :: t)
+              | Sin_D a                  -> push (((!aa * cos (primal a)), a) :: t)
+              | Cos_D a                  -> push (((!aa * (neg (sin (primal a)))), a) :: t)
+              | Tan_D a                  -> push (((!aa / (sqr (cos (primal a)))), a) :: t)
+              | Sinh_D a                 -> push (((!aa * (cosh (primal a))), a) :: t)
+              | Cosh_D a                 -> push (((!aa * (sinh (primal a))), a) :: t)
+              | Tanh_D a                 -> push (((!aa / (sqr (cosh (primal a)))), a) :: t)
+              | Asin_D a                 -> push (((!aa / sqrt ((F 1.) - sqr (primal a))), a) :: t)
+              | Acos_D a                 -> push ((((neg !aa) / sqrt ((F 1.) - sqr (primal a))), a) :: t)
+              | Atan_D a                 -> push (((!aa / ((F 1.) + sqr (primal a))), a) :: t)
+              | Asinh_D a                -> push (((!aa / sqrt ((sqr (primal a)) + (F 1.))), a) :: t)
+              | Acosh_D a                -> push (((!aa / sqrt ((sqr (primal a)) - (F 1.))), a) :: t)
+              | Atanh_D a                -> push (((!aa / ((F 1.) - sqr (primal a))), a) :: t)
+              | Get_Item (a, i, j)       -> (adjref a) := add_item (adjval a) i j !aa; push ((zero a, a) :: t)
+              | SetI_D_D (a, i, j, b)    -> push ((set_item !aa i j (F 0.), a) :: (get_item !aa i j, b) :: t)
+              | SetI_D_C (a, i, j, _)    -> push ((set_item !aa i j (F 0.), a) :: t)
+              | SetI_C_D (_, i, j, b)    -> push ((get_item !aa i j, b) :: t)
+              | AddI_D_D (a, i, j, b)    -> push ((!aa, a) :: (get_item !aa i j, b) :: t)
+              | AddI_D_C (a, _, _, _)    -> push ((!aa, a) :: t)
+              | AddI_C_D (_, i, j, b)    -> push ((get_item !aa i j, b) :: t)
+              | Sum_D a                  -> push ((((mat_create (row_num (primal a)) (col_num (primal a)) !aa)), a) :: t)
               (* TODO: SUM_D can be optimised to this | Sum_D a               -> push ((!aa, a) :: t) *)
-              | Dot_D_D (a, b)         -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
-              | Dot_D_C (a, b)         -> push (((dot !aa (transpose b)), a) :: t)
-              | Dot_C_D (a, b)         -> push (((dot (transpose a) !aa), b) :: t)
-              | Trans_D a              -> push (((transpose !aa), a) :: t)
-              | L1Norm_D a             -> push (((!aa * (signum (primal a))), a) :: t)
-              | L2Norm_D a             -> push (((!aa / ap * (primal a)), a) :: t)
-              | L2NormS_D a            -> push (((!aa * (F 2.) * (primal a)), a) :: t)
-              | Sigmoid_D a            -> push (((!aa * ap * (F 1. - ap)), a) :: t)
-              | Relu_D a               -> push (((!aa * ((signum (primal a) + F 1.) / (F 2.))), a) :: t)
-              | Inv_D a                -> let dpt = transpose ap in push ((((neg dpt) * !aa * dpt), a) :: t)
-              | Add_Row_D_D (a, b, i)  -> push ((!aa, a) :: (get_row !aa i, b) :: t)
-              | Add_Row_D_C (a, b, i)  -> push ((!aa, a) :: t)
-              | Add_Row_C_D (a, b, i)  -> push ((get_row !aa i, b) :: t)
-              | Get_Row_D (a, i)       -> (adjref a) := add_row (adjval a) !aa i; push ((zero a, a) :: t)
-              | Of_Rows_D a            -> push (t |> List.append (a |> Array.to_list |> List.mapi (fun i v -> (get_row !aa i, v))))
-              | Conv2D_D_D (a, b, s)   -> push ((conv2d_backward_input a b s !aa, a) :: (conv2d_backward_kernel a b s !aa, b) :: t)
-              | Conv2D_D_C (a, b, s)   -> push ((conv2d_backward_input a b s !aa, a) :: t)
-              | Conv2D_C_D (a, b, s)   -> push ((conv2d_backward_kernel a b s !aa, b) :: t)
-              | Conv3D_D_D (a, b, s)   -> push ((conv3d_backward_input a b s !aa, a) :: (conv3d_backward_kernel a b s !aa, b) :: t)
-              | Conv3D_D_C (a, b, s)   -> push ((conv3d_backward_input a b s !aa, a) :: t)
-              | Conv3D_C_D (a, b, s)   -> push ((conv3d_backward_kernel a b s !aa, b) :: t)
-              | Reshape_D a            -> push ((reshape !aa (shape (primal a)), a) :: t)
-              | Mat2Arr_D a            -> push ((arr_to_mat !aa, a) :: t)
-              | Arr2Mat_D a            -> push ((mat_to_arr !aa, a) :: t)
-              | Maxpool_D (a, p, d, s) -> push ((max_pool2d_backward p (primal a) d s !aa, a) :: t)
-              | Avgpool_D (a, p, d, s) -> push ((avg_pool2d_backward p (primal a) d s !aa, a) :: t)
+              | Dot_D_D (a, b)           -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
+              | Dot_D_C (a, b)           -> push (((dot !aa (transpose b)), a) :: t)
+              | Dot_C_D (a, b)           -> push (((dot (transpose a) !aa), b) :: t)
+              | Trans_D a                -> push (((transpose !aa), a) :: t)
+              | L1Norm_D a               -> push (((!aa * (signum (primal a))), a) :: t)
+              | L2Norm_D a               -> push (((!aa / ap * (primal a)), a) :: t)
+              | L2NormS_D a              -> push (((!aa * (F 2.) * (primal a)), a) :: t)
+              | Sigmoid_D a              -> push (((!aa * ap * (F 1. - ap)), a) :: t)
+              | Relu_D a                 -> push (((!aa * ((signum (primal a) + F 1.) / (F 2.))), a) :: t)
+              | Inv_D a                  -> let dpt = transpose ap in push ((((neg dpt) * !aa * dpt), a) :: t)
+              | Add_Row_D_D (a, b, i)    -> push ((!aa, a) :: (get_row !aa i, b) :: t)
+              | Add_Row_D_C (a, b, i)    -> push ((!aa, a) :: t)
+              | Add_Row_C_D (a, b, i)    -> push ((get_row !aa i, b) :: t)
+              | Get_Row_D (a, i)         -> (adjref a) := add_row (adjval a) !aa i; push ((zero a, a) :: t)
+              | Of_Rows_D a              -> push (t |> List.append (a |> Array.to_list |> List.mapi (fun i v -> (get_row !aa i, v))))
+              | Conv1D_D_D (a, b, s)     -> push ((conv1d_backward_input a b s !aa, a) :: (conv1d_backward_kernel a b s !aa, b) :: t)
+              | Conv1D_D_C (a, b, s)     -> push ((conv1d_backward_input a b s !aa, a) :: t)
+              | Conv1D_C_D (a, b, s)     -> push ((conv1d_backward_kernel a b s !aa, b) :: t)
+              | Conv2D_D_D (a, b, s)     -> push ((conv2d_backward_input a b s !aa, a) :: (conv2d_backward_kernel a b s !aa, b) :: t)
+              | Conv2D_D_C (a, b, s)     -> push ((conv2d_backward_input a b s !aa, a) :: t)
+              | Conv2D_C_D (a, b, s)     -> push ((conv2d_backward_kernel a b s !aa, b) :: t)
+              | Conv3D_D_D (a, b, s)     -> push ((conv3d_backward_input a b s !aa, a) :: (conv3d_backward_kernel a b s !aa, b) :: t)
+              | Conv3D_D_C (a, b, s)     -> push ((conv3d_backward_input a b s !aa, a) :: t)
+              | Conv3D_C_D (a, b, s)     -> push ((conv3d_backward_kernel a b s !aa, b) :: t)
+              | Reshape_D a              -> push ((reshape !aa (shape (primal a)), a) :: t)
+              | Mat2Arr_D a              -> push ((arr_to_mat !aa, a) :: t)
+              | Arr2Mat_D a              -> push ((mat_to_arr !aa, a) :: t)
+              | Maxpool1D_D (a, p, d, s) -> push ((max_pool1d_backward p (primal a) d s !aa, a) :: t)
+              | Maxpool2D_D (a, p, d, s) -> push ((max_pool2d_backward p (primal a) d s !aa, a) :: t)
+              | Avgpool1D_D (a, p, d, s) -> push ((avg_pool2d_backward p (primal a) d s !aa, a) :: t)
+              | Avgpool2D_D (a, p, d, s) -> push ((avg_pool2d_backward p (primal a) d s !aa, a) :: t)
               )
             else push t
             )

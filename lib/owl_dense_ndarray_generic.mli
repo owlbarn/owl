@@ -1158,6 +1158,12 @@ val avg_pool3d : ?padding:padding -> (float, 'a) t -> int array -> int array -> 
 val max_pool2d_argmax : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t * (int64, int64_elt) t
 (** [] *)
 
+val conv1d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
+val conv1d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
 val conv2d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
 (** [] *)
 
@@ -1170,7 +1176,13 @@ val conv3d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (floa
 val conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
 (** [] *)
 
+val max_pool1d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
 val max_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
+val avg_pool1d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
 (** [] *)
 
 val avg_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
@@ -1198,6 +1210,9 @@ val sum_slices : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
   shape [|4;5|]. Currently, the operation is done using [gemm], fast but uses
   more memory.
  *)
+
+val calc_conv1d_output_shape : padding -> int -> int -> int -> int
+(** [] *)
 
 val calc_conv2d_output_shape : padding -> int -> int -> int -> int -> int -> int -> int * int
 (** [] *)

@@ -38,7 +38,7 @@ module Init = struct
 end
 
 
-(* definition of Input layer *)
+(* definition of Input neuron *)
 module Input = struct
 
   type neuron_typ = {
@@ -130,7 +130,7 @@ module Activation = struct
 end
 
 
-(* definition of linear layer *)
+(* definition of linear neuron *)
 module Linear = struct
 
   type neuron_typ = {
@@ -199,7 +199,7 @@ module Linear = struct
 end
 
 
-(* definition of linear no bias layer *)
+(* definition of linear no bias neuron *)
 module LinearNoBias = struct
 
   type neuron_typ = {
@@ -257,7 +257,7 @@ module LinearNoBias = struct
 end
 
 
-(* definition of recurrent layer *)
+(* definition of recurrent neuron *)
 module Recurrent = struct
 
   type neuron_typ = {
@@ -379,7 +379,7 @@ module Recurrent = struct
 end
 
 
-(* definition of LSTM layer *)
+(* definition of LSTM neuron *)
 module LSTM = struct
 
   type neuron_typ = {
@@ -733,13 +733,91 @@ module GRU = struct
 end
 
 
-(* TODO: definition of Conv1D layer *)
+(* definition of Conv1D neuron *)
 module Conv1D = struct
+
+  type neuron_typ = {
+    mutable w         : t;
+    mutable b         : t;
+    mutable kernel    : int array;
+    mutable stride    : int array;
+    mutable padding   : padding;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create padding ?inputs kernel stride =
+    let h, i, o = kernel.(0), kernel.(1), kernel.(2) in
+    let in_shape = match inputs with
+      | Some a -> assert (i = a.(1)); a
+      | None   -> [|0;i|]
+    in
+    {
+      w         = Arr.empty [|h;i;o|];
+      b         = Arr.empty [|o|];
+      kernel    = kernel;
+      stride    = stride;
+      padding   = padding;
+      init_typ  = Init.Uniform (0.,1.);
+      in_shape  = in_shape;
+      out_shape = [|0;o|];
+    }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    assert (out_shape.(1) = l.in_shape.(1));
+    l.in_shape.(0) <- out_shape.(0);
+    let out_cols =
+      Owl_dense_ndarray_generic.calc_conv1d_output_shape
+      l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
+    in
+    l.out_shape.(0) <- out_cols
+
+  (* FIXME *)
+  let init l =
+    l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
+    l.b <- Arr.(zeros (shape l.b))
+
+  let reset l =
+    Arr.reset l.w;
+    Arr.reset l.b
+
+  let mktag t l =
+    l.w <- make_reverse l.w t;
+    l.b <- make_reverse l.b t
+
+  let mkpar l = [|l.w; l.b|]
+
+  let mkpri l = [|primal l.w; primal l.b|]
+
+  let mkadj l = [|adjval l.w; adjval l.b|]
+
+  let update l u =
+    l.w <- u.(0) |> primal';
+    l.b <- u.(1) |> primal'
+
+  let run x l = Maths.((conv1d ~padding:l.padding x l.w l.stride) + l.b)
+
+  let to_string l =
+    let ws = Arr.shape l.w in
+    let bn = Arr.shape l.b in
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "    Conv1D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2) + bn.(0)) ^
+    Printf.sprintf "    kernel : %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ^
+    Printf.sprintf "    b      : %i\n" bn.(0) ^
+    Printf.sprintf "    stride : [%i]\n" l.stride.(0) ^
+    ""
+
+  let to_name () = "conv1d"
 
 end
 
 
-(* definition of Conv2D layer *)
+(* definition of Conv2D neuron *)
 module Conv2D = struct
 
   type neuron_typ = {
@@ -775,10 +853,9 @@ module Conv2D = struct
     assert (out_shape.(2) = l.in_shape.(2));
     l.in_shape.(0) <- out_shape.(0);
     l.in_shape.(1) <- out_shape.(1);
-    let kernel_shape = l.kernel in
     let out_cols, out_rows =
       Owl_dense_ndarray_generic.calc_conv2d_output_shape
-      l.padding l.in_shape.(0) l.in_shape.(1) kernel_shape.(0) kernel_shape.(1)
+      l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1)
       l.stride.(0) l.stride.(1)
     in
     l.out_shape.(0) <- out_cols;
@@ -832,7 +909,7 @@ module Conv2D = struct
 end
 
 
-(* definition of Conv2D layer *)
+(* definition of Conv2D neuron *)
 module Conv3D = struct
 
   type neuron_typ = {
@@ -869,11 +946,10 @@ module Conv3D = struct
     l.in_shape.(0) <- out_shape.(0);
     l.in_shape.(1) <- out_shape.(1);
     l.in_shape.(2) <- out_shape.(2);
-    let kernel_shape = l.kernel in
     let out_cols, out_rows, out_dpts =
       Owl_dense_ndarray_generic.calc_conv3d_output_shape
       l.padding l.in_shape.(0) l.in_shape.(1) l.in_shape.(2)
-      kernel_shape.(0) kernel_shape.(1) kernel_shape.(2)
+      l.kernel.(0) l.kernel.(1) l.kernel.(2)
       l.stride.(0) l.stride.(1) l.stride.(2)
     in
     l.out_shape.(0) <- out_cols;
@@ -923,7 +999,7 @@ module Conv3D = struct
 end
 
 
-(* definition of FullyConnected layer *)
+(* definition of FullyConnected neuron *)
 module FullyConnected = struct
 
   type neuron_typ = {
@@ -1006,19 +1082,101 @@ module FullyConnected = struct
 end
 
 
-(* TODO: definition of MaxPool1D layer *)
+(* definition of MaxPool1D neuron *)
 module MaxPool1D = struct
 
+  type neuron_typ = {
+    mutable padding   : padding;
+    mutable kernel    : int array;
+    mutable stride    : int array;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create padding kernel stride = {
+    padding;
+    kernel;
+    stride;
+    in_shape  = [|0;0|];
+    out_shape = [|0;0|];
+  }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    let out_cols = Owl_dense_ndarray_generic.calc_conv1d_output_shape
+      l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
+    in
+    l.out_shape.(0) <- out_cols;
+    l.out_shape.(1) <- out_shape.(1)
+
+  let run x l = Maths.(max_pool1d l.padding x l.kernel l.stride)
+
+  let to_string l =
+    let padding_s = match l.padding with
+      | Owl_dense_ndarray_generic.SAME  -> "SAME"
+      | Owl_dense_ndarray_generic.VALID -> "VALID"
+    in
+    Printf.sprintf "    MaxPool1D : tensor in:[*,%i,%i] out:[*,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) l.out_shape.(1) ^
+    Printf.sprintf "    padding   : %s\n" padding_s ^
+    Printf.sprintf "    kernel    : [%i]\n" l.kernel.(0) ^
+    Printf.sprintf "    stride    : [%i]\n" l.stride.(0) ^
+    ""
+
+  let to_name () = "maxpool1d"
+
 end
 
 
-(* TODO: definition of AvgPool1D layer *)
+(* definition of AvgPool1D neuron *)
 module AvgPool1D = struct
 
+  type neuron_typ = {
+    mutable padding   : padding;
+    mutable kernel    : int array;
+    mutable stride    : int array;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create padding kernel stride = {
+    padding;
+    kernel;
+    stride;
+    in_shape  = [|0;0|];
+    out_shape = [|0;0|];
+  }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    let out_cols = Owl_dense_ndarray_generic.calc_conv1d_output_shape
+      l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
+    in
+    l.out_shape.(0) <- out_cols;
+    l.out_shape.(1) <- out_shape.(1)
+
+  let run x l = Maths.(avg_pool1d l.padding x l.kernel l.stride)
+
+  let to_string l =
+    let padding_s = match l.padding with
+      | Owl_dense_ndarray_generic.SAME  -> "SAME"
+      | Owl_dense_ndarray_generic.VALID -> "VALID"
+    in
+    Printf.sprintf "    AvgPool1D : tensor in:[*,%i,%i] out:[*,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) l.out_shape.(1) ^
+    Printf.sprintf "    padding   : %s\n" padding_s ^
+    Printf.sprintf "    kernel    : [%i]\n" l.kernel.(0) ^
+    Printf.sprintf "    stride    : [%i]\n" l.stride.(0) ^
+    ""
+
+  let to_name () = "avgpool1d"
+
 end
 
 
-(* definition of MaxPool2D layer *)
+(* definition of MaxPool2D neuron *)
 module MaxPool2D = struct
 
   type neuron_typ = {
@@ -1049,7 +1207,6 @@ module MaxPool2D = struct
     l.out_shape.(1) <- out_rows;
     l.out_shape.(2) <- out_shape.(2)
 
-
   let run x l = Maths.(max_pool2d l.padding x l.kernel l.stride)
 
   let to_string l =
@@ -1068,7 +1225,7 @@ module MaxPool2D = struct
 end
 
 
-(* definition of AvgPool2D layer *)
+(* definition of AvgPool2D neuron *)
 module AvgPool2D = struct
 
   type neuron_typ = {
@@ -1118,43 +1275,43 @@ module AvgPool2D = struct
 end
 
 
-(* TODO: definition of UpSampling1D layer *)
+(* TODO: definition of UpSampling1D neuron *)
 module UpSampling1D = struct
 
 end
 
 
-(* TODO: definition of UpSampling2D layer *)
+(* TODO: definition of UpSampling2D neuron *)
 module UpSampling2D = struct
 
 end
 
 
-(* TODO: definition of UpSampling3D layer *)
+(* TODO: definition of UpSampling3D neuron *)
 module UpSampling3D = struct
 
 end
 
 
-(* TODO: definition of Padding1D layer *)
+(* TODO: definition of Padding1D neuron *)
 module Padding1D = struct
 
 end
 
 
-(* TODO: definition of Padding2D layer *)
+(* TODO: definition of Padding2D neuron *)
 module Padding2D = struct
 
 end
 
 
-(* TODO: definition of Padding3D layer *)
+(* TODO: definition of Padding3D neuron *)
 module Padding3D = struct
 
 end
 
 
-(* definition of Lambda layer *)
+(* definition of Lambda neuron *)
 module Lambda = struct
 
   type neuron_typ = {
@@ -1187,7 +1344,7 @@ module Lambda = struct
 end
 
 
-(* definition of Dropout layer *)
+(* definition of Dropout neuron *)
 module Dropout = struct
 
   type neuron_typ = {
@@ -1219,7 +1376,7 @@ module Dropout = struct
 end
 
 
-(* definition of Reshape layer *)
+(* definition of Reshape neuron *)
 module Reshape = struct
 
   type neuron_typ = {
@@ -1269,7 +1426,7 @@ module Reshape = struct
 end
 
 
-(* definition of Flatten layer *)
+(* definition of Flatten neuron *)
 module Flatten = struct
 
   type neuron_typ = {
@@ -1310,7 +1467,7 @@ module Flatten = struct
 end
 
 
-(* definition of Add layer *)
+(* definition of Add neuron *)
 module Add = struct
 
   type neuron_typ = {
@@ -1347,7 +1504,7 @@ module Add = struct
 end
 
 
-(* definition of Multiply layer *)
+(* definition of Multiply neuron *)
 module Mul = struct
 
   type neuron_typ = {
@@ -1384,7 +1541,7 @@ module Mul = struct
 end
 
 
-(* definition of Dot layer *)
+(* definition of Dot neuron *)
 module Dot = struct
 
   type neuron_typ = {
@@ -1415,7 +1572,7 @@ module Dot = struct
 end
 
 
-(* definition of Max layer *)
+(* definition of Max neuron *)
 module Max = struct
 
   type neuron_typ = {
@@ -1452,7 +1609,7 @@ module Max = struct
 end
 
 
-(* definition of Average layer *)
+(* definition of Average neuron *)
 module Average = struct
 
   type neuron_typ = {
@@ -1489,32 +1646,32 @@ module Average = struct
 end
 
 
-(* TODO: definition of Concatenate layer *)
+(* TODO: definition of Concatenate neuron *)
 module Concatenate = struct
 
 end
 
 
 
-(* TODO: definition of Normalisation layer *)
+(* TODO: definition of Normalisation neuron *)
 module Normalisation = struct
 
 end
 
 
-(* TODO: definition of GaussianNoise layer *)
+(* TODO: definition of GaussianNoise neuron *)
 module GaussianNoise = struct
 
 end
 
 
-(* TODO: definition of GaussianDropout layer *)
+(* TODO: definition of GaussianDropout neuron *)
 module GaussianDropout = struct
 
 end
 
 
-(* TODO: definition of Masking layer *)
+(* TODO: definition of Masking neuron *)
 module Masking = struct
 
 end
@@ -1529,10 +1686,13 @@ type neuron =
   | LSTM           of LSTM.neuron_typ
   | GRU            of GRU.neuron_typ
   | Recurrent      of Recurrent.neuron_typ
+  | Conv1D         of Conv1D.neuron_typ
   | Conv2D         of Conv2D.neuron_typ
   | Conv3D         of Conv3D.neuron_typ
   | FullyConnected of FullyConnected.neuron_typ
+  | MaxPool1D      of MaxPool1D.neuron_typ
   | MaxPool2D      of MaxPool2D.neuron_typ
+  | AvgPool1D      of AvgPool1D.neuron_typ
   | AvgPool2D      of AvgPool2D.neuron_typ
   | Dropout        of Dropout.neuron_typ
   | Reshape        of Reshape.neuron_typ
@@ -1553,10 +1713,13 @@ let get_in_out_shape = function
   | LSTM l           -> LSTM.(l.in_shape, l.out_shape)
   | GRU l            -> GRU.(l.in_shape, l.out_shape)
   | Recurrent l      -> Recurrent.(l.in_shape, l.out_shape)
+  | Conv1D l         -> Conv1D.(l.in_shape, l.out_shape)
   | Conv2D l         -> Conv2D.(l.in_shape, l.out_shape)
   | Conv3D l         -> Conv3D.(l.in_shape, l.out_shape)
   | FullyConnected l -> FullyConnected.(l.in_shape, l.out_shape)
+  | MaxPool1D l      -> MaxPool1D.(l.in_shape, l.out_shape)
   | MaxPool2D l      -> MaxPool2D.(l.in_shape, l.out_shape)
+  | AvgPool1D l      -> AvgPool1D.(l.in_shape, l.out_shape)
   | AvgPool2D l      -> AvgPool2D.(l.in_shape, l.out_shape)
   | Dropout l        -> Dropout.(l.in_shape, l.out_shape)
   | Reshape l        -> Reshape.(l.in_shape, l.out_shape)
@@ -1575,16 +1738,19 @@ let get_out_shape x = x |> get_in_out_shape |> snd
 
 
 let connect out_shape l = match l with
-  | Input l          -> () (* always the first layer *)
+  | Input l          -> () (* always the first neuron *)
   | Linear l         -> Linear.connect out_shape l
   | LinearNoBias l   -> LinearNoBias.connect out_shape l
   | LSTM l           -> LSTM.connect out_shape l
   | GRU l            -> GRU.connect out_shape l
   | Recurrent l      -> Recurrent.connect out_shape l
+  | Conv1D l         -> Conv1D.connect out_shape l
   | Conv2D l         -> Conv2D.connect out_shape l
   | Conv3D l         -> Conv3D.connect out_shape l
   | FullyConnected l -> FullyConnected.connect out_shape l
+  | MaxPool1D l      -> MaxPool1D.connect out_shape l
   | MaxPool2D l      -> MaxPool2D.connect out_shape l
+  | AvgPool1D l      -> AvgPool1D.connect out_shape l
   | AvgPool2D l      -> AvgPool2D.connect out_shape l
   | Dropout l        -> Dropout.connect out_shape l
   | Reshape l        -> Reshape.connect out_shape l
@@ -1604,6 +1770,7 @@ let init = function
   | LSTM l           -> LSTM.init l
   | GRU l            -> GRU.init l
   | Recurrent l      -> Recurrent.init l
+  | Conv1D l         -> Conv1D.init l
   | Conv2D l         -> Conv2D.init l
   | Conv3D l         -> Conv3D.init l
   | FullyConnected l -> FullyConnected.init l
@@ -1616,6 +1783,7 @@ let reset = function
   | LSTM l           -> LSTM.reset l
   | GRU l            -> GRU.reset l
   | Recurrent l      -> Recurrent.reset l
+  | Conv1D l         -> Conv1D.reset l
   | Conv2D l         -> Conv2D.reset l
   | Conv3D l         -> Conv3D.reset l
   | FullyConnected l -> FullyConnected.reset l
@@ -1627,6 +1795,7 @@ let mktag t = function
   | LSTM l           -> LSTM.mktag t l
   | GRU l            -> GRU.mktag t l
   | Recurrent l      -> Recurrent.mktag t l
+  | Conv1D l         -> Conv1D.mktag t l
   | Conv2D l         -> Conv2D.mktag t l
   | Conv3D l         -> Conv3D.mktag t l
   | FullyConnected l -> FullyConnected.mktag t l
@@ -1639,6 +1808,7 @@ let mkpar = function
   | LSTM l           -> LSTM.mkpar l
   | GRU l            -> GRU.mkpar l
   | Recurrent l      -> Recurrent.mkpar l
+  | Conv1D l         -> Conv1D.mkpar l
   | Conv2D l         -> Conv2D.mkpar l
   | Conv3D l         -> Conv3D.mkpar l
   | FullyConnected l -> FullyConnected.mkpar l
@@ -1651,6 +1821,7 @@ let mkpri = function
   | LSTM l           -> LSTM.mkpri l
   | GRU l            -> GRU.mkpri l
   | Recurrent l      -> Recurrent.mkpri l
+  | Conv1D l         -> Conv1D.mkpri l
   | Conv2D l         -> Conv2D.mkpri l
   | Conv3D l         -> Conv3D.mkpri l
   | FullyConnected l -> FullyConnected.mkpri l
@@ -1663,6 +1834,7 @@ let mkadj = function
   | LSTM l           -> LSTM.mkadj l
   | GRU l            -> GRU.mkadj l
   | Recurrent l      -> Recurrent.mkadj l
+  | Conv1D l         -> Conv1D.mkadj l
   | Conv2D l         -> Conv2D.mkadj l
   | Conv3D l         -> Conv3D.mkadj l
   | FullyConnected l -> FullyConnected.mkadj l
@@ -1675,6 +1847,7 @@ let update l u = match l with
   | LSTM l           -> LSTM.update l u
   | GRU l            -> GRU.update l u
   | Recurrent l      -> Recurrent.update l u
+  | Conv1D l         -> Conv1D.update l u
   | Conv2D l         -> Conv2D.update l u
   | Conv3D l         -> Conv3D.update l u
   | FullyConnected l -> FullyConnected.update l u
@@ -1688,10 +1861,13 @@ let run a l = match l with
   | LSTM l           -> LSTM.run a l
   | GRU l            -> GRU.run a l
   | Recurrent l      -> Recurrent.run a l
+  | Conv1D l         -> Conv1D.run a l
   | Conv2D l         -> Conv2D.run a l
   | Conv3D l         -> Conv3D.run a l
   | FullyConnected l -> FullyConnected.run a l
+  | MaxPool1D l      -> MaxPool1D.run a l
   | MaxPool2D l      -> MaxPool2D.run a l
+  | AvgPool1D l      -> AvgPool1D.run a l
   | AvgPool2D l      -> AvgPool2D.run a l
   | Dropout l        -> Dropout.run a l
   | Reshape l        -> Reshape.run a l
@@ -1708,10 +1884,13 @@ let run_array a l = match l with
   | LSTM l           -> LSTM.run a.(0) l
   | GRU l            -> GRU.run a.(0) l
   | Recurrent l      -> Recurrent.run a.(0) l
+  | Conv1D l         -> Conv1D.run a.(0) l
   | Conv2D l         -> Conv2D.run a.(0) l
   | Conv3D l         -> Conv3D.run a.(0) l
   | FullyConnected l -> FullyConnected.run a.(0) l
+  | MaxPool1D l      -> MaxPool1D.run a.(0) l
   | MaxPool2D l      -> MaxPool2D.run a.(0) l
+  | AvgPool1D l      -> AvgPool1D.run a.(0) l
   | AvgPool2D l      -> AvgPool2D.run a.(0) l
   | Dropout l        -> Dropout.run a.(0) l
   | Reshape l        -> Reshape.run a.(0) l
@@ -1732,10 +1911,13 @@ let to_string = function
   | LSTM l           -> LSTM.to_string l
   | GRU l            -> GRU.to_string l
   | Recurrent l      -> Recurrent.to_string l
+  | Conv1D l         -> Conv1D.to_string l
   | Conv2D l         -> Conv2D.to_string l
   | Conv3D l         -> Conv3D.to_string l
   | FullyConnected l -> FullyConnected.to_string l
+  | MaxPool1D l      -> MaxPool1D.to_string l
   | MaxPool2D l      -> MaxPool2D.to_string l
+  | AvgPool1D l      -> AvgPool1D.to_string l
   | AvgPool2D l      -> AvgPool2D.to_string l
   | Dropout l        -> Dropout.to_string l
   | Reshape l        -> Reshape.to_string l
@@ -1756,10 +1938,13 @@ let to_name = function
   | LSTM _           -> LSTM.to_name ()
   | GRU _            -> GRU.to_name ()
   | Recurrent _      -> Recurrent.to_name ()
+  | Conv1D _         -> Conv1D.to_name ()
   | Conv2D _         -> Conv2D.to_name ()
   | Conv3D _         -> Conv3D.to_name ()
   | FullyConnected _ -> FullyConnected.to_name ()
+  | MaxPool1D _      -> MaxPool1D.to_name ()
   | MaxPool2D _      -> MaxPool2D.to_name ()
+  | AvgPool1D _      -> AvgPool1D.to_name ()
   | AvgPool2D _      -> AvgPool2D.to_name ()
   | Dropout _        -> Dropout.to_name ()
   | Reshape _        -> Reshape.to_name ()

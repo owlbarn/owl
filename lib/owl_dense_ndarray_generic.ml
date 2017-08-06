@@ -1913,6 +1913,13 @@ let calc_conv2d_padding
   let pad_right = pad_along_width - pad_left in
   pad_top, pad_left, pad_bottom, pad_right
 
+(* calc_conv1d_output_shape actually calls its 2d version  *)
+let calc_conv1d_output_shape padding input_cols kernel_cols col_stride =
+  let input_rows = 1 in
+  let kernel_rows = 1 in
+  let row_stride = 1 in
+  calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+  |> fst
 
 (* conv2d: 4d input and 4d kernel, refer to tensorlfow doc
   input : [batch; input_column; input_row; input_channel]
@@ -2250,7 +2257,79 @@ let conv1d ?(padding=SAME) input kernel stride =
   output
 
 
-(* max_pool2d: 4d input and 4d kernel, refer to tensorlfow doc
+(* gradient of conv1d w.r.t the input *)
+let conv1d_backward_input input kernel stride output' =
+  assert (num_dims input = 3);
+  assert (num_dims kernel = 3);
+  assert (num_dims output' = 3);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input_rows = 1 in
+  let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let out_channel = kernel_shp.(2) in
+  assert (in_channel = kernel_shp.(1));
+  let kernel_rows = 1 in
+  let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
+
+  let output'_shp = shape output' in
+  let output_cols = output'_shp.(1) in
+  assert (batches = output'_shp.(0));
+  assert (out_channel = output'_shp.(2));
+  let output_rows = 1 in
+  let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+  let col_stride = stride.(0) in
+  let row_stride = 1 in
+  let stride = [|row_stride; col_stride|] in
+
+  let input' = conv2d_backward_input input kernel stride output' in
+  reshape input' input_shp
+
+
+(* gradient of conv1d w.r.t the kernel *)
+let conv1d_backward_kernel input kernel stride output' =
+  assert (num_dims input = 3);
+  assert (num_dims kernel = 3);
+  assert (num_dims output' = 3);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let in_channel = input_shp.(2) in
+  let input_rows = 1 in
+  let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+  let kernel_shp = shape kernel in
+  let kernel_cols = kernel_shp.(0) in
+  let out_channel = kernel_shp.(2) in
+  assert (in_channel = kernel_shp.(1));
+  let kernel_rows = 1 in
+  let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
+
+  let output'_shp = shape output' in
+  let output_cols = output'_shp.(1) in
+  assert (batches = output'_shp.(0));
+  assert (out_channel = output'_shp.(2));
+  let output_rows = 1 in
+  let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+  let col_stride = stride.(0) in
+  let row_stride = 1 in
+  let stride = [|row_stride; col_stride|] in
+
+  let kernel' = conv2d_backward_kernel input kernel stride output' in
+  reshape kernel' kernel_shp
+
+
+(* max_pool2d: 4d input and 2d kernel, refer to tensorlfow doc
   input : [batch; input_column; input_row; input_channel]
   kernel: [kernel_column; kernel_row]
   stride: [column_stride; row_stride]
@@ -2290,7 +2369,7 @@ let max_pool2d ?(padding=SAME) input kernel stride =
   output
 
 
-(* max_pool1d: 3d input and 3d kernel, refer to tensorlfow doc
+(* max_pool1d: 3d input and 1d kernel, refer to tensorlfow doc
   input : [batch; input_column; input_channel]
   kernel: [kernel_column]
   stride: [column_stride]
@@ -2380,7 +2459,7 @@ let avg_pool1d ?(padding=SAME) input kernel stride =
   output
 
 
-(* max_pool3d: 5d input and 5d kernel, refer to tensorflow doc
+(* max_pool3d: 5d input and 3d kernel, refer to tensorflow doc
   input : [batch; input_column; input_row; input_depth; input_channel]
   kernel: [kernel_column; kernel_row; kernel_depth]
   stride: [column_stride; row_stride; depth_stride]
@@ -2533,6 +2612,37 @@ let max_pool2d_backward padding input kernel stride output' =
   input'
 
 
+(* calculate the gradient of max_pool1d *)
+let max_pool1d_backward padding input kernel stride output' =
+  assert (num_dims input = 3);
+  assert (Array.length kernel = 1);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = 1 in
+  let in_channel = input_shp.(2) in
+  let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = 1 in
+  let kernel = [|kernel_rows; kernel_cols|] in
+
+  let col_stride = stride.(0) in
+  let row_stride = 1 in
+  let stride = [|row_stride; col_stride|] in
+
+  let output'_shp = shape output' in
+  let output_cols = output'_shp.(1) in
+  let output_rows = 1 in
+  let out_channel = output'_shp.(2) in
+  let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+  let input' = max_pool2d_backward padding input kernel stride output' in
+  reshape input' input_shp
+
+
 (* calculate the gradient of avg_pool2d *)
 let avg_pool2d_backward padding input kernel stride output' =
   assert (num_dims input = 4);
@@ -2566,6 +2676,37 @@ let avg_pool2d_backward padding input kernel stride output' =
     row_stride col_stride pad_top pad_left;
 
   input'
+
+
+(* calculate the gradient of avg_pool1d *)
+let avg_pool1d_backward padding input kernel stride output' =
+  assert (num_dims input = 3);
+  assert (Array.length kernel = 1);
+  assert (Array.length stride = 1);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = 1 in
+  let in_channel = input_shp.(2) in
+  let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = 1 in
+  let kernel = [|kernel_rows; kernel_cols|] in
+
+  let col_stride = stride.(0) in
+  let row_stride = 1 in
+  let stride = [|row_stride; col_stride|] in
+
+  let output'_shp = shape output' in
+  let output_cols = output'_shp.(1) in
+  let output_rows = 1 in
+  let out_channel = output'_shp.(2) in
+  let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+  let input' = avg_pool2d_backward padding input kernel stride output' in
+  reshape input' input_shp
 
 
 (* simiar to sum_rows in matrix, sum all the slices along an axis.

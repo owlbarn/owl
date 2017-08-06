@@ -267,6 +267,13 @@ let gru ?name cells input_node =
   add_node nn [|input_node|] n
 
 
+let conv1d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel strides input_node =
+  let neuron = Conv1D (Conv1D.create padding kernel strides) in
+  let nn = get_network input_node in
+  let n = make_node ?name [||] [||] neuron None nn in
+  add_node ?act_typ nn [|input_node|] n
+
+
 let conv2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel strides input_node =
   let neuron = Conv2D (Conv2D.create padding kernel strides) in
   let nn = get_network input_node in
@@ -288,8 +295,22 @@ let fully_connected ?name ?(init_typ = Init.Standard) ?act_typ outputs input_nod
   add_node ?act_typ nn [|input_node|] n
 
 
+let max_pool1d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride input_node =
+  let neuron = MaxPool1D (MaxPool1D.create padding kernel stride) in
+  let nn = get_network input_node in
+  let n = make_node ?name [||] [||] neuron None nn in
+  add_node ?act_typ nn [|input_node|] n
+
+
 let max_pool2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride input_node =
   let neuron = MaxPool2D (MaxPool2D.create padding kernel stride) in
+  let nn = get_network input_node in
+  let n = make_node ?name [||] [||] neuron None nn in
+  add_node ?act_typ nn [|input_node|] n
+
+
+let avg_pool1d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride input_node =
+  let neuron = AvgPool1D (AvgPool1D.create padding kernel stride) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node ?act_typ nn [|input_node|] n
@@ -364,7 +385,6 @@ let average ?name ?act_typ input_node =
 let to_string nn =
   let s = ref (nn.nnid ^ "\n\n") in
   Array.iter (fun n ->
-    let t = to_string n.neuron in
     let prev = Array.map (fun n -> n.name) n.prev
       |> Owl_utils.string_of_array (fun s -> s)
     in

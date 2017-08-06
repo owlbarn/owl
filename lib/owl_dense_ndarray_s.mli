@@ -453,6 +453,10 @@ val avg_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
 
 val max_pool2d_argmax : ?padding:padding -> arr -> int array -> int array -> arr * (int64, int64_elt, c_layout) Genarray.t
 
+val conv1d_backward_input : arr -> arr -> int array -> arr -> arr
+
+val conv1d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
 val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
 
 val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
@@ -461,7 +465,11 @@ val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
 
 val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
 
+val max_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
 val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+val avg_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
 val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
