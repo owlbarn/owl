@@ -4,7 +4,9 @@
  *)
 
 
-(** Neural network: Feedforward neural network *)
+(** Neural network: Feedforward neural network
+  NOTE: this module has been superseded by the graph module.
+ *)
 
 
 open Owl_algodiff.S

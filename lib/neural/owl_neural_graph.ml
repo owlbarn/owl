@@ -371,8 +371,10 @@ let to_string nn =
     let next = Array.map (fun n -> n.name) n.next
       |> Owl_utils.string_of_array (fun s -> s)
     in
-    s := !s ^ (Printf.sprintf "[ Node %s ]:\n%s" n.name t) ^
-      (Printf.sprintf "    prev:[%s] next:[%s]\n\n" prev next)
+    s := !s ^
+      Printf.sprintf "\x1b[31m[ Node %s ]:\x1b[0m\n" n.name ^
+      Printf.sprintf "%s" (to_string n.neuron) ^
+      Printf.sprintf "    prev:[%s] next:[%s]\n\n" prev next
   ) nn.topo; !s
 
 
