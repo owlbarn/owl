@@ -125,27 +125,14 @@ let connect_pair prev next =
 
 
 let connect_to_parents parents child =
-  (* validate input and output have consistent shape *)
-  (match child.neuron with
-  | Dot _ -> (
-      (* for dot neuron, two matrices must have [*,m][m,n] shape *)
-      let shp0 = parents.(0).neuron |> get_out_shape in
-      let shp1 = parents.(1).neuron |> get_out_shape in
-      (* update the child's output shape *)
-      connect [|shp0.(0); shp1.(1)|] child.neuron;
-    )
-  | _     -> (
-      if Array.length parents > 0 then (
-        (* for other cases, all inputs must have the same shape *)
-        let shp = parents.(0).neuron |> get_out_shape in
-        Array.iter (fun n ->
-          let shp' = n.neuron |> get_out_shape in
-          assert (shp = shp');
-        ) parents;
-        (* update the child's output shape *)
-        connect shp child.neuron
-      )
-    ));
+  (* update the child's input and output shape *)
+  if Array.length parents > 0 then (
+    let out_shapes = Array.map (fun n ->
+      n.neuron |> get_out_shape
+    ) parents
+    in
+    connect out_shapes child.neuron
+  );
   (* connect the child to the parents *)
   Array.iter (fun p ->
     connect_pair p child
@@ -200,7 +187,7 @@ let run x nn =
       | _       -> collect_output n.prev
     in
     (* process the current neuron, save output *)
-    let output = run_array input n.neuron in
+    let output = run input n.neuron in
     n.output <- Some output
   ) nn.topo;
   (* collect the final output from the tail *)

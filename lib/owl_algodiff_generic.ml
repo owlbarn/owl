@@ -50,6 +50,8 @@ module type MatrixSig = sig
 
   val concatenate : ?axis:int -> mat array -> mat
 
+  val split : ?axis:int -> int array -> mat -> mat array
+
   val copy_row_to : mat -> mat -> int -> unit
 
   val copy_col_to : mat -> mat -> int -> unit
@@ -215,6 +217,8 @@ module type NdarraySig = sig
   val reshape : arr -> int array -> arr
 
   val concatenate : ?axis:int -> arr array -> arr
+
+  val split : ?axis:int -> int array -> arr -> arr array
 
   val sum_slices : ?axis:int -> arr -> arr
 
@@ -452,7 +456,9 @@ module Make
     | Add_Row_C_D of t * t * int
     | Get_Row_D   of t * int
     | Of_Rows_D   of t array
-    | Concat_D    of t array * int
+    | Concat_D_D  of t * t * int
+    | Concat_D_C  of t * t * int
+    | Concat_C_D  of t * t * int
     | Conv1D_D_D  of t * t * int array
     | Conv1D_D_C  of t * t * int array
     | Conv1D_C_D  of t * t * int array
@@ -1491,18 +1497,31 @@ module Make
         | _     -> error_uniop "dropout" a
       in
       a * b
-(* TODO
-    and concat axis a =
-      let ff = function
-        | Arr a -> Arr A.(concatenate ~axis a)
-        | Mat a -> Mat M.(concatenate ~axis a)
-        | _     -> error_uniop "concat" a
+
+    and concat axis a b =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> Arr A.(concatenate ~axis [|a; b|])
+        | Mat a, Mat b -> Mat M.(concatenate ~axis [|a; b|])
+        | _            -> error_binop "concat" a b
       in
-      let fd a = concat axis a in
-      let df cp ap at = concat axis at in
-      let r a = Concat_D (a, axis) in
-      op_d_d a ff fd df r
-*)
+      let fd a b = concat axis a b in
+      let df_da cp ap at = concat axis at (zero b) in
+      let df_db cp bp bt = concat axis (zero a) bt in
+      let df_dab cp ap at bp bt = concat axis at bt in
+      let r_d_d a b = Concat_D_D (a, b, axis) in
+      let r_d_c a b = Concat_D_C (a, b, axis) in
+      let r_c_d a b = Concat_C_D (a, b, axis) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
+    and split axis parts a =
+      let ff a =
+        match a with
+        | Arr a -> A.(split ~axis parts a) |> Array.map (fun x -> Arr x)
+        | Mat a -> M.(split ~axis parts a) |> Array.map (fun x -> Mat x)
+        | _     -> error_uniop "split" a
+      in
+      ff a
 
     (* TODO: trace and diag functions ... *)
 
@@ -1604,6 +1623,9 @@ module Make
               | Maxpool2D_D (a, _, _, _) -> reset (a :: t)
               | Avgpool1D_D (a, _, _, _) -> reset (a :: t)
               | Avgpool2D_D (a, _, _, _) -> reset (a :: t)
+              | Concat_D_D (a, b, _)     -> reset (a :: b :: t)
+              | Concat_D_C (a, _, _)     -> reset (a :: t)
+              | Concat_C_D (_, b, _)     -> reset (b :: t)
               )
             else reset t
             )
@@ -1728,6 +1750,9 @@ module Make
               | Maxpool2D_D (a, p, d, s) -> push ((max_pool2d_backward p (primal a) d s !aa, a) :: t)
               | Avgpool1D_D (a, p, d, s) -> push ((avg_pool2d_backward p (primal a) d s !aa, a) :: t)
               | Avgpool2D_D (a, p, d, s) -> push ((avg_pool2d_backward p (primal a) d s !aa, a) :: t)
+              | Concat_D_D (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: (s.(1) ,b) :: t)
+              | Concat_D_C (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: t)
+              | Concat_C_D (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(1) ,b) :: t)
               )
             else push t
             )

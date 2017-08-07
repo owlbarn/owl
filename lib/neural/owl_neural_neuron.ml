@@ -1480,9 +1480,10 @@ module Add = struct
     out_shape = [||];
   }
 
-  let connect out_shape l =
-    l.in_shape <- Array.copy out_shape;
-    l.out_shape <- Array.copy out_shape
+  let connect out_shapes l =
+    Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
+    l.in_shape <- Array.copy out_shapes.(0);
+    l.out_shape <- Array.copy out_shapes.(0)
 
   let run x l =
     let n = Array.length x in
@@ -1517,9 +1518,10 @@ module Mul = struct
     out_shape = [||];
   }
 
-  let connect out_shape l =
-    l.in_shape <- Array.copy out_shape;
-    l.out_shape <- Array.copy out_shape
+  let connect out_shapes l =
+    Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
+    l.in_shape <- Array.copy out_shapes.(0);
+    l.out_shape <- Array.copy out_shapes.(0)
 
   let run x l =
     let n = Array.length x in
@@ -1554,9 +1556,13 @@ module Dot = struct
     out_shape = [||];
   }
 
-  let connect out_shape l =
-    l.in_shape <- Array.copy out_shape;
-    l.out_shape <- [|out_shape.(1)|]
+  let connect out_shapes l =
+    (* for dot neuron, two matrices must have [*,m][m,n] shape *)
+    let m = out_shapes.(1).(0) in
+    let n = out_shapes.(1).(1) in
+    assert (m = out_shapes.(0).(1));
+    l.in_shape <- [|m; n|];
+    l.out_shape <- [|n|]
 
   let run x l =
     assert (Array.length x = 2);
@@ -1585,9 +1591,10 @@ module Max = struct
     out_shape = [||];
   }
 
-  let connect out_shape l =
-    l.in_shape <- Array.copy out_shape;
-    l.out_shape <- Array.copy out_shape
+  let connect out_shapes l =
+    Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
+    l.in_shape <- Array.copy out_shapes.(0);
+    l.out_shape <- Array.copy out_shapes.(0)
 
   let run x l =
     let n = Array.length x in
@@ -1622,9 +1629,10 @@ module Average = struct
     out_shape = [||];
   }
 
-  let connect out_shape l =
-    l.in_shape <- Array.copy out_shape;
-    l.out_shape <- Array.copy out_shape
+  let connect out_shapes l =
+    Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
+    l.in_shape <- Array.copy out_shapes.(0);
+    l.out_shape <- Array.copy out_shapes.(0)
 
   let run x l =
     let n = Array.length x in
@@ -1646,23 +1654,33 @@ module Average = struct
 end
 
 
-(* TODO: definition of Concatenate neuron *)
 module Concatenate = struct
-(*
+
   type neuron_typ = {
     mutable axis      : int;
     mutable in_shape  : int array;
     mutable out_shape : int array;
   }
 
-  let create () = {
+  let create axis = {
+    axis      = axis;
     in_shape  = [||];
     out_shape = [||];
   }
 
-  let connect out_shape l =
-    l.in_shape <- Array.copy out_shape;
-    l.out_shape <- Array.copy out_shape
+  let connect out_shapes l =
+    let s0 = out_shapes.(0) in
+    let _d = ref 0 in
+    Array.iter (fun s1 ->
+      Array.iteri (fun i d ->
+        if i <> l.axis then assert (d = s0.(i))
+        else _d := !_d + d
+      ) s1
+    ) out_shapes;
+    l.in_shape <- Array.copy s0;
+    l.out_shape <- Array.copy s0;
+    l.in_shape.(l.axis) <- (-1);
+    l.out_shape.(l.axis) <- !_d
 
   let run x l =
     let n = Array.length x in
@@ -1670,17 +1688,22 @@ module Concatenate = struct
     assert (n > 1);
     let acc = ref x.(0) in
     for i = 1 to n - 1 do
-      acc := Maths.(!acc + x.(i))
+      acc := Maths.(concat l.axis !acc x.(i))
     done;
-    Maths.(!acc / F (float_of_int n))
+    !acc
 
   let to_string l =
-    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let in_str = Owl_utils.string_of_array (fun i ->
+      if i = -1 then "*" else string_of_int i
+    ) l.in_shape
+    in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "    Average : in:[*,%s] out:[*,%s]\n" in_str out_str
+    Printf.sprintf "    Concatenate : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    axis : %i\n" l.axis ^
+    ""
 
-  let to_name () = "average"
-*)
+  let to_name () = "concatenate"
+
 end
 
 
@@ -1736,6 +1759,7 @@ type neuron =
   | Dot            of Dot.neuron_typ
   | Max            of Max.neuron_typ
   | Average        of Average.neuron_typ
+  | Concatenate    of Concatenate.neuron_typ
 
 
 let get_in_out_shape = function
@@ -1763,37 +1787,39 @@ let get_in_out_shape = function
   | Dot l            -> Dot.(l.in_shape, l.out_shape)
   | Max l            -> Max.(l.in_shape, l.out_shape)
   | Average l        -> Average.(l.in_shape, l.out_shape)
+  | Concatenate l    -> Concatenate.(l.in_shape, l.out_shape)
 
 let get_in_shape x = x |> get_in_out_shape |> fst
 
 let get_out_shape x = x |> get_in_out_shape |> snd
 
 
-let connect out_shape l = match l with
+let connect out_shapes l = match l with
   | Input l          -> () (* always the first neuron *)
-  | Linear l         -> Linear.connect out_shape l
-  | LinearNoBias l   -> LinearNoBias.connect out_shape l
-  | LSTM l           -> LSTM.connect out_shape l
-  | GRU l            -> GRU.connect out_shape l
-  | Recurrent l      -> Recurrent.connect out_shape l
-  | Conv1D l         -> Conv1D.connect out_shape l
-  | Conv2D l         -> Conv2D.connect out_shape l
-  | Conv3D l         -> Conv3D.connect out_shape l
-  | FullyConnected l -> FullyConnected.connect out_shape l
-  | MaxPool1D l      -> MaxPool1D.connect out_shape l
-  | MaxPool2D l      -> MaxPool2D.connect out_shape l
-  | AvgPool1D l      -> AvgPool1D.connect out_shape l
-  | AvgPool2D l      -> AvgPool2D.connect out_shape l
-  | Dropout l        -> Dropout.connect out_shape l
-  | Reshape l        -> Reshape.connect out_shape l
-  | Flatten l        -> Flatten.connect out_shape l
-  | Lambda l         -> Lambda.connect out_shape l
-  | Activation l     -> Activation.connect out_shape l
-  | Add l            -> Add.connect out_shape l
-  | Mul l            -> Mul.connect out_shape l
-  | Dot l            -> Dot.connect out_shape l
-  | Max l            -> Max.connect out_shape l
-  | Average l        -> Average.connect out_shape l
+  | Linear l         -> Linear.connect out_shapes.(0) l
+  | LinearNoBias l   -> LinearNoBias.connect out_shapes.(0) l
+  | LSTM l           -> LSTM.connect out_shapes.(0) l
+  | GRU l            -> GRU.connect out_shapes.(0) l
+  | Recurrent l      -> Recurrent.connect out_shapes.(0) l
+  | Conv1D l         -> Conv1D.connect out_shapes.(0) l
+  | Conv2D l         -> Conv2D.connect out_shapes.(0) l
+  | Conv3D l         -> Conv3D.connect out_shapes.(0) l
+  | FullyConnected l -> FullyConnected.connect out_shapes.(0) l
+  | MaxPool1D l      -> MaxPool1D.connect out_shapes.(0) l
+  | MaxPool2D l      -> MaxPool2D.connect out_shapes.(0) l
+  | AvgPool1D l      -> AvgPool1D.connect out_shapes.(0) l
+  | AvgPool2D l      -> AvgPool2D.connect out_shapes.(0) l
+  | Dropout l        -> Dropout.connect out_shapes.(0) l
+  | Reshape l        -> Reshape.connect out_shapes.(0) l
+  | Flatten l        -> Flatten.connect out_shapes.(0) l
+  | Lambda l         -> Lambda.connect out_shapes.(0) l
+  | Activation l     -> Activation.connect out_shapes.(0) l
+  | Add l            -> Add.connect out_shapes l
+  | Mul l            -> Mul.connect out_shapes l
+  | Dot l            -> Dot.connect out_shapes l
+  | Max l            -> Max.connect out_shapes l
+  | Average l        -> Average.connect out_shapes l
+  | Concatenate l    -> Concatenate.connect out_shapes l
 
 
 let init = function
@@ -1887,29 +1913,6 @@ let update l u = match l with
 
 
 let run a l = match l with
-  | Input l          -> Input.run a l
-  | Linear l         -> Linear.run a l
-  | LinearNoBias l   -> LinearNoBias.run a l
-  | LSTM l           -> LSTM.run a l
-  | GRU l            -> GRU.run a l
-  | Recurrent l      -> Recurrent.run a l
-  | Conv1D l         -> Conv1D.run a l
-  | Conv2D l         -> Conv2D.run a l
-  | Conv3D l         -> Conv3D.run a l
-  | FullyConnected l -> FullyConnected.run a l
-  | MaxPool1D l      -> MaxPool1D.run a l
-  | MaxPool2D l      -> MaxPool2D.run a l
-  | AvgPool1D l      -> AvgPool1D.run a l
-  | AvgPool2D l      -> AvgPool2D.run a l
-  | Dropout l        -> Dropout.run a l
-  | Reshape l        -> Reshape.run a l
-  | Flatten l        -> Flatten.run a l
-  | Lambda l         -> Lambda.run a l
-  | Activation l     -> Activation.run a l
-  | _                -> failwith "Owl_neural_neuron:run"
-
-
-let run_array a l = match l with
   | Input l          -> Input.run a.(0) l
   | Linear l         -> Linear.run a.(0) l
   | LinearNoBias l   -> LinearNoBias.run a.(0) l
@@ -1934,6 +1937,7 @@ let run_array a l = match l with
   | Dot l            -> Dot.run a l
   | Max l            -> Max.run a l
   | Average l        -> Average.run a l
+  | Concatenate l    -> Concatenate.run a l
 
 
 let to_string = function
@@ -1961,6 +1965,7 @@ let to_string = function
   | Dot l            -> Dot.to_string l
   | Max l            -> Max.to_string l
   | Average l        -> Average.to_string l
+  | Concatenate l    -> Concatenate.to_string l
 
 
 let to_name = function
@@ -1988,6 +1993,7 @@ let to_name = function
   | Dot _            -> Dot.to_name ()
   | Max _            -> Max.to_name ()
   | Average _        -> Average.to_name ()
+  | Concatenate _    -> Concatenate.to_name ()
 
 
 

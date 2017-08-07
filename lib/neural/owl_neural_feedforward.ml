@@ -59,7 +59,7 @@ let connect_layer prev_l next_l =
   let prev_neuron = prev_l.neuron in
   let next_neuron = next_l.neuron in
   let out_shape = get_out_shape prev_neuron in
-  connect out_shape next_neuron
+  connect [|out_shape|] next_neuron
 
 
 let rec add_layer ?act_typ nn l =
@@ -112,7 +112,7 @@ let mkadj nn = Array.map (fun l -> mkadj l.neuron) nn.layers
 let update nn us = Array.iter2 (fun l u -> update l.neuron u) nn.layers us
 
 
-let run x nn = Array.fold_left (fun a l -> run a l.neuron) x nn.layers
+let run x nn = Array.fold_left (fun a l -> run [|a|] l.neuron) x nn.layers
 
 
 let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
