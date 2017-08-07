@@ -48,6 +48,8 @@ module type MatrixSig = sig
 
   val reshape : int -> int -> mat -> mat
 
+  val concatenate : ?axis:int -> mat array -> mat
+
   val copy_row_to : mat -> mat -> int -> unit
 
   val copy_col_to : mat -> mat -> int -> unit
@@ -211,6 +213,8 @@ module type NdarraySig = sig
   val reset : arr -> unit
 
   val reshape : arr -> int array -> arr
+
+  val concatenate : ?axis:int -> arr array -> arr
 
   val sum_slices : ?axis:int -> arr -> arr
 
@@ -448,6 +452,7 @@ module Make
     | Add_Row_C_D of t * t * int
     | Get_Row_D   of t * int
     | Of_Rows_D   of t array
+    | Concat_D    of t array * int
     | Conv1D_D_D  of t * t * int array
     | Conv1D_D_C  of t * t * int array
     | Conv1D_C_D  of t * t * int array
@@ -460,10 +465,10 @@ module Make
     | Reshape_D   of t
     | Mat2Arr_D   of t
     | Arr2Mat_D   of t
-    | Maxpool1D_D   of t * padding * int array * int array
-    | Maxpool2D_D   of t * padding * int array * int array
-    | Avgpool1D_D   of t * padding * int array * int array
-    | Avgpool2D_D   of t * padding * int array * int array
+    | Maxpool1D_D of t * padding * int array * int array
+    | Maxpool2D_D of t * padding * int array * int array
+    | Avgpool1D_D of t * padding * int array * int array
+    | Avgpool2D_D of t * padding * int array * int array
 
 
   (* generate global tags *)
@@ -1486,6 +1491,18 @@ module Make
         | _     -> error_uniop "dropout" a
       in
       a * b
+(* TODO
+    and concat axis a =
+      let ff = function
+        | Arr a -> Arr A.(concatenate ~axis a)
+        | Mat a -> Mat M.(concatenate ~axis a)
+        | _     -> error_uniop "concat" a
+      in
+      let fd a = concat axis a in
+      let df cp ap at = concat axis at in
+      let r a = Concat_D (a, axis) in
+      op_d_d a ff fd df r
+*)
 
     (* TODO: trace and diag functions ... *)
 

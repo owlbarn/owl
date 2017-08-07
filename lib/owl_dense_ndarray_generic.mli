@@ -286,7 +286,11 @@ val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 (** [concatenate ~axis:2 x] concatenates an array of ndarrays along the third
   dimension. For the ndarrays in [x], they must have the same shape except the
   dimension specified by [axis]. The default value of [axis] is 0, i.e., the
-  lowest dimension on an ndarray.
+  lowest dimension of a matrix/ndarray.
+ *)
+
+val split : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
+(** [split ~axis parts x]
  *)
 
 val squeeze : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t

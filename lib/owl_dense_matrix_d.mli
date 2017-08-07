@@ -141,6 +141,8 @@ val concat_horizontal : mat -> mat -> mat
 
 val concatenate : ?axis:int -> mat array -> mat
 
+val split : ?axis:int -> int array -> mat -> mat array
+
 val transpose : mat -> mat
 
 val ctranspose : mat -> mat

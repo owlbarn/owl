@@ -48,6 +48,8 @@ module type MatrixSig = sig
 
   val reshape : int -> int -> mat -> mat
 
+  val concatenate : ?axis:int -> mat array -> mat
+
   val copy_row_to : mat -> mat -> int -> unit
 
   val copy_col_to : mat -> mat -> int -> unit
@@ -212,6 +214,8 @@ module type NdarraySig = sig
   val reset : arr -> unit
 
   val reshape : arr -> int array -> arr
+
+  val concatenate : ?axis:int -> arr array -> arr
 
   val sum_slices : ?axis:int -> arr -> arr
 

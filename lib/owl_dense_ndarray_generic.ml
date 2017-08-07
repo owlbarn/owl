@@ -2832,6 +2832,25 @@ let modf x =
   x, y
 
 
+(* TODO: optimise *)
+let split ?(axis=0) parts x =
+  let x_shp = shape x in
+  let x_dim = num_dims x in
+  let _d = Array.fold_left ( + ) 0 parts in
+  assert (axis < x_dim);
+  assert (_d = x_shp.(axis));
+
+  let _pos = ref 0 in
+  let slices = Array.map (fun d ->
+    let s_def = Array.make x_dim [||] in
+    s_def.(axis) <- [|!_pos; !_pos + d - 1|];
+    _pos := !_pos + d;
+    Owl_slicing.slice_array_typ s_def x
+  ) parts
+  in
+  slices
+
+
 (* TODO *)
 
 let insert_slice = None

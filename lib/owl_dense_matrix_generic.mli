@@ -340,6 +340,10 @@ val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
   lowest dimension on a marix, i.e., rows.
  *)
 
+val split : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
+(** [split ~axis parts x]
+ *)
+
 val transpose : ('a, 'b) t -> ('a, 'b) t
 (** [transpose x] transposes an [m] by [n] matrix to [n] by [m] one. *)
 
