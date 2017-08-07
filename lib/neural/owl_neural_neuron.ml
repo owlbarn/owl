@@ -1747,13 +1747,46 @@ module GaussianNoise = struct
     Printf.sprintf "    GaussianNoise : in:[*,%s] out:[*,%s]\n" in_str out_str ^
     Printf.sprintf "    sigma         : %g\n" l.sigma
 
-  let to_name () = "gaussiannoise"
+  let to_name () = "gaussian_noise"
 
 end
 
 
-(* TODO: definition of GaussianDropout neuron *)
 module GaussianDropout = struct
+
+  type neuron_typ = {
+    mutable rate      : float;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create rate = {
+    rate      = rate;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let run x l =
+    let s = shape x in
+    let sigma = Pervasives.sqrt (l.rate /. (1. -. l.rate)) in
+    let a = match (primal' x) with
+      | Arr _ -> Arr.gaussian ~sigma s
+      | Mat _ -> Mat.gaussian ~sigma s.(0) s.(1)
+      | _     -> failwith "owl_neural_neuron:gaussiandropout:run"
+    in
+    Maths.(x * (a + F 1.))
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "    GaussianDropout : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    rate            : %g\n" l.rate
+
+  let to_name () = "gaussian_dropout"
 
 end
 
@@ -1767,61 +1800,63 @@ end
 (* type definition and basic functions of neurons *)
 
 type neuron =
-  | Input          of Input.neuron_typ
-  | Linear         of Linear.neuron_typ
-  | LinearNoBias   of LinearNoBias.neuron_typ
-  | LSTM           of LSTM.neuron_typ
-  | GRU            of GRU.neuron_typ
-  | Recurrent      of Recurrent.neuron_typ
-  | Conv1D         of Conv1D.neuron_typ
-  | Conv2D         of Conv2D.neuron_typ
-  | Conv3D         of Conv3D.neuron_typ
-  | FullyConnected of FullyConnected.neuron_typ
-  | MaxPool1D      of MaxPool1D.neuron_typ
-  | MaxPool2D      of MaxPool2D.neuron_typ
-  | AvgPool1D      of AvgPool1D.neuron_typ
-  | AvgPool2D      of AvgPool2D.neuron_typ
-  | Dropout        of Dropout.neuron_typ
-  | Reshape        of Reshape.neuron_typ
-  | Flatten        of Flatten.neuron_typ
-  | Lambda         of Lambda.neuron_typ
-  | Activation     of Activation.neuron_typ
-  | GaussianNoise  of GaussianNoise.neuron_typ
-  | Add            of Add.neuron_typ
-  | Mul            of Mul.neuron_typ
-  | Dot            of Dot.neuron_typ
-  | Max            of Max.neuron_typ
-  | Average        of Average.neuron_typ
-  | Concatenate    of Concatenate.neuron_typ
+  | Input           of Input.neuron_typ
+  | Linear          of Linear.neuron_typ
+  | LinearNoBias    of LinearNoBias.neuron_typ
+  | LSTM            of LSTM.neuron_typ
+  | GRU             of GRU.neuron_typ
+  | Recurrent       of Recurrent.neuron_typ
+  | Conv1D          of Conv1D.neuron_typ
+  | Conv2D          of Conv2D.neuron_typ
+  | Conv3D          of Conv3D.neuron_typ
+  | FullyConnected  of FullyConnected.neuron_typ
+  | MaxPool1D       of MaxPool1D.neuron_typ
+  | MaxPool2D       of MaxPool2D.neuron_typ
+  | AvgPool1D       of AvgPool1D.neuron_typ
+  | AvgPool2D       of AvgPool2D.neuron_typ
+  | Dropout         of Dropout.neuron_typ
+  | Reshape         of Reshape.neuron_typ
+  | Flatten         of Flatten.neuron_typ
+  | Lambda          of Lambda.neuron_typ
+  | Activation      of Activation.neuron_typ
+  | GaussianNoise   of GaussianNoise.neuron_typ
+  | GaussianDropout of GaussianDropout.neuron_typ
+  | Add             of Add.neuron_typ
+  | Mul             of Mul.neuron_typ
+  | Dot             of Dot.neuron_typ
+  | Max             of Max.neuron_typ
+  | Average         of Average.neuron_typ
+  | Concatenate     of Concatenate.neuron_typ
 
 
 let get_in_out_shape = function
-  | Input l          -> Input.(l.in_shape, l.out_shape)
-  | Linear l         -> Linear.(l.in_shape, l.out_shape)
-  | LinearNoBias l   -> LinearNoBias.(l.in_shape, l.out_shape)
-  | LSTM l           -> LSTM.(l.in_shape, l.out_shape)
-  | GRU l            -> GRU.(l.in_shape, l.out_shape)
-  | Recurrent l      -> Recurrent.(l.in_shape, l.out_shape)
-  | Conv1D l         -> Conv1D.(l.in_shape, l.out_shape)
-  | Conv2D l         -> Conv2D.(l.in_shape, l.out_shape)
-  | Conv3D l         -> Conv3D.(l.in_shape, l.out_shape)
-  | FullyConnected l -> FullyConnected.(l.in_shape, l.out_shape)
-  | MaxPool1D l      -> MaxPool1D.(l.in_shape, l.out_shape)
-  | MaxPool2D l      -> MaxPool2D.(l.in_shape, l.out_shape)
-  | AvgPool1D l      -> AvgPool1D.(l.in_shape, l.out_shape)
-  | AvgPool2D l      -> AvgPool2D.(l.in_shape, l.out_shape)
-  | Dropout l        -> Dropout.(l.in_shape, l.out_shape)
-  | Reshape l        -> Reshape.(l.in_shape, l.out_shape)
-  | Flatten l        -> Flatten.(l.in_shape, l.out_shape)
-  | Lambda l         -> Lambda.(l.in_shape, l.out_shape)
-  | Activation l     -> Activation.(l.in_shape, l.out_shape)
-  | GaussianNoise l  -> GaussianNoise.(l.in_shape, l.out_shape)
-  | Add l            -> Add.(l.in_shape, l.out_shape)
-  | Mul l            -> Mul.(l.in_shape, l.out_shape)
-  | Dot l            -> Dot.(l.in_shape, l.out_shape)
-  | Max l            -> Max.(l.in_shape, l.out_shape)
-  | Average l        -> Average.(l.in_shape, l.out_shape)
-  | Concatenate l    -> Concatenate.(l.in_shape, l.out_shape)
+  | Input l           -> Input.(l.in_shape, l.out_shape)
+  | Linear l          -> Linear.(l.in_shape, l.out_shape)
+  | LinearNoBias l    -> LinearNoBias.(l.in_shape, l.out_shape)
+  | LSTM l            -> LSTM.(l.in_shape, l.out_shape)
+  | GRU l             -> GRU.(l.in_shape, l.out_shape)
+  | Recurrent l       -> Recurrent.(l.in_shape, l.out_shape)
+  | Conv1D l          -> Conv1D.(l.in_shape, l.out_shape)
+  | Conv2D l          -> Conv2D.(l.in_shape, l.out_shape)
+  | Conv3D l          -> Conv3D.(l.in_shape, l.out_shape)
+  | FullyConnected l  -> FullyConnected.(l.in_shape, l.out_shape)
+  | MaxPool1D l       -> MaxPool1D.(l.in_shape, l.out_shape)
+  | MaxPool2D l       -> MaxPool2D.(l.in_shape, l.out_shape)
+  | AvgPool1D l       -> AvgPool1D.(l.in_shape, l.out_shape)
+  | AvgPool2D l       -> AvgPool2D.(l.in_shape, l.out_shape)
+  | Dropout l         -> Dropout.(l.in_shape, l.out_shape)
+  | Reshape l         -> Reshape.(l.in_shape, l.out_shape)
+  | Flatten l         -> Flatten.(l.in_shape, l.out_shape)
+  | Lambda l          -> Lambda.(l.in_shape, l.out_shape)
+  | Activation l      -> Activation.(l.in_shape, l.out_shape)
+  | GaussianNoise l   -> GaussianNoise.(l.in_shape, l.out_shape)
+  | GaussianDropout l -> GaussianDropout.(l.in_shape, l.out_shape)
+  | Add l             -> Add.(l.in_shape, l.out_shape)
+  | Mul l             -> Mul.(l.in_shape, l.out_shape)
+  | Dot l             -> Dot.(l.in_shape, l.out_shape)
+  | Max l             -> Max.(l.in_shape, l.out_shape)
+  | Average l         -> Average.(l.in_shape, l.out_shape)
+  | Concatenate l     -> Concatenate.(l.in_shape, l.out_shape)
 
 let get_in_shape x = x |> get_in_out_shape |> fst
 
@@ -1829,32 +1864,33 @@ let get_out_shape x = x |> get_in_out_shape |> snd
 
 
 let connect out_shapes l = match l with
-  | Input l          -> () (* always the first neuron *)
-  | Linear l         -> Linear.connect out_shapes.(0) l
-  | LinearNoBias l   -> LinearNoBias.connect out_shapes.(0) l
-  | LSTM l           -> LSTM.connect out_shapes.(0) l
-  | GRU l            -> GRU.connect out_shapes.(0) l
-  | Recurrent l      -> Recurrent.connect out_shapes.(0) l
-  | Conv1D l         -> Conv1D.connect out_shapes.(0) l
-  | Conv2D l         -> Conv2D.connect out_shapes.(0) l
-  | Conv3D l         -> Conv3D.connect out_shapes.(0) l
-  | FullyConnected l -> FullyConnected.connect out_shapes.(0) l
-  | MaxPool1D l      -> MaxPool1D.connect out_shapes.(0) l
-  | MaxPool2D l      -> MaxPool2D.connect out_shapes.(0) l
-  | AvgPool1D l      -> AvgPool1D.connect out_shapes.(0) l
-  | AvgPool2D l      -> AvgPool2D.connect out_shapes.(0) l
-  | Dropout l        -> Dropout.connect out_shapes.(0) l
-  | Reshape l        -> Reshape.connect out_shapes.(0) l
-  | Flatten l        -> Flatten.connect out_shapes.(0) l
-  | Lambda l         -> Lambda.connect out_shapes.(0) l
-  | Activation l     -> Activation.connect out_shapes.(0) l
-  | GaussianNoise l  -> GaussianNoise.connect out_shapes.(0) l
-  | Add l            -> Add.connect out_shapes l
-  | Mul l            -> Mul.connect out_shapes l
-  | Dot l            -> Dot.connect out_shapes l
-  | Max l            -> Max.connect out_shapes l
-  | Average l        -> Average.connect out_shapes l
-  | Concatenate l    -> Concatenate.connect out_shapes l
+  | Input l           -> () (* always the first neuron *)
+  | Linear l          -> Linear.connect out_shapes.(0) l
+  | LinearNoBias l    -> LinearNoBias.connect out_shapes.(0) l
+  | LSTM l            -> LSTM.connect out_shapes.(0) l
+  | GRU l             -> GRU.connect out_shapes.(0) l
+  | Recurrent l       -> Recurrent.connect out_shapes.(0) l
+  | Conv1D l          -> Conv1D.connect out_shapes.(0) l
+  | Conv2D l          -> Conv2D.connect out_shapes.(0) l
+  | Conv3D l          -> Conv3D.connect out_shapes.(0) l
+  | FullyConnected l  -> FullyConnected.connect out_shapes.(0) l
+  | MaxPool1D l       -> MaxPool1D.connect out_shapes.(0) l
+  | MaxPool2D l       -> MaxPool2D.connect out_shapes.(0) l
+  | AvgPool1D l       -> AvgPool1D.connect out_shapes.(0) l
+  | AvgPool2D l       -> AvgPool2D.connect out_shapes.(0) l
+  | Dropout l         -> Dropout.connect out_shapes.(0) l
+  | Reshape l         -> Reshape.connect out_shapes.(0) l
+  | Flatten l         -> Flatten.connect out_shapes.(0) l
+  | Lambda l          -> Lambda.connect out_shapes.(0) l
+  | Activation l      -> Activation.connect out_shapes.(0) l
+  | GaussianNoise l   -> GaussianNoise.connect out_shapes.(0) l
+  | GaussianDropout l -> GaussianDropout.connect out_shapes.(0) l
+  | Add l             -> Add.connect out_shapes l
+  | Mul l             -> Mul.connect out_shapes l
+  | Dot l             -> Dot.connect out_shapes l
+  | Max l             -> Max.connect out_shapes l
+  | Average l         -> Average.connect out_shapes l
+  | Concatenate l     -> Concatenate.connect out_shapes l
 
 
 let init = function
@@ -1948,90 +1984,93 @@ let update l u = match l with
 
 
 let run a l = match l with
-  | Input l          -> Input.run a.(0) l
-  | Linear l         -> Linear.run a.(0) l
-  | LinearNoBias l   -> LinearNoBias.run a.(0) l
-  | LSTM l           -> LSTM.run a.(0) l
-  | GRU l            -> GRU.run a.(0) l
-  | Recurrent l      -> Recurrent.run a.(0) l
-  | Conv1D l         -> Conv1D.run a.(0) l
-  | Conv2D l         -> Conv2D.run a.(0) l
-  | Conv3D l         -> Conv3D.run a.(0) l
-  | FullyConnected l -> FullyConnected.run a.(0) l
-  | MaxPool1D l      -> MaxPool1D.run a.(0) l
-  | MaxPool2D l      -> MaxPool2D.run a.(0) l
-  | AvgPool1D l      -> AvgPool1D.run a.(0) l
-  | AvgPool2D l      -> AvgPool2D.run a.(0) l
-  | Dropout l        -> Dropout.run a.(0) l
-  | Reshape l        -> Reshape.run a.(0) l
-  | Flatten l        -> Flatten.run a.(0) l
-  | Lambda l         -> Lambda.run a.(0) l
-  | Activation l     -> Activation.run a.(0) l
-  | GaussianNoise l  -> GaussianNoise.run a.(0) l
-  | Add l            -> Add.run a l
-  | Mul l            -> Mul.run a l
-  | Dot l            -> Dot.run a l
-  | Max l            -> Max.run a l
-  | Average l        -> Average.run a l
-  | Concatenate l    -> Concatenate.run a l
+  | Input l           -> Input.run a.(0) l
+  | Linear l          -> Linear.run a.(0) l
+  | LinearNoBias l    -> LinearNoBias.run a.(0) l
+  | LSTM l            -> LSTM.run a.(0) l
+  | GRU l             -> GRU.run a.(0) l
+  | Recurrent l       -> Recurrent.run a.(0) l
+  | Conv1D l          -> Conv1D.run a.(0) l
+  | Conv2D l          -> Conv2D.run a.(0) l
+  | Conv3D l          -> Conv3D.run a.(0) l
+  | FullyConnected l  -> FullyConnected.run a.(0) l
+  | MaxPool1D l       -> MaxPool1D.run a.(0) l
+  | MaxPool2D l       -> MaxPool2D.run a.(0) l
+  | AvgPool1D l       -> AvgPool1D.run a.(0) l
+  | AvgPool2D l       -> AvgPool2D.run a.(0) l
+  | Dropout l         -> Dropout.run a.(0) l
+  | Reshape l         -> Reshape.run a.(0) l
+  | Flatten l         -> Flatten.run a.(0) l
+  | Lambda l          -> Lambda.run a.(0) l
+  | Activation l      -> Activation.run a.(0) l
+  | GaussianNoise l   -> GaussianNoise.run a.(0) l
+  | GaussianDropout l -> GaussianDropout.run a.(0) l
+  | Add l             -> Add.run a l
+  | Mul l             -> Mul.run a l
+  | Dot l             -> Dot.run a l
+  | Max l             -> Max.run a l
+  | Average l         -> Average.run a l
+  | Concatenate l     -> Concatenate.run a l
 
 
 let to_string = function
-  | Input l          -> Input.to_string l
-  | Linear l         -> Linear.to_string l
-  | LinearNoBias l   -> LinearNoBias.to_string l
-  | LSTM l           -> LSTM.to_string l
-  | GRU l            -> GRU.to_string l
-  | Recurrent l      -> Recurrent.to_string l
-  | Conv1D l         -> Conv1D.to_string l
-  | Conv2D l         -> Conv2D.to_string l
-  | Conv3D l         -> Conv3D.to_string l
-  | FullyConnected l -> FullyConnected.to_string l
-  | MaxPool1D l      -> MaxPool1D.to_string l
-  | MaxPool2D l      -> MaxPool2D.to_string l
-  | AvgPool1D l      -> AvgPool1D.to_string l
-  | AvgPool2D l      -> AvgPool2D.to_string l
-  | Dropout l        -> Dropout.to_string l
-  | Reshape l        -> Reshape.to_string l
-  | Flatten l        -> Flatten.to_string l
-  | Lambda l         -> Lambda.to_string l
-  | Activation l     -> Activation.to_string l
-  | GaussianNoise l  -> GaussianNoise.to_string l
-  | Add l            -> Add.to_string l
-  | Mul l            -> Mul.to_string l
-  | Dot l            -> Dot.to_string l
-  | Max l            -> Max.to_string l
-  | Average l        -> Average.to_string l
-  | Concatenate l    -> Concatenate.to_string l
+  | Input l           -> Input.to_string l
+  | Linear l          -> Linear.to_string l
+  | LinearNoBias l    -> LinearNoBias.to_string l
+  | LSTM l            -> LSTM.to_string l
+  | GRU l             -> GRU.to_string l
+  | Recurrent l       -> Recurrent.to_string l
+  | Conv1D l          -> Conv1D.to_string l
+  | Conv2D l          -> Conv2D.to_string l
+  | Conv3D l          -> Conv3D.to_string l
+  | FullyConnected l  -> FullyConnected.to_string l
+  | MaxPool1D l       -> MaxPool1D.to_string l
+  | MaxPool2D l       -> MaxPool2D.to_string l
+  | AvgPool1D l       -> AvgPool1D.to_string l
+  | AvgPool2D l       -> AvgPool2D.to_string l
+  | Dropout l         -> Dropout.to_string l
+  | Reshape l         -> Reshape.to_string l
+  | Flatten l         -> Flatten.to_string l
+  | Lambda l          -> Lambda.to_string l
+  | Activation l      -> Activation.to_string l
+  | GaussianNoise l   -> GaussianNoise.to_string l
+  | GaussianDropout l -> GaussianDropout.to_string l
+  | Add l             -> Add.to_string l
+  | Mul l             -> Mul.to_string l
+  | Dot l             -> Dot.to_string l
+  | Max l             -> Max.to_string l
+  | Average l         -> Average.to_string l
+  | Concatenate l     -> Concatenate.to_string l
 
 
 let to_name = function
-  | Input _          -> Input.to_name ()
-  | Linear _         -> Linear.to_name ()
-  | LinearNoBias _   -> LinearNoBias.to_name ()
-  | LSTM _           -> LSTM.to_name ()
-  | GRU _            -> GRU.to_name ()
-  | Recurrent _      -> Recurrent.to_name ()
-  | Conv1D _         -> Conv1D.to_name ()
-  | Conv2D _         -> Conv2D.to_name ()
-  | Conv3D _         -> Conv3D.to_name ()
-  | FullyConnected _ -> FullyConnected.to_name ()
-  | MaxPool1D _      -> MaxPool1D.to_name ()
-  | MaxPool2D _      -> MaxPool2D.to_name ()
-  | AvgPool1D _      -> AvgPool1D.to_name ()
-  | AvgPool2D _      -> AvgPool2D.to_name ()
-  | Dropout _        -> Dropout.to_name ()
-  | Reshape _        -> Reshape.to_name ()
-  | Flatten _        -> Flatten.to_name ()
-  | Lambda _         -> Lambda.to_name ()
-  | Activation _     -> Activation.to_name ()
-  | GaussianNoise _  -> GaussianNoise.to_name ()
-  | Add _            -> Add.to_name ()
-  | Mul _            -> Mul.to_name ()
-  | Dot _            -> Dot.to_name ()
-  | Max _            -> Max.to_name ()
-  | Average _        -> Average.to_name ()
-  | Concatenate _    -> Concatenate.to_name ()
+  | Input _           -> Input.to_name ()
+  | Linear _          -> Linear.to_name ()
+  | LinearNoBias _    -> LinearNoBias.to_name ()
+  | LSTM _            -> LSTM.to_name ()
+  | GRU _             -> GRU.to_name ()
+  | Recurrent _       -> Recurrent.to_name ()
+  | Conv1D _          -> Conv1D.to_name ()
+  | Conv2D _          -> Conv2D.to_name ()
+  | Conv3D _          -> Conv3D.to_name ()
+  | FullyConnected _  -> FullyConnected.to_name ()
+  | MaxPool1D _       -> MaxPool1D.to_name ()
+  | MaxPool2D _       -> MaxPool2D.to_name ()
+  | AvgPool1D _       -> AvgPool1D.to_name ()
+  | AvgPool2D _       -> AvgPool2D.to_name ()
+  | Dropout _         -> Dropout.to_name ()
+  | Reshape _         -> Reshape.to_name ()
+  | Flatten _         -> Flatten.to_name ()
+  | Lambda _          -> Lambda.to_name ()
+  | Activation _      -> Activation.to_name ()
+  | GaussianNoise _   -> GaussianNoise.to_name ()
+  | GaussianDropout _ -> GaussianDropout.to_name ()
+  | Add _             -> Add.to_name ()
+  | Mul _             -> Mul.to_name ()
+  | Dot _             -> Dot.to_name ()
+  | Max _             -> Max.to_name ()
+  | Average _         -> Average.to_name ()
+  | Concatenate _     -> Concatenate.to_name ()
 
 
 
