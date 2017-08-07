@@ -317,6 +317,13 @@ let dropout ?name rate input_node =
   add_node nn [|input_node|] n
 
 
+let gaussian_noise ?name sigma input_node =
+  let neuron = GaussianNoise (GaussianNoise.create sigma) in
+  let nn = get_network input_node in
+  let n = make_node ?name [||] [||] neuron None nn in
+  add_node nn [|input_node|] n
+
+
 let reshape ?name ?convert outputs input_node=
   let neuron = Reshape (Reshape.create ?convert outputs) in
   let nn = get_network input_node in
@@ -361,6 +368,13 @@ let max ?name ?act_typ input_node =
 
 let average ?name ?act_typ input_node =
   let neuron = Average (Average.create ()) in
+  let nn = get_network input_node.(0) in
+  let n = make_node ?name [||] [||] neuron None nn in
+  add_node ?act_typ nn input_node n
+
+
+let concatenate ?name ?act_typ axis input_node =
+  let neuron = Concatenate (Concatenate.create axis) in
   let nn = get_network input_node.(0) in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node ?act_typ nn input_node n

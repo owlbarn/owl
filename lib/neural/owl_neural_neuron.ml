@@ -1714,8 +1714,40 @@ module Normalisation = struct
 end
 
 
-(* TODO: definition of GaussianNoise neuron *)
 module GaussianNoise = struct
+
+  type neuron_typ = {
+    mutable sigma     : float;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create sigma = {
+    sigma;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let run x l =
+    let s = shape x in
+    let a = match (primal' x) with
+      | Arr _ -> Arr.gaussian ~sigma:l.sigma s
+      | Mat _ -> Mat.gaussian ~sigma:l.sigma s.(0) s.(1)
+      | _     -> failwith "owl_neural_neuron:gaussiannoise:run"
+    in
+    Maths.(x + a)
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "    GaussianNoise : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    sigma         : %g\n" l.sigma
+
+  let to_name () = "gaussiannoise"
 
 end
 
@@ -1754,6 +1786,7 @@ type neuron =
   | Flatten        of Flatten.neuron_typ
   | Lambda         of Lambda.neuron_typ
   | Activation     of Activation.neuron_typ
+  | GaussianNoise  of GaussianNoise.neuron_typ
   | Add            of Add.neuron_typ
   | Mul            of Mul.neuron_typ
   | Dot            of Dot.neuron_typ
@@ -1782,6 +1815,7 @@ let get_in_out_shape = function
   | Flatten l        -> Flatten.(l.in_shape, l.out_shape)
   | Lambda l         -> Lambda.(l.in_shape, l.out_shape)
   | Activation l     -> Activation.(l.in_shape, l.out_shape)
+  | GaussianNoise l  -> GaussianNoise.(l.in_shape, l.out_shape)
   | Add l            -> Add.(l.in_shape, l.out_shape)
   | Mul l            -> Mul.(l.in_shape, l.out_shape)
   | Dot l            -> Dot.(l.in_shape, l.out_shape)
@@ -1814,6 +1848,7 @@ let connect out_shapes l = match l with
   | Flatten l        -> Flatten.connect out_shapes.(0) l
   | Lambda l         -> Lambda.connect out_shapes.(0) l
   | Activation l     -> Activation.connect out_shapes.(0) l
+  | GaussianNoise l  -> GaussianNoise.connect out_shapes.(0) l
   | Add l            -> Add.connect out_shapes l
   | Mul l            -> Mul.connect out_shapes l
   | Dot l            -> Dot.connect out_shapes l
@@ -1932,6 +1967,7 @@ let run a l = match l with
   | Flatten l        -> Flatten.run a.(0) l
   | Lambda l         -> Lambda.run a.(0) l
   | Activation l     -> Activation.run a.(0) l
+  | GaussianNoise l  -> GaussianNoise.run a.(0) l
   | Add l            -> Add.run a l
   | Mul l            -> Mul.run a l
   | Dot l            -> Dot.run a l
@@ -1960,6 +1996,7 @@ let to_string = function
   | Flatten l        -> Flatten.to_string l
   | Lambda l         -> Lambda.to_string l
   | Activation l     -> Activation.to_string l
+  | GaussianNoise l  -> GaussianNoise.to_string l
   | Add l            -> Add.to_string l
   | Mul l            -> Mul.to_string l
   | Dot l            -> Dot.to_string l
@@ -1988,6 +2025,7 @@ let to_name = function
   | Flatten _        -> Flatten.to_name ()
   | Lambda _         -> Lambda.to_name ()
   | Activation _     -> Activation.to_name ()
+  | GaussianNoise _  -> GaussianNoise.to_name ()
   | Add _            -> Add.to_name ()
   | Mul _            -> Mul.to_name ()
   | Dot _            -> Dot.to_name ()
