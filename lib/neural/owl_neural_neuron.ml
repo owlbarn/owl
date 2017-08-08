@@ -83,6 +83,7 @@ module Activation = struct
     | Softmax
     | Tanh
     | LeakyRelu of float
+    | TRelu of float
     | Custom of (t -> t)
     | None
 
@@ -110,6 +111,7 @@ module Activation = struct
     | Softmax     -> Mat.map_by_row Maths.softmax x  (* FIXME: this probably needs to be fixed *)
     | Tanh        -> Maths.tanh x
     | LeakyRelu a -> Maths.((relu x) - (F a) * (relu (neg x)))
+    | TRelu a     -> Maths.(relu (x - F a))
     | Custom f    -> f x
     | None        -> x
 
@@ -122,6 +124,7 @@ module Activation = struct
     | Softmax     -> Printf.sprintf "%s" "softmax"
     | Tanh        -> Printf.sprintf "%s" "tanh"
     | LeakyRelu a -> Printf.sprintf "%s %g" "leaky_relu" a
+    | TRelu a     -> Printf.sprintf "%s %g" "threshold_relu" a
     | Custom _    -> Printf.sprintf "%s" "customise"
     | None        -> Printf.sprintf "%s" "none"
 
