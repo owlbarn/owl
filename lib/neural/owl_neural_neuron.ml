@@ -77,15 +77,19 @@ end
 module Activation = struct
 
   type typ =
-    | Elu
-    | Relu
-    | Sigmoid
-    | Softmax
-    | Tanh
-    | LeakyRelu of float
-    | TRelu of float
-    | Custom of (t -> t)
-    | None
+    | Elu                 (* Exponential linear unit *)
+    | Relu                (* Rectified linear unit *)
+    | Sigmoid             (* Element-wise sigmoid *)
+    | HardSigmoid         (* Linear approximation of sigmoid *)
+    | Softmax             (* Element-wise softmax *)
+    | Softplus            (* Element-wise softplus *)
+    | Softsign            (* Element-wise softsign *)
+    | Tanh                (* Element-wise tanh *)
+    | Relu6               (* Element-wise relu6 *)
+    | LeakyRelu of float  (* Leaky version of a Rectified Linear Unit *)
+    | TRelu of float      (* Thresholded Rectified Linear Unit *)
+    | Custom of (t -> t)  (* Element-wise customised activation *)
+    | None                (* None activation *)
 
   type neuron_typ = {
     mutable activation : typ;
@@ -108,9 +112,13 @@ module Activation = struct
     | Elu         -> Maths.((relu x) + (x |> neg |> relu |> neg |> exp) - F 1.)
     | Relu        -> Maths.relu x
     | Sigmoid     -> Maths.sigmoid x
+    | HardSigmoid -> Maths.(max2 (F 0.) (min2 (F 1.) ((F 0.2) * x + (F 0.5))))
     | Softmax     -> Mat.map_by_row Maths.softmax x  (* FIXME: this probably needs to be fixed *)
+    | Softplus    -> Maths.softplus x
+    | Softsign    -> Maths.softsign x
     | Tanh        -> Maths.tanh x
-    | LeakyRelu a -> Maths.((relu x) - (F a) * (relu (neg x)))
+    | Relu6       -> Maths.(min2 (relu x) (F 6.))
+    | LeakyRelu a -> Maths.((relu x) - (F a) * (x |> neg |> relu))
     | TRelu a     -> Maths.(relu (x - F a))
     | Custom f    -> f x
     | None        -> x
@@ -121,8 +129,12 @@ module Activation = struct
     | Elu         -> Printf.sprintf "%s" "elu"
     | Relu        -> Printf.sprintf "%s" "relu"
     | Sigmoid     -> Printf.sprintf "%s" "sigmoid"
+    | HardSigmoid -> Printf.sprintf "%s" "hard_sigmoid"
     | Softmax     -> Printf.sprintf "%s" "softmax"
+    | Softplus    -> Printf.sprintf "%s" "softplus"
+    | Softsign    -> Printf.sprintf "%s" "softsign"
     | Tanh        -> Printf.sprintf "%s" "tanh"
+    | Relu6       -> Printf.sprintf "%s" "relu6"
     | LeakyRelu a -> Printf.sprintf "%s %g" "leaky_relu" a
     | TRelu a     -> Printf.sprintf "%s %g" "threshold_relu" a
     | Custom _    -> Printf.sprintf "%s" "customise"
