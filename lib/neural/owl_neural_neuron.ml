@@ -81,6 +81,7 @@ module Activation = struct
     | Sigmoid
     | Softmax
     | Tanh
+    | LeakyRelu of float
     | Custom of (t -> t)
     | None
 
@@ -102,22 +103,24 @@ module Activation = struct
 
   let run_activation x activation =
     match activation with
-    | Relu     -> Maths.relu x
-    | Sigmoid  -> Maths.sigmoid x
-    | Softmax  -> Mat.map_by_row Maths.softmax x  (* FIXME: this probably needs to be fixed *)
-    | Tanh     -> Maths.tanh x
-    | Custom f -> f x
-    | None     -> x
+    | Relu        -> Maths.relu x
+    | Sigmoid     -> Maths.sigmoid x
+    | Softmax     -> Mat.map_by_row Maths.softmax x  (* FIXME: this probably needs to be fixed *)
+    | Tanh        -> Maths.tanh x
+    | LeakyRelu a -> Maths.((relu x) - (F a) * (relu (neg x)))
+    | Custom f    -> f x
+    | None        -> x
 
   let run x l = run_activation x l.activation
 
   let activation_to_string = function
-    | Relu     -> "relu"
-    | Sigmoid  -> "sigmoid"
-    | Softmax  -> "softmax"
-    | Tanh     -> "tanh"
-    | Custom _ -> "customise"
-    | None     -> "none"
+    | Relu        -> Printf.sprintf "%s" "relu"
+    | Sigmoid     -> Printf.sprintf "%s" "sigmoid"
+    | Softmax     -> Printf.sprintf "%s" "softmax"
+    | Tanh        -> Printf.sprintf "%s" "tanh"
+    | LeakyRelu a -> Printf.sprintf "%s %g" "leaky_relu" a
+    | Custom _    -> Printf.sprintf "%s" "customise"
+    | None        -> Printf.sprintf "%s" "none"
 
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
