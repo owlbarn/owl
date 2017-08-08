@@ -77,6 +77,7 @@ end
 module Activation = struct
 
   type typ =
+    | Elu
     | Relu
     | Sigmoid
     | Softmax
@@ -103,6 +104,7 @@ module Activation = struct
 
   let run_activation x activation =
     match activation with
+    | Elu         -> Maths.((relu x) + (x |> neg |> relu |> neg |> exp) - F 1.)
     | Relu        -> Maths.relu x
     | Sigmoid     -> Maths.sigmoid x
     | Softmax     -> Mat.map_by_row Maths.softmax x  (* FIXME: this probably needs to be fixed *)
@@ -114,6 +116,7 @@ module Activation = struct
   let run x l = run_activation x l.activation
 
   let activation_to_string = function
+    | Elu         -> Printf.sprintf "%s" "elu"
     | Relu        -> Printf.sprintf "%s" "relu"
     | Sigmoid     -> Printf.sprintf "%s" "sigmoid"
     | Softmax     -> Printf.sprintf "%s" "softmax"
