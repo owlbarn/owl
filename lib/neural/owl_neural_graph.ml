@@ -331,6 +331,13 @@ let gaussian_dropout ?name rate input_node =
   add_node nn [|input_node|] n
 
 
+let alpha_dropout ?name rate input_node =
+  let neuron = AlphaDropout (AlphaDropout.create rate) in
+  let nn = get_network input_node in
+  let n = make_node ?name [||] [||] neuron None nn in
+  add_node nn [|input_node|] n
+
+
 let reshape ?name ?convert outputs input_node=
   let neuron = Reshape (Reshape.create ?convert outputs) in
   let nn = get_network input_node in

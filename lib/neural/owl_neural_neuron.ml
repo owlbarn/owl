@@ -1363,7 +1363,10 @@ module Dropout = struct
     l.in_shape <- Array.copy out_shape;
     l.out_shape <- Array.copy out_shape
 
-  let run x l = Maths.(dropout ~rate:l.rate x)
+  let run x l =
+    let a = F (1. /. (1. -. l.rate)) in
+    let b = Maths.(dropout ~rate:l.rate x) in
+    Maths.(a * b)
 
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
@@ -1791,6 +1794,56 @@ module GaussianDropout = struct
 end
 
 
+module AlphaDropout = struct
+
+  type neuron_typ = {
+    mutable rate      : float;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create rate = {
+    rate      = rate;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let run x l =
+    (* parameters of affine transformation *)
+    let alpha = 1.6732632423543772848170429916717 in
+    let scale = 1.0507009873554804934193349852946 in
+    let p = (-.alpha) *. scale in
+    let a = ((1. -. l.rate) *. (1. +. l.rate *. p ** 2.)) ** (-0.5) in
+    let b = (-.a) *. p *. l.rate in
+
+    let s = shape x in
+    let mask = match (primal' x) with
+      | Arr y -> Arr Owl_dense.Ndarray.Generic.(let c = uniform (kind y) s in elt_greater_equal_scalar c l.rate)
+      | Mat y -> Mat Owl_dense.Matrix.Generic.(let c = uniform (kind y) s.(0) s.(1) in elt_greater_equal_scalar c l.rate)
+      | _     -> failwith "owl_neural_neuron:alphadropout:run"
+    in
+
+    let p = F p in
+    let a = F a in
+    let b = F b in
+    let x = Maths.(x * mask + p * (F 1. - mask)) in
+    Maths.(a * x + b)
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "    AlphaDropout : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    rate         : %g\n" l.rate
+
+  let to_name () = "alpha_dropout"
+
+end
+
+
 (* TODO: definition of Masking neuron *)
 module Masking = struct
 
@@ -1821,6 +1874,7 @@ type neuron =
   | Activation      of Activation.neuron_typ
   | GaussianNoise   of GaussianNoise.neuron_typ
   | GaussianDropout of GaussianDropout.neuron_typ
+  | AlphaDropout    of AlphaDropout.neuron_typ
   | Add             of Add.neuron_typ
   | Mul             of Mul.neuron_typ
   | Dot             of Dot.neuron_typ
@@ -1851,6 +1905,7 @@ let get_in_out_shape = function
   | Activation l      -> Activation.(l.in_shape, l.out_shape)
   | GaussianNoise l   -> GaussianNoise.(l.in_shape, l.out_shape)
   | GaussianDropout l -> GaussianDropout.(l.in_shape, l.out_shape)
+  | AlphaDropout l    -> AlphaDropout.(l.in_shape, l.out_shape)
   | Add l             -> Add.(l.in_shape, l.out_shape)
   | Mul l             -> Mul.(l.in_shape, l.out_shape)
   | Dot l             -> Dot.(l.in_shape, l.out_shape)
@@ -1885,6 +1940,7 @@ let connect out_shapes l = match l with
   | Activation l      -> Activation.connect out_shapes.(0) l
   | GaussianNoise l   -> GaussianNoise.connect out_shapes.(0) l
   | GaussianDropout l -> GaussianDropout.connect out_shapes.(0) l
+  | AlphaDropout l    -> AlphaDropout.connect out_shapes.(0) l
   | Add l             -> Add.connect out_shapes l
   | Mul l             -> Mul.connect out_shapes l
   | Dot l             -> Dot.connect out_shapes l
@@ -2005,6 +2061,7 @@ let run a l = match l with
   | Activation l      -> Activation.run a.(0) l
   | GaussianNoise l   -> GaussianNoise.run a.(0) l
   | GaussianDropout l -> GaussianDropout.run a.(0) l
+  | AlphaDropout l    -> AlphaDropout.run a.(0) l
   | Add l             -> Add.run a l
   | Mul l             -> Mul.run a l
   | Dot l             -> Dot.run a l
@@ -2035,6 +2092,7 @@ let to_string = function
   | Activation l      -> Activation.to_string l
   | GaussianNoise l   -> GaussianNoise.to_string l
   | GaussianDropout l -> GaussianDropout.to_string l
+  | AlphaDropout l    -> AlphaDropout.to_string l
   | Add l             -> Add.to_string l
   | Mul l             -> Mul.to_string l
   | Dot l             -> Dot.to_string l
@@ -2065,6 +2123,7 @@ let to_name = function
   | Activation _      -> Activation.to_name ()
   | GaussianNoise _   -> GaussianNoise.to_name ()
   | GaussianDropout _ -> GaussianDropout.to_name ()
+  | AlphaDropout _    -> AlphaDropout.to_name ()
   | Add _             -> Add.to_name ()
   | Mul _             -> Mul.to_name ()
   | Dot _             -> Dot.to_name ()
