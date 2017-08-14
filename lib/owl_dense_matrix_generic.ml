@@ -213,6 +213,11 @@ let concatenate ?(axis=0) xs =
   Owl_dense_ndarray_generic.concatenate ~axis xs
   |> of_ndarray
 
+let split ?(axis=0) parts x =
+  let x = to_ndarray x in
+  Owl_dense_ndarray_generic.split ~axis parts x
+  |> Array.map of_ndarray
+
 let rows x l =
   let m, n = Array.length (l), col_num x in
   let y = empty (Array2.kind x) m n in

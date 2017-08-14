@@ -110,6 +110,8 @@ val repeat : ?axis:int -> arr -> int -> arr
 
 val concatenate : ?axis:int -> arr array -> arr
 
+val split : ?axis:int -> int array -> arr -> arr array
+
 val squeeze : ?axis:int array -> arr -> arr
 
 val expand : arr -> int -> arr

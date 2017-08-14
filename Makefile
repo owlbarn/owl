@@ -1,8 +1,6 @@
 all:
 	ocaml setup.ml -build
-	rm -rf examples/*.byte examples/*.native examples/*.tmp
-	rm -rf perftest/*.byte perftest/*.native perftest/*.tmp
-	mv perf_* perftest/
+	rm -rf examples/*.tmp perftest/*.tmp
 install:
 	ocaml setup.ml -uninstall
 	ocaml setup.ml -install
@@ -19,8 +17,7 @@ doc:
 clean:
 	rm -rf _build
 	rm -rf *.byte *.native
-	rm -rf examples/*.byte examples/*.native examples/*.tmp
-	rm -rf perftest/*.byte perftest/*.native perftest/*.tmp
+	rm -rf examples/*.tmp perftest/*.tmp
 cleanall: uninstall
 	rm -rf _build setup.* *.odocl myocamlbuild.ml _tags
 	rm -rf `find . -name META`

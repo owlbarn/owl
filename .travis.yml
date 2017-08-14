@@ -2,7 +2,7 @@ language: c
 
 sudo: required
 
-env: OCAML_VERSION=4.04 EXTRA_DEPS="oasis alcotest ocaml-compiler-libs" INSTALL=false
+env: OCAML_VERSION=4.04 EXTRA_DEPS="oasis alcotest ocaml-compiler-libs atdgen" INSTALL=false
 
 matrix:
   include:

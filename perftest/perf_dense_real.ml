@@ -1,3 +1,6 @@
+#!/usr/bin/env owl
+#zoo "5ca2fdebb0ccb9ecee6f4331972a9087"
+
 module M = Owl.Dense.Matrix.D
 
 let test_op s c op = Perf_common.test_op s c op

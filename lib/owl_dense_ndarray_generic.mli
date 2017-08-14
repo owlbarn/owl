@@ -286,7 +286,11 @@ val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 (** [concatenate ~axis:2 x] concatenates an array of ndarrays along the third
   dimension. For the ndarrays in [x], they must have the same shape except the
   dimension specified by [axis]. The default value of [axis] is 0, i.e., the
-  lowest dimension on an ndarray.
+  lowest dimension of a matrix/ndarray.
+ *)
+
+val split : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
+(** [split ~axis parts x]
  *)
 
 val squeeze : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
@@ -1158,6 +1162,12 @@ val avg_pool3d : ?padding:padding -> (float, 'a) t -> int array -> int array -> 
 val max_pool2d_argmax : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t * (int64, int64_elt) t
 (** [] *)
 
+val conv1d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
+val conv1d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
 val conv2d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
 (** [] *)
 
@@ -1170,7 +1180,13 @@ val conv3d_backward_input : (float, 'a) t -> (float, 'a) t -> int array -> (floa
 val conv3d_backward_kernel : (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t -> (float, 'a) t
 (** [] *)
 
+val max_pool1d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
 val max_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
+val avg_pool1d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
 (** [] *)
 
 val avg_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
@@ -1198,6 +1214,9 @@ val sum_slices : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
   shape [|4;5|]. Currently, the operation is done using [gemm], fast but uses
   more memory.
  *)
+
+val calc_conv1d_output_shape : padding -> int -> int -> int -> int
+(** [] *)
 
 val calc_conv2d_output_shape : padding -> int -> int -> int -> int -> int -> int -> int * int
 (** [] *)

@@ -33,10 +33,12 @@ module Init = struct
     | Tanh            -> Printf.sprintf "tanh"
     | Custom _        -> Printf.sprintf "customise"
 
+    let to_name () = "init"
+
 end
 
 
-(* definition of Input layer *)
+(* definition of Input neuron *)
 module Input = struct
 
   type neuron_typ = {
@@ -64,7 +66,9 @@ module Input = struct
 
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-    Printf.sprintf "Input layer: in/out:[*,%s]\n" in_str
+    Printf.sprintf "    Input : in/out:[*,%s]\n" in_str
+
+  let to_name () = "input"
 
 end
 
@@ -73,12 +77,19 @@ end
 module Activation = struct
 
   type typ =
-    | Relu
-    | Sigmoid
-    | Softmax
-    | Tanh
-    | Custom of (t -> t)
-    | None
+    | Elu                 (* Exponential linear unit *)
+    | Relu                (* Rectified linear unit *)
+    | Sigmoid             (* Element-wise sigmoid *)
+    | HardSigmoid         (* Linear approximation of sigmoid *)
+    | Softmax             (* Element-wise softmax *)
+    | Softplus            (* Element-wise softplus *)
+    | Softsign            (* Element-wise softsign *)
+    | Tanh                (* Element-wise tanh *)
+    | Relu6               (* Element-wise relu6 *)
+    | LeakyRelu of float  (* Leaky version of a Rectified Linear Unit *)
+    | TRelu of float      (* Thresholded Rectified Linear Unit *)
+    | Custom of (t -> t)  (* Element-wise customised activation *)
+    | None                (* None activation *)
 
   type neuron_typ = {
     mutable activation : typ;
@@ -98,33 +109,49 @@ module Activation = struct
 
   let run_activation x activation =
     match activation with
-    | Relu     -> Maths.relu x
-    | Sigmoid  -> Maths.sigmoid x
-    | Softmax  -> Mat.map_by_row Maths.softmax x  (* FIXME: this probably needs to be fixed *)
-    | Tanh     -> Maths.tanh x
-    | Custom f -> f x
-    | None     -> x
+    | Elu         -> Maths.((relu x) + (x |> neg |> relu |> neg |> exp) - F 1.)
+    | Relu        -> Maths.relu x
+    | Sigmoid     -> Maths.sigmoid x
+    | HardSigmoid -> Maths.(max2 (F 0.) (min2 (F 1.) ((F 0.2) * x + (F 0.5))))
+    | Softmax     -> Mat.map_by_row Maths.softmax x  (* FIXME: this probably needs to be fixed *)
+    | Softplus    -> Maths.softplus x
+    | Softsign    -> Maths.softsign x
+    | Tanh        -> Maths.tanh x
+    | Relu6       -> Maths.(min2 (relu x) (F 6.))
+    | LeakyRelu a -> Maths.((relu x) - (F a) * (x |> neg |> relu))
+    | TRelu a     -> Maths.(relu (x - F a))
+    | Custom f    -> f x
+    | None        -> x
 
   let run x l = run_activation x l.activation
 
   let activation_to_string = function
-    | Relu     -> "relu"
-    | Sigmoid  -> "sigmoid"
-    | Softmax  -> "softmax"
-    | Tanh     -> "tanh"
-    | Custom _ -> "customise"
-    | None     -> "none"
+    | Elu         -> Printf.sprintf "%s" "elu"
+    | Relu        -> Printf.sprintf "%s" "relu"
+    | Sigmoid     -> Printf.sprintf "%s" "sigmoid"
+    | HardSigmoid -> Printf.sprintf "%s" "hard_sigmoid"
+    | Softmax     -> Printf.sprintf "%s" "softmax"
+    | Softplus    -> Printf.sprintf "%s" "softplus"
+    | Softsign    -> Printf.sprintf "%s" "softsign"
+    | Tanh        -> Printf.sprintf "%s" "tanh"
+    | Relu6       -> Printf.sprintf "%s" "relu6"
+    | LeakyRelu a -> Printf.sprintf "%s %g" "leaky_relu" a
+    | TRelu a     -> Printf.sprintf "%s %g" "threshold_relu" a
+    | Custom _    -> Printf.sprintf "%s" "customise"
+    | None        -> Printf.sprintf "%s" "none"
 
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let act_str = activation_to_string l.activation in
-    Printf.sprintf "Activation layer: %s in/out:[*,%s]\n" act_str in_str ^
+    Printf.sprintf "    Activation : %s in/out:[*,%s]\n" act_str in_str ^
     ""
+
+  let to_name () = "activation"
 
 end
 
 
-(* definition of linear layer *)
+(* definition of linear neuron *)
 module Linear = struct
 
   type neuron_typ = {
@@ -181,17 +208,19 @@ module Linear = struct
   let to_string l =
     let wm, wn = l.in_shape.(0), l.out_shape.(0) in
     let bm, bn = 1, l.out_shape.(0) in
-    Printf.sprintf "Linear layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    Printf.sprintf "    Linear : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wm * wn + bn) ^
     Printf.sprintf "    w      : %i x %i\n" wm wn ^
     Printf.sprintf "    b      : %i x %i\n" bm bn ^
     ""
 
+  let to_name () = "linear"
+
 end
 
 
-(* definition of linear no bias layer *)
+(* definition of linear no bias neuron *)
 module LinearNoBias = struct
 
   type neuron_typ = {
@@ -238,16 +267,18 @@ module LinearNoBias = struct
 
   let to_string l =
     let wm, wn = l.in_shape.(0), l.out_shape.(0) in
-    Printf.sprintf "LinearNoBias layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
-    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-    Printf.sprintf "    params : %i\n" (wm * wn) ^
-    Printf.sprintf "    w      : %i x %i\n" wm wn ^
+    Printf.sprintf "    LinearNoBias : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    Printf.sprintf "    init         : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params       : %i\n" (wm * wn) ^
+    Printf.sprintf "    w            : %i x %i\n" wm wn ^
     ""
+
+  let to_name () = "linearnobias"
 
 end
 
 
-(* definition of recurrent layer *)
+(* definition of recurrent neuron *)
 module Recurrent = struct
 
   type neuron_typ = {
@@ -354,20 +385,22 @@ module Recurrent = struct
     let whym, whyn = Mat.shape l.why in
     let bhm, bhn = Mat.shape l.bh in
     let bym, byn = Mat.shape l.by in
-    Printf.sprintf "Recurrent layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
-    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-    Printf.sprintf "    params : %i\n" (whhm * whhn + wxhm * wxhn + whym * whyn + bhm * bhn + bym * byn) ^
-    Printf.sprintf "    whh    : %i x %i\n" whhm whhn ^
-    Printf.sprintf "    wxh    : %i x %i\n" wxhm wxhn ^
-    Printf.sprintf "    why    : %i x %i\n" whym whyn ^
-    Printf.sprintf "    bh     : %i x %i\n" bhm bhn ^
-    Printf.sprintf "    by     : %i x %i\n" bym byn ^
-    Printf.sprintf "    act    : %s\n" (Activation.activation_to_string l.act)
+    Printf.sprintf "    Recurrent : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    Printf.sprintf "    init      : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params    : %i\n" (whhm * whhn + wxhm * wxhn + whym * whyn + bhm * bhn + bym * byn) ^
+    Printf.sprintf "    whh       : %i x %i\n" whhm whhn ^
+    Printf.sprintf "    wxh       : %i x %i\n" wxhm wxhn ^
+    Printf.sprintf "    why       : %i x %i\n" whym whyn ^
+    Printf.sprintf "    bh        : %i x %i\n" bhm bhn ^
+    Printf.sprintf "    by        : %i x %i\n" bym byn ^
+    Printf.sprintf "    act       : %s\n" (Activation.activation_to_string l.act)
+
+  let to_name () = "recurrent"
 
 end
 
 
-(* definition of LSTM layer *)
+(* definition of LSTM neuron *)
 module LSTM = struct
 
   type neuron_typ = {
@@ -541,7 +574,7 @@ module LSTM = struct
     let bcm, bcn = Mat.shape l.bc in
     let bfm, bfn = Mat.shape l.bf in
     let bom, bon = Mat.shape l.bo in
-    Printf.sprintf "LSTM layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    Printf.sprintf "    LSTM   : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wxim*wxin + whim*whin + wxcm*wxcn + whcm*whcn + wxfm*wxfn + whfm*whfn + wxom*wxon + whom*whon + bim*bin + bcm*bcn + bfm*bfn + bom*bon) ^
     Printf.sprintf "    wxi    : %i x %i\n" wxim wxin ^
@@ -557,6 +590,8 @@ module LSTM = struct
     Printf.sprintf "    bf     : %i x %i\n" bfm bfn ^
     Printf.sprintf "    bo     : %i x %i\n" bom bon ^
     ""
+
+  let to_name () = "lstm"
 
 end
 
@@ -700,7 +735,7 @@ module GRU = struct
     let bzm, bzn = Mat.shape l.bz in
     let brm, brn = Mat.shape l.br in
     let bhm, bhn = Mat.shape l.bh in
-    Printf.sprintf "GRU layer: matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    Printf.sprintf "    GRU    : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wxzm*wxzn + whzm*whzn + wxrm*wxrn + whrm*whrn + wxhm*wxhn + whhm*whhn + bzm*bzn + brm*brn + bhm*bhn) ^
     Printf.sprintf "    wxz    : %i x %i\n" wxzm wxzn ^
@@ -714,22 +749,103 @@ module GRU = struct
     Printf.sprintf "    bh     : %i x %i\n" bhm bhn ^
     ""
 
+  let to_name () = "gru"
+
 end
 
 
-(* TODO: definition of Conv1D layer *)
+(* definition of Conv1D neuron *)
 module Conv1D = struct
 
+  type neuron_typ = {
+    mutable w         : t;
+    mutable b         : t;
+    mutable kernel    : int array;
+    mutable stride    : int array;
+    mutable padding   : padding;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create padding ?inputs kernel stride =
+    let h, i, o = kernel.(0), kernel.(1), kernel.(2) in
+    let in_shape = match inputs with
+      | Some a -> assert (i = a.(1)); a
+      | None   -> [|0;i|]
+    in
+    {
+      w         = Arr.empty [|h;i;o|];
+      b         = Arr.empty [|o|];
+      kernel    = kernel;
+      stride    = stride;
+      padding   = padding;
+      init_typ  = Init.Uniform (0.,1.);
+      in_shape  = in_shape;
+      out_shape = [|0;o|];
+    }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    assert (out_shape.(1) = l.in_shape.(1));
+    l.in_shape.(0) <- out_shape.(0);
+    let out_cols =
+      Owl_dense_ndarray_generic.calc_conv1d_output_shape
+      l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
+    in
+    l.out_shape.(0) <- out_cols
+
+  (* FIXME *)
+  let init l =
+    l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
+    l.b <- Arr.(zeros (shape l.b))
+
+  let reset l =
+    Arr.reset l.w;
+    Arr.reset l.b
+
+  let mktag t l =
+    l.w <- make_reverse l.w t;
+    l.b <- make_reverse l.b t
+
+  let mkpar l = [|l.w; l.b|]
+
+  let mkpri l = [|primal l.w; primal l.b|]
+
+  let mkadj l = [|adjval l.w; adjval l.b|]
+
+  let update l u =
+    l.w <- u.(0) |> primal';
+    l.b <- u.(1) |> primal'
+
+  let run x l = Maths.((conv1d ~padding:l.padding x l.w l.stride) + l.b)
+
+  let to_string l =
+    let ws = Arr.shape l.w in
+    let bn = Arr.shape l.b in
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "    Conv1D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2) + bn.(0)) ^
+    Printf.sprintf "    kernel : %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ^
+    Printf.sprintf "    b      : %i\n" bn.(0) ^
+    Printf.sprintf "    stride : [%i]\n" l.stride.(0) ^
+    ""
+
+  let to_name () = "conv1d"
+
 end
 
 
-(* definition of Conv2D layer *)
+(* definition of Conv2D neuron *)
 module Conv2D = struct
 
   type neuron_typ = {
     mutable w         : t;
     mutable b         : t;
-    mutable s         : int array;
+    mutable kernel    : int array;
+    mutable stride    : int array;
     mutable padding   : padding;
     mutable init_typ  : Init.typ;
     mutable in_shape  : int array;
@@ -745,7 +861,8 @@ module Conv2D = struct
     {
       w         = Arr.empty [|w;h;i;o|];
       b         = Arr.empty [|o|];
-      s         = stride;
+      kernel    = kernel;
+      stride    = stride;
       padding   = padding;
       init_typ  = Init.Uniform (0.,1.);
       in_shape  = in_shape;
@@ -757,11 +874,10 @@ module Conv2D = struct
     assert (out_shape.(2) = l.in_shape.(2));
     l.in_shape.(0) <- out_shape.(0);
     l.in_shape.(1) <- out_shape.(1);
-    let kernel_shape = Arr.shape l.w in
     let out_cols, out_rows =
       Owl_dense_ndarray_generic.calc_conv2d_output_shape
-      l.padding l.in_shape.(0) l.in_shape.(1) kernel_shape.(0) kernel_shape.(1)
-      l.s.(0) l.s.(1)
+      l.padding l.in_shape.(0) l.in_shape.(1) l.kernel.(0) l.kernel.(1)
+      l.stride.(0) l.stride.(1)
     in
     l.out_shape.(0) <- out_cols;
     l.out_shape.(1) <- out_rows
@@ -794,32 +910,34 @@ module Conv2D = struct
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
 
-  let run x l = Maths.((conv2d ~padding:l.padding x l.w l.s) + l.b)
+  let run x l = Maths.((conv2d ~padding:l.padding x l.w l.stride) + l.b)
 
   let to_string l =
     let ws = Arr.shape l.w in
     let bn = Arr.shape l.b in
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Conv2D layer:" ^
-    Printf.sprintf " tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    Conv2D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3) + bn.(0)) ^
     Printf.sprintf "    kernel : %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3) ^
     Printf.sprintf "    b      : %i\n" bn.(0) ^
-    Printf.sprintf "    stride : [%i; %i]\n" l.s.(0) l.s.(1) ^
+    Printf.sprintf "    stride : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
     ""
+
+  let to_name () = "conv2d"
 
 end
 
 
-(* definition of Conv2D layer *)
+(* definition of Conv2D neuron *)
 module Conv3D = struct
 
   type neuron_typ = {
     mutable w         : t;
     mutable b         : t;
-    mutable s         : int array;
+    mutable kernel    : int array;
+    mutable stride    : int array;
     mutable padding   : padding;
     mutable init_typ  : Init.typ;
     mutable in_shape  : int array;
@@ -835,7 +953,8 @@ module Conv3D = struct
     {
       w         = Arr.empty [|w;h;d;i;o|];
       b         = Arr.empty [|o|];
-      s         = stride;
+      kernel    = kernel;
+      stride    = stride;
       padding   = padding;
       init_typ  = Init.Uniform (0.,1.);
       in_shape  = in_shape;
@@ -848,12 +967,11 @@ module Conv3D = struct
     l.in_shape.(0) <- out_shape.(0);
     l.in_shape.(1) <- out_shape.(1);
     l.in_shape.(2) <- out_shape.(2);
-    let kernel_shape = Arr.shape l.w in
     let out_cols, out_rows, out_dpts =
       Owl_dense_ndarray_generic.calc_conv3d_output_shape
       l.padding l.in_shape.(0) l.in_shape.(1) l.in_shape.(2)
-      kernel_shape.(0) kernel_shape.(1) kernel_shape.(2)
-      l.s.(0) l.s.(1) l.s.(2)
+      l.kernel.(0) l.kernel.(1) l.kernel.(2)
+      l.stride.(0) l.stride.(1) l.stride.(2)
     in
     l.out_shape.(0) <- out_cols;
     l.out_shape.(1) <- out_rows;
@@ -882,26 +1000,27 @@ module Conv3D = struct
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
 
-  let run x l = Maths.((conv3d ~padding:l.padding x l.w l.s) + l.b)
+  let run x l = Maths.((conv3d ~padding:l.padding x l.w l.stride) + l.b)
 
   let to_string l =
     let ws = Arr.shape l.w in
     let bn = Arr.shape l.b in
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Conv3D layer:" ^
-    Printf.sprintf " tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    Conv3D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3)*ws.(4) + bn.(0)) ^
     Printf.sprintf "    kernel : %i x %i x %i x %i x %i\n" ws.(0) ws.(1) ws.(2) ws.(3)  ws.(4) ^
     Printf.sprintf "    b      : %i\n" bn.(0) ^
-    Printf.sprintf "    stride : [%i; %i; %i]\n" l.s.(0) l.s.(1) l.s.(2) ^
+    Printf.sprintf "    stride : [%i; %i; %i]\n" l.stride.(0) l.stride.(1) l.stride.(2) ^
     ""
+
+  let to_name () = "conv3d"
 
 end
 
 
-(* definition of FullyConnected layer *)
+(* definition of FullyConnected neuron *)
 module FullyConnected = struct
 
   type neuron_typ = {
@@ -972,30 +1091,113 @@ module FullyConnected = struct
     let wn = l.out_shape.(0) in
     let bn = l.out_shape.(0) in
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-    Printf.sprintf "FullyConnected layer:" ^
-    Printf.sprintf " tensor in:[*,%s] matrix out:(*,%i)\n" in_str l.out_shape.(0) ^
-    Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-    Printf.sprintf "    params : %i\n" (wm * wn + bn) ^
-    Printf.sprintf "    w      : %i x %i\n" wm wn ^
-    Printf.sprintf "    b      : %i x %i\n" 1 bn ^
+    Printf.sprintf "    FullyConnected : tensor in:[*,%s] matrix out:(*,%i)\n" in_str l.out_shape.(0) ^
+    Printf.sprintf "    init           : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params         : %i\n" (wm * wn + bn) ^
+    Printf.sprintf "    w              : %i x %i\n" wm wn ^
+    Printf.sprintf "    b              : %i x %i\n" 1 bn ^
     ""
 
+  let to_name () = "fullyconnected"
+
 end
 
 
-(* TODO: definition of MaxPool1D layer *)
+(* definition of MaxPool1D neuron *)
 module MaxPool1D = struct
 
+  type neuron_typ = {
+    mutable padding   : padding;
+    mutable kernel    : int array;
+    mutable stride    : int array;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create padding kernel stride = {
+    padding;
+    kernel;
+    stride;
+    in_shape  = [|0;0|];
+    out_shape = [|0;0|];
+  }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    let out_cols = Owl_dense_ndarray_generic.calc_conv1d_output_shape
+      l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
+    in
+    l.out_shape.(0) <- out_cols;
+    l.out_shape.(1) <- out_shape.(1)
+
+  let run x l = Maths.(max_pool1d l.padding x l.kernel l.stride)
+
+  let to_string l =
+    let padding_s = match l.padding with
+      | Owl_dense_ndarray_generic.SAME  -> "SAME"
+      | Owl_dense_ndarray_generic.VALID -> "VALID"
+    in
+    Printf.sprintf "    MaxPool1D : tensor in:[*,%i,%i] out:[*,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) l.out_shape.(1) ^
+    Printf.sprintf "    padding   : %s\n" padding_s ^
+    Printf.sprintf "    kernel    : [%i]\n" l.kernel.(0) ^
+    Printf.sprintf "    stride    : [%i]\n" l.stride.(0) ^
+    ""
+
+  let to_name () = "maxpool1d"
+
 end
 
 
-(* TODO: definition of AvgPool1D layer *)
+(* definition of AvgPool1D neuron *)
 module AvgPool1D = struct
 
+  type neuron_typ = {
+    mutable padding   : padding;
+    mutable kernel    : int array;
+    mutable stride    : int array;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create padding kernel stride = {
+    padding;
+    kernel;
+    stride;
+    in_shape  = [|0;0|];
+    out_shape = [|0;0|];
+  }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    let out_cols = Owl_dense_ndarray_generic.calc_conv1d_output_shape
+      l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
+    in
+    l.out_shape.(0) <- out_cols;
+    l.out_shape.(1) <- out_shape.(1)
+
+  let run x l = Maths.(avg_pool1d l.padding x l.kernel l.stride)
+
+  let to_string l =
+    let padding_s = match l.padding with
+      | Owl_dense_ndarray_generic.SAME  -> "SAME"
+      | Owl_dense_ndarray_generic.VALID -> "VALID"
+    in
+    Printf.sprintf "    AvgPool1D : tensor in:[*,%i,%i] out:[*,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) l.out_shape.(1) ^
+    Printf.sprintf "    padding   : %s\n" padding_s ^
+    Printf.sprintf "    kernel    : [%i]\n" l.kernel.(0) ^
+    Printf.sprintf "    stride    : [%i]\n" l.stride.(0) ^
+    ""
+
+  let to_name () = "avgpool1d"
+
 end
 
 
-(* definition of MaxPool2D layer *)
+(* definition of MaxPool2D neuron *)
 module MaxPool2D = struct
 
   type neuron_typ = {
@@ -1026,7 +1228,6 @@ module MaxPool2D = struct
     l.out_shape.(1) <- out_rows;
     l.out_shape.(2) <- out_shape.(2)
 
-
   let run x l = Maths.(max_pool2d l.padding x l.kernel l.stride)
 
   let to_string l =
@@ -1034,17 +1235,18 @@ module MaxPool2D = struct
       | Owl_dense_ndarray_generic.SAME  -> "SAME"
       | Owl_dense_ndarray_generic.VALID -> "VALID"
     in
-    Printf.sprintf "MaxPool2D layer:" ^
-    Printf.sprintf " tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
-    Printf.sprintf "    padding : %s\n" padding_s ^
-    Printf.sprintf "    patch   : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
-    Printf.sprintf "    stride  : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
+    Printf.sprintf "    MaxPool2D : tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
+    Printf.sprintf "    padding   : %s\n" padding_s ^
+    Printf.sprintf "    kernel    : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
+    Printf.sprintf "    stride    : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
     ""
+
+  let to_name () = "maxpool2d"
 
 end
 
 
-(* definition of AvgPool2D layer *)
+(* definition of AvgPool2D neuron *)
 module AvgPool2D = struct
 
   type neuron_typ = {
@@ -1083,53 +1285,54 @@ module AvgPool2D = struct
       | Owl_dense_ndarray_generic.SAME  -> "SAME"
       | Owl_dense_ndarray_generic.VALID -> "VALID"
     in
-    Printf.sprintf "AvgPool2D layer:" ^
-    Printf.sprintf " tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
-    Printf.sprintf "    padding : %s\n" padding_s ^
-    Printf.sprintf "    patch   : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
-    Printf.sprintf "    stride  : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
+    Printf.sprintf "    AvgPool2D : tensor in:[*,%i,%i,%i] out:[*,%i,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) l.out_shape.(1) l.out_shape.(2) ^
+    Printf.sprintf "    padding   : %s\n" padding_s ^
+    Printf.sprintf "    kernel    : [%i; %i]\n" l.kernel.(0) l.kernel.(1) ^
+    Printf.sprintf "    stride    : [%i; %i]\n" l.stride.(0) l.stride.(1) ^
     ""
+
+  let to_name () = "avgpool2d"
 
 end
 
 
-(* TODO: definition of UpSampling1D layer *)
+(* TODO: definition of UpSampling1D neuron *)
 module UpSampling1D = struct
 
 end
 
 
-(* TODO: definition of UpSampling2D layer *)
+(* TODO: definition of UpSampling2D neuron *)
 module UpSampling2D = struct
 
 end
 
 
-(* TODO: definition of UpSampling3D layer *)
+(* TODO: definition of UpSampling3D neuron *)
 module UpSampling3D = struct
 
 end
 
 
-(* TODO: definition of Padding1D layer *)
+(* TODO: definition of Padding1D neuron *)
 module Padding1D = struct
 
 end
 
 
-(* TODO: definition of Padding2D layer *)
+(* TODO: definition of Padding2D neuron *)
 module Padding2D = struct
 
 end
 
 
-(* TODO: definition of Padding3D layer *)
+(* TODO: definition of Padding3D neuron *)
 module Padding3D = struct
 
 end
 
 
-(* definition of Lambda layer *)
+(* definition of Lambda neuron *)
 module Lambda = struct
 
   type neuron_typ = {
@@ -1153,14 +1356,16 @@ module Lambda = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Lambda layer: in:[*,%s] out:[*,%s]\n" in_str out_str ^
-    Printf.sprintf "  customised f : t -> t\n" ^
+    Printf.sprintf "    Lambda       : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    customised f : t -> t\n" ^
     ""
+
+  let to_name () = "lambda"
 
 end
 
 
-(* definition of Dropout layer *)
+(* definition of Dropout neuron *)
 module Dropout = struct
 
   type neuron_typ = {
@@ -1179,18 +1384,23 @@ module Dropout = struct
     l.in_shape <- Array.copy out_shape;
     l.out_shape <- Array.copy out_shape
 
-  let run x l = Maths.(dropout ~rate:l.rate x)
+  let run x l =
+    let a = F (1. /. (1. -. l.rate)) in
+    let b = Maths.(dropout ~rate:l.rate x) in
+    Maths.(a * b)
 
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Dropout layer: in:[*,%s] out:[*,%s]\n" in_str out_str ^
-    Printf.sprintf "    rate : %g\n" l.rate
+    Printf.sprintf "    Dropout : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    rate    : %g\n" l.rate
+
+  let to_name () = "dropout"
 
 end
 
 
-(* definition of Reshape layer *)
+(* definition of Reshape neuron *)
 module Reshape = struct
 
   type neuron_typ = {
@@ -1232,13 +1442,15 @@ module Reshape = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Reshape layer: in:[*,%s] out:[*,%s]\n" in_str out_str ^
-    Printf.sprintf "    convert  : %s\n" (string_of_bool l.convert)
+    Printf.sprintf "    Reshape : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    convert : %s\n" (string_of_bool l.convert)
+
+  let to_name () = "reshape"
 
 end
 
 
-(* definition of Flatten layer *)
+(* definition of Flatten neuron *)
 module Flatten = struct
 
   type neuron_typ = {
@@ -1271,14 +1483,15 @@ module Flatten = struct
 
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-    Printf.sprintf "Flatten layer: in:[*,%s] out:[*,%i]\n" in_str l.out_shape.(0) ^
-    Printf.sprintf "    convert  : %s\n" (string_of_bool l.convert)
+    Printf.sprintf "    Flatten : in:[*,%s] out:[*,%i]\n" in_str l.out_shape.(0) ^
+    Printf.sprintf "    convert : %s\n" (string_of_bool l.convert)
 
+  let to_name () = "flatten"
 
 end
 
 
-(* definition of Add layer *)
+(* definition of Add neuron *)
 module Add = struct
 
   type neuron_typ = {
@@ -1291,9 +1504,10 @@ module Add = struct
     out_shape = [||];
   }
 
-  let connect out_shape l =
-    l.in_shape <- Array.copy out_shape;
-    l.out_shape <- Array.copy out_shape
+  let connect out_shapes l =
+    Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
+    l.in_shape <- Array.copy out_shapes.(0);
+    l.out_shape <- Array.copy out_shapes.(0)
 
   let run x l =
     let n = Array.length x in
@@ -1308,12 +1522,14 @@ module Add = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Add layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+    Printf.sprintf "    Add : in:[*,%s] out:[*,%s]\n" in_str out_str
+
+  let to_name () = "add"
 
 end
 
 
-(* definition of Multiply layer *)
+(* definition of Multiply neuron *)
 module Mul = struct
 
   type neuron_typ = {
@@ -1326,9 +1542,10 @@ module Mul = struct
     out_shape = [||];
   }
 
-  let connect out_shape l =
-    l.in_shape <- Array.copy out_shape;
-    l.out_shape <- Array.copy out_shape
+  let connect out_shapes l =
+    Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
+    l.in_shape <- Array.copy out_shapes.(0);
+    l.out_shape <- Array.copy out_shapes.(0)
 
   let run x l =
     let n = Array.length x in
@@ -1343,12 +1560,14 @@ module Mul = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Multiply layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+    Printf.sprintf "    Multiply : in:[*,%s] out:[*,%s]\n" in_str out_str
+
+  let to_name () = "mul"
 
 end
 
 
-(* definition of Dot layer *)
+(* definition of Dot neuron *)
 module Dot = struct
 
   type neuron_typ = {
@@ -1361,9 +1580,13 @@ module Dot = struct
     out_shape = [||];
   }
 
-  let connect out_shape l =
-    l.in_shape <- Array.copy out_shape;
-    l.out_shape <- [|out_shape.(1)|]
+  let connect out_shapes l =
+    (* for dot neuron, two matrices must have [*,m][m,n] shape *)
+    let m = out_shapes.(1).(0) in
+    let n = out_shapes.(1).(1) in
+    assert (m = out_shapes.(0).(1));
+    l.in_shape <- [|m; n|];
+    l.out_shape <- [|n|]
 
   let run x l =
     assert (Array.length x = 2);
@@ -1372,12 +1595,14 @@ module Dot = struct
   let to_string l =
     let m = l.in_shape.(0) in
     let n = l.in_shape.(1) in
-    Printf.sprintf "Dot layer: in:[*,%i] [%i,%i] out:[*,%i]\n" m m n n
+    Printf.sprintf "    Dot : in:[*,%i] [%i,%i] out:[*,%i]\n" m m n n
+
+  let to_name () = "dot"
 
 end
 
 
-(* definition of Max layer *)
+(* definition of Max neuron *)
 module Max = struct
 
   type neuron_typ = {
@@ -1390,9 +1615,10 @@ module Max = struct
     out_shape = [||];
   }
 
-  let connect out_shape l =
-    l.in_shape <- Array.copy out_shape;
-    l.out_shape <- Array.copy out_shape
+  let connect out_shapes l =
+    Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
+    l.in_shape <- Array.copy out_shapes.(0);
+    l.out_shape <- Array.copy out_shapes.(0)
 
   let run x l =
     let n = Array.length x in
@@ -1407,12 +1633,14 @@ module Max = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Max layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+    Printf.sprintf "    Max : in:[*,%s] out:[*,%s]\n" in_str out_str
+
+  let to_name () = "max"
 
 end
 
 
-(* definition of Average layer *)
+(* definition of Average neuron *)
 module Average = struct
 
   type neuron_typ = {
@@ -1425,9 +1653,10 @@ module Average = struct
     out_shape = [||];
   }
 
-  let connect out_shape l =
-    l.in_shape <- Array.copy out_shape;
-    l.out_shape <- Array.copy out_shape
+  let connect out_shapes l =
+    Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
+    l.in_shape <- Array.copy out_shapes.(0);
+    l.out_shape <- Array.copy out_shapes.(0)
 
   let run x l =
     let n = Array.length x in
@@ -1442,37 +1671,201 @@ module Average = struct
   let to_string l =
     let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "Average layer: in:[*,%s] out:[*,%s]\n" in_str out_str
+    Printf.sprintf "    Average : in:[*,%s] out:[*,%s]\n" in_str out_str
+
+  let to_name () = "average"
 
 end
 
 
-(* TODO: definition of Concatenate layer *)
 module Concatenate = struct
 
+  type neuron_typ = {
+    mutable axis      : int;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create axis = {
+    axis      = axis;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shapes l =
+    let s0 = out_shapes.(0) in
+    let _d = ref 0 in
+    Array.iter (fun s1 ->
+      Array.iteri (fun i d ->
+        if i <> l.axis then assert (d = s0.(i))
+        else _d := !_d + d
+      ) s1
+    ) out_shapes;
+    l.in_shape <- Array.copy s0;
+    l.out_shape <- Array.copy s0;
+    l.in_shape.(l.axis) <- (-1);
+    l.out_shape.(l.axis) <- !_d
+
+  let run x l =
+    let n = Array.length x in
+    (* at least two inputs *)
+    assert (n > 1);
+    let acc = ref x.(0) in
+    for i = 1 to n - 1 do
+      acc := Maths.(concat l.axis !acc x.(i))
+    done;
+    !acc
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array (fun i ->
+      if i = -1 then "*" else string_of_int i
+    ) l.in_shape
+    in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "    Concatenate : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    axis : %i\n" l.axis ^
+    ""
+
+  let to_name () = "concatenate"
+
 end
 
 
 
-(* TODO: definition of Normalisation layer *)
+(* TODO: definition of Normalisation neuron *)
 module Normalisation = struct
 
 end
 
 
-(* TODO: definition of GaussianNoise layer *)
 module GaussianNoise = struct
 
+  type neuron_typ = {
+    mutable sigma     : float;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create sigma = {
+    sigma;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let run x l =
+    let s = shape x in
+    let a = match (primal' x) with
+      | Arr _ -> Arr.gaussian ~sigma:l.sigma s
+      | Mat _ -> Mat.gaussian ~sigma:l.sigma s.(0) s.(1)
+      | _     -> failwith "owl_neural_neuron:gaussiannoise:run"
+    in
+    Maths.(x + a)
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "    GaussianNoise : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    sigma         : %g\n" l.sigma
+
+  let to_name () = "gaussian_noise"
+
 end
 
 
-(* TODO: definition of GaussianDropout layer *)
 module GaussianDropout = struct
 
+  type neuron_typ = {
+    mutable rate      : float;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create rate = {
+    rate      = rate;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let run x l =
+    let s = shape x in
+    let sigma = Pervasives.sqrt (l.rate /. (1. -. l.rate)) in
+    let a = match (primal' x) with
+      | Arr _ -> Arr.gaussian ~sigma s
+      | Mat _ -> Mat.gaussian ~sigma s.(0) s.(1)
+      | _     -> failwith "owl_neural_neuron:gaussiandropout:run"
+    in
+    Maths.(x * (a + F 1.))
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "    GaussianDropout : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    rate            : %g\n" l.rate
+
+  let to_name () = "gaussian_dropout"
+
 end
 
 
-(* TODO: definition of Masking layer *)
+module AlphaDropout = struct
+
+  type neuron_typ = {
+    mutable rate      : float;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create rate = {
+    rate      = rate;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let run x l =
+    (* parameters of affine transformation *)
+    let alpha = 1.6732632423543772848170429916717 in
+    let scale = 1.0507009873554804934193349852946 in
+    let p = (-.alpha) *. scale in
+    let a = ((1. -. l.rate) *. (1. +. l.rate *. p ** 2.)) ** (-0.5) in
+    let b = (-.a) *. p *. l.rate in
+
+    let s = shape x in
+    let mask = match (primal' x) with
+      | Arr y -> Arr Owl_dense.Ndarray.Generic.(let c = uniform (kind y) s in elt_greater_equal_scalar c l.rate)
+      | Mat y -> Mat Owl_dense.Matrix.Generic.(let c = uniform (kind y) s.(0) s.(1) in elt_greater_equal_scalar c l.rate)
+      | _     -> failwith "owl_neural_neuron:alphadropout:run"
+    in
+
+    let p = F p in
+    let a = F a in
+    let b = F b in
+    let x = Maths.(x * mask + p * (F 1. - mask)) in
+    Maths.(a * x + b)
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "    AlphaDropout : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    rate         : %g\n" l.rate
+
+  let to_name () = "alpha_dropout"
+
+end
+
+
+(* TODO: definition of Masking neuron *)
 module Masking = struct
 
 end
@@ -1481,79 +1874,100 @@ end
 (* type definition and basic functions of neurons *)
 
 type neuron =
-  | Input          of Input.neuron_typ
-  | Linear         of Linear.neuron_typ
-  | LinearNoBias   of LinearNoBias.neuron_typ
-  | LSTM           of LSTM.neuron_typ
-  | GRU            of GRU.neuron_typ
-  | Recurrent      of Recurrent.neuron_typ
-  | Conv2D         of Conv2D.neuron_typ
-  | Conv3D         of Conv3D.neuron_typ
-  | FullyConnected of FullyConnected.neuron_typ
-  | MaxPool2D      of MaxPool2D.neuron_typ
-  | AvgPool2D      of AvgPool2D.neuron_typ
-  | Dropout        of Dropout.neuron_typ
-  | Reshape        of Reshape.neuron_typ
-  | Flatten        of Flatten.neuron_typ
-  | Lambda         of Lambda.neuron_typ
-  | Activation     of Activation.neuron_typ
-  | Add            of Add.neuron_typ
-  | Mul            of Mul.neuron_typ
-  | Dot            of Dot.neuron_typ
-  | Max            of Max.neuron_typ
-  | Average        of Average.neuron_typ
+  | Input           of Input.neuron_typ
+  | Linear          of Linear.neuron_typ
+  | LinearNoBias    of LinearNoBias.neuron_typ
+  | LSTM            of LSTM.neuron_typ
+  | GRU             of GRU.neuron_typ
+  | Recurrent       of Recurrent.neuron_typ
+  | Conv1D          of Conv1D.neuron_typ
+  | Conv2D          of Conv2D.neuron_typ
+  | Conv3D          of Conv3D.neuron_typ
+  | FullyConnected  of FullyConnected.neuron_typ
+  | MaxPool1D       of MaxPool1D.neuron_typ
+  | MaxPool2D       of MaxPool2D.neuron_typ
+  | AvgPool1D       of AvgPool1D.neuron_typ
+  | AvgPool2D       of AvgPool2D.neuron_typ
+  | Dropout         of Dropout.neuron_typ
+  | Reshape         of Reshape.neuron_typ
+  | Flatten         of Flatten.neuron_typ
+  | Lambda          of Lambda.neuron_typ
+  | Activation      of Activation.neuron_typ
+  | GaussianNoise   of GaussianNoise.neuron_typ
+  | GaussianDropout of GaussianDropout.neuron_typ
+  | AlphaDropout    of AlphaDropout.neuron_typ
+  | Add             of Add.neuron_typ
+  | Mul             of Mul.neuron_typ
+  | Dot             of Dot.neuron_typ
+  | Max             of Max.neuron_typ
+  | Average         of Average.neuron_typ
+  | Concatenate     of Concatenate.neuron_typ
 
 
 let get_in_out_shape = function
-  | Input l          -> Input.(l.in_shape, l.out_shape)
-  | Linear l         -> Linear.(l.in_shape, l.out_shape)
-  | LinearNoBias l   -> LinearNoBias.(l.in_shape, l.out_shape)
-  | LSTM l           -> LSTM.(l.in_shape, l.out_shape)
-  | GRU l            -> GRU.(l.in_shape, l.out_shape)
-  | Recurrent l      -> Recurrent.(l.in_shape, l.out_shape)
-  | Conv2D l         -> Conv2D.(l.in_shape, l.out_shape)
-  | Conv3D l         -> Conv3D.(l.in_shape, l.out_shape)
-  | FullyConnected l -> FullyConnected.(l.in_shape, l.out_shape)
-  | MaxPool2D l      -> MaxPool2D.(l.in_shape, l.out_shape)
-  | AvgPool2D l      -> AvgPool2D.(l.in_shape, l.out_shape)
-  | Dropout l        -> Dropout.(l.in_shape, l.out_shape)
-  | Reshape l        -> Reshape.(l.in_shape, l.out_shape)
-  | Flatten l        -> Flatten.(l.in_shape, l.out_shape)
-  | Lambda l         -> Lambda.(l.in_shape, l.out_shape)
-  | Activation l     -> Activation.(l.in_shape, l.out_shape)
-  | Add l            -> Add.(l.in_shape, l.out_shape)
-  | Mul l            -> Mul.(l.in_shape, l.out_shape)
-  | Dot l            -> Dot.(l.in_shape, l.out_shape)
-  | Max l            -> Max.(l.in_shape, l.out_shape)
-  | Average l        -> Average.(l.in_shape, l.out_shape)
+  | Input l           -> Input.(l.in_shape, l.out_shape)
+  | Linear l          -> Linear.(l.in_shape, l.out_shape)
+  | LinearNoBias l    -> LinearNoBias.(l.in_shape, l.out_shape)
+  | LSTM l            -> LSTM.(l.in_shape, l.out_shape)
+  | GRU l             -> GRU.(l.in_shape, l.out_shape)
+  | Recurrent l       -> Recurrent.(l.in_shape, l.out_shape)
+  | Conv1D l          -> Conv1D.(l.in_shape, l.out_shape)
+  | Conv2D l          -> Conv2D.(l.in_shape, l.out_shape)
+  | Conv3D l          -> Conv3D.(l.in_shape, l.out_shape)
+  | FullyConnected l  -> FullyConnected.(l.in_shape, l.out_shape)
+  | MaxPool1D l       -> MaxPool1D.(l.in_shape, l.out_shape)
+  | MaxPool2D l       -> MaxPool2D.(l.in_shape, l.out_shape)
+  | AvgPool1D l       -> AvgPool1D.(l.in_shape, l.out_shape)
+  | AvgPool2D l       -> AvgPool2D.(l.in_shape, l.out_shape)
+  | Dropout l         -> Dropout.(l.in_shape, l.out_shape)
+  | Reshape l         -> Reshape.(l.in_shape, l.out_shape)
+  | Flatten l         -> Flatten.(l.in_shape, l.out_shape)
+  | Lambda l          -> Lambda.(l.in_shape, l.out_shape)
+  | Activation l      -> Activation.(l.in_shape, l.out_shape)
+  | GaussianNoise l   -> GaussianNoise.(l.in_shape, l.out_shape)
+  | GaussianDropout l -> GaussianDropout.(l.in_shape, l.out_shape)
+  | AlphaDropout l    -> AlphaDropout.(l.in_shape, l.out_shape)
+  | Add l             -> Add.(l.in_shape, l.out_shape)
+  | Mul l             -> Mul.(l.in_shape, l.out_shape)
+  | Dot l             -> Dot.(l.in_shape, l.out_shape)
+  | Max l             -> Max.(l.in_shape, l.out_shape)
+  | Average l         -> Average.(l.in_shape, l.out_shape)
+  | Concatenate l     -> Concatenate.(l.in_shape, l.out_shape)
 
 let get_in_shape x = x |> get_in_out_shape |> fst
 
 let get_out_shape x = x |> get_in_out_shape |> snd
 
 
-let connect out_shape l = match l with
-  | Input l          -> () (* always the first layer *)
-  | Linear l         -> Linear.connect out_shape l
-  | LinearNoBias l   -> LinearNoBias.connect out_shape l
-  | LSTM l           -> LSTM.connect out_shape l
-  | GRU l            -> GRU.connect out_shape l
-  | Recurrent l      -> Recurrent.connect out_shape l
-  | Conv2D l         -> Conv2D.connect out_shape l
-  | Conv3D l         -> Conv3D.connect out_shape l
-  | FullyConnected l -> FullyConnected.connect out_shape l
-  | MaxPool2D l      -> MaxPool2D.connect out_shape l
-  | AvgPool2D l      -> AvgPool2D.connect out_shape l
-  | Dropout l        -> Dropout.connect out_shape l
-  | Reshape l        -> Reshape.connect out_shape l
-  | Flatten l        -> Flatten.connect out_shape l
-  | Lambda l         -> Lambda.connect out_shape l
-  | Activation l     -> Activation.connect out_shape l
-  | Add l            -> Add.connect out_shape l
-  | Mul l            -> Mul.connect out_shape l
-  | Dot l            -> Dot.connect out_shape l
-  | Max l            -> Max.connect out_shape l
-  | Average l        -> Average.connect out_shape l
+let connect out_shapes l = match l with
+  | Input l           -> () (* always the first neuron *)
+  | Linear l          -> Linear.connect out_shapes.(0) l
+  | LinearNoBias l    -> LinearNoBias.connect out_shapes.(0) l
+  | LSTM l            -> LSTM.connect out_shapes.(0) l
+  | GRU l             -> GRU.connect out_shapes.(0) l
+  | Recurrent l       -> Recurrent.connect out_shapes.(0) l
+  | Conv1D l          -> Conv1D.connect out_shapes.(0) l
+  | Conv2D l          -> Conv2D.connect out_shapes.(0) l
+  | Conv3D l          -> Conv3D.connect out_shapes.(0) l
+  | FullyConnected l  -> FullyConnected.connect out_shapes.(0) l
+  | MaxPool1D l       -> MaxPool1D.connect out_shapes.(0) l
+  | MaxPool2D l       -> MaxPool2D.connect out_shapes.(0) l
+  | AvgPool1D l       -> AvgPool1D.connect out_shapes.(0) l
+  | AvgPool2D l       -> AvgPool2D.connect out_shapes.(0) l
+  | Dropout l         -> Dropout.connect out_shapes.(0) l
+  | Reshape l         -> Reshape.connect out_shapes.(0) l
+  | Flatten l         -> Flatten.connect out_shapes.(0) l
+  | Lambda l          -> Lambda.connect out_shapes.(0) l
+  | Activation l      -> Activation.connect out_shapes.(0) l
+  | GaussianNoise l   -> GaussianNoise.connect out_shapes.(0) l
+  | GaussianDropout l -> GaussianDropout.connect out_shapes.(0) l
+  | AlphaDropout l    -> AlphaDropout.connect out_shapes.(0) l
+  | Add l             -> Add.connect out_shapes l
+  | Mul l             -> Mul.connect out_shapes l
+  | Dot l             -> Dot.connect out_shapes l
+  | Max l             -> Max.connect out_shapes l
+  | Average l         -> Average.connect out_shapes l
+  | Concatenate l     -> Concatenate.connect out_shapes l
 
 
 let init = function
@@ -1562,6 +1976,7 @@ let init = function
   | LSTM l           -> LSTM.init l
   | GRU l            -> GRU.init l
   | Recurrent l      -> Recurrent.init l
+  | Conv1D l         -> Conv1D.init l
   | Conv2D l         -> Conv2D.init l
   | Conv3D l         -> Conv3D.init l
   | FullyConnected l -> FullyConnected.init l
@@ -1574,6 +1989,7 @@ let reset = function
   | LSTM l           -> LSTM.reset l
   | GRU l            -> GRU.reset l
   | Recurrent l      -> Recurrent.reset l
+  | Conv1D l         -> Conv1D.reset l
   | Conv2D l         -> Conv2D.reset l
   | Conv3D l         -> Conv3D.reset l
   | FullyConnected l -> FullyConnected.reset l
@@ -1585,6 +2001,7 @@ let mktag t = function
   | LSTM l           -> LSTM.mktag t l
   | GRU l            -> GRU.mktag t l
   | Recurrent l      -> Recurrent.mktag t l
+  | Conv1D l         -> Conv1D.mktag t l
   | Conv2D l         -> Conv2D.mktag t l
   | Conv3D l         -> Conv3D.mktag t l
   | FullyConnected l -> FullyConnected.mktag t l
@@ -1597,6 +2014,7 @@ let mkpar = function
   | LSTM l           -> LSTM.mkpar l
   | GRU l            -> GRU.mkpar l
   | Recurrent l      -> Recurrent.mkpar l
+  | Conv1D l         -> Conv1D.mkpar l
   | Conv2D l         -> Conv2D.mkpar l
   | Conv3D l         -> Conv3D.mkpar l
   | FullyConnected l -> FullyConnected.mkpar l
@@ -1609,6 +2027,7 @@ let mkpri = function
   | LSTM l           -> LSTM.mkpri l
   | GRU l            -> GRU.mkpri l
   | Recurrent l      -> Recurrent.mkpri l
+  | Conv1D l         -> Conv1D.mkpri l
   | Conv2D l         -> Conv2D.mkpri l
   | Conv3D l         -> Conv3D.mkpri l
   | FullyConnected l -> FullyConnected.mkpri l
@@ -1621,6 +2040,7 @@ let mkadj = function
   | LSTM l           -> LSTM.mkadj l
   | GRU l            -> GRU.mkadj l
   | Recurrent l      -> Recurrent.mkadj l
+  | Conv1D l         -> Conv1D.mkadj l
   | Conv2D l         -> Conv2D.mkadj l
   | Conv3D l         -> Conv3D.mkadj l
   | FullyConnected l -> FullyConnected.mkadj l
@@ -1633,6 +2053,7 @@ let update l u = match l with
   | LSTM l           -> LSTM.update l u
   | GRU l            -> GRU.update l u
   | Recurrent l      -> Recurrent.update l u
+  | Conv1D l         -> Conv1D.update l u
   | Conv2D l         -> Conv2D.update l u
   | Conv3D l         -> Conv3D.update l u
   | FullyConnected l -> FullyConnected.update l u
@@ -1640,71 +2061,96 @@ let update l u = match l with
 
 
 let run a l = match l with
-  | Input l          -> Input.run a l
-  | Linear l         -> Linear.run a l
-  | LinearNoBias l   -> LinearNoBias.run a l
-  | LSTM l           -> LSTM.run a l
-  | GRU l            -> GRU.run a l
-  | Recurrent l      -> Recurrent.run a l
-  | Conv2D l         -> Conv2D.run a l
-  | Conv3D l         -> Conv3D.run a l
-  | FullyConnected l -> FullyConnected.run a l
-  | MaxPool2D l      -> MaxPool2D.run a l
-  | AvgPool2D l      -> AvgPool2D.run a l
-  | Dropout l        -> Dropout.run a l
-  | Reshape l        -> Reshape.run a l
-  | Flatten l        -> Flatten.run a l
-  | Lambda l         -> Lambda.run a l
-  | Activation l     -> Activation.run a l
-  | _                -> failwith "Owl_neural_neuron:run"
-
-
-let run_array a l = match l with
-  | Input l          -> Input.run a.(0) l
-  | Linear l         -> Linear.run a.(0) l
-  | LinearNoBias l   -> LinearNoBias.run a.(0) l
-  | LSTM l           -> LSTM.run a.(0) l
-  | GRU l            -> GRU.run a.(0) l
-  | Recurrent l      -> Recurrent.run a.(0) l
-  | Conv2D l         -> Conv2D.run a.(0) l
-  | Conv3D l         -> Conv3D.run a.(0) l
-  | FullyConnected l -> FullyConnected.run a.(0) l
-  | MaxPool2D l      -> MaxPool2D.run a.(0) l
-  | AvgPool2D l      -> AvgPool2D.run a.(0) l
-  | Dropout l        -> Dropout.run a.(0) l
-  | Reshape l        -> Reshape.run a.(0) l
-  | Flatten l        -> Flatten.run a.(0) l
-  | Lambda l         -> Lambda.run a.(0) l
-  | Activation l     -> Activation.run a.(0) l
-  | Add l            -> Add.run a l
-  | Mul l            -> Mul.run a l
-  | Dot l            -> Dot.run a l
-  | Max l            -> Max.run a l
-  | Average l        -> Average.run a l
+  | Input l           -> Input.run a.(0) l
+  | Linear l          -> Linear.run a.(0) l
+  | LinearNoBias l    -> LinearNoBias.run a.(0) l
+  | LSTM l            -> LSTM.run a.(0) l
+  | GRU l             -> GRU.run a.(0) l
+  | Recurrent l       -> Recurrent.run a.(0) l
+  | Conv1D l          -> Conv1D.run a.(0) l
+  | Conv2D l          -> Conv2D.run a.(0) l
+  | Conv3D l          -> Conv3D.run a.(0) l
+  | FullyConnected l  -> FullyConnected.run a.(0) l
+  | MaxPool1D l       -> MaxPool1D.run a.(0) l
+  | MaxPool2D l       -> MaxPool2D.run a.(0) l
+  | AvgPool1D l       -> AvgPool1D.run a.(0) l
+  | AvgPool2D l       -> AvgPool2D.run a.(0) l
+  | Dropout l         -> Dropout.run a.(0) l
+  | Reshape l         -> Reshape.run a.(0) l
+  | Flatten l         -> Flatten.run a.(0) l
+  | Lambda l          -> Lambda.run a.(0) l
+  | Activation l      -> Activation.run a.(0) l
+  | GaussianNoise l   -> GaussianNoise.run a.(0) l
+  | GaussianDropout l -> GaussianDropout.run a.(0) l
+  | AlphaDropout l    -> AlphaDropout.run a.(0) l
+  | Add l             -> Add.run a l
+  | Mul l             -> Mul.run a l
+  | Dot l             -> Dot.run a l
+  | Max l             -> Max.run a l
+  | Average l         -> Average.run a l
+  | Concatenate l     -> Concatenate.run a l
 
 
 let to_string = function
-  | Input l          -> Input.to_string l
-  | Linear l         -> Linear.to_string l
-  | LinearNoBias l   -> LinearNoBias.to_string l
-  | LSTM l           -> LSTM.to_string l
-  | GRU l            -> GRU.to_string l
-  | Recurrent l      -> Recurrent.to_string l
-  | Conv2D l         -> Conv2D.to_string l
-  | Conv3D l         -> Conv3D.to_string l
-  | FullyConnected l -> FullyConnected.to_string l
-  | MaxPool2D l      -> MaxPool2D.to_string l
-  | AvgPool2D l      -> AvgPool2D.to_string l
-  | Dropout l        -> Dropout.to_string l
-  | Reshape l        -> Reshape.to_string l
-  | Flatten l        -> Flatten.to_string l
-  | Lambda l         -> Lambda.to_string l
-  | Activation l     -> Activation.to_string l
-  | Add l            -> Add.to_string l
-  | Mul l            -> Mul.to_string l
-  | Dot l            -> Dot.to_string l
-  | Max l            -> Max.to_string l
-  | Average l        -> Average.to_string l
+  | Input l           -> Input.to_string l
+  | Linear l          -> Linear.to_string l
+  | LinearNoBias l    -> LinearNoBias.to_string l
+  | LSTM l            -> LSTM.to_string l
+  | GRU l             -> GRU.to_string l
+  | Recurrent l       -> Recurrent.to_string l
+  | Conv1D l          -> Conv1D.to_string l
+  | Conv2D l          -> Conv2D.to_string l
+  | Conv3D l          -> Conv3D.to_string l
+  | FullyConnected l  -> FullyConnected.to_string l
+  | MaxPool1D l       -> MaxPool1D.to_string l
+  | MaxPool2D l       -> MaxPool2D.to_string l
+  | AvgPool1D l       -> AvgPool1D.to_string l
+  | AvgPool2D l       -> AvgPool2D.to_string l
+  | Dropout l         -> Dropout.to_string l
+  | Reshape l         -> Reshape.to_string l
+  | Flatten l         -> Flatten.to_string l
+  | Lambda l          -> Lambda.to_string l
+  | Activation l      -> Activation.to_string l
+  | GaussianNoise l   -> GaussianNoise.to_string l
+  | GaussianDropout l -> GaussianDropout.to_string l
+  | AlphaDropout l    -> AlphaDropout.to_string l
+  | Add l             -> Add.to_string l
+  | Mul l             -> Mul.to_string l
+  | Dot l             -> Dot.to_string l
+  | Max l             -> Max.to_string l
+  | Average l         -> Average.to_string l
+  | Concatenate l     -> Concatenate.to_string l
+
+
+let to_name = function
+  | Input _           -> Input.to_name ()
+  | Linear _          -> Linear.to_name ()
+  | LinearNoBias _    -> LinearNoBias.to_name ()
+  | LSTM _            -> LSTM.to_name ()
+  | GRU _             -> GRU.to_name ()
+  | Recurrent _       -> Recurrent.to_name ()
+  | Conv1D _          -> Conv1D.to_name ()
+  | Conv2D _          -> Conv2D.to_name ()
+  | Conv3D _          -> Conv3D.to_name ()
+  | FullyConnected _  -> FullyConnected.to_name ()
+  | MaxPool1D _       -> MaxPool1D.to_name ()
+  | MaxPool2D _       -> MaxPool2D.to_name ()
+  | AvgPool1D _       -> AvgPool1D.to_name ()
+  | AvgPool2D _       -> AvgPool2D.to_name ()
+  | Dropout _         -> Dropout.to_name ()
+  | Reshape _         -> Reshape.to_name ()
+  | Flatten _         -> Flatten.to_name ()
+  | Lambda _          -> Lambda.to_name ()
+  | Activation _      -> Activation.to_name ()
+  | GaussianNoise _   -> GaussianNoise.to_name ()
+  | GaussianDropout _ -> GaussianDropout.to_name ()
+  | AlphaDropout _    -> AlphaDropout.to_name ()
+  | Add _             -> Add.to_name ()
+  | Mul _             -> Mul.to_name ()
+  | Dot _             -> Dot.to_name ()
+  | Max _             -> Max.to_name ()
+  | Average _         -> Average.to_name ()
+  | Concatenate _     -> Concatenate.to_name ()
 
 
 

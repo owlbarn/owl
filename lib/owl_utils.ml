@@ -5,6 +5,7 @@
 
 (** Helper functions used in the library *)
 
+
 let range a b =
   let r = Array.make (b - a + 1) 0 in
   for i = a to b do r.(i - a) <- i done; r
@@ -268,6 +269,7 @@ let array2_to_array1 x =
   let x = genarray_of_array2 x in
   reshape_1 x c
 
+
 (* A simple stack implementation *)
 
 module Stack = struct
@@ -308,6 +310,33 @@ module Stack = struct
   let to_array s = Array.sub s.data 0 s.used
 
 end
+
+
+(* read a file of a given path *)
+let read_file f =
+  let h = open_in f in
+  let s = Stack.make () in
+  (
+    try while true do
+      let l = input_line h |> String.trim in
+      Stack.push s l;
+    done with End_of_file -> ()
+  );
+  close_in h;
+  Stack.to_array s
+
+
+(* TODO: optimise - read file into a string *)
+let read_file_string f =
+  read_file f
+  |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
+
+
+(* write a file of a given path *)
+let write_file f s =
+  let h = open_out f in
+  Printf.fprintf h "%s" s;
+  close_out h
 
 
 (* The following function relates to performance measurement *)

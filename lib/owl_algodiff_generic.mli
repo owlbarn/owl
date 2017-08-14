@@ -48,6 +48,10 @@ module type MatrixSig = sig
 
   val reshape : int -> int -> mat -> mat
 
+  val concatenate : ?axis:int -> mat array -> mat
+
+  val split : ?axis:int -> int array -> mat -> mat array
+
   val copy_row_to : mat -> mat -> int -> unit
 
   val copy_col_to : mat -> mat -> int -> unit
@@ -213,6 +217,10 @@ module type NdarraySig = sig
 
   val reshape : arr -> int array -> arr
 
+  val concatenate : ?axis:int -> arr array -> arr
+
+  val split : ?axis:int -> int array -> arr -> arr array
+
   val sum_slices : ?axis:int -> arr -> arr
 
   val print : arr -> unit
@@ -321,27 +329,41 @@ module type NdarraySig = sig
 
   type padding
 
+  val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
+
   val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
-
-  val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
-
-  val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
 
   val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
 
-  val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
-
-  val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
+  val max_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
 
   val max_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
 
   val max_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
 
+  val avg_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
+
   val avg_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
 
   val avg_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
 
+  val conv1d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val conv1d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+  val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+  val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
+
+  val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
+
+  val max_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
   val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+  val avg_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
   val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
@@ -478,17 +500,25 @@ module Make
 
     val ( ** )  : t -> t -> t
 
+    val conv1d : ?padding:padding -> t -> t -> int array -> t
+
     val conv2d : ?padding:padding -> t -> t -> int array -> t
 
     val conv3d : ?padding:padding -> t -> t -> int array -> t
 
+    val max_pool1d : padding -> t -> int array -> int array -> t
+
     val max_pool2d : padding -> t -> int array -> int array -> t
+
+    val avg_pool1d : padding -> t -> int array -> int array -> t
 
     val avg_pool2d : padding -> t -> int array -> int array -> t
 
     val reshape : t -> int array -> t
 
     val flatten : t -> t
+
+    val concat : int -> t -> t -> t
 
     val mat_to_arr : t -> t
 

@@ -1,3 +1,5 @@
+#!/usr/bin/env owl
+#zoo "5ca2fdebb0ccb9ecee6f4331972a9087"
 (* Performance test of Owl_dense_matrix module *)
 
 open Bigarray
@@ -52,9 +54,9 @@ let _ =
   test_op "average           " c (fun () -> M.average x);
   test_op "avg_col           " c (fun () -> M.average_cols x);
   test_op "avg_row           " c (fun () -> M.average_rows x);
-  test_op "equal          " c (fun () -> M.equal x x);
-  test_op "greater        " c (fun () -> M.greater x x);
-  test_op "greater_equal  " c (fun () -> M.greater_equal x x);
+  test_op "equal             " c (fun () -> M.equal x x);
+  test_op "greater           " c (fun () -> M.greater x x);
+  test_op "greater_equal     " c (fun () -> M.greater_equal x x);
   test_op "diag              " c (fun () -> M.diag x);
   test_op "transpose         " c (fun () -> M.transpose x);
   test_op "clone             " c (fun () -> M.clone x);
