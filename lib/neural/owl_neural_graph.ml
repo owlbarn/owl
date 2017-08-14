@@ -268,7 +268,7 @@ let conv2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel str
   add_node ?act_typ nn [|input_node|] n
 
 
-let conv3d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel_width kernel strides input_node =
+let conv3d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel strides input_node =
   let neuron = Conv3D (Conv3D.create padding kernel strides) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
@@ -338,7 +338,7 @@ let alpha_dropout ?name rate input_node =
   add_node nn [|input_node|] n
 
 
-let reshape ?name ?convert outputs input_node=
+let reshape ?name ?convert outputs input_node =
   let neuron = Reshape (Reshape.create ?convert outputs) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
@@ -368,6 +368,13 @@ let add ?name ?act_typ input_node =
 
 let mul ?name ?act_typ input_node =
   let neuron = Mul (Mul.create ()) in
+  let nn = get_network input_node.(0) in
+  let n = make_node ?name [||] [||] neuron None nn in
+  add_node ?act_typ nn input_node n
+
+
+let dot ?name ?act_typ input_node =
+  let neuron = Dot (Dot.create ()) in
   let nn = get_network input_node.(0) in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node ?act_typ nn input_node n
