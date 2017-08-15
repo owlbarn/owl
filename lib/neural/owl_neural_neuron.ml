@@ -17,6 +17,9 @@ module Init = struct
     | Gaussian of float * float
     | Standard
     | Tanh
+    | GlorotNormal
+    | GlorotUniform
+    | LecunNormal
     | Custom   of (int array -> t)
 
   let calc_fans s =
@@ -46,6 +49,7 @@ module Init = struct
     let fan_in, fan_out = calc_fans s in
     let r0 = sqrt (1. /. fan_in) in
     let r1 = sqrt (6. /. (fan_in +. fan_out)) in
+    let r2 = sqrt (2. /. (fan_in +. fan_out)) in
     match x with
     | Mat _ -> (
         let m, n = s.(0), s.(1) in
@@ -54,6 +58,9 @@ module Init = struct
         | Gaussian (mu, sigma) -> Mat.(add (gaussian ~sigma m n) (F mu))
         | Standard             -> Mat.(add (uniform ~scale:(2.*.r0) m n) (F (-.r0)))
         | Tanh                 -> Mat.(add (uniform ~scale:(2.*.r1) m n) (F (-.r1)))
+        | GlorotUniform        -> Mat.(add (uniform ~scale:(2.*.r1) m n) (F (-.r1)))
+        | GlorotNormal         -> Mat.(gaussian ~sigma:r2 m n)
+        | LecunNormal          -> Mat.(gaussian ~sigma:r0 m n)
         | Custom f             -> f s
       )
     | Arr _ -> (
@@ -62,6 +69,9 @@ module Init = struct
         | Gaussian (mu, sigma) -> Arr.(add (gaussian ~sigma s) (F mu))
         | Standard             -> Arr.(add (uniform ~scale:(2.*.r0) s) (F (-.r0)))
         | Tanh                 -> Arr.(add (uniform ~scale:(2.*.r1) s) (F (-.r1)))
+        | GlorotUniform        -> Arr.(add (uniform ~scale:(2.*.r1) s) (F (-.r1)))
+        | GlorotNormal         -> Arr.(gaussian ~sigma:r2 s)
+        | LecunNormal          -> Arr.(gaussian ~sigma:r0 s)
         | Custom f             -> f s
       )
     | _     -> failwith "Owl_neural:init:run"
@@ -71,6 +81,9 @@ module Init = struct
     | Gaussian (a, b) -> Printf.sprintf "gaussian (%g, %g)" a b
     | Standard        -> Printf.sprintf "standard"
     | Tanh            -> Printf.sprintf "tanh"
+    | GlorotUniform   -> Printf.sprintf "glorot_uniform"
+    | GlorotNormal    -> Printf.sprintf "glorot_normal"
+    | LecunNormal     -> Printf.sprintf "lecun_normal"
     | Custom _        -> Printf.sprintf "customise"
 
   let to_name () = "init"
