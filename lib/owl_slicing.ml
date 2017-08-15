@@ -159,54 +159,53 @@ let slice_array_typ axis x =
   let sd = _calc_stride s0 in
   let _cp_op = _owl_copy (kind x) in
   let ofsy_i = ref 0 in
-  (* two copying strategies based on the size of the minimum continuous block *)
-  match cb > 1 with
-  | true  -> (
-      (* yay, there are at least some continuous blocks *)
-      let b = cb in
-      let f = fun i -> (
-        let ofsx = _index_nd_1d i sd in
-        let ofsy = !ofsy_i * b in
-        (* Printf.printf "%i %i\n" ofsx ofsy; *)
-        let _ = _cp_op b ~ofsx ~ofsy ~incx:1 ~incy:1 x' y' in
-        ofsy_i := !ofsy_i + 1
-      )
-      in
-      (* start copying blocks *)
-      _foreach_continuous_blk d0 d1 axis f;
-      (* reshape the ndarray *)
-      let z = Bigarray.genarray_of_array1 y' in
-      let z = Bigarray.reshape z s1 in
-      z
+  (* two copying strategies based on the size of the minimum continuous block.
+    also, consider the special case wherein the highest-dimension equals to 1.
+   *)
+  if cb > 1 || s0.(d0 - 1) = 1 then (
+    (* yay, there are at least some continuous blocks *)
+    let b = cb in
+    let f = fun i -> (
+      let ofsx = _index_nd_1d i sd in
+      let ofsy = !ofsy_i * b in
+      _cp_op b ~ofsx ~ofsy ~incx:1 ~incy:1 x' y';
+      ofsy_i := !ofsy_i + 1
     )
-  | false -> (
-      (* copy happens at the highest dimension, no continuous block *)
-      let b = s1.(d0 - 1) in
-      let c = axis.(d0 - 1).(2) in
-      let cx = if c > 0 then c else -c in
-      let cy = if c > 0 then 1 else -1 in
-      let dd =
-        if c > 0 then axis.(d0 - 1).(0)
-        (* do the math yourself, it is actually reduced from
-          s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
-        *)
-        else axis.(d0 - 1).(0) + (b - 1) * c
-      in
-      let f = fun i -> (
-        let ofsx = _index_nd_1d i sd + dd in
-        let ofsy = !ofsy_i * b in
-        (* Printf.printf "%i %i\n" ofsx ofsy; *)
-        let _ = _cp_op b ~ofsx ~ofsy ~incx:cx ~incy:cy x' y' in
-        ofsy_i := !ofsy_i + 1
-      )
-      in
-      (* start copying blocks *)
-      _foreach_continuous_blk d0 (d1 - 1) axis f;
-      (* reshape the ndarray *)
-      let z = Bigarray.genarray_of_array1 y' in
-      let z = Bigarray.reshape z s1 in
-      z
+    in
+    (* start copying blocks *)
+    _foreach_continuous_blk d0 d1 axis f;
+    (* reshape the ndarray *)
+    let z = Bigarray.genarray_of_array1 y' in
+    let z = Bigarray.reshape z s1 in
+    z
+  )
+  else (
+    (* copy happens at the highest dimension, no continuous block *)
+    let b = s1.(d0 - 1) in
+    let c = axis.(d0 - 1).(2) in
+    let cx = if c > 0 then c else -c in
+    let cy = if c > 0 then 1 else -1 in
+    let dd =
+      if c > 0 then axis.(d0 - 1).(0)
+      (* do the math yourself, it is actually reduced from
+        s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
+      *)
+      else axis.(d0 - 1).(0) + (b - 1) * c
+    in
+    let f = fun i -> (
+      let ofsx = _index_nd_1d i sd + dd in
+      let ofsy = !ofsy_i * b in
+      _cp_op b ~ofsx ~ofsy ~incx:cx ~incy:cy x' y';
+      ofsy_i := !ofsy_i + 1
     )
+    in
+    (* start copying blocks *)
+    _foreach_continuous_blk d0 (d1 - 1) axis f;
+    (* reshape the ndarray *)
+    let z = Bigarray.genarray_of_array1 y' in
+    let z = Bigarray.reshape z s1 in
+    z
+  )
 
 
 (* same as slice_array_typ function but take list type as slice definition *)
