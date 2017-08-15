@@ -904,8 +904,7 @@ module Conv2D = struct
   let update l u =
     (* DEBUG
     let x = u.(0) |> primal' |> unpack_arr in
-    let a = Owl_dense_ndarray_generic.sum x in
-    Printf.printf "===> %g\n" a;
+    Owl_dense.Ndarray.S.print x;
     flush_all (); exit 0; *)
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
