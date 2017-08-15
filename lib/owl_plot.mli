@@ -300,8 +300,8 @@ val wblplot : ?h:handle -> ?spec:spec list -> ?lambda:float -> ?k:float -> dsmat
 
 val qqplot : ?h:handle -> ?spec:spec list -> ?pd:(float -> float) -> ?x:dsmat -> dsmat -> unit
 (**
-  [qqplot y dist] displays a quantile-quantile plot of the quantiles of the
-  sample data x versus the theoretical quantiles values from [dist], which by
+  [qqplot y pd] displays a quantile-quantile plot of the quantiles of the
+  sample data x versus the theoretical quantiles values from [pd], which by
   default is standard normal distribution. If the second argument [x] is a
   vector, the empirical CDF of it is used as the distribtion of x-axis data,
   otherwise the qqplot is similar to [probplot], showing the inverseCDF of

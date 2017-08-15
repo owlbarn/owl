@@ -929,7 +929,7 @@ module Conv2D = struct
 end
 
 
-(* definition of Conv2D neuron *)
+(* definition of Conv3D neuron *)
 module Conv3D = struct
 
   type neuron_typ = {

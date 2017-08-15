@@ -48,6 +48,15 @@ val gru : ?name:string -> int -> node -> node
 
 val conv1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 
+(**
+  [conv2d params strides act_type padding name node] creates a 2D convolution node (e.g. spatial convolution over images) on previous [node].
+
+  Arguments:
+  - [params]: consists of [kernel_size], 2 integers specifying the width and height of the 2D convolution window, and [filters], an integer specifying the dimensionality of the output space.
+  - [strides]: int array of 2 integers
+  - [act_type]: activation function to use
+  - [padding]: VALID or SAME
+*)
 val conv2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 
 val conv3d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node

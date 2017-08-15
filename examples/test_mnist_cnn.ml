@@ -73,7 +73,7 @@ let start_inference () =
   let m = Dense.Matrix.S.row_num x in
   let x = Dense.Matrix.S.to_ndarray x in
   let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
-  (* draw 10 samples *)
+  (* draw 9 samples *)
   let num_test = 9 in
   let a, b = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) num_test in
   (* visualize dataset *)
