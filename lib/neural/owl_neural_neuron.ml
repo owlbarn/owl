@@ -17,14 +17,54 @@ module Init = struct
     | Gaussian of float * float
     | Standard
     | Tanh
-    | Custom   of (int -> int -> float)
+    | Custom   of (int array -> t)
 
-  let run t m n = match t with
-    | Uniform (a, b)       -> Mat.(add (uniform ~scale:(b-.a) m n) (F a))
-    | Gaussian (mu, sigma) -> Mat.(add (gaussian ~sigma m n) (F mu))
-    | Standard             -> let r = sqrt (1. /. float_of_int m) in Mat.(add (uniform ~scale:(2.*.r) m n) (F (-.r)))
-    | Tanh                 -> let r = sqrt (6. /. float_of_int (m + n)) in Mat.(add (uniform ~scale:(2.*.r) m n) (F (-.r)))
-    | Custom f             -> Mat.(empty m n |> mapi (fun i j _ -> f i j))
+  let calc_fans s =
+    let _prod x = Array.fold_left (fun p q -> p * q) 1 x in
+    let l = Array.length s in
+    let fan_in, fan_out =
+      (* for matrices *)
+      if l = 2 then
+        float_of_int s.(0), float_of_int s.(1)
+      (* for convolution kernels 1d, 2d, 3d *)
+      else if l > 2 && l < 6 then (
+        let s' = Array.sub s 0 (l - 2) in
+        let receptive = _prod s' in
+        let i = s.(l - 2) * receptive |> float_of_int in
+        let o = s.(l - 1) * receptive |> float_of_int in
+        i, o
+      )
+      (* for no specific assumptions *)
+      else (
+        let i_o = _prod s |> float_of_int |> Pervasives.sqrt in
+        i_o, i_o
+      )
+    in
+    fan_in, fan_out
+
+  let run t s x =
+    let fan_in, fan_out = calc_fans s in
+    let r0 = sqrt (1. /. fan_in) in
+    let r1 = sqrt (6. /. (fan_in +. fan_out)) in
+    match x with
+    | Mat _ -> (
+        let m, n = s.(0), s.(1) in
+        match t with
+        | Uniform (a, b)       -> Mat.(add (uniform ~scale:(b-.a) m n) (F a))
+        | Gaussian (mu, sigma) -> Mat.(add (gaussian ~sigma m n) (F mu))
+        | Standard             -> Mat.(add (uniform ~scale:(2.*.r0) m n) (F (-.r0)))
+        | Tanh                 -> Mat.(add (uniform ~scale:(2.*.r1) m n) (F (-.r1)))
+        | Custom f             -> f s
+      )
+    | Arr _ -> (
+        match t with
+        | Uniform (a, b)       -> Arr.(add (uniform ~scale:(b-.a) s) (F a))
+        | Gaussian (mu, sigma) -> Arr.(add (gaussian ~sigma s) (F mu))
+        | Standard             -> Arr.(add (uniform ~scale:(2.*.r0) s) (F (-.r0)))
+        | Tanh                 -> Arr.(add (uniform ~scale:(2.*.r1) s) (F (-.r1)))
+        | Custom f             -> f s
+      )
+    | _     -> failwith "Owl_neural:init:run"
 
   let to_string = function
     | Uniform (a, b)  -> Printf.sprintf "uniform (%g, %g)" a b
@@ -33,7 +73,7 @@ module Init = struct
     | Tanh            -> Printf.sprintf "tanh"
     | Custom _        -> Printf.sprintf "customise"
 
-    let to_name () = "init"
+  let to_name () = "init"
 
 end
 
@@ -182,7 +222,7 @@ module Linear = struct
   let init l =
     let m = l.in_shape.(0) in
     let n = l.out_shape.(0) in
-    l.w <- Init.run l.init_typ m n;
+    l.w <- Init.run l.init_typ [|m; n|] l.w;
     l.b <- Mat.zeros 1 n
 
   let reset l =
@@ -249,7 +289,7 @@ module LinearNoBias = struct
   let init l =
     let m = l.in_shape.(0) in
     let n = l.out_shape.(0) in
-    l.w <- Init.run l.init_typ m n
+    l.w <- Init.run l.init_typ [|m;n|] l.w
 
   let reset l = Mat.reset l.w
 
@@ -323,9 +363,9 @@ module Recurrent = struct
     let i = l.in_shape.(0) in
     let o = l.out_shape.(0) in
     let h = l.hiddens in
-    l.whh <- Init.run l.init_typ h h;
-    l.wxh <- Init.run l.init_typ i h;
-    l.why <- Init.run l.init_typ h o;
+    l.whh <- Init.run l.init_typ [|h;h|] l.whh;
+    l.wxh <- Init.run l.init_typ [|i;h|] l.wxh;
+    l.why <- Init.run l.init_typ [|h;o|] l.why;
     l.bh  <- Mat.zeros 1 h;
     l.by  <- Mat.zeros 1 o;
     l.h   <- Mat.zeros 1 h
@@ -455,14 +495,14 @@ module LSTM = struct
   let init l =
     let i = l.in_shape.(0) in
     let o = l.out_shape.(0) in
-    l.wxi <- Init.run l.init_typ i o;
-    l.whi <- Init.run l.init_typ o o;
-    l.wxc <- Init.run l.init_typ i o;
-    l.whc <- Init.run l.init_typ o o;
-    l.wxf <- Init.run l.init_typ i o;
-    l.whf <- Init.run l.init_typ o o;
-    l.wxo <- Init.run l.init_typ i o;
-    l.who <- Init.run l.init_typ o o;
+    l.wxi <- Init.run l.init_typ [|i;o|] l.wxi;
+    l.whi <- Init.run l.init_typ [|o;o|] l.whi;
+    l.wxc <- Init.run l.init_typ [|i;o|] l.wxc;
+    l.whc <- Init.run l.init_typ [|o;o|] l.whc;
+    l.wxf <- Init.run l.init_typ [|i;o|] l.wxf;
+    l.whf <- Init.run l.init_typ [|o;o|] l.whf;
+    l.wxo <- Init.run l.init_typ [|i;o|] l.wxo;
+    l.who <- Init.run l.init_typ [|o;o|] l.who;
     l.bi  <- Mat.zeros 1 o;
     l.bc  <- Mat.zeros 1 o;
     l.bf  <- Mat.zeros 1 o;
@@ -643,12 +683,12 @@ module GRU = struct
   let init l =
     let i = l.in_shape.(0) in
     let o = l.out_shape.(0) in
-    l.wxz <- Init.run l.init_typ i o;
-    l.whz <- Init.run l.init_typ o o;
-    l.wxr <- Init.run l.init_typ i o;
-    l.whr <- Init.run l.init_typ o o;
-    l.wxh <- Init.run l.init_typ i o;
-    l.whh <- Init.run l.init_typ o o;
+    l.wxz <- Init.run l.init_typ [|i;o|] l.wxz;
+    l.whz <- Init.run l.init_typ [|o;o|] l.whz;
+    l.wxr <- Init.run l.init_typ [|i;o|] l.wxr;
+    l.whr <- Init.run l.init_typ [|o;o|] l.whr;
+    l.wxh <- Init.run l.init_typ [|i;o|] l.wxh;
+    l.whh <- Init.run l.init_typ [|o;o|] l.whh;
     l.bz  <- Mat.zeros 1 o;
     l.br  <- Mat.zeros 1 o;
     l.bh  <- Mat.zeros 1 o;
@@ -768,7 +808,7 @@ module Conv1D = struct
     mutable out_shape : int array;
   }
 
-  let create padding ?inputs kernel stride =
+  let create padding ?inputs kernel stride init_typ =
     let h, i, o = kernel.(0), kernel.(1), kernel.(2) in
     let in_shape = match inputs with
       | Some a -> assert (i = a.(1)); a
@@ -780,7 +820,7 @@ module Conv1D = struct
       kernel    = kernel;
       stride    = stride;
       padding   = padding;
-      init_typ  = Init.Uniform (0.,1.);
+      init_typ  = init_typ;
       in_shape  = in_shape;
       out_shape = [|0;o|];
     }
@@ -852,7 +892,7 @@ module Conv2D = struct
     mutable out_shape : int array;
   }
 
-  let create padding ?inputs kernel stride =
+  let create padding ?inputs kernel stride init_typ =
     let w, h, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3) in
     let in_shape = match inputs with
       | Some a -> assert (i = a.(2)); a
@@ -864,7 +904,7 @@ module Conv2D = struct
       kernel    = kernel;
       stride    = stride;
       padding   = padding;
-      init_typ  = Init.Uniform (0.,1.);
+      init_typ  = init_typ;
       in_shape  = in_shape;
       out_shape = [|0;0;o|];
     }
@@ -882,9 +922,8 @@ module Conv2D = struct
     l.out_shape.(0) <- out_cols;
     l.out_shape.(1) <- out_rows
 
-  (* FIXME *)
   let init l =
-    l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
+    l.w <- Init.run l.init_typ l.kernel l.w;
     l.b <- Arr.(zeros (shape l.b))
 
   let reset l =
@@ -943,7 +982,7 @@ module Conv3D = struct
     mutable out_shape : int array;
   }
 
-  let create padding ?inputs kernel stride =
+  let create padding ?inputs kernel stride init_typ =
     let w, h, d, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3), kernel.(4) in
     let in_shape = match inputs with
       | Some a -> assert (i = a.(3)); a
@@ -955,7 +994,7 @@ module Conv3D = struct
       kernel    = kernel;
       stride    = stride;
       padding   = padding;
-      init_typ  = Init.Uniform (0.,1.);
+      init_typ  = init_typ;
       in_shape  = in_shape;
       out_shape = [|0;0;0;o|];
     }
@@ -1050,7 +1089,7 @@ module FullyConnected = struct
   let init l =
     let m = Array.fold_left (fun a b -> a * b) 1 l.in_shape in
     let n = l.out_shape.(0) in
-    l.w <- Init.run l.init_typ m n;
+    l.w <- Init.run l.init_typ [|m;n|] l.w;
     l.b <- Mat.zeros 1 n
 
   let reset l =
