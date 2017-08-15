@@ -12,6 +12,12 @@ open Owl_algodiff.S
   useful but not general enough to be included in Algodiff.[S|D].Maths module. *)
 module Utils = struct
 
+  let sample_num x =
+    match x with
+    | Arr _ -> Arr.(shape x).(0)
+    | Mat _ -> Mat.row_num x
+    | x     -> failwith ("Owl_neural_optimise.Utils.sample_num:" ^ (type_info x))
+
   let draw_samples x y n =
     match x, y with
     | Arr x, Mat y -> (
@@ -22,11 +28,25 @@ module Utils = struct
     | Mat x, Mat y -> let x, y, _ = Owl_dense_matrix_generic.draw_rows2 ~replacement:false x y n in Mat x, Mat y
     | x, y         -> failwith ("Owl_neural_optimise.Utils.draw_samples:" ^ (type_info x))
 
-  let sample_num x =
-    match x with
-    | Arr _ -> Arr.(shape x).(0)
-    | Mat _ -> Mat.row_num x
-    | x     -> failwith ("Owl_neural_optimise.Utils.sample_num:" ^ (type_info x))
+  let get_chunk x y i c =
+    match x, y with
+    | Arr x, Mat y -> (
+        let n = Owl_dense_matrix_generic.row_num y in
+        let a = (i * c) mod n in
+        let b = Pervasives.min (a + c - 1) (n - 1) in
+        let x = Owl_dense_ndarray_generic.slice [[a;b]] x in
+        let y = Owl_dense_matrix_generic.slice [[a;b]] y in
+        Arr x, Mat y
+      )
+    | Mat x, Mat y -> (
+        let n = Owl_dense_matrix_generic.row_num y in
+        let a = (i * c) mod n in
+        let b = Pervasives.min (a + c - 1) (n - 1) in
+        let x = Owl_dense_matrix_generic.slice [[a;b]] x in
+        let y = Owl_dense_matrix_generic.slice [[a;b]] y in
+        Mat x, Mat y
+      )
+    | x, y         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))
 
 end
 
@@ -78,22 +98,26 @@ module Batch = struct
   type typ =
     | Full
     | Mini of int
+    | Sample of int
     | Stochastic
 
-  let run typ x y = match typ with
+  let run typ x y i = match typ with
     | Full       -> x, y
-    | Mini c     -> Utils.draw_samples x y c
+    | Mini c     -> Utils.get_chunk x y i c
+    | Sample c   -> Utils.draw_samples x y c
     | Stochastic -> Utils.draw_samples x y 1
 
   let batches typ x = match typ with
     | Full       -> 1
     | Mini c     -> Utils.sample_num x / c
+    | Sample c   -> Utils.sample_num x / c
     | Stochastic -> Utils.sample_num x
 
   let to_string = function
-    | Full       -> "full"
+    | Full       -> Printf.sprintf "%s" "full"
     | Mini c     -> Printf.sprintf "mini of %i" c
-    | Stochastic -> "stochastic"
+    | Sample c   -> Printf.sprintf "sample of %i" c
+    | Stochastic -> Printf.sprintf "%s" "stochastic"
 
 end
 
@@ -281,7 +305,7 @@ module Params = struct
 
   let default () = {
     epochs         = 1.;
-    batch          = Batch.Mini 100;
+    batch          = Batch.Sample 100;
     gradient       = Gradient.GD;
     loss           = Loss.Cross_entropy;
     learning_rate  = Learning_Rate.(default (Const 0.));
@@ -351,9 +375,9 @@ let train_nn params forward backward update save x y =
   let upch_fun = Learning_Rate.update_ch params.learning_rate in
   let clip_fun = Clipping.run params.clipping in
 
-  (* operations in one iteration *)
-  let iterate () =
-    let xt, yt = batch x y in
+  (* operations in the ith iteration *)
+  let iterate i =
+    let xt, yt = batch x y i in
     let yt', ws = forward xt in
     let loss = Maths.(loss_fun yt yt') in
     (* DEBUG
@@ -376,7 +400,7 @@ let train_nn params forward backward update save x y =
 
   (* first iteration to bootstrap the training *)
   let t0 = Unix.time () in
-  let _loss, _ws, _gs = iterate () in
+  let _loss, _ws, _gs = iterate 0 in
   update _ws;
 
   (* variables used for specific modules *)
@@ -394,7 +418,7 @@ let train_nn params forward backward update save x y =
 
   (* iterate all batches in each epoch *)
   for i = 1 to batches do
-    let loss', ws, gs' = iterate () in
+    let loss', ws, gs' = iterate i in
     (* print out the current state of training *)
     if params.verbosity = true then
       _print_info i batches !loss.(!idx - 1) loss';
