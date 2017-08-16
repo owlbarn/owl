@@ -663,6 +663,9 @@ val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 val sum : ('a, 'b) t -> 'a
 (** [sum x] returns the sumtion of all elements in [x]. *)
 
+val sum_ : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [sum_ axis x] sums the elements in [x] along specified [axis]. *)
+
 val prod : ?axis:int option array -> ('a, 'b) t -> 'a
 (** [prod x] returns the product of all elements in [x] along passed in axises. *)
 
@@ -1230,6 +1233,7 @@ val calc_conv3d_output_shape : padding -> int -> int -> int -> int -> int -> int
 val slice_along_dim0 : ('a, 'b) t -> int array -> ('a, 'b) t
 
 val draw_along_dim0 : ('a, 'b) t -> int -> ('a, 'b) t * int array
+
 
 
 (* ends ehre *)

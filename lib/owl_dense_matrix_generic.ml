@@ -1511,6 +1511,12 @@ let clip_by_l2norm t x =
   let y = Owl_dense_ndarray_generic.clip_by_l2norm t x in
   of_ndarray y
 
+let sum_ ?axis x =
+  let y = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.sum_ ?axis y in
+  of_ndarray y
+
+
 (* cast functions *)
 
 let cast_s2d x = x |> to_ndarray |> Owl_dense_ndarray_generic.cast_s2d |> of_ndarray

@@ -268,6 +268,8 @@ val im : arr -> cast_arr
 
 val sum : arr -> elt
 
+val sum_ : ?axis:int -> arr -> arr
+
 val prod : ?axis:int option array -> arr -> elt
 
 val abs : arr -> cast_arr
