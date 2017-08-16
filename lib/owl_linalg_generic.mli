@@ -135,9 +135,10 @@ val chol : ?upper:bool -> ('a, 'b) t -> ('a, 'b) t
 
 val svd : ?thin:bool -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
 (** [svd x -> (u, s, vt)] calculates the singular value decomposition of [x],
-  and returns a 3-tuple [(u,s,vt)]. By default, a reduced svd is performed: [u]
-  is an [m] by [n] orthogonal matrix, [s] an [1] by [n] row vector of singular
-  values, and [vt] is the transpose of an [n] by [n] orthogonal square matrix.
+  and returns a 3-tuple [(u,s,vt)]. By default, a reduced svd is performed:
+  E.g., for a [m x n] matrix [x] wherein [m <= n], [u] is returned as an [m] by
+  [m] orthogonal matrix, [s] an [1] by [m] row vector of singular values, and
+  [vt] is the transpose of an [n] by [m] orthogonal rectangular matrix.
 
   The full svd can be performed by setting [thin = false]. Note that for complex
   numbers, the type of returned singular values are also complex, the imaginary
