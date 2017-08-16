@@ -201,6 +201,18 @@ let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
 let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
 
+let model nn x =
+  match run (Mat x) nn with
+  | Mat y -> y
+  | _     -> failwith "Owl_neural_graph:model"
+
+
+let model_cnn nn x =
+  match run (Arr x) nn with
+  | Mat y -> y
+  | _     -> failwith "Owl_neural_graph:model_cnn"
+
+
 (* functions to create functional nodes *)
 
 

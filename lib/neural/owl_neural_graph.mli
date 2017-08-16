@@ -99,6 +99,10 @@ val train_generic : ?params:Params.typ -> ?init_model:bool -> network -> t -> t 
 
 val run : t -> network -> t
 
+val model : network -> (mat -> mat)
+
+val model_cnn : network -> (arr -> mat)
+
 
 (** {6 Manipuate network structure} *)
 

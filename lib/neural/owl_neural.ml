@@ -15,7 +15,6 @@ open Owl_neural_neuron
 
 (* module aliases: two network types & parallel *)
 
-module Feedforward    = Owl_neural_feedforward
 module Graph          = Owl_neural_graph
 module Parallel       = Owl_neural_parallel
 
