@@ -821,7 +821,7 @@ module Conv1D = struct
     mutable out_shape : int array;
   }
 
-  let create padding ?inputs kernel stride init_typ =
+  let create ?inputs padding kernel stride init_typ =
     let h, i, o = kernel.(0), kernel.(1), kernel.(2) in
     let in_shape = match inputs with
       | Some a -> assert (i = a.(1)); a
@@ -848,7 +848,6 @@ module Conv1D = struct
     in
     l.out_shape.(0) <- out_cols
 
-  (* FIXME *)
   let init l =
     l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
     l.b <- Arr.(zeros (shape l.b))
@@ -905,7 +904,7 @@ module Conv2D = struct
     mutable out_shape : int array;
   }
 
-  let create padding ?inputs kernel stride init_typ =
+  let create ?inputs padding kernel stride init_typ =
     let w, h, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3) in
     let in_shape = match inputs with
       | Some a -> assert (i = a.(2)); a
@@ -954,10 +953,6 @@ module Conv2D = struct
   let mkadj l = [|adjval l.w; adjval l.b|]
 
   let update l u =
-    (* DEBUG
-    let x = u.(0) |> primal' |> unpack_arr in
-    Owl_dense.Ndarray.S.print x;
-    flush_all (); exit 0; *)
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
 
@@ -995,7 +990,7 @@ module Conv3D = struct
     mutable out_shape : int array;
   }
 
-  let create padding ?inputs kernel stride init_typ =
+  let create ?inputs padding kernel stride init_typ =
     let w, h, d, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3), kernel.(4) in
     let in_shape = match inputs with
       | Some a -> assert (i = a.(3)); a
@@ -1028,7 +1023,6 @@ module Conv3D = struct
     l.out_shape.(1) <- out_rows;
     l.out_shape.(2) <- out_dpts
 
-  (* FIXME *)
   let init l =
     l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
     l.b <- Arr.(zeros (shape l.b))
