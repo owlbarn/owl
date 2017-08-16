@@ -15,18 +15,19 @@ open Owl_neural_neuron
 
 
 type node = {
-  mutable name    : string;
-  mutable prev    : node array;
-  mutable next    : node array;
-  mutable neuron  : neuron;
-  mutable output  : t option;
-  mutable network : network;
+  mutable name    : string;     (* name of a node *)
+  mutable prev    : node array; (* parents of a node *)
+  mutable next    : node array; (* children of a node *)
+  mutable neuron  : neuron;     (* neuron contained in a node *)
+  mutable output  : t option;   (* output of a node *)
+  mutable network : network;    (* network a node belongs to *)
+  mutable train   : bool;       (* specify if a node is only for training *)
 }
 and network = {
-  mutable nnid : string;      (* name of the graph network *)
-  mutable size : int;         (* size of the graph network *)
-  mutable root : node option; (* root of the graph network, i.e. input *)
-  mutable topo : node array;  (* nodes sorted in topological order *)
+  mutable nnid : string;        (* name of the graph network *)
+  mutable size : int;           (* size of the graph network *)
+  mutable root : node option;   (* root of the graph network, i.e. input *)
+  mutable topo : node array;    (* nodes sorted in topological order *)
 }
 
 
@@ -78,7 +79,7 @@ let make_network ?nnid size root topo =
   { nnid; size; root; topo; }
 
 
-let make_node ?name prev next neuron output network =
+let make_node ?name ?(train=false) prev next neuron output network =
   let name = match name with
     | Some s -> s
     | None   -> Printf.sprintf "%s_%i" (to_name neuron) network.size
@@ -90,6 +91,7 @@ let make_node ?name prev next neuron output network =
     neuron;
     output;
     network;
+    train;
   }
 
 
@@ -201,13 +203,37 @@ let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
 let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
 
+let _remove_training_nodes nn =
+  let topo' = Owl_utils.array_filter (fun n ->
+    if n.train = true then (
+      (* remove myself from my parents *)
+      Array.iter (fun m ->
+        let next' = Owl_utils.array_filter (fun x -> x.name <> n.name) m.next in
+        m.next <- next'
+      ) n.prev;
+      (* remove myself from my children *)
+      Array.iter (fun m ->
+        let prev' = Owl_utils.array_filter (fun x -> x.name <> n.name) m.prev in
+        m.prev <- prev'
+      ) n.next;
+      (* connect my parents and my children *)
+      Array.iter (connect_to_parents n.prev) n.next
+    );
+    not n.train
+  ) nn.topo
+  in
+  nn.topo <- topo'
+
+
 let model nn x =
+  _remove_training_nodes nn;
   match run (Mat x) nn with
   | Mat y -> y
   | _     -> failwith "Owl_neural_graph:model"
 
 
 let model_cnn nn x =
+  _remove_training_nodes nn;
   match run (Arr x) nn with
   | Mat y -> y
   | _     -> failwith "Owl_neural_graph:model_cnn"
@@ -325,28 +351,28 @@ let avg_pool2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel
 let dropout ?name rate input_node =
   let neuron = Dropout (Dropout.create rate) in
   let nn = get_network input_node in
-  let n = make_node ?name [||] [||] neuron None nn in
+  let n = make_node ?name ~train:true [||] [||] neuron None nn in
   add_node nn [|input_node|] n
 
 
 let gaussian_noise ?name sigma input_node =
   let neuron = GaussianNoise (GaussianNoise.create sigma) in
   let nn = get_network input_node in
-  let n = make_node ?name [||] [||] neuron None nn in
+  let n = make_node ?name ~train:true [||] [||] neuron None nn in
   add_node nn [|input_node|] n
 
 
 let gaussian_dropout ?name rate input_node =
   let neuron = GaussianDropout (GaussianDropout.create rate) in
   let nn = get_network input_node in
-  let n = make_node ?name [||] [||] neuron None nn in
+  let n = make_node ?name ~train:true [||] [||] neuron None nn in
   add_node nn [|input_node|] n
 
 
 let alpha_dropout ?name rate input_node =
   let neuron = AlphaDropout (AlphaDropout.create rate) in
   let nn = get_network input_node in
-  let n = make_node ?name [||] [||] neuron None nn in
+  let n = make_node ?name ~train:true [||] [||] neuron None nn in
   add_node nn [|input_node|] n
 
 

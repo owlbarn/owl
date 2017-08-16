@@ -13,20 +13,20 @@ open Owl_neural_optimise
 
 (** {6 Type definition of graph network and node} *)
 
-
 type node = {
-  mutable name    : string;
-  mutable prev    : node array;
-  mutable next    : node array;
-  mutable neuron  : neuron;
-  mutable output  : t option;
-  mutable network : network;
+  mutable name    : string;     (* name of a node *)
+  mutable prev    : node array; (* parents of a node *)
+  mutable next    : node array; (* children of a node *)
+  mutable neuron  : neuron;     (* neuron contained in a node *)
+  mutable output  : t option;   (* output of a node *)
+  mutable network : network;    (* network a node belongs to *)
+  mutable train   : bool;       (* true if a node is only for training *)
 }
 and network = {
-  mutable nnid : string;      (* name of the graph network *)
-  mutable size : int;         (* size of the graph network *)
-  mutable root : node option; (* root of the graph network, i.e. input *)
-  mutable topo : node array;  (* nodes sorted in topological order *)
+  mutable nnid : string;        (* name of the graph network *)
+  mutable size : int;           (* size of the graph network *)
+  mutable root : node option;   (* root of the graph network, i.e. input *)
+  mutable topo : node array;    (* nodes sorted in topological order *)
 }
 
 
@@ -108,7 +108,7 @@ val model_cnn : network -> (arr -> mat)
 
 val make_network : ?nnid:string -> int -> node option -> node array -> network
 
-val make_node : ?name:string -> node array -> node array -> neuron -> t option -> network -> node
+val make_node : ?name:string -> ?train:bool -> node array -> node array -> neuron -> t option -> network -> node
 
 val get_network : node -> network
 
