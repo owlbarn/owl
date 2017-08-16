@@ -48,6 +48,10 @@ module type MatrixSig = sig
 
   val reshape : int -> int -> mat -> mat
 
+  val tile : mat -> int array -> mat
+
+  val repeat : ?axis:int -> mat -> int -> mat
+
   val concatenate : ?axis:int -> mat array -> mat
 
   val split : ?axis:int -> int array -> mat -> mat array
@@ -131,6 +135,8 @@ module type MatrixSig = sig
   val trace : mat -> elt
 
   val sum : mat -> elt
+
+  val sum_ : ?axis:int -> mat -> mat
 
   val sum_rows : mat -> mat
 
@@ -217,11 +223,13 @@ module type NdarraySig = sig
 
   val reshape : arr -> int array -> arr
 
+  val tile : arr -> int array -> arr
+
+  val repeat : ?axis:int -> arr -> int -> arr
+
   val concatenate : ?axis:int -> arr array -> arr
 
   val split : ?axis:int -> int array -> arr -> arr array
-
-  val sum_slices : ?axis:int -> arr -> arr
 
   val print : arr -> unit
 
@@ -274,6 +282,10 @@ module type NdarraySig = sig
   val atanh : arr -> arr
 
   val sum : arr -> elt
+
+  val sum_ : ?axis:int -> arr -> arr
+
+  val sum_slices : ?axis:int -> arr -> arr
 
   val signum : arr -> arr
 
@@ -398,6 +410,18 @@ module Make
 
   module Maths : sig
 
+    val ( + )  : t -> t -> t
+
+    val ( - )  : t -> t -> t
+
+    val ( * )  : t -> t -> t
+
+    val ( / )  : t -> t -> t
+
+    val ( *@ )  : t -> t -> t
+
+    val ( ** )  : t -> t -> t
+
     val add : t -> t -> t
 
     val sub : t -> t -> t
@@ -468,6 +492,8 @@ module Make
 
     val sum : t -> t
 
+    val sum_ : ?axis:int -> t -> t
+
     val average : t -> t
 
     val transpose : t -> t
@@ -487,18 +513,6 @@ module Make
     val softsign: t -> t
 
     val softmax : t -> t
-
-    val ( + )  : t -> t -> t
-
-    val ( - )  : t -> t -> t
-
-    val ( * )  : t -> t -> t
-
-    val ( / )  : t -> t -> t
-
-    val ( *@ )  : t -> t -> t
-
-    val ( ** )  : t -> t -> t
 
     val conv1d : ?padding:padding -> t -> t -> int array -> t
 

@@ -48,6 +48,10 @@ module type MatrixSig = sig
 
   val reshape : int -> int -> mat -> mat
 
+  val tile : mat -> int array -> mat
+
+  val repeat : ?axis:int -> mat -> int -> mat
+
   val concatenate : ?axis:int -> mat array -> mat
 
   val split : ?axis:int -> int array -> mat -> mat array
@@ -131,6 +135,8 @@ module type MatrixSig = sig
   val trace : mat -> elt
 
   val sum : mat -> elt
+
+  val sum_ : ?axis:int -> mat -> mat
 
   val sum_rows : mat -> mat
 
@@ -216,11 +222,13 @@ module type NdarraySig = sig
 
   val reshape : arr -> int array -> arr
 
+  val tile : arr -> int array -> arr
+
+  val repeat : ?axis:int -> arr -> int -> arr
+
   val concatenate : ?axis:int -> arr array -> arr
 
   val split : ?axis:int -> int array -> arr -> arr array
-
-  val sum_slices : ?axis:int -> arr -> arr
 
   val print : arr -> unit
 
@@ -273,6 +281,10 @@ module type NdarraySig = sig
   val atanh : arr -> arr
 
   val sum : arr -> elt
+
+  val sum_ : ?axis:int -> arr -> arr
+
+  val sum_slices : ?axis:int -> arr -> arr
 
   val signum : arr -> arr
 
@@ -441,6 +453,7 @@ module Make
     | AddI_D_C    of t * int * int * t
     | AddI_C_D    of t * int * int * t
     | Sum_D       of t
+    | Sum__D      of t * int
     | Dot_D_D     of t * t
     | Dot_D_C     of t * t
     | Dot_C_D     of t * t
@@ -549,7 +562,7 @@ module Make
     | _     -> failwith "error: AD.numel"
 
   let mat_create m n a =
-    match (primal a) with
+    match primal a with
     | F a  -> Mat (M.create m n a)
     | _ -> failwith "error: AD.mat_create"
 
@@ -559,6 +572,17 @@ module Make
     | Mat x -> Mat M.(clip_by_l2norm a x)
     | _     -> failwith "error: AD.clip_by_l2norm"
 
+  let tile x reps =
+    match primal' x with
+    | Arr x -> Arr A.(tile x reps)
+    | Mat x -> Mat M.(tile x reps)
+    | _     -> failwith "error: AD.tile"
+
+  let repeat ?axis x reps =
+    match primal' x with
+    | Arr x -> Arr A.(repeat ?axis x reps)
+    | Mat x -> Mat M.(repeat ?axis x reps)
+    | _     -> failwith "error: AD.repeat"
 
   (* packing and unpacking functions *)
 
@@ -1131,6 +1155,17 @@ module Make
       let r a = Sum_D a in
       op_d_d a ff fd df r
 
+    and sum_ ?(axis=0) a =
+      let ff = function
+        | Arr a    -> Arr A.(sum_ ~axis a)
+        | Mat a    -> Mat M.(sum_ ~axis a)
+        | _        -> error_uniop "sum_" a
+      in
+      let fd a = sum_ ~axis a in
+      let df cp ap at = sum_ ~axis at in
+      let r a = Sum__D (a, axis) in
+      op_d_d a ff fd df r
+
     and average a = (sum a) / F (numel a |> float_of_int)
 
     and ( *@ ) a b = dot a b
@@ -1592,6 +1627,7 @@ module Make
               | AddI_D_C (a, _, _, _)    -> reset (a :: t)
               | AddI_C_D (_, _, _, b)    -> reset (b :: t)
               | Sum_D a                  -> reset (a :: t)
+              | Sum__D (a, _)            -> reset (a :: t)
               | Dot_D_D (a, b)           -> reset (a :: b :: t)
               | Dot_D_C (a, _)           -> reset (a :: t)
               | Dot_C_D (_, b)           -> reset (b :: t)
@@ -1719,6 +1755,7 @@ module Make
               | AddI_C_D (_, i, j, b)    -> push ((get_item !aa i j, b) :: t)
               | Sum_D a                  -> push ((((mat_create (row_num (primal a)) (col_num (primal a)) !aa)), a) :: t)
               (* TODO: SUM_D can be optimised to this | Sum_D a               -> push ((!aa, a) :: t) *)
+              | Sum__D (a, i)            -> push ((repeat ~axis:i !aa (shape a).(i), a) :: t)
               | Dot_D_D (a, b)           -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
               | Dot_D_C (a, b)           -> push (((dot !aa (transpose b)), a) :: t)
               | Dot_C_D (a, b)           -> push (((dot (transpose a) !aa), b) :: t)
@@ -1996,7 +2033,7 @@ module Make
     let div x y = Maths.div x y
 
     let dot x y = Maths.dot x y
-    
+
   end
 
 
