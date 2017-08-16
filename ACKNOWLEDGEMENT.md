@@ -16,7 +16,7 @@ Because Owl is always under active development, there might be a lag between the
 
 - Interfacing to other C/C++ libraries (e.g., BLAS and Eigen) relies on [Jeremy Yallop](https://www.cl.cam.ac.uk/~jdy22/)'s [ocaml-ctypes](https://github.com/ocamllabs/ocaml-ctypes).
 
-- The plot module is built on top of [Hezekiah M. Carty](https://github.com/hcarty)'s project: [ocmal-plplot](https://github.com/hcarty/ocaml-plplot).
+- The plot module is built on top of [Hezekiah M. Carty](https://github.com/hcarty)'s project: [ocaml-plplot](https://github.com/hcarty/ocaml-plplot).
 
 - The [Algodiff] module partly uses the design of [DiffSharp](http://diffsharp.github.io/DiffSharp/) by [Atilim Gunes Baydin](http://www.cs.nuim.ie/~gunes/), [Barak A. Pearlmutter](http://www.bcl.hamilton.ie/~barak/), and et al., [[techreport]](https://arxiv.org/abs/1502.05767).
 
