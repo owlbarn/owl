@@ -17,6 +17,9 @@ module Init = struct
     | Gaussian of float * float
     | Standard
     | Tanh
+    | GlorotNormal
+    | GlorotUniform
+    | LecunNormal
     | Custom   of (int array -> t)
 
   let calc_fans s =
@@ -46,6 +49,7 @@ module Init = struct
     let fan_in, fan_out = calc_fans s in
     let r0 = sqrt (1. /. fan_in) in
     let r1 = sqrt (6. /. (fan_in +. fan_out)) in
+    let r2 = sqrt (2. /. (fan_in +. fan_out)) in
     match x with
     | Mat _ -> (
         let m, n = s.(0), s.(1) in
@@ -54,6 +58,9 @@ module Init = struct
         | Gaussian (mu, sigma) -> Mat.(add (gaussian ~sigma m n) (F mu))
         | Standard             -> Mat.(add (uniform ~scale:(2.*.r0) m n) (F (-.r0)))
         | Tanh                 -> Mat.(add (uniform ~scale:(2.*.r1) m n) (F (-.r1)))
+        | GlorotUniform        -> Mat.(add (uniform ~scale:(2.*.r1) m n) (F (-.r1)))
+        | GlorotNormal         -> Mat.(gaussian ~sigma:r2 m n)
+        | LecunNormal          -> Mat.(gaussian ~sigma:r0 m n)
         | Custom f             -> f s
       )
     | Arr _ -> (
@@ -62,6 +69,9 @@ module Init = struct
         | Gaussian (mu, sigma) -> Arr.(add (gaussian ~sigma s) (F mu))
         | Standard             -> Arr.(add (uniform ~scale:(2.*.r0) s) (F (-.r0)))
         | Tanh                 -> Arr.(add (uniform ~scale:(2.*.r1) s) (F (-.r1)))
+        | GlorotUniform        -> Arr.(add (uniform ~scale:(2.*.r1) s) (F (-.r1)))
+        | GlorotNormal         -> Arr.(gaussian ~sigma:r2 s)
+        | LecunNormal          -> Arr.(gaussian ~sigma:r0 s)
         | Custom f             -> f s
       )
     | _     -> failwith "Owl_neural:init:run"
@@ -71,6 +81,9 @@ module Init = struct
     | Gaussian (a, b) -> Printf.sprintf "gaussian (%g, %g)" a b
     | Standard        -> Printf.sprintf "standard"
     | Tanh            -> Printf.sprintf "tanh"
+    | GlorotUniform   -> Printf.sprintf "glorot_uniform"
+    | GlorotNormal    -> Printf.sprintf "glorot_normal"
+    | LecunNormal     -> Printf.sprintf "lecun_normal"
     | Custom _        -> Printf.sprintf "customise"
 
   let to_name () = "init"
@@ -808,7 +821,7 @@ module Conv1D = struct
     mutable out_shape : int array;
   }
 
-  let create padding ?inputs kernel stride init_typ =
+  let create ?inputs padding kernel stride init_typ =
     let h, i, o = kernel.(0), kernel.(1), kernel.(2) in
     let in_shape = match inputs with
       | Some a -> assert (i = a.(1)); a
@@ -835,7 +848,6 @@ module Conv1D = struct
     in
     l.out_shape.(0) <- out_cols
 
-  (* FIXME *)
   let init l =
     l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
     l.b <- Arr.(zeros (shape l.b))
@@ -892,7 +904,7 @@ module Conv2D = struct
     mutable out_shape : int array;
   }
 
-  let create padding ?inputs kernel stride init_typ =
+  let create ?inputs padding kernel stride init_typ =
     let w, h, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3) in
     let in_shape = match inputs with
       | Some a -> assert (i = a.(2)); a
@@ -941,10 +953,6 @@ module Conv2D = struct
   let mkadj l = [|adjval l.w; adjval l.b|]
 
   let update l u =
-    (* DEBUG
-    let x = u.(0) |> primal' |> unpack_arr in
-    Owl_dense.Ndarray.S.print x;
-    flush_all (); exit 0; *)
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
 
@@ -982,7 +990,7 @@ module Conv3D = struct
     mutable out_shape : int array;
   }
 
-  let create padding ?inputs kernel stride init_typ =
+  let create ?inputs padding kernel stride init_typ =
     let w, h, d, i, o = kernel.(0), kernel.(1), kernel.(2), kernel.(3), kernel.(4) in
     let in_shape = match inputs with
       | Some a -> assert (i = a.(3)); a
@@ -1015,7 +1023,6 @@ module Conv3D = struct
     l.out_shape.(1) <- out_rows;
     l.out_shape.(2) <- out_dpts
 
-  (* FIXME *)
   let init l =
     l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
     l.b <- Arr.(zeros (shape l.b))
@@ -1107,21 +1114,14 @@ module FullyConnected = struct
   let mkadj l = [|adjval l.w; adjval l.b|]
 
   let update l u =
-    (* DEBUG
-    let x = u.(1) |> primal' |> unpack_mat in
-    Owl_dense_matrix_generic.print x; flush_all (); exit 0; *)
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
 
   let run x l =
     let m = Mat.row_num l.w in
     let n = Arr.numel x / m in
-    (* Log.info "===> %i %i\n" n m; flush_all(); *)
     let x = Maths.(reshape x [|n;m|] |> arr_to_mat) in
-    (* Owl_dense_matrix_generic.print (unpack_mat x); *)
     let y = Maths.((x *@ l.w) + l.b) in
-    (* Log.info "done!"; flush_all (); *)
-    (* Owl_dense_matrix_generic.print (unpack_mat y); flush_all (); *)
     y
 
   let to_string l =
@@ -1716,6 +1716,7 @@ module Average = struct
 end
 
 
+(* definition of Concatenate neuron *)
 module Concatenate = struct
 
   type neuron_typ = {
@@ -1776,6 +1777,7 @@ module Normalisation = struct
 end
 
 
+(* definition of GaussianNoise neuron *)
 module GaussianNoise = struct
 
   type neuron_typ = {
@@ -1814,6 +1816,7 @@ module GaussianNoise = struct
 end
 
 
+(* definition of GaussianDropout neuron *)
 module GaussianDropout = struct
 
   type neuron_typ = {
@@ -1853,6 +1856,7 @@ module GaussianDropout = struct
 end
 
 
+(* definition of AlphaDropout neuron *)
 module AlphaDropout = struct
 
   type neuron_typ = {
@@ -1899,6 +1903,63 @@ module AlphaDropout = struct
     Printf.sprintf "    rate         : %g\n" l.rate
 
   let to_name () = "alpha_dropout"
+
+end
+
+
+(* TODO: definition of BatchNormalisation neuron *)
+module BatchNormalisation = struct
+
+  type neuron_typ = {
+    mutable axis      : int;
+    mutable w         : t;
+    mutable b         : t;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create axis = {
+    axis      = axis;
+    w         = F 0.;
+    b         = F 0.;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let init l = ()
+
+  let reset l =
+    l.w <- F 0.;
+    l.b <- F 0.
+
+  let mktag t l =
+    l.w <- make_reverse l.w t;
+    l.b <- make_reverse l.b t
+
+  let mkpar l = [|l.w; l.b|]
+
+  let mkpri l = [|primal l.w; primal l.b|]
+
+  let mkadj l = [|adjval l.w; adjval l.b|]
+
+  let update l u =
+    l.w <- u.(0) |> primal';
+    l.b <- u.(1) |> primal'
+
+  let run x l =
+    x
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "    BatchNormalisation : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    axis               : %i\n" l.axis
+
+  let to_name () = "batch_normalisation"
 
 end
 
@@ -1972,7 +2033,9 @@ let get_in_out_shape = function
   | Average l         -> Average.(l.in_shape, l.out_shape)
   | Concatenate l     -> Concatenate.(l.in_shape, l.out_shape)
 
+
 let get_in_shape x = x |> get_in_out_shape |> fst
+
 
 let get_out_shape x = x |> get_in_out_shape |> snd
 
@@ -2032,6 +2095,7 @@ let reset = function
   | Conv3D l         -> Conv3D.reset l
   | FullyConnected l -> FullyConnected.reset l
   | _                -> () (* activation, etc. *)
+
 
 let mktag t = function
   | Linear l         -> Linear.mktag t l
