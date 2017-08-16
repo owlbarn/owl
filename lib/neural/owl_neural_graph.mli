@@ -70,6 +70,8 @@ val gaussian_dropout : ?name:string -> float -> node -> node
 
 val alpha_dropout : ?name:string -> float -> node -> node
 
+val normalisation : ?name:string -> ?axis:int -> node -> node
+
 val reshape : ?name:string -> ?convert:bool -> int array -> node -> node
 
 val flatten : ?name:string -> ?convert:bool -> node -> node

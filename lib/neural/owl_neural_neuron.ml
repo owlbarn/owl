@@ -1770,9 +1770,63 @@ module Concatenate = struct
 end
 
 
-
-(* TODO: definition of Normalisation neuron *)
+(* TODO: definition of Batch Normalisation neuron *)
 module Normalisation = struct
+
+  type neuron_typ = {
+    mutable axis      : int;
+    mutable beta      : t;
+    mutable gamma     : t;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create axis = {
+    axis      = axis;
+    beta      = F 0.;
+    gamma     = F 1.;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let init l = ()
+
+  let reset l =
+    l.beta <- F 0.;
+    l.gamma <- F 1.
+
+  let mktag t l =
+    l.beta <- make_reverse l.beta t;
+    l.gamma <- make_reverse l.gamma t
+
+  let mkpar l = [|l.beta; l.gamma|]
+
+  let mkpri l = [|primal l.beta; primal l.gamma|]
+
+  let mkadj l = [|adjval l.beta; adjval l.gamma|]
+
+  let update l u =
+    l.beta <- u.(0) |> primal';
+    l.gamma <- u.(1) |> primal'
+
+  let run x l =
+    let a = F (1. /. float_of_int (shape x).(l.axis)) in
+    let mu = Maths.(x - a * (sum_ ~axis:l.axis x)) in
+    let var = Maths.(a * (sum_ ~axis:l.axis (x * x))) in
+    let x' = Maths.(mu / sqrt (var + F 1e-8)) in
+    Maths.(x' * l.gamma + l.beta)
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "    Normalisation : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    axis          : %i\n" l.axis
+
+  let to_name () = "normalisation"
 
 end
 
@@ -1907,63 +1961,6 @@ module AlphaDropout = struct
 end
 
 
-(* TODO: definition of BatchNormalisation neuron *)
-module BatchNormalisation = struct
-
-  type neuron_typ = {
-    mutable axis      : int;
-    mutable w         : t;
-    mutable b         : t;
-    mutable in_shape  : int array;
-    mutable out_shape : int array;
-  }
-
-  let create axis = {
-    axis      = axis;
-    w         = F 0.;
-    b         = F 0.;
-    in_shape  = [||];
-    out_shape = [||];
-  }
-
-  let connect out_shape l =
-    l.in_shape <- Array.copy out_shape;
-    l.out_shape <- Array.copy out_shape
-
-  let init l = ()
-
-  let reset l =
-    l.w <- F 0.;
-    l.b <- F 0.
-
-  let mktag t l =
-    l.w <- make_reverse l.w t;
-    l.b <- make_reverse l.b t
-
-  let mkpar l = [|l.w; l.b|]
-
-  let mkpri l = [|primal l.w; primal l.b|]
-
-  let mkadj l = [|adjval l.w; adjval l.b|]
-
-  let update l u =
-    l.w <- u.(0) |> primal';
-    l.b <- u.(1) |> primal'
-
-  let run x l =
-    x
-
-  let to_string l =
-    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-    Printf.sprintf "    BatchNormalisation : in:[*,%s] out:[*,%s]\n" in_str out_str ^
-    Printf.sprintf "    axis               : %i\n" l.axis
-
-  let to_name () = "batch_normalisation"
-
-end
-
-
 (* TODO: definition of Masking neuron *)
 module Masking = struct
 
@@ -1995,6 +1992,7 @@ type neuron =
   | GaussianNoise   of GaussianNoise.neuron_typ
   | GaussianDropout of GaussianDropout.neuron_typ
   | AlphaDropout    of AlphaDropout.neuron_typ
+  | Normalisation   of Normalisation.neuron_typ
   | Add             of Add.neuron_typ
   | Mul             of Mul.neuron_typ
   | Dot             of Dot.neuron_typ
@@ -2026,6 +2024,7 @@ let get_in_out_shape = function
   | GaussianNoise l   -> GaussianNoise.(l.in_shape, l.out_shape)
   | GaussianDropout l -> GaussianDropout.(l.in_shape, l.out_shape)
   | AlphaDropout l    -> AlphaDropout.(l.in_shape, l.out_shape)
+  | Normalisation l   -> Normalisation.(l.in_shape, l.out_shape)
   | Add l             -> Add.(l.in_shape, l.out_shape)
   | Mul l             -> Mul.(l.in_shape, l.out_shape)
   | Dot l             -> Dot.(l.in_shape, l.out_shape)
@@ -2063,6 +2062,7 @@ let connect out_shapes l = match l with
   | GaussianNoise l   -> GaussianNoise.connect out_shapes.(0) l
   | GaussianDropout l -> GaussianDropout.connect out_shapes.(0) l
   | AlphaDropout l    -> AlphaDropout.connect out_shapes.(0) l
+  | Normalisation l   -> Normalisation.connect out_shapes.(0) l
   | Add l             -> Add.connect out_shapes l
   | Mul l             -> Mul.connect out_shapes l
   | Dot l             -> Dot.connect out_shapes l
@@ -2081,6 +2081,7 @@ let init = function
   | Conv2D l         -> Conv2D.init l
   | Conv3D l         -> Conv3D.init l
   | FullyConnected l -> FullyConnected.init l
+  | Normalisation l  -> Normalisation.init l
   | _                -> () (* activation, etc. *)
 
 
@@ -2094,6 +2095,7 @@ let reset = function
   | Conv2D l         -> Conv2D.reset l
   | Conv3D l         -> Conv3D.reset l
   | FullyConnected l -> FullyConnected.reset l
+  | Normalisation l  -> Normalisation.reset l
   | _                -> () (* activation, etc. *)
 
 
@@ -2107,6 +2109,7 @@ let mktag t = function
   | Conv2D l         -> Conv2D.mktag t l
   | Conv3D l         -> Conv3D.mktag t l
   | FullyConnected l -> FullyConnected.mktag t l
+  | Normalisation l  -> Normalisation.mktag t l
   | _                -> () (* activation, etc. *)
 
 
@@ -2120,6 +2123,7 @@ let mkpar = function
   | Conv2D l         -> Conv2D.mkpar l
   | Conv3D l         -> Conv3D.mkpar l
   | FullyConnected l -> FullyConnected.mkpar l
+  | Normalisation l  -> Normalisation.mkpar l
   | _                -> [||] (* activation, etc. *)
 
 
@@ -2133,6 +2137,7 @@ let mkpri = function
   | Conv2D l         -> Conv2D.mkpri l
   | Conv3D l         -> Conv3D.mkpri l
   | FullyConnected l -> FullyConnected.mkpri l
+  | Normalisation l  -> Normalisation.mkpri l
   | _                -> [||] (* activation, etc. *)
 
 
@@ -2146,6 +2151,7 @@ let mkadj = function
   | Conv2D l         -> Conv2D.mkadj l
   | Conv3D l         -> Conv3D.mkadj l
   | FullyConnected l -> FullyConnected.mkadj l
+  | Normalisation l  -> Normalisation.mkadj l
   | _                -> [||] (* activation, etc. *)
 
 
@@ -2159,6 +2165,7 @@ let update l u = match l with
   | Conv2D l         -> Conv2D.update l u
   | Conv3D l         -> Conv3D.update l u
   | FullyConnected l -> FullyConnected.update l u
+  | Normalisation l  -> Normalisation.update l u
   | _                -> () (* activation, etc. *)
 
 
@@ -2185,6 +2192,7 @@ let run a l = match l with
   | GaussianNoise l   -> GaussianNoise.run a.(0) l
   | GaussianDropout l -> GaussianDropout.run a.(0) l
   | AlphaDropout l    -> AlphaDropout.run a.(0) l
+  | Normalisation l   -> Normalisation.run a.(0) l
   | Add l             -> Add.run a l
   | Mul l             -> Mul.run a l
   | Dot l             -> Dot.run a l
@@ -2216,6 +2224,7 @@ let to_string = function
   | GaussianNoise l   -> GaussianNoise.to_string l
   | GaussianDropout l -> GaussianDropout.to_string l
   | AlphaDropout l    -> AlphaDropout.to_string l
+  | Normalisation l   -> Normalisation.to_string l
   | Add l             -> Add.to_string l
   | Mul l             -> Mul.to_string l
   | Dot l             -> Dot.to_string l
@@ -2247,6 +2256,7 @@ let to_name = function
   | GaussianNoise _   -> GaussianNoise.to_name ()
   | GaussianDropout _ -> GaussianDropout.to_name ()
   | AlphaDropout _    -> AlphaDropout.to_name ()
+  | Normalisation _   -> Normalisation.to_name ()
   | Add _             -> Add.to_name ()
   | Mul _             -> Mul.to_name ()
   | Dot _             -> Dot.to_name ()
