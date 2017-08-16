@@ -1114,21 +1114,14 @@ module FullyConnected = struct
   let mkadj l = [|adjval l.w; adjval l.b|]
 
   let update l u =
-    (* DEBUG
-    let x = u.(1) |> primal' |> unpack_mat in
-    Owl_dense_matrix_generic.print x; flush_all (); exit 0; *)
     l.w <- u.(0) |> primal';
     l.b <- u.(1) |> primal'
 
   let run x l =
     let m = Mat.row_num l.w in
     let n = Arr.numel x / m in
-    (* Log.info "===> %i %i\n" n m; flush_all(); *)
     let x = Maths.(reshape x [|n;m|] |> arr_to_mat) in
-    (* Owl_dense_matrix_generic.print (unpack_mat x); *)
     let y = Maths.((x *@ l.w) + l.b) in
-    (* Log.info "done!"; flush_all (); *)
-    (* Owl_dense_matrix_generic.print (unpack_mat y); flush_all (); *)
     y
 
   let to_string l =
@@ -1723,6 +1716,7 @@ module Average = struct
 end
 
 
+(* definition of Concatenate neuron *)
 module Concatenate = struct
 
   type neuron_typ = {
@@ -1783,6 +1777,7 @@ module Normalisation = struct
 end
 
 
+(* definition of GaussianNoise neuron *)
 module GaussianNoise = struct
 
   type neuron_typ = {
@@ -1821,6 +1816,7 @@ module GaussianNoise = struct
 end
 
 
+(* definition of GaussianDropout neuron *)
 module GaussianDropout = struct
 
   type neuron_typ = {
@@ -1860,6 +1856,7 @@ module GaussianDropout = struct
 end
 
 
+(* definition of AlphaDropout neuron *)
 module AlphaDropout = struct
 
   type neuron_typ = {
@@ -1906,6 +1903,63 @@ module AlphaDropout = struct
     Printf.sprintf "    rate         : %g\n" l.rate
 
   let to_name () = "alpha_dropout"
+
+end
+
+
+(* TODO: definition of BatchNormalisation neuron *)
+module BatchNormalisation = struct
+
+  type neuron_typ = {
+    mutable axis      : int;
+    mutable w         : t;
+    mutable b         : t;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create axis = {
+    axis      = axis;
+    w         = F 0.;
+    b         = F 0.;
+    in_shape  = [||];
+    out_shape = [||];
+  }
+
+  let connect out_shape l =
+    l.in_shape <- Array.copy out_shape;
+    l.out_shape <- Array.copy out_shape
+
+  let init l = ()
+
+  let reset l =
+    l.w <- F 0.;
+    l.b <- F 0.
+
+  let mktag t l =
+    l.w <- make_reverse l.w t;
+    l.b <- make_reverse l.b t
+
+  let mkpar l = [|l.w; l.b|]
+
+  let mkpri l = [|primal l.w; primal l.b|]
+
+  let mkadj l = [|adjval l.w; adjval l.b|]
+
+  let update l u =
+    l.w <- u.(0) |> primal';
+    l.b <- u.(1) |> primal'
+
+  let run x l =
+    x
+
+  let to_string l =
+    let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+    let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+    Printf.sprintf "    BatchNormalisation : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+    Printf.sprintf "    axis               : %i\n" l.axis
+
+  let to_name () = "batch_normalisation"
 
 end
 
@@ -1979,7 +2033,9 @@ let get_in_out_shape = function
   | Average l         -> Average.(l.in_shape, l.out_shape)
   | Concatenate l     -> Concatenate.(l.in_shape, l.out_shape)
 
+
 let get_in_shape x = x |> get_in_out_shape |> fst
+
 
 let get_out_shape x = x |> get_in_out_shape |> snd
 
@@ -2039,6 +2095,7 @@ let reset = function
   | Conv3D l         -> Conv3D.reset l
   | FullyConnected l -> FullyConnected.reset l
   | _                -> () (* activation, etc. *)
+
 
 let mktag t = function
   | Linear l         -> Linear.mktag t l
