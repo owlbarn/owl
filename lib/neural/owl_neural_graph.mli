@@ -89,13 +89,15 @@ val average : ?name:string -> ?act_typ:Activation.typ -> node array -> node
 val concatenate : ?name:string -> ?act_typ:Activation.typ -> int -> node array -> node
 
 
-(** {6 Training functions} *)
+(** {6 Training and inference functions} *)
 
 val train : ?params:Params.typ -> ?init_model:bool -> network -> mat -> mat -> float array
 
 val train_cnn : ?params:Params.typ -> ?init_model:bool -> network -> arr -> mat -> float array
 
 val train_generic : ?params:Params.typ -> ?init_model:bool -> network -> t -> t -> float array
+
+val run : t -> network -> t
 
 
 (** {6 Manipuate network structure} *)
