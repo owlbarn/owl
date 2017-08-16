@@ -293,7 +293,8 @@ module Conv2D = struct
     let padding = ST.get_param_padding x |> Padding.of_specs in
     let kernel = ST.get_param_kernel x |> Array.of_list in
     let stride = ST.get_param_stride x |> Array.of_list in
-    let neuron = NN.Conv2D.create padding kernel stride in
+    let init_typ = ST.get_param_init_typ x |> Init.of_specs in
+    let neuron = NN.Conv2D.create padding kernel stride init_typ in
     NN.(Conv2D neuron)
 
 end
@@ -316,7 +317,8 @@ module Conv3D = struct
     let padding = ST.get_param_padding x |> Padding.of_specs in
     let kernel = ST.get_param_kernel x |> Array.of_list in
     let stride = ST.get_param_stride x |> Array.of_list in
-    let neuron = NN.Conv3D.create padding kernel stride in
+    let init_typ = ST.get_param_init_typ x |> Init.of_specs in
+    let neuron = NN.Conv3D.create padding kernel stride init_typ in
     NN.(Conv3D neuron)
 
 end

@@ -1985,6 +1985,18 @@ module Make
 
     let numel x = numel x
 
+    (* binary math operators *)
+
+    let add x y = Maths.add x y
+
+    let sub x y = Maths.sub x y
+
+    let mul x y = Maths.mul x y
+
+    let div x y = Maths.div x y
+
+    let dot x y = Maths.dot x y
+    
   end
 
 

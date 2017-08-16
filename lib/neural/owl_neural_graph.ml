@@ -254,22 +254,22 @@ let gru ?name cells input_node =
   add_node nn [|input_node|] n
 
 
-let conv1d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel strides input_node =
-  let neuron = Conv1D (Conv1D.create padding kernel strides) in
+let conv1d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
+  let neuron = Conv1D (Conv1D.create padding kernel strides init_typ) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node ?act_typ nn [|input_node|] n
 
 
-let conv2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel strides input_node =
-  let neuron = Conv2D (Conv2D.create padding kernel strides) in
+let conv2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
+  let neuron = Conv2D (Conv2D.create padding kernel strides init_typ) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node ?act_typ nn [|input_node|] n
 
 
-let conv3d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel strides input_node =
-  let neuron = Conv3D (Conv3D.create padding kernel strides) in
+let conv3d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
+  let neuron = Conv3D (Conv3D.create padding kernel strides init_typ) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node ?act_typ nn [|input_node|] n
