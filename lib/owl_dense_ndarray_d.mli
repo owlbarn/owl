@@ -247,6 +247,8 @@ val load : string -> arr
 
 val sum : arr -> elt
 
+val sum_ : ?axis:int -> arr -> arr
+
 val prod : ?axis:int option array -> arr -> elt
 
 val min : arr -> elt

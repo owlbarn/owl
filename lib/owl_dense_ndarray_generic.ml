@@ -2851,6 +2851,16 @@ let split ?(axis=0) parts x =
   slices
 
 
+(* TODO: optimise ... I am lazy so I currently use the cumsum operation,
+  but we should generalise reduce_op.
+ *)
+let sum_ ?(axis=0) x =
+  let i = Array.make (num_dims x) [||] in
+  i.(axis) <- [|-1|];
+  let y = cumsum ~axis x in
+  Owl_slicing.slice_array_typ i y
+
+
 (* TODO *)
 
 let insert_slice = None

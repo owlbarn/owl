@@ -663,6 +663,9 @@ val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 val sum : ('a, 'b) t -> 'a
 (** [sum x] returns the sumtion of all elements in [x]. *)
 
+val sum_ : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [sum_ axis x] sums the elements in [x] along specified [axis]. *)
+
 val prod : ?axis:int option array -> ('a, 'b) t -> 'a
 (** [prod x] returns the product of all elements in [x] along passed in axises. *)
 
@@ -979,6 +982,11 @@ val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [add x y] adds all the elements in [x] and [y] elementwise, and returns the
   result in a new ndarray.
+
+  General broadcast operation is automatically applied to add/sub/mul/div, etc.
+  The function compares the dimension element-wise from the highest to the
+  lowest with the following broadcast rules (same as numpy):
+  1. equal; 2. either is 1.
  *)
 
 val sub : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -1230,6 +1238,7 @@ val calc_conv3d_output_shape : padding -> int -> int -> int -> int -> int -> int
 val slice_along_dim0 : ('a, 'b) t -> int array -> ('a, 'b) t
 
 val draw_along_dim0 : ('a, 'b) t -> int -> ('a, 'b) t * int array
+
 
 
 (* ends ehre *)

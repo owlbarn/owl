@@ -410,6 +410,8 @@ val trace : mat -> elt
 
 val sum : mat -> elt
 
+val sum_ : ?axis:int -> mat -> mat
+
 val prod : mat -> elt
 
 val average : mat -> elt

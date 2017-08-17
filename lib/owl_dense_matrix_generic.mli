@@ -917,6 +917,9 @@ val trace : ('a, 'b) t -> 'a
 val sum : ('a, 'b) t -> 'a
 (** [sum x] returns the summation of all the elements in [x]. *)
 
+val sum_ : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [sum_ axis x] sums the elements in [x] along specified [axis]. *)
+
 val prod : ('a, 'b) t -> 'a
 (** [prod x] returns the product of all the elements in [x]. *)
 
