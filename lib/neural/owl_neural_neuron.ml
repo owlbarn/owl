@@ -1188,53 +1188,6 @@ module MaxPool1D = struct
 end
 
 
-(* definition of AvgPool1D neuron *)
-module AvgPool1D = struct
-
-  type neuron_typ = {
-    mutable padding   : padding;
-    mutable kernel    : int array;
-    mutable stride    : int array;
-    mutable in_shape  : int array;
-    mutable out_shape : int array;
-  }
-
-  let create padding kernel stride = {
-    padding;
-    kernel;
-    stride;
-    in_shape  = [|0;0|];
-    out_shape = [|0;0|];
-  }
-
-  let connect out_shape l =
-    assert Array.(length out_shape = length l.in_shape);
-    l.in_shape.(0) <- out_shape.(0);
-    l.in_shape.(1) <- out_shape.(1);
-    let out_cols = Owl_dense_ndarray_generic.calc_conv1d_output_shape
-      l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
-    in
-    l.out_shape.(0) <- out_cols;
-    l.out_shape.(1) <- out_shape.(1)
-
-  let run x l = Maths.(avg_pool1d l.padding x l.kernel l.stride)
-
-  let to_string l =
-    let padding_s = match l.padding with
-      | Owl_dense_ndarray_generic.SAME  -> "SAME"
-      | Owl_dense_ndarray_generic.VALID -> "VALID"
-    in
-    Printf.sprintf "    AvgPool1D : tensor in:[*,%i,%i] out:[*,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) l.out_shape.(1) ^
-    Printf.sprintf "    padding   : %s\n" padding_s ^
-    Printf.sprintf "    kernel    : [%i]\n" l.kernel.(0) ^
-    Printf.sprintf "    stride    : [%i]\n" l.stride.(0) ^
-    ""
-
-  let to_name () = "avgpool1d"
-
-end
-
-
 (* definition of MaxPool2D neuron *)
 module MaxPool2D = struct
 
@@ -1284,6 +1237,53 @@ module MaxPool2D = struct
 end
 
 
+(* definition of AvgPool1D neuron *)
+module AvgPool1D = struct
+
+  type neuron_typ = {
+    mutable padding   : padding;
+    mutable kernel    : int array;
+    mutable stride    : int array;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create padding kernel stride = {
+    padding;
+    kernel;
+    stride;
+    in_shape  = [|0;0|];
+    out_shape = [|0;0|];
+  }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    let out_cols = Owl_dense_ndarray_generic.calc_conv1d_output_shape
+      l.padding l.in_shape.(0) l.kernel.(0) l.stride.(0)
+    in
+    l.out_shape.(0) <- out_cols;
+    l.out_shape.(1) <- out_shape.(1)
+
+  let run x l = Maths.(avg_pool1d l.padding x l.kernel l.stride)
+
+  let to_string l =
+    let padding_s = match l.padding with
+      | Owl_dense_ndarray_generic.SAME  -> "SAME"
+      | Owl_dense_ndarray_generic.VALID -> "VALID"
+    in
+    Printf.sprintf "    AvgPool1D : tensor in:[*,%i,%i] out:[*,%i,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) l.out_shape.(1) ^
+    Printf.sprintf "    padding   : %s\n" padding_s ^
+    Printf.sprintf "    kernel    : [%i]\n" l.kernel.(0) ^
+    Printf.sprintf "    stride    : [%i]\n" l.stride.(0) ^
+    ""
+
+  let to_name () = "avgpool1d"
+
+end
+
+
 (* definition of AvgPool2D neuron *)
 module AvgPool2D = struct
 
@@ -1315,7 +1315,6 @@ module AvgPool2D = struct
     l.out_shape.(1) <- out_rows;
     l.out_shape.(2) <- out_shape.(2)
 
-
   let run x l = Maths.(avg_pool2d l.padding x l.kernel l.stride)
 
   let to_string l =
@@ -1330,6 +1329,140 @@ module AvgPool2D = struct
     ""
 
   let to_name () = "avgpool2d"
+
+end
+
+
+(* definition of GlobalMaxPool1D neuron *)
+module GlobalMaxPool1D = struct
+
+  type neuron_typ = {
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create () = {
+    in_shape  = [|0;0|];
+    out_shape = [|0|];
+  }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = 2);
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    l.out_shape.(0) <- out_shape.(1)
+
+  let run x l =
+    let kernel = [|l.in_shape.(0)|] in
+    let padding = Owl_dense_ndarray_generic.VALID in
+    Maths.(max_pool1d padding x kernel [|1|] |> arr_to_mat)
+
+  let to_string l =
+    Printf.sprintf "    GlobalMaxPool1D : in:[*,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) ^
+    ""
+
+  let to_name () = "global_maxpool1d"
+
+end
+
+
+(* definition of GlobalMaxPool2D neuron *)
+module GlobalMaxPool2D = struct
+
+  type neuron_typ = {
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create () = {
+    in_shape  = [|0;0;0|];
+    out_shape = [|0|];
+  }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = 3);
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    l.in_shape.(2) <- out_shape.(2);
+    l.out_shape.(0) <- out_shape.(2)
+
+  let run x l =
+    let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
+    let padding = Owl_dense_ndarray_generic.VALID in
+    Maths.(max_pool2d padding x kernel [|1;1|] |> arr_to_mat)
+
+  let to_string l =
+    Printf.sprintf "    GlobalMaxPool2D : in:[*,%i,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) ^
+    ""
+
+  let to_name () = "global_maxpool2d"
+
+end
+
+
+(* definition of GlobalAvgPool1D neuron *)
+module GlobalAvgPool1D = struct
+
+  type neuron_typ = {
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create () = {
+    in_shape  = [|0;0|];
+    out_shape = [|0|];
+  }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = 2);
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    l.out_shape.(0) <- out_shape.(1)
+
+  let run x l =
+    let kernel = [|l.in_shape.(0)|] in
+    let padding = Owl_dense_ndarray_generic.VALID in
+    Maths.(avg_pool1d padding x kernel [|1|] |> arr_to_mat)
+
+  let to_string l =
+    Printf.sprintf "    GlobalAvgPool1D : in:[*,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) ^
+    ""
+
+  let to_name () = "global_avgpool1d"
+
+end
+
+
+(* definition of GlobalAvgPool2D neuron *)
+module GlobalAvgPool2D = struct
+
+  type neuron_typ = {
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create () = {
+    in_shape  = [|0;0;0|];
+    out_shape = [|0|];
+  }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = 3);
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1);
+    l.in_shape.(2) <- out_shape.(2);
+    l.out_shape.(0) <- out_shape.(2)
+
+  let run x l =
+    let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
+    let padding = Owl_dense_ndarray_generic.VALID in
+    Maths.(avg_pool2d padding x kernel [|1;1|] |> arr_to_mat)
+
+  let to_string l =
+    Printf.sprintf "    GlobalAvgPool2D : in:[*,%i,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) ^
+    ""
+
+  let to_name () = "global_avgpool2d"
 
 end
 
@@ -1984,6 +2117,10 @@ type neuron =
   | MaxPool2D       of MaxPool2D.neuron_typ
   | AvgPool1D       of AvgPool1D.neuron_typ
   | AvgPool2D       of AvgPool2D.neuron_typ
+  | GlobalMaxPool1D of GlobalMaxPool1D.neuron_typ
+  | GlobalMaxPool2D of GlobalMaxPool2D.neuron_typ
+  | GlobalAvgPool1D of GlobalAvgPool1D.neuron_typ
+  | GlobalAvgPool2D of GlobalAvgPool2D.neuron_typ
   | Dropout         of Dropout.neuron_typ
   | Reshape         of Reshape.neuron_typ
   | Flatten         of Flatten.neuron_typ
@@ -2016,6 +2153,10 @@ let get_in_out_shape = function
   | MaxPool2D l       -> MaxPool2D.(l.in_shape, l.out_shape)
   | AvgPool1D l       -> AvgPool1D.(l.in_shape, l.out_shape)
   | AvgPool2D l       -> AvgPool2D.(l.in_shape, l.out_shape)
+  | GlobalMaxPool1D l -> GlobalMaxPool1D.(l.in_shape, l.out_shape)
+  | GlobalMaxPool2D l -> GlobalMaxPool2D.(l.in_shape, l.out_shape)
+  | GlobalAvgPool1D l -> GlobalAvgPool1D.(l.in_shape, l.out_shape)
+  | GlobalAvgPool2D l -> GlobalAvgPool2D.(l.in_shape, l.out_shape)
   | Dropout l         -> Dropout.(l.in_shape, l.out_shape)
   | Reshape l         -> Reshape.(l.in_shape, l.out_shape)
   | Flatten l         -> Flatten.(l.in_shape, l.out_shape)
@@ -2054,6 +2195,10 @@ let connect out_shapes l = match l with
   | MaxPool2D l       -> MaxPool2D.connect out_shapes.(0) l
   | AvgPool1D l       -> AvgPool1D.connect out_shapes.(0) l
   | AvgPool2D l       -> AvgPool2D.connect out_shapes.(0) l
+  | GlobalMaxPool1D l -> GlobalMaxPool1D.connect out_shapes.(0) l
+  | GlobalMaxPool2D l -> GlobalMaxPool2D.connect out_shapes.(0) l
+  | GlobalAvgPool1D l -> GlobalAvgPool1D.connect out_shapes.(0) l
+  | GlobalAvgPool2D l -> GlobalAvgPool2D.connect out_shapes.(0) l
   | Dropout l         -> Dropout.connect out_shapes.(0) l
   | Reshape l         -> Reshape.connect out_shapes.(0) l
   | Flatten l         -> Flatten.connect out_shapes.(0) l
@@ -2184,6 +2329,10 @@ let run a l = match l with
   | MaxPool2D l       -> MaxPool2D.run a.(0) l
   | AvgPool1D l       -> AvgPool1D.run a.(0) l
   | AvgPool2D l       -> AvgPool2D.run a.(0) l
+  | GlobalMaxPool1D l -> GlobalMaxPool1D.run a.(0) l
+  | GlobalMaxPool2D l -> GlobalMaxPool2D.run a.(0) l
+  | GlobalAvgPool1D l -> GlobalAvgPool1D.run a.(0) l
+  | GlobalAvgPool2D l -> GlobalAvgPool2D.run a.(0) l
   | Dropout l         -> Dropout.run a.(0) l
   | Reshape l         -> Reshape.run a.(0) l
   | Flatten l         -> Flatten.run a.(0) l
@@ -2216,6 +2365,10 @@ let to_string = function
   | MaxPool2D l       -> MaxPool2D.to_string l
   | AvgPool1D l       -> AvgPool1D.to_string l
   | AvgPool2D l       -> AvgPool2D.to_string l
+  | GlobalMaxPool1D l -> GlobalMaxPool1D.to_string l
+  | GlobalMaxPool2D l -> GlobalMaxPool2D.to_string l
+  | GlobalAvgPool1D l -> GlobalAvgPool1D.to_string l
+  | GlobalAvgPool2D l -> GlobalAvgPool2D.to_string l
   | Dropout l         -> Dropout.to_string l
   | Reshape l         -> Reshape.to_string l
   | Flatten l         -> Flatten.to_string l
@@ -2248,6 +2401,10 @@ let to_name = function
   | MaxPool2D _       -> MaxPool2D.to_name ()
   | AvgPool1D _       -> AvgPool1D.to_name ()
   | AvgPool2D _       -> AvgPool2D.to_name ()
+  | GlobalMaxPool1D _ -> GlobalMaxPool1D.to_name ()
+  | GlobalMaxPool2D _ -> GlobalMaxPool2D.to_name ()
+  | GlobalAvgPool1D _ -> GlobalAvgPool1D.to_name ()
+  | GlobalAvgPool2D _ -> GlobalAvgPool2D.to_name ()
   | Dropout _         -> Dropout.to_name ()
   | Reshape _         -> Reshape.to_name ()
   | Flatten _         -> Flatten.to_name ()

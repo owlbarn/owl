@@ -60,6 +60,14 @@ val avg_pool1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?
 
 val avg_pool2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 
+val global_max_pool1d : ?name:string -> ?act_typ:Activation.typ -> node -> node
+
+val global_max_pool2d : ?name:string -> ?act_typ:Activation.typ -> node -> node
+
+val global_avg_pool1d : ?name:string -> ?act_typ:Activation.typ -> node -> node
+
+val global_avg_pool2d : ?name:string -> ?act_typ:Activation.typ -> node -> node
+
 val fully_connected : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int -> node -> node
 
 val dropout : ?name:string -> float -> node -> node
