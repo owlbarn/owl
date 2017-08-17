@@ -42,23 +42,42 @@ val linear_nobias : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.ty
 
 val recurrent: ?name:string -> ?init_typ:Init.typ -> act_typ:Activation.typ -> int -> int-> node -> node
 
+(**
+  [lstm units node] adds a LSTM node on previous [node].
+
+  Arguments:
+  - [units]: Positive integer, dimensionality of the output space.
+*)
 val lstm : ?name:string -> int -> node -> node
 
 val gru : ?name:string -> int -> node -> node
 
+(**
+  [conv1d kernels strides node] adds a 1D convolution node (e.g. temporal convolution) on previous [node].
+
+  Arguments:
+  - [kernel]: int array consists of [h, i, o]. [h] specifies the dimension of the 1D convolution window. [i] and [o] are the dimensionalities of the input and output space.
+  - [stride]: int array of 1 integer
+*)
 val conv1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 
 (**
-  [conv2d params strides act_type padding name node] creates a 2D convolution node (e.g. spatial convolution over images) on previous [node].
+  [conv2d kernels strides node] adds a 2D convolution node (e.g. spatial convolution over images) on previous [node].
 
   Arguments:
-  - [params]: consists of [kernel_size], 2 integers specifying the width and height of the 2D convolution window, and [filters], an integer specifying the dimensionality of the output space.
-  - [strides]: int array of 2 integers
-  - [act_type]: activation function to use
-  - [padding]: VALID or SAME
+  - [kernel]: int array consists of [w, h, i, o]. [w] and [h] specify the width and height of the 2D convolution window. [i] and [o] are the dimensionality of the input and output space.
+  - [stride]: int array of 2 integers
 *)
 val conv2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 
+
+(**
+  [conv3d kernels strides node] adds a 3D convolution node (e.g. spatial convolution over volumes) on previous [node].
+
+  Arguments:
+  - [kernel]: int array consists of [w, h, d, i, o]. [w], [h], and [d] specify the 3 dimensionality of the 3D convolution window. [i] and [o] are the dimensionality of the input and output space.
+  - [stride]: int array of 3 integers
+*)
 val conv3d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 
 val max_pool1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
