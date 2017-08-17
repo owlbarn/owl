@@ -348,6 +348,34 @@ let avg_pool2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel
   add_node ?act_typ nn [|input_node|] n
 
 
+let global_max_pool1d ?name ?act_typ input_node =
+  let neuron = GlobalMaxPool1D (GlobalMaxPool1D.create ()) in
+  let nn = get_network input_node in
+  let n = make_node ?name [||] [||] neuron None nn in
+  add_node ?act_typ nn [|input_node|] n
+
+
+let global_max_pool2d ?name ?act_typ input_node =
+  let neuron = GlobalMaxPool2D (GlobalMaxPool2D.create ()) in
+  let nn = get_network input_node in
+  let n = make_node ?name [||] [||] neuron None nn in
+  add_node ?act_typ nn [|input_node|] n
+
+
+let global_avg_pool1d ?name ?act_typ input_node =
+  let neuron = GlobalAvgPool1D (GlobalAvgPool1D.create ()) in
+  let nn = get_network input_node in
+  let n = make_node ?name [||] [||] neuron None nn in
+  add_node ?act_typ nn [|input_node|] n
+
+
+let global_avg_pool2d ?name ?act_typ input_node =
+  let neuron = GlobalAvgPool2D (GlobalAvgPool2D.create ()) in
+  let nn = get_network input_node in
+  let n = make_node ?name [||] [||] neuron None nn in
+  add_node ?act_typ nn [|input_node|] n
+
+
 let dropout ?name rate input_node =
   let neuron = Dropout (Dropout.create rate) in
   let nn = get_network input_node in

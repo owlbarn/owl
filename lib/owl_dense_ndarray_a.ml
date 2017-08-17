@@ -591,49 +591,52 @@ let slice axis x =
   let sd = _calc_stride s0 in
   let ofsy_i = ref 0 in
   (* two copying strategies based on the size of the minimum continuous block *)
-  match cb > 1 with
-  | true  -> (
-      (* yay, there are at least some continuous blocks *)
-      let b = cb in
-      let f = fun i -> (
-        let ofsx = _index_nd_1d i sd in
-        let ofsy = !ofsy_i * b in
-        Array.blit x' ofsx y' ofsy b;
-        ofsy_i := !ofsy_i + 1
-      )
-      in
-      (* start copying blocks *)
-      Owl_slicing._foreach_continuous_blk d0 d1 axis f;
-      (* all done, return the result *)
-      y
+  if cb > 1 || s0.(d0 - 1) = 1 then (
+    (* yay, there are at least some continuous blocks *)
+    let b = cb in
+    let f = fun i -> (
+      let ofsx = _index_nd_1d i sd in
+      let ofsy = !ofsy_i * b in
+      Array.blit x' ofsx y' ofsy b;
+      ofsy_i := !ofsy_i + 1
     )
-  | false -> (
-      (* copy happens at the highest dimension, no continuous block *)
-      let b = s1.(d0 - 1) in
-      let c = axis.(d0 - 1).(2) in
-      let cx = if c > 0 then c else -c in
-      let cy = if c > 0 then 1 else -1 in
-      let dd =
-        if c > 0 then axis.(d0 - 1).(0)
-        else axis.(d0 - 1).(0) + (b - 1) * c
+    in
+    (* start copying blocks *)
+    Owl_slicing._foreach_continuous_blk d0 d1 axis f;
+    (* all done, return the result *)
+    y
+  )
+  else (
+    (* copy happens at the highest dimension, no continuous block *)
+    let b = s1.(d0 - 1) in
+    let c = axis.(d0 - 1).(2) in
+    let cx = if c > 0 then c else -c in
+    let cy = if c > 0 then 1 else -1 in
+    let dd =
+      if c > 0 then axis.(d0 - 1).(0)
+      else axis.(d0 - 1).(0) + (b - 1) * c
+    in
+    (* TODO: blit cannot be used, have to copy one by one *)
+    let f = fun i -> (
+      let ofsx = ref (_index_nd_1d i sd + dd) in
+      let ofsy =
+        if c > 0 then ref (!ofsy_i * b)
+        else ref ((!ofsy_i + 1) * b - 1)
       in
-      let f = fun i -> (
-        let ofsx = ref (_index_nd_1d i sd + dd) in
-        let ofsy = ref (!ofsy_i * b) in
-        (* TODO: blit cannot be used, have to copy one by one *)
-        for i = 0 to b - 1 do
-          y'.(!ofsy) <- x'.(!ofsx);
-          ofsx := !ofsx + cx;
-          ofsy := !ofsy + cy;
-        done;
-        ofsy_i := !ofsy_i + 1
-      )
-      in
-      (* start copying blocks *)
-      Owl_slicing._foreach_continuous_blk d0 (d1 - 1) axis f;
-      (* all done, return the result *)
-      y
+      for i = 0 to b - 1 do
+        Printf.printf "%i %i %i %i\n" !ofsx !ofsy cx cy; flush_all ();
+        y'.(!ofsy) <- x'.(!ofsx);
+        ofsx := !ofsx + cx;
+        ofsy := !ofsy + cy;
+      done;
+      ofsy_i := !ofsy_i + 1
     )
+    in
+    (* start copying blocks *)
+    Owl_slicing._foreach_continuous_blk d0 (d1 - 1) axis f;
+    (* all done, return the result *)
+    y
+  )
 
 
 let swap a0 a1 x =
