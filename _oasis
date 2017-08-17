@@ -80,6 +80,12 @@ Library owl
                     neural/Owl_neural_parallel,
                     ### Experimental ###
                     ext/Owl_ext,
+                    ext/Owl_ext_types,
+                    ext/Owl_ext_lifts,
+                    ext/Owl_ext_uniop,
+                    ext/Owl_ext_binop,
+                    ext/Owl_ext_dense_ndarray,
+                    ext/Owl_ext_dense_matrix,
                     Owl_parallel
   InternalModules:  Owl_cblas_generated,
                     Owl_lapacke_generated,
@@ -113,12 +119,6 @@ Library owl
                     Owl_linalg_d,
                     Owl_linalg_c,
                     Owl_linalg_z,
-                    ext/Owl_ext_types,
-                    ext/Owl_ext_lifts,
-                    ext/Owl_ext_uniop,
-                    ext/Owl_ext_binop,
-                    ext/Owl_ext_dense_ndarray,
-                    ext/Owl_ext_dense_matrix,
                     ### Backend modules ###
                     backend/Owl_backend_gsl_maths,
                     backend/Owl_backend_gsl_stats,
