@@ -11,8 +11,8 @@ let obtain_input_shape () = None
 
 let conv2d_bn ?(padding=Owl_dense_ndarray_generic.SAME) kernel stride x =  
   let open Owl_neural_graph in
-  conv2d ~act_typ:Activation.Relu ~padding kernel stride x 
-  (* |> batch_normalization *)
+  x |>conv2d ~act_typ:Activation.Relu ~padding kernel stride 
+    |> normalisation ~axis:3 (* color channel on 3rd dim*)
 
 
 let model () = 

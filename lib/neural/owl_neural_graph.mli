@@ -98,6 +98,12 @@ val gaussian_dropout : ?name:string -> float -> node -> node
 
 val alpha_dropout : ?name:string -> float -> node -> node
 
+(**
+  [normalisation axis] normalize the activations of the previous layer at each batch.
+
+  Arguments:
+  - [axis]:  Integer, the axis that should be normalized (typically the features axis). Default value is 0.
+*)
 val normalisation : ?name:string -> ?axis:int -> node -> node
 
 val reshape : ?name:string -> ?convert:bool -> int array -> node -> node
@@ -116,6 +122,12 @@ val max : ?name:string -> ?act_typ:Activation.typ -> node array -> node
 
 val average : ?name:string -> ?act_typ:Activation.typ -> node array -> node
 
+(**
+  [concatenate axis nodes] concatenates a array of [nodes] and return as a single node.
+
+  Arguments:
+  - [axis]: Axis along which to concatenate.
+*)
 val concatenate : ?name:string -> ?act_typ:Activation.typ -> int -> node array -> node
 
 
