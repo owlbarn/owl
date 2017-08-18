@@ -29,12 +29,12 @@ let download_all () =
     "stopwords.txt.gz"; "enron.test.gz"; "enron.train.gz"; "nips.test.gz"; "nips.train.gz";
     "mnist-test-images.gz"; "mnist-test-labels.gz"; "mnist-test-lblvec.gz";
     "mnist-train-images.gz"; "mnist-train-labels.gz"; "mnist-train-lblvec.gz";
-    "cifar10_test_data.gz"; "cifar10_test_labels.gz"; "cifar10_test_filenames.gz";
-    "cifar10_train1_data.gz"; "cifar10_train1_labels.gz"; "cifar10_train1_filenames.gz";
-    "cifar10_train2_data.gz"; "cifar10_train2_labels.gz"; "cifar10_train2_filenames.gz";
-    "cifar10_train3_data.gz"; "cifar10_train3_labels.gz"; "cifar10_train3_filenames.gz";
-    "cifar10_train4_data.gz"; "cifar10_train4_labels.gz"; "cifar10_train4_filenames.gz";
-    "cifar10_train5_data.gz"; "cifar10_train5_labels.gz"; "cifar10_train5_filenames.gz";
+    "cifar10_test_data.gz"; "cifar10_test_labels.gz"; "cifar10_test_filenames.gz"; "cifar10_test_lblvec.gz";
+    "cifar10_train1_data.gz"; "cifar10_train1_labels.gz"; "cifar10_train1_filenames.gz"; "cifar10_train1_lblvec.gz";
+    "cifar10_train2_data.gz"; "cifar10_train2_labels.gz"; "cifar10_train2_filenames.gz"; "cifar10_train2_lblvec.gz";
+    "cifar10_train3_data.gz"; "cifar10_train3_labels.gz"; "cifar10_train3_filenames.gz"; "cifar10_train3_lblvec.gz";
+    "cifar10_train4_data.gz"; "cifar10_train4_labels.gz"; "cifar10_train4_filenames.gz"; "cifar10_train4_lblvec.gz";
+    "cifar10_train5_data.gz"; "cifar10_train5_labels.gz"; "cifar10_train5_filenames.gz"; "cifar10_train5_lblvec.gz";
     ] in
   List.iter (fun fname -> download_data fname) l
 
@@ -69,13 +69,15 @@ let print_mnist_image x =
   channels, unravelled into a row vector. The labels are also returned. *)
 let load_cifar_train_data batch =
   let p = local_data_path () in
-  Owl_dense_matrix.S.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_data"),
-  Owl_dense_matrix.S.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_labels")
+  Owl_dense_ndarray.S.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_data"),
+  Owl_dense_matrix.S.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_labels"),
+  Owl_dense_matrix.S.load (p ^ "cifar10_train" ^ (string_of_int batch) ^ "_lblvec")
 
 let load_cifar_test_data () =
   let p = local_data_path () in
-  Owl_dense_matrix.S.load (p ^ "cifar10_test_data"),
-  Owl_dense_matrix.S.load (p ^ "cifar10_test_labels")
+  Owl_dense_ndarray.S.load (p ^ "cifar10_test_data"),
+  Owl_dense_matrix.S.load (p ^ "cifar10_test_labels"),
+  Owl_dense_matrix.S.load (p ^ "cifar10_test_lblvec")
 
 (* load text data and stopwords *)
 let load_stopwords () =
