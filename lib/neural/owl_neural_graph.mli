@@ -139,12 +139,24 @@ val avg_pool2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?
 *)
 
 val global_max_pool1d : ?name:string -> ?act_typ:Activation.typ -> node -> node
+(**
+  [global_max_pool1d] adds global max pooling operation for temporal data.
+*)
 
 val global_max_pool2d : ?name:string -> ?act_typ:Activation.typ -> node -> node
+(**
+  [global_max_poo2d ] global max pooling operation for spatial data.
+*)
 
 val global_avg_pool1d : ?name:string -> ?act_typ:Activation.typ -> node -> node
+(**
+  [global_avg_pool1d ] adds global average pooling operation for temporal data.
+*)
 
 val global_avg_pool2d : ?name:string -> ?act_typ:Activation.typ -> node -> node
+(**
+  [global_avg_poo2d ] global average pooling operation for spatial data.
+*)
 
 val fully_connected : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int -> node -> node
 

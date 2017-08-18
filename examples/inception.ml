@@ -158,12 +158,7 @@ let model () =
   let nn = nn |> mix_typ9 1280 |> mix_typ9 2048 in 
 
   let nn = nn 
-    (* imitate GlobalAveragePooling2D here *)
-    (* average the entire slice without actually moving *)
-    |> avg_pool2d [|8;8|] [|1;1|] ~padding:Owl_dense_ndarray_generic.VALID
-    |> reshape [|2048|]
-    (* no FC layer and its parameters in Keras impl. *)
-    (* |> fully_connected 2048 ~act_typ:Activation.Relu *)
+    |> global_avg_pool2d ~act_typ:Activation.None
     |> linear 1000 ~act_typ:Activation.Softmax
     |> get_network
   in print nn;
