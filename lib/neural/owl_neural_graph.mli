@@ -33,12 +33,34 @@ and network = {
 (** {6 Various types of neural nodes} *)
 
 val input : ?name:string -> int array -> node
+(**
+  [input shape] create an input layer for input data.
+
+  Arguments:
+  - [shape]: shape of input data.
+*)
 
 val activation : ?name:string -> Activation.typ -> node -> node
+(**
+  Applies an activation function to an output.
+
+  Arguments:
+  - [activation]: name of activation function to use.
+*)
 
 val linear : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int -> node -> node
+(**
+  [linear ?act_typ units node] adds the regular densely-connected NN layer to [node].
+
+  Arguments:
+  - [units]: Positive integer, dimensionality of the output space.
+  - [act_typ]: Activation function to use.
+*)
 
 val linear_nobias : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int -> node -> node
+(**
+  Similar to [linear], but does not use the bias vector.
+*)
 
 val recurrent: ?name:string -> ?init_typ:Init.typ -> act_typ:Activation.typ -> int -> int-> node -> node
 
@@ -80,12 +102,41 @@ val conv3d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init
 *)
 
 val max_pool1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+(**
+  [max_pool1d ~padding ~act_typ pool_size strides node] adds a max pooling operation for temporal data to [node].
+
+  Arguments:
+  - [pool_size]: Array of one integer, size of the max pooling windows.
+  - [strides]: Array of one integer, factor by which to downscale.
+*)
 
 val max_pool2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+(**
+  [max_pool2d ~padding ~act_typ pool_size strides node] adds a max pooling operation for spatial data to [node].
+
+  Arguments:
+  - [pool_size]: Array of 2 integers, size of the max pooling windows.
+  - [strides]: Array of 2 integers, factor by which to downscale.
+*)
 
 val avg_pool1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+(**
+  [avg_pool1d ~padding ~act_typ pool_size strides node] adds a average pooling operation for temporal data to [node].
+
+  Arguments:
+  - [pool_size]: Array of one integer, size of the max pooling windows.
+  - [strides]: Array of one integer, factor by which to downscale.
+*)
 
 val avg_pool2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+(**
+  [avg_pool2d ~padding ~act_typ pool_size strides node] adds a average pooling operation for spatial data to [node].
+
+  A
+  rguments:
+  - [pool_size]: Array of 2 integers, size of the max pooling windows.
+  - [strides]: Array of 2 integers, factor by which to downscale.
+*)
 
 val global_max_pool1d : ?name:string -> ?act_typ:Activation.typ -> node -> node
 
@@ -98,6 +149,12 @@ val global_avg_pool2d : ?name:string -> ?act_typ:Activation.typ -> node -> node
 val fully_connected : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int -> node -> node
 
 val dropout : ?name:string -> float -> node -> node
+(**
+  [dropout rate] applies Dropout to the input to prevent overfitting.
+
+  Arguments:
+  - rate: float between 0 and 1. Fraction of the input units to drop.
+*)
 
 val gaussian_noise : ?name:string -> float -> node -> node
 
@@ -107,17 +164,32 @@ val alpha_dropout : ?name:string -> float -> node -> node
 
 val normalisation : ?name:string -> ?axis:int -> node -> node
 (**
-  [normalisation axis] normalize the activations of the previous layer at each batch.
+  [normalisation axis node] normalize the activations of the previous layer at each batch.
 
   Arguments:
   - [axis]:  Integer, the axis that should be normalized (typically the features axis). Default value is 0.
 *)
 
 val reshape : ?name:string -> ?convert:bool -> int array -> node -> node
+(**
+  [reshape target_shape node] reshapes an output to a certain shape.
+
+  Arguments:
+  - [target_shape]: target shape. Array of integers. Does not include the batch axis.
+*)
 
 val flatten : ?name:string -> ?convert:bool -> node -> node
+(**
+  [flatten node] flattens the input. Does not affect the batch size.
+*)
 
 val lambda : ?name:string -> ?act_typ:Activation.typ -> (t -> t) -> node -> node
+(**
+  [lambda func node] wraps arbitrary expression as a Layer object.
+
+  Arguments:
+  - [func]: The function to be evaluated. Takes input tensor as first argument.
+*)
 
 val add : ?name:string -> ?act_typ:Activation.typ -> node array -> node
 
