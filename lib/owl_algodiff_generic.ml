@@ -42,6 +42,10 @@ module type MatrixSig = sig
 
   val row : mat -> int -> mat
 
+  val slice : int list list -> mat -> mat
+
+  val set_slice : int list list -> mat -> mat -> unit
+
   val clone : mat -> mat
 
   val reset : mat -> unit
@@ -217,6 +221,12 @@ module type NdarraySig = sig
   val shape : arr -> int array
 
   val numel : arr -> int
+
+  val slice : int list list -> arr -> arr
+
+  val set_slice : int list list -> arr -> arr -> unit
+
+  val clone : arr -> arr
 
   val reset : arr -> unit
 
@@ -403,91 +413,95 @@ module Make
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
   and trace_op =
     | Noop
-    | Add_D_D     of t * t
-    | Add_D_C     of t * t
-    | Add_C_D     of t * t
-    | Sub_D_D     of t * t
-    | Sub_D_C     of t * t
-    | Sub_C_D     of t * t
-    | Mul_D_D     of t * t
-    | Mul_D_C     of t * t
-    | Mul_C_D     of t * t
-    | Div_D_D     of t * t
-    | Div_D_C     of t * t
-    | Div_C_D     of t * t
-    | Pow_D_D     of t * t
-    | Pow_D_C     of t * t
-    | Pow_C_D     of t * t
-    | Atan2_D_D   of t * t
-    | Atan2_D_C   of t * t
-    | Atan2_C_D   of t * t
-    | Neg_D       of t
-    | Abs_D       of t
-    | Signum_D    of t
-    | Floor_D     of t
-    | Ceil_D      of t
-    | Round_D     of t
-    | Sqr_D       of t
-    | Sqrt_D      of t
-    | Log_D       of t
-    | Log2_D      of t
-    | Log10_D     of t
-    | Exp_D       of t
-    | Sin_D       of t
-    | Cos_D       of t
-    | Tan_D       of t
-    | Sinh_D      of t
-    | Cosh_D      of t
-    | Tanh_D      of t
-    | Asin_D      of t
-    | Acos_D      of t
-    | Atan_D      of t
-    | Asinh_D     of t
-    | Acosh_D     of t
-    | Atanh_D     of t
-    | Get_Item    of t * int * int
-    | SetI_D_D    of t * int * int * t
-    | SetI_D_C    of t * int * int * t
-    | SetI_C_D    of t * int * int * t
-    | AddI_D_D    of t * int * int * t
-    | AddI_D_C    of t * int * int * t
-    | AddI_C_D    of t * int * int * t
-    | Sum_D       of t
-    | Sum__D      of t * int
-    | Dot_D_D     of t * t
-    | Dot_D_C     of t * t
-    | Dot_C_D     of t * t
-    | Trans_D     of t
-    | L1Norm_D    of t
-    | L2Norm_D    of t
-    | L2NormS_D   of t
-    | Sigmoid_D   of t
-    | Relu_D      of t
-    | Inv_D       of t
-    | Add_Row_D_D of t * t * int
-    | Add_Row_D_C of t * t * int
-    | Add_Row_C_D of t * t * int
-    | Get_Row_D   of t * int
-    | Of_Rows_D   of t array
-    | Concat_D_D  of t * t * int
-    | Concat_D_C  of t * t * int
-    | Concat_C_D  of t * t * int
-    | Conv1D_D_D  of t * t * int array
-    | Conv1D_D_C  of t * t * int array
-    | Conv1D_C_D  of t * t * int array
-    | Conv2D_D_D  of t * t * int array
-    | Conv2D_D_C  of t * t * int array
-    | Conv2D_C_D  of t * t * int array
-    | Conv3D_D_D  of t * t * int array
-    | Conv3D_D_C  of t * t * int array
-    | Conv3D_C_D  of t * t * int array
-    | Reshape_D   of t
-    | Mat2Arr_D   of t
-    | Arr2Mat_D   of t
-    | Maxpool1D_D of t * padding * int array * int array
-    | Maxpool2D_D of t * padding * int array * int array
-    | Avgpool1D_D of t * padding * int array * int array
-    | Avgpool2D_D of t * padding * int array * int array
+    | Add_D_D       of t * t
+    | Add_D_C       of t * t
+    | Add_C_D       of t * t
+    | Sub_D_D       of t * t
+    | Sub_D_C       of t * t
+    | Sub_C_D       of t * t
+    | Mul_D_D       of t * t
+    | Mul_D_C       of t * t
+    | Mul_C_D       of t * t
+    | Div_D_D       of t * t
+    | Div_D_C       of t * t
+    | Div_C_D       of t * t
+    | Pow_D_D       of t * t
+    | Pow_D_C       of t * t
+    | Pow_C_D       of t * t
+    | Atan2_D_D     of t * t
+    | Atan2_D_C     of t * t
+    | Atan2_C_D     of t * t
+    | Neg_D         of t
+    | Abs_D         of t
+    | Signum_D      of t
+    | Floor_D       of t
+    | Ceil_D        of t
+    | Round_D       of t
+    | Sqr_D         of t
+    | Sqrt_D        of t
+    | Log_D         of t
+    | Log2_D        of t
+    | Log10_D       of t
+    | Exp_D         of t
+    | Sin_D         of t
+    | Cos_D         of t
+    | Tan_D         of t
+    | Sinh_D        of t
+    | Cosh_D        of t
+    | Tanh_D        of t
+    | Asin_D        of t
+    | Acos_D        of t
+    | Atan_D        of t
+    | Asinh_D       of t
+    | Acosh_D       of t
+    | Atanh_D       of t
+    | Get_Item      of t * int * int
+    | SetI_D_D      of t * int * int * t
+    | SetI_D_C      of t * int * int * t
+    | SetI_C_D      of t * int * int * t
+    | AddI_D_D      of t * int * int * t
+    | AddI_D_C      of t * int * int * t
+    | AddI_C_D      of t * int * int * t
+    | Get_Slice_D   of t * int list list
+    | Set_Slice_D_D of t * t * int list list
+    | Set_Slice_D_C of t * t * int list list
+    | Set_Slice_C_D of t * t * int list list
+    | Sum_D         of t
+    | Sum__D        of t * int
+    | Dot_D_D       of t * t
+    | Dot_D_C       of t * t
+    | Dot_C_D       of t * t
+    | Trans_D       of t
+    | L1Norm_D      of t
+    | L2Norm_D      of t
+    | L2NormS_D     of t
+    | Sigmoid_D     of t
+    | Relu_D        of t
+    | Inv_D         of t
+    | Add_Row_D_D   of t * t * int
+    | Add_Row_D_C   of t * t * int
+    | Add_Row_C_D   of t * t * int
+    | Get_Row_D     of t * int
+    | Of_Rows_D     of t array
+    | Concat_D_D    of t * t * int
+    | Concat_D_C    of t * t * int
+    | Concat_C_D    of t * t * int
+    | Conv1D_D_D    of t * t * int array
+    | Conv1D_D_C    of t * t * int array
+    | Conv1D_C_D    of t * t * int array
+    | Conv2D_D_D    of t * t * int array
+    | Conv2D_D_C    of t * t * int array
+    | Conv2D_C_D    of t * t * int array
+    | Conv3D_D_D    of t * t * int array
+    | Conv3D_D_C    of t * t * int array
+    | Conv3D_C_D    of t * t * int array
+    | Reshape_D     of t
+    | Mat2Arr_D     of t
+    | Arr2Mat_D     of t
+    | Maxpool1D_D   of t * padding * int array * int array
+    | Maxpool2D_D   of t * padding * int array * int array
+    | Avgpool1D_D   of t * padding * int array * int array
+    | Avgpool2D_D   of t * padding * int array * int array
 
 
   (* generate global tags *)
@@ -1144,6 +1158,33 @@ module Make
       let r_c_d a b = AddI_C_D (a, i, j, b) in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
+    and get_slice i a =
+      let ff = function
+        | Arr a    -> Arr A.(slice i a)
+        | Mat a    -> Mat M.(slice i a)
+        | _        -> error_uniop "slice" a
+      in
+      let fd a = get_slice i a in
+      let df cp ap at = get_slice i at in
+      let r a = Get_Slice_D (a, i) in
+      op_d_d a ff fd df r
+
+    and set_slice i a b =
+      let ff a b =
+        match a, b with
+        | Arr a, Arr b -> let a = A.clone a in A.(set_slice i a b); Arr a
+        | Mat a, Mat b -> let a = M.clone a in M.(set_slice i a b); Mat a
+        | _            -> error_binop "set_slice" a b
+      in
+      let fd a b = set_slice i a b in
+      let df_da cp ap at = set_slice i at (zero b) in
+      let df_db cp bp bt = set_slice i (zero a) bt in
+      let df_dab cp ap at bp bt = set_slice i at bt in
+      let r_d_d a b = Set_Slice_D_D (a, b, i) in
+      let r_d_c a b = Set_Slice_D_C (a, b, i) in
+      let r_c_d a b = Set_Slice_C_D (a, b, i) in
+      op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
+
     and sum a =
       let ff = function
         | Arr a    -> F A.(sum a)
@@ -1626,6 +1667,10 @@ module Make
               | AddI_D_D (a, _, _, b)    -> reset (a :: b :: t)
               | AddI_D_C (a, _, _, _)    -> reset (a :: t)
               | AddI_C_D (_, _, _, b)    -> reset (b :: t)
+              | Get_Slice_D (a, _)       -> reset (a :: t)
+              | Set_Slice_D_D (a, b, _)  -> reset (a :: b :: t)
+              | Set_Slice_D_C (a, _, _)  -> reset (a :: t)
+              | Set_Slice_C_D (_, b, _)  -> reset (b :: t)
               | Sum_D a                  -> reset (a :: t)
               | Sum__D (a, _)            -> reset (a :: t)
               | Dot_D_D (a, b)           -> reset (a :: b :: t)
@@ -1753,6 +1798,10 @@ module Make
               | AddI_D_D (a, i, j, b)    -> push ((!aa, a) :: (get_item !aa i j, b) :: t)
               | AddI_D_C (a, _, _, _)    -> push ((!aa, a) :: t)
               | AddI_C_D (_, i, j, b)    -> push ((get_item !aa i j, b) :: t)
+              | Get_Slice_D (a, i)       -> push ((set_slice i (zero a) !aa, a) :: t)
+              | Set_Slice_D_D (a, b, i)  -> push ((set_slice i !aa (zero b), a) :: (get_slice i !aa, b) :: t)
+              | Set_Slice_D_C (a, b, i)  -> push ((set_slice i !aa (zero b), a) :: t)
+              | Set_Slice_C_D (a, b, i)  -> push ((get_slice i !aa, b) :: t)
               | Sum_D a                  -> push ((((mat_create (row_num (primal a)) (col_num (primal a)) !aa)), a) :: t)
               (* TODO: SUM_D can be optimised to this | Sum_D a               -> push ((!aa, a) :: t) *)
               | Sum__D (a, i)            -> push ((repeat ~axis:i !aa (shape a).(i), a) :: t)

@@ -42,6 +42,10 @@ module type MatrixSig = sig
 
   val row : mat -> int -> mat
 
+  val slice : int list list -> mat -> mat
+
+  val set_slice : int list list -> mat -> mat -> unit
+
   val clone : mat -> mat
 
   val reset : mat -> unit
@@ -218,6 +222,12 @@ module type NdarraySig = sig
   val shape : arr -> int array
 
   val numel : arr -> int
+
+  val slice : int list list -> arr -> arr
+
+  val set_slice : int list list -> arr -> arr -> unit
+
+  val clone : arr -> arr
 
   val reset : arr -> unit
 
@@ -514,6 +524,8 @@ module Make
 
     val softmax : t -> t
 
+    val dropout : ?rate:float -> ?seed:int -> t -> t
+
     val conv1d : ?padding:padding -> t -> t -> int array -> t
 
     val conv2d : ?padding:padding -> t -> t -> int array -> t
@@ -538,7 +550,9 @@ module Make
 
     val arr_to_mat : t -> t
 
-    val dropout : ?rate:float -> ?seed:int -> t -> t
+    val get_slice: int list list -> t -> t
+
+    val set_slice : int list list -> t -> t -> t
 
   end
 
