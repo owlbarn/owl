@@ -33,70 +33,246 @@ and network = {
 (** {6 Various types of neural nodes} *)
 
 val input : ?name:string -> int array -> node
+(**
+  [input shape] create an input layer for input data.
+
+  Arguments:
+  - [shape]: shape of input data.
+*)
 
 val activation : ?name:string -> Activation.typ -> node -> node
+(**
+  Applies an activation function to an output.
+
+  Arguments:
+  - [activation]: name of activation function to use.
+*)
 
 val linear : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int -> node -> node
+(**
+  [linear ?act_typ units node] adds the regular densely-connected NN layer to [node].
+
+  Arguments:
+  - [units]: Positive integer, dimensionality of the output space.
+  - [act_typ]: Activation function to use.
+*)
 
 val linear_nobias : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int -> node -> node
+(**
+  Similar to [linear], but does not use the bias vector.
+*)
 
 val recurrent: ?name:string -> ?init_typ:Init.typ -> act_typ:Activation.typ -> int -> int-> node -> node
 
 val lstm : ?name:string -> int -> node -> node
+(**
+  [lstm units node] adds a LSTM node on previous [node].
+
+  Arguments:
+  - [units]: Positive integer, dimensionality of the output space.
+*)
 
 val gru : ?name:string -> int -> node -> node
+(**
+  [gru units node] adds a Gated Recurrent Unit node on previous [node].
+
+  Arguments:
+  - [units]: Positive integer, dimensionality of the output space.
+*)
 
 val conv1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+(**
+  [conv1d kernels strides node] adds a 1D convolution node (e.g. temporal convolution) on previous [node].
+
+  Arguments:
+  - [kernel]: int array consists of [h, i, o]. [h] specifies the dimension of the 1D convolution window. [i] and [o] are the dimensionalities of the input and output space.
+  - [stride]: int array of 1 integer
+*)
 
 val conv2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+(**
+  [conv2d kernels strides node] adds a 2D convolution node (e.g. spatial convolution over images) on previous [node].
+
+  Arguments:
+  - [kernel]: int array consists of [w, h, i, o]. [w] and [h] specify the width and height of the 2D convolution window. [i] and [o] are the dimensionality of the input and output space.
+  - [stride]: int array of 2 integers
+*)
 
 val conv3d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+(**
+  [conv3d kernels strides node] adds a 3D convolution node (e.g. spatial convolution over volumes) on previous [node].
+
+  Arguments:
+  - [kernel]: int array consists of [w, h, d, i, o]. [w], [h], and [d] specify the 3 dimensionality of the 3D convolution window. [i] and [o] are the dimensionality of the input and output space.
+  - [stride]: int array of 3 integers
+*)
 
 val max_pool1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+(**
+  [max_pool1d ~padding ~act_typ pool_size strides node] adds a max pooling operation for temporal data to [node].
+
+  Arguments:
+  - [pool_size]: Array of one integer, size of the max pooling windows.
+  - [strides]: Array of one integer, factor by which to downscale.
+*)
 
 val max_pool2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+(**
+  [max_pool2d ~padding ~act_typ pool_size strides node] adds a max pooling operation for spatial data to [node].
+
+  Arguments:
+  - [pool_size]: Array of 2 integers, size of the max pooling windows.
+  - [strides]: Array of 2 integers, factor by which to downscale.
+*)
 
 val avg_pool1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+(**
+  [avg_pool1d ~padding ~act_typ pool_size strides node] adds a average pooling operation for temporal data to [node].
+
+  Arguments:
+  - [pool_size]: Array of one integer, size of the max pooling windows.
+  - [strides]: Array of one integer, factor by which to downscale.
+*)
 
 val avg_pool2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+(**
+  [avg_pool2d ~padding ~act_typ pool_size strides node] adds a average pooling operation for spatial data to [node].
+
+  A
+  rguments:
+  - [pool_size]: Array of 2 integers, size of the max pooling windows.
+  - [strides]: Array of 2 integers, factor by which to downscale.
+*)
 
 val global_max_pool1d : ?name:string -> ?act_typ:Activation.typ -> node -> node
+(**
+  [global_max_pool1d] adds global max pooling operation for temporal data.
+*)
 
 val global_max_pool2d : ?name:string -> ?act_typ:Activation.typ -> node -> node
+(**
+  [global_max_poo2d ] global max pooling operation for spatial data.
+*)
 
 val global_avg_pool1d : ?name:string -> ?act_typ:Activation.typ -> node -> node
+(**
+  [global_avg_pool1d ] adds global average pooling operation for temporal data.
+*)
 
 val global_avg_pool2d : ?name:string -> ?act_typ:Activation.typ -> node -> node
+(**
+  [global_avg_poo2d ] global average pooling operation for spatial data.
+*)
 
 val fully_connected : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int -> node -> node
+(**
+  [fully_connected outputs node] adds a fully connected layer to [node].
+
+  Arguments:
+  - [outputs]: integer, the number of output units in the layer
+*)
 
 val dropout : ?name:string -> float -> node -> node
+(**
+  [dropout rate node] applies Dropout to the input to prevent overfitting.
+
+  Arguments:
+  - [rate]: float between 0 and 1. Fraction of the input units to drop.
+*)
 
 val gaussian_noise : ?name:string -> float -> node -> node
+(**
+  [gaussian_noise stddev node] applies additive zero-centered Gaussian noise.
+
+  Arguments:
+  - [stddev]: float, standard deviation of the noise distribution.
+*)
 
 val gaussian_dropout : ?name:string -> float -> node -> node
+(**
+  [gaussian_dropout rate node] applies multiplicative 1-centered Gaussian noise.
+  Only active at training time.
+
+  Arguments:
+  - [rates]: float, drop probability
+*)
 
 val alpha_dropout : ?name:string -> float -> node -> node
+(**
+  [alpha_dropout rate node] applies Alpha Dropout to the input [node].
+  Only active at training time.
+
+  Arguments:
+  - [rates]: float, drop probability
+*)
 
 val normalisation : ?name:string -> ?axis:int -> node -> node
+(**
+  [normalisation axis node] normalize the activations of the previous layer at each batch.
+
+  Arguments:
+  - [axis]:  Integer, the axis that should be normalized (typically the features axis). Default value is 0.
+*)
 
 val reshape : ?name:string -> ?convert:bool -> int array -> node -> node
+(**
+  [reshape target_shape node] reshapes an output to a certain shape.
+
+  Arguments:
+  - [target_shape]: target shape. Array of integers. Does not include the batch axis.
+*)
 
 val flatten : ?name:string -> ?convert:bool -> node -> node
+(**
+  [flatten node] flattens the input. Does not affect the batch size.
+*)
 
 val lambda : ?name:string -> ?act_typ:Activation.typ -> (t -> t) -> node -> node
+(**
+  [lambda func node] wraps arbitrary expression as a Layer object.
+
+  Arguments:
+  - [func]: The function to be evaluated. Takes input tensor as first argument.
+*)
 
 val add : ?name:string -> ?act_typ:Activation.typ -> node array -> node
+(**
+  Layer that adds a list of inputs.
+
+  It takes as input an array of nodes, all of the same shape, and returns a single node (also of the same shape).
+*)
 
 val mul : ?name:string -> ?act_typ:Activation.typ -> node array -> node
+(**
+  Layer that multiplies (element-wise) a list of inputs.
+
+  It takes as input an array of nodes, all of the same shape, and returns a single node (also of the same shape).
+*)
 
 val dot : ?name:string -> ?act_typ:Activation.typ -> node array -> node
+(**
+  Layer that computes a dot product between samples in two nodes.
+*)
 
 val max : ?name:string -> ?act_typ:Activation.typ -> node array -> node
+(**
+  Layer that computes the maximum (element-wise) a list of inputs.
+*)
 
 val average : ?name:string -> ?act_typ:Activation.typ -> node array -> node
+(**
+  Layer that averages a list of inputs.
+
+  It takes as input an array of nodes, all of the same shape, and returns a single node (also of the same shape).
+*)
 
 val concatenate : ?name:string -> ?act_typ:Activation.typ -> int -> node array -> node
+(**
+  [concatenate axis nodes] concatenates a array of [nodes] and return as a single node.
+
+  Arguments:
+  - [axis]: Axis along which to concatenate.
+*)
 
 
 (** {6 Training and inference functions} *)

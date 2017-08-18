@@ -37,7 +37,7 @@ git clone git@github.com:ryanrhymes/owl.git
 之后安装所有依赖库。
 
 ```bash
-opam install ctypes dolog eigen gsl oasis plplot
+opam install ctypes dolog eigen gsl oasis plplot atdgen
 ```
 然后，编译病安装Owl模块。
 

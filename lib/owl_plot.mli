@@ -195,7 +195,7 @@ val pie : ?h:handle -> ?spec:spec list -> dsmat -> unit
  *)
 
 val loglog : ?h:handle -> ?spec:spec list -> ?x:dsmat -> dsmat -> unit
-(** [loglog x y]  plots all [y] versus [x] pairs with log-log scale.
+(** [loglog ~x y]  plots all [y] versus [x] pairs with log-log scale.
   [loglog y] plots data in [y] versus their indices. If [Axis X] or [Axis Y] is
   specified in [spec], plot logarithmic scales only for x-axis or y-axis
   respectively.
@@ -264,9 +264,9 @@ val heatmap : ?h:handle -> dsmat -> dsmat -> dsmat -> unit
 
 val probplot : ?h:handle -> ?spec:spec list -> ?dist:(float -> float) -> ?noref:bool -> dsmat -> unit
 (**
-  [probplot dist x] creates a probability plot comparing the distribution of
+  [probplot ~dist ~noref x] creates a probability plot comparing the distribution of
   the data in [x] to the given distribution. The [dist] is set to standard
-  normal distribution by default.
+  normal distribution by default. When [noref] is set to [true] (default to be [false]), the reference line will not be shown.
 
   Note that in our implementation of probplot, we choose a Matlab-like
   definition: for the i-th point on the figure, x-axis is the sorted input
@@ -282,7 +282,7 @@ val probplot : ?h:handle -> ?spec:spec list -> ?dist:(float -> float) -> ?noref:
 
 val normplot : ?h:handle -> ?spec:spec list -> ?sigma:float -> dsmat -> unit
 (**
-  [normalplot sigma x] is probplot with normal distribution. User need to
+  [normalplot ~sigma x] is probplot with normal distribution. User need to
   specify the [sigma] of distribution or the default value 1 will be used.
 
   Parameters: [RGB], [Marker], [MarkerSize].
@@ -290,7 +290,7 @@ val normplot : ?h:handle -> ?spec:spec list -> ?sigma:float -> dsmat -> unit
 
 val wblplot : ?h:handle -> ?spec:spec list -> ?lambda:float -> ?k:float -> dsmat -> unit
 (**
-  [wblplot lambda k x] is probplot with weibull distribution. Currently user
+  [wblplot ~lambda ~k x] is probplot with weibull distribution. Currently user
   need to specify the weibull distribution parameters [lambda] and [k]
   explicitly. By default, (lambda, k) = (1., 1.). [wblplot] applies log-scale
   on x-axis.
@@ -300,8 +300,8 @@ val wblplot : ?h:handle -> ?spec:spec list -> ?lambda:float -> ?k:float -> dsmat
 
 val qqplot : ?h:handle -> ?spec:spec list -> ?pd:(float -> float) -> ?x:dsmat -> dsmat -> unit
 (**
-  [qqplot y dist] displays a quantile-quantile plot of the quantiles of the
-  sample data x versus the theoretical quantiles values from [dist], which by
+  [qqplot ~pd ~x y ] displays a quantile-quantile plot of the quantiles of the
+  sample data x versus the theoretical quantiles values from [pd], which by
   default is standard normal distribution. If the second argument [x] is a
   vector, the empirical CDF of it is used as the distribtion of x-axis data,
   otherwise the qqplot is similar to [probplot], showing the inverseCDF of

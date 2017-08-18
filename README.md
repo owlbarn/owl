@@ -43,7 +43,7 @@ git clone git@github.com:ryanrhymes/owl.git
 Then you need to install all the dependencies. The following dependencies may require you to install extra system libraries (e.g., Plplot) but `opam depext` can help you sort that out automatically.
 
 ```bash
-opam install ctypes dolog eigen gsl oasis plplot
+opam install ctypes dolog eigen gsl oasis plplot atdgen
 ```
 
 The most important dependency is [OpenBLAS](https://github.com/xianyi/OpenBLAS). Linking to the correct OpenBLAS is the key to achieve the best performance. Depending on the specific platform, you can use `yum`, `apt-get`, `brew` to install the binary format. For example on Mac OSX,
