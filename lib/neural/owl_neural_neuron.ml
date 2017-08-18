@@ -631,6 +631,7 @@ module LSTM = struct
     l.h
 
   let to_string l =
+    (* FIXME *)
     let wxim, wxin = Mat.shape l.wxi in
     let whim, whin = Mat.shape l.whi in
     let wxcm, wxcn = Mat.shape l.wxc in
@@ -2106,6 +2107,63 @@ module AlphaDropout = struct
     Printf.sprintf "    rate         : %g\n" l.rate
 
   let to_name () = "alpha_dropout"
+
+end
+
+
+
+(* TODO: definition of Embedding neuron *)
+module Embedding = struct
+
+  type neuron_typ = {
+    mutable w         : t;
+    mutable init_typ  : Init.typ;
+    mutable in_shape  : int array;
+    mutable out_shape : int array;
+  }
+
+  let create ?inputs o init_typ =
+    let i = match inputs with Some i -> i | None -> 0 in
+    {
+      w         = Mat.empty 0 0;
+      init_typ  = init_typ;
+      in_shape  = [|i|];
+      out_shape = [|i;o|];
+    }
+
+  let connect out_shape l =
+    assert Array.(length out_shape = length l.in_shape);
+    l.in_shape.(0) <- out_shape.(0);
+    l.out_shape.(0) <- out_shape.(0)
+
+  let init l =
+    let m = l.out_shape.(0) in
+    let n = l.out_shape.(1) in
+    l.w <- Init.run l.init_typ [|m;n|] l.w
+
+  let reset l = Mat.reset l.w
+
+  let mktag t l = l.w <- make_reverse l.w t
+
+  let mkpar l = [|l.w|]
+
+  let mkpri l = [|primal l.w|]
+
+  let mkadj l = [|adjval l.w|]
+
+  let update l u = l.w <- u.(0) |> primal'
+
+  let run x l = Maths.(x *@ l.w)
+
+  let to_string l =
+    let wm, wn = l.out_shape.(0), l.out_shape.(1) in
+    Printf.sprintf "    Embedding : matrix in:(*,%i) out:(*,%i,%i) \n" wm wm wn ^
+    Printf.sprintf "    init      : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    params    : %i\n" (wm * wn) ^
+    Printf.sprintf "    w         : %i x %i\n" wm wn ^
+    ""
+
+  let to_name () = "embedding"
 
 end
 
