@@ -64,6 +64,8 @@ module type MatrixSig = sig
 
   val copy_col_to : mat -> mat -> int -> unit
 
+  val iteri : (int -> int -> elt -> unit) -> mat -> unit
+
   val mapi : (int -> int -> elt -> elt) -> mat -> mat
 
   val iteri_rows : (int -> mat -> unit) -> mat -> unit
@@ -2029,6 +2031,8 @@ module Make
     let iteri_rows f x = M.iteri_rows (fun i v -> f i (pack_mat v)) (unpack_mat x)
 
     let iter2_rows f x y = M.iter2_rows (fun u v -> f (pack_mat u) (pack_mat v)) (unpack_mat x) (unpack_mat y)
+
+    let iteri f x = x |> unpack_mat |> M.iteri f
 
     let mapi f x = x |> unpack_mat |> M.mapi f |> pack_mat
 

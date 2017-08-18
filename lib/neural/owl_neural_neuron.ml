@@ -2111,24 +2111,25 @@ module AlphaDropout = struct
 end
 
 
-
-(* TODO: definition of Embedding neuron *)
+(* definition of Embedding neuron *)
 module Embedding = struct
 
   type neuron_typ = {
     mutable w         : t;
     mutable init_typ  : Init.typ;
+    mutable in_dim    : int;
     mutable in_shape  : int array;
     mutable out_shape : int array;
   }
 
-  let create ?inputs o init_typ =
+  let create ?inputs in_dim out_dim init_typ =
     let i = match inputs with Some i -> i | None -> 0 in
     {
       w         = Mat.empty 0 0;
       init_typ  = init_typ;
+      in_dim    = in_dim;
       in_shape  = [|i|];
-      out_shape = [|i;o|];
+      out_shape = [|i;out_dim|];
     }
 
   let connect out_shape l =
@@ -2137,7 +2138,7 @@ module Embedding = struct
     l.out_shape.(0) <- out_shape.(0)
 
   let init l =
-    let m = l.out_shape.(0) in
+    let m = l.in_dim in
     let n = l.out_shape.(1) in
     l.w <- Init.run l.init_typ [|m;n|] l.w
 
@@ -2153,10 +2154,25 @@ module Embedding = struct
 
   let update l u = l.w <- u.(0) |> primal'
 
-  let run x l = Maths.(x *@ l.w)
+  let run x l =
+    let x = primal' x |> unpack_mat in
+    let k = Owl_dense.Matrix.Generic.kind x in
+    let m, n = Owl_dense.Matrix.Generic.shape x in
+    let y = Owl_dense.Matrix.Generic.zeros k (m * n) l.in_dim in
+
+    let i' = ref 0 in
+    for i = 0 to m - 1 do
+      i' := i * n;
+      for j = 0 to n - 1 do
+        y.{!i' + j, int_of_float x.{i,j}} <- 1.
+      done;
+    done;
+
+    let y = Maths.((Mat y) *@ l.w |> mat_to_arr) in
+    Maths.reshape y [|m; n; l.out_shape.(1)|]
 
   let to_string l =
-    let wm, wn = l.out_shape.(0), l.out_shape.(1) in
+    let wm, wn = l.in_dim, l.out_shape.(1) in
     Printf.sprintf "    Embedding : matrix in:(*,%i) out:(*,%i,%i) \n" wm wm wn ^
     Printf.sprintf "    init      : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params    : %i\n" (wm * wn) ^
@@ -2180,6 +2196,7 @@ type neuron =
   | Input           of Input.neuron_typ
   | Linear          of Linear.neuron_typ
   | LinearNoBias    of LinearNoBias.neuron_typ
+  | Embedding       of Embedding.neuron_typ
   | LSTM            of LSTM.neuron_typ
   | GRU             of GRU.neuron_typ
   | Recurrent       of Recurrent.neuron_typ
@@ -2216,6 +2233,7 @@ let get_in_out_shape = function
   | Input l           -> Input.(l.in_shape, l.out_shape)
   | Linear l          -> Linear.(l.in_shape, l.out_shape)
   | LinearNoBias l    -> LinearNoBias.(l.in_shape, l.out_shape)
+  | Embedding l       -> Embedding.(l.in_shape, l.out_shape)
   | LSTM l            -> LSTM.(l.in_shape, l.out_shape)
   | GRU l             -> GRU.(l.in_shape, l.out_shape)
   | Recurrent l       -> Recurrent.(l.in_shape, l.out_shape)
@@ -2258,6 +2276,7 @@ let connect out_shapes l = match l with
   | Input l           -> () (* always the first neuron *)
   | Linear l          -> Linear.connect out_shapes.(0) l
   | LinearNoBias l    -> LinearNoBias.connect out_shapes.(0) l
+  | Embedding l       -> Embedding.connect out_shapes.(0) l
   | LSTM l            -> LSTM.connect out_shapes.(0) l
   | GRU l             -> GRU.connect out_shapes.(0) l
   | Recurrent l       -> Recurrent.connect out_shapes.(0) l
@@ -2293,6 +2312,7 @@ let connect out_shapes l = match l with
 let init = function
   | Linear l         -> Linear.init l
   | LinearNoBias l   -> LinearNoBias.init l
+  | Embedding l      -> Embedding.init l
   | LSTM l           -> LSTM.init l
   | GRU l            -> GRU.init l
   | Recurrent l      -> Recurrent.init l
@@ -2307,6 +2327,7 @@ let init = function
 let reset = function
   | Linear l         -> Linear.reset l
   | LinearNoBias l   -> LinearNoBias.reset l
+  | Embedding l      -> Embedding.reset l
   | LSTM l           -> LSTM.reset l
   | GRU l            -> GRU.reset l
   | Recurrent l      -> Recurrent.reset l
@@ -2321,6 +2342,7 @@ let reset = function
 let mktag t = function
   | Linear l         -> Linear.mktag t l
   | LinearNoBias l   -> LinearNoBias.mktag t l
+  | Embedding l      -> Embedding.mktag t l
   | LSTM l           -> LSTM.mktag t l
   | GRU l            -> GRU.mktag t l
   | Recurrent l      -> Recurrent.mktag t l
@@ -2335,6 +2357,7 @@ let mktag t = function
 let mkpar = function
   | Linear l         -> Linear.mkpar l
   | LinearNoBias l   -> LinearNoBias.mkpar l
+  | Embedding l      -> Embedding.mkpar l
   | LSTM l           -> LSTM.mkpar l
   | GRU l            -> GRU.mkpar l
   | Recurrent l      -> Recurrent.mkpar l
@@ -2349,6 +2372,7 @@ let mkpar = function
 let mkpri = function
   | Linear l         -> Linear.mkpri l
   | LinearNoBias l   -> LinearNoBias.mkpri l
+  | Embedding l      -> Embedding.mkpri l
   | LSTM l           -> LSTM.mkpri l
   | GRU l            -> GRU.mkpri l
   | Recurrent l      -> Recurrent.mkpri l
@@ -2363,6 +2387,7 @@ let mkpri = function
 let mkadj = function
   | Linear l         -> Linear.mkadj l
   | LinearNoBias l   -> LinearNoBias.mkadj l
+  | Embedding l      -> Embedding.mkadj l
   | LSTM l           -> LSTM.mkadj l
   | GRU l            -> GRU.mkadj l
   | Recurrent l      -> Recurrent.mkadj l
@@ -2377,6 +2402,7 @@ let mkadj = function
 let update l u = match l with
   | Linear l         -> Linear.update l u
   | LinearNoBias l   -> LinearNoBias.update l u
+  | Embedding l      -> Embedding.update l u
   | LSTM l           -> LSTM.update l u
   | GRU l            -> GRU.update l u
   | Recurrent l      -> Recurrent.update l u
@@ -2392,6 +2418,7 @@ let run a l = match l with
   | Input l           -> Input.run a.(0) l
   | Linear l          -> Linear.run a.(0) l
   | LinearNoBias l    -> LinearNoBias.run a.(0) l
+  | Embedding l       -> Embedding.run a.(0) l
   | LSTM l            -> LSTM.run a.(0) l
   | GRU l             -> GRU.run a.(0) l
   | Recurrent l       -> Recurrent.run a.(0) l
@@ -2428,6 +2455,7 @@ let to_string = function
   | Input l           -> Input.to_string l
   | Linear l          -> Linear.to_string l
   | LinearNoBias l    -> LinearNoBias.to_string l
+  | Embedding l       -> Embedding.to_string l
   | LSTM l            -> LSTM.to_string l
   | GRU l             -> GRU.to_string l
   | Recurrent l       -> Recurrent.to_string l
@@ -2464,6 +2492,7 @@ let to_name = function
   | Input _           -> Input.to_name ()
   | Linear _          -> Linear.to_name ()
   | LinearNoBias _    -> LinearNoBias.to_name ()
+  | Embedding _       -> Embedding.to_name ()
   | LSTM _            -> LSTM.to_name ()
   | GRU _             -> GRU.to_name ()
   | Recurrent _       -> Recurrent.to_name ()

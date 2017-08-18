@@ -64,6 +64,8 @@ module type MatrixSig = sig
 
   val copy_col_to : mat -> mat -> int -> unit
 
+  val iteri : (int -> int -> elt -> unit) -> mat -> unit
+
   val mapi : (int -> int -> elt -> elt) -> mat -> mat
 
   val iteri_rows : (int -> mat -> unit) -> mat -> unit
@@ -601,6 +603,8 @@ module Make
 
     val clip_by_l2norm : t -> t -> t
 
+    val iteri : (int -> int -> elt -> unit) -> t -> unit
+    
     val mapi : (int -> int -> elt -> elt) -> t -> t
 
     val iter2_rows : (t -> t -> unit) -> t -> t -> unit

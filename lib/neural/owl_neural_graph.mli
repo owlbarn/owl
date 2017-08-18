@@ -63,7 +63,11 @@ val linear_nobias : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.ty
   Similar to [linear], but does not use the bias vector.
 *)
 
-val recurrent: ?name:string -> ?init_typ:Init.typ -> act_typ:Activation.typ -> int -> int-> node -> node
+val embedding : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int -> int -> node -> node
+(** *)
+
+val recurrent: ?name:string -> ?init_typ:Init.typ -> act_typ:Activation.typ -> int -> int -> node -> node
+(** *)
 
 val lstm : ?name:string -> int -> node -> node
 (**

@@ -271,6 +271,13 @@ let linear_nobias ?name ?(init_typ = Init.Standard) ?act_typ outputs input_node 
   add_node ?act_typ nn [|input_node|] n
 
 
+let embedding ?name ?(init_typ = Init.Standard) ?act_typ in_dim out_dim input_node =
+  let neuron = Embedding (Embedding.create in_dim out_dim init_typ) in
+  let nn = get_network input_node in
+  let n = make_node ?name [||] [||] neuron None nn in
+  add_node ?act_typ nn [|input_node|] n
+
+
 let recurrent ?name ?(init_typ=Init.Standard) ~act_typ outputs hiddens input_node =
   let neuron = Recurrent (Recurrent.create hiddens outputs act_typ init_typ) in
   let nn = get_network input_node in
