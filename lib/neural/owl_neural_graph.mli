@@ -73,6 +73,12 @@ val lstm : ?name:string -> int -> node -> node
 *)
 
 val gru : ?name:string -> int -> node -> node
+(**
+  [gru units node] adds a Gated Recurrent Unit node on previous [node].
+
+  Arguments:
+  - [units]: Positive integer, dimensionality of the output space.
+*)
 
 val conv1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 (**
@@ -159,20 +165,46 @@ val global_avg_pool2d : ?name:string -> ?act_typ:Activation.typ -> node -> node
 *)
 
 val fully_connected : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int -> node -> node
+(**
+  [fully_connected outputs node] adds a fully connected layer to [node].
+
+  Arguments:
+  - [outputs]: integer, the number of output units in the layer
+*)
 
 val dropout : ?name:string -> float -> node -> node
 (**
-  [dropout rate] applies Dropout to the input to prevent overfitting.
+  [dropout rate node] applies Dropout to the input to prevent overfitting.
 
   Arguments:
-  - rate: float between 0 and 1. Fraction of the input units to drop.
+  - [rate]: float between 0 and 1. Fraction of the input units to drop.
 *)
 
 val gaussian_noise : ?name:string -> float -> node -> node
+(**
+  [gaussian_noise stddev node] applies additive zero-centered Gaussian noise.
+
+  Arguments:
+  - [stddev]: float, standard deviation of the noise distribution.
+*)
 
 val gaussian_dropout : ?name:string -> float -> node -> node
+(**
+  [gaussian_dropout rate node] applies multiplicative 1-centered Gaussian noise.
+  Only active at training time.
+
+  Arguments:
+  - [rates]: float, drop probability
+*)
 
 val alpha_dropout : ?name:string -> float -> node -> node
+(**
+  [alpha_dropout rate node] applies Alpha Dropout to the input [node].
+  Only active at training time.
+
+  Arguments:
+  - [rates]: float, drop probability
+*)
 
 val normalisation : ?name:string -> ?axis:int -> node -> node
 (**
@@ -204,14 +236,35 @@ val lambda : ?name:string -> ?act_typ:Activation.typ -> (t -> t) -> node -> node
 *)
 
 val add : ?name:string -> ?act_typ:Activation.typ -> node array -> node
+(**
+  Layer that adds a list of inputs.
+
+  It takes as input an array of nodes, all of the same shape, and returns a single node (also of the same shape).
+*)
 
 val mul : ?name:string -> ?act_typ:Activation.typ -> node array -> node
+(**
+  Layer that multiplies (element-wise) a list of inputs.
+
+  It takes as input an array of nodes, all of the same shape, and returns a single node (also of the same shape).
+*)
 
 val dot : ?name:string -> ?act_typ:Activation.typ -> node array -> node
+(**
+  Layer that computes a dot product between samples in two nodes.
+*)
 
 val max : ?name:string -> ?act_typ:Activation.typ -> node array -> node
+(**
+  Layer that computes the maximum (element-wise) a list of inputs.
+*)
 
 val average : ?name:string -> ?act_typ:Activation.typ -> node array -> node
+(**
+  Layer that averages a list of inputs.
+
+  It takes as input an array of nodes, all of the same shape, and returns a single node (also of the same shape).
+*)
 
 val concatenate : ?name:string -> ?act_typ:Activation.typ -> int -> node array -> node
 (**
