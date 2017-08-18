@@ -496,7 +496,7 @@ module LSTM = struct
       bo  = Mat.empty 1 o;
       c   = Mat.empty 1 o;
       h   = Mat.empty 1 o;
-      init_typ = Init.Tanh;
+      init_typ  = Init.Tanh;
       in_shape  = in_shape;
       out_shape = [|o|];
     }
@@ -684,7 +684,7 @@ module GRU = struct
       br  = Mat.empty 1 o;
       bh  = Mat.empty 1 o;
       h   = Mat.empty 1 o;
-      init_typ = Init.Standard;
+      init_typ  = Init.Standard;
       in_shape  = in_shape;
       out_shape = [|o|];
     }

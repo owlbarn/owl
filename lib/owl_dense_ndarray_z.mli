@@ -80,6 +80,8 @@ val slice_left : arr -> int array -> arr
 
 val slice : int list list -> arr -> arr
 
+val set_slice : int list list -> arr -> arr -> unit
+
 val copy : arr -> arr -> unit
 
 val reset : arr -> unit

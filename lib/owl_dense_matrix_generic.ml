@@ -311,6 +311,11 @@ let slice axis x =
   let y = Owl_dense_ndarray_generic.slice axis x in
   of_ndarray y
 
+let set_slice axis x y =
+  let x = to_ndarray x in
+  let y = to_ndarray y in
+  Owl_dense_ndarray_generic.set_slice axis x y
+
 let pad ?v d x = Owl_dense_ndarray_generic.pad ?v d (to_ndarray x) |> of_ndarray
 
 

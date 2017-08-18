@@ -1294,6 +1294,8 @@ let fold ?axis f a x =
 
 let slice axis x = Owl_slicing.slice_list_typ axis x
 
+let set_slice axis x y = Owl_slicing.set_slice_list_typ axis x y
+
 (* FIXME
 let rec _iteri_slice index axis f x =
   if Array.length axis = 0 then (

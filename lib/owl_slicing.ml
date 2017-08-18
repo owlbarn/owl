@@ -212,4 +212,67 @@ let slice_array_typ axis x =
 let slice_list_typ axis x = slice_array_typ (Owl_utils.llss2aarr axis) x
 
 
+(* set slice in [x] according to [y] *)
+let set_slice_array_typ axis x y =
+  (* check axis is within boundary then re-format *)
+  let s0 = shape x in
+  let axis = check_slice_definition axis s0 in
+  (* validate the slice shape is the same as y's *)
+  let s1 = calc_slice_shape axis in
+  assert (shape y = s1);
+  (* transform into 1d array *)
+  let x' = Bigarray.reshape_1 x (numel x) in
+  let y' = Bigarray.reshape_1 y (numel y) in
+  (* prepare function of copying blocks *)
+  let d0 = Array.length s1 in
+  let d1, cb = calc_continuous_blksz axis s0 in
+  let sd = _calc_stride s0 in
+  let _cp_op = _owl_copy (kind x) in
+  let ofsy_i = ref 0 in
+  (* two copying strategies based on the size of the minimum continuous block.
+    also, consider the special case wherein the highest-dimension equals to 1.
+   *)
+  if cb > 1 || s0.(d0 - 1) = 1 then (
+    (* yay, there are at least some continuous blocks *)
+    let b = cb in
+    let f = fun i -> (
+      let ofsx = _index_nd_1d i sd in
+      let ofsy = !ofsy_i * b in
+      _cp_op b ~ofsx:ofsy ~ofsy:ofsx ~incx:1 ~incy:1 y' x';
+      ofsy_i := !ofsy_i + 1
+    )
+    in
+    (* start copying blocks *)
+    _foreach_continuous_blk d0 d1 axis f
+  )
+  else (
+    (* copy happens at the highest dimension, no continuous block *)
+    let b = s1.(d0 - 1) in
+    let c = axis.(d0 - 1).(2) in
+    let cx = if c > 0 then c else -c in
+    let cy = if c > 0 then 1 else -1 in
+    let dd =
+      if c > 0 then axis.(d0 - 1).(0)
+      (* do the math yourself, it is actually reduced from
+        s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
+      *)
+      else axis.(d0 - 1).(0) + (b - 1) * c
+    in
+    let f = fun i -> (
+      let ofsx = _index_nd_1d i sd + dd in
+      let ofsy = !ofsy_i * b in
+      _cp_op b ~ofsx:ofsy ~ofsy:ofsx ~incx:cy ~incy:cx y' x';
+      ofsy_i := !ofsy_i + 1
+    )
+    in
+    (* start copying blocks *)
+    _foreach_continuous_blk d0 (d1 - 1) axis f
+  )
+
+
+(* same as set_slice_array_typ function but take list type as slice definition *)
+let set_slice_list_typ axis x y = set_slice_array_typ (Owl_utils.llss2aarr axis) x y
+
+
+
 (* ends here *)

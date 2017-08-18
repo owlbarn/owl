@@ -137,6 +137,8 @@ val flatten : mat -> mat
 
 val slice : int list list -> mat -> mat
 
+val set_slice : int list list -> mat -> mat -> unit
+
 val reverse : mat -> mat
 
 val flip : ?axis:int -> mat -> mat

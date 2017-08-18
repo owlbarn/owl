@@ -209,6 +209,13 @@ val slice : int list list -> ('a, 'b) t -> ('a, 'b) t
   on arbitrary axis which need not start from left-most side.
  *)
 
+val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_slice axis x y] set the slice defined by [axis] in [x] according to
+  the values in [y]. [y] must have the same shape as the one defined by [axis].
+
+  About the slice definition of [axis], please refer to [slice] function.
+ *)
+
 val copy : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [copy src dst] copies the data from ndarray [src] to [dst]. *)
 
