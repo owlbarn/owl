@@ -1,4 +1,5 @@
 #!/usr/bin/env owl
+#zoo "980a43a65e78613b4912c69008b3e909" (*Import the VisualModule *)
 
 (* Trains a simple convnet on the MNIST dataset. Network structure adapted from
  * Keras example: https://github.com/fchollet/keras/blob/master/examples/mnist_cnn.py
@@ -8,7 +9,6 @@ open Owl
 open Owl_neural
 open Algodiff.S
 open Owl_neural_neuron
-
 
 let model_name = "mnist.model"
 
@@ -52,32 +52,47 @@ let inference_mnist nn x y num_test =
   Array.iter (fun i -> Printf.printf "%d " i) p
   (* Printf.printf "prediction: %i\n" (let _, _, j = Owl_dense_matrix_generic.max_i p in j) *)
 
-let show_mnist ?(num=9) imgs  =
-  let imgs = Algodiff.S.unpack_arr imgs in
+
+(* with zoo, there is no need to write this function;
+  instead, we only need a one-liner to import it. *)
+(*
+let visualize_dataset x len  =
+  assert( len > 1 && len < 100 );
+  let num = len * len in
   let mats = Array.make num (Dense.Matrix.D.zeros 1 1) in
-  for i = 0 to (num - 1) do
-    let u = Dense.Ndarray.S.slice [[i]] imgs in
-    let u = Dense.Ndarray.S.reshape u [|28;28|] in
-    let u = Dense.Matrix.S.of_ndarray u in
-    let u = Dense.Matrix.Generic.cast_s2d u in
-    mats.(i) <- u;
+
+  for i = 0 to num - 1 do
+    let fig = Dense.Ndarray.D.slice [[i];[];[]] x
+              |> Dense.Ndarray.D.squeeze
+              |> Dense.Matrix.D.of_ndarray
+    in
+    mats.(i) <- fig;
   done;
-  (* let big_mat = Array.fold_left Dense.Matrix.D.concat_horizontal
-                  mats.(0) (Array.sub mats 1 (num-1)) in *)
-  Plot.image Dense.Matrix.D.((mats.(0) @|| mats.(1) @|| mats.(2))
-                          @= (mats.(3) @|| mats.(4) @|| mats.(5))
-                          @= (mats.(6) @|| mats.(7) @|| mats.(8)))
+
+  let mats2 = Array.make len (Dense.Matrix.D.zeros 1 1) in
+  for i = 0 to (len-1) do
+    let m = Array.sub mats (i*len) len
+            |> Dense.Matrix.D.concatenate ~axis:0
+    in
+    mats2.(i) <- m
+  done;
+
+  let img = Dense.Matrix.D.concatenate ~axis:1 mats2 in
+  Plot.image img
+*)
 
 let start_inference () =
   let x, _, y = Dataset.load_mnist_test_data () in
   let m = Dense.Matrix.S.row_num x in
   let x = Dense.Matrix.S.to_ndarray x in
   let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
-  (* draw 9 samples *)
-  let num_test = 9 in
-  let a, b = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) num_test in
   (* visualize dataset *)
-  show_mnist a;
+  let len = 6 in
+  let imgs = x |>  Dense.Ndarray.Generic.cast_s2d in
+  VisualModule.visualize_dataset imgs len;
+  (* draw (len * len) samples *)
+  let num_test = len * len in
+  let a, b = Owl_neural_optimise.Utils.draw_samples (Arr x) (Mat y) num_test in
   (* load model *)
   let nn = Owl_neural_graph.load model_name in
   inference_mnist nn a b num_test
