@@ -1958,7 +1958,6 @@ module Normalisation = struct
     let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
     Printf.sprintf "    Normalisation : in:[*,%s] out:[*,%s]\n" in_str out_str ^
     Printf.sprintf "    axis          : %i\n" l.axis
-    (* Printf.sprintf "    params        : %i\n" (3 * l.in_shape.(l.axis-1) *)
 
   let to_name () = "normalisation"
 
