@@ -383,7 +383,12 @@ module Recurrent = struct
     l.by  <- Mat.zeros 1 o;
     l.h   <- Mat.zeros 1 h
 
-  let reset l = Mat.reset l.h
+  let reset l =
+    Mat.reset l.whh;
+    Mat.reset l.wxh;
+    Mat.reset l.why;
+    Mat.reset l.bh;
+    Mat.reset l.by
 
   let mktag t l =
     l.whh <- make_reverse l.whh t;
@@ -476,11 +481,9 @@ module LSTM = struct
     mutable out_shape : int array;
   }
 
-  let create ?inputs o =
-    let in_shape = match inputs with
-      | Some i -> [|i|]
-      | None   -> [|0|]
-    in
+  let create ?time_steps ?inputs o =
+    let i = match inputs with Some i -> i | None -> 0 in
+    let t = match time_steps with Some i -> i | None -> 0 in
     {
       wxi = Mat.empty 0 o;
       whi = Mat.empty o o;
@@ -497,16 +500,17 @@ module LSTM = struct
       c   = Mat.empty 1 o;
       h   = Mat.empty 1 o;
       init_typ  = Init.Tanh;
-      in_shape  = in_shape;
+      in_shape  = [|t;i|];
       out_shape = [|o|];
     }
 
   let connect out_shape l =
     assert Array.(length out_shape = length l.in_shape);
-    l.in_shape.(0) <- out_shape.(0)
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1)
 
   let init l =
-    let i = l.in_shape.(0) in
+    let i = l.in_shape.(1) in
     let o = l.out_shape.(0) in
     l.wxi <- Init.run l.init_typ [|i;o|] l.wxi;
     l.whi <- Init.run l.init_typ [|o;o|] l.whi;
@@ -519,13 +523,21 @@ module LSTM = struct
     l.bi  <- Mat.zeros 1 o;
     l.bc  <- Mat.zeros 1 o;
     l.bf  <- Mat.zeros 1 o;
-    l.bo  <- Mat.zeros 1 o;
-    l.c   <- Mat.zeros 1 o;
-    l.h   <- Mat.zeros 1 o
+    l.bo  <- Mat.zeros 1 o
 
   let reset l =
-    Mat.reset l.c;
-    Mat.reset l.h
+    Mat.reset l.wxi;
+    Mat.reset l.whi;
+    Mat.reset l.wxc;
+    Mat.reset l.whc;
+    Mat.reset l.wxf;
+    Mat.reset l.whf;
+    Mat.reset l.wxo;
+    Mat.reset l.who;
+    Mat.reset l.bi;
+    Mat.reset l.bc;
+    Mat.reset l.bf;
+    Mat.reset l.bo
 
   let mktag t l =
     l.wxi <- make_reverse l.wxi t;
@@ -601,18 +613,22 @@ module LSTM = struct
     l.bo  <- u.(11) |> primal'
 
   let run x l =
-    let y = Mat.map_by_row (fun x ->
-      let i  = Maths.(((x *@ l.wxi) + (l.h *@ l.whi) + l.bi) |> sigmoid) in
-      let c' = Maths.(((x *@ l.wxc) + (l.h *@ l.whc) + l.bc) |> tanh) in
-      let f  = Maths.(((x *@ l.wxf) + (l.h *@ l.whf) + l.bf) |> sigmoid) in
+    let s = shape x in
+    assert (s.(1) = l.in_shape.(0) && s.(2) = l.in_shape.(1));
+    l.h <- Mat.zeros s.(0) l.out_shape.(0);
+    l.c <- Mat.zeros s.(0) l.out_shape.(0);
+
+    for i = 0 to l.in_shape.(1) - 1 do
+      let t = Maths.(get_slice [[];[i];[]] x |> arr_to_mat) in
+      (* lstm logic, calculate the output *)
+      let i  = Maths.(((t *@ l.wxi) + (l.h *@ l.whi) + l.bi) |> sigmoid) in
+      let c' = Maths.(((t *@ l.wxc) + (l.h *@ l.whc) + l.bc) |> tanh) in
+      let f  = Maths.(((t *@ l.wxf) + (l.h *@ l.whf) + l.bf) |> sigmoid) in
       l.c <- Maths.((i * c') + (f * l.c));
-      let o  = Maths.(((x *@ l.wxo) + (l.h *@ l.who) + l.bo) |> sigmoid) in
-      l.h <- Maths.(o * (tanh l.c));
-      l.h
-    ) x in
-    l.c <- primal' l.c;
-    l.h <- primal' l.h;
-    y
+      let o  = Maths.(((t *@ l.wxo) + (l.h *@ l.who) + l.bo) |> sigmoid) in
+      l.h <- Maths.(o * (tanh l.c))
+    done;
+    l.h
 
   let to_string l =
     let wxim, wxin = Mat.shape l.wxi in
@@ -627,7 +643,7 @@ module LSTM = struct
     let bcm, bcn = Mat.shape l.bc in
     let bfm, bfn = Mat.shape l.bf in
     let bom, bon = Mat.shape l.bo in
-    Printf.sprintf "    LSTM   : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    Printf.sprintf "    LSTM   : matrix in:(*,%i,%i) out:(*,%i) \n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
     Printf.sprintf "    params : %i\n" (wxim*wxin + whim*whin + wxcm*wxcn + whcm*whcn + wxfm*wxfn + whfm*whfn + wxom*wxon + whom*whon + bim*bin + bcm*bcn + bfm*bfn + bom*bon) ^
     Printf.sprintf "    wxi    : %i x %i\n" wxim wxin ^
@@ -2231,7 +2247,7 @@ let init = function
 
 
 let reset = function
-  | Linear l          -> Linear.reset l
+  | Linear l         -> Linear.reset l
   | LinearNoBias l   -> LinearNoBias.reset l
   | LSTM l           -> LSTM.reset l
   | GRU l            -> GRU.reset l
