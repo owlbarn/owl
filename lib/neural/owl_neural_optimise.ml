@@ -348,14 +348,18 @@ end
 
 (* helper functions *)
 
-let _print_info b_i b_n l l' =
+let _print_info e_n b_i b_n l l' =
   let l, l' = unpack_flt l, unpack_flt l' in
   let d = l -. l' in
   let s = if d = 0. then "-" else if d < 0. then "▲" else "▼" in
   let pid = Unix.getpid () in
-  Log.info "#%i | B: %i/%i | L: %g[%s]" pid b_i b_n l' s
+  let e_i = (float_of_int b_i) /. ((float_of_int b_n) /. e_n) in
+  Log.info "#%i | E: %.1f/%g | B: %i/%i | L: %g[%s]" pid e_i e_n b_i b_n l' s
 
-let _print_summary t = Printf.printf "--- Training summary\n    Duration: %g s\n" t
+
+let _print_summary t =
+  Printf.printf "--- Training summary\n    Duration: %g s\n" t;
+  flush_all ()
 
 
 (* core training functions for feedforward networks *)
@@ -380,12 +384,6 @@ let train_nn params forward backward update save x y =
     let xt, yt = batch x y i in
     let yt', ws = forward xt in
     let loss = Maths.(loss_fun yt yt') in
-    (* DEBUG
-    Printf.printf "===> %g \n" (unpack_flt loss);
-    Owl_dense_matrix_generic.print (unpack_mat yt);
-    Owl_dense_matrix_generic.print (unpack_mat yt');
-    flush_all ();
-    exit 0; *)
     (* take the average of the loss *)
     let loss = Maths.(loss / (F (Mat.row_num yt |> float_of_int))) in
     (* add regularisation term if necessary *)
@@ -421,7 +419,7 @@ let train_nn params forward backward update save x y =
     let loss', ws, gs' = iterate i in
     (* print out the current state of training *)
     if params.verbosity = true then
-      _print_info i batches !loss.(!idx - 1) loss';
+      _print_info params.epochs i batches !loss.(!idx - 1) loss';
     (* calculate gradient updates *)
     let ps' = Owl_utils.aarr_map2i (
       fun k l w g' ->

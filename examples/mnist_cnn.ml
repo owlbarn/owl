@@ -20,7 +20,7 @@ let make_network () =
 
 let train () =
   let network = make_network ()
-  in print network;
+  in Graph.print network;
 
   let x, _, y = Dataset.load_mnist_train_data () in
   let m = Dense.Matrix.S.row_num x in
@@ -28,7 +28,7 @@ let train () =
   let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
 
   let params = Params.config
-    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) ~checkpoint:0.5 0.1
+    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 0.1
   in
   Graph.train_cnn ~params network x y |> ignore;
   network
