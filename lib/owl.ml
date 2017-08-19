@@ -40,9 +40,11 @@ module Algodiff = Owl_algodiff
 
 module Utils = Owl_utils
 
-module Dataset = Owl_dataset
-
 module Ext = Owl_ext
+
+module Neural = Owl_neural
+
+module Dataset = Owl_dataset
 
 
 (* backend modules *)
