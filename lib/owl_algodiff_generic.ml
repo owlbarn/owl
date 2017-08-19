@@ -607,21 +607,25 @@ module Make
   let unpack_arr x =
     match (primal x) with
     | Arr x -> x
-    | _ -> failwith "error: AD.unpack_arr"
+    | _     -> failwith "error: AD.unpack_arr"
 
   let pack_mat x = Mat x
 
   let unpack_mat x =
     match (primal x) with
     | Mat x -> x
-    | _ -> failwith "error: AD.unpack_mat"
+    | Arr _ -> failwith "error: aaa"
+    | F _ -> failwith "error: bbb"
+    | DF _ -> failwith "error: ccc"
+    | DR _ -> failwith "error: ddd"
+    | _     -> failwith "error: AD.unpack_mat"
 
   let pack_flt x = F x
 
   let unpack_flt x =
     match (primal x) with
     | F x -> x
-    | _ -> failwith "error: AD.unpack_elt"
+    | _   -> failwith "error: AD.unpack_elt"
 
 
   (* functions to report errors, help in debugging *)

@@ -497,8 +497,8 @@ module LSTM = struct
       bc  = Mat.empty 1 o;
       bf  = Mat.empty 1 o;
       bo  = Mat.empty 1 o;
-      c   = Mat.empty 1 o;
-      h   = Mat.empty 1 o;
+      c   = Mat.empty 0 o;
+      h   = Mat.empty 0 o;
       init_typ  = Init.Tanh;
       in_shape  = [|t;i|];
       out_shape = [|o|];
@@ -614,10 +614,9 @@ module LSTM = struct
 
   let run x l =
     let s = shape x in
-    assert (s.(1) = l.in_shape.(0) && s.(2) = l.in_shape.(1));
     l.h <- Mat.zeros s.(0) l.out_shape.(0);
     l.c <- Mat.zeros s.(0) l.out_shape.(0);
-    for i = 0 to l.in_shape.(1) - 1 do
+    for i = 0 to l.in_shape.(0) - 1 do
       let t = Maths.get_slice [[];[i];[]] x in
       let t = Maths.(reshape t [|s.(0);s.(2)|] |> arr_to_mat) in
       (* lstm logic, calculate the output *)
@@ -631,34 +630,24 @@ module LSTM = struct
     l.h
 
   let to_string l =
-    (* FIXME *)
-    let wxim, wxin = Mat.shape l.wxi in
-    let whim, whin = Mat.shape l.whi in
-    let wxcm, wxcn = Mat.shape l.wxc in
-    let whcm, whcn = Mat.shape l.whc in
-    let wxfm, wxfn = Mat.shape l.wxf in
-    let whfm, whfn = Mat.shape l.whf in
-    let wxom, wxon = Mat.shape l.wxo in
-    let whom, whon = Mat.shape l.who in
-    let bim, bin = Mat.shape l.bi in
-    let bcm, bcn = Mat.shape l.bc in
-    let bfm, bfn = Mat.shape l.bf in
-    let bom, bon = Mat.shape l.bo in
-    Printf.sprintf "    LSTM   : matrix in:(*,%i,%i) out:(*,%i) \n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) ^
+    let t = l.in_shape.(0) in
+    let i = l.in_shape.(1) in
+    let o = l.out_shape.(0) in
+    Printf.sprintf "    LSTM   : in:(*,%i,%i) out:(*,%i) \n" i t o ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-    Printf.sprintf "    params : %i\n" (wxim*wxin + whim*whin + wxcm*wxcn + whcm*whcn + wxfm*wxfn + whfm*whfn + wxom*wxon + whom*whon + bim*bin + bcm*bcn + bfm*bfn + bom*bon) ^
-    Printf.sprintf "    wxi    : %i x %i\n" wxim wxin ^
-    Printf.sprintf "    whi    : %i x %i\n" whim whin ^
-    Printf.sprintf "    wxc    : %i x %i\n" wxcm wxcn ^
-    Printf.sprintf "    whc    : %i x %i\n" whcm whcn ^
-    Printf.sprintf "    wxf    : %i x %i\n" wxfm wxfn ^
-    Printf.sprintf "    whf    : %i x %i\n" whfm whfn ^
-    Printf.sprintf "    wxo    : %i x %i\n" wxom wxon ^
-    Printf.sprintf "    who    : %i x %i\n" whom whon ^
-    Printf.sprintf "    bi     : %i x %i\n" bim bin ^
-    Printf.sprintf "    bc     : %i x %i\n" bcm bcn ^
-    Printf.sprintf "    bf     : %i x %i\n" bfm bfn ^
-    Printf.sprintf "    bo     : %i x %i\n" bom bon ^
+    Printf.sprintf "    params : %i\n" (i*o + o*o + i*o + o*o + i*o + o*o + i*o + o*o + o + o + o + o) ^
+    Printf.sprintf "    wxi    : %i x %i\n" i o ^
+    Printf.sprintf "    whi    : %i x %i\n" o o ^
+    Printf.sprintf "    wxc    : %i x %i\n" i o ^
+    Printf.sprintf "    whc    : %i x %i\n" o o ^
+    Printf.sprintf "    wxf    : %i x %i\n" i o ^
+    Printf.sprintf "    whf    : %i x %i\n" o o ^
+    Printf.sprintf "    wxo    : %i x %i\n" i o ^
+    Printf.sprintf "    who    : %i x %i\n" o o ^
+    Printf.sprintf "    bi     : %i x %i\n" 1 o ^
+    Printf.sprintf "    bc     : %i x %i\n" 1 o ^
+    Printf.sprintf "    bf     : %i x %i\n" 1 o ^
+    Printf.sprintf "    bo     : %i x %i\n" 1 o ^
     ""
 
   let to_name () = "lstm"
@@ -2173,8 +2162,9 @@ module Embedding = struct
 
   let to_string l =
     let wm, wn = l.in_dim, l.out_shape.(1) in
-    Printf.sprintf "    Embedding : matrix in:(*,%i) out:(*,%i,%i) \n" wm wm wn ^
+    Printf.sprintf "    Embedding : matrix in:(*,%i) out:(*,%i,%i) \n" l.in_shape.(0) l.out_shape.(0) l.out_shape.(1) ^
     Printf.sprintf "    init      : %s\n" (Init.to_string l.init_typ) ^
+    Printf.sprintf "    in_dim    : %i\n" l.in_dim ^
     Printf.sprintf "    params    : %i\n" (wm * wn) ^
     Printf.sprintf "    w         : %i x %i\n" wm wn ^
     ""
