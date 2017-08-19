@@ -358,7 +358,7 @@ module Recurrent = struct
       why       = Mat.empty h o;
       bh        = Mat.empty 1 h;
       by        = Mat.empty 1 o;
-      h         = Mat.empty 1 h;
+      h         = Mat.empty 0 h;
       hiddens   = hiddens;
       act       = act;
       init_typ  = init_typ;
@@ -675,10 +675,8 @@ module GRU = struct
   }
 
   let create ?inputs o =
-    let in_shape = match inputs with
-      | Some i -> [|i|]
-      | None   -> [|0|]
-    in
+    let i = match inputs with Some i -> i | None -> 0 in
+    let t = match time_steps with Some i -> i | None -> 0 in
     {
       wxz = Mat.empty 0 o;
       whz = Mat.empty o o;
@@ -689,15 +687,16 @@ module GRU = struct
       bz  = Mat.empty 1 o;
       br  = Mat.empty 1 o;
       bh  = Mat.empty 1 o;
-      h   = Mat.empty 1 o;
+      h   = Mat.empty 0 o;
       init_typ  = Init.Standard;
-      in_shape  = in_shape;
+      in_shape  = [|t;i|];
       out_shape = [|o|];
     }
 
   let connect out_shape l =
     assert Array.(length out_shape = length l.in_shape);
-    l.in_shape.(0) <- out_shape.(0)
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1)
 
   let init l =
     let i = l.in_shape.(0) in
@@ -710,10 +709,18 @@ module GRU = struct
     l.whh <- Init.run l.init_typ [|o;o|] l.whh;
     l.bz  <- Mat.zeros 1 o;
     l.br  <- Mat.zeros 1 o;
-    l.bh  <- Mat.zeros 1 o;
-    l.h   <- Mat.zeros 1 o
+    l.bh  <- Mat.zeros 1 o
 
-  let reset l = Mat.reset l.h
+  let reset l =
+    Mat.reset l.wxz;
+    Mat.reset l.whz;
+    Mat.reset l.wxr;
+    Mat.reset l.whr;
+    Mat.reset l.wxh;
+    Mat.reset l.whh;
+    Mat.reset l.bz;
+    Mat.reset l.br;
+    Mat.reset l.bh
 
   let mktag t l =
     l.wxz <- make_reverse l.wxz t;
@@ -774,15 +781,18 @@ module GRU = struct
     l.bh  <- u.(8) |> primal'
 
   let run x l =
-    let y = Mat.map_by_row (fun x ->
-      let z  = Maths.(((x *@ l.wxz) + (l.h *@ l.whz) + l.bz) |> sigmoid) in
-      let r  = Maths.(((x *@ l.wxr) + (l.h *@ l.whr) + l.br) |> sigmoid) in
-      let h' = Maths.(((x *@ l.wxh) + ((l.h * r) *@ l.whh))  |> tanh) in
+    let s = shape x in
+    l.h <- Mat.zeros s.(0) l.out_shape.(0);
+    for i = 0 to l.in_shape.(0) - 1 do
+      let t = Maths.get_slice [[];[i];[]] x in
+      let t = Maths.(reshape t [|s.(0);s.(2)|] |> arr_to_mat) in
+      (* gru logic, calculate the output *)
+      let z  = Maths.(((t *@ l.wxz) + (l.h *@ l.whz) + l.bz) |> sigmoid) in
+      let r  = Maths.(((t *@ l.wxr) + (l.h *@ l.whr) + l.br) |> sigmoid) in
+      let h' = Maths.(((t *@ l.wxh) + ((l.h * r) *@ l.whh))  |> tanh) in
       l.h <- Maths.((F 1. - z) * h' + (z * l.h));
-      l.h
-    ) x in
-    l.h <- primal' l.h;
-    y
+    done;
+    l.h
 
   let to_string l =
     let wxzm, wxzn = Mat.shape l.wxz in
