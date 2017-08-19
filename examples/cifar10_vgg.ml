@@ -8,8 +8,8 @@ open Neural
 open Neural.Graph
 
 
-let make_network () =
-  input [|32;32;3|]
+let make_network input_shape =
+  input input_shape
   |> normalisation
   |> conv2d [|3;3;3;32|] [|1;1|] ~act_typ:Activation.Relu
   |> conv2d [|3;3;32;32|] [|1;1|] ~act_typ:Activation.Relu ~padding:Dense.Ndarray.Generic.VALID
@@ -26,7 +26,7 @@ let make_network () =
 
 let train () =
   let x, _, y = Dataset.load_cifar_train_data 1 in
-  let network = make_network () in
+  let network = make_network [|32;32;3|] in
   Graph.print network;
 
   let params = Params.config

@@ -7,8 +7,8 @@ open Neural.Graph
 open Algodiff.S
 
 
-let make_network () =
-  input [|28;28;1|]
+let make_network input_shape =
+  input input_shape
   |> lambda (fun x -> Maths.(x / F 256.))
   |> conv2d [|5;5;1;32|] [|1;1|] ~act_typ:Activation.Relu
   |> max_pool2d [|2;2|] [|2;2|]
@@ -19,14 +19,13 @@ let make_network () =
 
 
 let train () =
-  let network = make_network ()
-  in Graph.print network;
-
   let x, _, y = Dataset.load_mnist_train_data () in
   let m = Dense.Matrix.S.row_num x in
   let x = Dense.Matrix.S.to_ndarray x in
   let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
 
+  let network = make_network [|28;28;1|] in
+  Graph.print network;
   let params = Params.config
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 0.1
   in
