@@ -10,6 +10,7 @@ open Neural.Graph
 
 let make_network () =
   input [|32;32;3|]
+  |> normalisation
   |> conv2d [|3;3;3;32|] [|1;1|] ~act_typ:Activation.Relu
   |> conv2d [|3;3;32;32|] [|1;1|] ~act_typ:Activation.Relu ~padding:Dense.Ndarray.Generic.VALID
   |> max_pool2d [|2;2|] [|2;2|] ~padding:Dense.Ndarray.Generic.VALID
@@ -25,13 +26,11 @@ let make_network () =
 
 let train () =
   let x, _, y = Dataset.load_cifar_train_data 1 in
-  let x = Dense.Ndarray.S.(x /$ 256.) in
-
   let network = make_network () in
   Graph.print network;
 
   let params = Params.config
-    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) ~checkpoint:5. 10.
+    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) ~checkpoint:5. 10.
   in
   Graph.train_cnn ~params network x y
 
