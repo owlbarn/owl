@@ -481,7 +481,7 @@ module LSTM = struct
     mutable out_shape : int array;
   }
 
-  let create ?time_steps ?inputs o =
+  let create ?time_steps ?inputs o init_typ  =
     let i = match inputs with Some i -> i | None -> 0 in
     let t = match time_steps with Some i -> i | None -> 0 in
     {
@@ -499,7 +499,7 @@ module LSTM = struct
       bo  = Mat.empty 1 o;
       c   = Mat.empty 0 o;
       h   = Mat.empty 0 o;
-      init_typ  = Init.Tanh;
+      init_typ  = init_typ;
       in_shape  = [|t;i|];
       out_shape = [|o|];
     }
@@ -674,7 +674,7 @@ module GRU = struct
     mutable out_shape : int array;
   }
 
-  let create ?time_steps ?inputs o =
+  let create ?time_steps ?inputs o init_typ =
     let i = match inputs with Some i -> i | None -> 0 in
     let t = match time_steps with Some i -> i | None -> 0 in
     {
@@ -688,7 +688,7 @@ module GRU = struct
       br  = Mat.empty 1 o;
       bh  = Mat.empty 1 o;
       h   = Mat.empty 0 o;
-      init_typ  = Init.Standard;
+      init_typ  = init_typ;
       in_shape  = [|t;i|];
       out_shape = [|o|];
     }

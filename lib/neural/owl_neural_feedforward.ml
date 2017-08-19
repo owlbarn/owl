@@ -159,15 +159,15 @@ let recurrent ?name ?(init_typ=Init.Standard) ~act_typ outputs hiddens nn =
   nn
 
 
-let lstm ?name cells nn =
-  LSTM (LSTM.create cells)
+let lstm ?name ?(init_typ=Init.Tanh) cells nn =
+  LSTM (LSTM.create cells init_typ)
   |> make_layer ?name nn
   |> add_layer nn;
   nn
 
 
-let gru ?name cells nn =
-  GRU (GRU.create cells)
+let gru ?name ?(init_typ=Init.Tanh) cells nn =
+  GRU (GRU.create cells init_typ)
   |> make_layer ?name nn
   |> add_layer nn;
   nn

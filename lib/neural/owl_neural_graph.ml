@@ -285,15 +285,15 @@ let recurrent ?name ?(init_typ=Init.Standard) ~act_typ outputs hiddens input_nod
   add_node nn [|input_node|] n
 
 
-let lstm ?name cells input_node =
-  let neuron = LSTM (LSTM.create cells) in
+let lstm ?name ?(init_typ=Init.Tanh) cells input_node =
+  let neuron = LSTM (LSTM.create cells init_typ) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node nn [|input_node|] n
 
 
-let gru ?name cells input_node =
-  let neuron = GRU (GRU.create cells) in
+let gru ?name ?(init_typ=Init.Tanh) cells input_node =
+  let neuron = GRU (GRU.create cells init_typ) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node nn [|input_node|] n

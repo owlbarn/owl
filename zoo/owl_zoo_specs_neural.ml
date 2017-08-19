@@ -248,12 +248,14 @@ module LSTM = struct
     let typ = ST.(`LSTM) in
     let in_shape = NN.LSTM.(x.in_shape) |> Array.to_list in
     let out_shape = NN.LSTM.(x.out_shape) |> Array.to_list in
-    let param = ST.make_param ~in_shape ~out_shape in
+    let init_typ = NN.LSTM.(x.init_typ) |> Init.to_specs in
+    let param = ST.make_param ~in_shape ~out_shape ~init_typ in
     typ, param ()
 
   let of_specs x =
     let out_shape = ST.get_param_out_shape x |> Array.of_list in
-    let neuron = NN.LSTM.create out_shape.(0) in
+    let init_typ = ST.get_param_init_typ x |> Init.of_specs in
+    let neuron = NN.LSTM.create out_shape.(0) init_typ in
     NN.(LSTM neuron)
 
 end
@@ -265,12 +267,14 @@ module GRU = struct
     let typ = ST.(`GRU) in
     let in_shape = NN.GRU.(x.in_shape) |> Array.to_list in
     let out_shape = NN.GRU.(x.out_shape) |> Array.to_list in
-    let param = ST.make_param ~in_shape ~out_shape in
+    let init_typ = NN.GRU.(x.init_typ) |> Init.to_specs in
+    let param = ST.make_param ~in_shape ~out_shape ~init_typ in
     typ, param ()
 
   let of_specs x =
     let out_shape = ST.get_param_out_shape x |> Array.of_list in
-    let neuron = NN.GRU.create out_shape.(0) in
+    let init_typ = ST.get_param_init_typ x |> Init.of_specs in
+    let neuron = NN.GRU.create out_shape.(0) init_typ in
     NN.(GRU neuron)
 
 end

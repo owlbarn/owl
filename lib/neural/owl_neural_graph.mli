@@ -69,7 +69,7 @@ val embedding : ?name:string -> ?init_typ:Init.typ -> ?act_typ:Activation.typ ->
 val recurrent: ?name:string -> ?init_typ:Init.typ -> act_typ:Activation.typ -> int -> int -> node -> node
 (** *)
 
-val lstm : ?name:string -> int -> node -> node
+val lstm : ?name:string -> ?init_typ:Init.typ -> int -> node -> node
 (**
   [lstm units node] adds a LSTM node on previous [node].
 
@@ -77,7 +77,7 @@ val lstm : ?name:string -> int -> node -> node
   - [units]: Positive integer, dimensionality of the output space.
 *)
 
-val gru : ?name:string -> int -> node -> node
+val gru : ?name:string -> ?init_typ:Init.typ -> int -> node -> node
 (**
   [gru units node] adds a Gated Recurrent Unit node on previous [node].
 
