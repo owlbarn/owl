@@ -617,9 +617,9 @@ module LSTM = struct
     assert (s.(1) = l.in_shape.(0) && s.(2) = l.in_shape.(1));
     l.h <- Mat.zeros s.(0) l.out_shape.(0);
     l.c <- Mat.zeros s.(0) l.out_shape.(0);
-
     for i = 0 to l.in_shape.(1) - 1 do
-      let t = Maths.(get_slice [[];[i];[]] x |> arr_to_mat) in
+      let t = Maths.get_slice [[];[i];[]] x in
+      let t = Maths.(reshape t [|s.(0);s.(2)|] |> arr_to_mat) in
       (* lstm logic, calculate the output *)
       let i  = Maths.(((t *@ l.wxi) + (l.h *@ l.whi) + l.bi) |> sigmoid) in
       let c' = Maths.(((t *@ l.wxc) + (l.h *@ l.whc) + l.bc) |> tanh) in
@@ -2133,7 +2133,7 @@ module Embedding = struct
     }
 
   let connect out_shape l =
-    assert Array.(length out_shape = length l.in_shape);
+    assert Array.(length out_shape = 1);
     l.in_shape.(0) <- out_shape.(0);
     l.out_shape.(0) <- out_shape.(0)
 
