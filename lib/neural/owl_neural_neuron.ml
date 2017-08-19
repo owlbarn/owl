@@ -674,7 +674,7 @@ module GRU = struct
     mutable out_shape : int array;
   }
 
-  let create ?inputs o =
+  let create ?time_steps ?inputs o =
     let i = match inputs with Some i -> i | None -> 0 in
     let t = match time_steps with Some i -> i | None -> 0 in
     {
@@ -699,7 +699,7 @@ module GRU = struct
     l.in_shape.(1) <- out_shape.(1)
 
   let init l =
-    let i = l.in_shape.(0) in
+    let i = l.in_shape.(1) in
     let o = l.out_shape.(0) in
     l.wxz <- Init.run l.init_typ [|i;o|] l.wxz;
     l.whz <- Init.run l.init_typ [|o;o|] l.whz;
@@ -795,27 +795,21 @@ module GRU = struct
     l.h
 
   let to_string l =
-    let wxzm, wxzn = Mat.shape l.wxz in
-    let whzm, whzn = Mat.shape l.whz in
-    let wxrm, wxrn = Mat.shape l.wxr in
-    let whrm, whrn = Mat.shape l.whr in
-    let wxhm, wxhn = Mat.shape l.wxh in
-    let whhm, whhn = Mat.shape l.whh in
-    let bzm, bzn = Mat.shape l.bz in
-    let brm, brn = Mat.shape l.br in
-    let bhm, bhn = Mat.shape l.bh in
-    Printf.sprintf "    GRU    : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    let t = l.in_shape.(0) in
+    let i = l.in_shape.(1) in
+    let o = l.out_shape.(0) in
+    Printf.sprintf "    GRU    : matrix in:(*,%i,%i) out:(*,%i) \n" t i o ^
     Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
-    Printf.sprintf "    params : %i\n" (wxzm*wxzn + whzm*whzn + wxrm*wxrn + whrm*whrn + wxhm*wxhn + whhm*whhn + bzm*bzn + brm*brn + bhm*bhn) ^
-    Printf.sprintf "    wxz    : %i x %i\n" wxzm wxzn ^
-    Printf.sprintf "    whz    : %i x %i\n" whzm whzn ^
-    Printf.sprintf "    wxr    : %i x %i\n" wxrm wxrn ^
-    Printf.sprintf "    whr    : %i x %i\n" whrm whrn ^
-    Printf.sprintf "    wxh    : %i x %i\n" wxhm wxhn ^
-    Printf.sprintf "    whh    : %i x %i\n" whhm whhn ^
-    Printf.sprintf "    bz     : %i x %i\n" bzm bzn ^
-    Printf.sprintf "    br     : %i x %i\n" brm brn ^
-    Printf.sprintf "    bh     : %i x %i\n" bhm bhn ^
+    Printf.sprintf "    params : %i\n" (i*o + o*o + i*o + o*o + i*o + o*o + o + o + o) ^
+    Printf.sprintf "    wxz    : %i x %i\n" i o ^
+    Printf.sprintf "    whz    : %i x %i\n" o o ^
+    Printf.sprintf "    wxr    : %i x %i\n" i o ^
+    Printf.sprintf "    whr    : %i x %i\n" o o ^
+    Printf.sprintf "    wxh    : %i x %i\n" i o ^
+    Printf.sprintf "    whh    : %i x %i\n" o o ^
+    Printf.sprintf "    bz     : %i x %i\n" 1 o ^
+    Printf.sprintf "    br     : %i x %i\n" 1 o ^
+    Printf.sprintf "    bh     : %i x %i\n" 1 o ^
     ""
 
   let to_name () = "gru"
