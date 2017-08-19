@@ -348,11 +348,9 @@ module Recurrent = struct
     mutable out_shape : int array;
   }
 
-  let create ?inputs hiddens o act init_typ =
-    let in_shape = match inputs with
-      | Some i -> [|i|]
-      | None   -> [|0|]
-    in
+  let create ?time_steps ?inputs hiddens o act init_typ =
+    let i = match inputs with Some i -> i | None -> 0 in
+    let t = match time_steps with Some i -> i | None -> 0 in
     let h = hiddens in
     {
       whh       = Mat.empty h h;
@@ -364,24 +362,24 @@ module Recurrent = struct
       hiddens   = hiddens;
       act       = act;
       init_typ  = init_typ;
-      in_shape  = in_shape;
+      in_shape  = [|t;i|];
       out_shape = [|o|];
     }
 
   let connect out_shape l =
     assert Array.(length out_shape = length l.in_shape);
-    l.in_shape.(0) <- out_shape.(0)
+    l.in_shape.(0) <- out_shape.(0);
+    l.in_shape.(1) <- out_shape.(1)
 
   let init l =
-    let i = l.in_shape.(0) in
+    let i = l.in_shape.(1) in
     let o = l.out_shape.(0) in
     let h = l.hiddens in
     l.whh <- Init.run l.init_typ [|h;h|] l.whh;
     l.wxh <- Init.run l.init_typ [|i;h|] l.wxh;
     l.why <- Init.run l.init_typ [|h;o|] l.why;
     l.bh  <- Mat.zeros 1 h;
-    l.by  <- Mat.zeros 1 o;
-    l.h   <- Mat.zeros 1 h
+    l.by  <- Mat.zeros 1 o
 
   let reset l =
     Mat.reset l.whh;
@@ -429,28 +427,30 @@ module Recurrent = struct
     l.by  <- u.(4) |> primal'
 
   let run x l =
+    let s = shape x in
+    l.h <- Mat.zeros s.(0) l.hiddens;
     let act x = Activation.run_activation x l.act in
-    let y = Mat.map_by_row (fun x ->
-      l.h <- act Maths.((l.h *@ l.whh) + (x *@ l.wxh) + l.bh);
-      Maths.((l.h *@ l.why) + l.by)
-    ) x in
-    l.h <- primal' l.h;
-    y
+    for i = 0 to l.in_shape.(0) - 1 do
+      let t = Maths.get_slice [[];[i];[]] x in
+      let t = Maths.(reshape t [|s.(0);s.(2)|] |> arr_to_mat) in
+      (* recurrent logic, calculate the hidden state *)
+      l.h <- act Maths.((l.h *@ l.whh) + (t *@ l.wxh) + l.bh);
+    done;
+    Maths.((l.h *@ l.why) + l.by)
 
   let to_string l =
-    let whhm, whhn = Mat.shape l.whh in
-    let wxhm, wxhn = Mat.shape l.wxh in
-    let whym, whyn = Mat.shape l.why in
-    let bhm, bhn = Mat.shape l.bh in
-    let bym, byn = Mat.shape l.by in
-    Printf.sprintf "    Recurrent : matrix in:(*,%i) out:(*,%i) \n" l.in_shape.(0) l.out_shape.(0) ^
+    let t = l.in_shape.(0) in
+    let i = l.in_shape.(1) in
+    let o = l.out_shape.(0) in
+    let h = l.hiddens in
+    Printf.sprintf "    Recurrent : matrix in:(*,%i,%i) out:(*,%i) \n" t i o ^
     Printf.sprintf "    init      : %s\n" (Init.to_string l.init_typ) ^
-    Printf.sprintf "    params    : %i\n" (whhm * whhn + wxhm * wxhn + whym * whyn + bhm * bhn + bym * byn) ^
-    Printf.sprintf "    whh       : %i x %i\n" whhm whhn ^
-    Printf.sprintf "    wxh       : %i x %i\n" wxhm wxhn ^
-    Printf.sprintf "    why       : %i x %i\n" whym whyn ^
-    Printf.sprintf "    bh        : %i x %i\n" bhm bhn ^
-    Printf.sprintf "    by        : %i x %i\n" bym byn ^
+    Printf.sprintf "    params    : %i\n" (h*h + i*h + h*o + h + o) ^
+    Printf.sprintf "    whh       : %i x %i\n" h h ^
+    Printf.sprintf "    wxh       : %i x %i\n" i h ^
+    Printf.sprintf "    why       : %i x %i\n" h o ^
+    Printf.sprintf "    bh        : %i x %i\n" 1 h ^
+    Printf.sprintf "    by        : %i x %i\n" 1 o ^
     Printf.sprintf "    act       : %s\n" (Activation.activation_to_string l.act)
 
   let to_name () = "recurrent"
