@@ -128,4 +128,52 @@ let calc_slice_shape axis =
   ) axis
 
 
+(* recursively copy the continuous block, stop at its corresponding dimension d
+   a: slice definition
+   d: the corresponding dimension of continuous block + 1
+   j: current dimension index
+   i: current index of the data for copying
+   f: copy function of the continuous block
+ *)
+let rec __foreach_continuous_blk a d j i f =
+  if j = d then f i
+  else (
+    match a.(j) with
+    | I_ x -> ( (* never reache here *) )
+    | L_ x -> (
+        Array.iter (fun k ->
+          i.(j) <- k;
+          __foreach_continuous_blk a d (j + 1) i f
+        ) x
+      )
+    | R_ x -> (
+        let k = ref x.(0) in
+        if x.(2) > 0 then (
+          while !k <= x.(1)  do
+            i.(j) <- !k;
+            k := !k + x.(2);
+            __foreach_continuous_blk a d (j + 1) i f
+          done
+        )
+        else (
+          while !k >= x.(1)  do
+            i.(j) <- !k;
+            k := !k + x.(2);
+            __foreach_continuous_blk a d (j + 1) i f
+          done
+        )
+      )
+  )
+
+
+(* a : slice definition, same rank as original ndarray
+   d : the corresponding dimension of the continuous block +1
+   f : the copy function for the continuous block
+ *)
+let _foreach_continuous_blk a d f =
+  let i = Array.(make (length a) 0) in
+  __foreach_continuous_blk a d 0 i f
+
+
+
 (* ends here *)
