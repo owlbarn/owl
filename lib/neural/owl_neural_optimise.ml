@@ -48,15 +48,6 @@ module Utils = struct
       )
     | x, y         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))
 
-  let print_progress_info e_n b_i b_n l l' =
-    let l, l' = unpack_flt l, unpack_flt l' in
-    let d = l -. l' in
-    let s = if d = 0. then "-" else if d < 0. then "▲" else "▼" in
-    let pid = Unix.getpid () in
-    let e_i = (float_of_int b_i) /. ((float_of_int b_n) /. e_n) in
-    Log.info "#%i | E: %.1f/%g | B: %i/%i | L: %g[%s]" pid e_i e_n b_i b_n l' s
-
-
   let print_train_summary t =
     Printf.printf "--- Training summary\n    Duration: %g s\n" t;
     flush_all ()
@@ -301,6 +292,74 @@ module Stopping = struct
 end
 
 
+module Checkpoint = struct
+
+  type state = {
+    mutable current_batch     : int;     (* current iteration progress in batch *)
+    mutable batches_per_epoch : int;     (* number of batches in each epoch *)
+    mutable epochs            : float;   (* total number of epochs to run *)
+    mutable batches           : int;     (* total batches = batches_per_epoch * epochs *)
+    mutable loss              : t array; (* history of loss value in each iteration *)
+  }
+
+  type typ =
+    | Batch  of int             (* default checkpoint at every specified batch interval *)
+    | Epoch  of float           (* default checkpoint at every specified epoch interval *)
+    | Custom of (state -> unit) (* customised checkpoint called at every batch *)
+    | None                      (* no checkpoint at all, or interval is infinity *)
+
+  let init_state batches_per_epoch epochs =
+    let batches = (float_of_int batches_per_epoch) *. epochs |> int_of_float in
+    {
+      current_batch     = 0;
+      batches_per_epoch = batches_per_epoch;
+      epochs            = epochs;
+      batches           = batches;
+      loss              = Array.make (batches + 1) (F 0.);
+    }
+
+  let default_checkpoint_fun save_fun =
+    let file_name = Printf.sprintf "%s/%s.%i"
+      (Sys.getcwd ()) "model" (Unix.time () |> int_of_float)
+    in
+    Log.info "#%i | checkpoint => %s" (Unix.getpid()) file_name;
+    save_fun file_name
+
+  let print_state_info state =
+    let pid = Unix.getpid () in
+    let b_i = state.current_batch in
+    let b_n = state.batches in
+    let e_n = state.epochs in
+    let e_i = (float_of_int b_i) /. ((float_of_int b_n) /. e_n) in
+    let l0 = state.loss.(b_i - 1) |> unpack_flt in
+    let l1 = state.loss.(b_i) |> unpack_flt in
+    let d = l0 -. l1 in
+    let s = if d = 0. then "-" else if d < 0. then "▲" else "▼" in
+    Log.info "#%i | E: %.1f/%g | B: %i/%i | L: %g[%s]" pid e_i e_n b_i b_n l1 s
+
+  let run typ save_fun current_batch current_loss state =
+    state.current_batch <- current_batch;
+    state.loss.(current_batch) <- current_loss;
+    let interval = match typ with
+      | Batch i  -> i
+      | Epoch i  -> i *. (float_of_int state.batches_per_epoch) |> int_of_float
+      | Custom _ -> 1
+      | None     -> max_int
+    in
+    if (state.current_batch mod interval = 0) && (state.current_batch < state.batches) then
+      match typ with
+      | Custom f -> f state
+      | _        -> default_checkpoint_fun save_fun
+
+  let to_string = function
+    | Batch i  -> Printf.sprintf "per %i batches" i
+    | Epoch i  -> Printf.sprintf "per %g epochs" i
+    | Custom _ -> Printf.sprintf "customised f"
+    | None     -> Printf.sprintf "none"
+
+end
+
+
 module Params = struct
 
   type typ = {
@@ -312,7 +371,7 @@ module Params = struct
     mutable regularisation  : Regularisation.typ;
     mutable momentum        : Momentum.typ;
     mutable clipping        : Clipping.typ;
-    mutable checkpoint      : float;
+    mutable checkpoint      : Checkpoint.typ;
     mutable verbosity       : bool;
   }
 
@@ -325,7 +384,7 @@ module Params = struct
     regularisation = Regularisation.None;
     momentum       = Momentum.None;
     clipping       = Clipping.None;
-    checkpoint     = infinity;
+    checkpoint     = Checkpoint.None;
     verbosity      = true;
   }
 
@@ -352,7 +411,7 @@ module Params = struct
     Printf.sprintf "    regularisation : %s\n" (Regularisation.to_string p.regularisation) ^
     Printf.sprintf "    momentum       : %s\n" (Momentum.to_string p.momentum) ^
     Printf.sprintf "    clipping       : %s\n" (Clipping.to_string p.clipping) ^
-    Printf.sprintf "    checkpoint     : %g\n" (p.checkpoint) ^
+    Printf.sprintf "    checkpoint     : %s\n" (Checkpoint.to_string p.checkpoint) ^
     Printf.sprintf "    verbosity      : %s\n" (if p.verbosity then "true" else "false") ^
     "---"
 
@@ -375,6 +434,7 @@ let train_nn params forward backward update save x y =
   let momt_fun = Momentum.run params.momentum in
   let upch_fun = Learning_Rate.update_ch params.learning_rate in
   let clip_fun = Clipping.run params.clipping in
+  let chkp_fun = Checkpoint.run params.checkpoint in
 
   (* operations in the ith iteration *)
   let iterate i =
@@ -404,19 +464,19 @@ let train_nn params forward backward update save x y =
   let us = ref (Owl_utils.aarr_map (fun _ -> F 0.) _gs) in
   let ch = ref (Owl_utils.aarr_map (fun a -> F 0.) _gs) in
 
-  (* variables used in training process *)
-  let batches_per_epoch = Batch.batches params.batch x |> float_of_int in
-  let batches = (batches_per_epoch *. params.epochs) |> int_of_float in
-  let loss = ref (Array.make (batches + 1) (F 0.)) in
-  let idx = ref 1 in
-  !loss.(0) <- _loss;
+  (* init the state of training process *)
+  let batches_per_epoch = Batch.batches params.batch x in
+  let state = Checkpoint.init_state batches_per_epoch params.epochs in
+  Checkpoint.(state.loss.(0) <- _loss);
 
   (* iterate all batches in each epoch *)
-  for i = 1 to batches do
+  for i = 1 to Checkpoint.(state.batches) do
     let loss', ws, gs' = iterate i in
+    (* checkpoint of the training if necessary *)
+    chkp_fun save i loss' state;
     (* print out the current state of training *)
     if params.verbosity = true then
-      Utils.print_progress_info params.epochs i batches !loss.(!idx - 1) loss';
+      Checkpoint.print_state_info state;
     (* calculate gradient updates *)
     let ps' = Owl_utils.aarr_map2i (
       fun k l w g' ->
@@ -444,26 +504,13 @@ let train_nn params forward backward update save x y =
     if params.momentum <> Momentum.None then us := us';
     gs := gs';
     ps := ps';
-    !loss.(!idx) <- loss';
-    idx := !idx + 1;
-    (* checkpoint current model if necessary *)
-    let _a = params.checkpoint *. batches_per_epoch in
-    let _check = if _a = infinity then max_int else int_of_float _a in
-    match (i mod _check = 0) && (i < batches) with
-    | true  -> (
-        let file_name = Printf.sprintf "%s/%s.%i"
-          (Sys.getcwd ()) "model" (Unix.time () |> int_of_float) in
-        Log.info "#%i | checkpoint => %s" (Unix.getpid()) file_name;
-        save file_name;
-      )
-    | false -> ()
   done;
 
   (* print training summary *)
   if params.verbosity = true then
     Utils.print_train_summary (Unix.time () -. t0);
   (* return loss history *)
-  Array.map unpack_flt !loss
+  Array.map unpack_flt Checkpoint.(state.loss)
 
 
 (* generic training functions for both feedforward and graph module

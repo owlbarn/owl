@@ -21,7 +21,7 @@ let test nn i2w x =
   let wndsz = Dense.Matrix.S.numel x in
   for i = 0 to wndsz - 1 do
     let xt = Dense.Matrix.S.slice [[];[i;i+wndsz-1]] !all_char in
-    let yt = Graph.model nn xt in
+    let yt = Graph.run (Mat xt) nn |> unpack_mat in
     let _, _, next_i = Dense.Matrix.S.max_i yt in
     nxt_char.{0,0} <- float_of_int next_i;
     all_char := Dense.Matrix.S.(!all_char @|| nxt_char)
@@ -31,6 +31,7 @@ let test nn i2w x =
   |> Array.map (Hashtbl.find i2w)
   |> Array.fold_left (fun a c -> a ^ (String.make 1 c)) ""
   |> Printf.printf "generated text: %s\n"
+  |> flush_all
 
 
 let prepare wndsz stepsz =
@@ -95,7 +96,10 @@ let _ =
   let network = make_network wndsz vocabsz in
   Graph.print network;
   let params = Params.config
+    ~checkpoint:(Checkpoint.Custom (fun s ->
+      if Checkpoint.(s.current_batch mod 100 = 0) then
+        test network i2w (Dense.Matrix.S.row x 200)
+    ))
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 1.
   in
-  train ~params network x y |> ignore;
-  test network i2w (Dense.Matrix.S.row x 200)
+  train ~params network x y |> ignore

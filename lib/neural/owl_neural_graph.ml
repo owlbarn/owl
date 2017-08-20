@@ -225,6 +225,7 @@ let _remove_training_nodes nn =
   nn.topo <- topo'
 
 
+(* FIXME: need to do deep copy of a model *)
 let model nn x =
   _remove_training_nodes nn;
   match run (Mat x) nn with

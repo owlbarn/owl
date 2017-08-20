@@ -35,6 +35,7 @@ module Gradient       = Owl_neural_optimise.Gradient
 module Momentum       = Owl_neural_optimise.Momentum
 module Regularisation = Owl_neural_optimise.Regularisation
 module Clipping       = Owl_neural_optimise.Clipping
+module Checkpoint     = Owl_neural_optimise.Checkpoint
 
 
 
