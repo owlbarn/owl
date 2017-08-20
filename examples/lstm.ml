@@ -3,45 +3,34 @@
   The book used is Alice’s Adventures in Wonderland by Lewis Carroll.
  *)
 
-#zoo "ead57c6e9d645fcd1770d61659f4762c"
-
 open Owl
 open Neural
 open Neural.Graph
 open Algodiff.S
 
 
-let check_xy i2w x y =
-  Dense.Matrix.S.(iter2_rows (fun x' y' ->
-    Printf.printf "x: ";
-    iter (fun i -> Printf.printf "%c" (Hashtbl.find i2w i)) x';
-    Printf.printf "  y: ";
-    iter (fun i -> Printf.printf "%c" (Hashtbl.find i2w i)) y';
-    print_endline ""
-  )) x y
-
-
-let test_model nn i2w x y =
-  let model = Graph.model nn in
-  let all_char = ref x in
-  let nxt_char = Dense.Matrix.S.zeros 1 1 in
-  for i = 0 to wndsz - 1 do
-    let xt = Dense.Matrix.S.slice [[];[i;i+wndsz-1]] !all_char in
-    let yt = model xt in
-    let _, next_i = Dense.Matrix.S.max_i yt in
-    nxt_char.{0,0} <- float_of_int next_i;
-    all_char := Dense.Matrix.S.(all_char @|| nxt_char)
-  done;
-  Dense.Matrix.S.to_array all_char
-  |> Array.map (Hashtbl.find i2w)
-  |> Array.fold_left (fun a c -> a ^ (String.make 1 c)) ""
-  |> print_endline
-
-
 let str_to_chars s =
   let l = Array.make (String.length s) ' ' in
   String.iteri (fun i c -> l.(i) <- c) s;
   l
+
+
+let test nn i2w x =
+  let all_char = ref x in
+  let nxt_char = Dense.Matrix.S.zeros 1 1 in
+  let wndsz = Dense.Matrix.S.numel x in
+  for i = 0 to wndsz - 1 do
+    let xt = Dense.Matrix.S.slice [[];[i;i+wndsz-1]] !all_char in
+    let yt = Graph.model nn xt in
+    let _, _, next_i = Dense.Matrix.S.max_i yt in
+    nxt_char.{0,0} <- float_of_int next_i;
+    all_char := Dense.Matrix.S.(!all_char @|| nxt_char)
+  done;
+  Dense.Matrix.S.slice [[];[wndsz;-1]] !all_char
+  |> Dense.Matrix.S.to_array
+  |> Array.map (Hashtbl.find i2w)
+  |> Array.fold_left (fun a c -> a ^ (String.make 1 c)) ""
+  |> Printf.printf "generated text: %s\n"
 
 
 let prepare wndsz stepsz =
@@ -102,13 +91,11 @@ let _ =
   let stepsz = 1 in
   let w2i, i2w, x, y = prepare wndsz stepsz in
   let vocabsz = Hashtbl.length w2i in
-  (* check_xy i2w x y;
-  Printf.printf "[%i,%i]\n" (Dense.Matrix.S.row_num x) (Dense.Matrix.S.col_num x);
-  *)
 
   let network = make_network wndsz vocabsz in
   Graph.print network;
   let params = Params.config
-    ~batch:(Batch.Mini 10) ~learning_rate:(Learning_Rate.Adagrad 0.01) 50
+    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 1.
   in
-  train ~params network x y |> ignore
+  train ~params network x y |> ignore;
+  test network i2w (Dense.Matrix.S.row x 200)
