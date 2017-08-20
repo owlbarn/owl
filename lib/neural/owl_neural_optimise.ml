@@ -334,7 +334,7 @@ module Checkpoint = struct
     let d = l0 -. l1 in
     let s = if d = 0. then "-" else if d < 0. then "▲" else "▼" in
     let t = (Unix.gettimeofday () -. state.start_at) |> Owl_utils.format_time in
-    Log.info "#%i | T: %s | E: %.1f/%g | B: %i/%i | L: %g[%s]"
+    Log.info "#%i | T: %s | E: %.1f/%g | B: %i/%i | L: %.6f[%s]"
       pid t e_i e_n b_i b_n l1 s
 
   let print_summary state =
