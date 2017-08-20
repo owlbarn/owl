@@ -69,7 +69,7 @@ let calc_continuous_blksz axis shp =
   let _ = try
     for l = Array.length shp - 1 downto -1 do
       (* note: d is actually the corresponding dimension of continuous block
-        plue one; also note the loop is down to -1 so the lowest dimension is
+        plus one; also note the loop is down to -1 so the lowest dimension is
         also considered, in which case the whole array is copied. *)
       d := l + 1;
       if l < 0 then failwith "stop";

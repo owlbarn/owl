@@ -329,16 +329,16 @@ let read_file f =
 (* format time period into human-readable format *)
 let format_time t =
   if t < 60. then
-    Printf.sprintf "%2is" (int_of_float t)
+    Printf.sprintf "%02is" (int_of_float t)
   else if t >= 60. && t < 3600. then (
     let m = int_of_float (t /. 60.) in
     let s = (int_of_float t) mod 60 in
-    Printf.sprintf "%2im%2is" m s
+    Printf.sprintf "%02im%02is" m s
   )
   else (
     let h = int_of_float (t /. 3600.) in
     let m = int_of_float (t /. 60.) mod 60 in
-    Printf.sprintf "%ih%2im" h m
+    Printf.sprintf "%ih%02im" h m
   )
 
 
