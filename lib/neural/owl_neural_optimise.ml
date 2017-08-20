@@ -48,10 +48,6 @@ module Utils = struct
       )
     | x, y         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))
 
-  let print_train_summary t =
-    Printf.printf "--- Training summary\n    Duration: %g s\n" t;
-    flush_all ()
-
 end
 
 
@@ -300,6 +296,7 @@ module Checkpoint = struct
     mutable epochs            : float;   (* total number of epochs to run *)
     mutable batches           : int;     (* total batches = batches_per_epoch * epochs *)
     mutable loss              : t array; (* history of loss value in each iteration *)
+    mutable start_at          : float;   (* time when the training starts *)
   }
 
   type typ =
@@ -316,6 +313,7 @@ module Checkpoint = struct
       epochs            = epochs;
       batches           = batches;
       loss              = Array.make (batches + 1) (F 0.);
+      start_at          = Unix.gettimeofday ();
     }
 
   let default_checkpoint_fun save_fun =
@@ -335,7 +333,15 @@ module Checkpoint = struct
     let l1 = state.loss.(b_i) |> unpack_flt in
     let d = l0 -. l1 in
     let s = if d = 0. then "-" else if d < 0. then "▲" else "▼" in
-    Log.info "#%i | E: %.1f/%g | B: %i/%i | L: %g[%s]" pid e_i e_n b_i b_n l1 s
+    let t = (Unix.gettimeofday () -. state.start_at) |> Owl_utils.format_time in
+    Log.info "#%i | T: %s | E: %.1f/%g | B: %i/%i | L: %g[%s]"
+      pid t e_i e_n b_i b_n l1 s
+
+  let print_summary state =
+    (Unix.gettimeofday () -. state.start_at)
+    |> Owl_utils.format_time
+    |> Printf.printf "--- Training summary\n    Duration: %s\n"
+    |> flush_all
 
   let run typ save_fun current_batch current_loss state =
     state.current_batch <- current_batch;
@@ -454,7 +460,6 @@ let train_nn params forward backward update save x y =
   in
 
   (* first iteration to bootstrap the training *)
-  let t0 = Unix.time () in
   let _loss, _ws, _gs = iterate 0 in
   update _ws;
 
@@ -508,7 +513,7 @@ let train_nn params forward backward update save x y =
 
   (* print training summary *)
   if params.verbosity = true then
-    Utils.print_train_summary (Unix.time () -. t0);
+    Checkpoint.print_summary state;
   (* return loss history *)
   Array.map unpack_flt Checkpoint.(state.loss)
 
