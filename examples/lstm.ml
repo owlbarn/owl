@@ -6,9 +6,9 @@
 #zoo "ead57c6e9d645fcd1770d61659f4762c"
 
 open Owl
-open Owl_neural
+open Neural
+open Neural.Graph
 open Algodiff.S
-open Owl_neural_graph
 
 
 let check_xy i2w x y =
@@ -20,17 +20,23 @@ let check_xy i2w x y =
     print_endline ""
   )) x y
 
-(*
+
 let test_model nn i2w x y =
-  let model = model nn in
-  let start_chars = ref x in
+  let model = Graph.model nn in
+  let all_char = ref x in
+  let nxt_char = Dense.Matrix.S.zeros 1 1 in
   for i = 0 to wndsz - 1 do
-    let xt = Dense.Matrix.S.slice [[];[i;i+wndsz-1]] !start_chars in
+    let xt = Dense.Matrix.S.slice [[];[i;i+wndsz-1]] !all_char in
     let yt = model xt in
-    let next_i = Dense.Matrix.S.max_i yt in
-    start_chars := Dense.Matrix.S.
-  done
-*)
+    let _, next_i = Dense.Matrix.S.max_i yt in
+    nxt_char.{0,0} <- float_of_int next_i;
+    all_char := Dense.Matrix.S.(all_char @|| nxt_char)
+  done;
+  Dense.Matrix.S.to_array all_char
+  |> Array.map (Hashtbl.find i2w)
+  |> Array.fold_left (fun a c -> a ^ (String.make 1 c)) ""
+  |> print_endline
+
 
 let str_to_chars s =
   let l = Array.make (String.length s) ' ' in
@@ -103,6 +109,6 @@ let _ =
   let network = make_network wndsz vocabsz in
   Graph.print network;
   let params = Params.config
-    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 100.
+    ~batch:(Batch.Mini 10) ~learning_rate:(Learning_Rate.Adagrad 0.01) 50
   in
   train ~params network x y |> ignore
