@@ -15,11 +15,10 @@ let str_to_chars s =
   l
 
 
-let test nn i2w x =
+let test nn i2w wndsz tlen x =
   let all_char = ref x in
   let nxt_char = Dense.Matrix.S.zeros 1 1 in
-  let wndsz = Dense.Matrix.S.numel x in
-  for i = 0 to wndsz - 1 do
+  for i = 0 to tlen - 1 do
     let xt = Dense.Matrix.S.slice [[];[i;i+wndsz-1]] !all_char in
     let yt = Graph.run (Mat xt) nn |> unpack_mat in
     let _, _, next_i = Dense.Matrix.S.max_i yt in
@@ -88,8 +87,7 @@ let make_network wndsz vocabsz =
 
 
 let _ =
-  let wndsz = 50 in
-  let stepsz = 1 in
+  let wndsz = 50 and stepsz = 1 in
   let w2i, i2w, x, y = prepare wndsz stepsz in
   let vocabsz = Hashtbl.length w2i in
 
@@ -98,8 +96,8 @@ let _ =
   let params = Params.config
     ~checkpoint:(Checkpoint.Custom (fun s ->
       if Checkpoint.(s.current_batch mod 100 = 0) then
-        test network i2w (Dense.Matrix.S.row x 200)
+        test network i2w wndsz 1000 (Dense.Matrix.S.row x 200)
     ))
-    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 1.
+    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 50.
   in
   train ~params network x y |> ignore
