@@ -17,24 +17,6 @@ let str_to_chars s =
   l
 
 
-let test nn i2w wndsz tlen x =
-  let all_char = ref x in
-  let nxt_char = Dense.Matrix.S.zeros 1 1 in
-  for i = 0 to tlen - 1 do
-    let xt = Dense.Matrix.S.slice [[];[i;i+wndsz-1]] !all_char in
-    let yt = Graph.run (Mat xt) nn |> unpack_mat in
-    let _, _, next_i = Dense.Matrix.S.max_i yt in
-    nxt_char.{0,0} <- float_of_int next_i;
-    all_char := Dense.Matrix.S.(!all_char @|| nxt_char)
-  done;
-  Dense.Matrix.S.slice [[];[wndsz;-1]] !all_char
-  |> Dense.Matrix.S.to_array
-  |> Array.map (Hashtbl.find i2w)
-  |> Array.fold_left (fun a c -> a ^ (String.make 1 c)) ""
-  |> Printf.printf "generated text: %s\n"
-  |> flush_all
-
-
 let prepare wndsz stepsz =
   Log.info "load file ...";
   let txt = load_file "217ef87bc36845c4e78e398d52bc4c5b/wonderland.txt" in
@@ -87,7 +69,25 @@ let make_network wndsz vocabsz =
   |> get_network
 
 
-let _ =
+let test nn i2w wndsz tlen x =
+  let all_char = ref x in
+  let nxt_char = Dense.Matrix.S.zeros 1 1 in
+  for i = 0 to tlen - 1 do
+    let xt = Dense.Matrix.S.slice [[];[i;i+wndsz-1]] !all_char in
+    let yt = Graph.run (Mat xt) nn |> unpack_mat in
+    let _, _, next_i = Dense.Matrix.S.max_i yt in
+    nxt_char.{0,0} <- float_of_int next_i;
+    all_char := Dense.Matrix.S.(!all_char @|| nxt_char)
+  done;
+  Dense.Matrix.S.slice [[];[wndsz;-1]] !all_char
+  |> Dense.Matrix.S.to_array
+  |> Array.map (Hashtbl.find i2w)
+  |> Array.fold_left (fun a c -> a ^ (String.make 1 c)) ""
+  |> Printf.printf "generated text: %s\n"
+  |> flush_all
+
+
+let train () =
   let wndsz = 50 and stepsz = 1 in
   let w2i, i2w, x, y = prepare wndsz stepsz in
   let vocabsz = Hashtbl.length w2i in
@@ -102,3 +102,6 @@ let _ =
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) 50.
   in
   train ~params network x y |> ignore
+
+
+let _ = train ()
