@@ -1,7 +1,9 @@
 #!/usr/bin/env owl
 (* Text Generation using LSTM.
-  The book used is Alice’s Adventures in Wonderland by Lewis Carroll.
+ * The book used is Alice’s Adventures in Wonderland by Lewis Carroll.
  *)
+
+#zoo "217ef87bc36845c4e78e398d52bc4c5b"
 
 open Owl
 open Neural
@@ -35,7 +37,7 @@ let test nn i2w wndsz tlen x =
 
 let prepare wndsz stepsz =
   Log.info "load file ...";
-  let txt = load_file "ead57c6e9d645fcd1770d61659f4762c/wonderland.txt" in
+  let txt = load_file "217ef87bc36845c4e78e398d52bc4c5b/wonderland.txt" in
   let chars = txt |> String.lowercase_ascii |> str_to_chars in
 
   Log.info "build vocabulary ...";
@@ -55,7 +57,7 @@ let prepare wndsz stepsz =
   Log.info "tokenise ...";
   let tokens = Array.map (Hashtbl.find w2i) chars in
 
-  Log.info "make x matrix ...";
+  Log.info "make x matrix (indices) ...";
   let m = (Array.length chars - wndsz) / stepsz in
   let x = Dense.Matrix.S.zeros m wndsz in
   for i = 0 to m - 1 do
@@ -73,7 +75,6 @@ let prepare wndsz stepsz =
 
   Log.info "chars:%i, symbols:%i, wndsz:%i, stepsz:%i"
     (String.length txt) (Hashtbl.length w2i) wndsz stepsz;
-  (* return vocabulary and data *)
   w2i, i2w, x, y
 
 

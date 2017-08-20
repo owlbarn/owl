@@ -1,6 +1,6 @@
 #!/usr/bin/env owl
 (* This example demonstrates how to build a VGG-like convolutional neural
-  network for CIFAR10 dataset.
+ * network for CIFAR10 dataset.
  *)
 
 open Owl
