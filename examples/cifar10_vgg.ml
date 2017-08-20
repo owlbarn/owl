@@ -30,7 +30,7 @@ let train () =
   Graph.print network;
   let params = Params.config
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01)
-    ~checkpoint:(Checkpoint.Batch 10) 10.
+    ~checkpoint:(Checkpoint.Epoch 1.) 10.
   in
   Graph.train_cnn ~params network x y
 
