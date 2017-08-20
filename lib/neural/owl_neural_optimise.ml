@@ -48,6 +48,19 @@ module Utils = struct
       )
     | x, y         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))
 
+  let print_progress_info e_n b_i b_n l l' =
+    let l, l' = unpack_flt l, unpack_flt l' in
+    let d = l -. l' in
+    let s = if d = 0. then "-" else if d < 0. then "▲" else "▼" in
+    let pid = Unix.getpid () in
+    let e_i = (float_of_int b_i) /. ((float_of_int b_n) /. e_n) in
+    Log.info "#%i | E: %.1f/%g | B: %i/%i | L: %g[%s]" pid e_i e_n b_i b_n l' s
+
+
+  let print_train_summary t =
+    Printf.printf "--- Training summary\n    Duration: %g s\n" t;
+    flush_all ()
+
 end
 
 
@@ -346,22 +359,6 @@ module Params = struct
 end
 
 
-(* helper functions *)
-
-let _print_info e_n b_i b_n l l' =
-  let l, l' = unpack_flt l, unpack_flt l' in
-  let d = l -. l' in
-  let s = if d = 0. then "-" else if d < 0. then "▲" else "▼" in
-  let pid = Unix.getpid () in
-  let e_i = (float_of_int b_i) /. ((float_of_int b_n) /. e_n) in
-  Log.info "#%i | E: %.1f/%g | B: %i/%i | L: %g[%s]" pid e_i e_n b_i b_n l' s
-
-
-let _print_summary t =
-  Printf.printf "--- Training summary\n    Duration: %g s\n" t;
-  flush_all ()
-
-
 (* core training functions for feedforward networks *)
 
 let train_nn params forward backward update save x y =
@@ -419,7 +416,7 @@ let train_nn params forward backward update save x y =
     let loss', ws, gs' = iterate i in
     (* print out the current state of training *)
     if params.verbosity = true then
-      _print_info params.epochs i batches !loss.(!idx - 1) loss';
+      Utils.print_progress_info params.epochs i batches !loss.(!idx - 1) loss';
     (* calculate gradient updates *)
     let ps' = Owl_utils.aarr_map2i (
       fun k l w g' ->
@@ -464,7 +461,7 @@ let train_nn params forward backward update save x y =
 
   (* print training summary *)
   if params.verbosity = true then
-    _print_summary (Unix.time () -. t0);
+    Utils.print_train_summary (Unix.time () -. t0);
   (* return loss history *)
   Array.map unpack_flt !loss
 
