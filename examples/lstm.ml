@@ -38,7 +38,7 @@ let str_to_chars s =
   l
 
 
-let preprocess wndsz stepsz =
+let prepare wndsz stepsz =
   Log.info "load file ...";
   let txt = load_file "ead57c6e9d645fcd1770d61659f4762c/wonderland.txt" in
   let chars = txt |> String.lowercase_ascii |> str_to_chars in
@@ -46,9 +46,7 @@ let preprocess wndsz stepsz =
   Log.info "build vocabulary ...";
   let h = Hashtbl.create 1024 in
   Array.iter (fun c ->
-    if Hashtbl.mem h c = false then (
-      Hashtbl.add h c c;
-    )
+    if Hashtbl.mem h c = false then Hashtbl.add h c c
   ) chars;
   let w2i = Hashtbl.create 1024 in
   let i2w = Hashtbl.create 1024 in
@@ -96,7 +94,7 @@ let make_network wndsz vocabsz =
 let _ =
   let wndsz = 50 in
   let stepsz = 1 in
-  let w2i, i2w, x, y = preprocess wndsz stepsz in
+  let w2i, i2w, x, y = prepare wndsz stepsz in
   let vocabsz = Hashtbl.length w2i in
   (* check_xy i2w x y;
   Printf.printf "[%i,%i]\n" (Dense.Matrix.S.row_num x) (Dense.Matrix.S.col_num x);

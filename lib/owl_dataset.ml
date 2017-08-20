@@ -64,6 +64,21 @@ let print_mnist_image x =
     print_endline "";
   )
 
+(* similar to load_mnist_train_data but returns [x] as [*,28,28,1] ndarray *)
+let load_mnist_train_data_arr () =
+  let x, label, y = load_mnist_train_data () in
+  let m = Owl_dense_matrix.S.row_num x in
+  let x = Owl_dense_matrix.S.to_ndarray x in
+  let x = Owl_dense_ndarray.S.reshape x [|m;28;28;1|] in
+  x, label, y
+
+let load_mnist_test_data_arr () =
+  let x, label, y = load_mnist_test_data () in
+  let m = Owl_dense_matrix.S.row_num x in
+  let x = Owl_dense_matrix.S.to_ndarray x in
+  let x = Owl_dense_ndarray.S.reshape x [|m;28;28;1|] in
+  x, label, y
+
 (* load cifar train data, there are five batches in total. The loaded data is a
   10000 * 3072 matrix. Each row represents a 32 x 32 image of three colour
   channels, unravelled into a row vector. The labels are also returned. *)

@@ -19,11 +19,7 @@ let make_network input_shape =
 
 
 let train () =
-  let x, _, y = Dataset.load_mnist_train_data () in
-  let m = Dense.Matrix.S.row_num x in
-  let x = Dense.Matrix.S.to_ndarray x in
-  let x = Dense.Ndarray.S.reshape x [|m;28;28;1|] in
-
+  let x, _, y = Dataset.load_mnist_train_data_arr () in
   let network = make_network [|28;28;1|] in
   Graph.print network;
   let params = Params.config

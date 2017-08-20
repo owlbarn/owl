@@ -28,7 +28,6 @@ let train () =
   let x, _, y = Dataset.load_cifar_train_data 1 in
   let network = make_network [|32;32;3|] in
   Graph.print network;
-
   let params = Params.config
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.01) ~checkpoint:5. 10.
   in
