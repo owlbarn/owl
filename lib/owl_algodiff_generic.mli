@@ -5,6 +5,8 @@
 
 (** Algodiff: algorithmic differentiation module *)
 
+open Owl_types
+
 (** To use Make functor in Algodiff, the passed in module needs to implement the
   following functions to support necessary mathematical functions and etc. *)
 
@@ -42,9 +44,9 @@ module type MatrixSig = sig
 
   val row : mat -> int -> mat
 
-  val slice : int list list -> mat -> mat
+  val get_slice : index list -> mat -> mat
 
-  val set_slice : int list list -> mat -> mat -> unit
+  val set_slice : index list -> mat -> mat -> unit
 
   val clone : mat -> mat
 
@@ -225,9 +227,9 @@ module type NdarraySig = sig
 
   val numel : arr -> int
 
-  val slice : int list list -> arr -> arr
+  val get_slice : index list -> arr -> arr
 
-  val set_slice : int list list -> arr -> arr -> unit
+  val set_slice : index list -> arr -> arr -> unit
 
   val clone : arr -> arr
 
@@ -552,9 +554,9 @@ module Make
 
     val arr_to_mat : t -> t
 
-    val get_slice: int list list -> t -> t
+    val get_slice: index list -> t -> t
 
-    val set_slice : int list list -> t -> t -> t
+    val set_slice : index list -> t -> t -> t
 
   end
 
@@ -604,7 +606,7 @@ module Make
     val clip_by_l2norm : t -> t -> t
 
     val iteri : (int -> int -> elt -> unit) -> t -> unit
-    
+
     val mapi : (int -> int -> elt -> elt) -> t -> t
 
     val iter2_rows : (t -> t -> unit) -> t -> t -> unit

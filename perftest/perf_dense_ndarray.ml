@@ -2,6 +2,8 @@
 #zoo "5ca2fdebb0ccb9ecee6f4331972a9087"
 (* Performance test of Owl_dense_ndarray module *)
 
+open Owl
+
 module M = Owl_dense_ndarray_generic
 
 let test_op s c op = Perf_common.test_op s c op
@@ -18,9 +20,9 @@ let _ =
   test_op "empty             " c (fun () -> M.empty Bigarray.Float64 [|m;n;o|]);
   test_op "create            " c (fun () -> M.create Bigarray.Float64 [|m;n;o|] 1.);
   test_op "slice_left        " c (fun () -> M.slice_left x [|0|]);
-  test_op "slice (0,*.*)     " c (fun () -> M.slice [ [0]; []; [] ] x);
-  test_op "slice (*,0.*)     " c (fun () -> M.slice [ []; [0]; [] ] x);
-  test_op "slice (*,*.0)     " c (fun () -> M.slice [ []; []; [0] ] x);
+  test_op "get_slice (0,*.*) " c (fun () -> M.get_slice [ R[0]; R[]; R[] ] x);
+  test_op "get_slice (*,0.*) " c (fun () -> M.get_slice [ R[]; R[0]; R[] ] x);
+  test_op "get_slice (*,*.0) " c (fun () -> M.get_slice [ R[]; R[]; R[0] ] x);
   test_op "reshape           " c (fun () -> M.reshape x [|o;n;m|]);
   test_op "flatten           " c (fun () -> M.flatten x);
   test_op "min               " c (fun () -> M.min x);

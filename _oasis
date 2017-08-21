@@ -79,7 +79,6 @@ Library owl
                     neural/Owl_neural_optimise,
                     neural/Owl_neural_parallel,
                     ### Experimental ###
-                    Owl_slicing_ext,
                     ext/Owl_ext,
                     ext/Owl_ext_types,
                     ext/Owl_ext_lifts,

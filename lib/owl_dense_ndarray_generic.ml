@@ -3,12 +3,17 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Owl_types
+
 open Bigarray
+
 open Owl_dense_common
+
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
+
 
 (* Basic functions from Genarray module *)
 
@@ -1292,40 +1297,24 @@ let fold ?axis f a x =
   iter ?axis (fun y -> c := (f !c y)) x;
   !c
 
-let slice axis x = Owl_slicing.slice_list_typ axis x
+let get_slice axis x = Owl_slicing.get_slice_list_typ axis x
 
 let set_slice axis x y = Owl_slicing.set_slice_list_typ axis x y
 
-(* FIXME
-let rec _iteri_slice index axis f x =
+let get_slice_simple axis x = Owl_slicing.get_slice_simple axis x
+
+let set_slice_simple axis x y = Owl_slicing.set_slice_simple axis x y
+
+let rec _iteri_slice index slice_def axis f x =
   if Array.length axis = 0 then (
-    f index (slice index x)
-  )
-  else (
-    let s = shape x in
-    for i = 0 to s.(axis.(0)) - 1 do
-      index.(axis.(0)) <- Some i;
-      _iteri_slice index (Array.sub axis 1 (Array.length axis - 1)) f x
-    done
-  )
-
-let iteri_slice axis f x =
-  let index = Array.make (num_dims x) None in
-  _iteri_slice index axis f x
-
-let iter_slice axis f x = iteri_slice axis (fun _ y -> f y) x
-
-*)
-
-let rec _iteri_slice index axis f x =
-  if Array.length axis = 0 then (
-    f index (Owl_slicing.slice_array_typ index x)
+    f index (Owl_slicing.get_slice_array_typ slice_def x)
   )
   else (
     let s = shape x in
     for i = 0 to s.(axis.(0)) - 1 do
       index.(axis.(0)) <- [|i|];
-      _iteri_slice index (Array.sub axis 1 (Array.length axis - 1)) f x
+      slice_def.(axis.(0)) <- R_ [|i|];
+      _iteri_slice index slice_def (Array.sub axis 1 (Array.length axis - 1)) f x
     done
   )
 
@@ -1333,14 +1322,15 @@ let iteri_slice axis f x =
   if Array.length axis > num_dims x then
     failwith "iteri_slice: invalid indices";
   let index = Array.make (num_dims x) [||] in
-  _iteri_slice index axis f x
+  let slice_def = Array.make (num_dims x) (R_ [||]) in
+  _iteri_slice index slice_def axis f x
 
 let iter_slice axis f x = iteri_slice axis (fun _ y -> f y) x
 
 let flip ?(axis=0) x =
-  let a = Array.init (num_dims x) (fun _ -> [||]) in
-  a.(axis) <- [|-1;0|];
-  Owl_slicing.slice_array_typ a x
+  let a = Array.init (num_dims x) (fun _ -> R_ [||]) in
+  a.(axis) <- R_ [|-1;0|];
+  Owl_slicing.get_slice_array_typ a x
 
 
 let rotate x degree =
@@ -2844,10 +2834,10 @@ let split ?(axis=0) parts x =
 
   let _pos = ref 0 in
   let slices = Array.map (fun d ->
-    let s_def = Array.make x_dim [||] in
-    s_def.(axis) <- [|!_pos; !_pos + d - 1|];
+    let s_def = Array.make x_dim (R_ [||]) in
+    s_def.(axis) <- R_ [|!_pos; !_pos + d - 1|];
     _pos := !_pos + d;
-    Owl_slicing.slice_array_typ s_def x
+    Owl_slicing.get_slice_array_typ s_def x
   ) parts
   in
   slices
@@ -2857,10 +2847,10 @@ let split ?(axis=0) parts x =
   but we should generalise reduce_op.
  *)
 let sum_ ?(axis=0) x =
-  let i = Array.make (num_dims x) [||] in
-  i.(axis) <- [|-1|];
+  let i = Array.make (num_dims x) (R_ [||]) in
+  i.(axis) <- R_ [|-1|];
   let y = cumsum ~axis x in
-  Owl_slicing.slice_array_typ i y
+  Owl_slicing.get_slice_array_typ i y
 
 
 (* TODO *)

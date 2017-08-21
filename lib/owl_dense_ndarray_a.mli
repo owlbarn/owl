@@ -58,6 +58,10 @@ val get_slice : index list -> 'a arr -> 'a arr
 
 val set_slice : index list -> 'a arr -> 'a arr -> unit
 
+val get_slice_simple : int list list -> 'a arr -> 'a arr
+
+val set_slice_simple : int list list -> 'a arr -> 'a arr -> unit
+
 val fill : 'a arr -> 'a -> unit
 
 val copy : 'a arr -> 'a arr -> unit

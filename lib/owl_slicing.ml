@@ -3,9 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_dense_common
+open Owl_types
 
-type slice = int list list
+open Owl_dense_common
 
 
 (* local functions, since we will not use ndarray_generic module *)
@@ -16,51 +16,67 @@ let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
 
 
 (* check the validity of the slice definition, also re-format slice definition,
-  axis: slice definition;
-  shp: shape of the original ndarray;
+   axis: slice definition;
+   shp: shape of the original ndarray;
  *)
 let check_slice_definition axis shp =
-  let error_msg = "check_slice_definition: error" in
   let axis_len = Array.length axis in
   let shp_len = Array.length shp in
-  if axis_len > shp_len then failwith error_msg;
+  assert (axis_len <= shp_len);
   (* add missing definition on higher dimensions *)
   let axis =
     if axis_len < shp_len then
-      let suffix = Array.make (shp_len - axis_len) [||] in
+      let suffix = Array.make (shp_len - axis_len) (R_ [||]) in
       Array.append axis suffix
     else axis
   in
-  Array.map2 (fun x n ->
-    match Array.length x with
-    | 0 -> [|0;n-1;1|]
-    | 1 -> (
-        let a = if x.(0) >= 0 then x.(0) else n + x.(0) in
-        if a >= n then failwith error_msg;
-        [|a;a;1|]
+  (* re-format slice definition, note I_ will be replaced with L_ *)
+  Array.map2 (fun i n ->
+    match i with
+    | I_ x -> (
+        assert (x < n);
+        if n = 1 then R_ [|0;0;1|] else L_ [|x|]
       )
-    | 2 -> (
-        let a = if x.(0) >= 0 then x.(0) else n + x.(0) in
-        let b = if x.(1) >= 0 then x.(1) else n + x.(1) in
-        let c = if a <= b then 1 else -1 in
-        if a >= n || b >= n then failwith error_msg;
-        [|a;b;c|]
+    | L_ x -> (
+        let is_cont = ref true in
+        if Array.length x <> n then is_cont := false;
+        Array.iteri (fun i j ->
+          assert (j < n);
+          if i <> j then is_cont := false
+        ) x;
+        if !is_cont = true then R_ [|0;n-1;1|] else L_ x
       )
-    | 3 -> (
-        let a = if x.(0) >= 0 then x.(0) else n + x.(0) in
-        let b = if x.(1) >= 0 then x.(1) else n + x.(1) in
-        let c = x.(2) in
-        if a >= n || b >= n || c = 0 then failwith error_msg;
-        if (a < b && c < 0) || (a > b && c > 0) then failwith error_msg;
-        [|a;b;c|]
+    | R_ x -> (
+        match Array.length x with
+        | 0 -> R_ [|0;n-1;1|]
+        | 1 -> (
+            let a = if x.(0) >= 0 then x.(0) else n + x.(0) in
+            assert (a < n);
+            if n = 1 then R_ [|0;0;1|] else L_ [|a|]
+          )
+        | 2 -> (
+            let a = if x.(0) >= 0 then x.(0) else n + x.(0) in
+            let b = if x.(1) >= 0 then x.(1) else n + x.(1) in
+            let c = if a <= b then 1 else -1 in
+            assert (not (a >= n || b >= n));
+            R_ [|a;b;c|]
+          )
+        | 3 -> (
+            let a = if x.(0) >= 0 then x.(0) else n + x.(0) in
+            let b = if x.(1) >= 0 then x.(1) else n + x.(1) in
+            let c = x.(2) in
+            assert (not (a >= n || b >= n || c = 0));
+            assert (not ((a < b && c < 0) || (a > b && c > 0)));
+            R_ [|a;b;c|]
+          )
+        | _ -> failwith "check_slice_definition: error"
       )
-    | _ -> failwith error_msg
   ) axis shp
 
 
 (* calculate the minimum continuous block size and its corresponding dimension
-  axis: slice definition;
-  shp: shape of the original ndarray;
+   axis: slice definition;
+   shp: shape of the original ndarray;
  *)
 let calc_continuous_blksz axis shp =
   let slice_sz = _calc_slice shp in
@@ -69,81 +85,88 @@ let calc_continuous_blksz axis shp =
   let _ = try
     for l = Array.length shp - 1 downto -1 do
       (* note: d is actually the corresponding dimension of continuous block
-        plus one; also note the loop is down to -1 so the lowest dimension is
-        also considered, in which case the whole array is copied. *)
+         plus one; also note the loop is down to -1 so the lowest dimension is
+         also considered, in which case the whole array is copied. *)
       d := l + 1;
       if l < 0 then failwith "stop";
-      let x = axis.(l) in
-      if x.(0) = 0 && x.(1) = shp.(l) - 1 && x.(2) = 1 then
-        ssz := slice_sz.(l)
-      else failwith "stop"
+      match axis.(l) with
+      | I_ x -> failwith "stop" (* never reached *)
+      | L_ x -> failwith "stop"
+      | R_ x -> (
+          if x.(0) = 0 && x.(1) = shp.(l) - 1 && x.(2) = 1 then
+            ssz := slice_sz.(l)
+          else failwith "stop"
+        )
     done
   with exn -> ()
   in !d, !ssz
 
 
 (* calculat the shape according the slice definition
-  axis: slice definition
+   axis: slice definition
  *)
 let calc_slice_shape axis =
-  Array.map (fun x ->
-    let a, b, c = x.(0), x.(1), x.(2) in
-    Pervasives.(abs ((b - a) / c)) + 1
+  Array.map (function
+    | I_ x -> 1 (* never reached *)
+    | L_ x -> Array.length x
+    | R_ x ->
+        let a, b, c = x.(0), x.(1), x.(2) in
+        Pervasives.(abs ((b - a) / c)) + 1
   ) axis
 
 
 (* recursively copy the continuous block, stop at its corresponding dimension d
+   a: slice definition
    d: the corresponding dimension of continuous block + 1
    j: current dimension index
    i: current index of the data for copying
-   l: lower bound of the index i
-   h: higher bound of the index i
    f: copy function of the continuous block
  *)
-let rec __foreach_continuous_blk d j i l h s f =
+let rec __foreach_continuous_blk a d j i f =
   if j = d then f i
   else (
-    let k = ref l.(j) in
-    if s.(j) > 0 then (
-      while !k <= h.(j)  do
-        i.(j) <- !k;
-        k := !k + s.(j);
-        __foreach_continuous_blk d (j + 1) i l h s f
-      done
-    )
-    else (
-      while !k >= h.(j)  do
-        i.(j) <- !k;
-        k := !k + s.(j);
-        __foreach_continuous_blk d (j + 1) i l h s f
-      done
-    )
+    match a.(j) with
+    | I_ x -> ( (* never reache here *) )
+    | L_ x -> (
+        Array.iter (fun k ->
+          i.(j) <- k;
+          __foreach_continuous_blk a d (j + 1) i f
+        ) x
+      )
+    | R_ x -> (
+        let k = ref x.(0) in
+        if x.(2) > 0 then (
+          while !k <= x.(1)  do
+            i.(j) <- !k;
+            k := !k + x.(2);
+            __foreach_continuous_blk a d (j + 1) i f
+          done
+        )
+        else (
+          while !k >= x.(1)  do
+            i.(j) <- !k;
+            k := !k + x.(2);
+            __foreach_continuous_blk a d (j + 1) i f
+          done
+        )
+      )
   )
 
 
-(* d0: the total dimension of the ndarray;
-   d1: the corresponding dimension of the continuous block +1
-   axis: slice definition
-   f: the copy function for the continuous block
+(* a : slice definition, same rank as original ndarray
+   d : the corresponding dimension of the continuous block +1
+   f : the copy function for the continuous block
  *)
-let _foreach_continuous_blk d0 d1 axis f =
-  let i = Array.make d0 0 in
-  let l = Array.make d0 0 in
-  let h = Array.make d0 0 in
-  let s = Array.make d0 0 in
-  Array.iteri (fun j a ->
-    l.(j) <- a.(0);
-    h.(j) <- a.(1);
-    s.(j) <- a.(2);
-  ) axis;
-  __foreach_continuous_blk d1 0 i l h s f
+let _foreach_continuous_blk a d f =
+  let i = Array.(make (length a) 0) in
+  __foreach_continuous_blk a d 0 i f
 
 
 (* core slice function
-  axis: int array array, slice definition, format [start;stop;step]
-  x: ndarray
+   axis: index array, slice definition, e.g., format [start;stop;step]
+   x: ndarray
  *)
-let slice_array_typ axis x =
+let get_slice_array_typ axis x =
   (* check axis is within boundary then re-format *)
   let s0 = shape x in
   let axis = check_slice_definition axis s0 in
@@ -160,9 +183,10 @@ let slice_array_typ axis x =
   let _cp_op = _owl_copy (kind x) in
   let ofsy_i = ref 0 in
   (* two copying strategies based on the size of the minimum continuous block.
-    also, consider the special case wherein the highest-dimension equals to 1.
+     also, consider the special case wherein the highest-dimension equals to 1.
    *)
-  if cb > 1 || s0.(d0 - 1) = 1 then (
+  let high_dim_list = (function L_ _ -> true | _ -> false) axis.(d0 - 1) in
+  if cb > 1 || s0.(d0 - 1) = 1 || high_dim_list = true then (
     (* yay, there are at least some continuous blocks *)
     let b = cb in
     let f = fun i -> (
@@ -173,7 +197,7 @@ let slice_array_typ axis x =
     )
     in
     (* start copying blocks *)
-    _foreach_continuous_blk d0 d1 axis f;
+    _foreach_continuous_blk axis d1 f;
     (* reshape the ndarray *)
     let z = Bigarray.genarray_of_array1 y' in
     let z = Bigarray.reshape z s1 in
@@ -182,16 +206,19 @@ let slice_array_typ axis x =
   else (
     (* copy happens at the highest dimension, no continuous block *)
     let b = s1.(d0 - 1) in
-    let c = axis.(d0 - 1).(2) in
+    (* do the math yourself, [dd] is actually reduced from
+       s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
+    *)
+    let c, dd =
+      match axis.(d0 - 1) with
+      | R_ i -> (
+          if i.(2) > 0 then i.(2), i.(0)
+          else i.(2), i.(0) + (b - 1) * i.(2)
+        )
+      | _    -> failwith "owl_slicing:slice_array_typ"
+    in
     let cx = if c > 0 then c else -c in
     let cy = if c > 0 then 1 else -1 in
-    let dd =
-      if c > 0 then axis.(d0 - 1).(0)
-      (* do the math yourself, it is actually reduced from
-        s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
-      *)
-      else axis.(d0 - 1).(0) + (b - 1) * c
-    in
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd + dd in
       let ofsy = !ofsy_i * b in
@@ -200,16 +227,12 @@ let slice_array_typ axis x =
     )
     in
     (* start copying blocks *)
-    _foreach_continuous_blk d0 (d1 - 1) axis f;
+    _foreach_continuous_blk axis (d1 - 1) f;
     (* reshape the ndarray *)
     let z = Bigarray.genarray_of_array1 y' in
     let z = Bigarray.reshape z s1 in
     z
   )
-
-
-(* same as slice_array_typ function but take list type as slice definition *)
-let slice_list_typ axis x = slice_array_typ (Owl_utils.llss2aarr axis) x
 
 
 (* set slice in [x] according to [y] *)
@@ -230,9 +253,10 @@ let set_slice_array_typ axis x y =
   let _cp_op = _owl_copy (kind x) in
   let ofsy_i = ref 0 in
   (* two copying strategies based on the size of the minimum continuous block.
-    also, consider the special case wherein the highest-dimension equals to 1.
+     also, consider the special case wherein the highest-dimension equals to 1.
    *)
-  if cb > 1 || s0.(d0 - 1) = 1 then (
+  let high_dim_list = (function L_ _ -> true | _ -> false) axis.(d0 - 1) in
+  if cb > 1 || s0.(d0 - 1) = 1 || high_dim_list = true then (
     (* yay, there are at least some continuous blocks *)
     let b = cb in
     let f = fun i -> (
@@ -243,21 +267,24 @@ let set_slice_array_typ axis x y =
     )
     in
     (* start copying blocks *)
-    _foreach_continuous_blk d0 d1 axis f
+    _foreach_continuous_blk axis d1 f
   )
   else (
     (* copy happens at the highest dimension, no continuous block *)
     let b = s1.(d0 - 1) in
-    let c = axis.(d0 - 1).(2) in
+    (* do the math yourself, [dd] is actually reduced from
+       s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
+    *)
+    let c, dd =
+      match axis.(d0 - 1) with
+      | R_ i -> (
+          if i.(2) > 0 then i.(2), i.(0)
+          else i.(2), i.(0) + (b - 1) * i.(2)
+        )
+      | _    -> failwith "owl_slicing:set_slice_array_typ"
+    in
     let cx = if c > 0 then c else -c in
     let cy = if c > 0 then 1 else -1 in
-    let dd =
-      if c > 0 then axis.(d0 - 1).(0)
-      (* do the math yourself, it is actually reduced from
-        s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
-      *)
-      else axis.(d0 - 1).(0) + (b - 1) * c
-    in
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd + dd in
       let ofsy = !ofsy_i * b in
@@ -266,12 +293,38 @@ let set_slice_array_typ axis x y =
     )
     in
     (* start copying blocks *)
-    _foreach_continuous_blk d0 (d1 - 1) axis f
+    _foreach_continuous_blk axis (d1 - 1) f
   )
 
 
+(* convert from a list of slice definition to array for internal use *)
+let sdlist_to_sdarray axis =
+  List.map (function
+    | I i -> I_ i
+    | L i -> L_ (Array.of_list i)
+    | R i -> R_ (Array.of_list i)
+  ) axis
+  |> Array.of_list
+
+
+(* same as slice_array_typ function but take list type as slice definition *)
+let get_slice_list_typ axis x = get_slice_array_typ (sdlist_to_sdarray axis) x
+
+
 (* same as set_slice_array_typ function but take list type as slice definition *)
-let set_slice_list_typ axis x y = set_slice_array_typ (Owl_utils.llss2aarr axis) x y
+let set_slice_list_typ axis x y = set_slice_array_typ (sdlist_to_sdarray axis) x y
+
+
+(* simplified get_slice function which accept list of list as slice definition *)
+let get_slice_simple axis x =
+  let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
+  get_slice_array_typ axis x
+
+
+(* simplified set_slice function which accept list of list as slice definition *)
+let set_slice_simple axis x y =
+  let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
+  set_slice_array_typ axis x y
 
 
 

@@ -5,7 +5,10 @@
 
 (** Neural network: Neuron definitions *)
 
+open Owl_types
+
 open Owl_algodiff.S
+
 type t = Owl_algodiff.S.t
 
 
@@ -431,7 +434,7 @@ module Recurrent = struct
     l.h <- Mat.zeros s.(0) l.hiddens;
     let act x = Activation.run_activation x l.act in
     for i = 0 to l.in_shape.(0) - 1 do
-      let t = Maths.get_slice [[];[i];[]] x in
+      let t = Maths.get_slice [R[];R[i];R[]] x in
       let t = Maths.(reshape t [|s.(0);s.(2)|] |> arr_to_mat) in
       (* recurrent logic, calculate the hidden state *)
       l.h <- act Maths.((l.h *@ l.whh) + (t *@ l.wxh) + l.bh);
@@ -617,7 +620,7 @@ module LSTM = struct
     l.h <- Mat.zeros s.(0) l.out_shape.(0);
     l.c <- Mat.zeros s.(0) l.out_shape.(0);
     for i = 0 to l.in_shape.(0) - 1 do
-      let t = Maths.get_slice [[];[i];[]] x in
+      let t = Maths.get_slice [R[];R[i];R[]] x in
       let t = Maths.(reshape t [|s.(0);s.(2)|] |> arr_to_mat) in
       (* lstm logic, calculate the output *)
       let i  = Maths.(((t *@ l.wxi) + (l.h *@ l.whi) + l.bi) |> sigmoid) in
@@ -784,7 +787,7 @@ module GRU = struct
     let s = shape x in
     l.h <- Mat.zeros s.(0) l.out_shape.(0);
     for i = 0 to l.in_shape.(0) - 1 do
-      let t = Maths.get_slice [[];[i];[]] x in
+      let t = Maths.get_slice [R[];R[i];R[]] x in
       let t = Maths.(reshape t [|s.(0);s.(2)|] |> arr_to_mat) in
       (* gru logic, calculate the output *)
       let z  = Maths.(((t *@ l.wxz) + (l.h *@ l.whz) + l.bz) |> sigmoid) in

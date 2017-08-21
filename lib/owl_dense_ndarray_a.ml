@@ -579,12 +579,12 @@ let pad v d x =
    module, refer to Owl_slicing module for more information
  *)
 let get_slice axis x =
-  let axis = Owl_slicing_ext.sdlist_to_sdarray axis in
+  let axis = Owl_slicing.sdlist_to_sdarray axis in
   (* check axis is within boundary then re-format *)
   let s0 = shape x in
-  let axis = Owl_slicing_ext.check_slice_definition axis s0 in
+  let axis = Owl_slicing.check_slice_definition axis s0 in
   (* calculate the new shape for slice *)
-  let s1 = Owl_slicing_ext.calc_slice_shape axis in
+  let s1 = Owl_slicing.calc_slice_shape axis in
   let y_data = Array.make (_calc_numel_from_shape s1) x.data.(0) in
   let y = make_arr s1 (_calc_stride s1) y_data in
   (* transform into 1d array *)
@@ -592,7 +592,7 @@ let get_slice axis x =
   let y' = y.data in
   (* prepare function of copying blocks *)
   let d0 = Array.length s1 in
-  let d1, cb = Owl_slicing_ext.calc_continuous_blksz axis s0 in
+  let d1, cb = Owl_slicing.calc_continuous_blksz axis s0 in
   let sd = _calc_stride s0 in
   let ofsy_i = ref 0 in
   (* two copying strategies based on the size of the minimum continuous block *)
@@ -608,7 +608,7 @@ let get_slice axis x =
     )
     in
     (* start copying blocks *)
-    Owl_slicing_ext._foreach_continuous_blk axis d1 f;
+    Owl_slicing._foreach_continuous_blk axis d1 f;
     (* all done, return the result *)
     y
   )
@@ -641,7 +641,7 @@ let get_slice axis x =
     )
     in
     (* start copying blocks *)
-    Owl_slicing_ext._foreach_continuous_blk axis (d1 - 1) f;
+    Owl_slicing._foreach_continuous_blk axis (d1 - 1) f;
     (* all done, return the result *)
     y
   )
@@ -651,19 +651,19 @@ let get_slice axis x =
    module, refer to Owl_slicing module for more information
  *)
 let set_slice axis x y =
-  let axis = Owl_slicing_ext.sdlist_to_sdarray axis in
+  let axis = Owl_slicing.sdlist_to_sdarray axis in
   (* check axis is within boundary then re-format *)
   let s0 = shape x in
-  let axis = Owl_slicing_ext.check_slice_definition axis s0 in
+  let axis = Owl_slicing.check_slice_definition axis s0 in
   (* calculate the new shape for slice *)
-  let s1 = Owl_slicing_ext.calc_slice_shape axis in
+  let s1 = Owl_slicing.calc_slice_shape axis in
   assert (shape y = s1);
   (* transform into 1d array *)
   let x' = x.data in
   let y' = y.data in
   (* prepare function of copying blocks *)
   let d0 = Array.length s1 in
-  let d1, cb = Owl_slicing_ext.calc_continuous_blksz axis s0 in
+  let d1, cb = Owl_slicing.calc_continuous_blksz axis s0 in
   let sd = _calc_stride s0 in
   let ofsy_i = ref 0 in
   (* two copying strategies based on the size of the minimum continuous block *)
@@ -679,7 +679,7 @@ let set_slice axis x y =
     )
     in
     (* start copying blocks *)
-    Owl_slicing_ext._foreach_continuous_blk axis d1 f
+    Owl_slicing._foreach_continuous_blk axis d1 f
   )
   else (
     (* copy happens at the highest dimension, no continuous block *)
@@ -710,8 +710,23 @@ let set_slice axis x y =
     )
     in
     (* start copying blocks *)
-    Owl_slicing_ext._foreach_continuous_blk axis (d1 - 1) f
+    Owl_slicing._foreach_continuous_blk axis (d1 - 1) f
   )
+
+(* simplified get_slice function which accept list of list as slice definition.
+  adapted from owl_slicing module, refer to Owl_slicing for more information.
+ *)
+let get_slice_simple axis x =
+  let axis = List.map (fun i -> R i) axis in
+  get_slice axis x
+
+
+(* simplified set_slice function which accept list of list as slice definition
+  adapted from owl_slicing module, refer to Owl_slicing for more information.
+*)
+let set_slice_simple axis x y =
+  let axis = List.map (fun i -> R i) axis in
+  set_slice axis x y
 
 
 let swap a0 a1 x =

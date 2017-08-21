@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Owl_types
 
 open Owl_ext_types
 
@@ -130,11 +131,13 @@ module type BasicSig = sig
 
   val set : arr -> int array -> elt -> unit
 
+  val get_slice : index list -> arr -> arr
+
+  val set_slice : index list -> arr -> arr -> unit
+
   val sub_left : arr -> int -> int -> arr
 
   val slice_left : arr -> int array -> arr
-
-  val slice : int list list -> arr -> arr
 
   val copy : arr -> arr -> unit
 
@@ -339,11 +342,13 @@ module Make_Basic
 
   let set x i a = M.set (unpack_box x) i (unpack_elt a)
 
+  let get_slice axis x = M.get_slice axis (unpack_box x) |> pack_box
+
+  let set_slice axis x y = M.set_slice axis (unpack_box x) (unpack_box y)
+  
   let sub_left x s l = M.sub_left (unpack_box x) s l |> pack_box
 
   let slice_left x i = M.slice_left (unpack_box x) i |> pack_box
-
-  let slice axis x = M.slice axis (unpack_box x) |> pack_box
 
   let copy src dst = M.copy (unpack_box src) (unpack_box dst)
 

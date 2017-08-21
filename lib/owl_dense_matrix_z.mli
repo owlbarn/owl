@@ -15,6 +15,8 @@
 
 open Bigarray
 
+open Owl_types
+
 type elt = Complex.t
 type mat = (Complex.t, complex64_elt) Owl_dense_matrix_generic.t
 type cast_mat = (float, float64_elt) Owl_dense_matrix_generic.t
@@ -121,6 +123,14 @@ val get : mat -> int -> int -> elt
 
 val set : mat -> int -> int -> elt -> unit
 
+val get_slice : index list -> mat -> mat
+
+val set_slice : index list -> mat -> mat -> unit
+
+val get_slice_simple : int list list -> mat -> mat
+
+val set_slice_simple : int list list -> mat -> mat -> unit
+
 val row : mat -> int -> mat
 
 val col : mat -> int -> mat
@@ -134,10 +144,6 @@ val resize : ?head:bool -> int -> int -> mat -> mat
 val reshape : int -> int -> mat -> mat
 
 val flatten : mat -> mat
-
-val slice : int list list -> mat -> mat
-
-val set_slice : int list list -> mat -> mat -> unit
 
 val reverse : mat -> mat
 

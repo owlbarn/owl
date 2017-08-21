@@ -3,6 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Owl_types
+
+
 (* signatures of module parameters used in Make functor *)
 
 module S = Pervasives
@@ -42,9 +45,9 @@ module type MatrixSig = sig
 
   val row : mat -> int -> mat
 
-  val slice : int list list -> mat -> mat
+  val get_slice : index list -> mat -> mat
 
-  val set_slice : int list list -> mat -> mat -> unit
+  val set_slice : index list -> mat -> mat -> unit
 
   val clone : mat -> mat
 
@@ -224,9 +227,9 @@ module type NdarraySig = sig
 
   val numel : arr -> int
 
-  val slice : int list list -> arr -> arr
+  val get_slice : index list -> arr -> arr
 
-  val set_slice : int list list -> arr -> arr -> unit
+  val set_slice : index list -> arr -> arr -> unit
 
   val clone : arr -> arr
 
@@ -464,10 +467,10 @@ module Make
     | AddI_D_D      of t * int * int * t
     | AddI_D_C      of t * int * int * t
     | AddI_C_D      of t * int * int * t
-    | Get_Slice_D   of t * int list list
-    | Set_Slice_D_D of t * t * int list list
-    | Set_Slice_D_C of t * t * int list list
-    | Set_Slice_C_D of t * t * int list list
+    | Get_Slice_D   of t * index list
+    | Set_Slice_D_D of t * t * index list
+    | Set_Slice_D_C of t * t * index list
+    | Set_Slice_C_D of t * t * index list
     | Sum_D         of t
     | Sum__D        of t * int
     | Dot_D_D       of t * t
@@ -618,7 +621,6 @@ module Make
     | F _ -> failwith "error: bbb"
     | DF _ -> failwith "error: ccc"
     | DR _ -> failwith "error: ddd"
-    | _     -> failwith "error: AD.unpack_mat"
 
   let pack_flt x = F x
 
@@ -1166,8 +1168,8 @@ module Make
 
     and get_slice i a =
       let ff = function
-        | Arr a    -> Arr A.(slice i a)
-        | Mat a    -> Mat M.(slice i a)
+        | Arr a    -> Arr A.(get_slice i a)
+        | Mat a    -> Mat M.(get_slice i a)
         | _        -> error_uniop "slice" a
       in
       let fd a = get_slice i a in

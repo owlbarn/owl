@@ -4,13 +4,18 @@
  *)
 
 open Bigarray
+
+open Owl_types
+
 open Owl_dense_common
+
 
 type ('a, 'b) t = ('a, 'b, c_layout) Array2.t
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 type area = { a : int; b : int; c : int; d : int }
+
 
 (* transform between different format *)
 
@@ -306,15 +311,25 @@ let rotate x degree =
   let y = Owl_dense_ndarray_generic.rotate x degree in
   of_ndarray y
 
-let slice axis x =
+let get_slice axis x =
   let x = to_ndarray x in
-  let y = Owl_dense_ndarray_generic.slice axis x in
+  let y = Owl_dense_ndarray_generic.get_slice axis x in
   of_ndarray y
 
 let set_slice axis x y =
   let x = to_ndarray x in
   let y = to_ndarray y in
   Owl_dense_ndarray_generic.set_slice axis x y
+
+let get_slice_simple axis x =
+  let x = to_ndarray x in
+  let y = Owl_dense_ndarray_generic.get_slice_simple axis x in
+  of_ndarray y
+
+let set_slice_simple axis x y =
+  let x = to_ndarray x in
+  let y = to_ndarray y in
+  Owl_dense_ndarray_generic.set_slice_simple axis x y
 
 let pad ?v d x = Owl_dense_ndarray_generic.pad ?v d (to_ndarray x) |> of_ndarray
 
@@ -1770,15 +1785,15 @@ let magic k n =
     let xd = _magic_odd m (3 * m2 + 1) in
 
     let m3 = m / 2 in
-    let xa' = concat_horizontal (slice [[];[0;m3-1]] xd) (slice [[];[m3;-1]] xa) in
-    let xd' = concat_horizontal (slice [[];[0;m3-1]] xa) (slice [[];[m3;-1]] xd) in
+    let xa' = concat_horizontal (get_slice [R[];R[0;m3-1]] xd) (get_slice [R[];R[m3;-1]] xa) in
+    let xd' = concat_horizontal (get_slice [R[];R[0;m3-1]] xa) (get_slice [R[];R[m3;-1]] xd) in
     let xb' =
       if m3 - 1 = 0 then xb
-      else concat_horizontal (slice [[];[0;m-m3]] xb) (slice [[];[1-m3;-1]] xc)
+      else concat_horizontal (get_slice [R[];R[0;m-m3]] xb) (get_slice [R[];R[1-m3;-1]] xc)
     in
     let xc' =
       if m3 - 1 = 0 then xc
-      else concat_horizontal (slice [[];[0;m-m3]] xc) (slice [[];[1-m3;-1]] xb)
+      else concat_horizontal (get_slice [R[];R[0;m-m3]] xc) (get_slice [R[];R[1-m3;-1]] xb)
     in
     xa'.{m3,0} <- xa.{m3,0};
     xa'.{m3,m3} <- xd.{m3,m3};

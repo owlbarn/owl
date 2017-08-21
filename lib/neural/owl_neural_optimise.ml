@@ -5,6 +5,8 @@
 
 (** Neural network: optimisation engine *)
 
+open Owl_types
+
 open Owl_algodiff.S
 
 
@@ -34,16 +36,16 @@ module Utils = struct
         let n = Owl_dense_matrix_generic.row_num y in
         let a = (i * c) mod n in
         let b = Pervasives.min (a + c - 1) (n - 1) in
-        let x = Owl_dense_ndarray_generic.slice [[a;b]] x in
-        let y = Owl_dense_matrix_generic.slice [[a;b]] y in
+        let x = Owl_dense_ndarray_generic.get_slice [R [a;b]] x in
+        let y = Owl_dense_matrix_generic.get_slice [R [a;b]] y in
         Arr x, Mat y
       )
     | Mat x, Mat y -> (
         let n = Owl_dense_matrix_generic.row_num y in
         let a = (i * c) mod n in
         let b = Pervasives.min (a + c - 1) (n - 1) in
-        let x = Owl_dense_matrix_generic.slice [[a;b]] x in
-        let y = Owl_dense_matrix_generic.slice [[a;b]] y in
+        let x = Owl_dense_matrix_generic.get_slice [R [a;b]] x in
+        let y = Owl_dense_matrix_generic.get_slice [R [a;b]] y in
         Mat x, Mat y
       )
     | x, y         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))

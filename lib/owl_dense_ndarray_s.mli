@@ -5,6 +5,8 @@
 
 open Bigarray
 
+open Owl_types
+
 type elt = float
 type arr = (float, float32_elt, c_layout) Genarray.t
 
@@ -69,13 +71,17 @@ val get : arr -> int array -> elt
 
 val set : arr -> int array -> elt -> unit
 
+val get_slice : index list -> arr -> arr
+
+val set_slice : index list -> arr -> arr -> unit
+
+val get_slice_simple : int list list -> arr -> arr
+
+val set_slice_simple : int list list -> arr -> arr -> unit
+
 val sub_left : arr -> int -> int -> arr
 
 val slice_left : arr -> int array -> arr
-
-val slice : int list list -> arr -> arr
-
-val set_slice : int list list -> arr -> arr -> unit
 
 val copy : arr -> arr -> unit
 

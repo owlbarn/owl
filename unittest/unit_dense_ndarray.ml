@@ -1,4 +1,6 @@
 open Bigarray
+open Owl_types
+
 module M = Owl_dense_ndarray_generic
 
 (* make testable *)
@@ -53,8 +55,8 @@ module To_test = struct
     M.set x [|1;0;1|] 5.;
     M.get x [|1;0;1|] = 5.
 
-  let slice () =
-    let y = M.slice [[];[0];[0]] x0 |> M.flatten in
+  let get_slice () =
+    let y = M.get_slice [R[];R[0];R[0]] x0 |> M.flatten in
     let z = M.zeros Float64 [|2|] in
     M.set z [|1|] 3.;
     M.equal y z
@@ -171,8 +173,8 @@ let get () =
 let set () =
   Alcotest.(check bool) "set" true (To_test.set ())
 
-let slice () =
-  Alcotest.(check bool) "slice" true (To_test.slice ())
+let get_slice () =
+  Alcotest.(check bool) "get_slice" true (To_test.get_slice ())
 
 let clone () =
   Alcotest.(check bool) "clone" true (To_test.clone ())
@@ -279,7 +281,7 @@ let test_set = [
   "density", `Slow, density;
   "get", `Slow, get;
   "set", `Slow, set;
-  "slice", `Slow, slice;
+  "get_slice", `Slow, get_slice;
   "clone", `Slow, clone;
   "fill", `Slow, fill;
   "map", `Slow, map;

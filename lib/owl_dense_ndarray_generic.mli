@@ -19,6 +19,8 @@
 
 open Bigarray
 
+open Owl_types
+
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 (** N-dimensional array abstract type *)
 
@@ -183,13 +185,7 @@ val get : ('a, 'b) t -> int array -> 'a
 val set : ('a, 'b) t -> int array -> 'a -> unit
 (** [set x i a] sets the value at [i] to [a] in [x]. *)
 
-val sub_left : ('a, 'b) t -> int -> int -> ('a, 'b) t
-(** Some as [Bigarray.sub_left], please refer to Bigarray documentation. *)
-
-val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
-(** Same as [Bigarray.slice_left], please refer to Bigarray documentation. *)
-
-val slice : int list list -> ('a, 'b) t -> ('a, 'b) t
+val get_slice : index list -> ('a, 'b) t -> ('a, 'b) t
 (** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
   which is an [int option array]. E.g., for a ndarray [x] of dimension
   [[|2; 2; 3|]], [slice [0] x] takes the following slices of index [\(0,*,*\)],
@@ -209,12 +205,34 @@ val slice : int list list -> ('a, 'b) t -> ('a, 'b) t
   on arbitrary axis which need not start from left-most side.
  *)
 
-val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+val set_slice : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** [set_slice axis x y] set the slice defined by [axis] in [x] according to
   the values in [y]. [y] must have the same shape as the one defined by [axis].
 
   About the slice definition of [axis], please refer to [slice] function.
  *)
+
+val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
+(** [get_slice_simple axis x] aims to provide a simpler version of [get_slice].
+  This function assumes that every list element in the passed in [in list list]
+  represents a range, i.e., [R] constructor.
+
+  E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
+ *)
+
+val set_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_slice_simple axis x y] aims to provide a simpler version of [set_slice].
+  This function assumes that every list element in the passed in [in list list]
+  represents a range, i.e., [R] constructor.
+
+  E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
+ *)
+
+val sub_left : ('a, 'b) t -> int -> int -> ('a, 'b) t
+(** Some as [Bigarray.sub_left], please refer to Bigarray documentation. *)
+
+val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
+(** Same as [Bigarray.slice_left], please refer to Bigarray documentation. *)
 
 val copy : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [copy src dst] copies the data from ndarray [src] to [dst]. *)
