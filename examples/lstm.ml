@@ -88,7 +88,7 @@ let test nn i2w wndsz tlen x =
 
 
 let train () =
-  let wndsz = 50 and stepsz = 1 in
+  let wndsz = 100 and stepsz = 1 in
   let w2i, i2w, x, y = prepare wndsz stepsz in
   let vocabsz = Hashtbl.length w2i in
 

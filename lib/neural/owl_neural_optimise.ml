@@ -298,7 +298,7 @@ module Checkpoint = struct
     mutable epochs            : float;   (* total number of epochs to run *)
     mutable batches           : int;     (* total batches = batches_per_epoch * epochs *)
     mutable loss              : t array; (* history of loss value in each iteration *)
-    mutable start_at          : float;   (* time when the training starts *)
+    mutable start_at          : float;   (* time when the optimisation starts *)
   }
 
   type typ =
@@ -426,9 +426,9 @@ module Params = struct
 end
 
 
-(* core training functions for feedforward networks *)
+(* core optimisation functions *)
 
-let train_nn params forward backward update save x y =
+let minimise params forward backward update save x y =
   let open Params in
   if params.verbosity = true then
     print_endline (Params.to_string params);
@@ -461,7 +461,7 @@ let train_nn params forward backward update save x y =
     loss |> primal', ws, gs'
   in
 
-  (* first iteration to bootstrap the training *)
+  (* first iteration to bootstrap the optimisation *)
   let _loss, _ws, _gs = iterate 0 in
   update _ws;
 
@@ -471,7 +471,7 @@ let train_nn params forward backward update save x y =
   let us = ref (Owl_utils.aarr_map (fun _ -> F 0.) _gs) in
   let ch = ref (Owl_utils.aarr_map (fun a -> F 0.) _gs) in
 
-  (* init the state of training process *)
+  (* init the state of optimisation process *)
   let batches_per_epoch = Batch.batches params.batch x in
   let state = Checkpoint.init_state batches_per_epoch params.epochs in
   Checkpoint.(state.loss.(0) <- _loss);
@@ -479,9 +479,9 @@ let train_nn params forward backward update save x y =
   (* iterate all batches in each epoch *)
   for i = 1 to Checkpoint.(state.batches) do
     let loss', ws, gs' = iterate i in
-    (* checkpoint of the training if necessary *)
+    (* checkpoint of the optimisation if necessary *)
     chkp_fun save i loss' state;
-    (* print out the current state of training *)
+    (* print out the current state of optimisation *)
     if params.verbosity = true then
       Checkpoint.print_state_info state;
     (* calculate gradient updates *)
@@ -513,20 +513,20 @@ let train_nn params forward backward update save x y =
     ps := ps';
   done;
 
-  (* print training summary *)
+  (* print optimisation summary *)
   if params.verbosity = true then
     Checkpoint.print_summary state;
   (* return loss history *)
   Array.map unpack_flt Checkpoint.(state.loss)
 
 
-(* generic training functions for both feedforward and graph module
-  forward: fucntion to run the forward pass
-  backward: function to run the backward pass
-  update: function to update the weights according to the gradient
-  save: function to save the model for checkpoint
+(* generic minimisation functions
+   forward: fucntion to run the forward pass
+   backward: function to run the backward pass
+   update: function to update the weights according to the gradient
+   save: function to save the model for checkpoint
  *)
-let train_nn_generic ?params forward backward update save nn x y =
+let minimise_generic ?params forward backward update save nn x y =
   let f = forward nn in
   let b = backward nn in
   let u = update nn in
@@ -535,13 +535,12 @@ let train_nn_generic ?params forward backward update save nn x y =
     | Some p -> p
     | None   -> Params.default ()
   in
-  train_nn p f b u s x y
+  minimise p f b u s x y
 
 
 (* generic function to test the neural network, for both feedforward and graph
-  f : the passed in function applies to every x
-  forward: fucntion to run the forward pass
-  TODO :
+   f : the passed in function applies to every x
+   forward: fucntion to run the forward pass
  *)
 let test_nn_generic f forward nn x y =
   match x, y with

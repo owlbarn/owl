@@ -277,7 +277,7 @@ let load_weights nn f =
 
 let train_generic ?params ?(init_model=true) nn x y =
   if init_model = true then init nn;
-  Owl_neural_optimise.train_nn_generic
+  Owl_neural_optimise.minimise_generic
     ?params forward backward update save nn x y
 
 
