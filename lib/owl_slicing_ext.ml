@@ -16,8 +16,8 @@ let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
 
 
 (* check the validity of the slice definition, also re-format slice definition,
-  axis: slice definition;
-  shp: shape of the original ndarray;
+   axis: slice definition;
+   shp: shape of the original ndarray;
  *)
 let check_slice_definition axis shp =
   let axis_len = Array.length axis in
@@ -75,8 +75,8 @@ let check_slice_definition axis shp =
 
 
 (* calculate the minimum continuous block size and its corresponding dimension
-  axis: slice definition;
-  shp: shape of the original ndarray;
+   axis: slice definition;
+   shp: shape of the original ndarray;
  *)
 let calc_continuous_blksz axis shp =
   let slice_sz = _calc_slice shp in
@@ -85,8 +85,8 @@ let calc_continuous_blksz axis shp =
   let _ = try
     for l = Array.length shp - 1 downto -1 do
       (* note: d is actually the corresponding dimension of continuous block
-        plus one; also note the loop is down to -1 so the lowest dimension is
-        also considered, in which case the whole array is copied. *)
+         plus one; also note the loop is down to -1 so the lowest dimension is
+         also considered, in which case the whole array is copied. *)
       d := l + 1;
       if l < 0 then failwith "stop";
       match axis.(l) with
@@ -103,7 +103,7 @@ let calc_continuous_blksz axis shp =
 
 
 (* calculat the shape according the slice definition
-  axis: slice definition
+   axis: slice definition
  *)
 let calc_slice_shape axis =
   Array.map (function
@@ -163,8 +163,8 @@ let _foreach_continuous_blk a d f =
 
 
 (* core slice function
-  axis: index array, slice definition, e.g., format [start;stop;step]
-  x: ndarray
+   axis: index array, slice definition, e.g., format [start;stop;step]
+   x: ndarray
  *)
 let get_slice_array_typ axis x =
   (* check axis is within boundary then re-format *)
@@ -183,7 +183,7 @@ let get_slice_array_typ axis x =
   let _cp_op = _owl_copy (kind x) in
   let ofsy_i = ref 0 in
   (* two copying strategies based on the size of the minimum continuous block.
-    also, consider the special case wherein the highest-dimension equals to 1.
+     also, consider the special case wherein the highest-dimension equals to 1.
    *)
   let high_dim_list = (function L_ _ -> true | _ -> false) axis.(d0 - 1) in
   if cb > 1 || s0.(d0 - 1) = 1 || high_dim_list = true then (
@@ -207,7 +207,7 @@ let get_slice_array_typ axis x =
     (* copy happens at the highest dimension, no continuous block *)
     let b = s1.(d0 - 1) in
     (* do the math yourself, [dd] is actually reduced from
-      s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
+       s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
     *)
     let c, dd =
       match axis.(d0 - 1) with
@@ -253,7 +253,7 @@ let set_slice_array_typ axis x y =
   let _cp_op = _owl_copy (kind x) in
   let ofsy_i = ref 0 in
   (* two copying strategies based on the size of the minimum continuous block.
-    also, consider the special case wherein the highest-dimension equals to 1.
+     also, consider the special case wherein the highest-dimension equals to 1.
    *)
   let high_dim_list = (function L_ _ -> true | _ -> false) axis.(d0 - 1) in
   if cb > 1 || s0.(d0 - 1) = 1 || high_dim_list = true then (
@@ -273,7 +273,7 @@ let set_slice_array_typ axis x y =
     (* copy happens at the highest dimension, no continuous block *)
     let b = s1.(d0 - 1) in
     (* do the math yourself, [dd] is actually reduced from
-      s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
+       s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
     *)
     let c, dd =
       match axis.(d0 - 1) with

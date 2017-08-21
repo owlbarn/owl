@@ -54,6 +54,10 @@ val get : 'a arr -> int array -> 'a
 
 val set : 'a arr -> int array -> 'a -> unit
 
+val get_slice : index list -> 'a arr -> 'a arr
+
+val set_slice : index list -> 'a arr -> 'a arr -> unit
+
 val fill : 'a arr -> 'a -> unit
 
 val copy : 'a arr -> 'a arr -> unit
@@ -83,8 +87,6 @@ val tile : 'a arr -> int array -> 'a arr
 val concatenate : ?axis:int -> 'a arr array -> 'a arr
 
 val pad : 'a -> int list list -> 'a arr -> 'a arr
-
-val get_slice : index list -> 'a arr -> 'a arr
 
 
 (** {6 Iterate array elements} *)

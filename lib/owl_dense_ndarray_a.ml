@@ -575,7 +575,9 @@ let pad v d x =
   y
 
 
-(* refer to Owl_slicing module for more information *)
+(* get_slice function is adapted from its original implementation in owl_slicing
+   module, refer to Owl_slicing module for more information
+ *)
 let get_slice axis x =
   let axis = Owl_slicing_ext.sdlist_to_sdarray axis in
   (* check axis is within boundary then re-format *)
@@ -619,7 +621,7 @@ let get_slice axis x =
           if i.(2) > 0 then i.(2), i.(0)
           else i.(2), i.(0) + (b - 1) * i.(2)
         )
-      | _    -> failwith "owl_slicing:slice_array_typ"
+      | _    -> failwith "owl_dense_ndarray_a:slice_array_typ"
     in
     let cx = if c > 0 then c else -c in
     let cy = if c > 0 then 1 else -1 in
@@ -631,7 +633,6 @@ let get_slice axis x =
         else ref ((!ofsy_i + 1) * b - 1)
       in
       for i = 0 to b - 1 do
-        Printf.printf "%i %i %i %i\n" !ofsx !ofsy cx cy; flush_all ();
         y'.(!ofsy) <- x'.(!ofsx);
         ofsx := !ofsx + cx;
         ofsy := !ofsy + cy;
@@ -643,6 +644,73 @@ let get_slice axis x =
     Owl_slicing_ext._foreach_continuous_blk axis (d1 - 1) f;
     (* all done, return the result *)
     y
+  )
+
+
+(* set_slice function is adapted from its original implementation in owl_slicing
+   module, refer to Owl_slicing module for more information
+ *)
+let set_slice axis x y =
+  let axis = Owl_slicing_ext.sdlist_to_sdarray axis in
+  (* check axis is within boundary then re-format *)
+  let s0 = shape x in
+  let axis = Owl_slicing_ext.check_slice_definition axis s0 in
+  (* calculate the new shape for slice *)
+  let s1 = Owl_slicing_ext.calc_slice_shape axis in
+  assert (shape y = s1);
+  (* transform into 1d array *)
+  let x' = x.data in
+  let y' = y.data in
+  (* prepare function of copying blocks *)
+  let d0 = Array.length s1 in
+  let d1, cb = Owl_slicing_ext.calc_continuous_blksz axis s0 in
+  let sd = _calc_stride s0 in
+  let ofsy_i = ref 0 in
+  (* two copying strategies based on the size of the minimum continuous block *)
+  let high_dim_list = (function L_ _ -> true | _ -> false) axis.(d0 - 1) in
+  if cb > 1 || s0.(d0 - 1) = 1 || high_dim_list = true then (
+    (* yay, there are at least some continuous blocks *)
+    let b = cb in
+    let f = fun i -> (
+      let ofsx = _index_nd_1d i sd in
+      let ofsy = !ofsy_i * b in
+      Array.blit y' ofsy x' ofsx b;
+      ofsy_i := !ofsy_i + 1
+    )
+    in
+    (* start copying blocks *)
+    Owl_slicing_ext._foreach_continuous_blk axis d1 f
+  )
+  else (
+    (* copy happens at the highest dimension, no continuous block *)
+    let b = s1.(d0 - 1) in
+    let c, dd =
+      match axis.(d0 - 1) with
+      | R_ i -> (
+          if i.(2) > 0 then i.(2), i.(0)
+          else i.(2), i.(0) + (b - 1) * i.(2)
+        )
+      | _    -> failwith "owl_dense_ndarray_a:slice_array_typ"
+    in
+    let cx = if c > 0 then c else -c in
+    let cy = if c > 0 then 1 else -1 in
+    (* TODO: blit cannot be used, have to copy one by one *)
+    let f = fun i -> (
+      let ofsx = ref (_index_nd_1d i sd + dd) in
+      let ofsy =
+        if c > 0 then ref (!ofsy_i * b)
+        else ref ((!ofsy_i + 1) * b - 1)
+      in
+      for i = 0 to b - 1 do
+        x'.(!ofsx) <- y'.(!ofsy);
+        ofsx := !ofsx + cx;
+        ofsy := !ofsy + cy;
+      done;
+      ofsy_i := !ofsy_i + 1
+    )
+    in
+    (* start copying blocks *)
+    Owl_slicing_ext._foreach_continuous_blk axis (d1 - 1) f
   )
 
 
