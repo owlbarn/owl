@@ -3,25 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Owl_types
+
 open Owl_dense_common
-
-(* type of slice definition *)
-
-type index =
-  | I of int       (* single index *)
-  | L of int list  (* list of indices *)
-  | R of int list  (* index range *)
-
-type slice = index list
-
-(* type of slice definition for internal use *)
-
-type index_ =
-  | I_ of int
-  | L_ of int array
-  | R_ of int array
-
-type slice_ = index_ array
 
 
 (* local functions, since we will not use ndarray_generic module *)
@@ -251,19 +235,6 @@ let get_slice_array_typ axis x =
   )
 
 
-(* same as slice_array_typ function but take list type as slice definition *)
-let get_slice_list_typ axis x =
-  let axis = axis
-    |> List.map (function
-      | I i -> I_ i
-      | L i -> L_ (Array.of_list i)
-      | R i -> R_ (Array.of_list i)
-      )
-    |> Array.of_list
-  in
-  get_slice_array_typ axis x
-
-
 (* set slice in [x] according to [y] *)
 let set_slice_array_typ axis x y =
   (* check axis is within boundary then re-format *)
@@ -326,17 +297,23 @@ let set_slice_array_typ axis x y =
   )
 
 
+(* convert from a list of slice definition to array for internal use *)
+let sdlist_to_sdarray axis =
+  List.map (function
+    | I i -> I_ i
+    | L i -> L_ (Array.of_list i)
+    | R i -> R_ (Array.of_list i)
+  ) axis
+  |> Array.of_list
+
+
+(* same as slice_array_typ function but take list type as slice definition *)
+let get_slice_list_typ axis x = get_slice_array_typ (sdlist_to_sdarray axis) x
+
+
 (* same as set_slice_array_typ function but take list type as slice definition *)
-let set_slice_list_typ axis x y =
-  let axis = axis
-    |> List.map (function
-      | I i -> I_ i
-      | L i -> L_ (Array.of_list i)
-      | R i -> R_ (Array.of_list i)
-      )
-    |> Array.of_list
-  in
-  set_slice_array_typ axis x y
+let set_slice_list_typ axis x y = set_slice_array_typ (sdlist_to_sdarray axis) x y
+
 
 
 (* ends here *)

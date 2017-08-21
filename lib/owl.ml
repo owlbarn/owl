@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+include Owl_types
+
 (* So we don't have to open Bigarray all the time. *)
 
 let float32 = Bigarray.float32
