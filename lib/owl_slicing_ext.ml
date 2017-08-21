@@ -315,5 +315,17 @@ let get_slice_list_typ axis x = get_slice_array_typ (sdlist_to_sdarray axis) x
 let set_slice_list_typ axis x y = set_slice_array_typ (sdlist_to_sdarray axis) x y
 
 
+(* simplified get_slice function which accept list of list as slice definition *)
+let get_slice_simple axis x =
+  let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
+  get_slice_array_typ axis x
+
+
+(* simplified set_slice function which accept list of list as slice definition *)
+let set_slice_simple axis x y =
+  let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
+  set_slice_array_typ axis x
+
+
 
 (* ends here *)
