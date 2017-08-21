@@ -1163,8 +1163,6 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 
 (** {6 Neural network related functions} *)
 
-type padding = SAME | VALID
-
 val conv1d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
 (** [] *)
 

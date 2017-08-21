@@ -1871,7 +1871,6 @@ let pad ?v d x =
   modules to reduce the compplexity of the generic module.
  *)
 
-type padding = SAME | VALID
 
 (* calculate the output shape of [conv2d] given input and kernel and stride *)
 let calc_conv2d_output_shape

@@ -521,9 +521,9 @@ val l2norm : mat -> elt
 
 val l2norm_sqr : mat -> elt
 
-val max_pool : ?padding:Owl_dense_ndarray_generic.padding -> mat -> int array -> int array -> mat
+val max_pool : ?padding:padding -> mat -> int array -> int array -> mat
 
-val avg_pool : ?padding:Owl_dense_ndarray_generic.padding -> mat -> int array -> int array -> mat
+val avg_pool : ?padding:padding -> mat -> int array -> int array -> mat
 
 val cumsum : ?axis:int -> mat -> mat
 

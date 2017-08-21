@@ -9,6 +9,7 @@
  *)
 
 
+open Owl_types
 open Owl_algodiff.S
 open Owl_neural_neuron
 
@@ -173,14 +174,14 @@ let gru ?name ?(init_typ=Init.Tanh) cells nn =
   nn
 
 
-let conv2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides nn =
+let conv2d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides nn =
   Conv2D (Conv2D.create padding kernel strides init_typ)
   |> make_layer ?name nn
   |> add_layer ?act_typ nn;
   nn
 
 
-let conv3d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?(init_typ=Init.Tanh) ?act_typ kernel_width kernel strides nn =
+let conv3d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel_width kernel strides nn =
   Conv3D (Conv3D.create padding kernel strides init_typ)
   |> make_layer ?name nn
   |> add_layer ?act_typ nn;
@@ -194,14 +195,14 @@ let fully_connected ?name ?(init_typ = Init.Standard) ?act_typ outputs nn =
   nn
 
 
-let max_pool2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride nn =
+let max_pool2d ?name ?(padding = SAME) ?act_typ kernel stride nn =
   MaxPool2D (MaxPool2D.create padding kernel stride)
   |> make_layer ?name nn
   |> add_layer ?act_typ nn;
   nn
 
 
-let avg_pool2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride nn =
+let avg_pool2d ?name ?(padding = SAME) ?act_typ kernel stride nn =
   AvgPool2D (AvgPool2D.create padding kernel stride)
   |> make_layer ?name nn
   |> add_layer ?act_typ nn;

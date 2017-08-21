@@ -353,8 +353,6 @@ module type NdarraySig = sig
 
   (** {6 Neural network related functions} *)
 
-  type padding
-
   val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
 
   val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
@@ -408,7 +406,6 @@ module Make
   type arr = A.arr
   type mat = M.mat
   type elt = M.elt
-  type padding = A.padding
 
   type t =
     | F   of float

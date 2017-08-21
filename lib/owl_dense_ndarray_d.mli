@@ -443,8 +443,6 @@ val clip_by_l2norm : float -> arr -> arr
 
 (** {6 Neural network related functions} *)
 
-type padding = Owl_dense_ndarray_generic.padding
-
 val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
 
 val conv2d : ?padding:padding -> arr -> arr -> int array -> arr

@@ -30,6 +30,10 @@ type index_ =
 
 type slice_ = index_ array
 
+(* type of padding in conv?d and maxpool operations *)
+
+type padding = SAME | VALID
+
 
 (* define some constants *)
 

@@ -1233,10 +1233,10 @@ val l2norm_sqr : ('a, 'b) t -> float
   it always returns a float number.
  *)
 
-val max_pool : ?padding:Owl_dense_ndarray_generic.padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val max_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** [] *)
 
-val avg_pool : ?padding:Owl_dense_ndarray_generic.padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val avg_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** [] *)
 
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
