@@ -185,6 +185,27 @@ val get : ('a, 'b) t -> int array -> 'a
 val set : ('a, 'b) t -> int array -> 'a -> unit
 (** [set x i a] sets the value at [i] to [a] in [x]. *)
 
+val get_index : ('a, 'b) t -> int array array -> 'a array
+(** [get_index i x] returns an array of element values specified by the indices
+  [i]. The length of array [i] equals the number of dimensions of [x]. The
+  arrays in [i] must have the same length, and each represents the indices in
+  that dimension.
+
+  E.g., [ [| [|1;2|]; [|3;4|] |] ] returns the value of elements at position
+  [(1,3)] and [(2,4)] respectively.
+ *)
+
+val set_index : ('a, 'b) t -> int array array -> 'a array -> unit
+(** [set_index i x a] sets the value of elements in [x] according to the indices
+  specified by [i]. The length of array [i] equals the number of dimensions of
+  [x]. The arrays in [i] must have the same length, and each represents the
+  indices in that dimension.
+
+  If the length of [a] equals to the length of [i], then each element will be
+  assigned by the value in the corresponding position in [x]. If the length of
+  [a] equals to one, then all the elements will be assigned the same value.
+ *)
+
 val get_slice : index list -> ('a, 'b) t -> ('a, 'b) t
 (** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
   which is an [int option array]. E.g., for a ndarray [x] of dimension

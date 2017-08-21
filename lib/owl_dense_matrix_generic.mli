@@ -246,6 +246,23 @@ val set : ('a, 'b) t -> int -> int -> 'a -> unit
   for [set x i j a] is [x.{i,j} <- a]
  *)
 
+val get_index : ('a, 'b) t -> int array array -> 'a array
+(** [get_index i x] returns an array of element values specified by the indices
+  [i]. The length of array [i] equals the number of dimensions of [x]. The
+  arrays in [i] must have the same length, and each represents the indices in
+  that dimension.
+
+  E.g., [ [| [|1;2|]; [|3;4|] |] ] returns the value of elements at position
+  [(1,3)] and [(2,4)] respectively.
+ *)
+
+val set_index : ('a, 'b) t -> int array array -> 'a array -> unit
+(** [set_index] sets the value of elements in [x] according to the indices
+  specified by [i]. The length of array [i] equals the number of dimensions of
+  [x]. The arrays in [i] must have the same length, and each represents the
+  indices in that dimension.
+ *)
+
 val get_slice : index list -> ('a, 'b) t -> ('a, 'b) t
 (** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
   which is an [int array]. Please refer to the same function in the

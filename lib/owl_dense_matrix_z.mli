@@ -123,6 +123,10 @@ val get : mat -> int -> int -> elt
 
 val set : mat -> int -> int -> elt -> unit
 
+val get_index : mat -> int array array -> elt array
+
+val set_index : mat -> int array array -> elt array -> unit
+
 val get_slice : index list -> mat -> mat
 
 val set_slice : index list -> mat -> mat -> unit

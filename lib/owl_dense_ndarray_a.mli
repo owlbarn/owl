@@ -54,6 +54,10 @@ val get : 'a arr -> int array -> 'a
 
 val set : 'a arr -> int array -> 'a -> unit
 
+val get_index : 'a arr -> int array array -> 'a array
+
+val set_index : 'a arr -> int array array -> 'a array -> unit
+
 val get_slice : index list -> 'a arr -> 'a arr
 
 val set_slice : index list -> 'a arr -> 'a arr -> unit

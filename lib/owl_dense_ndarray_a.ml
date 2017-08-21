@@ -75,6 +75,27 @@ let get x i = x.data.(_index_nd_1d i x.stride)
 
 let set x i a = x.data.(_index_nd_1d i x.stride) <- a
 
+let get_index x axis =
+  let d = num_dims x in
+  assert (Array.length axis = d);
+  let n = Array.length axis.(0) in
+  let indices = Array.make_matrix d n 0 in
+  Array.iteri (fun i a ->
+    Array.iteri (fun j b -> indices.(i).(j) <- b) a
+  ) axis;
+  Array.map (fun i -> get x i) indices
+
+
+let set_index x axis a =
+  let d = num_dims x in
+  assert (Array.length axis = d);
+  let n = Array.length axis.(0) in
+  let indices = Array.make_matrix d n 0 in
+  Array.iteri (fun i a ->
+    Array.iteri (fun j b -> indices.(i).(j) <- b) a
+  ) axis;
+  Array.iteri (fun i j -> set x j a.(i)) indices
+
 let slice_left = None
 
 let copy src dst =

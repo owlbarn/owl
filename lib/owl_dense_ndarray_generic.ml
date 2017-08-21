@@ -1425,6 +1425,31 @@ let rotate x degree =
   )
 
 
+let get_index x axis =
+  let d = num_dims x in
+  assert (Array.length axis = d);
+  let n = Array.length axis.(0) in
+  let indices = Array.make_matrix n d 0 in
+  Array.iteri (fun j a ->
+    Array.iteri (fun i b -> indices.(i).(j) <- b) a
+  ) axis;
+  Array.map (fun i -> Bigarray.Genarray.get x i) indices
+
+
+let set_index x axis a =
+  let d = num_dims x in
+  assert (Array.length axis = d);
+  let n = Array.length axis.(0) in
+  let indices = Array.make_matrix n d 0 in
+  Array.iteri (fun j a ->
+    Array.iteri (fun i b -> indices.(i).(j) <- b) a
+  ) axis;
+  if Array.length a = 1 then
+    Array.iteri (fun i j -> Bigarray.Genarray.set x j a.(0)) indices
+  else
+    Array.iteri (fun i j -> Bigarray.Genarray.set x j a.(i)) indices
+
+
 (* some comparison functions *)
 
 let is_zero x =

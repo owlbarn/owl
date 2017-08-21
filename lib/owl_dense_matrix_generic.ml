@@ -126,6 +126,14 @@ let set = Array2.unsafe_set
 
 let get = Array2.unsafe_get
 
+let get_index x axis =
+  let x = to_ndarray x in
+  Owl_dense_ndarray_generic.get_index x axis
+
+let set_index x axis a =
+  let x = to_ndarray x in
+  Owl_dense_ndarray_generic.set_index x axis a
+
 let row x i =
   let m, n = shape x in
   assert (i < m);
@@ -330,6 +338,7 @@ let set_slice_simple axis x y =
   let x = to_ndarray x in
   let y = to_ndarray y in
   Owl_dense_ndarray_generic.set_slice_simple axis x y
+
 
 let pad ?v d x = Owl_dense_ndarray_generic.pad ?v d (to_ndarray x) |> of_ndarray
 
