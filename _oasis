@@ -60,6 +60,7 @@ Library owl
                     Owl_linalg_generic,
                     Owl_cluster,
                     Owl_optimise,
+                    Owl_optimise_ext,
                     Owl_regression,
                     Owl_plot,
                     Owl_dataset,
