@@ -2877,32 +2877,50 @@ let sum_ ?(axis=0) x =
   Owl_slicing.get_slice_array_typ i y
 
 
-(* TODO *)
+(* this function is used for searching top/bottom values in [x] *)
+let _search_close_to_extreme x n neg_ext cmp_fun =
+  let m = numel x in
+  let n = Pervasives.min n m in
+  let vls = Array.make n neg_ext in
+  let idx = Array.make n max_int in
+  let y = flatten x |> array1_of_genarray in
+  let l = n - 1 in
 
-let insert_slice = None
+  let _insert vls idx x p =
+    for q = l downto 0 do
+      if cmp_fun x vls.(q) then (
+        if q < l then (
+          vls.(q+1) <- vls.(q);
+          idx.(q+1) <- idx.(q);
+        );
+        vls.(q) <- x;
+        idx.(q) <- p;
+      )
+    done
+  in
 
-let remove_slice = None
+  for i = 0 to m - 1 do
+    if cmp_fun y.{i} vls.(l) then _insert vls idx y.{i} i
+  done;
 
-let mapi_slice = None
+  let k = num_dims x in
+  let s = strides x in
+  Array.map (fun i ->
+    let j = Array.make k 0 in
+    Owl_dense_common._index_1d_nd i j s;
+    j
+  ) idx
 
-let map_slice = None
 
-let diag x = None
+(* FIXME:
+  the (<) and (>) functions needs to be changed for complex numbers, since
+  Pervasives module may have different way to compare complex numbers.
+ *)
+let top x n = _search_close_to_extreme x n (_neg_inf (kind x)) ( > )
 
-let trace x = None
+let bottom x n = _search_close_to_extreme x n (_pos_inf (kind x)) ( < )
 
 
-(* TODO *)
-
-let inv x = None
-
-let mean x = None
-
-let std x = None
-
-let dot x = None
-
-let tensordot x = None
 
 
 

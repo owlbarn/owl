@@ -177,6 +177,10 @@ val pad : ?v:elt -> int list list -> mat -> mat
 
 val dropout : ?rate:float -> ?seed:int -> mat -> mat
 
+val top : mat -> int -> int array array
+
+val bottom : mat -> int -> int array array
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 

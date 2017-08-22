@@ -51,7 +51,7 @@ val init : ('a, 'b) kind -> int array -> (int -> 'a) -> ('a, 'b) t
 (** [init Bigarray.Float64 d f] creates a ndarray [x] of shape [d], then using
   [f] to initialise the elements in [x]. The input of [f] is 1-dimensional
   index of the ndarray. You need to explicitly convert it if you need N-dimensional
-  index. The function [Owl_utils._index_1d_nd] can help you.
+  index. The function [Owl_dense_common._index_1d_nd] can help you.
  *)
 
 val init_nd : ('a, 'b) kind -> int array -> (int array -> 'a) -> ('a, 'b) t
@@ -353,6 +353,18 @@ val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 val dropout : ?rate:float -> ?seed:int -> ('a, 'b) t -> ('a, 'b) t
 (** [dropout ~rate:0.3 x] drops out 30% of the elements in [x], in other words,
   by setting their values to zeros.
+ *)
+
+val top : ('a, 'b) t -> int -> int array array
+(** [top x n] returns the indices of [n] greatest values of [x]. The indices are
+  arranged according to the corresponding elelment values, from the greatest one
+  to the smallest one.
+ *)
+
+val bottom : ('a, 'b) t -> int -> int array array
+(** [bottom x n] returns the indices of [n] smallest values of [x]. The indices
+  are arranged according to the corresponding elelment values, from the smallest
+  one to the greatest one.
  *)
 
 val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -> ('a, 'b) t

@@ -127,6 +127,10 @@ val pad : ?v:elt -> int list list -> arr -> arr
 
 val dropout : ?rate:float -> ?seed:int -> arr -> arr
 
+val top : arr -> int -> int array array
+
+val bottom : arr -> int -> int array array
+
 val mmap : Unix.file_descr -> ?pos:int64 -> bool -> int array -> arr
 
 

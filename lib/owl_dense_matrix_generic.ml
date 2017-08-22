@@ -1931,5 +1931,14 @@ let mat2gray ?amin ?amax x =
   div_scalar x (_sub_elt (kind x) amax amin)
 
 
+let top x n =
+  let y = to_ndarray x in
+  Owl_dense_ndarray_generic.top y n
+
+
+let bottom x n =
+  let y = to_ndarray x in
+  Owl_dense_ndarray_generic.bottom y n
+
 
 (* end here *)
