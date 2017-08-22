@@ -304,7 +304,7 @@ module type MatrixSig = sig
   val row : mat -> int -> mat
 
   val rows : mat -> int array -> mat
-  
+
   val clone : mat -> mat
 
   val reset : mat -> unit
