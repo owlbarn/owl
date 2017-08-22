@@ -1,4 +1,8 @@
 #!/usr/bin/env owl
+(* This example demonstrates how to write the backpropogation algorithm from
+   scratch using Algodiff module. With the backprop algorithm, we further make
+   a naive neural network without using Owl' DNN to train on mnist dataset.
+ *)
 
 open Owl
 open Algodiff.S
@@ -6,7 +10,7 @@ open Algodiff.S
 type layer = {
   mutable w : t;
   mutable b : t;
-  a : t -> t;
+  mutable a : t -> t;
 }
 
 type network = { layers : layer array }
@@ -43,7 +47,7 @@ let backprop nn eta x y =
   ) nn.layers;
   loss |> unpack_flt
 
-let test_model nn x y =
+let test nn x y =
   Mat.iter2_rows (fun u v ->
     Dataset.print_mnist_image (unpack_mat u);
     let p = run_network u nn |> unpack_mat in
@@ -53,12 +57,11 @@ let test_model nn x y =
 
 let _ =
   let x, _, y = Dataset.load_mnist_train_data () in
-  for i = 1 to 1000 do
+  for i = 1 to 999 do
     let x', y' = Dataset.draw_samples x y 100 in
     backprop nn (F 0.01) (Mat x') (Mat y')
-    |> Printf.printf "#%i : loss = %g\n" i
-    |> flush_all;
+    |> Log.info "#%03i : loss = %g" i
   done;
   let x, y, _ = Dataset.load_mnist_test_data () in
   let x, y = Dataset.draw_samples x y 10 in
-  test_model nn (Mat x) (Mat y)
+  test nn (Mat x) (Mat y)

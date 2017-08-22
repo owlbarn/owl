@@ -12,12 +12,12 @@ let make_network input_shape =
   input input_shape
   |> normalisation
   |> conv2d [|3;3;3;32|] [|1;1|] ~act_typ:Activation.Relu
-  |> conv2d [|3;3;32;32|] [|1;1|] ~act_typ:Activation.Relu ~padding:Dense.Ndarray.Generic.VALID
-  |> max_pool2d [|2;2|] [|2;2|] ~padding:Dense.Ndarray.Generic.VALID
+  |> conv2d [|3;3;32;32|] [|1;1|] ~act_typ:Activation.Relu ~padding:VALID
+  |> max_pool2d [|2;2|] [|2;2|] ~padding:VALID
   |> dropout 0.1
   |> conv2d [|3;3;32;64|] [|1;1|] ~act_typ:Activation.Relu
-  |> conv2d [|3;3;64;64|] [|1;1|] ~act_typ:Activation.Relu ~padding:Dense.Ndarray.Generic.VALID
-  |> max_pool2d [|2;2|] [|2;2|] ~padding:Dense.Ndarray.Generic.VALID
+  |> conv2d [|3;3;64;64|] [|1;1|] ~act_typ:Activation.Relu ~padding:VALID
+  |> max_pool2d [|2;2|] [|2;2|] ~padding:VALID
   |> dropout 0.1
   |> fully_connected 512 ~act_typ:Activation.Relu
   |> linear 10 ~act_typ:Activation.Softmax

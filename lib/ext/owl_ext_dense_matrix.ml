@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Owl_types
+
 open Owl_ext_types
 
 (* modules for packing and unpacking *)
@@ -133,6 +135,10 @@ module type BasicSig = sig
 
   val set : mat -> int -> int -> elt -> unit
 
+  val get_slice : index list -> mat -> mat
+
+  val set_slice : index list -> mat -> mat -> unit
+
   val row : mat -> int -> mat
 
   val col : mat -> int -> mat
@@ -144,8 +150,6 @@ module type BasicSig = sig
   val reshape : int -> int -> mat -> mat
 
   val flatten : mat -> mat
-
-  val slice : int list list -> mat -> mat
 
   val reverse : mat -> mat
 
@@ -453,6 +457,10 @@ module Make_Basic
 
   let set x i j a = M.set (unpack_box x) i j (unpack_elt a)
 
+  let get_slice axis x = M.get_slice axis (unpack_box x) |> pack_box
+
+  let set_slice axis x y = M.set_slice axis (unpack_box x) (unpack_box y)
+  
   let row x i = M.row (unpack_box x) i |> pack_box
 
   let col x j = M.col (unpack_box x) j |> pack_box
@@ -464,8 +472,6 @@ module Make_Basic
   let reshape m n x = M.reshape m n (unpack_box x) |> pack_box
 
   let flatten x = M.flatten (unpack_box x) |> pack_box
-
-  let slice axis x = M.slice axis (unpack_box x) |> pack_box
 
   let reverse x = M.reverse (unpack_box x) |> pack_box
 

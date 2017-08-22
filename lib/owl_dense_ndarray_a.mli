@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Owl_types
+
 type 'a arr = {
   mutable shape  : int array;
   mutable stride : int array;
@@ -52,6 +54,18 @@ val get : 'a arr -> int array -> 'a
 
 val set : 'a arr -> int array -> 'a -> unit
 
+val get_index : 'a arr -> int array array -> 'a array
+
+val set_index : 'a arr -> int array array -> 'a array -> unit
+
+val get_slice : index list -> 'a arr -> 'a arr
+
+val set_slice : index list -> 'a arr -> 'a arr -> unit
+
+val get_slice_simple : int list list -> 'a arr -> 'a arr
+
+val set_slice_simple : int list list -> 'a arr -> 'a arr -> unit
+
 val fill : 'a arr -> 'a -> unit
 
 val copy : 'a arr -> 'a arr -> unit
@@ -81,8 +95,6 @@ val tile : 'a arr -> int array -> 'a arr
 val concatenate : ?axis:int -> 'a arr array -> 'a arr
 
 val pad : 'a -> int list list -> 'a arr -> 'a arr
-
-val slice : int list list -> 'a arr -> 'a arr
 
 
 (** {6 Iterate array elements} *)

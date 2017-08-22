@@ -19,6 +19,8 @@
 
 open Bigarray
 
+open Owl_types
+
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 (** N-dimensional array abstract type *)
 
@@ -49,7 +51,7 @@ val init : ('a, 'b) kind -> int array -> (int -> 'a) -> ('a, 'b) t
 (** [init Bigarray.Float64 d f] creates a ndarray [x] of shape [d], then using
   [f] to initialise the elements in [x]. The input of [f] is 1-dimensional
   index of the ndarray. You need to explicitly convert it if you need N-dimensional
-  index. The function [Owl_utils._index_1d_nd] can help you.
+  index. The function [Owl_dense_common._index_1d_nd] can help you.
  *)
 
 val init_nd : ('a, 'b) kind -> int array -> (int array -> 'a) -> ('a, 'b) t
@@ -183,13 +185,28 @@ val get : ('a, 'b) t -> int array -> 'a
 val set : ('a, 'b) t -> int array -> 'a -> unit
 (** [set x i a] sets the value at [i] to [a] in [x]. *)
 
-val sub_left : ('a, 'b) t -> int -> int -> ('a, 'b) t
-(** Some as [Bigarray.sub_left], please refer to Bigarray documentation. *)
+val get_index : ('a, 'b) t -> int array array -> 'a array
+(** [get_index i x] returns an array of element values specified by the indices
+  [i]. The length of array [i] equals the number of dimensions of [x]. The
+  arrays in [i] must have the same length, and each represents the indices in
+  that dimension.
 
-val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
-(** Same as [Bigarray.slice_left], please refer to Bigarray documentation. *)
+  E.g., [ [| [|1;2|]; [|3;4|] |] ] returns the value of elements at position
+  [(1,3)] and [(2,4)] respectively.
+ *)
 
-val slice : int list list -> ('a, 'b) t -> ('a, 'b) t
+val set_index : ('a, 'b) t -> int array array -> 'a array -> unit
+(** [set_index i x a] sets the value of elements in [x] according to the indices
+  specified by [i]. The length of array [i] equals the number of dimensions of
+  [x]. The arrays in [i] must have the same length, and each represents the
+  indices in that dimension.
+
+  If the length of [a] equals to the length of [i], then each element will be
+  assigned by the value in the corresponding position in [x]. If the length of
+  [a] equals to one, then all the elements will be assigned the same value.
+ *)
+
+val get_slice : index list -> ('a, 'b) t -> ('a, 'b) t
 (** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
   which is an [int option array]. E.g., for a ndarray [x] of dimension
   [[|2; 2; 3|]], [slice [0] x] takes the following slices of index [\(0,*,*\)],
@@ -209,12 +226,34 @@ val slice : int list list -> ('a, 'b) t -> ('a, 'b) t
   on arbitrary axis which need not start from left-most side.
  *)
 
-val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+val set_slice : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** [set_slice axis x y] set the slice defined by [axis] in [x] according to
   the values in [y]. [y] must have the same shape as the one defined by [axis].
 
   About the slice definition of [axis], please refer to [slice] function.
  *)
+
+val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
+(** [get_slice_simple axis x] aims to provide a simpler version of [get_slice].
+  This function assumes that every list element in the passed in [in list list]
+  represents a range, i.e., [R] constructor.
+
+  E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
+ *)
+
+val set_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_slice_simple axis x y] aims to provide a simpler version of [set_slice].
+  This function assumes that every list element in the passed in [in list list]
+  represents a range, i.e., [R] constructor.
+
+  E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
+ *)
+
+val sub_left : ('a, 'b) t -> int -> int -> ('a, 'b) t
+(** Some as [Bigarray.sub_left], please refer to Bigarray documentation. *)
+
+val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
+(** Same as [Bigarray.slice_left], please refer to Bigarray documentation. *)
 
 val copy : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [copy src dst] copies the data from ndarray [src] to [dst]. *)
@@ -314,6 +353,18 @@ val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 val dropout : ?rate:float -> ?seed:int -> ('a, 'b) t -> ('a, 'b) t
 (** [dropout ~rate:0.3 x] drops out 30% of the elements in [x], in other words,
   by setting their values to zeros.
+ *)
+
+val top : ('a, 'b) t -> int -> int array array
+(** [top x n] returns the indices of [n] greatest values of [x]. The indices are
+  arranged according to the corresponding elelment values, from the greatest one
+  to the smallest one.
+ *)
+
+val bottom : ('a, 'b) t -> int -> int array array
+(** [bottom x n] returns the indices of [n] smallest values of [x]. The indices
+  are arranged according to the corresponding elelment values, from the smallest
+  one to the greatest one.
  *)
 
 val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -> ('a, 'b) t
@@ -1144,8 +1195,6 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 
 
 (** {6 Neural network related functions} *)
-
-type padding = SAME | VALID
 
 val conv1d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
 (** [] *)

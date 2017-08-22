@@ -11,6 +11,30 @@ open Ctypes
 (* configure the logger *)
 let _ = Log.color_on (); Log.(set_log_level INFO)
 
+
+(* type of slice definition *)
+
+type index =
+  | I of int       (* single index *)
+  | L of int list  (* list of indices *)
+  | R of int list  (* index range *)
+
+type slice = index list
+
+(* type of slice definition for internal use in owl_slicing module *)
+
+type index_ =
+  | I_ of int
+  | L_ of int array
+  | R_ of int array
+
+type slice_ = index_ array
+
+(* type of padding in conv?d and maxpool operations *)
+
+type padding = SAME | VALID
+
+
 (* define some constants *)
 
 let _zero : type a b. (a, b) kind -> a = function

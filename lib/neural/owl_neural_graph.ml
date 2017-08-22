@@ -7,6 +7,7 @@
 (** Neural network: Graphical neural network *)
 
 
+open Owl_types
 open Owl_algodiff.S
 open Owl_neural_neuron
 
@@ -300,21 +301,21 @@ let gru ?name ?(init_typ=Init.Tanh) cells input_node =
   add_node nn [|input_node|] n
 
 
-let conv1d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
+let conv1d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
   let neuron = Conv1D (Conv1D.create padding kernel strides init_typ) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node ?act_typ nn [|input_node|] n
 
 
-let conv2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
+let conv2d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
   let neuron = Conv2D (Conv2D.create padding kernel strides init_typ) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node ?act_typ nn [|input_node|] n
 
 
-let conv3d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
+let conv3d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides input_node =
   let neuron = Conv3D (Conv3D.create padding kernel strides init_typ) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
@@ -328,28 +329,28 @@ let fully_connected ?name ?(init_typ = Init.Standard) ?act_typ outputs input_nod
   add_node ?act_typ nn [|input_node|] n
 
 
-let max_pool1d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride input_node =
+let max_pool1d ?name ?(padding = SAME) ?act_typ kernel stride input_node =
   let neuron = MaxPool1D (MaxPool1D.create padding kernel stride) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node ?act_typ nn [|input_node|] n
 
 
-let max_pool2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride input_node =
+let max_pool2d ?name ?(padding = SAME) ?act_typ kernel stride input_node =
   let neuron = MaxPool2D (MaxPool2D.create padding kernel stride) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node ?act_typ nn [|input_node|] n
 
 
-let avg_pool1d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride input_node =
+let avg_pool1d ?name ?(padding = SAME) ?act_typ kernel stride input_node =
   let neuron = AvgPool1D (AvgPool1D.create padding kernel stride) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
   add_node ?act_typ nn [|input_node|] n
 
 
-let avg_pool2d ?name ?(padding = Owl_dense_ndarray_generic.SAME) ?act_typ kernel stride input_node =
+let avg_pool2d ?name ?(padding = SAME) ?act_typ kernel stride input_node =
   let neuron = AvgPool2D (AvgPool2D.create padding kernel stride) in
   let nn = get_network input_node in
   let n = make_node ?name [||] [||] neuron None nn in
@@ -532,7 +533,7 @@ let load_weights nn f =
 
 let train_generic ?params ?(init_model=true) nn x y =
   if init_model = true then init nn;
-  Owl_neural_optimise.train_nn_generic
+  Owl_neural_optimise.minimise_generic
     ?params forward backward update save nn x y
 
 

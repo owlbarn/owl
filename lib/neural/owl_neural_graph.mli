@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Owl_types
 open Owl_algodiff.S
 open Owl_neural_neuron
 open Owl_neural_optimise
@@ -105,7 +106,7 @@ val gru : ?name:string -> ?init_typ:Init.typ -> int -> node -> node
   - [name]: Name of current node; should be unique in a neural network.
 *)
 
-val conv1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+val conv1d : ?name:string -> ?padding:padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 (**
   [conv1d ~name ~padding ~init_typ ~act_typ kernels strides node] adds a 1D
   convolution node (e.g. temporal convolution) on previous [node].
@@ -121,7 +122,7 @@ val conv1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init
   - [name]: Name of current node; should be unique in a neural network.
 *)
 
-val conv2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+val conv2d : ?name:string -> ?padding:padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 (**
   [conv2d ~name ~padding ~init_typ ~act_typ kernels strides node] adds a 2D
   convolution node (e.g. spatial convolution over images) on previous [node].
@@ -137,7 +138,7 @@ val conv2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init
   - [name]: Name of current node; should be unique in a neural network.
 *)
 
-val conv3d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+val conv3d : ?name:string -> ?padding:padding -> ?init_typ:Init.typ -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 (**
   [conv3d ~name ~padding ~init_typ ~act_typ kernels strides node] adds a 3D
   convolution node (e.g. spatial convolution over volumes) on previous [node].
@@ -153,7 +154,7 @@ val conv3d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?init
   - [name]: Name of current node; should be unique in a neural network.
 *)
 
-val max_pool1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+val max_pool1d : ?name:string -> ?padding:padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 (**
   [max_pool1d ~name ~padding ~act_typ pool_size strides node] adds a max pooling
   operation for temporal data to [node].
@@ -166,7 +167,7 @@ val max_pool1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?
   - [name]: Name of current node; should be unique in a neural network.
 *)
 
-val max_pool2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+val max_pool2d : ?name:string -> ?padding:padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 (**
   [max_pool2d ~name ~padding ~act_typ pool_size strides node] adds a max pooling
   operation for spatial data to [node].
@@ -179,7 +180,7 @@ val max_pool2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?
   - [name]: Name of current node; should be unique in a neural network.
 *)
 
-val avg_pool1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+val avg_pool1d : ?name:string -> ?padding:padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 (**
   [avg_pool1d ~name ~padding ~act_typ pool_size strides node] adds an average
   pooling operation for temporal data to [node].
@@ -192,7 +193,7 @@ val avg_pool1d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?
   - [name]: Name of current node; should be unique in a neural network.
 *)
 
-val avg_pool2d : ?name:string -> ?padding:Owl_dense_ndarray_generic.padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
+val avg_pool2d : ?name:string -> ?padding:padding -> ?act_typ:Activation.typ -> int array -> int array -> node -> node
 (**
   [avg_pool2d ~name ~padding ~act_typ pool_size strides node] adds an average
   pooling operation for spatial data to [node].

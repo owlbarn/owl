@@ -19,6 +19,8 @@
 
 open Bigarray
 
+open Owl_types
+
 type ('a, 'b) t = ('a, 'b, c_layout) Array2.t
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
@@ -244,6 +246,52 @@ val set : ('a, 'b) t -> int -> int -> 'a -> unit
   for [set x i j a] is [x.{i,j} <- a]
  *)
 
+val get_index : ('a, 'b) t -> int array array -> 'a array
+(** [get_index i x] returns an array of element values specified by the indices
+  [i]. The length of array [i] equals the number of dimensions of [x]. The
+  arrays in [i] must have the same length, and each represents the indices in
+  that dimension.
+
+  E.g., [ [| [|1;2|]; [|3;4|] |] ] returns the value of elements at position
+  [(1,3)] and [(2,4)] respectively.
+ *)
+
+val set_index : ('a, 'b) t -> int array array -> 'a array -> unit
+(** [set_index] sets the value of elements in [x] according to the indices
+  specified by [i]. The length of array [i] equals the number of dimensions of
+  [x]. The arrays in [i] must have the same length, and each represents the
+  indices in that dimension.
+ *)
+
+val get_slice : index list -> ('a, 'b) t -> ('a, 'b) t
+(** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
+  which is an [int array]. Please refer to the same function in the
+  [Owl_dense_ndarray_generic] documentation for more details.
+ *)
+
+val set_slice : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_slice axis x y] set the slice defined by [axis] in [x] according to
+  the values in [y]. [y] must have the same shape as the one defined by [axis].
+
+  About the slice definition of [axis], please refer to [slice] function.
+ *)
+
+val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
+(** [get_slice_simple axis x] aims to provide a simpler version of [get_slice].
+  This function assumes that every list element in the passed in [in list list]
+  represents a range, i.e., [R] constructor.
+
+  E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
+ *)
+
+val set_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_slice_simple axis x y] aims to provide a simpler version of [set_slice].
+  This function assumes that every list element in the passed in [in list list]
+  represents a range, i.e., [R] constructor.
+
+  E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
+ *)
+
 val row : ('a, 'b) t -> int -> ('a, 'b) t
 (** [row x i] returns the row [i] of [x]. *)
 
@@ -274,19 +322,6 @@ val reshape : int -> int -> ('a, 'b) t -> ('a, 'b) t
 val flatten : ('a, 'b) t -> ('a, 'b) t
 (** [flatten x] reshape [x] into a [1] by [n] row vector without making a copy.
   Therefore the returned value shares the same memory space with original [x].
- *)
-
-val slice : int list list -> ('a, 'b) t -> ('a, 'b) t
-(** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
-  which is an [int array]. Please refer to the same function in the
-  [Owl_dense_ndarray_generic] documentation for more details.
- *)
-
-val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** [set_slice axis x y] set the slice defined by [axis] in [x] according to
-  the values in [y]. [y] must have the same shape as the one defined by [axis].
-
-  About the slice definition of [axis], please refer to [slice] function.
  *)
 
 val reverse : ('a, 'b) t -> ('a, 'b) t
@@ -392,6 +427,18 @@ val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 val dropout : ?rate:float -> ?seed:int -> ('a, 'b) t -> ('a, 'b) t
 (** [dropout ~rate:0.3 x] drops out 30% of the elements in [x], in other words,
   by setting their values to zeros.
+ *)
+
+val top : ('a, 'b) t -> int -> int array array
+(** [top x n] returns the indices of [n] greatest values of [x]. The indices are
+  arranged according to the corresponding elelment values, from the greatest one
+  to the smallest one.
+ *)
+
+val bottom : ('a, 'b) t -> int -> int array array
+(** [bottom x n] returns the indices of [n] smallest values of [x]. The indices
+  are arranged according to the corresponding elelment values, from the smallest
+  one to the greatest one.
  *)
 
 
@@ -1215,10 +1262,10 @@ val l2norm_sqr : ('a, 'b) t -> float
   it always returns a float number.
  *)
 
-val max_pool : ?padding:Owl_dense_ndarray_generic.padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val max_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** [] *)
 
-val avg_pool : ?padding:Owl_dense_ndarray_generic.padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
+val avg_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (** [] *)
 
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t

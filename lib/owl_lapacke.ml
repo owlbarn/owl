@@ -12,7 +12,11 @@
  *)
 
 open Ctypes
+
 open Bigarray
+
+open Owl_types
+
 
 module L = Owl_lapacke_generated
 
@@ -586,7 +590,7 @@ let gels
   check_lapack_error ret;
 
   let k = Pervasives.min m n in
-  let a' = Owl_dense_matrix_generic.slice [[0;k-1]; [0;k-1]] a in
+  let a' = Owl_dense_matrix_generic.get_slice [R[0;k-1]; R[0;k-1]] a in
   let f = match m < n with
     | true  -> Owl_dense_matrix_generic.tril a'
     | false -> Owl_dense_matrix_generic.triu a'
@@ -1289,12 +1293,12 @@ let ggsvd3
   let l = Int32.to_int !@_l in
   let r = match m - k -l >= 0 with
     | true  -> (
-        let r = Owl_dense_matrix_generic.slice [[0; k + l - 1]; [n - k - l; n - 1]] a in
+        let r = Owl_dense_matrix_generic.get_slice [R[0; k + l - 1]; R[n - k - l; n - 1]] a in
         Owl_dense_matrix_generic.triu r
       )
     | false -> (
-        let ra = Owl_dense_matrix_generic.slice [[]; [n - k - l; n - 1]] a in
-        let rb = Owl_dense_matrix_generic.slice [[m - k; l - 1]; [n - k - l; n - 1]] b in
+        let ra = Owl_dense_matrix_generic.get_slice [R[]; R[n - k - l; n - 1]] a in
+        let rb = Owl_dense_matrix_generic.get_slice [R[m - k; l - 1]; R[n - k - l; n - 1]] b in
         let r = Owl_dense_matrix_generic.concat_vertical ra rb in
         Owl_dense_matrix_generic.triu r
       )
@@ -1643,7 +1647,7 @@ let orglq
   check_lapack_error ret;
   (* extract the first leading rows if necessary *)
   match minmn < m with
-  | true  -> Owl_dense_matrix_generic.slice [[0;minmn-1]; []] a
+  | true  -> Owl_dense_matrix_generic.get_slice [R[0;minmn-1]; R[]] a
   | false -> a
 
 
@@ -1674,7 +1678,7 @@ let unglq
   check_lapack_error ret;
   (* extract the first leading rows if necessary *)
   match minmn < m with
-  | true  -> Owl_dense_matrix_generic.slice [[0;minmn-1]; []] a
+  | true  -> Owl_dense_matrix_generic.get_slice [R[0;minmn-1]; R[]] a
   | false -> a
 
 
@@ -1705,7 +1709,7 @@ let orgqr
   check_lapack_error ret;
   (* extract the first leading columns if necessary *)
   match minmn < n with
-  | true  -> Owl_dense_matrix_generic.slice [[]; [0;minmn-1]] a
+  | true  -> Owl_dense_matrix_generic.get_slice [R[]; R[0;minmn-1]] a
   | false -> a
 
 
@@ -1736,7 +1740,7 @@ let ungqr
   check_lapack_error ret;
   (* extract the first leading columns if necessary *)
   match minmn < n with
-  | true  -> Owl_dense_matrix_generic.slice [[]; [0;minmn-1]] a
+  | true  -> Owl_dense_matrix_generic.get_slice [R[]; R[0;minmn-1]] a
   | false -> a
 
 
@@ -1767,7 +1771,7 @@ let orgql
   check_lapack_error ret;
   (* extract the first leading columns if necessary *)
   match minmn < n with
-  | true  -> Owl_dense_matrix_generic.slice [[]; [0;minmn-1]] a
+  | true  -> Owl_dense_matrix_generic.get_slice [R[]; R[0;minmn-1]] a
   | false -> a
 
 
@@ -1798,7 +1802,7 @@ let orgrq
   check_lapack_error ret;
   (* extract the first leading columns if necessary *)
   match minmn < n with
-  | true  -> Owl_dense_matrix_generic.slice [[]; [0;minmn-1]] a
+  | true  -> Owl_dense_matrix_generic.get_slice [R[]; R[0;minmn-1]] a
   | false -> a
 
 
@@ -2396,19 +2400,19 @@ let trevc
   let _empty = Array2.create _kind _layout 0 0 in
   if howmny = 'S' then (      (* return selected eigenvectors *)
     if side = 'L' then        (* left eigenvectors only *)
-      select, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vl, _empty
+      select, Owl_dense_matrix_generic.get_slice [R[]; R[0;m-1]] vl, _empty
     else if side = 'R' then   (* right eigenvectors only *)
-      select, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vr, _empty
+      select, Owl_dense_matrix_generic.get_slice [R[]; R[0;m-1]] vr, _empty
     else                      (* both eigenvectors *)
-      select, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vl, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vr
+      select, Owl_dense_matrix_generic.get_slice [R[]; R[0;m-1]] vl, Owl_dense_matrix_generic.get_slice [R[]; R[0;m-1]] vr
   )
   else (                      (* return all eigenvectors *)
     if side = 'L' then        (* left eigenvectors only *)
-      select, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vl, _empty
+      select, Owl_dense_matrix_generic.get_slice [R[]; R[0;m-1]] vl, _empty
     else if side = 'R' then   (* right eigenvectors only *)
-      select, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vr, _empty
+      select, Owl_dense_matrix_generic.get_slice [R[]; R[0;m-1]] vr, _empty
     else                      (* both eigenvectors *)
-      select, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vl, Owl_dense_matrix_generic.slice [[]; [0;m-1]] vr
+      select, Owl_dense_matrix_generic.get_slice [R[]; R[0;m-1]] vl, Owl_dense_matrix_generic.get_slice [R[]; R[0;m-1]] vr
   )
 
 
@@ -2622,7 +2626,7 @@ let stegr
     | false -> !w
   in
   let z = match m < Array2.dim2 z with
-    | true  -> Owl_dense_matrix_generic.slice [[]; [0;m-1]] z
+    | true  -> Owl_dense_matrix_generic.get_slice [R[]; R[0;m-1]] z
     | false -> z
   in
   w, z
@@ -3056,7 +3060,7 @@ let syevr
   let m = Int32.to_int !@_m in
   let w = Owl_dense_matrix_generic.resize 1 m w in
   match jobz with
-  | 'V' -> w, Owl_dense_matrix_generic.slice [[]; [0;m-1]] z
+  | 'V' -> w, Owl_dense_matrix_generic.get_slice [R[]; R[0;m-1]] z
   | _   -> w, Array2.create _kind _layout 0 0
 
 

@@ -5,6 +5,8 @@
 
 open Bigarray
 
+open Owl_types
+
 type elt = float
 type arr = (float, float32_elt, c_layout) Genarray.t
 
@@ -69,13 +71,21 @@ val get : arr -> int array -> elt
 
 val set : arr -> int array -> elt -> unit
 
+val get_index : arr -> int array array -> elt array
+
+val set_index : arr -> int array array -> elt array -> unit
+
+val get_slice : index list -> arr -> arr
+
+val set_slice : index list -> arr -> arr -> unit
+
+val get_slice_simple : int list list -> arr -> arr
+
+val set_slice_simple : int list list -> arr -> arr -> unit
+
 val sub_left : arr -> int -> int -> arr
 
 val slice_left : arr -> int array -> arr
-
-val slice : int list list -> arr -> arr
-
-val set_slice : int list list -> arr -> arr -> unit
 
 val copy : arr -> arr -> unit
 
@@ -116,6 +126,10 @@ val expand : arr -> int -> arr
 val pad : ?v:elt -> int list list -> arr -> arr
 
 val dropout : ?rate:float -> ?seed:int -> arr -> arr
+
+val top : arr -> int -> int array array
+
+val bottom : arr -> int -> int array array
 
 val mmap : Unix.file_descr -> ?pos:int64 -> bool -> int array -> arr
 
@@ -436,8 +450,6 @@ val clip_by_l2norm : float -> arr -> arr
 
 
 (** {6 Neural network related functions} *)
-
-type padding = Owl_dense_ndarray_generic.padding
 
 val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
 
