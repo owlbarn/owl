@@ -114,6 +114,8 @@ module type NdarraySig = sig
 
   val print : arr -> unit
 
+  val draw_along_dim0 : arr -> int -> arr * int array
+
   (* mathematical functions *)
 
   val abs : arr -> arr
@@ -295,12 +297,14 @@ module type MatrixSig = sig
 
   val set : mat -> int -> int -> elt -> unit
 
-  val row : mat -> int -> mat
-
   val get_slice : index list -> mat -> mat
 
   val set_slice : index list -> mat -> mat -> unit
 
+  val row : mat -> int -> mat
+
+  val rows : mat -> int array -> mat
+  
   val clone : mat -> mat
 
   val reset : mat -> unit

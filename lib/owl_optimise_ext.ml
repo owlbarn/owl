@@ -7,7 +7,14 @@
 
 open Owl_types
 
-open Owl_algodiff.S
+
+module Make
+  (M : MatrixSig)
+  (A : NdarraySig with type elt = M.elt and type arr = M.arr)
+  = struct
+
+  module AD = Owl_algodiff_generic.Make (M) (A)
+  open AD
 
 
 (* This module contains the helper fucntions used by other sub-modules. They are
@@ -23,29 +30,29 @@ module Utils = struct
   let draw_samples x y n =
     match x, y with
     | Arr x, Mat y -> (
-        let x, i = Owl_dense_ndarray_generic.draw_along_dim0 x n in
-        let y = Owl_dense_matrix_generic.rows y i in
+        let x, i = A.draw_along_dim0 x n in
+        let y = M.rows y i in
         Arr x, Mat y
       )
-    | Mat x, Mat y -> let x, y, _ = Owl_dense_matrix_generic.draw_rows2 ~replacement:false x y n in Mat x, Mat y
+    | Mat x, Mat y -> let x, y, _ = M.draw_rows2 ~replacement:false x y n in Mat x, Mat y
     | x, y         -> failwith ("Owl_neural_optimise.Utils.draw_samples:" ^ (type_info x))
 
   let get_chunk x y i c =
     match x, y with
     | Arr x, Mat y -> (
-        let n = Owl_dense_matrix_generic.row_num y in
+        let n = M.row_num y in
         let a = (i * c) mod n in
         let b = Pervasives.min (a + c - 1) (n - 1) in
-        let x = Owl_dense_ndarray_generic.get_slice [R [a;b]] x in
-        let y = Owl_dense_matrix_generic.get_slice [R [a;b]] y in
+        let x = A.get_slice [R [a;b]] x in
+        let y = M.get_slice [R [a;b]] y in
         Arr x, Mat y
       )
     | Mat x, Mat y -> (
-        let n = Owl_dense_matrix_generic.row_num y in
+        let n = M.row_num y in
         let a = (i * c) mod n in
         let b = Pervasives.min (a + c - 1) (n - 1) in
-        let x = Owl_dense_matrix_generic.get_slice [R [a;b]] x in
-        let y = Owl_dense_matrix_generic.get_slice [R [a;b]] y in
+        let x = M.get_slice [R [a;b]] x in
+        let y = M.get_slice [R [a;b]] y in
         Mat x, Mat y
       )
     | x, y         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))
@@ -555,5 +562,7 @@ let test_nn_generic f forward nn x y =
   | _, _         -> failwith "Owl_neural_optimise:test_nn_generic"
 
 
+
+end
 
 (* ends here *)

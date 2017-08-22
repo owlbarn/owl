@@ -423,3 +423,5 @@ val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
 (** {6 Experimental functions} *)
 
 val sum_slices : ?axis:int -> arr -> arr
+
+val draw_along_dim0 : arr -> int -> arr * int array
