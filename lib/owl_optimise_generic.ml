@@ -3,7 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Optimisation engine *)
+(** [Optimisation engine]
+  This module provides fundamental supports for Owl's regression and neural
+  network module. The module supports both single and double precision float
+  numbers.
+ *)
 
 open Owl_types
 
