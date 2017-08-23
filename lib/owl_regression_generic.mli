@@ -31,5 +31,7 @@ module Make
   val logistic : ?i:bool -> mat -> mat -> mat array
   (** [] *)
 
+  val exponential : ?i:bool -> mat -> mat -> elt * elt * elt
+
 
 end

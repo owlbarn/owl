@@ -140,7 +140,7 @@ module Make
 
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Quadratic) 1000.
+      ~loss:(Loss.Quadratic) 100000.
     in
     minimise params forward backward update save (Mat x) (Mat y) |> ignore;
     !a |> primal' |> unpack_flt,
