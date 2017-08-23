@@ -288,18 +288,22 @@ module Make
   module Stopping = struct
 
     type typ =
+      | Const of float
       | Early of int * int (* stagnation patience, overfitting patience *)
       | None
 
-    let run = function
+    let run typ x = match typ with
+      | Const a      -> x < a
       | Early (s, o) -> failwith "not implemented"   (* TODO *)
       | None         -> false
 
     let default = function
+      | Const _ -> Const 1e-6
       | Early _ -> Early (750, 10)
       | None    -> None
 
     let to_string = function
+      | Const a      -> Printf.sprintf "const (a = %g)" a
       | Early (s, o) -> Printf.sprintf "early (s = %i, o = %i)" s o
       | None         -> "none"
 
@@ -395,6 +399,7 @@ module Make
       mutable regularisation  : Regularisation.typ;
       mutable momentum        : Momentum.typ;
       mutable clipping        : Clipping.typ;
+      mutable stopping        : Stopping.typ;
       mutable checkpoint      : Checkpoint.typ;
       mutable verbosity       : bool;
     }
@@ -408,11 +413,15 @@ module Make
       regularisation = Regularisation.None;
       momentum       = Momentum.None;
       clipping       = Clipping.None;
+      stopping       = Stopping.None;
       checkpoint     = Checkpoint.None;
       verbosity      = true;
     }
 
-    let config ?batch ?gradient ?loss ?learning_rate ?regularisation ?momentum ?clipping ?checkpoint ?verbosity epochs =
+    let config
+      ?batch ?gradient ?loss ?learning_rate ?regularisation ?momentum ?clipping
+      ?stopping ?checkpoint ?verbosity epochs
+      =
       let p = default () in
       (match batch with Some x -> p.batch <- x | None -> ());
       (match gradient with Some x -> p.gradient <- x | None -> ());
@@ -421,6 +430,7 @@ module Make
       (match regularisation with Some x -> p.regularisation <- x | None -> ());
       (match momentum with Some x -> p.momentum <- x | None -> ());
       (match clipping with Some x -> p.clipping <- x | None -> ());
+      (match stopping with Some x -> p.stopping <- x | None -> ());
       (match checkpoint with Some x -> p.checkpoint <- x | None -> ());
       (match verbosity with Some x -> p.verbosity <- x | None -> ());
       p.epochs <- epochs; p
@@ -435,6 +445,7 @@ module Make
       Printf.sprintf "    regularisation : %s\n" (Regularisation.to_string p.regularisation) ^
       Printf.sprintf "    momentum       : %s\n" (Momentum.to_string p.momentum) ^
       Printf.sprintf "    clipping       : %s\n" (Clipping.to_string p.clipping) ^
+      Printf.sprintf "    stopping       : %s\n" (Stopping.to_string p.stopping) ^
       Printf.sprintf "    checkpoint     : %s\n" (Checkpoint.to_string p.checkpoint) ^
       Printf.sprintf "    verbosity      : %s\n" (if p.verbosity then "true" else "false") ^
       "---"
@@ -458,6 +469,7 @@ module Make
     let momt_fun = Momentum.run params.momentum in
     let upch_fun = Learning_Rate.update_ch params.learning_rate in
     let clip_fun = Clipping.run params.clipping in
+    let stop_fun = Stopping.run params.stopping in
     let chkp_fun = Checkpoint.run params.checkpoint in
 
     (* operations in the ith iteration *)
@@ -492,14 +504,15 @@ module Make
     let state = Checkpoint.init_state batches_per_epoch params.epochs in
     Checkpoint.(state.loss.(0) <- _loss);
 
-    (* iterate all batches in each epoch *)
-    for i = 1 to Checkpoint.(state.batches) do
+    (* try to iterate all batches *)
+    (try for i = 1 to Checkpoint.(state.batches) do
       let loss', ws, gs' = iterate i in
       (* checkpoint of the optimisation if necessary *)
       chkp_fun save i loss' state;
       (* print out the current state of optimisation *)
-      if params.verbosity = true then
-        Checkpoint.print_state_info state;
+      if params.verbosity = true then Checkpoint.print_state_info state;
+      (* check if stopping criterion is met *)
+      if stop_fun (unpack_flt loss') = true then failwith "stop";
       (* calculate gradient updates *)
       let ps' = Owl_utils.aarr_map2i (
         fun k l w g' ->
@@ -527,7 +540,7 @@ module Make
       if params.momentum <> Momentum.None then us := us';
       gs := gs';
       ps := ps';
-    done;
+    done with exn -> ());
 
     (* print optimisation summary *)
     if params.verbosity = true then

@@ -27,15 +27,15 @@ module Activation     = Owl_neural_neuron.Activation
 
 (* module aliases: optimisation configuration *)
 
-module Params         = Owl_neural_optimise.Params
-module Batch          = Owl_neural_optimise.Batch
-module Learning_Rate  = Owl_neural_optimise.Learning_Rate
-module Loss           = Owl_neural_optimise.Loss
-module Gradient       = Owl_neural_optimise.Gradient
-module Momentum       = Owl_neural_optimise.Momentum
-module Regularisation = Owl_neural_optimise.Regularisation
-module Clipping       = Owl_neural_optimise.Clipping
-module Checkpoint     = Owl_neural_optimise.Checkpoint
+module Params         = Owl_optimise.S.Params
+module Batch          = Owl_optimise.S.Batch
+module Learning_Rate  = Owl_optimise.S.Learning_Rate
+module Loss           = Owl_optimise.S.Loss
+module Gradient       = Owl_optimise.S.Gradient
+module Momentum       = Owl_optimise.S.Momentum
+module Regularisation = Owl_optimise.S.Regularisation
+module Clipping       = Owl_optimise.S.Clipping
+module Checkpoint     = Owl_optimise.S.Checkpoint
 
 
 

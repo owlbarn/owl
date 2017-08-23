@@ -6,7 +6,7 @@
 open Owl_types
 open Owl_algodiff.S
 open Owl_neural_neuron
-open Owl_neural_optimise
+open Owl_optimise.S
 
 
 (** Neural network: Graphical neural network *)

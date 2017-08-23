@@ -78,7 +78,6 @@ Library owl
                     neural/Owl_neural_neuron,
                     neural/Owl_neural_graph,
                     neural/Owl_neural_feedforward,
-                    neural/Owl_neural_optimise,
                     neural/Owl_neural_parallel,
                     ### Experimental ###
                     ext/Owl_ext,

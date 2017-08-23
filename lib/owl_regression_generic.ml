@@ -34,6 +34,7 @@ module Make
       pri_v, adj_v
     in
     let update us = p := us.(0).(0) in
+    let save _ = () in
 
     (* forward/backward/update with bias *)
     let forward_bias x =
@@ -54,12 +55,6 @@ module Make
       b := us.(0).(1)
     in
 
-    let save _ = () in
-    let params = Params.config
-      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.)
-      ~gradient:(Gradient.GD) ~loss:(Loss.Quadratic) 1000.
-    in
-
     (* return either [p] or [p, b] depends on [bias] *)
     if bias = true then
       let _ = minimise params forward_bias backward_bias update_bias save (Mat x) (Mat y) in
@@ -72,15 +67,15 @@ module Make
   let ols ?(i=false) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Quadratic) 1000.
+      ~loss:(Loss.Quadratic) ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
 
 
   let ridge ?(i=true) ?(a=0.001) x y =
     let params = Params.config
-      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L2norm a) 1000.
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 0.01) ~gradient:(Gradient.GD)
+      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L2norm a) ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
 
@@ -88,7 +83,7 @@ module Make
   let lasso ?(i=true) ?(a=0.001) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L1norm a) 1000.
+      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L1norm a) ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
 
@@ -96,7 +91,7 @@ module Make
   let svm ?(i=true) ?(a=0.001) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Hinge) ~regularisation:(Regularisation.L2norm a) 1000.
+      ~loss:(Loss.Hinge) ~regularisation:(Regularisation.L2norm a) ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
 
@@ -104,7 +99,7 @@ module Make
   let logistic ?(i=true) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Cross_entropy) 1000.
+      ~loss:(Loss.Cross_entropy) ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
 
@@ -140,7 +135,7 @@ module Make
 
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Quadratic) 100000.
+      ~loss:(Loss.Quadratic) ~stopping:(Stopping.Const 1e-16) 100000.
     in
     minimise params forward backward update save (Mat x) (Mat y) |> ignore;
     !a |> primal' |> unpack_flt,
