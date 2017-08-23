@@ -1463,9 +1463,14 @@ module GlobalAvgPool2D = struct
     l.in_shape.(2) <- out_shape.(2);
     l.out_shape.(0) <- out_shape.(2)
 
+  (* TODO: also fix other Global*Pool nodes? *)
   let run x l =
     let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
-    Maths.(avg_pool2d VALID x kernel [|1;1|] |> arr_to_mat)
+    (* Maths.(avg_pool2d VALID x kernel [|1;1|] |> arr_to_mat) *)
+    let a = Maths.avg_pool2d VALID x kernel [|1;1|] in
+    let s = Arr.shape a in
+    let b, o = s.(0), s.(3) in
+    Arr.reshape a [|b; o|] |> Maths.arr_to_mat
 
   let to_string l =
     Printf.sprintf "    GlobalAvgPool2D : in:[*,%i,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) ^
@@ -1878,14 +1883,16 @@ module Concatenate = struct
     let _d = ref 0 in
     Array.iter (fun s1 ->
       Array.iteri (fun i d ->
-        if i <> l.axis then assert (d = s0.(i))
-        else _d := !_d + d
+        if (i+1) <> l.axis then assert (d = s0.(i))
+        else _d := !_d + d;
       ) s1
     ) out_shapes;
     l.in_shape <- Array.copy s0;
     l.out_shape <- Array.copy s0;
-    l.in_shape.(l.axis) <- (-1);
-    l.out_shape.(l.axis) <- !_d
+    (* should not concatenate along batchs axis *)
+    assert (l.axis > 0);
+    l.in_shape.(l.axis - 1) <- (-1);
+    l.out_shape.(l.axis - 1) <- !_d
 
   let run x l =
     let n = Array.length x in
