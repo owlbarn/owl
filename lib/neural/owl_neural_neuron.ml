@@ -1878,7 +1878,7 @@ module Concatenate = struct
     let _d = ref 0 in
     Array.iter (fun s1 ->
       Array.iteri (fun i d ->
-        if i <> l.axis then assert (d = s0.(i))
+        if (i + 1) <> l.axis then assert (d = s0.(i))
         else _d := !_d + d
       ) s1
     ) out_shapes;
