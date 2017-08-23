@@ -1367,7 +1367,10 @@ module GlobalMaxPool1D = struct
 
   let run x l =
     let kernel = [|l.in_shape.(0)|] in
-    Maths.(max_pool1d VALID x kernel [|1|] |> arr_to_mat)
+    let a = Maths.max_pool1d VALID x kernel [|1|] in
+    let s = Arr.shape a in
+    let b, o = s.(0), s.(2) in
+    Arr.reshape a [|b; o|] |> Maths.arr_to_mat
 
   let to_string l =
     Printf.sprintf "    GlobalMaxPool1D : in:[*,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) ^
@@ -1400,7 +1403,10 @@ module GlobalMaxPool2D = struct
 
   let run x l =
     let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
-    Maths.(max_pool2d VALID x kernel [|1;1|] |> arr_to_mat)
+    let a = Maths.max_pool2d VALID x kernel [|1;1|] in
+    let s = Arr.shape a in
+    let b, o = s.(0), s.(3) in
+    Arr.reshape a [|b; o|] |> Maths.arr_to_mat
 
   let to_string l =
     Printf.sprintf "    GlobalMaxPool2D : in:[*,%i,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) ^
@@ -1432,7 +1438,10 @@ module GlobalAvgPool1D = struct
 
   let run x l =
     let kernel = [|l.in_shape.(0)|] in
-    Maths.(avg_pool1d VALID x kernel [|1|] |> arr_to_mat)
+    let a = Maths.avg_pool1d VALID x kernel [|1|] in
+    let s = Arr.shape a in
+    let b, o = s.(0), s.(2) in
+    Arr.reshape a [|b; o|] |> Maths.arr_to_mat
 
   let to_string l =
     Printf.sprintf "    GlobalAvgPool1D : in:[*,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) ^
@@ -1463,10 +1472,8 @@ module GlobalAvgPool2D = struct
     l.in_shape.(2) <- out_shape.(2);
     l.out_shape.(0) <- out_shape.(2)
 
-  (* TODO: also fix other Global*Pool nodes? *)
   let run x l =
     let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
-    (* Maths.(avg_pool2d VALID x kernel [|1;1|] |> arr_to_mat) *)
     let a = Maths.avg_pool2d VALID x kernel [|1;1|] in
     let s = Arr.shape a in
     let b, o = s.(0), s.(3) in
@@ -1884,7 +1891,7 @@ module Concatenate = struct
     Array.iter (fun s1 ->
       Array.iteri (fun i d ->
         if (i+1) <> l.axis then assert (d = s0.(i))
-        else _d := !_d + d;
+        else _d := !_d + d
       ) s1
     ) out_shapes;
     l.in_shape <- Array.copy s0;
