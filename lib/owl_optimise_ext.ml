@@ -136,6 +136,7 @@ module Make
   module Loss = struct
 
     type typ =
+      | Hinge
       | L1norm
       | L2norm
       | Quadratic
@@ -143,6 +144,7 @@ module Make
       | Custom of (t -> t -> t)
 
     let run typ y y' = match typ with
+      | Hinge         -> Maths.(max2 (F 0.) (F 1. - y * y'))
       | L1norm        -> Maths.(l1norm (y - y'))
       | L2norm        -> Maths.(l2norm (y - y'))
       | Quadratic     -> Maths.(l2norm_sqr (y - y'))
@@ -150,6 +152,7 @@ module Make
       | Custom f      -> f y y' (* y': prediction *)
 
     let to_string = function
+      | Hinge         -> "Hinge"
       | L1norm        -> "l1norm"
       | L2norm        -> "l2norm"
       | Quadratic     -> "quadratic"

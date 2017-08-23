@@ -62,6 +62,7 @@ Library owl
                     Owl_optimise,
                     Owl_optimise_ext,
                     Owl_regression,
+                    Owl_regression_ext,
                     Owl_plot,
                     Owl_dataset,
                     Owl_toplevel,

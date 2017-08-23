@@ -60,7 +60,7 @@ val nonlinear : (vector -> float -> float) -> float array -> dsmat -> dsmat -> d
 val ols : ?i:bool -> dsmat -> dsmat -> dsmat
 (** Ordinary Least Square regression: in [ols ~i x y], [i] : whether or not to
   include intercept bias in parameters, the default is [true]; ; [x] is the
-  measurements, and [y] is the observations. THe return is the model.
+  measurements, and [y] is the observations. The return is the model.
  *)
 
 val ridge : ?i:bool -> ?a:float -> dsmat -> dsmat -> dsmat
