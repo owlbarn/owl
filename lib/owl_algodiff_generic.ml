@@ -228,10 +228,7 @@ module Make
   let unpack_mat x =
     match (primal x) with
     | Mat x -> x
-    | Arr _ -> failwith "error: aaa"
-    | F _ -> failwith "error: bbb"
-    | DF _ -> failwith "error: ccc"
-    | DR _ -> failwith "error: ddd"
+    | _     -> failwith "error: AD.unpack_mat"
 
   let pack_flt x = F x
 

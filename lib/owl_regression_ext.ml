@@ -161,4 +161,44 @@ module Make
     !p |> primal' |> unpack_mat
 
 
+  let exponential ?(i=true) x y =
+    let a = ref (F (Owl_stats.Rnd.uniform ())) in
+    let lambda = ref (F (Owl_stats.Rnd.uniform ())) in
+    let b = ref (F (Owl_stats.Rnd.uniform ())) in
+
+    let forward x =
+      let t = tag () in
+      a := make_reverse !a t;
+      lambda := make_reverse !lambda t;
+      b := make_reverse !b t;
+      let pred = Maths.(!a * exp (neg !lambda * x) + !b) in
+      pred, [| [|!a; !lambda; !b|] |]
+    in
+
+    let backward y =
+      reverse_prop (F 1.) y;
+      let pri_v = [| [|primal !a; primal !lambda; primal !b|] |] in
+      let adj_v = [| [|adjval !a; adjval !lambda; adjval !b|] |] in
+      pri_v, adj_v
+    in
+
+    let update us =
+      a := us.(0).(0);
+      lambda := us.(0).(1);
+      b := us.(0).(2)
+    in
+
+    let save _ = () in
+
+    let params = Params.config
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.)
+      ~gradient:(Gradient.GD) ~loss:(Loss.Quadratic) 1000.
+    in
+    minimise params forward backward update save (Mat x) (Mat y);
+    !a |> primal' |> unpack_flt,
+    !lambda |> primal' |> unpack_flt,
+    !b |> primal' |> unpack_flt
+
+
+
 end
