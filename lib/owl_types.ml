@@ -70,7 +70,7 @@ let _neg_inf : type a b. (a, b) kind -> a = function
   | _         -> failwith "_neg_inf: unsupported operation"
 
 
-(* Module Signatures for Ndarray *)
+(* Module Signature for Ndarray *)
 
 module type NdarraySig = sig
 
@@ -263,7 +263,7 @@ module type NdarraySig = sig
 end
 
 
-(* Module Signatures for Ndarray and Matirx *)
+(* Module Signature Matirx *)
 
 module type MatrixSig = sig
 
