@@ -391,17 +391,17 @@ module Make
   module Params = struct
 
     type typ = {
-      mutable epochs          : float;
-      mutable batch           : Batch.typ;
-      mutable gradient        : Gradient.typ;
-      mutable loss            : Loss.typ;
-      mutable learning_rate   : Learning_Rate.typ;
-      mutable regularisation  : Regularisation.typ;
-      mutable momentum        : Momentum.typ;
-      mutable clipping        : Clipping.typ;
-      mutable stopping        : Stopping.typ;
-      mutable checkpoint      : Checkpoint.typ;
-      mutable verbosity       : bool;
+      mutable epochs         : float;
+      mutable batch          : Batch.typ;
+      mutable gradient       : Gradient.typ;
+      mutable loss           : Loss.typ;
+      mutable learning_rate  : Learning_Rate.typ;
+      mutable regularisation : Regularisation.typ;
+      mutable momentum       : Momentum.typ;
+      mutable clipping       : Clipping.typ;
+      mutable stopping       : Stopping.typ;
+      mutable checkpoint     : Checkpoint.typ;
+      mutable verbosity      : bool;
     }
 
     let default () = {

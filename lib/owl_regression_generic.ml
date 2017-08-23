@@ -18,8 +18,10 @@ module Make
   let _linear_reg bias params x y =
     let m = M.col_num x in
     let n = M.col_num y in
-    let p = ref (Mat (M.uniform m n)) in
-    let b = ref (Mat (M.zeros 1 n)) in
+    (* initialise the matrices according to fan_in/out *)
+    let r = 1. /. (float_of_int m) in
+    let p = ref (Mat M.(sub_scalar (uniform ~scale:(2.*.r) m n) r)) in
+    let b = ref (Mat M.(sub_scalar (uniform ~scale:(2.*.r) 1 n) r)) in
 
     (* forward/backward/update without bias *)
     let forward x =
@@ -72,15 +74,15 @@ module Make
     _linear_reg i params x y
 
 
-  let ridge ?(i=true) ?(a=0.001) x y =
+  let ridge ?(i=false) ?(a=0.001) x y =
     let params = Params.config
-      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 0.01) ~gradient:(Gradient.GD)
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
       ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L2norm a) ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
 
 
-  let lasso ?(i=true) ?(a=0.001) x y =
+  let lasso ?(i=false) ?(a=0.001) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
       ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L1norm a) ~stopping:(Stopping.Const 1e-16) 1000.
@@ -88,7 +90,7 @@ module Make
     _linear_reg i params x y
 
 
-  let svm ?(i=true) ?(a=0.001) x y =
+  let svm ?(i=false) ?(a=0.001) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
       ~loss:(Loss.Hinge) ~regularisation:(Regularisation.L2norm a) ~stopping:(Stopping.Const 1e-16) 1000.
@@ -96,7 +98,7 @@ module Make
     _linear_reg i params x y
 
 
-  let logistic ?(i=true) x y =
+  let logistic ?(i=false) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
       ~loss:(Loss.Cross_entropy) ~stopping:(Stopping.Const 1e-16) 1000.
@@ -104,7 +106,7 @@ module Make
     _linear_reg i params x y
 
 
-  let exponential ?(i=true) x y =
+  let exponential ?(i=false) x y =
     let a = ref (F (Owl_stats.Rnd.uniform ())) in
     let lambda = ref (F (Owl_stats.Rnd.uniform ())) in
     let b = ref (F (Owl_stats.Rnd.uniform ())) in
