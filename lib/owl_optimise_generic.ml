@@ -24,7 +24,7 @@ module Make
 
 
   (* This module contains the helper fucntions used by other sub-modules. They are
-    useful but not general enough to be included in Algodiff.[S|D].Maths module. *)
+     useful but not general enough to be included in Algodiff.[S|D].Maths module. *)
   module Utils = struct
 
     let sample_num x =
