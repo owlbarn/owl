@@ -1980,7 +1980,7 @@ module Make
       let s_str = Owl_utils.string_of_array string_of_int s in
       Printf.sprintf "    Normalisation : in:[*,%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    axis          : %i\n" l.axis ^
-      Printf.sprintf "    params        : %i\n" (l.in_shape.(l.axis - 1) * l.in_shape.(l.axis - 1)) ^
+      Printf.sprintf "    params        : %i\n" (l.in_shape.(l.axis - 1) * 2) ^
       Printf.sprintf "    beta          : [%s]\n" s_str ^
       Printf.sprintf "    gamma         : [%s]\n" s_str
 

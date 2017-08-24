@@ -538,11 +538,23 @@ module Make
 
   (* training functions *)
 
-
+  (* generic minimisation functions
+     forward: fucntion to run the forward pass
+     backward: function to run the backward pass
+     update: function to update the weights according to the gradient
+     save: function to save the model for checkpoint
+   *)
   let train_generic ?params ?(init_model=true) nn x y =
     if init_model = true then init nn;
-    Optimise.minimise_generic
-      ?params forward backward update save nn x y
+    let f = forward nn in
+    let b = backward nn in
+    let u = update nn in
+    let s = save nn in
+    let p = match params with
+      | Some p -> p
+      | None   -> Optimise.Params.default ()
+    in
+    Optimise.minimise p f b u s x y
 
 
   let train ?params ?init_model nn x y =

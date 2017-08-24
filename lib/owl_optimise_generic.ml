@@ -562,41 +562,6 @@ module Make
     Array.map unpack_flt Checkpoint.(state.loss)
 
 
-  (* generic minimisation functions
-     forward: fucntion to run the forward pass
-     backward: function to run the backward pass
-     update: function to update the weights according to the gradient
-     save: function to save the model for checkpoint
-   *)
-  let minimise_generic ?params forward backward update save nn x y =
-    let f = forward nn in
-    let b = backward nn in
-    let u = update nn in
-    let s = save nn in
-    let p = match params with
-      | Some p -> p
-      | None   -> Params.default ()
-    in
-    minimise p f b u s x y
-
-
-  (* generic function to test the neural network, for both feedforward and graph
-     f : the passed in function applies to every x
-     forward: fucntion to run the forward pass
-   *)
-  let test_nn_generic f forward nn x y =
-    match x, y with
-    | Mat _, Mat _ -> (
-        Mat.iter2_rows (fun u v ->
-          forward u nn |> unpack_mat |> f
-        ) x y
-      )
-    | Arr _, Mat _ -> (
-        failwith "not implemented yet"
-      )
-    | _, _         -> failwith "Owl_neural_optimise:test_nn_generic"
-
-
 
 end
 
