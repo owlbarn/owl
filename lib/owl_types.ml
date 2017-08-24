@@ -220,6 +220,8 @@ module type NdarraySig = sig
 
   val scalar_div : elt -> arr -> arr
 
+  val elt_greater_equal_scalar : arr -> elt -> arr
+
   (** {6 Neural network related functions} *)
 
   val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
@@ -458,6 +460,8 @@ module type MatrixSig = sig
   val scalar_div : elt -> mat -> mat
 
   val dot : mat -> mat -> mat
+
+  val elt_greater_equal_scalar : mat -> elt -> mat
 
 end
 

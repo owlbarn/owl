@@ -9,33 +9,62 @@
 (** NOTE: this is an experimental module being built now *)
 
 
-open Owl_algodiff.S
-open Owl_neural_neuron
+(** {6 Single precision neural network} *)
+module S = struct
+
+  (* module aliases: graphical network & parallel *)
+
+  module Graph          = Owl_neural_graph.Make (Owl_dense_matrix.S) (Owl_dense_ndarray.S)
+  module Parallel       = Owl_neural_parallel.Make (Graph)
+
+  (* module aliases: weight init and activation *)
+
+  module Init           = Graph.Neuron.Init
+  module Activation     = Graph.Neuron.Activation
+
+  (* module aliases: optimisation configuration *)
+
+  module Params         = Graph.Optimise.Params
+  module Batch          = Graph.Optimise.Batch
+  module Learning_Rate  = Graph.Optimise.Learning_Rate
+  module Loss           = Graph.Optimise.Loss
+  module Gradient       = Graph.Optimise.Gradient
+  module Momentum       = Graph.Optimise.Momentum
+  module Regularisation = Graph.Optimise.Regularisation
+  module Clipping       = Graph.Optimise.Clipping
+  module Checkpoint     = Graph.Optimise.Checkpoint
 
 
-(* module aliases: two network types & parallel *)
-
-module Graph          = Owl_neural_graph
-module Parallel       = Owl_neural_parallel
+end
 
 
-(* module aliases: weight init and activation *)
+(** {6 Double precision neural network} *)
+module D = struct
 
-module Init           = Owl_neural_neuron.Init
-module Activation     = Owl_neural_neuron.Activation
+  (* module aliases: graphical network & parallel *)
+
+  module Graph          = Owl_neural_graph.Make (Owl_dense_matrix.D) (Owl_dense_ndarray.D)
+  (* module Parallel       = Owl_neural_parallel.Make (Graph) *)
+
+  (* module aliases: weight init and activation *)
+
+  module Init           = Graph.Neuron.Init
+  module Activation     = Graph.Neuron.Activation
+
+  (* module aliases: optimisation configuration *)
+
+  module Params         = Graph.Optimise.Params
+  module Batch          = Graph.Optimise.Batch
+  module Learning_Rate  = Graph.Optimise.Learning_Rate
+  module Loss           = Graph.Optimise.Loss
+  module Gradient       = Graph.Optimise.Gradient
+  module Momentum       = Graph.Optimise.Momentum
+  module Regularisation = Graph.Optimise.Regularisation
+  module Clipping       = Graph.Optimise.Clipping
+  module Checkpoint     = Graph.Optimise.Checkpoint
 
 
-(* module aliases: optimisation configuration *)
-
-module Params         = Owl_optimise.S.Params
-module Batch          = Owl_optimise.S.Batch
-module Learning_Rate  = Owl_optimise.S.Learning_Rate
-module Loss           = Owl_optimise.S.Loss
-module Gradient       = Owl_optimise.S.Gradient
-module Momentum       = Owl_optimise.S.Momentum
-module Regularisation = Owl_optimise.S.Regularisation
-module Clipping       = Owl_optimise.S.Clipping
-module Checkpoint     = Owl_optimise.S.Checkpoint
+end
 
 
 

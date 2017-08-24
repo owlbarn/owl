@@ -6,8 +6,8 @@
 #zoo "217ef87bc36845c4e78e398d52bc4c5b"
 
 open Owl
-open Neural
-open Neural.Graph
+open Neural.S
+open Neural.S.Graph
 open Algodiff.S
 
 

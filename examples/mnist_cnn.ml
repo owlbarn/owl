@@ -2,8 +2,8 @@
 (* This example trains a simple convolutional network over the MNIST dataset. *)
 
 open Owl
-open Neural
-open Neural.Graph
+open Neural.S
+open Neural.S.Graph
 open Algodiff.S
 
 
