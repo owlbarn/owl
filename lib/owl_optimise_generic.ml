@@ -169,7 +169,7 @@ module Make
   module Gradient = struct
 
     type typ =
-      | GD           (* classic gradient descendent *)
+      | GD           (* classic gradient descent *)
       | CG           (* Hestenes and Stiefel 1952 *)
       | CD           (* Fletcher 1987 *)
       | NonlinearCG  (* Fletcher and Reeves 1964 *)
@@ -198,16 +198,23 @@ module Make
           Maths.((neg g') + (b * p))
         )
       | NewtonCG    -> fun _ w g p g' -> failwith "not implemented" (* TODO *)
-      | Newton      -> fun _ w g p g' -> failwith "not implemented" (* TODO *)
+      | Newton      -> fun f w g p g' -> (
+          (* TODO: NOT FINISHED YET *)
+          let f = Maths.l2norm_sqr in
+          let w' = Maths.flatten w in
+          let g', h' = gradhessian f w' in
+          let g' = Maths.reshape g' (shape w) in
+          Maths.(neg ((sum (inv h')) * g'))
+        )
 
     let to_string = function
-      | GD          -> "gradient descendent"
+      | GD          -> "gradient descent"
       | CG          -> "conjugate gradient"
-      | CD          -> "conjugate descendent"
+      | CD          -> "conjugate descent"
       | NonlinearCG -> "nonlinear conjugate gradient"
       | DaiYuanCG   -> "dai & yuan conjugate gradient"
       | NewtonCG    -> "newton conjugate gradient"
-      | Newton      -> "newtown"
+      | Newton      -> "newton"
 
   end
 
@@ -519,15 +526,17 @@ module Make
           let g, p = !gs.(k).(l), !ps.(k).(l) in
           (* clip the gradient if necessary *)
           let g' = clip_fun g' in
-          (* calculate the descendent *)
+          (* calculate the descent *)
           grad_fun loss_fun w g p g'
-        ) ws gs' in
+        ) ws gs'
+      in
       (* update gcache if necessary *)
       ch := upch_fun gs' !ch;
       (* adjust direction based on learning_rate *)
       let us' = Owl_utils.aarr_map3 (fun p' g' c ->
         Maths.(p' * rate_fun i g' c)
-      ) ps' gs' !ch in
+      ) ps' gs' !ch
+      in
       (* adjust direction based on momentum *)
       let us' = match params.momentum <> Momentum.None with
         | true  -> Owl_utils.aarr_map2 momt_fun !us us'
@@ -540,7 +549,7 @@ module Make
       if params.momentum <> Momentum.None then us := us';
       gs := gs';
       ps := ps';
-    done with Failure _ -> ());
+    done with exn -> raise exn);
 
     (* print optimisation summary *)
     if params.verbosity = true then

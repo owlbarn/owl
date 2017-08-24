@@ -67,6 +67,8 @@ module Make
 
     val cross_entropy : t -> t -> t
 
+    val inv : t -> t
+    
     val neg : t -> t
 
     val abs : t -> t
