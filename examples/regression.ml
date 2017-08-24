@@ -5,7 +5,7 @@ open Owl
 
 let generate_data () =
   let x = Mat.uniform 1000 3 in
-  let p = Mat.uniform 3 1 in
+  let p = Mat.uniform 3 2 in
   let y = Mat.(x *@ p) in
   x, p, y
 

@@ -180,13 +180,18 @@ module Make
     let run = function
       | GD          -> fun _ _ _ g' -> Maths.neg g'
       | CG          -> fun _ g p g' -> (
+          (* FIXME *)
           let y = Maths.(g' - g) in
-          let b = Maths.((g' *@ y) / (p *@ y)) in
-          Maths.(neg g' + (b *@ p))
+          let b = Maths.((g' * y) / (p * y)) in
+          Maths.(neg g' + (b * p))
         )
       | CD          -> fun _ g p g' -> (
-          let b = Maths.(l2norm_sqr g' / (neg p *@ g)) in
-          Maths.(neg g' + (b *@ p))
+          (* let s0 = shape g in
+          let s1 = shape p in
+          let s2 = shape g' in
+          Printf.printf "(%i,%i) (%i,%i) (%i,%i) \n" s0.(0) s0.(1) s1.(0) s1.(1) s2.(0) s2.(1); flush_all (); *)
+          let b = Maths.(l2norm_sqr g' / (neg p * g)) in
+          Maths.(neg g' + (b * p))
         )
       | NonlinearCG -> fun _ g p g' -> (
           let b = Maths.((l2norm_sqr g') / (l2norm_sqr g)) in
@@ -461,7 +466,7 @@ module Make
       print_endline (Params.to_string params);
 
     (* make alias functions *)
-    let batch    = Batch.run params.batch in
+    let bach_fun = Batch.run params.batch in
     let loss_fun = Loss.run params.loss in
     let grad_fun = Gradient.run params.gradient in
     let rate_fun = Learning_Rate.run params.learning_rate in
@@ -474,7 +479,7 @@ module Make
 
     (* operations in the ith iteration *)
     let iterate i =
-      let xt, yt = batch x y i in
+      let xt, yt = bach_fun x y i in
       let yt', ws = forward xt in
       let loss = Maths.(loss_fun yt yt') in
       (* take the average of the loss *)
@@ -540,7 +545,7 @@ module Make
       if params.momentum <> Momentum.None then us := us';
       gs := gs';
       ps := ps';
-    done with exn -> ());
+    done with Failure _ -> ());
 
     (* print optimisation summary *)
     if params.verbosity = true then
