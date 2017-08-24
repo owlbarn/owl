@@ -30,6 +30,7 @@ Some simple evaluations can be found as follows [[Ndarray](https://github.com/ry
 [LinkedIn](http://uk.linkedin.com/in/liangsuomi/)
 
 
+
 ## Installation
 
 Owl requires OCaml `>=4.04.0`. The installation is rather trivial. You can simply use `opam install owl` to start. Owl's current version on OPAM is `0.2.6`, and it lags behind the master branch and misses many new features. If you want to try the newest version, I recommend installing Owl from the source and I will briefly show you how to do that in the following.

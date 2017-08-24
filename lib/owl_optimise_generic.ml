@@ -178,32 +178,27 @@ module Make
       | Newton       (* Exact Newton *)
 
     let run = function
-      | GD          -> fun _ _ _ g' -> Maths.neg g'
-      | CG          -> fun _ g p g' -> (
-          (* FIXME *)
+      | GD          -> fun _ _ _ _ g' -> Maths.neg g'
+      | CG          -> fun _ _ g p g' -> (
           let y = Maths.(g' - g) in
-          let b = Maths.((g' * y) / (p * y)) in
-          Maths.(neg g' + (b * p))
+          let b = Maths.((sum (g' * y)) / ((sum (p * y)) + F 1e-16)) in
+          Maths.((neg g') + (b * p))
         )
-      | CD          -> fun _ g p g' -> (
-          (* let s0 = shape g in
-          let s1 = shape p in
-          let s2 = shape g' in
-          Printf.printf "(%i,%i) (%i,%i) (%i,%i) \n" s0.(0) s0.(1) s1.(0) s1.(1) s2.(0) s2.(1); flush_all (); *)
-          let b = Maths.(l2norm_sqr g' / (neg p * g)) in
-          Maths.(neg g' + (b * p))
+      | CD          -> fun _ _ g p g' -> (
+          let b = Maths.((l2norm_sqr g') / (sum (neg p * g))) in
+          Maths.((neg g') + (b * p))
         )
-      | NonlinearCG -> fun _ g p g' -> (
+      | NonlinearCG -> fun _ _ g p g' -> (
           let b = Maths.((l2norm_sqr g') / (l2norm_sqr g)) in
-          Maths.(neg g' + (b *@ p))
+          Maths.((neg g') + (b * p))
         )
-      | DaiYuanCG   -> fun w g p g' -> (
+      | DaiYuanCG   -> fun _ w g p g' -> (
           let y = Maths.(g' - g) in
-          let b = Maths.((l2norm_sqr g') / (p *@ y)) in
-          Maths.(neg g' + (b *@ p))
+          let b = Maths.((l2norm_sqr g') / (sum (p * y))) in
+          Maths.((neg g') + (b * p))
         )
-      | NewtonCG    -> fun w g p g' -> failwith "not implemented" (* TODO *)
-      | Newton      -> fun w g p g' -> failwith "not implemented" (* TODO *)
+      | NewtonCG    -> fun _ w g p g' -> failwith "not implemented" (* TODO *)
+      | Newton      -> fun _ w g p g' -> failwith "not implemented" (* TODO *)
 
     let to_string = function
       | GD          -> "gradient descendent"
@@ -525,7 +520,7 @@ module Make
           (* clip the gradient if necessary *)
           let g' = clip_fun g' in
           (* calculate the descendent *)
-          grad_fun w g p g'
+          grad_fun loss_fun w g p g'
         ) ws gs' in
       (* update gcache if necessary *)
       ch := upch_fun gs' !ch;

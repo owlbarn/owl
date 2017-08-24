@@ -68,7 +68,7 @@ module Make
 
   let ols ?(i=false) x y =
     let params = Params.config
-      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 0.01) ~gradient:(Gradient.CG)
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
       ~loss:(Loss.Quadratic) ~verbosity:true
       ~stopping:(Stopping.Const 1e-16) 1000.
     in
