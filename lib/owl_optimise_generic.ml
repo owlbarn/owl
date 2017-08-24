@@ -326,6 +326,7 @@ module Make
       mutable batches           : int;     (* total batches = batches_per_epoch * epochs *)
       mutable loss              : t array; (* history of loss value in each iteration *)
       mutable start_at          : float;   (* time when the optimisation starts *)
+      mutable stop              : bool;    (* optimisation stops if true, otherwise false *)
     }
 
     type typ =
@@ -343,6 +344,7 @@ module Make
         batches           = batches;
         loss              = Array.make (batches + 1) (F 0.);
         start_at          = Unix.gettimeofday ();
+        stop              = false;
       }
 
     let default_checkpoint_fun save_fun =
@@ -463,7 +465,24 @@ module Make
   (* core optimisation functions *)
 
   let minimise_fun params f x y =
+    let open Params in
+    if params.verbosity = true then
+      print_endline (Params.to_string params);
+
+    (* make alias functions *)
+    let bach_fun = Batch.run params.batch in
+    let loss_fun = Loss.run params.loss in
+    let grad_fun = Gradient.run params.gradient in
+    let rate_fun = Learning_Rate.run params.learning_rate in
+    let regl_fun = Regularisation.run params.regularisation in
+    let momt_fun = Momentum.run params.momentum in
+    let upch_fun = Learning_Rate.update_ch params.learning_rate in
+    let clip_fun = Clipping.run params.clipping in
+    let stop_fun = Stopping.run params.stopping in
+    let chkp_fun = Checkpoint.run params.checkpoint in
     ()
+
+
 
 
   let minimise params forward backward update save x y =
@@ -516,14 +535,17 @@ module Make
     Checkpoint.(state.loss.(0) <- _loss);
 
     (* try to iterate all batches *)
-    (try for i = 1 to Checkpoint.(state.batches) do
+    let iter_idx = ref 1 in
+    while !iter_idx < Checkpoint.(state.batches)
+      && Checkpoint.(state.stop = false) do
+      let i = !iter_idx in
       let loss', ws, gs' = iterate i in
       (* checkpoint of the optimisation if necessary *)
       chkp_fun save i loss' state;
       (* print out the current state of optimisation *)
       if params.verbosity = true then Checkpoint.print_state_info state;
-      (* check if stopping criterion is met *)
-      if stop_fun (unpack_flt loss') = true then failwith "stop";
+      (* check if the stopping criterion is met *)
+      Checkpoint.(state.stop <- stop_fun (unpack_flt loss'));
       (* calculate gradient updates *)
       let ps' = Owl_utils.aarr_map2i (
         fun k l w g' ->
@@ -553,7 +575,8 @@ module Make
       if params.momentum <> Momentum.None then us := us';
       gs := gs';
       ps := ps';
-    done with Failure _ -> ());
+      iter_idx := !iter_idx + 1;
+    done;
 
     (* print optimisation summary *)
     if params.verbosity = true then
