@@ -1,6 +1,6 @@
 #!/usr/bin/env owl
 (* This example demonstrates how to write a gradient descent algorithm from
-   using Algodiff. The passed in f must have the type [t -> t].
+   using Algodiff. The passed in [f] must have the type [f : scalar -> scalar].
  *)
 
 open Owl

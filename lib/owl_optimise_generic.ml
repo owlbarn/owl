@@ -549,7 +549,7 @@ module Make
       if params.momentum <> Momentum.None then us := us';
       gs := gs';
       ps := ps';
-    done with exn -> raise exn);
+    done with Failure _ -> ());
 
     (* print optimisation summary *)
     if params.verbosity = true then
