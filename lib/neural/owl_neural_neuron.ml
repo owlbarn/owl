@@ -1918,7 +1918,7 @@ module Make
   end
 
 
-  (* TODO: definition of Batch Normalisation neuron *)
+  (* definition of Batch Normalisation neuron *)
   module Normalisation = struct
 
     type neuron_typ = {
