@@ -1938,11 +1938,11 @@ module Make
     }
 
     let connect out_shape l =
+      if l.axis < 0 then l.axis <- Array.(length out_shape + l.axis + 1);
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- Array.copy out_shape
 
     let init l =
-      assert (l.axis > 0);
       let s = Array.(make (length l.in_shape + 1) 1) in
       s.(l.axis) <- l.in_shape.(l.axis - 1);
       l.beta <- Arr.zeros s;
@@ -1976,8 +1976,13 @@ module Make
     let to_string l =
       let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
       let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let s = Array.(make (length l.in_shape + 1) 1) in s.(l.axis) <- l.in_shape.(l.axis - 1);
+      let s_str = Owl_utils.string_of_array string_of_int s in
       Printf.sprintf "    Normalisation : in:[*,%s] out:[*,%s]\n" in_str out_str ^
-      Printf.sprintf "    axis          : %i\n" l.axis
+      Printf.sprintf "    axis          : %i\n" l.axis ^
+      Printf.sprintf "    params        : %i\n" (l.in_shape.(l.axis - 1) * l.in_shape.(l.axis - 1)) ^
+      Printf.sprintf "    beta          : [%s]\n" s_str ^
+      Printf.sprintf "    gamma         : [%s]\n" s_str
 
     let to_name () = "normalisation"
 

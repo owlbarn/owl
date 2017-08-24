@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(* FIXME: this module should be removed! *)
 
 module S = Owl_optimise_generic.Make (Owl_dense_matrix.S) (Owl_dense_ndarray.S)
 

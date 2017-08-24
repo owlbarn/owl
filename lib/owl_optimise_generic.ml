@@ -462,6 +462,10 @@ module Make
 
   (* core optimisation functions *)
 
+  let minimise_fun params f x y =
+    ()
+
+
   let minimise params forward backward update save x y =
     let open Params in
     if params.verbosity = true then

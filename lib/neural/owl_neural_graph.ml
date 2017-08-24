@@ -421,7 +421,7 @@ module Make
     add_node nn [|input_node|] n
 
 
-  let normalisation ?name ?(axis=0) input_node =
+  let normalisation ?name ?(axis=(-1)) input_node =
     let neuron = Normalisation (Normalisation.create axis) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
