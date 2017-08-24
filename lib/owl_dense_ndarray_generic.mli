@@ -1083,16 +1083,24 @@ val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
  *)
 
 val scalar_add : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** [scalar_add a x] is similar to [add_scalar] but with scalar as the first parameter. *)
+(** [scalar_add a x] adds all the elements in [x] to a scalar value [a],
+  and returns the result in a new ndarray.
+ *)
 
 val scalar_sub : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** [scalar_sub a x] is similar to [sub_scalar] but with scalar as the first parameter. *)
+(** [scalar_sub a x] subtracts all the elements in [x] to a scalar value [a],
+  and returns the result in a new ndarray.
+ *)
 
 val scalar_mul : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** [scalar_mul a x] is similar to [mul_scalar] but with scalar as the first parameter. *)
+(** [scalar_mul a x] multiplies all the elements in [x] to a scalar value [a],
+  and returns the result in a new ndarray.
+ *)
 
 val scalar_div : 'a -> ('a, 'b) t -> ('a, 'b) t
-(** [scalar_div a x] is similar to [div_scalar] but with scalar as the first parameter. *)
+(** [scalar_div a x] divides all the elements in [x] to a scalar value [a],
+  and returns the result in a new ndarray.
+ *)
 
 val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [pow x y] computes [pow(a, b)] of all the elements in [x] and [y]
