@@ -1601,6 +1601,8 @@ module Make
 
     let zeros m n = M.zeros m n |> pack_mat
 
+    let ones m n = M.ones m n |> pack_mat
+
     let uniform ?scale m n = M.uniform ?scale m n |> pack_mat
 
     let gaussian ?sigma m n = M.gaussian ?sigma m n |> pack_mat
@@ -1676,6 +1678,8 @@ module Make
     let empty d = A.empty d |> pack_arr
 
     let zeros d = A.zeros d |> pack_arr
+
+    let ones d = A.ones d |> pack_arr
 
     let uniform ?scale d = A.uniform ?scale d |> pack_arr
 

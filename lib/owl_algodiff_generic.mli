@@ -68,7 +68,7 @@ module Make
     val cross_entropy : t -> t -> t
 
     val inv : t -> t
-    
+
     val neg : t -> t
 
     val abs : t -> t
@@ -184,6 +184,8 @@ module Make
 
     val zeros : int -> int -> t
 
+    val ones : int -> int -> t
+
     val uniform : ?scale:float -> int -> int -> t
 
     val gaussian : ?sigma:float -> int -> int -> t
@@ -240,6 +242,8 @@ module Make
     val empty : int array -> t
 
     val zeros : int array -> t
+
+    val ones : int array -> t
 
     val uniform : ?scale:float -> int array -> t
 

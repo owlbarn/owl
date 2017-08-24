@@ -1931,8 +1931,8 @@ module Make
 
     let create axis = {
       axis      = axis;
-      beta      = F 0.;
-      gamma     = F 1.;
+      beta      = Arr.empty [|0|];
+      gamma     = Arr.empty [|0|];
       in_shape  = [||];
       out_shape = [||];
     }
@@ -1941,11 +1941,16 @@ module Make
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- Array.copy out_shape
 
-    let init l = ()
+    let init l =
+      assert (l.axis > 0);
+      let s = Array.(make (length l.in_shape + 1) 1) in
+      s.(l.axis) <- l.in_shape.(l.axis - 1);
+      l.beta <- Arr.zeros s;
+      l.gamma <- Arr.ones s
 
     let reset l =
-      l.beta <- F 0.;
-      l.gamma <- F 1.
+      Arr.reset l.beta;
+      Arr.reset l.gamma
 
     let mktag t l =
       l.beta <- make_reverse l.beta t;

@@ -84,6 +84,8 @@ module type NdarraySig = sig
 
   val zeros : int array -> arr
 
+  val ones : int array -> arr
+
   val uniform : ?scale:elt -> int array -> arr
 
   val gaussian : ?sigma:elt -> int array -> arr
@@ -280,6 +282,8 @@ module type MatrixSig = sig
   val empty : int -> int -> mat
 
   val zeros : int -> int -> mat
+
+  val ones : int -> int -> mat
 
   val uniform : ?scale:elt -> int -> int -> mat
 
