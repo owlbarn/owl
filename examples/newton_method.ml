@@ -1,7 +1,5 @@
 #!/usr/bin/env owl
-(* This example demonstrates how to implement Newton method with Algdoff.
-   The passed in [f] must have the type [f : vector -> scalar].
- *)
+(* This example demonstrates how to implement Newton method with Algdoff. *)
 
 open Owl
 open Algodiff.D
@@ -14,7 +12,7 @@ let rec newton ?(eta=F 0.01) ?(eps=1e-6) f x =
 
 
 let _ =
-  (* plug in the function you want *)
+  (* [f] must be [f : vector -> scalar]. *)
   let f x = Maths.(cos x |> sum) in
   let y = newton f (Mat.uniform 1 2) in
   Mat.print y
