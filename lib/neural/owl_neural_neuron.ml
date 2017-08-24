@@ -2528,7 +2528,3 @@ module Make
 end
 
 (* Make function ends *)
-
-
-module S = Make (Owl_dense_matrix.S) (Owl_dense_ndarray.S)
-module D = Make (Owl_dense_matrix.D) (Owl_dense_ndarray.D)

@@ -1,15 +1,14 @@
 #!/usr/bin/env owl
-
 (*
  * OWL - an OCaml numerical library for scientific computing
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
-(** Neural network: Feedforward neural network
-  NOTE: this module has been superseded by the graph module.
+(** Feedforward Neural Network
+ *  This is a complete example to show how to build up a Feedforward network in
+ *  Owl. The code used to be part of Owl then superseded by Graph module. Now
+ *  the module can be shared and used in scripting via Zoo System.
  *)
-
 
 open Owl
 open Owl_types
@@ -39,11 +38,8 @@ let make_network ?nnid () =
   in
   { nnid; layers = [||]; }
 
-
 let layer_num nn = Array.length nn.layers
 
-
-(* TODO: check the uniqueness of the name *)
 let make_layer ?name nn neuron =
   let name = match name with
     | Some s -> s
@@ -51,20 +47,17 @@ let make_layer ?name nn neuron =
   in
   { name; neuron }
 
-
 let get_layer nn i =
   let c = layer_num nn in
   match i < 0 with
   | true  -> nn.layers.(c + i)
   | false -> nn.layers.(i)
 
-
 let connect_layer prev_l next_l =
   let prev_neuron = prev_l.neuron in
   let next_neuron = next_l.neuron in
   let out_shape = get_out_shape prev_neuron in
   connect [|out_shape|] next_neuron
-
 
 let rec add_layer ?act_typ nn l =
   (* check whether it is input layer *)
@@ -97,30 +90,21 @@ let rec add_layer ?act_typ nn l =
 
 let init nn = Array.iter (fun l -> init l.neuron) nn.layers
 
-
 let reset nn = Array.iter (fun l -> reset l.neuron) nn.layers
-
 
 let mktag t nn = Array.iter (fun l -> mktag t l.neuron) nn.layers
 
-
 let mkpar nn = Array.map (fun l -> mkpar l.neuron) nn.layers
-
 
 let mkpri nn = Array.map (fun l -> mkpri l.neuron) nn.layers
 
-
 let mkadj nn = Array.map (fun l -> mkadj l.neuron) nn.layers
-
 
 let update nn us = Array.iter2 (fun l u -> update l.neuron u) nn.layers us
 
-
 let run x nn = Array.fold_left (fun a l -> run [|a|] l.neuron) x nn.layers
 
-
 let forward nn x = mktag (tag ()) nn; run x nn, mkpar nn
-
 
 let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
@@ -134,13 +118,11 @@ let input ?name inputs =
   |> add_layer nn;
   nn
 
-
 let activation ?name act_typ nn =
   Activation (Activation.create act_typ)
   |> make_layer ?name nn
   |> add_layer nn;
   nn
-
 
 let linear ?name ?(init_typ = Init.Standard) ?act_typ outputs nn =
   Linear (Linear.create outputs init_typ)
@@ -148,13 +130,11 @@ let linear ?name ?(init_typ = Init.Standard) ?act_typ outputs nn =
   |> add_layer ?act_typ nn;
   nn
 
-
 let linear_nobias ?name ?(init_typ = Init.Standard) ?act_typ outputs nn =
   LinearNoBias (LinearNoBias.create outputs init_typ)
   |> make_layer ?name nn
   |> add_layer ?act_typ nn;
   nn
-
 
 let recurrent ?name ?(init_typ=Init.Standard) ~act_typ outputs hiddens nn =
   Recurrent (Recurrent.create hiddens outputs act_typ init_typ)
@@ -162,13 +142,11 @@ let recurrent ?name ?(init_typ=Init.Standard) ~act_typ outputs hiddens nn =
   |> add_layer nn;
   nn
 
-
 let lstm ?name ?(init_typ=Init.Tanh) cells nn =
   LSTM (LSTM.create cells init_typ)
   |> make_layer ?name nn
   |> add_layer nn;
   nn
-
 
 let gru ?name ?(init_typ=Init.Tanh) cells nn =
   GRU (GRU.create cells init_typ)
@@ -176,13 +154,11 @@ let gru ?name ?(init_typ=Init.Tanh) cells nn =
   |> add_layer nn;
   nn
 
-
 let conv2d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel strides nn =
   Conv2D (Conv2D.create padding kernel strides init_typ)
   |> make_layer ?name nn
   |> add_layer ?act_typ nn;
   nn
-
 
 let conv3d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel_width kernel strides nn =
   Conv3D (Conv3D.create padding kernel strides init_typ)
@@ -190,13 +166,11 @@ let conv3d ?name ?(padding = SAME) ?(init_typ=Init.Tanh) ?act_typ kernel_width k
   |> add_layer ?act_typ nn;
   nn
 
-
 let fully_connected ?name ?(init_typ = Init.Standard) ?act_typ outputs nn =
   FullyConnected (FullyConnected.create outputs init_typ)
   |> make_layer ?name nn
   |> add_layer ?act_typ nn;
   nn
-
 
 let max_pool2d ?name ?(padding = SAME) ?act_typ kernel stride nn =
   MaxPool2D (MaxPool2D.create padding kernel stride)
@@ -204,13 +178,11 @@ let max_pool2d ?name ?(padding = SAME) ?act_typ kernel stride nn =
   |> add_layer ?act_typ nn;
   nn
 
-
 let avg_pool2d ?name ?(padding = SAME) ?act_typ kernel stride nn =
   AvgPool2D (AvgPool2D.create padding kernel stride)
   |> make_layer ?name nn
   |> add_layer ?act_typ nn;
   nn
-
 
 let dropout ?name rate nn =
   Dropout (Dropout.create rate)
@@ -218,13 +190,11 @@ let dropout ?name rate nn =
   |> add_layer nn;
   nn
 
-
 let reshape ?name ?convert outputs nn =
   Reshape (Reshape.create ?convert outputs)
   |> make_layer ?name nn
   |> add_layer nn;
   nn
-
 
 let flatten ?name ?convert nn =
   Flatten (Flatten.create ?convert ())
@@ -249,15 +219,11 @@ let to_string nn =
     s := !s ^ (Printf.sprintf "[ Layer %s ]:\n%s\n" name neuron)
   done; !s
 
-
 let print nn = to_string nn |> Printf.printf "%s"
-
 
 let save nn f = Owl_utils.marshal_to_file nn f
 
-
 let load f : network = Owl_utils.marshal_from_file f
-
 
 let save_weights nn f =
   let h = Hashtbl.create (layer_num nn) in
@@ -266,7 +232,6 @@ let save_weights nn f =
     Hashtbl.add h l.name ws
   ) nn.layers;
   Owl_utils.marshal_to_file h f
-
 
 let load_weights nn f =
   let h = Owl_utils.marshal_from_file f in
@@ -283,14 +248,11 @@ let train_generic ?params ?(init_model=true) nn x y =
   Owl_optimise.S.minimise_generic
     ?params forward backward update save nn x y
 
-
 let train ?params ?init_model nn x y =
   train_generic ?params ?init_model nn (Mat x) (Mat y)
 
-
 let train_cnn ?params ?init_model nn x y =
   train_generic ?params ?init_model nn (Arr x) (Mat y)
-
 
 let test_model nn x y =
   Mat.iter2_rows (fun u v ->
