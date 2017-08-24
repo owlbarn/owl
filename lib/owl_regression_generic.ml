@@ -69,7 +69,8 @@ module Make
   let ols ?(i=false) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Quadratic) ~stopping:(Stopping.Const 1e-16) 1000.
+      ~loss:(Loss.Quadratic) ~verbosity:false
+      ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
 
@@ -77,7 +78,8 @@ module Make
   let ridge ?(i=false) ?(a=0.001) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L2norm a) ~stopping:(Stopping.Const 1e-16) 1000.
+      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L2norm a) ~verbosity:false
+      ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
 
@@ -85,7 +87,8 @@ module Make
   let lasso ?(i=false) ?(a=0.001) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L1norm a) ~stopping:(Stopping.Const 1e-16) 1000.
+      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L1norm a) ~verbosity:false
+      ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
 
@@ -93,7 +96,8 @@ module Make
   let svm ?(i=false) ?(a=0.001) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Hinge) ~regularisation:(Regularisation.L2norm a) ~stopping:(Stopping.Const 1e-16) 1000.
+      ~loss:(Loss.Hinge) ~regularisation:(Regularisation.L2norm a) ~verbosity:false
+      ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
 
@@ -101,7 +105,8 @@ module Make
   let logistic ?(i=false) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Cross_entropy) ~stopping:(Stopping.Const 1e-16) 1000.
+      ~loss:(Loss.Cross_entropy) ~verbosity:false
+      ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
 
