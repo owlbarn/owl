@@ -7,7 +7,7 @@
 
 
 open Owl_algodiff.S
-open Owl_neural_optimise
+open Owl_optimise.S
 
 
 (* module signature of model parallel engine *)

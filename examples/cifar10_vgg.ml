@@ -4,8 +4,8 @@
  *)
 
 open Owl
-open Neural
-open Neural.Graph
+open Neural.S
+open Neural.S.Graph
 
 
 let make_network input_shape =

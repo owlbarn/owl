@@ -1,11 +1,10 @@
 #!/usr/bin/env owl
 (* test stochastic gradient decent algorithm on dense metrix. *)
 
-module MX = Owl.Dense.Matrix.D
-module LL = Owl_optimise
+open Owl
 
 let generate_data () =
-  let open MX in
+  let open Mat in
   let c = 500 in
   let x1 = (gaussian c 2 *$ 2.) in
   let a, b = float_of_int (Random.int 15), float_of_int (Random.int 15) in
@@ -25,21 +24,20 @@ let generate_data () =
 
 let draw_line p =
   let a, b, c = 0., 20., 100 in
-  let z = MX.empty c 2 in
+  let z = Mat.empty c 2 in
   for i = 0 to c - 1 do
     let x = a +. (float_of_int i *. (b -. a) /. float_of_int c) in
     let y = (p.{0,0} *. x +. p.{2,0}) /. (p.{1,0} *. (-1.)) in
     z.{i,0} <- x; z.{i,1} <- y
   done;
-  MX.save_txt z "test_svm.model.tmp"
+  Mat.save_txt z "test_svm.model.tmp"
 
 let test_svm x y =
-  let p = MX.uniform 2 1 in
-  LL.svm_regression ~i:true p x y
+  Regression.D.svm ~i:true x y
 
 let _ =
   let _ = Random.self_init () in
   let x, y = generate_data () in
-  let p = test_svm x y in
-  draw_line p;
-  MX.pp_dsmat p;
+  let r = test_svm x y in
+  draw_line r.(0);
+  Mat.pp_dsmat r.(0);

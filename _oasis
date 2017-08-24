@@ -60,7 +60,9 @@ Library owl
                     Owl_linalg_generic,
                     Owl_cluster,
                     Owl_optimise,
+                    Owl_optimise_generic,
                     Owl_regression,
+                    Owl_regression_generic,
                     Owl_plot,
                     Owl_dataset,
                     Owl_toplevel,
@@ -73,10 +75,8 @@ Library owl
                     nlp/Owl_nlp_utils,
                     ### Neural network ###
                     neural/Owl_neural,
-                    neural/Owl_neural_neuron,
                     neural/Owl_neural_graph,
-                    neural/Owl_neural_feedforward,
-                    neural/Owl_neural_optimise,
+                    neural/Owl_neural_neuron,
                     neural/Owl_neural_parallel,
                     ### Experimental ###
                     ext/Owl_ext,
@@ -161,10 +161,10 @@ Library owl_zoo
   Path:             zoo
   BuildTools:       ocamlbuild, ocamldoc
   Modules:          Owl_zoo_cmd,
-                    Owl_zoo_toplevel,
-                    Owl_zoo_specs_neural_t,
-                    Owl_zoo_specs_neural_j,
-                    Owl_zoo_specs_neural
+                    Owl_zoo_toplevel
+                    #Owl_zoo_specs_neural_t,
+                    #Owl_zoo_specs_neural_j,
+                    #Owl_zoo_specs_neural
   BuildDepends:     owl,
                     atdgen,
                     ocaml-compiler-libs,

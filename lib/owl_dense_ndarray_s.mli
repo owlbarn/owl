@@ -495,3 +495,5 @@ val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 (** {6 Experimental functions} *)
 
 val sum_slices : ?axis:int -> arr -> arr
+
+val draw_along_dim0 : arr -> int -> arr * int array

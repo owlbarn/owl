@@ -1,3 +1,5 @@
+#!/usr/bin/env owl
+
 (*
  * OWL - an OCaml numerical library for scientific computing
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
@@ -9,9 +11,10 @@
  *)
 
 
+open Owl
 open Owl_types
-open Owl_algodiff.S
-open Owl_neural_neuron
+open Algodiff.S
+open Owl_neural_neuron.S
 
 
 (* definition of Feedforward neural network *)
@@ -259,7 +262,7 @@ let load f : network = Owl_utils.marshal_from_file f
 let save_weights nn f =
   let h = Hashtbl.create (layer_num nn) in
   Array.iter (fun l ->
-    let ws = Owl_neural_neuron.mkpar l.neuron in
+    let ws = Owl_neural_neuron.S.mkpar l.neuron in
     Hashtbl.add h l.name ws
   ) nn.layers;
   Owl_utils.marshal_to_file h f
@@ -269,7 +272,7 @@ let load_weights nn f =
   let h = Owl_utils.marshal_from_file f in
   Array.iter (fun l ->
     let ws = Hashtbl.find h l.name in
-    Owl_neural_neuron.update l.neuron ws
+    Owl_neural_neuron.S.update l.neuron ws
   ) nn.layers
 
 
@@ -277,7 +280,7 @@ let load_weights nn f =
 
 let train_generic ?params ?(init_model=true) nn x y =
   if init_model = true then init nn;
-  Owl_neural_optimise.minimise_generic
+  Owl_optimise.S.minimise_generic
     ?params forward backward update save nn x y
 
 

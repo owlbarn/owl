@@ -1257,9 +1257,9 @@ val l2norm : ('a, 'b) t -> float
 (** [l2norm x] calculates the l2-norm of all the element in [x]. *)
 
 val l2norm_sqr : ('a, 'b) t -> float
-(** [l2norm_sqr x] calculates the sum of 2-norm (or l2norm, Euclidean norm) of all
-  elements in [x]. The function uses conjugate transpose in the product, hence
-  it always returns a float number.
+(** [l2norm_sqr x] calculates the square of l2-norm (or l2norm, Euclidean norm)
+  of all elements in [x]. The function uses conjugate transpose in the product,
+  hence it always returns a float number.
  *)
 
 val max_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
