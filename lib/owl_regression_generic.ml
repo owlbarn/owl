@@ -66,9 +66,33 @@ module Make
       [| !p |> primal' |> unpack_mat |]
 
 
+  let ols' ?(i=false) x y =
+    let m = M.col_num x in
+    let n = M.col_num y in
+    (* initialise the matrices according to fan_in/out *)
+    let r = 1. /. (float_of_int m) in
+    let p = ref (Mat M.(sub_scalar (uniform ~scale:(2.*.r) m n) r)) in
+    let b = ref (Mat M.(sub_scalar (uniform ~scale:(2.*.r) 1 n) r)) in
+
+    let f w x =
+      let w = Mat.reshape m n w in
+      let pred = Maths.(x *@ w) in
+      pred
+    in
+
+    let params = Params.config
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
+      ~loss:(Loss.Quadratic) ~verbosity:false
+      ~stopping:(Stopping.Const 1e-16) 1000.
+    in
+    let _, w = minimise_weight params f (Maths.flatten !p) (Mat x) (Mat y) in
+    (w |> Mat.reshape m n |> unpack_mat)
+
+
+
   let ols ?(i=false) x y =
     let params = Params.config
-      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Const 0.1) ~gradient:(Gradient.GD)
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
       ~loss:(Loss.Quadratic) ~verbosity:false
       ~stopping:(Stopping.Const 1e-16) 1000.
     in

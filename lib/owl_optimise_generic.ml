@@ -540,11 +540,11 @@ module Make
     (* print optimisation summary *)
     if params.verbosity = true then
       Checkpoint.print_summary state;
-    (* return loss history *)
-    Array.map unpack_flt Checkpoint.(state.loss)
+    (* return both loss history and weight *)
+    Array.map unpack_flt Checkpoint.(state.loss), !w
 
 
-
+  (* *)
   let minimise params forward backward update save x y =
     let open Params in
     if params.verbosity = true then
