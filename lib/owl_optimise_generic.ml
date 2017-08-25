@@ -495,7 +495,7 @@ module Make
     (* first iteration to bootstrap the optimisation *)
     let _loss, _g0, _ = iterate 0 w in
     let _g = ref _g0 in
-    let _p = ref _g0 in
+    let _p = ref Maths.(neg _g0) in
     let _u = ref (F 0.) in
     let _c = ref (F 0.) in
 
@@ -565,7 +565,7 @@ module Make
     let iterate i =
       let xt, yt = bach_fun x y i in
       let yt', ws = forward xt in
-      let loss = Maths.(loss_fun yt yt') in
+      let loss = loss_fun yt yt' in
       (* take the average of the loss *)
       let loss = Maths.(loss / (F (Mat.row_num yt |> float_of_int))) in
       (* add regularisation term if necessary *)
@@ -603,28 +603,18 @@ module Make
       if params.verbosity = true then Checkpoint.print_state_info state;
       (* check if the stopping criterion is met *)
       Checkpoint.(state.stop <- stop_fun (unpack_flt loss'));
-      (* calculate gradient updates *)
-      let ps' = Owl_utils.aarr_map2i (
-        fun k l w g' ->
-          let g, p = !gs.(k).(l), !ps.(k).(l) in
-          (* clip the gradient if necessary *)
-          let g' = clip_fun g' in
-          (* calculate the descent *)
-          grad_fun (fun a -> a) w g p g'
-        ) ws gs'
-      in
+      (* clip the gradient if necessary *)
+      let gs' = Owl_utils.aarr_map clip_fun gs' in
+      (* calculate gradient descent *)
+      let ps' = Owl_utils.aarr_map4 (grad_fun (fun a -> a)) ws !gs !ps gs' in
       (* update gcache if necessary *)
       ch := Owl_utils.aarr_map2 upch_fun gs' !ch;
       (* adjust direction based on learning_rate *)
       let us' = Owl_utils.aarr_map3 (fun p' g' c ->
         Maths.(p' * rate_fun !i g' c)
-      ) ps' gs' !ch
-      in
+      ) ps' gs' !ch in
       (* adjust direction based on momentum *)
-      let us' = match params.momentum <> Momentum.None with
-        | true  -> Owl_utils.aarr_map2 momt_fun !us us'
-        | false -> us'
-      in
+      let us' = Owl_utils.aarr_map2 momt_fun !us us' in
       (* update the weight *)
       let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
       update ws';

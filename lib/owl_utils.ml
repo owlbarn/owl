@@ -189,6 +189,14 @@ let aarr_map3 f x0 x1 x2 =
     )
   )
 
+(* map4 function for ['a array array] type, all must have the same shape. *)
+let aarr_map4 f x0 x1 x2 x3 =
+  Array.init (Array.length x0) (fun i ->
+    Array.init (Array.length x0.(i)) (fun j ->
+      f x0.(i).(j) x1.(i).(j) x2.(i).(j) x3.(i).(j)
+    )
+  )
+
 (* convert array of array to list of list, shape remains the same *)
 let aarr2llss x = Array.map Array.to_list x |> Array.to_list
 
