@@ -199,15 +199,6 @@ module Make
         )
       | NewtonCG    -> fun _ w g p g' -> failwith "not implemented" (* TODO *)
       | Newton      -> fun f w g p g' -> (
-          (* TODO: NOT FINISHED YET *)
-          (*Printf.printf "++++\n"; flush_all ();
-          let g', h' = gradhessian f w in
-          Printf.printf "@@@\n"; flush_all ();
-          M.print (unpack_mat w); flush_all ();
-          M.print (unpack_mat g'); flush_all ();
-          M.print (unpack_mat h'); flush_all ();
-          let h'' = Maths.(sum_ ~axis:0 (inv h')) in
-          M.print (unpack_mat h''); flush_all (); *)
           let g', h' = gradhessian f w in
           Maths.(neg (sum (inv h')) * g')
         )
@@ -553,7 +544,7 @@ module Make
      neural network of graph structure. In Owl's earlier versions, the functions
      in the regression module were actually implemented using this function.
    *)
-  let minimise params forward backward update save x y =
+  let minimise_network params forward backward update save x y =
     let open Params in
     if params.verbosity = true then
       print_endline (Params.to_string params);

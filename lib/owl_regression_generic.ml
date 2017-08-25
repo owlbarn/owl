@@ -95,7 +95,7 @@ module Make
     in
 
     let params = Params.config
-      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 0.5) ~gradient:(Gradient.CD)
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 0.5) ~gradient:(Gradient.GD)
       ~loss:(Loss.Quadratic) ~verbosity:true
       ~stopping:(Stopping.Const 1e-16) 10000.
     in
@@ -138,7 +138,7 @@ module Make
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
       ~loss:(Loss.Quadratic) ~stopping:(Stopping.Const 1e-16) 100000.
     in
-    minimise params forward backward update save (Mat x) (Mat y) |> ignore;
+    minimise_network params forward backward update save (Mat x) (Mat y) |> ignore;
     !a |> primal' |> unpack_flt,
     !lambda |> primal' |> unpack_flt,
     !b |> primal' |> unpack_flt

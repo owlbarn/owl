@@ -554,7 +554,7 @@ module Make
       | Some p -> p
       | None   -> Optimise.Params.default ()
     in
-    Optimise.minimise p f b u s x y
+    Optimise.minimise_network p f b u s x y
 
 
   let train ?params ?init_model nn x y =
