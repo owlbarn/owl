@@ -235,8 +235,7 @@ module Make
   let unpack_flt x =
     match (primal x) with
     | F x -> x
-    | _   -> failwith "error: AD.unpack_elt"
-
+    | _   -> failwith "error: AD.unpack_flt"
 
   (* functions to report errors, help in debugging *)
 

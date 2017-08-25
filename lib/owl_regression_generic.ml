@@ -67,7 +67,7 @@ module Make
   let svm ?(i=false) ?(a=0.001) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Hinge) ~regularisation:(Regularisation.L2norm a) ~verbosity:false
+      ~loss:(Loss.Hinge) ~regularisation:(Regularisation.L2norm a) ~verbosity:true
       ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y

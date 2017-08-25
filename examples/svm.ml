@@ -18,26 +18,28 @@ let generate_data () =
   let y2 = create c 1 ( -1.)in
   let x = concat_vertical x1 x2 in
   let y = concat_vertical y1 y2 in
-  let _ = save_txt x1 "test_svm.data1.tmp" in
-  let _ = save_txt x2 "test_svm.data2.tmp" in
   x, y
 
-let draw_line p =
+
+let draw_line x0 y0 p =
   let a, b, c = 0., 20., 100 in
-  let z = Mat.empty c 2 in
+  let x' = Mat.empty 1 c in
+  let y' = Mat.empty 1 c in
   for i = 0 to c - 1 do
     let x = a +. (float_of_int i *. (b -. a) /. float_of_int c) in
     let y = (p.{0,0} *. x +. p.{2,0}) /. (p.{1,0} *. (-1.)) in
-    z.{i,0} <- x; z.{i,1} <- y
+    x'.{0,i} <- x; y'.{0,i} <- y
   done;
-  Mat.save_txt z "test_svm.model.tmp"
+  let h = Plot.create "plot_svm.png" in
+  Plot.(plot ~h ~spec:[ RGB (100,100,100) ] x' y');
+  Plot.(scatter ~h ~spec:[ RGB (150,150,150) ] x0 y0);
+  Plot.output h
 
-let test_svm x y =
-  Regression.D.svm ~i:true x y
 
 let _ =
   let _ = Random.self_init () in
   let x, y = generate_data () in
-  let r = test_svm x y in
-  draw_line r.(0);
-  Mat.pp_dsmat r.(0);
+  let r = Regression.D.svm ~i:true x y in
+  let p = Mat.(r.(0) @= r.(1)) in
+  draw_line (Mat.col x 0) (Mat.col x 1) p;
+  Mat.pp_dsmat Mat.(r.(0) @= r.(1))

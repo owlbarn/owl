@@ -148,7 +148,7 @@ module Make
       | Custom of (t -> t -> t)
 
     let run typ y y' = match typ with
-      | Hinge         -> Maths.(max2 (F 0.) (F 1. - y * y'))
+      | Hinge         -> Maths.(sum (max2 (F 0.) (F 1. - y * y')))
       | L1norm        -> Maths.(l1norm (y - y'))
       | L2norm        -> Maths.(l2norm (y - y'))
       | Quadratic     -> Maths.(l2norm_sqr (y - y'))
