@@ -92,10 +92,10 @@ module Make
       | RMSprop _   -> RMSprop (0.001, 0.9)
       | Schedule _  -> Schedule [|0.001|]
 
-    let update_ch typ gs ch = match typ with
-      | Adagrad _      -> Owl_utils.aarr_map2 (fun g c -> Maths.(c + g * g)) gs ch
-      | RMSprop (a, k) -> Owl_utils.aarr_map2 (fun g c -> Maths.((F k * c) + (F 1. - F k) * g * g)) gs ch
-      | _              -> ch
+    let update_ch typ g c = match typ with
+      | Adagrad _      -> Maths.(c + g * g)
+      | RMSprop (a, k) -> Maths.((F k * c) + (F 1. - F k) * g * g)
+      | _              -> c
 
     let to_string = function
       | Adagrad a        -> Printf.sprintf "adagrad %g" a
@@ -464,7 +464,11 @@ module Make
 
   (* core optimisation functions *)
 
-  let minimise_fun params f x y =
+  (* This function minimise the weight [w] of passed-in function [f].
+     [f] is a function [f : w -> x -> y].
+     Both [w] and [y] are row vector.
+   *)
+  let minimise_weight params f w x y =
     let open Params in
     if params.verbosity = true then
       print_endline (Params.to_string params);
@@ -481,18 +485,21 @@ module Make
     let stop_fun = Stopping.run params.stopping in
     let chkp_fun = Checkpoint.run params.checkpoint in
 
+    (* make the function to minimise *)
+    let optz_fun xi yi wi = Maths.((loss_fun yi (f wi xi)) + (regl_fun wi)) in
+
     (* operations in the ith iteration *)
-    let iterate i =
-      let xt, yt = bach_fun x y i in
-      let loss x = Maths.((loss_fun yt (f x)) + (regl_fun x)) in
-      let lt, gt = grad' loss xt in
-      lt |> primal', xt, gt
+    let iterate i w =
+      let xi, yi = bach_fun x y i in
+      let optz = (optz_fun xi yi) in
+      let loss, g = grad' optz w in
+      loss |> primal', g, optz
     in
 
     (* first iteration to bootstrap the optimisation *)
-    let _loss, _xt, _gt = iterate 0 in
-    let _g = ref _gt in
-    let _p = ref _gt in
+    let _loss, _g0, _ = iterate 0 w in
+    let _g = ref _g0 in
+    let _p = ref _g0 in
     let _u = ref (F 0.) in
     let _c = ref (F 0.) in
 
@@ -502,9 +509,9 @@ module Make
     Checkpoint.(state.loss.(0) <- _loss);
 
     (* try to iterate all batches *)
-    let i = ref 1 in
+    let i = ref 1 and w = ref w in
     while Checkpoint.(!i < state.batches && state.stop = false) do
-      let loss', x', g' = iterate !i in
+      let loss', g', optz' = iterate !i !w in
       (* checkpoint of the optimisation if necessary *)
       chkp_fun (fun _ -> ()) !i loss' state;
       (* print out the current state of optimisation *)
@@ -514,17 +521,15 @@ module Make
       (* clip the gradient if necessary *)
       let g' = clip_fun g' in
       (* calculate gradient descent *)
-      let p' = grad_fun loss_fun x' !_g !_p g' in
+      let p' = grad_fun optz' !w !_g !_p g' in
       (* update gcache if necessary *)
-      (*_c := upch_fun g' !_c;*)
+      _c := upch_fun g' !_c;
       (* adjust direction based on learning_rate *)
       let u' = Maths.(p' * rate_fun !i g' !_c) in
       (* adjust direction based on momentum *)
       let u' = momt_fun !_u u' in
       (* update the weight *)
-      let ws' = Maths.(x + u') in
-      ();
-      (* update ws'; *)
+      w := Maths.(!w + u') |> primal';
       (* save historical data *)
       if params.momentum <> Momentum.None then _u := u';
       _g := g';
@@ -610,7 +615,7 @@ module Make
         ) ws gs'
       in
       (* update gcache if necessary *)
-      ch := upch_fun gs' !ch;
+      ch := Owl_utils.aarr_map2 upch_fun gs' !ch;
       (* adjust direction based on learning_rate *)
       let us' = Owl_utils.aarr_map3 (fun p' g' c ->
         Maths.(p' * rate_fun !i g' c)
