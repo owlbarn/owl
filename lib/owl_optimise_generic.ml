@@ -200,11 +200,16 @@ module Make
       | NewtonCG    -> fun _ w g p g' -> failwith "not implemented" (* TODO *)
       | Newton      -> fun f w g p g' -> (
           (* TODO: NOT FINISHED YET *)
-          let f = Maths.l2norm_sqr in
-          let w' = Maths.flatten w in
-          let g', h' = gradhessian f w' in
-          let g' = Maths.reshape g' (shape w) in
-          Maths.(neg ((sum (inv h')) * g'))
+          (*Printf.printf "++++\n"; flush_all ();
+          let g', h' = gradhessian f w in
+          Printf.printf "@@@\n"; flush_all ();
+          M.print (unpack_mat w); flush_all ();
+          M.print (unpack_mat g'); flush_all ();
+          M.print (unpack_mat h'); flush_all ();
+          let h'' = Maths.(sum_ ~axis:0 (inv h')) in
+          M.print (unpack_mat h''); flush_all (); *)
+          let g', h' = gradhessian f w in
+          Maths.(neg (sum (inv h')) * g')
         )
 
     let to_string = function
@@ -614,7 +619,7 @@ module Make
           (* clip the gradient if necessary *)
           let g' = clip_fun g' in
           (* calculate the descent *)
-          grad_fun loss_fun w g p g'
+          grad_fun (fun a -> a) w g p g'
         ) ws gs'
       in
       (* update gcache if necessary *)

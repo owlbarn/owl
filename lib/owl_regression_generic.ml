@@ -83,6 +83,29 @@ module Make
 
 
   let exponential ?(i=false) x y =
+    let a = Owl_stats.Rnd.uniform () in
+    let l = Owl_stats.Rnd.uniform () in
+    let b = Owl_stats.Rnd.uniform () in
+
+    let f w x =
+      let a = Mat.get w 0 0 in
+      let l = Mat.get w 0 1 in
+      let b = Mat.get w 0 2 in
+      Maths.(a * exp (neg l * x) + b)
+    in
+
+    let params = Params.config
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 0.5) ~gradient:(Gradient.CD)
+      ~loss:(Loss.Quadratic) ~verbosity:true
+      ~stopping:(Stopping.Const 1e-16) 10000.
+    in
+    let w = minimise_weight params f (Mat.of_arrays [|[|a;l;b|]|]) (Mat x) (Mat y)
+      |> snd |> unpack_mat
+    in
+    M.(get w 0 0, get w 0 1, get w 0 2)
+
+
+  let _exponential ?(i=false) x y =
     let a = ref (F (Owl_stats.Rnd.uniform ())) in
     let lambda = ref (F (Owl_stats.Rnd.uniform ())) in
     let b = ref (F (Owl_stats.Rnd.uniform ())) in
@@ -119,7 +142,6 @@ module Make
     !a |> primal' |> unpack_flt,
     !lambda |> primal' |> unpack_flt,
     !b |> primal' |> unpack_flt
-
 
 
 end

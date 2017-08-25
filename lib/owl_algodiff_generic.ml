@@ -803,6 +803,7 @@ module Make
 
     and sum a =
       let ff = function
+        | F a      -> F a
         | Arr a    -> F A.(sum a)
         | Mat a    -> F M.(sum a)
         | _        -> error_uniop "sum" a
@@ -814,6 +815,7 @@ module Make
 
     and sum_ ?(axis=0) a =
       let ff = function
+        | F a      -> F a
         | Arr a    -> Arr A.(sum_ ~axis a)
         | Mat a    -> Mat M.(sum_ ~axis a)
         | _        -> error_uniop "sum_" a
@@ -1407,7 +1409,7 @@ module Make
               | Asinh_D a                -> push (((!aa / sqrt ((sqr (primal a)) + (F 1.))), a) :: t)
               | Acosh_D a                -> push (((!aa / sqrt ((sqr (primal a)) - (F 1.))), a) :: t)
               | Atanh_D a                -> push (((!aa / ((F 1.) - sqr (primal a))), a) :: t)
-              | Get_Item (a, i, j)       -> (adjref a) := add_item (adjval a) i j !aa; push ((zero a, a) :: t)
+              | Get_Item (a, i, j)       -> push ((set_item (zero a) i j (sum !aa), a) :: t)
               | SetI_D_D (a, i, j, b)    -> push ((set_item !aa i j (F 0.), a) :: (get_item !aa i j, b) :: t)
               | SetI_D_C (a, i, j, _)    -> push ((set_item !aa i j (F 0.), a) :: t)
               | SetI_C_D (_, i, j, b)    -> push ((get_item !aa i j, b) :: t)
@@ -1418,8 +1420,7 @@ module Make
               | Set_Slice_D_D (a, b, i)  -> push ((set_slice i !aa (zero b), a) :: (get_slice i !aa, b) :: t)
               | Set_Slice_D_C (a, b, i)  -> push ((set_slice i !aa (zero b), a) :: t)
               | Set_Slice_C_D (a, b, i)  -> push ((get_slice i !aa, b) :: t)
-              | Sum_D a                  -> push ((((mat_create (row_num (primal a)) (col_num (primal a)) !aa)), a) :: t)
-              (* TODO: SUM_D can be optimised to this | Sum_D a               -> push ((!aa, a) :: t) *)
+              | Sum_D a                  -> push ((!aa, a) :: t)
               | Sum__D (a, i)            -> push ((repeat ~axis:i !aa (shape a).(i), a) :: t)
               | Dot_D_D (a, b)           -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
               | Dot_D_C (a, b)           -> push (((dot !aa (transpose b)), a) :: t)
