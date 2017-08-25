@@ -1,5 +1,5 @@
 #!/usr/bin/env owl
-(* test stochastic gradient decent algorithm on dense metrix. *)
+(* This example demonstrates SVM regression. *)
 
 open Owl
 
