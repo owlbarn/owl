@@ -34,7 +34,4 @@ module Make
   val exponential : ?i:bool -> mat -> mat -> elt * elt * elt
 
 
-  val ols' : ?i:bool -> mat -> mat -> mat
-  (** [] *)
-
 end
