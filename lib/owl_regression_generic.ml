@@ -66,27 +66,36 @@ module Make
       [| !p |> primal' |> unpack_mat |]
 
 
-  let ols' ?(i=false) x y =
-    let m = M.col_num x in
+  (* iterative sovler for linear regression *)
+  let _linear_regression bias params x y =
+    let l, m = M.shape x in
     let n = M.col_num y in
+    let o = if bias = true then m else m + 1 in
+    let x = if bias = true then x else M.concatenate ~axis:1 [|x; M.ones l 1|] in
     (* initialise the matrices according to fan_in/out *)
-    let r = 1. /. (float_of_int m) in
-    let p = ref (Mat M.(sub_scalar (uniform ~scale:(2.*.r) m n) r)) in
-    let b = ref (Mat M.(sub_scalar (uniform ~scale:(2.*.r) 1 n) r)) in
-
+    let r = 1. /. (float_of_int o) in
+    let p = Mat M.(sub_scalar (uniform ~scale:(2.*.r) o n) r) in
+    (* make the function to minimise *)
     let f w x =
-      let w = Mat.reshape m n w in
-      let pred = Maths.(x *@ w) in
-      pred
+      let w = Mat.reshape o n w in
+      Maths.(x *@ w)
     in
+    (* get the result, reshape, return *)
+    let w = minimise_weight params f (Maths.flatten p) (Mat x) (Mat y)
+      |> snd |> Mat.reshape o n |> unpack_mat
+    in
+    match bias with
+    | true  -> M.split ~axis:0 [|m;1|] w
+    | false -> [|w|]
 
+
+  let ols' ?(i=false) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
       ~loss:(Loss.Quadratic) ~verbosity:false
       ~stopping:(Stopping.Const 1e-16) 1000.
     in
-    let _, w = minimise_weight params f (Maths.flatten !p) (Mat x) (Mat y) in
-    (w |> Mat.reshape m n |> unpack_mat)
+    _linear_regression i params x y
 
 
 
