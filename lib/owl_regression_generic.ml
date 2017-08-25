@@ -96,7 +96,7 @@ module Make
 
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Const 0.1) ~gradient:(Gradient.Newton)
-      ~loss:(Loss.Quadratic) ~verbosity:true
+      ~loss:(Loss.Quadratic) ~verbosity:false
       ~stopping:(Stopping.Const 1e-16) 1000.
     in
     let w = minimise_weight params f (Mat.of_arrays [|[|a;l;b|]|]) (Mat x) (Mat y)
@@ -105,43 +105,15 @@ module Make
     M.(get w 0 0, get w 0 1, get w 0 2)
 
 
-  let _exponential ?(i=false) x y =
-    let a = ref (F (Owl_stats.Rnd.uniform ())) in
-    let lambda = ref (F (Owl_stats.Rnd.uniform ())) in
-    let b = ref (F (Owl_stats.Rnd.uniform ())) in
-
-    let forward x =
-      let t = tag () in
-      a := make_reverse !a t;
-      lambda := make_reverse !lambda t;
-      b := make_reverse !b t;
-      let pred = Maths.(!a * exp (neg !lambda * x) + !b) in
-      pred, [| [|!a; !lambda; !b|] |]
-    in
-
-    let backward y =
-      reverse_prop (F 1.) y;
-      let pri_v = [| [|primal !a; primal !lambda; primal !b|] |] in
-      let adj_v = [| [|adjval !a; adjval !lambda; adjval !b|] |] in
-      pri_v, adj_v
-    in
-
-    let update us =
-      a := us.(0).(0);
-      lambda := us.(0).(1);
-      b := us.(0).(2)
-    in
-
-    let save _ = () in
-
+  let poly x y n =
+    let z = Array.init (n + 1) (fun i -> M.(pow_scalar x (float_of_int i))) in
+    let x = M.concatenate ~axis:1 z in
     let params = Params.config
-      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Quadratic) ~stopping:(Stopping.Const 1e-16) 100000.
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Const 1.) ~gradient:(Gradient.Newton)
+      ~loss:(Loss.Quadratic) ~verbosity:false
+      ~stopping:(Stopping.Const 1e-16) 100.
     in
-    minimise_network params forward backward update save (Mat x) (Mat y) |> ignore;
-    !a |> primal' |> unpack_flt,
-    !lambda |> primal' |> unpack_flt,
-    !b |> primal' |> unpack_flt
+    (_linear_reg false params x y).(0)
 
 
 end
