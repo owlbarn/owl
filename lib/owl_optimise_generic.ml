@@ -464,7 +464,7 @@ module Make
 
   (* core optimisation functions *)
 
-  (* This function minimise the weight [w] of passed-in function [f].
+  (* This function minimises the weight [w] of passed-in function [f].
      [f] is a function [f : w -> x -> y].
      Both [w] and [y] are row vector.
    *)
@@ -544,7 +544,10 @@ module Make
     Array.map unpack_flt Checkpoint.(state.loss), !w
 
 
-  (* *)
+  (* This function is specifically designed for minimising the weights in a
+     neural network of graph structure. In Owl's earlier versions, the functions
+     in the regression module were actually implemented using this function. 
+   *)
   let minimise params forward backward update save x y =
     let open Params in
     if params.verbosity = true then
