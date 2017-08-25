@@ -1373,7 +1373,10 @@ module Make
 
     let run x l =
       let kernel = [|l.in_shape.(0)|] in
-      Maths.(max_pool1d VALID x kernel [|1|] |> arr_to_mat)
+      let a = Maths.max_pool1d VALID x kernel [|1|] in
+      let s = Arr.shape a in
+      let b, o = s.(0), s.(2) in
+      Arr.reshape a [|b; o|] |> Maths.arr_to_mat
 
     let to_string l =
       Printf.sprintf "    GlobalMaxPool1D : in:[*,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) ^
@@ -1406,7 +1409,10 @@ module Make
 
     let run x l =
       let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
-      Maths.(max_pool2d VALID x kernel [|1;1|] |> arr_to_mat)
+      let a = Maths.max_pool2d VALID x kernel [|1;1|] in
+      let s = Arr.shape a in
+      let b, o = s.(0), s.(3) in
+      Arr.reshape a [|b; o|] |> Maths.arr_to_mat
 
     let to_string l =
       Printf.sprintf "    GlobalMaxPool2D : in:[*,%i,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) ^
@@ -1438,7 +1444,10 @@ module Make
 
     let run x l =
       let kernel = [|l.in_shape.(0)|] in
-      Maths.(avg_pool1d VALID x kernel [|1|] |> arr_to_mat)
+      let a = Maths.avg_pool1d VALID x kernel [|1|] in
+      let s = Arr.shape a in
+      let b, o = s.(0), s.(2) in
+      Arr.reshape a [|b; o|] |> Maths.arr_to_mat
 
     let to_string l =
       Printf.sprintf "    GlobalAvgPool1D : in:[*,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) ^
@@ -1471,7 +1480,10 @@ module Make
 
     let run x l =
       let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
-      Maths.(avg_pool2d VALID x kernel [|1;1|] |> arr_to_mat)
+      let a = Maths.avg_pool2d VALID x kernel [|1;1|] in
+      let s = Arr.shape a in
+      let b, o = s.(0), s.(3) in
+      Arr.reshape a [|b; o|] |> Maths.arr_to_mat
 
     let to_string l =
       Printf.sprintf "    GlobalAvgPool2D : in:[*,%i,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) ^
@@ -1890,8 +1902,10 @@ module Make
       ) out_shapes;
       l.in_shape <- Array.copy s0;
       l.out_shape <- Array.copy s0;
-      l.in_shape.(l.axis) <- (-1);
-      l.out_shape.(l.axis) <- !_d
+      (* should not concatenate along batchs axis *)
+      assert (l.axis > 0);
+      l.in_shape.(l.axis - 1) <- (-1);
+      l.out_shape.(l.axis - 1) <- !_d
 
     let run x l =
       let n = Array.length x in

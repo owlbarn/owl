@@ -5,6 +5,7 @@
 
 (** Dataset: easy access to various datasets *)
 
+open Owl_types
 
 let remote_data_path () = "https://github.com/ryanrhymes/owl_dataset/raw/master/"
 
@@ -93,6 +94,13 @@ let load_cifar_test_data () =
   Owl_dense_ndarray.S.load (p ^ "cifar10_test_data"),
   Owl_dense_matrix.S.load (p ^ "cifar10_test_labels"),
   Owl_dense_matrix.S.load (p ^ "cifar10_test_lblvec")
+
+let draw_samples_cifar x y n =
+  let col_num = (Owl_dense_ndarray_generic.shape x).(0) in
+  let a = Array.init col_num (fun i -> i) in
+  let a = Owl_stats.choose a n |> Array.to_list in
+  Owl_dense_ndarray.S.get_slice [L a; R []; R []; R []] x,
+  Owl_dense_matrix.S.get_slice  [L a; R []] y
 
 (* load text data and stopwords *)
 let load_stopwords () =
