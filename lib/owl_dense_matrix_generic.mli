@@ -1329,44 +1329,44 @@ val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** [add_scalar x a] adds a scalar value [a] to all the elements in [x], and
+(** [add_scalar x a] adds a scalar value [a] to each element in [x], and
   returns the result in a new matrix.
  *)
 
 val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** [sub_scalar x a] subtracts a scalar value [a] to all the elements in [x],
+(** [sub_scalar x a] subtracts a scalar value [a] from each element in [x],
   and returns the result in a new matrix.
  *)
 
 val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** [mul_scalar x a] multiplies a scalar value [a] to all the elements in [x],
+(** [mul_scalar x a] multiplies each element in [x] by a scalar value [a],
   and returns the result in a new matrix.
  *)
 
 val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** [div_scalar x a] divides a scalar value [a] to all the elements in [x], and
+(** [div_scalar x a] divides each element in [x] by a scalar value [a], and
   returns the result in a new matrix.
  *)
 
- val scalar_add : 'a -> ('a, 'b) t -> ('a, 'b) t
- (** [scalar_add a x] adds all the elements in [x] to a scalar value [a],
-   and returns the result in a new matrix.
+val scalar_add : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [scalar_add a x] adds a scalar value [a] to each element in [x],
+  and returns the result in a new matrix.
  *)
 
- val scalar_sub : 'a -> ('a, 'b) t -> ('a, 'b) t
- (** [scalar_sub a x] subtracts all the elements in [x] to a scalar value [a],
-   and returns the result in a new matrix.
-  *)
+val scalar_sub : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [scalar_sub a x] subtracts each element in [x] from a scalar value [a],
+  and returns the result in a new matrix.
+ *)
 
- val scalar_mul : 'a -> ('a, 'b) t -> ('a, 'b) t
- (** [scalar_mul a x] multiplies all the elements in [x] to a scalar value [a],
-   and returns the result in a new matrix.
-  *)
+val scalar_mul : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [scalar_mul a x] multiplies each element in [x] by a scalar value [a],
+  and returns the result in a new matrix.
+ *)
 
- val scalar_div : 'a -> ('a, 'b) t -> ('a, 'b) t
- (** [scalar_div a x] divides all the elements in [x] to a scalar value [a],
-   and returns the result in a new matrix.
-  *)
+val scalar_div : 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [scalar_div a x] divides a scalar value [a] by each element in [x],
+  and returns the result in a new matrix.
+ *)
 
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [dot x y] returns the dot product of matrix [x] and [y]. *)
