@@ -6,10 +6,9 @@
 
 (** Neural network: module aliases *)
 
-(** NOTE: this is an experimental module being built now *)
-
 
 (** {6 Single precision neural network} *)
+
 module S = struct
 
   (* module aliases: graphical network & parallel *)
@@ -39,6 +38,7 @@ end
 
 
 (** {6 Double precision neural network} *)
+
 module D = struct
 
   (* module aliases: graphical network & parallel *)

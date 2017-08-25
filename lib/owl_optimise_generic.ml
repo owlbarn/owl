@@ -480,8 +480,63 @@ module Make
     let clip_fun = Clipping.run params.clipping in
     let stop_fun = Stopping.run params.stopping in
     let chkp_fun = Checkpoint.run params.checkpoint in
-    ()
 
+    (* operations in the ith iteration *)
+    let iterate i =
+      let xt, yt = bach_fun x y i in
+      let loss x = Maths.((loss_fun yt (f x)) + (regl_fun x)) in
+      let lt, gt = grad' loss xt in
+      lt |> primal', xt, gt
+    in
+
+    (* first iteration to bootstrap the optimisation *)
+    let _loss, _xt, _gt = iterate 0 in
+    let _g = ref _gt in
+    let _p = ref _gt in
+    let _u = ref (F 0.) in
+    let _c = ref (F 0.) in
+
+    (* init the state of optimisation process *)
+    let batches_per_epoch = Batch.batches params.batch x in
+    let state = Checkpoint.init_state batches_per_epoch params.epochs in
+    Checkpoint.(state.loss.(0) <- _loss);
+
+    (* try to iterate all batches *)
+    let i = ref 1 in
+    while Checkpoint.(!i < state.batches && state.stop = false) do
+      let loss', x', g' = iterate !i in
+      (* checkpoint of the optimisation if necessary *)
+      chkp_fun (fun _ -> ()) !i loss' state;
+      (* print out the current state of optimisation *)
+      if params.verbosity = true then Checkpoint.print_state_info state;
+      (* check if the stopping criterion is met *)
+      Checkpoint.(state.stop <- stop_fun (unpack_flt loss'));
+      (* clip the gradient if necessary *)
+      let g' = clip_fun g' in
+      (* calculate gradient descent *)
+      let p' = grad_fun loss_fun x' !_g !_p g' in
+      (* update gcache if necessary *)
+      (*_c := upch_fun g' !_c;*)
+      (* adjust direction based on learning_rate *)
+      let u' = Maths.(p' * rate_fun !i g' !_c) in
+      (* adjust direction based on momentum *)
+      let u' = momt_fun !_u u' in
+      (* update the weight *)
+      let ws' = Maths.(x + u') in
+      ();
+      (* update ws'; *)
+      (* save historical data *)
+      if params.momentum <> Momentum.None then _u := u';
+      _g := g';
+      _p := p';
+      i := !i + 1;
+    done;
+
+    (* print optimisation summary *)
+    if params.verbosity = true then
+      Checkpoint.print_summary state;
+    (* return loss history *)
+    Array.map unpack_flt Checkpoint.(state.loss)
 
 
 
@@ -535,13 +590,11 @@ module Make
     Checkpoint.(state.loss.(0) <- _loss);
 
     (* try to iterate all batches *)
-    let iter_idx = ref 1 in
-    while !iter_idx < Checkpoint.(state.batches)
-      && Checkpoint.(state.stop = false) do
-      let i = !iter_idx in
-      let loss', ws, gs' = iterate i in
+    let i = ref 1 in
+    while Checkpoint.(!i < state.batches && state.stop = false) do
+      let loss', ws, gs' = iterate !i in
       (* checkpoint of the optimisation if necessary *)
-      chkp_fun save i loss' state;
+      chkp_fun save !i loss' state;
       (* print out the current state of optimisation *)
       if params.verbosity = true then Checkpoint.print_state_info state;
       (* check if the stopping criterion is met *)
@@ -560,7 +613,7 @@ module Make
       ch := upch_fun gs' !ch;
       (* adjust direction based on learning_rate *)
       let us' = Owl_utils.aarr_map3 (fun p' g' c ->
-        Maths.(p' * rate_fun i g' c)
+        Maths.(p' * rate_fun !i g' c)
       ) ps' gs' !ch
       in
       (* adjust direction based on momentum *)
@@ -575,7 +628,7 @@ module Make
       if params.momentum <> Momentum.None then us := us';
       gs := gs';
       ps := ps';
-      iter_idx := !iter_idx + 1;
+      i := !i + 1;
     done;
 
     (* print optimisation summary *)
