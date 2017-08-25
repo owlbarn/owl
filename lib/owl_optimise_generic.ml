@@ -197,10 +197,15 @@ module Make
           let b = Maths.((l2norm_sqr g') / (sum (p * y))) in
           Maths.((neg g') + (b * p))
         )
-      | NewtonCG    -> fun _ w g p g' -> failwith "not implemented" (* TODO *)
+      | NewtonCG    -> fun f w g p g' -> (
+          (* TODO: NOT FINISHED *)
+          let hv = hessianv f w p |> Maths.transpose in
+          let b = Maths.((hv *@ g') / (hv *@ p)) in
+          Maths.((neg g') + p *@ b)
+        )
       | Newton      -> fun f w g p g' -> (
           let g', h' = gradhessian f w in
-          Maths.(neg (sum (inv h')) * g')
+          Maths.(neg (g' *@ (inv h')))
         )
 
     let to_string = function
@@ -631,6 +636,8 @@ module Make
     (* return loss history *)
     Array.map unpack_flt Checkpoint.(state.loss)
 
+
+  (* let minimise_fun f = *)
 
 
 end

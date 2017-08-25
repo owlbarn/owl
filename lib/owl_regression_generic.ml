@@ -95,9 +95,9 @@ module Make
     in
 
     let params = Params.config
-      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 0.5) ~gradient:(Gradient.GD)
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Const 0.1) ~gradient:(Gradient.Newton)
       ~loss:(Loss.Quadratic) ~verbosity:true
-      ~stopping:(Stopping.Const 1e-16) 10000.
+      ~stopping:(Stopping.Const 1e-16) 1000.
     in
     let w = minimise_weight params f (Mat.of_arrays [|[|a;l;b|]|]) (Mat x) (Mat y)
       |> snd |> unpack_mat
