@@ -240,11 +240,9 @@ module Make
   (* functions to report errors, help in debugging *)
 
   let type_info x =
-    let idx2str idx = Array.(map string_of_int idx |> to_list) |> String.concat ","
-    in
     let deep_info x = match primal' x with
-      | F a   -> Printf.sprintf "(F %g)" a
-      | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> idx2str)
+      | F a   -> Printf.sprintf "F(%g)" a
+      | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils.string_of_array string_of_int)
       | Mat a -> Printf.sprintf "Mat(%i,%i)" (M.row_num a) (M.col_num a)
       | _     -> "you should not have reached here!"
     in
@@ -1356,7 +1354,7 @@ module Make
     in
     let rec push xs =
       match xs with
-      | [] -> ()
+      | []          -> ()
       | (v, x) :: t -> (
           match x with
           | DR (ap, aa, ao, af, ai) -> (
@@ -1708,10 +1706,54 @@ module Make
   end
 
 
-  (* TODO: consider visualisation *)
-  let print_trace x =
-    None
 
+  let print_trace x =
+    (* init variables for tracking nodes and indices *)
+    let nodes = Hashtbl.create 512 in
+    let index = ref 0 in
+
+    (* local function to traverse the nodes *)
+    let rec push tlist =
+      match tlist with
+      | []       -> ()
+      | hd :: tl ->
+          if Hashtbl.mem nodes hd = false then (
+            let op, prev =
+              match hd with
+              | DR (ap, aa, ao, af, ai) -> (
+                  match ao with
+                  | Noop                     -> "Noop", []
+                  | Add_D_D (a, b)           -> "Add_D_D", [a; b]
+                  | Add_D_C (a, b)           -> "Add_D_C", [a; b]
+                  | Add_C_D (a, b)           -> "Add_C_D", [a; b]
+                  | Sub_D_D (a, b)           -> "Sub_D_D", [a; b]
+                  | Sub_D_C (a, b)           -> "Sub_D_C", [a; b]
+                  | Sub_C_D (a, b)           -> "Sub_C_D", [a; b]
+                )
+              | F a                     -> Printf.sprintf "Const", []
+              | Mat a                   -> Printf.sprintf "Const", []
+              | Arr a                   -> Printf.sprintf "Const", []
+              | DF (_, _, _)            -> Printf.sprintf "DF", []
+            in
+            (* check if the node has been visited before *)
+            Hashtbl.add nodes hd (!index, op, prev);
+            index := !index + 1;
+            push (prev @ tl);
+          )
+          else push tl
+  in
+
+  (* iterate then re-iterate to format *)
+  push x;
+  Hashtbl.iter (fun v (v_id, v_op, v_prev) ->
+    let v_ts = type_info v in
+    List.iter (fun u ->
+      let u_id, u_op, _ = Hashtbl.find nodes u in
+      let u_ts = type_info u in
+      Printf.printf "[ i:%i o:%s t:%s ] -> [ i:%i o:%s t:%s ]\n"
+        u_id u_op u_ts v_id v_op v_ts
+    ) v_prev
+  ) nodes
 
 end
 
