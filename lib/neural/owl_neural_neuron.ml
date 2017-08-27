@@ -2154,6 +2154,11 @@ module Make
       l.mean <- u.(2) |> primal';
       l.variance <- u.(3) |> primal'
 
+    let copy l =
+      let l' = create l.axis in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l =
       let x' = Maths.( (x - l.mean) / sqrt (l.variance + F 1e-8)) in
       Maths.(x' * l.gamma + l.beta)
@@ -2659,6 +2664,7 @@ module Make
     | GaussianDropout l -> GaussianDropout GaussianDropout.(copy l)
     | AlphaDropout l    -> AlphaDropout AlphaDropout.(copy l)
     | Normalisation l   -> Normalisation Normalisation.(copy l)
+    | NormalisationInference l   -> NormalisationInference NormalisationInference.(copy l)
     | Add l             -> Add Add.(copy l)
     | Mul l             -> Mul Mul.(copy l)
     | Dot l             -> Dot Dot.(copy l)
