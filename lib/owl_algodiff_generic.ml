@@ -239,14 +239,13 @@ module Make
 
   (* functions to report errors, help in debugging *)
 
-  let type_info x =
-    let deep_info x = match primal' x with
-      | F a   -> Printf.sprintf "F(%g)" a
-      | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils.string_of_array string_of_int)
-      | Mat a -> Printf.sprintf "Mat(%i,%i)" (M.row_num a) (M.col_num a)
-      | _     -> "you should not have reached here!"
-    in
-    match x with
+  let deep_info x = match primal' x with
+    | F a   -> Printf.sprintf "F(%g)" a
+    | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils.string_of_array string_of_int)
+    | Mat a -> Printf.sprintf "Mat(%i,%i)" (M.row_num a) (M.col_num a)
+    | _     -> "you should not have reached here!"
+
+  let type_info x = match x with
     | DF (ap, at, ai)         -> Printf.sprintf "[DF tag:%i ap:%s]" ai (deep_info ap)
     | DR (ap, at, ao, af, ai) -> Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
     | _                       -> Printf.sprintf "[%s]" (deep_info x)
@@ -1846,19 +1845,32 @@ module Make
 
   (* convert graph to dot file output *)
   let _convert_dot_output nodes =
-    Hashtbl.fold (fun v (v_id, v_op, v_prev) s0 ->
+    let network = Hashtbl.fold (fun v (v_id, v_op, v_prev) s0 ->
       s0 ^ List.fold_left (fun s1 u ->
         let u_id, u_op, _ = Hashtbl.find nodes u in
-        s1 ^ Printf.sprintf "\t\"#%i %s\" -> \"#%i %s\"\n"
-          u_id u_op v_id v_op
+        s1 ^ Printf.sprintf "\t%i -> %i;\n" u_id v_id
       ) "" v_prev
     ) nodes ""
+    in
+    let attrs = Hashtbl.fold (fun v (v_id, v_op, v_prev) s0 ->
+      if v_op = "Const" then
+        s0 ^ Printf.sprintf "%i [ label=\"#%i | { %s | %s }\" fillcolor=gray, style=filled ];\n"
+          v_id v_id v_op (deep_info v)
+      else
+        s0 ^ Printf.sprintf "%i [ label=\"#%i | { %s | %s }\" ];\n"
+          v_id v_id v_op (deep_info v)
+    ) nodes ""
+    in
+    network ^ attrs
 
 
   let to_trace nodes = _traverse_trace nodes |> _convert_terminal_output
 
 
-  let to_dot nodes = _traverse_trace nodes |> _convert_dot_output |> Printf.sprintf "digraph G {\n%s\n}"
+  let to_dot nodes =
+    _traverse_trace nodes
+    |> _convert_dot_output
+    |> Printf.sprintf "digraph CG {\nnode [shape=record];\n%s}"
 
 
 
