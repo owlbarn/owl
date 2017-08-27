@@ -380,7 +380,10 @@ module Make
 
   val clip_by_l2norm : elt -> t -> t
 
-  val print_trace : t list -> unit
+  val to_trace : t list -> string
+
+  val to_dot : t list -> string
+
 
 
 end

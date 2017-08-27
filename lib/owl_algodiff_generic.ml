@@ -1706,12 +1706,14 @@ module Make
   end
 
 
-
-  let print_trace x =
+  (* _traverse_trace and its related functions are used to convert the
+     computation graph generated in backward mode into human-readable format.
+     You can make your own convert function to generate needed format.
+   *)
+  let _traverse_trace x =
     (* init variables for tracking nodes and indices *)
     let nodes = Hashtbl.create 512 in
     let index = ref 0 in
-
     (* local function to traverse the nodes *)
     let rec push tlist =
       match tlist with
@@ -1825,18 +1827,40 @@ module Make
           )
           else push tl
   in
+  (* iterate the graph then return the hash table *)
+  push x; nodes
 
-  (* iterate then re-iterate to format *)
-  push x;
-  Hashtbl.iter (fun v (v_id, v_op, v_prev) ->
-    let v_ts = type_info v in
-    List.iter (fun u ->
-      let u_id, u_op, _ = Hashtbl.find nodes u in
-      let u_ts = type_info u in
-      Printf.printf "{ i:%i o:%s t:%s } -> { i:%i o:%s t:%s }\n"
-        u_id u_op u_ts v_id v_op v_ts
-    ) v_prev
-  ) nodes
+
+  (* convert graph to terminal output *)
+  let _convert_terminal_output nodes =
+    Hashtbl.fold (fun v (v_id, v_op, v_prev) s0 ->
+      let v_ts = type_info v in
+      s0 ^ List.fold_left (fun s1 u ->
+        let u_id, u_op, _ = Hashtbl.find nodes u in
+        let u_ts = type_info u in
+        s1 ^ Printf.sprintf "{ i:%i o:%s t:%s } -> { i:%i o:%s t:%s }\n"
+          u_id u_op u_ts v_id v_op v_ts
+      ) "" v_prev
+    ) nodes ""
+
+
+  (* convert graph to dot file output *)
+  let _convert_dot_output nodes =
+    Hashtbl.fold (fun v (v_id, v_op, v_prev) s0 ->
+      s0 ^ List.fold_left (fun s1 u ->
+        let u_id, u_op, _ = Hashtbl.find nodes u in
+        s1 ^ Printf.sprintf "\t\"#%i %s\" -> \"#%i %s\"\n"
+          u_id u_op v_id v_op
+      ) "" v_prev
+    ) nodes ""
+
+
+  let to_trace nodes = _traverse_trace nodes |> _convert_terminal_output
+
+
+  let to_dot nodes = _traverse_trace nodes |> _convert_dot_output |> Printf.sprintf "digraph G {\n%s\n}"
+
+
 
 end
 
