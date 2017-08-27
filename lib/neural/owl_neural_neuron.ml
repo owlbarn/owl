@@ -113,6 +113,8 @@ module Make
       out_shape = Array.copy inputs;
     }
 
+    let copy l = create l.in_shape
+
     let run x l =
       (* check the input shape, a bit overhead but worth it *)
       let check_shape = function
@@ -184,6 +186,8 @@ module Make
       | TRelu a     -> Maths.(relu (x - F a))
       | Custom f    -> f x
       | None        -> x
+
+    let copy l = create l.activation
 
     let run x l = run_activation x l.activation
 
@@ -265,6 +269,11 @@ module Make
       l.w <- u.(0) |> primal';
       l.b <- u.(1) |> primal'
 
+    let copy l =
+      let l' = create l.out_shape.(0) l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l = Maths.((x *@ l.w) + l.b)
 
     let to_string l =
@@ -324,6 +333,11 @@ module Make
     let mkadj l = [|adjval l.w|]
 
     let update l u = l.w <- u.(0) |> primal'
+
+    let copy l =
+      let l' = create l.out_shape.(0) l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
 
     let run x l = Maths.(x *@ l.w)
 
@@ -434,6 +448,11 @@ module Make
       l.why <- u.(2) |> primal';
       l.bh  <- u.(3) |> primal';
       l.by  <- u.(4) |> primal'
+
+    let copy l =
+      let l' = create l.hiddens l.out_shape.(0) l.act l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
 
     let run x l =
       let s = shape x in
@@ -621,6 +640,11 @@ module Make
       l.bf  <- u.(10) |> primal';
       l.bo  <- u.(11) |> primal'
 
+    let copy l =
+      let l' = create l.out_shape.(0) l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l =
       let s = shape x in
       l.h <- Mat.zeros s.(0) l.out_shape.(0);
@@ -789,6 +813,11 @@ module Make
       l.br  <- u.(7) |> primal';
       l.bh  <- u.(8) |> primal'
 
+    let copy l =
+      let l' = create l.out_shape.(0) l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l =
       let s = shape x in
       l.h <- Mat.zeros s.(0) l.out_shape.(0);
@@ -889,6 +918,11 @@ module Make
       l.w <- u.(0) |> primal';
       l.b <- u.(1) |> primal'
 
+    let copy l =
+      let l' = create l.padding l.kernel l.stride l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l = Maths.((conv1d ~padding:l.padding x l.w l.stride) + l.b)
 
     let to_string l =
@@ -974,6 +1008,11 @@ module Make
     let update l u =
       l.w <- u.(0) |> primal';
       l.b <- u.(1) |> primal'
+
+    let copy l =
+      let l' = create l.padding l.kernel l.stride l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
 
     let run x l = Maths.((conv2d ~padding:l.padding x l.w l.stride) + l.b)
 
@@ -1064,6 +1103,11 @@ module Make
       l.w <- u.(0) |> primal';
       l.b <- u.(1) |> primal'
 
+    let copy l =
+      let l' = create l.padding l.kernel l.stride l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l = Maths.((conv3d ~padding:l.padding x l.w l.stride) + l.b)
 
     let to_string l =
@@ -1136,6 +1180,11 @@ module Make
       l.w <- u.(0) |> primal';
       l.b <- u.(1) |> primal'
 
+    let copy l =
+      let l' = create l.out_shape.(0) l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l =
       let m = Mat.row_num l.w in
       let n = Arr.numel x / m in
@@ -1189,6 +1238,8 @@ module Make
       l.out_shape.(0) <- out_cols;
       l.out_shape.(1) <- out_shape.(1)
 
+    let copy l = create l.padding l.kernel l.stride
+
     let run x l = Maths.(max_pool1d l.padding x l.kernel l.stride)
 
     let to_string l =
@@ -1238,6 +1289,8 @@ module Make
       l.out_shape.(1) <- out_rows;
       l.out_shape.(2) <- out_shape.(2)
 
+    let copy l = create l.padding l.kernel l.stride
+
     let run x l = Maths.(max_pool2d l.padding x l.kernel l.stride)
 
     let to_string l =
@@ -1284,6 +1337,8 @@ module Make
       in
       l.out_shape.(0) <- out_cols;
       l.out_shape.(1) <- out_shape.(1)
+
+    let copy l = create l.padding l.kernel l.stride
 
     let run x l = Maths.(avg_pool1d l.padding x l.kernel l.stride)
 
@@ -1334,6 +1389,8 @@ module Make
       l.out_shape.(1) <- out_rows;
       l.out_shape.(2) <- out_shape.(2)
 
+    let copy l = create l.padding l.kernel l.stride
+
     let run x l = Maths.(avg_pool2d l.padding x l.kernel l.stride)
 
     let to_string l =
@@ -1371,6 +1428,8 @@ module Make
       l.in_shape.(1) <- out_shape.(1);
       l.out_shape.(0) <- out_shape.(1)
 
+    let copy l = create ()
+
     let run x l =
       let kernel = [|l.in_shape.(0)|] in
       let a = Maths.max_pool1d VALID x kernel [|1|] in
@@ -1407,6 +1466,8 @@ module Make
       l.in_shape.(2) <- out_shape.(2);
       l.out_shape.(0) <- out_shape.(2)
 
+    let copy l = create ()
+
     let run x l =
       let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
       let a = Maths.max_pool2d VALID x kernel [|1;1|] in
@@ -1441,6 +1502,8 @@ module Make
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
       l.out_shape.(0) <- out_shape.(1)
+
+    let copy l = create ()
 
     let run x l =
       let kernel = [|l.in_shape.(0)|] in
@@ -1477,6 +1540,8 @@ module Make
       l.in_shape.(1) <- out_shape.(1);
       l.in_shape.(2) <- out_shape.(2);
       l.out_shape.(0) <- out_shape.(2)
+
+    let copy l = create ()
 
     let run x l =
       let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
@@ -1549,6 +1614,8 @@ module Make
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- Array.copy out_shape
 
+    let copy l = create l.lambda
+
     let run x l = l.lambda x
 
     let to_string l =
@@ -1581,6 +1648,8 @@ module Make
     let connect out_shape l =
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- Array.copy out_shape
+
+    let copy l = create l.rate
 
     let run x l =
       let a = F (1. /. (1. -. l.rate)) in
@@ -1623,6 +1692,8 @@ module Make
       let n = Array.fold_left (fun a b -> a * b) 1 l.out_shape in
       assert (m = n);
       l.in_shape <- Array.copy out_shape
+
+    let copy l = create ~convert:l.convert l.out_shape
 
     let run x l =
       let x_shape = shape x in
@@ -1668,6 +1739,8 @@ module Make
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- [|o|]
 
+    let copy l = create ~convert:l.convert ()
+
     let run x l =
       let x = Maths.reshape x [|(shape x).(0); l.out_shape.(0)|] in
       match l.convert with
@@ -1707,6 +1780,8 @@ module Make
       l.in_shape <- Array.copy out_shapes.(0);
       l.out_shape <- Array.copy out_shapes.(0)
 
+    let copy l = create ()
+
     let run x l =
       let n = Array.length x in
       (* at least two inputs *)
@@ -1744,6 +1819,8 @@ module Make
       Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
       l.in_shape <- Array.copy out_shapes.(0);
       l.out_shape <- Array.copy out_shapes.(0)
+
+    let copy l = create ()
 
     let run x l =
       let n = Array.length x in
@@ -1786,6 +1863,8 @@ module Make
       l.in_shape <- [|m; n|];
       l.out_shape <- [|n|]
 
+    let copy l = create ()
+
     let run x l =
       assert (Array.length x = 2);
       Maths.(x.(0) *@ x.(1))
@@ -1817,6 +1896,8 @@ module Make
       Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
       l.in_shape <- Array.copy out_shapes.(0);
       l.out_shape <- Array.copy out_shapes.(0)
+
+    let copy l = create ()
 
     let run x l =
       let n = Array.length x in
@@ -1855,6 +1936,8 @@ module Make
       Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
       l.in_shape <- Array.copy out_shapes.(0);
       l.out_shape <- Array.copy out_shapes.(0)
+
+    let copy l = create ()
 
     let run x l =
       let n = Array.length x in
@@ -1906,6 +1989,8 @@ module Make
       assert (l.axis > 0);
       l.in_shape.(l.axis - 1) <- (-1);
       l.out_shape.(l.axis - 1) <- !_d
+
+    let copy l = create l.axis
 
     let run x l =
       let n = Array.length x in
@@ -1980,6 +2065,11 @@ module Make
       l.beta <- u.(0) |> primal';
       l.gamma <- u.(1) |> primal'
 
+    let copy l =
+      let l' = create l.axis in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l =
       let a = F (1. /. float_of_int (shape x).(l.axis)) in
       let mu = Maths.(x - a * (sum_ ~axis:l.axis x)) in
@@ -2022,6 +2112,8 @@ module Make
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- Array.copy out_shape
 
+    let copy l = create l.sigma
+
     let run x l =
       let s = shape x in
       let a = match (primal' x) with
@@ -2060,6 +2152,8 @@ module Make
     let connect out_shape l =
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- Array.copy out_shape
+
+    let copy l = create l.rate
 
     let run x l =
       let s = shape x in
@@ -2100,6 +2194,8 @@ module Make
     let connect out_shape l =
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- Array.copy out_shape
+
+    let copy l = create l.rate
 
     let run x l =
       (* parameters of affine transformation *)
@@ -2175,6 +2271,11 @@ module Make
     let mkadj l = [|adjval l.w|]
 
     let update l u = l.w <- u.(0) |> primal'
+
+    let copy l =
+      let l' = create l.in_dim l.out_shape.(1) l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
 
     let run x l =
       let x = primal' x |> unpack_mat in
@@ -2435,6 +2536,43 @@ module Make
     | FullyConnected l -> FullyConnected.update l u
     | Normalisation l  -> Normalisation.update l u
     | _                -> () (* activation, etc. *)
+
+
+  let copy a l = match l with
+    | Input l           -> Input Input.(copy l)
+    | Linear l          -> Linear Linear.(copy l)
+    | LinearNoBias l    -> LinearNoBias LinearNoBias.(copy l)
+    | Embedding l       -> Embedding Embedding.(copy l)
+    | LSTM l            -> LSTM LSTM.(copy l)
+    | GRU l             -> GRU GRU.(copy l)
+    | Recurrent l       -> Recurrent Recurrent.(copy l)
+    | Conv1D l          -> Conv1D Conv1D.(copy l)
+    | Conv2D l          -> Conv2D Conv2D.(copy l)
+    | Conv3D l          -> Conv3D Conv3D.(copy l)
+    | FullyConnected l  -> FullyConnected FullyConnected.(copy l)
+    | MaxPool1D l       -> MaxPool1D MaxPool1D.(copy l)
+    | MaxPool2D l       -> MaxPool2D MaxPool2D.(copy l)
+    | AvgPool1D l       -> AvgPool1D AvgPool1D.(copy l)
+    | AvgPool2D l       -> AvgPool2D AvgPool2D.(copy l)
+    | GlobalMaxPool1D l -> GlobalMaxPool1D GlobalMaxPool1D.(copy l)
+    | GlobalMaxPool2D l -> GlobalMaxPool2D GlobalMaxPool2D.(copy l)
+    | GlobalAvgPool1D l -> GlobalAvgPool1D GlobalAvgPool1D.(copy l)
+    | GlobalAvgPool2D l -> GlobalAvgPool2D GlobalAvgPool2D.(copy l)
+    | Dropout l         -> Dropout Dropout.(copy l)
+    | Reshape l         -> Reshape Reshape.(copy l)
+    | Flatten l         -> Flatten Flatten.(copy l)
+    | Lambda l          -> Lambda Lambda.(copy l)
+    | Activation l      -> Activation Activation.(copy l)
+    | GaussianNoise l   -> GaussianNoise GaussianNoise.(copy l)
+    | GaussianDropout l -> GaussianDropout GaussianDropout.(copy l)
+    | AlphaDropout l    -> AlphaDropout AlphaDropout.(copy l)
+    | Normalisation l   -> Normalisation Normalisation.(copy l)
+    | Add l             -> Add Add.(copy l)
+    | Mul l             -> Mul Mul.(copy l)
+    | Dot l             -> Dot Dot.(copy l)
+    | Max l             -> Max Max.(copy l)
+    | Average l         -> Average Average.(copy l)
+    | Concatenate l     -> Concatenate Concatenate.(copy l)
 
 
   let run a l = match l with

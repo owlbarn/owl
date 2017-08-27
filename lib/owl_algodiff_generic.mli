@@ -375,6 +375,8 @@ module Make
 
   val shape : t -> int array
 
+  val clone_primal' : t -> t
+
 
   (* other functions, without tracking gradient *)
 

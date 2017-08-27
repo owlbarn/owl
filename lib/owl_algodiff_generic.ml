@@ -202,6 +202,12 @@ module Make
     | Mat x -> Mat M.(clip_by_l2norm a x)
     | _     -> failwith "error: AD.clip_by_l2norm"
 
+  let clone_primal' x =
+    match (primal' x) with
+    | Arr ap -> Arr A.(clone ap)
+    | Mat ap -> Mat M.(clone ap)
+    | _      -> failwith "error: AD.clone"
+
   let tile x reps =
     match primal' x with
     | Arr x -> Arr A.(tile x reps)
