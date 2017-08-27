@@ -377,10 +377,27 @@ module Make
 
   val shape : t -> int array
 
+  val clone_primal' : t -> t
+
 
   (* other functions, without tracking gradient *)
 
   val clip_by_l2norm : elt -> t -> t
+
+
+  (* functions for debugging *)
+
+  val to_trace : t list -> string
+  (** [to_trace [t0; t1; ...]] outputs the trace of computation graph on the
+      terminal in a human-readable format.
+   *)
+
+  val to_dot : t list -> string
+  (** [to_dot [t0; t1; ...]] outputs the trace of computation graph in the dot
+      file format which you can use other tools further visualisation, such as
+      Graphviz.
+   *)
+
 
 
 end

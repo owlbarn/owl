@@ -202,6 +202,12 @@ module Make
     | Mat x -> Mat M.(clip_by_l2norm a x)
     | _     -> failwith "error: AD.clip_by_l2norm"
 
+  let clone_primal' x =
+    match (primal' x) with
+    | Arr ap -> Arr A.(clone ap)
+    | Mat ap -> Mat M.(clone ap)
+    | _      -> failwith "error: AD.clone"
+
   let tile x reps =
     match primal' x with
     | Arr x -> Arr A.(tile x reps)
@@ -235,21 +241,17 @@ module Make
   let unpack_flt x =
     match (primal x) with
     | F x -> x
-    | _   -> failwith "error: AD.unpack_elt"
-
+    | _   -> failwith "error: AD.unpack_flt"
 
   (* functions to report errors, help in debugging *)
 
-  let type_info x =
-    let idx2str idx = Array.(map string_of_int idx |> to_list) |> String.concat ","
-    in
-    let deep_info x = match primal' x with
-      | F a   -> Printf.sprintf "(F %g)" a
-      | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> idx2str)
-      | Mat a -> Printf.sprintf "Mat(%i,%i)" (M.row_num a) (M.col_num a)
-      | _     -> "you should not have reached here!"
-    in
-    match x with
+  let deep_info x = match primal' x with
+    | F a   -> Printf.sprintf "F(%g)" a
+    | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils.string_of_array string_of_int)
+    | Mat a -> Printf.sprintf "Mat(%i,%i)" (M.row_num a) (M.col_num a)
+    | _     -> "you should not have reached here!"
+
+  let type_info x = match x with
     | DF (ap, at, ai)         -> Printf.sprintf "[DF tag:%i ap:%s]" ai (deep_info ap)
     | DR (ap, at, ao, af, ai) -> Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
     | _                       -> Printf.sprintf "[%s]" (deep_info x)
@@ -803,6 +805,7 @@ module Make
 
     and sum a =
       let ff = function
+        | F a      -> F a
         | Arr a    -> F A.(sum a)
         | Mat a    -> F M.(sum a)
         | _        -> error_uniop "sum" a
@@ -814,6 +817,7 @@ module Make
 
     and sum_ ?(axis=0) a =
       let ff = function
+        | F a      -> F a
         | Arr a    -> Arr A.(sum_ ~axis a)
         | Mat a    -> Mat M.(sum_ ~axis a)
         | _        -> error_uniop "sum_" a
@@ -1355,7 +1359,7 @@ module Make
     in
     let rec push xs =
       match xs with
-      | [] -> ()
+      | []          -> ()
       | (v, x) :: t -> (
           match x with
           | DR (ap, aa, ao, af, ai) -> (
@@ -1407,7 +1411,7 @@ module Make
               | Asinh_D a                -> push (((!aa / sqrt ((sqr (primal a)) + (F 1.))), a) :: t)
               | Acosh_D a                -> push (((!aa / sqrt ((sqr (primal a)) - (F 1.))), a) :: t)
               | Atanh_D a                -> push (((!aa / ((F 1.) - sqr (primal a))), a) :: t)
-              | Get_Item (a, i, j)       -> (adjref a) := add_item (adjval a) i j !aa; push ((zero a, a) :: t)
+              | Get_Item (a, i, j)       -> push ((set_item (zero a) i j (sum !aa), a) :: t)
               | SetI_D_D (a, i, j, b)    -> push ((set_item !aa i j (F 0.), a) :: (get_item !aa i j, b) :: t)
               | SetI_D_C (a, i, j, _)    -> push ((set_item !aa i j (F 0.), a) :: t)
               | SetI_C_D (_, i, j, b)    -> push ((get_item !aa i j, b) :: t)
@@ -1418,8 +1422,7 @@ module Make
               | Set_Slice_D_D (a, b, i)  -> push ((set_slice i !aa (zero b), a) :: (get_slice i !aa, b) :: t)
               | Set_Slice_D_C (a, b, i)  -> push ((set_slice i !aa (zero b), a) :: t)
               | Set_Slice_C_D (a, b, i)  -> push ((get_slice i !aa, b) :: t)
-              | Sum_D a                  -> push ((((mat_create (row_num (primal a)) (col_num (primal a)) !aa)), a) :: t)
-              (* TODO: SUM_D can be optimised to this | Sum_D a               -> push ((!aa, a) :: t) *)
+              | Sum_D a                  -> push ((!aa, a) :: t)
               | Sum__D (a, i)            -> push ((repeat ~axis:i !aa (shape a).(i), a) :: t)
               | Dot_D_D (a, b)           -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)
               | Dot_D_C (a, b)           -> push (((dot !aa (transpose b)), a) :: t)
@@ -1710,9 +1713,173 @@ module Make
   end
 
 
-  (* TODO: consider visualisation *)
-  let print_trace x =
-    None
+  (* _traverse_trace and its related functions are used to convert the
+     computation graph generated in backward mode into human-readable format.
+     You can make your own convert function to generate needed format.
+   *)
+  let _traverse_trace x =
+    (* init variables for tracking nodes and indices *)
+    let nodes = Hashtbl.create 512 in
+    let index = ref 0 in
+    (* local function to traverse the nodes *)
+    let rec push tlist =
+      match tlist with
+      | []       -> ()
+      | hd :: tl ->
+          if Hashtbl.mem nodes hd = false then (
+            let op, prev =
+              match hd with
+              | DR (ap, aa, ao, af, ai) -> (
+                  match ao with
+                  | Noop                     -> "Noop", []
+                  | Add_D_D (a, b)           -> "Add_D_D", [a; b]
+                  | Add_D_C (a, b)           -> "Add_D_C", [a; b]
+                  | Add_C_D (a, b)           -> "Add_C_D", [a; b]
+                  | Sub_D_D (a, b)           -> "Sub_D_D", [a; b]
+                  | Sub_D_C (a, b)           -> "Sub_D_C", [a; b]
+                  | Sub_C_D (a, b)           -> "Sub_C_D", [a; b]
+                  | Mul_D_D (a, b)           -> "Mul_D_D", [a; b]
+                  | Mul_D_C (a, b)           -> "Mul_D_C", [a; b]
+                  | Mul_C_D (a, b)           -> "Mul_C_D", [a; b]
+                  | Div_D_D (a, b)           -> "Div_D_D", [a; b]
+                  | Div_D_C (a, b)           -> "Div_D_C", [a; b]
+                  | Div_C_D (a, b)           -> "Div_C_D", [a; b]
+                  | Pow_D_D (a, b)           -> "Pow_D_D", [a; b]
+                  | Pow_D_C (a, b)           -> "Pow_D_C", [a; b]
+                  | Pow_C_D (a, b)           -> "Pow_C_D", [a; b]
+                  | Atan2_D_D (a, b)         -> "Atan2_D_D", [a; b]
+                  | Atan2_D_C (a, b)         -> "Atan2_D_C", [a; b]
+                  | Atan2_C_D (a, b)         -> "Atan2_C_D", [a; b]
+                  | Neg_D a                  -> "Neg_D", [ a ]
+                  | Abs_D a                  -> "Abs_D", [ a ]
+                  | Signum_D a               -> "Signum_D", [ a ]
+                  | Floor_D a                -> "Floor_D", [ a ]
+                  | Ceil_D a                 -> "Ceil_D", [ a ]
+                  | Round_D a                -> "Round_D", [ a ]
+                  | Sqr_D a                  -> "Sqr_D", [ a ]
+                  | Sqrt_D a                 -> "Sqrt_D", [ a ]
+                  | Log_D a                  -> "Log_D", [ a ]
+                  | Log2_D a                 -> "Log2_D", [ a ]
+                  | Log10_D a                -> "Log10_D", [ a ]
+                  | Exp_D a                  -> "Exp_D", [ a ]
+                  | Sin_D a                  -> "Sin_D", [ a ]
+                  | Cos_D a                  -> "Cos_D", [ a ]
+                  | Tan_D a                  -> "Tan_D", [ a ]
+                  | Sinh_D a                 -> "Sinh_D", [ a ]
+                  | Cosh_D a                 -> "Cosh_D", [ a ]
+                  | Tanh_D a                 -> "Tanh_D", [ a ]
+                  | Asin_D a                 -> "Asin_D", [ a ]
+                  | Acos_D a                 -> "Acos_D", [ a ]
+                  | Atan_D a                 -> "Atan_D", [ a ]
+                  | Asinh_D a                -> "Asinh_D", [ a ]
+                  | Acosh_D a                -> "Acosh_D", [ a ]
+                  | Atanh_D a                -> "Atanh_D", [ a ]
+                  | Get_Item (a, i, j)       -> "Get_Item", [ a ]
+                  | SetI_D_D (a, i, j, b)    -> "SetI_D_D", [a; b]
+                  | SetI_D_C (a, i, j, b)    -> "SetI_D_C", [a; b]
+                  | SetI_C_D (a, i, j, b)    -> "SetI_C_D", [a; b]
+                  | AddI_D_D (a, i, j, b)    -> "AddI_D_D", [a; b]
+                  | AddI_D_C (a, i, j, b)    -> "AddI_D_C", [a; b]
+                  | AddI_C_D (a, i, j, b)    -> "AddI_C_D", [a; b]
+                  | Get_Slice_D (a, i)       -> "Get_Slice_D", [ a ]
+                  | Set_Slice_D_D (a, b, i)  -> "Set_Slice_D_D", [a; b]
+                  | Set_Slice_D_C (a, b, i)  -> "Set_Slice_D_C", [a; b]
+                  | Set_Slice_C_D (a, b, i)  -> "Set_Slice_C_D", [a; b]
+                  | Sum_D a                  -> "Sum_D", [ a ]
+                  | Sum__D (a, i)            -> "Sum__D", [ a ]
+                  | Dot_D_D (a, b)           -> "Dot_D_D", [a; b]
+                  | Dot_D_C (a, b)           -> "Dot_D_C", [a; b]
+                  | Dot_C_D (a, b)           -> "Dot_C_D", [a; b]
+                  | Trans_D a                -> "Trans_D", [ a ]
+                  | L1Norm_D a               -> "L1Norm_D", [ a ]
+                  | L2Norm_D a               -> "L2Norm_D", [ a ]
+                  | L2NormS_D a              -> "L2NormS_D", [ a ]
+                  | Sigmoid_D a              -> "Sigmoid_D", [ a ]
+                  | Relu_D a                 -> "Relu_D", [ a ]
+                  | Inv_D a                  -> "Inv_D", [ a ]
+                  | Add_Row_D_D (a, b, i)    -> "Add_Row_D_D", [a; b]
+                  | Add_Row_D_C (a, b, i)    -> "Add_Row_D_C", [a; b]
+                  | Add_Row_C_D (a, b, i)    -> "Add_Row_C_D", [a; b]
+                  | Get_Row_D (a, i)         -> "Get_Row_D", [ a ]
+                  | Of_Rows_D a              -> "Of_Rows_D", (Array.to_list a)
+                  | Conv1D_D_D (a, b, s)     -> "Conv1D_D_D", [a; b]
+                  | Conv1D_D_C (a, b, s)     -> "Conv1D_D_C", [a; b]
+                  | Conv1D_C_D (a, b, s)     -> "Conv1D_C_D", [a; b]
+                  | Conv2D_D_D (a, b, s)     -> "Conv2D_D_D", [a; b]
+                  | Conv2D_D_C (a, b, s)     -> "Conv2D_D_C", [a; b]
+                  | Conv2D_C_D (a, b, s)     -> "Conv2D_C_D", [a; b]
+                  | Conv3D_D_D (a, b, s)     -> "Conv3D_D_D", [a; b]
+                  | Conv3D_D_C (a, b, s)     -> "Conv3D_D_C", [a; b]
+                  | Conv3D_C_D (a, b, s)     -> "Conv3D_C_D", [a; b]
+                  | Reshape_D a              -> "Reshape_D", [ a ]
+                  | Mat2Arr_D a              -> "Mat2Arr_D", [ a ]
+                  | Arr2Mat_D a              -> "Arr2Mat_D", [ a ]
+                  | Maxpool1D_D (a, p, d, s) -> "Maxpool1D_D", [ a ]
+                  | Maxpool2D_D (a, p, d, s) -> "Maxpool2D_D", [ a ]
+                  | Avgpool1D_D (a, p, d, s) -> "Avgpool1D_D", [ a ]
+                  | Avgpool2D_D (a, p, d, s) -> "Avgpool2D_D", [ a ]
+                  | Concat_D_D (a, b, i)     -> "Concat_D_D", [a; b]
+                  | Concat_D_C (a, b, i)     -> "Concat_D_C", [a; b]
+                  | Concat_C_D (a, b, i)     -> "Concat_C_D", [a; b]
+                )
+              | F a                     -> Printf.sprintf "Const", []
+              | Mat a                   -> Printf.sprintf "Const", []
+              | Arr a                   -> Printf.sprintf "Const", []
+              | DF (_, _, _)            -> Printf.sprintf "DF", []
+            in
+            (* check if the node has been visited before *)
+            Hashtbl.add nodes hd (!index, op, prev);
+            index := !index + 1;
+            push (prev @ tl);
+          )
+          else push tl
+  in
+  (* iterate the graph then return the hash table *)
+  push x; nodes
+
+
+  (* convert graph to terminal output *)
+  let _convert_terminal_output nodes =
+    Hashtbl.fold (fun v (v_id, v_op, v_prev) s0 ->
+      let v_ts = type_info v in
+      s0 ^ List.fold_left (fun s1 u ->
+        let u_id, u_op, _ = Hashtbl.find nodes u in
+        let u_ts = type_info u in
+        s1 ^ Printf.sprintf "{ i:%i o:%s t:%s } -> { i:%i o:%s t:%s }\n"
+          u_id u_op u_ts v_id v_op v_ts
+      ) "" v_prev
+    ) nodes ""
+
+
+  (* convert graph to dot file output *)
+  let _convert_dot_output nodes =
+    let network = Hashtbl.fold (fun v (v_id, v_op, v_prev) s0 ->
+      s0 ^ List.fold_left (fun s1 u ->
+        let u_id, u_op, _ = Hashtbl.find nodes u in
+        s1 ^ Printf.sprintf "\t%i -> %i;\n" u_id v_id
+      ) "" v_prev
+    ) nodes ""
+    in
+    let attrs = Hashtbl.fold (fun v (v_id, v_op, v_prev) s0 ->
+      if v_op = "Const" then
+        s0 ^ Printf.sprintf "%i [ label=\"#%i | { %s | %s }\" fillcolor=gray, style=filled ];\n"
+          v_id v_id v_op (deep_info v)
+      else
+        s0 ^ Printf.sprintf "%i [ label=\"#%i | { %s | %s }\" ];\n"
+          v_id v_id v_op (deep_info v)
+    ) nodes ""
+    in
+    network ^ attrs
+
+
+  let to_trace nodes = _traverse_trace nodes |> _convert_terminal_output
+
+
+  let to_dot nodes =
+    _traverse_trace nodes
+    |> _convert_dot_output
+    |> Printf.sprintf "digraph CG {\nnode [shape=record];\n%s}"
+
 
 
 end

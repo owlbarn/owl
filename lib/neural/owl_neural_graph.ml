@@ -129,10 +129,10 @@ module Make
 
 
   let connect_pair prev next =
-    assert (Array.mem prev next.prev = false);
-    assert (Array.mem next prev.next = false);
-    next.prev <- Array.append next.prev [|prev|];
-    prev.next <- Array.append prev.next [|next|]
+    if Array.mem prev next.prev = false then
+      next.prev <- Array.append next.prev [|prev|];
+    if Array.mem next prev.next = false then
+      prev.next <- Array.append prev.next [|next|]
 
 
   let connect_to_parents parents child =
@@ -212,6 +212,24 @@ module Make
   let backward nn y = reverse_prop (F 1.) y; mkpri nn, mkadj nn
 
 
+  let copy nn =
+    let nn' = make_network ~nnid:nn.nnid nn.size None [||] in
+    (* first iteration to copy the neurons *)
+    nn'.topo <- Array.map (fun node ->
+      let neuron' = copy node.neuron in
+      make_node ~name:node.name ~train:node.train [||] [||] neuron' None nn'
+    ) nn.topo;
+    (* second iteration to re-construct the structure and infer the shape *)
+    Array.iter2 (fun node node' ->
+      node'.prev <- Array.map (fun n -> get_node nn' n.name) node.prev;
+      node'.next <- Array.map (fun n -> get_node nn' n.name) node.next;
+      connect_to_parents node'.prev node'
+    ) nn.topo nn'.topo;
+    (* set root to finalise the structure *)
+    nn'.root <- Some (get_node nn' (get_root nn).name);
+    nn'
+
+
   let _remove_training_nodes nn =
     let topo' = Owl_utils.array_filter (fun n ->
       if n.train = true then (
@@ -234,19 +252,26 @@ module Make
     nn.topo <- topo'
 
 
-  (* FIXME: need to do deep copy of a model *)
-  let model nn x =
+  let model nn =
+    let nn = copy nn in
     _remove_training_nodes nn;
-    match run (Mat x) nn with
-    | Mat y -> y
-    | _     -> failwith "Owl_neural_graph:model"
+    let inference x =
+      match run (Mat x) nn with
+      | Mat y -> y
+      | _     -> failwith "Owl_neural_graph:model"
+    in
+    inference
 
 
-  let model_cnn nn x =
+  let model_cnn nn =
+    let nn = copy nn in
     _remove_training_nodes nn;
-    match run (Arr x) nn with
-    | Mat y -> y
-    | _     -> failwith "Owl_neural_graph:model_cnn"
+    let inference x =
+      match run (Arr x) nn with
+      | Mat y -> y
+      | _     -> failwith "Owl_neural_graph:model_cnn"
+    in
+    inference
 
 
   (* functions to create functional nodes *)
@@ -560,7 +585,7 @@ module Make
       | Some p -> p
       | None   -> Optimise.Params.default ()
     in
-    Optimise.minimise p f b u s x y
+    Optimise.minimise_network p f b u s x y
 
 
   let train ?params ?init_model nn x y =

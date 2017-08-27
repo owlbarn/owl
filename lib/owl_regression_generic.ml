@@ -16,59 +16,30 @@ module Make
 
   (* iterative sovler for linear regression *)
   let _linear_reg bias params x y =
-    let m = M.col_num x in
+    let l, m = M.shape x in
     let n = M.col_num y in
+    let o = if bias = true then m + 1 else m in
+    let x = if bias = true then M.concatenate ~axis:1 [|x; M.ones l 1|] else x in
     (* initialise the matrices according to fan_in/out *)
-    let r = 1. /. (float_of_int m) in
-    let p = ref (Mat M.(sub_scalar (uniform ~scale:(2.*.r) m n) r)) in
-    let b = ref (Mat M.(sub_scalar (uniform ~scale:(2.*.r) 1 n) r)) in
-
-    (* forward/backward/update without bias *)
-    let forward x =
-      p := make_reverse !p (tag ());
-      let pred = Maths.(x *@ !p) in
-      pred, [| [|!p|] |]
+    let r = 1. /. (float_of_int o) in
+    let p = Mat M.(sub_scalar (uniform ~scale:(2.*.r) o n) r) in
+    (* make the function to minimise *)
+    let f w x =
+      let w = Mat.reshape o n w in
+      Maths.(x *@ w)
     in
-    let backward y =
-      reverse_prop (F 1.) y;
-      let pri_v = [| [|primal !p|] |] in
-      let adj_v = [| [|adjval !p|] |] in
-      pri_v, adj_v
+    (* get the result, reshape, then return *)
+    let w = minimise_weight params f (Maths.flatten p) (Mat x) (Mat y)
+      |> snd |> Mat.reshape o n |> unpack_mat
     in
-    let update us = p := us.(0).(0) in
-    let save _ = () in
-
-    (* forward/backward/update with bias *)
-    let forward_bias x =
-      let t = tag () in
-      p := make_reverse !p t;
-      b := make_reverse !b t;
-      let pred = Maths.(x *@ !p + !b) in
-      pred, [| [|!p; !b|] |]
-    in
-    let backward_bias y =
-      reverse_prop (F 1.) y;
-      let pri_v = [| [|primal !p; primal !b|] |] in
-      let adj_v = [| [|adjval !p; adjval !b|] |] in
-      pri_v, adj_v
-    in
-    let update_bias us =
-      p := us.(0).(0);
-      b := us.(0).(1)
-    in
-
-    (* return either [p] or [p, b] depends on [bias] *)
-    if bias = true then
-      let _ = minimise params forward_bias backward_bias update_bias save (Mat x) (Mat y) in
-      [| !p |> primal' |> unpack_mat; !b |> primal' |> unpack_mat |]
-    else
-      let _ = minimise params forward backward update save (Mat x) (Mat y) in
-      [| !p |> primal' |> unpack_mat |]
+    match bias with
+    | true  -> M.split ~axis:0 [|m;1|] w
+    | false -> [|w|]
 
 
   let ols ?(i=false) x y =
     let params = Params.config
-      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Const 0.1) ~gradient:(Gradient.GD)
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
       ~loss:(Loss.Quadratic) ~verbosity:false
       ~stopping:(Stopping.Const 1e-16) 1000.
     in
@@ -96,7 +67,7 @@ module Make
   let svm ?(i=false) ?(a=0.001) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Hinge) ~regularisation:(Regularisation.L2norm a) ~verbosity:false
+      ~loss:(Loss.Hinge) ~regularisation:(Regularisation.L2norm a) ~verbosity:true
       ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
@@ -112,43 +83,37 @@ module Make
 
 
   let exponential ?(i=false) x y =
-    let a = ref (F (Owl_stats.Rnd.uniform ())) in
-    let lambda = ref (F (Owl_stats.Rnd.uniform ())) in
-    let b = ref (F (Owl_stats.Rnd.uniform ())) in
+    let a = Owl_stats.Rnd.uniform () in
+    let l = Owl_stats.Rnd.uniform () in
+    let b = Owl_stats.Rnd.uniform () in
 
-    let forward x =
-      let t = tag () in
-      a := make_reverse !a t;
-      lambda := make_reverse !lambda t;
-      b := make_reverse !b t;
-      let pred = Maths.(!a * exp (neg !lambda * x) + !b) in
-      pred, [| [|!a; !lambda; !b|] |]
+    let f w x =
+      let a = Mat.get w 0 0 in
+      let l = Mat.get w 0 1 in
+      let b = Mat.get w 0 2 in
+      Maths.(a * exp (neg l * x) + b)
     in
-
-    let backward y =
-      reverse_prop (F 1.) y;
-      let pri_v = [| [|primal !a; primal !lambda; primal !b|] |] in
-      let adj_v = [| [|adjval !a; adjval !lambda; adjval !b|] |] in
-      pri_v, adj_v
-    in
-
-    let update us =
-      a := us.(0).(0);
-      lambda := us.(0).(1);
-      b := us.(0).(2)
-    in
-
-    let save _ = () in
 
     let params = Params.config
-      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Quadratic) ~stopping:(Stopping.Const 1e-16) 100000.
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Const 0.1) ~gradient:(Gradient.Newton)
+      ~loss:(Loss.Quadratic) ~verbosity:false
+      ~stopping:(Stopping.Const 1e-16) 1000.
     in
-    minimise params forward backward update save (Mat x) (Mat y) |> ignore;
-    !a |> primal' |> unpack_flt,
-    !lambda |> primal' |> unpack_flt,
-    !b |> primal' |> unpack_flt
+    let w = minimise_weight params f (Mat.of_arrays [|[|a;l;b|]|]) (Mat x) (Mat y)
+      |> snd |> unpack_mat
+    in
+    M.(get w 0 0, get w 0 1, get w 0 2)
 
+
+  let poly x y n =
+    let z = Array.init (n + 1) (fun i -> M.(pow_scalar x (float_of_int i))) in
+    let x = M.concatenate ~axis:1 z in
+    let params = Params.config
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Const 1.) ~gradient:(Gradient.Newton)
+      ~loss:(Loss.Quadratic) ~verbosity:false
+      ~stopping:(Stopping.Const 1e-16) 100.
+    in
+    (_linear_reg false params x y).(0)
 
 
 end
