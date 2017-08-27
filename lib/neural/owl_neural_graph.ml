@@ -234,6 +234,16 @@ module Make
     nn.topo <- topo'
 
 
+  let copy nn =
+    let nn' = make_network ~nnid:nn.nnid nn.size None [||] in
+    let topo' = Array.map (fun node ->
+      let neuron' = copy node.neuron in
+      let node' = make_node ~name:node.name ~train:node.train [||] [||] neuron None nn' =
+    ) nn.topo
+    in
+    ()
+
+
   (* FIXME: need to do deep copy of a model *)
   let model nn x =
     _remove_training_nodes nn;
