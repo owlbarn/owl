@@ -2538,7 +2538,7 @@ module Make
     | _                -> () (* activation, etc. *)
 
 
-  let copy a l = match l with
+  let copy = function
     | Input l           -> Input Input.(copy l)
     | Linear l          -> Linear Linear.(copy l)
     | LinearNoBias l    -> LinearNoBias LinearNoBias.(copy l)

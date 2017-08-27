@@ -129,10 +129,10 @@ module Make
 
 
   let connect_pair prev next =
-    assert (Array.mem prev next.prev = false);
-    assert (Array.mem next prev.next = false);
-    next.prev <- Array.append next.prev [|prev|];
-    prev.next <- Array.append prev.next [|next|]
+    if Array.mem prev next.prev = false then
+      next.prev <- Array.append next.prev [|prev|];
+    if Array.mem next prev.next = false then
+      prev.next <- Array.append prev.next [|next|]
 
 
   let connect_to_parents parents child =
@@ -236,12 +236,20 @@ module Make
 
   let copy nn =
     let nn' = make_network ~nnid:nn.nnid nn.size None [||] in
-    let topo' = Array.map (fun node ->
+    (* first iteration to copy the neurons *)
+    nn'.topo <- Array.map (fun node ->
       let neuron' = copy node.neuron in
-      let node' = make_node ~name:node.name ~train:node.train [||] [||] neuron None nn' =
-    ) nn.topo
-    in
-    ()
+      make_node ~name:node.name ~train:node.train [||] [||] neuron' None nn'
+    ) nn.topo;
+    (* second iteration to re-construct the structure and infer the shape *)
+    Array.iter2 (fun node node' ->
+      node'.prev <- Array.map (fun n -> get_node nn' n.name) node.prev;
+      node'.next <- Array.map (fun n -> get_node nn' n.name) node.next;
+      connect_to_parents node'.prev node'
+    ) nn.topo nn'.topo;
+    (* set root to finalise the structure *)
+    nn'.root <- Some (get_node nn' (get_root nn).name);
+    nn'
 
 
   (* FIXME: need to do deep copy of a model *)
