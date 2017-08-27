@@ -2038,7 +2038,6 @@ module Make
       l.mean <- Arr.zeros s;
       l.variance <- Arr.ones s
 
-
     let reset l =
       Arr.reset l.beta;
       Arr.reset l.gamma;
@@ -2066,9 +2065,6 @@ module Make
       l.variance <- u.(3) |> primal'
 
     let run x l =
-      (* let a = F (1. /. float_of_int (shape x).(l.axis)) in
-      let mu = Maths.(x - a * (sum_ ~axis:l.axis x)) in
-      let var = Maths.(a * (sum_ ~axis:l.axis (x * x))) in *)
       let x' = Maths.( (x - l.mean) / sqrt (l.variance + F 1e-8)) in
       Maths.(x' * l.gamma + l.beta)
 
@@ -2077,7 +2073,7 @@ module Make
       let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
       let s = Array.(make (length l.in_shape + 1) 1) in s.(l.axis) <- l.in_shape.(l.axis - 1);
       let s_str = Owl_utils.string_of_array string_of_int s in
-      Printf.sprintf "    Normalisation : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+      Printf.sprintf "    NormalisationInference : in:[*,%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    axis          : %i\n" l.axis ^
       Printf.sprintf "    params        : %i\n" (l.in_shape.(l.axis - 1) * 4) ^
       Printf.sprintf "    beta          : [%s]\n" s_str ^
