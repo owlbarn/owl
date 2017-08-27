@@ -4,14 +4,15 @@
    computer. Or you can use other visualisation tools for the generated dot file.
  *)
 
+#zoo "2e7c902812a7ae0547e24f7ea743c7e6"
 open Owl
-open Algodiff.D
+open Algodiff.S
 
 
 let f x y = Maths.((x * sin (x + x) + ( F 1. * sqrt x) / F 7.) * (relu y) |> sum)
 
 
-let print_to_terminal () =
+let visualise_simple_01 () =
   let t = tag () in
   let x = make_reverse (F 5.) t in
   let y = make_reverse (Mat.uniform 3 4) t in
@@ -19,7 +20,7 @@ let print_to_terminal () =
   to_trace [z]
 
 
-let print_to_dotfile () =
+let visualise_simple_02 () =
   let t = tag () in
   let x = make_reverse (F 5.) t in
   let y = make_reverse (Mat.uniform 3 4) t in
@@ -27,9 +28,21 @@ let print_to_dotfile () =
   to_dot [z]
 
 
+let visualise_neural_network () =
+  let network = Cifar10.make_network [|32;32;3|] in
+  let x, _, y = Dataset.load_cifar_train_data 1 in
+  let xt, yt = Optimise.S.Utils.draw_samples (Arr x) (Mat y) 10 in
+  let yt', _ = Neural.S.Graph.(init network; forward network xt) in
+  let loss = Maths.((cross_entropy yt yt') / (F (Mat.row_num yt |> float_of_int))) in
+  to_dot [loss]
+
+
 let _ =
-  Log.info "write computation graph to terminal ...";
-  print_to_terminal () |> print_endline;
-  Log.info "write to dot file and visualise ...";
-  print_to_dotfile () |> Owl_utils.write_file "plot_algodiff_graph.dot";
-  Sys.command "dot -Tps plot_algodiff_graph.dot -o plot_algodiff_graph.ps"
+  Log.info "visualise simple computation graph to terminal ...";
+  visualise_simple_01 () |> print_endline;
+  Log.info "visualise simple computation graph to dot file ...";
+  visualise_simple_02 () |> Owl_utils.write_file "plot_algodiff_graph1.dot";
+  Sys.command "dot -Tpdf plot_algodiff_graph1.dot -o plot_algodiff_graph1.pdf";
+  Log.info "visualise neural network ...";
+  visualise_neural_network () |> Owl_utils.write_file "plot_algodiff_graph2.dot";
+  Sys.command "dot -Tpdf plot_algodiff_graph2.dot -o plot_algodiff_graph2.pdf"
