@@ -1705,6 +1705,8 @@ module Make
 
     let dot x y = Maths.dot x y
 
+    let print x = A.print (unpack_arr x)
+
   end
 
 

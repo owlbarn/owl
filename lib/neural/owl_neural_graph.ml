@@ -427,6 +427,12 @@ module Make
     let n = make_node ?name [||] [||] neuron None nn in
     add_node nn [|input_node|] n
 
+  let normalisation_inf ?name ?(axis=(-1)) input_node =
+    let neuron = NormalisationInference (NormalisationInference.create axis) in
+    let nn = get_network input_node in
+    let n = make_node ?name [||] [||] neuron None nn in
+    add_node nn [|input_node|] n
+
 
   let reshape ?name ?convert outputs input_node =
     let neuron = Reshape (Reshape.create ?convert outputs) in
