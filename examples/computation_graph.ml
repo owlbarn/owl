@@ -84,6 +84,6 @@ let _ =
   Log.info "visualise LSTM neural network ...";
   visualise_lstm () |> Owl_utils.write_file "plot_algodiff_graph3.dot";
   Sys.command "dot -Tpdf plot_algodiff_graph3.dot -o plot_algodiff_graph3.pdf"
-  visualise_inception () |> Owl_utils.write_file "plot_algodiff_graph4.dot"(*;
-  (* this command takes ages on a ~60K .dot file *)
-  Sys.command "dot -Tpdf plot_algodiff_graph4.dot -o plot_algodiff_graph4.pdf"*)
+  visualise_inception () |> Owl_utils.write_file "plot_algodiff_graph4.dot";
+  Sys.command "dot -Tpdf -Gnslimit=1 plot_algodiff_graph4.dot -o
+  plot_algodiff_graph4.pdf"
