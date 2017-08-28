@@ -181,6 +181,8 @@ val top : mat -> int -> int array array
 
 val bottom : mat -> int -> int array array
 
+val sort : mat -> unit
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 
