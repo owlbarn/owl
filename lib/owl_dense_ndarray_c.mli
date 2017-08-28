@@ -136,6 +136,8 @@ val top : arr -> int -> int array array
 
 val bottom : arr -> int -> int array array
 
+val sort : arr -> unit
+
 val mmap : Unix.file_descr -> ?pos:int64 -> bool -> int array -> arr
 
 

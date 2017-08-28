@@ -15,7 +15,7 @@ void __dumb_fun_vec_map() {};  // define a dumb to avoid warnings
 #endif /* INIT */
 
 
-// function to perform in-place mapping of elements in x
+// function to perform in-place sorting
 #ifdef FUN3
 
 CAMLprim value FUN3(value vN, value vX)
@@ -27,19 +27,10 @@ CAMLprim value FUN3(value vN, value vX)
   CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
-  NUMBER *start_x, *stop_x;
-
   caml_enter_blocking_section();  /* Allow other threads */
 
-  start_x = X_data;
-  stop_x = start_x + N;
-
-  while (start_x != stop_x) {
-    NUMBER x = *start_x;
-    *start_x = (MAPFN(x));
-    start_x += 1;
-  };
-
+  MAPFN(X_data);
+  
   caml_leave_blocking_section();  /* Disallow other threads */
 
   CAMLreturn(Val_unit);
