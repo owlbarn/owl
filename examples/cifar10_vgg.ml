@@ -10,7 +10,7 @@ open Neural.S.Graph
 
 let make_network input_shape =
   input input_shape
-  |> normalisation
+  |> normalisation ~decay:0.9
   |> conv2d [|3;3;3;32|] [|1;1|] ~act_typ:Activation.Relu
   |> conv2d [|3;3;32;32|] [|1;1|] ~act_typ:Activation.Relu ~padding:VALID
   |> max_pool2d [|2;2|] [|2;2|] ~padding:VALID

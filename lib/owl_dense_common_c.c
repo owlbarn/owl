@@ -64,7 +64,6 @@ int complex_cmp (const void * a, const void * b)
 }
 
 
-
 //////////////////// function templates starts ////////////////////
 
 
