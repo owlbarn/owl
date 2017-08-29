@@ -2108,92 +2108,6 @@ module Make
 
   end
 
-  (* definition of Batch Normalisation neuron for inference *)
-  module NormalisationInference = struct
-
-    type neuron_typ = {
-      mutable axis      : int;
-      mutable beta      : t;
-      mutable gamma     : t;
-      mutable variance  : t;
-      mutable mean      : t;
-      mutable in_shape  : int array;
-      mutable out_shape : int array;
-    }
-
-    let create axis = {
-      axis      = axis;
-      beta      = Arr.empty [|0|];
-      gamma     = Arr.empty [|0|];
-      mean      = Arr.empty [|0|];
-      variance  = Arr.empty [|0|];
-      in_shape  = [||];
-      out_shape = [||];
-    }
-
-    let connect out_shape l =
-      if l.axis < 0 then l.axis <- Array.(length out_shape + l.axis + 1);
-      l.in_shape <- Array.copy out_shape;
-      l.out_shape <- Array.copy out_shape
-
-    let init l =
-      let s = Array.(make (length l.in_shape + 1) 1) in
-      s.(l.axis) <- l.in_shape.(l.axis - 1);
-      l.beta <- Arr.zeros s;
-      l.gamma <- Arr.ones s;
-      l.mean <- Arr.zeros s;
-      l.variance <- Arr.ones s
-
-    let reset l =
-      Arr.reset l.beta;
-      Arr.reset l.gamma;
-      Arr.reset l.mean;
-      Arr.reset l.variance
-
-    let mktag t l =
-      l.beta <- make_reverse l.beta t;
-      l.gamma <- make_reverse l.gamma t;
-      l.mean <- make_reverse l.variance t;
-      l.variance <- make_reverse l.variance t
-
-    let mkpar l = [|l.beta; l.gamma; l.mean; l.variance|]
-
-    let mkpri l = [|primal l.beta; primal l.gamma; primal l.mean; primal
-      l.variance|]
-
-    let mkadj l = [|adjval l.beta; adjval l.gamma; adjval l.mean; adjval
-      l.variance|]
-
-    let update l u =
-      l.beta <- u.(0) |> primal';
-      l.gamma <- u.(1) |> primal';
-      l.mean <- u.(2) |> primal';
-      l.variance <- u.(3) |> primal'
-
-    let copy l =
-      let l' = create l.axis in
-      mkpri l |> Array.map clone_primal' |> update l';
-      l'
-
-    let run x l =
-      let x' = Maths.( (x - l.mean) / sqrt (l.variance + F 1e-8)) in
-      Maths.(x' * l.gamma + l.beta)
-
-    let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-      let s = Array.(make (length l.in_shape + 1) 1) in s.(l.axis) <- l.in_shape.(l.axis - 1);
-      let s_str = Owl_utils.string_of_array string_of_int s in
-      Printf.sprintf "    NormalisationInference : in:[*,%s] out:[*,%s]\n" in_str out_str ^
-      Printf.sprintf "    axis          : %i\n" l.axis ^
-      Printf.sprintf "    params        : %i\n" (l.in_shape.(l.axis - 1) * 4) ^
-      Printf.sprintf "    beta          : [%s]\n" s_str ^
-      Printf.sprintf "    gamma         : [%s]\n" s_str
-
-    let to_name () = "normalisation_inference"
-
-  end
-
 
   (* definition of GaussianNoise neuron *)
   module GaussianNoise = struct
@@ -2447,7 +2361,6 @@ module Make
     | GaussianDropout of GaussianDropout.neuron_typ
     | AlphaDropout    of AlphaDropout.neuron_typ
     | Normalisation   of Normalisation.neuron_typ
-    | NormalisationInference   of NormalisationInference.neuron_typ
     | Add             of Add.neuron_typ
     | Mul             of Mul.neuron_typ
     | Dot             of Dot.neuron_typ
@@ -2485,8 +2398,6 @@ module Make
     | GaussianDropout l -> GaussianDropout.(l.in_shape, l.out_shape)
     | AlphaDropout l    -> AlphaDropout.(l.in_shape, l.out_shape)
     | Normalisation l   -> Normalisation.(l.in_shape, l.out_shape)
-    | NormalisationInference l -> NormalisationInference.(l.in_shape,
-      l.out_shape)
     | Add l             -> Add.(l.in_shape, l.out_shape)
     | Mul l             -> Mul.(l.in_shape, l.out_shape)
     | Dot l             -> Dot.(l.in_shape, l.out_shape)
@@ -2530,7 +2441,6 @@ module Make
     | GaussianDropout l -> GaussianDropout.connect out_shapes.(0) l
     | AlphaDropout l    -> AlphaDropout.connect out_shapes.(0) l
     | Normalisation l   -> Normalisation.connect out_shapes.(0) l
-    | NormalisationInference l -> NormalisationInference.connect out_shapes.(0) l
     | Add l             -> Add.connect out_shapes l
     | Mul l             -> Mul.connect out_shapes l
     | Dot l             -> Dot.connect out_shapes l
@@ -2551,7 +2461,6 @@ module Make
     | Conv3D l         -> Conv3D.init l
     | FullyConnected l -> FullyConnected.init l
     | Normalisation l  -> Normalisation.init l
-    | NormalisationInference l -> NormalisationInference.init l
     | _                -> () (* activation, etc. *)
 
 
@@ -2567,7 +2476,6 @@ module Make
     | Conv3D l         -> Conv3D.reset l
     | FullyConnected l -> FullyConnected.reset l
     | Normalisation l  -> Normalisation.reset l
-    | NormalisationInference l -> NormalisationInference.reset l
     | _                -> () (* activation, etc. *)
 
 
@@ -2583,7 +2491,6 @@ module Make
     | Conv3D l         -> Conv3D.mktag t l
     | FullyConnected l -> FullyConnected.mktag t l
     | Normalisation l  -> Normalisation.mktag t l
-    | NormalisationInference l -> NormalisationInference.mktag t l
     | _                -> () (* activation, etc. *)
 
 
@@ -2599,7 +2506,6 @@ module Make
     | Conv3D l         -> Conv3D.mkpar l
     | FullyConnected l -> FullyConnected.mkpar l
     | Normalisation l  -> Normalisation.mkpar l
-    | NormalisationInference l -> NormalisationInference.mkpar l
     | _                -> [||] (* activation, etc. *)
 
 
@@ -2615,7 +2521,6 @@ module Make
     | Conv3D l         -> Conv3D.mkpri l
     | FullyConnected l -> FullyConnected.mkpri l
     | Normalisation l  -> Normalisation.mkpri l
-    | NormalisationInference l -> NormalisationInference.mkpri l
     | _                -> [||] (* activation, etc. *)
 
 
@@ -2631,7 +2536,6 @@ module Make
     | Conv3D l         -> Conv3D.mkadj l
     | FullyConnected l -> FullyConnected.mkadj l
     | Normalisation l  -> Normalisation.mkadj l
-    | NormalisationInference l -> NormalisationInference.mkadj l
     | _                -> [||] (* activation, etc. *)
 
 
@@ -2647,7 +2551,6 @@ module Make
     | Conv3D l         -> Conv3D.update l u
     | FullyConnected l -> FullyConnected.update l u
     | Normalisation l  -> Normalisation.update l u
-    | NormalisationInference l -> NormalisationInference.update l u
     | _                -> () (* activation, etc. *)
 
 
@@ -2680,7 +2583,6 @@ module Make
     | GaussianDropout l -> GaussianDropout GaussianDropout.(copy l)
     | AlphaDropout l    -> AlphaDropout AlphaDropout.(copy l)
     | Normalisation l   -> Normalisation Normalisation.(copy l)
-    | NormalisationInference l   -> NormalisationInference NormalisationInference.(copy l)
     | Add l             -> Add Add.(copy l)
     | Mul l             -> Mul Mul.(copy l)
     | Dot l             -> Dot Dot.(copy l)
@@ -2718,7 +2620,6 @@ module Make
     | GaussianDropout l -> GaussianDropout.run a.(0) l
     | AlphaDropout l    -> AlphaDropout.run a.(0) l
     | Normalisation l   -> Normalisation.run a.(0) l
-    | NormalisationInference l -> NormalisationInference.run a.(0) l
     | Add l             -> Add.run a l
     | Mul l             -> Mul.run a l
     | Dot l             -> Dot.run a l
@@ -2756,7 +2657,6 @@ module Make
     | GaussianDropout l -> GaussianDropout.to_string l
     | AlphaDropout l    -> AlphaDropout.to_string l
     | Normalisation l   -> Normalisation.to_string l
-    | NormalisationInference l   -> NormalisationInference.to_string l
     | Add l             -> Add.to_string l
     | Mul l             -> Mul.to_string l
     | Dot l             -> Dot.to_string l
@@ -2794,7 +2694,6 @@ module Make
     | GaussianDropout _ -> GaussianDropout.to_name ()
     | AlphaDropout _    -> AlphaDropout.to_name ()
     | Normalisation _   -> Normalisation.to_name ()
-    | NormalisationInference _   -> NormalisationInference.to_name ()
     | Add _             -> Add.to_name ()
     | Mul _             -> Mul.to_name ()
     | Dot _             -> Dot.to_name ()
