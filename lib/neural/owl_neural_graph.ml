@@ -538,7 +538,7 @@ module Make
   let print nn = to_string nn |> Printf.printf "%s"
 
 
-  let save nn f = Owl_utils.marshal_to_file nn f
+  let save nn f = Owl_utils.marshal_to_file (copy nn) f
 
 
   let load f : network = Owl_utils.marshal_from_file f
