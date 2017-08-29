@@ -446,8 +446,8 @@ module Make
     add_node nn [|input_node|] n
 
 
-  let normalisation ?name ?(axis=(-1)) input_node =
-    let neuron = Normalisation (Normalisation.create axis) in
+  let normalisation ?name ?(axis=(-1)) ?training ?decay ?mu ?var input_node =
+    let neuron = Normalisation (Normalisation.create ?training ?decay ?mu ?var axis) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
     add_node nn [|input_node|] n
@@ -544,7 +544,7 @@ module Make
   let print nn = to_string nn |> Printf.printf "%s"
 
 
-  let save nn f = Owl_utils.marshal_to_file nn f
+  let save nn f = Owl_utils.marshal_to_file (copy nn) f
 
 
   let load f : network = Owl_utils.marshal_from_file f

@@ -41,6 +41,29 @@ value cp_two_doubles(double d0, double d1)
 #define CGE(X,Y) !CLT(X,Y)
 
 
+// compare two numbers (real & complex)
+
+int real_cmpf (const void * a, const void * b)
+{
+  return ( *(float*)a < *(float*)b ? -1 : (*(float*)a > *(float*)b ? 1 : 0) );
+}
+
+int real_cmp (const void * a, const void * b)
+{
+  return ( *(double*)a < *(double*)b ? -1 : (*(double*)a > *(double*)b ? 1 : 0) );
+}
+
+int complex_cmpf (const void * a, const void * b)
+{
+ return ( CLTF(*(_Complex float*)a,*(_Complex float*)b) ? -1 : (CGTF(*(_Complex float*)a,*(_Complex float*)b) ? 1 : 0) );
+}
+
+int complex_cmp (const void * a, const void * b)
+{
+ return ( CLT(*(_Complex double*)a,*(_Complex double*)b) ? -1 : (CGT(*(_Complex double*)a,*(_Complex double*)b) ? 1 : 0) );
+}
+
+
 //////////////////// function templates starts ////////////////////
 
 
@@ -2865,5 +2888,26 @@ value cp_two_doubles(double d0, double d1)
 #include "owl_dense_common_vec_map.c"
 
 // sort
+
+#define FUN3 real_float_sort
+#define NUMBER float
+#define MAPFN(X) qsort(X,N,sizeof(float),real_cmpf)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN3 real_double_sort
+#define NUMBER float
+#define MAPFN(X) qsort(X,N,sizeof(double),real_cmp)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN3 complex_float_sort
+#define NUMBER _Complex float
+#define MAPFN(X) qsort(X,N,sizeof(_Complex float),complex_cmpf)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN3 complex_double_sort
+#define NUMBER _Complex double
+#define MAPFN(X) qsort(X,N,sizeof(_Complex double),complex_cmp)
+#include "owl_dense_common_vec_map.c"
+
 
 //////////////////// function templates ends ////////////////////

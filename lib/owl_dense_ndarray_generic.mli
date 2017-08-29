@@ -367,6 +367,9 @@ val bottom : ('a, 'b) t -> int -> int array array
   one to the greatest one.
  *)
 
+val sort : ('a, 'b) t -> unit
+(** [sort x] performs in-place quicksort of the elelments in [x]. *)
+
 val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -> ('a, 'b) t
 (** [mmap fd kind layout shared dims] ... *)
 

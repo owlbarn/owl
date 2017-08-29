@@ -1712,7 +1712,7 @@ module Make
       let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
       let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Reshape : in:[*,%s] out:[*,%s]\n" in_str out_str ^
-      Printf.sprintf "    convert : %s\n" (string_of_bool l.convert)
+      Printf.sprintf "    convert : %b\n" l.convert
 
     let to_name () = "reshape"
 
@@ -1755,7 +1755,7 @@ module Make
     let to_string l =
       let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
       Printf.sprintf "    Flatten : in:[*,%s] out:[*,%i]\n" in_str l.out_shape.(0) ^
-      Printf.sprintf "    convert : %s\n" (string_of_bool l.convert)
+      Printf.sprintf "    convert : %b\n" l.convert
 
     let to_name () = "flatten"
 
@@ -2024,14 +2024,22 @@ module Make
       mutable axis      : int;
       mutable beta      : t;
       mutable gamma     : t;
+      mutable mu        : t;
+      mutable var       : t;
+      mutable decay     : t;
+      mutable training  : bool;
       mutable in_shape  : int array;
       mutable out_shape : int array;
     }
 
-    let create axis = {
+    let create ?(training=true) ?(decay=0.99) ?mu ?var axis = {
       axis      = axis;
       beta      = Arr.empty [|0|];
       gamma     = Arr.empty [|0|];
+      mu        = (match mu with Some a -> Arr a | None -> Arr.empty [|0|]);
+      var       = (match var with Some a -> Arr a | None -> Arr.empty [|0|]);
+      decay     = F decay;
+      training  = training;
       in_shape  = [||];
       out_shape = [||];
     }
@@ -2045,7 +2053,9 @@ module Make
       let s = Array.(make (length l.in_shape + 1) 1) in
       s.(l.axis) <- l.in_shape.(l.axis - 1);
       l.beta <- Arr.zeros s;
-      l.gamma <- Arr.ones s
+      l.gamma <- Arr.ones s;
+      l.mu <- Arr.zeros s;
+      l.var <- Arr.ones s
 
     let reset l =
       Arr.reset l.beta;
@@ -2066,15 +2076,19 @@ module Make
       l.gamma <- u.(1) |> primal'
 
     let copy l =
-      let l' = create l.axis in
+      let l' = create ~training:l.training ~decay:(unpack_flt l.decay) ~mu:(unpack_arr l.mu) ~var:(unpack_arr l.var) l.axis in
       mkpri l |> Array.map clone_primal' |> update l';
       l'
 
     let run x l =
       let a = F (1. /. float_of_int (shape x).(l.axis)) in
-      let mu = Maths.(x - a * (sum_ ~axis:l.axis x)) in
-      let var = Maths.(a * (sum_ ~axis:l.axis (x * x))) in
-      let x' = Maths.(mu / sqrt (var + F 1e-8)) in
+      if l.training = true then (
+        let mu' = Maths.(a * (sum_ ~axis:l.axis x)) in
+        let var' = Maths.(a * (sum_ ~axis:l.axis (x * x))) in
+        l.mu <- Maths.(l.decay * l.mu + (F 1. - l.decay) * mu') |> primal';
+        l.var <- Maths.(l.decay * l.var + (F 1. - l.decay) * var') |> primal';
+      );
+      let x' = Maths.((x - l.mu) / sqrt (l.var + F 1e-8)) in
       Maths.(x' * l.gamma + l.beta)
 
     let to_string l =
@@ -2083,7 +2097,9 @@ module Make
       let s = Array.(make (length l.in_shape + 1) 1) in s.(l.axis) <- l.in_shape.(l.axis - 1);
       let s_str = Owl_utils.string_of_array string_of_int s in
       Printf.sprintf "    Normalisation : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+      Printf.sprintf "    training      : %b\n" l.training ^
       Printf.sprintf "    axis          : %i\n" l.axis ^
+      Printf.sprintf "    decay         : %g\n" (unpack_flt l.decay) ^
       Printf.sprintf "    params        : %i\n" (l.in_shape.(l.axis - 1) * 2) ^
       Printf.sprintf "    beta          : [%s]\n" s_str ^
       Printf.sprintf "    gamma         : [%s]\n" s_str
