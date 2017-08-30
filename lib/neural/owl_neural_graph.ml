@@ -569,7 +569,7 @@ module Make
      update: function to update the weights according to the gradient
      save: function to save the model for checkpoint
    *)
-  let train_generic ?params ?(init_model=true) nn x y =
+  let train_generic ?state ?params ?(init_model=true) nn x y =
     if init_model = true then init nn;
     let f = forward nn in
     let b = backward nn in
@@ -579,15 +579,15 @@ module Make
       | Some p -> p
       | None   -> Optimise.Params.default ()
     in
-    Optimise.minimise_network p f b u s x y
+    Optimise.minimise_network ?state p f b u s x y
 
 
-  let train ?params ?init_model nn x y =
-    train_generic ?params ?init_model nn (Mat x) (Mat y)
+  let train ?state ?params ?init_model nn x y =
+    train_generic ?state ?params ?init_model nn (Mat x) (Mat y)
 
 
-  let train_cnn ?params ?init_model nn x y =
-    train_generic ?params ?init_model nn (Arr x) (Mat y)
+  let train_cnn ?state ?params ?init_model nn x y =
+    train_generic ?state ?params ?init_model nn (Arr x) (Mat y)
 
 
 

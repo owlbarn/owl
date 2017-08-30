@@ -384,6 +384,7 @@ module Make
       |> flush_all
 
     let run typ save_fun current_batch current_loss state =
+      (* FIXME: this needs to be removed *)
       state.current_batch <- current_batch;
       state.loss.(current_batch) <- current_loss;
       let interval = match typ with
@@ -559,7 +560,7 @@ module Make
    *)
   let minimise_network ?state params forward backward update save x y =
     let open Params in
-    if params.verbosity = true then
+    if params.verbosity = true && state = None then
       print_endline (Params.to_string params);
 
     (* make alias functions *)
@@ -613,12 +614,12 @@ module Make
     (* try to iterate all batches *)
     while Checkpoint.(state.current_batch < state.batches && state.stop = false) do
       let loss', ws, gs' = iterate Checkpoint.(state.current_batch) in
+      (* check if the stopping criterion is met *)
+      Checkpoint.(state.stop <- stop_fun (unpack_flt loss'));
       (* checkpoint of the optimisation if necessary *)
       chkp_fun save Checkpoint.(state.current_batch) loss' state;
       (* print out the current state of optimisation *)
       if params.verbosity = true then Checkpoint.print_state_info state;
-      (* check if the stopping criterion is met *)
-      Checkpoint.(state.stop <- stop_fun (unpack_flt loss'));
       (* clip the gradient if necessary *)
       let gs' = Owl_utils.aarr_map clip_fun gs' in
       (* calculate gradient descent *)
@@ -645,10 +646,10 @@ module Make
     done;
 
     (* print optimisation summary *)
-    if params.verbosity = true then
+    if params.verbosity = true && Checkpoint.(state.current_batch >= state.batches) then
       Checkpoint.print_summary state;
-    (* return loss history *)
-    Array.map unpack_flt Checkpoint.(state.loss)
+    (* return the current state *)
+    state
 
 
   (* let minimise_fun f = *)
