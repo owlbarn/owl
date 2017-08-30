@@ -52,6 +52,8 @@ module type ModelSig = sig
 
   val update : network -> t array array -> unit
 
+  val copy : network -> network
+
   val train_generic : ?params:Params.typ -> ?init_model:bool -> network -> t -> t -> float array
 
 end
@@ -137,7 +139,7 @@ module Make (M : ModelSig) (E : EngineSig) = struct
       let y = task.data_y in
       M.train_generic ~params ~init_model:false model x y |> ignore;
       (* TODO: only send out delta model in future *)
-      (k, model) ) vars in
+      (k, M.copy model) ) vars in
     updates
 
 
