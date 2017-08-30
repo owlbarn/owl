@@ -384,9 +384,8 @@ module Make
       |> flush_all
 
     let run typ save_fun current_batch current_loss state =
-      (* FIXME: this needs to be removed *)
-      state.current_batch <- current_batch;
       state.loss.(current_batch) <- current_loss;
+      state.stop <- (state.current_batch >= state.batches);
       let interval = match typ with
         | Batch i  -> i
         | Epoch i  -> i *. (float_of_int state.batches_per_epoch) |> int_of_float
@@ -478,9 +477,9 @@ module Make
      [f] is a function [f : w -> x -> y].
      [w] is a row vector but [y] can have any shape.
    *)
-  let minimise_weight params f w x y =
+  let minimise_weight ?state params f w x y =
     let open Params in
-    if params.verbosity = true then
+    if params.verbosity = true && state = None then
       print_endline (Params.to_string params);
 
     (* make alias functions *)
@@ -506,52 +505,58 @@ module Make
       loss |> primal', g, optz
     in
 
-    (* first iteration to bootstrap the optimisation *)
-    let _loss, _g0, _ = iterate 0 w in
-    let _g = ref _g0 in
-    let _p = ref Maths.(neg _g0) in
-    let _u = ref (F 0.) in
-    let _c = ref (F 0.) in
-
-    (* init the state of optimisation process *)
-    let batches_per_epoch = Batch.batches params.batch x in
-    let state = Checkpoint.init_state batches_per_epoch params.epochs in
-    Checkpoint.(state.loss.(0) <- _loss);
+    (* init new or continue previous state of optimisation process *)
+    let state = match state with
+      | Some state -> state
+      | None       -> (
+          let batches_per_epoch = Batch.batches params.batch x in
+          let state = Checkpoint.init_state batches_per_epoch params.epochs in
+          (* first iteration to bootstrap the optimisation *)
+          let _loss, _g0, _ = iterate 0 w in
+          (* variables used for specific gradient method *)
+          Checkpoint.(state.gs <- [| [|_g0 |] |]);
+          Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
+          Checkpoint.(state.us <- [| [|F 0.|] |]);
+          Checkpoint.(state.ch <- [| [|F 0.|] |]);
+          Checkpoint.(state.loss.(0) <- _loss);
+          state
+        )
+    in
 
     (* try to iterate all batches *)
-    let i = ref 1 and w = ref w in
-    while Checkpoint.(!i < state.batches && state.stop = false) do
-      let loss', g', optz' = iterate !i !w in
-      (* checkpoint of the optimisation if necessary *)
-      chkp_fun (fun _ -> ()) !i loss' state;
-      (* print out the current state of optimisation *)
-      if params.verbosity = true then Checkpoint.print_state_info state;
+    let w = ref w in
+    while Checkpoint.(state.stop = false) do
+      let loss', g', optz' = iterate Checkpoint.(state.current_batch) !w in
       (* check if the stopping criterion is met *)
       Checkpoint.(state.stop <- stop_fun (unpack_flt loss'));
+      (* checkpoint of the optimisation if necessary *)
+      chkp_fun (fun _ -> ()) Checkpoint.(state.current_batch) loss' state;
+      (* print out the current state of optimisation *)
+      if params.verbosity = true then Checkpoint.print_state_info state;
       (* clip the gradient if necessary *)
       let g' = clip_fun g' in
       (* calculate gradient descent *)
-      let p' = grad_fun optz' !w !_g !_p g' in
+      let p' = Checkpoint.(grad_fun optz' !w state.gs.(0).(0) state.ps.(0).(0) g') in
       (* update gcache if necessary *)
-      _c := upch_fun g' !_c;
+      Checkpoint.(state.ch.(0).(0) <- upch_fun g' state.ch.(0).(0));
       (* adjust direction based on learning_rate *)
-      let u' = Maths.(p' * rate_fun !i g' !_c) in
+      let u' = Checkpoint.(Maths.(p' * rate_fun state.current_batch g' state.ch.(0).(0))) in
       (* adjust direction based on momentum *)
-      let u' = momt_fun !_u u' in
+      let u' = momt_fun Checkpoint.(state.us.(0).(0)) u' in
       (* update the weight *)
       w := Maths.(!w + u') |> primal';
       (* save historical data *)
-      if params.momentum <> Momentum.None then _u := u';
-      _g := g';
-      _p := p';
-      i := !i + 1;
+      if params.momentum <> Momentum.None then Checkpoint.(state.us.(0).(0) <- u');
+      Checkpoint.(state.gs.(0).(0) <- g');
+      Checkpoint.(state.ps.(0).(0) <- p');
+      Checkpoint.(state.current_batch <- state.current_batch + 1);
     done;
 
     (* print optimisation summary *)
-    if params.verbosity = true then
+    if params.verbosity = true && Checkpoint.(state.current_batch >= state.batches) then
       Checkpoint.print_summary state;
     (* return both loss history and weight *)
-    Array.map unpack_flt Checkpoint.(state.loss), !w
+    state, !w
 
 
   (* This function is specifically designed for minimising the weights in a
@@ -612,7 +617,7 @@ module Make
     in
 
     (* try to iterate all batches *)
-    while Checkpoint.(state.current_batch < state.batches && state.stop = false) do
+    while Checkpoint.(state.stop = false) do
       let loss', ws, gs' = iterate Checkpoint.(state.current_batch) in
       (* check if the stopping criterion is met *)
       Checkpoint.(state.stop <- stop_fun (unpack_flt loss'));
