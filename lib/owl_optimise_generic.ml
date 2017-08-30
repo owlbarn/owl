@@ -77,11 +77,11 @@ module Make
       | Schedule  of float array
 
     let run = function
-      | Adagrad a        -> fun _ _ c -> Maths.(F a / sqrt (c + F 1e-16))
+      | Adagrad a        -> fun _ _ c -> Maths.(F a / sqrt (c + F 1e-32))
       | Const a          -> fun _ _ _ -> F a
       | Decay (a, k)     -> fun i _ _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
       | Exp_decay (a, k) -> fun i _ _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
-      | RMSprop (a, k)   -> fun _ g c -> Maths.(F a / sqrt (c + F 1e-16))
+      | RMSprop (a, k)   -> fun _ g c -> Maths.(F a / sqrt (c + F 1e-32))
       | Schedule a       -> fun i _ _ -> F a.(i mod (Array.length a))
 
     let default = function
@@ -181,7 +181,7 @@ module Make
       | GD          -> fun _ _ _ _ g' -> Maths.neg g'
       | CG          -> fun _ _ g p g' -> (
           let y = Maths.(g' - g) in
-          let b = Maths.((sum (g' * y)) / ((sum (p * y)) + F 1e-16)) in
+          let b = Maths.((sum (g' * y)) / ((sum (p * y)) + F 1e-32)) in
           Maths.((neg g') + (b * p))
         )
       | CD          -> fun _ _ g p g' -> (
