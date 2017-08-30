@@ -83,8 +83,8 @@ module Make (M : ModelSig) (E : EngineSig) = struct
   }
 
 
-  (* calculate \delta model = model1 - model0, save the result in model0 *)
-  let delta_model model1 model0 =
+  (* calculate \delta model = model0 - model1, save the result in model0 *)
+  let delta_model model0 model1 =
     let par0 = M.mkpar model0 in
     let par1 = M.mkpar model1 in
     let delta = Owl_utils.aarr_map2 (fun a0 a1 -> Maths.(a0 - a1)) par0 par1 in
@@ -114,15 +114,13 @@ module Make (M : ModelSig) (E : EngineSig) = struct
   let pull task vars =
     let n = E.worker_num () |> float_of_int in
     assert (n >= 1.); (* at least one worker *)
-    let w_old = F ((n -. 1.) /. n) in
-    let w_new = F (1. /. n) in
     (* there should be only one item in list *)
     List.map (fun (k, model1) ->
       let model0 = local_model task in
       let par0 = M.mkpar model0 in
       let par1 = M.mkpar model1 in
       Owl_utils.aarr_map2 (fun a0 a1 ->
-        Maths.(w_old * a0 + w_new * a1)
+        Maths.(a0 + a1)
       ) par0 par1
       |> M.update model0;
       task.model <- model0;
@@ -134,7 +132,7 @@ module Make (M : ModelSig) (E : EngineSig) = struct
   let push task id vars =
     (* there should be only one item in list *)
     let updates = List.map (fun (k, model) ->
-      task.model <- model;
+      task.model <- M.copy model;
       (* start local training *)
       let params = task.params in
       let x = task.data_x in
@@ -145,7 +143,8 @@ module Make (M : ModelSig) (E : EngineSig) = struct
       in
       Checkpoint.(state.stop <- false);
       task.state <- Some state;
-      (* TODO: only send out delta model in future *)
+      (* only send out delta model *)
+      delta_model model task.model;
       (k, M.copy model) ) vars in
     updates
 

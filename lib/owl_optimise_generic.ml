@@ -77,7 +77,7 @@ module Make
       | Schedule  of float array
 
     let run = function
-      | Adagrad a        -> fun _ g c -> Maths.(F a / sqrt (c + F 1e-16))
+      | Adagrad a        -> fun _ _ c -> Maths.(F a / sqrt (c + F 1e-16))
       | Const a          -> fun _ _ _ -> F a
       | Decay (a, k)     -> fun i _ _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
       | Exp_decay (a, k) -> fun i _ _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
