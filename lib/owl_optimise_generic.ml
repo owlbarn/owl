@@ -321,13 +321,17 @@ module Make
   module Checkpoint = struct
 
     type state = {
-      mutable current_batch     : int;     (* current iteration progress in batch *)
-      mutable batches_per_epoch : int;     (* number of batches in each epoch *)
-      mutable epochs            : float;   (* total number of epochs to run *)
-      mutable batches           : int;     (* total batches = batches_per_epoch * epochs *)
-      mutable loss              : t array; (* history of loss value in each iteration *)
-      mutable start_at          : float;   (* time when the optimisation starts *)
-      mutable stop              : bool;    (* optimisation stops if true, otherwise false *)
+      mutable current_batch     : int;           (* current iteration progress in batch *)
+      mutable batches_per_epoch : int;           (* number of batches in each epoch *)
+      mutable epochs            : float;         (* total number of epochs to run *)
+      mutable batches           : int;           (* total batches = batches_per_epoch * epochs *)
+      mutable loss              : t array;       (* history of loss value in each iteration *)
+      mutable start_at          : float;         (* time when the optimisation starts *)
+      mutable stop              : bool;          (* optimisation stops if true, otherwise false *)
+      mutable gs                : t array array; (* gradient of the the previous iteration *)
+      mutable ps                : t array array; (* direction of the the prevoius iteration *)
+      mutable us                : t array array; (* direction update of the previous iteration *)
+      mutable ch                : t array array; (* gcache of the prevoius iteration *)
     }
 
     type typ =
@@ -339,13 +343,17 @@ module Make
     let init_state batches_per_epoch epochs =
       let batches = (float_of_int batches_per_epoch) *. epochs |> int_of_float in
       {
-        current_batch     = 0;
+        current_batch     = 1;
         batches_per_epoch = batches_per_epoch;
         epochs            = epochs;
         batches           = batches;
         loss              = Array.make (batches + 1) (F 0.);
         start_at          = Unix.gettimeofday ();
         stop              = false;
+        gs                = [| [| F 0. |] |];
+        ps                = [| [| F 0. |] |];
+        us                = [| [| F 0. |] |];
+        ch                = [| [| F 0. |] |];
       }
 
     let default_checkpoint_fun save_fun =
@@ -549,7 +557,7 @@ module Make
      neural network of graph structure. In Owl's earlier versions, the functions
      in the regression module were actually implemented using this function.
    *)
-  let minimise_network params forward backward update save x y =
+  let minimise_network ?state params forward backward update save x y =
     let open Params in
     if params.verbosity = true then
       print_endline (Params.to_string params);
@@ -583,27 +591,30 @@ module Make
       loss |> primal', ws, gs'
     in
 
-    (* first iteration to bootstrap the optimisation *)
-    let _loss, _ws, _gs = iterate 0 in
-    update _ws;
-
-    (* variables used for specific modules *)
-    let gs = ref _gs in
-    let ps = ref (Owl_utils.aarr_map Maths.neg _gs) in
-    let us = ref (Owl_utils.aarr_map (fun _ -> F 0.) _gs) in
-    let ch = ref (Owl_utils.aarr_map (fun a -> F 0.) _gs) in
-
-    (* init the state of optimisation process *)
-    let batches_per_epoch = Batch.batches params.batch x in
-    let state = Checkpoint.init_state batches_per_epoch params.epochs in
-    Checkpoint.(state.loss.(0) <- _loss);
+    (* init new or continue previous state of optimisation process *)
+    let state = match state with
+      | Some state -> state
+      | None       -> (
+          let batches_per_epoch = Batch.batches params.batch x in
+          let state = Checkpoint.init_state batches_per_epoch params.epochs in
+          (* first iteration to bootstrap the optimisation *)
+          let _loss, _ws, _gs = iterate 0 in
+          update _ws;
+          (* variables used for specific gradient method *)
+          Checkpoint.(state.gs <- _gs);
+          Checkpoint.(state.ps <- Owl_utils.aarr_map Maths.neg _gs);
+          Checkpoint.(state.us <- Owl_utils.aarr_map (fun _ -> F 0.) _gs);
+          Checkpoint.(state.ch <- Owl_utils.aarr_map (fun _ -> F 0.) _gs);
+          Checkpoint.(state.loss.(0) <- _loss);
+          state
+        )
+    in
 
     (* try to iterate all batches *)
-    let i = ref 1 in
-    while Checkpoint.(!i < state.batches && state.stop = false) do
-      let loss', ws, gs' = iterate !i in
+    while Checkpoint.(state.current_batch < state.batches && state.stop = false) do
+      let loss', ws, gs' = iterate Checkpoint.(state.current_batch) in
       (* checkpoint of the optimisation if necessary *)
-      chkp_fun save !i loss' state;
+      chkp_fun save Checkpoint.(state.current_batch) loss' state;
       (* print out the current state of optimisation *)
       if params.verbosity = true then Checkpoint.print_state_info state;
       (* check if the stopping criterion is met *)
@@ -611,23 +622,26 @@ module Make
       (* clip the gradient if necessary *)
       let gs' = Owl_utils.aarr_map clip_fun gs' in
       (* calculate gradient descent *)
-      let ps' = Owl_utils.aarr_map4 (grad_fun (fun a -> a)) ws !gs !ps gs' in
+      let ps' = Checkpoint.(Owl_utils.aarr_map4 (grad_fun (fun a -> a)) ws state.gs state.ps gs') in
       (* update gcache if necessary *)
-      ch := Owl_utils.aarr_map2 upch_fun gs' !ch;
+      Checkpoint.(state.ch <- Owl_utils.aarr_map2 upch_fun gs' state.ch);
       (* adjust direction based on learning_rate *)
-      let us' = Owl_utils.aarr_map3 (fun p' g' c ->
-        Maths.(p' * rate_fun !i g' c)
-      ) ps' gs' !ch in
+      let us' = Checkpoint.(
+        Owl_utils.aarr_map3 (fun p' g' c ->
+          Maths.(p' * rate_fun state.current_batch g' c)
+        ) ps' gs' state.ch
+      )
+      in
       (* adjust direction based on momentum *)
-      let us' = Owl_utils.aarr_map2 momt_fun !us us' in
+      let us' = Owl_utils.aarr_map2 momt_fun Checkpoint.(state.us) us' in
       (* update the weight *)
       let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
       update ws';
       (* save historical data *)
-      if params.momentum <> Momentum.None then us := us';
-      gs := gs';
-      ps := ps';
-      i := !i + 1;
+      if params.momentum <> Momentum.None then Checkpoint.(state.us <- us');
+      Checkpoint.(state.gs <- gs');
+      Checkpoint.(state.ps <- ps');
+      Checkpoint.(state.current_batch <- state.current_batch + 1);
     done;
 
     (* print optimisation summary *)
