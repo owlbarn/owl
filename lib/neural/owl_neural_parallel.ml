@@ -54,7 +54,7 @@ module type ModelSig = sig
 
   val copy : network -> network
 
-  val train_generic : ?params:Params.typ -> ?init_model:bool -> network -> t -> t -> float array
+  val train_generic : ?state:Checkpoint.state -> ?params:Params.typ -> ?init_model:bool -> network -> t -> t -> Checkpoint.state
 
 end
 
@@ -65,6 +65,7 @@ module Make (M : ModelSig) (E : EngineSig) = struct
 
   type task = {
     mutable id     : int;
+    mutable state  : Checkpoint.state option;
     mutable params : Params.typ;
     mutable model  : M.network;
     mutable data_x : t;
@@ -74,6 +75,7 @@ module Make (M : ModelSig) (E : EngineSig) = struct
 
   let make_task id params model data_x data_y = {
     id;
+    state = None;
     params;
     model;
     data_x;
@@ -137,7 +139,12 @@ module Make (M : ModelSig) (E : EngineSig) = struct
       let params = task.params in
       let x = task.data_x in
       let y = task.data_y in
-      M.train_generic ~params ~init_model:false model x y |> ignore;
+      let state = match task.state with
+        | Some state -> M.(train_generic ~state ~params ~init_model:false model x y)
+        | None       -> M.(train_generic ~params ~init_model:false model x y)
+      in
+      Checkpoint.(state.stop <- false);
+      task.state <- Some state;
       (* TODO: only send out delta model in future *)
       (k, M.copy model) ) vars in
     updates
