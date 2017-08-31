@@ -23,7 +23,7 @@ let train () =
   let network = make_network [|28;28;1|] in
   Graph.print network;
   let params = Params.config
-    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 0.3
+    ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 0.1
   in
   Graph.train_cnn ~params network x y |> ignore;
   Graph.save_weights network "mnist_owl.weights";

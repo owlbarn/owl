@@ -4,8 +4,8 @@
    computer. Or you can use other visualisation tools for the generated dot file.
  *)
 
-#zoo "2e7c902812a7ae0547e24f7ea743c7e6"
-#zoo "217ef87bc36845c4e78e398d52bc4c5b"
+#zoo "2e7c902812a7ae0547e24f7ea743c7e6" (* Cifar10     *)
+#zoo "217ef87bc36845c4e78e398d52bc4c5b" (* Lstm        *)
 #zoo "e7d8b1f6fbe1d12bb4a769d8736454b9" (* LoadImage   *)
 #zoo "9428a62a31dbea75511882ab8218076f" (* InceptionV3 *)
 
@@ -52,7 +52,9 @@ let visualise_lstm () =
   to_dot [loss]
 
 let visualise_inception () =
-  let fname = "panda1.ppm" in (* local file *)
+  (* Get picture "panda1.ppm" to local directory from gist
+   6dfed11c521fb2cd286f2519fb88d3bf *)
+  let fname = "panda1.ppm" in
   let _, _, _, img = LoadImage.img_to_owl fname in
   let shape = Arr.shape img in
   let shape = Array.append [|1|] shape in
