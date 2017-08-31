@@ -40,15 +40,7 @@ module C = Owl_cblas_generated
 
 (* Computes the parameters for a Givens rotation. *)
 
-let srotg a b =
-  let a = allocate float a in
-  let b = allocate float b in
-  let c = allocate float 0. in
-  let s = allocate float 0. in
-  C.srotg a b c s;
-  !@a, !@b, !@c, !@s
-
-let drotg a b =
+let rotg a b =
   let a = allocate double a in
   let b = allocate double b in
   let c = allocate double 0. in
@@ -59,23 +51,29 @@ let drotg a b =
 
 (* Computes the parameters for a modified Givens rotation. *)
 
-let srotmg d1 d2 b1 b2 =
-  let d1 = allocate float d1 in
-  let d2 = allocate float d2 in
-  let b1 = allocate float b1 in
-  let p  = Bigarray.(Array1.create Float32 C_layout 5) in
-  let _p = bigarray_start Ctypes_static.Array1 p in
-  C.srotmg d1 d2 b1 b2 _p;
-  !@d1, !@d2, !@b1, p
-
-let drotmg d1 d2 b1 b2 =
-  let d1 = allocate double d1 in
-  let d2 = allocate double d2 in
-  let b1 = allocate double b1 in
-  let p  = Bigarray.(Array1.create Float64 C_layout 5) in
-  let _p = bigarray_start Ctypes_static.Array1 p in
-  C.drotmg d1 d2 b1 b2 _p;
-  !@d1, !@d2, !@b1, p
+let rotmg
+  : type a b. (a, b) Bigarray.kind -> float -> float -> float -> float -> float * float * float * (a, b) t
+  = fun k d1 d2 b1 b2 ->
+  match k with
+  | Bigarray.Float32 -> (
+      let d1 = allocate float d1 in
+      let d2 = allocate float d2 in
+      let b1 = allocate float b1 in
+      let p  = Bigarray.(Array1.create Float32 C_layout 5) in
+      let _p = bigarray_start Ctypes_static.Array1 p in
+      C.srotmg d1 d2 b1 b2 _p;
+      !@d1, !@d2, !@b1, p
+    )
+  | Bigarray.Float64 -> (
+      let d1 = allocate double d1 in
+      let d2 = allocate double d2 in
+      let b1 = allocate double b1 in
+      let p  = Bigarray.(Array1.create Float64 C_layout 5) in
+      let _p = bigarray_start Ctypes_static.Array1 p in
+      C.drotmg d1 d2 b1 b2 _p;
+      !@d1, !@d2, !@b1, p
+    )
+  | _                -> failwith "owl_cblas:rotmg"
 
 
 (* Performs modified Givens rotation of points in the plane *)
@@ -181,15 +179,27 @@ let axpy
 
 (* Computes a vector-vector dot product. *)
 
-let sdot n x incx y incy =
+let dot
+  : type a b. ?conj:bool -> int -> (a, b) t -> int -> (a, b) t -> int -> a
+  = fun ?(conj=false) n x incx y incy ->
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _y = bigarray_start Ctypes_static.Array1 y in
-  C.sdot n _x incx _y incy
-
-let ddot n x incx y incy =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  C.ddot n _x incx _y incy
+  match Bigarray.Array1.kind x with
+  | Bigarray.Float32   -> C.sdot n _x incx _y incy
+  | Bigarray.Float64   -> C.ddot n _x incx _y incy
+  | Bigarray.Complex32 -> (
+      let _z = allocate complex32 Complex.zero in
+      if conj = true then C.cdotc n _x incx _y incy _z
+      else C.cdotu n _x incx _y incy _z;
+      !@_z
+    )
+  | Bigarray.Complex64 -> (
+      let _z = allocate complex32 Complex.zero in
+      if conj = true then C.zdotc n _x incx _y incy _z
+      else C.zdotu n _x incx _y incy _z;
+      !@_z
+    )
+  | _                  -> failwith "owl_cblas:dot"
 
 
 (* Computes a vector-vector dot product with double precision. *)
@@ -205,99 +215,48 @@ let dsdot n x incx y incy =
   C.dsdot n _x incx _y incy
 
 
-(* Computes a vector-vector dot product, unconjugated. *)
-
-let cdotu n x incx y incy =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  let _z = allocate complex32 Complex.zero in
-  C.cdotu n _x incx _y incy _z;
-  !@_z
-
-let zdotu n x incx y incy =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  let _z = allocate complex64 Complex.zero in
-  C.zdotu n _x incx _y incy _z;
-  !@_z
-
-
-(* Computes a dot product of a conjugated vector with another vector. *)
-
-let cdotc n x incx y incy =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  let _z = allocate complex32 Complex.zero in
-  C.cdotc n _x incx _y incy _z;
-  !@_z
-
-let zdotc n x incx y incy =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  let _z = allocate complex64 Complex.zero in
-  C.zdotc n _x incx _y incy _z;
-  !@_z
-
-
 (* Computes the Euclidean norm of a vector. *)
 
-let snrm2 n x incx =
+let nrm2
+  : type a b. int -> (a, b) t -> int -> float
+  = fun n x incx ->
   let _x = bigarray_start Ctypes_static.Array1 x in
-  C.snrm2 n _x incx
-
-let dnrm2 n x incx =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.dnrm2 n _x incx
-
-let scnrm2 n x incx =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.scnrm2 n _x incx
-
-let dznrm2 n x incx =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.dznrm2 n _x incx
+  match Bigarray.Array1.kind x with
+  | Bigarray.Float32   -> C.snrm2 n _x incx
+  | Bigarray.Float64   -> C.dnrm2 n _x incx
+  | Bigarray.Complex32 -> C.scnrm2 n _x incx
+  | Bigarray.Complex64 -> C.dznrm2 n _x incx
+  | _                  -> failwith "owl_cblas:nrm2"
 
 
 (* Computes the sum of magnitudes of the vector elements. *)
 
-let sasum n x incx =
+let asum
+  : type a b. int -> (a, b) t -> int -> float
+  = fun n x incx ->
   let _x = bigarray_start Ctypes_static.Array1 x in
-  C.sasum n _x incx
-
-let dasum n x incx =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.dasum n _x incx
-
-let scasum n x incx =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.scasum n _x incx
-
-let dzasum n x incx =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.dzasum n _x incx
+  match Bigarray.Array1.kind x with
+  | Bigarray.Float32   -> C.sasum n _x incx
+  | Bigarray.Float64   -> C.sasum n _x incx
+  | Bigarray.Complex32 -> C.scasum n _x incx
+  | Bigarray.Complex64 -> C.dzasum n _x incx
+  | _                  -> failwith "owl_cblas:asum"
 
 
 (* Finds the index of the element with maximum absolute value. *)
 
-let isamax n x incx =
+let amax
+  : type a b. int -> (a, b) t -> int -> int
+  = fun n x incx ->
   let _x = bigarray_start Ctypes_static.Array1 x in
-  C.isamax n _x incx
-  |> Unsigned.Size_t.to_int
-
-let idamax n x incx =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.idamax n _x incx
-  |> Unsigned.Size_t.to_int
-
-let icamax n x incx =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.icamax n _x incx
-  |> Unsigned.Size_t.to_int
-
-let izamax n x incx =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.izamax n _x incx
-  |> Unsigned.Size_t.to_int
+  let i = match Bigarray.Array1.kind x with
+    | Bigarray.Float32   -> C.isamax n _x incx
+    | Bigarray.Float64   -> C.idamax n _x incx
+    | Bigarray.Complex32 -> C.icamax n _x incx
+    | Bigarray.Complex64 -> C.izamax n _x incx
+    | _                  -> failwith "owl_cblas:amax"
+  in
+  Unsigned.Size_t.to_int i
 
 
 (* Level 2 BLAS *)

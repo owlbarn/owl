@@ -10,6 +10,8 @@
 (** Please refer to: Intel Math Kernel Library in the CBLAS interface
   url: https://software.intel.com/en-us/mkl-developer-reference-c *)
 
+open Bigarray
+
 
 (** {6 Definition of basic types} *)
 
@@ -33,20 +35,11 @@ type cblas_side = CblasLeft | CblasRight
 
 (** {6 Level-1 BLAS: vector-vector operations} *)
 
+val rotg : float -> float -> float * float * float * float
+(** Computes the parameters for a Givens rotation. *)
 
-(* Computes the parameters for a Givens rotation. *)
-
-val srotg : float -> float -> float * float * float * float
-
-val drotg : float -> float -> float * float * float * float
-
-
+val rotmg : ('a, 'b) Bigarray.kind -> float -> float -> float -> float -> float * float * float * ('a, 'b) t
 (* Computes the parameters for a modified Givens rotation. *)
-
-val srotmg : float -> float -> float -> float -> float * float * float * s_t
-
-val drotmg : float -> float -> float -> float -> float * float * float * d_t
-
 
 val rot : int -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> float -> float -> unit
 (** Performs rotation of points in the plane. *)
@@ -69,65 +62,25 @@ val copy : int -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> unit
 val axpy : int -> 'a -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> unit
 (** Computes a vector-scalar product and adds the result to a vector. *)
 
-(* Computes a vector-vector dot product. *)
+val dot : ?conj:bool -> int -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> 'a
+(** Computes a vector-vector dot product. [conj] is for complex numbers, [true]
+  indicates conjugated, [false] indicates unconjugated.
+ *)
 
-val sdot : int -> s_t -> int -> s_t -> int -> float
+val sdsdot : int -> float -> (float, float32_elt) t -> int -> (float, float32_elt) t -> int -> float
+(** Computes a vector-vector dot product extended precision accumulation. *)
 
-val ddot : int -> d_t -> int -> d_t -> int -> float
+val dsdot : int -> (float, float32_elt) t -> int -> (float, float32_elt) t -> int -> float
+(** Computes a vector-vector dot product extended precision accumulation. *)
 
+val nrm2 : int -> ('a, 'b) t -> int -> float
+(** Computes the Euclidean norm of a vector. *)
 
-(* Computes a vector-vector dot product. *)
+val asum : int -> ('a, 'b) t -> int -> float
+(** Computes the sum of magnitudes of the vector elements. *)
 
-val cdotu : int -> c_t -> int -> c_t -> int -> Complex.t
-
-val zdotu : int -> z_t -> int -> z_t -> int -> Complex.t
-
-
-(* Computes a vector-vector dot product, unconjugated. *)
-
-val cdotc : int -> c_t -> int -> c_t -> int -> Complex.t
-
-val zdotc : int -> z_t -> int -> z_t -> int -> Complex.t
-
-
-(* Computes a dot product of a conjugated vector with another vector. *)
-
-val sdsdot : int -> float -> s_t -> int -> s_t -> int -> float
-
-val dsdot : int -> s_t -> int -> s_t -> int -> float
-
-
-(* Computes the Euclidean norm of a vector. *)
-
-val snrm2 : int -> s_t -> int -> float
-
-val dnrm2 : int -> d_t -> int -> float
-
-val scnrm2 : int -> c_t -> int -> float
-
-val dznrm2 : int -> z_t -> int -> float
-
-
-(* Computes the sum of magnitudes of the vector elements. *)
-
-val sasum : int -> s_t -> int -> float
-
-val dasum : int -> d_t -> int -> float
-
-val scasum : int -> c_t -> int -> float
-
-val dzasum : int -> z_t -> int -> float
-
-
+val amax : int -> ('a, 'b) t -> int -> int
 (* Finds the index of the element with maximum absolute value. *)
-
-val isamax : int -> s_t -> int -> int
-
-val idamax : int -> d_t -> int -> int
-
-val icamax : int -> c_t -> int -> int
-
-val izamax : int -> z_t -> int -> int
 
 
 (** {6 Level-2 BLAS: matrix-vector operations} *)
