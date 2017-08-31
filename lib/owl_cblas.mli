@@ -48,67 +48,26 @@ val srotmg : float -> float -> float -> float -> float * float * float * s_t
 val drotmg : float -> float -> float -> float -> float * float * float * d_t
 
 
-(* Performs rotation of points in the plane. *)
+val rot : int -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> float -> float -> unit
+(** Performs rotation of points in the plane. *)
 
-val srot : int -> s_t -> int -> s_t -> int -> float -> float -> unit
+val rotm : int -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> ('a, 'b) t -> unit
+(** Performs modified Givens rotation of points in the plane *)
 
-val drot : int -> d_t -> int -> d_t -> int -> float -> float -> unit
+val swap : int -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> unit
+(** Swaps a vector with another vector. *)
 
+val scal : int -> 'a -> ('a, 'b) t -> int -> unit
+(** Computes the product of a vector and a scalar. *)
 
-(* Performs modified Givens rotation of points in the plane *)
+val cszd_scal : int -> float -> (Complex.t, 'a) t -> int -> unit
+(** Computes the product of a complex vector and a float number. *)
 
-val srotm : int -> s_t -> int -> s_t -> int -> s_t -> unit
+val copy : int -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> unit
+(** Copies vector to another vector. *)
 
-val drotm : int -> d_t -> int -> d_t -> int -> d_t -> unit
-
-
-(* Swaps a vector with another vector. *)
-
-val sswap : int -> s_t -> int -> s_t -> int -> unit
-
-val dswap : int -> d_t -> int -> d_t -> int -> unit
-
-val cswap : int -> c_t -> int -> c_t -> int -> unit
-
-val zswap : int -> z_t -> int -> z_t -> int -> unit
-
-
-(* Computes the product of a vector by a scalar. *)
-
-val sscal : int -> float -> s_t -> int -> unit
-
-val dscal : int -> float -> d_t -> int -> unit
-
-val cscal : int -> Complex.t -> c_t -> int -> unit
-
-val zscal : int -> Complex.t -> z_t -> int -> unit
-
-val csscal : int -> float -> c_t -> int -> unit
-
-val zdscal : int -> float -> z_t -> int -> unit
-
-
-(* Copies vector to another vector. *)
-
-val scopy : int -> s_t -> int -> s_t -> int -> unit
-
-val dcopy : int -> d_t -> int -> d_t -> int -> unit
-
-val ccopy : int -> c_t -> int -> c_t -> int -> unit
-
-val zcopy : int -> z_t -> int -> z_t -> int -> unit
-
-
-(* Computes a vector-scalar product and adds the result to a vector. *)
-
-val saxpy : int -> float -> s_t -> int -> s_t -> int -> unit
-
-val daxpy : int -> float -> d_t -> int -> d_t -> int -> unit
-
-val caxpy : int -> Complex.t -> c_t -> int -> c_t -> int -> unit
-
-val zaxpy : int -> Complex.t -> z_t -> int -> z_t -> int -> unit
-
+val axpy : int -> 'a -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> unit
+(** Computes a vector-scalar product and adds the result to a vector. *)
 
 (* Computes a vector-vector dot product. *)
 

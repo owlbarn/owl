@@ -80,152 +80,103 @@ let drotmg d1 d2 b1 b2 =
 
 (* Performs modified Givens rotation of points in the plane *)
 
-let srotm n x incx y incy p =
+let rotm
+  : type a b. int -> (a, b) t -> int -> (a, b) t -> int -> (a, b) t -> unit
+  = fun n x incx y incy p ->
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _y = bigarray_start Ctypes_static.Array1 y in
   let _p = bigarray_start Ctypes_static.Array1 p in
-  C.srotm n _x incx _y incy _p
-  |> ignore
-
-let drotm n x incx y incy p =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  let _p = bigarray_start Ctypes_static.Array1 p in
-  C.drotm n _x incx _y incy _p
-  |> ignore
+  let _ = match Bigarray.Array1.kind x with
+    | Bigarray.Float32 -> C.srotm n _x incx _y incy _p
+    | Bigarray.Float64 -> C.drotm n _x incx _y incy _p
+    | _                -> failwith "owl_cblas:rotm"
+  in ()
 
 
 (* Performs rotation of points in the plane. *)
 
-let srot n x incx y incy c s =
+let rot
+  : type a b. int -> (a, b) t -> int -> (a, b) t -> int -> float -> float -> unit
+  = fun n x incx y incy c s ->
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _y = bigarray_start Ctypes_static.Array1 y in
-  C.srot n _x incx _y incy c s
-  |> ignore
-
-let drot n x incx y incy c s =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  C.drot n _x incx _y incy c s
-  |> ignore
+  let _ = match Bigarray.Array1.kind x with
+    | Bigarray.Float32 -> C.srot n _x incx _y incy c s
+    | Bigarray.Float64 -> C.drot n _x incx _y incy c s
+    | _                -> failwith "owl_cblas:rot"
+  in ()
 
 
 (* Swaps a vector with another vector. *)
 
-let sswap n x incx y incy =
+let swap
+  : type a b. int -> (a, b) t -> int -> (a, b) t -> int -> unit
+  = fun n x incx y incy ->
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _y = bigarray_start Ctypes_static.Array1 y in
-  C.sswap n _x incx _y incy
-  |> ignore
-
-let dswap n x incx y incy =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  C.dswap n _x incx _y incy
-  |> ignore
-
-let cswap n x incx y incy =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  C.cswap n _x incx _y incy
-  |> ignore
-
-let zswap n x incx y incy =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  C.zswap n _x incx _y incy
-  |> ignore
+  let _ = match Bigarray.Array1.kind x with
+    | Bigarray.Float32   -> C.sswap n _x incx _y incy
+    | Bigarray.Float64   -> C.dswap n _x incx _y incy
+    | Bigarray.Complex32 -> C.cswap n _x incx _y incy
+    | Bigarray.Complex64 -> C.zswap n _x incx _y incy
+    | _                  -> failwith "owl_cblas:swap"
+  in ()
 
 
 (* Computes the product of a vector by a scalar. *)
 
-let sscal n a x incx =
+let scal
+  : type a b. int -> a -> (a, b) t -> int -> unit
+  = fun n a x incx ->
   let _x = bigarray_start Ctypes_static.Array1 x in
-  C.sscal n a _x incx
-  |> ignore
+  let _ = match Bigarray.Array1.kind x with
+    | Bigarray.Float32   -> C.sscal n a _x incx
+    | Bigarray.Float64   -> C.dscal n a _x incx
+    | Bigarray.Complex32 -> C.cscal n (allocate complex32 a) _x incx
+    | Bigarray.Complex64 -> C.zscal n (allocate complex64 a) _x incx
+    | _                  -> failwith "owl_cblas:scal"
+  in ()
 
-let dscal n a x incx =
+let cszd_scal
+  : type a. int -> float -> (Complex.t, a) t -> int -> unit
+  = fun n a x incx ->
   let _x = bigarray_start Ctypes_static.Array1 x in
-  C.dscal n a _x incx
-  |> ignore
-
-let cscal n a x incx =
-  let _a = allocate complex32 a in
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.cscal n _a _x incx
-  |> ignore
-
-let zscal n a x incx =
-  let _a = allocate complex64 a in
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.zscal n _a _x incx
-  |> ignore
-
-let csscal n a x incx =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.csscal n a _x incx
-  |> ignore
-
-let zdscal n a x incx =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  C.zdscal n a _x incx
-  |> ignore
+  let _ = match Bigarray.Array1.kind x with
+    | Bigarray.Complex32 -> C.csscal n a _x incx
+    | Bigarray.Complex64 -> C.zdscal n a _x incx
+  in ()
 
 
 (* Copies vector to another vector. *)
 
-let scopy n x incx y incy =
-  let _x = Ctypes.bigarray_start Ctypes_static.Array1 x in
-  let _y = Ctypes.bigarray_start Ctypes_static.Array1 y in
-  C.scopy n _x incx _y incy
-  |> ignore
-
-let dcopy n x incx y incy =
-  let _x = Ctypes.bigarray_start Ctypes_static.Array1 x in
-  let _y = Ctypes.bigarray_start Ctypes_static.Array1 y in
-  C.dcopy n _x incx _y incy
-  |> ignore
-
-let ccopy n x incx y incy =
-  let _x = Ctypes.bigarray_start Ctypes_static.Array1 x in
-  let _y = Ctypes.bigarray_start Ctypes_static.Array1 y in
-  C.ccopy n _x incx _y incy
-  |> ignore
-
-let zcopy n x incx y incy =
-  let _x = Ctypes.bigarray_start Ctypes_static.Array1 x in
-  let _y = Ctypes.bigarray_start Ctypes_static.Array1 y in
-  C.zcopy n _x incx _y incy
-  |> ignore
+let copy
+  : type a b. int -> (a, b) t -> int -> (a, b) t -> int -> unit
+  = fun n x incx y incy ->
+  let _x = bigarray_start Ctypes_static.Array1 x in
+  let _y = bigarray_start Ctypes_static.Array1 y in
+  let _ = match Bigarray.Array1.kind x with
+    | Bigarray.Float32   -> C.scopy n _x incx _y incy
+    | Bigarray.Float64   -> C.dcopy n _x incx _y incy
+    | Bigarray.Complex32 -> C.ccopy n _x incx _y incy
+    | Bigarray.Complex64 -> C.zcopy n _x incx _y incy
+    | _                  -> failwith "owl_cblas:copy"
+  in ()
 
 
 (* Computes a vector-scalar product and adds the result to a vector. *)
 
-let saxpy n a x incx y incy =
+let axpy
+  : type a b. int -> a -> (a, b) t -> int -> (a, b) t -> int -> unit
+  = fun n a x incx y incy ->
   let _x = bigarray_start Ctypes_static.Array1 x in
   let _y = bigarray_start Ctypes_static.Array1 y in
-  C.saxpy n a _x incx _y incy
-  |> ignore
-
-let daxpy n a x incx y incy =
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  C.daxpy n a _x incx _y incy
-  |> ignore
-
-let caxpy n a x incx y incy =
-  let _a = allocate complex32 a in
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  C.caxpy n _a _x incx _y incy
-  |> ignore
-
-let zaxpy n a x incx y incy =
-  let _a = allocate complex64 a in
-  let _x = bigarray_start Ctypes_static.Array1 x in
-  let _y = bigarray_start Ctypes_static.Array1 y in
-  C.zaxpy n _a _x incx _y incy
-  |> ignore
+  let _ = match Bigarray.Array1.kind x with
+    | Bigarray.Float32   -> C.saxpy n a _x incx _y incy
+    | Bigarray.Float64   -> C.daxpy n a _x incx _y incy
+    | Bigarray.Complex32 -> C.caxpy n (allocate complex32 a) _x incx _y incy
+    | Bigarray.Complex64 -> C.zaxpy n (allocate complex64 a) _x incx _y incy
+    | _                  -> failwith "owl_cblas:axpy"
+  in ()
 
 
 (* Computes a vector-vector dot product. *)

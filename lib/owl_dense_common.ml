@@ -345,6 +345,11 @@ type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
 (* call functions in owl native c *)
 
+let _owl_copy n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y =
+  let x = Array1.sub x ofsx (Array1.dim x - ofsx) in
+  let y = Array1.sub y ofsy (Array1.dim y - ofsy) in
+  Owl_cblas.copy n x incx y incy
+
 let _owl_elt_to_str : type a b. (a, b) kind -> (a -> bytes) = function
   | Int8_signed    -> fun v -> Printf.sprintf "%i" v
   | Int8_unsigned  -> fun v -> Printf.sprintf "%i" v
@@ -1507,35 +1512,14 @@ let _owl_logspace : type a b. (a, b) kind -> (a, b) owl_vec_op08 = function
   | Complex64 -> owl_complex_double_logspace
   | _         -> failwith "_owl_logspace: unsupported operation"
 
-let _owl_copy : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
-  fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
-  match k with
-  | Float32   ->
-    let x = Array1.sub x ofsx (Array1.dim x - ofsx) in
-    let y = Array1.sub y ofsy (Array1.dim y - ofsy) in
-    Owl_cblas.scopy n x incx y incy
-  | Float64   ->
-    let x = Array1.sub x ofsx (Array1.dim x - ofsx) in
-    let y = Array1.sub y ofsy (Array1.dim y - ofsy) in
-    Owl_cblas.dcopy n x incx y incy
-  | Complex32 ->
-    let x = Array1.sub x ofsx (Array1.dim x - ofsx) in
-    let y = Array1.sub y ofsy (Array1.dim y - ofsy) in
-    Owl_cblas.ccopy n x incx y incy
-  | Complex64 ->
-    let x = Array1.sub x ofsx (Array1.dim x - ofsx) in
-    let y = Array1.sub y ofsy (Array1.dim y - ofsy) in
-    Owl_cblas.zcopy n x incx y incy
-  | _ -> failwith "_owl_copy: unsupported operation"
-
 external owl_complex_float_conj : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "complex_float_conj" "complex_float_conj_impl"
 external owl_complex_double_conj : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "complex_double_conj" "complex_double_conj_impl"
 
 let _owl_conj : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
   fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
   match k with
-  | Float32     -> _owl_copy k n ~ofsx ~incx ~ofsy ~incy x y
-  | Float64     -> _owl_copy k n ~ofsx ~incx ~ofsy ~incy x y
+  | Float32     -> _owl_copy n ~ofsx ~incx ~ofsy ~incy x y
+  | Float64     -> _owl_copy n ~ofsx ~incx ~ofsy ~incy x y
   | Complex32   -> owl_complex_float_conj n x ofsx incx y ofsy incy
   | Complex64   -> owl_complex_double_conj n x ofsx incx y ofsy incy
   | _         -> failwith "_owl_conj: unsupported operation"

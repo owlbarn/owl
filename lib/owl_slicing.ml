@@ -180,7 +180,6 @@ let get_slice_array_typ axis x =
   let d0 = Array.length s1 in
   let d1, cb = calc_continuous_blksz axis s0 in
   let sd = _calc_stride s0 in
-  let _cp_op = _owl_copy (kind x) in
   let ofsy_i = ref 0 in
   (* two copying strategies based on the size of the minimum continuous block.
      also, consider the special case wherein the highest-dimension equals to 1.
@@ -192,7 +191,7 @@ let get_slice_array_typ axis x =
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd in
       let ofsy = !ofsy_i * b in
-      _cp_op b ~ofsx ~ofsy ~incx:1 ~incy:1 x' y';
+      _owl_copy b ~ofsx ~ofsy ~incx:1 ~incy:1 x' y';
       ofsy_i := !ofsy_i + 1
     )
     in
@@ -222,7 +221,7 @@ let get_slice_array_typ axis x =
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd + dd in
       let ofsy = !ofsy_i * b in
-      _cp_op b ~ofsx ~ofsy ~incx:cx ~incy:cy x' y';
+      _owl_copy b ~ofsx ~ofsy ~incx:cx ~incy:cy x' y';
       ofsy_i := !ofsy_i + 1
     )
     in
@@ -250,7 +249,6 @@ let set_slice_array_typ axis x y =
   let d0 = Array.length s1 in
   let d1, cb = calc_continuous_blksz axis s0 in
   let sd = _calc_stride s0 in
-  let _cp_op = _owl_copy (kind x) in
   let ofsy_i = ref 0 in
   (* two copying strategies based on the size of the minimum continuous block.
      also, consider the special case wherein the highest-dimension equals to 1.
@@ -262,7 +260,7 @@ let set_slice_array_typ axis x y =
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd in
       let ofsy = !ofsy_i * b in
-      _cp_op b ~ofsx:ofsy ~ofsy:ofsx ~incx:1 ~incy:1 y' x';
+      _owl_copy b ~ofsx:ofsy ~ofsy:ofsx ~incx:1 ~incy:1 y' x';
       ofsy_i := !ofsy_i + 1
     )
     in
@@ -288,7 +286,7 @@ let set_slice_array_typ axis x y =
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd + dd in
       let ofsy = !ofsy_i * b in
-      _cp_op b ~ofsx:ofsy ~ofsy:ofsx ~incx:cy ~incy:cx y' x';
+      _owl_copy b ~ofsx:ofsy ~ofsy:ofsx ~incx:cy ~incy:cx y' x';
       ofsy_i := !ofsy_i + 1
     )
     in

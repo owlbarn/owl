@@ -100,9 +100,8 @@ let reverse x =
   let y = clone x in
   let x' = x |> flatten |> array1_of_genarray in
   let y' = y |> flatten |> array1_of_genarray in
-  let k = kind x in
   let n = numel x in
-  _owl_copy k n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:(-1) x' y';
+  _owl_copy n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:(-1) x' y';
   y
 
 let tile x reps =
@@ -164,7 +163,6 @@ let tile x reps =
 
 
 let repeat ?axis x reps =
-  let _cp_op = _owl_copy (kind x) in
   let highest_dim = Array.length (shape x) - 1 in
   (* by default, repeat at the highest dimension *)
   let axis = match axis with
@@ -181,7 +179,7 @@ let repeat ?axis x reps =
   (* if repeat at the highest dimension, use this strategy *)
   if axis = highest_dim then (
     for i = 0 to reps - 1 do
-      ignore (_cp_op (numel x) ~ofsx:0 ~incx:1 ~ofsy:i ~incy:reps x' y')
+      ignore (_owl_copy (numel x) ~ofsx:0 ~incx:1 ~ofsy:i ~incy:reps x' y')
     done;
   )
   (* if repeat at another dimension, use this block copying *)
@@ -193,7 +191,7 @@ let repeat ?axis x reps =
       let ofsx = i * _slice_sz in
       for j = 0 to reps - 1 do
         let ofsy = (i * reps + j) * _slice_sz in
-        ignore (_cp_op _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:1 x' y')
+        ignore (_owl_copy _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:1 x' y')
       done;
     done;
   );
@@ -229,10 +227,9 @@ let concatenate ?(axis=0) xs =
   let x_ofs = Array.make n 0 in
   (* copy data in the flattened space *)
   let z_ofs = ref 0 in
-  let _cp_op = _owl_copy (kind y) in
   for i = 0 to m - 1 do
     for j = 0 to n - 1 do
-      ignore(_cp_op step_sz.(j) ~ofsx:x_ofs.(j) ~incx:1 ~ofsy:!z_ofs ~incy:1 x_flt.(j) z);
+      ignore(_owl_copy step_sz.(j) ~ofsx:x_ofs.(j) ~incx:1 ~ofsy:!z_ofs ~incy:1 x_flt.(j) z);
       x_ofs.(j) <- x_ofs.(j) + step_sz.(j);
       z_ofs := !z_ofs + step_sz.(j);
     done;
@@ -277,7 +274,7 @@ let resize ?(head=true) x d =
       let y = empty k d in
       fill y (_zero k);
       let _y = reshape_1 y n1 in
-      _owl_copy k n0 ~ofsx ~incx:1 ~ofsy ~incy:1 _x _y;
+      _owl_copy n0 ~ofsx ~incx:1 ~ofsy ~incy:1 _x _y;
       y
     )
   | false -> (
@@ -1336,7 +1333,6 @@ let flip ?(axis=0) x =
 let rotate x degree =
   assert (degree mod 90 = 0);
   let k = (degree mod 360) / 90 in
-  let _cp_op = _owl_copy (kind x) in
 
   if num_dims x < 2 || k = 0 then
     clone x
@@ -1357,13 +1353,13 @@ let rotate x degree =
 
     if m <= n then (
       for i = 1 to m do
-        _cp_op n ~ofsx:!ofsx ~incx:1 ~ofsy:(m - i) ~incy:m x' y';
+        _owl_copy n ~ofsx:!ofsx ~incx:1 ~ofsy:(m - i) ~incy:m x' y';
         ofsx := !ofsx + n
       done
     )
     else (
       for i = 0 to n - 1 do
-        _cp_op m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:(-1) x' y';
+        _owl_copy m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:(-1) x' y';
         ofsy := !ofsy + m
       done
     );
@@ -1382,14 +1378,14 @@ let rotate x degree =
       let ofsx = ref 0 in
       let ofsy = ref ((m - 1) * n) in
       for i = 0 to m - 1 do
-        _cp_op n ~ofsx:!ofsx ~incx:1 ~ofsy:!ofsy ~incy:(-1) x' y';
+        _owl_copy n ~ofsx:!ofsx ~incx:1 ~ofsy:!ofsy ~incy:(-1) x' y';
         ofsx := !ofsx + n;
         ofsy := !ofsy - n
       done
     )
     else (
       for i = 0 to n - 1 do
-        _cp_op m ~ofsx:i ~incx:n ~ofsy:(n - i - 1) ~incy:(-n) x' y'
+        _owl_copy m ~ofsx:i ~incx:n ~ofsy:(n - i - 1) ~incy:(-n) x' y'
       done
     );
     y
@@ -1411,13 +1407,13 @@ let rotate x degree =
 
     if m <= n then (
       for i = 0 to m - 1 do
-        _cp_op n ~ofsx:!ofsx ~incx:1 ~ofsy:i ~incy:(-m) x' y';
+        _owl_copy n ~ofsx:!ofsx ~incx:1 ~ofsy:i ~incy:(-m) x' y';
         ofsx := !ofsx + n
       done
     )
     else (
       for i = 0 to n - 1 do
-        _cp_op m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:1 x' y';
+        _owl_copy m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:1 x' y';
         ofsy := !ofsy - m
       done
     );
@@ -1825,7 +1821,6 @@ let _expand_padding_index d s =
   ) d
 
 (*
-  k : kind of the source
   p1: padding index
   ls: slice size of the source
   l0: stride size of the source
@@ -1839,13 +1834,12 @@ let _expand_padding_index d s =
   x0: source
   x1: destination
  *)
-let rec _copy_to_padding k p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1 =
+let rec _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1 =
   if d0 < d1 then (
-    (* Printf.printf "+++ %i\n" d0; *)
     for i = 0 to s0.(d0) - 1 do
       i0.(d0) <- i;
       i1.(d0) <- i + p1.(d0).(0);
-      _copy_to_padding k p1 ls l0 l1 i0 i1 (d0 + 1) d1 s0 s1 x0 x1;
+      _copy_to_padding p1 ls l0 l1 i0 i1 (d0 + 1) d1 s0 s1 x0 x1;
       i0.(d0) <- 0;
       i1.(d0) <- p1.(d0).(0);
     done
@@ -1854,7 +1848,7 @@ let rec _copy_to_padding k p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1 =
     (* print_index i0; Printf.printf " === "; print_index i1; print_endline ""; *)
     let j0 = _index_nd_1d i0 l0 in
     let j1 = _index_nd_1d i1 l1 in
-    _owl_copy k ls.(d0) ~ofsx:j0 ~incx:1 ~ofsy:j1 ~incy:1 x0 x1
+    _owl_copy ls.(d0) ~ofsx:j0 ~incx:1 ~ofsy:j1 ~incy:1 x0 x1
   )
 
 (* according to the expanded padding index, calcuate the highest dimension
@@ -1889,7 +1883,7 @@ let pad ?v d x =
   let d1 = _highest_padding_dimension p1 in
   let x0 = Bigarray.reshape_1 x (numel x) in
   let x1 = Bigarray.reshape_1 y (numel y) in
-  _copy_to_padding k p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1;
+  _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1;
   y
 
 

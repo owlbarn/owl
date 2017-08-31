@@ -145,10 +145,9 @@ let col x j =
   assert (j < n);
   let k = Array2.kind x in
   let y = empty k m 1 in
-  let _cp_op = _owl_copy k in
   let _x = Owl_utils.array2_to_array1 x in
   let _y = Owl_utils.array2_to_array1 y in
-  _cp_op m ~ofsx:j ~incx:n ~ofsy:0 ~incy:1 _x _y;
+  _owl_copy m ~ofsx:j ~incx:n ~ofsy:0 ~incy:1 _x _y;
   y
 
 let copy_area_to x1 r1 x2 r2 =
@@ -187,14 +186,13 @@ let concat_vertical x1 x2 =
   let m3 = m1 + m2 in
   let k = kind x1 in
   let x3 = empty k m3 n1 in
-  let _cp_op = _owl_copy k in
   let _x1 = Owl_utils.array2_to_array1 x1 in
   let _x2 = Owl_utils.array2_to_array1 x2 in
   let _x3 = Owl_utils.array2_to_array1 x3 in
   let num1 = numel x1 in
   let num2 = numel x2 in
-  _cp_op num1 ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 _x1 _x3;
-  _cp_op num2 ~ofsx:0 ~incx:1 ~ofsy:num1 ~incy:1 _x2 _x3;
+  _owl_copy num1 ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:1 _x1 _x3;
+  _owl_copy num2 ~ofsx:0 ~incx:1 ~ofsy:num1 ~incy:1 _x2 _x3;
   x3
 
 let concat_horizontal x1 x2 =
@@ -204,7 +202,6 @@ let concat_horizontal x1 x2 =
   let n3 = n1 + n2 in
   let k = kind x1 in
   let x3 = empty k m1 n3 in
-  let _cp_op = _owl_copy k in
   let _x1 = Owl_utils.array2_to_array1 x1 in
   let _x2 = Owl_utils.array2_to_array1 x2 in
   let _x3 = Owl_utils.array2_to_array1 x3 in
@@ -212,8 +209,8 @@ let concat_horizontal x1 x2 =
   let ofs2 = ref 0 in
   let ofs3 = ref 0 in
   for i = 0 to m1 - 1 do
-    _cp_op n1 ~ofsx:!ofs1 ~incx:1 ~ofsy:!ofs3 ~incy:1 _x1 _x3;
-    _cp_op n2 ~ofsx:!ofs2 ~incx:1 ~ofsy:(!ofs3 + n1) ~incy:1 _x2 _x3;
+    _owl_copy n1 ~ofsx:!ofs1 ~incx:1 ~ofsy:!ofs3 ~incy:1 _x1 _x3;
+    _owl_copy n2 ~ofsx:!ofs2 ~incx:1 ~ofsy:(!ofs3 + n1) ~incy:1 _x2 _x3;
     ofs1 := !ofs1 + n1;
     ofs2 := !ofs2 + n2;
     ofs3 := !ofs3 + n3;
@@ -244,12 +241,11 @@ let cols x l =
   let nl = Array.length (l) in
   let k = kind x in
   let y = empty k m nl in
-  let _cp_op = _owl_copy k in
   let _x = Owl_utils.array2_to_array1 x in
   let _y = Owl_utils.array2_to_array1 y in
   Array.iteri (fun i j ->
     assert (i < nl && j < n);
-    _cp_op m ~ofsx:j ~incx:n ~ofsy:i ~incy:nl _x _y;
+    _owl_copy m ~ofsx:j ~incx:n ~ofsy:i ~incy:nl _x _y;
   ) l;
   y
 
@@ -352,13 +348,12 @@ let triu ?(k=0) x =
   let _y = to_ndarray y in
   let _y = reshape _y [|c|] |> array1_of_genarray in
 
-  let _cp_op = _owl_copy (kind x) in
   let ofs = ref (Pervasives.(min n (max 0 k))) in
   let len = ref (Pervasives.(max 0 (min n (n - k)))) in
   let loops = Pervasives.(max 0 (min m (n - k))) in
 
   for i = 0 to loops - 1 do
-    _cp_op !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 _x _y;
+    _owl_copy !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 _x _y;
     if i + k >= 0 then (
       ofs := !ofs + n + 1;
       len := !len - 1
@@ -378,13 +373,12 @@ let tril ?(k=0) x =
   let _y = to_ndarray y in
   let _y = reshape _y [|c|] |> array1_of_genarray in
 
-  let _cp_op = _owl_copy (kind x) in
   let row_i = Pervasives.(min m (abs (min 0 k))) in
   let len = ref (Pervasives.(min n ((max 0 k) + 1))) in
   let ofs = ref (row_i * n) in
 
   for i = row_i to m - 1 do
-    _cp_op !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 _x _y;
+    _owl_copy !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 _x _y;
     ofs := !ofs + n;
     if !len < n then
       len := !len + 1
@@ -399,16 +393,14 @@ let symmetric ?(upper=true) x =
   let y = clone x in
   let _y = Owl_utils.array2_to_array1 y in
 
-  let _cp_op = _owl_copy (kind x) in
   let ofs = ref 0 in
-
   let incx, incy =
     match upper with
     | true  -> 1, m
     | false -> m, 1
   in
   for i = 0 to m - 1 do
-    _cp_op (m - i) ~ofsx:!ofs ~incx ~ofsy:!ofs ~incy _y _y;
+    _owl_copy (m - i) ~ofsx:!ofs ~incx ~ofsy:!ofs ~incy _y _y;
     ofs := !ofs + n + 1
   done;
   (* return the symmetric matrix *)
@@ -1584,13 +1576,12 @@ let toeplitz ?c r =
   let _x = Owl_utils.array2_to_array1 x in
   let _r = Owl_utils.array2_to_array1 r in
   let _c = Owl_utils.array2_to_array1 c in
-  let _op = _owl_copy (kind r) in
   let ofs = ref 0 in
   let loops = Pervasives.min m n in
 
   for i = 0 to loops - 1 do
-    _op (n - i) ~ofsx:0 ~incx:1 _r ~ofsy:!ofs ~incy:1 _x;
-    _op (m - i) ~ofsx:0 ~incx:1 _c ~ofsy:!ofs ~incy:n _x;
+    _owl_copy (n - i) ~ofsx:0 ~incx:1 _r ~ofsy:!ofs ~incy:1 _x;
+    _owl_copy (m - i) ~ofsx:0 ~incx:1 _c ~ofsy:!ofs ~incy:n _x;
     ofs := !ofs + n + 1;
   done;
   x
@@ -1608,13 +1599,12 @@ let hankel ?r c =
   let _x = Owl_utils.array2_to_array1 x in
   let _r = Owl_utils.array2_to_array1 r in
   let _c = Owl_utils.array2_to_array1 c in
-  let _op = _owl_copy (kind r) in
   let ofs = ref ( (m - 1) * n ) in
   let loops = Pervasives.min m n in
 
   for i = 0 to loops - 1 do
-    _op (n - i) ~ofsx:0 ~incx:1 _r ~ofsy:!ofs ~incy:1 _x;
-    _op (m - i) ~ofsx:i ~incx:1 _c ~ofsy:i ~incy:n _x;
+    _owl_copy (n - i) ~ofsx:0 ~incx:1 _r ~ofsy:!ofs ~incy:1 _x;
+    _owl_copy (m - i) ~ofsx:i ~incx:1 _c ~ofsy:i ~incy:n _x;
     ofs := !ofs - n + 1;
   done;
   x
@@ -1700,11 +1690,10 @@ let hadamard k n =
   (* start building, only deal with pow2 of n, n/12, n/20. *)
   let x = empty k n n in
   let _x = Owl_utils.array2_to_array1 x in
-  let cp_op = _owl_copy k in
   let neg_op = _owl_neg k in
   if Owl_maths.is_pow2 n then (
     x.{0,0} <- (_one k);
-    _make_hadamard cp_op neg_op n n 1 _x;
+    _make_hadamard _owl_copy neg_op n n 1 _x;
     x
   )
   else if Owl_maths.is_pow2 (n / 12) && Pervasives.(n mod 12) = 0 then (
@@ -1712,7 +1701,7 @@ let hadamard k n =
     let y = of_array k y 12 12 in
     let _area = area 0 0 11 11 in
     copy_area_to y _area x _area;
-    _make_hadamard cp_op neg_op n n 12 _x;
+    _make_hadamard _owl_copy neg_op n n 12 _x;
     x
   )
   else if Owl_maths.is_pow2 (n / 20) && Pervasives.(n mod 20) = 0 then (
@@ -1720,7 +1709,7 @@ let hadamard k n =
     let y = of_array k y 20 20 in
     let _area = area 0 0 19 19 in
     copy_area_to y _area x _area;
-    _make_hadamard cp_op neg_op n n 20 _x;
+    _make_hadamard _owl_copy neg_op n n 20 _x;
     x
   )
   else
