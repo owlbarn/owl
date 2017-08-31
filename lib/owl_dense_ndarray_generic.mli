@@ -51,7 +51,7 @@ val init : ('a, 'b) kind -> int array -> (int -> 'a) -> ('a, 'b) t
 (** [init Bigarray.Float64 d f] creates a ndarray [x] of shape [d], then using
   [f] to initialise the elements in [x]. The input of [f] is 1-dimensional
   index of the ndarray. You need to explicitly convert it if you need N-dimensional
-  index. The function [Owl_dense_common._index_1d_nd] can help you.
+  index. The function [index_1d_nd] can help you.
  *)
 
 val init_nd : ('a, 'b) kind -> int array -> (int array -> 'a) -> ('a, 'b) t
