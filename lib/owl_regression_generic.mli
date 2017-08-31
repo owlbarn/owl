@@ -32,6 +32,10 @@ module Make
   (** [] *)
 
   val exponential : ?i:bool -> mat -> mat -> elt * elt * elt
+  (** [] *)
+
+  val poly : mat -> mat -> int -> mat
+  (** [] *)
 
 
 end

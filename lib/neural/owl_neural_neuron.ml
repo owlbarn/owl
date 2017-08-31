@@ -113,6 +113,8 @@ module Make
       out_shape = Array.copy inputs;
     }
 
+    let copy l = create l.in_shape
+
     let run x l =
       (* check the input shape, a bit overhead but worth it *)
       let check_shape = function
@@ -184,6 +186,8 @@ module Make
       | TRelu a     -> Maths.(relu (x - F a))
       | Custom f    -> f x
       | None        -> x
+
+    let copy l = create l.activation
 
     let run x l = run_activation x l.activation
 
@@ -265,6 +269,11 @@ module Make
       l.w <- u.(0) |> primal';
       l.b <- u.(1) |> primal'
 
+    let copy l =
+      let l' = create l.out_shape.(0) l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l = Maths.((x *@ l.w) + l.b)
 
     let to_string l =
@@ -324,6 +333,11 @@ module Make
     let mkadj l = [|adjval l.w|]
 
     let update l u = l.w <- u.(0) |> primal'
+
+    let copy l =
+      let l' = create l.out_shape.(0) l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
 
     let run x l = Maths.(x *@ l.w)
 
@@ -434,6 +448,11 @@ module Make
       l.why <- u.(2) |> primal';
       l.bh  <- u.(3) |> primal';
       l.by  <- u.(4) |> primal'
+
+    let copy l =
+      let l' = create l.hiddens l.out_shape.(0) l.act l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
 
     let run x l =
       let s = shape x in
@@ -621,6 +640,11 @@ module Make
       l.bf  <- u.(10) |> primal';
       l.bo  <- u.(11) |> primal'
 
+    let copy l =
+      let l' = create l.out_shape.(0) l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l =
       let s = shape x in
       l.h <- Mat.zeros s.(0) l.out_shape.(0);
@@ -789,6 +813,11 @@ module Make
       l.br  <- u.(7) |> primal';
       l.bh  <- u.(8) |> primal'
 
+    let copy l =
+      let l' = create l.out_shape.(0) l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l =
       let s = shape x in
       l.h <- Mat.zeros s.(0) l.out_shape.(0);
@@ -889,6 +918,11 @@ module Make
       l.w <- u.(0) |> primal';
       l.b <- u.(1) |> primal'
 
+    let copy l =
+      let l' = create l.padding l.kernel l.stride l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l = Maths.((conv1d ~padding:l.padding x l.w l.stride) + l.b)
 
     let to_string l =
@@ -974,6 +1008,11 @@ module Make
     let update l u =
       l.w <- u.(0) |> primal';
       l.b <- u.(1) |> primal'
+
+    let copy l =
+      let l' = create l.padding l.kernel l.stride l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
 
     let run x l = Maths.((conv2d ~padding:l.padding x l.w l.stride) + l.b)
 
@@ -1064,6 +1103,11 @@ module Make
       l.w <- u.(0) |> primal';
       l.b <- u.(1) |> primal'
 
+    let copy l =
+      let l' = create l.padding l.kernel l.stride l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l = Maths.((conv3d ~padding:l.padding x l.w l.stride) + l.b)
 
     let to_string l =
@@ -1136,6 +1180,11 @@ module Make
       l.w <- u.(0) |> primal';
       l.b <- u.(1) |> primal'
 
+    let copy l =
+      let l' = create l.out_shape.(0) l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l =
       let m = Mat.row_num l.w in
       let n = Arr.numel x / m in
@@ -1189,6 +1238,8 @@ module Make
       l.out_shape.(0) <- out_cols;
       l.out_shape.(1) <- out_shape.(1)
 
+    let copy l = create l.padding l.kernel l.stride
+
     let run x l = Maths.(max_pool1d l.padding x l.kernel l.stride)
 
     let to_string l =
@@ -1238,6 +1289,8 @@ module Make
       l.out_shape.(1) <- out_rows;
       l.out_shape.(2) <- out_shape.(2)
 
+    let copy l = create l.padding l.kernel l.stride
+
     let run x l = Maths.(max_pool2d l.padding x l.kernel l.stride)
 
     let to_string l =
@@ -1284,6 +1337,8 @@ module Make
       in
       l.out_shape.(0) <- out_cols;
       l.out_shape.(1) <- out_shape.(1)
+
+    let copy l = create l.padding l.kernel l.stride
 
     let run x l = Maths.(avg_pool1d l.padding x l.kernel l.stride)
 
@@ -1334,6 +1389,8 @@ module Make
       l.out_shape.(1) <- out_rows;
       l.out_shape.(2) <- out_shape.(2)
 
+    let copy l = create l.padding l.kernel l.stride
+
     let run x l = Maths.(avg_pool2d l.padding x l.kernel l.stride)
 
     let to_string l =
@@ -1371,6 +1428,8 @@ module Make
       l.in_shape.(1) <- out_shape.(1);
       l.out_shape.(0) <- out_shape.(1)
 
+    let copy l = create ()
+
     let run x l =
       let kernel = [|l.in_shape.(0)|] in
       let a = Maths.max_pool1d VALID x kernel [|1|] in
@@ -1407,6 +1466,8 @@ module Make
       l.in_shape.(2) <- out_shape.(2);
       l.out_shape.(0) <- out_shape.(2)
 
+    let copy l = create ()
+
     let run x l =
       let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
       let a = Maths.max_pool2d VALID x kernel [|1;1|] in
@@ -1441,6 +1502,8 @@ module Make
       l.in_shape.(0) <- out_shape.(0);
       l.in_shape.(1) <- out_shape.(1);
       l.out_shape.(0) <- out_shape.(1)
+
+    let copy l = create ()
 
     let run x l =
       let kernel = [|l.in_shape.(0)|] in
@@ -1477,6 +1540,8 @@ module Make
       l.in_shape.(1) <- out_shape.(1);
       l.in_shape.(2) <- out_shape.(2);
       l.out_shape.(0) <- out_shape.(2)
+
+    let copy l = create ()
 
     let run x l =
       let kernel = [|l.in_shape.(0); l.in_shape.(1)|] in
@@ -1549,6 +1614,8 @@ module Make
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- Array.copy out_shape
 
+    let copy l = create l.lambda
+
     let run x l = l.lambda x
 
     let to_string l =
@@ -1581,6 +1648,8 @@ module Make
     let connect out_shape l =
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- Array.copy out_shape
+
+    let copy l = create l.rate
 
     let run x l =
       let a = F (1. /. (1. -. l.rate)) in
@@ -1624,6 +1693,8 @@ module Make
       assert (m = n);
       l.in_shape <- Array.copy out_shape
 
+    let copy l = create ~convert:l.convert l.out_shape
+
     let run x l =
       let x_shape = shape x in
       let out_shape = Array.append [|x_shape.(0)|] l.out_shape in
@@ -1641,7 +1712,7 @@ module Make
       let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
       let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Reshape : in:[*,%s] out:[*,%s]\n" in_str out_str ^
-      Printf.sprintf "    convert : %s\n" (string_of_bool l.convert)
+      Printf.sprintf "    convert : %b\n" l.convert
 
     let to_name () = "reshape"
 
@@ -1668,6 +1739,8 @@ module Make
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- [|o|]
 
+    let copy l = create ~convert:l.convert ()
+
     let run x l =
       let x = Maths.reshape x [|(shape x).(0); l.out_shape.(0)|] in
       match l.convert with
@@ -1682,7 +1755,7 @@ module Make
     let to_string l =
       let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
       Printf.sprintf "    Flatten : in:[*,%s] out:[*,%i]\n" in_str l.out_shape.(0) ^
-      Printf.sprintf "    convert : %s\n" (string_of_bool l.convert)
+      Printf.sprintf "    convert : %b\n" l.convert
 
     let to_name () = "flatten"
 
@@ -1706,6 +1779,8 @@ module Make
       Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
       l.in_shape <- Array.copy out_shapes.(0);
       l.out_shape <- Array.copy out_shapes.(0)
+
+    let copy l = create ()
 
     let run x l =
       let n = Array.length x in
@@ -1744,6 +1819,8 @@ module Make
       Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
       l.in_shape <- Array.copy out_shapes.(0);
       l.out_shape <- Array.copy out_shapes.(0)
+
+    let copy l = create ()
 
     let run x l =
       let n = Array.length x in
@@ -1786,6 +1863,8 @@ module Make
       l.in_shape <- [|m; n|];
       l.out_shape <- [|n|]
 
+    let copy l = create ()
+
     let run x l =
       assert (Array.length x = 2);
       Maths.(x.(0) *@ x.(1))
@@ -1817,6 +1896,8 @@ module Make
       Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
       l.in_shape <- Array.copy out_shapes.(0);
       l.out_shape <- Array.copy out_shapes.(0)
+
+    let copy l = create ()
 
     let run x l =
       let n = Array.length x in
@@ -1855,6 +1936,8 @@ module Make
       Array.iter (fun s -> assert (s = out_shapes.(0))) out_shapes;
       l.in_shape <- Array.copy out_shapes.(0);
       l.out_shape <- Array.copy out_shapes.(0)
+
+    let copy l = create ()
 
     let run x l =
       let n = Array.length x in
@@ -1907,6 +1990,8 @@ module Make
       l.in_shape.(l.axis - 1) <- (-1);
       l.out_shape.(l.axis - 1) <- !_d
 
+    let copy l = create l.axis
+
     let run x l =
       let n = Array.length x in
       (* at least two inputs *)
@@ -1939,14 +2024,22 @@ module Make
       mutable axis      : int;
       mutable beta      : t;
       mutable gamma     : t;
+      mutable mu        : t;
+      mutable var       : t;
+      mutable decay     : t;
+      mutable training  : bool;
       mutable in_shape  : int array;
       mutable out_shape : int array;
     }
 
-    let create axis = {
+    let create ?(training=true) ?(decay=0.99) ?mu ?var axis = {
       axis      = axis;
       beta      = Arr.empty [|0|];
       gamma     = Arr.empty [|0|];
+      mu        = (match mu with Some a -> Arr a | None -> Arr.empty [|0|]);
+      var       = (match var with Some a -> Arr a | None -> Arr.empty [|0|]);
+      decay     = F decay;
+      training  = training;
       in_shape  = [||];
       out_shape = [||];
     }
@@ -1960,7 +2053,9 @@ module Make
       let s = Array.(make (length l.in_shape + 1) 1) in
       s.(l.axis) <- l.in_shape.(l.axis - 1);
       l.beta <- Arr.zeros s;
-      l.gamma <- Arr.ones s
+      l.gamma <- Arr.ones s;
+      l.mu <- Arr.zeros s;
+      l.var <- Arr.ones s
 
     let reset l =
       Arr.reset l.beta;
@@ -1980,11 +2075,20 @@ module Make
       l.beta <- u.(0) |> primal';
       l.gamma <- u.(1) |> primal'
 
+    let copy l =
+      let l' = create ~training:l.training ~decay:(unpack_flt l.decay) ~mu:(unpack_arr l.mu) ~var:(unpack_arr l.var) l.axis in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l =
       let a = F (1. /. float_of_int (shape x).(l.axis)) in
-      let mu = Maths.(x - a * (sum_ ~axis:l.axis x)) in
-      let var = Maths.(a * (sum_ ~axis:l.axis (x * x))) in
-      let x' = Maths.(mu / sqrt (var + F 1e-8)) in
+      if l.training = true then (
+        let mu' = Maths.(a * (sum_ ~axis:l.axis x)) in
+        let var' = Maths.(a * (sum_ ~axis:l.axis (x * x))) in
+        l.mu <- Maths.(l.decay * l.mu + (F 1. - l.decay) * mu') |> primal';
+        l.var <- Maths.(l.decay * l.var + (F 1. - l.decay) * var') |> primal';
+      );
+      let x' = Maths.((x - l.mu) / sqrt (l.var + F 1e-8)) in
       Maths.(x' * l.gamma + l.beta)
 
     let to_string l =
@@ -1993,97 +2097,14 @@ module Make
       let s = Array.(make (length l.in_shape + 1) 1) in s.(l.axis) <- l.in_shape.(l.axis - 1);
       let s_str = Owl_utils.string_of_array string_of_int s in
       Printf.sprintf "    Normalisation : in:[*,%s] out:[*,%s]\n" in_str out_str ^
+      Printf.sprintf "    training      : %b\n" l.training ^
       Printf.sprintf "    axis          : %i\n" l.axis ^
+      Printf.sprintf "    decay         : %g\n" (unpack_flt l.decay) ^
       Printf.sprintf "    params        : %i\n" (l.in_shape.(l.axis - 1) * 2) ^
       Printf.sprintf "    beta          : [%s]\n" s_str ^
       Printf.sprintf "    gamma         : [%s]\n" s_str
 
     let to_name () = "normalisation"
-
-  end
-
-  (* definition of Batch Normalisation neuron for inference *)
-  module NormalisationInference = struct
-
-    type neuron_typ = {
-      mutable axis      : int;
-      mutable beta      : t;
-      mutable gamma     : t;
-      mutable variance  : t;
-      mutable mean      : t;
-      mutable in_shape  : int array;
-      mutable out_shape : int array;
-    }
-
-    let create axis = {
-      axis      = axis;
-      beta      = Arr.empty [|0|];
-      gamma     = Arr.empty [|0|];
-      mean      = Arr.empty [|0|];
-      variance  = Arr.empty [|0|];
-      in_shape  = [||];
-      out_shape = [||];
-    }
-
-    let connect out_shape l =
-      if l.axis < 0 then l.axis <- Array.(length out_shape + l.axis + 1);
-      l.in_shape <- Array.copy out_shape;
-      l.out_shape <- Array.copy out_shape
-
-    let init l =
-      let s = Array.(make (length l.in_shape + 1) 1) in
-      s.(l.axis) <- l.in_shape.(l.axis - 1);
-      l.beta <- Arr.zeros s;
-      l.gamma <- Arr.ones s;
-      l.mean <- Arr.zeros s;
-      l.variance <- Arr.ones s
-
-
-    let reset l =
-      Arr.reset l.beta;
-      Arr.reset l.gamma;
-      Arr.reset l.mean;
-      Arr.reset l.variance
-
-    let mktag t l =
-      l.beta <- make_reverse l.beta t;
-      l.gamma <- make_reverse l.gamma t;
-      l.mean <- make_reverse l.variance t;
-      l.variance <- make_reverse l.variance t
-
-    let mkpar l = [|l.beta; l.gamma; l.mean; l.variance|]
-
-    let mkpri l = [|primal l.beta; primal l.gamma; primal l.mean; primal
-      l.variance|]
-
-    let mkadj l = [|adjval l.beta; adjval l.gamma; adjval l.mean; adjval
-      l.variance|]
-
-    let update l u =
-      l.beta <- u.(0) |> primal';
-      l.gamma <- u.(1) |> primal';
-      l.mean <- u.(2) |> primal';
-      l.variance <- u.(3) |> primal'
-
-    let run x l =
-      (* let a = F (1. /. float_of_int (shape x).(l.axis)) in
-      let mu = Maths.(x - a * (sum_ ~axis:l.axis x)) in
-      let var = Maths.(a * (sum_ ~axis:l.axis (x * x))) in *)
-      let x' = Maths.( (x - l.mean) / sqrt (l.variance + F 1e-8)) in
-      Maths.(x' * l.gamma + l.beta)
-
-    let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-      let s = Array.(make (length l.in_shape + 1) 1) in s.(l.axis) <- l.in_shape.(l.axis - 1);
-      let s_str = Owl_utils.string_of_array string_of_int s in
-      Printf.sprintf "    Normalisation : in:[*,%s] out:[*,%s]\n" in_str out_str ^
-      Printf.sprintf "    axis          : %i\n" l.axis ^
-      Printf.sprintf "    params        : %i\n" (l.in_shape.(l.axis - 1) * 4) ^
-      Printf.sprintf "    beta          : [%s]\n" s_str ^
-      Printf.sprintf "    gamma         : [%s]\n" s_str
-
-    let to_name () = "normalisation_inference"
 
   end
 
@@ -2106,6 +2127,8 @@ module Make
     let connect out_shape l =
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- Array.copy out_shape
+
+    let copy l = create l.sigma
 
     let run x l =
       let s = shape x in
@@ -2146,6 +2169,8 @@ module Make
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- Array.copy out_shape
 
+    let copy l = create l.rate
+
     let run x l =
       let s = shape x in
       let sigma = Pervasives.sqrt (l.rate /. (1. -. l.rate)) in
@@ -2185,6 +2210,8 @@ module Make
     let connect out_shape l =
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- Array.copy out_shape
+
+    let copy l = create l.rate
 
     let run x l =
       (* parameters of affine transformation *)
@@ -2261,6 +2288,11 @@ module Make
 
     let update l u = l.w <- u.(0) |> primal'
 
+    let copy l =
+      let l' = create l.in_dim l.out_shape.(1) l.init_typ in
+      mkpri l |> Array.map clone_primal' |> update l';
+      l'
+
     let run x l =
       let x = primal' x |> unpack_mat in
       let m, n = M.shape x in
@@ -2329,7 +2361,6 @@ module Make
     | GaussianDropout of GaussianDropout.neuron_typ
     | AlphaDropout    of AlphaDropout.neuron_typ
     | Normalisation   of Normalisation.neuron_typ
-    | NormalisationInference   of NormalisationInference.neuron_typ
     | Add             of Add.neuron_typ
     | Mul             of Mul.neuron_typ
     | Dot             of Dot.neuron_typ
@@ -2367,8 +2398,6 @@ module Make
     | GaussianDropout l -> GaussianDropout.(l.in_shape, l.out_shape)
     | AlphaDropout l    -> AlphaDropout.(l.in_shape, l.out_shape)
     | Normalisation l   -> Normalisation.(l.in_shape, l.out_shape)
-    | NormalisationInference l -> NormalisationInference.(l.in_shape,
-      l.out_shape)
     | Add l             -> Add.(l.in_shape, l.out_shape)
     | Mul l             -> Mul.(l.in_shape, l.out_shape)
     | Dot l             -> Dot.(l.in_shape, l.out_shape)
@@ -2412,7 +2441,6 @@ module Make
     | GaussianDropout l -> GaussianDropout.connect out_shapes.(0) l
     | AlphaDropout l    -> AlphaDropout.connect out_shapes.(0) l
     | Normalisation l   -> Normalisation.connect out_shapes.(0) l
-    | NormalisationInference l -> NormalisationInference.connect out_shapes.(0) l
     | Add l             -> Add.connect out_shapes l
     | Mul l             -> Mul.connect out_shapes l
     | Dot l             -> Dot.connect out_shapes l
@@ -2433,7 +2461,6 @@ module Make
     | Conv3D l         -> Conv3D.init l
     | FullyConnected l -> FullyConnected.init l
     | Normalisation l  -> Normalisation.init l
-    | NormalisationInference l -> NormalisationInference.init l
     | _                -> () (* activation, etc. *)
 
 
@@ -2449,7 +2476,6 @@ module Make
     | Conv3D l         -> Conv3D.reset l
     | FullyConnected l -> FullyConnected.reset l
     | Normalisation l  -> Normalisation.reset l
-    | NormalisationInference l -> NormalisationInference.reset l
     | _                -> () (* activation, etc. *)
 
 
@@ -2465,7 +2491,6 @@ module Make
     | Conv3D l         -> Conv3D.mktag t l
     | FullyConnected l -> FullyConnected.mktag t l
     | Normalisation l  -> Normalisation.mktag t l
-    | NormalisationInference l -> NormalisationInference.mktag t l
     | _                -> () (* activation, etc. *)
 
 
@@ -2481,7 +2506,6 @@ module Make
     | Conv3D l         -> Conv3D.mkpar l
     | FullyConnected l -> FullyConnected.mkpar l
     | Normalisation l  -> Normalisation.mkpar l
-    | NormalisationInference l -> NormalisationInference.mkpar l
     | _                -> [||] (* activation, etc. *)
 
 
@@ -2497,7 +2521,6 @@ module Make
     | Conv3D l         -> Conv3D.mkpri l
     | FullyConnected l -> FullyConnected.mkpri l
     | Normalisation l  -> Normalisation.mkpri l
-    | NormalisationInference l -> NormalisationInference.mkpri l
     | _                -> [||] (* activation, etc. *)
 
 
@@ -2513,7 +2536,6 @@ module Make
     | Conv3D l         -> Conv3D.mkadj l
     | FullyConnected l -> FullyConnected.mkadj l
     | Normalisation l  -> Normalisation.mkadj l
-    | NormalisationInference l -> NormalisationInference.mkadj l
     | _                -> [||] (* activation, etc. *)
 
 
@@ -2529,12 +2551,47 @@ module Make
     | Conv3D l         -> Conv3D.update l u
     | FullyConnected l -> FullyConnected.update l u
     | Normalisation l  -> Normalisation.update l u
-    | NormalisationInference l -> NormalisationInference.update l u
     | _                -> () (* activation, etc. *)
 
 
-  let run a l =
-  let foo = match l with
+  let copy = function
+    | Input l           -> Input Input.(copy l)
+    | Linear l          -> Linear Linear.(copy l)
+    | LinearNoBias l    -> LinearNoBias LinearNoBias.(copy l)
+    | Embedding l       -> Embedding Embedding.(copy l)
+    | LSTM l            -> LSTM LSTM.(copy l)
+    | GRU l             -> GRU GRU.(copy l)
+    | Recurrent l       -> Recurrent Recurrent.(copy l)
+    | Conv1D l          -> Conv1D Conv1D.(copy l)
+    | Conv2D l          -> Conv2D Conv2D.(copy l)
+    | Conv3D l          -> Conv3D Conv3D.(copy l)
+    | FullyConnected l  -> FullyConnected FullyConnected.(copy l)
+    | MaxPool1D l       -> MaxPool1D MaxPool1D.(copy l)
+    | MaxPool2D l       -> MaxPool2D MaxPool2D.(copy l)
+    | AvgPool1D l       -> AvgPool1D AvgPool1D.(copy l)
+    | AvgPool2D l       -> AvgPool2D AvgPool2D.(copy l)
+    | GlobalMaxPool1D l -> GlobalMaxPool1D GlobalMaxPool1D.(copy l)
+    | GlobalMaxPool2D l -> GlobalMaxPool2D GlobalMaxPool2D.(copy l)
+    | GlobalAvgPool1D l -> GlobalAvgPool1D GlobalAvgPool1D.(copy l)
+    | GlobalAvgPool2D l -> GlobalAvgPool2D GlobalAvgPool2D.(copy l)
+    | Dropout l         -> Dropout Dropout.(copy l)
+    | Reshape l         -> Reshape Reshape.(copy l)
+    | Flatten l         -> Flatten Flatten.(copy l)
+    | Lambda l          -> Lambda Lambda.(copy l)
+    | Activation l      -> Activation Activation.(copy l)
+    | GaussianNoise l   -> GaussianNoise GaussianNoise.(copy l)
+    | GaussianDropout l -> GaussianDropout GaussianDropout.(copy l)
+    | AlphaDropout l    -> AlphaDropout AlphaDropout.(copy l)
+    | Normalisation l   -> Normalisation Normalisation.(copy l)
+    | Add l             -> Add Add.(copy l)
+    | Mul l             -> Mul Mul.(copy l)
+    | Dot l             -> Dot Dot.(copy l)
+    | Max l             -> Max Max.(copy l)
+    | Average l         -> Average Average.(copy l)
+    | Concatenate l     -> Concatenate Concatenate.(copy l)
+
+
+  let run a l = match l with
     | Input l           -> Input.run a.(0) l
     | Linear l          -> Linear.run a.(0) l
     | LinearNoBias l    -> LinearNoBias.run a.(0) l
@@ -2563,16 +2620,12 @@ module Make
     | GaussianDropout l -> GaussianDropout.run a.(0) l
     | AlphaDropout l    -> AlphaDropout.run a.(0) l
     | Normalisation l   -> Normalisation.run a.(0) l
-    | NormalisationInference l -> NormalisationInference.run a.(0) l
     | Add l             -> Add.run a l
     | Mul l             -> Mul.run a l
     | Dot l             -> Dot.run a l
     | Max l             -> Max.run a l
     | Average l         -> Average.run a l
     | Concatenate l     -> Concatenate.run a l
-  in
-  (* Arr.print foo; *)
-  foo
 
 
   let to_string = function
@@ -2604,7 +2657,6 @@ module Make
     | GaussianDropout l -> GaussianDropout.to_string l
     | AlphaDropout l    -> AlphaDropout.to_string l
     | Normalisation l   -> Normalisation.to_string l
-    | NormalisationInference l   -> NormalisationInference.to_string l
     | Add l             -> Add.to_string l
     | Mul l             -> Mul.to_string l
     | Dot l             -> Dot.to_string l
@@ -2642,7 +2694,6 @@ module Make
     | GaussianDropout _ -> GaussianDropout.to_name ()
     | AlphaDropout _    -> AlphaDropout.to_name ()
     | Normalisation _   -> Normalisation.to_name ()
-    | NormalisationInference _   -> NormalisationInference.to_name ()
     | Add _             -> Add.to_name ()
     | Mul _             -> Mul.to_name ()
     | Dot _             -> Dot.to_name ()

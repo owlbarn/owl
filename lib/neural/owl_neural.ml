@@ -31,6 +31,7 @@ module S = struct
   module Momentum       = Graph.Optimise.Momentum
   module Regularisation = Graph.Optimise.Regularisation
   module Clipping       = Graph.Optimise.Clipping
+  module Stopping       = Graph.Optimise.Stopping
   module Checkpoint     = Graph.Optimise.Checkpoint
 
 
@@ -61,6 +62,7 @@ module D = struct
   module Momentum       = Graph.Optimise.Momentum
   module Regularisation = Graph.Optimise.Regularisation
   module Clipping       = Graph.Optimise.Clipping
+  module Stopping       = Graph.Optimise.Stopping
   module Checkpoint     = Graph.Optimise.Checkpoint
 
 

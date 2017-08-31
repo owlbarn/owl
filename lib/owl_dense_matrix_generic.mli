@@ -441,6 +441,9 @@ val bottom : ('a, 'b) t -> int -> int array array
   one to the greatest one.
  *)
 
+val sort : ('a, 'b) t -> unit
+(** [sort x] performs in-place quicksort of the elelments in [x]. *)
+
 
 (** {6 Iterate elements, columns, and rows.} *)
 

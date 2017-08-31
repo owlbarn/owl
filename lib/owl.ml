@@ -30,7 +30,13 @@ module Stats = Owl_stats
 
 module Linalg = Owl_linalg
 
+module Algodiff = Owl_algodiff
+
+module Optimise = Owl_optimise
+
 module Regression = Owl_regression
+
+module Neural = Owl_neural
 
 module Plot = Owl_plot
 
@@ -38,13 +44,9 @@ module Fft = Owl_fft
 
 module Cluster = Owl_cluster
 
-module Algodiff = Owl_algodiff
-
 module Utils = Owl_utils
 
 module Ext = Owl_ext
-
-module Neural = Owl_neural
 
 module Dataset = Owl_dataset
 

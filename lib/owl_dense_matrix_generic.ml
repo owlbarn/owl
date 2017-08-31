@@ -727,6 +727,10 @@ let average_rows x =
   let y = create k 1 m _a in
   dot y x
 
+let sort x =
+  let y = to_ndarray x in
+  Owl_dense_ndarray_generic.sort y
+
 let is_zero x =
   let y = to_ndarray x in
   Owl_dense_ndarray_generic.is_zero y
@@ -1911,6 +1915,7 @@ let std ?(axis=0) a =
   let n = n - 1
     |> Pervasives.max 1
     |> float_of_int
+    |> Owl_maths.sqrt
     |> Owl_dense_common._float_typ_elt (kind a)
   in
 
