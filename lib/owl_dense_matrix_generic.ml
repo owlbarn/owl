@@ -1918,7 +1918,7 @@ let std ?(axis=0) a =
     |> Owl_dense_common._float_typ_elt (kind a)
   in
 
-  div_scalar aa n
+  div_scalar aa (sqrt n)
 
 
 let mat2gray ?amin ?amax x =
