@@ -17,11 +17,6 @@ open Bigarray
 
 type ('a, 'b) t = ('a, 'b, Bigarray.c_layout) Bigarray.Array1.t
 
-type s_t = (float, Bigarray.float32_elt) t
-type d_t = (float, Bigarray.float64_elt) t
-type c_t = (Complex.t, Bigarray.complex32_elt) t
-type z_t = (Complex.t, Bigarray.complex64_elt) t
-
 type cblas_layout = CblasRowMajor | CblasColMajor
 
 type cblas_transpose = CblasNoTrans | CblasTrans | CblasConjTrans
@@ -165,66 +160,23 @@ val gemm : cblas_layout -> cblas_transpose -> cblas_transpose -> int -> int -> i
 val symm : cblas_layout -> cblas_side -> cblas_uplo -> int -> int -> 'a -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> 'a -> ('a, 'b) t -> int -> unit
 (* Computes a matrix-matrix product where one input matrix is symmetric. *)
 
-(* Performs a symmetric rank-k update. *)
+val syrk : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> 'a -> ('a, 'b) t -> int -> 'a -> ('a, 'b) t -> int -> unit
+(** Performs a symmetric rank-k update. *)
 
-val ssyrk : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> float -> s_t -> int -> float -> s_t -> int -> unit
+val syr2k : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> 'a -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> 'a -> ('a, 'b) t -> int -> unit
+(** Performs a symmetric rank-2k update. *)
 
-val dsyrk : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> float -> d_t -> int -> float -> d_t -> int -> unit
+val trmm : cblas_layout -> cblas_side -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> 'a -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> unit
+(** Computes a matrix-matrix product where one input matrix is triangular. *)
 
-val csyrk : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> Complex.t -> c_t -> int -> Complex.t -> c_t -> int -> unit
+val trsm : cblas_layout -> cblas_side -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> 'a -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> unit
+(** Solves a triangular matrix equation. *)
 
-val zsyrk : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> Complex.t -> z_t -> int -> Complex.t -> z_t -> int -> unit
+val hemm : cblas_layout -> cblas_side -> cblas_uplo -> int -> int -> Complex.t -> (Complex.t, 'a) t -> int -> (Complex.t, 'a) t -> int -> Complex.t -> (Complex.t, 'a) t -> int -> unit
+(** Computes a matrix-matrix product where one input matrix is Hermitian. *)
 
+val herk : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> float -> (Complex.t, 'a) t -> int -> float -> (Complex.t, 'a) t -> int -> unit
+(** Performs a Hermitian rank-k update. *)
 
-(* Performs a symmetric rank-2k update. *)
-
-val ssyr2k : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> float -> s_t -> int -> s_t -> int -> float -> s_t -> int -> unit
-
-val dsyr2k : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> float -> d_t -> int -> d_t -> int -> float -> d_t -> int -> unit
-
-val csyr2k : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> Complex.t -> c_t -> int -> c_t -> int -> Complex.t -> c_t -> int -> unit
-
-val zsyr2k : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> Complex.t -> z_t -> int -> z_t -> int -> Complex.t -> z_t -> int -> unit
-
-
-(* Computes a matrix-matrix product where one input matrix is triangular. *)
-
-val strmm : cblas_layout -> cblas_side -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> float -> s_t -> int -> s_t -> int -> unit
-
-val dtrmm : cblas_layout -> cblas_side -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> float -> d_t -> int -> d_t -> int -> unit
-
-val ctrmm : cblas_layout -> cblas_side -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> Complex.t -> c_t -> int -> c_t -> int -> unit
-
-val ztrmm : cblas_layout -> cblas_side -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> Complex.t -> z_t -> int -> z_t -> int -> unit
-
-
-(* Solves a triangular matrix equation. *)
-
-val strsm : cblas_layout -> cblas_side -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> float -> s_t -> int -> s_t -> int -> unit
-
-val dtrsm : cblas_layout -> cblas_side -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> float -> d_t -> int -> d_t -> int -> unit
-
-val ctrsm : cblas_layout -> cblas_side -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> Complex.t -> c_t -> int -> c_t -> int -> unit
-
-val ztrsm : cblas_layout -> cblas_side -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> Complex.t -> z_t -> int -> z_t -> int -> unit
-
-
-(* Computes a matrix-matrix product where one input matrix is Hermitian. *)
-
-val chemm : cblas_layout -> cblas_side -> cblas_uplo -> int -> int -> Complex.t -> c_t -> int -> c_t -> int -> Complex.t -> c_t -> int -> unit
-
-val zhemm : cblas_layout -> cblas_side -> cblas_uplo -> int -> int -> Complex.t -> z_t -> int -> z_t -> int -> Complex.t -> z_t -> int -> unit
-
-
-(* Performs a Hermitian rank-k update. *)
-
-val cherk : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> float -> c_t -> int -> float -> c_t -> int -> unit
-
-val zherk : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> float -> z_t -> int -> float -> z_t -> int -> unit
-
-
-(* Performs a Hermitian rank-2k update. *)
-
-val cher2k : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> Complex.t -> c_t -> int -> c_t -> int -> float -> c_t -> int -> unit
-
-val zher2k : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> Complex.t -> z_t -> int -> z_t -> int -> float -> z_t -> int -> unit
+val her2k : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> Complex.t -> (Complex.t, 'a) t -> int -> (Complex.t, 'a) t -> int -> float -> (Complex.t, 'a) t -> int -> unit
+(** Performs a Hermitian rank-2k update. *)

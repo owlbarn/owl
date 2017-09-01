@@ -690,97 +690,46 @@ let symm
 
 (* Performs a symmetric rank-k update. *)
 
-let ssyrk layout uplo trans n k alpha a lda beta c ldc =
+let syrk
+  : type a b. cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> a -> (a, b) t -> int -> a -> (a, b) t -> int -> unit
+  = fun layout uplo trans n k alpha a lda beta c ldc ->
   let _layout = cblas_layout layout in
   let _uplo = cblas_uplo uplo in
   let _trans = cblas_transpose trans in
   let _a = bigarray_start Ctypes_static.Array1 a in
   let _c = bigarray_start Ctypes_static.Array1 c in
-  C.ssyrk _layout _uplo _trans n k alpha _a lda beta _c ldc
-  |> ignore
-
-let dsyrk layout uplo trans n k alpha a lda beta c ldc =
-  let _layout = cblas_layout layout in
-  let _uplo = cblas_uplo uplo in
-  let _trans = cblas_transpose trans in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _c = bigarray_start Ctypes_static.Array1 c in
-  C.dsyrk _layout _uplo _trans n k alpha _a lda beta _c ldc
-  |> ignore
-
-let csyrk layout uplo trans n k alpha a lda beta c ldc =
-  let _layout = cblas_layout layout in
-  let _uplo = cblas_uplo uplo in
-  let _trans = cblas_transpose trans in
-  let _alpha = allocate complex32 alpha in
-  let _beta = allocate complex32 beta in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _c = bigarray_start Ctypes_static.Array1 c in
-  C.csyrk _layout _uplo _trans n k _alpha _a lda _beta _c ldc
-  |> ignore
-
-let zsyrk layout uplo trans n k alpha a lda beta c ldc =
-  let _layout = cblas_layout layout in
-  let _uplo = cblas_uplo uplo in
-  let _trans = cblas_transpose trans in
-  let _alpha = allocate complex64 alpha in
-  let _beta = allocate complex64 beta in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _c = bigarray_start Ctypes_static.Array1 c in
-  C.zsyrk _layout _uplo _trans n k _alpha _a lda _beta _c ldc
-  |> ignore
+  match Bigarray.Array1.kind a with
+  | Bigarray.Float32   -> C.ssyrk _layout _uplo _trans n k alpha _a lda beta _c ldc
+  | Bigarray.Float64   -> C.dsyrk _layout _uplo _trans n k alpha _a lda beta _c ldc
+  | Bigarray.Complex32 -> C.csyrk _layout _uplo _trans n k (allocate complex32 alpha) _a lda (allocate complex32 beta) _c ldc
+  | Bigarray.Complex64 -> C.zsyrk _layout _uplo _trans n k (allocate complex64 alpha) _a lda (allocate complex64 beta) _c ldc
+  | _                  -> failwith "owl_cblas:syrk"
 
 
 (* Performs a symmetric rank-2k update. *)
 
-let ssyr2k layout uplo trans n k alpha a lda b ldb beta c ldc =
+let syr2k
+  : type a b. cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> a -> (a, b) t -> int -> (a, b) t -> int -> a -> (a, b) t -> int -> unit
+  = fun layout uplo trans n k alpha a lda b ldb beta c ldc ->
   let _layout = cblas_layout layout in
   let _uplo = cblas_uplo uplo in
   let _trans = cblas_transpose trans in
   let _a = bigarray_start Ctypes_static.Array1 a in
   let _b = bigarray_start Ctypes_static.Array1 b in
   let _c = bigarray_start Ctypes_static.Array1 c in
-  C.ssyr2k _layout _uplo _trans n k alpha _a lda _b ldb beta _c ldc
-  |> ignore
-
-let dsyr2k layout uplo trans n k alpha a lda b ldb beta c ldc =
-  let _layout = cblas_layout layout in
-  let _uplo = cblas_uplo uplo in
-  let _trans = cblas_transpose trans in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _b = bigarray_start Ctypes_static.Array1 b in
-  let _c = bigarray_start Ctypes_static.Array1 c in
-  C.dsyr2k _layout _uplo _trans n k alpha _a lda _b ldb beta _c ldc
-  |> ignore
-
-let csyr2k layout uplo trans n k alpha a lda b ldb beta c ldc =
-  let _layout = cblas_layout layout in
-  let _uplo = cblas_uplo uplo in
-  let _trans = cblas_transpose trans in
-  let _alpha = allocate complex32 alpha in
-  let _beta = allocate complex32 beta in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _b = bigarray_start Ctypes_static.Array1 b in
-  let _c = bigarray_start Ctypes_static.Array1 c in
-  C.csyr2k _layout _uplo _trans n k _alpha _a lda _b ldb _beta _c ldc
-  |> ignore
-
-let zsyr2k layout uplo trans n k alpha a lda b ldb beta c ldc =
-  let _layout = cblas_layout layout in
-  let _uplo = cblas_uplo uplo in
-  let _trans = cblas_transpose trans in
-  let _alpha = allocate complex64 alpha in
-  let _beta = allocate complex64 beta in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _b = bigarray_start Ctypes_static.Array1 b in
-  let _c = bigarray_start Ctypes_static.Array1 c in
-  C.zsyr2k _layout _uplo _trans n k _alpha _a lda _b ldb _beta _c ldc
-  |> ignore
+  match Bigarray.Array1.kind a with
+  | Bigarray.Float32   -> C.ssyr2k _layout _uplo _trans n k alpha _a lda _b ldb beta _c ldc
+  | Bigarray.Float64   -> C.dsyr2k _layout _uplo _trans n k alpha _a lda _b ldb beta _c ldc
+  | Bigarray.Complex32 -> C.csyr2k _layout _uplo _trans n k (allocate complex32 alpha) _a lda _b ldb (allocate complex32 beta) _c ldc
+  | Bigarray.Complex64 -> C.zsyr2k _layout _uplo _trans n k (allocate complex64 alpha) _a lda _b ldb (allocate complex64 beta) _c ldc
+  | _                  -> failwith "owl_cblas:syr2k"
 
 
 (* Computes a matrix-matrix product where one input matrix is triangular. *)
 
-let strmm layout side uplo transa diag m n alpha a lda b ldb =
+let trmm
+  : type a b. cblas_layout -> cblas_side -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> a -> (a, b) t -> int -> (a, b) t -> int -> unit
+  = fun layout side uplo transa diag m n alpha a lda b ldb ->
   let _layout = cblas_layout layout in
   let _side = cblas_side side in
   let _uplo = cblas_uplo uplo in
@@ -788,48 +737,19 @@ let strmm layout side uplo transa diag m n alpha a lda b ldb =
   let _diag = cblas_diag diag in
   let _a = bigarray_start Ctypes_static.Array1 a in
   let _b = bigarray_start Ctypes_static.Array1 b in
-  C.strmm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
-  |> ignore
-
-let dtrmm layout side uplo transa diag m n alpha a lda b ldb =
-  let _layout = cblas_layout layout in
-  let _side = cblas_side side in
-  let _uplo = cblas_uplo uplo in
-  let _transa = cblas_transpose transa in
-  let _diag = cblas_diag diag in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _b = bigarray_start Ctypes_static.Array1 b in
-  C.dtrmm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
-  |> ignore
-
-let ctrmm layout side uplo transa diag m n alpha a lda b ldb =
-  let _layout = cblas_layout layout in
-  let _side = cblas_side side in
-  let _uplo = cblas_uplo uplo in
-  let _transa = cblas_transpose transa in
-  let _diag = cblas_diag diag in
-  let _alpha = allocate complex32 alpha in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _b = bigarray_start Ctypes_static.Array1 b in
-  C.ctrmm _layout _side _uplo _transa _diag m n _alpha _a lda _b ldb
-  |> ignore
-
-let ztrmm layout side uplo transa diag m n alpha a lda b ldb =
-  let _layout = cblas_layout layout in
-  let _side = cblas_side side in
-  let _uplo = cblas_uplo uplo in
-  let _transa = cblas_transpose transa in
-  let _diag = cblas_diag diag in
-  let _alpha = allocate complex64 alpha in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _b = bigarray_start Ctypes_static.Array1 b in
-  C.ztrmm _layout _side _uplo _transa _diag m n _alpha _a lda _b ldb
-  |> ignore
+  match Bigarray.Array1.kind a with
+  | Bigarray.Float32   -> C.strmm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
+  | Bigarray.Float64   -> C.dtrmm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
+  | Bigarray.Complex32 -> C.ctrmm _layout _side _uplo _transa _diag m n (allocate complex32 alpha) _a lda _b ldb
+  | Bigarray.Complex64 -> C.ztrmm _layout _side _uplo _transa _diag m n (allocate complex64 alpha) _a lda _b ldb
+  | _                  -> failwith "owl_cblas:trmm"
 
 
 (* Solves a triangular matrix equation. *)
 
-let strsm layout side uplo transa diag m n alpha a lda b ldb =
+let trsm
+  : type a b. cblas_layout -> cblas_side -> cblas_uplo -> cblas_transpose -> cblas_diag -> int -> int -> a -> (a, b) t -> int -> (a, b) t -> int -> unit
+  = fun layout side uplo transa diag m n alpha a lda b ldb ->
   let _layout = cblas_layout layout in
   let _side = cblas_side side in
   let _uplo = cblas_uplo uplo in
@@ -837,96 +757,50 @@ let strsm layout side uplo transa diag m n alpha a lda b ldb =
   let _diag = cblas_diag diag in
   let _a = bigarray_start Ctypes_static.Array1 a in
   let _b = bigarray_start Ctypes_static.Array1 b in
-  C.strsm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
-  |> ignore
-
-let dtrsm layout side uplo transa diag m n alpha a lda b ldb =
-  let _layout = cblas_layout layout in
-  let _side = cblas_side side in
-  let _uplo = cblas_uplo uplo in
-  let _transa = cblas_transpose transa in
-  let _diag = cblas_diag diag in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _b = bigarray_start Ctypes_static.Array1 b in
-  C.dtrsm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
-  |> ignore
-
-let ctrsm layout side uplo transa diag m n alpha a lda b ldb =
-  let _layout = cblas_layout layout in
-  let _side = cblas_side side in
-  let _uplo = cblas_uplo uplo in
-  let _transa = cblas_transpose transa in
-  let _diag = cblas_diag diag in
-  let _alpha = allocate complex32 alpha in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _b = bigarray_start Ctypes_static.Array1 b in
-  C.ctrsm _layout _side _uplo _transa _diag m n _alpha _a lda _b ldb
-  |> ignore
-
-let ztrsm layout side uplo transa diag m n alpha a lda b ldb =
-  let _layout = cblas_layout layout in
-  let _side = cblas_side side in
-  let _uplo = cblas_uplo uplo in
-  let _transa = cblas_transpose transa in
-  let _diag = cblas_diag diag in
-  let _alpha = allocate complex64 alpha in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _b = bigarray_start Ctypes_static.Array1 b in
-  C.ztrsm _layout _side _uplo _transa _diag m n _alpha _a lda _b ldb
-  |> ignore
+  match Bigarray.Array1.kind a with
+  | Bigarray.Float32   -> C.strsm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
+  | Bigarray.Float64   -> C.dtrsm _layout _side _uplo _transa _diag m n alpha _a lda _b ldb
+  | Bigarray.Complex32 -> C.ctrsm _layout _side _uplo _transa _diag m n (allocate complex32 alpha) _a lda _b ldb
+  | Bigarray.Complex64 -> C.ztrsm _layout _side _uplo _transa _diag m n (allocate complex64 alpha) _a lda _b ldb
+  | _                  -> failwith "owl_cblas:trsm"
 
 
 (* Computes a matrix-matrix product where one input matrix is Hermitian. *)
 
-let chemm layout side uplo m n alpha a lda b ldb beta c ldc =
+let hemm
+  : type a. cblas_layout -> cblas_side -> cblas_uplo -> int -> int -> Complex.t -> (Complex.t, a) t -> int -> (Complex.t, a) t -> int -> Complex.t -> (Complex.t, a) t -> int -> unit
+  = fun layout side uplo m n alpha a lda b ldb beta c ldc ->
   let _layout = cblas_layout layout in
   let _side = cblas_side side in
   let _uplo = cblas_uplo uplo in
-  let _alpha = allocate complex32 alpha in
-  let _beta = allocate complex32 beta in
   let _a = bigarray_start Ctypes_static.Array1 a in
   let _b = bigarray_start Ctypes_static.Array1 b in
   let _c = bigarray_start Ctypes_static.Array1 c in
-  C.chemm _layout _side _uplo m n _alpha _a lda _b ldb _beta _c ldc
-  |> ignore
-
-let zhemm layout side uplo m n alpha a lda b ldb beta c ldc =
-  let _layout = cblas_layout layout in
-  let _side = cblas_side side in
-  let _uplo = cblas_uplo uplo in
-  let _alpha = allocate complex64 alpha in
-  let _beta = allocate complex64 beta in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _b = bigarray_start Ctypes_static.Array1 b in
-  let _c = bigarray_start Ctypes_static.Array1 c in
-  C.zhemm _layout _side _uplo m n _alpha _a lda _b ldb _beta _c ldc
-  |> ignore
+  match Bigarray.Array1.kind a with
+  | Bigarray.Complex32 -> C.chemm _layout _side _uplo m n (allocate complex32 alpha) _a lda _b ldb (allocate complex32 beta) _c ldc
+  | Bigarray.Complex64 -> C.zhemm _layout _side _uplo m n (allocate complex64 alpha) _a lda _b ldb (allocate complex64 beta) _c ldc
 
 
 (* Performs a Hermitian rank-k update. *)
 
-let cherk layout uplo trans n k alpha a lda beta c ldc =
+let herk
+  : type a. cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> float -> (Complex.t, a) t -> int -> float -> (Complex.t, a) t -> int -> unit
+  = fun layout uplo trans n k alpha a lda beta c ldc ->
   let _layout = cblas_layout layout in
   let _uplo = cblas_uplo uplo in
   let _trans = cblas_transpose trans in
   let _a = bigarray_start Ctypes_static.Array1 a in
   let _c = bigarray_start Ctypes_static.Array1 c in
-  C.cherk _layout _uplo _trans n k alpha _a lda beta _c ldc
-  |> ignore
-
-let zherk layout uplo trans n k alpha a lda beta c ldc =
-  let _layout = cblas_layout layout in
-  let _uplo = cblas_uplo uplo in
-  let _trans = cblas_transpose trans in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _c = bigarray_start Ctypes_static.Array1 c in
-  C.zherk _layout _uplo _trans n k alpha _a lda beta _c ldc
-  |> ignore
+  match Bigarray.Array1.kind a with
+  | Bigarray.Complex32 -> C.cherk _layout _uplo _trans n k alpha _a lda beta _c ldc
+  | Bigarray.Complex64 -> C.zherk _layout _uplo _trans n k alpha _a lda beta _c ldc
 
 
 (* Performs a Hermitian rank-2k update. *)
 
-let cher2k layout uplo trans n k alpha a lda b ldb beta c ldc =
+let her2k
+  : type a. cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> Complex.t -> (Complex.t, a) t -> int -> (Complex.t, a) t -> int -> float -> (Complex.t, a) t -> int -> unit
+  = fun layout uplo trans n k alpha a lda b ldb beta c ldc ->
   let _layout = cblas_layout layout in
   let _uplo = cblas_uplo uplo in
   let _trans = cblas_transpose trans in
@@ -934,16 +808,6 @@ let cher2k layout uplo trans n k alpha a lda b ldb beta c ldc =
   let _a = bigarray_start Ctypes_static.Array1 a in
   let _b = bigarray_start Ctypes_static.Array1 b in
   let _c = bigarray_start Ctypes_static.Array1 c in
-  C.cher2k _layout _uplo _trans n k _alpha _a lda _b ldb beta _c ldc
-  |> ignore
-
-let zher2k layout uplo trans n k alpha a lda b ldb beta c ldc =
-  let _layout = cblas_layout layout in
-  let _uplo = cblas_uplo uplo in
-  let _trans = cblas_transpose trans in
-  let _alpha = allocate complex64 alpha in
-  let _a = bigarray_start Ctypes_static.Array1 a in
-  let _b = bigarray_start Ctypes_static.Array1 b in
-  let _c = bigarray_start Ctypes_static.Array1 c in
-  C.zher2k _layout _uplo _trans n k _alpha _a lda _b ldb beta _c ldc
-  |> ignore
+  match Bigarray.Array1.kind a with
+  | Bigarray.Complex32 -> C.cher2k _layout _uplo _trans n k (allocate complex32 alpha) _a lda _b ldb beta _c ldc
+  | Bigarray.Complex64 -> C.zher2k _layout _uplo _trans n k (allocate complex64 alpha) _a lda _b ldb beta _c ldc
