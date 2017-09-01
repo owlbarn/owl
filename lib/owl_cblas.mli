@@ -34,7 +34,7 @@ val rotg : float -> float -> float * float * float * float
 (** Computes the parameters for a Givens rotation. *)
 
 val rotmg : ('a, 'b) kind -> float -> float -> float -> float -> float * float * float * ('a, 'b) t
-(* Computes the parameters for a modified Givens rotation. *)
+(** Computes the parameters for a modified Givens rotation. *)
 
 val rot : int -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> float -> float -> unit
 (** Performs rotation of points in the plane. *)
@@ -158,7 +158,7 @@ val gemm : cblas_layout -> cblas_transpose -> cblas_transpose -> int -> int -> i
 (** Computes a matrix-matrix product with general matrices. *)
 
 val symm : cblas_layout -> cblas_side -> cblas_uplo -> int -> int -> 'a -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> 'a -> ('a, 'b) t -> int -> unit
-(* Computes a matrix-matrix product where one input matrix is symmetric. *)
+(** Computes a matrix-matrix product where one input matrix is symmetric. *)
 
 val syrk : cblas_layout -> cblas_uplo -> cblas_transpose -> int -> int -> 'a -> ('a, 'b) t -> int -> 'a -> ('a, 'b) t -> int -> unit
 (** Performs a symmetric rank-k update. *)

@@ -1372,7 +1372,7 @@ val scalar_div : 'a -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [dot x y] returns the dot product of matrix [x] and [y]. *)
+(** [dot x y] returns the matrix product of matrix [x] and [y]. *)
 
 val add_diag : ('a, 'b) t -> 'a -> ('a, 'b) t
 

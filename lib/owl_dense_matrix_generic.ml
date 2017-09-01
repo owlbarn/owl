@@ -690,8 +690,24 @@ let div x1 x2 =
     )
   | _, _      -> _broadcast_op "( / )" (kind x1) 3 5 x1 x2 m1 n1 m2 n2
 
-(* let dot x1 x2 = _eigen_dot (kind x1) x1 x2 *)
-let dot x1 x2 = Owl_backend_gsl_linalg.dot (kind x1) x1 x2
+let dot x1 x2 =
+  let m, k = shape x1 in
+  let l, n = shape x2 in
+  assert (k = l);
+
+  let _kind = kind x1 in
+  let alpha = _one _kind in
+  let beta = _zero _kind in
+  let x3 = empty _kind m n in
+  let a = Owl_utils.array2_to_array1 x1 in
+  let b = Owl_utils.array2_to_array1 x2 in
+  let c = Owl_utils.array2_to_array1 x3 in
+
+  let layout = Owl_cblas.CblasRowMajor in
+  let transa = Owl_cblas.CblasNoTrans in
+  let transb = Owl_cblas.CblasNoTrans in
+  Owl_cblas.gemm layout transa transb m n k alpha a k b n beta c n;
+  x3
 
 let inv x =
   assert (row_num x = col_num x);
