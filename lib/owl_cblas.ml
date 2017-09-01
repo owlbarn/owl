@@ -11,11 +11,6 @@ open Ctypes
 
 type ('a, 'b) t = ('a, 'b, Bigarray.c_layout) Bigarray.Array1.t
 
-type s_t = (float, Bigarray.float32_elt) t
-type d_t = (float, Bigarray.float64_elt) t
-type c_t = (Complex.t, Bigarray.complex32_elt) t
-type z_t = (Complex.t, Bigarray.complex64_elt) t
-
 type cblas_layout = CblasRowMajor | CblasColMajor
 let cblas_layout = function CblasRowMajor -> 101 | CblasColMajor -> 102
 
