@@ -375,68 +375,62 @@ let minmax x =
 let add x y =
   match same_shape x y with
   | true  -> (
-      let z = clone x in
-      let x = ndarray_to_c_mat z in
-      let y = ndarray_to_c_mat y in
-      let _ = Owl_backend_gsl_linalg.add (kind z) x y in
-      z
+      let y = clone y in
+      let _x = flatten x |> array1_of_genarray in
+      let _y = flatten y |> array1_of_genarray in
+      Owl_cblas.axpy (numel x) (_one (kind x)) _x 1 _y 1;
+      y
     )
   | false -> broadcast_op 0 x y
 
 let sub x y =
   match same_shape x y with
   | true  -> (
-      let z = clone x in
-      let x = ndarray_to_c_mat z in
-      let y = ndarray_to_c_mat y in
-      let _ = Owl_backend_gsl_linalg.sub (kind z) x y in
-      z
+      let x = clone x in
+      let _x = flatten x |> array1_of_genarray in
+      let _y = flatten y |> array1_of_genarray in
+      Owl_cblas.axpy (numel x) (_neg_one (kind x)) _y 1 _x 1;
+      x
     )
   | false -> broadcast_op 1 x y
 
 let mul x y =
   match same_shape x y with
   | true  -> (
-      let z = clone x in
-      let x = ndarray_to_c_mat z in
-      let y = ndarray_to_c_mat y in
-      let _ = Owl_backend_gsl_linalg.mul (kind z) x y in
-      z
+      let y = clone y in
+      let _x = flatten x |> array1_of_genarray in
+      let _y = flatten y |> array1_of_genarray in
+      _owl_mul (kind x) (numel x) _x _y _y;
+      y
     )
   | false -> broadcast_op 2 x y
 
 let div x y =
   match same_shape x y with
   | true  -> (
-      let z = clone x in
-      let x = ndarray_to_c_mat z in
-      let y = ndarray_to_c_mat y in
-      let _ = Owl_backend_gsl_linalg.div (kind z) x y in
-      z
+      let y = clone y in
+      let _x = flatten x |> array1_of_genarray in
+      let _y = flatten y |> array1_of_genarray in
+      _owl_div (kind x) (numel x) _x _y _y;
+      y
   )
   | false -> broadcast_op 3 x y
 
 let add_scalar x a =
-  let z = clone x in
-  let x = ndarray_to_c_mat z in
-  let _ = Owl_backend_gsl_linalg.add_scalar (kind z) x a in
-  z
+  let x = clone x in
+  let _x = flatten x |> array1_of_genarray in
+  _owl_add_scalar (kind x) (numel x) _x _x a;
+  x
 
-let sub_scalar x a =
-  let k = kind x in
-  let b = (_sub_elt k) (_zero k) (_one k) in
-  add_scalar x ((_mul_elt k) a b)
+let sub_scalar x a = add_scalar x (_neg_elt (kind x) a)
 
 let mul_scalar x a =
-  let z = clone x in
-  let x = ndarray_to_c_mat z in
-  let _ = Owl_backend_gsl_linalg.mul_scalar (kind z) x a in
-  z
+  let x = clone x in
+  let _x = flatten x |> array1_of_genarray in
+  Owl_cblas.scal (numel x) a _x 1;
+  x
 
-let div_scalar x a =
-  let k = kind x in
-  let b = (_div_elt k) (_one k) a in
-  mul_scalar x b
+let div_scalar x a = mul_scalar x (_inv_elt (kind x) a)
 
 let pow x y =
   let z = clone x in
@@ -848,20 +842,7 @@ let sigmoid x =
   let _ = _owl_sigmoid (kind x) (numel y) src dst in
   y
 
-let _ssqr_0 x =
-  let n = numel x in
-  let x1 = reshape x [|1;n|] |> array2_of_genarray in
-  let x2 = reshape x [|n;1|] |> array2_of_genarray in
-  let y = Owl_backend_gsl_linalg.dot (kind x) x1 x2 in
-  y.{0,0}
-
 let ssqr x a = flatten x |> array1_of_genarray |> _owl_ssqr (kind x) (numel x) a
-
-(* TODO: using Gsl.dot is not really faster
-let ssqr x a = match a = _zero (kind x) with
-  | true  -> _ssqr_0 x
-  | false -> _ssqr_1 x a
-*)
 
 let l1norm x = flatten x |> array1_of_genarray |> _owl_l1norm (kind x) (numel x)
 
@@ -873,53 +854,53 @@ let log_sum_exp x =
   let y = flatten x |> array1_of_genarray in
   _owl_log_sum_exp (kind x) (numel x) y
 
-(* TODO: optimise *)
 let scalar_pow a x =
-  let y = empty (kind x) (shape x) in
-  fill y a;
-  pow y x
+  let x = clone x in
+  let _x = flatten x |> array1_of_genarray in
+  _owl_scalar_pow (kind x) (numel x) _x _x a;
+  x
 
-(* TODO: optimise *)
 let pow_scalar x a =
-  let y = empty (kind x) (shape x) in
-  fill y a;
-  pow x y
+  let x = clone x in
+  let _x = flatten x |> array1_of_genarray in
+  _owl_pow_scalar (kind x) (numel x) _x _x a;
+  x
 
-(* TODO: optimise *)
 let scalar_atan2 a x =
-  let y = empty (kind x) (shape x) in
-  fill y a;
-  atan2 y x
+  let x = clone x in
+  let _x = flatten x |> array1_of_genarray in
+  _owl_scalar_atan2 (kind x) (numel x) _x _x a;
+  x
 
-(* TODO: optimise *)
 let atan2_scalar x a =
-  let y = empty (kind x) (shape x) in
-  fill y a;
-  atan2 x y
+  let x = clone x in
+  let _x = flatten x |> array1_of_genarray in
+  _owl_atan2_scalar (kind x) (numel x) _x _x a;
+  x
 
 let scalar_add a x =
-  let z = clone x in
-  let x = ndarray_to_c_mat z in
-  let _ = Owl_backend_gsl_linalg.add_scalar (kind z) x a in
-  z
+  let x = clone x in
+  let _x = flatten x |> array1_of_genarray in
+  _owl_add_scalar (kind x) (numel x) _x _x a;
+  x
 
 let scalar_sub a x =
-  let z = neg x in
-  let x = ndarray_to_c_mat z in
-  let _ = Owl_backend_gsl_linalg.add_scalar (kind z) x a in
-  z
+  let x = clone x in
+  let _x = flatten x |> array1_of_genarray in
+  _owl_scalar_sub (kind x) (numel x) _x _x a;
+  x
 
 let scalar_mul a x =
-  let z = clone x in
-  let x = ndarray_to_c_mat z in
-  let _ = Owl_backend_gsl_linalg.mul_scalar (kind z) x a in
-  z
+  let x = clone x in
+  let _x = flatten x |> array1_of_genarray in
+  Owl_cblas.scal (numel x) a _x 1;
+  x
 
 let scalar_div a x =
-  let z = reci x in
-  let x = ndarray_to_c_mat z in
-  let _ = Owl_backend_gsl_linalg.mul_scalar (kind z) x a in
-  z
+  let x = clone x in
+  let _x = flatten x |> array1_of_genarray in
+  _owl_scalar_div (kind x) (numel x) _x _x a;
+  x
 
 let reci_tol ?tol x =
   let tol = match tol with

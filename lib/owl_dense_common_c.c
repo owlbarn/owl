@@ -2013,6 +2013,248 @@ int complex_cmp (const void * a, const void * b)
 
 ////// binary math operator //////
 
+// mul
+
+#define FUN7 real_float_mul
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 float
+#define MAPFN(X,Y,Z) Z = X * Y
+#include "owl_dense_common_vec_combine.c"
+
+#define FUN7 real_double_mul
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 double
+#define MAPFN(X,Y,Z) Z = X * Y
+#include "owl_dense_common_vec_combine.c"
+
+#define FUN7 complex_float_mul
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define NUMBER2 _Complex float
+#define MAPFN(X,Y,Z) Z = X * Y
+#include "owl_dense_common_vec_combine.c"
+
+#define FUN7 complex_double_mul
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define NUMBER2 _Complex double
+#define MAPFN(X,Y,Z) Z = X * Y
+#include "owl_dense_common_vec_combine.c"
+
+// div
+
+#define FUN7 real_float_div
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 float
+#define MAPFN(X,Y,Z) Z = X / Y
+#include "owl_dense_common_vec_combine.c"
+
+#define FUN7 real_double_div
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 double
+#define MAPFN(X,Y,Z) Z = X / Y
+#include "owl_dense_common_vec_combine.c"
+
+#define FUN7 complex_float_div
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define NUMBER2 _Complex float
+#define MAPFN(X,Y,Z) Z = X / Y
+#include "owl_dense_common_vec_combine.c"
+
+#define FUN7 complex_double_div
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define NUMBER2 _Complex double
+#define MAPFN(X,Y,Z) Z = X / Y
+#include "owl_dense_common_vec_combine.c"
+
+// add_scalar
+
+#define FUN17 real_float_add_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = *X + a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_add_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = *X + a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_add_scalar
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = *X + a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_add_scalar
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = *X + a
+#include "owl_dense_common_vec_map.c"
+
+// scalar_sub
+
+#define FUN17 real_float_scalar_sub
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = a - *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_scalar_sub
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = a - *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_scalar_sub
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = a - *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_scalar_sub
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = a - *X
+#include "owl_dense_common_vec_map.c"
+
+// scalar_div
+
+#define FUN17 real_float_scalar_div
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = a / *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_scalar_div
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = a / *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_scalar_div
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = a / *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_scalar_div
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = a / *X
+#include "owl_dense_common_vec_map.c"
+
+// scalar_pow
+
+#define FUN17 real_float_scalar_pow
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = powf(a,*X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_scalar_pow
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = pow(a,*X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_scalar_pow
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = cpowf(a,*X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_scalar_pow
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = cpow(a,*X)
+#include "owl_dense_common_vec_map.c"
+
+// pow_scalar
+
+#define FUN17 real_float_pow_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = powf(*X,a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_pow_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = pow(*X,a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_float_pow_scalar
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = cpowf(*X,a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex_double_pow_scalar
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = cpow(*X,a)
+#include "owl_dense_common_vec_map.c"
+
+// scalar_atan2
+
+#define FUN17 real_float_scalar_atan2
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = atan2f(a,*X)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_scalar_atan2
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = atan2(a,*X)
+#include "owl_dense_common_vec_map.c"
+
+// atan2_scalar
+
+#define FUN17 real_float_atan2_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = atan2f(*X,a)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 real_double_atan2_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = atan2(*X,a)
+#include "owl_dense_common_vec_map.c"
+
 // pow
 
 #define FUN7 real_float_pow
