@@ -265,6 +265,8 @@ module Make
 
     val div : t -> t -> t
 
+    val print : t -> unit 
+
   end
 
 
