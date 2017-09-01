@@ -644,7 +644,7 @@ let peakflops ?(n=2000) () =
   let transb = Owl_cblas.CblasNoTrans in
 
   let t0 = Unix.gettimeofday () in
-  Owl_cblas.dgemm layout transa transb n n n 1.0 x n x n 0.0 z n;
+  Owl_cblas.gemm layout transa transb n n n 1.0 x n x n 0.0 z n;
   let t1 = Unix.gettimeofday () in
 
   let flops = 2. *. (float_of_int n) ** 3. /. (t1 -. t0) in

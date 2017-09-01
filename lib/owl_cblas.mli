@@ -38,7 +38,7 @@ type cblas_side = CblasLeft | CblasRight
 val rotg : float -> float -> float * float * float * float
 (** Computes the parameters for a Givens rotation. *)
 
-val rotmg : ('a, 'b) Bigarray.kind -> float -> float -> float -> float -> float * float * float * ('a, 'b) t
+val rotmg : ('a, 'b) kind -> float -> float -> float -> float -> float * float * float * ('a, 'b) t
 (* Computes the parameters for a modified Givens rotation. *)
 
 val rot : int -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> float -> float -> unit
@@ -159,28 +159,11 @@ val hpr2 : cblas_layout -> cblas_uplo -> int -> Complex.t -> (Complex.t, 'a) t -
 
 (** {6 Level-3 BLAS: matrix-matrix operations} *)
 
+val gemm : cblas_layout -> cblas_transpose -> cblas_transpose -> int -> int -> int -> 'a -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> 'a -> ('a, 'b) t -> int -> unit
+(** Computes a matrix-matrix product with general matrices. *)
 
-(* Computes a matrix-matrix product with general matrices. *)
-
-val sgemm : cblas_layout -> cblas_transpose -> cblas_transpose -> int -> int -> int -> float -> s_t -> int -> s_t -> int -> float -> s_t -> int -> unit
-
-val dgemm : cblas_layout -> cblas_transpose -> cblas_transpose -> int -> int -> int -> float -> d_t -> int -> d_t -> int -> float -> d_t -> int -> unit
-
-val cgemm : cblas_layout -> cblas_transpose -> cblas_transpose -> int -> int -> int -> Complex.t -> c_t -> int -> c_t -> int -> Complex.t -> c_t -> int -> unit
-
-val zgemm : cblas_layout -> cblas_transpose -> cblas_transpose -> int -> int -> int -> Complex.t -> z_t -> int -> z_t -> int -> Complex.t -> z_t -> int -> unit
-
-
+val symm : cblas_layout -> cblas_side -> cblas_uplo -> int -> int -> 'a -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> 'a -> ('a, 'b) t -> int -> unit
 (* Computes a matrix-matrix product where one input matrix is symmetric. *)
-
-val ssymm : cblas_layout -> cblas_side -> cblas_uplo -> int -> int -> float -> s_t -> int -> s_t -> int -> float -> s_t -> int -> unit
-
-val dsymm : cblas_layout -> cblas_side -> cblas_uplo -> int -> int -> float -> d_t -> int -> d_t -> int -> float -> d_t -> int -> unit
-
-val csymm : cblas_layout -> cblas_side -> cblas_uplo -> int -> int -> Complex.t -> c_t -> int -> c_t -> int -> Complex.t -> c_t -> int -> unit
-
-val zsymm : cblas_layout -> cblas_side -> cblas_uplo -> int -> int -> Complex.t -> z_t -> int -> z_t -> int -> Complex.t -> z_t -> int -> unit
-
 
 (* Performs a symmetric rank-k update. *)
 
