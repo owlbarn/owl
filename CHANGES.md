@@ -1,5 +1,15 @@
 ### 0.3.0 (in progress)
 
+
+### 0.2.8 (2017-09-02)
+* New Linalg module is implemented.
+* New neural network module supports both single and double precision.
+* New Optimise and Regression module is built atop of Algodiff.
+* Experimental Zoo system is introduced as a separate library.
+* Enhance core functions and fix some bugs.
+
+### 0.2.7 (2017-07-11)
+
 * Enhance basic math operations for complex numbers.
 * Redesign Plot module and add more plotting functions.
 * Add more hypothesis test functions in Owl.Stats module.
