@@ -46,6 +46,9 @@ is no worse than the original one.
 - That being said, you are encouraged to use the `zoo` system to share any code
 snippets in `owl`.
 
+- Keep corner cases in mind. For example, does your code also work for complex
+ +numbers?
+
 ## Documentation
 
 - Make sure the grammar is correct.

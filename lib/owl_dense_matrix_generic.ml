@@ -1920,6 +1920,7 @@ let std ?(axis=0) a =
   let n = n - 1
     |> Pervasives.max 1
     |> float_of_int
+    |> Owl_maths.sqrt
     |> Owl_dense_common._float_typ_elt (kind a)
   in
 
