@@ -591,12 +591,11 @@ Then you should be able to see a figure like this one below. For more advanced u
 
 Even though this is still work in progress, I find it necessary to present a small neural network example to show how necessary it is to have a comprehensive numerical infrastructure. The illustration in the following is of course the classic MNIST example wherein we will train a two-layer network that can recognise hand-written digits.
 
-Currently `Neural` module is wrapped into a separate library but it will be merged into `Owl` main library in the future. First, please start your `utop` and load the `Owl_neural` library.
+`Neural` module has been included in `Owl` main library. To define a feedforward network, you can first open `Neural.S.Graph` in `utop`. `Neural.S.Graph` contains many easy-to-use wrappers to create different types of neuron node, `S` indicates the network is for single precision.
 
 ```ocaml
-#require "owl_neural";;
-open Owl_neural;;
-open Feedforward;;
+open Neural.S;;
+open Neural.S.Graph;;
 ```
 
 Now, let's see how to define a two-layer neural network.
@@ -605,35 +604,46 @@ Now, let's see how to define a two-layer neural network.
 let nn = input [|784|]
   |> linear 300 ~act_typ:Activation.Tanh
   |> linear 10  ~act_typ:Activation.Softmax
+  |> get_network
 ;;
 ```
 
 Done! Only three lines of code, that's easy, isn't it? Owl's `Neural` module is built atop of its `Algodiff` module. I am often amazed by the power of algorithmic differentiation while developing the neural network module, it just simplifies the design so much and makes life so easy.
 
-Let's look closer at what the code does: the first line defines a `Feedforward` neural network; the second line adds a linear layer (of shape `784 x 300`) with `Tanh` activation; the third line does the similar thing by adding another linear layer with `Softmax` activation.
+Let's look closer at what the code does: the first line defines the input shape of the neural network; the second line adds a linear layer (of shape `784 x 300`) with `Tanh` activation; the third line does the similar thing by adding another linear layer with `Softmax` activation. The input shape of each layer is automatically inferred for you. The last line `get_network` returns the created network for training.
 
-You can print out the summary of the neural network by calling `print nn`, then you see the following output.
+You can print out the summary of the neural network by calling `Graph.print nn`, then you see the following output.
 
 ```bash
-Feedforward network
+Graphical network
 
-(0): Input layer: in/out:[*,784]
+[ Node input_0 ]:
+    Input : in/out:[*,784]
+    prev:[] next:[linear_1]
 
-(1): Linear layer: matrix in:(*,784) out:(*,300)
+[ Node linear_1 ]:
+    Linear : matrix in:(*,784) out:(*,300)
     init   : standard
     params : 235500
     w      : 784 x 300
     b      : 1 x 300
+    prev:[input_0] next:[activation_2]
 
-(2): Activation layer: tanh in/out:[*,300]
+[ Node activation_2 ]:
+    Activation : tanh in/out:[*,300]
+    prev:[linear_1] next:[linear_3]
 
-(3): Linear layer: matrix in:(*,300) out:(*,10)
+[ Node linear_3 ]:
+    Linear : matrix in:(*,300) out:(*,10)
     init   : standard
     params : 3010
     w      : 300 x 10
     b      : 1 x 10
+    prev:[activation_2] next:[activation_4]
 
-(4): Activation layer: softmax in/out:[*,10]
+[ Node activation_4 ]:
+    Activation : softmax in/out:[*,10]
+    prev:[linear_3] next:[]
 ```
 
 How to train the defined network now? You only need two lines of code to load the dataset and start training. By the way, calling `Dataset.download_all ()` will download all the data sets used in Owl (about 1GB uncompressed data).
@@ -643,7 +653,7 @@ let x, _, y = Dataset.load_mnist_train_data () in
 train nn x y;;
 ```
 
-You may ask "what if I want different training configuration?" Well, the training and network module is actually very flexible and highly configurable. But I will talk about these details in another separate tutorial.
+You may ask "what if I want different training configuration?" Well, the training and network module is actually very flexible and highly configurable. But I will talk about these details in another [separate tutorial](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Neural-Network).
 
 
 ## Distributed & Parallel Computing
