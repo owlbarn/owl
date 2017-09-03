@@ -305,8 +305,6 @@ let index_1d_nd i_1d _stride =
   i_nd
 
 
-(* TODO: zpxy, zmxy, sort ... *)
-
 (* TODO: add axis paramater *)
 
 
