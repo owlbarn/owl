@@ -1830,4 +1830,17 @@ let _owl_sort : type a b. (a, b) kind -> int -> (a, b) owl_vec -> unit = functio
   | Complex64 -> owl_complex_double_sort
   | _         -> failwith "_owl_sort: unsupported operation"
 
+external owl_real_float_repeat : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "real_float_repeat" "real_float_repeat_impl"
+external owl_real_double_repeat : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "real_double_repeat" "real_double_repeat_impl"
+external owl_complex_float_repeat : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex_float_repeat" "complex_float_repeat_impl"
+external owl_complex_double_repeat : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex_double_repeat" "complex_double_repeat_impl"
+
+let _owl_repeat : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
+  | Float32   -> owl_real_float_repeat
+  | Float64   -> owl_real_double_repeat
+  | Complex32 -> owl_complex_float_repeat
+  | Complex64 -> owl_complex_double_repeat
+  | _         -> failwith "_owl_repeat: unsupported operation"
+
+
 (* ends here *)

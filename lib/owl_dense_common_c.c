@@ -3151,5 +3151,34 @@ int complex_cmp (const void * a, const void * b)
 #define MAPFN(X) qsort(X,N,sizeof(_Complex double),complex_cmp)
 #include "owl_dense_common_vec_map.c"
 
+// repeat
+
+#define FUN20 real_float_repeat
+#define FUN20_IMPL real_float_repeat_impl
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN20 real_double_repeat
+#define FUN20_IMPL real_double_repeat_impl
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN20 complex_float_repeat
+#define FUN20_IMPL complex_float_repeat_impl
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN20 complex_double_repeat
+#define FUN20_IMPL complex_double_repeat_impl
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = *X
+#include "owl_dense_common_vec_map.c"
 
 //////////////////// function templates ends ////////////////////
