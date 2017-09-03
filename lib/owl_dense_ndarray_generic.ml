@@ -104,6 +104,7 @@ let reverse x =
   _owl_copy n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:(-1) x' y';
   y
 
+
 let tile x reps =
   (* check the validity of reps *)
   if Array.exists ((>) 1) reps then
@@ -139,13 +140,18 @@ let tile x reps =
   (* recursively tile the data within y *)
   let rec _tile ofsx ofsy lvl =
     if lvl = !i then (
-      let src = Array1.sub x1 ofsx !dx in
-      for k = 0 to reps.(lvl) - 1 do
-        let ofsy' = ofsy + (k * !dx) in
-        let dst = Array1.sub y1 ofsy' !dx in
-        Array1.blit src dst;
-      done;
-    ) else (
+      (* two tiling strategies based on the continuous block size, quite empirical though *)
+      if !dx >= 32 then (
+        let src = Array1.sub x1 ofsx !dx in
+        for k = 0 to reps.(lvl) - 1 do
+          let ofsy' = ofsy + (k * !dx) in
+          let dst = Array1.sub y1 ofsy' !dx in
+          Array1.blit src dst;
+        done
+      )
+      else _owl_repeat (kind x) !dx reps.(lvl) x1 ofsx 1 0 y1 ofsy 1 !dx
+    )
+    else (
       for j = 0 to sx.(lvl) - 1 do
         let ofsx' = ofsx + j * stride_x.(lvl) in
         let ofsy' = ofsy + j * stride_y.(lvl) in
@@ -155,7 +161,7 @@ let tile x reps =
       let src = Array1.sub y1 ofsy _len in
       for k = 1 to reps.(lvl) - 1 do
         let dst = Array1.sub y1 (ofsy + (k * _len)) _len in
-        Array1.blit src dst;
+        Array1.blit src dst
       done;
     )
   in
