@@ -2015,63 +2015,63 @@ int complex_cmp (const void * a, const void * b)
 
 // mul
 
-#define FUN7 real_float_mul
+#define FUN15 real_float_mul
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) Z = X * Y
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 real_double_mul
+#define FUN15 real_double_mul
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
-#define MAPFN(X,Y,Z) Z = X * Y
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 complex_float_mul
+#define FUN15 complex_float_mul
 #define NUMBER _Complex float
 #define NUMBER1 _Complex float
 #define NUMBER2 _Complex float
-#define MAPFN(X,Y,Z) Z = X * Y
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 complex_double_mul
+#define FUN15 complex_double_mul
 #define NUMBER _Complex double
 #define NUMBER1 _Complex double
 #define NUMBER2 _Complex double
-#define MAPFN(X,Y,Z) Z = X * Y
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
 
 // div
 
-#define FUN7 real_float_div
+#define FUN15 real_float_div
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) Z = X / Y
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 real_double_div
+#define FUN15 real_double_div
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
-#define MAPFN(X,Y,Z) Z = X / Y
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 complex_float_div
+#define FUN15 complex_float_div
 #define NUMBER _Complex float
 #define NUMBER1 _Complex float
 #define NUMBER2 _Complex float
-#define MAPFN(X,Y,Z) Z = X / Y
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 complex_double_div
+#define FUN15 complex_double_div
 #define NUMBER _Complex double
 #define NUMBER1 _Complex double
 #define NUMBER2 _Complex double
-#define MAPFN(X,Y,Z) Z = X / Y
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
 
 // add_scalar
 
@@ -2257,125 +2257,125 @@ int complex_cmp (const void * a, const void * b)
 
 // pow
 
-#define FUN7 real_float_pow
+#define FUN15 real_float_pow
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) Z = powf(X,Y)
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = powf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 real_double_pow
+#define FUN15 real_double_pow
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
-#define MAPFN(X,Y,Z) Z = pow(X,Y)
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = pow(*X,*Y)
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 complex_float_pow
+#define FUN15 complex_float_pow
 #define NUMBER _Complex float
 #define NUMBER1 _Complex float
 #define NUMBER2 _Complex float
-#define MAPFN(X,Y,Z) Z = cpowf(X,Y)
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = cpowf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 complex_double_pow
+#define FUN15 complex_double_pow
 #define NUMBER _Complex double
 #define NUMBER1 _Complex double
 #define NUMBER2 _Complex double
-#define MAPFN(X,Y,Z) Z = cpow(X,Y)
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = cpow(*X,*Y)
+#include "owl_dense_common_vec_map.c"
 
 // atan2
 
-#define FUN7 real_float_atan2
+#define FUN15 real_float_atan2
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) Z = atan2f(X,Y)
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = atan2f(*X,*Y)
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 real_double_atan2
+#define FUN15 real_double_atan2
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
-#define MAPFN(X,Y,Z) Z = atan2(X,Y)
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = atan2(*X,*Y)
+#include "owl_dense_common_vec_map.c"
 
 // hypot
 
-#define FUN7 real_float_hypot
+#define FUN15 real_float_hypot
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) Z = hypotf(X,Y)
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = hypotf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 real_double_hypot
+#define FUN15 real_double_hypot
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
-#define MAPFN(X,Y,Z) Z = hypot(X,Y)
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = hypot(*X,*Y)
+#include "owl_dense_common_vec_map.c"
 
 // min2
 
-#define FUN7 real_float_min2
+#define FUN15 real_float_min2
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) Z = fminf(X,Y)
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = fminf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 real_double_min2
+#define FUN15 real_double_min2
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
-#define MAPFN(X,Y,Z) Z = fmin(X,Y)
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = fmin(*X,*Y)
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 complex_float_min2
+#define FUN15 complex_float_min2
 #define NUMBER _Complex float
 #define NUMBER1 _Complex float
 #define NUMBER2 _Complex float
-#define MAPFN(X,Y,Z) Z = CLTF(X,Y) ? X : Y
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = CLTF(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 complex_double_min2
+#define FUN15 complex_double_min2
 #define NUMBER _Complex double
 #define NUMBER1 _Complex double
 #define NUMBER2 _Complex double
-#define MAPFN(X,Y,Z) Z = CLT(X,Y) ? X : Y
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = CLT(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
 
 // max2
 
-#define FUN7 real_float_max2
+#define FUN15 real_float_max2
 #define NUMBER float
 #define NUMBER1 float
 #define NUMBER2 float
-#define MAPFN(X,Y,Z) Z = fmaxf(X,Y)
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = fmaxf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 real_double_max2
+#define FUN15 real_double_max2
 #define NUMBER double
 #define NUMBER1 double
 #define NUMBER2 double
-#define MAPFN(X,Y,Z) Z = fmax(X,Y)
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = fmax(*X,*Y)
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 complex_float_max2
+#define FUN15 complex_float_max2
 #define NUMBER _Complex float
 #define NUMBER1 _Complex float
 #define NUMBER2 _Complex float
-#define MAPFN(X,Y,Z) Z = CGTF(X,Y) ? X : Y
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = CGTF(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
 
-#define FUN7 complex_double_max2
+#define FUN15 complex_double_max2
 #define NUMBER _Complex double
 #define NUMBER1 _Complex double
 #define NUMBER2 _Complex double
-#define MAPFN(X,Y,Z) Z = CGT(X,Y) ? X : Y
-#include "owl_dense_common_vec_combine.c"
+#define MAPFN(X,Y,Z) *Z = CGT(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
 
 // fmod
 

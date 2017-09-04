@@ -30,7 +30,7 @@ CAMLprim value FUN3(value vN, value vX)
   caml_enter_blocking_section();  /* Allow other threads */
 
   MAPFN(X_data);
-  
+
   caml_leave_blocking_section();  /* Disallow other threads */
 
   CAMLreturn(Val_unit);

@@ -130,7 +130,6 @@ Library owl
                     owl_dense_common_vec_cmp.c,
                     owl_dense_common_vec_map.c,
                     owl_dense_common_vec_fold.c,
-                    owl_dense_common_vec_combine.c,
                     cblas.h,
                     lapacke.h,
                     lapacke_config.h,
