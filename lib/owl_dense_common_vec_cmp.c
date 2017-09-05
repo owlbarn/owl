@@ -23,11 +23,11 @@ CAMLprim value FUN0(value vN, value vX, value vY)
   CAMLparam3(vN, vX, vY);
   int N = Long_val(vN);
 
-  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  NUMBER *X_data = ((NUMBER *) big_X->data);
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *X_data = (NUMBER *) X->data;
 
-  struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
-  NUMBER *Y_data = ((NUMBER *) big_Y->data);
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  NUMBER *Y_data = (NUMBER *) Y->data;
 
   NUMBER *start_x, *stop_x, *start_y;
 
@@ -68,8 +68,8 @@ CAMLprim value FUN1(value vN, value vX)
   CAMLparam2(vN, vX);
   int N = Long_val(vN);
 
-  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  NUMBER *X_data = ((NUMBER *) big_X->data);
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *X_data = (NUMBER *) X->data;
 
   NUMBER *start_x, *stop_x;
 
@@ -107,8 +107,8 @@ CAMLprim value FUN2(value vN, value vX)
   CAMLparam2(vN, vX);
   int N = Long_val(vN);
 
-  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  NUMBER *X_data = ((NUMBER *) big_X->data);
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *X_data = (NUMBER *) X->data;
 
   NUMBER *start_x, *stop_x;
 
@@ -141,8 +141,8 @@ CAMLprim value FUN16(value vN, value vX, value vA)
   CAMLparam3(vN, vX, vA);
   int N = Long_val(vN);
 
-  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  NUMBER *X_data = ((NUMBER *) big_X->data);
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *X_data = (NUMBER *) X->data;
 
   NUMBER *start_x, *stop_x;
   INIT;
@@ -182,11 +182,11 @@ CAMLprim value FUN21(value vN, value vX, value vY, value vA)
   int N = Long_val(vN);
   INIT;
 
-  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  NUMBER *X_data = ((NUMBER *) big_X->data);
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *X_data = (NUMBER *) X->data;
 
-  struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
-  NUMBER *Y_data = ((NUMBER *) big_Y->data);
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  NUMBER *Y_data = (NUMBER *) Y->data;
 
   NUMBER *start_x, *stop_x, *start_y;
 
@@ -228,8 +228,8 @@ CAMLprim value FUN22(value vN, value vX, value vA, value vB)
   int N = Long_val(vN);
   INIT;
 
-  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  NUMBER *X_data = ((NUMBER *) big_X->data);
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *X_data = (NUMBER *) X->data;
 
   NUMBER *start_x, *stop_x;
 
