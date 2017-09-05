@@ -20,7 +20,6 @@ CAMLprim value FUN5(value vN, value vX)
   int N = Long_val(vN);
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   NUMBER *start_x, *stop_x;
@@ -54,7 +53,6 @@ CAMLprim value FUN6(value vN, value vX)
   int N = Long_val(vN);
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   NUMBER *start_x;
@@ -91,7 +89,6 @@ CAMLprim value FUN8(value vN, value vX)
   int N = Long_val(vN);
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   NUMBER *start_x, *stop_x, *max_start, max_x;
@@ -133,7 +130,6 @@ CAMLprim value FUN9(value vN, value vC, value vX)
   int N = Long_val(vN);
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   NUMBER *start_x, *stop_x;
@@ -167,11 +163,9 @@ CAMLprim value FUN11(value vN, value vX, value vY)
   int N = Long_val(vN);
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
-  CAMLunused int dim_Y = *big_Y->dim;
   NUMBER1 *Y_data = ((NUMBER1 *) big_Y->data);
 
   NUMBER *start_x, *stop_x;
@@ -210,7 +204,6 @@ CAMLprim value FUN23(value vN, value vX, value vA, vB)
   INIT;
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   caml_enter_blocking_section();  /* Allow other threads */

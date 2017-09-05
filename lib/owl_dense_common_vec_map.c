@@ -24,7 +24,6 @@ CAMLprim value FUN3(value vN, value vX)
   int N = Long_val(vN);
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   caml_enter_blocking_section();  /* Allow other threads */
@@ -49,11 +48,9 @@ CAMLprim value FUN4(value vN, value vX, value vY)
   INIT;
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
-  CAMLunused int dim_Y = *big_Y->dim;
   NUMBER1 *Y_data = ((NUMBER1 *) big_Y->data);
 
   NUMBER *start_x, *stop_x;
@@ -91,7 +88,6 @@ CAMLprim value FUN12(value vN, value vA, value vB, value vX)
   INIT;
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   caml_enter_blocking_section();  /* Allow other threads */
@@ -119,7 +115,6 @@ CAMLprim value FUN13(value vN, value vBase, value vA, value vB, value vX)
   INIT;
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   caml_enter_blocking_section();  /* Allow other threads */
@@ -164,11 +159,9 @@ CAMLprim value FUN14(value vN, value vX, value vY)
   int N = Long_val(vN);
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
-  CAMLunused int dim_Y = *big_Y->dim;
   NUMBER1 *Y_data = ((NUMBER1 *) big_Y->data);
 
   NUMBER *start_x, *stop_x;
@@ -203,15 +196,12 @@ CAMLprim value FUN15(value vN, value vX, value vY, value vZ)
   int N = Long_val(vN);
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
-  CAMLunused int dim_Y = *big_Y->dim;
   NUMBER1 *Y_data = ((NUMBER1 *) big_Y->data);
 
   struct caml_ba_array *big_Z = Caml_ba_array_val(vZ);
-  CAMLunused int dim_Z = *big_Z->dim;
   NUMBER2 *Z_data = ((NUMBER2 *) big_Z->data);
 
   NUMBER *start_x, *stop_x;
@@ -250,11 +240,9 @@ CAMLprim value FUN17(value vN, value vX, value vY, value vA)
   INIT;
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
-  CAMLunused int dim_Y = *big_Y->dim;
   NUMBER1 *Y_data = ((NUMBER1 *) big_Y->data);
 
   NUMBER *start_x, *stop_x;
@@ -290,7 +278,6 @@ CAMLprim value FUN18(value vN, value vX, value vA, value vB)
   INIT;
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   NUMBER *start_x, *stop_x;
@@ -333,11 +320,9 @@ CAMLprim value FUN19_IMPL(
   INIT;
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
-  CAMLunused int dim_Y = *big_Y->dim;
   NUMBER1 *Y_data = ((NUMBER1 *) big_Y->data);
 
   NUMBER  *start_x;
@@ -393,11 +378,9 @@ CAMLprim value FUN20_IMPL(
   INIT;
 
   struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused int dim_X = *big_X->dim;
   NUMBER *X_data = ((NUMBER *) big_X->data);
 
   struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
-  CAMLunused int dim_Y = *big_Y->dim;
   NUMBER1 *Y_data = ((NUMBER1 *) big_Y->data);
 
   NUMBER  *start_x_m;
@@ -460,8 +443,6 @@ void FUN24_CODE (
 
 
   if (d == X->num_dims - 1) {
-    //printf("<<< d:%i ofs_x:%i ofs_y:%i ofs_z:%i inc_x:%i inc_y:%i inc_z:%i x:%f\n",
-    //  d, ofs_x, ofs_y, ofs_z, inc_x, inc_y, inc_z, *(x+ofs_x));
     for (int i = 0; i < Z->dim[d]; i++) {
       MAPFN((x + ofs_x), (y + ofs_y), (z + ofs_z));
       ofs_x += inc_x;
@@ -470,7 +451,6 @@ void FUN24_CODE (
     }
   }
   else {
-    //printf(">>> %i; %lli\n", d, stride_x[d]);
     for (int i = 0; i < Z->dim[d]; i++) {
       FUN24_CODE (d+1, X, stride_x, ofs_x, Y, stride_y, ofs_y, Z, stride_z, ofs_z);
       ofs_x += inc_x;

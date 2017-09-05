@@ -145,6 +145,12 @@ module To_test = struct
     let y = M.load Float64 "ds_nda.tmp" in
     M.equal x0 y
 
+  let broadcast_add () =
+    let x = M.sequential Float64 [|2;1;3|] in
+    let y = M.ones Float64 [|2;1|] in
+    let z = M.of_array Float64 [|1.;2.;3.;1.;2.;3.;4.;5.;6.;4.;5.;6.|] [|2;2;3|] in
+    M.(equal z (add x y))
+
 end
 
 (* the tests *)
@@ -272,6 +278,9 @@ let l2norm () =
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
+let broadcast_add () =
+  Alcotest.(check bool) "broadcast_add" true (To_test.broadcast_add ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -314,4 +323,5 @@ let test_set = [
   "reshape", `Slow, reshape;
   "l2norm", `Slow, l2norm;
   "save_load", `Slow, save_load;
+  "broadcast_add", `Slow, broadcast_add;
 ]
