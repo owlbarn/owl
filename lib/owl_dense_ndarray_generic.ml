@@ -2905,7 +2905,14 @@ let top x n = _search_close_to_extreme x n (_neg_inf (kind x)) ( > )
 let bottom x n = _search_close_to_extreme x n (_pos_inf (kind x)) ( < )
 
 
-
+let test_broadcast x y =
+  let stride_x = strides x |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let stride_y = strides y |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let shape_z = Array.map2 Pervasives.max (shape x) (shape y) in
+  let z = empty (kind x) shape_z in
+  let stride_z = strides z |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  Owl_dense_common.owl_real_double_broadcast x stride_x y stride_y z stride_z;
+  z
 
 
 (* ends here *)

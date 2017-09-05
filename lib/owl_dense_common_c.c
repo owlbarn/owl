@@ -3181,4 +3181,14 @@ int complex_cmp (const void * a, const void * b)
 #define MAPFN(X,Y) *Y = *X
 #include "owl_dense_common_vec_map.c"
 
+// broadcast
+
+#define FUN24 real_double_broadcast
+#define FUN24_IMPL real_double_broadcast_impl
+#define FUN24_CODE real_double_broadcast_body
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+
 //////////////////// function templates ends ////////////////////

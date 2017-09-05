@@ -1843,4 +1843,7 @@ let _owl_repeat : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
   | _         -> failwith "_owl_repeat: unsupported operation"
 
 
+external owl_real_double_broadcast : (float, float64_elt, c_layout) Genarray.t -> (int64, int64_elt, c_layout) Genarray.t -> (float, float64_elt, c_layout) Genarray.t -> (int64, int64_elt, c_layout) Genarray.t -> (float, float64_elt, c_layout) Genarray.t -> (int64, int64_elt, c_layout) Genarray.t -> unit = "real_double_broadcast" "real_double_broadcast_impl"
+
+
 (* ends here *)
