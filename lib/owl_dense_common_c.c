@@ -3181,14 +3181,124 @@ int complex_cmp (const void * a, const void * b)
 #define MAPFN(X,Y) *Y = *X
 #include "owl_dense_common_vec_map.c"
 
-// broadcast
+// broadcast_add
 
-#define FUN24 real_double_broadcast
-#define FUN24_IMPL real_double_broadcast_impl
-#define FUN24_CODE real_double_broadcast_body
+#define FUN24 real_float_broadcast_add
+#define FUN24_IMPL real_float_broadcast_add_impl
+#define FUN24_CODE real_float_broadcast_add_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 real_double_broadcast_add
+#define FUN24_IMPL real_double_broadcast_add_impl
+#define FUN24_CODE real_double_broadcast_add_code
 #define NUMBER double
 #define MAPFN(X,Y,Z) *Z = *X + *Y
 #include "owl_dense_common_vec_map.c"
 
+#define FUN24 complex_float_broadcast_add
+#define FUN24_IMPL complex_float_broadcast_add_impl
+#define FUN24_CODE complex_float_broadcast_add_code
+#define NUMBER _Complex float
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_double_broadcast_add
+#define FUN24_IMPL complex_double_broadcast_add_impl
+#define FUN24_CODE complex_double_broadcast_add_code
+#define NUMBER _Complex double
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+// broadcast_sub
+
+#define FUN24 real_float_broadcast_sub
+#define FUN24_IMPL real_float_broadcast_sub_impl
+#define FUN24_CODE real_float_broadcast_sub_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 real_double_broadcast_sub
+#define FUN24_IMPL real_double_broadcast_sub_impl
+#define FUN24_CODE real_double_broadcast_sub_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_float_broadcast_sub
+#define FUN24_IMPL complex_float_broadcast_sub_impl
+#define FUN24_CODE complex_float_broadcast_sub_code
+#define NUMBER _Complex float
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_double_broadcast_sub
+#define FUN24_IMPL complex_double_broadcast_sub_impl
+#define FUN24_CODE complex_double_broadcast_sub_code
+#define NUMBER _Complex double
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+// broadcast_mul
+
+#define FUN24 real_float_broadcast_mul
+#define FUN24_IMPL real_float_broadcast_mul_impl
+#define FUN24_CODE real_float_broadcast_mul_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 real_double_broadcast_mul
+#define FUN24_IMPL real_double_broadcast_mul_impl
+#define FUN24_CODE real_double_broadcast_mul_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_float_broadcast_mul
+#define FUN24_IMPL complex_float_broadcast_mul_impl
+#define FUN24_CODE complex_float_broadcast_mul_code
+#define NUMBER _Complex float
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_double_broadcast_mul
+#define FUN24_IMPL complex_double_broadcast_mul_impl
+#define FUN24_CODE complex_double_broadcast_mul_code
+#define NUMBER _Complex double
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+// broadcast_div
+
+#define FUN24 real_float_broadcast_div
+#define FUN24_IMPL real_float_broadcast_div_impl
+#define FUN24_CODE real_float_broadcast_div_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 real_double_broadcast_div
+#define FUN24_IMPL real_double_broadcast_div_impl
+#define FUN24_CODE real_double_broadcast_div_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_float_broadcast_div
+#define FUN24_IMPL complex_float_broadcast_div_impl
+#define FUN24_CODE complex_float_broadcast_div_code
+#define NUMBER _Complex float
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_double_broadcast_div
+#define FUN24_IMPL complex_double_broadcast_div_impl
+#define FUN24_CODE complex_double_broadcast_div_code
+#define NUMBER _Complex double
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
 
 //////////////////// function templates ends ////////////////////

@@ -27,7 +27,6 @@ type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 (** Type of the ndarray, e.g., Bigarray.Float32, Bigarray.Complex64, and etc. *)
 
-val test_broadcast : (float, float64_elt) t -> (float, float64_elt) t -> (float, float64_elt) t
 
 (** {6 Create N-dimensional array} *)
 

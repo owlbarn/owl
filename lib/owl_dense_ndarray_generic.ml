@@ -321,31 +321,21 @@ let broadcast_op op x0 x1 =
   let y0 = expand x0 d3 in
   let y1 = expand x1 d3 in
   (* check whether the shape is valid *)
-  let sy0 = shape y0 in
-  let sy1 = shape y1 in
+  let s0 = shape y0 in
+  let s1 = shape y1 in
   Array.iter2 (fun a b ->
     if a <> 1 && b <> 1 && a <> b then
       failwith "broadcast_op: slice not aligned"
-  ) sy0 sy1;
+  ) s0 s1;
   (* calculate the output shape *)
-  let s3 = Array.map2 max sy0 sy1 in
-  (* tile y0, i.e. x0 as output *)
-  let st = Array.map2 (fun a b -> a / b) s3 sy0 in
-  let x3 = tile y0 st in
-  (* tile x1 as x4 with orginal rank *)
-  let s1 = shape x1 in
-  let s4 = Array.sub s3 (d3-d1) d1 in
-  let st = Array.map2 (fun a b -> a / b) s4 s1 in
-  let x4 = tile x1 st in
-  (* reshape both into 2d matrices *)
-  let k = kind x4 in
-  let n = numel x4 in
-  let m = numel x3 / n in
-  let y4 = reshape x4 [|1;n|] |> array2_of_genarray in
-  let y3 = reshape x3 [|m;n|] |> array2_of_genarray in
-  (* call broadcast in eigen, return the tiled x3 *)
-  (_eigen_rowwise_op k) op y3 y4;
-  x3
+  let s2 = Array.map2 max s0 s1 in
+  let y2 = empty (kind x0) s2 in
+  (* calculate the strides *)
+  let t0 = _calc_stride s0 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t1 = _calc_stride s1 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t2 = _calc_stride s2 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  op y0 t0 y1 t1 y2 t2;
+  y2
 
 
 (* mathematical functions *)
@@ -385,7 +375,7 @@ let add x y =
       Owl_cblas.axpy (numel x) (_one (kind x)) _x 1 _y 1;
       y
     )
-  | false -> broadcast_op 0 x y
+  | false -> broadcast_op (_owl_broadcast_add (kind x)) x y
 
 let sub x y =
   match same_shape x y with
@@ -396,7 +386,7 @@ let sub x y =
       Owl_cblas.axpy (numel x) (_neg_one (kind x)) _y 1 _x 1;
       x
     )
-  | false -> broadcast_op 1 x y
+  | false -> broadcast_op (_owl_broadcast_sub (kind x)) x y
 
 let mul x y =
   match same_shape x y with
@@ -407,7 +397,7 @@ let mul x y =
       _owl_mul (kind x) (numel x) _x _y _y;
       y
     )
-  | false -> broadcast_op 2 x y
+  | false -> broadcast_op (_owl_broadcast_mul (kind x)) x y
 
 let div x y =
   match same_shape x y with
@@ -418,7 +408,7 @@ let div x y =
       _owl_div (kind x) (numel x) _x _y _y;
       y
   )
-  | false -> broadcast_op 3 x y
+  | false -> broadcast_op (_owl_broadcast_div (kind x)) x y
 
 let add_scalar x a =
   let x = clone x in
@@ -2904,15 +2894,6 @@ let top x n = _search_close_to_extreme x n (_neg_inf (kind x)) ( > )
 
 let bottom x n = _search_close_to_extreme x n (_pos_inf (kind x)) ( < )
 
-
-let test_broadcast x y =
-  let stride_x = strides x |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
-  let stride_y = strides y |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
-  let shape_z = Array.map2 Pervasives.max (shape x) (shape y) in
-  let z = empty (kind x) shape_z in
-  let stride_z = strides z |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
-  Owl_dense_common.owl_real_double_broadcast x stride_x y stride_y z stride_z;
-  z
 
 
 (* ends here *)

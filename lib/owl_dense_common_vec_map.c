@@ -443,9 +443,11 @@ CAMLprim value FUN20(value *argv, int __unused_argn)
 // broadcast function of x and y then save the result to z
 #ifdef FUN24
 
-void FUN24_CODE (int d, struct caml_ba_array *X, struct caml_ba_array *Y, struct caml_ba_array *Z,
-  int64_t *stride_x, int64_t *stride_y, int64_t *stride_z,
-  int ofs_x, int ofs_y, int ofs_z
+void FUN24_CODE (
+  int d,
+  struct caml_ba_array *X, int64_t *stride_x, int ofs_x,
+  struct caml_ba_array *Y, int64_t *stride_y, int ofs_y,
+  struct caml_ba_array *Z, int64_t *stride_z, int ofs_z
 )
 {
   int inc_x = X->dim[d] == Z->dim[d] ? stride_x[d] : 0;
@@ -461,7 +463,7 @@ void FUN24_CODE (int d, struct caml_ba_array *X, struct caml_ba_array *Y, struct
     //printf("<<< d:%i ofs_x:%i ofs_y:%i ofs_z:%i inc_x:%i inc_y:%i inc_z:%i x:%f\n",
     //  d, ofs_x, ofs_y, ofs_z, inc_x, inc_y, inc_z, *(x+ofs_x));
     for (int i = 0; i < Z->dim[d]; i++) {
-      MAPFN((x+ofs_x), (y+ofs_y), (z+ofs_z));
+      MAPFN((x + ofs_x), (y + ofs_y), (z + ofs_z));
       ofs_x += inc_x;
       ofs_y += inc_y;
       ofs_z += inc_z;
@@ -470,9 +472,13 @@ void FUN24_CODE (int d, struct caml_ba_array *X, struct caml_ba_array *Y, struct
   else {
     //printf(">>> %i; %lli\n", d, stride_x[d]);
     for (int i = 0; i < Z->dim[d]; i++) {
-      FUN24_CODE (d+1, X, Y, Z, stride_x, stride_y, stride_z, ofs_x+i*inc_x, ofs_y+i*inc_y, ofs_z+i*inc_z);
+      FUN24_CODE (d+1, X, stride_x, ofs_x, Y, stride_y, ofs_y, Z, stride_z, ofs_z);
+      ofs_x += inc_x;
+      ofs_y += inc_y;
+      ofs_z += inc_z;
     }
   }
+
   return;
 }
 
@@ -485,28 +491,20 @@ CAMLprim value FUN24_IMPL(
   CAMLparam4(vX, vSTRIDE_X, vY, vSTRIDE_Y);
   CAMLxparam2(vZ, vSTRIDE_Z);
 
-  struct caml_ba_array *big_X = Caml_ba_array_val(vX);
-  CAMLunused long num_dims = big_X->num_dims;
-  NUMBER *X_data = ((NUMBER *) big_X->data);
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  struct caml_ba_array *Z = Caml_ba_array_val(vZ);
 
-  struct caml_ba_array *big_Y = Caml_ba_array_val(vY);
-  NUMBER *Y_data = ((NUMBER *) big_Y->data);
-
-  struct caml_ba_array *big_Z = Caml_ba_array_val(vZ);
-  NUMBER *Z_data = ((NUMBER *) big_Z->data);
-
-  struct caml_ba_array *big_stride_X = Caml_ba_array_val(vSTRIDE_X);
-  int64_t *stride_x = ((int64_t *) big_stride_X->data);
-
-  struct caml_ba_array *big_stride_Y = Caml_ba_array_val(vSTRIDE_Y);
-  int64_t *stride_y = ((int64_t *) big_stride_Y->data);
-
-  struct caml_ba_array *big_stride_Z = Caml_ba_array_val(vSTRIDE_Z);
-  int64_t *stride_z = ((int64_t *) big_stride_Z->data);
+  struct caml_ba_array *stride_X = Caml_ba_array_val(vSTRIDE_X);
+  int64_t *stride_x = (int64_t *) stride_X->data;
+  struct caml_ba_array *stride_Y = Caml_ba_array_val(vSTRIDE_Y);
+  int64_t *stride_y = (int64_t *) stride_Y->data;
+  struct caml_ba_array *stride_Z = Caml_ba_array_val(vSTRIDE_Z);
+  int64_t *stride_z = (int64_t *) stride_Z->data;
 
   caml_enter_blocking_section();  /* Allow other threads */
 
-  FUN24_CODE (0, big_X, big_Y, big_Z, stride_x, stride_y, stride_z, 0, 0, 0);
+  FUN24_CODE (0, X, stride_x, 0, Y, stride_y, 0, Z, stride_z, 0);
 
   caml_leave_blocking_section();  /* Disallow other threads */
 
@@ -515,10 +513,7 @@ CAMLprim value FUN24_IMPL(
 
 CAMLprim value FUN24(value *argv, int __unused_argn)
 {
-  return FUN24_IMPL(
-    argv[0], argv[1], argv[2], argv[3], argv[4],
-    argv[5]
-  );
+  return FUN24_IMPL(argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);
 }
 
 #endif /* FUN24 */
