@@ -370,9 +370,9 @@ let add x y =
   match same_shape x y with
   | true  -> (
       let y = clone y in
-      let _x = flatten x |> array1_of_genarray in
-      let _y = flatten y |> array1_of_genarray in
-      Owl_cblas.axpy (numel x) (_one (kind x)) _x 1 _y 1;
+      let x' = flatten x |> array1_of_genarray in
+      let y' = flatten y |> array1_of_genarray in
+      Owl_cblas.axpy (numel x) (_one (kind x)) x' 1 y' 1;
       y
     )
   | false -> broadcast_op (_owl_broadcast_add (kind x)) x y
@@ -381,9 +381,9 @@ let sub x y =
   match same_shape x y with
   | true  -> (
       let x = clone x in
-      let _x = flatten x |> array1_of_genarray in
-      let _y = flatten y |> array1_of_genarray in
-      Owl_cblas.axpy (numel x) (_neg_one (kind x)) _y 1 _x 1;
+      let x' = flatten x |> array1_of_genarray in
+      let y' = flatten y |> array1_of_genarray in
+      Owl_cblas.axpy (numel x) (_neg_one (kind x)) y' 1 x' 1;
       x
     )
   | false -> broadcast_op (_owl_broadcast_sub (kind x)) x y
@@ -392,9 +392,9 @@ let mul x y =
   match same_shape x y with
   | true  -> (
       let y = clone y in
-      let _x = flatten x |> array1_of_genarray in
-      let _y = flatten y |> array1_of_genarray in
-      _owl_mul (kind x) (numel x) _x _y _y;
+      let x' = flatten x |> array1_of_genarray in
+      let y' = flatten y |> array1_of_genarray in
+      _owl_mul (kind x) (numel x) x' y' y';
       y
     )
   | false -> broadcast_op (_owl_broadcast_mul (kind x)) x y
@@ -403,25 +403,25 @@ let div x y =
   match same_shape x y with
   | true  -> (
       let y = clone y in
-      let _x = flatten x |> array1_of_genarray in
-      let _y = flatten y |> array1_of_genarray in
-      _owl_div (kind x) (numel x) _x _y _y;
+      let x' = flatten x |> array1_of_genarray in
+      let y' = flatten y |> array1_of_genarray in
+      _owl_div (kind x) (numel x) x' y' y';
       y
   )
   | false -> broadcast_op (_owl_broadcast_div (kind x)) x y
 
 let add_scalar x a =
   let x = clone x in
-  let _x = flatten x |> array1_of_genarray in
-  _owl_add_scalar (kind x) (numel x) _x _x a;
+  let x' = flatten x |> array1_of_genarray in
+  _owl_add_scalar (kind x) (numel x) x' x' a;
   x
 
 let sub_scalar x a = add_scalar x (_neg_elt (kind x) a)
 
 let mul_scalar x a =
   let x = clone x in
-  let _x = flatten x |> array1_of_genarray in
-  Owl_cblas.scal (numel x) a _x 1;
+  let x' = flatten x |> array1_of_genarray in
+  Owl_cblas.scal (numel x) a x' 1;
   x
 
 let div_scalar x a = mul_scalar x (_inv_elt (kind x) a)
@@ -868,50 +868,50 @@ let log_sum_exp x =
 
 let scalar_pow a x =
   let x = clone x in
-  let _x = flatten x |> array1_of_genarray in
-  _owl_scalar_pow (kind x) (numel x) _x _x a;
+  let x' = flatten x |> array1_of_genarray in
+  _owl_scalar_pow (kind x) (numel x) x' x' a;
   x
 
 let pow_scalar x a =
   let x = clone x in
-  let _x = flatten x |> array1_of_genarray in
-  _owl_pow_scalar (kind x) (numel x) _x _x a;
+  let x' = flatten x |> array1_of_genarray in
+  _owl_pow_scalar (kind x) (numel x) x' x' a;
   x
 
 let scalar_atan2 a x =
   let x = clone x in
-  let _x = flatten x |> array1_of_genarray in
-  _owl_scalar_atan2 (kind x) (numel x) _x _x a;
+  let x' = flatten x |> array1_of_genarray in
+  _owl_scalar_atan2 (kind x) (numel x) x' x' a;
   x
 
 let atan2_scalar x a =
   let x = clone x in
-  let _x = flatten x |> array1_of_genarray in
-  _owl_atan2_scalar (kind x) (numel x) _x _x a;
+  let x' = flatten x |> array1_of_genarray in
+  _owl_atan2_scalar (kind x) (numel x) x' x' a;
   x
 
 let scalar_add a x =
   let x = clone x in
-  let _x = flatten x |> array1_of_genarray in
-  _owl_add_scalar (kind x) (numel x) _x _x a;
+  let x' = flatten x |> array1_of_genarray in
+  _owl_add_scalar (kind x) (numel x) x' x' a;
   x
 
 let scalar_sub a x =
   let x = clone x in
-  let _x = flatten x |> array1_of_genarray in
-  _owl_scalar_sub (kind x) (numel x) _x _x a;
+  let x' = flatten x |> array1_of_genarray in
+  _owl_scalar_sub (kind x) (numel x) x' x' a;
   x
 
 let scalar_mul a x =
   let x = clone x in
-  let _x = flatten x |> array1_of_genarray in
-  Owl_cblas.scal (numel x) a _x 1;
+  let x' = flatten x |> array1_of_genarray in
+  Owl_cblas.scal (numel x) a x' 1;
   x
 
 let scalar_div a x =
   let x = clone x in
-  let _x = flatten x |> array1_of_genarray in
-  _owl_scalar_div (kind x) (numel x) _x _x a;
+  let x' = flatten x |> array1_of_genarray in
+  _owl_scalar_div (kind x) (numel x) x' x' a;
   x
 
 let reci_tol ?tol x =
@@ -922,7 +922,7 @@ let reci_tol ?tol x =
   let y = clone x in
   let src = flatten x |> array1_of_genarray in
   let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_reci_tol (kind x) (numel y) src dst tol in
+  _owl_reci_tol (kind x) (numel y) src dst tol;
   y
 
 (* element-wise comparison functions *)
