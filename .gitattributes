@@ -1,0 +1,2 @@
+lib/lapacke* linguist-vendored
+lib/cblas.h linguist-vendored
