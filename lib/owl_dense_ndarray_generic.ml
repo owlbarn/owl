@@ -427,52 +427,70 @@ let mul_scalar x a =
 let div_scalar x a = mul_scalar x (_inv_elt (kind x) a)
 
 let pow x y =
-  let z = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  let _ = _owl_pow (kind x) (numel x) x' y' z' in
-  z
+  match same_shape x y with
+  | true  -> (
+      let y = clone y in
+      let x' = flatten x |> array1_of_genarray in
+      let y' = flatten y |> array1_of_genarray in
+      _owl_pow (kind x) (numel x) x' y' y';
+      y
+    )
+  | false -> broadcast_op (_owl_broadcast_pow (kind x)) x y
 
 let atan2 x y =
-  let z = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  let _ = _owl_atan2 (kind x) (numel x) x' y' z' in
-  z
+  match same_shape x y with
+  | true  -> (
+      let y = clone y in
+      let x' = flatten x |> array1_of_genarray in
+      let y' = flatten y |> array1_of_genarray in
+      _owl_atan2 (kind x) (numel x) x' y' y';
+      y
+    )
+  | false -> broadcast_op (_owl_broadcast_atan2 (kind x)) x y
 
 let hypot x y =
-  let z = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  let _ = _owl_hypot (kind x) (numel x) x' y' z' in
-  z
+  match same_shape x y with
+  | true  -> (
+      let y = clone y in
+      let x' = flatten x |> array1_of_genarray in
+      let y' = flatten y |> array1_of_genarray in
+      _owl_hypot (kind x) (numel x) x' y' y';
+      y
+    )
+  | false -> broadcast_op (_owl_broadcast_hypot (kind x)) x y
 
 let min2 x y =
-  let z = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  let _ = _owl_min2 (kind x) (numel x) x' y' z' in
-  z
+  match same_shape x y with
+  | true  -> (
+      let y = clone y in
+      let x' = flatten x |> array1_of_genarray in
+      let y' = flatten y |> array1_of_genarray in
+      _owl_min2 (kind x) (numel x) x' y' y';
+      y
+    )
+  | false -> broadcast_op (_owl_broadcast_min2 (kind x)) x y
 
 let max2 x y =
-  let z = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  let _ = _owl_max2 (kind x) (numel x) x' y' z' in
-  z
+  match same_shape x y with
+  | true  -> (
+      let y = clone y in
+      let x' = flatten x |> array1_of_genarray in
+      let y' = flatten y |> array1_of_genarray in
+      _owl_max2 (kind x) (numel x) x' y' y';
+      y
+    )
+  | false -> broadcast_op (_owl_broadcast_max2 (kind x)) x y
 
 let fmod x y =
-  let z = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  _owl_fmod (kind x) (numel z) x' y' z';
-  z
+  match same_shape x y with
+  | true  -> (
+      let y = clone y in
+      let x' = flatten x |> array1_of_genarray in
+      let y' = flatten y |> array1_of_genarray in
+      _owl_fmod (kind x) (numel x) x' y' y';
+      y
+    )
+  | false -> broadcast_op (_owl_broadcast_fmod (kind x)) x y
 
 let fmod_scalar x a =
   let y = empty (kind x) (shape x) in

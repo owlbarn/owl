@@ -3301,4 +3301,142 @@ int complex_cmp (const void * a, const void * b)
 #define MAPFN(X,Y,Z) *Z = *X / *Y
 #include "owl_dense_common_vec_map.c"
 
+// broadcast_max2
+
+#define FUN24 real_float_broadcast_max2
+#define FUN24_IMPL real_float_broadcast_max2_impl
+#define FUN24_CODE real_float_broadcast_max2_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = fmaxf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 real_double_broadcast_max2
+#define FUN24_IMPL real_double_broadcast_max2_impl
+#define FUN24_CODE real_double_broadcast_max2_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = fmax(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_float_broadcast_max2
+#define FUN24_IMPL complex_float_broadcast_max2_impl
+#define FUN24_CODE complex_float_broadcast_max2_code
+#define NUMBER _Complex float
+#define MAPFN(X,Y,Z) *Z = CGTF(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_double_broadcast_max2
+#define FUN24_IMPL complex_double_broadcast_max2_impl
+#define FUN24_CODE complex_double_broadcast_max2_code
+#define NUMBER _Complex double
+#define MAPFN(X,Y,Z) *Z = CGT(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+// broadcast_min2
+
+#define FUN24 real_float_broadcast_min2
+#define FUN24_IMPL real_float_broadcast_min2_impl
+#define FUN24_CODE real_float_broadcast_min2_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = fminf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 real_double_broadcast_min2
+#define FUN24_IMPL real_double_broadcast_min2_impl
+#define FUN24_CODE real_double_broadcast_min2_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = fmin(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_float_broadcast_min2
+#define FUN24_IMPL complex_float_broadcast_min2_impl
+#define FUN24_CODE complex_float_broadcast_min2_code
+#define NUMBER _Complex float
+#define MAPFN(X,Y,Z) *Z = CLTF(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_double_broadcast_min2
+#define FUN24_IMPL complex_double_broadcast_min2_impl
+#define FUN24_CODE complex_double_broadcast_min2_code
+#define NUMBER _Complex double
+#define MAPFN(X,Y,Z) *Z = CLT(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+// broadcast_pow
+
+#define FUN24 real_float_broadcast_pow
+#define FUN24_IMPL real_float_broadcast_pow_impl
+#define FUN24_CODE real_float_broadcast_pow_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = powf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 real_double_broadcast_pow
+#define FUN24_IMPL real_double_broadcast_pow_impl
+#define FUN24_CODE real_double_broadcast_pow_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = pow(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_float_broadcast_pow
+#define FUN24_IMPL complex_float_broadcast_pow_impl
+#define FUN24_CODE complex_float_broadcast_pow_code
+#define NUMBER _Complex float
+#define MAPFN(X,Y,Z) *Z = cpowf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 complex_double_broadcast_pow
+#define FUN24_IMPL complex_double_broadcast_pow_impl
+#define FUN24_CODE complex_double_broadcast_pow_code
+#define NUMBER _Complex double
+#define MAPFN(X,Y,Z) *Z = cpow(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+// broadcast_atan2
+
+#define FUN24 real_float_broadcast_atan2
+#define FUN24_IMPL real_float_broadcast_atan2_impl
+#define FUN24_CODE real_float_broadcast_atan2_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = atan2f(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 real_double_broadcast_atan2
+#define FUN24_IMPL real_double_broadcast_atan2_impl
+#define FUN24_CODE real_double_broadcast_atan2_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = atan2(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+// broadcast_hypot
+
+#define FUN24 real_float_broadcast_hypot
+#define FUN24_IMPL real_float_broadcast_hypot_impl
+#define FUN24_CODE real_float_broadcast_hypot_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = hypotf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 real_double_broadcast_hypot
+#define FUN24_IMPL real_double_broadcast_hypot_impl
+#define FUN24_CODE real_double_broadcast_hypot_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = hypot(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+// broadcast_fmod
+
+#define FUN24 real_float_broadcast_fmod
+#define FUN24_IMPL real_float_broadcast_fmod_impl
+#define FUN24_CODE real_float_broadcast_fmod_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = fmodf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 real_double_broadcast_fmod
+#define FUN24_IMPL real_double_broadcast_fmod_impl
+#define FUN24_CODE real_double_broadcast_fmod_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = fmod(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
 //////////////////// function templates ends ////////////////////

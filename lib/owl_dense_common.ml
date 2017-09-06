@@ -1892,6 +1892,66 @@ let _owl_broadcast_div : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
   | Complex64 -> owl_complex_double_broadcast_div
   | _         -> failwith "_owl_broadcast_div: unsupported operation"
 
+external owl_real_float_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "real_float_broadcast_max2" "real_float_broadcast_max2_impl"
+external owl_real_double_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "real_double_broadcast_max2" "real_double_broadcast_max2_impl"
+external owl_complex_float_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex_float_broadcast_max2" "complex_double_broadcast_max2_impl"
+external owl_complex_double_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex_float_broadcast_max2" "complex_double_broadcast_max2_impl"
+
+let _owl_broadcast_max2 : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32   -> owl_real_float_broadcast_max2
+  | Float64   -> owl_real_double_broadcast_max2
+  | Complex32 -> owl_complex_float_broadcast_max2
+  | Complex64 -> owl_complex_double_broadcast_max2
+  | _         -> failwith "_owl_broadcast_max2: unsupported operation"
+
+external owl_real_float_broadcast_min2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "real_float_broadcast_min2" "real_float_broadcast_min2_impl"
+external owl_real_double_broadcast_min2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "real_double_broadcast_min2" "real_double_broadcast_min2_impl"
+external owl_complex_float_broadcast_min2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex_float_broadcast_min2" "complex_double_broadcast_min2_impl"
+external owl_complex_double_broadcast_min2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex_float_broadcast_min2" "complex_double_broadcast_min2_impl"
+
+let _owl_broadcast_min2 : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32   -> owl_real_float_broadcast_min2
+  | Float64   -> owl_real_double_broadcast_min2
+  | Complex32 -> owl_complex_float_broadcast_min2
+  | Complex64 -> owl_complex_double_broadcast_min2
+  | _         -> failwith "_owl_broadcast_min2: unsupported operation"
+
+external owl_real_float_broadcast_pow : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "real_float_broadcast_pow" "real_float_broadcast_pow_impl"
+external owl_real_double_broadcast_pow : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "real_double_broadcast_pow" "real_double_broadcast_pow_impl"
+external owl_complex_float_broadcast_pow : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex_float_broadcast_pow" "complex_double_broadcast_pow_impl"
+external owl_complex_double_broadcast_pow : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex_float_broadcast_pow" "complex_double_broadcast_pow_impl"
+
+let _owl_broadcast_pow : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32   -> owl_real_float_broadcast_pow
+  | Float64   -> owl_real_double_broadcast_pow
+  | Complex32 -> owl_complex_float_broadcast_pow
+  | Complex64 -> owl_complex_double_broadcast_pow
+  | _         -> failwith "_owl_broadcast_pow: unsupported operation"
+
+external owl_real_float_broadcast_atan2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "real_float_broadcast_atan2" "real_float_broadcast_atan2_impl"
+external owl_real_double_broadcast_atan2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "real_double_broadcast_atan2" "real_double_broadcast_atan2_impl"
+
+let _owl_broadcast_atan2 : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32   -> owl_real_float_broadcast_atan2
+  | Float64   -> owl_real_double_broadcast_atan2
+  | _         -> failwith "_owl_broadcast_atan2: unsupported operation"
+
+external owl_real_float_broadcast_hypot : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "real_float_broadcast_hypot" "real_float_broadcast_hypot_impl"
+external owl_real_double_broadcast_hypot : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "real_double_broadcast_hypot" "real_double_broadcast_hypot_impl"
+
+let _owl_broadcast_hypot : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32   -> owl_real_float_broadcast_hypot
+  | Float64   -> owl_real_double_broadcast_hypot
+  | _         -> failwith "_owl_broadcast_hypot: unsupported operation"
+
+external owl_real_float_broadcast_fmod : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "real_float_broadcast_fmod" "real_float_broadcast_fmod_impl"
+external owl_real_double_broadcast_fmod : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "real_double_broadcast_fmod" "real_double_broadcast_fmod_impl"
+
+let _owl_broadcast_fmod : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32   -> owl_real_float_broadcast_fmod
+  | Float64   -> owl_real_double_broadcast_fmod
+  | _         -> failwith "_owl_broadcast_fmod: unsupported operation"
+
 
 
 (* ends here *)
