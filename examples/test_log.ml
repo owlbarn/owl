@@ -2,7 +2,7 @@
 (* stochastic gradient decent algorithm *)
 
 module MX = Owl.Dense.Matrix.D
-module LL = Owl_optimise
+module LL = Owl_regression.D
 
 let generate_data () =
   let open MX in
@@ -34,7 +34,7 @@ let draw_line p =
   MX.save_txt z "test_log.model.tmp"
 
 let test_log x y =
-  let p = LL.logistic_regression ~i:true x y in
+  let p = LL.logistic ~i:true x y in
   let x = MX.(concat_horizontal x (ones (row_num x) 1)) in
   let y' = MX.(sigmoid (x *@ p)) in
   let y' = MX.map (fun x -> if x > 0.5 then 1. else 0.) y' in
