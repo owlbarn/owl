@@ -7,7 +7,7 @@ dev-repo: "https://github.com/ryanrhymes/owl.git"
 bug-reports: "https://github.com/ryanrhymes/owl/issues"
 build: [
   ["oasis" "setup"]
-  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix "--bindir" bin]
   ["ocaml" "setup.ml" "-build"]
 ]
 install: ["ocaml" "setup.ml" "-install"]
