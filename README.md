@@ -23,10 +23,8 @@ This [How-To?](https://github.com/ryanrhymes/owl/wiki/How-To%3F) maintains a lis
 * [Tutorial 11: Neural Network](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Neural-Network)
 * [Tutorial 12: Scripting and Zoo System](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Scripting-and-Zoo-System)
 
-
-[Presentation Slides in OCaml Workshop 2017](https://docs.google.com/presentation/d/1A-7KiQLot3X2lLyZntrFGxsxaNir0g_2TlruBP4W2Uc/edit)
-
-[CUFP Tutorial material on Owl](https://docs.google.com/presentation/d/1EB4B6xAc81ypUGze22qESnFixZWIK31OaNZ8n0ndC6w/edit?usp=sharing)
+The Presentation Slides in OCaml Workshop 2017 can be viewed with [this link](https://docs.google.com/presentation/d/1A-7KiQLot3X2lLyZntrFGxsxaNir0g_2TlruBP4W2Uc/edit).
+The tutorial material of Owl in CUFP 2017 can be accessed with [this link](https://docs.google.com/presentation/d/1EB4B6xAc81ypUGze22qESnFixZWIK31OaNZ8n0ndC6w/edit?usp=sharing).
 
 Some simple evaluations can be found as follows [[Ndarray](https://github.com/ryanrhymes/owl/wiki/Evaluation:-Performance-Test)]. The roadmap and future plan of Owl can be found
 [[Here]](https://github.com/ryanrhymes/owl/wiki/Future-Plan). I would love to hear from you, and please let me know your comments and suggestions to improve Owl.
