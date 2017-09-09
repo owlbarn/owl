@@ -409,6 +409,7 @@ lib: [
   "_build/install/default/lib/owl/owl__Owl_utils.cmt"
   "_build/install/default/lib/owl/owl_utils.ml"
   "_build/install/default/lib/owl/owl.cma"
+  "_build/install/default/lib/owl/libowl_stubs.a"
   "_build/install/default/lib/owl/owl.cmxa"
   "_build/install/default/lib/owl/owl.a"
   "_build/install/default/lib/owl/owl.cmxs"
@@ -418,4 +419,7 @@ doc: [
   "_build/install/default/doc/owl/README-zh.md"
   "_build/install/default/doc/owl/LICENSE.md"
   "_build/install/default/doc/owl/CHANGES.md"
+]
+stublibs: [
+  "_build/install/default/lib/stublibs/dllowl_stubs.so"
 ]

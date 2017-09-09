@@ -11,7 +11,8 @@
 // some helper functions
 
 #define LN10 2.30258509299404568402  /* log_e 10 */
-inline double exp10 (double arg) { return exp(LN10 * arg); }
+#define exp10f(X) expf(LN10 * X)
+#define exp10(X) exp(LN10 * X)
 
 value cp_two_doubles(double d0, double d1)
 {
@@ -2521,7 +2522,7 @@ int complex_cmp (const void * a, const void * b)
 #define INIT float a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), base = Double_val(vBase), x = a, log_base = log(base)
 #define NUMBER float
 #define MAPFN(X)  *X = exp2f(x); x = a + i * h
-#define MAPFN1(X) *X = exp10(x); x = a + i * h
+#define MAPFN1(X) *X = exp10f(x); x = a + i * h
 #define MAPFN2(X) *X = expf(x); x = a + i * h
 #define MAPFN3(X) *X = expf(x * log_base); x = a + i * h
 #include "owl_dense_common_vec_map.c"
@@ -2539,7 +2540,7 @@ int complex_cmp (const void * a, const void * b)
 #define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, base = Double_val(vBase), xr = ar, xi = ai, log_base = log(base)
 #define NUMBER complex_float
 #define MAPFN(X)  X->r = exp2f(xr); X->i = exp2f(xi); xr = ar + i * hr; xi = ai + i * hi
-#define MAPFN1(X) X->r = exp10(xr); X->i = exp10(xi); xr = ar + i * hr; xi = ai + i * hi
+#define MAPFN1(X) X->r = exp10f(xr); X->i = exp10f(xi); xr = ar + i * hr; xi = ai + i * hi
 #define MAPFN2(X) X->r = expf(xr); X->i = expf(xi); xr = ar + i * hr; xi = ai + i * hi
 #define MAPFN3(X) X->r = expf(xr * log_base); X->i = expf(xi * log_base); xr = ar + i * hr; xi = ai + i * hi
 #include "owl_dense_common_vec_map.c"
