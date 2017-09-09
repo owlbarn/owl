@@ -3,6 +3,7 @@
 (library (
   (name owl)
   (public_name owl)
+  (wrapped false)
   (c_names (
     owl_dense_common_c
     owl_dense_common_vec_cmp
@@ -19,5 +20,11 @@
     -lopenblas
     -lgfortran
   ))
-  (libraries (ctypes dolog gsl eigen plplot))
+  (libraries (
+    ctypes
+    dolog
+    gsl
+    eigen
+    plplot
+  ))
 ))

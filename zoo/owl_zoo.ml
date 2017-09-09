@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_zoo_cmd
+open Owl_top.Owl_top_cmd
 
 
 let _ =

@@ -10,7 +10,7 @@ let _deploy_gist dir gist =
   )
   else (
     Log.info "owl_zoo: %s missing" gist;
-    Owl_top.Owl_top_cmd.download_gist gist
+    Owl_top_cmd.download_gist gist
   )
 
 
