@@ -11,8 +11,7 @@ let preprocess script =
   let tmp_script = Filename.temp_file prefix ".ml" in
   let content =
     "#require \"owl\"\n" ^
-    "#require \"owl_zoo\"\n" ^
-    "let load_file = Owl_zoo_cmd.load_file;;\n" ^
+    "#require \"owl_top\"\n" ^
     Printf.sprintf "#use \"%s\"\n" script
   in
   Utils.write_file tmp_script content;

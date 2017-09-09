@@ -1,8 +1,9 @@
 (jbuild_version 1)
 
 (library (
-  (name owl_top)
-  (public_name owl_top)
+  (name owl_zoo)
+  (public_name owl_zoo)
+  (wrapped false)
   (modes (byte))
   (libraries (
     owl
