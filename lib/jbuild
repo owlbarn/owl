@@ -1,0 +1,7 @@
+(jbuild_version 1)
+
+(library (
+  (name owl)
+  (public_name owl)
+  (libraries (ctypes dolog gsl eigen plplot))
+))

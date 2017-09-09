@@ -1,0 +1,36 @@
+opam-version: "1.2"
+maintainer: "Liang Wang (ryanrhymes@gmail.com)"
+authors: [ "Liang Wang (ryanrhymes@gmail.com)" ]
+license: "MIT"
+homepage: "https://github.com/ryanrhymes/owl"
+dev-repo: "https://github.com/ryanrhymes/owl.git"
+bug-reports: "https://github.com/ryanrhymes/owl/issues"
+build: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--prefix" prefix]
+  ["ocaml" "setup.ml" "-build"]
+]
+install: ["ocaml" "setup.ml" "-install"]
+remove: [
+  ["ocaml" "%{etc}%/owl/_oasis_remove_.ml" "%{etc}%/owl"]
+]
+build-test: [
+  ["oasis" "setup"]
+  ["ocaml" "setup.ml" "-configure" "--enable-tests"]
+  ["ocaml" "setup.ml" "-build"]
+  ["ocaml" "setup.ml" "-test"]
+]
+build-doc: [ "ocaml" "setup.ml" "-doc" ]
+depends: [
+  "ctypes"
+  "dolog" {>= "3.0"}
+  "gsl" {>= "1.20.0"}
+  "conf-gsl"
+  "oasis" {build & >= "0.4"}
+  "ocamlbuild" {build}
+  "ocamlfind" {build}
+  "plplot"
+  "eigen" {>= "0.0.3"}
+  "conf-openblas"
+]
+available: [ ocaml-version >= "4.04.0" ]
