@@ -1,0 +1,7 @@
+(library (
+  (name owl_top)
+  (public_name owl_top)
+  (modes (byte))
+  (modules (owl_top))
+  (libraries (owl ocaml-compiler-libs.toplevel))
+))
