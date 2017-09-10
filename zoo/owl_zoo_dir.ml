@@ -4,21 +4,21 @@
  *)
 
 
-let _extract_zoo_gist f =
+let rec _extract_zoo_gist f =
   let s = Owl.Utils.read_file_string f in
   let regex = Str.regexp "#zoo \"\\([0-9A-Za-z]+\\)\"" in
   try
     let pos = ref 0 in
     while true do
       pos := Str.search_forward regex s !pos;
-      let gist = Str.matched_group 0 s in
-      pos := pos + (String.length gist);
-      Log.info " --> %s" gist
+      let gist = Str.matched_group 1 s in
+      pos := !pos + (String.length gist);
+      process_dir_zoo gist
     done
   with Not_found -> ()
 
 
-let _deploy_gist dir gist =
+and _deploy_gist dir gist =
   if Sys.file_exists (dir ^ gist) = true then (
     Log.info "owl_zoo: %s cached" gist
   )
@@ -28,13 +28,12 @@ let _deploy_gist dir gist =
   )
 
 
-let _dir_zoo_ocaml dir gist =
+and _dir_zoo_ocaml dir gist =
   let dir_gist = dir ^ gist in
   Sys.readdir (dir_gist)
   |> Array.to_list
   |> List.filter (fun s -> Filename.check_suffix s "ml")
   |> List.iter (fun l ->
-      Log.info "debug ==> import zoo %s" gist;
       let f = Printf.sprintf "%s/%s" dir_gist l in
       _extract_zoo_gist f;
       Toploop.mod_use_file Format.std_formatter f
@@ -42,14 +41,13 @@ let _dir_zoo_ocaml dir gist =
     )
 
 
-let process_dir_zoo gist =
+and process_dir_zoo gist =
   let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
-  Log.info "debug ==> detect zoo %s" gist;
   _deploy_gist dir gist;
   _dir_zoo_ocaml dir gist
 
 
-let add_dir_zoo () =
+and add_dir_zoo () =
   let section = "owl" in
   let doc =
     "owl's zoo system\n" ^
