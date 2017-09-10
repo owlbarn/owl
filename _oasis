@@ -144,6 +144,7 @@ Library owl
     CCLib+:         -L/usr/lib
                     -lopenblas
                     -llapacke
+                    -lm
   if system(macosx)
     CCOpt+:         -O3
     CCLib+:         -L/usr/local/opt/openblas/lib
