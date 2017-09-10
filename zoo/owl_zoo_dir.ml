@@ -6,7 +6,7 @@
 
 let rec _extract_zoo_gist f =
   let s = Owl.Utils.read_file_string f in
-  let regex = Str.regexp "#zoo \"\\([0-9A-Za-z]+\\)\"" in
+  let regex = Str.regexp "^#zoo \"\\([0-9A-Za-z]+\\)\"" in
   try
     let pos = ref 0 in
     while true do
