@@ -2,7 +2,7 @@
 
 (executable (
   (name       zoo)
-  (public_name zoo)
+  (public_name owl)
   (libraries  (
     compiler-libs.toplevel
     owl

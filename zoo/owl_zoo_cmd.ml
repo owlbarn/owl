@@ -6,10 +6,19 @@
 open Owl
 
 
+let eval cmd = cmd
+  |> Lexing.from_string
+  |> !Toploop.parse_toplevel_phrase
+  |> Toploop.execute_phrase true Format.std_formatter
+  |> ignore
+
+
 let preprocess script =
   let prefix = "." ^ (Filename.basename script) in
   let tmp_script = Filename.temp_file prefix ".ml" in
   let content =
+    "#!/usr/bin/env zoo\n" ^
+    "#use \"topfind\"" ^
     "#require \"owl\"\n" ^
     "#require \"owl_zoo\"\n" ^
     Printf.sprintf "#use \"%s\"\n" script
@@ -91,16 +100,16 @@ let load_file f =
 
 let run args script =
   let new_script = preprocess script in
-  let cmd = Printf.sprintf "utop %s %s" args new_script in
-  Sys.command cmd
-  (* Topmain.main () *)
+  Toploop.initialize_toplevel_env ();
+  Toploop.run_script Format.std_formatter new_script args
+  |> ignore
 
 
 let run_gist gist =
   let tmp_script = Filename.temp_file gist ".ml" in
-  let content = Printf.sprintf "#zoo \"%s\"\n" gist in
+  let content = Printf.sprintf "\n#zoo \"%s\"\n" gist in
   Utils.write_file tmp_script content;
-  run "" tmp_script |> ignore
+  run [|""|] tmp_script |> ignore
 
 
 let print_info () =
@@ -118,3 +127,11 @@ let print_info () =
     "  owl -help\t\t\t\tprint out help information\n"
   in
   print_endline info
+
+
+let start_toplevel () =
+  print_info ();
+  Toploop.initialize_toplevel_env ();
+  Toploop.use_silently Format.std_formatter "topfind" |> ignore;
+  eval "#require \"owl\"";
+  Toploop.loop Format.std_formatter

@@ -407,7 +407,7 @@ lib: [
   "_build/install/default/lib/owl/owl.cmxs"
 ]
 bin: [
-  "_build/install/default/bin/zoo" {"zoo"}
+  "_build/install/default/bin/owl" {"owl"}
 ]
 doc: [
   "_build/install/default/doc/owl/README.md"

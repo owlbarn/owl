@@ -10,7 +10,7 @@ let _ =
   Log.color_on (); Log.(set_log_level DEBUG);
 
   if Array.length Sys.argv < 2 then
-    print_info ()
+    start_toplevel ()
   else if Sys.argv.(1) = "-upload" then
     upload_gist Sys.argv.(2)
   else if Sys.argv.(1) = "-download" then
@@ -33,8 +33,5 @@ let _ =
   else (
     let len = Array.length Sys.argv in
     let script = Sys.argv.(len - 1) in
-    let args = Array.sub Sys.argv 1 (len - 2)
-      |> Array.fold_left (fun a s -> a ^ s ^ " ") ""
-    in
-    run args script |> ignore
+    run Sys.argv script |> ignore
   )

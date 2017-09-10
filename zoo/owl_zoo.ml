@@ -4,15 +4,8 @@
  *)
 
 
-let eval cmd = cmd
-  |> Lexing.from_string
-  |> !Toploop.parse_toplevel_phrase
-  |> Toploop.execute_phrase true Format.std_formatter
-  |> ignore
-
-
 let () =
-  eval "
+  Owl_zoo_cmd.eval "
     #install_printer Owl.Neural.S.Graph.print;;
     #install_printer Owl.Neural.D.Graph.print;;
     #install_printer Owl.Mat.pp_dsmat;;
