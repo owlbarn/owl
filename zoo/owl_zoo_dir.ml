@@ -4,6 +4,19 @@
  *)
 
 
+let _extract_zoo_gist f =
+  let s = Owl.Utils.read_file_string f in
+  let regex = Str.regexp "#zoo \"\\([0-9A-Za-z]+\\)\"" in
+  try
+    let pos = ref 0 in
+    while true do
+      pos := Str.search_forward regex s !pos;
+      let gist = Str.matched_group 0 s in
+      Log.info " --> %s" gist
+    done
+  with Not_found -> ()
+
+
 let _deploy_gist dir gist =
   if Sys.file_exists (dir ^ gist) = true then (
     Log.info "owl_zoo: %s cached" gist
@@ -22,6 +35,7 @@ let _dir_zoo_ocaml dir gist =
   |> List.iter (fun l ->
       Log.info "debug ==> import zoo %s" gist;
       let f = Printf.sprintf "%s/%s" dir_gist l in
+      _extract_zoo_gist f;
       Toploop.mod_use_file Format.std_formatter f
       |> ignore
     )
