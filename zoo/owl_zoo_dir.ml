@@ -20,6 +20,7 @@ let _dir_zoo_ocaml dir gist =
   |> Array.to_list
   |> List.filter (fun s -> Filename.check_suffix s "ml")
   |> List.iter (fun l ->
+      Log.info "debug ==> import zoo %s" gist;
       let f = Printf.sprintf "%s/%s" dir_gist l in
       Toploop.mod_use_file Format.std_formatter f
       |> ignore
@@ -28,6 +29,7 @@ let _dir_zoo_ocaml dir gist =
 
 let process_dir_zoo gist =
   let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
+  Log.info "debug ==> detect zoo %s" gist;
   _deploy_gist dir gist;
   _dir_zoo_ocaml dir gist
 
