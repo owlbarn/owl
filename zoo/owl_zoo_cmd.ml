@@ -11,7 +11,7 @@ let preprocess script =
   let tmp_script = Filename.temp_file prefix ".ml" in
   let content =
     "#require \"owl\"\n" ^
-    "#require \"owl_top\"\n" ^
+    "#require \"owl_zoo\"\n" ^
     Printf.sprintf "#use \"%s\"\n" script
   in
   Utils.write_file tmp_script content;
@@ -93,6 +93,7 @@ let run args script =
   let new_script = preprocess script in
   let cmd = Printf.sprintf "utop %s %s" args new_script in
   Sys.command cmd
+  (* Topmain.main () *)
 
 
 let run_gist gist =

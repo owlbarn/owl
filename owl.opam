@@ -5,6 +5,12 @@ license: "MIT"
 homepage: "https://github.com/ryanrhymes/owl"
 dev-repo: "https://github.com/ryanrhymes/owl.git"
 bug-reports: "https://github.com/ryanrhymes/owl/issues"
+
+build: [
+  ["jbuilder" "subst"]{pinned}
+  ["jbuilder" "build" "-p" name "-j" jobs]
+]
+
 depends: [
   "ctypes"
   "dolog" {>= "3.0"}

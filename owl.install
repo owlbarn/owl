@@ -406,6 +406,9 @@ lib: [
   "_build/install/default/lib/owl/owl.a"
   "_build/install/default/lib/owl/owl.cmxs"
 ]
+bin: [
+  "_build/install/default/bin/zoo" {"zoo"}
+]
 doc: [
   "_build/install/default/doc/owl/README.md"
   "_build/install/default/doc/owl/README-zh.md"
