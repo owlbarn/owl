@@ -1,0 +1,13 @@
+(jbuild_version 1)
+
+(executable (
+  (name       zoo)
+  (public_name zoo)
+  (libraries  (
+    compiler-libs.toplevel
+    owl
+    owl_zoo
+  ))
+  (link_flags (-linkall))
+  (modes      (byte))
+))
