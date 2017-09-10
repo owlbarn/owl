@@ -12,6 +12,7 @@ let _extract_zoo_gist f =
     while true do
       pos := Str.search_forward regex s !pos;
       let gist = Str.matched_group 0 s in
+      pos := pos + (String.length gist);
       Log.info " --> %s" gist
     done
   with Not_found -> ()
