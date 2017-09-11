@@ -26,5 +26,4 @@ depends: [
   "plplot"
   "eigen" {>= "0.0.3"}
   "conf-openblas"
-  "ocaml" {>= "4.04"}
 ]
