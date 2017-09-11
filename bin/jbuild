@@ -11,3 +11,12 @@
   (link_flags (-linkall))
   (modes      (byte))
 ))
+
+(install (
+  (section bin)
+  (files (
+    (owl_upload_gist.sh as owl_upload_gist.sh)
+    (owl_download_gist.sh as owl_download_gist.sh)
+    (owl_list_gist.sh as owl_list_gist.sh)
+  ))
+))

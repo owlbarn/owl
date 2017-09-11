@@ -5,6 +5,7 @@ license: "MIT"
 homepage: "https://github.com/ryanrhymes/owl"
 dev-repo: "https://github.com/ryanrhymes/owl.git"
 bug-reports: "https://github.com/ryanrhymes/owl/issues"
+doc: "http://www.cl.cam.ac.uk/~lw525/owl/"
 
 build: [
   ["jbuilder" "subst"]{pinned}
@@ -23,3 +24,7 @@ depends: [
   "eigen" {>= "0.0.3"}
   "conf-openblas"
 ]
+
+name: "owl"
+version: "0.3.0"
+available: [ ocaml-version >= "4.04" ]

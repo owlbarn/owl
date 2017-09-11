@@ -7,9 +7,6 @@
 (** Operator definition such add, sub, mul, and div. *)
 
 
-open Bigarray
-
-
 (* define the functions need to be implemented *)
 
 module type BasicSig = sig

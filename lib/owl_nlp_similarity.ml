@@ -14,7 +14,7 @@ let to_string = function
   | KL_D      -> "Kullback–Leibler divergence"
 
 
-let kl_distance x y = 0.
+let kl_distance _ _ = 0.
 
 
 let cosine_distance x y =
@@ -81,7 +81,7 @@ let euclidean_distance x y =
     | false -> Hashtbl.add h k b
   ) y;
   let z = ref 0. in
-  Hashtbl.iter (fun k v -> z := !z +. v *. v) h;
+  Hashtbl.iter (fun _ v -> z := !z +. v *. v) h;
   sqrt !z
 
 

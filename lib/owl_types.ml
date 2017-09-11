@@ -6,7 +6,6 @@
 (** Define the types shared by various modules *)
 
 open Bigarray
-open Ctypes
 
 (* configure the logger *)
 let _ = Log.color_on (); Log.(set_log_level INFO)
