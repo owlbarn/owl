@@ -11,6 +11,7 @@ name: "owl"
 version: "dev"
 
 build: [
+  ["jbuilder" "subst" "-n" name] {pinned}
   ["jbuilder" "build" "-p" name "-j" jobs]
 ]
 
