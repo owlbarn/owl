@@ -20,6 +20,7 @@ install:
     elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew update;
       rm '/usr/local/include/c++';
+      brew install gcc
       brew install homebrew/science/openblas;
     fi
   - wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh

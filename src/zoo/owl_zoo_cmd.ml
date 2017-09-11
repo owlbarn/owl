@@ -132,6 +132,7 @@ let print_info () =
 let start_toplevel () =
   print_info ();
   Toploop.initialize_toplevel_env ();
-  Toploop.use_silently Format.std_formatter "topfind" |> ignore;
-  eval "#require \"owl\"";
+  eval "#use \"topfind\";;";
+  eval "#require \"owl\";;";
+  eval "#require \"owl_zoo\";;";
   Toploop.loop Format.std_formatter
