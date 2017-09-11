@@ -9,9 +9,6 @@ clean:
 test:
 	jbuilder runtest
 
-cleanall:
-	jbuilder uninstall && jbuilder clean
-
 install:
 	jbuilder install
 
@@ -20,3 +17,7 @@ uninstall:
 
 doc:
 	jbuilder build @doc
+
+cleanall:
+	jbuilder uninstall && jbuilder clean
+	rm -rf `find . -name .merlin`
