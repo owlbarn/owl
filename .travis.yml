@@ -6,7 +6,7 @@ env:
   - OCAML_VERSION=4.04
   - PACKAGE="owl"
   - TESTS=true
-  - EXTRA_DEPS="jbuilder alcotest ocaml-compiler-libs"
+  - EXTRA_DEPS="alcotest ocaml-compiler-libs"
   - INSTALL=false
   matrix:
   include:
@@ -20,7 +20,6 @@ install:
     elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew update;
       rm '/usr/local/include/c++';
-      brew install gcc
       brew install homebrew/science/openblas;
     fi
   - wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh
