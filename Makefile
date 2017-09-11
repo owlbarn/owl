@@ -6,6 +6,9 @@ all:
 clean:
 	jbuilder clean
 
+test:
+	jbuilder runtest
+
 cleanall:
 	jbuilder uninstall && jbuilder clean
 

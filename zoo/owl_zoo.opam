@@ -1,9 +1,9 @@
-opam-version: "1.2"
+opam-version: "2.0"
 maintainer: "Liang Wang (ryanrhymes@gmail.com)"
 authors: [ "Liang Wang (ryanrhymes@gmail.com)" ]
 license: "MIT"
 homepage: "https://github.com/ryanrhymes/owl"
-dev-repo: "https://github.com/ryanrhymes/owl.git"
+dev-repo: "git+https://github.com/ryanrhymes/owl.git"
 bug-reports: "https://github.com/ryanrhymes/owl/issues"
 doc: "http://www.cl.cam.ac.uk/~lw525/owl/"
 
@@ -16,5 +16,5 @@ build: [
 
 depends: [
   "owl"
-  "ocaml-compiler-libs.toplevel"
+  "ocaml-compiler-libs"
 ]
