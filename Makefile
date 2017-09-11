@@ -1,4 +1,4 @@
-.PHONY: all clean doc
+.PHONY: all clean test doc
 
 all:
 	jbuilder build @install
@@ -7,7 +7,7 @@ clean:
 	jbuilder clean
 
 test:
-	jbuilder runtest
+	jbuilder runtest -j1 --no-buffer
 
 install:
 	jbuilder install

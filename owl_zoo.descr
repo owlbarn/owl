@@ -1,0 +1,3 @@
+Owl's Zoo System
+
+The Zoo System is Owl's customised toplevel. It is used for scripting numerical applications and sharing small code snippets via gist among users. The Zoo system introduces a zoo directive into toplevel, the referred gist id will be automatically downloaded and imported as a module in the script. The nested zoo reference is also supported.
