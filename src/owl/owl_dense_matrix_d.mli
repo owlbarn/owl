@@ -378,7 +378,7 @@ val of_cols : mat array -> mat
 val print : mat -> unit
 (** [print x] pretty prints matrix [x] without headings. *)
 
-val pp_dsmat : mat -> unit
+val pp_dsmat : Format.formatter -> mat -> unit
 
 val save : mat -> string -> unit
 

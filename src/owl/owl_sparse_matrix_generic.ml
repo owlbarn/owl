@@ -569,7 +569,8 @@ let pp_spmat x =
   let c = nnz x in
   let p = 100. *. (density x) in
   let mz, nz = row_num_nz x, col_num_nz x in
-  if m < 100 && n < 100 then Owl_dense_matrix_generic.pp_dsmat (to_dense x);
+  if m < 100 && n < 100 then
+    Owl_dense_matrix_generic.pp_dsmat Format.std_formatter (to_dense x);
   Printf.printf "shape = (%i,%i) | (%i,%i); nnz = %i (%.1f%%)\n" m n mz nz c p
 
 let save x f = Owl_utils.marshal_to_file x f

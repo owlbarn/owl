@@ -6,8 +6,8 @@
 
 let () =
   Owl_zoo_cmd.eval "
-    #install_printer Owl.Neural.S.Graph.print;;
-    #install_printer Owl.Neural.D.Graph.print;;
+    #install_printer Owl.Neural.S.Graph.pp_network;;
+    #install_printer Owl.Neural.D.Graph.pp_network;;
     #install_printer Owl.Mat.pp_dsmat;;
     #install_printer Owl.Arr.pp_dsdna;;
     #install_printer Owl.Dense.Matrix.S.pp_dsmat;;

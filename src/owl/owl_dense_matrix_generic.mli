@@ -900,7 +900,7 @@ val of_cols : ('a, 'b) t array -> ('a, 'b) t
 val print : ('a, 'b) t -> unit
 (** [print x] pretty prints matrix [x] without headings. *)
 
-val pp_dsmat : ('a, 'b) t -> unit
+val pp_dsmat : Format.formatter -> ('a, 'b) t -> unit
 (** [pp_spmat x] pretty prints matrix [x] with headings. Toplevel uses this
   function to print out the matrices.
  *)

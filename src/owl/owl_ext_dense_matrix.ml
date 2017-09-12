@@ -353,7 +353,7 @@ module type BasicSig = sig
 
   val print : mat -> unit
 
-  val pp_dsmat : mat -> unit
+  val pp_dsmat : Format.formatter -> mat -> unit
 
   val save : mat -> string -> unit
 
@@ -460,7 +460,7 @@ module Make_Basic
   let get_slice axis x = M.get_slice axis (unpack_box x) |> pack_box
 
   let set_slice axis x y = M.set_slice axis (unpack_box x) (unpack_box y)
-  
+
   let row x i = M.row (unpack_box x) i |> pack_box
 
   let col x j = M.col (unpack_box x) j |> pack_box
@@ -657,7 +657,7 @@ module Make_Basic
 
   let print x = M.print (unpack_box x)
 
-  let pp_dsmat x = M.pp_dsmat (unpack_box x)
+  let pp_dsmat x = M.pp_dsmat Format.std_formatter (unpack_box x)
 
   let save x f = M.save (unpack_box x) f
 

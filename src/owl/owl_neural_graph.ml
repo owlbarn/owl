@@ -537,6 +537,7 @@ module Make
 
   let print nn = to_string nn |> Printf.printf "%s"
 
+  let pp_network formatter nn = print_endline (to_string nn)
 
   let save nn f = Owl_utils.marshal_to_file (copy nn) f
 

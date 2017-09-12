@@ -1073,7 +1073,7 @@ let load k f = Owl_utils.marshal_from_file f
 
 let print x = _owl_print_mat (Array2.kind x) x
 
-let pp_dsmat x = _owl_print_mat_toplevel (Array2.kind x) x
+let pp_dsmat formatter x = _owl_print_mat_toplevel (Array2.kind x) x
 
 (* some other uncategorised functions *)
 
