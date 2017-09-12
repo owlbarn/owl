@@ -4,18 +4,20 @@
  *)
 
 
-let () =
-  Owl_zoo_cmd.eval "
-    #install_printer Owl.Neural.S.Graph.pp_network;;
-    #install_printer Owl.Neural.D.Graph.pp_network;;
-    #install_printer Owl.Mat.pp_dsmat;;
-    #install_printer Owl.Arr.pp_dsdna;;
-    #install_printer Owl.Dense.Matrix.S.pp_dsmat;;
-    #install_printer Owl.Dense.Matrix.D.pp_dsmat;;
-    #install_printer Owl.Dense.Matrix.C.pp_dsmat;;
-    #install_printer Owl.Dense.Matrix.Z.pp_dsmat;;
-    #install_printer Owl.Dense.Ndarray.Generic.pp_dsnda;;
-    #install_printer Owl.Dense.Matrix.Generic.pp_dsmat;;
-    #install_printer Owl.Sparse.Ndarray.Generic.pp_spnda;;
-    #install_printer Owl.Sparse.Matrix.Generic.pp_spmat;;
-  "
+let printers = [
+  "Owl.Neural.S.Graph.pp_network";
+  "Owl.Neural.D.Graph.pp_network";
+  "Owl.Dense.Matrix.Generic.pp_dsmat";
+  "Owl.Dense.Ndarray.Generic.pp_dsnda";
+  "Owl.Sparse.Matrix.Generic.pp_spmat";
+  "Owl.Sparse.Ndarray.Generic.pp_spnda";
+]
+
+
+let install_printers printers =
+  List.iter (fun printer ->
+    Printf.sprintf "#install_printer %s;;" printer |> Owl_zoo_cmd.eval
+  ) printers
+
+
+let () = install_printers printers

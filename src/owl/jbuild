@@ -20,6 +20,7 @@
     -lopenblas
     -lgfortran
   ))
+  (flags (:standard))
   (libraries (
     ctypes
     dolog

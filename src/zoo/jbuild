@@ -5,6 +5,7 @@
   (public_name owl_zoo)
   (wrapped false)
   (modes (byte))
+  (flags (:standard))
   (libraries (
     owl
     ocaml-compiler-libs.toplevel
