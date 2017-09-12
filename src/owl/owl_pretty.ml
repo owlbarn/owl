@@ -3,8 +3,6 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Pretty print the n-dimensional array *)
-
 
 let _calc_col_width table col_idx =
   let col_width = ref 0 in
