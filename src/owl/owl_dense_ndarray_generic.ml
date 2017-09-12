@@ -1636,34 +1636,19 @@ let print_element k v =
   let s = (_owl_elt_to_str k) v in
   Printf.printf "%s" s
 
-let print x =
-  let _op = _owl_elt_to_str (kind x) in
-  iteri (fun i y ->
-    print_index i;
-    Printf.printf "%s\n" (_op y)
-  ) x
-
-let pp_dsnda x =
-  let _op = _owl_elt_to_str (kind x) in
-  let k = shape x in
-  let s = _calc_stride k in
-  let _pp = fun i j -> (
-    for i' = i to j do
-      _index_1d_nd i' k s;
-      print_index k;
-      Printf.printf "%s\n" (_op (get x k))
-    done
-  )
+let print ?max_row ?max_col ?header ?fmt x =
+  let n = (shape x).(num_dims x - 1) in
+  let max_row = match max_row with
+    | Some a -> Some a
+    | None   -> Some ((numel x) / n)
   in
-  let n = numel x in
-  if n <= 40 then (
-    _pp 0 (n - 1)
-  )
-  else (
-    _pp 0 19;
-    print_endline "......";
-    _pp (n - 20) (n - 1)
-  )
+  let max_col = match max_col with
+    | Some a -> Some a
+    | None   -> Some n
+  in
+  Owl_pretty.print ?max_row ?max_col ?header ?elt_to_str_fun:fmt x
+
+let pp_dsnda formatter x = Owl_pretty.pp_dsnda formatter x
 
 let save x f = Owl_utils.marshal_to_file x f
 

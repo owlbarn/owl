@@ -535,9 +535,14 @@ module Make
     ) nn.topo; !s
 
 
-  let print nn = to_string nn |> Printf.printf "%s"
+  let pp_network formatter nn =
+    Format.open_box 0;
+    Format.fprintf formatter "%s" (to_string nn);
+    Format.close_box ()
 
-  let pp_network formatter nn = print_endline (to_string nn)
+
+  let print nn = pp_network Format.std_formatter nn
+
 
   let save nn f = Owl_utils.marshal_to_file (copy nn) f
 

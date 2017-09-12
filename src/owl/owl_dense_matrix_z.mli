@@ -395,9 +395,7 @@ val to_cols : mat -> mat array
 
 val of_cols : mat array -> mat
 
-val print : mat -> unit
-
-val pp_dsmat : Format.formatter -> mat -> unit
+val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> mat -> unit
 
 val save : mat -> string -> unit
 

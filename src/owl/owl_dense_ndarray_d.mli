@@ -254,7 +254,7 @@ val of_array : elt array -> int array -> arr
 
 val to_array : arr -> elt array
 
-val print : arr -> unit
+val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
 
 val save : arr -> string -> unit
 

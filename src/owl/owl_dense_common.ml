@@ -374,21 +374,6 @@ let _owl_elt_to_str : type a b. (a, b) kind -> (a -> bytes) = function
   | Complex64      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
   | _         -> failwith "_owl_print_elt: unsupported operation"
 
-let _owl_print_mat : type a b. (a, b) kind -> (a, b) owl_mat_op00 = function
-  | Float32   -> Format.printf "%a\n" Owl_pretty.pp_fmat
-  | Float64   -> Format.printf "%a\n" Owl_pretty.pp_fmat
-  | Complex32 -> Format.printf "%a\n" Owl_pretty.pp_cmat
-  | Complex64 -> Format.printf "%a\n" Owl_pretty.pp_cmat
-  | _         -> failwith "_owl_print_mat: unsupported operation"
-
-let _owl_print_mat_toplevel : type a b. (a, b) kind -> (a, b) owl_mat_op00 = function
-  | Int32     -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_imat
-  | Float32   -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_fmat
-  | Float64   -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_fmat
-  | Complex32 -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat
-  | Complex64 -> Format.printf "%a\n" Owl_pretty.Toplevel.pp_cmat
-  | _         -> fun _ -> () (* Format.printf "I don't know how to pprint it :(\n" *)
-
 let _owl_uniform_fun : type a b. (a, b) kind -> (float -> a) = function
   | Float32   -> fun s -> Owl_stats.Rnd.uniform () *. s
   | Float64   -> fun s -> Owl_stats.Rnd.uniform () *. s

@@ -113,7 +113,7 @@ module type NdarraySig = sig
 
   val split : ?axis:int -> int array -> arr -> arr array
 
-  val print : arr -> unit
+  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
 
   val draw_along_dim0 : arr -> int -> arr * int array
 
@@ -348,7 +348,7 @@ module type MatrixSig = sig
 
   val of_ndarray : arr -> mat
 
-  val print : mat -> unit
+  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> mat -> unit
 
   (* mathematical functions *)
 

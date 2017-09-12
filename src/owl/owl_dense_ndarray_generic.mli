@@ -690,10 +690,14 @@ val to_array : ('a, 'b) t -> 'a array
   ndarray [x] is flattened before convertion.
  *)
 
-val print : ('a, 'b) t -> unit
-(** [print x] prints all the elements in [x] as well as their indices. *)
+val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:('a -> string) -> ('a, 'b) t -> unit
+(** [print x] prints all the elements in [x] as well as their indices. [max_row]
+  and [max_col] specify the maximum number of rows and columns to display.
+  [header] specifies whether or not to print out the headers. [fmt] is the
+  function to format every element into string.
+ *)
 
-val pp_dsnda : ('a, 'b) t -> unit
+val pp_dsnda : Format.formatter -> ('a, 'b) t -> unit
 (** [pp_dsnda x] prints [x] in OCaml toplevel. If the ndarray is too long,
   [pp_dsnda] only prints out parts of the ndarray.
  *)

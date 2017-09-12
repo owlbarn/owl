@@ -897,13 +897,11 @@ val to_cols : ('a, 'b) t -> ('a, 'b) t array
 
 val of_cols : ('a, 'b) t array -> ('a, 'b) t
 
-val print : ('a, 'b) t -> unit
+val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:('a -> string) -> ('a, 'b) t -> unit
 (** [print x] pretty prints matrix [x] without headings. *)
 
 val pp_dsmat : Format.formatter -> ('a, 'b) t -> unit
-(** [pp_spmat x] pretty prints matrix [x] with headings. Toplevel uses this
-  function to print out the matrices.
- *)
+(** [pp_dsmat x] prints [x] in OCaml toplevel. *)
 
 val save : ('a, 'b) t -> string -> unit
 (** [save x f] saves the matrix [x] to a file with the name [f]. The format

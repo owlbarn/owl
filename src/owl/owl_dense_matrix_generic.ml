@@ -1071,9 +1071,11 @@ let save x f = Owl_utils.marshal_to_file x f
 
 let load k f = Owl_utils.marshal_from_file f
 
-let print x = _owl_print_mat (Array2.kind x) x
+let print ?max_row ?max_col ?header ?fmt x =
+  Owl_dense_ndarray_generic.print ?max_row ?max_col ?header ?fmt (to_ndarray x)
 
-let pp_dsmat formatter x = _owl_print_mat_toplevel (Array2.kind x) x
+let pp_dsmat formatter x = Owl_dense_ndarray_generic.pp_dsnda formatter (to_ndarray x)
+
 
 (* some other uncategorised functions *)
 

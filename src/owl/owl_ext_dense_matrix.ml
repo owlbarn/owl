@@ -351,9 +351,7 @@ module type BasicSig = sig
 
   val of_cols : mat array -> mat
 
-  val print : mat -> unit
-
-  val pp_dsmat : Format.formatter -> mat -> unit
+  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> mat -> unit
 
   val save : mat -> string -> unit
 
@@ -656,8 +654,6 @@ module Make_Basic
   let of_arrays x = M.of_arrays x |> pack_box
 
   let print x = M.print (unpack_box x)
-
-  let pp_dsmat x = M.pp_dsmat Format.std_formatter (unpack_box x)
 
   let save x f = M.save (unpack_box x) f
 

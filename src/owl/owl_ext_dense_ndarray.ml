@@ -259,7 +259,7 @@ module type BasicSig = sig
   val elt_greater_equal_scalar : arr -> elt -> arr
 
 
-  val print : arr -> unit
+  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
 
   val save : arr -> string -> unit
 
@@ -345,7 +345,7 @@ module Make_Basic
   let get_slice axis x = M.get_slice axis (unpack_box x) |> pack_box
 
   let set_slice axis x y = M.set_slice axis (unpack_box x) (unpack_box y)
-  
+
   let sub_left x s l = M.sub_left (unpack_box x) s l |> pack_box
 
   let slice_left x i = M.slice_left (unpack_box x) i |> pack_box
