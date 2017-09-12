@@ -20,7 +20,7 @@ RUN make -C $EIGENPATH oasis && make -C $EIGENPATH && make -C $EIGENPATH install
 
 RUN opam update
 RUN opam install ocaml-compiler-libs
-RUN opam install atdgen
+RUN opam install jbuilder
 
 RUN apt-get -y install libopenblas-dev liblapacke-dev
 
@@ -32,7 +32,7 @@ ENV OWLPATH /root/owl
 
 # Clone the repo, compile, and install
 RUN cd /root && git clone https://github.com/ryanrhymes/owl.git
-RUN make -C $OWLPATH oasis && make -C $OWLPATH && make -C $OWLPATH install
+RUN make -C $OWLPATH && make -C $OWLPATH install
 
 # Set default container command
 WORKDIR $OWLPATH

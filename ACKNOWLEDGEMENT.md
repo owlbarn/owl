@@ -10,7 +10,7 @@ Because Owl is always under active development, there might be a lag between the
 
 - The interface design are heavily influenced by [Numpy](http://www.numpy.org/), [SciPy](https://www.scipy.org/), [Julia](https://julialang.org/), [Matlab](https://www.mathworks.com/products/matlab.html).
 
-- The early versions heavily relied on [Markus Mottl](http://www.ocaml.info/) and [Christophe Troestler](https://github.com/Chris00)'s projects: [Lacaml](https://github.com/mmottl/lacaml), [Gsl](https://github.com/mmottl/gsl-ocaml). Even now, the pretty printing function of matrices still uses Markus' code.
+- The early versions heavily relied on [Markus Mottl](http://www.ocaml.info/) and [Christophe Troestler](https://github.com/Chris00)'s projects: [Lacaml](https://github.com/mmottl/lacaml), [Gsl](https://github.com/mmottl/gsl-ocaml).
 
 - [Ben Catterall](https://www.linkedin.com/in/ben-catterall-38643287/?ppe=1) did excellent theoretical work for Owl's underlying distributed computation engine. He also contributed to the NLP module.
 
