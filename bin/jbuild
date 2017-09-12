@@ -1,0 +1,24 @@
+(jbuild_version 1)
+
+(executable (
+  (name        zoo)
+  (public_name owl)
+  (package     owl_zoo)
+  (libraries  (
+    compiler-libs.toplevel
+    owl
+    owl_zoo
+  ))
+  (link_flags (-linkall))
+  (modes      (byte))
+))
+
+(install (
+  (section bin)
+  (package owl_zoo)
+  (files (
+    (owl_upload_gist.sh as owl_upload_gist.sh)
+    (owl_download_gist.sh as owl_download_gist.sh)
+    (owl_list_gist.sh as owl_list_gist.sh)
+  ))
+))

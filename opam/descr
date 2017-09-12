@@ -1,2 +1,0 @@
-Scientific computing library
-Owl is an OCaml numerical library for scientific computing. Owl supports both dense and sparse matrices of real and complex numbers, and various maths, stats, matrix, regression, optimisation, and fft operations. Owl also includes an integrated plotting module.

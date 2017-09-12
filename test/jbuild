@@ -1,0 +1,15 @@
+(jbuild_version 1)
+
+(executables (
+  (names (test_runner))
+  (libraries (
+    owl
+    alcotest
+  ))
+))
+
+(alias (
+  (name    runtest)
+  (deps    (test_runner.exe))
+  (action  (run ${<}))
+))

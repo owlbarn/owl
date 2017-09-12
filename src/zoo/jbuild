@@ -1,0 +1,13 @@
+(jbuild_version 1)
+
+(library (
+  (name owl_zoo)
+  (public_name owl_zoo)
+  (wrapped false)
+  (modes (byte))
+  (flags (:standard))
+  (libraries (
+    owl
+    ocaml-compiler-libs.toplevel
+  ))
+))
