@@ -143,9 +143,9 @@ val rows : mat -> int array -> mat
 
 val cols : mat -> int array -> mat
 
-val resize : ?head:bool -> int -> int -> mat -> mat
+val resize : ?head:bool -> mat -> int array -> mat
 
-val reshape : int -> int -> mat -> mat
+val reshape : mat -> int array -> mat
 
 val flatten : mat -> mat
 
@@ -180,10 +180,6 @@ val transpose : mat -> mat
 val ctranspose : mat -> mat
 
 val diag : ?k:int -> mat -> mat
-
-val replace_row : mat -> mat -> int -> mat
-
-val replace_col : mat -> mat -> int -> mat
 
 val swap_rows : mat -> int -> int -> unit
 
@@ -383,10 +379,6 @@ val to_arrays : mat -> elt array array
 
 val of_arrays : elt array array -> mat
 
-val to_ndarray : mat -> (Complex.t, complex64_elt) Owl_dense_ndarray_generic.t
-
-val of_ndarray : (Complex.t, complex64_elt) Owl_dense_ndarray_generic.t -> mat
-
 val to_rows : mat -> mat array
 
 val of_rows : mat array -> mat
@@ -410,11 +402,11 @@ val max : mat -> elt
 
 val minmax : mat -> elt * elt
 
-val min_i : mat -> elt * int * int
+val min_i : mat -> elt * int array
 
-val max_i : mat -> elt * int * int
+val max_i : mat -> elt * int array
 
-val minmax_i : mat -> (elt * int * int) * (elt * int * int)
+val minmax_i : mat -> (elt * int array) * (elt * int array)
 
 val re : mat -> cast_mat
 
@@ -428,7 +420,7 @@ val sum : mat -> elt
 
 val sum_ : ?axis:int -> mat -> mat
 
-val prod : mat -> elt
+val prod : ?axis:int option array -> mat -> elt
 
 val average : mat -> elt
 

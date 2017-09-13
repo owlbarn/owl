@@ -1084,7 +1084,7 @@ module Make
     and reshape a s =
       let ff = function
         | Arr a    -> Arr A.(reshape a s)
-        | Mat a    -> Mat M.(reshape s.(0) s.(1) a)
+        | Mat a    -> Mat M.(reshape a s)
         | _        -> error_uniop "reshape" a
       in
       let fd a = reshape a s in
@@ -1094,9 +1094,10 @@ module Make
 
     and flatten a = reshape a [|1; numel a|]
 
+    (* FIXME *)
     and mat_to_arr a =
       let ff = function
-        | Mat a    -> Arr M.(to_ndarray a)
+        | Mat a    -> Arr (Obj.magic a)
         | _        -> error_uniop "mat_to_arr" a
       in
       let fd a = mat_to_arr a in
@@ -1104,9 +1105,10 @@ module Make
       let r a = Mat2Arr_D a in
       op_d_d a ff fd df r
 
+    (* FIXME *)
     and arr_to_mat a =
       let ff = function
-        | Arr a    -> Mat M.(of_ndarray a)
+        | Arr a    -> Mat (Obj.magic a)
         | _        -> error_uniop "arr_to_mat" a
       in
       let fd a = arr_to_mat a in

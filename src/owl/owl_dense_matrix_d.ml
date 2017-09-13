@@ -71,8 +71,9 @@ let vector_uniform n = uniform 1 n
 
 let uniform_int ?(a=0) ?(b=99) m n =
   let x = empty m n in
-  iteri (fun i j _ -> x.{i,j} <-
-    float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ())
+  iteri (fun i j _ ->
+    M.set x i j
+    (float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ()))
   ) x; x
 
 let conj x = clone x

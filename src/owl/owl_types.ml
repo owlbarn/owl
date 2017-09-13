@@ -314,7 +314,7 @@ module type MatrixSig = sig
 
   val reset : mat -> unit
 
-  val reshape : int -> int -> mat -> mat
+  val reshape : mat -> int array -> mat
 
   val tile : mat -> int array -> mat
 
@@ -343,10 +343,6 @@ module type MatrixSig = sig
   val of_arrays : elt array array -> mat
 
   val of_rows: mat array -> mat
-
-  val to_ndarray : mat -> arr
-
-  val of_ndarray : arr -> mat
 
   val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> mat -> unit
 

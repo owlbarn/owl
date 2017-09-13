@@ -27,13 +27,13 @@ type dns = Dns
 type sps = Sps
 
 
-type dms = (float, float32_elt, c_layout) Array2.t
+type dms = (float, float32_elt, c_layout) Genarray.t
 
-type dmd = (float, float64_elt, c_layout) Array2.t
+type dmd = (float, float64_elt, c_layout) Genarray.t
 
-type dmc = (Complex.t, complex32_elt, c_layout) Array2.t
+type dmc = (Complex.t, complex32_elt, c_layout) Genarray.t
 
-type dmz = (Complex.t, complex64_elt, c_layout) Array2.t
+type dmz = (Complex.t, complex64_elt, c_layout) Genarray.t
 
 type das = (float, float32_elt, c_layout) Genarray.t
 

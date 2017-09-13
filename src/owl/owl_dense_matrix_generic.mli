@@ -21,9 +21,10 @@ open Bigarray
 
 open Owl_types
 
-type ('a, 'b) t = ('a, 'b, c_layout) Array2.t
+open Owl_dense_ndarray_generic
 
-type ('a, 'b) kind = ('a, 'b) Bigarray.kind
+
+type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 
 
 (** {6 Create dense matrices} *)
@@ -309,12 +310,12 @@ val cols : ('a, 'b) t -> int array -> ('a, 'b) t
   of x in a new dense matrix.
  *)
 
-val resize : ?head:bool -> int -> int -> ('a, 'b) t -> ('a, 'b) t
-(** [resize m n x] please refer to the Ndarray document.
+val resize : ?head:bool -> ('a, 'b) t -> int array -> ('a, 'b) t
+(** [resize x s] please refer to the Ndarray document.
  *)
 
-val reshape : int -> int -> ('a, 'b) t -> ('a, 'b) t
-(** [reshape m n x] returns a new [m] by [n] matrix from the [m'] by [n']
+val reshape :('a, 'b) t -> int array -> ('a, 'b) t
+(** [reshape x s] returns a new [m] by [n] matrix from the [m'] by [n']
   matrix [x]. Note that [(m * n)] must be equal to [(m' * n')], and the
   returned matrix shares the same memory with the original [x].
  *)
@@ -397,16 +398,6 @@ val ctranspose : ('a, 'b) t -> ('a, 'b) t
 val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t
 (** [diag k x] returns the [k]th diagonal elements of [x]. [k > 0] means above
   the main diagonal and [k < 0] means the below the main diagonal.
- *)
-
-val replace_row : ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
-(** [replace_row v x i] uses the row vector [v] to replace the [i]th row in
-  the matrix [x].
- *)
-
-val replace_col : ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t
-(** [replace_col v x j] uses the column vector [v] to replace the [j]th column
-  in the matrix [x].
  *)
 
 val swap_rows : ('a, 'b) t -> int -> int -> unit
@@ -879,16 +870,6 @@ val of_arrays : ('a, 'b) kind -> 'a array array -> ('a, 'b) t
   an [m] by [n] matrix.
  *)
 
-val to_ndarray : ('a, 'b) t -> ('a, 'b) Owl_dense_ndarray_generic.t
-(** [to_ndarray x] transforms a dense real matrix to [Bigarray.Genarray.t] type.
-  No copy is made by calling this function.
- *)
-
-val of_ndarray : ('a, 'b) Owl_dense_ndarray_generic.t -> ('a, 'b) t
-(** [of_ndarray x] transforms a ndarray of type [Bigarray.Genarray.t] to a dense
-  real matrix type. No copy is made by calling this function.
- *)
-
 val to_rows : ('a, 'b) t -> ('a, 'b) t array
 
 val of_rows : ('a, 'b) t array -> ('a, 'b) t
@@ -899,9 +880,6 @@ val of_cols : ('a, 'b) t array -> ('a, 'b) t
 
 val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:('a -> string) -> ('a, 'b) t -> unit
 (** [print x] pretty prints matrix [x] without headings. *)
-
-val pp_dsmat : Format.formatter -> ('a, 'b) t -> unit
-(** [pp_dsmat x] prints [x] in OCaml toplevel. *)
 
 val save : ('a, 'b) t -> string -> unit
 (** [save x f] saves the matrix [x] to a file with the name [f]. The format
@@ -951,13 +929,13 @@ val max : ('a, 'b) t -> 'a
 val minmax : ('a, 'b) t -> 'a * 'a
 (** [minmax x] returns both the minimum and minimum values in [x]. *)
 
-val min_i : ('a, 'b) t -> 'a * int * int
+val min_i : ('a, 'b) t -> 'a * int array
 (** [min_i x] returns the minimum of all elements in [x] as well as its index. *)
 
-val max_i : ('a, 'b) t -> 'a * int * int
+val max_i : ('a, 'b) t -> 'a * int array
 (** [max_i x] returns the maximum of all elements in [x] as well as its index. *)
 
-val minmax_i : ('a, 'b) t -> ('a * int * int) * ('a * int * int)
+val minmax_i : ('a, 'b) t -> ('a * int array) * ('a * int array)
 (** [minmax_i x] returns [((min_v,min_i), (max_v,max_i))] where [(min_v,min_i)]
   is the minimum value in [x] along with its index while [(max_v,max_i)] is the
   maximum value along its index.
@@ -975,7 +953,7 @@ val sum : ('a, 'b) t -> 'a
 val sum_ : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** [sum_ axis x] sums the elements in [x] along specified [axis]. *)
 
-val prod : ('a, 'b) t -> 'a
+val prod : ?axis:int option array -> ('a, 'b) t -> 'a
 (** [prod x] returns the product of all the elements in [x]. *)
 
 val average : ('a, 'b) t -> 'a

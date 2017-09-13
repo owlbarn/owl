@@ -9,7 +9,7 @@ module M = Owl_dense_matrix_generic
 let eps = 1e-16
 
 (* make testable *)
-let matrix = Alcotest.testable Owl_pretty.pp_fmat M.equal
+let matrix = Alcotest.testable Owl_pretty.pp_dsnda M.equal
 
 (* some test input *)
 let x0 = M.zeros Float64 3 4
@@ -69,7 +69,8 @@ module To_test = struct
   let greater () =
     let x = M.ones Float64 3 4 in
     let y = M.ones Float64 3 4 in
-    y.{0,0} <- 0.; y.{0,1} <- 2.;
+    M.set y 0 0 0.;
+    M.set y 0 1 2.;
     M.greater x y
 
   let greater_equal x = M.greater_equal x x
@@ -128,14 +129,14 @@ module To_test = struct
   let min_i () =
     let m, n = 3, 4 in
     let x = M.sequential Float64 m n in
-    let a, i, j = M.min_i x in
-    (i, j) = (0,0)
+    let a, i = M.min_i x in
+    i = [|0; 0|]
 
   let max_i () =
     let m, n = 3, 4 in
     let x = M.sequential Float64 m n in
-    let a, i, j = M.max_i x in
-    (i, j) = (m - 1, n - 1)
+    let a, i = M.max_i x in
+    i = [|m - 1; n - 1|]
 
   let map () =
     let x = M.ones Float64 3 4 in

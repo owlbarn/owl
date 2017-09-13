@@ -254,9 +254,7 @@ let marshal_from_file f =
   Marshal.from_string s 0
 
 (* check if passed-in variable is a row vector *)
-let check_row_vector x =
-  if Bigarray.Array2.dim1 x <> 1 then
-    failwith "error: the variable is not a row vector"
+let check_row_vector x = assert ((Bigarray.Genarray.dims x).(0) = 1)
 
 (* search the list given a value, return the position of its first occurrence *)
 let list_search x l =

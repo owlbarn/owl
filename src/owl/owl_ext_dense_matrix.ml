@@ -147,7 +147,7 @@ module type BasicSig = sig
 
   val cols : mat -> int array -> mat
 
-  val reshape : int -> int -> mat -> mat
+  val reshape : mat -> int array -> mat
 
   val flatten : mat -> mat
 
@@ -172,10 +172,6 @@ module type BasicSig = sig
   val transpose : mat -> mat
 
   val diag : ?k:int -> mat -> mat
-
-  val replace_row : mat -> mat -> int -> mat
-
-  val replace_col : mat -> mat -> int -> mat
 
   val swap_rows : mat -> int -> int -> unit
 
@@ -364,7 +360,7 @@ module type BasicSig = sig
 
   val sum : mat -> elt
 
-  val prod : mat -> elt
+  val prod : ?axis:int option array -> mat -> elt
 
   val average : mat -> elt
 
@@ -467,7 +463,7 @@ module Make_Basic
 
   let cols x l = M.cols (unpack_box x) l |> pack_box
 
-  let reshape m n x = M.reshape m n (unpack_box x) |> pack_box
+  let reshape x s = M.reshape (unpack_box x) s |> pack_box
 
   let flatten x = M.flatten (unpack_box x) |> pack_box
 
@@ -490,10 +486,6 @@ module Make_Basic
   let transpose x = M.transpose (unpack_box x) |> pack_box
 
   let diag x = M.diag (unpack_box x) |> pack_box
-
-  let replace_row v x i = M.replace_row (unpack_box v) (unpack_box x) i |> pack_box
-
-  let replace_col v x i = M.replace_col (unpack_box v) (unpack_box x) i |> pack_box
 
   let swap_rows x i i' = M.swap_rows (unpack_box x) i i'
 
@@ -666,7 +658,7 @@ module Make_Basic
 
   let sum x = M.sum (unpack_box x) |> pack_elt
 
-  let prod x = M.prod (unpack_box x) |> pack_elt
+  let prod ?axis x = M.prod ?axis (unpack_box x) |> pack_elt
 
   let average x = M.average (unpack_box x) |> pack_elt
 
@@ -723,11 +715,11 @@ module type SD_Sig = sig
 
   val minmax : mat -> elt * elt
 
-  val min_i : mat -> elt * int * int
+  val min_i : mat -> elt * int array
 
-  val max_i : mat -> elt * int * int
+  val max_i : mat -> elt * int array
 
-  val minmax_i : mat -> (elt * int * int) * (elt * int * int)
+  val minmax_i : mat -> (elt * int array) * (elt * int array)
 
   val abs : mat -> mat
 
@@ -859,11 +851,11 @@ module Make_SD
 
   let minmax x = let (a, b) = M.minmax (unpack_box x) in (pack_elt a, pack_elt b)
 
-  let min_i x = let (a, i, j) = M.min_i (unpack_box x) in (pack_elt a, [|i;j|])
+  let min_i x = let (a, i) = M.min_i (unpack_box x) in (pack_elt a, i)
 
-  let max_i x = let (a, i, j) = M.max_i (unpack_box x) in (pack_elt a, [|i;j|])
+  let max_i x = let (a, i) = M.max_i (unpack_box x) in (pack_elt a, i)
 
-  let minmax_i x = let (a, i, j), (b, p, q) = M.minmax_i (unpack_box x) in (pack_elt a, [|i;j|]), (pack_elt b, [|p;q|])
+  let minmax_i x = let (a, i), (b, j) = M.minmax_i (unpack_box x) in (pack_elt a, i), (pack_elt b, j)
 
   let abs x = M.abs (unpack_box x) |> pack_box
 

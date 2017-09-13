@@ -22,11 +22,11 @@ let lu x =
 
   let a, ipiv = Owl_lapacke.getrf x in
   let l = M.tril a in
-  let u = M.resize n n (M.triu a) in
+  let u = M.resize (M.triu a) [|n; n|] in
 
   let _a1 = Owl_dense_common._one (M.kind x) in
   for i = 0 to minmn - 1 do
-    l.{i,i} <- _a1
+    M.set l i i _a1
   done;
 
   l, u, ipiv
@@ -54,9 +54,9 @@ let det x =
 
   let _mul_op = Owl_dense_common._mul_elt (M.kind x) in
   for i = 0 to m - 1 do
-    d := _mul_op !d a.{i,i};
+    d := _mul_op !d (M.get a i i);
     (* NOTE: +1 to adjust to Fortran index *)
-    if ipiv.{0,i} <> Int32.of_int (i + 1) then
+    if (M.get ipiv 0 i) <> Int32.of_int (i + 1) then
       c := !c + 1
   done;
 
@@ -81,9 +81,9 @@ let logdet x =
   let _neg_op = Owl_dense_common._neg_elt _kind in
 
   for i = 0 to m - 1 do
-    d := _add_op !d (_log_op a.{i,i});
+    d := _add_op !d (_log_op (M.get a i i));
     (* NOTE: +1 to adjust to Fortran index *)
-    if ipiv.{0,i} <> Int32.of_int (i + 1) then
+    if (M.get ipiv 0 i) <> Int32.of_int (i + 1) then
       c := !c + 1
   done;
 
@@ -119,8 +119,8 @@ let qr ?(thin=true) ?(pivot=false) x =
       )
   in
   let r = match thin with
-    | true  -> M.resize ~head:true minmn n (M.triu a)
-    | false -> M.resize ~head:true m n (M.triu a)
+    | true  -> M.resize ~head:true (M.triu a) [|minmn; n|]
+    | false -> M.resize ~head:true (M.triu a) [|m; n|]
   in
   let a = match thin with
     | true  -> a
@@ -174,7 +174,7 @@ let lq ?(thin=true) x =
     | true  -> a
     | false ->
         if m >= n then a
-        else M.resize ~head:true n n a
+        else M.resize ~head:true a [|n; n|]
   in
   let q = _get_lq_q (M.kind x) a tau in
   l, q
@@ -207,11 +207,11 @@ let gsvd x y =
   let u, v, q, alpha, beta, k, l, r =
     Owl_lapacke.ggsvd3 ~jobu:'U' ~jobv:'V' ~jobq:'Q' ~a:x ~b:y
   in
-  let alpha = M.resize ~head:true 1 (k + l) alpha in
-  let d1 = M.resize ~head:true m (k + l) (M.diagm alpha) in
-  let beta = M.resize ~head:true 1 (k + l) beta in
-  let beta = M.resize ~head:false 1 l beta in
-  let d2 = M.resize p (k + l) (M.diagm ~k beta) in
+  let alpha = M.resize ~head:true alpha [|1; (k + l)|] in
+  let d1 = M.resize ~head:true (M.diagm alpha) [|m; k + l|] in
+  let beta = M.resize ~head:true beta [|1; k + l|] in
+  let beta = M.resize ~head:false beta [|1; l|] in
+  let d2 = M.resize (M.diagm ~k beta) [|p; k + l|] in
   u, v, q, d1, d2, r
 
 
@@ -221,8 +221,8 @@ let gsvdvals x y =
   let _, _, _, alpha, beta, k, l, _ =
     Owl_lapacke.ggsvd3 ~jobu:'N' ~jobv:'N' ~jobq:'N' ~a:x ~b:y
   in
-  let alpha = M.resize ~head:true 1 (k + l) alpha in
-  let beta = M.resize ~head:true 1 (k + l) beta in
+  let alpha = M.resize ~head:true alpha [|1; k + l|] in
+  let beta = M.resize ~head:true beta [|1; k + l|] in
   M.(div alpha beta)
 
 
@@ -306,15 +306,15 @@ let eig
     let j = ref 0 in
 
     while !j < n do
-      if wi.{0,!j} = _a0 then (
+      if (M.get wi 0 !j) = _a0 then (
         for k = 0 to n - 1 do
-          v.{k,!j} <- Complex.({re=vr.{k,!j}; im=0.})
+          M.set v k !j Complex.({re = M.get vr k !j; im = 0.})
         done
       )
       else (
         for k = 0 to n - 1 do
-          v.{k,!j}   <- Complex.( {re = vr.{k,!j}; im = vr.{k,!j+1}} );
-          v.{k,!j+1} <- Complex.( {re = vr.{k,!j}; im = 0. -. vr.{k,!j+1}} );
+          M.set v k !j Complex.( {re = M.get vr k !j; im = M.get vr k (!j+1)} );
+          M.set v k (!j+1) Complex.( {re = M.get vr k !j; im = 0. -. (M.get vr k (!j+1))} );
         done;
         j := !j + 1
       );
@@ -435,7 +435,7 @@ let is_triu x =
   try
     for i = 0 to k - 1 do
       for j = 0 to i - 1 do
-        assert (x.{i,j} = _a0)
+        assert (M.get x i j = _a0)
       done
     done;
     true
@@ -449,7 +449,7 @@ let is_tril x =
   try
     for i = 0 to k - 1 do
       for j = i + 1 to k - 1 do
-        assert (x.{i,j} = _a0)
+        assert (M.get x i j = _a0)
       done
     done;
     true
@@ -463,7 +463,9 @@ let is_symmetric x =
     try
       for i = 0 to n - 1 do
         for j = (i + 1) to n - 1 do
-          assert (x.{j,i} = x.{i,j})
+          let a = M.get x j i in
+          let b = M.get x i j in
+          assert (a = b)
         done
       done;
       true
@@ -478,7 +480,9 @@ let is_hermitian x =
     try
       for i = 0 to n - 1 do
         for j = i to n - 1 do
-          assert (x.{j,i} = Complex.conj x.{i,j})
+          let a = M.get x j i in
+          let b = Complex.conj (M.get x i j) in
+          assert (a = b)
         done
       done;
       true
@@ -558,7 +562,7 @@ let null x =
     let maxsv = M.max s in
     let maxmn = Pervasives.max m n |> float_of_int in
     let i = M.elt_greater_scalar s (maxmn *. maxsv *. eps) |> M.sum |> int_of_float in
-    let vt = M.resize ~head:false (M.row_num vt - i) (M.col_num vt) vt in
+    let vt = M.resize ~head:false vt [|M.row_num vt - i; M.col_num vt|] in
     M.transpose vt
   )
 
@@ -605,11 +609,13 @@ let linreg x y =
   let ny = M.numel y in
   assert (nx = ny);
 
-  let x = M.reshape nx 1 x in
-  let y = M.reshape ny 1 y in
+  let x = M.reshape x [|nx; 1|] in
+  let y = M.reshape y [|ny; 1|] in
 
   let k = M.kind x in
-  let b = Owl_dense_common._div_elt k (M.cov ~a:x ~b:y).{0,1} (M.var ~axis:0 x).{0,0} in
+  let p = M.get (M.cov ~a:x ~b:y) 0 1 in
+  let q = M.get (M.var ~axis:0 x) 0 0 in
+  let b = Owl_dense_common._div_elt k p q in
   let c = Owl_dense_common._mul_elt k b (M.average x) in
   let a = Owl_dense_common._sub_elt k (M.average y) c in
   a, b
@@ -637,8 +643,8 @@ let pinv ?tol x =
 
 
 let peakflops ?(n=2000) () =
-  let x = M.ones float64 n n |> Owl_utils.array2_to_array1 in
-  let z = M.ones float64 n n |> Owl_utils.array2_to_array1 in
+  let x = M.ones float64 n n |> M.flatten |> array1_of_genarray in
+  let z = M.ones float64 n n |> M.flatten |> array1_of_genarray in
   let layout = Owl_cblas.CblasRowMajor in
   let transa = Owl_cblas.CblasNoTrans in
   let transb = Owl_cblas.CblasNoTrans in

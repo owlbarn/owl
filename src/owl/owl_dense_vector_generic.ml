@@ -48,16 +48,16 @@ let sequential ?(typ=Row) ?a ?step k m = match typ with
 let unit_basis ?(typ=Row) k m i =
   let a1 = Owl_types._one k in
   match typ with
-  | Row -> let v = M.zeros k 1 m in v.{0,i} <- a1; v
-  | Col -> let v = M.zeros k m 1 in v.{i,0} <- a1; v
+  | Row -> let v = M.zeros k 1 m in M.set v 0 i a1; v
+  | Col -> let v = M.zeros k m 1 in M.set v 0 i a1; v
 
 let linspace ?(typ=Row) k a b n = match typ with
   | Row -> M.linspace k a b n
-  | Col -> M.linspace k a b n |> M.reshape n 1
+  | Col -> M.linspace k a b n |> M.transpose
 
 let logspace ?(typ=Row) ?base k a b n = match typ with
   | Row -> M.logspace k ?base a b n
-  | Col -> M.logspace k ?base a b n |> M.reshape n 1
+  | Col -> M.logspace k ?base a b n |> M.transpose
 
 
 (* vector properties and manipulations *)
@@ -69,13 +69,13 @@ let vec_typ x =
 
 let get x i =
   match vec_typ x with
-  | Row -> x.{0,i}
-  | Col -> x.{i,0}
+  | Row -> M.get x 0 i
+  | Col -> M.get x i 0
 
 let set x i a =
   match vec_typ x with
-  | Row -> x.{0,i} <- a
-  | Col -> x.{i,0} <- a
+  | Row -> M.set x 0 i a
+  | Col -> M.set x i 0 a
 
 
 (* vector iteration operations *)
@@ -109,12 +109,12 @@ let of_array ?(typ=Row) k l = match typ with
 (* unary math operators *)
 
 let min_i x = match vec_typ x with
-  | Row -> let a, _, i = M.min_i x in a, i
-  | Col -> let a, i, _ = M.min_i x in a, i
+  | Row -> let a, i = M.min_i x in a, i.(1)
+  | Col -> let a, i = M.min_i x in a, i.(0)
 
 let max_i x = match vec_typ x with
-  | Row -> let a, _, i = M.max_i x in a, i
-  | Col -> let a, i, _ = M.max_i x in a, i
+  | Row -> let a, i = M.max_i x in a, i.(1)
+  | Col -> let a, i = M.max_i x in a, i.(0)
 
 
 (* ends here *)

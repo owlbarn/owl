@@ -72,7 +72,7 @@ let uniform_int ?(a=0) ?(b=99) m n =
   iteri (fun i j _ ->
     let re = float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ()) in
     let im = float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ()) in
-    x.{i,j} <- Complex.({re; im})
+    M.set x i j Complex.({re; im})
   ) x; x
 
 let abs x = abs_z2d x

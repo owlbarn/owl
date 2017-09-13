@@ -35,7 +35,7 @@ let grad' f x =
   let g = V.create n (f x) in
   let gg = V.mapi (fun i xi ->
     let x' = V.clone x in
-    x'.{0,i} <- xi +. _eps;
+    M.set x' 0 i (xi +. _eps);
     f x'
   ) x
   in
@@ -52,7 +52,7 @@ let jacobianT' f x =
   let j = M.tile y [|m; 1|] in
   let jj = M.mapi_by_row n (fun i yi ->
     let x' = M.clone x in
-    x'.{0,i} <- x.{0,i} +. _eps;
+    M.set x' 0 i ((M.get x 0 i) +. _eps);
     f x'
   ) j
   in

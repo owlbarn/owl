@@ -59,7 +59,7 @@ let load_mnist_test_data () =
   Owl_dense_matrix.S.load (p ^ "mnist-test-lblvec")
 
 let print_mnist_image x =
-  x |> Owl_dense_matrix_generic.reshape 28 28
+  Owl_dense_matrix_generic.reshape x [|28; 28|]
   |> Owl_dense_matrix_generic.iter_rows (fun v ->
     Owl_dense_vector_generic.iter (function 0. -> Printf.printf " " | _ -> Printf.printf "■") v;
     print_endline "";
@@ -69,14 +69,12 @@ let print_mnist_image x =
 let load_mnist_train_data_arr () =
   let x, label, y = load_mnist_train_data () in
   let m = Owl_dense_matrix.S.row_num x in
-  let x = Owl_dense_matrix.S.to_ndarray x in
   let x = Owl_dense_ndarray.S.reshape x [|m;28;28;1|] in
   x, label, y
 
 let load_mnist_test_data_arr () =
   let x, label, y = load_mnist_test_data () in
   let m = Owl_dense_matrix.S.row_num x in
-  let x = Owl_dense_matrix.S.to_ndarray x in
   let x = Owl_dense_ndarray.S.reshape x [|m;28;28;1|] in
   x, label, y
 
