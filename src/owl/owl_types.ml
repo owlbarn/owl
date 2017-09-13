@@ -275,7 +275,6 @@ end
 module type MatrixSig = sig
 
   type mat
-  type arr
   type elt = float
 
   (* creation and operation functions *)

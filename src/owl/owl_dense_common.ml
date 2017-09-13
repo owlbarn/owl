@@ -328,7 +328,6 @@ let _eigen_colwise_op : type a b . (a, b) kind -> (a, b) eigen_mat_op03 = functi
 (* interface to owl's c functions, types for interfacing to owl *)
 
 type ('a, 'b) owl_vec = ('a, 'b, c_layout) Array1.t
-type ('a, 'b) owl_mat = ('a, 'b, c_layout) Array2.t
 type ('a, 'b) owl_arr = ('a, 'b, c_layout) Genarray.t
 
 type ('a, 'b) owl_vec_op00 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> int
@@ -351,7 +350,6 @@ type ('a, 'b) owl_vec_op16 = int -> ('a, 'b) owl_vec -> 'a -> float -> int
 type ('a, 'b, 'c, 'd) owl_vec_op17 = int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> ('c, 'd) owl_vec -> unit
 type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
 type ('a, 'b) owl_arr_op17 = ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit
-type ('a, 'b) owl_mat_op00 = ('a, 'b) owl_mat -> unit
 
 
 (* call functions in owl native c *)
@@ -1616,10 +1614,10 @@ external owl_complex_double_conj : int -> ('a, 'b) owl_vec -> int -> int -> ('a,
 let _owl_conj : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
   fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
   match k with
-  | Float32     -> _owl_copy n ~ofsx ~incx ~ofsy ~incy x y
-  | Float64     -> _owl_copy n ~ofsx ~incx ~ofsy ~incy x y
-  | Complex32   -> owl_complex_float_conj n x ofsx incx y ofsy incy
-  | Complex64   -> owl_complex_double_conj n x ofsx incx y ofsy incy
+  | Float32   -> _owl_copy n ~ofsx ~incx ~ofsy ~incy x y
+  | Float64   -> _owl_copy n ~ofsx ~incx ~ofsy ~incy x y
+  | Complex32 -> owl_complex_float_conj n x ofsx incx y ofsy incy
+  | Complex64 -> owl_complex_double_conj n x ofsx incx y ofsy incy
   | _         -> failwith "_owl_conj: unsupported operation"
 
 external _owl_re_c2s : int -> (Complex.t, complex32_elt) owl_vec -> (float, float32_elt) owl_vec -> unit = "re_c2s"

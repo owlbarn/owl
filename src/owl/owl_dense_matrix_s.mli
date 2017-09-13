@@ -9,7 +9,6 @@ open Owl_types
 
 type elt = float
 type mat = (float, float32_elt) Owl_dense_matrix_generic.t
-type arr = (float, float32_elt) Owl_dense_ndarray_generic.t
 
 
 (** {6 Create dense matrices} *)

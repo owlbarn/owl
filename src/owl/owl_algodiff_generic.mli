@@ -8,9 +8,11 @@
 open Owl_types
 
 
-(** {The functor used to generate Algodiff module of various precisions.
+(**
+  The functor used to generate Algodiff module of various precisions.
   Currently, Dense.Matrix.S and Dense.Matrix.D can be plugged in to suppport
-  32-bit and 64-bit two precisions.} *)
+  32-bit and 64-bit two precisions.
+ *)
 
 module Make
   (M : MatrixSig)
