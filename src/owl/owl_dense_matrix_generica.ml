@@ -13,7 +13,7 @@ include Owl_dense_ndarray_generic
 type area = { a : int; b : int; c : int; d : int }
 
 
-let _is_matrix x =
+let shape x =
   let x_shape = shape x in
   assert (Array.length x_shape = 2);
   x_shape.(0), x_shape.(1)
@@ -23,17 +23,17 @@ let area a b c d = { a = a; b = b; c = c; d = d }
 
 
 let area_of x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   { a = 0; b = 0; c = m - 1; d = n - 1 }
 
 
 let area_of_row x i =
-  let n = (shape x).(1) in
+  let n = (Owl_dense_ndarray_generic.shape x).(1) in
   area i 0 i (n - 1)
 
 
 let area_of_col x i =
-  let m = (shape x).(0) in
+  let m = (Owl_dense_ndarray_generic.shape x).(0) in
   area 0 i (m - 1) i
 
 
@@ -131,7 +131,7 @@ let diagm ?(k=0) v =
 
 
 let triu ?(k=0) x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let y = zeros (kind x) m n in
   let x' = flatten x |> Bigarray.array1_of_genarray in
   let y' = flatten y |> Bigarray.array1_of_genarray in
@@ -153,7 +153,7 @@ let triu ?(k=0) x =
 
 
 let tril ?(k=0) x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let y = zeros (kind x) m n in
   let x' = flatten x |> Bigarray.array1_of_genarray in
   let y' = flatten y |> Bigarray.array1_of_genarray in
@@ -173,7 +173,7 @@ let tril ?(k=0) x =
 
 
 let symmetric ?(upper=true) x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   assert (m = n);
   let y = clone x in
   let y' = flatten y |> Bigarray.array1_of_genarray in
@@ -215,7 +215,7 @@ let bidiagonal ?(upper=true) dv ev =
 
 
 let hermitian ?(upper=true) x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   assert (m = n);
 
   let y = clone x in
@@ -298,8 +298,8 @@ let hankel ?r c =
 
 let kron a b =
   let int_floor q r = int_of_float((float_of_int q) /. (float_of_int r)) in
-  let nra, nca = _is_matrix a in
-  let nrb, ncb = _is_matrix b in
+  let nra, nca = shape a in
+  let nrb, ncb = shape b in
   let nrk, nck = ((nra*nrb), (nca*ncb)) in
   let k = empty (kind a) nrk nck in
   let _mul_op = _mul_elt (kind a) in
@@ -328,21 +328,21 @@ let get x i j = Owl_dense_ndarray_generic.get x [|i;j|]
 let set x i j a = Owl_dense_ndarray_generic.set x [|i;j|] a
 
 
-let row_num x = _is_matrix x |> fst
+let row_num x = shape x |> fst
 
 
-let col_num x = _is_matrix x |> snd
+let col_num x = shape x |> snd
 
 
 let row x i =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   assert (i < m);
   let y = Bigarray.Genarray.slice_left x [|i|] in
   reshape y [|1;n|]
 
 
 let col x j =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   assert (j < n);
   let y = empty (kind x) m 1 in
   let x' = flatten x |> Bigarray.array1_of_genarray in
@@ -378,7 +378,7 @@ let rows x l =
 
 
 let cols x l =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let nl = Array.length (l) in
   let k = kind x in
   let y = empty k m nl in
@@ -403,7 +403,7 @@ let swap_cols x j j' =
 
 
 let transpose x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let y = empty (kind x) n m in
   let x' = Bigarray.array2_of_genarray x in
   let y' = Bigarray.array2_of_genarray y in
@@ -412,7 +412,7 @@ let transpose x =
 
 
 let ctranspose x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let y = empty (kind x) n m in
   let x' = flatten x |> Bigarray.array1_of_genarray in
   let y' = flatten y |> Bigarray.array1_of_genarray in
@@ -440,8 +440,11 @@ let ctranspose x =
 
 (* iteration functions *)
 
+let iter f x = Owl_dense_ndarray_generic.iter f x
+
+
 let iteri f x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let x = Bigarray.array2_of_genarray x in
 
   for i = 0 to m - 1 do
@@ -484,8 +487,11 @@ let iteri_cols f x =
 let iter_cols f x = iteri_cols (fun _ y -> f y) x
 
 
+let map f x = Owl_dense_ndarray_generic.map f x
+
+
 let mapi f x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let y = empty (kind x) m n in
   let y' = Bigarray.array2_of_genarray y in
   iteri (fun i j z ->
@@ -496,7 +502,7 @@ let mapi f x =
 
 let map2i f x y =
   assert (shape x = shape y);
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let z = empty (kind x) m n in
   let y' = Bigarray.array2_of_genarray y in
   let z' = Bigarray.array2_of_genarray z in
@@ -617,8 +623,8 @@ let foldi f a x =
 
 
 let dot x1 x2 =
-  let m, k = _is_matrix x1 in
-  let l, n = _is_matrix x2 in
+  let m, k = shape x1 in
+  let l, n = shape x2 in
   assert (k = l);
 
   let _kind = kind x1 in
@@ -650,7 +656,7 @@ let sum_rows x = dot (ones (kind x) 1 (row_num x)) x
 
 
 let average_cols x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let k = kind x in
   let _a = (_average_elt k) (_one k) n in
   let y = create k n 1 _a in
@@ -658,7 +664,7 @@ let average_cols x =
 
 
 let average_rows x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let k = kind x in
   let _a = (_average_elt k) (_one k) m in
   let y = create k 1 m _a in
@@ -692,7 +698,7 @@ let average x =
 
 
 let diag ?(k=0) x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let l = match k >= 0 with
     | true  -> Pervasives.(max 0 (min m (n - k)))
     | false -> Pervasives.(max 0 (min n (m + k)))
@@ -712,7 +718,7 @@ let trace x = sum (diag x)
 
 
 let add_diag x a =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let m = Pervasives.min m n in
   let y = clone x in
   let _op = _add_elt (kind x) in
@@ -812,7 +818,7 @@ let draw_cols2 ?(replacement=true) x y c =
 
 
 let shuffle_rows x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let y = clone x in
   for i = 0 to m - 1 do
     swap_rows y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
@@ -820,7 +826,7 @@ let shuffle_rows x =
 
 
 let shuffle_cols x =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let y = clone x in
   for i = 0 to n - 1 do
     swap_cols y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
@@ -1050,7 +1056,7 @@ let magic k n =
 
 
 let max_pool ?padding x kernel stride =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let x = Owl_dense_ndarray_generic.reshape x [|1;m;n;1|] in
   let y = Owl_dense_ndarray_generic.max_pool2d ?padding x kernel stride in
   let s = Owl_dense_ndarray_generic.shape y in
@@ -1059,7 +1065,7 @@ let max_pool ?padding x kernel stride =
 
 
 let avg_pool ?padding x kernel stride =
-  let m, n = _is_matrix x in
+  let m, n = shape x in
   let x = Owl_dense_ndarray_generic.reshape x [|1;m;n;1|] in
   let y = Owl_dense_ndarray_generic.avg_pool2d ?padding x kernel stride in
   let s = Owl_dense_ndarray_generic.shape y in
