@@ -13,7 +13,7 @@ open Owl_types
 
 module Make
   (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.arr)
+  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
   = struct
 
   module Neuron = Owl_neural_neuron.Make (M) (A)
@@ -256,8 +256,8 @@ module Make
     let nn = copy nn in
     _remove_training_nodes nn;
     let inference x =
-      match run (Mat x) nn with
-      | Mat y -> y
+      match run (Arr x) nn with
+      | Arr y -> y
       | _     -> failwith "Owl_neural_graph:model"
     in
     inference
@@ -268,7 +268,7 @@ module Make
     _remove_training_nodes nn;
     let inference x =
       match run (Arr x) nn with
-      | Mat y -> y
+      | Arr y -> y
       | _     -> failwith "Owl_neural_graph:model_cnn"
     in
     inference
@@ -453,15 +453,15 @@ module Make
     add_node nn [|input_node|] n
 
 
-  let reshape ?name ?convert outputs input_node =
-    let neuron = Reshape (Reshape.create ?convert outputs) in
+  let reshape ?name outputs input_node =
+    let neuron = Reshape (Reshape.create outputs) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
     add_node nn [|input_node|] n
 
 
-  let flatten ?name ?convert input_node =
-    let neuron = Flatten (Flatten.create ?convert ()) in
+  let flatten ?name input_node =
+    let neuron = Flatten (Flatten.create ()) in
     let nn = get_network input_node in
     let n = make_node ?name [||] [||] neuron None nn in
     add_node nn [|input_node|] n
@@ -589,11 +589,11 @@ module Make
 
 
   let train ?state ?params ?init_model nn x y =
-    train_generic ?state ?params ?init_model nn (Mat x) (Mat y)
+    train_generic ?state ?params ?init_model nn (Arr x) (Arr y)
 
 
   let train_cnn ?state ?params ?init_model nn x y =
-    train_generic ?state ?params ?init_model nn (Arr x) (Mat y)
+    train_generic ?state ?params ?init_model nn (Arr x) (Arr y)
 
 
 

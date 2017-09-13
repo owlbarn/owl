@@ -14,11 +14,10 @@ open Owl_types
 
 module Make
   (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.arr)
+  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
   : sig
 
   type arr = A.arr
-  type mat = M.mat
   type elt = M.elt
 
   type trace_op
@@ -26,7 +25,6 @@ module Make
   type t =
     | F   of float                                  (* constructor of float numbers *)
     | Arr of arr                                    (* constructor of ndarrays *)
-    | Mat of mat                                    (* constructor of matrices *)
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
 
@@ -162,10 +160,6 @@ module Make
     val flatten : t -> t
 
     val concat : int -> t -> t -> t
-
-    val mat_to_arr : t -> t
-
-    val arr_to_mat : t -> t
 
     val get_slice: index list -> t -> t
 
@@ -348,10 +342,6 @@ module Make
   val pack_arr : arr -> t
 
   val unpack_arr : t -> arr
-
-  val pack_mat : mat -> t
-
-  val unpack_mat : t -> mat
 
   val tag : unit -> int
 

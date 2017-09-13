@@ -12,7 +12,7 @@ open Owl_types
 
 module Make
   (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.arr)
+  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
   = struct
 
   include Owl_algodiff_generic.Make (M) (A)
@@ -60,18 +60,6 @@ module Make
       let r1 = sqrt (6. /. (fan_in +. fan_out)) in
       let r2 = sqrt (2. /. (fan_in +. fan_out)) in
       match x with
-      | Mat _ -> (
-          let m, n = s.(0), s.(1) in
-          match t with
-          | Uniform (a, b)       -> Mat.(add (uniform ~scale:(b-.a) m n) (F a))
-          | Gaussian (mu, sigma) -> Mat.(add (gaussian ~sigma m n) (F mu))
-          | Standard             -> Mat.(add (uniform ~scale:(2.*.r0) m n) (F (-.r0)))
-          | Tanh                 -> Mat.(add (uniform ~scale:(2.*.r1) m n) (F (-.r1)))
-          | GlorotUniform        -> Mat.(add (uniform ~scale:(2.*.r1) m n) (F (-.r1)))
-          | GlorotNormal         -> Mat.(gaussian ~sigma:r2 m n)
-          | LecunNormal          -> Mat.(gaussian ~sigma:r0 m n)
-          | Custom f             -> f s
-        )
       | Arr _ -> (
           match t with
           | Uniform (a, b)       -> Arr.(add (uniform ~scale:(b-.a) s) (F a))
@@ -123,7 +111,6 @@ module Make
             let in_shape = Array.(sub in_shape 1 (length in_shape - 1)) in
             assert (in_shape = l.in_shape)
           )
-        | Mat _ -> assert (Mat.col_num x = l.in_shape.(0))
         | _     -> failwith "Owl_neural:Input:run:check_shape"
       in
       check_shape x; x
@@ -460,7 +447,7 @@ module Make
       let act x = Activation.run_activation x l.act in
       for i = 0 to l.in_shape.(0) - 1 do
         let t = Maths.get_slice [R[];R[i];R[]] x in
-        let t = Maths.(reshape t [|s.(0);s.(2)|] |> arr_to_mat) in
+        let t = Maths.reshape t [|s.(0);s.(2)|] in
         (* recurrent logic, calculate the hidden state *)
         l.h <- act Maths.((l.h *@ l.whh) + (t *@ l.wxh) + l.bh);
       done;
@@ -651,7 +638,7 @@ module Make
       l.c <- Mat.zeros s.(0) l.out_shape.(0);
       for i = 0 to l.in_shape.(0) - 1 do
         let t = Maths.get_slice [R[];R[i];R[]] x in
-        let t = Maths.(reshape t [|s.(0);s.(2)|] |> arr_to_mat) in
+        let t = Maths.reshape t [|s.(0);s.(2)|] in
         (* lstm logic, calculate the output *)
         let i  = Maths.(((t *@ l.wxi) + (l.h *@ l.whi) + l.bi) |> sigmoid) in
         let c' = Maths.(((t *@ l.wxc) + (l.h *@ l.whc) + l.bc) |> tanh) in
@@ -823,7 +810,7 @@ module Make
       l.h <- Mat.zeros s.(0) l.out_shape.(0);
       for i = 0 to l.in_shape.(0) - 1 do
         let t = Maths.get_slice [R[];R[i];R[]] x in
-        let t = Maths.(reshape t [|s.(0);s.(2)|] |> arr_to_mat) in
+        let t = Maths.reshape t [|s.(0);s.(2)|] in
         (* gru logic, calculate the output *)
         let z  = Maths.(((t *@ l.wxz) + (l.h *@ l.whz) + l.bz) |> sigmoid) in
         let r  = Maths.(((t *@ l.wxr) + (l.h *@ l.whr) + l.br) |> sigmoid) in
@@ -1188,7 +1175,7 @@ module Make
     let run x l =
       let m = Mat.row_num l.w in
       let n = Arr.numel x / m in
-      let x = Maths.(reshape x [|n;m|] |> arr_to_mat) in
+      let x = Maths.reshape x [|n;m|] in
       let y = Maths.((x *@ l.w) + l.b) in
       y
 
@@ -1435,7 +1422,7 @@ module Make
       let a = Maths.max_pool1d VALID x kernel [|1|] in
       let s = Arr.shape a in
       let b, o = s.(0), s.(2) in
-      Arr.reshape a [|b; o|] |> Maths.arr_to_mat
+      Arr.reshape a [|b; o|]
 
     let to_string l =
       Printf.sprintf "    GlobalMaxPool1D : in:[*,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) ^
@@ -1473,7 +1460,7 @@ module Make
       let a = Maths.max_pool2d VALID x kernel [|1;1|] in
       let s = Arr.shape a in
       let b, o = s.(0), s.(3) in
-      Arr.reshape a [|b; o|] |> Maths.arr_to_mat
+      Arr.reshape a [|b; o|]
 
     let to_string l =
       Printf.sprintf "    GlobalMaxPool2D : in:[*,%i,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) ^
@@ -1510,7 +1497,7 @@ module Make
       let a = Maths.avg_pool1d VALID x kernel [|1|] in
       let s = Arr.shape a in
       let b, o = s.(0), s.(2) in
-      Arr.reshape a [|b; o|] |> Maths.arr_to_mat
+      Arr.reshape a [|b; o|]
 
     let to_string l =
       Printf.sprintf "    GlobalAvgPool1D : in:[*,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.out_shape.(0) ^
@@ -1548,7 +1535,7 @@ module Make
       let a = Maths.avg_pool2d VALID x kernel [|1;1|] in
       let s = Arr.shape a in
       let b, o = s.(0), s.(3) in
-      Arr.reshape a [|b; o|] |> Maths.arr_to_mat
+      Arr.reshape a [|b; o|]
 
     let to_string l =
       Printf.sprintf "    GlobalAvgPool2D : in:[*,%i,%i,%i] out:[*,%i]\n" l.in_shape.(0) l.in_shape.(1) l.in_shape.(2) l.out_shape.(0) ^
@@ -1671,18 +1658,16 @@ module Make
   module Reshape = struct
 
     type neuron_typ = {
-      mutable convert   : bool;
       mutable in_shape  : int array;
       mutable out_shape : int array;
     }
 
-    let create ?(convert=false) ?inputs o =
+    let create ?inputs o =
       let in_shape = match inputs with
         | Some i -> i
         | None   -> [||]
       in
       {
-        convert   = convert;
         in_shape  = in_shape;
         out_shape = o;
       }
@@ -1693,26 +1678,17 @@ module Make
       assert (m = n);
       l.in_shape <- Array.copy out_shape
 
-    let copy l = create ~convert:l.convert l.out_shape
+    let copy l = create l.out_shape
 
     let run x l =
       let x_shape = shape x in
       let out_shape = Array.append [|x_shape.(0)|] l.out_shape in
-      let x = Maths.reshape x out_shape in
-      match l.convert with
-      | true  -> (
-          match (primal' x) with
-          | Arr _ -> Maths.arr_to_mat x
-          | Mat _ -> Maths.mat_to_arr x
-          | _     -> failwith "Owl_neural:Reshape:run"
-        )
-      | false -> x
+      Maths.reshape x out_shape
 
     let to_string l =
       let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
       let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
-      Printf.sprintf "    Reshape : in:[*,%s] out:[*,%s]\n" in_str out_str ^
-      Printf.sprintf "    convert : %b\n" l.convert
+      Printf.sprintf "    Reshape : in:[*,%s] out:[*,%s]\n" in_str out_str
 
     let to_name () = "reshape"
 
@@ -1723,13 +1699,11 @@ module Make
   module Flatten = struct
 
     type neuron_typ = {
-      mutable convert   : bool;
       mutable in_shape  : int array;
       mutable out_shape : int array;
     }
 
-    let create ?(convert=false) () = {
-        convert   = convert;
+    let create () = {
         in_shape  = [||];
         out_shape = [||];
       }
@@ -1739,23 +1713,13 @@ module Make
       l.in_shape <- Array.copy out_shape;
       l.out_shape <- [|o|]
 
-    let copy l = create ~convert:l.convert ()
+    let copy l = create ()
 
-    let run x l =
-      let x = Maths.reshape x [|(shape x).(0); l.out_shape.(0)|] in
-      match l.convert with
-      | true  -> (
-          match (primal' x) with
-          | Arr _ -> Maths.arr_to_mat x
-          | Mat _ -> Maths.mat_to_arr x
-          | _     -> failwith "Owl_neural:Flatten:run"
-        )
-      | false -> x
+    let run x l = Maths.reshape x [|(shape x).(0); l.out_shape.(0)|]
 
     let to_string l =
       let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      Printf.sprintf "    Flatten : in:[*,%s] out:[*,%i]\n" in_str l.out_shape.(0) ^
-      Printf.sprintf "    convert : %b\n" l.convert
+      Printf.sprintf "    Flatten : in:[*,%s] out:[*,%i]\n" in_str l.out_shape.(0)
 
     let to_name () = "flatten"
 
@@ -2134,7 +2098,6 @@ module Make
       let s = shape x in
       let a = match (primal' x) with
         | Arr _ -> Arr.gaussian ~sigma:l.sigma s
-        | Mat _ -> Mat.gaussian ~sigma:l.sigma s.(0) s.(1)
         | _     -> failwith "owl_neural_neuron:gaussiannoise:run"
       in
       Maths.(x + a)
@@ -2176,7 +2139,6 @@ module Make
       let sigma = Pervasives.sqrt (l.rate /. (1. -. l.rate)) in
       let a = match (primal' x) with
         | Arr _ -> Arr.gaussian ~sigma s
-        | Mat _ -> Mat.gaussian ~sigma s.(0) s.(1)
         | _     -> failwith "owl_neural_neuron:gaussiandropout:run"
       in
       Maths.(x * (a + F 1.))
@@ -2224,7 +2186,6 @@ module Make
       let s = shape x in
       let mask = match (primal' x) with
         | Arr y -> Arr A.(let c = uniform s in elt_greater_equal_scalar c l.rate)
-        | Mat y -> Mat M.(let c = uniform s.(0) s.(1) in elt_greater_equal_scalar c l.rate)
         | _     -> failwith "owl_neural_neuron:alphadropout:run"
       in
 
@@ -2294,7 +2255,7 @@ module Make
       l'
 
     let run x l =
-      let x = primal' x |> unpack_mat in
+      let x = primal' x |> unpack_arr in
       let m, n = M.shape x in
       let y = M.zeros (m * n) l.in_dim in
 
@@ -2307,7 +2268,7 @@ module Make
         done;
       done;
 
-      let y = Maths.((Mat y) *@ l.w |> mat_to_arr) in
+      let y = Maths.((Arr y) *@ l.w) in
       Maths.reshape y [|m; n; l.out_shape.(1)|]
 
     let to_string l =

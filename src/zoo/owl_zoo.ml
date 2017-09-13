@@ -5,12 +5,11 @@
 
 
 let printers = [
+  "Owl.Dense.Ndarray.Generic.pp_dsnda";
+  "Owl.Sparse.Ndarray.Generic.pp_spnda";
+  "Owl.Sparse.Matrix.Generic.pp_spmat";
   "Owl.Neural.S.Graph.pp_network";
   "Owl.Neural.D.Graph.pp_network";
-  "Owl.Dense.Matrix.Generic.pp_dsmat";
-  "Owl.Dense.Ndarray.Generic.pp_dsnda";
-  "Owl.Sparse.Matrix.Generic.pp_spmat";
-  "Owl.Sparse.Ndarray.Generic.pp_spnda";
 ]
 
 

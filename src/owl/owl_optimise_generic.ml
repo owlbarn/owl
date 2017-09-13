@@ -16,7 +16,7 @@ open Owl_types
 
 module Make
   (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.arr)
+  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
   = struct
 
   include Owl_algodiff_generic.Make (M) (A)
@@ -30,36 +30,26 @@ module Make
     let sample_num x =
       match x with
       | Arr _ -> Arr.(shape x).(0)
-      | Mat _ -> Mat.row_num x
       | x     -> failwith ("Owl_neural_optimise.Utils.sample_num:" ^ (type_info x))
 
     let draw_samples x y n =
       match x, y with
-      | Arr x, Mat y -> (
+      | Arr x, Arr y -> (
           let x, i = A.draw_along_dim0 x n in
           let y = M.rows y i in
-          Arr x, Mat y
+          Arr x, Arr y
         )
-      | Mat x, Mat y -> let x, y, _ = M.draw_rows2 ~replacement:false x y n in Mat x, Mat y
       | x, y         -> failwith ("Owl_neural_optimise.Utils.draw_samples:" ^ (type_info x))
 
     let get_chunk x y i c =
       match x, y with
-      | Arr x, Mat y -> (
+      | Arr x, Arr y -> (
           let n = M.row_num y in
           let a = (i * c) mod n in
           let b = Pervasives.min (a + c - 1) (n - 1) in
           let x = A.get_slice [R [a;b]] x in
           let y = M.get_slice [R [a;b]] y in
-          Arr x, Mat y
-        )
-      | Mat x, Mat y -> (
-          let n = M.row_num y in
-          let a = (i * c) mod n in
-          let b = Pervasives.min (a + c - 1) (n - 1) in
-          let x = M.get_slice [R [a;b]] x in
-          let y = M.get_slice [R [a;b]] y in
-          Mat x, Mat y
+          Arr x, Arr y
         )
       | x, y         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))
 

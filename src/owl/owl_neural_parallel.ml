@@ -169,10 +169,10 @@ module Make (M : ModelSig) (E : EngineSig) = struct
     E.start ~barrier:E.ASP jid url
 
 
-  let train ?params nn x y jid url = train_generic ?params nn (Mat x) (Mat y) jid url
+  let train ?params nn x y jid url = train_generic ?params nn (Arr x) (Arr y) jid url
 
 
-  let train_cnn ?params nn x y jid url = train_generic ?params nn (Arr x) (Mat y) jid url
+  let train_cnn ?params nn x y jid url = train_generic ?params nn (Arr x) (Arr y) jid url
 
 
 end

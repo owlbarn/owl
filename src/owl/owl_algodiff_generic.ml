@@ -12,19 +12,17 @@ module S = Pervasives
 
 module Make
   (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.arr)
+  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
   = struct
 
   (* type definitions *)
 
   type arr = A.arr
-  type mat = M.mat
   type elt = M.elt
 
   type t =
     | F   of float
     | Arr of arr
-    | Mat of mat
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
   and trace_op =
@@ -112,8 +110,6 @@ module Make
     | Conv3D_D_C    of t * t * int array
     | Conv3D_C_D    of t * t * int array
     | Reshape_D     of t
-    | Mat2Arr_D     of t
-    | Arr2Mat_D     of t
     | Maxpool1D_D   of t * padding * int array * int array
     | Maxpool2D_D   of t * padding * int array * int array
     | Avgpool1D_D   of t * padding * int array * int array
@@ -135,7 +131,6 @@ module Make
   let rec reset_zero = function
     | F _    -> F 0.
     | Arr ap -> A.reset ap; Arr ap
-    | Mat ap -> M.reset ap; Mat ap
     | _      -> failwith "error: reset_zero"
 
   let primal = function
@@ -151,7 +146,6 @@ module Make
   let rec zero = function
     | F _                     -> F 0.
     | Arr ap                  -> Arr A.(zeros (shape ap))
-    | Mat ap                  -> Mat M.(zeros (row_num ap) (col_num ap))
     | DF (ap, at, ai)         -> ap |> primal' |> zero
     | DR (ap, at, ao, af, ai) -> ap |> primal' |> zero
 
@@ -173,51 +167,35 @@ module Make
   let shape x =
     match (primal' x) with
     | Arr ap -> A.shape ap
-    | Mat ap -> [|M.row_num ap; M.col_num ap|]
     | _      -> failwith "error: AD.shape"
 
-  let mat_shape x =
-    match (primal' x) with
-    | Mat ap    -> M.shape ap
-    | _         -> failwith "error: AD.mat_shape"
+  let row_num x = (shape x).(0)
 
-  let row_num x = x |> mat_shape |> fst
-
-  let col_num x = x |> mat_shape |> snd
+  let col_num x = (shape x).(1)
 
   let numel x =
     match primal' x with
     | Arr x -> A.numel x
-    | Mat x -> M.numel x
     | _     -> failwith "error: AD.numel"
-
-  let mat_create m n a =
-    match primal a with
-    | F a  -> Mat (M.create m n a)
-    | _ -> failwith "error: AD.mat_create"
 
   let clip_by_l2norm a x =
     match primal' x with
     | Arr x -> Arr A.(clip_by_l2norm a x)
-    | Mat x -> Mat M.(clip_by_l2norm a x)
     | _     -> failwith "error: AD.clip_by_l2norm"
 
   let clone_primal' x =
     match (primal' x) with
     | Arr ap -> Arr A.(clone ap)
-    | Mat ap -> Mat M.(clone ap)
     | _      -> failwith "error: AD.clone"
 
   let tile x reps =
     match primal' x with
     | Arr x -> Arr A.(tile x reps)
-    | Mat x -> Mat M.(tile x reps)
     | _     -> failwith "error: AD.tile"
 
   let repeat ?axis x reps =
     match primal' x with
     | Arr x -> Arr A.(repeat ?axis x reps)
-    | Mat x -> Mat M.(repeat ?axis x reps)
     | _     -> failwith "error: AD.repeat"
 
   (* packing and unpacking functions *)
@@ -228,13 +206,6 @@ module Make
     match (primal x) with
     | Arr x -> x
     | _     -> failwith "error: AD.unpack_arr"
-
-  let pack_mat x = Mat x
-
-  let unpack_mat x =
-    match (primal x) with
-    | Mat x -> x
-    | _     -> failwith "error: AD.unpack_mat"
 
   let pack_flt x = F x
 
@@ -248,7 +219,6 @@ module Make
   let deep_info x = match primal' x with
     | F a   -> Printf.sprintf "F(%g)" a
     | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils.string_of_array string_of_int)
-    | Mat a -> Printf.sprintf "Mat(%i,%i)" (M.row_num a) (M.col_num a)
     | _     -> "you should not have reached here!"
 
   let type_info x = match x with
@@ -284,14 +254,10 @@ module Make
       | DF (ap, at, ai), F bp                      -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
       | Arr ap, DF (bp, bt, bi)                    -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
       | DF (ap, at, ai), Arr bp                    -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
-      | Mat ap, DF (bp, bt, bi)                    -> let cp = fd a bp in DF (cp, (df_db cp bp bt), bi)
-      | DF (ap, at, ai), Mat bp                    -> let cp = fd ap b in DF (cp, (df_da cp ap at), ai)
       | F ap, DR (bp, _, _, _, bi)                 -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
       | DR (ap, _, _, _, ai), F bp                 -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
       | Arr ap, DR (bp, _, _, _, bi)               -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
       | DR (ap, _, _, _, ai), Arr bp               -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
-      | Mat ap, DR (bp, _, _, _, bi)               -> let cp = fd a bp in DR (cp, ref (zero cp), r_c_d a b, ref 0, bi)
-      | DR (ap, _, _, _, ai), Mat bp               -> let cp = fd ap b in DR (cp, ref (zero cp), r_d_c a b, ref 0, ai)
       | DF (ap, at, ai), DR (bp, _, _, _, bi)      -> (
           match cmp_tag ai bi with
           | 1  -> let cp = fd ap b in DF (cp, df_da cp ap at, ai)
@@ -326,9 +292,6 @@ module Make
         | F a, Arr b   -> Arr A.(scalar_add a b)
         | Arr a, F b   -> Arr A.(add_scalar a b)
         | Arr a, Arr b -> Arr A.(add a b)
-        | F a, Mat b   -> Mat M.(scalar_add a b)
-        | Mat a, F b   -> Mat M.(add_scalar a b)
-        | Mat a, Mat b -> Mat M.(add a b)
         | _            -> error_binop "( + )" a b
       in
       let fd a b = a + b in
@@ -348,9 +311,6 @@ module Make
         | F a, Arr b   -> Arr A.(scalar_sub a b)
         | Arr a, F b   -> Arr A.(sub_scalar a b)
         | Arr a, Arr b -> Arr A.(sub a b)
-        | F a, Mat b   -> Mat M.(scalar_sub a b)
-        | Mat a, F b   -> Mat M.(sub_scalar a b)
-        | Mat a, Mat b -> Mat M.(sub a b)
         | _            -> error_binop "( - )" a b
       in
       let fd a b = a - b in
@@ -370,9 +330,6 @@ module Make
         | F a, Arr b   -> Arr A.(scalar_mul a b)
         | Arr a, F b   -> Arr A.(mul_scalar a b)
         | Arr a, Arr b -> Arr A.(mul a b)
-        | F a, Mat b   -> Mat M.(scalar_mul a b)
-        | Mat a, F b   -> Mat M.(mul_scalar a b)
-        | Mat a, Mat b -> Mat M.(mul a b)
         | _            -> error_binop "( * )" a b
       in
       let fd a b = a * b in
@@ -392,9 +349,6 @@ module Make
         | F a, Arr b   -> Arr A.(scalar_div a b)
         | Arr a, F b   -> Arr A.(div_scalar a b)
         | Arr a, Arr b -> Arr A.(div a b)
-        | F a, Mat b   -> Mat M.(scalar_div a b)
-        | Mat a, F b   -> Mat M.(div_scalar a b)
-        | Mat a, Mat b -> Mat M.(div a b)
         | _            -> error_binop "( / )" a b
       in
       let fd a b = a / b in
@@ -414,9 +368,6 @@ module Make
         | F a, Arr b   -> Arr A.(scalar_pow a b)
         | Arr a, F b   -> Arr A.(pow_scalar a b)
         | Arr a, Arr b -> Arr A.(pow a b)
-        | F a, Mat b   -> Mat M.(scalar_pow a b)
-        | Mat a, F b   -> Mat M.(pow_scalar a b)
-        | Mat a, Mat b -> Mat M.(pow a b)
         | _            -> error_binop "( ** )" a b
       in
       let fd a b = a ** b in
@@ -435,9 +386,6 @@ module Make
         | F a, Arr b   -> Arr A.(scalar_atan2 a b)
         | Arr a, F b   -> Arr A.(atan2_scalar a b)
         | Arr a, Arr b -> Arr A.(atan2 a b)
-        | F a, Mat b   -> Mat M.(scalar_atan2 a b)
-        | Mat a, F b   -> Mat M.(atan2_scalar a b)
-        | Mat a, Mat b -> Mat M.(atan2 a b)
         | _            -> error_binop "atan2" a b
       in
       let fd a b = atan2 a b in
@@ -457,7 +405,6 @@ module Make
       let ff = function
         | F a      -> F S.(0. -. a)
         | Arr a    -> Arr A.(neg a)
-        | Mat a    -> Mat M.(neg a)
         | _        -> error_uniop "neg" a
       in
       let fd a = neg a in
@@ -469,7 +416,6 @@ module Make
       let ff = function
         | F a      -> F Owl_maths.(abs a)
         | Arr a    -> Arr A.(abs a)
-        | Mat a    -> Mat M.(abs a)
         | _        -> error_uniop "abs" a
       in
       let fd a = abs a in
@@ -481,7 +427,6 @@ module Make
       let ff = function
         | F a      -> F Owl_maths.(signum a)
         | Arr a    -> Arr A.(signum a)
-        | Mat a    -> Mat M.(signum a)
         | _        -> error_uniop "signum" a
       in
       let fd a = signum a in
@@ -493,7 +438,6 @@ module Make
       let ff = function
         | F a      -> F Owl_maths.(floor a)
         | Arr a    -> Arr A.(floor a)
-        | Mat a    -> Mat M.(floor a)
         | _        -> error_uniop "floor" a
       in
       let fd a = floor a in
@@ -505,7 +449,6 @@ module Make
       let ff = function
         | F a      -> F Owl_maths.(ceil a)
         | Arr a    -> Arr A.(ceil a)
-        | Mat a    -> Mat M.(ceil a)
         | _        -> error_uniop "ceil" a
       in
       let fd a = ceil a in
@@ -517,7 +460,6 @@ module Make
       let ff = function
         | F a      -> F Owl_maths.(round a)
         | Arr a    -> Arr A.(round a)
-        | Mat a    -> Mat M.(round a)
         | _        -> error_uniop "round" a
       in
       let fd a = round a in
@@ -529,7 +471,6 @@ module Make
       let ff = function
         | F a      -> F S.(a *. a)
         | Arr a    -> Arr A.(sqr a)
-        | Mat a    -> Mat M.(sqr a)
         | _        -> error_uniop "sqr" a
       in
       let fd a = sqr a in
@@ -541,7 +482,6 @@ module Make
       let ff = function
         | F a      -> F S.(sqrt a)
         | Arr a    -> Arr A.(sqrt a)
-        | Mat a    -> Mat M.(sqrt a)
         | _        -> error_uniop "sqrt" a
       in
       let fd a = sqrt a in
@@ -553,7 +493,6 @@ module Make
       let ff = function
         | F a      -> F S.(log a)
         | Arr a    -> Arr A.(log a)
-        | Mat a    -> Mat M.(log a)
         | _        -> error_uniop "log" a
       in
       let fd a = log a in
@@ -565,7 +504,6 @@ module Make
       let ff = function
         | F a      -> F Owl_maths.(log2 a)
         | Arr a    -> Arr A.(log2 a)
-        | Mat a    -> Mat M.(log2 a)
         | _        -> error_uniop "log2" a
       in
       let fd a = log2 a in
@@ -577,7 +515,6 @@ module Make
       let ff = function
         | F a      -> F S.(log10 a)
         | Arr a    -> Arr A.(log10 a)
-        | Mat a    -> Mat M.(log10 a)
         | _        -> error_uniop "log10" a
       in
       let fd a = log10 a in
@@ -589,7 +526,6 @@ module Make
       let ff = function
         | F a      -> F S.(exp a)
         | Arr a    -> Arr A.(exp a)
-        | Mat a    -> Mat M.(exp a)
         | _        -> error_uniop "exp" a
       in
       let fd a = exp a in
@@ -601,7 +537,6 @@ module Make
       let ff = function
         | F a      -> F S.(sin a)
         | Arr a    -> Arr A.(sin a)
-        | Mat a    -> Mat M.(sin a)
         | _        -> error_uniop "sin" a
       in
       let fd a = sin a in
@@ -613,7 +548,6 @@ module Make
       let ff = function
         | F a      -> F S.(cos a)
         | Arr a    -> Arr A.(cos a)
-        | Mat a    -> Mat M.(cos a)
         | _        -> error_uniop "cos" a
       in
       let fd a = cos a in
@@ -625,7 +559,6 @@ module Make
       let ff = function
         | F a      -> F S.(tan a)
         | Arr a    -> Arr A.(tan a)
-        | Mat a    -> Mat M.(tan a)
         | _        -> error_uniop "tan" a
       in
       let fd a = tan a in
@@ -637,7 +570,6 @@ module Make
       let ff = function
         | F a      -> F S.(sinh a)
         | Arr a    -> Arr A.(sinh a)
-        | Mat a    -> Mat M.(sinh a)
         | _        -> error_uniop "sinh" a
       in
       let fd a = sinh a in
@@ -649,7 +581,6 @@ module Make
       let ff = function
         | F a      -> F S.(cosh a)
         | Arr a    -> Arr A.(cosh a)
-        | Mat a    -> Mat M.(cosh a)
         | _        -> error_uniop "cosh" a
       in
       let fd a = cosh a in
@@ -661,7 +592,6 @@ module Make
       let ff = function
         | F a      -> F S.(tanh a)
         | Arr a    -> Arr A.(tanh a)
-        | Mat a    -> Mat M.(tanh a)
         | _        -> error_uniop "tanh" a
       in
       let fd a = tanh a in
@@ -673,7 +603,6 @@ module Make
       let ff = function
         | F a      -> F S.(asin a)
         | Arr a    -> Arr A.(asin a)
-        | Mat a    -> Mat M.(asin a)
         | _        -> error_uniop "asin" a
       in
       let fd a = asin a in
@@ -685,7 +614,6 @@ module Make
       let ff = function
         | F a      -> F S.(acos a)
         | Arr a    -> Arr A.(acos a)
-        | Mat a    -> Mat M.(acos a)
         | _        -> error_uniop "acos" a
       in
       let fd a = acos a in
@@ -697,7 +625,6 @@ module Make
       let ff = function
         | F a      -> F S.(atan a)
         | Arr a    -> Arr A.(atan a)
-        | Mat a    -> Mat M.(atan a)
         | _        -> error_uniop "atan" a
       in
       let fd a = atan a in
@@ -709,7 +636,6 @@ module Make
       let ff = function
         | F a      -> F Owl_maths.(asinh a)
         | Arr a    -> Arr A.(asinh a)
-        | Mat a    -> Mat M.(asinh a)
         | _        -> error_uniop "asinh" a
       in
       let fd a = asinh a in
@@ -721,7 +647,6 @@ module Make
       let ff = function
         | F a      -> F Owl_maths.(acosh a)
         | Arr a    -> Arr A.(acosh a)
-        | Mat a    -> Mat M.(acosh a)
         | _        -> error_uniop "acosh" a
       in
       let fd a = acosh a in
@@ -733,7 +658,6 @@ module Make
       let ff = function
         | F a      -> F Owl_maths.(atanh a)
         | Arr a    -> Arr A.(atanh a)
-        | Mat a    -> Mat M.(atanh a)
         | _        -> error_uniop "atanh" a
       in
       let fd a = atanh a in
@@ -743,14 +667,14 @@ module Make
 
     and get_item a i j =
       match a with
-      | Mat ap               -> F (M.get ap i j)
+      | Arr ap               -> F (A.get ap [|i;j|])
       | DF (ap, at, ai)      -> DF (get_item ap i j, get_item at i j, ai)
       | DR (ap, _, _, _, ai) -> DR (get_item ap i j, ref (F 0.), Get_Item (a, i, j), ref 0, ai)
       | _                    -> error_uniop "get_item" a
 
     and set_item a i j b =
       let ff a b = match a, b with
-        | Mat a, F b        -> let aa = M.clone a in M.set aa i j b; Mat aa
+        | Arr a, F b        -> let aa = A.clone a in A.set aa [|i;j|] b; Arr aa
         | _                 -> error_uniop "set_item" a
       in
       let fd a b = set_item a i j b in
@@ -764,7 +688,7 @@ module Make
 
     and add_item a i j b =
       let ff a b = match a, b with
-        | Mat a, F b        -> let aa = M.clone a in M.set aa i j S.((M.get aa i j) +. b); Mat aa
+        | Arr a, F b        -> let aa = A.clone a in A.set aa [|i;j|] S.((A.get aa [|i;j|]) +. b); Arr aa
         | _                 -> error_binop "add_item" a b
       in
       let fd a b = add_item a i j b in
@@ -779,7 +703,6 @@ module Make
     and get_slice i a =
       let ff = function
         | Arr a    -> Arr A.(get_slice i a)
-        | Mat a    -> Mat M.(get_slice i a)
         | _        -> error_uniop "slice" a
       in
       let fd a = get_slice i a in
@@ -791,7 +714,6 @@ module Make
       let ff a b =
         match a, b with
         | Arr a, Arr b -> let a = A.clone a in A.(set_slice i a b); Arr a
-        | Mat a, Mat b -> let a = M.clone a in M.(set_slice i a b); Mat a
         | _            -> error_binop "set_slice" a b
       in
       let fd a b = set_slice i a b in
@@ -807,7 +729,6 @@ module Make
       let ff = function
         | F a      -> F a
         | Arr a    -> F A.(sum a)
-        | Mat a    -> F M.(sum a)
         | _        -> error_uniop "sum" a
       in
       let fd a = sum a in
@@ -819,7 +740,6 @@ module Make
       let ff = function
         | F a      -> F a
         | Arr a    -> Arr A.(sum_ ~axis a)
-        | Mat a    -> Mat M.(sum_ ~axis a)
         | _        -> error_uniop "sum_" a
       in
       let fd a = sum_ ~axis a in
@@ -833,7 +753,7 @@ module Make
     and dot a b =
       let ff a b =
         match a, b with
-        | Mat a, Mat b       -> Mat M.(dot a b)
+        | Arr a, Arr b       -> Arr M.(dot a b)
         | _                  -> error_binop "( *@ )" a b
       in
       let fd a b = a *@ b in
@@ -847,7 +767,7 @@ module Make
 
     and transpose a =
       let ff = function
-        | Mat a    -> Mat M.(transpose a)
+        | Arr a    -> Arr M.(transpose a)
         | _        -> error_uniop "transpose" a
       in
       let fd a = transpose a in
@@ -858,7 +778,6 @@ module Make
     and l1norm a =
       let ff = function
         | Arr a    -> F A.(l1norm a)
-        | Mat a    -> F M.(l1norm a)
         | _        -> error_uniop "l1norm" a
       in
       let fd a = l1norm a in
@@ -869,7 +788,6 @@ module Make
     and l2norm a =
       let ff = function
         | Arr a    -> F A.(l2norm a)
-        | Mat a    -> F M.(l2norm a)
         | _        -> error_uniop "l2norm" a
       in
       let fd a = l2norm a in
@@ -881,7 +799,6 @@ module Make
       let ff = function
         | F a      -> F S.(a *. a)
         | Arr a    -> F A.(l2norm_sqr a)
-        | Mat a    -> F M.(l2norm_sqr a)
         | _        -> error_uniop "l2norm_sqr" a
       in
       let fd a = l2norm_sqr a in
@@ -893,7 +810,6 @@ module Make
       let ff = function
         | F a      -> F Owl_maths.(sigmoid a)
         | Arr a    -> Arr A.(sigmoid a)
-        | Mat a    -> Mat M.(sigmoid a)
         | _        -> error_uniop "sigmoid" a
       in
       let fd a = sigmoid a in
@@ -905,7 +821,6 @@ module Make
       let ff = function
         | F a      -> F Owl_maths.(relu a)
         | Arr a    -> Arr A.(relu a)
-        | Mat a    -> Mat M.(relu a)
         | _        -> error_uniop "relu" a
       in
       let fd a = relu a in
@@ -915,7 +830,7 @@ module Make
 
     and inv a =
       let ff = function
-        | Mat a    -> Mat M.(inv a)
+        | Arr a    -> Arr M.(inv a)
         | _        -> error_uniop "inv" a
       in
       let fd a = inv a in
@@ -929,7 +844,7 @@ module Make
 
     (* FIXME: use numerically stable version *)
     and softmax x =
-      let c = F M.(max (unpack_mat x)) in
+      let c = F M.(max (unpack_arr x)) in
       let y = exp (x - c) in
       let a = sum y in
       y / a
@@ -939,7 +854,7 @@ module Make
     and add_row a b i =
       let ff a b =
         match a, b with
-        | Mat a, Mat b       -> M.(copy_row_to (add (row a i) b) a i; Mat a)
+        | Arr a, Arr b       -> M.(copy_row_to (add (row a i) b) a i; Arr a)
         | _                  -> error_binop "add_row" a b
       in
       let fd a b = add_row a b i in
@@ -953,7 +868,7 @@ module Make
 
     and get_row a i =
       let ff = function
-        | Mat a    -> Mat M.(row a i |> clone)
+        | Arr a    -> Arr M.(row a i |> clone)
         | _        -> error_uniop "get_row" a
       in
       let fd a = get_row a i in
@@ -966,14 +881,14 @@ module Make
     and of_rows a =
       (* TODO: this can be further optimised by incorporating t array type as t *)
       match a.(0) with
-      | Mat _               -> Array.map unpack_mat a |> M.of_rows |> pack_mat
+      | Arr _               -> Array.map unpack_arr a |> M.of_rows |> pack_arr
       | DF (_, _, ai)       ->
-        let ap = a |> Array.map (fun x -> x |> primal |> unpack_mat) |> M.of_rows |> pack_mat in
-        let at = a |> Array.map (fun x -> x |> adjval |> unpack_mat) |> M.of_rows |> pack_mat in
+        let ap = a |> Array.map (fun x -> x |> primal |> unpack_arr) |> M.of_rows |> pack_arr in
+        let at = a |> Array.map (fun x -> x |> adjval |> unpack_arr) |> M.of_rows |> pack_arr in
         DF (ap, at, ai)
       | DR (_, _, _, _, ai) ->
         let ap = a |> Array.map (fun x -> x |> primal) in
-        let cp = ap |> Array.map (fun x -> x |> unpack_mat) |> M.of_rows |> pack_mat in
+        let cp = ap |> Array.map (fun x -> x |> unpack_arr) |> M.of_rows |> pack_arr in
         DR (cp, ref (zero cp), Of_Rows_D a, ref 0, ai)
       | _                  -> error_uniop "of_rows a.(0)" a.(0)
 
@@ -1084,7 +999,6 @@ module Make
     and reshape a s =
       let ff = function
         | Arr a    -> Arr A.(reshape a s)
-        | Mat a    -> Mat M.(reshape a s)
         | _        -> error_uniop "reshape" a
       in
       let fd a = reshape a s in
@@ -1093,28 +1007,6 @@ module Make
       op_d_d a ff fd df r
 
     and flatten a = reshape a [|1; numel a|]
-
-    (* FIXME *)
-    and mat_to_arr a =
-      let ff = function
-        | Mat a    -> Arr (Obj.magic a)
-        | _        -> error_uniop "mat_to_arr" a
-      in
-      let fd a = mat_to_arr a in
-      let df cp ap at = mat_to_arr at in
-      let r a = Mat2Arr_D a in
-      op_d_d a ff fd df r
-
-    (* FIXME *)
-    and arr_to_mat a =
-      let ff = function
-        | Arr a    -> Mat (Obj.magic a)
-        | _        -> error_uniop "arr_to_mat" a
-      in
-      let fd a = arr_to_mat a in
-      let df cp ap at = arr_to_mat at in
-      let r a = Arr2Mat_D a in
-      op_d_d a ff fd df r
 
     (* a:input; b:kernel; s:stride *)
     and max_pool1d padding a b s =
@@ -1191,7 +1083,6 @@ module Make
     and dropout ?(rate=0.5) ?seed a =
       let b = match (primal' a) with
         | Arr a -> Arr (A.bernoulli ~p:(1. -. rate) ?seed (A.shape a))
-        | Mat a -> Mat (M.bernoulli ~p:(1. -. rate) ?seed (M.row_num a) (M.col_num a))
         | _     -> error_uniop "dropout" a
       in
       a * b
@@ -1200,7 +1091,6 @@ module Make
       let ff a b =
         match a, b with
         | Arr a, Arr b -> Arr A.(concatenate ~axis [|a; b|])
-        | Mat a, Mat b -> Mat M.(concatenate ~axis [|a; b|])
         | _            -> error_binop "concat" a b
       in
       let fd a b = concat axis a b in
@@ -1216,7 +1106,6 @@ module Make
       let ff a =
         match a with
         | Arr a -> A.(split ~axis parts a) |> Array.map (fun x -> Arr x)
-        | Mat a -> M.(split ~axis parts a) |> Array.map (fun x -> Mat x)
         | _     -> error_uniop "split" a
       in
       ff a
@@ -1320,8 +1209,6 @@ module Make
               | Conv3D_D_C (a, _, _)     -> reset (a :: t)
               | Conv3D_C_D (_, b, _)     -> reset (b :: t)
               | Reshape_D a              -> reset (a :: t)
-              | Mat2Arr_D a              -> reset (a :: t)
-              | Arr2Mat_D a              -> reset (a :: t)
               | Maxpool1D_D (a, _, _, _) -> reset (a :: t)
               | Maxpool2D_D (a, _, _, _) -> reset (a :: t)
               | Avgpool1D_D (a, _, _, _) -> reset (a :: t)
@@ -1343,16 +1230,10 @@ module Make
     (* check adjoint a and its update v, ensure rank a >= rank v *)
     let _melt a v =
       match a, v with
-      | F _, Mat v -> F (M.sum v)
-      | Mat a, Mat v -> (
+      | F _, Arr v -> F (A.sum v)
+      | Arr a, Arr v -> (
           (* check if this is due to previous broadcast operation *)
           (* FIXME: need to check full-shape, sum_cols if necessary *)
-          match M.(shape a = shape v) with
-          | true  -> Mat v
-          | false -> Mat (M.sum_rows v)
-        )
-      | Arr a, Arr v -> (
-          (* FIXME: only for simple case where broadcast at highest dimension *)
           match A.(shape a = shape v) with
           | true  -> Arr v
           | false -> Arr (A.sum_slices v)
@@ -1451,8 +1332,6 @@ module Make
               | Conv3D_D_C (a, b, s)     -> push ((conv3d_backward_input a b s !aa, a) :: t)
               | Conv3D_C_D (a, b, s)     -> push ((conv3d_backward_kernel a b s !aa, b) :: t)
               | Reshape_D a              -> push ((reshape !aa (shape (primal a)), a) :: t)
-              | Mat2Arr_D a              -> push ((arr_to_mat !aa, a) :: t)
-              | Arr2Mat_D a              -> push ((mat_to_arr !aa, a) :: t)
               | Maxpool1D_D (a, p, d, s) -> push ((max_pool1d_backward p (primal a) d s !aa, a) :: t)
               | Maxpool2D_D (a, p, d, s) -> push ((max_pool2d_backward p (primal a) d s !aa, a) :: t)
               | Avgpool1D_D (a, p, d, s) -> push ((avg_pool2d_backward p (primal a) d s !aa, a) :: t)
@@ -1531,11 +1410,11 @@ module Make
           Array.init n (fun i ->
             let v = M.zeros 1 n in
             M.set v 0 i 1.;
-            jacobianv f x (Mat v)
+            jacobianv f x (Arr v)
           )
           |> Array.iteri (fun i v ->
             match v with
-            | Mat v -> M.copy_col_to (M.transpose v) z i
+            | Arr v -> M.copy_col_to (M.transpose v) z i
             | _     -> failwith "error: jacobian"
           );
         )
@@ -1543,16 +1422,16 @@ module Make
           Array.init m (fun i ->
             let v = M.zeros 1 m in
             M.set v 0 i 1.;
-            jacobianTv f x (Mat v)
+            jacobianTv f x (Arr v)
           )
           |> Array.iteri (fun i v ->
             match v with
-            | Mat v -> M.copy_row_to v z i
+            | Arr v -> M.copy_row_to v z i
             | _     -> failwith "error: jacobian"
           );
         );
     );
-    (y, Mat z)
+    (y, Arr z)
 
 
   (* jacobian of f *)
@@ -1593,7 +1472,7 @@ module Make
     hv
 
   (* laplacian of f *)
-  let laplacian f x = F (hessian f x |> unpack_mat |> M.trace)
+  let laplacian f x = F (hessian f x |> unpack_arr |> M.trace)
 
   let laplacian' f x = f x, laplacian f x
 
@@ -1602,25 +1481,25 @@ module Make
 
   module Mat = struct
 
-    let empty m n = M.empty m n |> pack_mat
+    let empty m n = M.empty m n |> pack_arr
 
-    let zeros m n = M.zeros m n |> pack_mat
+    let zeros m n = M.zeros m n |> pack_arr
 
-    let ones m n = M.ones m n |> pack_mat
+    let ones m n = M.ones m n |> pack_arr
 
-    let uniform ?scale m n = M.uniform ?scale m n |> pack_mat
+    let uniform ?scale m n = M.uniform ?scale m n |> pack_arr
 
-    let gaussian ?sigma m n = M.gaussian ?sigma m n |> pack_mat
+    let gaussian ?sigma m n = M.gaussian ?sigma m n |> pack_arr
 
-    let reset x = x |> unpack_mat |> M.reset
+    let reset x = x |> unpack_arr |> M.reset
 
     let reshape m n x = Maths.reshape x [|m;n|]
 
-    let shape x = M.shape (unpack_mat x)
+    let shape x = M.shape (unpack_arr x)
 
-    let row_num x = M.row_num (unpack_mat x)
+    let row_num x = M.row_num (unpack_arr x)
 
-    let col_num x = M.col_num (unpack_mat x)
+    let col_num x = M.col_num (unpack_arr x)
 
     let numel x = numel x
 
@@ -1646,32 +1525,32 @@ module Make
 
     let dot x y = Maths.dot x y
 
-    let clip_by_l2norm t x = M.clip_by_l2norm (unpack_flt t) (unpack_mat x) |> pack_mat
+    let clip_by_l2norm t x = M.clip_by_l2norm (unpack_flt t) (unpack_arr x) |> pack_arr
 
     (* FIXME: need to be call row fun *)
-    let iteri_rows f x = M.iteri_rows (fun i v -> f i (pack_mat v)) (unpack_mat x)
+    let iteri_rows f x = M.iteri_rows (fun i v -> f i (pack_arr v)) (unpack_arr x)
 
-    let iter2_rows f x y = M.iter2_rows (fun u v -> f (pack_mat u) (pack_mat v)) (unpack_mat x) (unpack_mat y)
+    let iter2_rows f x y = M.iter2_rows (fun u v -> f (pack_arr u) (pack_arr v)) (unpack_arr x) (unpack_arr y)
 
-    let iteri f x = x |> unpack_mat |> M.iteri f
+    let iteri f x = x |> unpack_arr |> M.iteri f
 
-    let mapi f x = x |> unpack_mat |> M.mapi f |> pack_mat
+    let mapi f x = x |> unpack_arr |> M.mapi f |> pack_arr
 
     let map_by_row f x = x |> Maths.to_rows |> Array.map f |> Maths.of_rows
 
     (* FIXME: severe *)
     let draw_rows ?replacement x c =
-      let x', l = M.draw_rows ?replacement (unpack_mat x) c in
-      pack_mat x', l
+      let x', l = M.draw_rows ?replacement (unpack_arr x) c in
+      pack_arr x', l
 
     (* FIXME: severe *)
     let draw_rows2 ?replacement x y c =
-      let x', y', l = M.draw_rows2 ?replacement (unpack_mat x) (unpack_mat y) c in
-      pack_mat x', pack_mat y', l
+      let x', y', l = M.draw_rows2 ?replacement (unpack_arr x) (unpack_arr y) c in
+      pack_arr x', pack_arr y', l
 
-    let print x = M.print (unpack_mat x)
+    let print x = M.print (unpack_arr x)
 
-    let of_arrays x = M.of_arrays x |> pack_mat
+    let of_arrays x = M.of_arrays x |> pack_arr
 
   end
 
@@ -1812,8 +1691,6 @@ module Make
                   | Conv3D_D_C (a, b, s)     -> "Conv3D_D_C", [a; b]
                   | Conv3D_C_D (a, b, s)     -> "Conv3D_C_D", [a; b]
                   | Reshape_D a              -> "Reshape_D", [ a ]
-                  | Mat2Arr_D a              -> "Mat2Arr_D", [ a ]
-                  | Arr2Mat_D a              -> "Arr2Mat_D", [ a ]
                   | Maxpool1D_D (a, p, d, s) -> "Maxpool1D_D", [ a ]
                   | Maxpool2D_D (a, p, d, s) -> "Maxpool2D_D", [ a ]
                   | Avgpool1D_D (a, p, d, s) -> "Avgpool1D_D", [ a ]
@@ -1823,7 +1700,6 @@ module Make
                   | Concat_C_D (a, b, i)     -> "Concat_C_D", [a; b]
                 )
               | F a                     -> Printf.sprintf "Const", []
-              | Mat a                   -> Printf.sprintf "Const", []
               | Arr a                   -> Printf.sprintf "Const", []
               | DF (_, _, _)            -> Printf.sprintf "DF", []
             in

@@ -8,10 +8,12 @@ open Owl_types
 
 module Make
   (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.arr)
+  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
   = struct
 
   include Owl_optimise_generic.Make (M) (A)
+
+  type mat = M.mat
 
 
   (* iterative sovler for linear regression *)
@@ -22,15 +24,15 @@ module Make
     let x = if bias = true then M.concatenate ~axis:1 [|x; M.ones l 1|] else x in
     (* initialise the matrices according to fan_in/out *)
     let r = 1. /. (float_of_int o) in
-    let p = Mat M.(sub_scalar (uniform ~scale:(2.*.r) o n) r) in
+    let p = Arr M.(sub_scalar (uniform ~scale:(2.*.r) o n) r) in
     (* make the function to minimise *)
     let f w x =
       let w = Mat.reshape o n w in
       Maths.(x *@ w)
     in
     (* get the result, reshape, then return *)
-    let w = minimise_weight params f (Maths.flatten p) (Mat x) (Mat y)
-      |> snd |> Mat.reshape o n |> unpack_mat
+    let w = minimise_weight params f (Maths.flatten p) (Arr x) (Arr y)
+      |> snd |> Mat.reshape o n |> unpack_arr
     in
     match bias with
     | true  -> M.split ~axis:0 [|m;1|] w
@@ -99,8 +101,8 @@ module Make
       ~loss:(Loss.Quadratic) ~verbosity:false
       ~stopping:(Stopping.Const 1e-16) 1000.
     in
-    let w = minimise_weight params f (Mat.of_arrays [|[|a;l;b|]|]) (Mat x) (Mat y)
-      |> snd |> unpack_mat
+    let w = minimise_weight params f (Mat.of_arrays [|[|a;l;b|]|]) (Arr x) (Arr y)
+      |> snd |> unpack_arr
     in
     M.(get w 0 0, get w 0 1, get w 0 2)
 
