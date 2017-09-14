@@ -32,7 +32,6 @@ let train () =
 let test network =
   let imgs, _, labels = Dataset.load_mnist_test_data () in
   let m = Dense.Matrix.S.row_num imgs in
-  let imgs = Dense.Matrix.S.to_ndarray imgs in
   let imgs = Dense.Ndarray.S.reshape imgs [|m;28;28;1|] in
 
   let mat2num x = Dense.Matrix.S.of_array (
