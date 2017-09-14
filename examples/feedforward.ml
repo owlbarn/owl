@@ -13,7 +13,8 @@
 open Owl
 open Owl_types
 open Algodiff.S
-open Owl_neural_neuron.S
+open Owl.Neural.S
+open Owl.Neural.S.Graph.Neuron
 
 
 (* definition of Feedforward neural network *)
@@ -190,14 +191,14 @@ let dropout ?name rate nn =
   |> add_layer nn;
   nn
 
-let reshape ?name ?convert outputs nn =
-  Reshape (Reshape.create ?convert outputs)
+let reshape ?name outputs nn =
+  Reshape (Reshape.create outputs)
   |> make_layer ?name nn
   |> add_layer nn;
   nn
 
-let flatten ?name ?convert nn =
-  Flatten (Flatten.create ?convert ())
+let flatten ?name nn =
+  Flatten (Flatten.create ())
   |> make_layer ?name nn
   |> add_layer nn;
   nn
@@ -228,7 +229,7 @@ let load f : network = Owl_utils.marshal_from_file f
 let save_weights nn f =
   let h = Hashtbl.create (layer_num nn) in
   Array.iter (fun l ->
-    let ws = Owl_neural_neuron.S.mkpar l.neuron in
+    let ws = Graph.Neuron.mkpar l.neuron in
     Hashtbl.add h l.name ws
   ) nn.layers;
   Owl_utils.marshal_to_file h f
@@ -237,30 +238,27 @@ let load_weights nn f =
   let h = Owl_utils.marshal_from_file f in
   Array.iter (fun l ->
     let ws = Hashtbl.find h l.name in
-    Owl_neural_neuron.S.update l.neuron ws
+    Graph.Neuron.update l.neuron ws
   ) nn.layers
 
 
 (* training functions *)
 
-let train_generic ?params ?(init_model=true) nn x y =
+let train ?state ?params ?(init_model=true) nn x y =
   if init_model = true then init nn;
-  Owl_optimise.S.minimise_generic
-    ?params forward backward update save nn x y
-
-let train ?params ?init_model nn x y =
-  train_generic ?params ?init_model nn (Mat x) (Mat y)
-
-let train_cnn ?params ?init_model nn x y =
-  train_generic ?params ?init_model nn (Arr x) (Mat y)
+  let p = match params with
+    | Some p -> p
+    | None   -> Params.default ()
+  in
+  Optimise.S.minimise_network ?state p (forward nn) (backward nn) (update nn) (save nn) (Arr x) (Arr y)
 
 let test_model nn x y =
   Mat.iter2_rows (fun u v ->
-    Owl_dataset.print_mnist_image (unpack_mat u);
-    let p = run u nn |> unpack_mat in
+    Owl_dataset.print_mnist_image (unpack_arr u);
+    let p = run u nn |> unpack_arr in
     Owl_dense_matrix_generic.print p;
-    Printf.printf "prediction: %i\n" (let _, _, j = Owl_dense_matrix_generic.max_i p in j)
-  ) (Mat x) (Mat y)
+    Printf.printf "prediction: %i\n" (let _, i = Owl_dense_matrix_generic.max_i p in i.(1))
+  ) (Arr x) (Arr y)
 
 
 
