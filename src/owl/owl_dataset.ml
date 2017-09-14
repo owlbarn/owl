@@ -77,13 +77,13 @@ let print_mnist_image x =
 (* similar to load_mnist_train_data but returns [x] as [*,28,28,1] ndarray *)
 let load_mnist_train_data_arr () =
   let x, label, y = load_mnist_train_data () in
-  let m = (Owl_dense_ndarray_generic.shape x).(0) in
+  let m = (Owl_dense_ndarray.S.shape x).(0) in
   let x = Owl_dense_ndarray.S.reshape x [|m;28;28;1|] in
   x, label, y
 
 let load_mnist_test_data_arr () =
   let x, label, y = load_mnist_test_data () in
-  let m = (Owl_dense_ndarray_generic.shape x).(0) in
+  let m = (Owl_dense_ndarray.S.shape x).(0) in
   let x = Owl_dense_ndarray.S.reshape x [|m;28;28;1|] in
   x, label, y
 
