@@ -342,7 +342,7 @@ let broadcast_op op x0 x1 =
 
 let min_i x =
   let y = flatten x |> array1_of_genarray in
-  let i = _owl_min_i (kind x) (numel x) y in
+  let i = _owl_min_i (kind x) (numel x) x in
   let s = _calc_stride (shape x) in
   let j = Array.copy s in
   let _ = _index_1d_nd i j s in
@@ -350,7 +350,7 @@ let min_i x =
 
 let max_i x =
   let y = flatten x |> array1_of_genarray in
-  let i = _owl_max_i (kind x) (numel x) y in
+  let i = _owl_max_i (kind x) (numel x) x in
   let s = _calc_stride (shape x) in
   let j = Array.copy s in
   let _ = _index_1d_nd i j s in
@@ -392,9 +392,7 @@ let mul x y =
   match same_shape x y with
   | true  -> (
       let y = clone y in
-      let x' = flatten x |> array1_of_genarray in
-      let y' = flatten y |> array1_of_genarray in
-      _owl_mul (kind x) (numel x) x' y' y';
+      _owl_mul (kind x) (numel x) x y y;
       y
     )
   | false -> broadcast_op (_owl_broadcast_mul (kind x)) x y
@@ -403,17 +401,14 @@ let div x y =
   match same_shape x y with
   | true  -> (
       let y = clone y in
-      let x' = flatten x |> array1_of_genarray in
-      let y' = flatten y |> array1_of_genarray in
-      _owl_div (kind x) (numel x) x' y' y';
+      _owl_div (kind x) (numel x) x y y;
       y
   )
   | false -> broadcast_op (_owl_broadcast_div (kind x)) x y
 
 let add_scalar x a =
   let x = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  _owl_add_scalar (kind x) (numel x) x' x' a;
+  _owl_add_scalar (kind x) (numel x) x x a;
   x
 
 let sub_scalar x a = add_scalar x (_neg_elt (kind x) a)
@@ -430,9 +425,7 @@ let pow x y =
   match same_shape x y with
   | true  -> (
       let y = clone y in
-      let x' = flatten x |> array1_of_genarray in
-      let y' = flatten y |> array1_of_genarray in
-      _owl_pow (kind x) (numel x) x' y' y';
+      _owl_pow (kind x) (numel x) x y y;
       y
     )
   | false -> broadcast_op (_owl_broadcast_pow (kind x)) x y
@@ -441,9 +434,7 @@ let atan2 x y =
   match same_shape x y with
   | true  -> (
       let y = clone y in
-      let x' = flatten x |> array1_of_genarray in
-      let y' = flatten y |> array1_of_genarray in
-      _owl_atan2 (kind x) (numel x) x' y' y';
+      _owl_atan2 (kind x) (numel x) x y y;
       y
     )
   | false -> broadcast_op (_owl_broadcast_atan2 (kind x)) x y
@@ -452,9 +443,7 @@ let hypot x y =
   match same_shape x y with
   | true  -> (
       let y = clone y in
-      let x' = flatten x |> array1_of_genarray in
-      let y' = flatten y |> array1_of_genarray in
-      _owl_hypot (kind x) (numel x) x' y' y';
+      _owl_hypot (kind x) (numel x) x y y;
       y
     )
   | false -> broadcast_op (_owl_broadcast_hypot (kind x)) x y
@@ -463,9 +452,7 @@ let min2 x y =
   match same_shape x y with
   | true  -> (
       let y = clone y in
-      let x' = flatten x |> array1_of_genarray in
-      let y' = flatten y |> array1_of_genarray in
-      _owl_min2 (kind x) (numel x) x' y' y';
+      _owl_min2 (kind x) (numel x) x y y;
       y
     )
   | false -> broadcast_op (_owl_broadcast_min2 (kind x)) x y
@@ -474,9 +461,7 @@ let max2 x y =
   match same_shape x y with
   | true  -> (
       let y = clone y in
-      let x' = flatten x |> array1_of_genarray in
-      let y' = flatten y |> array1_of_genarray in
-      _owl_max2 (kind x) (numel x) x' y' y';
+      _owl_max2 (kind x) (numel x) x y y;
       y
     )
   | false -> broadcast_op (_owl_broadcast_max2 (kind x)) x y
@@ -485,72 +470,51 @@ let fmod x y =
   match same_shape x y with
   | true  -> (
       let y = clone y in
-      let x' = flatten x |> array1_of_genarray in
-      let y' = flatten y |> array1_of_genarray in
-      _owl_fmod (kind x) (numel x) x' y' y';
+      _owl_fmod (kind x) (numel x) x y y;
       y
     )
   | false -> broadcast_op (_owl_broadcast_fmod (kind x)) x y
 
 let fmod_scalar x a =
   let y = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  _owl_fmod_scalar (kind x) (numel y) x' y' a;
+  _owl_fmod_scalar (kind x) (numel y) x y a;
   y
 
 let scalar_fmod a x =
   let y = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  _owl_scalar_fmod (kind x) (numel y) x' y' a;
+  _owl_scalar_fmod (kind x) (numel y) x y a;
   y
 
-let ssqr_diff x y =
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  _owl_ssqr_diff (kind x) (numel x) x' y'
+let ssqr_diff x y = _owl_ssqr_diff (kind x) (numel x) x y
 
 let abs x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_abs (kind x) (numel y) src dst in
+  _owl_abs (kind x) (numel y) x y;
   y
 
 let abs_c2s x =
   let y = empty Float32 (shape x) in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = owl_complex_float_abs (numel y) src dst in
+  owl_complex_float_abs (numel y) x y;
   y
 
 let abs_z2d x =
   let y = empty Float64 (shape x) in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = owl_complex_double_abs (numel y) src dst in
+  owl_complex_double_abs (numel y) x y;
   y
 
 let abs2 x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_abs2 (kind x) (numel y) src dst in
+  _owl_abs2 (kind x) (numel y) x y;
   y
 
 let abs2_c2s x =
   let y = empty Float32 (shape x) in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = owl_complex_float_abs2 (numel y) src dst in
+  owl_complex_float_abs2 (numel y) x y;
   y
 
 let abs2_z2d x =
   let y = empty Float64 (shape x) in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = owl_complex_double_abs2 (numel y) src dst in
+  owl_complex_double_abs2 (numel y) x y;
   y
 
 let conj x =
@@ -569,337 +533,247 @@ let neg x =
 
 let reci x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_reci (kind x) (numel y) src dst in
+  _owl_reci (kind x) (numel y) x y;
   y
 
 let signum x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_signum (kind x) (numel y) src dst in
+  _owl_signum (kind x) (numel y) x y;
   y
 
 let sqr x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_sqr (kind x) (numel y) src dst in
+  _owl_sqr (kind x) (numel y) x y;
   y
 
 let sqrt x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_sqrt (kind x) (numel y) src dst in
+  _owl_sqrt (kind x) (numel y) x y;
   y
 
 let cbrt x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_cbrt (kind x) (numel y) src dst in
+  _owl_cbrt (kind x) (numel y) x y;
   y
 
 let exp x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_exp (kind x) (numel y) src dst in
+  _owl_exp (kind x) (numel y) x y;
   y
 
 let exp2 x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_exp2 (kind x) (numel y) src dst in
+  _owl_exp2 (kind x) (numel y) x y;
   y
 
 let exp10 x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_exp10 (kind x) (numel y) src dst in
+  _owl_exp10 (kind x) (numel y) x y;
   y
 
 let expm1 x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_expm1 (kind x) (numel y) src dst in
+  _owl_expm1 (kind x) (numel y) x y;
   y
 
 let log x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_log (kind x) (numel y) src dst in
+  _owl_log (kind x) (numel y) x y;
   y
 
 let log10 x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_log10 (kind x) (numel y) src dst in
+  _owl_log10 (kind x) (numel y) x y;
   y
 
 let log2 x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_log2 (kind x) (numel y) src dst in
+  _owl_log2 (kind x) (numel y) x y;
   y
 
 let log1p x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_log1p (kind x) (numel y) src dst in
+  _owl_log1p (kind x) (numel y) x y;
   y
 
 let sin x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_sin (kind x) (numel y) src dst in
+  _owl_sin (kind x) (numel y) x y;
   y
 
 let cos x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_cos (kind x) (numel y) src dst in
+  _owl_cos (kind x) (numel y) x y;
   y
 
 let tan x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_tan (kind x) (numel y) src dst in
+  _owl_tan (kind x) (numel y) x y;
   y
 
 let asin x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_asin (kind x) (numel y) src dst in
+  _owl_asin (kind x) (numel y) x y;
   y
 
 let acos x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_acos (kind x) (numel y) src dst in
+  _owl_acos (kind x) (numel y) x y;
   y
 
 let atan x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_atan (kind x) (numel y) src dst in
+  _owl_atan (kind x) (numel y) x y;
   y
 
 let sinh x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_sinh (kind x) (numel y) src dst in
+  _owl_sinh (kind x) (numel y) x y;
   y
 
 let cosh x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_cosh (kind x) (numel y) src dst in
+  _owl_cosh (kind x) (numel y) x y;
   y
 
 let tanh x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_tanh (kind x) (numel y) src dst in
+  _owl_tanh (kind x) (numel y) x y;
   y
 
 let asinh x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_asinh (kind x) (numel y) src dst in
+  _owl_asinh (kind x) (numel y) x y;
   y
 
 let acosh x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_acosh (kind x) (numel y) src dst in
+  _owl_acosh (kind x) (numel y) x y;
   y
 
 let atanh x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_atanh (kind x) (numel y) src dst in
+  _owl_atanh (kind x) (numel y) x y;
   y
 
 let floor x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_floor (kind x) (numel y) src dst in
+  _owl_floor (kind x) (numel y) x y;
   y
 
 let ceil x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_ceil (kind x) (numel y) src dst in
+  _owl_ceil (kind x) (numel y) x y;
   y
 
 let round x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_round (kind x) (numel y) src dst in
+  _owl_round (kind x) (numel y) x y;
   y
 
 let trunc x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_trunc (kind x) (numel y) src dst in
+  _owl_trunc (kind x) (numel y) x y;
   y
 
 let fix x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_fix (kind x) (numel y) src dst in
+  _owl_fix (kind x) (numel y) x y;
   y
 
 let angle x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_angle (kind x) (numel y) src dst in
+  _owl_angle (kind x) (numel y) x y;
   y
 
 let proj x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_proj (kind x) (numel y) src dst in
+  _owl_proj (kind x) (numel y) x y;
   y
 
 let erf x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_erf (kind x) (numel y) src dst in
+  _owl_erf (kind x) (numel y) x y;
   y
 
 let erfc x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_erfc (kind x) (numel y) src dst in
+  _owl_erfc (kind x) (numel y) x y;
   y
 
 let logistic x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_logistic (kind x) (numel y) src dst in
+  _owl_logistic (kind x) (numel y) x y;
   y
 
 let relu x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_relu (kind x) (numel y) src dst in
+  _owl_relu (kind x) (numel y) x y;
   y
 
 let elu ?(alpha=1.0) x =
   let y = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  _owl_elu (kind x) (numel x) x' y' alpha;
+  _owl_elu (kind x) (numel x) x y alpha;
   y
 
 let leaky_relu ?(alpha=0.2) x =
   let y = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  _owl_leaky_relu (kind x) (numel x) x' y' alpha;
+  _owl_leaky_relu (kind x) (numel x) x y alpha;
   y
 
 let softplus x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_softplus (kind x) (numel y) src dst in
+  _owl_softplus (kind x) (numel y) x y;
   y
 
 let softsign x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_softsign (kind x) (numel y) src dst in
+  _owl_softsign (kind x) (numel y) x y;
   y
 
 let sigmoid x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_sigmoid (kind x) (numel y) src dst in
+  _owl_sigmoid (kind x) (numel y) x y;
   y
 
-let ssqr x a = flatten x |> array1_of_genarray |> _owl_ssqr (kind x) (numel x) a
+let ssqr x a = _owl_ssqr (kind x) (numel x) a x
 
-let l1norm x = flatten x |> array1_of_genarray |> _owl_l1norm (kind x) (numel x)
+let l1norm x = _owl_l1norm (kind x) (numel x) x
 
-let l2norm_sqr x = flatten x |> array1_of_genarray |> _owl_l2norm_sqr (kind x) (numel x)
+let l2norm_sqr x = _owl_l2norm_sqr (kind x) (numel x) x
 
 let l2norm x = l2norm_sqr x |> Owl_maths.sqrt
 
-let log_sum_exp x =
-  let y = flatten x |> array1_of_genarray in
-  _owl_log_sum_exp (kind x) (numel x) y
+let log_sum_exp x = _owl_log_sum_exp (kind x) (numel x) x
 
 let scalar_pow a x =
   let x = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  _owl_scalar_pow (kind x) (numel x) x' x' a;
+  _owl_scalar_pow (kind x) (numel x) x x a;
   x
 
 let pow_scalar x a =
   let x = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  _owl_pow_scalar (kind x) (numel x) x' x' a;
+  _owl_pow_scalar (kind x) (numel x) x x a;
   x
 
 let scalar_atan2 a x =
   let x = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  _owl_scalar_atan2 (kind x) (numel x) x' x' a;
+  _owl_scalar_atan2 (kind x) (numel x) x x a;
   x
 
 let atan2_scalar x a =
   let x = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  _owl_atan2_scalar (kind x) (numel x) x' x' a;
+  _owl_atan2_scalar (kind x) (numel x) x x a;
   x
 
 let scalar_add a x =
   let x = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  _owl_add_scalar (kind x) (numel x) x' x' a;
+  _owl_add_scalar (kind x) (numel x) x x a;
   x
 
 let scalar_sub a x =
   let x = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  _owl_scalar_sub (kind x) (numel x) x' x' a;
+  _owl_scalar_sub (kind x) (numel x) x x a;
   x
 
 let scalar_mul a x =
@@ -910,8 +784,7 @@ let scalar_mul a x =
 
 let scalar_div a x =
   let x = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  _owl_scalar_div (kind x) (numel x) x' x' a;
+  _owl_scalar_div (kind x) (numel x) x x a;
   x
 
 let reci_tol ?tol x =
@@ -920,104 +793,72 @@ let reci_tol ?tol x =
     | None   -> _float_typ_elt (kind x) (Owl_utils.eps Float32)
   in
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  _owl_reci_tol (kind x) (numel y) src dst tol;
+  _owl_reci_tol (kind x) (numel y) x y tol;
   y
 
 (* element-wise comparison functions *)
 
 let elt_equal x y =
   let z = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  _owl_elt_equal (kind x) (numel z) x' y' z';
+  _owl_elt_equal (kind x) (numel z) x y z;
   z
 
 let elt_not_equal x y =
   let z = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  _owl_elt_not_equal (kind x) (numel z) x' y' z';
+  _owl_elt_not_equal (kind x) (numel z) x y z;
   z
 
 let elt_less x y =
   let z = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  _owl_elt_less (kind x) (numel z) x' y' z';
+  _owl_elt_less (kind x) (numel z) x y z;
   z
 
 let elt_greater x y =
   let z = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  _owl_elt_greater (kind x) (numel z) x' y' z';
+  _owl_elt_greater (kind x) (numel z) x y z;
   z
 
 let elt_less_equal x y =
   let z = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  _owl_elt_less_equal (kind x) (numel z) x' y' z';
+  _owl_elt_less_equal (kind x) (numel z) x y z;
   z
 
 let elt_greater_equal x y =
   let z = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  _owl_elt_greater_equal (kind x) (numel z) x' y' z';
+  _owl_elt_greater_equal (kind x) (numel z) x y z;
   z
 
 let elt_equal_scalar x a =
   let y = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  _owl_elt_equal_scalar (kind x) (numel x) x' y' a;
+  _owl_elt_equal_scalar (kind x) (numel x) x y a;
   y
 
 let elt_not_equal_scalar x a =
   let y = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  _owl_elt_not_equal_scalar (kind x) (numel x) x' y' a;
+  _owl_elt_not_equal_scalar (kind x) (numel x) x y a;
   y
 
 let elt_less_scalar x a =
   let y = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  _owl_elt_less_scalar (kind x) (numel x) x' y' a;
+  _owl_elt_less_scalar (kind x) (numel x) x y a;
   y
 
 let elt_greater_scalar x a =
   let y = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  _owl_elt_greater_scalar (kind x) (numel x) x' y' a;
+  _owl_elt_greater_scalar (kind x) (numel x) x y a;
   y
 
 let elt_less_equal_scalar x a =
   let y = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  _owl_elt_less_equal_scalar (kind x) (numel x) x' y' a;
+  _owl_elt_less_equal_scalar (kind x) (numel x) x y a;
   y
 
 let elt_greater_equal_scalar x a =
   let y = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  _owl_elt_greater_equal_scalar (kind x) (numel x) x' y' a;
+  _owl_elt_greater_equal_scalar (kind x) (numel x) x y a;
   y
 
-let sum x = flatten x |> array1_of_genarray |> _owl_sum (kind x) (numel x)
+let sum x = _owl_sum (kind x) (numel x) x
 
 let softmax x =
   let y = max x |> sub_scalar x |> exp in
@@ -1085,14 +926,14 @@ let gaussian : type a b. ?sigma:float -> (a, b) kind -> int array -> (a, b) t =
   in x
 
 let linspace k a b n =
-  let x = Array1.create k c_layout n in
+  let x = empty k [|n|] in
   _owl_linspace k n a b x;
-  genarray_of_array1 x
+  x
 
 let logspace k ?(base=Owl_maths.e) a b n =
-  let x = Array1.create k c_layout n in
+  let x = empty k [|n|] in
   _owl_logspace k n base a b x;
-  genarray_of_array1 x
+  x
 
 let bernoulli k ?(p=0.5) ?seed d =
   assert (p >= 0. && p <= 1.);
@@ -1101,8 +942,7 @@ let bernoulli k ?(p=0.5) ?seed d =
     | None   -> Owl_stats.Rnd.uniform_int ()
   in
   let x = empty k d in
-  let y = x |> flatten |> array1_of_genarray in
-  (_owl_bernoulli k) (numel x) y p seed;
+  (_owl_bernoulli k) (numel x) x p seed;
   x
 
 let create kind dimension a =
@@ -1124,8 +964,7 @@ let sequential k ?a ?step dimension =
     | None      -> _one k
   in
   let x = empty k dimension in
-  let y = flatten x |> array1_of_genarray in
-  _owl_sequential k (numel x) y a step;
+  _owl_sequential k (numel x) x a step;
   x
 
 let dropout ?(rate=0.5) ?seed x =
@@ -1446,122 +1285,59 @@ let sort x =
   let _op = _owl_sort (kind x) in
   _op (numel x) y
 
-let is_zero x =
-  let y = flatten x |> array1_of_genarray in
-  let _op = _owl_is_zero (kind x) in
-  _op (numel x) y = 1
+let is_zero x = _owl_is_zero (kind x) (numel x) x = 1
 
-let is_positive x =
-  let y = flatten x |> array1_of_genarray in
-  let _op = _owl_is_positive (kind x) in
-  _op (numel x) y = 1
+let is_positive x = _owl_is_positive (kind x) (numel x) x = 1
 
-let is_negative x =
-  let y = flatten x |> array1_of_genarray in
-  let _op = _owl_is_negative (kind x) in
-  _op (numel x) y = 1
+let is_negative x = _owl_is_negative (kind x) (numel x) x = 1
 
-let is_nonnegative x =
-  let y = flatten x |> array1_of_genarray in
-  let _op = _owl_is_nonnegative (kind x) in
-  _op (numel x) y = 1
+let is_nonnegative x = _owl_is_nonnegative (kind x) (numel x) x = 1
 
-let is_nonpositive x =
-  let y = flatten x |> array1_of_genarray in
-  let _op = _owl_is_nonpositive (kind x) in
-  _op (numel x) y = 1
+let is_nonpositive x = _owl_is_nonpositive (kind x) (numel x) x = 1
 
-let is_normal x =
-  let y = flatten x |> array1_of_genarray in
-  let _op = _owl_is_normal (kind x) in
-  _op (numel x) y = 1
+let is_normal x = _owl_is_normal (kind x) (numel x) x = 1
 
-let not_nan x =
-  let y = flatten x |> array1_of_genarray in
-  let _op = _owl_not_nan (kind x) in
-  _op (numel x) y = 1
+let not_nan x = _owl_not_nan (kind x) (numel x) x = 1
 
-let not_inf x =
-  let y = flatten x |> array1_of_genarray in
-  let _op = _owl_not_inf (kind x) in
-  _op (numel x) y = 1
+let not_inf x = _owl_not_inf (kind x) (numel x) x = 1
 
 let equal x y = ( = ) x y
 
 let not_equal x y = ( <> ) x y
 
-let greater x y =
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let _op = _owl_greater (kind x) in
-  _op (numel x) x' y' = 1
+let greater x y = _owl_greater (kind x) (numel x) x y = 1
 
-let less x y =
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let _op = _owl_less (kind x) in
-  _op (numel x) x' y' = 1
+let less x y = _owl_less (kind x) (numel x) x y = 1
 
-let greater_equal x y =
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let _op = _owl_greater_equal (kind x) in
-  _op (numel x) x' y' = 1
+let greater_equal x y = _owl_greater_equal (kind x) (numel x) x y = 1
 
-let less_equal x y =
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let _op = _owl_less_equal (kind x) in
-  _op (numel x) x' y' = 1
+let less_equal x y = _owl_less_equal (kind x) (numel x) x y = 1
 
-let equal_scalar x a =
-  let x' = flatten x |> array1_of_genarray in
-  let _op = _owl_equal_scalar (kind x) in
-  _op (numel x) x' a = 1
+let equal_scalar x a = _owl_equal_scalar (kind x) (numel x) x a = 1
 
-let not_equal_scalar x a =
-  let x' = flatten x |> array1_of_genarray in
-  let _op = _owl_not_equal_scalar (kind x) in
-  _op (numel x) x' a = 1
+let not_equal_scalar x a = _owl_equal_scalar (kind x) (numel x) x a = 1
 
-let less_scalar x a =
-  let x' = flatten x |> array1_of_genarray in
-  let _op = _owl_less_scalar (kind x) in
-  _op (numel x) x' a = 1
+let less_scalar x a = _owl_less_scalar (kind x) (numel x) x a = 1
 
-let greater_scalar x a =
-  let x' = flatten x |> array1_of_genarray in
-  let _op = _owl_greater_scalar (kind x) in
-  _op (numel x) x' a = 1
+let greater_scalar x a = _owl_greater_scalar (kind x) (numel x) x a = 1
 
-let less_equal_scalar x a =
-  let x' = flatten x |> array1_of_genarray in
-  let _op = _owl_less_equal_scalar (kind x) in
-  _op (numel x) x' a = 1
+let less_equal_scalar x a = _owl_less_equal_scalar (kind x) (numel x) x a = 1
 
-let greater_equal_scalar x a =
-  let x' = flatten x |> array1_of_genarray in
-  let _op = _owl_greater_equal_scalar (kind x) in
-  _op (numel x) x' a = 1
+let greater_equal_scalar x a = _owl_greater_equal_scalar (kind x) (numel x) x a = 1
 
 let approx_equal ?eps x y =
   let eps = match eps with
     | Some eps -> eps
     | None     -> Owl_utils.eps Float32
   in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let _op = _owl_approx_equal (kind x) in
-  _op (numel x) x' y' eps = 1
+  _owl_approx_equal (kind x) (numel x) x y eps = 1
 
 let approx_equal_scalar ?eps x a =
   let eps = match eps with
     | Some eps -> eps
     | None     -> Owl_utils.eps Float32
   in
-  let x' = flatten x |> array1_of_genarray in
-  let _op = _owl_approx_equal_scalar (kind x) in
-  _op (numel x) x' a eps = 1
+  _owl_approx_equal_scalar (kind x) (numel x) x a eps = 1
 
 let approx_elt_equal ?eps x y =
   let eps = match eps with
@@ -1578,10 +1354,7 @@ let approx_elt_equal ?eps x y =
   in
   let k = kind x in
   let z = create k (shape x) (_eps k eps) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  let z' = flatten z |> array1_of_genarray in
-  _owl_approx_elt_equal k (numel z) x' y' z';
+  _owl_approx_elt_equal k (numel z) x y z;
   z
 
 let approx_elt_equal_scalar ?eps x a =
@@ -1599,9 +1372,7 @@ let approx_elt_equal_scalar ?eps x a =
   in
   let k = kind x in
   let y = create k (shape x) (_eps k eps) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
-  _owl_approx_elt_equal_scalar k (numel y) x' y' a;
+  _owl_approx_elt_equal_scalar k (numel y) x y a;
   y
 
 let exists f x =
@@ -1618,10 +1389,7 @@ let not_exists f x = not (exists f x)
 
 let for_all f x = let g y = not (f y) in not_exists g x
 
-let nnz x =
-  let y = flatten x |> array1_of_genarray in
-  let _op = _owl_nnz (kind x) in
-  _op (numel x) y
+let nnz x = _owl_nnz (kind x) (numel x) x
 
 let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
 
@@ -1669,22 +1437,16 @@ let complex
   : type a b c d. (a, b) kind -> (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
   = fun real_kind complex_kind re im ->
   assert (shape re = shape im);
-  let _re = flatten re |> array1_of_genarray in
-  let _im = flatten im |> array1_of_genarray in
   let x = empty complex_kind (shape re) in
-  let _x = flatten x |> array1_of_genarray in
-  _owl_to_complex real_kind complex_kind (numel re) _re _im _x;
+  _owl_to_complex real_kind complex_kind (numel re) re im x;
   x
 
 let polar
   : type a b c d. (a, b) kind -> (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
   = fun real_kind complex_kind rho theta ->
   assert (shape rho = shape theta);
-  let _rho = flatten rho |> array1_of_genarray in
-  let _theta = flatten theta |> array1_of_genarray in
   let x = empty complex_kind (shape rho) in
-  let _x = flatten x |> array1_of_genarray in
-  _owl_polar real_kind complex_kind (numel rho) _rho _theta _x;
+  _owl_polar real_kind complex_kind (numel rho) rho theta x;
   x
 
 
@@ -1692,22 +1454,22 @@ let polar
 
 let re_c2s x =
   let y = empty Float32 (shape x) in
-  _owl_re_c2s (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  _owl_re_c2s (numel x) x y;
   y
 
 let re_z2d x =
   let y = empty Float64 (shape x) in
-  _owl_re_z2d (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  _owl_re_z2d (numel x) x y;
   y
 
 let im_c2s x =
   let y = empty Float32 (shape x) in
-  _owl_im_c2s (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  _owl_im_c2s (numel x) x y;
   y
 
 let im_z2d x =
   let y = empty Float64 (shape x) in
-  _owl_im_z2d (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  _owl_im_z2d (numel x) x y;
   y
 
 let prod ?axis x =
@@ -1716,49 +1478,49 @@ let prod ?axis x =
     let _a1 = _one (kind x) in
     let _op = _mul_elt (kind x) in
     fold ~axis (fun a y -> _op a y) _a1 x
-  | None -> flatten x |> array1_of_genarray |> _owl_prod (kind x) (numel x)
+  | None -> _owl_prod (kind x) (numel x) x
 
 
 (* cast functions *)
 
 let cast_s2d x =
   let y = empty Float64 (shape x) in
-  _owl_cast_s2d (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  _owl_cast_s2d (numel x) x y;
   y
 
 let cast_d2s x =
   let y = empty Float32 (shape x) in
-  _owl_cast_d2s (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  _owl_cast_d2s (numel x) x y;
   y
 
 let cast_c2z x =
   let y = empty Complex64 (shape x) in
-  _owl_cast_c2z (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  _owl_cast_c2z (numel x) x y;
   y
 
 let cast_z2c x =
   let y = empty Complex32 (shape x) in
-  _owl_cast_z2c (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  _owl_cast_z2c (numel x) x y;
   y
 
 let cast_s2c x =
   let y = empty Complex32 (shape x) in
-  _owl_cast_s2c (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  _owl_cast_s2c (numel x) x y;
   y
 
 let cast_d2z x =
   let y = empty Complex64 (shape x) in
-  _owl_cast_d2z (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  _owl_cast_d2z (numel x) x y;
   y
 
 let cast_s2z x =
   let y = empty Complex64 (shape x) in
-  _owl_cast_s2z (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  _owl_cast_s2z (numel x) x y;
   y
 
 let cast_d2c x =
   let y = empty Complex32 (shape x) in
-  _owl_cast_d2c (numel x) (flatten x |> array1_of_genarray) (flatten y |> array1_of_genarray);
+  _owl_cast_d2c (numel x) x y;
   y
 
 
@@ -1775,8 +1537,7 @@ let clip_by_value ?amin ?amax x =
     | None   -> _pos_inf k
   in
   let y = clone x in
-  let z = flatten y |> array1_of_genarray in
-  _owl_clip_by_value k (numel x) amin amax z;
+  _owl_clip_by_value k (numel x) amin amax y;
   y
 
 let clip_by_l2norm t x =
@@ -2818,10 +2579,8 @@ let cummax ?axis x =
 let modf x =
   let x = clone x in
   let y = empty (kind x) (shape x) in
-  let x' = flatten x |> array1_of_genarray in
-  let y' = flatten y |> array1_of_genarray in
   (* the last parameter zero is just a dummy parameter *)
-  _owl_modf (kind x) (numel x) x' y' (_zero (kind x));
+  _owl_modf (kind x) (numel x) x y (_zero (kind x));
   x, y
 
 
