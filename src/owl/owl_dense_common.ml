@@ -1773,12 +1773,12 @@ let _owl_clip_by_value : type a b. (a, b) kind -> (a, b) owl_arr_op07 = function
   | Complex64 -> owl_complex_double_clip_by_value
   | _         -> failwith "_owl_clip_by_value: unsupported operation"
 
-external owl_real_float_sort : int -> ('a, 'b) owl_vec -> unit = "real_float_sort"
-external owl_real_double_sort : int -> ('a, 'b) owl_vec -> unit = "real_double_sort"
-external owl_complex_float_sort : int -> ('a, 'b) owl_vec -> unit = "complex_float_sort"
-external owl_complex_double_sort : int -> ('a, 'b) owl_vec -> unit = "complex_double_sort"
+external owl_real_float_sort : int -> ('a, 'b) owl_arr -> unit = "real_float_sort"
+external owl_real_double_sort : int -> ('a, 'b) owl_arr -> unit = "real_double_sort"
+external owl_complex_float_sort : int -> ('a, 'b) owl_arr -> unit = "complex_float_sort"
+external owl_complex_double_sort : int -> ('a, 'b) owl_arr -> unit = "complex_double_sort"
 
-let _owl_sort : type a b. (a, b) kind -> int -> (a, b) owl_vec -> unit = function
+let _owl_sort : type a b. (a, b) kind -> int -> (a, b) owl_arr -> unit = function
   | Float32   -> owl_real_float_sort
   | Float64   -> owl_real_double_sort
   | Complex32 -> owl_complex_float_sort

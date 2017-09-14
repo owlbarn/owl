@@ -1280,10 +1280,7 @@ let set_index x axis a =
 
 (* some comparison functions *)
 
-let sort x =
-  let y = flatten x |> array1_of_genarray in
-  let _op = _owl_sort (kind x) in
-  _op (numel x) y
+let sort x = _owl_sort (kind x) (numel x) x
 
 let is_zero x = _owl_is_zero (kind x) (numel x) x = 1
 
