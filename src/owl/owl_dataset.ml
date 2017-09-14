@@ -68,11 +68,11 @@ let load_mnist_test_data () =
   Owl_dense_ndarray.S.load (p ^ "mnist-test-lblvec")
 
 let print_mnist_image x =
-  let x = Owl_dense_ndarray_generic.reshape x [|28; 28|] in
-  Owl_dense_ndarray_generic.iter_slice [|0|] (fun v ->
+  Owl_dense_ndarray_generic.reshape x [|28; 28|] 
+  |> Owl_dense_ndarray_generic.iter_slice [|0|] (fun v ->
     Owl_dense_ndarray_generic.iter (function 0. -> Printf.printf " " | _ -> Printf.printf "■") v;
     print_endline "";
-  ) x
+  )
 
 (* similar to load_mnist_train_data but returns [x] as [*,28,28,1] ndarray *)
 let load_mnist_train_data_arr () =
