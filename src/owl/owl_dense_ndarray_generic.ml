@@ -490,12 +490,12 @@ let abs x =
 
 let abs_c2s x =
   let y = empty Float32 (shape x) in
-  owl_complex_float_abs (numel y) x y;
+  owl_complex32_abs (numel y) x y;
   y
 
 let abs_z2d x =
   let y = empty Float64 (shape x) in
-  owl_complex_double_abs (numel y) x y;
+  owl_complex64_abs (numel y) x y;
   y
 
 let abs2 x =
@@ -505,12 +505,12 @@ let abs2 x =
 
 let abs2_c2s x =
   let y = empty Float32 (shape x) in
-  owl_complex_float_abs2 (numel y) x y;
+  owl_complex32_abs2 (numel y) x y;
   y
 
 let abs2_z2d x =
   let y = empty Float64 (shape x) in
-  owl_complex_double_abs2 (numel y) x y;
+  owl_complex64_abs2 (numel y) x y;
   y
 
 let conj x =
