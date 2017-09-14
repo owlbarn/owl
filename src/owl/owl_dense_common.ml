@@ -1392,53 +1392,61 @@ external owl_float32_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, '
 external owl_float64_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_add"
 external owl_complex32_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex32_add"
 external owl_complex64_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex64_add"
+external owl_int8_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "int8_add"
 
 let _owl_add : type a b. (a, b) kind -> (a, b) owl_arr_op03 = fun k l x y z ->
   match k with
-  | Float32   -> owl_float32_add l x y z
-  | Float64   -> owl_float64_add l x y z
-  | Complex32 -> owl_complex32_add l x y z
-  | Complex64 -> owl_complex64_add l x y z
-  | _         -> failwith "_owl_add: unsupported operation"
+  | Float32     -> owl_float32_add l x y z
+  | Float64     -> owl_float64_add l x y z
+  | Complex32   -> owl_complex32_add l x y z
+  | Complex64   -> owl_complex64_add l x y z
+  | Int8_signed -> owl_int8_add l x y z
+  | _           -> failwith "_owl_add: unsupported operation"
 
 external owl_float32_sub : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_sub"
 external owl_float64_sub : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_sub"
 external owl_complex32_sub : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex32_sub"
 external owl_complex64_sub : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex64_sub"
+external owl_int8_sub : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "int8_sub"
 
 let _owl_sub : type a b. (a, b) kind -> (a, b) owl_arr_op03 = fun k l x y z ->
   match k with
-  | Float32   -> owl_float32_sub l x y z
-  | Float64   -> owl_float64_sub l x y z
-  | Complex32 -> owl_complex32_sub l x y z
-  | Complex64 -> owl_complex64_sub l x y z
-  | _         -> failwith "_owl_sub: unsupported operation"
+  | Float32     -> owl_float32_sub l x y z
+  | Float64     -> owl_float64_sub l x y z
+  | Complex32   -> owl_complex32_sub l x y z
+  | Complex64   -> owl_complex64_sub l x y z
+  | Int8_signed -> owl_int8_sub l x y z
+  | _           -> failwith "_owl_sub: unsupported operation"
 
 external owl_float32_mul : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_mul"
 external owl_float64_mul : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_mul"
 external owl_complex32_mul : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex32_mul"
 external owl_complex64_mul : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex64_mul"
+external owl_int8_mul : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "int8_mul"
 
 let _owl_mul : type a b. (a, b) kind -> (a, b) owl_arr_op03 = fun k l x y z ->
   match k with
-  | Float32   -> owl_float32_mul l x y z
-  | Float64   -> owl_float64_mul l x y z
-  | Complex32 -> owl_complex32_mul l x y z
-  | Complex64 -> owl_complex64_mul l x y z
-  | _         -> failwith "_owl_mul: unsupported operation"
+  | Float32     -> owl_float32_mul l x y z
+  | Float64     -> owl_float64_mul l x y z
+  | Complex32   -> owl_complex32_mul l x y z
+  | Complex64   -> owl_complex64_mul l x y z
+  | Int8_signed -> owl_int8_mul l x y z
+  | _           -> failwith "_owl_mul: unsupported operation"
 
 external owl_float32_div : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_div"
 external owl_float64_div : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_div"
 external owl_complex32_div : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex32_div"
 external owl_complex64_div : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex64_div"
+external owl_int8_div : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "int8_div"
 
 let _owl_div : type a b. (a, b) kind -> (a, b) owl_arr_op03 = fun k l x y z ->
   match k with
-  | Float32   -> owl_float32_div l x y z
-  | Float64   -> owl_float64_div l x y z
-  | Complex32 -> owl_complex32_div l x y z
-  | Complex64 -> owl_complex64_div l x y z
-  | _         -> failwith "_owl_div: unsupported operation"
+  | Float32     -> owl_float32_div l x y z
+  | Float64     -> owl_float64_div l x y z
+  | Complex32   -> owl_complex32_div l x y z
+  | Complex64   -> owl_complex64_div l x y z
+  | Int8_signed -> owl_int8_div l x y z
+  | _           -> failwith "_owl_div: unsupported operation"
 
 external owl_float32_add_scalar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "float32_add_scalar"
 external owl_float64_add_scalar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "float64_add_scalar"
@@ -1845,49 +1853,57 @@ external owl_float32_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_
 external owl_float64_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_add" "float64_broadcast_add_impl"
 external owl_complex32_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_add" "complex64_broadcast_add_impl"
 external owl_complex64_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_add" "complex64_broadcast_add_impl"
+external owl_int8_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_add" "int8_broadcast_add_impl"
 
 let _owl_broadcast_add : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
-  | Float32   -> owl_float32_broadcast_add
-  | Float64   -> owl_float64_broadcast_add
-  | Complex32 -> owl_complex32_broadcast_add
-  | Complex64 -> owl_complex64_broadcast_add
-  | _         -> failwith "_owl_broadcast_add: unsupported operation"
+  | Float32     -> owl_float32_broadcast_add
+  | Float64     -> owl_float64_broadcast_add
+  | Complex32   -> owl_complex32_broadcast_add
+  | Complex64   -> owl_complex64_broadcast_add
+  | Int8_signed -> owl_int8_broadcast_add
+  | _           -> failwith "_owl_broadcast_add: unsupported operation"
 
 external owl_float32_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_sub" "float32_broadcast_sub_impl"
 external owl_float64_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_sub" "float64_broadcast_sub_impl"
 external owl_complex32_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_sub" "complex64_broadcast_sub_impl"
 external owl_complex64_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_sub" "complex64_broadcast_sub_impl"
+external owl_int8_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_sub" "int8_broadcast_sub_impl"
 
 let _owl_broadcast_sub : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
-  | Float32   -> owl_float32_broadcast_sub
-  | Float64   -> owl_float64_broadcast_sub
-  | Complex32 -> owl_complex32_broadcast_sub
-  | Complex64 -> owl_complex64_broadcast_sub
-  | _         -> failwith "_owl_broadcast_sub: unsupported operation"
+  | Float32     -> owl_float32_broadcast_sub
+  | Float64     -> owl_float64_broadcast_sub
+  | Complex32   -> owl_complex32_broadcast_sub
+  | Complex64   -> owl_complex64_broadcast_sub
+  | Int8_signed -> owl_int8_broadcast_sub
+  | _           -> failwith "_owl_broadcast_sub: unsupported operation"
 
 external owl_float32_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_mul" "float32_broadcast_mul_impl"
 external owl_float64_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_mul" "float64_broadcast_mul_impl"
 external owl_complex32_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_mul" "complex64_broadcast_mul_impl"
 external owl_complex64_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_mul" "complex64_broadcast_mul_impl"
+external owl_int8_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_mul" "int8_broadcast_mul_impl"
 
 let _owl_broadcast_mul : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
-  | Float32   -> owl_float32_broadcast_mul
-  | Float64   -> owl_float64_broadcast_mul
-  | Complex32 -> owl_complex32_broadcast_mul
-  | Complex64 -> owl_complex64_broadcast_mul
-  | _         -> failwith "_owl_broadcast_mul: unsupported operation"
+  | Float32     -> owl_float32_broadcast_mul
+  | Float64     -> owl_float64_broadcast_mul
+  | Complex32   -> owl_complex32_broadcast_mul
+  | Complex64   -> owl_complex64_broadcast_mul
+  | Int8_signed -> owl_int8_broadcast_mul
+  | _           -> failwith "_owl_broadcast_mul: unsupported operation"
 
 external owl_float32_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_div" "float32_broadcast_div_impl"
 external owl_float64_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_div" "float64_broadcast_div_impl"
 external owl_complex32_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_div" "complex64_broadcast_div_impl"
 external owl_complex64_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_div" "complex64_broadcast_div_impl"
+external owl_int8_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_div" "int8_broadcast_div_impl"
 
 let _owl_broadcast_div : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
-  | Float32   -> owl_float32_broadcast_div
-  | Float64   -> owl_float64_broadcast_div
-  | Complex32 -> owl_complex32_broadcast_div
-  | Complex64 -> owl_complex64_broadcast_div
-  | _         -> failwith "_owl_broadcast_div: unsupported operation"
+  | Float32     -> owl_float32_broadcast_div
+  | Float64     -> owl_float64_broadcast_div
+  | Complex32   -> owl_complex32_broadcast_div
+  | Complex64   -> owl_complex64_broadcast_div
+  | Int8_signed -> owl_int8_broadcast_div
+  | _           -> failwith "_owl_broadcast_div: unsupported operation"
 
 external owl_float32_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_max2" "float32_broadcast_max2_impl"
 external owl_float64_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_max2" "float64_broadcast_max2_impl"
