@@ -2014,6 +2014,66 @@ int complex_cmp (const void * a, const void * b)
 
 ////// binary math operator //////
 
+// add
+
+#define FUN15 real_float_add
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 float
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 real_double_add
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 double
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 complex_float_add
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define NUMBER2 _Complex float
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 complex_double_add
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define NUMBER2 _Complex double
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+// sub
+
+#define FUN15 real_float_sub
+#define NUMBER float
+#define NUMBER1 float
+#define NUMBER2 float
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 real_double_sub
+#define NUMBER double
+#define NUMBER1 double
+#define NUMBER2 double
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 complex_float_sub
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define NUMBER2 _Complex float
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 complex_double_sub
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define NUMBER2 _Complex double
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
 // mul
 
 #define FUN15 real_float_mul

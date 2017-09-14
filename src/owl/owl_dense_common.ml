@@ -1370,6 +1370,32 @@ let _owl_log_sum_exp : type a b. (a, b) kind -> (a, b) owl_arr_op02 = function
   | Float64   -> owl_real_double_log_sum_exp
   | _         -> failwith "_owl_log_sum_exp: unsupported operation"
 
+external owl_real_float_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "real_float_add"
+external owl_real_double_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "real_double_add"
+external owl_complex_float_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex_float_add"
+external owl_complex_double_add : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex_double_add"
+
+let _owl_add : type a b. (a, b) kind -> (a, b) owl_arr_op03 = fun k l x y z ->
+  match k with
+  | Float32   -> owl_real_float_add l x y z
+  | Float64   -> owl_real_double_add l x y z
+  | Complex32 -> owl_complex_float_add l x y z
+  | Complex64 -> owl_complex_double_add l x y z
+  | _         -> failwith "_owl_add: unsupported operation"
+
+external owl_real_float_sub : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "real_float_sub"
+external owl_real_double_sub : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "real_double_sub"
+external owl_complex_float_sub : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex_float_sub"
+external owl_complex_double_sub : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex_double_sub"
+
+let _owl_sub : type a b. (a, b) kind -> (a, b) owl_arr_op03 = fun k l x y z ->
+  match k with
+  | Float32   -> owl_real_float_sub l x y z
+  | Float64   -> owl_real_double_sub l x y z
+  | Complex32 -> owl_complex_float_sub l x y z
+  | Complex64 -> owl_complex_double_sub l x y z
+  | _         -> failwith "_owl_sub: unsupported operation"
+
 external owl_real_float_mul : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "real_float_mul"
 external owl_real_double_mul : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "real_double_mul"
 external owl_complex_float_mul : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex_float_mul"

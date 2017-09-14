@@ -370,9 +370,7 @@ let add x y =
   match same_shape x y with
   | true  -> (
       let y = clone y in
-      let x' = flatten x |> array1_of_genarray in
-      let y' = flatten y |> array1_of_genarray in
-      Owl_cblas.axpy (numel x) (_one (kind x)) x' 1 y' 1;
+      _owl_add (kind x) (numel x) x y y;
       y
     )
   | false -> broadcast_op (_owl_broadcast_add (kind x)) x y
@@ -380,11 +378,9 @@ let add x y =
 let sub x y =
   match same_shape x y with
   | true  -> (
-      let x = clone x in
-      let x' = flatten x |> array1_of_genarray in
-      let y' = flatten y |> array1_of_genarray in
-      Owl_cblas.axpy (numel x) (_neg_one (kind x)) y' 1 x' 1;
-      x
+      let y = clone y in
+      _owl_sub (kind x) (numel x) x y y;
+      y
     )
   | false -> broadcast_op (_owl_broadcast_sub (kind x)) x y
 
