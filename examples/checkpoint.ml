@@ -37,10 +37,10 @@ let train () =
     ~checkpoint:(Checkpoint.Custom chkpt) ~stopping:(Stopping.Const 1e-6) 10.
   in
   (* keep restarting the optimisation until it finishes *)
-  let state = Graph.train_cnn ~params network x y in
+  let state = Graph.train ~params network x y in
   while Checkpoint.(state.current_batch < state.batches) do
     Checkpoint.(state.stop <- false);
-    Graph.train_cnn ~state ~params ~init_model:false network x y |> ignore
+    Graph.train ~state ~params ~init_model:false network x y |> ignore
   done;
 
   network

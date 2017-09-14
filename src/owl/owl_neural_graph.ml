@@ -263,17 +263,6 @@ module Make
     inference
 
 
-  let model_cnn nn =
-    let nn = copy nn in
-    _remove_training_nodes nn;
-    let inference x =
-      match run (Arr x) nn with
-      | Arr y -> y
-      | _     -> failwith "Owl_neural_graph:model_cnn"
-    in
-    inference
-
-
   (* functions to create functional nodes *)
 
 
@@ -589,10 +578,6 @@ module Make
 
 
   let train ?state ?params ?init_model nn x y =
-    train_generic ?state ?params ?init_model nn (Arr x) (Arr y)
-
-
-  let train_cnn ?state ?params ?init_model nn x y =
     train_generic ?state ?params ?init_model nn (Arr x) (Arr y)
 
 

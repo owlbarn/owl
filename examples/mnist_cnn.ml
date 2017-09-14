@@ -25,7 +25,7 @@ let train () =
   let params = Params.config
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005) 0.1
   in
-  Graph.train_cnn ~params network x y |> ignore;
+  Graph.train ~params network x y |> ignore;
   network
 
 
@@ -41,7 +41,7 @@ let test network =
     ) 1 m
   in
 
-  let pred = mat2num (Graph.model_cnn network imgs) in
+  let pred = mat2num (Graph.model network imgs) in
   let fact = mat2num labels in
   let accu = Dense.Matrix.S.(elt_equal pred fact |> sum) in
   Log.info "Accuracy on test set: %f" (accu /. (float_of_int m))

@@ -172,7 +172,4 @@ module Make (M : ModelSig) (E : EngineSig) = struct
   let train ?params nn x y jid url = train_generic ?params nn (Arr x) (Arr y) jid url
 
 
-  let train_cnn ?params nn x y jid url = train_generic ?params nn (Arr x) (Arr y) jid url
-
-
 end

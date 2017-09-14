@@ -32,7 +32,7 @@ let train () =
     ~batch:(Batch.Mini 100) ~learning_rate:(Learning_Rate.Adagrad 0.005)
     ~checkpoint:(Checkpoint.Epoch 1.) ~stopping:(Stopping.Const 1e-6) 10.
   in
-  Graph.train_cnn ~params network x y
+  Graph.train ~params network x y
 
 
 let test () = () (* TODO *)
