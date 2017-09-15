@@ -1,0 +1,4 @@
+clGetPlatformIDs
+clGetPlatformInfo
+clGetDeviceIDs
+clGetDeviceInfo

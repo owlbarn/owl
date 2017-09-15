@@ -1,3 +1,4 @@
 *.ml linguist-language=OCaml
 src/owl/lapacke* linguist-vendored
 src/owl/cblas.h linguist-vendored
+src/opencl/bindings/opencl12/* linguist-vendored
