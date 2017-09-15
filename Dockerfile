@@ -11,10 +11,10 @@ MAINTAINER Liang Wang
 ##################### PREREQUISITES ########################
 
 # Set up the environment variables
-ENV EIGENPATH /root/eigen
 ENV PATH /root/.opam/4.04.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 ENV CAML_LD_LIBRARY_PATH /root/.opam/4.04.0/lib/stublibs
 
+ENV EIGENPATH /root/eigen
 RUN cd /root && git clone https://github.com/ryanrhymes/eigen.git
 RUN make -C $EIGENPATH oasis && make -C $EIGENPATH && make -C $EIGENPATH install
 
@@ -27,11 +27,12 @@ RUN apt-get -y install libopenblas-dev liblapacke-dev
 
 ################## INSTALL OWL LIBRARY #####################
 
-# Set up the environment variables
 ENV OWLPATH /root/owl
-
-# Clone the repo, compile, and install
 RUN cd /root && git clone https://github.com/ryanrhymes/owl.git
+
+# FIXME: hacking ... need to be fixed in future
+RUN sed -i -- 's/-lopenblas/-lopenblas -llapacke/g' $OWLPATH/src/owl/jbuild
+
 RUN make -C $OWLPATH && make -C $OWLPATH install
 
 # Set default container command
