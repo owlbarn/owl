@@ -14,8 +14,15 @@ module Platform = struct
 
   let get_platform_ids () =
     let _n = allocate uint32_t uint32_0 in
-    let err = clGetPlatformIDs uint32_0 cl_platform_id_ptr_null _n in
-    Printf.printf "==> %i\n" (Int32.to_int err);
-    !@_n
+    clGetPlatformIDs uint32_0 cl_platform_id_ptr_null _n |> cl_check_err;
+    let n = Unsigned.UInt32.to_int !@_n in
+    let _platforms = allocate_n cl_platform_id n in
+    clGetPlatformIDs !@_n _platforms (Obj.magic null) |> cl_check_err;
+    Array.init n (fun i -> !@(_platforms +@ i))
+
+  let get_platform_info id =
+    let _buf = allocate_n char ~count:1024 in
+    clGetPlatformInfo id (Unsigned.UInt32.of_int 0x0902) (Unsigned.Size_t.of_int 1024) (coerce (ptr char) (ptr void) _buf) (Obj.magic null) |> cl_check_err;
+    Array.init 1024 (fun i -> !@(_buf +@ i))
 
 end
