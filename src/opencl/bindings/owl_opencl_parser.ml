@@ -20,13 +20,51 @@ let convert_c_types_to_ocaml_types = function
   | "cl_uint *"        -> "ptr uint32_t"
   | "cl_device_type"   -> "uint64_t"
   | "cl_device_type *" -> "ptr uint64_t"
-  | "cl_device_id"     -> "ptr void"
-  | "cl_device_id *"   -> "ptr (ptr void)"
+  | "cl_device_id"     -> "ptr _cl_device_id"
+  | "cl_device_id *"   -> "ptr (ptr _cl_device_id)"
   | "cl_device_info"   -> "uint32_t"
-  | "cl_platform_id"   -> "ptr void"
-  | "cl_platform_id *" -> "ptr (ptr void)"
+  | "cl_platform_id"   -> "ptr _cl_platform_id"
+  | "cl_platform_id *" -> "ptr (ptr _cl_platform_id)"
   | "cl_platform_info" -> "uint32_t"
-  | s -> failwith (Printf.sprintf "convert_c_types_to_ocaml_types: %s" s)
+  | s                  -> failwith (Printf.sprintf "convert_c_types_to_ocaml_types: %s" s)
+
+
+(* convert c types to ocaml types in ml file *)
+let convert_c_types_to_ml_types = function
+  | "size_t"           -> "Unsigned.size_t"
+  | "size_t *"         -> "_ CI.fatptr"
+  | "void *"           -> "_ CI.fatptr"
+  | "cl_int"           -> "int32"
+  | "cl_uint"          -> "Unsigned.uint32"
+  | "cl_uint *"        -> "_ CI.fatptr"
+  | "cl_device_type"   -> "Unsigned.uint64"
+  | "cl_device_type *" -> "_ CI.fatptr"
+  | "cl_device_id"     -> "_ CI.fatptr"
+  | "cl_device_id *"   -> "_ CI.fatptr"
+  | "cl_device_info"   -> "Unsigned.uint32"
+  | "cl_platform_id"   -> "_ CI.fatptr"
+  | "cl_platform_id *" -> "_ CI.fatptr"
+  | "cl_platform_info" -> "Unsigned.uint32"
+  | s                  -> failwith (Printf.sprintf "convert_c_types_to_ml_types: %s" s)
+
+
+(* convert c types to ocaml types in mli file *)
+let convert_c_types_to_mli_types = function
+  | "size_t"           -> "Unsigned.size_t"
+  | "size_t *"         -> "Unsigned.size_t ptr"
+  | "void *"           -> "unit ptr"
+  | "cl_int"           -> "int32"
+  | "cl_uint"          -> "Unsigned.uint32"
+  | "cl_uint *"        -> "Unsigned.uint32 ptr"
+  | "cl_device_type"   -> "Unsigned.uint64"
+  | "cl_device_type *" -> "unit64_t ptr"
+  | "cl_device_id"     -> "_cl_device_id ptr"
+  | "cl_device_id *"   -> "_cl_device_id ptr ptr"
+  | "cl_device_info"   -> "Unsigned.uint32"
+  | "cl_platform_id"   -> "_cl_platform_id ptr"
+  | "cl_platform_id *" -> "_cl_platform_id ptr ptr"
+  | "cl_platform_info" -> "Unsigned.uint32"
+  | s                  -> failwith (Printf.sprintf "convert_c_types_to_ml_types: %s" s)
 
 
 (* helper functions *)
@@ -73,16 +111,72 @@ let parse_args_to_array s =
 (* convert the list of functions into ctypes-compatible interfaces *)
 let convert_to_ctypes_fun funs =
   Array.map (fun (fun_rval, fun_name, fun_vars, fun_vers) ->
-    let args = parse_args_to_array fun_vars
-      |> Array.map convert_c_types_to_ocaml_types
-    in
     (* assemble the function string *)
-    let args_s = Array.fold_left (fun a b -> a ^ b ^ " @-> ") "" args in
+    let args_s = parse_args_to_array fun_vars
+      |> Array.map convert_c_types_to_ocaml_types
+      |> Array.fold_left (fun a b -> a ^ b ^ " @-> ") ""
+    in
     let rval_s = convert_c_types_to_ocaml_types fun_rval in
     let fun_s = Printf.sprintf
       "  let %s = foreign \"%s\" (%sreturning %s)\n" fun_name fun_name args_s rval_s
     in
     fun_s
+  ) funs
+
+
+(* convert the list of functions into ocaml stub fun *)
+let convert_to_ocaml_fun funs structs =
+  Array.map (fun (fun_rval, fun_name, fun_vars, fun_vers) ->
+    (* assemble the function string *)
+    let args = parse_args_to_array fun_vars in
+    let vars_s = Array.mapi (fun i _ -> Printf.sprintf "x%i" i) args
+      |> Array.fold_left (fun a b -> a ^ b ^ " ") ""
+    in
+    let args_s = Array.mapi (fun i arg ->
+      if String.get arg (String.length arg - 1) = '*' || Array.mem arg structs = true
+      then Printf.sprintf "(CI.cptr x%i)" i
+      else Printf.sprintf "x%i" i
+    ) args |> Array.fold_left (fun a b -> a ^ b ^ " ") ""
+    in
+    let fun_s = Printf.sprintf
+      "let %s %s=\n  owl_opencl_%s %s\n" fun_name vars_s fun_name args_s
+    in
+    fun_s
+  ) funs
+
+
+(* convert to fun in ml and mli files *)
+let convert_to_extern_fun funs =
+  Array.mapi (fun i (fun_rval, fun_name, fun_vars, fun_vers) ->
+    let args = parse_args_to_array fun_vars in
+    let args_l = Array.length args in
+    let args_ml_s = args
+      |> Array.map convert_c_types_to_ml_types
+      |> Array.fold_left (fun a b -> a ^ b ^ " -> ") ""
+    in
+    let rval_ml_s = convert_c_types_to_ml_types fun_rval in
+
+    (* NOTE: naming needs to be consistent with Ctypes *)
+    let fun_native_s = Printf.sprintf "owl_opencl_stub_%i_%s" (i + 1) fun_name in
+    let fun_byte_s = Printf.sprintf "owl_opencl_stub_%i_%s_byte%i" (i + 1) fun_name args_l in
+    let fun_extern_s = match args_l < 6 with
+      | true  -> Printf.sprintf "\"%s\"" fun_native_s
+      | false -> Printf.sprintf "\"%s\" \"%s\"" fun_byte_s fun_native_s
+    in
+    let fun_ml_s = Printf.sprintf
+      "external owl_opencl_%s\n  : %s%s\n  = %s\n" fun_name args_ml_s rval_ml_s fun_extern_s
+    in
+
+    let args_mli_s = args
+      |> Array.map convert_c_types_to_mli_types
+      |> Array.fold_left (fun a b -> a ^ b ^ " -> ") ""
+    in
+    let rval_mli_s = convert_c_types_to_mli_types fun_rval in
+    let fun_mli_s = Printf.sprintf
+      "val %s : %s%s\n" fun_name args_mli_s rval_mli_s
+    in
+
+    fun_ml_s, fun_mli_s
   ) funs
 
 
@@ -160,8 +254,8 @@ let convert_opencl_header_to_ctypes fname funs structs =
   Printf.fprintf h "  open F\n\n";
 
   Array.iter (fun s ->
-    Printf.fprintf h "  type %s\n" s;
-    Printf.fprintf h "  let %s : %s structure typ = structure \"%s\"\n\n" s s s;
+    Printf.fprintf h "  type _%s\n" s;
+    Printf.fprintf h "  let _%s : _%s structure typ = structure \"_%s\"\n\n" s s s;
   ) structs;
 
   Array.iter (fun s ->
@@ -173,6 +267,44 @@ let convert_opencl_header_to_ctypes fname funs structs =
   close_out h
 
 
+(* generate ml and mli files *)
+let convert_opencl_header_to_extern fname funs structs =
+  let h_ml = open_out fname in
+  Printf.fprintf h_ml "%s\n" copyright;
+  Printf.fprintf h_ml "(** auto-generated opencl interface file, timestamp:%.0f *)\n\n" (Unix.gettimeofday ());
+  Printf.fprintf h_ml "open Ctypes\n\n";
+  Printf.fprintf h_ml "module CI = Cstubs_internals\n\n";
+
+  Array.iter (fun s ->
+    Printf.fprintf h_ml "type _%s\n\n" s;
+  ) structs;
+
+  Array.iter (fun (fun_ml_s, fun_mli_s) ->
+    Printf.fprintf h_ml "%s\n" fun_ml_s;
+  ) (convert_to_extern_fun funs);
+
+  Array.iter (fun fun_ml_s ->
+    Printf.fprintf h_ml "%s\n" fun_ml_s;
+  ) (convert_to_ocaml_fun funs structs);
+
+  close_out h_ml;
+
+  let h_mli = open_out (fname ^ "i") in
+  Printf.fprintf h_mli "%s\n" copyright;
+  Printf.fprintf h_mli "(** auto-generated opencl interface file, timestamp:%.0f *)\n\n" (Unix.gettimeofday ());
+  Printf.fprintf h_mli "open Ctypes\n\n";
+
+  Array.iter (fun s ->
+    Printf.fprintf h_mli "type _%s\n\n" s;
+  ) structs;
+
+  Array.iter (fun (fun_ml_s, fun_mli_s) ->
+    Printf.fprintf h_mli "%s\n" fun_mli_s;
+  ) (convert_to_extern_fun funs);
+
+  close_out h_mli
+
+
 let _ =
   if Array.length Sys.argv < 2 then
     print_endline "Usage: parser [opencl header directory]"
@@ -181,8 +313,10 @@ let _ =
     let header = Printf.sprintf "%s/cl.h" dir in
     let funlist = Printf.sprintf "%s/cl_funlist.txt" dir in
     let ctypes_file = Sys.argv.(2) in
+    let out_ml_file = Sys.argv.(3) in
 
     let funs = parse_opencl_header_funlist header funlist in
     let structs = parse_opencl_header_structs header in
     convert_opencl_header_to_ctypes ctypes_file funs structs;
+    convert_opencl_header_to_extern out_ml_file funs structs;
   )

@@ -1,2 +1,7 @@
 B ../../_build/default/src/opencl
 FLG -w -40
+PKG bigarray
+PKG bytes
+PKG ctypes
+PKG integers
+PKG unix

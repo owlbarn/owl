@@ -5,7 +5,7 @@
   (public_name owl_opencl)
   (wrapped false)
   (c_names (
-    owl_opencl_stub
+    owl_opencl_generated_stub
   ))
   (c_flags (
     -g -O3 -Ofast
@@ -14,5 +14,5 @@
     -framework opencl
   ))
   (flags (:standard))
-  (libraries ( ))
+  (libraries ( ctypes ))
 ))

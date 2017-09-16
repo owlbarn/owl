@@ -23,4 +23,5 @@ let _ =
   | true, false ->
     Cstubs.write_ml Format.std_formatter ~prefix (module Owl_opencl_bindings.Bindings)
   | false, true ->
+    print_endline "#ifdef __APPLE__\n#include <OpenCL/cl.h>\n#else\n#include <CL/cl.h>\n#endif";
     Cstubs.write_c Format.std_formatter ~prefix (module Owl_opencl_bindings.Bindings)
