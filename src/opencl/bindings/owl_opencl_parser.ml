@@ -58,11 +58,11 @@ let convert_c_types_to_mli_types = function
   | "cl_uint *"        -> "Unsigned.uint32 ptr"
   | "cl_device_type"   -> "Unsigned.uint64"
   | "cl_device_type *" -> "unit64_t ptr"
-  | "cl_device_id"     -> "_cl_device_id ptr"
-  | "cl_device_id *"   -> "_cl_device_id ptr ptr"
+  | "cl_device_id"     -> "cl_device_id"
+  | "cl_device_id *"   -> "cl_device_id ptr"
   | "cl_device_info"   -> "Unsigned.uint32"
-  | "cl_platform_id"   -> "_cl_platform_id ptr"
-  | "cl_platform_id *" -> "_cl_platform_id ptr ptr"
+  | "cl_platform_id"   -> "cl_platform_id"
+  | "cl_platform_id *" -> "cl_platform_id ptr"
   | "cl_platform_info" -> "Unsigned.uint32"
   | s                  -> failwith (Printf.sprintf "convert_c_types_to_ml_types: %s" s)
 
@@ -276,7 +276,10 @@ let convert_opencl_header_to_extern fname funs structs =
   Printf.fprintf h_ml "module CI = Cstubs_internals\n\n";
 
   Array.iter (fun s ->
-    Printf.fprintf h_ml "type _%s\n\n" s;
+    Printf.fprintf h_ml "type %s = unit Ctypes.ptr\n" s;
+    Printf.fprintf h_ml "let %s : %s Ctypes.typ = Ctypes.(ptr void)\n" s s;
+    Printf.fprintf h_ml "let %s_null : %s = Ctypes.null\n" s s;
+    Printf.fprintf h_ml "let %s_ptr_null : %s Ctypes.ptr = Obj.magic Ctypes.null\n\n" s s;
   ) structs;
 
   Array.iter (fun (fun_ml_s, fun_mli_s) ->
@@ -295,7 +298,11 @@ let convert_opencl_header_to_extern fname funs structs =
   Printf.fprintf h_mli "open Ctypes\n\n";
 
   Array.iter (fun s ->
-    Printf.fprintf h_mli "type _%s\n\n" s;
+    (* Printf.fprintf h_mli "type %s = unit Ctypes.ptr\n" s; *)
+    Printf.fprintf h_mli "type %s\n" s;
+    Printf.fprintf h_mli "val %s : %s Ctypes.typ\n" s s;
+    Printf.fprintf h_mli "val %s_null : %s\n" s s;
+    Printf.fprintf h_mli "val %s_ptr_null : %s Ctypes.ptr\n\n" s s;
   ) structs;
 
   Array.iter (fun (fun_ml_s, fun_mli_s) ->
