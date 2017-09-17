@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** auto-generated opencl interface file, timestamp:1505609485 *)
+(** auto-generated opencl interface file, timestamp:1505646926 *)
 
 open Ctypes
 
@@ -234,6 +234,150 @@ external owl_opencl_clSetKernelArg
   : _ CI.fatptr -> Unsigned.uint32 -> Unsigned.size_t -> _ CI.fatptr -> int32
   = "owl_opencl_stub_43_clSetKernelArg"
 
+external owl_opencl_clGetKernelInfo
+  : _ CI.fatptr -> Unsigned.uint32 -> Unsigned.size_t -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_44_clGetKernelInfo"
+
+external owl_opencl_clGetKernelArgInfo
+  : _ CI.fatptr -> Unsigned.uint32 -> Unsigned.uint32 -> Unsigned.size_t -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_45_clGetKernelArgInfo_byte6" "owl_opencl_stub_45_clGetKernelArgInfo"
+
+external owl_opencl_clGetKernelWorkGroupInfo
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.size_t -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_46_clGetKernelWorkGroupInfo_byte6" "owl_opencl_stub_46_clGetKernelWorkGroupInfo"
+
+external owl_opencl_clWaitForEvents
+  : Unsigned.uint32 -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_47_clWaitForEvents"
+
+external owl_opencl_clGetEventInfo
+  : _ CI.fatptr -> Unsigned.uint32 -> Unsigned.size_t -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_48_clGetEventInfo"
+
+external owl_opencl_clCreateUserEvent
+  : _ CI.fatptr -> _ CI.fatptr -> cl_event
+  = "owl_opencl_stub_49_clCreateUserEvent"
+
+external owl_opencl_clRetainEvent
+  : _ CI.fatptr -> int32
+  = "owl_opencl_stub_50_clRetainEvent"
+
+external owl_opencl_clReleaseEvent
+  : _ CI.fatptr -> int32
+  = "owl_opencl_stub_51_clReleaseEvent"
+
+external owl_opencl_clSetUserEventStatus
+  : _ CI.fatptr -> int32 -> int32
+  = "owl_opencl_stub_52_clSetUserEventStatus"
+
+external owl_opencl_clSetEventCallback
+  : _ CI.fatptr -> int32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_53_clSetEventCallback"
+
+external owl_opencl_clGetEventProfilingInfo
+  : _ CI.fatptr -> Unsigned.uint32 -> Unsigned.size_t -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_54_clGetEventProfilingInfo"
+
+external owl_opencl_clFlush
+  : _ CI.fatptr -> int32
+  = "owl_opencl_stub_55_clFlush"
+
+external owl_opencl_clFinish
+  : _ CI.fatptr -> int32
+  = "owl_opencl_stub_56_clFinish"
+
+external owl_opencl_clEnqueueReadBuffer
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.size_t -> Unsigned.size_t -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_57_clEnqueueReadBuffer_byte9" "owl_opencl_stub_57_clEnqueueReadBuffer"
+
+external owl_opencl_clEnqueueReadBufferRect
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_58_clEnqueueReadBufferRect_byte14" "owl_opencl_stub_58_clEnqueueReadBufferRect"
+
+external owl_opencl_clEnqueueWriteBuffer
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.size_t -> Unsigned.size_t -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_59_clEnqueueWriteBuffer_byte9" "owl_opencl_stub_59_clEnqueueWriteBuffer"
+
+external owl_opencl_clEnqueueWriteBufferRect
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_60_clEnqueueWriteBufferRect_byte14" "owl_opencl_stub_60_clEnqueueWriteBufferRect"
+
+external owl_opencl_clEnqueueFillBuffer
+  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_61_clEnqueueFillBuffer_byte9" "owl_opencl_stub_61_clEnqueueFillBuffer"
+
+external owl_opencl_clEnqueueCopyBuffer
+  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_62_clEnqueueCopyBuffer_byte9" "owl_opencl_stub_62_clEnqueueCopyBuffer"
+
+external owl_opencl_clEnqueueCopyBufferRect
+  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_63_clEnqueueCopyBufferRect_byte13" "owl_opencl_stub_63_clEnqueueCopyBufferRect"
+
+external owl_opencl_clEnqueueReadImage
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.size_t -> Unsigned.size_t -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_64_clEnqueueReadImage_byte11" "owl_opencl_stub_64_clEnqueueReadImage"
+
+external owl_opencl_clEnqueueWriteImage
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.size_t -> Unsigned.size_t -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_65_clEnqueueWriteImage_byte11" "owl_opencl_stub_65_clEnqueueWriteImage"
+
+external owl_opencl_clEnqueueFillImage
+  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_66_clEnqueueFillImage_byte8" "owl_opencl_stub_66_clEnqueueFillImage"
+
+external owl_opencl_clEnqueueCopyImage
+  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_67_clEnqueueCopyImage_byte9" "owl_opencl_stub_67_clEnqueueCopyImage"
+
+external owl_opencl_clEnqueueCopyImageToBuffer
+  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.size_t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_68_clEnqueueCopyImageToBuffer_byte9" "owl_opencl_stub_68_clEnqueueCopyImageToBuffer"
+
+external owl_opencl_clEnqueueCopyBufferToImage
+  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.size_t -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_69_clEnqueueCopyBufferToImage_byte9" "owl_opencl_stub_69_clEnqueueCopyBufferToImage"
+
+external owl_opencl_clEnqueueMapBuffer
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.uint64 -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit ptr
+  = "owl_opencl_stub_70_clEnqueueMapBuffer_byte10" "owl_opencl_stub_70_clEnqueueMapBuffer"
+
+external owl_opencl_clEnqueueMapImage
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.uint64 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit ptr
+  = "owl_opencl_stub_71_clEnqueueMapImage_byte12" "owl_opencl_stub_71_clEnqueueMapImage"
+
+external owl_opencl_clEnqueueUnmapMemObject
+  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_72_clEnqueueUnmapMemObject_byte6" "owl_opencl_stub_72_clEnqueueUnmapMemObject"
+
+external owl_opencl_clEnqueueMigrateMemObjects
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> Unsigned.uint64 -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_73_clEnqueueMigrateMemObjects_byte7" "owl_opencl_stub_73_clEnqueueMigrateMemObjects"
+
+external owl_opencl_clEnqueueNDRangeKernel
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_74_clEnqueueNDRangeKernel_byte9" "owl_opencl_stub_74_clEnqueueNDRangeKernel"
+
+external owl_opencl_clEnqueueTask
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_75_clEnqueueTask"
+
+external owl_opencl_clEnqueueNativeKernel
+  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.size_t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_76_clEnqueueNativeKernel_byte10" "owl_opencl_stub_76_clEnqueueNativeKernel"
+
+external owl_opencl_clEnqueueMarkerWithWaitList
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_77_clEnqueueMarkerWithWaitList"
+
+external owl_opencl_clEnqueueBarrierWithWaitList
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  = "owl_opencl_stub_78_clEnqueueBarrierWithWaitList"
+
+external owl_opencl_clGetExtensionFunctionAddressForPlatform
+  : _ CI.fatptr -> _ CI.fatptr -> unit ptr
+  = "owl_opencl_stub_79_clGetExtensionFunctionAddressForPlatform"
+
 
 
 (** stub function definition *)
@@ -366,6 +510,114 @@ let clReleaseKernel x0 =
 
 let clSetKernelArg x0 x1 x2 x3 =
   owl_opencl_clSetKernelArg (CI.cptr x0) x1 x2 (CI.cptr x3) 
+
+let clGetKernelInfo x0 x1 x2 x3 x4 =
+  owl_opencl_clGetKernelInfo (CI.cptr x0) x1 x2 (CI.cptr x3) (CI.cptr x4) 
+
+let clGetKernelArgInfo x0 x1 x2 x3 x4 x5 =
+  owl_opencl_clGetKernelArgInfo (CI.cptr x0) x1 x2 x3 (CI.cptr x4) (CI.cptr x5) 
+
+let clGetKernelWorkGroupInfo x0 x1 x2 x3 x4 x5 =
+  owl_opencl_clGetKernelWorkGroupInfo (CI.cptr x0) (CI.cptr x1) x2 x3 (CI.cptr x4) (CI.cptr x5) 
+
+let clWaitForEvents x0 x1 =
+  owl_opencl_clWaitForEvents x0 (CI.cptr x1) 
+
+let clGetEventInfo x0 x1 x2 x3 x4 =
+  owl_opencl_clGetEventInfo (CI.cptr x0) x1 x2 (CI.cptr x3) (CI.cptr x4) 
+
+let clCreateUserEvent x0 x1 =
+  owl_opencl_clCreateUserEvent (CI.cptr x0) (CI.cptr x1) 
+
+let clRetainEvent x0 =
+  owl_opencl_clRetainEvent (CI.cptr x0) 
+
+let clReleaseEvent x0 =
+  owl_opencl_clReleaseEvent (CI.cptr x0) 
+
+let clSetUserEventStatus x0 x1 =
+  owl_opencl_clSetUserEventStatus (CI.cptr x0) x1 
+
+let clSetEventCallback x0 x1 x2 x3 =
+  owl_opencl_clSetEventCallback (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) 
+
+let clGetEventProfilingInfo x0 x1 x2 x3 x4 =
+  owl_opencl_clGetEventProfilingInfo (CI.cptr x0) x1 x2 (CI.cptr x3) (CI.cptr x4) 
+
+let clFlush x0 =
+  owl_opencl_clFlush (CI.cptr x0) 
+
+let clFinish x0 =
+  owl_opencl_clFinish (CI.cptr x0) 
+
+let clEnqueueReadBuffer x0 x1 x2 x3 x4 x5 x6 x7 x8 =
+  owl_opencl_clEnqueueReadBuffer (CI.cptr x0) (CI.cptr x1) x2 x3 x4 (CI.cptr x5) x6 (CI.cptr x7) (CI.cptr x8) 
+
+let clEnqueueReadBufferRect x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 =
+  owl_opencl_clEnqueueReadBufferRect (CI.cptr x0) (CI.cptr x1) x2 (CI.cptr x3) (CI.cptr x4) (CI.cptr x5) x6 x7 x8 x9 (CI.cptr x10) x11 (CI.cptr x12) (CI.cptr x13) 
+
+let clEnqueueWriteBuffer x0 x1 x2 x3 x4 x5 x6 x7 x8 =
+  owl_opencl_clEnqueueWriteBuffer (CI.cptr x0) (CI.cptr x1) x2 x3 x4 (CI.cptr x5) x6 (CI.cptr x7) (CI.cptr x8) 
+
+let clEnqueueWriteBufferRect x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 x13 =
+  owl_opencl_clEnqueueWriteBufferRect (CI.cptr x0) (CI.cptr x1) x2 (CI.cptr x3) (CI.cptr x4) (CI.cptr x5) x6 x7 x8 x9 (CI.cptr x10) x11 (CI.cptr x12) (CI.cptr x13) 
+
+let clEnqueueFillBuffer x0 x1 x2 x3 x4 x5 x6 x7 x8 =
+  owl_opencl_clEnqueueFillBuffer (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) x3 x4 x5 x6 (CI.cptr x7) (CI.cptr x8) 
+
+let clEnqueueCopyBuffer x0 x1 x2 x3 x4 x5 x6 x7 x8 =
+  owl_opencl_clEnqueueCopyBuffer (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) x3 x4 x5 x6 (CI.cptr x7) (CI.cptr x8) 
+
+let clEnqueueCopyBufferRect x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 x12 =
+  owl_opencl_clEnqueueCopyBufferRect (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) (CI.cptr x5) x6 x7 x8 x9 x10 (CI.cptr x11) (CI.cptr x12) 
+
+let clEnqueueReadImage x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 =
+  owl_opencl_clEnqueueReadImage (CI.cptr x0) (CI.cptr x1) x2 (CI.cptr x3) (CI.cptr x4) x5 x6 (CI.cptr x7) x8 (CI.cptr x9) (CI.cptr x10) 
+
+let clEnqueueWriteImage x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 =
+  owl_opencl_clEnqueueWriteImage (CI.cptr x0) (CI.cptr x1) x2 (CI.cptr x3) (CI.cptr x4) x5 x6 (CI.cptr x7) x8 (CI.cptr x9) (CI.cptr x10) 
+
+let clEnqueueFillImage x0 x1 x2 x3 x4 x5 x6 x7 =
+  owl_opencl_clEnqueueFillImage (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) x5 (CI.cptr x6) (CI.cptr x7) 
+
+let clEnqueueCopyImage x0 x1 x2 x3 x4 x5 x6 x7 x8 =
+  owl_opencl_clEnqueueCopyImage (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) (CI.cptr x5) x6 (CI.cptr x7) (CI.cptr x8) 
+
+let clEnqueueCopyImageToBuffer x0 x1 x2 x3 x4 x5 x6 x7 x8 =
+  owl_opencl_clEnqueueCopyImageToBuffer (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) x5 x6 (CI.cptr x7) (CI.cptr x8) 
+
+let clEnqueueCopyBufferToImage x0 x1 x2 x3 x4 x5 x6 x7 x8 =
+  owl_opencl_clEnqueueCopyBufferToImage (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) x3 (CI.cptr x4) (CI.cptr x5) x6 (CI.cptr x7) (CI.cptr x8) 
+
+let clEnqueueMapBuffer x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 =
+  owl_opencl_clEnqueueMapBuffer (CI.cptr x0) (CI.cptr x1) x2 x3 x4 x5 x6 (CI.cptr x7) (CI.cptr x8) (CI.cptr x9) 
+
+let clEnqueueMapImage x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 =
+  owl_opencl_clEnqueueMapImage (CI.cptr x0) (CI.cptr x1) x2 x3 (CI.cptr x4) (CI.cptr x5) (CI.cptr x6) (CI.cptr x7) x8 (CI.cptr x9) (CI.cptr x10) (CI.cptr x11) 
+
+let clEnqueueUnmapMemObject x0 x1 x2 x3 x4 x5 =
+  owl_opencl_clEnqueueUnmapMemObject (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) x3 (CI.cptr x4) (CI.cptr x5) 
+
+let clEnqueueMigrateMemObjects x0 x1 x2 x3 x4 x5 x6 =
+  owl_opencl_clEnqueueMigrateMemObjects (CI.cptr x0) x1 (CI.cptr x2) x3 x4 (CI.cptr x5) (CI.cptr x6) 
+
+let clEnqueueNDRangeKernel x0 x1 x2 x3 x4 x5 x6 x7 x8 =
+  owl_opencl_clEnqueueNDRangeKernel (CI.cptr x0) (CI.cptr x1) x2 (CI.cptr x3) (CI.cptr x4) (CI.cptr x5) x6 (CI.cptr x7) (CI.cptr x8) 
+
+let clEnqueueTask x0 x1 x2 x3 x4 =
+  owl_opencl_clEnqueueTask (CI.cptr x0) (CI.cptr x1) x2 (CI.cptr x3) (CI.cptr x4) 
+
+let clEnqueueNativeKernel x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 =
+  owl_opencl_clEnqueueNativeKernel (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) x3 x4 (CI.cptr x5) (CI.cptr x6) x7 (CI.cptr x8) (CI.cptr x9) 
+
+let clEnqueueMarkerWithWaitList x0 x1 x2 x3 =
+  owl_opencl_clEnqueueMarkerWithWaitList (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) 
+
+let clEnqueueBarrierWithWaitList x0 x1 x2 x3 =
+  owl_opencl_clEnqueueBarrierWithWaitList (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) 
+
+let clGetExtensionFunctionAddressForPlatform x0 x1 =
+  owl_opencl_clGetExtensionFunctionAddressForPlatform (CI.cptr x0) (CI.cptr x1) 
 
 
 

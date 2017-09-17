@@ -16,10 +16,10 @@ clReleaseCommandQueue
 clGetCommandQueueInfo
 clCreateBuffer
 clCreateSubBuffer
-# clCreateImage
+### clCreateImage
 clRetainMemObject
 clReleaseMemObject
-# clGetSupportedImageFormats
+### clGetSupportedImageFormats
 clGetMemObjectInfo
 clGetImageInfo
 clSetMemObjectDestructorCallback
@@ -43,3 +43,39 @@ clCreateKernelsInProgram
 clRetainKernel
 clReleaseKernel
 clSetKernelArg
+clGetKernelInfo
+clGetKernelArgInfo
+clGetKernelWorkGroupInfo
+clWaitForEvents
+clGetEventInfo
+clCreateUserEvent
+clRetainEvent
+clReleaseEvent
+clSetUserEventStatus
+clSetEventCallback
+clGetEventProfilingInfo
+clFlush
+clFinish
+clEnqueueReadBuffer
+clEnqueueReadBufferRect
+clEnqueueWriteBuffer
+clEnqueueWriteBufferRect
+clEnqueueFillBuffer
+clEnqueueCopyBuffer
+clEnqueueCopyBufferRect
+clEnqueueReadImage
+clEnqueueWriteImage
+clEnqueueFillImage
+clEnqueueCopyImage
+clEnqueueCopyImageToBuffer
+clEnqueueCopyBufferToImage
+clEnqueueMapBuffer
+clEnqueueMapImage
+clEnqueueUnmapMemObject
+clEnqueueMigrateMemObjects
+clEnqueueNDRangeKernel
+clEnqueueTask
+clEnqueueNativeKernel
+clEnqueueMarkerWithWaitList
+clEnqueueBarrierWithWaitList
+clGetExtensionFunctionAddressForPlatform
