@@ -17,6 +17,7 @@ let convert_c_types_to_ocaml_types = function
   | "unsigned char **"               -> "ptr (ptr uchar)"
   | "size_t"                         -> "size_t"
   | "size_t *"                       -> "ptr size_t"
+  | "void"                           -> "void"
   | "void *"                         -> "ptr void"
   | "void **"                        -> "ptr (ptr void)"
   | "cl_int"                         -> "int32_t"
@@ -24,6 +25,7 @@ let convert_c_types_to_ocaml_types = function
   | "cl_uint"                        -> "uint32_t"
   | "cl_uint *"                      -> "ptr uint32_t"
   | "cl_bool"                        -> "uint32_t"
+  | "cl_ulong *"                     -> "ptr ulong"
   | "cl_device_type"                 -> "uint64_t"
   | "cl_device_type *"               -> "ptr uint64_t"
   | "cl_device_id"                   -> "ptr _cl_device_id"
@@ -44,12 +46,16 @@ let convert_c_types_to_ocaml_types = function
   | "cl_mem *"                       -> "ptr (ptr _cl_mem)"
   | "cl_mem_flags"                   -> "uint64_t"
   | "cl_mem_info"                    -> "uint32_t"
+  | "cl_mem_object_type"             -> "uint32_t"
+  | "cl_mem_migration_flags"         -> "uint64_t"
+  | "cl_svm_mem_flags"               -> "uint64_t"
   | "cl_buffer_create_type"          -> "uint32_t"
   | "cl_image_info"                  -> "uint32_t"
   | "cl_addressing_mode"             -> "uint32_t"
   | "cl_filter_mode"                 -> "uint32_t"
   | "cl_sampler"                     -> "ptr _cl_sampler"
   | "cl_sampler_info"                -> "uint32_t"
+  | "cl_sampler_properties *"        -> "ptr uint64_t"
   | "cl_program"                     -> "ptr _cl_program"
   | "cl_program *"                   -> "ptr (ptr _cl_program)"
   | "cl_program_info"                -> "uint32_t"
@@ -59,12 +65,17 @@ let convert_c_types_to_ocaml_types = function
   | "cl_kernel_info"                 -> "uint32_t"
   | "cl_kernel_arg_info"             -> "uint32_t"
   | "cl_kernel_work_group_info"      -> "uint32_t"
+  | "cl_kernel_sub_group_info"       -> "uint32_t"
+  | "cl_kernel_exec_info"            -> "uint32_t"
   | "cl_event"                       -> "ptr _cl_event"
   | "cl_event *"                     -> "ptr (ptr _cl_event)"
   | "cl_event_info"                  -> "uint32_t"
   | "cl_profiling_info"              -> "uint32_t"
   | "cl_map_flags"                   -> "uint64_t"
-  | "cl_mem_migration_flags"         -> "uint64_t"
+  | "cl_pipe_info"                   -> "uint32_t"
+  | "cl_pipe_properties"             -> "intptr_t"
+  | "cl_pipe_properties *"           -> "ptr intptr_t"
+  | "cl_queue_properties *"          -> "ptr uint64_t"
   | s                                -> failwith (Printf.sprintf "convert_c_types_to_ocaml_types: %s" s)
 
 
@@ -74,6 +85,7 @@ let convert_c_types_to_ml_types = function
   | "char **"                        -> "_ CI.fatptr"
   | "unsigned char **"               -> "_ CI.fatptr"
   | "size_t"                         -> "Unsigned.size_t"
+  | "void"                           -> "unit"
   | "size_t *"                       -> "_ CI.fatptr"
   | "void *"                         -> "_ CI.fatptr"
   | "void **"                        -> "_ CI.fatptr"
@@ -82,6 +94,7 @@ let convert_c_types_to_ml_types = function
   | "cl_uint"                        -> "Unsigned.uint32"
   | "cl_uint *"                      -> "_ CI.fatptr"
   | "cl_bool"                        -> "Unsigned.uint32"
+  | "cl_ulong *"                     -> "_ CI.fatptr"
   | "cl_device_type"                 -> "Unsigned.uint64"
   | "cl_device_type *"               -> "_ CI.fatptr"
   | "cl_device_id"                   -> "_ CI.fatptr"
@@ -102,12 +115,16 @@ let convert_c_types_to_ml_types = function
   | "cl_mem *"                       -> "_ CI.fatptr"
   | "cl_mem_flags"                   -> "Unsigned.uint64"
   | "cl_mem_info"                    -> "Unsigned.uint32"
+  | "cl_mem_object_type"             -> "Unsigned.uint32"
+  | "cl_mem_migration_flags"         -> "Unsigned.uint64"
+  | "cl_svm_mem_flags"               -> "Unsigned.uint64"
   | "cl_buffer_create_type"          -> "Unsigned.uint32"
   | "cl_image_info"                  -> "Unsigned.uint32"
   | "cl_addressing_mode"             -> "Unsigned.uint32"
   | "cl_filter_mode"                 -> "Unsigned.uint32"
   | "cl_sampler"                     -> "_ CI.fatptr"
   | "cl_sampler_info"                -> "Unsigned.uint32"
+  | "cl_sampler_properties *"        -> "_ CI.fatptr"
   | "cl_program"                     -> "_ CI.fatptr"
   | "cl_program *"                   -> "_ CI.fatptr"
   | "cl_program_info"                -> "Unsigned.uint32"
@@ -117,12 +134,17 @@ let convert_c_types_to_ml_types = function
   | "cl_kernel_info"                 -> "Unsigned.uint32"
   | "cl_kernel_arg_info"             -> "Unsigned.uint32"
   | "cl_kernel_work_group_info"      -> "Unsigned.uint32"
+  | "cl_kernel_sub_group_info"       -> "Unsigned.uint32"
+  | "cl_kernel_exec_info"            -> "Unsigned.uint32"
   | "cl_event"                       -> "_ CI.fatptr"
   | "cl_event *"                     -> "_ CI.fatptr"
   | "cl_event_info"                  -> "Unsigned.uint32"
   | "cl_profiling_info"              -> "Unsigned.uint32"
   | "cl_map_flags"                   -> "Unsigned.uint64"
-  | "cl_mem_migration_flags"         -> "Unsigned.uint64"
+  | "cl_pipe_info"                   -> "Unsigned.uint32"
+  | "cl_pipe_properties"             -> "intptr_t"
+  | "cl_pipe_properties *"           -> "_ CI.fatptr"
+  | "cl_queue_properties *"          -> "_ CI.fatptr"
   | s                                -> failwith (Printf.sprintf "convert_c_types_to_ml_types: %s" s)
 
 
@@ -133,6 +155,7 @@ let convert_c_types_to_mli_types = function
   | "unsigned char **"               -> "Unsigned.UChar.t ptr ptr"
   | "size_t"                         -> "Unsigned.size_t"
   | "size_t *"                       -> "Unsigned.size_t ptr"
+  | "void"                           -> "unit"
   | "void *"                         -> "unit ptr"
   | "void **"                        -> "unit ptr ptr"
   | "cl_int"                         -> "int32"
@@ -140,6 +163,7 @@ let convert_c_types_to_mli_types = function
   | "cl_uint"                        -> "Unsigned.uint32"
   | "cl_uint *"                      -> "Unsigned.uint32 ptr"
   | "cl_bool"                        -> "Unsigned.uint32"
+  | "cl_ulong *"                     -> "Unsigned.ULong.t ptr"
   | "cl_device_type"                 -> "Unsigned.uint64"
   | "cl_device_type *"               -> "unit64_t ptr"
   | "cl_device_id"                   -> "cl_device_id"
@@ -160,12 +184,16 @@ let convert_c_types_to_mli_types = function
   | "cl_mem *"                       -> "cl_mem ptr"
   | "cl_mem_flags"                   -> "Unsigned.uint64"
   | "cl_mem_info"                    -> "Unsigned.uint32"
+  | "cl_mem_object_type"             -> "Unsigned.uint32"
+  | "cl_mem_migration_flags"         -> "Unsigned.uint64"
+  | "cl_svm_mem_flags"               -> "Unsigned.uint64"
   | "cl_buffer_create_type"          -> "Unsigned.uint32"
   | "cl_image_info"                  -> "Unsigned.uint32"
   | "cl_addressing_mode"             -> "Unsigned.uint32"
   | "cl_filter_mode"                 -> "Unsigned.uint32"
   | "cl_sampler"                     -> "cl_sampler"
   | "cl_sampler_info"                -> "Unsigned.uint32"
+  | "cl_sampler_properties *"        -> "Unsigned.uint64 ptr"
   | "cl_program"                     -> "cl_program"
   | "cl_program *"                   -> "cl_program ptr"
   | "cl_program_info"                -> "Unsigned.uint32"
@@ -175,24 +203,35 @@ let convert_c_types_to_mli_types = function
   | "cl_kernel_info"                 -> "Unsigned.uint32"
   | "cl_kernel_arg_info"             -> "Unsigned.uint32"
   | "cl_kernel_work_group_info"      -> "Unsigned.uint32"
+  | "cl_kernel_sub_group_info"       -> "Unsigned.uint32"
+  | "cl_kernel_exec_info"            -> "Unsigned.uint32"
   | "cl_event"                       -> "cl_event"
   | "cl_event *"                     -> "cl_event ptr"
   | "cl_event_info"                  -> "Unsigned.uint32"
   | "cl_profiling_info"              -> "Unsigned.uint32"
   | "cl_map_flags"                   -> "Unsigned.uint64"
-  | "cl_mem_migration_flags"         -> "Unsigned.uint64"
+  | "cl_pipe_info"                   -> "Unsigned.uint32"
+  | "cl_pipe_properties"             -> "Intptr.t"
+  | "cl_pipe_properties *"           -> "Intptr.t ptr"
+  | "cl_queue_properties *"          -> "Unsigned.uint64 ptr"
   | s                                -> failwith (Printf.sprintf "convert_c_types_to_ml_types: %s" s)
 
 
 (* convert c types to ocaml returning types in ml file *)
 let convert_c_types_to_ml_rvals = function
-  | "cl_context"  -> "unit Ctypes.ptr"
-  | a             -> convert_c_types_to_mli_types a
+  | "cl_context" -> "unit Ctypes.ptr"
+  | "cl_program" -> "unit Ctypes.ptr"
+  | "cl_kernel"  -> "unit Ctypes.ptr"
+  | "cl_mem"     -> "unit Ctypes.ptr"
+  | a            -> convert_c_types_to_mli_types a
 
 (* convert c types to ocaml returning types in mli file *)
 let convert_c_types_to_mli_rvals = function
-  | "cl_context"  -> "cl_context"
-  | a  -> convert_c_types_to_mli_types a
+  | "cl_context" -> "cl_context"
+  | "cl_program" -> "cl_program"
+  | "cl_kernel"  -> "cl_kernel"
+  | "cl_mem"     -> "cl_mem"
+  | a            -> convert_c_types_to_mli_types a
 
 
 (* helper functions *)
@@ -227,10 +266,20 @@ let _clean_up_fun_declaration s =
   let regex0 = Str.regexp "\\([ \n\r]*/\\*[^\\*]+\\*/[ \n\r]*\\)" in
   let regex1 = Str.regexp "[ \n\r]+" in
   let regex2 = Str.regexp "const" in
+  let regex6 = Str.regexp "void\\*" in
+  let regex4 = Str.regexp "void \\*\\[\\]" in
+  let regex5 = Str.regexp "ulong\\*" in
+  let regex7 = Str.regexp "cl_int\\*" in
+  let regex8 = Str.regexp "size_t\\*" in
   let regex3 = Str.regexp "void (CL_CALLBACK \\*)([ ,_\\*a-zA-Z0-9]+)" in
   Str.global_replace regex0 "" s |>
   Str.global_replace regex1 " " |>
   Str.global_replace regex2 "" |>
+  Str.global_replace regex6 "void *" |>
+  Str.global_replace regex4 "void **" |>
+  Str.global_replace regex5 "ulong *" |>
+  Str.global_replace regex7 "cl_int *" |>
+  Str.global_replace regex8 "size_t *" |>
   Str.global_replace regex3 "void *"
 
 

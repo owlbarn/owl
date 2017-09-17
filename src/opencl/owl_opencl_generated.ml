@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** auto-generated opencl interface file, timestamp:1505646926 *)
+(** auto-generated opencl interface file, timestamp:1505655288 *)
 
 open Ctypes
 
@@ -127,11 +127,11 @@ external owl_opencl_clGetCommandQueueInfo
   = "owl_opencl_stub_16_clGetCommandQueueInfo"
 
 external owl_opencl_clCreateBuffer
-  : _ CI.fatptr -> Unsigned.uint64 -> Unsigned.size_t -> _ CI.fatptr -> _ CI.fatptr -> cl_mem
+  : _ CI.fatptr -> Unsigned.uint64 -> Unsigned.size_t -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
   = "owl_opencl_stub_17_clCreateBuffer"
 
 external owl_opencl_clCreateSubBuffer
-  : _ CI.fatptr -> Unsigned.uint64 -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> cl_mem
+  : _ CI.fatptr -> Unsigned.uint64 -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
   = "owl_opencl_stub_18_clCreateSubBuffer"
 
 external owl_opencl_clRetainMemObject
@@ -171,15 +171,15 @@ external owl_opencl_clGetSamplerInfo
   = "owl_opencl_stub_27_clGetSamplerInfo"
 
 external owl_opencl_clCreateProgramWithSource
-  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> cl_program
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
   = "owl_opencl_stub_28_clCreateProgramWithSource"
 
 external owl_opencl_clCreateProgramWithBinary
-  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> cl_program
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
   = "owl_opencl_stub_29_clCreateProgramWithBinary_byte7" "owl_opencl_stub_29_clCreateProgramWithBinary"
 
 external owl_opencl_clCreateProgramWithBuiltInKernels
-  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> cl_program
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
   = "owl_opencl_stub_30_clCreateProgramWithBuiltInKernels"
 
 external owl_opencl_clRetainProgram
@@ -199,7 +199,7 @@ external owl_opencl_clCompileProgram
   = "owl_opencl_stub_34_clCompileProgram_byte9" "owl_opencl_stub_34_clCompileProgram"
 
 external owl_opencl_clLinkProgram
-  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> cl_program
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
   = "owl_opencl_stub_35_clLinkProgram_byte9" "owl_opencl_stub_35_clLinkProgram"
 
 external owl_opencl_clUnloadPlatformCompiler
@@ -215,7 +215,7 @@ external owl_opencl_clGetProgramBuildInfo
   = "owl_opencl_stub_38_clGetProgramBuildInfo_byte6" "owl_opencl_stub_38_clGetProgramBuildInfo"
 
 external owl_opencl_clCreateKernel
-  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> cl_kernel
+  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
   = "owl_opencl_stub_39_clCreateKernel"
 
 external owl_opencl_clCreateKernelsInProgram
