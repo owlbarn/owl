@@ -12,59 +12,154 @@ let copyright =
 
 (* convert c types to corresponding types in ctypes *)
 let convert_c_types_to_ocaml_types = function
-  | "size_t"           -> "size_t"
-  | "size_t *"         -> "ptr size_t"
-  | "void *"           -> "ptr void"
-  | "cl_int"           -> "int32_t"
-  | "cl_uint"          -> "uint32_t"
-  | "cl_uint *"        -> "ptr uint32_t"
-  | "cl_device_type"   -> "uint64_t"
-  | "cl_device_type *" -> "ptr uint64_t"
-  | "cl_device_id"     -> "ptr _cl_device_id"
-  | "cl_device_id *"   -> "ptr (ptr _cl_device_id)"
-  | "cl_device_info"   -> "uint32_t"
-  | "cl_platform_id"   -> "ptr _cl_platform_id"
-  | "cl_platform_id *" -> "ptr (ptr _cl_platform_id)"
-  | "cl_platform_info" -> "uint32_t"
-  | s                  -> failwith (Printf.sprintf "convert_c_types_to_ocaml_types: %s" s)
+  | "char *"                         -> "ptr char"
+  | "char **"                        -> "ptr (ptr char)"
+  | "unsigned char **"               -> "ptr (ptr uchar)"
+  | "size_t"                         -> "size_t"
+  | "size_t *"                       -> "ptr size_t"
+  | "void *"                         -> "ptr void"
+  | "cl_int"                         -> "int32_t"
+  | "cl_int *"                       -> "ptr int32_t"
+  | "cl_uint"                        -> "uint32_t"
+  | "cl_uint *"                      -> "ptr uint32_t"
+  | "cl_bool"                        -> "uint32_t"
+  | "cl_device_type"                 -> "uint64_t"
+  | "cl_device_type *"               -> "ptr uint64_t"
+  | "cl_device_id"                   -> "ptr _cl_device_id"
+  | "cl_device_id *"                 -> "ptr (ptr _cl_device_id)"
+  | "cl_context"                     -> "ptr _cl_context"
+  | "cl_context_info"                -> "uint32_t"
+  | "cl_device_info"                 -> "uint32_t"
+  | "cl_platform_id"                 -> "ptr _cl_platform_id"
+  | "cl_platform_id *"               -> "ptr (ptr _cl_platform_id)"
+  | "cl_platform_info"               -> "uint32_t"
+  | "cl_device_partition_property"   -> "intptr_t"
+  | "cl_device_partition_property *" -> "ptr intptr_t"
+  | "cl_context_properties *"        -> "ptr intptr_t"
+  | "cl_command_queue"               -> "ptr _cl_command_queue"
+  | "cl_command_queue_info"          -> "uint32_t"
+  | "cl_command_queue_properties"    -> "uint64_t"
+  | "cl_mem"                         -> "ptr _cl_mem"
+  | "cl_mem_flags"                   -> "uint64_t"
+  | "cl_mem_info"                    -> "uint32_t"
+  | "cl_buffer_create_type"          -> "uint32_t"
+  | "cl_image_info"                  -> "uint32_t"
+  | "cl_addressing_mode"             -> "uint32_t"
+  | "cl_filter_mode"                 -> "uint32_t"
+  | "cl_sampler"                     -> "ptr _cl_sampler"
+  | "cl_sampler_info"                -> "uint32_t"
+  | "cl_program"                     -> "ptr _cl_program"
+  | "cl_program *"                   -> "ptr (ptr _cl_program)"
+  | "cl_program_info"                -> "uint32_t"
+  | "cl_program_build_info"          -> "uint32_t"
+  | "cl_kernel"                      -> "ptr _cl_kernel"
+  | "cl_kernel *"                    -> "ptr (ptr _cl_kernel)"
+  | s                                -> failwith (Printf.sprintf "convert_c_types_to_ocaml_types: %s" s)
 
 
 (* convert c types to ocaml types in ml file *)
 let convert_c_types_to_ml_types = function
-  | "size_t"           -> "Unsigned.size_t"
-  | "size_t *"         -> "_ CI.fatptr"
-  | "void *"           -> "_ CI.fatptr"
-  | "cl_int"           -> "int32"
-  | "cl_uint"          -> "Unsigned.uint32"
-  | "cl_uint *"        -> "_ CI.fatptr"
-  | "cl_device_type"   -> "Unsigned.uint64"
-  | "cl_device_type *" -> "_ CI.fatptr"
-  | "cl_device_id"     -> "_ CI.fatptr"
-  | "cl_device_id *"   -> "_ CI.fatptr"
-  | "cl_device_info"   -> "Unsigned.uint32"
-  | "cl_platform_id"   -> "_ CI.fatptr"
-  | "cl_platform_id *" -> "_ CI.fatptr"
-  | "cl_platform_info" -> "Unsigned.uint32"
-  | s                  -> failwith (Printf.sprintf "convert_c_types_to_ml_types: %s" s)
+  | "char *"                         -> "_ CI.fatptr"
+  | "char **"                        -> "_ CI.fatptr"
+  | "unsigned char **"               -> "_ CI.fatptr"
+  | "size_t"                         -> "Unsigned.size_t"
+  | "size_t *"                       -> "_ CI.fatptr"
+  | "void *"                         -> "_ CI.fatptr"
+  | "cl_int"                         -> "int32"
+  | "cl_int *"                       -> "_ CI.fatptr"
+  | "cl_uint"                        -> "Unsigned.uint32"
+  | "cl_uint *"                      -> "_ CI.fatptr"
+  | "cl_bool"                        -> "Unsigned.uint32"
+  | "cl_device_type"                 -> "Unsigned.uint64"
+  | "cl_device_type *"               -> "_ CI.fatptr"
+  | "cl_device_id"                   -> "_ CI.fatptr"
+  | "cl_device_id *"                 -> "_ CI.fatptr"
+  | "cl_context"                     -> "_ CI.fatptr"
+  | "cl_context_info"                -> "Unsigned.uint32"
+  | "cl_device_info"                 -> "Unsigned.uint32"
+  | "cl_platform_id"                 -> "_ CI.fatptr"
+  | "cl_platform_id *"               -> "_ CI.fatptr"
+  | "cl_platform_info"               -> "Unsigned.uint32"
+  | "cl_device_partition_property"   -> "intptr_t"
+  | "cl_device_partition_property *" -> "_ CI.fatptr"
+  | "cl_context_properties *"        -> "_ CI.fatptr"
+  | "cl_command_queue"               -> "_ CI.fatptr"
+  | "cl_command_queue_info"          -> "Unsigned.uint32"
+  | "cl_command_queue_properties"    -> "Unsigned.uint64"
+  | "cl_mem"                         -> "_ CI.fatptr"
+  | "cl_mem_flags"                   -> "Unsigned.uint64"
+  | "cl_mem_info"                    -> "Unsigned.uint32"
+  | "cl_buffer_create_type"          -> "Unsigned.uint32"
+  | "cl_image_info"                  -> "Unsigned.uint32"
+  | "cl_addressing_mode"             -> "Unsigned.uint32"
+  | "cl_filter_mode"                 -> "Unsigned.uint32"
+  | "cl_sampler"                     -> "_ CI.fatptr"
+  | "cl_sampler_info"                -> "Unsigned.uint32"
+  | "cl_program"                     -> "_ CI.fatptr"
+  | "cl_program *"                   -> "_ CI.fatptr"
+  | "cl_program_info"                -> "Unsigned.uint32"
+  | "cl_program_build_info"          -> "Unsigned.uint32"
+  | "cl_kernel"                      -> "_ CI.fatptr"
+  | "cl_kernel *"                    -> "_ CI.fatptr"
+  | s                                -> failwith (Printf.sprintf "convert_c_types_to_ml_types: %s" s)
 
 
 (* convert c types to ocaml types in mli file *)
 let convert_c_types_to_mli_types = function
-  | "size_t"           -> "Unsigned.size_t"
-  | "size_t *"         -> "Unsigned.size_t ptr"
-  | "void *"           -> "unit ptr"
-  | "cl_int"           -> "int32"
-  | "cl_uint"          -> "Unsigned.uint32"
-  | "cl_uint *"        -> "Unsigned.uint32 ptr"
-  | "cl_device_type"   -> "Unsigned.uint64"
-  | "cl_device_type *" -> "unit64_t ptr"
-  | "cl_device_id"     -> "cl_device_id"
-  | "cl_device_id *"   -> "cl_device_id ptr"
-  | "cl_device_info"   -> "Unsigned.uint32"
-  | "cl_platform_id"   -> "cl_platform_id"
-  | "cl_platform_id *" -> "cl_platform_id ptr"
-  | "cl_platform_info" -> "Unsigned.uint32"
-  | s                  -> failwith (Printf.sprintf "convert_c_types_to_ml_types: %s" s)
+  | "char *"                         -> "char ptr"
+  | "char **"                        -> "char ptr ptr"
+  | "unsigned char **"               -> "Unsigned.UChar.t ptr ptr"
+  | "size_t"                         -> "Unsigned.size_t"
+  | "size_t *"                       -> "Unsigned.size_t ptr"
+  | "void *"                         -> "unit ptr"
+  | "cl_int"                         -> "int32"
+  | "cl_int *"                       -> "int32 ptr"
+  | "cl_uint"                        -> "Unsigned.uint32"
+  | "cl_uint *"                      -> "Unsigned.uint32 ptr"
+  | "cl_bool"                        -> "Unsigned.uint32"
+  | "cl_device_type"                 -> "Unsigned.uint64"
+  | "cl_device_type *"               -> "unit64_t ptr"
+  | "cl_device_id"                   -> "cl_device_id"
+  | "cl_device_id *"                 -> "cl_device_id ptr"
+  | "cl_context"                     -> "cl_context ptr"
+  | "cl_context_info"                -> "Unsigned.uint32"
+  | "cl_device_info"                 -> "Unsigned.uint32"
+  | "cl_platform_id"                 -> "cl_platform_id"
+  | "cl_platform_id *"               -> "cl_platform_id ptr"
+  | "cl_platform_info"               -> "Unsigned.uint32"
+  | "cl_device_partition_property"   -> "Intptr.t"
+  | "cl_device_partition_property *" -> "Intptr.t ptr"
+  | "cl_context_properties *"        -> "Intptr.t ptr"
+  | "cl_command_queue"               -> "cl_command_queue"
+  | "cl_command_queue_info"          -> "Unsigned.uint32"
+  | "cl_command_queue_properties"    -> "Unsigned.uint64"
+  | "cl_mem"                         -> "cl_mem"
+  | "cl_mem_flags"                   -> "Unsigned.uint64"
+  | "cl_mem_info"                    -> "Unsigned.uint32"
+  | "cl_buffer_create_type"          -> "Unsigned.uint32"
+  | "cl_image_info"                  -> "Unsigned.uint32"
+  | "cl_addressing_mode"             -> "Unsigned.uint32"
+  | "cl_filter_mode"                 -> "Unsigned.uint32"
+  | "cl_sampler"                     -> "cl_sampler"
+  | "cl_sampler_info"                -> "Unsigned.uint32"
+  | "cl_program"                     -> "cl_program"
+  | "cl_program *"                   -> "cl_program ptr"
+  | "cl_program_info"                -> "Unsigned.uint32"
+  | "cl_program_build_info"          -> "Unsigned.uint32"
+  | "cl_kernel"                      -> "cl_kernel"
+  | "cl_kernel *"                    -> "cl_kernel ptr"
+  | s                                -> failwith (Printf.sprintf "convert_c_types_to_ml_types: %s" s)
+
+
+(* convert c types to ocaml returning types in ml file *)
+let convert_c_types_to_ml_rvals = function
+  | "cl_context"  -> "unit Ctypes.ptr"
+  | a             -> convert_c_types_to_mli_types a
+
+(* convert c types to ocaml returning types in mli file *)
+let convert_c_types_to_mli_rvals = function
+  | "cl_context"  -> "cl_context"
+  | a  -> convert_c_types_to_mli_types a
 
 
 (* helper functions *)
@@ -94,11 +189,16 @@ let _get_funlist fname =
 let is_in_funlist t fun_name = Hashtbl.mem t fun_name
 
 
+(* get rid of the stuff I don't really want to deal with atm *)
 let _clean_up_fun_declaration s =
   let regex0 = Str.regexp "\\([ \n\r]*/\\*[^\\*]+\\*/[ \n\r]*\\)" in
   let regex1 = Str.regexp "[ \n\r]+" in
+  let regex2 = Str.regexp "const" in
+  let regex3 = Str.regexp "void (CL_CALLBACK \\*)([ ,_\\*a-zA-Z0-9]+)" in
   Str.global_replace regex0 "" s |>
-  Str.global_replace regex1 " "
+  Str.global_replace regex1 " " |>
+  Str.global_replace regex2 "" |>
+  Str.global_replace regex3 "void *"
 
 
 (* parse argument string to array *)
@@ -116,7 +216,11 @@ let convert_to_ctypes_fun funs =
       |> Array.map convert_c_types_to_ocaml_types
       |> Array.fold_left (fun a b -> a ^ b ^ " @-> ") ""
     in
-    let rval_s = convert_c_types_to_ocaml_types fun_rval in
+    let rval_s =
+      let s = convert_c_types_to_ocaml_types fun_rval in
+      if List.length (Str.split (Str.regexp " ") s) = 1 then s
+      else Printf.sprintf "(%s)" s
+    in
     let fun_s = Printf.sprintf
       "  let %s = foreign \"%s\" (%sreturning %s)\n" fun_name fun_name args_s rval_s
     in
@@ -154,7 +258,7 @@ let convert_to_extern_fun funs =
       |> Array.map convert_c_types_to_ml_types
       |> Array.fold_left (fun a b -> a ^ b ^ " -> ") ""
     in
-    let rval_ml_s = convert_c_types_to_ml_types fun_rval in
+    let rval_ml_s = convert_c_types_to_ml_rvals fun_rval in
 
     (* NOTE: naming needs to be consistent with Ctypes *)
     let fun_native_s = Printf.sprintf "owl_opencl_stub_%i_%s" (i + 1) fun_name in
@@ -171,7 +275,7 @@ let convert_to_extern_fun funs =
       |> Array.map convert_c_types_to_mli_types
       |> Array.fold_left (fun a b -> a ^ b ^ " -> ") ""
     in
-    let rval_mli_s = convert_c_types_to_mli_types fun_rval in
+    let rval_mli_s = convert_c_types_to_mli_rvals fun_rval in
     let fun_mli_s = Printf.sprintf
       "val %s : %s%s\n" fun_name args_mli_s rval_mli_s
     in
@@ -189,6 +293,7 @@ let replace_const_val s =
   |> Str.global_replace regex0 "0"
   |> Str.global_replace regex1 "1"
   |> Str.global_replace regex2 "lsl"
+
 
 (* parse through opencl header file, filter out the constants *)
 let parse_opencl_header_consts fname =
@@ -321,7 +426,8 @@ let parse_opencl_header_funlist fname funlist =
       (* only accept thos in funlist *)
       if is_in_funlist t _fun_name = true then (
         funs := Array.append !funs [| (_fun_rval, _fun_name, _fun_vars, _fun_vers) |]
-      );
+      )
+      else Printf.printf "opencl %s @ %s\n" _fun_name _fun_vars;
 
       ofs := _ofs + (String.length _s)
     done with exn -> ()

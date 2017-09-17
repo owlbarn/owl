@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** auto-generated opencl interface file, timestamp:1505577750 *)
+(** auto-generated opencl interface file, timestamp:1505609485 *)
 
 open Ctypes
 
@@ -69,6 +69,84 @@ val clGetPlatformInfo : cl_platform_id -> Unsigned.uint32 -> Unsigned.size_t -> 
 val clGetDeviceIDs : cl_platform_id -> Unsigned.uint64 -> Unsigned.uint32 -> cl_device_id ptr -> Unsigned.uint32 ptr -> int32
 
 val clGetDeviceInfo : cl_device_id -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+
+val clCreateSubDevices : cl_device_id -> Intptr.t ptr -> Unsigned.uint32 -> cl_device_id ptr -> Unsigned.uint32 ptr -> int32
+
+val clRetainDevice : cl_device_id -> int32
+
+val clReleaseDevice : cl_device_id -> int32
+
+val clCreateContext : Intptr.t ptr -> Unsigned.uint32 -> cl_device_id ptr -> unit ptr -> unit ptr -> int32 ptr -> cl_context
+
+val clCreateContextFromType : Intptr.t ptr -> Unsigned.uint64 -> unit ptr -> unit ptr -> int32 ptr -> cl_context
+
+val clRetainContext : cl_context ptr -> int32
+
+val clReleaseContext : cl_context ptr -> int32
+
+val clGetContextInfo : cl_context ptr -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+
+val clCreateCommandQueue : cl_context ptr -> cl_device_id -> Unsigned.uint64 -> int32 ptr -> cl_command_queue
+
+val clRetainCommandQueue : cl_command_queue -> int32
+
+val clReleaseCommandQueue : cl_command_queue -> int32
+
+val clGetCommandQueueInfo : cl_command_queue -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+
+val clCreateBuffer : cl_context ptr -> Unsigned.uint64 -> Unsigned.size_t -> unit ptr -> int32 ptr -> cl_mem
+
+val clCreateSubBuffer : cl_mem -> Unsigned.uint64 -> Unsigned.uint32 -> unit ptr -> int32 ptr -> cl_mem
+
+val clRetainMemObject : cl_mem -> int32
+
+val clReleaseMemObject : cl_mem -> int32
+
+val clGetMemObjectInfo : cl_mem -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+
+val clGetImageInfo : cl_mem -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+
+val clSetMemObjectDestructorCallback : cl_mem -> unit ptr -> unit ptr -> int32
+
+val clCreateSampler : cl_context ptr -> Unsigned.uint32 -> Unsigned.uint32 -> Unsigned.uint32 -> int32 ptr -> cl_sampler
+
+val clRetainSampler : cl_sampler -> int32
+
+val clReleaseSampler : cl_sampler -> int32
+
+val clGetSamplerInfo : cl_sampler -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+
+val clCreateProgramWithSource : cl_context ptr -> Unsigned.uint32 -> char ptr ptr -> Unsigned.size_t ptr -> int32 ptr -> cl_program
+
+val clCreateProgramWithBinary : cl_context ptr -> Unsigned.uint32 -> cl_device_id ptr -> Unsigned.size_t ptr -> Unsigned.UChar.t ptr ptr -> int32 ptr -> int32 ptr -> cl_program
+
+val clCreateProgramWithBuiltInKernels : cl_context ptr -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> int32 ptr -> cl_program
+
+val clRetainProgram : cl_program -> int32
+
+val clReleaseProgram : cl_program -> int32
+
+val clBuildProgram : cl_program -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> unit ptr -> unit ptr -> int32
+
+val clCompileProgram : cl_program -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> Unsigned.uint32 -> cl_program ptr -> char ptr ptr -> unit ptr -> unit ptr -> int32
+
+val clLinkProgram : cl_context ptr -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> Unsigned.uint32 -> cl_program ptr -> unit ptr -> unit ptr -> int32 ptr -> cl_program
+
+val clUnloadPlatformCompiler : cl_platform_id -> int32
+
+val clGetProgramInfo : cl_program -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+
+val clGetProgramBuildInfo : cl_program -> cl_device_id -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+
+val clCreateKernel : cl_program -> char ptr -> int32 ptr -> cl_kernel
+
+val clCreateKernelsInProgram : cl_program -> Unsigned.uint32 -> cl_kernel ptr -> Unsigned.uint32 ptr -> int32
+
+val clRetainKernel : cl_kernel -> int32
+
+val clReleaseKernel : cl_kernel -> int32
+
+val clSetKernelArg : cl_kernel -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> int32
 
 
 
