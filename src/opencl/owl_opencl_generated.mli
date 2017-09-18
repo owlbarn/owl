@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** auto-generated opencl interface file, timestamp:1505662398 *)
+(** auto-generated opencl interface file, timestamp:1505755200 *)
 
 open Ctypes
 
@@ -80,13 +80,13 @@ val clCreateContext : Intptr.t ptr -> Unsigned.uint32 -> cl_device_id ptr -> uni
 
 val clCreateContextFromType : Intptr.t ptr -> Unsigned.uint64 -> unit ptr -> unit ptr -> int32 ptr -> cl_context
 
-val clRetainContext : cl_context ptr -> int32
+val clRetainContext : cl_context -> int32
 
-val clReleaseContext : cl_context ptr -> int32
+val clReleaseContext : cl_context -> int32
 
-val clGetContextInfo : cl_context ptr -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
+val clGetContextInfo : cl_context -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
 
-val clCreateCommandQueue : cl_context ptr -> cl_device_id -> Unsigned.uint64 -> int32 ptr -> cl_command_queue
+val clCreateCommandQueue : cl_context -> cl_device_id -> Unsigned.uint64 -> int32 ptr -> cl_command_queue
 
 val clRetainCommandQueue : cl_command_queue -> int32
 
@@ -94,7 +94,7 @@ val clReleaseCommandQueue : cl_command_queue -> int32
 
 val clGetCommandQueueInfo : cl_command_queue -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
 
-val clCreateBuffer : cl_context ptr -> Unsigned.uint64 -> Unsigned.size_t -> unit ptr -> int32 ptr -> cl_mem
+val clCreateBuffer : cl_context -> Unsigned.uint64 -> Unsigned.size_t -> unit ptr -> int32 ptr -> cl_mem
 
 val clCreateSubBuffer : cl_mem -> Unsigned.uint64 -> Unsigned.uint32 -> unit ptr -> int32 ptr -> cl_mem
 
@@ -108,7 +108,7 @@ val clGetImageInfo : cl_mem -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr ->
 
 val clSetMemObjectDestructorCallback : cl_mem -> unit ptr -> unit ptr -> int32
 
-val clCreateSampler : cl_context ptr -> Unsigned.uint32 -> Unsigned.uint32 -> Unsigned.uint32 -> int32 ptr -> cl_sampler
+val clCreateSampler : cl_context -> Unsigned.uint32 -> Unsigned.uint32 -> Unsigned.uint32 -> int32 ptr -> cl_sampler
 
 val clRetainSampler : cl_sampler -> int32
 
@@ -116,11 +116,11 @@ val clReleaseSampler : cl_sampler -> int32
 
 val clGetSamplerInfo : cl_sampler -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
 
-val clCreateProgramWithSource : cl_context ptr -> Unsigned.uint32 -> char ptr ptr -> Unsigned.size_t ptr -> int32 ptr -> cl_program
+val clCreateProgramWithSource : cl_context -> Unsigned.uint32 -> char ptr ptr -> Unsigned.size_t ptr -> int32 ptr -> cl_program
 
-val clCreateProgramWithBinary : cl_context ptr -> Unsigned.uint32 -> cl_device_id ptr -> Unsigned.size_t ptr -> Unsigned.UChar.t ptr ptr -> int32 ptr -> int32 ptr -> cl_program
+val clCreateProgramWithBinary : cl_context -> Unsigned.uint32 -> cl_device_id ptr -> Unsigned.size_t ptr -> Unsigned.UChar.t ptr ptr -> int32 ptr -> int32 ptr -> cl_program
 
-val clCreateProgramWithBuiltInKernels : cl_context ptr -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> int32 ptr -> cl_program
+val clCreateProgramWithBuiltInKernels : cl_context -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> int32 ptr -> cl_program
 
 val clRetainProgram : cl_program -> int32
 
@@ -130,7 +130,7 @@ val clBuildProgram : cl_program -> Unsigned.uint32 -> cl_device_id ptr -> char p
 
 val clCompileProgram : cl_program -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> Unsigned.uint32 -> cl_program ptr -> char ptr ptr -> unit ptr -> unit ptr -> int32
 
-val clLinkProgram : cl_context ptr -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> Unsigned.uint32 -> cl_program ptr -> unit ptr -> unit ptr -> int32 ptr -> cl_program
+val clLinkProgram : cl_context -> Unsigned.uint32 -> cl_device_id ptr -> char ptr -> Unsigned.uint32 -> cl_program ptr -> unit ptr -> unit ptr -> int32 ptr -> cl_program
 
 val clUnloadPlatformCompiler : cl_platform_id -> int32
 
@@ -158,7 +158,7 @@ val clWaitForEvents : Unsigned.uint32 -> cl_event ptr -> int32
 
 val clGetEventInfo : cl_event -> Unsigned.uint32 -> Unsigned.size_t -> unit ptr -> Unsigned.size_t ptr -> int32
 
-val clCreateUserEvent : cl_context ptr -> int32 ptr -> cl_event
+val clCreateUserEvent : cl_context -> int32 ptr -> cl_event
 
 val clRetainEvent : cl_event -> int32
 
@@ -1071,4 +1071,3 @@ exception EXN_INVALID_COMPILER_OPTIONS
 exception EXN_INVALID_LINKER_OPTIONS
 
 exception EXN_INVALID_DEVICE_PARTITION_COUNT
-

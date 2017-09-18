@@ -155,19 +155,52 @@ module Context = struct
   }
 
 
-  let get_info ctx = ()
+  let get_context_info ctx param_name =
+    let param_name = Unsigned.UInt32.of_int param_name in
+    let param_value_size_ret = allocate size_t size_0 in
+    clGetContextInfo ctx param_name size_0 null param_value_size_ret |> cl_check_err;
+    print_endline "$$$"; flush_all ();
+    let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
+    let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
+    clGetContextInfo ctx param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
+    param_value, _param_value_size
 
 
-  let create () = ()
+  let get_info ctx =
+    let reference_count = ( let p, l = get_context_info ctx cl_CONTEXT_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
+    (* let num_devices     = ( let p, l = get_context_info ctx cl_CONTEXT_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
+    let devices         = ( let p, l = get_context_info ctx cl_CONTEXT_DEVICES in let _devices = char_ptr_to_cl_device_id_ptr p in Array.init num_devices (fun i -> !@(_devices +@ i)) ) in *)
+    {
+      reference_count;
+      num_devices = 0;
+      devices = [||];
+    }
+
+
+  let retain ctx = clRetainContext ctx |> cl_check_err
+
+
+  let release ctx = clReleaseContext ctx |> cl_check_err
+
+
+  let create ?(properties=[||]) devices =
+    let _properties = allocate_n intptr_t ~count:3 in
+    let l = Platform.get_platforms () in
+    (_properties +@ 0) <-@ Intptr.of_int cl_CONTEXT_PLATFORM;
+    (_properties +@ 1) <-@ Obj.magic l.(0);
+    (_properties +@ 2) <-@ intptr_0;
+
+    let num_devices = Array.length devices in
+    let _devices = allocate_n cl_device_id ~count:num_devices in
+    Array.iteri (fun i d -> (_devices +@ i) <-@ d) devices;
+    let _num_devices = Unsigned.UInt32.of_int num_devices in
+    let err_ret = allocate int32_t 0l in
+    let ctx = clCreateContext magic_null _num_devices _devices magic_null magic_null err_ret in
+    cl_check_err !@err_ret;
+    ctx
 
 
   let create_from_type () = ()
-
-
-  let retain () = ()
-
-
-  let release () = ()
 
 
   let to_string x = ""

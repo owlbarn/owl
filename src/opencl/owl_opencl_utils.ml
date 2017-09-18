@@ -20,6 +20,8 @@ let uint32_1 = Unsigned.UInt32.one
 
 let size_0 = Unsigned.Size_t.zero
 
+let intptr_0 = Intptr.zero
+
 
 (** coerce from type a to type b *)
 
@@ -33,5 +35,6 @@ let char_ptr_to_cl_device_id_ptr x = coerce (ptr char) (ptr cl_device_id) x
 
 let char_ptr_to_cl_platform_id_ptr x = coerce (ptr char) (ptr cl_platform_id) x
 
+let cl_platform_id_to_intptr x = coerce cl_platform_id intptr_t x
 
 (* ends here *)
