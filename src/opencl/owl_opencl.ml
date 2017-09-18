@@ -23,7 +23,7 @@ module Platform = struct
   }
 
 
-  let get_platform_ids () =
+  let get_platforms () =
     let _n = allocate uint32_t uint32_0 in
     clGetPlatformIDs uint32_0 cl_platform_id_ptr_null _n |> cl_check_err;
     let n = Unsigned.UInt32.to_int !@_n in
@@ -51,6 +51,10 @@ module Platform = struct
     vendor     = get_platform_info plf_id cl_PLATFORM_VENDOR;
     extensions = get_platform_info plf_id cl_PLATFORM_EXTENSIONS;
   }
+
+
+  let to_string x = ""
+
 
 end
 
@@ -85,7 +89,7 @@ module Device = struct
   }
 
 
-  let get_device_ids plf_id =
+  let get_devices plf_id =
     let dev_typ = Unsigned.UInt64.of_int cl_DEVICE_TYPE_ALL in
     let num_entries = Unsigned.UInt32.of_int 0 in
     let _num_devices = allocate uint32_t uint32_0 in
@@ -134,12 +138,40 @@ module Device = struct
   }
 
 
+  let to_string x = ""
+
+
 end
 
 
 
 (** context definition *)
 module Context = struct
+
+  type info = {
+    reference_count : int;
+    num_devices     : int;
+    devices         : cl_device_id array;
+  }
+
+
+  let get_info ctx = ()
+
+
+  let create () = ()
+
+
+  let create_from_type () = ()
+
+
+  let retain () = ()
+
+
+  let release () = ()
+
+
+  let to_string x = ""
+
 
 end
 
