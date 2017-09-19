@@ -39,10 +39,23 @@ let char_ptr_to_cl_device_id_ptr x = coerce (ptr char) (ptr cl_device_id) x
 
 let char_ptr_to_cl_platform_id_ptr x = coerce (ptr char) (ptr cl_platform_id) x
 
+let char_ptr_to_cl_context_ptr x = coerce (ptr char) (ptr cl_context) x
+
 let cl_platform_id_to_intptr x =
   let _x = allocate cl_platform_id x in
   let _y = coerce (ptr cl_platform_id) (ptr intptr_t) _x in
   !@_y
+
+
+(** convert between ocaml type and c type *)
+
+let char_ptr_of_string s =
+  (* optimise: more efficient way? *)
+  let s_len = String.length s in
+  let c_ptr = allocate_n char ~count:(s_len + 1) in
+  String.iteri (fun j c -> (c_ptr +@ j) <-@ c) s;
+  (c_ptr +@ s_len) <-@ '\000';
+  c_ptr
 
 
 (* ends here *)

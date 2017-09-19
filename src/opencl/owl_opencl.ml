@@ -42,7 +42,7 @@ module Platform = struct
     let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
     clGetPlatformInfo plf_id param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
     (* null terminated string, so minus 1 *)
-    Ctypes.string_from_ptr param_value (_param_value_size - 1)
+    string_from_ptr param_value (_param_value_size - 1)
 
 
   let get_info plf_id = {
@@ -213,6 +213,31 @@ end
 (** kernel definition *)
 module Kernel = struct
 
+  type info = {
+    function_name : string;
+  }
+
+
+  let get_kernel_info kernel param_name = ()
+
+
+  let get_info kernel = ()
+
+
+  let create program kernel_name =
+    let _kernel_name = char_ptr_of_string kernel_name in
+    let err_ret = allocate int32_t 0l in
+    let kernel = clCreateKernel program _kernel_name err_ret in
+    cl_check_err !@err_ret;
+    kernel
+
+
+  let create_in_program program kernels = ()
+
+
+  let to_string x = ""
+
+
 end
 
 
@@ -220,17 +245,51 @@ end
 (** program definition *)
 module Program = struct
 
+  type info = {
+    reference_count : int;
+    context         : cl_context;
+    num_devices     : int;
+    devices         : cl_device_id array;
+    source          : string;
+    binary_sizes    : int array;
+    binaries        : CI.voidp array;
+    num_kernels     : int;
+    kernel_names    : string array;
+  }
+
+
+  let get_program_info program param_name =
+    let param_name = Unsigned.UInt32.of_int param_name in
+    let param_value_size_ret = allocate size_t size_0 in
+    clGetProgramInfo program param_name size_0 null param_value_size_ret |> cl_check_err;
+
+    let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
+    let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
+    clGetProgramInfo program param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
+    param_value, _param_value_size
+
+
+  let get_info program =
+  (* FIXME: many information is only available after the program is built, need to check null *)
+  let num_devices = ( let p, l = get_program_info program cl_PROGRAM_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
+  {
+    reference_count = ( let p, l = get_program_info program cl_PROGRAM_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    context         = ( let p, l = get_program_info program cl_PROGRAM_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
+    num_devices     = num_devices;
+    devices         = ( let p, l = get_program_info program cl_PROGRAM_DEVICES in let _devices = char_ptr_to_cl_device_id_ptr p in Array.init num_devices (fun i -> !@(_devices +@ i)) );
+    source          = ( let p, l = get_program_info program cl_PROGRAM_SOURCE in string_from_ptr p (l - 1) );
+    binary_sizes    = [||]; (* TODO: not implemented yet *)
+    binaries        = [||]; (* TODO: not implemented yet *)
+    num_kernels     = ( let p, l = get_program_info program cl_PROGRAM_NUM_KERNELS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    kernel_names    = ( let p, l = get_program_info program cl_PROGRAM_KERNEL_NAMES in (string_from_ptr p (l - 1)) |> Str.split (Str.regexp ";") |> Array.of_list );
+  }
+
 
   let create_with_source ctx str =
     let str_num = Array.length str in
     let _str = allocate_n (ptr char) ~count:str_num in
-    (* optimise: more efficient way? *)
     Array.iteri (fun i s ->
-      let sl = String.length s in
-      let _s = allocate_n char ~count:(sl + 1) in
-      String.iteri (fun j c -> (_s +@ j) <-@ c) s;
-      (_s +@ sl) <-@ '\000';
-      (_str +@ i) <-@ _s;
+      (_str +@ i) <-@ (char_ptr_of_string s);
     ) str;
 
     let err_ret = allocate int32_t 0l in
@@ -241,6 +300,21 @@ module Program = struct
 
 
   let create_with_binary = ()
+
+
+  let build ?(options="") program devices =
+    let num_devices = Array.length devices in
+    let _devices = allocate_n cl_device_id ~count:num_devices in
+    Array.iteri (fun i d -> (_devices +@ i) <-@ d) devices;
+    let _num_devices = Unsigned.UInt32.of_int num_devices in
+    let _options = char_ptr_of_string options in
+    clBuildProgram program _num_devices _devices _options magic_null magic_null |> cl_check_err
+
+
+  let compile = ()
+
+
+  let link = ()
 
 
   let to_string = ""
