@@ -23,6 +23,7 @@
   (flags (:standard))
   (libraries (
     ctypes
+    ctypes.stubs
     dolog
     gsl
     eigen

@@ -20,7 +20,11 @@ let uint32_1 = Unsigned.UInt32.one
 
 let size_0 = Unsigned.Size_t.zero
 
+let size_1 = Unsigned.Size_t.one
+
 let intptr_0 = Intptr.zero
+
+let intptr_1 = Intptr.one
 
 
 (** coerce from type a to type b *)
@@ -35,6 +39,10 @@ let char_ptr_to_cl_device_id_ptr x = coerce (ptr char) (ptr cl_device_id) x
 
 let char_ptr_to_cl_platform_id_ptr x = coerce (ptr char) (ptr cl_platform_id) x
 
-let cl_platform_id_to_intptr x = coerce cl_platform_id intptr_t x
+let cl_platform_id_to_intptr x =
+  let _x = allocate cl_platform_id x in
+  let _y = coerce (ptr cl_platform_id) (ptr intptr_t) _x in
+  !@_y
+
 
 (* ends here *)

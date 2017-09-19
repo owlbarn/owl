@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** auto-generated opencl interface file, timestamp:1505755200 *)
+(** auto-generated opencl interface file, timestamp:1505835669 *)
 
 open Ctypes
 
@@ -91,11 +91,11 @@ external owl_opencl_clReleaseDevice
   = "owl_opencl_stub_7_clReleaseDevice"
 
 external owl_opencl_clCreateContext
-  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_8_clCreateContext_byte6" "owl_opencl_stub_8_clCreateContext"
 
 external owl_opencl_clCreateContextFromType
-  : _ CI.fatptr -> Unsigned.uint64 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
+  : _ CI.fatptr -> Unsigned.uint64 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_9_clCreateContextFromType"
 
 external owl_opencl_clRetainContext
@@ -111,7 +111,7 @@ external owl_opencl_clGetContextInfo
   = "owl_opencl_stub_12_clGetContextInfo"
 
 external owl_opencl_clCreateCommandQueue
-  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint64 -> _ CI.fatptr -> cl_command_queue
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint64 -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_13_clCreateCommandQueue"
 
 external owl_opencl_clRetainCommandQueue
@@ -127,11 +127,11 @@ external owl_opencl_clGetCommandQueueInfo
   = "owl_opencl_stub_16_clGetCommandQueueInfo"
 
 external owl_opencl_clCreateBuffer
-  : _ CI.fatptr -> Unsigned.uint64 -> Unsigned.size_t -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
+  : _ CI.fatptr -> Unsigned.uint64 -> Unsigned.size_t -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_17_clCreateBuffer"
 
 external owl_opencl_clCreateSubBuffer
-  : _ CI.fatptr -> Unsigned.uint64 -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
+  : _ CI.fatptr -> Unsigned.uint64 -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_18_clCreateSubBuffer"
 
 external owl_opencl_clRetainMemObject
@@ -155,7 +155,7 @@ external owl_opencl_clSetMemObjectDestructorCallback
   = "owl_opencl_stub_23_clSetMemObjectDestructorCallback"
 
 external owl_opencl_clCreateSampler
-  : _ CI.fatptr -> Unsigned.uint32 -> Unsigned.uint32 -> Unsigned.uint32 -> _ CI.fatptr -> cl_sampler
+  : _ CI.fatptr -> Unsigned.uint32 -> Unsigned.uint32 -> Unsigned.uint32 -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_24_clCreateSampler"
 
 external owl_opencl_clRetainSampler
@@ -171,15 +171,15 @@ external owl_opencl_clGetSamplerInfo
   = "owl_opencl_stub_27_clGetSamplerInfo"
 
 external owl_opencl_clCreateProgramWithSource
-  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_28_clCreateProgramWithSource"
 
 external owl_opencl_clCreateProgramWithBinary
-  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_29_clCreateProgramWithBinary_byte7" "owl_opencl_stub_29_clCreateProgramWithBinary"
 
 external owl_opencl_clCreateProgramWithBuiltInKernels
-  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_30_clCreateProgramWithBuiltInKernels"
 
 external owl_opencl_clRetainProgram
@@ -199,7 +199,7 @@ external owl_opencl_clCompileProgram
   = "owl_opencl_stub_34_clCompileProgram_byte9" "owl_opencl_stub_34_clCompileProgram"
 
 external owl_opencl_clLinkProgram
-  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_35_clLinkProgram_byte9" "owl_opencl_stub_35_clLinkProgram"
 
 external owl_opencl_clUnloadPlatformCompiler
@@ -215,7 +215,7 @@ external owl_opencl_clGetProgramBuildInfo
   = "owl_opencl_stub_38_clGetProgramBuildInfo_byte6" "owl_opencl_stub_38_clGetProgramBuildInfo"
 
 external owl_opencl_clCreateKernel
-  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit Ctypes.ptr
+  : _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_39_clCreateKernel"
 
 external owl_opencl_clCreateKernelsInProgram
@@ -255,7 +255,7 @@ external owl_opencl_clGetEventInfo
   = "owl_opencl_stub_48_clGetEventInfo"
 
 external owl_opencl_clCreateUserEvent
-  : _ CI.fatptr -> _ CI.fatptr -> cl_event
+  : _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_49_clCreateUserEvent"
 
 external owl_opencl_clRetainEvent
@@ -339,11 +339,11 @@ external owl_opencl_clEnqueueCopyBufferToImage
   = "owl_opencl_stub_69_clEnqueueCopyBufferToImage_byte9" "owl_opencl_stub_69_clEnqueueCopyBufferToImage"
 
 external owl_opencl_clEnqueueMapBuffer
-  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.uint64 -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit ptr
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.uint64 -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_70_clEnqueueMapBuffer_byte10" "owl_opencl_stub_70_clEnqueueMapBuffer"
 
 external owl_opencl_clEnqueueMapImage
-  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.uint64 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> unit ptr
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.uint64 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_71_clEnqueueMapImage_byte12" "owl_opencl_stub_71_clEnqueueMapImage"
 
 external owl_opencl_clEnqueueUnmapMemObject
@@ -375,7 +375,7 @@ external owl_opencl_clEnqueueBarrierWithWaitList
   = "owl_opencl_stub_78_clEnqueueBarrierWithWaitList"
 
 external owl_opencl_clGetExtensionFunctionAddressForPlatform
-  : _ CI.fatptr -> _ CI.fatptr -> unit ptr
+  : _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_79_clGetExtensionFunctionAddressForPlatform"
 
 
@@ -404,10 +404,12 @@ let clReleaseDevice x0 =
   owl_opencl_clReleaseDevice (CI.cptr x0) 
 
 let clCreateContext x0 x1 x2 x3 x4 x5 =
-  owl_opencl_clCreateContext (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) (CI.cptr x5) 
+  ( owl_opencl_clCreateContext (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) (CI.cptr x5) )
+  |> CI.make_ptr void
 
 let clCreateContextFromType x0 x1 x2 x3 x4 =
-  owl_opencl_clCreateContextFromType (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) 
+  ( owl_opencl_clCreateContextFromType (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) )
+  |> CI.make_ptr void
 
 let clRetainContext x0 =
   owl_opencl_clRetainContext (CI.cptr x0) 
@@ -419,7 +421,8 @@ let clGetContextInfo x0 x1 x2 x3 x4 =
   owl_opencl_clGetContextInfo (CI.cptr x0) x1 x2 (CI.cptr x3) (CI.cptr x4) 
 
 let clCreateCommandQueue x0 x1 x2 x3 =
-  owl_opencl_clCreateCommandQueue (CI.cptr x0) (CI.cptr x1) x2 (CI.cptr x3) 
+  ( owl_opencl_clCreateCommandQueue (CI.cptr x0) (CI.cptr x1) x2 (CI.cptr x3) )
+  |> CI.make_ptr void
 
 let clRetainCommandQueue x0 =
   owl_opencl_clRetainCommandQueue (CI.cptr x0) 
@@ -431,10 +434,12 @@ let clGetCommandQueueInfo x0 x1 x2 x3 x4 =
   owl_opencl_clGetCommandQueueInfo (CI.cptr x0) x1 x2 (CI.cptr x3) (CI.cptr x4) 
 
 let clCreateBuffer x0 x1 x2 x3 x4 =
-  owl_opencl_clCreateBuffer (CI.cptr x0) x1 x2 (CI.cptr x3) (CI.cptr x4) 
+  ( owl_opencl_clCreateBuffer (CI.cptr x0) x1 x2 (CI.cptr x3) (CI.cptr x4) )
+  |> CI.make_ptr void
 
 let clCreateSubBuffer x0 x1 x2 x3 x4 =
-  owl_opencl_clCreateSubBuffer (CI.cptr x0) x1 x2 (CI.cptr x3) (CI.cptr x4) 
+  ( owl_opencl_clCreateSubBuffer (CI.cptr x0) x1 x2 (CI.cptr x3) (CI.cptr x4) )
+  |> CI.make_ptr void
 
 let clRetainMemObject x0 =
   owl_opencl_clRetainMemObject (CI.cptr x0) 
@@ -452,7 +457,8 @@ let clSetMemObjectDestructorCallback x0 x1 x2 =
   owl_opencl_clSetMemObjectDestructorCallback (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) 
 
 let clCreateSampler x0 x1 x2 x3 x4 =
-  owl_opencl_clCreateSampler (CI.cptr x0) x1 x2 x3 (CI.cptr x4) 
+  ( owl_opencl_clCreateSampler (CI.cptr x0) x1 x2 x3 (CI.cptr x4) )
+  |> CI.make_ptr void
 
 let clRetainSampler x0 =
   owl_opencl_clRetainSampler (CI.cptr x0) 
@@ -464,13 +470,16 @@ let clGetSamplerInfo x0 x1 x2 x3 x4 =
   owl_opencl_clGetSamplerInfo (CI.cptr x0) x1 x2 (CI.cptr x3) (CI.cptr x4) 
 
 let clCreateProgramWithSource x0 x1 x2 x3 x4 =
-  owl_opencl_clCreateProgramWithSource (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) 
+  ( owl_opencl_clCreateProgramWithSource (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) )
+  |> CI.make_ptr void
 
 let clCreateProgramWithBinary x0 x1 x2 x3 x4 x5 x6 =
-  owl_opencl_clCreateProgramWithBinary (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) (CI.cptr x5) (CI.cptr x6) 
+  ( owl_opencl_clCreateProgramWithBinary (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) (CI.cptr x5) (CI.cptr x6) )
+  |> CI.make_ptr void
 
 let clCreateProgramWithBuiltInKernels x0 x1 x2 x3 x4 =
-  owl_opencl_clCreateProgramWithBuiltInKernels (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) 
+  ( owl_opencl_clCreateProgramWithBuiltInKernels (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) (CI.cptr x4) )
+  |> CI.make_ptr void
 
 let clRetainProgram x0 =
   owl_opencl_clRetainProgram (CI.cptr x0) 
@@ -485,7 +494,8 @@ let clCompileProgram x0 x1 x2 x3 x4 x5 x6 x7 x8 =
   owl_opencl_clCompileProgram (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) x4 (CI.cptr x5) (CI.cptr x6) (CI.cptr x7) (CI.cptr x8) 
 
 let clLinkProgram x0 x1 x2 x3 x4 x5 x6 x7 x8 =
-  owl_opencl_clLinkProgram (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) x4 (CI.cptr x5) (CI.cptr x6) (CI.cptr x7) (CI.cptr x8) 
+  ( owl_opencl_clLinkProgram (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) x4 (CI.cptr x5) (CI.cptr x6) (CI.cptr x7) (CI.cptr x8) )
+  |> CI.make_ptr void
 
 let clUnloadPlatformCompiler x0 =
   owl_opencl_clUnloadPlatformCompiler (CI.cptr x0) 
@@ -497,7 +507,8 @@ let clGetProgramBuildInfo x0 x1 x2 x3 x4 x5 =
   owl_opencl_clGetProgramBuildInfo (CI.cptr x0) (CI.cptr x1) x2 x3 (CI.cptr x4) (CI.cptr x5) 
 
 let clCreateKernel x0 x1 x2 =
-  owl_opencl_clCreateKernel (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) 
+  ( owl_opencl_clCreateKernel (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) )
+  |> CI.make_ptr void
 
 let clCreateKernelsInProgram x0 x1 x2 x3 =
   owl_opencl_clCreateKernelsInProgram (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) 
@@ -527,7 +538,8 @@ let clGetEventInfo x0 x1 x2 x3 x4 =
   owl_opencl_clGetEventInfo (CI.cptr x0) x1 x2 (CI.cptr x3) (CI.cptr x4) 
 
 let clCreateUserEvent x0 x1 =
-  owl_opencl_clCreateUserEvent (CI.cptr x0) (CI.cptr x1) 
+  ( owl_opencl_clCreateUserEvent (CI.cptr x0) (CI.cptr x1) )
+  |> CI.make_ptr void
 
 let clRetainEvent x0 =
   owl_opencl_clRetainEvent (CI.cptr x0) 
@@ -590,10 +602,12 @@ let clEnqueueCopyBufferToImage x0 x1 x2 x3 x4 x5 x6 x7 x8 =
   owl_opencl_clEnqueueCopyBufferToImage (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) x3 (CI.cptr x4) (CI.cptr x5) x6 (CI.cptr x7) (CI.cptr x8) 
 
 let clEnqueueMapBuffer x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 =
-  owl_opencl_clEnqueueMapBuffer (CI.cptr x0) (CI.cptr x1) x2 x3 x4 x5 x6 (CI.cptr x7) (CI.cptr x8) (CI.cptr x9) 
+  ( owl_opencl_clEnqueueMapBuffer (CI.cptr x0) (CI.cptr x1) x2 x3 x4 x5 x6 (CI.cptr x7) (CI.cptr x8) (CI.cptr x9) )
+  |> CI.make_ptr void
 
 let clEnqueueMapImage x0 x1 x2 x3 x4 x5 x6 x7 x8 x9 x10 x11 =
-  owl_opencl_clEnqueueMapImage (CI.cptr x0) (CI.cptr x1) x2 x3 (CI.cptr x4) (CI.cptr x5) (CI.cptr x6) (CI.cptr x7) x8 (CI.cptr x9) (CI.cptr x10) (CI.cptr x11) 
+  ( owl_opencl_clEnqueueMapImage (CI.cptr x0) (CI.cptr x1) x2 x3 (CI.cptr x4) (CI.cptr x5) (CI.cptr x6) (CI.cptr x7) x8 (CI.cptr x9) (CI.cptr x10) (CI.cptr x11) )
+  |> CI.make_ptr void
 
 let clEnqueueUnmapMemObject x0 x1 x2 x3 x4 x5 =
   owl_opencl_clEnqueueUnmapMemObject (CI.cptr x0) (CI.cptr x1) (CI.cptr x2) x3 (CI.cptr x4) (CI.cptr x5) 
@@ -617,7 +631,8 @@ let clEnqueueBarrierWithWaitList x0 x1 x2 x3 =
   owl_opencl_clEnqueueBarrierWithWaitList (CI.cptr x0) x1 (CI.cptr x2) (CI.cptr x3) 
 
 let clGetExtensionFunctionAddressForPlatform x0 x1 =
-  owl_opencl_clGetExtensionFunctionAddressForPlatform (CI.cptr x0) (CI.cptr x1) 
+  ( owl_opencl_clGetExtensionFunctionAddressForPlatform (CI.cptr x0) (CI.cptr x1) )
+  |> CI.make_ptr void
 
 
 

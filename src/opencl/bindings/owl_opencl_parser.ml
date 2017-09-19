@@ -219,19 +219,49 @@ let convert_c_types_to_mli_types = function
 
 (* convert c types to ocaml returning types in ml file *)
 let convert_c_types_to_ml_rvals = function
-  | "cl_context" -> "unit Ctypes.ptr"
-  | "cl_program" -> "unit Ctypes.ptr"
-  | "cl_kernel"  -> "unit Ctypes.ptr"
-  | "cl_mem"     -> "unit Ctypes.ptr"
-  | a            -> convert_c_types_to_mli_types a
+  | "cl_platform_id"   -> "CI.voidp"
+  | "cl_device_id"     -> "CI.voidp"
+  | "cl_context"       -> "CI.voidp"
+  | "cl_command_queue" -> "CI.voidp"
+  | "cl_mem"           -> "CI.voidp"
+  | "cl_program"       -> "CI.voidp"
+  | "cl_kernel"        -> "CI.voidp"
+  | "cl_event"         -> "CI.voidp"
+  | "cl_sampler"       -> "CI.voidp"
+  | "void *"           -> "CI.voidp"
+  | a                  -> convert_c_types_to_mli_types a
 
 (* convert c types to ocaml returning types in mli file *)
 let convert_c_types_to_mli_rvals = function
-  | "cl_context" -> "cl_context"
-  | "cl_program" -> "cl_program"
-  | "cl_kernel"  -> "cl_kernel"
-  | "cl_mem"     -> "cl_mem"
+  | "cl_platform_id"   -> "cl_platform_id"
+  | "cl_device_id"     -> "cl_device_id"
+  | "cl_context"       -> "cl_context"
+  | "cl_command_queue" -> "cl_command_queue"
+  | "cl_mem"           -> "cl_mem"
+  | "cl_program"       -> "cl_program"
+  | "cl_kernel"        -> "cl_kernel"
+  | "cl_event"         -> "cl_event"
+  | "cl_sampler"       -> "cl_sampler"
+  | "void *"           -> "unit ptr"
   | a            -> convert_c_types_to_mli_types a
+
+
+(* check if we need to call make_ptr *)
+let is_rval_ptr s =
+  let l = [
+    "cl_platform_id";
+    "cl_device_id";
+    "cl_context";
+    "cl_command_queue";
+    "cl_mem";
+    "cl_program";
+    "cl_kernel";
+    "cl_event";
+    "cl_sampler";
+    "void *"
+  ]
+  in
+  List.mem s l
 
 
 (* helper functions *)
@@ -324,8 +354,11 @@ let convert_to_ocaml_fun funs structs =
       else Printf.sprintf "x%i" i
     ) args |> Array.fold_left (fun a b -> a ^ b ^ " ") ""
     in
-    let fun_s = Printf.sprintf
-      "let %s %s=\n  owl_opencl_%s %s\n" fun_name vars_s fun_name args_s
+    let fun_s =
+      if is_rval_ptr fun_rval = false then
+        Printf.sprintf "let %s %s=\n  owl_opencl_%s %s\n" fun_name vars_s fun_name args_s
+      else
+        Printf.sprintf "let %s %s=\n  ( owl_opencl_%s %s)\n  |> CI.make_ptr void\n" fun_name vars_s fun_name args_s
     in
     fun_s
   ) funs

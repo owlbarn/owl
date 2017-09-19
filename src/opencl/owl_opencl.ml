@@ -9,6 +9,7 @@ open Owl_opencl_utils
 
 open Owl_opencl_generated
 
+module CI = Cstubs_internals
 
 
 (** platform definition *)
@@ -91,14 +92,13 @@ module Device = struct
 
   let get_devices plf_id =
     let dev_typ = Unsigned.UInt64.of_int cl_DEVICE_TYPE_ALL in
-    let num_entries = Unsigned.UInt32.of_int 0 in
     let _num_devices = allocate uint32_t uint32_0 in
-    clGetDeviceIDs plf_id dev_typ num_entries cl_device_id_ptr_null _num_devices |> cl_check_err;
+    clGetDeviceIDs plf_id dev_typ uint32_0 cl_device_id_ptr_null _num_devices |> cl_check_err;
 
-    let num_entries = Unsigned.UInt32.to_int !@_num_devices in
-    let _devices = allocate_n cl_device_id num_entries in
+    let num_devices = Unsigned.UInt32.to_int !@_num_devices in
+    let _devices = allocate_n cl_device_id num_devices in
     clGetDeviceIDs plf_id dev_typ !@_num_devices _devices magic_null |> cl_check_err;
-    Array.init num_entries (fun i -> !@(_devices +@ i))
+    Array.init num_devices (fun i -> !@(_devices +@ i))
 
 
   let get_device_info dev_id param_name =
@@ -159,7 +159,7 @@ module Context = struct
     let param_name = Unsigned.UInt32.of_int param_name in
     let param_value_size_ret = allocate size_t size_0 in
     clGetContextInfo ctx param_name size_0 null param_value_size_ret |> cl_check_err;
-    print_endline "$$$"; flush_all ();
+
     let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
     let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
     clGetContextInfo ctx param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
@@ -168,12 +168,12 @@ module Context = struct
 
   let get_info ctx =
     let reference_count = ( let p, l = get_context_info ctx cl_CONTEXT_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
-    (* let num_devices     = ( let p, l = get_context_info ctx cl_CONTEXT_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
-    let devices         = ( let p, l = get_context_info ctx cl_CONTEXT_DEVICES in let _devices = char_ptr_to_cl_device_id_ptr p in Array.init num_devices (fun i -> !@(_devices +@ i)) ) in *)
+    let num_devices     = ( let p, l = get_context_info ctx cl_CONTEXT_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
+    let devices         = ( let p, l = get_context_info ctx cl_CONTEXT_DEVICES in let _devices = char_ptr_to_cl_device_id_ptr p in Array.init num_devices (fun i -> !@(_devices +@ i)) ) in
     {
       reference_count;
-      num_devices = 0;
-      devices = [||];
+      num_devices = num_devices;
+      devices = devices;
     }
 
 
@@ -187,7 +187,7 @@ module Context = struct
     let _properties = allocate_n intptr_t ~count:3 in
     let l = Platform.get_platforms () in
     (_properties +@ 0) <-@ Intptr.of_int cl_CONTEXT_PLATFORM;
-    (_properties +@ 1) <-@ Obj.magic l.(0);
+    (_properties +@ 1) <-@ cl_platform_id_to_intptr l.(0);
     (_properties +@ 2) <-@ intptr_0;
 
     let num_devices = Array.length devices in
@@ -195,7 +195,7 @@ module Context = struct
     Array.iteri (fun i d -> (_devices +@ i) <-@ d) devices;
     let _num_devices = Unsigned.UInt32.of_int num_devices in
     let err_ret = allocate int32_t 0l in
-    let ctx = clCreateContext magic_null _num_devices _devices magic_null magic_null err_ret in
+    let ctx = clCreateContext _properties _num_devices _devices magic_null magic_null err_ret in
     cl_check_err !@err_ret;
     ctx
 
@@ -219,6 +219,32 @@ end
 
 (** program definition *)
 module Program = struct
+
+
+  let create_with_source ctx str =
+    let str_num = Array.length str in
+    let _str = allocate_n (ptr char) ~count:str_num in
+    (* optimise: more efficient way? *)
+    Array.iteri (fun i s ->
+      let sl = String.length s in
+      let _s = allocate_n char ~count:(sl + 1) in
+      String.iteri (fun j c -> (_s +@ j) <-@ c) s;
+      (_s +@ sl) <-@ '\000';
+      (_str +@ i) <-@ _s;
+    ) str;
+
+    let err_ret = allocate int32_t 0l in
+    let str_num = Unsigned.UInt32.of_int str_num in
+    let program = clCreateProgramWithSource ctx str_num _str magic_null err_ret in
+    cl_check_err !@err_ret;
+    program
+
+
+  let create_with_binary = ()
+
+
+  let to_string = ""
+
 
 end
 

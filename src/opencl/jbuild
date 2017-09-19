@@ -14,5 +14,8 @@
     -framework opencl
   ))
   (flags (:standard))
-  (libraries ( ctypes ))
+  (libraries (
+    ctypes
+    ctypes.stubs
+  ))
 ))

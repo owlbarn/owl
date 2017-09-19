@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** auto-generated opencl interface file, timestamp:1505755200 *)
+(** auto-generated opencl interface file, timestamp:1505835669 *)
 
 open Ctypes
 
@@ -1071,3 +1071,4 @@ exception EXN_INVALID_COMPILER_OPTIONS
 exception EXN_INVALID_LINKER_OPTIONS
 
 exception EXN_INVALID_DEVICE_PARTITION_COUNT
+
