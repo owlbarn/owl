@@ -91,7 +91,7 @@ module Device = struct
 
 
   let get_devices plf_id =
-    let dev_typ = Unsigned.UInt64.of_int cl_DEVICE_TYPE_ALL in
+    let dev_typ = Unsigned.ULong.of_int cl_DEVICE_TYPE_ALL in
     let _num_devices = allocate uint32_t uint32_0 in
     clGetDeviceIDs plf_id dev_typ uint32_0 cl_device_id_ptr_null _num_devices |> cl_check_err;
 
@@ -334,12 +334,49 @@ end
 (** command queue definition *)
 module CommandQueue = struct
 
-end
+  type info = {
+    context          : cl_context;
+    device           : cl_device_id;
+    reference_count  : int;
+    queue_properties : Unsigned.ULong.t;
+  }
 
 
+  let get_commandqueue_info cmdq param_name =
+    let param_name = Unsigned.UInt32.of_int param_name in
+    let param_value_size_ret = allocate size_t size_0 in
+    clGetCommandQueueInfo cmdq param_name size_0 null param_value_size_ret |> cl_check_err;
 
-(** memory object definition *)
-module MemoryObject = struct
+    let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
+    let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
+    clGetCommandQueueInfo cmdq param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
+    param_value, _param_value_size
+
+
+  let get_info cmdq = {
+    context          = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
+    device           = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_DEVICE in !@(char_ptr_to_cl_device_id_ptr p) );
+    reference_count  = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    queue_properties = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_PROPERTIES in !@(char_ptr_to_ulong_ptr p) );
+  }
+
+
+  let create ?(properties=[||]) context device =
+    let _properties = Array.fold_left ( lor ) 0 properties |> Unsigned.ULong.of_int in
+    let err_ret = allocate int32_t 0l in
+    let cmdq = clCreateCommandQueue context device _properties err_ret in
+    cl_check_err !@err_ret;
+    cmdq
+
+
+  let retain cmdq = clRetainCommandQueue cmdq |> cl_check_err
+
+
+  let release cmdq = clReleaseCommandQueue cmdq |> cl_check_err
+
+
+  let to_string = ""
+
 
 end
 
@@ -347,6 +384,30 @@ end
 
 (** buffer definition *)
 module Buffer = struct
+
+  type info = {
+    typ : int;
+  }
+
+
+  let get_buffer_info buf param_name = ()
+
+
+  let get_info buf = ()
+
+
+  let create () = ()
+
+
+  let create_sub () = ()
+  
+
+end
+
+
+
+(** image definition *)
+module Image = struct
 
 end
 

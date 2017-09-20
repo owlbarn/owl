@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** auto-generated opencl interface file, timestamp:1505835669 *)
+(** auto-generated opencl interface file, timestamp:1505933083 *)
 
 open Ctypes
 
@@ -71,7 +71,7 @@ external owl_opencl_clGetPlatformInfo
   = "owl_opencl_stub_2_clGetPlatformInfo"
 
 external owl_opencl_clGetDeviceIDs
-  : _ CI.fatptr -> Unsigned.uint64 -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  : _ CI.fatptr -> Unsigned.ULong.t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
   = "owl_opencl_stub_3_clGetDeviceIDs"
 
 external owl_opencl_clGetDeviceInfo
@@ -95,7 +95,7 @@ external owl_opencl_clCreateContext
   = "owl_opencl_stub_8_clCreateContext_byte6" "owl_opencl_stub_8_clCreateContext"
 
 external owl_opencl_clCreateContextFromType
-  : _ CI.fatptr -> Unsigned.uint64 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
+  : _ CI.fatptr -> Unsigned.ULong.t -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_9_clCreateContextFromType"
 
 external owl_opencl_clRetainContext
@@ -111,7 +111,7 @@ external owl_opencl_clGetContextInfo
   = "owl_opencl_stub_12_clGetContextInfo"
 
 external owl_opencl_clCreateCommandQueue
-  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint64 -> _ CI.fatptr -> CI.voidp
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.ULong.t -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_13_clCreateCommandQueue"
 
 external owl_opencl_clRetainCommandQueue
@@ -127,11 +127,11 @@ external owl_opencl_clGetCommandQueueInfo
   = "owl_opencl_stub_16_clGetCommandQueueInfo"
 
 external owl_opencl_clCreateBuffer
-  : _ CI.fatptr -> Unsigned.uint64 -> Unsigned.size_t -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
+  : _ CI.fatptr -> Unsigned.ULong.t -> Unsigned.size_t -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_17_clCreateBuffer"
 
 external owl_opencl_clCreateSubBuffer
-  : _ CI.fatptr -> Unsigned.uint64 -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
+  : _ CI.fatptr -> Unsigned.ULong.t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_18_clCreateSubBuffer"
 
 external owl_opencl_clRetainMemObject
@@ -339,11 +339,11 @@ external owl_opencl_clEnqueueCopyBufferToImage
   = "owl_opencl_stub_69_clEnqueueCopyBufferToImage_byte9" "owl_opencl_stub_69_clEnqueueCopyBufferToImage"
 
 external owl_opencl_clEnqueueMapBuffer
-  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.uint64 -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.ULong.t -> Unsigned.size_t -> Unsigned.size_t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_70_clEnqueueMapBuffer_byte10" "owl_opencl_stub_70_clEnqueueMapBuffer"
 
 external owl_opencl_clEnqueueMapImage
-  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.uint64 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
+  : _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> Unsigned.ULong.t -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> CI.voidp
   = "owl_opencl_stub_71_clEnqueueMapImage_byte12" "owl_opencl_stub_71_clEnqueueMapImage"
 
 external owl_opencl_clEnqueueUnmapMemObject
@@ -351,7 +351,7 @@ external owl_opencl_clEnqueueUnmapMemObject
   = "owl_opencl_stub_72_clEnqueueUnmapMemObject_byte6" "owl_opencl_stub_72_clEnqueueUnmapMemObject"
 
 external owl_opencl_clEnqueueMigrateMemObjects
-  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> Unsigned.uint64 -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
+  : _ CI.fatptr -> Unsigned.uint32 -> _ CI.fatptr -> Unsigned.ULong.t -> Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
   = "owl_opencl_stub_73_clEnqueueMigrateMemObjects_byte7" "owl_opencl_stub_73_clEnqueueMigrateMemObjects"
 
 external owl_opencl_clEnqueueNDRangeKernel

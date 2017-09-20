@@ -27,7 +27,7 @@ value owl_opencl_stub_3_clGetDeviceIDs(value x29, value x28, value x27,
                                        value x26, value x25)
 {
    struct _cl_platform_id* x30 = CTYPES_ADDR_OF_FATPTR(x29);
-   uint64_t x31 = Uint64_val(x28);
+   unsigned long x31 = ctypes_ulong_val(x28);
    uint32_t x34 = Uint32_val(x27);
    struct _cl_device_id** x37 = CTYPES_ADDR_OF_FATPTR(x26);
    uint32_t* x38 = CTYPES_ADDR_OF_FATPTR(x25);
@@ -95,7 +95,7 @@ value owl_opencl_stub_9_clCreateContextFromType(value x99, value x98,
                                                 value x95)
 {
    intptr_t* x100 = CTYPES_ADDR_OF_FATPTR(x99);
-   uint64_t x101 = Uint64_val(x98);
+   unsigned long x101 = ctypes_ulong_val(x98);
    void* x104 = CTYPES_ADDR_OF_FATPTR(x97);
    void* x105 = CTYPES_ADDR_OF_FATPTR(x96);
    int32_t* x106 = CTYPES_ADDR_OF_FATPTR(x95);
@@ -131,7 +131,7 @@ value owl_opencl_stub_13_clCreateCommandQueue(value x132, value x131,
 {
    struct _cl_context* x133 = CTYPES_ADDR_OF_FATPTR(x132);
    struct _cl_device_id* x134 = CTYPES_ADDR_OF_FATPTR(x131);
-   uint64_t x135 = Uint64_val(x130);
+   unsigned long x135 = ctypes_ulong_val(x130);
    int32_t* x138 = CTYPES_ADDR_OF_FATPTR(x129);
    struct _cl_command_queue* x139 =
    clCreateCommandQueue(x133, x134, x135, x138);
@@ -165,7 +165,7 @@ value owl_opencl_stub_17_clCreateBuffer(value x165, value x164, value x163,
                                         value x162, value x161)
 {
    struct _cl_context* x166 = CTYPES_ADDR_OF_FATPTR(x165);
-   uint64_t x167 = Uint64_val(x164);
+   unsigned long x167 = ctypes_ulong_val(x164);
    size_t x170 = ctypes_size_t_val(x163);
    void* x173 = CTYPES_ADDR_OF_FATPTR(x162);
    int32_t* x174 = CTYPES_ADDR_OF_FATPTR(x161);
@@ -177,7 +177,7 @@ value owl_opencl_stub_18_clCreateSubBuffer(value x180, value x179,
                                            value x176)
 {
    struct _cl_mem* x181 = CTYPES_ADDR_OF_FATPTR(x180);
-   uint64_t x182 = Uint64_val(x179);
+   unsigned long x182 = ctypes_ulong_val(x179);
    uint32_t x185 = Uint32_val(x178);
    void* x188 = CTYPES_ADDR_OF_FATPTR(x177);
    int32_t* x189 = CTYPES_ADDR_OF_FATPTR(x176);
@@ -1160,7 +1160,7 @@ value owl_opencl_stub_70_clEnqueueMapBuffer(value x1144, value x1143,
    struct _cl_command_queue* x1145 = CTYPES_ADDR_OF_FATPTR(x1144);
    struct _cl_mem* x1146 = CTYPES_ADDR_OF_FATPTR(x1143);
    uint32_t x1147 = Uint32_val(x1142);
-   uint64_t x1150 = Uint64_val(x1141);
+   unsigned long x1150 = ctypes_ulong_val(x1141);
    size_t x1153 = ctypes_size_t_val(x1140);
    size_t x1156 = ctypes_size_t_val(x1139);
    uint32_t x1159 = Uint32_val(x1138);
@@ -1199,7 +1199,7 @@ value owl_opencl_stub_71_clEnqueueMapImage(value x1187, value x1186,
    struct _cl_command_queue* x1188 = CTYPES_ADDR_OF_FATPTR(x1187);
    struct _cl_mem* x1189 = CTYPES_ADDR_OF_FATPTR(x1186);
    uint32_t x1190 = Uint32_val(x1185);
-   uint64_t x1193 = Uint64_val(x1184);
+   unsigned long x1193 = ctypes_ulong_val(x1184);
    size_t* x1196 = CTYPES_ADDR_OF_FATPTR(x1183);
    size_t* x1197 = CTYPES_ADDR_OF_FATPTR(x1182);
    size_t* x1198 = CTYPES_ADDR_OF_FATPTR(x1181);
@@ -1266,7 +1266,7 @@ value owl_opencl_stub_73_clEnqueueMigrateMemObjects(value x1246, value x1245,
    struct _cl_command_queue* x1247 = CTYPES_ADDR_OF_FATPTR(x1246);
    uint32_t x1248 = Uint32_val(x1245);
    struct _cl_mem** x1251 = CTYPES_ADDR_OF_FATPTR(x1244);
-   uint64_t x1252 = Uint64_val(x1243);
+   unsigned long x1252 = ctypes_ulong_val(x1243);
    uint32_t x1255 = Uint32_val(x1242);
    struct _cl_event** x1258 = CTYPES_ADDR_OF_FATPTR(x1241);
    struct _cl_event** x1259 = CTYPES_ADDR_OF_FATPTR(x1240);
