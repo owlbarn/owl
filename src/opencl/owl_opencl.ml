@@ -215,13 +215,31 @@ module Kernel = struct
 
   type info = {
     function_name : string;
+    num_args : int;
+    reference_count : int;
+    context : cl_context;
+    program : cl_program;
   }
 
 
-  let get_kernel_info kernel param_name = ()
+  let get_kernel_info kernel param_name =
+    let param_name = Unsigned.UInt32.of_int param_name in
+    let param_value_size_ret = allocate size_t size_0 in
+    clGetKernelInfo kernel param_name size_0 null param_value_size_ret |> cl_check_err;
+
+    let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
+    let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
+    clGetKernelInfo kernel param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
+    param_value, _param_value_size
 
 
-  let get_info kernel = ()
+  let get_info kernel = {
+    function_name   = ( let p, l = get_kernel_info kernel cl_KERNEL_FUNCTION_NAME in string_from_ptr p (l - 1) );
+    num_args        = ( let p, l = get_kernel_info kernel cl_KERNEL_NUM_ARGS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    reference_count = ( let p, l = get_kernel_info kernel cl_KERNEL_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    context         = ( let p, l = get_kernel_info kernel cl_KERNEL_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
+    program         = ( let p, l = get_kernel_info kernel cl_KERNEL_PROGRAM in !@(char_ptr_to_cl_program_ptr p) );
+  }
 
 
   let create program kernel_name =
@@ -233,6 +251,12 @@ module Kernel = struct
 
 
   let create_in_program program kernels = ()
+
+
+  let retain kernel = clRetainKernel kernel |> cl_check_err
+
+
+  let release kernel = clReleaseKernel kernel |> cl_check_err
 
 
   let to_string x = ""
@@ -396,11 +420,18 @@ module Buffer = struct
   let get_info buf = ()
 
 
-  let create () = ()
+  let create ?(flags=[||]) ctx x =
+    let _flags = Array.fold_left ( lor ) 0 flags |> Unsigned.ULong.of_int in
+    let size = Bigarray.Genarray.size_in_bytes x |> Unsigned.Size_t.of_int in
+    let _x = bigarray_to_void_ptr x in
+    let err_ret = allocate int32_t 0l in
+    let buf = clCreateBuffer ctx _flags size _x err_ret in
+    cl_check_err !@err_ret;
+    buf
 
 
   let create_sub () = ()
-  
+
 
 end
 

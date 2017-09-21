@@ -41,10 +41,26 @@ let char_ptr_to_cl_platform_id_ptr x = coerce (ptr char) (ptr cl_platform_id) x
 
 let char_ptr_to_cl_context_ptr x = coerce (ptr char) (ptr cl_context) x
 
+let char_ptr_to_cl_program_ptr x = coerce (ptr char) (ptr cl_program) x
+
 let cl_platform_id_to_intptr x =
   let _x = allocate cl_platform_id x in
   let _y = coerce (ptr cl_platform_id) (ptr intptr_t) _x in
   !@_y
+
+let float32_ptr_to_void_ptr x = coerce (ptr float) (ptr void) x
+
+let float64_ptr_to_void_ptr x = coerce (ptr double) (ptr void) x
+
+let bigarray_to_void_ptr
+  : type a b . (a, b, Bigarray.c_layout) Bigarray.Genarray.t -> unit ptr
+  = fun x ->
+  let open Bigarray in
+  let _x = bigarray_start Ctypes_static.Genarray x in
+  match Genarray.kind x with
+  | Float32 -> coerce (ptr float) (ptr void) _x
+  | Float64 -> coerce (ptr double) (ptr void) _x
+  | _       -> failwith "owl_opencl_utils:unsupported type"
 
 
 (** convert between ocaml type and c type *)
