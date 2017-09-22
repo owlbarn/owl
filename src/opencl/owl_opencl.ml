@@ -253,6 +253,10 @@ module Kernel = struct
   let create_in_program program kernels = ()
 
 
+  let set_arg kernel arg_idx arg_size arg_val =
+    clSetKernelArg kernel arg_idx arg_size arg_val
+
+
   let retain kernel = clRetainKernel kernel |> cl_check_err
 
 
@@ -431,6 +435,14 @@ module Buffer = struct
 
 
   let create_sub () = ()
+
+
+  let enqueue_read cmdq src ofs len dst =
+    let blocking = true in
+    ()
+
+
+  let enqueue_write () = ()
 
 
 end

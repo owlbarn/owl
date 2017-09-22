@@ -4,7 +4,7 @@
  *)
 
 
-let rec _extract_zoo_gist f =
+let rec _extract_zoo_gist f added =
   let s = Owl.Utils.read_file_string f in
   let regex = Str.regexp "^#zoo \"\\([0-9A-Za-z]+\\)\"" in
   try
@@ -13,7 +13,7 @@ let rec _extract_zoo_gist f =
       pos := Str.search_forward regex s !pos;
       let gist = Str.matched_group 1 s in
       pos := !pos + (String.length gist);
-      process_dir_zoo gist
+      process_dir_zoo ~added gist
     done
   with Not_found -> ()
 
@@ -28,23 +28,30 @@ and _deploy_gist dir gist =
   )
 
 
-and _dir_zoo_ocaml dir gist =
+and _dir_zoo_ocaml dir gist added =
   let dir_gist = dir ^ gist in
   Sys.readdir (dir_gist)
   |> Array.to_list
   |> List.filter (fun s -> Filename.check_suffix s "ml")
   |> List.iter (fun l ->
       let f = Printf.sprintf "%s/%s" dir_gist l in
-      _extract_zoo_gist f;
+      _extract_zoo_gist f added;
       Toploop.mod_use_file Format.std_formatter f
       |> ignore
     )
 
 
-and process_dir_zoo gist =
+and process_dir_zoo ?added gist =
   let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
-  _deploy_gist dir gist;
-  _dir_zoo_ocaml dir gist
+  let added = match added with
+    | Some h -> h
+    | None   -> Hashtbl.create 128
+  in
+  if Hashtbl.mem added gist = false then (
+    Hashtbl.add added gist gist;
+    _deploy_gist dir gist;
+    _dir_zoo_ocaml dir gist added
+  )
 
 
 and add_dir_zoo () =
