@@ -254,7 +254,28 @@ module Kernel = struct
 
 
   let set_arg kernel arg_idx arg_size arg_val =
-    clSetKernelArg kernel arg_idx arg_size arg_val
+    let _arg_idx = Unsigned.UInt32.of_int arg_idx in
+    let _arg_size = Unsigned.Size_t.of_int arg_size in
+    let _arg_val = Ctypes.to_voidp arg_val in
+    clSetKernelArg kernel _arg_idx _arg_size _arg_val |> cl_check_err
+
+
+  let enqueue_task ?wait_for cmdq kernel =
+    (* TODO: support event list *)
+    let event = allocate cl_event cl_event_null in
+    clEnqueueTask cmdq kernel uint32_0 magic_null event |> cl_check_err;
+    !@event
+
+
+  let enqueue_ndrange ?wait_for cmdq kernel work_dim global_work_ofs global_work_size local_work_size =
+    (* TODO: support event list *)
+    let event = allocate cl_event cl_event_null in
+    let _work_dim = Unsigned.UInt32.of_int work_dim in
+    let _global_work_ofs = global_work_ofs |> Array.map Unsigned.Size_t.of_int |> Array.to_list |> CArray.of_list size_t |> CArray.start in
+    let _global_work_size = global_work_size |> Array.map Unsigned.Size_t.of_int |> Array.to_list |> CArray.of_list size_t |> CArray.start in
+    let _local_work_size = local_work_size |> Array.map Unsigned.Size_t.of_int |> Array.to_list |> CArray.of_list size_t |> CArray.start in
+    clEnqueueNDRangeKernel cmdq kernel _work_dim _global_work_ofs _global_work_size _local_work_size uint32_0 magic_null event |> cl_check_err;
+    !@event
 
 
   let retain kernel = clRetainKernel kernel |> cl_check_err
@@ -414,14 +435,29 @@ end
 module Buffer = struct
 
   type info = {
-    typ : int;
+    typ             : int;
+    size            : int;
+    reference_count : int;
+    (* host_ptr        : CI.voidp; *)
   }
 
 
-  let get_buffer_info buf param_name = ()
+  let get_buffer_info buf param_name =
+    let param_name = Unsigned.UInt32.of_int param_name in
+    let param_value_size_ret = allocate size_t size_0 in
+    clGetMemObjectInfo buf param_name size_0 null param_value_size_ret |> cl_check_err;
+
+    let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
+    let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
+    clGetMemObjectInfo buf param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
+    param_value, _param_value_size
 
 
-  let get_info buf = ()
+  let get_info buf = {
+    typ              = ( let p, l = get_buffer_info buf cl_MEM_TYPE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    size             = ( let p, l = get_buffer_info buf cl_MEM_SIZE in !@(char_ptr_to_size_t_ptr p) |> Unsigned.Size_t.to_int );
+    reference_count  = ( let p, l = get_buffer_info buf cl_MEM_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+  }
 
 
   let create ?(flags=[||]) ctx x =
@@ -437,12 +473,32 @@ module Buffer = struct
   let create_sub () = ()
 
 
-  let enqueue_read cmdq src ofs len dst =
-    let blocking = true in
-    ()
+  let enqueue_read ?(blocking=true) cmdq src ofs len dst =
+    let blocking = match blocking with
+      | true  -> uint32_1
+      | false -> uint32_0
+    in
+    let ofs = Unsigned.Size_t.of_int ofs in
+    let len = Unsigned.Size_t.of_int len in
+    (* TODO: support event list *)
+    clEnqueueReadBuffer cmdq src blocking ofs len dst uint32_0 magic_null magic_null |> cl_check_err
 
 
-  let enqueue_write () = ()
+  let enqueue_write  ?(blocking=true) cmdq src ofs len dst =
+    let blocking = match blocking with
+      | true  -> uint32_1
+      | false -> uint32_0
+    in
+    let ofs = Unsigned.Size_t.of_int ofs in
+    let len = Unsigned.Size_t.of_int len in
+    (* TODO: support event list *)
+    clEnqueueWriteBuffer cmdq src blocking ofs len dst uint32_0 magic_null magic_null |> cl_check_err
+
+
+  let retain memobj = clRetainMemObject memobj |> cl_check_err
+
+
+  let release memobj = clReleaseMemObject memobj |> cl_check_err
 
 
 end
