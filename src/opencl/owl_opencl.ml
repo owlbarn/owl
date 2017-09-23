@@ -198,6 +198,7 @@ module Context = struct
 
 
   let create ?(properties=[||]) devices =
+    (* FIXME *)
     let _properties = allocate_n intptr_t ~count:3 in
     let l = Platform.get_platforms () in
     (_properties +@ 0) <-@ Intptr.of_int cl_CONTEXT_PLATFORM;
@@ -214,7 +215,14 @@ module Context = struct
     ctx
 
 
-  let create_from_type () = ()
+  let create_from_type ?(properties=[]) device_typ =
+    (* FIXME *)
+    let _properties = magic_null in
+    let _device_typ = Unsigned.ULong.of_int device_typ in
+    let err_ret = allocate int32_t 0l in
+    let ctx = clCreateContextFromType _properties _device_typ magic_null magic_null err_ret in
+    cl_check_err !@err_ret;
+    ctx
 
 
   let to_string x =
