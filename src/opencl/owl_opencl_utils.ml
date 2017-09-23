@@ -50,8 +50,7 @@ let cl_platform_id_to_intptr x =
 
 let cl_mem_to_void_ptr x =
   let _x = allocate cl_mem x in
-  let _y = coerce (ptr cl_mem) (ptr void) _x in
-  !@_y
+  to_voidp _x
 
 let bigarray_to_void_ptr
   : type a b . (a, b, Bigarray.c_layout) Bigarray.Genarray.t -> unit ptr

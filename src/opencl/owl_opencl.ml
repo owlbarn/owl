@@ -267,13 +267,21 @@ module Kernel = struct
     !@event
 
 
-  let enqueue_ndrange ?wait_for cmdq kernel work_dim global_work_ofs global_work_size local_work_size =
+  let enqueue_ndrange ?wait_for ?(global_work_ofs=[]) ?(local_work_size=[]) cmdq kernel work_dim global_work_size =
     (* TODO: support event list *)
     let event = allocate cl_event cl_event_null in
     let _work_dim = Unsigned.UInt32.of_int work_dim in
-    let _global_work_ofs = global_work_ofs |> Array.map Unsigned.Size_t.of_int |> Array.to_list |> CArray.of_list size_t |> CArray.start in
-    let _global_work_size = global_work_size |> Array.map Unsigned.Size_t.of_int |> Array.to_list |> CArray.of_list size_t |> CArray.start in
-    let _local_work_size = local_work_size |> Array.map Unsigned.Size_t.of_int |> Array.to_list |> CArray.of_list size_t |> CArray.start in
+    let _local_work_size =
+      match local_work_size with
+      | [] -> magic_null
+      | _  -> local_work_size |> List.map Unsigned.Size_t.of_int |> CArray.of_list size_t |> CArray.start
+    in
+    let _global_work_ofs =
+      match global_work_ofs with
+      | [] -> magic_null
+      | _  -> global_work_ofs |> List.map Unsigned.Size_t.of_int |> CArray.of_list size_t |> CArray.start
+    in
+    let _global_work_size = global_work_size |> List.map Unsigned.Size_t.of_int |> CArray.of_list size_t |> CArray.start in
     clEnqueueNDRangeKernel cmdq kernel _work_dim _global_work_ofs _global_work_size _local_work_size uint32_0 magic_null event |> cl_check_err;
     !@event
 
@@ -366,6 +374,9 @@ module Program = struct
   let link = ()
 
 
+  let release program = clReleaseProgram program |> cl_check_err
+
+
   let to_string = ""
 
 
@@ -422,6 +433,12 @@ module CommandQueue = struct
 
 
   let release cmdq = clReleaseCommandQueue cmdq |> cl_check_err
+
+
+  let flush cmdq = clFlush cmdq |> cl_check_err
+
+
+  let finish cmdq = clFinish cmdq |> cl_check_err
 
 
   let to_string = ""
