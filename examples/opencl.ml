@@ -13,6 +13,7 @@ let prog_s = "
   }
 ";;
 
+
 Log.info "pick platform, device, build program ...";;
 let l = Owl_opencl.Platform.get_platforms ();;
 let m = Owl_opencl.Device.get_devices l.(0);;
@@ -23,11 +24,18 @@ let program = Owl_opencl.Program.create_with_source ctx [|prog_s|];;
 Owl_opencl.Program.build program [|gpu|];;
 let kernel = Owl_opencl.Kernel.create program "hello_kernel";;
 
+print_endline (Owl_opencl.Platform.to_string l.(0));;
+print_endline (Owl_opencl.Device.to_string gpu);;
+print_endline (Owl_opencl.Context.to_string ctx);;
+print_endline (Owl_opencl.Program.to_string program);;
+print_endline (Owl_opencl.Kernel.to_string kernel);;
+
 
 Log.info "prepare and set variables ...";;
-let a = Dense.Ndarray.S.uniform [|1024|];;
-let b = Dense.Ndarray.S.uniform [|1024|];;
-let c = Dense.Ndarray.S.zeros [|1024|];;
+let _size = 10_000_000;;
+let a = Dense.Ndarray.S.uniform [|_size|];;
+let b = Dense.Ndarray.S.uniform [|_size|];;
+let c = Dense.Ndarray.S.zeros [|_size|];;
 let a' = Owl_opencl.Buffer.create ~flags:[|Owl_opencl_generated.cl_MEM_USE_HOST_PTR|] ctx a;;
 let b' = Owl_opencl.Buffer.create ~flags:[|Owl_opencl_generated.cl_MEM_USE_HOST_PTR|] ctx b;;
 let c' = Owl_opencl.Buffer.create ~flags:[|Owl_opencl_generated.cl_MEM_USE_HOST_PTR|] ctx c;;
@@ -41,7 +49,7 @@ Owl_opencl.Kernel.set_arg kernel 2 len _c;;
 
 
 Log.info "execute kernel ...";;
-Owl_opencl.Kernel.enqueue_ndrange cmdq kernel 1 [1024];;
+Owl_opencl.Kernel.enqueue_ndrange cmdq kernel 1 [_size];;
 
 
 Log.info "fetch result ...";;

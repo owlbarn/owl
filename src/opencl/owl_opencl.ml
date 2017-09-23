@@ -54,8 +54,13 @@ module Platform = struct
   }
 
 
-  let to_string x = ""
-
+  let to_string x =
+    let info = get_info x in
+    Printf.sprintf "Platform %s\n" info.profile ^
+    Printf.sprintf "  name       : %s\n" info.name ^
+    Printf.sprintf "  vendor     : %s\n" info.vendor ^
+    Printf.sprintf "  version    : %s\n" info.version ^
+    Printf.sprintf "  extensions : %s\n" info.extensions
 
 end
 
@@ -138,7 +143,16 @@ module Device = struct
   }
 
 
-  let to_string x = ""
+  let to_string x =
+    let info = get_info x in
+    Printf.sprintf "Device %s\n" info.profile ^
+    Printf.sprintf "  name             : %s\n" info.name ^
+    Printf.sprintf "  vendor           : %s\n" info.vendor ^
+    Printf.sprintf "  version          : %s\n" info.version ^
+    Printf.sprintf "  driver_version   : %s\n" info.driver_version ^
+    Printf.sprintf "  opencl_c_version : %s\n" info.opencl_c_version ^
+    Printf.sprintf "  build_in_kernels : %s\n" info.build_in_kernels ^
+    Printf.sprintf "  reference_count  : %i\n" info.reference_count
 
 
 end
@@ -203,7 +217,11 @@ module Context = struct
   let create_from_type () = ()
 
 
-  let to_string x = ""
+  let to_string x =
+    let info = get_info x in
+    Printf.sprintf "Context Info\n" ^
+    Printf.sprintf "  reference_count : %i\n" info.reference_count ^
+    Printf.sprintf "  num_devices     : %i\n" info.num_devices
 
 
 end
@@ -292,7 +310,12 @@ module Kernel = struct
   let release kernel = clReleaseKernel kernel |> cl_check_err
 
 
-  let to_string x = ""
+  let to_string x =
+    let info = get_info x in
+    Printf.sprintf "Kernel Info\n" ^
+    Printf.sprintf "  function_name   : %s\n" info.function_name ^
+    Printf.sprintf "  num_args        : %i\n" info.num_args ^
+    Printf.sprintf "  reference_count : %i\n" info.reference_count
 
 
 end
@@ -377,7 +400,14 @@ module Program = struct
   let release program = clReleaseProgram program |> cl_check_err
 
 
-  let to_string = ""
+  let to_string x =
+    let info = get_info x in
+    Printf.sprintf "Program Info\n" ^
+    Printf.sprintf "  num_devices     : %i\n" info.num_devices ^
+    Printf.sprintf "  num_kernels     : %i\n" info.num_kernels ^
+    Printf.sprintf "  reference_count : %i\n" info.reference_count ^
+    Printf.sprintf "  kernel_names    : %s\n" (Array.fold_left (fun a b -> a ^ b ^ " ") "" info.kernel_names)
+
 
 
 end
@@ -441,7 +471,10 @@ module CommandQueue = struct
   let finish cmdq = clFinish cmdq |> cl_check_err
 
 
-  let to_string = ""
+  let to_string x =
+    let info = get_info x in
+    Printf.sprintf "CommandQueue Info\n" ^
+    Printf.sprintf "  reference_count : %i\n" info.reference_count
 
 
 end
@@ -516,6 +549,14 @@ module Buffer = struct
 
 
   let release memobj = clReleaseMemObject memobj |> cl_check_err
+
+
+  let to_string x =
+    let info = get_info x in
+    Printf.sprintf "Buffer Info\n" ^
+    Printf.sprintf "  typ             : %i\n" info.typ ^
+    Printf.sprintf "  size            : %i\n" info.size ^
+    Printf.sprintf "  reference_count : %i\n" info.reference_count
 
 
 end
