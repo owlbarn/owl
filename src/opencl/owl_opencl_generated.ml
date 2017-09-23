@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** auto-generated opencl interface file, timestamp:1506184754 *)
+(** auto-generated opencl interface file, timestamp:1506204035 *)
 
 open Ctypes
 
