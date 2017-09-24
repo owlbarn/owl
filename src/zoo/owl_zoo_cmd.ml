@@ -136,4 +136,5 @@ let start_toplevel () =
   eval "Topfind.don't_load_deeply [\"compiler-libs.toplevel\"];;";
   eval "#require \"owl\";;";
   eval "#require \"owl_zoo\";;";
+  eval "#require \"owl_top\";;";
   Toploop.loop Format.std_formatter

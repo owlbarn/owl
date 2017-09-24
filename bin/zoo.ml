@@ -7,7 +7,11 @@ open Owl_zoo_cmd
 
 
 let _ =
-  Log.color_on (); Log.(set_log_level DEBUG);
+  (* initialise logger *)
+  Log.color_on ();
+  Log.(set_log_level DEBUG);
+  (* add zoo directive *)
+  Owl_zoo_dir.add_dir_zoo ();
 
   if Array.length Sys.argv < 2 then
     start_toplevel ()

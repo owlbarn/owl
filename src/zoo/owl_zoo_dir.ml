@@ -63,7 +63,3 @@ and add_dir_zoo () =
   let info = Toploop.({ section; doc }) in
   let dir_fun = Toploop.Directive_string process_dir_zoo in
   Toploop.add_directive "zoo" dir_fun info
-
-
-(* register zoo directive *)
-let _ = add_dir_zoo ()

@@ -17,3 +17,9 @@ let install_printers printers =
   List.iter (fun printer ->
     Printf.sprintf "#install_printer %s;;" printer |> Owl_zoo_cmd.eval
   ) printers
+
+
+let () =
+  (* register zoo directive *)
+  Owl_zoo_dir.add_dir_zoo ();
+  install_printers printers
