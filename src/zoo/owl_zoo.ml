@@ -17,6 +17,3 @@ let install_printers printers =
   List.iter (fun printer ->
     Printf.sprintf "#install_printer %s;;" printer |> Owl_zoo_cmd.eval
   ) printers
-
-
-let () = install_printers printers

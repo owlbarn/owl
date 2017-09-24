@@ -9,7 +9,7 @@ open Owl
 let eval cmd = cmd
   |> Lexing.from_string
   |> !Toploop.parse_toplevel_phrase
-  |> Toploop.execute_phrase true Format.std_formatter
+  |> Toploop.execute_phrase true Format.err_formatter
   |> ignore
 
 
@@ -17,8 +17,8 @@ let preprocess script =
   let prefix = "." ^ (Filename.basename script) in
   let tmp_script = Filename.temp_file prefix ".ml" in
   let content =
-    "#!/usr/bin/env zoo\n" ^
-    "#use \"topfind\"" ^
+    "#!/usr/bin/env owl\n" ^
+    "#use \"topfind\"\n" ^
     "#require \"owl\"\n" ^
     "#require \"owl_zoo\"\n" ^
     Printf.sprintf "#use \"%s\"\n" script
@@ -133,6 +133,7 @@ let start_toplevel () =
   print_info ();
   Toploop.initialize_toplevel_env ();
   eval "#use \"topfind\";;";
+  eval "Topfind.don't_load_deeply [\"compiler-libs.toplevel\"];;";
   eval "#require \"owl\";;";
   eval "#require \"owl_zoo\";;";
   Toploop.loop Format.std_formatter
