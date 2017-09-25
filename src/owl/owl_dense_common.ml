@@ -69,6 +69,22 @@ let _neg_inf : type a b. (a, b) kind -> a = function
   | Complex64 -> Complex.({re = neg_infinity; im = neg_infinity})
   | _         -> failwith "_neg_inf: unsupported operation"
 
+let _owl_elt_to_str : type a b. (a, b) kind -> (a -> bytes) = function
+  | Char           -> fun v -> Printf.sprintf "%c" v
+  | Nativeint      -> fun v -> Printf.sprintf "%nd" v
+  | Int8_signed    -> fun v -> Printf.sprintf "%i" v
+  | Int8_unsigned  -> fun v -> Printf.sprintf "%i" v
+  | Int16_signed   -> fun v -> Printf.sprintf "%i" v
+  | Int16_unsigned -> fun v -> Printf.sprintf "%i" v
+  | Int            -> fun v -> Printf.sprintf "%i" v
+  | Int32          -> fun v -> Printf.sprintf "%ld" v
+  | Int64          -> fun v -> Printf.sprintf "%Ld" v
+  | Float32        -> fun v -> Printf.sprintf "%G" v
+  | Float64        -> fun v -> Printf.sprintf "%G" v
+  | Complex32      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
+  | Complex64      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
+
+
 (* some transformation and helper functions *)
 
 let _size_in_bytes = Eigen.Utils.size_in_bytes
@@ -206,6 +222,20 @@ let _float_typ_elt : type a b. (a, b) kind -> (float -> a) = function
   | Complex64 -> fun a -> Complex.({re = a; im = 0.})
   | _         -> failwith "_float_typ_elt: unsupported operation"
 
+let _owl_uniform_fun : type a b. (a, b) kind -> (float -> a) = function
+  | Float32   -> fun s -> Owl_stats.Rnd.uniform () *. s
+  | Float64   -> fun s -> Owl_stats.Rnd.uniform () *. s
+  | Complex32 -> fun s -> Complex.({re = Owl_stats.Rnd.uniform () *. s; im = Owl_stats.Rnd.uniform () *. s})
+  | Complex64 -> fun s -> Complex.({re = Owl_stats.Rnd.uniform () *. s; im = Owl_stats.Rnd.uniform () *. s})
+  | _         -> failwith "_owl_uniform: unsupported operation"
+
+let _owl_gaussian_fun : type a b. (a, b) kind -> (float -> a) = function
+  | Float32   -> fun s -> Owl_stats.Rnd.gaussian ~sigma:s ()
+  | Float64   -> fun s -> Owl_stats.Rnd.gaussian ~sigma:s ()
+  | Complex32 -> fun s -> Complex.({re = Owl_stats.Rnd.gaussian ~sigma:s (); im = Owl_stats.Rnd.gaussian ~sigma:s ()})
+  | Complex64 -> fun s -> Complex.({re = Owl_stats.Rnd.gaussian ~sigma:s (); im = Owl_stats.Rnd.gaussian ~sigma:s ()})
+  | _         -> failwith "_owl_gaussian: unsupported operation"
+
 
 (* interface to eigen functions, types for interfacing to eigen *)
 
@@ -315,7 +345,6 @@ let _eigen_spatial_avg_pooling_backward : type a b . (a, b) kind -> (a, b) eigen
 
 (* interface to owl's c functions, types for interfacing to owl *)
 
-type ('a, 'b) owl_vec = ('a, 'b, c_layout) Array1.t
 type ('a, 'b) owl_arr = ('a, 'b, c_layout) Genarray.t
 
 type ('a, 'b) owl_arr_op00 = int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int
@@ -332,47 +361,29 @@ type ('a, 'b) owl_arr_op10 = int -> ('a, 'b) owl_arr -> 'a -> int
 type ('a, 'b) owl_arr_op11 = int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit
 type ('a, 'b) owl_arr_op12 = int -> ('a, 'b) owl_arr -> float -> int -> unit
 type ('a, 'b) owl_arr_op13 = int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit
-type ('a, 'b) owl_vec_op14 = int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit
+type ('a, 'b) owl_arr_op14 = int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit
 type ('a, 'b) owl_arr_op15 = int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> float -> int
 type ('a, 'b) owl_arr_op16 = int -> ('a, 'b) owl_arr -> 'a -> float -> int
 type ('a, 'b) owl_arr_op17 = ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit
-type ('a, 'b, 'c, 'd) owl_arr_op18 = int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> unit
-type ('a, 'b) owl_vec_op99 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_vec -> ('a, 'b) owl_vec -> unit
+type ('a, 'b) owl_arr_op18 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit
+type ('a, 'b, 'c, 'd) owl_arr_op19 = int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> unit
 
 
 (* call functions in owl native c *)
 
-let _owl_copy n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y =
-  let x = Array1.sub x ofsx (Array1.dim x - ofsx) in
-  let y = Array1.sub y ofsy (Array1.dim y - ofsy) in
-  Owl_cblas.copy n x incx y incy
+external owl_float32_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float32_copy" "float32_copy_impl"
+external owl_float64_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float64_copy" "float64_copy_impl"
+external owl_complex32_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex32_copy" "complex32_copy_impl"
+external owl_complex64_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex64_copy" "complex64_copy_impl"
 
-let _owl_elt_to_str : type a b. (a, b) kind -> (a -> bytes) = function
-  | Int8_signed    -> fun v -> Printf.sprintf "%i" v
-  | Int8_unsigned  -> fun v -> Printf.sprintf "%i" v
-  | Int16_signed   -> fun v -> Printf.sprintf "%i" v
-  | Int16_unsigned -> fun v -> Printf.sprintf "%i" v
-  | Int32          -> fun v -> Printf.sprintf "%ld" v
-  | Int64          -> fun v -> Printf.sprintf "%Ld" v
-  | Float32        -> fun v -> Printf.sprintf "%G" v
-  | Float64        -> fun v -> Printf.sprintf "%G" v
-  | Complex32      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
-  | Complex64      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
-  | _         -> failwith "_owl_print_elt: unsupported operation"
-
-let _owl_uniform_fun : type a b. (a, b) kind -> (float -> a) = function
-  | Float32   -> fun s -> Owl_stats.Rnd.uniform () *. s
-  | Float64   -> fun s -> Owl_stats.Rnd.uniform () *. s
-  | Complex32 -> fun s -> Complex.({re = Owl_stats.Rnd.uniform () *. s; im = Owl_stats.Rnd.uniform () *. s})
-  | Complex64 -> fun s -> Complex.({re = Owl_stats.Rnd.uniform () *. s; im = Owl_stats.Rnd.uniform () *. s})
-  | _         -> failwith "_owl_uniform: unsupported operation"
-
-let _owl_gaussian_fun : type a b. (a, b) kind -> (float -> a) = function
-  | Float32   -> fun s -> Owl_stats.Rnd.gaussian ~sigma:s ()
-  | Float64   -> fun s -> Owl_stats.Rnd.gaussian ~sigma:s ()
-  | Complex32 -> fun s -> Complex.({re = Owl_stats.Rnd.gaussian ~sigma:s (); im = Owl_stats.Rnd.gaussian ~sigma:s ()})
-  | Complex64 -> fun s -> Complex.({re = Owl_stats.Rnd.gaussian ~sigma:s (); im = Owl_stats.Rnd.gaussian ~sigma:s ()})
-  | _         -> failwith "_owl_gaussian: unsupported operation"
+let _owl_copy : type a b. (a, b) kind -> (a, b) owl_arr_op18 =
+  fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
+  match k with
+  | Float32   -> owl_float32_copy n x ofsx incx y ofsy incy
+  | Float64   -> owl_float64_copy n x ofsx incx y ofsy incy
+  | Complex32 -> owl_complex32_copy n x ofsx incx y ofsy incy
+  | Complex64 -> owl_complex64_copy n x ofsx incx y ofsy incy
+  | _         -> failwith "_owl_copy: unsupported operation"
 
 external owl_float32_less : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int = "float32_less"
 external owl_float64_less : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int = "float64_less"
@@ -776,12 +787,12 @@ let _owl_max_i : type a b. (a, b) kind -> (a, b) owl_arr_op01 = function
   | Complex64 -> owl_complex64_max_i
   | _         -> failwith "_owl_max_i: unsupported operation"
 
-external owl_float32_neg : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "float32_neg" "float32_neg_impl"
-external owl_float64_neg : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "float64_neg" "float64_neg_impl"
-external owl_complex32_neg : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "complex32_neg" "complex32_neg_impl"
-external owl_complex64_neg : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "complex64_neg" "complex64_neg_impl"
+external owl_float32_neg : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float32_neg" "float32_neg_impl"
+external owl_float64_neg : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float64_neg" "float64_neg_impl"
+external owl_complex32_neg : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex32_neg" "complex32_neg_impl"
+external owl_complex64_neg : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex64_neg" "complex64_neg_impl"
 
-let _owl_neg : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
+let _owl_neg : type a b. (a, b) kind -> (a, b) owl_arr_op18 =
   fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
   match k with
   | Float32   -> owl_float32_neg n x ofsx incx y ofsy incy
@@ -1630,14 +1641,14 @@ let _owl_logspace : type a b. (a, b) kind -> (a, b) owl_arr_op08 = function
   | Complex64 -> owl_complex64_logspace
   | _         -> failwith "_owl_logspace: unsupported operation"
 
-external owl_complex32_conj : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "complex32_conj" "complex32_conj_impl"
-external owl_complex64_conj : int -> ('a, 'b) owl_vec -> int -> int -> ('a, 'b) owl_vec -> int -> int -> unit = "complex64_conj" "complex64_conj_impl"
+external owl_complex32_conj : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex32_conj" "complex32_conj_impl"
+external owl_complex64_conj : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex64_conj" "complex64_conj_impl"
 
-let _owl_conj : type a b. (a, b) kind -> (a, b) owl_vec_op99 =
+let _owl_conj : type a b. (a, b) kind -> (a, b) owl_arr_op18 =
   fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
   match k with
-  | Float32   -> _owl_copy n ~ofsx ~incx ~ofsy ~incy x y
-  | Float64   -> _owl_copy n ~ofsx ~incx ~ofsy ~incy x y
+  | Float32   -> owl_float32_copy n x ofsx incx y ofsy incy
+  | Float64   -> owl_float32_copy n x ofsx incx y ofsy incy
   | Complex32 -> owl_complex32_conj n x ofsx incx y ofsy incy
   | Complex64 -> owl_complex64_conj n x ofsx incx y ofsy incy
   | _         -> failwith "_owl_conj: unsupported operation"
@@ -1680,48 +1691,48 @@ let _owl_sequential : type a b. (a, b) kind -> (a, b) owl_arr_op13 = function
   | Complex64 -> owl_complex64_sequential
   | _         -> failwith "_owl_sequential: unsupported operation"
 
-external owl_float32_cumsum : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "float32_cumsum" "float32_cumsum_impl"
-external owl_float64_cumsum : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "float64_cumsum" "float64_cumsum_impl"
-external owl_complex32_cumsum : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex32_cumsum" "complex32_cumsum_impl"
-external owl_complex64_cumsum : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex64_cumsum" "complex64_cumsum_impl"
+external owl_float32_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float32_cumsum" "float32_cumsum_impl"
+external owl_float64_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float64_cumsum" "float64_cumsum_impl"
+external owl_complex32_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex32_cumsum" "complex32_cumsum_impl"
+external owl_complex64_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex64_cumsum" "complex64_cumsum_impl"
 
-let _owl_cumsum : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
+let _owl_cumsum : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
   | Float32   -> owl_float32_cumsum
   | Float64   -> owl_float64_cumsum
   | Complex32 -> owl_complex32_cumsum
   | Complex64 -> owl_complex64_cumsum
   | _         -> failwith "_owl_cumsum: unsupported operation"
 
-external owl_float32_cumprod : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "float32_cumprod" "float32_cumprod_impl"
-external owl_float64_cumprod : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "float64_cumprod" "float64_cumprod_impl"
-external owl_complex32_cumprod : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex32_cumprod" "complex32_cumprod_impl"
-external owl_complex64_cumprod : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex64_cumprod" "complex64_cumprod_impl"
+external owl_float32_cumprod : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float32_cumprod" "float32_cumprod_impl"
+external owl_float64_cumprod : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float64_cumprod" "float64_cumprod_impl"
+external owl_complex32_cumprod : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex32_cumprod" "complex32_cumprod_impl"
+external owl_complex64_cumprod : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex64_cumprod" "complex64_cumprod_impl"
 
-let _owl_cumprod : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
+let _owl_cumprod : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
   | Float32   -> owl_float32_cumprod
   | Float64   -> owl_float64_cumprod
   | Complex32 -> owl_complex32_cumprod
   | Complex64 -> owl_complex64_cumprod
   | _         -> failwith "_owl_cumprod: unsupported operation"
 
-external owl_float32_cummin : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "float32_cummin" "float32_cummin_impl"
-external owl_float64_cummin : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "float64_cummin" "float64_cummin_impl"
-external owl_complex32_cummin : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex32_cummin" "complex32_cummin_impl"
-external owl_complex64_cummin : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex64_cummin" "complex64_cummin_impl"
+external owl_float32_cummin : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float32_cummin" "float32_cummin_impl"
+external owl_float64_cummin : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float64_cummin" "float64_cummin_impl"
+external owl_complex32_cummin : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex32_cummin" "complex32_cummin_impl"
+external owl_complex64_cummin : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex64_cummin" "complex64_cummin_impl"
 
-let _owl_cummin : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
+let _owl_cummin : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
   | Float32   -> owl_float32_cummin
   | Float64   -> owl_float64_cummin
   | Complex32 -> owl_complex32_cummin
   | Complex64 -> owl_complex64_cummin
   | _         -> failwith "_owl_cummin: unsupported operation"
 
-external owl_float32_cummax : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "float32_cummax" "float32_cummax_impl"
-external owl_float64_cummax : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "float64_cummax" "float64_cummax_impl"
-external owl_complex32_cummax : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex32_cummax" "complex32_cummax_impl"
-external owl_complex64_cummax : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex64_cummax" "complex64_cummax_impl"
+external owl_float32_cummax : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float32_cummax" "float32_cummax_impl"
+external owl_float64_cummax : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float64_cummax" "float64_cummax_impl"
+external owl_complex32_cummax : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex32_cummax" "complex32_cummax_impl"
+external owl_complex64_cummax : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex64_cummax" "complex64_cummax_impl"
 
-let _owl_cummax : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
+let _owl_cummax : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
   | Float32   -> owl_float32_cummax
   | Float64   -> owl_float64_cummax
   | Complex32 -> owl_complex32_cummax
@@ -1794,7 +1805,7 @@ external owl_float64_to_complex : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr ->
 external owl_complex32_to_complex : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> unit = "complex32_to_complex"
 external owl_complex64_to_complex : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> unit = "complex64_to_complex"
 
-let _owl_to_complex : type a b c d. (a, b) kind -> (c, d) kind -> (a, b, c, d) owl_arr_op18 =
+let _owl_to_complex : type a b c d. (a, b) kind -> (c, d) kind -> (a, b, c, d) owl_arr_op19 =
   fun real_kind complex_kind l x y z ->
   match real_kind with
   | Float32   -> owl_float32_to_complex l x y z
@@ -1806,7 +1817,7 @@ let _owl_to_complex : type a b c d. (a, b) kind -> (c, d) kind -> (a, b, c, d) o
 external owl_float32_polar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> unit = "float32_polar"
 external owl_float64_polar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> unit = "float64_polar"
 
-let _owl_polar : type a b c d. (a, b) kind -> (c, d) kind -> (a, b, c, d) owl_arr_op18 =
+let _owl_polar : type a b c d. (a, b) kind -> (c, d) kind -> (a, b, c, d) owl_arr_op19 =
   fun real_kind complex_kind l x y z ->
   match real_kind with
   | Float32   -> owl_float32_polar l x y z
@@ -1837,12 +1848,12 @@ let _owl_sort : type a b. (a, b) kind -> int -> (a, b) owl_arr -> unit = functio
   | Complex64 -> owl_complex64_sort
   | _         -> failwith "_owl_sort: unsupported operation"
 
-external owl_float32_repeat : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "float32_repeat" "float32_repeat_impl"
-external owl_float64_repeat : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "float64_repeat" "float64_repeat_impl"
-external owl_complex32_repeat : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex32_repeat" "complex32_repeat_impl"
-external owl_complex64_repeat : int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> ('a, 'b) owl_vec -> int -> int -> int -> unit = "complex64_repeat" "complex64_repeat_impl"
+external owl_float32_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float32_repeat" "float32_repeat_impl"
+external owl_float64_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float64_repeat" "float64_repeat_impl"
+external owl_complex32_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex32_repeat" "complex32_repeat_impl"
+external owl_complex64_repeat : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex64_repeat" "complex64_repeat_impl"
 
-let _owl_repeat : type a b. (a, b) kind -> (a, b) owl_vec_op14 = function
+let _owl_repeat : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
   | Float32   -> owl_float32_repeat
   | Float64   -> owl_float64_repeat
   | Complex32 -> owl_complex32_repeat

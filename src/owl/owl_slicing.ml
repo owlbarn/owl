@@ -167,15 +167,13 @@ let _foreach_continuous_blk a d f =
    x: ndarray
  *)
 let get_slice_array_typ axis x =
+  let _kind = kind x in
   (* check axis is within boundary then re-format *)
   let s0 = shape x in
   let axis = check_slice_definition axis s0 in
   (* calculate the new shape for slice *)
   let s1 = calc_slice_shape axis in
-  let y = empty (kind x) s1 in
-  (* transform into 1d array *)
-  let x' = Bigarray.reshape_1 x (numel x) in
-  let y' = Bigarray.reshape_1 y (numel y) in
+  let y = empty _kind s1 in
   (* prepare function of copying blocks *)
   let d0 = Array.length s1 in
   let d1, cb = calc_continuous_blksz axis s0 in
@@ -191,16 +189,14 @@ let get_slice_array_typ axis x =
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd in
       let ofsy = !ofsy_i * b in
-      _owl_copy b ~ofsx ~ofsy ~incx:1 ~incy:1 x' y';
+      _owl_copy _kind b ~ofsx ~ofsy ~incx:1 ~incy:1 x y;
       ofsy_i := !ofsy_i + 1
     )
     in
     (* start copying blocks *)
     _foreach_continuous_blk axis d1 f;
     (* reshape the ndarray *)
-    let z = Bigarray.genarray_of_array1 y' in
-    let z = Bigarray.reshape z s1 in
-    z
+    Bigarray.reshape y s1
   )
   else (
     (* copy happens at the highest dimension, no continuous block *)
@@ -221,30 +217,26 @@ let get_slice_array_typ axis x =
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd + dd in
       let ofsy = !ofsy_i * b in
-      _owl_copy b ~ofsx ~ofsy ~incx:cx ~incy:cy x' y';
+      _owl_copy _kind b ~ofsx ~ofsy ~incx:cx ~incy:cy x y;
       ofsy_i := !ofsy_i + 1
     )
     in
     (* start copying blocks *)
     _foreach_continuous_blk axis (d1 - 1) f;
     (* reshape the ndarray *)
-    let z = Bigarray.genarray_of_array1 y' in
-    let z = Bigarray.reshape z s1 in
-    z
+    Bigarray.reshape y s1
   )
 
 
 (* set slice in [x] according to [y] *)
 let set_slice_array_typ axis x y =
+  let _kind = kind x in
   (* check axis is within boundary then re-format *)
   let s0 = shape x in
   let axis = check_slice_definition axis s0 in
   (* validate the slice shape is the same as y's *)
   let s1 = calc_slice_shape axis in
   assert (shape y = s1);
-  (* transform into 1d array *)
-  let x' = Bigarray.reshape_1 x (numel x) in
-  let y' = Bigarray.reshape_1 y (numel y) in
   (* prepare function of copying blocks *)
   let d0 = Array.length s1 in
   let d1, cb = calc_continuous_blksz axis s0 in
@@ -260,7 +252,7 @@ let set_slice_array_typ axis x y =
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd in
       let ofsy = !ofsy_i * b in
-      _owl_copy b ~ofsx:ofsy ~ofsy:ofsx ~incx:1 ~incy:1 y' x';
+      _owl_copy _kind b ~ofsx:ofsy ~ofsy:ofsx ~incx:1 ~incy:1 y x;
       ofsy_i := !ofsy_i + 1
     )
     in
@@ -286,7 +278,7 @@ let set_slice_array_typ axis x y =
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd + dd in
       let ofsy = !ofsy_i * b in
-      _owl_copy b ~ofsx:ofsy ~ofsy:ofsx ~incx:cy ~incy:cx y' x';
+      _owl_copy _kind b ~ofsx:ofsy ~ofsy:ofsx ~incx:cy ~incy:cx y x;
       ofsy_i := !ofsy_i + 1
     )
     in

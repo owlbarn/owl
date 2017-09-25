@@ -68,6 +68,40 @@ int complex_cmp (const void * a, const void * b)
 //////////////////// function templates starts ////////////////////
 
 
+// copy
+
+#define FUN19 float32_copy
+#define FUN19_IMPL float32_copy_impl
+#define NUMBER float
+#define NUMBER1 float
+#define INIT
+#define MAPFN(X,Y) *Y = *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN19 float64_copy
+#define FUN19_IMPL float64_copy_impl
+#define NUMBER double
+#define NUMBER1 double
+#define INIT
+#define MAPFN(X,Y) *Y = *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN19 complex32_copy
+#define FUN19_IMPL complex32_copy_impl
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define INIT
+#define MAPFN(X,Y) *Y = *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN19 complex64_copy
+#define FUN19_IMPL complex64_copy_impl
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define INIT
+#define MAPFN(X,Y) *Y = *X
+#include "owl_dense_common_vec_map.c"
+
 // less
 
 #define FUN0 float32_less
