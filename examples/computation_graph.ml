@@ -33,7 +33,7 @@ let visualise_simple_02 () =
 let visualise_vgg () =
   let network = Cifar10.make_network [|32;32;3|] in
   let x, _, y = Dataset.load_cifar_train_data 1 in
-  let xt, yt = Optimise.S.Utils.draw_samples (Arr x) (Mat y) 5 in
+  let xt, yt = Optimise.S.Utils.draw_samples (Arr x) (Arr y) 5 in
   let yt', _ = Neural.S.Graph.(init network; forward network xt) in
   let loss = Maths.((cross_entropy yt yt') / (F (Mat.row_num yt |> float_of_int))) in
   to_dot [loss]
@@ -44,7 +44,7 @@ let visualise_lstm () =
   let w2i, i2w, x, y = Lstm.prepare wndsz stepsz in
   let vocabsz = Hashtbl.length w2i in
   let network = Lstm.make_network wndsz vocabsz in
-  let xt, yt = Optimise.S.Utils.draw_samples (Mat x) (Mat y) 15 in
+  let xt, yt = Optimise.S.Utils.draw_samples (Arr x) (Arr y) 15 in
   let yt', _ = Neural.S.Graph.(init network; forward network xt) in
   let loss = Maths.((cross_entropy yt yt') / (F (Mat.row_num yt |> float_of_int))) in
   to_dot [loss]
