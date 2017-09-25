@@ -43,7 +43,39 @@ Some simple evaluations can be found [[here](https://github.com/ryanrhymes/owl/w
 
 ## Installation
 
-Owl requires OCaml `>=4.04.0`. The installation is rather trivial. You can simply use `opam install owl` to start. Owl's current version on OPAM is `0.2.6`, and it lags behind the master branch and misses many new features. If you want to try the newest version, I recommend installing Owl from the source and I will briefly show you how to do that in the following.
+Owl requires OCaml `>=4.04.0`. The installation is rather trivial. There are four possible ways to try out Owl, as shown below, from the most straightforward one to the least one.
+
+### Option 1: Install from OPAM
+
+You can simply type the following in the command line to start.
+
+```bash
+opam install owl
+```
+
+Owl's current version on OPAM is `0.2.9`, and it lags behind the master branch and misses many new features. If you want to try the newest version, I recommend the other three ways to install.
+
+### Option 2: Pull from Docker Hub
+
+[Owl's docker image](https://hub.docker.com/r/ryanrhymes/owl/) is perfectly synced with master branch and is always automatically built whenever there are new commits. You can check the building history on [Docker Hub](https://hub.docker.com/r/ryanrhymes/owl/builds/).
+
+You only need to pull the image then start a container, then play with it in `utop`. The source code is stored in `/root/owl` directory.
+
+```bash
+docker pull ryanrhymes/owl
+docker run -t -i ryanrhymes/owl
+```
+
+### Option 3: Pin the Dev-Repo
+
+`opam pin` allows us to pin the local code to Owl's development repository on Github. The first command `opam depext` installs all the dependencies Owl needs.
+
+```bash
+opam depext owl
+opam pin add owl --dev-repo
+```
+
+### Option 4: Compile from Source
 
 First, you need to clone the repository.
 
@@ -51,11 +83,19 @@ First, you need to clone the repository.
 git clone git@github.com:ryanrhymes/owl.git
 ```
 
-Then you need to install all the dependencies. The following dependencies may require you to install extra system libraries (e.g., Plplot) but `opam depext` can help you sort that out automatically.
+Second, you need to figure out the missing dependencies and install them.
 
 ```bash
-opam install ctypes dolog eigen gsl oasis plplot atdgen
+jbuilder external-lib-deps --missing @install
 ```
+
+Last, this is perhaps the most classic step.
+
+```bash
+make && make install
+```
+
+### CBLAS/LAPACKE Dependency
 
 The most important dependency is [OpenBLAS](https://github.com/xianyi/OpenBLAS). Linking to the correct OpenBLAS is the key to achieve the best performance. Depending on the specific platform, you can use `yum`, `apt-get`, `brew` to install the binary format. For example on Mac OSX,
 
@@ -65,28 +105,15 @@ brew install homebrew/science/openblas
 
 However, installing from OpenBLAS source code leads to way better performance in my own experiment. In future, the dependency on OpenBLAS should also be resolved by `opam` automatically.
 
+### Integration to Toplevel
 
-Finally, you can compile and install the module with the following command.
-
-```bash
-make oasis
-make && make install
-```
-
-Owl is well integrated with `utop`. Now you can start `utop` and continue this tutorial to do some experiments. If you want `utop` to automatically load Owl for you, you can also edit `.ocamlinit` file in your home folder by adding the following lines. (Note that the library name is `owl` with lowercase `o`.)
+Owl is well integrated with `utop`. You can use `utop` to try out the experiments in our tutorials. If you want `utop` to automatically load Owl for you, you can also edit `.ocamlinit` file in your home folder by adding the following lines. (Note that the library name is `owl` with lowercase `o`.)
 
 ```bash
-#require "owl"
+#require "owl.top"
 ```
 
-If you are too lazy to do any labour work, here is a [docker image](https://hub.docker.com/r/ryanrhymes/owl/) to let you try Owl without dealing with aforementioned installation and configuration steps. The docker image is automatically build from the master branch whenever there are new commits. You can check the building history on [Docker Hub](https://hub.docker.com/r/ryanrhymes/owl/builds/).
-
-Just pull the image, start a container, then play with it in `utop`. The latest source code is saved in `/root/owl` directory.
-
-```bash
-docker pull ryanrhymes/owl
-docker run -t -i ryanrhymes/owl
-```
+The `owl.top` is the toplevel library of Owl, it automatically loads `owl` core library and installs the corresponding pretty printers of various data types.
 
 
 ## Access Modules

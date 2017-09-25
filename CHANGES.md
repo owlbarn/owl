@@ -1,12 +1,18 @@
 ### 0.3.0 (in progress)
+* Migrate to jbuilder building system.
+* Unify Dense Ndarray and Matrix types.
+* Split Toplevel out as a separate library.
+* Redesign Zoo system for recursive importing.
 
 
 ### 0.2.8 (2017-09-02)
+
 * New Linalg module is implemented.
 * New neural network module supports both single and double precision.
 * New Optimise and Regression module is built atop of Algodiff.
 * Experimental Zoo system is introduced as a separate library.
 * Enhance core functions and fix some bugs.
+
 
 ### 0.2.7 (2017-07-11)
 
@@ -20,6 +26,7 @@
 * Support n-dimensional array of any types in Dense.Ndarray.Any module.
 * Support simple feedforward and convolutional neural networks.
 * Support experimental distributed and parallel computing.
+
 
 ### 0.2.0 (2017-01-20)
 
