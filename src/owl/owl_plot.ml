@@ -1048,6 +1048,39 @@ let area ?(h=_default_handle) ?(spec=[]) x y=
   if not h.holdon then output h
 
 
+let draw_polygon ?(h=_default_handle) ?(spec=[]) x y =
+  let open Plplot in
+  let x = Owl_dense_matrix.D.to_array x in
+  let y = Owl_dense_matrix.D.to_array y in
+  _adjust_range h x X;
+  _adjust_range h y Y;
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let color = _get_rgb spec p.fgcolor in
+  let r, g, b = color in
+  let line_style = _get_line_style spec 1 in
+  let fill_pattern = _get_fill_pattern spec 0 in
+  (* drawing function *)
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    plscol0 1 r g b;
+    plcol0 1;
+    pllsty line_style;
+    plline x y;
+    plpsty fill_pattern;
+    plfill x y;
+    (* restore original settings *)
+    plscol0 1 r' g' b';
+    plcol0 1;
+    pllsty 1
+  )
+  in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  (* add legend item to page *)
+  _add_legend_item p BOX line_style color "" color fill_pattern color;
+  if not h.holdon then output h
+
 let _ecdf_interleave x i =
   let m = Array.length x in
   let n = 2 * m in
