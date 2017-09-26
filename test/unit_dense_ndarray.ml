@@ -151,6 +151,13 @@ module To_test = struct
     let z = M.of_array Float64 [|1.;2.;3.;1.;2.;3.;4.;5.;6.;4.;5.;6.|] [|2;2;3|] in
     M.(equal z (add x y))
 
+  let reverse () =
+    let x = M.sequential Float64 [|3|] in
+    let y = M.reverse x in
+    M.get y [|0|] = 2. &&
+    M.get y [|1|] = 1. &&
+    M.get y [|2|] = 0.
+
 end
 
 (* the tests *)
@@ -281,6 +288,9 @@ let save_load () =
 let broadcast_add () =
   Alcotest.(check bool) "broadcast_add" true (To_test.broadcast_add ())
 
+let reverse () =
+  Alcotest.(check bool) "reverse" true (To_test.reverse ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -324,4 +334,5 @@ let test_set = [
   "l2norm", `Slow, l2norm;
   "save_load", `Slow, save_load;
   "broadcast_add", `Slow, broadcast_add;
+  "reverse", `Slow, reverse;
 ]
