@@ -181,7 +181,6 @@ let repeat ?axis x reps =
       for j = 0 to reps - 1 do
         let ofsy = (i * reps + j) * _slice_sz in
         _owl_copy _kind _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:1 x y
-        |> ignore
       done;
     done;
   );
@@ -1151,16 +1150,16 @@ let rotate x degree =
 
     let m = sx.(0) in
     let n = (numel x) / m in
-    let ofsx = ref 0 in
-    let ofsy = ref 0 in
 
     if m <= n then (
+      let ofsx = ref 0 in
       for i = 1 to m do
         _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:(m - i) ~incy:m x y;
         ofsx := !ofsx + n
       done
     )
     else (
+      let ofsy = ref (m - 1) in
       for i = 0 to n - 1 do
         _owl_copy _kind m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:(-1) x y;
         ofsy := !ofsy + m
@@ -1176,7 +1175,7 @@ let rotate x degree =
 
     if m <= n then (
       let ofsx = ref 0 in
-      let ofsy = ref ((m - 1) * n) in
+      let ofsy = ref (m * n - 1) in
       for i = 0 to m - 1 do
         _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:!ofsy ~incy:(-1) x y;
         ofsx := !ofsx + n;
@@ -1184,8 +1183,9 @@ let rotate x degree =
       done
     )
     else (
+      let ofsy = m * n - 1 in
       for i = 0 to n - 1 do
-        _owl_copy _kind m ~ofsx:i ~incx:n ~ofsy:(n - i - 1) ~incy:(-n) x y
+        _owl_copy _kind m ~ofsx:i ~incx:n ~ofsy:(ofsy - i) ~incy:(-n) x y
       done
     );
     y
@@ -1199,16 +1199,17 @@ let rotate x degree =
 
     let m = sx.(0) in
     let n = (numel x) / m in
-    let ofsx = ref 0 in
-    let ofsy = ref ((n - 1) * m) in
 
     if m <= n then (
+      let ofsx = ref 0 in
+      let ofsy = (n - 1) * m in
       for i = 0 to m - 1 do
-        _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:i ~incy:(-m) x y;
+        _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:(ofsy + i) ~incy:(-m) x y;
         ofsx := !ofsx + n
       done
     )
     else (
+      let ofsy = ref ((n - 1) * m) in
       for i = 0 to n - 1 do
         _owl_copy _kind m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:1 x y;
         ofsy := !ofsy - m

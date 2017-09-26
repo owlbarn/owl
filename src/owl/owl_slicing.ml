@@ -189,7 +189,7 @@ let get_slice_array_typ axis x =
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd in
       let ofsy = !ofsy_i * b in
-      _owl_copy _kind b ~ofsx ~ofsy ~incx:1 ~incy:1 x y;
+      _owl_copy _kind b ~ofsx ~incx:1 ~ofsy ~incy:1 x y;
       ofsy_i := !ofsy_i + 1
     )
     in
@@ -216,8 +216,8 @@ let get_slice_array_typ axis x =
     let cy = if c > 0 then 1 else -1 in
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd + dd in
-      let ofsy = !ofsy_i * b in
-      _owl_copy _kind b ~ofsx ~ofsy ~incx:cx ~incy:cy x y;
+      let ofsy = if c > 0 then !ofsy_i * b else (!ofsy_i + 1) * b - 1 in
+      _owl_copy _kind b ~ofsx ~incx:cx ~ofsy ~incy:cy x y;
       ofsy_i := !ofsy_i + 1
     )
     in
@@ -252,7 +252,7 @@ let set_slice_array_typ axis x y =
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd in
       let ofsy = !ofsy_i * b in
-      _owl_copy _kind b ~ofsx:ofsy ~ofsy:ofsx ~incx:1 ~incy:1 y x;
+      _owl_copy _kind b ~ofsx:ofsy ~incx:1 ~ofsy:ofsx ~incy:1 y x;
       ofsy_i := !ofsy_i + 1
     )
     in
@@ -277,8 +277,8 @@ let set_slice_array_typ axis x y =
     let cy = if c > 0 then 1 else -1 in
     let f = fun i -> (
       let ofsx = _index_nd_1d i sd + dd in
-      let ofsy = !ofsy_i * b in
-      _owl_copy _kind b ~ofsx:ofsy ~ofsy:ofsx ~incx:cy ~incy:cx y x;
+      let ofsy = if c > 0 then !ofsy_i * b else (!ofsy_i + 1) * b - 1 in
+      _owl_copy _kind b ~ofsx:ofsy ~incx:cy ~ofsy:ofsx ~incy:cx y x;
       ofsy_i := !ofsy_i + 1
     )
     in
