@@ -1884,6 +1884,36 @@ int complex_cmp (const void * a, const void * b)
 #define CHECKFN(X) (X.r != 0 || X.i != 0)
 #include "owl_dense_common_vec_cmp.c"
 
+#define FUN2 int8_nnz
+#define NUMBER int8_t
+#define CHECKFN(X) (X != 0)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN2 uint8_nnz
+#define NUMBER uint8_t
+#define CHECKFN(X) (X != 0)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN2 int16_nnz
+#define NUMBER int16_t
+#define CHECKFN(X) (X != 0)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN2 uint16_nnz
+#define NUMBER uint16_t
+#define CHECKFN(X) (X != 0)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN2 int32_nnz
+#define NUMBER int32_t
+#define CHECKFN(X) (X != 0)
+#include "owl_dense_common_vec_cmp.c"
+
+#define FUN2 int64_nnz
+#define NUMBER int64_t
+#define CHECKFN(X) (X != 0)
+#include "owl_dense_common_vec_cmp.c"
+
 // min_i
 
 #define FUN6 float32_min_i
@@ -1906,6 +1936,36 @@ int complex_cmp (const void * a, const void * b)
 #define CHECKFN(X,Y) CGT(X,Y)
 #include "owl_dense_common_vec_fold.c"
 
+#define FUN6 int8_min_i
+#define NUMBER int8_t
+#define CHECKFN(X,Y) (X > Y)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 uint8_min_i
+#define NUMBER uint8_t
+#define CHECKFN(X,Y) (X > Y)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 int16_min_i
+#define NUMBER int16_t
+#define CHECKFN(X,Y) (X > Y)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 uint16_min_i
+#define NUMBER uint16_t
+#define CHECKFN(X,Y) (X > Y)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 int32_min_i
+#define NUMBER int32_t
+#define CHECKFN(X,Y) (X > Y)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 int64_min_i
+#define NUMBER int64_t
+#define CHECKFN(X,Y) (X > Y)
+#include "owl_dense_common_vec_fold.c"
+
 // max_i
 
 #define FUN6 float32_max_i
@@ -1926,6 +1986,36 @@ int complex_cmp (const void * a, const void * b)
 #define FUN6 complex64_max_i
 #define NUMBER _Complex double
 #define CHECKFN(X,Y) CLT(X,Y)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 int8_max_i
+#define NUMBER int8_t
+#define CHECKFN(X,Y) (X < Y)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 uint8_max_i
+#define NUMBER uint8_t
+#define CHECKFN(X,Y) (X < Y)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 int16_max_i
+#define NUMBER int16_t
+#define CHECKFN(X,Y) (X < Y)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 uint16_max_i
+#define NUMBER uint16_t
+#define CHECKFN(X,Y) (X < Y)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 int32_max_i
+#define NUMBER int32_t
+#define CHECKFN(X,Y) (X < Y)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN6 int64_max_i
+#define NUMBER int64_t
+#define CHECKFN(X,Y) (X < Y)
 #include "owl_dense_common_vec_fold.c"
 
 // minmax_i
@@ -3131,6 +3221,41 @@ int complex_cmp (const void * a, const void * b)
 #define MAPFN(X,Y,Z) *Z = *X + *Y
 #include "owl_dense_common_vec_map.c"
 
+#define FUN15 uint8_add
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define NUMBER2 uint8_t
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 int16_add
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define NUMBER2 int16_t
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 uint16_add
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define NUMBER2 uint16_t
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 int32_add
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define NUMBER2 int32_t
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 int64_add
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define NUMBER2 int64_t
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
 // sub
 
 #define FUN15 float32_sub
@@ -3165,6 +3290,41 @@ int complex_cmp (const void * a, const void * b)
 #define NUMBER int8_t
 #define NUMBER1 int8_t
 #define NUMBER2 int8_t
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 uint8_sub
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define NUMBER2 uint8_t
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 int16_sub
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define NUMBER2 int16_t
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 uint16_sub
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define NUMBER2 uint16_t
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 int32_sub
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define NUMBER2 int32_t
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 int64_sub
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define NUMBER2 int64_t
 #define MAPFN(X,Y,Z) *Z = *X - *Y
 #include "owl_dense_common_vec_map.c"
 
@@ -3205,6 +3365,41 @@ int complex_cmp (const void * a, const void * b)
 #define MAPFN(X,Y,Z) *Z = *X * *Y
 #include "owl_dense_common_vec_map.c"
 
+#define FUN15 uint8_mul
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define NUMBER2 uint8_t
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 int16_mul
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define NUMBER2 int16_t
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 uint16_mul
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define NUMBER2 uint16_t
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 int32_mul
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define NUMBER2 int32_t
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 int64_mul
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define NUMBER2 int64_t
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
 // div
 
 #define FUN15 float32_div
@@ -3242,6 +3437,41 @@ int complex_cmp (const void * a, const void * b)
 #define MAPFN(X,Y,Z) *Z = *X / *Y
 #include "owl_dense_common_vec_map.c"
 
+#define FUN15 uint8_div
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define NUMBER2 uint8_t
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 int16_div
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define NUMBER2 int16_t
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 uint16_div
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define NUMBER2 uint16_t
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 int32_div
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define NUMBER2 int32_t
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN15 int64_div
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define NUMBER2 int64_t
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
 // add_scalar
 
 #define FUN17 float32_add_scalar
@@ -3270,6 +3500,120 @@ int complex_cmp (const void * a, const void * b)
 #define NUMBER _Complex double
 #define NUMBER1 _Complex double
 #define MAPFN(X,Y) *Y = *X + a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int8_add_scalar
+#define INIT int8_t a = Int_val(vA)
+#define NUMBER int8_t
+#define NUMBER1 int8_t
+#define MAPFN(X,Y) *Y = *X + a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 uint8_add_scalar
+#define INIT uint8_t a = Int_val(vA)
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define MAPFN(X,Y) *Y = *X + a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int16_add_scalar
+#define INIT int16_t a = Int_val(vA)
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define MAPFN(X,Y) *Y = *X + a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 uint16_add_scalar
+#define INIT uint16_t a = Int_val(vA)
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define MAPFN(X,Y) *Y = *X + a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int32_add_scalar
+#define INIT int32_t a = Int_val(vA)
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define MAPFN(X,Y) *Y = *X + a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int64_add_scalar
+#define INIT int64_t a = Int_val(vA)
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define MAPFN(X,Y) *Y = *X + a
+#include "owl_dense_common_vec_map.c"
+
+// mul_scalar
+
+#define FUN17 float32_mul_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = *X * a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 float64_mul_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = *X * a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex32_mul_scalar
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = *X * a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex64_mul_scalar
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = *X * a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int8_mul_scalar
+#define INIT int8_t a = Int_val(vA)
+#define NUMBER int8_t
+#define NUMBER1 int8_t
+#define MAPFN(X,Y) *Y = *X * a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 uint8_mul_scalar
+#define INIT uint8_t a = Int_val(vA)
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define MAPFN(X,Y) *Y = *X * a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int16_mul_scalar
+#define INIT int16_t a = Int_val(vA)
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define MAPFN(X,Y) *Y = *X * a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 uint16_mul_scalar
+#define INIT uint16_t a = Int_val(vA)
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define MAPFN(X,Y) *Y = *X * a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int32_mul_scalar
+#define INIT int32_t a = Int_val(vA)
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define MAPFN(X,Y) *Y = *X * a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int64_mul_scalar
+#define INIT int64_t a = Int_val(vA)
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define MAPFN(X,Y) *Y = *X * a
 #include "owl_dense_common_vec_map.c"
 
 // scalar_sub
@@ -3302,6 +3646,48 @@ int complex_cmp (const void * a, const void * b)
 #define MAPFN(X,Y) *Y = a - *X
 #include "owl_dense_common_vec_map.c"
 
+#define FUN17 int8_scalar_sub
+#define INIT int8_t a = Int_val(vA)
+#define NUMBER int8_t
+#define NUMBER1 int8_t
+#define MAPFN(X,Y) *Y = a - *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 uint8_scalar_sub
+#define INIT uint8_t a = Int_val(vA)
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define MAPFN(X,Y) *Y = a - *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int16_scalar_sub
+#define INIT int16_t a = Int_val(vA)
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define MAPFN(X,Y) *Y = a - *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 uint16_scalar_sub
+#define INIT uint16_t a = Int_val(vA)
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define MAPFN(X,Y) *Y = a - *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int32_scalar_sub
+#define INIT int32_t a = Int_val(vA)
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define MAPFN(X,Y) *Y = a - *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int64_scalar_sub
+#define INIT int64_t a = Int_val(vA)
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define MAPFN(X,Y) *Y = a - *X
+#include "owl_dense_common_vec_map.c"
+
 // scalar_div
 
 #define FUN17 float32_scalar_div
@@ -3329,6 +3715,48 @@ int complex_cmp (const void * a, const void * b)
 #define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
 #define NUMBER _Complex double
 #define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = a / *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int8_scalar_div
+#define INIT int8_t a = Int_val(vA)
+#define NUMBER int8_t
+#define NUMBER1 int8_t
+#define MAPFN(X,Y) *Y = a / *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 uint8_scalar_div
+#define INIT uint8_t a = Int_val(vA)
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define MAPFN(X,Y) *Y = a / *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int16_scalar_div
+#define INIT int16_t a = Int_val(vA)
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define MAPFN(X,Y) *Y = a / *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 uint16_scalar_div
+#define INIT uint16_t a = Int_val(vA)
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define MAPFN(X,Y) *Y = a / *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int32_scalar_div
+#define INIT int32_t a = Int_val(vA)
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define MAPFN(X,Y) *Y = a / *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int64_scalar_div
+#define INIT int64_t a = Int_val(vA)
+#define NUMBER int64_t
+#define NUMBER1 int64_t
 #define MAPFN(X,Y) *Y = a / *X
 #include "owl_dense_common_vec_map.c"
 
@@ -4383,7 +4811,42 @@ int complex_cmp (const void * a, const void * b)
 #define FUN24 int8_broadcast_add
 #define FUN24_IMPL int8_broadcast_add_impl
 #define FUN24_CODE int8_broadcast_add_code
-#define NUMBER int8
+#define NUMBER int8_t
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 uint8_broadcast_add
+#define FUN24_IMPL uint8_broadcast_add_impl
+#define FUN24_CODE uint8_broadcast_add_code
+#define NUMBER uint8_t
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 int16_broadcast_add
+#define FUN24_IMPL int16_broadcast_add_impl
+#define FUN24_CODE int16_broadcast_add_code
+#define NUMBER int16_t
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 uint16_broadcast_add
+#define FUN24_IMPL uint16_broadcast_add_impl
+#define FUN24_CODE uint16_broadcast_add_code
+#define NUMBER uint16_t
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 int32_broadcast_add
+#define FUN24_IMPL int32_broadcast_add_impl
+#define FUN24_CODE int32_broadcast_add_code
+#define NUMBER int32_t
+#define MAPFN(X,Y,Z) *Z = *X + *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 int64_broadcast_add
+#define FUN24_IMPL int64_broadcast_add_impl
+#define FUN24_CODE int64_broadcast_add_code
+#define NUMBER int64_t
 #define MAPFN(X,Y,Z) *Z = *X + *Y
 #include "owl_dense_common_vec_map.c"
 
@@ -4420,7 +4883,42 @@ int complex_cmp (const void * a, const void * b)
 #define FUN24 int8_broadcast_sub
 #define FUN24_IMPL int8_broadcast_sub_impl
 #define FUN24_CODE int8_broadcast_sub_code
-#define NUMBER int8
+#define NUMBER int8_t
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 uint8_broadcast_sub
+#define FUN24_IMPL uint8_broadcast_sub_impl
+#define FUN24_CODE uint8_broadcast_sub_code
+#define NUMBER uint8_t
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 int16_broadcast_sub
+#define FUN24_IMPL int16_broadcast_sub_impl
+#define FUN24_CODE int16_broadcast_sub_code
+#define NUMBER int16_t
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 uint16_broadcast_sub
+#define FUN24_IMPL uint16_broadcast_sub_impl
+#define FUN24_CODE uint16_broadcast_sub_code
+#define NUMBER uint16_t
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 int32_broadcast_sub
+#define FUN24_IMPL int32_broadcast_sub_impl
+#define FUN24_CODE int32_broadcast_sub_code
+#define NUMBER int32_t
+#define MAPFN(X,Y,Z) *Z = *X - *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 int64_broadcast_sub
+#define FUN24_IMPL int64_broadcast_sub_impl
+#define FUN24_CODE int64_broadcast_sub_code
+#define NUMBER int64_t
 #define MAPFN(X,Y,Z) *Z = *X - *Y
 #include "owl_dense_common_vec_map.c"
 
@@ -4457,7 +4955,42 @@ int complex_cmp (const void * a, const void * b)
 #define FUN24 int8_broadcast_mul
 #define FUN24_IMPL int8_broadcast_mul_impl
 #define FUN24_CODE int8_broadcast_mul_code
-#define NUMBER int8
+#define NUMBER int8_t
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 uint8_broadcast_mul
+#define FUN24_IMPL uint8_broadcast_mul_impl
+#define FUN24_CODE uint8_broadcast_mul_code
+#define NUMBER uint8_t
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 int16_broadcast_mul
+#define FUN24_IMPL int16_broadcast_mul_impl
+#define FUN24_CODE int16_broadcast_mul_code
+#define NUMBER int16_t
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 uint16_broadcast_mul
+#define FUN24_IMPL uint16_broadcast_mul_impl
+#define FUN24_CODE uint16_broadcast_mul_code
+#define NUMBER uint16_t
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 int32_broadcast_mul
+#define FUN24_IMPL int32_broadcast_mul_impl
+#define FUN24_CODE int32_broadcast_mul_code
+#define NUMBER int32_t
+#define MAPFN(X,Y,Z) *Z = *X * *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 int64_broadcast_mul
+#define FUN24_IMPL int64_broadcast_mul_impl
+#define FUN24_CODE int64_broadcast_mul_code
+#define NUMBER int64_t
 #define MAPFN(X,Y,Z) *Z = *X * *Y
 #include "owl_dense_common_vec_map.c"
 
@@ -4494,7 +5027,42 @@ int complex_cmp (const void * a, const void * b)
 #define FUN24 int8_broadcast_div
 #define FUN24_IMPL int8_broadcast_div_impl
 #define FUN24_CODE int8_broadcast_div_code
-#define NUMBER int8
+#define NUMBER int8_t
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 uint8_broadcast_div
+#define FUN24_IMPL uint8_broadcast_div_impl
+#define FUN24_CODE uint8_broadcast_div_code
+#define NUMBER uint8_t
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 int16_broadcast_div
+#define FUN24_IMPL int16_broadcast_div_impl
+#define FUN24_CODE int16_broadcast_div_code
+#define NUMBER int16_t
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 uint16_broadcast_div
+#define FUN24_IMPL uint16_broadcast_div_impl
+#define FUN24_CODE uint16_broadcast_div_code
+#define NUMBER uint16_t
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 int32_broadcast_div
+#define FUN24_IMPL int32_broadcast_div_impl
+#define FUN24_CODE int32_broadcast_div_code
+#define NUMBER int32_t
+#define MAPFN(X,Y,Z) *Z = *X / *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN24 int64_broadcast_div
+#define FUN24_IMPL int64_broadcast_div_impl
+#define FUN24_CODE int64_broadcast_div_code
+#define NUMBER int64_t
 #define MAPFN(X,Y,Z) *Z = *X / *Y
 #include "owl_dense_common_vec_map.c"
 
