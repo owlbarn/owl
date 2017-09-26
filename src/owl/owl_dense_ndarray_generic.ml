@@ -99,7 +99,7 @@ let clone x =
 let reverse x =
   let y = clone x in
   let n = numel x in
-  _owl_copy (kind x) n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:(-1) x y;
+  _owl_copy (kind x) n ~ofsx:0 ~incx:1 ~ofsy:(n-1) ~incy:(-1) x y;
   y
 
 
