@@ -379,7 +379,7 @@ let div x y =
       let y = clone y in
       _owl_div (kind x) (numel x) x y y;
       y
-  )
+    )
   | false -> broadcast_op (_owl_broadcast_div (kind x)) x y
 
 let add_scalar x a =

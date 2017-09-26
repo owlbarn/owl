@@ -375,15 +375,29 @@ external owl_float32_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) ow
 external owl_float64_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float64_copy" "float64_copy_impl"
 external owl_complex32_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex32_copy" "complex32_copy_impl"
 external owl_complex64_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex64_copy" "complex64_copy_impl"
+external owl_char_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "char_copy" "char_copy_impl"
+external owl_int8_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "int8_copy" "int8_copy_impl"
+external owl_uint8_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "uint8_copy" "uint8_copy_impl"
+external owl_int16_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "int16_copy" "int16_copy_impl"
+external owl_uint16_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "uint16_copy" "uint16_copy_impl"
+external owl_int32_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "int32_copy" "int32_copy_impl"
+external owl_int64_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "int64_copy" "int64_copy_impl"
 
 let _owl_copy : type a b. (a, b) kind -> (a, b) owl_arr_op18 =
   fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
   match k with
-  | Float32   -> owl_float32_copy n x ofsx incx y ofsy incy
-  | Float64   -> owl_float64_copy n x ofsx incx y ofsy incy
-  | Complex32 -> owl_complex32_copy n x ofsx incx y ofsy incy
-  | Complex64 -> owl_complex64_copy n x ofsx incx y ofsy incy
-  | _         -> failwith "_owl_copy: unsupported operation"
+  | Float32        -> owl_float32_copy n x ofsx incx y ofsy incy
+  | Float64        -> owl_float64_copy n x ofsx incx y ofsy incy
+  | Complex32      -> owl_complex32_copy n x ofsx incx y ofsy incy
+  | Complex64      -> owl_complex64_copy n x ofsx incx y ofsy incy
+  | Char           -> owl_char_copy n x ofsx incx y ofsy incy
+  | Int8_signed    -> owl_int8_copy n x ofsx incx y ofsy incy
+  | Int8_unsigned  -> owl_uint8_copy n x ofsx incx y ofsy incy
+  | Int16_signed   -> owl_int16_copy n x ofsx incx y ofsy incy
+  | Int16_unsigned -> owl_uint16_copy n x ofsx incx y ofsy incy
+  | Int32          -> owl_int32_copy n x ofsx incx y ofsy incy
+  | Int64          -> owl_int64_copy n x ofsx incx y ofsy incy
+  | _              -> failwith "_owl_copy: unsupported operation"
 
 external owl_float32_less : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int = "float32_less"
 external owl_float64_less : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int = "float64_less"
