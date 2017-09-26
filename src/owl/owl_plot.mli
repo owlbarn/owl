@@ -176,6 +176,14 @@ val area : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> unit
   Parameters: [RGB], [LineStyle], [FillPattern].
  *)
 
+val draw_polygon : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> unit
+(** [area x y] fills the polygon specified by [x] and [y].  Each point
+  will be treated as connected to the next point except the last, which 
+  will be connected to the first point.
+
+  Parameters: [RGB], [LineStyle], [FillPattern].
+ *)
+
 val error_bar : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 (** [error_bar x y] generates a line plot of [x] and [y] with error bars.
 
