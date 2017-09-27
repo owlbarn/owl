@@ -103,7 +103,7 @@ int complex_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN19 char_copy
-#define FUN19_IMPL float32_char_impl
+#define FUN19_IMPL char_copy_impl
 #define NUMBER char
 #define NUMBER1 char
 #define INIT
@@ -111,7 +111,7 @@ int complex_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN19 int8_copy
-#define FUN19_IMPL int8_char_impl
+#define FUN19_IMPL int8_copy_impl
 #define NUMBER int8_t
 #define NUMBER1 int8_t
 #define INIT
@@ -119,7 +119,7 @@ int complex_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN19 uint8_copy
-#define FUN19_IMPL uint8_char_impl
+#define FUN19_IMPL uint8_copy_impl
 #define NUMBER uint8_t
 #define NUMBER1 uint8_t
 #define INIT
@@ -127,7 +127,7 @@ int complex_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN19 int16_copy
-#define FUN19_IMPL int16_char_impl
+#define FUN19_IMPL int16_copy_impl
 #define NUMBER int16_t
 #define NUMBER1 int16_t
 #define INIT
@@ -135,7 +135,7 @@ int complex_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN19 uint16_copy
-#define FUN19_IMPL uint16_char_impl
+#define FUN19_IMPL uint16_copy_impl
 #define NUMBER uint16_t
 #define NUMBER1 uint16_t
 #define INIT
@@ -143,7 +143,7 @@ int complex_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN19 int32_copy
-#define FUN19_IMPL int32_char_impl
+#define FUN19_IMPL int32_copy_impl
 #define NUMBER int32_t
 #define NUMBER1 int32_t
 #define INIT
@@ -151,7 +151,7 @@ int complex_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN19 int64_copy
-#define FUN19_IMPL int64_char_impl
+#define FUN19_IMPL int64_copy_impl
 #define NUMBER int64_t
 #define NUMBER1 int64_t
 #define INIT
