@@ -7,7 +7,7 @@ Owl is an OCaml numerical library. It supports N-dimensional arrays, both dense 
 
 ## Learning
 
-Here are some learning material to help you start with Owl. The full API documentation is recently built on 17th August, 2017:
+Here are some learning material to help you start with Owl. The full API documentation is recently built on 26th September, 2017:
 
 * on [cl.cam.ac.uk](http://www.cl.cam.ac.uk/~lw525/owl/)
 

@@ -131,17 +131,16 @@ let diagm ?(k=0) v =
 
 
 let triu ?(k=0) x =
+  let _kind = kind x in
   let m, n = shape x in
-  let y = zeros (kind x) m n in
-  let x' = flatten x |> Bigarray.array1_of_genarray in
-  let y' = flatten y |> Bigarray.array1_of_genarray in
+  let y = zeros _kind m n in
 
   let ofs = ref (Pervasives.(min n (max 0 k))) in
   let len = ref (Pervasives.(max 0 (min n (n - k)))) in
   let loops = Pervasives.(max 0 (min m (n - k))) in
 
   for i = 0 to loops - 1 do
-    _owl_copy !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 x' y';
+    _owl_copy _kind !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 x y;
     if i + k >= 0 then (
       ofs := !ofs + n + 1;
       len := !len - 1
@@ -153,17 +152,16 @@ let triu ?(k=0) x =
 
 
 let tril ?(k=0) x =
+  let _kind = kind x in
   let m, n = shape x in
-  let y = zeros (kind x) m n in
-  let x' = flatten x |> Bigarray.array1_of_genarray in
-  let y' = flatten y |> Bigarray.array1_of_genarray in
+  let y = zeros _kind m n in
 
   let row_i = Pervasives.(min m (abs (min 0 k))) in
   let len = ref (Pervasives.(min n ((max 0 k) + 1))) in
   let ofs = ref (row_i * n) in
 
   for i = row_i to m - 1 do
-    _owl_copy !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 x' y';
+    _owl_copy _kind !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 x y;
     ofs := !ofs + n;
     if !len < n then
       len := !len + 1
@@ -173,10 +171,10 @@ let tril ?(k=0) x =
 
 
 let symmetric ?(upper=true) x =
+  let _kind = kind x in
   let m, n = shape x in
   assert (m = n);
   let y = clone x in
-  let y' = flatten y |> Bigarray.array1_of_genarray in
 
   let ofs = ref 0 in
   let incx, incy =
@@ -185,7 +183,7 @@ let symmetric ?(upper=true) x =
     | false -> m, 1
   in
   for i = 0 to m - 1 do
-    _owl_copy (m - i) ~ofsx:!ofs ~incx ~ofsy:!ofs ~incy y' y';
+    _owl_copy _kind (m - i) ~ofsx:!ofs ~incx ~ofsy:!ofs ~incy y y;
     ofs := !ofs + n + 1
   done;
   (* return the symmetric matrix *)
@@ -230,11 +228,10 @@ let hermitian ?(upper=true) x =
   in
   for i = 0 to m - 1 do
     (* copy and conjugate *)
-    _conj_op (m - i) ~ofsx:!ofs ~incx ~ofsy:!ofs ~incy _y _y;
+    _conj_op (m - i) ~ofsx:!ofs ~incx ~ofsy:!ofs ~incy y y;
     (* set the imaginary part to zero by default. *)
     let a = _y.{!ofs} in
     _y.{!ofs} <- Complex.( {re = a.re; im = 0.} );
-
     ofs := !ofs + n + 1
   done;
   (* return the symmetric matrix *)
@@ -258,16 +255,14 @@ let toeplitz ?c r =
   let m = numel c in
   let n = numel r in
   Owl_dense_ndarray_generic.(set c [|0;0|] (get r [|0;0|]));
-  let x = empty (kind r) m n in
-  let _x = flatten x |> Bigarray.array1_of_genarray in
-  let _r = flatten r |> Bigarray.array1_of_genarray in
-  let _c = flatten c |> Bigarray.array1_of_genarray in
+  let _kind = kind r in
+  let x = empty _kind m n in
   let ofs = ref 0 in
   let loops = Pervasives.min m n in
 
   for i = 0 to loops - 1 do
-    _owl_copy (n - i) ~ofsx:0 ~incx:1 _r ~ofsy:!ofs ~incy:1 _x;
-    _owl_copy (m - i) ~ofsx:0 ~incx:1 _c ~ofsy:!ofs ~incy:n _x;
+    _owl_copy _kind (n - i) ~ofsx:0 ~incx:1 ~ofsy:!ofs ~incy:1 r x;
+    _owl_copy _kind (m - i) ~ofsx:0 ~incx:1 ~ofsy:!ofs ~incy:n c x;
     ofs := !ofs + n + 1;
   done;
   x
@@ -281,16 +276,14 @@ let hankel ?r c =
   in
   let n = numel r in
   Owl_dense_ndarray_generic.(set r [|0;0|] (get c [|0;m-1|]));
-  let x = empty (kind r) m n in
-  let _x = flatten x |> Bigarray.array1_of_genarray in
-  let _r = flatten r |> Bigarray.array1_of_genarray in
-  let _c = flatten c |> Bigarray.array1_of_genarray in
+  let _kind = kind r in
+  let x = empty _kind m n in
   let ofs = ref ( (m - 1) * n ) in
   let loops = Pervasives.min m n in
 
   for i = 0 to loops - 1 do
-    _owl_copy (n - i) ~ofsx:0 ~incx:1 _r ~ofsy:!ofs ~incy:1 _x;
-    _owl_copy (m - i) ~ofsx:i ~incx:1 _c ~ofsy:i ~incy:n _x;
+    _owl_copy _kind (n - i) ~ofsx:0 ~incx:1 ~ofsy:!ofs ~incy:1 r x;
+    _owl_copy _kind (m - i) ~ofsx:i ~incx:1 ~ofsy:i ~incy:n c x;
     ofs := !ofs - n + 1;
   done;
   x
@@ -344,10 +337,9 @@ let row x i =
 let col x j =
   let m, n = shape x in
   assert (j < n);
-  let y = empty (kind x) m 1 in
-  let x' = flatten x |> Bigarray.array1_of_genarray in
-  let y' = flatten y |> Bigarray.array1_of_genarray in
-  _owl_copy m ~ofsx:j ~incx:n ~ofsy:0 ~incy:1 x' y';
+  let _kind = kind x in
+  let y = empty _kind m 1 in
+  _owl_copy _kind m ~ofsx:j ~incx:n ~ofsy:0 ~incy:1 x y;
   y
 
 
@@ -380,13 +372,11 @@ let rows x l =
 let cols x l =
   let m, n = shape x in
   let nl = Array.length (l) in
-  let k = kind x in
-  let y = empty k m nl in
-  let _x = flatten x |> Bigarray.array1_of_genarray in
-  let _y = flatten y |> Bigarray.array1_of_genarray in
+  let _kind = kind x in
+  let y = empty _kind m nl in
   Array.iteri (fun i j ->
     assert (i < nl && j < n);
-    _owl_copy m ~ofsx:j ~incx:n ~ofsy:i ~incy:nl _x _y;
+    _owl_copy _kind m ~ofsx:j ~incx:n ~ofsy:i ~incy:nl x y;
   ) l;
   y
 
@@ -412,21 +402,19 @@ let transpose x =
 
 
 let ctranspose x =
+  let _kind = kind x in
   let m, n = shape x in
-  let y = empty (kind x) n m in
-  let x' = flatten x |> Bigarray.array1_of_genarray in
-  let y' = flatten y |> Bigarray.array1_of_genarray in
+  let y = empty _kind n m in
   (* different strategies depends on row/col ratio *)
   let len, incx, incy, iofx, iofy, loops =
     match m <= n with
     | true  -> n, 1, m, n, 1, m
     | false -> m, n, 1, 1, m, n
   in
-  let _op = _owl_conj (kind x) in
   let ofsx = ref 0 in
   let ofsy = ref 0 in
   for i = 0 to loops - 1 do
-    _op len ~ofsx:!ofsx ~incx ~ofsy:!ofsy ~incy x' y';
+    _owl_conj _kind len ~ofsx:!ofsx ~incx ~ofsy:!ofsy ~incy x y;
     ofsx := !ofsx + iofx;
     ofsy := !ofsy + iofy;
   done;
@@ -900,8 +888,8 @@ let _hadamard_20 = Array.map float_of_int
 let hadamard k n =
   (* function to build up hadamard matrix recursively *)
   let rec _make_hadamard
-    (cp_op : ('a, 'b) Owl_dense_common.owl_vec_op99)
-    (neg_op : ('a, 'b) Owl_dense_common.owl_vec_op99)
+    (cp_op  : ('a, 'b) Owl_dense_common.owl_arr_op18)
+    (neg_op : ('a, 'b) Owl_dense_common.owl_arr_op18)
     len n base x =
     if len = base then ()
     else (
@@ -932,11 +920,11 @@ let hadamard k n =
   in
   (* start building, only deal with pow2 of n, n/12, n/20. *)
   let x = empty k n n in
-  let _x = flatten x |> Bigarray.array1_of_genarray in
+  let cp_op = _owl_copy k in
   let neg_op = _owl_neg k in
   if Owl_maths.is_pow2 n then (
     Owl_dense_ndarray_generic.set x [|0;0|] (_one k);
-    _make_hadamard _owl_copy neg_op n n 1 _x;
+    _make_hadamard cp_op neg_op n n 1 x;
     x
   )
   else if Owl_maths.is_pow2 (n / 12) && Pervasives.(n mod 12) = 0 then (
@@ -944,7 +932,7 @@ let hadamard k n =
     let y = of_array k y 12 12 in
     let _area = area 0 0 11 11 in
     copy_area_to y _area x _area;
-    _make_hadamard _owl_copy neg_op n n 12 _x;
+    _make_hadamard cp_op neg_op n n 12 x;
     x
   )
   else if Owl_maths.is_pow2 (n / 20) && Pervasives.(n mod 20) = 0 then (
@@ -952,7 +940,7 @@ let hadamard k n =
     let y = of_array k y 20 20 in
     let _area = area 0 0 19 19 in
     copy_area_to y _area x _area;
-    _make_hadamard _owl_copy neg_op n n 20 _x;
+    _make_hadamard cp_op neg_op n n 20 x;
     x
   )
   else

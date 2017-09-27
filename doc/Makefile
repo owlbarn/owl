@@ -1,4 +1,4 @@
-ODIGDOC=/Users/liang/.opam/4.04.0/var/cache/odig/odoc/owl
+ODIGDOC=/Users/liang/.opam/4.05.0/var/cache/odig/odoc/owl
 DIR="../lib"
 DOCS=\
 	${DIR}/owl_cblas.mli \

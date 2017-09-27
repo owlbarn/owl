@@ -98,10 +98,8 @@ let clone x =
 
 let reverse x =
   let y = clone x in
-  let x' = x |> flatten |> array1_of_genarray in
-  let y' = y |> flatten |> array1_of_genarray in
   let n = numel x in
-  _owl_copy n ~ofsx:0 ~incx:1 ~ofsy:0 ~incy:(-1) x' y';
+  _owl_copy (kind x) n ~ofsx:0 ~incx:1 ~ofsy:(n-1) ~incy:(-1) x y;
   y
 
 
@@ -132,25 +130,14 @@ let tile x reps =
   done;
   (* project x and y to 1-dimensional arrays *)
   let sy = Owl_utils.array_map2i (fun _ a b -> a * b) sx reps in
-  let y = empty (kind x) sy in
-  let x1 = Bigarray.reshape_1 x (numel x) in
-  let y1 = Bigarray.reshape_1 y (numel y) in
+  let _kind = kind x in
+  let y = empty _kind sy in
   let stride_x = _calc_stride (shape x) in
   let stride_y = _calc_stride (shape y) in
   (* recursively tile the data within y *)
   let rec _tile ofsx ofsy lvl =
-    if lvl = !i then (
-      (* two tiling strategies based on the continuous block size, quite empirical though *)
-      if !dx >= 32 then (
-        let src = Array1.sub x1 ofsx !dx in
-        for k = 0 to reps.(lvl) - 1 do
-          let ofsy' = ofsy + (k * !dx) in
-          let dst = Array1.sub y1 ofsy' !dx in
-          Array1.blit src dst;
-        done
-      )
-      else _owl_repeat (kind x) !dx reps.(lvl) x1 ofsx 1 0 y1 ofsy 1 !dx
-    )
+    if lvl = !i then
+      _owl_repeat _kind !dx reps.(lvl) x ofsx 1 0 y ofsy 1 !dx
     else (
       for j = 0 to sx.(lvl) - 1 do
         let ofsx' = ofsx + j * stride_x.(lvl) in
@@ -158,10 +145,8 @@ let tile x reps =
         _tile ofsx' ofsy' (lvl + 1);
       done;
       let _len = stride_y.(lvl) * sx.(lvl) in
-      let src = Array1.sub y1 ofsy _len in
       for k = 1 to reps.(lvl) - 1 do
-        let dst = Array1.sub y1 (ofsy + (k * _len)) _len in
-        Array1.blit src dst
+        _owl_copy _kind _len ~ofsx:ofsy ~incx:1 ~ofsy:(ofsy + (k * _len)) ~incy:1 y y
       done;
     )
   in
@@ -176,16 +161,14 @@ let repeat ?axis x reps =
     | None   -> highest_dim
   in
   (* calculate the new shape of y based on reps *)
+  let _kind = kind x in
   let _shape_y = shape x in
   _shape_y.(axis) <- _shape_y.(axis) * reps;
-  let y = empty (kind x) _shape_y in
-  (* transform into genarray first *)
-  let x' = Bigarray.reshape_1 x (numel x) in
-  let y' = Bigarray.reshape_1 y (numel y) in
+  let y = empty _kind _shape_y in
   (* if repeat at the highest dimension, use this strategy *)
   if axis = highest_dim then (
     for i = 0 to reps - 1 do
-      ignore (_owl_copy (numel x) ~ofsx:0 ~incx:1 ~ofsy:i ~incy:reps x' y')
+      _owl_copy _kind (numel x) ~ofsx:0 ~incx:1 ~ofsy:i ~incy:reps x y
     done;
   )
   (* if repeat at another dimension, use this block copying *)
@@ -197,13 +180,12 @@ let repeat ?axis x reps =
       let ofsx = i * _slice_sz in
       for j = 0 to reps - 1 do
         let ofsy = (i * reps + j) * _slice_sz in
-        ignore (_owl_copy _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:1 x' y')
+        _owl_copy _kind _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:1 x y
       done;
     done;
   );
   (* reshape y' back to ndarray before return result *)
-  let y' = genarray_of_array1 y' in
-  reshape y' _shape_y
+  reshape y _shape_y
 
 
 let concatenate ?(axis=0) xs =
@@ -221,23 +203,22 @@ let concatenate ?(axis=0) xs =
     assert (shape0 = shape1);
   ) shapes;
   (* allocalte space for new array *)
+  let _kind = kind xs.(0) in
   shape0.(axis) <- !acc_dim;
-  let y = empty (kind xs.(0)) shape0 in
-  (* flatten y then calculate the number of copies *)
-  let z = Bigarray.reshape_1 y (numel y) in
+  let y = empty _kind shape0 in
+  (* calculate the number of copies *)
   let slice_sz = (_calc_slice shape0).(axis) in
   let m = numel y / slice_sz in
   let n = Array.length xs in
-  (* flatten all the inputs and init the copy location *)
-  let x_flt = Array.map (fun x -> Bigarray.reshape_1 x (numel x)) xs in
+  (* init the copy location for all inputs *)
   let x_ofs = Array.make n 0 in
   (* copy data in the flattened space *)
-  let z_ofs = ref 0 in
+  let y_ofs = ref 0 in
   for i = 0 to m - 1 do
     for j = 0 to n - 1 do
-      ignore(_owl_copy step_sz.(j) ~ofsx:x_ofs.(j) ~incx:1 ~ofsy:!z_ofs ~incy:1 x_flt.(j) z);
+      _owl_copy _kind step_sz.(j) ~ofsx:x_ofs.(j) ~incx:1 ~ofsy:!y_ofs ~incy:1 xs.(j) y;
       x_ofs.(j) <- x_ofs.(j) + step_sz.(j);
-      z_ofs := !z_ofs + step_sz.(j);
+      y_ofs := !y_ofs + step_sz.(j);
     done;
   done;
   (* all done, return the combined result *)
@@ -266,7 +247,6 @@ let expand x d =
 let resize ?(head=true) x d =
   let n0 = numel x in
   let n1 = Array.fold_left (fun a b -> a * b) 1 d in
-  let _x = reshape_1 x n0 in
   let ofsx, ofsy =
     match head, n0 < n1 with
     | true, true   -> 0, 0
@@ -279,11 +259,11 @@ let resize ?(head=true) x d =
       let k = kind x in
       let y = empty k d in
       fill y (_zero k);
-      let _y = reshape_1 y n1 in
-      _owl_copy n0 ~ofsx ~incx:1 ~ofsy ~incy:1 _x _y;
+      _owl_copy k n0 ~ofsx ~incx:1 ~ofsy ~incy:1 x y;
       y
     )
   | false -> (
+      let _x = reshape_1 x n0 in
       let _y = Array1.sub _x ofsx n1 |> genarray_of_array1 in
       reshape _y d
     )
@@ -399,7 +379,7 @@ let div x y =
       let y = clone y in
       _owl_div (kind x) (numel x) x y y;
       y
-  )
+    )
   | false -> broadcast_op (_owl_broadcast_div (kind x)) x y
 
 let add_scalar x a =
@@ -515,16 +495,12 @@ let abs2_z2d x =
 
 let conj x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_conj (kind x) (numel y) src dst in
+  _owl_conj (kind x) (numel y) x y;
   y
 
 let neg x =
   let y = clone x in
-  let src = flatten x |> array1_of_genarray in
-  let dst = flatten y |> array1_of_genarray in
-  let _ = _owl_neg (kind x) (numel y) src dst in
+  _owl_neg (kind x) (numel y) x y;
   y
 
 let reci x =
@@ -1161,6 +1137,7 @@ let flip ?(axis=0) x =
 let rotate x degree =
   assert (degree mod 90 = 0);
   let k = (degree mod 360) / 90 in
+  let _kind = kind x in
 
   if num_dims x < 2 || k = 0 then
     clone x
@@ -1169,25 +1146,22 @@ let rotate x degree =
     let sy = Array.copy sx in
     sy.(0) <- sx.(1);
     sy.(1) <- sx.(0);
-
-    let y = empty (kind x) sy in
-    let x' = flatten x |> array1_of_genarray in
-    let y' = flatten y |> array1_of_genarray in
+    let y = empty _kind sy in
 
     let m = sx.(0) in
     let n = (numel x) / m in
-    let ofsx = ref 0 in
-    let ofsy = ref 0 in
 
     if m <= n then (
+      let ofsx = ref 0 in
       for i = 1 to m do
-        _owl_copy n ~ofsx:!ofsx ~incx:1 ~ofsy:(m - i) ~incy:m x' y';
+        _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:(m - i) ~incy:m x y;
         ofsx := !ofsx + n
       done
     )
     else (
+      let ofsy = ref (m - 1) in
       for i = 0 to n - 1 do
-        _owl_copy m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:(-1) x' y';
+        _owl_copy _kind m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:(-1) x y;
         ofsy := !ofsy + m
       done
     );
@@ -1195,25 +1169,23 @@ let rotate x degree =
   )
   else if k = 2 then (
     let sx = shape x in
-    let y = empty (kind x) sx in
-    let x' = flatten x |> array1_of_genarray in
-    let y' = flatten y |> array1_of_genarray in
-
+    let y = empty _kind sx in
     let m = sx.(0) in
     let n = (numel x) / m in
 
     if m <= n then (
       let ofsx = ref 0 in
-      let ofsy = ref ((m - 1) * n) in
+      let ofsy = ref (m * n - 1) in
       for i = 0 to m - 1 do
-        _owl_copy n ~ofsx:!ofsx ~incx:1 ~ofsy:!ofsy ~incy:(-1) x' y';
+        _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:!ofsy ~incy:(-1) x y;
         ofsx := !ofsx + n;
         ofsy := !ofsy - n
       done
     )
     else (
+      let ofsy = m * n - 1 in
       for i = 0 to n - 1 do
-        _owl_copy m ~ofsx:i ~incx:n ~ofsy:(n - i - 1) ~incy:(-n) x' y'
+        _owl_copy _kind m ~ofsx:i ~incx:n ~ofsy:(ofsy - i) ~incy:(-n) x y
       done
     );
     y
@@ -1223,25 +1195,23 @@ let rotate x degree =
     let sy = Array.copy sx in
     sy.(0) <- sx.(1);
     sy.(1) <- sx.(0);
-
     let y = empty (kind x) sy in
-    let x' = flatten x |> array1_of_genarray in
-    let y' = flatten y |> array1_of_genarray in
 
     let m = sx.(0) in
     let n = (numel x) / m in
-    let ofsx = ref 0 in
-    let ofsy = ref ((n - 1) * m) in
 
     if m <= n then (
+      let ofsx = ref 0 in
+      let ofsy = (n - 1) * m in
       for i = 0 to m - 1 do
-        _owl_copy n ~ofsx:!ofsx ~incx:1 ~ofsy:i ~incy:(-m) x' y';
+        _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:(ofsy + i) ~incy:(-m) x y;
         ofsx := !ofsx + n
       done
     )
     else (
+      let ofsy = ref ((n - 1) * m) in
       for i = 0 to n - 1 do
-        _owl_copy m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:1 x' y';
+        _owl_copy _kind m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:1 x y;
         ofsy := !ofsy - m
       done
     );
@@ -1580,7 +1550,7 @@ let rec _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1 =
     (* print_index i0; Printf.printf " === "; print_index i1; print_endline ""; *)
     let j0 = _index_nd_1d i0 l0 in
     let j1 = _index_nd_1d i1 l1 in
-    _owl_copy ls.(d0) ~ofsx:j0 ~incx:1 ~ofsy:j1 ~incy:1 x0 x1
+    _owl_copy (kind x0) ls.(d0) ~ofsx:j0 ~incx:1 ~ofsy:j1 ~incy:1 x0 x1
   )
 
 (* according to the expanded padding index, calcuate the highest dimension
@@ -1613,9 +1583,7 @@ let pad ?v d x =
   let i1 = Array.map (fun a -> a.(0)) p1 in
   let d0 = 0 in
   let d1 = _highest_padding_dimension p1 in
-  let x0 = Bigarray.reshape_1 x (numel x) in
-  let x1 = Bigarray.reshape_1 y (numel y) in
-  _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1;
+  _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x y;
   y
 
 
@@ -2529,7 +2497,6 @@ let draw_along_dim0 x n =
 (* TODO: optimise performance, slow along the low dimension *)
 let cumulative_op ?axis _cumop x =
   let y = clone x in
-  let y' = flatten y |> array1_of_genarray in
   let d = num_dims x in
   let a = match axis with
     | Some a -> a
@@ -2548,7 +2515,7 @@ let cumulative_op ?axis _cumop x =
   let ofsx = 0 in
   let ofsy = _stride.(a) in
 
-  _cumop m n y' ofsx incx_m incx_n y' ofsy incy_m incy_n;
+  _cumop m n y ofsx incx_m incx_n y ofsy incy_m incy_n;
   y
 
 
