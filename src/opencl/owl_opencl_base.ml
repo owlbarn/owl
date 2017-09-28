@@ -86,6 +86,10 @@ module Device = struct
     global_mem_size       : int;
     max_clock_frequency   : int;
     max_compute_units     : int;
+    (* TODO
+    max_work_item_dimensions : int;
+    max_work_group_size : int;
+    max_work_item_sizes   : ??? *)
     max_parameter_size    : int;
     max_samplers          : int;
     reference_count       : int;
@@ -233,11 +237,13 @@ end
 module Kernel = struct
 
   type info = {
-    function_name : string;
-    num_args : int;
+    function_name   : string;
+    num_args        : int;
+    attributes      : int;
     reference_count : int;
-    context : cl_context;
-    program : cl_program;
+    (* work_group_size : int; *)
+    context         : cl_context;
+    program         : cl_program;
   }
 
 
@@ -255,6 +261,7 @@ module Kernel = struct
   let get_info kernel = {
     function_name   = ( let p, l = get_kernel_info kernel cl_KERNEL_FUNCTION_NAME in string_from_ptr p (l - 1) );
     num_args        = ( let p, l = get_kernel_info kernel cl_KERNEL_NUM_ARGS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    attributes      = ( let p, l = get_kernel_info kernel cl_KERNEL_ATTRIBUTES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
     reference_count = ( let p, l = get_kernel_info kernel cl_KERNEL_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
     context         = ( let p, l = get_kernel_info kernel cl_KERNEL_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
     program         = ( let p, l = get_kernel_info kernel cl_KERNEL_PROGRAM in !@(char_ptr_to_cl_program_ptr p) );
@@ -316,6 +323,7 @@ module Kernel = struct
     Printf.sprintf "Kernel Info\n" ^
     Printf.sprintf "  function_name   : %s\n" info.function_name ^
     Printf.sprintf "  num_args        : %i\n" info.num_args ^
+    Printf.sprintf "  attributes      : %i\n" info.attributes ^
     Printf.sprintf "  reference_count : %i\n" info.reference_count
 
 
@@ -410,13 +418,30 @@ module Program = struct
     Printf.sprintf "  kernel_names    : %s\n" (Array.fold_left (fun a b -> a ^ b ^ " ") "" info.kernel_names)
 
 
-
 end
 
 
 
 (** event definition *)
 module Event = struct
+
+  type info = {
+    command_type             : int;
+    reference_count          : int;
+    command_execution_status : int;
+    command_queue            : cl_command_queue;
+    context                  : cl_context;
+  }
+
+
+  let get_event_info event param_name = ()
+
+
+  let get_info event = ()
+
+
+  let to_string = ""
+
 
 end
 
