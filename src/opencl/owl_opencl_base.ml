@@ -445,10 +445,43 @@ module Event = struct
     param_value, _param_value_size
 
 
-  let get_info event = ()
+  let get_info event = {
+    command_type             = ( let p, l = get_event_info event cl_EVENT_COMMAND_TYPE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    reference_count          = ( let p, l = get_event_info event cl_EVENT_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    command_execution_status = ( let p, l = get_event_info event cl_EVENT_COMMAND_EXECUTION_STATUS in !@(char_ptr_to_int32_ptr p) |> Int32.to_int );
+    command_queue            = ( let p, l = get_event_info event cl_EVENT_COMMAND_QUEUE in !@(char_ptr_to_cl_command_queue_ptr p) );
+    context                  = ( let p, l = get_event_info event cl_EVENT_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
+  }
 
 
-  let to_string = ""
+  let create ctx =
+    let err_ret = allocate int32_t 0l in
+    let event = clCreateUserEvent ctx err_ret in
+    cl_check_err !@err_ret;
+    event
+
+
+  let set_status event status = clSetUserEventStatus event (Int32.of_int status) |> cl_check_err
+
+
+  let set_callback = ()
+
+
+  let wait_for event_list = ()
+  
+
+  let retain event = clRetainEvent event |> cl_check_err
+
+
+  let release event = clReleaseEvent event |> cl_check_err
+
+
+  let to_string x =
+    let info = get_info x in
+    Printf.sprintf "Event Info\n" ^
+    Printf.sprintf "  command_type             : %i\n" info.command_type ^
+    Printf.sprintf "  reference_count          : %i\n" info.reference_count ^
+    Printf.sprintf "  command_execution_status : %i\n" info.command_execution_status
 
 
 end

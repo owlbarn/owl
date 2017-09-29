@@ -38,6 +38,9 @@ let intptr_1 = Intptr.one
 let char_ptr_to_uint32_ptr x = coerce (ptr char) (ptr uint32_t) x
 
 
+let char_ptr_to_int32_ptr x = coerce (ptr char) (ptr int32_t) x
+
+
 let char_ptr_to_size_t_ptr x = coerce (ptr char) (ptr size_t) x
 
 
@@ -54,6 +57,9 @@ let char_ptr_to_cl_context_ptr x = coerce (ptr char) (ptr cl_context) x
 
 
 let char_ptr_to_cl_program_ptr x = coerce (ptr char) (ptr cl_program) x
+
+
+let char_ptr_to_cl_command_queue_ptr x = coerce (ptr char) (ptr cl_command_queue) x
 
 
 let cl_platform_id_to_intptr x =
