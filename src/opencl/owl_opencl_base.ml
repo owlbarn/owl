@@ -286,16 +286,27 @@ module Kernel = struct
     clSetKernelArg kernel _arg_idx _arg_size _arg_val |> cl_check_err
 
 
-  let enqueue_task ?wait_for cmdq kernel =
-    (* TODO: support event list *)
+  let enqueue_task ?(wait_for=[]) cmdq kernel =
+    let event_list =
+      match wait_for with
+      | [] -> magic_null
+      | _  -> wait_for |> CArray.of_list cl_event |> CArray.start
+    in
+    let num_events = List.length wait_for |> Unsigned.UInt32.of_int in
     let event = allocate cl_event cl_event_null in
-    clEnqueueTask cmdq kernel uint32_0 magic_null event |> cl_check_err;
+    clEnqueueTask cmdq kernel num_events event_list event |> cl_check_err;
     !@event
 
 
-  let enqueue_ndrange ?wait_for ?(global_work_ofs=[]) ?(local_work_size=[]) cmdq kernel work_dim global_work_size =
-    (* TODO: support event list *)
+  let enqueue_ndrange ?(wait_for=[]) ?(global_work_ofs=[]) ?(local_work_size=[]) cmdq kernel work_dim global_work_size =
+    let event_list =
+      match wait_for with
+      | [] -> magic_null
+      | _  -> wait_for |> CArray.of_list cl_event |> CArray.start
+    in
+    let num_events = List.length wait_for |> Unsigned.UInt32.of_int in
     let event = allocate cl_event cl_event_null in
+
     let _work_dim = Unsigned.UInt32.of_int work_dim in
     let _local_work_size =
       match local_work_size with
@@ -308,7 +319,8 @@ module Kernel = struct
       | _  -> global_work_ofs |> List.map Unsigned.Size_t.of_int |> CArray.of_list size_t |> CArray.start
     in
     let _global_work_size = global_work_size |> List.map Unsigned.Size_t.of_int |> CArray.of_list size_t |> CArray.start in
-    clEnqueueNDRangeKernel cmdq kernel _work_dim _global_work_ofs _global_work_size _local_work_size uint32_0 magic_null event |> cl_check_err;
+    
+    clEnqueueNDRangeKernel cmdq kernel _work_dim _global_work_ofs _global_work_size _local_work_size num_events event_list event |> cl_check_err;
     !@event
 
 
@@ -464,18 +476,18 @@ module Event = struct
   let set_status event status = clSetUserEventStatus event (Int32.of_int status) |> cl_check_err
 
 
-  let set_callback = ()
+  let set_callback () = failwith "opencl:event:set_callback: not implemented yet"
 
 
   let wait_for event_list =
-  let _event_list =
-    match event_list with
-    | [] -> magic_null
-    | _  -> event_list |> CArray.of_list cl_event |> CArray.start
-  in
-  let num_events = List.length event_list |> Unsigned.UInt32.of_int in
-  clWaitForEvents num_events _event_list
-  
+    let _event_list =
+      match event_list with
+      | [] -> magic_null
+      | _  -> event_list |> CArray.of_list cl_event |> CArray.start
+    in
+    let num_events = List.length event_list |> Unsigned.UInt32.of_int in
+    clWaitForEvents num_events _event_list
+
 
   let retain event = clRetainEvent event |> cl_check_err
 
@@ -597,26 +609,44 @@ module Buffer = struct
   let create_sub () = ()
 
 
-  let enqueue_read ?(blocking=true) cmdq src ofs len dst =
+  let enqueue_read ?(blocking=true) ?(wait_for=[]) cmdq src ofs len dst =
     let blocking = match blocking with
       | true  -> uint32_1
       | false -> uint32_0
     in
     let ofs = Unsigned.Size_t.of_int ofs in
     let len = Unsigned.Size_t.of_int len in
-    (* TODO: support event list *)
-    clEnqueueReadBuffer cmdq src blocking ofs len dst uint32_0 magic_null magic_null |> cl_check_err
+
+    let event_list =
+      match wait_for with
+      | [] -> magic_null
+      | _  -> wait_for |> CArray.of_list cl_event |> CArray.start
+    in
+    let num_events = List.length wait_for |> Unsigned.UInt32.of_int in
+    let event = allocate cl_event cl_event_null in
+
+    clEnqueueReadBuffer cmdq src blocking ofs len dst num_events event_list event |> cl_check_err;
+    !@event
 
 
-  let enqueue_write  ?(blocking=true) cmdq src ofs len dst =
+  let enqueue_write  ?(blocking=true) ?(wait_for=[]) cmdq src ofs len dst =
     let blocking = match blocking with
       | true  -> uint32_1
       | false -> uint32_0
     in
     let ofs = Unsigned.Size_t.of_int ofs in
     let len = Unsigned.Size_t.of_int len in
-    (* TODO: support event list *)
-    clEnqueueWriteBuffer cmdq src blocking ofs len dst uint32_0 magic_null magic_null |> cl_check_err
+
+    let event_list =
+      match wait_for with
+      | [] -> magic_null
+      | _  -> wait_for |> CArray.of_list cl_event |> CArray.start
+    in
+    let num_events = List.length wait_for |> Unsigned.UInt32.of_int in
+    let event = allocate cl_event cl_event_null in
+
+    clEnqueueWriteBuffer cmdq src blocking ofs len dst num_events event_list event |> cl_check_err;
+    !@event
 
 
   let retain memobj = clRetainMemObject memobj |> cl_check_err
