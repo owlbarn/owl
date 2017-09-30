@@ -467,7 +467,14 @@ module Event = struct
   let set_callback = ()
 
 
-  let wait_for event_list = ()
+  let wait_for event_list =
+  let _event_list =
+    match event_list with
+    | [] -> magic_null
+    | _  -> event_list |> CArray.of_list cl_event |> CArray.start
+  in
+  let num_events = List.length event_list |> Unsigned.UInt32.of_int in
+  clWaitForEvents num_events _event_list
   
 
   let retain event = clRetainEvent event |> cl_check_err
