@@ -319,7 +319,7 @@ module Kernel = struct
       | _  -> global_work_ofs |> List.map Unsigned.Size_t.of_int |> CArray.of_list size_t |> CArray.start
     in
     let _global_work_size = global_work_size |> List.map Unsigned.Size_t.of_int |> CArray.of_list size_t |> CArray.start in
-    
+
     clEnqueueNDRangeKernel cmdq kernel _work_dim _global_work_ofs _global_work_size _local_work_size num_events event_list event |> cl_check_err;
     !@event
 
@@ -555,6 +555,30 @@ module CommandQueue = struct
 
 
   let finish cmdq = clFinish cmdq |> cl_check_err
+
+
+  let barrier ?(wait_for=[]) cmdq =
+    let event_list =
+      match wait_for with
+      | [] -> magic_null
+      | _  -> wait_for |> CArray.of_list cl_event |> CArray.start
+    in
+    let num_events = List.length wait_for |> Unsigned.UInt32.of_int in
+    let event = allocate cl_event cl_event_null in
+    clEnqueueBarrierWithWaitList cmdq num_events event_list event |> cl_check_err;
+    !@event
+
+
+  let marker ?(wait_for=[]) cmdq =
+    let event_list =
+      match wait_for with
+      | [] -> magic_null
+      | _  -> wait_for |> CArray.of_list cl_event |> CArray.start
+    in
+    let num_events = List.length wait_for |> Unsigned.UInt32.of_int in
+    let event = allocate cl_event cl_event_null in
+    clEnqueueMarkerWithWaitList cmdq num_events event_list event |> cl_check_err;
+    !@event
 
 
   let to_string x =
