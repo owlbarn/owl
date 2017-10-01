@@ -371,7 +371,7 @@ module Program = struct
 
 
   let get_info program =
-  (* FIXME: many information is only available after the program is built, need to check null *)
+  (* TODO: many information is only available after the program is built, need to check null *)
   let num_devices = ( let p, l = get_program_info program cl_PROGRAM_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
   {
     reference_count = ( let p, l = get_program_info program cl_PROGRAM_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
