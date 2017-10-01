@@ -258,6 +258,18 @@ module Kernel = struct
     param_value, _param_value_size
 
 
+  let get_work_group_info kernel device param_name =
+    let param_name = Unsigned.UInt32.of_int param_name in
+    let param_value_size_ret = allocate size_t size_0 in
+    clGetKernelWorkGroupInfo kernel device param_name size_0 null param_value_size_ret |> cl_check_err;
+
+    let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
+    let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
+    clGetKernelWorkGroupInfo kernel device param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
+    param_value, _param_value_size
+
+
+  (* TODO: extend to work_group_info *)
   let get_info kernel = {
     function_name   = ( let p, l = get_kernel_info kernel cl_KERNEL_FUNCTION_NAME in string_from_ptr p (l - 1) );
     num_args        = ( let p, l = get_kernel_info kernel cl_KERNEL_NUM_ARGS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
