@@ -33,24 +33,24 @@ module Platform = struct
     Array.init n (fun i -> !@(_platforms +@ i))
 
 
-  let get_platform_info plf_id param_name =
+  let get_platform_info platform param_name =
     let param_name = Unsigned.UInt32.of_int param_name in
     let param_value_size_ret = allocate size_t size_0 in
-    clGetPlatformInfo plf_id param_name size_0 null param_value_size_ret |> cl_check_err;
+    clGetPlatformInfo platform param_name size_0 null param_value_size_ret |> cl_check_err;
 
     let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
     let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
-    clGetPlatformInfo plf_id param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
+    clGetPlatformInfo platform param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
     (* null terminated string, so minus 1 *)
     string_from_ptr param_value (_param_value_size - 1)
 
 
-  let get_info plf_id = {
-    profile    = get_platform_info plf_id cl_PLATFORM_PROFILE;
-    version    = get_platform_info plf_id cl_PLATFORM_VERSION;
-    name       = get_platform_info plf_id cl_PLATFORM_NAME;
-    vendor     = get_platform_info plf_id cl_PLATFORM_VENDOR;
-    extensions = get_platform_info plf_id cl_PLATFORM_EXTENSIONS;
+  let get_info platform = {
+    profile    = get_platform_info platform cl_PLATFORM_PROFILE;
+    version    = get_platform_info platform cl_PLATFORM_VERSION;
+    name       = get_platform_info platform cl_PLATFORM_NAME;
+    vendor     = get_platform_info platform cl_PLATFORM_VENDOR;
+    extensions = get_platform_info platform cl_PLATFORM_EXTENSIONS;
   }
 
 
@@ -99,14 +99,14 @@ module Device = struct
   }
 
 
-  let get_devices plf_id =
+  let get_devices platform =
     let dev_typ = Unsigned.ULong.of_int cl_DEVICE_TYPE_ALL in
     let _num_devices = allocate uint32_t uint32_0 in
-    clGetDeviceIDs plf_id dev_typ uint32_0 cl_device_id_ptr_null _num_devices |> cl_check_err;
+    clGetDeviceIDs platform dev_typ uint32_0 cl_device_id_ptr_null _num_devices |> cl_check_err;
 
     let num_devices = Unsigned.UInt32.to_int !@_num_devices in
     let _devices = allocate_n cl_device_id num_devices in
-    clGetDeviceIDs plf_id dev_typ !@_num_devices _devices magic_null |> cl_check_err;
+    clGetDeviceIDs platform dev_typ !@_num_devices _devices magic_null |> cl_check_err;
     Array.init num_devices (fun i -> !@(_devices +@ i))
 
 
