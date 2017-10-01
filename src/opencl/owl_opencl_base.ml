@@ -110,40 +110,40 @@ module Device = struct
     Array.init num_devices (fun i -> !@(_devices +@ i))
 
 
-  let get_device_info dev_id param_name =
+  let get_device_info device param_name =
     let param_name = Unsigned.UInt32.of_int param_name in
     let param_value_size_ret = allocate size_t size_0 in
-    clGetDeviceInfo dev_id param_name size_0 null param_value_size_ret |> cl_check_err;
+    clGetDeviceInfo device param_name size_0 null param_value_size_ret |> cl_check_err;
 
     let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
     let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
-    clGetDeviceInfo dev_id param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
+    clGetDeviceInfo device param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
     param_value, _param_value_size
 
 
-  let get_info dev_id = {
-      name                  = ( let p, l = get_device_info dev_id cl_DEVICE_NAME in string_from_ptr p (l - 1) );
-      profile               = ( let p, l = get_device_info dev_id cl_DEVICE_PROFILE in string_from_ptr p (l - 1) );
-      vendor                = ( let p, l = get_device_info dev_id cl_DEVICE_VENDOR in string_from_ptr p (l - 1) );
-      version               = ( let p, l = get_device_info dev_id cl_DEVICE_VERSION in string_from_ptr p (l - 1) );
-      driver_version        = ( let p, l = get_device_info dev_id cl_DRIVER_VERSION in string_from_ptr p (l - 1) );
-      opencl_c_version      = ( let p, l = get_device_info dev_id cl_DEVICE_OPENCL_C_VERSION in string_from_ptr p (l - 1) );
-      build_in_kernels      = ( let p, l = get_device_info dev_id cl_DEVICE_BUILT_IN_KERNELS in string_from_ptr p (l - 1) );
-      typ                   = ( let p, l = get_device_info dev_id cl_DEVICE_TYPE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      address_bits          = ( let p, l = get_device_info dev_id cl_DEVICE_ADDRESS_BITS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      available             = ( let p, l = get_device_info dev_id cl_DEVICE_AVAILABLE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int |> ( = ) 1);
-      compiler_available    = ( let p, l = get_device_info dev_id cl_DEVICE_COMPILER_AVAILABLE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int |> ( = ) 1);
-      linker_available      = ( let p, l = get_device_info dev_id cl_DEVICE_LINKER_AVAILABLE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int |> ( = ) 1);
-      global_mem_cache_size = ( let p, l = get_device_info dev_id cl_DEVICE_GLOBAL_MEM_CACHE_SIZE in !@(char_ptr_to_ulong_ptr p) |> Unsigned.ULong.to_int);
-      global_mem_size       = ( let p, l = get_device_info dev_id cl_DEVICE_GLOBAL_MEM_SIZE in !@(char_ptr_to_ulong_ptr p) |> Unsigned.ULong.to_int);
-      max_clock_frequency   = ( let p, l = get_device_info dev_id cl_DEVICE_MAX_CLOCK_FREQUENCY in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      max_compute_units     = ( let p, l = get_device_info dev_id cl_DEVICE_MAX_COMPUTE_UNITS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      max_parameter_size    = ( let p, l = get_device_info dev_id cl_DEVICE_MAX_PARAMETER_SIZE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      max_samplers          = ( let p, l = get_device_info dev_id cl_DEVICE_MAX_SAMPLERS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      reference_count       = ( let p, l = get_device_info dev_id cl_DEVICE_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-      extensions            = ( let p, l = get_device_info dev_id cl_DEVICE_EXTENSIONS in string_from_ptr p (l - 1) );
-      parent_device         = ( let p, l = get_device_info dev_id cl_DEVICE_PARENT_DEVICE in !@(char_ptr_to_cl_device_id_ptr p) );
-      platform              = ( let p, l = get_device_info dev_id cl_DEVICE_PLATFORM in !@(char_ptr_to_cl_platform_id_ptr p) );
+  let get_info device = {
+      name                  = ( let p, l = get_device_info device cl_DEVICE_NAME in string_from_ptr p (l - 1) );
+      profile               = ( let p, l = get_device_info device cl_DEVICE_PROFILE in string_from_ptr p (l - 1) );
+      vendor                = ( let p, l = get_device_info device cl_DEVICE_VENDOR in string_from_ptr p (l - 1) );
+      version               = ( let p, l = get_device_info device cl_DEVICE_VERSION in string_from_ptr p (l - 1) );
+      driver_version        = ( let p, l = get_device_info device cl_DRIVER_VERSION in string_from_ptr p (l - 1) );
+      opencl_c_version      = ( let p, l = get_device_info device cl_DEVICE_OPENCL_C_VERSION in string_from_ptr p (l - 1) );
+      build_in_kernels      = ( let p, l = get_device_info device cl_DEVICE_BUILT_IN_KERNELS in string_from_ptr p (l - 1) );
+      typ                   = ( let p, l = get_device_info device cl_DEVICE_TYPE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      address_bits          = ( let p, l = get_device_info device cl_DEVICE_ADDRESS_BITS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      available             = ( let p, l = get_device_info device cl_DEVICE_AVAILABLE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int |> ( = ) 1);
+      compiler_available    = ( let p, l = get_device_info device cl_DEVICE_COMPILER_AVAILABLE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int |> ( = ) 1);
+      linker_available      = ( let p, l = get_device_info device cl_DEVICE_LINKER_AVAILABLE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int |> ( = ) 1);
+      global_mem_cache_size = ( let p, l = get_device_info device cl_DEVICE_GLOBAL_MEM_CACHE_SIZE in !@(char_ptr_to_ulong_ptr p) |> Unsigned.ULong.to_int);
+      global_mem_size       = ( let p, l = get_device_info device cl_DEVICE_GLOBAL_MEM_SIZE in !@(char_ptr_to_ulong_ptr p) |> Unsigned.ULong.to_int);
+      max_clock_frequency   = ( let p, l = get_device_info device cl_DEVICE_MAX_CLOCK_FREQUENCY in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      max_compute_units     = ( let p, l = get_device_info device cl_DEVICE_MAX_COMPUTE_UNITS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      max_parameter_size    = ( let p, l = get_device_info device cl_DEVICE_MAX_PARAMETER_SIZE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      max_samplers          = ( let p, l = get_device_info device cl_DEVICE_MAX_SAMPLERS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      reference_count       = ( let p, l = get_device_info device cl_DEVICE_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      extensions            = ( let p, l = get_device_info device cl_DEVICE_EXTENSIONS in string_from_ptr p (l - 1) );
+      parent_device         = ( let p, l = get_device_info device cl_DEVICE_PARENT_DEVICE in !@(char_ptr_to_cl_device_id_ptr p) );
+      platform              = ( let p, l = get_device_info device cl_DEVICE_PLATFORM in !@(char_ptr_to_cl_platform_id_ptr p) );
   }
 
 
