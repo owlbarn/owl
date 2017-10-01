@@ -457,6 +457,18 @@ module Event = struct
     param_value, _param_value_size
 
 
+  let get_profiling_info event param_name =
+    let param_name = Unsigned.UInt32.of_int param_name in
+    let param_value_size_ret = allocate size_t size_0 in
+    clGetEventProfilingInfo event param_name size_0 null param_value_size_ret |> cl_check_err;
+
+    let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
+    let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
+    clGetEventProfilingInfo event param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
+    param_value, _param_value_size
+
+
+  (* TODO: extend to profiling info *)
   let get_info event = {
     command_type             = ( let p, l = get_event_info event cl_EVENT_COMMAND_TYPE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
     reference_count          = ( let p, l = get_event_info event cl_EVENT_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
