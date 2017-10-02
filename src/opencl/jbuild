@@ -17,5 +17,6 @@
   (libraries (
     ctypes
     ctypes.stubs
+    owl
   ))
 ))
