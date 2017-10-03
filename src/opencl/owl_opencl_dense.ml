@@ -34,7 +34,7 @@ let pack_input = function
 
 let pack_op op input output =
   let input = Array.map pack_input input in
-  {
+  Trace {
     op;
     input;
     output;
