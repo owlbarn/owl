@@ -16,10 +16,11 @@ type t =
 and trace = {
   mutable op     : trace_op;
   mutable input  : t array;
-  mutable output : t array option;
+  mutable output : cl_mem array;
   mutable events : cl_event array;
   mutable in_shape : int array array;
   mutable out_shape : int array array;
+  mutable reference : int;
 }
 and trace_op =
   | Noop
@@ -27,17 +28,19 @@ and trace_op =
   | Sub
   | Mul
   | Div
+  | Sin
 
 
 let pack_input = function
   | Trace x -> Trace x
   | x       -> Trace {
-      op     = Noop;
-      input  = [|x|];
-      output = None;
-      events = [||];
-      in_shape = [||];
+      op        = Noop;
+      input     = [|x|];
+      output    = [||];
+      events    = [||];
+      in_shape  = [||];
       out_shape = [||];
+      reference = 0;
     }
 
 
@@ -49,33 +52,34 @@ let pack_op op input output =
     input;
     output;
     events;
-    in_shape = [||];
+    in_shape  = [||];
     out_shape = [||];
+    reference = 0;
   }
 
 
-let add x y = pack_op Add [|x; y|] None
+let add x y = pack_op Add [|x; y|] [||]
 
 
-let sub x y = pack_op Sub [|x; y|] None
+let sub x y = pack_op Sub [|x; y|] [||]
 
 
-let mul x y = pack_op Mul [|x; y|] None
+let mul x y = pack_op Mul [|x; y|] [||]
 
 
-let div x y = pack_op Div [|x; y|] None
+let div x y = pack_op Div [|x; y|] [||]
 
 
 module Add = struct
 
-  let run x y = pack_op Add [|x; y|] None
+  let run x y = pack_op Add [|x; y|] [||]
 
 
   let eval ctx cmdq kernel x =
-    let z = empty x.out_shape.(0) in
+    let z = zeros x.out_shape.(0) in
     let z' = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx z in
-    let _x = Ctypes.allocate Owl_opencl_generated.cl_mem z' in
-    let _y = Ctypes.allocate Owl_opencl_generated.cl_mem z' in
+    let _x = Ctypes.allocate Owl_opencl_generated.cl_mem x.output.(0) in
+    let _y = Ctypes.allocate Owl_opencl_generated.cl_mem x.output.(1) in
     let _z = Ctypes.allocate Owl_opencl_generated.cl_mem z' in
     let len = Ctypes.sizeof Owl_opencl_generated.cl_mem in
     Owl_opencl_base.Kernel.set_arg kernel 0 len _x;
@@ -84,7 +88,20 @@ module Add = struct
 
     let _size = numel z in
     let event = Owl_opencl_base.Kernel.enqueue_ndrange cmdq kernel 1 [_size] in
+    x.output <- [|z'|];
     x.events <- [|event|]
+
+
+end
+
+
+module Sin = struct
+
+  let run x = pack_op Sin [|x|] [||]
+
+
+  let eval x = ()
+
 
 
 end
@@ -106,9 +123,7 @@ let rec eval x =
   | Arr x   -> print_endline "arr"
   | Buf x   -> print_endline "buf"
   | Trace x -> (
-      match x.output with
-      | Some o -> print_endline "stop"
-      | None   -> (
+      if x.output = [||] then (
           let _ =
             match x.op with
             | Noop -> print_endline "Noop"
@@ -116,9 +131,13 @@ let rec eval x =
             | Sub  -> print_endline "Sub"
             | Mul  -> print_endline "Mul"
             | Div  -> print_endline "Div"
+            | Sin  -> print_endline "Sin"
           in
           Array.iter eval x.input
         )
+      else (
+        print_endline "stop"
+      )
     )
 
 
