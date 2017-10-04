@@ -58,6 +58,9 @@ let pack_op op input output =
   }
 
 
+let inc_ref x = x.reference <- x.reference + 1
+
+
 let add x y = pack_op Add [|x; y|] [||]
 
 
@@ -72,7 +75,10 @@ let div x y = pack_op Div [|x; y|] [||]
 
 module Add = struct
 
-  let run x y = pack_op Add [|x; y|] [||]
+  let run x y =
+    inc_ref x;
+    inc_ref y;
+    pack_op Add [|x; y|] [||]
 
 
   let eval ctx cmdq kernel x =
