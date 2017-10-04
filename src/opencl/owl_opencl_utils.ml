@@ -33,6 +33,11 @@ let intptr_0 = Intptr.zero
 let intptr_1 = Intptr.one
 
 
+let ulong_0 = Unsigned.ULong.zero
+
+let ulong_1 = Unsigned.ULong.one
+
+
 (** coerce from type a to type b *)
 
 let char_ptr_to_uint32_ptr x = coerce (ptr char) (ptr uint32_t) x

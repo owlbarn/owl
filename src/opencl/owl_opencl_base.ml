@@ -698,14 +698,15 @@ module Buffer = struct
     !@event
 
 
-  let enqueue_map ?(blocking=true) ?(wait_for=[]) cmdq src ofs len dst =
+  let enqueue_map ?(blocking=true) ?(wait_for=[]) ?(flags=[]) cmdq src ofs len dst =
+    let ofs = Unsigned.Size_t.of_int ofs in
+    let len = Unsigned.Size_t.of_int len in
+    let flags = List.fold_left ( lor ) 0 flags |> Unsigned.ULong.of_int in
+
     let blocking = match blocking with
       | true  -> uint32_1
       | false -> uint32_0
     in
-    let ofs = Unsigned.Size_t.of_int ofs in
-    let len = Unsigned.Size_t.of_int len in
-
     let event_list =
       match wait_for with
       | [] -> magic_null
@@ -715,13 +716,22 @@ module Buffer = struct
     let event = allocate cl_event cl_event_null in
     let err_ret = allocate int32_t 0l in
 
-    (* TODO *)
-    clEnqueueMapBuffer cmdq src blocking Unsigned.ULong.zero ofs len num_events event_list event err_ret;
+    let buf_ptr = clEnqueueMapBuffer cmdq src blocking flags ofs len num_events event_list event err_ret in
     cl_check_err !@err_ret;
+    !@event, buf_ptr
+
+
+  let enqueue_unmap ?(wait_for=[]) cmdq buf mem_ptr =
+    let event_list =
+      match wait_for with
+      | [] -> magic_null
+      | _  -> wait_for |> CArray.of_list cl_event |> CArray.start
+    in
+    let num_events = List.length wait_for |> Unsigned.UInt32.of_int in
+    let event = allocate cl_event cl_event_null in
+
+    clEnqueueUnmapMemObject cmdq buf mem_ptr num_events event_list event |> cl_check_err;
     !@event
-
-
-  let enqueue_unmap () = ()
 
 
   let retain memobj = clRetainMemObject memobj |> cl_check_err

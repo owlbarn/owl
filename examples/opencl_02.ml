@@ -73,11 +73,9 @@ let _ = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for:[e] cmdq kernel1 1 [_si
 
 
 Log.info "fetch result ...";;
-Owl_opencl_base.Buffer.enqueue_read cmdq c' 0 len (Ctypes.to_voidp _c);;
-Dense.Ndarray.Generic.pp_dsnda Format.std_formatter a;;
-Dense.Ndarray.Generic.pp_dsnda Format.std_formatter b;;
-Dense.Ndarray.Generic.pp_dsnda Format.std_formatter c;;
-Dense.Ndarray.Generic.pp_dsnda Format.std_formatter d;;
+(* Owl_opencl_base.Buffer.enqueue_read cmdq c' 0 len (Ctypes.to_voidp _c);; *)
+Owl_opencl_base.CommandQueue.finish cmdq;;
+
 
 Log.info "clean up ...";;
 Owl_opencl_base.Buffer.release a';;
@@ -87,3 +85,10 @@ Owl_opencl_base.Buffer.release d';;
 Owl_opencl_base.Program.release program;;
 Owl_opencl_base.CommandQueue.release cmdq;;
 Owl_opencl_base.Context.release ctx;;
+
+
+Log.info "print out ...";;
+Dense.Ndarray.Generic.pp_dsnda Format.std_formatter a;;
+Dense.Ndarray.Generic.pp_dsnda Format.std_formatter b;;
+Dense.Ndarray.Generic.pp_dsnda Format.std_formatter c;;
+Dense.Ndarray.Generic.pp_dsnda Format.std_formatter d;;
