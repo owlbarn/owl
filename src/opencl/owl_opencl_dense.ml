@@ -124,7 +124,8 @@ module Sin = struct
 
 
   let eval ctx cmdq kernel x =
-    if x.reference = 1 then (
+    let input = x.input.(0) |> get_trace in
+    if input.reference = 1 then (
       let a = (x.input.(0) |> get_trace).output.(0) in
       let _a = Ctypes.allocate Owl_opencl_generated.cl_mem a in
       let l = Ctypes.sizeof Owl_opencl_generated.cl_mem in
