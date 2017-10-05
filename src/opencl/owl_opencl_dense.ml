@@ -31,8 +31,13 @@ and trace_op =
   | Sin
 
 
+(* helper functions *)
+
 let pack_input = function
-  | Trace x -> Trace x
+  | Trace x -> (
+      x.reference <- x.reference + 1;
+      Trace x
+    )
   | x       -> Trace {
       op        = Noop;
       input     = [|x|];
@@ -58,8 +63,18 @@ let pack_op op input output =
   }
 
 
-let inc_ref x = x.reference <- x.reference + 1
+let get_trace = function
+  | Trace x -> x
+  | _       -> failwith "owl_opencl_dense:get_trace"
 
+
+let get_input_event x =
+  Array.fold_left (fun a i ->
+      Array.append a (get_trace i).events
+  ) [||] x.input
+
+
+(* math functions *)
 
 let add x y = pack_op Add [|x; y|] [||]
 
@@ -75,10 +90,7 @@ let div x y = pack_op Div [|x; y|] [||]
 
 module Add = struct
 
-  let run x y =
-    inc_ref x;
-    inc_ref y;
-    pack_op Add [|x; y|] [||]
+  let run x y = pack_op Add [|x; y|] [||]
 
 
   let eval ctx cmdq kernel x =
@@ -106,7 +118,33 @@ module Sin = struct
   let run x = pack_op Sin [|x|] [||]
 
 
-  let eval x = ()
+  let eval ctx cmdq kernel x =
+    if x.reference = 1 then (
+      let a = (x.input.(0) |> get_trace).output.(0) in
+      let _a = Ctypes.allocate Owl_opencl_generated.cl_mem a in
+      let l = Ctypes.sizeof Owl_opencl_generated.cl_mem in
+      Owl_opencl_base.Kernel.set_arg kernel 0 l _a;
+
+      let _size = Array.fold_left ( * ) 1 x.out_shape.(0) in
+      let event = Owl_opencl_base.Kernel.enqueue_ndrange cmdq kernel 1 [_size] in
+      x.output <- [|a|];
+      x.events <- Array.append (get_input_event x) [|event|]
+    )
+    else (
+      let a = (x.input.(0) |> get_trace).output.(0) in
+      let b = zeros x.out_shape.(0) in
+      let b_buf = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b in
+      let _b = Ctypes.allocate Owl_opencl_generated.cl_mem b_buf in
+      let l = Ctypes.sizeof Owl_opencl_generated.cl_mem in
+
+      let event0 = Owl_opencl_base.Buffer.enqueue_read cmdq a 0 l (Ctypes.to_voidp _b) in
+      Owl_opencl_base.Kernel.set_arg kernel 0 l _b;
+
+      let _size = Array.fold_left ( * ) 1 x.out_shape.(0) in
+      let event1 = Owl_opencl_base.Kernel.enqueue_ndrange cmdq kernel 1 [_size] in
+      x.output <- [|b_buf|];
+      x.events <- Array.append (get_input_event x) [|event0;event1|]
+    )
 
 
 
