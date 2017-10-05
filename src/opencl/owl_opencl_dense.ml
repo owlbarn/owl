@@ -8,6 +8,11 @@ open Owl_dense_ndarray_s
 open Owl_opencl_generated
 
 
+type mem = {
+  arr : arr;
+  mem : cl_mem;
+}
+
 type t =
   | F     of float
   | Arr   of arr
@@ -126,9 +131,10 @@ module Sin = struct
       Owl_opencl_base.Kernel.set_arg kernel 0 l _a;
 
       let _size = Array.fold_left ( * ) 1 x.out_shape.(0) in
-      let event = Owl_opencl_base.Kernel.enqueue_ndrange cmdq kernel 1 [_size] in
+      let wait_for = get_input_event x |> Array.to_list in
+      let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
       x.output <- [|a|];
-      x.events <- Array.append (get_input_event x) [|event|]
+      x.events <- [|event|]
     )
     else (
       let a = (x.input.(0) |> get_trace).output.(0) in
@@ -137,13 +143,15 @@ module Sin = struct
       let _b = Ctypes.allocate Owl_opencl_generated.cl_mem b_buf in
       let l = Ctypes.sizeof Owl_opencl_generated.cl_mem in
 
-      let event0 = Owl_opencl_base.Buffer.enqueue_read cmdq a 0 l (Ctypes.to_voidp _b) in
+      let wait_for = get_input_event x |> Array.to_list in
+      let event0 = Owl_opencl_base.Buffer.enqueue_read ~blocking:false ~wait_for cmdq a 0 l (Ctypes.to_voidp _b) in
       Owl_opencl_base.Kernel.set_arg kernel 0 l _b;
 
       let _size = Array.fold_left ( * ) 1 x.out_shape.(0) in
-      let event1 = Owl_opencl_base.Kernel.enqueue_ndrange cmdq kernel 1 [_size] in
+      let wait_for = [|event0|] |> Array.to_list in
+      let event1 = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
       x.output <- [|b_buf|];
-      x.events <- Array.append (get_input_event x) [|event0;event1|]
+      x.events <- [|event1|]
     )
 
 
