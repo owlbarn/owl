@@ -24,7 +24,6 @@ let prog_s = "
 
 Log.info "pick platform, device, build program ...";;
 let l = Owl_opencl_base.Platform.get_platforms ();;
-let m = Owl_opencl_base.Device.get_devices l.(0);;
 let ctx = Owl_opencl_base.Context.create_from_type Owl_opencl_generated.cl_DEVICE_TYPE_GPU;;
 let gpu = Owl_opencl_base.Context.((get_info ctx).devices.(0));;
 let cmdq = Owl_opencl_base.CommandQueue.create ctx gpu;;
