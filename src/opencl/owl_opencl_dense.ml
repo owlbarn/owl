@@ -195,23 +195,29 @@ let op_to_kernel x =
   | _ -> failwith "op_to_kernel"
 
 
-let rec eval x =
-  match x with
-  | F x     -> print_endline "float"
-  | Arr x   -> print_endline "arr"
-  | Buf x   -> print_endline "buf"
-  | Trace x -> (
-      Array.iter eval x.input;
-      if x.output = [||] then (
-        match x.op with
-        | Noop -> Noop.eval Owl_opencl_kernels.default x
-        | Sin  -> Sin.eval Owl_opencl_kernels.default x
-        | _    -> failwith "not implemented yet"
+let eval x =
+  let rec _eval x =
+    match x with
+    | F x     -> print_endline "float"
+    | Arr x   -> print_endline "arr"
+    | Buf x   -> print_endline "buf"
+    | Trace x -> (
+        Array.iter _eval x.input;
+        if x.output = [||] then (
+          match x.op with
+          | Noop -> Noop.eval Owl_opencl_kernels.default x
+          | Sin  -> Sin.eval Owl_opencl_kernels.default x
+          | _    -> failwith "not implemented yet"
+        )
+        else (
+          print_endline "stop"
+        )
       )
-      else (
-        print_endline "stop"
-      )
-    )
+  in
+  let cmdq = Owl_opencl_kernels.(default.command_queue) in
+  Owl_opencl_base.CommandQueue.finish cmdq;
+  x
+
 
 
 (* ends here *)
