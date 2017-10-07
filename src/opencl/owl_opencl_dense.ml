@@ -76,12 +76,37 @@ let get_input_event x =
   |> Array.to_list
 
 
+(* FIXME: scalar is not taken into account *)
+let allocate_operand ctx x =
+  let src = Owl_utils.Stack.make () in
+  let dst = Owl_utils.Stack.make () in
+  Array.iter (fun a ->
+    let a_val = a.outval.(0) in
+    let a_mem = a.outmem.(0) in
+    let a_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem a_mem in
+
+    let b_val, b_mem, b_ptr =
+      match a.refnum = 1 with
+      | true  -> a_val, a_mem, a_ptr
+      | false -> (
+          let b_val = zeros (a_val |> unpack_arr |> shape) in
+          let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
+          let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
+          Arr b_val, b_mem, b_ptr
+        )
+    in
+
+    Owl_utils.Stack.push src (a_val, a_mem, a_ptr);
+    Owl_utils.Stack.push dst (b_val, b_mem, b_ptr);
+  ) x.input;
+  Owl_utils.Stack.(to_array src, to_array dst)
+
+
 (* math operator modules *)
 
 module Noop = struct
 
   let eval context x =
-    print_endline "@@@"; flush_all ();
     let ctx = Owl_opencl_kernels.(context.context) in
     match x.outval.(0) with
     | Arr y -> (
@@ -101,28 +126,15 @@ module Sin = struct
   let mk_kernel program = Owl_opencl_base.Kernel.create program "owl_opencl_sin"
 
   let eval context x =
-    print_endline "==="; flush_all ();
     let ctx = Owl_opencl_kernels.(context.context) in
     let cmdq = Owl_opencl_kernels.(context.command_queue) in
     let kernel = mk_kernel Owl_opencl_kernels.(context.program) in
 
-    let input = x.input.(0) in
-    let a_val = input.outval.(0) in
-    let a_mem = input.outmem.(0) in
-    let a_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem a_mem in
+    let src, dst = allocate_operand ctx x in
+    let a_val, a_mem, a_ptr = src.(0) in
+    let b_val, b_mem, b_ptr = dst.(0) in
     let _size = a_val |> unpack_arr |> numel in
     let wait_for = get_input_event x in
-
-    let b_val, b_mem, b_ptr =
-      match input.refnum = 1 with
-      | true  -> a_val, a_mem, a_ptr
-      | false -> (
-          let b_val = zeros (a_val |> unpack_arr |> shape) in
-          let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
-          let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
-          Arr b_val, b_mem, b_ptr
-        )
-    in
 
     Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
     Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
@@ -146,9 +158,7 @@ let eval x =
       | Sin  -> Sin.eval Owl_opencl_kernels.default x
       | _    -> failwith "not implemented yet"
     )
-    else (
-          print_endline "stop"
-    )
+    else print_endline "stop"
   in
   _eval (unpack_trace x);
   let cmdq = Owl_opencl_kernels.(default.command_queue) in
