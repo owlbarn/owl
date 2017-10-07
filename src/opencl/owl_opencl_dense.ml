@@ -5,6 +5,8 @@
 
 open Owl_dense_ndarray_s
 
+open Owl_opencl_utils
+
 open Owl_opencl_generated
 
 
@@ -71,6 +73,7 @@ let get_input_event x =
   Array.fold_left (fun a i ->
       Array.append a i.events
   ) [||] x.input
+  |> Array.to_list
 
 
 (* math operator modules *)
@@ -104,34 +107,29 @@ module Sin = struct
     let kernel = mk_kernel Owl_opencl_kernels.(context.program) in
 
     let input = x.input.(0) in
+    let a_val = input.outval.(0) in
     let a_mem = input.outmem.(0) in
-    let _a = Ctypes.allocate Owl_opencl_generated.cl_mem a_mem in
-    let l = Ctypes.sizeof Owl_opencl_generated.cl_mem in
-    let _size = input.outval.(0) |> unpack_arr |> numel in
-    let wait_for = get_input_event x |> Array.to_list in
+    let a_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem a_mem in
+    let _size = a_val |> unpack_arr |> numel in
+    let wait_for = get_input_event x in
 
-    if input.refnum = 1 then (
-      Owl_opencl_base.Kernel.set_arg kernel 0 l _a;
-      Owl_opencl_base.Kernel.set_arg kernel 1 l _a;
+    let b_val, b_mem, b_ptr =
+      match input.refnum = 1 with
+      | true  -> a_val, a_mem, a_ptr
+      | false -> (
+          let b_val = zeros (a_val |> unpack_arr |> shape) in
+          let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
+          let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
+          Arr b_val, b_mem, b_ptr
+        )
+    in
 
-      let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
-      x.outval <- input.outval;
-      x.outmem <- [|a_mem|];
-      x.events <- [|event|]
-    )
-    else (
-      let b_val = zeros (input.outval.(0) |> unpack_arr |> shape) in
-      let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
-      let _b = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
-
-      Owl_opencl_base.Kernel.set_arg kernel 0 l _a;
-      Owl_opencl_base.Kernel.set_arg kernel 1 l _b;
-
-      let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
-      x.outval <- [|Arr b_val|];
-      x.outmem <- [|b_mem|];
-      x.events <- [|event|]
-    )
+    Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
+    Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
+    let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
+    x.outval <- [|b_val|];
+    x.outmem <- [|b_mem|];
+    x.events <- [|event|]
 
 
 end

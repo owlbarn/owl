@@ -35,7 +35,11 @@ let intptr_1 = Intptr.one
 
 let ulong_0 = Unsigned.ULong.zero
 
+
 let ulong_1 = Unsigned.ULong.one
+
+
+let sizeof_cl_mem = sizeof cl_mem
 
 
 (** coerce from type a to type b *)
