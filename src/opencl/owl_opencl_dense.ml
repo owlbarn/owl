@@ -5,31 +5,9 @@
 
 open Owl_dense_ndarray_s
 
+open Owl_opencl_types
+
 open Owl_opencl_utils
-
-open Owl_opencl_generated
-
-
-type t =
-  | F     of float
-  | Arr   of arr
-  | Trace of trace
-and trace = {
-  mutable op     : trace_op;
-  mutable input  : trace array;
-  mutable outval : t array;        (* output value, not Trace *)
-  mutable outmem : cl_mem array;
-  mutable events : cl_event array;
-  mutable refnum : int;
-}
-and trace_op =
-  | Noop
-  | Add
-  | Sub
-  | Mul
-  | Div
-  | Sin
-  | Cos
 
 
 (* helper functions *)
@@ -107,10 +85,10 @@ module Operand = struct
 
 
   let map kernel_name x =
-    let context = Owl_opencl_kernels.default in
-    let ctx = Owl_opencl_kernels.(context.context) in
-    let cmdq = Owl_opencl_kernels.(context.command_queue) in
-    let kernel = Owl_opencl_base.Kernel.create Owl_opencl_kernels.(context.program) kernel_name in
+    let context = Owl_opencl_context.default in
+    let ctx = Owl_opencl_context.(context.context) in
+    let cmdq = Owl_opencl_context.(context.command_queue) in
+    let kernel = Owl_opencl_base.Kernel.create Owl_opencl_context.(context.program) kernel_name in
 
     let src, dst = allocate_operand ctx x in
     let a_val, a_mem, a_ptr = src.(0) in
@@ -133,7 +111,7 @@ end
 module Noop = struct
 
   let eval x =
-    let ctx = Owl_opencl_kernels.(default.context) in
+    let ctx = Owl_opencl_context.(default.context) in
     match x.outval.(0) with
     | Arr y -> (
         let y' = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx y in
@@ -177,7 +155,7 @@ let eval x =
     else print_endline "stop"
   in
   _eval (unpack_trace x);
-  let cmdq = Owl_opencl_kernels.(default.command_queue) in
+  let cmdq = Owl_opencl_context.(default.command_queue) in
   Owl_opencl_base.CommandQueue.finish cmdq;
   x
 

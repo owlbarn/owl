@@ -18,6 +18,7 @@ type context = {
 
 (* let kernel_tbl = Hashtbl.create 512 *)
 
+(* FIXME: hardcoded path *)
 let compile_kernels () =
   let ctx = Context.create_from_type cl_DEVICE_TYPE_GPU in
   let gpu = Context.((get_info ctx).devices).(0) in
@@ -39,7 +40,7 @@ module Default = struct
 
   let init () = ()
 
-  
+
 
 end
 
