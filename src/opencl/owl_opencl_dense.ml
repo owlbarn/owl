@@ -214,6 +214,7 @@ let eval x =
         )
       )
   in
+  _eval x;
   let cmdq = Owl_opencl_kernels.(default.command_queue) in
   Owl_opencl_base.CommandQueue.finish cmdq;
   x
