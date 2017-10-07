@@ -42,3 +42,13 @@ __kernel void owl_opencl_sin(
   int gid = get_global_id(0);
   b[gid] = sin(a[gid]);
 }
+
+
+__kernel void owl_opencl_cos(
+  __global float *a,
+  __global float *b
+)
+{
+  int gid = get_global_id(0);
+  b[gid] = cos(a[gid]);
+}
