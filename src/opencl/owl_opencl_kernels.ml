@@ -33,3 +33,16 @@ let compile_kernels () =
 
 
 let default = compile_kernels ()
+
+
+module Default = struct
+
+  let init () = ()
+
+  
+
+end
+
+
+
+(* end here *)

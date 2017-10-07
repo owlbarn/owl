@@ -106,7 +106,12 @@ module Operand = struct
     Owl_utils.Stack.(to_array src, to_array dst)
 
 
-  let map ctx cmdq kernel x =
+  let map kernel_name x =
+    let context = Owl_opencl_kernels.default in
+    let ctx = Owl_opencl_kernels.(context.context) in
+    let cmdq = Owl_opencl_kernels.(context.command_queue) in
+    let kernel = Owl_opencl_base.Kernel.create Owl_opencl_kernels.(context.program) kernel_name in
+
     let src, dst = allocate_operand ctx x in
     let a_val, a_mem, a_ptr = src.(0) in
     let b_val, b_mem, b_ptr = dst.(0) in
@@ -127,8 +132,8 @@ end
 
 module Noop = struct
 
-  let eval context x =
-    let ctx = Owl_opencl_kernels.(context.context) in
+  let eval x =
+    let ctx = Owl_opencl_kernels.(default.context) in
     match x.outval.(0) with
     | Arr y -> (
         let y' = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx y in
@@ -143,13 +148,7 @@ module Sin = struct
 
   let run x = pack_op Sin [|x|] [||] [||]
 
-  let mk_kernel program = Owl_opencl_base.Kernel.create program "owl_opencl_sin"
-
-  let eval context x =
-    let ctx = Owl_opencl_kernels.(context.context) in
-    let cmdq = Owl_opencl_kernels.(context.command_queue) in
-    let kernel = mk_kernel Owl_opencl_kernels.(context.program) in
-    Operand.map ctx cmdq kernel x
+  let eval x = Operand.map "owl_opencl_sin" x
 
 end
 
@@ -158,14 +157,7 @@ module Cos = struct
 
   let run x = pack_op Cos [|x|] [||] [||]
 
-  let mk_kernel program = Owl_opencl_base.Kernel.create program "owl_opencl_cos"
-
-  let eval context x =
-    let ctx = Owl_opencl_kernels.(context.context) in
-    let cmdq = Owl_opencl_kernels.(context.command_queue) in
-    let kernel = mk_kernel Owl_opencl_kernels.(context.program) in
-    Operand.map ctx cmdq kernel x
-
+  let eval x = Operand.map "owl_opencl_cos" x
 
 end
 
@@ -177,9 +169,9 @@ let eval x =
     Array.iter _eval x.input;
     if x.outmem = [||] then (
       match x.op with
-      | Noop -> Noop.eval Owl_opencl_kernels.default x
-      | Sin  -> Sin.eval Owl_opencl_kernels.default x
-      | Cos  -> Cos.eval Owl_opencl_kernels.default x
+      | Noop -> Noop.eval x
+      | Sin  -> Sin.eval x
+      | Cos  -> Cos.eval x
       | _    -> failwith "not implemented yet"
     )
     else print_endline "stop"
