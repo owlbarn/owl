@@ -83,7 +83,7 @@ let get_input_event x =
 
 
 (* FIXME: scalar is not taken into account *)
-let allocate_operand ctx x =
+let allocate ctx x =
   let src = Owl_utils.Stack.make () in
   let dst = Owl_utils.Stack.make () in
   Array.iter (fun a ->
@@ -108,13 +108,14 @@ let allocate_operand ctx x =
   Owl_utils.Stack.(to_array src, to_array dst)
 
 
-let map kernel_name x =
+let map fun_name x =
   let context = Owl_opencl_context.default in
   let ctx = Owl_opencl_context.(context.context) in
   let cmdq = Owl_opencl_context.(context.command_queue) in
-  let kernel = Owl_opencl_base.Kernel.create Owl_opencl_context.(context.program) kernel_name in
+  (* FIXME *)
+  let kernel = Owl_opencl_context.(mk_kernel Float32 fun_name context.program) in
 
-  let src, dst = allocate_operand ctx x in
+  let src, dst = allocate ctx x in
   let a_val, a_mem, a_ptr = src.(0) in
   let b_val, b_mem, b_ptr = dst.(0) in
   let _size = a_val |> unpack_arr |> numel in
@@ -135,9 +136,8 @@ let eval x =
       match x.op with
       | Noop _   -> ()
       | Map  s   -> map s x
-      | Reduce s -> failwith "not implemented yet"
+      | Reduce s -> failwith "eval:reduce:not implemented yet"
     )
-    else print_endline "stop"
   in
   _eval (unpack_trace x);
   let cmdq = Owl_opencl_context.(default.command_queue) in
