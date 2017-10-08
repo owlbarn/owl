@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Bigarray
 
 open Owl_opencl_base
 
@@ -34,6 +35,18 @@ let compile_kernels () =
 
 
 let default = compile_kernels ()
+
+
+let mk_kernel
+  : type a b. (a, b) kind -> string -> cl_program -> cl_kernel
+  = fun kind fun_name program ->
+  let kernel_name =
+    match kind with
+    | Float32 -> "owl_opencl_float32_" ^ fun_name
+    | Float64 -> "owl_opencl_float64_" ^ fun_name
+    | _       -> failwith "owl_opencl_context:mk_kernel"
+  in
+  Kernel.create program kernel_name
 
 
 module Default = struct

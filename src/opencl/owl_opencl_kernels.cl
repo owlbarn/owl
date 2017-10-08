@@ -1,4 +1,4 @@
-__kernel void owl_opencl_add(__global const float *a,
+__kernel void owl_opencl_float32_add(__global const float *a,
                   __global const float *b,
                   __global float *result)
 {
@@ -7,7 +7,7 @@ __kernel void owl_opencl_add(__global const float *a,
 }
 
 
-__kernel void owl_opencl_sub(__global const float *a,
+__kernel void owl_opencl_float32_sub(__global const float *a,
                   __global const float *b,
                   __global float *result)
 {
@@ -16,7 +16,7 @@ __kernel void owl_opencl_sub(__global const float *a,
 }
 
 
-__kernel void owl_opencl_mul(__global const float *a,
+__kernel void owl_opencl_float32_mul(__global const float *a,
                   __global const float *b,
                   __global float *result)
 {
@@ -25,7 +25,7 @@ __kernel void owl_opencl_mul(__global const float *a,
 }
 
 
-__kernel void owl_opencl_div(__global const float *a,
+__kernel void owl_opencl_float32_div(__global const float *a,
                   __global const float *b,
                   __global float *result)
 {
@@ -34,7 +34,7 @@ __kernel void owl_opencl_div(__global const float *a,
 }
 
 
-__kernel void owl_opencl_sin(
+__kernel void owl_opencl_float32_sin(
   __global float *a,
   __global float *b
 )
@@ -44,7 +44,7 @@ __kernel void owl_opencl_sin(
 }
 
 
-__kernel void owl_opencl_cos(
+__kernel void owl_opencl_float32_cos(
   __global float *a,
   __global float *b
 )
