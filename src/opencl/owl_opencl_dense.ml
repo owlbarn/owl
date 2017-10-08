@@ -10,5 +10,6 @@ let sin x = Owl_opencl_operand.(pack_op (Map "sin") [|x|])
 
 let cos x = Owl_opencl_operand.(pack_op (Map "cos") [|x|])
 
+let add x y = Owl_opencl_operand.(pack_op (Combine "add") [|x; y|])
 
 (* ends here *)

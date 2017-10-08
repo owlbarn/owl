@@ -23,9 +23,10 @@ and trace = {
   mutable refnum : int;
 }
 and trace_op =
-  | Noop   of string
-  | Map    of string
-  | Reduce of string
+  | Noop    of string
+  | Map     of string
+  | Reduce  of string
+  | Combine of string
 
 
 let pack_input = function
@@ -76,10 +77,24 @@ let unpack_trace = function
 
 
 let get_input_event x =
-  Array.fold_left (fun a i ->
-      Array.append a i.events
-  ) [||] x.input
+  x.input
+  |> Array.fold_left (fun a i -> Array.append a i.events) [||]
   |> Array.to_list
+
+
+let get_input_kind x i =
+  assert (Array.length x.input > i);
+  let input_i = x.input.(i) in
+  match input_i.outval.(i) with
+  | Arr y -> Owl_dense_ndarray_generic.kind y
+  | _     -> failwith "owl_opencl_operand:get_input_kind"
+
+
+let get_val_mem_ptr x i =
+  let x_val = x.outval.(0) in
+  let x_mem = x.outmem.(0) in
+  let x_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem x_mem in
+  x_val, x_mem, x_ptr
 
 
 (* FIXME: scalar is not taken into account *)
@@ -87,9 +102,7 @@ let allocate ctx x =
   let src = Owl_utils.Stack.make () in
   let dst = Owl_utils.Stack.make () in
   Array.iter (fun a ->
-    let a_val = a.outval.(0) in
-    let a_mem = a.outmem.(0) in
-    let a_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem a_mem in
+    let a_val, a_mem, a_ptr = get_val_mem_ptr a 0 in
 
     let b_val, b_mem, b_ptr =
       match a.refnum = 1 with
@@ -112,8 +125,8 @@ let map fun_name x =
   let context = Owl_opencl_context.default in
   let ctx = Owl_opencl_context.(context.context) in
   let cmdq = Owl_opencl_context.(context.command_queue) in
-  (* FIXME *)
-  let kernel = Owl_opencl_context.(mk_kernel Float32 fun_name context.program) in
+  let kind = get_input_kind x 0 in
+  let kernel = Owl_opencl_context.(mk_kernel kind fun_name context.program) in
 
   let src, dst = allocate ctx x in
   let a_val, a_mem, a_ptr = src.(0) in
@@ -129,14 +142,45 @@ let map fun_name x =
   x.events <- [|event|]
 
 
+(* TODO *)
+let reduce () = ()
+
+
+let combine fun_name x =
+  let context = Owl_opencl_context.default in
+  let ctx = Owl_opencl_context.(context.context) in
+  let cmdq = Owl_opencl_context.(context.command_queue) in
+  let kind = get_input_kind x 0 in
+  let kernel = Owl_opencl_context.(mk_kernel kind fun_name context.program) in
+
+  let src = Array.mapi (fun i a -> get_val_mem_ptr a i) x.input in
+  let tmp = Owl_utils.array_filteri_v (fun i a -> a.refnum = 1, i) x.input in
+  let dst = match Array.length tmp > 0 with
+    | true  -> (allocate ctx x |> snd).(tmp.(0))
+    | false -> (allocate ctx x |> snd).(0)
+  in
+
+  let b_val, b_mem, _ = dst in
+  let _size = b_val |> unpack_arr |> numel in
+  let wait_for = Array.fold_left (fun a b -> a @ (get_input_event b)) [] x.input in
+
+  let args = Array.append src [|dst|] in
+  Array.iteri (fun i (_, _, a_ptr) -> Owl_opencl_base.Kernel.set_arg kernel i sizeof_cl_mem a_ptr) args;
+  let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
+  x.outval <- [|b_val|];
+  x.outmem <- [|b_mem|];
+  x.events <- [|event|]
+
+
 let eval x =
   let rec _eval x =
     Array.iter _eval x.input;
     if x.outmem = [||] then (
       match x.op with
-      | Noop _   -> ()
-      | Map  s   -> map s x
-      | Reduce s -> failwith "eval:reduce:not implemented yet"
+      | Noop _    -> ()
+      | Map s     -> map s x
+      | Reduce s  -> failwith "eval:reduce:not implemented yet"
+      | Combine s -> combine s x
     )
   in
   _eval (unpack_trace x);
