@@ -12,7 +12,7 @@ open Owl_opencl_generated
 module CI = Cstubs_internals
 
 
-(** platform definition *)
+(** Platform definition *)
 module Platform = struct
 
   type info = {
@@ -67,7 +67,7 @@ end
 
 
 
-(** device definition *)
+(** Device definition *)
 module Device = struct
 
   type info = {
@@ -164,7 +164,7 @@ end
 
 
 
-(** context definition *)
+(** Context definition *)
 module Context = struct
 
   type info = {
@@ -234,7 +234,101 @@ end
 
 
 
-(** kernel definition *)
+(** Program definition *)
+module Program = struct
+
+  type info = {
+    reference_count : int;
+    context         : cl_context;
+    num_devices     : int;
+    devices         : cl_device_id array;
+    source          : string;
+    binary_sizes    : int array;
+    binaries        : CI.voidp array;
+    num_kernels     : int;
+    kernel_names    : string array;
+  }
+
+
+  let get_program_info program param_name =
+    let param_name = Unsigned.UInt32.of_int param_name in
+    let param_value_size_ret = allocate size_t size_0 in
+    clGetProgramInfo program param_name size_0 null param_value_size_ret |> cl_check_err;
+
+    let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
+    let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
+    clGetProgramInfo program param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
+    param_value, _param_value_size
+
+
+  let get_info program =
+  (* TODO: many information is only available after the program is built, need to check null *)
+  let num_devices = ( let p, l = get_program_info program cl_PROGRAM_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
+  {
+    reference_count = ( let p, l = get_program_info program cl_PROGRAM_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    context         = ( let p, l = get_program_info program cl_PROGRAM_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
+    num_devices     = num_devices;
+    devices         = ( let p, l = get_program_info program cl_PROGRAM_DEVICES in let _devices = char_ptr_to_cl_device_id_ptr p in Array.init num_devices (fun i -> !@(_devices +@ i)) );
+    source          = ( let p, l = get_program_info program cl_PROGRAM_SOURCE in string_from_ptr p (l - 1) );
+    binary_sizes    = [||]; (* TODO: not implemented yet *)
+    binaries        = [||]; (* TODO: not implemented yet *)
+    num_kernels     = ( let p, l = get_program_info program cl_PROGRAM_NUM_KERNELS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    kernel_names    = ( let p, l = get_program_info program cl_PROGRAM_KERNEL_NAMES in (string_from_ptr p (l - 1)) |> Str.split (Str.regexp ";") |> Array.of_list );
+  }
+
+
+  let create_with_source ctx str =
+    let str_num = Array.length str in
+    let _str = allocate_n (ptr char) ~count:str_num in
+    Array.iteri (fun i s ->
+      (_str +@ i) <-@ (char_ptr_of_string s);
+    ) str;
+
+    let err_ret = allocate int32_t 0l in
+    let str_num = Unsigned.UInt32.of_int str_num in
+    let program = clCreateProgramWithSource ctx str_num _str magic_null err_ret in
+    cl_check_err !@err_ret;
+    program
+
+
+  let create_with_binary = ()
+
+
+  let build ?(options="") program devices =
+    let num_devices = Array.length devices in
+    let _devices = allocate_n cl_device_id ~count:num_devices in
+    Array.iteri (fun i d -> (_devices +@ i) <-@ d) devices;
+    let _num_devices = Unsigned.UInt32.of_int num_devices in
+    let _options = char_ptr_of_string options in
+    clBuildProgram program _num_devices _devices _options magic_null magic_null |> cl_check_err
+
+
+  let compile = ()
+
+
+  let link = ()
+
+
+  let retain program = clRetainProgram program |> cl_check_err
+
+
+  let release program = clReleaseProgram program |> cl_check_err
+
+
+  let to_string x =
+    let info = get_info x in
+    Printf.sprintf "Program Info\n" ^
+    Printf.sprintf "  num_devices     : %i\n" info.num_devices ^
+    Printf.sprintf "  num_kernels     : %i\n" info.num_kernels ^
+    Printf.sprintf "  reference_count : %i\n" info.reference_count ^
+    Printf.sprintf "  kernel_names    : %s\n" (Array.fold_left (fun a b -> a ^ b ^ " ") "" info.kernel_names)
+
+
+end
+
+
+
+(** Kernel definition *)
 module Kernel = struct
 
   type info = {
@@ -356,98 +450,91 @@ end
 
 
 
-(** program definition *)
-module Program = struct
+(** Command queue definition *)
+module CommandQueue = struct
 
   type info = {
-    reference_count : int;
-    context         : cl_context;
-    num_devices     : int;
-    devices         : cl_device_id array;
-    source          : string;
-    binary_sizes    : int array;
-    binaries        : CI.voidp array;
-    num_kernels     : int;
-    kernel_names    : string array;
+    context          : cl_context;
+    device           : cl_device_id;
+    reference_count  : int;
+    queue_properties : Unsigned.ULong.t;
   }
 
 
-  let get_program_info program param_name =
+  let get_commandqueue_info cmdq param_name =
     let param_name = Unsigned.UInt32.of_int param_name in
     let param_value_size_ret = allocate size_t size_0 in
-    clGetProgramInfo program param_name size_0 null param_value_size_ret |> cl_check_err;
+    clGetCommandQueueInfo cmdq param_name size_0 null param_value_size_ret |> cl_check_err;
 
     let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
     let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
-    clGetProgramInfo program param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
+    clGetCommandQueueInfo cmdq param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
     param_value, _param_value_size
 
 
-  let get_info program =
-  (* TODO: many information is only available after the program is built, need to check null *)
-  let num_devices = ( let p, l = get_program_info program cl_PROGRAM_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
-  {
-    reference_count = ( let p, l = get_program_info program cl_PROGRAM_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-    context         = ( let p, l = get_program_info program cl_PROGRAM_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
-    num_devices     = num_devices;
-    devices         = ( let p, l = get_program_info program cl_PROGRAM_DEVICES in let _devices = char_ptr_to_cl_device_id_ptr p in Array.init num_devices (fun i -> !@(_devices +@ i)) );
-    source          = ( let p, l = get_program_info program cl_PROGRAM_SOURCE in string_from_ptr p (l - 1) );
-    binary_sizes    = [||]; (* TODO: not implemented yet *)
-    binaries        = [||]; (* TODO: not implemented yet *)
-    num_kernels     = ( let p, l = get_program_info program cl_PROGRAM_NUM_KERNELS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-    kernel_names    = ( let p, l = get_program_info program cl_PROGRAM_KERNEL_NAMES in (string_from_ptr p (l - 1)) |> Str.split (Str.regexp ";") |> Array.of_list );
+  let get_info cmdq = {
+    context          = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
+    device           = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_DEVICE in !@(char_ptr_to_cl_device_id_ptr p) );
+    reference_count  = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+    queue_properties = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_PROPERTIES in !@(char_ptr_to_ulong_ptr p) );
   }
 
 
-  let create_with_source ctx str =
-    let str_num = Array.length str in
-    let _str = allocate_n (ptr char) ~count:str_num in
-    Array.iteri (fun i s ->
-      (_str +@ i) <-@ (char_ptr_of_string s);
-    ) str;
-
+  let create ?(properties=[]) context device =
+    let _properties = List.fold_left ( lor ) 0 properties |> Unsigned.ULong.of_int in
     let err_ret = allocate int32_t 0l in
-    let str_num = Unsigned.UInt32.of_int str_num in
-    let program = clCreateProgramWithSource ctx str_num _str magic_null err_ret in
+    let cmdq = clCreateCommandQueue context device _properties err_ret in
     cl_check_err !@err_ret;
-    program
+    cmdq
 
 
-  let create_with_binary = ()
+  let retain cmdq = clRetainCommandQueue cmdq |> cl_check_err
 
 
-  let build ?(options="") program devices =
-    let num_devices = Array.length devices in
-    let _devices = allocate_n cl_device_id ~count:num_devices in
-    Array.iteri (fun i d -> (_devices +@ i) <-@ d) devices;
-    let _num_devices = Unsigned.UInt32.of_int num_devices in
-    let _options = char_ptr_of_string options in
-    clBuildProgram program _num_devices _devices _options magic_null magic_null |> cl_check_err
+  let release cmdq = clReleaseCommandQueue cmdq |> cl_check_err
 
 
-  let compile = ()
+  let flush cmdq = clFlush cmdq |> cl_check_err
 
 
-  let link = ()
+  let finish cmdq = clFinish cmdq |> cl_check_err
 
 
-  let release program = clReleaseProgram program |> cl_check_err
+  let barrier ?(wait_for=[]) cmdq =
+    let event_list =
+      match wait_for with
+      | [] -> magic_null
+      | _  -> wait_for |> CArray.of_list cl_event |> CArray.start
+    in
+    let num_events = List.length wait_for |> Unsigned.UInt32.of_int in
+    let event = allocate cl_event cl_event_null in
+    clEnqueueBarrierWithWaitList cmdq num_events event_list event |> cl_check_err;
+    !@event
+
+
+  let marker ?(wait_for=[]) cmdq =
+    let event_list =
+      match wait_for with
+      | [] -> magic_null
+      | _  -> wait_for |> CArray.of_list cl_event |> CArray.start
+    in
+    let num_events = List.length wait_for |> Unsigned.UInt32.of_int in
+    let event = allocate cl_event cl_event_null in
+    clEnqueueMarkerWithWaitList cmdq num_events event_list event |> cl_check_err;
+    !@event
 
 
   let to_string x =
     let info = get_info x in
-    Printf.sprintf "Program Info\n" ^
-    Printf.sprintf "  num_devices     : %i\n" info.num_devices ^
-    Printf.sprintf "  num_kernels     : %i\n" info.num_kernels ^
-    Printf.sprintf "  reference_count : %i\n" info.reference_count ^
-    Printf.sprintf "  kernel_names    : %s\n" (Array.fold_left (fun a b -> a ^ b ^ " ") "" info.kernel_names)
+    Printf.sprintf "CommandQueue Info\n" ^
+    Printf.sprintf "  reference_count : %i\n" info.reference_count
 
 
 end
 
 
 
-(** event definition *)
+(** Event definition *)
 module Event = struct
 
   type info = {
@@ -532,91 +619,7 @@ end
 
 
 
-(** command queue definition *)
-module CommandQueue = struct
-
-  type info = {
-    context          : cl_context;
-    device           : cl_device_id;
-    reference_count  : int;
-    queue_properties : Unsigned.ULong.t;
-  }
-
-
-  let get_commandqueue_info cmdq param_name =
-    let param_name = Unsigned.UInt32.of_int param_name in
-    let param_value_size_ret = allocate size_t size_0 in
-    clGetCommandQueueInfo cmdq param_name size_0 null param_value_size_ret |> cl_check_err;
-
-    let _param_value_size = Unsigned.Size_t.to_int !@param_value_size_ret in
-    let param_value = allocate_n char ~count:_param_value_size |> Obj.magic in
-    clGetCommandQueueInfo cmdq param_name !@param_value_size_ret param_value magic_null |> cl_check_err;
-    param_value, _param_value_size
-
-
-  let get_info cmdq = {
-    context          = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
-    device           = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_DEVICE in !@(char_ptr_to_cl_device_id_ptr p) );
-    reference_count  = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-    queue_properties = ( let p, l = get_commandqueue_info cmdq cl_QUEUE_PROPERTIES in !@(char_ptr_to_ulong_ptr p) );
-  }
-
-
-  let create ?(properties=[]) context device =
-    let _properties = List.fold_left ( lor ) 0 properties |> Unsigned.ULong.of_int in
-    let err_ret = allocate int32_t 0l in
-    let cmdq = clCreateCommandQueue context device _properties err_ret in
-    cl_check_err !@err_ret;
-    cmdq
-
-
-  let retain cmdq = clRetainCommandQueue cmdq |> cl_check_err
-
-
-  let release cmdq = clReleaseCommandQueue cmdq |> cl_check_err
-
-
-  let flush cmdq = clFlush cmdq |> cl_check_err
-
-
-  let finish cmdq = clFinish cmdq |> cl_check_err
-
-
-  let barrier ?(wait_for=[]) cmdq =
-    let event_list =
-      match wait_for with
-      | [] -> magic_null
-      | _  -> wait_for |> CArray.of_list cl_event |> CArray.start
-    in
-    let num_events = List.length wait_for |> Unsigned.UInt32.of_int in
-    let event = allocate cl_event cl_event_null in
-    clEnqueueBarrierWithWaitList cmdq num_events event_list event |> cl_check_err;
-    !@event
-
-
-  let marker ?(wait_for=[]) cmdq =
-    let event_list =
-      match wait_for with
-      | [] -> magic_null
-      | _  -> wait_for |> CArray.of_list cl_event |> CArray.start
-    in
-    let num_events = List.length wait_for |> Unsigned.UInt32.of_int in
-    let event = allocate cl_event cl_event_null in
-    clEnqueueMarkerWithWaitList cmdq num_events event_list event |> cl_check_err;
-    !@event
-
-
-  let to_string x =
-    let info = get_info x in
-    Printf.sprintf "CommandQueue Info\n" ^
-    Printf.sprintf "  reference_count : %i\n" info.reference_count
-
-
-end
-
-
-
-(** buffer definition *)
+(** Buffer definition *)
 module Buffer = struct
 
   type info = {
