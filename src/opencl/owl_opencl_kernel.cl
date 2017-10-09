@@ -1,3 +1,9 @@
+//
+// OWL - an OCaml numerical library for scientific computing
+// Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
+//
+
+
 __kernel void owl_opencl_float32_add(
   __global float *a,
   __global float *b,
