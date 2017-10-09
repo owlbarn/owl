@@ -23,10 +23,11 @@ and trace = {
   mutable refnum : int;
 }
 and trace_op =
-  | Noop    of string
-  | Map     of string
-  | Reduce  of string
-  | Combine of string
+  | Noop         of string
+  | Map          of string
+  | MapN         of string
+  | MapArrScalar of string
+  | Reduce       of string
 
 
 let pack_input = function
@@ -66,6 +67,11 @@ let pack_op op input = Trace {
 }
 
 
+let unpack_flt = function
+  | F x   -> x
+  | _     -> failwith "owl_opencl_operand:unpack_flt"
+
+
 let unpack_arr = function
   | Arr x -> x
   | _     -> failwith "owl_opencl_operand:unpack_arr"
@@ -97,8 +103,23 @@ let get_val_mem_ptr x i =
   x_val, x_mem, x_ptr
 
 
+let allocate_from_arr ctx a =
+  let a_val, a_mem, a_ptr = get_val_mem_ptr a 0 in
+  let b_val, b_mem, b_ptr =
+    match a.refnum = 1 with
+    | true  -> a_val, a_mem, a_ptr
+    | false -> (
+        let b_val = empty (a_val |> unpack_arr |> shape) in
+        let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
+        let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
+        Arr b_val, b_mem, b_ptr
+      )
+  in
+  (a_val, a_mem, a_ptr), (b_val, b_mem, b_ptr)
+
+
 (* FIXME: scalar is not taken into account *)
-let allocate ctx x =
+let allocate_from_inputs ctx x =
   let src = Owl_utils.Stack.make () in
   let dst = Owl_utils.Stack.make () in
   Array.iter (fun a ->
@@ -128,7 +149,7 @@ let map fun_name x =
   let kind = get_input_kind x 0 in
   let kernel = Owl_opencl_context.(mk_kernel kind fun_name context.program) in
 
-  let src, dst = allocate ctx x in
+  let src, dst = allocate_from_inputs ctx x in
   let a_val, a_mem, a_ptr = src.(0) in
   let b_val, b_mem, b_ptr = dst.(0) in
   let _size = a_val |> unpack_arr |> numel in
@@ -142,11 +163,7 @@ let map fun_name x =
   x.events <- [|event|]
 
 
-(* TODO *)
-let reduce () = ()
-
-
-let combine fun_name x =
+let map_n fun_name x =
   let context = Owl_opencl_context.default in
   let ctx = Owl_opencl_context.(context.context) in
   let cmdq = Owl_opencl_context.(context.command_queue) in
@@ -156,8 +173,8 @@ let combine fun_name x =
   let src = Array.mapi (fun i a -> get_val_mem_ptr a i) x.input in
   let tmp = Owl_utils.array_filteri_v (fun i a -> a.refnum = 1, i) x.input in
   let dst = match Array.length tmp > 0 with
-    | true  -> (allocate ctx x |> snd).(tmp.(0))
-    | false -> (allocate ctx x |> snd).(0)
+    | true  -> (allocate_from_inputs ctx x |> snd).(tmp.(0))
+    | false -> (allocate_from_inputs ctx x |> snd).(0)
   in
 
   let b_val, b_mem, _ = dst in
@@ -172,6 +189,36 @@ let combine fun_name x =
   x.events <- [|event|]
 
 
+let map_arr_scalar fun_name x =
+  let context = Owl_opencl_context.default in
+  let ctx = Owl_opencl_context.(context.context) in
+  let cmdq = Owl_opencl_context.(context.command_queue) in
+  let kind = get_input_kind x 0 in
+  let kernel = Owl_opencl_context.(mk_kernel kind fun_name context.program) in
+
+  let src, dst = allocate_from_arr ctx x.input.(0) in
+  let a_val, a_mem, a_ptr = src in
+  let b_val, b_mem, b_ptr = dst in
+
+  let c_val = x.input.(1).outval.(0) |> unpack_flt in
+  let c_ptr = Ctypes.allocate Ctypes.float c_val in
+  let _size = a_val |> unpack_arr |> numel in
+  let wait_for = get_input_event x in
+
+  Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
+  Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_float_ptr c_ptr;
+  Owl_opencl_base.Kernel.set_arg kernel 2 sizeof_cl_mem b_ptr;
+  let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for cmdq kernel 1 [_size] in
+  x.outval <- [|b_val|];
+  x.outmem <- [|b_mem|];
+  x.events <- [|event|]
+
+
+(* TODO *)
+let reduce () = ()
+
+
+(* recursively evaluate an expression *)
 let eval x =
   let rec _eval x =
     Array.iter _eval x.input;
@@ -179,8 +226,9 @@ let eval x =
       match x.op with
       | Noop _    -> ()
       | Map s     -> map s x
+      | MapN s    -> map_n s x
+      | MapArrScalar s -> map_arr_scalar s x
       | Reduce s  -> failwith "eval:reduce:not implemented yet"
-      | Combine s -> combine s x
     )
   in
   _eval (unpack_trace x);

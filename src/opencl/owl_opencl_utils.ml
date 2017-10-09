@@ -42,6 +42,9 @@ let ulong_1 = Unsigned.ULong.one
 let sizeof_cl_mem = sizeof cl_mem
 
 
+let sizeof_float_ptr = sizeof (ptr float)
+
+
 (** coerce from type a to type b *)
 
 let char_ptr_to_uint32_ptr x = coerce (ptr char) (ptr uint32_t) x

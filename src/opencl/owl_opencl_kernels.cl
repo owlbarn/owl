@@ -8,6 +8,16 @@ __kernel void owl_opencl_float32_add(
 }
 
 
+__kernel void owl_opencl_float32_add_scalar(
+  __global float *a,
+  float b,
+  __global float *c)
+{
+  int gid = get_global_id(0);
+  c[gid] = a[gid] + b;
+}
+
+
 __kernel void owl_opencl_float32_sin(
   __global float *a,
   __global float *b
