@@ -42,3 +42,16 @@ __kernel void owl_opencl_float32_cos(
   int gid = get_global_id(0);
   b[gid] = cos(a[gid]);
 }
+
+
+__kernel void owl_opencl_float32_sum(
+    __global const float *input,
+    __global float *output,
+    __local float *shared,
+    const unsigned int n)
+{
+  const unsigned int group_id = get_global_id(0) / get_local_size(0);
+  const unsigned int group_size = 64;
+  const unsigned int group_stride = 2 * group_size;
+  const size_t local_stride = group_stride * group_size;
+}

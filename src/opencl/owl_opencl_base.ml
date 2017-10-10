@@ -87,10 +87,7 @@ module Device = struct
     global_mem_size       : int;
     max_clock_frequency   : int;
     max_compute_units     : int;
-    (* TODO
-    max_work_item_dimensions : int;
-    max_work_group_size : int;
-    max_work_item_sizes   : ??? *)
+    max_work_group_size   : int;
     max_parameter_size    : int;
     max_samplers          : int;
     reference_count       : int;
@@ -139,6 +136,7 @@ module Device = struct
       global_mem_size       = ( let p, l = get_device_info device cl_DEVICE_GLOBAL_MEM_SIZE in !@(char_ptr_to_ulong_ptr p) |> Unsigned.ULong.to_int);
       max_clock_frequency   = ( let p, l = get_device_info device cl_DEVICE_MAX_CLOCK_FREQUENCY in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
       max_compute_units     = ( let p, l = get_device_info device cl_DEVICE_MAX_COMPUTE_UNITS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      max_work_group_size   = ( let p, l = get_device_info device cl_DEVICE_MAX_WORK_GROUP_SIZE in !@(char_ptr_to_size_t_ptr p) |> Unsigned.Size_t.to_int );
       max_parameter_size    = ( let p, l = get_device_info device cl_DEVICE_MAX_PARAMETER_SIZE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
       max_samplers          = ( let p, l = get_device_info device cl_DEVICE_MAX_SAMPLERS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
       reference_count       = ( let p, l = get_device_info device cl_DEVICE_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
@@ -151,13 +149,26 @@ module Device = struct
   let to_string x =
     let info = get_info x in
     Printf.sprintf "Device %s\n" info.profile ^
-    Printf.sprintf "  name             : %s\n" info.name ^
-    Printf.sprintf "  vendor           : %s\n" info.vendor ^
-    Printf.sprintf "  version          : %s\n" info.version ^
-    Printf.sprintf "  driver_version   : %s\n" info.driver_version ^
-    Printf.sprintf "  opencl_c_version : %s\n" info.opencl_c_version ^
-    Printf.sprintf "  build_in_kernels : %s\n" info.build_in_kernels ^
-    Printf.sprintf "  reference_count  : %i\n" info.reference_count
+    Printf.sprintf "  name                  : %s\n" info.name ^
+    Printf.sprintf "  vendor                : %s\n" info.vendor ^
+    Printf.sprintf "  version               : %s\n" info.version ^
+    Printf.sprintf "  driver_version        : %s\n" info.driver_version ^
+    Printf.sprintf "  opencl_c_version      : %s\n" info.opencl_c_version ^
+    Printf.sprintf "  build_in_kernels      : %s\n" info.build_in_kernels ^
+    Printf.sprintf "  reference_count       : %i\n" info.reference_count ^
+    Printf.sprintf "  type                  : %i\n" info.typ ^
+    Printf.sprintf "  address_bits          : %i\n" info.address_bits ^
+    Printf.sprintf "  available             : %b\n" info.available ^
+    Printf.sprintf "  compiler_available    : %b\n" info.compiler_available ^
+    Printf.sprintf "  linker_available      : %b\n" info.linker_available ^
+    Printf.sprintf "  global_mem_cache_size : %i\n" info.global_mem_cache_size ^
+    Printf.sprintf "  global_mem_size       : %i\n" info.global_mem_size ^
+    Printf.sprintf "  max_clock_frequency   : %i\n" info.max_clock_frequency ^
+    Printf.sprintf "  max_compute_units     : %i\n" info.max_compute_units ^
+    Printf.sprintf "  max_work_group_size   : %i\n" info.max_work_group_size ^
+    Printf.sprintf "  max_parameter_size    : %i\n" info.max_parameter_size ^
+    Printf.sprintf "  max_samplers          : %i\n" info.max_samplers ^
+    Printf.sprintf "  extensions            : %s\n" info.extensions
 
 
 end
@@ -262,19 +273,19 @@ module Program = struct
 
 
   let get_info program =
-  (* TODO: many information is only available after the program is built, need to check null *)
-  let num_devices = ( let p, l = get_program_info program cl_PROGRAM_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
-  {
-    reference_count = ( let p, l = get_program_info program cl_PROGRAM_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-    context         = ( let p, l = get_program_info program cl_PROGRAM_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
-    num_devices     = num_devices;
-    devices         = ( let p, l = get_program_info program cl_PROGRAM_DEVICES in let _devices = char_ptr_to_cl_device_id_ptr p in Array.init num_devices (fun i -> !@(_devices +@ i)) );
-    source          = ( let p, l = get_program_info program cl_PROGRAM_SOURCE in string_from_ptr p (l - 1) );
-    binary_sizes    = [||]; (* TODO: not implemented yet *)
-    binaries        = [||]; (* TODO: not implemented yet *)
-    num_kernels     = ( let p, l = get_program_info program cl_PROGRAM_NUM_KERNELS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-    kernel_names    = ( let p, l = get_program_info program cl_PROGRAM_KERNEL_NAMES in (string_from_ptr p (l - 1)) |> Str.split (Str.regexp ";") |> Array.of_list );
-  }
+    (* TODO: many information is only available after the program is built, need to check null *)
+    let num_devices = ( let p, l = get_program_info program cl_PROGRAM_NUM_DEVICES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int ) in
+    {
+      reference_count = ( let p, l = get_program_info program cl_PROGRAM_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      context         = ( let p, l = get_program_info program cl_PROGRAM_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
+      num_devices     = num_devices;
+      devices         = ( let p, l = get_program_info program cl_PROGRAM_DEVICES in let _devices = char_ptr_to_cl_device_id_ptr p in Array.init num_devices (fun i -> !@(_devices +@ i)) );
+      source          = ( let p, l = get_program_info program cl_PROGRAM_SOURCE in string_from_ptr p (l - 1) );
+      binary_sizes    = [||]; (* TODO: not implemented yet *)
+      binaries        = [||]; (* TODO: not implemented yet *)
+      num_kernels     = ( let p, l = get_program_info program cl_PROGRAM_NUM_KERNELS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      kernel_names    = ( let p, l = get_program_info program cl_PROGRAM_KERNEL_NAMES in (string_from_ptr p (l - 1)) |> Str.split (Str.regexp ";") |> Array.of_list );
+    }
 
 
   let create_with_source ctx str =
@@ -336,9 +347,9 @@ module Kernel = struct
     num_args        : int;
     attributes      : int;
     reference_count : int;
-    (* work_group_size : int; *)
     context         : cl_context;
     program         : cl_program;
+    work_group_size : (cl_device_id * int) array;
   }
 
 
@@ -364,15 +375,24 @@ module Kernel = struct
     param_value, _param_value_size
 
 
-  (* TODO: extend to work_group_info *)
-  let get_info kernel = {
-    function_name   = ( let p, l = get_kernel_info kernel cl_KERNEL_FUNCTION_NAME in string_from_ptr p (l - 1) );
-    num_args        = ( let p, l = get_kernel_info kernel cl_KERNEL_NUM_ARGS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-    attributes      = ( let p, l = get_kernel_info kernel cl_KERNEL_ATTRIBUTES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-    reference_count = ( let p, l = get_kernel_info kernel cl_KERNEL_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
-    context         = ( let p, l = get_kernel_info kernel cl_KERNEL_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
-    program         = ( let p, l = get_kernel_info kernel cl_KERNEL_PROGRAM in !@(char_ptr_to_cl_program_ptr p) );
-  }
+  (* TODO: change work_group_info into Hashtbl *)
+  let get_info kernel =
+    let program = ( let p, l = get_kernel_info kernel cl_KERNEL_PROGRAM in !@(char_ptr_to_cl_program_ptr p) ) in
+    let work_group_size = Program.(get_info program).devices |> Array.map (fun device ->
+      let p, l = get_work_group_info kernel device cl_KERNEL_WORK_GROUP_SIZE in
+      let sz = !@(char_ptr_to_size_t_ptr p) |> Unsigned.Size_t.to_int in
+      device, sz
+    )
+    in
+    {
+      function_name   = ( let p, l = get_kernel_info kernel cl_KERNEL_FUNCTION_NAME in string_from_ptr p (l - 1) );
+      num_args        = ( let p, l = get_kernel_info kernel cl_KERNEL_NUM_ARGS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      attributes      = ( let p, l = get_kernel_info kernel cl_KERNEL_ATTRIBUTES in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      reference_count = ( let p, l = get_kernel_info kernel cl_KERNEL_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      context         = ( let p, l = get_kernel_info kernel cl_KERNEL_CONTEXT in !@(char_ptr_to_cl_context_ptr p) );
+      program         = program;
+      work_group_size = work_group_size;
+    }
 
 
   let create program kernel_name =

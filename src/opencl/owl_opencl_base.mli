@@ -48,6 +48,7 @@ module Device : sig
     global_mem_size       : int;
     max_clock_frequency   : int;
     max_compute_units     : int;
+    max_work_group_size   : int;
     max_parameter_size    : int;
     max_samplers          : int;
     reference_count       : int;
@@ -132,6 +133,7 @@ module Kernel : sig
     reference_count : int;
     context         : cl_context;
     program         : cl_program;
+    work_group_size : (cl_device_id * int) array;
   }
 
   val get_info : cl_kernel -> info
