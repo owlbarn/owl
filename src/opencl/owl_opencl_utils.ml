@@ -39,6 +39,9 @@ let ulong_0 = Unsigned.ULong.zero
 let ulong_1 = Unsigned.ULong.one
 
 
+let sizeof_int = sizeof int
+
+
 let sizeof_cl_mem = sizeof cl_mem
 
 

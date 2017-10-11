@@ -215,7 +215,72 @@ let map_arr_scalar fun_name x =
 
 
 (* TODO *)
-let reduce () = ()
+let reduce''' fun_name x =
+  let context = Owl_opencl_context.default in
+  let ctx = Owl_opencl_context.(context.context) in
+  let cmdq = Owl_opencl_context.(context.command_queue) in
+  let kind = get_input_kind x 0 in
+  let kernel = Owl_opencl_context.(mk_kernel kind fun_name context.program) in
+
+  let a_val, a_mem, a_ptr = get_val_mem_ptr x.input.(0) 0 in
+
+  (* FIXME: need to query the device to decide *)
+  let max_groups = 64 in
+  let max_work_items = 64 in
+  let b_val = empty [|max_groups|] in
+  let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
+  let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
+  let _size = a_val |> unpack_arr |> numel in
+  let s_ptr = Ctypes.allocate Ctypes.int _size in
+  let wait_for = get_input_event x in
+
+  let global_work_size = [max_groups * max_work_items] in
+  let local_work_size = [max_work_items] in
+
+  Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
+  Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
+  Owl_opencl_base.Kernel.set_arg kernel 2 max_groups magic_null;
+  Owl_opencl_base.Kernel.set_arg kernel 3 sizeof_int s_ptr;
+  let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for ~local_work_size cmdq kernel 1 global_work_size in
+  x.outval <- [|Arr b_val|];
+  x.outmem <- [|b_mem|];
+  x.events <- [|event|]
+
+
+let _reduce fun_name wait_for num_groups group_size a_val a_ptr =
+  let context = Owl_opencl_context.default in
+  let ctx = Owl_opencl_context.(context.context) in
+  let cmdq = Owl_opencl_context.(context.command_queue) in
+  let kind = Owl_dense_ndarray_generic.kind a_val in
+  let kernel = Owl_opencl_context.(mk_kernel kind fun_name context.program) in
+
+  let b_val = empty [|num_groups|] in
+  let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
+  let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
+  let s_ptr = a_val |> numel |> Ctypes.(allocate int) in
+
+  let global_work_size = [ num_groups * group_size ] in
+  let local_work_size = [ group_size ] in
+
+  Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
+  Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
+  Owl_opencl_base.Kernel.set_arg kernel 2 num_groups magic_null;
+  Owl_opencl_base.Kernel.set_arg kernel 3 sizeof_int s_ptr;
+  let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for ~local_work_size cmdq kernel 1 global_work_size in
+  event, b_val, b_mem, b_ptr
+
+
+let reduce fun_name x =
+  (* FIXME: need to query the device to decide *)
+  let num_groups = 64 in
+  let group_size = 64 in
+  let wait_for = get_input_event x in
+  let a_val, a_mem, a_ptr = get_val_mem_ptr x.input.(0) 0 in
+  let event, b_val, b_mem, b_ptr = _reduce fun_name wait_for num_groups group_size (unpack_arr a_val) a_ptr in
+  (* let event, b_val, b_mem, b_ptr = _reduce fun_name [event] 64 group_size b_val b_ptr in *)
+  x.outval <- [|Arr b_val|];
+  x.outmem <- [|b_mem|];
+  x.events <- [|event|]
 
 
 (* recursively evaluate an expression *)
@@ -224,11 +289,11 @@ let eval x =
     Array.iter _eval x.input;
     if x.outmem = [||] then (
       match x.op with
-      | Noop _    -> ()
-      | Map s     -> map s x
-      | MapN s    -> map_n s x
+      | Noop _         -> ()
+      | Map s          -> map s x
+      | MapN s         -> map_n s x
       | MapArrScalar s -> map_arr_scalar s x
-      | Reduce s  -> failwith "eval:reduce:not implemented yet"
+      | Reduce s       -> reduce s x
     )
   in
   _eval (unpack_trace x);
