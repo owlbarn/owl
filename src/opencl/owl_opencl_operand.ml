@@ -272,12 +272,13 @@ let _reduce fun_name wait_for num_groups group_size a_val a_ptr =
 
 let reduce fun_name x =
   (* FIXME: need to query the device to decide *)
+  (* min-len needs to be group_size * 2 *)
   let num_groups = 64 in
   let group_size = 64 in
   let wait_for = get_input_event x in
   let a_val, a_mem, a_ptr = get_val_mem_ptr x.input.(0) 0 in
-  let event, b_val, b_mem, b_ptr = _reduce fun_name wait_for num_groups group_size (unpack_arr a_val) a_ptr in
-  (* let event, b_val, b_mem, b_ptr = _reduce fun_name [event] 64 group_size b_val b_ptr in *)
+  let event, b_val, b_mem, b_ptr = _reduce fun_name wait_for (num_groups * 2) group_size (unpack_arr a_val) a_ptr in
+  let event, b_val, b_mem, b_ptr = _reduce fun_name [event] 1 group_size b_val b_ptr in
   x.outval <- [|Arr b_val|];
   x.outmem <- [|b_mem|];
   x.events <- [|event|]
