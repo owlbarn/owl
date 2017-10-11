@@ -143,11 +143,10 @@ let allocate_from_inputs ctx x =
 
 
 let map fun_name x =
-  let context = Owl_opencl_context.default in
-  let ctx = Owl_opencl_context.(context.context) in
-  let cmdq = Owl_opencl_context.(context.command_queue) in
+  let ctx = Owl_opencl_context.(default.context) in
+  let cmdq = Owl_opencl_context.(default.command_queue) in
   let kind = get_input_kind x 0 in
-  let kernel = Owl_opencl_context.(mk_kernel kind fun_name context.program) in
+  let kernel = Owl_opencl_context.(mk_kernel kind fun_name default.program) in
 
   let src, dst = allocate_from_inputs ctx x in
   let a_val, a_mem, a_ptr = src.(0) in
@@ -164,11 +163,10 @@ let map fun_name x =
 
 
 let map_n fun_name x =
-  let context = Owl_opencl_context.default in
-  let ctx = Owl_opencl_context.(context.context) in
-  let cmdq = Owl_opencl_context.(context.command_queue) in
+  let ctx = Owl_opencl_context.(default.context) in
+  let cmdq = Owl_opencl_context.(default.command_queue) in
   let kind = get_input_kind x 0 in
-  let kernel = Owl_opencl_context.(mk_kernel kind fun_name context.program) in
+  let kernel = Owl_opencl_context.(mk_kernel kind fun_name default.program) in
 
   let src = Array.mapi (fun i a -> get_val_mem_ptr a i) x.input in
   let tmp = Owl_utils.array_filteri_v (fun i a -> a.refnum = 1, i) x.input in
@@ -190,11 +188,10 @@ let map_n fun_name x =
 
 
 let map_arr_scalar fun_name x =
-  let context = Owl_opencl_context.default in
-  let ctx = Owl_opencl_context.(context.context) in
-  let cmdq = Owl_opencl_context.(context.command_queue) in
+  let ctx = Owl_opencl_context.(default.context) in
+  let cmdq = Owl_opencl_context.(default.command_queue) in
   let kind = get_input_kind x 0 in
-  let kernel = Owl_opencl_context.(mk_kernel kind fun_name context.program) in
+  let kernel = Owl_opencl_context.(mk_kernel kind fun_name default.program) in
 
   let src, dst = allocate_from_arr ctx x.input.(0) in
   let a_val, a_mem, a_ptr = src in
@@ -214,45 +211,11 @@ let map_arr_scalar fun_name x =
   x.events <- [|event|]
 
 
-(* TODO *)
-let reduce''' fun_name x =
-  let context = Owl_opencl_context.default in
-  let ctx = Owl_opencl_context.(context.context) in
-  let cmdq = Owl_opencl_context.(context.command_queue) in
-  let kind = get_input_kind x 0 in
-  let kernel = Owl_opencl_context.(mk_kernel kind fun_name context.program) in
-
-  let a_val, a_mem, a_ptr = get_val_mem_ptr x.input.(0) 0 in
-
-  (* FIXME: need to query the device to decide *)
-  let max_groups = 64 in
-  let max_work_items = 64 in
-  let b_val = empty [|max_groups|] in
-  let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
-  let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
-  let _size = a_val |> unpack_arr |> numel in
-  let s_ptr = Ctypes.allocate Ctypes.int _size in
-  let wait_for = get_input_event x in
-
-  let global_work_size = [max_groups * max_work_items] in
-  let local_work_size = [max_work_items] in
-
-  Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
-  Owl_opencl_base.Kernel.set_arg kernel 1 sizeof_cl_mem b_ptr;
-  Owl_opencl_base.Kernel.set_arg kernel 2 max_groups magic_null;
-  Owl_opencl_base.Kernel.set_arg kernel 3 sizeof_int s_ptr;
-  let event = Owl_opencl_base.Kernel.enqueue_ndrange ~wait_for ~local_work_size cmdq kernel 1 global_work_size in
-  x.outval <- [|Arr b_val|];
-  x.outmem <- [|b_mem|];
-  x.events <- [|event|]
-
-
 let _reduce fun_name wait_for num_groups group_size a_val a_ptr =
-  let context = Owl_opencl_context.default in
-  let ctx = Owl_opencl_context.(context.context) in
-  let cmdq = Owl_opencl_context.(context.command_queue) in
+  let ctx = Owl_opencl_context.(default.context) in
+  let cmdq = Owl_opencl_context.(default.command_queue) in
   let kind = Owl_dense_ndarray_generic.kind a_val in
-  let kernel = Owl_opencl_context.(mk_kernel kind fun_name context.program) in
+  let kernel = Owl_opencl_context.(mk_kernel kind fun_name default.program) in
 
   let b_val = empty [|num_groups|] in
   let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
