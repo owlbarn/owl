@@ -43,19 +43,6 @@ module Make
   (* functions to manipulate the network *)
 
 
-  (* TODO: topological sort the nodes in a graph network, Kahn's algorithm *)
-  let topological_sort n =
-    let l = Owl_utils.Stack.make () in
-    let s = Owl_utils.Stack.make () in
-    Owl_utils.Stack.push s n;
-    while Owl_utils.Stack.is_empty s = false do
-      let n = Owl_utils.Stack.pop s in
-      Owl_utils.Stack.push l n;
-      (* TODO *)
-    done;
-    Owl_utils.Stack.to_array l
-
-
   (* BFS iterate the nodes, apply [f : node -> unit] to each node *)
   let rec bfs_iter f x =
     match x with
