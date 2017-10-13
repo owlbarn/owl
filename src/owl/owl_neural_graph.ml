@@ -42,31 +42,6 @@ module Make
 
   (* functions to manipulate the network *)
 
-
-  (* BFS iterate the nodes, apply [f : node -> unit] to each node *)
-  let rec bfs_iter f x =
-    match x with
-    | []     -> ()
-    | hd::tl -> (
-        let _ = f hd in
-        let new_tl = tl @ (Array.to_list hd.next) in
-        bfs_iter f new_tl
-      )
-
-
-  (* BFS map the nodes, apply [f : node -> 'a] then return ['a array] *)
-  let bfs_map f x =
-    let stack = Owl_utils.Stack.make () in
-    bfs_iter (fun n ->
-      Owl_utils.Stack.push stack (f n)
-    ) x;
-    Owl_utils.Stack.to_array stack
-
-
-  (* convert nn to array, the order is in BFS order *)
-  let bfs_array x = bfs_map (fun n -> n) x
-
-
   let make_network ?nnid size root topo =
     let nnid = match nnid with
       | Some s -> s
