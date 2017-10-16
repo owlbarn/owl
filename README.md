@@ -2,12 +2,26 @@
 
 %%VERSION%%
 
-Owl is an OCaml numerical library. It supports N-dimensional arrays, both dense and sparse matrix operations, linear algebra, regressions, fast Fourier transforms, and many advanced mathematical and statistical functions (such as Markov chain Monte Carlo methods). Recently, Owl has implemented algorithmic differentiation which essentially makes developing machine learning and neural network algorithms trivial. [![Travis build Status](https://travis-ci.org/ryanrhymes/owl.svg?branch=master)](https://travis-ci.org/ryanrhymes/owl)
+Owl is an emerging numerical library for scientific computing and engineering. The library is developed in the OCaml language and inherits all its powerful features such as static type checking, powerful module system, and superior runtime efficiency. Owl allows you to write succinct type-safe code in functional language without sacrificing performance, significantly reduces the cost from prototype to production use.
+
+Behind the scene, Owl builds the advanced numerical functions atop of its solid implementation of n-dimensional arrays. Quite different from other libraries, algorithmic differentiation and distributed computing have been included as integral components in the core library to maximise developers' productivity. Owl is a young but grows fast, the current features include:
+
+* N-dimensional array (both dense and sparse)
+* Various number types: `float32`, `float64`, `complex32`, `complex64`, `int8`, `int16`, `int32` ...
+* Linear algebra and full interface to CBLAS and LAPACKE
+* Algorithmic differentiation (or automatic differentiation)
+* Neural network module for deep learning applications
+* Parallel and Distributed engine (map-reduce, parameter server, etc.)
+* Advanced math and stats functions (e.g., hypothesis tests, MCMC, etc.)
+* Zoo system for efficient scripting and code sharing
+* GPU support (work in progress ...)
 
 You can reach us in the following ways, looking forward to hearing from you!
 
 - [Email Me](mailto:liang.wang@cl.cam.ac.uk)
 - [Slack Channel](https://join.slack.com/t/owl-dev-team/shared_invite/enQtMjQ3OTM1MDY4MDIwLTA3MmMyMmQ5Y2U0NjJiNjI0NzFhZDAwNGFhODBmMTk4N2ZmNDExYjZiMzI2N2M1MGNiMTUyYTQ5MTAzZjliZDI)
+
+Build status: [![Travis build Status](https://travis-ci.org/ryanrhymes/owl.svg?branch=master)](https://travis-ci.org/ryanrhymes/owl)
 
 
 
