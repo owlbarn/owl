@@ -504,7 +504,7 @@ module Make
           (* first iteration to bootstrap the optimisation *)
           let _loss, _g0, _ = iterate 0 w in
           (* variables used for specific gradient method *)
-          Checkpoint.(state.gs <- [| [|_g0 |] |]);
+          Checkpoint.(state.gs <- [| [|_g0|] |]);
           Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
           Checkpoint.(state.us <- [| [|F 0.|] |]);
           Checkpoint.(state.ch <- [| [|F 0.|] |]);
@@ -647,7 +647,84 @@ module Make
     state
 
 
-  (* let minimise_fun f = *)
+  (* This function minimises [f : x -> y] wrt [x].
+    [x] is an ndarray; and [y] is an scalar value.
+   *)
+  let minimise_fun ?state params f x =
+  let open Params in
+  if params.verbosity = true && state = None then
+    print_endline (Params.to_string params);
+
+  (* make alias functions *)
+  let grad_fun = Gradient.run params.gradient in
+  let rate_fun = Learning_Rate.run params.learning_rate in
+  let regl_fun = Regularisation.run params.regularisation in
+  let momt_fun = Momentum.run params.momentum in
+  let upch_fun = Learning_Rate.update_ch params.learning_rate in
+  let clip_fun = Clipping.run params.clipping in
+  let stop_fun = Stopping.run params.stopping in
+  let chkp_fun = Checkpoint.run params.checkpoint in
+
+  (* make the function to minimise *)
+  let optz_fun xi = Maths.((f xi) + (regl_fun xi)) in
+
+  (* operations in the ith iteration *)
+  let iterate i xi =
+    let loss, g = grad' optz_fun xi in
+    loss |> primal', g, optz_fun
+  in
+
+  (* init new or continue previous state of optimisation process *)
+  let state = match state with
+    | Some state -> state
+    | None       -> (
+        let state = Checkpoint.init_state 1 params.epochs in
+        (* first iteration to bootstrap the optimisation *)
+        let _loss, _g0, _ = iterate 0 x in
+        (* variables used for specific gradient method *)
+        Checkpoint.(state.gs <- [| [|_g0|] |]);
+        Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
+        Checkpoint.(state.us <- [| [|F 0.|] |]);
+        Checkpoint.(state.ch <- [| [|F 0.|] |]);
+        Checkpoint.(state.loss.(0) <- _loss);
+        state
+      )
+  in
+
+  (* try to iterate all batches *)
+  let x = ref x in
+    while Checkpoint.(state.stop = false) do
+      let loss', g', optz' = iterate Checkpoint.(state.current_batch) !x in
+      (* check if the stopping criterion is met *)
+      Checkpoint.(state.stop <- stop_fun (unpack_flt loss'));
+      (* checkpoint of the optimisation if necessary *)
+      chkp_fun (fun _ -> ()) Checkpoint.(state.current_batch) loss' state;
+      (* print out the current state of optimisation *)
+      if params.verbosity = true then Checkpoint.print_state_info state;
+      (* clip the gradient if necessary *)
+      let g' = clip_fun g' in
+      (* calculate gradient descent *)
+      let p' = Checkpoint.(grad_fun optz' !x state.gs.(0).(0) state.ps.(0).(0) g') in
+      (* update gcache if necessary *)
+      Checkpoint.(state.ch.(0).(0) <- upch_fun g' state.ch.(0).(0));
+      (* adjust direction based on learning_rate *)
+      let u' = Checkpoint.(Maths.(p' * rate_fun state.current_batch g' state.ch.(0).(0))) in
+      (* adjust direction based on momentum *)
+      let u' = momt_fun Checkpoint.(state.us.(0).(0)) u' in
+      (* update the weight *)
+      x := Maths.(!x + u') |> primal';
+      (* save historical data *)
+      if params.momentum <> Momentum.None then Checkpoint.(state.us.(0).(0) <- u');
+      Checkpoint.(state.gs.(0).(0) <- g');
+      Checkpoint.(state.ps.(0).(0) <- p');
+      Checkpoint.(state.current_batch <- state.current_batch + 1);
+    done;
+
+    (* print optimisation summary *)
+    if params.verbosity = true && Checkpoint.(state.current_batch >= state.batches) then
+      Checkpoint.print_summary state;
+    (* return both loss history and weight *)
+    state, !x
 
 
 end
