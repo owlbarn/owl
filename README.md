@@ -2,7 +2,7 @@
 
 %%VERSION%%
 
-Owl is an emerging numerical library for scientific computing and engineering. The library is developed in the OCaml language and inherits all its powerful features such as static type checking, powerful module system, and superior runtime efficiency. Owl allows you to write succinct type-safe code in functional language without sacrificing performance, significantly reduces the cost from prototype to production use.
+Owl is an emerging numerical library for scientific computing and engineering. The library is developed in the OCaml language and inherits all its powerful features such as static type checking, powerful module system, and superior runtime efficiency. Owl allows you to write succinct type-safe numerical applications in functional language without sacrificing performance, significantly reduces the cost from prototype to production use.
 
 Behind the scene, Owl builds the advanced numerical functions atop of its solid implementation of n-dimensional arrays. Quite different from other libraries, algorithmic differentiation and distributed computing have been included as integral components in the core library to maximise developers' productivity. Owl is young but grows fast, the current features include:
 
