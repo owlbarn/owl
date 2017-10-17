@@ -7,11 +7,11 @@ open Owl_opencl_kernel_map
 
 
 let head_s = "
+  #pragma OPENCL EXTENSION cl_khr_fp64 : enable
 
   #ifndef GROUP_SIZE
   #define GROUP_SIZE (64)
   #endif
-
 "
 
 
@@ -70,6 +70,8 @@ let functions () = [
     map_arr_arr_fun    "float32_hypot"          "float" "hypot(a[gid], b[gid])";
     map_arr_arr_fun    "float32_atan2"          "float" "atan2(a[gid], b[gid])";
     map_arr_arr_fun    "float32_atan2pi"        "float" "atan2pi(a[gid], b[gid])";
+    map_arr_arr_fun    "float32_equal"          "float" "a[gid] = b[gid]";
+    map_arr_arr_fun    "float32_not_equal"      "float" "a[gid] != b[gid]";
     map_arr_scalar_fun "float32_add_scalar"     "float" "a[gid] + b";
     map_arr_scalar_fun "float32_sub_scalar"     "float" "a[gid] - b";
     map_arr_scalar_fun "float32_mul_scalar"     "float" "a[gid] * b";
@@ -78,6 +80,11 @@ let functions () = [
     map_arr_scalar_fun "float32_fmod_scalar"    "float" "fmod(a[gid], b)";
     map_arr_scalar_fun "float32_atan2_scalar"   "float" "atan2(a[gid], b)";
     map_arr_scalar_fun "float32_atan2pi_scalar" "float" "atan2pi(a[gid], b)";
+
+    (* TODO: complex32 functions *)
+    (* TODO: float64 functions *)
+    (* TODO: int32 functions *)
+    (* TODO: int64 functions *)
   ]
 
 

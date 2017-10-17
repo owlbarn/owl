@@ -91,6 +91,7 @@ module Device = struct
     max_parameter_size    : int;
     max_samplers          : int;
     reference_count       : int;
+    double_fp_config      : int;
     extensions            : string;
     parent_device         : cl_device_id;
     platform              : cl_platform_id;
@@ -140,6 +141,7 @@ module Device = struct
       max_parameter_size    = ( let p, l = get_device_info device cl_DEVICE_MAX_PARAMETER_SIZE in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
       max_samplers          = ( let p, l = get_device_info device cl_DEVICE_MAX_SAMPLERS in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
       reference_count       = ( let p, l = get_device_info device cl_DEVICE_REFERENCE_COUNT in !@(char_ptr_to_uint32_ptr p) |> Unsigned.UInt32.to_int );
+      double_fp_config      = ( let p, l = get_device_info device cl_DEVICE_DOUBLE_FP_CONFIG in !@(char_ptr_to_ulong_ptr p) |> Unsigned.ULong.to_int);
       extensions            = ( let p, l = get_device_info device cl_DEVICE_EXTENSIONS in string_from_ptr p (l - 1) );
       parent_device         = ( let p, l = get_device_info device cl_DEVICE_PARENT_DEVICE in !@(char_ptr_to_cl_device_id_ptr p) );
       platform              = ( let p, l = get_device_info device cl_DEVICE_PLATFORM in !@(char_ptr_to_cl_platform_id_ptr p) );
@@ -168,6 +170,7 @@ module Device = struct
     Printf.sprintf "  max_work_group_size   : %i\n" info.max_work_group_size ^
     Printf.sprintf "  max_parameter_size    : %i\n" info.max_parameter_size ^
     Printf.sprintf "  max_samplers          : %i\n" info.max_samplers ^
+    Printf.sprintf "  double_fp_config      : %i\n" info.double_fp_config ^
     Printf.sprintf "  extensions            : %s\n" info.extensions
 
 

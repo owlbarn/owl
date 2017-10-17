@@ -52,6 +52,7 @@ module Device : sig
     max_parameter_size    : int;
     max_samplers          : int;
     reference_count       : int;
+    double_fp_config      : int;
     extensions            : string;
     parent_device         : cl_device_id;
     platform              : cl_platform_id;
