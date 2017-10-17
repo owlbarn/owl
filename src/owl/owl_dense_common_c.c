@@ -3234,13 +3234,13 @@ int int64_cmp (const void * a, const void * b)
 #define FUN4 float32_logistic
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X) (1.0 / (1.0 + expf(-X)))
+#define MAPFN(X) (1 / (1 + expf(-X)))
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 float64_logistic
 #define NUMBER double
 #define NUMBER1 double
-#define MAPFN(X) (1.0 / (1.0 + exp(-X)))
+#define MAPFN(X) (1 / (1 + exp(-X)))
 #include "owl_dense_common_vec_map.c"
 
 // elu

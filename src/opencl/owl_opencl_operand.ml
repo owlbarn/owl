@@ -118,6 +118,9 @@ let allocate_from_arr ctx a =
   (a_val, a_mem, a_ptr), (b_val, b_mem, b_ptr)
 
 
+(* evalution function for the map-reduce primitives *)
+
+
 (* FIXME: scalar is not taken into account *)
 let allocate_from_inputs ctx x =
   let src = Owl_utils.Stack.make () in
@@ -142,7 +145,7 @@ let allocate_from_inputs ctx x =
   Owl_utils.Stack.(to_array src, to_array dst)
 
 
-let map fun_name x =
+let map_arr_eval fun_name x =
   let ctx = Owl_opencl_context.(default.context) in
   let cmdq = Owl_opencl_context.(default.command_queue) in
   let kind = get_input_kind x 0 in
@@ -162,7 +165,7 @@ let map fun_name x =
   x.events <- [|event|]
 
 
-let map_n fun_name x =
+let mapn_arr_eval fun_name x =
   let ctx = Owl_opencl_context.(default.context) in
   let cmdq = Owl_opencl_context.(default.command_queue) in
   let kind = get_input_kind x 0 in
@@ -187,7 +190,7 @@ let map_n fun_name x =
   x.events <- [|event|]
 
 
-let map_arr_scalar fun_name x =
+let map_arr_scalar_eval fun_name x =
   let ctx = Owl_opencl_context.(default.context) in
   let cmdq = Owl_opencl_context.(default.command_queue) in
   let kind = get_input_kind x 0 in
@@ -211,7 +214,7 @@ let map_arr_scalar fun_name x =
   x.events <- [|event|]
 
 
-let _reduce fun_name wait_for num_groups group_size a_val a_ptr =
+let _reduce_eval fun_name wait_for num_groups group_size a_val a_ptr =
   let ctx = Owl_opencl_context.(default.context) in
   let cmdq = Owl_opencl_context.(default.command_queue) in
   let kind = Owl_dense_ndarray_generic.kind a_val in
@@ -233,18 +236,36 @@ let _reduce fun_name wait_for num_groups group_size a_val a_ptr =
   event, b_val, b_mem, b_ptr
 
 
-let reduce fun_name x =
+let reduce_eval fun_name x =
   (* FIXME: need to query the device to decide *)
   (* min-len needs to be group_size * 2 *)
   let num_groups = 64 in
   let group_size = 64 in
   let wait_for = get_input_event x in
   let a_val, a_mem, a_ptr = get_val_mem_ptr x.input.(0) 0 in
-  let event, b_val, b_mem, b_ptr = _reduce fun_name wait_for (num_groups * 2) group_size (unpack_arr a_val) a_ptr in
-  let event, b_val, b_mem, b_ptr = _reduce fun_name [event] 1 group_size b_val b_ptr in
+  let event, b_val, b_mem, b_ptr = _reduce_eval fun_name wait_for (num_groups * 2) group_size (unpack_arr a_val) a_ptr in
+  let event, b_val, b_mem, b_ptr = _reduce_eval fun_name [event] 1 group_size b_val b_ptr in
   x.outval <- [|Arr b_val|];
   x.outmem <- [|b_mem|];
   x.events <- [|event|]
+
+
+(* interface of map-reduce primitives *)
+
+
+let map_arr fun_name x = pack_op (Map fun_name) [|x|]
+
+
+let mapn_arr fun_name x = pack_op (MapN fun_name) x
+
+
+let map2_arr fun_name x y = pack_op (MapN fun_name) [|x; y|]
+
+
+let map_arr_scalar fun_name x a = pack_op (MapArrScalar fun_name) [|x; a|]
+
+
+let reduce fun_name x = pack_op (Reduce fun_name) [|x|]
 
 
 (* recursively evaluate an expression *)
@@ -254,10 +275,10 @@ let eval x =
     if x.outmem = [||] then (
       match x.op with
       | Noop _         -> ()
-      | Map s          -> map s x
-      | MapN s         -> map_n s x
-      | MapArrScalar s -> map_arr_scalar s x
-      | Reduce s       -> reduce s x
+      | Map s          -> map_arr_eval s x
+      | MapN s         -> mapn_arr_eval s x
+      | MapArrScalar s -> map_arr_scalar_eval s x
+      | Reduce s       -> reduce_eval s x
     )
   in
   _eval (unpack_trace x);

@@ -45,6 +45,11 @@ let functions () = [
     map_arr_fun        "float32_log10"          "float" "log10(a[gid])";
     map_arr_fun        "float32_log1p"          "float" "log1p(a[gid])";
     map_arr_fun        "float32_logb"           "float" "logb(a[gid])";
+    map_arr_fun        "float32_relu"           "float" "fmax(a[gid], 0)";
+    map_arr_fun        "float32_signum"         "float" "(a[gid] > 0) ? 1 : (a[gid] < 0) ? -1 : 0";
+    map_arr_fun        "float32_sigmoid"        "float" "1 / (1 + exp(-a[gid]))";
+    map_arr_fun        "float32_softplus"       "float" "log1p(exp(a[gid]))";
+    map_arr_fun        "float32_softsign"       "float" "a[gid] / (1 + fabs(a[gid]))";
     map_arr_arr_fun    "float32_add"            "float" "a[gid] + b[gid]";
     map_arr_arr_fun    "float32_sub"            "float" "a[gid] - b[gid]";
     map_arr_arr_fun    "float32_mul"            "float" "a[gid] * b[gid]";
