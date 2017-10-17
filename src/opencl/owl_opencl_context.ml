@@ -24,7 +24,7 @@ let compile_kernels () =
   let ctx = Context.create_from_type cl_DEVICE_TYPE_GPU in
   let gpu = Context.((get_info ctx).devices).(0) in
   let cmdq = CommandQueue.create ctx gpu in
-  let prog_s = Owl_opencl_kernel.code in
+  let prog_s = Owl_opencl_kernel.code () in
   let prog = Program.create_with_source ctx [|prog_s|] in
   Owl_opencl_base.Program.build prog [|gpu|];
   {

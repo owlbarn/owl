@@ -5,10 +5,10 @@
 
 let code = "
 
-__kernel void owl_opencl_float32_sum(
-    __global const float *input,
-    __global float *output,
-    __local float *shared,
+__kernel void owl_opencl_MLTYP0_sum(
+    __global const CLTYP0 *input,
+    __global CLTYP0 *output,
+    __local CLTYP0 *shared,
     const unsigned int n)
 {
   size_t local_id = get_local_id(0);

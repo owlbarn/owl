@@ -10,29 +10,29 @@ let code = "
 #endif
 
 
-__kernel void owl_opencl_float32_add(
-  __global float *a,
-  __global float *b,
-  __global float *c)
+__kernel void owl_opencl_MLTYP0_add(
+  __global CLTYP0 *a,
+  __global CLTYP0 *b,
+  __global CLTYP0 *c)
 {
   int gid = get_global_id(0);
   c[gid] = a[gid] + b[gid];
 }
 
 
-__kernel void owl_opencl_float32_add_scalar(
-  __global float *a,
-  float b,
-  __global float *c)
+__kernel void owl_opencl_MLTYP0_add_scalar(
+  __global CLTYP0 *a,
+  CLTYP0 b,
+  __global CLTYP0 *c)
 {
   int gid = get_global_id(0);
   c[gid] = a[gid] + b;
 }
 
 
-__kernel void owl_opencl_float32_sin(
-  __global float *a,
-  __global float *b
+__kernel void owl_opencl_MLTYP0_sin(
+  __global CLTYP0 *a,
+  __global CLTYP0 *b
 )
 {
   int gid = get_global_id(0);
@@ -40,9 +40,9 @@ __kernel void owl_opencl_float32_sin(
 }
 
 
-__kernel void owl_opencl_float32_cos(
-  __global float *a,
-  __global float *b
+__kernel void owl_opencl_MLTYP0_cos(
+  __global CLTYP0 *a,
+  __global CLTYP0 *b
 )
 {
   int gid = get_global_id(0);
