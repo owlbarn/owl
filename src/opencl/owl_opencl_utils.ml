@@ -125,4 +125,17 @@ let context_properties_to_c_enum properties =
   )
 
 
+(** other helper, string operations, regular expressions *)
+
+(* given a string [s], replace the substrings pairs contained in [replacement],
+  the format of [replacement] is [(original, replace)].
+ *)
+let replace_subs s replacement =
+  List.fold_left (fun a (s0, s1) ->
+    let regex = Str.regexp s0 in
+    Str.global_replace regex s1 a
+  ) s replacement
+
+
+
 (* ends here *)

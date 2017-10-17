@@ -3,51 +3,59 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-let code = "
+let map_arr_template = "
+  __kernel void owl_opencl_FUNNAME(
+    __global CLTYP *a,
+    __global CLTYP *b
+  )
+  {
+    int gid = get_global_id(0);
+    b[gid] = MAPFUN;
+  }
+  "
 
-#ifndef GROUP_SIZE
-#define GROUP_SIZE (64)
-#endif
+let map_arr_arr_template = "
+  __kernel void owl_opencl_FUNNAME(
+    __global CLTYP *a,
+    __global CLTYP *b,
+    __global CLTYP *c)
+  {
+    int gid = get_global_id(0);
+    c[gid] = MAPFUN;
+  }
+  "
 
-
-__kernel void owl_opencl_MLTYP0_add(
-  __global CLTYP0 *a,
-  __global CLTYP0 *b,
-  __global CLTYP0 *c)
-{
-  int gid = get_global_id(0);
-  c[gid] = a[gid] + b[gid];
-}
-
-
-__kernel void owl_opencl_MLTYP0_add_scalar(
-  __global CLTYP0 *a,
-  CLTYP0 b,
-  __global CLTYP0 *c)
-{
-  int gid = get_global_id(0);
-  c[gid] = a[gid] + b;
-}
-
-
-__kernel void owl_opencl_MLTYP0_sin(
-  __global CLTYP0 *a,
-  __global CLTYP0 *b
-)
-{
-  int gid = get_global_id(0);
-  b[gid] = sin(a[gid]);
-}
+let map_arr_scalar_template = "
+  __kernel void owl_opencl_FUNNAME(
+    __global CLTYP *a,
+             CLTYP  b,
+    __global CLTYP *c)
+  {
+    int gid = get_global_id(0);
+    c[gid] = MAPFUN;
+  }
+  "
 
 
-__kernel void owl_opencl_MLTYP0_cos(
-  __global CLTYP0 *a,
-  __global CLTYP0 *b
-)
-{
-  int gid = get_global_id(0);
-  b[gid] = cos(a[gid]);
-}
+let map_arr_fun fun_name cl_typ map_fun =
+  Owl_opencl_utils.replace_subs map_arr_template [
+    ("FUNNAME", fun_name);
+    ("MAPFUN", map_fun);
+    ("CLTYP", cl_typ);
+  ]
 
 
-"
+let map_arr_arr_fun fun_name cl_typ map_fun =
+  Owl_opencl_utils.replace_subs map_arr_arr_template [
+    ("FUNNAME", fun_name);
+    ("MAPFUN", map_fun);
+    ("CLTYP", cl_typ);
+  ]
+
+
+let map_arr_scalar_fun fun_name cl_typ map_fun =
+  Owl_opencl_utils.replace_subs map_arr_scalar_template [
+    ("FUNNAME", fun_name);
+    ("MAPFUN", map_fun);
+    ("CLTYP", cl_typ);
+  ]
