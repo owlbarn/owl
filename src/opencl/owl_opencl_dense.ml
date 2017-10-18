@@ -130,5 +130,15 @@ let atan2_scalar x a = Owl_opencl_operand.map_arr_scalar "atan2_scalar" x a
 let atan2pi_scalar x a = Owl_opencl_operand.map_arr_scalar "atan2pi_scalar" x a
 
 
+(* helper functions *)
+
+let to_ndarray x =
+  Owl_opencl_operand.eval x |> ignore;
+  let y = Owl_opencl_operand.unpack_trace x in
+  Owl_opencl_operand.(y.outval.(0) |> unpack_arr)
+
+
+let of_ndarray x = Owl_opencl_operand.(Arr x)
+
 
 (* ends here *)

@@ -90,7 +90,7 @@ let functions () = [
 
 let code () =
   let fun_s = functions () |> List.fold_left ( ^ ) "" in
-  let s = head_s ^ fun_s in
-  (* FIXME: DEBUG *)
-  print_endline s; flush_all ();
-  s
+  head_s ^ fun_s
+
+
+(* ends here *)
