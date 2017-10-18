@@ -13,9 +13,9 @@ let _ =
   match !generate_ml, !generate_c with
   | false, false
   | true, true ->
-    failwith "Exactly one of -ml and -c must be specified"
+      failwith "Exactly one of -ml and -c must be specified"
   | true, false ->
-    Cstubs.write_ml Format.std_formatter ~prefix (module Owl_lapacke_bindings.Bindings)
+      Cstubs.write_ml Format.std_formatter ~prefix (module Owl_lapacke_bindings.Bindings)
   | false, true ->
-    print_endline "#include \"lapacke.h\"";
-    Cstubs.write_c Format.std_formatter ~prefix (module Owl_lapacke_bindings.Bindings)
+      print_endline "#include \"lapacke.h\"";
+      Cstubs.write_c Format.std_formatter ~prefix (module Owl_lapacke_bindings.Bindings)

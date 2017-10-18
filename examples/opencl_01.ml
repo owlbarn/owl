@@ -3,6 +3,7 @@
 
 open Owl
 
+
 let prog_s = "
   __kernel void hello_kernel(__global const float *a,
                              __global const float *b,
@@ -31,11 +32,14 @@ print_endline (Owl_opencl_base.Program.to_string program);;
 print_endline (Owl_opencl_base.Kernel.to_string kernel);;
 
 
-Log.info "prepare and set variables ...";;
+Log.info "prepare variables ...";;
 let _size = 10_000_000;;
 let a = Dense.Ndarray.S.uniform [|_size|];;
 let b = Dense.Ndarray.S.uniform [|_size|];;
 let c = Dense.Ndarray.S.zeros [|_size|];;
+
+
+Log.info "set args ...";;
 let a' = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx a;;
 let b' = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b;;
 let c' = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx c;;
