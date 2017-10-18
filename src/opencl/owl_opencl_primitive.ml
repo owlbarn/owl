@@ -7,12 +7,10 @@ open Owl_opencl_utils
 
 open Owl_opencl_generated
 
-open Owl_dense_ndarray_s
-
 
 type t =
   | F     of float
-  | Arr   of arr
+  | Arr   of (float, Bigarray.float32_elt) Owl_dense_ndarray_generic.t
   | Trace of trace
 and trace = {
   mutable op     : trace_op;
@@ -109,7 +107,10 @@ let allocate_from_arr ctx a =
     match a.refnum = 1 with
     | true  -> a_val, a_mem, a_ptr
     | false -> (
-        let b_val = empty (a_val |> unpack_arr |> shape) in
+        let a_upk = a_val |> unpack_arr in
+        let a_knd = Owl_dense_ndarray_generic.kind a_upk in
+        let a_shp = Owl_dense_ndarray_generic.shape a_upk in
+        let b_val = Owl_dense_ndarray_generic.empty a_knd a_shp in
         let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
         let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
         Arr b_val, b_mem, b_ptr
@@ -132,7 +133,10 @@ let allocate_from_inputs ctx x =
       match a.refnum = 1 with
       | true  -> a_val, a_mem, a_ptr
       | false -> (
-          let b_val = empty (a_val |> unpack_arr |> shape) in
+          let a_upk = a_val |> unpack_arr in
+          let a_knd = Owl_dense_ndarray_generic.kind a_upk in
+          let a_shp = Owl_dense_ndarray_generic.shape a_upk in
+          let b_val = Owl_dense_ndarray_generic.empty a_knd a_shp in
           let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
           let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
           Arr b_val, b_mem, b_ptr
@@ -154,7 +158,7 @@ let map_arr_eval fun_name x =
   let src, dst = allocate_from_inputs ctx x in
   let a_val, a_mem, a_ptr = src.(0) in
   let b_val, b_mem, b_ptr = dst.(0) in
-  let _size = a_val |> unpack_arr |> numel in
+  let _size = a_val |> unpack_arr |> Owl_dense_ndarray_generic.numel in
   let wait_for = get_input_event x in
 
   Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
@@ -179,7 +183,7 @@ let mapn_arr_eval fun_name x =
   in
 
   let b_val, b_mem, _ = dst in
-  let _size = b_val |> unpack_arr |> numel in
+  let _size = b_val |> unpack_arr |> Owl_dense_ndarray_generic.numel in
   let wait_for = Array.fold_left (fun a b -> a @ (get_input_event b)) [] x.input in
 
   let args = Array.append src [|dst|] in
@@ -202,7 +206,7 @@ let map_arr_scalar_eval fun_name x =
 
   let c_val = x.input.(1).outval.(0) |> unpack_flt in
   let c_ptr = Ctypes.allocate Ctypes.float c_val in
-  let _size = a_val |> unpack_arr |> numel in
+  let _size = a_val |> unpack_arr |> Owl_dense_ndarray_generic.numel in
   let wait_for = get_input_event x in
 
   Owl_opencl_base.Kernel.set_arg kernel 0 sizeof_cl_mem a_ptr;
@@ -220,7 +224,8 @@ let _reduce_eval fun_name wait_for num_groups group_size a_val a_ptr =
   let kind = Owl_dense_ndarray_generic.kind a_val in
   let kernel = Owl_opencl_context.(mk_kernel kind fun_name default.program) in
 
-  let b_val = empty [|num_groups|] in
+  let a_knd = a_val |> unpack_arr |> Owl_dense_ndarray_generic.kind in
+  let b_val = empty a_knd [|num_groups|] in
   let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
   let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
   let s_ptr = a_val |> numel |> Ctypes.(allocate int) in
