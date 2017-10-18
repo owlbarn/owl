@@ -10,7 +10,8 @@ open Owl_opencl_generated
 
 type t =
   | F     of float
-  | Arr   of (float, Bigarray.float32_elt) Owl_dense_ndarray_generic.t
+  | F32   of (float, Bigarray.float32_elt) Owl_dense_ndarray_generic.t
+  | F64   of (float, Bigarray.float64_elt) Owl_dense_ndarray_generic.t
   | Trace of trace
 and trace = {
   mutable op     : trace_op;
@@ -33,13 +34,13 @@ let pack_input = function
       x.refnum <- x.refnum + 1;
       x
     )
-  | Arr x   -> (
+  | F32 x   -> (
       let ctx = Owl_opencl_context.(default.context) in
       let x_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx x in
       {
         op      = Noop "";
         input   = [| |];
-        outval  = [|Arr x|];
+        outval  = [|F32 x|];
         outmem  = [|x_mem|];
         events  = [| |];
         refnum  = 1;
@@ -70,14 +71,24 @@ let unpack_flt = function
   | _     -> failwith "owl_opencl_operand:unpack_flt"
 
 
-let unpack_arr = function
-  | Arr x -> x
-  | _     -> failwith "owl_opencl_operand:unpack_arr"
-
-
 let unpack_trace = function
   | Trace x -> x
   | _       -> failwith "owl_opencl_operand:unpack_trace"
+
+
+let pack_arr
+  : type a b. (a, b) Owl_dense_ndarray_generic.t -> t
+  = fun x ->
+  match Owl_dense_ndarray_generic.kind x with
+  | Bigarray.Float32 -> F32 x
+  | Bigarray.Float64 -> F64 x
+  | _                -> failwith "owl_opencl_operand:pack_arr"
+
+
+let unpack_arr = function
+  | F32 x -> Obj.magic x
+  | F64 x -> Obj.magic x
+  | _     -> failwith "owl_opencl_operand:unpack_arr"
 
 
 let get_input_event x =
@@ -89,9 +100,7 @@ let get_input_event x =
 let get_input_kind x i =
   assert (Array.length x.input > i);
   let input_i = x.input.(i) in
-  match input_i.outval.(i) with
-  | Arr y -> Owl_dense_ndarray_generic.kind y
-  | _     -> failwith "owl_opencl_operand:get_input_kind"
+  input_i.outval.(i) |> unpack_arr |> Owl_dense_ndarray_generic.kind
 
 
 let get_val_mem_ptr x i =
@@ -113,7 +122,7 @@ let allocate_from_arr ctx a =
         let b_val = Owl_dense_ndarray_generic.empty a_knd a_shp in
         let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
         let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
-        Arr b_val, b_mem, b_ptr
+        F32 b_val, b_mem, b_ptr
       )
   in
   (a_val, a_mem, a_ptr), (b_val, b_mem, b_ptr)
@@ -139,7 +148,7 @@ let allocate_from_inputs ctx x =
           let b_val = Owl_dense_ndarray_generic.empty a_knd a_shp in
           let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
           let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
-          Arr b_val, b_mem, b_ptr
+          F32 b_val, b_mem, b_ptr
         )
     in
 
@@ -224,11 +233,11 @@ let _reduce_eval fun_name wait_for num_groups group_size a_val a_ptr =
   let kind = Owl_dense_ndarray_generic.kind a_val in
   let kernel = Owl_opencl_context.(mk_kernel kind fun_name default.program) in
 
-  let a_knd = a_val |> unpack_arr |> Owl_dense_ndarray_generic.kind in
-  let b_val = empty a_knd [|num_groups|] in
+  let a_knd = Owl_dense_ndarray_generic.kind a_val in
+  let b_val = Owl_dense_ndarray_generic.empty a_knd [|num_groups|] in
   let b_mem = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b_val in
   let b_ptr = Ctypes.allocate Owl_opencl_generated.cl_mem b_mem in
-  let s_ptr = a_val |> numel |> Ctypes.(allocate int) in
+  let s_ptr = a_val |> Owl_dense_ndarray_generic.numel |> Ctypes.(allocate int) in
 
   let global_work_size = [ num_groups * group_size ] in
   let local_work_size = [ group_size ] in
@@ -250,7 +259,7 @@ let reduce_eval fun_name x =
   let a_val, a_mem, a_ptr = get_val_mem_ptr x.input.(0) 0 in
   let event, b_val, b_mem, b_ptr = _reduce_eval fun_name wait_for (num_groups * 2) group_size (unpack_arr a_val) a_ptr in
   let event, b_val, b_mem, b_ptr = _reduce_eval fun_name [event] 1 group_size b_val b_ptr in
-  x.outval <- [|Arr b_val|];
+  x.outval <- [|F32 b_val|];
   x.outmem <- [|b_mem|];
   x.events <- [|event|]
 

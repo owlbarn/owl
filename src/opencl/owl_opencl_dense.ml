@@ -134,13 +134,15 @@ let atan2pi_scalar x a = map_arr_scalar "atan2pi_scalar" x a
 
 (* helper functions *)
 
-let to_ndarray x =
+let to_ndarray
+  : type a b . (a, b) Bigarray.kind -> t -> (a, b) Owl_dense_ndarray_generic.t
+  = fun k x ->
   eval x |> ignore;
   let y = unpack_trace x in
   (y.outval.(0) |> unpack_arr)
 
 
-let of_ndarray x = (Arr x)
+let of_ndarray x = pack_arr x
 
 
 (* ends here *)
