@@ -1139,13 +1139,13 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 int32_equal_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define STOPFN(X) X != a
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 int64_equal_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define STOPFN(X) X != a
 #include "owl_dense_common_vec_cmp.c"
@@ -1201,13 +1201,13 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 int32_not_equal_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define STOPFN(X) X == a
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 int64_not_equal_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define STOPFN(X) X == a
 #include "owl_dense_common_vec_cmp.c"
@@ -1263,13 +1263,13 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 int32_less_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define STOPFN(X) X >= a
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 int64_less_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define STOPFN(X) X >= a
 #include "owl_dense_common_vec_cmp.c"
@@ -1325,13 +1325,13 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 int32_greater_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define STOPFN(X) X <= a
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 int64_greater_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define STOPFN(X) X <= a
 #include "owl_dense_common_vec_cmp.c"
@@ -1387,13 +1387,13 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 int32_less_equal_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define STOPFN(X) X > a
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 int64_less_equal_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define STOPFN(X) X > a
 #include "owl_dense_common_vec_cmp.c"
@@ -1449,13 +1449,13 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 int32_greater_equal_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define STOPFN(X) X < a
 #include "owl_dense_common_vec_cmp.c"
 
 #define FUN16 int64_greater_equal_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define STOPFN(X) X < a
 #include "owl_dense_common_vec_cmp.c"
@@ -1519,14 +1519,14 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int32_elt_equal_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define NUMBER1 int32_t
 #define MAPFN(X,Y) *Y = (*X == a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int64_elt_equal_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define NUMBER1 int64_t
 #define MAPFN(X,Y) *Y = (*X == a)
@@ -1591,14 +1591,14 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int32_elt_not_equal_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define NUMBER1 int32_t
 #define MAPFN(X,Y) *Y = (*X != a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int64_elt_not_equal_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define NUMBER1 int64_t
 #define MAPFN(X,Y) *Y = (*X != a)
@@ -1663,14 +1663,14 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int32_elt_less_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define NUMBER1 int32_t
 #define MAPFN(X,Y) *Y = (*X < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int64_elt_less_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define NUMBER1 int64_t
 #define MAPFN(X,Y) *Y = (*X < a)
@@ -1735,14 +1735,14 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int32_elt_greater_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define NUMBER1 int32_t
 #define MAPFN(X,Y) *Y = (*X > a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int64_elt_greater_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define NUMBER1 int64_t
 #define MAPFN(X,Y) *Y = (*X > a)
@@ -1807,14 +1807,14 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int32_elt_less_equal_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define NUMBER1 int32_t
 #define MAPFN(X,Y) *Y = (*X <= a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int64_elt_less_equal_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define NUMBER1 int64_t
 #define MAPFN(X,Y) *Y = (*X <= a)
@@ -1879,14 +1879,14 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int32_elt_greater_equal_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define NUMBER1 int32_t
 #define MAPFN(X,Y) *Y = (*X >= a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int64_elt_greater_equal_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define NUMBER1 int64_t
 #define MAPFN(X,Y) *Y = (*X >= a)
@@ -2181,14 +2181,14 @@ int int64_cmp (const void * a, const void * b)
 #define INIT int r = 0
 #define NUMBER int32_t
 #define ACCFN(A,X) (A += X)
-#define COPYNUM(X) (Val_int(r))
+#define COPYNUM(X) (caml_copy_int32(r))
 #include "owl_dense_common_vec_fold.c"
 
 #define FUN5 int64_sum
 #define INIT int r = 0
 #define NUMBER int64_t
 #define ACCFN(A,X) (A += X)
-#define COPYNUM(X) (Val_int(r))
+#define COPYNUM(X) (caml_copy_int64(r))
 #include "owl_dense_common_vec_fold.c"
 
 // prod
@@ -2253,14 +2253,14 @@ int int64_cmp (const void * a, const void * b)
 #define INIT int r = 0
 #define NUMBER int32_t
 #define ACCFN(A,X) (A *= X)
-#define COPYNUM(X) (Val_int(r))
+#define COPYNUM(X) (caml_copy_int32(r))
 #include "owl_dense_common_vec_fold.c"
 
 #define FUN5 int64_prod
 #define INIT int r = 0
 #define NUMBER int64_t
 #define ACCFN(A,X) (A *= X)
-#define COPYNUM(X) (Val_int(r))
+#define COPYNUM(X) (caml_copy_int64(r))
 #include "owl_dense_common_vec_fold.c"
 
 // neg
@@ -3693,14 +3693,14 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int32_add_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define NUMBER1 int32_t
 #define MAPFN(X,Y) *Y = *X + a
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int64_add_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define NUMBER1 int64_t
 #define MAPFN(X,Y) *Y = *X + a
@@ -3765,14 +3765,14 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int32_mul_scalar
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define NUMBER1 int32_t
 #define MAPFN(X,Y) *Y = *X * a
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int64_mul_scalar
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define NUMBER1 int64_t
 #define MAPFN(X,Y) *Y = *X * a
@@ -3837,14 +3837,14 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int32_scalar_sub
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define NUMBER1 int32_t
 #define MAPFN(X,Y) *Y = a - *X
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int64_scalar_sub
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define NUMBER1 int64_t
 #define MAPFN(X,Y) *Y = a - *X
@@ -3909,14 +3909,14 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int32_scalar_div
-#define INIT int32_t a = Int_val(vA)
+#define INIT int32_t a = Int32_val(vA)
 #define NUMBER int32_t
 #define NUMBER1 int32_t
 #define MAPFN(X,Y) *Y = a / *X
 #include "owl_dense_common_vec_map.c"
 
 #define FUN17 int64_scalar_div
-#define INIT int64_t a = Int_val(vA)
+#define INIT int64_t a = Int64_val(vA)
 #define NUMBER int64_t
 #define NUMBER1 int64_t
 #define MAPFN(X,Y) *Y = a / *X
@@ -4605,13 +4605,13 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int32_sequential
-#define INIT int32_t a = Int_val(vA); int32_t b = Int_val(vB)
+#define INIT int32_t a = Int32_val(vA); int32_t b = Int32_val(vB)
 #define NUMBER int32_t
 #define MAPFN(X) *X = a; a += b
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int64_sequential
-#define INIT int64_t a = Int_val(vA); int64_t b = Int_val(vB)
+#define INIT int64_t a = Int64_val(vA); int64_t b = Int64_val(vB)
 #define NUMBER int64_t
 #define MAPFN(X) *X = a; a += b
 #include "owl_dense_common_vec_map.c"
