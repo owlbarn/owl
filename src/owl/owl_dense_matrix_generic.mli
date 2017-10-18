@@ -294,10 +294,13 @@ val set_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
  *)
 
 val row : ('a, 'b) t -> int -> ('a, 'b) t
-(** [row x i] returns the row [i] of [x]. *)
+(** [row x i] returns row [i] of [x].  Note: Unlike [col], the return value
+  is simply a view onto the original row in [x], so modifying [row]'s
+  value also alters [x]. *)
 
 val col : ('a, 'b) t -> int -> ('a, 'b) t
-(** [col x j] returns the column [j] of [x]. *)
+(** [col x j] returns column [j] of [x].  Note: Unlike [row], the return
+  value is a copy of the original row in [x]. *)
 
 val rows : ('a, 'b) t -> int array -> ('a, 'b) t
 (** [rows x a] returns the rows (defined in an int array [a]) of [x]. The
