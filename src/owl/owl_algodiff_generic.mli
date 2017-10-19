@@ -388,6 +388,7 @@ module Make
       Graphviz.
    *)
 
-
+   val pp_num : Format.formatter -> t -> unit
+   (** [pp_num t] pretty prints the abstract number used in [Algodiff]. *)
 
 end

@@ -222,6 +222,7 @@ module Make
     | _     -> "you should not have reached here!"
 
   let type_info x = match x with
+    | F a                     -> Printf.sprintf "[%s]" (deep_info x)
     | DF (ap, at, ai)         -> Printf.sprintf "[DF tag:%i ap:%s]" ai (deep_info ap)
     | DR (ap, at, ao, af, ai) -> Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
     | _                       -> Printf.sprintf "[%s]" (deep_info x)
@@ -1756,6 +1757,8 @@ module Make
     |> _convert_dot_output
     |> Printf.sprintf "digraph CG {\nnode [shape=record];\n%s}"
 
+
+  let pp_num formatter x = Format.fprintf formatter "%s" (type_info x)
 
 
 end
