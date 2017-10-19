@@ -640,9 +640,10 @@ let plot ?(h=_default_handle) ?(spec=[]) x y =
     plschr marker_size 1.;
     if line_style > 0 && line_style < 9 then
       pllsty line_style; plline x y;
-    if marker <> "" then
+    if marker <> "" then (
       let x', y' = _thinning x, _thinning y in
-      plstring x' y' marker;
+      plstring x' y' marker
+    );
     (* restore original settings *)
     plschr c' 1.;
     plwidth old_pensize;
@@ -1259,9 +1260,10 @@ let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
     plschr marker_size 1.;
     if line_style > 0 && line_style < 9 then
       pllsty line_style; plline x y;
-    if marker <> "" then
+    if marker <> "" then (
       let x', y' = _thinning x, _thinning y in
-      plstring x' y' marker;
+      plstring x' y' marker
+    );
     (* restore original settings *)
     plschr c' 1.;
     plwidth old_pensize;

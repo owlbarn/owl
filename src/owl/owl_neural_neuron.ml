@@ -113,7 +113,7 @@ module Make
           )
         | _     -> failwith "Owl_neural:Input:run:check_shape"
       in
-      check_shape x; x
+      check_shape (primal x); x
 
     let to_string l =
       let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
