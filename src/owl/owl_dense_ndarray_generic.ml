@@ -2636,6 +2636,9 @@ let mul_scalar_ x a = _owl_mul_scalar (kind x) (numel x) x x a
 
 let div_scalar_ x a = mul_scalar_ x (_inv_elt (kind x) a)
 
+let sin_ x = _owl_sin (kind x) (numel x) x x
+
+let cos_ x = _owl_cos (kind x) (numel x) x x
 
 
 (* ends here *)

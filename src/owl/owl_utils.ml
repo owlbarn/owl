@@ -313,6 +313,10 @@ module Stack = struct
 
   let is_empty s = s.size = 0
 
+  let mem s x = Array.mem x s.data
+
+  let memq s x = Array.memq x s.data
+
   let to_array s = Array.sub s.data 0 s.used
 
 end

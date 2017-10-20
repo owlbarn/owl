@@ -1349,10 +1349,13 @@ val mul_scalar_ : ('a, 'b) t -> 'a -> unit
  *)
 
 val div_scalar_ : ('a, 'b) t -> 'a -> unit
-(** [div_scalar_ x y] is simiar to [div_scalar] function but the output is 
+(** [div_scalar_ x y] is simiar to [div_scalar] function but the output is
   written to [x]. The broadcast operation is not supported.
  *)
 
+val sin_ : ('a, 'b) t -> unit
+
+val cos_ : ('a, 'b) t -> unit
 
 
 (* ends ehre *)
