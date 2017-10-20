@@ -469,4 +469,23 @@ end
 
 
 
+module type InpureSig = sig
+
+  type arr
+
+  type elt
+
+  val clone : arr -> arr
+
+  val add_ : arr -> arr -> unit
+
+  val sin_ : arr -> unit
+
+  val cos_ : arr -> unit
+
+end
+
+
+
+
 (* ends here *)

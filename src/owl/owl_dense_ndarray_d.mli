@@ -499,3 +499,26 @@ val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 val sum_slices : ?axis:int -> arr -> arr
 
 val draw_along_dim0 : arr -> int -> arr * int array
+
+
+(** {6 Fucntions of in-place modification } *)
+
+val add_ : arr -> arr -> unit
+
+val sub_ : arr -> arr -> unit
+
+val mul_ : arr -> arr -> unit
+
+val div_ : arr -> arr -> unit
+
+val add_scalar_ : arr -> elt -> unit
+
+val sub_scalar_ : arr -> elt -> unit
+
+val mul_scalar_ : arr -> elt -> unit
+
+val div_scalar_ : arr -> elt -> unit
+
+val sin_ : arr -> unit
+
+val cos_ : arr -> unit
