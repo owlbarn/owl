@@ -27,6 +27,9 @@ module Make
   and op =
     | Noop
     | Add of t * t
+    | Sub of t * t
+    | Mul of t * t
+    | Div of t * t
     | Sin of t
     | Cos of t
 
@@ -34,9 +37,11 @@ module Make
   let unpack_operands = function
     | Noop       -> [| |]
     | Add (a, b) -> [|a; b|]
+    | Sub (a, b) -> [|a; b|]
+    | Mul (a, b) -> [|a; b|]
+    | Div (a, b) -> [|a; b|]
     | Sin a      -> [|a|]
     | Cos a      -> [|a|]
-
 
 
   let inc_operand_refnum x =
@@ -66,16 +71,21 @@ module Make
     else A.clone a.outval.(0)
 
 
-  (* FIXME: broadcast *)
-  let allocate_2 op =
-    let operands = unpack_operands op in
+  let allocate_2 operands =
     let a = operands.(0) in
     let b = operands.(1) in
-    let mem =
-      if a.refnum = 1 then a.outval.(0)
-      else A.clone a.outval.(0)
-    in
-    mem, b.outval.(0)
+    let a_val = a.outval.(0) in
+    let b_val = b.outval.(0) in
+    let a_shp = A.shape a_val in
+    let b_shp = A.shape b_val in
+    if a_shp = b_shp then (
+      if a.refnum = 1 then Some (a_val, b_val)
+      else if b.refnum = 1 then Some (b_val, a_val)
+      else Some (A.clone a_val, b_val)
+    )
+    else if Owl_utils.array_greater_eqaul a_shp b_shp && a.refnum = 1 then Some (a_val, b_val)
+    else if Owl_utils.array_greater_eqaul b_shp a_shp && b.refnum = 1 then Some (b_val, a_val)
+    else None
 
 
   (* recursively evaluate an expression *)
@@ -84,11 +94,35 @@ module Make
     if Array.length x.outval = 0 then (
       match x.op with
       | Noop       -> ()
-      | Add (a, b) -> (_eval_term a; _eval_term b; let c_val, d_val = allocate_2 x.op in x.outval <- [|c_val|]; A.add_ c_val d_val)
-      | Sin a      -> (_eval_term a; let a_val = allocate_1 x.op in x.outval <- [|a_val|]; A.sin_ a_val)
-      | Cos a      -> (_eval_term a; let a_val = allocate_1 x.op in x.outval <- [|a_val|]; A.cos_ a_val)
+      | Add (a, b) -> _eval_2 x A.add_ A.add
+      | Sub (a, b) -> _eval_2 x A.sub_ A.sub
+      | Mul (a, b) -> _eval_2 x A.mul_ A.mul
+      | Div (a, b) -> _eval_2 x A.div_ A.div
+      | Sin a      -> _eval_1 x A.sin_
+      | Cos a      -> _eval_1 x A.cos_
 
     )
+
+  (* [f] is inpure *)
+  and _eval_1 x f =
+    let operands = unpack_operands x.op in
+    _eval_term operands.(0);
+    let a = operands.(0).outval.(0) in
+    f a;
+    x.outval <- [|a|]
+
+  (* [f] is inpure and [g] is pure *)
+  and _eval_2 x f g =
+    let operands = unpack_operands x.op in
+    _eval_term operands.(0);
+    _eval_term operands.(1);
+    let a = operands.(0).outval.(0) in
+    let b = operands.(1).outval.(0) in
+    let c = match allocate_2 operands with
+      | Some (p, q) -> f p q; p    (* in-place function, p will be written *)
+      | None        -> g a b       (* pure function without touching a and b *)
+    in
+    x.outval <- [|c|]
 
 
   let of_ndarray x = make_t ~outval:[|x|] Noop
@@ -97,6 +131,12 @@ module Make
   (* math functions *)
 
   let add x y = make_t (Add (x, y))
+
+  let sub x y = make_t (Sub (x, y))
+
+  let mul x y = make_t (Mul (x, y))
+
+  let div x y = make_t (Div (x, y))
 
   let sin x = make_t (Sin x)
 

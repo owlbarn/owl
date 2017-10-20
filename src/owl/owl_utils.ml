@@ -147,6 +147,28 @@ let array_pad s x v n =
     | `Right -> Array.blit x 0 y 0 l
   in y
 
+(* [x] is greater or equal than [y] elementwise *)
+let array_greater_eqaul x y =
+  let la = Array.length x in
+  let lb = Array.length y in
+  assert (la = lb);
+  let b = ref true in
+  (
+    try for i = 0 to la - 1 do
+      if x.(i) < y.(i) then failwith "found"
+    done with exn -> b := false
+  );
+  !b
+
+
+(* deal with the issue: OCaml 4.02.3 does not have Array.iter2
+  eventually we need to move to OCaml 4.03.0 *)
+let array_iter2 f x y =
+  let c = min (Array.length x) (Array.length y) in
+  for i = 0 to c - 1 do
+    f x.(i) y.(i)
+  done
+
 (* pretty-print an array to string *)
 let string_of_array ?(prefix="") ?(suffix="") ?(sep=",") string_of_x x =
   let s = Array.to_list x |> List.map string_of_x |> String.concat sep in

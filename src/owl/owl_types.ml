@@ -475,9 +475,25 @@ module type InpureSig = sig
 
   type elt
 
+  val shape : arr -> int array
+
   val clone : arr -> arr
 
+  val add : arr -> arr -> arr
+
+  val sub : arr -> arr -> arr
+
+  val mul : arr -> arr -> arr
+
+  val div : arr -> arr -> arr
+
   val add_ : arr -> arr -> unit
+
+  val sub_ : arr -> arr -> unit
+
+  val mul_ : arr -> arr -> unit
+
+  val div_ : arr -> arr -> unit
 
   val sin_ : arr -> unit
 
