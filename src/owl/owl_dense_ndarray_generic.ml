@@ -317,6 +317,26 @@ let broadcast_op op x0 x1 =
   op y0 t0 y1 t1 y2 t2;
   y2
 
+let broadcast_op_inplace op x0 x1 =
+  (* align the rank of inputs *)
+  let d0 = num_dims x0 in
+  let d1 = num_dims x1 in
+  if d0 < d1 then
+    failwith "broadcast_op_inplace: cannot broadcast to a smaller array";
+  let y0 = x0 in
+  let y1 = expand x1 d0 in
+  (* check whether the shape is valid *)
+  let s0 = shape y0 in
+  let s1 = shape y1 in
+  Array.iter2 (fun a b ->
+    if a < b then
+      failwith "broadcast_op_inplace: slice not aligned"
+  ) s0 s1;
+  (* calculate the strides *)
+  let t0 = _calc_stride s0 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t1 = _calc_stride s1 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  op y0 t0 y1 t1 y0 t0
+
 
 (* mathematical functions *)
 
@@ -2620,13 +2640,29 @@ let bottom x n = _search_close_to_extreme x n (_pos_inf (kind x)) ( < )
 
 (* fucntions which modify the data in-place, not so pure *)
 
-let add_ x y = _owl_add (kind x) (numel x) x y x
+let add_ x y =
+  if same_shape x y then
+      _owl_add (kind x) (numel x) x y x
+  else
+    broadcast_op_inplace (_owl_broadcast_add (kind x)) x y
 
-let sub_ x y = _owl_sub (kind x) (numel x) x y x
+let sub_ x y =
+  if same_shape x y then
+      _owl_sub (kind x) (numel x) x y x
+  else
+    broadcast_op_inplace (_owl_broadcast_sub (kind x)) x y
 
-let mul_ x y = _owl_mul (kind x) (numel x) x y x
+let mul_ x y =
+  if same_shape x y then
+      _owl_mul (kind x) (numel x) x y x
+  else
+    broadcast_op_inplace (_owl_broadcast_mul (kind x)) x y
 
-let div_ x y = _owl_div (kind x) (numel x) x y x
+let div_ x y =
+  if same_shape x y then
+      _owl_div (kind x) (numel x) x y x
+  else
+    broadcast_op_inplace (_owl_broadcast_div (kind x)) x y
 
 let add_scalar_ x a = _owl_add_scalar (kind x) (numel x) x x a
 
