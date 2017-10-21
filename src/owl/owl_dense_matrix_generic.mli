@@ -1496,6 +1496,30 @@ val div_ : ('a, 'b) t -> ('a, 'b) t -> unit
   make sure [x] is big enough to hold the output result.
  *)
 
+val pow_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [pow_ x y] is simiar to [pow] function but the output is written to [x].
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
+ *)
+
+val atan2_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [atan2_ x y] is simiar to [atan2] function but the output is written to [x].
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
+ *)
+
+val hypot_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [hypot_ x y] is simiar to [hypot] function but the output is written to [x].
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
+ *)
+
+val fmod_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [fmod_ x y] is simiar to [fmod] function but the output is written to [x].
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
+ *)
+
 val min2_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [min2_ x y] is simiar to [min2] function but the output is written to [x].
   The broadcast operation only allows broadcasting [y] over [x], so you need to
@@ -1528,6 +1552,159 @@ val div_scalar_ : ('a, 'b) t -> 'a -> unit
   written to [x].
  *)
 
+val pow_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [pow_scalar_ x y] is simiar to [pow_scalar] function but the output is
+  written to [x].
+ *)
+
+val atan2_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [atan2_scalar_ x y] is simiar to [atan2_scalar] function but the output is
+  written to [x].
+ *)
+
+val scalar_add_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_add_ a x] is simiar to [scalar_add] function but the output is
+  written to [x].
+ *)
+
+val scalar_sub_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_sub_ a x] is simiar to [scalar_sub] function but the output is
+  written to [x].
+ *)
+
+val scalar_mul_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_mul_ a x] is simiar to [scalar_mul] function but the output is
+  written to [x].
+ *)
+
+val scalar_div_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_div_ a x] is simiar to [scalar_div] function but the output is
+  written to [x].
+ *)
+
+val scalar_pow_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_pow_ a x] is simiar to [scalar_pow] function but the output is
+  written to [x].
+ *)
+
+val scalar_atan2_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_atan2_ a x] is simiar to [scalar_atan2] function but the output is
+  written to [x].
+ *)
+
+val conj_ : ('a, 'b) t -> unit
+(** [conj_ x] is similar to [conj] but output is written to [x] *)
+
+val neg_ : ('a, 'b) t -> unit
+(** [neg_ x] is similar to [neg] but output is written to [x] *)
+
+val reci_ : ('a, 'b) t -> unit
+(** [reci_ x] is similar to [reci] but output is written to [x] *)
+
+val signum_ : ('a, 'b) t -> unit
+(** [signum_ x] is similar to [signum] but output is written to [x] *)
+
+val sqr_ : ('a, 'b) t -> unit
+(** [sqr_ x] is similar to [sqr] but output is written to [x] *)
+
+val sqrt_ : ('a, 'b) t -> unit
+(** [sqrt_ x] is similar to [sqrt] but output is written to [x] *)
+
+val cbrt_ : ('a, 'b) t -> unit
+(** [cbrt_ x] is similar to [cbrt] but output is written to [x] *)
+
+val exp_ : ('a, 'b) t -> unit
+(** [exp_ x] is similar to [exp_] but output is written to [x] *)
+
+val exp2_ : ('a, 'b) t -> unit
+(** [exp2_ x] is similar to [exp2] but output is written to [x] *)
+
+val exp10_ : ('a, 'b) t -> unit
+(** [exp2_ x] is similar to [exp2] but output is written to [x] *)
+
+val expm1_ : ('a, 'b) t -> unit
+(** [expm1_ x] is similar to [expm1] but output is written to [x] *)
+
+val log_ : ('a, 'b) t -> unit
+(** [log_ x] is similar to [log] but output is written to [x] *)
+
+val log2_ : ('a, 'b) t -> unit
+(** [log2_ x] is similar to [log2] but output is written to [x] *)
+
+val log10_ : ('a, 'b) t -> unit
+(** [log10_ x] is similar to [log10] but output is written to [x] *)
+
+val log1p_ : ('a, 'b) t -> unit
+(** [log1p_ x] is similar to [log1p] but output is written to [x] *)
+
 val sin_ : ('a, 'b) t -> unit
+(** [sin_ x] is similar to [sin] but output is written to [x] *)
 
 val cos_ : ('a, 'b) t -> unit
+(** [cos_ x] is similar to [cos] but output is written to [x] *)
+
+val tan_ : ('a, 'b) t -> unit
+(** [tan_ x] is similar to [tan] but output is written to [x] *)
+
+val asin_ : ('a, 'b) t -> unit
+(** [asin_ x] is similar to [asin] but output is written to [x] *)
+
+val acos_ : ('a, 'b) t -> unit
+(** [acos_ x] is similar to [acos] but output is written to [x] *)
+
+val atan_ : ('a, 'b) t -> unit
+(** [atan_ x] is similar to [atan] but output is written to [x] *)
+
+val sinh_ : ('a, 'b) t -> unit
+(** [sinh_ x] is similar to [sinh] but output is written to [x] *)
+
+val cosh_ : ('a, 'b) t -> unit
+(** [cosh_ x] is similar to [cosh] but output is written to [x] *)
+
+val tanh_ : ('a, 'b) t -> unit
+(** [tanh_ x] is similar to [tanh] but output is written to [x] *)
+
+val asinh_ : ('a, 'b) t -> unit
+(** [asinh_ x] is similar to [asinh] but output is written to [x] *)
+
+val acosh_ : ('a, 'b) t -> unit
+(** [acosh_ x] is similar to [acosh] but output is written to [x] *)
+
+val atanh_ : ('a, 'b) t -> unit
+(** [atanh_ x] is similar to [atanh] but output is written to [x] *)
+
+val floor_ : ('a, 'b) t -> unit
+(** [floor_ x] is similar to [floor] but output is written to [x] *)
+
+val ceil_ : ('a, 'b) t -> unit
+(** [ceil_ x] is similar to [ceil] but output is written to [x] *)
+
+val round_ : ('a, 'b) t -> unit
+(** [round_ x] is similar to [round] but output is written to [x] *)
+
+val trunc_ : ('a, 'b) t -> unit
+(** [trunc_ x] is similar to [trunc] but output is written to [x] *)
+
+val fix_ : ('a, 'b) t -> unit
+(** [fix_ x] is similar to [fix] but output is written to [x] *)
+
+val erf_ : ('a, 'b) t -> unit
+(** [erf_ x] is similar to [erf] but output is written to [x] *)
+
+val erfc_ : ('a, 'b) t -> unit
+(** [erfc_ x] is similar to [erfc] but output is written to [x] *)
+
+val relu_ : ('a, 'b) t -> unit
+(** [relu_ x] is similar to [relu] but output is written to [x] *)
+
+val softplus_ : ('a, 'b) t -> unit
+(** [softplus_ x] is similar to [softplus] but output is written to [x] *)
+
+val softsign_ : ('a, 'b) t -> unit
+(** [softsign_ x] is similar to [softsign] but output is written to [x] *)
+
+val sigmoid_ : ('a, 'b) t -> unit
+(** [sigmoid_ x] is similar to [sigmoid] but output is written to [x] *)
+
+val softmax_ : ('a, 'b) t -> unit
+(** [softmax_ x] is similar to [softmax] but output is written to [x] *)

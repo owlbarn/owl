@@ -840,13 +840,6 @@ let elt_greater_equal_scalar x a =
 
 let sum x = _owl_sum (kind x) (numel x) x
 
-let softmax x =
-  let y = max x |> sub_scalar x |> exp in
-  let a = sum y in
-  div_scalar y a
-
-let cross_entropy x y = (mul x (log y) |> sum) |> _neg_elt (kind x)
-
 let uniform : type a b. ?scale:float -> (a, b) kind -> int array -> (a, b) t =
   fun ?(scale=1.) kind dimension ->
   let x = empty kind dimension in
@@ -2668,6 +2661,46 @@ let div_ x y =
     broadcast_op (_owl_broadcast_div (kind x)) x y ~out:x |> ignore
   )
 
+let pow_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_pow (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_pow (kind x)) x y ~out:x |> ignore
+  )
+
+let atan2_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_atan2 (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_atan2 (kind x)) x y ~out:x |> ignore
+  )
+
+let hypot_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_hypot (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_hypot (kind x)) x y ~out:x |> ignore
+  )
+
+let fmod_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_fmod (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_fmod (kind x)) x y ~out:x |> ignore
+  )
+
 let min2_ x y =
   let sx = shape x in
   let sy = shape y in
@@ -2696,9 +2729,118 @@ let mul_scalar_ x a = _owl_mul_scalar (kind x) (numel x) x x a
 
 let div_scalar_ x a = mul_scalar_ x (_inv_elt (kind x) a)
 
+let pow_scalar_ x a = _owl_pow_scalar (kind x) (numel x) x x a
+
+let atan2_scalar_ x a = _owl_atan2_scalar (kind x) (numel x) x x a
+
+let scalar_add_ a x = _owl_add_scalar (kind x) (numel x) x x a
+
+let scalar_sub_ a x = _owl_scalar_sub (kind x) (numel x) x x a
+
+let scalar_mul_ a x = _owl_mul_scalar (kind x) (numel x) x x a
+
+let scalar_div_ a x = _owl_scalar_div (kind x) (numel x) x x a
+
+let scalar_pow_ a x = _owl_scalar_pow (kind x) (numel x) x x a
+
+let scalar_atan2_ a x = _owl_scalar_atan2 (kind x) (numel x) x x a
+
+let conj_ x = _owl_conj (kind x) (numel x) x x
+
+let neg_ x = _owl_neg (kind x) (numel x) x x
+
+let reci_ x = _owl_reci (kind x) (numel x) x x
+
+let signum_ x = _owl_signum (kind x) (numel x) x x
+
+let sqr_ x = _owl_sqr (kind x) (numel x) x x
+
+let sqrt_ x = _owl_sqrt (kind x) (numel x) x x
+
+let cbrt_ x = _owl_cbrt (kind x) (numel x) x x
+
+let exp_ x = _owl_exp (kind x) (numel x) x x
+
+let exp2_ x = _owl_exp2 (kind x) (numel x) x x
+
+let exp10_ x = _owl_exp10 (kind x) (numel x) x x
+
+let expm1_ x = _owl_expm1 (kind x) (numel x) x x
+
+let log_ x = _owl_log (kind x) (numel x) x x
+
+let log2_ x = _owl_log2 (kind x) (numel x) x x
+
+let log10_ x = _owl_log10 (kind x) (numel x) x x
+
+let log1p_ x = _owl_log1p (kind x) (numel x) x x
+
 let sin_ x = _owl_sin (kind x) (numel x) x x
 
 let cos_ x = _owl_cos (kind x) (numel x) x x
+
+let tan_ x = _owl_tan (kind x) (numel x) x x
+
+let asin_ x = _owl_asin (kind x) (numel x) x x
+
+let acos_ x = _owl_acos (kind x) (numel x) x x
+
+let atan_ x = _owl_atan (kind x) (numel x) x x
+
+let sinh_ x = _owl_sinh (kind x) (numel x) x x
+
+let cosh_ x = _owl_cosh (kind x) (numel x) x x
+
+let tanh_ x = _owl_tanh (kind x) (numel x) x x
+
+let asinh_ x = _owl_asinh (kind x) (numel x) x x
+
+let acosh_ x = _owl_acosh (kind x) (numel x) x x
+
+let atanh_ x = _owl_atanh (kind x) (numel x) x x
+
+let floor_ x = _owl_floor (kind x) (numel x) x x
+
+let ceil_ x = _owl_ceil (kind x) (numel x) x x
+
+let round_ x = _owl_round (kind x) (numel x) x x
+
+let trunc_ x = _owl_trunc (kind x) (numel x) x x
+
+let fix_ x = _owl_fix (kind x) (numel x) x x
+
+let erf_ x = _owl_erf (kind x) (numel x) x x
+
+let erfc_ x = _owl_erfc (kind x) (numel x) x x
+
+let relu_ x = _owl_relu (kind x) (numel x) x x
+
+let softplus_ x = _owl_softplus (kind x) (numel x) x x
+
+let softsign_ x = _owl_softsign (kind x) (numel x) x x
+
+let sigmoid_ x = _owl_sigmoid (kind x) (numel x) x x
+
+let softmax x =
+  let x = clone x in
+  sub_scalar_ x (max x);
+  exp_ x;
+  let a = sum x in
+  div_scalar_ x a;
+  x
+
+let softmax_ x =
+  sub_scalar_ x (max x);
+  exp_ x;
+  let a = sum x in
+  div_scalar_ x a
+
+let cross_entropy x y =
+  let y = clone y in
+  log_ y;
+  mul_ y x;
+  _neg_elt (kind y) (sum y)
+
 
 
 (* ends here *)
