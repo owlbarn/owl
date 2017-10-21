@@ -1474,40 +1474,60 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 
 val add_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [add_ x y] is simiar to [add] function but the output is written to [x].
-  The broadcast operation is not supported.
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
  *)
 
 val sub_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [sub_ x y] is simiar to [sub] function but the output is written to [x].
-  The broadcast operation is not supported.
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
  *)
 
 val mul_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [mul_ x y] is simiar to [mul] function but the output is written to [x].
-  The broadcast operation is not supported.
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
  *)
 
 val div_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [div_ x y] is simiar to [div] function but the output is written to [x].
-  The broadcast operation is not supported.
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
+ *)
+
+val min2_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [min2_ x y] is simiar to [min2] function but the output is written to [x].
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
+ *)
+
+val max2_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [max2_ x y] is simiar to [max2] function but the output is written to [x].
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
  *)
 
 val add_scalar_ : ('a, 'b) t -> 'a -> unit
 (** [add_scalar_ x y] is simiar to [add_scalar] function but the output is
-  written to [x]. The broadcast operation is not supported.
+  written to [x].
  *)
 
 val sub_scalar_ : ('a, 'b) t -> 'a -> unit
 (** [sub_scalar_ x y] is simiar to [sub_scalar] function but the output is
-  written to [x]. The broadcast operation is not supported.
+  written to [x].
  *)
 
 val mul_scalar_ : ('a, 'b) t -> 'a -> unit
 (** [mul_scalar_ x y] is simiar to [mul_scalar] function but the output is
-  written to [x]. The broadcast operation is not supported.
+  written to [x].
  *)
 
 val div_scalar_ : ('a, 'b) t -> 'a -> unit
 (** [div_scalar_ x y] is simiar to [div_scalar] function but the output is
-  written to [x]. The broadcast operation is not supported.
+  written to [x].
  *)
+
+val sin_ : ('a, 'b) t -> unit
+
+val cos_ : ('a, 'b) t -> unit

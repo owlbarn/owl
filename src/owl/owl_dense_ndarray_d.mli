@@ -511,6 +511,10 @@ val mul_ : arr -> arr -> unit
 
 val div_ : arr -> arr -> unit
 
+val min2_ : arr -> arr -> unit
+
+val max2_ : arr -> arr -> unit
+
 val add_scalar_ : arr -> elt -> unit
 
 val sub_scalar_ : arr -> elt -> unit

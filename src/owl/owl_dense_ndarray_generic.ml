@@ -285,15 +285,8 @@ let index_1d_nd i_1d _stride =
   i_nd
 
 
-(* TODO: add axis paramater *)
-
-
-(* general broadcast operation for add/sub/mul/div and etc.
-  This function compares the dimension element-wise from the highest to the
-  lowest with the following broadcast rules (same as numpy):
-  1. equal; 2. either is 1.
- *)
-let broadcast_op op x0 x1 =
+(* align and calculate the output shape for broadcasting over [x0] and [x1] *)
+let broadcast_align_shape x0 x1 =
   (* align the rank of inputs *)
   let d0 = num_dims x0 in
   let d1 = num_dims x1 in
@@ -304,16 +297,31 @@ let broadcast_op op x0 x1 =
   let s0 = shape y0 in
   let s1 = shape y1 in
   Array.iter2 (fun a b ->
-    if a <> 1 && b <> 1 && a <> b then
-      failwith "broadcast_op: slice not aligned"
+    assert (not(a <> 1 && b <> 1 && a <> b))
   ) s0 s1;
   (* calculate the output shape *)
   let s2 = Array.map2 max s0 s1 in
-  let y2 = empty (kind x0) s2 in
   (* calculate the strides *)
   let t0 = _calc_stride s0 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
   let t1 = _calc_stride s1 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
   let t2 = _calc_stride s2 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  (* return aligned arrays, shapes, strides *)
+  y0, y1, s0, s1, s2, t0, t1, t2
+
+
+(* general broadcast operation for add/sub/mul/div and etc.
+  This function compares the dimension element-wise from the highest to the
+  lowest with the following broadcast rules (same as numpy):
+  1. equal; 2. either is 1.
+ *)
+let broadcast_op ?out op x0 x1 =
+  (* align the input rank, calculate the output shape and stride *)
+  let y0, y1, s0, s1, s2, t0, t1, t2 = broadcast_align_shape x0 x1 in
+  let y2 = match out with
+    | Some y2 -> y2
+    | None    -> empty (kind x0) s2
+  in
+  (* call the specific map function *)
   op y0 t0 y1 t1 y2 t2;
   y2
 
@@ -2620,13 +2628,65 @@ let bottom x n = _search_close_to_extreme x n (_pos_inf (kind x)) ( < )
 
 (* fucntions which modify the data in-place, not so pure *)
 
-let add_ x y = _owl_add (kind x) (numel x) x y x
+let add_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_add (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_add (kind x)) x y ~out:x |> ignore
+  )
 
-let sub_ x y = _owl_sub (kind x) (numel x) x y x
+let sub_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_sub (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_sub (kind x)) x y ~out:x |> ignore
+  )
 
-let mul_ x y = _owl_mul (kind x) (numel x) x y x
+let mul_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_mul (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_mul (kind x)) x y ~out:x |> ignore
+  )
 
-let div_ x y = _owl_div (kind x) (numel x) x y x
+let div_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_div (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_div (kind x)) x y ~out:x |> ignore
+  )
+
+let min2_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_min2 (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_min2 (kind x)) x y ~out:x |> ignore
+  )
+
+let max2_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_max2 (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_max2 (kind x)) x y ~out:x |> ignore
+  )
 
 let add_scalar_ x a = _owl_add_scalar (kind x) (numel x) x x a
 
