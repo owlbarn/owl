@@ -329,7 +329,7 @@ let broadcast_op_inplace op x0 x1 =
   let s0 = shape y0 in
   let s1 = shape y1 in
   Array.iter2 (fun a b ->
-    if a < b then
+    if b <> 1 && a <> b then
       failwith "broadcast_op_inplace: slice not aligned"
   ) s0 s1;
   (* calculate the strides *)
