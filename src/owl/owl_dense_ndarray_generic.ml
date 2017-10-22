@@ -2571,28 +2571,19 @@ let reduce_params a x =
   let _stride = strides x in
   let _slicez = slice_size x in
   let m = (numel x) / _slicez.(a) in
-  let n = _stride.(a) in
-  let o = _slicez.(a) / _stride.(a) in
-  let incx_m = _slicez.(a) in
-  let incx_n = 1 in
-  let incx_o = _stride.(a) in
-  let incy_m = _slicez.(a) / _shape.(a) in
-  let incy_n = 1 in
-  let incy_o = 0 in
-  let ofsx = 0 in
-  let ofsy = 0 in
-  m, n, o, ofsx, incx_m, incx_n, incx_o, ofsy, incy_m, incy_n, incy_o
+  let n = _slicez.(a) in
+  let o = _stride.(a) in
+  _shape.(a) <- 1;
+  m, n, o, _shape
 
 
 let sum ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, ofsx, incx_m, incx_n, incx_o, ofsy, incy_m, incy_n, incy_o = reduce_params a x in
-      let shp = shape x in
-      shp.(a) <- 1;
-      let y = zeros _kind shp in
-      _owl_sum_along _kind m n o x ofsx incx_m incx_n incx_o y ofsy incy_m incy_n incy_o;
+      let m, n, o, s = reduce_params a x in
+      let y = zeros _kind s in
+      _owl_sum_along _kind m n o x y;
       y
     )
   | None   -> _owl_sum _kind (numel x) x |> create _kind [|1|]
@@ -2602,11 +2593,9 @@ let prod ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, ofsx, incx_m, incx_n, incx_o, ofsy, incy_m, incy_n, incy_o = reduce_params a x in
-      let shp = shape x in
-      shp.(a) <- 1;
-      let y = zeros _kind shp in
-      _owl_prod_along _kind m n o x ofsx incx_m incx_n incx_o y ofsy incy_m incy_n incy_o;
+      let m, n, o, s = reduce_params a x in
+      let y = ones _kind s in
+      _owl_prod_along _kind m n o x y;
       y
     )
   | None   -> _owl_prod _kind (numel x) x |> create _kind [|1|]
@@ -2616,11 +2605,9 @@ let min ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, ofsx, incx_m, incx_n, incx_o, ofsy, incy_m, incy_n, incy_o = reduce_params a x in
-      let shp = shape x in
-      shp.(a) <- 1;
-      let y = create _kind shp (_pos_inf _kind) in
-      _owl_min_along _kind m n o x ofsx incx_m incx_n incx_o y ofsy incy_m incy_n incy_o;
+      let m, n, o, s = reduce_params a x in
+      let y = create _kind s (_pos_inf _kind) in
+      _owl_min_along _kind m n o x y;
       y
     )
   | None   -> min' x |> create _kind [|1|]
@@ -2630,11 +2617,9 @@ let max ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
-      let m, n, o, ofsx, incx_m, incx_n, incx_o, ofsy, incy_m, incy_n, incy_o = reduce_params a x in
-      let shp = shape x in
-      shp.(a) <- 1;
-      let y = create _kind shp (_neg_inf _kind) in
-      _owl_max_along _kind m n o x ofsx incx_m incx_n incx_o y ofsy incy_m incy_n incy_o;
+      let m, n, o, s = reduce_params a x in
+      let y = create _kind s (_neg_inf _kind) in
+      _owl_max_along _kind m n o x y;
       y
     )
   | None   -> max' x |> create _kind [|1|]

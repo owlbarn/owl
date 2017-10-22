@@ -1998,75 +1998,65 @@ int int64_cmp (const void * a, const void * b)
 
 // min_along
 
-#define FUN25 float32_min_along
-#define FUN25_IMPL float32_min_along_impl
+#define FUN26 float32_min_along
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X,Y) *Y = fminf(*X,*Y)
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = fminf(*X,*Y)
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 float64_min_along
-#define FUN25_IMPL float64_min_along_impl
+#define FUN26 float64_min_along
 #define NUMBER double
 #define NUMBER1 double
-#define MAPFN(X,Y) *Y = fmin(*X,*Y)
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = fmin(*X,*Y)
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 complex32_min_along
-#define FUN25_IMPL complex32_min_along_impl
+#define FUN26 complex32_min_along
 #define NUMBER _Complex float
 #define NUMBER1 _Complex float
-#define MAPFN(X,Y) *Y = CLTF(*X,*Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = CLTF(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 complex64_min_along
-#define FUN25_IMPL complex64_min_along_impl
+#define FUN26 complex64_min_along
 #define NUMBER _Complex double
 #define NUMBER1 _Complex double
-#define MAPFN(X,Y) *Y = CLT(*X,*Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = CLT(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int8_min_along
-#define FUN25_IMPL int8_min_along_impl
+#define FUN26 int8_min_along
 #define NUMBER int8_t
 #define NUMBER1 int8_t
-#define MAPFN(X,Y) *Y = (*X < *Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = (*X < *Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 uint8_min_along
-#define FUN25_IMPL uint8_min_along_impl
+#define FUN26 uint8_min_along
 #define NUMBER uint8_t
 #define NUMBER1 uint8_t
-#define MAPFN(X,Y) *Y = (*X < *Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = (*X < *Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int16_min_along
-#define FUN25_IMPL int16_min_along_impl
+#define FUN26 int16_min_along
 #define NUMBER int16_t
 #define NUMBER1 int16_t
-#define MAPFN(X,Y) *Y = (*X < *Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = (*X < *Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 uint16_min_along
-#define FUN25_IMPL uint16_min_along_impl
+#define FUN26 uint16_min_along
 #define NUMBER uint16_t
 #define NUMBER1 uint16_t
-#define MAPFN(X,Y) *Y = (*X < *Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = (*X < *Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int32_min_along
-#define FUN25_IMPL int32_min_along_impl
+#define FUN26 int32_min_along
 #define NUMBER int32_t
 #define NUMBER1 int32_t
-#define MAPFN(X,Y) *Y = (*X < *Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = (*X < *Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int64_min_along
-#define FUN25_IMPL int64_min_along_impl
+#define FUN26 int64_min_along
 #define NUMBER int64_t
 #define NUMBER1 int64_t
-#define MAPFN(X,Y) *Y = (*X < *Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = (*X < *Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
 // max_i
 
@@ -2122,75 +2112,65 @@ int int64_cmp (const void * a, const void * b)
 
 // max_along
 
-#define FUN25 float32_max_along
-#define FUN25_IMPL float32_max_along_impl
+#define FUN26 float32_max_along
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X,Y) *Y = fmaxf(*X,*Y)
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = fmaxf(*X,*Y)
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 float64_max_along
-#define FUN25_IMPL float64_max_along_impl
+#define FUN26 float64_max_along
 #define NUMBER double
 #define NUMBER1 double
-#define MAPFN(X,Y) *Y = fmax(*X,*Y)
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = fmax(*X,*Y)
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 complex32_max_along
-#define FUN25_IMPL complex32_max_along_impl
+#define FUN26 complex32_max_along
 #define NUMBER _Complex float
 #define NUMBER1 _Complex float
-#define MAPFN(X,Y) *Y = CGTF(*X,*Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = CGTF(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 complex64_max_along
-#define FUN25_IMPL complex64_max_along_impl
+#define FUN26 complex64_max_along
 #define NUMBER _Complex double
 #define NUMBER1 _Complex double
-#define MAPFN(X,Y) *Y = CGT(*X,*Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = CGT(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int8_max_along
-#define FUN25_IMPL int8_max_along_impl
+#define FUN26 int8_max_along
 #define NUMBER int8_t
 #define NUMBER1 int8_t
-#define MAPFN(X,Y) *Y = (*X > *Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = (*X > *Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 uint8_max_along
-#define FUN25_IMPL uint8_max_along_impl
+#define FUN26 uint8_max_along
 #define NUMBER uint8_t
 #define NUMBER1 uint8_t
-#define MAPFN(X,Y) *Y = (*X > *Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = (*X > *Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int16_max_along
-#define FUN25_IMPL int16_max_along_impl
+#define FUN26 int16_max_along
 #define NUMBER int16_t
 #define NUMBER1 int16_t
-#define MAPFN(X,Y) *Y = (*X > *Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = (*X > *Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 uint16_max_along
-#define FUN25_IMPL uint16_max_along_impl
+#define FUN26 uint16_max_along
 #define NUMBER uint16_t
 #define NUMBER1 uint16_t
-#define MAPFN(X,Y) *Y = (*X > *Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = (*X > *Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int32_max_along
-#define FUN25_IMPL int32_max_along_impl
+#define FUN26 int32_max_along
 #define NUMBER int32_t
 #define NUMBER1 int32_t
-#define MAPFN(X,Y) *Y = (*X > *Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = (*X > *Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int64_max_along
-#define FUN25_IMPL int64_max_along_impl
+#define FUN26 int64_max_along
 #define NUMBER int64_t
 #define NUMBER1 int64_t
-#define MAPFN(X,Y) *Y = (*X > *Y) ? *X : *Y
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y = (*X > *Y) ? *X : *Y
+#include "owl_dense_common_vec_fold.c"
 
 // minmax_i
 // TODO
@@ -2337,75 +2317,65 @@ int int64_cmp (const void * a, const void * b)
 
 // sum_along
 
-#define FUN25 float32_sum_along
-#define FUN25_IMPL float32_sum_along_impl
+#define FUN26 float32_sum_along
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X,Y) *Y += *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y += *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 float64_sum_along
-#define FUN25_IMPL float64_sum_along_impl
+#define FUN26 float64_sum_along
 #define NUMBER double
 #define NUMBER1 double
-#define MAPFN(X,Y) *Y += *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y += *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 complex32_sum_along
-#define FUN25_IMPL complex32_sum_along_impl
+#define FUN26 complex32_sum_along
 #define NUMBER _Complex float
 #define NUMBER1 _Complex float
-#define MAPFN(X,Y) *Y += *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y += *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 complex64_sum_along
-#define FUN25_IMPL complex64_sum_along_impl
+#define FUN26 complex64_sum_along
 #define NUMBER _Complex double
 #define NUMBER1 _Complex double
-#define MAPFN(X,Y) *Y += *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y += *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int8_sum_along
-#define FUN25_IMPL int8_sum_along_impl
+#define FUN26 int8_sum_along
 #define NUMBER int8_t
 #define NUMBER1 int8_t
-#define MAPFN(X,Y) *Y += *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y += *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 uint8_sum_along
-#define FUN25_IMPL uint8_sum_along_impl
+#define FUN26 uint8_sum_along
 #define NUMBER uint8_t
 #define NUMBER1 uint8_t
-#define MAPFN(X,Y) *Y += *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y += *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int16_sum_along
-#define FUN25_IMPL int16_sum_along_impl
+#define FUN26 int16_sum_along
 #define NUMBER int16_t
 #define NUMBER1 int16_t
-#define MAPFN(X,Y) *Y += *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y += *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 uint16_sum_along
-#define FUN25_IMPL uint16_sum_along_impl
+#define FUN26 uint16_sum_along
 #define NUMBER uint16_t
 #define NUMBER1 uint16_t
-#define MAPFN(X,Y) *Y += *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y += *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int32_sum_along
-#define FUN25_IMPL int32_sum_along_impl
+#define FUN26 int32_sum_along
 #define NUMBER int32_t
 #define NUMBER1 int32_t
-#define MAPFN(X,Y) *Y += *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y += *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int64_sum_along
-#define FUN25_IMPL int64_sum_along_impl
+#define FUN26 int64_sum_along
 #define NUMBER int64_t
 #define NUMBER1 int64_t
-#define MAPFN(X,Y) *Y += *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y += *X
+#include "owl_dense_common_vec_fold.c"
 
 // prod
 
@@ -2481,75 +2451,65 @@ int int64_cmp (const void * a, const void * b)
 
 // prod_along
 
-#define FUN25 float32_prod_along
-#define FUN25_IMPL float32_prod_along_impl
+#define FUN26 float32_prod_along
 #define NUMBER float
 #define NUMBER1 float
-#define MAPFN(X,Y) *Y *= *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y *= *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 float64_prod_along
-#define FUN25_IMPL float64_prod_along_impl
+#define FUN26 float64_prod_along
 #define NUMBER double
 #define NUMBER1 double
-#define MAPFN(X,Y) *Y *= *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y *= *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 complex32_prod_along
-#define FUN25_IMPL complex32_prod_along_impl
+#define FUN26 complex32_prod_along
 #define NUMBER _Complex float
 #define NUMBER1 _Complex float
-#define MAPFN(X,Y) *Y *= *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y *= *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 complex64_prod_along
-#define FUN25_IMPL complex64_prod_along_impl
+#define FUN26 complex64_prod_along
 #define NUMBER _Complex double
 #define NUMBER1 _Complex double
-#define MAPFN(X,Y) *Y *= *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y *= *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int8_prod_along
-#define FUN25_IMPL int8_prod_along_impl
+#define FUN26 int8_prod_along
 #define NUMBER int8_t
 #define NUMBER1 int8_t
-#define MAPFN(X,Y) *Y *= *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y *= *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 uint8_prod_along
-#define FUN25_IMPL uint8_prod_along_impl
+#define FUN26 uint8_prod_along
 #define NUMBER uint8_t
 #define NUMBER1 uint8_t
-#define MAPFN(X,Y) *Y *= *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y *= *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int16_prod_along
-#define FUN25_IMPL int16_prod_along_impl
+#define FUN26 int16_prod_along
 #define NUMBER int16_t
 #define NUMBER1 int16_t
-#define MAPFN(X,Y) *Y *= *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y *= *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 uint16_prod_along
-#define FUN25_IMPL uint16_prod_along_impl
+#define FUN26 uint16_prod_along
 #define NUMBER uint16_t
 #define NUMBER1 uint16_t
-#define MAPFN(X,Y) *Y *= *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y *= *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int32_prod_along
-#define FUN25_IMPL int32_prod_along_impl
+#define FUN26 int32_prod_along
 #define NUMBER int32_t
 #define NUMBER1 int32_t
-#define MAPFN(X,Y) *Y *= *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y *= *X
+#include "owl_dense_common_vec_fold.c"
 
-#define FUN25 int64_prod_along
-#define FUN25_IMPL int64_prod_along_impl
+#define FUN26 int64_prod_along
 #define NUMBER int64_t
 #define NUMBER1 int64_t
-#define MAPFN(X,Y) *Y *= *X
-#include "owl_dense_common_vec_map.c"
+#define ACCFN(X,Y) *Y *= *X
+#include "owl_dense_common_vec_fold.c"
 
 // neg
 

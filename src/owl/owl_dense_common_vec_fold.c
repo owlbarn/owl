@@ -227,6 +227,49 @@ CAMLprim value FUN23(value vN, value vX, value vA, vB)
 #endif /* FUN23 */
 
 
+// function specifically for folding along a specified axis, aka reduction.
+// M: number of slices; N: x's slice size; O: x' strides, also y's slice size;
+// X: source; Y: destination. Note that O <= N
+#ifdef FUN26
+
+CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
+{
+  CAMLparam5(vM, vN, vO, vX, vY);
+  int M = Long_val(vM);
+  int N = Long_val(vN);
+  int O = Long_val(vO);
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *X_data = (NUMBER *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  NUMBER1 *Y_data = (NUMBER1 *) Y->data;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  NUMBER  *start_x = X_data;
+  NUMBER1 *start_y = Y_data;
+  int incy = 0;
+
+  for (int i = 0; i < M; i++) {
+
+    for (int j = 0; j < N; j++) {
+      ACCFN((start_x + j), (start_y + incy));
+      incy = incy + 1 == O ? 0 : incy + 1;
+    }
+
+    start_x += N;
+    start_y += O;
+  }
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_unit);
+}
+
+#endif /* FUN26 */
+
+
 #undef NUMBER
 #undef NUMBER1
 #undef CHECKFN
@@ -241,3 +284,4 @@ CAMLprim value FUN23(value vN, value vX, value vA, vB)
 #undef FUN9
 #undef FUN11
 #undef FUN23
+#undef FUN26
