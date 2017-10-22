@@ -262,6 +262,16 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
     start_y += O;
   }
 
+  /*** another solution, similar performance
+   * int incx = 0;
+   * for (int i = 0; i < M * N; i++) {
+   *   ACCFN((start_x + i), (start_y + incy));
+   *   start_y += (incx + 1 == N ? O : 0);
+   *   incx = incx + 1 == N ? 0 : incx + 1;
+   *   incy = incy + 1 == O ? 0 : incy + 1;
+   * }
+   ***/
+
   caml_leave_blocking_section();  /* Disallow other threads */
 
   CAMLreturn(Val_unit);
