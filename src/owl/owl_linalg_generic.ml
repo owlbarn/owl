@@ -616,8 +616,8 @@ let linreg x y =
   let p = M.get (M.cov ~a:x ~b:y) 0 1 in
   let q = M.get (M.var ~axis:0 x) 0 0 in
   let b = Owl_dense_common._div_elt k p q in
-  let c = Owl_dense_common._mul_elt k b (M.mean x) in
-  let a = Owl_dense_common._sub_elt k (M.mean y) c in
+  let c = Owl_dense_common._mul_elt k b (M.mean' x) in
+  let a = Owl_dense_common._sub_elt k (M.mean' y) c in
   a, b
 
 

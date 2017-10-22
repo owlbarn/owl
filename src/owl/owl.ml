@@ -58,11 +58,11 @@ module Cblas = Owl_cblas
 
 (* shortcuts to 64-bit precision modules *)
 
-module Arr = Owl_dense.Ndarray.D
+module Arr = Owl_dense_ndarray_d
 
-module Mat = Owl_dense.Matrix.D
+module Mat = Owl_dense_matrix_d
 
-module Vec = Owl_dense.Vector.D
+module Vec = Owl_dense_vector_d
 
 
 (* set up owl's folder *)

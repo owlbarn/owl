@@ -298,6 +298,18 @@ val prod' : arr -> elt
 
 val prod : ?axis:int -> arr -> arr
 
+val mean : ?axis:int -> arr -> arr
+
+val mean': arr -> elt
+
+val var : ?axis:int -> arr -> arr
+
+val var': arr -> elt
+
+val std : ?axis:int -> arr -> arr
+
+val std': arr -> elt
+
 val abs : arr -> cast_arr
 
 val abs2 : arr -> cast_arr

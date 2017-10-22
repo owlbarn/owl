@@ -726,16 +726,34 @@ val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [im_d2z x] returns all the imaginary components of [x] in a new ndarray of same shape. *)
 
 val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
-(** [sum_ axis x] sums the elements in [x] along specified [axis]. *)
+(** [sum ~axis x] sums the elements in [x] along specified [axis]. *)
 
 val sum' : ('a, 'b) t -> 'a
 (** [sum' x] returns the sumtion of all elements in [x]. *)
 
 val prod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
-(** [prod_ axis x] multiples the elements in [x] along specified [axis]. *)
+(** [prod ~axis x] multiples the elements in [x] along specified [axis]. *)
 
 val prod' : ('a, 'b) t -> 'a
 (** [prod x] returns the product of all elements in [x] along passed in axises. *)
+
+val mean : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [mean ~axis x] calculates the mean along specified [axis]. *)
+
+val mean' : ('a, 'b) t -> 'a
+(** [mean' x] calculates the mean of all the elements in [x]. *)
+
+val var : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [var ~axis x] calculates the variance along specified [axis]. *)
+
+val var' : ('a, 'b) t -> 'a
+(** [var' x] calculates the variance of all the elements in [x]. *)
+
+val std : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [std ~axis] calculates the standard deviation along specified [axis]. *)
+
+val std' : ('a, 'b) t -> 'a
+(** [std' x] calculates the standard deviation of all the elements in [x]. *)
 
 val min : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** [min x] returns the minimum of all elements in [x] along specified [axis].

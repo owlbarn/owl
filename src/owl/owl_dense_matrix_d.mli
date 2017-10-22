@@ -409,7 +409,17 @@ val prod : ?axis:int -> mat -> mat
 
 val prod' : mat -> elt
 
-val mean : mat -> elt
+val mean : ?axis:int -> mat -> mat
+
+val mean': mat -> elt
+
+val var : ?axis:int -> mat -> mat
+
+val var': mat -> elt
+
+val std : ?axis:int -> mat -> mat
+
+val std': mat -> elt
 
 val sum_rows : mat -> mat
 

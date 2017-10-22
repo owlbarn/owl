@@ -230,12 +230,25 @@ let _log_elt : type a b. (a, b) kind -> (a -> a) = function
   | Complex64 -> Complex.log
   | _         -> failwith "_log_elt: unsupported operation"
 
+let _sqrt_elt : type a b. (a, b) kind -> (a -> a) = function
+  | Float32   -> Pervasives.sqrt
+  | Float64   -> Pervasives.sqrt
+  | Complex32 -> Complex.sqrt
+  | Complex64 -> Complex.sqrt
+  | _         -> failwith "_sqrt_elt: unsupported operation"
+
 let _mean_elt : type a b. (a, b) kind -> (a -> int -> a) = function
-  | Float32   -> fun x n -> x /. (float_of_int n)
-  | Float64   -> fun x n -> x /. (float_of_int n)
-  | Complex32 -> fun x n -> Complex.(div x {re = float_of_int n; im = 0.})
-  | Complex64 -> fun x n -> Complex.(div x {re = float_of_int n; im = 0.})
-  | _         -> failwith "_mean_elt: unsupported operation"
+  | Float32        -> fun x n -> x /. (float_of_int n)
+  | Float64        -> fun x n -> x /. (float_of_int n)
+  | Complex32      -> fun x n -> Complex.(div x {re = float_of_int n; im = 0.})
+  | Complex64      -> fun x n -> Complex.(div x {re = float_of_int n; im = 0.})
+  | Int8_signed    -> fun x n -> x / n
+  | Int8_unsigned  -> fun x n -> x / n
+  | Int16_signed   -> fun x n -> x / n
+  | Int16_unsigned -> fun x n -> x / n
+  | Int32          -> fun x n -> Int32.(div x (of_int n))
+  | Int64          -> fun x n -> Int64.(div x (of_int n))
+  | _              -> failwith "_mean_elt: unsupported operation"
 
 let _power_scalar_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( ** )
@@ -2095,6 +2108,30 @@ let _owl_mul_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
   | Int32          -> owl_int32_mul_scalar
   | Int64          -> owl_int64_mul_scalar
   | _              -> failwith "_owl_mul_scalar: unsupported operation"
+
+external owl_float32_div_scalar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "float32_div_scalar"
+external owl_float64_div_scalar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "float64_div_scalar"
+external owl_complex32_div_scalar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "complex32_div_scalar"
+external owl_complex64_div_scalar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "complex64_div_scalar"
+external owl_int8_div_scalar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "int8_div_scalar"
+external owl_uint8_div_scalar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "uint8_div_scalar"
+external owl_int16_div_scalar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "int16_div_scalar"
+external owl_uint16_div_scalar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "uint16_div_scalar"
+external owl_int32_div_scalar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "int32_div_scalar"
+external owl_int64_div_scalar : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "int64_div_scalar"
+
+let _owl_div_scalar : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
+  | Float32        -> owl_float32_div_scalar
+  | Float64        -> owl_float64_div_scalar
+  | Complex32      -> owl_complex32_div_scalar
+  | Complex64      -> owl_complex64_div_scalar
+  | Int8_signed    -> owl_int8_div_scalar
+  | Int8_unsigned  -> owl_uint8_div_scalar
+  | Int16_signed   -> owl_int16_div_scalar
+  | Int16_unsigned -> owl_uint16_div_scalar
+  | Int32          -> owl_int32_div_scalar
+  | Int64          -> owl_int64_div_scalar
+  | _              -> failwith "_owl_div_scalar: unsupported operation"
 
 external owl_float32_scalar_sub : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "float32_scalar_sub"
 external owl_float64_scalar_sub : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit = "float64_scalar_sub"

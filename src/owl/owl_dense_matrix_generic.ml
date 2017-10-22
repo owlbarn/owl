@@ -680,9 +680,7 @@ let max_rows x =
   ) x
 
 
-let mean x =
-  let _op = _mean_elt (kind x) in
-  _op (sum' x) (numel x)
+let mean' x = _mean_elt (kind x) (sum' x) (numel x)
 
 
 let diag ?(k=0) x =
@@ -1086,53 +1084,6 @@ let cov ?b ~a =
   in
 
   div_scalar c n
-
-
-let var ?(axis=0) a =
-  let aa, n =
-    if axis = 0 then (
-      let mu = mean_rows a in
-      let aa = sub a mu |> sqr |> sum_rows in
-      aa, row_num a
-    )
-    else (
-      let mu = mean_cols a in
-      let aa = sub a mu |> sqr |> sum_cols in
-      aa, col_num a
-    )
-  in
-
-  let n = n - 1
-    |> Pervasives.max 1
-    |> float_of_int
-    |> Owl_dense_common._float_typ_elt (kind a)
-  in
-
-  div_scalar aa n
-
-
-let std ?(axis=0) a =
-  let aa, n =
-    if axis = 0 then (
-      let mu = mean_rows a in
-      let aa = sub a mu |> sqr |> sum_rows in
-      sqrt aa, row_num a
-    )
-    else (
-      let mu = mean_cols a in
-      let aa = sub a mu |> sqr |> sum_cols in
-      sqrt aa, col_num a
-    )
-  in
-
-  let n = n - 1
-    |> Pervasives.max 1
-    |> float_of_int
-    |> Owl_maths.sqrt
-    |> Owl_dense_common._float_typ_elt (kind a)
-  in
-
-  div_scalar aa n
 
 
 let mat2gray ?amin ?amax x =

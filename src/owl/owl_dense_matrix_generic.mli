@@ -983,10 +983,23 @@ val prod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 val prod' : ('a, 'b) t -> 'a
 (** [prod x] returns the product of all the elements in [x]. *)
 
-val mean : ('a, 'b) t -> 'a
-(** [mean x] returns the mean value of all the elements in [x]. It is
-  equivalent to calculate [sum x] divided by [numel x]
- *)
+val mean : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [mean ~axis x] calculates the mean along specified [axis]. *)
+
+val mean' : ('a, 'b) t -> 'a
+(** [mean' x] calculates the mean of all the elements in [x]. *)
+
+val var : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [var ~axis x] calculates the variance along specified [axis]. *)
+
+val var' : ('a, 'b) t -> 'a
+(** [var' x] calculates the variance of all the elements in [x]. *)
+
+val std : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [std ~axis] calculates the standard deviation along specified [axis]. *)
+
+val std' : ('a, 'b) t -> 'a
+(** [std' x] calculates the standard deviation of all the elements in [x]. *)
 
 val sum_rows : ('a, 'b) t -> ('a, 'b) t
 (** [sum_rows x] returns the summation of all the row vectors in [x]. *)
@@ -1288,22 +1301,11 @@ val cummin : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 val cummax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** [cummax ~axis x] : performs cumulative [max] along [axis] dimension. *)
 
-
 val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (** [angle x] calculates the phase angle of all complex numbers in [x]. *)
 
 val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (** [proj x] computes the projection on Riemann sphere of all elelments in [x]. *)
-
-val var : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
-(** [var x] computes the variance of [x] along the [axis] dimension. By default,
-  [axis] is set to the lowest dimension.
- *)
-
-val std : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
-(** [std x] computes the standard deviation of [x] along the [axis] dimension.
-  By default, [axis] is set to the lowest dimension.
- *)
 
 val mat2gray : ?amin:'a -> ?amax:'a -> ('a, 'b) t -> ('a, 'b) t
 (** [mat2gray ~amin ~amax x] converts the matrix [x] to the intensity image.

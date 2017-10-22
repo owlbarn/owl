@@ -399,11 +399,13 @@ let sub_scalar x a = add_scalar x (_neg_elt (kind x) a)
 
 let mul_scalar x a =
   let x = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  Owl_cblas.scal (numel x) a x' 1;
+  _owl_mul_scalar (kind x) (numel x) x x a;
   x
 
-let div_scalar x a = mul_scalar x (_inv_elt (kind x) a)
+let div_scalar x a =
+  let x = clone x in
+  _owl_div_scalar (kind x) (numel x) x x a;
+  x
 
 let pow x y =
   match same_shape x y with
@@ -2641,6 +2643,76 @@ let max ?axis x =
 let minmax ?axis x = min ?axis x, max ?axis x
 
 
+let mean' x =
+  let _kind = kind x in
+  let _numel = numel x in
+  let y = _owl_sum _kind _numel x in
+  _mean_elt _kind y _numel
+
+
+let mean ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let y = sum ~axis:a x in
+      let n = (shape x).(a) |> float_of_int |> _float_typ_elt _kind in
+      _owl_div_scalar _kind (numel y) y y n;
+      y
+    )
+  | None   -> mean' x |> create _kind [|1|]
+
+
+let var' x =
+  let _kind = kind x in
+  let mu = mean' x in
+  let y = sub_scalar x mu in
+  _owl_sqr _kind (numel y) y y;
+  let y = sum' y in
+  let n = (numel x) - 1 |> Pervasives.max 1 |> float_of_int |> _float_typ_elt _kind in
+  _div_elt _kind y n
+
+
+let var ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let mu = mean ~axis:a x in
+      let y = sub x mu in
+      _owl_sqr _kind (numel y) y y;
+      let y = sum ~axis:a y in
+      let n = (shape x).(a) - 1 |> Pervasives.max 1 |> float_of_int |> _float_typ_elt _kind in
+      _owl_div_scalar _kind (numel y) y y n;
+      y
+    )
+  | None   -> var' x |> create _kind [|1|]
+
+
+let std' x =
+  let _kind = kind x in
+  let mu = mean' x in
+  let y = sub_scalar x mu in
+  _owl_sqr _kind (numel y) y y;
+  let y = sum' y in
+  let n = (numel x) - 1 |> Pervasives.max 1 |> float_of_int |> _float_typ_elt _kind in
+  _div_elt _kind y n |> _sqrt_elt _kind
+
+
+let std ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let mu = mean ~axis:a x in
+      let y = sub x mu in
+      _owl_sqr _kind (numel y) y y;
+      let y = sum ~axis:a y in
+      let n = (shape x).(a) - 1 |> Pervasives.max 1 |> float_of_int |> _float_typ_elt _kind in
+      _owl_div_scalar _kind (numel y) y y n;
+      _owl_sqrt _kind (numel y) y y;
+      y
+    )
+  | None   -> std' x |> create _kind [|1|]
+
+
 (* this function is used for searching top/bottom values in [x] *)
 let _search_close_to_extreme x n neg_ext cmp_fun =
   let m = numel x in
@@ -2794,7 +2866,7 @@ let sub_scalar_ x a = add_scalar_ x (_neg_elt (kind x) a)
 
 let mul_scalar_ x a = _owl_mul_scalar (kind x) (numel x) x x a
 
-let div_scalar_ x a = mul_scalar_ x (_inv_elt (kind x) a)
+let div_scalar_ x a = _owl_div_scalar (kind x) (numel x) x x a
 
 let pow_scalar_ x a = _owl_pow_scalar (kind x) (numel x) x x a
 

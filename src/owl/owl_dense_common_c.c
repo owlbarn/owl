@@ -4066,6 +4066,78 @@ int int64_cmp (const void * a, const void * b)
 #define MAPFN(X,Y) *Y = *X * a
 #include "owl_dense_common_vec_map.c"
 
+// div_scalar
+
+#define FUN17 float32_div_scalar
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = *X / a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 float64_div_scalar
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = *X / a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex32_div_scalar
+#define INIT _Complex float a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = *X / a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 complex64_div_scalar
+#define INIT _Complex double a = Double_field(vA, 0) + Double_field(vA, 1)*I
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = *X / a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int8_div_scalar
+#define INIT int8_t a = Int_val(vA)
+#define NUMBER int8_t
+#define NUMBER1 int8_t
+#define MAPFN(X,Y) *Y = *X / a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 uint8_div_scalar
+#define INIT uint8_t a = Int_val(vA)
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define MAPFN(X,Y) *Y = *X / a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int16_div_scalar
+#define INIT int16_t a = Int_val(vA)
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define MAPFN(X,Y) *Y = *X / a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 uint16_div_scalar
+#define INIT uint16_t a = Int_val(vA)
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define MAPFN(X,Y) *Y = *X / a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int32_div_scalar
+#define INIT int32_t a = Int32_val(vA)
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define MAPFN(X,Y) *Y = *X / a
+#include "owl_dense_common_vec_map.c"
+
+#define FUN17 int64_div_scalar
+#define INIT int64_t a = Int64_val(vA)
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define MAPFN(X,Y) *Y = *X / a
+#include "owl_dense_common_vec_map.c"
+
 // scalar_sub
 
 #define FUN17 float32_scalar_sub
