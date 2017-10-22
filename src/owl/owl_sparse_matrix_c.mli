@@ -224,15 +224,15 @@ val trace : mat -> elt
 
 val sum : mat -> elt
 
-val average : mat -> elt
+val mean : mat -> elt
 
 val sum_rows : mat -> mat
 
 val sum_cols : mat -> mat
 
-val average_rows : mat -> mat
+val mean_rows : mat -> mat
 
-val average_cols : mat -> mat
+val mean_cols : mat -> mat
 
 val neg : mat -> mat
 

@@ -362,15 +362,15 @@ module type BasicSig = sig
 
   val prod' : mat -> elt
 
-  val average : mat -> elt
+  val mean : mat -> elt
 
   val sum_rows : mat -> mat
 
   val sum_cols : mat -> mat
 
-  val average_rows : mat -> mat
+  val mean_rows : mat -> mat
 
-  val average_cols : mat -> mat
+  val mean_cols : mat -> mat
 
 
   val add : mat -> mat -> mat
@@ -660,15 +660,15 @@ module Make_Basic
 
   let prod' x = M.prod' (unpack_box x) |> pack_elt
 
-  let average x = M.average (unpack_box x) |> pack_elt
+  let mean x = M.mean (unpack_box x) |> pack_elt
 
   let sum_rows x = M.sum_rows (unpack_box x) |> pack_box
 
   let sum_cols x = M.sum_rows (unpack_box x) |> pack_box
 
-  let average_rows x = M.sum_rows (unpack_box x) |> pack_box
+  let mean_rows x = M.sum_rows (unpack_box x) |> pack_box
 
-  let average_cols x = M.sum_rows (unpack_box x) |> pack_box
+  let mean_cols x = M.sum_rows (unpack_box x) |> pack_box
 
 
   let add x y = M.add (unpack_box x) (unpack_box y) |> pack_box

@@ -47,9 +47,9 @@ let _ =
   test_op "min        " c (fun () -> M.min x);
   test_op "min_cols   " c (fun () -> M.min_cols x);
   test_op "min_rows   " c (fun () -> M.min_rows x);
-  test_op "average    " c (fun () -> M.average x);
-  test_op "avg_col    " c (fun () -> M.average_cols x);
-  test_op "avg_row    " c (fun () -> M.average_rows x);
+  test_op "mean    " c (fun () -> M.mean x);
+  test_op "avg_col    " c (fun () -> M.mean_cols x);
+  test_op "avg_row    " c (fun () -> M.mean_rows x);
   test_op "=@         " c (fun () -> M.(x = y));
   test_op ">@         " c (fun () -> M.(x > y));
   test_op ">=@        " c (fun () -> M.(x >= y));

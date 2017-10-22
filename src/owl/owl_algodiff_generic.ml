@@ -748,7 +748,7 @@ module Make
       let r a = Sum__D (a, axis) in
       op_d_d a ff fd df r
 
-    and average a = (sum' a) / F (numel a |> float_of_int)
+    and mean a = (sum' a) / F (numel a |> float_of_int)
 
     and ( *@ ) a b = dot a b
     and dot a b =
@@ -1512,7 +1512,7 @@ module Make
 
     (* unary math operators *)
 
-    let average x = Maths.average x
+    let mean x = Maths.mean x
 
     (* binary math operators *)
 

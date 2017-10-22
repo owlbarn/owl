@@ -643,18 +643,18 @@ let sum_cols x = dot x (ones (kind x) (col_num x) 1)
 let sum_rows x = dot (ones (kind x) 1 (row_num x)) x
 
 
-let average_cols x =
+let mean_cols x =
   let m, n = shape x in
   let k = kind x in
-  let _a = (_average_elt k) (_one k) n in
+  let _a = (_mean_elt k) (_one k) n in
   let y = create k n 1 _a in
   dot x y
 
 
-let average_rows x =
+let mean_rows x =
   let m, n = shape x in
   let k = kind x in
-  let _a = (_average_elt k) (_one k) m in
+  let _a = (_mean_elt k) (_one k) m in
   let y = create k 1 m _a in
   dot y x
 
@@ -680,8 +680,8 @@ let max_rows x =
   ) x
 
 
-let average x =
-  let _op = _average_elt (kind x) in
+let mean x =
+  let _op = _mean_elt (kind x) in
   _op (sum' x) (numel x)
 
 
@@ -1074,7 +1074,7 @@ let cov ?b ~a =
     | None   -> a
   in
 
-  let mu = average_rows a in
+  let mu = mean_rows a in
   let a = sub a mu in
   let a' = ctranspose a in
   let c = dot a' a in
@@ -1091,12 +1091,12 @@ let cov ?b ~a =
 let var ?(axis=0) a =
   let aa, n =
     if axis = 0 then (
-      let mu = average_rows a in
+      let mu = mean_rows a in
       let aa = sub a mu |> sqr |> sum_rows in
       aa, row_num a
     )
     else (
-      let mu = average_cols a in
+      let mu = mean_cols a in
       let aa = sub a mu |> sqr |> sum_cols in
       aa, col_num a
     )
@@ -1114,12 +1114,12 @@ let var ?(axis=0) a =
 let std ?(axis=0) a =
   let aa, n =
     if axis = 0 then (
-      let mu = average_rows a in
+      let mu = mean_rows a in
       let aa = sub a mu |> sqr |> sum_rows in
       sqrt aa, row_num a
     )
     else (
-      let mu = average_cols a in
+      let mu = mean_cols a in
       let aa = sub a mu |> sqr |> sum_cols in
       sqrt aa, col_num a
     )

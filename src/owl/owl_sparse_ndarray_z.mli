@@ -139,7 +139,7 @@ val neg : arr -> arr
 
 val sum : arr -> elt
 
-val average : arr -> elt
+val mean : arr -> elt
 
 
 (** {6 Binary mathematical operations } *)

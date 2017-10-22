@@ -50,9 +50,9 @@ let _ =
   (* test_op "abs           " c (fun () -> M.abs x); *)
   test_op "neg           " c (fun () -> M.neg x);
   test_op "sum           " c (fun () -> M.sum x);
-  test_op "average       " c (fun () -> M.average x);
+  test_op "mean       " c (fun () -> M.mean x);
   test_op "sum_rows      " c (fun () -> M.sum_rows x);
-  test_op "average_rows  " c (fun () -> M.average_rows x);
+  test_op "mean_rows  " c (fun () -> M.mean_rows x);
   (* test_op "minmax        " c (fun () -> M.minmax x); *)
   test_op "is_zero       " c (fun () -> M.is_zero x);
   test_op "is_negative   " c (fun () -> M.is_negative x);

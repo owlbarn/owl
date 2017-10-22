@@ -456,7 +456,7 @@ let sum x =
   let k = kind x in
   fold_nz (_add_elt k) (_zero k) x
 
-let average x = (_average_elt (kind x)) (sum x) (numel x)
+let mean x = (_mean_elt (kind x)) (sum x) (numel x)
 
 let equal x1 x2 =
   _check_same_shape x1 x2;

@@ -385,7 +385,7 @@ let max2 x y = _eigen_max2 x.d y.d
 
 let sum x = _eigen_sum x.d
 
-let average x = (Owl_dense_common._average_elt x.k) (sum x) (numel x)
+let mean x = (Owl_dense_common._mean_elt x.k) (sum x) (numel x)
 
 let abs x = {
   m = x.m;
@@ -485,17 +485,17 @@ let sum_cols x =
   let y = Owl_dense_matrix_generic.ones x.k x.n 1 |> of_dense in
   dot x y
 
-let average_rows x =
+let mean_rows x =
   let m, n = shape x in
   let k = kind x in
-  let a = (Owl_dense_common._average_elt k) (Owl_types._one k) m in
+  let a = (Owl_dense_common._mean_elt k) (Owl_types._one k) m in
   let y = Owl_dense_matrix_generic.create k 1 m a |> of_dense in
   dot y x
 
-let average_cols x =
+let mean_cols x =
   let m, n = shape x in
   let k = kind x in
-  let a = (Owl_dense_common._average_elt k) (Owl_types._one k) n in
+  let a = (Owl_dense_common._mean_elt k) (Owl_types._one k) n in
   let y = Owl_dense_matrix_generic.create k n 1 a |> of_dense in
   dot x y
 

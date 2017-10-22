@@ -230,12 +230,12 @@ let _log_elt : type a b. (a, b) kind -> (a -> a) = function
   | Complex64 -> Complex.log
   | _         -> failwith "_log_elt: unsupported operation"
 
-let _average_elt : type a b. (a, b) kind -> (a -> int -> a) = function
+let _mean_elt : type a b. (a, b) kind -> (a -> int -> a) = function
   | Float32   -> fun x n -> x /. (float_of_int n)
   | Float64   -> fun x n -> x /. (float_of_int n)
   | Complex32 -> fun x n -> Complex.(div x {re = float_of_int n; im = 0.})
   | Complex64 -> fun x n -> Complex.(div x {re = float_of_int n; im = 0.})
-  | _         -> failwith "_average_elt: unsupported operation"
+  | _         -> failwith "_mean_elt: unsupported operation"
 
 let _power_scalar_elt : type a b. (a, b) kind -> (a -> a -> a) = function
   | Float32   -> ( ** )

@@ -121,7 +121,7 @@ module Make
 
     val sum : ?axis:int -> t -> t
 
-    val average : t -> t
+    val mean : t -> t
 
     val transpose : t -> t
 

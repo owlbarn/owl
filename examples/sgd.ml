@@ -5,7 +5,7 @@ module LL = Owl_optimise
 
 let centerise x =
   let open MX in
-  let v = average_rows x in
+  let v = mean_rows x in
   map_by_row (row_num v) (fun x -> x - v) x
 
 let test () =

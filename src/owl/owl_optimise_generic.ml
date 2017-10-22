@@ -575,7 +575,7 @@ module Make
       let xt, yt = bach_fun x y i in
       let yt', ws = forward xt in
       let loss = loss_fun yt yt' in
-      (* take the average of the loss *)
+      (* take the mean of the loss *)
       let loss = Maths.(loss / (F (Mat.row_num yt |> float_of_int))) in
       (* add regularisation term if necessary *)
       let reg = match params.regularisation <> Regularisation.None with

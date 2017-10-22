@@ -983,8 +983,8 @@ val prod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 val prod' : ('a, 'b) t -> 'a
 (** [prod x] returns the product of all the elements in [x]. *)
 
-val average : ('a, 'b) t -> 'a
-(** [average x] returns the average value of all the elements in [x]. It is
+val mean : ('a, 'b) t -> 'a
+(** [mean x] returns the mean value of all the elements in [x]. It is
   equivalent to calculate [sum x] divided by [numel x]
  *)
 
@@ -994,13 +994,13 @@ val sum_rows : ('a, 'b) t -> ('a, 'b) t
 val sum_cols : ('a, 'b) t -> ('a, 'b) t
 (** [sum_cols] returns the summation of all the column vectors in [x]. *)
 
-val average_rows : ('a, 'b) t -> ('a, 'b) t
-(** [average_rows x] returns the average value of all row vectors in [x]. It is
+val mean_rows : ('a, 'b) t -> ('a, 'b) t
+(** [mean_rows x] returns the mean value of all row vectors in [x]. It is
  equivalent to [div_scalar (sum_rows x) (float_of_int (row_num x))].
  *)
 
-val average_cols : ('a, 'b) t -> ('a, 'b) t
-(** [average_cols x] returns the average value of all column vectors in [x].
+val mean_cols : ('a, 'b) t -> ('a, 'b) t
+(** [mean_cols x] returns the mean value of all column vectors in [x].
  It is equivalent to [div_scalar (sum_cols x) (float_of_int (col_num x))].
  *)
 
