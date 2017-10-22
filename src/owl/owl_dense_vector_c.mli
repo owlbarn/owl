@@ -93,7 +93,7 @@ val div_scalar : vec -> elt -> vec
 
 (** {6 Uniary mathematical operations } *)
 
-val sum : vec -> elt
+val sum' : vec -> elt
 
 val neg : vec -> vec
 

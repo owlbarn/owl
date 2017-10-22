@@ -682,7 +682,7 @@ let max_rows x =
 
 let average x =
   let _op = _average_elt (kind x) in
-  _op (sum x) (numel x)
+  _op (sum' x) (numel x)
 
 
 let diag ?(k=0) x =
@@ -702,7 +702,7 @@ let diag ?(k=0) x =
   y
 
 
-let trace x = sum (diag x)
+let trace x = sum' (diag x)
 
 
 let add_diag x a =
@@ -1138,11 +1138,11 @@ let std ?(axis=0) a =
 let mat2gray ?amin ?amax x =
   let amin = match amin with
     | Some a -> a
-    | None   -> min x
+    | None   -> min' x
   in
   let amax = match amax with
     | Some a -> a
-    | None   -> max x
+    | None   -> max' x
   in
   let x = clip_by_value ~amin ~amax x in
   let x = sub_scalar x amin in

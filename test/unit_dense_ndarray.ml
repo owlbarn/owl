@@ -66,9 +66,9 @@ module To_test = struct
   let fill () =
     let y = M.empty Float64 [|2;2;3|] in
     M.fill y 2.;
-    M.sum y = 24.
+    M.sum' y = 24.
 
-  let map () = M.map (fun a -> a +. 1.) x0 |> M.sum = 18.
+  let map () = M.map (fun a -> a +. 1.) x0 |> M.sum' = 18.
 
   let fold () = M.fold (fun c a -> c +. a) 0. x0 = 6.
 
@@ -80,21 +80,21 @@ module To_test = struct
 
   let add () = M.equal (M.add x0 x1) x2
 
-  let mul () = M.mul x0 x1 |> M.sum = 13.
+  let mul () = M.mul x0 x1 |> M.sum' = 13.
 
-  let add_scalar () = M.add_scalar x0 2. |> M.sum = 30.
+  let add_scalar () = M.add_scalar x0 2. |> M.sum' = 30.
 
-  let mul_scalar () = M.mul_scalar x0 2. |> M.sum = 12.
+  let mul_scalar () = M.mul_scalar x0 2. |> M.sum' = 12.
 
   let abs () = M.equal (M.abs x0) x0
 
   let neg () = M.equal (M.map (fun a -> (-1.) *. a) x0) (M.neg x0)
 
-  let sum () = M.sum x0 = 6.
+  let sum' () = M.sum' x0 = 6.
 
-  let min () = M.min x0 = 0.
+  let min' () = M.min' x0 = 0.
 
-  let max () = M.max x0 = 3.
+  let max' () = M.max' x0 = 3.
 
   let minmax_i () =
     let (a, i), (b, j) = M.minmax_i x0 in
@@ -229,14 +229,14 @@ let abs () =
 let neg () =
   Alcotest.(check bool) "neg" true (To_test.neg ())
 
-let sum () =
-  Alcotest.(check bool) "sum" true (To_test.sum ())
+let sum' () =
+  Alcotest.(check bool) "sum'" true (To_test.sum' ())
 
-let min () =
-  Alcotest.(check bool) "min" true (To_test.min ())
+let min' () =
+  Alcotest.(check bool) "min'" true (To_test.min' ())
 
-let max () =
-  Alcotest.(check bool) "max" true (To_test.max ())
+let max' () =
+  Alcotest.(check bool) "max'" true (To_test.max' ())
 
 let minmax_i () =
   Alcotest.(check bool) "minmax_i" true (To_test.minmax_i ())
@@ -322,9 +322,9 @@ let test_set = [
   "mul_scalar", `Slow, mul_scalar;
   "abs", `Slow, abs;
   "neg", `Slow, neg;
-  "sum", `Slow, sum;
-  "min", `Slow, min;
-  "max", `Slow, max;
+  "sum'", `Slow, sum';
+  "min'", `Slow, min';
+  "max'", `Slow, max';
   "minmax_i", `Slow, minmax_i;
   "is_zero", `Slow, is_zero;
   "is_positive", `Slow, is_positive;

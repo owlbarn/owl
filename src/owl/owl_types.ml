@@ -169,9 +169,9 @@ module type NdarraySig = sig
 
   val atanh : arr -> arr
 
-  val sum : arr -> elt
+  val sum' : arr -> elt
 
-  val sum_ : ?axis:int -> arr -> arr
+  val sum : ?axis:int -> arr -> arr
 
   val sum_slices : ?axis:int -> arr -> arr
 
@@ -351,7 +351,9 @@ module type MatrixSig = sig
 
   (* mathematical functions *)
 
-  val max : mat -> elt
+  val min' : mat -> elt
+
+  val max' : mat -> elt
 
   val abs : mat -> mat
 
@@ -403,9 +405,9 @@ module type MatrixSig = sig
 
   val trace : mat -> elt
 
-  val sum : mat -> elt
+  val sum' : mat -> elt
 
-  val sum_ : ?axis:int -> mat -> mat
+  val sum : ?axis:int -> mat -> mat
 
   val sum_rows : mat -> mat
 

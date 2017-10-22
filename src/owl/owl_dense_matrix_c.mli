@@ -396,11 +396,17 @@ val load : string -> mat
 
 (** {6 Unary mathematical operations } *)
 
-val min : mat -> elt
+val min : ?axis:int -> mat -> mat
 
-val max : mat -> elt
+val min' : mat -> elt
 
-val minmax : mat -> elt * elt
+val max : ?axis:int -> mat -> mat
+
+val max' : mat -> elt
+
+val minmax : ?axis:int -> mat -> mat * mat
+
+val minmax' : mat -> elt * elt
 
 val min_i : mat -> elt * int array
 
@@ -416,11 +422,13 @@ val inv : mat -> mat
 
 val trace : mat -> elt
 
-val sum : mat -> elt
+val sum : ?axis:int -> mat -> mat
 
-val sum_ : ?axis:int -> mat -> mat
+val sum': mat -> elt
 
-val prod : ?axis:int option array -> mat -> elt
+val prod : ?axis:int -> mat -> mat
+
+val prod' : mat -> elt
 
 val average : mat -> elt
 

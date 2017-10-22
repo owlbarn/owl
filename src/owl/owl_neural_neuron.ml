@@ -2047,8 +2047,8 @@ module Make
     let run x l =
       let a = F (1. /. float_of_int (shape x).(l.axis)) in
       if l.training = true then (
-        let mu' = Maths.(a * (sum_ ~axis:l.axis x)) in
-        let var' = Maths.(a * (sum_ ~axis:l.axis (x * x))) in
+        let mu' = Maths.(a * (sum ~axis:l.axis x)) in
+        let var' = Maths.(a * (sum ~axis:l.axis (x * x))) in
         l.mu <- Maths.(l.decay * l.mu + (F 1. - l.decay) * mu') |> primal';
         l.var <- Maths.(l.decay * l.var + (F 1. - l.decay) * var') |> primal';
       );

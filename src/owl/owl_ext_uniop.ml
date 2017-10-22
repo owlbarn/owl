@@ -73,14 +73,14 @@ module DAS = struct
 
   module M = Owl_ext_dense_ndarray.S
 
-  let min x = M.min x
-  let max x = M.max x
-  let minmax x = M.minmax x
+  let min' x = M.min' x
+  let max' x = M.max' x
+  let minmax' x = M.minmax' x
   let min_i x = M.min_i x
   let max_i x = M.max_i x
   let minmax_i x = M.minmax_i x
-  let sum x = M.sum x
-  let prod x = M.prod x
+  let sum' x = M.sum' x
+  let prod' x = M.prod' x
   let abs x = M.abs x
   let abs2 x = M.abs2 x
   let neg x = M.neg x
@@ -132,14 +132,14 @@ module DAD = struct
 
   module M = Owl_ext_dense_ndarray.D
 
-  let min x = M.min x
-  let max x = M.max x
-  let minmax x = M.minmax x
+  let min' x = M.min' x
+  let max' x = M.max' x
+  let minmax' x = M.minmax' x
   let min_i x = M.min_i x
   let max_i x = M.max_i x
   let minmax_i x = M.minmax_i x
-  let sum x = M.sum x
-  let prod x = M.prod x
+  let sum' x = M.sum' x
+  let prod' x = M.prod' x
   let abs x = M.abs x
   let abs2 x = M.abs2 x
   let neg x = M.neg x
@@ -191,16 +191,16 @@ module DMS = struct
 
   module M = Owl_ext_dense_matrix.S
 
-  let min x = M.min x
-  let max x = M.max x
-  let minmax x = M.minmax x
+  let min' x = M.min' x
+  let max' x = M.max' x
+  let minmax' x = M.minmax' x
   let min_i x = M.min_i x
   let max_i x = M.max_i x
   let minmax_i x = M.minmax_i x
   let inv x = M.inv x
   let trace x = M.trace x
-  let sum x = M.sum x
-  let prod x = M.prod x
+  let sum' x = M.sum' x
+  let prod' x = M.prod' x
   let abs x = M.abs x
   let abs2 x = M.abs2 x
   let neg x = M.neg x
@@ -252,16 +252,16 @@ module DMD = struct
 
   module M = Owl_ext_dense_matrix.D
 
-  let min x = M.min x
-  let max x = M.max x
-  let minmax x = M.minmax x
+  let min' x = M.min' x
+  let max' x = M.max' x
+  let minmax' x = M.minmax' x
   let min_i x = M.min_i x
   let max_i x = M.max_i x
   let minmax_i x = M.minmax_i x
   let inv x = M.inv x
   let trace x = M.trace x
-  let sum x = M.sum x
-  let prod x = M.prod x
+  let sum' x = M.sum' x
+  let prod' x = M.prod' x
   let abs x = M.abs x
   let abs2 x = M.abs2 x
   let neg x = M.neg x
@@ -315,8 +315,8 @@ module DAC = struct
 
   let re x = M.re x
   let im x = M.im x
-  let sum x = M.sum x
-  let prod x = M.prod x
+  let sum' x = M.sum' x
+  let prod' x = M.prod' x
   let abs x = M.abs x
   let abs2 x = M.abs2 x
   let conj x = M.conj x
@@ -335,8 +335,8 @@ module DAZ = struct
 
   let re x = M.re x
   let im x = M.im x
-  let sum x = M.sum x
-  let prod x = M.prod x
+  let sum' x = M.sum' x
+  let prod' x = M.prod' x
   let abs x = M.abs x
   let abs2 x = M.abs2 x
   let conj x = M.conj x
@@ -357,8 +357,8 @@ module DMC = struct
   let im x = M.im x
   let inv x = M.inv x
   let trace x = M.trace x
-  let sum x = M.sum x
-  let prod x = M.prod x
+  let sum' x = M.sum' x
+  let prod' x = M.prod' x
   let abs x = M.abs x
   let abs2 x = M.abs2 x
   let conj x = M.conj x
@@ -379,8 +379,8 @@ module DMZ = struct
   let im x = M.im x
   let inv x = M.inv x
   let trace x = M.trace x
-  let sum x = M.sum x
-  let prod x = M.prod x
+  let sum' x = M.sum' x
+  let prod' x = M.prod' x
   let abs x = M.abs x
   let abs2 x = M.abs2 x
   let conj x = M.conj x
@@ -419,25 +419,25 @@ let conj x = match x with
   | DMZ _ -> DMZ.conj x
   | _     -> error_uniop "conj" x
 
-let min x = match x with
-  | DAS _ -> DAS.min x
-  | DAD _ -> DAD.min x
-  | DMS _ -> DMS.min x
-  | DMD _ -> DMD.min x
+let min' x = match x with
+  | DAS _ -> DAS.min' x
+  | DAD _ -> DAD.min' x
+  | DMS _ -> DMS.min' x
+  | DMD _ -> DMD.min' x
   | _     -> error_uniop "min" x
 
-let max x = match x with
-  | DAS _ -> DAS.max x
-  | DAD _ -> DAD.max x
-  | DMS _ -> DMS.max x
-  | DMD _ -> DMD.max x
+let max' x = match x with
+  | DAS _ -> DAS.max' x
+  | DAD _ -> DAD.max' x
+  | DMS _ -> DMS.max' x
+  | DMD _ -> DMD.max' x
   | _     -> error_uniop "max" x
 
-let minmax x = match x with
-  | DAS _ -> DAS.minmax x
-  | DAD _ -> DAD.minmax x
-  | DMS _ -> DMS.minmax x
-  | DMD _ -> DMD.minmax x
+let minmax' x = match x with
+  | DAS _ -> DAS.minmax' x
+  | DAD _ -> DAD.minmax' x
+  | DMS _ -> DMS.minmax' x
+  | DMD _ -> DMD.minmax' x
   | _     -> error_uniop "minmax" x
 
 let min_i x = match x with
@@ -475,26 +475,26 @@ let trace x = match x with
   | DMZ _ -> DMZ.trace x
   | _     -> error_uniop "trace" x
 
-let sum x = match x with
-  | DAS _ -> DAS.sum x
-  | DAD _ -> DAD.sum x
-  | DMS _ -> DMS.sum x
-  | DMD _ -> DMD.sum x
-  | DAC _ -> DAC.sum x
-  | DAZ _ -> DAZ.sum x
-  | DMC _ -> DMC.sum x
-  | DMZ _ -> DMZ.sum x
+let sum' x = match x with
+  | DAS _ -> DAS.sum' x
+  | DAD _ -> DAD.sum' x
+  | DMS _ -> DMS.sum' x
+  | DMD _ -> DMD.sum' x
+  | DAC _ -> DAC.sum' x
+  | DAZ _ -> DAZ.sum' x
+  | DMC _ -> DMC.sum' x
+  | DMZ _ -> DMZ.sum' x
   | _     -> error_uniop "sum" x
 
-let prod x = match x with
-  | DAS _ -> DAS.prod x
-  | DAD _ -> DAD.prod x
-  | DMS _ -> DMS.prod x
-  | DMD _ -> DMD.prod x
-  | DAC _ -> DAC.prod x
-  | DAZ _ -> DAZ.prod x
-  | DMC _ -> DMC.prod x
-  | DMZ _ -> DMZ.prod x
+let prod' x = match x with
+  | DAS _ -> DAS.prod' x
+  | DAD _ -> DAD.prod' x
+  | DMS _ -> DMS.prod' x
+  | DMD _ -> DMD.prod' x
+  | DAC _ -> DAC.prod' x
+  | DAZ _ -> DAZ.prod' x
+  | DMC _ -> DMC.prod' x
+  | DMZ _ -> DMZ.prod' x
   | _     -> error_uniop "prod" x
 
 let abs x = match x with

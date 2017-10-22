@@ -263,17 +263,25 @@ val load : string -> arr
 
 (** {6 Unary mathematical operations } *)
 
-val sum : arr -> elt
+val sum : ?axis:int -> arr -> arr
 
-val sum_ : ?axis:int -> arr -> arr
+val sum': arr -> elt
 
-val prod : ?axis:int option array -> arr -> elt
+val prod : ?axis:int -> arr -> arr
 
-val min : arr -> elt
+val prod' : arr -> elt
 
-val max : arr -> elt
+val min : ?axis:int -> arr -> arr
 
-val minmax : arr -> elt * elt
+val min' : arr -> elt
+
+val max : ?axis:int -> arr -> arr
+
+val max' : arr -> elt
+
+val minmax : ?axis:int -> arr -> arr * arr
+
+val minmax' : arr -> elt * elt
 
 val min_i : arr -> elt * int array
 

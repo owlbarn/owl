@@ -1996,6 +1996,78 @@ int int64_cmp (const void * a, const void * b)
 #define CHECKFN(X,Y) (X > Y)
 #include "owl_dense_common_vec_fold.c"
 
+// min_along
+
+#define FUN25 float32_min_along
+#define FUN25_IMPL float32_min_along_impl
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = fminf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 float64_min_along
+#define FUN25_IMPL float64_min_along_impl
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = fmin(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 complex32_min_along
+#define FUN25_IMPL complex32_min_along_impl
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = CLTF(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 complex64_min_along
+#define FUN25_IMPL complex64_min_along_impl
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = CLT(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 int8_min_along
+#define FUN25_IMPL int8_min_along_impl
+#define NUMBER int8_t
+#define NUMBER1 int8_t
+#define MAPFN(X,Y) *Y = (*X < *Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 uint8_min_along
+#define FUN25_IMPL uint8_min_along_impl
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define MAPFN(X,Y) *Y = (*X < *Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 int16_min_along
+#define FUN25_IMPL int16_min_along_impl
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define MAPFN(X,Y) *Y = (*X < *Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 uint16_min_along
+#define FUN25_IMPL uint16_min_along_impl
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define MAPFN(X,Y) *Y = (*X < *Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 int32_min_along
+#define FUN25_IMPL int32_min_along_impl
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define MAPFN(X,Y) *Y = (*X < *Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 int64_min_along
+#define FUN25_IMPL int64_min_along_impl
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define MAPFN(X,Y) *Y = (*X < *Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
 // max_i
 
 #define FUN6 float32_max_i
@@ -2047,6 +2119,78 @@ int int64_cmp (const void * a, const void * b)
 #define NUMBER int64_t
 #define CHECKFN(X,Y) (X < Y)
 #include "owl_dense_common_vec_fold.c"
+
+// max_along
+
+#define FUN25 float32_max_along
+#define FUN25_IMPL float32_max_along_impl
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = fmaxf(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 float64_max_along
+#define FUN25_IMPL float64_max_along_impl
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = fmax(*X,*Y)
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 complex32_max_along
+#define FUN25_IMPL complex32_max_along_impl
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = CGTF(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 complex64_max_along
+#define FUN25_IMPL complex64_max_along_impl
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = CGT(*X,*Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 int8_max_along
+#define FUN25_IMPL int8_max_along_impl
+#define NUMBER int8_t
+#define NUMBER1 int8_t
+#define MAPFN(X,Y) *Y = (*X > *Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 uint8_max_along
+#define FUN25_IMPL uint8_max_along_impl
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define MAPFN(X,Y) *Y = (*X > *Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 int16_max_along
+#define FUN25_IMPL int16_max_along_impl
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define MAPFN(X,Y) *Y = (*X > *Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 uint16_max_along
+#define FUN25_IMPL uint16_max_along_impl
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define MAPFN(X,Y) *Y = (*X > *Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 int32_max_along
+#define FUN25_IMPL int32_max_along_impl
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define MAPFN(X,Y) *Y = (*X > *Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
+
+#define FUN25 int64_max_along
+#define FUN25_IMPL int64_max_along_impl
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define MAPFN(X,Y) *Y = (*X > *Y) ? *X : *Y
+#include "owl_dense_common_vec_map.c"
 
 // minmax_i
 // TODO

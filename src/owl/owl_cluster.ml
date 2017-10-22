@@ -22,7 +22,7 @@ let kmeans x c =
       Log.info "iteration %i ..." counter; flush stdout;
       iteri_rows (fun i v ->
         iteri_rows (fun j u ->
-          let e = sum(pow_scalar (sub v u) 2.) in
+          let e = sum' (pow_scalar (sub v u) 2.) in
           if Pervasives.(e < snd assignment.(i)) then
             assignment.(i) <- (j, e)
         ) cpts0

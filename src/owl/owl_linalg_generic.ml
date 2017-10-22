@@ -240,13 +240,13 @@ let rank ?tol x =
   let ztol = Complex.({re = tol; im = neg_infinity}) in
   let _count : type a b. (a, b) kind -> (a, b) t -> int =
     fun _kind sv -> match _kind with
-    | Float32   -> M.elt_greater_scalar sv dtol |> M.sum |> int_of_float
-    | Float64   -> M.elt_greater_scalar sv dtol |> M.sum |> int_of_float
+    | Float32   -> M.elt_greater_scalar sv dtol |> M.sum' |> int_of_float
+    | Float64   -> M.elt_greater_scalar sv dtol |> M.sum' |> int_of_float
     | Complex32 ->
-        let a = M.elt_greater_scalar sv ztol |> M.sum in
+        let a = M.elt_greater_scalar sv ztol |> M.sum' in
         int_of_float Complex.(a.re)
     | Complex64 ->
-        let a = M.elt_greater_scalar sv ztol |> M.sum in
+        let a = M.elt_greater_scalar sv ztol |> M.sum' in
         int_of_float Complex.(a.re)
     | _         -> failwith "owl_linalg:rank"
   in
@@ -502,10 +502,10 @@ let _minmax_real
   : type a b. (a, b) kind -> (a, b) t -> float * float
   = fun k v ->
     match (M.kind v) with
-    | Float32   -> M.minmax v
-    | Float64   -> M.minmax v
-    | Complex32 -> M.re_c2s v |> M.minmax
-    | Complex64 -> M.re_z2d v |> M.minmax
+    | Float32   -> M.minmax' v
+    | Float64   -> M.minmax' v
+    | Complex32 -> M.re_c2s v |> M.minmax'
+    | Complex64 -> M.re_z2d v |> M.minmax'
     | _         -> failwith "owl_linalg_generic:_minmax_real"
 
 
@@ -522,9 +522,9 @@ let _abs
 
 let norm ?(p=2.) x =
   let k = M.kind x in
-  if p = 1. then x |> _abs k |> M.sum_rows |> M.max
+  if p = 1. then x |> _abs k |> M.sum_rows |> M.max'
   else if p = 2. then x |> svdvals |> _minmax_real k |> snd
-  else if p = infinity then x |> _abs k |> M.sum_cols |> M.max
+  else if p = infinity then x |> _abs k |> M.sum_cols |> M.max'
   else failwith "owl_linalg_generic:norm:p=1|2|inf"
 
 
@@ -559,9 +559,9 @@ let null x =
   else (
     let _, s, vt = svd ~thin:false x in
     let s = _abs (M.kind s) s in
-    let maxsv = M.max s in
+    let maxsv = M.max' s in
     let maxmn = Pervasives.max m n |> float_of_int in
-    let i = M.elt_greater_scalar s (maxmn *. maxsv *. eps) |> M.sum |> int_of_float in
+    let i = M.elt_greater_scalar s (maxmn *. maxsv *. eps) |> M.sum' |> int_of_float in
     let vt = M.resize ~head:false vt [|M.row_num vt - i; M.col_num vt|] in
     M.transpose vt
   )

@@ -966,7 +966,7 @@ let gglse
   check_lapack_error ret;
 
   let c' = Owl_dense_matrix_generic.resize ~head:false c [|1; m - n + p|] in
-  let res = Owl_dense_matrix_generic.(mul c' c' |> sum) in
+  let res = Owl_dense_matrix_generic.(mul c' c' |> sum') in
   x, res
 
 

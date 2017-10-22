@@ -726,29 +726,29 @@ module Make
       let r_c_d a b = Set_Slice_C_D (a, b, i) in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    and sum a =
+    and sum' a =
       let ff = function
         | F a      -> F a
-        | Arr a    -> F A.(sum a)
+        | Arr a    -> F A.(sum' a)
         | _        -> error_uniop "sum" a
       in
-      let fd a = sum a in
-      let df cp ap at = sum at in
+      let fd a = sum' a in
+      let df cp ap at = sum' at in
       let r a = Sum_D a in
       op_d_d a ff fd df r
 
-    and sum_ ?(axis=0) a =
+    and sum ?(axis=0) a =
       let ff = function
         | F a      -> F a
-        | Arr a    -> Arr A.(sum_ ~axis a)
-        | _        -> error_uniop "sum_" a
+        | Arr a    -> Arr A.(sum ~axis a)
+        | _        -> error_uniop "sum" a
       in
-      let fd a = sum_ ~axis a in
-      let df cp ap at = sum_ ~axis at in
+      let fd a = sum ~axis a in
+      let df cp ap at = sum ~axis at in
       let r a = Sum__D (a, axis) in
       op_d_d a ff fd df r
 
-    and average a = (sum a) / F (numel a |> float_of_int)
+    and average a = (sum' a) / F (numel a |> float_of_int)
 
     and ( *@ ) a b = dot a b
     and dot a b =
@@ -845,12 +845,12 @@ module Make
 
     (* FIXME: use numerically stable version *)
     and softmax x =
-      let c = F M.(max (unpack_arr x)) in
+      let c = F M.(max' (unpack_arr x)) in
       let y = exp (x - c) in
-      let a = sum y in
+      let a = sum' y in
       y / a
 
-    and cross_entropy x y = x * log y |> sum |> neg
+    and cross_entropy x y = x * log y |> sum' |> neg
 
     and add_row a b i =
       let ff a b =
@@ -1231,7 +1231,7 @@ module Make
     (* check adjoint a and its update v, ensure rank a >= rank v *)
     let _melt a v =
       match a, v with
-      | F _, Arr v -> F (A.sum v)
+      | F _, Arr v -> F (A.sum' v)
       | Arr a, Arr v -> (
           (* check if this is due to previous broadcast operation *)
           (* FIXME: need to check full-shape, sum_cols if necessary *)
@@ -1295,7 +1295,7 @@ module Make
               | Asinh_D a                -> push (((!aa / sqrt ((sqr (primal a)) + (F 1.))), a) :: t)
               | Acosh_D a                -> push (((!aa / sqrt ((sqr (primal a)) - (F 1.))), a) :: t)
               | Atanh_D a                -> push (((!aa / ((F 1.) - sqr (primal a))), a) :: t)
-              | Get_Item (a, i, j)       -> push ((set_item (zero a) i j (sum !aa), a) :: t)
+              | Get_Item (a, i, j)       -> push ((set_item (zero a) i j (sum' !aa), a) :: t)
               | SetI_D_D (a, i, j, b)    -> push ((set_item !aa i j (F 0.), a) :: (get_item !aa i j, b) :: t)
               | SetI_D_C (a, i, j, _)    -> push ((set_item !aa i j (F 0.), a) :: t)
               | SetI_C_D (_, i, j, b)    -> push ((get_item !aa i j, b) :: t)

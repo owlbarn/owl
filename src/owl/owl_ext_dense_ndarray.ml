@@ -266,9 +266,9 @@ module type BasicSig = sig
   val load : string -> arr
 
 
-  val sum : arr -> elt
+  val sum' : arr -> elt
 
-  val prod : ?axis:int option array -> arr -> elt
+  val prod' : arr -> elt
 
   val add : arr -> arr -> arr
 
@@ -475,9 +475,9 @@ module Make_Basic
   let load f = M.load f |> pack_box
 
 
-  let sum x = M.sum (unpack_box x) |> pack_elt
+  let sum' x = M.sum' (unpack_box x) |> pack_elt
 
-  let prod x = M.prod (unpack_box x) |> pack_elt
+  let prod' x = M.prod' (unpack_box x) |> pack_elt
 
   let add x y = M.add (unpack_box x) (unpack_box y) |> pack_box
 
@@ -513,11 +513,11 @@ module type SD_Sig = sig
   type arr
   type elt
 
-  val min : arr -> elt
+  val min' : arr -> elt
 
-  val max : arr -> elt
+  val max' : arr -> elt
 
-  val minmax : arr -> elt * elt
+  val minmax' : arr -> elt * elt
 
   val min_i : arr -> elt * int array
 
@@ -651,11 +651,11 @@ module Make_SD
 
   open P
 
-  let min x = M.min (unpack_box x) |> pack_elt
+  let min' x = M.min' (unpack_box x) |> pack_elt
 
-  let max x = M.max (unpack_box x) |> pack_elt
+  let max' x = M.max' (unpack_box x) |> pack_elt
 
-  let minmax x = let a, b = M.minmax (unpack_box x) in (pack_elt a, pack_elt b)
+  let minmax' x = let a, b = M.minmax' (unpack_box x) in (pack_elt a, pack_elt b)
 
   let min_i x = let a, i = M.min_i (unpack_box x) in (pack_elt a, i)
 
@@ -795,9 +795,9 @@ module type CZ_Sig = sig
 
   val im : arr -> cast_arr
 
-  val sum : arr -> elt
+  val sum' : arr -> elt
 
-  val prod : ?axis:int option array -> arr -> elt
+  val prod' : arr -> elt
 
   val abs : arr -> cast_arr
 
@@ -841,9 +841,9 @@ module Make_CZ
 
   let conj x = M.conj (unpack_box x) |> pack_box
 
-  let sum x = M.sum (unpack_box x) |> pack_elt
+  let sum' x = M.sum' (unpack_box x) |> pack_elt
 
-  let prod x = M.prod (unpack_box x) |> pack_elt
+  let prod' x = M.prod' (unpack_box x) |> pack_elt
 
   let neg x = M.neg (unpack_box x) |> pack_box
 

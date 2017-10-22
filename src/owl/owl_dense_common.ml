@@ -1180,6 +1180,30 @@ let _owl_min_i : type a b. (a, b) kind -> (a, b) owl_arr_op01 = function
   | Int64          -> owl_int64_min_i
   | _              -> failwith "_owl_min_i: unsupported operation"
 
+external owl_float32_min_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "float32_min_along" "float32_min_along_impl"
+external owl_float64_min_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "float64_min_along" "float64_min_along_impl"
+external owl_complex32_min_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "complex32_min_along" "complex32_min_along_impl"
+external owl_complex64_min_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "complex64_min_along" "complex64_min_along_impl"
+external owl_int8_min_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "int8_min_along" "int8_min_along_impl"
+external owl_uint8_min_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "uint8_min_along" "uint8_min_along_impl"
+external owl_int16_min_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "int16_min_along" "int16_min_along_impl"
+external owl_uint16_min_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "uint16_min_along" "uint16_min_along_impl"
+external owl_int32_min_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "int32_min_along" "int32_min_along_impl"
+external owl_int64_min_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "int64_min_along" "int64_min_along_impl"
+
+let _owl_min_along : type a b. (a, b) kind -> (a, b) owl_arr_op20 = function
+  | Float32        -> owl_float32_min_along
+  | Float64        -> owl_float64_min_along
+  | Complex32      -> owl_complex32_min_along
+  | Complex64      -> owl_complex64_min_along
+  | Int8_signed    -> owl_int8_min_along
+  | Int8_unsigned  -> owl_uint8_min_along
+  | Int16_signed   -> owl_int16_min_along
+  | Int16_unsigned -> owl_uint16_min_along
+  | Int32          -> owl_int32_min_along
+  | Int64          -> owl_int64_min_along
+  | _              -> failwith "_owl_min_along: unsupported operation"
+
 external owl_float32_max_i : int -> ('a, 'b) owl_arr -> int = "float32_max_i"
 external owl_float64_max_i : int -> ('a, 'b) owl_arr -> int = "float64_max_i"
 external owl_complex32_max_i : int -> ('a, 'b) owl_arr -> int = "complex32_max_i"
@@ -1203,6 +1227,30 @@ let _owl_max_i : type a b. (a, b) kind -> (a, b) owl_arr_op01 = function
   | Int32          -> owl_int32_max_i
   | Int64          -> owl_int64_max_i
   | _              -> failwith "_owl_max_i: unsupported operation"
+
+external owl_float32_max_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "float32_max_along" "float32_max_along_impl"
+external owl_float64_max_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "float64_max_along" "float64_max_along_impl"
+external owl_complex32_max_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "complex32_max_along" "complex32_max_along_impl"
+external owl_complex64_max_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "complex64_max_along" "complex64_max_along_impl"
+external owl_int8_max_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "int8_max_along" "int8_max_along_impl"
+external owl_uint8_max_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "uint8_max_along" "uint8_max_along_impl"
+external owl_int16_max_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "int16_max_along" "int16_max_along_impl"
+external owl_uint16_max_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "uint16_max_along" "uint16_max_along_impl"
+external owl_int32_max_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "int32_max_along" "int32_max_along_impl"
+external owl_int64_max_along : int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "int64_max_along" "int64_max_along_impl"
+
+let _owl_max_along : type a b. (a, b) kind -> (a, b) owl_arr_op20 = function
+  | Float32        -> owl_float32_max_along
+  | Float64        -> owl_float64_max_along
+  | Complex32      -> owl_complex32_max_along
+  | Complex64      -> owl_complex64_max_along
+  | Int8_signed    -> owl_int8_max_along
+  | Int8_unsigned  -> owl_uint8_max_along
+  | Int16_signed   -> owl_int16_max_along
+  | Int16_unsigned -> owl_uint16_max_along
+  | Int32          -> owl_int32_max_along
+  | Int64          -> owl_int64_max_along
+  | _              -> failwith "_owl_max_along: unsupported operation"
 
 external owl_float32_neg : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float32_neg" "float32_neg_impl"
 external owl_float64_neg : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float64_neg" "float64_neg_impl"

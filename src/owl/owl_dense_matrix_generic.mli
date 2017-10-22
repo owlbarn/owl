@@ -917,20 +917,41 @@ val im_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [im_d2z x] returns all the imaginary components of [x] in a new ndarray of same shape. *)
 
-val min : ('a, 'b) t -> 'a
-(** [min x] returns the minimum of all elements in [x]. For two complex numbers,
-  the one with the smaller magnitude will be selected. If two magnitudes are
-  the same, the one with the smaller phase will be selected.
+val min : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [min x] returns the minimum of all elements in [x] along specified [axis].
+  If no axis is specified, [x] will be flattened and the minimum of all the
+  elements will be returned.  For two complex numbers, the one with the smaller
+  magnitude will be selected. If two magnitudes are the same, the one with the
+  smaller phase will be selected.
  *)
 
-val max : ('a, 'b) t -> 'a
-(** [max x] returns the maximum of all elements in [x]. For two complex numbers,
-  the one with the greater magnitude will be selected. If two magnitudes are
-  the same, the one with the greater phase will be selected.
+val min' : ('a, 'b) t -> 'a
+(** [min' x] is similar to [min] but returns the minimum of all elements in [x]
+  in scalar value.
  *)
 
-val minmax : ('a, 'b) t -> 'a * 'a
-(** [minmax x] returns both the minimum and minimum values in [x]. *)
+val max : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [max x] returns the maximum of all elements in [x] along specified [axis].
+  If no axis is specified, [x] will be flattened and the maximum of all the
+  elements will be returned.  For two complex numbers, the one with the greater
+  magnitude will be selected. If two magnitudes are the same, the one with the
+  greater phase will be selected.
+ *)
+
+val max' : ('a, 'b) t -> 'a
+(** [max' x] is similar to [max] but returns the maximum of all elements in [x]
+  in scalar value.
+ *)
+
+val minmax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(** [minmax' x] returns [(min_v, max_v)], [min_v] is the minimum value in [x]
+  while [max_v] is the maximum.
+ *)
+
+val minmax' : ('a, 'b) t -> 'a * 'a
+(** [minmax' x] returns [(min_v, max_v)], [min_v] is the minimum value in [x]
+  while [max_v] is the maximum.
+ *)
 
 val min_i : ('a, 'b) t -> 'a * int array
 (** [min_i x] returns the minimum of all elements in [x] as well as its index. *)
@@ -950,13 +971,16 @@ val inv : ('a, 'b) t -> ('a, 'b) t
 val trace : ('a, 'b) t -> 'a
 (** [trace x] returns the sum of diagonal elements in [x]. *)
 
-val sum : ('a, 'b) t -> 'a
-(** [sum x] returns the summation of all the elements in [x]. *)
-
-val sum_ : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** [sum_ axis x] sums the elements in [x] along specified [axis]. *)
 
-val prod : ?axis:int option array -> ('a, 'b) t -> 'a
+val sum': ('a, 'b) t -> 'a
+(** [sum x] returns the summation of all the elements in [x]. *)
+
+val prod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [prod_ axis x] multiplies the elements in [x] along specified [axis]. *)
+
+val prod' : ('a, 'b) t -> 'a
 (** [prod x] returns the product of all the elements in [x]. *)
 
 val average : ('a, 'b) t -> 'a

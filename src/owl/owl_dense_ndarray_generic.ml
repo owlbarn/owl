@@ -333,7 +333,7 @@ let min_i x =
   let i = _owl_min_i (kind x) (numel x) x in
   let s = _calc_stride (shape x) in
   let j = Array.copy s in
-  let _ = _index_1d_nd i j s in
+  _index_1d_nd i j s;
   y.{i}, j
 
 let max_i x =
@@ -341,16 +341,16 @@ let max_i x =
   let i = _owl_max_i (kind x) (numel x) x in
   let s = _calc_stride (shape x) in
   let j = Array.copy s in
-  let _ = _index_1d_nd i j s in
+  _index_1d_nd i j s;
   y.{i}, j
 
 let minmax_i x = min_i x, max_i x
 
-let min x = x |> min_i |> fst
+let min' x = x |> min_i |> fst
 
-let max x = x |> max_i |> fst
+let max' x = x |> max_i |> fst
 
-let minmax x =
+let minmax' x =
   let minx_i, maxx_i = minmax_i x in
   fst minx_i, fst maxx_i
 
@@ -837,8 +837,6 @@ let elt_greater_equal_scalar x a =
   let y = empty (kind x) (shape x) in
   _owl_elt_greater_equal_scalar (kind x) (numel x) x y a;
   y
-
-let sum x = _owl_sum (kind x) (numel x) x
 
 let uniform : type a b. ?scale:float -> (a, b) kind -> int array -> (a, b) t =
   fun ?(scale=1.) kind dimension ->
@@ -1435,14 +1433,6 @@ let im_z2d x =
   let y = empty Float64 (shape x) in
   _owl_im_z2d (numel x) x y;
   y
-
-let prod ?axis x =
-  match axis with
-  | Some axis ->
-    let _a1 = _one (kind x) in
-    let _op = _mul_elt (kind x) in
-    fold ~axis (fun a y -> _op a y) _a1 x
-  | None -> _owl_prod (kind x) (numel x) x
 
 
 (* cast functions *)
@@ -2564,6 +2554,12 @@ let split ?(axis=0) parts x =
   slices
 
 
+let sum' x = _owl_sum (kind x) (numel x) x
+
+
+let prod' x = _owl_prod (kind x) (numel x) x
+
+
 (* prepare the parameters for reduce operation, [a] is axis *)
 let reduce_params a x =
   let d = num_dims x in
@@ -2586,7 +2582,7 @@ let reduce_params a x =
   m, n, o, ofsx, incx_m, incx_n, incx_o, ofsy, incy_m, incy_n, incy_o
 
 
-let sum_ ?axis x =
+let sum ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
@@ -2600,7 +2596,7 @@ let sum_ ?axis x =
   | None   -> _owl_sum _kind (numel x) x |> create _kind [|1|]
 
 
-let prod_ ?axis x =
+let prod ?axis x =
   let _kind = kind x in
   match axis with
   | Some a -> (
@@ -2612,6 +2608,37 @@ let prod_ ?axis x =
       y
     )
   | None   -> _owl_prod _kind (numel x) x |> create _kind [|1|]
+
+
+let min ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, ofsx, incx_m, incx_n, incx_o, ofsy, incy_m, incy_n, incy_o = reduce_params a x in
+      let shp = shape x in
+      shp.(a) <- 1;
+      let y = create _kind shp (_pos_inf _kind) in
+      _owl_min_along _kind m n o x ofsx incx_m incx_n incx_o y ofsy incy_m incy_n incy_o;
+      y
+    )
+  | None   -> min' x |> create _kind [|1|]
+
+
+let max ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, ofsx, incx_m, incx_n, incx_o, ofsy, incy_m, incy_n, incy_o = reduce_params a x in
+      let shp = shape x in
+      shp.(a) <- 1;
+      let y = create _kind shp (_neg_inf _kind) in
+      _owl_max_along _kind m n o x ofsx incx_m incx_n incx_o y ofsy incy_m incy_n incy_o;
+      y
+    )
+  | None   -> max' x |> create _kind [|1|]
+
+
+let minmax ?axis x = min ?axis x, max ?axis x
 
 
 (* this function is used for searching top/bottom values in [x] *)
@@ -2863,23 +2890,23 @@ let sigmoid_ x = _owl_sigmoid (kind x) (numel x) x x
 
 let softmax x =
   let x = clone x in
-  sub_scalar_ x (max x);
+  sub_scalar_ x (max' x);
   exp_ x;
-  let a = sum x in
+  let a = sum' x in
   div_scalar_ x a;
   x
 
 let softmax_ x =
-  sub_scalar_ x (max x);
+  sub_scalar_ x (max' x);
   exp_ x;
-  let a = sum x in
+  let a = sum' x in
   div_scalar_ x a
 
 let cross_entropy x y =
   let y = clone y in
   log_ y;
   mul_ y x;
-  _neg_elt (kind y) (sum y)
+  _neg_elt (kind y) (sum' y)
 
 
 

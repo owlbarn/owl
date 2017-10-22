@@ -138,7 +138,7 @@ module Make
       | Custom of (t -> t -> t)
 
     let run typ y y' = match typ with
-      | Hinge         -> Maths.(sum (max2 (F 0.) (F 1. - y * y')))
+      | Hinge         -> Maths.(sum' (max2 (F 0.) (F 1. - y * y')))
       | L1norm        -> Maths.(l1norm (y - y'))
       | L2norm        -> Maths.(l2norm (y - y'))
       | Quadratic     -> Maths.(l2norm_sqr (y - y'))
@@ -171,11 +171,11 @@ module Make
       | GD          -> fun _ _ _ _ g' -> Maths.neg g'
       | CG          -> fun _ _ g p g' -> (
           let y = Maths.(g' - g) in
-          let b = Maths.((sum (g' * y)) / ((sum (p * y)) + F 1e-32)) in
+          let b = Maths.((sum' (g' * y)) / ((sum' (p * y)) + F 1e-32)) in
           Maths.((neg g') + (b * p))
         )
       | CD          -> fun _ _ g p g' -> (
-          let b = Maths.((l2norm_sqr g') / (sum (neg p * g))) in
+          let b = Maths.((l2norm_sqr g') / (sum' (neg p * g))) in
           Maths.((neg g') + (b * p))
         )
       | NonlinearCG -> fun _ _ g p g' -> (
@@ -184,7 +184,7 @@ module Make
         )
       | DaiYuanCG   -> fun _ w g p g' -> (
           let y = Maths.(g' - g) in
-          let b = Maths.((l2norm_sqr g') / (sum (p * y))) in
+          let b = Maths.((l2norm_sqr g') / (sum' (p * y))) in
           Maths.((neg g') + (b * p))
         )
       | NewtonCG    -> fun f w g p g' -> (

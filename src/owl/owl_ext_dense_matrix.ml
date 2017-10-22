@@ -358,9 +358,9 @@ module type BasicSig = sig
 
   val trace : mat -> elt
 
-  val sum : mat -> elt
+  val sum' : mat -> elt
 
-  val prod : ?axis:int option array -> mat -> elt
+  val prod' : mat -> elt
 
   val average : mat -> elt
 
@@ -656,9 +656,9 @@ module Make_Basic
 
   let trace x = M.trace (unpack_box x) |> pack_elt
 
-  let sum x = M.sum (unpack_box x) |> pack_elt
+  let sum' x = M.sum' (unpack_box x) |> pack_elt
 
-  let prod ?axis x = M.prod ?axis (unpack_box x) |> pack_elt
+  let prod' x = M.prod' (unpack_box x) |> pack_elt
 
   let average x = M.average (unpack_box x) |> pack_elt
 
@@ -707,13 +707,11 @@ module type SD_Sig = sig
   type mat
   type elt
 
-  val min : mat -> elt
+  val min' : mat -> elt
 
-  val min : mat -> elt
+  val max' : mat -> elt
 
-  val max : mat -> elt
-
-  val minmax : mat -> elt * elt
+  val minmax' : mat -> elt * elt
 
   val min_i : mat -> elt * int array
 
@@ -845,11 +843,11 @@ module Make_SD
 
   open P
 
-  let min x = M.min (unpack_box x) |> pack_elt
+  let min' x = M.min' (unpack_box x) |> pack_elt
 
-  let max x = M.max (unpack_box x) |> pack_elt
+  let max' x = M.max' (unpack_box x) |> pack_elt
 
-  let minmax x = let (a, b) = M.minmax (unpack_box x) in (pack_elt a, pack_elt b)
+  let minmax' x = let (a, b) = M.minmax' (unpack_box x) in (pack_elt a, pack_elt b)
 
   let min_i x = let (a, i) = M.min_i (unpack_box x) in (pack_elt a, i)
 

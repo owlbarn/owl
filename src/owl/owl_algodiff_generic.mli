@@ -117,9 +117,9 @@ module Make
 
     val atanh : t -> t
 
-    val sum : t -> t
+    val sum' : t -> t
 
-    val sum_ : ?axis:int -> t -> t
+    val sum : ?axis:int -> t -> t
 
     val average : t -> t
 
