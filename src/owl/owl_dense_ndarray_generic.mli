@@ -734,6 +734,9 @@ val sum_ : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 val prod : ?axis:int option array -> ('a, 'b) t -> 'a
 (** [prod x] returns the product of all elements in [x] along passed in axises. *)
 
+val prod_ : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [prod_ axis x] multiples the elements in [x] along specified [axis]. *)
+
 val min : ('a, 'b) t -> 'a
 (** [min x] returns the minimum of all elements in [x]. For two complex numbers,
   the one with the smaller magnitude will be selected. If two magnitudes are

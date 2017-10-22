@@ -2564,14 +2564,54 @@ let split ?(axis=0) parts x =
   slices
 
 
-(* TODO: optimise ... I am lazy so I currently use the cumsum operation,
-  but we should generalise reduce_op.
- *)
-let sum_ ?(axis=0) x =
-  let i = Array.make (num_dims x) (R_ [||]) in
-  i.(axis) <- R_ [|-1|];
-  let y = cumsum ~axis x in
-  Owl_slicing.get_slice_array_typ i y
+(* prepare the parameters for reduce operation, [a] is axis *)
+let reduce_params a x =
+  let d = num_dims x in
+  assert (0 <= a && a < d);
+
+  let _shape = shape x in
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = _stride.(a) in
+  let o = _slicez.(a) / _stride.(a) in
+  let incx_m = _slicez.(a) in
+  let incx_n = 1 in
+  let incx_o = _stride.(a) in
+  let incy_m = _slicez.(a) / _shape.(a) in
+  let incy_n = 1 in
+  let incy_o = 0 in
+  let ofsx = 0 in
+  let ofsy = 0 in
+  m, n, o, ofsx, incx_m, incx_n, incx_o, ofsy, incy_m, incy_n, incy_o
+
+
+let sum_ ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, ofsx, incx_m, incx_n, incx_o, ofsy, incy_m, incy_n, incy_o = reduce_params a x in
+      let shp = shape x in
+      shp.(a) <- 1;
+      let y = zeros _kind shp in
+      _owl_sum_along _kind m n o x ofsx incx_m incx_n incx_o y ofsy incy_m incy_n incy_o;
+      y
+    )
+  | None   -> _owl_sum _kind (numel x) x |> create _kind [|1|]
+
+
+let prod_ ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, ofsx, incx_m, incx_n, incx_o, ofsy, incy_m, incy_n, incy_o = reduce_params a x in
+      let shp = shape x in
+      shp.(a) <- 1;
+      let y = zeros _kind shp in
+      _owl_prod_along _kind m n o x ofsx incx_m incx_n incx_o y ofsy incy_m incy_n incy_o;
+      y
+    )
+  | None   -> _owl_prod _kind (numel x) x |> create _kind [|1|]
 
 
 (* this function is used for searching top/bottom values in [x] *)
