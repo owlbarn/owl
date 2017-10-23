@@ -112,7 +112,7 @@ let reshape x d =
 
 let flatten x = make_arr [|Array.length x.data|] [|1|] x.data
 
-let clone x = {
+let copy x = {
   shape  = Array.copy x.shape;
   stride = Array.copy x.stride;
   data   = Array.copy x.data;
@@ -150,7 +150,7 @@ let expand x d =
   | false -> x
 
 let reverse x =
-  let y = clone x in
+  let y = copy x in
   Owl_utils.array_reverse y.data;
   y
 

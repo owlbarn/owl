@@ -145,7 +145,7 @@ module type BasicSig = sig
 
   val fill : arr -> elt -> unit
 
-  val clone : arr -> arr
+  val copy : arr -> arr
 
   val reshape : arr -> int array -> arr
 
@@ -354,7 +354,7 @@ module Make_Basic
 
   let fill x a = M.fill (unpack_box x) (unpack_elt a)
 
-  let clone x = M.clone (unpack_box x) |> pack_box
+  let copy x = M.copy (unpack_box x) |> pack_box
 
   let reshape x s = M.reshape (unpack_box x) s |> pack_box
 

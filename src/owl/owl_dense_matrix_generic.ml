@@ -57,7 +57,7 @@ let copy_area_to x1 r1 x2 r2 =
 let copy_to x1 x2 = Bigarray.Genarray.blit x1 x2
 
 
-let clone_area x r =
+let copy_area x r =
   let y = empty (kind x) [|r.c - r.a + 1; r.d - r.b + 1|] in
   copy_area_to x r y (area_of y)
 
@@ -174,7 +174,7 @@ let symmetric ?(upper=true) x =
   let _kind = kind x in
   let m, n = shape x in
   assert (m = n);
-  let y = clone x in
+  let y = copy x in
 
   let ofs = ref 0 in
   let incx, incy =
@@ -216,7 +216,7 @@ let hermitian ?(upper=true) x =
   let m, n = shape x in
   assert (m = n);
 
-  let y = clone x in
+  let y = copy x in
   let _y = flatten y |> Bigarray.array1_of_genarray in
   let _conj_op = _owl_conj (kind x) in
   let ofs = ref 0 in
@@ -540,7 +540,7 @@ let map_by_col d f x = mapi_by_col d (fun _ y -> f y) x
 
 let mapi_at_row f x i =
   let v = mapi (fun _ j y -> f i j y) (row x i) in
-  let y = clone x in
+  let y = copy x in
   copy_row_to v y i; y
 
 
@@ -549,7 +549,7 @@ let map_at_row f x i = mapi_at_row (fun _ _ y -> f y) x i
 
 let mapi_at_col f x j =
   let v = mapi (fun i _ y -> f i j y) (col x j) in
-  let y = clone x in
+  let y = copy x in
   copy_col_to v y j; y
 
 
@@ -706,7 +706,7 @@ let trace x = sum' (diag x)
 let add_diag x a =
   let m, n = shape x in
   let m = Pervasives.min m n in
-  let y = clone x in
+  let y = copy x in
   let _op = _add_elt (kind x) in
   for i = 0 to m - 1 do
     let b = Owl_dense_ndarray_generic.get x [|i;i|] in
@@ -805,7 +805,7 @@ let draw_cols2 ?(replacement=true) x y c =
 
 let shuffle_rows x =
   let m, n = shape x in
-  let y = clone x in
+  let y = copy x in
   for i = 0 to m - 1 do
     swap_rows y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
   done; y
@@ -813,7 +813,7 @@ let shuffle_rows x =
 
 let shuffle_cols x =
   let m, n = shape x in
-  let y = clone x in
+  let y = copy x in
   for i = 0 to n - 1 do
     swap_cols y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
   done; y

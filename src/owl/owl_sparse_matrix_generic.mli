@@ -107,8 +107,8 @@ val reset : ('a, 'b) t -> unit
 
 val fill : ('a, 'b) t -> 'a -> unit
 
-val clone : ('a, 'b) t -> ('a, 'b) t
-(** [clone x] makes an exact copy of matrix [x]. Note that the clone becomes
+val copy : ('a, 'b) t -> ('a, 'b) t
+(** [copy x] makes an exact copy of matrix [x]. Note that the copy becomes
   mutable no matter [w] is mutable or not. This is expecially useful if you
   want to modify certain elements in an immutable matrix from math operations.
  *)

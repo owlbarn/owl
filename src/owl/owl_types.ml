@@ -103,7 +103,7 @@ module type NdarraySig = sig
 
   val set_slice : index list -> arr -> arr -> unit
 
-  val clone : arr -> arr
+  val copy : arr -> arr
 
   val reset : arr -> unit
 
@@ -313,7 +313,7 @@ module type MatrixSig = sig
 
   val rows : mat -> int array -> mat
 
-  val clone : mat -> mat
+  val copy : mat -> mat
 
   val reset : mat -> unit
 
@@ -479,7 +479,7 @@ module type InpureSig = sig
 
   val shape : arr -> int array
 
-  val clone : arr -> arr
+  val copy : arr -> arr
 
   val add : arr -> arr -> arr
 

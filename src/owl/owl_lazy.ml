@@ -68,7 +68,7 @@ module Make
   let allocate_1 op =
     let a = (unpack_operands op).(0) in
     if a.refnum = 1 then a.outval.(0)
-    else A.clone a.outval.(0)
+    else A.copy a.outval.(0)
 
 
   let allocate_2 operands =
@@ -81,7 +81,7 @@ module Make
     if a_shp = b_shp then (
       if a.refnum = 1 then Some (a_val, b_val)
       else if b.refnum = 1 then Some (b_val, a_val)
-      else Some (A.clone a_val, b_val)
+      else Some (A.copy a_val, b_val)
     )
     else if Owl_utils.array_greater_eqaul a_shp b_shp && a.refnum = 1 then Some (a_val, b_val)
     else if Owl_utils.array_greater_eqaul b_shp a_shp && b.refnum = 1 then Some (b_val, a_val)

@@ -161,7 +161,7 @@ let _swap_left_right x =
   Owl_dense_matrix_z.cols x (Array.append b a)
 
 let fftshift x =
-  let y = Owl_dense_matrix_z.clone x in
+  let y = Owl_dense_matrix_z.copy x in
   let z = match Owl_dense_matrix_z.row_num y with
   | 1 -> _swap_left_right y
   | _ -> (
@@ -180,7 +180,7 @@ let _swap_right_left x =
   Owl_dense_matrix_z.cols x (Array.append b a)
 
 let ifftshift x =
-  let y = Owl_dense_matrix_z.clone x in
+  let y = Owl_dense_matrix_z.copy x in
   let z = match Owl_dense_matrix_z.row_num y with
   | 1 -> _swap_right_left y
   | _ -> (

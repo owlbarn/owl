@@ -55,7 +55,7 @@ let _ =
   test_op ">=@        " c (fun () -> M.(x >= y));
   test_op "diag       " c (fun () -> M.diag x);
   test_op "transpose  " c (fun () -> M.transpose x);
-  test_op "clone      " c (fun () -> M.clone x);
+  test_op "copy      " c (fun () -> M.copy x);
   test_op "@=         " c (fun () -> M.concat_vertical x y);
   test_op "@||        " c (fun () -> M.concat_horizontal x y);
   test_op "draw_cols  " c (fun () -> M.draw_cols x 1000);

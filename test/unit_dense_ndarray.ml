@@ -61,7 +61,7 @@ module To_test = struct
     M.set z [|1|] 3.;
     M.equal y z
 
-  let clone () = (M.clone x0) = x0
+  let copy () = (M.copy x0) = x0
 
   let fill () =
     let y = M.empty Float64 [|2;2;3|] in
@@ -128,7 +128,7 @@ module To_test = struct
     ) x1 = [| [|0;1;1|] |]
 
   let transpose () =
-    let y = M.clone x0 in
+    let y = M.copy x0 in
     let y = M.transpose y in
     M.get y [|1;0;0|] = 1. &&
     M.get y [|0;1;0|] = 2. &&
@@ -196,8 +196,8 @@ let set () =
 let get_slice () =
   Alcotest.(check bool) "get_slice" true (To_test.get_slice ())
 
-let clone () =
-  Alcotest.(check bool) "clone" true (To_test.clone ())
+let copy () =
+  Alcotest.(check bool) "copy" true (To_test.copy ())
 
 let fill () =
   Alcotest.(check bool) "fill" true (To_test.fill ())
@@ -311,7 +311,7 @@ let test_set = [
   "get", `Slow, get;
   "set", `Slow, set;
   "get_slice", `Slow, get_slice;
-  "clone", `Slow, clone;
+  "copy", `Slow, copy;
   "fill", `Slow, fill;
   "map", `Slow, map;
   "fold", `Slow, fold;

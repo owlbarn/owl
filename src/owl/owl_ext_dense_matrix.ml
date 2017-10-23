@@ -157,7 +157,7 @@ module type BasicSig = sig
 
   val fill : mat -> elt -> unit
 
-  val clone : mat -> mat
+  val copy : mat -> mat
 
   val copy_to : mat -> mat -> unit
 
@@ -471,7 +471,7 @@ module Make_Basic
 
   let fill x a = M.fill (unpack_box x) (unpack_elt a)
 
-  let clone x = M.clone (unpack_box x) |> pack_box
+  let copy x = M.copy (unpack_box x) |> pack_box
 
   let copy_to src dst = M.copy_to (unpack_box src) (unpack_box dst)
 

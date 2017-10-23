@@ -16,7 +16,7 @@ module M = Owl_dense.Matrix.Generic
 
 
 let lu x =
-  let x = M.clone x in
+  let x = M.copy x in
   let m, n = M.shape x in
   let minmn = Pervasives.min m n in
 
@@ -38,13 +38,13 @@ let lufact x =
 
 
 let inv x =
-  let x = M.clone x in
+  let x = M.copy x in
   let a, ipiv = Owl_lapacke.getrf x in
   Owl_lapacke.getri a ipiv
 
 
 let det x =
-  let x = M.clone x in
+  let x = M.copy x in
   let m, n = M.shape x in
   assert (m = n);
 
@@ -67,7 +67,7 @@ let det x =
 
 (* FIXME: need to check ... *)
 let logdet x =
-  let x = M.clone x in
+  let x = M.copy x in
   let m, n = M.shape x in
   assert (m = n);
 
@@ -107,7 +107,7 @@ let _get_qr_q
 
 
 let qr ?(thin=true) ?(pivot=false) x =
-  let x = M.clone x in
+  let x = M.copy x in
   let m, n = M.shape x in
   let minmn = Pervasives.min m n in
   let a, tau, jpvt = match pivot with
@@ -159,7 +159,7 @@ let _get_lq_q
 
 
 let lq ?(thin=true) x =
-  let x = M.clone x in
+  let x = M.copy x in
   let m, n = M.shape x in
   let minmn = Pervasives.min m n in
   let a, tau = Owl_lapacke.gelqf x in
@@ -184,7 +184,7 @@ let lq ?(thin=true) x =
 
 
 let svd ?(thin=true) x =
-  let x = M.clone x in
+  let x = M.copy x in
   let jobz = match thin with
     | true  -> 'S'
     | false -> 'A'
@@ -194,14 +194,14 @@ let svd ?(thin=true) x =
 
 
 let svdvals x =
-  let x = M.clone x in
+  let x = M.copy x in
   let _, s, _ = Owl_lapacke.gesdd ~jobz:'N' ~a:x in
   s
 
 
 let gsvd x y =
-  let x = M.clone x in
-  let y = M.clone y in
+  let x = M.copy x in
+  let y = M.copy y in
   let m, n = M.shape x in
   let p, _ = M.shape y in
   let u, v, q, alpha, beta, k, l, r =
@@ -216,8 +216,8 @@ let gsvd x y =
 
 
 let gsvdvals x y =
-  let x = M.clone x in
-  let y = M.clone y in
+  let x = M.copy x in
+  let y = M.copy y in
   let _, _, _, alpha, beta, k, l, _ =
     Owl_lapacke.ggsvd3 ~jobu:'N' ~jobv:'N' ~jobq:'N' ~a:x ~b:y
   in
@@ -257,7 +257,7 @@ let rank ?tol x =
 
 
 let chol ?(upper=true) x =
-  let x = M.clone x in
+  let x = M.copy x in
   match upper with
   | true  -> Owl_lapacke.potrf 'U' x |> M.triu
   | false -> Owl_lapacke.potrf 'L' x |> M.tril
@@ -266,7 +266,7 @@ let chol ?(upper=true) x =
 let schur
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x ->
-  let x = M.clone x in
+  let x = M.copy x in
   let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
 
   let w = match (M.kind x) with
@@ -285,7 +285,7 @@ let schur
 let eig
   : type a b c d. ?permute:bool -> ?scale:bool -> otyp:(a, b) kind -> (c, d) t -> (a, b) t * (a, b) t
   = fun ?(permute=true) ?(scale=true) ~otyp x ->
-  let x = M.clone x in
+  let x = M.copy x in
   let balanc = match permute, scale with
     | true, true   -> 'B'
     | true, false  -> 'P'
@@ -353,7 +353,7 @@ let eig
 let eigvals
   : type a b c d. ?permute:bool -> ?scale:bool -> otyp:(a, b) kind -> (c, d) t -> (a, b) t
   = fun ?(permute=true) ?(scale=true) ~otyp x ->
-  let x = M.clone x in
+  let x = M.copy x in
   let balanc = match permute, scale with
     | true, true   -> 'B'
     | true, false  -> 'P'
@@ -388,7 +388,7 @@ let _get_hess_q
 
 
 let hess x =
-  let x = M.clone x in
+  let x = M.copy x in
   let _, n = M.shape x in
   let ilo = 1 in
   let ihi = n in
@@ -401,7 +401,7 @@ let hess x =
 (* Bunch-Kaufman [Bunch1977] factorization *)
 
 let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
-  let x = M.clone x in
+  let x = M.copy x in
   let uplo = match upper with
     | true  -> 'U'
     | false -> 'L'
@@ -536,7 +536,7 @@ let cond ?(p=2.) x =
   )
   else if p = 1. || p = infinity then (
     assert (M.row_num x = M.col_num x);
-    let x = M.clone x in
+    let x = M.copy x in
     let a, ipiv = lufact x in
     let anorm = norm ~p x in
     let norm = if p = 1. then '1' else 'I' in
@@ -584,8 +584,8 @@ let linsolve ?(trans=false) a b =
   let ma, na = M.shape a in
   let mb, nb = M.shape b in
   assert (ma = mb);
-  let a = M.clone a in
-  let b = M.clone b in
+  let a = M.copy a in
+  let b = M.copy b in
 
   let trans = match trans with
     | true  -> _get_trans_code (M.kind a)

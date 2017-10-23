@@ -55,11 +55,11 @@ let reset x = _eigen_reset x.d
 
 let prune x a eps = _eigen_prune x.d a eps
 
-let clone x = {
+let copy x = {
   m = x.m;
   n = x.n;
   k = x.k;
-  d = _eigen_clone x.d;
+  d = _eigen_copy x.d;
 }
 
 let transpose x = {
@@ -162,7 +162,7 @@ let mapi_nz f x =
   let d = _eigen_valueptr x.d in
   let q = _eigen_innerindexptr x.d in
   let p = _eigen_outerindexptr x.d in
-  let y = clone x in
+  let y = copy x in
   let e = _eigen_valueptr y.d in
   for i = 0 to x.m - 1 do
     for k = (Int64.to_int p.{i}) to (Int64.to_int p.{i + 1}) - 1 do
@@ -175,7 +175,7 @@ let mapi_nz f x =
 let map_nz f x =
   let _ = _eigen_compress x.d in
   let d = _eigen_valueptr x.d in
-  let y = clone x in
+  let y = copy x in
   let e = _eigen_valueptr y.d in
   for i = 0 to Array1.dim d - 1 do
     e.{i} <- f d.{i}

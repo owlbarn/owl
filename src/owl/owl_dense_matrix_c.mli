@@ -159,7 +159,7 @@ val reset : mat -> unit
 
 val fill : mat -> elt -> unit
 
-val clone : mat -> mat
+val copy : mat -> mat
 
 val copy_to : mat -> mat -> unit
 

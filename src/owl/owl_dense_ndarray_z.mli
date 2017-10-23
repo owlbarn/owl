@@ -98,7 +98,7 @@ val reset : arr -> unit
 
 val fill : arr -> elt -> unit
 
-val clone : arr -> arr
+val copy : arr -> arr
 
 val resize : ?head:bool -> arr -> int array -> arr
 

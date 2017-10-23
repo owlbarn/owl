@@ -351,8 +351,8 @@ val reset : ('a, 'b) t -> unit
 val fill : ('a, 'b) t -> 'a -> unit
 (** [fill x a] fills the [x] with value [a]. *)
 
-val clone : ('a, 'b) t -> ('a, 'b) t
-(** [clone x] returns a copy of matrix [x]. *)
+val copy : ('a, 'b) t -> ('a, 'b) t
+(** [copy x] returns a copy of matrix [x]. *)
 
 val copy_to : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [copy_to x y] copies the elements of [x] to [y]. [x] and [y] must have

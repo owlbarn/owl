@@ -20,7 +20,7 @@ let _ =
   test_op "uniform       " c (fun () -> M.uniform m n);
   test_op "nnz_rows      " c (fun () -> M.nnz_rows z);
   test_op "row_num_nz    " c (fun () -> M.row_num_nz z);
-  test_op "clone         " c (fun () -> M.clone z);
+  test_op "copy         " c (fun () -> M.copy z);
   test_op "col           " c (fun () -> M.col x (n-1));
   test_op "row           " c (fun () -> M.row x (m-1));
   test_op "cols          " c (fun () -> M.cols x [|1;2|]);

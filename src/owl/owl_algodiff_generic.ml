@@ -183,10 +183,10 @@ module Make
     | Arr x -> Arr A.(clip_by_l2norm a x)
     | _     -> failwith "error: AD.clip_by_l2norm"
 
-  let clone_primal' x =
+  let copy_primal' x =
     match (primal' x) with
-    | Arr ap -> Arr A.(clone ap)
-    | _      -> failwith "error: AD.clone"
+    | Arr ap -> Arr A.(copy ap)
+    | _      -> failwith "error: AD.copy"
 
   let tile x reps =
     match primal' x with
@@ -675,7 +675,7 @@ module Make
 
     and set_item a i j b =
       let ff a b = match a, b with
-        | Arr a, F b        -> let aa = A.clone a in A.set aa [|i;j|] b; Arr aa
+        | Arr a, F b        -> let aa = A.copy a in A.set aa [|i;j|] b; Arr aa
         | _                 -> error_uniop "set_item" a
       in
       let fd a b = set_item a i j b in
@@ -689,7 +689,7 @@ module Make
 
     and add_item a i j b =
       let ff a b = match a, b with
-        | Arr a, F b        -> let aa = A.clone a in A.set aa [|i;j|] S.((A.get aa [|i;j|]) +. b); Arr aa
+        | Arr a, F b        -> let aa = A.copy a in A.set aa [|i;j|] S.((A.get aa [|i;j|]) +. b); Arr aa
         | _                 -> error_binop "add_item" a b
       in
       let fd a b = add_item a i j b in
@@ -714,7 +714,7 @@ module Make
     and set_slice i a b =
       let ff a b =
         match a, b with
-        | Arr a, Arr b -> let a = A.clone a in A.(set_slice i a b); Arr a
+        | Arr a, Arr b -> let a = A.copy a in A.(set_slice i a b); Arr a
         | _            -> error_binop "set_slice" a b
       in
       let fd a b = set_slice i a b in
@@ -869,7 +869,7 @@ module Make
 
     and get_row a i =
       let ff = function
-        | Arr a    -> Arr M.(row a i |> clone)
+        | Arr a    -> Arr M.(row a i |> copy)
         | _        -> error_uniop "get_row" a
       in
       let fd a = get_row a i in

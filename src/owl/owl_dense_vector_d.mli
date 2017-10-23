@@ -47,7 +47,7 @@ val set : vec -> int -> elt -> unit
 
 val get : vec -> int -> elt
 
-val clone : vec -> vec
+val copy : vec -> vec
 
 val transpose : vec -> vec
 

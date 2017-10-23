@@ -256,7 +256,7 @@ let array1_extend x n =
   y
 
 (* make a copy of the passed in array1 *)
-let array1_clone x =
+let array1_copy x =
   let open Bigarray in
   let y = Array1.(create (kind x) c_layout (dim x)) in
   Array1.blit x y;

@@ -47,7 +47,7 @@ val set : ('a, 'b) t -> int array -> 'a -> unit
 
 val slice : int option array -> ('a, 'b) t -> ('a, 'b) t
 
-val clone : ('a, 'b) t -> ('a, 'b) t
+val copy : ('a, 'b) t -> ('a, 'b) t
 
 val flatten : ('a, 'b) t -> ('a, 'b) t
 

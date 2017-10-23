@@ -75,4 +75,4 @@ let uniform_int ?(a=0) ?(b=99) m n =
     (float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ()))
   ) x; x
 
-let conj x = clone x
+let conj x = copy x

@@ -264,8 +264,8 @@ val reset : ('a, 'b) t -> unit
 val fill : ('a, 'b) t -> 'a -> unit
 (** [fill x a] assigns the value [a] to the elements in [x]. *)
 
-val clone : ('a, 'b) t -> ('a, 'b) t
-(** [clone x] makes a copy of [x]. *)
+val copy : ('a, 'b) t -> ('a, 'b) t
+(** [copy x] makes a copy of [x]. *)
 
 val resize : ?head:bool -> ('a, 'b) t -> int array -> ('a, 'b) t
 (** [resize ~head x d] resizes the ndarray [x]. If there are less number of

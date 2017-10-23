@@ -91,13 +91,13 @@ let same_shape x y =
     !b
   )
 
-let clone x =
+let copy x =
   let y = empty (kind x) (shape x) in
   Genarray.blit x y;
   y
 
 let reverse x =
-  let y = clone x in
+  let y = copy x in
   let n = numel x in
   _owl_copy (kind x) n ~ofsx:0 ~incx:1 ~ofsy:(n-1) ~incy:(-1) x y;
   y
@@ -357,7 +357,7 @@ let minmax' x =
 let add x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_add (kind x) (numel x) x y y;
       y
     )
@@ -366,7 +366,7 @@ let add x y =
 let sub x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_sub (kind x) (numel x) x y y;
       y
     )
@@ -375,7 +375,7 @@ let sub x y =
 let mul x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_mul (kind x) (numel x) x y y;
       y
     )
@@ -384,33 +384,33 @@ let mul x y =
 let div x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_div (kind x) (numel x) x y y;
       y
     )
   | false -> broadcast_op (_owl_broadcast_div (kind x)) x y
 
 let add_scalar x a =
-  let x = clone x in
+  let x = copy x in
   _owl_add_scalar (kind x) (numel x) x x a;
   x
 
 let sub_scalar x a = add_scalar x (_neg_elt (kind x) a)
 
 let mul_scalar x a =
-  let x = clone x in
+  let x = copy x in
   _owl_mul_scalar (kind x) (numel x) x x a;
   x
 
 let div_scalar x a =
-  let x = clone x in
+  let x = copy x in
   _owl_div_scalar (kind x) (numel x) x x a;
   x
 
 let pow x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_pow (kind x) (numel x) x y y;
       y
     )
@@ -419,7 +419,7 @@ let pow x y =
 let atan2 x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_atan2 (kind x) (numel x) x y y;
       y
     )
@@ -428,7 +428,7 @@ let atan2 x y =
 let hypot x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_hypot (kind x) (numel x) x y y;
       y
     )
@@ -437,7 +437,7 @@ let hypot x y =
 let min2 x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_min2 (kind x) (numel x) x y y;
       y
     )
@@ -446,7 +446,7 @@ let min2 x y =
 let max2 x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_max2 (kind x) (numel x) x y y;
       y
     )
@@ -455,7 +455,7 @@ let max2 x y =
 let fmod x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_fmod (kind x) (numel x) x y y;
       y
     )
@@ -474,7 +474,7 @@ let scalar_fmod a x =
 let ssqr_diff x y = _owl_ssqr_diff (kind x) (numel x) x y
 
 let abs x =
-  let y = clone x in
+  let y = copy x in
   _owl_abs (kind x) (numel y) x y;
   y
 
@@ -489,7 +489,7 @@ let abs_z2d x =
   y
 
 let abs2 x =
-  let y = clone x in
+  let y = copy x in
   _owl_abs2 (kind x) (numel y) x y;
   y
 
@@ -504,192 +504,192 @@ let abs2_z2d x =
   y
 
 let conj x =
-  let y = clone x in
+  let y = copy x in
   _owl_conj (kind x) (numel y) x y;
   y
 
 let neg x =
-  let y = clone x in
+  let y = copy x in
   _owl_neg (kind x) (numel y) x y;
   y
 
 let reci x =
-  let y = clone x in
+  let y = copy x in
   _owl_reci (kind x) (numel y) x y;
   y
 
 let signum x =
-  let y = clone x in
+  let y = copy x in
   _owl_signum (kind x) (numel y) x y;
   y
 
 let sqr x =
-  let y = clone x in
+  let y = copy x in
   _owl_sqr (kind x) (numel y) x y;
   y
 
 let sqrt x =
-  let y = clone x in
+  let y = copy x in
   _owl_sqrt (kind x) (numel y) x y;
   y
 
 let cbrt x =
-  let y = clone x in
+  let y = copy x in
   _owl_cbrt (kind x) (numel y) x y;
   y
 
 let exp x =
-  let y = clone x in
+  let y = copy x in
   _owl_exp (kind x) (numel y) x y;
   y
 
 let exp2 x =
-  let y = clone x in
+  let y = copy x in
   _owl_exp2 (kind x) (numel y) x y;
   y
 
 let exp10 x =
-  let y = clone x in
+  let y = copy x in
   _owl_exp10 (kind x) (numel y) x y;
   y
 
 let expm1 x =
-  let y = clone x in
+  let y = copy x in
   _owl_expm1 (kind x) (numel y) x y;
   y
 
 let log x =
-  let y = clone x in
+  let y = copy x in
   _owl_log (kind x) (numel y) x y;
   y
 
 let log10 x =
-  let y = clone x in
+  let y = copy x in
   _owl_log10 (kind x) (numel y) x y;
   y
 
 let log2 x =
-  let y = clone x in
+  let y = copy x in
   _owl_log2 (kind x) (numel y) x y;
   y
 
 let log1p x =
-  let y = clone x in
+  let y = copy x in
   _owl_log1p (kind x) (numel y) x y;
   y
 
 let sin x =
-  let y = clone x in
+  let y = copy x in
   _owl_sin (kind x) (numel y) x y;
   y
 
 let cos x =
-  let y = clone x in
+  let y = copy x in
   _owl_cos (kind x) (numel y) x y;
   y
 
 let tan x =
-  let y = clone x in
+  let y = copy x in
   _owl_tan (kind x) (numel y) x y;
   y
 
 let asin x =
-  let y = clone x in
+  let y = copy x in
   _owl_asin (kind x) (numel y) x y;
   y
 
 let acos x =
-  let y = clone x in
+  let y = copy x in
   _owl_acos (kind x) (numel y) x y;
   y
 
 let atan x =
-  let y = clone x in
+  let y = copy x in
   _owl_atan (kind x) (numel y) x y;
   y
 
 let sinh x =
-  let y = clone x in
+  let y = copy x in
   _owl_sinh (kind x) (numel y) x y;
   y
 
 let cosh x =
-  let y = clone x in
+  let y = copy x in
   _owl_cosh (kind x) (numel y) x y;
   y
 
 let tanh x =
-  let y = clone x in
+  let y = copy x in
   _owl_tanh (kind x) (numel y) x y;
   y
 
 let asinh x =
-  let y = clone x in
+  let y = copy x in
   _owl_asinh (kind x) (numel y) x y;
   y
 
 let acosh x =
-  let y = clone x in
+  let y = copy x in
   _owl_acosh (kind x) (numel y) x y;
   y
 
 let atanh x =
-  let y = clone x in
+  let y = copy x in
   _owl_atanh (kind x) (numel y) x y;
   y
 
 let floor x =
-  let y = clone x in
+  let y = copy x in
   _owl_floor (kind x) (numel y) x y;
   y
 
 let ceil x =
-  let y = clone x in
+  let y = copy x in
   _owl_ceil (kind x) (numel y) x y;
   y
 
 let round x =
-  let y = clone x in
+  let y = copy x in
   _owl_round (kind x) (numel y) x y;
   y
 
 let trunc x =
-  let y = clone x in
+  let y = copy x in
   _owl_trunc (kind x) (numel y) x y;
   y
 
 let fix x =
-  let y = clone x in
+  let y = copy x in
   _owl_fix (kind x) (numel y) x y;
   y
 
 let angle x =
-  let y = clone x in
+  let y = copy x in
   _owl_angle (kind x) (numel y) x y;
   y
 
 let proj x =
-  let y = clone x in
+  let y = copy x in
   _owl_proj (kind x) (numel y) x y;
   y
 
 let erf x =
-  let y = clone x in
+  let y = copy x in
   _owl_erf (kind x) (numel y) x y;
   y
 
 let erfc x =
-  let y = clone x in
+  let y = copy x in
   _owl_erfc (kind x) (numel y) x y;
   y
 
 let logistic x =
-  let y = clone x in
+  let y = copy x in
   _owl_logistic (kind x) (numel y) x y;
   y
 
 let relu x =
-  let y = clone x in
+  let y = copy x in
   _owl_relu (kind x) (numel y) x y;
   y
 
@@ -704,17 +704,17 @@ let leaky_relu ?(alpha=0.2) x =
   y
 
 let softplus x =
-  let y = clone x in
+  let y = copy x in
   _owl_softplus (kind x) (numel y) x y;
   y
 
 let softsign x =
-  let y = clone x in
+  let y = copy x in
   _owl_softsign (kind x) (numel y) x y;
   y
 
 let sigmoid x =
-  let y = clone x in
+  let y = copy x in
   _owl_sigmoid (kind x) (numel y) x y;
   y
 
@@ -729,43 +729,43 @@ let l2norm x = l2norm_sqr x |> Owl_maths.sqrt
 let log_sum_exp x = _owl_log_sum_exp (kind x) (numel x) x
 
 let scalar_pow a x =
-  let x = clone x in
+  let x = copy x in
   _owl_scalar_pow (kind x) (numel x) x x a;
   x
 
 let pow_scalar x a =
-  let x = clone x in
+  let x = copy x in
   _owl_pow_scalar (kind x) (numel x) x x a;
   x
 
 let scalar_atan2 a x =
-  let x = clone x in
+  let x = copy x in
   _owl_scalar_atan2 (kind x) (numel x) x x a;
   x
 
 let atan2_scalar x a =
-  let x = clone x in
+  let x = copy x in
   _owl_atan2_scalar (kind x) (numel x) x x a;
   x
 
 let scalar_add a x =
-  let x = clone x in
+  let x = copy x in
   _owl_add_scalar (kind x) (numel x) x x a;
   x
 
 let scalar_sub a x =
-  let x = clone x in
+  let x = copy x in
   _owl_scalar_sub (kind x) (numel x) x x a;
   x
 
 let scalar_mul a x =
-  let x = clone x in
+  let x = copy x in
   let x' = flatten x |> array1_of_genarray in
   Owl_cblas.scal (numel x) a x' 1;
   x
 
 let scalar_div a x =
-  let x = clone x in
+  let x = copy x in
   _owl_scalar_div (kind x) (numel x) x x a;
   x
 
@@ -774,7 +774,7 @@ let reci_tol ?tol x =
     | Some t -> t
     | None   -> _float_typ_elt (kind x) (Owl_utils.eps Float32)
   in
-  let y = clone x in
+  let y = copy x in
   _owl_reci_tol (kind x) (numel y) x y tol;
   y
 
@@ -1014,11 +1014,11 @@ let iter2 f x y =
   done
 
 let mapi ?axis f x =
-  let y = clone x in
+  let y = copy x in
   iteri ?axis (fun i z -> set y i (f i z)) y; y
 
 let _map_all_axis f x =
-  let x = clone x in
+  let x = copy x in
   let y = flatten x |> array1_of_genarray in
   for i = 0 to (numel x) - 1 do
     y.{i} <- f y.{i}
@@ -1141,7 +1141,7 @@ let rotate x degree =
   let _kind = kind x in
 
   if num_dims x < 2 || k = 0 then
-    clone x
+    copy x
   else if k = 1 then (
     let sx = shape x in
     let sy = Array.copy sx in
@@ -1492,7 +1492,7 @@ let clip_by_value ?amin ?amax x =
     | Some a -> a
     | None   -> _pos_inf k
   in
-  let y = clone x in
+  let y = copy x in
   _owl_clip_by_value k (numel x) amin amax y;
   y
 
@@ -2489,7 +2489,7 @@ let draw_along_dim0 x n =
 
 (* TODO: optimise performance, slow along the low dimension *)
 let cumulative_op ?axis _cumop x =
-  let y = clone x in
+  let y = copy x in
   let d = num_dims x in
   let a = match axis with
     | Some a -> a
@@ -2530,7 +2530,7 @@ let cummax ?axis x =
   cumulative_op ?axis _cumop x
 
 let modf x =
-  let x = clone x in
+  let x = copy x in
   let y = empty (kind x) (shape x) in
   (* the last parameter zero is just a dummy parameter *)
   _owl_modf (kind x) (numel x) x y (_zero (kind x));
@@ -2946,7 +2946,7 @@ let softsign_ x = _owl_softsign (kind x) (numel x) x x
 let sigmoid_ x = _owl_sigmoid (kind x) (numel x) x x
 
 let softmax x =
-  let x = clone x in
+  let x = copy x in
   sub_scalar_ x (max' x);
   exp_ x;
   let a = sum' x in
@@ -2960,7 +2960,7 @@ let softmax_ x =
   div_scalar_ x a
 
 let cross_entropy x y =
-  let y = clone y in
+  let y = copy y in
   log_ y;
   mul_ y x;
   _neg_elt (kind y) (sum' y)
