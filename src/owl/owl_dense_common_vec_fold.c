@@ -251,15 +251,32 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
   NUMBER1 *start_y = Y_data;
   int incy = 0;
 
-  for (int i = 0; i < M; i++) {
-
-    for (int j = 0; j < N; j++) {
-      ACCFN((start_x + j), (start_y + incy));
-      incy = incy + 1 == O ? 0 : incy + 1;
+  // case 1: optimisation
+  if (N == O) {
+    for (int i = 0; i < M * N; i++) {
+      ACCFN((start_x + i), (start_y + i));
     }
-
-    start_x += N;
-    start_y += O;
+  }
+  // case 2: optimisation
+  else if (O == 1) {
+    for (int i = 0; i < M; i++) {
+      for (int j = 0; j < N; j++) {
+        ACCFN((start_x + j), start_y);
+      }
+      start_x += N;
+      start_y += 1;
+    }
+  }
+  // case 3: common reduction
+  else {
+    for (int i = 0; i < M; i++) {
+      for (int j = 0; j < N; j++) {
+        ACCFN((start_x + j), (start_y + incy));
+        incy = incy + 1 == O ? 0 : incy + 1;
+      }
+      start_x += N;
+      start_y += O;
+    }
   }
 
   /*** another solution, similar performance
