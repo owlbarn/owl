@@ -45,7 +45,7 @@ let slice_left = Genarray.slice_left
 
 let slice_right = Genarray.slice_right
 
-let copy src dst = Genarray.blit src dst
+let copy_to src dst = Genarray.blit src dst
 
 let fill x a = Genarray.fill x a
 

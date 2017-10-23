@@ -87,7 +87,7 @@ val sub_left : arr -> int -> int -> arr
 
 val slice_left : arr -> int array -> arr
 
-val copy : arr -> arr -> unit
+val copy_to : arr -> arr -> unit
 
 val reset : arr -> unit
 

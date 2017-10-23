@@ -255,8 +255,8 @@ val sub_left : ('a, 'b) t -> int -> int -> ('a, 'b) t
 val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
 (** Same as [Bigarray.slice_left], please refer to Bigarray documentation. *)
 
-val copy : ('a, 'b) t -> ('a, 'b) t -> unit
-(** [copy src dst] copies the data from ndarray [src] to [dst]. *)
+val copy_to : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [copy_to src dst] copies the data from ndarray [src] to [dst]. *)
 
 val reset : ('a, 'b) t -> unit
 (** [reset x] resets all the elements in [x] to zero. *)
