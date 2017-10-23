@@ -177,11 +177,11 @@ module type NdarraySig = sig
 
   val signum : arr -> arr
 
-  val l1norm : arr -> elt
+  val l1norm' : arr -> elt
 
-  val l2norm : arr -> elt
+  val l2norm' : arr -> elt
 
-  val l2norm_sqr : arr -> elt
+  val l2norm_sqr' : arr -> elt
 
   val sigmoid : arr -> arr
 
@@ -415,11 +415,11 @@ module type MatrixSig = sig
 
   val transpose : mat -> mat
 
-  val l1norm : mat -> elt
+  val l1norm' : mat -> elt
 
-  val l2norm : mat -> elt
+  val l2norm' : mat -> elt
 
-  val l2norm_sqr : mat -> elt
+  val l2norm_sqr' : mat -> elt
 
   val sigmoid : mat -> mat
 

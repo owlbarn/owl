@@ -776,33 +776,33 @@ module Make
       let r a = Trans_D a in
       op_d_d a ff fd df r
 
-    and l1norm a =
+    and l1norm' a =
       let ff = function
-        | Arr a    -> F A.(l1norm a)
-        | _        -> error_uniop "l1norm" a
+        | Arr a    -> F A.(l1norm' a)
+        | _        -> error_uniop "l1norm'" a
       in
-      let fd a = l1norm a in
+      let fd a = l1norm' a in
       let df cp ap at = at * (signum ap) in
       let r a = L1Norm_D a in
       op_d_d a ff fd df r
 
-    and l2norm a =
+    and l2norm' a =
       let ff = function
-        | Arr a    -> F A.(l2norm a)
-        | _        -> error_uniop "l2norm" a
+        | Arr a    -> F A.(l2norm' a)
+        | _        -> error_uniop "l2norm'" a
       in
-      let fd a = l2norm a in
+      let fd a = l2norm' a in
       let df cp ap at = (ap * at) / cp in
       let r a = L2Norm_D a in
       op_d_d a ff fd df r
 
-    and l2norm_sqr a =
+    and l2norm_sqr' a =
       let ff = function
         | F a      -> F S.(a *. a)
-        | Arr a    -> F A.(l2norm_sqr a)
-        | _        -> error_uniop "l2norm_sqr" a
+        | Arr a    -> F A.(l2norm_sqr' a)
+        | _        -> error_uniop "l2norm_sqr'" a
       in
-      let fd a = l2norm_sqr a in
+      let fd a = l2norm_sqr' a in
       let df cp ap at = (F 2.) * (ap * at) in
       let r a = L2NormS_D a in
       op_d_d a ff fd df r

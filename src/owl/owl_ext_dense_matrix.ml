@@ -797,13 +797,13 @@ module type SD_Sig = sig
 
   val sigmoid : mat -> mat
 
-  val log_sum_exp : mat -> elt
+  val log_sum_exp' : mat -> elt
 
-  val l1norm : mat -> elt
+  val l1norm' : mat -> elt
 
-  val l2norm : mat -> elt
+  val l2norm' : mat -> elt
 
-  val l2norm_sqr : mat -> elt
+  val l2norm_sqr' : mat -> elt
 
   val pow : mat -> mat -> mat
 
@@ -829,9 +829,9 @@ module type SD_Sig = sig
 
   val scalar_fmod : elt -> mat -> mat
 
-  val ssqr : mat -> elt -> elt
+  val ssqr' : mat -> elt -> elt
 
-  val ssqr_diff : mat -> mat -> elt
+  val ssqr_diff' : mat -> mat -> elt
 
 end
 
@@ -933,13 +933,13 @@ module Make_SD
 
   let sigmoid x = M.sigmoid (unpack_box x) |> pack_box
 
-  let log_sum_exp x = M.log_sum_exp (unpack_box x) |> pack_elt
+  let log_sum_exp' x = M.log_sum_exp' (unpack_box x) |> pack_elt
 
-  let l1norm x = M.l1norm (unpack_box x) |> pack_elt
+  let l1norm' x = M.l1norm' (unpack_box x) |> pack_elt
 
-  let l2norm x = M.l2norm (unpack_box x) |> pack_elt
+  let l2norm' x = M.l2norm' (unpack_box x) |> pack_elt
 
-  let l2norm_sqr x = M.l2norm_sqr (unpack_box x) |> pack_elt
+  let l2norm_sqr' x = M.l2norm_sqr' (unpack_box x) |> pack_elt
 
   let pow x y = M.pow (unpack_box x) (unpack_box y) |> pack_box
 
@@ -966,9 +966,9 @@ module Make_SD
 
   let scalar_fmod a x = M.scalar_fmod (unpack_elt a) (unpack_box x) |> pack_box
 
-  let ssqr x a = M.ssqr (unpack_box x) (unpack_elt a) |> pack_elt
+  let ssqr' x a = M.ssqr' (unpack_box x) (unpack_elt a) |> pack_elt
 
-  let ssqr_diff x y = M.ssqr_diff (unpack_box x) (unpack_box y) |> pack_elt
+  let ssqr_diff' x y = M.ssqr_diff' (unpack_box x) (unpack_box y) |> pack_elt
 
 end
 
@@ -995,15 +995,15 @@ module type CZ_Sig = sig
 
   val reci : mat -> mat
 
-  val l1norm : mat -> float
+  val l1norm' : mat -> elt
 
-  val l2norm : mat -> float
+  val l2norm' : mat -> elt
 
-  val l2norm_sqr : mat -> float
+  val l2norm_sqr' : mat -> elt
 
-  val ssqr : mat -> elt -> elt
+  val ssqr' : mat -> elt -> elt
 
-  val ssqr_diff : mat -> mat -> elt
+  val ssqr_diff' : mat -> mat -> elt
 
 end
 
@@ -1014,8 +1014,6 @@ module Make_CZ
   = struct
 
   open P
-
-  let pack_cast_elt x = F x
 
   let re x = M.re (unpack_box x) |> pack_cast_box
 
@@ -1031,15 +1029,15 @@ module Make_CZ
 
   let reci x = M.reci (unpack_box x) |> pack_box
 
-  let l1norm x = M.l1norm (unpack_box x) |> pack_cast_elt
+  let l1norm' x = M.l1norm' (unpack_box x) |> pack_elt
 
-  let l2norm x = M.l2norm (unpack_box x) |> pack_cast_elt
+  let l2norm' x = M.l2norm' (unpack_box x) |> pack_elt
 
-  let l2norm_sqr x = M.l2norm_sqr (unpack_box x) |> pack_cast_elt
+  let l2norm_sqr' x = M.l2norm_sqr' (unpack_box x) |> pack_elt
 
-  let ssqr x a = M.ssqr (unpack_box x) (unpack_elt a) |> pack_elt
+  let ssqr' x a = M.ssqr' (unpack_box x) (unpack_elt a) |> pack_elt
 
-  let ssqr_diff x y = M.ssqr_diff (unpack_box x) (unpack_box y) |> pack_elt
+  let ssqr_diff' x y = M.ssqr_diff' (unpack_box x) (unpack_box y) |> pack_elt
 
 end
 

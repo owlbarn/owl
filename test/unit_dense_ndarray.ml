@@ -138,7 +138,7 @@ module To_test = struct
 
   let reshape () = M.get (M.reshape x0 [|2;3;2|]) [|0;1;1|] = 2.
 
-  let l2norm () = M.l2norm vec = 5.
+  let l2norm' () = M.l2norm' vec = {Complex.re=5.0;im=0.}
 
   let save_load () =
     M.save x0 "ds_nda.tmp";
@@ -286,8 +286,8 @@ let flatten () =
 let reshape () =
   Alcotest.(check bool) "reshape" true (To_test.reshape ())
 
-let l2norm () =
-  Alcotest.(check bool) "l2norm" true (To_test.l2norm ())
+let l2norm' () =
+  Alcotest.(check bool) "l2norm'" true (To_test.l2norm' ())
 
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
@@ -341,7 +341,7 @@ let test_set = [
   "transpose", `Slow, transpose;
   "flatten", `Slow, flatten;
   "reshape", `Slow, reshape;
-  "l2norm", `Slow, l2norm;
+  "l2norm'", `Slow, l2norm';
   "save_load", `Slow, save_load;
   "broadcast_add", `Slow, broadcast_add;
   "reverse", `Slow, reverse;

@@ -120,10 +120,10 @@ module DAS = struct
   let softsign x = M.softsign x
   let softmax x = M.softmax x
   let sigmoid x = M.sigmoid x
-  let log_sum_exp x = M.log_sum_exp x
-  let l1norm x = M.l1norm x
-  let l2norm x = M.l2norm x
-  let l2norm_sqr x = M.l2norm_sqr x
+  let log_sum_exp' x = M.log_sum_exp' x
+  let l1norm' x = M.l1norm' x
+  let l2norm' x = M.l2norm' x
+  let l2norm_sqr' x = M.l2norm_sqr' x
 
 end
 
@@ -179,10 +179,10 @@ module DAD = struct
   let softsign x = M.softsign x
   let softmax x = M.softmax x
   let sigmoid x = M.sigmoid x
-  let log_sum_exp x = M.log_sum_exp x
-  let l1norm x = M.l1norm x
-  let l2norm x = M.l2norm x
-  let l2norm_sqr x = M.l2norm_sqr x
+  let log_sum_exp' x = M.log_sum_exp' x
+  let l1norm' x = M.l1norm' x
+  let l2norm' x = M.l2norm' x
+  let l2norm_sqr' x = M.l2norm_sqr' x
 
 end
 
@@ -240,10 +240,10 @@ module DMS = struct
   let softsign x = M.softsign x
   let softmax x = M.softmax x
   let sigmoid x = M.sigmoid x
-  let log_sum_exp x = M.log_sum_exp x
-  let l1norm x = M.l1norm x
-  let l2norm x = M.l2norm x
-  let l2norm_sqr x = M.l2norm_sqr x
+  let log_sum_exp' x = M.log_sum_exp' x
+  let l1norm' x = M.l1norm' x
+  let l2norm' x = M.l2norm' x
+  let l2norm_sqr' x = M.l2norm_sqr' x
 
 end
 
@@ -301,10 +301,10 @@ module DMD = struct
   let softsign x = M.softsign x
   let softmax x = M.softmax x
   let sigmoid x = M.sigmoid x
-  let log_sum_exp x = M.log_sum_exp x
-  let l1norm x = M.l1norm x
-  let l2norm x = M.l2norm x
-  let l2norm_sqr x = M.l2norm_sqr x
+  let log_sum_exp' x = M.log_sum_exp' x
+  let l1norm' x = M.l1norm' x
+  let l2norm' x = M.l2norm' x
+  let l2norm_sqr' x = M.l2norm_sqr' x
 
 end
 
@@ -322,9 +322,9 @@ module DAC = struct
   let conj x = M.conj x
   let neg x = M.neg x
   let reci x = M.reci x
-  let l1norm x = M.l1norm x
-  let l2norm x = M.l2norm x
-  let l2norm_sqr x = M.l2norm_sqr x
+  let l1norm' x = M.l1norm' x
+  let l2norm' x = M.l2norm' x
+  let l2norm_sqr' x = M.l2norm_sqr' x
 
 end
 
@@ -342,9 +342,9 @@ module DAZ = struct
   let conj x = M.conj x
   let neg x = M.neg x
   let reci x = M.reci x
-  let l1norm x = M.l1norm x
-  let l2norm x = M.l2norm x
-  let l2norm_sqr x = M.l2norm_sqr x
+  let l1norm' x = M.l1norm' x
+  let l2norm' x = M.l2norm' x
+  let l2norm_sqr' x = M.l2norm_sqr' x
 
 end
 
@@ -364,9 +364,9 @@ module DMC = struct
   let conj x = M.conj x
   let neg x = M.neg x
   let reci x = M.reci x
-  let l1norm x = M.l1norm x
-  let l2norm x = M.l2norm x
-  let l2norm_sqr x = M.l2norm_sqr x
+  let l1norm' x = M.l1norm' x
+  let l2norm' x = M.l2norm' x
+  let l2norm_sqr' x = M.l2norm_sqr' x
 
 end
 
@@ -386,9 +386,9 @@ module DMZ = struct
   let conj x = M.conj x
   let neg x = M.neg x
   let reci x = M.reci x
-  let l1norm x = M.l1norm x
-  let l2norm x = M.l2norm x
-  let l2norm_sqr x = M.l2norm_sqr x
+  let l1norm' x = M.l1norm' x
+  let l2norm' x = M.l2norm' x
+  let l2norm_sqr' x = M.l2norm_sqr' x
 
 end
 
@@ -817,44 +817,44 @@ let sigmoid x = match x with
   | DMD _ -> DMD.sigmoid x
   | _     -> error_uniop "sigmoid" x
 
-let log_sum_exp x = match x with
-  | DAS _ -> DAS.log_sum_exp x
-  | DAD _ -> DAD.log_sum_exp x
-  | DMS _ -> DMS.log_sum_exp x
-  | DMD _ -> DMD.log_sum_exp x
-  | _     -> error_uniop "log_sum_exp" x
+let log_sum_exp' x = match x with
+  | DAS _ -> DAS.log_sum_exp' x
+  | DAD _ -> DAD.log_sum_exp' x
+  | DMS _ -> DMS.log_sum_exp' x
+  | DMD _ -> DMD.log_sum_exp' x
+  | _     -> error_uniop "log_sum_exp'" x
 
-let l1norm x = match x with
-  | DAS _ -> DAS.l1norm x
-  | DAD _ -> DAD.l1norm x
-  | DMS _ -> DMS.l1norm x
-  | DMD _ -> DMD.l1norm x
-  | DAC _ -> DAC.l1norm x
-  | DAZ _ -> DAZ.l1norm x
-  | DMC _ -> DMC.l1norm x
-  | DMZ _ -> DMZ.l1norm x
+let l1norm' x = match x with
+  | DAS _ -> DAS.l1norm' x
+  | DAD _ -> DAD.l1norm' x
+  | DMS _ -> DMS.l1norm' x
+  | DMD _ -> DMD.l1norm' x
+  | DAC _ -> DAC.l1norm' x
+  | DAZ _ -> DAZ.l1norm' x
+  | DMC _ -> DMC.l1norm' x
+  | DMZ _ -> DMZ.l1norm' x
   | _     -> error_uniop "l1norm" x
 
-let l2norm x = match x with
-  | DAS _ -> DAS.l2norm x
-  | DAD _ -> DAD.l2norm x
-  | DMS _ -> DMS.l2norm x
-  | DMD _ -> DMD.l2norm x
-  | DAC _ -> DAC.l2norm x
-  | DAZ _ -> DAZ.l2norm x
-  | DMC _ -> DMC.l2norm x
-  | DMZ _ -> DMZ.l2norm x
+let l2norm' x = match x with
+  | DAS _ -> DAS.l2norm' x
+  | DAD _ -> DAD.l2norm' x
+  | DMS _ -> DMS.l2norm' x
+  | DMD _ -> DMD.l2norm' x
+  | DAC _ -> DAC.l2norm' x
+  | DAZ _ -> DAZ.l2norm' x
+  | DMC _ -> DMC.l2norm' x
+  | DMZ _ -> DMZ.l2norm' x
   | _     -> error_uniop "l2norm" x
 
-let l2norm_sqr x = match x with
-  | DAS _ -> DAS.l2norm_sqr x
-  | DAD _ -> DAD.l2norm_sqr x
-  | DMS _ -> DMS.l2norm_sqr x
-  | DMD _ -> DMD.l2norm_sqr x
-  | DAC _ -> DAC.l2norm_sqr x
-  | DAZ _ -> DAZ.l2norm_sqr x
-  | DMC _ -> DMC.l2norm_sqr x
-  | DMZ _ -> DMZ.l2norm_sqr x
-  | _     -> error_uniop "l2norm_sqr" x
+let l2norm_sqr' x = match x with
+  | DAS _ -> DAS.l2norm_sqr' x
+  | DAD _ -> DAD.l2norm_sqr' x
+  | DMS _ -> DMS.l2norm_sqr' x
+  | DMD _ -> DMD.l2norm_sqr' x
+  | DAC _ -> DAC.l2norm_sqr' x
+  | DAZ _ -> DAZ.l2norm_sqr' x
+  | DMC _ -> DMC.l2norm_sqr' x
+  | DMZ _ -> DMZ.l2norm_sqr' x
+  | _     -> error_uniop "l2norm_sqr'" x
 
 (* ends here *)

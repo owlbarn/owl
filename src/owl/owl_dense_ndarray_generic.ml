@@ -471,7 +471,7 @@ let scalar_fmod a x =
   _owl_scalar_fmod (kind x) (numel y) x y a;
   y
 
-let ssqr_diff x y = _owl_ssqr_diff (kind x) (numel x) x y
+let ssqr_diff' x y = _owl_ssqr_diff (kind x) (numel x) x y
 
 let abs x =
   let y = copy x in
@@ -718,15 +718,21 @@ let sigmoid x =
   _owl_sigmoid (kind x) (numel y) x y;
   y
 
-let ssqr x a = _owl_ssqr (kind x) (numel x) a x
+let ssqr' x a = _owl_ssqr (kind x) (numel x) a x
 
-let l1norm x = _owl_l1norm (kind x) (numel x) x
+let l1norm' x =
+  let _kind = kind x in
+  _owl_l1norm _kind (numel x) x |> _float_typ_elt _kind
 
-let l2norm_sqr x = _owl_l2norm_sqr (kind x) (numel x) x
+let l2norm_sqr' x =
+  let _kind = kind x in
+  _owl_l2norm_sqr _kind (numel x) x |> _float_typ_elt _kind
 
-let l2norm x = l2norm_sqr x |> Owl_maths.sqrt
+let l2norm' x =
+  let _kind = kind x in
+  _owl_l2norm_sqr _kind (numel x) x |> Owl_maths.sqrt |> _float_typ_elt _kind
 
-let log_sum_exp x = _owl_log_sum_exp (kind x) (numel x) x
+let log_sum_exp' x = _owl_log_sum_exp (kind x) (numel x) x
 
 let scalar_pow a x =
   let x = copy x in
@@ -1497,7 +1503,7 @@ let clip_by_value ?amin ?amax x =
   y
 
 let clip_by_l2norm t x =
-  let a = l2norm x in
+  let a = l2norm' x in
   match a > t with
   | true  -> mul_scalar x (t /. a)
   | false -> x
@@ -2959,7 +2965,7 @@ let softmax_ x =
   let a = sum' x in
   div_scalar_ x a
 
-let cross_entropy x y =
+let cross_entropy' x y =
   let y = copy y in
   log_ y;
   mul_ y x;

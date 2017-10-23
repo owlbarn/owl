@@ -179,15 +179,15 @@ val softmax : vec -> vec
 
 val sigmoid : vec -> vec
 
-val log_sum_exp : vec -> elt
+val log_sum_exp' : vec -> elt
 
-val l1norm : vec -> elt
+val l1norm' : vec -> elt
 
-val l2norm : vec -> elt
+val l2norm' : vec -> elt
 
-val l2norm_sqr : vec -> elt
+val l2norm_sqr' : vec -> elt
 
-val cross_entropy : vec -> vec -> elt
+val cross_entropy' : vec -> vec -> elt
 
 
 (* ends here *)

@@ -1264,18 +1264,18 @@ val sigmoid : (float, 'a) t -> (float, 'a) t
   element in [x].
  *)
 
-val log_sum_exp : (float, 'a) t -> float
+val log_sum_exp' : (float, 'a) t -> float
 (** [log_sum_exp x] computes the logarithm of the sum of exponentials of all
   the elements in [x].
  *)
 
-val l1norm : ('a, 'b) t -> float
+val l1norm' : ('a, 'b) t -> 'a
 (** [l1norm x] calculates the l1-norm of all the element in [x]. *)
 
-val l2norm : ('a, 'b) t -> float
+val l2norm' : ('a, 'b) t -> 'a
 (** [l2norm x] calculates the l2-norm of all the element in [x]. *)
 
-val l2norm_sqr : ('a, 'b) t -> float
+val l2norm_sqr' : ('a, 'b) t -> 'a
 (** [l2norm_sqr x] calculates the square of l2-norm (or l2norm, Euclidean norm)
   of all elements in [x]. The function uses conjugate transpose in the product,
   hence it always returns a float number.
@@ -1427,18 +1427,18 @@ val fmod_scalar : (float, 'a) t -> float -> (float, 'a) t
 val scalar_fmod : float -> (float, 'a) t -> (float, 'a) t
 (** [scalar_fmod x a] performs mod division between scalar [a] and [x]. *)
 
-val ssqr : ('a, 'b) t -> 'a -> 'a
+val ssqr' : ('a, 'b) t -> 'a -> 'a
 (** [ssqr x a] computes the sum of squared differences of all the elements in
   [x] from constant [a]. This function only computes the square of each element
   rather than the conjugate transpose as {!sqr_nrm2} does.
  *)
 
-val ssqr_diff : ('a, 'b) t -> ('a, 'b) t -> 'a
+val ssqr_diff' : ('a, 'b) t -> ('a, 'b) t -> 'a
 (** [ssqr_diff x y] computes the sum of squared differences of every elements in
   [x] and its corresponding element in [y].
  *)
 
-val cross_entropy : (float, 'a) t -> (float, 'a) t -> float
+val cross_entropy' : (float, 'a) t -> (float, 'a) t -> float
 (** [cross_entropy x y] calculates the cross entropy between [x] and [y] using base [e]. *)
 
 val clip_by_value : ?amin:'a -> ?amax:'a -> ('a, 'b) t -> ('a, 'b) t

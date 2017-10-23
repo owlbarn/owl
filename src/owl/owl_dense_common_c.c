@@ -2201,16 +2201,42 @@ int int64_cmp (const void * a, const void * b)
 
 #define FUN5 complex32_l1norm
 #define INIT float r = 0.
-#define NUMBER complex_float
-#define ACCFN(A,X) (A += sqrtf (X.r * X.r + X.i * X.i))
+#define NUMBER _Complex float
+#define ACCFN(A,X) (A += cabsf(X))
 #define COPYNUM(X) (caml_copy_double(X))
 #include "owl_dense_common_vec_fold.c"
 
 #define FUN5 complex64_l1norm
 #define INIT double r = 0.
-#define NUMBER complex_double
-#define ACCFN(A,X) (A += sqrt (X.r * X.r + X.i * X.i))
+#define NUMBER _Complex double
+#define ACCFN(A,X) (A += cabs(X))
 #define COPYNUM(X) (caml_copy_double(X))
+#include "owl_dense_common_vec_fold.c"
+
+// l1norm_along
+
+#define FUN26 float32_l1norm_along
+#define NUMBER float
+#define NUMBER1 float
+#define ACCFN(X,Y) *Y += fabsf(*X)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN26 float64_l1norm_along
+#define NUMBER double
+#define NUMBER1 double
+#define ACCFN(X,Y) *Y += fabs(*X)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN26 complex32_l1norm_along
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define ACCFN(X,Y) *Y += cabsf(*X)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN26 complex64_l1norm_along
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define ACCFN(X,Y) *Y += cabs(*X)
 #include "owl_dense_common_vec_fold.c"
 
 // l2norm_sqr
@@ -2241,6 +2267,32 @@ int int64_cmp (const void * a, const void * b)
 #define NUMBER complex_double
 #define ACCFN(A,X) (A += X.r * X.r + X.i * X.i)
 #define COPYNUM(X) (caml_copy_double(X))
+#include "owl_dense_common_vec_fold.c"
+
+// l2norm_sqr_along
+
+#define FUN26 float32_l2norm_sqr_along
+#define NUMBER float
+#define NUMBER1 float
+#define ACCFN(X,Y) *Y += *X * *X
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN26 float64_l2norm_sqr_along
+#define NUMBER double
+#define NUMBER1 double
+#define ACCFN(X,Y) *Y += *X * *X
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN26 complex32_l2norm_sqr_along
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define ACCFN(X,Y) *Y += *X * conjf(*X)
+#include "owl_dense_common_vec_fold.c"
+
+#define FUN26 complex64_l2norm_sqr_along
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define ACCFN(X,Y) *Y += *X * conj(*X)
 #include "owl_dense_common_vec_fold.c"
 
 // sum

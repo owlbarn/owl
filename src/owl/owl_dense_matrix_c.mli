@@ -462,11 +462,11 @@ val reci : mat -> mat
 
 val reci_tol : ?tol:elt -> mat -> mat
 
-val l1norm : mat -> float
+val l1norm' : mat -> elt
 
-val l2norm : mat -> float
+val l2norm' : mat -> elt
 
-val l2norm_sqr : mat -> float
+val l2norm_sqr' : mat -> elt
 
 val cumsum : ?axis:int -> mat -> mat
 
@@ -575,9 +575,9 @@ val dot : mat -> mat -> mat
 
 val add_diag : mat -> elt -> mat
 
-val ssqr : mat -> elt -> elt
+val ssqr' : mat -> elt -> elt
 
-val ssqr_diff : mat -> mat -> elt
+val ssqr_diff' : mat -> mat -> elt
 
 val min2 : mat -> mat -> mat
 

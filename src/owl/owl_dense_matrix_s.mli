@@ -529,13 +529,13 @@ val softmax : mat -> mat
 
 val sigmoid : mat -> mat
 
-val log_sum_exp : mat -> elt
+val log_sum_exp' : mat -> elt
 
-val l1norm : mat -> elt
+val l1norm' : mat -> elt
 
-val l2norm : mat -> elt
+val l2norm' : mat -> elt
 
-val l2norm_sqr : mat -> elt
+val l2norm_sqr' : mat -> elt
 
 val max_pool : ?padding:padding -> mat -> int array -> int array -> mat
 
@@ -610,11 +610,11 @@ val fmod_scalar : mat -> elt -> mat
 
 val scalar_fmod : elt -> mat -> mat
 
-val ssqr : mat -> elt -> elt
+val ssqr' : mat -> elt -> elt
 
-val ssqr_diff : mat -> mat -> elt
+val ssqr_diff' : mat -> mat -> elt
 
-val cross_entropy : mat -> mat -> elt
+val cross_entropy' : mat -> mat -> elt
 
 val clip_by_value : ?amin:elt -> ?amax:elt -> mat -> mat
 

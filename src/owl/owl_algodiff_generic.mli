@@ -125,11 +125,11 @@ module Make
 
     val transpose : t -> t
 
-    val l1norm : t -> t
+    val l1norm' : t -> t
 
-    val l2norm : t -> t
+    val l2norm' : t -> t
 
-    val l2norm_sqr : t -> t
+    val l2norm_sqr' : t -> t
 
     val sigmoid : t -> t
 

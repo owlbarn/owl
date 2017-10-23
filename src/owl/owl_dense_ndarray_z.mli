@@ -322,11 +322,11 @@ val reci : arr -> arr
 
 val reci_tol : ?tol:elt -> arr -> arr
 
-val l1norm : arr -> float
+val l1norm' : arr -> elt
 
-val l2norm : arr -> float
+val l2norm' : arr -> elt
 
-val l2norm_sqr : arr -> float
+val l2norm_sqr' : arr -> elt
 
 val cumsum : ?axis:int -> arr -> arr
 
@@ -425,9 +425,9 @@ val scalar_mul : elt -> arr -> arr
 
 val scalar_div : elt -> arr -> arr
 
-val ssqr : arr -> elt -> elt
+val ssqr' : arr -> elt -> elt
 
-val ssqr_diff : arr -> arr -> elt
+val ssqr_diff' : arr -> arr -> elt
 
 val min2 : arr -> arr -> arr
 

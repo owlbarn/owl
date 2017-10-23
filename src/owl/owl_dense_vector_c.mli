@@ -99,11 +99,11 @@ val neg : vec -> vec
 
 val reci : vec -> vec
 
-val l1norm : vec -> float
+val l1norm' : vec -> elt
 
-val l2norm : vec -> float
+val l2norm' : vec -> elt
 
-val l2norm_sqr : vec -> float
+val l2norm_sqr' : vec -> elt
 
 
 (* ends here *)

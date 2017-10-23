@@ -1820,6 +1820,18 @@ let _owl_l1norm : type a b. (a, b) kind -> (a, b) owl_arr_op02 = function
   | Complex64 -> owl_complex64_l1norm
   | _         -> failwith "_owl_l1norm: unsupported operation"
 
+external owl_float32_l1norm_along : int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_l1norm_along"
+external owl_float64_l1norm_along : int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_l1norm_along"
+external owl_complex32_l1norm_along : int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex32_l1norm_along"
+external owl_complex64_l1norm_along : int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex64_l1norm_along"
+
+let _owl_l1norm_along : type a b. (a, b) kind -> (a, b) owl_arr_op21 = function
+  | Float32        -> owl_float32_l1norm_along
+  | Float64        -> owl_float64_l1norm_along
+  | Complex32      -> owl_complex32_l1norm_along
+  | Complex64      -> owl_complex64_l1norm_along
+  | _              -> failwith "_owl_l1norm_along: unsupported operation"
+
 (* NOTE: same as sqr_nrm2, but slower *)
 external owl_float32_l2norm_sqr : int -> (float, 'a) owl_arr -> float = "float32_l2norm_sqr"
 external owl_float64_l2norm_sqr : int -> (float, 'a) owl_arr -> float = "float64_l2norm_sqr"
@@ -1832,6 +1844,18 @@ let _owl_l2norm_sqr : type a b. (a, b) kind -> (a, b) owl_arr_op02 = function
   | Complex32 -> owl_complex32_l2norm_sqr
   | Complex64 -> owl_complex64_l2norm_sqr
   | _         -> failwith "_owl_l2norm_sqr: unsupported operation"
+
+external owl_float32_l2norm_sqr_along : int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_l2norm_sqr_along"
+external owl_float64_l2norm_sqr_along : int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_l2norm_sqr_along"
+external owl_complex32_l2norm_sqr_along : int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex32_l2norm_sqr_along"
+external owl_complex64_l2norm_sqr_along : int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex64_l2norm_sqr_along"
+
+let _owl_l2norm_sqr_along : type a b. (a, b) kind -> (a, b) owl_arr_op21 = function
+  | Float32        -> owl_float32_l2norm_sqr_along
+  | Float64        -> owl_float64_l2norm_sqr_along
+  | Complex32      -> owl_complex32_l2norm_sqr_along
+  | Complex64      -> owl_complex64_l2norm_sqr_along
+  | _              -> failwith "_owl_l2norm_sqr_along: unsupported operation"
 
 external owl_float32_sum : int -> ('a, 'b) owl_arr -> 'a = "float32_sum"
 external owl_float64_sum : int -> ('a, 'b) owl_arr -> 'a = "float64_sum"

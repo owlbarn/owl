@@ -393,13 +393,13 @@ val softmax : arr -> arr
 
 val sigmoid : arr -> arr
 
-val log_sum_exp : arr -> float
+val log_sum_exp' : arr -> float
 
-val l1norm : arr -> float
+val l1norm' : arr -> elt
 
-val l2norm : arr -> float
+val l2norm' : arr -> elt
 
-val l2norm_sqr : arr -> float
+val l2norm_sqr' : arr -> elt
 
 val cumsum : ?axis:int -> arr -> arr
 
@@ -460,11 +460,11 @@ val fmod_scalar : arr -> elt -> arr
 
 val scalar_fmod : elt -> arr -> arr
 
-val ssqr : arr -> elt -> elt
+val ssqr' : arr -> elt -> elt
 
-val ssqr_diff : arr -> arr -> elt
+val ssqr_diff' : arr -> arr -> elt
 
-val cross_entropy : arr -> arr -> float
+val cross_entropy' : arr -> arr -> float
 
 val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
 
