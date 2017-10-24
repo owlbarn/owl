@@ -501,6 +501,11 @@ module type InpureSig = sig
 
   val cos_ : arr -> unit
 
+  val add_scalar_ : arr -> elt -> unit
+
+  val sum : ?axis:int -> arr -> arr
+
+
 end
 
 

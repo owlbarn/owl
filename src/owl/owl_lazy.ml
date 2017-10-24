@@ -26,22 +26,26 @@ module Make
   }
   and op =
     | Noop
-    | Add of t * t
-    | Sub of t * t
-    | Mul of t * t
-    | Div of t * t
-    | Sin of t
-    | Cos of t
+    | Add   of t * t
+    | Sub   of t * t
+    | Mul   of t * t
+    | Div   of t * t
+    | Add_S of t * elt
+    | Sin   of t
+    | Cos   of t
+    | Sum   of t
 
 
   let unpack_operands = function
-    | Noop       -> [| |]
-    | Add (a, b) -> [|a; b|]
-    | Sub (a, b) -> [|a; b|]
-    | Mul (a, b) -> [|a; b|]
-    | Div (a, b) -> [|a; b|]
-    | Sin a      -> [|a|]
-    | Cos a      -> [|a|]
+    | Noop         -> [| |]
+    | Add (a, b)   -> [|a; b|]
+    | Sub (a, b)   -> [|a; b|]
+    | Mul (a, b)   -> [|a; b|]
+    | Div (a, b)   -> [|a; b|]
+    | Add_S (a, b) -> [|a|]
+    | Sin a        -> [|a|]
+    | Cos a        -> [|a|]
+    | Sum a        -> [|a|]
 
 
   let inc_operand_refnum x =
@@ -65,8 +69,8 @@ module Make
     }
 
 
-  let allocate_1 op =
-    let a = (unpack_operands op).(0) in
+  let allocate_1 operands =
+    let a = operands.(0) in
     if a.refnum = 1 then a.outval.(0)
     else A.copy a.outval.(0)
 
@@ -93,26 +97,27 @@ module Make
   let rec _eval_term x =
     if Array.length x.outval = 0 then (
       match x.op with
-      | Noop       -> ()
-      | Add (a, b) -> _eval_2 x A.add_ A.add
-      | Sub (a, b) -> _eval_2 x A.sub_ A.sub
-      | Mul (a, b) -> _eval_2 x A.mul_ A.mul
-      | Div (a, b) -> _eval_2 x A.div_ A.div
-      | Sin a      -> _eval_1 x A.sin_
-      | Cos a      -> _eval_1 x A.cos_
-
+      | Noop         -> ()
+      | Add (a, b)   -> _eval_map2 x A.add_ A.add
+      | Sub (a, b)   -> _eval_map2 x A.sub_ A.sub
+      | Mul (a, b)   -> _eval_map2 x A.mul_ A.mul
+      | Div (a, b)   -> _eval_map2 x A.div_ A.div
+      | Add_S (a, b) -> _eval_map3 x b A.add_scalar_
+      | Sin a        -> _eval_map1 x A.sin_
+      | Cos a        -> _eval_map1 x A.cos_
+      | Sum a        -> _eval_reduce x A.sum
     )
 
-  (* [f] is inpure *)
-  and _eval_1 x f =
+  (* [f] is inpure, for [arr -> arr] *)
+  and _eval_map1 x f =
     let operands = unpack_operands x.op in
     _eval_term operands.(0);
-    let a = operands.(0).outval.(0) in
+    let a = allocate_1 operands in
     f a;
     x.outval <- [|a|]
 
-  (* [f] is inpure and [g] is pure *)
-  and _eval_2 x f g =
+  (* [f] is inpure and [g] is pure, for [arr -> arr -> arr] *)
+  and _eval_map2 x f g =
     let operands = unpack_operands x.op in
     _eval_term operands.(0);
     _eval_term operands.(1);
@@ -124,8 +129,28 @@ module Make
     in
     x.outval <- [|c|]
 
+  (* [f] is inpure, for [arr -> elt -> arr] *)
+  and _eval_map3 x b f =
+    let operands = unpack_operands x.op in
+    _eval_term operands.(0);
+    let a = allocate_1 operands in
+    f a b;
+    x.outval <- [|a|]
+
+  (* [f] is always pure, for [arr -> elt] *)
+  and _eval_reduce x f =
+    let operands = unpack_operands x.op in
+    _eval_term operands.(0);
+    let a = operands.(0).outval.(0) in
+    x.outval <- [|f a|]
+
 
   let of_ndarray x = make_t ~outval:[|x|] Noop
+
+
+  let to_ndarray x =
+    _eval_term x;
+    x.outval.(0)
 
 
   (* math functions *)
@@ -138,9 +163,13 @@ module Make
 
   let div x y = make_t (Div (x, y))
 
+  let add_scalar x a = make_t (Add_S (x, a))
+
   let sin x = make_t (Sin x)
 
   let cos x = make_t (Cos x)
+
+  let sum ?axis x = make_t (Sum x)
 
 
 end
