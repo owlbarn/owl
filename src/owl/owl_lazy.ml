@@ -31,6 +31,13 @@ module Make
     | Mul   of t * t
     | Div   of t * t
     | Add_S of t * elt
+    | Sub_S of t * elt
+    | Mul_S of t * elt
+    | Div_S of t * elt
+    | S_Add of elt * t
+    | S_Sub of elt * t
+    | S_Mul of elt * t
+    | S_Div of elt * t
     | Sin   of t
     | Cos   of t
     | Sum   of t
@@ -43,6 +50,13 @@ module Make
     | Mul (a, b)   -> [|a; b|]
     | Div (a, b)   -> [|a; b|]
     | Add_S (a, b) -> [|a|]
+    | Sub_S (a, b) -> [|a|]
+    | Mul_S (a, b) -> [|a|]
+    | Div_S (a, b) -> [|a|]
+    | S_Add (a, b) -> [|b|]
+    | S_Sub (a, b) -> [|b|]
+    | S_Mul (a, b) -> [|b|]
+    | S_Div (a, b) -> [|b|]
     | Sin a        -> [|a|]
     | Cos a        -> [|a|]
     | Sum a        -> [|a|]
@@ -103,6 +117,13 @@ module Make
       | Mul (a, b)   -> _eval_map2 x A.mul_ A.mul
       | Div (a, b)   -> _eval_map2 x A.div_ A.div
       | Add_S (a, b) -> _eval_map3 x b A.add_scalar_
+      | Sub_S (a, b) -> _eval_map3 x b A.sub_scalar_
+      | Mul_S (a, b) -> _eval_map3 x b A.mul_scalar_
+      | Div_S (a, b) -> _eval_map3 x b A.div_scalar_
+      | S_Add (a, b) -> _eval_map4 x a A.scalar_add_
+      | S_Sub (a, b) -> _eval_map4 x a A.scalar_sub_
+      | S_Mul (a, b) -> _eval_map4 x a A.scalar_mul_
+      | S_Div (a, b) -> _eval_map4 x a A.scalar_div_
       | Sin a        -> _eval_map1 x A.sin_
       | Cos a        -> _eval_map1 x A.cos_
       | Sum a        -> _eval_reduce x A.sum
@@ -137,6 +158,14 @@ module Make
     f a b;
     x.outval <- [|a|]
 
+  (* [f] is inpure, for [elt -> add -> arr] *)
+  and _eval_map4 x a f =
+    let operands = unpack_operands x.op in
+    _eval_term operands.(0);
+    let b = allocate_1 operands in
+    f a b;
+    x.outval <- [|b|]
+
   (* [f] is always pure, for [arr -> elt] *)
   and _eval_reduce x f =
     let operands = unpack_operands x.op in
@@ -164,6 +193,20 @@ module Make
   let div x y = make_t (Div (x, y))
 
   let add_scalar x a = make_t (Add_S (x, a))
+
+  let sub_scalar x a = make_t (Sub_S (x, a))
+
+  let mul_scalar x a = make_t (Mul_S (x, a))
+
+  let div_scalar x a = make_t (Div_S (x, a))
+
+  let scalar_add a x = make_t (S_Add (a, x))
+
+  let scalar_sub a x = make_t (S_Sub (a, x))
+
+  let scalar_mul a x = make_t (S_Mul (a, x))
+
+  let scalar_div a x = make_t (S_Div (a, x))
 
   let sin x = make_t (Sin x)
 

@@ -503,6 +503,20 @@ module type InpureSig = sig
 
   val add_scalar_ : arr -> elt -> unit
 
+  val sub_scalar_ : arr -> elt -> unit
+
+  val mul_scalar_ : arr -> elt -> unit
+
+  val div_scalar_ : arr -> elt -> unit
+
+  val scalar_add_ : elt -> arr -> unit
+
+  val scalar_sub_ : elt -> arr -> unit
+
+  val scalar_mul_ : elt -> arr -> unit
+
+  val scalar_div_ : elt -> arr -> unit
+
   val sum : ?axis:int -> arr -> arr
 
 
