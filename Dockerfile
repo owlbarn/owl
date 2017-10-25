@@ -35,6 +35,10 @@ RUN sed -i -- 's/-lopenblas/-lopenblas -llapacke/g' $OWLPATH/src/owl/jbuild
 
 RUN make -C $OWLPATH && make -C $OWLPATH install
 
+# FIXME: hacking ... need to be fixed in future
+RUN mv /root/.opam/4.04.0/lib/stubslibs/dllowl_stubs.so /root/.opam/4.04.0/lib/stublibs/dllowl_stubs.so
+
+
 # Set default container command
 WORKDIR $OWLPATH
 ENTRYPOINT /bin/bash
