@@ -489,6 +489,18 @@ module type InpureSig = sig
 
   val div : arr -> arr -> arr
 
+  val pow : arr -> arr -> arr
+
+  val atan2 : arr -> arr -> arr
+
+  val hypot : arr -> arr -> arr
+
+  val fmod : arr -> arr -> arr
+
+  val min2 : arr -> arr -> arr
+
+  val max2 : arr -> arr -> arr
+
   val add_ : arr -> arr -> unit
 
   val sub_ : arr -> arr -> unit
@@ -496,6 +508,18 @@ module type InpureSig = sig
   val mul_ : arr -> arr -> unit
 
   val div_ : arr -> arr -> unit
+
+  val pow_ : arr -> arr -> unit
+
+  val atan2_ : arr -> arr -> unit
+
+  val hypot_ : arr -> arr -> unit
+
+  val fmod_ : arr -> arr -> unit
+
+  val min2_ : arr -> arr -> unit
+
+  val max2_ : arr -> arr -> unit
 
   val sin_ : arr -> unit
 
@@ -509,6 +533,12 @@ module type InpureSig = sig
 
   val div_scalar_ : arr -> elt -> unit
 
+  val pow_scalar_ : arr -> elt -> unit
+
+  val atan2_scalar_ : arr -> elt -> unit
+
+  val fmod_scalar_ : arr -> elt -> unit
+
   val scalar_add_ : elt -> arr -> unit
 
   val scalar_sub_ : elt -> arr -> unit
@@ -517,8 +547,15 @@ module type InpureSig = sig
 
   val scalar_div_ : elt -> arr -> unit
 
+  val scalar_pow_ : elt -> arr -> unit
+
+  val scalar_atan2_ : elt -> arr -> unit
+
+  val scalar_fmod_ : elt -> arr -> unit
+
   val sum : ?axis:int -> arr -> arr
 
+  val prod : ?axis:int -> arr -> arr
 
 end
 
