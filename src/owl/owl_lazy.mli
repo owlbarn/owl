@@ -20,6 +20,20 @@ module Make
 
   (** {6 Unary operators} *)
 
+  val neg : t -> t
+
+  val conj : t -> t
+
+  val reci : t -> t
+
+  val signum : t -> t
+
+  val sqr : t -> t
+
+  val sqrt : t -> t
+
+  val cbrt : t -> t
+
   val sin : t -> t
 
   val cos : t -> t

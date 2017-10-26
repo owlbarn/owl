@@ -50,6 +50,13 @@ module Make
     | S_Pow   of elt * t
     | S_Atan2 of elt * t
     | S_Fmod  of elt * t
+    | Neg     of t
+    | Conj    of t
+    | Reci    of t
+    | Signum  of t
+    | Sqr     of t
+    | Sqrt    of t
+    | Cbrt    of t
     | Sin     of t
     | Cos     of t
     | Sum     of t
@@ -82,6 +89,13 @@ module Make
     | S_Pow (a, b)   -> [|b|]
     | S_Atan2 (a, b) -> [|b|]
     | S_Fmod (a, b)  -> [|b|]
+    | Neg a          -> [|a|]
+    | Conj a         -> [|a|]
+    | Reci a         -> [|a|]
+    | Signum a       -> [|a|]
+    | Sqr a          -> [|a|]
+    | Sqrt a         -> [|a|]
+    | Cbrt a         -> [|a|]
     | Sin a          -> [|a|]
     | Cos a          -> [|a|]
     | Sum a          -> [|a|]
@@ -162,6 +176,13 @@ module Make
       | S_Pow (a, b)   -> _eval_map4 x a A.scalar_pow_
       | S_Atan2 (a, b) -> _eval_map4 x a A.scalar_atan2_
       | S_Fmod (a, b)  -> _eval_map4 x a A.scalar_fmod_
+      | Neg a          -> _eval_map1 x A.neg_
+      | Conj a         -> _eval_map1 x A.conj_
+      | Reci a         -> _eval_map1 x A.reci_
+      | Signum a       -> _eval_map1 x A.signum_
+      | Sqr a          -> _eval_map1 x A.sqr_
+      | Sqrt a         -> _eval_map1 x A.sqrt_
+      | Cbrt a         -> _eval_map1 x A.cbrt_
       | Sin a          -> _eval_map1 x A.sin_
       | Cos a          -> _eval_map1 x A.cos_
       | Sum a          -> _eval_reduce x A.sum
@@ -273,6 +294,20 @@ module Make
   let scalar_atan2 a x = make_t (S_Atan2 (a, x))
 
   let scalar_fmod a x = make_t (S_Fmod (a, x))
+
+  let neg x = make_t (Neg x)
+
+  let conj x = make_t (Conj x)
+
+  let reci x = make_t (Reci x)
+
+  let signum x = make_t (Signum x)
+
+  let sqr x = make_t (Sqr x)
+
+  let sqrt x = make_t (Sqrt x)
+
+  let cbrt x = make_t (Cbrt x)
 
   let sin x = make_t (Sin x)
 

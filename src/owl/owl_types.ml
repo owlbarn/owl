@@ -521,10 +521,6 @@ module type InpureSig = sig
 
   val max2_ : arr -> arr -> unit
 
-  val sin_ : arr -> unit
-
-  val cos_ : arr -> unit
-
   val add_scalar_ : arr -> elt -> unit
 
   val sub_scalar_ : arr -> elt -> unit
@@ -552,6 +548,24 @@ module type InpureSig = sig
   val scalar_atan2_ : elt -> arr -> unit
 
   val scalar_fmod_ : elt -> arr -> unit
+
+  val neg_ : arr -> unit
+
+  val conj_ : arr -> unit
+
+  val reci_ : arr -> unit
+
+  val signum_ : arr -> unit
+
+  val sqr_ : arr -> unit
+
+  val sqrt_ : arr -> unit
+
+  val cbrt_ : arr -> unit
+
+  val sin_ : arr -> unit
+
+  val cos_ : arr -> unit
 
   val sum : ?axis:int -> arr -> arr
 
