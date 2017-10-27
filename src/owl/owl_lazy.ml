@@ -67,6 +67,21 @@ module Make
     | Log1p   of t
     | Sin     of t
     | Cos     of t
+    | Tan     of t
+    | Asin    of t
+    | Acos    of t
+    | Atan    of t
+    | Sinh    of t
+    | Cosh    of t
+    | Tanh    of t
+    | Asinh   of t
+    | Acosh   of t
+    | Atanh   of t
+    | Floor   of t
+    | Ceil    of t
+    | Round   of t
+    | Trunc   of t
+    | Fix     of t
     | Sum     of t
     | Prod    of t
 
@@ -114,6 +129,21 @@ module Make
     | Log1p a        -> [|a|]
     | Sin a          -> [|a|]
     | Cos a          -> [|a|]
+    | Tan a          -> [|a|]
+    | Asin a         -> [|a|]
+    | Acos a         -> [|a|]
+    | Atan a         -> [|a|]
+    | Sinh a         -> [|a|]
+    | Cosh a         -> [|a|]
+    | Tanh a         -> [|a|]
+    | Asinh a        -> [|a|]
+    | Acosh a        -> [|a|]
+    | Atanh a        -> [|a|]
+    | Floor a        -> [|a|]
+    | Ceil a         -> [|a|]
+    | Round a        -> [|a|]
+    | Trunc a        -> [|a|]
+    | Fix a          -> [|a|]
     | Sum a          -> [|a|]
     | Prod a         -> [|a|]
 
@@ -209,6 +239,21 @@ module Make
       | Log1p a        -> _eval_map1 x A.log1p_
       | Sin a          -> _eval_map1 x A.sin_
       | Cos a          -> _eval_map1 x A.cos_
+      | Tan a          -> _eval_map1 x A.tan_
+      | Asin a         -> _eval_map1 x A.asin_
+      | Acos a         -> _eval_map1 x A.acos_
+      | Atan a         -> _eval_map1 x A.atan_
+      | Sinh a         -> _eval_map1 x A.sinh_
+      | Cosh a         -> _eval_map1 x A.cosh_
+      | Tanh a         -> _eval_map1 x A.tanh_
+      | Asinh a        -> _eval_map1 x A.asinh_
+      | Acosh a        -> _eval_map1 x A.acosh_
+      | Atanh a        -> _eval_map1 x A.atanh_
+      | Floor a        -> _eval_map1 x A.floor_
+      | Ceil a         -> _eval_map1 x A.ceil_
+      | Round a        -> _eval_map1 x A.round_
+      | Trunc a        -> _eval_map1 x A.trunc_
+      | Fix a          -> _eval_map1 x A.fix_
       | Sum a          -> _eval_reduce x A.sum
       | Prod a         -> _eval_reduce x A.prod
     )
@@ -352,6 +397,36 @@ module Make
   let sin x = make_t (Sin x)
 
   let cos x = make_t (Cos x)
+
+  let tan x = make_t (Tan x)
+
+  let asin x = make_t (Asin x)
+
+  let acos x = make_t (Acos x)
+
+  let atan x = make_t (Atan x)
+
+  let sinh x = make_t (Sinh x)
+
+  let cosh x = make_t (Cosh x)
+
+  let tanh x = make_t (Tanh x)
+
+  let asinh x = make_t (Asinh x)
+
+  let acosh x = make_t (Acosh x)
+
+  let atanh x = make_t (Atanh x)
+
+  let floor x = make_t (Floor x)
+
+  let ceil x = make_t (Ceil x)
+
+  let round x = make_t (Round x)
+
+  let trunc x = make_t (Trunc x)
+
+  let fix x = make_t (Fix x)
 
   let sum ?axis x = make_t (Sum x)
 

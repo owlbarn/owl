@@ -34,9 +34,55 @@ module Make
 
   val cbrt : t -> t
 
+  val exp : t -> t
+
+  val exp2 : t -> t
+
+  val exp10 : t -> t
+
+  val expm1 : t -> t
+
+  val log : t -> t
+
+  val log2 : t -> t
+
+  val log10 : t -> t
+
+  val log1p : t -> t
+
   val sin : t -> t
 
   val cos : t -> t
+
+  val tan : t -> t
+
+  val asin : t -> t
+
+  val acos : t -> t
+
+  val atan : t -> t
+
+  val sinh : t -> t
+
+  val cosh : t -> t
+
+  val tanh : t -> t
+
+  val asinh : t -> t
+
+  val acosh : t -> t
+
+  val atanh : t -> t
+
+  val floor : t -> t
+
+  val ceil : t -> t
+
+  val round : t -> t
+
+  val trunc : t -> t
+
+  val fix : t -> t
 
   val sum : ?axis:int -> t -> t
 

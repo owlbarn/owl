@@ -583,6 +583,36 @@ module type InpureSig = sig
 
   val cos_ : arr -> unit
 
+  val tan_ : arr -> unit
+
+  val asin_ : arr -> unit
+
+  val acos_ : arr -> unit
+
+  val atan_ : arr -> unit
+
+  val sinh_ : arr -> unit
+
+  val cosh_ : arr -> unit
+
+  val tanh_ : arr -> unit
+
+  val asinh_ : arr -> unit
+
+  val acosh_ : arr -> unit
+
+  val atanh_ : arr -> unit
+
+  val floor_ : arr -> unit
+
+  val ceil_ : arr -> unit
+
+  val round_ : arr -> unit
+
+  val trunc_ : arr -> unit
+
+  val fix_ : arr -> unit
+
   val sum : ?axis:int -> arr -> arr
 
   val prod : ?axis:int -> arr -> arr
