@@ -563,6 +563,22 @@ module type InpureSig = sig
 
   val cbrt_ : arr -> unit
 
+  val exp_ : arr -> unit
+
+  val exp2_ : arr -> unit
+
+  val exp10_ : arr -> unit
+
+  val expm1_ : arr -> unit
+
+  val log_ : arr -> unit
+
+  val log2_ : arr -> unit
+
+  val log10_ : arr -> unit
+
+  val log1p_ : arr -> unit
+
   val sin_ : arr -> unit
 
   val cos_ : arr -> unit

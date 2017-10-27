@@ -57,6 +57,14 @@ module Make
     | Sqr     of t
     | Sqrt    of t
     | Cbrt    of t
+    | Exp     of t
+    | Exp2    of t
+    | Exp10   of t
+    | Expm1   of t
+    | Log     of t
+    | Log2    of t
+    | Log10   of t
+    | Log1p   of t
     | Sin     of t
     | Cos     of t
     | Sum     of t
@@ -96,6 +104,14 @@ module Make
     | Sqr a          -> [|a|]
     | Sqrt a         -> [|a|]
     | Cbrt a         -> [|a|]
+    | Exp a          -> [|a|]
+    | Exp2 a         -> [|a|]
+    | Exp10 a        -> [|a|]
+    | Expm1 a        -> [|a|]
+    | Log a          -> [|a|]
+    | Log2 a         -> [|a|]
+    | Log10 a        -> [|a|]
+    | Log1p a        -> [|a|]
     | Sin a          -> [|a|]
     | Cos a          -> [|a|]
     | Sum a          -> [|a|]
@@ -183,6 +199,14 @@ module Make
       | Sqr a          -> _eval_map1 x A.sqr_
       | Sqrt a         -> _eval_map1 x A.sqrt_
       | Cbrt a         -> _eval_map1 x A.cbrt_
+      | Exp a          -> _eval_map1 x A.exp_
+      | Exp2 a         -> _eval_map1 x A.exp2_
+      | Exp10 a        -> _eval_map1 x A.exp10_
+      | Expm1 a        -> _eval_map1 x A.expm1_
+      | Log a          -> _eval_map1 x A.log_
+      | Log2 a         -> _eval_map1 x A.log2_
+      | Log10 a        -> _eval_map1 x A.log10_
+      | Log1p a        -> _eval_map1 x A.log1p_
       | Sin a          -> _eval_map1 x A.sin_
       | Cos a          -> _eval_map1 x A.cos_
       | Sum a          -> _eval_reduce x A.sum
@@ -308,6 +332,22 @@ module Make
   let sqrt x = make_t (Sqrt x)
 
   let cbrt x = make_t (Cbrt x)
+
+  let exp x = make_t (Exp x)
+
+  let exp2 x = make_t (Exp2 x)
+
+  let exp10 x = make_t (Exp10 x)
+
+  let expm1 x = make_t (Expm1 x)
+
+  let log x = make_t (Log x)
+
+  let log2 x = make_t (Log2 x)
+
+  let log10 x = make_t (Log10 x)
+
+  let log1p x = make_t (Log1p x)
 
   let sin x = make_t (Sin x)
 
