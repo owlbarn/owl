@@ -2618,4 +2618,27 @@ let bottom x n = _search_close_to_extreme x n (_pos_inf (kind x)) ( < )
 
 
 
+(* fucntions which modify the data in-place, not so pure *)
+
+let add_ x y = _owl_add (kind x) (numel x) x y x
+
+let sub_ x y = _owl_sub (kind x) (numel x) x y x
+
+let mul_ x y = _owl_mul (kind x) (numel x) x y x
+
+let div_ x y = _owl_div (kind x) (numel x) x y x
+
+let add_scalar_ x a = _owl_add_scalar (kind x) (numel x) x x a
+
+let sub_scalar_ x a = add_scalar_ x (_neg_elt (kind x) a)
+
+let mul_scalar_ x a = _owl_mul_scalar (kind x) (numel x) x x a
+
+let div_scalar_ x a = mul_scalar_ x (_inv_elt (kind x) a)
+
+let sin_ x = _owl_sin (kind x) (numel x) x x
+
+let cos_ x = _owl_cos (kind x) (numel x) x x
+
+
 (* ends here *)

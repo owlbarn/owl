@@ -1311,5 +1311,51 @@ val slice_along_dim0 : ('a, 'b) t -> int array -> ('a, 'b) t
 val draw_along_dim0 : ('a, 'b) t -> int -> ('a, 'b) t * int array
 
 
+(** {6 Fucntions of in-place modification } *)
+
+val add_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [add_ x y] is simiar to [add] function but the output is written to [x].
+  The broadcast operation is not supported.
+ *)
+
+val sub_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [sub_ x y] is simiar to [sub] function but the output is written to [x].
+  The broadcast operation is not supported.
+ *)
+
+val mul_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [mul_ x y] is simiar to [mul] function but the output is written to [x].
+  The broadcast operation is not supported.
+ *)
+
+val div_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [div_ x y] is simiar to [div] function but the output is written to [x].
+  The broadcast operation is not supported.
+ *)
+
+val add_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [add_scalar_ x y] is simiar to [add_scalar] function but the output is
+  written to [x]. The broadcast operation is not supported.
+ *)
+
+val sub_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [sub_scalar_ x y] is simiar to [sub_scalar] function but the output is
+  written to [x]. The broadcast operation is not supported.
+ *)
+
+val mul_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [mul_scalar_ x y] is simiar to [mul_scalar] function but the output is
+  written to [x]. The broadcast operation is not supported.
+ *)
+
+val div_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [div_scalar_ x y] is simiar to [div_scalar] function but the output is
+  written to [x]. The broadcast operation is not supported.
+ *)
+
+val sin_ : ('a, 'b) t -> unit
+
+val cos_ : ('a, 'b) t -> unit
+
 
 (* ends ehre *)
