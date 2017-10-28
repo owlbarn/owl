@@ -890,17 +890,17 @@ val save : ('a, 'b) t -> string -> unit
  *)
 
 val load : ('a, 'b) kind -> string -> ('a, 'b) t
-(** [load f] loads a sparse matrix from file [f]. The file must be previously
-  saved by using [save] function.
+(** [load f] loads a matrix from file [f]. The file must be previously saved
+  by using [save] function.
  *)
 
 val save_txt : ('a, 'b) t -> string -> unit
-(** [save_txt x f] save the matrix [x] into a text file [f]. The operation can
+(** [save_txt x f] save the matrix [x] into a tab-delimited text file [f]. The operation can
   be very time consuming.
  *)
 
 val load_txt : (float, 'a) kind -> string -> (float, 'a) t
-(** [load_txt f] load a text file [f] into a matrix. *)
+(** [load_txt f] load a tab-delimited text file [f] into a matrix. *)
 
 
 (** {6 Unary mathematical operations } *)
