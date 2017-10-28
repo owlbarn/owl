@@ -26,64 +26,71 @@ module Make
   }
   and op =
     | Noop
-    | Add     of t * t
-    | Sub     of t * t
-    | Mul     of t * t
-    | Div     of t * t
-    | Pow     of t * t
-    | Atan2   of t * t
-    | Hypot   of t * t
-    | Fmod    of t * t
-    | Min2    of t * t
-    | Max2    of t * t
-    | Add_S   of t * elt
-    | Sub_S   of t * elt
-    | Mul_S   of t * elt
-    | Div_S   of t * elt
-    | Pow_S   of t * elt
-    | Atan2_S of t * elt
-    | Fmod_S  of t * elt
-    | S_Add   of elt * t
-    | S_Sub   of elt * t
-    | S_Mul   of elt * t
-    | S_Div   of elt * t
-    | S_Pow   of elt * t
-    | S_Atan2 of elt * t
-    | S_Fmod  of elt * t
-    | Neg     of t
-    | Conj    of t
-    | Reci    of t
-    | Signum  of t
-    | Sqr     of t
-    | Sqrt    of t
-    | Cbrt    of t
-    | Exp     of t
-    | Exp2    of t
-    | Exp10   of t
-    | Expm1   of t
-    | Log     of t
-    | Log2    of t
-    | Log10   of t
-    | Log1p   of t
-    | Sin     of t
-    | Cos     of t
-    | Tan     of t
-    | Asin    of t
-    | Acos    of t
-    | Atan    of t
-    | Sinh    of t
-    | Cosh    of t
-    | Tanh    of t
-    | Asinh   of t
-    | Acosh   of t
-    | Atanh   of t
-    | Floor   of t
-    | Ceil    of t
-    | Round   of t
-    | Trunc   of t
-    | Fix     of t
-    | Sum     of t
-    | Prod    of t
+    | Add      of t * t
+    | Sub      of t * t
+    | Mul      of t * t
+    | Div      of t * t
+    | Pow      of t * t
+    | Atan2    of t * t
+    | Hypot    of t * t
+    | Fmod     of t * t
+    | Min2     of t * t
+    | Max2     of t * t
+    | Add_S    of t * elt
+    | Sub_S    of t * elt
+    | Mul_S    of t * elt
+    | Div_S    of t * elt
+    | Pow_S    of t * elt
+    | Atan2_S  of t * elt
+    | Fmod_S   of t * elt
+    | S_Add    of elt * t
+    | S_Sub    of elt * t
+    | S_Mul    of elt * t
+    | S_Div    of elt * t
+    | S_Pow    of elt * t
+    | S_Atan2  of elt * t
+    | S_Fmod   of elt * t
+    | Neg      of t
+    | Conj     of t
+    | Reci     of t
+    | Signum   of t
+    | Sqr      of t
+    | Sqrt     of t
+    | Cbrt     of t
+    | Exp      of t
+    | Exp2     of t
+    | Exp10    of t
+    | Expm1    of t
+    | Log      of t
+    | Log2     of t
+    | Log10    of t
+    | Log1p    of t
+    | Sin      of t
+    | Cos      of t
+    | Tan      of t
+    | Asin     of t
+    | Acos     of t
+    | Atan     of t
+    | Sinh     of t
+    | Cosh     of t
+    | Tanh     of t
+    | Asinh    of t
+    | Acosh    of t
+    | Atanh    of t
+    | Floor    of t
+    | Ceil     of t
+    | Round    of t
+    | Trunc    of t
+    | Fix      of t
+    | Erf      of t
+    | Erfc     of t
+    | Relu     of t
+    | Softplus of t
+    | Softsign of t
+    | Softmax  of t
+    | Sigmoid  of t
+    | Sum      of t
+    | Prod     of t
 
 
   let unpack_operands = function
@@ -144,6 +151,13 @@ module Make
     | Round a        -> [|a|]
     | Trunc a        -> [|a|]
     | Fix a          -> [|a|]
+    | Erf a          -> [|a|]
+    | Erfc a         -> [|a|]
+    | Relu a         -> [|a|]
+    | Softplus a     -> [|a|]
+    | Softsign a     -> [|a|]
+    | Softmax a      -> [|a|]
+    | Sigmoid a      -> [|a|]
     | Sum a          -> [|a|]
     | Prod a         -> [|a|]
 
@@ -254,6 +268,13 @@ module Make
       | Round a        -> _eval_map1 x A.round_
       | Trunc a        -> _eval_map1 x A.trunc_
       | Fix a          -> _eval_map1 x A.fix_
+      | Erf a          -> _eval_map1 x A.erf_
+      | Erfc a         -> _eval_map1 x A.erfc_
+      | Relu a         -> _eval_map1 x A.relu_
+      | Softplus a     -> _eval_map1 x A.softplus_
+      | Softsign a     -> _eval_map1 x A.softsign_
+      | Softmax a      -> _eval_map1 x A.softmax_
+      | Sigmoid a      -> _eval_map1 x A.sigmoid_
       | Sum a          -> _eval_reduce x A.sum
       | Prod a         -> _eval_reduce x A.prod
     )
@@ -427,6 +448,20 @@ module Make
   let trunc x = make_t (Trunc x)
 
   let fix x = make_t (Fix x)
+
+  let erf x = make_t (Erf x)
+
+  let erfc x = make_t (Erfc x)
+
+  let relu x = make_t (Relu x)
+
+  let softplus x = make_t (Softplus x)
+
+  let softsign x = make_t (Softsign x)
+
+  let softmax x = make_t (Softmax x)
+
+  let sigmoid x = make_t (Sigmoid x)
 
   let sum ?axis x = make_t (Sum x)
 

@@ -613,6 +613,20 @@ module type InpureSig = sig
 
   val fix_ : arr -> unit
 
+  val erf_ : arr -> unit
+
+  val erfc_ : arr -> unit
+
+  val relu_ : arr -> unit
+
+  val softplus_ : arr -> unit
+
+  val softsign_ : arr -> unit
+
+  val softmax_ : arr -> unit
+
+  val sigmoid_ : arr -> unit
+
   val sum : ?axis:int -> arr -> arr
 
   val prod : ?axis:int -> arr -> arr
