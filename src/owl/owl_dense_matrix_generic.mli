@@ -895,8 +895,8 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
  *)
 
 val save_txt : ('a, 'b) t -> string -> unit
-(** [save_txt x f] save the matrix [x] into a tab-delimited text file [f]. The operation can
-  be very time consuming.
+(** [save_txt x f] save the matrix [x] into a tab-delimited text file [f]. 
+  The operation can be very time consuming.
  *)
 
 val load_txt : (float, 'a) kind -> string -> (float, 'a) t
