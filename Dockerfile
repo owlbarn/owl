@@ -1,28 +1,34 @@
 ############################################################
-# Dockerfile to build Owl container image from github
-# Based on ryanrhymes/owl-base
+# Dockerfile to build Owl docker image
+# Based on ryanrhymes/owl master branch
 # By Liang Wang <liang.wang@cl.cam.ac.uk>
 ############################################################
 
-FROM ryanrhymes/owl-base
+FROM ubuntu:latest
 MAINTAINER Liang Wang
 
 
 ##################### PREREQUISITES ########################
 
-# Set up the environment variables
+RUN apt-get update
+RUN apt-get -y install git build-essential ocaml wget unzip aspcud m4 pkg-config
+RUN apt-get -y install libgsl-dev libplplot-dev libopenblas-dev liblapacke-dev
+
+RUN wget https://github.com/ocaml/opam/archive/2.0.0-beta4.tar.gz && tar xzvf 2.0.0-beta4.tar.gz
+RUN cd opam-2.0.0-beta4 && ./configure && make lib-ext && make && make install
+RUN yes | opam init && eval $(opam env) && opam update && opam switch create 4.04.0
+
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop dolog plplot gsl
+
+
+#################### SET UP ENV VARS #######################
+
 ENV PATH /root/.opam/4.04.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
 ENV CAML_LD_LIBRARY_PATH /root/.opam/4.04.0/lib/stublibs
 
 ENV EIGENPATH /root/eigen
 RUN cd /root && git clone https://github.com/ryanrhymes/eigen.git
 RUN make -C $EIGENPATH oasis && make -C $EIGENPATH && make -C $EIGENPATH install
-
-RUN opam update
-RUN opam install ocaml-compiler-libs
-RUN opam install jbuilder
-
-RUN apt-get -y install libopenblas-dev liblapacke-dev
 
 
 ################## INSTALL OWL LIBRARY #####################
@@ -35,10 +41,8 @@ RUN sed -i -- 's/-lopenblas/-lopenblas -llapacke/g' $OWLPATH/src/owl/jbuild
 
 RUN make -C $OWLPATH && make -C $OWLPATH install
 
-# FIXME: hacking ... need to be fixed in future
-RUN mv /root/.opam/4.04.0/lib/stubslibs/dllowl_stubs.so /root/.opam/4.04.0/lib/stublibs/dllowl_stubs.so
 
+############## SET UP DEFAULT CONTAINER VARS ##############
 
-# Set default container command
 WORKDIR $OWLPATH
 ENTRYPOINT /bin/bash
