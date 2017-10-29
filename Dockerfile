@@ -12,7 +12,8 @@ MAINTAINER Liang Wang
 
 RUN apt-get update
 RUN apt-get -y install git build-essential ocaml wget unzip aspcud m4 pkg-config
-RUN apt-get -y install libgsl-dev libplplot-dev libopenblas-dev liblapacke-dev
+RUN apt-get -y install camlp4-extra libshp-dev libplplot-dev
+RUN apt-get -y install libgsl-dev libopenblas-dev liblapacke-dev
 
 RUN wget https://github.com/ocaml/opam/archive/2.0.0-beta4.tar.gz && tar xzvf 2.0.0-beta4.tar.gz
 RUN cd opam-2.0.0-beta4 && ./configure && make lib-ext && make && make install
@@ -44,5 +45,6 @@ RUN make -C $OWLPATH && make -C $OWLPATH install
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
 
+RUN echo "#require \"owl_top\";; open Owl;;" >> /root/.ocamlinit
 WORKDIR $OWLPATH
 ENTRYPOINT /bin/bash
