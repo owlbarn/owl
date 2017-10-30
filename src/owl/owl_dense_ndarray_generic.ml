@@ -2704,6 +2704,43 @@ let std ?axis x =
   | None   -> std' x |> create _kind [|1|]
 
 
+let l1norm ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = reduce_params a x in
+      let y = zeros _kind s in
+      _owl_l1norm_along _kind m n o x y;
+      y
+    )
+  | None   -> l1norm' x |> create _kind [|1|]
+
+
+let l2norm_sqr ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = reduce_params a x in
+      let y = zeros _kind s in
+      _owl_l2norm_sqr_along _kind m n o x y;
+      y
+    )
+  | None   -> l2norm_sqr' x |> create _kind [|1|]
+
+
+let l2norm ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = reduce_params a x in
+      let y = zeros _kind s in
+      _owl_l2norm_sqr_along _kind m n o x y;
+      _owl_sqrt _kind (numel y) y y;
+      y
+    )
+  | None   -> l2norm' x |> create _kind [|1|]
+
+
 (* this function is used for searching top/bottom values in [x] *)
 let _search_close_to_extreme x n neg_ext cmp_fun =
   let m = numel x in

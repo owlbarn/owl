@@ -1269,11 +1269,20 @@ val log_sum_exp' : (float, 'a) t -> float
   the elements in [x].
  *)
 
+val l1norm : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [l1norm x] calculates the l1-norm of of [x] along specified axis. *)
+
 val l1norm' : ('a, 'b) t -> 'a
 (** [l1norm x] calculates the l1-norm of all the element in [x]. *)
 
+val l2norm : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [l2norm x] calculates the l2-norm of of [x] along specified axis. *)
+
 val l2norm' : ('a, 'b) t -> 'a
 (** [l2norm x] calculates the l2-norm of all the element in [x]. *)
+
+val l2norm_sqr : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [l2norm x] calculates the square l2-norm of of [x] along specified axis. *)
 
 val l2norm_sqr' : ('a, 'b) t -> 'a
 (** [l2norm_sqr x] calculates the square of l2-norm (or l2norm, Euclidean norm)
