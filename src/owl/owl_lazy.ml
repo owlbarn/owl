@@ -91,6 +91,17 @@ module Make
     | Sigmoid  of t
     | Sum      of t
     | Prod     of t
+    | Min      of t
+    | Max      of t
+    | Mean     of t
+    | Var      of t
+    | Std      of t
+    | L1norm   of t
+    | L2norm   of t
+    | Cumsum   of t
+    | Cumprod  of t
+    | Cummin   of t
+    | Cummax   of t
 
 
   let unpack_operands = function
@@ -160,6 +171,17 @@ module Make
     | Sigmoid a      -> [|a|]
     | Sum a          -> [|a|]
     | Prod a         -> [|a|]
+    | Min a          -> [|a|]
+    | Max a          -> [|a|]
+    | Mean a         -> [|a|]
+    | Var a          -> [|a|]
+    | Std a          -> [|a|]
+    | L1norm a       -> [|a|]
+    | L2norm a       -> [|a|]
+    | Cumsum a       -> [|a|]
+    | Cumprod a      -> [|a|]
+    | Cummin a       -> [|a|]
+    | Cummax a       -> [|a|]
 
 
   let inc_operand_refnum x =
@@ -277,6 +299,17 @@ module Make
       | Sigmoid a      -> _eval_map1 x A.sigmoid_
       | Sum a          -> _eval_reduce x A.sum
       | Prod a         -> _eval_reduce x A.prod
+      | Min a          -> _eval_reduce x A.min
+      | Max a          -> _eval_reduce x A.max
+      | Mean a         -> _eval_reduce x A.mean
+      | Var a          -> _eval_reduce x A.var
+      | Std a          -> _eval_reduce x A.std
+      | L1norm a       -> _eval_reduce x A.l1norm
+      | L2norm a       -> _eval_reduce x A.l2norm
+      (*| Cumsum a       -> [|a|]
+      | Cumprod a      -> [|a|]
+      | Cummin a       -> [|a|]
+      | Cummax a       -> [|a|] *)
     )
 
   (* [f] is inpure, for [arr -> arr] *)

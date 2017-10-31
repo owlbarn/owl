@@ -631,6 +631,28 @@ module type InpureSig = sig
 
   val prod : ?axis:int -> arr -> arr
 
+  val min : ?axis:int -> arr -> arr
+
+  val max : ?axis:int -> arr -> arr
+
+  val mean : ?axis:int -> arr -> arr
+
+  val var : ?axis:int -> arr -> arr
+
+  val std : ?axis:int -> arr -> arr
+
+  val l1norm : ?axis:int -> arr -> arr
+
+  val l2norm : ?axis:int -> arr -> arr
+
+  val cumsum : ?axis:int -> arr -> arr
+
+  val cumprod : ?axis:int -> arr -> arr
+
+  val cummin : ?axis:int -> arr -> arr
+
+  val cummax : ?axis:int -> arr -> arr
+
 end
 
 

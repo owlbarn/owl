@@ -2495,7 +2495,6 @@ let draw_along_dim0 x n =
 
 (* TODO: optimise performance, slow along the low dimension *)
 let cumulative_op ?axis _cumop x =
-  let y = copy x in
   let d = num_dims x in
   let a = match axis with
     | Some a -> a
@@ -2514,26 +2513,36 @@ let cumulative_op ?axis _cumop x =
   let ofsx = 0 in
   let ofsy = _stride.(a) in
 
-  _cumop m n y ofsx incx_m incx_n y ofsy incy_m incy_n;
-  y
+  _cumop m n x ofsx incx_m incx_n x ofsy incy_m incy_n
 
 
 let cumsum ?axis x =
+  let x = copy x in
   let _cumop = _owl_cumsum (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x;
+  x
 
 
 let cumprod ?axis x =
+  let x = copy x in
   let _cumop = _owl_cumprod (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x;
+  x
+
 
 let cummin ?axis x =
+  let x = copy x in
   let _cumop = _owl_cummin (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x;
+  x
+
 
 let cummax ?axis x =
+  let x = copy x in
   let _cumop = _owl_cummax (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x;
+  x
+
 
 let modf x =
   let x = copy x in
@@ -3001,6 +3010,22 @@ let softmax_ x =
   exp_ x;
   let a = sum' x in
   div_scalar_ x a
+
+let cumsum_ ?axis x =
+  let _cumop = _owl_cumsum (kind x) in
+  cumulative_op ?axis _cumop x
+
+let cumprod_ ?axis x =
+  let _cumop = _owl_cumprod (kind x) in
+  cumulative_op ?axis _cumop x
+
+let cummin_ ?axis x =
+  let _cumop = _owl_cummin (kind x) in
+  cumulative_op ?axis _cumop x
+
+let cummax_ ?axis x =
+  let _cumop = _owl_cummax (kind x) in
+  cumulative_op ?axis _cumop x
 
 let cross_entropy' x y =
   let y = copy y in
