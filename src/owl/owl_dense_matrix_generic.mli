@@ -1743,3 +1743,15 @@ val sigmoid_ : ('a, 'b) t -> unit
 
 val softmax_ : ('a, 'b) t -> unit
 (** [softmax_ x] is similar to [softmax] but output is written to [x] *)
+
+val cumsum_ : ?axis:int -> ('a, 'b) t -> unit
+(** [cumsum_ x] is similar to [cumsum] but output is written to [x] *)
+
+val cumprod_ : ?axis:int -> ('a, 'b) t -> unit
+(** [cumprod_ x] is similar to [cumprod] but output is written to [x] *)
+
+val cummin_ : ?axis:int -> ('a, 'b) t -> unit
+(** [cummin_ x] is similar to [cummin] but output is written to [x] *)
+
+val cumprod_ : ?axis:int -> ('a, 'b) t -> unit
+(** [cumprod_ x] is similar to [cumprod] but output is written to [x] *)
