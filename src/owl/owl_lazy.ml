@@ -306,10 +306,10 @@ module Make
       | Std a          -> _eval_reduce x A.std
       | L1norm a       -> _eval_reduce x A.l1norm
       | L2norm a       -> _eval_reduce x A.l2norm
-      (*| Cumsum a       -> [|a|]
-      | Cumprod a      -> [|a|]
-      | Cummin a       -> [|a|]
-      | Cummax a       -> [|a|] *)
+      | Cumsum a       -> _eval_map1 x A.cumsum_
+      | Cumprod a      -> _eval_map1 x A.cumprod_
+      | Cummin a       -> _eval_map1 x A.cummin_
+      | Cummax a       -> _eval_map1 x A.cummax_
     )
 
   (* [f] is inpure, for [arr -> arr] *)
@@ -500,5 +500,26 @@ module Make
 
   let prod ?axis x = make_t (Prod x)
 
+  let min ?axis x = make_t (Min x)
+
+  let max ?axis x = make_t (Max x)
+
+  let mean ?axis x = make_t (Mean x)
+
+  let var ?axis x = make_t (Var x)
+
+  let std ?axis x = make_t (Std x)
+
+  let l1norm ?axis x = make_t (L1norm x)
+
+  let l2norm ?axis x = make_t (L1norm x)
+
+  let cumsum ?axis x = make_t (Cumsum x)
+
+  let cumprod ?axis x = make_t (Cumprod x)
+
+  let cummin ?axis x = make_t (Cummin x)
+
+  let cummax ?axis x = make_t (Cummax x)
 
 end

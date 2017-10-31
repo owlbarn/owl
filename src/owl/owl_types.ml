@@ -641,17 +641,17 @@ module type InpureSig = sig
 
   val std : ?axis:int -> arr -> arr
 
-  val l1norm_ : ?axis:int -> arr -> arr
+  val l1norm : ?axis:int -> arr -> arr
 
-  val l2norm_ : ?axis:int -> arr -> arr
+  val l2norm : ?axis:int -> arr -> arr
 
-  val cumsum_ : ?axis:int -> arr -> arr
+  val cumsum_ : ?axis:int -> arr -> unit
 
-  val cumprod_ : ?axis:int -> arr -> arr
+  val cumprod_ : ?axis:int -> arr -> unit
 
-  val cummin_ : ?axis:int -> arr -> arr
+  val cummin_ : ?axis:int -> arr -> unit
 
-  val cummax_ : ?axis:int -> arr -> arr
+  val cummax_ : ?axis:int -> arr -> unit
 
 end
 

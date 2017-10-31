@@ -88,6 +88,28 @@ module Make
 
   val prod : ?axis:int -> t -> t
 
+  val min : ?axis:int -> t -> t
+
+  val max : ?axis:int -> t -> t
+
+  val mean : ?axis:int -> t -> t
+
+  val var : ?axis:int -> t -> t
+
+  val std : ?axis:int -> t -> t
+
+  val l1norm : ?axis:int -> t -> t
+
+  val l2norm : ?axis:int -> t -> t
+
+  val cumsum : ?axis:int -> t -> t
+
+  val cumprod : ?axis:int -> t -> t
+
+  val cummin : ?axis:int -> t -> t
+
+  val cummax : ?axis:int -> t -> t
+
 
   (** {6 Binary operators} *)
 
