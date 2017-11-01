@@ -2593,8 +2593,8 @@ let reduce_params a x =
 
 
 (* TODO: performance can be optimised by removing embedded loops *)
-(* generic reduce funtion *)
-let reduce ?axis f a x =
+(* generic fold funtion *)
+let fold__ ?axis f a x =
   let _kind = kind x in
   let x' = flatten x |> array1_of_genarray in
   match axis with

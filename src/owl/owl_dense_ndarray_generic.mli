@@ -429,12 +429,11 @@ val foldi : ?axis:int option array -> (int array -> 'c -> 'a -> 'c) -> 'c -> ('a
 val fold : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 (** Similar to [foldi], except that the index of an element is not passed to [f]. *)
 
-
-val reduce : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+val fold__ : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [TODO: rename and add doc] *)
 
 val cumulate : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** [] *)
+(** [TODO: rename and add doc] *)
 
 val iteri_slice : int array -> (int array array -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 (** [iteri_slice s f x] iterates the slices along the passed in axis indices [s],
