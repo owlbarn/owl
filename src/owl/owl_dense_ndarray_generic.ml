@@ -2592,6 +2592,72 @@ let reduce_params a x =
   m, n, o, _shape
 
 
+(* TODO: performance can be optimised by removing embedded loops *)
+(* generic reduce funtion *)
+let reduce ?axis f a x =
+  let _kind = kind x in
+  let x' = flatten x |> array1_of_genarray in
+  match axis with
+  | Some axis -> (
+      let m, n, o, s = reduce_params axis x in
+      let start_x = ref 0 in
+      let start_y = ref 0 in
+      let incy = ref 0 in
+
+      let y = create _kind s a in
+      let y' = flatten y |> array1_of_genarray in
+
+      for i = 0 to m - 1 do
+        for j = 0 to n - 1 do
+          y'.{!start_y + !incy} <- f y'.{!start_y + !incy} x'.{!start_x + j};
+          if !incy + 1 = o then incy := 0
+          else incy := !incy + 1;
+        done;
+        start_x := !start_x + n;
+        start_y := !start_y + o;
+      done;
+      y
+    )
+  | None   -> (
+      let b = ref x'.{0} in
+      for i = 1 to (numel x) - 1 do
+        b := f !b x'.{i}
+      done;
+      create _kind [|1|] !b
+    )
+
+
+(* generic cumulate function *)
+let cumulate ?axis f x =
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None   -> d - 1
+  in
+  assert (0 <= a && a < d);
+
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = _slicez.(a) - _stride.(a) in
+  let incx = _slicez.(a) in
+  let incy = _slicez.(a) in
+  let start_x = ref 0 in
+  let start_y = ref _stride.(a) in
+
+  let y = copy x in
+  let y' = flatten y |> array1_of_genarray in
+
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      y'.{!start_y + j} <- f y'.{!start_x + j} y'.{!start_y + j}
+    done;
+    start_x := !start_x + incx;
+    start_y := !start_y + incy;
+  done;
+  y
+
+
 let sum ?axis x =
   let _kind = kind x in
   match axis with
