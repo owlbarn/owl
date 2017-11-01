@@ -1458,6 +1458,11 @@ val atan2_scalar_ : ('a, 'b) t -> 'a -> unit
   written to [x].
  *)
 
+val fmod_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [fmod_scalar_ x y] is simiar to [fmod_scalar] function but the output is
+  written to [x].
+ *)
+
 val scalar_add_ : 'a -> ('a, 'b) t -> unit
 (** [scalar_add_ a x] is simiar to [scalar_add] function but the output is
   written to [x].
@@ -1485,6 +1490,11 @@ val scalar_pow_ : 'a -> ('a, 'b) t -> unit
 
 val scalar_atan2_ : 'a -> ('a, 'b) t -> unit
 (** [scalar_atan2_ a x] is simiar to [scalar_atan2] function but the output is
+  written to [x].
+ *)
+
+val scalar_fmod_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_fmod_ a x] is simiar to [scalar_fmod] function but the output is
   written to [x].
  *)
 
@@ -1614,9 +1624,8 @@ val cumprod_ : ?axis:int -> ('a, 'b) t -> unit
 val cummin_ : ?axis:int -> ('a, 'b) t -> unit
 (** [cummin_ x] is similar to [cummin] but output is written to [x] *)
 
-val cumprod_ : ?axis:int -> ('a, 'b) t -> unit
-(** [cumprod_ x] is similar to [cumprod] but output is written to [x] *)
-
+val cummax_ : ?axis:int -> ('a, 'b) t -> unit
+(** [cummax_ x] is similar to [cummax] but output is written to [x] *)
 
 
 (* ends ehre *)

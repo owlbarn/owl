@@ -2975,6 +2975,8 @@ let pow_scalar_ x a = _owl_pow_scalar (kind x) (numel x) x x a
 
 let atan2_scalar_ x a = _owl_atan2_scalar (kind x) (numel x) x x a
 
+let fmod_scalar_ x a = _owl_fmod_scalar (kind x) (numel x) x x a
+
 let scalar_add_ a x = _owl_add_scalar (kind x) (numel x) x x a
 
 let scalar_sub_ a x = _owl_scalar_sub (kind x) (numel x) x x a
@@ -2986,6 +2988,8 @@ let scalar_div_ a x = _owl_scalar_div (kind x) (numel x) x x a
 let scalar_pow_ a x = _owl_scalar_pow (kind x) (numel x) x x a
 
 let scalar_atan2_ a x = _owl_scalar_atan2 (kind x) (numel x) x x a
+
+let scalar_fmod_ a x = _owl_scalar_fmod (kind x) (numel x) x x a
 
 let conj_ x = _owl_conj (kind x) (numel x) x x
 
