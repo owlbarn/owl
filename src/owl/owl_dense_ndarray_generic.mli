@@ -433,7 +433,11 @@ val fold__ : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
 (** [TODO: rename and add doc] *)
 
 val cumulate : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** [TODO: rename and add doc] *)
+(** [TODO: rename and add doc] [accumulate ~axis f x] scans the [x] along specified
+  [axis] using passed in function [f]. [f acc a b] returns an updated [acc] which
+  will be passed in the next call to [f acc a b]. This function can be used to
+  implement accumulate [sum] and [prod] funcgions.
+ *)
 
 val iteri_slice : int array -> (int array array -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 (** [iteri_slice s f x] iterates the slices along the passed in axis indices [s],
@@ -1261,7 +1265,6 @@ val cast_s2z : (float, float32_elt) t -> (Complex.t, complex64_elt) t
 
 val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 (** [cast_d2c x] casts [x] from [float64] to [complex32]. *)
-
 
 
 (** {6 Neural network related functions} *)
