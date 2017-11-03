@@ -430,7 +430,11 @@ val fold : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 (** Similar to [foldi], except that the index of an element is not passed to [f]. *)
 
 val fold__ : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
-(** [TODO: rename and add doc] *)
+(** [TODO: rename and add doc] [fold ~axis f a x] folds the elements in [x] from
+  left along specified [axis] using passed in function [f]. [a] is the initial
+  element and in [f acc b] is the accumulater and [b] is one of the elemets in
+  [x] along the same axis.
+ *)
 
 val cumulate : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** [TODO: rename and add doc] [accumulate ~axis f x] scans the [x] along specified
