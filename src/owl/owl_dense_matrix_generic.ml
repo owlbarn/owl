@@ -637,26 +637,16 @@ let inv x =
   |> Bigarray.genarray_of_array2
 
 
-let sum_cols x = dot x (ones (kind x) (col_num x) 1)
+let sum_cols x = sum ~axis:1 x
 
 
-let sum_rows x = dot (ones (kind x) 1 (row_num x)) x
+let sum_rows x = sum ~axis:0 x
 
 
-let mean_cols x =
-  let m, n = shape x in
-  let k = kind x in
-  let _a = (_mean_elt k) (_one k) n in
-  let y = create k n 1 _a in
-  dot x y
+let mean_cols x = mean ~axis:0 x
 
 
-let mean_rows x =
-  let m, n = shape x in
-  let k = kind x in
-  let _a = (_mean_elt k) (_one k) m in
-  let y = create k 1 m _a in
-  dot y x
+let mean_rows x = mean ~axis:1 x
 
 
 let min_cols x =
@@ -820,7 +810,6 @@ let shuffle_cols x =
 
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols
-
 
 
 let meshgrid k xa xb ya yb xn yn =
