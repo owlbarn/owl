@@ -643,10 +643,10 @@ let sum_cols x = sum ~axis:1 x
 let sum_rows x = sum ~axis:0 x
 
 
-let mean_cols x = mean ~axis:0 x
+let mean_cols x = mean ~axis:1 x
 
 
-let mean_rows x = mean ~axis:1 x
+let mean_rows x = mean ~axis:0 x
 
 
 let min_cols x =
