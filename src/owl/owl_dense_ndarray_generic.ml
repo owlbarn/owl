@@ -1445,6 +1445,27 @@ let im_z2d x =
 
 (* cast functions *)
 
+let cast
+  : type a b c d. (a, b) kind -> (c, d) t -> (a, b) t
+  = fun dst_typ x ->
+  let src_typ = kind x in
+  let y = empty dst_typ (shape x) in
+  match src_typ, dst_typ with
+  | Float32,   Float32   -> copy x
+  | Float64,   Float64   -> copy x
+  | Complex32, Complex32 -> copy x
+  | Complex64, Complex64 -> copy x
+  | Float32,   Float64   -> _owl_cast_s2d (numel x) x y; y
+  | Float64,   Float32   -> _owl_cast_d2s (numel x) x y; y
+  | Float32,   Complex32 -> _owl_cast_s2c (numel x) x y; y
+  | Float64,   Complex64 -> _owl_cast_d2z (numel x) x y; y
+  | Float32,   Complex64 -> _owl_cast_s2z (numel x) x y; y
+  | Float64,   Complex32 -> _owl_cast_d2c (numel x) x y; y
+  | Complex32, Complex64 -> _owl_cast_c2z (numel x) x y; y
+  | Complex64, Complex32 -> _owl_cast_z2c (numel x) x y; y
+  | _                    -> failwith "Owl_dense_ndarray_generic:cast"
+
+
 let cast_s2d x =
   let y = empty Float64 (shape x) in
   _owl_cast_s2d (numel x) x y;
