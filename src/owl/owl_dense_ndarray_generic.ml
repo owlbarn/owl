@@ -1466,45 +1466,21 @@ let cast
   | _                    -> failwith "Owl_dense_ndarray_generic:cast"
 
 
-let cast_s2d x =
-  let y = empty Float64 (shape x) in
-  _owl_cast_s2d (numel x) x y;
-  y
+let cast_s2d x = cast Float64 x
 
-let cast_d2s x =
-  let y = empty Float32 (shape x) in
-  _owl_cast_d2s (numel x) x y;
-  y
+let cast_d2s x = cast Float32 x
 
-let cast_c2z x =
-  let y = empty Complex64 (shape x) in
-  _owl_cast_c2z (numel x) x y;
-  y
+let cast_c2z x = cast Complex64 x
 
-let cast_z2c x =
-  let y = empty Complex32 (shape x) in
-  _owl_cast_z2c (numel x) x y;
-  y
+let cast_z2c x = cast Complex32 x
 
-let cast_s2c x =
-  let y = empty Complex32 (shape x) in
-  _owl_cast_s2c (numel x) x y;
-  y
+let cast_s2c x = cast Complex32 x
 
-let cast_d2z x =
-  let y = empty Complex64 (shape x) in
-  _owl_cast_d2z (numel x) x y;
-  y
+let cast_d2z x = cast Complex64 x
 
-let cast_s2z x =
-  let y = empty Complex64 (shape x) in
-  _owl_cast_s2z (numel x) x y;
-  y
+let cast_s2z x = cast Complex64 x
 
-let cast_d2c x =
-  let y = empty Complex32 (shape x) in
-  _owl_cast_d2c (numel x) x y;
-  y
+let cast_d2c x = cast Complex32 x
 
 
 (* clipping functions *)
