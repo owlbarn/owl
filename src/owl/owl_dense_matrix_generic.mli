@@ -1480,6 +1480,12 @@ val kron : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 (** {6 Cast functions to different number types} *)
 
+val cast : ('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
+(** [cast kind x] casts [x] of type [('c, 'd) t] to type [('a, 'b) t] specify by
+  the passed in [kind] parameter. This function is a generalisation of the other
+  type casting functions such as [cast_s2d], [cast_c2z], and etc.
+ *)
+
 val cast_s2d : (float, float32_elt) t -> (float, float64_elt) t
 (** [cast_s2d x] casts [x] from [float32] to [float64]. *)
 
