@@ -10,56 +10,10 @@ include Owl_dense_ndarray_generic
 
 (* area function *)
 
-type area = { a : int; b : int; c : int; d : int }
-
-
 let shape x =
   let x_shape = shape x in
   assert (Array.length x_shape = 2);
   x_shape.(0), x_shape.(1)
-
-
-let area a b c d = { a = a; b = b; c = c; d = d }
-
-
-let area_of x =
-  let m, n = shape x in
-  { a = 0; b = 0; c = m - 1; d = n - 1 }
-
-
-let area_of_row x i =
-  let n = (Owl_dense_ndarray_generic.shape x).(1) in
-  area i 0 i (n - 1)
-
-
-let area_of_col x i =
-  let m = (Owl_dense_ndarray_generic.shape x).(0) in
-  area 0 i (m - 1) i
-
-
-let equal_area r1 r2 =
-  ((r1.c-r1.a = r2.c-r2.a) && (r1.d-r1.b = r2.d-r2.b))
-
-
-let same_area r1 r2 = r1 = r2
-
-
-let copy_area_to x1 r1 x2 r2 =
-  assert (equal_area r1 r2);
-  for i = 0 to r1.c - r1.a do
-    for j = 0 to r1.d - r1.b do
-      set x2 [|r2.a + i; r2.b + j|]
-      (get x1 [|r1.a + i; r1.b + j|])
-    done
-  done
-
-
-let copy_to x1 x2 = Bigarray.Genarray.blit x1 x2
-
-
-let copy_area x r =
-  let y = empty (kind x) [|r.c - r.a + 1; r.d - r.b + 1|] in
-  copy_area_to x r y (area_of y)
 
 
 (* creation functions *)
@@ -321,64 +275,10 @@ let get x i j = Owl_dense_ndarray_generic.get x [|i;j|]
 let set x i j a = Owl_dense_ndarray_generic.set x [|i;j|] a
 
 
-let row_num x = shape x |> fst
-
-
-let col_num x = shape x |> snd
-
-
-let row x i =
-  let m, n = shape x in
-  assert (i < m);
-  let y = Bigarray.Genarray.slice_left x [|i|] in
-  reshape y [|1;n|]
-
-
-let col x j =
-  let m, n = shape x in
-  assert (j < n);
-  let _kind = kind x in
-  let y = empty _kind m 1 in
-  _owl_copy _kind m ~ofsx:j ~incx:n ~ofsy:0 ~incy:1 x y;
-  y
-
-
 let concat_vertical x1 x2 = concatenate ~axis:0 [|x1;x2|]
 
 
 let concat_horizontal x1 x2 = concatenate ~axis:1 [|x1;x2|]
-
-
-let copy_row_to v x i =
-  let u = row x i in
-  copy_to v u
-
-
-let copy_col_to v x i =
-  let r1 = area_of v in
-  let r2 = area_of_col x i in
-  copy_area_to v r1 x r2
-
-
-let rows x l =
-  let m, n = Array.length (l), col_num x in
-  let y = empty (kind x) m n in
-  Array.iteri (fun i j ->
-    copy_row_to (row x j) y i
-  ) l;
-  y
-
-
-let cols x l =
-  let m, n = shape x in
-  let nl = Array.length (l) in
-  let _kind = kind x in
-  let y = empty _kind m nl in
-  Array.iteri (fun i j ->
-    assert (i < nl && j < n);
-    _owl_copy _kind m ~ofsx:j ~incx:n ~ofsy:i ~incy:nl x y;
-  ) l;
-  y
 
 
 (* TODO: optimise *)
@@ -419,11 +319,6 @@ let ctranspose x =
     ofsy := !ofsy + iofy;
   done;
   y
-
-
-(* let replace_row = ... *)
-
-(* let replace_col = ... *)
 
 
 (* iteration functions *)
@@ -610,33 +505,6 @@ let foldi f a x =
   !r
 
 
-let dot x1 x2 =
-  let m, k = shape x1 in
-  let l, n = shape x2 in
-  assert (k = l);
-
-  let _kind = kind x1 in
-  let alpha = _one _kind in
-  let beta = _zero _kind in
-  let x3 = empty _kind m n in
-  let a = flatten x1 |> Bigarray.array1_of_genarray in
-  let b = flatten x2 |> Bigarray.array1_of_genarray in
-  let c = flatten x3 |> Bigarray.array1_of_genarray in
-
-  let layout = Owl_cblas.CblasRowMajor in
-  let transa = Owl_cblas.CblasNoTrans in
-  let transb = Owl_cblas.CblasNoTrans in
-  Owl_cblas.gemm layout transa transb m n k alpha a k b n beta c n;
-  x3
-
-
-let inv x =
-  assert (row_num x = col_num x);
-  let x' = Bigarray.array2_of_genarray x in
-  Owl_dense_common._eigen_inv (kind x) x'
-  |> Bigarray.genarray_of_array2
-
-
 let sum_cols x = sum ~axis:1 x
 
 
@@ -673,26 +541,6 @@ let max_rows x =
 let mean' x = _mean_elt (kind x) (sum' x) (numel x)
 
 
-let diag ?(k=0) x =
-  let m, n = shape x in
-  let l = match k >= 0 with
-    | true  -> Pervasives.(max 0 (min m (n - k)))
-    | false -> Pervasives.(max 0 (min n (m + k)))
-  in
-  let i, j = match k >= 0 with
-    | true  -> 0, k
-    | false -> Pervasives.abs k, 0
-  in
-  let y = empty (kind x) 1 l in
-  for k = 0 to l - 1 do
-    Owl_dense_ndarray_generic.(set y [|0; k|] (get x [|i + k; j + k|]))
-  done;
-  y
-
-
-let trace x = sum' (diag x)
-
-
 let add_diag x a =
   let m, n = shape x in
   let m = Pervasives.min m n in
@@ -711,29 +559,6 @@ let of_array k x m n = Owl_backend_gsl_linalg.of_array k x m n |> Bigarray.genar
 
 
 let to_array x = Owl_backend_gsl_linalg.to_array (kind x) (Bigarray.array2_of_genarray x)
-
-
-let of_arrays k x = Owl_backend_gsl_linalg.of_arrays k x |> Bigarray.genarray_of_array2
-
-
-let to_arrays x = Owl_backend_gsl_linalg.to_arrays (kind x) (Bigarray.array2_of_genarray x)
-
-
-let to_rows x = Array.init (row_num x) (fun i -> row x i)
-
-
-let to_cols x = Array.init (col_num x) (fun i -> col x i)
-
-
-let of_rows l =
-  let x = empty (kind l.(0)) (Array.length l) (col_num l.(0)) in
-  Array.iteri (fun i v -> copy_row_to v x i) l;
-  x
-
-let of_cols l =
-  let x = empty (kind l.(0)) (row_num l.(0)) (Array.length l)  in
-  Array.iteri (fun i v -> copy_col_to v x i) l;
-  x
 
 
 (* FIXME *)
@@ -765,32 +590,6 @@ let load_txt k f =
 let semidef k n =
   let x = uniform k n n in
   dot (transpose x) x
-
-
-let draw_rows ?(replacement=true) x c =
-  let a = Array.init (row_num x) (fun i -> i) in
-  let l = match replacement with
-    | true  -> Owl_stats.sample a c
-    | false -> Owl_stats.choose a c
-  in rows x l, l
-
-
-let draw_cols ?(replacement=true) x c =
-  let a = Array.init (col_num x) (fun i -> i) in
-  let l = match replacement with
-    | true  -> Owl_stats.sample a c
-    | false -> Owl_stats.choose a c
-  in cols x l, l
-
-
-let draw_rows2 ?(replacement=true) x y c =
-  let x_rows, l = draw_rows ~replacement x c in
-  x_rows, rows y l, l
-
-
-let draw_cols2 ?(replacement=true) x y c =
-  let x_cols, l = draw_rows ~replacement x c in
-  x_cols, cols y l, l
 
 
 let shuffle_rows x =

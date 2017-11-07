@@ -7,34 +7,32 @@ open Owl_types
 
 
 module Make
-  (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
+  (A : NdarraySig)
   : sig
 
   type arr = A.arr
-  type mat = M.mat
-  type elt = M.elt
+  type elt = A.elt
 
 
-  val ols : ?i:bool -> mat -> mat -> mat array
+  val ols : ?i:bool -> arr -> arr -> arr array
   (** [] *)
 
-  val ridge : ?i:bool -> ?a:float -> mat -> mat -> mat array
+  val ridge : ?i:bool -> ?a:float -> arr -> arr -> arr array
   (** [] *)
 
-  val lasso : ?i:bool -> ?a:float -> mat -> mat -> mat array
+  val lasso : ?i:bool -> ?a:float -> arr -> arr -> arr array
   (** [] *)
 
-  val svm : ?i:bool -> ?a:float -> mat -> mat -> mat array
+  val svm : ?i:bool -> ?a:float -> arr -> arr -> arr array
   (** [] *)
 
-  val logistic : ?i:bool -> mat -> mat -> mat array
+  val logistic : ?i:bool -> arr -> arr -> arr array
   (** [] *)
 
-  val exponential : ?i:bool -> mat -> mat -> elt * elt * elt
+  val exponential : ?i:bool -> arr -> arr -> elt * elt * elt
   (** [] *)
 
-  val poly : mat -> mat -> int -> mat
+  val poly : arr -> arr -> int -> arr
   (** [] *)
 
 

@@ -134,7 +134,6 @@ val triu : ?k:int -> ('a, 'b) t -> ('a, 'b) t
   [k < 0] is below the main diagonal.
  *)
 
-
 val tril : ?k:int -> ('a, 'b) t -> ('a, 'b) t
 (** [tril k x] returns the element on and below the [k]th diagonal of [x].
   [k = 0] is the main diagonal, [k > 0] is above the main diagonal, and
@@ -1479,6 +1478,12 @@ val kron : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 
 (** {6 Cast functions to different number types} *)
+
+val cast : ('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
+(** [cast kind x] casts [x] of type [('c, 'd) t] to type [('a, 'b) t] specify by
+  the passed in [kind] parameter. This function is a generalisation of the other
+  type casting functions such as [cast_s2d], [cast_c2z], and etc.
+ *)
 
 val cast_s2d : (float, float32_elt) t -> (float, float64_elt) t
 (** [cast_s2d x] casts [x] from [float32] to [float64]. *)

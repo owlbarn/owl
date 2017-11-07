@@ -15,12 +15,11 @@ open Owl_types
  *)
 
 module Make
-  (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
+  (A : NdarraySig)
   : sig
 
   type arr = A.arr
-  type elt = M.elt
+  type elt = A.elt
 
   type trace_op
 
@@ -216,12 +215,12 @@ module Make
 
     val clip_by_l2norm : t -> t -> t
 
-    val iteri : (int -> int -> elt -> unit) -> t -> unit
+    (* val iteri : (int -> int -> elt -> unit) -> t -> unit
 
     val mapi : (int -> int -> elt -> elt) -> t -> t
 
     val iter2_rows : (t -> t -> unit) -> t -> t -> unit
-
+    *)
     val map_by_row : (t -> t) -> t -> t
 
     val draw_rows2 : ?replacement:bool -> t -> t -> int -> t * t * int array
