@@ -102,6 +102,8 @@ module Make
     | Cumprod  of t
     | Cummin   of t
     | Cummax   of t
+    | Copy     of t
+    | Reshape  of t * (int array)
 
 
   let unpack_operands = function
@@ -182,6 +184,8 @@ module Make
     | Cumprod a      -> [|a|]
     | Cummin a       -> [|a|]
     | Cummax a       -> [|a|]
+    | Copy a         -> [|a|]
+    | Reshape (a, b) -> [|a|]
 
 
   let inc_operand_refnum x =
@@ -310,6 +314,8 @@ module Make
       | Cumprod a      -> _eval_map1 x A.cumprod_
       | Cummin a       -> _eval_map1 x A.cummin_
       | Cummax a       -> _eval_map1 x A.cummax_
+      | Copy a         -> _eval_map1 x ignore
+      | Reshape (a, b) -> failwith "reshape: not implmented"
     )
 
   (* [f] is inpure, for [arr -> arr] *)
@@ -341,7 +347,7 @@ module Make
     f a b;
     x.outval <- [|a|]
 
-  (* [f] is inpure, for [elt -> add -> arr] *)
+  (* [f] is inpure, for [elt -> arr -> arr] *)
   and _eval_map4 x a f =
     let operands = unpack_operands x.op in
     _eval_term operands.(0);
@@ -366,6 +372,38 @@ module Make
 
 
   let eval x = _eval_term x
+
+
+  (* creation functions *)
+
+  let empty d = A.empty d |> of_ndarray
+
+  let zeros d = A.zeros d |> of_ndarray
+
+  let ones d = A.ones d |> of_ndarray
+
+  let uniform ?scale d = A.uniform ?scale d |> of_ndarray
+
+  let gaussian ?sigma d = A.gaussian ?sigma d |> of_ndarray
+
+  let bernoulli ?p ?seed d = A.bernoulli ?p ?seed d |> of_ndarray
+
+
+  (* properties and manipulations *)
+
+  let shape x = to_ndarray x |> A.shape
+
+  let numel x = to_ndarray x |> A.numel
+
+  let get x i = A.get (to_ndarray x) i
+
+  let set x i a = A.set (to_ndarray x) i a
+
+  let copy x = make_t (Copy x)
+
+  let reset x = A.reset (to_ndarray x)
+
+  let reshape x d = make_t (Reshape (x, d))
 
 
   (* math functions *)
@@ -521,5 +559,6 @@ module Make
   let cummin ?axis x = make_t (Cummin x)
 
   let cummax ?axis x = make_t (Cummax x)
+
 
 end

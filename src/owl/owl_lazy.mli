@@ -18,6 +18,38 @@ module Make
   type elt = A.elt
 
 
+  (** {6 Creation functions} *)
+
+  val empty : int array -> t
+
+  val zeros : int array -> t
+
+  val ones : int array -> t
+
+  val uniform : ?scale:elt -> int array -> t
+
+  val gaussian : ?sigma:elt -> int array -> t
+
+  val bernoulli : ?p:float -> ?seed:int -> int array -> t
+
+
+  (** {6 Properties and manipulations} *)
+
+  val shape : t -> int array
+
+  val numel : t -> int
+
+  val get : t -> int array -> elt
+
+  val set : t -> int array -> elt -> unit
+
+  val copy : t -> t
+
+  val reset : t -> unit
+
+  val reshape : t -> int array -> t
+
+
   (** {6 Unary operators} *)
 
   val neg : t -> t
