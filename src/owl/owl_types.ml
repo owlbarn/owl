@@ -103,7 +103,7 @@ module type NdarraySig = sig
 
   val set_slice : index list -> arr -> arr -> unit
 
-  val clone : arr -> arr
+  val copy : arr -> arr
 
   val reset : arr -> unit
 
@@ -169,19 +169,19 @@ module type NdarraySig = sig
 
   val atanh : arr -> arr
 
-  val sum : arr -> elt
+  val sum' : arr -> elt
 
-  val sum_ : ?axis:int -> arr -> arr
+  val sum : ?axis:int -> arr -> arr
 
   val sum_slices : ?axis:int -> arr -> arr
 
   val signum : arr -> arr
 
-  val l1norm : arr -> elt
+  val l1norm' : arr -> elt
 
-  val l2norm : arr -> elt
+  val l2norm' : arr -> elt
 
-  val l2norm_sqr : arr -> elt
+  val l2norm_sqr' : arr -> elt
 
   val sigmoid : arr -> arr
 
@@ -313,7 +313,7 @@ module type MatrixSig = sig
 
   val rows : mat -> int array -> mat
 
-  val clone : mat -> mat
+  val copy : mat -> mat
 
   val reset : mat -> unit
 
@@ -351,7 +351,9 @@ module type MatrixSig = sig
 
   (* mathematical functions *)
 
-  val max : mat -> elt
+  val min' : mat -> elt
+
+  val max' : mat -> elt
 
   val abs : mat -> mat
 
@@ -403,9 +405,9 @@ module type MatrixSig = sig
 
   val trace : mat -> elt
 
-  val sum : mat -> elt
+  val sum' : mat -> elt
 
-  val sum_ : ?axis:int -> mat -> mat
+  val sum : ?axis:int -> mat -> mat
 
   val sum_rows : mat -> mat
 
@@ -413,11 +415,11 @@ module type MatrixSig = sig
 
   val transpose : mat -> mat
 
-  val l1norm : mat -> elt
+  val l1norm' : mat -> elt
 
-  val l2norm : mat -> elt
+  val l2norm' : mat -> elt
 
-  val l2norm_sqr : mat -> elt
+  val l2norm_sqr' : mat -> elt
 
   val sigmoid : mat -> mat
 
@@ -475,13 +477,181 @@ module type InpureSig = sig
 
   type elt
 
-  val clone : arr -> arr
+  val shape : arr -> int array
+
+  val copy : arr -> arr
+
+  val add : arr -> arr -> arr
+
+  val sub : arr -> arr -> arr
+
+  val mul : arr -> arr -> arr
+
+  val div : arr -> arr -> arr
+
+  val pow : arr -> arr -> arr
+
+  val atan2 : arr -> arr -> arr
+
+  val hypot : arr -> arr -> arr
+
+  val fmod : arr -> arr -> arr
+
+  val min2 : arr -> arr -> arr
+
+  val max2 : arr -> arr -> arr
 
   val add_ : arr -> arr -> unit
+
+  val sub_ : arr -> arr -> unit
+
+  val mul_ : arr -> arr -> unit
+
+  val div_ : arr -> arr -> unit
+
+  val pow_ : arr -> arr -> unit
+
+  val atan2_ : arr -> arr -> unit
+
+  val hypot_ : arr -> arr -> unit
+
+  val fmod_ : arr -> arr -> unit
+
+  val min2_ : arr -> arr -> unit
+
+  val max2_ : arr -> arr -> unit
+
+  val add_scalar_ : arr -> elt -> unit
+
+  val sub_scalar_ : arr -> elt -> unit
+
+  val mul_scalar_ : arr -> elt -> unit
+
+  val div_scalar_ : arr -> elt -> unit
+
+  val pow_scalar_ : arr -> elt -> unit
+
+  val atan2_scalar_ : arr -> elt -> unit
+
+  val fmod_scalar_ : arr -> elt -> unit
+
+  val scalar_add_ : elt -> arr -> unit
+
+  val scalar_sub_ : elt -> arr -> unit
+
+  val scalar_mul_ : elt -> arr -> unit
+
+  val scalar_div_ : elt -> arr -> unit
+
+  val scalar_pow_ : elt -> arr -> unit
+
+  val scalar_atan2_ : elt -> arr -> unit
+
+  val scalar_fmod_ : elt -> arr -> unit
+
+  val neg_ : arr -> unit
+
+  val conj_ : arr -> unit
+
+  val reci_ : arr -> unit
+
+  val signum_ : arr -> unit
+
+  val sqr_ : arr -> unit
+
+  val sqrt_ : arr -> unit
+
+  val cbrt_ : arr -> unit
+
+  val exp_ : arr -> unit
+
+  val exp2_ : arr -> unit
+
+  val exp10_ : arr -> unit
+
+  val expm1_ : arr -> unit
+
+  val log_ : arr -> unit
+
+  val log2_ : arr -> unit
+
+  val log10_ : arr -> unit
+
+  val log1p_ : arr -> unit
 
   val sin_ : arr -> unit
 
   val cos_ : arr -> unit
+
+  val tan_ : arr -> unit
+
+  val asin_ : arr -> unit
+
+  val acos_ : arr -> unit
+
+  val atan_ : arr -> unit
+
+  val sinh_ : arr -> unit
+
+  val cosh_ : arr -> unit
+
+  val tanh_ : arr -> unit
+
+  val asinh_ : arr -> unit
+
+  val acosh_ : arr -> unit
+
+  val atanh_ : arr -> unit
+
+  val floor_ : arr -> unit
+
+  val ceil_ : arr -> unit
+
+  val round_ : arr -> unit
+
+  val trunc_ : arr -> unit
+
+  val fix_ : arr -> unit
+
+  val erf_ : arr -> unit
+
+  val erfc_ : arr -> unit
+
+  val relu_ : arr -> unit
+
+  val softplus_ : arr -> unit
+
+  val softsign_ : arr -> unit
+
+  val softmax_ : arr -> unit
+
+  val sigmoid_ : arr -> unit
+
+  val sum : ?axis:int -> arr -> arr
+
+  val prod : ?axis:int -> arr -> arr
+
+  val min : ?axis:int -> arr -> arr
+
+  val max : ?axis:int -> arr -> arr
+
+  val mean : ?axis:int -> arr -> arr
+
+  val var : ?axis:int -> arr -> arr
+
+  val std : ?axis:int -> arr -> arr
+
+  val l1norm : ?axis:int -> arr -> arr
+
+  val l2norm : ?axis:int -> arr -> arr
+
+  val cumsum_ : ?axis:int -> arr -> unit
+
+  val cumprod_ : ?axis:int -> arr -> unit
+
+  val cummin_ : ?axis:int -> arr -> unit
+
+  val cummax_ : ?axis:int -> arr -> unit
 
 end
 

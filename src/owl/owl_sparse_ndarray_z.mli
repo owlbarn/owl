@@ -43,7 +43,7 @@ val set : arr -> int array -> elt -> unit
 
 val slice : int option array -> arr -> arr
 
-val clone : arr -> arr
+val copy : arr -> arr
 
 val flatten : arr -> arr
 
@@ -139,7 +139,7 @@ val neg : arr -> arr
 
 val sum : arr -> elt
 
-val average : arr -> elt
+val mean : arr -> elt
 
 
 (** {6 Binary mathematical operations } *)

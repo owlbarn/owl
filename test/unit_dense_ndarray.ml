@@ -61,14 +61,14 @@ module To_test = struct
     M.set z [|1|] 3.;
     M.equal y z
 
-  let clone () = (M.clone x0) = x0
+  let copy () = (M.copy x0) = x0
 
   let fill () =
     let y = M.empty Float64 [|2;2;3|] in
     M.fill y 2.;
-    M.sum y = 24.
+    M.sum' y = 24.
 
-  let map () = M.map (fun a -> a +. 1.) x0 |> M.sum = 18.
+  let map () = M.map (fun a -> a +. 1.) x0 |> M.sum' = 18.
 
   let fold () = M.fold (fun c a -> c +. a) 0. x0 = 6.
 
@@ -80,21 +80,21 @@ module To_test = struct
 
   let add () = M.equal (M.add x0 x1) x2
 
-  let mul () = M.mul x0 x1 |> M.sum = 13.
+  let mul () = M.mul x0 x1 |> M.sum' = 13.
 
-  let add_scalar () = M.add_scalar x0 2. |> M.sum = 30.
+  let add_scalar () = M.add_scalar x0 2. |> M.sum' = 30.
 
-  let mul_scalar () = M.mul_scalar x0 2. |> M.sum = 12.
+  let mul_scalar () = M.mul_scalar x0 2. |> M.sum' = 12.
 
   let abs () = M.equal (M.abs x0) x0
 
   let neg () = M.equal (M.map (fun a -> (-1.) *. a) x0) (M.neg x0)
 
-  let sum () = M.sum x0 = 6.
+  let sum' () = M.sum' x0 = 6.
 
-  let min () = M.min x0 = 0.
+  let min' () = M.min' x0 = 0.
 
-  let max () = M.max x0 = 3.
+  let max' () = M.max' x0 = 3.
 
   let minmax_i () =
     let (a, i), (b, j) = M.minmax_i x0 in
@@ -128,7 +128,7 @@ module To_test = struct
     ) x1 = [| [|0;1;1|] |]
 
   let transpose () =
-    let y = M.clone x0 in
+    let y = M.copy x0 in
     let y = M.transpose y in
     M.get y [|1;0;0|] = 1. &&
     M.get y [|0;1;0|] = 2. &&
@@ -138,7 +138,7 @@ module To_test = struct
 
   let reshape () = M.get (M.reshape x0 [|2;3;2|]) [|0;1;1|] = 2.
 
-  let l2norm () = M.l2norm vec = 5.
+  let l2norm' () = M.l2norm' vec = {Complex.re=5.0;im=0.}
 
   let save_load () =
     M.save x0 "ds_nda.tmp";
@@ -196,8 +196,8 @@ let set () =
 let get_slice () =
   Alcotest.(check bool) "get_slice" true (To_test.get_slice ())
 
-let clone () =
-  Alcotest.(check bool) "clone" true (To_test.clone ())
+let copy () =
+  Alcotest.(check bool) "copy" true (To_test.copy ())
 
 let fill () =
   Alcotest.(check bool) "fill" true (To_test.fill ())
@@ -229,14 +229,14 @@ let abs () =
 let neg () =
   Alcotest.(check bool) "neg" true (To_test.neg ())
 
-let sum () =
-  Alcotest.(check bool) "sum" true (To_test.sum ())
+let sum' () =
+  Alcotest.(check bool) "sum'" true (To_test.sum' ())
 
-let min () =
-  Alcotest.(check bool) "min" true (To_test.min ())
+let min' () =
+  Alcotest.(check bool) "min'" true (To_test.min' ())
 
-let max () =
-  Alcotest.(check bool) "max" true (To_test.max ())
+let max' () =
+  Alcotest.(check bool) "max'" true (To_test.max' ())
 
 let minmax_i () =
   Alcotest.(check bool) "minmax_i" true (To_test.minmax_i ())
@@ -286,8 +286,8 @@ let flatten () =
 let reshape () =
   Alcotest.(check bool) "reshape" true (To_test.reshape ())
 
-let l2norm () =
-  Alcotest.(check bool) "l2norm" true (To_test.l2norm ())
+let l2norm' () =
+  Alcotest.(check bool) "l2norm'" true (To_test.l2norm' ())
 
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
@@ -311,7 +311,7 @@ let test_set = [
   "get", `Slow, get;
   "set", `Slow, set;
   "get_slice", `Slow, get_slice;
-  "clone", `Slow, clone;
+  "copy", `Slow, copy;
   "fill", `Slow, fill;
   "map", `Slow, map;
   "fold", `Slow, fold;
@@ -322,9 +322,9 @@ let test_set = [
   "mul_scalar", `Slow, mul_scalar;
   "abs", `Slow, abs;
   "neg", `Slow, neg;
-  "sum", `Slow, sum;
-  "min", `Slow, min;
-  "max", `Slow, max;
+  "sum'", `Slow, sum';
+  "min'", `Slow, min';
+  "max'", `Slow, max';
   "minmax_i", `Slow, minmax_i;
   "is_zero", `Slow, is_zero;
   "is_positive", `Slow, is_positive;
@@ -341,7 +341,7 @@ let test_set = [
   "transpose", `Slow, transpose;
   "flatten", `Slow, flatten;
   "reshape", `Slow, reshape;
-  "l2norm", `Slow, l2norm;
+  "l2norm'", `Slow, l2norm';
   "save_load", `Slow, save_load;
   "broadcast_add", `Slow, broadcast_add;
   "reverse", `Slow, reverse;

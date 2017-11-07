@@ -14,14 +14,14 @@ type t =
   | F64   of (float, Bigarray.float64_elt) Owl_dense_ndarray_generic.t
   | Trace of trace
 and trace = {
-  mutable op     : trace_op;
+  mutable op     : op;
   mutable input  : trace array;
   mutable outval : t array;        (* output value, not Trace *)
   mutable outmem : cl_mem array;
   mutable events : cl_event array;
   mutable refnum : int;
 }
-and trace_op =
+and op =
   | Noop         of string
   | Map          of string
   | MapN         of string

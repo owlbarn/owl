@@ -87,13 +87,13 @@ val sub_left : arr -> int -> int -> arr
 
 val slice_left : arr -> int array -> arr
 
-val copy : arr -> arr -> unit
+val copy_to : arr -> arr -> unit
 
 val reset : arr -> unit
 
 val fill : arr -> elt -> unit
 
-val clone : arr -> arr
+val copy : arr -> arr
 
 val resize : ?head:bool -> arr -> int array -> arr
 
@@ -263,17 +263,37 @@ val load : string -> arr
 
 (** {6 Unary mathematical operations } *)
 
-val sum : arr -> elt
+val sum : ?axis:int -> arr -> arr
 
-val sum_ : ?axis:int -> arr -> arr
+val sum': arr -> elt
 
-val prod : ?axis:int option array -> arr -> elt
+val prod : ?axis:int -> arr -> arr
 
-val min : arr -> elt
+val prod' : arr -> elt
 
-val max : arr -> elt
+val mean : ?axis:int -> arr -> arr
 
-val minmax : arr -> elt * elt
+val mean': arr -> elt
+
+val var : ?axis:int -> arr -> arr
+
+val var': arr -> elt
+
+val std : ?axis:int -> arr -> arr
+
+val std': arr -> elt
+
+val min : ?axis:int -> arr -> arr
+
+val min' : arr -> elt
+
+val max : ?axis:int -> arr -> arr
+
+val max' : arr -> elt
+
+val minmax : ?axis:int -> arr -> arr * arr
+
+val minmax' : arr -> elt * elt
 
 val min_i : arr -> elt * int array
 
@@ -373,13 +393,13 @@ val softmax : arr -> arr
 
 val sigmoid : arr -> arr
 
-val log_sum_exp : arr -> float
+val log_sum_exp' : arr -> float
 
-val l1norm : arr -> float
+val l1norm' : arr -> elt
 
-val l2norm : arr -> float
+val l2norm' : arr -> elt
 
-val l2norm_sqr : arr -> float
+val l2norm_sqr' : arr -> elt
 
 val cumsum : ?axis:int -> arr -> arr
 
@@ -440,11 +460,11 @@ val fmod_scalar : arr -> elt -> arr
 
 val scalar_fmod : elt -> arr -> arr
 
-val ssqr : arr -> elt -> elt
+val ssqr' : arr -> elt -> elt
 
-val ssqr_diff : arr -> arr -> elt
+val ssqr_diff' : arr -> arr -> elt
 
-val cross_entropy : arr -> arr -> float
+val cross_entropy' : arr -> arr -> float
 
 val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
 

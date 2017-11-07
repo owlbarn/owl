@@ -258,7 +258,7 @@ module Make
 
     let copy l =
       let l' = create l.out_shape.(0) l.init_typ in
-      mkpri l |> Array.map clone_primal' |> update l';
+      mkpri l |> Array.map copy_primal' |> update l';
       l'
 
     let run x l = Maths.((x *@ l.w) + l.b)
@@ -323,7 +323,7 @@ module Make
 
     let copy l =
       let l' = create l.out_shape.(0) l.init_typ in
-      mkpri l |> Array.map clone_primal' |> update l';
+      mkpri l |> Array.map copy_primal' |> update l';
       l'
 
     let run x l = Maths.(x *@ l.w)
@@ -438,7 +438,7 @@ module Make
 
     let copy l =
       let l' = create l.hiddens l.out_shape.(0) l.act l.init_typ in
-      mkpri l |> Array.map clone_primal' |> update l';
+      mkpri l |> Array.map copy_primal' |> update l';
       l'
 
     let run x l =
@@ -629,7 +629,7 @@ module Make
 
     let copy l =
       let l' = create l.out_shape.(0) l.init_typ in
-      mkpri l |> Array.map clone_primal' |> update l';
+      mkpri l |> Array.map copy_primal' |> update l';
       l'
 
     let run x l =
@@ -802,7 +802,7 @@ module Make
 
     let copy l =
       let l' = create l.out_shape.(0) l.init_typ in
-      mkpri l |> Array.map clone_primal' |> update l';
+      mkpri l |> Array.map copy_primal' |> update l';
       l'
 
     let run x l =
@@ -907,7 +907,7 @@ module Make
 
     let copy l =
       let l' = create l.padding l.kernel l.stride l.init_typ in
-      mkpri l |> Array.map clone_primal' |> update l';
+      mkpri l |> Array.map copy_primal' |> update l';
       l'
 
     let run x l = Maths.((conv1d ~padding:l.padding x l.w l.stride) + l.b)
@@ -998,7 +998,7 @@ module Make
 
     let copy l =
       let l' = create l.padding l.kernel l.stride l.init_typ in
-      mkpri l |> Array.map clone_primal' |> update l';
+      mkpri l |> Array.map copy_primal' |> update l';
       l'
 
     let run x l = Maths.((conv2d ~padding:l.padding x l.w l.stride) + l.b)
@@ -1092,7 +1092,7 @@ module Make
 
     let copy l =
       let l' = create l.padding l.kernel l.stride l.init_typ in
-      mkpri l |> Array.map clone_primal' |> update l';
+      mkpri l |> Array.map copy_primal' |> update l';
       l'
 
     let run x l = Maths.((conv3d ~padding:l.padding x l.w l.stride) + l.b)
@@ -1169,7 +1169,7 @@ module Make
 
     let copy l =
       let l' = create l.out_shape.(0) l.init_typ in
-      mkpri l |> Array.map clone_primal' |> update l';
+      mkpri l |> Array.map copy_primal' |> update l';
       l'
 
     let run x l =
@@ -2041,14 +2041,14 @@ module Make
 
     let copy l =
       let l' = create ~training:l.training ~decay:(unpack_flt l.decay) ~mu:(unpack_arr l.mu) ~var:(unpack_arr l.var) l.axis in
-      mkpri l |> Array.map clone_primal' |> update l';
+      mkpri l |> Array.map copy_primal' |> update l';
       l'
 
     let run x l =
       let a = F (1. /. float_of_int (shape x).(l.axis)) in
       if l.training = true then (
-        let mu' = Maths.(a * (sum_ ~axis:l.axis x)) in
-        let var' = Maths.(a * (sum_ ~axis:l.axis (x * x))) in
+        let mu' = Maths.(a * (sum ~axis:l.axis x)) in
+        let var' = Maths.(a * (sum ~axis:l.axis (x * x))) in
         l.mu <- Maths.(l.decay * l.mu + (F 1. - l.decay) * mu') |> primal';
         l.var <- Maths.(l.decay * l.var + (F 1. - l.decay) * var') |> primal';
       );
@@ -2251,7 +2251,7 @@ module Make
 
     let copy l =
       let l' = create l.in_dim l.out_shape.(1) l.init_typ in
-      mkpri l |> Array.map clone_primal' |> update l';
+      mkpri l |> Array.map copy_primal' |> update l';
       l'
 
     let run x l =

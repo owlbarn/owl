@@ -139,13 +139,13 @@ module type BasicSig = sig
 
   val slice_left : arr -> int array -> arr
 
-  val copy : arr -> arr -> unit
+  val copy_to : arr -> arr -> unit
 
   val reset : arr -> unit
 
   val fill : arr -> elt -> unit
 
-  val clone : arr -> arr
+  val copy : arr -> arr
 
   val reshape : arr -> int array -> arr
 
@@ -266,9 +266,9 @@ module type BasicSig = sig
   val load : string -> arr
 
 
-  val sum : arr -> elt
+  val sum' : arr -> elt
 
-  val prod : ?axis:int option array -> arr -> elt
+  val prod' : arr -> elt
 
   val add : arr -> arr -> arr
 
@@ -350,11 +350,11 @@ module Make_Basic
 
   let slice_left x i = M.slice_left (unpack_box x) i |> pack_box
 
-  let copy src dst = M.copy (unpack_box src) (unpack_box dst)
+  let copy_to src dst = M.copy_to (unpack_box src) (unpack_box dst)
 
   let fill x a = M.fill (unpack_box x) (unpack_elt a)
 
-  let clone x = M.clone (unpack_box x) |> pack_box
+  let copy x = M.copy (unpack_box x) |> pack_box
 
   let reshape x s = M.reshape (unpack_box x) s |> pack_box
 
@@ -475,9 +475,9 @@ module Make_Basic
   let load f = M.load f |> pack_box
 
 
-  let sum x = M.sum (unpack_box x) |> pack_elt
+  let sum' x = M.sum' (unpack_box x) |> pack_elt
 
-  let prod x = M.prod (unpack_box x) |> pack_elt
+  let prod' x = M.prod' (unpack_box x) |> pack_elt
 
   let add x y = M.add (unpack_box x) (unpack_box y) |> pack_box
 
@@ -513,11 +513,11 @@ module type SD_Sig = sig
   type arr
   type elt
 
-  val min : arr -> elt
+  val min' : arr -> elt
 
-  val max : arr -> elt
+  val max' : arr -> elt
 
-  val minmax : arr -> elt * elt
+  val minmax' : arr -> elt * elt
 
   val min_i : arr -> elt * int array
 
@@ -603,13 +603,13 @@ module type SD_Sig = sig
 
   val sigmoid : arr -> arr
 
-  val log_sum_exp : arr -> elt
+  val log_sum_exp' : arr -> elt
 
-  val l1norm : arr -> elt
+  val l1norm' : arr -> elt
 
-  val l2norm : arr -> elt
+  val l2norm' : arr -> elt
 
-  val l2norm_sqr : arr -> elt
+  val l2norm_sqr' : arr -> elt
 
   val pow : arr -> arr -> arr
 
@@ -635,11 +635,11 @@ module type SD_Sig = sig
 
   val scalar_fmod : elt -> arr -> arr
 
-  val ssqr : arr -> elt -> elt
+  val ssqr' : arr -> elt -> elt
 
-  val ssqr_diff : arr -> arr -> elt
+  val ssqr_diff' : arr -> arr -> elt
 
-  val cross_entropy : arr -> arr -> elt
+  val cross_entropy' : arr -> arr -> elt
 
 end
 
@@ -651,11 +651,11 @@ module Make_SD
 
   open P
 
-  let min x = M.min (unpack_box x) |> pack_elt
+  let min' x = M.min' (unpack_box x) |> pack_elt
 
-  let max x = M.max (unpack_box x) |> pack_elt
+  let max' x = M.max' (unpack_box x) |> pack_elt
 
-  let minmax x = let a, b = M.minmax (unpack_box x) in (pack_elt a, pack_elt b)
+  let minmax' x = let a, b = M.minmax' (unpack_box x) in (pack_elt a, pack_elt b)
 
   let min_i x = let a, i = M.min_i (unpack_box x) in (pack_elt a, i)
 
@@ -741,13 +741,13 @@ module Make_SD
 
   let sigmoid x = M.sigmoid (unpack_box x) |> pack_box
 
-  let log_sum_exp x = M.log_sum_exp (unpack_box x) |> pack_elt
+  let log_sum_exp' x = M.log_sum_exp' (unpack_box x) |> pack_elt
 
-  let l1norm x = M.l1norm (unpack_box x) |> pack_elt
+  let l1norm' x = M.l1norm' (unpack_box x) |> pack_elt
 
-  let l2norm x = M.l2norm (unpack_box x) |> pack_elt
+  let l2norm' x = M.l2norm' (unpack_box x) |> pack_elt
 
-  let l2norm_sqr x = M.l2norm_sqr (unpack_box x) |> pack_elt
+  let l2norm_sqr' x = M.l2norm_sqr' (unpack_box x) |> pack_elt
 
 
   let pow x y = M.pow (unpack_box x) (unpack_box y) |> pack_box
@@ -774,11 +774,11 @@ module Make_SD
 
   let scalar_fmod a x = M.scalar_fmod (unpack_elt a) (unpack_box x) |> pack_box
 
-  let ssqr x a = M.ssqr (unpack_box x) (unpack_elt a) |> pack_elt
+  let ssqr' x a = M.ssqr' (unpack_box x) (unpack_elt a) |> pack_elt
 
-  let ssqr_diff x y = M.ssqr_diff (unpack_box x) (unpack_box y) |> pack_elt
+  let ssqr_diff' x y = M.ssqr_diff' (unpack_box x) (unpack_box y) |> pack_elt
 
-  let cross_entropy x y = M.cross_entropy (unpack_box x) (unpack_box y) |> pack_elt
+  let cross_entropy' x y = M.cross_entropy' (unpack_box x) (unpack_box y) |> pack_elt
 
 end
 
@@ -795,9 +795,9 @@ module type CZ_Sig = sig
 
   val im : arr -> cast_arr
 
-  val sum : arr -> elt
+  val sum' : arr -> elt
 
-  val prod : ?axis:int option array -> arr -> elt
+  val prod' : arr -> elt
 
   val abs : arr -> cast_arr
 
@@ -809,15 +809,15 @@ module type CZ_Sig = sig
 
   val reci : arr -> arr
 
-  val l1norm : arr -> float
+  val l1norm' : arr -> elt
 
-  val l2norm : arr -> float
+  val l2norm' : arr -> elt
 
-  val l2norm_sqr : arr -> float
+  val l2norm_sqr' : arr -> elt
 
-  val ssqr : arr -> elt -> elt
+  val ssqr' : arr -> elt -> elt
 
-  val ssqr_diff : arr -> arr -> elt
+  val ssqr_diff' : arr -> arr -> elt
 
 end
 
@@ -829,8 +829,6 @@ module Make_CZ
 
   open P
 
-  let pack_cast_elt x = F x
-
   let re x = M.re (unpack_box x) |> pack_cast_box
 
   let im x = M.im (unpack_box x) |> pack_cast_box
@@ -841,23 +839,23 @@ module Make_CZ
 
   let conj x = M.conj (unpack_box x) |> pack_box
 
-  let sum x = M.sum (unpack_box x) |> pack_elt
+  let sum' x = M.sum' (unpack_box x) |> pack_elt
 
-  let prod x = M.prod (unpack_box x) |> pack_elt
+  let prod' x = M.prod' (unpack_box x) |> pack_elt
 
   let neg x = M.neg (unpack_box x) |> pack_box
 
   let reci x = M.reci (unpack_box x) |> pack_box
 
-  let l1norm x = M.l1norm (unpack_box x) |> pack_cast_elt
+  let l1norm' x = M.l1norm' (unpack_box x) |> pack_elt
 
-  let l2norm x = M.l2norm (unpack_box x) |> pack_cast_elt
+  let l2norm' x = M.l2norm' (unpack_box x) |> pack_elt
 
-  let l2norm_sqr x = M.l2norm_sqr (unpack_box x) |> pack_cast_elt
+  let l2norm_sqr' x = M.l2norm_sqr' (unpack_box x) |> pack_elt
 
-  let ssqr x a = M.ssqr (unpack_box x) (unpack_elt a) |> pack_elt
+  let ssqr' x a = M.ssqr' (unpack_box x) (unpack_elt a) |> pack_elt
 
-  let ssqr_diff x y = M.ssqr_diff (unpack_box x) (unpack_box y) |> pack_elt
+  let ssqr_diff' x y = M.ssqr_diff' (unpack_box x) (unpack_box y) |> pack_elt
 
 end
 

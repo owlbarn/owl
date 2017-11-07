@@ -99,10 +99,10 @@ let _check_same_shape x y =
   if same_shape x y = false then
     failwith "Owl_sparse_ndarray: _check_same_shape fails."
 
-let clone x = {
+let copy x = {
   s = Array.copy x.s;
   h = Hashtbl.copy x.h;
-  d = Owl_utils.array1_clone x.d;
+  d = Owl_utils.array1_copy x.d;
 }
 
 let get x i =
@@ -131,7 +131,7 @@ let set x i a =
 
 let flatten x =
   let s = _calc_stride (shape x) in
-  let y = clone x in
+  let y = copy x in
   Hashtbl.iter (fun i j ->
     let i' = _index_nd_1d i s in
     Hashtbl.remove y.h i;
@@ -141,7 +141,7 @@ let flatten x =
   y
 
 let reshape x s =
-  let y = clone x in
+  let y = copy x in
   let s0 = _calc_stride (shape x) in
   let s1 = _calc_stride s in
   let i1 = Array.copy s in
@@ -188,12 +188,12 @@ let iteri ?axis f x =
 let iter ?axis f x = iteri ?axis (fun _ y -> f y) x
 
 let mapi ?axis f x =
-  let y = clone x in
+  let y = copy x in
   iteri ?axis (fun i z -> set y i (f i z)) y;
   y
 
 let map ?axis f x =
-  let y = clone x in
+  let y = copy x in
   iteri ?axis (fun i z -> set y i (f z)) y;
   y
 
@@ -220,7 +220,7 @@ let iter_nz ?axis f x =
   | None   -> _iter_all_axis_nz f x
 
 let mapi_nz ?axis f x =
-  let y = clone x in (
+  let y = copy x in (
   match axis with
   | Some a -> Hashtbl.iter (fun i j ->
     if _in_slice a i = true then y.d.{j} <- f i (x.d.{j})
@@ -233,7 +233,7 @@ let map_nz ?axis f x =
   match axis with
   | Some a -> mapi_nz ~axis:a (fun _ z -> f z) x
   | None   -> (
-    let y = clone x in
+    let y = copy x in
     for i = 0 to (nnz y) do
       let a = f (Array1.unsafe_get y.d i) in
       Array1.unsafe_set y.d i a
@@ -456,7 +456,7 @@ let sum x =
   let k = kind x in
   fold_nz (_add_elt k) (_zero k) x
 
-let average x = (_average_elt (kind x)) (sum x) (numel x)
+let mean x = (_mean_elt (kind x)) (sum x) (numel x)
 
 let equal x1 x2 =
   _check_same_shape x1 x2;

@@ -57,7 +57,7 @@ let copy_area_to x1 r1 x2 r2 =
 let copy_to x1 x2 = Bigarray.Genarray.blit x1 x2
 
 
-let clone_area x r =
+let copy_area x r =
   let y = empty (kind x) [|r.c - r.a + 1; r.d - r.b + 1|] in
   copy_area_to x r y (area_of y)
 
@@ -174,7 +174,7 @@ let symmetric ?(upper=true) x =
   let _kind = kind x in
   let m, n = shape x in
   assert (m = n);
-  let y = clone x in
+  let y = copy x in
 
   let ofs = ref 0 in
   let incx, incy =
@@ -216,7 +216,7 @@ let hermitian ?(upper=true) x =
   let m, n = shape x in
   assert (m = n);
 
-  let y = clone x in
+  let y = copy x in
   let _y = flatten y |> Bigarray.array1_of_genarray in
   let _conj_op = _owl_conj (kind x) in
   let ofs = ref 0 in
@@ -540,7 +540,7 @@ let map_by_col d f x = mapi_by_col d (fun _ y -> f y) x
 
 let mapi_at_row f x i =
   let v = mapi (fun _ j y -> f i j y) (row x i) in
-  let y = clone x in
+  let y = copy x in
   copy_row_to v y i; y
 
 
@@ -549,7 +549,7 @@ let map_at_row f x i = mapi_at_row (fun _ _ y -> f y) x i
 
 let mapi_at_col f x j =
   let v = mapi (fun i _ y -> f i j y) (col x j) in
-  let y = clone x in
+  let y = copy x in
   copy_col_to v y j; y
 
 
@@ -637,26 +637,16 @@ let inv x =
   |> Bigarray.genarray_of_array2
 
 
-let sum_cols x = dot x (ones (kind x) (col_num x) 1)
+let sum_cols x = sum ~axis:1 x
 
 
-let sum_rows x = dot (ones (kind x) 1 (row_num x)) x
+let sum_rows x = sum ~axis:0 x
 
 
-let average_cols x =
-  let m, n = shape x in
-  let k = kind x in
-  let _a = (_average_elt k) (_one k) n in
-  let y = create k n 1 _a in
-  dot x y
+let mean_cols x = mean ~axis:1 x
 
 
-let average_rows x =
-  let m, n = shape x in
-  let k = kind x in
-  let _a = (_average_elt k) (_one k) m in
-  let y = create k 1 m _a in
-  dot y x
+let mean_rows x = mean ~axis:0 x
 
 
 let min_cols x =
@@ -680,9 +670,7 @@ let max_rows x =
   ) x
 
 
-let average x =
-  let _op = _average_elt (kind x) in
-  _op (sum x) (numel x)
+let mean' x = _mean_elt (kind x) (sum' x) (numel x)
 
 
 let diag ?(k=0) x =
@@ -702,13 +690,13 @@ let diag ?(k=0) x =
   y
 
 
-let trace x = sum (diag x)
+let trace x = sum' (diag x)
 
 
 let add_diag x a =
   let m, n = shape x in
   let m = Pervasives.min m n in
-  let y = clone x in
+  let y = copy x in
   let _op = _add_elt (kind x) in
   for i = 0 to m - 1 do
     let b = Owl_dense_ndarray_generic.get x [|i;i|] in
@@ -807,7 +795,7 @@ let draw_cols2 ?(replacement=true) x y c =
 
 let shuffle_rows x =
   let m, n = shape x in
-  let y = clone x in
+  let y = copy x in
   for i = 0 to m - 1 do
     swap_rows y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
   done; y
@@ -815,14 +803,13 @@ let shuffle_rows x =
 
 let shuffle_cols x =
   let m, n = shape x in
-  let y = clone x in
+  let y = copy x in
   for i = 0 to n - 1 do
     swap_cols y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
   done; y
 
 
 let shuffle x = x |> shuffle_rows |> shuffle_cols
-
 
 
 let meshgrid k xa xb ya yb xn yn =
@@ -1074,7 +1061,7 @@ let cov ?b ~a =
     | None   -> a
   in
 
-  let mu = average_rows a in
+  let mu = mean_rows a in
   let a = sub a mu in
   let a' = ctranspose a in
   let c = dot a' a in
@@ -1088,61 +1075,14 @@ let cov ?b ~a =
   div_scalar c n
 
 
-let var ?(axis=0) a =
-  let aa, n =
-    if axis = 0 then (
-      let mu = average_rows a in
-      let aa = sub a mu |> sqr |> sum_rows in
-      aa, row_num a
-    )
-    else (
-      let mu = average_cols a in
-      let aa = sub a mu |> sqr |> sum_cols in
-      aa, col_num a
-    )
-  in
-
-  let n = n - 1
-    |> Pervasives.max 1
-    |> float_of_int
-    |> Owl_dense_common._float_typ_elt (kind a)
-  in
-
-  div_scalar aa n
-
-
-let std ?(axis=0) a =
-  let aa, n =
-    if axis = 0 then (
-      let mu = average_rows a in
-      let aa = sub a mu |> sqr |> sum_rows in
-      sqrt aa, row_num a
-    )
-    else (
-      let mu = average_cols a in
-      let aa = sub a mu |> sqr |> sum_cols in
-      sqrt aa, col_num a
-    )
-  in
-
-  let n = n - 1
-    |> Pervasives.max 1
-    |> float_of_int
-    |> Owl_maths.sqrt
-    |> Owl_dense_common._float_typ_elt (kind a)
-  in
-
-  div_scalar aa n
-
-
 let mat2gray ?amin ?amax x =
   let amin = match amin with
     | Some a -> a
-    | None   -> min x
+    | None   -> min' x
   in
   let amax = match amax with
     | Some a -> a
-    | None   -> max x
+    | None   -> max' x
   in
   let x = clip_by_value ~amin ~amax x in
   let x = sub_scalar x amin in

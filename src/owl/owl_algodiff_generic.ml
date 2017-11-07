@@ -183,10 +183,10 @@ module Make
     | Arr x -> Arr A.(clip_by_l2norm a x)
     | _     -> failwith "error: AD.clip_by_l2norm"
 
-  let clone_primal' x =
+  let copy_primal' x =
     match (primal' x) with
-    | Arr ap -> Arr A.(clone ap)
-    | _      -> failwith "error: AD.clone"
+    | Arr ap -> Arr A.(copy ap)
+    | _      -> failwith "error: AD.copy"
 
   let tile x reps =
     match primal' x with
@@ -222,6 +222,7 @@ module Make
     | _     -> "you should not have reached here!"
 
   let type_info x = match x with
+    | F a                     -> Printf.sprintf "[%s]" (deep_info x)
     | DF (ap, at, ai)         -> Printf.sprintf "[DF tag:%i ap:%s]" ai (deep_info ap)
     | DR (ap, at, ao, af, ai) -> Printf.sprintf "[DR tag:%i ap:%s]" ai (deep_info ap)
     | _                       -> Printf.sprintf "[%s]" (deep_info x)
@@ -674,7 +675,7 @@ module Make
 
     and set_item a i j b =
       let ff a b = match a, b with
-        | Arr a, F b        -> let aa = A.clone a in A.set aa [|i;j|] b; Arr aa
+        | Arr a, F b        -> let aa = A.copy a in A.set aa [|i;j|] b; Arr aa
         | _                 -> error_uniop "set_item" a
       in
       let fd a b = set_item a i j b in
@@ -688,7 +689,7 @@ module Make
 
     and add_item a i j b =
       let ff a b = match a, b with
-        | Arr a, F b        -> let aa = A.clone a in A.set aa [|i;j|] S.((A.get aa [|i;j|]) +. b); Arr aa
+        | Arr a, F b        -> let aa = A.copy a in A.set aa [|i;j|] S.((A.get aa [|i;j|]) +. b); Arr aa
         | _                 -> error_binop "add_item" a b
       in
       let fd a b = add_item a i j b in
@@ -713,7 +714,7 @@ module Make
     and set_slice i a b =
       let ff a b =
         match a, b with
-        | Arr a, Arr b -> let a = A.clone a in A.(set_slice i a b); Arr a
+        | Arr a, Arr b -> let a = A.copy a in A.(set_slice i a b); Arr a
         | _            -> error_binop "set_slice" a b
       in
       let fd a b = set_slice i a b in
@@ -725,29 +726,29 @@ module Make
       let r_c_d a b = Set_Slice_C_D (a, b, i) in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    and sum a =
+    and sum' a =
       let ff = function
         | F a      -> F a
-        | Arr a    -> F A.(sum a)
+        | Arr a    -> F A.(sum' a)
         | _        -> error_uniop "sum" a
       in
-      let fd a = sum a in
-      let df cp ap at = sum at in
+      let fd a = sum' a in
+      let df cp ap at = sum' at in
       let r a = Sum_D a in
       op_d_d a ff fd df r
 
-    and sum_ ?(axis=0) a =
+    and sum ?(axis=0) a =
       let ff = function
         | F a      -> F a
-        | Arr a    -> Arr A.(sum_ ~axis a)
-        | _        -> error_uniop "sum_" a
+        | Arr a    -> Arr A.(sum ~axis a)
+        | _        -> error_uniop "sum" a
       in
-      let fd a = sum_ ~axis a in
-      let df cp ap at = sum_ ~axis at in
+      let fd a = sum ~axis a in
+      let df cp ap at = sum ~axis at in
       let r a = Sum__D (a, axis) in
       op_d_d a ff fd df r
 
-    and average a = (sum a) / F (numel a |> float_of_int)
+    and mean a = (sum' a) / F (numel a |> float_of_int)
 
     and ( *@ ) a b = dot a b
     and dot a b =
@@ -775,33 +776,33 @@ module Make
       let r a = Trans_D a in
       op_d_d a ff fd df r
 
-    and l1norm a =
+    and l1norm' a =
       let ff = function
-        | Arr a    -> F A.(l1norm a)
-        | _        -> error_uniop "l1norm" a
+        | Arr a    -> F A.(l1norm' a)
+        | _        -> error_uniop "l1norm'" a
       in
-      let fd a = l1norm a in
+      let fd a = l1norm' a in
       let df cp ap at = at * (signum ap) in
       let r a = L1Norm_D a in
       op_d_d a ff fd df r
 
-    and l2norm a =
+    and l2norm' a =
       let ff = function
-        | Arr a    -> F A.(l2norm a)
-        | _        -> error_uniop "l2norm" a
+        | Arr a    -> F A.(l2norm' a)
+        | _        -> error_uniop "l2norm'" a
       in
-      let fd a = l2norm a in
+      let fd a = l2norm' a in
       let df cp ap at = (ap * at) / cp in
       let r a = L2Norm_D a in
       op_d_d a ff fd df r
 
-    and l2norm_sqr a =
+    and l2norm_sqr' a =
       let ff = function
         | F a      -> F S.(a *. a)
-        | Arr a    -> F A.(l2norm_sqr a)
-        | _        -> error_uniop "l2norm_sqr" a
+        | Arr a    -> F A.(l2norm_sqr' a)
+        | _        -> error_uniop "l2norm_sqr'" a
       in
-      let fd a = l2norm_sqr a in
+      let fd a = l2norm_sqr' a in
       let df cp ap at = (F 2.) * (ap * at) in
       let r a = L2NormS_D a in
       op_d_d a ff fd df r
@@ -844,12 +845,12 @@ module Make
 
     (* FIXME: use numerically stable version *)
     and softmax x =
-      let c = F M.(max (unpack_arr x)) in
+      let c = F M.(max' (unpack_arr x)) in
       let y = exp (x - c) in
-      let a = sum y in
+      let a = sum' y in
       y / a
 
-    and cross_entropy x y = x * log y |> sum |> neg
+    and cross_entropy x y = x * log y |> sum' |> neg
 
     and add_row a b i =
       let ff a b =
@@ -868,7 +869,7 @@ module Make
 
     and get_row a i =
       let ff = function
-        | Arr a    -> Arr M.(row a i |> clone)
+        | Arr a    -> Arr M.(row a i |> copy)
         | _        -> error_uniop "get_row" a
       in
       let fd a = get_row a i in
@@ -1230,7 +1231,7 @@ module Make
     (* check adjoint a and its update v, ensure rank a >= rank v *)
     let _melt a v =
       match a, v with
-      | F _, Arr v -> F (A.sum v)
+      | F _, Arr v -> F (A.sum' v)
       | Arr a, Arr v -> (
           (* check if this is due to previous broadcast operation *)
           (* FIXME: need to check full-shape, sum_cols if necessary *)
@@ -1294,7 +1295,7 @@ module Make
               | Asinh_D a                -> push (((!aa / sqrt ((sqr (primal a)) + (F 1.))), a) :: t)
               | Acosh_D a                -> push (((!aa / sqrt ((sqr (primal a)) - (F 1.))), a) :: t)
               | Atanh_D a                -> push (((!aa / ((F 1.) - sqr (primal a))), a) :: t)
-              | Get_Item (a, i, j)       -> push ((set_item (zero a) i j (sum !aa), a) :: t)
+              | Get_Item (a, i, j)       -> push ((set_item (zero a) i j (sum' !aa), a) :: t)
               | SetI_D_D (a, i, j, b)    -> push ((set_item !aa i j (F 0.), a) :: (get_item !aa i j, b) :: t)
               | SetI_D_C (a, i, j, _)    -> push ((set_item !aa i j (F 0.), a) :: t)
               | SetI_C_D (_, i, j, b)    -> push ((get_item !aa i j, b) :: t)
@@ -1511,7 +1512,7 @@ module Make
 
     (* unary math operators *)
 
-    let average x = Maths.average x
+    let mean x = Maths.mean x
 
     (* binary math operators *)
 
@@ -1756,6 +1757,8 @@ module Make
     |> _convert_dot_output
     |> Printf.sprintf "digraph CG {\nnode [shape=record];\n%s}"
 
+
+  let pp_num formatter x = Format.fprintf formatter "%s" (type_info x)
 
 
 end

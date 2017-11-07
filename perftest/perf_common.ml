@@ -1,6 +1,6 @@
 (* helper functions for performance test *)
 
-(* test one operation c times, output the average time *)
+(* test one operation c times, output the mean time *)
 let test_op s c op =
   let ttime = ref 0. in
   for i = 1 to c do

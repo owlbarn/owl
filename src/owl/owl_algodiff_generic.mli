@@ -117,19 +117,19 @@ module Make
 
     val atanh : t -> t
 
-    val sum : t -> t
+    val sum' : t -> t
 
-    val sum_ : ?axis:int -> t -> t
+    val sum : ?axis:int -> t -> t
 
-    val average : t -> t
+    val mean : t -> t
 
     val transpose : t -> t
 
-    val l1norm : t -> t
+    val l1norm' : t -> t
 
-    val l2norm : t -> t
+    val l2norm' : t -> t
 
-    val l2norm_sqr : t -> t
+    val l2norm_sqr' : t -> t
 
     val sigmoid : t -> t
 
@@ -367,7 +367,7 @@ module Make
 
   val shape : t -> int array
 
-  val clone_primal' : t -> t
+  val copy_primal' : t -> t
 
 
   (* other functions, without tracking gradient *)
@@ -388,6 +388,7 @@ module Make
       Graphviz.
    *)
 
-
+   val pp_num : Format.formatter -> t -> unit
+   (** [pp_num t] pretty prints the abstract number used in [Algodiff]. *)
 
 end

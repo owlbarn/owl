@@ -351,8 +351,8 @@ val reset : ('a, 'b) t -> unit
 val fill : ('a, 'b) t -> 'a -> unit
 (** [fill x a] fills the [x] with value [a]. *)
 
-val clone : ('a, 'b) t -> ('a, 'b) t
-(** [clone x] returns a copy of matrix [x]. *)
+val copy : ('a, 'b) t -> ('a, 'b) t
+(** [copy x] returns a copy of matrix [x]. *)
 
 val copy_to : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [copy_to x y] copies the elements of [x] to [y]. [x] and [y] must have
@@ -917,20 +917,41 @@ val im_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val im_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [im_d2z x] returns all the imaginary components of [x] in a new ndarray of same shape. *)
 
-val min : ('a, 'b) t -> 'a
-(** [min x] returns the minimum of all elements in [x]. For two complex numbers,
-  the one with the smaller magnitude will be selected. If two magnitudes are
-  the same, the one with the smaller phase will be selected.
+val min : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [min x] returns the minimum of all elements in [x] along specified [axis].
+  If no axis is specified, [x] will be flattened and the minimum of all the
+  elements will be returned.  For two complex numbers, the one with the smaller
+  magnitude will be selected. If two magnitudes are the same, the one with the
+  smaller phase will be selected.
  *)
 
-val max : ('a, 'b) t -> 'a
-(** [max x] returns the maximum of all elements in [x]. For two complex numbers,
-  the one with the greater magnitude will be selected. If two magnitudes are
-  the same, the one with the greater phase will be selected.
+val min' : ('a, 'b) t -> 'a
+(** [min' x] is similar to [min] but returns the minimum of all elements in [x]
+  in scalar value.
  *)
 
-val minmax : ('a, 'b) t -> 'a * 'a
-(** [minmax x] returns both the minimum and minimum values in [x]. *)
+val max : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [max x] returns the maximum of all elements in [x] along specified [axis].
+  If no axis is specified, [x] will be flattened and the maximum of all the
+  elements will be returned.  For two complex numbers, the one with the greater
+  magnitude will be selected. If two magnitudes are the same, the one with the
+  greater phase will be selected.
+ *)
+
+val max' : ('a, 'b) t -> 'a
+(** [max' x] is similar to [max] but returns the maximum of all elements in [x]
+  in scalar value.
+ *)
+
+val minmax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(** [minmax' x] returns [(min_v, max_v)], [min_v] is the minimum value in [x]
+  while [max_v] is the maximum.
+ *)
+
+val minmax' : ('a, 'b) t -> 'a * 'a
+(** [minmax' x] returns [(min_v, max_v)], [min_v] is the minimum value in [x]
+  while [max_v] is the maximum.
+ *)
 
 val min_i : ('a, 'b) t -> 'a * int array
 (** [min_i x] returns the minimum of all elements in [x] as well as its index. *)
@@ -950,19 +971,35 @@ val inv : ('a, 'b) t -> ('a, 'b) t
 val trace : ('a, 'b) t -> 'a
 (** [trace x] returns the sum of diagonal elements in [x]. *)
 
-val sum : ('a, 'b) t -> 'a
-(** [sum x] returns the summation of all the elements in [x]. *)
-
-val sum_ : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+val sum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** [sum_ axis x] sums the elements in [x] along specified [axis]. *)
 
-val prod : ?axis:int option array -> ('a, 'b) t -> 'a
+val sum': ('a, 'b) t -> 'a
+(** [sum x] returns the summation of all the elements in [x]. *)
+
+val prod : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [prod_ axis x] multiplies the elements in [x] along specified [axis]. *)
+
+val prod' : ('a, 'b) t -> 'a
 (** [prod x] returns the product of all the elements in [x]. *)
 
-val average : ('a, 'b) t -> 'a
-(** [average x] returns the average value of all the elements in [x]. It is
-  equivalent to calculate [sum x] divided by [numel x]
- *)
+val mean : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [mean ~axis x] calculates the mean along specified [axis]. *)
+
+val mean' : ('a, 'b) t -> 'a
+(** [mean' x] calculates the mean of all the elements in [x]. *)
+
+val var : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [var ~axis x] calculates the variance along specified [axis]. *)
+
+val var' : ('a, 'b) t -> 'a
+(** [var' x] calculates the variance of all the elements in [x]. *)
+
+val std : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [std ~axis] calculates the standard deviation along specified [axis]. *)
+
+val std' : ('a, 'b) t -> 'a
+(** [std' x] calculates the standard deviation of all the elements in [x]. *)
 
 val sum_rows : ('a, 'b) t -> ('a, 'b) t
 (** [sum_rows x] returns the summation of all the row vectors in [x]. *)
@@ -970,13 +1007,13 @@ val sum_rows : ('a, 'b) t -> ('a, 'b) t
 val sum_cols : ('a, 'b) t -> ('a, 'b) t
 (** [sum_cols] returns the summation of all the column vectors in [x]. *)
 
-val average_rows : ('a, 'b) t -> ('a, 'b) t
-(** [average_rows x] returns the average value of all row vectors in [x]. It is
+val mean_rows : ('a, 'b) t -> ('a, 'b) t
+(** [mean_rows x] returns the mean value of all row vectors in [x]. It is
  equivalent to [div_scalar (sum_rows x) (float_of_int (row_num x))].
  *)
 
-val average_cols : ('a, 'b) t -> ('a, 'b) t
-(** [average_cols x] returns the average value of all column vectors in [x].
+val mean_cols : ('a, 'b) t -> ('a, 'b) t
+(** [mean_cols x] returns the mean value of all column vectors in [x].
  It is equivalent to [div_scalar (sum_cols x) (float_of_int (col_num x))].
  *)
 
@@ -1227,18 +1264,27 @@ val sigmoid : (float, 'a) t -> (float, 'a) t
   element in [x].
  *)
 
-val log_sum_exp : (float, 'a) t -> float
+val log_sum_exp' : (float, 'a) t -> float
 (** [log_sum_exp x] computes the logarithm of the sum of exponentials of all
   the elements in [x].
  *)
 
-val l1norm : ('a, 'b) t -> float
+val l1norm : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [l1norm x] calculates the l1-norm of of [x] along specified axis. *)
+
+val l1norm' : ('a, 'b) t -> 'a
 (** [l1norm x] calculates the l1-norm of all the element in [x]. *)
 
-val l2norm : ('a, 'b) t -> float
+val l2norm : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [l2norm x] calculates the l2-norm of of [x] along specified axis. *)
+
+val l2norm' : ('a, 'b) t -> 'a
 (** [l2norm x] calculates the l2-norm of all the element in [x]. *)
 
-val l2norm_sqr : ('a, 'b) t -> float
+val l2norm_sqr : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
+(** [l2norm x] calculates the square l2-norm of of [x] along specified axis. *)
+
+val l2norm_sqr' : ('a, 'b) t -> 'a
 (** [l2norm_sqr x] calculates the square of l2-norm (or l2norm, Euclidean norm)
   of all elements in [x]. The function uses conjugate transpose in the product,
   hence it always returns a float number.
@@ -1264,22 +1310,11 @@ val cummin : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 val cummax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (** [cummax ~axis x] : performs cumulative [max] along [axis] dimension. *)
 
-
 val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (** [angle x] calculates the phase angle of all complex numbers in [x]. *)
 
 val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (** [proj x] computes the projection on Riemann sphere of all elelments in [x]. *)
-
-val var : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
-(** [var x] computes the variance of [x] along the [axis] dimension. By default,
-  [axis] is set to the lowest dimension.
- *)
-
-val std : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
-(** [std x] computes the standard deviation of [x] along the [axis] dimension.
-  By default, [axis] is set to the lowest dimension.
- *)
 
 val mat2gray : ?amin:'a -> ?amax:'a -> ('a, 'b) t -> ('a, 'b) t
 (** [mat2gray ~amin ~amax x] converts the matrix [x] to the intensity image.
@@ -1401,18 +1436,18 @@ val fmod_scalar : (float, 'a) t -> float -> (float, 'a) t
 val scalar_fmod : float -> (float, 'a) t -> (float, 'a) t
 (** [scalar_fmod x a] performs mod division between scalar [a] and [x]. *)
 
-val ssqr : ('a, 'b) t -> 'a -> 'a
+val ssqr' : ('a, 'b) t -> 'a -> 'a
 (** [ssqr x a] computes the sum of squared differences of all the elements in
   [x] from constant [a]. This function only computes the square of each element
   rather than the conjugate transpose as {!sqr_nrm2} does.
  *)
 
-val ssqr_diff : ('a, 'b) t -> ('a, 'b) t -> 'a
+val ssqr_diff' : ('a, 'b) t -> ('a, 'b) t -> 'a
 (** [ssqr_diff x y] computes the sum of squared differences of every elements in
   [x] and its corresponding element in [y].
  *)
 
-val cross_entropy : (float, 'a) t -> (float, 'a) t -> float
+val cross_entropy' : (float, 'a) t -> (float, 'a) t -> float
 (** [cross_entropy x y] calculates the cross entropy between [x] and [y] using base [e]. *)
 
 val clip_by_value : ?amin:'a -> ?amax:'a -> ('a, 'b) t -> ('a, 'b) t
@@ -1474,40 +1509,249 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 
 val add_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [add_ x y] is simiar to [add] function but the output is written to [x].
-  The broadcast operation is not supported.
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
  *)
 
 val sub_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [sub_ x y] is simiar to [sub] function but the output is written to [x].
-  The broadcast operation is not supported.
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
  *)
 
 val mul_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [mul_ x y] is simiar to [mul] function but the output is written to [x].
-  The broadcast operation is not supported.
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
  *)
 
 val div_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [div_ x y] is simiar to [div] function but the output is written to [x].
-  The broadcast operation is not supported.
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
+ *)
+
+val pow_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [pow_ x y] is simiar to [pow] function but the output is written to [x].
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
+ *)
+
+val atan2_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [atan2_ x y] is simiar to [atan2] function but the output is written to [x].
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
+ *)
+
+val hypot_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [hypot_ x y] is simiar to [hypot] function but the output is written to [x].
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
+ *)
+
+val fmod_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [fmod_ x y] is simiar to [fmod] function but the output is written to [x].
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
+ *)
+
+val min2_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [min2_ x y] is simiar to [min2] function but the output is written to [x].
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
+ *)
+
+val max2_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [max2_ x y] is simiar to [max2] function but the output is written to [x].
+  The broadcast operation only allows broadcasting [y] over [x], so you need to
+  make sure [x] is big enough to hold the output result.
  *)
 
 val add_scalar_ : ('a, 'b) t -> 'a -> unit
 (** [add_scalar_ x y] is simiar to [add_scalar] function but the output is
-  written to [x]. The broadcast operation is not supported.
+  written to [x].
  *)
 
 val sub_scalar_ : ('a, 'b) t -> 'a -> unit
 (** [sub_scalar_ x y] is simiar to [sub_scalar] function but the output is
-  written to [x]. The broadcast operation is not supported.
+  written to [x].
  *)
 
 val mul_scalar_ : ('a, 'b) t -> 'a -> unit
 (** [mul_scalar_ x y] is simiar to [mul_scalar] function but the output is
-  written to [x]. The broadcast operation is not supported.
+  written to [x].
  *)
 
 val div_scalar_ : ('a, 'b) t -> 'a -> unit
 (** [div_scalar_ x y] is simiar to [div_scalar] function but the output is
-  written to [x]. The broadcast operation is not supported.
+  written to [x].
  *)
+
+val pow_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [pow_scalar_ x y] is simiar to [pow_scalar] function but the output is
+  written to [x].
+ *)
+
+val atan2_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [atan2_scalar_ x y] is simiar to [atan2_scalar] function but the output is
+  written to [x].
+ *)
+
+val scalar_add_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_add_ a x] is simiar to [scalar_add] function but the output is
+  written to [x].
+ *)
+
+val scalar_sub_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_sub_ a x] is simiar to [scalar_sub] function but the output is
+  written to [x].
+ *)
+
+val scalar_mul_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_mul_ a x] is simiar to [scalar_mul] function but the output is
+  written to [x].
+ *)
+
+val scalar_div_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_div_ a x] is simiar to [scalar_div] function but the output is
+  written to [x].
+ *)
+
+val scalar_pow_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_pow_ a x] is simiar to [scalar_pow] function but the output is
+  written to [x].
+ *)
+
+val scalar_atan2_ : 'a -> ('a, 'b) t -> unit
+(** [scalar_atan2_ a x] is simiar to [scalar_atan2] function but the output is
+  written to [x].
+ *)
+
+val conj_ : ('a, 'b) t -> unit
+(** [conj_ x] is similar to [conj] but output is written to [x] *)
+
+val neg_ : ('a, 'b) t -> unit
+(** [neg_ x] is similar to [neg] but output is written to [x] *)
+
+val reci_ : ('a, 'b) t -> unit
+(** [reci_ x] is similar to [reci] but output is written to [x] *)
+
+val signum_ : ('a, 'b) t -> unit
+(** [signum_ x] is similar to [signum] but output is written to [x] *)
+
+val sqr_ : ('a, 'b) t -> unit
+(** [sqr_ x] is similar to [sqr] but output is written to [x] *)
+
+val sqrt_ : ('a, 'b) t -> unit
+(** [sqrt_ x] is similar to [sqrt] but output is written to [x] *)
+
+val cbrt_ : ('a, 'b) t -> unit
+(** [cbrt_ x] is similar to [cbrt] but output is written to [x] *)
+
+val exp_ : ('a, 'b) t -> unit
+(** [exp_ x] is similar to [exp_] but output is written to [x] *)
+
+val exp2_ : ('a, 'b) t -> unit
+(** [exp2_ x] is similar to [exp2] but output is written to [x] *)
+
+val exp10_ : ('a, 'b) t -> unit
+(** [exp2_ x] is similar to [exp2] but output is written to [x] *)
+
+val expm1_ : ('a, 'b) t -> unit
+(** [expm1_ x] is similar to [expm1] but output is written to [x] *)
+
+val log_ : ('a, 'b) t -> unit
+(** [log_ x] is similar to [log] but output is written to [x] *)
+
+val log2_ : ('a, 'b) t -> unit
+(** [log2_ x] is similar to [log2] but output is written to [x] *)
+
+val log10_ : ('a, 'b) t -> unit
+(** [log10_ x] is similar to [log10] but output is written to [x] *)
+
+val log1p_ : ('a, 'b) t -> unit
+(** [log1p_ x] is similar to [log1p] but output is written to [x] *)
+
+val sin_ : ('a, 'b) t -> unit
+(** [sin_ x] is similar to [sin] but output is written to [x] *)
+
+val cos_ : ('a, 'b) t -> unit
+(** [cos_ x] is similar to [cos] but output is written to [x] *)
+
+val tan_ : ('a, 'b) t -> unit
+(** [tan_ x] is similar to [tan] but output is written to [x] *)
+
+val asin_ : ('a, 'b) t -> unit
+(** [asin_ x] is similar to [asin] but output is written to [x] *)
+
+val acos_ : ('a, 'b) t -> unit
+(** [acos_ x] is similar to [acos] but output is written to [x] *)
+
+val atan_ : ('a, 'b) t -> unit
+(** [atan_ x] is similar to [atan] but output is written to [x] *)
+
+val sinh_ : ('a, 'b) t -> unit
+(** [sinh_ x] is similar to [sinh] but output is written to [x] *)
+
+val cosh_ : ('a, 'b) t -> unit
+(** [cosh_ x] is similar to [cosh] but output is written to [x] *)
+
+val tanh_ : ('a, 'b) t -> unit
+(** [tanh_ x] is similar to [tanh] but output is written to [x] *)
+
+val asinh_ : ('a, 'b) t -> unit
+(** [asinh_ x] is similar to [asinh] but output is written to [x] *)
+
+val acosh_ : ('a, 'b) t -> unit
+(** [acosh_ x] is similar to [acosh] but output is written to [x] *)
+
+val atanh_ : ('a, 'b) t -> unit
+(** [atanh_ x] is similar to [atanh] but output is written to [x] *)
+
+val floor_ : ('a, 'b) t -> unit
+(** [floor_ x] is similar to [floor] but output is written to [x] *)
+
+val ceil_ : ('a, 'b) t -> unit
+(** [ceil_ x] is similar to [ceil] but output is written to [x] *)
+
+val round_ : ('a, 'b) t -> unit
+(** [round_ x] is similar to [round] but output is written to [x] *)
+
+val trunc_ : ('a, 'b) t -> unit
+(** [trunc_ x] is similar to [trunc] but output is written to [x] *)
+
+val fix_ : ('a, 'b) t -> unit
+(** [fix_ x] is similar to [fix] but output is written to [x] *)
+
+val erf_ : ('a, 'b) t -> unit
+(** [erf_ x] is similar to [erf] but output is written to [x] *)
+
+val erfc_ : ('a, 'b) t -> unit
+(** [erfc_ x] is similar to [erfc] but output is written to [x] *)
+
+val relu_ : ('a, 'b) t -> unit
+(** [relu_ x] is similar to [relu] but output is written to [x] *)
+
+val softplus_ : ('a, 'b) t -> unit
+(** [softplus_ x] is similar to [softplus] but output is written to [x] *)
+
+val softsign_ : ('a, 'b) t -> unit
+(** [softsign_ x] is similar to [softsign] but output is written to [x] *)
+
+val sigmoid_ : ('a, 'b) t -> unit
+(** [sigmoid_ x] is similar to [sigmoid] but output is written to [x] *)
+
+val softmax_ : ('a, 'b) t -> unit
+(** [softmax_ x] is similar to [softmax] but output is written to [x] *)
+
+val cumsum_ : ?axis:int -> ('a, 'b) t -> unit
+(** [cumsum_ x] is similar to [cumsum] but output is written to [x] *)
+
+val cumprod_ : ?axis:int -> ('a, 'b) t -> unit
+(** [cumprod_ x] is similar to [cumprod] but output is written to [x] *)
+
+val cummin_ : ?axis:int -> ('a, 'b) t -> unit
+(** [cummin_ x] is similar to [cummin] but output is written to [x] *)
+
+val cumprod_ : ?axis:int -> ('a, 'b) t -> unit
+(** [cumprod_ x] is similar to [cumprod] but output is written to [x] *)

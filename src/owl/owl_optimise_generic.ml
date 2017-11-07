@@ -138,10 +138,10 @@ module Make
       | Custom of (t -> t -> t)
 
     let run typ y y' = match typ with
-      | Hinge         -> Maths.(sum (max2 (F 0.) (F 1. - y * y')))
-      | L1norm        -> Maths.(l1norm (y - y'))
-      | L2norm        -> Maths.(l2norm (y - y'))
-      | Quadratic     -> Maths.(l2norm_sqr (y - y'))
+      | Hinge         -> Maths.(sum' (max2 (F 0.) (F 1. - y * y')))
+      | L1norm        -> Maths.(l1norm' (y - y'))
+      | L2norm        -> Maths.(l2norm' (y - y'))
+      | Quadratic     -> Maths.(l2norm_sqr' (y - y'))
       | Cross_entropy -> Maths.(cross_entropy y y')
       | Custom f      -> f y y' (* y': prediction *)
 
@@ -171,20 +171,20 @@ module Make
       | GD          -> fun _ _ _ _ g' -> Maths.neg g'
       | CG          -> fun _ _ g p g' -> (
           let y = Maths.(g' - g) in
-          let b = Maths.((sum (g' * y)) / ((sum (p * y)) + F 1e-32)) in
+          let b = Maths.((sum' (g' * y)) / ((sum' (p * y)) + F 1e-32)) in
           Maths.((neg g') + (b * p))
         )
       | CD          -> fun _ _ g p g' -> (
-          let b = Maths.((l2norm_sqr g') / (sum (neg p * g))) in
+          let b = Maths.((l2norm_sqr' g') / (sum' (neg p * g))) in
           Maths.((neg g') + (b * p))
         )
       | NonlinearCG -> fun _ _ g p g' -> (
-          let b = Maths.((l2norm_sqr g') / (l2norm_sqr g)) in
+          let b = Maths.((l2norm_sqr' g') / (l2norm_sqr' g)) in
           Maths.((neg g') + (b * p))
         )
       | DaiYuanCG   -> fun _ w g p g' -> (
           let y = Maths.(g' - g) in
-          let b = Maths.((l2norm_sqr g') / (sum (p * y))) in
+          let b = Maths.((l2norm_sqr' g') / (sum' (p * y))) in
           Maths.((neg g') + (b * p))
         )
       | NewtonCG    -> fun f w g p g' -> (
@@ -244,9 +244,9 @@ module Make
       | None
 
     let run typ x = match typ with
-      | L1norm a           -> Maths.(F a * l1norm x)
-      | L2norm a           -> Maths.(F a * l2norm x)
-      | Elastic_net (a, b) -> Maths.(F a * l1norm x + F b * l2norm x)
+      | L1norm a           -> Maths.(F a * l1norm' x)
+      | L2norm a           -> Maths.(F a * l2norm' x)
+      | Elastic_net (a, b) -> Maths.(F a * l1norm' x + F b * l2norm' x)
       | None               -> F 0.
 
     let to_string = function
@@ -575,7 +575,7 @@ module Make
       let xt, yt = bach_fun x y i in
       let yt', ws = forward xt in
       let loss = loss_fun yt yt' in
-      (* take the average of the loss *)
+      (* take the mean of the loss *)
       let loss = Maths.(loss / (F (Mat.row_num yt |> float_of_int))) in
       (* add regularisation term if necessary *)
       let reg = match params.regularisation <> Regularisation.None with

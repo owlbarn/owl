@@ -499,6 +499,90 @@ CAMLprim value FUN24(value *argv, int __unused_argn)
 #endif /* FUN24 */
 
 
+// function to map x to y with explicit offset, step size, number of ops
+// more general version of FUN20, so more control over the access pattern to
+// the data with three embedded loops.
+#ifdef FUN25
+
+CAMLprim value FUN25_IMPL(
+  value vM, value vN, value vO,
+  value vX, value vOFSX, value vINCX_M, value vINCX_N, value vINCX_O,
+  value vY, value vOFSY, value vINCY_M, value vINCY_N, value vINCY_O
+)
+{
+  CAMLparam3(vM, vN, vO);
+  CAMLxparam5(vX, vOFSX, vINCX_M, vINCX_N, vINCX_O);
+  CAMLxparam5(vY, vOFSY, vINCY_M, vINCY_N, vINCY_O);
+  int M = Long_val(vM);
+  int N = Long_val(vN);
+  int O = Long_val(vO);
+  int ofsx = Long_val(vOFSX);
+  int incx_m = Long_val(vINCX_M);
+  int incx_n = Long_val(vINCX_N);
+  int incx_o = Long_val(vINCX_O);
+  int ofsy = Long_val(vOFSY);
+  int incy_m = Long_val(vINCY_M);
+  int incy_n = Long_val(vINCY_N);
+  int incy_o = Long_val(vINCY_O);
+
+  INIT;
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  NUMBER *X_data = (NUMBER *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  NUMBER1 *Y_data = (NUMBER1 *) Y->data;
+
+  NUMBER  *start_x_m;
+  NUMBER  *start_x_n;
+  NUMBER  *start_x_o;
+  NUMBER1 *start_y_m;
+  NUMBER1 *start_y_n;
+  NUMBER1 *start_y_o;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  start_x_m = X_data + ofsx;
+  start_y_m = Y_data + ofsy;
+
+  for (int i = 0; i < M; i++) {
+    start_x_n = start_x_m;
+    start_y_n = start_y_m;
+
+    for (int j = 0; j < N; j++) {
+      start_x_o = start_x_n;
+      start_y_o = start_y_n;
+
+      for (int k = 0; k < O; k++) {
+        MAPFN(start_x_o, start_y_o);
+        start_x_o += incx_o;
+        start_y_o += incy_o;
+      }
+
+      start_x_n += incx_n;
+      start_y_n += incy_n;
+    }
+
+    start_x_m += incx_m;
+    start_y_m += incy_m;
+  }
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value FUN25(value *argv, int __unused_argn)
+{
+  return FUN25_IMPL(
+    argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6],
+    argv[7], argv[8], argv[9], argv[10], argv[11], argv[12]
+  );
+}
+
+#endif /* FUN25 */
+
+
 #undef NUMBER
 #undef NUMBER1
 #undef NUMBER2
@@ -522,3 +606,5 @@ CAMLprim value FUN24(value *argv, int __unused_argn)
 #undef FUN24
 #undef FUN24_IMPL
 #undef FUN24_CODE
+#undef FUN25
+#undef FUN25_IMPL
