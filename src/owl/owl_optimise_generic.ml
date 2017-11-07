@@ -15,11 +15,10 @@ open Owl_types
 (* Make functor starts *)
 
 module Make
-  (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
+  (A : NdarraySig)
   = struct
 
-  include Owl_algodiff_generic.Make (M) (A)
+  include Owl_algodiff_generic.Make (A)
 
 
 
@@ -36,7 +35,7 @@ module Make
       match x, y with
       | Arr x, Arr y -> (
           let x, i = A.draw_along_dim0 x n in
-          let y = M.rows y i in
+          let y = A.rows y i in
           Arr x, Arr y
         )
       | x, y         -> failwith ("Owl_neural_optimise.Utils.draw_samples:" ^ (type_info x))
@@ -44,11 +43,11 @@ module Make
     let get_chunk x y i c =
       match x, y with
       | Arr x, Arr y -> (
-          let n = M.row_num y in
+          let n = A.row_num y in
           let a = (i * c) mod n in
           let b = Pervasives.min (a + c - 1) (n - 1) in
           let x = A.get_slice [R [a;b]] x in
-          let y = M.get_slice [R [a;b]] y in
+          let y = A.get_slice [R [a;b]] y in
           Arr x, Arr y
         )
       | x, y         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))

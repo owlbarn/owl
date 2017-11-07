@@ -134,7 +134,6 @@ val triu : ?k:int -> ('a, 'b) t -> ('a, 'b) t
   [k < 0] is below the main diagonal.
  *)
 
-
 val tril : ?k:int -> ('a, 'b) t -> ('a, 'b) t
 (** [tril k x] returns the element on and below the [k]th diagonal of [x].
   [k = 0] is the main diagonal, [k > 0] is above the main diagonal, and

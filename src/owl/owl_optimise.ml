@@ -5,9 +5,9 @@
 
 (* FIXME: this module should be removed! *)
 
-module S = Owl_optimise_generic.Make (Owl_dense_matrix.S) (Owl_dense_ndarray.S)
+module S = Owl_optimise_generic.Make (Owl_dense_ndarray.S)
 
-module D = Owl_optimise_generic.Make (Owl_dense_matrix.D) (Owl_dense_ndarray.D)
+module D = Owl_optimise_generic.Make (Owl_dense_ndarray.D)
 
 
 

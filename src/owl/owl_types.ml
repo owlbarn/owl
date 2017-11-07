@@ -169,6 +169,10 @@ module type NdarraySig = sig
 
   val atanh : arr -> arr
 
+  val min' : arr -> elt
+
+  val max' : arr -> elt
+
   val sum' : arr -> elt
 
   val sum : ?axis:int -> arr -> arr
@@ -227,7 +231,7 @@ module type NdarraySig = sig
 
   val elt_greater_equal_scalar : arr -> elt -> arr
 
-  (** {6 Neural network related functions} *)
+  (* Neural network related functions *)
 
   val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
 
@@ -266,6 +270,38 @@ module type NdarraySig = sig
   val avg_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
   val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+  (* matrix functions *)
+
+  val row_num : arr -> int
+
+  val col_num : arr -> int
+
+  val row : arr -> int -> arr
+
+  val rows : arr -> int array -> arr
+
+  val copy_row_to : arr -> arr -> int -> unit
+
+  val copy_col_to : arr -> arr -> int -> unit
+
+  val dot : arr -> arr -> arr
+
+  val inv : arr -> arr
+
+  val trace : arr -> elt
+
+  val transpose : ?axis:int array -> arr -> arr
+
+  val to_rows : arr -> arr array
+
+  val of_rows : arr array -> arr
+
+  val of_arrays : elt array array -> arr
+
+  val draw_rows : ?replacement:bool -> arr -> int -> arr * int array
+
+  val draw_rows2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
 
 end
 

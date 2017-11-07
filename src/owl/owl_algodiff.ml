@@ -9,11 +9,11 @@
 
 
 (* AD module of Float32 type *)
-module S = Owl_algodiff_generic.Make (Owl_dense_matrix.S) (Owl_dense_ndarray.S)
+module S = Owl_algodiff_generic.Make (Owl_dense_ndarray.S)
 
 
 (* AD module of Float64 type *)
-module D = Owl_algodiff_generic.Make (Owl_dense_matrix.D) (Owl_dense_ndarray.D)
+module D = Owl_algodiff_generic.Make (Owl_dense_ndarray.D)
 
 
 (* Numerical differentiation *)
