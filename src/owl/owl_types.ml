@@ -308,25 +308,7 @@ end
 
 module type InpureSig = sig
 
-  type arr
-
-  type elt
-
-  val shape : arr -> int array
-
-  val copy : arr -> arr
-
-  val add : arr -> arr -> arr
-
-  val sub : arr -> arr -> arr
-
-  val mul : arr -> arr -> arr
-
-  val div : arr -> arr -> arr
-
-  val pow : arr -> arr -> arr
-
-  val atan2 : arr -> arr -> arr
+  include NdarraySig
 
   val hypot : arr -> arr -> arr
 
