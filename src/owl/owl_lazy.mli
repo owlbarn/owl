@@ -49,6 +49,12 @@ module Make
 
   val reshape : t -> int array -> t
 
+  val tile : t -> int array -> t
+
+  val repeat : ?axis:int -> t -> int -> t
+
+  val concatenate : ?axis:int -> t array -> t
+
 
   (** {6 Unary operators} *)
 
@@ -141,6 +147,26 @@ module Make
   val cummin : ?axis:int -> t -> t
 
   val cummax : ?axis:int -> t -> t
+
+  val sum' : t -> elt
+
+  val prod' : t -> elt
+
+  val min' : t -> elt
+
+  val max' : t -> elt
+
+  val mean' : t -> elt
+
+  val var' : t -> elt
+
+  val std' : t -> elt
+
+  val l1norm' : t -> elt
+
+  val l2norm' : t -> elt
+
+  val l2norm_sqr' : t -> elt
 
 
   (** {6 Binary operators} *)
