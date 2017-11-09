@@ -103,10 +103,11 @@ module Make
     | Cummin   of t
     | Cummax   of t
     | Copy     of t
-    | Reshape  of t * (int array)
-    | Tile     of t * (int array)
+    | Reshape  of t * int array
+    | Tile     of t * int array
     | Repeat   of t * int option * int
     | Concat   of t array * int option
+    | Split    of t * int option * int array
 
 
   let unpack_operands = function
@@ -371,7 +372,7 @@ module Make
     let a = operands.(0).outval.(0) in
     x.outval <- [|f a|]
 
-  (* [f] is pure, shape changes, for [arr array -> arr] *)
+  (* [f] is pure, shape changes so always allocate mem, for [arr array -> arr] *)
   and _eval_map6 x f =
     let operands = unpack_operands x.op in
     let a = Array.map (fun x -> _eval_term x; x.outval.(0)) operands in
@@ -432,6 +433,8 @@ module Make
   let repeat ?axis x reps = make_t (Repeat (x, axis, reps))
 
   let concatenate ?axis x = make_t (Concat (x, axis))
+
+  let split ?axis parts x = ()
 
 
   (* reduce to scalar *)
