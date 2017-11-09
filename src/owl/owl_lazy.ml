@@ -108,6 +108,7 @@ module Make
     | Repeat   of t * int option * int
     | Concat   of t array * int option
     | Split    of t * int option * int array
+    | Item_I   of t * int (* select the ith item in an array *)
 
 
   let unpack_operands = function
@@ -434,7 +435,9 @@ module Make
 
   let concatenate ?axis x = make_t (Concat (x, axis))
 
-  let split ?axis parts x = ()
+  let split ?axis parts x =
+    let t = make_t (Split (x, axis, parts)) in
+    Array.mapi (fun i _ -> make_t (Item_I (t, i))) parts
 
 
   (* reduce to scalar *)
