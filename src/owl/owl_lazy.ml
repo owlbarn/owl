@@ -26,214 +26,214 @@ module Make
   }
   and op =
     | Noop
-    | Add      of t * t
-    | Sub      of t * t
-    | Mul      of t * t
-    | Div      of t * t
-    | Pow      of t * t
-    | Atan2    of t * t
-    | Hypot    of t * t
-    | Fmod     of t * t
-    | Min2     of t * t
-    | Max2     of t * t
-    | Add_S    of t * elt
-    | Sub_S    of t * elt
-    | Mul_S    of t * elt
-    | Div_S    of t * elt
-    | Pow_S    of t * elt
-    | Atan2_S  of t * elt
-    | Fmod_S   of t * elt
-    | S_Add    of elt * t
-    | S_Sub    of elt * t
-    | S_Mul    of elt * t
-    | S_Div    of elt * t
-    | S_Pow    of elt * t
-    | S_Atan2  of elt * t
-    | S_Fmod   of elt * t
-    | Neg      of t
-    | Conj     of t
-    | Reci     of t
-    | Signum   of t
-    | Sqr      of t
-    | Sqrt     of t
-    | Cbrt     of t
-    | Exp      of t
-    | Exp2     of t
-    | Exp10    of t
-    | Expm1    of t
-    | Log      of t
-    | Log2     of t
-    | Log10    of t
-    | Log1p    of t
-    | Sin      of t
-    | Cos      of t
-    | Tan      of t
-    | Asin     of t
-    | Acos     of t
-    | Atan     of t
-    | Sinh     of t
-    | Cosh     of t
-    | Tanh     of t
-    | Asinh    of t
-    | Acosh    of t
-    | Atanh    of t
-    | Floor    of t
-    | Ceil     of t
-    | Round    of t
-    | Trunc    of t
-    | Fix      of t
-    | Erf      of t
-    | Erfc     of t
-    | Relu     of t
-    | Softplus of t
-    | Softsign of t
-    | Softmax  of t
-    | Sigmoid  of t
-    | Sum      of t
-    | Prod     of t
-    | Min      of t
-    | Max      of t
-    | Mean     of t
-    | Var      of t
-    | Std      of t
-    | L1norm   of t
-    | L2norm   of t
-    | Cumsum   of t
-    | Cumprod  of t
-    | Cummin   of t
-    | Cummax   of t
-    | Conv1D   of padding option * t * arr * int array
-    | Conv2D   of padding option * t * arr * int array
-    | Conv3D   of padding option * t * arr * int array
-    | MaxPool1D of padding option * t * int array * int array
-    | MaxPool2D of padding option * t * int array * int array
-    | MaxPool3D of padding option * t * int array * int array
-    | AvgPool1D of padding option * t * int array * int array
-    | AvgPool2D of padding option * t * int array * int array
-    | AvgPool3D of padding option * t * int array * int array
-    | Conv1D_BI of t * arr * int array * t
-    | Conv1D_BK of t * arr * int array * t
-    | Conv2D_BI of t * arr * int array * t
-    | Conv2D_BK of t * arr * int array * t
-    | Conv3D_BI of t * arr * int array * t
-    | Conv3D_BK of t * arr * int array * t
+    | Add         of t * t
+    | Sub         of t * t
+    | Mul         of t * t
+    | Div         of t * t
+    | Pow         of t * t
+    | Atan2       of t * t
+    | Hypot       of t * t
+    | Fmod        of t * t
+    | Min2        of t * t
+    | Max2        of t * t
+    | Add_S       of t * elt
+    | Sub_S       of t * elt
+    | Mul_S       of t * elt
+    | Div_S       of t * elt
+    | Pow_S       of t * elt
+    | Atan2_S     of t * elt
+    | Fmod_S      of t * elt
+    | S_Add       of elt * t
+    | S_Sub       of elt * t
+    | S_Mul       of elt * t
+    | S_Div       of elt * t
+    | S_Pow       of elt * t
+    | S_Atan2     of elt * t
+    | S_Fmod      of elt * t
+    | Neg         of t
+    | Conj        of t
+    | Reci        of t
+    | Signum      of t
+    | Sqr         of t
+    | Sqrt        of t
+    | Cbrt        of t
+    | Exp         of t
+    | Exp2        of t
+    | Exp10       of t
+    | Expm1       of t
+    | Log         of t
+    | Log2        of t
+    | Log10       of t
+    | Log1p       of t
+    | Sin         of t
+    | Cos         of t
+    | Tan         of t
+    | Asin        of t
+    | Acos        of t
+    | Atan        of t
+    | Sinh        of t
+    | Cosh        of t
+    | Tanh        of t
+    | Asinh       of t
+    | Acosh       of t
+    | Atanh       of t
+    | Floor       of t
+    | Ceil        of t
+    | Round       of t
+    | Trunc       of t
+    | Fix         of t
+    | Erf         of t
+    | Erfc        of t
+    | Relu        of t
+    | Softplus    of t
+    | Softsign    of t
+    | Softmax     of t
+    | Sigmoid     of t
+    | Sum         of t
+    | Prod        of t
+    | Min         of t
+    | Max         of t
+    | Mean        of t
+    | Var         of t
+    | Std         of t
+    | L1norm      of t
+    | L2norm      of t
+    | Cumsum      of t
+    | Cumprod     of t
+    | Cummin      of t
+    | Cummax      of t
+    | Conv1D      of padding option * t * arr * int array
+    | Conv2D      of padding option * t * arr * int array
+    | Conv3D      of padding option * t * arr * int array
+    | MaxPool1D   of padding option * t * int array * int array
+    | MaxPool2D   of padding option * t * int array * int array
+    | MaxPool3D   of padding option * t * int array * int array
+    | AvgPool1D   of padding option * t * int array * int array
+    | AvgPool2D   of padding option * t * int array * int array
+    | AvgPool3D   of padding option * t * int array * int array
+    | Conv1D_BI   of t * arr * int array * t
+    | Conv1D_BK   of t * arr * int array * t
+    | Conv2D_BI   of t * arr * int array * t
+    | Conv2D_BK   of t * arr * int array * t
+    | Conv3D_BI   of t * arr * int array * t
+    | Conv3D_BK   of t * arr * int array * t
     | MaxPool1D_B of padding * t * int array * int array * t
     | MaxPool2D_B of padding * t * int array * int array * t
     | AvgPool1D_B of padding * t * int array * int array * t
     | AvgPool2D_B of padding * t * int array * int array * t
-    | Copy     of t
-    | Reshape  of t * int array
-    | Tile     of t * int array
-    | Repeat   of t * int option * int
-    | Concat   of t array * int option
-    | Split    of t * int option * int array
-    | Item_I   of t * int (* select the ith item in an array *)
+    | Copy        of t
+    | Reshape     of t * int array
+    | Tile        of t * int array
+    | Repeat      of t * int option * int
+    | Concat      of t array * int option
+    | Split       of t * int option * int array
+    | Item_I      of t * int (* select the ith item in an array *)
 
 
   let unpack_operands = function
-    | Noop             -> [| |]
-    | Add (a, b)       -> [|a; b|]
-    | Sub (a, b)       -> [|a; b|]
-    | Mul (a, b)       -> [|a; b|]
-    | Div (a, b)       -> [|a; b|]
-    | Pow (a, b)       -> [|a; b|]
-    | Atan2 (a, b)     -> [|a; b|]
-    | Hypot (a, b)     -> [|a; b|]
-    | Fmod (a, b)      -> [|a; b|]
-    | Min2 (a, b)      -> [|a; b|]
-    | Max2 (a, b)      -> [|a; b|]
-    | Add_S (a, b)     -> [|a|]
-    | Sub_S (a, b)     -> [|a|]
-    | Mul_S (a, b)     -> [|a|]
-    | Div_S (a, b)     -> [|a|]
-    | Pow_S (a, b)     -> [|a|]
-    | Atan2_S (a, b)   -> [|a|]
-    | Fmod_S (a, b)    -> [|a|]
-    | S_Add (a, b)     -> [|b|]
-    | S_Sub (a, b)     -> [|b|]
-    | S_Mul (a, b)     -> [|b|]
-    | S_Div (a, b)     -> [|b|]
-    | S_Pow (a, b)     -> [|b|]
-    | S_Atan2 (a, b)   -> [|b|]
-    | S_Fmod (a, b)    -> [|b|]
-    | Neg a            -> [|a|]
-    | Conj a           -> [|a|]
-    | Reci a           -> [|a|]
-    | Signum a         -> [|a|]
-    | Sqr a            -> [|a|]
-    | Sqrt a           -> [|a|]
-    | Cbrt a           -> [|a|]
-    | Exp a            -> [|a|]
-    | Exp2 a           -> [|a|]
-    | Exp10 a          -> [|a|]
-    | Expm1 a          -> [|a|]
-    | Log a            -> [|a|]
-    | Log2 a           -> [|a|]
-    | Log10 a          -> [|a|]
-    | Log1p a          -> [|a|]
-    | Sin a            -> [|a|]
-    | Cos a            -> [|a|]
-    | Tan a            -> [|a|]
-    | Asin a           -> [|a|]
-    | Acos a           -> [|a|]
-    | Atan a           -> [|a|]
-    | Sinh a           -> [|a|]
-    | Cosh a           -> [|a|]
-    | Tanh a           -> [|a|]
-    | Asinh a          -> [|a|]
-    | Acosh a          -> [|a|]
-    | Atanh a          -> [|a|]
-    | Floor a          -> [|a|]
-    | Ceil a           -> [|a|]
-    | Round a          -> [|a|]
-    | Trunc a          -> [|a|]
-    | Fix a            -> [|a|]
-    | Erf a            -> [|a|]
-    | Erfc a           -> [|a|]
-    | Relu a           -> [|a|]
-    | Softplus a       -> [|a|]
-    | Softsign a       -> [|a|]
-    | Softmax a        -> [|a|]
-    | Sigmoid a        -> [|a|]
-    | Sum a            -> [|a|]
-    | Prod a           -> [|a|]
-    | Min a            -> [|a|]
-    | Max a            -> [|a|]
-    | Mean a           -> [|a|]
-    | Var a            -> [|a|]
-    | Std a            -> [|a|]
-    | L1norm a         -> [|a|]
-    | L2norm a         -> [|a|]
-    | Cumsum a         -> [|a|]
-    | Cumprod a        -> [|a|]
-    | Cummin a         -> [|a|]
-    | Cummax a         -> [|a|]
-    | Conv1D (a, b, c, d) -> [|b|]
-    | Conv2D (a, b, c, d) -> [|b|]
-    | Conv3D (a, b, c, d) -> [|b|]
-    | MaxPool1D (a, b, c, d) -> [|b|]
-    | MaxPool2D (a, b, c, d) -> [|b|]
-    | MaxPool3D (a, b, c, d) -> [|b|]
-    | AvgPool1D (a, b, c, d) -> [|b|]
-    | AvgPool2D (a, b, c, d) -> [|b|]
-    | AvgPool3D (a, b, c, d) -> [|b|]
-    | Conv1D_BI (a, b, c, d) -> [|a; d|]
-    | Conv1D_BK (a, b, c, d) -> [|a; d|]
-    | Conv2D_BI (a, b, c, d) -> [|a; d|]
-    | Conv2D_BK (a, b, c, d) -> [|a; d|]
-    | Conv3D_BI (a, b, c, d) -> [|a; d|]
-    | Conv3D_BK (a, b, c, d) -> [|a; d|]
+    | Noop                        -> [| |]
+    | Add (a, b)                  -> [|a; b|]
+    | Sub (a, b)                  -> [|a; b|]
+    | Mul (a, b)                  -> [|a; b|]
+    | Div (a, b)                  -> [|a; b|]
+    | Pow (a, b)                  -> [|a; b|]
+    | Atan2 (a, b)                -> [|a; b|]
+    | Hypot (a, b)                -> [|a; b|]
+    | Fmod (a, b)                 -> [|a; b|]
+    | Min2 (a, b)                 -> [|a; b|]
+    | Max2 (a, b)                 -> [|a; b|]
+    | Add_S (a, b)                -> [|a|]
+    | Sub_S (a, b)                -> [|a|]
+    | Mul_S (a, b)                -> [|a|]
+    | Div_S (a, b)                -> [|a|]
+    | Pow_S (a, b)                -> [|a|]
+    | Atan2_S (a, b)              -> [|a|]
+    | Fmod_S (a, b)               -> [|a|]
+    | S_Add (a, b)                -> [|b|]
+    | S_Sub (a, b)                -> [|b|]
+    | S_Mul (a, b)                -> [|b|]
+    | S_Div (a, b)                -> [|b|]
+    | S_Pow (a, b)                -> [|b|]
+    | S_Atan2 (a, b)              -> [|b|]
+    | S_Fmod (a, b)               -> [|b|]
+    | Neg a                       -> [|a|]
+    | Conj a                      -> [|a|]
+    | Reci a                      -> [|a|]
+    | Signum a                    -> [|a|]
+    | Sqr a                       -> [|a|]
+    | Sqrt a                      -> [|a|]
+    | Cbrt a                      -> [|a|]
+    | Exp a                       -> [|a|]
+    | Exp2 a                      -> [|a|]
+    | Exp10 a                     -> [|a|]
+    | Expm1 a                     -> [|a|]
+    | Log a                       -> [|a|]
+    | Log2 a                      -> [|a|]
+    | Log10 a                     -> [|a|]
+    | Log1p a                     -> [|a|]
+    | Sin a                       -> [|a|]
+    | Cos a                       -> [|a|]
+    | Tan a                       -> [|a|]
+    | Asin a                      -> [|a|]
+    | Acos a                      -> [|a|]
+    | Atan a                      -> [|a|]
+    | Sinh a                      -> [|a|]
+    | Cosh a                      -> [|a|]
+    | Tanh a                      -> [|a|]
+    | Asinh a                     -> [|a|]
+    | Acosh a                     -> [|a|]
+    | Atanh a                     -> [|a|]
+    | Floor a                     -> [|a|]
+    | Ceil a                      -> [|a|]
+    | Round a                     -> [|a|]
+    | Trunc a                     -> [|a|]
+    | Fix a                       -> [|a|]
+    | Erf a                       -> [|a|]
+    | Erfc a                      -> [|a|]
+    | Relu a                      -> [|a|]
+    | Softplus a                  -> [|a|]
+    | Softsign a                  -> [|a|]
+    | Softmax a                   -> [|a|]
+    | Sigmoid a                   -> [|a|]
+    | Sum a                       -> [|a|]
+    | Prod a                      -> [|a|]
+    | Min a                       -> [|a|]
+    | Max a                       -> [|a|]
+    | Mean a                      -> [|a|]
+    | Var a                       -> [|a|]
+    | Std a                       -> [|a|]
+    | L1norm a                    -> [|a|]
+    | L2norm a                    -> [|a|]
+    | Cumsum a                    -> [|a|]
+    | Cumprod a                   -> [|a|]
+    | Cummin a                    -> [|a|]
+    | Cummax a                    -> [|a|]
+    | Conv1D (a, b, c, d)         -> [|b|]
+    | Conv2D (a, b, c, d)         -> [|b|]
+    | Conv3D (a, b, c, d)         -> [|b|]
+    | MaxPool1D (a, b, c, d)      -> [|b|]
+    | MaxPool2D (a, b, c, d)      -> [|b|]
+    | MaxPool3D (a, b, c, d)      -> [|b|]
+    | AvgPool1D (a, b, c, d)      -> [|b|]
+    | AvgPool2D (a, b, c, d)      -> [|b|]
+    | AvgPool3D (a, b, c, d)      -> [|b|]
+    | Conv1D_BI (a, b, c, d)      -> [|a; d|]
+    | Conv1D_BK (a, b, c, d)      -> [|a; d|]
+    | Conv2D_BI (a, b, c, d)      -> [|a; d|]
+    | Conv2D_BK (a, b, c, d)      -> [|a; d|]
+    | Conv3D_BI (a, b, c, d)      -> [|a; d|]
+    | Conv3D_BK (a, b, c, d)      -> [|a; d|]
     | MaxPool1D_B (a, b, c, d, e) -> [|b; e|]
     | MaxPool2D_B (a, b, c, d, e) -> [|b; e|]
     | AvgPool1D_B (a, b, c, d, e) -> [|b; e|]
     | AvgPool2D_B (a, b, c, d, e) -> [|b; e|]
-    | Copy a           -> [|a|]
-    | Reshape (a, b)   -> [|a|]
-    | Tile (a, b)      -> [|a|]
-    | Repeat (a, b, c) -> [|a|]
-    | Concat (a, b)    ->   a
-    | Split (a, b, c)  -> [|a|]
-    | Item_I (a, b)    -> [|a|]
+    | Copy a                      -> [|a|]
+    | Reshape (a, b)              -> [|a|]
+    | Tile (a, b)                 -> [|a|]
+    | Repeat (a, b, c)            -> [|a|]
+    | Concat (a, b)               ->   a
+    | Split (a, b, c)             -> [|a|]
+    | Item_I (a, b)               -> [|a|]
 
 
   let inc_operand_refnum x =
@@ -285,109 +285,109 @@ module Make
   let rec _eval_term x =
     if Array.length x.outval = 0 then (
       match x.op with
-      | Noop             -> ()
-      | Add (a, b)       -> _eval_map2 x A.add_ A.add
-      | Sub (a, b)       -> _eval_map2 x A.sub_ A.sub
-      | Mul (a, b)       -> _eval_map2 x A.mul_ A.mul
-      | Div (a, b)       -> _eval_map2 x A.div_ A.div
-      | Pow (a, b)       -> _eval_map2 x A.pow_ A.pow
-      | Atan2 (a, b)     -> _eval_map2 x A.atan2_ A.atan2
-      | Hypot (a, b)     -> _eval_map2 x A.hypot_ A.hypot
-      | Fmod (a, b)      -> _eval_map2 x A.fmod_ A.fmod
-      | Min2 (a, b)      -> _eval_map2 x A.min2_ A.min2
-      | Max2 (a, b)      -> _eval_map2 x A.max2_ A.max2
-      | Add_S (a, b)     -> _eval_map3 x b A.add_scalar_
-      | Sub_S (a, b)     -> _eval_map3 x b A.sub_scalar_
-      | Mul_S (a, b)     -> _eval_map3 x b A.mul_scalar_
-      | Div_S (a, b)     -> _eval_map3 x b A.div_scalar_
-      | Pow_S (a, b)     -> _eval_map3 x b A.pow_scalar_
-      | Atan2_S (a, b)   -> _eval_map3 x b A.atan2_scalar_
-      | Fmod_S (a, b)    -> _eval_map3 x b A.fmod_scalar_
-      | S_Add (a, b)     -> _eval_map4 x a A.scalar_add_
-      | S_Sub (a, b)     -> _eval_map4 x a A.scalar_sub_
-      | S_Mul (a, b)     -> _eval_map4 x a A.scalar_mul_
-      | S_Div (a, b)     -> _eval_map4 x a A.scalar_div_
-      | S_Pow (a, b)     -> _eval_map4 x a A.scalar_pow_
-      | S_Atan2 (a, b)   -> _eval_map4 x a A.scalar_atan2_
-      | S_Fmod (a, b)    -> _eval_map4 x a A.scalar_fmod_
-      | Neg a            -> _eval_map1 x A.neg_
-      | Conj a           -> _eval_map1 x A.conj_
-      | Reci a           -> _eval_map1 x A.reci_
-      | Signum a         -> _eval_map1 x A.signum_
-      | Sqr a            -> _eval_map1 x A.sqr_
-      | Sqrt a           -> _eval_map1 x A.sqrt_
-      | Cbrt a           -> _eval_map1 x A.cbrt_
-      | Exp a            -> _eval_map1 x A.exp_
-      | Exp2 a           -> _eval_map1 x A.exp2_
-      | Exp10 a          -> _eval_map1 x A.exp10_
-      | Expm1 a          -> _eval_map1 x A.expm1_
-      | Log a            -> _eval_map1 x A.log_
-      | Log2 a           -> _eval_map1 x A.log2_
-      | Log10 a          -> _eval_map1 x A.log10_
-      | Log1p a          -> _eval_map1 x A.log1p_
-      | Sin a            -> _eval_map1 x A.sin_
-      | Cos a            -> _eval_map1 x A.cos_
-      | Tan a            -> _eval_map1 x A.tan_
-      | Asin a           -> _eval_map1 x A.asin_
-      | Acos a           -> _eval_map1 x A.acos_
-      | Atan a           -> _eval_map1 x A.atan_
-      | Sinh a           -> _eval_map1 x A.sinh_
-      | Cosh a           -> _eval_map1 x A.cosh_
-      | Tanh a           -> _eval_map1 x A.tanh_
-      | Asinh a          -> _eval_map1 x A.asinh_
-      | Acosh a          -> _eval_map1 x A.acosh_
-      | Atanh a          -> _eval_map1 x A.atanh_
-      | Floor a          -> _eval_map1 x A.floor_
-      | Ceil a           -> _eval_map1 x A.ceil_
-      | Round a          -> _eval_map1 x A.round_
-      | Trunc a          -> _eval_map1 x A.trunc_
-      | Fix a            -> _eval_map1 x A.fix_
-      | Erf a            -> _eval_map1 x A.erf_
-      | Erfc a           -> _eval_map1 x A.erfc_
-      | Relu a           -> _eval_map1 x A.relu_
-      | Softplus a       -> _eval_map1 x A.softplus_
-      | Softsign a       -> _eval_map1 x A.softsign_
-      | Softmax a        -> _eval_map1 x A.softmax_
-      | Sigmoid a        -> _eval_map1 x A.sigmoid_
-      | Sum a            -> _eval_reduce x A.sum
-      | Prod a           -> _eval_reduce x A.prod
-      | Min a            -> _eval_reduce x A.min
-      | Max a            -> _eval_reduce x A.max
-      | Mean a           -> _eval_reduce x A.mean
-      | Var a            -> _eval_reduce x A.var
-      | Std a            -> _eval_reduce x A.std
-      | L1norm a         -> _eval_reduce x A.l1norm
-      | L2norm a         -> _eval_reduce x A.l2norm
-      | Cumsum a         -> _eval_map1 x A.cumsum_
-      | Cumprod a        -> _eval_map1 x A.cumprod_
-      | Cummin a         -> _eval_map1 x A.cummin_
-      | Cummax a         -> _eval_map1 x A.cummax_
-      | Conv1D (a, b, c, d) -> _eval_map5 x (fun x -> A.conv1d ?padding:a x c d)
-      | Conv2D (a, b, c, d) -> _eval_map5 x (fun x -> A.conv2d ?padding:a x c d)
-      | Conv3D (a, b, c, d) -> _eval_map5 x (fun x -> A.conv3d ?padding:a x c d)
-      | MaxPool1D (a, b, c, d) -> _eval_map5 x (fun x -> A.max_pool1d ?padding:a x c d)
-      | MaxPool2D (a, b, c, d) -> _eval_map5 x (fun x -> A.max_pool2d ?padding:a x c d)
-      | MaxPool3D (a, b, c, d) -> _eval_map5 x (fun x -> A.max_pool3d ?padding:a x c d)
-      | AvgPool1D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool1d ?padding:a x c d)
-      | AvgPool2D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool2d ?padding:a x c d)
-      | AvgPool3D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool3d ?padding:a x c d)
-      | Conv1D_BI (a, b, c, d) -> _eval_map6 x (fun x -> A.conv1d_backward_input x.(0) b c x.(1))
-      | Conv1D_BK (a, b, c, d) -> _eval_map6 x (fun x -> A.conv1d_backward_kernel x.(0) b c x.(1))
-      | Conv2D_BI (a, b, c, d) -> _eval_map6 x (fun x -> A.conv2d_backward_input x.(0) b c x.(1))
-      | Conv2D_BK (a, b, c, d) -> _eval_map6 x (fun x -> A.conv2d_backward_kernel x.(0) b c x.(1))
-      | Conv3D_BI (a, b, c, d) -> _eval_map6 x (fun x -> A.conv3d_backward_input x.(0) b c x.(1))
-      | Conv3D_BK (a, b, c, d) -> _eval_map6 x (fun x -> A.conv3d_backward_kernel x.(0) b c x.(1))
+      | Noop                        -> ()
+      | Add (a, b)                  -> _eval_map2 x A.add_ A.add
+      | Sub (a, b)                  -> _eval_map2 x A.sub_ A.sub
+      | Mul (a, b)                  -> _eval_map2 x A.mul_ A.mul
+      | Div (a, b)                  -> _eval_map2 x A.div_ A.div
+      | Pow (a, b)                  -> _eval_map2 x A.pow_ A.pow
+      | Atan2 (a, b)                -> _eval_map2 x A.atan2_ A.atan2
+      | Hypot (a, b)                -> _eval_map2 x A.hypot_ A.hypot
+      | Fmod (a, b)                 -> _eval_map2 x A.fmod_ A.fmod
+      | Min2 (a, b)                 -> _eval_map2 x A.min2_ A.min2
+      | Max2 (a, b)                 -> _eval_map2 x A.max2_ A.max2
+      | Add_S (a, b)                -> _eval_map3 x b A.add_scalar_
+      | Sub_S (a, b)                -> _eval_map3 x b A.sub_scalar_
+      | Mul_S (a, b)                -> _eval_map3 x b A.mul_scalar_
+      | Div_S (a, b)                -> _eval_map3 x b A.div_scalar_
+      | Pow_S (a, b)                -> _eval_map3 x b A.pow_scalar_
+      | Atan2_S (a, b)              -> _eval_map3 x b A.atan2_scalar_
+      | Fmod_S (a, b)               -> _eval_map3 x b A.fmod_scalar_
+      | S_Add (a, b)                -> _eval_map4 x a A.scalar_add_
+      | S_Sub (a, b)                -> _eval_map4 x a A.scalar_sub_
+      | S_Mul (a, b)                -> _eval_map4 x a A.scalar_mul_
+      | S_Div (a, b)                -> _eval_map4 x a A.scalar_div_
+      | S_Pow (a, b)                -> _eval_map4 x a A.scalar_pow_
+      | S_Atan2 (a, b)              -> _eval_map4 x a A.scalar_atan2_
+      | S_Fmod (a, b)               -> _eval_map4 x a A.scalar_fmod_
+      | Neg a                       -> _eval_map1 x A.neg_
+      | Conj a                      -> _eval_map1 x A.conj_
+      | Reci a                      -> _eval_map1 x A.reci_
+      | Signum a                    -> _eval_map1 x A.signum_
+      | Sqr a                       -> _eval_map1 x A.sqr_
+      | Sqrt a                      -> _eval_map1 x A.sqrt_
+      | Cbrt a                      -> _eval_map1 x A.cbrt_
+      | Exp a                       -> _eval_map1 x A.exp_
+      | Exp2 a                      -> _eval_map1 x A.exp2_
+      | Exp10 a                     -> _eval_map1 x A.exp10_
+      | Expm1 a                     -> _eval_map1 x A.expm1_
+      | Log a                       -> _eval_map1 x A.log_
+      | Log2 a                      -> _eval_map1 x A.log2_
+      | Log10 a                     -> _eval_map1 x A.log10_
+      | Log1p a                     -> _eval_map1 x A.log1p_
+      | Sin a                       -> _eval_map1 x A.sin_
+      | Cos a                       -> _eval_map1 x A.cos_
+      | Tan a                       -> _eval_map1 x A.tan_
+      | Asin a                      -> _eval_map1 x A.asin_
+      | Acos a                      -> _eval_map1 x A.acos_
+      | Atan a                      -> _eval_map1 x A.atan_
+      | Sinh a                      -> _eval_map1 x A.sinh_
+      | Cosh a                      -> _eval_map1 x A.cosh_
+      | Tanh a                      -> _eval_map1 x A.tanh_
+      | Asinh a                     -> _eval_map1 x A.asinh_
+      | Acosh a                     -> _eval_map1 x A.acosh_
+      | Atanh a                     -> _eval_map1 x A.atanh_
+      | Floor a                     -> _eval_map1 x A.floor_
+      | Ceil a                      -> _eval_map1 x A.ceil_
+      | Round a                     -> _eval_map1 x A.round_
+      | Trunc a                     -> _eval_map1 x A.trunc_
+      | Fix a                       -> _eval_map1 x A.fix_
+      | Erf a                       -> _eval_map1 x A.erf_
+      | Erfc a                      -> _eval_map1 x A.erfc_
+      | Relu a                      -> _eval_map1 x A.relu_
+      | Softplus a                  -> _eval_map1 x A.softplus_
+      | Softsign a                  -> _eval_map1 x A.softsign_
+      | Softmax a                   -> _eval_map1 x A.softmax_
+      | Sigmoid a                   -> _eval_map1 x A.sigmoid_
+      | Sum a                       -> _eval_reduce x A.sum
+      | Prod a                      -> _eval_reduce x A.prod
+      | Min a                       -> _eval_reduce x A.min
+      | Max a                       -> _eval_reduce x A.max
+      | Mean a                      -> _eval_reduce x A.mean
+      | Var a                       -> _eval_reduce x A.var
+      | Std a                       -> _eval_reduce x A.std
+      | L1norm a                    -> _eval_reduce x A.l1norm
+      | L2norm a                    -> _eval_reduce x A.l2norm
+      | Cumsum a                    -> _eval_map1 x A.cumsum_
+      | Cumprod a                   -> _eval_map1 x A.cumprod_
+      | Cummin a                    -> _eval_map1 x A.cummin_
+      | Cummax a                    -> _eval_map1 x A.cummax_
+      | Conv1D (a, b, c, d)         -> _eval_map5 x (fun x -> A.conv1d ?padding:a x c d)
+      | Conv2D (a, b, c, d)         -> _eval_map5 x (fun x -> A.conv2d ?padding:a x c d)
+      | Conv3D (a, b, c, d)         -> _eval_map5 x (fun x -> A.conv3d ?padding:a x c d)
+      | MaxPool1D (a, b, c, d)      -> _eval_map5 x (fun x -> A.max_pool1d ?padding:a x c d)
+      | MaxPool2D (a, b, c, d)      -> _eval_map5 x (fun x -> A.max_pool2d ?padding:a x c d)
+      | MaxPool3D (a, b, c, d)      -> _eval_map5 x (fun x -> A.max_pool3d ?padding:a x c d)
+      | AvgPool1D (a, b, c, d)      -> _eval_map5 x (fun x -> A.avg_pool1d ?padding:a x c d)
+      | AvgPool2D (a, b, c, d)      -> _eval_map5 x (fun x -> A.avg_pool2d ?padding:a x c d)
+      | AvgPool3D (a, b, c, d)      -> _eval_map5 x (fun x -> A.avg_pool3d ?padding:a x c d)
+      | Conv1D_BI (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv1d_backward_input x.(0) b c x.(1))
+      | Conv1D_BK (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv1d_backward_kernel x.(0) b c x.(1))
+      | Conv2D_BI (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv2d_backward_input x.(0) b c x.(1))
+      | Conv2D_BK (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv2d_backward_kernel x.(0) b c x.(1))
+      | Conv3D_BI (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv3d_backward_input x.(0) b c x.(1))
+      | Conv3D_BK (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv3d_backward_kernel x.(0) b c x.(1))
       | MaxPool1D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.max_pool1d_backward a x.(0) c d x.(1))
       | MaxPool2D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.max_pool2d_backward a x.(0) c d x.(1))
       | AvgPool1D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.avg_pool1d_backward a x.(0) c d x.(1))
       | AvgPool2D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.avg_pool2d_backward a x.(0) c d x.(1))
-      | Copy a           -> _eval_map1 x ignore
-      | Reshape (a, b)   -> failwith "reshape: not implmented"
-      | Tile (a, b)      -> _eval_map5 x (fun x -> A.tile x b)
-      | Repeat (a, b, c) -> _eval_map5 x (fun x -> A.repeat ?axis:b x c)
-      | Concat (a, b)    -> _eval_map6 x (fun x -> A.concatenate ?axis:b x)
-      | Split (a, b, c)  -> _eval_map7 x (fun x -> A.split ?axis:b c x)
-      | Item_I (a, b)    -> _item_i x b
+      | Copy a                      -> _eval_map1 x ignore
+      | Reshape (a, b)              -> failwith "reshape: not implmented"
+      | Tile (a, b)                 -> _eval_map5 x (fun x -> A.tile x b)
+      | Repeat (a, b, c)            -> _eval_map5 x (fun x -> A.repeat ?axis:b x c)
+      | Concat (a, b)               -> _eval_map6 x (fun x -> A.concatenate ?axis:b x)
+      | Split (a, b, c)             -> _eval_map7 x (fun x -> A.split ?axis:b c x)
+      | Item_I (a, b)               -> _item_i x b
     )
 
   (* [f] is inpure, for [arr -> arr] *)
