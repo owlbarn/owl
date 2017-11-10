@@ -102,6 +102,15 @@ module Make
     | Cumprod  of t
     | Cummin   of t
     | Cummax   of t
+    | Conv1D   of t * arr * int array * padding option
+    | Conv2D   of t * arr * int array * padding option
+    | Conv3D   of t * arr * int array * padding option
+    | MaxPool1D of t * int array * int array * padding option
+    | MaxPool2D of t * int array * int array * padding option
+    | MaxPool3D of t * int array * int array * padding option
+    | AvgPool1D of t * int array * int array * padding option
+    | AvgPool2D of t * int array * int array * padding option
+    | AvgPool3D of t * int array * int array * padding option
     | Copy     of t
     | Reshape  of t * int array
     | Tile     of t * int array
@@ -189,11 +198,22 @@ module Make
     | Cumprod a        -> [|a|]
     | Cummin a         -> [|a|]
     | Cummax a         -> [|a|]
+    | Conv1D (a, b, c, d) -> [|a|]
+    | Conv2D (a, b, c, d) -> [|a|]
+    | Conv3D (a, b, c, d) -> [|a|]
+    | MaxPool1D (a, b, c, d) -> [|a|]
+    | MaxPool2D (a, b, c, d) -> [|a|]
+    | MaxPool3D (a, b, c, d) -> [|a|]
+    | AvgPool1D (a, b, c, d) -> [|a|]
+    | AvgPool2D (a, b, c, d) -> [|a|]
+    | AvgPool3D (a, b, c, d) -> [|a|]
     | Copy a           -> [|a|]
     | Reshape (a, b)   -> [|a|]
     | Tile (a, b)      -> [|a|]
     | Repeat (a, b, c) -> [|a|]
     | Concat (a, b)    ->   a
+    | Split (a, b, c)  -> [|a|]
+    | Item_I (a, b)    -> [|a|]
 
 
   let inc_operand_refnum x =
@@ -322,13 +342,22 @@ module Make
       | Cumprod a        -> _eval_map1 x A.cumprod_
       | Cummin a         -> _eval_map1 x A.cummin_
       | Cummax a         -> _eval_map1 x A.cummax_
+      | Conv1D (a, b, c, d) -> _eval_map5 x (fun x -> A.conv1d ?padding:d x b c)
+      | Conv2D (a, b, c, d) -> _eval_map5 x (fun x -> A.conv2d ?padding:d x b c)
+      | Conv3D (a, b, c, d) -> _eval_map5 x (fun x -> A.conv3d ?padding:d x b c)
+      | MaxPool1D (a, b, c, d) -> _eval_map5 x (fun x -> A.max_pool1d ?padding:d x b c)
+      | MaxPool2D (a, b, c, d) -> _eval_map5 x (fun x -> A.max_pool2d ?padding:d x b c)
+      | MaxPool3D (a, b, c, d) -> _eval_map5 x (fun x -> A.max_pool3d ?padding:d x b c)
+      | AvgPool1D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool1d ?padding:d x b c)
+      | AvgPool2D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool2d ?padding:d x b c)
+      | AvgPool3D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool3d ?padding:d x b c)
       | Copy a           -> _eval_map1 x ignore
       | Reshape (a, b)   -> failwith "reshape: not implmented"
       | Tile (a, b)      -> _eval_map5 x (fun x -> A.tile x b)
       | Repeat (a, b, c) -> _eval_map5 x (fun x -> A.repeat ?axis:b x c)
       | Concat (a, b)    -> _eval_map6 x (fun x -> A.concatenate ?axis:b x)
       | Split (a, b, c)  -> _eval_map7 x (fun x -> A.split ?axis:b c x)
-      | Item_I (a, b)    -> ()
+      | Item_I (a, b)    -> _item_i x b
     )
 
   (* [f] is inpure, for [arr -> arr] *)
@@ -394,6 +423,13 @@ module Make
     _eval_term operands.(0);
     let a = operands.(0).outval.(0) in
     x.outval <- [|f a|]
+
+  (* get the specific output val of [x] for a given index *)
+  and _item_i x i =
+    let operands = unpack_operands x.op in
+    _eval_term operands.(0);
+    assert (i < Array.length operands.(0).outval);
+    x.outval <- [|operands.(0).outval.(i)|]
 
 
   let of_ndarray x = make_t ~outval:[|x|] Noop
@@ -626,5 +662,22 @@ module Make
 
   let cummax ?axis x = make_t (Cummax x)
 
+  let conv1d ?padding input kernel stride = make_t (Conv1D (input, kernel, stride, padding))
+
+  let conv2d ?padding input kernel stride = make_t (Conv2D (input, kernel, stride, padding))
+
+  let conv3d ?padding input kernel stride = make_t (Conv3D (input, kernel, stride, padding))
+
+  let max_pool1d ?padding input kernel stride = make_t (MaxPool1D (input, kernel, stride, padding))
+
+  let max_pool2d ?padding input kernel stride = make_t (MaxPool2D (input, kernel, stride, padding))
+
+  let max_pool3d ?padding input kernel stride = make_t (MaxPool3D (input, kernel, stride, padding))
+
+  let avg_pool1d ?padding input kernel stride = make_t (AvgPool1D (input, kernel, stride, padding))
+
+  let avg_pool2d ?padding input kernel stride = make_t (AvgPool2D (input, kernel, stride, padding))
+
+  let avg_pool3d ?padding input kernel stride = make_t (AvgPool3D (input, kernel, stride, padding))
 
 end

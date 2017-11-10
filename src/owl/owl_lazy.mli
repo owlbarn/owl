@@ -55,6 +55,8 @@ module Make
 
   val concatenate : ?axis:int -> t array -> t
 
+  val split : ?axis:int -> int array -> t -> t array
+
 
   (** {6 Unary operators} *)
 
@@ -218,6 +220,24 @@ module Make
   val scalar_atan2 : elt -> t -> t
 
   val scalar_fmod : elt -> t -> t
+
+  val conv1d : ?padding:padding -> t -> arr -> int array -> t
+
+  val conv2d : ?padding:padding -> t -> arr -> int array -> t
+
+  val conv3d : ?padding:padding -> t -> arr -> int array -> t
+
+  val max_pool1d : ?padding:padding -> t -> int array -> int array -> t
+
+  val max_pool2d : ?padding:padding -> t -> int array -> int array -> t
+
+  val max_pool3d : ?padding:padding -> t -> int array -> int array -> t
+
+  val avg_pool1d : ?padding:padding -> t -> int array -> int array -> t
+
+  val avg_pool2d : ?padding:padding -> t -> int array -> int array -> t
+
+  val avg_pool3d : ?padding:padding -> t -> int array -> int array -> t
 
 
   (** {6 Helper functions} *)
