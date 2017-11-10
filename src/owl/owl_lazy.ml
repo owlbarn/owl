@@ -102,15 +102,15 @@ module Make
     | Cumprod  of t
     | Cummin   of t
     | Cummax   of t
-    | Conv1D   of t * arr * int array * padding option
-    | Conv2D   of t * arr * int array * padding option
-    | Conv3D   of t * arr * int array * padding option
-    | MaxPool1D of t * int array * int array * padding option
-    | MaxPool2D of t * int array * int array * padding option
-    | MaxPool3D of t * int array * int array * padding option
-    | AvgPool1D of t * int array * int array * padding option
-    | AvgPool2D of t * int array * int array * padding option
-    | AvgPool3D of t * int array * int array * padding option
+    | Conv1D   of padding option * t * arr * int array
+    | Conv2D   of padding option * t * arr * int array
+    | Conv3D   of padding option * t * arr * int array
+    | MaxPool1D of padding option * t * int array * int array
+    | MaxPool2D of padding option * t * int array * int array
+    | MaxPool3D of padding option * t * int array * int array
+    | AvgPool1D of padding option * t * int array * int array
+    | AvgPool2D of padding option * t * int array * int array
+    | AvgPool3D of padding option * t * int array * int array
     | Conv1D_BI of t * arr * int array * t
     | Conv1D_BK of t * arr * int array * t
     | Conv2D_BI of t * arr * int array * t
@@ -208,15 +208,15 @@ module Make
     | Cumprod a        -> [|a|]
     | Cummin a         -> [|a|]
     | Cummax a         -> [|a|]
-    | Conv1D (a, b, c, d) -> [|a|]
-    | Conv2D (a, b, c, d) -> [|a|]
-    | Conv3D (a, b, c, d) -> [|a|]
-    | MaxPool1D (a, b, c, d) -> [|a|]
-    | MaxPool2D (a, b, c, d) -> [|a|]
-    | MaxPool3D (a, b, c, d) -> [|a|]
-    | AvgPool1D (a, b, c, d) -> [|a|]
-    | AvgPool2D (a, b, c, d) -> [|a|]
-    | AvgPool3D (a, b, c, d) -> [|a|]
+    | Conv1D (a, b, c, d) -> [|b|]
+    | Conv2D (a, b, c, d) -> [|b|]
+    | Conv3D (a, b, c, d) -> [|b|]
+    | MaxPool1D (a, b, c, d) -> [|b|]
+    | MaxPool2D (a, b, c, d) -> [|b|]
+    | MaxPool3D (a, b, c, d) -> [|b|]
+    | AvgPool1D (a, b, c, d) -> [|b|]
+    | AvgPool2D (a, b, c, d) -> [|b|]
+    | AvgPool3D (a, b, c, d) -> [|b|]
     | Conv1D_BI (a, b, c, d) -> [|a; d|]
     | Conv1D_BK (a, b, c, d) -> [|a; d|]
     | Conv2D_BI (a, b, c, d) -> [|a; d|]
@@ -362,15 +362,15 @@ module Make
       | Cumprod a        -> _eval_map1 x A.cumprod_
       | Cummin a         -> _eval_map1 x A.cummin_
       | Cummax a         -> _eval_map1 x A.cummax_
-      | Conv1D (a, b, c, d) -> _eval_map5 x (fun x -> A.conv1d ?padding:d x b c)
-      | Conv2D (a, b, c, d) -> _eval_map5 x (fun x -> A.conv2d ?padding:d x b c)
-      | Conv3D (a, b, c, d) -> _eval_map5 x (fun x -> A.conv3d ?padding:d x b c)
-      | MaxPool1D (a, b, c, d) -> _eval_map5 x (fun x -> A.max_pool1d ?padding:d x b c)
-      | MaxPool2D (a, b, c, d) -> _eval_map5 x (fun x -> A.max_pool2d ?padding:d x b c)
-      | MaxPool3D (a, b, c, d) -> _eval_map5 x (fun x -> A.max_pool3d ?padding:d x b c)
-      | AvgPool1D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool1d ?padding:d x b c)
-      | AvgPool2D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool2d ?padding:d x b c)
-      | AvgPool3D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool3d ?padding:d x b c)
+      | Conv1D (a, b, c, d) -> _eval_map5 x (fun x -> A.conv1d ?padding:a x c d)
+      | Conv2D (a, b, c, d) -> _eval_map5 x (fun x -> A.conv2d ?padding:a x c d)
+      | Conv3D (a, b, c, d) -> _eval_map5 x (fun x -> A.conv3d ?padding:a x c d)
+      | MaxPool1D (a, b, c, d) -> _eval_map5 x (fun x -> A.max_pool1d ?padding:a x c d)
+      | MaxPool2D (a, b, c, d) -> _eval_map5 x (fun x -> A.max_pool2d ?padding:a x c d)
+      | MaxPool3D (a, b, c, d) -> _eval_map5 x (fun x -> A.max_pool3d ?padding:a x c d)
+      | AvgPool1D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool1d ?padding:a x c d)
+      | AvgPool2D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool2d ?padding:a x c d)
+      | AvgPool3D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool3d ?padding:a x c d)
       | Conv1D_BI (a, b, c, d) -> _eval_map6 x (fun x -> A.conv1d_backward_input x.(0) b c x.(1))
       | Conv1D_BK (a, b, c, d) -> _eval_map6 x (fun x -> A.conv1d_backward_kernel x.(0) b c x.(1))
       | Conv2D_BI (a, b, c, d) -> _eval_map6 x (fun x -> A.conv2d_backward_input x.(0) b c x.(1))
@@ -692,23 +692,23 @@ module Make
 
   let cummax ?axis x = make_t (Cummax x)
 
-  let conv1d ?padding input kernel stride = make_t (Conv1D (input, kernel, stride, padding))
+  let conv1d ?padding input kernel stride = make_t (Conv1D (padding, input, kernel, stride))
 
-  let conv2d ?padding input kernel stride = make_t (Conv2D (input, kernel, stride, padding))
+  let conv2d ?padding input kernel stride = make_t (Conv2D (padding, input, kernel, stride))
 
-  let conv3d ?padding input kernel stride = make_t (Conv3D (input, kernel, stride, padding))
+  let conv3d ?padding input kernel stride = make_t (Conv3D (padding, input, kernel, stride))
 
-  let max_pool1d ?padding input kernel stride = make_t (MaxPool1D (input, kernel, stride, padding))
+  let max_pool1d ?padding input kernel stride = make_t (MaxPool1D (padding, input, kernel, stride))
 
-  let max_pool2d ?padding input kernel stride = make_t (MaxPool2D (input, kernel, stride, padding))
+  let max_pool2d ?padding input kernel stride = make_t (MaxPool2D (padding, input, kernel, stride))
 
-  let max_pool3d ?padding input kernel stride = make_t (MaxPool3D (input, kernel, stride, padding))
+  let max_pool3d ?padding input kernel stride = make_t (MaxPool3D (padding, input, kernel, stride))
 
-  let avg_pool1d ?padding input kernel stride = make_t (AvgPool1D (input, kernel, stride, padding))
+  let avg_pool1d ?padding input kernel stride = make_t (AvgPool1D (padding, input, kernel, stride))
 
-  let avg_pool2d ?padding input kernel stride = make_t (AvgPool2D (input, kernel, stride, padding))
+  let avg_pool2d ?padding input kernel stride = make_t (AvgPool2D (padding, input, kernel, stride))
 
-  let avg_pool3d ?padding input kernel stride = make_t (AvgPool3D (input, kernel, stride, padding))
+  let avg_pool3d ?padding input kernel stride = make_t (AvgPool3D (padding, input, kernel, stride))
 
   let conv1d_backward_input input kernel stride output' = make_t (Conv1D_BI (input, kernel, stride, output'))
 
