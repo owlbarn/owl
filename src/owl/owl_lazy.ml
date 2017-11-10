@@ -111,6 +111,16 @@ module Make
     | AvgPool1D of t * int array * int array * padding option
     | AvgPool2D of t * int array * int array * padding option
     | AvgPool3D of t * int array * int array * padding option
+    | Conv1D_BI of t * arr * int array * t
+    | Conv1D_BK of t * arr * int array * t
+    | Conv2D_BI of t * arr * int array * t
+    | Conv2D_BK of t * arr * int array * t
+    | Conv3D_BI of t * arr * int array * t
+    | Conv3D_BK of t * arr * int array * t
+    | MaxPool1D_B of padding * t * int array * int array * t
+    | MaxPool2D_B of padding * t * int array * int array * t
+    | AvgPool1D_B of padding * t * int array * int array * t
+    | AvgPool2D_B of padding * t * int array * int array * t
     | Copy     of t
     | Reshape  of t * int array
     | Tile     of t * int array
@@ -207,6 +217,16 @@ module Make
     | AvgPool1D (a, b, c, d) -> [|a|]
     | AvgPool2D (a, b, c, d) -> [|a|]
     | AvgPool3D (a, b, c, d) -> [|a|]
+    | Conv1D_BI (a, b, c, d) -> [|a; d|]
+    | Conv1D_BK (a, b, c, d) -> [|a; d|]
+    | Conv2D_BI (a, b, c, d) -> [|a; d|]
+    | Conv2D_BK (a, b, c, d) -> [|a; d|]
+    | Conv3D_BI (a, b, c, d) -> [|a; d|]
+    | Conv3D_BK (a, b, c, d) -> [|a; d|]
+    | MaxPool1D_B (a, b, c, d, e) -> [|b; e|]
+    | MaxPool2D_B (a, b, c, d, e) -> [|b; e|]
+    | AvgPool1D_B (a, b, c, d, e) -> [|b; e|]
+    | AvgPool2D_B (a, b, c, d, e) -> [|b; e|]
     | Copy a           -> [|a|]
     | Reshape (a, b)   -> [|a|]
     | Tile (a, b)      -> [|a|]
@@ -351,6 +371,16 @@ module Make
       | AvgPool1D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool1d ?padding:d x b c)
       | AvgPool2D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool2d ?padding:d x b c)
       | AvgPool3D (a, b, c, d) -> _eval_map5 x (fun x -> A.avg_pool3d ?padding:d x b c)
+      | Conv1D_BI (a, b, c, d) -> _eval_map6 x (fun x -> A.conv1d_backward_input x.(0) b c x.(1))
+      | Conv1D_BK (a, b, c, d) -> _eval_map6 x (fun x -> A.conv1d_backward_kernel x.(0) b c x.(1))
+      | Conv2D_BI (a, b, c, d) -> _eval_map6 x (fun x -> A.conv2d_backward_input x.(0) b c x.(1))
+      | Conv2D_BK (a, b, c, d) -> _eval_map6 x (fun x -> A.conv2d_backward_kernel x.(0) b c x.(1))
+      | Conv3D_BI (a, b, c, d) -> _eval_map6 x (fun x -> A.conv3d_backward_input x.(0) b c x.(1))
+      | Conv3D_BK (a, b, c, d) -> _eval_map6 x (fun x -> A.conv3d_backward_kernel x.(0) b c x.(1))
+      | MaxPool1D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.max_pool1d_backward a x.(0) c d x.(1))
+      | MaxPool2D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.max_pool2d_backward a x.(0) c d x.(1))
+      | AvgPool1D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.avg_pool1d_backward a x.(0) c d x.(1))
+      | AvgPool2D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.avg_pool2d_backward a x.(0) c d x.(1))
       | Copy a           -> _eval_map1 x ignore
       | Reshape (a, b)   -> failwith "reshape: not implmented"
       | Tile (a, b)      -> _eval_map5 x (fun x -> A.tile x b)
@@ -679,5 +709,26 @@ module Make
   let avg_pool2d ?padding input kernel stride = make_t (AvgPool2D (input, kernel, stride, padding))
 
   let avg_pool3d ?padding input kernel stride = make_t (AvgPool3D (input, kernel, stride, padding))
+
+  let conv1d_backward_input input kernel stride output' = make_t (Conv1D_BI (input, kernel, stride, output'))
+
+  let conv1d_backward_kernel input kernel stride output' = make_t (Conv1D_BK (input, kernel, stride, output'))
+
+  let conv2d_backward_input input kernel stride output' = make_t (Conv2D_BI (input, kernel, stride, output'))
+
+  let conv2d_backward_kernel input kernel stride output' = make_t (Conv2D_BK (input, kernel, stride, output'))
+
+  let conv3d_backward_input input kernel stride output' = make_t (Conv3D_BI (input, kernel, stride, output'))
+
+  let conv3d_backward_kernel input kernel stride output' = make_t (Conv3D_BK (input, kernel, stride, output'))
+
+  let max_pool1d_backward padding input kernel stride output' = make_t (MaxPool1D_B (padding, input, kernel, stride, output'))
+
+  let max_pool2d_backward padding input kernel stride output' = make_t (MaxPool2D_B (padding, input, kernel, stride, output'))
+
+  let avg_pool1d_backward padding input kernel stride output' = make_t (AvgPool1D_B (padding, input, kernel, stride, output'))
+
+  let avg_pool2d_backward padding input kernel stride output' = make_t (AvgPool2D_B (padding, input, kernel, stride, output'))
+
 
 end

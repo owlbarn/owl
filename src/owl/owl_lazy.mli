@@ -239,6 +239,26 @@ module Make
 
   val avg_pool3d : ?padding:padding -> t -> int array -> int array -> t
 
+  val conv1d_backward_input : t -> arr -> int array -> t -> t
+
+  val conv1d_backward_kernel : t -> arr -> int array -> t -> t
+
+  val conv2d_backward_input : t -> arr -> int array -> t -> t
+
+  val conv2d_backward_kernel : t -> arr -> int array -> t -> t
+
+  val conv3d_backward_input : t -> arr -> int array -> t -> t
+
+  val conv3d_backward_kernel : t -> arr -> int array -> t -> t
+
+  val max_pool1d_backward : padding -> t -> int array -> int array -> t -> t
+
+  val max_pool2d_backward : padding -> t -> int array -> int array -> t -> t
+
+  val avg_pool1d_backward : padding -> t -> int array -> int array -> t -> t
+
+  val avg_pool2d_backward : padding -> t -> int array -> int array -> t -> t
+
 
   (** {6 Helper functions} *)
 
