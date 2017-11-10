@@ -327,6 +327,8 @@ module Make
       | Tile (a, b)      -> _eval_map5 x (fun x -> A.tile x b)
       | Repeat (a, b, c) -> _eval_map5 x (fun x -> A.repeat ?axis:b x c)
       | Concat (a, b)    -> _eval_map6 x (fun x -> A.concatenate ?axis:b x)
+      | Split (a, b, c)  -> _eval_map7 x (fun x -> A.split ?axis:b c x)
+      | Item_I (a, b)    -> ()
     )
 
   (* [f] is inpure, for [arr -> arr] *)
@@ -366,7 +368,7 @@ module Make
     f a b;
     x.outval <- [|b|]
 
-  (* [f] is pure, shape changes, for [arr -> arr] *)
+  (* [f] is pure, shape changes so always allocate mem, for [arr -> arr] *)
   and _eval_map5 x f =
     let operands = unpack_operands x.op in
     _eval_term operands.(0);
@@ -378,6 +380,13 @@ module Make
     let operands = unpack_operands x.op in
     let a = Array.map (fun x -> _eval_term x; x.outval.(0)) operands in
     x.outval <- [|f a|]
+
+  (* [f] is pure, allocate mem, for [arr -> arr array] *)
+  and _eval_map7 x f =
+    let operands = unpack_operands x.op in
+    _eval_term operands.(0);
+    let a = operands.(0).outval.(0) in
+    x.outval <- f a
 
   (* [f] is always pure, for [arr -> elt] *)
   and _eval_reduce x f =
