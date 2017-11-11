@@ -16,14 +16,14 @@ module Make
 
   (* type definitions *)
 
-  type arr = A.arr
   type elt = A.elt
 
   type t = {
     mutable op     : op;
     mutable refnum : int;
-    mutable outval : arr array;
+    mutable outval : A.arr array;
   }
+  and arr = t
   and op =
     | Noop
     | Add         of t * t
@@ -106,21 +106,21 @@ module Make
     | Cummax      of t
     | Inv         of t
     | Transpose   of t
-    | Conv1D      of padding option * t * arr * int array
-    | Conv2D      of padding option * t * arr * int array
-    | Conv3D      of padding option * t * arr * int array
+    | Conv1D      of padding option * t * t * int array
+    | Conv2D      of padding option * t * t * int array
+    | Conv3D      of padding option * t * t * int array
     | MaxPool1D   of padding option * t * int array * int array
     | MaxPool2D   of padding option * t * int array * int array
     | MaxPool3D   of padding option * t * int array * int array
     | AvgPool1D   of padding option * t * int array * int array
     | AvgPool2D   of padding option * t * int array * int array
     | AvgPool3D   of padding option * t * int array * int array
-    | Conv1D_BI   of t * arr * int array * t
-    | Conv1D_BK   of t * arr * int array * t
-    | Conv2D_BI   of t * arr * int array * t
-    | Conv2D_BK   of t * arr * int array * t
-    | Conv3D_BI   of t * arr * int array * t
-    | Conv3D_BK   of t * arr * int array * t
+    | Conv1D_BI   of t * t * int array * t
+    | Conv1D_BK   of t * t * int array * t
+    | Conv2D_BI   of t * t * int array * t
+    | Conv2D_BK   of t * t * int array * t
+    | Conv3D_BI   of t * t * int array * t
+    | Conv3D_BK   of t * t * int array * t
     | MaxPool1D_B of padding * t * int array * int array * t
     | MaxPool2D_B of padding * t * int array * int array * t
     | AvgPool1D_B of padding * t * int array * int array * t
@@ -217,21 +217,21 @@ module Make
     | Cummax a                    -> [|a|]
     | Inv a                       -> [|a|]
     | Transpose a                 -> [|a|]
-    | Conv1D (a, b, c, d)         -> [|b|]
-    | Conv2D (a, b, c, d)         -> [|b|]
-    | Conv3D (a, b, c, d)         -> [|b|]
+    | Conv1D (a, b, c, d)         -> [|b; c|]
+    | Conv2D (a, b, c, d)         -> [|b; c|]
+    | Conv3D (a, b, c, d)         -> [|b; c|]
     | MaxPool1D (a, b, c, d)      -> [|b|]
     | MaxPool2D (a, b, c, d)      -> [|b|]
     | MaxPool3D (a, b, c, d)      -> [|b|]
     | AvgPool1D (a, b, c, d)      -> [|b|]
     | AvgPool2D (a, b, c, d)      -> [|b|]
     | AvgPool3D (a, b, c, d)      -> [|b|]
-    | Conv1D_BI (a, b, c, d)      -> [|a; d|]
-    | Conv1D_BK (a, b, c, d)      -> [|a; d|]
-    | Conv2D_BI (a, b, c, d)      -> [|a; d|]
-    | Conv2D_BK (a, b, c, d)      -> [|a; d|]
-    | Conv3D_BI (a, b, c, d)      -> [|a; d|]
-    | Conv3D_BK (a, b, c, d)      -> [|a; d|]
+    | Conv1D_BI (a, b, c, d)      -> [|a; b; d|]
+    | Conv1D_BK (a, b, c, d)      -> [|a; b; d|]
+    | Conv2D_BI (a, b, c, d)      -> [|a; b; d|]
+    | Conv2D_BK (a, b, c, d)      -> [|a; b; d|]
+    | Conv3D_BI (a, b, c, d)      -> [|a; b; d|]
+    | Conv3D_BK (a, b, c, d)      -> [|a; b; d|]
     | MaxPool1D_B (a, b, c, d, e) -> [|b; e|]
     | MaxPool2D_B (a, b, c, d, e) -> [|b; e|]
     | AvgPool1D_B (a, b, c, d, e) -> [|b; e|]
@@ -285,8 +285,11 @@ module Make
       else if b.refnum = 1 then Some (b_val, a_val)
       else Some (A.copy a_val, b_val)
     )
+    (* FIXME *)
+    (*
     else if Owl_utils.array_greater_eqaul a_shp b_shp && a.refnum = 1 then Some (a_val, b_val)
     else if Owl_utils.array_greater_eqaul b_shp a_shp && b.refnum = 1 then Some (b_val, a_val)
+    *)
     else None
 
 
@@ -376,27 +379,27 @@ module Make
       | Cummax a                    -> _eval_map1 x A.cummax_
       | Inv a                       -> _eval_map5 x A.inv
       | Transpose a                 -> _eval_map5 x A.transpose
-      | Conv1D (a, b, c, d)         -> _eval_map5 x (fun x -> A.conv1d ?padding:a x c d)
-      | Conv2D (a, b, c, d)         -> _eval_map5 x (fun x -> A.conv2d ?padding:a x c d)
-      | Conv3D (a, b, c, d)         -> _eval_map5 x (fun x -> A.conv3d ?padding:a x c d)
+      | Conv1D (a, b, c, d)         -> _eval_map6 x (fun x -> A.conv1d ?padding:a x.(0) x.(1) d)
+      | Conv2D (a, b, c, d)         -> _eval_map6 x (fun x -> A.conv2d ?padding:a x.(0) x.(1) d)
+      | Conv3D (a, b, c, d)         -> _eval_map6 x (fun x -> A.conv3d ?padding:a x.(0) x.(1) d)
       | MaxPool1D (a, b, c, d)      -> _eval_map5 x (fun x -> A.max_pool1d ?padding:a x c d)
       | MaxPool2D (a, b, c, d)      -> _eval_map5 x (fun x -> A.max_pool2d ?padding:a x c d)
       | MaxPool3D (a, b, c, d)      -> _eval_map5 x (fun x -> A.max_pool3d ?padding:a x c d)
       | AvgPool1D (a, b, c, d)      -> _eval_map5 x (fun x -> A.avg_pool1d ?padding:a x c d)
       | AvgPool2D (a, b, c, d)      -> _eval_map5 x (fun x -> A.avg_pool2d ?padding:a x c d)
       | AvgPool3D (a, b, c, d)      -> _eval_map5 x (fun x -> A.avg_pool3d ?padding:a x c d)
-      | Conv1D_BI (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv1d_backward_input x.(0) b c x.(1))
-      | Conv1D_BK (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv1d_backward_kernel x.(0) b c x.(1))
-      | Conv2D_BI (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv2d_backward_input x.(0) b c x.(1))
-      | Conv2D_BK (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv2d_backward_kernel x.(0) b c x.(1))
-      | Conv3D_BI (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv3d_backward_input x.(0) b c x.(1))
-      | Conv3D_BK (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv3d_backward_kernel x.(0) b c x.(1))
+      | Conv1D_BI (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv1d_backward_input x.(0) x.(1) c x.(2))
+      | Conv1D_BK (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv1d_backward_kernel x.(0) x.(1) c x.(2))
+      | Conv2D_BI (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv2d_backward_input x.(0) x.(1) c x.(2))
+      | Conv2D_BK (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv2d_backward_kernel x.(0) x.(1) c x.(2))
+      | Conv3D_BI (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv3d_backward_input x.(0) x.(1) c x.(2))
+      | Conv3D_BK (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv3d_backward_kernel x.(0) x.(1) c x.(2))
       | MaxPool1D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.max_pool1d_backward a x.(0) c d x.(1))
       | MaxPool2D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.max_pool2d_backward a x.(0) c d x.(1))
       | AvgPool1D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.avg_pool1d_backward a x.(0) c d x.(1))
       | AvgPool2D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.avg_pool2d_backward a x.(0) c d x.(1))
       | Copy a                      -> _eval_map1 x ignore
-      | Reshape (a, b)              -> failwith "reshape: not implmented"
+      | Reshape (a, b)              -> _eval_map5 x (fun x -> A.(reshape (copy x) b)) (* FIXME *)
       | Tile (a, b)                 -> _eval_map5 x (fun x -> A.tile x b)
       | Repeat (a, b, c)            -> _eval_map5 x (fun x -> A.repeat ?axis:b x c)
       | Concat (a, b)               -> _eval_map6 x (fun x -> A.concatenate ?axis:b x)
@@ -569,7 +572,7 @@ module Make
 
   let elt_greater_equal_scalar x a = A.elt_greater_equal_scalar (to_ndarray x) a |> of_ndarray
 
-  let print t = Printf.printf "lazy t"
+  let print ?max_row ?max_col ?header ?fmt x = Printf.printf "lazy t"
 
 
   (* reduce to scalar *)
@@ -755,7 +758,7 @@ module Make
 
   let inv x = make_t (Inv x)
 
-  let transpose x = make_t (Transpose x)
+  let transpose ?axis x = make_t (Transpose x)
 
   let clip_by_l2norm a x = make_t (Clip_L2Norm (a, x))
 

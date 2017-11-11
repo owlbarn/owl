@@ -13,7 +13,7 @@ module Make
 
   type t
 
-  type arr = A.arr
+  type arr = t
 
   type elt = A.elt
 
@@ -91,7 +91,7 @@ module Make
 
   val elt_greater_equal_scalar : t -> elt -> t
 
-  val print : t -> unit
+  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> t -> unit
 
 
   (** {6 Unary operators} *)
@@ -204,7 +204,7 @@ module Make
 
   val inv : t -> t
 
-  val transpose : t -> t
+  val transpose : ?axis:int array -> t -> t
 
   val clip_by_l2norm : elt -> t -> t
 
@@ -281,11 +281,11 @@ module Make
 
   val scalar_fmod : elt -> t -> t
 
-  val conv1d : ?padding:padding -> t -> arr -> int array -> t
+  val conv1d : ?padding:padding -> t -> t -> int array -> t
 
-  val conv2d : ?padding:padding -> t -> arr -> int array -> t
+  val conv2d : ?padding:padding -> t -> t -> int array -> t
 
-  val conv3d : ?padding:padding -> t -> arr -> int array -> t
+  val conv3d : ?padding:padding -> t -> t -> int array -> t
 
   val max_pool1d : ?padding:padding -> t -> int array -> int array -> t
 
@@ -299,17 +299,17 @@ module Make
 
   val avg_pool3d : ?padding:padding -> t -> int array -> int array -> t
 
-  val conv1d_backward_input : t -> arr -> int array -> t -> t
+  val conv1d_backward_input : t -> t -> int array -> t -> t
 
-  val conv1d_backward_kernel : t -> arr -> int array -> t -> t
+  val conv1d_backward_kernel : t -> t -> int array -> t -> t
 
-  val conv2d_backward_input : t -> arr -> int array -> t -> t
+  val conv2d_backward_input : t -> t -> int array -> t -> t
 
-  val conv2d_backward_kernel : t -> arr -> int array -> t -> t
+  val conv2d_backward_kernel : t -> t -> int array -> t -> t
 
-  val conv3d_backward_input : t -> arr -> int array -> t -> t
+  val conv3d_backward_input : t -> t -> int array -> t -> t
 
-  val conv3d_backward_kernel : t -> arr -> int array -> t -> t
+  val conv3d_backward_kernel : t -> t -> int array -> t -> t
 
   val max_pool1d_backward : padding -> t -> int array -> int array -> t -> t
 
@@ -322,9 +322,9 @@ module Make
 
   (** {6 Helper functions} *)
 
-  val of_ndarray : arr -> t
+  val of_ndarray : A.arr -> t
 
-  val to_ndarray : t -> arr
+  val to_ndarray : t -> A.arr
 
   val eval : t -> unit
 
