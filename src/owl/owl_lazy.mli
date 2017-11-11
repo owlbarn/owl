@@ -39,9 +39,19 @@ module Make
 
   val numel : t -> int
 
+  val row_num : t -> int
+
+  val col_num : t -> int
+
   val get : t -> int array -> elt
 
   val set : t -> int array -> elt -> unit
+
+  val get_slice : index list -> t -> t
+
+  val set_slice : index list -> t -> t -> unit
+
+  val trace : t -> elt
 
   val copy : t -> t
 
@@ -57,8 +67,16 @@ module Make
 
   val split : ?axis:int -> int array -> t -> t array
 
+  val to_rows : t -> t array
+
+  val of_rows : t array -> t
+
+  val print : t -> unit
+
 
   (** {6 Unary operators} *)
+
+  val abs : t -> t
 
   val neg : t -> t
 
@@ -124,6 +142,20 @@ module Make
 
   val fix : t -> t
 
+  val erf : t -> t
+
+  val erfc : t -> t
+
+  val relu : t -> t
+
+  val softplus : t -> t
+
+  val softsign : t -> t
+
+  val softmax : t -> t
+
+  val sigmoid : t -> t
+
   val sum : ?axis:int -> t -> t
 
   val prod : ?axis:int -> t -> t
@@ -149,6 +181,12 @@ module Make
   val cummin : ?axis:int -> t -> t
 
   val cummax : ?axis:int -> t -> t
+
+  val inv : t -> t
+
+  val transpose : t -> t
+
+  val clip_by_l2norm : elt -> t -> t
 
   val sum' : t -> elt
 
@@ -182,6 +220,8 @@ module Make
   val div : t -> t -> t
 
   val pow : t -> t -> t
+
+  val dot : t -> t -> t
 
   val atan2 : t -> t -> t
 

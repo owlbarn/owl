@@ -31,6 +31,7 @@ module Make
     | Mul         of t * t
     | Div         of t * t
     | Pow         of t * t
+    | Dot         of t * t
     | Atan2       of t * t
     | Hypot       of t * t
     | Fmod        of t * t
@@ -50,6 +51,7 @@ module Make
     | S_Pow       of elt * t
     | S_Atan2     of elt * t
     | S_Fmod      of elt * t
+    | Abs         of t
     | Neg         of t
     | Conj        of t
     | Reci        of t
@@ -102,6 +104,8 @@ module Make
     | Cumprod     of t
     | Cummin      of t
     | Cummax      of t
+    | Inv         of t
+    | Transpose   of t
     | Conv1D      of padding option * t * arr * int array
     | Conv2D      of padding option * t * arr * int array
     | Conv3D      of padding option * t * arr * int array
@@ -128,6 +132,7 @@ module Make
     | Concat      of t array * int option
     | Split       of t * int option * int array
     | Item_I      of t * int (* select the ith item in an array *)
+    | Clip_L2Norm of elt * t
 
 
   let unpack_operands = function
@@ -137,6 +142,7 @@ module Make
     | Mul (a, b)                  -> [|a; b|]
     | Div (a, b)                  -> [|a; b|]
     | Pow (a, b)                  -> [|a; b|]
+    | Dot (a, b)                  -> [|a; b|]
     | Atan2 (a, b)                -> [|a; b|]
     | Hypot (a, b)                -> [|a; b|]
     | Fmod (a, b)                 -> [|a; b|]
@@ -156,6 +162,7 @@ module Make
     | S_Pow (a, b)                -> [|b|]
     | S_Atan2 (a, b)              -> [|b|]
     | S_Fmod (a, b)               -> [|b|]
+    | Abs a                       -> [|a|]
     | Neg a                       -> [|a|]
     | Conj a                      -> [|a|]
     | Reci a                      -> [|a|]
@@ -208,6 +215,8 @@ module Make
     | Cumprod a                   -> [|a|]
     | Cummin a                    -> [|a|]
     | Cummax a                    -> [|a|]
+    | Inv a                       -> [|a|]
+    | Transpose a                 -> [|a|]
     | Conv1D (a, b, c, d)         -> [|b|]
     | Conv2D (a, b, c, d)         -> [|b|]
     | Conv3D (a, b, c, d)         -> [|b|]
@@ -234,6 +243,7 @@ module Make
     | Concat (a, b)               ->   a
     | Split (a, b, c)             -> [|a|]
     | Item_I (a, b)               -> [|a|]
+    | Clip_L2Norm (a, b)          -> [|b|]
 
 
   let inc_operand_refnum x =
@@ -291,6 +301,7 @@ module Make
       | Mul (a, b)                  -> _eval_map2 x A.mul_ A.mul
       | Div (a, b)                  -> _eval_map2 x A.div_ A.div
       | Pow (a, b)                  -> _eval_map2 x A.pow_ A.pow
+      | Dot (a, b)                  -> _eval_map6 x (fun x -> A.dot x.(0) x.(1))
       | Atan2 (a, b)                -> _eval_map2 x A.atan2_ A.atan2
       | Hypot (a, b)                -> _eval_map2 x A.hypot_ A.hypot
       | Fmod (a, b)                 -> _eval_map2 x A.fmod_ A.fmod
@@ -310,6 +321,7 @@ module Make
       | S_Pow (a, b)                -> _eval_map4 x a A.scalar_pow_
       | S_Atan2 (a, b)              -> _eval_map4 x a A.scalar_atan2_
       | S_Fmod (a, b)               -> _eval_map4 x a A.scalar_fmod_
+      | Abs a                       -> _eval_map1 x A.abs_
       | Neg a                       -> _eval_map1 x A.neg_
       | Conj a                      -> _eval_map1 x A.conj_
       | Reci a                      -> _eval_map1 x A.reci_
@@ -362,6 +374,8 @@ module Make
       | Cumprod a                   -> _eval_map1 x A.cumprod_
       | Cummin a                    -> _eval_map1 x A.cummin_
       | Cummax a                    -> _eval_map1 x A.cummax_
+      | Inv a                       -> _eval_map5 x A.inv
+      | Transpose a                 -> _eval_map5 x A.transpose
       | Conv1D (a, b, c, d)         -> _eval_map5 x (fun x -> A.conv1d ?padding:a x c d)
       | Conv2D (a, b, c, d)         -> _eval_map5 x (fun x -> A.conv2d ?padding:a x c d)
       | Conv3D (a, b, c, d)         -> _eval_map5 x (fun x -> A.conv3d ?padding:a x c d)
@@ -388,6 +402,7 @@ module Make
       | Concat (a, b)               -> _eval_map6 x (fun x -> A.concatenate ?axis:b x)
       | Split (a, b, c)             -> _eval_map7 x (fun x -> A.split ?axis:b c x)
       | Item_I (a, b)               -> _item_i x b
+      | Clip_L2Norm (a, b)          -> _eval_map5 x (fun x -> A.clip_by_l2norm a x)
     )
 
   (* [f] is inpure, for [arr -> arr] *)
@@ -494,9 +509,19 @@ module Make
 
   let numel x = to_ndarray x |> A.numel
 
+  let row_num x = to_ndarray x |> A.row_num
+
+  let col_num x = to_ndarray x |> A.col_num
+
   let get x i = A.get (to_ndarray x) i
 
   let set x i a = A.set (to_ndarray x) i a
+
+  let get_slice axis x = A.get_slice axis (to_ndarray x) |> of_ndarray
+
+  let set_slice axis x y = A.set_slice axis (to_ndarray x) (to_ndarray y)
+
+  let trace x = A.trace (to_ndarray x)
 
   let copy x = make_t (Copy x)
 
@@ -513,6 +538,12 @@ module Make
   let split ?axis parts x =
     let t = make_t (Split (x, axis, parts)) in
     Array.mapi (fun i _ -> make_t (Item_I (t, i))) parts
+
+  let to_rows x = A.to_rows (to_ndarray x) |> Array.map of_ndarray
+
+  let of_rows x = Array.map to_ndarray x |> A.of_rows |> of_ndarray
+
+  let print t = Printf.printf "lazy t"
 
 
   (* reduce to scalar *)
@@ -549,6 +580,8 @@ module Make
   let div x y = make_t (Div (x, y))
 
   let pow x y = make_t (Pow (x, y))
+
+  let dot x y = make_t (Dot (x, y))
 
   let atan2 x y = make_t (Atan2 (x, y))
 
@@ -587,6 +620,8 @@ module Make
   let scalar_atan2 a x = make_t (S_Atan2 (a, x))
 
   let scalar_fmod a x = make_t (S_Fmod (a, x))
+
+  let abs x = make_t (Abs x)
 
   let neg x = make_t (Neg x)
 
@@ -691,6 +726,12 @@ module Make
   let cummin ?axis x = make_t (Cummin x)
 
   let cummax ?axis x = make_t (Cummax x)
+
+  let inv x = make_t (Inv x)
+
+  let transpose x = make_t (Transpose x)
+
+  let clip_by_l2norm a x = make_t (Clip_L2Norm (a, x))
 
   let conv1d ?padding input kernel stride = make_t (Conv1D (padding, input, kernel, stride))
 

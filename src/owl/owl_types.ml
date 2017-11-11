@@ -366,6 +366,8 @@ module type InpureSig = sig
 
   val scalar_fmod_ : elt -> arr -> unit
 
+  val abs_ : arr -> unit
+  
   val neg_ : arr -> unit
 
   val conj_ : arr -> unit
