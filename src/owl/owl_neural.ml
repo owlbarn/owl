@@ -13,7 +13,7 @@ module S = struct
 
   (* module aliases: graphical network & parallel *)
 
-  module Graph          = Owl_neural_graph.Make (Owl_dense_matrix.S) (Owl_dense_ndarray.S)
+  module Graph          = Owl_neural_graph.Make (Owl_dense_ndarray.S)
   module Parallel       = Owl_neural_parallel.Make (Graph)
 
   (* module aliases: weight init and activation *)
@@ -44,7 +44,7 @@ module D = struct
 
   (* module aliases: graphical network & parallel *)
 
-  module Graph          = Owl_neural_graph.Make (Owl_dense_matrix.D) (Owl_dense_ndarray.D)
+  module Graph          = Owl_neural_graph.Make (Owl_dense_ndarray.D)
   (* module Parallel       = Owl_neural_parallel.Make (Graph) *)
 
   (* module aliases: weight init and activation *)

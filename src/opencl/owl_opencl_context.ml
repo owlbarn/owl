@@ -17,9 +17,6 @@ type context = {
 }
 
 
-(* let kernel_tbl = Hashtbl.create 512 *)
-
-(* FIXME: hardcoded path *)
 let compile_kernels () =
   let ctx = Context.create_from_type cl_DEVICE_TYPE_GPU in
   let gpu = Context.((get_info ctx).devices).(0) in
@@ -34,7 +31,11 @@ let compile_kernels () =
   }
 
 
-let default = compile_kernels ()
+let default =
+  Log.info "OpenCL: compling kernels";
+  let ctx = compile_kernels () in
+  Log.info "OpenCL: kernels compiled";
+  ctx
 
 
 let mk_kernel

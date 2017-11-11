@@ -34,7 +34,7 @@ let grad' f x =
   let n = V.numel x in
   let g = V.create n (f x) in
   let gg = V.mapi (fun i xi ->
-    let x' = V.clone x in
+    let x' = V.copy x in
     M.set x' 0 i (xi +. _eps);
     f x'
   ) x
@@ -51,7 +51,7 @@ let jacobianT' f x =
   let m, n = V.numel x, V.numel y in
   let j = M.tile y [|m; 1|] in
   let jj = M.mapi_by_row n (fun i yi ->
-    let x' = M.clone x in
+    let x' = M.copy x in
     M.set x' 0 i ((M.get x 0 i) +. _eps);
     f x'
   ) j

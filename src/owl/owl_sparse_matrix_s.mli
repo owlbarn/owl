@@ -61,7 +61,7 @@ val reset : mat -> unit
 
 val fill : mat -> elt -> unit
 
-val clone : mat -> mat
+val copy : mat -> mat
 
 val transpose : mat -> mat
 
@@ -232,15 +232,15 @@ val trace : mat -> elt
 
 val sum : mat -> elt
 
-val average : mat -> elt
+val mean : mat -> elt
 
 val sum_rows : mat -> mat
 
 val sum_cols : mat -> mat
 
-val average_rows : mat -> mat
+val mean_rows : mat -> mat
 
-val average_cols : mat -> mat
+val mean_cols : mat -> mat
 
 val abs : mat -> mat
 

@@ -15,11 +15,10 @@ open Owl_types
 (* Make functor starts *)
 
 module Make
-  (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
+  (A : NdarraySig)
   = struct
 
-  include Owl_algodiff_generic.Make (M) (A)
+  include Owl_algodiff_generic.Make (A)
 
 
 
@@ -36,7 +35,7 @@ module Make
       match x, y with
       | Arr x, Arr y -> (
           let x, i = A.draw_along_dim0 x n in
-          let y = M.rows y i in
+          let y = A.rows y i in
           Arr x, Arr y
         )
       | x, y         -> failwith ("Owl_neural_optimise.Utils.draw_samples:" ^ (type_info x))
@@ -44,11 +43,11 @@ module Make
     let get_chunk x y i c =
       match x, y with
       | Arr x, Arr y -> (
-          let n = M.row_num y in
+          let n = A.row_num y in
           let a = (i * c) mod n in
           let b = Pervasives.min (a + c - 1) (n - 1) in
           let x = A.get_slice [R [a;b]] x in
-          let y = M.get_slice [R [a;b]] y in
+          let y = A.get_slice [R [a;b]] y in
           Arr x, Arr y
         )
       | x, y         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))
@@ -138,10 +137,10 @@ module Make
       | Custom of (t -> t -> t)
 
     let run typ y y' = match typ with
-      | Hinge         -> Maths.(sum (max2 (F 0.) (F 1. - y * y')))
-      | L1norm        -> Maths.(l1norm (y - y'))
-      | L2norm        -> Maths.(l2norm (y - y'))
-      | Quadratic     -> Maths.(l2norm_sqr (y - y'))
+      | Hinge         -> Maths.(sum' (max2 (F 0.) (F 1. - y * y')))
+      | L1norm        -> Maths.(l1norm' (y - y'))
+      | L2norm        -> Maths.(l2norm' (y - y'))
+      | Quadratic     -> Maths.(l2norm_sqr' (y - y'))
       | Cross_entropy -> Maths.(cross_entropy y y')
       | Custom f      -> f y y' (* y': prediction *)
 
@@ -171,20 +170,20 @@ module Make
       | GD          -> fun _ _ _ _ g' -> Maths.neg g'
       | CG          -> fun _ _ g p g' -> (
           let y = Maths.(g' - g) in
-          let b = Maths.((sum (g' * y)) / ((sum (p * y)) + F 1e-32)) in
+          let b = Maths.((sum' (g' * y)) / ((sum' (p * y)) + F 1e-32)) in
           Maths.((neg g') + (b * p))
         )
       | CD          -> fun _ _ g p g' -> (
-          let b = Maths.((l2norm_sqr g') / (sum (neg p * g))) in
+          let b = Maths.((l2norm_sqr' g') / (sum' (neg p * g))) in
           Maths.((neg g') + (b * p))
         )
       | NonlinearCG -> fun _ _ g p g' -> (
-          let b = Maths.((l2norm_sqr g') / (l2norm_sqr g)) in
+          let b = Maths.((l2norm_sqr' g') / (l2norm_sqr' g)) in
           Maths.((neg g') + (b * p))
         )
       | DaiYuanCG   -> fun _ w g p g' -> (
           let y = Maths.(g' - g) in
-          let b = Maths.((l2norm_sqr g') / (sum (p * y))) in
+          let b = Maths.((l2norm_sqr' g') / (sum' (p * y))) in
           Maths.((neg g') + (b * p))
         )
       | NewtonCG    -> fun f w g p g' -> (
@@ -244,9 +243,9 @@ module Make
       | None
 
     let run typ x = match typ with
-      | L1norm a           -> Maths.(F a * l1norm x)
-      | L2norm a           -> Maths.(F a * l2norm x)
-      | Elastic_net (a, b) -> Maths.(F a * l1norm x + F b * l2norm x)
+      | L1norm a           -> Maths.(F a * l1norm' x)
+      | L2norm a           -> Maths.(F a * l2norm' x)
+      | Elastic_net (a, b) -> Maths.(F a * l1norm' x + F b * l2norm' x)
       | None               -> F 0.
 
     let to_string = function
@@ -575,7 +574,7 @@ module Make
       let xt, yt = bach_fun x y i in
       let yt', ws = forward xt in
       let loss = loss_fun yt yt' in
-      (* take the average of the loss *)
+      (* take the mean of the loss *)
       let loss = Maths.(loss / (F (Mat.row_num yt |> float_of_int))) in
       (* add regularisation term if necessary *)
       let reg = match params.regularisation <> Regularisation.None with

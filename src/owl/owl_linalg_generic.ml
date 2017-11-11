@@ -16,7 +16,7 @@ module M = Owl_dense.Matrix.Generic
 
 
 let lu x =
-  let x = M.clone x in
+  let x = M.copy x in
   let m, n = M.shape x in
   let minmn = Pervasives.min m n in
 
@@ -38,13 +38,13 @@ let lufact x =
 
 
 let inv x =
-  let x = M.clone x in
+  let x = M.copy x in
   let a, ipiv = Owl_lapacke.getrf x in
   Owl_lapacke.getri a ipiv
 
 
 let det x =
-  let x = M.clone x in
+  let x = M.copy x in
   let m, n = M.shape x in
   assert (m = n);
 
@@ -67,7 +67,7 @@ let det x =
 
 (* FIXME: need to check ... *)
 let logdet x =
-  let x = M.clone x in
+  let x = M.copy x in
   let m, n = M.shape x in
   assert (m = n);
 
@@ -107,7 +107,7 @@ let _get_qr_q
 
 
 let qr ?(thin=true) ?(pivot=false) x =
-  let x = M.clone x in
+  let x = M.copy x in
   let m, n = M.shape x in
   let minmn = Pervasives.min m n in
   let a, tau, jpvt = match pivot with
@@ -159,7 +159,7 @@ let _get_lq_q
 
 
 let lq ?(thin=true) x =
-  let x = M.clone x in
+  let x = M.copy x in
   let m, n = M.shape x in
   let minmn = Pervasives.min m n in
   let a, tau = Owl_lapacke.gelqf x in
@@ -184,7 +184,7 @@ let lq ?(thin=true) x =
 
 
 let svd ?(thin=true) x =
-  let x = M.clone x in
+  let x = M.copy x in
   let jobz = match thin with
     | true  -> 'S'
     | false -> 'A'
@@ -194,14 +194,14 @@ let svd ?(thin=true) x =
 
 
 let svdvals x =
-  let x = M.clone x in
+  let x = M.copy x in
   let _, s, _ = Owl_lapacke.gesdd ~jobz:'N' ~a:x in
   s
 
 
 let gsvd x y =
-  let x = M.clone x in
-  let y = M.clone y in
+  let x = M.copy x in
+  let y = M.copy y in
   let m, n = M.shape x in
   let p, _ = M.shape y in
   let u, v, q, alpha, beta, k, l, r =
@@ -216,8 +216,8 @@ let gsvd x y =
 
 
 let gsvdvals x y =
-  let x = M.clone x in
-  let y = M.clone y in
+  let x = M.copy x in
+  let y = M.copy y in
   let _, _, _, alpha, beta, k, l, _ =
     Owl_lapacke.ggsvd3 ~jobu:'N' ~jobv:'N' ~jobq:'N' ~a:x ~b:y
   in
@@ -240,13 +240,13 @@ let rank ?tol x =
   let ztol = Complex.({re = tol; im = neg_infinity}) in
   let _count : type a b. (a, b) kind -> (a, b) t -> int =
     fun _kind sv -> match _kind with
-    | Float32   -> M.elt_greater_scalar sv dtol |> M.sum |> int_of_float
-    | Float64   -> M.elt_greater_scalar sv dtol |> M.sum |> int_of_float
+    | Float32   -> M.elt_greater_scalar sv dtol |> M.sum' |> int_of_float
+    | Float64   -> M.elt_greater_scalar sv dtol |> M.sum' |> int_of_float
     | Complex32 ->
-        let a = M.elt_greater_scalar sv ztol |> M.sum in
+        let a = M.elt_greater_scalar sv ztol |> M.sum' in
         int_of_float Complex.(a.re)
     | Complex64 ->
-        let a = M.elt_greater_scalar sv ztol |> M.sum in
+        let a = M.elt_greater_scalar sv ztol |> M.sum' in
         int_of_float Complex.(a.re)
     | _         -> failwith "owl_linalg:rank"
   in
@@ -257,7 +257,7 @@ let rank ?tol x =
 
 
 let chol ?(upper=true) x =
-  let x = M.clone x in
+  let x = M.copy x in
   match upper with
   | true  -> Owl_lapacke.potrf 'U' x |> M.triu
   | false -> Owl_lapacke.potrf 'L' x |> M.tril
@@ -266,7 +266,7 @@ let chol ?(upper=true) x =
 let schur
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x ->
-  let x = M.clone x in
+  let x = M.copy x in
   let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
 
   let w = match (M.kind x) with
@@ -285,7 +285,7 @@ let schur
 let eig
   : type a b c d. ?permute:bool -> ?scale:bool -> otyp:(a, b) kind -> (c, d) t -> (a, b) t * (a, b) t
   = fun ?(permute=true) ?(scale=true) ~otyp x ->
-  let x = M.clone x in
+  let x = M.copy x in
   let balanc = match permute, scale with
     | true, true   -> 'B'
     | true, false  -> 'P'
@@ -353,7 +353,7 @@ let eig
 let eigvals
   : type a b c d. ?permute:bool -> ?scale:bool -> otyp:(a, b) kind -> (c, d) t -> (a, b) t
   = fun ?(permute=true) ?(scale=true) ~otyp x ->
-  let x = M.clone x in
+  let x = M.copy x in
   let balanc = match permute, scale with
     | true, true   -> 'B'
     | true, false  -> 'P'
@@ -388,7 +388,7 @@ let _get_hess_q
 
 
 let hess x =
-  let x = M.clone x in
+  let x = M.copy x in
   let _, n = M.shape x in
   let ilo = 1 in
   let ihi = n in
@@ -401,7 +401,7 @@ let hess x =
 (* Bunch-Kaufman [Bunch1977] factorization *)
 
 let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
-  let x = M.clone x in
+  let x = M.copy x in
   let uplo = match upper with
     | true  -> 'U'
     | false -> 'L'
@@ -502,10 +502,10 @@ let _minmax_real
   : type a b. (a, b) kind -> (a, b) t -> float * float
   = fun k v ->
     match (M.kind v) with
-    | Float32   -> M.minmax v
-    | Float64   -> M.minmax v
-    | Complex32 -> M.re_c2s v |> M.minmax
-    | Complex64 -> M.re_z2d v |> M.minmax
+    | Float32   -> M.minmax' v
+    | Float64   -> M.minmax' v
+    | Complex32 -> M.re_c2s v |> M.minmax'
+    | Complex64 -> M.re_z2d v |> M.minmax'
     | _         -> failwith "owl_linalg_generic:_minmax_real"
 
 
@@ -522,9 +522,9 @@ let _abs
 
 let norm ?(p=2.) x =
   let k = M.kind x in
-  if p = 1. then x |> _abs k |> M.sum_rows |> M.max
+  if p = 1. then x |> _abs k |> M.sum_rows |> M.max'
   else if p = 2. then x |> svdvals |> _minmax_real k |> snd
-  else if p = infinity then x |> _abs k |> M.sum_cols |> M.max
+  else if p = infinity then x |> _abs k |> M.sum_cols |> M.max'
   else failwith "owl_linalg_generic:norm:p=1|2|inf"
 
 
@@ -536,7 +536,7 @@ let cond ?(p=2.) x =
   )
   else if p = 1. || p = infinity then (
     assert (M.row_num x = M.col_num x);
-    let x = M.clone x in
+    let x = M.copy x in
     let a, ipiv = lufact x in
     let anorm = norm ~p x in
     let norm = if p = 1. then '1' else 'I' in
@@ -559,9 +559,9 @@ let null x =
   else (
     let _, s, vt = svd ~thin:false x in
     let s = _abs (M.kind s) s in
-    let maxsv = M.max s in
+    let maxsv = M.max' s in
     let maxmn = Pervasives.max m n |> float_of_int in
-    let i = M.elt_greater_scalar s (maxmn *. maxsv *. eps) |> M.sum |> int_of_float in
+    let i = M.elt_greater_scalar s (maxmn *. maxsv *. eps) |> M.sum' |> int_of_float in
     let vt = M.resize ~head:false vt [|M.row_num vt - i; M.col_num vt|] in
     M.transpose vt
   )
@@ -584,8 +584,8 @@ let linsolve ?(trans=false) a b =
   let ma, na = M.shape a in
   let mb, nb = M.shape b in
   assert (ma = mb);
-  let a = M.clone a in
-  let b = M.clone b in
+  let a = M.copy a in
+  let b = M.copy b in
 
   let trans = match trans with
     | true  -> _get_trans_code (M.kind a)
@@ -616,8 +616,8 @@ let linreg x y =
   let p = M.get (M.cov ~a:x ~b:y) 0 1 in
   let q = M.get (M.var ~axis:0 x) 0 0 in
   let b = Owl_dense_common._div_elt k p q in
-  let c = Owl_dense_common._mul_elt k b (M.average x) in
-  let a = Owl_dense_common._sub_elt k (M.average y) c in
+  let c = Owl_dense_common._mul_elt k b (M.mean' x) in
+  let a = Owl_dense_common._sub_elt k (M.mean' y) c in
   a, b
 
 

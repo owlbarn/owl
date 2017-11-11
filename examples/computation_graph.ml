@@ -11,7 +11,7 @@ open Owl
 open Algodiff.S
 
 
-let f x y = Maths.((x * sin (x + x) + ( F 1. * sqrt x) / F 7.) * (relu y) |> sum)
+let f x y = Maths.((x * sin (x + x) + ( F 1. * sqrt x) / F 7.) * (relu y) |> sum')
 
 
 let visualise_simple_01 () =

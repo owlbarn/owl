@@ -851,8 +851,8 @@ let _draw_error_bar ?(w=0.) x y e =
 
 let error_bar ?(h=_default_handle) ?(spec=[]) x y e =
   let open Plplot in
-  let ymin = Owl_dense_matrix.D.(min(y - e)) in
-  let ymax = Owl_dense_matrix.D.(max(y + e)) in
+  let ymin = Owl_dense_matrix.D.(min'(y - e)) in
+  let ymax = Owl_dense_matrix.D.(max'(y + e)) in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
   let e = Owl_dense_matrix.D.to_array e in
@@ -1635,7 +1635,7 @@ let image ?(h=_default_handle) x =
   let x = Owl_dense_matrix.D.rotate x 90 in
   (* compute necessary parameters *)
   let width, height = Owl_dense_matrix.D.shape x in
-  let num_col = Owl_dense_matrix.D.max x in
+  let num_col = Owl_dense_matrix.D.max' x in
   let img = Owl_dense_matrix.D.to_arrays x in
   let width = float_of_int width in
   let height = float_of_int height in

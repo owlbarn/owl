@@ -38,7 +38,7 @@ val get : ('a, 'b) t -> int -> int -> 'a
 
 val reset : ('a, 'b) t -> unit
 
-val clone : ('a, 'b) t -> ('a, 'b) t
+val copy : ('a, 'b) t -> ('a, 'b) t
 
 
 (** {6 Iterate elements, columns, and rows} *)

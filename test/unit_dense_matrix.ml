@@ -48,7 +48,7 @@ module To_test = struct
     let x = M.zeros Float64 3 3 in
     M.add_diag x 1.
 
-  let sum x = M.sum x
+  let sum' x = M.sum' x
 
   let exists x = M.exists (fun a -> a = 6.) x
 
@@ -114,17 +114,17 @@ module To_test = struct
      let c = M.of_arrays Float64 [| [|0.;1.;0.;0.|]; [|2.;3.;0.;0.|]; [|0.;0.;0.;1.|]; [|0.;0.;2.;3.|] |] in
      M.equal (M.kron b a) c
 
-  let add_scalar () = M.add_scalar x1 2. |> M.sum = 36.
+  let add_scalar () = M.add_scalar x1 2. |> M.sum' = 36.
 
-  let mul_scalar () = M.mul_scalar x1 2. |> M.sum = 24.
+  let mul_scalar () = M.mul_scalar x1 2. |> M.sum' = 24.
 
-  let min x =
+  let min' x =
     let x = M.add_scalar x 1. in
-    M.min x
+    M.min' x
 
-  let max x =
+  let max' x =
     let x = M.add_scalar x 1. in
-    M.max x
+    M.max' x
 
   let min_i () =
     let m, n = 3, 4 in
@@ -213,8 +213,8 @@ let trace () =
 let add_diag () =
   Alcotest.(check matrix) "add_diag" (M.eye Float64 3) (To_test.add_diag ())
 
-let sum () =
-  Alcotest.(check (float eps)) "sum" 66. (To_test.sum x2)
+let sum' () =
+  Alcotest.(check (float eps)) "sum'" 66. (To_test.sum' x2)
 
 let exists () =
   Alcotest.(check bool) "exits" true (To_test.exists x2)
@@ -276,11 +276,11 @@ let add_scalar () =
 let mul_scalar () =
   Alcotest.(check bool) "mul_scalar" true (To_test.mul_scalar ())
 
-let min x =
-  Alcotest.(check (float eps)) "min" 1. (To_test.min x2)
+let min' x =
+  Alcotest.(check (float eps)) "min" 1. (To_test.min' x2)
 
-let max x =
-  Alcotest.(check (float eps)) "max" 12. (To_test.max x2)
+let max' x =
+  Alcotest.(check (float eps)) "max" 12. (To_test.max' x2)
 
 let min_i x =
   Alcotest.(check bool) "min_i" true (To_test.min_i ())
@@ -292,7 +292,7 @@ let map x =
   Alcotest.(check bool) "map" true (To_test.map ())
 
 let fold () =
-  Alcotest.(check (float eps)) "fold" (M.sum x2) (To_test.fold x2)
+  Alcotest.(check (float eps)) "fold" (M.sum' x2) (To_test.fold x2)
 
 let foldi () =
   Alcotest.(check bool) "foldi" true (To_test.foldi ())
@@ -327,7 +327,7 @@ let test_set = [
   "fill", `Slow, fill;
   "trace", `Slow, trace;
   "add_diag", `Slow, add_diag;
-  "sum", `Slow, sum;
+  "sum'", `Slow, sum';
   "exists", `Slow, exists;
   "not_exists", `Slow, not_exists;
   "for_all", `Slow, for_all;
@@ -348,8 +348,8 @@ let test_set = [
   "kron", `Slow, kron;
   "add_scalar", `Slow, add_scalar;
   "mul_scalar", `Slow, mul_scalar;
-  "min", `Slow, min;
-  "max", `Slow, max;
+  "min'", `Slow, min';
+  "max'", `Slow, max';
   "min_i", `Slow, min_i;
   "max_i", `Slow, max_i;
   "map", `Slow, map;
