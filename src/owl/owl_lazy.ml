@@ -521,6 +521,14 @@ module Make
 
   let set_slice axis x y = A.set_slice axis (to_ndarray x) (to_ndarray y)
 
+  let copy_row_to x v i = A.copy_row_to (to_ndarray x) (to_ndarray v) i
+
+  let copy_col_to x v i = A.copy_col_to (to_ndarray x) (to_ndarray v) i
+
+  let row x i = A.row (to_ndarray x) i |> of_ndarray
+
+  let rows x l = A.rows (to_ndarray x) l |> of_ndarray
+
   let trace x = A.trace (to_ndarray x)
 
   let copy x = make_t (Copy x)
@@ -542,6 +550,24 @@ module Make
   let to_rows x = A.to_rows (to_ndarray x) |> Array.map of_ndarray
 
   let of_rows x = Array.map to_ndarray x |> A.of_rows |> of_ndarray
+
+  let of_arrays x = A.of_arrays x |> of_ndarray
+
+  let sum_slices ?axis x = A.sum_slices ?axis (to_ndarray x) |> of_ndarray
+
+  let draw_along_dim0 x n =
+    let y, indices = A.draw_along_dim0 (to_ndarray x) n in
+    of_ndarray y, indices
+
+  let draw_rows ?replacement x c =
+    let x, l = A.draw_rows (to_ndarray x) c in
+    of_ndarray x, l
+
+  let draw_rows2 ?replacement x y c =
+    let x, y, l = A.draw_rows2 (to_ndarray x) (to_ndarray y) c in
+    of_ndarray x, of_ndarray y, l
+
+  let elt_greater_equal_scalar x a = A.elt_greater_equal_scalar (to_ndarray x) a |> of_ndarray
 
   let print t = Printf.printf "lazy t"
 

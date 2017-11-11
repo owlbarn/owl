@@ -51,6 +51,14 @@ module Make
 
   val set_slice : index list -> t -> t -> unit
 
+  val row : t -> int -> t
+
+  val rows : t -> int array -> t
+
+  val copy_row_to : t -> t -> int -> unit
+
+  val copy_col_to : t -> t -> int -> unit
+
   val trace : t -> elt
 
   val copy : t -> t
@@ -70,6 +78,18 @@ module Make
   val to_rows : t -> t array
 
   val of_rows : t array -> t
+
+  val of_arrays : elt array array -> t
+
+  val sum_slices : ?axis:int -> t -> t
+
+  val draw_along_dim0 : t -> int -> t * int array
+
+  val draw_rows : ?replacement:bool -> t -> int -> t * int array
+
+  val draw_rows2 : ?replacement:bool -> t -> t -> int -> t * t * int array
+
+  val elt_greater_equal_scalar : t -> elt -> t
 
   val print : t -> unit
 
