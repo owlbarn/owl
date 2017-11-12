@@ -328,5 +328,7 @@ module Make
 
   val eval : t -> unit
 
+  val inc_refnum : t -> unit
+
 
 end

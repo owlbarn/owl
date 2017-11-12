@@ -258,6 +258,10 @@ module Make
     ) operands
 
 
+
+  let inc_refnum x = x.refnum <- x.refnum + 1
+
+
   let make_t ?(outval=[||]) ?(refnum=0) op =
     inc_operand_refnum op;
     {
