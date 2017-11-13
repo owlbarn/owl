@@ -577,6 +577,8 @@ val scalar_fmod_ : elt -> arr -> unit
 
 val conj_ : arr -> unit
 
+val abs_ : arr -> unit
+
 val neg_ : arr -> unit
 
 val reci_ : arr -> unit
@@ -660,3 +662,48 @@ val cumprod_ : ?axis:int -> arr -> unit
 val cummin_ : ?axis:int -> arr -> unit
 
 val cummax_ : ?axis:int -> arr -> unit
+
+
+(** {6 Matrix functions} *)
+
+val row : arr -> int -> arr
+
+val col : arr -> int -> arr
+
+val rows : arr -> int array -> arr
+
+val cols : arr -> int array -> arr
+
+val copy_row_to : arr -> arr -> int -> unit
+
+val copy_col_to : arr -> arr -> int -> unit
+
+val row_num : arr -> int
+
+val col_num : arr -> int
+
+val dot : arr -> arr -> arr
+
+val inv : arr -> arr
+
+val trace : arr -> elt
+
+val to_rows : arr -> arr array
+
+val of_rows : arr array -> arr
+
+val to_cols : arr -> arr array
+
+val of_cols : arr array -> arr
+
+val to_arrays : arr -> elt array array
+
+val of_arrays : elt array array -> arr
+
+val draw_rows : ?replacement:bool -> arr -> int -> arr * int array
+
+val draw_cols : ?replacement:bool -> arr -> int -> arr * int array
+
+val draw_rows2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
+
+val draw_cols2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array

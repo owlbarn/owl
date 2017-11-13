@@ -12,12 +12,11 @@ open Owl_types
 (* Make functor starts *)
 
 module Make
-  (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
+  (A : NdarraySig)
   = struct
 
-  module Neuron = Owl_neural_neuron.Make (M) (A)
-  module Optimise = Owl_optimise_generic.Make (M) (A)
+  module Neuron = Owl_neural_neuron.Make (A)
+  module Optimise = Owl_optimise_generic.Make (A)
   open Neuron
 
 

@@ -169,23 +169,27 @@ module type NdarraySig = sig
 
   val atanh : arr -> arr
 
-  val sum' : arr -> elt
-
   val sum : ?axis:int -> arr -> arr
 
   val sum_slices : ?axis:int -> arr -> arr
 
   val signum : arr -> arr
 
+  val sigmoid : arr -> arr
+
+  val relu : arr -> arr
+
+  val min' : arr -> elt
+
+  val max' : arr -> elt
+
+  val sum' : arr -> elt
+
   val l1norm' : arr -> elt
 
   val l2norm' : arr -> elt
 
   val l2norm_sqr' : arr -> elt
-
-  val sigmoid : arr -> arr
-
-  val relu : arr -> arr
 
   val clip_by_l2norm : elt -> arr -> arr
 
@@ -227,7 +231,7 @@ module type NdarraySig = sig
 
   val elt_greater_equal_scalar : arr -> elt -> arr
 
-  (** {6 Neural network related functions} *)
+  (* Neural network related functions *)
 
   val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
 
@@ -267,231 +271,44 @@ module type NdarraySig = sig
 
   val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
-end
+  (* matrix functions *)
 
+  val row_num : arr -> int
 
-(* Module Signature Matirx *)
+  val col_num : arr -> int
 
-module type MatrixSig = sig
+  val row : arr -> int -> arr
 
-  type mat
-  type elt = float
+  val rows : arr -> int array -> arr
 
-  (* creation and operation functions *)
+  val copy_row_to : arr -> arr -> int -> unit
 
-  val create : int -> int -> elt -> mat
+  val copy_col_to : arr -> arr -> int -> unit
 
-  val empty : int -> int -> mat
+  val dot : arr -> arr -> arr
 
-  val zeros : int -> int -> mat
+  val inv : arr -> arr
 
-  val ones : int -> int -> mat
+  val trace : arr -> elt
 
-  val uniform : ?scale:elt -> int -> int -> mat
+  val transpose : ?axis:int array -> arr -> arr
 
-  val gaussian : ?sigma:elt -> int -> int -> mat
+  val to_rows : arr -> arr array
 
-  val bernoulli : ?p:float -> ?seed:int -> int -> int -> mat
+  val of_rows : arr array -> arr
 
-  val shape : mat -> int * int
+  val of_arrays : elt array array -> arr
 
-  val row_num : mat -> int
+  val draw_rows : ?replacement:bool -> arr -> int -> arr * int array
 
-  val col_num : mat -> int
-
-  val numel : mat -> int
-
-  val get : mat -> int -> int -> elt
-
-  val set : mat -> int -> int -> elt -> unit
-
-  val get_slice : index list -> mat -> mat
-
-  val set_slice : index list -> mat -> mat -> unit
-
-  val row : mat -> int -> mat
-
-  val rows : mat -> int array -> mat
-
-  val copy : mat -> mat
-
-  val reset : mat -> unit
-
-  val reshape : mat -> int array -> mat
-
-  val tile : mat -> int array -> mat
-
-  val repeat : ?axis:int -> mat -> int -> mat
-
-  val concatenate : ?axis:int -> mat array -> mat
-
-  val split : ?axis:int -> int array -> mat -> mat array
-
-  val copy_row_to : mat -> mat -> int -> unit
-
-  val copy_col_to : mat -> mat -> int -> unit
-
-  val iteri : (int -> int -> elt -> unit) -> mat -> unit
-
-  val mapi : (int -> int -> elt -> elt) -> mat -> mat
-
-  val iteri_rows : (int -> mat -> unit) -> mat -> unit
-
-  val iter2_rows : (mat -> mat -> unit) -> mat -> mat -> unit
-
-  val draw_rows : ?replacement:bool -> mat -> int -> mat * int array
-
-  val draw_rows2 : ?replacement:bool -> mat -> mat -> int -> mat * mat * int array
-
-  val of_arrays : elt array array -> mat
-
-  val of_rows: mat array -> mat
-
-  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> mat -> unit
-
-  (* mathematical functions *)
-
-  val min' : mat -> elt
-
-  val max' : mat -> elt
-
-  val abs : mat -> mat
-
-  val neg : mat -> mat
-
-  val floor : mat -> mat
-
-  val ceil : mat -> mat
-
-  val round : mat -> mat
-
-  val sqr : mat -> mat
-
-  val sqrt : mat -> mat
-
-  val log : mat -> mat
-
-  val log2 : mat -> mat
-
-  val log10 : mat -> mat
-
-  val exp : mat -> mat
-
-  val sin : mat -> mat
-
-  val cos : mat -> mat
-
-  val tan : mat -> mat
-
-  val sinh : mat -> mat
-
-  val cosh : mat -> mat
-
-  val tanh : mat -> mat
-
-  val asin : mat -> mat
-
-  val acos : mat -> mat
-
-  val atan : mat -> mat
-
-  val asinh : mat -> mat
-
-  val acosh : mat -> mat
-
-  val atanh : mat -> mat
-
-  val inv : mat -> mat
-
-  val trace : mat -> elt
-
-  val sum' : mat -> elt
-
-  val sum : ?axis:int -> mat -> mat
-
-  val sum_rows : mat -> mat
-
-  val signum : mat -> mat
-
-  val transpose : mat -> mat
-
-  val l1norm' : mat -> elt
-
-  val l2norm' : mat -> elt
-
-  val l2norm_sqr' : mat -> elt
-
-  val sigmoid : mat -> mat
-
-  val relu : mat -> mat
-
-  val clip_by_l2norm : elt -> mat -> mat
-
-  val pow : mat -> mat -> mat
-
-  val scalar_pow : elt -> mat -> mat
-
-  val pow_scalar : mat -> elt -> mat
-
-  val atan2 : mat -> mat -> mat
-
-  val scalar_atan2 : elt -> mat -> mat
-
-  val atan2_scalar : mat -> elt -> mat
-
-  val add : mat -> mat -> mat
-
-  val sub : mat -> mat -> mat
-
-  val mul : mat -> mat -> mat
-
-  val div : mat -> mat -> mat
-
-  val add_scalar : mat -> elt -> mat
-
-  val sub_scalar : mat -> elt -> mat
-
-  val mul_scalar : mat -> elt -> mat
-
-  val div_scalar : mat -> elt -> mat
-
-  val scalar_add : elt -> mat -> mat
-
-  val scalar_sub : elt -> mat -> mat
-
-  val scalar_mul : elt -> mat -> mat
-
-  val scalar_div : elt -> mat -> mat
-
-  val dot : mat -> mat -> mat
-
-  val elt_greater_equal_scalar : mat -> elt -> mat
+  val draw_rows2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
 
 end
-
 
 
 module type InpureSig = sig
 
-  type arr
-
-  type elt
-
-  val shape : arr -> int array
-
-  val copy : arr -> arr
-
-  val add : arr -> arr -> arr
-
-  val sub : arr -> arr -> arr
-
-  val mul : arr -> arr -> arr
-
-  val div : arr -> arr -> arr
-
-  val pow : arr -> arr -> arr
-
-  val atan2 : arr -> arr -> arr
+  include NdarraySig
 
   val hypot : arr -> arr -> arr
 
@@ -549,6 +366,8 @@ module type InpureSig = sig
 
   val scalar_fmod_ : elt -> arr -> unit
 
+  val abs_ : arr -> unit
+  
   val neg_ : arr -> unit
 
   val conj_ : arr -> unit
@@ -652,6 +471,15 @@ module type InpureSig = sig
   val cummin_ : ?axis:int -> arr -> unit
 
   val cummax_ : ?axis:int -> arr -> unit
+
+  val prod' : arr -> elt
+
+  val mean' : arr -> elt
+
+  val var' : arr -> elt
+
+  val std' : arr -> elt
+
 
 end
 

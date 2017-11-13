@@ -10,9 +10,9 @@
 *)
 
 
-module S = Owl_regression_generic.Make (Owl_dense_matrix.S) (Owl_dense_ndarray.S)
+module S = Owl_regression_generic.Make (Owl_dense_ndarray.S)
 
-module D = Owl_regression_generic.Make (Owl_dense_matrix.D) (Owl_dense_ndarray.D)
+module D = Owl_regression_generic.Make (Owl_dense_ndarray.D)
 
 
 

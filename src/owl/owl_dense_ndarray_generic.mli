@@ -1514,6 +1514,9 @@ val scalar_fmod_ : 'a -> ('a, 'b) t -> unit
 val conj_ : ('a, 'b) t -> unit
 (** [conj_ x] is similar to [conj] but output is written to [x] *)
 
+val abs_ : ('a, 'b) t -> unit
+(** [abs_ x] is similar to [abs] but output is written to [x] *)
+
 val neg_ : ('a, 'b) t -> unit
 (** [neg_ x] is similar to [neg] but output is written to [x] *)
 
@@ -1639,6 +1642,59 @@ val cummin_ : ?axis:int -> ('a, 'b) t -> unit
 
 val cummax_ : ?axis:int -> ('a, 'b) t -> unit
 (** [cummax_ x] is similar to [cummax] but output is written to [x] *)
+
+
+(** {6 Matrix functions} *)
+
+type area = { a : int; b : int; c : int; d : int }
+
+val area : int -> int -> int -> int -> area
+
+val copy_area_to : ('a, 'b) t -> area -> ('a, 'b) t -> area -> unit
+
+val row_num : ('a, 'b) t -> int
+
+val col_num : ('a, 'b) t -> int
+
+val row : ('a, 'b) t -> int -> ('a, 'b) t
+
+val col : ('a, 'b) t -> int -> ('a, 'b) t
+
+val rows : ('a, 'b) t -> int array -> ('a, 'b) t
+
+val cols : ('a, 'b) t -> int array -> ('a, 'b) t
+
+val copy_row_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
+
+val copy_col_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
+
+val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+val inv : ('a, 'b) t -> ('a, 'b) t
+
+val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t
+
+val trace : ('a, 'b) t -> 'a
+
+val to_rows : ('a, 'b) t -> ('a, 'b) t array
+
+val of_rows : ('a, 'b) t array -> ('a, 'b) t
+
+val to_cols : ('a, 'b) t -> ('a, 'b) t array
+
+val of_cols : ('a, 'b) t array -> ('a, 'b) t
+
+val to_arrays : ('a, 'b) t -> 'a array array
+
+val of_arrays : ('a, 'b) kind -> 'a array array -> ('a, 'b) t
+
+val draw_rows : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
+
+val draw_cols : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
+
+val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
+
+val draw_cols2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
 
 
 (* ends ehre *)

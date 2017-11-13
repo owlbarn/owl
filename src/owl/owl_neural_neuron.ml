@@ -11,11 +11,10 @@ open Owl_types
 (* Make functor starts *)
 
 module Make
-  (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
+  (A : NdarraySig)
   = struct
 
-  include Owl_algodiff_generic.Make (M) (A)
+  include Owl_algodiff_generic.Make (A)
 
 
   (* module for initialising weight matrix *)
@@ -2256,15 +2255,16 @@ module Make
 
     let run x l =
       let x = primal' x |> unpack_arr in
-      let m, n = M.shape x in
-      let y = M.zeros (m * n) l.in_dim in
+      let s = A.shape x in
+      let m, n = s.(0), s.(1) in
+      let y = A.zeros [|(m * n); l.in_dim|] in
 
       let i' = ref 0 in
       for i = 0 to m - 1 do
         i' := i * n;
         for j = 0 to n - 1 do
-          let k = int_of_float (M.get x i j) in
-          M.set y (!i' + j) k 1.
+          let k = int_of_float (A.get x [|i;j|]) in
+          A.set y [|(!i' + j); k|] 1.
         done;
       done;
 

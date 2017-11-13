@@ -395,7 +395,11 @@ val sigmoid : arr -> arr
 
 val log_sum_exp' : arr -> float
 
+val l1norm : ?axis:int -> arr -> arr
+
 val l1norm' : arr -> elt
+
+val l2norm : ?axis:int -> arr -> arr
 
 val l2norm' : arr -> elt
 
@@ -519,3 +523,187 @@ val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 val sum_slices : ?axis:int -> arr -> arr
 
 val draw_along_dim0 : arr -> int -> arr * int array
+
+
+(** {6 Fucntions of in-place modification } *)
+
+val add_ : arr -> arr -> unit
+
+val sub_ : arr -> arr -> unit
+
+val mul_ : arr -> arr -> unit
+
+val div_ : arr -> arr -> unit
+
+val pow_ : arr -> arr -> unit
+
+val atan2_ : arr -> arr -> unit
+
+val hypot_ : arr -> arr -> unit
+
+val fmod_ : arr -> arr -> unit
+
+val min2_ : arr -> arr -> unit
+
+val max2_ : arr -> arr -> unit
+
+val add_scalar_ : arr -> elt -> unit
+
+val sub_scalar_ : arr -> elt -> unit
+
+val mul_scalar_ : arr -> elt -> unit
+
+val div_scalar_ : arr -> elt -> unit
+
+val pow_scalar_ : arr -> elt -> unit
+
+val atan2_scalar_ : arr -> elt -> unit
+
+val fmod_scalar_ : arr -> elt -> unit
+
+val scalar_add_ : elt -> arr -> unit
+
+val scalar_sub_ : elt -> arr -> unit
+
+val scalar_mul_ : elt -> arr -> unit
+
+val scalar_div_ : elt -> arr -> unit
+
+val scalar_pow_ : elt -> arr -> unit
+
+val scalar_atan2_ : elt -> arr -> unit
+
+val scalar_fmod_ : elt -> arr -> unit
+
+val conj_ : arr -> unit
+
+val abs_ : arr -> unit
+
+val neg_ : arr -> unit
+
+val reci_ : arr -> unit
+
+val signum_ : arr -> unit
+
+val sqr_ : arr -> unit
+
+val sqrt_ : arr -> unit
+
+val cbrt_ : arr -> unit
+
+val exp_ : arr -> unit
+
+val exp2_ : arr -> unit
+
+val exp10_ : arr -> unit
+
+val expm1_ : arr -> unit
+
+val log_ : arr -> unit
+
+val log2_ : arr -> unit
+
+val log10_ : arr -> unit
+
+val log1p_ : arr -> unit
+
+val sin_ : arr -> unit
+
+val cos_ : arr -> unit
+
+val tan_ : arr -> unit
+
+val asin_ : arr -> unit
+
+val acos_ : arr -> unit
+
+val atan_ : arr -> unit
+
+val sinh_ : arr -> unit
+
+val cosh_ : arr -> unit
+
+val tanh_ : arr -> unit
+
+val asinh_ : arr -> unit
+
+val acosh_ : arr -> unit
+
+val atanh_ : arr -> unit
+
+val floor_ : arr -> unit
+
+val ceil_ : arr -> unit
+
+val round_ : arr -> unit
+
+val trunc_ : arr -> unit
+
+val fix_ : arr -> unit
+
+val erf_ : arr -> unit
+
+val erfc_ : arr -> unit
+
+val relu_ : arr -> unit
+
+val softplus_ : arr -> unit
+
+val softsign_ : arr -> unit
+
+val sigmoid_ : arr -> unit
+
+val softmax_ : arr -> unit
+
+val cumsum_ : ?axis:int -> arr -> unit
+
+val cumprod_ : ?axis:int -> arr -> unit
+
+val cummin_ : ?axis:int -> arr -> unit
+
+val cummax_ : ?axis:int -> arr -> unit
+
+
+(** {6 Matrix functions} *)
+
+val row : arr -> int -> arr
+
+val col : arr -> int -> arr
+
+val rows : arr -> int array -> arr
+
+val cols : arr -> int array -> arr
+
+val copy_row_to : arr -> arr -> int -> unit
+
+val copy_col_to : arr -> arr -> int -> unit
+
+val row_num : arr -> int
+
+val col_num : arr -> int
+
+val dot : arr -> arr -> arr
+
+val inv : arr -> arr
+
+val trace : arr -> elt
+
+val to_rows : arr -> arr array
+
+val of_rows : arr array -> arr
+
+val to_cols : arr -> arr array
+
+val of_cols : arr array -> arr
+
+val to_arrays : arr -> elt array array
+
+val of_arrays : elt array array -> arr
+
+val draw_rows : ?replacement:bool -> arr -> int -> arr * int array
+
+val draw_cols : ?replacement:bool -> arr -> int -> arr * int array
+
+val draw_rows2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
+
+val draw_cols2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array

@@ -45,3 +45,5 @@ let of_array x d = M.of_array Float32 x d
 let mmap fd ?pos shared dims = Genarray.map_file fd ?pos Float32 c_layout shared dims
 
 let conj x = copy x
+
+let of_arrays x = of_arrays Float32 x
