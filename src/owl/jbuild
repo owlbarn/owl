@@ -14,6 +14,11 @@
   ))
   (c_flags (
     -g -O3 -Ofast
+    ; Experimental switches
+    ; -ffast-math may break IEEE754 semantics
+    -march=native -mfpmath=sse -flto -funroll-loops -ffast-math
+    ; For development use before release
+    ; -Wall -pedantic -Wextra -Wunused
   ))
   (c_library_flags (
     -L/usr/local/lib/gcc/7

@@ -3007,6 +3007,8 @@ let scalar_fmod_ a x = _owl_scalar_fmod (kind x) (numel x) x x a
 
 let conj_ x = _owl_conj (kind x) (numel x) x x
 
+let abs_ x = _owl_abs (kind x) (numel x) x x
+
 let neg_ x = _owl_neg (kind x) (numel x) x x
 
 let reci_ x = _owl_reci (kind x) (numel x) x x

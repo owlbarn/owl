@@ -1514,6 +1514,9 @@ val scalar_fmod_ : 'a -> ('a, 'b) t -> unit
 val conj_ : ('a, 'b) t -> unit
 (** [conj_ x] is similar to [conj] but output is written to [x] *)
 
+val abs_ : ('a, 'b) t -> unit
+(** [abs_ x] is similar to [abs] but output is written to [x] *)
+
 val neg_ : ('a, 'b) t -> unit
 (** [neg_ x] is similar to [neg] but output is written to [x] *)
 

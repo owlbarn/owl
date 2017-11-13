@@ -169,27 +169,27 @@ module type NdarraySig = sig
 
   val atanh : arr -> arr
 
-  val min' : arr -> elt
-
-  val max' : arr -> elt
-
-  val sum' : arr -> elt
-
   val sum : ?axis:int -> arr -> arr
 
   val sum_slices : ?axis:int -> arr -> arr
 
   val signum : arr -> arr
 
+  val sigmoid : arr -> arr
+
+  val relu : arr -> arr
+
+  val min' : arr -> elt
+
+  val max' : arr -> elt
+
+  val sum' : arr -> elt
+
   val l1norm' : arr -> elt
 
   val l2norm' : arr -> elt
 
   val l2norm_sqr' : arr -> elt
-
-  val sigmoid : arr -> arr
-
-  val relu : arr -> arr
 
   val clip_by_l2norm : elt -> arr -> arr
 
@@ -366,6 +366,8 @@ module type InpureSig = sig
 
   val scalar_fmod_ : elt -> arr -> unit
 
+  val abs_ : arr -> unit
+  
   val neg_ : arr -> unit
 
   val conj_ : arr -> unit
@@ -469,6 +471,15 @@ module type InpureSig = sig
   val cummin_ : ?axis:int -> arr -> unit
 
   val cummax_ : ?axis:int -> arr -> unit
+
+  val prod' : arr -> elt
+
+  val mean' : arr -> elt
+
+  val var' : arr -> elt
+
+  val std' : arr -> elt
+
 
 end
 
