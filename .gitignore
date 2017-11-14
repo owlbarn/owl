@@ -8,6 +8,10 @@
 *.cmxs
 *.cmxa
 
+# added by tudort
+*.merlin
+*.install
+
 # ocamlbuild working directory
 _build/
 
