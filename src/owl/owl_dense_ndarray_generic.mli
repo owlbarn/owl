@@ -817,7 +817,7 @@ val minmax_i : ('a, 'b) t -> ('a * (int array)) * ('a * (int array))
   maximum value along its index.
  *)
 
-val abs : (float, 'a) t -> (float, 'a) t
+val abs : ('a, 'b) t -> ('a, 'b) t
 (** [abs x] returns the absolute value of all elements in [x] in a new ndarray. *)
 
 val abs_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t

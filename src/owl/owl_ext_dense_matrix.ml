@@ -985,7 +985,7 @@ module type CZ_Sig = sig
 
   val im : mat -> cast_mat
 
-  val abs : mat -> cast_mat
+  val abs : mat -> mat
 
   val abs2 : mat -> cast_mat
 
@@ -1019,7 +1019,7 @@ module Make_CZ
 
   let im x = M.im (unpack_box x) |> pack_cast_box
 
-  let abs x = M.abs (unpack_box x) |> pack_cast_box
+  let abs x = M.abs (unpack_box x) |> pack_box
 
   let abs2 x = M.abs2 (unpack_box x) |> pack_cast_box
 

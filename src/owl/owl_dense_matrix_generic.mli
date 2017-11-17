@@ -1028,7 +1028,7 @@ val max_rows : (float, 'b) t -> (float * int * int) array
 val max_cols : (float, 'b) t -> (float * int * int) array
 (** [max_cols x] returns the maximum value in each column along with their coordinates. *)
 
-val abs : (float, 'a) t -> (float, 'a) t
+val abs : ('a, 'b) t -> ('a, 'b) t
 (** [abs x] returns the absolute value of all elements in [x] in a new matrix. *)
 
 val abs_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t

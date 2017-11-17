@@ -2716,15 +2716,15 @@ int int64_cmp (const void * a, const void * b)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 complex32_abs
-#define NUMBER complex_float
-#define NUMBER1 float
-#define MAPFN(X) (sqrtf (X.r * X.r + X.i * X.i))
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X) csqrtf(X)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 complex64_abs
-#define NUMBER complex_double
-#define NUMBER1 double
-#define MAPFN(X) (sqrt (X.r * X.r + X.i * X.i))
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X) csqrt(X)
 #include "owl_dense_common_vec_map.c"
 
 // abs2

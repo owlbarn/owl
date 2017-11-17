@@ -478,16 +478,6 @@ let abs x =
   _owl_abs (kind x) (numel y) x y;
   y
 
-let abs_c2s x =
-  let y = empty Float32 (shape x) in
-  owl_complex32_abs (numel y) x y;
-  y
-
-let abs_z2d x =
-  let y = empty Float64 (shape x) in
-  owl_complex64_abs (numel y) x y;
-  y
-
 let abs2 x =
   let y = copy x in
   _owl_abs2 (kind x) (numel y) x y;
@@ -1458,6 +1448,10 @@ let im_z2d x =
   let y = empty Float64 (shape x) in
   _owl_im_z2d (numel x) x y;
   y
+
+let abs_c2s x = abs x |> im_c2s
+
+let abs_z2d x = abs x |> im_z2d
 
 
 (* cast functions *)

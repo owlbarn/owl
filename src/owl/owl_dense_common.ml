@@ -1318,13 +1318,15 @@ let _owl_reci_tol : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
 
 external owl_float32_abs : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_abs"
 external owl_float64_abs : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_abs"
-external owl_complex32_abs : int -> (Complex.t, complex32_elt) owl_arr -> (float, float32_elt) owl_arr -> unit = "complex32_abs"
-external owl_complex64_abs : int -> (Complex.t, complex64_elt) owl_arr -> (float, float64_elt) owl_arr -> unit = "complex64_abs"
+external owl_complex32_abs : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex32_abs"
+external owl_complex64_abs : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex64_abs"
 
 let _owl_abs : type a b. (a, b) kind -> (a, b) owl_arr_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_float32_abs l x y
   | Float64   -> owl_float64_abs l x y
+  | Complex32 -> owl_complex32_abs l x y
+  | Complex64 -> owl_complex64_abs l x y
   | _         -> failwith "_owl_abs: unsupported operation"
 
 external owl_float32_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_abs2"

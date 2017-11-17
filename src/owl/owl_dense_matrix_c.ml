@@ -75,8 +75,6 @@ let uniform_int ?(a=0) ?(b=99) m n =
     M.set x i j Complex.({re; im})
   ) x; x
 
-let abs x = abs_c2s x
-
 let abs2 x = abs2_c2s x
 
 let re x = re_c2s x
