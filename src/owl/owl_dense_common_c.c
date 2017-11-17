@@ -2743,14 +2743,14 @@ int int64_cmp (const void * a, const void * b)
 
 #define FUN4 complex32_abs2
 #define NUMBER complex_float
-#define NUMBER1 float
-#define MAPFN(X) (X.r * X.r + X.i * X.i)
+#define NUMBER1 complex_float
+#define MAPFN(X) (complex_float){.r = X.r * X.r + X.i * X.i, .i = 0.}
 #include "owl_dense_common_vec_map.c"
 
 #define FUN4 complex64_abs2
 #define NUMBER complex_double
-#define NUMBER1 double
-#define MAPFN(X) (X.r * X.r + X.i * X.i)
+#define NUMBER1 complex_double
+#define MAPFN(X) (complex_double){.r = X.r * X.r + X.i * X.i, .i = 0.}
 #include "owl_dense_common_vec_map.c"
 
 // signum

@@ -1331,13 +1331,15 @@ let _owl_abs : type a b. (a, b) kind -> (a, b) owl_arr_op09 = fun k l x y ->
 
 external owl_float32_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_abs2"
 external owl_float64_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_abs2"
-external owl_complex32_abs2 : int -> (Complex.t, complex32_elt) owl_arr -> (float, float32_elt) owl_arr -> unit = "complex32_abs2"
-external owl_complex64_abs2 : int -> (Complex.t, complex64_elt) owl_arr -> (float, float64_elt) owl_arr -> unit = "complex64_abs2"
+external owl_complex32_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex32_abs2"
+external owl_complex64_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex64_abs2"
 
 let _owl_abs2 : type a b. (a, b) kind -> (a, b) owl_arr_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_float32_abs2 l x y
   | Float64   -> owl_float64_abs2 l x y
+  | Complex32 -> owl_complex32_abs2 l x y
+  | Complex64 -> owl_complex64_abs2 l x y
   | _         -> failwith "_owl_abs2: unsupported operation"
 
 external owl_float32_signum : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_signum"

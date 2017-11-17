@@ -1037,7 +1037,7 @@ val abs_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val abs_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [abs_z2d x] is similar to [abs] but takes [complex64] as input. *)
 
-val abs2 : (float, 'a) t -> (float, 'a) t
+val abs2 : ('a, 'b) t -> ('a, 'b) t
 (** [abs2 x] returns the square of absolute value of all elements in [x] in a new ndarray. *)
 
 val abs2_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
