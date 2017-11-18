@@ -50,6 +50,8 @@ module Ext = Owl_ext
 
 module Dataset = Owl_dataset
 
+module Lazy = Owl_lazy
+
 
 (* backend modules *)
 
