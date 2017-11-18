@@ -549,6 +549,8 @@ val elt_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   that [a] is from [x] and [b] is the corresponding element of [a] from [y] of
   the same position. The function returns another binary ([0] and [1])
   ndarray/matrix wherein [1] indicates [a = b].
+
+  The function supports broadcast operation.
  *)
 
 val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -556,6 +558,8 @@ val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   Assume that [a] is from [x] and [b] is the corresponding element of [a] from
   [y] of the same position. The function returns another binary ([0] and [1])
   ndarray/matrix wherein [1] indicates [a <> b].
+
+  The function supports broadcast operation.
 *)
 
 val elt_less : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -563,6 +567,8 @@ val elt_less : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   that [a] is from [x] and [b] is the corresponding element of [a] from [y] of
   the same position. The function returns another binary ([0] and [1])
   ndarray/matrix wherein [1] indicates [a < b].
+
+  The function supports broadcast operation.
  *)
 
 val elt_greater : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -570,6 +576,8 @@ val elt_greater : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   Assume that [a] is from [x] and [b] is the corresponding element of [a] from
   [y] of the same position. The function returns another binary ([0] and [1])
   ndarray/matrix wherein [1] indicates [a > b].
+
+  The function supports broadcast operation.
  *)
 
 val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -577,6 +585,8 @@ val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   Assume that [a] is from [x] and [b] is the corresponding element of [a] from
   [y] of the same position. The function returns another binary ([0] and [1])
   ndarray/matrix wherein [1] indicates [a <= b].
+
+  The function supports broadcast operation.
  *)
 
 val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -584,6 +594,8 @@ val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   Assume that [a] is from [x] and [b] is the corresponding element of [a] from
   [y] of the same position. The function returns another binary ([0] and [1])
   ndarray/matrix wherein [1] indicates [a >= b].
+
+  The function supports broadcast operation.
  *)
 
 val equal_scalar : ('a, 'b) t -> 'a -> bool

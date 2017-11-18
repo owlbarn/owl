@@ -767,34 +767,58 @@ let reci_tol ?tol x =
 (* element-wise comparison functions *)
 
 let elt_equal x y =
-  let z = empty (kind x) (shape x) in
-  _owl_elt_equal (kind x) (numel z) x y z;
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = empty (kind x) (shape x) in
+      _owl_elt_equal (kind x) (numel z) x y z;
+      z
+    )
+  | false -> broadcast_op (_owl_broadcast_elt_equal (kind x)) x y
 
 let elt_not_equal x y =
-  let z = empty (kind x) (shape x) in
-  _owl_elt_not_equal (kind x) (numel z) x y z;
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = empty (kind x) (shape x) in
+      _owl_elt_not_equal (kind x) (numel z) x y z;
+      z
+    )
+  | false -> broadcast_op (_owl_broadcast_elt_not_equal (kind x)) x y
 
 let elt_less x y =
-  let z = empty (kind x) (shape x) in
-  _owl_elt_less (kind x) (numel z) x y z;
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = empty (kind x) (shape x) in
+      _owl_elt_less (kind x) (numel z) x y z;
+      z
+    )
+  | false -> broadcast_op (_owl_broadcast_elt_less (kind x)) x y
 
 let elt_greater x y =
-  let z = empty (kind x) (shape x) in
-  _owl_elt_greater (kind x) (numel z) x y z;
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = empty (kind x) (shape x) in
+      _owl_elt_greater (kind x) (numel z) x y z;
+      z
+    )
+  | false -> broadcast_op (_owl_broadcast_elt_greater (kind x)) x y
 
 let elt_less_equal x y =
-  let z = empty (kind x) (shape x) in
-  _owl_elt_less_equal (kind x) (numel z) x y z;
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = empty (kind x) (shape x) in
+      _owl_elt_less_equal (kind x) (numel z) x y z;
+      z
+    )
+  | false -> broadcast_op (_owl_broadcast_elt_less_equal (kind x)) x y
 
 let elt_greater_equal x y =
-  let z = empty (kind x) (shape x) in
-  _owl_elt_greater_equal (kind x) (numel z) x y z;
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = empty (kind x) (shape x) in
+      _owl_elt_greater_equal (kind x) (numel z) x y z;
+      z
+    )
+  | false -> broadcast_op (_owl_broadcast_elt_greater_equal (kind x)) x y
 
 let elt_equal_scalar x a =
   let y = empty (kind x) (shape x) in

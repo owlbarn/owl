@@ -306,6 +306,13 @@ module type NdarraySig = sig
 end
 
 
+module type NdarraySig_Ext = sig
+
+  (* place holder *)
+
+end
+
+
 module type InpureSig = sig
 
   include NdarraySig
@@ -367,7 +374,7 @@ module type InpureSig = sig
   val scalar_fmod_ : elt -> arr -> unit
 
   val abs_ : arr -> unit
-  
+
   val neg_ : arr -> unit
 
   val conj_ : arr -> unit
