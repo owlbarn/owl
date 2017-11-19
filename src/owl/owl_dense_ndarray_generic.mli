@@ -1453,42 +1453,6 @@ val max2_ : ('a, 'b) t -> ('a, 'b) t -> unit
   make sure [x] is big enough to hold the output result.
  *)
 
-val elt_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
-(** [elt_equal_ x y] is simiar to [elt_equal] function but the output is written
-  to [x]. The broadcast operation only allows broadcasting [y] over [x], so you
-  need to make sure [x] is big enough to hold the output result.
- *)
-
-val elt_not_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
-(** [elt_not_equal_ x y] is simiar to [elt_not_equal] function but the output is
-  written to [x]. The broadcast operation only allows broadcasting [y] over [x],
-  so you need to make sure [x] is big enough to hold the output result.
- *)
-
-val elt_less_ : ('a, 'b) t -> ('a, 'b) t -> unit
-(** [elt_less_ x y] is simiar to [elt_less] function but the output is written
-  to [x]. The broadcast operation only allows broadcasting [y] over [x], so you
-  need to make sure [x] is big enough to hold the output result.
- *)
-
-val elt_greater_ : ('a, 'b) t -> ('a, 'b) t -> unit
-(** [elt_greater_ x y] is simiar to [elt_greater] function but the output is
-  written to [x]. The broadcast operation only allows broadcasting [y] over [x],
-  so you need to make sure [x] is big enough to hold the output result.
- *)
-
-val elt_less_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
-(** [elt_less_equal_ x y] is simiar to [elt_less_equal] function but the output
-  is written to [x]. The broadcast operation only allows broadcasting [y] over
-  [x], so you need to make sure [x] is big enough to hold the output result.
- *)
-
-val elt_greater_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
-(** [elt_greater_equal_ x y] is simiar to [elt_greater_equal] function but the
-  output is written to [x]. The broadcast operation only allows broadcasting [y]
-  over [x], so you need to make sure [x] is big enough to hold the output result.
- *)
-
 val add_scalar_ : ('a, 'b) t -> 'a -> unit
 (** [add_scalar_ x y] is simiar to [add_scalar] function but the output is
   written to [x].
@@ -1690,6 +1654,42 @@ val cummin_ : ?axis:int -> ('a, 'b) t -> unit
 
 val cummax_ : ?axis:int -> ('a, 'b) t -> unit
 (** [cummax_ x] is similar to [cummax] but output is written to [x] *)
+
+val elt_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_equal_ x y] is simiar to [elt_equal] function but the output is written
+  to [x]. The broadcast operation only allows broadcasting [y] over [x], so you
+  need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_not_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_not_equal_ x y] is simiar to [elt_not_equal] function but the output is
+  written to [x]. The broadcast operation only allows broadcasting [y] over [x],
+  so you need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_less_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_less_ x y] is simiar to [elt_less] function but the output is written
+  to [x]. The broadcast operation only allows broadcasting [y] over [x], so you
+  need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_greater_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_greater_ x y] is simiar to [elt_greater] function but the output is
+  written to [x]. The broadcast operation only allows broadcasting [y] over [x],
+  so you need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_less_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_less_equal_ x y] is simiar to [elt_less_equal] function but the output
+  is written to [x]. The broadcast operation only allows broadcasting [y] over
+  [x], so you need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_greater_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_greater_equal_ x y] is simiar to [elt_greater_equal] function but the
+  output is written to [x]. The broadcast operation only allows broadcasting [y]
+  over [x], so you need to make sure [x] is big enough to hold the output result.
+ *)
 
 
 (** {6 Matrix functions} *)

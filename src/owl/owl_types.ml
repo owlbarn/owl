@@ -308,14 +308,26 @@ end
 
 module type NdarraySig_Ext = sig
 
-  (* place holder *)
+  include NdarraySig
+
+  val equal : arr -> arr -> bool
+
+  val not_equal : arr -> arr -> bool
+
+  val less : arr -> arr -> bool
+
+  val greater : arr -> arr -> bool
+
+  val less_equal : arr -> arr -> bool
+
+  val greater_equal : arr -> arr -> bool
 
 end
 
 
 module type InpureSig = sig
 
-  include NdarraySig
+  include NdarraySig_Ext
 
   val hypot : arr -> arr -> arr
 

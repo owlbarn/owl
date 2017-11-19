@@ -26,6 +26,8 @@ module Make
   and arr = t
   and op =
     | Noop
+    | Fun00       of t * (A.arr -> A.arr)
+    | Fun01       of t * (A.arr -> unit)
     | Add         of t * t
     | Sub         of t * t
     | Mul         of t * t
@@ -137,6 +139,7 @@ module Make
 
   let unpack_operands = function
     | Noop                        -> [| |]
+    | Fun01 (a, f)                -> [|a|]
     | Add (a, b)                  -> [|a; b|]
     | Sub (a, b)                  -> [|a; b|]
     | Mul (a, b)                  -> [|a; b|]
@@ -328,7 +331,7 @@ module Make
       | S_Pow (a, b)                -> _eval_map4 x a A.scalar_pow_
       | S_Atan2 (a, b)              -> _eval_map4 x a A.scalar_atan2_
       | S_Fmod (a, b)               -> _eval_map4 x a A.scalar_fmod_
-      | Abs a                       -> _eval_map1 x A.abs_
+      | Fun01 (a, f)                -> _eval_map1 x f
       | Neg a                       -> _eval_map1 x A.neg_
       | Conj a                      -> _eval_map1 x A.conj_
       | Reci a                      -> _eval_map1 x A.reci_
@@ -654,7 +657,7 @@ module Make
 
   let scalar_fmod a x = make_t (S_Fmod (a, x))
 
-  let abs x = make_t (Abs x)
+  let abs x = make_t (Fun01 (x, A.abs_))
 
   let neg x = make_t (Neg x)
 
@@ -803,6 +806,21 @@ module Make
   let avg_pool1d_backward padding input kernel stride output' = make_t (AvgPool1D_B (padding, input, kernel, stride, output'))
 
   let avg_pool2d_backward padding input kernel stride output' = make_t (AvgPool2D_B (padding, input, kernel, stride, output'))
+
+
+  (* comparion functions *)
+
+  let equal x y = A.equal (to_ndarray x) (to_ndarray y)
+
+  let not_equal x y = A.not_equal (to_ndarray x) (to_ndarray y)
+
+  let less x y = A.less (to_ndarray x) (to_ndarray y)
+
+  let greater x y = A.greater (to_ndarray x) (to_ndarray y)
+
+  let less_equal x y = A.less_equal (to_ndarray x) (to_ndarray y)
+
+  let greater_equal x y = A.greater_equal (to_ndarray x) (to_ndarray y)
 
 
 end

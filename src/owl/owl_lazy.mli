@@ -320,6 +320,21 @@ module Make
   val avg_pool2d_backward : padding -> t -> int array -> int array -> t -> t
 
 
+  (** {6 Comparion functions} *)
+
+  val equal : t -> t -> bool
+
+  val not_equal : t -> t -> bool
+
+  val less : t -> t -> bool
+
+  val greater : t -> t -> bool
+
+  val less_equal : t -> t -> bool
+
+  val greater_equal : t -> t -> bool
+
+
   (** {6 Helper functions} *)
 
   val of_ndarray : A.arr -> t
