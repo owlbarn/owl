@@ -7,7 +7,7 @@ module M = Owl.Lazy.Make (Arr)
 (* some test input *)
 let x0 = Arr.zeros [|3; 4|]
 let x1 = Arr.ones [|3; 4|]
-let x2 = Arr.sequential [|3; 4|]
+let x2 = Arr.sequential ~a:1. [|3; 4|]
 let x3 = Arr.(uniform [|3; 4|] - x1)
 
 (* make testable *)
@@ -76,6 +76,16 @@ module To_test = struct
     let b = Arr.max2 x2 x3 in
     Arr.(a = b)
 
+  let fun12 () =
+    let a = M.max2 (M.of_ndarray (Arr.copy x2)) (M.of_ndarray (Arr.copy x3)) |> M.to_ndarray in
+    let b = Arr.max2 x2 x3 in
+    Arr.(a = b)
+
+  let fun13 () =
+    let a = Arr.copy x2 |> M.of_ndarray |> M.log |> M.sqr |> M.cbrt |> M.to_ndarray in
+    let b = x2 |> Arr.log |> Arr.sqr |> Arr.cbrt in
+    Arr.(a = b)
+
 end
 
 (* the tests *)
@@ -116,6 +126,12 @@ let fun10 () =
 let fun11 () =
   Alcotest.(check bool) "fun11" true (To_test.fun11 ())
 
+let fun12 () =
+  Alcotest.(check bool) "fun12" true (To_test.fun12 ())
+
+let fun13 () =
+  Alcotest.(check bool) "fun13" true (To_test.fun13 ())
+
 let test_set = [
   "fun00", `Slow, fun00;
   "fun01", `Slow, fun01;
@@ -129,4 +145,6 @@ let test_set = [
   "fun09", `Slow, fun09;
   "fun10", `Slow, fun10;
   "fun11", `Slow, fun11;
+  "fun12", `Slow, fun12;
+  "fun13", `Slow, fun13;
 ]
