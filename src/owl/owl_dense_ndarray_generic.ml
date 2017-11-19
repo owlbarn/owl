@@ -2989,6 +2989,66 @@ let max2_ x y =
     broadcast_op (_owl_broadcast_max2 (kind x)) x y ~out:x |> ignore
   )
 
+let elt_equal_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_equal (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_elt_equal (kind x)) x y ~out:x |> ignore
+  )
+
+let elt_not_equal_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_not_equal (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_elt_not_equal (kind x)) x y ~out:x |> ignore
+  )
+
+let elt_less_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_less (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_elt_less (kind x)) x y ~out:x |> ignore
+  )
+
+let elt_greater_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_greater (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_elt_greater (kind x)) x y ~out:x |> ignore
+  )
+
+let elt_less_equal_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_less_equal (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_elt_less_equal (kind x)) x y ~out:x |> ignore
+  )
+
+let elt_greater_equal_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_equal (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_elt_greater_equal (kind x)) x y ~out:x |> ignore
+  )
+
 let add_scalar_ x a = _owl_add_scalar (kind x) (numel x) x x a
 
 let sub_scalar_ x a = add_scalar_ x (_neg_elt (kind x) a)
