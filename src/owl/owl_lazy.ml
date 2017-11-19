@@ -28,225 +28,24 @@ module Make
     | Noop
     | Fun00       of t * (A.arr -> A.arr)
     | Fun01       of t * (A.arr -> unit)
-    | Add         of t * t
-    | Sub         of t * t
-    | Mul         of t * t
-    | Div         of t * t
-    | Pow         of t * t
-    | Dot         of t * t
-    | Atan2       of t * t
-    | Hypot       of t * t
-    | Fmod        of t * t
-    | Min2        of t * t
-    | Max2        of t * t
-    | Add_S       of t * elt
-    | Sub_S       of t * elt
-    | Mul_S       of t * elt
-    | Div_S       of t * elt
-    | Pow_S       of t * elt
-    | Atan2_S     of t * elt
-    | Fmod_S      of t * elt
-    | S_Add       of elt * t
-    | S_Sub       of elt * t
-    | S_Mul       of elt * t
-    | S_Div       of elt * t
-    | S_Pow       of elt * t
-    | S_Atan2     of elt * t
-    | S_Fmod      of elt * t
-    | Abs         of t
-    | Neg         of t
-    | Conj        of t
-    | Reci        of t
-    | Signum      of t
-    | Sqr         of t
-    | Sqrt        of t
-    | Cbrt        of t
-    | Exp         of t
-    | Exp2        of t
-    | Exp10       of t
-    | Expm1       of t
-    | Log         of t
-    | Log2        of t
-    | Log10       of t
-    | Log1p       of t
-    | Sin         of t
-    | Cos         of t
-    | Tan         of t
-    | Asin        of t
-    | Acos        of t
-    | Atan        of t
-    | Sinh        of t
-    | Cosh        of t
-    | Tanh        of t
-    | Asinh       of t
-    | Acosh       of t
-    | Atanh       of t
-    | Floor       of t
-    | Ceil        of t
-    | Round       of t
-    | Trunc       of t
-    | Fix         of t
-    | Erf         of t
-    | Erfc        of t
-    | Relu        of t
-    | Softplus    of t
-    | Softsign    of t
-    | Softmax     of t
-    | Sigmoid     of t
-    | Sum         of t
-    | Prod        of t
-    | Min         of t
-    | Max         of t
-    | Mean        of t
-    | Var         of t
-    | Std         of t
-    | L1norm      of t
-    | L2norm      of t
-    | Cumsum      of t
-    | Cumprod     of t
-    | Cummin      of t
-    | Cummax      of t
-    | Inv         of t
-    | Transpose   of t
-    | Conv1D      of padding option * t * t * int array
-    | Conv2D      of padding option * t * t * int array
-    | Conv3D      of padding option * t * t * int array
-    | MaxPool1D   of padding option * t * int array * int array
-    | MaxPool2D   of padding option * t * int array * int array
-    | MaxPool3D   of padding option * t * int array * int array
-    | AvgPool1D   of padding option * t * int array * int array
-    | AvgPool2D   of padding option * t * int array * int array
-    | AvgPool3D   of padding option * t * int array * int array
-    | Conv1D_BI   of t * t * int array * t
-    | Conv1D_BK   of t * t * int array * t
-    | Conv2D_BI   of t * t * int array * t
-    | Conv2D_BK   of t * t * int array * t
-    | Conv3D_BI   of t * t * int array * t
-    | Conv3D_BK   of t * t * int array * t
-    | MaxPool1D_B of padding * t * int array * int array * t
-    | MaxPool2D_B of padding * t * int array * int array * t
-    | AvgPool1D_B of padding * t * int array * int array * t
-    | AvgPool2D_B of padding * t * int array * int array * t
-    | Copy        of t
-    | Reshape     of t * int array
-    | Tile        of t * int array
-    | Repeat      of t * int option * int
-    | Concat      of t array * int option
+    | Fun02       of t * t * (A.arr -> A.arr -> unit) * (A.arr -> A.arr -> A.arr)
+    | Fun03       of t array * (A.arr array -> A.arr)
+    | Fun04       of t * elt * (A.arr -> elt -> unit)
+    | Fun05       of elt * t * (elt -> A.arr -> unit)
     | Split       of t * int option * int array
     | Item_I      of t * int (* select the ith item in an array *)
-    | Clip_L2Norm of elt * t
 
 
   let unpack_operands = function
     | Noop                        -> [| |]
+    | Fun00 (a, f)                -> [|a|]
     | Fun01 (a, f)                -> [|a|]
-    | Add (a, b)                  -> [|a; b|]
-    | Sub (a, b)                  -> [|a; b|]
-    | Mul (a, b)                  -> [|a; b|]
-    | Div (a, b)                  -> [|a; b|]
-    | Pow (a, b)                  -> [|a; b|]
-    | Dot (a, b)                  -> [|a; b|]
-    | Atan2 (a, b)                -> [|a; b|]
-    | Hypot (a, b)                -> [|a; b|]
-    | Fmod (a, b)                 -> [|a; b|]
-    | Min2 (a, b)                 -> [|a; b|]
-    | Max2 (a, b)                 -> [|a; b|]
-    | Add_S (a, b)                -> [|a|]
-    | Sub_S (a, b)                -> [|a|]
-    | Mul_S (a, b)                -> [|a|]
-    | Div_S (a, b)                -> [|a|]
-    | Pow_S (a, b)                -> [|a|]
-    | Atan2_S (a, b)              -> [|a|]
-    | Fmod_S (a, b)               -> [|a|]
-    | S_Add (a, b)                -> [|b|]
-    | S_Sub (a, b)                -> [|b|]
-    | S_Mul (a, b)                -> [|b|]
-    | S_Div (a, b)                -> [|b|]
-    | S_Pow (a, b)                -> [|b|]
-    | S_Atan2 (a, b)              -> [|b|]
-    | S_Fmod (a, b)               -> [|b|]
-    | Abs a                       -> [|a|]
-    | Neg a                       -> [|a|]
-    | Conj a                      -> [|a|]
-    | Reci a                      -> [|a|]
-    | Signum a                    -> [|a|]
-    | Sqr a                       -> [|a|]
-    | Sqrt a                      -> [|a|]
-    | Cbrt a                      -> [|a|]
-    | Exp a                       -> [|a|]
-    | Exp2 a                      -> [|a|]
-    | Exp10 a                     -> [|a|]
-    | Expm1 a                     -> [|a|]
-    | Log a                       -> [|a|]
-    | Log2 a                      -> [|a|]
-    | Log10 a                     -> [|a|]
-    | Log1p a                     -> [|a|]
-    | Sin a                       -> [|a|]
-    | Cos a                       -> [|a|]
-    | Tan a                       -> [|a|]
-    | Asin a                      -> [|a|]
-    | Acos a                      -> [|a|]
-    | Atan a                      -> [|a|]
-    | Sinh a                      -> [|a|]
-    | Cosh a                      -> [|a|]
-    | Tanh a                      -> [|a|]
-    | Asinh a                     -> [|a|]
-    | Acosh a                     -> [|a|]
-    | Atanh a                     -> [|a|]
-    | Floor a                     -> [|a|]
-    | Ceil a                      -> [|a|]
-    | Round a                     -> [|a|]
-    | Trunc a                     -> [|a|]
-    | Fix a                       -> [|a|]
-    | Erf a                       -> [|a|]
-    | Erfc a                      -> [|a|]
-    | Relu a                      -> [|a|]
-    | Softplus a                  -> [|a|]
-    | Softsign a                  -> [|a|]
-    | Softmax a                   -> [|a|]
-    | Sigmoid a                   -> [|a|]
-    | Sum a                       -> [|a|]
-    | Prod a                      -> [|a|]
-    | Min a                       -> [|a|]
-    | Max a                       -> [|a|]
-    | Mean a                      -> [|a|]
-    | Var a                       -> [|a|]
-    | Std a                       -> [|a|]
-    | L1norm a                    -> [|a|]
-    | L2norm a                    -> [|a|]
-    | Cumsum a                    -> [|a|]
-    | Cumprod a                   -> [|a|]
-    | Cummin a                    -> [|a|]
-    | Cummax a                    -> [|a|]
-    | Inv a                       -> [|a|]
-    | Transpose a                 -> [|a|]
-    | Conv1D (a, b, c, d)         -> [|b; c|]
-    | Conv2D (a, b, c, d)         -> [|b; c|]
-    | Conv3D (a, b, c, d)         -> [|b; c|]
-    | MaxPool1D (a, b, c, d)      -> [|b|]
-    | MaxPool2D (a, b, c, d)      -> [|b|]
-    | MaxPool3D (a, b, c, d)      -> [|b|]
-    | AvgPool1D (a, b, c, d)      -> [|b|]
-    | AvgPool2D (a, b, c, d)      -> [|b|]
-    | AvgPool3D (a, b, c, d)      -> [|b|]
-    | Conv1D_BI (a, b, c, d)      -> [|a; b; d|]
-    | Conv1D_BK (a, b, c, d)      -> [|a; b; d|]
-    | Conv2D_BI (a, b, c, d)      -> [|a; b; d|]
-    | Conv2D_BK (a, b, c, d)      -> [|a; b; d|]
-    | Conv3D_BI (a, b, c, d)      -> [|a; b; d|]
-    | Conv3D_BK (a, b, c, d)      -> [|a; b; d|]
-    | MaxPool1D_B (a, b, c, d, e) -> [|b; e|]
-    | MaxPool2D_B (a, b, c, d, e) -> [|b; e|]
-    | AvgPool1D_B (a, b, c, d, e) -> [|b; e|]
-    | AvgPool2D_B (a, b, c, d, e) -> [|b; e|]
-    | Copy a                      -> [|a|]
-    | Reshape (a, b)              -> [|a|]
-    | Tile (a, b)                 -> [|a|]
-    | Repeat (a, b, c)            -> [|a|]
-    | Concat (a, b)               ->   a
+    | Fun02 (a, b, f, g)          -> [|a; b|]
+    | Fun03 (a, f)                -> a
+    | Fun04 (a, b, f)             -> [|a|]
+    | Fun05 (a, b, f)             -> [|b|]
     | Split (a, b, c)             -> [|a|]
     | Item_I (a, b)               -> [|a|]
-    | Clip_L2Norm (a, b)          -> [|b|]
 
 
   let inc_operand_refnum x =
@@ -306,113 +105,14 @@ module Make
     if Array.length x.outval = 0 then (
       match x.op with
       | Noop                        -> ()
-      | Add (a, b)                  -> _eval_map2 x A.add_ A.add
-      | Sub (a, b)                  -> _eval_map2 x A.sub_ A.sub
-      | Mul (a, b)                  -> _eval_map2 x A.mul_ A.mul
-      | Div (a, b)                  -> _eval_map2 x A.div_ A.div
-      | Pow (a, b)                  -> _eval_map2 x A.pow_ A.pow
-      | Dot (a, b)                  -> _eval_map6 x (fun x -> A.dot x.(0) x.(1))
-      | Atan2 (a, b)                -> _eval_map2 x A.atan2_ A.atan2
-      | Hypot (a, b)                -> _eval_map2 x A.hypot_ A.hypot
-      | Fmod (a, b)                 -> _eval_map2 x A.fmod_ A.fmod
-      | Min2 (a, b)                 -> _eval_map2 x A.min2_ A.min2
-      | Max2 (a, b)                 -> _eval_map2 x A.max2_ A.max2
-      | Add_S (a, b)                -> _eval_map3 x b A.add_scalar_
-      | Sub_S (a, b)                -> _eval_map3 x b A.sub_scalar_
-      | Mul_S (a, b)                -> _eval_map3 x b A.mul_scalar_
-      | Div_S (a, b)                -> _eval_map3 x b A.div_scalar_
-      | Pow_S (a, b)                -> _eval_map3 x b A.pow_scalar_
-      | Atan2_S (a, b)              -> _eval_map3 x b A.atan2_scalar_
-      | Fmod_S (a, b)               -> _eval_map3 x b A.fmod_scalar_
-      | S_Add (a, b)                -> _eval_map4 x a A.scalar_add_
-      | S_Sub (a, b)                -> _eval_map4 x a A.scalar_sub_
-      | S_Mul (a, b)                -> _eval_map4 x a A.scalar_mul_
-      | S_Div (a, b)                -> _eval_map4 x a A.scalar_div_
-      | S_Pow (a, b)                -> _eval_map4 x a A.scalar_pow_
-      | S_Atan2 (a, b)              -> _eval_map4 x a A.scalar_atan2_
-      | S_Fmod (a, b)               -> _eval_map4 x a A.scalar_fmod_
+      | Fun00 (a, f)                -> _eval_map5 x f
       | Fun01 (a, f)                -> _eval_map1 x f
-      | Neg a                       -> _eval_map1 x A.neg_
-      | Conj a                      -> _eval_map1 x A.conj_
-      | Reci a                      -> _eval_map1 x A.reci_
-      | Signum a                    -> _eval_map1 x A.signum_
-      | Sqr a                       -> _eval_map1 x A.sqr_
-      | Sqrt a                      -> _eval_map1 x A.sqrt_
-      | Cbrt a                      -> _eval_map1 x A.cbrt_
-      | Exp a                       -> _eval_map1 x A.exp_
-      | Exp2 a                      -> _eval_map1 x A.exp2_
-      | Exp10 a                     -> _eval_map1 x A.exp10_
-      | Expm1 a                     -> _eval_map1 x A.expm1_
-      | Log a                       -> _eval_map1 x A.log_
-      | Log2 a                      -> _eval_map1 x A.log2_
-      | Log10 a                     -> _eval_map1 x A.log10_
-      | Log1p a                     -> _eval_map1 x A.log1p_
-      | Sin a                       -> _eval_map1 x A.sin_
-      | Cos a                       -> _eval_map1 x A.cos_
-      | Tan a                       -> _eval_map1 x A.tan_
-      | Asin a                      -> _eval_map1 x A.asin_
-      | Acos a                      -> _eval_map1 x A.acos_
-      | Atan a                      -> _eval_map1 x A.atan_
-      | Sinh a                      -> _eval_map1 x A.sinh_
-      | Cosh a                      -> _eval_map1 x A.cosh_
-      | Tanh a                      -> _eval_map1 x A.tanh_
-      | Asinh a                     -> _eval_map1 x A.asinh_
-      | Acosh a                     -> _eval_map1 x A.acosh_
-      | Atanh a                     -> _eval_map1 x A.atanh_
-      | Floor a                     -> _eval_map1 x A.floor_
-      | Ceil a                      -> _eval_map1 x A.ceil_
-      | Round a                     -> _eval_map1 x A.round_
-      | Trunc a                     -> _eval_map1 x A.trunc_
-      | Fix a                       -> _eval_map1 x A.fix_
-      | Erf a                       -> _eval_map1 x A.erf_
-      | Erfc a                      -> _eval_map1 x A.erfc_
-      | Relu a                      -> _eval_map1 x A.relu_
-      | Softplus a                  -> _eval_map1 x A.softplus_
-      | Softsign a                  -> _eval_map1 x A.softsign_
-      | Softmax a                   -> _eval_map1 x A.softmax_
-      | Sigmoid a                   -> _eval_map1 x A.sigmoid_
-      | Sum a                       -> _eval_reduce x A.sum
-      | Prod a                      -> _eval_reduce x A.prod
-      | Min a                       -> _eval_reduce x A.min
-      | Max a                       -> _eval_reduce x A.max
-      | Mean a                      -> _eval_reduce x A.mean
-      | Var a                       -> _eval_reduce x A.var
-      | Std a                       -> _eval_reduce x A.std
-      | L1norm a                    -> _eval_reduce x A.l1norm
-      | L2norm a                    -> _eval_reduce x A.l2norm
-      | Cumsum a                    -> _eval_map1 x A.cumsum_
-      | Cumprod a                   -> _eval_map1 x A.cumprod_
-      | Cummin a                    -> _eval_map1 x A.cummin_
-      | Cummax a                    -> _eval_map1 x A.cummax_
-      | Inv a                       -> _eval_map5 x A.inv
-      | Transpose a                 -> _eval_map5 x A.transpose
-      | Conv1D (a, b, c, d)         -> _eval_map6 x (fun x -> A.conv1d ?padding:a x.(0) x.(1) d)
-      | Conv2D (a, b, c, d)         -> _eval_map6 x (fun x -> A.conv2d ?padding:a x.(0) x.(1) d)
-      | Conv3D (a, b, c, d)         -> _eval_map6 x (fun x -> A.conv3d ?padding:a x.(0) x.(1) d)
-      | MaxPool1D (a, b, c, d)      -> _eval_map5 x (fun x -> A.max_pool1d ?padding:a x c d)
-      | MaxPool2D (a, b, c, d)      -> _eval_map5 x (fun x -> A.max_pool2d ?padding:a x c d)
-      | MaxPool3D (a, b, c, d)      -> _eval_map5 x (fun x -> A.max_pool3d ?padding:a x c d)
-      | AvgPool1D (a, b, c, d)      -> _eval_map5 x (fun x -> A.avg_pool1d ?padding:a x c d)
-      | AvgPool2D (a, b, c, d)      -> _eval_map5 x (fun x -> A.avg_pool2d ?padding:a x c d)
-      | AvgPool3D (a, b, c, d)      -> _eval_map5 x (fun x -> A.avg_pool3d ?padding:a x c d)
-      | Conv1D_BI (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv1d_backward_input x.(0) x.(1) c x.(2))
-      | Conv1D_BK (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv1d_backward_kernel x.(0) x.(1) c x.(2))
-      | Conv2D_BI (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv2d_backward_input x.(0) x.(1) c x.(2))
-      | Conv2D_BK (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv2d_backward_kernel x.(0) x.(1) c x.(2))
-      | Conv3D_BI (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv3d_backward_input x.(0) x.(1) c x.(2))
-      | Conv3D_BK (a, b, c, d)      -> _eval_map6 x (fun x -> A.conv3d_backward_kernel x.(0) x.(1) c x.(2))
-      | MaxPool1D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.max_pool1d_backward a x.(0) c d x.(1))
-      | MaxPool2D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.max_pool2d_backward a x.(0) c d x.(1))
-      | AvgPool1D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.avg_pool1d_backward a x.(0) c d x.(1))
-      | AvgPool2D_B (a, b, c, d, e) -> _eval_map6 x (fun x -> A.avg_pool2d_backward a x.(0) c d x.(1))
-      | Copy a                      -> _eval_map1 x ignore
-      | Reshape (a, b)              -> _eval_map5 x (fun x -> A.(reshape (copy x) b)) (* FIXME *)
-      | Tile (a, b)                 -> _eval_map5 x (fun x -> A.tile x b)
-      | Repeat (a, b, c)            -> _eval_map5 x (fun x -> A.repeat ?axis:b x c)
-      | Concat (a, b)               -> _eval_map6 x (fun x -> A.concatenate ?axis:b x)
+      | Fun02 (a, b, f, g)          -> _eval_map2 x f g
+      | Fun03 (a, f)                -> _eval_map6 x f
+      | Fun04 (a, b, f)             -> _eval_map3 x b f
+      | Fun05 (a, b, f)             -> _eval_map4 x a f
       | Split (a, b, c)             -> _eval_map7 x (fun x -> A.split ?axis:b c x)
       | Item_I (a, b)               -> _item_i x b
-      | Clip_L2Norm (a, b)          -> _eval_map5 x (fun x -> A.clip_by_l2norm a x)
     )
 
   (* [f] is inpure, for [arr -> arr] *)
@@ -471,13 +171,6 @@ module Make
     _eval_term operands.(0);
     let a = operands.(0).outval.(0) in
     x.outval <- f a
-
-  (* [f] is always pure, for [arr -> elt] *)
-  and _eval_reduce x f =
-    let operands = unpack_operands x.op in
-    _eval_term operands.(0);
-    let a = operands.(0).outval.(0) in
-    x.outval <- [|f a|]
 
   (* get the specific output val of [x] for a given index *)
   and _item_i x i =
@@ -541,17 +234,17 @@ module Make
 
   let trace x = A.trace (to_ndarray x)
 
-  let copy x = make_t (Copy x)
+  let copy x = make_t (Fun01 (x, ignore))
 
   let reset x = A.reset (to_ndarray x)
 
-  let reshape x d = make_t (Reshape (x, d))
+  let reshape x d = make_t (Fun00 (x, (fun x -> A.(reshape (copy x) d)))) (* FIXME *)
 
-  let tile x reps = make_t (Tile (x, reps))
+  let tile x reps = make_t (Fun00 (x, (fun x -> A.tile x reps)))
 
-  let repeat ?axis x reps = make_t (Repeat (x, axis, reps))
+  let repeat ?axis x reps = make_t (Fun00 (x, (fun x -> A.repeat ?axis x reps)))
 
-  let concatenate ?axis x = make_t (Concat (x, axis))
+  let concatenate ?axis x = make_t (Fun03 (x, (fun x -> A.concatenate ?axis x)))
 
   let split ?axis parts x =
     let t = make_t (Split (x, axis, parts)) in
@@ -607,205 +300,205 @@ module Make
 
   (* math functions *)
 
-  let add x y = make_t (Add (x, y))
+  let add x y = make_t (Fun02 (x, y, A.add_, A.add))
 
-  let sub x y = make_t (Sub (x, y))
+  let sub x y = make_t (Fun02 (x, y, A.sub_, A.sub))
 
-  let mul x y = make_t (Mul (x, y))
+  let mul x y = make_t (Fun02 (x, y, A.mul_, A.mul))
 
-  let div x y = make_t (Div (x, y))
+  let div x y = make_t (Fun02 (x, y, A.div_, A.div))
 
-  let pow x y = make_t (Pow (x, y))
+  let pow x y = make_t (Fun02 (x, y, A.pow_, A.pow))
 
-  let dot x y = make_t (Dot (x, y))
+  let atan2 x y = make_t (Fun02 (x, y, A.atan2_, A.atan2))
 
-  let atan2 x y = make_t (Atan2 (x, y))
+  let hypot x y = make_t (Fun02 (x, y, A.hypot_, A.hypot))
 
-  let hypot x y = make_t (Hypot (x, y))
+  let fmod x y = make_t (Fun02 (x, y, A.fmod_, A.fmod))
 
-  let fmod x y = make_t (Fmod (x, y))
+  let min2 x y = make_t (Fun02 (x, y, A.min2_, A.min2))
 
-  let min2 x y = make_t (Min2 (x, y))
+  let max2 x y = make_t (Fun02 (x, y, A.max2_, A.max2))
 
-  let max2 x y = make_t (Max2 (x, y))
+  let dot x y = make_t (Fun03 ([|x; y|], (fun x -> A.dot x.(0) x.(1))))
 
-  let add_scalar x a = make_t (Add_S (x, a))
+  let add_scalar x a = make_t (Fun04 (x, a, A.add_scalar_))
 
-  let sub_scalar x a = make_t (Sub_S (x, a))
+  let sub_scalar x a = make_t (Fun04 (x, a, A.sub_scalar_))
 
-  let mul_scalar x a = make_t (Mul_S (x, a))
+  let mul_scalar x a = make_t (Fun04 (x, a, A.mul_scalar_))
 
-  let div_scalar x a = make_t (Div_S (x, a))
+  let div_scalar x a = make_t (Fun04 (x, a, A.div_scalar_))
 
-  let pow_scalar x a = make_t (Pow_S (x, a))
+  let pow_scalar x a = make_t (Fun04 (x, a, A.pow_scalar_))
 
-  let atan2_scalar x a = make_t (Atan2_S (x, a))
+  let atan2_scalar x a = make_t (Fun04 (x, a, A.atan2_scalar_))
 
-  let fmod_scalar x a = make_t (Fmod_S (x, a))
+  let fmod_scalar x a = make_t (Fun04 (x, a, A.fmod_scalar_))
 
-  let scalar_add a x = make_t (S_Add (a, x))
+  let scalar_add a x = make_t (Fun05 (a, x, A.scalar_add_))
 
-  let scalar_sub a x = make_t (S_Sub (a, x))
+  let scalar_sub a x = make_t (Fun05 (a, x, A.scalar_sub_))
 
-  let scalar_mul a x = make_t (S_Mul (a, x))
+  let scalar_mul a x = make_t (Fun05 (a, x, A.scalar_mul_))
 
-  let scalar_div a x = make_t (S_Div (a, x))
+  let scalar_div a x = make_t (Fun05 (a, x, A.scalar_div_))
 
-  let scalar_pow a x = make_t (S_Pow (a, x))
+  let scalar_pow a x = make_t (Fun05 (a, x, A.scalar_pow_))
 
-  let scalar_atan2 a x = make_t (S_Atan2 (a, x))
+  let scalar_atan2 a x = make_t (Fun05 (a, x, A.scalar_atan2_))
 
-  let scalar_fmod a x = make_t (S_Fmod (a, x))
+  let scalar_fmod a x = make_t (Fun05 (a, x, A.scalar_fmod_))
 
   let abs x = make_t (Fun01 (x, A.abs_))
 
-  let neg x = make_t (Neg x)
+  let neg x = make_t (Fun01 (x, A.neg_))
 
-  let conj x = make_t (Conj x)
+  let conj x = make_t (Fun01 (x, A.conj_))
 
-  let reci x = make_t (Reci x)
+  let reci x = make_t (Fun01 (x, A.reci_))
 
-  let signum x = make_t (Signum x)
+  let signum x = make_t (Fun01 (x, A.signum_))
 
-  let sqr x = make_t (Sqr x)
+  let sqr x = make_t (Fun01 (x, A.sqr_))
 
-  let sqrt x = make_t (Sqrt x)
+  let sqrt x = make_t (Fun01 (x, A.sqrt_))
 
-  let cbrt x = make_t (Cbrt x)
+  let cbrt x = make_t (Fun01 (x, A.cbrt_))
 
-  let exp x = make_t (Exp x)
+  let exp x = make_t (Fun01 (x, A.exp_))
 
-  let exp2 x = make_t (Exp2 x)
+  let exp2 x = make_t (Fun01 (x, A.exp2_))
 
-  let exp10 x = make_t (Exp10 x)
+  let exp10 x = make_t (Fun01 (x, A.exp10_))
 
-  let expm1 x = make_t (Expm1 x)
+  let expm1 x = make_t (Fun01 (x, A.expm1_))
 
-  let log x = make_t (Log x)
+  let log x = make_t (Fun01 (x, A.log_))
 
-  let log2 x = make_t (Log2 x)
+  let log2 x = make_t (Fun01 (x, A.log2_))
 
-  let log10 x = make_t (Log10 x)
+  let log10 x = make_t (Fun01 (x, A.log10_))
 
-  let log1p x = make_t (Log1p x)
+  let log1p x = make_t (Fun01 (x, A.log1p_))
 
-  let sin x = make_t (Sin x)
+  let sin x = make_t (Fun01 (x, A.sin_))
 
-  let cos x = make_t (Cos x)
+  let cos x = make_t (Fun01 (x, A.cos_))
 
-  let tan x = make_t (Tan x)
+  let tan x = make_t (Fun01 (x, A.tan_))
 
-  let asin x = make_t (Asin x)
+  let asin x = make_t (Fun01 (x, A.asin_))
 
-  let acos x = make_t (Acos x)
+  let acos x = make_t (Fun01 (x, A.acos_))
 
-  let atan x = make_t (Atan x)
+  let atan x = make_t (Fun01 (x, A.atan_))
 
-  let sinh x = make_t (Sinh x)
+  let sinh x = make_t (Fun01 (x, A.sinh_))
 
-  let cosh x = make_t (Cosh x)
+  let cosh x = make_t (Fun01 (x, A.cosh_))
 
-  let tanh x = make_t (Tanh x)
+  let tanh x = make_t (Fun01 (x, A.tanh_))
 
-  let asinh x = make_t (Asinh x)
+  let asinh x = make_t (Fun01 (x, A.asinh_))
 
-  let acosh x = make_t (Acosh x)
+  let acosh x = make_t (Fun01 (x, A.acosh_))
 
-  let atanh x = make_t (Atanh x)
+  let atanh x = make_t (Fun01 (x, A.atanh_))
 
-  let floor x = make_t (Floor x)
+  let floor x = make_t (Fun01 (x, A.floor_))
 
-  let ceil x = make_t (Ceil x)
+  let ceil x = make_t (Fun01 (x, A.ceil_))
 
-  let round x = make_t (Round x)
+  let round x = make_t (Fun01 (x, A.round_))
 
-  let trunc x = make_t (Trunc x)
+  let trunc x = make_t (Fun01 (x, A.trunc_))
 
-  let fix x = make_t (Fix x)
+  let fix x = make_t (Fun01 (x, A.fix_))
 
-  let erf x = make_t (Erf x)
+  let erf x = make_t (Fun01 (x, A.erf_))
 
-  let erfc x = make_t (Erfc x)
+  let erfc x = make_t (Fun01 (x, A.erfc_))
 
-  let relu x = make_t (Relu x)
+  let relu x = make_t (Fun01 (x, A.relu_))
 
-  let softplus x = make_t (Softplus x)
+  let softplus x = make_t (Fun01 (x, A.softplus_))
 
-  let softsign x = make_t (Softsign x)
+  let softsign x = make_t (Fun01 (x, A.softsign_))
 
-  let softmax x = make_t (Softmax x)
+  let softmax x = make_t (Fun01 (x, A.softmax_))
 
-  let sigmoid x = make_t (Sigmoid x)
+  let sigmoid x = make_t (Fun01 (x, A.sigmoid_))
 
-  let sum ?axis x = make_t (Sum x)
+  let sum ?axis x = make_t (Fun00 (x, A.sum))
 
-  let prod ?axis x = make_t (Prod x)
+  let prod ?axis x = make_t (Fun00 (x, A.prod))
 
-  let min ?axis x = make_t (Min x)
+  let min ?axis x = make_t (Fun00 (x, A.min))
 
-  let max ?axis x = make_t (Max x)
+  let max ?axis x = make_t (Fun00 (x, A.max))
 
-  let mean ?axis x = make_t (Mean x)
+  let mean ?axis x = make_t (Fun00 (x, A.mean))
 
-  let var ?axis x = make_t (Var x)
+  let var ?axis x = make_t (Fun00 (x, A.var))
 
-  let std ?axis x = make_t (Std x)
+  let std ?axis x = make_t (Fun00 (x, A.std))
 
-  let l1norm ?axis x = make_t (L1norm x)
+  let l1norm ?axis x = make_t (Fun00 (x, A.l1norm))
 
-  let l2norm ?axis x = make_t (L1norm x)
+  let l2norm ?axis x = make_t (Fun00 (x, A.l2norm))
 
-  let cumsum ?axis x = make_t (Cumsum x)
+  let cumsum ?axis x = make_t (Fun01 (x, A.cumsum_))
 
-  let cumprod ?axis x = make_t (Cumprod x)
+  let cumprod ?axis x = make_t (Fun01 (x, A.cumprod_))
 
-  let cummin ?axis x = make_t (Cummin x)
+  let cummin ?axis x = make_t (Fun01 (x, A.cummin_))
 
-  let cummax ?axis x = make_t (Cummax x)
+  let cummax ?axis x = make_t (Fun01 (x, A.cummax_))
 
-  let inv x = make_t (Inv x)
+  let inv x = make_t (Fun00 (x, A.inv))
 
-  let transpose ?axis x = make_t (Transpose x)
+  let transpose ?axis x = make_t (Fun00 (x, A.transpose))
 
-  let clip_by_l2norm a x = make_t (Clip_L2Norm (a, x))
+  let clip_by_l2norm a x = make_t (Fun00 (x, (fun x -> A.clip_by_l2norm a x)))
 
-  let conv1d ?padding input kernel stride = make_t (Conv1D (padding, input, kernel, stride))
+  let conv1d ?padding input kernel stride = make_t (Fun03 ([|input; kernel|], (fun x -> A.conv1d ?padding x.(0) x.(1) stride)))
 
-  let conv2d ?padding input kernel stride = make_t (Conv2D (padding, input, kernel, stride))
+  let conv2d ?padding input kernel stride = make_t (Fun03 ([|input; kernel|], (fun x -> A.conv2d ?padding x.(0) x.(1) stride)))
 
-  let conv3d ?padding input kernel stride = make_t (Conv3D (padding, input, kernel, stride))
+  let conv3d ?padding input kernel stride = make_t (Fun03 ([|input; kernel|], (fun x -> A.conv3d ?padding x.(0) x.(1) stride)))
 
-  let max_pool1d ?padding input kernel stride = make_t (MaxPool1D (padding, input, kernel, stride))
+  let max_pool1d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.max_pool1d ?padding x kernel stride)))
 
-  let max_pool2d ?padding input kernel stride = make_t (MaxPool2D (padding, input, kernel, stride))
+  let max_pool2d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.max_pool2d ?padding x kernel stride)))
 
-  let max_pool3d ?padding input kernel stride = make_t (MaxPool3D (padding, input, kernel, stride))
+  let max_pool3d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.max_pool3d ?padding x kernel stride)))
 
-  let avg_pool1d ?padding input kernel stride = make_t (AvgPool1D (padding, input, kernel, stride))
+  let avg_pool1d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.avg_pool1d ?padding x kernel stride)))
 
-  let avg_pool2d ?padding input kernel stride = make_t (AvgPool2D (padding, input, kernel, stride))
+  let avg_pool2d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.avg_pool2d ?padding x kernel stride)))
 
-  let avg_pool3d ?padding input kernel stride = make_t (AvgPool3D (padding, input, kernel, stride))
+  let avg_pool3d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.avg_pool3d ?padding x kernel stride)))
 
-  let conv1d_backward_input input kernel stride output' = make_t (Conv1D_BI (input, kernel, stride, output'))
+  let conv1d_backward_input input kernel stride output' = make_t (Fun03 ([|input; kernel; output'|], (fun x -> A.conv1d_backward_input x.(0) x.(1) stride x.(2))))
 
-  let conv1d_backward_kernel input kernel stride output' = make_t (Conv1D_BK (input, kernel, stride, output'))
+  let conv1d_backward_kernel input kernel stride output' = make_t (Fun03 ([|input; kernel; output'|], (fun x -> A.conv1d_backward_kernel x.(0) x.(1) stride x.(2))))
 
-  let conv2d_backward_input input kernel stride output' = make_t (Conv2D_BI (input, kernel, stride, output'))
+  let conv2d_backward_input input kernel stride output' = make_t (Fun03 ([|input; kernel; output'|], (fun x -> A.conv2d_backward_input x.(0) x.(1) stride x.(2))))
 
-  let conv2d_backward_kernel input kernel stride output' = make_t (Conv2D_BK (input, kernel, stride, output'))
+  let conv2d_backward_kernel input kernel stride output' = make_t (Fun03 ([|input; kernel; output'|], (fun x -> A.conv2d_backward_kernel x.(0) x.(1) stride x.(2))))
 
-  let conv3d_backward_input input kernel stride output' = make_t (Conv3D_BI (input, kernel, stride, output'))
+  let conv3d_backward_input input kernel stride output' = make_t (Fun03 ([|input; kernel; output'|], (fun x -> A.conv3d_backward_input x.(0) x.(1) stride x.(2))))
 
-  let conv3d_backward_kernel input kernel stride output' = make_t (Conv3D_BK (input, kernel, stride, output'))
+  let conv3d_backward_kernel input kernel stride output' = make_t (Fun03 ([|input; kernel; output'|], (fun x -> A.conv3d_backward_kernel x.(0) x.(1) stride x.(2))))
 
-  let max_pool1d_backward padding input kernel stride output' = make_t (MaxPool1D_B (padding, input, kernel, stride, output'))
+  let max_pool1d_backward padding input kernel stride output' = make_t (Fun03 ([|input; output'|], (fun x -> A.max_pool1d_backward padding x.(0) kernel stride x.(1))))
 
-  let max_pool2d_backward padding input kernel stride output' = make_t (MaxPool2D_B (padding, input, kernel, stride, output'))
+  let max_pool2d_backward padding input kernel stride output' = make_t (Fun03 ([|input; output'|], (fun x -> A.max_pool2d_backward padding x.(0) kernel stride x.(1))))
 
-  let avg_pool1d_backward padding input kernel stride output' = make_t (AvgPool1D_B (padding, input, kernel, stride, output'))
+  let avg_pool1d_backward padding input kernel stride output' = make_t (Fun03 ([|input; output'|], (fun x -> A.avg_pool1d_backward padding x.(0) kernel stride x.(1))))
 
-  let avg_pool2d_backward padding input kernel stride output' = make_t (AvgPool2D_B (padding, input, kernel, stride, output'))
+  let avg_pool2d_backward padding input kernel stride output' = make_t (Fun03 ([|input; output'|], (fun x -> A.avg_pool2d_backward padding x.(0) kernel stride x.(1))))
 
 
   (* comparion functions *)
