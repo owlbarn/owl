@@ -115,7 +115,7 @@ val rank
 
     [ties_strategy] controls which ranks are assigned to equal values:
 
-    - [`Average] the average of ranks should be assigned to each value.
+    - [`Average] the mean of ranks should be assigned to each value.
       {b Default}.
     - [`Min] the minimum of ranks is assigned to each value.
     - [`Max] the maximum of ranks is assigned to each value.

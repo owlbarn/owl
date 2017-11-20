@@ -5,7 +5,7 @@ module LL = Owl_optimise
 
 let centerise x =
   let open MX in
-  let v = average_rows x in
+  let v = mean_rows x in
   map_by_row (row_num v) (fun x -> x - v) x
 
 let test () =
@@ -14,7 +14,7 @@ let test () =
   let y = Mat.(x *@ p) in
   let q = Mat.uniform_int 100 10 in
   let p' = LL.sgd q x y in
-  Printf.printf "error ==> %.4f\n" Mat.(sum (abs (p'- p)))
+  Printf.printf "error ==> %.4f\n" Mat.(sum' (abs (p'- p)))
 
 let test_small () =
   let p = Mat.uniform_int 5 3 in
@@ -27,7 +27,7 @@ let test_small () =
   Mat.(pp_dsmat (p));
   Mat.(pp_dsmat (p'));
   Mat.(pp_dsmat (p' - p));
-  Printf.printf "error ==> %.4f\n" Mat.(sum (abs (p'- p)))
+  Printf.printf "error ==> %.4f\n" Mat.(sum' (abs (p'- p)))
 
 let test_intercept () =
   let p = Mat.uniform_int 5 3 in
@@ -37,7 +37,7 @@ let test_intercept () =
   let y = Mat.(x *@ p) in
   let q = Mat.uniform_int 4 3 in
   let p' = LL.sgd ~i:true q Mat.(cols x [|0;1;2;3|]) y in
-  Printf.printf "error ==> %.4f\n" Mat.(sum (abs (p'- p)))
+  Printf.printf "error ==> %.4f\n" Mat.(sum' (abs (p'- p)))
 
 let _ =
   Random.self_init ();

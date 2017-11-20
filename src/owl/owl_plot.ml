@@ -640,9 +640,10 @@ let plot ?(h=_default_handle) ?(spec=[]) x y =
     plschr marker_size 1.;
     if line_style > 0 && line_style < 9 then
       pllsty line_style; plline x y;
-    if marker <> "" then
+    if marker <> "" then (
       let x', y' = _thinning x, _thinning y in
-      plstring x' y' marker;
+      plstring x' y' marker
+    );
     (* restore original settings *)
     plschr c' 1.;
     plwidth old_pensize;
@@ -850,8 +851,8 @@ let _draw_error_bar ?(w=0.) x y e =
 
 let error_bar ?(h=_default_handle) ?(spec=[]) x y e =
   let open Plplot in
-  let ymin = Owl_dense_matrix.D.(min(y - e)) in
-  let ymax = Owl_dense_matrix.D.(max(y + e)) in
+  let ymin = Owl_dense_matrix.D.(min'(y - e)) in
+  let ymax = Owl_dense_matrix.D.(max'(y + e)) in
   let x = Owl_dense_matrix.D.to_array x in
   let y = Owl_dense_matrix.D.to_array y in
   let e = Owl_dense_matrix.D.to_array e in
@@ -1048,6 +1049,39 @@ let area ?(h=_default_handle) ?(spec=[]) x y=
   if not h.holdon then output h
 
 
+let draw_polygon ?(h=_default_handle) ?(spec=[]) x y =
+  let open Plplot in
+  let x = Owl_dense_matrix.D.to_array x in
+  let y = Owl_dense_matrix.D.to_array y in
+  _adjust_range h x X;
+  _adjust_range h y Y;
+  (* prepare the closure *)
+  let p = h.pages.(h.current_page) in
+  let color = _get_rgb spec p.fgcolor in
+  let r, g, b = color in
+  let line_style = _get_line_style spec 1 in
+  let fill_pattern = _get_fill_pattern spec 0 in
+  (* drawing function *)
+  let f = (fun () ->
+    let r', g', b' = plgcol0 1 in
+    plscol0 1 r g b;
+    plcol0 1;
+    pllsty line_style;
+    plline x y;
+    plpsty fill_pattern;
+    plfill x y;
+    (* restore original settings *)
+    plscol0 1 r' g' b';
+    plcol0 1;
+    pllsty 1
+  )
+  in
+  (* add closure as a layer *)
+  p.plots <- Array.append p.plots [|f|];
+  (* add legend item to page *)
+  _add_legend_item p BOX line_style color "" color fill_pattern color;
+  if not h.holdon then output h
+
 let _ecdf_interleave x i =
   let m = Array.length x in
   let n = 2 * m in
@@ -1226,9 +1260,10 @@ let loglog ?(h=_default_handle) ?(spec=[]) ?x y =
     plschr marker_size 1.;
     if line_style > 0 && line_style < 9 then
       pllsty line_style; plline x y;
-    if marker <> "" then
+    if marker <> "" then (
       let x', y' = _thinning x, _thinning y in
-      plstring x' y' marker;
+      plstring x' y' marker
+    );
     (* restore original settings *)
     plschr c' 1.;
     plwidth old_pensize;
@@ -1600,7 +1635,7 @@ let image ?(h=_default_handle) x =
   let x = Owl_dense_matrix.D.rotate x 90 in
   (* compute necessary parameters *)
   let width, height = Owl_dense_matrix.D.shape x in
-  let num_col = Owl_dense_matrix.D.max x in
+  let num_col = Owl_dense_matrix.D.max' x in
   let img = Owl_dense_matrix.D.to_arrays x in
   let width = float_of_int width in
   let height = float_of_int height in

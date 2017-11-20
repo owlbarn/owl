@@ -8,7 +8,6 @@
 open Ctypes
 
 
-
 (** type definition *)
 
 type cl_platform_id
@@ -1071,4 +1070,3 @@ exception EXN_INVALID_COMPILER_OPTIONS
 exception EXN_INVALID_LINKER_OPTIONS
 
 exception EXN_INVALID_DEVICE_PARTITION_COUNT
-

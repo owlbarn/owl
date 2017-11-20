@@ -45,7 +45,7 @@ let slice_left = Genarray.slice_left
 
 let slice_right = Genarray.slice_right
 
-let copy src dst = Genarray.blit src dst
+let copy_to src dst = Genarray.blit src dst
 
 let fill x a = Genarray.fill x a
 
@@ -91,13 +91,13 @@ let same_shape x y =
     !b
   )
 
-let clone x =
+let copy x =
   let y = empty (kind x) (shape x) in
   Genarray.blit x y;
   y
 
 let reverse x =
-  let y = clone x in
+  let y = copy x in
   let n = numel x in
   _owl_copy (kind x) n ~ofsx:0 ~incx:1 ~ofsy:(n-1) ~incy:(-1) x y;
   y
@@ -181,7 +181,6 @@ let repeat ?axis x reps =
       for j = 0 to reps - 1 do
         let ofsy = (i * reps + j) * _slice_sz in
         _owl_copy _kind _slice_sz ~ofsx ~incx:1 ~ofsy ~incy:1 x y
-        |> ignore
       done;
     done;
   );
@@ -286,15 +285,8 @@ let index_1d_nd i_1d _stride =
   i_nd
 
 
-(* TODO: add axis paramater *)
-
-
-(* general broadcast operation for add/sub/mul/div and etc.
-  This function compares the dimension element-wise from the highest to the
-  lowest with the following broadcast rules (same as numpy):
-  1. equal; 2. either is 1.
- *)
-let broadcast_op op x0 x1 =
+(* align and calculate the output shape for broadcasting over [x0] and [x1] *)
+let broadcast_align_shape x0 x1 =
   (* align the rank of inputs *)
   let d0 = num_dims x0 in
   let d1 = num_dims x1 in
@@ -305,16 +297,31 @@ let broadcast_op op x0 x1 =
   let s0 = shape y0 in
   let s1 = shape y1 in
   Array.iter2 (fun a b ->
-    if a <> 1 && b <> 1 && a <> b then
-      failwith "broadcast_op: slice not aligned"
+    assert (not(a <> 1 && b <> 1 && a <> b))
   ) s0 s1;
   (* calculate the output shape *)
   let s2 = Array.map2 max s0 s1 in
-  let y2 = empty (kind x0) s2 in
   (* calculate the strides *)
   let t0 = _calc_stride s0 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
   let t1 = _calc_stride s1 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
   let t2 = _calc_stride s2 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  (* return aligned arrays, shapes, strides *)
+  y0, y1, s0, s1, s2, t0, t1, t2
+
+
+(* general broadcast operation for add/sub/mul/div and etc.
+  This function compares the dimension element-wise from the highest to the
+  lowest with the following broadcast rules (same as numpy):
+  1. equal; 2. either is 1.
+ *)
+let broadcast_op ?out op x0 x1 =
+  (* align the input rank, calculate the output shape and stride *)
+  let y0, y1, s0, s1, s2, t0, t1, t2 = broadcast_align_shape x0 x1 in
+  let y2 = match out with
+    | Some y2 -> y2
+    | None    -> empty (kind x0) s2
+  in
+  (* call the specific map function *)
   op y0 t0 y1 t1 y2 t2;
   y2
 
@@ -326,7 +333,7 @@ let min_i x =
   let i = _owl_min_i (kind x) (numel x) x in
   let s = _calc_stride (shape x) in
   let j = Array.copy s in
-  let _ = _index_1d_nd i j s in
+  _index_1d_nd i j s;
   y.{i}, j
 
 let max_i x =
@@ -334,23 +341,23 @@ let max_i x =
   let i = _owl_max_i (kind x) (numel x) x in
   let s = _calc_stride (shape x) in
   let j = Array.copy s in
-  let _ = _index_1d_nd i j s in
+  _index_1d_nd i j s;
   y.{i}, j
 
 let minmax_i x = min_i x, max_i x
 
-let min x = x |> min_i |> fst
+let min' x = x |> min_i |> fst
 
-let max x = x |> max_i |> fst
+let max' x = x |> max_i |> fst
 
-let minmax x =
+let minmax' x =
   let minx_i, maxx_i = minmax_i x in
   fst minx_i, fst maxx_i
 
 let add x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_add (kind x) (numel x) x y y;
       y
     )
@@ -359,7 +366,7 @@ let add x y =
 let sub x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_sub (kind x) (numel x) x y y;
       y
     )
@@ -368,7 +375,7 @@ let sub x y =
 let mul x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_mul (kind x) (numel x) x y y;
       y
     )
@@ -377,31 +384,33 @@ let mul x y =
 let div x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_div (kind x) (numel x) x y y;
       y
-  )
+    )
   | false -> broadcast_op (_owl_broadcast_div (kind x)) x y
 
 let add_scalar x a =
-  let x = clone x in
+  let x = copy x in
   _owl_add_scalar (kind x) (numel x) x x a;
   x
 
 let sub_scalar x a = add_scalar x (_neg_elt (kind x) a)
 
 let mul_scalar x a =
-  let x = clone x in
-  let x' = flatten x |> array1_of_genarray in
-  Owl_cblas.scal (numel x) a x' 1;
+  let x = copy x in
+  _owl_mul_scalar (kind x) (numel x) x x a;
   x
 
-let div_scalar x a = mul_scalar x (_inv_elt (kind x) a)
+let div_scalar x a =
+  let x = copy x in
+  _owl_div_scalar (kind x) (numel x) x x a;
+  x
 
 let pow x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_pow (kind x) (numel x) x y y;
       y
     )
@@ -410,7 +419,7 @@ let pow x y =
 let atan2 x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_atan2 (kind x) (numel x) x y y;
       y
     )
@@ -419,7 +428,7 @@ let atan2 x y =
 let hypot x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_hypot (kind x) (numel x) x y y;
       y
     )
@@ -428,7 +437,7 @@ let hypot x y =
 let min2 x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_min2 (kind x) (numel x) x y y;
       y
     )
@@ -437,7 +446,7 @@ let min2 x y =
 let max2 x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_max2 (kind x) (numel x) x y y;
       y
     )
@@ -446,7 +455,7 @@ let max2 x y =
 let fmod x y =
   match same_shape x y with
   | true  -> (
-      let y = clone y in
+      let y = copy y in
       _owl_fmod (kind x) (numel x) x y y;
       y
     )
@@ -462,10 +471,10 @@ let scalar_fmod a x =
   _owl_scalar_fmod (kind x) (numel y) x y a;
   y
 
-let ssqr_diff x y = _owl_ssqr_diff (kind x) (numel x) x y
+let ssqr_diff' x y = _owl_ssqr_diff (kind x) (numel x) x y
 
 let abs x =
-  let y = clone x in
+  let y = copy x in
   _owl_abs (kind x) (numel y) x y;
   y
 
@@ -480,7 +489,7 @@ let abs_z2d x =
   y
 
 let abs2 x =
-  let y = clone x in
+  let y = copy x in
   _owl_abs2 (kind x) (numel y) x y;
   y
 
@@ -495,192 +504,192 @@ let abs2_z2d x =
   y
 
 let conj x =
-  let y = clone x in
+  let y = copy x in
   _owl_conj (kind x) (numel y) x y;
   y
 
 let neg x =
-  let y = clone x in
+  let y = copy x in
   _owl_neg (kind x) (numel y) x y;
   y
 
 let reci x =
-  let y = clone x in
+  let y = copy x in
   _owl_reci (kind x) (numel y) x y;
   y
 
 let signum x =
-  let y = clone x in
+  let y = copy x in
   _owl_signum (kind x) (numel y) x y;
   y
 
 let sqr x =
-  let y = clone x in
+  let y = copy x in
   _owl_sqr (kind x) (numel y) x y;
   y
 
 let sqrt x =
-  let y = clone x in
+  let y = copy x in
   _owl_sqrt (kind x) (numel y) x y;
   y
 
 let cbrt x =
-  let y = clone x in
+  let y = copy x in
   _owl_cbrt (kind x) (numel y) x y;
   y
 
 let exp x =
-  let y = clone x in
+  let y = copy x in
   _owl_exp (kind x) (numel y) x y;
   y
 
 let exp2 x =
-  let y = clone x in
+  let y = copy x in
   _owl_exp2 (kind x) (numel y) x y;
   y
 
 let exp10 x =
-  let y = clone x in
+  let y = copy x in
   _owl_exp10 (kind x) (numel y) x y;
   y
 
 let expm1 x =
-  let y = clone x in
+  let y = copy x in
   _owl_expm1 (kind x) (numel y) x y;
   y
 
 let log x =
-  let y = clone x in
+  let y = copy x in
   _owl_log (kind x) (numel y) x y;
   y
 
 let log10 x =
-  let y = clone x in
+  let y = copy x in
   _owl_log10 (kind x) (numel y) x y;
   y
 
 let log2 x =
-  let y = clone x in
+  let y = copy x in
   _owl_log2 (kind x) (numel y) x y;
   y
 
 let log1p x =
-  let y = clone x in
+  let y = copy x in
   _owl_log1p (kind x) (numel y) x y;
   y
 
 let sin x =
-  let y = clone x in
+  let y = copy x in
   _owl_sin (kind x) (numel y) x y;
   y
 
 let cos x =
-  let y = clone x in
+  let y = copy x in
   _owl_cos (kind x) (numel y) x y;
   y
 
 let tan x =
-  let y = clone x in
+  let y = copy x in
   _owl_tan (kind x) (numel y) x y;
   y
 
 let asin x =
-  let y = clone x in
+  let y = copy x in
   _owl_asin (kind x) (numel y) x y;
   y
 
 let acos x =
-  let y = clone x in
+  let y = copy x in
   _owl_acos (kind x) (numel y) x y;
   y
 
 let atan x =
-  let y = clone x in
+  let y = copy x in
   _owl_atan (kind x) (numel y) x y;
   y
 
 let sinh x =
-  let y = clone x in
+  let y = copy x in
   _owl_sinh (kind x) (numel y) x y;
   y
 
 let cosh x =
-  let y = clone x in
+  let y = copy x in
   _owl_cosh (kind x) (numel y) x y;
   y
 
 let tanh x =
-  let y = clone x in
+  let y = copy x in
   _owl_tanh (kind x) (numel y) x y;
   y
 
 let asinh x =
-  let y = clone x in
+  let y = copy x in
   _owl_asinh (kind x) (numel y) x y;
   y
 
 let acosh x =
-  let y = clone x in
+  let y = copy x in
   _owl_acosh (kind x) (numel y) x y;
   y
 
 let atanh x =
-  let y = clone x in
+  let y = copy x in
   _owl_atanh (kind x) (numel y) x y;
   y
 
 let floor x =
-  let y = clone x in
+  let y = copy x in
   _owl_floor (kind x) (numel y) x y;
   y
 
 let ceil x =
-  let y = clone x in
+  let y = copy x in
   _owl_ceil (kind x) (numel y) x y;
   y
 
 let round x =
-  let y = clone x in
+  let y = copy x in
   _owl_round (kind x) (numel y) x y;
   y
 
 let trunc x =
-  let y = clone x in
+  let y = copy x in
   _owl_trunc (kind x) (numel y) x y;
   y
 
 let fix x =
-  let y = clone x in
+  let y = copy x in
   _owl_fix (kind x) (numel y) x y;
   y
 
 let angle x =
-  let y = clone x in
+  let y = copy x in
   _owl_angle (kind x) (numel y) x y;
   y
 
 let proj x =
-  let y = clone x in
+  let y = copy x in
   _owl_proj (kind x) (numel y) x y;
   y
 
 let erf x =
-  let y = clone x in
+  let y = copy x in
   _owl_erf (kind x) (numel y) x y;
   y
 
 let erfc x =
-  let y = clone x in
+  let y = copy x in
   _owl_erfc (kind x) (numel y) x y;
   y
 
 let logistic x =
-  let y = clone x in
+  let y = copy x in
   _owl_logistic (kind x) (numel y) x y;
   y
 
 let relu x =
-  let y = clone x in
+  let y = copy x in
   _owl_relu (kind x) (numel y) x y;
   y
 
@@ -695,68 +704,74 @@ let leaky_relu ?(alpha=0.2) x =
   y
 
 let softplus x =
-  let y = clone x in
+  let y = copy x in
   _owl_softplus (kind x) (numel y) x y;
   y
 
 let softsign x =
-  let y = clone x in
+  let y = copy x in
   _owl_softsign (kind x) (numel y) x y;
   y
 
 let sigmoid x =
-  let y = clone x in
+  let y = copy x in
   _owl_sigmoid (kind x) (numel y) x y;
   y
 
-let ssqr x a = _owl_ssqr (kind x) (numel x) a x
+let ssqr' x a = _owl_ssqr (kind x) (numel x) a x
 
-let l1norm x = _owl_l1norm (kind x) (numel x) x
+let l1norm' x =
+  let _kind = kind x in
+  _owl_l1norm _kind (numel x) x |> _float_typ_elt _kind
 
-let l2norm_sqr x = _owl_l2norm_sqr (kind x) (numel x) x
+let l2norm_sqr' x =
+  let _kind = kind x in
+  _owl_l2norm_sqr _kind (numel x) x |> _float_typ_elt _kind
 
-let l2norm x = l2norm_sqr x |> Owl_maths.sqrt
+let l2norm' x =
+  let _kind = kind x in
+  _owl_l2norm_sqr _kind (numel x) x |> Owl_maths.sqrt |> _float_typ_elt _kind
 
-let log_sum_exp x = _owl_log_sum_exp (kind x) (numel x) x
+let log_sum_exp' x = _owl_log_sum_exp (kind x) (numel x) x
 
 let scalar_pow a x =
-  let x = clone x in
+  let x = copy x in
   _owl_scalar_pow (kind x) (numel x) x x a;
   x
 
 let pow_scalar x a =
-  let x = clone x in
+  let x = copy x in
   _owl_pow_scalar (kind x) (numel x) x x a;
   x
 
 let scalar_atan2 a x =
-  let x = clone x in
+  let x = copy x in
   _owl_scalar_atan2 (kind x) (numel x) x x a;
   x
 
 let atan2_scalar x a =
-  let x = clone x in
+  let x = copy x in
   _owl_atan2_scalar (kind x) (numel x) x x a;
   x
 
 let scalar_add a x =
-  let x = clone x in
+  let x = copy x in
   _owl_add_scalar (kind x) (numel x) x x a;
   x
 
 let scalar_sub a x =
-  let x = clone x in
+  let x = copy x in
   _owl_scalar_sub (kind x) (numel x) x x a;
   x
 
 let scalar_mul a x =
-  let x = clone x in
+  let x = copy x in
   let x' = flatten x |> array1_of_genarray in
   Owl_cblas.scal (numel x) a x' 1;
   x
 
 let scalar_div a x =
-  let x = clone x in
+  let x = copy x in
   _owl_scalar_div (kind x) (numel x) x x a;
   x
 
@@ -765,7 +780,7 @@ let reci_tol ?tol x =
     | Some t -> t
     | None   -> _float_typ_elt (kind x) (Owl_utils.eps Float32)
   in
-  let y = clone x in
+  let y = copy x in
   _owl_reci_tol (kind x) (numel y) x y tol;
   y
 
@@ -830,15 +845,6 @@ let elt_greater_equal_scalar x a =
   let y = empty (kind x) (shape x) in
   _owl_elt_greater_equal_scalar (kind x) (numel x) x y a;
   y
-
-let sum x = _owl_sum (kind x) (numel x) x
-
-let softmax x =
-  let y = max x |> sub_scalar x |> exp in
-  let a = sum y in
-  div_scalar y a
-
-let cross_entropy x y = (mul x (log y) |> sum) |> _neg_elt (kind x)
 
 let uniform : type a b. ?scale:float -> (a, b) kind -> int array -> (a, b) t =
   fun ?(scale=1.) kind dimension ->
@@ -1014,11 +1020,11 @@ let iter2 f x y =
   done
 
 let mapi ?axis f x =
-  let y = clone x in
+  let y = copy x in
   iteri ?axis (fun i z -> set y i (f i z)) y; y
 
 let _map_all_axis f x =
-  let x = clone x in
+  let x = copy x in
   let y = flatten x |> array1_of_genarray in
   for i = 0 to (numel x) - 1 do
     y.{i} <- f y.{i}
@@ -1041,6 +1047,7 @@ let map2i ?axis f x y =
 
 let map2 ?axis f x y = map2i ?axis (fun _ a b -> f a b) x y
 
+
 let _check_transpose_axis axis d =
   let info = "check_transpose_axis fails" in
   if Array.length axis <> d then
@@ -1052,23 +1059,39 @@ let _check_transpose_axis axis d =
     Hashtbl.add h x 0
   ) axis
 
+
+let matrix_transpose x =
+  let s = shape x in
+  let m, n = s.(0), s.(1) in
+  let y = empty (kind x) [|n;m|] in
+  let x' = Bigarray.array2_of_genarray x in
+  let y' = Bigarray.array2_of_genarray y in
+  Owl_backend_gsl_linalg.transpose_copy (kind x) y' x';
+  y
+
+
+(*TODO: FIXME: optimise*)
 let transpose ?axis x =
   let d = num_dims x in
-  let a = match axis with
-    | Some a -> a
-    | None -> Array.init d (fun i -> d - i - 1)
-  in
-  (* check if axis is a correct permutation *)
-  _check_transpose_axis a d;
-  let s0 = shape x in
-  let s1 = Array.map (fun j -> s0.(j)) a in
-  let i' = Array.make d 0 in
-  let y = empty (kind x) s1 in
-  iteri (fun i z ->
-    Array.iteri (fun k j -> i'.(k) <- i.(j)) a;
-    set y i' z
-  ) x;
-  y
+  if d = 2 then matrix_transpose x
+  else (
+    let a = match axis with
+      | Some a -> a
+      | None -> Array.init d (fun i -> d - i - 1)
+    in
+    (* check if axis is a correct permutation *)
+    _check_transpose_axis a d;
+    let s0 = shape x in
+    let s1 = Array.map (fun j -> s0.(j)) a in
+    let i' = Array.make d 0 in
+    let y = empty (kind x) s1 in
+    iteri (fun i z ->
+      Array.iteri (fun k j -> i'.(k) <- i.(j)) a;
+      set y i' z
+    ) x;
+    y
+  )
+
 
 let swap a0 a1 x =
   let d = num_dims x in
@@ -1141,7 +1164,7 @@ let rotate x degree =
   let _kind = kind x in
 
   if num_dims x < 2 || k = 0 then
-    clone x
+    copy x
   else if k = 1 then (
     let sx = shape x in
     let sy = Array.copy sx in
@@ -1151,16 +1174,16 @@ let rotate x degree =
 
     let m = sx.(0) in
     let n = (numel x) / m in
-    let ofsx = ref 0 in
-    let ofsy = ref 0 in
 
     if m <= n then (
+      let ofsx = ref 0 in
       for i = 1 to m do
         _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:(m - i) ~incy:m x y;
         ofsx := !ofsx + n
       done
     )
     else (
+      let ofsy = ref (m - 1) in
       for i = 0 to n - 1 do
         _owl_copy _kind m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:(-1) x y;
         ofsy := !ofsy + m
@@ -1176,7 +1199,7 @@ let rotate x degree =
 
     if m <= n then (
       let ofsx = ref 0 in
-      let ofsy = ref ((m - 1) * n) in
+      let ofsy = ref (m * n - 1) in
       for i = 0 to m - 1 do
         _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:!ofsy ~incy:(-1) x y;
         ofsx := !ofsx + n;
@@ -1184,8 +1207,9 @@ let rotate x degree =
       done
     )
     else (
+      let ofsy = m * n - 1 in
       for i = 0 to n - 1 do
-        _owl_copy _kind m ~ofsx:i ~incx:n ~ofsy:(n - i - 1) ~incy:(-n) x y
+        _owl_copy _kind m ~ofsx:i ~incx:n ~ofsy:(ofsy - i) ~incy:(-n) x y
       done
     );
     y
@@ -1199,16 +1223,17 @@ let rotate x degree =
 
     let m = sx.(0) in
     let n = (numel x) / m in
-    let ofsx = ref 0 in
-    let ofsy = ref ((n - 1) * m) in
 
     if m <= n then (
+      let ofsx = ref 0 in
+      let ofsy = (n - 1) * m in
       for i = 0 to m - 1 do
-        _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:i ~incy:(-m) x y;
+        _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:(ofsy + i) ~incy:(-m) x y;
         ofsx := !ofsx + n
       done
     )
     else (
+      let ofsy = ref ((n - 1) * m) in
       for i = 0 to n - 1 do
         _owl_copy _kind m ~ofsx:i ~incx:n ~ofsy:!ofsy ~incy:1 x y;
         ofsy := !ofsy - m
@@ -1434,56 +1459,45 @@ let im_z2d x =
   _owl_im_z2d (numel x) x y;
   y
 
-let prod ?axis x =
-  match axis with
-  | Some axis ->
-    let _a1 = _one (kind x) in
-    let _op = _mul_elt (kind x) in
-    fold ~axis (fun a y -> _op a y) _a1 x
-  | None -> _owl_prod (kind x) (numel x) x
-
 
 (* cast functions *)
 
-let cast_s2d x =
-  let y = empty Float64 (shape x) in
-  _owl_cast_s2d (numel x) x y;
-  y
+let cast
+  : type a b c d. (a, b) kind -> (c, d) t -> (a, b) t
+  = fun dst_typ x ->
+  let src_typ = kind x in
+  let y = empty dst_typ (shape x) in
+  match src_typ, dst_typ with
+  | Float32,   Float32   -> copy x
+  | Float64,   Float64   -> copy x
+  | Complex32, Complex32 -> copy x
+  | Complex64, Complex64 -> copy x
+  | Float32,   Float64   -> _owl_cast_s2d (numel x) x y; y
+  | Float64,   Float32   -> _owl_cast_d2s (numel x) x y; y
+  | Float32,   Complex32 -> _owl_cast_s2c (numel x) x y; y
+  | Float64,   Complex64 -> _owl_cast_d2z (numel x) x y; y
+  | Float32,   Complex64 -> _owl_cast_s2z (numel x) x y; y
+  | Float64,   Complex32 -> _owl_cast_d2c (numel x) x y; y
+  | Complex32, Complex64 -> _owl_cast_c2z (numel x) x y; y
+  | Complex64, Complex32 -> _owl_cast_z2c (numel x) x y; y
+  | _                    -> failwith "Owl_dense_ndarray_generic:cast"
 
-let cast_d2s x =
-  let y = empty Float32 (shape x) in
-  _owl_cast_d2s (numel x) x y;
-  y
 
-let cast_c2z x =
-  let y = empty Complex64 (shape x) in
-  _owl_cast_c2z (numel x) x y;
-  y
+let cast_s2d x = cast Float64 x
 
-let cast_z2c x =
-  let y = empty Complex32 (shape x) in
-  _owl_cast_z2c (numel x) x y;
-  y
+let cast_d2s x = cast Float32 x
 
-let cast_s2c x =
-  let y = empty Complex32 (shape x) in
-  _owl_cast_s2c (numel x) x y;
-  y
+let cast_c2z x = cast Complex64 x
 
-let cast_d2z x =
-  let y = empty Complex64 (shape x) in
-  _owl_cast_d2z (numel x) x y;
-  y
+let cast_z2c x = cast Complex32 x
 
-let cast_s2z x =
-  let y = empty Complex64 (shape x) in
-  _owl_cast_s2z (numel x) x y;
-  y
+let cast_s2c x = cast Complex32 x
 
-let cast_d2c x =
-  let y = empty Complex32 (shape x) in
-  _owl_cast_d2c (numel x) x y;
-  y
+let cast_d2z x = cast Complex64 x
+
+let cast_s2z x = cast Complex64 x
+
+let cast_d2c x = cast Complex32 x
 
 
 (* clipping functions *)
@@ -1498,12 +1512,12 @@ let clip_by_value ?amin ?amax x =
     | Some a -> a
     | None   -> _pos_inf k
   in
-  let y = clone x in
+  let y = copy x in
   _owl_clip_by_value k (numel x) amin amax y;
   y
 
 let clip_by_l2norm t x =
-  let a = l2norm x in
+  let a = l2norm' x in
   match a > t with
   | true  -> mul_scalar x (t /. a)
   | false -> x
@@ -2495,7 +2509,6 @@ let draw_along_dim0 x n =
 
 (* TODO: optimise performance, slow along the low dimension *)
 let cumulative_op ?axis _cumop x =
-  let y = clone x in
   let d = num_dims x in
   let a = match axis with
     | Some a -> a
@@ -2514,29 +2527,39 @@ let cumulative_op ?axis _cumop x =
   let ofsx = 0 in
   let ofsy = _stride.(a) in
 
-  _cumop m n y ofsx incx_m incx_n y ofsy incy_m incy_n;
-  y
+  _cumop m n x ofsx incx_m incx_n x ofsy incy_m incy_n
 
 
 let cumsum ?axis x =
+  let x = copy x in
   let _cumop = _owl_cumsum (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x;
+  x
 
 
 let cumprod ?axis x =
+  let x = copy x in
   let _cumop = _owl_cumprod (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x;
+  x
+
 
 let cummin ?axis x =
+  let x = copy x in
   let _cumop = _owl_cummin (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x;
+  x
+
 
 let cummax ?axis x =
+  let x = copy x in
   let _cumop = _owl_cummax (kind x) in
-  cumulative_op ?axis _cumop x
+  cumulative_op ?axis _cumop x;
+  x
+
 
 let modf x =
-  let x = clone x in
+  let x = copy x in
   let y = empty (kind x) (shape x) in
   (* the last parameter zero is just a dummy parameter *)
   _owl_modf (kind x) (numel x) x y (_zero (kind x));
@@ -2562,14 +2585,249 @@ let split ?(axis=0) parts x =
   slices
 
 
-(* TODO: optimise ... I am lazy so I currently use the cumsum operation,
-  but we should generalise reduce_op.
- *)
-let sum_ ?(axis=0) x =
-  let i = Array.make (num_dims x) (R_ [||]) in
-  i.(axis) <- R_ [|-1|];
-  let y = cumsum ~axis x in
-  Owl_slicing.get_slice_array_typ i y
+let sum' x = _owl_sum (kind x) (numel x) x
+
+
+let prod' x = _owl_prod (kind x) (numel x) x
+
+
+(* prepare the parameters for reduce operation, [a] is axis *)
+let reduce_params a x =
+  let d = num_dims x in
+  assert (0 <= a && a < d);
+
+  let _shape = shape x in
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = _slicez.(a) in
+  let o = _stride.(a) in
+  _shape.(a) <- 1;
+  m, n, o, _shape
+
+
+(* TODO: performance can be optimised by removing embedded loops *)
+(* generic fold funtion *)
+let fold__ ?axis f a x =
+  let _kind = kind x in
+  let x' = flatten x |> array1_of_genarray in
+  match axis with
+  | Some axis -> (
+      let m, n, o, s = reduce_params axis x in
+      let start_x = ref 0 in
+      let start_y = ref 0 in
+      let incy = ref 0 in
+
+      let y = create _kind s a in
+      let y' = flatten y |> array1_of_genarray in
+
+      for i = 0 to m - 1 do
+        for j = 0 to n - 1 do
+          y'.{!start_y + !incy} <- f y'.{!start_y + !incy} x'.{!start_x + j};
+          if !incy + 1 = o then incy := 0
+          else incy := !incy + 1;
+        done;
+        start_x := !start_x + n;
+        start_y := !start_y + o;
+      done;
+      y
+    )
+  | None   -> (
+      let b = ref x'.{0} in
+      for i = 1 to (numel x) - 1 do
+        b := f !b x'.{i}
+      done;
+      create _kind [|1|] !b
+    )
+
+
+(* generic cumulate function *)
+let cumulate ?axis f x =
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None   -> d - 1
+  in
+  assert (0 <= a && a < d);
+
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = _slicez.(a) - _stride.(a) in
+  let incx = _slicez.(a) in
+  let incy = _slicez.(a) in
+  let start_x = ref 0 in
+  let start_y = ref _stride.(a) in
+
+  let y = copy x in
+  let y' = flatten y |> array1_of_genarray in
+
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      y'.{!start_y + j} <- f y'.{!start_x + j} y'.{!start_y + j}
+    done;
+    start_x := !start_x + incx;
+    start_y := !start_y + incy;
+  done;
+  y
+
+
+let sum ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = reduce_params a x in
+      let y = zeros _kind s in
+      _owl_sum_along _kind m n o x y;
+      y
+    )
+  | None   -> _owl_sum _kind (numel x) x |> create _kind [|1|]
+
+
+let prod ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = reduce_params a x in
+      let y = ones _kind s in
+      _owl_prod_along _kind m n o x y;
+      y
+    )
+  | None   -> _owl_prod _kind (numel x) x |> create _kind [|1|]
+
+
+let min ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = reduce_params a x in
+      let y = create _kind s (_pos_inf _kind) in
+      _owl_min_along _kind m n o x y;
+      y
+    )
+  | None   -> min' x |> create _kind [|1|]
+
+
+let max ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = reduce_params a x in
+      let y = create _kind s (_neg_inf _kind) in
+      _owl_max_along _kind m n o x y;
+      y
+    )
+  | None   -> max' x |> create _kind [|1|]
+
+
+let minmax ?axis x = min ?axis x, max ?axis x
+
+
+let mean' x =
+  let _kind = kind x in
+  let _numel = numel x in
+  let y = _owl_sum _kind _numel x in
+  _mean_elt _kind y _numel
+
+
+let mean ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let y = sum ~axis:a x in
+      let n = (shape x).(a) |> float_of_int |> _float_typ_elt _kind in
+      _owl_div_scalar _kind (numel y) y y n;
+      y
+    )
+  | None   -> mean' x |> create _kind [|1|]
+
+
+let var' x =
+  let _kind = kind x in
+  let mu = mean' x in
+  let y = sub_scalar x mu in
+  _owl_sqr _kind (numel y) y y;
+  let y = sum' y in
+  let n = (numel x) - 1 |> Pervasives.max 1 |> float_of_int |> _float_typ_elt _kind in
+  _div_elt _kind y n
+
+
+let var ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let mu = mean ~axis:a x in
+      let y = sub x mu in
+      _owl_sqr _kind (numel y) y y;
+      let y = sum ~axis:a y in
+      let n = (shape x).(a) - 1 |> Pervasives.max 1 |> float_of_int |> _float_typ_elt _kind in
+      _owl_div_scalar _kind (numel y) y y n;
+      y
+    )
+  | None   -> var' x |> create _kind [|1|]
+
+
+let std' x =
+  let _kind = kind x in
+  let mu = mean' x in
+  let y = sub_scalar x mu in
+  _owl_sqr _kind (numel y) y y;
+  let y = sum' y in
+  let n = (numel x) - 1 |> Pervasives.max 1 |> float_of_int |> _float_typ_elt _kind in
+  _div_elt _kind y n |> _sqrt_elt _kind
+
+
+let std ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let mu = mean ~axis:a x in
+      let y = sub x mu in
+      _owl_sqr _kind (numel y) y y;
+      let y = sum ~axis:a y in
+      let n = (shape x).(a) - 1 |> Pervasives.max 1 |> float_of_int |> _float_typ_elt _kind in
+      _owl_div_scalar _kind (numel y) y y n;
+      _owl_sqrt _kind (numel y) y y;
+      y
+    )
+  | None   -> std' x |> create _kind [|1|]
+
+
+let l1norm ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = reduce_params a x in
+      let y = zeros _kind s in
+      _owl_l1norm_along _kind m n o x y;
+      y
+    )
+  | None   -> l1norm' x |> create _kind [|1|]
+
+
+let l2norm_sqr ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = reduce_params a x in
+      let y = zeros _kind s in
+      _owl_l2norm_sqr_along _kind m n o x y;
+      y
+    )
+  | None   -> l2norm_sqr' x |> create _kind [|1|]
+
+
+let l2norm ?axis x =
+  let _kind = kind x in
+  match axis with
+  | Some a -> (
+      let m, n, o, s = reduce_params a x in
+      let y = zeros _kind s in
+      _owl_l2norm_sqr_along _kind m n o x y;
+      _owl_sqrt _kind (numel y) y y;
+      y
+    )
+  | None   -> l2norm' x |> create _kind [|1|]
 
 
 (* this function is used for searching top/bottom values in [x] *)
@@ -2615,6 +2873,460 @@ let top x n = _search_close_to_extreme x n (_neg_inf (kind x)) ( > )
 
 let bottom x n = _search_close_to_extreme x n (_pos_inf (kind x)) ( < )
 
+
+
+(* fucntions which modify the data in-place, not so pure *)
+
+let add_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_add (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_add (kind x)) x y ~out:x |> ignore
+  )
+
+let sub_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_sub (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_sub (kind x)) x y ~out:x |> ignore
+  )
+
+let mul_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_mul (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_mul (kind x)) x y ~out:x |> ignore
+  )
+
+let div_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_div (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_div (kind x)) x y ~out:x |> ignore
+  )
+
+let pow_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_pow (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_pow (kind x)) x y ~out:x |> ignore
+  )
+
+let atan2_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_atan2 (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_atan2 (kind x)) x y ~out:x |> ignore
+  )
+
+let hypot_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_hypot (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_hypot (kind x)) x y ~out:x |> ignore
+  )
+
+let fmod_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_fmod (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_fmod (kind x)) x y ~out:x |> ignore
+  )
+
+let min2_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_min2 (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_min2 (kind x)) x y ~out:x |> ignore
+  )
+
+let max2_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_max2 (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_max2 (kind x)) x y ~out:x |> ignore
+  )
+
+let add_scalar_ x a = _owl_add_scalar (kind x) (numel x) x x a
+
+let sub_scalar_ x a = add_scalar_ x (_neg_elt (kind x) a)
+
+let mul_scalar_ x a = _owl_mul_scalar (kind x) (numel x) x x a
+
+let div_scalar_ x a = _owl_div_scalar (kind x) (numel x) x x a
+
+let pow_scalar_ x a = _owl_pow_scalar (kind x) (numel x) x x a
+
+let atan2_scalar_ x a = _owl_atan2_scalar (kind x) (numel x) x x a
+
+let fmod_scalar_ x a = _owl_fmod_scalar (kind x) (numel x) x x a
+
+let scalar_add_ a x = _owl_add_scalar (kind x) (numel x) x x a
+
+let scalar_sub_ a x = _owl_scalar_sub (kind x) (numel x) x x a
+
+let scalar_mul_ a x = _owl_mul_scalar (kind x) (numel x) x x a
+
+let scalar_div_ a x = _owl_scalar_div (kind x) (numel x) x x a
+
+let scalar_pow_ a x = _owl_scalar_pow (kind x) (numel x) x x a
+
+let scalar_atan2_ a x = _owl_scalar_atan2 (kind x) (numel x) x x a
+
+let scalar_fmod_ a x = _owl_scalar_fmod (kind x) (numel x) x x a
+
+let conj_ x = _owl_conj (kind x) (numel x) x x
+
+let abs_ x = _owl_abs (kind x) (numel x) x x
+
+let neg_ x = _owl_neg (kind x) (numel x) x x
+
+let reci_ x = _owl_reci (kind x) (numel x) x x
+
+let signum_ x = _owl_signum (kind x) (numel x) x x
+
+let sqr_ x = _owl_sqr (kind x) (numel x) x x
+
+let sqrt_ x = _owl_sqrt (kind x) (numel x) x x
+
+let cbrt_ x = _owl_cbrt (kind x) (numel x) x x
+
+let exp_ x = _owl_exp (kind x) (numel x) x x
+
+let exp2_ x = _owl_exp2 (kind x) (numel x) x x
+
+let exp10_ x = _owl_exp10 (kind x) (numel x) x x
+
+let expm1_ x = _owl_expm1 (kind x) (numel x) x x
+
+let log_ x = _owl_log (kind x) (numel x) x x
+
+let log2_ x = _owl_log2 (kind x) (numel x) x x
+
+let log10_ x = _owl_log10 (kind x) (numel x) x x
+
+let log1p_ x = _owl_log1p (kind x) (numel x) x x
+
+let sin_ x = _owl_sin (kind x) (numel x) x x
+
+let cos_ x = _owl_cos (kind x) (numel x) x x
+
+let tan_ x = _owl_tan (kind x) (numel x) x x
+
+let asin_ x = _owl_asin (kind x) (numel x) x x
+
+let acos_ x = _owl_acos (kind x) (numel x) x x
+
+let atan_ x = _owl_atan (kind x) (numel x) x x
+
+let sinh_ x = _owl_sinh (kind x) (numel x) x x
+
+let cosh_ x = _owl_cosh (kind x) (numel x) x x
+
+let tanh_ x = _owl_tanh (kind x) (numel x) x x
+
+let asinh_ x = _owl_asinh (kind x) (numel x) x x
+
+let acosh_ x = _owl_acosh (kind x) (numel x) x x
+
+let atanh_ x = _owl_atanh (kind x) (numel x) x x
+
+let floor_ x = _owl_floor (kind x) (numel x) x x
+
+let ceil_ x = _owl_ceil (kind x) (numel x) x x
+
+let round_ x = _owl_round (kind x) (numel x) x x
+
+let trunc_ x = _owl_trunc (kind x) (numel x) x x
+
+let fix_ x = _owl_fix (kind x) (numel x) x x
+
+let erf_ x = _owl_erf (kind x) (numel x) x x
+
+let erfc_ x = _owl_erfc (kind x) (numel x) x x
+
+let relu_ x = _owl_relu (kind x) (numel x) x x
+
+let softplus_ x = _owl_softplus (kind x) (numel x) x x
+
+let softsign_ x = _owl_softsign (kind x) (numel x) x x
+
+let sigmoid_ x = _owl_sigmoid (kind x) (numel x) x x
+
+let softmax x =
+  let x = copy x in
+  sub_scalar_ x (max' x);
+  exp_ x;
+  let a = sum' x in
+  div_scalar_ x a;
+  x
+
+let softmax_ x =
+  sub_scalar_ x (max' x);
+  exp_ x;
+  let a = sum' x in
+  div_scalar_ x a
+
+let cumsum_ ?axis x =
+  let _cumop = _owl_cumsum (kind x) in
+  cumulative_op ?axis _cumop x
+
+let cumprod_ ?axis x =
+  let _cumop = _owl_cumprod (kind x) in
+  cumulative_op ?axis _cumop x
+
+let cummin_ ?axis x =
+  let _cumop = _owl_cummin (kind x) in
+  cumulative_op ?axis _cumop x
+
+let cummax_ ?axis x =
+  let _cumop = _owl_cummax (kind x) in
+  cumulative_op ?axis _cumop x
+
+let cross_entropy' x y =
+  let y = copy y in
+  log_ y;
+  mul_ y x;
+  _neg_elt (kind y) (sum' y)
+
+
+
+(** Matrix functions *)
+
+type area = { a : int; b : int; c : int; d : int }
+
+
+let area a b c d = { a = a; b = b; c = c; d = d }
+
+
+let area_of x =
+  let s = shape x in
+  let m, n = s.(0), s.(1) in
+  { a = 0; b = 0; c = m - 1; d = n - 1 }
+
+
+let area_of_row x i =
+  let n = (shape x).(1) in
+  area i 0 i (n - 1)
+
+
+let area_of_col x i =
+  let m = (shape x).(0) in
+  area 0 i (m - 1) i
+
+
+let equal_area r1 r2 =
+  ((r1.c-r1.a = r2.c-r2.a) && (r1.d-r1.b = r2.d-r2.b))
+
+
+let same_area r1 r2 = r1 = r2
+
+
+let copy_area_to x1 r1 x2 r2 =
+  assert (equal_area r1 r2);
+  for i = 0 to r1.c - r1.a do
+    for j = 0 to r1.d - r1.b do
+      set x2 [|r2.a + i; r2.b + j|]
+      (get x1 [|r1.a + i; r1.b + j|])
+    done
+  done
+
+
+let copy_area x r =
+  let y = empty (kind x) [|r.c - r.a + 1; r.d - r.b + 1|] in
+  copy_area_to x r y (area_of y)
+
+
+let _matrix_shape x =
+  let s = shape x in
+  assert (Array.length s = 2);
+  s.(0), s.(1)
+
+
+let row_num x =
+  assert (num_dims x = 2);
+  (shape x).(0)
+
+
+let col_num x =
+  assert (num_dims x = 2);
+  (shape x).(1)
+
+
+let row x i =
+  let m, n = _matrix_shape x in
+  assert (i < m);
+  let y = Bigarray.Genarray.slice_left x [|i|] in
+  reshape y [|1;n|]
+
+
+let col x j =
+  let m, n = _matrix_shape x in
+  assert (j < n);
+  let _kind = kind x in
+  let y = empty _kind [|m;1|] in
+  _owl_copy _kind m ~ofsx:j ~incx:n ~ofsy:0 ~incy:1 x y;
+  y
+
+
+let copy_row_to v x i =
+  let u = row x i in
+  copy_to v u
+
+
+let copy_col_to v x i =
+  let r1 = area_of v in
+  let r2 = area_of_col x i in
+  copy_area_to v r1 x r2
+
+
+let dot x1 x2 =
+  let m, k = _matrix_shape x1 in
+  let l, n = _matrix_shape x2 in
+  assert (k = l);
+
+  let _kind = kind x1 in
+  let alpha = _one _kind in
+  let beta = _zero _kind in
+  let x3 = empty _kind [|m; n|] in
+  let a = flatten x1 |> Bigarray.array1_of_genarray in
+  let b = flatten x2 |> Bigarray.array1_of_genarray in
+  let c = flatten x3 |> Bigarray.array1_of_genarray in
+
+  let layout = Owl_cblas.CblasRowMajor in
+  let transa = Owl_cblas.CblasNoTrans in
+  let transb = Owl_cblas.CblasNoTrans in
+  Owl_cblas.gemm layout transa transb m n k alpha a k b n beta c n;
+  x3
+
+
+let inv x =
+  let m, n = _matrix_shape x in
+  assert (m = n && num_dims x = 2);
+  let x' = Bigarray.array2_of_genarray x in
+  Owl_dense_common._eigen_inv (kind x) x'
+  |> Bigarray.genarray_of_array2
+
+
+let diag ?(k=0) x =
+  let m, n = _matrix_shape x in
+  let l = match k >= 0 with
+    | true  -> Pervasives.(max 0 (min m (n - k)))
+    | false -> Pervasives.(max 0 (min n (m + k)))
+  in
+  let i, j = match k >= 0 with
+    | true  -> 0, k
+    | false -> Pervasives.abs k, 0
+  in
+  let y = empty (kind x) [|1;l|] in
+  for k = 0 to l - 1 do
+    set y [|0; k|] (get x [|i + k; j + k|])
+  done;
+  y
+
+
+let trace x = sum' (diag x)
+
+
+let to_rows x = Array.init (row_num x) (fun i -> row x i)
+
+
+let to_cols x = Array.init (col_num x) (fun i -> col x i)
+
+
+let of_rows l =
+  let x = empty (kind l.(0)) [|(Array.length l); (col_num l.(0))|] in
+  Array.iteri (fun i v -> copy_row_to v x i) l;
+  x
+
+
+let of_cols l =
+  let x = empty (kind l.(0)) [|(row_num l.(0)); (Array.length l)|] in
+  Array.iteri (fun i v -> copy_col_to v x i) l;
+  x
+
+
+let of_arrays k x = Owl_backend_gsl_linalg.of_arrays k x |> Bigarray.genarray_of_array2
+
+
+let to_arrays x = Owl_backend_gsl_linalg.to_arrays (kind x) (Bigarray.array2_of_genarray x)
+
+
+let rows x l =
+  let m, n = Array.length (l), col_num x in
+  let y = empty (kind x) [|m;n|] in
+  Array.iteri (fun i j ->
+    copy_row_to (row x j) y i
+  ) l;
+  y
+
+
+let cols x l =
+  let m, n = _matrix_shape x in
+  let nl = Array.length (l) in
+  let _kind = kind x in
+  let y = empty _kind [|m;nl|] in
+  Array.iteri (fun i j ->
+    assert (i < nl && j < n);
+    _owl_copy _kind m ~ofsx:j ~incx:n ~ofsy:i ~incy:nl x y;
+  ) l;
+  y
+
+
+let draw_rows ?(replacement=true) x c =
+  let a = Array.init (row_num x) (fun i -> i) in
+  let l = match replacement with
+    | true  -> Owl_stats.sample a c
+    | false -> Owl_stats.choose a c
+  in rows x l, l
+
+
+let draw_cols ?(replacement=true) x c =
+  let a = Array.init (col_num x) (fun i -> i) in
+  let l = match replacement with
+    | true  -> Owl_stats.sample a c
+    | false -> Owl_stats.choose a c
+  in cols x l, l
+
+
+let draw_rows2 ?(replacement=true) x y c =
+  let x_rows, l = draw_rows ~replacement x c in
+  x_rows, rows y l, l
+
+
+let draw_cols2 ?(replacement=true) x y c =
+  let x_cols, l = draw_rows ~replacement x c in
+  x_cols, cols y l, l
 
 
 (* ends here *)

@@ -15,11 +15,10 @@ open Owl_types
 (* Make functor starts *)
 
 module Make
-  (M : MatrixSig)
-  (A : NdarraySig with type elt = M.elt and type arr = M.mat)
+  (A : NdarraySig)
   = struct
 
-  include Owl_algodiff_generic.Make (M) (A)
+  include Owl_algodiff_generic.Make (A)
 
 
 
@@ -36,7 +35,7 @@ module Make
       match x, y with
       | Arr x, Arr y -> (
           let x, i = A.draw_along_dim0 x n in
-          let y = M.rows y i in
+          let y = A.rows y i in
           Arr x, Arr y
         )
       | x, y         -> failwith ("Owl_neural_optimise.Utils.draw_samples:" ^ (type_info x))
@@ -44,11 +43,11 @@ module Make
     let get_chunk x y i c =
       match x, y with
       | Arr x, Arr y -> (
-          let n = M.row_num y in
+          let n = A.row_num y in
           let a = (i * c) mod n in
           let b = Pervasives.min (a + c - 1) (n - 1) in
           let x = A.get_slice [R [a;b]] x in
-          let y = M.get_slice [R [a;b]] y in
+          let y = A.get_slice [R [a;b]] y in
           Arr x, Arr y
         )
       | x, y         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))
@@ -138,10 +137,10 @@ module Make
       | Custom of (t -> t -> t)
 
     let run typ y y' = match typ with
-      | Hinge         -> Maths.(sum (max2 (F 0.) (F 1. - y * y')))
-      | L1norm        -> Maths.(l1norm (y - y'))
-      | L2norm        -> Maths.(l2norm (y - y'))
-      | Quadratic     -> Maths.(l2norm_sqr (y - y'))
+      | Hinge         -> Maths.(sum' (max2 (F 0.) (F 1. - y * y')))
+      | L1norm        -> Maths.(l1norm' (y - y'))
+      | L2norm        -> Maths.(l2norm' (y - y'))
+      | Quadratic     -> Maths.(l2norm_sqr' (y - y'))
       | Cross_entropy -> Maths.(cross_entropy y y')
       | Custom f      -> f y y' (* y': prediction *)
 
@@ -171,20 +170,20 @@ module Make
       | GD          -> fun _ _ _ _ g' -> Maths.neg g'
       | CG          -> fun _ _ g p g' -> (
           let y = Maths.(g' - g) in
-          let b = Maths.((sum (g' * y)) / ((sum (p * y)) + F 1e-32)) in
+          let b = Maths.((sum' (g' * y)) / ((sum' (p * y)) + F 1e-32)) in
           Maths.((neg g') + (b * p))
         )
       | CD          -> fun _ _ g p g' -> (
-          let b = Maths.((l2norm_sqr g') / (sum (neg p * g))) in
+          let b = Maths.((l2norm_sqr' g') / (sum' (neg p * g))) in
           Maths.((neg g') + (b * p))
         )
       | NonlinearCG -> fun _ _ g p g' -> (
-          let b = Maths.((l2norm_sqr g') / (l2norm_sqr g)) in
+          let b = Maths.((l2norm_sqr' g') / (l2norm_sqr' g)) in
           Maths.((neg g') + (b * p))
         )
       | DaiYuanCG   -> fun _ w g p g' -> (
           let y = Maths.(g' - g) in
-          let b = Maths.((l2norm_sqr g') / (sum (p * y))) in
+          let b = Maths.((l2norm_sqr' g') / (sum' (p * y))) in
           Maths.((neg g') + (b * p))
         )
       | NewtonCG    -> fun f w g p g' -> (
@@ -244,9 +243,9 @@ module Make
       | None
 
     let run typ x = match typ with
-      | L1norm a           -> Maths.(F a * l1norm x)
-      | L2norm a           -> Maths.(F a * l2norm x)
-      | Elastic_net (a, b) -> Maths.(F a * l1norm x + F b * l2norm x)
+      | L1norm a           -> Maths.(F a * l1norm' x)
+      | L2norm a           -> Maths.(F a * l2norm' x)
+      | Elastic_net (a, b) -> Maths.(F a * l1norm' x + F b * l2norm' x)
       | None               -> F 0.
 
     let to_string = function
@@ -504,7 +503,7 @@ module Make
           (* first iteration to bootstrap the optimisation *)
           let _loss, _g0, _ = iterate 0 w in
           (* variables used for specific gradient method *)
-          Checkpoint.(state.gs <- [| [|_g0 |] |]);
+          Checkpoint.(state.gs <- [| [|_g0|] |]);
           Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
           Checkpoint.(state.us <- [| [|F 0.|] |]);
           Checkpoint.(state.ch <- [| [|F 0.|] |]);
@@ -575,7 +574,7 @@ module Make
       let xt, yt = bach_fun x y i in
       let yt', ws = forward xt in
       let loss = loss_fun yt yt' in
-      (* take the average of the loss *)
+      (* take the mean of the loss *)
       let loss = Maths.(loss / (F (Mat.row_num yt |> float_of_int))) in
       (* add regularisation term if necessary *)
       let reg = match params.regularisation <> Regularisation.None with
@@ -647,7 +646,84 @@ module Make
     state
 
 
-  (* let minimise_fun f = *)
+  (* This function minimises [f : x -> y] wrt [x].
+    [x] is an ndarray; and [y] is an scalar value.
+   *)
+  let minimise_fun ?state params f x =
+  let open Params in
+  if params.verbosity = true && state = None then
+    print_endline (Params.to_string params);
+
+  (* make alias functions *)
+  let grad_fun = Gradient.run params.gradient in
+  let rate_fun = Learning_Rate.run params.learning_rate in
+  let regl_fun = Regularisation.run params.regularisation in
+  let momt_fun = Momentum.run params.momentum in
+  let upch_fun = Learning_Rate.update_ch params.learning_rate in
+  let clip_fun = Clipping.run params.clipping in
+  let stop_fun = Stopping.run params.stopping in
+  let chkp_fun = Checkpoint.run params.checkpoint in
+
+  (* make the function to minimise *)
+  let optz_fun xi = Maths.((f xi) + (regl_fun xi)) in
+
+  (* operations in the ith iteration *)
+  let iterate i xi =
+    let loss, g = grad' optz_fun xi in
+    loss |> primal', g, optz_fun
+  in
+
+  (* init new or continue previous state of optimisation process *)
+  let state = match state with
+    | Some state -> state
+    | None       -> (
+        let state = Checkpoint.init_state 1 params.epochs in
+        (* first iteration to bootstrap the optimisation *)
+        let _loss, _g0, _ = iterate 0 x in
+        (* variables used for specific gradient method *)
+        Checkpoint.(state.gs <- [| [|_g0|] |]);
+        Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
+        Checkpoint.(state.us <- [| [|F 0.|] |]);
+        Checkpoint.(state.ch <- [| [|F 0.|] |]);
+        Checkpoint.(state.loss.(0) <- _loss);
+        state
+      )
+  in
+
+  (* try to iterate all batches *)
+  let x = ref x in
+    while Checkpoint.(state.stop = false) do
+      let loss', g', optz' = iterate Checkpoint.(state.current_batch) !x in
+      (* check if the stopping criterion is met *)
+      Checkpoint.(state.stop <- stop_fun (unpack_flt loss'));
+      (* checkpoint of the optimisation if necessary *)
+      chkp_fun (fun _ -> ()) Checkpoint.(state.current_batch) loss' state;
+      (* print out the current state of optimisation *)
+      if params.verbosity = true then Checkpoint.print_state_info state;
+      (* clip the gradient if necessary *)
+      let g' = clip_fun g' in
+      (* calculate gradient descent *)
+      let p' = Checkpoint.(grad_fun optz' !x state.gs.(0).(0) state.ps.(0).(0) g') in
+      (* update gcache if necessary *)
+      Checkpoint.(state.ch.(0).(0) <- upch_fun g' state.ch.(0).(0));
+      (* adjust direction based on learning_rate *)
+      let u' = Checkpoint.(Maths.(p' * rate_fun state.current_batch g' state.ch.(0).(0))) in
+      (* adjust direction based on momentum *)
+      let u' = momt_fun Checkpoint.(state.us.(0).(0)) u' in
+      (* update the weight *)
+      x := Maths.(!x + u') |> primal';
+      (* save historical data *)
+      if params.momentum <> Momentum.None then Checkpoint.(state.us.(0).(0) <- u');
+      Checkpoint.(state.gs.(0).(0) <- g');
+      Checkpoint.(state.ps.(0).(0) <- p');
+      Checkpoint.(state.current_batch <- state.current_batch + 1);
+    done;
+
+    (* print optimisation summary *)
+    if params.verbosity = true && Checkpoint.(state.current_batch >= state.batches) then
+      Checkpoint.print_summary state;
+    (* return both loss history and weight *)
+    state, !x
 
 
 end

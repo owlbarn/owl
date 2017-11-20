@@ -20,7 +20,7 @@ let _ =
   test_op "uniform       " c (fun () -> M.uniform m n);
   test_op "nnz_rows      " c (fun () -> M.nnz_rows z);
   test_op "row_num_nz    " c (fun () -> M.row_num_nz z);
-  test_op "clone         " c (fun () -> M.clone z);
+  test_op "copy         " c (fun () -> M.copy z);
   test_op "col           " c (fun () -> M.col x (n-1));
   test_op "row           " c (fun () -> M.row x (m-1));
   test_op "cols          " c (fun () -> M.cols x [|1;2|]);
@@ -50,9 +50,9 @@ let _ =
   (* test_op "abs           " c (fun () -> M.abs x); *)
   test_op "neg           " c (fun () -> M.neg x);
   test_op "sum           " c (fun () -> M.sum x);
-  test_op "average       " c (fun () -> M.average x);
+  test_op "mean       " c (fun () -> M.mean x);
   test_op "sum_rows      " c (fun () -> M.sum_rows x);
-  test_op "average_rows  " c (fun () -> M.average_rows x);
+  test_op "mean_rows  " c (fun () -> M.mean_rows x);
   (* test_op "minmax        " c (fun () -> M.minmax x); *)
   test_op "is_zero       " c (fun () -> M.is_zero x);
   test_op "is_negative   " c (fun () -> M.is_negative x);

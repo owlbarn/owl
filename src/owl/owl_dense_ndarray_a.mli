@@ -68,9 +68,9 @@ val set_slice_simple : int list list -> 'a arr -> 'a arr -> unit
 
 val fill : 'a arr -> 'a -> unit
 
-val copy : 'a arr -> 'a arr -> unit
+val copy_to : 'a arr -> 'a arr -> unit
 
-val clone : 'a arr -> 'a arr
+val copy : 'a arr -> 'a arr
 
 val reshape : 'a arr -> int array -> 'a arr
 

@@ -65,7 +65,7 @@ let _eigen_reset : type a b . (a, b) eigen_mat -> unit =
   | SPMAT_C x -> Eigen.Sparse.C.reset x
   | SPMAT_Z x -> Eigen.Sparse.Z.reset x
 
-let _eigen_clone : type a b . (a, b) eigen_mat -> (a, b) eigen_mat =
+let _eigen_copy : type a b . (a, b) eigen_mat -> (a, b) eigen_mat =
   fun x -> match x with
   | SPMAT_S x -> SPMAT_S (Eigen.Sparse.S.clone x)
   | SPMAT_D x -> SPMAT_D (Eigen.Sparse.D.clone x)

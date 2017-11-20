@@ -6,6 +6,7 @@
     owl
     alcotest
   ))
+  (flags (:standard -safe-string))
 ))
 
 (alias (

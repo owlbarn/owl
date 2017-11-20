@@ -47,7 +47,7 @@ val set : vec -> int -> elt -> unit
 
 val get : vec -> int -> elt
 
-val clone : vec -> vec
+val copy : vec -> vec
 
 val transpose : vec -> vec
 
@@ -93,17 +93,17 @@ val div_scalar : vec -> elt -> vec
 
 (** {6 Uniary mathematical operations } *)
 
-val sum : vec -> elt
+val sum' : vec -> elt
 
 val neg : vec -> vec
 
 val reci : vec -> vec
 
-val l1norm : vec -> float
+val l1norm' : vec -> elt
 
-val l2norm : vec -> float
+val l2norm' : vec -> elt
 
-val l2norm_sqr : vec -> float
+val l2norm_sqr' : vec -> elt
 
 
 (* ends here *)

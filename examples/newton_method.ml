@@ -13,6 +13,6 @@ let rec newton ?(eta=F 0.01) ?(eps=1e-6) f x =
 
 let _ =
   (* [f] must be [f : vector -> scalar]. *)
-  let f x = Maths.(cos x |> sum) in
+  let f x = Maths.(cos x |> sum') in
   let y = newton f (Mat.uniform 1 2) in
   Mat.print y

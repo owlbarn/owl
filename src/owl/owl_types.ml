@@ -103,7 +103,7 @@ module type NdarraySig = sig
 
   val set_slice : index list -> arr -> arr -> unit
 
-  val clone : arr -> arr
+  val copy : arr -> arr
 
   val reset : arr -> unit
 
@@ -169,23 +169,27 @@ module type NdarraySig = sig
 
   val atanh : arr -> arr
 
-  val sum : arr -> elt
-
-  val sum_ : ?axis:int -> arr -> arr
+  val sum : ?axis:int -> arr -> arr
 
   val sum_slices : ?axis:int -> arr -> arr
 
   val signum : arr -> arr
 
-  val l1norm : arr -> elt
-
-  val l2norm : arr -> elt
-
-  val l2norm_sqr : arr -> elt
-
   val sigmoid : arr -> arr
 
   val relu : arr -> arr
+
+  val min' : arr -> elt
+
+  val max' : arr -> elt
+
+  val sum' : arr -> elt
+
+  val l1norm' : arr -> elt
+
+  val l2norm' : arr -> elt
+
+  val l2norm_sqr' : arr -> elt
 
   val clip_by_l2norm : elt -> arr -> arr
 
@@ -227,7 +231,7 @@ module type NdarraySig = sig
 
   val elt_greater_equal_scalar : arr -> elt -> arr
 
-  (** {6 Neural network related functions} *)
+  (* Neural network related functions *)
 
   val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
 
@@ -267,205 +271,218 @@ module type NdarraySig = sig
 
   val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
+  (* matrix functions *)
+
+  val row_num : arr -> int
+
+  val col_num : arr -> int
+
+  val row : arr -> int -> arr
+
+  val rows : arr -> int array -> arr
+
+  val copy_row_to : arr -> arr -> int -> unit
+
+  val copy_col_to : arr -> arr -> int -> unit
+
+  val dot : arr -> arr -> arr
+
+  val inv : arr -> arr
+
+  val trace : arr -> elt
+
+  val transpose : ?axis:int array -> arr -> arr
+
+  val to_rows : arr -> arr array
+
+  val of_rows : arr array -> arr
+
+  val of_arrays : elt array array -> arr
+
+  val draw_rows : ?replacement:bool -> arr -> int -> arr * int array
+
+  val draw_rows2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
+
 end
 
 
-(* Module Signature Matirx *)
+module type InpureSig = sig
 
-module type MatrixSig = sig
+  include NdarraySig
 
-  type mat
-  type elt = float
+  val hypot : arr -> arr -> arr
 
-  (* creation and operation functions *)
+  val fmod : arr -> arr -> arr
 
-  val create : int -> int -> elt -> mat
+  val min2 : arr -> arr -> arr
 
-  val empty : int -> int -> mat
+  val max2 : arr -> arr -> arr
 
-  val zeros : int -> int -> mat
+  val add_ : arr -> arr -> unit
 
-  val ones : int -> int -> mat
+  val sub_ : arr -> arr -> unit
 
-  val uniform : ?scale:elt -> int -> int -> mat
+  val mul_ : arr -> arr -> unit
 
-  val gaussian : ?sigma:elt -> int -> int -> mat
+  val div_ : arr -> arr -> unit
 
-  val bernoulli : ?p:float -> ?seed:int -> int -> int -> mat
+  val pow_ : arr -> arr -> unit
 
-  val shape : mat -> int * int
+  val atan2_ : arr -> arr -> unit
 
-  val row_num : mat -> int
+  val hypot_ : arr -> arr -> unit
 
-  val col_num : mat -> int
+  val fmod_ : arr -> arr -> unit
 
-  val numel : mat -> int
+  val min2_ : arr -> arr -> unit
 
-  val get : mat -> int -> int -> elt
+  val max2_ : arr -> arr -> unit
 
-  val set : mat -> int -> int -> elt -> unit
+  val add_scalar_ : arr -> elt -> unit
 
-  val get_slice : index list -> mat -> mat
+  val sub_scalar_ : arr -> elt -> unit
 
-  val set_slice : index list -> mat -> mat -> unit
+  val mul_scalar_ : arr -> elt -> unit
 
-  val row : mat -> int -> mat
+  val div_scalar_ : arr -> elt -> unit
 
-  val rows : mat -> int array -> mat
+  val pow_scalar_ : arr -> elt -> unit
 
-  val clone : mat -> mat
+  val atan2_scalar_ : arr -> elt -> unit
 
-  val reset : mat -> unit
+  val fmod_scalar_ : arr -> elt -> unit
 
-  val reshape : mat -> int array -> mat
+  val scalar_add_ : elt -> arr -> unit
 
-  val tile : mat -> int array -> mat
+  val scalar_sub_ : elt -> arr -> unit
 
-  val repeat : ?axis:int -> mat -> int -> mat
+  val scalar_mul_ : elt -> arr -> unit
 
-  val concatenate : ?axis:int -> mat array -> mat
+  val scalar_div_ : elt -> arr -> unit
 
-  val split : ?axis:int -> int array -> mat -> mat array
+  val scalar_pow_ : elt -> arr -> unit
 
-  val copy_row_to : mat -> mat -> int -> unit
+  val scalar_atan2_ : elt -> arr -> unit
 
-  val copy_col_to : mat -> mat -> int -> unit
+  val scalar_fmod_ : elt -> arr -> unit
 
-  val iteri : (int -> int -> elt -> unit) -> mat -> unit
+  val abs_ : arr -> unit
+  
+  val neg_ : arr -> unit
 
-  val mapi : (int -> int -> elt -> elt) -> mat -> mat
+  val conj_ : arr -> unit
 
-  val iteri_rows : (int -> mat -> unit) -> mat -> unit
+  val reci_ : arr -> unit
 
-  val iter2_rows : (mat -> mat -> unit) -> mat -> mat -> unit
+  val signum_ : arr -> unit
 
-  val draw_rows : ?replacement:bool -> mat -> int -> mat * int array
+  val sqr_ : arr -> unit
 
-  val draw_rows2 : ?replacement:bool -> mat -> mat -> int -> mat * mat * int array
+  val sqrt_ : arr -> unit
 
-  val of_arrays : elt array array -> mat
+  val cbrt_ : arr -> unit
 
-  val of_rows: mat array -> mat
+  val exp_ : arr -> unit
 
-  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> mat -> unit
+  val exp2_ : arr -> unit
 
-  (* mathematical functions *)
+  val exp10_ : arr -> unit
 
-  val max : mat -> elt
+  val expm1_ : arr -> unit
 
-  val abs : mat -> mat
+  val log_ : arr -> unit
 
-  val neg : mat -> mat
+  val log2_ : arr -> unit
 
-  val floor : mat -> mat
+  val log10_ : arr -> unit
 
-  val ceil : mat -> mat
+  val log1p_ : arr -> unit
 
-  val round : mat -> mat
+  val sin_ : arr -> unit
 
-  val sqr : mat -> mat
+  val cos_ : arr -> unit
 
-  val sqrt : mat -> mat
+  val tan_ : arr -> unit
 
-  val log : mat -> mat
+  val asin_ : arr -> unit
 
-  val log2 : mat -> mat
+  val acos_ : arr -> unit
 
-  val log10 : mat -> mat
+  val atan_ : arr -> unit
 
-  val exp : mat -> mat
+  val sinh_ : arr -> unit
 
-  val sin : mat -> mat
+  val cosh_ : arr -> unit
 
-  val cos : mat -> mat
+  val tanh_ : arr -> unit
 
-  val tan : mat -> mat
+  val asinh_ : arr -> unit
 
-  val sinh : mat -> mat
+  val acosh_ : arr -> unit
 
-  val cosh : mat -> mat
+  val atanh_ : arr -> unit
 
-  val tanh : mat -> mat
+  val floor_ : arr -> unit
 
-  val asin : mat -> mat
+  val ceil_ : arr -> unit
 
-  val acos : mat -> mat
+  val round_ : arr -> unit
 
-  val atan : mat -> mat
+  val trunc_ : arr -> unit
 
-  val asinh : mat -> mat
+  val fix_ : arr -> unit
 
-  val acosh : mat -> mat
+  val erf_ : arr -> unit
 
-  val atanh : mat -> mat
+  val erfc_ : arr -> unit
 
-  val inv : mat -> mat
+  val relu_ : arr -> unit
 
-  val trace : mat -> elt
+  val softplus_ : arr -> unit
 
-  val sum : mat -> elt
+  val softsign_ : arr -> unit
 
-  val sum_ : ?axis:int -> mat -> mat
+  val softmax_ : arr -> unit
 
-  val sum_rows : mat -> mat
+  val sigmoid_ : arr -> unit
 
-  val signum : mat -> mat
+  val sum : ?axis:int -> arr -> arr
 
-  val transpose : mat -> mat
+  val prod : ?axis:int -> arr -> arr
 
-  val l1norm : mat -> elt
+  val min : ?axis:int -> arr -> arr
 
-  val l2norm : mat -> elt
+  val max : ?axis:int -> arr -> arr
 
-  val l2norm_sqr : mat -> elt
+  val mean : ?axis:int -> arr -> arr
 
-  val sigmoid : mat -> mat
+  val var : ?axis:int -> arr -> arr
 
-  val relu : mat -> mat
+  val std : ?axis:int -> arr -> arr
 
-  val clip_by_l2norm : elt -> mat -> mat
+  val l1norm : ?axis:int -> arr -> arr
 
-  val pow : mat -> mat -> mat
+  val l2norm : ?axis:int -> arr -> arr
 
-  val scalar_pow : elt -> mat -> mat
+  val cumsum_ : ?axis:int -> arr -> unit
 
-  val pow_scalar : mat -> elt -> mat
+  val cumprod_ : ?axis:int -> arr -> unit
 
-  val atan2 : mat -> mat -> mat
+  val cummin_ : ?axis:int -> arr -> unit
 
-  val scalar_atan2 : elt -> mat -> mat
+  val cummax_ : ?axis:int -> arr -> unit
 
-  val atan2_scalar : mat -> elt -> mat
+  val prod' : arr -> elt
 
-  val add : mat -> mat -> mat
+  val mean' : arr -> elt
 
-  val sub : mat -> mat -> mat
+  val var' : arr -> elt
 
-  val mul : mat -> mat -> mat
+  val std' : arr -> elt
 
-  val div : mat -> mat -> mat
-
-  val add_scalar : mat -> elt -> mat
-
-  val sub_scalar : mat -> elt -> mat
-
-  val mul_scalar : mat -> elt -> mat
-
-  val div_scalar : mat -> elt -> mat
-
-  val scalar_add : elt -> mat -> mat
-
-  val scalar_sub : elt -> mat -> mat
-
-  val scalar_mul : elt -> mat -> mat
-
-  val scalar_div : elt -> mat -> mat
-
-  val dot : mat -> mat -> mat
-
-  val elt_greater_equal_scalar : mat -> elt -> mat
 
 end
+
 
 
 

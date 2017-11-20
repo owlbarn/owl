@@ -70,7 +70,7 @@ let get x i j =
 
 let reset x = Hashtbl.reset x.d
 
-let clone x = {
+let copy x = {
   m = x.m;
   n = x.n;
   k = x.k;

@@ -157,7 +157,7 @@ module type BasicSig = sig
 
   val fill : mat -> elt -> unit
 
-  val clone : mat -> mat
+  val copy : mat -> mat
 
   val copy_to : mat -> mat -> unit
 
@@ -358,19 +358,19 @@ module type BasicSig = sig
 
   val trace : mat -> elt
 
-  val sum : mat -> elt
+  val sum' : mat -> elt
 
-  val prod : ?axis:int option array -> mat -> elt
+  val prod' : mat -> elt
 
-  val average : mat -> elt
+  val mean' : mat -> elt
 
   val sum_rows : mat -> mat
 
   val sum_cols : mat -> mat
 
-  val average_rows : mat -> mat
+  val mean_rows : mat -> mat
 
-  val average_cols : mat -> mat
+  val mean_cols : mat -> mat
 
 
   val add : mat -> mat -> mat
@@ -471,7 +471,7 @@ module Make_Basic
 
   let fill x a = M.fill (unpack_box x) (unpack_elt a)
 
-  let clone x = M.clone (unpack_box x) |> pack_box
+  let copy x = M.copy (unpack_box x) |> pack_box
 
   let copy_to src dst = M.copy_to (unpack_box src) (unpack_box dst)
 
@@ -656,19 +656,19 @@ module Make_Basic
 
   let trace x = M.trace (unpack_box x) |> pack_elt
 
-  let sum x = M.sum (unpack_box x) |> pack_elt
+  let sum' x = M.sum' (unpack_box x) |> pack_elt
 
-  let prod ?axis x = M.prod ?axis (unpack_box x) |> pack_elt
+  let prod' x = M.prod' (unpack_box x) |> pack_elt
 
-  let average x = M.average (unpack_box x) |> pack_elt
+  let mean' x = M.mean' (unpack_box x) |> pack_elt
 
   let sum_rows x = M.sum_rows (unpack_box x) |> pack_box
 
   let sum_cols x = M.sum_rows (unpack_box x) |> pack_box
 
-  let average_rows x = M.sum_rows (unpack_box x) |> pack_box
+  let mean_rows x = M.sum_rows (unpack_box x) |> pack_box
 
-  let average_cols x = M.sum_rows (unpack_box x) |> pack_box
+  let mean_cols x = M.sum_rows (unpack_box x) |> pack_box
 
 
   let add x y = M.add (unpack_box x) (unpack_box y) |> pack_box
@@ -707,13 +707,11 @@ module type SD_Sig = sig
   type mat
   type elt
 
-  val min : mat -> elt
+  val min' : mat -> elt
 
-  val min : mat -> elt
+  val max' : mat -> elt
 
-  val max : mat -> elt
-
-  val minmax : mat -> elt * elt
+  val minmax' : mat -> elt * elt
 
   val min_i : mat -> elt * int array
 
@@ -799,13 +797,13 @@ module type SD_Sig = sig
 
   val sigmoid : mat -> mat
 
-  val log_sum_exp : mat -> elt
+  val log_sum_exp' : mat -> elt
 
-  val l1norm : mat -> elt
+  val l1norm' : mat -> elt
 
-  val l2norm : mat -> elt
+  val l2norm' : mat -> elt
 
-  val l2norm_sqr : mat -> elt
+  val l2norm_sqr' : mat -> elt
 
   val pow : mat -> mat -> mat
 
@@ -831,9 +829,9 @@ module type SD_Sig = sig
 
   val scalar_fmod : elt -> mat -> mat
 
-  val ssqr : mat -> elt -> elt
+  val ssqr' : mat -> elt -> elt
 
-  val ssqr_diff : mat -> mat -> elt
+  val ssqr_diff' : mat -> mat -> elt
 
 end
 
@@ -845,11 +843,11 @@ module Make_SD
 
   open P
 
-  let min x = M.min (unpack_box x) |> pack_elt
+  let min' x = M.min' (unpack_box x) |> pack_elt
 
-  let max x = M.max (unpack_box x) |> pack_elt
+  let max' x = M.max' (unpack_box x) |> pack_elt
 
-  let minmax x = let (a, b) = M.minmax (unpack_box x) in (pack_elt a, pack_elt b)
+  let minmax' x = let (a, b) = M.minmax' (unpack_box x) in (pack_elt a, pack_elt b)
 
   let min_i x = let (a, i) = M.min_i (unpack_box x) in (pack_elt a, i)
 
@@ -935,13 +933,13 @@ module Make_SD
 
   let sigmoid x = M.sigmoid (unpack_box x) |> pack_box
 
-  let log_sum_exp x = M.log_sum_exp (unpack_box x) |> pack_elt
+  let log_sum_exp' x = M.log_sum_exp' (unpack_box x) |> pack_elt
 
-  let l1norm x = M.l1norm (unpack_box x) |> pack_elt
+  let l1norm' x = M.l1norm' (unpack_box x) |> pack_elt
 
-  let l2norm x = M.l2norm (unpack_box x) |> pack_elt
+  let l2norm' x = M.l2norm' (unpack_box x) |> pack_elt
 
-  let l2norm_sqr x = M.l2norm_sqr (unpack_box x) |> pack_elt
+  let l2norm_sqr' x = M.l2norm_sqr' (unpack_box x) |> pack_elt
 
   let pow x y = M.pow (unpack_box x) (unpack_box y) |> pack_box
 
@@ -968,9 +966,9 @@ module Make_SD
 
   let scalar_fmod a x = M.scalar_fmod (unpack_elt a) (unpack_box x) |> pack_box
 
-  let ssqr x a = M.ssqr (unpack_box x) (unpack_elt a) |> pack_elt
+  let ssqr' x a = M.ssqr' (unpack_box x) (unpack_elt a) |> pack_elt
 
-  let ssqr_diff x y = M.ssqr_diff (unpack_box x) (unpack_box y) |> pack_elt
+  let ssqr_diff' x y = M.ssqr_diff' (unpack_box x) (unpack_box y) |> pack_elt
 
 end
 
@@ -997,15 +995,15 @@ module type CZ_Sig = sig
 
   val reci : mat -> mat
 
-  val l1norm : mat -> float
+  val l1norm' : mat -> elt
 
-  val l2norm : mat -> float
+  val l2norm' : mat -> elt
 
-  val l2norm_sqr : mat -> float
+  val l2norm_sqr' : mat -> elt
 
-  val ssqr : mat -> elt -> elt
+  val ssqr' : mat -> elt -> elt
 
-  val ssqr_diff : mat -> mat -> elt
+  val ssqr_diff' : mat -> mat -> elt
 
 end
 
@@ -1016,8 +1014,6 @@ module Make_CZ
   = struct
 
   open P
-
-  let pack_cast_elt x = F x
 
   let re x = M.re (unpack_box x) |> pack_cast_box
 
@@ -1033,15 +1029,15 @@ module Make_CZ
 
   let reci x = M.reci (unpack_box x) |> pack_box
 
-  let l1norm x = M.l1norm (unpack_box x) |> pack_cast_elt
+  let l1norm' x = M.l1norm' (unpack_box x) |> pack_elt
 
-  let l2norm x = M.l2norm (unpack_box x) |> pack_cast_elt
+  let l2norm' x = M.l2norm' (unpack_box x) |> pack_elt
 
-  let l2norm_sqr x = M.l2norm_sqr (unpack_box x) |> pack_cast_elt
+  let l2norm_sqr' x = M.l2norm_sqr' (unpack_box x) |> pack_elt
 
-  let ssqr x a = M.ssqr (unpack_box x) (unpack_elt a) |> pack_elt
+  let ssqr' x a = M.ssqr' (unpack_box x) (unpack_elt a) |> pack_elt
 
-  let ssqr_diff x y = M.ssqr_diff (unpack_box x) (unpack_box y) |> pack_elt
+  let ssqr_diff' x y = M.ssqr_diff' (unpack_box x) (unpack_box y) |> pack_elt
 
 end
 

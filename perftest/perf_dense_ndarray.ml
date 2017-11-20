@@ -43,7 +43,7 @@ let _ =
   test_op "transpose         " c (fun () -> M.transpose x);
   test_op "swap 0 1          " c (fun () -> M.swap 0 1 x);
   test_op "fill              " c (fun () -> M.fill x 1.5);
-  test_op "clone             " c (fun () -> M.clone x);
+  test_op "copy             " c (fun () -> M.copy x);
   test_op "copy              " c (fun () -> M.copy x y);
   test_op "iteri             " c (fun () -> M.iteri (fun i a -> ()) x);
   test_op "iter              " c (fun () -> M.iter (fun a -> ()) x);

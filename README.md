@@ -2,12 +2,32 @@
 
 %%VERSION%%
 
-Owl is an OCaml numerical library. It supports N-dimensional arrays, both dense and sparse matrix operations, linear algebra, regressions, fast Fourier transforms, and many advanced mathematical and statistical functions (such as Markov chain Monte Carlo methods). Recently, Owl has implemented algorithmic differentiation which essentially makes developing machine learning and neural network algorithms trivial. [![Travis build Status](https://travis-ci.org/ryanrhymes/owl.svg?branch=master)](https://travis-ci.org/ryanrhymes/owl)
+Owl is an emerging numerical library for scientific computing and engineering. The library is developed in the OCaml language and inherits all its powerful features such as static type checking, powerful module system, and superior runtime efficiency. Owl allows you to write succinct type-safe numerical applications in functional language without sacrificing performance, significantly reduces the cost from prototype to production use.
+
+Behind the scene, Owl builds the advanced numerical functions atop of its solid implementation of n-dimensional arrays. Quite different from other libraries, algorithmic differentiation and distributed computing have been included as integral components in the core library to maximise developers' productivity. Owl is young but grows fast, the current features include:
+
+* N-dimensional array (both dense and sparse)
+* Various number types: `float32`, `float64`, `complex32`, `complex64`, `int8`, `int16`, `int32` ...
+* Linear algebra and full interface to CBLAS and LAPACKE
+* Algorithmic differentiation (or automatic differentiation)
+* Neural network module for deep learning applications
+* Parallel and Distributed engine (map-reduce, parameter server, etc.)
+* Advanced math and stats functions (e.g., hypothesis tests, MCMC, etc.)
+* Zoo system for efficient scripting and code sharing
+* GPU support (work in progress ...)
+
+You can reach us in the following ways, looking forward to hearing from you!
+
+- [Email Me](mailto:liang.wang@cl.cam.ac.uk)
+- [Slack Channel](https://join.slack.com/t/owl-dev-team/shared_invite/enQtMjQ3OTM1MDY4MDIwLTA3MmMyMmQ5Y2U0NjJiNjI0NzFhZDAwNGFhODBmMTk4N2ZmNDExYjZiMzI2N2M1MGNiMTUyYTQ5MTAzZjliZDI)
+
+Build status: [![Travis build Status](https://travis-ci.org/ryanrhymes/owl.svg?branch=master)](https://travis-ci.org/ryanrhymes/owl)
+
 
 
 ## Learning
 
-Here are some learning material to help you start with Owl. The full API documentation is recently built on 17th August, 2017:
+Here are some learning material to help you start with Owl. The full API documentation is recently built on 26th September, 2017:
 
 * on [cl.cam.ac.uk](http://www.cl.cam.ac.uk/~lw525/owl/)
 
@@ -28,16 +48,6 @@ This [How-To?](https://github.com/ryanrhymes/owl/wiki/How-To%3F) maintains a lis
 
 The Presentation Slides in OCaml Workshop 2017 can be viewed with [this link](https://docs.google.com/presentation/d/1A-7KiQLot3X2lLyZntrFGxsxaNir0g_2TlruBP4W2Uc/edit).
 The tutorial material of Owl in CUFP 2017 can be accessed with [this link](https://docs.google.com/presentation/d/1EB4B6xAc81ypUGze22qESnFixZWIK31OaNZ8n0ndC6w/edit?usp=sharing).
-
-Some simple evaluations can be found [[here](https://github.com/ryanrhymes/owl/wiki/Evaluation:-Performance-Test)]. The roadmap and future plan of Owl can be found
-[[Here]](https://github.com/ryanrhymes/owl/wiki/Future-Plan). I would love to hear from you, and please let me know your comments and suggestions to improve Owl.
-
-[Email Me](mailto:liang.wang@cl.cam.ac.uk) or message me on:
-[Twitter](https://twitter.com/ryan_liang),
-[Google+](https://www.google.com/+RyanLiang),
-[Facebook](http://www.facebook.com/ryan.liang.wang),
-[Blogger](http://ryanrhymes.blogspot.com/),
-[LinkedIn](http://uk.linkedin.com/in/liangsuomi/)
 
 
 

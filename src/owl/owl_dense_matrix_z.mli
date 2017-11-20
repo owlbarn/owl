@@ -159,7 +159,7 @@ val reset : mat -> unit
 
 val fill : mat -> elt -> unit
 
-val clone : mat -> mat
+val copy : mat -> mat
 
 val copy_to : mat -> mat -> unit
 
@@ -396,11 +396,17 @@ val load : string -> mat
 
 (** {6 Unary mathematical operations } *)
 
-val min : mat -> elt
+val min : ?axis:int -> mat -> mat
 
-val max : mat -> elt
+val min' : mat -> elt
 
-val minmax : mat -> elt * elt
+val max : ?axis:int -> mat -> mat
+
+val max' : mat -> elt
+
+val minmax : ?axis:int -> mat -> mat * mat
+
+val minmax' : mat -> elt * elt
 
 val min_i : mat -> elt * int array
 
@@ -416,21 +422,33 @@ val inv : mat -> mat
 
 val trace : mat -> elt
 
-val sum : mat -> elt
+val sum : ?axis:int -> mat -> mat
 
-val sum_ : ?axis:int -> mat -> mat
+val sum': mat -> elt
 
-val prod : ?axis:int option array -> mat -> elt
+val prod : ?axis:int -> mat -> mat
 
-val average : mat -> elt
+val prod' : mat -> elt
+
+val mean : ?axis:int -> mat -> mat
+
+val mean': mat -> elt
+
+val var : ?axis:int -> mat -> mat
+
+val var': mat -> elt
+
+val std : ?axis:int -> mat -> mat
+
+val std': mat -> elt
 
 val sum_rows : mat -> mat
 
 val sum_cols : mat -> mat
 
-val average_rows : mat -> mat
+val mean_rows : mat -> mat
 
-val average_cols : mat -> mat
+val mean_cols : mat -> mat
 
 val abs : mat -> cast_mat
 
@@ -444,11 +462,11 @@ val reci : mat -> mat
 
 val reci_tol : ?tol:elt -> mat -> mat
 
-val l1norm : mat -> float
+val l1norm' : mat -> elt
 
-val l2norm : mat -> float
+val l2norm' : mat -> elt
 
-val l2norm_sqr : mat -> float
+val l2norm_sqr' : mat -> elt
 
 val cumsum : ?axis:int -> mat -> mat
 
@@ -557,9 +575,9 @@ val dot : mat -> mat -> mat
 
 val add_diag : mat -> elt -> mat
 
-val ssqr : mat -> elt -> elt
+val ssqr' : mat -> elt -> elt
 
-val ssqr_diff : mat -> mat -> elt
+val ssqr_diff' : mat -> mat -> elt
 
 val min2 : mat -> mat -> mat
 

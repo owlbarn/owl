@@ -3,4 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(* This module wraps up the constants in OpenCL interface. *)
+open Bigarray
+
+
+type arr = (float, float32_elt, c_layout) Genarray.t
+
+type elt = float

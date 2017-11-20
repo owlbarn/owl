@@ -10,6 +10,8 @@ let printers = [
   "Owl.Sparse.Matrix.Generic.pp_spmat";
   "Owl.Neural.S.Graph.pp_network";
   "Owl.Neural.D.Graph.pp_network";
+  "Owl.Algodiff.S.pp_num";
+  "Owl.Algodiff.D.pp_num";
 ]
 
 

@@ -54,7 +54,7 @@ val set : vec -> int -> elt -> unit
 
 val get : vec -> int -> elt
 
-val clone : vec -> vec
+val copy : vec -> vec
 
 val transpose : vec -> vec
 
@@ -93,15 +93,15 @@ val div_scalar : vec -> elt -> vec
 
 (** {6 Uniary mathematical operations } *)
 
-val min : vec -> elt
+val min' : vec -> elt
 
-val max : vec -> elt
+val max' : vec -> elt
 
 val min_i : vec -> elt * int
 
 val max_i : vec -> elt * int
 
-val sum : vec -> elt
+val sum' : vec -> elt
 
 val abs : vec -> vec
 
@@ -179,15 +179,15 @@ val softmax : vec -> vec
 
 val sigmoid : vec -> vec
 
-val log_sum_exp : vec -> elt
+val log_sum_exp' : vec -> elt
 
-val l1norm : vec -> elt
+val l1norm' : vec -> elt
 
-val l2norm : vec -> elt
+val l2norm' : vec -> elt
 
-val l2norm_sqr : vec -> elt
+val l2norm_sqr' : vec -> elt
 
-val cross_entropy : vec -> vec -> elt
+val cross_entropy' : vec -> vec -> elt
 
 
 (* ends here *)
