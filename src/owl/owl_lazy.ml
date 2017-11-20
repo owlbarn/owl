@@ -26,26 +26,26 @@ module Make
   and arr = t
   and op =
     | Noop
-    | Fun00       of t * (A.arr -> A.arr)
-    | Fun01       of t * (A.arr -> unit)
-    | Fun02       of t * t * (A.arr -> A.arr -> unit) * (A.arr -> A.arr -> A.arr)
-    | Fun03       of t array * (A.arr array -> A.arr)
-    | Fun04       of t * elt * (A.arr -> elt -> unit)
-    | Fun05       of elt * t * (elt -> A.arr -> unit)
-    | Split       of t * int option * int array
-    | Item_I      of t * int (* select the ith item in an array *)
+    | Fun00  of t * (A.arr -> A.arr)
+    | Fun01  of t * (A.arr -> unit)
+    | Fun02  of t * t * (A.arr -> A.arr -> unit) * (A.arr -> A.arr -> A.arr)
+    | Fun03  of t array * (A.arr array -> A.arr)
+    | Fun04  of t * elt * (A.arr -> elt -> unit)
+    | Fun05  of elt * t * (elt -> A.arr -> unit)
+    | Split  of t * int option * int array
+    | Item_I of t * int (* select the ith item in an array *)
 
 
   let unpack_operands = function
-    | Noop                        -> [| |]
-    | Fun00 (a, f)                -> [|a|]
-    | Fun01 (a, f)                -> [|a|]
-    | Fun02 (a, b, f, g)          -> [|a; b|]
-    | Fun03 (a, f)                -> a
-    | Fun04 (a, b, f)             -> [|a|]
-    | Fun05 (a, b, f)             -> [|b|]
-    | Split (a, b, c)             -> [|a|]
-    | Item_I (a, b)               -> [|a|]
+    | Noop               -> [| |]
+    | Fun00 (a, f)       -> [|a|]
+    | Fun01 (a, f)       -> [|a|]
+    | Fun02 (a, b, f, g) -> [|a; b|]
+    | Fun03 (a, f)       -> a
+    | Fun04 (a, b, f)    -> [|a|]
+    | Fun05 (a, b, f)    -> [|b|]
+    | Split (a, b, c)    -> [|a|]
+    | Item_I (a, b)      -> [|a|]
 
 
   let inc_operand_refnum x =
@@ -101,15 +101,15 @@ module Make
   let rec _eval_term x =
     if Array.length x.outval = 0 then (
       match x.op with
-      | Noop                        -> ()
-      | Fun00 (a, f)                -> _eval_map5 x f
-      | Fun01 (a, f)                -> _eval_map1 x f
-      | Fun02 (a, b, f, g)          -> _eval_map2 x f g
-      | Fun03 (a, f)                -> _eval_map6 x f
-      | Fun04 (a, b, f)             -> _eval_map3 x b f
-      | Fun05 (a, b, f)             -> _eval_map4 x a f
-      | Split (a, b, c)             -> _eval_map7 x (fun x -> A.split ?axis:b c x)
-      | Item_I (a, b)               -> _item_i x b
+      | Noop               -> ()
+      | Fun00 (a, f)       -> _eval_map5 x f
+      | Fun01 (a, f)       -> _eval_map1 x f
+      | Fun02 (a, b, f, g) -> _eval_map2 x f g
+      | Fun03 (a, f)       -> _eval_map6 x f
+      | Fun04 (a, b, f)    -> _eval_map3 x b f
+      | Fun05 (a, b, f)    -> _eval_map4 x a f
+      | Split (a, b, c)    -> _eval_map7 x (fun x -> A.split ?axis:b c x)
+      | Item_I (a, b)      -> _item_i x b
     )
 
   (* [f] is inpure, for [arr -> arr] *)
@@ -176,6 +176,11 @@ module Make
     assert (i < Array.length operands.(0).outval);
     x.outval <- [|operands.(0).outval.(i)|]
 
+  and _outval_i x i =
+    let operands = unpack_operands x.op in
+    _eval_term operands.(0);
+    assert (i < Array.length operands.(0).outval);
+    x.outval <- [|operands.(0).outval.(i)|]
 
   let of_ndarray x = make_t ~outval:[|x|] Noop
 
