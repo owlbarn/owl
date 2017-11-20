@@ -60,7 +60,6 @@ module Make
     ) operands
 
 
-
   let inc_refnum x = x.refnum <- x.refnum + 1
 
 
@@ -175,12 +174,7 @@ module Make
     _eval_term operands.(0);
     assert (i < Array.length operands.(0).outval);
     x.outval <- [|operands.(0).outval.(i)|]
-
-  and _outval_i x i =
-    let operands = unpack_operands x.op in
-    _eval_term operands.(0);
-    assert (i < Array.length operands.(0).outval);
-    x.outval <- [|operands.(0).outval.(i)|]
+    
 
   let of_ndarray x = make_t ~outval:[|x|] Noop
 
