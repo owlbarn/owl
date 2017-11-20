@@ -322,6 +322,18 @@ module type NdarraySig_Ext = sig
 
   val greater_equal : arr -> arr -> bool
 
+  val elt_equal : arr -> arr -> arr
+
+  val elt_not_equal : arr -> arr -> arr
+
+  val elt_less : arr -> arr -> arr
+
+  val elt_greater : arr -> arr -> arr
+
+  val elt_less_equal : arr -> arr -> arr
+
+  val elt_greater_equal : arr -> arr -> arr
+
 end
 
 

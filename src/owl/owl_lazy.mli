@@ -334,6 +334,18 @@ module Make
 
   val greater_equal : t -> t -> bool
 
+  val elt_equal : t -> t -> t
+
+  val elt_not_equal : t -> t -> t
+
+  val elt_less : t -> t -> t
+
+  val elt_greater : t -> t -> t
+
+  val elt_less_equal : t -> t -> t
+
+  val elt_greater_equal : t -> t -> t
+
 
   (** {6 Helper functions} *)
 

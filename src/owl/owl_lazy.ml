@@ -26,14 +26,14 @@ module Make
   and arr = t
   and op =
     | Noop
-    | Fun00  of t * (A.arr -> A.arr)
-    | Fun01  of t * (A.arr -> unit)
-    | Fun02  of t * t * (A.arr -> A.arr -> unit) * (A.arr -> A.arr -> A.arr)
-    | Fun03  of t array * (A.arr array -> A.arr)
-    | Fun04  of t * elt * (A.arr -> elt -> unit)
-    | Fun05  of elt * t * (elt -> A.arr -> unit)
-    | Split  of t * int option * int array
-    | Item_I of t * int (* select the ith item in an array *)
+    | Fun00 of t * (A.arr -> A.arr)
+    | Fun01 of t * (A.arr -> unit)
+    | Fun02 of t * t * (A.arr -> A.arr -> unit) * (A.arr -> A.arr -> A.arr)
+    | Fun03 of t * elt * (A.arr -> elt -> unit)
+    | Fun04 of elt * t * (elt -> A.arr -> unit)
+    | Fun05 of t array * (A.arr array -> A.arr)
+    | Fun06 of t * (A.arr -> A.arr array)
+    | ItemI of t * int (* select the ith item in an array *)
 
 
   let unpack_operands = function
@@ -41,11 +41,11 @@ module Make
     | Fun00 (a, f)       -> [|a|]
     | Fun01 (a, f)       -> [|a|]
     | Fun02 (a, b, f, g) -> [|a; b|]
-    | Fun03 (a, f)       -> a
-    | Fun04 (a, b, f)    -> [|a|]
-    | Fun05 (a, b, f)    -> [|b|]
-    | Split (a, b, c)    -> [|a|]
-    | Item_I (a, b)      -> [|a|]
+    | Fun03 (a, b, f)    -> [|a|]
+    | Fun04 (a, b, f)    -> [|b|]
+    | Fun05 (a, f)       -> a
+    | Fun06 (a, f)       -> [|a|]
+    | ItemI (a, b)       -> [|a|]
 
 
   let inc_operand_refnum x =
@@ -104,11 +104,11 @@ module Make
       | Fun00 (a, f)       -> _eval_map0 x f
       | Fun01 (a, f)       -> _eval_map1 x f
       | Fun02 (a, b, f, g) -> _eval_map2 x f g
-      | Fun03 (a, f)       -> _eval_map3 x f
-      | Fun04 (a, b, f)    -> _eval_map4 x b f
-      | Fun05 (a, b, f)    -> _eval_map5 x a f
-      | Split (a, b, c)    -> _eval_map6 x (fun x -> A.split ?axis:b c x)
-      | Item_I (a, b)      -> _item_i x b
+      | Fun03 (a, b, f)    -> _eval_map3 x b f
+      | Fun04 (a, b, f)    -> _eval_map4 x a f
+      | Fun05 (a, f)       -> _eval_map5 x f
+      | Fun06 (a, f)       -> _eval_map6 x f
+      | ItemI (a, b)       -> _item_i x b
     )
 
   (* [f] is pure, shape changes so always allocate mem, for [arr -> arr] *)
@@ -139,14 +139,8 @@ module Make
     in
     x.outval <- [|c|]
 
-  (* [f] is pure, shape changes so always allocate mem, for [arr array -> arr] *)
-  and _eval_map3 x f =
-    let operands = unpack_operands x.op in
-    let a = Array.map (fun x -> _eval_term x; x.outval.(0)) operands in
-    x.outval <- [|f a|]
-
   (* [f] is inpure, for [arr -> elt -> arr] *)
-  and _eval_map4 x b f =
+  and _eval_map3 x b f =
     let operands = unpack_operands x.op in
     _eval_term operands.(0);
     let a = allocate_1 operands in
@@ -154,12 +148,18 @@ module Make
     x.outval <- [|a|]
 
   (* [f] is inpure, for [elt -> arr -> arr] *)
-  and _eval_map5 x a f =
+  and _eval_map4 x a f =
     let operands = unpack_operands x.op in
     _eval_term operands.(0);
     let b = allocate_1 operands in
     f a b;
     x.outval <- [|b|]
+
+  (* [f] is pure, shape changes so always allocate mem, for [arr array -> arr] *)
+  and _eval_map5 x f =
+    let operands = unpack_operands x.op in
+    let a = Array.map (fun x -> _eval_term x; x.outval.(0)) operands in
+    x.outval <- [|f a|]
 
   (* [f] is pure, allocate mem, for [arr -> arr array] *)
   and _eval_map6 x f =
@@ -240,11 +240,11 @@ module Make
 
   let repeat ?axis x reps = make_t (Fun00 (x, (fun x -> A.repeat ?axis x reps)))
 
-  let concatenate ?axis x = make_t (Fun03 (x, (fun x -> A.concatenate ?axis x)))
+  let concatenate ?axis x = make_t (Fun05 (x, (fun x -> A.concatenate ?axis x)))
 
   let split ?axis parts x =
-    let t = make_t (Split (x, axis, parts)) in
-    Array.mapi (fun i _ -> make_t (Item_I (t, i))) parts
+    let t = make_t (Fun06 (x, (fun x -> A.split ?axis parts x))) in
+    Array.mapi (fun i _ -> make_t (ItemI (t, i))) parts
 
   let to_rows x = A.to_rows (to_ndarray x) |> Array.map of_ndarray
 
@@ -317,35 +317,35 @@ module Make
 
   let max2 x y = make_t (Fun02 (x, y, A.max2_, A.max2))
 
-  let dot x y = make_t (Fun03 ([|x; y|], (fun x -> A.dot x.(0) x.(1))))
+  let dot x y = make_t (Fun05 ([|x; y|], (fun x -> A.dot x.(0) x.(1))))
 
-  let add_scalar x a = make_t (Fun04 (x, a, A.add_scalar_))
+  let add_scalar x a = make_t (Fun03 (x, a, A.add_scalar_))
 
-  let sub_scalar x a = make_t (Fun04 (x, a, A.sub_scalar_))
+  let sub_scalar x a = make_t (Fun03 (x, a, A.sub_scalar_))
 
-  let mul_scalar x a = make_t (Fun04 (x, a, A.mul_scalar_))
+  let mul_scalar x a = make_t (Fun03 (x, a, A.mul_scalar_))
 
-  let div_scalar x a = make_t (Fun04 (x, a, A.div_scalar_))
+  let div_scalar x a = make_t (Fun03 (x, a, A.div_scalar_))
 
-  let pow_scalar x a = make_t (Fun04 (x, a, A.pow_scalar_))
+  let pow_scalar x a = make_t (Fun03 (x, a, A.pow_scalar_))
 
-  let atan2_scalar x a = make_t (Fun04 (x, a, A.atan2_scalar_))
+  let atan2_scalar x a = make_t (Fun03 (x, a, A.atan2_scalar_))
 
-  let fmod_scalar x a = make_t (Fun04 (x, a, A.fmod_scalar_))
+  let fmod_scalar x a = make_t (Fun03 (x, a, A.fmod_scalar_))
 
-  let scalar_add a x = make_t (Fun05 (a, x, A.scalar_add_))
+  let scalar_add a x = make_t (Fun04 (a, x, A.scalar_add_))
 
-  let scalar_sub a x = make_t (Fun05 (a, x, A.scalar_sub_))
+  let scalar_sub a x = make_t (Fun04 (a, x, A.scalar_sub_))
 
-  let scalar_mul a x = make_t (Fun05 (a, x, A.scalar_mul_))
+  let scalar_mul a x = make_t (Fun04 (a, x, A.scalar_mul_))
 
-  let scalar_div a x = make_t (Fun05 (a, x, A.scalar_div_))
+  let scalar_div a x = make_t (Fun04 (a, x, A.scalar_div_))
 
-  let scalar_pow a x = make_t (Fun05 (a, x, A.scalar_pow_))
+  let scalar_pow a x = make_t (Fun04 (a, x, A.scalar_pow_))
 
-  let scalar_atan2 a x = make_t (Fun05 (a, x, A.scalar_atan2_))
+  let scalar_atan2 a x = make_t (Fun04 (a, x, A.scalar_atan2_))
 
-  let scalar_fmod a x = make_t (Fun05 (a, x, A.scalar_fmod_))
+  let scalar_fmod a x = make_t (Fun04 (a, x, A.scalar_fmod_))
 
   let abs x = make_t (Fun01 (x, A.abs_))
 
@@ -459,11 +459,11 @@ module Make
 
   let clip_by_l2norm a x = make_t (Fun00 (x, (fun x -> A.clip_by_l2norm a x)))
 
-  let conv1d ?padding input kernel stride = make_t (Fun03 ([|input; kernel|], (fun x -> A.conv1d ?padding x.(0) x.(1) stride)))
+  let conv1d ?padding input kernel stride = make_t (Fun05 ([|input; kernel|], (fun x -> A.conv1d ?padding x.(0) x.(1) stride)))
 
-  let conv2d ?padding input kernel stride = make_t (Fun03 ([|input; kernel|], (fun x -> A.conv2d ?padding x.(0) x.(1) stride)))
+  let conv2d ?padding input kernel stride = make_t (Fun05 ([|input; kernel|], (fun x -> A.conv2d ?padding x.(0) x.(1) stride)))
 
-  let conv3d ?padding input kernel stride = make_t (Fun03 ([|input; kernel|], (fun x -> A.conv3d ?padding x.(0) x.(1) stride)))
+  let conv3d ?padding input kernel stride = make_t (Fun05 ([|input; kernel|], (fun x -> A.conv3d ?padding x.(0) x.(1) stride)))
 
   let max_pool1d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.max_pool1d ?padding x kernel stride)))
 
@@ -477,25 +477,25 @@ module Make
 
   let avg_pool3d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.avg_pool3d ?padding x kernel stride)))
 
-  let conv1d_backward_input input kernel stride output' = make_t (Fun03 ([|input; kernel; output'|], (fun x -> A.conv1d_backward_input x.(0) x.(1) stride x.(2))))
+  let conv1d_backward_input input kernel stride output' = make_t (Fun05 ([|input; kernel; output'|], (fun x -> A.conv1d_backward_input x.(0) x.(1) stride x.(2))))
 
-  let conv1d_backward_kernel input kernel stride output' = make_t (Fun03 ([|input; kernel; output'|], (fun x -> A.conv1d_backward_kernel x.(0) x.(1) stride x.(2))))
+  let conv1d_backward_kernel input kernel stride output' = make_t (Fun05 ([|input; kernel; output'|], (fun x -> A.conv1d_backward_kernel x.(0) x.(1) stride x.(2))))
 
-  let conv2d_backward_input input kernel stride output' = make_t (Fun03 ([|input; kernel; output'|], (fun x -> A.conv2d_backward_input x.(0) x.(1) stride x.(2))))
+  let conv2d_backward_input input kernel stride output' = make_t (Fun05 ([|input; kernel; output'|], (fun x -> A.conv2d_backward_input x.(0) x.(1) stride x.(2))))
 
-  let conv2d_backward_kernel input kernel stride output' = make_t (Fun03 ([|input; kernel; output'|], (fun x -> A.conv2d_backward_kernel x.(0) x.(1) stride x.(2))))
+  let conv2d_backward_kernel input kernel stride output' = make_t (Fun05 ([|input; kernel; output'|], (fun x -> A.conv2d_backward_kernel x.(0) x.(1) stride x.(2))))
 
-  let conv3d_backward_input input kernel stride output' = make_t (Fun03 ([|input; kernel; output'|], (fun x -> A.conv3d_backward_input x.(0) x.(1) stride x.(2))))
+  let conv3d_backward_input input kernel stride output' = make_t (Fun05 ([|input; kernel; output'|], (fun x -> A.conv3d_backward_input x.(0) x.(1) stride x.(2))))
 
-  let conv3d_backward_kernel input kernel stride output' = make_t (Fun03 ([|input; kernel; output'|], (fun x -> A.conv3d_backward_kernel x.(0) x.(1) stride x.(2))))
+  let conv3d_backward_kernel input kernel stride output' = make_t (Fun05 ([|input; kernel; output'|], (fun x -> A.conv3d_backward_kernel x.(0) x.(1) stride x.(2))))
 
-  let max_pool1d_backward padding input kernel stride output' = make_t (Fun03 ([|input; output'|], (fun x -> A.max_pool1d_backward padding x.(0) kernel stride x.(1))))
+  let max_pool1d_backward padding input kernel stride output' = make_t (Fun05 ([|input; output'|], (fun x -> A.max_pool1d_backward padding x.(0) kernel stride x.(1))))
 
-  let max_pool2d_backward padding input kernel stride output' = make_t (Fun03 ([|input; output'|], (fun x -> A.max_pool2d_backward padding x.(0) kernel stride x.(1))))
+  let max_pool2d_backward padding input kernel stride output' = make_t (Fun05 ([|input; output'|], (fun x -> A.max_pool2d_backward padding x.(0) kernel stride x.(1))))
 
-  let avg_pool1d_backward padding input kernel stride output' = make_t (Fun03 ([|input; output'|], (fun x -> A.avg_pool1d_backward padding x.(0) kernel stride x.(1))))
+  let avg_pool1d_backward padding input kernel stride output' = make_t (Fun05 ([|input; output'|], (fun x -> A.avg_pool1d_backward padding x.(0) kernel stride x.(1))))
 
-  let avg_pool2d_backward padding input kernel stride output' = make_t (Fun03 ([|input; output'|], (fun x -> A.avg_pool2d_backward padding x.(0) kernel stride x.(1))))
+  let avg_pool2d_backward padding input kernel stride output' = make_t (Fun05 ([|input; output'|], (fun x -> A.avg_pool2d_backward padding x.(0) kernel stride x.(1))))
 
 
   (* comparion functions *)
@@ -511,6 +511,18 @@ module Make
   let less_equal x y = A.less_equal (to_ndarray x) (to_ndarray y)
 
   let greater_equal x y = A.greater_equal (to_ndarray x) (to_ndarray y)
+
+  let elt_equal x y = make_t (Fun02 (x, y, A.elt_equal_, A.elt_equal))
+
+  let elt_not_equal x y = make_t (Fun02 (x, y, A.elt_not_equal_, A.elt_not_equal))
+
+  let elt_less x y = make_t (Fun02 (x, y, A.elt_less_, A.elt_less))
+
+  let elt_greater x y = make_t (Fun02 (x, y, A.elt_greater_, A.elt_greater))
+
+  let elt_less_equal x y = make_t (Fun02 (x, y, A.elt_less_equal_, A.elt_less_equal))
+
+  let elt_greater_equal x y = make_t (Fun02 (x, y, A.elt_greater_equal_, A.elt_greater_equal))
 
 
 end
