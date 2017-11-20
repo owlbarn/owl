@@ -24,6 +24,7 @@
     -L/usr/local/lib/gcc/7
     -lopenblas
     -lgfortran
+    -lm
   ))
   (flags (:standard -safe-string))
   (libraries (
