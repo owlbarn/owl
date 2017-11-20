@@ -4,7 +4,7 @@
   (name owl_ocaml)
   (public_name owl_ocaml)
   (wrapped false)
-  (flags (:standard))
+  (flags (:standard -safe-string))
   (libraries (
 
   ))

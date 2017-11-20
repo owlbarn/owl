@@ -25,7 +25,7 @@
     -lopenblas
     -lgfortran
   ))
-  (flags (:standard))
+  (flags (:standard -safe-string))
   (libraries (
     ctypes
     ctypes.stubs

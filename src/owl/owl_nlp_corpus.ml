@@ -234,7 +234,7 @@ let unique fi_name fo_name =
     match Hashtbl.mem h s with
     | true  -> Owl_utils.Stack.push rm i
     | false -> (
-        output_bytes fo s;
+        output_string fo s;
         output_char fo '\n';
         Hashtbl.add h s None;
       )
@@ -300,7 +300,7 @@ let save_txt corpus f =
       |> Array.to_list
       |> String.concat " "
     in
-    output_bytes fh s;
+    output_string fh s;
     output_char fh '\n';
   ) corpus;
   close_out fh
