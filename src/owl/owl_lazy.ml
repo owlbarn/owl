@@ -91,11 +91,8 @@ module Make
       else if b.refnum = 1 then Some (b_val, a_val)
       else Some (A.copy a_val, b_val)
     )
-    (* FIXME *)
-    (*
     else if Owl_utils.array_greater_eqaul a_shp b_shp && a.refnum = 1 then Some (a_val, b_val)
     else if Owl_utils.array_greater_eqaul b_shp a_shp && b.refnum = 1 then Some (b_val, a_val)
-    *)
     else None
 
 
@@ -270,6 +267,7 @@ module Make
     let x, y, l = A.draw_rows2 (to_ndarray x) (to_ndarray y) c in
     of_ndarray x, of_ndarray y, l
 
+  (* FIXME *)
   let elt_greater_equal_scalar x a = A.elt_greater_equal_scalar (to_ndarray x) a |> of_ndarray
 
   let print ?max_row ?max_col ?header ?fmt x = Printf.printf "lazy t"
