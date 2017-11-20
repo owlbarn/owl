@@ -69,7 +69,7 @@ let _neg_inf : type a b. (a, b) kind -> a = function
   | Complex64 -> Complex.({re = neg_infinity; im = neg_infinity})
   | _         -> failwith "_neg_inf: unsupported operation"
 
-let _owl_elt_to_str : type a b. (a, b) kind -> (a -> bytes) = function
+let _owl_elt_to_str : type a b. (a, b) kind -> (a -> string) = function
   | Char           -> fun v -> Printf.sprintf "%c" v
   | Nativeint      -> fun v -> Printf.sprintf "%nd" v
   | Int8_signed    -> fun v -> Printf.sprintf "%i" v
