@@ -101,15 +101,22 @@ module Make
     if Array.length x.outval = 0 then (
       match x.op with
       | Noop               -> ()
-      | Fun00 (a, f)       -> _eval_map5 x f
+      | Fun00 (a, f)       -> _eval_map0 x f
       | Fun01 (a, f)       -> _eval_map1 x f
       | Fun02 (a, b, f, g) -> _eval_map2 x f g
-      | Fun03 (a, f)       -> _eval_map6 x f
-      | Fun04 (a, b, f)    -> _eval_map3 x b f
-      | Fun05 (a, b, f)    -> _eval_map4 x a f
-      | Split (a, b, c)    -> _eval_map7 x (fun x -> A.split ?axis:b c x)
+      | Fun03 (a, f)       -> _eval_map3 x f
+      | Fun04 (a, b, f)    -> _eval_map4 x b f
+      | Fun05 (a, b, f)    -> _eval_map5 x a f
+      | Split (a, b, c)    -> _eval_map6 x (fun x -> A.split ?axis:b c x)
       | Item_I (a, b)      -> _item_i x b
     )
+
+  (* [f] is pure, shape changes so always allocate mem, for [arr -> arr] *)
+  and _eval_map0 x f =
+    let operands = unpack_operands x.op in
+    _eval_term operands.(0);
+    let a = operands.(0).outval.(0) in
+    x.outval <- [|f a|]
 
   (* [f] is inpure, for [arr -> arr] *)
   and _eval_map1 x f =
@@ -132,8 +139,14 @@ module Make
     in
     x.outval <- [|c|]
 
+  (* [f] is pure, shape changes so always allocate mem, for [arr array -> arr] *)
+  and _eval_map3 x f =
+    let operands = unpack_operands x.op in
+    let a = Array.map (fun x -> _eval_term x; x.outval.(0)) operands in
+    x.outval <- [|f a|]
+
   (* [f] is inpure, for [arr -> elt -> arr] *)
-  and _eval_map3 x b f =
+  and _eval_map4 x b f =
     let operands = unpack_operands x.op in
     _eval_term operands.(0);
     let a = allocate_1 operands in
@@ -141,28 +154,15 @@ module Make
     x.outval <- [|a|]
 
   (* [f] is inpure, for [elt -> arr -> arr] *)
-  and _eval_map4 x a f =
+  and _eval_map5 x a f =
     let operands = unpack_operands x.op in
     _eval_term operands.(0);
     let b = allocate_1 operands in
     f a b;
     x.outval <- [|b|]
 
-  (* [f] is pure, shape changes so always allocate mem, for [arr -> arr] *)
-  and _eval_map5 x f =
-    let operands = unpack_operands x.op in
-    _eval_term operands.(0);
-    let a = operands.(0).outval.(0) in
-    x.outval <- [|f a|]
-
-  (* [f] is pure, shape changes so always allocate mem, for [arr array -> arr] *)
-  and _eval_map6 x f =
-    let operands = unpack_operands x.op in
-    let a = Array.map (fun x -> _eval_term x; x.outval.(0)) operands in
-    x.outval <- [|f a|]
-
   (* [f] is pure, allocate mem, for [arr -> arr array] *)
-  and _eval_map7 x f =
+  and _eval_map6 x f =
     let operands = unpack_operands x.op in
     _eval_term operands.(0);
     let a = operands.(0).outval.(0) in
@@ -174,7 +174,7 @@ module Make
     _eval_term operands.(0);
     assert (i < Array.length operands.(0).outval);
     x.outval <- [|operands.(0).outval.(i)|]
-    
+
 
   let of_ndarray x = make_t ~outval:[|x|] Noop
 
