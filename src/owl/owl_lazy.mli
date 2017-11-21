@@ -346,6 +346,18 @@ module Make
 
   val elt_greater_equal : t -> t -> t
 
+  val elt_equal_scalar : t -> elt -> t
+
+  val elt_not_equal_scalar : t -> elt -> t
+
+  val elt_less_scalar : t -> elt -> t
+
+  val elt_greater_scalar : t -> elt -> t
+
+  val elt_less_equal_scalar : t -> elt -> t
+
+  val elt_greater_equal_scalar : t -> elt -> t
+
 
   (** {6 Helper functions} *)
 

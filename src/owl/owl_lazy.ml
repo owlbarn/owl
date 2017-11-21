@@ -524,5 +524,17 @@ module Make
 
   let elt_greater_equal x y = make_t (Fun02 (x, y, A.elt_greater_equal_, A.elt_greater_equal))
 
+  let elt_equal_scalar x a = make_t (Fun03 (x, a, A.elt_equal_scalar_))
+
+  let elt_not_equal_scalar x a = make_t (Fun03 (x, a, A.elt_not_equal_scalar_))
+
+  let elt_less_scalar x a = make_t (Fun03 (x, a, A.elt_less_scalar_))
+
+  let elt_greater_scalar x a = make_t (Fun03 (x, a, A.elt_greater_scalar_))
+
+  let elt_less_equal_scalar x a = make_t (Fun03 (x, a, A.elt_less_equal_scalar_))
+
+  let elt_greater_equal_scalar x a = make_t (Fun03 (x, a, A.elt_greater_equal_scalar_))
+
 
 end

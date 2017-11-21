@@ -1691,6 +1691,36 @@ val elt_greater_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
   over [x], so you need to make sure [x] is big enough to hold the output result.
  *)
 
+val elt_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_equal_scalar_ x a] is simiar to [elt_equal_scalar] function but the
+  output is written to [x].
+ *)
+
+val elt_not_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_not_equal_scalar_ x a] is simiar to [elt_not_equal_scalar] function but
+  the output is written to [x].
+ *)
+
+val elt_less_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_less_scalar_ x a] is simiar to [elt_less_scalar] function but the
+  output is written to [x].
+ *)
+
+val elt_greater_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_greater_scalar_ x a] is simiar to [elt_greater_scalar] function but the
+  output is written to [x].
+ *)
+
+val elt_less_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_less_equal_scalar_ x a] is simiar to [elt_less_equal_scalar] function
+  but the output is written to [x].
+ *)
+
+val elt_greater_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_greater_equal_scalar_ x a] is simiar to [elt_greater_equal_scalar]
+  function but the output is written to [x].
+ *)
+
 
 (** {6 Matrix functions} *)
 

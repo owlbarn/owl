@@ -334,6 +334,18 @@ module type NdarraySig_Ext = sig
 
   val elt_greater_equal : arr -> arr -> arr
 
+  val elt_equal_scalar : arr -> elt -> arr
+
+  val elt_not_equal_scalar : arr -> elt -> arr
+
+  val elt_less_scalar : arr -> elt -> arr
+
+  val elt_greater_scalar : arr -> elt -> arr
+
+  val elt_less_equal_scalar : arr -> elt -> arr
+
+  val elt_greater_equal_scalar : arr -> elt -> arr
+
 end
 
 
@@ -368,18 +380,6 @@ module type InpureSig = sig
   val min2_ : arr -> arr -> unit
 
   val max2_ : arr -> arr -> unit
-
-  val elt_equal_ : arr -> arr -> unit
-
-  val elt_not_equal_ : arr -> arr -> unit
-
-  val elt_less_ : arr -> arr -> unit
-
-  val elt_greater_ : arr -> arr -> unit
-
-  val elt_less_equal_ : arr -> arr -> unit
-
-  val elt_greater_equal_ : arr -> arr -> unit
 
   val add_scalar_ : arr -> elt -> unit
 
@@ -523,6 +523,29 @@ module type InpureSig = sig
 
   val std' : arr -> elt
 
+  val elt_equal_ : arr -> arr -> unit
+
+  val elt_not_equal_ : arr -> arr -> unit
+
+  val elt_less_ : arr -> arr -> unit
+
+  val elt_greater_ : arr -> arr -> unit
+
+  val elt_less_equal_ : arr -> arr -> unit
+
+  val elt_greater_equal_ : arr -> arr -> unit
+
+  val elt_equal_scalar_ : arr -> elt -> unit
+
+  val elt_not_equal_scalar_ : arr -> elt -> unit
+
+  val elt_less_scalar_ : arr -> elt -> unit
+
+  val elt_greater_scalar_ : arr -> elt -> unit
+
+  val elt_less_equal_scalar_ : arr -> elt -> unit
+
+  val elt_greater_equal_scalar_ : arr -> elt -> unit
 
 end
 

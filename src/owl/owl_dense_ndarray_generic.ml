@@ -3049,6 +3049,18 @@ let elt_greater_equal_ x y =
     broadcast_op (_owl_broadcast_elt_greater_equal (kind x)) x y ~out:x |> ignore
   )
 
+let elt_equal_scalar_ x a = _owl_elt_equal_scalar (kind x) (numel x) x x a
+
+let elt_not_equal_scalar_ x a = _owl_elt_not_equal_scalar (kind x) (numel x) x x a
+
+let elt_less_scalar_ x a = _owl_elt_less_scalar (kind x) (numel x) x x a
+
+let elt_greater_scalar_ x a = _owl_elt_greater_scalar (kind x) (numel x) x x a
+
+let elt_less_equal_scalar_ x a = _owl_elt_less_equal_scalar (kind x) (numel x) x x a
+
+let elt_greater_equal_scalar_ x a = _owl_elt_greater_equal_scalar (kind x) (numel x) x x a
+
 let add_scalar_ x a = _owl_add_scalar (kind x) (numel x) x x a
 
 let sub_scalar_ x a = add_scalar_ x (_neg_elt (kind x) a)

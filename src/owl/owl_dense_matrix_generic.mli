@@ -894,7 +894,7 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
  *)
 
 val save_txt : ('a, 'b) t -> string -> unit
-(** [save_txt x f] save the matrix [x] into a tab-delimited text file [f]. 
+(** [save_txt x f] save the matrix [x] into a tab-delimited text file [f].
   The operation can be very time consuming.
  *)
 
@@ -1795,4 +1795,34 @@ val elt_greater_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [elt_greater_equal_ x y] is simiar to [elt_greater_equal] function but the
   output is written to [x]. The broadcast operation only allows broadcasting [y]
   over [x], so you need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_equal_scalar_ x a] is simiar to [elt_equal_scalar] function but the
+  output is written to [x].
+ *)
+
+val elt_not_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_not_equal_scalar_ x a] is simiar to [elt_not_equal_scalar] function but
+  the output is written to [x].
+ *)
+
+val elt_less_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_less_scalar_ x a] is simiar to [elt_less_scalar] function but the
+  output is written to [x].
+ *)
+
+val elt_greater_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_greater_scalar_ x a] is simiar to [elt_greater_scalar] function but the
+  output is written to [x].
+ *)
+
+val elt_less_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_less_equal_scalar_ x a] is simiar to [elt_less_equal_scalar] function
+  but the output is written to [x].
+ *)
+
+val elt_greater_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_greater_equal_scalar_ x a] is simiar to [elt_greater_equal_scalar]
+  function but the output is written to [x].
  *)
