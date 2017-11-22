@@ -51,6 +51,65 @@ module Make
   }
 
 
-  let connect x y = ()
+  let connect parents children =
+    Array.iter (fun parent ->
+      Array.iter (fun child ->
+        if Array.memq child parent.next = false then
+          parent.next <- (Array.append parent.next [|child|]);
+        if Array.memq parent child.prev = false then
+          child.prev <- (Array.append child.prev [|parent|])
+      ) children
+    ) parents
+
+
+  let unpack_arr = function Arr x -> x | _ -> failwith "owl_lazy: unpack_arr"
+
+  let unpack_elt = function Elt x -> x | _ -> failwith "owl_lazy: unpack_elt"
+
+  let refnum x = Array.length x.next
+
+  let allocate_1 x =
+    let value = unpack_arr x.value.(0) in
+    if refnum x = 1 then value
+    else A.copy value
+
+
+  let rec _eval_term x =
+    if Array.length x.value = 0 then (
+      match x.op with
+      | Noop         -> ()
+      | Fun00 f      -> ()
+      | Fun01 f      -> ()
+      | Fun02 (f, g) -> ()
+      | Fun03 f      -> ()
+      | Fun04 f      -> ()
+      | Fun05 f      -> ()
+      | Fun06 f      -> ()
+      | ItemI i      -> ()
+    )
+
+    (* [f] is inpure, for [arr -> arr] *)
+    (*and _eval_map1 x f =
+      let operand = unpack_arr x.op in
+      _eval_term operands.(0);
+      let a = allocate_1 operands in
+      f a;
+      x.outval <- [|a|]*)
+
+
+  let add x y =
+    let z = node (Fun02 (A.add_, A.add)) in
+    connect [|x|] [|z|];
+    connect [|y|] [|z|];
+    z
+
+
+  let sin x =
+    let y = node (Fun01 A.sin_) in
+    connect [|x|] [|y|];
+    y
+
+
+
 
 end
