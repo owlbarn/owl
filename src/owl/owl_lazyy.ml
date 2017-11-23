@@ -24,6 +24,7 @@ module Make
     | Arr of A.arr
 
   type node = {
+    mutable name  : string;
     mutable op    : op;
     mutable prev  : node array;
     mutable next  : node array;
@@ -42,7 +43,8 @@ module Make
     | ItemI of int (* select the ith item in an array *)
 
 
-  let node ?(prev=[||]) ?(next=[||]) ?(state=Invalid) ?(value=[||]) op = {
+  let node ?(name="") ?(prev=[||]) ?(next=[||]) ?(state=Invalid) ?(value=[||]) op = {
+    name;
     op;
     prev;
     next;
@@ -54,10 +56,8 @@ module Make
   let connect parents children =
     Array.iter (fun parent ->
       Array.iter (fun child ->
-        if Array.memq child parent.next = false then
           parent.next <- (Array.append parent.next [|child|]);
-        if Array.memq parent child.prev = false then
-          child.prev <- (Array.append child.prev [|parent|])
+          child.prev <- (Array.append child.prev [|parent|]);
       ) children
     ) parents
 
@@ -69,9 +69,23 @@ module Make
   let refnum x = Array.length x.next
 
   let allocate_1 x =
-    let value = unpack_arr x.value.(0) in
-    if refnum x = 1 then value
-    else A.copy value
+    let x_val = unpack_arr x.value.(0) in
+    if refnum x = 1 then x_val
+    else A.copy x_val
+
+  let allocate_2 x y =
+    let x_val = unpack_arr x.value.(0) in
+    let y_val = unpack_arr y.value.(0) in
+    let x_shp = A.shape x_val in
+    let y_shp = A.shape y_val in
+    if x_shp = y_shp then (
+      if refnum x = 1 then Some (x_val, y_val)
+      else if refnum y = 1 then Some (y_val, x_val)
+      else Some (A.copy x_val, y_val)
+    )
+    else if Owl_utils.array_greater_eqaul x_shp y_shp && refnum x = 1 then Some (x_val, y_val)
+    else if Owl_utils.array_greater_eqaul y_shp x_shp && refnum y = 1 then Some (y_val, x_val)
+    else None
 
 
   let rec _eval_term x =
@@ -79,8 +93,8 @@ module Make
       match x.op with
       | Noop         -> ()
       | Fun00 f      -> ()
-      | Fun01 f      -> ()
-      | Fun02 (f, g) -> ()
+      | Fun01 f      -> _eval_map1 x f
+      | Fun02 (f, g) -> _eval_map2 x f g
       | Fun03 f      -> ()
       | Fun04 f      -> ()
       | Fun05 f      -> ()
@@ -89,26 +103,49 @@ module Make
     )
 
     (* [f] is inpure, for [arr -> arr] *)
-    (*and _eval_map1 x f =
-      let operand = unpack_arr x.op in
-      _eval_term operands.(0);
-      let a = allocate_1 operands in
+    and _eval_map1 x f =
+      let operand = x.prev.(0) in
+      _eval_term operand;
+      let a = allocate_1 operand in
       f a;
-      x.outval <- [|a|]*)
+      x.value <- [|Arr a|]
+
+    (* [f] is inpure and [g] is pure, for [arr -> arr -> arr] *)
+    and _eval_map2 x f g =
+      _eval_term x.prev.(0);
+      _eval_term x.prev.(1);
+      let a = unpack_arr x.prev.(0).value.(0) in
+      let b = unpack_arr x.prev.(1).value.(0) in
+      let c = match allocate_2 x.prev.(0) x.prev.(1) with
+        | Some (p, q) -> f p q; p    (* in-place function, p will be written *)
+        | None        -> g a b       (* pure function without touching a and b *)
+      in
+      x.value <- [|Arr c|]
+
+
+  let of_ndarray x = node ~value:[|Arr x|] Noop
+
+
+  let to_ndarray x =
+    _eval_term x;
+    x.value.(0) |> unpack_arr
+
+
+  let eval x = _eval_term x
 
 
   let add x y =
-    let z = node (Fun02 (A.add_, A.add)) in
+    (* FIXME: unique ... *)
+    let z = node ~name:"add" (Fun02 (A.add_, A.add)) in
     connect [|x|] [|z|];
     connect [|y|] [|z|];
     z
 
 
   let sin x =
-    let y = node (Fun01 A.sin_) in
+    let y = node ~name:"sin" (Fun01 A.sin_) in
     connect [|x|] [|y|];
     y
-
 
 
 
