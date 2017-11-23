@@ -71,30 +71,54 @@ module Make
 
   let check_noop x = assert (Array.length x.value > 0)
 
-  let validate x = x.state <- Valid
-
-  let invalidate x = x.state <- Invalid
-
   let shall_eval x = Array.length x.value = 0 || x.state = Invalid
 
-  (* find the root inputs of x *)
-  let find_roots x =
+  let is_var x = x.op = Noop
+
+  let is_valid x = x.state = Valid
+
+  let validate x = x.state <- Valid
+
+  let invalidate x =
+    x.state <- Invalid;
+    x.value <- [||]
+
+  (* invalidate [x] and all its descendants nodes in the subgraph *)
+  let rec invalidate_graph x =
+    invalidate x;
+    Array.iter invalidate_graph x.next
+
+  (* find the root inputs of [x] *)
+  (* let find_roots x =
     let s = Owl_utils.Stack.make () in
-    let rec _find_roots x =
+    let rec _find x =
       Array.iter (fun n ->
         if n.op = Noop then Owl_utils.Stack.push s n
-        else _find_roots n
+        else _find n
       ) x.prev
     in
-    _find_roots x;
-    Owl_utils.Stack.to_array s
+    _find x;
+    Owl_utils.Stack.to_array s *)
 
-  (* update x's dependency graph by invalidating stale nodes *)
-  let update_dependency x = ()
+  (* update [x]'s dependency graph by invalidating stale nodes *)
+  (* let update_graph x =
+    let rec _update x =
+      let valid = ref (is_valid x) in
+      Array.iter (fun n ->
+        valid := !valid || _update n
+      ) x.prev;
+      if !valid = false then invalidate x;
+      !valid
+    in
+    _update x |> ignore *)
+
 
   let allocate_1 x =
     let x_val = unpack_arr x.value.(0) in
-    if refnum x = 1 then x_val
+    if refnum x = 1 && is_var x = false then (
+      invalidate x;
+      x_val
+    )
     else A.copy x_val
 
 
@@ -104,13 +128,28 @@ module Make
     let x_shp = A.shape x_val in
     let y_shp = A.shape y_val in
     if x_shp = y_shp then (
-      if refnum x = 1 then Some (x_val, y_val)
-      else if refnum y = 1 then Some (y_val, x_val)
-      else if refnum x = 2 && x == y then Some (x_val, y_val)
+      if refnum x = 1 && is_var x = false then (
+        invalidate x;
+        Some (x_val, y_val)
+      )
+      else if refnum y = 1 && is_var y = false then (
+        invalidate y;
+        Some (y_val, x_val)
+      )
+      else if refnum x = 2 && x == y && is_var x = false then (
+        invalidate x;
+        Some (x_val, y_val)
+      )
       else Some (A.copy x_val, y_val)
     )
-    else if Owl_utils.array_greater_eqaul x_shp y_shp && refnum x = 1 then Some (x_val, y_val)
-    else if Owl_utils.array_greater_eqaul y_shp x_shp && refnum y = 1 then Some (y_val, x_val)
+    else if Owl_utils.array_greater_eqaul x_shp y_shp && refnum x = 1 && is_var x = false then (
+      invalidate x;
+      Some (x_val, y_val)
+    )
+    else if Owl_utils.array_greater_eqaul y_shp x_shp && refnum y = 1 && is_var y = false then (
+      invalidate y;
+      Some (y_val, x_val)
+    )
     else None
 
 
@@ -156,8 +195,8 @@ module Make
   let var () = node ~value:[||] Noop
 
   let assign x x_val =
-    x.value <- [|x_val|];
-    invalidate x
+    invalidate_graph x;
+    x.value <- [|x_val|]
 
   let assign_arr x x_val = assign x (Arr x_val)
 
