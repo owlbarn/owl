@@ -69,11 +69,11 @@ module Make
 
   let unpack_elt = function Elt x -> x | _ -> failwith "owl_lazy: unpack_elt"
 
-  let check_noop x = assert (Array.length x.value > 0)
-
   let shall_eval x = Array.length x.value = 0 || x.state = Invalid
 
   let is_var x = x.op = Noop
+
+  let is_assigned x = assert (Array.length x.value > 0)
 
   let is_valid x = x.state = Valid
 
@@ -156,12 +156,12 @@ module Make
   let rec _eval_term x =
     if shall_eval x then (
       let _ = match x.op with
-        | Noop         -> check_noop x
-        | Fun00 f      -> ()
+        | Noop         -> is_assigned x
+        | Fun00 f      -> _eval_map0 x f
         | Fun01 f      -> _eval_map1 x f
         | Fun02 (f, g) -> _eval_map2 x f g
-        | Fun03 f      -> ()
-        | Fun04 f      -> ()
+        | Fun03 f      -> _eval_map3 x f
+        | Fun04 f      -> _eval_map4 x f
         | Fun05 f      -> ()
         | Fun06 f      -> ()
         | ItemI i      -> ()
@@ -169,11 +169,16 @@ module Make
       validate x
     )
 
+  (* [f] is pure, shape changes so always allocate mem, for [arr -> arr] *)
+  and _eval_map0 x f =
+    _eval_term x.prev.(0);
+    let a = x.prev.(0).value.(0) |> unpack_arr |> f in
+    x.value <- [|Arr a|]
+
   (* [f] is inpure, for [arr -> arr] *)
   and _eval_map1 x f =
-    let operand = x.prev.(0) in
-    _eval_term operand;
-    let a = allocate_1 operand in
+    _eval_term x.prev.(0);
+    let a = allocate_1 x.prev.(0) in
     f a;
     x.value <- [|Arr a|]
 
@@ -189,6 +194,24 @@ module Make
     in
     x.value <- [|Arr c|]
 
+  (* [f] is inpure, for [arr -> elt -> arr] *)
+  and _eval_map3 x f =
+    _eval_term x.prev.(0);
+    _eval_term x.prev.(1);
+    let a = allocate_1 x.prev.(0) in
+    let b = unpack_elt x.prev.(1).value.(0) in
+    f a b;
+    x.value <- [|Arr a|]
+
+  (* [f] is inpure, for [elt -> arr -> arr] *)
+  and _eval_map4 x f =
+    _eval_term x.prev.(0);
+    _eval_term x.prev.(1);
+    let a = unpack_elt x.prev.(0).value.(0) in
+    let b = allocate_1 x.prev.(1) in
+    f a b;
+    x.value <- [|Arr b|]
+
 
   let eval x = _eval_term x
 
@@ -202,26 +225,35 @@ module Make
 
   let assign_elt x x_val = assign x (Elt x_val)
 
+  (*
   let of_ndarray x = node ~value:[|Arr x|] Noop
 
   let to_ndarray x =
     _eval_term x;
     x.value.(0) |> unpack_arr
+  *)
+
+  let _make_node name op x =
+    let y = node ~name op in
+    connect x [|y|];
+    y
 
 
   (* unary and binary math functions *)
 
-  let add x y =
-    let z = node ~name:"add" (Fun02 (A.add_, A.add)) in
-    connect [|x|] [|z|];
-    connect [|y|] [|z|];
-    z
+  let add x y = _make_node "add" (Fun02 (A.add_, A.add)) [|x; y|]
 
 
-  let sin x =
-    let y = node ~name:"sin" (Fun01 A.sin_) in
-    connect [|x|] [|y|];
-    y
+  let add_scalar x a = _make_node "add_scalar" (Fun03 A.add_scalar_) [|x; a|]
+
+
+  let scalar_add a x = _make_node "scalar_add" (Fun04 A.scalar_add_) [|a; x|]
+
+
+  let sin x = _make_node "sin" (Fun01 A.sin_) [|x|]
+
+
+  let sum ?axis x = _make_node "sum" (Fun00 (A.sum ?axis)) [|x|]
 
 
 
