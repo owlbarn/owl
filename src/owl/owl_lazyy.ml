@@ -89,7 +89,7 @@ module Make
     invalidate x;
     Array.iter invalidate_graph x.next
 
-  let var () = node ~value:[||] Noop
+  let variable () = node ~value:[||] Noop
 
   let assign x x_val =
     invalidate_graph x;
@@ -274,86 +274,109 @@ module Make
 
   let abs x = _make_node "abs" (Fun01 A.abs_) [|x|]
 
-  let neg x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let neg x = _make_node "neg" (Fun01 A.neg_) [|x|]
 
-  let conj x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let conj x = _make_node "conj" (Fun01 A.conj_) [|x|]
 
-  let reci x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let reci x = _make_node "reci" (Fun01 A.reci_) [|x|]
 
-  let signum x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let signum x = _make_node "signum" (Fun01 A.signum_) [|x|]
 
-  let sqr x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let sqr x = _make_node "sqr" (Fun01 A.sqr_) [|x|]
 
-  let sqrt x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let sqrt x = _make_node "sqrt" (Fun01 A.sqrt_) [|x|]
 
-  let cbrt x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let cbrt x = _make_node "cbrt" (Fun01 A.cbrt_) [|x|]
 
-  let exp x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let exp x = _make_node "exp" (Fun01 A.exp_) [|x|]
 
-  let exp2 x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let exp2 x = _make_node "exp2" (Fun01 A.exp2_) [|x|]
 
-  let exp10 x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let exp10 x = _make_node "exp10" (Fun01 A.exp10_) [|x|]
 
-  let expm1 x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let expm1 x = _make_node "expm1" (Fun01 A.expm1_) [|x|]
 
-  let log x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let log x = _make_node "log" (Fun01 A.log_) [|x|]
 
-  let log2 x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let log2 x = _make_node "log2" (Fun01 A.log2_) [|x|]
 
-  let log10 x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let log10 x = _make_node "log10" (Fun01 A.log10_) [|x|]
 
-  let log1p x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let log1p x = _make_node "log1p" (Fun01 A.log1p_) [|x|]
 
-  let sin x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let sin x = _make_node "sin" (Fun01 A.sin_) [|x|]
 
-  let cos x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let cos x = _make_node "cos" (Fun01 A.cos_) [|x|]
 
-  let tan x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let tan x = _make_node "tan" (Fun01 A.tan_) [|x|]
 
-  let asin x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let asin x = _make_node "asin" (Fun01 A.asin_) [|x|]
 
-  let acos x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let acos x = _make_node "acos" (Fun01 A.acos_) [|x|]
 
-  let atan x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let atan x = _make_node "atan" (Fun01 A.atan_) [|x|]
 
-  let sinh x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let sinh x = _make_node "sinh" (Fun01 A.sinh_) [|x|]
 
-  let cosh x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let cosh x = _make_node "cosh" (Fun01 A.cosh_) [|x|]
 
-  let tanh x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let tanh x = _make_node "tanh" (Fun01 A.tanh_) [|x|]
 
-  let asinh x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let asinh x = _make_node "asinh" (Fun01 A.asinh_) [|x|]
 
-  let acosh x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let acosh x = _make_node "acosh" (Fun01 A.acosh_) [|x|]
 
-  let atanh x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let atanh x = _make_node "atanh" (Fun01 A.atanh_) [|x|]
 
-  let floor x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let floor x = _make_node "floor" (Fun01 A.floor_) [|x|]
 
-  let ceil x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let ceil x = _make_node "ceil" (Fun01 A.ceil_) [|x|]
 
-  let round x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let round x = _make_node "round" (Fun01 A.round_) [|x|]
 
-  let trunc x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let trunc x = _make_node "trunc" (Fun01 A.trunc_) [|x|]
 
-  let fix x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let fix x = _make_node "fix" (Fun01 A.fix_) [|x|]
 
-  let erf x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let erf x = _make_node "erf" (Fun01 A.erf_) [|x|]
 
-  let erfc x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let erfc x = _make_node "erfc" (Fun01 A.erfc_) [|x|]
 
-  let relu x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let relu x = _make_node "relu" (Fun01 A.relu_) [|x|]
 
-  let softplus x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let softplus x = _make_node "softplus" (Fun01 A.softplus_) [|x|]
 
-  let softsign x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let softsign x = _make_node "softsign" (Fun01 A.softsign_) [|x|]
 
-  let softmax x = _make_node "abs" (Fun01 A.abs_) [|x|]
+  let softmax x = _make_node "softmax" (Fun01 A.softmax_) [|x|]
 
-  let sigmoid x = _make_node "abs" (Fun01 A.abs_) [|x|]
-
+  let sigmoid x = _make_node "sigmoid" (Fun01 A.sigmoid_) [|x|]
 
   let sum ?axis x = _make_node "sum" (Fun00 (A.sum ?axis)) [|x|]
+
+  let prod ?axis x = _make_node "prod" (Fun00 (A.prod ?axis)) [|x|]
+
+  let min ?axis x = _make_node "min" (Fun00 (A.min ?axis)) [|x|]
+
+  let max ?axis x = _make_node "max" (Fun00 (A.max ?axis)) [|x|]
+
+  let mean ?axis x = _make_node "mean" (Fun00 (A.mean ?axis)) [|x|]
+
+  let var ?axis x = _make_node "var" (Fun00 (A.var ?axis)) [|x|]
+
+  let std ?axis x = _make_node "std" (Fun00 (A.std ?axis)) [|x|]
+
+  let l1norm ?axis x = _make_node "l1norm" (Fun00 (A.l1norm ?axis)) [|x|]
+
+  let l2norm ?axis x = _make_node "l2norm" (Fun00 (A.l2norm ?axis)) [|x|]
+
+  let cumsum ?axis x = _make_node "cumsum" (Fun01 (A.cumsum_ ?axis)) [|x|]
+
+  let cumprod ?axis x = _make_node "cumprod" (Fun01 (A.cumprod_ ?axis)) [|x|]
+
+  let cummin ?axis x = _make_node "cummin" (Fun01 (A.cummin_ ?axis)) [|x|]
+
+  let cummax ?axis x = _make_node "cummax" (Fun01 (A.cummax_ ?axis)) [|x|]
 
 
 
