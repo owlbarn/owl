@@ -14,6 +14,7 @@ module Make
   (A : InpureSig)
   = struct
 
+
   (* type definitions *)
 
   type state = Valid | Invalid
@@ -88,30 +89,18 @@ module Make
     invalidate x;
     Array.iter invalidate_graph x.next
 
-  (* find the root inputs of [x] *)
-  (* let find_roots x =
-    let s = Owl_utils.Stack.make () in
-    let rec _find x =
-      Array.iter (fun n ->
-        if n.op = Noop then Owl_utils.Stack.push s n
-        else _find n
-      ) x.prev
-    in
-    _find x;
-    Owl_utils.Stack.to_array s *)
+  let var () = node ~value:[||] Noop
 
-  (* update [x]'s dependency graph by invalidating stale nodes *)
-  (* let update_graph x =
-    let rec _update x =
-      let valid = ref (is_valid x) in
-      Array.iter (fun n ->
-        valid := !valid || _update n
-      ) x.prev;
-      if !valid = false then invalidate x;
-      !valid
-    in
-    _update x |> ignore *)
+  let assign x x_val =
+    invalidate_graph x;
+    x.value <- [|x_val|]
 
+  let assign_arr x x_val = assign x (Arr x_val)
+
+  let assign_elt x x_val = assign x (Elt x_val)
+
+
+  (* allocate memory and evaluate experssions *)
 
   let allocate_1 x =
     let x_val = unpack_arr x.value.(0) in
@@ -162,7 +151,7 @@ module Make
         | Fun02 (f, g) -> _eval_map2 x f g
         | Fun03 f      -> _eval_map3 x f
         | Fun04 f      -> _eval_map4 x f
-        | Fun05 f      -> ()
+        | Fun05 f      -> _eval_map5 x f
         | Fun06 f      -> ()
         | ItemI i      -> ()
       in
@@ -212,26 +201,18 @@ module Make
     f a b;
     x.value <- [|Arr b|]
 
+  (* [f] is pure, shape changes so always allocate mem, for [arr array -> arr] *)
+  and _eval_map5 x f =
+    let a = Array.map (fun x ->
+      _eval_term x;
+      unpack_arr x.value.(0)
+    ) x.prev |> f
+    in
+    x.value <- [|Arr a|]
+
 
   let eval x = _eval_term x
 
-  let var () = node ~value:[||] Noop
-
-  let assign x x_val =
-    invalidate_graph x;
-    x.value <- [|x_val|]
-
-  let assign_arr x x_val = assign x (Arr x_val)
-
-  let assign_elt x x_val = assign x (Elt x_val)
-
-  (*
-  let of_ndarray x = node ~value:[|Arr x|] Noop
-
-  let to_ndarray x =
-    _eval_term x;
-    x.value.(0) |> unpack_arr
-  *)
 
   let _make_node name op x =
     let y = node ~name op in
