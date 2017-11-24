@@ -428,4 +428,32 @@ module Make
   let l2norm_sqr' x = _make_node "l2norm_sqr'" (Fun07 A.l2norm_sqr')
 
 
+  (* comparion functions *)
+
+  let elt_equal x y = _make_node "elt_equal" (Fun02 (A.elt_equal_, A.elt_equal)) [|x; y|]
+
+  let elt_not_equal x y = _make_node "elt_not_equal" (Fun02 (A.elt_not_equal_, A.elt_not_equal)) [|x; y|]
+
+  let elt_less x y = _make_node "elt_less" (Fun02 (A.elt_less_, A.elt_less)) [|x; y|]
+
+  let elt_greater x y = _make_node "elt_greater" (Fun02 (A.elt_greater_, A.elt_greater)) [|x; y|]
+
+  let elt_less_equal x y = _make_node "elt_less_equal" (Fun02 (A.elt_less_equal_, A.elt_less_equal)) [|x; y|]
+
+  let elt_greater_equal x y = _make_node "elt_greater_equal" (Fun02 (A.elt_greater_equal_, A.elt_greater_equal)) [|x; y|]
+
+  let elt_equal_scalar x a = _make_node "elt_equal_scalar" (Fun03 A.elt_equal_scalar_) [|x; a|]
+
+  let elt_not_equal_scalar x a = _make_node "elt_not_equal_scalar" (Fun03 A.elt_not_equal_scalar_) [|x; a|]
+
+  let elt_less_scalar x a = _make_node "elt_less_scalar" (Fun03 A.elt_less_scalar_) [|x; a|]
+
+  let elt_greater_scalar x a = _make_node "elt_greater_scalar" (Fun03 A.elt_greater_scalar_) [|x; a|]
+
+  let elt_less_equal_scalar x a = _make_node "elt_less_equal_scalar" (Fun03 A.elt_less_equal_scalar_) [|x; a|]
+
+  let elt_greater_equal_scalar x a = _make_node "elt_greater_equal_scalar" (Fun03 A.elt_greater_equal_scalar_) [|x; a|]
+
+
+
 end
