@@ -272,7 +272,85 @@ module Make
 
   let scalar_fmod a x = _make_node "scalar_fmod" (Fun04 A.scalar_fmod_) [|a; x|]
 
-  let sin x = _make_node "sin" (Fun01 A.sin_) [|x|]
+  let abs x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let neg x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let conj x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let reci x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let signum x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let sqr x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let sqrt x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let cbrt x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let exp x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let exp2 x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let exp10 x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let expm1 x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let log x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let log2 x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let log10 x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let log1p x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let sin x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let cos x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let tan x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let asin x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let acos x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let atan x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let sinh x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let cosh x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let tanh x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let asinh x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let acosh x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let atanh x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let floor x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let ceil x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let round x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let trunc x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let fix x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let erf x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let erfc x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let relu x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let softplus x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let softsign x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let softmax x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let sigmoid x = _make_node "abs" (Fun01 A.abs_) [|x|]
 
 
   let sum ?axis x = _make_node "sum" (Fun00 (A.sum ?axis)) [|x|]
