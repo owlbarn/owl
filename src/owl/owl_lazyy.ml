@@ -224,12 +224,53 @@ module Make
 
   let add x y = _make_node "add" (Fun02 (A.add_, A.add)) [|x; y|]
 
+  let sub x y = _make_node "sub" (Fun02 (A.sub_, A.sub)) [|x; y|]
+
+  let mul x y = _make_node "mul" (Fun02 (A.mul_, A.mul)) [|x; y|]
+
+  let div x y = _make_node "div" (Fun02 (A.div_, A.div)) [|x; y|]
+
+  let pow x y = _make_node "pow" (Fun02 (A.pow_, A.pow)) [|x; y|]
+
+  let atan2 x y = _make_node "atan2" (Fun02 (A.atan2_, A.atan2)) [|x; y|]
+
+  let hypot x y = _make_node "hypot" (Fun02 (A.hypot_, A.hypot)) [|x; y|]
+
+  let fmod x y = _make_node "fmod" (Fun02 (A.fmod_, A.fmod)) [|x; y|]
+
+  let min2 x y = _make_node "min2" (Fun02 (A.min2_, A.min2)) [|x; y|]
+
+  let max2 x y = _make_node "max2" (Fun02 (A.max2_, A.max2)) [|x; y|]
+
+  let dot x y = _make_node "dot" (Fun05 (fun x -> A.dot x.(0) x.(1))) [|x; y|]
 
   let add_scalar x a = _make_node "add_scalar" (Fun03 A.add_scalar_) [|x; a|]
 
+  let sub_scalar x a = _make_node "sub_scalar" (Fun03 A.sub_scalar_) [|x; a|]
+
+  let mul_scalar x a = _make_node "mul_scalar" (Fun03 A.mul_scalar_) [|x; a|]
+
+  let div_scalar x a = _make_node "div_scalar" (Fun03 A.div_scalar_) [|x; a|]
+
+  let pow_scalar x a = _make_node "pow_scalar" (Fun03 A.pow_scalar_) [|x; a|]
+
+  let atan2_scalar x a = _make_node "atan2_scalar" (Fun03 A.atan2_scalar_) [|x; a|]
+
+  let fmod_scalar x a = _make_node "fmod_scalar" (Fun03 A.fmod_scalar_) [|x; a|]
 
   let scalar_add a x = _make_node "scalar_add" (Fun04 A.scalar_add_) [|a; x|]
 
+  let scalar_sub a x = _make_node "scalar_sub" (Fun04 A.scalar_sub_) [|a; x|]
+
+  let scalar_mul a x = _make_node "scalar_mul" (Fun04 A.scalar_mul_) [|a; x|]
+
+  let scalar_div a x = _make_node "scalar_div" (Fun04 A.scalar_div_) [|a; x|]
+
+  let scalar_pow a x = _make_node "scalar_pow" (Fun04 A.scalar_pow_) [|a; x|]
+
+  let scalar_atan2 a x = _make_node "scalar_atan2" (Fun04 A.scalar_atan2_) [|a; x|]
+
+  let scalar_fmod a x = _make_node "scalar_fmod" (Fun04 A.scalar_fmod_) [|a; x|]
 
   let sin x = _make_node "sin" (Fun01 A.sin_) [|x|]
 
