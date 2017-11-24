@@ -40,6 +40,7 @@ module Make
     | Fun04 of (A.elt -> A.arr -> unit)
     | Fun05 of (A.arr array -> A.arr)
     | Fun06 of (A.arr -> A.arr array)
+    | Fun07 of (A.arr -> A.elt)
     | ItemI of int (* select the ith item in an array *)
 
 
@@ -153,6 +154,7 @@ module Make
         | Fun04 f      -> _eval_map4 x f
         | Fun05 f      -> _eval_map5 x f
         | Fun06 f      -> ()
+        | Fun07 f      -> _eval_map7 x f
         | ItemI i      -> ()
       in
       validate x
@@ -209,6 +211,12 @@ module Make
     ) x.prev |> f
     in
     x.value <- [|Arr a|]
+
+  (* [f] is pure, for [arr -> elt] *)
+  and _eval_map7 x f =
+    _eval_term x.prev.(0);
+    let a = x.prev.(0).value.(0) |> unpack_arr |> f in
+    x.value <- [|Elt a|]
 
 
   let eval x = _eval_term x
@@ -378,6 +386,46 @@ module Make
 
   let cummax ?axis x = _make_node "cummax" (Fun01 (A.cummax_ ?axis)) [|x|]
 
+  let conv1d ?padding input kernel stride = _make_node "conv1d" (Fun05 (fun x -> A.conv1d ?padding x.(0) x.(1) stride)) [|input; kernel|]
+
+  let conv2d ?padding input kernel stride = _make_node "conv2d" (Fun05 (fun x -> A.conv2d ?padding x.(0) x.(1) stride)) [|input; kernel|]
+
+  let conv3d ?padding input kernel stride = _make_node "conv3d" (Fun05 (fun x -> A.conv3d ?padding x.(0) x.(1) stride)) [|input; kernel|]
+
+  let max_pool1d ?padding input kernel stride = _make_node "max_pool1d" (Fun00 (fun x -> A.max_pool1d ?padding x kernel stride)) [|input|]
+
+  let max_pool2d ?padding input kernel stride = _make_node "max_pool2d" (Fun00 (fun x -> A.max_pool2d ?padding x kernel stride)) [|input|]
+
+  let max_pool3d ?padding input kernel stride = _make_node "max_pool3d" (Fun00 (fun x -> A.max_pool3d ?padding x kernel stride)) [|input|]
+
+  let avg_pool1d ?padding input kernel stride = _make_node "avg_pool1d" (Fun00 (fun x -> A.avg_pool1d ?padding x kernel stride)) [|input|]
+
+  let avg_pool2d ?padding input kernel stride = _make_node "avg_pool2d" (Fun00 (fun x -> A.avg_pool2d ?padding x kernel stride)) [|input|]
+
+  let avg_pool3d ?padding input kernel stride = _make_node "avg_pool3d" (Fun00 (fun x -> A.avg_pool3d ?padding x kernel stride)) [|input|]
+
+
+  (* reduce to scalar *)
+
+  let sum' x = _make_node "sum'" (Fun07 A.sum')
+
+  let prod' x = _make_node "prod'" (Fun07 A.prod')
+
+  let min' x = _make_node "min'" (Fun07 A.min')
+
+  let max' x = _make_node "max'" (Fun07 A.max')
+
+  let mean' x = _make_node "mean'" (Fun07 A.mean')
+
+  let var' x = _make_node "var'" (Fun07 A.var')
+
+  let std' x = _make_node "std'" (Fun07 A.std')
+
+  let l1norm' x = _make_node "l1norm'" (Fun07 A.l1norm')
+
+  let l2norm' x = _make_node "l2norm'" (Fun07 A.l2norm')
+
+  let l2norm_sqr' x = _make_node "l2norm_sqr'" (Fun07 A.l2norm_sqr')
 
 
 end
