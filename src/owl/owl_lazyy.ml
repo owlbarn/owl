@@ -228,6 +228,15 @@ module Make
     y
 
 
+  (* properties and manipulations *)
+
+  let tile x reps = _make_node "tile" (Fun00 (fun x -> A.tile x reps)) [|x|]
+
+  let repeat ?axis x reps = _make_node "repeat" (Fun00 (fun x -> A.repeat ?axis x reps)) [|x|]
+
+  let concatenate ?axis x = _make_node "concatenate" (Fun05 (A.concatenate ?axis)) x
+
+
   (* unary and binary math functions *)
 
   let add x y = _make_node "add" (Fun02 (A.add_, A.add)) [|x; y|]
@@ -403,6 +412,26 @@ module Make
   let avg_pool2d ?padding input kernel stride = _make_node "avg_pool2d" (Fun00 (fun x -> A.avg_pool2d ?padding x kernel stride)) [|input|]
 
   let avg_pool3d ?padding input kernel stride = _make_node "avg_pool3d" (Fun00 (fun x -> A.avg_pool3d ?padding x kernel stride)) [|input|]
+
+  let conv1d_backward_input input kernel stride output' = _make_node "conv1d_backward_input" (Fun05 (fun x -> A.conv1d_backward_input x.(0) x.(1) stride x.(2))) [|input; kernel; output'|]
+
+  let conv1d_backward_kernel input kernel stride output' = _make_node "conv1d_backward_kernel" (Fun05 (fun x -> A.conv1d_backward_kernel x.(0) x.(1) stride x.(2))) [|input; kernel; output'|]
+
+  let conv2d_backward_input input kernel stride output' = _make_node "conv2d_backward_input" (Fun05 (fun x -> A.conv2d_backward_input x.(0) x.(1) stride x.(2))) [|input; kernel; output'|]
+
+  let conv2d_backward_kernel input kernel stride output' = _make_node "conv2d_backward_kernel" (Fun05 (fun x -> A.conv2d_backward_kernel x.(0) x.(1) stride x.(2))) [|input; kernel; output'|]
+
+  let conv3d_backward_input input kernel stride output' = _make_node "conv3d_backward_input" (Fun05 (fun x -> A.conv3d_backward_input x.(0) x.(1) stride x.(2))) [|input; kernel; output'|]
+
+  let conv3d_backward_kernel input kernel stride output' = _make_node "conv3d_backward_kernel" (Fun05 (fun x -> A.conv3d_backward_kernel x.(0) x.(1) stride x.(2))) [|input; kernel; output'|]
+
+  let max_pool1d_backward padding input kernel stride output' = _make_node "max_pool1d_backward" (Fun05 (fun x -> A.max_pool1d_backward padding x.(0) kernel stride x.(1))) [|input; output'|]
+
+  let max_pool2d_backward padding input kernel stride output' = _make_node "max_pool2d_backward" (Fun05 (fun x -> A.max_pool2d_backward padding x.(0) kernel stride x.(1))) [|input; output'|]
+
+  let avg_pool1d_backward padding input kernel stride output' = _make_node "avg_pool1d_backward" (Fun05 (fun x -> A.avg_pool1d_backward padding x.(0) kernel stride x.(1))) [|input; output'|]
+
+  let avg_pool2d_backward padding input kernel stride output' = _make_node "avg_pool2d_backward" (Fun05 (fun x -> A.avg_pool2d_backward padding x.(0) kernel stride x.(1))) [|input; output'|]
 
 
   (* reduce to scalar *)
