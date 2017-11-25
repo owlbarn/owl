@@ -24,12 +24,13 @@ module Make
     | Arr of A.arr
 
   type node = {
-    mutable name  : string;
-    mutable op    : op;
-    mutable prev  : node array;
-    mutable next  : node array;
-    mutable state : state;
-    mutable value : value array;
+    mutable name  : string;         (* name of the node *)
+    mutable tag   : int;            (* tag of the node *)
+    mutable op    : op;             (* function in the node *)
+    mutable prev  : node array;     (* parents of the node *)
+    mutable next  : node array;     (* children of the node *)
+    mutable state : state;          (* indicate the validity *)
+    mutable value : value array;    (* save the calculated value *)
   }
   and t = node
   and op =
@@ -47,8 +48,9 @@ module Make
 
   (* core functions to manipulate computation graphs *)
 
-  let node ?(name="") ?(prev=[||]) ?(next=[||]) ?(state=Invalid) ?(value=[||]) op = {
+  let node ?(name="") ?(tag=0) ?(prev=[||]) ?(next=[||]) ?(state=Invalid) ?(value=[||]) op = {
     name;
+    tag;
     op;
     prev;
     next;
@@ -86,10 +88,25 @@ module Make
     x.state <- Invalid;
     x.value <- [||]
 
-  (* invalidate [x] and all its descendants nodes in the subgraph *)
-  let rec invalidate_graph x =
-    invalidate x;
-    Array.iter invalidate_graph x.next
+  (* depth-first search from [x];
+    [f] is applied to each node;
+    [next] returns the next set of nodes to iterate;
+  *)
+  let dfs_iter x f next =
+    let max_tag = Array.fold_left (fun a y -> max a y.tag) min_int x in
+    let tag = max_tag + 1 in
+    let rec _dfs_iter y =
+      Array.iter (fun z ->
+        if z.tag < tag then (
+          f z;
+          z.tag <- tag;
+          _dfs_iter (next z);
+        )
+      ) y
+    in
+    _dfs_iter x
+
+  let invalidate_graph x = dfs_iter [|x|] invalidate (fun x -> x.next)
 
   let variable () = node ~value:[||] Noop
 
@@ -104,6 +121,22 @@ module Make
   let to_arr x = unpack_arr x.value.(0)
 
   let to_elt x = unpack_elt x.value.(0)
+
+
+  (* pretty printing and print out computation graph *)
+
+  let type_to_str = function Elt _ -> "elt" | Arr _ -> "arr"
+
+  let state_to_str = function Valid -> "valid" | Invalid -> "invalid"
+
+  let pp_lazy formatter x =
+    let out_s =
+      Printf.sprintf "[ name:%s tag:%i prev:%i next:%i state:%s ]\n"
+      x.name x.tag (Array.length x.prev) (Array.length x.next) (state_to_str x.state)
+    in
+    Format.open_box 0;
+    Format.fprintf formatter "%s" out_s;
+    Format.close_box ()
 
 
   (* allocate memory and evaluate experssions *)

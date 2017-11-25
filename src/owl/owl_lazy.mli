@@ -28,6 +28,11 @@ module Make
   val eval : t -> unit
 
 
+  (** {6 Printing functions} *)
+
+  val pp_lazy : Format.formatter -> t -> unit
+
+
   (** {6 Properties and manipulations} *)
 
   val tile : t -> int array -> t
