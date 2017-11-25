@@ -32,6 +32,8 @@ module Make
 
   val pp_lazy : Format.formatter -> t -> unit
 
+  val to_trace : t list -> string
+
 
   (** {6 Properties and manipulations} *)
 

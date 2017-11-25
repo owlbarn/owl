@@ -24,9 +24,9 @@ module Make
     | Arr of A.arr
 
   type node = {
-    mutable name  : string;         (* name of the node *)
-    mutable tag   : int;            (* tag of the node *)
+    mutable id    : int;            (* unique identifier *)
     mutable op    : op;             (* function in the node *)
+    mutable name  : string;         (* name of the node *)
     mutable prev  : node array;     (* parents of the node *)
     mutable next  : node array;     (* children of the node *)
     mutable state : state;          (* indicate the validity *)
@@ -48,15 +48,19 @@ module Make
 
   (* core functions to manipulate computation graphs *)
 
-  let node ?(name="") ?(tag=0) ?(prev=[||]) ?(next=[||]) ?(state=Invalid) ?(value=[||]) op = {
-    name;
-    tag;
-    op;
-    prev;
-    next;
-    state;
-    value;
-  }
+  let _global_id = ref 0
+
+  let node ?(name="") ?(prev=[||]) ?(next=[||]) ?(state=Invalid) ?(value=[||]) op =
+    _global_id := !_global_id + 1;
+    {
+      id = !_global_id;
+      op;
+      name;
+      prev;
+      next;
+      state;
+      value;
+    }
 
 
   let connect parents children =
@@ -88,18 +92,16 @@ module Make
     x.state <- Invalid;
     x.value <- [||]
 
-  (* depth-first search from [x];
-    [f] is applied to each node;
-    [next] returns the next set of nodes to iterate;
+  (* depth-first search from [x]; [f : node -> unit] is applied to each node;
+    [next node -> node array] returns the next set of nodes to iterate;
   *)
   let dfs_iter x f next =
-    let max_tag = Array.fold_left (fun a y -> max a y.tag) min_int x in
-    let tag = max_tag + 1 in
+    let h = Hashtbl.create 512 in
     let rec _dfs_iter y =
       Array.iter (fun z ->
-        if z.tag < tag then (
+        if Hashtbl.mem h z.id = false then (
           f z;
-          z.tag <- tag;
+          Hashtbl.add h z.id None;
           _dfs_iter (next z);
         )
       ) y
@@ -108,7 +110,7 @@ module Make
 
   let invalidate_graph x = dfs_iter [|x|] invalidate (fun x -> x.next)
 
-  let variable () = node ~value:[||] Noop
+  let variable () = node ~name:"variable" ~value:[||] Noop
 
   let assign x x_val =
     invalidate_graph x;
@@ -129,14 +131,42 @@ module Make
 
   let state_to_str = function Valid -> "valid" | Invalid -> "invalid"
 
-  let pp_lazy formatter x =
-    let out_s =
-      Printf.sprintf "[ name:%s tag:%i prev:%i next:%i state:%s ]\n"
-      x.name x.tag (Array.length x.prev) (Array.length x.next) (state_to_str x.state)
+  let node_to_str ?id x =
+    let id = match id with
+      | Some i -> Printf.sprintf " #%i" i
+      | None   -> ""
     in
+    Printf.sprintf "[%s name:%s state:%s ]"
+    id x.name (state_to_str x.state)
+
+  let pp_lazy formatter x =
     Format.open_box 0;
-    Format.fprintf formatter "%s" out_s;
+    Format.fprintf formatter "%s\n" (node_to_str x);
     Format.close_box ()
+
+  (* traverse all the nodes; assign indices; save to a Hashtbl *)
+  let to_hashtbl x next =
+    let i = ref 0 in
+    let h = Hashtbl.create 512 in
+    let f = fun x ->
+      Hashtbl.add h x !i;
+      i := !i + 1;
+    in
+    dfs_iter x f next;
+    h
+
+  let to_trace x =
+    let x = Array.of_list x in
+    let next = fun x -> x.prev in
+    let h = to_hashtbl x next in
+    let s = ref "" in
+    Hashtbl.iter (fun n nid ->
+      Array.iter (fun p ->
+        let pid = Hashtbl.find h p in
+        s := Printf.sprintf "%s%s -> %s\n" !s (node_to_str ~id:pid p) (node_to_str ~id:nid n);
+      ) n.prev
+    ) h;
+    !s
 
 
   (* allocate memory and evaluate experssions *)
