@@ -127,6 +127,17 @@ module Make
 
   (* pretty printing and print out computation graph *)
 
+  let op_to_str = function
+    | Fun00 _ -> "arr"
+    | Fun01 _ -> "arr"
+    | Fun02 _ -> "arr"
+    | Fun03 _ -> "arr"
+    | Fun04 _ -> "arr"
+    | Fun05 _ -> "arr"
+    | Fun06 _ -> "arr array"
+    | Fun07 _ -> "elt"
+    | _       -> ""
+
   let type_to_str = function Elt _ -> "elt" | Arr _ -> "arr"
 
   let state_to_str = function Valid -> "valid" | Invalid -> "invalid"
@@ -144,29 +155,25 @@ module Make
     Format.fprintf formatter "%s\n" (node_to_str x);
     Format.close_box ()
 
-  (* traverse all the nodes; assign indices; save to a Hashtbl *)
-  let to_hashtbl x next =
-    let i = ref 0 in
-    let h = Hashtbl.create 512 in
-    let f = fun x ->
-      Hashtbl.add h x !i;
-      i := !i + 1;
-    in
-    dfs_iter x f next;
-    h
-
   let to_trace x =
     let x = Array.of_list x in
-    let next = fun x -> x.prev in
-    let h = to_hashtbl x next in
     let s = ref "" in
-    Hashtbl.iter (fun n nid ->
+    dfs_iter x (fun n ->
       Array.iter (fun p ->
-        let pid = Hashtbl.find h p in
-        s := Printf.sprintf "%s%s -> %s\n" !s (node_to_str ~id:pid p) (node_to_str ~id:nid n);
+        s := !s ^ Printf.sprintf "%s -> %s\n" (node_to_str ~id:p.id p) (node_to_str ~id:n.id n);
       ) n.prev
-    ) h;
+    ) (fun x -> x.prev);
     !s
+
+  let to_dot x =
+    let x = Array.of_list x in
+    let topo = ref "" in
+    let attr = ref "" in
+    dfs_iter x (fun n ->
+      Array.iter (fun p -> topo := !topo ^ Printf.sprintf "%i -> %i;\n" p.id n.id) n.prev;
+      attr := !attr ^ Printf.sprintf "%i [ label=\"#%i | { %s | %s }\" ];\n" n.id n.id n.name (op_to_str n.op);
+    ) (fun x -> x.prev);
+    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s}" (!topo ^ !attr)
 
 
   (* allocate memory and evaluate experssions *)

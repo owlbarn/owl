@@ -34,6 +34,8 @@ module Make
 
   val to_trace : t list -> string
 
+  val to_dot : t list -> string
+
 
   (** {6 Properties and manipulations} *)
 

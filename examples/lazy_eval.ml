@@ -6,6 +6,7 @@ open Owl
 module M = Lazy.Make (Arr)
 
 
+(* an example for lazy evaluation using computation graph *)
 let lazy_eval x () =
   let a = M.variable () in
   let z = M.(add a a |> log |> sin |> neg |> cos |> abs |> sinh |> round |> atan) in
@@ -13,10 +14,12 @@ let lazy_eval x () =
   M.eval z
 
 
+(* an exmaple for eager evaluation *)
 let eager_eval x () =
   Arr.(add x x |> log |> sin |> neg |> cos |> abs |> sinh |> round |> atan)
 
 
+(* test incremental compuation by changing part of inputs *)
 let incremental x =
   let a = M.variable () in
   let b = M.variable () in
@@ -30,6 +33,7 @@ let incremental x =
   Printf.printf "Incremental#2:\t%.3f ms\n" (Utils.time (fun () -> M.eval c))
 
 
+(* print out the computation trace on terminal *)
 let print_trace a =
   let x = M.variable () in
   let y = M.variable () in
@@ -40,9 +44,20 @@ let print_trace a =
   M.to_trace [z] |> print_endline
 
 
-let () =
+(* generate computation graph, you need to install graphviz *)
+let print_graph () =
+  let x = M.variable () in
+  let y = M.variable () in
+  let z = M.(add x y |> dot x |> sin |> abs |> sum' |> add_scalar x |> log |> atan2 y |> neg |> relu) in
+  print_endline "visualise computation graph to dot file ...";
+  M.to_dot [z] |> Utils.write_file "plot_lazy.dot";
+  Sys.command "dot -Tpdf plot_lazy.dot -o plot_lazy.pdf"
+
+
+let _ =
   let x = Arr.uniform [|2000; 2000|] in
   Printf.printf "Lazy eval:\t%.3f ms\n" (Utils.time (lazy_eval x));
   Printf.printf "Eager eval:\t%.3f ms\n" (Utils.time (eager_eval x));
   incremental x;
-  print_trace x
+  print_trace x;
+  print_graph ()
