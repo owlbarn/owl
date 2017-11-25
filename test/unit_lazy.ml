@@ -9,81 +9,158 @@ let x0 = Arr.zeros [|3; 4|]
 let x1 = Arr.ones [|3; 4|]
 let x2 = Arr.sequential ~a:1. [|3; 4|]
 let x3 = Arr.(uniform [|3; 4|] - x1)
+let x4 = Arr.(uniform [|4; 4|] -$ 1.)
 
 (* make testable *)
-let ndarray = Alcotest.testable (fun p (x : M.t) -> ()) M.equal
+(* let ndarray = Alcotest.testable (fun p (x : M.t) -> ()) (fun ) *)
 
 (* a module with functions to test *)
 module To_test = struct
 
   let fun00 () =
-    let a = Arr.copy x3 |> M.of_ndarray |> M.abs |> M.to_ndarray in
+    let x = M.variable () in
+    let y = M.abs x in
+    M.assign_arr x x3;
+    M.eval y;
+    let a = M.to_arr y in
     let b = Arr.abs x3 in
     Arr.(a = b)
 
   let fun01 () =
-    let a = Arr.copy x3 |> M.of_ndarray |> M.sin |> M.cos |> M.to_ndarray in
+    let x = M.variable () in
+    let y = x |> M.sin |> M.cos in
+    M.assign_arr x x3;
+    M.eval y;
+    let a = M.to_arr y in
     let b = x3 |> Arr.sin |> Arr.cos in
     Arr.(a = b)
 
   let fun02 () =
-    let a = Arr.copy x3 |> M.of_ndarray |> M.neg |> M.cosh |> M.tanh |> M.to_ndarray in
+    let x = M.variable () in
+    let y = x |> M.neg |> M.cosh |> M.tanh in
+    M.assign_arr x x3;
+    M.eval y;
+    let a = M.to_arr y in
     let b = x3 |> Arr.cosh |> Arr.tanh in
     Arr.(a = b)
 
   let fun03 () =
-    let a = M.add (M.of_ndarray (Arr.copy x2)) (M.of_ndarray (Arr.copy x3)) |> M.to_ndarray in
+    let x = M.variable () in
+    let y = M.variable () in
+    let z = M.add x y in
+    M.assign_arr x x2;
+    M.assign_arr y x3;
+    M.eval z;
+    let a = M.to_arr z in
     let b = Arr.add x2 x3 in
     Arr.(a = b)
 
   let fun04 () =
-    let a = M.sub (M.of_ndarray (Arr.copy x2)) (M.of_ndarray (Arr.copy x3)) |> M.to_ndarray in
+    let x = M.variable () in
+    let y = M.variable () in
+    let z = M.sub x y in
+    M.assign_arr x x2;
+    M.assign_arr y x3;
+    M.eval z;
+    let a = M.to_arr z in
     let b = Arr.sub x2 x3 in
     Arr.(a = b)
 
   let fun05 () =
-    let a = M.mul (M.of_ndarray (Arr.copy x2)) (M.of_ndarray (Arr.copy x3)) |> M.to_ndarray in
+    let x = M.variable () in
+    let y = M.variable () in
+    let z = M.mul x y in
+    M.assign_arr x x2;
+    M.assign_arr y x3;
+    M.eval z;
+    let a = M.to_arr z in
     let b = Arr.mul x2 x3 in
     Arr.(a = b)
 
   let fun06 () =
-    let a = M.div (M.of_ndarray (Arr.copy x2)) (M.of_ndarray (Arr.copy x3)) |> M.to_ndarray in
+    let x = M.variable () in
+    let y = M.variable () in
+    let z = M.div x y in
+    M.assign_arr x x2;
+    M.assign_arr y x3;
+    M.eval z;
+    let a = M.to_arr z in
     let b = Arr.div x2 x3 in
     Arr.(a = b)
 
   let fun07 () =
-    let a = M.pow (M.of_ndarray (Arr.copy x2)) (M.of_ndarray (Arr.copy x3)) |> M.to_ndarray in
+    let x = M.variable () in
+    let y = M.variable () in
+    let z = M.pow x y in
+    M.assign_arr x x2;
+    M.assign_arr y x3;
+    M.eval z;
+    let a = M.to_arr z in
     let b = Arr.pow x2 x3 in
     Arr.(a = b)
 
   let fun08 () =
-    let a = M.atan2 (M.of_ndarray (Arr.copy x2)) (M.of_ndarray (Arr.copy x3)) |> M.to_ndarray in
+    let x = M.variable () in
+    let y = M.variable () in
+    let z = M.atan2 x y in
+    M.assign_arr x x2;
+    M.assign_arr y x3;
+    M.eval z;
+    let a = M.to_arr z in
     let b = Arr.atan2 x2 x3 in
     Arr.(a = b)
 
   let fun09 () =
-    let a = M.hypot (M.of_ndarray (Arr.copy x2)) (M.of_ndarray (Arr.copy x3)) |> M.to_ndarray in
+    let x = M.variable () in
+    let y = M.variable () in
+    let z = M.hypot x y in
+    M.assign_arr x x2;
+    M.assign_arr y x3;
+    M.eval z;
+    let a = M.to_arr z in
     let b = Arr.hypot x2 x3 in
     Arr.(a = b)
 
   let fun10 () =
-    let a = M.min2 (M.of_ndarray (Arr.copy x2)) (M.of_ndarray (Arr.copy x3)) |> M.to_ndarray in
+    let x = M.variable () in
+    let y = M.variable () in
+    let z = M.min2 x y in
+    M.assign_arr x x2;
+    M.assign_arr y x3;
+    M.eval z;
+    let a = M.to_arr z in
     let b = Arr.min2 x2 x3 in
     Arr.(a = b)
 
   let fun11 () =
-    let a = M.max2 (M.of_ndarray (Arr.copy x2)) (M.of_ndarray (Arr.copy x3)) |> M.to_ndarray in
+    let x = M.variable () in
+    let y = M.variable () in
+    let z = M.max2 x y in
+    M.assign_arr x x2;
+    M.assign_arr y x3;
+    M.eval z;
+    let a = M.to_arr z in
     let b = Arr.max2 x2 x3 in
     Arr.(a = b)
 
   let fun12 () =
-    let a = M.max2 (M.of_ndarray (Arr.copy x2)) (M.of_ndarray (Arr.copy x3)) |> M.to_ndarray in
+    let x = M.variable () in
+    let y = M.variable () in
+    let z = M.max2 x y in
+    M.assign_arr x x2;
+    M.assign_arr y x3;
+    M.eval z;
+    let a = M.to_arr z in
     let b = Arr.max2 x2 x3 in
     Arr.(a = b)
 
   let fun13 () =
-    let a = Arr.copy x2 |> M.of_ndarray |> M.log |> M.sqr |> M.cbrt |> M.to_ndarray in
-    let b = x2 |> Arr.log |> Arr.sqr |> Arr.cbrt in
+    let x = M.variable () in
+    let y = M.dot x x in
+    M.assign_arr x x4;
+    M.eval y;
+    let a = M.to_arr y in
+    let b = Arr.dot x4 x4 in
     Arr.(a = b)
 
 end

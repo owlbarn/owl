@@ -14,527 +14,480 @@ module Make
   (A : InpureSig)
   = struct
 
+
   (* type definitions *)
 
-  type elt = A.elt
+  type state = Valid | Invalid
 
-  type t = {
-    mutable op     : op;
-    mutable refnum : int;
-    mutable outval : A.arr array;
+  type value =
+    | Elt of A.elt
+    | Arr of A.arr
+
+  type node = {
+    mutable name  : string;
+    mutable op    : op;
+    mutable prev  : node array;
+    mutable next  : node array;
+    mutable state : state;
+    mutable value : value array;
   }
-  and arr = t
+  and t = node
   and op =
     | Noop
-    | Fun00 of t * (A.arr -> A.arr)
-    | Fun01 of t * (A.arr -> unit)
-    | Fun02 of t * t * (A.arr -> A.arr -> unit) * (A.arr -> A.arr -> A.arr)
-    | Fun03 of t * elt * (A.arr -> elt -> unit)
-    | Fun04 of elt * t * (elt -> A.arr -> unit)
-    | Fun05 of t array * (A.arr array -> A.arr)
-    | Fun06 of t * (A.arr -> A.arr array)
-    | ItemI of t * int (* select the ith item in an array *)
+    | Fun00 of (A.arr -> A.arr)
+    | Fun01 of (A.arr -> unit)
+    | Fun02 of (A.arr -> A.arr -> unit) * (A.arr -> A.arr -> A.arr)
+    | Fun03 of (A.arr -> A.elt -> unit)
+    | Fun04 of (A.elt -> A.arr -> unit)
+    | Fun05 of (A.arr array -> A.arr)
+    | Fun06 of (A.arr -> A.arr array)
+    | Fun07 of (A.arr -> A.elt)
+    | ItemI of int (* select the ith item in an array *)
 
 
-  let unpack_operands = function
-    | Noop               -> [| |]
-    | Fun00 (a, f)       -> [|a|]
-    | Fun01 (a, f)       -> [|a|]
-    | Fun02 (a, b, f, g) -> [|a; b|]
-    | Fun03 (a, b, f)    -> [|a|]
-    | Fun04 (a, b, f)    -> [|b|]
-    | Fun05 (a, f)       -> a
-    | Fun06 (a, f)       -> [|a|]
-    | ItemI (a, b)       -> [|a|]
+  (* core functions to manipulate computation graphs *)
+
+  let node ?(name="") ?(prev=[||]) ?(next=[||]) ?(state=Invalid) ?(value=[||]) op = {
+    name;
+    op;
+    prev;
+    next;
+    state;
+    value;
+  }
 
 
-  let inc_operand_refnum x =
-    let operands = unpack_operands x in
-    let s = Owl_utils.Stack.make () in
-    Array.iter (fun a ->
-      (* avoid increasing twice for the same operand *)
-      if Owl_utils.Stack.memq s a = false then (
-        Owl_utils.Stack.push s a;
-        a.refnum <- a.refnum + 1
-      )
-    ) operands
+  let connect parents children =
+    Array.iter (fun parent ->
+      Array.iter (fun child ->
+          parent.next <- (Array.append parent.next [|child|]);
+          child.prev <- (Array.append child.prev [|parent|]);
+      ) children
+    ) parents
 
 
-  let inc_refnum x = x.refnum <- x.refnum + 1
+  let refnum x = Array.length x.next
+
+  let unpack_arr = function Arr x -> x | _ -> failwith "owl_lazy: unpack_arr"
+
+  let unpack_elt = function Elt x -> x | _ -> failwith "owl_lazy: unpack_elt"
+
+  let shall_eval x = Array.length x.value = 0 || x.state = Invalid
+
+  let is_var x = x.op = Noop
+
+  let is_assigned x = assert (Array.length x.value > 0)
+
+  let is_valid x = x.state = Valid
+
+  let validate x = x.state <- Valid
+
+  let invalidate x =
+    x.state <- Invalid;
+    x.value <- [||]
+
+  (* invalidate [x] and all its descendants nodes in the subgraph *)
+  let rec invalidate_graph x =
+    invalidate x;
+    Array.iter invalidate_graph x.next
+
+  let variable () = node ~value:[||] Noop
+
+  let assign x x_val =
+    invalidate_graph x;
+    x.value <- [|x_val|]
+
+  let assign_arr x x_val = assign x (Arr x_val)
+
+  let assign_elt x x_val = assign x (Elt x_val)
+
+  let to_arr x = unpack_arr x.value.(0)
+
+  let to_elt x = unpack_elt x.value.(0)
 
 
-  let make_t ?(outval=[||]) ?(refnum=0) op =
-    inc_operand_refnum op;
-    {
-      op;
-      refnum;
-      outval;
-    }
+  (* allocate memory and evaluate experssions *)
 
-
-  let allocate_1 operands =
-    let a = operands.(0) in
-    if a.refnum = 1 then a.outval.(0)
-    else A.copy a.outval.(0)
-
-
-  let allocate_2 operands =
-    let a = operands.(0) in
-    let b = operands.(1) in
-    let a_val = a.outval.(0) in
-    let b_val = b.outval.(0) in
-    let a_shp = A.shape a_val in
-    let b_shp = A.shape b_val in
-    if a_shp = b_shp then (
-      if a.refnum = 1 then Some (a_val, b_val)
-      else if b.refnum = 1 then Some (b_val, a_val)
-      else Some (A.copy a_val, b_val)
+  let allocate_1 x =
+    let x_val = unpack_arr x.value.(0) in
+    if refnum x = 1 && is_var x = false then (
+      invalidate x;
+      x_val
     )
-    else if Owl_utils.array_greater_eqaul a_shp b_shp && a.refnum = 1 then Some (a_val, b_val)
-    else if Owl_utils.array_greater_eqaul b_shp a_shp && b.refnum = 1 then Some (b_val, a_val)
+    else A.copy x_val
+
+
+  let allocate_2 x y =
+    let x_val = unpack_arr x.value.(0) in
+    let y_val = unpack_arr y.value.(0) in
+    let x_shp = A.shape x_val in
+    let y_shp = A.shape y_val in
+    if x_shp = y_shp then (
+      if refnum x = 1 && is_var x = false then (
+        invalidate x;
+        Some (x_val, y_val)
+      )
+      else if refnum y = 1 && is_var y = false then (
+        invalidate y;
+        Some (y_val, x_val)
+      )
+      else if refnum x = 2 && x == y && is_var x = false then (
+        invalidate x;
+        Some (x_val, y_val)
+      )
+      else Some (A.copy x_val, y_val)
+    )
+    else if Owl_utils.array_greater_eqaul x_shp y_shp && refnum x = 1 && is_var x = false then (
+      invalidate x;
+      Some (x_val, y_val)
+    )
+    else if Owl_utils.array_greater_eqaul y_shp x_shp && refnum y = 1 && is_var y = false then (
+      invalidate y;
+      Some (y_val, x_val)
+    )
     else None
 
 
-  (* recursively evaluate an expression *)
-
   let rec _eval_term x =
-    if Array.length x.outval = 0 then (
-      match x.op with
-      | Noop               -> ()
-      | Fun00 (a, f)       -> _eval_map0 x f
-      | Fun01 (a, f)       -> _eval_map1 x f
-      | Fun02 (a, b, f, g) -> _eval_map2 x f g
-      | Fun03 (a, b, f)    -> _eval_map3 x b f
-      | Fun04 (a, b, f)    -> _eval_map4 x a f
-      | Fun05 (a, f)       -> _eval_map5 x f
-      | Fun06 (a, f)       -> _eval_map6 x f
-      | ItemI (a, b)       -> _item_i x b
+    if shall_eval x then (
+      let _ = match x.op with
+        | Noop         -> is_assigned x
+        | Fun00 f      -> _eval_map0 x f
+        | Fun01 f      -> _eval_map1 x f
+        | Fun02 (f, g) -> _eval_map2 x f g
+        | Fun03 f      -> _eval_map3 x f
+        | Fun04 f      -> _eval_map4 x f
+        | Fun05 f      -> _eval_map5 x f
+        | Fun06 f      -> ()
+        | Fun07 f      -> _eval_map7 x f
+        | ItemI i      -> ()
+      in
+      validate x
     )
 
   (* [f] is pure, shape changes so always allocate mem, for [arr -> arr] *)
   and _eval_map0 x f =
-    let operands = unpack_operands x.op in
-    _eval_term operands.(0);
-    let a = operands.(0).outval.(0) in
-    x.outval <- [|f a|]
+    _eval_term x.prev.(0);
+    let a = x.prev.(0).value.(0) |> unpack_arr |> f in
+    x.value <- [|Arr a|]
 
   (* [f] is inpure, for [arr -> arr] *)
   and _eval_map1 x f =
-    let operands = unpack_operands x.op in
-    _eval_term operands.(0);
-    let a = allocate_1 operands in
+    _eval_term x.prev.(0);
+    let a = allocate_1 x.prev.(0) in
     f a;
-    x.outval <- [|a|]
+    x.value <- [|Arr a|]
 
   (* [f] is inpure and [g] is pure, for [arr -> arr -> arr] *)
   and _eval_map2 x f g =
-    let operands = unpack_operands x.op in
-    _eval_term operands.(0);
-    _eval_term operands.(1);
-    let a = operands.(0).outval.(0) in
-    let b = operands.(1).outval.(0) in
-    let c = match allocate_2 operands with
+    _eval_term x.prev.(0);
+    _eval_term x.prev.(1);
+    let a = unpack_arr x.prev.(0).value.(0) in
+    let b = unpack_arr x.prev.(1).value.(0) in
+    let c = match allocate_2 x.prev.(0) x.prev.(1) with
       | Some (p, q) -> f p q; p    (* in-place function, p will be written *)
       | None        -> g a b       (* pure function without touching a and b *)
     in
-    x.outval <- [|c|]
+    x.value <- [|Arr c|]
 
   (* [f] is inpure, for [arr -> elt -> arr] *)
-  and _eval_map3 x b f =
-    let operands = unpack_operands x.op in
-    _eval_term operands.(0);
-    let a = allocate_1 operands in
+  and _eval_map3 x f =
+    _eval_term x.prev.(0);
+    _eval_term x.prev.(1);
+    let a = allocate_1 x.prev.(0) in
+    let b = unpack_elt x.prev.(1).value.(0) in
     f a b;
-    x.outval <- [|a|]
+    x.value <- [|Arr a|]
 
   (* [f] is inpure, for [elt -> arr -> arr] *)
-  and _eval_map4 x a f =
-    let operands = unpack_operands x.op in
-    _eval_term operands.(0);
-    let b = allocate_1 operands in
+  and _eval_map4 x f =
+    _eval_term x.prev.(0);
+    _eval_term x.prev.(1);
+    let a = unpack_elt x.prev.(0).value.(0) in
+    let b = allocate_1 x.prev.(1) in
     f a b;
-    x.outval <- [|b|]
+    x.value <- [|Arr b|]
 
   (* [f] is pure, shape changes so always allocate mem, for [arr array -> arr] *)
   and _eval_map5 x f =
-    let operands = unpack_operands x.op in
-    let a = Array.map (fun x -> _eval_term x; x.outval.(0)) operands in
-    x.outval <- [|f a|]
+    let a = Array.map (fun x ->
+      _eval_term x;
+      unpack_arr x.value.(0)
+    ) x.prev |> f
+    in
+    x.value <- [|Arr a|]
 
-  (* [f] is pure, allocate mem, for [arr -> arr array] *)
-  and _eval_map6 x f =
-    let operands = unpack_operands x.op in
-    _eval_term operands.(0);
-    let a = operands.(0).outval.(0) in
-    x.outval <- f a
-
-  (* get the specific output val of [x] for a given index *)
-  and _item_i x i =
-    let operands = unpack_operands x.op in
-    _eval_term operands.(0);
-    assert (i < Array.length operands.(0).outval);
-    x.outval <- [|operands.(0).outval.(i)|]
-
-
-  let of_ndarray x = make_t ~outval:[|x|] Noop
-
-
-  let to_ndarray x =
-    _eval_term x;
-    x.outval.(0)
+  (* [f] is pure, for [arr -> elt] *)
+  and _eval_map7 x f =
+    _eval_term x.prev.(0);
+    let a = x.prev.(0).value.(0) |> unpack_arr |> f in
+    x.value <- [|Elt a|]
 
 
   let eval x = _eval_term x
 
 
-  (* creation functions *)
-
-  let empty d = A.empty d |> of_ndarray
-
-  let zeros d = A.zeros d |> of_ndarray
-
-  let ones d = A.ones d |> of_ndarray
-
-  let uniform ?scale d = A.uniform ?scale d |> of_ndarray
-
-  let gaussian ?sigma d = A.gaussian ?sigma d |> of_ndarray
-
-  let bernoulli ?p ?seed d = A.bernoulli ?p ?seed d |> of_ndarray
+  let _make_node name op x =
+    let y = node ~name op in
+    connect x [|y|];
+    y
 
 
   (* properties and manipulations *)
 
-  let shape x = to_ndarray x |> A.shape
+  let tile x reps = _make_node "tile" (Fun00 (fun x -> A.tile x reps)) [|x|]
 
-  let numel x = to_ndarray x |> A.numel
+  let repeat ?axis x reps = _make_node "repeat" (Fun00 (fun x -> A.repeat ?axis x reps)) [|x|]
 
-  let row_num x = to_ndarray x |> A.row_num
+  let concatenate ?axis x = _make_node "concatenate" (Fun05 (A.concatenate ?axis)) x
 
-  let col_num x = to_ndarray x |> A.col_num
 
-  let get x i = A.get (to_ndarray x) i
+  (* unary and binary math functions *)
 
-  let set x i a = A.set (to_ndarray x) i a
+  let add x y = _make_node "add" (Fun02 (A.add_, A.add)) [|x; y|]
 
-  let get_slice axis x = A.get_slice axis (to_ndarray x) |> of_ndarray
+  let sub x y = _make_node "sub" (Fun02 (A.sub_, A.sub)) [|x; y|]
 
-  let set_slice axis x y = A.set_slice axis (to_ndarray x) (to_ndarray y)
+  let mul x y = _make_node "mul" (Fun02 (A.mul_, A.mul)) [|x; y|]
 
-  let copy_row_to x v i = A.copy_row_to (to_ndarray x) (to_ndarray v) i
+  let div x y = _make_node "div" (Fun02 (A.div_, A.div)) [|x; y|]
 
-  let copy_col_to x v i = A.copy_col_to (to_ndarray x) (to_ndarray v) i
+  let pow x y = _make_node "pow" (Fun02 (A.pow_, A.pow)) [|x; y|]
 
-  let row x i = A.row (to_ndarray x) i |> of_ndarray
+  let atan2 x y = _make_node "atan2" (Fun02 (A.atan2_, A.atan2)) [|x; y|]
 
-  let rows x l = A.rows (to_ndarray x) l |> of_ndarray
+  let hypot x y = _make_node "hypot" (Fun02 (A.hypot_, A.hypot)) [|x; y|]
 
-  let trace x = A.trace (to_ndarray x)
+  let fmod x y = _make_node "fmod" (Fun02 (A.fmod_, A.fmod)) [|x; y|]
 
-  let copy x = make_t (Fun01 (x, ignore))
+  let min2 x y = _make_node "min2" (Fun02 (A.min2_, A.min2)) [|x; y|]
 
-  let reset x = A.reset (to_ndarray x)
+  let max2 x y = _make_node "max2" (Fun02 (A.max2_, A.max2)) [|x; y|]
 
-  let reshape x d = make_t (Fun00 (x, (fun x -> A.(reshape (copy x) d)))) (* FIXME *)
+  let dot x y = _make_node "dot" (Fun05 (fun x -> A.dot x.(0) x.(1))) [|x; y|]
 
-  let tile x reps = make_t (Fun00 (x, (fun x -> A.tile x reps)))
+  let add_scalar x a = _make_node "add_scalar" (Fun03 A.add_scalar_) [|x; a|]
 
-  let repeat ?axis x reps = make_t (Fun00 (x, (fun x -> A.repeat ?axis x reps)))
+  let sub_scalar x a = _make_node "sub_scalar" (Fun03 A.sub_scalar_) [|x; a|]
 
-  let concatenate ?axis x = make_t (Fun05 (x, (fun x -> A.concatenate ?axis x)))
+  let mul_scalar x a = _make_node "mul_scalar" (Fun03 A.mul_scalar_) [|x; a|]
 
-  let split ?axis parts x =
-    let t = make_t (Fun06 (x, (fun x -> A.split ?axis parts x))) in
-    Array.mapi (fun i _ -> make_t (ItemI (t, i))) parts
+  let div_scalar x a = _make_node "div_scalar" (Fun03 A.div_scalar_) [|x; a|]
 
-  let to_rows x = A.to_rows (to_ndarray x) |> Array.map of_ndarray
+  let pow_scalar x a = _make_node "pow_scalar" (Fun03 A.pow_scalar_) [|x; a|]
 
-  let of_rows x = Array.map to_ndarray x |> A.of_rows |> of_ndarray
+  let atan2_scalar x a = _make_node "atan2_scalar" (Fun03 A.atan2_scalar_) [|x; a|]
 
-  let of_arrays x = A.of_arrays x |> of_ndarray
+  let fmod_scalar x a = _make_node "fmod_scalar" (Fun03 A.fmod_scalar_) [|x; a|]
 
-  let sum_slices ?axis x = A.sum_slices ?axis (to_ndarray x) |> of_ndarray
+  let scalar_add a x = _make_node "scalar_add" (Fun04 A.scalar_add_) [|a; x|]
 
-  let draw_along_dim0 x n =
-    let y, indices = A.draw_along_dim0 (to_ndarray x) n in
-    of_ndarray y, indices
+  let scalar_sub a x = _make_node "scalar_sub" (Fun04 A.scalar_sub_) [|a; x|]
 
-  let draw_rows ?replacement x c =
-    let x, l = A.draw_rows (to_ndarray x) c in
-    of_ndarray x, l
+  let scalar_mul a x = _make_node "scalar_mul" (Fun04 A.scalar_mul_) [|a; x|]
 
-  let draw_rows2 ?replacement x y c =
-    let x, y, l = A.draw_rows2 (to_ndarray x) (to_ndarray y) c in
-    of_ndarray x, of_ndarray y, l
+  let scalar_div a x = _make_node "scalar_div" (Fun04 A.scalar_div_) [|a; x|]
 
-  (* FIXME *)
-  let elt_greater_equal_scalar x a = A.elt_greater_equal_scalar (to_ndarray x) a |> of_ndarray
+  let scalar_pow a x = _make_node "scalar_pow" (Fun04 A.scalar_pow_) [|a; x|]
 
-  let print ?max_row ?max_col ?header ?fmt x = Printf.printf "lazy t"
+  let scalar_atan2 a x = _make_node "scalar_atan2" (Fun04 A.scalar_atan2_) [|a; x|]
+
+  let scalar_fmod a x = _make_node "scalar_fmod" (Fun04 A.scalar_fmod_) [|a; x|]
+
+  let abs x = _make_node "abs" (Fun01 A.abs_) [|x|]
+
+  let neg x = _make_node "neg" (Fun01 A.neg_) [|x|]
+
+  let conj x = _make_node "conj" (Fun01 A.conj_) [|x|]
+
+  let reci x = _make_node "reci" (Fun01 A.reci_) [|x|]
+
+  let signum x = _make_node "signum" (Fun01 A.signum_) [|x|]
+
+  let sqr x = _make_node "sqr" (Fun01 A.sqr_) [|x|]
+
+  let sqrt x = _make_node "sqrt" (Fun01 A.sqrt_) [|x|]
+
+  let cbrt x = _make_node "cbrt" (Fun01 A.cbrt_) [|x|]
+
+  let exp x = _make_node "exp" (Fun01 A.exp_) [|x|]
+
+  let exp2 x = _make_node "exp2" (Fun01 A.exp2_) [|x|]
+
+  let exp10 x = _make_node "exp10" (Fun01 A.exp10_) [|x|]
+
+  let expm1 x = _make_node "expm1" (Fun01 A.expm1_) [|x|]
+
+  let log x = _make_node "log" (Fun01 A.log_) [|x|]
+
+  let log2 x = _make_node "log2" (Fun01 A.log2_) [|x|]
+
+  let log10 x = _make_node "log10" (Fun01 A.log10_) [|x|]
+
+  let log1p x = _make_node "log1p" (Fun01 A.log1p_) [|x|]
+
+  let sin x = _make_node "sin" (Fun01 A.sin_) [|x|]
+
+  let cos x = _make_node "cos" (Fun01 A.cos_) [|x|]
+
+  let tan x = _make_node "tan" (Fun01 A.tan_) [|x|]
+
+  let asin x = _make_node "asin" (Fun01 A.asin_) [|x|]
+
+  let acos x = _make_node "acos" (Fun01 A.acos_) [|x|]
+
+  let atan x = _make_node "atan" (Fun01 A.atan_) [|x|]
+
+  let sinh x = _make_node "sinh" (Fun01 A.sinh_) [|x|]
+
+  let cosh x = _make_node "cosh" (Fun01 A.cosh_) [|x|]
+
+  let tanh x = _make_node "tanh" (Fun01 A.tanh_) [|x|]
+
+  let asinh x = _make_node "asinh" (Fun01 A.asinh_) [|x|]
+
+  let acosh x = _make_node "acosh" (Fun01 A.acosh_) [|x|]
+
+  let atanh x = _make_node "atanh" (Fun01 A.atanh_) [|x|]
+
+  let floor x = _make_node "floor" (Fun01 A.floor_) [|x|]
+
+  let ceil x = _make_node "ceil" (Fun01 A.ceil_) [|x|]
+
+  let round x = _make_node "round" (Fun01 A.round_) [|x|]
+
+  let trunc x = _make_node "trunc" (Fun01 A.trunc_) [|x|]
+
+  let fix x = _make_node "fix" (Fun01 A.fix_) [|x|]
+
+  let erf x = _make_node "erf" (Fun01 A.erf_) [|x|]
+
+  let erfc x = _make_node "erfc" (Fun01 A.erfc_) [|x|]
+
+  let relu x = _make_node "relu" (Fun01 A.relu_) [|x|]
+
+  let softplus x = _make_node "softplus" (Fun01 A.softplus_) [|x|]
+
+  let softsign x = _make_node "softsign" (Fun01 A.softsign_) [|x|]
+
+  let softmax x = _make_node "softmax" (Fun01 A.softmax_) [|x|]
+
+  let sigmoid x = _make_node "sigmoid" (Fun01 A.sigmoid_) [|x|]
+
+  let sum ?axis x = _make_node "sum" (Fun00 (A.sum ?axis)) [|x|]
+
+  let prod ?axis x = _make_node "prod" (Fun00 (A.prod ?axis)) [|x|]
+
+  let min ?axis x = _make_node "min" (Fun00 (A.min ?axis)) [|x|]
+
+  let max ?axis x = _make_node "max" (Fun00 (A.max ?axis)) [|x|]
+
+  let mean ?axis x = _make_node "mean" (Fun00 (A.mean ?axis)) [|x|]
+
+  let var ?axis x = _make_node "var" (Fun00 (A.var ?axis)) [|x|]
+
+  let std ?axis x = _make_node "std" (Fun00 (A.std ?axis)) [|x|]
+
+  let l1norm ?axis x = _make_node "l1norm" (Fun00 (A.l1norm ?axis)) [|x|]
+
+  let l2norm ?axis x = _make_node "l2norm" (Fun00 (A.l2norm ?axis)) [|x|]
+
+  let cumsum ?axis x = _make_node "cumsum" (Fun01 (A.cumsum_ ?axis)) [|x|]
+
+  let cumprod ?axis x = _make_node "cumprod" (Fun01 (A.cumprod_ ?axis)) [|x|]
+
+  let cummin ?axis x = _make_node "cummin" (Fun01 (A.cummin_ ?axis)) [|x|]
+
+  let cummax ?axis x = _make_node "cummax" (Fun01 (A.cummax_ ?axis)) [|x|]
+
+  let conv1d ?padding input kernel stride = _make_node "conv1d" (Fun05 (fun x -> A.conv1d ?padding x.(0) x.(1) stride)) [|input; kernel|]
+
+  let conv2d ?padding input kernel stride = _make_node "conv2d" (Fun05 (fun x -> A.conv2d ?padding x.(0) x.(1) stride)) [|input; kernel|]
+
+  let conv3d ?padding input kernel stride = _make_node "conv3d" (Fun05 (fun x -> A.conv3d ?padding x.(0) x.(1) stride)) [|input; kernel|]
+
+  let max_pool1d ?padding input kernel stride = _make_node "max_pool1d" (Fun00 (fun x -> A.max_pool1d ?padding x kernel stride)) [|input|]
+
+  let max_pool2d ?padding input kernel stride = _make_node "max_pool2d" (Fun00 (fun x -> A.max_pool2d ?padding x kernel stride)) [|input|]
+
+  let max_pool3d ?padding input kernel stride = _make_node "max_pool3d" (Fun00 (fun x -> A.max_pool3d ?padding x kernel stride)) [|input|]
+
+  let avg_pool1d ?padding input kernel stride = _make_node "avg_pool1d" (Fun00 (fun x -> A.avg_pool1d ?padding x kernel stride)) [|input|]
+
+  let avg_pool2d ?padding input kernel stride = _make_node "avg_pool2d" (Fun00 (fun x -> A.avg_pool2d ?padding x kernel stride)) [|input|]
+
+  let avg_pool3d ?padding input kernel stride = _make_node "avg_pool3d" (Fun00 (fun x -> A.avg_pool3d ?padding x kernel stride)) [|input|]
+
+  let conv1d_backward_input input kernel stride output' = _make_node "conv1d_backward_input" (Fun05 (fun x -> A.conv1d_backward_input x.(0) x.(1) stride x.(2))) [|input; kernel; output'|]
+
+  let conv1d_backward_kernel input kernel stride output' = _make_node "conv1d_backward_kernel" (Fun05 (fun x -> A.conv1d_backward_kernel x.(0) x.(1) stride x.(2))) [|input; kernel; output'|]
+
+  let conv2d_backward_input input kernel stride output' = _make_node "conv2d_backward_input" (Fun05 (fun x -> A.conv2d_backward_input x.(0) x.(1) stride x.(2))) [|input; kernel; output'|]
+
+  let conv2d_backward_kernel input kernel stride output' = _make_node "conv2d_backward_kernel" (Fun05 (fun x -> A.conv2d_backward_kernel x.(0) x.(1) stride x.(2))) [|input; kernel; output'|]
+
+  let conv3d_backward_input input kernel stride output' = _make_node "conv3d_backward_input" (Fun05 (fun x -> A.conv3d_backward_input x.(0) x.(1) stride x.(2))) [|input; kernel; output'|]
+
+  let conv3d_backward_kernel input kernel stride output' = _make_node "conv3d_backward_kernel" (Fun05 (fun x -> A.conv3d_backward_kernel x.(0) x.(1) stride x.(2))) [|input; kernel; output'|]
+
+  let max_pool1d_backward padding input kernel stride output' = _make_node "max_pool1d_backward" (Fun05 (fun x -> A.max_pool1d_backward padding x.(0) kernel stride x.(1))) [|input; output'|]
+
+  let max_pool2d_backward padding input kernel stride output' = _make_node "max_pool2d_backward" (Fun05 (fun x -> A.max_pool2d_backward padding x.(0) kernel stride x.(1))) [|input; output'|]
+
+  let avg_pool1d_backward padding input kernel stride output' = _make_node "avg_pool1d_backward" (Fun05 (fun x -> A.avg_pool1d_backward padding x.(0) kernel stride x.(1))) [|input; output'|]
+
+  let avg_pool2d_backward padding input kernel stride output' = _make_node "avg_pool2d_backward" (Fun05 (fun x -> A.avg_pool2d_backward padding x.(0) kernel stride x.(1))) [|input; output'|]
 
 
   (* reduce to scalar *)
 
-  let sum' x = to_ndarray x |> A.sum'
+  let sum' x = _make_node "sum'" (Fun07 A.sum') [|x|]
 
-  let prod' x = to_ndarray x |> A.prod'
+  let prod' x = _make_node "prod'" (Fun07 A.prod') [|x|]
 
-  let min' x = to_ndarray x |> A.min'
+  let min' x = _make_node "min'" (Fun07 A.min') [|x|]
 
-  let max' x = to_ndarray x |> A.max'
+  let max' x = _make_node "max'" (Fun07 A.max') [|x|]
 
-  let mean' x = to_ndarray x |> A.mean'
+  let mean' x = _make_node "mean'" (Fun07 A.mean') [|x|]
 
-  let var' x = to_ndarray x |> A.var'
+  let var' x = _make_node "var'" (Fun07 A.var') [|x|]
 
-  let std' x = to_ndarray x |> A.std'
+  let std' x = _make_node "std'" (Fun07 A.std') [|x|]
 
-  let l1norm' x = to_ndarray x |> A.l1norm'
+  let l1norm' x = _make_node "l1norm'" (Fun07 A.l1norm') [|x|]
 
-  let l2norm' x = to_ndarray x |> A.l2norm'
+  let l2norm' x = _make_node "l2norm'" (Fun07 A.l2norm') [|x|]
 
-  let l2norm_sqr' x = to_ndarray x |> A.l2norm_sqr'
-
-
-  (* math functions *)
-
-  let add x y = make_t (Fun02 (x, y, A.add_, A.add))
-
-  let sub x y = make_t (Fun02 (x, y, A.sub_, A.sub))
-
-  let mul x y = make_t (Fun02 (x, y, A.mul_, A.mul))
-
-  let div x y = make_t (Fun02 (x, y, A.div_, A.div))
-
-  let pow x y = make_t (Fun02 (x, y, A.pow_, A.pow))
-
-  let atan2 x y = make_t (Fun02 (x, y, A.atan2_, A.atan2))
-
-  let hypot x y = make_t (Fun02 (x, y, A.hypot_, A.hypot))
-
-  let fmod x y = make_t (Fun02 (x, y, A.fmod_, A.fmod))
-
-  let min2 x y = make_t (Fun02 (x, y, A.min2_, A.min2))
-
-  let max2 x y = make_t (Fun02 (x, y, A.max2_, A.max2))
-
-  let dot x y = make_t (Fun05 ([|x; y|], (fun x -> A.dot x.(0) x.(1))))
-
-  let add_scalar x a = make_t (Fun03 (x, a, A.add_scalar_))
-
-  let sub_scalar x a = make_t (Fun03 (x, a, A.sub_scalar_))
-
-  let mul_scalar x a = make_t (Fun03 (x, a, A.mul_scalar_))
-
-  let div_scalar x a = make_t (Fun03 (x, a, A.div_scalar_))
-
-  let pow_scalar x a = make_t (Fun03 (x, a, A.pow_scalar_))
-
-  let atan2_scalar x a = make_t (Fun03 (x, a, A.atan2_scalar_))
-
-  let fmod_scalar x a = make_t (Fun03 (x, a, A.fmod_scalar_))
-
-  let scalar_add a x = make_t (Fun04 (a, x, A.scalar_add_))
-
-  let scalar_sub a x = make_t (Fun04 (a, x, A.scalar_sub_))
-
-  let scalar_mul a x = make_t (Fun04 (a, x, A.scalar_mul_))
-
-  let scalar_div a x = make_t (Fun04 (a, x, A.scalar_div_))
-
-  let scalar_pow a x = make_t (Fun04 (a, x, A.scalar_pow_))
-
-  let scalar_atan2 a x = make_t (Fun04 (a, x, A.scalar_atan2_))
-
-  let scalar_fmod a x = make_t (Fun04 (a, x, A.scalar_fmod_))
-
-  let abs x = make_t (Fun01 (x, A.abs_))
-
-  let neg x = make_t (Fun01 (x, A.neg_))
-
-  let conj x = make_t (Fun01 (x, A.conj_))
-
-  let reci x = make_t (Fun01 (x, A.reci_))
-
-  let signum x = make_t (Fun01 (x, A.signum_))
-
-  let sqr x = make_t (Fun01 (x, A.sqr_))
-
-  let sqrt x = make_t (Fun01 (x, A.sqrt_))
-
-  let cbrt x = make_t (Fun01 (x, A.cbrt_))
-
-  let exp x = make_t (Fun01 (x, A.exp_))
-
-  let exp2 x = make_t (Fun01 (x, A.exp2_))
-
-  let exp10 x = make_t (Fun01 (x, A.exp10_))
-
-  let expm1 x = make_t (Fun01 (x, A.expm1_))
-
-  let log x = make_t (Fun01 (x, A.log_))
-
-  let log2 x = make_t (Fun01 (x, A.log2_))
-
-  let log10 x = make_t (Fun01 (x, A.log10_))
-
-  let log1p x = make_t (Fun01 (x, A.log1p_))
-
-  let sin x = make_t (Fun01 (x, A.sin_))
-
-  let cos x = make_t (Fun01 (x, A.cos_))
-
-  let tan x = make_t (Fun01 (x, A.tan_))
-
-  let asin x = make_t (Fun01 (x, A.asin_))
-
-  let acos x = make_t (Fun01 (x, A.acos_))
-
-  let atan x = make_t (Fun01 (x, A.atan_))
-
-  let sinh x = make_t (Fun01 (x, A.sinh_))
-
-  let cosh x = make_t (Fun01 (x, A.cosh_))
-
-  let tanh x = make_t (Fun01 (x, A.tanh_))
-
-  let asinh x = make_t (Fun01 (x, A.asinh_))
-
-  let acosh x = make_t (Fun01 (x, A.acosh_))
-
-  let atanh x = make_t (Fun01 (x, A.atanh_))
-
-  let floor x = make_t (Fun01 (x, A.floor_))
-
-  let ceil x = make_t (Fun01 (x, A.ceil_))
-
-  let round x = make_t (Fun01 (x, A.round_))
-
-  let trunc x = make_t (Fun01 (x, A.trunc_))
-
-  let fix x = make_t (Fun01 (x, A.fix_))
-
-  let erf x = make_t (Fun01 (x, A.erf_))
-
-  let erfc x = make_t (Fun01 (x, A.erfc_))
-
-  let relu x = make_t (Fun01 (x, A.relu_))
-
-  let softplus x = make_t (Fun01 (x, A.softplus_))
-
-  let softsign x = make_t (Fun01 (x, A.softsign_))
-
-  let softmax x = make_t (Fun01 (x, A.softmax_))
-
-  let sigmoid x = make_t (Fun01 (x, A.sigmoid_))
-
-  let sum ?axis x = make_t (Fun00 (x, A.sum))
-
-  let prod ?axis x = make_t (Fun00 (x, A.prod))
-
-  let min ?axis x = make_t (Fun00 (x, A.min))
-
-  let max ?axis x = make_t (Fun00 (x, A.max))
-
-  let mean ?axis x = make_t (Fun00 (x, A.mean))
-
-  let var ?axis x = make_t (Fun00 (x, A.var))
-
-  let std ?axis x = make_t (Fun00 (x, A.std))
-
-  let l1norm ?axis x = make_t (Fun00 (x, A.l1norm))
-
-  let l2norm ?axis x = make_t (Fun00 (x, A.l2norm))
-
-  let cumsum ?axis x = make_t (Fun01 (x, A.cumsum_))
-
-  let cumprod ?axis x = make_t (Fun01 (x, A.cumprod_))
-
-  let cummin ?axis x = make_t (Fun01 (x, A.cummin_))
-
-  let cummax ?axis x = make_t (Fun01 (x, A.cummax_))
-
-  let inv x = make_t (Fun00 (x, A.inv))
-
-  let transpose ?axis x = make_t (Fun00 (x, A.transpose))
-
-  let clip_by_l2norm a x = make_t (Fun00 (x, (fun x -> A.clip_by_l2norm a x)))
-
-  let conv1d ?padding input kernel stride = make_t (Fun05 ([|input; kernel|], (fun x -> A.conv1d ?padding x.(0) x.(1) stride)))
-
-  let conv2d ?padding input kernel stride = make_t (Fun05 ([|input; kernel|], (fun x -> A.conv2d ?padding x.(0) x.(1) stride)))
-
-  let conv3d ?padding input kernel stride = make_t (Fun05 ([|input; kernel|], (fun x -> A.conv3d ?padding x.(0) x.(1) stride)))
-
-  let max_pool1d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.max_pool1d ?padding x kernel stride)))
-
-  let max_pool2d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.max_pool2d ?padding x kernel stride)))
-
-  let max_pool3d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.max_pool3d ?padding x kernel stride)))
-
-  let avg_pool1d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.avg_pool1d ?padding x kernel stride)))
-
-  let avg_pool2d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.avg_pool2d ?padding x kernel stride)))
-
-  let avg_pool3d ?padding input kernel stride = make_t (Fun00 (input, (fun x -> A.avg_pool3d ?padding x kernel stride)))
-
-  let conv1d_backward_input input kernel stride output' = make_t (Fun05 ([|input; kernel; output'|], (fun x -> A.conv1d_backward_input x.(0) x.(1) stride x.(2))))
-
-  let conv1d_backward_kernel input kernel stride output' = make_t (Fun05 ([|input; kernel; output'|], (fun x -> A.conv1d_backward_kernel x.(0) x.(1) stride x.(2))))
-
-  let conv2d_backward_input input kernel stride output' = make_t (Fun05 ([|input; kernel; output'|], (fun x -> A.conv2d_backward_input x.(0) x.(1) stride x.(2))))
-
-  let conv2d_backward_kernel input kernel stride output' = make_t (Fun05 ([|input; kernel; output'|], (fun x -> A.conv2d_backward_kernel x.(0) x.(1) stride x.(2))))
-
-  let conv3d_backward_input input kernel stride output' = make_t (Fun05 ([|input; kernel; output'|], (fun x -> A.conv3d_backward_input x.(0) x.(1) stride x.(2))))
-
-  let conv3d_backward_kernel input kernel stride output' = make_t (Fun05 ([|input; kernel; output'|], (fun x -> A.conv3d_backward_kernel x.(0) x.(1) stride x.(2))))
-
-  let max_pool1d_backward padding input kernel stride output' = make_t (Fun05 ([|input; output'|], (fun x -> A.max_pool1d_backward padding x.(0) kernel stride x.(1))))
-
-  let max_pool2d_backward padding input kernel stride output' = make_t (Fun05 ([|input; output'|], (fun x -> A.max_pool2d_backward padding x.(0) kernel stride x.(1))))
-
-  let avg_pool1d_backward padding input kernel stride output' = make_t (Fun05 ([|input; output'|], (fun x -> A.avg_pool1d_backward padding x.(0) kernel stride x.(1))))
-
-  let avg_pool2d_backward padding input kernel stride output' = make_t (Fun05 ([|input; output'|], (fun x -> A.avg_pool2d_backward padding x.(0) kernel stride x.(1))))
+  let l2norm_sqr' x = _make_node "l2norm_sqr'" (Fun07 A.l2norm_sqr') [|x|]
 
 
   (* comparion functions *)
 
-  let equal x y = A.equal (to_ndarray x) (to_ndarray y)
+  let elt_equal x y = _make_node "elt_equal" (Fun02 (A.elt_equal_, A.elt_equal)) [|x; y|]
 
-  let not_equal x y = A.not_equal (to_ndarray x) (to_ndarray y)
+  let elt_not_equal x y = _make_node "elt_not_equal" (Fun02 (A.elt_not_equal_, A.elt_not_equal)) [|x; y|]
 
-  let less x y = A.less (to_ndarray x) (to_ndarray y)
+  let elt_less x y = _make_node "elt_less" (Fun02 (A.elt_less_, A.elt_less)) [|x; y|]
 
-  let greater x y = A.greater (to_ndarray x) (to_ndarray y)
+  let elt_greater x y = _make_node "elt_greater" (Fun02 (A.elt_greater_, A.elt_greater)) [|x; y|]
 
-  let less_equal x y = A.less_equal (to_ndarray x) (to_ndarray y)
+  let elt_less_equal x y = _make_node "elt_less_equal" (Fun02 (A.elt_less_equal_, A.elt_less_equal)) [|x; y|]
 
-  let greater_equal x y = A.greater_equal (to_ndarray x) (to_ndarray y)
+  let elt_greater_equal x y = _make_node "elt_greater_equal" (Fun02 (A.elt_greater_equal_, A.elt_greater_equal)) [|x; y|]
 
-  let elt_equal x y = make_t (Fun02 (x, y, A.elt_equal_, A.elt_equal))
+  let elt_equal_scalar x a = _make_node "elt_equal_scalar" (Fun03 A.elt_equal_scalar_) [|x; a|]
 
-  let elt_not_equal x y = make_t (Fun02 (x, y, A.elt_not_equal_, A.elt_not_equal))
+  let elt_not_equal_scalar x a = _make_node "elt_not_equal_scalar" (Fun03 A.elt_not_equal_scalar_) [|x; a|]
 
-  let elt_less x y = make_t (Fun02 (x, y, A.elt_less_, A.elt_less))
+  let elt_less_scalar x a = _make_node "elt_less_scalar" (Fun03 A.elt_less_scalar_) [|x; a|]
 
-  let elt_greater x y = make_t (Fun02 (x, y, A.elt_greater_, A.elt_greater))
+  let elt_greater_scalar x a = _make_node "elt_greater_scalar" (Fun03 A.elt_greater_scalar_) [|x; a|]
 
-  let elt_less_equal x y = make_t (Fun02 (x, y, A.elt_less_equal_, A.elt_less_equal))
+  let elt_less_equal_scalar x a = _make_node "elt_less_equal_scalar" (Fun03 A.elt_less_equal_scalar_) [|x; a|]
 
-  let elt_greater_equal x y = make_t (Fun02 (x, y, A.elt_greater_equal_, A.elt_greater_equal))
+  let elt_greater_equal_scalar x a = _make_node "elt_greater_equal_scalar" (Fun03 A.elt_greater_equal_scalar_) [|x; a|]
 
-  let elt_equal_scalar x a = make_t (Fun03 (x, a, A.elt_equal_scalar_))
-
-  let elt_not_equal_scalar x a = make_t (Fun03 (x, a, A.elt_not_equal_scalar_))
-
-  let elt_less_scalar x a = make_t (Fun03 (x, a, A.elt_less_scalar_))
-
-  let elt_greater_scalar x a = make_t (Fun03 (x, a, A.elt_greater_scalar_))
-
-  let elt_less_equal_scalar x a = make_t (Fun03 (x, a, A.elt_less_equal_scalar_))
-
-  let elt_greater_equal_scalar x a = make_t (Fun03 (x, a, A.elt_greater_equal_scalar_))
 
 
 end

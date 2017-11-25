@@ -13,85 +13,28 @@ module Make
 
   type t
 
-  type arr = t
+  (** {6 core functions} *)
 
-  type elt = A.elt
+  val variable : unit -> t
 
+  val assign_arr : t -> A.arr -> unit
 
-  (** {6 Creation functions} *)
+  val assign_elt : t -> A.elt -> unit
 
-  val empty : int array -> t
+  val to_arr : t -> A.arr
 
-  val zeros : int array -> t
+  val to_elt : t -> A.elt
 
-  val ones : int array -> t
-
-  val uniform : ?scale:elt -> int array -> t
-
-  val gaussian : ?sigma:elt -> int array -> t
-
-  val bernoulli : ?p:float -> ?seed:int -> int array -> t
+  val eval : t -> unit
 
 
   (** {6 Properties and manipulations} *)
-
-  val shape : t -> int array
-
-  val numel : t -> int
-
-  val row_num : t -> int
-
-  val col_num : t -> int
-
-  val get : t -> int array -> elt
-
-  val set : t -> int array -> elt -> unit
-
-  val get_slice : index list -> t -> t
-
-  val set_slice : index list -> t -> t -> unit
-
-  val row : t -> int -> t
-
-  val rows : t -> int array -> t
-
-  val copy_row_to : t -> t -> int -> unit
-
-  val copy_col_to : t -> t -> int -> unit
-
-  val trace : t -> elt
-
-  val copy : t -> t
-
-  val reset : t -> unit
-
-  val reshape : t -> int array -> t
 
   val tile : t -> int array -> t
 
   val repeat : ?axis:int -> t -> int -> t
 
   val concatenate : ?axis:int -> t array -> t
-
-  val split : ?axis:int -> int array -> t -> t array
-
-  val to_rows : t -> t array
-
-  val of_rows : t array -> t
-
-  val of_arrays : elt array array -> t
-
-  val sum_slices : ?axis:int -> t -> t
-
-  val draw_along_dim0 : t -> int -> t * int array
-
-  val draw_rows : ?replacement:bool -> t -> int -> t * int array
-
-  val draw_rows2 : ?replacement:bool -> t -> t -> int -> t * t * int array
-
-  val elt_greater_equal_scalar : t -> elt -> t
-
-  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> t -> unit
 
 
   (** {6 Unary operators} *)
@@ -202,31 +145,25 @@ module Make
 
   val cummax : ?axis:int -> t -> t
 
-  val inv : t -> t
+  val sum' : t -> t
 
-  val transpose : ?axis:int array -> t -> t
+  val prod' : t -> t
 
-  val clip_by_l2norm : elt -> t -> t
+  val min' : t -> t
 
-  val sum' : t -> elt
+  val max' : t -> t
 
-  val prod' : t -> elt
+  val mean' : t -> t
 
-  val min' : t -> elt
+  val var' : t -> t
 
-  val max' : t -> elt
+  val std' : t -> t
 
-  val mean' : t -> elt
+  val l1norm' : t -> t
 
-  val var' : t -> elt
+  val l2norm' : t -> t
 
-  val std' : t -> elt
-
-  val l1norm' : t -> elt
-
-  val l2norm' : t -> elt
-
-  val l2norm_sqr' : t -> elt
+  val l2norm_sqr' : t -> t
 
 
   (** {6 Binary operators} *)
@@ -253,33 +190,33 @@ module Make
 
   val max2 : t -> t -> t
 
-  val add_scalar : t -> elt -> t
+  val add_scalar : t -> t -> t
 
-  val sub_scalar : t -> elt -> t
+  val sub_scalar : t -> t -> t
 
-  val mul_scalar : t -> elt -> t
+  val mul_scalar : t -> t -> t
 
-  val div_scalar : t -> elt -> t
+  val div_scalar : t -> t -> t
 
-  val pow_scalar : t -> elt -> t
+  val pow_scalar : t -> t -> t
 
-  val atan2_scalar : t -> elt -> t
+  val atan2_scalar : t -> t -> t
 
-  val fmod_scalar : t -> elt -> t
+  val fmod_scalar : t -> t -> t
 
-  val scalar_add : elt -> t -> t
+  val scalar_add : t -> t -> t
 
-  val scalar_sub : elt -> t -> t
+  val scalar_sub : t -> t -> t
 
-  val scalar_mul : elt -> t -> t
+  val scalar_mul : t -> t -> t
 
-  val scalar_div : elt -> t -> t
+  val scalar_div : t -> t -> t
 
-  val scalar_pow : elt -> t -> t
+  val scalar_pow : t -> t -> t
 
-  val scalar_atan2 : elt -> t -> t
+  val scalar_atan2 : t -> t -> t
 
-  val scalar_fmod : elt -> t -> t
+  val scalar_fmod : t -> t -> t
 
   val conv1d : ?padding:padding -> t -> t -> int array -> t
 
@@ -322,18 +259,6 @@ module Make
 
   (** {6 Comparion functions} *)
 
-  val equal : t -> t -> bool
-
-  val not_equal : t -> t -> bool
-
-  val less : t -> t -> bool
-
-  val greater : t -> t -> bool
-
-  val less_equal : t -> t -> bool
-
-  val greater_equal : t -> t -> bool
-
   val elt_equal : t -> t -> t
 
   val elt_not_equal : t -> t -> t
@@ -346,28 +271,17 @@ module Make
 
   val elt_greater_equal : t -> t -> t
 
-  val elt_equal_scalar : t -> elt -> t
+  val elt_equal_scalar : t -> t -> t
 
-  val elt_not_equal_scalar : t -> elt -> t
+  val elt_not_equal_scalar : t -> t -> t
 
-  val elt_less_scalar : t -> elt -> t
+  val elt_less_scalar : t -> t -> t
 
-  val elt_greater_scalar : t -> elt -> t
+  val elt_greater_scalar : t -> t -> t
 
-  val elt_less_equal_scalar : t -> elt -> t
+  val elt_less_equal_scalar : t -> t -> t
 
-  val elt_greater_equal_scalar : t -> elt -> t
-
-
-  (** {6 Helper functions} *)
-
-  val of_ndarray : A.arr -> t
-
-  val to_ndarray : t -> A.arr
-
-  val eval : t -> unit
-
-  val inc_refnum : t -> unit
+  val elt_greater_equal_scalar : t -> t -> t
 
 
 end
