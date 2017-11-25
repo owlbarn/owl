@@ -22,11 +22,13 @@ let test_incremental x =
   M.assign_elt b 5.;
   Printf.printf "Incremental#0:\t%.3f ms\n" (Utils.time (fun () -> M.eval c));
   M.assign_elt b 6.;
-  Printf.printf "Incremental#1:\t%.3f ms\n" (Utils.time (fun () -> M.eval c))
+  Printf.printf "Incremental#1:\t%.3f ms\n" (Utils.time (fun () -> M.eval c));
+  M.assign_elt b 7.;
+  Printf.printf "Incremental#2:\t%.3f ms\n" (Utils.time (fun () -> M.eval c))
 
 
 let () =
-  let x = Arr.uniform [|1000; 1000|] in
+  let x = Arr.uniform [|2000; 2000|] in
   Printf.printf "Lazy eval:\t%.3f ms\n" (Utils.time (test_lazy x));
   Printf.printf "Eager eval:\t%.3f ms\n" (Utils.time (test_eager x));
   test_incremental x
