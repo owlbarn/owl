@@ -3209,6 +3209,13 @@ let cross_entropy' x y =
   mul_ y x;
   _neg_elt (kind y) (sum' y)
 
+let dropout_ ?(rate=0.5) ?seed x =
+  assert (rate >= 0. && rate <= 1.);
+  let seed = match seed with
+    | Some a -> a
+    | None   -> Owl_stats.Rnd.uniform_int ()
+  in
+  _owl_dropout (kind x) (numel x) x rate seed
 
 
 (** Matrix functions *)

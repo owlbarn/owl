@@ -663,6 +663,8 @@ val cummin_ : ?axis:int -> arr -> unit
 
 val cummax_ : ?axis:int -> arr -> unit
 
+val dropout_ : ?rate:float -> ?seed:int -> arr -> unit
+
 val elt_equal_ : arr -> arr -> unit
 
 val elt_not_equal_ : arr -> arr -> unit

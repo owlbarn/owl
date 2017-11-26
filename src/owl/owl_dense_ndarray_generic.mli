@@ -1655,6 +1655,9 @@ val cummin_ : ?axis:int -> ('a, 'b) t -> unit
 val cummax_ : ?axis:int -> ('a, 'b) t -> unit
 (** [cummax_ x] is similar to [cummax] but output is written to [x] *)
 
+val dropout_ : ?rate:float -> ?seed:int -> ('a, 'b) t -> unit
+(** [dropout_ x] is similar to [dropout] but output is written to [x] *)
+
 val elt_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [elt_equal_ x y] is simiar to [elt_equal] function but the output is written
   to [x]. The broadcast operation only allows broadcasting [y] over [x], so you
