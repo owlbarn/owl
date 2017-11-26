@@ -1,5 +1,5 @@
 #!/usr/bin/env owl
-(* This example trains a simple convolutional network on the MNIST dataset. *)
+(* This example implements LeNet-5 architecture on the MNIST dataset. *)
 
 open Owl
 open Neural.S
@@ -10,10 +10,12 @@ open Algodiff.S
 let make_network input_shape =
   input input_shape
   |> lambda (fun x -> Maths.(x / F 256.))
-  |> conv2d [|5;5;1;32|] [|1;1|] ~act_typ:Activation.Relu
+  |> conv2d [|1;1;1;6|] [|1;1|] ~act_typ:Activation.Relu
   |> max_pool2d [|2;2|] [|2;2|]
-  |> dropout 0.1
-  |> fully_connected 1024 ~act_typ:Activation.Relu
+  |> conv2d [|5;5;6;16|] [|1;1|] ~act_typ:Activation.Relu
+  |> max_pool2d [|2;2|] [|2;2|]
+  |> fully_connected 120 ~act_typ:Activation.Relu
+  |> linear 84  ~act_typ:Activation.Relu
   |> linear 10 ~act_typ:Activation.Softmax
   |> get_network
 

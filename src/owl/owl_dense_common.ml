@@ -2429,6 +2429,30 @@ let _owl_bernoulli : type a b. (a, b) kind -> (a, b) owl_arr_op12 = function
   | Int64          -> owl_int64_bernoulli
   | _              -> failwith "_owl_bernoulli: unsupported operation"
 
+external owl_float32_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "float32_dropout"
+external owl_float64_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "float64_dropout"
+external owl_complex32_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "complex32_dropout"
+external owl_complex64_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "complex64_dropout"
+external owl_int8_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "int8_dropout"
+external owl_uint8_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "uint8_dropout"
+external owl_int16_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "int16_dropout"
+external owl_uint16_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "uint16_dropout"
+external owl_int32_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "int32_dropout"
+external owl_int64_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "int64_dropout"
+
+let _owl_dropout : type a b. (a, b) kind -> (a, b) owl_arr_op12 = function
+  | Float32        -> owl_float32_dropout
+  | Float64        -> owl_float64_dropout
+  | Complex32      -> owl_complex32_dropout
+  | Complex64      -> owl_complex64_dropout
+  | Int8_signed    -> owl_int8_dropout
+  | Int8_unsigned  -> owl_uint8_dropout
+  | Int16_signed   -> owl_int16_dropout
+  | Int16_unsigned -> owl_uint16_dropout
+  | Int32          -> owl_int32_dropout
+  | Int64          -> owl_int64_dropout
+  | _              -> failwith "_owl_dropout: unsupported operation"
+
 external owl_float32_sequential : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "float32_sequential"
 external owl_float64_sequential : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "float64_sequential"
 external owl_complex32_sequential : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "complex32_sequential"

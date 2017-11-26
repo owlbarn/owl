@@ -951,8 +951,14 @@ let sequential k ?a ?step dimension =
   x
 
 let dropout ?(rate=0.5) ?seed x =
-  let y = bernoulli ~p:(1. -. rate) ?seed (kind x) (shape x) in
-  mul x y
+  assert (rate >= 0. && rate <= 1.);
+  let seed = match seed with
+    | Some a -> a
+    | None   -> Owl_stats.Rnd.uniform_int ()
+  in
+  let x = copy x in
+  _owl_dropout (kind x) (numel x) x rate seed;
+  x
 
 
 (* advanced operations *)
