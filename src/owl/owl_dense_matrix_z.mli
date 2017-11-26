@@ -450,9 +450,9 @@ val mean_rows : mat -> mat
 
 val mean_cols : mat -> mat
 
-val abs : mat -> cast_mat
+val abs : mat -> mat
 
-val abs2 : mat -> cast_mat
+val abs2 : mat -> mat
 
 val conj : mat -> mat
 

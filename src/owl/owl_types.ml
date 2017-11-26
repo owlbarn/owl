@@ -306,9 +306,52 @@ module type NdarraySig = sig
 end
 
 
-module type InpureSig = sig
+module type NdarraySig_Ext = sig
 
   include NdarraySig
+
+  val equal : arr -> arr -> bool
+
+  val not_equal : arr -> arr -> bool
+
+  val less : arr -> arr -> bool
+
+  val greater : arr -> arr -> bool
+
+  val less_equal : arr -> arr -> bool
+
+  val greater_equal : arr -> arr -> bool
+
+  val elt_equal : arr -> arr -> arr
+
+  val elt_not_equal : arr -> arr -> arr
+
+  val elt_less : arr -> arr -> arr
+
+  val elt_greater : arr -> arr -> arr
+
+  val elt_less_equal : arr -> arr -> arr
+
+  val elt_greater_equal : arr -> arr -> arr
+
+  val elt_equal_scalar : arr -> elt -> arr
+
+  val elt_not_equal_scalar : arr -> elt -> arr
+
+  val elt_less_scalar : arr -> elt -> arr
+
+  val elt_greater_scalar : arr -> elt -> arr
+
+  val elt_less_equal_scalar : arr -> elt -> arr
+
+  val elt_greater_equal_scalar : arr -> elt -> arr
+
+end
+
+
+module type InpureSig = sig
+
+  include NdarraySig_Ext
 
   val hypot : arr -> arr -> arr
 
@@ -367,7 +410,7 @@ module type InpureSig = sig
   val scalar_fmod_ : elt -> arr -> unit
 
   val abs_ : arr -> unit
-  
+
   val neg_ : arr -> unit
 
   val conj_ : arr -> unit
@@ -480,6 +523,29 @@ module type InpureSig = sig
 
   val std' : arr -> elt
 
+  val elt_equal_ : arr -> arr -> unit
+
+  val elt_not_equal_ : arr -> arr -> unit
+
+  val elt_less_ : arr -> arr -> unit
+
+  val elt_greater_ : arr -> arr -> unit
+
+  val elt_less_equal_ : arr -> arr -> unit
+
+  val elt_greater_equal_ : arr -> arr -> unit
+
+  val elt_equal_scalar_ : arr -> elt -> unit
+
+  val elt_not_equal_scalar_ : arr -> elt -> unit
+
+  val elt_less_scalar_ : arr -> elt -> unit
+
+  val elt_greater_scalar_ : arr -> elt -> unit
+
+  val elt_less_equal_scalar_ : arr -> elt -> unit
+
+  val elt_greater_equal_scalar_ : arr -> elt -> unit
 
 end
 
