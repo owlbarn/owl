@@ -45,6 +45,8 @@ This [How-To?](https://github.com/ryanrhymes/owl/wiki/How-To%3F) maintains a lis
 * [Tutorial 10: Algorithmic Differentiation](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Algorithmic-Differentiation)
 * [Tutorial 11: Neural Network](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Neural-Network)
 * [Tutorial 12: Scripting and Zoo System](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Scripting-and-Zoo-System)
+* [Tutorial 13: Laziness and Dataflow](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Laziness-and-Dataflow)
+
 
 The Presentation Slides in OCaml Workshop 2017 can be viewed with [this link](https://docs.google.com/presentation/d/1A-7KiQLot3X2lLyZntrFGxsxaNir0g_2TlruBP4W2Uc/edit).
 The tutorial material of Owl in CUFP 2017 can be accessed with [this link](https://docs.google.com/presentation/d/1EB4B6xAc81ypUGze22qESnFixZWIK31OaNZ8n0ndC6w/edit?usp=sharing).
