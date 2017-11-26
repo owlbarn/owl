@@ -28,7 +28,7 @@ module Make
    *)
 
 
-  (** {6 core functions} *)
+  (** {6 Core functions} *)
 
   val variable : unit -> t
   (** [variable ()] creates a placeholder for the variable in the graph. *)
