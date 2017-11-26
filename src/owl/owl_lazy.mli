@@ -3,7 +3,18 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.caMD.ac.uk>
  *)
 
-(** Lazy module implments lazy evaluation atop of owl's ndarray. *)
+(** Lazy module
+  The module is used to construct a computation graph explicitly for evaluation.
+  The module can be used to simulate the lazy evaluation atop of OCaml. It can
+  also be used for dataflow programming and supports incremental computation.
+  If a variable is updated, only the subgraph depending on such variable will be
+  evaluated.
+
+  The module also tracks the reference of each node in the compuation graph and
+  tries to reuse the allocated memory if possible. This mechanism avoids the
+  overhead from memory allocation but may also cause extra computation in
+  incremental compuation.
+ *)
 
 open Owl_types
 
@@ -12,29 +23,52 @@ module Make
   : sig
 
   type t
+  (** [t] is an abstract type to represent an experssion, it is also an alias
+    for type [node]. Type [node] is only for internal use in the module.
+   *)
+
 
   (** {6 core functions} *)
 
   val variable : unit -> t
+  (** [variable ()] creates a placeholder for the variable in the graph. *)
 
   val assign_arr : t -> A.arr -> unit
+  (** [assign_arr x a] assigns value [a] to [x]. [x] is the variable created by
+    [variable ()] function before. Note that assignment will invalidate all the
+    nodes in the subgraph depending on [x].
+   *)
 
   val assign_elt : t -> A.elt -> unit
+  (** [assign_elt x a] assigns value [a] to [x], simiar to [assign_arr]. *)
 
   val to_arr : t -> A.arr
+  (** [to_arr x] unpacks an ndarray from [x] of type [t]. *)
 
   val to_elt : t -> A.elt
+  (** [to_elt x] unpacks an element from [x] of type [t]. *)
 
   val eval : t -> unit
+  (** [eval x] evaluates the experssion represented by [x]. Note only the
+    subgraph that [x] depends on will be evaluated rather than the whole graph.
+   *)
 
 
   (** {6 Printing functions} *)
 
   val pp_lazy : Format.formatter -> t -> unit
+  (** [pp_lazy x] pretty prints [x]. *)
 
   val to_trace : t list -> string
+  (** [to_trace x] returns the trace string that can be printed on the terminal
+    for a list of given expressions. The trace shows the structure of the graph.
+   *)
 
   val to_dot : t list -> string
+  (** [to_dot x] converts a list of experssions into graph using dot-formatted
+    string. The returned string can be used for visualising the computation
+    graph with third-party tool such as graphviz.
+   *)
 
 
   (** {6 Properties and manipulations} *)
