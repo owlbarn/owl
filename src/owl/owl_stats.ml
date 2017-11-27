@@ -712,8 +712,8 @@ let t_test_unpaired ?(alpha=0.05) ?(side=BothSide) ?(equal_var=true) x y =
 let ks_test x = None
 (* One-sample Kolmogorov-Smirnov test *)
 
-let ks2_test x = None
-(* Two-sample Kolmogorov-Smirnov test *)
+let ks2_test ?(alpha=0.05) x y =
+  (true, 0.0, 0.0)
 
 let ad_test x = None
 (* Anderson-Darling test *)
