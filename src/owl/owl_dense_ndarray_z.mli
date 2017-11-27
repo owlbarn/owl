@@ -310,9 +310,9 @@ val std : ?axis:int -> arr -> arr
 
 val std': arr -> elt
 
-val abs : arr -> cast_arr
+val abs : arr -> arr
 
-val abs2 : arr -> cast_arr
+val abs2 : arr -> arr
 
 val conj : arr -> arr
 

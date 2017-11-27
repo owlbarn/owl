@@ -478,29 +478,9 @@ let abs x =
   _owl_abs (kind x) (numel y) x y;
   y
 
-let abs_c2s x =
-  let y = empty Float32 (shape x) in
-  owl_complex32_abs (numel y) x y;
-  y
-
-let abs_z2d x =
-  let y = empty Float64 (shape x) in
-  owl_complex64_abs (numel y) x y;
-  y
-
 let abs2 x =
   let y = copy x in
   _owl_abs2 (kind x) (numel y) x y;
-  y
-
-let abs2_c2s x =
-  let y = empty Float32 (shape x) in
-  owl_complex32_abs2 (numel y) x y;
-  y
-
-let abs2_z2d x =
-  let y = empty Float64 (shape x) in
-  owl_complex64_abs2 (numel y) x y;
   y
 
 let conj x =
@@ -787,34 +767,58 @@ let reci_tol ?tol x =
 (* element-wise comparison functions *)
 
 let elt_equal x y =
-  let z = empty (kind x) (shape x) in
-  _owl_elt_equal (kind x) (numel z) x y z;
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = empty (kind x) (shape x) in
+      _owl_elt_equal (kind x) (numel z) x y z;
+      z
+    )
+  | false -> broadcast_op (_owl_broadcast_elt_equal (kind x)) x y
 
 let elt_not_equal x y =
-  let z = empty (kind x) (shape x) in
-  _owl_elt_not_equal (kind x) (numel z) x y z;
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = empty (kind x) (shape x) in
+      _owl_elt_not_equal (kind x) (numel z) x y z;
+      z
+    )
+  | false -> broadcast_op (_owl_broadcast_elt_not_equal (kind x)) x y
 
 let elt_less x y =
-  let z = empty (kind x) (shape x) in
-  _owl_elt_less (kind x) (numel z) x y z;
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = empty (kind x) (shape x) in
+      _owl_elt_less (kind x) (numel z) x y z;
+      z
+    )
+  | false -> broadcast_op (_owl_broadcast_elt_less (kind x)) x y
 
 let elt_greater x y =
-  let z = empty (kind x) (shape x) in
-  _owl_elt_greater (kind x) (numel z) x y z;
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = empty (kind x) (shape x) in
+      _owl_elt_greater (kind x) (numel z) x y z;
+      z
+    )
+  | false -> broadcast_op (_owl_broadcast_elt_greater (kind x)) x y
 
 let elt_less_equal x y =
-  let z = empty (kind x) (shape x) in
-  _owl_elt_less_equal (kind x) (numel z) x y z;
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = empty (kind x) (shape x) in
+      _owl_elt_less_equal (kind x) (numel z) x y z;
+      z
+    )
+  | false -> broadcast_op (_owl_broadcast_elt_less_equal (kind x)) x y
 
 let elt_greater_equal x y =
-  let z = empty (kind x) (shape x) in
-  _owl_elt_greater_equal (kind x) (numel z) x y z;
-  z
+  match same_shape x y with
+  | true  -> (
+      let z = empty (kind x) (shape x) in
+      _owl_elt_greater_equal (kind x) (numel z) x y z;
+      z
+    )
+  | false -> broadcast_op (_owl_broadcast_elt_greater_equal (kind x)) x y
 
 let elt_equal_scalar x a =
   let y = empty (kind x) (shape x) in
@@ -947,8 +951,14 @@ let sequential k ?a ?step dimension =
   x
 
 let dropout ?(rate=0.5) ?seed x =
-  let y = bernoulli ~p:(1. -. rate) ?seed (kind x) (shape x) in
-  mul x y
+  assert (rate >= 0. && rate <= 1.);
+  let seed = match seed with
+    | Some a -> a
+    | None   -> Owl_stats.Rnd.uniform_int ()
+  in
+  let x = copy x in
+  _owl_dropout (kind x) (numel x) x rate seed;
+  x
 
 
 (* advanced operations *)
@@ -1458,6 +1468,14 @@ let im_z2d x =
   let y = empty Float64 (shape x) in
   _owl_im_z2d (numel x) x y;
   y
+
+let abs_c2s x = abs x |> re_c2s
+
+let abs_z2d x = abs x |> re_z2d
+
+let abs2_c2s x = abs2 x |> re_c2s
+
+let abs2_z2d x = abs2 x |> re_z2d
 
 
 (* cast functions *)
@@ -2977,6 +2995,78 @@ let max2_ x y =
     broadcast_op (_owl_broadcast_max2 (kind x)) x y ~out:x |> ignore
   )
 
+let elt_equal_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_equal (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_elt_equal (kind x)) x y ~out:x |> ignore
+  )
+
+let elt_not_equal_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_not_equal (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_elt_not_equal (kind x)) x y ~out:x |> ignore
+  )
+
+let elt_less_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_less (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_elt_less (kind x)) x y ~out:x |> ignore
+  )
+
+let elt_greater_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_greater (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_elt_greater (kind x)) x y ~out:x |> ignore
+  )
+
+let elt_less_equal_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_less_equal (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_elt_less_equal (kind x)) x y ~out:x |> ignore
+  )
+
+let elt_greater_equal_ x y =
+  let sx = shape x in
+  let sy = shape y in
+  if sx = sy then _owl_elt_equal (kind x) (numel x) x y x
+  else (
+    (* broadcast [y] to [x], so make sure [x] is big enough *)
+    assert (Owl_utils.array_greater_eqaul sx sy);
+    broadcast_op (_owl_broadcast_elt_greater_equal (kind x)) x y ~out:x |> ignore
+  )
+
+let elt_equal_scalar_ x a = _owl_elt_equal_scalar (kind x) (numel x) x x a
+
+let elt_not_equal_scalar_ x a = _owl_elt_not_equal_scalar (kind x) (numel x) x x a
+
+let elt_less_scalar_ x a = _owl_elt_less_scalar (kind x) (numel x) x x a
+
+let elt_greater_scalar_ x a = _owl_elt_greater_scalar (kind x) (numel x) x x a
+
+let elt_less_equal_scalar_ x a = _owl_elt_less_equal_scalar (kind x) (numel x) x x a
+
+let elt_greater_equal_scalar_ x a = _owl_elt_greater_equal_scalar (kind x) (numel x) x x a
+
 let add_scalar_ x a = _owl_add_scalar (kind x) (numel x) x x a
 
 let sub_scalar_ x a = add_scalar_ x (_neg_elt (kind x) a)
@@ -3119,6 +3209,13 @@ let cross_entropy' x y =
   mul_ y x;
   _neg_elt (kind y) (sum' y)
 
+let dropout_ ?(rate=0.5) ?seed x =
+  assert (rate >= 0. && rate <= 1.);
+  let seed = match seed with
+    | Some a -> a
+    | None   -> Owl_stats.Rnd.uniform_int ()
+  in
+  _owl_dropout (kind x) (numel x) x rate seed
 
 
 (** Matrix functions *)

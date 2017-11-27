@@ -1,3 +1,5 @@
+(** Unit test for Owl_stats module *)
+
 module M = Owl_stats
 
 (* define the test error *)

@@ -78,7 +78,7 @@ CAMLprim value FUN4(value vN, value vX, value vY)
 #endif /* FUN4 */
 
 
-// function to perform mapping of elements in x with regards to scalar values
+// function to map elements in [x] w.r.t scalar values
 #ifdef FUN12
 
 CAMLprim value FUN12(value vN, value vA, value vB, value vX)
@@ -268,7 +268,7 @@ CAMLprim value FUN17(value vN, value vX, value vY, value vA)
 #endif /* FUN17 */
 
 
-// function of a and b then save results to x
+// function to map elements in [x] w.r.t [a] and [b] then save results to [x]
 #ifdef FUN18
 
 CAMLprim value FUN18(value vN, value vX, value vA, value vB)

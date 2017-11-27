@@ -1318,24 +1318,28 @@ let _owl_reci_tol : type a b. (a, b) kind -> (a, b) owl_arr_op11 = function
 
 external owl_float32_abs : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_abs"
 external owl_float64_abs : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_abs"
-external owl_complex32_abs : int -> (Complex.t, complex32_elt) owl_arr -> (float, float32_elt) owl_arr -> unit = "complex32_abs"
-external owl_complex64_abs : int -> (Complex.t, complex64_elt) owl_arr -> (float, float64_elt) owl_arr -> unit = "complex64_abs"
+external owl_complex32_abs : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex32_abs"
+external owl_complex64_abs : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex64_abs"
 
 let _owl_abs : type a b. (a, b) kind -> (a, b) owl_arr_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_float32_abs l x y
   | Float64   -> owl_float64_abs l x y
+  | Complex32 -> owl_complex32_abs l x y
+  | Complex64 -> owl_complex64_abs l x y
   | _         -> failwith "_owl_abs: unsupported operation"
 
 external owl_float32_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_abs2"
 external owl_float64_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_abs2"
-external owl_complex32_abs2 : int -> (Complex.t, complex32_elt) owl_arr -> (float, float32_elt) owl_arr -> unit = "complex32_abs2"
-external owl_complex64_abs2 : int -> (Complex.t, complex64_elt) owl_arr -> (float, float64_elt) owl_arr -> unit = "complex64_abs2"
+external owl_complex32_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex32_abs2"
+external owl_complex64_abs2 : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex64_abs2"
 
 let _owl_abs2 : type a b. (a, b) kind -> (a, b) owl_arr_op09 = fun k l x y ->
   match k with
   | Float32   -> owl_float32_abs2 l x y
   | Float64   -> owl_float64_abs2 l x y
+  | Complex32 -> owl_complex32_abs2 l x y
+  | Complex64 -> owl_complex64_abs2 l x y
   | _         -> failwith "_owl_abs2: unsupported operation"
 
 external owl_float32_signum : int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_signum"
@@ -2425,6 +2429,30 @@ let _owl_bernoulli : type a b. (a, b) kind -> (a, b) owl_arr_op12 = function
   | Int64          -> owl_int64_bernoulli
   | _              -> failwith "_owl_bernoulli: unsupported operation"
 
+external owl_float32_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "float32_dropout"
+external owl_float64_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "float64_dropout"
+external owl_complex32_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "complex32_dropout"
+external owl_complex64_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "complex64_dropout"
+external owl_int8_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "int8_dropout"
+external owl_uint8_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "uint8_dropout"
+external owl_int16_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "int16_dropout"
+external owl_uint16_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "uint16_dropout"
+external owl_int32_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "int32_dropout"
+external owl_int64_dropout : int -> ('a, 'b) owl_arr -> float -> int -> unit = "int64_dropout"
+
+let _owl_dropout : type a b. (a, b) kind -> (a, b) owl_arr_op12 = function
+  | Float32        -> owl_float32_dropout
+  | Float64        -> owl_float64_dropout
+  | Complex32      -> owl_complex32_dropout
+  | Complex64      -> owl_complex64_dropout
+  | Int8_signed    -> owl_int8_dropout
+  | Int8_unsigned  -> owl_uint8_dropout
+  | Int16_signed   -> owl_int16_dropout
+  | Int16_unsigned -> owl_uint16_dropout
+  | Int32          -> owl_int32_dropout
+  | Int64          -> owl_int64_dropout
+  | _              -> failwith "_owl_dropout: unsupported operation"
+
 external owl_float32_sequential : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "float32_sequential"
 external owl_float64_sequential : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "float64_sequential"
 external owl_complex32_sequential : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "complex32_sequential"
@@ -2693,7 +2721,7 @@ let _owl_repeat : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
 external owl_float32_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_add" "float32_broadcast_add_impl"
 external owl_float64_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_add" "float64_broadcast_add_impl"
 external owl_complex32_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_add" "complex64_broadcast_add_impl"
-external owl_complex64_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_add" "complex64_broadcast_add_impl"
+external owl_complex64_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_add" "complex64_broadcast_add_impl"
 external owl_int8_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_add" "int8_broadcast_add_impl"
 external owl_uint8_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint8_broadcast_add" "uint8_broadcast_add_impl"
 external owl_int16_broadcast_add : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int16_broadcast_add" "int16_broadcast_add_impl"
@@ -2717,7 +2745,7 @@ let _owl_broadcast_add : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
 external owl_float32_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_sub" "float32_broadcast_sub_impl"
 external owl_float64_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_sub" "float64_broadcast_sub_impl"
 external owl_complex32_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_sub" "complex64_broadcast_sub_impl"
-external owl_complex64_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_sub" "complex64_broadcast_sub_impl"
+external owl_complex64_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_sub" "complex64_broadcast_sub_impl"
 external owl_int8_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_sub" "int8_broadcast_sub_impl"
 external owl_uint8_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint8_broadcast_sub" "uint8_broadcast_sub_impl"
 external owl_int16_broadcast_sub : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int16_broadcast_sub" "int16_broadcast_sub_impl"
@@ -2741,7 +2769,7 @@ let _owl_broadcast_sub : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
 external owl_float32_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_mul" "float32_broadcast_mul_impl"
 external owl_float64_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_mul" "float64_broadcast_mul_impl"
 external owl_complex32_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_mul" "complex64_broadcast_mul_impl"
-external owl_complex64_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_mul" "complex64_broadcast_mul_impl"
+external owl_complex64_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_mul" "complex64_broadcast_mul_impl"
 external owl_int8_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_mul" "int8_broadcast_mul_impl"
 external owl_uint8_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint8_broadcast_mul" "uint8_broadcast_mul_impl"
 external owl_int16_broadcast_mul : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int16_broadcast_mul" "int16_broadcast_mul_impl"
@@ -2765,7 +2793,7 @@ let _owl_broadcast_mul : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
 external owl_float32_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_div" "float32_broadcast_div_impl"
 external owl_float64_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_div" "float64_broadcast_div_impl"
 external owl_complex32_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_div" "complex64_broadcast_div_impl"
-external owl_complex64_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_div" "complex64_broadcast_div_impl"
+external owl_complex64_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_div" "complex64_broadcast_div_impl"
 external owl_int8_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_div" "int8_broadcast_div_impl"
 external owl_uint8_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint8_broadcast_div" "uint8_broadcast_div_impl"
 external owl_int16_broadcast_div : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int16_broadcast_div" "int16_broadcast_div_impl"
@@ -2789,7 +2817,7 @@ let _owl_broadcast_div : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
 external owl_float32_broadcast_min2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_min2" "float32_broadcast_min2_impl"
 external owl_float64_broadcast_min2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_min2" "float64_broadcast_min2_impl"
 external owl_complex32_broadcast_min2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_min2" "complex64_broadcast_min2_impl"
-external owl_complex64_broadcast_min2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_min2" "complex64_broadcast_min2_impl"
+external owl_complex64_broadcast_min2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_min2" "complex64_broadcast_min2_impl"
 external owl_int8_broadcast_min2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_min2" "int8_broadcast_min2_impl"
 external owl_uint8_broadcast_min2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint8_broadcast_min2" "uint8_broadcast_min2_impl"
 external owl_int16_broadcast_min2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int16_broadcast_min2" "int16_broadcast_min2_impl"
@@ -2813,7 +2841,7 @@ let _owl_broadcast_min2 : type a b. (a, b) kind -> (a, b) owl_arr_op17 = functio
 external owl_float32_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_max2" "float32_broadcast_max2_impl"
 external owl_float64_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_max2" "float64_broadcast_max2_impl"
 external owl_complex32_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_max2" "complex64_broadcast_max2_impl"
-external owl_complex64_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_max2" "complex64_broadcast_max2_impl"
+external owl_complex64_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_max2" "complex64_broadcast_max2_impl"
 external owl_int8_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_max2" "int8_broadcast_max2_impl"
 external owl_uint8_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint8_broadcast_max2" "uint8_broadcast_max2_impl"
 external owl_int16_broadcast_max2 : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int16_broadcast_max2" "int16_broadcast_max2_impl"
@@ -2837,7 +2865,7 @@ let _owl_broadcast_max2 : type a b. (a, b) kind -> (a, b) owl_arr_op17 = functio
 external owl_float32_broadcast_pow : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_pow" "float32_broadcast_pow_impl"
 external owl_float64_broadcast_pow : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_pow" "float64_broadcast_pow_impl"
 external owl_complex32_broadcast_pow : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_pow" "complex64_broadcast_pow_impl"
-external owl_complex64_broadcast_pow : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_pow" "complex64_broadcast_pow_impl"
+external owl_complex64_broadcast_pow : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_pow" "complex64_broadcast_pow_impl"
 
 let _owl_broadcast_pow : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
   | Float32   -> owl_float32_broadcast_pow
@@ -2870,6 +2898,149 @@ let _owl_broadcast_fmod : type a b. (a, b) kind -> (a, b) owl_arr_op17 = functio
   | Float64   -> owl_float64_broadcast_fmod
   | _         -> failwith "_owl_broadcast_fmod: unsupported operation"
 
+external owl_float32_broadcast_elt_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_elt_equal" "float32_broadcast_elt_equal_impl"
+external owl_float64_broadcast_elt_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_elt_equal" "float64_broadcast_elt_equal_impl"
+external owl_complex32_broadcast_elt_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_elt_equal" "complex64_broadcast_elt_equal_impl"
+external owl_complex64_broadcast_elt_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_elt_equal" "complex64_broadcast_elt_equal_impl"
+external owl_int8_broadcast_elt_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_elt_equal" "int8_broadcast_elt_equal_impl"
+external owl_uint8_broadcast_elt_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint8_broadcast_elt_equal" "uint8_broadcast_elt_equal_impl"
+external owl_int16_broadcast_elt_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int16_broadcast_elt_equal" "int16_broadcast_elt_equal_impl"
+external owl_uint16_broadcast_elt_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint16_broadcast_elt_equal" "uint16_broadcast_elt_equal_impl"
+external owl_int32_broadcast_elt_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int32_broadcast_elt_equal" "int32_broadcast_elt_equal_impl"
+external owl_int64_broadcast_elt_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int64_broadcast_elt_equal" "int64_broadcast_elt_equal_impl"
+
+let _owl_broadcast_elt_equal : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_broadcast_elt_equal
+  | Float64        -> owl_float64_broadcast_elt_equal
+  | Complex32      -> owl_complex32_broadcast_elt_equal
+  | Complex64      -> owl_complex64_broadcast_elt_equal
+  | Int8_signed    -> owl_int8_broadcast_elt_equal
+  | Int8_unsigned  -> owl_uint8_broadcast_elt_equal
+  | Int16_signed   -> owl_int16_broadcast_elt_equal
+  | Int16_unsigned -> owl_uint16_broadcast_elt_equal
+  | Int32          -> owl_int32_broadcast_elt_equal
+  | Int64          -> owl_int64_broadcast_elt_equal
+  | _              -> failwith "_owl_broadcast_elt_equal: unsupported operation"
+
+external owl_float32_broadcast_elt_not_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_elt_not_equal" "float32_broadcast_elt_not_equal_impl"
+external owl_float64_broadcast_elt_not_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_elt_not_equal" "float64_broadcast_elt_not_equal_impl"
+external owl_complex32_broadcast_elt_not_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_elt_not_equal" "complex64_broadcast_elt_not_equal_impl"
+external owl_complex64_broadcast_elt_not_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_elt_not_equal" "complex64_broadcast_elt_not_equal_impl"
+external owl_int8_broadcast_elt_not_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_elt_not_equal" "int8_broadcast_elt_not_equal_impl"
+external owl_uint8_broadcast_elt_not_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint8_broadcast_elt_not_equal" "uint8_broadcast_elt_not_equal_impl"
+external owl_int16_broadcast_elt_not_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int16_broadcast_elt_not_equal" "int16_broadcast_elt_not_equal_impl"
+external owl_uint16_broadcast_elt_not_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint16_broadcast_elt_not_equal" "uint16_broadcast_elt_not_equal_impl"
+external owl_int32_broadcast_elt_not_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int32_broadcast_elt_not_equal" "int32_broadcast_elt_not_equal_impl"
+external owl_int64_broadcast_elt_not_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int64_broadcast_elt_not_equal" "int64_broadcast_elt_not_equal_impl"
+
+let _owl_broadcast_elt_not_equal : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_broadcast_elt_not_equal
+  | Float64        -> owl_float64_broadcast_elt_not_equal
+  | Complex32      -> owl_complex32_broadcast_elt_not_equal
+  | Complex64      -> owl_complex64_broadcast_elt_not_equal
+  | Int8_signed    -> owl_int8_broadcast_elt_not_equal
+  | Int8_unsigned  -> owl_uint8_broadcast_elt_not_equal
+  | Int16_signed   -> owl_int16_broadcast_elt_not_equal
+  | Int16_unsigned -> owl_uint16_broadcast_elt_not_equal
+  | Int32          -> owl_int32_broadcast_elt_not_equal
+  | Int64          -> owl_int64_broadcast_elt_not_equal
+  | _              -> failwith "_owl_broadcast_elt_not_equal: unsupported operation"
+
+external owl_float32_broadcast_elt_less : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_elt_less" "float32_broadcast_elt_less_impl"
+external owl_float64_broadcast_elt_less : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_elt_less" "float64_broadcast_elt_less_impl"
+external owl_complex32_broadcast_elt_less : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_elt_less" "complex64_broadcast_elt_less_impl"
+external owl_complex64_broadcast_elt_less : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_elt_less" "complex64_broadcast_elt_less_impl"
+external owl_int8_broadcast_elt_less : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_elt_less" "int8_broadcast_elt_less_impl"
+external owl_uint8_broadcast_elt_less : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint8_broadcast_elt_less" "uint8_broadcast_elt_less_impl"
+external owl_int16_broadcast_elt_less : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int16_broadcast_elt_less" "int16_broadcast_elt_less_impl"
+external owl_uint16_broadcast_elt_less : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint16_broadcast_elt_less" "uint16_broadcast_elt_less_impl"
+external owl_int32_broadcast_elt_less : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int32_broadcast_elt_less" "int32_broadcast_elt_less_impl"
+external owl_int64_broadcast_elt_less : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int64_broadcast_elt_less" "int64_broadcast_elt_less_impl"
+
+let _owl_broadcast_elt_less : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_broadcast_elt_less
+  | Float64        -> owl_float64_broadcast_elt_less
+  | Complex32      -> owl_complex32_broadcast_elt_less
+  | Complex64      -> owl_complex64_broadcast_elt_less
+  | Int8_signed    -> owl_int8_broadcast_elt_less
+  | Int8_unsigned  -> owl_uint8_broadcast_elt_less
+  | Int16_signed   -> owl_int16_broadcast_elt_less
+  | Int16_unsigned -> owl_uint16_broadcast_elt_less
+  | Int32          -> owl_int32_broadcast_elt_less
+  | Int64          -> owl_int64_broadcast_elt_less
+  | _              -> failwith "_owl_broadcast_elt_less: unsupported operation"
+
+external owl_float32_broadcast_elt_greater : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_elt_greater" "float32_broadcast_elt_greater_impl"
+external owl_float64_broadcast_elt_greater : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_elt_greater" "float64_broadcast_elt_greater_impl"
+external owl_complex32_broadcast_elt_greater : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_elt_greater" "complex64_broadcast_elt_greater_impl"
+external owl_complex64_broadcast_elt_greater : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_elt_greater" "complex64_broadcast_elt_greater_impl"
+external owl_int8_broadcast_elt_greater : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_elt_greater" "int8_broadcast_elt_greater_impl"
+external owl_uint8_broadcast_elt_greater : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint8_broadcast_elt_greater" "uint8_broadcast_elt_greater_impl"
+external owl_int16_broadcast_elt_greater : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int16_broadcast_elt_greater" "int16_broadcast_elt_greater_impl"
+external owl_uint16_broadcast_elt_greater : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint16_broadcast_elt_greater" "uint16_broadcast_elt_greater_impl"
+external owl_int32_broadcast_elt_greater : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int32_broadcast_elt_greater" "int32_broadcast_elt_greater_impl"
+external owl_int64_broadcast_elt_greater : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int64_broadcast_elt_greater" "int64_broadcast_elt_greater_impl"
+
+let _owl_broadcast_elt_greater : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_broadcast_elt_greater
+  | Float64        -> owl_float64_broadcast_elt_greater
+  | Complex32      -> owl_complex32_broadcast_elt_greater
+  | Complex64      -> owl_complex64_broadcast_elt_greater
+  | Int8_signed    -> owl_int8_broadcast_elt_greater
+  | Int8_unsigned  -> owl_uint8_broadcast_elt_greater
+  | Int16_signed   -> owl_int16_broadcast_elt_greater
+  | Int16_unsigned -> owl_uint16_broadcast_elt_greater
+  | Int32          -> owl_int32_broadcast_elt_greater
+  | Int64          -> owl_int64_broadcast_elt_greater
+  | _              -> failwith "_owl_broadcast_elt_greater: unsupported operation"
+
+external owl_float32_broadcast_elt_less_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_elt_less_equal" "float32_broadcast_elt_less_equal_impl"
+external owl_float64_broadcast_elt_less_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_elt_less_equal" "float64_broadcast_elt_less_equal_impl"
+external owl_complex32_broadcast_elt_less_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_elt_less_equal" "complex64_broadcast_elt_less_equal_impl"
+external owl_complex64_broadcast_elt_less_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_elt_less_equal" "complex64_broadcast_elt_less_equal_impl"
+external owl_int8_broadcast_elt_less_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_elt_less_equal" "int8_broadcast_elt_less_equal_impl"
+external owl_uint8_broadcast_elt_less_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint8_broadcast_elt_less_equal" "uint8_broadcast_elt_less_equal_impl"
+external owl_int16_broadcast_elt_less_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int16_broadcast_elt_less_equal" "int16_broadcast_elt_less_equal_impl"
+external owl_uint16_broadcast_elt_less_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint16_broadcast_elt_less_equal" "uint16_broadcast_elt_less_equal_impl"
+external owl_int32_broadcast_elt_less_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int32_broadcast_elt_less_equal" "int32_broadcast_elt_less_equal_impl"
+external owl_int64_broadcast_elt_less_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int64_broadcast_elt_less_equal" "int64_broadcast_elt_less_equal_impl"
+
+let _owl_broadcast_elt_less_equal : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_broadcast_elt_less_equal
+  | Float64        -> owl_float64_broadcast_elt_less_equal
+  | Complex32      -> owl_complex32_broadcast_elt_less_equal
+  | Complex64      -> owl_complex64_broadcast_elt_less_equal
+  | Int8_signed    -> owl_int8_broadcast_elt_less_equal
+  | Int8_unsigned  -> owl_uint8_broadcast_elt_less_equal
+  | Int16_signed   -> owl_int16_broadcast_elt_less_equal
+  | Int16_unsigned -> owl_uint16_broadcast_elt_less_equal
+  | Int32          -> owl_int32_broadcast_elt_less_equal
+  | Int64          -> owl_int64_broadcast_elt_less_equal
+  | _              -> failwith "_owl_broadcast_elt_less_equal: unsupported operation"
+
+external owl_float32_broadcast_elt_greater_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_broadcast_elt_greater_equal" "float32_broadcast_elt_greater_equal_impl"
+external owl_float64_broadcast_elt_greater_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_broadcast_elt_greater_equal" "float64_broadcast_elt_greater_equal_impl"
+external owl_complex32_broadcast_elt_greater_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex32_broadcast_elt_greater_equal" "complex64_broadcast_elt_greater_equal_impl"
+external owl_complex64_broadcast_elt_greater_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "complex64_broadcast_elt_greater_equal" "complex64_broadcast_elt_greater_equal_impl"
+external owl_int8_broadcast_elt_greater_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int8_broadcast_elt_greater_equal" "int8_broadcast_elt_greater_equal_impl"
+external owl_uint8_broadcast_elt_greater_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint8_broadcast_elt_greater_equal" "uint8_broadcast_elt_greater_equal_impl"
+external owl_int16_broadcast_elt_greater_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int16_broadcast_elt_greater_equal" "int16_broadcast_elt_greater_equal_impl"
+external owl_uint16_broadcast_elt_greater_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "uint16_broadcast_elt_greater_equal" "uint16_broadcast_elt_greater_equal_impl"
+external owl_int32_broadcast_elt_greater_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int32_broadcast_elt_greater_equal" "int32_broadcast_elt_greater_equal_impl"
+external owl_int64_broadcast_elt_greater_equal : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "int64_broadcast_elt_greater_equal" "int64_broadcast_elt_greater_equal_impl"
+
+let _owl_broadcast_elt_greater_equal : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_broadcast_elt_greater_equal
+  | Float64        -> owl_float64_broadcast_elt_greater_equal
+  | Complex32      -> owl_complex32_broadcast_elt_greater_equal
+  | Complex64      -> owl_complex64_broadcast_elt_greater_equal
+  | Int8_signed    -> owl_int8_broadcast_elt_greater_equal
+  | Int8_unsigned  -> owl_uint8_broadcast_elt_greater_equal
+  | Int16_signed   -> owl_int16_broadcast_elt_greater_equal
+  | Int16_unsigned -> owl_uint16_broadcast_elt_greater_equal
+  | Int32          -> owl_int32_broadcast_elt_greater_equal
+  | Int64          -> owl_int64_broadcast_elt_greater_equal
+  | _              -> failwith "_owl_broadcast_elt_greater_equal: unsupported operation"
 
 
 (* ends here *)
