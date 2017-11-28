@@ -189,6 +189,8 @@ val t_test_unpaired : ?alpha:float -> ?side:tail -> ?equal_var:bool -> float arr
   two variances are not the same, the test is referred to as Welche's t-test.
  *)
 
+exception EXN_EMPTY_ARRAY
+
 val ks2_test : ?alpha:float -> float array -> float array -> bool * float * float
 
 (** [ks2_test ~alpha x y] returns a test decision for the null
