@@ -114,6 +114,7 @@ module Make
   let variable () = node ~name:"variable" ~value:[||] Noop
 
   let assign x x_val =
+    assert (x.op = Noop);
     invalidate_graph x;
     x.value <- [|x_val|]
 
