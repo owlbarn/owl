@@ -43,7 +43,8 @@ module Make
     | Fun05 of (A.arr array -> A.arr)
     | Fun06 of (A.arr -> A.arr array)
     | Fun07 of (A.arr -> A.elt)
-    | ItemI of int (* select the ith item in an array *)
+    | Fun08 of (t array -> value array)
+    | ItemI of int (* get the ith output value *)
 
 
   (* core functions to manipulate computation graphs *)
@@ -136,6 +137,7 @@ module Make
     | Fun05 _ -> "arr"
     | Fun06 _ -> "arr array"
     | Fun07 _ -> "elt"
+    | Fun08 _ -> "t array"
     | _       -> ""
 
   let type_to_str = function Elt _ -> "elt" | Arr _ -> "arr"
@@ -230,7 +232,8 @@ module Make
         | Fun05 f      -> _eval_map5 x f
         | Fun06 f      -> ()
         | Fun07 f      -> _eval_map7 x f
-        | ItemI i      -> ()
+        | Fun08 f      -> _eval_map8 x f
+        | ItemI i      -> _item_i x i
       in
       validate x
     )
@@ -292,6 +295,17 @@ module Make
     _eval_term x.prev.(0);
     let a = x.prev.(0).value.(0) |> unpack_arr |> f in
     x.value <- [|Elt a|]
+
+  (* [f] is pure and always allocates mem, for [t array -> value array] *)
+  and _eval_map8 x f =
+    Array.iter _eval_term x.prev;
+    x.value <- f x.prev
+
+  (* get the ith output value of [x] *)
+  and _item_i x i =
+    _eval_term x.prev.(0);
+    assert (i < Array.length x.prev.(0).value);
+    x.value <- [|x.prev.(0).value.(i)|]
 
 
   let eval x = _eval_term x
