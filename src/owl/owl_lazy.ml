@@ -43,7 +43,7 @@ module Make
     | Fun05 of (A.arr array -> A.arr)
     | Fun06 of (A.arr -> A.arr array)
     | Fun07 of (A.arr -> A.elt)
-    | Fun08 of (t array -> value array)
+    | Fun08 of (t array -> value array)  (* FIXME: needs redesign *)
     | ItemI of int (* get the ith output value *)
 
 
