@@ -16,10 +16,24 @@ let qr_fact x =
 (* LU factorisation *)
 let lu_fact x =
   let l, u, a = Linalg.D.lu x in
-  Mat.(l *@ u |> print)
+  (* TODO: permutation *)
+  Mat.(l *@ u)
 
 (* SVD factorisation *)
-let svd_fact x = ()
+let svd_fact x =
+  let u, s, v = Linalg.D.svd x in
+  let s = Mat.diagm s in
+  Mat.(u *@ s *@ v - x |> print)
+
+(* inverse a matrix *)
+let inv_mat x =
+  let y = Linalg.D.inv x in
+  Mat.(x *@ y |> print)
+
+(* pseudo inversion *)
+let pinv_mat x =
+  let y = Linalg.D.pinv x in
+  Mat.(x *@ y |> print)
 
 let _ =
   let x0 = Mat.uniform 8 8 in
@@ -27,4 +41,6 @@ let _ =
   lq_fact x0;
   qr_fact x0;
   lu_fact x0;
-  svd_fact x0
+  svd_fact x0;
+  inv_mat x0;
+  pinv_mat x0
