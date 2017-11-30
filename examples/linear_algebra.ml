@@ -14,7 +14,9 @@ let qr_fact x =
   Mat.(q *@ r - x |> print)
 
 (* LU factorisation *)
-let lu_fact x = ()
+let lu_fact x =
+  let l, u, a = Linalg.D.lu x in
+  Mat.(l *@ u |> print)
 
 (* SVD factorisation *)
 let svd_fact x = ()
