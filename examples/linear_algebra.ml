@@ -35,6 +35,11 @@ let pinv_mat x =
   let y = Linalg.D.pinv x in
   Mat.(x *@ y |> print)
 
+(* rank of a matrix *)
+let rank_mat x =
+  let r = Linalg.D.rank x in
+  Printf.printf "\nrank of x is %i\n" r
+
 let _ =
   let x0 = Mat.uniform 8 8 in
   let x1 = Mat.uniform 8 10 in
@@ -43,4 +48,5 @@ let _ =
   lu_fact x0;
   svd_fact x0;
   inv_mat x0;
-  pinv_mat x0
+  pinv_mat x0;
+  rank_mat x0
