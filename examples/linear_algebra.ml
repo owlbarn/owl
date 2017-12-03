@@ -40,6 +40,11 @@ let rank_mat x =
   let r = Linalg.D.rank x in
   Printf.printf "\nrank of x is %i\n" r
 
+(* determinant of a matrix *)
+let det_mat x =
+  let a = Linalg.D.det x in
+  Printf.printf "determinant of x is %f\n" a
+
 let _ =
   let x0 = Mat.uniform 8 8 in
   let x1 = Mat.uniform 8 10 in
@@ -49,4 +54,5 @@ let _ =
   svd_fact x0;
   inv_mat x0;
   pinv_mat x0;
-  rank_mat x0
+  rank_mat x0;
+  det_mat x0
