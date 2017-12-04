@@ -48,6 +48,12 @@ module Make
   val to_elt : t -> A.elt
   (** [to_elt x] unpacks an element from [x] of type [t]. *)
 
+  val of_arr : A.arr -> t
+  (** [] ... *)
+
+  val of_elt : A.elt -> t
+  (** [] ... *)
+
   val eval : t -> unit
   (** [eval x] evaluates the experssion represented by [x]. Note only the
     subgraph that [x] depends on will be evaluated rather than the whole graph.
@@ -72,6 +78,9 @@ module Make
 
 
   (** {6 Properties and manipulations} *)
+
+  val map : (t array -> t) -> t array -> t
+  (** [map f x] ... *)
 
   val tile : t -> int array -> t
 

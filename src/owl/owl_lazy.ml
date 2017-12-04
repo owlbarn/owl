@@ -34,7 +34,8 @@ module Make
   }
   and t = node
   and op =
-    | Noop
+    | Var
+    | Const
     | Fun00 of (A.arr -> A.arr)
     | Fun01 of (A.arr -> unit)
     | Fun02 of (A.arr -> A.arr -> unit) * (A.arr -> A.arr -> A.arr)
@@ -43,7 +44,7 @@ module Make
     | Fun05 of (A.arr array -> A.arr)
     | Fun06 of (A.arr -> A.arr array)
     | Fun07 of (A.arr -> A.elt)
-    | Fun08 of (t array -> value array)  (* FIXME: needs redesign *)
+    | Fun08 of (node array -> node)
     | ItemI of int (* get the ith output value *)
 
 
@@ -81,7 +82,9 @@ module Make
 
   let shall_eval x = Array.length x.value = 0 || x.state = Invalid
 
-  let is_var x = x.op = Noop
+  let is_var x = x.op = Var
+
+  let is_const x = x.op = Const
 
   let is_assigned x = assert (Array.length x.value > 0)
 
@@ -111,10 +114,10 @@ module Make
 
   let invalidate_graph x = dfs_iter [|x|] invalidate (fun x -> x.next)
 
-  let variable () = node ~name:"variable" ~value:[||] Noop
+  let variable () = node ~name:"variable" ~value:[||] Var
 
   let assign x x_val =
-    assert (x.op = Noop);
+    assert (x.op = Var);
     invalidate_graph x;
     x.value <- [|x_val|]
 
@@ -125,6 +128,10 @@ module Make
   let to_arr x = unpack_arr x.value.(0)
 
   let to_elt x = unpack_elt x.value.(0)
+
+  let of_arr x = node ~name:"const" ~value:[|Arr x|] Const
+
+  let of_elt x = node ~name:"const" ~value:[|Elt x|] Const
 
 
   (* pretty printing and print out computation graph *)
@@ -224,7 +231,7 @@ module Make
   let rec _eval_term x =
     if shall_eval x then (
       let _ = match x.op with
-        | Noop         -> is_assigned x
+        | Var          -> is_assigned x
         | Fun00 f      -> _eval_map0 x f
         | Fun01 f      -> _eval_map1 x f
         | Fun02 (f, g) -> _eval_map2 x f g
@@ -235,6 +242,7 @@ module Make
         | Fun07 f      -> _eval_map7 x f
         | Fun08 f      -> _eval_map8 x f
         | ItemI i      -> _item_i x i
+        | _            -> ()
       in
       validate x
     )
@@ -297,10 +305,10 @@ module Make
     let a = x.prev.(0).value.(0) |> unpack_arr |> f in
     x.value <- [|Elt a|]
 
-  (* [f] is pure and always allocates mem, for [t array -> value array] *)
+  (* [f] is pure and always allocates mem, for [node array -> node] *)
   and _eval_map8 x f =
     Array.iter _eval_term x.prev;
-    x.value <- f x.prev
+    x.value <- (f x.prev).value
 
   (* get the ith output value of [x] *)
   and _item_i x i =
@@ -319,6 +327,8 @@ module Make
 
 
   (* properties and manipulations *)
+
+  let map f x = _make_node "map" (Fun08 f) x
 
   let tile x reps = _make_node "tile" (Fun00 (fun x -> A.tile x reps)) [|x|]
 
