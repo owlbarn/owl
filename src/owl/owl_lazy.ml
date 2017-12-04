@@ -308,7 +308,9 @@ module Make
   (* [f] is pure and always allocates mem, for [node array -> node] *)
   and _eval_map8 x f =
     Array.iter _eval_term x.prev;
-    x.value <- (f x.prev).value
+    let y = f x.prev in
+    assert (is_const y = true);
+    x.value <- y.value
 
   (* get the ith output value of [x] *)
   and _item_i x i =

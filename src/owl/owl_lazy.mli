@@ -49,10 +49,12 @@ module Make
   (** [to_elt x] unpacks an element from [x] of type [t]. *)
 
   val of_arr : A.arr -> t
-  (** [] ... *)
+  (** [of_arr x] creates a constant value from [x] in the computation graph. The
+    constant value cannot be re-assigned by [assign_arr] or [assign_elt] later.
+   *)
 
   val of_elt : A.elt -> t
-  (** [] ... *)
+  (** [of_elt x] is similar to [of_arr] but used for the value of type [elt]. *)
 
   val eval : t -> unit
   (** [eval x] evaluates the experssion represented by [x]. Note only the
@@ -79,8 +81,24 @@ module Make
 
   (** {6 Properties and manipulations} *)
 
+  val is_var : t -> bool
+  (** [is_var x] returns [true] if [x] is a variable created by [variable]. *)
+
+  val is_const : t -> bool
+  (** [is_const x] returns [true] if [x] is a const created by [of_arr] or [of_elt]. *)
+
+  val refnum : t -> int
+  (** [refnum x] returns the number of [x]'s parents in the computation graph. *)
+
   val map : (t array -> t) -> t array -> t
-  (** [map f x] ... *)
+  (** [map f x] is a general mechanism that allows you to plug in any functions
+    into a compuation graph as a computation node in case the unary and binary
+    math operators defined in this functor are not sufficient.
+
+    [f : t array -> t] takes an array of [t] as inputs and outputs a constant
+    value of [t]. This means the output must be wrapped up using either [of_arr]
+    or [of_elt] function before returning the result.
+   *)
 
   val tile : t -> int array -> t
 
