@@ -11,9 +11,6 @@ let x2 = Arr.sequential ~a:1. [|3; 4|]
 let x3 = Arr.(uniform [|3; 4|] - x1)
 let x4 = Arr.(uniform [|4; 4|] -$ 1.)
 
-(* make testable *)
-(* let ndarray = Alcotest.testable (fun p (x : M.t) -> ()) (fun ) *)
-
 (* a module with functions to test *)
 module To_test = struct
 
