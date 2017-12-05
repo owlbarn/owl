@@ -25,3 +25,4 @@ depends: [
   "eigen" {>= "0.0.3"}
   "conf-openblas"
 ]
+available: [ ocaml-version >= "4.04.0" ]
