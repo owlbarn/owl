@@ -46,6 +46,7 @@ This [How-To?](https://github.com/ryanrhymes/owl/wiki/How-To%3F) maintains a lis
 * [Tutorial 11: Neural Network](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Neural-Network)
 * [Tutorial 12: Scripting and Zoo System](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Scripting-and-Zoo-System)
 * [Tutorial 13: Laziness and Dataflow](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Laziness-and-Dataflow)
+* [Tutorial 14: Naming Conventions](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Naming-Conventions)
 
 
 The Presentation Slides in OCaml Workshop 2017 can be viewed with [this link](https://docs.google.com/presentation/d/1A-7KiQLot3X2lLyZntrFGxsxaNir0g_2TlruBP4W2Uc/edit).
