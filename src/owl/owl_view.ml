@@ -28,6 +28,9 @@ module Make
   }
 
 
+  (* core functions *)
+
+
   (* adjust slice s1 according to s0 on one dimension *)
   let project_slice_dim s0 s1 =
     let start_0, stop_0, stride_0 = s0.(0), s0.(1), s0.(2) in
@@ -42,6 +45,16 @@ module Make
   let project_slice s0 s1 = Array.map2 project_slice_dim s0 s1
 
 
+  (* project the index onto the slice on one dimension *)
+  let project_index_dim s i =
+    let start_, stop_, stride_ = s.(0), s.(1), s.(2) in
+    start_ + i * stride_
+
+
+  (* project indices onto the slice on all dimensions *)
+  let project_index s i = Array.map2 project_index_dim s i
+
+
   let of_arr x =
     let shape = A.shape x in
     let s0 = Array.(make (length shape)) (R_ [||]) in
@@ -54,10 +67,20 @@ module Make
   let to_arr x = ()
 
 
-  let get x i = ()
+  (* manipulation functions *)
 
 
-  let set x i a = ()
+  let num_dims x = Array.length x.shape
+
+
+  let get x i =
+    let i' = project_index x.slice i in
+    A.get x.data i'
+
+
+  let set x i a =
+    let i' = project_index x.slice i in
+    A.set x.data i' a
 
 
   let get_slice_simple axis x =
@@ -71,6 +94,38 @@ module Make
 
 
   let set_slice_simple axis x y = ()
+
+
+  (* iteration functions *)
+  
+
+  let rec _iteri f x i s dim =
+    if dim = (Array.length i) - 1 then (
+      for j = 0 to s.(dim) - 1 do
+        i.(dim) <- j;
+        f i (get x i)
+      done
+    )
+    else (
+      for j = 0 to s.(dim) - 1 do
+        i.(dim) <- j;
+        _iteri f x i s (dim + 1)
+      done
+    )
+
+
+  let iteri f x =
+    let i = Array.make (num_dims x) 0 in
+    _iteri f x i x.shape 0
+
+
+  let iter f x = iteri (fun _ a -> f a) x
+
+
+  let mapi f x = iteri (fun i a -> set x i (f i a)) x
+
+
+  let map f x = iteri (fun i a -> set x i (f a)) x
 
 
 end
