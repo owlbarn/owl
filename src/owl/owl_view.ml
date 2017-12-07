@@ -17,13 +17,13 @@ module Make
   type t = {
     mutable shape : int array;         (* shape of the view *)
     mutable slice : int array array;   (* slice definition projected on original data *)
-    mutable ofstr : int array array;   (* [|offset; stride|] array of view on original data *)
+    mutable ofstr : int array array;   (* [|offset; stride|] array of view projected on original data *)
     mutable data  : A.arr;             (* original data object *)
     mutable dvec  : A.arr;             (* one-dimensional vector of original data *)
   }
 
 
-  (* calculate (offset, stride) list from [shape] and [slice] of original data *)
+  (* calculate (offset, stride) from the [shape] of original data and [slice] *)
   let calc_ofstr shape slice =
     let dims = Array.length shape in
     let strides = Owl_dense_common._calc_stride shape in
@@ -119,6 +119,7 @@ module Make
   (* iteration functions *)
 
 
+  (* iterate using 1d-index and x.dvec, fast *)
   let rec _iter f x i dim =
     let offset = x.ofstr.(dim).(0) in
     let stride = x.ofstr.(dim).(1) in
@@ -137,19 +138,64 @@ module Make
     )
 
 
-  let iteri f x = _iter (fun i a -> f i.(0) a) x 0 0
+  (* iterate using nd-index and x.data, slow *)
+  let rec _iteri f x i dim =
+    if dim = num_dims x - 1 then (
+      for j = 0 to x.shape.(dim) - 1 do
+        i.(dim) <- j;
+        f i (get x i)
+      done
+    )
+    else (
+      for j = 0 to x.shape.(dim) - 1 do
+        i.(dim) <- j;
+        _iteri f x i (dim + 1)
+      done
+    )
+
+
+  let iteri f x = _iteri f x (Array.make (num_dims x) 0) 0
 
 
   let iter f x = _iter (fun _ a -> f a) x 0 0
 
 
-  let mapi f x = _iter (fun i a -> A.set x.dvec i (f i.(0) a)) x 0 0
+  let mapi f x = iteri (fun i a -> set x i (f i a)) x
 
 
   let map f x = _iter (fun i a -> A.set x.dvec i (f a)) x 0 0
 
 
   let fold ?axis f x = ()
+
+
+  let rec _iter2 f x y i_x i_y dim =
+    let offset_x = x.ofstr.(dim).(0) in
+    let stride_x = x.ofstr.(dim).(1) in
+    let offset_y = y.ofstr.(dim).(0) in
+    let stride_y = y.ofstr.(dim).(1) in
+    let i_x = [|i_x + offset_x|] in
+    let i_y = [|i_y + offset_y|] in
+    if dim = num_dims x - 1 then (
+      for j = 0 to x.shape.(dim) - 1 do
+        f i_x i_y (A.get x.dvec i_x) (A.get y.dvec i_y);
+        i_x.(0) <- i_x.(0) + stride_x;
+        i_y.(0) <- i_y.(0) + stride_y;
+      done
+    )
+    else (
+      for j = 0 to x.shape.(dim) - 1 do
+        _iter2 f x y i_x.(0) i_y.(0) (dim + 1);
+        i_x.(0) <- i_x.(0) + stride_x;
+        i_y.(0) <- i_y.(0) + stride_y;
+      done
+    )
+
+
+  let iter2 f x y =
+    assert (x.shape = y.shape);
+    _iter2 (fun _ _ a b -> f a b) x y 0 0 (num_dims x)
+
 
 
 end

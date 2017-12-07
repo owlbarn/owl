@@ -44,13 +44,20 @@ module Make
 
   (** {6 Iteration functions} *)
 
-  val iteri : (int -> A.elt -> unit) -> t -> unit
+  val iteri : (int array -> A.elt -> unit) -> t -> unit
+  (** [iteri f x] iterates and applies [f] to every element in [x]. [f] has type
+    [f : int array -> elt -> unit], the first paramater is index. The function
+    is much slower than [iter]
+   *)
 
   val iter : (A.elt -> unit) -> t -> unit
 
-  val mapi : (int -> A.elt -> A.elt) -> t -> unit
+  val mapi : (int array -> A.elt -> A.elt) -> t -> unit
+  (** [mapi] is much slower than [map]. *)
 
   val map : (A.elt -> A.elt) -> t -> unit
+
+  val iter2 : (A.elt -> A.elt -> unit) -> t -> t -> unit
 
 
 end
