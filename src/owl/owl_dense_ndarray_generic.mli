@@ -168,7 +168,7 @@ val index_1d_nd : int -> int array -> int array
  *)
 
 val index_nd_1d : int array -> int array -> int
-(** [index_nd_1d i shp] converts n-dimensional index [i] to one-dimensional
+(** [index_nd_1d i stride] converts n-dimensional index [i] to one-dimensional
   index according to the passed in [stride].
 
   NOTE: you need to pass in stride, not the shape of [x]!

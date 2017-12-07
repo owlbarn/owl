@@ -15,23 +15,38 @@ module Make
   = struct
 
   type t = {
-    mutable shape : int array;
-    mutable slice : int array array;
-    mutable data  : A.arr
+    mutable shape : int array;         (* shape of the view *)
+    mutable slice : int array array;   (* slice definition projected on original data *)
+    mutable ofstr : int array array;   (* [|offset; stride|] array of view on original data *)
+    mutable data  : A.arr;             (* original data object *)
+    mutable dvec  : A.arr;             (* one-dimensional vector of original data *)
   }
+
+
+  (* calculate (offset, stride) list from [shape] and [slice] of original data *)
+  let calc_ofstr shape slice =
+    let dims = Array.length shape in
+    let strides = Owl_dense_common._calc_stride shape in
+    Array.init dims (fun i ->
+      let offset = slice.(i).(0) * strides.(i) in
+      let stride = strides.(i) * slice.(i).(2) in
+      [|offset; stride|]
+    )
 
 
   let make_view shape slice data = {
     shape;
     slice;
+    ofstr = calc_ofstr (A.shape data) slice;
     data;
+    dvec = A.reshape data [|A.numel data|];
   }
 
 
   (* core functions *)
 
 
-  (* adjust slice s1 according to s0 on one dimension *)
+  (* project slice s1 to to s0 on one dimension *)
   let project_slice_dim s0 s1 =
     let start_0, stop_0, stride_0 = s0.(0), s0.(1), s0.(2) in
     let start_1, stop_1, stride_1 = s1.(0), s1.(1), s1.(2) in
@@ -104,33 +119,34 @@ module Make
   (* iteration functions *)
 
 
-  let rec _iteri f x i s dim =
-    if dim = (Array.length i) - 1 then (
-      for j = 0 to s.(dim) - 1 do
-        i.(dim) <- j;
-        f i (get x i)
+  let rec _iter f x i dim =
+    let offset = x.ofstr.(dim).(0) in
+    let stride = x.ofstr.(dim).(1) in
+    let i = [|i + offset|] in
+    if dim = num_dims x - 1 then (
+      for j = 0 to x.shape.(dim) - 1 do
+        f i (A.get x.dvec i);
+        i.(0) <- i.(0) + stride;
       done
     )
     else (
-      for j = 0 to s.(dim) - 1 do
-        i.(dim) <- j;
-        _iteri f x i s (dim + 1)
+      for j = 0 to x.shape.(dim) - 1 do
+        _iter f x i.(0) (dim + 1);
+        i.(0) <- i.(0) + stride;
       done
     )
 
 
-  let iteri f x =
-    let i = Array.make (num_dims x) 0 in
-    _iteri f x i x.shape 0
+  let iteri f x = _iter (fun i a -> f i.(0) a) x 0 0
 
 
-  let iter f x = iteri (fun _ a -> f a) x
+  let iter f x = _iter (fun _ a -> f a) x 0 0
 
 
-  let mapi f x = iteri (fun i a -> set x i (f i a)) x
+  let mapi f x = _iter (fun i a -> A.set x.dvec i (f i.(0) a)) x 0 0
 
 
-  let map f x = iteri (fun i a -> set x i (f a)) x
+  let map f x = _iter (fun i a -> A.set x.dvec i (f a)) x 0 0
 
 
   let fold ?axis f x = ()

@@ -44,11 +44,11 @@ module Make
 
   (** {6 Iteration functions} *)
 
-  val iteri : (int array -> A.elt -> unit) -> t -> unit
+  val iteri : (int -> A.elt -> unit) -> t -> unit
 
   val iter : (A.elt -> unit) -> t -> unit
 
-  val mapi : (int array -> A.elt -> A.elt) -> t -> unit
+  val mapi : (int -> A.elt -> A.elt) -> t -> unit
 
   val map : (A.elt -> A.elt) -> t -> unit
 
