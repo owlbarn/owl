@@ -154,21 +154,6 @@ module Make
     )
 
 
-  let iteri f x = _iteri f x (Array.make (num_dims x) 0) 0
-
-
-  let iter f x = _iter (fun _ a -> f a) x 0 0
-
-
-  let mapi f x = iteri (fun i a -> set x i (f i a)) x
-
-
-  let map f x = _iter (fun i a -> A.set x.dvec i (f a)) x 0 0
-
-
-  let fold ?axis f x = ()
-
-
   let rec _iter2 f x y i_x i_y dim =
     let offset_x = x.ofstr.(dim).(0) in
     let stride_x = x.ofstr.(dim).(1) in
@@ -190,6 +175,21 @@ module Make
         i_y.(0) <- i_y.(0) + stride_y;
       done
     )
+
+
+  let iteri f x = _iteri f x (Array.make (num_dims x) 0) 0
+
+
+  let iter f x = _iter (fun _ a -> f a) x 0 0
+
+
+  let mapi f x = iteri (fun i a -> set x i (f i a)) x
+
+
+  let map f x = _iter (fun i a -> A.set x.dvec i (f a)) x 0 0
+
+
+  let fold ?axis f x = ()
 
 
   let iter2 f x y =
