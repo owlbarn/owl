@@ -43,6 +43,10 @@ module Make
   }
 
 
+  (* check whether two views are equivalent *)
+  let is_same_view x y = (x.data == y.data) && (x.slice = y.slice)
+
+
   (* core functions *)
 
 
@@ -111,9 +115,6 @@ module Make
     let slice = project_slice x.slice s2 in
     let shape = Owl_slicing.calc_slice_shape s1 in
     make_view shape slice x.data
-
-
-  let set_slice_simple axis x y = ()
 
 
   (* iteration functions *)
@@ -194,8 +195,23 @@ module Make
 
   let iter2 f x y =
     assert (x.shape = y.shape);
-    _iter2 (fun _ _ a b -> f a b) x y 0 0 (num_dims x)
+    if is_same_view x y then
+      _iter (fun _ a -> f a a) x 0 0
+    else
+      _iter2 (fun _ _ a b -> f a b) x y 0 0 0
 
+
+  let map2 f x y =
+    assert (x.shape = y.shape);
+    if is_same_view x y then
+      _iter (fun i a -> A.set x.dvec i (f a a)) x 0 0
+    else
+      _iter2 (fun i j a b -> A.set y.dvec j (f a b)) x y 0 0 0
+
+
+  let set_slice_simple axis x y =
+    let x = get_slice_simple axis x in
+    map2 (fun _ a -> a) y x
 
 
 end

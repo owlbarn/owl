@@ -25,8 +25,10 @@ module Make
   (** {6 Core functions} *)
 
   val of_arr : A.arr -> t
+  (** [of_arr x] creates a view from ndarray [x]. *)
 
   val to_arr : t -> A.arr
+  (** [to_arr x] creates an new ndarray based on the view [x]. *)
 
 
   (** {6 Manipulation functions} *)
@@ -36,6 +38,8 @@ module Make
   val set : t -> int array -> A.elt -> unit
 
   val get_slice_simple : int list list -> t -> t
+
+  val set_slice_simple : int list list -> t -> t -> unit
 
   val num_dims : t -> int
 
@@ -53,11 +57,21 @@ module Make
   val iter : (A.elt -> unit) -> t -> unit
 
   val mapi : (int array -> A.elt -> A.elt) -> t -> unit
-  (** [mapi] is much slower than [map]. *)
+  (** [mapi f x] applies [f : int array -> elt -> elt] to every element in [x],
+    then save the result in place. This function is much slower than [map].
+   *)
 
   val map : (A.elt -> A.elt) -> t -> unit
+  (** [map f x] applies [f : elt -> elt] to every element in [x], then save the
+    the result in place in [x].
+   *)
 
   val iter2 : (A.elt -> A.elt -> unit) -> t -> t -> unit
 
+  val map2 : (A.elt -> A.elt -> A.elt) -> t -> t -> unit
+  (** [map2 f x y] applies [f : elt -> elt -> elt] every pair of elements in [x]
+    and [y], then saves the result in [y]. So be careful with the order, it
+    matters, the data reflected by view [y] will be modified.
+   *)
 
 end
