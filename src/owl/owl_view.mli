@@ -26,6 +26,8 @@ module Make
 
   val of_arr : A.arr -> t
 
+  val to_arr : t -> A.arr
+
 
   (** {6 Manipulation functions} *)
 
@@ -34,6 +36,10 @@ module Make
   val set : t -> int array -> A.elt -> unit
 
   val get_slice_simple : int list list -> t -> t
+
+  val num_dims : t -> int
+
+  val shape : t -> int array
 
 
   (** {6 Iteration functions} *)

@@ -64,13 +64,18 @@ module Make
     make_view shape s1 x
 
 
-  let to_arr x = ()
+  let to_arr x =
+    let slice = Array.(map (fun a -> R (to_list a)) x.slice |> to_list) in
+    A.get_slice slice x.data
 
 
   (* manipulation functions *)
 
 
   let num_dims x = Array.length x.shape
+
+
+  let shape x = x.shape
 
 
   let get x i =
@@ -97,7 +102,7 @@ module Make
 
 
   (* iteration functions *)
-  
+
 
   let rec _iteri f x i s dim =
     if dim = (Array.length i) - 1 then (
@@ -126,6 +131,9 @@ module Make
 
 
   let map f x = iteri (fun i a -> set x i (f a)) x
+
+
+  let fold ?axis f x = ()
 
 
 end
