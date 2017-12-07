@@ -14,6 +14,7 @@
 
 open Owl_types
 
+
 module Make
   (A : InpureSig)
   : sig
@@ -41,9 +42,13 @@ module Make
 
   val set_slice_simple : int list list -> t -> t -> unit
 
+  val shape : t -> int array
+
   val num_dims : t -> int
 
-  val shape : t -> int array
+  val nth_dim : t -> int -> int
+
+  val numel : t -> int
 
 
   (** {6 Iteration functions} *)
@@ -73,5 +78,6 @@ module Make
     and [y], then saves the result in [y]. So be careful with the order, it
     matters, the data reflected by view [y] will be modified.
    *)
+
 
 end

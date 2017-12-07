@@ -91,10 +91,13 @@ module Make
   (* manipulation functions *)
 
 
+  let shape x = x.shape
+
   let num_dims x = Array.length x.shape
 
+  let nth_dim x i = x.shape.(i)
 
-  let shape x = x.shape
+  let numel x = Array.fold_left ( * ) 1 x.shape
 
 
   let get x i =
