@@ -709,10 +709,151 @@ let t_test_unpaired ?(alpha=0.05) ?(side=BothSide) ?(equal_var=true) x y =
   | true  -> _t_test2_equal_var ~alpha ~side x y
   | false -> _t_test2_welche ~alpha ~side x y
 
-let ks_test x = None
-(* One-sample Kolmogorov-Smirnov test *)
-
 exception EXN_EMPTY_ARRAY
+
+let smirnov n e =
+  let nn = int_of_float (floor ((float_of_int n) *. (1. -. e))) in
+  let rec helper sum v c =
+    let evn = e +. (float_of_int v) /. (float_of_int n) in
+    let sum' = sum +. c *. (evn ** (float_of_int (v - 1)))
+                         *. ((1. -. evn) ** (float_of_int (n - v))) in
+    let c' = c *. (float_of_int (n - v)) /. (float_of_int (v + 1)) in
+    Printf.printf "helper evn=%f sum'=%f c'=%f v=%d nn=%d\n" evn sum' c' v nn;
+    if v <= nn then
+      helper sum' (v + 1) c'
+    else
+      sum
+  in
+  let helper2 () =
+    let maxlog = log max_float in
+    let lngamma = Gsl.Sf.lngamma in
+    let lgamnp1 = lngamma (1. +. float_of_int n) in
+    let rec helper3 sum v =
+      let evn = e +. (float_of_int v) /. (float_of_int n) in
+      let omevn = 1. -. evn in
+      let t = lgamnp1
+              -. lngamma (1. +. float_of_int v)
+              -. lngamma (1. +. float_of_int (n + v)) in
+      let sum' = sum +. exp t in
+      if v <= nn then
+        if abs_float omevn > 0. && t > ~-. maxlog then
+          helper3 sum' (v + 1)
+        else
+          helper3 sum (v + 1)
+      else
+        sum
+    in
+    helper3 0. 0
+  in
+  if not (n > 0 && e >= 0. && e <= 1.) then nan
+  else if e = 0.0 then 1.0
+  else if n < 1013 then
+    e *. (helper 0. 0 1.)
+  else
+    e *. (helper2 ())
+
+(*
+double smirnov(int n, double e)
+{
+    int v, nn;
+    double evn, omevn, p, t, c, lgamnp1;
+
+    /* This comparison should assure returning NaN whenever
+     * e is NaN itself.  In original || form it would proceed */
+    if (!(n > 0 && e >= 0.0 && e <= 1.0))
+	return (NPY_NAN);
+    if (e == 0.0)
+	return 1.0;
+    nn = (int) (floor((double) n * (1.0 - e)));
+    p = 0.0;
+    if (n < 1013) {
+	c = 1.0;
+	for (v = 0; v <= nn; v++) {
+	    evn = e + ((double) v) / n;
+	    p += c * pow(evn, (double) (v - 1))
+		* pow(1.0 - evn, (double) (n - v));
+	    /* Next combinatorial term; worst case error = 4e-15.  */
+	    c *= ((double) (n - v)) / (v + 1);
+	}
+    }
+    else {
+	lgamnp1 = lgam((double) (n + 1));
+	for (v = 0; v <= nn; v++) {
+	    evn = e + ((double) v) / n;
+	    omevn = 1.0 - evn;
+	    if (fabs(omevn) > 0.0) {
+		t = lgamnp1 - lgam((double) (v + 1))
+		    - lgam((double) (n - v + 1))
+		    + (v - 1) * log(evn)
+		    + (n - v) * log(omevn);
+		if (t > -MAXLOG)
+		    p += exp(t);
+	    }
+	}
+    }
+    return (p * e);
+}
+
+/* Kolmogorov's limiting distribution of two-sided test, returns
+ * probability that sqrt(n) * max deviation > y,
+ * or that max deviation > y/sqrt(n).
+ * The approximation is useful for the tail of the distribution
+ * when n is large.  */
+double kolmogorov(double y)
+{
+    double p, t, r, sign, x;
+
+    if (y < 1.1e-16)
+	return 1.0;
+    x = -2.0 * y * y;
+    sign = 1.0;
+    p = 0.0;
+    r = 1.0;
+    do {
+	t = exp(x * r * r);
+	p += sign * t;
+	if (t == 0.0)
+	    break;
+	r += 1.0;
+	sign = -sign;
+    }
+    while ((t / p) > 1.1e-16);
+    return (p + p);
+}
+
+*)
+
+let kolmogorov y =
+  let x = (-2.) *. y *. y in
+  let rec helper sign sum r =
+    let t = exp (x *. r *. r) in
+    let sum' = sum +. sign *. t in
+    let r' = r +. 1. in
+    let sign' = ~-. sign in
+    if t = 0.0 || (t /. sum' <= 1.1e-16) then sum'
+    else helper sign' sum' r'
+  in
+  if y < 1.1e-16 then 1.0
+  else
+    2. *. helper 1. 0. 1.
+
+let ks_test ?(alpha=0.05) x f =
+  let max p q = if p > q then p else q in
+  let n = Array.length x in
+  let nn = float_of_int (Array.length x) in
+  let fvals = Array.map f x in
+  let g1 i v = v -. (float_of_int i) /. nn in
+  let g2 i v = (float_of_int (i+1)) /. nn -. v in
+  let d1 = Array.fold_left max 0. (Array.mapi g1 fvals) in
+  let d2 = Array.fold_left max 0. (Array.mapi g2 fvals) in
+  let d = max d1 d2 in
+  let pval =  2. *. (smirnov n d) in
+  let pval2 = kolmogorov (d *. sqrt nn) in
+  Printf.printf "Final: n=%n d=%f pval=%f pval2=%f\n" n d pval pval2;
+  if n == 0 then raise EXN_EMPTY_ARRAY
+  else if n > 2666 || pval2 > 0.8 -. nn *. 0.003
+  then (pval2 < alpha, pval2, d)
+  else (pval < alpha, pval, d)
 
 let ks2_test ?(alpha=0.05) x y =
   (true, 0.0, 0.0)

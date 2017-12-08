@@ -191,6 +191,20 @@ val t_test_unpaired : ?alpha:float -> ?side:tail -> ?equal_var:bool -> float arr
 
 exception EXN_EMPTY_ARRAY
 
+val ks_test : ?alpha:float -> float array -> (float -> float) -> bool * float * float
+
+(** [ks_test ~alpha x f] returns a test decision for the null
+   hypothesis that the data in vector [x] comes from independent
+   random samples of the distribution with CDF f. The alternative
+   hypothesis is that the data in [x] comes from a different
+   distribution.
+
+    The result [h,p,d]: [h] is [true] if the test rejects the null
+   hypothesis at the [alpha] significance level, and [false]
+   otherwise. [p] is the p-value and [d] is the Kolmogorov-Smirnov
+   test statistic. *)
+
+
 val ks2_test : ?alpha:float -> float array -> float array -> bool * float * float
 
 (** [ks2_test ~alpha x y] returns a test decision for the null
