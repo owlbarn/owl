@@ -90,7 +90,7 @@ module Make
   val refnum : t -> int
   (** [refnum x] returns the number of [x]'s parents in the computation graph. *)
 
-  val map : (t array -> t) -> t array -> t
+  val map : ?name:string -> (t array -> t) -> t array -> t
   (** [map f x] is a general mechanism that allows you to plug in any functions
     into a compuation graph as a computation node in case the unary and binary
     math operators defined in this functor are not sufficient.

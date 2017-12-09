@@ -330,7 +330,7 @@ module Make
 
   (* properties and manipulations *)
 
-  let map f x = _make_node "map" (Fun08 f) x
+  let map ?(name="map") f x = _make_node name (Fun08 f) x
 
   let tile x reps = _make_node "tile" (Fun00 (fun x -> A.tile x reps)) [|x|]
 
