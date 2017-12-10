@@ -34,6 +34,18 @@ module To_test = struct
   let fisher_test_left_side a b c d =
     let (_, p, _) = M.fisher_test ~side:M.LeftSide a b c d in
     p
+  let ks_test_pval a b =
+    let (_, p, _) = M.ks_test a b in
+    p
+  let ks_test_statistic a b =
+    let (_, _, s) = M.ks_test a b in
+    s
+  let ks2_test_pval a b =
+    let (_, p, _) = M.ks2_test a b in
+    p
+  let ks2_test_statistic a b =
+    let (_, _, s) = M.ks2_test a b in
+    s
 end
 
 (* The tests *)
@@ -134,8 +146,91 @@ let wilcoxon_test_left_side_asymp () =
     true
      (abs_float((To_test.wilcoxon_left_side [|10.;9.;8.;7.;6.|] [|10.; 3.; 1.; 3.; 2.|]) -. 0.0328) < 0.001)
 
+let ks_teststat1 () =
+  Alcotest.(check bool)
+    "ks_test test stat"
+    true
+    (abs_float((To_test.ks_test_statistic
+                  [| 1.; 2.; 3. |]
+                  (fun x -> M.Cdf.gaussian_P x 1.0)) -. 0.8413) < 0.0001)
+
+let ks_teststat2 () =
+  Alcotest.(check bool)
+    "ks_test pval 4"
+    true
+    (abs_float((To_test.ks_test_statistic
+                  [| 0.; 0.; 0. |]
+                  (fun x -> M.Cdf.gaussian_P x 1.0)) -. 0.5) < 0.0001)
+
+let ks_pval_test1 () =
+  Alcotest.(check bool)
+    "ks_test pval 1"
+    true
+    (abs_float((To_test.ks_test_pval
+                  [| 1.; 2.; 3. |]
+                  (fun x -> M.Cdf.gaussian_P x 1.0)) -. 0.0079) < 0.0001)
+
+let ks_pval_test2 () =
+  Alcotest.(check bool)
+    "ks_test pval 2"
+    true
+    (abs_float((To_test.ks_test_pval
+                  [| 0.; 0.25; 0.15; 0.05 |]
+                  (fun x -> M.Cdf.gaussian_P x 1.0)) -. 0.1875) < 0.0001)
+
+let ks_pval_test3 () =
+  Alcotest.(check bool)
+  "ks_test pval 3"
+    true
+    (abs_float((To_test.ks_test_pval
+                  (Array.mapi (fun i _ -> 0.99 /. 2000. *. float_of_int i) (Array.create_float 2000))
+                  (fun x -> M.Cdf.flat_P x 0. 1.)) -. 0.98025) < 0.00001)
+
+let ks_pval_test4 () =
+  Alcotest.(check bool)
+  "ks_test pval 4"
+    true
+    (abs_float((To_test.ks_test_pval
+                  (Array.mapi (fun i _ -> 0.99 /. 10_000. *. float_of_int i) (Array.create_float 10_000))
+                  (fun x -> M.Cdf.flat_P x 0. 1.)) -. 0.25953) < 0.00001)
+
+let ks_pval_test5 () =
+  Alcotest.check_raises
+    "ks_test exception"
+    M.EXN_EMPTY_ARRAY
+    (fun _ -> ignore (To_test.ks_test_pval [| |] (fun x -> M.Cdf.gaussian_P x 1.0));)
 
 
+let ks2_teststat () =
+  Alcotest.(check bool)
+    "ks2_test test statistic"
+    true
+    (abs_float((To_test.ks2_test_statistic
+                  [| 0.; 2.; 3.; 1.; 4.|]
+                  [| 6.; 5.; 3.; 4.;|]) -. 0.6) < 0.0001)
+
+let ks2_pval_test1 () =
+  Alcotest.(check bool)
+    "ks2_test p value"
+    true
+    (abs_float((To_test.ks2_test_pval
+                  [| 0.; 2.; 3.; 1.; 4.|]
+                  [| 6.; 5.; 3.; 4.;|]) -. 0.2587) < 0.0001)
+
+let ks2_pval_test2 () =
+  Alcotest.(check bool)
+    "ks2_test p value"
+    true
+    (abs_float((To_test.ks2_test_pval
+                  [|8.3653642; 9.39604144; 9.567219; 8.95912556; 9.97116074|]
+                  [|1.7835817; -0.37877421; -1.21761325;  0.91270459; -1.06491371|])
+               -. 0.003781) < 0.0001)
+
+let ks2_pval_test3 () =
+  Alcotest.check_raises
+    "ks2_test exception"
+    M.EXN_EMPTY_ARRAY
+    (fun _ -> ignore (To_test.ks2_test_pval [||] [|1.; 2.; 3.;|]);)
 
 (* The tests *)
 let test_set = [
@@ -152,6 +247,17 @@ let test_set = [
   "wilcoxon_test_right_side_asymp" , `Slow, wilcoxon_test_right_side_asymp;
   "wilcoxon_test_left_side_asymp" , `Slow, wilcoxon_test_left_side_asymp;
   "fisher_test_both_side" , `Slow, fisher_test_both_side;
-  "fisher_test_right_side", `Slow , fisher_test_right_side ;
+  "fisher_test_right_side", `Slow , fisher_test_right_side;
   "fisher_test_left_side", `Slow, fisher_test_left_side;
-  ]
+  "ks_teststat1", `Slow, ks_teststat1;
+  "ks_teststat2", `Slow, ks_teststat2;
+  "ks_pval_test1", `Slow, ks_pval_test1;
+  "ks_pval_test2", `Slow, ks_pval_test2;
+  "ks_pval_test3", `Slow, ks_pval_test3;
+  "ks_pval_test4", `Slow, ks_pval_test4;
+  "ks_pval_test5", `Slow, ks_pval_test5;
+  "ks2_pval_test1", `Slow, ks2_pval_test1;
+  "ks2_pval_test2", `Slow, ks2_pval_test2;
+  "ks2_pval_test3", `Slow, ks2_pval_test3;
+  "ks2_teststat", `Slow, ks2_teststat;
+]
