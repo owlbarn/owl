@@ -718,7 +718,6 @@ let smirnov n e =
     let sum' = sum +. c *. (evn ** (float_of_int (v - 1)))
                          *. ((1. -. evn) ** (float_of_int (n - v))) in
     let c' = c *. (float_of_int (n - v)) /. (float_of_int (v + 1)) in
-    Printf.printf "helper evn=%f sum'=%f c'=%f v=%d nn=%d\n" evn sum' c' v nn;
     if v <= nn then
       helper sum' (v + 1) c'
     else
@@ -752,77 +751,6 @@ let smirnov n e =
   else
     e *. (helper2 ())
 
-(*
-double smirnov(int n, double e)
-{
-    int v, nn;
-    double evn, omevn, p, t, c, lgamnp1;
-
-    /* This comparison should assure returning NaN whenever
-     * e is NaN itself.  In original || form it would proceed */
-    if (!(n > 0 && e >= 0.0 && e <= 1.0))
-	return (NPY_NAN);
-    if (e == 0.0)
-	return 1.0;
-    nn = (int) (floor((double) n * (1.0 - e)));
-    p = 0.0;
-    if (n < 1013) {
-	c = 1.0;
-	for (v = 0; v <= nn; v++) {
-	    evn = e + ((double) v) / n;
-	    p += c * pow(evn, (double) (v - 1))
-		* pow(1.0 - evn, (double) (n - v));
-	    /* Next combinatorial term; worst case error = 4e-15.  */
-	    c *= ((double) (n - v)) / (v + 1);
-	}
-    }
-    else {
-	lgamnp1 = lgam((double) (n + 1));
-	for (v = 0; v <= nn; v++) {
-	    evn = e + ((double) v) / n;
-	    omevn = 1.0 - evn;
-	    if (fabs(omevn) > 0.0) {
-		t = lgamnp1 - lgam((double) (v + 1))
-		    - lgam((double) (n - v + 1))
-		    + (v - 1) * log(evn)
-		    + (n - v) * log(omevn);
-		if (t > -MAXLOG)
-		    p += exp(t);
-	    }
-	}
-    }
-    return (p * e);
-}
-
-/* Kolmogorov's limiting distribution of two-sided test, returns
- * probability that sqrt(n) * max deviation > y,
- * or that max deviation > y/sqrt(n).
- * The approximation is useful for the tail of the distribution
- * when n is large.  */
-double kolmogorov(double y)
-{
-    double p, t, r, sign, x;
-
-    if (y < 1.1e-16)
-	return 1.0;
-    x = -2.0 * y * y;
-    sign = 1.0;
-    p = 0.0;
-    r = 1.0;
-    do {
-	t = exp(x * r * r);
-	p += sign * t;
-	if (t == 0.0)
-	    break;
-	r += 1.0;
-	sign = -sign;
-    }
-    while ((t / p) > 1.1e-16);
-    return (p + p);
-}
-
-*)
-
 let kolmogorov y =
   let x = (-2.) *. y *. y in
   let rec helper sign sum r =
@@ -837,13 +765,6 @@ let kolmogorov y =
   else
     2. *. helper 1. 0. 1.
 
-(*let sort x =
-  let cmp u v = if u = v then 0 else if u < v then 1 else -1 in
-  let x' = Array.copy x in
-  Array.sort cmp  x';
-  x'
- *)
-
 let ks_test ?(alpha=0.05) x f =
   let x' = sort x in
   let max p q = if p > q then p else q in
@@ -857,7 +778,6 @@ let ks_test ?(alpha=0.05) x f =
   let d = max d1 d2 in
   let pval =  2. *. (smirnov n d) in
   let pval2 = kolmogorov (d *. sqrt nn) in
-  Printf.printf "Final: n=%n d=%f pval=%f pval2=%f\n" n d pval pval2;
   if n = 0 then raise EXN_EMPTY_ARRAY
   else if n > 2666 || pval2 > 0.8 -. nn *. 0.003
   then (pval2 < alpha, pval2, d)
@@ -870,26 +790,29 @@ let rec uniques l = match l with
      if x1 = x2 then uniques (x2 :: xs)
      else x1 :: (uniques (x2 :: xs))
 
-let rec count x samples = match samples with
-  | [] -> (0, samples)
-  | y :: ys ->
-     if x = y then
-       let (n, rest) = count x ys in
-       (n + 1, rest)
-     else
-       (0, samples)
-
-let rec hist accum domain samples = match domain with
-  | [] -> []
-  | x :: xs ->
-     let (p, rest) = count x samples in
-     let accum' = accum + p in
-     accum' :: (hist accum' xs rest)
-
+(* Compute the empirical CDF of a list of samples from the input
+   domain (sorted list of floats). The output is a list of length
+   equal to domain. Both inputs are assumed to be sorted. *)
 let empCdf domain samples =
+  let rec count x samples = match samples with
+    | [] -> (0, samples)
+    | y :: ys ->
+       if x = y then
+         let (n, rest) = count x ys in
+         (n + 1, rest)
+       else
+         (0, samples)
+  in
+  let rec aggregate accum domain samples = match domain with
+    | [] -> []
+    | x :: xs ->
+       let (p, rest) = count x samples in
+       let accum' = accum + p in
+       accum' :: (aggregate accum' xs rest)
+  in
   let n = float_of_int (List.length samples) in
-  let h = hist 0 domain samples in
-  List.map (fun x -> (float_of_int x) /. n) h
+  let a = aggregate 0 domain samples in
+  List.map (fun x -> (float_of_int x) /. n) a
 
 let ks2_test ?(alpha=0.05) x y =
   let n1 = Array.length x in
@@ -909,7 +832,6 @@ let ks2_test ?(alpha=0.05) x y =
     let d = List.fold_left max 0. diffs in
     let en = sqrt (nn1 *. nn2 /. (nn1 +. nn2)) in
     let pval = kolmogorov ((en +. 0.12 +. 0.11 /. en) *. d) in
-    Printf.printf "Final: n1=%n n2=%n pval=%f d=%f" n1 n2 pval d;
     (pval < alpha, pval, d)
 
 let ad_test x = None
