@@ -837,11 +837,19 @@ let kolmogorov y =
   else
     2. *. helper 1. 0. 1.
 
+(*let sort x =
+  let cmp u v = if u = v then 0 else if u < v then 1 else -1 in
+  let x' = Array.copy x in
+  Array.sort cmp  x';
+  x'
+ *)
+
 let ks_test ?(alpha=0.05) x f =
+  let x' = sort x in
   let max p q = if p > q then p else q in
-  let n = Array.length x in
-  let nn = float_of_int (Array.length x) in
-  let fvals = Array.map f x in
+  let n = Array.length x' in
+  let nn = float_of_int n in
+  let fvals = Array.map f x' in
   let g1 i v = v -. (float_of_int i) /. nn in
   let g2 i v = (float_of_int (i+1)) /. nn -. v in
   let d1 = Array.fold_left max 0. (Array.mapi g1 fvals) in
@@ -850,13 +858,59 @@ let ks_test ?(alpha=0.05) x f =
   let pval =  2. *. (smirnov n d) in
   let pval2 = kolmogorov (d *. sqrt nn) in
   Printf.printf "Final: n=%n d=%f pval=%f pval2=%f\n" n d pval pval2;
-  if n == 0 then raise EXN_EMPTY_ARRAY
+  if n = 0 then raise EXN_EMPTY_ARRAY
   else if n > 2666 || pval2 > 0.8 -. nn *. 0.003
   then (pval2 < alpha, pval2, d)
   else (pval < alpha, pval, d)
 
+let rec uniques l = match l with
+  | [] -> []
+  | x :: [] -> x :: []
+  | x1 :: x2 :: xs ->
+     if x1 = x2 then uniques (x2 :: xs)
+     else x1 :: (uniques (x2 :: xs))
+
+let rec count x samples = match samples with
+  | [] -> (0, samples)
+  | y :: ys ->
+     if x = y then
+       let (n, rest) = count x ys in
+       (n + 1, rest)
+     else
+       (0, samples)
+
+let rec hist accum domain samples = match domain with
+  | [] -> []
+  | x :: xs ->
+     let (p, rest) = count x samples in
+     let accum' = accum + p in
+     accum' :: (hist accum' xs rest)
+
+let empCdf domain samples =
+  let n = float_of_int (List.length samples) in
+  let h = hist 0 domain samples in
+  List.map (fun x -> (float_of_int x) /. n) h
+
 let ks2_test ?(alpha=0.05) x y =
-  (true, 0.0, 0.0)
+  let n1 = Array.length x in
+  let n2 = Array.length y in
+  if n1 = 0 || n2 = 0 then
+    raise EXN_EMPTY_ARRAY
+  else
+    let nn1 = float_of_int n1 in
+    let nn2 = float_of_int n2 in
+    let x' = Array.to_list (sort x) in
+    let y' = Array.to_list (sort y) in
+    let domain = uniques (Array.to_list (sort (Array.concat [x; y]))) in
+    let xCdf = empCdf domain x' in
+    let yCdf = empCdf domain y' in
+    let diffs = List.map2 (fun p q -> abs_float (p -. q)) xCdf yCdf in
+    let max p q = if p > q then p else q in
+    let d = List.fold_left max 0. diffs in
+    let en = sqrt (nn1 *. nn2 /. (nn1 +. nn2)) in
+    let pval = kolmogorov ((en +. 0.12 +. 0.11 /. en) *. d) in
+    Printf.printf "Final: n1=%n n2=%n pval=%f d=%f" n1 n2 pval d;
+    (pval < alpha, pval, d)
 
 let ad_test x = None
 (* Anderson-Darling test *)

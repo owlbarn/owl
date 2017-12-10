@@ -178,11 +178,6 @@ let ks_pval_test2 () =
                   [| 0.; 0.25; 0.15; 0.05 |]
                   (fun x -> M.Cdf.gaussian_P x 1.0)) -. 0.1875) < 0.0001)
 
-(*
-stats.kstest([0.99 * 0.0001 * k for k in range(0,10000)], stats.uniform.cdf)
-Out[72]: KstestResult(statistic=0.010098999999999969, pvalue=0.25953830350891244)
- *)
-
 let ks_pval_test3 () =
   Alcotest.(check bool)
   "ks_test pval 3"
