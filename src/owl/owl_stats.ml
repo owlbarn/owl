@@ -709,11 +709,130 @@ let t_test_unpaired ?(alpha=0.05) ?(side=BothSide) ?(equal_var=true) x y =
   | true  -> _t_test2_equal_var ~alpha ~side x y
   | false -> _t_test2_welche ~alpha ~side x y
 
-let ks_test x = None
-(* One-sample Kolmogorov-Smirnov test *)
+exception EXN_EMPTY_ARRAY
 
-let ks2_test x = None
-(* Two-sample Kolmogorov-Smirnov test *)
+let smirnov n e =
+  let nn = int_of_float (floor ((float_of_int n) *. (1. -. e))) in
+  let rec helper sum v c =
+    let evn = e +. (float_of_int v) /. (float_of_int n) in
+    let sum' = sum +. c *. (evn ** (float_of_int (v - 1)))
+                         *. ((1. -. evn) ** (float_of_int (n - v))) in
+    let c' = c *. (float_of_int (n - v)) /. (float_of_int (v + 1)) in
+    if v <= nn then
+      helper sum' (v + 1) c'
+    else
+      sum
+  in
+  let helper2 () =
+    let maxlog = log max_float in
+    let lngamma = Gsl.Sf.lngamma in
+    let lgamnp1 = lngamma (1. +. float_of_int n) in
+    let rec helper3 sum v =
+      let evn = e +. (float_of_int v) /. (float_of_int n) in
+      let omevn = 1. -. evn in
+      let t = lgamnp1
+              -. lngamma (1. +. float_of_int v)
+              -. lngamma (1. +. float_of_int (n + v)) in
+      let sum' = sum +. exp t in
+      if v <= nn then
+        if abs_float omevn > 0. && t > ~-. maxlog then
+          helper3 sum' (v + 1)
+        else
+          helper3 sum (v + 1)
+      else
+        sum
+    in
+    helper3 0. 0
+  in
+  if not (n > 0 && e >= 0. && e <= 1.) then nan
+  else if e = 0.0 then 1.0
+  else if n < 1013 then
+    e *. (helper 0. 0 1.)
+  else
+    e *. (helper2 ())
+
+let kolmogorov y =
+  let x = (-2.) *. y *. y in
+  let rec helper sign sum r =
+    let t = exp (x *. r *. r) in
+    let sum' = sum +. sign *. t in
+    let r' = r +. 1. in
+    let sign' = ~-. sign in
+    if t = 0.0 || (t /. sum' <= 1.1e-16) then sum'
+    else helper sign' sum' r'
+  in
+  if y < 1.1e-16 then 1.0
+  else
+    2. *. helper 1. 0. 1.
+
+let ks_test ?(alpha=0.05) x f =
+  let x' = sort x in
+  let max p q = if p > q then p else q in
+  let n = Array.length x' in
+  let nn = float_of_int n in
+  let fvals = Array.map f x' in
+  let g1 i v = v -. (float_of_int i) /. nn in
+  let g2 i v = (float_of_int (i+1)) /. nn -. v in
+  let d1 = Array.fold_left max 0. (Array.mapi g1 fvals) in
+  let d2 = Array.fold_left max 0. (Array.mapi g2 fvals) in
+  let d = max d1 d2 in
+  let pval =  2. *. (smirnov n d) in
+  let pval2 = kolmogorov (d *. sqrt nn) in
+  if n = 0 then raise EXN_EMPTY_ARRAY
+  else if n > 2666 || pval2 > 0.8 -. nn *. 0.003
+  then (pval2 < alpha, pval2, d)
+  else (pval < alpha, pval, d)
+
+let rec uniques l = match l with
+  | []             -> []
+  | x :: []        -> x :: []
+  | x1 :: x2 :: xs ->
+     if x1 = x2 then uniques (x2 :: xs)
+     else x1 :: (uniques (x2 :: xs))
+
+(* Compute the empirical CDF of a list of samples from the input
+   domain (sorted list of floats). The output is a list of length
+   equal to domain. Both inputs are assumed to be sorted. *)
+let empCdf domain samples =
+  let rec count x samples = match samples with
+    | []      -> (0, samples)
+    | y :: ys ->
+       if x = y then
+         let (n, rest) = count x ys in
+         (n + 1, rest)
+       else
+         (0, samples)
+  in
+  let rec aggregate accum domain samples = match domain with
+    | []      -> []
+    | x :: xs ->
+       let (p, rest) = count x samples in
+       let accum' = accum + p in
+       accum' :: (aggregate accum' xs rest)
+  in
+  let n = float_of_int (List.length samples) in
+  let a = aggregate 0 domain samples in
+  List.map (fun x -> (float_of_int x) /. n) a
+
+let ks2_test ?(alpha=0.05) x y =
+  let n1 = Array.length x in
+  let n2 = Array.length y in
+  if n1 = 0 || n2 = 0 then
+    raise EXN_EMPTY_ARRAY
+  else
+    let nn1 = float_of_int n1 in
+    let nn2 = float_of_int n2 in
+    let x' = Array.to_list (sort x) in
+    let y' = Array.to_list (sort y) in
+    let domain = uniques (Array.to_list (sort (Array.concat [x; y]))) in
+    let xCdf = empCdf domain x' in
+    let yCdf = empCdf domain y' in
+    let diffs = List.map2 (fun p q -> abs_float (p -. q)) xCdf yCdf in
+    let max p q = if p > q then p else q in
+    let d = List.fold_left max 0. diffs in
+    let en = sqrt (nn1 *. nn2 /. (nn1 +. nn2)) in
+    let pval = kolmogorov ((en +. 0.12 +. 0.11 /. en) *. d) in
+    (pval < alpha, pval, d)
 
 let ad_test x = None
 (* Anderson-Darling test *)
