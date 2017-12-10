@@ -784,8 +784,8 @@ let ks_test ?(alpha=0.05) x f =
   else (pval < alpha, pval, d)
 
 let rec uniques l = match l with
-  | [] -> []
-  | x :: [] -> x :: []
+  | []             -> []
+  | x :: []        -> x :: []
   | x1 :: x2 :: xs ->
      if x1 = x2 then uniques (x2 :: xs)
      else x1 :: (uniques (x2 :: xs))
@@ -795,7 +795,7 @@ let rec uniques l = match l with
    equal to domain. Both inputs are assumed to be sorted. *)
 let empCdf domain samples =
   let rec count x samples = match samples with
-    | [] -> (0, samples)
+    | []      -> (0, samples)
     | y :: ys ->
        if x = y then
          let (n, rest) = count x ys in
@@ -804,7 +804,7 @@ let empCdf domain samples =
          (0, samples)
   in
   let rec aggregate accum domain samples = match domain with
-    | [] -> []
+    | []      -> []
     | x :: xs ->
        let (p, rest) = count x samples in
        let accum' = accum + p in
