@@ -168,7 +168,7 @@ val index_1d_nd : int -> int array -> int array
  *)
 
 val index_nd_1d : int array -> int array -> int
-(** [index_nd_1d i shp] converts n-dimensional index [i] to one-dimensional
+(** [index_nd_1d i stride] converts n-dimensional index [i] to one-dimensional
   index according to the passed in [stride].
 
   NOTE: you need to pass in stride, not the shape of [x]!
@@ -235,7 +235,7 @@ val set_slice : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
 
 val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
 (** [get_slice_simple axis x] aims to provide a simpler version of [get_slice].
-  This function assumes that every list element in the passed in [in list list]
+  This function assumes that every list element in the passed in [int list list]
   represents a range, i.e., [R] constructor.
 
   E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
@@ -243,7 +243,7 @@ val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
 
 val set_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** [set_slice_simple axis x y] aims to provide a simpler version of [set_slice].
-  This function assumes that every list element in the passed in [in list list]
+  This function assumes that every list element in the passed in [int list list]
   represents a range, i.e., [R] constructor.
 
   E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
@@ -1654,6 +1654,9 @@ val cummin_ : ?axis:int -> ('a, 'b) t -> unit
 
 val cummax_ : ?axis:int -> ('a, 'b) t -> unit
 (** [cummax_ x] is similar to [cummax] but output is written to [x] *)
+
+val dropout_ : ?rate:float -> ?seed:int -> ('a, 'b) t -> unit
+(** [dropout_ x] is similar to [dropout] but output is written to [x] *)
 
 val elt_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (** [elt_equal_ x y] is simiar to [elt_equal] function but the output is written

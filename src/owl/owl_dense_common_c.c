@@ -4888,14 +4888,14 @@ int int64_cmp (const void * a, const void * b)
 
 #define FUN18 complex32_bernoulli
 #define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
-#define NUMBER complex_float
-#define MAPFN(X) X->r = (rand() < a); X->i = 0
+#define NUMBER _Complex float
+#define MAPFN(X) *X = (rand() < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 complex64_bernoulli
 #define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
-#define NUMBER complex_double
-#define MAPFN(X) X->r = (rand() < a); X->i = 0
+#define NUMBER _Complex double
+#define MAPFN(X) *X = (rand() < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int8_bernoulli
@@ -4932,6 +4932,68 @@ int int64_cmp (const void * a, const void * b)
 #define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
 #define NUMBER int64_t
 #define MAPFN(X) *X = (rand() < a)
+#include "owl_dense_common_vec_map.c"
+
+// dropout
+
+#define FUN18 float32_dropout
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER float
+#define MAPFN(X) *X = (rand() < a) ? 0. : *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 float64_dropout
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER double
+#define MAPFN(X) *X = (rand() < a) ? 0. : *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 complex32_dropout
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER _Complex float
+#define MAPFN(X) *X = (rand() < a) ? 0. : *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 complex64_dropout
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER _Complex double
+#define MAPFN(X) *X = (rand() < a) ? 0. : *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 int8_dropout
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER int8_t
+#define MAPFN(X) *X = (rand() < a) ? 0 : *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 uint8_dropout
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER uint8_t
+#define MAPFN(X) *X = (rand() < a) ? 0 : *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 int16_dropout
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER int16_t
+#define MAPFN(X) *X = (rand() < a) ? 0 : *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 uint16_dropout
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER uint16_t
+#define MAPFN(X) *X = (rand() < a) ? 0 : *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 int32_dropout
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER int32_t
+#define MAPFN(X) *X = (rand() < a) ? 0 : *X
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 int64_dropout
+#define INIT int a = Double_val(vA) * RAND_MAX; srand (Int_val(vB))
+#define NUMBER int64_t
+#define MAPFN(X) *X = (rand() < a) ? 0 : *X
 #include "owl_dense_common_vec_map.c"
 
 // sequential
