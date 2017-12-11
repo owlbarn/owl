@@ -103,10 +103,7 @@ val sort : ?inc:bool -> float array -> float array
 
 val argsort : ?inc:bool -> float array -> int array
 
-val rank
-  : ?ties_strategy:[`Average | `Min | `Max]
-  -> float array
-  -> float array
+val rank : ?ties_strategy:[ `Average | `Min | `Max ] -> float array -> float array
 (** Computes sample's ranks.
 
     The ranking order is from the smallest one to the largest. For example
@@ -151,10 +148,17 @@ val gibbs_sampling : (float array -> int -> float) -> float array -> int -> floa
 
 (** {6 Hypothesis tests} *)
 
+type hypothesis = {
+  reject  : bool;    (* reject null hypothesis if [true] *)
+  p_value : float;   (* p-value of the hypothesis test *)
+  score   : float;   (* score has different meaning in different tests *)
+}
+(** record type contains the result of hypothesis tests. *)
+
 type tail = BothSide | RightSide | LeftSide
 (** Types of alternative hypothesis tests: one-side, left-side, or right-side. *)
 
-val z_test : mu:float -> sigma:float -> ?alpha:float -> ?side:tail -> float array -> bool * float * float
+val z_test : mu:float -> sigma:float -> ?alpha:float -> ?side:tail -> float array -> hypothesis
 (** [z_test ~mu ~sigma ~alpha ~side x] returns a test decision for the null
   hypothesis that the data [x] comes from a normal distribution with mean [mu]
   and a standard deviation [sigma], using the z-test of [alpha] significance
@@ -165,19 +169,19 @@ val z_test : mu:float -> sigma:float -> ?alpha:float -> ?side:tail -> float arra
   [z] is the z-score.
  *)
 
- val t_test : mu:float -> ?alpha:float -> ?side:tail -> float array -> bool * float * float
+ val t_test : mu:float -> ?alpha:float -> ?side:tail -> float array -> hypothesis
 (** [t_test ~mu ~alpha ~side x] returns a test decision of one-sample t-test
   which is a parametric test of the location parameter when the population
   standard deviation is unknown. [mu] is population mean, [alpha] is the
   significance level.
  *)
 
-val t_test_paired : ?alpha:float -> ?side:tail -> float array -> float array -> bool * float * float
+val t_test_paired : ?alpha:float -> ?side:tail -> float array -> float array -> hypothesis
 (** [t_test_paired ~alpha ~side x y] returns a test decision for the null
   hypothesis that the data in [x – y] comes from a normal distribution with
   mean equal to zero and unknown variance, using the paired-sample t-test. *)
 
-val t_test_unpaired : ?alpha:float -> ?side:tail -> ?equal_var:bool -> float array -> float array -> bool * float * float
+val t_test_unpaired : ?alpha:float -> ?side:tail -> ?equal_var:bool -> float array -> float array -> hypothesis
 (** [t_test_unpaired ~alpha ~side ~equal_var x y] returns a test decision for
   the null hypothesis that the data in vectors [x] and [y] comes from
   independent random samples from normal distributions with equal means and
@@ -191,7 +195,7 @@ val t_test_unpaired : ?alpha:float -> ?side:tail -> ?equal_var:bool -> float arr
 
 exception EXN_EMPTY_ARRAY
 
-val ks_test : ?alpha:float -> float array -> (float -> float) -> bool * float * float
+val ks_test : ?alpha:float -> float array -> (float -> float) -> hypothesis
 
 (** [ks_test ~alpha x f] returns a test decision for the null
    hypothesis that the data in vector [x] comes from independent
@@ -205,7 +209,7 @@ val ks_test : ?alpha:float -> float array -> (float -> float) -> bool * float * 
    test statistic. *)
 
 
-val ks2_test : ?alpha:float -> float array -> float array -> bool * float * float
+val ks2_test : ?alpha:float -> float array -> float array -> hypothesis
 
 (** [ks2_test ~alpha x y] returns a test decision for the null
     hypothesis that the data in vectors [x] and [y] come from
@@ -219,20 +223,20 @@ val ks2_test : ?alpha:float -> float array -> float array -> bool * float * floa
     test statistic.
 *)
 
-val var_test : ?alpha:float -> ?side:tail -> var:float -> float array -> bool * float * float
+val var_test : ?alpha:float -> ?side:tail -> var:float -> float array -> hypothesis
 (** [var_test ~alpha ~side ~var x] returns a test decision for the null
   hypothesis that the data in [x] comes from a normal distribution with
   variance [var], using the chi-square variance test. The alternative hypothesis
   is that [x] comes from a normal distribution with a different variance.
  *)
 
-val jb_test : ?alpha:float -> float array -> bool * float * float
+val jb_test : ?alpha:float -> float array -> hypothesis
 (** [jb_test ~alpha x] returns a test decision for the null hypothesis that the
   data [x] comes from a normal distribution with an unknown mean and variance,
   using the Jarque-Bera test.
  *)
 
-val fisher_test : ?alpha:float -> ?side:tail -> int -> int -> int -> int -> bool * float * float
+val fisher_test : ?alpha:float -> ?side:tail -> int -> int -> int -> int -> hypothesis
 (** [fisher_test ~alpha ~side a b c d] fisher's exact test for contingency table
     |[a], [b]|
     |[c], [d]|
@@ -242,7 +246,7 @@ val fisher_test : ?alpha:float -> ?side:tail -> int -> int -> int -> int -> bool
     [z] is prior odds ratio.
 *)
 
-val runs_test : ?alpha:float -> ?side:tail -> ?v:float -> float array -> bool * float * float
+val runs_test : ?alpha:float -> ?side:tail -> ?v:float -> float array -> hypothesis
 (** [runs_test ~alpha ~v x] returns a test decision for the null hypothesis that
   the data [x] comes in random order, against the alternative that they do not,
   by runnign Wald–Wolfowitz runs test. The test is based on the number of runs
@@ -250,7 +254,7 @@ val runs_test : ?alpha:float -> ?side:tail -> ?v:float -> float array -> bool * 
   value, the default value is the median of [x].
  *)
 
-val mannwhitneyu : ?alpha:float -> ?side:tail -> float array -> float array -> bool * float * float
+val mannwhitneyu : ?alpha:float -> ?side:tail -> float array -> float array -> hypothesis
 (** [mannwhitneyu ~alpha ~side x y] Computes the Mann-Whitney rank test on
     samples x and y. If length of each sample less than 10 and no ties, then
     using exact test (see paper Ying Kuen Cheung and Jerome H. Klotz (1997)
@@ -258,7 +262,7 @@ val mannwhitneyu : ?alpha:float -> ?side:tail -> float array -> float array -> b
     Statistica Sinica 7 805-813), else usning asymptotic normal distribution.
 *)
 
-val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> bool * float * float
+val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypothesis
 
 
 (** {6 Random numbers, PDF, and CDF} *)
