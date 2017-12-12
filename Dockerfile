@@ -29,6 +29,8 @@ ENV CAML_LD_LIBRARY_PATH /root/.opam/4.04.0/lib/stublibs
 
 ENV EIGENPATH /root/eigen
 RUN cd /root && git clone https://github.com/ryanrhymes/eigen.git
+RUN sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile ###FIXME
+RUN sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis       ###FIXME
 RUN make -C $EIGENPATH oasis && make -C $EIGENPATH && make -C $EIGENPATH install
 
 

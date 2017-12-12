@@ -39,6 +39,12 @@ let connect parents children =
 let refnum x = Array.length x.next
 
 
+let parents x = x.prev
+
+
+let children x = x.next
+
+
 (* depth-first search from [x]; [f : node -> unit] is applied to each node;
   [next node -> node array] returns the next set of nodes to iterate;
 *)
@@ -54,6 +60,17 @@ let dfs_iter x f next =
     ) y
   in
   _dfs_iter x
+
+
+(* TODO: BFS iterator *)
+
+
+let iter_descendants iter_fun x f = iter_fun x f children
+
+
+let iter_ancestors iter_fun x f = iter_fun x f parents
+
+
 
 
 
