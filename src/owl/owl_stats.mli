@@ -653,7 +653,5 @@ module Cdf : sig
 end
 
 
-(* TODO: implement a small PPL *)
-
 
 (* ends here *)

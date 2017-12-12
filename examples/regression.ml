@@ -24,7 +24,13 @@ let test_lasso () =
 
 let test_ridge () =
   let x, p, y = generate_data () in
-  let r = Regression.D.ridge ~i:true ~a:1e-4 x y in
+  let r = Regression.D.ridge ~i:true x y in
+  Mat.(p - r.(0) |> print)
+
+
+let test_elastic () =
+  let x, p, y = generate_data () in
+  let r = Regression.D.elastic_net ~i:true x y in
   Mat.(p - r.(0) |> print)
 
 
@@ -58,4 +64,5 @@ let _ =
   Log.info "test ols"; test_ols (); flush_all ();
   Log.info "test lasso"; test_lasso (); flush_all ();
   Log.info "test ridge"; test_ridge (); flush_all ();
+  Log.info "test elastic"; test_elastic (); flush_all ();
   Log.info "test poly"; test_poly (); flush_all ()

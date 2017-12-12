@@ -90,10 +90,13 @@ module Make
   val refnum : t -> int
   (** [refnum x] returns the number of [x]'s parents in the computation graph. *)
 
-  val map : (t array -> t) -> t array -> t
+  val map : ?name:string -> (t array -> t) -> t array -> t
   (** [map f x] is a general mechanism that allows you to plug in any functions
     into a compuation graph as a computation node in case the unary and binary
-    math operators defined in this functor are not sufficient.
+    math operators defined in this functor are not sufficient. Also because of
+    [map], we do not really need the control flow node in Owl as that in
+    TensorFlow since [map] is more general can be used to implement arbitrary
+    operations (almost).
 
     [f : t array -> t] takes an array of [t] as inputs and outputs a constant
     value of [t]. This means the output must be wrapped up using either [of_arr]
