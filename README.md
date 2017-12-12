@@ -11,6 +11,7 @@ Behind the scene, Owl builds the advanced numerical functions atop of its solid 
 * Linear algebra and full interface to CBLAS and LAPACKE
 * Algorithmic differentiation (or automatic differentiation)
 * Neural network module for deep learning applications
+* Dynamic computational graph allowing greatest flexibility for applications
 * Parallel and Distributed engine (map-reduce, parameter server, etc.)
 * Advanced math and stats functions (e.g., hypothesis tests, MCMC, etc.)
 * Zoo system for efficient scripting and code sharing
