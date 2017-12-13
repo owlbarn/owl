@@ -13,17 +13,30 @@ type 'a node
 (** type definition of a node *)
 
 
+(** {6 Obtaining properties} *)
+
+val id : 'a node -> int
+
+val name : 'a node -> string
+
+val parents : 'a node -> 'a node array
+
+val children : 'a node -> 'a node array
+
+val indegree : 'a node -> int
+
+val outdegree : 'a node -> int
+
+
 (** {6 Manipulation functions} *)
 
 val node : ?name:string -> ?prev:'a node array -> ?next:'a node array -> 'a -> 'a node
 
 val connect : 'a node array -> 'a node array -> unit
 
-val parents : 'a node -> 'a node array
+val remove_node : 'a node -> unit
 
-val children : 'a node -> 'a node array
-
-val refnum : 'a node -> int
+val remove_link : 'a node -> 'a node -> unit
 
 
 (** {6 Iterators} *)

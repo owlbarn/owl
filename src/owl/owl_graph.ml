@@ -17,6 +17,18 @@ type order = BFS | DFS
 
 let _global_id = ref 0
 
+let id x = x.id
+
+let name x = x.name
+
+let parents x = x.prev
+
+let children x = x.next
+
+let indegree x = Array.length x.prev
+
+let outdegree x = Array.length x.next
+
 
 let node ?(name="") ?(prev=[||]) ?(next=[||]) attr =
   _global_id := !_global_id + 1;
@@ -51,15 +63,6 @@ let remove_node x =
 let remove_link src dst =
   src.next <- Owl_utils.array_filter (fun x -> x.id <> dst.id) src.next;
   dst.prev <- Owl_utils.array_filter (fun x -> x.id <> src.id) dst.prev
-
-
-let refnum x = Array.length x.next
-
-
-let parents x = x.prev
-
-
-let children x = x.next
 
 
 (* depth-first search from [x]; [f : node -> unit] is applied to each node;
