@@ -52,6 +52,8 @@ module Dataset = Owl_dataset
 
 module Lazy = Owl_lazy
 
+module Graph = Owl_graph
+
 
 (* backend modules *)
 

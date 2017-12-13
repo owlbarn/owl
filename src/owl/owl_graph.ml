@@ -104,7 +104,14 @@ let iter_descendants order f x =
 let copy = None
 
 
-let pp_node = None
+let node_to_str x =
+  Printf.sprintf "[ #%i %s in:%i out:%i ]" x.id x.name (indegree x) (outdegree x)
+
+
+let pp_node formatter x =
+  Format.open_box 0;
+  Format.fprintf formatter "%s" (node_to_str x);
+  Format.close_box ()
 
 
 let to_string from_root node_to_str x =

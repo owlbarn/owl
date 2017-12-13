@@ -52,4 +52,6 @@ val iter_descendants : order -> ('a node -> unit) -> 'a node array -> unit
 
 (** {6 Helper functions} *)
 
+val pp_node : Format.formatter -> 'a node -> unit
+
 val to_string : bool -> ('a node -> string) -> 'a node list -> string
