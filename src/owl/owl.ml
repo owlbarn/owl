@@ -6,7 +6,7 @@
 include Owl_types
 
 
-let version = "0.3.1 dev"
+let version = "%%VERSION%%"
 
 (* So we don't have to open Bigarray all the time. *)
 
