@@ -12,6 +12,8 @@ type 'a node = {
   mutable attr : 'a;             (* indicate the validity *)
 }
 
+type order = BFS | DFS
+
 
 let _global_id = ref 0
 
@@ -36,6 +38,10 @@ let connect parents children =
   ) parents
 
 
+(* TODO *)
+let remove x = None
+
+
 let refnum x = Array.length x.next
 
 
@@ -48,7 +54,7 @@ let children x = x.next
 (* depth-first search from [x]; [f : node -> unit] is applied to each node;
   [next node -> node array] returns the next set of nodes to iterate;
 *)
-let dfs_iter x f next =
+let dfs_iter f x next =
   let h = Hashtbl.create 512 in
   let rec _dfs_iter y =
     Array.iter (fun z ->
@@ -63,14 +69,23 @@ let dfs_iter x f next =
 
 
 (* TODO: BFS iterator *)
+let bfs_iter f next x = failwith "owl_graph:bfs_iter"
 
 
-let iter_descendants iter_fun x f = iter_fun x f children
+let iter_ancestors order f x =
+  match order with
+  | BFS -> bfs_iter f x parents
+  | DFS -> dfs_iter f x parents
 
 
-let iter_ancestors iter_fun x f = iter_fun x f parents
+let iter_descendants order f x =
+  match order with
+  | BFS -> bfs_iter f x children
+  | DFS -> dfs_iter f x children
 
 
+(* TODO *)
+let copy = None
 
 
 
