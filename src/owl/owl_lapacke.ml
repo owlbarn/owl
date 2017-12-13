@@ -838,7 +838,7 @@ let gesvx
     | _         -> failwith "lapacke:gesvx"
   in
   check_lapack_error ret;
-  if ret = n + 1 then Log.warn "matrix is singular to working precision.";
+  if ret = n + 1 then Owl_log.warn "matrix is singular to working precision.";
   let rcond = Owl_dense_matrix_generic.get !rcond 0 0 in
   let rpivot = Owl_dense_matrix_generic.get !rpivot 0 0 in
   x, !@_equed, !r_ref, !c_ref, b, rcond, !ferr, !berr, rpivot

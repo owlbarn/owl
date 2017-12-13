@@ -27,12 +27,12 @@ let _allocate_more_space x =
   let c = nnz x in
   if  c < Array1.dim x.d then ()
   else (
-    Log.debug "allocate space %i" c;
+    Owl_log.debug "allocate space %i" c;
     x.d <- Owl_utils.array1_extend x.d c;
   )
 
 let _remove_ith_item x i =
-  Log.debug "_remove_ith_item";
+  Owl_log.debug "_remove_ith_item";
   for j = i to (nnz x) - 2 do
     x.d.{j} <- x.d.{j + 1}
   done;

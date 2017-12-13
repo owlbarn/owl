@@ -60,9 +60,9 @@ let test_poly () =
 
 
 let _ =
-  Log.info "test exp"; test_exp (); flush_all ();
-  Log.info "test ols"; test_ols (); flush_all ();
-  Log.info "test lasso"; test_lasso (); flush_all ();
-  Log.info "test ridge"; test_ridge (); flush_all ();
-  Log.info "test elastic"; test_elastic (); flush_all ();
-  Log.info "test poly"; test_poly (); flush_all ()
+  Owl_log.info "test exp"; test_exp (); flush_all ();
+  Owl_log.info "test ols"; test_ols (); flush_all ();
+  Owl_log.info "test lasso"; test_lasso (); flush_all ();
+  Owl_log.info "test ridge"; test_ridge (); flush_all ();
+  Owl_log.info "test elastic"; test_elastic (); flush_all ();
+  Owl_log.info "test poly"; test_poly (); flush_all ()

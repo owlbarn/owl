@@ -30,7 +30,6 @@
   (libraries (
     ctypes
     ctypes.stubs
-    dolog
     gsl
     eigen
     plplot

@@ -29,27 +29,27 @@ let preprocess script =
 
 
 let remove_gist gist =
-  Log.debug "owl_zoo: %s removed" gist;
+  Owl_log.debug "owl_zoo: %s removed" gist;
   let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" ^ gist in
   let cmd = Printf.sprintf "rm -rf %s" dir in
   Sys.command cmd |> ignore
 
 
 let upload_gist gist =
-  Log.debug "owl_zoo: %s uploading" gist;
+  Owl_log.debug "owl_zoo: %s uploading" gist;
   let cmd = Printf.sprintf "owl_upload_gist.sh %s" gist in
   Sys.command cmd |> ignore
 
 
 let download_gist gist =
-  Log.debug "owl_zoo: %s downloading" gist;
+  Owl_log.debug "owl_zoo: %s downloading" gist;
   let cmd = Printf.sprintf "owl_download_gist.sh %s" gist in
   Sys.command cmd |> ignore
 
 
 let list_gist () =
   let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
-  Log.debug "owl_zoo: %s" dir;
+  Owl_log.debug "owl_zoo: %s" dir;
   let cmd = Printf.sprintf "owl_list_gist.sh" in
   Sys.command cmd |> ignore
 
@@ -60,7 +60,7 @@ let update_gist gists =
     if Array.length gists = 0 then Sys.readdir dir
     else gists
   in
-  Log.debug "owl_zoo: updating %i gists" Array.(length gists);
+  Owl_log.debug "owl_zoo: updating %i gists" Array.(length gists);
   Array.iter (fun gist ->
     let cmd = Printf.sprintf "owl_download_gist.sh %s" gist in
     Sys.command cmd |> ignore

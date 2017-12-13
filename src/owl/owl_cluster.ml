@@ -6,8 +6,6 @@
 module MX = Owl_dense.Matrix.D
 module UT = Owl_utils
 
-let _ = Log.color_on (); Log.(set_log_level INFO)
-
 (** K-means clustering algorithm
   x is the row-based data points and c is the number of clusters.
  *)
@@ -19,7 +17,7 @@ let kmeans x c =
   let assignment = Array.make (row_num x) (0, max_float) in
   let _ =
     try for counter = 1 to 100 do
-      Log.info "iteration %i ..." counter; flush stdout;
+      Owl_log.info "iteration %i ..." counter; flush stdout;
       iteri_rows (fun i v ->
         iteri_rows (fun j u ->
           let e = sum' (pow_scalar (sub v u) 2.) in

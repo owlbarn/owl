@@ -159,7 +159,7 @@ let build ?docid ?stopwords ?lo ?hi ?vocab ?(minlen=10) fname =
   let vocab = match vocab with
     | Some vocab -> vocab
     | None       -> (
-        Log.info "build up vocabulary ...";
+        Owl_log.info "build up vocabulary ...";
         Owl_nlp_vocabulary.build ?lo ?hi ?stopwords fname
       )
   in
@@ -182,7 +182,7 @@ let build ?docid ?stopwords ?lo ?hi ?vocab ?(minlen=10) fname =
   let doc_s = Owl_utils.Stack.make () in
 
   (* binarise and tokenise at the same time *)
-  Log.info "convert to binary and tokenise ...";
+  Owl_log.info "convert to binary and tokenise ...";
   iteri_lines_of_file (fun i s ->
 
     let t = Str.split Owl_nlp_utils.regexp_split s

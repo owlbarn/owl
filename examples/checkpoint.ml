@@ -26,7 +26,7 @@ let train () =
   let chkpt state =
     let open Checkpoint in
     if state.current_batch mod 10 = 0 then (
-      Log.warn "this is a customised checkpoint ...";
+      Owl_log.warn "this is a customised checkpoint ...";
       state.stop <- true
     )
   in

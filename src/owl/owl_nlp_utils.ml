@@ -12,13 +12,13 @@ let regexp_split = Str.regexp "[ \t;,.'!?()’“”\\/&—\\-]+"
 
 
 let _allocate_space x =
-  Log.info "allocate more space";
+  Owl_log.info "allocate more space";
   let l = Array.length x in
   let y = Array.make l [||] in
   Array.append x y
 
 let load_from_file ?stopwords f =
-  Log.info "load text corpus";
+  Owl_log.info "load text corpus";
   let t = match stopwords with
     | Some t -> t
     | None   -> Hashtbl.create 2
@@ -40,7 +40,7 @@ let load_from_file ?stopwords f =
     done with End_of_file -> ()
   );
   close_in h;
-  Log.info "load %i docs, %i words" !c !w;
+  Owl_log.info "load %i docs, %i words" !c !w;
   Array.sub !x 0 !c
 
 let load_from_string ?stopwords s =
@@ -53,7 +53,7 @@ let load_from_string ?stopwords s =
   |> Array.of_list
 
 let load_stopwords f =
-  Log.info "load stopwords";
+  Owl_log.info "load stopwords";
   let x = Hashtbl.create (64 * 1024) in
   let h = open_in f in
   (
@@ -67,7 +67,7 @@ let load_stopwords f =
 
 (* return both word->index and index->word hashtbl *)
 let build_vocabulary x =
-  Log.info "build up vocabulary";
+  Owl_log.info "build up vocabulary";
   let w2i = Hashtbl.create (64 * 1024) in
   Array.iter (fun l ->
     Array.iter (fun w ->
@@ -95,11 +95,11 @@ let save_vocabulary x f = Owl_utils.marshal_to_file x f
 let load_vocabulary f = Owl_utils.marshal_from_file f
 
 let save_lda_model m f =
-  Log.info "save LDA model";
+  Owl_log.info "save LDA model";
   Owl_utils.marshal_to_file m (f ^ ".model")
 
 let load_lda_model f =
-  Log.info "load LDA model";
+  Owl_log.info "load LDA model";
   Owl_utils.marshal_from_file (f ^ ".model")
 
 (* recent core functions *)
@@ -123,7 +123,7 @@ let iteri_lines_of_file ?(verbose=true) f fname =
         if t2 -. !t1 > 5. then (
           t1 := t2;
           let speed = float_of_int !i /. (t2 -. t0) |> int_of_float in
-          Log.info "processed %i, avg. %i docs/s" !i speed
+          Owl_log.info "processed %i, avg. %i docs/s" !i speed
         )
       )
     done with End_of_file -> ()
@@ -156,7 +156,7 @@ let iteri_lines_of_marshal ?(verbose=true) f fname =
           let speed = float_of_int (!i - !i1) /. (t2 -. !t1) |> int_of_float in
           i1 := !i;
           t1 := t2;
-          Log.info "processed %i, avg. %i docs/s" !i speed
+          Owl_log.info "processed %i, avg. %i docs/s" !i speed
         )
       )
     done with End_of_file -> ()

@@ -60,7 +60,7 @@ let _ =
   for i = 1 to 999 do
     let x', y' = Dataset.draw_samples x y 100 in
     backprop nn (F 0.01) (Mat x') (Mat y')
-    |> Log.info "#%03i : loss = %g" i
+    |> Owl_log.info "#%03i : loss = %g" i
   done;
   let x, y, _ = Dataset.load_mnist_test_data () in
   let x, y = Dataset.draw_samples x y 10 in

@@ -7,9 +7,6 @@
 
 open Bigarray
 
-(* configure the logger *)
-let _ = Log.color_on (); Log.(set_log_level INFO)
-
 
 (* type of slice definition *)
 
