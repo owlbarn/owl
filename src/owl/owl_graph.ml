@@ -29,6 +29,8 @@ let indegree x = Array.length x.prev
 
 let outdegree x = Array.length x.next
 
+let attr x = x.attr
+
 
 let node ?(name="") ?(prev=[||]) ?(next=[||]) attr =
   _global_id := !_global_id + 1;

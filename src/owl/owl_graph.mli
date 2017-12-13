@@ -27,6 +27,8 @@ val indegree : 'a node -> int
 
 val outdegree : 'a node -> int
 
+val attr : 'a node -> 'a
+
 
 (** {6 Manipulation functions} *)
 
