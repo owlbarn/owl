@@ -5,15 +5,12 @@
 
 open Owl_types
 
-module S = Pervasives
+open Owl_graph
 
 
 (* Functor of making Lazy module of different number types *)
 
-module Make
-  (A : InpureSig)
-  = struct
-
+module Make (A : InpureSig) = struct
 
   (* type definitions *)
 
@@ -23,16 +20,12 @@ module Make
     | Elt of A.elt
     | Arr of A.arr
 
-  type node = {
-    mutable id    : int;            (* unique identifier *)
+  type t = attr node
+  and attr = {
     mutable op    : op;             (* function in the node *)
-    mutable name  : string;         (* name of the node *)
-    mutable prev  : node array;     (* parents of the node *)
-    mutable next  : node array;     (* children of the node *)
     mutable state : state;          (* indicate the validity *)
     mutable value : value array;    (* save the calculated value *)
   }
-  and t = node
   and op =
     | Var
     | Const
@@ -44,90 +37,57 @@ module Make
     | Fun05 of (A.arr array -> A.arr)
     | Fun06 of (A.arr -> A.arr array)
     | Fun07 of (A.arr -> A.elt)
-    | Fun08 of (node array -> node)
+    | Fun08 of (t array -> t)
     | ItemI of int (* get the ith output value *)
 
 
   (* core functions to manipulate computation graphs *)
 
-  let _global_id = ref 0
+  let node ?(name="") ?(state=Invalid) ?(value=[||]) op =
+    Owl_graph.node ~name ~prev:[||] ~next:[||] { op; state; value }
 
-  let node ?(name="") ?(prev=[||]) ?(next=[||]) ?(state=Invalid) ?(value=[||]) op =
-    _global_id := !_global_id + 1;
-    {
-      id = !_global_id;
-      op;
-      name;
-      prev;
-      next;
-      state;
-      value;
-    }
-
-
-  let connect parents children =
-    Array.iter (fun parent ->
-      Array.iter (fun child ->
-          parent.next <- (Array.append parent.next [|child|]);
-          child.prev <- (Array.append child.prev [|parent|]);
-      ) children
-    ) parents
-
-
-  let refnum x = Array.length x.next
+  let refnum x = Owl_graph.outdegree x
 
   let unpack_arr = function Arr x -> x | _ -> failwith "owl_lazy: unpack_arr"
 
   let unpack_elt = function Elt x -> x | _ -> failwith "owl_lazy: unpack_elt"
 
-  let shall_eval x = Array.length x.value = 0 || x.state = Invalid
+  let shall_eval x =
+    let a = attr x in
+    Array.length a.value = 0 || a.state = Invalid
 
-  let is_var x = x.op = Var
+  let is_var x = (attr x).op = Var
 
-  let is_const x = x.op = Const
+  let is_const x = (attr x).op = Const
 
-  let is_assigned x = assert (Array.length x.value > 0)
+  let is_assigned x = assert (Array.length (attr x).value > 0)
 
-  let is_valid x = x.state = Valid
+  let is_valid x = (attr x).state = Valid
 
-  let validate x = x.state <- Valid
+  let validate x = (attr x).state <- Valid
 
   let invalidate x =
-    x.state <- Invalid;
-    x.value <- [||]
+    let a = attr x in
+    a.state <- Invalid;
+    a.value <- [||]
 
-  (* depth-first search from [x]; [f : node -> unit] is applied to each node;
-    [next node -> node array] returns the next set of nodes to iterate;
-  *)
-  let dfs_iter x f next =
-    let h = Hashtbl.create 512 in
-    let rec _dfs_iter y =
-      Array.iter (fun z ->
-        if Hashtbl.mem h z.id = false then (
-          f z;
-          Hashtbl.add h z.id None;
-          _dfs_iter (next z);
-        )
-      ) y
-    in
-    _dfs_iter x
-
-  let invalidate_graph x = dfs_iter [|x|] invalidate (fun x -> x.next)
+  let invalidate_graph x = iter_descendants DFS invalidate [|x|]
 
   let variable () = node ~name:"variable" ~value:[||] Var
 
   let assign x x_val =
-    assert (x.op = Var);
+    let a = attr x in
+    assert (a.op = Var);
     invalidate_graph x;
-    x.value <- [|x_val|]
+    a.value <- [|x_val|]
 
   let assign_arr x x_val = assign x (Arr x_val)
 
   let assign_elt x x_val = assign x (Elt x_val)
 
-  let to_arr x = unpack_arr x.value.(0)
+  let to_arr x = unpack_arr (attr x).value.(0)
 
-  let to_elt x = unpack_elt x.value.(0)
+  let to_elt x = unpack_elt (attr x).value.(0)
 
   let of_arr x = node ~name:"const" ~value:[|Arr x|] Const
 
@@ -152,44 +112,33 @@ module Make
 
   let state_to_str = function Valid -> "valid" | Invalid -> "invalid"
 
-  let node_to_str ?id x =
-    let id = match id with
-      | Some i -> Printf.sprintf " #%i" i
-      | None   -> ""
-    in
+  let node_to_str show_id x =
+    let id = if show_id then Printf.sprintf " #%i" (id x) else "" in
     Printf.sprintf "[%s name:%s state:%s ]"
-    id x.name (state_to_str x.state)
+    id (name x) (state_to_str (attr x).state)
 
   let pp_lazy formatter x =
     Format.open_box 0;
-    Format.fprintf formatter "%s\n" (node_to_str x);
+    Format.fprintf formatter "%s\n" (node_to_str false x);
     Format.close_box ()
 
-  let to_trace x =
-    let x = Array.of_list x in
-    let s = ref "" in
-    dfs_iter x (fun n ->
-      Array.iter (fun p ->
-        s := !s ^ Printf.sprintf "%s -> %s\n" (node_to_str ~id:p.id p) (node_to_str ~id:n.id n);
-      ) n.prev
-    ) (fun x -> x.prev);
-    !s
+  let to_trace x = Owl_graph.to_string false (node_to_str true) x
 
   let to_dot x =
     let x = Array.of_list x in
-    let topo = ref "" in
-    let attr = ref "" in
-    dfs_iter x (fun n ->
-      Array.iter (fun p -> topo := !topo ^ Printf.sprintf "%i -> %i;\n" p.id n.id) n.prev;
-      attr := !attr ^ Printf.sprintf "%i [ label=\"#%i | { %s | %s }\" ];\n" n.id n.id n.name (op_to_str n.op);
-    ) (fun x -> x.prev);
-    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s}" (!topo ^ !attr)
+    let topo_s = ref "" in
+    let attr_s = ref "" in
+    iter_ancestors DFS (fun n ->
+      Array.iter (fun p -> topo_s := !topo_s ^ Printf.sprintf "%i -> %i;\n" (id p) (id n)) (parents n);
+      attr_s := !attr_s ^ Printf.sprintf "%i [ label=\"#%i | { %s | %s }\" ];\n" (id n) (id n) (name n) (op_to_str (attr n).op);
+    ) x;
+    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s}" (!topo_s ^ !attr_s)
 
 
   (* allocate memory and evaluate experssions *)
 
   let allocate_1 x =
-    let x_val = unpack_arr x.value.(0) in
+    let x_val = unpack_arr (attr x).value.(0) in
     if refnum x = 1 && is_var x = false then (
       invalidate x;
       x_val
@@ -198,8 +147,8 @@ module Make
 
 
   let allocate_2 x y =
-    let x_val = unpack_arr x.value.(0) in
-    let y_val = unpack_arr y.value.(0) in
+    let x_val = unpack_arr (attr x).value.(0) in
+    let y_val = unpack_arr (attr y).value.(0) in
     let x_shp = A.shape x_val in
     let y_shp = A.shape y_val in
     if x_shp = y_shp then (
@@ -230,7 +179,7 @@ module Make
 
   let rec _eval_term x =
     if shall_eval x then (
-      let _ = match x.op with
+      let _ = match (attr x).op with
         | Var          -> is_assigned x
         | Fun00 f      -> _eval_map0 x f
         | Fun01 f      -> _eval_map1 x f
@@ -249,74 +198,85 @@ module Make
 
   (* [f] is pure, shape changes so always allocate mem, for [arr -> arr] *)
   and _eval_map0 x f =
-    _eval_term x.prev.(0);
-    let a = x.prev.(0).value.(0) |> unpack_arr |> f in
-    x.value <- [|Arr a|]
+    let x_parent = (parents x).(0) in
+    _eval_term x_parent;
+    let a = (attr x_parent).value.(0) |> unpack_arr |> f in
+    (attr x).value <- [|Arr a|]
 
   (* [f] is inpure, for [arr -> arr] *)
   and _eval_map1 x f =
-    _eval_term x.prev.(0);
-    let a = allocate_1 x.prev.(0) in
+    let x_parent = (parents x).(0) in
+    _eval_term x_parent;
+    let a = allocate_1 x_parent in
     f a;
-    x.value <- [|Arr a|]
+    (attr x).value <- [|Arr a|]
 
   (* [f] is inpure and [g] is pure, for [arr -> arr -> arr] *)
   and _eval_map2 x f g =
-    _eval_term x.prev.(0);
-    _eval_term x.prev.(1);
-    let a = unpack_arr x.prev.(0).value.(0) in
-    let b = unpack_arr x.prev.(1).value.(0) in
-    let c = match allocate_2 x.prev.(0) x.prev.(1) with
+    let x_parent_0 = (parents x).(0) in
+    let x_parent_1 = (parents x).(1) in
+    _eval_term x_parent_0;
+    _eval_term x_parent_1;
+    let a = unpack_arr (attr x_parent_0).value.(0) in
+    let b = unpack_arr (attr x_parent_1).value.(0) in
+    let c = match allocate_2 x_parent_0 x_parent_1 with
       | Some (p, q) -> f p q; p    (* in-place function, p will be written *)
       | None        -> g a b       (* pure function without touching a and b *)
     in
-    x.value <- [|Arr c|]
+    (attr x).value <- [|Arr c|]
 
   (* [f] is inpure, for [arr -> elt -> arr] *)
   and _eval_map3 x f =
-    _eval_term x.prev.(0);
-    _eval_term x.prev.(1);
-    let a = allocate_1 x.prev.(0) in
-    let b = unpack_elt x.prev.(1).value.(0) in
+    let x_parent_0 = (parents x).(0) in
+    let x_parent_1 = (parents x).(1) in
+    _eval_term x_parent_0;
+    _eval_term x_parent_1;
+    let a = allocate_1 x_parent_0 in
+    let b = unpack_elt (attr x_parent_1).value.(0) in
     f a b;
-    x.value <- [|Arr a|]
+    (attr x).value <- [|Arr a|]
 
   (* [f] is inpure, for [elt -> arr -> arr] *)
   and _eval_map4 x f =
-    _eval_term x.prev.(0);
-    _eval_term x.prev.(1);
-    let a = unpack_elt x.prev.(0).value.(0) in
-    let b = allocate_1 x.prev.(1) in
+    let x_parent_0 = (parents x).(0) in
+    let x_parent_1 = (parents x).(1) in
+    _eval_term x_parent_0;
+    _eval_term x_parent_1;
+    let a = unpack_elt (attr x_parent_0).value.(0) in
+    let b = allocate_1 x_parent_1 in
     f a b;
-    x.value <- [|Arr b|]
+    (attr x).value <- [|Arr b|]
 
   (* [f] is pure, shape changes so always allocate mem, for [arr array -> arr] *)
   and _eval_map5 x f =
     let a = Array.map (fun x ->
       _eval_term x;
-      unpack_arr x.value.(0)
-    ) x.prev |> f
+      unpack_arr (attr x).value.(0)
+    ) (parents x) |> f
     in
-    x.value <- [|Arr a|]
+    (attr x).value <- [|Arr a|]
 
   (* [f] is pure, for [arr -> elt] *)
   and _eval_map7 x f =
-    _eval_term x.prev.(0);
-    let a = x.prev.(0).value.(0) |> unpack_arr |> f in
-    x.value <- [|Elt a|]
+    let x_parent = (parents x).(0) in
+    _eval_term x_parent;
+    let a = (attr x_parent).value.(0) |> unpack_arr |> f in
+    (attr x).value <- [|Elt a|]
 
   (* [f] is pure and always allocates mem, for [node array -> node] *)
   and _eval_map8 x f =
-    Array.iter _eval_term x.prev;
-    let y = f x.prev in
+    let x_parents = parents x in
+    Array.iter _eval_term x_parents;
+    let y = f x_parents in
     assert (is_const y = true);
-    x.value <- y.value
+    (attr x).value <- (attr y).value
 
   (* get the ith output value of [x] *)
   and _item_i x i =
-    _eval_term x.prev.(0);
-    assert (i < Array.length x.prev.(0).value);
-    x.value <- [|x.prev.(0).value.(i)|]
+    let x_parent = (parents x).(0) in
+    _eval_term x_parent;
+    assert (i < Array.length (attr x_parent).value);
+    (attr x).value <- [|(attr x_parent).value.(i)|]
 
 
   let eval x = _eval_term x
@@ -584,7 +544,6 @@ module Make
   let elt_less_equal_scalar x a = _make_node "elt_less_equal_scalar" (Fun03 A.elt_less_equal_scalar_) [|x; a|]
 
   let elt_greater_equal_scalar x a = _make_node "elt_greater_equal_scalar" (Fun03 A.elt_greater_equal_scalar_) [|x; a|]
-
 
 
 end

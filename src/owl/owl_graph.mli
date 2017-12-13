@@ -48,3 +48,8 @@ val dfs_iter : ('a node -> unit) -> 'a node array -> ('a node -> 'a node array) 
 val iter_ancestors : order -> ('a node -> unit) -> 'a node array -> unit
 
 val iter_descendants : order -> ('a node -> unit) -> 'a node array -> unit
+
+
+(** {6 Helper functions} *)
+
+val to_string : bool -> ('a node -> string) -> 'a node list -> string

@@ -107,4 +107,19 @@ let copy = None
 let pp_node = None
 
 
+let to_string from_root node_to_str x =
+  let s = ref "" in
+  let arrow, next_fun, iter_fun =
+    match from_root with
+    | true  -> "->", (fun x -> x.next), (iter_descendants BFS)
+    | false -> "<-", (fun x -> x.prev), (iter_ancestors BFS)
+  in
+  iter_fun (fun m ->
+    Array.iter (fun n ->
+      s := Printf.sprintf "%s%s %s %s\n" !s (node_to_str m) arrow (node_to_str n);
+    ) (next_fun m)
+  ) (Array.of_list x);
+  !s
+
+
 (* ends here *)
