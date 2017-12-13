@@ -38,8 +38,19 @@ let connect parents children =
   ) parents
 
 
-(* TODO *)
-let remove x = None
+let remove_node x =
+  let f = fun y -> y.id <> x.id in
+  Array.iter (fun parent ->
+    parent.next <- Owl_utils.array_filter f parent.next
+  ) x.prev;
+  Array.iter (fun child ->
+    child.prev <- Owl_utils.array_filter f child.prev
+  ) x.next
+
+
+let remove_link src dst =
+  src.next <- Owl_utils.array_filter (fun x -> x.id <> dst.id) src.next;
+  dst.prev <- Owl_utils.array_filter (fun x -> x.id <> src.id) dst.prev
 
 
 let refnum x = Array.length x.next
