@@ -9,13 +9,7 @@
 type order = BFS | DFS
 (** Order to traverse a graph, BFS or DFS. *)
 
-type 'a node = {
-  mutable id   : int;            (* unique identifier *)
-  mutable name : string;         (* name of the node *)
-  mutable prev : 'a node array;  (* parents of the node *)
-  mutable next : 'a node array;  (* children of the node *)
-  mutable attr : 'a;             (* indicate the validity *)
-}
+type 'a node
 (** type definition of a node *)
 
 
