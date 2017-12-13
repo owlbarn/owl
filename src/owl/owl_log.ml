@@ -39,11 +39,6 @@ let color_off () = _colorful := false
 
 let _shall_print x = (_level_to_int x) >= (_level_to_int !_level)
 
-let info x = ()
-
-let error x = ()
-
-let warn x = ()
 
 let make_prefix lvl =
   let ts = Unix.gettimeofday() in
