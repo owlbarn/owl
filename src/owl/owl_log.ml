@@ -7,11 +7,7 @@
 
 type color = Red | Green | Yellow | Blue | Magenta | Cyan
 
-type level =
-  | DEBUG
-  | INFO
-  | WARN
-  | ERROR
+type level = DEBUG | INFO | WARN | ERROR
 
 let _level_to_int = function
   | DEBUG -> 0

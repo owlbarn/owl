@@ -8,7 +8,13 @@
 
 (** {6 Type definition} *)
 
-type color = Red | Green | Yellow | Blue | Magenta | Cyan
+type color =
+  | Red
+  | Green
+  | Yellow
+  | Blue
+  | Magenta
+  | Cyan
 (** basic colour types *)
 
 type level =
