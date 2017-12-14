@@ -71,7 +71,7 @@ module Make (A : InpureSig) = struct
     a.state <- Invalid;
     a.value <- [||]
 
-  let invalidate_graph x = iter_descendants DFS invalidate [|x|]
+  let invalidate_graph x = iter_descendants invalidate [|x|]
 
   let variable () = node ~name:"variable" ~value:[||] Var
 
@@ -128,7 +128,7 @@ module Make (A : InpureSig) = struct
     let x = Array.of_list x in
     let topo_s = ref "" in
     let attr_s = ref "" in
-    iter_ancestors DFS (fun n ->
+    iter_ancestors (fun n ->
       Array.iter (fun p -> topo_s := !topo_s ^ Printf.sprintf "%i -> %i;\n" (id p) (id n)) (parents n);
       attr_s := !attr_s ^ Printf.sprintf "%i [ label=\"#%i | { %s | %s }\" ];\n" (id n) (id n) (name n) (op_to_str (attr n).op);
     ) x;

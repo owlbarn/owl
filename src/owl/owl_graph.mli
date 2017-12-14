@@ -45,11 +45,13 @@ val remove_link : 'a node -> 'a node -> unit
 
 (** {6 Iterators} *)
 
-val dfs_iter : ('a node -> unit) -> 'a node array -> ('a node -> 'a node array) -> unit
+val iter_ancestors : ?order:order -> ('a node -> unit) -> 'a node array -> unit
 
-val iter_ancestors : order -> ('a node -> unit) -> 'a node array -> unit
+val iter_descendants : ?order:order -> ('a node -> unit) -> 'a node array -> unit
 
-val iter_descendants : order -> ('a node -> unit) -> 'a node array -> unit
+val filter_ancestors : ('a node -> bool) -> 'a node array -> 'a node array
+
+val filter_descendants : ('a node -> bool) -> 'a node array -> 'a node array
 
 
 (** {6 Helper functions} *)

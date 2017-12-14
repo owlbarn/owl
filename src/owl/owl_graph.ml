@@ -88,16 +88,29 @@ let dfs_iter f x next =
 let bfs_iter f next x = failwith "owl_graph:bfs_iter"
 
 
-let iter_ancestors order f x =
+let iter_ancestors ?(order=DFS) f x =
   match order with
   | BFS -> bfs_iter f x parents
   | DFS -> dfs_iter f x parents
 
 
-let iter_descendants order f x =
+let iter_descendants ?(order=DFS) f x =
   match order with
   | BFS -> bfs_iter f x children
   | DFS -> dfs_iter f x children
+
+
+let filter_ancestors f x =
+  let s = Owl_utils.Stack.make () in
+  iter_ancestors (fun n -> if f n then Owl_utils.Stack.push s n) x;
+  Owl_utils.Stack.to_array s
+
+
+let filter_descendants f x =
+  let s = Owl_utils.Stack.make () in
+  iter_descendants (fun n -> if f n then Owl_utils.Stack.push s n) x;
+  Owl_utils.Stack.to_array s
+
 
 
 (* TODO *)
@@ -126,8 +139,8 @@ let to_string from_root node_to_str x =
   let s = ref "" in
   let flip_fun, next_fun, iter_fun =
     match from_root with
-    | true  -> (fun x y -> (x,y)), (fun x -> x.next), (iter_descendants DFS)
-    | false -> (fun x y -> (y,x)), (fun x -> x.prev), (iter_ancestors DFS)
+    | true  -> (fun x y -> (x,y)), (fun x -> x.next), iter_descendants
+    | false -> (fun x y -> (y,x)), (fun x -> x.prev), iter_ancestors
   in
   iter_fun (fun m ->
     Array.iter (fun n ->
