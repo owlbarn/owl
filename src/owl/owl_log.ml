@@ -5,6 +5,8 @@
 
 (** Log module provides logging functionality. *)
 
+type color = Red | Green | Yellow | Blue | Magenta | Cyan
+
 type level =
   | DEBUG
   | INFO
@@ -17,11 +19,13 @@ let _level_to_int = function
   | WARN  -> 2
   | ERROR -> 3
 
-let _level_to_str = function
-  | DEBUG -> "DEBUG"
-  | INFO  -> "INFO"
-  | WARN  -> "WARN"
-  | ERROR -> "ERROR"
+let _color_to_str = function
+  | Red     -> "\027[31m"
+  | Green   -> "\027[32m"
+  | Yellow  -> "\027[33m"
+  | Blue    -> "\027[34m"
+  | Magenta -> "\027[35m"
+  | Cyan    -> "\027[36m"
 
 let _level = ref INFO
 
@@ -39,6 +43,16 @@ let color_off () = _colorful := false
 
 let _shall_print x = (_level_to_int x) >= (_level_to_int !_level)
 
+let _shall_paint c s =
+  match !_colorful with
+  | true  -> (_color_to_str c) ^ s ^ "\027[0m"
+  | false -> s
+
+let _level_to_str = function
+  | DEBUG -> _shall_paint Cyan "DEBUG"
+  | INFO  -> _shall_paint Green "INFO"
+  | WARN  -> _shall_paint Yellow "WARN"
+  | ERROR -> _shall_paint Red "ERROR"
 
 let make_prefix lvl =
   let ts = Unix.gettimeofday() in
@@ -52,7 +66,6 @@ let make_prefix lvl =
     tm.Unix.tm_sec
     (modf ts |> fst |> ( *. ) 1000. |> int_of_float)
     (_level_to_str lvl)
-
 
 let _log lvl fmt =
   match _shall_print lvl with
