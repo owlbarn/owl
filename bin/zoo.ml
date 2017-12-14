@@ -8,7 +8,7 @@ open Owl_zoo_cmd
 
 let _ =
   (* initialise logger *)
-  Owl_log.color_on ();
+  Owl_log.set_color true;
   Owl_log.(set_level DEBUG);
   (* add zoo directive *)
   Owl_zoo_dir.add_dir_zoo ();

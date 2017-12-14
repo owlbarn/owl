@@ -103,6 +103,14 @@ let iter_descendants order f x =
 (* TODO *)
 let copy = None
 
+let nodes = None
+
+let edges = None
+
+let iter_links = None
+
+let iter_nodes = None
+
 
 let node_to_str x =
   Printf.sprintf "[ #%i %s in:%i out:%i ]" x.id x.name (indegree x) (outdegree x)

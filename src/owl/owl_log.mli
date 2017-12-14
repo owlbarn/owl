@@ -8,21 +8,8 @@
 
 (** {6 Type definition} *)
 
-type color =
-  | Red
-  | Green
-  | Yellow
-  | Blue
-  | Magenta
-  | Cyan
-(** basic colour types *)
-
-type level =
-  | DEBUG
-  | INFO
-  | WARN
-  | ERROR
-(** type definition of log levels *)
+type level = DEBUG | INFO | WARN | ERROR
+(** type definition of log levels, priority is from low to high. *)
 
 
 (** {6 Configuration functions} *)
@@ -31,9 +18,7 @@ val set_level : level -> unit
 
 val set_output : out_channel -> unit
 
-val color_on : unit -> unit
-
-val color_off : unit -> unit
+val set_color : bool -> unit
 
 
 (** {6 Log functions} *)

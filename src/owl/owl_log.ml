@@ -33,9 +33,7 @@ let set_level x = _level := x
 
 let set_output x = _output := x
 
-let color_on () = _colorful := true
-
-let color_off () = _colorful := false
+let set_color x = _colorful := x
 
 let _shall_print x = (_level_to_int x) >= (_level_to_int !_level)
 
