@@ -53,6 +53,10 @@ val filter_ancestors : ('a node -> bool) -> 'a node array -> 'a node array
 
 val filter_descendants : ('a node -> bool) -> 'a node array -> 'a node array
 
+val iter_in_edges : ?order:order -> ('a node -> 'a node -> unit) -> 'a node array -> unit
+
+val iter_out_edges : ?order:order -> ('a node -> 'a node -> unit) -> 'a node array -> unit
+
 
 (** {6 Helper functions} *)
 

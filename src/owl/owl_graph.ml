@@ -112,6 +112,18 @@ let filter_descendants f x =
   Owl_utils.Stack.to_array s
 
 
+let iter_in_edges ?order f x =
+  iter_ancestors ?order (fun dst ->
+    Array.iter (fun src -> f src dst) dst.prev
+  ) x
+
+
+let iter_out_edges ?order f x =
+  iter_descendants ?order (fun src ->
+    Array.iter (fun dst -> f src dst) src.next
+  ) x
+
+
 
 (* TODO *)
 let copy = None
@@ -119,10 +131,6 @@ let copy = None
 let nodes = None
 
 let edges = None
-
-let iter_links = None
-
-let iter_nodes = None
 
 
 let node_to_str x =
