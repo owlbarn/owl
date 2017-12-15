@@ -62,7 +62,7 @@ let remove_node x =
   ) x.next
 
 
-let remove_link src dst =
+let remove_edge src dst =
   src.next <- Owl_utils.array_filter (fun x -> x.id <> dst.id) src.next;
   dst.prev <- Owl_utils.array_filter (fun x -> x.id <> src.id) dst.prev
 

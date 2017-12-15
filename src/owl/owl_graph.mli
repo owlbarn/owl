@@ -40,7 +40,7 @@ val connect : 'a node array -> 'a node array -> unit
 
 val remove_node : 'a node -> unit
 
-val remove_link : 'a node -> 'a node -> unit
+val remove_edge : 'a node -> 'a node -> unit
 
 
 (** {6 Iterators} *)
@@ -71,3 +71,4 @@ val fold_out_edges : ('b -> 'a node -> 'a node -> 'b) -> 'b -> 'a node array -> 
 val pp_node : Format.formatter -> 'a node -> unit
 
 val to_string : bool -> ('a node -> string) -> 'a node list -> string
+(* FIXME *)
