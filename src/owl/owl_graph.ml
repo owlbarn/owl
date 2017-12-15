@@ -112,6 +112,18 @@ let filter_descendants f x =
   Owl_utils.Stack.to_array s
 
 
+let fold_ancestors f a x =
+  let a = ref a in
+  iter_ancestors (fun b -> a := f !a b) x;
+  !a
+
+
+let fold_descendants f a x =
+  let a = ref a in
+  iter_descendants (fun b -> a := f !a b) x;
+  !a
+
+
 let iter_in_edges ?order f x =
   iter_ancestors ?order (fun dst ->
     Array.iter (fun src -> f src dst) dst.prev
@@ -123,6 +135,17 @@ let iter_out_edges ?order f x =
     Array.iter (fun dst -> f src dst) src.next
   ) x
 
+
+let fold_in_edges f a x =
+  let a = ref a in
+  iter_in_edges (fun b c -> a := f !a b c) x;
+  !a
+
+
+let fold_out_edges f a x =
+  let a = ref a in
+  iter_out_edges (fun b c -> a := f !a b c) x;
+  !a
 
 
 (* TODO *)

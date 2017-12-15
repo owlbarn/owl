@@ -122,17 +122,18 @@ module Make (A : InpureSig) = struct
     Format.fprintf formatter "%s\n" (node_to_str false x);
     Format.close_box ()
 
-  let to_trace x = Owl_graph.to_string false (node_to_str true) x
+  let to_trace x =
+    let x = Array.of_list x in
+    let _str n = node_to_str true n in
+    fold_in_edges (fun a u v -> Printf.sprintf "%s%s -> %s\n" a (_str u) (_str v)) "" x
 
   let to_dot x =
     let x = Array.of_list x in
-    let topo_s = ref "" in
-    let attr_s = ref "" in
-    iter_ancestors (fun n ->
-      Array.iter (fun p -> topo_s := !topo_s ^ Printf.sprintf "%i -> %i;\n" (id p) (id n)) (parents n);
-      attr_s := !attr_s ^ Printf.sprintf "%i [ label=\"#%i | { %s | %s }\" ];\n" (id n) (id n) (name n) (op_to_str (attr n).op);
-    ) x;
-    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s}" (!topo_s ^ !attr_s)
+    let edge_s = fold_in_edges (fun a u v -> Printf.sprintf "%s%i -> %i;\n" a (id u) (id v)) "" x in
+    let node_s = fold_ancestors (fun a n ->
+      Printf.sprintf "%s%i [ label=\"#%i | { %s | %s }\" ];\n" a (id n) (id n) (name n) (op_to_str (attr n).op)
+    ) "" x in
+    Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
 
 
   (* allocate memory and evaluate experssions *)

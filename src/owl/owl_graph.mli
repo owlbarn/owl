@@ -53,9 +53,17 @@ val filter_ancestors : ('a node -> bool) -> 'a node array -> 'a node array
 
 val filter_descendants : ('a node -> bool) -> 'a node array -> 'a node array
 
+val fold_ancestors : ('b -> 'a node -> 'b) -> 'b -> 'a node array -> 'b
+
+val fold_descendants : ('b -> 'a node -> 'b) -> 'b -> 'a node array -> 'b
+
 val iter_in_edges : ?order:order -> ('a node -> 'a node -> unit) -> 'a node array -> unit
 
 val iter_out_edges : ?order:order -> ('a node -> 'a node -> unit) -> 'a node array -> unit
+
+val fold_in_edges : ('b -> 'a node -> 'a node -> 'b) -> 'b -> 'a node array -> 'b
+
+val fold_out_edges : ('b -> 'a node -> 'a node -> 'b) -> 'b -> 'a node array -> 'b
 
 
 (** {6 Helper functions} *)
