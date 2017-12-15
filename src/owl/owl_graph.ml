@@ -151,10 +151,6 @@ let fold_out_edges f a x =
 (* TODO *)
 let copy = None
 
-let nodes = None
-
-let edges = None
-
 
 let node_to_str x =
   Printf.sprintf "[ #%i %s in:%i out:%i ]" x.id x.name (indegree x) (outdegree x)
