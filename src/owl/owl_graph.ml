@@ -166,19 +166,10 @@ let pp_node formatter x =
   Format.close_box ()
 
 
-let to_string from_root node_to_str x =
+let to_string from_root x =
   let s = ref "" in
-  let flip_fun, next_fun, iter_fun =
-    match from_root with
-    | true  -> (fun x y -> (x,y)), (fun x -> x.next), iter_descendants
-    | false -> (fun x y -> (y,x)), (fun x -> x.prev), iter_ancestors
-  in
-  iter_fun (fun m ->
-    Array.iter (fun n ->
-      let a, b = flip_fun (node_to_str m) (node_to_str n) in
-      s := Printf.sprintf "%s%s -> %s\n" !s a b;
-    ) (next_fun m)
-  ) (Array.of_list x);
+  let iter_fun = if from_root then iter_out_edges else iter_in_edges in
+  iter_fun (fun u v -> s := Printf.sprintf "%s%i -> %i\n" !s u.id v.id) x;
   !s
 
 

@@ -70,5 +70,5 @@ val fold_out_edges : ('b -> 'a node -> 'a node -> 'b) -> 'b -> 'a node array -> 
 
 val pp_node : Format.formatter -> 'a node -> unit
 
-val to_string : bool -> ('a node -> string) -> 'a node list -> string
+val to_string : bool -> 'a node array -> string
 (* FIXME *)
