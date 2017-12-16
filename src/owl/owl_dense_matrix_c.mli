@@ -589,6 +589,8 @@ val scalar_pow : elt -> mat -> mat
 
 val pow_scalar : mat -> elt -> mat
 
+val dot_pow : mat -> int -> mat
+
 val cov : ?b:mat -> a:mat -> mat
 
 val kron : mat -> mat -> mat
