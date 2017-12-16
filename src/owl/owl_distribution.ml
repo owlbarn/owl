@@ -20,7 +20,7 @@ module Make
       b : float;
     }
 
-    let make a b =
+    let make ~a ~b =
       assert ( a <= b);
       { a; b }
 
@@ -40,7 +40,7 @@ module Make
       sigma : float;
     }
 
-    let make mu sigma =
+    let make ~mu ~sigma =
       assert (sigma >= 0.);
       { mu; sigma }
 
@@ -53,6 +53,11 @@ module Make
     let mean x = ()
 
   end
+
+
+  type dist =
+    | Uniform  of Uniform.t
+    | Gaussian of Gaussian.t
 
 
 end

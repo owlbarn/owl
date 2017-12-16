@@ -15,11 +15,11 @@ module Make
   = struct
 
   type t = {
-    mutable shape : int array;         (* shape of the view *)
-    mutable slice : int array array;   (* slice definition projected on original data *)
-    mutable ofstr : int array array;   (* [|offset; stride|] array of view projected on original data *)
-    mutable data  : A.arr;             (* original data object *)
-    mutable dvec  : A.arr;             (* one-dimensional vector of original data *)
+    shape : int array;         (* shape of the view *)
+    slice : int array array;   (* slice definition projected on original data *)
+    ofstr : int array array;   (* [|offset; stride|] array of view projected on original data *)
+    data  : A.arr;             (* original data object *)
+    dvec  : A.arr;             (* one-dimensional vector of original data *)
   }
 
 
