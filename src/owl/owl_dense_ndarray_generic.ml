@@ -3306,7 +3306,6 @@ let copy_col_to v x i =
   let r2 = area_of_col x i in
   copy_area_to v r1 x r2
 
-
 let dot x1 x2 =
   let m, k = _matrix_shape x1 in
   let l, n = _matrix_shape x2 in
@@ -3326,6 +3325,14 @@ let dot x1 x2 =
   Owl_cblas.gemm layout transa transb m n k alpha a k b n beta c n;
   x3
 
+let dot_pow x k =
+  if k <= 0 then failwith "dot_pow: exponent is non-positive";
+  let m, n = _matrix_shape x in
+  assert (m = n);
+  let rec _pow k' acc =
+    if k' = 1 then acc 
+    else _pow (k' - 1) (dot x acc)
+  in _pow k x
 
 let inv x =
   let m, n = _matrix_shape x in
