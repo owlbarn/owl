@@ -1,3 +1,5 @@
+(** Unit test for Owl_sparse_matrix_generic module *)
+
 open Bigarray
 module M = Owl_sparse_matrix_generic
 

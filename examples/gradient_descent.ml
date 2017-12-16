@@ -15,4 +15,4 @@ let _ =
   (* [f] must be  [f : scalar -> scalar] *)
   let f = Maths.sin in
   let y = desc f (F (Stats.Rnd.uniform ())) in
-  Log.info "argmin f(x) = %g" (unpack_flt y)
+  Owl_log.info "argmin f(x) = %g" (unpack_flt y)

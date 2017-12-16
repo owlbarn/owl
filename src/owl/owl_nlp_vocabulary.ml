@@ -201,7 +201,7 @@ let save_txt d fname =
   List.fast_sort (fun x y -> String.compare (fst x) (fst y)) vl
   |> List.iter (fun (w,i) ->
     let s = Printf.sprintf "%s %i\n" w i in
-    output_bytes fh s
+    output_string fh s
   );
   close_out fh
 

@@ -51,14 +51,14 @@ let visualise_lstm () =
 
 
 let _ =
-  Log.info "visualise simple computation graph to terminal ...";
+  Owl_log.info "visualise simple computation graph to terminal ...";
   visualise_simple_01 () |> print_endline;
-  Log.info "visualise simple computation graph to dot file ...";
+  Owl_log.info "visualise simple computation graph to dot file ...";
   visualise_simple_02 () |> Owl_utils.write_file "plot_algodiff_graph1.dot";
   Sys.command "dot -Tpdf plot_algodiff_graph1.dot -o plot_algodiff_graph1.pdf";
-  Log.info "visualise VGG neural network ...";
+  Owl_log.info "visualise VGG neural network ...";
   visualise_vgg () |> Owl_utils.write_file "plot_algodiff_graph2.dot";
   Sys.command "dot -Tpdf plot_algodiff_graph2.dot -o plot_algodiff_graph2.pdf";
-  Log.info "visualise LSTM neural network ...";
+  Owl_log.info "visualise LSTM neural network ...";
   visualise_lstm () |> Owl_utils.write_file "plot_algodiff_graph3.dot";
   Sys.command "dot -Tpdf plot_algodiff_graph3.dot -o plot_algodiff_graph3.pdf"

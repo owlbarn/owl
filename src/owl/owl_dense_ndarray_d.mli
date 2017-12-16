@@ -577,6 +577,8 @@ val scalar_fmod_ : elt -> arr -> unit
 
 val conj_ : arr -> unit
 
+val abs_ : arr -> unit
+
 val neg_ : arr -> unit
 
 val reci_ : arr -> unit
@@ -660,6 +662,32 @@ val cumprod_ : ?axis:int -> arr -> unit
 val cummin_ : ?axis:int -> arr -> unit
 
 val cummax_ : ?axis:int -> arr -> unit
+
+val dropout_ : ?rate:float -> ?seed:int -> arr -> unit
+
+val elt_equal_ : arr -> arr -> unit
+
+val elt_not_equal_ : arr -> arr -> unit
+
+val elt_less_ : arr -> arr -> unit
+
+val elt_greater_ : arr -> arr -> unit
+
+val elt_less_equal_ : arr -> arr -> unit
+
+val elt_greater_equal_ : arr -> arr -> unit
+
+val elt_equal_scalar_ : arr -> elt -> unit
+
+val elt_not_equal_scalar_ : arr -> elt -> unit
+
+val elt_less_scalar_ : arr -> elt -> unit
+
+val elt_greater_scalar_ : arr -> elt -> unit
+
+val elt_less_equal_scalar_ : arr -> elt -> unit
+
+val elt_greater_equal_scalar_ : arr -> elt -> unit
 
 
 (** {6 Matrix functions} *)

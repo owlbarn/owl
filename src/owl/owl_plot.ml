@@ -502,7 +502,7 @@ let set_output h s =
   let x = Owl_utils.get_suffix s in
   match (List.mem x _supported_device) with
   | true  -> h.output <- s
-  | false -> Log.error "unsupported file type."
+  | false -> Owl_log.error "unsupported file type."
 
 
 let set_title h s = (h.pages.(h.current_page)).title <- s

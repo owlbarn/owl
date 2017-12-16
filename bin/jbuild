@@ -8,6 +8,7 @@
     owl
     owl_zoo
   ))
+  (flags (:standard -safe-string))
   (link_flags (-linkall))
   (modes      (byte))
 ))

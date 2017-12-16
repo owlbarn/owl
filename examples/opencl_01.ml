@@ -15,7 +15,7 @@ let prog_s = "
 ";;
 
 
-Log.info "pick platform, device, build program ...";;
+Owl_log.info "pick platform, device, build program ...";;
 let l = Owl_opencl_base.Platform.get_platforms ();;
 let m = Owl_opencl_base.Device.get_devices l.(0);;
 let gpu = m.(1);;
@@ -32,14 +32,14 @@ print_endline (Owl_opencl_base.Program.to_string program);;
 print_endline (Owl_opencl_base.Kernel.to_string kernel);;
 
 
-Log.info "prepare variables ...";;
+Owl_log.info "prepare variables ...";;
 let _size = 10_000_000;;
 let a = Dense.Ndarray.S.uniform [|_size|];;
 let b = Dense.Ndarray.S.uniform [|_size|];;
 let c = Dense.Ndarray.S.zeros [|_size|];;
 
 
-Log.info "set args ...";;
+Owl_log.info "set args ...";;
 let a' = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx a;;
 let b' = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx b;;
 let c' = Owl_opencl_base.Buffer.create ~flags:[Owl_opencl_generated.cl_MEM_USE_HOST_PTR] ctx c;;
@@ -52,18 +52,18 @@ Owl_opencl_base.Kernel.set_arg kernel 1 len _b;;
 Owl_opencl_base.Kernel.set_arg kernel 2 len _c;;
 
 
-Log.info "execute kernel ...";;
+Owl_log.info "execute kernel ...";;
 Owl_opencl_base.Kernel.enqueue_ndrange cmdq kernel 1 [_size];;
 
 
-Log.info "fetch result ...";;
+Owl_log.info "fetch result ...";;
 Owl_opencl_base.Buffer.enqueue_read cmdq c' 0 len (Ctypes.to_voidp _c);;
 Dense.Ndarray.Generic.pp_dsnda Format.std_formatter a;;
 Dense.Ndarray.Generic.pp_dsnda Format.std_formatter b;;
 Dense.Ndarray.Generic.pp_dsnda Format.std_formatter c;;
 
 
-Log.info "clean up ...";;
+Owl_log.info "clean up ...";;
 Owl_opencl_base.Buffer.release a';;
 Owl_opencl_base.Buffer.release b';;
 Owl_opencl_base.Buffer.release c';;

@@ -17,10 +17,13 @@ module Make
   val ols : ?i:bool -> arr -> arr -> arr array
   (** [] *)
 
-  val ridge : ?i:bool -> ?a:float -> arr -> arr -> arr array
+  val ridge : ?i:bool -> ?alpha:float -> arr -> arr -> arr array
   (** [] *)
 
-  val lasso : ?i:bool -> ?a:float -> arr -> arr -> arr array
+  val lasso : ?i:bool -> ?alpha:float -> arr -> arr -> arr array
+  (** [] *)
+
+  val elastic_net : ?i:bool -> ?alpha:float -> ?l1_ratio:float -> arr -> arr -> arr array
   (** [] *)
 
   val svm : ?i:bool -> ?a:float -> arr -> arr -> arr array

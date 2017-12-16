@@ -32,9 +32,9 @@ let compile_kernels () =
 
 
 let default =
-  Log.info "OpenCL: compling kernels";
+  Owl_log.info "OpenCL: compling kernels";
   let ctx = compile_kernels () in
-  Log.info "OpenCL: kernels compiled";
+  Owl_log.info "OpenCL: kernels compiled";
   ctx
 
 
