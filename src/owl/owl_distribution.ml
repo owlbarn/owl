@@ -15,6 +15,43 @@ module Make
 
   module Uniform = struct
 
+    type t = {
+      a : float;
+      b : float;
+    }
+
+    let make a b =
+      assert ( a <= b);
+      { a; b }
+
+    let sample t s = ()
+
+    let pdf x = ()
+
+    let mean x = ()
+
+  end
+
+
+  module Gaussian = struct
+
+    type t = {
+      mu    : float;
+      sigma : float;
+    }
+
+    let make mu sigma =
+      assert (sigma >= 0.);
+      { mu; sigma }
+
+    let sample t s =
+      let x = A.gaussian ~sigma:t.sigma s in
+      A.add_scalar x t.mu
+
+    let pdf x = ()
+
+    let mean x = ()
+
   end
 
 
