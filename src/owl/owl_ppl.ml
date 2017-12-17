@@ -21,6 +21,8 @@ module Make (A : NdarraySig) = struct
   }
 
 
+  (* graph manipulation *)
+
   (* Draw random variables from different distribution. *)
 
   let uniform ~a ~b = {
