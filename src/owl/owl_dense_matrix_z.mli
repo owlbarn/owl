@@ -589,7 +589,7 @@ val scalar_pow : elt -> mat -> mat
 
 val pow_scalar : mat -> elt -> mat
 
-val mpow : mat -> int -> mat
+val mpow : mat -> float -> mat
 
 val cov : ?b:mat -> a:mat -> mat
 
