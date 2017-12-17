@@ -3325,8 +3325,8 @@ let dot x1 x2 =
   Owl_cblas.gemm layout transa transb m n k alpha a k b n beta c n;
   x3
 
-let dot_pow x k =
-  if k <= 0 then failwith "dot_pow: exponent is non-positive";
+let mpow x k =
+  if k <= 0 then failwith "mpow: exponent is non-positive";
   let m, n = _matrix_shape x in
   assert (m = n);
   let rec _pow k' acc =

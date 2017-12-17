@@ -1400,8 +1400,8 @@ val scalar_pow : 'a -> ('a, 'b) t -> ('a, 'b) t
 val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [pow_scalar x a] *)
 
-val dot_pow : ('a, 'b) t -> int -> ('a, 'b) t
-(** [dot_pow x k] returns the dot product of [x] with itself [k] times. 
+val mpow : ('a, 'b) t -> int -> ('a, 'b) t
+(** [mpow x k] returns the dot product of [x] with itself [k] times. 
     k must be at least 1. *)
 
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
