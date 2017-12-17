@@ -3328,6 +3328,7 @@ let dot x1 x2 =
 
 let _is_odd n = n mod 2 <> 0
 
+(* try rewriting for floats *)
 let _int_mpow x k =
   let m, n = _matrix_shape x in
   assert (m = n);
@@ -3338,8 +3339,8 @@ let _int_mpow x k =
           else even_pow k' acc
   and odd_pow k' acc = dot x (even_pow (k' - 1) acc)
   and even_pow k' acc =
-    let k'' = k' / 2 in
-    let half_acc = either_pow k'' acc in
+    let k2 = k' / 2 in
+    let half_acc = either_pow k2 acc in
     dot half_acc half_acc
   in either_pow k x
 
