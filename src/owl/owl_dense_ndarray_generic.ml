@@ -3336,8 +3336,7 @@ let _int_mpow x k =
      then even_pow k' acc
      else odd_pow k' acc
   and even_pow k' acc =
-    let k2 = k' / 2 in
-    let acc2 = either_pow k2 acc in
+    let acc2 = either_pow (k' / 2) acc in
     dot acc2 acc2
   and odd_pow k' acc =
     dot x (even_pow (k' - 1) acc)
