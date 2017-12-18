@@ -3332,14 +3332,15 @@ let _int_mpow x k =
   assert (m = n);
   let rec either_pow k' acc =
      if k' = 1 then acc
-     else if n mod 2 <> 0
-	  then odd_pow k' acc
-          else even_pow k' acc
-  and odd_pow k' acc = dot x (even_pow (k' - 1) acc)
+     else if k' mod 2 = 0
+     then even_pow k' acc
+     else odd_pow k' acc
   and even_pow k' acc =
     let k2 = k' / 2 in
-    let half_acc = either_pow k2 acc in
-    dot half_acc half_acc
+    let acc2 = either_pow k2 acc in
+    dot acc2 acc2
+  and odd_pow k' acc =
+    dot x (even_pow (k' - 1) acc)
   in either_pow k x
 
 let mpow x r =
