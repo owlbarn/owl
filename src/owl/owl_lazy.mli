@@ -357,4 +357,10 @@ module Make
   val elt_greater_equal_scalar : t -> t -> t
 
 
+  (** {6 Advanced operations} *)
+
+  val invalidate : t -> unit
+
+  val get_by_name : t -> string -> t array
+
 end

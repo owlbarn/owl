@@ -19,30 +19,43 @@ module Make (A : InpureSig) = struct
 
   (* graph manipulation *)
 
-  (* Draw random variables from different distribution. *)
+  (* Draw random variables from different distributions. *)
 
   let uniform ~a ~b =
     let draw_samples args =
       let a = to_elt args.(0) in
       let b = to_elt args.(1) in
+      let s = A.shape (to_arr args.(2)) in
       let t = Uniform.make ~a ~b in
-      of_arr (Uniform.sample t [|100|])
+      of_arr (Uniform.sample t s)
     in
-    map ~name:"uniform" draw_samples [|a;b|]
+    let shape_holder = variable () in (* FIXME *)
+    map ~name:"uniform" draw_samples [|a;b;shape_holder|]
 
   let gaussian ~mu ~sigma =
     let draw_samples args =
       let mu = to_elt args.(0) in
       let sigma = to_elt args.(1) in
+      let s = A.shape (to_arr args.(2)) in
       let t = Gaussian.make ~mu ~sigma in
-      of_arr (Gaussian.sample t [|100|])
+      of_arr (Gaussian.sample t s)
     in
-    map ~name:"gaussian" draw_samples [|mu;sigma|]
+    let shape_holder = variable () in (* FIXME *)
+    map ~name:"gaussian" draw_samples [|mu;sigma;shape_holder|]
+
+
+  let sample x s =
+    invalidate x;
+    Array.iter (fun n ->
+      assign_arr n (A.empty s)
+    ) (get_by_name x "variable");
+    eval x;
+    x
+
+  let infer x = ()
 
 
   (* Mathematical operators *)
-
-  let add x y = ()
 
 
 end
