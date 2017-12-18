@@ -24,7 +24,7 @@ module Make
       assert ( a <= b);
       { a; b }
 
-    let sample t s = ()
+    let sample t s = A.uniform s
 
     let pdf x = ()
 
