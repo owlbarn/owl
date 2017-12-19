@@ -3326,22 +3326,20 @@ let dot x1 x2 =
   x3
 
 let mpow x r =
-  let (frac_part, whole_part) = Pervasives.modf r in
+  let (frac_part, _) = Pervasives.modf r in
   if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
   let m, n = _matrix_shape x in assert (m = n);
   (* integer matrix powers using floats: *)
   if r < 1. then failwith "mpow: exponent is non-positive";
-  let rec either_pow s acc =
+  let rec _mpow s acc =
      if s = 1. then acc
-     else if mod_float s 2. = 0.
-     then even_pow s acc
-     else odd_pow s acc
-  and even_pow s acc =
-    let acc2 = either_pow (s /. 2.) acc in
+     else if mod_float s 2. = 0.  (* exponent is even? *)
+     then even_mpow s acc
+     else dot x (even_mpow (s -. 1.) acc)
+  and even_mpow s acc =
+    let acc2 = _mpow (s /. 2.) acc in
     dot acc2 acc2
-  and odd_pow s acc =
-    dot x (even_pow (s -. 1.) acc)
-  in either_pow r x
+  in _mpow r x
 
 let inv x =
   let m, n = _matrix_shape x in
