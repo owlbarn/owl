@@ -1197,6 +1197,9 @@ val scalar_pow : 'a -> ('a, 'b) t -> ('a, 'b) t
 val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [pow_scalar x a] computes each element in [x] power to [a]. *)
 
+val mpow : ('a, 'b) t -> float -> ('a, 'b) t
+(** [mpow x r] returns the dot product of [x] with itself [r] times. *)
+
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new ndarray.

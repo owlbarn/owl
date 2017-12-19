@@ -3306,7 +3306,6 @@ let copy_col_to v x i =
   let r2 = area_of_col x i in
   copy_area_to v r1 x r2
 
-
 let dot x1 x2 =
   let m, k = _matrix_shape x1 in
   let l, n = _matrix_shape x2 in
@@ -3326,6 +3325,21 @@ let dot x1 x2 =
   Owl_cblas.gemm layout transa transb m n k alpha a k b n beta c n;
   x3
 
+let mpow x r =
+  let (frac_part, _) = Pervasives.modf r in
+  if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
+  let m, n = _matrix_shape x in assert (m = n);
+  (* integer matrix powers using floats: *)
+  if r < 1. then failwith "mpow: exponent is non-positive";
+  let rec _mpow s acc =
+     if s = 1. then acc
+     else if mod_float s 2. = 0.  (* exponent is even? *)
+     then even_mpow s acc
+     else dot x (even_mpow (s -. 1.) acc)
+  and even_mpow s acc =
+    let acc2 = _mpow (s /. 2.) acc in
+    dot acc2 acc2
+  in _mpow r x
 
 let inv x =
   let m, n = _matrix_shape x in
