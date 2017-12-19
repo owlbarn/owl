@@ -3325,29 +3325,23 @@ let dot x1 x2 =
   Owl_cblas.gemm layout transa transb m n k alpha a k b n beta c n;
   x3
 
-
-(* try rewriting for floats *)
-let _int_mpow x k =
-  let m, n = _matrix_shape x in
-  assert (m = n);
-  let rec either_pow k' acc =
-     if k' = 1 then acc
-     else if k' mod 2 = 0
-     then even_pow k' acc
-     else odd_pow k' acc
-  and even_pow k' acc =
-    let acc2 = either_pow (k' / 2) acc in
-    dot acc2 acc2
-  and odd_pow k' acc =
-    dot x (even_pow (k' - 1) acc)
-  in either_pow k x
-
 let mpow x r =
   let (frac_part, whole_part) = Pervasives.modf r in
-  if frac_part <> 0. then failwith "mpow: fractional powers not implemented"
-  else if r < 1. then failwith "mpow: exponent is non-positive"
-  else _int_mpow x (int_of_float whole_part)
-
+  if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
+  let m, n = _matrix_shape x in assert (m = n);
+  (* integer matrix powers using floats: *)
+  if r < 1. then failwith "mpow: exponent is non-positive";
+  let rec either_pow s acc =
+     if s = 1. then acc
+     else if mod_float s 2. = 0.
+     then even_pow s acc
+     else odd_pow s acc
+  and even_pow s acc =
+    let acc2 = either_pow (s /. 2.) acc in
+    dot acc2 acc2
+  and odd_pow s acc =
+    dot x (even_pow (s -. 1.) acc)
+  in either_pow r x
 
 let inv x =
   let m, n = _matrix_shape x in
