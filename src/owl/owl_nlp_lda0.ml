@@ -74,7 +74,7 @@ let show_info m i t =
     | true  -> Printf.sprintf "likelihood:%.3f" (likelihood m)
     | false -> ""
   in
-  Log.info "iter#%i t(s):%.1f t_dk:%.3f t_wk:%.3f %s" i t (MD.density m.t_dk) (MS.density m.t_wk) s
+  Owl_log.info "iter#%i t(s):%.1f t_dk:%.3f t_wk:%.3f %s" i t (MD.density m.t_dk) (MS.density m.t_wk) s
 
 
 (* implement several LDA with specific samplings *)
@@ -263,7 +263,7 @@ end
 
 (* init the model based on: topics, vocabulary, tokens *)
 let init ?(iter=100) k v d =
-  Log.info "init the model";
+  Owl_log.info "init the model";
   (* set basic model stats *)
   let n_d = Array.length d in
   let n_v = Hashtbl.length v in
@@ -326,7 +326,7 @@ let train typ m =
   for i = 0 to m.iter - 1 do
     let t0 = Unix.gettimeofday () in
     for j = 0 to m.n_d - 1 do
-      (* Log.info "iteration #%i - doc#%i" i j; *)
+      (* Owl_log.info "iteration #%i - doc#%i" i j; *)
       sampling m j
     done;
     let t1 = Unix.gettimeofday () in

@@ -168,7 +168,7 @@ val index_1d_nd : int -> int array -> int array
  *)
 
 val index_nd_1d : int array -> int array -> int
-(** [index_nd_1d i shp] converts n-dimensional index [i] to one-dimensional
+(** [index_nd_1d i stride] converts n-dimensional index [i] to one-dimensional
   index according to the passed in [stride].
 
   NOTE: you need to pass in stride, not the shape of [x]!
@@ -235,7 +235,7 @@ val set_slice : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
 
 val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
 (** [get_slice_simple axis x] aims to provide a simpler version of [get_slice].
-  This function assumes that every list element in the passed in [in list list]
+  This function assumes that every list element in the passed in [int list list]
   represents a range, i.e., [R] constructor.
 
   E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
@@ -243,7 +243,7 @@ val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
 
 val set_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** [set_slice_simple axis x y] aims to provide a simpler version of [set_slice].
-  This function assumes that every list element in the passed in [in list list]
+  This function assumes that every list element in the passed in [int list list]
   represents a range, i.e., [R] constructor.
 
   E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].

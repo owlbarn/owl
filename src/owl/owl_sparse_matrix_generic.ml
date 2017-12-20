@@ -200,11 +200,11 @@ let filter_nz f x = filteri_nz (fun _ _ y -> f y) x
 
 let _disassemble_rows x =
   _eigen_compress x.d;
-  Log.debug "_disassemble_rows :allocate space";
+  Owl_log.debug "_disassemble_rows :allocate space";
   let d = Array.init x.m (fun _ -> zeros x.k 1 x.n) in
-  Log.debug "_disassemble_rows: iteri_nz";
+  Owl_log.debug "_disassemble_rows: iteri_nz";
   let _ = iteri_nz (fun i j z -> insert d.(i) 0 j z) x in
-  Log.debug "_disassemble_rows: ends";
+  Owl_log.debug "_disassemble_rows: ends";
   d
 
 let _disassemble_cols x =

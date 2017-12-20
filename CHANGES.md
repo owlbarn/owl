@@ -1,4 +1,10 @@
+### 0.3.1 (in progress)
+
+* Design View module for Ndarray.
+
+
 ### 0.3.0 (2017-12-05)
+
 * Migrate to jbuilder building system.
 * Unify Dense Ndarray and Matrix types.
 * Split Toplevel out as a separate library.

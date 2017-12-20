@@ -607,11 +607,18 @@ end
 
 type tail = BothSide | RightSide | LeftSide
 
-type test_result = {
+type hypothesis = {
   reject : bool;
   p_value : float;
   score : float;
 }
+
+let make_hypothesis reject p_value score = {
+  reject;
+  p_value;
+  score
+}
+
 
 let z_test ~mu ~sigma ?(alpha=0.05) ?(side=BothSide) x =
   let n = float_of_int (Array.length x) in
@@ -624,9 +631,8 @@ let z_test ~mu ~sigma ?(alpha=0.05) ?(side=BothSide) x =
     | BothSide  -> min [|pl; pr|] *. 2.
   in
   let h = alpha > p in
-  (h, p, z)
+  make_hypothesis h p z
 
-let f_test x = None
 
 let t_test ~mu ?(alpha=0.05) ?(side=BothSide) x =
   let n = float_of_int (Array.length x) in
@@ -641,7 +647,8 @@ let t_test ~mu ?(alpha=0.05) ?(side=BothSide) x =
     | BothSide  -> min [|pl; pr|] *. 2.
   in
   let h = alpha > p in
-  (h, p, t)
+  make_hypothesis h p t
+
 
 let t_test_paired ?(alpha=0.05) ?(side=BothSide) x y =
   let nx = float_of_int (Array.length x) in
@@ -660,7 +667,8 @@ let t_test_paired ?(alpha=0.05) ?(side=BothSide) x y =
     | BothSide  -> min [|pl; pr|] *. 2.
   in
   let h = alpha > p in
-  (h, p, t)
+  make_hypothesis h p t
+
 
 let _t_test2_equal_var ~alpha ~side x y =
   let nx = float_of_int (Array.length x) in
@@ -679,7 +687,8 @@ let _t_test2_equal_var ~alpha ~side x y =
     | BothSide  -> min [|pl; pr|] *. 2.
   in
   let h = alpha > p in
-  (h, p, t)
+  make_hypothesis h p t
+
 
 let _t_test2_welche ~alpha ~side x y =
   let nx = float_of_int (Array.length x) in
@@ -702,24 +711,148 @@ let _t_test2_welche ~alpha ~side x y =
     | BothSide  -> min [|pl; pr|] *. 2.
   in
   let h = alpha > p in
-  (h, p, t)
+  make_hypothesis h p t
+
 
 let t_test_unpaired ?(alpha=0.05) ?(side=BothSide) ?(equal_var=true) x y =
   match equal_var with
   | true  -> _t_test2_equal_var ~alpha ~side x y
   | false -> _t_test2_welche ~alpha ~side x y
 
-let ks_test x = None
-(* One-sample Kolmogorov-Smirnov test *)
 
-let ks2_test x = None
-(* Two-sample Kolmogorov-Smirnov test *)
+exception EXN_EMPTY_ARRAY
+
+let smirnov n e =
+  let nn = int_of_float (floor ((float_of_int n) *. (1. -. e))) in
+  let rec helper sum v c =
+    let evn = e +. (float_of_int v) /. (float_of_int n) in
+    let sum' = sum +. c *. (evn ** (float_of_int (v - 1)))
+                         *. ((1. -. evn) ** (float_of_int (n - v))) in
+    let c' = c *. (float_of_int (n - v)) /. (float_of_int (v + 1)) in
+    if v <= nn then
+      helper sum' (v + 1) c'
+    else
+      sum
+  in
+  let helper2 () =
+    let maxlog = log max_float in
+    let lngamma = Gsl.Sf.lngamma in
+    let lgamnp1 = lngamma (1. +. float_of_int n) in
+    let rec helper3 sum v =
+      let evn = e +. (float_of_int v) /. (float_of_int n) in
+      let omevn = 1. -. evn in
+      let t = lgamnp1
+              -. lngamma (1. +. float_of_int v)
+              -. lngamma (1. +. float_of_int (n + v)) in
+      let sum' = sum +. exp t in
+      if v <= nn then
+        if abs_float omevn > 0. && t > ~-. maxlog then
+          helper3 sum' (v + 1)
+        else
+          helper3 sum (v + 1)
+      else
+        sum
+    in
+    helper3 0. 0
+  in
+  if not (n > 0 && e >= 0. && e <= 1.) then nan
+  else if e = 0.0 then 1.0
+  else if n < 1013 then
+    e *. (helper 0. 0 1.)
+  else
+    e *. (helper2 ())
+
+let kolmogorov y =
+  let x = (-2.) *. y *. y in
+  let rec helper sign sum r =
+    let t = exp (x *. r *. r) in
+    let sum' = sum +. sign *. t in
+    let r' = r +. 1. in
+    let sign' = ~-. sign in
+    if t = 0.0 || (t /. sum' <= 1.1e-16) then sum'
+    else helper sign' sum' r'
+  in
+  if y < 1.1e-16 then 1.0
+  else
+    2. *. helper 1. 0. 1.
+
+let ks_test ?(alpha=0.05) x f =
+  let x' = sort x in
+  let max p q = if p > q then p else q in
+  let n = Array.length x' in
+  let nn = float_of_int n in
+  let fvals = Array.map f x' in
+  let g1 i v = v -. (float_of_int i) /. nn in
+  let g2 i v = (float_of_int (i+1)) /. nn -. v in
+  let d1 = Array.fold_left max 0. (Array.mapi g1 fvals) in
+  let d2 = Array.fold_left max 0. (Array.mapi g2 fvals) in
+  let d = max d1 d2 in
+  let pval =  2. *. (smirnov n d) in
+  let pval2 = kolmogorov (d *. sqrt nn) in
+  if n = 0 then raise EXN_EMPTY_ARRAY
+  else if n > 2666 || pval2 > 0.8 -. nn *. 0.003
+  then make_hypothesis (pval2 < alpha) pval2 d
+  else make_hypothesis (pval < alpha) pval d
+
+
+let rec uniques l = match l with
+  | []             -> []
+  | x :: []        -> x :: []
+  | x1 :: x2 :: xs ->
+     if x1 = x2 then uniques (x2 :: xs)
+     else x1 :: (uniques (x2 :: xs))
+
+(* Compute the empirical CDF of a list of samples from the input
+   domain (sorted list of floats). The output is a list of length
+   equal to domain. Both inputs are assumed to be sorted. *)
+let empCdf domain samples =
+  let rec count x samples = match samples with
+    | []      -> (0, samples)
+    | y :: ys ->
+       if x = y then
+         let (n, rest) = count x ys in
+         (n + 1, rest)
+       else
+         (0, samples)
+  in
+  let rec aggregate accum domain samples = match domain with
+    | []      -> []
+    | x :: xs ->
+       let (p, rest) = count x samples in
+       let accum' = accum + p in
+       accum' :: (aggregate accum' xs rest)
+  in
+  let n = float_of_int (List.length samples) in
+  let a = aggregate 0 domain samples in
+  List.map (fun x -> (float_of_int x) /. n) a
+
+let ks2_test ?(alpha=0.05) x y =
+  let n1 = Array.length x in
+  let n2 = Array.length y in
+  if n1 = 0 || n2 = 0 then
+    raise EXN_EMPTY_ARRAY
+  else
+    let nn1 = float_of_int n1 in
+    let nn2 = float_of_int n2 in
+    let x' = Array.to_list (sort x) in
+    let y' = Array.to_list (sort y) in
+    let domain = uniques (Array.to_list (sort (Array.concat [x; y]))) in
+    let xCdf = empCdf domain x' in
+    let yCdf = empCdf domain y' in
+    let diffs = List.map2 (fun p q -> abs_float (p -. q)) xCdf yCdf in
+    let max p q = if p > q then p else q in
+    let d = List.fold_left max 0. diffs in
+    let en = sqrt (nn1 *. nn2 /. (nn1 +. nn2)) in
+    let pval = kolmogorov ((en +. 0.12 +. 0.11 /. en) *. d) in
+    make_hypothesis (pval < alpha) pval d
+
 
 let ad_test x = None
 (* Anderson-Darling test *)
 
 let dw_test x = None
 (* Durbin-Watson test *)
+
 
 let jb_test ?(alpha=0.05) x =
 (* Jarque-Bera test *)
@@ -729,7 +862,8 @@ let jb_test ?(alpha=0.05) x =
   let j = (n /. 6.) *. ((s ** 2.) +. (((k -. 3.) ** 2.) /. 4.)) in
   let p = Cdf.chisq_Q j 2. in
   let h = alpha > p in
-  (h, p, j)
+  make_hypothesis h p j
+
 
 let var_test ?(alpha=0.05) ?(side=BothSide) ~var x =
   let n = float_of_int (Array.length x) in
@@ -743,7 +877,8 @@ let var_test ?(alpha=0.05) ?(side=BothSide) ~var x =
     | BothSide  -> min [|pl; pr|] *. 2.
   in
   let h = alpha > p in
-  (h, p, k)
+  make_hypothesis h p k
+
 
 let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
   let cdf ?(max_prob=1.) k n1 n2 t =
@@ -770,7 +905,7 @@ let fisher_test ?(alpha=0.05) ?(side=BothSide) a b c d =
     | LeftSide -> cdf a (a + b) (c + d) (a + c)
   in
   let h = alpha > p in
-  (h, p, oddsratio)
+  make_hypothesis h p oddsratio
 
 
 let lillie_test x = None
@@ -817,7 +952,7 @@ let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
       | _ -> Cdf.gaussian_Q z 1.0
     in
     let h = alpha > p in
-    (h, p, u2)
+    make_hypothesis h p u2
   in
   let exact v =
     let bigu = match side with
@@ -834,12 +969,13 @@ let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
       | _ -> z
     in
     let h = alpha > p in
-    (h, p, u2)
+    make_hypothesis h p u2
   in
   if (max ranked) = (n1 +. n2) && (max [|n1;n2|]) < 10. then exact 1
   else asymptotic 1
 
-(* wilcoxon paired*)
+
+(* wilcoxon paired *)
 let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
   let d = Array.map2 (fun a b -> a -. b) x y in
   let d = Owl_utils.array_filter (fun a -> a <> 0.) d in
@@ -894,45 +1030,42 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
     else asymptotic 1
   in
   let h = alpha > p in
-  match side with
-  | BothSide -> (h, p, t)
-  | RightSide -> (h, p, t)
-  | LeftSide -> (h, p, t)
-
+  make_hypothesis h p t
 
 
 let runs_test ?(alpha=0.05) ?(side=BothSide) ?v x =
-(* Run test for randomness *)
-let v = match v with
-  | Some v -> v
-  | None -> median x
-in
-let n1, n2 = ref 0., ref 0. in
-let z = ref [||] in
-let _ = Array.iter (fun y ->
-  if y > v then (n1 := !n1 +. 1.; z := Array.append !z [|1|])
-  else if y < v then (n2 := !n2 +. 1.; z := Array.append !z [|-1|])
-) x in
-let r0 = ref 1. in
-let _ = for i = 0 to Array.length !z - 2 do
-  match (!z.(i) * !z.(i+1)) < 0 with
-  | true  -> r0 := !r0 +. 1.
-  | false -> ()
-done in
-let aa = 2. *. !n1 *. !n2 in
-let bb = !n1 +. !n2 in
-let r1 = aa /. bb +. 1. in
-let sr = aa *. (aa -. bb) /. (bb *. bb *. (bb -. 1.)) in
-let z = (!r0 -. r1) /. (sqrt sr) in
-let pl = Cdf.gaussian_P z 1. in
-let pr = Cdf.gaussian_Q z 1. in
-let p = match side with
-  | LeftSide  -> pl
-  | RightSide -> pr
-  | BothSide  -> min [|pl; pr|] *. 2.
-in
-let h = alpha > p in
-(h, p, z)
+  (* Run test for randomness *)
+  let v = match v with
+    | Some v -> v
+    | None -> median x
+  in
+  let n1, n2 = ref 0., ref 0. in
+  let z = ref [||] in
+  let _ = Array.iter (fun y ->
+    if y > v then (n1 := !n1 +. 1.; z := Array.append !z [|1|])
+    else if y < v then (n2 := !n2 +. 1.; z := Array.append !z [|-1|])
+  ) x in
+  let r0 = ref 1. in
+  let _ = for i = 0 to Array.length !z - 2 do
+    match (!z.(i) * !z.(i+1)) < 0 with
+    | true  -> r0 := !r0 +. 1.
+    | false -> ()
+  done in
+  let aa = 2. *. !n1 *. !n2 in
+  let bb = !n1 +. !n2 in
+  let r1 = aa /. bb +. 1. in
+  let sr = aa *. (aa -. bb) /. (bb *. bb *. (bb -. 1.)) in
+  let z = (!r0 -. r1) /. (sqrt sr) in
+  let pl = Cdf.gaussian_P z 1. in
+  let pr = Cdf.gaussian_Q z 1. in
+  let p = match side with
+    | LeftSide  -> pl
+    | RightSide -> pr
+    | BothSide  -> min [|pl; pr|] *. 2.
+  in
+  let h = alpha > p in
+  make_hypothesis h p z
+
 
 let crosstab x = None
 (* Cross-tabulation *)

@@ -5,6 +5,9 @@
 
 include Owl_types
 
+
+let version = "0.3.1 dev"
+
 (* So we don't have to open Bigarray all the time. *)
 
 let float32 = Bigarray.float32
@@ -51,6 +54,8 @@ module Ext = Owl_ext
 module Dataset = Owl_dataset
 
 module Lazy = Owl_lazy
+
+module Graph = Owl_graph
 
 
 (* backend modules *)

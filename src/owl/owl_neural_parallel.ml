@@ -95,7 +95,7 @@ module Make (M : ModelSig) (E : EngineSig) = struct
   let local_model task =
     try E.get task.id |> fst
     with Not_found -> (
-      Log.warn "set up first model";
+      Owl_log.warn "set up first model";
       M.init task.model;
       E.set task.id task.model;
       E.get task.id |> fst;
