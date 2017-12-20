@@ -3326,7 +3326,7 @@ let dot x1 x2 =
   x3
 
 let mpow x r =
-  let (frac_part, whole_part) = Pervasives.modf r in
+  let (frac_part, _) = Pervasives.modf r in
   if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
   let m, n = _matrix_shape x in assert (m = n);
   (* integer matrix powers using floats: *)
