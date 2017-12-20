@@ -73,7 +73,7 @@ module Make (A : InpureSig) = struct
 
   let invalidate_graph x = iter_descendants invalidate [|x|]
 
-  let variable () = node ~name:"variable" ~value:[||] Var
+  let variable ?(name="variable") () = node ~name ~value:[||] Var
 
   let assign x x_val =
     let a = attr x in
@@ -89,9 +89,9 @@ module Make (A : InpureSig) = struct
 
   let to_elt x = unpack_elt (attr x).value.(0)
 
-  let of_arr x = node ~name:"const" ~value:[|Arr x|] Const
+  let of_arr ?(name="const") x = node ~name ~value:[|Arr x|] Const
 
-  let of_elt x = node ~name:"const" ~value:[|Elt x|] Const
+  let of_elt ?(name="const") x = node ~name ~value:[|Elt x|] Const
 
   let get_by_name x s = filter_ancestors (fun n -> name n = s) [|x|]
 

@@ -60,4 +60,9 @@ module Make
     | Gaussian of Gaussian.t
 
 
+  let sample t s = match t with
+    | Uniform t  -> Uniform.sample t s
+    | Gaussian t -> Gaussian.sample t s
+
+
 end

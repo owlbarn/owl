@@ -30,7 +30,7 @@ module Make
 
   (** {6 Core functions} *)
 
-  val variable : unit -> t
+  val variable : ?name:string -> unit -> t
   (** [variable ()] creates a placeholder for the variable in the graph. *)
 
   val assign_arr : t -> A.arr -> unit
@@ -48,12 +48,12 @@ module Make
   val to_elt : t -> A.elt
   (** [to_elt x] unpacks an element from [x] of type [t]. *)
 
-  val of_arr : A.arr -> t
+  val of_arr : ?name:string -> A.arr -> t
   (** [of_arr x] creates a constant value from [x] in the computation graph. The
     constant value cannot be re-assigned by [assign_arr] or [assign_elt] later.
    *)
 
-  val of_elt : A.elt -> t
+  val of_elt : ?name:string -> A.elt -> t
   (** [of_elt x] is similar to [of_arr] but used for the value of type [elt]. *)
 
   val eval : t -> unit
