@@ -45,6 +45,8 @@ val remove_node : 'a node -> unit
 
 val remove_edge : 'a node -> 'a node -> unit
 
+val copy : ?dir:dir -> 'a node array -> 'a node array
+
 
 (** {6 Iterators} *)
 

@@ -157,7 +157,34 @@ let fold_out_edges f a x =
 
 
 (* TODO *)
-let copy ?dir x = None
+let copy ?(dir=Ancestor) x =
+  let _make_if_not_exists h n =
+    if Hashtbl.mem h n.id = true then Hashtbl.find h n.id
+    else (
+      let n' = {
+        id   = n.id;
+        name = n.name;
+        prev = [||];
+        next = [||];
+        attr = n.attr;
+      }
+      in
+      Hashtbl.add h n'.id n;
+      n'
+    )
+  in
+  let h = Hashtbl.create 128 in
+  let _copy src dst =
+    let src' = _make_if_not_exists h src in
+    let dst' = _make_if_not_exists h dst in
+    connect [|src'|] [|dst'|]
+  in
+  let _ = match dir with
+    | Ancestor   -> iter_in_edges _copy x
+    | Descendant -> iter_out_edges _copy x
+  in
+  Array.map (fun n -> Hashtbl.find h n.id) x
+
 
 let to_array = None
 
