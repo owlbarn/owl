@@ -14,6 +14,8 @@ type 'a node = {
 
 type order = BFS | DFS
 
+type dir = Ancestor | Descendant
+
 
 let _global_id = ref 0
 
@@ -100,6 +102,12 @@ let iter_descendants ?(order=DFS) f x =
   | DFS -> dfs_iter f x children
 
 
+let iter ?(dir=Ancestor) ?order f x =
+  match dir with
+  | Ancestor   -> iter_ancestors ?order f x
+  | Descendant -> iter_descendants ?order f x
+
+
 let filter_ancestors f x =
   let s = Owl_utils.Stack.make () in
   iter_ancestors (fun n -> if f n then Owl_utils.Stack.push s n) x;
@@ -149,7 +157,11 @@ let fold_out_edges f a x =
 
 
 (* TODO *)
-let copy = None
+let copy ?dir x = None
+
+let to_array = None
+
+let to_hashtbl = None
 
 
 let node_to_str x =

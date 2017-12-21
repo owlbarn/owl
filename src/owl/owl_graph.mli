@@ -11,6 +11,9 @@
 type order = BFS | DFS
 (** Order to traverse a graph, BFS or DFS. *)
 
+type dir = Ancestor | Descendant
+(** Iteration direction, i.e. ancestors or descendants *)
+
 type 'a node
 (** type definition of a node *)
 
