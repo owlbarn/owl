@@ -34,6 +34,8 @@ val outdegree : 'a node -> int
 
 val attr : 'a node -> 'a
 
+val set_attr : 'a node -> 'a -> unit
+
 
 (** {6 Manipulation functions} *)
 

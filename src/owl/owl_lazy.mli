@@ -78,6 +78,9 @@ module Make
     graph with third-party tool such as graphviz.
    *)
 
+  val copy : t array -> t array
+  (** [copy x] *)
+
 
   (** {6 Properties and manipulations} *)
 

@@ -137,6 +137,19 @@ module Make (A : InpureSig) = struct
     ) "" x in
     Printf.sprintf "digraph CG {\nnode [shape=record];\n%s%s}" edge_s node_s
 
+  let copy x =
+    let y = copy ~dir:Ancestor x in
+    iter_ancestors (fun n ->
+      let a = attr n in
+      let a' = match a.op with
+        | Var   -> { op = a.op; state = a.state; value = a.value }
+        | Const -> { op = a.op; state = a.state; value = a.value }
+        | _     -> { op = a.op; state = Invalid; value = [||] }
+      in
+      set_attr n a';
+    ) y;
+    y
+
 
   (* allocate memory and evaluate experssions *)
 

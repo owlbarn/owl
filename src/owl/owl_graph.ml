@@ -33,6 +33,8 @@ let outdegree x = Array.length x.next
 
 let attr x = x.attr
 
+let set_attr x a = x.attr <- a
+
 
 let node ?(name="") ?(prev=[||]) ?(next=[||]) attr =
   _global_id := !_global_id + 1;
@@ -156,7 +158,7 @@ let fold_out_edges f a x =
   !a
 
 
-(* TODO *)
+(* TODO: optimise *)
 let copy ?(dir=Ancestor) x =
   let _make_if_not_exists h n =
     if Hashtbl.mem h n.id = true then Hashtbl.find h n.id
@@ -169,7 +171,7 @@ let copy ?(dir=Ancestor) x =
         attr = n.attr;
       }
       in
-      Hashtbl.add h n'.id n;
+      Hashtbl.add h n'.id n';
       n'
     )
   in
