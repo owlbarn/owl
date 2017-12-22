@@ -39,7 +39,7 @@ val set_attr : 'a node -> 'a -> unit
 
 (** {6 Manipulation functions} *)
 
-val node : ?name:string -> ?prev:'a node array -> ?next:'a node array -> 'a -> 'a node
+val node : ?id:int -> ?name:string -> ?prev:'a node array -> ?next:'a node array -> 'a -> 'a node
 
 val connect : 'a node array -> 'a node array -> unit
 

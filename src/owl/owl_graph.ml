@@ -36,15 +36,15 @@ let attr x = x.attr
 let set_attr x a = x.attr <- a
 
 
-let node ?(name="") ?(prev=[||]) ?(next=[||]) attr =
-  _global_id := !_global_id + 1;
-  {
-    id = !_global_id;
-    name;
-    prev;
-    next;
-    attr;
-  }
+let node ?id ?(name="") ?(prev=[||]) ?(next=[||]) attr =
+  let id = match id with
+    | Some i -> i
+    | None   -> (
+        _global_id := !_global_id + 1;
+        !_global_id
+      )
+  in
+  { id; name; prev; next; attr }
 
 
 let connect parents children =
@@ -163,14 +163,7 @@ let copy ?(dir=Ancestor) x =
   let _make_if_not_exists h n =
     if Hashtbl.mem h n.id = true then Hashtbl.find h n.id
     else (
-      let n' = {
-        id   = n.id;
-        name = n.name;
-        prev = [||];
-        next = [||];
-        attr = n.attr;
-      }
-      in
+      let n' = node ~id:n.id ~name:n.name ~prev:[||] ~next:[||] n.attr in
       Hashtbl.add h n'.id n';
       n'
     )
