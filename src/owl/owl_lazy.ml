@@ -95,6 +95,8 @@ module Make (A : InpureSig) = struct
 
   let get_by_name x s = filter_ancestors (fun n -> name n = s) [|x|]
 
+  let get_by_id x i = (filter_ancestors (fun n -> id n = i) [|x|]).(0)
+  
 
   (* pretty printing and print out computation graph *)
 

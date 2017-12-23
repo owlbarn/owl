@@ -366,4 +366,7 @@ module Make
 
   val get_by_name : t -> string -> t array
 
+  val get_by_id : t -> int -> t
+
+
 end

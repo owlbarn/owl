@@ -26,7 +26,8 @@ module Make
 
     let sample t s = A.uniform s
 
-    let pdf x = ()
+    (* FIXME *)
+    let log_prob t x = A.zeros [|10|]
 
     let mean x = ()
 
@@ -48,7 +49,8 @@ module Make
       let x = A.gaussian ~sigma:t.sigma s in
       A.add_scalar x t.mu
 
-    let pdf x = ()
+    (* FIXME *)
+    let log_prob t x = A.zeros [|10|]
 
     let mean x = ()
 
@@ -63,6 +65,11 @@ module Make
   let sample t s = match t with
     | Uniform t  -> Uniform.sample t s
     | Gaussian t -> Gaussian.sample t s
+
+
+  let log_prob t x = match t with
+    | Uniform t  -> Uniform.log_prob t x
+    | Gaussian t -> Gaussian.log_prob t x
 
 
 end
