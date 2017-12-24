@@ -22,7 +22,7 @@
   ))
   (c_library_flags (
     -L/usr/local/lib/gcc/7
-    -L/usr/local/opt/openblas/lib 
+    -L/usr/local/opt/openblas/lib
     -lopenblas
     -lgfortran
     -lm

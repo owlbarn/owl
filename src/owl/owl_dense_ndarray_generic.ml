@@ -3335,21 +3335,31 @@ let inv x =
   |> Bigarray.genarray_of_array2
 
 
+let eye k n =
+  let x = zeros k [|n;n|] in
+  let y = Bigarray.array2_of_genarray x in
+  let a = _one k in
+  for i = 0 to n - 1 do
+    Bigarray.Array2.unsafe_set y i i a
+  done;
+  x
+
+
 let mpow x r =
-  let (frac_part, _) = Pervasives.modf r in
+  let frac_part, _ = Pervasives.modf r in
   if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
   let m, n = _matrix_shape x in assert (m = n);
   (* integer matrix powers using floats: *)
   let rec _mpow acc s =
-     if s = 1. then acc
-     else if mod_float s 2. = 0.  (* exponent is even? *)
-     then even_mpow acc s
-     else dot x (even_mpow acc (s -. 1.))
+    if s = 1. then acc
+    else if mod_float s 2. = 0.  (* exponent is even? *)
+    then even_mpow acc s
+    else dot x (even_mpow acc (s -. 1.))
   and even_mpow acc s =
     let acc2 = _mpow acc (s /. 2.) in
     dot acc2 acc2
   in  (* r is equal to an integer: *)
-  if r = 0.0 then eye n (* FIXME *)
+  if r = 0.0 then eye (kind x) n
   else if r > 0.0 then _mpow x r
   else _mpow (inv x) r
 
