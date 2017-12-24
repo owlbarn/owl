@@ -15,9 +15,9 @@ module Make (A : InpureSig) = struct
 
   module MetropolisHastings = struct
 
-    let init () = ()
+    let init h = ()
 
-    let update model h =
+    let update h =
       let ratio = ref 0.0 in
 
       let g_x'_x = Hashtbl.find h "g(x'|x)" in
@@ -45,9 +45,10 @@ module Make (A : InpureSig) = struct
         List.iter2 (fun x' x ->
           L.assign_arr x (L.to_arr x')
         ) sample' sample
+        (* copy to samples *)
       )
       else (
-
+        (* copy to samples *)
       )
 
   end
