@@ -169,6 +169,12 @@ module To_test = struct
     let x = M.sum_cols x2 |> M.to_arrays in
     x = [| [|6.|]; [|22.|]; [|38.|] |]
 
+  let mpow () =
+    let x = M.uniform Float64 4 4 in
+    let y = M.mpow x 3. in
+    let z = M.(dot x (dot x x)) in
+    M.(y = z)
+
   let save_load () =
     M.save x2 "ds_mat.tmp";
     let y = M.load Float64 "ds_mat.tmp" in
@@ -310,6 +316,9 @@ let sum_rows () =
 let sum_cols () =
   Alcotest.(check bool) "sum_cols" true (To_test.sum_cols ())
 
+let mpow () =
+  Alcotest.(check bool) "mpow" true (To_test.mpow ())
+
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
@@ -358,5 +367,6 @@ let test_set = [
   "fold_cols", `Slow, fold_cols;
   "sum_rows", `Slow, sum_rows;
   "sum_cols", `Slow, sum_cols;
+  "mpow", `Slow, mpow;
   "save_load", `Slow, save_load;
 ]
