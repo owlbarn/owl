@@ -44,14 +44,7 @@ let init_nd k m n f =
   x
 
 
-let eye k n =
-  let x = zeros k n n in
-  let y = Bigarray.array2_of_genarray x in
-  let a = _one k in
-  for i = 0 to n - 1 do
-    Bigarray.Array2.unsafe_set y i i a
-  done;
-  x
+let eye k n = Owl_dense_ndarray_generic.eye k n
 
 
 let sequential k ?a ?step m n =
