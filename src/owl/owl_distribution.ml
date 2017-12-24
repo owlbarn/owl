@@ -29,7 +29,7 @@ module Make
     (* FIXME *)
     let log_prob t x = A.zeros [|10|]
 
-    let mean x = ()
+    let mean t = (t.a +. t.b) /. 2.
 
   end
 
@@ -52,7 +52,7 @@ module Make
     (* FIXME *)
     let log_prob t x = A.zeros [|10|]
 
-    let mean x = ()
+    let mean t = t.mu
 
   end
 
@@ -70,6 +70,11 @@ module Make
   let log_prob t x = match t with
     | Uniform t  -> Uniform.log_prob t x
     | Gaussian t -> Gaussian.log_prob t x
+
+
+  let mean t = match t with
+    | Uniform t  -> Uniform.mean t
+    | Gaussian t -> Gaussian.mean t
 
 
 end
