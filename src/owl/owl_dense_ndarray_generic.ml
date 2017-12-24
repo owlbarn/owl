@@ -3361,7 +3361,7 @@ let mpow x r =
   in  (* r is equal to an integer: *)
   if r = 0.0 then eye (kind x) n
   else if r > 0.0 then _mpow x r
-  else _mpow (inv x) r
+  else _mpow (inv x) (-. r)
 
 
 let diag ?(k=0) x =
