@@ -3346,15 +3346,15 @@ let eye k n =
 
 
 let mpow x r =
-  let (frac_part, _) = Pervasives.modf r in
+  let frac_part, _ = Pervasives.modf r in
   if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
   let m, n = _matrix_shape x in assert (m = n);
   (* integer matrix powers using floats: *)
   let rec _mpow acc s =
-     if s = 1. then acc
-     else if mod_float s 2. = 0.  (* exponent is even? *)
-     then even_mpow acc s
-     else dot x (even_mpow acc (s -. 1.))
+    if s = 1. then acc
+    else if mod_float s 2. = 0.  (* exponent is even? *)
+    then even_mpow acc s
+    else dot x (even_mpow acc (s -. 1.))
   and even_mpow acc s =
     let acc2 = _mpow acc (s /. 2.) in
     dot acc2 acc2
