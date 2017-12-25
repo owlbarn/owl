@@ -93,10 +93,14 @@ module Make (A : InpureSig) = struct
 
   let of_elt ?(name="const") x = node ~name ~value:[|Elt x|] Const
 
-  let get_by_name x s = filter_ancestors (fun n -> name n = s) [|x|]
+  let id x = Owl_graph.id x
+
+  let name x = Owl_graph.name x
 
   let get_by_id x i = (filter_ancestors (fun n -> id n = i) [|x|]).(0)
-  
+
+  let get_by_name x s = filter_ancestors (fun n -> name n = s) [|x|]
+
 
   (* pretty printing and print out computation graph *)
 

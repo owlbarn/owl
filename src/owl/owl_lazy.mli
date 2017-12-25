@@ -364,9 +364,13 @@ module Make
 
   val invalidate : t -> unit
 
-  val get_by_name : t -> string -> t array
+  val id : t -> int
+
+  val name : t -> string
 
   val get_by_id : t -> int -> t
+
+  val get_by_name : t -> string -> t array
 
 
 end
