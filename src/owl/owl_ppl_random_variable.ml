@@ -5,14 +5,17 @@
 
 open Owl_types
 
-open Owl_lazy_generic
 
+module Make (A : InpureSig) = struct
 
-module Dummy_Attr = struct
+  module D = Owl_distribution.Make (A)
 
-  type attr
+  module L = Owl_lazy.Make (A)
+
+  type t = {
+    mutable dist : D.dist;
+    mutable expr : L.t;
+  }
+
 
 end
-
-
-module Lazy (A : InpureSig) = Owl_lazy_generic.Make (A) (Dummy_Attr)

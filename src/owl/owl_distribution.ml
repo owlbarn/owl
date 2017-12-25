@@ -8,9 +8,7 @@ open Owl_types
 
 (* Functor of making Lazy module of different number types *)
 
-module Make
-  (A : NdarraySig)
-  = struct
+module Make (A : NdarraySig) = struct
 
 
   module Uniform = struct
