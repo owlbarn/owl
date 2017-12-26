@@ -18,4 +18,7 @@ module Make (A : InpureSig) = struct
   }
 
 
+  let uniform ~a ~b = ()
+
+
 end
