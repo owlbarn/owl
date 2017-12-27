@@ -118,7 +118,7 @@ val meshgrid : ('a, 'b) kind -> 'a -> 'a -> 'a -> 'a -> int -> int -> ('a, 'b) t
 val meshup : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** [meshup x y] creates mesh grids by using two row vectors [x] and [y]. *)
 
-val bernoulli : ('a, 'b) kind -> ?p:float -> ?seed:int -> int -> int -> ('a, 'b) t
+val bernoulli : ('a, 'b) kind -> ?p:float -> int -> int -> ('a, 'b) t
 (** [bernoulli k ~p:0.3 m n]*)
 
 val diagm : ?k:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1401,7 +1401,7 @@ val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [pow_scalar x a] *)
 
 val mpow : ('a, 'b) t -> float -> ('a, 'b) t
-(** [mpow x r] returns the dot product of square matrix [x] with 
+(** [mpow x r] returns the dot product of square matrix [x] with
   itself [r] times, and more generally raises the matrix to the
   [r]th power.  [r] is a float that must be equal to an integer;
   it can be be negative, zero, or positive. Non-integer exponents

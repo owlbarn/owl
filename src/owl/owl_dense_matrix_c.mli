@@ -56,7 +56,7 @@ val meshgrid : elt -> elt -> elt -> elt -> int -> int -> mat * mat
 
 val meshup : mat -> mat -> mat * mat
 
-val bernoulli : ?p:float -> ?seed:int -> int -> int -> mat
+val bernoulli : ?p:float -> int -> int -> mat
 
 val diagm : ?k:int -> mat -> mat
 

@@ -37,7 +37,7 @@ let linspace a b n = M.linspace Complex64 a b n
 
 let logspace ?base a b n = M.logspace Complex64 a b n
 
-let bernoulli ?p ?seed d = M.bernoulli Complex64 ?p ?seed d
+let bernoulli ?p d = M.bernoulli Complex64 ?p d
 
 let load f = M.load Complex64 f
 

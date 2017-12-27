@@ -101,7 +101,7 @@ val linspace : ('a, 'b) kind -> 'a -> 'a -> int -> ('a, 'b) t
 val logspace : ('a, 'b) kind -> ?base:float -> 'a -> 'a -> int -> ('a, 'b) t
 (** [logspace k 0. 9. 10] ... *)
 
-val bernoulli : ('a, 'b) kind -> ?p:float -> ?seed:int -> int array -> ('a, 'b) t
+val bernoulli : ('a, 'b) kind -> ?p:float -> int array -> ('a, 'b) t
 (** [bernoulli k ~p:0.3 [|2;3;4|]] *)
 
 val complex : ('a, 'b) kind -> ('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('c, 'd) t

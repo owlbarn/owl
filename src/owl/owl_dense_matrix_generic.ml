@@ -191,7 +191,7 @@ let uniform ?scale k m n = Owl_dense_ndarray_generic.uniform ?scale k [|m;n|]
 let gaussian ?sigma k m n = Owl_dense_ndarray_generic.gaussian ?sigma k [|m;n|]
 
 
-let bernoulli k ?p ?seed m n = Owl_dense_ndarray_generic.bernoulli k ?p ?seed [|m;n|]
+let bernoulli k ?p m n = Owl_dense_ndarray_generic.bernoulli k ?p [|m;n|]
 
 
 let toeplitz ?c r =

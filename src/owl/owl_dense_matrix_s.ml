@@ -44,7 +44,7 @@ let logspace ?(base=Owl_maths.e) a b n = M.logspace Float32 ~base a b n
 
 let meshgrid xa xb ya yb xn yn = M.meshgrid Float32 xa xb ya yb xn yn
 
-let bernoulli ?p ?seed d = M.bernoulli Float32 ?p ?seed d
+let bernoulli ?p d = M.bernoulli Float32 ?p d
 
 let hadamard n = M.hadamard Float32 n
 

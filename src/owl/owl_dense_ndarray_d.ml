@@ -36,7 +36,7 @@ let linspace a b n = M.linspace Float64 a b n
 
 let logspace ?base a b n = M.logspace Float64 a b n
 
-let bernoulli ?p ?seed d = M.bernoulli Float64 ?p ?seed d
+let bernoulli ?p d = M.bernoulli Float64 ?p d
 
 let load f = M.load Float64 f
 
@@ -46,4 +46,4 @@ let mmap fd ?pos shared dims = Genarray.map_file fd ?pos Float64 c_layout shared
 
 let conj x = copy x
 
-let of_arrays x = of_arrays Float64 x 
+let of_arrays x = of_arrays Float64 x

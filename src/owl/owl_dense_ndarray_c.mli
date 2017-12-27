@@ -36,7 +36,7 @@ val linspace : elt -> elt -> int -> arr
 
 val logspace : ?base:float -> elt -> elt -> int -> arr
 
-val bernoulli : ?p:float -> ?seed:int -> int array -> arr
+val bernoulli : ?p:float -> int array -> arr
 
 val complex : cast_arr -> cast_arr -> arr
 

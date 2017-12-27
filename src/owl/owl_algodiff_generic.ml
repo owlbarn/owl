@@ -1082,7 +1082,7 @@ module Make
 
     and dropout ?(rate=0.5) ?seed a =
       let b = match (primal' a) with
-        | Arr a -> Arr (A.bernoulli ~p:(1. -. rate) ?seed (A.shape a))
+        | Arr a -> Arr (A.bernoulli ~p:(1. -. rate) (A.shape a))
         | _     -> error_uniop "dropout" a
       in
       a * b

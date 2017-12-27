@@ -45,7 +45,7 @@ let logspace ?(base=Owl_maths.e) a b n = M.logspace Complex32 ~base a b n
 
 let meshgrid xa xb ya yb xn yn = M.meshgrid Complex32 xa xb ya yb xn yn
 
-let bernoulli ?p ?seed d = M.bernoulli Complex32 ?p ?seed d
+let bernoulli ?p d = M.bernoulli Complex32 ?p d
 
 let hadamard n = M.hadamard Complex32 n
 

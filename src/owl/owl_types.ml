@@ -86,7 +86,7 @@ module type NdarraySig = sig
 
   val gaussian : ?sigma:elt -> int array -> arr
 
-  val bernoulli : ?p:float -> ?seed:int -> int array -> arr
+  val bernoulli : ?p:float -> int array -> arr
 
   val shape : arr -> int array
 

@@ -918,14 +918,10 @@ let logspace k ?(base=Owl_maths.e) a b n =
   _owl_logspace k n base a b x;
   x
 
-let bernoulli k ?(p=0.5) ?seed d =
+let bernoulli k ?(p=0.5) d =
   assert (p >= 0. && p <= 1.);
-  let seed = match seed with
-    | Some a -> a
-    | None   -> Owl_stats.Rnd.uniform_int ()
-  in
   let x = empty k d in
-  (_owl_bernoulli k) (numel x) x p seed;
+  (_owl_bernoulli k) (numel x) x p 0;
   x
 
 let create kind dimension a =

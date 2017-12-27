@@ -36,7 +36,7 @@ let linspace a b n = M.linspace Float32 a b n
 
 let logspace ?base a b n = M.logspace Float32 a b n
 
-let bernoulli ?p ?seed d = M.bernoulli Float32 ?p ?seed d
+let bernoulli ?p d = M.bernoulli Float32 ?p d
 
 let load f = M.load Float32 f
 
