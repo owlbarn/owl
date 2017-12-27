@@ -353,7 +353,7 @@ val expand : ('a, 'b) t -> int -> ('a, 'b) t
 val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 (** [pad ~v:0. [[1;1]] x] *)
 
-val dropout : ?rate:float -> ?seed:int -> ('a, 'b) t -> ('a, 'b) t
+val dropout : ?rate:float -> ('a, 'b) t -> ('a, 'b) t
 (** [dropout ~rate:0.3 x] drops out 30% of the elements in [x], in other words,
   by setting their values to zeros.
  *)
@@ -1665,7 +1665,7 @@ val cummin_ : ?axis:int -> ('a, 'b) t -> unit
 val cummax_ : ?axis:int -> ('a, 'b) t -> unit
 (** [cummax_ x] is similar to [cummax] but output is written to [x] *)
 
-val dropout_ : ?rate:float -> ?seed:int -> ('a, 'b) t -> unit
+val dropout_ : ?rate:float -> ('a, 'b) t -> unit
 (** [dropout_ x] is similar to [dropout] but output is written to [x] *)
 
 val elt_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit

@@ -512,7 +512,7 @@ module type InpureSig = sig
 
   val cummax_ : ?axis:int -> arr -> unit
 
-  val dropout_ : ?rate:float -> ?seed:int -> arr -> unit
+  val dropout_ : ?rate:float -> arr -> unit
 
   val prod' : arr -> elt
 

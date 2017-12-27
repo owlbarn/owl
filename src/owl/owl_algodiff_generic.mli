@@ -140,7 +140,7 @@ module Make
 
     val softmax : t -> t
 
-    val dropout : ?rate:float -> ?seed:int -> t -> t
+    val dropout : ?rate:float -> t -> t
 
     val conv1d : ?padding:padding -> t -> t -> int array -> t
 

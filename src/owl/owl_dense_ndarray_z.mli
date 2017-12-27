@@ -130,7 +130,7 @@ val expand : arr -> int -> arr
 
 val pad : ?v:elt -> int list list -> arr -> arr
 
-val dropout : ?rate:float -> ?seed:int -> arr -> arr
+val dropout : ?rate:float -> arr -> arr
 
 val top : arr -> int -> int array array
 

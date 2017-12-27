@@ -946,14 +946,10 @@ let sequential k ?a ?step dimension =
   _owl_sequential k (numel x) x a step;
   x
 
-let dropout ?(rate=0.5) ?seed x =
+let dropout ?(rate=0.5) x =
   assert (rate >= 0. && rate <= 1.);
-  let seed = match seed with
-    | Some a -> a
-    | None   -> Owl_stats.Rnd.uniform_int ()
-  in
   let x = copy x in
-  _owl_dropout (kind x) (numel x) x rate seed;
+  _owl_dropout (kind x) (numel x) x rate 0;
   x
 
 
@@ -3205,13 +3201,9 @@ let cross_entropy' x y =
   mul_ y x;
   _neg_elt (kind y) (sum' y)
 
-let dropout_ ?(rate=0.5) ?seed x =
+let dropout_ ?(rate=0.5) x =
   assert (rate >= 0. && rate <= 1.);
-  let seed = match seed with
-    | Some a -> a
-    | None   -> Owl_stats.Rnd.uniform_int ()
-  in
-  _owl_dropout (kind x) (numel x) x rate seed
+  _owl_dropout (kind x) (numel x) x rate 0
 
 
 (** Matrix functions *)

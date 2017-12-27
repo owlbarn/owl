@@ -125,7 +125,7 @@ val expand : arr -> int -> arr
 
 val pad : ?v:elt -> int list list -> arr -> arr
 
-val dropout : ?rate:float -> ?seed:int -> arr -> arr
+val dropout : ?rate:float -> arr -> arr
 
 val top : arr -> int -> int array array
 
@@ -663,7 +663,7 @@ val cummin_ : ?axis:int -> arr -> unit
 
 val cummax_ : ?axis:int -> arr -> unit
 
-val dropout_ : ?rate:float -> ?seed:int -> arr -> unit
+val dropout_ : ?rate:float -> arr -> unit
 
 val elt_equal_ : arr -> arr -> unit
 

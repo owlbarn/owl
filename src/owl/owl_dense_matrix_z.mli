@@ -191,7 +191,7 @@ val repeat : ?axis:int -> mat -> int -> mat
 
 val pad : ?v:elt -> int list list -> mat -> mat
 
-val dropout : ?rate:float -> ?seed:int -> mat -> mat
+val dropout : ?rate:float -> mat -> mat
 
 val top : mat -> int -> int array array
 
