@@ -26,7 +26,7 @@ let zeros dimension = M.zeros Float32 dimension
 
 let ones dimension = M.ones Float32 dimension
 
-let uniform ?scale dimension = M.uniform ?scale Float32 dimension
+let uniform ?a ?b dimension = M.uniform Float32 ?a ?b dimension
 
 let gaussian ?sigma dimension = M.gaussian ?sigma Float32 dimension
 

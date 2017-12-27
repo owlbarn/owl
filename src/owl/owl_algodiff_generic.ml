@@ -1487,7 +1487,7 @@ module Make
 
     let ones m n = A.ones [|m;n|] |> pack_arr
 
-    let uniform ?scale m n = A.uniform ?scale [|m;n|] |> pack_arr
+    let uniform ?a ?b m n = A.uniform ?a ?b [|m;n|] |> pack_arr
 
     let gaussian ?sigma m n = A.gaussian ?sigma [|m;n|] |> pack_arr
 
@@ -1566,7 +1566,7 @@ module Make
 
     let ones d = A.ones d |> pack_arr
 
-    let uniform ?scale d = A.uniform ?scale d |> pack_arr
+    let uniform ?a ?b d = A.uniform ?a ?b d |> pack_arr
 
     let gaussian ?sigma d = A.gaussian ?sigma d |> pack_arr
 

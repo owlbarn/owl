@@ -33,7 +33,7 @@ let eye m = M.eye Complex64 m
 
 let sequential ?a ?step m n = M.sequential Complex64 ?a ?step m n
 
-let uniform ?(scale=1.) m n = M.uniform Complex64 ~scale m n
+let uniform ?a ?b m n = M.uniform Complex64 ?a ?b m n
 
 let gaussian ?(sigma=1.) m n = M.gaussian Complex64 ~sigma m n
 

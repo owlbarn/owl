@@ -37,9 +37,9 @@ let gaussian ?(typ=Row) ?sigma k m = match typ with
   | Row -> M.gaussian ?sigma k 1 m
   | Col -> M.gaussian ?sigma k m 1
 
-let uniform ?(typ=Row) ?scale k m = match typ with
-  | Row -> M.uniform ?scale k 1 m
-  | Col -> M.uniform ?scale k m 1
+let uniform ?(typ=Row) k ?a ?b m = match typ with
+  | Row -> M.uniform k ?a ?b 1 m
+  | Col -> M.uniform k ?a ?b m 1
 
 let sequential ?(typ=Row) ?a ?step k m = match typ with
   | Row -> M.sequential ?a ?step k 1 m

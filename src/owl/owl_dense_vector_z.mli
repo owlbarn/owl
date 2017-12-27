@@ -23,7 +23,7 @@ val ones : ?typ:vec_typ -> int -> vec
 
 val gaussian : ?typ:vec_typ -> ?sigma:float -> int -> vec
 
-val uniform : ?typ:vec_typ -> ?scale:float -> int -> vec
+val uniform : ?typ:vec_typ -> ?a:elt -> ?b:elt -> int -> vec
 
 val sequential : ?typ:vec_typ -> ?a:elt -> ?step:elt -> int -> vec
 

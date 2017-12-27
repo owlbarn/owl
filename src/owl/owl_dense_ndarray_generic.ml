@@ -850,34 +850,12 @@ let elt_greater_equal_scalar x a =
   _owl_elt_greater_equal_scalar (kind x) (numel x) x y a;
   y
 
-let uniform : type a b. ?scale:float -> (a, b) kind -> int array -> (a, b) t =
-  fun ?(scale=1.) kind dimension ->
-  let x = empty kind dimension in
-  let n = numel x in
-  let y = Bigarray.reshape_1 x n in
-  let _ = match kind with
-  | Float32 -> (
-    for i = 0 to n - 1 do
-      y.{i} <- Owl_stats.Rnd.uniform () *. scale
-    done
-    )
-  | Float64 -> (
-    for i = 0 to n - 1 do
-      y.{i} <- Owl_stats.Rnd.uniform () *. scale
-    done
-    )
-  | Complex32 -> (
-    for i = 0 to n - 1 do
-      y.{i} <- Complex.({ re = Owl_stats.Rnd.uniform () *. scale; im = Owl_stats.Rnd.uniform () *. scale })
-    done
-    )
-  | Complex64 -> (
-    for i = 0 to n - 1 do
-      y.{i} <- Complex.({ re = Owl_stats.Rnd.uniform () *. scale; im = Owl_stats.Rnd.uniform () *. scale })
-    done
-    )
-  | _ -> failwith "Owl_dense_ndarray_generic.uniform: unknown type"
-  in x
+let uniform k ?a ?b d =
+  let a = match a with Some a -> a | None -> _zero k in
+  let b = match b with Some b -> b | None -> _one k in
+  let x = empty k d in
+  _owl_uniform k (numel x) x a b;
+  x
 
 let gaussian : type a b. ?sigma:float -> (a, b) kind -> int array -> (a, b) t =
   fun ?(sigma=1.) kind dimension ->

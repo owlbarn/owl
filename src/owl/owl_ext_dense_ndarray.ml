@@ -101,7 +101,7 @@ module type BasicSig = sig
 
   val ones : int array -> arr
 
-  val uniform : ?scale:float -> int array -> arr
+  val uniform : ?a:elt -> ?b:elt -> int array -> arr
 
   val sequential : ?a:elt -> ?step:elt -> int array -> arr
 
@@ -312,7 +312,7 @@ module Make_Basic
 
   let ones i = M.ones i |> pack_box
 
-  let uniform ?scale i = M.uniform ?scale i |> pack_box
+  let uniform ?a ?b i = M.uniform ?a ?b i |> pack_box
 
   let sequential ?a ?step i = M.sequential ?a ?step i |> pack_box
 

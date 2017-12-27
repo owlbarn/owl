@@ -27,7 +27,7 @@ let zeros dimension = M.zeros Complex64 dimension
 
 let ones dimension = M.ones Complex64 dimension
 
-let uniform ?scale dimension = M.uniform ?scale Complex64 dimension
+let uniform ?a ?b dimension = M.uniform Complex64 ?a ?b dimension
 
 let gaussian ?sigma dimension = M.gaussian ?sigma Complex64 dimension
 

@@ -181,7 +181,7 @@ module Make
 
     val ones : int -> int -> t
 
-    val uniform : ?scale:float -> int -> int -> t
+    val uniform : ?a:float -> ?b:float -> int -> int -> t
 
     val gaussian : ?sigma:float -> int -> int -> t
 
@@ -240,7 +240,7 @@ module Make
 
     val ones : int array -> t
 
-    val uniform : ?scale:float -> int array -> t
+    val uniform : ?a:float -> ?b:float -> int array -> t
 
     val gaussian : ?sigma:float -> int array -> t
 

@@ -82,7 +82,7 @@ module type NdarraySig = sig
 
   val ones : int array -> arr
 
-  val uniform : ?scale:elt -> int array -> arr
+  val uniform : ?a:elt -> ?b:elt -> int array -> arr
 
   val gaussian : ?sigma:elt -> int array -> arr
 

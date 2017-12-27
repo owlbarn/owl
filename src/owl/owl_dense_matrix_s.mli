@@ -31,7 +31,7 @@ val sequential : ?a:elt -> ?step:elt -> int -> int -> mat
 
 val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
 
-val uniform : ?scale:float -> int -> int -> mat
+val uniform : ?a:elt -> ?b:elt -> int -> int -> mat
 
 val gaussian : ?sigma:float -> int -> int -> mat
 

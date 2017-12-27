@@ -105,7 +105,7 @@ module type BasicSig = sig
 
   val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
 
-  val uniform : ?scale:float -> int -> int -> mat
+  val uniform : ?a:elt -> ?b:elt -> int -> int -> mat
 
   val gaussian : ?sigma:float -> int -> int -> mat
 
@@ -419,7 +419,7 @@ module Make_Basic
 
   let sequential ?a ?step m n = M.sequential ?a ?step m n |> pack_box
 
-  let uniform ?(scale=1.) m n = M.uniform ~scale m n |> pack_box
+  let uniform ?a ?b m n = M.uniform ?a ?b m n |> pack_box
 
   let gaussian ?(sigma=1.) m n = M.gaussian ~sigma m n |> pack_box
 

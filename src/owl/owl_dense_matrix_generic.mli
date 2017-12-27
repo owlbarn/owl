@@ -85,7 +85,7 @@ val sequential : ('a, 'b) kind -> ?a:'a -> ?step:'a -> int -> int -> ('a, 'b) t
   The default value of [~a] is zero whilst the default value of [~step] is one.
  *)
 
-val uniform : ?scale:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
+val uniform : ('a, 'b) kind -> ?a:'a -> ?b:'a -> int -> int -> ('a, 'b) t
 (** [uniform m n] creates an [m] by [n] matrix where all the elements
   follow a uniform distribution in [(0,1)] interval. [uniform ~scale:a m n]
   adjusts the interval to [(0,a)].

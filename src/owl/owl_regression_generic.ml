@@ -22,7 +22,7 @@ module Make
     let x = if bias = true then A.concatenate ~axis:1 [| x; A.ones [|l;1|] |] else x in
     (* initialise the matrices according to fan_in/out *)
     let r = 1. /. (float_of_int o) in
-    let p = Arr A.(sub_scalar (uniform ~scale:(2.*.r) [|o;n|]) r) in
+    let p = Arr A.(uniform ~a:(-.r) ~b:r [|o;n|]) in
     (* make the function to minimise *)
     let f w x =
       let w = Mat.reshape o n w in

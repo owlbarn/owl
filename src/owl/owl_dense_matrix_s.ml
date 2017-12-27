@@ -32,7 +32,7 @@ let eye m = M.eye Float32 m
 
 let sequential ?a ?step m n = M.sequential Float32 ?a ?step m n
 
-let uniform ?(scale=1.) m n = M.uniform Float32 ~scale m n
+let uniform ?a ?b m n = M.uniform Float32 ?a ?b m n
 
 let gaussian ?(sigma=1.) m n = M.gaussian Float32 ~sigma m n
 

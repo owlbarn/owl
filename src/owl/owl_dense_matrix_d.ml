@@ -33,7 +33,7 @@ let eye m = M.eye Float64 m
 
 let sequential ?a ?step m n = M.sequential Float64 ?a ?step m n
 
-let uniform ?(scale=1.) m n = M.uniform Float64 ~scale m n
+let uniform ?a ?b m n = M.uniform Float64 ?a ?b m n
 
 let gaussian ?(sigma=1.) m n = M.gaussian Float64 ~sigma m n
 

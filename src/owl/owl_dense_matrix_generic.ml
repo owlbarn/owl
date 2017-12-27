@@ -185,7 +185,7 @@ let hermitian ?(upper=true) x =
   y
 
 
-let uniform ?scale k m n = Owl_dense_ndarray_generic.uniform ?scale k [|m;n|]
+let uniform k ?a ?b m n = Owl_dense_ndarray_generic.uniform k ?a ?b [|m;n|]
 
 
 let gaussian ?sigma k m n = Owl_dense_ndarray_generic.gaussian ?sigma k [|m;n|]

@@ -25,7 +25,7 @@ val zeros : int array -> arr
 
 val ones : int array -> arr
 
-val uniform : ?scale:float -> int array -> arr
+val uniform : ?a:elt -> ?b:elt -> int array -> arr
 
 val gaussian : ?sigma:float -> int array -> arr
 

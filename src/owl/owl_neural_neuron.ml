@@ -61,11 +61,11 @@ module Make
       match x with
       | Arr _ -> (
           match t with
-          | Uniform (a, b)       -> Arr.(add (uniform ~scale:(b-.a) s) (F a))
+          | Uniform (a, b)       -> Arr.(uniform ~a ~b s)
           | Gaussian (mu, sigma) -> Arr.(add (gaussian ~sigma s) (F mu))
-          | Standard             -> Arr.(add (uniform ~scale:(2.*.r0) s) (F (-.r0)))
-          | Tanh                 -> Arr.(add (uniform ~scale:(2.*.r1) s) (F (-.r1)))
-          | GlorotUniform        -> Arr.(add (uniform ~scale:(2.*.r1) s) (F (-.r1)))
+          | Standard             -> Arr.(uniform ~a:(-.r0) ~b:r0 s)
+          | Tanh                 -> Arr.(uniform ~a:(-.r1) ~b:r1 s)
+          | GlorotUniform        -> Arr.(uniform ~a:(-.r1) ~b:r1 s)
           | GlorotNormal         -> Arr.(gaussian ~sigma:r2 s)
           | LecunNormal          -> Arr.(gaussian ~sigma:r0 s)
           | Custom f             -> f s
@@ -883,7 +883,7 @@ module Make
       l.out_shape.(0) <- out_cols
 
     let init l =
-      l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
+      l.w <- Init.run l.init_typ l.kernel l.w;
       l.b <- Arr.(zeros (shape l.b))
 
     let reset l =
@@ -1068,7 +1068,7 @@ module Make
       l.out_shape.(2) <- out_dpts
 
     let init l =
-      l.w <- Maths.((Arr.(uniform (shape l.w)) - (F 0.5)) / (F 1000.));
+      l.w <- Init.run l.init_typ l.kernel l.w;
       l.b <- Arr.(zeros (shape l.b))
 
     let reset l =

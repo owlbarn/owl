@@ -2477,6 +2477,18 @@ let _owl_sequential : type a b. (a, b) kind -> (a, b) owl_arr_op13 = function
   | Int64          -> owl_int64_sequential
   | _              -> failwith "_owl_sequential: unsupported operation"
 
+external owl_float32_uniform : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "float32_uniform"
+external owl_float64_uniform : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "float64_uniform"
+external owl_complex32_uniform : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "complex32_uniform"
+external owl_complex64_uniform : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "complex64_uniform"
+
+let _owl_uniform : type a b. (a, b) kind -> (a, b) owl_arr_op13 = function
+  | Float32        -> owl_float32_uniform
+  | Float64        -> owl_float64_uniform
+  | Complex32      -> owl_complex32_uniform
+  | Complex64      -> owl_complex64_uniform
+  | _              -> failwith "_owl_uniform: unsupported operation"
+
 external owl_float32_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float32_cumsum" "float32_cumsum_impl"
 external owl_float64_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float64_cumsum" "float64_cumsum_impl"
 external owl_complex32_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex32_cumsum" "complex32_cumsum_impl"
