@@ -965,7 +965,10 @@ val minmax_i : ('a, 'b) t -> ('a * int array) * ('a * int array)
  *)
 
 val inv : ('a, 'b) t -> ('a, 'b) t
-(** [inv x] returns the inverse of a square matrix [x]. *)
+(** [inv x] calculates the inverse of an invertible square matrix [x]
+    such that [x *@ x = I] wherein [I] is an identity matrix.  (If [x] 
+    is singular, [inv] will return a useless result.)
+ *)
 
 val trace : ('a, 'b) t -> 'a
 (** [trace x] returns the sum of diagonal elements in [x]. *)
@@ -1405,7 +1408,8 @@ val mpow : ('a, 'b) t -> float -> ('a, 'b) t
   itself [r] times, and more generally raises the matrix to the
   [r]th power.  [r] is a float that must be equal to an integer;
   it can be be negative, zero, or positive. Non-integer exponents
-  are not yet implemented. *)
+  are not yet implemented. (If [r] is negative, [mpow] calls [inv],
+  and warnings in documentation for [inv] apply.) *)
 
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]
