@@ -4875,63 +4875,63 @@ int int64_cmp (const void * a, const void * b)
 // bernoulli
 
 #define FUN18 float32_bernoulli
-#define INIT int a = Double_val(vA) * RAND_MAX;
+#define INIT double a = Double_val(vA)
 #define NUMBER float
-#define MAPFN(X) *X = (rand() < a)
+#define MAPFN(X) *X = (sfmt_randf2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 float64_bernoulli
-#define INIT int a = Double_val(vA) * RAND_MAX;
+#define INIT double a = Double_val(vA)
 #define NUMBER double
-#define MAPFN(X) *X = (rand() < a)
+#define MAPFN(X) *X = (sfmt_randf2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 complex32_bernoulli
-#define INIT int a = Double_val(vA) * RAND_MAX;
+#define INIT double a = Double_val(vA)
 #define NUMBER _Complex float
-#define MAPFN(X) *X = (rand() < a)
+#define MAPFN(X) *X = (sfmt_randf2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 complex64_bernoulli
-#define INIT int a = Double_val(vA) * RAND_MAX;
+#define INIT double a = Double_val(vA)
 #define NUMBER _Complex double
-#define MAPFN(X) *X = (rand() < a)
+#define MAPFN(X) *X = (sfmt_randf2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int8_bernoulli
-#define INIT int a = Double_val(vA) * RAND_MAX;
+#define INIT double a = Double_val(vA)
 #define NUMBER int8_t
-#define MAPFN(X) *X = (rand() < a)
+#define MAPFN(X) *X = (sfmt_randf2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 uint8_bernoulli
-#define INIT int a = Double_val(vA) * RAND_MAX;
+#define INIT double a = Double_val(vA)
 #define NUMBER uint8_t
-#define MAPFN(X) *X = (rand() < a)
+#define MAPFN(X) *X = (sfmt_randf2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int16_bernoulli
-#define INIT int a = Double_val(vA) * RAND_MAX;
+#define INIT double a = Double_val(vA)
 #define NUMBER int16_t
-#define MAPFN(X) *X = (rand() < a)
+#define MAPFN(X) *X = (sfmt_randf2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 uint16_bernoulli
-#define INIT int a = Double_val(vA) * RAND_MAX;
+#define INIT double a = Double_val(vA)
 #define NUMBER uint16_t
-#define MAPFN(X) *X = (rand() < a)
+#define MAPFN(X) *X = (sfmt_randf2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int32_bernoulli
-#define INIT int a = Double_val(vA) * RAND_MAX;
+#define INIT double a = Double_val(vA)
 #define NUMBER int32_t
-#define MAPFN(X) *X = (rand() < a)
+#define MAPFN(X) *X = (sfmt_randf2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int64_bernoulli
-#define INIT int a = Double_val(vA) * RAND_MAX;
+#define INIT double a = Double_val(vA)
 #define NUMBER int64_t
-#define MAPFN(X) *X = (rand() < a)
+#define MAPFN(X) *X = (sfmt_randf2 < a)
 #include "owl_dense_common_vec_map.c"
 
 // dropout
