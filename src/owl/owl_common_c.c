@@ -4,6 +4,7 @@
  */
 
 #include "owl_macros.h"
+#include "SFMT.h"
 
 
 CAMLprim value seed(value vX)
