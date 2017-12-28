@@ -5061,27 +5061,27 @@ int int64_cmp (const void * a, const void * b)
 // uniform
 
 #define FUN18 float32_uniform
-#define INIT float a = Double_val(vA); float b = (Double_val(vB) - a) / RAND_MAX
+#define INIT float a = Double_val(vA); float b = Double_val(vB) - a
 #define NUMBER float
-#define MAPFN(X) *X = a + b * rand()
+#define MAPFN(X) *X = a + b * sfmt_randf2
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 float64_uniform
-#define INIT double a = Double_val(vA); double b = (Double_val(vB) - a) / RAND_MAX
+#define INIT double a = Double_val(vA); double b = Double_val(vB) - a
 #define NUMBER double
-#define MAPFN(X) *X = a + b * rand()
+#define MAPFN(X) *X = a + b * sfmt_randf2
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 complex32_uniform
-#define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1); float br = (Double_field(vB, 0) - ar) / RAND_MAX, bi = (Double_field(vB, 1) - ai) / RAND_MAX
+#define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1); float br = Double_field(vB, 0) - ar, bi = Double_field(vB, 1) - ai
 #define NUMBER _Complex float
-#define MAPFN(X) *X = (ar + br * rand()) + (ai + bi * rand())*I
+#define MAPFN(X) *X = (ar + br * sfmt_randf2) + (ai + bi * sfmt_randf2)*I
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 complex64_uniform
-#define INIT double ar = Double_field(vA, 0), ai = Double_field(vA, 1); double br = (Double_field(vB, 0) - ar) / RAND_MAX, bi = (Double_field(vB, 1) - ai) / RAND_MAX
+#define INIT double ar = Double_field(vA, 0), ai = Double_field(vA, 1); double br = Double_field(vB, 0) - ar, bi = Double_field(vB, 1) - ai
 #define NUMBER _Complex double
-#define MAPFN(X) *X = (ar + br * rand()) + (ai + bi * rand())*I
+#define MAPFN(X) *X = (ar + br * sfmt_randf2) + (ai + bi * sfmt_randf2)*I
 #include "owl_dense_common_vec_map.c"
 
 // cumsum

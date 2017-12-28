@@ -19,4 +19,17 @@ typedef struct { float r, i; } complex_float;
 
 typedef struct { double r, i; } complex_double;
 
+
+// PRNG and its internal state
+#include "SFMT.h"
+
+sfmt_t sfmt_state;
+
+#define sfmt_randf1 sfmt_genrand_real1(&sfmt_state)
+
+#define sfmt_randf2 sfmt_genrand_real2(&sfmt_state)
+
+#define sfmt_randf3 sfmt_genrand_real3(&sfmt_state)
+
+
 #endif  /* OWL_MACROS */
