@@ -57,6 +57,8 @@ module Lazy = Owl_lazy
 
 module Graph = Owl_graph
 
+module Common = Owl_common
+
 
 (* backend modules *)
 
@@ -78,9 +80,13 @@ module Vec = struct
 end
 
 
-(* set up owl's folder *)
+(* initialise owl's working environment *)
 
 let _ =
+  (* init the internal state of PRNG *)
+  Random.self_init ();
+  Owl_common.PRNG.seed (Random.int 65535);
+  (* set up owl's folder *)
   let home = Sys.getenv "HOME" ^ "/.owl" in
   let dir_dataset = home ^ "/dataset" in
   let dir_zoo = home ^ "/zoo" in

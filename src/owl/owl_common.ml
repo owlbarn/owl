@@ -12,9 +12,3 @@ module PRNG = struct
   external rand_int : unit -> int = "owl_sfmt_rand_int"
 
 end
-
-
-(* init the state of PRNG *)
-let _ =
-  Random.self_init ();
-  PRNG.seed (Random.int 65535)
