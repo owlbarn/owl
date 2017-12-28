@@ -965,7 +965,10 @@ val minmax_i : ('a, 'b) t -> ('a * int array) * ('a * int array)
  *)
 
 val inv : ('a, 'b) t -> ('a, 'b) t
-(** [inv x] returns the inverse of a square matrix [x]. *)
+(** [inv x] calculates the inverse of an invertible square matrix [x]
+    such that [x *@ x = I] wherein [I] is an identity matrix.  (If [x] 
+    is singular, [inv] will return a useless result.)
+ *)
 
 val trace : ('a, 'b) t -> 'a
 (** [trace x] returns the sum of diagonal elements in [x]. *)
