@@ -6,6 +6,7 @@
   (wrapped false)
   (c_names (
     owl_common_c
+    owl_common_ziggurat
     owl_dense_common_c
     owl_dense_common_vec_cmp
     owl_dense_common_vec_map
