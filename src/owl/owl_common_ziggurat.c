@@ -8,7 +8,6 @@ static float wn[128], fn[128], we[256], fe[256];
 // init the internal state for exponential prng
 inline float ziggurat_exp ( ) {
   float value, x;
-
   uint32_t jz = sfmt_rand32;
   uint32_t iz = ( jz & 255 );
 
@@ -66,7 +65,6 @@ void ziggurat_exp_init ( ) {
     fe[i] = ( float ) ( exp ( - de ) );
     we[i] = ( float ) ( de / m2 );
   }
-  return;
 }
 
 // generate a prng of gaussian distribution
@@ -88,11 +86,7 @@ inline float ziggurat_gaussian ( ) {
           if ( x * x <= y + y )
             break;
         }
-
-        if ( hz <= 0 )
-          value = - r - x;
-        else
-          value = + r + x;
+        value = ( hz > 0 ) ? (+ r + x) : (- r - x);
         break;
       }
 
@@ -141,8 +135,6 @@ void ziggurat_gaussian_init ( ) {
     fn[i] = ( float ) ( exp ( - 0.5 * dn * dn ) );
     wn[i] = ( float ) ( dn / m1 );
   }
-
-  return;
 }
 
 
