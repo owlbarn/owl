@@ -35,7 +35,7 @@ let sequential ?a ?step m n = M.sequential Float64 ?a ?step m n
 
 let uniform ?a ?b m n = M.uniform Float64 ?a ?b m n
 
-let gaussian ?(sigma=1.) m n = M.gaussian Float64 ~sigma m n
+let gaussian ?mu ?sigma m n = M.gaussian Float64 ?mu ?sigma m n
 
 let semidef m = M.semidef Float64 m
 

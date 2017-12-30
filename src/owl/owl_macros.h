@@ -55,5 +55,9 @@ extern float ziggurat_exp ( );
 
 extern float ziggurat_gaussian ( );
 
+#define f32_gaussian ziggurat_gaussian()
+
+#define f64_gaussian ziggurat_gaussian()
+
 
 #endif  /* OWL_MACROS */

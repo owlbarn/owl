@@ -91,7 +91,7 @@ val uniform : ('a, 'b) kind -> ?a:'a -> ?b:'a -> int -> int -> ('a, 'b) t
   adjusts the interval to [(0,a)].
  *)
 
-val gaussian : ?sigma:float -> ('a, 'b) kind -> int -> int -> ('a, 'b) t
+ val gaussian : ('a, 'b) kind -> ?mu:'a -> ?sigma:'a -> int -> int -> ('a, 'b) t
 (** [gaussian m n] creates an [m] by [n] matrix where all the elements in [x]
   follow a Gaussian distribution with specified sigma. By default [sigma = 1].
  *)

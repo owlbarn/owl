@@ -83,7 +83,7 @@ val uniform : ('a, 'b) kind -> ?a:'a -> ?b:'a -> int array -> ('a, 'b) t
   and 5. The elements in the array follow a uniform distribution [0,1].
  *)
 
-val gaussian : ?sigma:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
+val gaussian : ('a, 'b) kind -> ?mu:'a -> ?sigma:'a -> int array -> ('a, 'b) t
 (** [gaussian Float64 [|3;4;5|]] ... *)
 
 val sequential : ('a, 'b) kind -> ?a:'a -> ?step:'a -> int array -> ('a, 'b) t

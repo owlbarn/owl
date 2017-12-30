@@ -29,7 +29,7 @@ let ones dimension = M.ones Complex32 dimension
 
 let uniform ?a ?b dimension = M.uniform Complex32 ?a ?b dimension
 
-let gaussian ?sigma dimension = M.gaussian ?sigma Complex32 dimension
+let gaussian ?mu ?sigma dimension = M.gaussian ?mu ?sigma Complex32 dimension
 
 let sequential ?a ?step dimension = M.sequential Complex32 ?a ?step dimension
 

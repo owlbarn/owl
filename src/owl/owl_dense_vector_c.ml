@@ -19,7 +19,7 @@ let zeros ?typ m = V.zeros ?typ Complex32 m
 
 let ones ?typ m = V.ones ?typ Complex32 m
 
-let gaussian ?typ ?sigma m = V.gaussian ?typ ?sigma Complex32 m
+let gaussian ?typ ?mu ?sigma m = V.gaussian ?typ ?mu ?sigma Complex32 m
 
 let uniform ?typ ?a ?b m = V.uniform ?typ ?a ?b Complex32 m
 

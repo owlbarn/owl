@@ -5082,6 +5082,32 @@ int int64_cmp (const void * a, const void * b)
 #define MAPFN(X) *X = (ar + br * sfmt_f64_2) + (ai + bi * sfmt_f64_2)*I
 #include "owl_dense_common_vec_map.c"
 
+// gaussian
+
+#define FUN18 float32_gaussian
+#define INIT float a = Double_val(vA); float b = Double_val(vB)
+#define NUMBER float
+#define MAPFN(X) *X = a + b * f32_gaussian
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 float64_gaussian
+#define INIT double a = Double_val(vA); double b = Double_val(vB)
+#define NUMBER double
+#define MAPFN(X) *X = a + b * f64_gaussian
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 complex32_gaussian
+#define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1); float br = Double_field(vB, 0), bi = Double_field(vB, 1)
+#define NUMBER _Complex float
+#define MAPFN(X) *X = (ar + br * f32_gaussian) + (ai + bi * f32_gaussian)*I
+#include "owl_dense_common_vec_map.c"
+
+#define FUN18 complex64_gaussian
+#define INIT double ar = Double_field(vA, 0), ai = Double_field(vA, 1); double br = Double_field(vB, 0), bi = Double_field(vB, 1)
+#define NUMBER _Complex double
+#define MAPFN(X) *X = (ar + br * f64_gaussian) + (ai + bi * f64_gaussian)*I
+#include "owl_dense_common_vec_map.c"
+
 // cumsum
 
 #define FUN20 float32_cumsum

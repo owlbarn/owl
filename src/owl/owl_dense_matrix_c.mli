@@ -48,7 +48,7 @@ val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
 
 val uniform : ?a:elt -> ?b:elt -> int -> int -> mat
 
-val gaussian : ?sigma:float -> int -> int -> mat
+val gaussian : ?mu:elt -> ?sigma:elt -> int -> int -> mat
 
 val linspace : elt -> elt -> int -> mat
 

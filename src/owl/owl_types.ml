@@ -84,7 +84,7 @@ module type NdarraySig = sig
 
   val uniform : ?a:elt -> ?b:elt -> int array -> arr
 
-  val gaussian : ?sigma:elt -> int array -> arr
+  val gaussian : ?mu:elt -> ?sigma:elt -> int array -> arr
 
   val bernoulli : ?p:float -> int array -> arr
 

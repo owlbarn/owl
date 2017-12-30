@@ -2489,6 +2489,18 @@ let _owl_uniform : type a b. (a, b) kind -> (a, b) owl_arr_op13 = function
   | Complex64      -> owl_complex64_uniform
   | _              -> failwith "_owl_uniform: unsupported operation"
 
+external owl_float32_gaussian : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "float32_gaussian"
+external owl_float64_gaussian : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "float64_gaussian"
+external owl_complex32_gaussian : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "complex32_gaussian"
+external owl_complex64_gaussian : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "complex64_gaussian"
+
+let _owl_gaussian : type a b. (a, b) kind -> (a, b) owl_arr_op13 = function
+  | Float32        -> owl_float32_gaussian
+  | Float64        -> owl_float64_gaussian
+  | Complex32      -> owl_complex32_gaussian
+  | Complex64      -> owl_complex64_gaussian
+  | _              -> failwith "_owl_gaussian: unsupported operation"
+
 external owl_float32_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float32_cumsum" "float32_cumsum_impl"
 external owl_float64_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float64_cumsum" "float64_cumsum_impl"
 external owl_complex32_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex32_cumsum" "complex32_cumsum_impl"

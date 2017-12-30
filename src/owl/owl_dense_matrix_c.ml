@@ -35,7 +35,7 @@ let sequential ?a ?step m n = M.sequential Complex32 ?a ?step m n
 
 let uniform ?a ?b m n = M.uniform Complex32 ?a ?b m n
 
-let gaussian ?(sigma=1.) m n = M.gaussian Complex32 ~sigma m n
+let gaussian ?mu ?sigma m n = M.gaussian Complex32 ?mu ?sigma m n
 
 (* let semidef m = M.semidef Complex32 m *)
 

@@ -28,7 +28,7 @@ let ones dimension = M.ones Float32 dimension
 
 let uniform ?a ?b dimension = M.uniform Float32 ?a ?b dimension
 
-let gaussian ?sigma dimension = M.gaussian ?sigma Float32 dimension
+let gaussian ?mu ?sigma dimension = M.gaussian ?mu ?sigma Float32 dimension
 
 let sequential ?a ?step dimension = M.sequential Float32 ?a ?step dimension
 

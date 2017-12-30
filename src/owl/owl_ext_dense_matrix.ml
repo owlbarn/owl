@@ -107,7 +107,7 @@ module type BasicSig = sig
 
   val uniform : ?a:elt -> ?b:elt -> int -> int -> mat
 
-  val gaussian : ?sigma:float -> int -> int -> mat
+  val gaussian : ?mu:elt -> ?sigma:elt -> int -> int -> mat
 
   val linspace : elt -> elt -> int -> mat
 
@@ -421,7 +421,7 @@ module Make_Basic
 
   let uniform ?a ?b m n = M.uniform ?a ?b m n |> pack_box
 
-  let gaussian ?(sigma=1.) m n = M.gaussian ~sigma m n |> pack_box
+  let gaussian ?mu ?sigma m n = M.gaussian ?mu ?sigma m n |> pack_box
 
   let linspace a b n = M.linspace a b n |> pack_box
 

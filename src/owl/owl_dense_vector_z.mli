@@ -21,7 +21,7 @@ val zeros : ?typ:vec_typ -> int -> vec
 
 val ones : ?typ:vec_typ -> int -> vec
 
-val gaussian : ?typ:vec_typ -> ?sigma:float -> int -> vec
+val gaussian : ?typ:vec_typ -> ?mu:elt -> ?sigma:elt -> int -> vec
 
 val uniform : ?typ:vec_typ -> ?a:elt -> ?b:elt -> int -> vec
 

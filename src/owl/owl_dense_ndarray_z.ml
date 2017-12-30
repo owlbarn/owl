@@ -29,7 +29,7 @@ let ones dimension = M.ones Complex64 dimension
 
 let uniform ?a ?b dimension = M.uniform Complex64 ?a ?b dimension
 
-let gaussian ?sigma dimension = M.gaussian ?sigma Complex64 dimension
+let gaussian ?mu ?sigma dimension = M.gaussian ?mu ?sigma Complex64 dimension
 
 let sequential ?a ?step dimension = M.sequential Complex64 ?a ?step dimension
 

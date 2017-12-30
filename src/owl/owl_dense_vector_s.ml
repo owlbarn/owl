@@ -19,7 +19,7 @@ let zeros ?typ m = V.zeros ?typ Float32 m
 
 let ones ?typ m = V.ones ?typ Float32 m
 
-let gaussian ?typ ?sigma m = V.gaussian ?typ ?sigma Float32 m
+let gaussian ?typ ?mu ?sigma m = V.gaussian ?typ ?mu ?sigma Float32 m
 
 let uniform ?typ ?a ?b m = V.uniform ?typ ?a ?b Float32 m
 

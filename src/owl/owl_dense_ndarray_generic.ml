@@ -857,34 +857,12 @@ let uniform k ?a ?b d =
   _owl_uniform k (numel x) x a b;
   x
 
-let gaussian : type a b. ?sigma:float -> (a, b) kind -> int array -> (a, b) t =
-  fun ?(sigma=1.) kind dimension ->
-  let x = empty kind dimension in
-  let n = numel x in
-  let y = Bigarray.reshape_1 x n in
-  let _ = match kind with
-  | Float32 -> (
-    for i = 0 to n - 1 do
-      y.{i} <- Owl_stats.Rnd.gaussian ~sigma ()
-    done
-    )
-  | Float64 -> (
-    for i = 0 to n - 1 do
-      y.{i} <- Owl_stats.Rnd.gaussian ~sigma ()
-    done
-    )
-  | Complex32 -> (
-    for i = 0 to n - 1 do
-      y.{i} <- Complex.({ re = Owl_stats.Rnd.gaussian ~sigma (); im = Owl_stats.Rnd.gaussian ~sigma () })
-    done
-    )
-  | Complex64 -> (
-    for i = 0 to n - 1 do
-      y.{i} <- Complex.({ re = Owl_stats.Rnd.gaussian ~sigma (); im = Owl_stats.Rnd.gaussian ~sigma () })
-    done
-    )
-  | _ -> failwith "Owl_dense_ndarray_generic.gaussian: unknown type"
-  in x
+let gaussian k ?mu ?sigma d =
+  let mu = match mu with Some a -> a | None -> _zero k in
+  let sigma = match sigma with Some a -> a | None -> _one k in
+  let x = empty k d in
+  _owl_gaussian k (numel x) x mu sigma;
+  x
 
 let linspace k a b n =
   let x = empty k [|n|] in
