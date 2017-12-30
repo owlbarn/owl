@@ -6,12 +6,11 @@ static float wn[128], fn[128], we[256], fe[256];
 
 
 // init the internal state for exponential prng
-float ziggurat_exp ( ) {
-  uint32_t iz, jz;
+inline float ziggurat_exp ( ) {
   float value, x;
 
-  jz = sfmt_rand32;
-  iz = ( jz & 255 );
+  uint32_t jz = sfmt_rand32;
+  uint32_t iz = ( jz & 255 );
 
   if ( jz < ke[iz] )
     value = ( float ) ( jz ) * we[iz];
@@ -46,11 +45,10 @@ float ziggurat_exp ( ) {
 void ziggurat_exp_init ( ) {
   double de = 7.697117470131487;
   const double m2 = 2147483648.0;
-  double q;
   double te = 7.697117470131487;
   const double ve = 3.949659822581572E-03;
 
-  q = ve / exp ( - de );
+  double q = ve / exp ( - de );
 
   ke[0] = ( uint32_t ) ( ( de / q ) * m2 );
   ke[1] = 0;
@@ -72,14 +70,12 @@ void ziggurat_exp_init ( ) {
 }
 
 // generate a prng of gaussian distribution
-float ziggurat_gaussian ( ) {
-  int hz;
-  uint32_t iz;
+inline float ziggurat_gaussian ( ) {
   const float r = 3.442620;
   float value, x, y;
 
-  hz = ( int ) sfmt_rand32;
-  iz = ( hz & 127 );
+  int hz = ( int ) sfmt_rand32;
+  uint32_t iz = ( hz & 127 );
 
   if ( fabs ( hz ) < kn[iz] )
     value = ( float ) ( hz ) * wn[iz];
@@ -124,11 +120,10 @@ float ziggurat_gaussian ( ) {
 void ziggurat_gaussian_init ( ) {
   double dn = 3.442619855899;
   const double m1 = 2147483648.0;
-  double q;
   double tn = 3.442619855899;
   const double vn = 9.91256303526217E-03;
 
-  q = vn / exp ( - 0.5 * dn * dn );
+  double q = vn / exp ( - 0.5 * dn * dn );
 
   kn[0] = ( uint32_t ) ( ( dn / q ) * m1 );
   kn[1] = 0;
