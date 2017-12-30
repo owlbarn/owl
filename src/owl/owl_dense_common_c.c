@@ -4877,61 +4877,61 @@ int int64_cmp (const void * a, const void * b)
 #define FUN18 float32_bernoulli
 #define INIT double a = Double_val(vA)
 #define NUMBER float
-#define MAPFN(X) *X = (sfmt_randf2 < a)
+#define MAPFN(X) *X = (sfmt_f64_2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 float64_bernoulli
 #define INIT double a = Double_val(vA)
 #define NUMBER double
-#define MAPFN(X) *X = (sfmt_randf2 < a)
+#define MAPFN(X) *X = (sfmt_f64_2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 complex32_bernoulli
 #define INIT double a = Double_val(vA)
 #define NUMBER _Complex float
-#define MAPFN(X) *X = (sfmt_randf2 < a)
+#define MAPFN(X) *X = (sfmt_f64_2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 complex64_bernoulli
 #define INIT double a = Double_val(vA)
 #define NUMBER _Complex double
-#define MAPFN(X) *X = (sfmt_randf2 < a)
+#define MAPFN(X) *X = (sfmt_f64_2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int8_bernoulli
 #define INIT double a = Double_val(vA)
 #define NUMBER int8_t
-#define MAPFN(X) *X = (sfmt_randf2 < a)
+#define MAPFN(X) *X = (sfmt_f64_2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 uint8_bernoulli
 #define INIT double a = Double_val(vA)
 #define NUMBER uint8_t
-#define MAPFN(X) *X = (sfmt_randf2 < a)
+#define MAPFN(X) *X = (sfmt_f64_2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int16_bernoulli
 #define INIT double a = Double_val(vA)
 #define NUMBER int16_t
-#define MAPFN(X) *X = (sfmt_randf2 < a)
+#define MAPFN(X) *X = (sfmt_f64_2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 uint16_bernoulli
 #define INIT double a = Double_val(vA)
 #define NUMBER uint16_t
-#define MAPFN(X) *X = (sfmt_randf2 < a)
+#define MAPFN(X) *X = (sfmt_f64_2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int32_bernoulli
 #define INIT double a = Double_val(vA)
 #define NUMBER int32_t
-#define MAPFN(X) *X = (sfmt_randf2 < a)
+#define MAPFN(X) *X = (sfmt_f64_2 < a)
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int64_bernoulli
 #define INIT double a = Double_val(vA)
 #define NUMBER int64_t
-#define MAPFN(X) *X = (sfmt_randf2 < a)
+#define MAPFN(X) *X = (sfmt_f64_2 < a)
 #include "owl_dense_common_vec_map.c"
 
 // dropout
@@ -4939,61 +4939,61 @@ int int64_cmp (const void * a, const void * b)
 #define FUN18 float32_dropout
 #define INIT double a = Double_val(vA)
 #define NUMBER float
-#define MAPFN(X) *X = (sfmt_randf2 < a) ? 0. : *X
+#define MAPFN(X) *X = (sfmt_f64_2 < a) ? 0. : *X
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 float64_dropout
 #define INIT double a = Double_val(vA)
 #define NUMBER double
-#define MAPFN(X) *X = (sfmt_randf2 < a) ? 0. : *X
+#define MAPFN(X) *X = (sfmt_f64_2 < a) ? 0. : *X
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 complex32_dropout
 #define INIT double a = Double_val(vA)
 #define NUMBER _Complex float
-#define MAPFN(X) *X = (sfmt_randf2 < a) ? 0. : *X
+#define MAPFN(X) *X = (sfmt_f64_2 < a) ? 0. : *X
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 complex64_dropout
 #define INIT double a = Double_val(vA)
 #define NUMBER _Complex double
-#define MAPFN(X) *X = (sfmt_randf2 < a) ? 0. : *X
+#define MAPFN(X) *X = (sfmt_f64_2 < a) ? 0. : *X
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int8_dropout
 #define INIT double a = Double_val(vA)
 #define NUMBER int8_t
-#define MAPFN(X) *X = (sfmt_randf2 < a) ? 0 : *X
+#define MAPFN(X) *X = (sfmt_f64_2 < a) ? 0 : *X
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 uint8_dropout
 #define INIT double a = Double_val(vA)
 #define NUMBER uint8_t
-#define MAPFN(X) *X = (sfmt_randf2 < a) ? 0 : *X
+#define MAPFN(X) *X = (sfmt_f64_2 < a) ? 0 : *X
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int16_dropout
 #define INIT double a = Double_val(vA)
 #define NUMBER int16_t
-#define MAPFN(X) *X = (sfmt_randf2 < a) ? 0 : *X
+#define MAPFN(X) *X = (sfmt_f64_2 < a) ? 0 : *X
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 uint16_dropout
 #define INIT double a = Double_val(vA)
 #define NUMBER uint16_t
-#define MAPFN(X) *X = (sfmt_randf2 < a) ? 0 : *X
+#define MAPFN(X) *X = (sfmt_f64_2 < a) ? 0 : *X
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int32_dropout
 #define INIT double a = Double_val(vA)
 #define NUMBER int32_t
-#define MAPFN(X) *X = (sfmt_randf2 < a) ? 0 : *X
+#define MAPFN(X) *X = (sfmt_f64_2 < a) ? 0 : *X
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 int64_dropout
 #define INIT double a = Double_val(vA)
 #define NUMBER int64_t
-#define MAPFN(X) *X = (sfmt_randf2 < a) ? 0 : *X
+#define MAPFN(X) *X = (sfmt_f64_2 < a) ? 0 : *X
 #include "owl_dense_common_vec_map.c"
 
 // sequential
@@ -5063,25 +5063,25 @@ int int64_cmp (const void * a, const void * b)
 #define FUN18 float32_uniform
 #define INIT float a = Double_val(vA); float b = Double_val(vB) - a
 #define NUMBER float
-#define MAPFN(X) *X = a + b * sfmt_randf2
+#define MAPFN(X) *X = a + b * sfmt_f32_2
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 float64_uniform
 #define INIT double a = Double_val(vA); double b = Double_val(vB) - a
 #define NUMBER double
-#define MAPFN(X) *X = a + b * sfmt_randf2
+#define MAPFN(X) *X = a + b * sfmt_f64_2
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 complex32_uniform
 #define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1); float br = Double_field(vB, 0) - ar, bi = Double_field(vB, 1) - ai
 #define NUMBER _Complex float
-#define MAPFN(X) *X = (ar + br * sfmt_randf2) + (ai + bi * sfmt_randf2)*I
+#define MAPFN(X) *X = (ar + br * sfmt_f32_2) + (ai + bi * sfmt_f32_2)*I
 #include "owl_dense_common_vec_map.c"
 
 #define FUN18 complex64_uniform
 #define INIT double ar = Double_field(vA, 0), ai = Double_field(vA, 1); double br = Double_field(vB, 0) - ar, bi = Double_field(vB, 1) - ai
 #define NUMBER _Complex double
-#define MAPFN(X) *X = (ar + br * sfmt_randf2) + (ai + bi * sfmt_randf2)*I
+#define MAPFN(X) *X = (ar + br * sfmt_f64_2) + (ai + bi * sfmt_f64_2)*I
 #include "owl_dense_common_vec_map.c"
 
 // cumsum

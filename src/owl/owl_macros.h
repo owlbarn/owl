@@ -21,6 +21,7 @@ typedef struct { double r, i; } complex_double;
 
 
 // SFMT PRNG and its internal state
+
 #include "SFMT.h"
 
 extern sfmt_t sfmt_state;
@@ -29,12 +30,20 @@ extern sfmt_t sfmt_state;
 
 #define sfmt_rand64 sfmt_genrand_uint64(&sfmt_state)
 
-#define sfmt_randf1 sfmt_genrand_real1(&sfmt_state)
+#define sfmt_f32_1 sfmt_genrand_real4(&sfmt_state)
 
-#define sfmt_randf2 sfmt_genrand_real2(&sfmt_state)
+#define sfmt_f32_2 sfmt_genrand_real5(&sfmt_state)
 
-#define sfmt_randf3 sfmt_genrand_real3(&sfmt_state)
+#define sfmt_f32_3 sfmt_genrand_real6(&sfmt_state)
 
+#define sfmt_f64_1 sfmt_genrand_real1(&sfmt_state)
+
+#define sfmt_f64_2 sfmt_genrand_real2(&sfmt_state)
+
+#define sfmt_f64_3 sfmt_genrand_real3(&sfmt_state)
+
+
+// Ziggurat PRNG and functions
 
 extern float r4_exp ( uint32_t *jsr );
 extern void r4_exp_setup ( );

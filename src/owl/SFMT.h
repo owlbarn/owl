@@ -206,6 +206,11 @@ inline static double sfmt_genrand_real1(sfmt_t * sfmt)
     return sfmt_to_real1(sfmt_genrand_uint32(sfmt));
 }
 
+inline static float sfmt_genrand_real4(sfmt_t * sfmt)
+{
+    return sfmt_genrand_uint32(sfmt) * (1.0/4294967295.0);
+}
+
 /**
  * converts an unsigned 32-bit integer to a double on [0,1)-real-interval.
  * @param v 32-bit unsigned integer
@@ -227,6 +232,11 @@ inline static double sfmt_genrand_real2(sfmt_t * sfmt)
     return sfmt_to_real2(sfmt_genrand_uint32(sfmt));
 }
 
+inline static float sfmt_genrand_real5(sfmt_t * sfmt)
+{
+    return sfmt_genrand_uint32(sfmt) * (1.0/4294967296.0);
+}
+
 /**
  * converts an unsigned 32-bit integer to a double on (0,1)-real-interval.
  * @param v 32-bit unsigned integer
@@ -246,6 +256,11 @@ inline static double sfmt_to_real3(uint32_t v)
 inline static double sfmt_genrand_real3(sfmt_t * sfmt)
 {
     return sfmt_to_real3(sfmt_genrand_uint32(sfmt));
+}
+
+inline static float sfmt_genrand_real6(sfmt_t * sfmt)
+{
+    return (sfmt_genrand_uint32(sfmt) + 0.5) * (1.0/4294967296.0);
 }
 
 /**

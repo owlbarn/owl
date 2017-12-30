@@ -109,8 +109,8 @@ float ziggurat_gaussian ( ) {
       {
         for ( ; ; )
         {
-          x = - 0.2904764 * log ( sfmt_randf1 );
-          y = - log ( sfmt_randf1 );
+          x = - 0.2904764 * log ( sfmt_f64_1 );
+          y = - log ( sfmt_f64_1 );
           if ( x * x <= y + y )
           {
             break;
@@ -130,7 +130,7 @@ float ziggurat_gaussian ( ) {
 
       x = ( float ) ( hz ) * wn[iz];
 
-      if ( fn[iz] + ( sfmt_randf1 ) * ( fn[iz-1] - fn[iz] )
+      if ( fn[iz] + ( sfmt_f64_1 ) * ( fn[iz-1] - fn[iz] )
         < exp ( - 0.5 * x * x ) )
       {
         value = x;
