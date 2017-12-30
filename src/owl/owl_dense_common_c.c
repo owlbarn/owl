@@ -3,9 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-#include <math.h>
 #include <complex.h>
-#include <caml/mlvalues.h>
 #include "owl_macros.h"
 
 // some helper functions

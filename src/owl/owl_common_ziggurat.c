@@ -1,4 +1,3 @@
-# include <math.h>
 # include "owl_macros.h"
 
 static uint32_t kn[128], ke[256];

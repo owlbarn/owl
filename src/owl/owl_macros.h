@@ -15,6 +15,10 @@
 #include <caml/signals.h>
 #include <caml/threads.h>
 
+#include <math.h>
+
+// Define the structure for complex numbers
+
 typedef struct { float r, i; } complex_float;
 
 typedef struct { double r, i; } complex_double;
