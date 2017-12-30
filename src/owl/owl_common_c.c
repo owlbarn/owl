@@ -32,3 +32,27 @@ CAMLprim value owl_sfmt_rand_int()
 
   CAMLreturn(Val_int(x));
 }
+
+
+CAMLprim value owl_ziggurat_init()
+{
+  CAMLparam0();
+
+  caml_enter_blocking_section();
+  ziggurat_init();
+  caml_leave_blocking_section();
+
+  CAMLreturn(Val_unit);
+}
+
+
+CAMLprim value owl_ziggurat_gaussian()
+{
+  CAMLparam0();
+
+  caml_enter_blocking_section();
+  double x = ziggurat_gaussian ();
+  caml_leave_blocking_section();
+
+  CAMLreturn(caml_copy_double(x));
+}

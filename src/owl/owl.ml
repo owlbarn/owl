@@ -84,8 +84,7 @@ end
 
 let _ =
   (* init the internal state of PRNG *)
-  Random.self_init ();
-  Owl_common.PRNG.seed (Random.int 65535);
+  Owl_common.PRNG.init ();
   (* set up owl's folder *)
   let home = Sys.getenv "HOME" ^ "/.owl" in
   let dir_dataset = home ^ "/dataset" in

@@ -20,16 +20,28 @@ typedef struct { float r, i; } complex_float;
 typedef struct { double r, i; } complex_double;
 
 
-// PRNG and its internal state
+// SFMT PRNG and its internal state
 #include "SFMT.h"
 
 extern sfmt_t sfmt_state;
+
+#define sfmt_rand32 sfmt_genrand_uint32(&sfmt_state)
+
+#define sfmt_rand64 sfmt_genrand_uint64(&sfmt_state)
 
 #define sfmt_randf1 sfmt_genrand_real1(&sfmt_state)
 
 #define sfmt_randf2 sfmt_genrand_real2(&sfmt_state)
 
 #define sfmt_randf3 sfmt_genrand_real3(&sfmt_state)
+
+
+extern float r4_exp ( uint32_t *jsr );
+extern void r4_exp_setup ( );
+extern float ziggurat_gaussian ( );
+extern void ziggurat_init ( );
+extern float r4_uni ( uint32_t *jsr );
+extern uint32_t shr3_seeded ( uint32_t *jsr );
 
 
 #endif  /* OWL_MACROS */
