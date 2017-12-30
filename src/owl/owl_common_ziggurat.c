@@ -1,43 +1,30 @@
-# include <stdlib.h>
-# include <stdio.h>
 # include <math.h>
-# include <stdint.h>
-
 # include "owl_macros.h"
 
-static long hz;
 static uint32_t kn[128], ke[256];
 static float wn[128], fn[128], we[256], fe[256];
 
 
 // init the internal state for exponential prng
 float ziggurat_exp ( ) {
-  uint32_t iz;
-  uint32_t jz;
-  float value;
-  float x;
+  uint32_t iz, jz;
+  float value, x;
 
   jz = sfmt_rand32;
   iz = ( jz & 255 );
 
   if ( jz < ke[iz] )
-  {
     value = ( float ) ( jz ) * we[iz];
-  }
-  else
-  {
-    for ( ; ; )
-    {
-      if ( iz == 0 )
-      {
+  else {
+    for ( ; ; ) {
+      if ( iz == 0 ) {
         value = 7.69711 - log ( sfmt_f64_1 );
         break;
       }
 
       x = ( float ) ( jz ) * we[iz];
 
-      if ( fe[iz] + sfmt_f64_1 * ( fe[iz-1] - fe[iz] ) < exp ( - x ) )
-      {
+      if ( fe[iz] + sfmt_f64_1 * ( fe[iz-1] - fe[iz] ) < exp ( - x ) ) {
         value = x;
         break;
       }
@@ -45,8 +32,7 @@ float ziggurat_exp ( ) {
       jz = sfmt_rand32;
       iz = ( jz & 255 );
 
-      if ( jz < ke[iz] )
-      {
+      if ( jz < ke[iz] ) {
         value = ( float ) ( jz ) * we[iz];
         break;
       }
@@ -59,7 +45,6 @@ float ziggurat_exp ( ) {
 // init the internal state for exponential prng
 void ziggurat_exp_init ( ) {
   double de = 7.697117470131487;
-  int i;
   const double m2 = 2147483648.0;
   double q;
   double te = 7.697117470131487;
@@ -76,8 +61,7 @@ void ziggurat_exp_init ( ) {
   fe[0] = 1.0;
   fe[255] = ( float ) ( exp ( - de ) );
 
-  for ( i = 254; 1 <= i; i-- )
-  {
+  for ( int i = 254; 1 <= i; i-- ) {
     de = - log ( ve / de + exp ( - de ) );
     ke[i+1] = ( uint32_t ) ( ( de / te ) * m2 );
     te = de;
@@ -92,49 +76,33 @@ float ziggurat_gaussian ( ) {
   int hz;
   uint32_t iz;
   const float r = 3.442620;
-  float value;
-  float x;
-  float y;
+  float value, x, y;
 
   hz = ( int ) sfmt_rand32;
   iz = ( hz & 127 );
 
   if ( fabs ( hz ) < kn[iz] )
-  {
     value = ( float ) ( hz ) * wn[iz];
-  }
-  else
-  {
-    for ( ; ; )
-    {
-      if ( iz == 0 )
-      {
-        for ( ; ; )
-        {
+  else {
+    for ( ; ; ) {
+      if ( iz == 0 ) {
+        for ( ; ; ) {
           x = - 0.2904764 * log ( sfmt_f64_1 );
           y = - log ( sfmt_f64_1 );
           if ( x * x <= y + y )
-          {
             break;
-          }
         }
 
         if ( hz <= 0 )
-        {
           value = - r - x;
-        }
         else
-        {
           value = + r + x;
-        }
         break;
       }
 
       x = ( float ) ( hz ) * wn[iz];
 
-      if ( fn[iz] + ( sfmt_f64_1 ) * ( fn[iz-1] - fn[iz] )
-        < exp ( - 0.5 * x * x ) )
-      {
+      if ( fn[iz] + ( sfmt_f64_1 ) * ( fn[iz-1] - fn[iz] ) < exp ( - 0.5 * x * x ) ) {
         value = x;
         break;
       }
@@ -142,8 +110,7 @@ float ziggurat_gaussian ( ) {
       hz = ( int ) sfmt_rand32;
       iz = ( hz & 127 );
 
-      if ( fabs ( hz ) < kn[iz] )
-      {
+      if ( fabs ( hz ) < kn[iz] ) {
         value = ( float ) ( hz ) * wn[iz];
         break;
       }
@@ -156,7 +123,6 @@ float ziggurat_gaussian ( ) {
 // init the internal state for gaussian prng
 void ziggurat_gaussian_init ( ) {
   double dn = 3.442619855899;
-  int i;
   const double m1 = 2147483648.0;
   double q;
   double tn = 3.442619855899;
@@ -173,8 +139,7 @@ void ziggurat_gaussian_init ( ) {
   fn[0] = 1.0;
   fn[127] = ( float ) ( exp ( - 0.5 * dn * dn ) );
 
-  for ( i = 126; 1 <= i; i-- )
-  {
+  for ( int i = 126; 1 <= i; i-- ) {
     dn = sqrt ( - 2.0 * log ( vn / dn + exp ( - 0.5 * dn * dn ) ) );
     kn[i+1] = ( uint32_t ) ( ( dn / tn ) * m1 );
     tn = dn;
