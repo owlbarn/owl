@@ -56,3 +56,15 @@ CAMLprim value owl_ziggurat_gaussian()
 
   CAMLreturn(caml_copy_double(x));
 }
+
+
+CAMLprim value owl_ziggurat_exp()
+{
+  CAMLparam0();
+
+  caml_enter_blocking_section();
+  double x = ziggurat_exp ();
+  caml_leave_blocking_section();
+
+  CAMLreturn(caml_copy_double(x));
+}

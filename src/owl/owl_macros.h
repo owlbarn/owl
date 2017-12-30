@@ -45,12 +45,11 @@ extern sfmt_t sfmt_state;
 
 // Ziggurat PRNG and functions
 
-extern float r4_exp ( uint32_t *jsr );
-extern void r4_exp_setup ( );
-extern float ziggurat_gaussian ( );
 extern void ziggurat_init ( );
-extern float r4_uni ( uint32_t *jsr );
-extern uint32_t shr3_seeded ( uint32_t *jsr );
+
+extern float ziggurat_exp ( );
+
+extern float ziggurat_gaussian ( );
 
 
 #endif  /* OWL_MACROS */

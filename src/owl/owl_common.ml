@@ -13,6 +13,8 @@ module PRNG = struct
 
   external ziggurat_init : unit -> unit = "owl_ziggurat_init"
 
+  external rand_exp : unit -> float = "owl_ziggurat_exp"
+
   external rand_gaussian : unit -> float = "owl_ziggurat_gaussian"
 
   let init () =

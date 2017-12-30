@@ -10,13 +10,14 @@ static uint32_t kn[128], ke[256];
 static float wn[128], fn[128], we[256], fe[256];
 
 
-float r4_exp ( uint32_t *jsr ) {
+// init the internal state for exponential prng
+float ziggurat_exp ( ) {
   uint32_t iz;
   uint32_t jz;
   float value;
   float x;
 
-  jz = shr3_seeded ( jsr );
+  jz = sfmt_rand32;
   iz = ( jz & 255 );
 
   if ( jz < ke[iz] )
@@ -29,19 +30,19 @@ float r4_exp ( uint32_t *jsr ) {
     {
       if ( iz == 0 )
       {
-        value = 7.69711 - log ( r4_uni ( jsr ) );
+        value = 7.69711 - log ( sfmt_f64_1 );
         break;
       }
 
       x = ( float ) ( jz ) * we[iz];
 
-      if ( fe[iz] + r4_uni ( jsr ) * ( fe[iz-1] - fe[iz] ) < exp ( - x ) )
+      if ( fe[iz] + sfmt_f64_1 * ( fe[iz-1] - fe[iz] ) < exp ( - x ) )
       {
         value = x;
         break;
       }
 
-      jz = shr3_seeded ( jsr );
+      jz = sfmt_rand32;
       iz = ( jz & 255 );
 
       if ( jz < ke[iz] )
@@ -55,7 +56,8 @@ float r4_exp ( uint32_t *jsr ) {
 }
 
 
-void r4_exp_setup () {
+// init the internal state for exponential prng
+void ziggurat_exp_init ( ) {
   double de = 7.697117470131487;
   int i;
   const double m2 = 2147483648.0;
@@ -85,7 +87,7 @@ void r4_exp_setup () {
   return;
 }
 
-
+// generate a prng of gaussian distribution
 float ziggurat_gaussian ( ) {
   int hz;
   uint32_t iz;
@@ -150,8 +152,8 @@ float ziggurat_gaussian ( ) {
 
   return value;
 }
-/******************************************************************************/
 
+// init the internal state for gaussian prng
 void ziggurat_gaussian_init ( ) {
   double dn = 3.442619855899;
   int i;
@@ -182,40 +184,10 @@ void ziggurat_gaussian_init ( ) {
 
   return;
 }
-/******************************************************************************/
-
-float r4_uni ( uint32_t *jsr ) {
-  uint32_t jsr_input;
-  float value;
-
-  jsr_input = *jsr;
-
-  *jsr = ( *jsr ^ ( *jsr <<   13 ) );
-  *jsr = ( *jsr ^ ( *jsr >>   17 ) );
-  *jsr = ( *jsr ^ ( *jsr <<    5 ) );
-
-  value = fmod ( 0.5
-    + ( float ) ( jsr_input + *jsr ) / 65536.0 / 65536.0, 1.0 );
-
-  return value;
-}
-/******************************************************************************/
-
-uint32_t shr3_seeded ( uint32_t *jsr ) {
-  uint32_t value;
-
-  value = *jsr;
-
-  *jsr = ( *jsr ^ ( *jsr <<   13 ) );
-  *jsr = ( *jsr ^ ( *jsr >>   17 ) );
-  *jsr = ( *jsr ^ ( *jsr <<    5 ) );
-
-  value = value + *jsr;
-
-  return value;
-}
 
 
+// init the internal table of ziggurat module
 void ziggurat_init ( ) {
+  ziggurat_exp_init();
   ziggurat_gaussian_init();
 }
