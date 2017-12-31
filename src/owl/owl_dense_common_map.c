@@ -499,12 +499,93 @@ CAMLprim value FUN24(value *argv, int __unused_argn)
 #endif /* FUN24 */
 
 
+// broadcast function of x and y then save the result to z. Compared to FUN24,
+// the difference of FUN25 is z has one extra dimension than max(dim_x, dim_y).
+// This function is used in owl's distribution module and extra dimension is
+// used as sample dimension.
+#ifdef FUN25
+
+void FUN25_CODE (
+  int d,
+  struct caml_ba_array *X, int64_t *stride_x, int ofs_x,
+  struct caml_ba_array *Y, int64_t *stride_y, int ofs_y,
+  struct caml_ba_array *Z, int64_t *stride_z, int ofs_z
+)
+{
+  int inc_x = X->dim[d] == Z->dim[d] ? stride_x[d] : 0;
+  int inc_y = Y->dim[d] == Z->dim[d] ? stride_y[d] : 0;
+  int inc_z = stride_z[d+1];
+
+  NUMBER *x = (NUMBER *) X->data;
+  NUMBER *y = (NUMBER *) Y->data;
+  NUMBER *z = (NUMBER *) Z->data;
+
+
+  if (d == X->num_dims - 1) {
+    for (int i = 0; i < Z->dim[d+1]; i++) {
+      MAPFN((x + ofs_x), (y + ofs_y), (z + ofs_z));
+      ofs_x += inc_x;
+      ofs_y += inc_y;
+      ofs_z += inc_z;
+    }
+  }
+  else {
+    for (int i = 0; i < z->dim[0]; i++) {
+      for (int j = 0; j < Z->dim[d+1]; j++) {
+        FUN25_CODE (d+1, X, stride_x, ofs_x, Y, stride_y, ofs_y, Z, stride_z, ofs_z);
+        ofs_x += inc_x;
+        ofs_y += inc_y;
+        ofs_z += inc_z;
+      }
+    }
+  }
+
+  return;
+}
+
+CAMLprim value FUN25_IMPL(
+  value vX, value vSTRIDE_X,
+  value vY, value vSTRIDE_Y,
+  value vZ, value vSTRIDE_Z
+)
+{
+  CAMLparam4(vX, vSTRIDE_X, vY, vSTRIDE_Y);
+  CAMLxparam2(vZ, vSTRIDE_Z);
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  struct caml_ba_array *Z = Caml_ba_array_val(vZ);
+
+  struct caml_ba_array *stride_X = Caml_ba_array_val(vSTRIDE_X);
+  int64_t *stride_x = (int64_t *) stride_X->data;
+  struct caml_ba_array *stride_Y = Caml_ba_array_val(vSTRIDE_Y);
+  int64_t *stride_y = (int64_t *) stride_Y->data;
+  struct caml_ba_array *stride_Z = Caml_ba_array_val(vSTRIDE_Z);
+  int64_t *stride_z = (int64_t *) stride_Z->data;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  FUN25_CODE (0, X, stride_x, 0, Y, stride_y, 0, Z, stride_z, 0);
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value FUN25(value *argv, int __unused_argn)
+{
+  return FUN25_IMPL(argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);
+}
+
+#endif /* FUN25 */
+
+
 // function to map x to y with explicit offset, step size, number of ops
 // more general version of FUN20, so more control over the access pattern to
 // the data with three embedded loops.
-#ifdef FUN25
+#ifdef FUN26
 
-CAMLprim value FUN25_IMPL(
+CAMLprim value FUN26_IMPL(
   value vM, value vN, value vO,
   value vX, value vOFSX, value vINCX_M, value vINCX_N, value vINCX_O,
   value vY, value vOFSY, value vINCY_M, value vINCY_N, value vINCY_O
@@ -572,15 +653,15 @@ CAMLprim value FUN25_IMPL(
   CAMLreturn(Val_unit);
 }
 
-CAMLprim value FUN25(value *argv, int __unused_argn)
+CAMLprim value FUN26(value *argv, int __unused_argn)
 {
-  return FUN25_IMPL(
+  return FUN26_IMPL(
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6],
     argv[7], argv[8], argv[9], argv[10], argv[11], argv[12]
   );
 }
 
-#endif /* FUN25 */
+#endif /* FUN26 */
 
 
 #undef NUMBER
@@ -608,3 +689,6 @@ CAMLprim value FUN25(value *argv, int __unused_argn)
 #undef FUN24_CODE
 #undef FUN25
 #undef FUN25_IMPL
+#undef FUN25_CODE
+#undef FUN26
+#undef FUN26_IMPL

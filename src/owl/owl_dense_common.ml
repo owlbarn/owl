@@ -3066,5 +3066,13 @@ let _owl_broadcast_elt_greater_equal : type a b. (a, b) kind -> (a, b) owl_arr_o
   | Int64          -> owl_int64_broadcast_elt_greater_equal
   | _              -> failwith "_owl_broadcast_elt_greater_equal: unsupported operation"
 
+external owl_float32_dist_gaussian : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_dist_gaussian" "float32_dist_gaussian_impl"
+external owl_float64_dist_gaussian : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_dist_gaussian" "float64_dist_gaussian_impl"
 
+let _owl_dist_gaussian : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_dist_gaussian
+  | Float64        -> owl_float64_dist_gaussian
+  | _              -> failwith "_owl_dist_gaussian: unsupported operation"
+
+  
 (* ends here *)

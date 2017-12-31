@@ -343,6 +343,16 @@ module type NdarraySig_Ext = sig
 
   val elt_greater_equal_scalar : arr -> elt -> arr
 
+  val is_zero : arr -> bool
+
+  val is_positive : arr -> bool
+
+  val is_negative : arr -> bool
+
+  val is_nonpositive : arr -> bool
+
+  val is_nonnegative : arr -> bool
+
 end
 
 

@@ -8,7 +8,7 @@ open Owl_types
 
 (* Functor of making Lazy module of different number types *)
 
-module Make (A : NdarraySig) = struct
+module Make (A : NdarraySig_Ext) = struct
 
 
   module Uniform = struct
@@ -51,6 +51,27 @@ module Make (A : NdarraySig) = struct
     let log_prob t x = A.zeros [|10|]
 
     let mean t = t.mu
+
+  end
+
+
+  module Gaussian_ = struct
+
+    type t = {
+      mu    : A.arr;
+      sigma : A.arr;
+    }
+
+    let make ~mu ~sigma =
+      assert (A.is_positive sigma);
+      { mu; sigma }
+
+    let sample t n =
+      let s = A.shape t.mu in
+      let z = A.empty s in
+      let k = A.kind t.mu in
+      Owl_dense_common._owl_dist_gaussian k;
+      ()
 
   end
 
