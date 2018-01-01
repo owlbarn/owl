@@ -3074,5 +3074,12 @@ let _owl_dist_gaussian : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
   | Float64        -> owl_float64_dist_gaussian
   | _              -> failwith "_owl_dist_gaussian: unsupported operation"
 
-  
+external owl_float32_dist_uniform : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_dist_uniform" "float32_dist_uniform_impl"
+external owl_float64_dist_uniform : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_dist_uniform" "float64_dist_uniform_impl"
+
+let _owl_dist_uniform : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_dist_uniform
+  | Float64        -> owl_float64_dist_uniform
+  | _              -> failwith "_owl_dist_uniform: unsupported operation"
+
 (* ends here *)

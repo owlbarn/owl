@@ -45,6 +45,9 @@ let broadcast_op op x0 x1 n =
   y2
 
 
+let uniform_rand ~a ~b ~n = broadcast_op (_owl_dist_uniform (kind a)) a b n
+
+
 let gaussian_rand ~mu ~sigma ~n = broadcast_op (_owl_dist_gaussian (kind mu)) mu sigma n
 
 
