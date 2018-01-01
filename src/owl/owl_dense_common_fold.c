@@ -14,7 +14,7 @@ void __dumb_fun_vec_fold() {};  // define a dumb to avoid warnings
 // function to accumulate all the elements in x
 #ifdef FUN5
 
-CAMLprim value FUN5(value vN, value vX)
+inline CAMLprim value FUN5(value vN, value vX)
 {
   CAMLparam2(vN, vX);
   int N = Long_val(vN);
@@ -47,7 +47,7 @@ CAMLprim value FUN5(value vN, value vX)
 // function to scan all the elements in x then return index
 #ifdef FUN6
 
-CAMLprim value FUN6(value vN, value vX)
+inline CAMLprim value FUN6(value vN, value vX)
 {
   CAMLparam2(vN, vX);
   int N = Long_val(vN);
@@ -83,7 +83,7 @@ CAMLprim value FUN6(value vN, value vX)
 // function to calculate log_sum_exp specifically
 #ifdef FUN8
 
-CAMLprim value FUN8(value vN, value vX)
+inline CAMLprim value FUN8(value vN, value vX)
 {
   CAMLparam2(vN, vX);
   int N = Long_val(vN);
@@ -124,7 +124,7 @@ CAMLprim value FUN8(value vN, value vX)
 // function to calculate ssqr
 #ifdef FUN9
 
-CAMLprim value FUN9(value vN, value vC, value vX)
+inline CAMLprim value FUN9(value vN, value vC, value vX)
 {
   CAMLparam3(vN, vC, vX);
   int N = Long_val(vN);
@@ -157,7 +157,7 @@ CAMLprim value FUN9(value vN, value vC, value vX)
 // function to fold two vectors x and y to a scalar value r
 #ifdef FUN11
 
-CAMLprim value FUN11(value vN, value vX, value vY)
+inline CAMLprim value FUN11(value vN, value vX, value vY)
 {
   CAMLparam3(vN, vX, vY);
   int N = Long_val(vN);
@@ -197,7 +197,7 @@ CAMLprim value FUN11(value vN, value vX, value vY)
 // function to fold all the elements in x with extra paramaters A and B
 #ifdef FUN23
 
-CAMLprim value FUN23(value vN, value vX, value vA, vB)
+inline CAMLprim value FUN23(value vN, value vX, value vA, vB)
 {
   CAMLparam4(vN, vX, vA, vB);
   int N = Long_val(vN);
@@ -232,7 +232,7 @@ CAMLprim value FUN23(value vN, value vX, value vA, vB)
 // X: source; Y: destination. Note that O <= N
 #ifdef FUN26
 
-CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
+inline CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 {
   CAMLparam5(vM, vN, vO, vX, vY);
   int M = Long_val(vM);

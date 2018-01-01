@@ -18,7 +18,7 @@ void __dumb_fun_vec_map() {};  // define a dumb to avoid warnings
 // function to perform in-place sorting
 #ifdef FUN3
 
-CAMLprim value FUN3(value vN, value vX)
+inline CAMLprim value FUN3(value vN, value vX)
 {
   CAMLparam2(vN, vX);
   int N = Long_val(vN);
@@ -41,7 +41,7 @@ CAMLprim value FUN3(value vN, value vX)
 // function to perform mapping of elements from x to y
 #ifdef FUN4
 
-CAMLprim value FUN4(value vN, value vX, value vY)
+inline CAMLprim value FUN4(value vN, value vX, value vY)
 {
   CAMLparam3(vN, vX, vY);
   int N = Long_val(vN);
@@ -81,7 +81,7 @@ CAMLprim value FUN4(value vN, value vX, value vY)
 // function to map elements in [x] w.r.t scalar values
 #ifdef FUN12
 
-CAMLprim value FUN12(value vN, value vA, value vB, value vX)
+inline CAMLprim value FUN12(value vN, value vA, value vB, value vX)
 {
   CAMLparam1(vX);
   int i, N = Long_val(vN);
@@ -108,7 +108,7 @@ CAMLprim value FUN12(value vN, value vA, value vB, value vX)
 // function to calculate logspace function
 #ifdef FUN13
 
-CAMLprim value FUN13(value vN, value vBase, value vA, value vB, value vX)
+inline CAMLprim value FUN13(value vN, value vBase, value vA, value vB, value vX)
 {
   CAMLparam1(vX);
   int i, N = Long_val(vN);
@@ -153,7 +153,7 @@ CAMLprim value FUN13(value vN, value vBase, value vA, value vB, value vX)
 // similar to FUN4, but mostly for complex numbers
 #ifdef FUN14
 
-CAMLprim value FUN14(value vN, value vX, value vY)
+inline CAMLprim value FUN14(value vN, value vX, value vY)
 {
   CAMLparam3(vN, vX, vY);
   int N = Long_val(vN);
@@ -190,7 +190,7 @@ CAMLprim value FUN14(value vN, value vX, value vY)
 // function to map pairwise elements in x and y then save results to z
 #ifdef FUN15
 
-CAMLprim value FUN15(value vN, value vX, value vY, value vZ)
+inline CAMLprim value FUN15(value vN, value vX, value vY, value vZ)
 {
   CAMLparam4(vN, vX, vY, vZ);
   int N = Long_val(vN);
@@ -233,7 +233,7 @@ CAMLprim value FUN15(value vN, value vX, value vY, value vZ)
 // function to map all elements in [x] w.r.t to [a] then save results to [y]
 #ifdef FUN17
 
-CAMLprim value FUN17(value vN, value vX, value vY, value vA)
+inline CAMLprim value FUN17(value vN, value vX, value vY, value vA)
 {
   CAMLparam4(vN, vX, vY, vA);
   int N = Long_val(vN);
@@ -271,7 +271,7 @@ CAMLprim value FUN17(value vN, value vX, value vY, value vA)
 // function to map elements in [x] w.r.t [a] and [b] then save results to [x]
 #ifdef FUN18
 
-CAMLprim value FUN18(value vN, value vX, value vA, value vB)
+inline CAMLprim value FUN18(value vN, value vX, value vA, value vB)
 {
   CAMLparam4(vN, vX, vA, vB);
   int N = Long_val(vN);
@@ -303,7 +303,7 @@ CAMLprim value FUN18(value vN, value vX, value vA, value vB)
 // function to map x to y with explicit offset, step size, number of ops
 #ifdef FUN19
 
-CAMLprim value FUN19_IMPL(
+inline CAMLprim value FUN19_IMPL(
   value vN,
   value vX, value vOFSX, value vINCX,
   value vY, value vOFSY, value vINCY
@@ -344,7 +344,7 @@ CAMLprim value FUN19_IMPL(
   CAMLreturn(Val_unit);
 }
 
-CAMLprim value FUN19(value *argv, int __unused_argn)
+inline CAMLprim value FUN19(value *argv, int __unused_argn)
 {
   return FUN19_IMPL(argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6]);
 }
@@ -357,7 +357,7 @@ CAMLprim value FUN19(value *argv, int __unused_argn)
 // the data with two embedded loops.
 #ifdef FUN20
 
-CAMLprim value FUN20_IMPL(
+inline CAMLprim value FUN20_IMPL(
   value vM, value vN,
   value vX, value vOFSX, value vINCX_M, value vINCX_N,
   value vY, value vOFSY, value vINCY_M, value vINCY_N
@@ -412,7 +412,7 @@ CAMLprim value FUN20_IMPL(
   CAMLreturn(Val_unit);
 }
 
-CAMLprim value FUN20(value *argv, int __unused_argn)
+inline CAMLprim value FUN20(value *argv, int __unused_argn)
 {
   return FUN20_IMPL(
     argv[0], argv[1], argv[2], argv[3], argv[4],
@@ -426,7 +426,7 @@ CAMLprim value FUN20(value *argv, int __unused_argn)
 // broadcast function of x and y then save the result to z
 #ifdef FUN24
 
-void FUN24_CODE (
+inline void FUN24_CODE (
   int d,
   struct caml_ba_array *X, int64_t *stride_x, int ofs_x,
   struct caml_ba_array *Y, int64_t *stride_y, int ofs_y,
@@ -462,7 +462,7 @@ void FUN24_CODE (
   return;
 }
 
-CAMLprim value FUN24_IMPL(
+inline CAMLprim value FUN24_IMPL(
   value vX, value vSTRIDE_X,
   value vY, value vSTRIDE_Y,
   value vZ, value vSTRIDE_Z
@@ -491,7 +491,7 @@ CAMLprim value FUN24_IMPL(
   CAMLreturn(Val_unit);
 }
 
-CAMLprim value FUN24(value *argv, int __unused_argn)
+inline CAMLprim value FUN24(value *argv, int __unused_argn)
 {
   return FUN24_IMPL(argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);
 }
@@ -505,7 +505,7 @@ CAMLprim value FUN24(value *argv, int __unused_argn)
 // used as sample dimension.
 #ifdef FUN25
 
-void FUN25_CODE (
+inline void FUN25_CODE (
   int d,
   struct caml_ba_array *X, int64_t *stride_x, int ofs_x,
   struct caml_ba_array *Y, int64_t *stride_y, int ofs_y,
@@ -542,7 +542,7 @@ void FUN25_CODE (
   return;
 }
 
-CAMLprim value FUN25_IMPL(
+inline CAMLprim value FUN25_IMPL(
   value vX, value vSTRIDE_X,
   value vY, value vSTRIDE_Y,
   value vZ, value vSTRIDE_Z
@@ -576,7 +576,7 @@ CAMLprim value FUN25_IMPL(
   CAMLreturn(Val_unit);
 }
 
-CAMLprim value FUN25(value *argv, int __unused_argn)
+inline CAMLprim value FUN25(value *argv, int __unused_argn)
 {
   return FUN25_IMPL(argv[0], argv[1], argv[2], argv[3], argv[4], argv[5]);
 }
@@ -589,7 +589,7 @@ CAMLprim value FUN25(value *argv, int __unused_argn)
 // the data with three embedded loops.
 #ifdef FUN26
 
-CAMLprim value FUN26_IMPL(
+inline CAMLprim value FUN26_IMPL(
   value vM, value vN, value vO,
   value vX, value vOFSX, value vINCX_M, value vINCX_N, value vINCX_O,
   value vY, value vOFSY, value vINCY_M, value vINCY_N, value vINCY_O
@@ -657,7 +657,7 @@ CAMLprim value FUN26_IMPL(
   CAMLreturn(Val_unit);
 }
 
-CAMLprim value FUN26(value *argv, int __unused_argn)
+inline CAMLprim value FUN26(value *argv, int __unused_argn)
 {
   return FUN26_IMPL(
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6],
