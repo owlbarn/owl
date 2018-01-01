@@ -1489,7 +1489,7 @@ module Make
 
     let uniform ?a ?b m n = A.uniform ?a ?b [|m;n|] |> pack_arr
 
-    let gaussian ?sigma m n = A.gaussian ?sigma [|m;n|] |> pack_arr
+    let gaussian ?mu ?sigma m n = A.gaussian ?mu ?sigma [|m;n|] |> pack_arr
 
     let reset x = x |> unpack_arr |> A.reset
 
@@ -1568,7 +1568,7 @@ module Make
 
     let uniform ?a ?b d = A.uniform ?a ?b d |> pack_arr
 
-    let gaussian ?sigma d = A.gaussian ?sigma d |> pack_arr
+    let gaussian ?mu ?sigma d = A.gaussian ?mu ?sigma d |> pack_arr
 
     let reset x = x |> unpack_arr |> A.reset
 

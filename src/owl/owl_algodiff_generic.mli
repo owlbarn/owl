@@ -183,7 +183,7 @@ module Make
 
     val uniform : ?a:float -> ?b:float -> int -> int -> t
 
-    val gaussian : ?sigma:float -> int -> int -> t
+    val gaussian : ?mu:elt -> ?sigma:elt -> int -> int -> t
 
     val shape : t -> int * int
 
@@ -242,7 +242,7 @@ module Make
 
     val uniform : ?a:float -> ?b:float -> int array -> t
 
-    val gaussian : ?sigma:float -> int array -> t
+    val gaussian : ?mu:elt -> ?sigma:elt -> int array -> t
 
     val shape : t -> int array
 

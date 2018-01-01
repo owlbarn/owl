@@ -5,9 +5,6 @@
 
 #include "owl_macros.h"
 
-// Internal state of PRNG
-sfmt_t sfmt_state;
-
 
 CAMLprim value owl_sfmt_seed(value vX)
 {

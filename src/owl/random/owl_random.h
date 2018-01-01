@@ -33,11 +33,11 @@ extern sfmt_t sfmt_state;
 
 // Ziggurat PRNG and functions
 
-extern void ziggurat_init ( );
+extern void ziggurat_init();
 
-extern float ziggurat_exp ( );
+extern float ziggurat_exp();
 
-extern float ziggurat_gaussian ( );
+extern float ziggurat_gaussian();
 
 #define f32_gaussian ziggurat_gaussian()
 
