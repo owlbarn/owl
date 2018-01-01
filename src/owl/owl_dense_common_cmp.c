@@ -18,7 +18,7 @@ void __dumb_fun() {};  // define a dumb to avoid warnings
 // function to compare two arrays
 #ifdef FUN0
 
-inline CAMLprim value FUN0(value vN, value vX, value vY)
+CAMLprim value FUN0(value vN, value vX, value vY)
 {
   CAMLparam3(vN, vX, vY);
   int N = Long_val(vN);
@@ -63,7 +63,7 @@ inline CAMLprim value FUN0(value vN, value vX, value vY)
 // function to compare an array to zero
 #ifdef FUN1
 
-inline CAMLprim value FUN1(value vN, value vX)
+CAMLprim value FUN1(value vN, value vX)
 {
   CAMLparam2(vN, vX);
   int N = Long_val(vN);
@@ -102,7 +102,7 @@ inline CAMLprim value FUN1(value vN, value vX)
 // function to count number of non-zero elements
 #ifdef FUN2
 
-inline CAMLprim value FUN2(value vN, value vX)
+CAMLprim value FUN2(value vN, value vX)
 {
   CAMLparam2(vN, vX);
   int N = Long_val(vN);
@@ -136,7 +136,7 @@ inline CAMLprim value FUN2(value vN, value vX)
 // function to compare an array to a specific value
 #ifdef FUN16
 
-inline CAMLprim value FUN16(value vN, value vX, value vA)
+CAMLprim value FUN16(value vN, value vX, value vA)
 {
   CAMLparam3(vN, vX, vA);
   int N = Long_val(vN);
@@ -176,7 +176,7 @@ inline CAMLprim value FUN16(value vN, value vX, value vA)
 // function to compare two arrays with regard to a scalar
 #ifdef FUN21
 
-inline CAMLprim value FUN21(value vN, value vX, value vY, value vA)
+CAMLprim value FUN21(value vN, value vX, value vY, value vA)
 {
   CAMLparam4(vN, vX, vY, vA);
   int N = Long_val(vN);
@@ -222,7 +222,7 @@ inline CAMLprim value FUN21(value vN, value vX, value vY, value vA)
 // function to compare an array to a specific value A w.r.t to B
 #ifdef FUN22
 
-inline CAMLprim value FUN22(value vN, value vX, value vA, value vB)
+CAMLprim value FUN22(value vN, value vX, value vA, value vB)
 {
   CAMLparam4(vN, vX, vA, vB);
   int N = Long_val(vN);

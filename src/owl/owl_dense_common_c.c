@@ -12,7 +12,7 @@
 #define exp10f(X) expf(LN10 * X)
 #define exp10(X) exp(LN10 * X)
 
-inline value cp_two_doubles(double d0, double d1)
+value cp_two_doubles(double d0, double d1)
 {
   value res = caml_alloc_small(2 * Double_wosize, Double_array_tag);
   Store_double_field(res, 0, d0);
@@ -50,52 +50,52 @@ inline value cp_two_doubles(double d0, double d1)
 
 // compare two numbers (real & complex & int)
 
-inline int float32_cmp (const void * a, const void * b)
+int float32_cmp (const void * a, const void * b)
 {
   return ( *(float*)a < *(float*)b ? -1 : (*(float*)a > *(float*)b ? 1 : 0) );
 }
 
-inline int float64_cmp (const void * a, const void * b)
+int float64_cmp (const void * a, const void * b)
 {
   return ( *(double*)a < *(double*)b ? -1 : (*(double*)a > *(double*)b ? 1 : 0) );
 }
 
-inline int complex32_cmpf (const void * a, const void * b)
+int complex32_cmpf (const void * a, const void * b)
 {
  return ( CLTF(*(_Complex float*)a,*(_Complex float*)b) ? -1 : (CGTF(*(_Complex float*)a,*(_Complex float*)b) ? 1 : 0) );
 }
 
-inline int complex64_cmpf (const void * a, const void * b)
+int complex64_cmpf (const void * a, const void * b)
 {
  return ( CLT(*(_Complex double*)a,*(_Complex double*)b) ? -1 : (CGT(*(_Complex double*)a,*(_Complex double*)b) ? 1 : 0) );
 }
 
-inline int int8_cmp (const void * a, const void * b)
+int int8_cmp (const void * a, const void * b)
 {
   return ( *(int8_t*)a < *(int8_t*)b ? -1 : (*(int8_t*)a > *(int8_t*)b ? 1 : 0) );
 }
 
-inline int uint8_cmp (const void * a, const void * b)
+int uint8_cmp (const void * a, const void * b)
 {
   return ( *(uint8_t*)a < *(uint8_t*)b ? -1 : (*(uint8_t*)a > *(uint8_t*)b ? 1 : 0) );
 }
 
-inline int int16_cmp (const void * a, const void * b)
+int int16_cmp (const void * a, const void * b)
 {
   return ( *(int16_t*)a < *(int16_t*)b ? -1 : (*(int16_t*)a > *(int16_t*)b ? 1 : 0) );
 }
 
-inline int uint16_cmp (const void * a, const void * b)
+int uint16_cmp (const void * a, const void * b)
 {
   return ( *(uint16_t*)a < *(uint16_t*)b ? -1 : (*(uint16_t*)a > *(uint16_t*)b ? 1 : 0) );
 }
 
-inline int int32_cmp (const void * a, const void * b)
+int int32_cmp (const void * a, const void * b)
 {
   return ( *(int32_t*)a < *(int32_t*)b ? -1 : (*(int32_t*)a > *(int32_t*)b ? 1 : 0) );
 }
 
-inline int int64_cmp (const void * a, const void * b)
+int int64_cmp (const void * a, const void * b)
 {
   return ( *(int64_t*)a < *(int64_t*)b ? -1 : (*(int64_t*)a > *(int64_t*)b ? 1 : 0) );
 }
