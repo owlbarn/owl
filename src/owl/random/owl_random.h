@@ -59,6 +59,12 @@ extern double rng_gamma(double, double);
 
 extern double rng_beta(double, double);
 
+extern long rng_poisson(double);
+
+extern double rng_std_cauchy();
+
+extern double rng_std_t(double);
+
 
 
 #endif // OWL_RANDOM_H
