@@ -37,17 +37,17 @@ extern sfmt_t sfmt_state;
 
 extern void ziggurat_init();
 
-extern float ziggurat_exp();
+extern float rng_std_exp();
 
-extern float ziggurat_gaussian();
+extern float rng_std_gaussian();
 
-#define f32_exponential ziggurat_exp()
+#define f32_exponential rng_std_exp()
 
-#define f64_exponential ziggurat_exp()
+#define f64_exponential rng_std_exp()
 
-#define f32_gaussian ziggurat_gaussian()
+#define f32_gaussian rng_std_gaussian()
 
-#define f64_gaussian ziggurat_gaussian()
+#define f64_gaussian rng_std_gaussian()
 
 
 // Other distributions

@@ -7,7 +7,7 @@ static float wn[128], fn[128], we[256], fe[256];
 
 
 // init the internal state for exponential prng
-inline float ziggurat_exp ( ) {
+inline float rng_std_exp ( ) {
   float value, x;
   uint32_t jz = sfmt_rand32;
   uint32_t iz = ( jz & 255 );
@@ -42,7 +42,7 @@ inline float ziggurat_exp ( ) {
 
 
 // init the internal state for exponential prng
-void ziggurat_exp_init ( ) {
+void rng_std_exp_init ( ) {
   double de = 7.697117470131487;
   const double m2 = 2147483648.0;
   double te = 7.697117470131487;
@@ -69,7 +69,7 @@ void ziggurat_exp_init ( ) {
 }
 
 // generate a prng of gaussian distribution
-inline float ziggurat_gaussian ( ) {
+inline float rng_std_gaussian ( ) {
   const float r = 3.442620;
   float value, x, y;
 
@@ -112,7 +112,7 @@ inline float ziggurat_gaussian ( ) {
 }
 
 // init the internal state for gaussian prng
-void ziggurat_gaussian_init ( ) {
+void rng_std_gaussian_init ( ) {
   double dn = 3.442619855899;
   const double m1 = 2147483648.0;
   double tn = 3.442619855899;
@@ -141,6 +141,6 @@ void ziggurat_gaussian_init ( ) {
 
 // init the internal table of ziggurat module
 void ziggurat_init ( ) {
-  ziggurat_exp_init();
-  ziggurat_gaussian_init();
+  rng_std_exp_init();
+  rng_std_gaussian_init();
 }

@@ -5,21 +5,21 @@
 
 #include "owl_random.h"
 
+// FIXME: currently in owl_common_c.c file.
 // Internal state of SFMT PRNG
-sfmt_t sfmt_state;
+// sfmt_t sfmt_state;
 
 
 double rng_std_gamma(double shape) {
   double b, c;
   double U, V, X, Y;
 
-  if (shape == 1.0) {
-    return ziggurat_exp();
-  }
+  if (shape == 1.0)
+    return rng_std_exp();
   else if (shape < 1.0) {
     for ( ; ; ) {
       U = sfmt_f64_3;
-      V = ziggurat_exp();
+      V = rng_std_exp();
       if (U <= 1.0 - shape) {
         X = pow(U, 1. / shape);
         if (X <= V)

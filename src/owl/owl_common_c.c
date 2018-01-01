@@ -5,6 +5,9 @@
 
 #include "owl_macros.h"
 
+// Internal state of SFMT PRNG
+sfmt_t sfmt_state;
+
 
 CAMLprim value owl_sfmt_seed(value vX)
 {
@@ -43,24 +46,24 @@ CAMLprim value owl_ziggurat_init()
 }
 
 
-CAMLprim value owl_ziggurat_gaussian()
+CAMLprim value owl_rng_std_gaussian()
 {
   CAMLparam0();
 
   caml_enter_blocking_section();
-  double x = ziggurat_gaussian ();
+  double x = rng_std_gaussian ();
   caml_leave_blocking_section();
 
   CAMLreturn(caml_copy_double(x));
 }
 
 
-CAMLprim value owl_ziggurat_exp()
+CAMLprim value owl_rng_std_exp()
 {
   CAMLparam0();
 
   caml_enter_blocking_section();
-  double x = ziggurat_exp ();
+  double x = rng_std_exp ();
   caml_leave_blocking_section();
 
   CAMLreturn(caml_copy_double(x));
