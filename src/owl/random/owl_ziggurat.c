@@ -41,6 +41,11 @@ inline float rng_std_exp ( ) {
 }
 
 
+inline float rng_exp (float lambda) {
+  return (lambda * rng_std_exp());
+}
+
+
 // init the internal state for exponential prng
 void rng_std_exp_init ( ) {
   double de = 7.697117470131487;
@@ -110,6 +115,12 @@ inline float rng_std_gaussian ( ) {
 
   return value;
 }
+
+
+inline float rng_gaussian (float mu, float sigma) {
+  return (mu + sigma * rng_std_gaussian());
+}
+
 
 // init the internal state for gaussian prng
 void rng_std_gaussian_init ( ) {

@@ -35,12 +35,6 @@ extern sfmt_t sfmt_state;
 
 // Ziggurat PRNG and functions
 
-extern void ziggurat_init();
-
-extern float rng_std_exp();
-
-extern float rng_std_gaussian();
-
 #define f32_exponential rng_std_exp()
 
 #define f64_exponential rng_std_exp()
@@ -49,8 +43,21 @@ extern float rng_std_gaussian();
 
 #define f64_gaussian rng_std_gaussian()
 
+extern void ziggurat_init();
 
-// Other distributions
+extern float rng_std_exp();
+
+extern float rng_exp(float);
+
+extern float rng_std_gaussian();
+
+extern float rng_gaussian(float, float);
+
+extern double rng_std_gamma();
+
+extern double rng_gamma(double, double);
+
+extern double rng_beta(double, double);
 
 
 
