@@ -4,6 +4,10 @@
  */
 
 
+#ifndef OWL_RANDOM_H
+#define OWL_RANDOM_H
+
+
 // SFMT PRNG and its internal state
 
 #include "SFMT.h"
@@ -38,3 +42,7 @@ extern float ziggurat_gaussian ( );
 #define f32_gaussian ziggurat_gaussian()
 
 #define f64_gaussian ziggurat_gaussian()
+
+
+
+#endif // OWL_RANDOM_H
