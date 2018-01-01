@@ -5108,6 +5108,20 @@ int int64_cmp (const void * a, const void * b)
 #define MAPFN(X) *X = (ar + br * f64_gaussian) + (ai + bi * f64_gaussian)*I
 #include "owl_dense_common_map.c"
 
+// exponential
+
+#define FUN18 float32_exponential
+#define INIT float a = Double_val(vA)
+#define NUMBER float
+#define MAPFN(X) *X = a * f32_exponential
+#include "owl_dense_common_map.c"
+
+#define FUN18 float64_exponential
+#define INIT double a = Double_val(vA)
+#define NUMBER double
+#define MAPFN(X) *X = a * f64_exponential
+#include "owl_dense_common_map.c"
+
 // cumsum
 
 #define FUN20 float32_cumsum

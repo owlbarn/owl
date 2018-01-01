@@ -2501,6 +2501,14 @@ let _owl_gaussian : type a b. (a, b) kind -> (a, b) owl_arr_op13 = function
   | Complex64      -> owl_complex64_gaussian
   | _              -> failwith "_owl_gaussian: unsupported operation"
 
+external owl_float32_exponential : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "float32_exponential"
+external owl_float64_exponential : int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit = "float64_exponential"
+
+let _owl_exponential : type a b. (a, b) kind -> (a, b) owl_arr_op13 = function
+  | Float32        -> owl_float32_exponential
+  | Float64        -> owl_float64_exponential
+  | _              -> failwith "_owl_exponential: unsupported operation"
+
 external owl_float32_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float32_cumsum" "float32_cumsum_impl"
 external owl_float64_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float64_cumsum" "float64_cumsum_impl"
 external owl_complex32_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex32_cumsum" "complex32_cumsum_impl"

@@ -7,6 +7,8 @@
 #ifndef OWL_RANDOM_H
 #define OWL_RANDOM_H
 
+#include <math.h>
+
 
 // SFMT PRNG and its internal state
 
@@ -39,9 +41,16 @@ extern float ziggurat_exp();
 
 extern float ziggurat_gaussian();
 
+#define f32_exponential ziggurat_exp()
+
+#define f64_exponential ziggurat_exp()
+
 #define f32_gaussian ziggurat_gaussian()
 
 #define f64_gaussian ziggurat_gaussian()
+
+
+// Other distributions
 
 
 

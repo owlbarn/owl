@@ -62,7 +62,7 @@ module Make
       | Arr _ -> (
           match t with
           | Uniform (a, b)       -> Arr.(uniform ~a ~b s)
-          | Gaussian (mu, sigma) -> Arr.(add (gaussian ~sigma s) (F mu))
+          | Gaussian (mu, sigma) -> Arr.(gaussian ~mu ~sigma s)
           | Standard             -> Arr.(uniform ~a:(-.r0) ~b:r0 s)
           | Tanh                 -> Arr.(uniform ~a:(-.r1) ~b:r1 s)
           | GlorotUniform        -> Arr.(uniform ~a:(-.r1) ~b:r1 s)
