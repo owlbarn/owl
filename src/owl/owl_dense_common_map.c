@@ -512,8 +512,8 @@ void FUN25_CODE (
   struct caml_ba_array *Z, int64_t *stride_z, int ofs_z
 )
 {
-  int inc_x = X->dim[d] == Z->dim[d] ? stride_x[d] : 0;
-  int inc_y = Y->dim[d] == Z->dim[d] ? stride_y[d] : 0;
+  int inc_x = X->dim[d] == Z->dim[d+1] ? stride_x[d] : 0;
+  int inc_y = Y->dim[d] == Z->dim[d+1] ? stride_y[d] : 0;
   int inc_z = stride_z[d+1];
 
   NUMBER *x = (NUMBER *) X->data;
@@ -523,6 +523,7 @@ void FUN25_CODE (
 
   if (d == X->num_dims - 1) {
     for (int i = 0; i < Z->dim[d+1]; i++) {
+      //printf ("d:%i ofs_x:%i ofs_y:%i ofs_z:%i\n", d, ofs_x, ofs_y, ofs_z); fflush(stdout);
       MAPFN((x + ofs_x), (y + ofs_y), (z + ofs_z));
       ofs_x += inc_x;
       ofs_y += inc_y;
@@ -530,13 +531,11 @@ void FUN25_CODE (
     }
   }
   else {
-    for (int i = 0; i < z->dim[0]; i++) {
-      for (int j = 0; j < Z->dim[d+1]; j++) {
-        FUN25_CODE (d+1, X, stride_x, ofs_x, Y, stride_y, ofs_y, Z, stride_z, ofs_z);
-        ofs_x += inc_x;
-        ofs_y += inc_y;
-        ofs_z += inc_z;
-      }
+    for (int i = 0; i < Z->dim[d+1]; i++) {
+      FUN25_CODE (d+1, X, stride_x, ofs_x, Y, stride_y, ofs_y, Z, stride_z, ofs_z);
+      ofs_x += inc_x;
+      ofs_y += inc_y;
+      ofs_z += inc_z;
     }
   }
 
@@ -565,7 +564,12 @@ CAMLprim value FUN25_IMPL(
 
   caml_enter_blocking_section();  /* Allow other threads */
 
-  FUN25_CODE (0, X, stride_x, 0, Y, stride_y, 0, Z, stride_z, 0);
+  int ofs_z = 0;
+
+  for (int i = 0; i < Z->dim[0]; i++) {
+    FUN25_CODE (0, X, stride_x, 0, Y, stride_y, 0, Z, stride_z, ofs_z);
+    ofs_z += stride_z[0];
+  }
 
   caml_leave_blocking_section();  /* Disallow other threads */
 

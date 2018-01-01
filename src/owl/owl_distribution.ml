@@ -69,8 +69,6 @@ module Make (A : NdarraySig_Ext) = struct
     let sample t n =
       let s = A.shape t.mu in
       let z = A.empty s in
-      let k = A.kind t.mu in
-      Owl_dense_common._owl_dist_gaussian k;
       ()
 
   end
