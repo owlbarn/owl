@@ -1,5 +1,7 @@
 (jbuild_version 1)
 
+(copy_files# random/*)
+
 (library (
   (name owl)
   (public_name owl)
