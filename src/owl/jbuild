@@ -8,7 +8,9 @@
   (wrapped false)
   (c_names (
     owl_common_c
-    owl_random
+    owl_random_rng
+    owl_random_pdf
+    owl_random_cdf
     owl_ziggurat
     owl_dense_common_c
     owl_dense_common_cmp
