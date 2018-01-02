@@ -1,5 +1,6 @@
 (jbuild_version 1)
 
+(copy_files# maths/*)
 (copy_files# stats/*)
 
 (library (
