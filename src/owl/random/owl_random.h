@@ -34,7 +34,7 @@ extern sfmt_t sfmt_state;
 #define sfmt_f64_3 sfmt_genrand_real3(&sfmt_state)
 
 
-// Ziggurat PRNG and functions
+// Various PRNG and functions
 
 #define f32_exponential rng_std_exp()
 
@@ -90,6 +90,11 @@ extern long rng_zipf(double);
 
 extern long rng_geometric(double);
 
+extern long rng_hypergeometric(long, long, long);
+
+extern double rng_triangular(double, double, double);
+
+extern long rng_logseries(double);
 
 
 #endif // OWL_RANDOM_H

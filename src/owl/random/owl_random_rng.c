@@ -407,7 +407,7 @@ long rng_hypergeometric_hrua(long good, long bad, long sample) {
 #undef D2
 
 
-long rnbg_hypergeometric(long good, long bad, long sample) {
+long rng_hypergeometric(long good, long bad, long sample) {
   if (sample > 10)
     return rng_hypergeometric_hrua(good, bad, sample);
   else
