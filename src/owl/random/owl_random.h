@@ -66,6 +66,30 @@ extern double rng_std_cauchy();
 
 extern double rng_std_t(double);
 
+extern double rng_vonmises(double, double);
+
+extern double rng_pareto(double);
+
+extern double rng_weibull(double);
+
+extern double rng_power(double);
+
+extern double rng_laplace(double, double);
+
+extern double rng_gumbel(double, double);
+
+extern double rng_logistic(double, double);
+
+extern double rng_lognormal(double, double);
+
+extern double rng_rayleigh(double);
+
+extern double rng_wald(double, double);
+
+extern long rng_zipf(double);
+
+extern long rng_geometric(double);
+
 
 
 #endif // OWL_RANDOM_H

@@ -92,15 +92,11 @@ double rng_beta(double a, double b)
 
 
 long rng_poisson_mult(double lam) {
-  long X;
-  double prod, U, enlam;
-
-  enlam = exp(-lam);
-  X = 0;
-  prod = 1.0;
+  long X = 0;
+  double enlam = exp(-lam);
+  double prod = 1.;
   while (1) {
-    U = sfmt_f64_3;
-    prod *= U;
+    prod *= sfmt_f64_3;
     if (prod > enlam)
       X += 1;
     else
@@ -110,33 +106,30 @@ long rng_poisson_mult(double lam) {
 
 
 static double loggam(double x) {
-  double x0, x2, xp, gl, gl0;
-  long k, n;
-
   static double a[10] = {
     8.333333333333333e-02,-2.777777777777778e-03,
     7.936507936507937e-04,-5.952380952380952e-04,
     8.417508417508418e-04,-1.917526917526918e-03,
     6.410256410256410e-03,-2.955065359477124e-02,
     1.796443723688307e-01,-1.39243221690590e+00 };
-  x0 = x;
-  n = 0;
-  if ((x == 1.0) || (x == 2.0))
-    return 0.0;
-  else if (x <= 7.0) {
+  double x0 = x;
+  long n = 0;
+  if ((x == 1.) || (x == 2.))
+    return 0.;
+  else if (x <= 7.) {
     n = (long) (7 - x);
     x0 = x + n;
   }
-  x2 = 1. / (x0 * x0);
-  xp = 2 * M_PI;
-  gl0 = a[9];
-  for (k = 8; k >= 0; k--) {
-      gl0 *= x2;
-      gl0 += a[k];
+  double x2 = 1. / (x0 * x0);
+  double xp = 2 * M_PI;
+  double gl0 = a[9];
+  for (long k = 8; k >= 0; k--) {
+    gl0 *= x2;
+    gl0 += a[k];
   }
-  gl = gl0 / x0 + 0.5 * log(xp) + (x0 - 0.5) * log(x0) - x0;
+  double gl = gl0 / x0 + 0.5 * log(xp) + (x0 - 0.5) * log(x0) - x0;
   if (x <= 7.0) {
-    for (k=1; k<=n; k++) {
+    for (long k = 1; k <= n; k++) {
       gl -= log(x0 - 1.0);
       x0 -= 1.0;
     }
@@ -144,9 +137,6 @@ static double loggam(double x) {
   return gl;
 }
 
-
-#define LS2PI 0.91893853320467267
-#define TWELFTH 0.083333333333333333333333
 
 long rng_poisson_ptrs(double lam) {
   long k;
@@ -192,13 +182,11 @@ double rng_std_cauchy() {
 
 
 double rng_std_t(double df) {
-  double N, G, X;
-
-  N = rng_std_gaussian();
-  G = rng_std_gamma(df / 2);
-  X = sqrt(df / 2) * N / sqrt(G);
-  return X;
+  double N = rng_std_gaussian();
+  double G = rng_std_gamma(df / 2);
+  return (sqrt(df / 2) * N / sqrt(G));
 }
+
 
 double rng_vonmises(double mu, double kappa) {
   double s;
@@ -213,9 +201,9 @@ double rng_vonmises(double mu, double kappa) {
     if (kappa < 1e-5)
       s = (1./kappa + kappa);
     else {
-      double r = 1 + sqrt(1 + 4*kappa*kappa);
-      double rho = (r - sqrt(2*r)) / (2*kappa);
-      s = (1 + rho*rho)/(2*rho);
+      double r = 1 + sqrt(1 + 4 * kappa * kappa);
+      double rho = (r - sqrt(2 * r)) / (2 * kappa);
+      s = (1 + rho * rho) / (2 * rho);
     }
 
     while (1) {
@@ -294,14 +282,11 @@ double rng_rayleigh(double mode) {
 
 
 double rng_wald(double mu, double lambda) {
-  double U, X, Y;
-  double mu_2l;
-
-  mu_2l = mu / (2 * lambda);
-  Y = rng_std_gaussian();
+  double mu_2l = mu / (2 * lambda);
+  double Y = rng_std_gaussian();
   Y = mu * Y * Y;
-  X = mu + mu_2l * (Y - sqrt(4 * lambda * Y + Y * Y));
-  U = sfmt_f64_3;
+  double X = mu + mu_2l * (Y - sqrt(4 * lambda * Y + Y * Y));
+  double U = sfmt_f64_3;
   if (U <= mu / (mu + X))
     return X;
   else
@@ -314,18 +299,159 @@ long rng_zipf(double a) {
   double b = pow(2., am1);
 
   while (1) {
-    double T, U, V, X;
-
-    U = 1. - sfmt_f64_3;
-    V = sfmt_f64_3;
-    X = floor(pow(U, -1. / am1));
+    double U = 1. - sfmt_f64_3;
+    double V = sfmt_f64_3;
+    double X = floor(pow(U, -1. / am1));
 
     if (X > LONG_MAX || X < 1.0)
       continue;
 
-    T = pow(1. + 1. / X, am1);
+    double T = pow(1. + 1. / X, am1);
     if (V * X * (T - 1.) / (b - 1.) <= T / b)
         return (long) X;
+  }
+}
+
+
+long rng_geometric_search(double p) {
+  long X = 1;
+  double sum = p;
+  double prod = p;
+  double q = 1. - p;
+  double U = sfmt_f64_3;
+  while (U > sum) {
+    prod *= q;
+    sum += prod;
+    X++;
+  }
+  return X;
+}
+
+
+long rng_geometric_inversion(double p) {
+  return (long) ceil(log(1. - sfmt_f64_3) / log(1. - p));
+}
+
+
+long rng_geometric(double p) {
+  if (p >= 0.333333333333333333333333)
+    return rng_geometric_search(p);
+  else
+    return rng_geometric_inversion(p);
+}
+
+
+long rng_hypergeometric_hyp(long good, long bad, long sample) {
+  long d1 = bad + good - sample;
+  double d2 = good < bad ? good : bad;
+
+  double Y = d2;
+  long K = sample;
+  while (Y > 0.0) {
+    Y -= (long) floor(sfmt_f64_3 + Y / (d1 + K));
+    K--;
+    if (K == 0) break;
+  }
+  long Z = d2 - Y;
+  if (good > bad) Z = sample - Z;
+  return Z;
+}
+
+
+#define D1 1.7155277699214135  /* D1 = 2*sqrt(2/e) */
+#define D2 0.8989161620588988  /* D2 = 3 - 2*sqrt(3/e) */
+long rng_hypergeometric_hrua(long good, long bad, long sample) {
+  long mingoodbad, maxgoodbad, popsize, m, d9;
+  double d4, d5, d6, d7, d8, d10, d11;
+  long Z;
+  double T, W, X, Y;
+
+  mingoodbad = fmin(good, bad);
+  popsize = good + bad;
+  maxgoodbad = fmax(good, bad);
+  m = fmin(sample, popsize - sample);
+  d4 = ((double) mingoodbad) / popsize;
+  d5 = 1. - d4;
+  d6 = m * d4 + 0.5;
+  d7 = sqrt((double) (popsize - m) * sample * d4 * d5 / (popsize - 1) + 0.5);
+  d8 = D1 * d7 + D2;
+  d9 = (long) floor((double) (m + 1) * (mingoodbad + 1) / (popsize + 2));
+  d10 = (loggam(d9 + 1) + loggam(mingoodbad - d9 + 1) + loggam(m - d9 + 1) +
+         loggam(maxgoodbad - m + d9 + 1));
+  d11 = fmin(fmin(m, mingoodbad) + 1., floor(d6 + 16 * d7));
+
+  while (1) {
+    X = sfmt_f64_3;
+    Y = sfmt_f64_3;
+    W = d6 + d8 * (Y - 0.5) / X;
+
+    if ((W < 0.) || (W >= d11)) continue;
+
+    Z = (long) floor(W);
+    T = d10 - (loggam(Z + 1) + loggam(mingoodbad - Z + 1) + loggam(m - Z + 1) +
+               loggam(maxgoodbad - m + Z + 1));
+
+    if ((X * (4. - X) - 3.) <= T) break;
+    if (X * (X - T) >= 1) continue;
+    if (2. * log(X) <= T) break;
+  }
+
+  /* this is a correction to HRUA* by Ivan Frohne in rv.py */
+  if (good > bad) Z = m - Z;
+  /* another fix from rv.py to allow sample to exceed popsize/2 */
+  if (m < sample) Z = good - Z;
+
+  return Z;
+}
+#undef D1
+#undef D2
+
+
+long rnbg_hypergeometric(long good, long bad, long sample) {
+  if (sample > 10)
+    return rng_hypergeometric_hrua(good, bad, sample);
+  else
+    return rng_hypergeometric_hyp(good, bad, sample);
+}
+
+
+double rng_triangular(double left, double mode, double right) {
+  double base = right - left;
+  double leftbase = mode - left;
+  double ratio = leftbase / base;
+  double leftprod = leftbase*base;
+  double rightprod = (right - mode) * base;
+  double U = sfmt_f64_3;
+
+  if (U <= ratio)
+    return left + sqrt(U * leftprod);
+  else
+    return right - sqrt((1. - U) * rightprod);
+}
+
+
+long rng_logseries(double p) {
+  double q, r, U, V;
+  long result;
+
+  r = log(1. - p);
+
+  while (1) {
+    V = sfmt_f64_3;
+    if (V >= p)
+      return 1;
+    U = sfmt_f64_3;
+    q = 1. - exp(r * U);
+    if (V <= q * q) {
+      result = (long) floor(1 + log(V) / log(q));
+      if (result < 1)
+        continue;
+      else
+        return result;
+    }
+    if (V >= q) return 1;
+
+    return 2;
   }
 }
 
