@@ -1,6 +1,6 @@
 (jbuild_version 1)
 
-(copy_files# random/*)
+(copy_files# stats/*)
 
 (library (
   (name owl)
@@ -8,10 +8,8 @@
   (wrapped false)
   (c_names (
     owl_common_c
-    owl_random_rng
-    owl_random_pdf
-    owl_random_cdf
-    owl_ziggurat
+    owl_stats_ziggurat
+    owl_stats_distribution
     owl_dense_common_c
     owl_dense_common_cmp
     owl_dense_common_map

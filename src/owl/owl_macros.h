@@ -15,7 +15,7 @@
 #include <caml/signals.h>
 #include <caml/threads.h>
 #include <math.h>
-#include "owl_random.h"
+#include "owl_stats.h"
 
 // Define the structure for complex numbers
 

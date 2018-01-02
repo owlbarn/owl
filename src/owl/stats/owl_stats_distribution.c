@@ -3,12 +3,14 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-#include "owl_random.h"
+#include "owl_stats.h"
 
 // FIXME: currently in owl_common_c.c file.
 // Internal state of SFMT PRNG
 // sfmt_t sfmt_state;
 
+
+/* Gamma distribution */
 
 double rng_std_gamma(double shape) {
   double b, c;

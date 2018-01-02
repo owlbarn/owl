@@ -4,8 +4,8 @@
  */
 
 
-#ifndef OWL_RANDOM_H
-#define OWL_RANDOM_H
+#ifndef OWL_STATS_H
+#define OWL_STATS_H
 
 #include <math.h>
 #include <limits.h>
@@ -97,4 +97,4 @@ extern double rng_triangular(double, double, double);
 extern long rng_logseries(double);
 
 
-#endif // OWL_RANDOM_H
+#endif // OWL_STATS_H

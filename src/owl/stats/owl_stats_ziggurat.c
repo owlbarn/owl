@@ -1,6 +1,6 @@
 
 #include <math.h>
-#include "owl_random.h"
+#include "owl_stats.h"
 
 static uint32_t kn[128], ke[256];
 static float wn[128], fn[128], we[256], fe[256];
