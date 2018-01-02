@@ -8,6 +8,7 @@
 #define OWL_RANDOM_H
 
 #include <math.h>
+#include <limits.h>
 
 
 // SFMT PRNG and its internal state

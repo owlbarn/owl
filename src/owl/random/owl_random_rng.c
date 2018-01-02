@@ -245,4 +245,89 @@ double rng_vonmises(double mu, double kappa) {
 }
 
 
+double rng_pareto(double a) {
+  return exp(rng_std_exp() / a) - 1.;
+}
+
+
+double rng_weibull(double a) {
+  return pow(rng_std_exp(), 1. / a);
+}
+
+
+double rng_power(double a) {
+  return pow(1. - exp(-rng_std_exp()), 1. / a);
+}
+
+
+double rng_laplace(double loc, double scale) {
+  double U = sfmt_f64_3;
+
+  if (U < 0.5)
+    U = loc + scale * log(U + U);
+  else
+    U = loc - scale * log(2. - U - U);
+  return U;
+}
+
+
+double rng_gumbel(double loc, double scale) {
+  double U = 1. - sfmt_f64_3;
+  return loc - scale * log(-log(U));
+}
+
+
+double rng_logistic(double loc, double scale) {
+  double U = sfmt_f64_3;
+  return loc + scale * log(U/(1. - U));
+}
+
+
+double rng_lognormal(double mu, double sigma) {
+  return exp(rng_gaussian(mu, sigma));
+}
+
+
+double rng_rayleigh(double mode) {
+  return mode * sqrt(-2. * log(1. - sfmt_f64_3));
+}
+
+
+double rng_wald(double mu, double lambda) {
+  double U, X, Y;
+  double mu_2l;
+
+  mu_2l = mu / (2 * lambda);
+  Y = rng_std_gaussian();
+  Y = mu * Y * Y;
+  X = mu + mu_2l * (Y - sqrt(4 * lambda * Y + Y * Y));
+  U = sfmt_f64_3;
+  if (U <= mu / (mu + X))
+    return X;
+  else
+    return (mu * mu / X);
+}
+
+
+long rng_zipf(double a) {
+  double am1 = a - 1.;
+  double b = pow(2., am1);
+
+  while (1) {
+    double T, U, V, X;
+
+    U = 1. - sfmt_f64_3;
+    V = sfmt_f64_3;
+    X = floor(pow(U, -1. / am1));
+
+    if (X > LONG_MAX || X < 1.0)
+      continue;
+
+    T = pow(1. + 1. / X, am1);
+    if (V * X * (T - 1.) / (b - 1.) <= T / b)
+        return (long) X;
+  }
+}
+
+
 // ends here
