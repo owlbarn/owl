@@ -10,7 +10,61 @@
 // sfmt_t sfmt_state;
 
 
-/* Gamma distribution */
+/** Constant definition **/
+
+#define PI 3.1415926535897932384626433
+
+#define _norm_pdf_C 2.5066282746310005024157652    // sqrt(2 * PI)
+
+#define _norm_pdf_logC 0.9189385332046727417803297 // log(_norm_pdf_C);
+
+
+/** Gaussian distribution **/
+
+double gaussian_pdf(double x) {
+  return exp(-x * x / 2.) / _norm_pdf_C;
+}
+
+double gaussian_logpdf(double x) {
+  return (-x * x / 2. - _norm_pdf_logC);
+}
+
+double gaussian_cdf(double x) {
+  // TODO: not implemented yet
+  return 0.;
+}
+
+double gaussian_logcdf(double x) {
+  // TODO: not implemented yet
+  return 0.;
+}
+
+double gaussian_ppf(double q) {
+  // TODO: not implemented yet
+  return 0.;
+}
+
+double gaussian_sf(double x) {
+  // TODO: not implemented yet
+  return 0.;
+}
+
+double gaussian_logsf(double x) {
+  // TODO: not implemented yet
+  return 0.;
+}
+
+double gaussian_isf(double q) {
+  // TODO: not implemented yet
+  return 0.;
+}
+
+double gaussian_entropy(double x) {
+  return 0.5 * (log(2 * PI) + 1);
+}
+
+
+/** Gamma distribution **/
 
 double std_gamma_rvs(double shape) {
   double b, c;
@@ -58,6 +112,8 @@ double gamma_rvs(double shape, double scale) {
 }
 
 
+/** Beta distribution **/
+
 double beta_rvs(double a, double b)
 {
   double Ga, Gb;
@@ -92,6 +148,8 @@ double beta_rvs(double a, double b)
   }
 }
 
+
+/** Poisson distribution **/
 
 long poisson_mult_rvs(double lam) {
   long X = 0;
@@ -178,10 +236,14 @@ long poisson_rvs(double lam)
 }
 
 
+/** Cauchy distribution **/
+
 double std_cauchy_rvs() {
   return std_gaussian_rvs() / std_gaussian_rvs();
 }
 
+
+/** Student-t distribution **/
 
 double std_t_rvs(double df) {
   double N = std_gaussian_rvs();
@@ -189,6 +251,8 @@ double std_t_rvs(double df) {
   return (sqrt(df / 2) * N / sqrt(G));
 }
 
+
+/** von Mises distribution **/
 
 double vonmises_rvs(double mu, double kappa) {
   double s;
@@ -235,20 +299,28 @@ double vonmises_rvs(double mu, double kappa) {
 }
 
 
+/** Pareto distribution **/
+
 double pareto_rvs(double a) {
   return exp(std_exp_rvs() / a) - 1.;
 }
 
+
+/** Weibull distribution **/
 
 double weibull_rvs(double a) {
   return pow(std_exp_rvs(), 1. / a);
 }
 
 
+/** Power distribution **/
+
 double power_rvs(double a) {
   return pow(1. - exp(-std_exp_rvs()), 1. / a);
 }
 
+
+/** Laplace distribution **/
 
 double laplace_rvs(double loc, double scale) {
   double U = sfmt_f64_3;
@@ -261,11 +333,15 @@ double laplace_rvs(double loc, double scale) {
 }
 
 
+/** Gumbel distribution **/
+
 double gumbel_rvs(double loc, double scale) {
   double U = 1. - sfmt_f64_3;
   return loc - scale * log(-log(U));
 }
 
+
+/** Logistic distribution **/
 
 double logistic_rvs(double loc, double scale) {
   double U = sfmt_f64_3;
@@ -273,15 +349,21 @@ double logistic_rvs(double loc, double scale) {
 }
 
 
+/** Log-normal distribution **/
+
 double lognormal_rvs(double mu, double sigma) {
   return exp(gaussian_rvs(mu, sigma));
 }
 
 
+/** Rayleigh distribution **/
+
 double rayleigh_rvs(double mode) {
   return mode * sqrt(-2. * log(1. - sfmt_f64_3));
 }
 
+
+/** Wald distribution **/
 
 double wald_rvs(double mu, double lambda) {
   double mu_2l = mu / (2 * lambda);
@@ -295,6 +377,8 @@ double wald_rvs(double mu, double lambda) {
     return (mu * mu / X);
 }
 
+
+/** Zipf distribution **/
 
 long zipf_rvs(double a) {
   double am1 = a - 1.;
@@ -314,6 +398,8 @@ long zipf_rvs(double a) {
   }
 }
 
+
+/** Geometric distribution **/
 
 long geometric_search_rvs(double p) {
   long X = 1;
@@ -343,6 +429,8 @@ long geometric_rvs(double p) {
 }
 
 
+/** Cauchy distribution **/
+
 long hypergeometric_hyp_rvs(long good, long bad, long sample) {
   long d1 = bad + good - sample;
   double d2 = good < bad ? good : bad;
@@ -362,7 +450,7 @@ long hypergeometric_hyp_rvs(long good, long bad, long sample) {
 
 #define D1 1.7155277699214135  /* D1 = 2*sqrt(2/e) */
 #define D2 0.8989161620588988  /* D2 = 3 - 2*sqrt(3/e) */
-long rng_hypergeometric_hrua(long good, long bad, long sample) {
+long hypergeometric_hrua_rvs(long good, long bad, long sample) {
   long mingoodbad, maxgoodbad, popsize, m, d9;
   double d4, d5, d6, d7, d8, d10, d11;
   long Z;
@@ -409,13 +497,17 @@ long rng_hypergeometric_hrua(long good, long bad, long sample) {
 #undef D2
 
 
-long rng_hypergeometric(long good, long bad, long sample) {
+/** Hypergeometric distribution **/
+
+long hypergeometric_rvs(long good, long bad, long sample) {
   if (sample > 10)
-    return rng_hypergeometric_hrua(good, bad, sample);
+    return hypergeometric_hrua_rvs(good, bad, sample);
   else
     return hypergeometric_hyp_rvs(good, bad, sample);
 }
 
+
+/** Triangular distribution **/
 
 double triangular_rvs(double left, double mode, double right) {
   double base = right - left;
@@ -431,6 +523,8 @@ double triangular_rvs(double left, double mode, double right) {
     return right - sqrt((1. - U) * rightprod);
 }
 
+
+/** Log-Series distribution **/
 
 long logseries_rvs(double p) {
   double q, r, U, V;

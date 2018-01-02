@@ -3,7 +3,6 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-
 #ifndef OWL_STATS_H
 #define OWL_STATS_H
 
@@ -90,7 +89,7 @@ extern long zipf_rvs(double);
 
 extern long geometric_rvs(double);
 
-extern long rng_hypergeometric(long, long, long);
+extern long hypergeometric_rvs(long, long, long);
 
 extern double triangular_rvs(double, double, double);
 
