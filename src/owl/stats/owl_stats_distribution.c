@@ -12,16 +12,16 @@
 
 /* Gamma distribution */
 
-double rng_std_gamma(double shape) {
+double std_gamma_rvs(double shape) {
   double b, c;
   double U, V, X, Y;
 
   if (shape == 1.0)
-    return rng_std_exp();
+    return std_exp_rvs();
   else if (shape < 1.0) {
     for ( ; ; ) {
       U = sfmt_f64_3;
-      V = rng_std_exp();
+      V = std_exp_rvs();
       if (U <= 1.0 - shape) {
         X = pow(U, 1. / shape);
         if (X <= V)
@@ -53,12 +53,12 @@ double rng_std_gamma(double shape) {
 }
 
 
-double rng_gamma(double shape, double scale) {
-  return scale * rng_std_gamma(shape);
+double gamma_rvs(double shape, double scale) {
+  return scale * std_gamma_rvs(shape);
 }
 
 
-double rng_beta(double a, double b)
+double beta_rvs(double a, double b)
 {
   double Ga, Gb;
 
@@ -86,14 +86,14 @@ double rng_beta(double a, double b)
     }
   }
   else {
-    Ga = rng_std_gamma(a);
-    Gb = rng_std_gamma(b);
+    Ga = std_gamma_rvs(a);
+    Gb = std_gamma_rvs(b);
     return Ga / (Ga + Gb);
   }
 }
 
 
-long rng_poisson_mult(double lam) {
+long poisson_mult_rvs(double lam) {
   long X = 0;
   double enlam = exp(-lam);
   double prod = 1.;
@@ -140,7 +140,7 @@ static double loggam(double x) {
 }
 
 
-long rng_poisson_ptrs(double lam) {
+long poisson_ptrs_rvs(double lam) {
   long k;
   double U, V, slam, loglam, a, b, invalpha, vr, us;
 
@@ -167,30 +167,30 @@ long rng_poisson_ptrs(double lam) {
 }
 
 
-long rng_poisson(double lam)
+long poisson_rvs(double lam)
 {
   if (lam == 0)
     return 0;
   else if (lam >= 10)
-    return rng_poisson_ptrs(lam);
+    return poisson_ptrs_rvs(lam);
   else
-    return rng_poisson_mult(lam);
+    return poisson_mult_rvs(lam);
 }
 
 
-double rng_std_cauchy() {
-  return rng_std_gaussian() / rng_std_gaussian();
+double std_cauchy_rvs() {
+  return std_gaussian_rvs() / std_gaussian_rvs();
 }
 
 
-double rng_std_t(double df) {
-  double N = rng_std_gaussian();
-  double G = rng_std_gamma(df / 2);
+double std_t_rvs(double df) {
+  double N = std_gaussian_rvs();
+  double G = std_gamma_rvs(df / 2);
   return (sqrt(df / 2) * N / sqrt(G));
 }
 
 
-double rng_vonmises(double mu, double kappa) {
+double vonmises_rvs(double mu, double kappa) {
   double s;
   double U, V, W, Y, Z;
   double result, mod;
@@ -235,22 +235,22 @@ double rng_vonmises(double mu, double kappa) {
 }
 
 
-double rng_pareto(double a) {
-  return exp(rng_std_exp() / a) - 1.;
+double pareto_rvs(double a) {
+  return exp(std_exp_rvs() / a) - 1.;
 }
 
 
-double rng_weibull(double a) {
-  return pow(rng_std_exp(), 1. / a);
+double weibull_rvs(double a) {
+  return pow(std_exp_rvs(), 1. / a);
 }
 
 
-double rng_power(double a) {
-  return pow(1. - exp(-rng_std_exp()), 1. / a);
+double power_rvs(double a) {
+  return pow(1. - exp(-std_exp_rvs()), 1. / a);
 }
 
 
-double rng_laplace(double loc, double scale) {
+double laplace_rvs(double loc, double scale) {
   double U = sfmt_f64_3;
 
   if (U < 0.5)
@@ -261,31 +261,31 @@ double rng_laplace(double loc, double scale) {
 }
 
 
-double rng_gumbel(double loc, double scale) {
+double gumbel_rvs(double loc, double scale) {
   double U = 1. - sfmt_f64_3;
   return loc - scale * log(-log(U));
 }
 
 
-double rng_logistic(double loc, double scale) {
+double logistic_rvs(double loc, double scale) {
   double U = sfmt_f64_3;
   return loc + scale * log(U/(1. - U));
 }
 
 
-double rng_lognormal(double mu, double sigma) {
-  return exp(rng_gaussian(mu, sigma));
+double lognormal_rvs(double mu, double sigma) {
+  return exp(gaussian_rvs(mu, sigma));
 }
 
 
-double rng_rayleigh(double mode) {
+double rayleigh_rvs(double mode) {
   return mode * sqrt(-2. * log(1. - sfmt_f64_3));
 }
 
 
-double rng_wald(double mu, double lambda) {
+double wald_rvs(double mu, double lambda) {
   double mu_2l = mu / (2 * lambda);
-  double Y = rng_std_gaussian();
+  double Y = std_gaussian_rvs();
   Y = mu * Y * Y;
   double X = mu + mu_2l * (Y - sqrt(4 * lambda * Y + Y * Y));
   double U = sfmt_f64_3;
@@ -296,7 +296,7 @@ double rng_wald(double mu, double lambda) {
 }
 
 
-long rng_zipf(double a) {
+long zipf_rvs(double a) {
   double am1 = a - 1.;
   double b = pow(2., am1);
 
@@ -315,7 +315,7 @@ long rng_zipf(double a) {
 }
 
 
-long rng_geometric_search(double p) {
+long geometric_search_rvs(double p) {
   long X = 1;
   double sum = p;
   double prod = p;
@@ -330,20 +330,20 @@ long rng_geometric_search(double p) {
 }
 
 
-long rng_geometric_inversion(double p) {
+long geometric_inversion_rvs(double p) {
   return (long) ceil(log(1. - sfmt_f64_3) / log(1. - p));
 }
 
 
-long rng_geometric(double p) {
+long geometric_rvs(double p) {
   if (p >= 0.333333333333333333333333)
-    return rng_geometric_search(p);
+    return geometric_search_rvs(p);
   else
-    return rng_geometric_inversion(p);
+    return geometric_inversion_rvs(p);
 }
 
 
-long rng_hypergeometric_hyp(long good, long bad, long sample) {
+long hypergeometric_hyp_rvs(long good, long bad, long sample) {
   long d1 = bad + good - sample;
   double d2 = good < bad ? good : bad;
 
@@ -413,11 +413,11 @@ long rng_hypergeometric(long good, long bad, long sample) {
   if (sample > 10)
     return rng_hypergeometric_hrua(good, bad, sample);
   else
-    return rng_hypergeometric_hyp(good, bad, sample);
+    return hypergeometric_hyp_rvs(good, bad, sample);
 }
 
 
-double rng_triangular(double left, double mode, double right) {
+double triangular_rvs(double left, double mode, double right) {
   double base = right - left;
   double leftbase = mode - left;
   double ratio = leftbase / base;
@@ -432,7 +432,7 @@ double rng_triangular(double left, double mode, double right) {
 }
 
 
-long rng_logseries(double p) {
+long logseries_rvs(double p) {
   double q, r, U, V;
   long result;
 

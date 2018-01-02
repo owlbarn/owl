@@ -36,65 +36,65 @@ extern sfmt_t sfmt_state;
 
 // Various PRNG and functions
 
-#define f32_exponential rng_std_exp()
+#define f32_exponential std_exp_rvs()
 
-#define f64_exponential rng_std_exp()
+#define f64_exponential std_exp_rvs()
 
-#define f32_gaussian rng_std_gaussian()
+#define f32_gaussian std_gaussian_rvs()
 
-#define f64_gaussian rng_std_gaussian()
+#define f64_gaussian std_gaussian_rvs()
 
 extern void ziggurat_init();
 
-extern float rng_std_exp();
+extern float std_exp_rvs();
 
-extern float rng_exp(float);
+extern float exp_rvs(float);
 
-extern float rng_std_gaussian();
+extern float std_gaussian_rvs();
 
-extern float rng_gaussian(float, float);
+extern float gaussian_rvs(float, float);
 
-extern double rng_std_gamma();
+extern double std_gamma_rvs();
 
-extern double rng_gamma(double, double);
+extern double gamma_rvs(double, double);
 
-extern double rng_beta(double, double);
+extern double beta_rvs(double, double);
 
-extern long rng_poisson(double);
+extern long poisson_rvs(double);
 
-extern double rng_std_cauchy();
+extern double std_cauchy_rvs();
 
-extern double rng_std_t(double);
+extern double std_t_rvs(double);
 
-extern double rng_vonmises(double, double);
+extern double vonmises_rvs(double, double);
 
-extern double rng_pareto(double);
+extern double pareto_rvs(double);
 
-extern double rng_weibull(double);
+extern double weibull_rvs(double);
 
-extern double rng_power(double);
+extern double power_rvs(double);
 
-extern double rng_laplace(double, double);
+extern double laplace_rvs(double, double);
 
-extern double rng_gumbel(double, double);
+extern double gumbel_rvs(double, double);
 
-extern double rng_logistic(double, double);
+extern double logistic_rvs(double, double);
 
-extern double rng_lognormal(double, double);
+extern double lognormal_rvs(double, double);
 
-extern double rng_rayleigh(double);
+extern double rayleigh_rvs(double);
 
-extern double rng_wald(double, double);
+extern double wald_rvs(double, double);
 
-extern long rng_zipf(double);
+extern long zipf_rvs(double);
 
-extern long rng_geometric(double);
+extern long geometric_rvs(double);
 
 extern long rng_hypergeometric(long, long, long);
 
-extern double rng_triangular(double, double, double);
+extern double triangular_rvs(double, double, double);
 
-extern long rng_logseries(double);
+extern long logseries_rvs(double);
 
 
 #endif // OWL_STATS_H

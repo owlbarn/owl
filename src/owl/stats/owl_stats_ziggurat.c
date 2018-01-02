@@ -1,5 +1,6 @@
 
 #include <math.h>
+#include <stdlib.h>
 #include "owl_stats.h"
 
 static uint32_t kn[128], ke[256];
@@ -7,7 +8,7 @@ static float wn[128], fn[128], we[256], fe[256];
 
 
 // init the internal state for exponential prng
-inline float rng_std_exp ( ) {
+inline float std_exp_rvs ( ) {
   float value, x;
   uint32_t jz = sfmt_rand32;
   uint32_t iz = ( jz & 255 );
@@ -41,13 +42,13 @@ inline float rng_std_exp ( ) {
 }
 
 
-inline float rng_exp (float lambda) {
-  return (lambda * rng_std_exp());
+inline float exp_rvs (float lambda) {
+  return (lambda * std_exp_rvs());
 }
 
 
 // init the internal state for exponential prng
-void rng_std_exp_init ( ) {
+void std_exp_rvs_init ( ) {
   double de = 7.697117470131487;
   const double m2 = 2147483648.0;
   double te = 7.697117470131487;
@@ -74,14 +75,14 @@ void rng_std_exp_init ( ) {
 }
 
 // generate a prng of gaussian distribution
-inline float rng_std_gaussian ( ) {
+inline float std_gaussian_rvs ( ) {
   const float r = 3.442620;
   float value, x, y;
 
   int hz = ( int ) sfmt_rand32;
   uint32_t iz = ( hz & 127 );
 
-  if ( fabs ( hz ) < kn[iz] )
+  if ( abs ( hz ) < kn[iz] )
     value = ( float ) ( hz ) * wn[iz];
   else {
     for ( ; ; ) {
@@ -106,7 +107,7 @@ inline float rng_std_gaussian ( ) {
       hz = ( int ) sfmt_rand32;
       iz = ( hz & 127 );
 
-      if ( fabs ( hz ) < kn[iz] ) {
+      if ( abs ( hz ) < kn[iz] ) {
         value = ( float ) ( hz ) * wn[iz];
         break;
       }
@@ -117,13 +118,13 @@ inline float rng_std_gaussian ( ) {
 }
 
 
-inline float rng_gaussian (float mu, float sigma) {
-  return (mu + sigma * rng_std_gaussian());
+inline float gaussian_rvs (float mu, float sigma) {
+  return (mu + sigma * std_gaussian_rvs());
 }
 
 
 // init the internal state for gaussian prng
-void rng_std_gaussian_init ( ) {
+void std_gaussian_rvs_init ( ) {
   double dn = 3.442619855899;
   const double m1 = 2147483648.0;
   double tn = 3.442619855899;
@@ -152,6 +153,6 @@ void rng_std_gaussian_init ( ) {
 
 // init the internal table of ziggurat module
 void ziggurat_init ( ) {
-  rng_std_exp_init();
-  rng_std_gaussian_init();
+  std_exp_rvs_init();
+  std_gaussian_rvs_init();
 }

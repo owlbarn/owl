@@ -46,24 +46,24 @@ CAMLprim value owl_ziggurat_init()
 }
 
 
-CAMLprim value owl_rng_std_gaussian()
+CAMLprim value owl_std_gaussian_rvs()
 {
   CAMLparam0();
 
   caml_enter_blocking_section();
-  double x = rng_std_gaussian ();
+  double x = std_gaussian_rvs ();
   caml_leave_blocking_section();
 
   CAMLreturn(caml_copy_double(x));
 }
 
 
-CAMLprim value owl_rng_std_exp()
+CAMLprim value owl_std_exp_rvs()
 {
   CAMLparam0();
 
   caml_enter_blocking_section();
-  double x = rng_std_exp ();
+  double x = std_exp_rvs ();
   caml_leave_blocking_section();
 
   CAMLreturn(caml_copy_double(x));

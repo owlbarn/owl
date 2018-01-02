@@ -13,9 +13,9 @@ module PRNG = struct
 
   external ziggurat_init : unit -> unit = "owl_ziggurat_init"
 
-  external rand_exp : unit -> float = "owl_rng_std_exp"
+  external rand_exp : unit -> float = "owl_std_exp_rvs"
 
-  external rand_gaussian : unit -> float = "owl_rng_std_gaussian"
+  external rand_gaussian : unit -> float = "owl_std_gaussian_rvs"
 
   let init () =
     Random.self_init ();
