@@ -1,6 +1,7 @@
 (jbuild_version 1)
 
 (copy_files# maths/*)
+(copy_files# maths/cdflib/*)
 (copy_files# maths/cephes/*)
 (copy_files# stats/*)
 
@@ -20,6 +21,9 @@
     owl_cblas_generated_stub
     owl_lapacke_generated_stub
     SFMT
+    ; CDFlib
+    dcdflib
+    ipmpar
     ; Cephes
     sf_error
     airy
@@ -90,6 +94,8 @@ zetac
     -march=native -mfpmath=sse -funroll-loops -ffast-math -flto
     ; For Mersenne Twister RNG
     -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing
+    ;  Turn off the warning on logical op parentheses
+    -Wno-logical-op-parentheses
     ; For development use before release
     ; -Wall -pedantic -Wextra -Wunused
   ))

@@ -4,14 +4,14 @@
 #include "cdflib.h"
 /*
 -----------------------------------------------------------------------
- 
+
      COMPUTATION OF LN(GAMMA(B)/GAMMA(A+B)) WHEN B .GE. 8
- 
+
                          --------
- 
+
      IN THIS ALGORITHM, DEL(X) IS THE FUNCTION DEFINED BY
      LN(GAMMA(X)) = (X - 0.5)*LN(X) - X + 0.5*LN(2*PI) + DEL(X).
- 
+
 -----------------------------------------------------------------------
 */
 double algdiv(double *a,double *b)
@@ -70,35 +70,35 @@ S30:
 double alngam(double *x)
 /*
 **********************************************************************
- 
+
      double alngam(double *x)
                  double precision LN of the GAMma function
- 
- 
+
+
                               Function
- 
- 
+
+
      Returns the natural logarithm of GAMMA(X).
- 
- 
+
+
                               Arguments
- 
- 
+
+
      X --> value at which scaled log gamma is to be returned
                     X is DOUBLE PRECISION
- 
- 
+
+
                               Method
- 
- 
+
+
      If X .le. 6.0, then use recursion to get X below 3
      then apply rational approximation number 5236 of
      Hart et al, Computer Approximations, John Wiley and
      Sons, NY, 1968.
- 
+
      If X .gt. 6.0, then use recursion to get X to at least 12 and
      then use formula 5423 of the same source.
- 
+
 **********************************************************************
 */
 {
@@ -354,11 +354,11 @@ S80:
 double bcorr(double *a0,double *b0)
 /*
 -----------------------------------------------------------------------
- 
+
      EVALUATION OF  DEL(A0) + DEL(B0) - DEL(A0 + B0)  WHERE
      LN(GAMMA(A)) = (A - 0.5)*LN(A) - A + 0.5*LN(2*PI) + DEL(A).
      IT IS ASSUMED THAT A0 .GE. 8 AND B0 .GE. 8.
- 
+
 -----------------------------------------------------------------------
 */
 {
@@ -757,23 +757,23 @@ void bratio(double *a,double *b,double *x,double *y,double *w,
 	    double *w1,int *ierr)
 /*
 -----------------------------------------------------------------------
- 
+
             EVALUATION OF THE INCOMPLETE BETA FUNCTION IX(A,B)
- 
+
                      --------------------
- 
+
      IT IS ASSUMED THAT A AND B ARE NONNEGATIVE, AND THAT X .LE. 1
      AND Y = 1 - X.  BRATIO ASSIGNS W AND W1 THE VALUES
- 
+
                       W  = IX(A,B)
                       W1 = 1 - IX(A,B)
- 
+
      IERR IS A VARIABLE THAT REPORTS THE STATUS OF THE RESULTS.
      IF NO INPUT ERRORS ARE DETECTED THEN IERR IS SET TO 0 AND
      W AND W1 ARE COMPUTED. OTHERWISE, IF AN ERROR IS DETECTED,
      THEN W AND W1 ARE ASSIGNED THE VALUE 0 AND IERR IS SET TO
      ONE OF THE FOLLOWING VALUES ...
- 
+
         IERR = 1  IF A OR B IS NEGATIVE
         IERR = 2  IF A = B = 0
         IERR = 3  IF X .LT. 0 OR X .GT. 1
@@ -781,7 +781,7 @@ void bratio(double *a,double *b,double *x,double *y,double *w,
         IERR = 5  IF X + Y .NE. 1
         IERR = 6  IF X = A = 0
         IERR = 7  IF Y = B = 0
- 
+
 --------------------
      WRITTEN BY ALFRED H. MORRIS, JR.
         NAVAL SURFACE WARFARE CENTER
@@ -4667,54 +4667,54 @@ void cumbet(double *x,double *y,double *a,double *b,double *cum,
 	    double *ccum)
 /*
 **********************************************************************
- 
+
      void cumbet(double *x,double *y,double *a,double *b,double *cum,
             double *ccum)
 
           Double precision cUMulative incomplete BETa distribution
- 
- 
+
+
                               Function
- 
- 
+
+
      Calculates the cdf to X of the incomplete beta distribution
      with parameters a and b.  This is the integral from 0 to x
      of (1/B(a,b))*f(t)) where f(t) = t**(a-1) * (1-t)**(b-1)
- 
- 
+
+
                               Arguments
- 
- 
+
+
      X --> Upper limit of integration.
                                         X is DOUBLE PRECISION
- 
+
      Y --> 1 - X.
                                         Y is DOUBLE PRECISION
- 
+
      A --> First parameter of the beta distribution.
                                         A is DOUBLE PRECISION
- 
+
      B --> Second parameter of the beta distribution.
                                         B is DOUBLE PRECISION
- 
+
      CUM <-- Cumulative incomplete beta distribution.
                                         CUM is DOUBLE PRECISION
- 
+
      CCUM <-- Compliment of Cumulative incomplete beta distribution.
                                         CCUM is DOUBLE PRECISION
- 
- 
+
+
                               Method
- 
- 
+
+
      Calls the routine BRATIO.
- 
+
                                    References
- 
+
      Didonato, Armido R. and Morris, Alfred H. Jr. (1992) Algorithim
      708 Significant Digit Computation of the Incomplete Beta Function
      Ratios. ACM ToMS, Vol.18, No. 3, Sept. 1992, 360-373.
- 
+
 **********************************************************************
 */
 {
@@ -4743,49 +4743,49 @@ void cumbin(double *s,double *xn,double *pr,double *ompr,
 	    double *cum,double *ccum)
 /*
 **********************************************************************
- 
+
      void cumbin(double *s,double *xn,double *pr,double *ompr,
             double *cum,double *ccum)
 
                     CUmulative BINomial distribution
- 
- 
+
+
                               Function
- 
- 
+
+
      Returns the probability   of 0  to  S  successes in  XN   binomial
      trials, each of which has a probability of success, PBIN.
- 
- 
+
+
                               Arguments
- 
- 
+
+
      S --> The upper limit of cumulation of the binomial distribution.
                                                   S is DOUBLE PRECISION
- 
+
      XN --> The number of binomial trials.
                                                   XN is DOUBLE PRECISIO
- 
+
      PBIN --> The probability of success in each binomial trial.
                                                   PBIN is DOUBLE PRECIS
- 
+
      OMPR --> 1 - PBIN
                                                   OMPR is DOUBLE PRECIS
- 
+
      CUM <-- Cumulative binomial distribution.
                                                   CUM is DOUBLE PRECISI
- 
+
      CCUM <-- Compliment of Cumulative binomial distribution.
                                                   CCUM is DOUBLE PRECIS
- 
- 
+
+
                               Method
- 
- 
+
+
      Formula  26.5.24    of   Abramowitz  and    Stegun,  Handbook   of
      Mathematical   Functions (1966) is   used  to reduce the  binomial
      distribution  to  the  cumulative    beta distribution.
- 
+
 **********************************************************************
 */
 {
@@ -4808,40 +4808,40 @@ S20:
 void cumchi(double *x,double *df,double *cum,double *ccum)
 /*
 **********************************************************************
- 
+
      void cumchi(double *x,double *df,double *cum,double *ccum)
              CUMulative of the CHi-square distribution
- 
- 
+
+
                               Function
- 
- 
+
+
      Calculates the cumulative chi-square distribution.
- 
- 
+
+
                               Arguments
- 
- 
+
+
      X       --> Upper limit of integration of the
                  chi-square distribution.
                                                  X is DOUBLE PRECISION
- 
+
      DF      --> Degrees of freedom of the
                  chi-square distribution.
                                                  DF is DOUBLE PRECISION
- 
+
      CUM <-- Cumulative chi-square distribution.
                                                  CUM is DOUBLE PRECISIO
- 
+
      CCUM <-- Compliment of Cumulative chi-square distribution.
                                                  CCUM is DOUBLE PRECISI
- 
- 
+
+
                               Method
- 
- 
+
+
      Calls incomplete gamma function (CUMGAM)
- 
+
 **********************************************************************
 */
 {
@@ -4859,72 +4859,72 @@ void cumchn(double *x,double *df,double *pnonc,double *cum,
 	    double *ccum)
 /*
 **********************************************************************
- 
+
      void cumchn(double *x,double *df,double *pnonc,double *cum,
             double *ccum)
 
              CUMulative of the Non-central CHi-square distribution
- 
- 
+
+
                               Function
- 
- 
+
+
      Calculates     the       cumulative      non-central    chi-square
      distribution, i.e.,  the probability   that  a   random   variable
      which    follows  the  non-central chi-square  distribution,  with
      non-centrality  parameter    PNONC  and   continuous  degrees   of
      freedom DF, is less than or equal to X.
- 
- 
+
+
                               Arguments
- 
- 
+
+
      X       --> Upper limit of integration of the non-central
                  chi-square distribution.
                                                  X is DOUBLE PRECISION
- 
+
      DF      --> Degrees of freedom of the non-central
                  chi-square distribution.
                                                  DF is DOUBLE PRECISION
- 
+
      PNONC   --> Non-centrality parameter of the non-central
                  chi-square distribution.
                                                  PNONC is DOUBLE PRECIS
- 
+
      CUM <-- Cumulative non-central chi-square distribution.
                                                  CUM is DOUBLE PRECISIO
- 
+
      CCUM <-- Compliment of Cumulative non-central chi-square distribut
                                                  CCUM is DOUBLE PRECISI
- 
- 
+
+
                               Method
- 
- 
+
+
      Uses  formula  26.4.25   of  Abramowitz  and  Stegun, Handbook  of
      Mathematical    Functions,  US   NBS   (1966)    to calculate  the
      non-central chi-square.
- 
- 
+
+
                               Variables
- 
- 
+
+
      EPS     --- Convergence criterion.  The sum stops when a
                  term is less than EPS*SUM.
                                                  EPS is DOUBLE PRECISIO
- 
+
      NTIRED  --- Maximum number of terms to be evaluated
                  in each sum.
                                                  NTIRED is INTEGER
- 
+
      QCONV   --- .TRUE. if convergence achieved -
                  i.e., program did not stop on NTIRED criterion.
                                                  QCONV is LOGICAL
- 
+
      CCUM <-- Compliment of Cumulative non-central
               chi-square distribution.
                                                  CCUM is DOUBLE PRECISI
- 
+
 **********************************************************************
 */
 {
@@ -5071,49 +5071,49 @@ S80:
 void cumf(double *f,double *dfn,double *dfd,double *cum,double *ccum)
 /*
 **********************************************************************
- 
+
      void cumf(double *f,double *dfn,double *dfd,double *cum,double *ccum)
                     CUMulative F distribution
- 
- 
+
+
                               Function
- 
- 
+
+
      Computes  the  integral from  0  to  F of  the f-density  with DFN
      and DFD degrees of freedom.
- 
- 
+
+
                               Arguments
- 
- 
+
+
      F --> Upper limit of integration of the f-density.
                                                   F is DOUBLE PRECISION
- 
+
      DFN --> Degrees of freedom of the numerator sum of squares.
                                                   DFN is DOUBLE PRECISI
- 
+
      DFD --> Degrees of freedom of the denominator sum of squares.
                                                   DFD is DOUBLE PRECISI
- 
+
      CUM <-- Cumulative f distribution.
                                                   CUM is DOUBLE PRECISI
- 
+
      CCUM <-- Compliment of Cumulative f distribution.
                                                   CCUM is DOUBLE PRECIS
- 
- 
+
+
                               Method
- 
- 
+
+
      Formula  26.5.28 of  Abramowitz and   Stegun   is  used to  reduce
      the cumulative F to a cumulative beta distribution.
- 
- 
+
+
                               Note
- 
- 
+
+
      If F is less than or equal to 0, 0 is returned.
- 
+
 **********************************************************************
 */
 {
@@ -5156,63 +5156,63 @@ void cumfnc(double *f,double *dfn,double *dfd,double *pnonc,
 	    double *cum,double *ccum)
 /*
 **********************************************************************
- 
+
                F -NON- -C-ENTRAL F DISTRIBUTION
- 
- 
- 
+
+
+
                               Function
- 
- 
+
+
      COMPUTES NONCENTRAL F DISTRIBUTION WITH DFN AND DFD
      DEGREES OF FREEDOM AND NONCENTRALITY PARAMETER PNONC
- 
- 
+
+
                               Arguments
- 
- 
+
+
      X --> UPPER LIMIT OF INTEGRATION OF NONCENTRAL F IN EQUATION
- 
+
      DFN --> DEGREES OF FREEDOM OF NUMERATOR
- 
+
      DFD -->  DEGREES OF FREEDOM OF DENOMINATOR
- 
+
      PNONC --> NONCENTRALITY PARAMETER.
- 
+
      CUM <-- CUMULATIVE NONCENTRAL F DISTRIBUTION
- 
+
      CCUM <-- COMPLIMENT OF CUMMULATIVE
- 
- 
+
+
                               Method
- 
- 
+
+
      USES FORMULA 26.6.20 OF REFERENCE FOR INFINITE SERIES.
      SERIES IS CALCULATED BACKWARD AND FORWARD FROM J = LAMBDA/2
      (THIS IS THE TERM WITH THE LARGEST POISSON WEIGHT) UNTIL
      THE CONVERGENCE CRITERION IS MET.
- 
+
      FOR SPEED, THE INCOMPLETE BETA FUNCTIONS ARE EVALUATED
      BY FORMULA 26.5.16.
- 
- 
+
+
                REFERENCE
- 
- 
+
+
      HANDBOOD OF MATHEMATICAL FUNCTIONS
      EDITED BY MILTON ABRAMOWITZ AND IRENE A. STEGUN
      NATIONAL BUREAU OF STANDARDS APPLIED MATEMATICS SERIES - 55
      MARCH 1965
      P 947, EQUATIONS 26.6.17, 26.6.18
- 
- 
+
+
                               Note
- 
- 
+
+
      THE SUM CONTINUES UNTIL A SUCCEEDING TERM IS LESS THAN EPS
      TIMES THE SUM (OR THE SUM IS LESS THAN 1.0E-20).  EPS IS
      SET TO 1.0E-4 IN A DATA STATEMENT WHICH CAN BE CHANGED.
- 
+
 **********************************************************************
 */
 {
@@ -5325,43 +5325,43 @@ S70:
 void cumgam(double *x,double *a,double *cum,double *ccum)
 /*
 **********************************************************************
- 
+
      void cumgam(double *x,double *a,double *cum,double *ccum)
            Double precision cUMulative incomplete GAMma distribution
- 
- 
+
+
                               Function
- 
- 
+
+
      Computes   the  cumulative        of    the     incomplete   gamma
      distribution, i.e., the integral from 0 to X of
           (1/GAM(A))*EXP(-T)*T**(A-1) DT
      where GAM(A) is the complete gamma function of A, i.e.,
           GAM(A) = integral from 0 to infinity of
                     EXP(-T)*T**(A-1) DT
- 
- 
+
+
                               Arguments
- 
- 
+
+
      X --> The upper limit of integration of the incomplete gamma.
                                                 X is DOUBLE PRECISION
- 
+
      A --> The shape parameter of the incomplete gamma.
                                                 A is DOUBLE PRECISION
- 
+
      CUM <-- Cumulative incomplete gamma distribution.
                                         CUM is DOUBLE PRECISION
- 
+
      CCUM <-- Compliment of Cumulative incomplete gamma distribution.
                                                 CCUM is DOUBLE PRECISIO
- 
- 
+
+
                               Method
- 
- 
+
+
      Calls the routine GRATIO.
- 
+
 **********************************************************************
 */
 {
@@ -5385,55 +5385,55 @@ void cumnbn(double *s,double *xn,double *pr,double *ompr,
 	    double *cum,double *ccum)
 /*
 **********************************************************************
- 
+
      void cumnbn(double *s,double *xn,double *pr,double *ompr,
             double *cum,double *ccum)
 
                     CUmulative Negative BINomial distribution
- 
- 
+
+
                               Function
- 
- 
+
+
      Returns the probability that it there will be S or fewer failures
      before there are XN successes, with each binomial trial having
      a probability of success PR.
- 
+
      Prob(# failures = S | XN successes, PR)  =
                         ( XN + S - 1 )
                         (            ) * PR^XN * (1-PR)^S
                         (      S     )
- 
- 
+
+
                               Arguments
- 
- 
+
+
      S --> The number of failures
                                                   S is DOUBLE PRECISION
- 
+
      XN --> The number of successes
                                                   XN is DOUBLE PRECISIO
- 
+
      PR --> The probability of success in each binomial trial.
                                                   PR is DOUBLE PRECISIO
- 
+
      OMPR --> 1 - PR
                                                   OMPR is DOUBLE PRECIS
- 
+
      CUM <-- Cumulative negative binomial distribution.
                                                   CUM is DOUBLE PRECISI
- 
+
      CCUM <-- Compliment of Cumulative negative binomial distribution.
                                                   CCUM is DOUBLE PRECIS
- 
- 
+
+
                               Method
- 
- 
+
+
      Formula  26.5.26    of   Abramowitz  and    Stegun,  Handbook   of
      Mathematical   Functions (1966) is   used  to reduce the  negative
      binomial distribution to the cumulative beta distribution.
- 
+
 **********************************************************************
 */
 {
@@ -5449,26 +5449,26 @@ static double T1;
 void cumnor(double *arg,double *result,double *ccum)
 /*
 **********************************************************************
- 
+
      void cumnor(double *arg,double *result,double *ccum)
- 
- 
+
+
                               Function
- 
- 
+
+
      Computes the cumulative  of    the  normal   distribution,   i.e.,
      the integral from -infinity to x of
           (1/sqrt(2*pi)) exp(-u*u/2) du
- 
+
      X --> Upper limit of integration.
                                         X is DOUBLE PRECISION
- 
+
      RESULT <-- Cumulative normal distribution.
                                         RESULT is DOUBLE PRECISION
- 
+
      CCUM <-- Compliment of Cumulative normal distribution.
                                         CCUM is DOUBLE PRECISION
- 
+
      Renaming of function ANORM from:
 
      Cody, W.D. (1993). "ALGORITHM 715: SPECFUN - A Portabel FORTRAN
@@ -5477,19 +5477,19 @@ void cumnor(double *arg,double *result,double *ccum)
 
      with slight modifications to return ccum and to deal with
      machine constants.
- 
+
 **********************************************************************
   Original Comments:
 ------------------------------------------------------------------
- 
+
  This function evaluates the normal distribution function:
- 
+
                               / x
                      1       |       -t*t/2
           P(x) = ----------- |      e       dt
                  sqrt(2 pi)  |
                              /-oo
- 
+
    The main computation evaluates near-minimax approximations
    derived from those in "Rational Chebyshev approximations for
    the error function" by W. J. Cody, Math. Comp., 1969, 631-637.
@@ -5499,38 +5499,38 @@ void cumnor(double *arg,double *result,double *ccum)
    depends on the arithmetic system, the compiler, the intrinsic
    functions, and proper selection of the machine-dependent
    constants.
- 
+
 *******************************************************************
 *******************************************************************
- 
+
  Explanation of machine-dependent constants.
- 
+
    MIN   = smallest machine representable number.
- 
+
    EPS   = argument below which anorm(x) may be represented by
            0.5  and above which  x*x  will not underflow.
            A conservative value is the largest machine number X
            such that   1.0 + X = 1.0   to machine precision.
 *******************************************************************
 *******************************************************************
- 
+
  Error returns
- 
+
   The program returns  ANORM = 0     for  ARG .LE. XLOW.
- 
- 
+
+
  Intrinsic functions required are:
- 
+
      ABS, AINT, EXP
- 
- 
+
+
   Author: W. J. Cody
           Mathematics and Computer Science Division
           Argonne National Laboratory
           Argonne, IL 60439
- 
+
   Latest modification: March 15, 1992
- 
+
 ------------------------------------------------------------------
 */
 {
@@ -5660,41 +5660,41 @@ static double del,eps,temp,x,xden,xnum,y,xsq,min;
 void cumpoi(double *s,double *xlam,double *cum,double *ccum)
 /*
 **********************************************************************
- 
+
      void cumpoi(double *s,double *xlam,double *cum,double *ccum)
                     CUMulative POIsson distribution
- 
- 
+
+
                               Function
- 
- 
+
+
      Returns the  probability  of  S   or  fewer events in  a   Poisson
      distribution with mean XLAM.
- 
- 
+
+
                               Arguments
- 
- 
+
+
      S --> Upper limit of cumulation of the Poisson.
                                                   S is DOUBLE PRECISION
- 
+
      XLAM --> Mean of the Poisson distribution.
                                                   XLAM is DOUBLE PRECIS
- 
+
      CUM <-- Cumulative poisson distribution.
                                         CUM is DOUBLE PRECISION
- 
+
      CCUM <-- Compliment of Cumulative poisson distribution.
                                                   CCUM is DOUBLE PRECIS
- 
- 
+
+
                               Method
- 
- 
+
+
      Uses formula  26.4.21   of   Abramowitz and  Stegun,  Handbook  of
      Mathematical   Functions  to reduce   the   cumulative Poisson  to
      the cumulative chi-square distribution.
- 
+
 **********************************************************************
 */
 {
@@ -5711,40 +5711,40 @@ static double chi,df;
 void cumt(double *t,double *df,double *cum,double *ccum)
 /*
 **********************************************************************
- 
+
      void cumt(double *t,double *df,double *cum,double *ccum)
                     CUMulative T-distribution
- 
- 
+
+
                               Function
- 
- 
+
+
      Computes the integral from -infinity to T of the t-density.
- 
- 
+
+
                               Arguments
- 
- 
+
+
      T --> Upper limit of integration of the t-density.
                                                   T is DOUBLE PRECISION
- 
+
      DF --> Degrees of freedom of the t-distribution.
                                                   DF is DOUBLE PRECISIO
- 
+
      CUM <-- Cumulative t-distribution.
                                                   CCUM is DOUBLE PRECIS
- 
+
      CCUM <-- Compliment of Cumulative t-distribution.
                                                   CCUM is DOUBLE PRECIS
- 
- 
+
+
                               Method
- 
- 
+
+
      Formula 26.5.27   of     Abramowitz  and   Stegun,    Handbook  of
      Mathematical Functions  is   used   to  reduce the  t-distribution
      to an incomplete beta.
- 
+
 **********************************************************************
 */
 {
@@ -5773,34 +5773,34 @@ S20:
 double dbetrm(double *a,double *b)
 /*
 **********************************************************************
- 
+
      double dbetrm(double *a,double *b)
           Double Precision Sterling Remainder for Complete
                     Beta Function
- 
- 
+
+
                               Function
- 
- 
+
+
      Log(Beta(A,B)) = Lgamma(A) + Lgamma(B) - Lgamma(A+B)
      where Lgamma is the log of the (complete) gamma function
- 
+
      Let ZZ be approximation obtained if each log gamma is approximated
      by Sterling's formula, i.e.,
      Sterling(Z) = LOG( SQRT( 2*PI ) ) + ( Z-0.5 ) * LOG( Z ) - Z
- 
+
      Returns Log(Beta(A,B)) - ZZ
- 
- 
+
+
                               Arguments
- 
- 
+
+
      A --> One argument of the Beta
                     DOUBLE PRECISION A
- 
+
      B --> The other argument of the Beta
                     DOUBLE PRECISION B
- 
+
 **********************************************************************
 */
 {
@@ -5823,30 +5823,30 @@ static double dbetrm,T1,T2,T3;
 double devlpl(double a[],int *n,double *x)
 /*
 **********************************************************************
- 
+
      double devlpl(double a[],int *n,double *x)
               Double precision EVALuate a PoLynomial at X
- 
- 
+
+
                               Function
- 
- 
+
+
      returns
           A(1) + A(2)*X + ... + A(N)*X**(N-1)
- 
- 
+
+
                               Arguments
- 
- 
+
+
      A --> Array of coefficients of the polynomial.
                                         A is DOUBLE PRECISION(N)
- 
+
      N --> Length of A, also degree of polynomial - 1.
                                         N is INTEGER
- 
+
      X --> Point at which the polynomial is to be evaluated.
                                         X is DOUBLE PRECISION
- 
+
 **********************************************************************
 */
 {
@@ -5864,27 +5864,27 @@ static int i;
 double dexpm1(double *x)
 /*
 **********************************************************************
- 
+
      double dexpm1(double *x)
             Evaluation of the function EXP(X) - 1
- 
- 
+
+
                               Arguments
- 
- 
+
+
      X --> Argument at which exp(x)-1 desired
                     DOUBLE PRECISION X
- 
- 
+
+
                               Method
- 
- 
+
+
      Renaming of function rexp from code of:
- 
+
      DiDinato, A. R. and Morris,  A.   H.  Algorithm 708: Significant
      Digit Computation of the Incomplete  Beta  Function Ratios.  ACM
      Trans. Math.  Softw. 18 (1993), 360-373.
- 
+
 **********************************************************************
 */
 {
@@ -5914,41 +5914,41 @@ S20:
 double dinvnr(double *p,double *q)
 /*
 **********************************************************************
- 
+
      double dinvnr(double *p,double *q)
      Double precision NoRmal distribution INVerse
- 
- 
+
+
                               Function
- 
- 
+
+
      Returns X  such that CUMNOR(X)  =   P,  i.e., the  integral from -
      infinity to X of (1/SQRT(2*PI)) EXP(-U*U/2) dU is P
- 
- 
+
+
                               Arguments
- 
- 
+
+
      P --> The probability whose normal deviate is sought.
                     P is DOUBLE PRECISION
- 
+
      Q --> 1-P
                     P is DOUBLE PRECISION
- 
- 
+
+
                               Method
- 
- 
+
+
      The  rational   function   on  page 95    of Kennedy  and  Gentle,
      Statistical Computing, Marcel Dekker, NY , 1980 is used as a start
      value for the Newton method of finding roots.
- 
- 
+
+
                               Note
- 
- 
+
+
      If P or Q .lt. machine EPS returns +/- DINVNR(EPS)
- 
+
 **********************************************************************
 */
 {
@@ -6209,7 +6209,7 @@ S300:
     *status = 1;
     return;
 S310:
-    switch((int)i99999){case 1: goto S10;case 2: goto S20;case 3: goto S90;case 
+    switch((int)i99999){case 1: goto S10;case 2: goto S20;case 3: goto S90;case
       4: goto S130;case 5: goto S200;case 6: goto S270;default: break;}
 #undef qxmon
 }
@@ -6217,62 +6217,62 @@ void dinvr(int *status,double *x,double *fx,
 	   unsigned long *qleft,unsigned long *qhi)
 /*
 **********************************************************************
- 
+
      void dinvr(int *status,double *x,double *fx,
            unsigned long *qleft,unsigned long *qhi)
 
           Double precision
           bounds the zero of the function and invokes zror
                     Reverse Communication
- 
- 
+
+
                               Function
- 
- 
+
+
      Bounds the    function  and  invokes  ZROR   to perform the   zero
      finding.  STINVR  must  have   been  called  before this   routine
      in order to set its parameters.
- 
- 
+
+
                               Arguments
- 
- 
+
+
      STATUS <--> At the beginning of a zero finding problem, STATUS
                  should be set to 0 and INVR invoked.  (The value
                  of parameters other than X will be ignored on this cal
- 
+
                  When INVR needs the function evaluated, it will set
                  STATUS to 1 and return.  The value of the function
                  should be set in FX and INVR again called without
                  changing any of its other parameters.
- 
+
                  When INVR has finished without error, it will return
                  with STATUS 0.  In that case X is approximately a root
                  of F(X).
- 
+
                  If INVR cannot bound the function, it returns status
                  -1 and sets QLEFT and QHI.
                          INTEGER STATUS
- 
+
      X <-- The value of X at which F(X) is to be evaluated.
                          DOUBLE PRECISION X
- 
+
      FX --> The value of F(X) calculated when INVR returns with
             STATUS = 1.
                          DOUBLE PRECISION FX
- 
+
      QLEFT <-- Defined only if QMFINV returns .FALSE.  In that
           case it is .TRUE. If the stepping search terminated
           unsucessfully at SMALL.  If it is .FALSE. the search
           terminated unsucessfully at BIG.
                     QLEFT is LOGICAL
- 
+
      QHI <-- Defined only if QMFINV returns .FALSE.  In that
           case it is .TRUE. if F(X) .GT. Y at the termination
           of the search and .FALSE. if F(X) .LT. Y at the
           termination of the search.
                     QHI is LOGICAL
- 
+
 **********************************************************************
 */
 {
@@ -6352,37 +6352,37 @@ void dstinv(double *zsmall,double *zbig,double *zabsst,
 double dlanor(double *x)
 /*
 **********************************************************************
- 
+
      double dlanor(double *x)
            Double precision Logarith of the Asymptotic Normal
- 
- 
+
+
                               Function
- 
- 
+
+
       Computes the logarithm of the cumulative normal distribution
       from abs( x ) to infinity for abs( x ) >= 5.
- 
- 
+
+
                               Arguments
- 
- 
+
+
       X --> Value at which cumulative normal to be evaluated
                      DOUBLE PRECISION X
- 
- 
+
+
                               Method
- 
- 
+
+
       23 term expansion of formula 26.2.12 of Abramowitz and Stegun.
       The relative error at X = 5 is about 0.5E-5.
- 
- 
+
+
                               Note
- 
- 
+
+
       ABS(X) must be >= 5 else there is an error stop.
- 
+
 **********************************************************************
 */
 {
@@ -6411,33 +6411,33 @@ static double dlanor,approx,correc,xx,xx2,T2;
 double dln1mx(double *x)
 /*
 **********************************************************************
- 
+
      double dln1mx(double *x)
                Double precision LN(1-X)
- 
- 
+
+
                               Function
- 
- 
+
+
      Returns ln(1-x) for small x (good accuracy if x .le. 0.1).
      Note that the obvious code of
                LOG(1.0-X)
      won't work for small X because 1.0-X loses accuracy
- 
- 
+
+
                               Arguments
- 
- 
+
+
      X --> Value for which ln(1-x) is desired.
                                         X is DOUBLE PRECISION
- 
- 
+
+
                               Method
- 
- 
+
+
      If X > 0.1, the obvious code above is used ELSE
      The Taylor series for 1-x is expanded to 20 terms.
- 
+
 **********************************************************************
 */
 {
@@ -6453,35 +6453,35 @@ static double dln1mx,T1;
 double dln1px(double *a)
 /*
 **********************************************************************
- 
+
      double dln1px(double *a)
                Double precision LN(1+X)
- 
- 
+
+
                               Function
- 
- 
+
+
      Returns ln(1+x)
      Note that the obvious code of
                LOG(1.0+X)
      won't work for small X because 1.0+X loses accuracy
- 
- 
+
+
                               Arguments
- 
- 
+
+
      X --> Value for which ln(1-x) is desired.
                                         X is DOUBLE PRECISION
- 
- 
+
+
                               Method
- 
- 
+
+
      Renames ALNREL from:
      DiDinato, A. R. and Morris,  A.   H.  Algorithm 708: Significant
      Digit Computation of the Incomplete  Beta  Function Ratios.  ACM
      Trans. Math.  Softw. 18 (1993), 360-373.
- 
+
 **********************************************************************
 -----------------------------------------------------------------------
             EVALUATION OF THE FUNCTION LN(1 + A)
@@ -6513,35 +6513,35 @@ S10:
 double dlnbet(double *a0,double *b0)
 /*
 **********************************************************************
- 
+
      double dlnbet(a0,b0)
           Double precision LN of the complete BETa
- 
- 
+
+
                               Function
- 
- 
+
+
      Returns the natural log of the complete beta function,
      i.e.,
- 
+
                   ln( Gamma(a)*Gamma(b) / Gamma(a+b)
- 
- 
+
+
                               Arguments
- 
- 
+
+
    A,B --> The (symmetric) arguments to the complete beta
                   DOUBLE PRECISION A, B
- 
- 
+
+
                               Method
- 
- 
+
+
      Renames BETALN from:
      DiDinato, A. R. and Morris,  A.   H.  Algorithm 708: Significant
      Digit Computation of the Incomplete  Beta  Function Ratios.  ACM
      Trans. Math.  Softw. 18 (1993), 360-373.
- 
+
 **********************************************************************
 -----------------------------------------------------------------------
      EVALUATION OF THE LOGARITHM OF THE BETA FUNCTION
@@ -6650,32 +6650,32 @@ S110:
 double dlngam(double *a)
 /*
 **********************************************************************
- 
+
      double dlngam(double *a)
                  Double precision LN of the GAMma function
- 
- 
+
+
                               Function
- 
- 
+
+
      Returns the natural logarithm of GAMMA(X).
- 
- 
+
+
                               Arguments
- 
- 
+
+
      X --> value at which scaled log gamma is to be returned
                     X is DOUBLE PRECISION
- 
- 
+
+
                               Method
- 
- 
+
+
      Renames GAMLN from:
      DiDinato, A. R. and Morris,  A.   H.  Algorithm 708: Significant
      Digit Computation of the Incomplete  Beta  Function Ratios.  ACM
      Trans. Math.  Softw. 18 (1993), 360-373.
- 
+
 **********************************************************************
 -----------------------------------------------------------------------
             EVALUATION OF LN(GAMMA(A)) FOR POSITIVE A
@@ -6795,33 +6795,33 @@ S20:
 double dt1(double *p,double *q,double *df)
 /*
 **********************************************************************
- 
+
      double dt1(double *p,double *q,double *df)
      Double precision Initalize Approximation to
            INVerse of the cumulative T distribution
- 
- 
+
+
                               Function
- 
- 
+
+
      Returns  the  inverse   of  the T   distribution   function, i.e.,
      the integral from 0 to INVT of the T density is P. This is an
      initial approximation
- 
- 
+
+
                               Arguments
- 
- 
+
+
      P --> The p-value whose inverse from the T distribution is
           desired.
                     P is DOUBLE PRECISION
- 
+
      Q --> 1-P.
                     Q is DOUBLE PRECISION
- 
+
      DF --> Degrees of freedom of the T distribution.
                     DF is DOUBLE PRECISION
- 
+
 **********************************************************************
 */
 {
@@ -7022,65 +7022,65 @@ void dzror(int *status,double *x,double *fx,double *xlo,
 	   double *xhi,unsigned long *qleft,unsigned long *qhi)
 /*
 **********************************************************************
- 
+
      void dzror(int *status,double *x,double *fx,double *xlo,
            double *xhi,unsigned long *qleft,unsigned long *qhi)
 
      Double precision ZeRo of a function -- Reverse Communication
- 
- 
+
+
                               Function
- 
- 
+
+
      Performs the zero finding.  STZROR must have been called before
      this routine in order to set its parameters.
- 
- 
+
+
                               Arguments
- 
- 
+
+
      STATUS <--> At the beginning of a zero finding problem, STATUS
                  should be set to 0 and ZROR invoked.  (The value
                  of other parameters will be ignored on this call.)
- 
+
                  When ZROR needs the function evaluated, it will set
                  STATUS to 1 and return.  The value of the function
                  should be set in FX and ZROR again called without
                  changing any of its other parameters.
- 
+
                  When ZROR has finished without error, it will return
                  with STATUS 0.  In that case (XLO,XHI) bound the answe
- 
+
                  If ZROR finds an error (which implies that F(XLO)-Y an
                  F(XHI)-Y have the same sign, it returns STATUS -1.  In
                  this case, XLO and XHI are undefined.
                          INTEGER STATUS
- 
+
      X <-- The value of X at which F(X) is to be evaluated.
                          DOUBLE PRECISION X
- 
+
      FX --> The value of F(X) calculated when ZROR returns with
             STATUS = 1.
                          DOUBLE PRECISION FX
- 
+
      XLO <-- When ZROR returns with STATUS = 0, XLO bounds the
              inverval in X containing the solution below.
                          DOUBLE PRECISION XLO
- 
+
      XHI <-- When ZROR returns with STATUS = 0, XHI bounds the
              inverval in X containing the solution above.
                          DOUBLE PRECISION XHI
- 
+
      QLEFT <-- .TRUE. if the stepping search terminated unsucessfully
                 at XLO.  If it is .FALSE. the search terminated
                 unsucessfully at XHI.
                     QLEFT is LOGICAL
- 
+
      QHI <-- .TRUE. if F(X) .GT. Y at the termination of the
               search and .FALSE. if F(X) .LT. Y at the
               termination of the search.
                     QHI is LOGICAL
- 
+
 **********************************************************************
 */
 {
@@ -7205,7 +7205,7 @@ double erfc1(int *ind,double *x)
 /*
 -----------------------------------------------------------------------
          EVALUATION OF THE COMPLEMENTARY ERROR FUNCTION
- 
+
           ERFC1(IND,X) = ERFC(X)            IF IND = 0
           ERFC1(IND,X) = EXP(X*X)*ERFC(X)   OTHERWISE
 -----------------------------------------------------------------------
@@ -7341,10 +7341,10 @@ double exparg(int *l)
 --------------------------------------------------------------------
      IF L = 0 THEN  EXPARG(L) = THE LARGEST POSITIVE W FOR WHICH
      EXP(W) CAN BE COMPUTED.
- 
+
      IF L IS NONZERO THEN  EXPARG(L) = THE LARGEST NEGATIVE W FOR
      WHICH THE COMPUTED VALUE OF EXP(W) IS NONZERO.
- 
+
      NOTE... ONLY AN APPROXIMATE VALUE FOR EXPARG(L) IS NEEDED.
 --------------------------------------------------------------------
 */
@@ -7385,14 +7385,14 @@ S50:
 double fpser(double *a,double *b,double *x,double *eps)
 /*
 -----------------------------------------------------------------------
- 
+
                  EVALUATION OF I (A,B)
                                 X
- 
+
           FOR B .LT. MIN(EPS,EPS*A) AND X .LE. 0.5.
- 
+
 -----------------------------------------------------------------------
- 
+
                   SET  FPSER = X**A
 */
 {
@@ -7491,29 +7491,29 @@ void gaminv(double *a,double *x,double *x0,double *p,double *q,
 /*
  ----------------------------------------------------------------------
             INVERSE INCOMPLETE GAMMA RATIO FUNCTION
- 
+
      GIVEN POSITIVE A, AND NONEGATIVE P AND Q WHERE P + Q = 1.
      THEN X IS COMPUTED WHERE P(A,X) = P AND Q(A,X) = Q. SCHRODER
      ITERATION IS EMPLOYED. THE ROUTINE ATTEMPTS TO COMPUTE X
      TO 10 SIGNIFICANT DIGITS IF THIS IS POSSIBLE FOR THE
      PARTICULAR COMPUTER ARITHMETIC BEING USED.
- 
+
                       ------------
- 
+
      X IS A VARIABLE. IF P = 0 THEN X IS ASSIGNED THE VALUE 0,
      AND IF Q = 0 THEN X IS SET TO THE LARGEST FLOATING POINT
      NUMBER AVAILABLE. OTHERWISE, GAMINV ATTEMPTS TO OBTAIN
      A SOLUTION FOR P(A,X) = P AND Q(A,X) = Q. IF THE ROUTINE
      IS SUCCESSFUL THEN THE SOLUTION IS STORED IN X.
- 
+
      X0 IS AN OPTIONAL INITIAL APPROXIMATION FOR X. IF THE USER
      DOES NOT WISH TO SUPPLY AN INITIAL APPROXIMATION, THEN SET
      X0 .LE. 0.
- 
+
      IERR IS A VARIABLE THAT REPORTS THE STATUS OF THE RESULTS.
      WHEN THE ROUTINE TERMINATES, IERR HAS ONE OF THE FOLLOWING
      VALUES ...
- 
+
        IERR =  0    THE SOLUTION WAS OBTAINED. ITERATION WAS
                     NOT USED.
        IERR.GT.0    THE SOLUTION WAS OBTAINED. IERR ITERATIONS
@@ -7952,14 +7952,14 @@ S10:
 double Xgamm(double *a)
 /*
 -----------------------------------------------------------------------
- 
+
          EVALUATION OF THE GAMMA FUNCTION FOR REAL ARGUMENTS
- 
+
                            -----------
- 
+
      GAMMA(A) IS ASSIGNED THE VALUE 0 WHEN THE GAMMA FUNCTION CANNOT
      BE COMPUTED.
- 
+
 -----------------------------------------------------------------------
      WRITTEN BY ALFRED H. MORRIS, JR.
           NAVAL SURFACE WEAPONS CENTER
@@ -8206,12 +8206,12 @@ void gratio(double *a,double *x,double *ans,double *qans,int *ind)
  ----------------------------------------------------------------------
         EVALUATION OF THE INCOMPLETE GAMMA RATIO FUNCTIONS
                       P(A,X) AND Q(A,X)
- 
+
                         ----------
- 
+
      IT IS ASSUMED THAT A AND X ARE NONNEGATIVE, WHERE A AND X
      ARE NOT BOTH 0.
- 
+
      ANS AND QANS ARE VARIABLES. GRATIO ASSIGNS ANS THE VALUE
      P(A,X) AND QANS THE VALUE Q(A,X). IND MAY BE ANY INTEGER.
      IF IND = 0 THEN THE USER IS REQUESTING AS MUCH ACCURACY AS
@@ -8219,7 +8219,7 @@ void gratio(double *a,double *x,double *ans,double *qans,int *ind)
      IND = 1 THEN ACCURACY IS REQUESTED TO WITHIN 1 UNIT OF THE
      6-TH SIGNIFICANT DIGIT, AND IF IND .NE. 0,1 THEN ACCURACY
      IS REQUESTED TO WITHIN 1 UNIT OF THE 3RD SIGNIFICANT DIGIT.
- 
+
      ERROR RETURN ...
         ANS IS ASSIGNED THE VALUE 2 WHEN A OR X IS NEGATIVE,
      WHEN A*X = 0, OR WHEN P(A,X) AND Q(A,X) ARE INDETERMINANT.
@@ -8648,18 +8648,18 @@ S20:
 double psi(double *xx)
 /*
 ---------------------------------------------------------------------
- 
+
                  EVALUATION OF THE DIGAMMA FUNCTION
- 
+
                            -----------
- 
+
      PSI(XX) IS ASSIGNED THE VALUE 0 WHEN THE DIGAMMA FUNCTION CANNOT
      BE COMPUTED.
- 
+
      THE MAIN COMPUTATION INVOLVES EVALUATION OF RATIONAL CHEBYSHEV
      APPROXIMATIONS PUBLISHED IN MATH. COMP. 27, 123-127(1973) BY
      CODY, STRECOK AND THACHER.
- 
+
 ---------------------------------------------------------------------
      PSI WAS WRITTEN AT ARGONNE NATIONAL LABORATORY FOR THE FUNPACK
      PACKAGE OF SPECIAL FUNCTION SUBROUTINES. PSI WAS MODIFIED BY
@@ -9004,19 +9004,19 @@ S40:
 double spmpar(int *i)
 /*
 -----------------------------------------------------------------------
- 
+
      SPMPAR PROVIDES THE SINGLE PRECISION MACHINE CONSTANTS FOR
      THE COMPUTER BEING USED. IT IS ASSUMED THAT THE ARGUMENT
      I IS AN INTEGER HAVING ONE OF THE VALUES 1, 2, OR 3. IF THE
      SINGLE PRECISION ARITHMETIC BEING USED HAS M BASE B DIGITS AND
      ITS SMALLEST AND LARGEST EXPONENTS ARE EMIN AND EMAX, THEN
- 
+
         SPMPAR(1) = B**(1 - M), THE MACHINE PRECISION,
- 
+
         SPMPAR(2) = B**(EMIN - 1), THE SMALLEST MAGNITUDE,
- 
+
         SPMPAR(3) = B**EMAX*(1 - B**(-M)), THE LARGEST MAGNITUDE.
- 
+
 -----------------------------------------------------------------------
      WRITTEN BY
         ALFRED H. MORRIS, JR.
@@ -9070,32 +9070,32 @@ S20:
 double stvaln(double *p)
 /*
 **********************************************************************
- 
+
      double stvaln(double *p)
                     STarting VALue for Neton-Raphon
                 calculation of Normal distribution Inverse
- 
- 
+
+
                               Function
- 
- 
+
+
      Returns X  such that CUMNOR(X)  =   P,  i.e., the  integral from -
      infinity to X of (1/SQRT(2*PI)) EXP(-U*U/2) dU is P
- 
- 
+
+
                               Arguments
- 
- 
+
+
      P --> The probability whose normal deviate is sought.
                     P is DOUBLE PRECISION
- 
- 
+
+
                               Method
- 
- 
+
+
      The  rational   function   on  page 95    of Kennedy  and  Gentle,
      Statistical Computing, Marcel Dekker, NY , 1980.
- 
+
 **********************************************************************
 */
 {
