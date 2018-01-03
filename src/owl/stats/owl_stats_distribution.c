@@ -160,9 +160,7 @@ double beta_cdf(double x, double a, double b) {
 }
 
 double beta_ppf(double q, double a, double b) {
-  // TODO: not implemented yet.
-  //return btdtri(a, b, q);
-  return 0.;
+  return btdtri(a, b, q);
 }
 
 

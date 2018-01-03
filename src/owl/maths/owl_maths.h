@@ -64,6 +64,11 @@ extern "C" {
 #define OWL_SQRT1_2l  0.707106781186547524400844362104849039L /* 1/sqrt(2) */
 
 
+/* Aliases of Cephes functions */
+
+#define btdtri incbi
+
+
 /* float C99 math functions */
 
 #define npy_asinh(X) asinh(X)
