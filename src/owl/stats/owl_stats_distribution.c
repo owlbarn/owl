@@ -20,39 +20,43 @@
 
 /** Gaussian distribution **/
 
-double gaussian_pdf(double x) {
-  return exp(-x * x / 2.) / _norm_pdf_C;
+double gaussian_pdf(double x, double mu, double sigma) {
+  double u = (x - mu) / sigma;
+  return exp(-u * u / 2.) / (_norm_pdf_C * sigma);
 }
 
-double gaussian_logpdf(double x) {
-  return (-x * x / 2. - _norm_pdf_logC);
+double gaussian_logpdf(double x, double mu, double sigma) {
+  double u = (x - mu) / sigma;
+  return (-u * u / 2. - _norm_pdf_logC - sigma);
 }
 
-inline double gaussian_cdf(double x) {
-  return ndtr(x);
+double gaussian_cdf(double x, double mu, double sigma) {
+  double u = (x - mu) / sigma;
+  return ndtr(u);
 }
 
-double gaussian_logcdf(double x) {
-  return log(ndtr(x));
+double gaussian_logcdf(double x, double mu, double sigma) {
+  return log(gaussian_cdf(x, mu, sigma));
 }
 
-double gaussian_ppf(double q) {
-  return ndtri(q);
+double gaussian_ppf(double q, double mu, double sigma) {
+  double u = (q - mu) / sigma;
+  return ndtri(u);
 }
 
-double gaussian_sf(double x) {
-  return gaussian_cdf(-x);
+double gaussian_sf(double x, double mu, double sigma) {
+  return gaussian_cdf(-x, mu, sigma);
 }
 
-double gaussian_logsf(double x) {
-  return gaussian_logcdf(-x);
+double gaussian_logsf(double x, double mu, double sigma) {
+  return gaussian_logcdf(-x, mu, sigma);
 }
 
-double gaussian_isf(double q) {
-  return -gaussian_sf(q);
+double gaussian_isf(double q, double mu, double sigma) {
+  return -gaussian_sf(q, mu, sigma);
 }
 
-double gaussian_entropy(double x) {
+double gaussian_entropy() {
   return 0.5 * (log(2 * OWL_PI) + 1);
 }
 
@@ -139,6 +143,26 @@ double beta_rvs(double a, double b)
     Gb = std_gamma_rvs(b);
     return Ga / (Ga + Gb);
   }
+}
+
+double beta_pdf(double x, double a, double b) {
+  // TODO: not implemented yet.
+  return 0.;
+}
+
+double beta_logpdf(double x, double a, double b) {
+  // TODO: not implemented yet.
+  return 0.;
+}
+
+double beta_cdf(double x, double a, double b) {
+  return btdtr(a, b, x);
+}
+
+double beta_ppf(double q, double a, double b) {
+  // TODO: not implemented yet.
+  //return btdtri(a, b, q);
+  return 0.;
 }
 
 
