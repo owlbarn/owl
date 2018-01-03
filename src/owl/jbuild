@@ -4,6 +4,7 @@
 (copy_files# maths/cdflib/*)
 (copy_files# maths/cephes/*)
 (copy_files# stats/*)
+(copy_files# stats/sfmt/*)
 
 (library (
   (name owl)
@@ -27,65 +28,65 @@
     ; Cephes
     sf_error
     airy
-bdtr
-beta
-btdtr
-cbrt
-chbevl
-chdtr
-const
-dawsn
-ellie
-ellik
-ellpe
-ellpj
-ellpk
-exp10
-exp2
-expn
-fdtr
-fresnl
-gamma
-gdtr
-gels
-hyp2f1
-hyperg
-i0
-i1
-igam
-igami
-incbet
-incbi
-j0
-j1
-jv
-k0
-k1
-kn
-kolmogorov
-lanczos
-mtherr
-nbdtr
-ndtr
-ndtri
-pdtr
-psi
-rgamma
-round
-scipy_iv
-shichi
-sici
-sincos
-sindg
-spence
-stdtr
-struve
-tandg
-tukey
-unity
-yn
-zeta
-zetac
+    bdtr
+    beta
+    btdtr
+    cbrt
+    chbevl
+    chdtr
+    const
+    dawsn
+    ellie
+    ellik
+    ellpe
+    ellpj
+    ellpk
+    exp10
+    exp2
+    expn
+    fdtr
+    fresnl
+    gamma
+    gdtr
+    gels
+    hyp2f1
+    hyperg
+    i0
+    i1
+    igam
+    igami
+    incbet
+    incbi
+    j0
+    j1
+    jv
+    k0
+    k1
+    kn
+    kolmogorov
+    lanczos
+    mtherr
+    nbdtr
+    ndtr
+    ndtri
+    pdtr
+    psi
+    rgamma
+    round
+    scipy_iv
+    shichi
+    sici
+    sincos
+    sindg
+    spence
+    stdtr
+    struve
+    tandg
+    tukey
+    unity
+    yn
+    zeta
+    zetac
   ))
   (c_flags (
     -g -O3 -Ofast
