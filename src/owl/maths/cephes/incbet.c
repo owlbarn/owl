@@ -88,7 +88,7 @@ double aa, bb, xx;
 	    return (1.0);
       domerr:
 	mtherr("incbet", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
 
     flag = 0;

@@ -76,11 +76,11 @@ double expn(int n, double x)
     static double big = BIG;
 
     if (npy_isnan(x)) {
-	return NPY_NAN;
+	return OWL_NAN;
     }
     else if (n < 0 || x < 0) {
 	mtherr("expn", DOMAIN);
-	return NPY_INFINITY;
+	return OWL_INFINITY;
     }
 
     if (x > MAXLOG) {
@@ -90,7 +90,7 @@ double expn(int n, double x)
     if (x == 0.0) {
 	if (n < 2) {
 	    mtherr("expn", SING);
-	    return (NPY_INFINITY);
+	    return (OWL_INFINITY);
 	}
 	else {
 	    return (1.0 / (n - 1.0));

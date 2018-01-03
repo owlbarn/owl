@@ -20,7 +20,7 @@ double tukeylambdacdf(double x, double lmbda)
     int count;
 
     if (npy_isnan(x) || npy_isnan(lmbda)) {
-        return NPY_NAN;
+        return OWL_NAN;
     }
 
     xeval = 1.0 / lmbda;

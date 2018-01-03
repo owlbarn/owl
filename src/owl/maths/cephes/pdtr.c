@@ -135,7 +135,7 @@ double m;
 
     if ((k < 0) || (m < 0.0)) {
         mtherr("pdtrc", DOMAIN);
-        return (NPY_NAN);
+        return (OWL_NAN);
     }
     if (m == 0.0) {
         return 0.0;
@@ -153,7 +153,7 @@ double m;
 
     if ((k < 0) || (m < 0.0)) {
         mtherr("pdtr", DOMAIN);
-        return (NPY_NAN);
+        return (OWL_NAN);
     }
     if (m == 0.0) {
         return 1.0;
@@ -171,7 +171,7 @@ double y;
 
     if ((k < 0) || (y < 0.0) || (y >= 1.0)) {
         mtherr("pdtri", DOMAIN);
-        return (NPY_NAN);
+        return (OWL_NAN);
     }
     v = k + 1;
     v = igami(v, y);

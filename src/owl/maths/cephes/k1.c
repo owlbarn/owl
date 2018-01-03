@@ -32,7 +32,7 @@
  * ERROR MESSAGES:
  *
  *   message         condition      value returned
- * k1 domain          x <= 0          NPY_INFINITY
+ * k1 domain          x <= 0          OWL_INFINITY
  *
  */
 /*							k1e.c
@@ -137,11 +137,11 @@ double x;
 
     if (x == 0.0) {
 	mtherr("k1", SING);
-	return NPY_INFINITY;
+	return OWL_INFINITY;
     }
     else if (x < 0.0) {
 	mtherr("k1", DOMAIN);
-	return NPY_NAN;
+	return OWL_NAN;
     }
     z = 0.5 * x;
 
@@ -164,11 +164,11 @@ double x;
 
     if (x == 0.0) {
 	mtherr("k1e", SING);
-	return NPY_INFINITY;
+	return OWL_INFINITY;
     }
     else if (x < 0.0) {
 	mtherr("k1e", DOMAIN);
-	return NPY_NAN;
+	return OWL_NAN;
     }
 
     if (x <= 2.0) {

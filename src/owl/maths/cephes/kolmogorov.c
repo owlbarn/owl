@@ -35,7 +35,7 @@ double smirnov(int n, double e)
     /* This comparison should assure returning NaN whenever
      * e is NaN itself.  In original || form it would proceed */
     if (!(n > 0 && e >= 0.0 && e <= 1.0))
-	return (NPY_NAN);
+	return (OWL_NAN);
     if (e == 0.0)
 	return 1.0;
     nn = (int) (floor((double) n * (1.0 - e)));
@@ -105,7 +105,7 @@ double smirnovi(int n, double p)
 
     if (!(p > 0.0 && p <= 1.0)) {
 	mtherr("smirnovi", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
     /* Start with approximation p = exp(-2 n e^2).  */
     e = sqrt(-log(p) / (2.0 * n));
@@ -146,7 +146,7 @@ double kolmogi(double p)
 
     if (!(p > 0.0 && p <= 1.0)) {
 	mtherr("kolmogi", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
     if ((1.0 - p) < 1e-16)
 	return 0.0;

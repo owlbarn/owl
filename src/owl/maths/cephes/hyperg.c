@@ -137,7 +137,7 @@ double *err;
     while (t > MACHEP) {
 	if (bn == 0) {		/* check bn first since if both   */
 	    mtherr("hyperg", SING);
-	    return (NPY_INFINITY);	/* an and bn are zero it is     */
+	    return (OWL_INFINITY);	/* an and bn are zero it is     */
 	}
 	if (an == 0)		/* a singularity            */
 	    return (sum);
@@ -213,7 +213,7 @@ double *err;
 
     if (x == 0) {
 	acanc = 1.0;
-	asum = NPY_INFINITY;
+	asum = OWL_INFINITY;
 	goto adone;
     }
     temp = log(fabs(x));
@@ -263,7 +263,7 @@ double *err;
 	/* nan */
 	acanc = 1.0;
 
-    if (asum == NPY_INFINITY || asum == -NPY_INFINITY)
+    if (asum == OWL_INFINITY || asum == -OWL_INFINITY)
 	/* infinity */
 	acanc = 0;
 
@@ -375,7 +375,7 @@ double *err;
 
     /* series blew up: */
   error:
-    *err = NPY_INFINITY;
+    *err = OWL_INFINITY;
     mtherr("hyperg", TLOSS);
     return (sum);
 }

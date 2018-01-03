@@ -203,7 +203,7 @@ double *si, *ci;
 
     if (x == 0.0) {
 	*si = 0.0;
-	*ci = -NPY_INFINITY;
+	*ci = -OWL_INFINITY;
 	return (0);
     }
 
@@ -211,16 +211,16 @@ double *si, *ci;
     if (x > 1.0e9) {
 	if (cephes_isinf(x)) {
 	    if (sign == -1) {
-		*si = -NPY_PI_2;
-		*ci = NPY_NAN;
+		*si = -OWL_PI_2;
+		*ci = OWL_NAN;
 	    }
 	    else {
-		*si = NPY_PI_2;
+		*si = OWL_PI_2;
 		*ci = 0;
 	    }
 	    return 0;
 	}
-	*si = NPY_PI_2 - cos(x) / x;
+	*si = OWL_PI_2 - cos(x) / x;
 	*ci = sin(x) / x;
     }
 
@@ -236,7 +236,7 @@ double *si, *ci;
     if (sign)
 	s = -s;
     *si = s;
-    *ci = NPY_EULER + log(x) + c;	/* real part if x < 0 */
+    *ci = OWL_EULER + log(x) + c;	/* real part if x < 0 */
     return (0);
 
 
@@ -244,7 +244,7 @@ double *si, *ci;
     /* The auxiliary functions are:
      *
      *
-     * *si = *si - NPY_PI_2;
+     * *si = *si - OWL_PI_2;
      * c = cos(x);
      * s = sin(x);
      *
@@ -269,7 +269,7 @@ double *si, *ci;
 	f = polevl(z, FN8, 8) / (x * p1evl(z, FD8, 8));
 	g = z * polevl(z, GN8, 8) / p1evl(z, GD8, 9);
     }
-    *si = NPY_PI_2 - f * c - g * s;
+    *si = OWL_PI_2 - f * c - g * s;
     if (sign)
 	*si = -(*si);
     *ci = f * s - g * c;

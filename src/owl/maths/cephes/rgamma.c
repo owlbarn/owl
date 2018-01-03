@@ -26,7 +26,7 @@
  *
  * The reciprocal Gamma function has no singularities,
  * but overflow and underflow may occur for large arguments.
- * These conditions return either NPY_INFINITY or 0 with
+ * These conditions return either OWL_INFINITY or 0 with
  * appropriate sign.
  *
  * ACCURACY:
@@ -85,7 +85,7 @@ double x;
     }
     if (x < -34.034) {
 	w = -x;
-	z = sin(NPY_PI * w);
+	z = sin(OWL_PI * w);
 	if (z == 0.0)
 	    return (0.0);
 	if (z < 0.0) {
@@ -95,14 +95,14 @@ double x;
 	else
 	    sign = -1;
 
-	y = log(w * z) - log(NPY_PI) + lgam(w);
+	y = log(w * z) - log(OWL_PI) + lgam(w);
 	if (y < -MAXLOG) {
 	    mtherr(name, UNDERFLOW);
 	    return (sign * 0.0);
 	}
 	if (y > MAXLOG) {
 	    mtherr(name, OVERFLOW);
-	    return (sign * NPY_INFINITY);
+	    return (sign * OWL_INFINITY);
 	}
 	return (sign * exp(y));
     }

@@ -98,7 +98,7 @@ double t;
 
     if (k <= 0) {
 	mtherr("stdtr", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
 
     if (t == 0)
@@ -139,7 +139,7 @@ double t;
 	    }
 	    p += f * xsqk / z;
 	}
-	p *= 2.0 / NPY_PI;
+	p *= 2.0 / OWL_PI;
     }
 
 
@@ -178,7 +178,7 @@ double p;
 
     if (k <= 0 || p <= 0.0 || p >= 1.0) {
 	mtherr("stdtri", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
 
     rk = k;
@@ -201,7 +201,7 @@ double p;
     z = incbi(0.5 * rk, 0.5, 2.0 * p);
 
     if (DBL_MAX * z < rk)
-	return (rflg * NPY_INFINITY);
+	return (rflg * OWL_INFINITY);
     t = sqrt(rk / z - rk);
     return (rflg * t);
 }

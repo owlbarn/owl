@@ -99,17 +99,17 @@ double x;
     if (n > MAXFAC) {
       overf:
 	mtherr("kn", OVERFLOW);
-	return (NPY_INFINITY);
+	return (OWL_INFINITY);
     }
 
     if (x <= 0.0) {
 	if (x < 0.0) {
 	    mtherr("kn", DOMAIN);
-	    return NPY_NAN;
+	    return OWL_NAN;
 	}
 	else {
 	    mtherr("kn", SING);
-	    return NPY_INFINITY;
+	    return OWL_INFINITY;
 	}
     }
 
@@ -214,7 +214,7 @@ double x;
     fn = 1.0;
     t = 1.0;
     s = t;
-    nkf = NPY_INFINITY;
+    nkf = OWL_INFINITY;
     i = 0;
     do {
 	z = pn - pk * pk;
@@ -232,6 +232,6 @@ double x;
     while (fabs(t / s) > MACHEP);
 
   adone:
-    ans = exp(-x) * sqrt(NPY_PI / (2.0 * x)) * s;
+    ans = exp(-x) * sqrt(OWL_PI / (2.0 * x)) * s;
     return (ans);
 }

@@ -205,12 +205,12 @@ double v, x;
 	}
 	else if (v < -1) {
 	    if ((int) (floor(0.5 - v) - 1) % 2)
-		return -NPY_INFINITY;
+		return -OWL_INFINITY;
 	    else
-		return NPY_INFINITY;
+		return OWL_INFINITY;
 	}
 	else {
-	    return 2.0 / NPY_PI;
+	    return 2.0 / OWL_PI;
 	}
     }
 
@@ -242,7 +242,7 @@ double v, x;
 	ya = threef0(1.0, 0.5, 0.5 - v, -1.0 / t, &threef0err);
     }
 
-    f = sqrt(NPY_PI);
+    f = sqrt(OWL_PI);
     h = pow(0.5 * x, v - 1.0);
 
     if (onef2err <= threef0err) {
@@ -278,21 +278,21 @@ double v, x;
     else if (v == floor(v)) {
         /* Zero in denominator. */
 	mtherr("yv", DOMAIN);
-        return NPY_NAN;
+        return OWL_NAN;
     }
 
-    t = NPY_PI * v;
+    t = OWL_PI * v;
     y = (cos(t) * jv(v, x) - jv(-v, x)) / sin(t);
 
     if (cephes_isinf(y)) {
         if (v > 0) {
             mtherr("yv", OVERFLOW);
-            return -NPY_INFINITY;
+            return -OWL_INFINITY;
         }
         else if (v < -1e10) {
             /* Whether it's +inf or -inf is numerically ill-defined. */
             mtherr("yv", DOMAIN);
-            return NPY_NAN;
+            return OWL_NAN;
         }
     }
 

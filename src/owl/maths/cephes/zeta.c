@@ -98,14 +98,14 @@ double x, q;
     if (x < 1.0) {
       domerr:
 	mtherr("zeta", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
 
     if (q <= 0.0) {
 	if (q == floor(q)) {
 	    mtherr("zeta", SING);
 	  retinf:
-	    return (NPY_INFINITY);
+	    return (OWL_INFINITY);
 	}
 	if (x != floor(x))
 	    goto domerr;	/* because q^-x not defined */

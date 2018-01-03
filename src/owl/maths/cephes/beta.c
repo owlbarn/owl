@@ -129,7 +129,7 @@ double beta(double a, double b)
 
 overflow:
     mtherr("beta", OVERFLOW);
-    return (sign * NPY_INFINITY);
+    return (sign * OWL_INFINITY);
 }
 
 
@@ -192,7 +192,7 @@ double lbeta(double a, double b)
     if (y == 0.0) {
       over:
 	mtherr("lbeta", OVERFLOW);
-	return (sign * NPY_INFINITY);
+	return (sign * OWL_INFINITY);
     }
 
     if (fabs(fabs(a) - fabs(y)) > fabs(fabs(b) - fabs(y))) {
@@ -240,7 +240,7 @@ static double beta_negint(int a, double b)
     }
     else {
 	mtherr("lbeta", OVERFLOW);
-        return NPY_INFINITY;
+        return OWL_INFINITY;
     }
 }
 
@@ -253,6 +253,6 @@ static double lbeta_negint(int a, double b)
     }
     else {
 	mtherr("lbeta", OVERFLOW);
-        return NPY_INFINITY;
+        return OWL_INFINITY;
     }
 }

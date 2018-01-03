@@ -64,9 +64,9 @@ double ellie(double phi, double m)
     int d, mod, sign;
 
     if (cephes_isnan(phi) || cephes_isnan(m))
-        return NPY_NAN;
+        return OWL_NAN;
     if (m > 1.0)
-        return NPY_NAN;
+        return OWL_NAN;
     if (cephes_isinf(phi))
         return phi;
     if (cephes_isinf(m))
@@ -74,10 +74,10 @@ double ellie(double phi, double m)
     if (m == 0.0)
 	return (phi);
     lphi = phi;
-    npio2 = floor(lphi / NPY_PI_2);
+    npio2 = floor(lphi / OWL_PI_2);
     if (fmod(fabs(npio2), 2.0) == 1.0)
 	npio2 += 1;
-    lphi = lphi - npio2 * NPY_PI_2;
+    lphi = lphi - npio2 * OWL_PI_2;
     if (lphi < 0.0) {
 	lphi = -lphi;
 	sign = -1;
@@ -131,15 +131,15 @@ double ellie(double phi, double m)
 
     while (fabs(c / a) > MACHEP) {
 	temp = b / a;
-	lphi = lphi + atan(t * temp) + mod * NPY_PI;
+	lphi = lphi + atan(t * temp) + mod * OWL_PI;
         denom = 1 - temp * t * t;
         if (fabs(denom) > 10*MACHEP) {
             t = t * (1.0 + temp) / denom;
-            mod = (lphi + NPY_PI_2) / NPY_PI;
+            mod = (lphi + OWL_PI_2) / OWL_PI;
         }
         else {
             t = tan(lphi);
-            mod = (int)floor((lphi - atan(t))/NPY_PI);
+            mod = (int)floor((lphi - atan(t))/OWL_PI);
         }
 	c = (a - b) / 2.0;
 	temp = sqrt(a * b);
@@ -150,7 +150,7 @@ double ellie(double phi, double m)
     }
 
     temp = E / ellpk(1.0 - m);
-    temp *= (atan(t) + mod * NPY_PI) / (d * a);
+    temp *= (atan(t) + mod * OWL_PI) / (d * a);
     temp += e;
 
   done:

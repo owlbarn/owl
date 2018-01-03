@@ -77,10 +77,10 @@ int ellpj(double u, double m, double *sn, double *cn, double *dn, double *ph)
     /* Check for special cases */
     if (m < 0.0 || m > 1.0 || cephes_isnan(m)) {
 	mtherr("ellpj", DOMAIN);
-	*sn = NPY_NAN;
-	*cn = NPY_NAN;
-	*ph = NPY_NAN;
-	*dn = NPY_NAN;
+	*sn = OWL_NAN;
+	*cn = OWL_NAN;
+	*ph = OWL_NAN;
+	*dn = OWL_NAN;
 	return (-1);
     }
     if (m < 1.0e-9) {
@@ -100,7 +100,7 @@ int ellpj(double u, double m, double *sn, double *cn, double *dn, double *ph)
 	phi = 1.0 / b;
 	twon = b * sinh(u);
 	*sn = t + ai * (twon - u) / (b * b);
-	*ph = 2.0 * atan(exp(u)) - NPY_PI_2 + ai * (twon - u) / b;
+	*ph = 2.0 * atan(exp(u)) - OWL_PI_2 + ai * (twon - u) / b;
 	ai *= t * phi;
 	*cn = phi - ai * (twon - u);
 	*dn = phi + ai * (twon + u);

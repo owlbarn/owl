@@ -155,7 +155,7 @@ double p;
     double dk, dn;
 
     if (npy_isnan(p)) {
-	return NPY_NAN;
+	return OWL_NAN;
     }
     if ((p < 0.0) || (p > 1.0)) {
 	goto domerr;
@@ -167,7 +167,7 @@ double p;
     if (n < k) {
       domerr:
 	mtherr("bdtrc", DOMAIN);
-	return NPY_NAN;
+	return OWL_NAN;
     }
 
     if (k == n)
@@ -199,7 +199,7 @@ double p;
     if ((k < 0) || (n < k)) {
       domerr:
 	mtherr("bdtr", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
 
     if (k == n)
@@ -228,7 +228,7 @@ double y;
     if ((k < 0) || (n <= k)) {
       domerr:
 	mtherr("bdtri", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
 
     dn = n - k;

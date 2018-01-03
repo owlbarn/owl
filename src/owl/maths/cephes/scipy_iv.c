@@ -95,7 +95,7 @@ double iv(double v, double x)
     if (x < 0.0) {
 	if (t != v) {
 	    mtherr("iv", DOMAIN);
-	    return (NPY_NAN);
+	    return (OWL_NAN);
 	}
 	if (v != 2.0 * floor(v / 2.0)) {
 	    sign = -1;
@@ -109,7 +109,7 @@ double iv(double v, double x)
 	}
 	if (v < 0.0) {
 	    mtherr("iv", OVERFLOW);
-	    return NPY_INFINITY;
+	    return OWL_INFINITY;
 	}
 	else
 	    return 0.0;
@@ -144,9 +144,9 @@ static double iv_asymptotic(double v, double x)
     double sum, term, prefactor, factor;
     int k;
 
-    prefactor = exp(x) / sqrt(2 * NPY_PI * x);
+    prefactor = exp(x) / sqrt(2 * OWL_PI * x);
 
-    if (prefactor == NPY_INFINITY) {
+    if (prefactor == OWL_INFINITY) {
 	return prefactor;
     }
 
@@ -262,10 +262,10 @@ void ikv_asymptotic_uniform(double v, double x,
     t2 = t * t;
     eta = sqrt(1 + z * z) + log(z / (1 + 1 / t));
 
-    i_prefactor = sqrt(t / (2 * NPY_PI * v)) * exp(v * eta);
+    i_prefactor = sqrt(t / (2 * OWL_PI * v)) * exp(v * eta);
     i_sum = 1.0;
 
-    k_prefactor = sqrt(NPY_PI * t / (2 * v)) * exp(-v * eta);
+    k_prefactor = sqrt(OWL_PI * t / (2 * v)) * exp(-v * eta);
     k_sum = 1.0;
 
     divisor = v;
@@ -321,7 +321,7 @@ void ikv_asymptotic_uniform(double v, double x,
 	else {
 	    /* (AMS 9.6.2) */
 	    *i_value = (i_prefactor * i_sum
-			+ (2 / NPY_PI) * sin(NPY_PI * v) * k_prefactor * k_sum);
+			+ (2 / OWL_PI) * sin(OWL_PI * v) * k_prefactor * k_sum);
 	}
     }
 }
@@ -367,9 +367,9 @@ static int temme_ik_series(double v, double x, double *K, double *K1)
     a = log(x / 2);
     b = exp(v * a);
     sigma = -a * v;
-    c = fabs(v) < MACHEP ? 1 : sin(NPY_PI * v) / (v * NPY_PI);
+    c = fabs(v) < MACHEP ? 1 : sin(OWL_PI * v) / (v * OWL_PI);
     d = fabs(sigma) < MACHEP ? 1 : sinh(sigma) / sigma;
-    gamma1 = fabs(v) < MACHEP ? -NPY_EULER : (0.5f / v) * (gp - gm) * c;
+    gamma1 = fabs(v) < MACHEP ? -OWL_EULER : (0.5f / v) * (gp - gm) * c;
     gamma2 = (2 + gp + gm) * c / 2;
 
     /* initial values */
@@ -509,7 +509,7 @@ static int CF2_ik(double v, double x, double *Kv, double *Kv1)
 	mtherr("ikv_temme(CF2_ik)", TLOSS);
     }
 
-    *Kv = sqrt(NPY_PI / (2 * x)) * exp(-x) / S;
+    *Kv = sqrt(OWL_PI / (2 * x)) * exp(-x) / S;
     *Kv1 = *Kv * (0.5f + v + x + (v * v - 0.25f) * f) / x;
 
     return 0;
@@ -553,9 +553,9 @@ void ikv_temme(double v, double x, double *Iv_p, double *Kv_p)
 
     if (x < 0) {
 	if (Iv_p != NULL)
-	    *Iv_p = NPY_NAN;
+	    *Iv_p = OWL_NAN;
 	if (Kv_p != NULL)
-	    *Kv_p = NPY_NAN;
+	    *Kv_p = OWL_NAN;
 	mtherr("ikv_temme", DOMAIN);
 	return;
     }
@@ -563,17 +563,17 @@ void ikv_temme(double v, double x, double *Iv_p, double *Kv_p)
 	Iv = (v == 0) ? 1 : 0;
 	if (kind & need_k) {
 	    mtherr("ikv_temme", OVERFLOW);
-	    Kv = NPY_INFINITY;
+	    Kv = OWL_INFINITY;
 	}
 	else {
-	    Kv = NPY_NAN;	/* any value will do */
+	    Kv = OWL_NAN;	/* any value will do */
 	}
 
 	if (reflect && (kind & need_i)) {
 	    double z = (u + n % 2);
 
-	    Iv = sin(NPY_PI * z) == 0 ? Iv : NPY_INFINITY;
-	    if (Iv == NPY_INFINITY || Iv == -NPY_INFINITY) {
+	    Iv = sin(OWL_PI * z) == 0 ? Iv : OWL_INFINITY;
+	    if (Iv == OWL_INFINITY || Iv == -OWL_INFINITY) {
 		mtherr("ikv_temme", OVERFLOW);
 	    }
 	}
@@ -625,14 +625,14 @@ void ikv_temme(double v, double x, double *Iv_p, double *Kv_p)
 	}
     }
     else {
-	Iv = NPY_NAN;		/* any value will do */
+	Iv = OWL_NAN;		/* any value will do */
     }
 
     if (reflect) {
 	double z = (u + n % 2);
 
 	if (Iv_p != NULL) {
-	    *Iv_p = Iv + (2 / NPY_PI) * sin(NPY_PI * z) * Kv;	/* reflection formula */
+	    *Iv_p = Iv + (2 / OWL_PI) * sin(OWL_PI * z) * Kv;	/* reflection formula */
 	}
 	if (Kv_p != NULL) {
 	    *Kv_p = Kv;

@@ -163,7 +163,7 @@ double p;
     if (k < 0) {
       domerr:
 	mtherr("nbdtr", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
 
     dk = k + 1;
@@ -184,7 +184,7 @@ double p;
     if (k < 0) {
       domerr:
 	mtherr("nbdtr", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
     dk = k + 1;
     dn = n;
@@ -204,7 +204,7 @@ double p;
     if (k < 0) {
       domerr:
 	mtherr("nbdtri", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
     dk = k + 1;
     dn = n;

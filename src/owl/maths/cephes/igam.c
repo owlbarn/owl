@@ -139,7 +139,7 @@ double a, x;
 
     if ((x < 0) || (a <= 0)) {
 	mtherr("gammainc", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
 
     /* Asymptotic regime where a ~ x; see [2]. */
@@ -164,7 +164,7 @@ double igamc(double a, double x)
 
     if ((x < 0) || (a <= 0)) {
 	mtherr("gammaincc", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     } else if (x == 0) {
 	return 1;
     } else if (cephes_isinf(x)) {
@@ -353,7 +353,7 @@ double asymptotic_series(double a, double x, int func)
     double lambda = x / a;
     double sigma = (x - a) / a;
     double eta, res, ck, ckterm, term, absterm;
-    double absoldterm = NPY_INFINITY;
+    double absoldterm = OWL_INFINITY;
     double etapow[N] = {1};
     double sum = 0;
     double afac = 1;
@@ -398,7 +398,7 @@ double asymptotic_series(double a, double x, int func)
 	absoldterm = absterm;
 	afac /= a;
     }
-    res += sgn * exp(-0.5 * a * eta * eta) * sum / sqrt(2 * NPY_PI * a);
+    res += sgn * exp(-0.5 * a * eta * eta) * sum / sqrt(2 * OWL_PI * a);
 	    
     return res;
 }

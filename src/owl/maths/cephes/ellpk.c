@@ -100,7 +100,7 @@ double x;
 
     if (x < 0.0) {
 	mtherr("ellpk", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
 
     if (x > 1.0) {
@@ -116,7 +116,7 @@ double x;
     else {
 	if (x == 0.0) {
 	    mtherr("ellpk", SING);
-	    return (NPY_INFINITY);
+	    return (OWL_INFINITY);
 	}
 	else {
 	    return (C1 - 0.5 * log(x));

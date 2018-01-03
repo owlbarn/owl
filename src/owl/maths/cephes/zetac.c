@@ -27,7 +27,7 @@
  *     Riemann zeta(x) = zetac(x) + 1.
  *
  * Extension of the function definition for x < 1 is implemented.
- * Zero is returned for x > log2(NPY_INFINITY).
+ * Zero is returned for x > log2(OWL_INFINITY).
  *
  * An overflow error may occur for large negative x, due to the
  * Gamma function in the reflection formula.
@@ -181,8 +181,8 @@ double x;
 	}
 	s = 1.0 - x;
 	w = zetac(s);
-	b = sin(0.5 * NPY_PI * x) * pow(2.0 * NPY_PI,
-				    x) * Gamma(s) * (1.0 + w) / NPY_PI;
+	b = sin(0.5 * OWL_PI * x) * pow(2.0 * OWL_PI,
+				    x) * Gamma(s) * (1.0 + w) / OWL_PI;
 	return (b - 1.0);
     }
 
@@ -211,7 +211,7 @@ double x;
 
     if (x == 1.0) {
 	mtherr("zetac", SING);
-	return (NPY_INFINITY);
+	return (OWL_INFINITY);
     }
 
     if (x <= 10.0) {

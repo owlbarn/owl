@@ -205,15 +205,15 @@ double x;
     if (x <= 5.0) {
 	if (x == 0.0) {
 	    mtherr("y1", SING);
-	    return -NPY_INFINITY;
+	    return -OWL_INFINITY;
 	}
 	else if (x <= 0.0) {
 	    mtherr("y1", DOMAIN);
-	    return NPY_NAN;
+	    return OWL_NAN;
 	}
 	z = x * x;
 	w = x * (polevl(z, YP, 5) / p1evl(z, YQ, 8));
-	w += NPY_2_PI * (j1(x) * log(x) - 1.0 / x);
+	w += OWL_2_PI * (j1(x) * log(x) - 1.0 / x);
 	return (w);
     }
 

@@ -167,7 +167,7 @@ double df, x;
 
     if ((x < 0.0)) {		/* || (df < 1.0) ) */
 	mtherr("chdtr", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
     return (igam(df / 2.0, x / 2.0));
 }
@@ -181,7 +181,7 @@ double df, y;
 
     if ((y < 0.0) || (y > 1.0)) {	/* || (df < 1.0) ) */
 	mtherr("chdtri", DOMAIN);
-	return (NPY_NAN);
+	return (OWL_NAN);
     }
 
     x = igami(0.5 * df, y);
