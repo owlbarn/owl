@@ -45,53 +45,126 @@ extern sfmt_t sfmt_state;
 
 extern void ziggurat_init();
 
+/** Uniform distribution **/
+
+
+/** Exponential distribution **/
+
 extern float std_exp_rvs();
 
 extern float exp_rvs(float);
+
+/** Gaussian distribution **/
 
 extern float std_gaussian_rvs();
 
 extern float gaussian_rvs(float, float);
 
-extern double std_gamma_rvs();
+/** Gamma distribution **/
+
+extern double std_gamma_rvs(double);
 
 extern double gamma_rvs(double, double);
 
+/** Beta distribution **/
+
 extern double beta_rvs(double, double);
+
+/** Chi-squared distribution **/
+
+extern double chisquare_rvs(double);
+
+/** Noncentral Chi-squared distribution **/
+
+extern double noncentral_chisquare_rvs(double, double);
+
+/** F distribution **/
+
+extern double f_rvs(double, double);
+
+/** Noncentral F distribution **/
+
+extern double noncentral_f_rvs(double, double, double);
+
+/** Binomial distribution **/
+
+// TODO
+
+/** Negative Binomial distribution **/
+
+extern long negative_binomial_rvs(double, double);
+
+/** Poisson distribution **/
 
 extern long poisson_rvs(double);
 
+/** Cauchy distribution **/
+
 extern double std_cauchy_rvs();
+
+extern double cauchy_rvs(double);
+
+/** Student-t distribution **/
 
 extern double std_t_rvs(double);
 
+/** von Mises distribution **/
+
 extern double vonmises_rvs(double, double);
+
+/** Pareto distribution **/
 
 extern double pareto_rvs(double);
 
+/** Weibull distribution **/
+
 extern double weibull_rvs(double);
+
+/** Power distribution **/
 
 extern double power_rvs(double);
 
+/** Laplace distribution **/
+
 extern double laplace_rvs(double, double);
+
+/** Gumbel distribution **/
 
 extern double gumbel_rvs(double, double);
 
+/** Logistic distribution **/
+
 extern double logistic_rvs(double, double);
+
+/** Log-normal distribution **/
 
 extern double lognormal_rvs(double, double);
 
+/** Rayleigh distribution **/
+
 extern double rayleigh_rvs(double);
+
+/** Wald distribution **/
 
 extern double wald_rvs(double, double);
 
+/** Zipf distribution **/
+
 extern long zipf_rvs(double);
+
+/** Geometric distribution **/
 
 extern long geometric_rvs(double);
 
+/** Hypergeometric distribution **/
+
 extern long hypergeometric_rvs(long, long, long);
 
+/** Triangular distribution **/
+
 extern double triangular_rvs(double, double, double);
+
+/** Log-Series distribution **/
 
 extern long logseries_rvs(double);
 

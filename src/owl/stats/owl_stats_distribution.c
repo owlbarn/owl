@@ -549,7 +549,7 @@ long geometric_rvs(double p) {
 }
 
 
-/** Cauchy distribution **/
+/** Hypergeometric distribution **/
 
 long hypergeometric_hyp_rvs(long good, long bad, long sample) {
   long d1 = bad + good - sample;
@@ -615,9 +615,6 @@ long hypergeometric_hrua_rvs(long good, long bad, long sample) {
 }
 #undef D1
 #undef D2
-
-
-/** Hypergeometric distribution **/
 
 long hypergeometric_rvs(long good, long bad, long sample) {
   if (sample > 10)
