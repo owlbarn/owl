@@ -139,9 +139,9 @@
 #endif
 #endif
 #ifndef cephes_isnan
-#define cephes_isnan(x) npy_isnan(x)
-#define cephes_isinf(x) npy_isinf(x)
-#define cephes_isfinite(x) npy_isfinite(x)
+#define cephes_isnan(x) owl_isnan(x)
+#define cephes_isinf(x) owl_isinf(x)
+#define cephes_isfinite(x) owl_isfinite(x)
 #endif
 
 #endif				/* CEPHES_MCONF_H */

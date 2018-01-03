@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
+#include "owl_maths.h"
 #include "owl_stats.h"
 
 // FIXME: currently in owl_common_c.c file.
@@ -11,8 +12,6 @@
 
 
 /** Constant definition **/
-
-#define PI 3.1415926535897932384626433
 
 #define _norm_pdf_C 2.5066282746310005024157652    // sqrt(2 * PI)
 
@@ -60,7 +59,7 @@ double gaussian_isf(double q) {
 }
 
 double gaussian_entropy(double x) {
-  return 0.5 * (log(2 * PI) + 1);
+  return 0.5 * (log(2 * OWL_PI) + 1);
 }
 
 

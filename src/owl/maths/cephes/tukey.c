@@ -19,7 +19,7 @@ double tukeylambdacdf(double x, double lmbda)
     double pmin, pmid, pmax, plow, phigh, xeval;
     int count;
 
-    if (npy_isnan(x) || npy_isnan(lmbda)) {
+    if (owl_isnan(x) || owl_isnan(lmbda)) {
         return OWL_NAN;
     }
 

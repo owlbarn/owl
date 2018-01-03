@@ -149,7 +149,7 @@ double psi(double x)
     double q, r;
     int i, n;
 
-    if (npy_isnan(x)) {
+    if (owl_isnan(x)) {
 	return x;
     }
     else if (x == OWL_INFINITY) {

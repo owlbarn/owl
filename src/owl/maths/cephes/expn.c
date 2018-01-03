@@ -75,7 +75,7 @@ double expn(int n, double x)
     int i, k;
     static double big = BIG;
 
-    if (npy_isnan(x)) {
+    if (owl_isnan(x)) {
 	return OWL_NAN;
     }
     else if (n < 0 || x < 0) {

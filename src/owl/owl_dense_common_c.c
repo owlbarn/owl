@@ -12,7 +12,7 @@
 #define exp10f(X) expf(LN10 * X)
 #define exp10(X) exp(LN10 * X)
 
-value cp_two_doubles(double d0, double d1)
+OWL_INLINE value cp_two_doubles(double d0, double d1)
 {
   value res = caml_alloc_small(2 * Double_wosize, Double_array_tag);
   Store_double_field(res, 0, d0);

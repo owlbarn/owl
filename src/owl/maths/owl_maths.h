@@ -13,6 +13,8 @@ extern "C" {
 #include <math.h>
 #include <assert.h>
 
+#include "owl_cephes.h"
+
 #define OWL_INFINITY INFINITY
 #define OWL_NAN NAN
 
@@ -76,60 +78,60 @@ extern "C" {
 /* use builtins to avoid function calls in tight loops
  * only available if npy_config.h is available (= numpys own build) */
 #if HAVE___BUILTIN_ISNAN
-    #define npy_isnan(x) __builtin_isnan(x)
+  #define owl_isnan(x) __builtin_isnan(x)
 #else
-    #ifndef OWL_HAVE_DECL_ISNAN
-        #define npy_isnan(x) ((x) != (x))
+  #ifndef OWL_HAVE_DECL_ISNAN
+    #define owl_isnan(x) ((x) != (x))
+  #else
+    #if defined(_MSC_VER) && (_MSC_VER < 1900)
+      #define owl_isnan(x) _isnan((x))
     #else
-        #if defined(_MSC_VER) && (_MSC_VER < 1900)
-            #define npy_isnan(x) _isnan((x))
-        #else
-            #define npy_isnan(x) isnan(x)
-        #endif
+      #define owl_isnan(x) isnan(x)
     #endif
+  #endif
 #endif
 
 
 /* only available if npy_config.h is available (= numpys own build) */
 #if HAVE___BUILTIN_ISFINITE
-    #define npy_isfinite(x) __builtin_isfinite(x)
+  #define owl_isfinite(x) __builtin_isfinite(x)
 #else
-    #ifndef OWL_HAVE_DECL_ISFINITE
-        #ifdef _MSC_VER
-            #define npy_isfinite(x) _finite((x))
-        #else
-            #define npy_isfinite(x) !npy_isnan((x) + (-x))
-        #endif
+  #ifndef OWL_HAVE_DECL_ISFINITE
+    #ifdef _MSC_VER
+      #define owl_isfinite(x) _finite((x))
     #else
-        #define npy_isfinite(x) isfinite((x))
+      #define owl_isfinite(x) !owl_isnan((x) + (-x))
     #endif
+  #else
+    #define owl_isfinite(x) isfinite((x))
+  #endif
 #endif
 
 /* only available if npy_config.h is available (= numpys own build) */
 #if HAVE___BUILTIN_ISINF
-    #define npy_isinf(x) __builtin_isinf(x)
+  #define owl_isinf(x) __builtin_isinf(x)
 #else
-    #ifndef OWL_HAVE_DECL_ISINF
-        #define npy_isinf(x) (!npy_isfinite(x) && !npy_isnan(x))
+  #ifndef OWL_HAVE_DECL_ISINF
+    #define owl_isinf(x) (!owl_isfinite(x) && !owl_isnan(x))
+  #else
+    #if defined(_MSC_VER) && (_MSC_VER < 1900)
+      #define owl_isinf(x) (!_finite((x)) && !_isnan((x)))
     #else
-        #if defined(_MSC_VER) && (_MSC_VER < 1900)
-            #define npy_isinf(x) (!_finite((x)) && !_isnan((x)))
-        #else
-            #define npy_isinf(x) isinf((x))
-        #endif
+      #define owl_isinf(x) isinf((x))
     #endif
+  #endif
 #endif
 
 #ifndef OWL_HAVE_DECL_SIGNBIT
-    int _npy_signbit_f(float x);
-    int _npy_signbit_d(double x);
-    int _npy_signbit_ld(long double x);
-    #define npy_signbit(x) \
-        (sizeof (x) == sizeof (long double) ? _npy_signbit_ld (x) \
-         : sizeof (x) == sizeof (double) ? _npy_signbit_d (x) \
-         : _npy_signbit_f (x))
+  int _owl_signbit_f(float x);
+  int _owl_signbit_d(double x);
+  int _owl_signbit_ld(long double x);
+  #define owl_signbit(x) \
+    (sizeof (x) == sizeof (long double) ? _owl_signbit_ld (x) \
+    : sizeof (x) == sizeof (double) ? _owl_signbit_d (x) \
+    : _owl_signbit_f (x))
 #else
-    #define npy_signbit(x) signbit((x))
+  #define owl_signbit(x) signbit((x))
 #endif
 
 

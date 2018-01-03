@@ -154,7 +154,7 @@ double p;
 {
     double dk, dn;
 
-    if (npy_isnan(p)) {
+    if (owl_isnan(p)) {
 	return OWL_NAN;
     }
     if ((p < 0.0) || (p > 1.0)) {

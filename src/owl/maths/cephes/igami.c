@@ -66,7 +66,7 @@ double a, y0;
     yh = 1.0;
     dithresh = 5.0 * MACHEP;
 
-    if (npy_isnan(a) || npy_isnan(y0)) {
+    if (owl_isnan(a) || owl_isnan(y0)) {
         return OWL_NAN;
     }
     if ((y0 < 0.0) || (y0 > 1.0) || (a <= 0)) {
