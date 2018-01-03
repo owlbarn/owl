@@ -45,11 +45,13 @@ double gaussian_ppf(double q, double mu, double sigma) {
 }
 
 double gaussian_sf(double x, double mu, double sigma) {
-  return gaussian_cdf(-x, mu, sigma);
+  double u = x - mu;
+  return gaussian_cdf(-u, 0., sigma);
 }
 
 double gaussian_logsf(double x, double mu, double sigma) {
-  return gaussian_logcdf(-x, mu, sigma);
+  double u = x - mu;
+  return log(gaussian_cdf(-u, 0., sigma));
 }
 
 double gaussian_isf(double q, double mu, double sigma) {
@@ -103,7 +105,6 @@ double std_gamma_rvs(double shape) {
   }
 }
 
-
 double gamma_rvs(double shape, double scale) {
   return scale * std_gamma_rvs(shape);
 }
@@ -146,21 +147,91 @@ double beta_rvs(double a, double b)
 }
 
 double beta_pdf(double x, double a, double b) {
-  // TODO: not implemented yet.
-  return 0.;
+  if (x < 0 || x > 1)
+    return 0;
+  else {
+    double p;
+    double gab = lgam(a + b);
+    double ga = lgam(a);
+    double gb = lgam(b);
+
+    if (x == 0.0 || x == 1.0) {
+      if (a > 1.0 && b > 1.0)
+       p = 0.0;
+      else
+       p = exp (gab - ga - gb) * pow (x, a - 1) * pow (1 - x, b - 1);
+    }
+    else
+      p = exp (gab - ga - gb + log(x) * (a - 1)  + log1p(-x) * (b - 1));
+
+    return p;
+    }
 }
 
 double beta_logpdf(double x, double a, double b) {
-  // TODO: not implemented yet.
-  return 0.;
+  return log(beta_pdf(x, a, b));
 }
 
 double beta_cdf(double x, double a, double b) {
   return btdtr(a, b, x);
 }
 
+double beta_logcdf(double x, double a, double b) {
+  return log(beta_cdf(x, a, b));
+}
+
 double beta_ppf(double q, double a, double b) {
-  return btdtri(a, b, q);
+  return incbi(a, b, q);
+}
+
+
+/** Chi-squared distribution **/
+
+double chisquare_rvs(double df) {
+  return 2. * std_gamma_rvs(df / 2.);
+}
+
+
+/** Noncentral Chi-squared distribution **/
+
+double noncentral_chisquare_rvs(double df, double nonc) {
+  if (nonc == 0)
+    return chisquare_rvs(df);
+  if (1 < df) {
+    const double Chi2 = chisquare_rvs(df - 1);
+    const double N = std_gaussian_rvs() + sqrt(nonc);
+    return Chi2 + N * N;
+  }
+  else {
+    const long i = poisson_rvs(nonc / 2);
+    return chisquare_rvs(df + 2 * i);
+  }
+}
+
+
+/** F distribution **/
+
+double f_rvs(double dfnum, double dfden) {
+  return ((chisquare_rvs(dfnum) * dfden) / (chisquare_rvs(dfden) * dfnum));
+}
+
+
+/** Noncentral F distribution **/
+
+double noncentral_f_rvs(double dfnum, double dfden, double nonc) {
+  double t = noncentral_chisquare_rvs(dfnum, nonc) * dfden;
+  return t / (chisquare_rvs(dfden) * dfnum);
+}
+
+
+/** Binomial distribution **/
+
+
+/** Negative Binomial distribution **/
+
+long negative_binomial_rvs(double n, double p) {
+  double Y = gamma_rvs(n, (1 - p) / p);
+  return poisson_rvs(Y);
 }
 
 
@@ -255,6 +326,40 @@ long poisson_rvs(double lam)
 
 double std_cauchy_rvs() {
   return std_gaussian_rvs() / std_gaussian_rvs();
+}
+
+double cauchy_rvs(double a) {
+  return a * std_cauchy_rvs();
+}
+
+double cauchy_pdf(double x, double a) {
+  double u = x / a;
+  double p = (1 / (OWL_PI * a)) / (1 + u * u);
+  return p;
+}
+
+double cauchy_logpdf(double x, double a) {
+  return log(cauchy_pdf(x, a));
+}
+
+double cauchy_cdf(double x, double a) {
+  double p;
+  double u = x / a;
+
+  if (u > -1)
+    p = 0.5 + atan(u) / OWL_PI;
+  else
+    p = atan(-1 / u) / OWL_PI;
+
+  return p;
+}
+
+double cauchy_logcdf(double x, double a) {
+  return log(cauchy_cdf(x, a));
+}
+
+double cauchy_ppf(double p, double a) {
+  return a * tan(OWL_PI * (p - 0.5));
 }
 
 
