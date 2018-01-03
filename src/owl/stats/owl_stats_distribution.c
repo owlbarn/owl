@@ -28,7 +28,7 @@ double gaussian_logpdf(double x) {
   return (-x * x / 2. - _norm_pdf_logC);
 }
 
-double gaussian_cdf(double x) {
+inline double gaussian_cdf(double x) {
   return ndtr(x);
 }
 
@@ -37,23 +37,19 @@ double gaussian_logcdf(double x) {
 }
 
 double gaussian_ppf(double q) {
-  // TODO: not implemented yet
-  return 0.;
+  return ndtri(q);
 }
 
 double gaussian_sf(double x) {
-  // TODO: not implemented yet
-  return 0.;
+  return gaussian_cdf(-x);
 }
 
 double gaussian_logsf(double x) {
-  // TODO: not implemented yet
-  return 0.;
+  return gaussian_logcdf(-x);
 }
 
 double gaussian_isf(double q) {
-  // TODO: not implemented yet
-  return 0.;
+  return -gaussian_sf(q);
 }
 
 double gaussian_entropy(double x) {
