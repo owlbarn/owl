@@ -29,13 +29,11 @@ double gaussian_logpdf(double x) {
 }
 
 double gaussian_cdf(double x) {
-  // TODO: not implemented yet
-  return 0.;
+  return ndtr(x);
 }
 
 double gaussian_logcdf(double x) {
-  // TODO: not implemented yet
-  return 0.;
+  return log(ndtr(x));
 }
 
 double gaussian_ppf(double q) {
