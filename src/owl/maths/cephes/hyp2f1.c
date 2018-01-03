@@ -69,7 +69,7 @@
 
 #include "mconf.h"
 #include <stdlib.h>
-#include "_c99compat.h"
+//#include "_c99compat.h"
 
 #define EPS 1.0e-13
 #define EPS2 1.0e-10

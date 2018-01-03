@@ -1,17 +1,14 @@
 
-/* Compute the CDF of the Tukey-Lambda distribution 
+/* Compute the CDF of the Tukey-Lambda distribution
  * using a braketing search with special checks
- * 
- * The PPF of the Tukey-lambda distribution is 
+ *
+ * The PPF of the Tukey-lambda distribution is
  * G(p) = p**lam + (1-p)**lam / lam
- * 
- * Author:  Travis Oliphant 
+ *
+ * Author:  Travis Oliphant
  */
 
-#include <Python.h>
-#include <numpy/npy_math.h>
-
-#include <math.h>
+#include "owl_maths.h"
 
 #define SMALLVAL 1e-4
 #define EPS 1.0e-14

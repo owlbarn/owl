@@ -19,7 +19,7 @@
  * The file also includes a conditional assembly definition
  * for the type of computer arithmetic (IEEE, Motorola
  * IEEE, or UNKnown).
- * 
+ *
  * For little-endian computers, such as IBM PC, that follow the
  * IEEE Standard for Binary Floating Point Arithmetic (ANSI/IEEE
  * Std 754-1985), the symbol IBMPC should be defined.  These
@@ -58,8 +58,26 @@
 #ifndef CEPHES_MCONF_H
 #define CEPHES_MCONF_H
 
-#include <Python.h>
-#include <numpy/npy_math.h>
+
+// FIXME: hacking
+
+#include "owl_maths.h"
+
+
+#if defined(_MSC_VER)
+        #define NPY_INLINE __inline
+#elif defined(__GNUC__)
+	#if defined(__STRICT_ANSI__)
+		#define NPY_INLINE __inline__
+	#else
+		#define NPY_INLINE inline
+	#endif
+#else
+        #define NPY_INLINE
+#endif
+
+// hacking ends
+
 
 #include "cephes_names.h"
 #include "protos.h"
