@@ -59,6 +59,7 @@ double gaussian_isf(double q, double mu, double sigma) {
 }
 
 double gaussian_entropy() {
+  // TODO
   return 0.5 * (log(2 * OWL_PI) + 1);
 }
 
@@ -107,6 +108,52 @@ double std_gamma_rvs(double shape) {
 
 double gamma_rvs(double shape, double scale) {
   return scale * std_gamma_rvs(shape);
+}
+
+double gamma_pdf(double x, double shape, double scale) {
+  if (x < 0)
+    return 0;
+  else if (x == 0)
+    return (shape == 1 ? 1 / scale : 0);
+  else if (shape == 1)
+    return exp(-x / scale) / scale;
+  else
+    return exp((shape - 1) * log(x/scale) - x/scale - lgam(shape)) / scale;
+}
+
+double gamma_logpdf(double x, double shape, double scale) {
+  return log(gamma_pdf(x, shape, scale));
+}
+
+double gamma_cdf(double x, double shape, double scale) {
+  double y = x / scale;
+
+  if (x <= 0.)
+    return 0.;
+  else
+    return (y > shape ? (1. - igamc(shape, y)) : igam(shape, y));
+}
+
+double gamma_logcdf(double x, double shape, double scale) {
+  return log(gamma_cdf(x, shape, scale));
+}
+
+double gamma_ppl(double q, double shape, double scale) {
+  // TODO
+  return 0.;
+}
+
+double gamma_sf(double x, double shape, double scale) {
+  return igamc(shape, (x / scale));
+}
+
+double gamma_logsf(double x, double shape, double scale) {
+  return log(gamma_sf(x, shape, scale));
+}
+
+double gamma_isf(double q, double shape, double scale) {
+  // TODO
+  return 0.;
 }
 
 
@@ -159,10 +206,10 @@ double beta_pdf(double x, double a, double b) {
       if (a > 1.0 && b > 1.0)
        p = 0.0;
       else
-       p = exp (gab - ga - gb) * pow (x, a - 1) * pow (1 - x, b - 1);
+       p = exp(gab - ga - gb) * pow(x, a - 1) * pow(1 - x, b - 1);
     }
     else
-      p = exp (gab - ga - gb + log(x) * (a - 1)  + log1p(-x) * (b - 1));
+      p = exp(gab - ga - gb + log(x) * (a - 1)  + log1p(-x) * (b - 1));
 
     return p;
     }

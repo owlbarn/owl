@@ -71,6 +71,13 @@ extern "C" {
 #define npy_copysign(X,Y) copysign(X,Y)
 
 
+/* Extended functions */
+
+extern double xlogy(double x, double y);
+
+extern double xlog1py(double x, double y);
+
+
 /*
  * IEEE 754 fpu handling. Those are guaranteed to be macros
  */

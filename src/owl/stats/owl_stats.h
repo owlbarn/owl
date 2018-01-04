@@ -60,11 +60,45 @@ extern float std_gaussian_rvs();
 
 extern float gaussian_rvs(float mu, float sigma);
 
+extern double gaussian_pdf(double x, double mu, double sigma);
+
+extern double gaussian_logpdf(double x, double mu, double sigma);
+
+extern double gaussian_cdf(double x, double mu, double sigma);
+
+extern double gaussian_logcdf(double x, double mu, double sigma);
+
+extern double gaussian_ppf(double q, double mu, double sigma);
+
+extern double gaussian_sf(double x, double mu, double sigma);
+
+extern double gaussian_logsf(double x, double mu, double sigma);
+
+extern double gaussian_isf(double q, double mu, double sigma);
+
+
 /** Gamma distribution **/
 
 extern double std_gamma_rvs(double shape);
 
 extern double gamma_rvs(double shape, double scale);
+
+extern double gamma_pdf(double x, double shape, double scale);
+
+extern double gamma_logpdf(double x, double shape, double scale);
+
+extern double gamma_cdf(double x, double shape, double scale);
+
+extern double gamma_logcdf(double x, double shape, double scale);
+
+extern double gamma_ppl(double q, double shape, double scale);
+
+extern double gamma_sf(double x, double shape, double scale);
+
+extern double gamma_logsf(double x, double shape, double scale);
+
+extern double gamma_isf(double q, double shape, double scale);
+
 
 /** Beta distribution **/
 
