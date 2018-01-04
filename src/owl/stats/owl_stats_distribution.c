@@ -197,21 +197,18 @@ double beta_pdf(double x, double a, double b) {
   if (x < 0 || x > 1)
     return 0;
   else {
-    double p;
     double gab = lgam(a + b);
     double ga = lgam(a);
     double gb = lgam(b);
 
     if (x == 0.0 || x == 1.0) {
       if (a > 1.0 && b > 1.0)
-       p = 0.0;
+        return 0.0;
       else
-       p = exp(gab - ga - gb) * pow(x, a - 1) * pow(1 - x, b - 1);
+       return exp(gab - ga - gb) * pow(x, a - 1) * pow(1 - x, b - 1);
     }
     else
-      p = exp(gab - ga - gb + log(x) * (a - 1)  + log1p(-x) * (b - 1));
-
-    return p;
+      return exp(gab - ga - gb + log(x) * (a - 1)  + log1p(-x) * (b - 1));
     }
 }
 
@@ -245,12 +242,12 @@ double noncentral_chisquare_rvs(double df, double nonc) {
   if (nonc == 0)
     return chisquare_rvs(df);
   if (1 < df) {
-    const double Chi2 = chisquare_rvs(df - 1);
-    const double N = std_gaussian_rvs() + sqrt(nonc);
+    double Chi2 = chisquare_rvs(df - 1);
+    double N = std_gaussian_rvs() + sqrt(nonc);
     return Chi2 + N * N;
   }
   else {
-    const long i = poisson_rvs(nonc / 2);
+    long i = poisson_rvs(nonc / 2);
     return chisquare_rvs(df + 2 * i);
   }
 }
