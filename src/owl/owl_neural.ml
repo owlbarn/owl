@@ -6,45 +6,11 @@
 
 (** Neural network: module aliases *)
 
-
-(** {6 Single precision neural network} *)
-
-module S = struct
+module Make (A : Owl_types.NdarraySig) = struct
 
   (* module aliases: graphical network & parallel *)
 
-  module Graph          = Owl_neural_graph.Make (Owl_dense_ndarray.S)
-  module Parallel       = Owl_neural_parallel.Make (Graph)
-
-  (* module aliases: weight init and activation *)
-
-  module Init           = Graph.Neuron.Init
-  module Activation     = Graph.Neuron.Activation
-
-  (* module aliases: optimisation configuration *)
-
-  module Params         = Graph.Optimise.Params
-  module Batch          = Graph.Optimise.Batch
-  module Learning_Rate  = Graph.Optimise.Learning_Rate
-  module Loss           = Graph.Optimise.Loss
-  module Gradient       = Graph.Optimise.Gradient
-  module Momentum       = Graph.Optimise.Momentum
-  module Regularisation = Graph.Optimise.Regularisation
-  module Clipping       = Graph.Optimise.Clipping
-  module Stopping       = Graph.Optimise.Stopping
-  module Checkpoint     = Graph.Optimise.Checkpoint
-
-
-end
-
-
-(** {6 Double precision neural network} *)
-
-module D = struct
-
-  (* module aliases: graphical network & parallel *)
-
-  module Graph          = Owl_neural_graph.Make (Owl_dense_ndarray.D)
+  module Graph          = Owl_neural_graph.Make (A)
   (* module Parallel       = Owl_neural_parallel.Make (Graph) *)
 
   (* module aliases: weight init and activation *)
@@ -65,9 +31,18 @@ module D = struct
   module Stopping       = Graph.Optimise.Stopping
   module Checkpoint     = Graph.Optimise.Checkpoint
 
-
 end
 
 
+(** {6 Single precision neural network} *)
+
+module S = struct
+  include Make (Owl_dense_ndarray.S)
+  module Parallel = Owl_neural_parallel.Make (Graph)
+end
+
+(** {6 Double precision neural network} *)
+
+module D = Make (Owl_dense_ndarray.D)
 
 (* ends here *)
