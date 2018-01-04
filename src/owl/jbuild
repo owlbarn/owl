@@ -5,6 +5,7 @@
 (copy_files# maths/cephes/*)
 (copy_files# stats/*)
 (copy_files# stats/sfmt/*)
+(copy_files# neural/*)
 
 (library (
   (name owl)
