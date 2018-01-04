@@ -58,7 +58,7 @@ extern float exp_rvs(float);
 
 extern float std_gaussian_rvs();
 
-extern float gaussian_rvs(float, float);
+extern float gaussian_rvs(float mu, float sigma);
 
 /** Gamma distribution **/
 
