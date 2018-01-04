@@ -12,7 +12,7 @@ open Owl_dense_ndarray_generic
 open Owl_distribution_common
 
 
-(* align and calculate the output shape for broadcasting over [x0] and [x1] *)
+(* TODO: same as that in Owl_dense_ndarray_generic, need to combine soon. *)
 let broadcast_align_shape x0 x1 =
   (* align the rank of inputs *)
   let d0 = num_dims x0 in
@@ -33,12 +33,8 @@ let broadcast_align_shape x0 x1 =
   y0, y1, s0, s1, t0, t1
 
 
-(* general broadcast operation for add/sub/mul/div and etc.
-  This function compares the dimension element-wise from the highest to the
-  lowest with the following broadcast rules (same as numpy):
-  1. equal; 2. either is 1.
- *)
-let broadcast_op op x0 x1 n =
+(* broadcast for [f : x -> y -> z] *)
+let broadcast_op0 op x0 x1 n =
   (* align the input rank, calculate the output shape and stride *)
   let y0, y1, s0, s1, t0, t1 = broadcast_align_shape x0 x1 in
   let s2 = Array.(map2 Pervasives.max s0 s1 |> append [|n|]) in
@@ -49,10 +45,23 @@ let broadcast_op op x0 x1 n =
   y2
 
 
-let uniform_rvs ~a ~b ~n = broadcast_op (_owl_uniform_rvs (kind a)) a b n
+(* broadcast for [f : x -> y] *)
+let broadcast_op1 op x n =
+  let y = empty (kind x) (Array.append [|n|] (shape x)) in
+  let x, y, sx, sy, tx, ty = broadcast_align_shape x y in
+  (* call the specific map function *)
+  op x tx y ty y ty;
+  y
 
 
-let gaussian_rvs ~mu ~sigma ~n = broadcast_op (_owl_gaussian_rvs (kind mu)) mu sigma n
+let uniform_rvs ~a ~b ~n = broadcast_op0 (_owl_uniform_rvs (kind a)) a b n
+
+
+let gaussian_rvs ~mu ~sigma ~n = broadcast_op0 (_owl_gaussian_rvs (kind mu)) mu sigma n
+
+
+let exponential_rvs ~lambda ~n = broadcast_op1 (_owl_exponential_rvs (kind lambda)) lambda n
+
 
 
 (* ends here *)
