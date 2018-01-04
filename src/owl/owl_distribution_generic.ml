@@ -4,8 +4,12 @@
  *)
 
 open Bigarray
+
 open Owl_dense_common
+
 open Owl_dense_ndarray_generic
+
+open Owl_distribution_common
 
 
 (* align and calculate the output shape for broadcasting over [x0] and [x1] *)
@@ -45,10 +49,10 @@ let broadcast_op op x0 x1 n =
   y2
 
 
-let uniform_rand ~a ~b ~n = broadcast_op (_owl_dist_uniform (kind a)) a b n
+let uniform_rvs ~a ~b ~n = broadcast_op (_owl_uniform_rvs (kind a)) a b n
 
 
-let gaussian_rand ~mu ~sigma ~n = broadcast_op (_owl_dist_gaussian (kind mu)) mu sigma n
+let gaussian_rvs ~mu ~sigma ~n = broadcast_op (_owl_gaussian_rvs (kind mu)) mu sigma n
 
 
 (* ends here *)

@@ -5,6 +5,9 @@
 
 open Bigarray
 
+open Owl_dense_common_types
+
+
 (* FIXME: need to unify with the Stats module in the future *)
 let rng = Random.State.make_self_init ()
 
@@ -292,23 +295,6 @@ let _owl_gaussian_fun : type a b. (a, b) kind -> (float -> a) = function
   | _         -> failwith "_owl_gaussian: unsupported operation"
 
 
-(* interface to eigen functions, types for interfacing to eigen *)
-
-type ('a, 'b) eigen_mat = ('a, 'b, c_layout) Array2.t
-type ('a, 'b) eigen_arr = ('a, 'b, c_layout) Genarray.t
-
-type ('a, 'b) eigen_mat_op00 = ('a, 'b) eigen_mat -> ('a, 'b) eigen_mat
-type ('a, 'b) eigen_mat_op01 = ('a, 'b) eigen_mat -> int -> int -> unit
-type ('a, 'b) eigen_arr_op00 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
-type ('a, 'b) eigen_arr_op01 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
-type ('a, 'b) eigen_arr_op02 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
-type ('a, 'b) eigen_arr_op03 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
-type ('a, 'b) eigen_arr_op04 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
-type ('a, 'b) eigen_arr_op05 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
-type ('a, 'b) eigen_arr_op06 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> (int64, int64_elt) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
-type ('a, 'b) eigen_arr_op07 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
-type ('a, 'b) eigen_arr_op08 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
-
 (* call functions in eigen *)
 
 let _eigen_swap_rows : type a b . (a, b) kind -> (a, b) eigen_mat_op01 = function
@@ -397,33 +383,6 @@ let _eigen_spatial_avg_pooling_backward : type a b . (a, b) kind -> (a, b) eigen
   | Float64   -> Eigen.Tensor.D.spatial_avg_pooling_backward
   | _         -> failwith "_eigen_spatial_avg_pooling_backward: unsupported operation"
 
-
-(* interface to owl's c functions, types for interfacing to owl *)
-
-type ('a, 'b) owl_arr = ('a, 'b, c_layout) Genarray.t
-
-type ('a, 'b) owl_arr_op00 = int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int
-type ('a, 'b) owl_arr_op01 = int -> ('a, 'b) owl_arr -> int
-type ('a, 'b) owl_arr_op02 = int -> ('a, 'b) owl_arr -> float
-type ('a, 'b) owl_arr_op03 = int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit
-type ('a, 'b) owl_arr_op04 = int -> ('a, 'b) owl_arr -> 'a
-type ('a, 'b) owl_arr_op05 = int -> 'a -> ('a, 'b) owl_arr -> 'a
-type ('a, 'b) owl_arr_op06 = int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a
-type ('a, 'b) owl_arr_op07 = int -> 'a -> 'a -> ('a, 'b) owl_arr -> unit
-type ('a, 'b) owl_arr_op08 = int -> float -> 'a -> 'a -> ('a, 'b) owl_arr -> unit
-type ('a, 'b) owl_arr_op09 = int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit
-type ('a, 'b) owl_arr_op10 = int -> ('a, 'b) owl_arr -> 'a -> int
-type ('a, 'b) owl_arr_op11 = int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> 'a -> unit
-type ('a, 'b) owl_arr_op12 = int -> ('a, 'b) owl_arr -> float -> int -> unit
-type ('a, 'b) owl_arr_op13 = int -> ('a, 'b) owl_arr -> 'a -> 'a -> unit
-type ('a, 'b) owl_arr_op14 = int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit
-type ('a, 'b) owl_arr_op15 = int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> float -> int
-type ('a, 'b) owl_arr_op16 = int -> ('a, 'b) owl_arr -> 'a -> float -> int
-type ('a, 'b) owl_arr_op17 = ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit
-type ('a, 'b) owl_arr_op18 = int -> ?ofsx:int -> ?incx:int -> ?ofsy:int -> ?incy:int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit
-type ('a, 'b, 'c, 'd) owl_arr_op19 = int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> unit
-type ('a, 'b) owl_arr_op20 = int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> int -> unit
-type ('a, 'b) owl_arr_op21 = int -> int -> int -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit
 
 (* call functions in owl native c *)
 
@@ -3074,20 +3033,5 @@ let _owl_broadcast_elt_greater_equal : type a b. (a, b) kind -> (a, b) owl_arr_o
   | Int64          -> owl_int64_broadcast_elt_greater_equal
   | _              -> failwith "_owl_broadcast_elt_greater_equal: unsupported operation"
 
-external owl_float32_dist_gaussian : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_dist_gaussian" "float32_dist_gaussian_impl"
-external owl_float64_dist_gaussian : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_dist_gaussian" "float64_dist_gaussian_impl"
-
-let _owl_dist_gaussian : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
-  | Float32        -> owl_float32_dist_gaussian
-  | Float64        -> owl_float64_dist_gaussian
-  | _              -> failwith "_owl_dist_gaussian: unsupported operation"
-
-external owl_float32_dist_uniform : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_dist_uniform" "float32_dist_uniform_impl"
-external owl_float64_dist_uniform : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_dist_uniform" "float64_dist_uniform_impl"
-
-let _owl_dist_uniform : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
-  | Float32        -> owl_float32_dist_uniform
-  | Float64        -> owl_float64_dist_uniform
-  | _              -> failwith "_owl_dist_uniform: unsupported operation"
 
 (* ends here *)

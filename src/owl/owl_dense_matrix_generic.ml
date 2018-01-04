@@ -667,8 +667,8 @@ let _hadamard_20 = Array.map float_of_int
 let hadamard k n =
   (* function to build up hadamard matrix recursively *)
   let rec _make_hadamard
-    (cp_op  : ('a, 'b) Owl_dense_common.owl_arr_op18)
-    (neg_op : ('a, 'b) Owl_dense_common.owl_arr_op18)
+    (cp_op  : ('a, 'b) Owl_dense_common_types.owl_arr_op18)
+    (neg_op : ('a, 'b) Owl_dense_common_types.owl_arr_op18)
     len n base x =
     if len = base then ()
     else (

@@ -15,11 +15,11 @@
     owl_common_c
     owl_stats_ziggurat
     owl_stats_distribution
+    owl_distribution_common_c
     owl_dense_common_c
     owl_dense_common_cmp
     owl_dense_common_map
     owl_dense_common_fold
-    owl_dense_common_dist
     owl_cblas_generated_stub
     owl_lapacke_generated_stub
     SFMT
