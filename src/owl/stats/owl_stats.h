@@ -52,7 +52,7 @@ extern void ziggurat_init();
 
 extern float std_exp_rvs();
 
-extern float exp_rvs(float);
+extern float exp_rvs(float lambda);
 
 /** Gaussian distribution **/
 
@@ -62,9 +62,9 @@ extern float gaussian_rvs(float mu, float sigma);
 
 /** Gamma distribution **/
 
-extern double std_gamma_rvs(double);
+extern double std_gamma_rvs(double shape);
 
-extern double gamma_rvs(double, double);
+extern double gamma_rvs(double shape, double scale);
 
 /** Beta distribution **/
 
