@@ -3,10 +3,12 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+(** Functor to create neural networks of different precision. *)
 
-(** Neural network: module aliases *)
+open Owl_types
 
-module Make (A : Owl_types.NdarraySig) = struct
+
+module Make (A : NdarraySig) = struct
 
   (* module aliases: graphical network & parallel *)
 
