@@ -49,6 +49,6 @@ double gaussian_isf(double q, double mu, double sigma) {
   return mu - sigma * ndtri(q);
 }
 
-double gaussian_entropy() {
-  return 0.5 * (log(2 * OWL_PI) + 1);
+double gaussian_entropy(double sigma) {
+  return 0.5 * (log(2 * OWL_PI) + 1) + log(sigma);
 }

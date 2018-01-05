@@ -52,7 +52,6 @@
     owl_stats_dist_wald
     owl_stats_dist_weibull
     owl_stats_dist_zipf
-    owl_stats_distribution
     ; CDFlib
     ;dcdflib
     ;ipmpar

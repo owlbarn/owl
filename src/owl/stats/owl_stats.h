@@ -32,7 +32,6 @@ extern sfmt_t sfmt_state;
 
 #define sfmt_f64_3 sfmt_genrand_real3(&sfmt_state)
 
-
 // Various PRNG and functions
 
 #define f32_exponential std_exp_rvs()
@@ -46,7 +45,6 @@ extern sfmt_t sfmt_state;
 extern void ziggurat_init();
 
 /** Uniform distribution **/
-
 
 /** Exponential distribution **/
 
@@ -76,6 +74,7 @@ extern double gaussian_logsf(double x, double mu, double sigma);
 
 extern double gaussian_isf(double q, double mu, double sigma);
 
+extern double gaussian_entropy(double sigma);
 
 /** Gamma distribution **/
 
@@ -99,6 +98,7 @@ extern double gamma_logsf(double x, double shape, double scale);
 
 extern double gamma_isf(double q, double shape, double scale);
 
+extern double gamma_entropy(double shape, double scale)
 
 /** Beta distribution **/
 
@@ -201,6 +201,10 @@ extern double triangular_rvs(double, double, double);
 /** Log-Series distribution **/
 
 extern long logseries_rvs(double);
+
+/** Some helper functions **/
+
+extern double loggam(double x);
 
 
 #endif // OWL_STATS_H

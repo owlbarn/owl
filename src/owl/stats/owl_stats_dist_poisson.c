@@ -8,21 +8,8 @@
 
 /** Poisson distribution **/
 
-long poisson_mult_rvs(double lam) {
-  long X = 0;
-  double enlam = exp(-lam);
-  double prod = 1.;
-  while (1) {
-    prod *= sfmt_f64_3;
-    if (prod > enlam)
-      X += 1;
-    else
-      return X;
-  }
-}
-
-
-static double loggam(double x) {
+// FIXME: replace with lgam in cephes?
+double loggam(double x) {
   static double a[10] = {
     8.333333333333333e-02,-2.777777777777778e-03,
     7.936507936507937e-04,-5.952380952380952e-04,
@@ -54,6 +41,18 @@ static double loggam(double x) {
   return gl;
 }
 
+long poisson_mult_rvs(double lam) {
+  long X = 0;
+  double enlam = exp(-lam);
+  double prod = 1.;
+  while (1) {
+    prod *= sfmt_f64_3;
+    if (prod > enlam)
+      X += 1;
+    else
+      return X;
+  }
+}
 
 long poisson_ptrs_rvs(double lam) {
   long k;

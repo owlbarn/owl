@@ -8,6 +8,9 @@
 
 /** Hypergeometric distribution **/
 
+#define D1 1.7155277699214135  /* D1 = 2*sqrt(2/e) */
+#define D2 0.8989161620588988  /* D2 = 3 - 2*sqrt(3/e) */
+
 long hypergeometric_hyp_rvs(long good, long bad, long sample) {
   long d1 = bad + good - sample;
   double d2 = good < bad ? good : bad;
@@ -24,9 +27,6 @@ long hypergeometric_hyp_rvs(long good, long bad, long sample) {
   return Z;
 }
 
-
-#define D1 1.7155277699214135  /* D1 = 2*sqrt(2/e) */
-#define D2 0.8989161620588988  /* D2 = 3 - 2*sqrt(3/e) */
 long hypergeometric_hrua_rvs(long good, long bad, long sample) {
   long mingoodbad, maxgoodbad, popsize, m, d9;
   double d4, d5, d6, d7, d8, d10, d11;

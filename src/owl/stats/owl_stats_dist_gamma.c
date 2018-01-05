@@ -96,6 +96,6 @@ double gamma_isf(double q, double shape, double scale) {
   return scale * igami(shape, q);
 }
 
-double gamma_entropy(shape) {
-  return psi(shape) * (1 - shape) + shape + lgam(shape);
+double gamma_entropy(double shape, double scale) {
+  return psi(shape) * (1 - shape) + shape + lgam(shape) + log(scale);
 }
