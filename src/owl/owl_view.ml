@@ -129,13 +129,13 @@ module Make
     let stride = x.ofstr.(dim).(1) in
     let i = [|i + offset|] in
     if dim = num_dims x - 1 then (
-      for j = 0 to x.shape.(dim) - 1 do
+      for _j = 0 to x.shape.(dim) - 1 do
         f i (A.get x.dvec i);
         i.(0) <- i.(0) + stride;
       done
     )
     else (
-      for j = 0 to x.shape.(dim) - 1 do
+      for _j = 0 to x.shape.(dim) - 1 do
         _iter f x i.(0) (dim + 1);
         i.(0) <- i.(0) + stride;
       done
@@ -166,14 +166,14 @@ module Make
     let i_x = [|i_x + offset_x|] in
     let i_y = [|i_y + offset_y|] in
     if dim = num_dims x - 1 then (
-      for j = 0 to x.shape.(dim) - 1 do
+      for _j = 0 to x.shape.(dim) - 1 do
         f i_x i_y (A.get x.dvec i_x) (A.get y.dvec i_y);
         i_x.(0) <- i_x.(0) + stride_x;
         i_y.(0) <- i_y.(0) + stride_y;
       done
     )
     else (
-      for j = 0 to x.shape.(dim) - 1 do
+      for _j = 0 to x.shape.(dim) - 1 do
         _iter2 f x y i_x.(0) i_y.(0) (dim + 1);
         i_x.(0) <- i_x.(0) + stride_x;
         i_y.(0) <- i_y.(0) + stride_y;

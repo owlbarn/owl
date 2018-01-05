@@ -27,7 +27,10 @@
     -lgfortran
     -lm
   ))
-  (flags (:standard -safe-string))
+  (flags (
+    ; turn off some warnings as 4.06.0 is pernickety and errors out
+    :standard -w "-32-27-6-37-3" -safe-string)
+  )
   (libraries (
     ctypes
     ctypes.stubs

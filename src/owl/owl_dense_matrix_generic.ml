@@ -107,7 +107,7 @@ let tril ?(k=0) x =
   let len = ref (Pervasives.(min n ((max 0 k) + 1))) in
   let ofs = ref (row_i * n) in
 
-  for i = row_i to m - 1 do
+  for _i = row_i to m - 1 do
     _owl_copy _kind !len ~ofsx:!ofs ~incx:1 ~ofsy:!ofs ~incy:1 x y;
     ofs := !ofs + n;
     if !len < n then
@@ -306,7 +306,7 @@ let ctranspose x =
   in
   let ofsx = ref 0 in
   let ofsy = ref 0 in
-  for i = 0 to loops - 1 do
+  for _i = 0 to loops - 1 do
     _owl_conj _kind len ~ofsx:!ofsx ~incx ~ofsy:!ofsy ~incy x y;
     ofsx := !ofsx + iofx;
     ofsy := !ofsy + iofy;
@@ -675,7 +675,7 @@ let hadamard k n =
       let len' = len / 2 in
       _make_hadamard cp_op neg_op len' n base x;
       let ofsx = ref 0 in
-      for i = 0 to len' - 1 do
+      for _i = 0 to len' - 1 do
         let x1_ofs = !ofsx + len' in
         let x2_ofs = !ofsx + len' * n in
         let x3_ofs = x2_ofs + len' in

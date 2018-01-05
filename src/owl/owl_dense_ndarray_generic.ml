@@ -214,7 +214,7 @@ let concatenate ?(axis=0) xs =
   let x_ofs = Array.make n 0 in
   (* copy data in the flattened space *)
   let y_ofs = ref 0 in
-  for i = 0 to m - 1 do
+  for _i = 0 to m - 1 do
     for j = 0 to n - 1 do
       _owl_copy _kind step_sz.(j) ~ofsx:x_ofs.(j) ~incx:1 ~ofsy:!y_ofs ~incy:1 xs.(j) y;
       x_ofs.(j) <- x_ofs.(j) + step_sz.(j);
@@ -1210,7 +1210,7 @@ let rotate x degree =
     if m <= n then (
       let ofsx = ref 0 in
       let ofsy = ref (m * n - 1) in
-      for i = 0 to m - 1 do
+      for _i = 0 to m - 1 do
         _owl_copy _kind n ~ofsx:!ofsx ~incx:1 ~ofsy:!ofsy ~incy:(-1) x y;
         ofsx := !ofsx + n;
         ofsy := !ofsy - n
@@ -2639,7 +2639,7 @@ let fold__ ?axis f a x =
       let y = create _kind s a in
       let y' = flatten y |> array1_of_genarray in
 
-      for i = 0 to m - 1 do
+      for _i = 0 to m - 1 do
         for j = 0 to n - 1 do
           y'.{!start_y + !incy} <- f y'.{!start_y + !incy} x'.{!start_x + j};
           if !incy + 1 = o then incy := 0
@@ -2680,7 +2680,7 @@ let cumulate ?axis f x =
   let y = copy x in
   let y' = flatten y |> array1_of_genarray in
 
-  for i = 0 to m - 1 do
+  for _i = 0 to m - 1 do
     for j = 0 to n - 1 do
       y'.{!start_y + j} <- f y'.{!start_x + j} y'.{!start_y + j}
     done;

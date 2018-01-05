@@ -6,7 +6,6 @@
 (** Neural network: interface of parallel engine *)
 
 
-open Owl_algodiff.S
 open Owl_optimise.S
 
 
