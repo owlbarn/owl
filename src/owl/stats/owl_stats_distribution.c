@@ -27,7 +27,7 @@ double gaussian_pdf(double x, double mu, double sigma) {
 
 double gaussian_logpdf(double x, double mu, double sigma) {
   double u = (x - mu) / sigma;
-  return (-u * u / 2. - _norm_pdf_logC - sigma);
+  return (-u * u / 2.) - _norm_pdf_logC - log(sigma);
 }
 
 double gaussian_cdf(double x, double mu, double sigma) {
@@ -40,8 +40,7 @@ double gaussian_logcdf(double x, double mu, double sigma) {
 }
 
 double gaussian_ppf(double q, double mu, double sigma) {
-  double u = (q - mu) / sigma;
-  return ndtri(u);
+  return mu + sigma * ndtri(q);
 }
 
 double gaussian_sf(double x, double mu, double sigma) {
@@ -55,11 +54,10 @@ double gaussian_logsf(double x, double mu, double sigma) {
 }
 
 double gaussian_isf(double q, double mu, double sigma) {
-  return -gaussian_sf(q, mu, sigma);
+  return mu - sigma * ndtri(q);
 }
 
 double gaussian_entropy() {
-  // TODO
   return 0.5 * (log(2 * OWL_PI) + 1);
 }
 
@@ -138,9 +136,8 @@ double gamma_logcdf(double x, double shape, double scale) {
   return log(gamma_cdf(x, shape, scale));
 }
 
-double gamma_ppl(double q, double shape, double scale) {
-  // TODO
-  return 0.;
+double gamma_ppf(double q, double shape, double scale) {
+  return scale * igami(shape, 1 - q);
 }
 
 double gamma_sf(double x, double shape, double scale) {
@@ -152,7 +149,10 @@ double gamma_logsf(double x, double shape, double scale) {
 }
 
 double gamma_isf(double q, double shape, double scale) {
-  // TODO
+  return scale * igami(shape, q);
+}
+
+double gamma_entropy() {
   return 0.;
 }
 
