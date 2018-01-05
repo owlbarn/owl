@@ -176,7 +176,27 @@ extern double cauchy_entropy(double scale);
 
 /** Student's t distribution **/
 
-extern double std_t_rvs(double);
+extern double std_t_rvs(double df);
+
+extern double t_rvs(double df, double loc, double scale);
+
+extern double t_pdf(double x, double df, double loc, double scale);
+
+extern double t_logpdf(double x, double df, double loc, double scale);
+
+extern double t_cdf(double x, double df, double loc, double scale);
+
+extern double t_logcdf(double x, double df, double loc, double scale);
+
+extern double t_ppl(double q, double df, double loc, double scale);
+
+extern double t_sf(double x, double df, double loc, double scale);
+
+extern double t_logsf(double x, double df, double loc, double scale);
+
+extern double t_isf(double q, double df, double loc, double scale);
+
+extern double t_entropy(double df);
 
 /** von Mises distribution **/
 
