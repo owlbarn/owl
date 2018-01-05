@@ -138,7 +138,7 @@ extern double std_cauchy_rvs();
 
 extern double cauchy_rvs(double);
 
-/** Student-t distribution **/
+/** Student's t distribution **/
 
 extern double std_t_rvs(double);
 

@@ -13,8 +13,6 @@
   (wrapped false)
   (c_names (
     owl_common_c
-    owl_stats_ziggurat
-    owl_stats_distribution
     owl_distribution_common_c
     owl_dense_common_c
     owl_dense_common_cmp
@@ -24,9 +22,40 @@
     owl_lapacke_generated_stub
     ; stats
     SFMT
+    owl_stats_ziggurat
+    owl_stats_dist_beta
+    owl_stats_dist_binomial
+    owl_stats_dist_cauchy
+    owl_stats_dist_chisquare
+    owl_stats_dist_exponential
+    owl_stats_dist_f
+    owl_stats_dist_gamma
+    owl_stats_dist_gaussian
+    owl_stats_dist_geometric
+    owl_stats_dist_gumbel
+    owl_stats_dist_hypergeometric
+    owl_stats_dist_laplace
+    owl_stats_dist_logistic
+    owl_stats_dist_lognormal
+    owl_stats_dist_logseries
+    owl_stats_dist_negative_binomial
+    owl_stats_dist_noncentral_chisquare
+    owl_stats_dist_noncentral_f
+    owl_stats_dist_pareto
+    owl_stats_dist_poisson
+    owl_stats_dist_power
+    owl_stats_dist_rayleigh
+    owl_stats_dist_t
+    owl_stats_dist_triangular
+    owl_stats_dist_uniform
+    owl_stats_dist_vonmises
+    owl_stats_dist_wald
+    owl_stats_dist_weibull
+    owl_stats_dist_zipf
+    owl_stats_distribution
     ; CDFlib
-    dcdflib
-    ipmpar
+    ;dcdflib
+    ;ipmpar
     ; maths
     owl_maths_ext
     sf_error
