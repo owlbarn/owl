@@ -48,15 +48,15 @@ extern void ziggurat_init();
 
 /** Exponential distribution **/
 
-extern float std_exp_rvs();
+extern double std_exp_rvs();
 
-extern float exp_rvs(float lambda);
+extern double exp_rvs(double lambda);
 
 /** Gaussian distribution **/
 
-extern float std_gaussian_rvs();
+extern double std_gaussian_rvs();
 
-extern float gaussian_rvs(float mu, float sigma);
+extern double gaussian_rvs(double mu, double sigma);
 
 extern double gaussian_pdf(double x, double mu, double sigma);
 

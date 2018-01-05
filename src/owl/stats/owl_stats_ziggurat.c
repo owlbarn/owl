@@ -8,17 +8,17 @@
 #include "owl_stats.h"
 
 static uint32_t kn[128], ke[256];
-static float wn[128], fn[128], we[256], fe[256];
+static double wn[128], fn[128], we[256], fe[256];
 
 
 // init the internal state for exponential prng
-inline float std_exp_rvs ( ) {
+inline double std_exp_rvs ( ) {
   float value, x;
   uint32_t jz = sfmt_rand32;
   uint32_t iz = ( jz & 255 );
 
   if ( jz < ke[iz] )
-    value = ( float ) ( jz ) * we[iz];
+    value = jz * we[iz];
   else {
     for ( ; ; ) {
       if ( iz == 0 ) {
@@ -26,7 +26,7 @@ inline float std_exp_rvs ( ) {
         break;
       }
 
-      x = ( float ) ( jz ) * we[iz];
+      x = jz * we[iz];
 
       if ( fe[iz] + sfmt_f64_1 * ( fe[iz-1] - fe[iz] ) < exp ( - x ) ) {
         value = x;
@@ -37,7 +37,7 @@ inline float std_exp_rvs ( ) {
       iz = ( jz & 255 );
 
       if ( jz < ke[iz] ) {
-        value = ( float ) ( jz ) * we[iz];
+        value = jz * we[iz];
         break;
       }
     }
@@ -46,7 +46,7 @@ inline float std_exp_rvs ( ) {
 }
 
 
-inline float exp_rvs (float lambda) {
+inline double exp_rvs (double lambda) {
   return (lambda * std_exp_rvs());
 }
 
@@ -63,31 +63,31 @@ void std_exp_rvs_init ( ) {
   ke[0] = ( uint32_t ) ( ( de / q ) * m2 );
   ke[1] = 0;
 
-  we[0] = ( float ) ( q / m2 );
-  we[255] = ( float ) ( de / m2 );
+  we[0] = q / m2;
+  we[255] = de / m2;
 
   fe[0] = 1.0;
-  fe[255] = ( float ) ( exp ( - de ) );
+  fe[255] =exp ( - de );
 
   for ( int i = 254; 1 <= i; i-- ) {
     de = - log ( ve / de + exp ( - de ) );
     ke[i+1] = ( uint32_t ) ( ( de / te ) * m2 );
     te = de;
-    fe[i] = ( float ) ( exp ( - de ) );
-    we[i] = ( float ) ( de / m2 );
+    fe[i] = exp ( - de );
+    we[i] = de / m2;
   }
 }
 
 // generate a prng of gaussian distribution
-inline float std_gaussian_rvs ( ) {
-  const float r = 3.442620;
-  float value, x, y;
+inline double std_gaussian_rvs ( ) {
+  const double r = 3.442620;
+  double value, x, y;
 
   int hz = ( int ) sfmt_rand32;
   uint32_t iz = ( hz & 127 );
 
   if ( abs ( hz ) < kn[iz] )
-    value = ( float ) ( hz ) * wn[iz];
+    value = hz * wn[iz];
   else {
     for ( ; ; ) {
       if ( iz == 0 ) {
@@ -101,7 +101,7 @@ inline float std_gaussian_rvs ( ) {
         break;
       }
 
-      x = ( float ) ( hz ) * wn[iz];
+      x = hz * wn[iz];
 
       if ( fn[iz] + ( sfmt_f64_1 ) * ( fn[iz-1] - fn[iz] ) < exp ( - 0.5 * x * x ) ) {
         value = x;
@@ -112,7 +112,7 @@ inline float std_gaussian_rvs ( ) {
       iz = ( hz & 127 );
 
       if ( abs ( hz ) < kn[iz] ) {
-        value = ( float ) ( hz ) * wn[iz];
+        value = hz * wn[iz];
         break;
       }
     }
@@ -122,7 +122,7 @@ inline float std_gaussian_rvs ( ) {
 }
 
 
-inline float gaussian_rvs (float mu, float sigma) {
+inline double gaussian_rvs (double mu, double sigma) {
   return (mu + sigma * std_gaussian_rvs());
 }
 
@@ -139,18 +139,18 @@ void std_gaussian_rvs_init ( ) {
   kn[0] = ( uint32_t ) ( ( dn / q ) * m1 );
   kn[1] = 0;
 
-  wn[0] = ( float ) ( q / m1 );
-  wn[127] = ( float ) ( dn / m1 );
+  wn[0] = q / m1;
+  wn[127] = dn / m1;
 
   fn[0] = 1.0;
-  fn[127] = ( float ) ( exp ( - 0.5 * dn * dn ) );
+  fn[127] = exp ( - 0.5 * dn * dn );
 
   for ( int i = 126; 1 <= i; i-- ) {
     dn = sqrt ( - 2.0 * log ( vn / dn + exp ( - 0.5 * dn * dn ) ) );
     kn[i+1] = ( uint32_t ) ( ( dn / tn ) * m1 );
     tn = dn;
-    fn[i] = ( float ) ( exp ( - 0.5 * dn * dn ) );
-    wn[i] = ( float ) ( dn / m1 );
+    fn[i] = exp ( - 0.5 * dn * dn );
+    wn[i] = dn / m1;
   }
 }
 
