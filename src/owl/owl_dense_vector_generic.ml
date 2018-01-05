@@ -5,9 +5,6 @@
 
 (** Vector module: various functions of vectors *)
 
-
-open Bigarray
-
 (* save some efforts, just include it *)
 module M = Owl_dense_matrix_generic
 include M

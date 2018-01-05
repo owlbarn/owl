@@ -3,11 +3,6 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
-(*random generators *)
-type t = Gsl.Rng.t
-
-
 (* Set up random environment *)
 
 let rng =

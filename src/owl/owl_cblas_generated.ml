@@ -5,8 +5,6 @@
 
 (** auto-generated cblas interface file, timestamp:1498396302 *)
 
-open Ctypes
-
 module CI = Cstubs_internals
 
 external cblas_sdsdot
@@ -1002,4 +1000,3 @@ let zherk ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~beta ~c ~ldc =
 
 let zher2k ~order ~uplo ~trans ~n ~k ~alpha ~a ~lda ~b ~ldb ~beta ~c ~ldc =
   cblas_zher2k order uplo trans n k (CI.cptr alpha) (CI.cptr a) lda (CI.cptr b) ldb beta (CI.cptr c) ldc
-

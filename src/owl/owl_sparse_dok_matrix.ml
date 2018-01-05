@@ -3,10 +3,6 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-
-open Bigarray
-open Owl_sparse_common
-
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 type ('a, 'b) t = {

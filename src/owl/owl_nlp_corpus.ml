@@ -123,7 +123,7 @@ let reset_iterators corpus =
 let next_batch ?(size=100) corpus =
   let batch = Owl_utils.Stack.make () in
   (
-    try for i = 0 to size - 1 do
+    try for _i = 0 to size - 1 do
       corpus |> next |> Owl_utils.Stack.push batch
     done with exn -> ()
   );
@@ -133,7 +133,7 @@ let next_batch ?(size=100) corpus =
 let next_batch_tok ?(size=100) corpus =
   let batch = Owl_utils.Stack.make () in
   (
-    try for i = 0 to size - 1 do
+    try for _i = 0 to size - 1 do
       corpus |> next_tok |> Owl_utils.Stack.push batch
     done with exn -> ()
   );

@@ -127,7 +127,7 @@ module Make
     else if ai < bi then -1
     else 0
 
-  let rec reset_zero = function
+  let reset_zero = function
     | F _    -> F 0.
     | Arr ap -> A.reset ap; Arr ap
     | _      -> failwith "error: reset_zero"

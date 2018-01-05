@@ -475,7 +475,7 @@ let repeat ?axis x reps =
       out a more efficient way to copy at the highest dimension. *)
     let ofsy = ref 0 in
     for i = 0 to numel x - 1 do
-      for j = 0 to reps - 1 do
+      for _j = 0 to reps - 1 do
         y'.(!ofsy) <- x'.(i);
         ofsy := !ofsy + 1;
       done
@@ -526,7 +526,7 @@ let concatenate ?(axis=0) xs =
   let x_ofs = Array.make n 0 in
   (* copy data in the flattened space *)
   let z_ofs = ref 0 in
-  for i = 0 to m - 1 do
+  for _i = 0 to m - 1 do
     for j = 0 to n - 1 do
       Array.blit x_flt.(j) x_ofs.(j) z !z_ofs step_sz.(j);
       x_ofs.(j) <- x_ofs.(j) + step_sz.(j);
@@ -653,7 +653,7 @@ let get_slice axis x =
         if c > 0 then ref (!ofsy_i * b)
         else ref ((!ofsy_i + 1) * b - 1)
       in
-      for i = 0 to b - 1 do
+      for _i = 0 to b - 1 do
         y'.(!ofsy) <- x'.(!ofsx);
         ofsx := !ofsx + cx;
         ofsy := !ofsy + cy;
@@ -722,7 +722,7 @@ let set_slice axis x y =
         if c > 0 then ref (!ofsy_i * b)
         else ref ((!ofsy_i + 1) * b - 1)
       in
-      for i = 0 to b - 1 do
+      for _i = 0 to b - 1 do
         x'.(!ofsx) <- y'.(!ofsy);
         ofsx := !ofsx + cx;
         ofsy := !ofsy + cy;

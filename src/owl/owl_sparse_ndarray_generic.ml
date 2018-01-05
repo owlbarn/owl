@@ -545,7 +545,7 @@ let _random_basic a k f d =
   let c = int_of_float ((float_of_int n) *. a) in
   let i = Array.copy d in
   let s = _calc_stride d in
-  for k = 0 to c - 1 do
+  for _k = 0 to c - 1 do
     let j = Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) () in
     _index_1d_nd j i s;
     set x i (f ())

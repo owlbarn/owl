@@ -1,23 +1,28 @@
-.PHONY: all clean test doc
-
+.PHONY: all
 all:
-	jbuilder build @install
+	jbuilder build --dev
 
+.PHONY: clean
 clean:
 	jbuilder clean
 
+.PHONY: test
 test:
 	jbuilder runtest -j1 --no-buffer
 
+.PHONY: install
 install:
 	jbuilder install
 
+.PHONY: uninstall
 uninstall:
 	jbuilder uninstall
 
+.PHONY: doc
 doc:
 	jbuilder build @doc
 
+.PHONY: cleanall
 cleanall:
 	jbuilder uninstall && jbuilder clean
-	rm -rf `find . -name .merlin`
+	$(RM) -r $(find . -name .merlin)

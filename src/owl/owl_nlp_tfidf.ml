@@ -202,7 +202,7 @@ let next m : (int * float) array = m |> get_handle |> Marshal.from_channel
 let next_batch ?(size=100) m =
   let batch = Owl_utils.Stack.make () in
   (
-    try for i = 0 to size - 1 do
+    try for _i = 0 to size - 1 do
       m |> next |> Owl_utils.Stack.push batch
     done with exn -> ()
   );
