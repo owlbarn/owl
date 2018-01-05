@@ -52,6 +52,24 @@ extern double std_exp_rvs();
 
 extern double exp_rvs(double lambda);
 
+extern double exp_pdf(double x, double lambda);
+
+extern double exp_logpdf(double x, double lambda);
+
+extern double exp_cdf(double x, double lambda);
+
+extern double exp_logcdf(double x, double lambda);
+
+extern double exp_ppf(double q, double lambda);
+
+extern double exp_sf(double x, double lambda);
+
+extern double exp_logsf(double x, double lambda);
+
+extern double exp_isf(double q, double lambda);
+
+extern double exp_entropy(double sigma);
+
 /** Gaussian distribution **/
 
 extern double std_gaussian_rvs();
