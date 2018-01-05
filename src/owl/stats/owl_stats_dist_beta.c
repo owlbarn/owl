@@ -66,7 +66,7 @@ double beta_logpdf(double x, double a, double b) {
 }
 
 double beta_cdf(double x, double a, double b) {
-  return btdtr(a, b, x);
+  return incbet(a, b, x);
 }
 
 double beta_logcdf(double x, double a, double b) {
@@ -75,4 +75,20 @@ double beta_logcdf(double x, double a, double b) {
 
 double beta_ppf(double q, double a, double b) {
   return incbi(a, b, q);
+}
+
+double beta_sf(double x, double a, double b) {
+  return 1 - beta_cdf(x, a, b);
+}
+
+double beta_logsf(double x, double a, double b) {
+  return log(1 - beta_cdf(x, a, b));
+}
+
+double beta_isf(double q, double a, double b) {
+  return incbi(a, b, 1 - q);
+}
+
+double beta_entropy(double a, double b) {
+  return lbeta(a, b) - (a - 1) * (psi(a) - psi(a + b)) - (b - 1) * (psi(b) - psi(a + b));
 }

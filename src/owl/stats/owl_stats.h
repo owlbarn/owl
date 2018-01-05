@@ -98,11 +98,29 @@ extern double gamma_logsf(double x, double shape, double scale);
 
 extern double gamma_isf(double q, double shape, double scale);
 
-extern double gamma_entropy(double shape, double scale)
+extern double gamma_entropy(double shape, double scale);
 
 /** Beta distribution **/
 
-extern double beta_rvs(double, double);
+extern double beta_rvs(double a, double b);
+
+extern double beta_pdf(double x, double a, double b);
+
+extern double beta_logpdf(double x, double a, double b);
+
+extern double beta_cdf(double x, double a, double b);
+
+extern double beta_logcdf(double x, double a, double b);
+
+extern double beta_ppl(double q, double a, double b);
+
+extern double beta_sf(double x, double a, double b);
+
+extern double beta_logsf(double x, double a, double b);
+
+extern double beta_isf(double q, double a, double b);
+
+extern double beta_entropy(double a, double b);
 
 /** Chi-squared distribution **/
 
@@ -136,7 +154,25 @@ extern long poisson_rvs(double);
 
 extern double std_cauchy_rvs();
 
-extern double cauchy_rvs(double);
+extern double cauchy_rvs(double loc, double scale);
+
+extern double cauchy_pdf(double x, double loc, double scale);
+
+extern double cauchy_logpdf(double x, double loc, double scale);
+
+extern double cauchy_cdf(double x, double loc, double scale);
+
+extern double cauchy_logcdf(double x, double loc, double scale);
+
+extern double cauchy_ppl(double q, double loc, double scale);
+
+extern double cauchy_sf(double x, double loc, double scale);
+
+extern double cauchy_logsf(double x, double loc, double scale);
+
+extern double cauchy_isf(double q, double loc, double scale);
+
+extern double cauchy_entropy(double scale);
 
 /** Student's t distribution **/
 

@@ -12,36 +12,46 @@ double std_cauchy_rvs() {
   return std_gaussian_rvs() / std_gaussian_rvs();
 }
 
-double cauchy_rvs(double a) {
-  return a * std_cauchy_rvs();
+double cauchy_rvs(double loc, double scale) {
+  return loc + scale * std_cauchy_rvs();
 }
 
-double cauchy_pdf(double x, double a) {
-  double u = x / a;
-  double p = (1 / (OWL_PI * a)) / (1 + u * u);
+double cauchy_pdf(double x, double loc, double scale) {
+  double u = (x - loc) / scale;
+  double p = 1 / (OWL_PI * scale * (1 + u * u));
   return p;
 }
 
-double cauchy_logpdf(double x, double a) {
-  return log(cauchy_pdf(x, a));
+double cauchy_logpdf(double x, double loc, double scale) {
+  return log(cauchy_pdf(x, loc, scale));
 }
 
-double cauchy_cdf(double x, double a) {
-  double p;
-  double u = x / a;
-
-  if (u > -1)
-    p = 0.5 + atan(u) / OWL_PI;
-  else
-    p = atan(-1 / u) / OWL_PI;
-
-  return p;
+double cauchy_cdf(double x, double loc, double scale) {
+  double u = (x - loc) / scale;
+  return 0.5 + atan(u) / OWL_PI;
 }
 
-double cauchy_logcdf(double x, double a) {
-  return log(cauchy_cdf(x, a));
+double cauchy_logcdf(double x, double loc, double scale) {
+  return log(cauchy_cdf(x, loc, scale));
 }
 
-double cauchy_ppf(double p, double a) {
-  return a * tan(OWL_PI * (p - 0.5));
+double cauchy_ppf(double q, double loc, double scale) {
+  return loc + scale * tan(OWL_PI * (q - 0.5));
+}
+
+double cauchy_sf(double x, double loc, double scale) {
+  double u = (x - loc) / scale;
+  return 0.5 - atan(u) / OWL_PI;
+}
+
+double cauchy_logsf(double x, double loc, double scale) {
+  return log(cauchy_sf(x, loc, scale));
+}
+
+double cauchy_isf(double q, double loc, double scale) {
+  return loc + scale * tan(OWL_PI * (0.5 - q));
+}
+
+double cauchy_entropy(double scale) {
+  return log(OWL_4PI * scale);
 }
