@@ -9,5 +9,5 @@
 /** F distribution **/
 
 double f_rvs(double dfnum, double dfden) {
-  return ((chisquare_rvs(dfnum) * dfden) / (chisquare_rvs(dfden) * dfnum));
+  return ((chi2_rvs(dfnum) * dfden) / (chi2_rvs(dfden) * dfnum));
 }

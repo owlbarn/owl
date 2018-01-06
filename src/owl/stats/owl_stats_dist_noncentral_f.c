@@ -9,6 +9,6 @@
 /** Noncentral F distribution **/
 
 double noncentral_f_rvs(double dfnum, double dfden, double nonc) {
-  double t = noncentral_chisquare_rvs(dfnum, nonc) * dfden;
-  return t / (chisquare_rvs(dfden) * dfnum);
+  double t = noncentral_chi2_rvs(dfnum, nonc) * dfden;
+  return t / (chi2_rvs(dfden) * dfnum);
 }

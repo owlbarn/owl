@@ -8,16 +8,16 @@
 
 /** Noncentral Chi-squared distribution **/
 
-double noncentral_chisquare_rvs(double df, double nonc) {
+double noncentral_chi2_rvs(double df, double nonc) {
   if (nonc == 0)
-    return chisquare_rvs(df);
+    return chi2_rvs(df);
   if (1 < df) {
-    double Chi2 = chisquare_rvs(df - 1);
+    double Chi2 = chi2_rvs(df - 1);
     double N = std_gaussian_rvs() + sqrt(nonc);
     return Chi2 + N * N;
   }
   else {
     long i = poisson_rvs(nonc / 2);
-    return chisquare_rvs(df + 2 * i);
+    return chi2_rvs(df + 2 * i);
   }
 }

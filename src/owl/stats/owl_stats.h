@@ -142,11 +142,11 @@ extern double beta_entropy(double a, double b);
 
 /** Chi-squared distribution **/
 
-extern double chisquare_rvs(double);
+extern double chi2_rvs(double);
 
 /** Noncentral Chi-squared distribution **/
 
-extern double noncentral_chisquare_rvs(double, double);
+extern double noncentral_chi2_rvs(double, double);
 
 /** F distribution **/
 

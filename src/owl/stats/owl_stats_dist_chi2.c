@@ -8,6 +8,6 @@
 
 /** Chi-squared distribution **/
 
-double chisquare_rvs(double df) {
+double chi2_rvs(double df) {
   return 2. * std_gamma_rvs(df / 2.);
 }
