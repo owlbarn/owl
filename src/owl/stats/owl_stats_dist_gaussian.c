@@ -36,8 +36,8 @@ double gaussian_ppf(double q, double mu, double sigma) {
 }
 
 double gaussian_sf(double x, double mu, double sigma) {
-  double u = x - mu;
-  return gaussian_cdf(-u, 0., sigma);
+  double y = x - mu;
+  return gaussian_cdf(-y, 0., sigma);
 }
 
 double gaussian_logsf(double x, double mu, double sigma) {

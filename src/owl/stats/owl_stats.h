@@ -318,7 +318,25 @@ extern double logistic_entropy(double scale);
 
 /** Log-normal distribution **/
 
-extern double lognormal_rvs(double, double);
+extern double lognormal_rvs(double mu, double sigma);
+
+extern double lognormal_pdf(double x, double mu, double sigma);
+
+extern double lognormal_logpdf(double x, double mu, double sigma);
+
+extern double lognormal_cdf(double x, double mu, double sigma);
+
+extern double lognormal_logcdf(double x, double mu, double sigma);
+
+extern double lognormal_ppf(double q, double mu, double sigma);
+
+extern double lognormal_sf(double x, double mu, double sigma);
+
+extern double lognormal_logsf(double x, double mu, double sigma);
+
+extern double lognormal_isf(double q, double mu, double sigma);
+
+extern double lognormal_entropy(double sigma);
 
 /** Rayleigh distribution **/
 
