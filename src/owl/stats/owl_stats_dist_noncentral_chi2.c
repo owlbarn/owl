@@ -21,3 +21,20 @@ double noncentral_chi2_rvs(double df, double nonc) {
     return chi2_rvs(df + 2 * i);
   }
 }
+
+/*
+double noncentral_chi2_logpdf(double x, double df, double nonc) {
+  double df2 = df / 2 - 1;
+  double xs = sqrt(x);
+  double ns = sqrt(nonc);
+  double res = xlogy(df2 / 2, x / nonc) - 0.5 * (xs - ns) * (xs - ns);
+  res += log(ive(df2, xs * ns) / 2);
+  return res;
+}
+*/
+
+/*
+double noncentral_chi2_ppf(double q, double df, double nonc) {
+  return chndtrix(q, df, nonc);
+}
+*/

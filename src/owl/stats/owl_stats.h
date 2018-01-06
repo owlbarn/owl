@@ -68,7 +68,7 @@ extern double exp_logsf(double x, double lambda);
 
 extern double exp_isf(double q, double lambda);
 
-extern double exp_entropy(double sigma);
+extern double exp_entropy(double lambda);
 
 /** Gaussian distribution **/
 
@@ -144,6 +144,24 @@ extern double beta_entropy(double a, double b);
 
 extern double chi2_rvs(double);
 
+extern double chi2_pdf(double x, double df);
+
+extern double chi2_logpdf(double x, double df);
+
+extern double chi2_cdf(double x, double df);
+
+extern double chi2_logcdf(double x, double df);
+
+extern double chi2_ppf(double q, double df);
+
+extern double chi2_sf(double x, double df);
+
+extern double chi2_logsf(double x, double df);
+
+extern double chi2_isf(double q, double df);
+
+extern double chi2_entropy(double df);
+
 /** Noncentral Chi-squared distribution **/
 
 extern double noncentral_chi2_rvs(double, double);
@@ -151,6 +169,24 @@ extern double noncentral_chi2_rvs(double, double);
 /** F distribution **/
 
 extern double f_rvs(double, double);
+
+extern double f_pdf(double x, double dfnum, double dfden);
+
+extern double f_logpdf(double x, double dfnum, double dfden);
+
+extern double f_cdf(double x, double dfnum, double dfden);
+
+extern double f_logcdf(double x, double dfnum, double dfden);
+
+extern double f_ppf(double q, double dfnum, double dfden);
+
+extern double f_sf(double x, double dfnum, double dfden);
+
+extern double f_logsf(double x, double dfnum, double dfden);
+
+extern double f_isf(double q, double dfnum, double dfden);
+
+extern double f_entropy(double dfnum, double dfden);
 
 /** Noncentral F distribution **/
 
