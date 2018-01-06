@@ -336,7 +336,7 @@ extern double lognormal_logsf(double x, double mu, double sigma);
 
 extern double lognormal_isf(double q, double mu, double sigma);
 
-extern double lognormal_entropy(double sigma);
+extern double lognormal_entropy(double mu, double sigma);
 
 /** Rayleigh distribution **/
 

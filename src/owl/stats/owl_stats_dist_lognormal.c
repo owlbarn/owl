@@ -52,6 +52,6 @@ double lognormal_isf(double q, double mu, double sigma) {
   return exp(mu + sigma * ndtri(1 - q));
 }
 
-double lognormal_entropy(double q, double mu, double sigma) {
+double lognormal_entropy(double mu, double sigma) {
   return mu + log(sigma) + 0.5 * (1 + OWL_LOGE2 + OWL_LOGEPI);
 }
