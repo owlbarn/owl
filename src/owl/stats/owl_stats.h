@@ -296,7 +296,25 @@ extern double gumbel_rvs(double, double);
 
 /** Logistic distribution **/
 
-extern double logistic_rvs(double, double);
+extern double logistic_rvs(double loc, double scale);
+
+extern double logistic_pdf(double x, double loc, double scale);
+
+extern double logistic_logpdf(double x, double loc, double scale);
+
+extern double logistic_cdf(double x, double loc, double scale);
+
+extern double logistic_logcdf(double x, double loc, double scale);
+
+extern double logistic_ppl(double q, double loc, double scale);
+
+extern double logistic_sf(double x, double loc, double scale);
+
+extern double logistic_logsf(double x, double loc, double scale);
+
+extern double logistic_isf(double q, double loc, double scale);
+
+extern double logistic_entropy(double scale);
 
 /** Log-normal distribution **/
 

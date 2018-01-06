@@ -83,6 +83,10 @@ extern double xlogy(double x, double y);
 
 extern double xlog1py(double x, double y);
 
+extern double expit(double x);
+
+extern double logit(double x);
+
 
 /*
  * IEEE 754 fpu handling. Those are guaranteed to be macros

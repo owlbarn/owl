@@ -20,3 +20,13 @@ double xlog1py(double x, double y) {
   else
     return x * log1p(y);
 }
+
+
+double expit(double x) {
+  return 1 / (1 + exp(-x));
+}
+
+
+double logit(double x) {
+  return log(1 / (1 - x));
+}
