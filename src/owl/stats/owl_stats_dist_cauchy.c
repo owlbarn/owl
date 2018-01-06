@@ -17,8 +17,8 @@ double cauchy_rvs(double loc, double scale) {
 }
 
 double cauchy_pdf(double x, double loc, double scale) {
-  double u = (x - loc) / scale;
-  double p = 1 / (OWL_PI * scale * (1 + u * u));
+  double y = (x - loc) / scale;
+  double p = 1 / (OWL_PI * scale * (1 + y * y));
   return p;
 }
 
@@ -27,8 +27,8 @@ double cauchy_logpdf(double x, double loc, double scale) {
 }
 
 double cauchy_cdf(double x, double loc, double scale) {
-  double u = (x - loc) / scale;
-  return 0.5 + atan(u) / OWL_PI;
+  double y = (x - loc) / scale;
+  return 0.5 + atan(y) / OWL_PI;
 }
 
 double cauchy_logcdf(double x, double loc, double scale) {
@@ -40,8 +40,8 @@ double cauchy_ppf(double q, double loc, double scale) {
 }
 
 double cauchy_sf(double x, double loc, double scale) {
-  double u = (x - loc) / scale;
-  return 0.5 - atan(u) / OWL_PI;
+  double y = (x - loc) / scale;
+  return 0.5 - atan(y) / OWL_PI;
 }
 
 double cauchy_logsf(double x, double loc, double scale) {

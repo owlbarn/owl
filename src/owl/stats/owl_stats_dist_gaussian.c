@@ -13,18 +13,18 @@
 #define _norm_pdf_logC 0.9189385332046727417803297 // log(_norm_pdf_C);
 
 double gaussian_pdf(double x, double mu, double sigma) {
-  double u = (x - mu) / sigma;
-  return exp(-u * u / 2.) / (_norm_pdf_C * sigma);
+  double y = (x - mu) / sigma;
+  return exp(-y * y / 2.) / (_norm_pdf_C * sigma);
 }
 
 double gaussian_logpdf(double x, double mu, double sigma) {
-  double u = (x - mu) / sigma;
-  return (-u * u / 2.) - _norm_pdf_logC - log(sigma);
+  double y = (x - mu) / sigma;
+  return (-y * y / 2.) - _norm_pdf_logC - log(sigma);
 }
 
 double gaussian_cdf(double x, double mu, double sigma) {
-  double u = (x - mu) / sigma;
-  return ndtr(u);
+  double y = (x - mu) / sigma;
+  return ndtr(y);
 }
 
 double gaussian_logcdf(double x, double mu, double sigma) {
@@ -41,8 +41,8 @@ double gaussian_sf(double x, double mu, double sigma) {
 }
 
 double gaussian_logsf(double x, double mu, double sigma) {
-  double u = x - mu;
-  return log(gaussian_cdf(-u, 0., sigma));
+  double y = x - mu;
+  return log(gaussian_cdf(-y, 0., sigma));
 }
 
 double gaussian_isf(double q, double mu, double sigma) {

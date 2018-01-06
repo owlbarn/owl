@@ -19,27 +19,27 @@ double t_rvs(double df, double loc, double scale) {
 }
 
 double t_pdf(double x, double df, double loc, double scale) {
-  double u = (x - loc) / scale;
+  double y = (x - loc) / scale;
   double p = exp(lgam((df + 1) / 2) - lgam(df / 2));
-  p /= sqrt(OWL_PI * df) * pow(1 + u * u / df, (df + 1) / 2);
+  p /= sqrt(OWL_PI * df) * pow(1 + y * y / df, (df + 1) / 2);
   return p;
 }
 
 double t_logpdf(double x, double df, double loc, double scale) {
-  double u = (x - loc) / scale;
+  double y = (x - loc) / scale;
   double lp = lgam((df + 1) / 2) - lgam(df / 2);
-  lp -= 0.5 * log(OWL_PI * df) + (df + 1) / 2 * log(1 + u * u / df);
+  lp -= 0.5 * log(OWL_PI * df) + (df + 1) / 2 * log(1 + y * y / df);
   return lp;
 }
 
 double t_cdf(double x, double df, double loc, double scale) {
-  double u = (x - loc) / scale;
-  return stdtr(df, u);
+  double y = (x - loc) / scale;
+  return stdtr(df, y);
 }
 
 double t_logcdf(double x, double df, double loc, double scale) {
-  double u = (x - loc) / scale;
-  return log(stdtr(df, u));
+  double y = (x - loc) / scale;
+  return log(stdtr(df, y));
 }
 
 double t_ppf(double q, double df, double loc, double scale) {
@@ -47,13 +47,13 @@ double t_ppf(double q, double df, double loc, double scale) {
 }
 
 double t_sf(double x, double df, double loc, double scale) {
-  double u = (x - loc) / scale;
-  return stdtr(df, -u);
+  double y = (x - loc) / scale;
+  return stdtr(df, -y);
 }
 
 double t_logsf(double x, double df, double loc, double scale) {
-  double u = (x - loc) / scale;
-  return log(stdtr(df, -u));
+  double y = (x - loc) / scale;
+  return log(stdtr(df, -y));
 }
 
 double t_isf(double q, double df, double loc, double scale) {

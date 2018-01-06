@@ -236,6 +236,24 @@ extern double power_rvs(double);
 
 extern double laplace_rvs(double, double);
 
+extern double laplace_pdf(double x, double loc, double scale);
+
+extern double laplace_logpdf(double x, double loc, double scale);
+
+extern double laplace_cdf(double x, double loc, double scale);
+
+extern double laplace_logcdf(double x, double loc, double scale);
+
+extern double laplace_ppl(double q, double loc, double scale);
+
+extern double laplace_sf(double x, double loc, double scale);
+
+extern double laplace_logsf(double x, double loc, double scale);
+
+extern double laplace_isf(double q, double loc, double scale);
+
+extern double laplace_entropy(double scale);
+
 /** Gumbel distribution **/
 
 extern double gumbel_rvs(double, double);
