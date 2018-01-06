@@ -342,6 +342,24 @@ extern double lognormal_entropy(double mu, double sigma);
 
 extern double rayleigh_rvs(double);
 
+extern double rayleigh_pdf(double x, double sigma);
+
+extern double rayleigh_logpdf(double x, double sigma);
+
+extern double rayleigh_cdf(double x, double sigma);
+
+extern double rayleigh_logcdf(double x, double sigma);
+
+extern double rayleigh_ppf(double q, double sigma);
+
+extern double rayleigh_sf(double x, double sigma);
+
+extern double rayleigh_logsf(double x, double sigma);
+
+extern double rayleigh_isf(double q, double sigma);
+
+extern double rayleigh_entropy(double sigma);
+
 /** Wald distribution **/
 
 extern double wald_rvs(double, double);
