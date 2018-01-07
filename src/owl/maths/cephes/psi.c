@@ -47,7 +47,7 @@
  *
  * ERROR MESSAGES:
  *     message         condition      value returned
- * psi singularity    x integer <=0      OWL_INFINITY
+ * psi singularity    x integer <=0      OWL_POSINF
  */
 
 /*
@@ -152,15 +152,15 @@ double psi(double x)
     if (owl_isnan(x)) {
 	return x;
     }
-    else if (x == OWL_INFINITY) {
+    else if (x == OWL_POSINF) {
 	return x;
     }
-    else if (x == -OWL_INFINITY) {
+    else if (x == -OWL_POSINF) {
 	return OWL_NAN;
     }
     else if (x == 0) {
 	mtherr("psi", SING);
-	return npy_copysign(OWL_INFINITY, -x);
+	return npy_copysign(OWL_POSINF, -x);
     }
     else if (x < 0.0) {
 	/* argument reduction before evaluating tan(pi * x) */

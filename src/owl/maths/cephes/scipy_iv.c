@@ -109,7 +109,7 @@ double iv(double v, double x)
 	}
 	if (v < 0.0) {
 	    mtherr("iv", OVERFLOW);
-	    return OWL_INFINITY;
+	    return OWL_POSINF;
 	}
 	else
 	    return 0.0;
@@ -146,7 +146,7 @@ static double iv_asymptotic(double v, double x)
 
     prefactor = exp(x) / sqrt(2 * OWL_PI * x);
 
-    if (prefactor == OWL_INFINITY) {
+    if (prefactor == OWL_POSINF) {
 	return prefactor;
     }
 
@@ -563,7 +563,7 @@ void ikv_temme(double v, double x, double *Iv_p, double *Kv_p)
 	Iv = (v == 0) ? 1 : 0;
 	if (kind & need_k) {
 	    mtherr("ikv_temme", OVERFLOW);
-	    Kv = OWL_INFINITY;
+	    Kv = OWL_POSINF;
 	}
 	else {
 	    Kv = OWL_NAN;	/* any value will do */
@@ -572,8 +572,8 @@ void ikv_temme(double v, double x, double *Iv_p, double *Kv_p)
 	if (reflect && (kind & need_i)) {
 	    double z = (u + n % 2);
 
-	    Iv = sin(OWL_PI * z) == 0 ? Iv : OWL_INFINITY;
-	    if (Iv == OWL_INFINITY || Iv == -OWL_INFINITY) {
+	    Iv = sin(OWL_PI * z) == 0 ? Iv : OWL_POSINF;
+	    if (Iv == OWL_POSINF || Iv == -OWL_POSINF) {
 		mtherr("ikv_temme", OVERFLOW);
 	    }
 	}

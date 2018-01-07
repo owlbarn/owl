@@ -60,7 +60,7 @@ double a, y0;
     int i, dir;
 
     /* bound the solution */
-    x0 = OWL_INFINITY;
+    x0 = OWL_POSINF;
     yl = 0;
     x1 = 0;
     yh = 1.0;
@@ -74,7 +74,7 @@ double a, y0;
 	return OWL_NAN;
     }
     if (y0 == 0.0) {
-	return OWL_INFINITY;
+	return OWL_POSINF;
     }
     if (y0 == 1.0) {
 	return 0.0;
@@ -117,10 +117,10 @@ double a, y0;
   ihalve:
 
     d = 0.0625;
-    if (x0 == OWL_INFINITY) {
+    if (x0 == OWL_POSINF) {
 	if (x <= 0.0)
 	    x = 1.0;
-	while (x0 == OWL_INFINITY) {
+	while (x0 == OWL_POSINF) {
 	    x = (1.0 + d) * x;
 	    y = igamc(a, x);
 	    if (y < y0) {

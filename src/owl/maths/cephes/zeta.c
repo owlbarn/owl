@@ -105,7 +105,7 @@ double x, q;
 	if (q == floor(q)) {
 	    mtherr("zeta", SING);
 	  retinf:
-	    return (OWL_INFINITY);
+	    return (OWL_POSINF);
 	}
 	if (x != floor(x))
 	    goto domerr;	/* because q^-x not defined */

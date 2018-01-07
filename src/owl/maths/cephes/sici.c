@@ -203,7 +203,7 @@ double *si, *ci;
 
     if (x == 0.0) {
 	*si = 0.0;
-	*ci = -OWL_INFINITY;
+	*ci = -OWL_POSINF;
 	return (0);
     }
 

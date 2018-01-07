@@ -39,8 +39,8 @@
  * ERROR MESSAGES:
  *
  *   message         condition      value returned
- * yn singularity   x = 0              OWL_INFINITY
- * yn overflow                         OWL_INFINITY
+ * yn singularity   x = 0              OWL_POSINF
+ * yn overflow                         OWL_POSINF
  *
  * Spot checked against tables for x, n between 0 and 100.
  *
@@ -80,7 +80,7 @@ double x;
     /* test for overflow */
     if (x == 0.0) {
 	mtherr("yn", SING);
-	return -OWL_INFINITY * sign;
+	return -OWL_POSINF * sign;
     }
     else if (x < 0.0) {
 	mtherr("yn", DOMAIN);

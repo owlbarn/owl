@@ -99,7 +99,7 @@ double x;
     if (n > MAXFAC) {
       overf:
 	mtherr("kn", OVERFLOW);
-	return (OWL_INFINITY);
+	return (OWL_POSINF);
     }
 
     if (x <= 0.0) {
@@ -109,7 +109,7 @@ double x;
 	}
 	else {
 	    mtherr("kn", SING);
-	    return OWL_INFINITY;
+	    return OWL_POSINF;
 	}
     }
 
@@ -214,7 +214,7 @@ double x;
     fn = 1.0;
     t = 1.0;
     s = t;
-    nkf = OWL_INFINITY;
+    nkf = OWL_POSINF;
     i = 0;
     do {
 	z = pn - pk * pk;

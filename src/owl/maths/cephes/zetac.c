@@ -27,7 +27,7 @@
  *     Riemann zeta(x) = zetac(x) + 1.
  *
  * Extension of the function definition for x < 1 is implemented.
- * Zero is returned for x > log2(OWL_INFINITY).
+ * Zero is returned for x > log2(OWL_POSINF).
  *
  * An overflow error may occur for large negative x, due to the
  * Gamma function in the reflection formula.
@@ -211,7 +211,7 @@ double x;
 
     if (x == 1.0) {
 	mtherr("zetac", SING);
-	return (OWL_INFINITY);
+	return (OWL_POSINF);
     }
 
     if (x <= 10.0) {

@@ -271,7 +271,7 @@ double a, b, c, x;
     /* The alarm exit */
   hypdiv:
     mtherr("hyp2f1", OVERFLOW);
-    return OWL_INFINITY;
+    return OWL_POSINF;
 }
 
 
@@ -501,7 +501,7 @@ double *loss;			/* estimates loss of significance */
     do {
 	if (fabs(h) < EPS) {
 	    *loss = 1.0;
-	    return OWL_INFINITY;
+	    return OWL_POSINF;
 	}
 	m = k + 1.0;
 	u = u * ((f + k) * (g + k) * x / ((h + k) * m));

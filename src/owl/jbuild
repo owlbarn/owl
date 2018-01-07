@@ -32,7 +32,8 @@
     owl_stats_dist_gamma
     owl_stats_dist_gaussian
     owl_stats_dist_geometric
-    owl_stats_dist_gumbel
+    owl_stats_dist_gumbel1
+    owl_stats_dist_gumbel2
     owl_stats_dist_hypergeometric
     owl_stats_dist_laplace
     owl_stats_dist_logistic

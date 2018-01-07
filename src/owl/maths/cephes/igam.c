@@ -353,7 +353,7 @@ double asymptotic_series(double a, double x, int func)
     double lambda = x / a;
     double sigma = (x - a) / a;
     double eta, res, ck, ckterm, term, absterm;
-    double absoldterm = OWL_INFINITY;
+    double absoldterm = OWL_POSINF;
     double etapow[N] = {1};
     double sum = 0;
     double afac = 1;

@@ -35,7 +35,7 @@
  * The integrals are evaluated by power series for x < 8
  * and by Chebyshev expansions for x between 8 and 88.
  * For large x, both functions approach exp(x)/2x.
- * Arguments greater than 88 in magnitude return OWL_INFINITY.
+ * Arguments greater than 88 in magnitude return OWL_POSINF.
  *
  *
  * ACCURACY:
@@ -188,7 +188,7 @@ double *si, *ci;
 
     if (x == 0.0) {
 	*si = 0.0;
-	*ci = -OWL_INFINITY;
+	*ci = -OWL_POSINF;
 	return (0);
     }
 
@@ -240,8 +240,8 @@ chb:
 
 asymp:
     if (x > 1000) {
-        *si = OWL_INFINITY;
-        *ci = OWL_INFINITY;
+        *si = OWL_POSINF;
+        *ci = OWL_POSINF;
     }
     else {
         /* Asymptotic expansions

@@ -201,7 +201,7 @@ double p;
     z = incbi(0.5 * rk, 0.5, 2.0 * p);
 
     if (DBL_MAX * z < rk)
-	return (rflg * OWL_INFINITY);
+	return (rflg * OWL_POSINF);
     t = sqrt(rk / z - rk);
     return (rflg * t);
 }

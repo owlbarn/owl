@@ -362,9 +362,45 @@ extern double laplace_isf(double q, double loc, double scale);
 
 extern double laplace_entropy(double scale);
 
-/** Gumbel distribution **/
+/** Gumbel Type-1 distribution **/
 
-extern double gumbel_rvs(double, double);
+extern double gumbel1_rvs(double, double);
+
+extern double gumbel1_pdf(double x, double a, double b);
+
+extern double gumbel1_logpdf(double x, double a, double b);
+
+extern double gumbel1_cdf(double x, double a, double b);
+
+extern double gumbel1_logcdf(double x, double a, double b);
+
+extern double gumbel1_ppl(double q, double a, double b);
+
+extern double gumbel1_sf(double x, double a, double b);
+
+extern double gumbel1_logsf(double x, double a, double b);
+
+extern double gumbel1_isf(double q, double a, double b);
+
+/** Gumbel Type-2 distribution **/
+
+extern double gumbel2_rvs(double, double);
+
+extern double gumbel2_pdf(double x, double a, double b);
+
+extern double gumbel2_logpdf(double x, double a, double b);
+
+extern double gumbel2_cdf(double x, double a, double b);
+
+extern double gumbel2_logcdf(double x, double a, double b);
+
+extern double gumbel2_ppl(double q, double a, double b);
+
+extern double gumbel2_sf(double x, double a, double b);
+
+extern double gumbel2_logsf(double x, double a, double b);
+
+extern double gumbel2_isf(double q, double a, double b);
 
 /** Logistic distribution **/
 

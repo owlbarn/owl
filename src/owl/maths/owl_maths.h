@@ -15,7 +15,8 @@ extern "C" {
 
 #include "owl_cephes.h"
 
-#define OWL_INFINITY INFINITY
+#define OWL_POSINF INFINITY
+#define OWL_NEGINF -INFINITY
 #define OWL_NAN NAN
 
 

@@ -37,7 +37,7 @@ double weibull_logcdf(double x, double shape, double scale) {
 
 double weibull_ppf(double p, double shape, double scale) {
   if (p == 1.)
-    return OWL_INFINITY;
+    return OWL_POSINF;
   else if (p == 0.)
     return 0.0;
   else
@@ -54,7 +54,7 @@ double weibull_logsf(double x, double shape, double scale) {
 
 double weibull_isf(double q, double shape, double scale) {
   if (q == 0.)
-    return OWL_INFINITY;
+    return OWL_POSINF;
   else if (q == 1.)
     return 0.;
   else

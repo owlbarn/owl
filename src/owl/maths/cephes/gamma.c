@@ -63,7 +63,7 @@
  * The cosecant reflection formula is employed for arguments
  * less than -33.
  *
- * Arguments greater than MAXLGM return OWL_INFINITY and an error
+ * Arguments greater than MAXLGM return OWL_POSINF and an error
  * message.  MAXLGM = 2.556348e305 for IEEE arithmetic.
  *
  *
@@ -140,7 +140,7 @@ static double stirf(double x)
     double y, w, v;
 
     if (x >= MAXGAM) {
-	return (OWL_INFINITY);
+	return (OWL_POSINF);
     }
     w = 1.0 / x;
     w = 1.0 + w * polevl(w, STIR, 4);
@@ -174,7 +174,7 @@ double Gamma(double x)
 	    if (p == q) {
 	      gamnan:
 		mtherr("Gamma", OVERFLOW);
-		return (OWL_INFINITY);
+		return (OWL_POSINF);
 	    }
 	    i = p;
 	    if ((i & 1) == 0)
@@ -186,7 +186,7 @@ double Gamma(double x)
 	    }
 	    z = q * sin(OWL_PI * z);
 	    if (z == 0.0) {
-		return (sgngam * OWL_INFINITY);
+		return (sgngam * OWL_POSINF);
 	    }
 	    z = fabs(z);
 	    z = OWL_PI / (z * stirf(q));
@@ -295,7 +295,7 @@ double lgam_sgn(double x, int *sign)
 	if (p == q) {
 	  lgsing:
 	    mtherr("lgam", SING);
-	    return (OWL_INFINITY);
+	    return (OWL_POSINF);
 	}
 	i = p;
 	if ((i & 1) == 0)
@@ -346,7 +346,7 @@ double lgam_sgn(double x, int *sign)
     }
 
     if (x > MAXLGM) {
-	return (*sign * OWL_INFINITY);
+	return (*sign * OWL_POSINF);
     }
 
     q = (x - 0.5) * log(x) - x + LS2PI;

@@ -38,8 +38,8 @@
  * ERROR MESSAGES:
  *
  *   message         condition    value returned
- * ndtri domain       x <= 0        -OWL_INFINITY
- * ndtri domain       x >= 1         OWL_INFINITY
+ * ndtri domain       x <= 0        -OWL_POSINF
+ * ndtri domain       x >= 1         OWL_POSINF
  *
  */
 
@@ -139,11 +139,11 @@ double y0;
 
     if (y0 <= 0.0) {
 	mtherr("ndtri", DOMAIN);
-	return (-OWL_INFINITY);
+	return (-OWL_POSINF);
     }
     if (y0 >= 1.0) {
 	mtherr("ndtri", DOMAIN);
-	return (OWL_INFINITY);
+	return (OWL_POSINF);
     }
     code = 1;
     y = y0;

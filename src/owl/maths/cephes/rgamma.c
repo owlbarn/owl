@@ -26,7 +26,7 @@
  *
  * The reciprocal Gamma function has no singularities,
  * but overflow and underflow may occur for large arguments.
- * These conditions return either OWL_INFINITY or 0 with
+ * These conditions return either OWL_POSINF or 0 with
  * appropriate sign.
  *
  * ACCURACY:
@@ -102,7 +102,7 @@ double x;
 	}
 	if (y > MAXLOG) {
 	    mtherr(name, OVERFLOW);
-	    return (sign * OWL_INFINITY);
+	    return (sign * OWL_POSINF);
 	}
 	return (sign * exp(y));
     }

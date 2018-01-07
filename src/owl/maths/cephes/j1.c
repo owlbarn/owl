@@ -205,7 +205,7 @@ double x;
     if (x <= 5.0) {
 	if (x == 0.0) {
 	    mtherr("y1", SING);
-	    return -OWL_INFINITY;
+	    return -OWL_POSINF;
 	}
 	else if (x <= 0.0) {
 	    mtherr("y1", DOMAIN);

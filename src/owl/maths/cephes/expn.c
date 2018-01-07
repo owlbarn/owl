@@ -80,7 +80,7 @@ double expn(int n, double x)
     }
     else if (n < 0 || x < 0) {
 	mtherr("expn", DOMAIN);
-	return OWL_INFINITY;
+	return OWL_POSINF;
     }
 
     if (x > MAXLOG) {
@@ -90,7 +90,7 @@ double expn(int n, double x)
     if (x == 0.0) {
 	if (n < 2) {
 	    mtherr("expn", SING);
-	    return (OWL_INFINITY);
+	    return (OWL_POSINF);
 	}
 	else {
 	    return (1.0 / (n - 1.0));

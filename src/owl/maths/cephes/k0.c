@@ -34,7 +34,7 @@
  * ERROR MESSAGES:
  *
  *   message         condition      value returned
- *  K0 domain          x <= 0          OWL_INFINITY
+ *  K0 domain          x <= 0          OWL_POSINF
  *
  */
 /*							k0e()
@@ -135,7 +135,7 @@ double x;
 
     if (x == 0.0) {
 	mtherr("k0", SING);
-	return OWL_INFINITY;
+	return OWL_POSINF;
     }
     else if (x < 0.0) {
 	mtherr("k0", DOMAIN);
@@ -162,7 +162,7 @@ double x;
 
     if (x == 0.0) {
 	mtherr("k0e", SING);
-	return OWL_INFINITY;
+	return OWL_POSINF;
     }
     else if (x < 0.0) {
 	mtherr("k0e", DOMAIN);

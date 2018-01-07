@@ -263,8 +263,8 @@ double x, *ai, *aip, *bi, *bip;
     if (x > MAXAIRY) {
 	*ai = 0;
 	*aip = 0;
-	*bi = OWL_INFINITY;
-	*bip = OWL_INFINITY;
+	*bi = OWL_POSINF;
+	*bip = OWL_POSINF;
 	return (-1);
     }
 

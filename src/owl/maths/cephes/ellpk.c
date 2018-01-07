@@ -116,7 +116,7 @@ double x;
     else {
 	if (x == 0.0) {
 	    mtherr("ellpk", SING);
-	    return (OWL_INFINITY);
+	    return (OWL_POSINF);
 	}
 	else {
 	    return (C1 - 0.5 * log(x));

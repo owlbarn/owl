@@ -85,7 +85,7 @@ double ellik(double phi,  double m)
     if (a == 0.0) {
 	if (fabs(phi) >= OWL_PI_2) {
 	    mtherr("ellik", SING);
-	    return (OWL_INFINITY);
+	    return (OWL_POSINF);
 	}
         /* DLMF 19.6.8, and 4.23.42 */
        return npy_asinh(tan(phi));

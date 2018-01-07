@@ -205,9 +205,9 @@ double v, x;
 	}
 	else if (v < -1) {
 	    if ((int) (floor(0.5 - v) - 1) % 2)
-		return -OWL_INFINITY;
+		return -OWL_POSINF;
 	    else
-		return OWL_INFINITY;
+		return OWL_POSINF;
 	}
 	else {
 	    return 2.0 / OWL_PI;
@@ -287,7 +287,7 @@ double v, x;
     if (cephes_isinf(y)) {
         if (v > 0) {
             mtherr("yv", OVERFLOW);
-            return -OWL_INFINITY;
+            return -OWL_POSINF;
         }
         else if (v < -1e10) {
             /* Whether it's +inf or -inf is numerically ill-defined. */

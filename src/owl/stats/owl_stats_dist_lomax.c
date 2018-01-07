@@ -30,7 +30,7 @@ double pareto_logcdf(double x, double shape, double scale) {
 
 double pareto_ppf(double p, double shape, double scale) {
   if (p == 1.)
-    return OWL_INFINITY;
+    return OWL_POSINF;
   else if (p == 0.)
     return scale;
   else
@@ -47,7 +47,7 @@ double pareto_logsf(double x, double shape, double scale) {
 
 double pareto_isf(double q, double shape, double scale) {
   if (q == 0.)
-    return OWL_INFINITY;
+    return OWL_POSINF;
   else if (q == 1.)
     return scale;
   else

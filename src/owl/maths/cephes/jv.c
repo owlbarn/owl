@@ -102,7 +102,7 @@ double jv(double n, double x)
 
     if (x == 0 && n < 0 && !nint) {
         mtherr("Jv", OVERFLOW);
-        return OWL_INFINITY / gamma(n + 1);
+        return OWL_POSINF / gamma(n + 1);
     }
 
     y = fabs(x);
@@ -449,7 +449,7 @@ static double jvs(double n, double x)
 	}
 	if (t > MAXLOG) {
 	    mtherr("Jv", OVERFLOW);
-	    return (OWL_INFINITY);
+	    return (OWL_POSINF);
 	}
 	y = sgngam * exp(t);
     }
@@ -675,8 +675,8 @@ static double jnx(double n, double x)
     /* flags to stop when terms get larger */
     doa = 1;
     dob = 1;
-    akl = OWL_INFINITY;
-    bkl = OWL_INFINITY;
+    akl = OWL_POSINF;
+    bkl = OWL_POSINF;
 
     for (k = 0; k <= 3; k++) {
 	tk = 2 * k;
