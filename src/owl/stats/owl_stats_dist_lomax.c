@@ -9,7 +9,7 @@
 /** Lomax distribution, i.e. Pareto Type II distribution **/
 
 double lomax_rvs(double shape, double scale) {
-  return scale * (exp(std_exp_rvs() / shape) - 1.);
+  return scale * (exp(std_exponential_rvs() / shape) - 1.);
 }
 
 double pareto_pdf(double x, double shape, double scale) {

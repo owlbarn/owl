@@ -34,9 +34,9 @@ extern sfmt_t sfmt_state;
 
 // Various PRNG and functions
 
-#define f32_exponential std_exp_rvs()
+#define f32_exponential std_exponential_rvs()
 
-#define f64_exponential std_exp_rvs()
+#define f64_exponential std_exponential_rvs()
 
 #define f32_gaussian std_gaussian_rvs()
 
@@ -68,27 +68,27 @@ extern double uniform_entropy(double a, double b);
 
 /** Exponential distribution **/
 
-extern double std_exp_rvs();
+extern double std_exponential_rvs();
 
-extern double exp_rvs(double lambda);
+extern double exponential_rvs(double lambda);
 
-extern double exp_pdf(double x, double lambda);
+extern double exponential_pdf(double x, double lambda);
 
-extern double exp_logpdf(double x, double lambda);
+extern double exponential_logpdf(double x, double lambda);
 
-extern double exp_cdf(double x, double lambda);
+extern double exponential_cdf(double x, double lambda);
 
-extern double exp_logcdf(double x, double lambda);
+extern double exponential_logcdf(double x, double lambda);
 
-extern double exp_ppf(double q, double lambda);
+extern double exponential_ppf(double q, double lambda);
 
-extern double exp_sf(double x, double lambda);
+extern double exponential_sf(double x, double lambda);
 
-extern double exp_logsf(double x, double lambda);
+extern double exponential_logsf(double x, double lambda);
 
-extern double exp_isf(double q, double lambda);
+extern double exponential_isf(double q, double lambda);
 
-extern double exp_entropy(double lambda);
+extern double exponential_entropy(double lambda);
 
 /** Gaussian distribution **/
 
@@ -128,7 +128,7 @@ extern double gamma_cdf(double x, double shape, double scale);
 
 extern double gamma_logcdf(double x, double shape, double scale);
 
-extern double gamma_ppl(double q, double shape, double scale);
+extern double gamma_ppf(double q, double shape, double scale);
 
 extern double gamma_sf(double x, double shape, double scale);
 
@@ -150,7 +150,7 @@ extern double beta_cdf(double x, double a, double b);
 
 extern double beta_logcdf(double x, double a, double b);
 
-extern double beta_ppl(double q, double a, double b);
+extern double beta_ppf(double q, double a, double b);
 
 extern double beta_sf(double x, double a, double b);
 
@@ -238,7 +238,7 @@ extern double cauchy_cdf(double x, double loc, double scale);
 
 extern double cauchy_logcdf(double x, double loc, double scale);
 
-extern double cauchy_ppl(double q, double loc, double scale);
+extern double cauchy_ppf(double q, double loc, double scale);
 
 extern double cauchy_sf(double x, double loc, double scale);
 
@@ -262,7 +262,7 @@ extern double t_cdf(double x, double df, double loc, double scale);
 
 extern double t_logcdf(double x, double df, double loc, double scale);
 
-extern double t_ppl(double q, double df, double loc, double scale);
+extern double t_ppf(double q, double df, double loc, double scale);
 
 extern double t_sf(double x, double df, double loc, double scale);
 
@@ -304,7 +304,7 @@ extern double lomax_cdf(double x, double shape, double scale);
 
 extern double lomax_logcdf(double x, double shape, double scale);
 
-extern double lomax_ppl(double q, double shape, double scale);
+extern double lomax_ppf(double q, double shape, double scale);
 
 extern double lomax_sf(double x, double shape, double scale);
 
@@ -352,7 +352,7 @@ extern double laplace_cdf(double x, double loc, double scale);
 
 extern double laplace_logcdf(double x, double loc, double scale);
 
-extern double laplace_ppl(double q, double loc, double scale);
+extern double laplace_ppf(double q, double loc, double scale);
 
 extern double laplace_sf(double x, double loc, double scale);
 
@@ -374,7 +374,7 @@ extern double gumbel1_cdf(double x, double a, double b);
 
 extern double gumbel1_logcdf(double x, double a, double b);
 
-extern double gumbel1_ppl(double q, double a, double b);
+extern double gumbel1_ppf(double q, double a, double b);
 
 extern double gumbel1_sf(double x, double a, double b);
 
@@ -394,7 +394,7 @@ extern double gumbel2_cdf(double x, double a, double b);
 
 extern double gumbel2_logcdf(double x, double a, double b);
 
-extern double gumbel2_ppl(double q, double a, double b);
+extern double gumbel2_ppf(double q, double a, double b);
 
 extern double gumbel2_sf(double x, double a, double b);
 
@@ -414,7 +414,7 @@ extern double logistic_cdf(double x, double loc, double scale);
 
 extern double logistic_logcdf(double x, double loc, double scale);
 
-extern double logistic_ppl(double q, double loc, double scale);
+extern double logistic_ppf(double q, double loc, double scale);
 
 extern double logistic_sf(double x, double loc, double scale);
 

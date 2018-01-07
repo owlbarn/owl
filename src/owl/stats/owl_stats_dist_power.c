@@ -9,5 +9,5 @@
 /** Power distribution **/
 
 double power_rvs(double a) {
-  return pow(1. - exp(-std_exp_rvs()), 1. / a);
+  return pow(1. - exp(-std_exponential_rvs()), 1. / a);
 }

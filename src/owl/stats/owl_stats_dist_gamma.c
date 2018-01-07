@@ -13,11 +13,11 @@ double std_gamma_rvs(double shape) {
   double U, V, X, Y;
 
   if (shape == 1.0)
-    return std_exp_rvs();
+    return std_exponential_rvs();
   else if (shape < 1.0) {
     for ( ; ; ) {
       U = sfmt_f64_3;
-      V = std_exp_rvs();
+      V = std_exponential_rvs();
       if (U <= 1.0 - shape) {
         X = pow(U, 1. / shape);
         if (X <= V)

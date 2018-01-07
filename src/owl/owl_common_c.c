@@ -58,12 +58,12 @@ CAMLprim value owl_std_gaussian_rvs()
 }
 
 
-CAMLprim value owl_std_exp_rvs()
+CAMLprim value owl_std_exponential_rvs()
 {
   CAMLparam0();
 
   caml_enter_blocking_section();
-  double x = std_exp_rvs ();
+  double x = std_exponential_rvs ();
   caml_leave_blocking_section();
 
   CAMLreturn(caml_copy_double(x));

@@ -12,7 +12,7 @@ static double wn[128], fn[128], we[256], fe[256];
 
 
 // init the internal state for exponential prng
-inline double std_exp_rvs ( ) {
+inline double std_exponential_rvs ( ) {
   float value, x;
   uint32_t jz = sfmt_rand32;
   uint32_t iz = ( jz & 255 );
@@ -46,13 +46,13 @@ inline double std_exp_rvs ( ) {
 }
 
 
-inline double exp_rvs (double lambda) {
-  return (lambda * std_exp_rvs());
+inline double exponential_rvs (double lambda) {
+  return (lambda * std_exponential_rvs());
 }
 
 
 // init the internal state for exponential prng
-void std_exp_rvs_init ( ) {
+void std_exponential_rvs_init ( ) {
   double de = 7.697117470131487;
   const double m2 = 2147483648.0;
   double te = 7.697117470131487;
@@ -157,6 +157,6 @@ void std_gaussian_rvs_init ( ) {
 
 // init the internal table of ziggurat module
 void ziggurat_init ( ) {
-  std_exp_rvs_init();
+  std_exponential_rvs_init();
   std_gaussian_rvs_init();
 }

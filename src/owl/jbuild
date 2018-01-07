@@ -28,9 +28,11 @@
     owl_stats_dist_cauchy
     owl_stats_dist_chi2
     owl_stats_dist_exponential
+    owl_stats_dist_exponpow
     owl_stats_dist_f
     owl_stats_dist_gamma
     owl_stats_dist_gaussian
+    owl_stats_dist_gennorm
     owl_stats_dist_geometric
     owl_stats_dist_gumbel1
     owl_stats_dist_gumbel2
