@@ -38,10 +38,10 @@
     owl_stats_dist_logistic
     owl_stats_dist_lognormal
     owl_stats_dist_logseries
+    owl_stats_dist_lomax
     owl_stats_dist_negative_binomial
     owl_stats_dist_noncentral_chi2
     owl_stats_dist_noncentral_f
-    owl_stats_dist_pareto
     owl_stats_dist_poisson
     owl_stats_dist_power
     owl_stats_dist_rayleigh

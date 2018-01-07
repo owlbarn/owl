@@ -290,13 +290,51 @@ extern double vonmises_logsf(double x, double mu, double kappa);
 
 extern double vonmises_entropy(double kappa);
 
-/** Pareto distribution **/
+/** Lomax distribution, i.e. Pareto Type II distribution **/
 
-extern double pareto_rvs(double);
+extern double lomax_rvs(double shape, double scale);
+
+extern double lomax_rvs(double shape, double scale);
+
+extern double lomax_pdf(double x, double shape, double scale);
+
+extern double lomax_logpdf(double x, double shape, double scale);
+
+extern double lomax_cdf(double x, double shape, double scale);
+
+extern double lomax_logcdf(double x, double shape, double scale);
+
+extern double lomax_ppl(double q, double shape, double scale);
+
+extern double lomax_sf(double x, double shape, double scale);
+
+extern double lomax_logsf(double x, double shape, double scale);
+
+extern double lomax_isf(double q, double shape, double scale);
+
+extern double lomax_entropy(double shape, double scale);
 
 /** Weibull distribution **/
 
-extern double weibull_rvs(double);
+extern double weibull_rvs(double shape, double scale);
+
+extern double weibull_pdf(double x, double shape, double scale);
+
+extern double weibull_logpdf(double x, double shape, double scale);
+
+extern double weibull_cdf(double x, double shape, double scale);
+
+extern double weibull_logcdf(double x, double shape, double scale);
+
+extern double weibull_ppf(double p, double shape, double scale);
+
+extern double weibull_sf(double x, double shape, double scale);
+
+extern double weibull_logsf(double x, double shape, double scale);
+
+extern double weibull_isf(double q, double shape, double scale);
+
+extern double weibull_entropy(double shape, double scale);
 
 /** Power distribution **/
 
