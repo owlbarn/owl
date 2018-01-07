@@ -20,17 +20,17 @@ extern sfmt_t sfmt_state;
 
 #define sfmt_rand64 sfmt_genrand_uint64(&sfmt_state)
 
-#define sfmt_f32_1 sfmt_genrand_real4(&sfmt_state)
+#define sfmt_f32_1 sfmt_genrand_real4(&sfmt_state)  // [0, 1]
 
-#define sfmt_f32_2 sfmt_genrand_real5(&sfmt_state)
+#define sfmt_f32_2 sfmt_genrand_real5(&sfmt_state)  // [0, 1)
 
-#define sfmt_f32_3 sfmt_genrand_real6(&sfmt_state)
+#define sfmt_f32_3 sfmt_genrand_real6(&sfmt_state)  // (0, 1)
 
-#define sfmt_f64_1 sfmt_genrand_real1(&sfmt_state)
+#define sfmt_f64_1 sfmt_genrand_real1(&sfmt_state)  // [0, 1]
 
-#define sfmt_f64_2 sfmt_genrand_real2(&sfmt_state)
+#define sfmt_f64_2 sfmt_genrand_real2(&sfmt_state)  // [0, 1)
 
-#define sfmt_f64_3 sfmt_genrand_real3(&sfmt_state)
+#define sfmt_f64_3 sfmt_genrand_real3(&sfmt_state)  // (0, 1)
 
 // Various PRNG and functions
 
@@ -45,6 +45,26 @@ extern sfmt_t sfmt_state;
 extern void ziggurat_init();
 
 /** Uniform distribution **/
+
+extern double uniform_rvs(double a, double b);
+
+extern double uniform_pdf(double x, double a, double b);
+
+extern double uniform_logpdf(double x, double a, double b);
+
+extern double uniform_cdf(double x, double a, double b);
+
+extern double uniform_logcdf(double x, double a, double b);
+
+extern double uniform_ppf(double p, double a, double b);
+
+extern double uniform_sf(double x, double a, double b);
+
+extern double uniform_logsf(double x, double a, double b);
+
+extern double uniform_isf(double q, double a, double b);
+
+extern double uniform_entropy(double a, double b);
 
 /** Exponential distribution **/
 
