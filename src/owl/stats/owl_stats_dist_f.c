@@ -38,6 +38,10 @@ double f_sf(double x, double dfnum, double dfden) {
   return fdtrc(dfnum, dfden, x);
 }
 
+double f_logsf(double x, double dfnum, double dfden) {
+  return log(fdtrc(dfnum, dfden, x));
+}
+
 double f_isf(double q, double dfnum, double dfden) {
   return fdtri(dfnum, dfden, 1 - q);
 }

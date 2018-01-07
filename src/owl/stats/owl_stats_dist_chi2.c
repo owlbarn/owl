@@ -43,6 +43,10 @@ double chi2_sf(double x, double df) {
   return chdtrc(df, x);
 }
 
+double chi2_logsf(double x, double df) {
+  return log(chdtrc(df, x));
+}
+
 double chi2_isf(double q, double df) {
   return chdtri(df, q);
 }

@@ -584,5 +584,436 @@
 #define MAPFN(X,Y,Z) *Z = gamma_isf(*Z, *X, *Y)
 #include "owl_dense_common_map.c"
 
+// beta_rvs
+
+#define FUN25 float32_beta_rvs
+#define FUN25_IMPL float32_beta_rvs_impl
+#define FUN25_CODE float32_beta_rvs_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = beta_rvs(*X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_beta_rvs
+#define FUN25_IMPL float64_beta_rvs_impl
+#define FUN25_CODE float64_beta_rvs_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = beta_rvs(*X, *Y)
+#include "owl_dense_common_map.c"
+
+// beta_pdf
+
+#define FUN25 float32_beta_pdf
+#define FUN25_IMPL float32_beta_pdf_impl
+#define FUN25_CODE float32_beta_pdf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = beta_pdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_beta_pdf
+#define FUN25_IMPL float64_beta_pdf_impl
+#define FUN25_CODE float64_beta_pdf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = beta_pdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// beta_logpdf
+
+#define FUN25 float32_beta_logpdf
+#define FUN25_IMPL float32_beta_logpdf_impl
+#define FUN25_CODE float32_beta_logpdf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = beta_logpdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_beta_logpdf
+#define FUN25_IMPL float64_beta_logpdf_impl
+#define FUN25_CODE float64_beta_logpdf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = beta_logpdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// beta_cdf
+
+#define FUN25 float32_beta_cdf
+#define FUN25_IMPL float32_beta_cdf_impl
+#define FUN25_CODE float32_beta_cdf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = beta_cdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_beta_cdf
+#define FUN25_IMPL float64_beta_cdf_impl
+#define FUN25_CODE float64_beta_cdf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = beta_cdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// beta_logcdf
+
+#define FUN25 float32_beta_logcdf
+#define FUN25_IMPL float32_beta_logcdf_impl
+#define FUN25_CODE float32_beta_logcdf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = beta_logcdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_beta_logcdf
+#define FUN25_IMPL float64_beta_logcdf_impl
+#define FUN25_CODE float64_beta_logcdf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = beta_logcdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// beta_ppf
+
+#define FUN25 float32_beta_ppf
+#define FUN25_IMPL float32_beta_ppf_impl
+#define FUN25_CODE float32_beta_ppf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = beta_ppf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_beta_ppf
+#define FUN25_IMPL float64_beta_ppf_impl
+#define FUN25_CODE float64_beta_ppf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = beta_ppf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// beta_sf
+
+#define FUN25 float32_beta_sf
+#define FUN25_IMPL float32_beta_sf_impl
+#define FUN25_CODE float32_beta_sf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = beta_sf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_beta_sf
+#define FUN25_IMPL float64_beta_sf_impl
+#define FUN25_CODE float64_beta_sf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = beta_sf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// beta_logsf
+
+#define FUN25 float32_beta_logsf
+#define FUN25_IMPL float32_beta_logsf_impl
+#define FUN25_CODE float32_beta_logsf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = beta_logsf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_beta_logsf
+#define FUN25_IMPL float64_beta_logsf_impl
+#define FUN25_CODE float64_beta_logsf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = beta_logsf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// beta_isf
+
+#define FUN25 float32_beta_isf
+#define FUN25_IMPL float32_beta_isf_impl
+#define FUN25_CODE float32_beta_isf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = beta_isf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_beta_isf
+#define FUN25_IMPL float64_beta_isf_impl
+#define FUN25_CODE float64_beta_isf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = beta_isf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// chi2_rvs
+
+#define FUN24 float32_chi2_rvs
+#define FUN24_IMPL float32_chi2_rvs_impl
+#define FUN24_CODE float32_chi2_rvs_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = chi2_rvs(*X)
+#include "owl_dense_common_map.c"
+
+#define FUN24 float64_chi2_rvs
+#define FUN24_IMPL float64_chi2_rvs_impl
+#define FUN24_CODE float64_chi2_rvs_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = chi2_rvs(*X)
+#include "owl_dense_common_map.c"
+
+// chi2_pdf
+
+#define FUN24 float32_chi2_pdf
+#define FUN24_IMPL float32_chi2_pdf_impl
+#define FUN24_CODE float32_chi2_pdf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = chi2_pdf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN24 float64_chi2_pdf
+#define FUN24_IMPL float64_chi2_pdf_impl
+#define FUN24_CODE float64_chi2_pdf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = chi2_pdf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+// chi2_logpdf
+
+#define FUN24 float32_chi2_logpdf
+#define FUN24_IMPL float32_chi2_logpdf_impl
+#define FUN24_CODE float32_chi2_logpdf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = chi2_logpdf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN24 float64_chi2_logpdf
+#define FUN24_IMPL float64_chi2_logpdf_impl
+#define FUN24_CODE float64_chi2_logpdf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = chi2_logpdf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+// chi2_cdf
+
+#define FUN24 float32_chi2_cdf
+#define FUN24_IMPL float32_chi2_cdf_impl
+#define FUN24_CODE float32_chi2_cdf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = chi2_cdf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN24 float64_chi2_cdf
+#define FUN24_IMPL float64_chi2_cdf_impl
+#define FUN24_CODE float64_chi2_cdf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = chi2_cdf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+// chi2_logcdf
+
+#define FUN24 float32_chi2_logcdf
+#define FUN24_IMPL float32_chi2_logcdf_impl
+#define FUN24_CODE float32_chi2_logcdf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = chi2_logcdf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN24 float64_chi2_logcdf
+#define FUN24_IMPL float64_chi2_logcdf_impl
+#define FUN24_CODE float64_chi2_logcdf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = chi2_logcdf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+// chi2_ppf
+
+#define FUN24 float32_chi2_ppf
+#define FUN24_IMPL float32_chi2_ppf_impl
+#define FUN24_CODE float32_chi2_ppf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = chi2_ppf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN24 float64_chi2_ppf
+#define FUN24_IMPL float64_chi2_ppf_impl
+#define FUN24_CODE float64_chi2_ppf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = chi2_ppf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+// chi2_sf
+
+#define FUN24 float32_chi2_sf
+#define FUN24_IMPL float32_chi2_sf_impl
+#define FUN24_CODE float32_chi2_sf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = chi2_sf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN24 float64_chi2_sf
+#define FUN24_IMPL float64_chi2_sf_impl
+#define FUN24_CODE float64_chi2_sf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = chi2_sf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+// chi2_logsf
+
+#define FUN24 float32_chi2_logsf
+#define FUN24_IMPL float32_chi2_logsf_impl
+#define FUN24_CODE float32_chi2_logsf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = chi2_logsf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN24 float64_chi2_logsf
+#define FUN24_IMPL float64_chi2_logsf_impl
+#define FUN24_CODE float64_chi2_logsf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = chi2_logsf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+// chi2_isf
+
+#define FUN24 float32_chi2_isf
+#define FUN24_IMPL float32_chi2_isf_impl
+#define FUN24_CODE float32_chi2_isf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = chi2_isf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN24 float64_chi2_isf
+#define FUN24_IMPL float64_chi2_isf_impl
+#define FUN24_CODE float64_chi2_isf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = chi2_isf(*X, *Y)
+#include "owl_dense_common_map.c"
+
+// f_rvs
+
+#define FUN25 float32_f_rvs
+#define FUN25_IMPL float32_f_rvs_impl
+#define FUN25_CODE float32_f_rvs_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = f_rvs(*X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_f_rvs
+#define FUN25_IMPL float64_f_rvs_impl
+#define FUN25_CODE float64_f_rvs_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = f_rvs(*X, *Y)
+#include "owl_dense_common_map.c"
+
+// f_pdf
+
+#define FUN25 float32_f_pdf
+#define FUN25_IMPL float32_f_pdf_impl
+#define FUN25_CODE float32_f_pdf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = f_pdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_f_pdf
+#define FUN25_IMPL float64_f_pdf_impl
+#define FUN25_CODE float64_f_pdf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = f_pdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// f_logpdf
+
+#define FUN25 float32_f_logpdf
+#define FUN25_IMPL float32_f_logpdf_impl
+#define FUN25_CODE float32_f_logpdf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = f_logpdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_f_logpdf
+#define FUN25_IMPL float64_f_logpdf_impl
+#define FUN25_CODE float64_f_logpdf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = f_logpdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// f_cdf
+
+#define FUN25 float32_f_cdf
+#define FUN25_IMPL float32_f_cdf_impl
+#define FUN25_CODE float32_f_cdf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = f_cdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_f_cdf
+#define FUN25_IMPL float64_f_cdf_impl
+#define FUN25_CODE float64_f_cdf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = f_cdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// f_logcdf
+
+#define FUN25 float32_f_logcdf
+#define FUN25_IMPL float32_f_logcdf_impl
+#define FUN25_CODE float32_f_logcdf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = f_logcdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_f_logcdf
+#define FUN25_IMPL float64_f_logcdf_impl
+#define FUN25_CODE float64_f_logcdf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = f_logcdf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// f_ppf
+
+#define FUN25 float32_f_ppf
+#define FUN25_IMPL float32_f_ppf_impl
+#define FUN25_CODE float32_f_ppf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = f_ppf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_f_ppf
+#define FUN25_IMPL float64_f_ppf_impl
+#define FUN25_CODE float64_f_ppf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = f_ppf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// f_sf
+
+#define FUN25 float32_f_sf
+#define FUN25_IMPL float32_f_sf_impl
+#define FUN25_CODE float32_f_sf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = f_sf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_f_sf
+#define FUN25_IMPL float64_f_sf_impl
+#define FUN25_CODE float64_f_sf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = f_sf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// f_logsf
+
+#define FUN25 float32_f_logsf
+#define FUN25_IMPL float32_f_logsf_impl
+#define FUN25_CODE float32_f_logsf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = f_logsf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_f_logsf
+#define FUN25_IMPL float64_f_logsf_impl
+#define FUN25_CODE float64_f_logsf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = f_logsf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+// f_isf
+
+#define FUN25 float32_f_isf
+#define FUN25_IMPL float32_f_isf_impl
+#define FUN25_CODE float32_f_isf_code
+#define NUMBER float
+#define MAPFN(X,Y,Z) *Z = f_isf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
+
+#define FUN25 float64_f_isf
+#define FUN25_IMPL float64_f_isf_impl
+#define FUN25_CODE float64_f_isf_code
+#define NUMBER double
+#define MAPFN(X,Y,Z) *Z = f_isf(*Z, *X, *Y)
+#include "owl_dense_common_map.c"
 
 //////////////////// function templates ends ////////////////////

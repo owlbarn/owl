@@ -129,4 +129,80 @@ let exponential_logsf ~lambda x = broadcast_op2 (_owl_exponential_logsf (kind x)
 let exponential_isf ~lambda x = broadcast_op2 (_owl_exponential_isf (kind x)) lambda lambda x
 
 
+let gamma_rvs ~shape ~scale ~n = broadcast_op0 (_owl_gamma_rvs (kind shape)) shape scale n
+
+let gamma_pdf ~shape ~scale x = broadcast_op2 (_owl_gamma_pdf (kind x)) shape scale x
+
+let gamma_logpdf ~shape ~scale x = broadcast_op2 (_owl_gamma_logpdf (kind x)) shape scale x
+
+let gamma_cdf ~shape ~scale x = broadcast_op2 (_owl_gamma_cdf (kind x)) shape scale x
+
+let gamma_logcdf ~shape ~scale x = broadcast_op2 (_owl_gamma_logcdf (kind x)) shape scale x
+
+let gamma_ppf ~shape ~scale x = broadcast_op2 (_owl_gamma_ppf (kind x)) shape scale x
+
+let gamma_sf ~shape ~scale x = broadcast_op2 (_owl_gamma_sf (kind x)) shape scale x
+
+let gamma_logsf ~shape ~scale x = broadcast_op2 (_owl_gamma_logsf (kind x)) shape scale x
+
+let gamma_isf ~shape ~scale x = broadcast_op2 (_owl_gamma_isf (kind x)) shape scale x
+
+
+let beta_rvs ~a ~b ~n = broadcast_op0 (_owl_beta_rvs (kind a)) a b n
+
+let beta_pdf ~a ~b x = broadcast_op2 (_owl_beta_pdf (kind x)) a b x
+
+let beta_logpdf ~a ~b x = broadcast_op2 (_owl_beta_logpdf (kind x)) a b x
+
+let beta_cdf ~a ~b x = broadcast_op2 (_owl_beta_cdf (kind x)) a b x
+
+let beta_logcdf ~a ~b x = broadcast_op2 (_owl_beta_logcdf (kind x)) a b x
+
+let beta_ppf ~a ~b x = broadcast_op2 (_owl_beta_ppf (kind x)) a b x
+
+let beta_sf ~a ~b x = broadcast_op2 (_owl_beta_sf (kind x)) a b x
+
+let beta_logsf ~a ~b x = broadcast_op2 (_owl_beta_logsf (kind x)) a b x
+
+let beta_isf ~a ~b x = broadcast_op2 (_owl_beta_isf (kind x)) a b x
+
+
+let chi2_rvs ~df ~n = broadcast_op1 (_owl_chi2_rvs (kind df)) df n
+
+let chi2_pdf ~df x = broadcast_op2 (_owl_chi2_pdf (kind x)) df df x
+
+let chi2_logpdf ~df x = broadcast_op2 (_owl_chi2_logpdf (kind x)) df df x
+
+let chi2_cdf ~df x = broadcast_op2 (_owl_chi2_cdf (kind x)) df df x
+
+let chi2_logcdf ~df x = broadcast_op2 (_owl_chi2_logcdf (kind x)) df df x
+
+let chi2_ppf ~df x = broadcast_op2 (_owl_chi2_ppf (kind x)) df df x
+
+let chi2_sf ~df x = broadcast_op2 (_owl_chi2_sf (kind x)) df df x
+
+let chi2_logsf ~df x = broadcast_op2 (_owl_chi2_logsf (kind x)) df df x
+
+let chi2_isf ~df x = broadcast_op2 (_owl_chi2_isf (kind x)) df df x
+
+
+let f_rvs ~dfnum ~dfden ~n = broadcast_op0 (_owl_f_rvs (kind dfnum)) dfnum dfden n
+
+let f_pdf ~dfnum ~dfden x = broadcast_op2 (_owl_f_pdf (kind x)) dfnum dfden x
+
+let f_logpdf ~dfnum ~dfden x = broadcast_op2 (_owl_f_logpdf (kind x)) dfnum dfden x
+
+let f_cdf ~dfnum ~dfden x = broadcast_op2 (_owl_f_cdf (kind x)) dfnum dfden x
+
+let f_logcdf ~dfnum ~dfden x = broadcast_op2 (_owl_f_logcdf (kind x)) dfnum dfden x
+
+let f_ppf ~dfnum ~dfden x = broadcast_op2 (_owl_f_ppf (kind x)) dfnum dfden x
+
+let f_sf ~dfnum ~dfden x = broadcast_op2 (_owl_f_sf (kind x)) dfnum dfden x
+
+let f_logsf ~dfnum ~dfden x = broadcast_op2 (_owl_f_logsf (kind x)) dfnum dfden x
+
+let f_isf ~dfnum ~dfden x = broadcast_op2 (_owl_f_isf (kind x)) dfnum dfden x
+
+
 (* ends here *)
