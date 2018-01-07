@@ -57,6 +57,8 @@ let broadcast_op1 op x n =
 let uniform_rvs ~a ~b ~n = broadcast_op0 (_owl_uniform_rvs (kind a)) a b n
 
 
+
+
 let gaussian_rvs ~mu ~sigma ~n = broadcast_op0 (_owl_gaussian_rvs (kind mu)) mu sigma n
 
 
