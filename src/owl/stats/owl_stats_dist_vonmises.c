@@ -51,3 +51,75 @@ double vonmises_rvs(double mu, double kappa) {
     return mod;
   }
 }
+
+double vonmises_pdf(double x, double mu, double kappa) {
+  return exp(kappa * cos(x)) / (2 * OWL_PI * i0(kappa));
+}
+
+double vonmises_logpdf(double x, double mu, double kappa) {
+  return log(vonmises_pdf(x, mu, kappa));
+}
+
+double vonmises_entropy(double kappa) {
+  return (-kappa * i1(kappa) / i0(kappa) + log(2 * OWL_PI * i0(kappa)));
+}
+
+double vonmises_cdf_series(double k, double x, double p) {
+  double s = sin(x);
+  double c = cos(x);
+  double sn = sin(p * x);
+  double cn = cos(p * x);
+  double R = 0;
+  double V = 0;
+
+  for (int n = p - 1; n > 0; n--) {
+    double _sn = sn * c - cn * s;
+    cn = cn * c + sn * s;
+    sn = _sn;
+    R = 1. / (2 * n / k + R);
+    V = R * (sn / n + V);
+  }
+
+  return 0.5 + x / (2 * OWL_PI) + V / OWL_PI;
+}
+
+double vonmises_cdf_normalapprox(double k, double x) {
+  double b = sqrt(2 / OWL_PI) * exp(k) / i0(k);
+  double z = b * sin(x / 2.);
+  return ndtr(z);
+}
+
+double vonmises_cdf(double x, double mu, double kappa) {
+  x = x - mu;
+  double ix = 2 * OWL_PI * round(x / OWL_2PI);
+  x = x - ix;
+
+  double F = 0.;
+  int CK = 50;
+  static double a[] = {28., 0.5, 100., 5.0};
+
+  if (kappa < CK) {
+    double p = ceil(a[0] + a[1] * kappa - a[2] / (kappa + a[3]));
+    F = vonmises_cdf_series(kappa, x, p);
+    if (F < 0)
+      F = 0.;
+    else if (F > 1)
+      F = 1.;
+  }
+  else
+    F = vonmises_cdf_normalapprox(kappa, x);
+
+  return F + ix;
+}
+
+double vonmises_logcdf(double x, double mu, double kappa) {
+  return log(vonmises_cdf(x, mu, kappa));
+}
+
+double vonmises_sf(double x, double mu, double kappa) {
+  return 1 - vonmises_cdf(x, mu, kappa);
+}
+
+double vonmises_logsf(double x, double mu, double kappa) {
+  return log(vonmises_sf(x, mu, kappa));
+}

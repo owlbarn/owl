@@ -6,6 +6,8 @@
 #include "owl_maths.h"
 #include "owl_stats.h"
 
+// TODO: add mu ...
+
 /** Rayleigh distribution **/
 
 double rayleigh_rvs(double sigma) {

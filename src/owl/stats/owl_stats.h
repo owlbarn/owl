@@ -256,6 +256,20 @@ extern double t_entropy(double df);
 
 extern double vonmises_rvs(double, double);
 
+extern double vonmises_pdf(double x, double mu, double kappa);
+
+extern double vonmises_logpdf(double x, double mu, double kappa);
+
+extern double vonmises_cdf(double x, double mu, double kappa);
+
+extern double vonmises_logcdf(double x, double mu, double kappa);
+
+extern double vonmises_sf(double x, double mu, double kappa);
+
+extern double vonmises_logsf(double x, double mu, double kappa);
+
+extern double vonmises_entropy(double kappa);
+
 /** Pareto distribution **/
 
 extern double pareto_rvs(double);
