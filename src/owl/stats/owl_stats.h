@@ -398,6 +398,24 @@ extern double rayleigh_entropy(double sigma);
 
 extern double wald_rvs(double, double);
 
+extern double wald_pdf(double x, double mu, double lambda);
+
+extern double wald_logpdf(double x, double mu, double lambda);
+
+extern double wald_cdf(double x, double mu, double lambda);
+
+extern double wald_logcdf(double x, double mu, double lambda);
+
+//extern double wald_ppf(double q, double mu, double lambda);
+
+extern double wald_sf(double x, double mu, double lambda);
+
+extern double wald_logsf(double x, double mu, double lambda);
+
+//extern double wald_isf(double q, double mu, double lambda);
+
+//extern double wald_entropy(double mu, double lambda);
+
 /** Zipf distribution **/
 
 extern long zipf_rvs(double);
