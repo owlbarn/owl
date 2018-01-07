@@ -11,7 +11,7 @@ double uniform_rvs(double a, double b) {
 }
 
 double uniform_pdf(double x, double a, double b) {
-  return (x >= a && x <= b) ? 1 / (b - 1) : 0;
+  return (x >= a && x <= b) ? 1 / (b - a) : 0;
 }
 
 double uniform_logpdf(double x, double a, double b) {
