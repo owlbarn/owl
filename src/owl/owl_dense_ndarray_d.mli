@@ -754,3 +754,21 @@ val uniform_sf : a:arr -> b:arr -> arr -> arr
 val uniform_logsf : a:arr -> b:arr -> arr -> arr
 
 val uniform_isf : a:arr -> b:arr -> arr -> arr
+
+val gaussian_rvs : mu:arr -> sigma:arr -> n:int -> arr
+
+val gaussian_pdf : mu:arr -> sigma:arr -> arr -> arr
+
+val gaussian_logpdf : mu:arr -> sigma:arr -> arr -> arr
+
+val gaussian_cdf : mu:arr -> sigma:arr -> arr -> arr
+
+val gaussian_logcdf : mu:arr -> sigma:arr -> arr -> arr
+
+val gaussian_ppf : mu:arr -> sigma:arr -> arr -> arr
+
+val gaussian_sf : mu:arr -> sigma:arr -> arr -> arr
+
+val gaussian_logsf : mu:arr -> sigma:arr -> arr -> arr
+
+val gaussian_isf : mu:arr -> sigma:arr -> arr -> arr

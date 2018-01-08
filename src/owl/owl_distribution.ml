@@ -11,7 +11,7 @@ open Owl_types
 module Make (A : StatsSig) = struct
 
 
-  module Uniform_ = struct
+  module Uniform = struct
 
     type t = {
       a : A.arr;
@@ -43,51 +43,7 @@ module Make (A : StatsSig) = struct
   end
 
 
-  module Uniform = struct
-
-    type t = {
-      a : float;
-      b : float;
-    }
-
-    let make ~a ~b =
-      assert ( a <= b);
-      { a; b }
-
-    let sample t s = A.uniform s
-
-    (* FIXME *)
-    let log_prob t x = A.zeros [|10|]
-
-    let mean t = (t.a +. t.b) /. 2.
-
-  end
-
-
   module Gaussian = struct
-
-    type t = {
-      mu    : float;
-      sigma : float;
-    }
-
-    let make ~mu ~sigma =
-      assert (sigma >= 0.);
-      { mu; sigma }
-
-    let sample t s =
-      let x = A.gaussian ~sigma:t.sigma s in
-      A.add_scalar x t.mu
-
-    (* FIXME *)
-    let log_prob t x = A.zeros [|10|]
-
-    let mean t = t.mu
-
-  end
-
-
-  module Gaussian_ = struct
 
     type t = {
       mu    : A.arr;
@@ -95,13 +51,25 @@ module Make (A : StatsSig) = struct
     }
 
     let make ~mu ~sigma =
-      assert (A.is_positive sigma);
       { mu; sigma }
 
-    let sample t n =
-      let s = A.shape t.mu in
-      let z = A.empty s in
-      ()
+    let sample t n = A.gaussian_rvs ~mu:t.mu ~sigma:t.sigma ~n
+
+    let pdf t x = A.gaussian_pdf ~mu:t.mu ~sigma:t.sigma x
+
+    let logpdf t x = A.gaussian_logpdf ~mu:t.mu ~sigma:t.sigma x
+
+    let cdf t x = A.gaussian_cdf ~mu:t.mu ~sigma:t.sigma x
+
+    let logcdf t x = A.gaussian_logcdf ~mu:t.mu ~sigma:t.sigma x
+
+    let ppf t x = A.gaussian_ppf ~mu:t.mu ~sigma:t.sigma x
+
+    let sf t x = A.gaussian_sf ~mu:t.mu ~sigma:t.sigma x
+
+    let logsf t x = A.gaussian_logsf ~mu:t.mu ~sigma:t.sigma x
+
+    let isf t x = A.gaussian_isf ~mu:t.mu ~sigma:t.sigma x
 
   end
 
@@ -111,19 +79,33 @@ module Make (A : StatsSig) = struct
     | Gaussian of Gaussian.t
 
 
-  let sample t s = match t with
-    | Uniform t  -> Uniform.sample t s
-    | Gaussian t -> Gaussian.sample t s
+  let sample t n = match t with
+    | Uniform t  -> Uniform.sample t n
+    | Gaussian t -> Gaussian.sample t n
+
+
+  let prob t x = match t with
+    | Uniform t  -> Uniform.pdf t x
+    | Gaussian t -> Gaussian.pdf t x
 
 
   let log_prob t x = match t with
-    | Uniform t  -> Uniform.log_prob t x
-    | Gaussian t -> Gaussian.log_prob t x
+    | Uniform t  -> Uniform.logpdf t x
+    | Gaussian t -> Gaussian.logpdf t x
 
+  let cdf t x = match t with
+    | Uniform t  -> Uniform.cdf t x
+    | Gaussian t -> Gaussian.cdf t x
 
+  let logcdf t x = match t with
+    | Uniform t  -> Uniform.logcdf t x
+    | Gaussian t -> Gaussian.logcdf t x
+
+(*
   let mean t = match t with
     | Uniform t  -> Uniform.mean t
     | Gaussian t -> Gaussian.mean t
+*)
 
 
 end

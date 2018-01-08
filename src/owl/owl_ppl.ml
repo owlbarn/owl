@@ -23,22 +23,24 @@ module Make (A : StatsSig) = struct
 
   let uniform ~a ~b =
     let draw_samples args =
-      let a = to_elt args.(0) in
-      let b = to_elt args.(1) in
-      let s = A.shape (to_arr args.(2)) in
+      let a = to_arr args.(0) in
+      let b = to_arr args.(1) in
+      (*let s = A.shape (to_arr args.(2)) in*)
+      let n = 0 in
       let t = Uniform.make ~a ~b in
-      of_arr (Uniform.sample t s)
+      of_arr (Uniform.sample t n)
     in
     let shape_holder = variable () in (* FIXME *)
     map ~name:"uniform" draw_samples [|a;b;shape_holder|]
 
   let gaussian ~mu ~sigma =
     let draw_samples args =
-      let mu = to_elt args.(0) in
-      let sigma = to_elt args.(1) in
-      let s = A.shape (to_arr args.(2)) in
+      let mu = to_arr args.(0) in
+      let sigma = to_arr args.(1) in
+      (*let s = A.shape (to_arr args.(2)) in*)
+      let n = 0 in
       let t = Gaussian.make ~mu ~sigma in
-      of_arr (Gaussian.sample t s)
+      of_arr (Gaussian.sample t n)
     in
     let shape_holder = variable () in (* FIXME *)
     map ~name:"gaussian" draw_samples [|mu;sigma;shape_holder|]
