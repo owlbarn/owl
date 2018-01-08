@@ -8,6 +8,9 @@ open Bigarray
 module M = Owl_dense_ndarray_generic
 include M
 
+module N = Owl_distribution_generic
+include N
+
 type elt = float
 type arr = (float, float64_elt, c_layout) Genarray.t
 

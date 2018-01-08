@@ -10,7 +10,7 @@ open Owl_types
 open Owl_graph
 
 
-module Make (A : InpureSig) = struct
+module Make (A : StatsSig) = struct
 
   include Owl_distribution.Make (A)
 

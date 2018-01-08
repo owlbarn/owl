@@ -559,6 +559,30 @@ module type InpureSig = sig
 end
 
 
+module type StatsSig = sig
+
+  include InpureSig
+
+  val uniform_rvs : a:arr -> b:arr -> n:int -> arr
+
+  val uniform_pdf : a:arr -> b:arr -> arr -> arr
+
+  val uniform_logpdf : a:arr -> b:arr -> arr -> arr
+
+  val uniform_cdf : a:arr -> b:arr -> arr -> arr
+
+  val uniform_logcdf : a:arr -> b:arr -> arr -> arr
+
+  val uniform_ppf : a:arr -> b:arr -> arr -> arr
+
+  val uniform_sf : a:arr -> b:arr -> arr -> arr
+
+  val uniform_logsf : a:arr -> b:arr -> arr -> arr
+
+  val uniform_isf : a:arr -> b:arr -> arr -> arr
+
+end
+
 
 
 (* ends here *)

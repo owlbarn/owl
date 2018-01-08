@@ -8,7 +8,39 @@ open Owl_types
 
 (* Functor of making Lazy module of different number types *)
 
-module Make (A : NdarraySig_Ext) = struct
+module Make (A : StatsSig) = struct
+
+
+  module Uniform_ = struct
+
+    type t = {
+      a : A.arr;
+      b : A.arr;
+    }
+
+    let make ~a ~b =
+      (* TODO: maybe we should validate a < b constraint *)
+      { a; b }
+
+    let sample t n = A.uniform_rvs ~a:t.a ~b:t.b ~n
+
+    let pdf t x = A.uniform_pdf ~a:t.a ~b:t.b x
+
+    let logpdf t x = A.uniform_logpdf ~a:t.a ~b:t.b x
+
+    let cdf t x = A.uniform_cdf ~a:t.a ~b:t.b x
+
+    let logcdf t x = A.uniform_logcdf ~a:t.a ~b:t.b x
+
+    let ppf t x = A.uniform_ppf ~a:t.a ~b:t.b x
+
+    let sf t x = A.uniform_sf ~a:t.a ~b:t.b x
+
+    let logsf t x = A.uniform_logsf ~a:t.a ~b:t.b x
+
+    let isf t x = A.uniform_isf ~a:t.a ~b:t.b x
+
+  end
 
 
   module Uniform = struct

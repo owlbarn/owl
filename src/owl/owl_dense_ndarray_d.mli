@@ -733,3 +733,24 @@ val draw_cols : ?replacement:bool -> arr -> int -> arr * int array
 val draw_rows2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
 
 val draw_cols2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
+
+
+(** {6 Stats & distribution functions} *)
+
+val uniform_rvs : a:arr -> b:arr -> n:int -> arr
+
+val uniform_pdf : a:arr -> b:arr -> arr -> arr
+
+val uniform_logpdf : a:arr -> b:arr -> arr -> arr
+
+val uniform_cdf : a:arr -> b:arr -> arr -> arr
+
+val uniform_logcdf : a:arr -> b:arr -> arr -> arr
+
+val uniform_ppf : a:arr -> b:arr -> arr -> arr
+
+val uniform_sf : a:arr -> b:arr -> arr -> arr
+
+val uniform_logsf : a:arr -> b:arr -> arr -> arr
+
+val uniform_isf : a:arr -> b:arr -> arr -> arr
