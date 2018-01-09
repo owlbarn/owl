@@ -83,6 +83,8 @@ end
 (* initialise owl's working environment *)
 
 let _ =
+  (* FIXME: need to unify with the Stats module in the future *)
+  Random.State.make_self_init () |> ignore;
   (* init the internal state of PRNG *)
   Owl_common.PRNG.init ();
   (* set up owl's folder *)

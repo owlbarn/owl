@@ -772,3 +772,93 @@ val gaussian_sf : mu:arr -> sigma:arr -> arr -> arr
 val gaussian_logsf : mu:arr -> sigma:arr -> arr -> arr
 
 val gaussian_isf : mu:arr -> sigma:arr -> arr -> arr
+
+val exponential_rvs : lambda:arr -> n:int -> arr
+
+val exponential_pdf : lambda:arr -> arr -> arr
+
+val exponential_logpdf : lambda:arr -> arr -> arr
+
+val exponential_cdf : lambda:arr -> arr -> arr
+
+val exponential_logcdf : lambda:arr -> arr -> arr
+
+val exponential_ppf : lambda:arr -> arr -> arr
+
+val exponential_sf : lambda:arr -> arr -> arr
+
+val exponential_logsf : lambda:arr -> arr -> arr
+
+val exponential_isf : lambda:arr -> arr -> arr
+
+val gamma_rvs : shape:arr -> scale:arr -> n:int -> arr
+
+val gamma_pdf : shape:arr -> scale:arr -> arr -> arr
+
+val gamma_logpdf : shape:arr -> scale:arr -> arr -> arr
+
+val gamma_cdf : shape:arr -> scale:arr -> arr -> arr
+
+val gamma_logcdf : shape:arr -> scale:arr -> arr -> arr
+
+val gamma_ppf : shape:arr -> scale:arr -> arr -> arr
+
+val gamma_sf : shape:arr -> scale:arr -> arr -> arr
+
+val gamma_logsf : shape:arr -> scale:arr -> arr -> arr
+
+val gamma_isf : shape:arr -> scale:arr -> arr -> arr
+
+val beta_rvs : a:arr -> b:arr -> n:int -> arr
+
+val beta_pdf : a:arr -> b:arr -> arr -> arr
+
+val beta_logpdf : a:arr -> b:arr -> arr -> arr
+
+val beta_cdf : a:arr -> b:arr -> arr -> arr
+
+val beta_logcdf : a:arr -> b:arr -> arr -> arr
+
+val beta_ppf : a:arr -> b:arr -> arr -> arr
+
+val beta_sf : a:arr -> b:arr -> arr -> arr
+
+val beta_logsf : a:arr -> b:arr -> arr -> arr
+
+val beta_isf : a:arr -> b:arr -> arr -> arr
+
+val chi2_rvs : df:arr -> n:int -> arr
+
+val chi2_pdf : df:arr -> arr -> arr
+
+val chi2_logpdf : df:arr -> arr -> arr
+
+val chi2_cdf : df:arr -> arr -> arr
+
+val chi2_logcdf : df:arr -> arr -> arr
+
+val chi2_ppf : df:arr -> arr -> arr
+
+val chi2_sf : df:arr -> arr -> arr
+
+val chi2_logsf : df:arr -> arr -> arr
+
+val chi2_isf : df:arr -> arr -> arr
+
+val f_rvs : dfnum:arr -> dfden:arr -> n:int -> arr
+
+val f_pdf : dfnum:arr -> dfden:arr -> arr -> arr
+
+val f_logpdf : dfnum:arr -> dfden:arr -> arr -> arr
+
+val f_cdf : dfnum:arr -> dfden:arr -> arr -> arr
+
+val f_logcdf : dfnum:arr -> dfden:arr -> arr -> arr
+
+val f_ppf : dfnum:arr -> dfden:arr -> arr -> arr
+
+val f_sf : dfnum:arr -> dfden:arr -> arr -> arr
+
+val f_logsf : dfnum:arr -> dfden:arr -> arr -> arr
+
+val f_isf : dfnum:arr -> dfden:arr -> arr -> arr

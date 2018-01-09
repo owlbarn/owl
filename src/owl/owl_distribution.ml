@@ -11,6 +11,28 @@ open Owl_types
 module Make (A : StatsSig) = struct
 
 
+  module Utility = struct
+
+    (* check the elements in [xs] and make sure their shapes are broadcastable,
+      by satisfying either of the following rules: 1) equal; 2) equal to one.
+     *)
+    let _check_broadcast_shape xs =
+      let xs = Array.map A.shape xs in
+      let s = Array.copy xs.(0) in
+      Array.iter (fun x ->
+        assert (Array.length s = Array.length x);
+        Array.iteri (fun i d ->
+          if d <> s.(i) then (
+            if s.(i) = 1 then s.(i) <- d
+            else if d = 1 then ()
+            else failwith "_check_broadcast_shape"
+          )
+        ) x
+      ) xs
+
+  end
+
+
   module Uniform = struct
 
     type t = {
@@ -19,7 +41,7 @@ module Make (A : StatsSig) = struct
     }
 
     let make ~a ~b =
-      (* TODO: maybe we should validate a < b constraint *)
+      Utility._check_broadcast_shape [|a; b|];
       { a; b }
 
     let sample t n = A.uniform_rvs ~a:t.a ~b:t.b ~n
@@ -51,6 +73,7 @@ module Make (A : StatsSig) = struct
     }
 
     let make ~mu ~sigma =
+      Utility._check_broadcast_shape [|mu; sigma|];
       { mu; sigma }
 
     let sample t n = A.gaussian_rvs ~mu:t.mu ~sigma:t.sigma ~n

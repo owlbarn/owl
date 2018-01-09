@@ -8,9 +8,6 @@ open Bigarray
 open Owl_dense_common_types
 
 
-(* FIXME: need to unify with the Stats module in the future *)
-let rng = Random.State.make_self_init ()
-
 (* define constants *)
 
 let _zero : type a b. (a, b) kind -> a = function
