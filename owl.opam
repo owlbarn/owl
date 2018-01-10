@@ -17,7 +17,6 @@ build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 
 depends: [
   "ctypes"
-  "dolog" {>= "3.0"}
   "gsl" {>= "1.20.0"}
   "conf-gsl"
   "jbuilder" {build}
@@ -25,3 +24,4 @@ depends: [
   "eigen" {>= "0.0.3"}
   "conf-openblas"
 ]
+available: [ ocaml-version >= "4.04.0" ]

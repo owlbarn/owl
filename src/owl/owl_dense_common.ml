@@ -2386,7 +2386,7 @@ let _owl_conj : type a b. (a, b) kind -> (a, b) owl_arr_op18 =
   fun k n ?(ofsx=0) ?(incx=1) ?(ofsy=0) ?(incy=1) x y ->
   match k with
   | Float32   -> owl_float32_copy n x ofsx incx y ofsy incy
-  | Float64   -> owl_float32_copy n x ofsx incx y ofsy incy
+  | Float64   -> owl_float64_copy n x ofsx incx y ofsy incy
   | Complex32 -> owl_complex32_conj n x ofsx incx y ofsy incy
   | Complex64 -> owl_complex64_conj n x ofsx incx y ofsy incy
   | _         -> failwith "_owl_conj: unsupported operation"

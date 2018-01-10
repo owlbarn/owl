@@ -45,7 +45,7 @@ let exclude_token m w d k =
   m.t_dk.(d).(k) <- (m.t_dk.(d).(k) -. 1.)
 
 let show_info m i t =
-  Log.info "iter#%i t(s):%.1f t_dk:%.3f t_wk:%.3f" i t 0. 0.
+  Owl_log.info "iter#%i t(s):%.1f t_dk:%.3f t_wk:%.3f" i t 0. 0.
 
 (* implement several LDA with specific samplings *)
 
@@ -240,7 +240,7 @@ end
 
 (* init the model based on: topics, vocabulary, tokens *)
 let init ?(iter=100) k v d =
-  Log.info "init the model";
+  Owl_log.info "init the model";
   (* set basic model stats *)
   let n_d = Owl_nlp_corpus.length d in
   let n_v = Hashtbl.length v in
@@ -304,7 +304,7 @@ let train typ m =
     let t0 = Unix.gettimeofday () in
     Owl_nlp_corpus.iteri_tok (
       fun j doc ->
-      (* Log.info "iteration #%i - doc#%i" i j; *)
+      (* Owl_log.info "iteration #%i - doc#%i" i j; *)
       sampling m j doc
     ) m.data;
     let t1 = Unix.gettimeofday () in

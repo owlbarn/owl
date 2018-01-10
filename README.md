@@ -11,6 +11,7 @@ Behind the scene, Owl builds the advanced numerical functions atop of its solid 
 * Linear algebra and full interface to CBLAS and LAPACKE
 * Algorithmic differentiation (or automatic differentiation)
 * Neural network module for deep learning applications
+* Dynamic computational graph allowing greatest flexibility for applications
 * Parallel and Distributed engine (map-reduce, parameter server, etc.)
 * Advanced math and stats functions (e.g., hypothesis tests, MCMC, etc.)
 * Zoo system for efficient scripting and code sharing
@@ -46,6 +47,7 @@ This [How-To?](https://github.com/ryanrhymes/owl/wiki/How-To%3F) maintains a lis
 * [Tutorial 11: Neural Network](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Neural-Network)
 * [Tutorial 12: Scripting and Zoo System](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Scripting-and-Zoo-System)
 * [Tutorial 13: Laziness and Dataflow](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Laziness-and-Dataflow)
+* [Tutorial 14: Naming Conventions](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Naming-Conventions)
 
 
 The Presentation Slides in OCaml Workshop 2017 can be viewed with [this link](https://docs.google.com/presentation/d/1A-7KiQLot3X2lLyZntrFGxsxaNir0g_2TlruBP4W2Uc/edit).
@@ -223,6 +225,8 @@ Mat.load "matrix_01.data";;    (* load the matrix from a file *)
 
 
 ## Access Elements, Rows, and Columns
+
+**This section needs to be updated**
 
 Both `Dense.Matrix` and `Sparse.Matrix` modules provide a wide range of operations to access the elements, rows, and columns of a matrix. You can refer to the full document in [`Dense.Matrix.Generic`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_dense_matrix_generic.mli). Here we just gave some simple examples briefly.
 

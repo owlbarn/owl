@@ -39,7 +39,7 @@ let test_log x y =
   let y' = MX.(sigmoid (x *@ p)) in
   let y' = MX.map (fun x -> if x > 0.5 then 1. else 0.) y' in
   let e = MX.(mean (abs (y - y'))) in
-  let _ = Log.info "accuracy: %.4f" (1. -. e) in p
+  let _ = Owl_log.info "accuracy: %.4f" (1. -. e) in p
 
 let _ =
   let _ = Random.self_init () in

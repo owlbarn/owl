@@ -90,7 +90,7 @@ let mix_typ9 input nn =
   let branch_pool = nn |> avg_pool2d [|3;3|] [|1;1|] |> conv2d_bn [|1;1;input;192|] [|1;1|] in
   concatenate 3 [|branch1x1; branch3x3; branch3x3dbl; branch_pool|]
 
-let make_inception img_size =
+let make_network img_size =
   input [|img_size;img_size;3|]
   |> conv2d_bn [|3;3;3;32|] [|2;2|] ~padding:VALID
   |> conv2d_bn [|3;3;32;32|] [|1;1|] ~padding:VALID
@@ -108,4 +108,4 @@ let make_inception img_size =
   |> linear 1000 ~act_typ:Activation.Softmax
   |> get_network
 
-let _ = make_inception 299 |> print
+let _ = make_network 299 |> print

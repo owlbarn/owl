@@ -12,7 +12,7 @@ let remote_data_path () = "https://github.com/ryanrhymes/owl_dataset/raw/master/
 let local_data_path () =
   let d = Sys.getenv "HOME" ^ "/.owl/dataset/" in
   if Sys.file_exists d = false then (
-    Log.info "create %s" d;
+    Owl_log.info "create %s" d;
     Unix.mkdir d 0o755;
   );
   d

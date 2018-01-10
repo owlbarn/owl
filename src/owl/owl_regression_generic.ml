@@ -46,19 +46,30 @@ module Make
     _linear_reg i params x y
 
 
-  let ridge ?(i=false) ?(a=0.001) x y =
+  let ridge ?(i=false) ?(alpha=0.001) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L2norm a) ~verbosity:false
+      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L2norm alpha) ~verbosity:false
       ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y
 
 
-  let lasso ?(i=false) ?(a=0.001) x y =
+  let lasso ?(i=false) ?(alpha=0.001) x y =
     let params = Params.config
       ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
-      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L1norm a) ~verbosity:false
+      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.L1norm alpha) ~verbosity:false
+      ~stopping:(Stopping.Const 1e-16) 1000.
+    in
+    _linear_reg i params x y
+
+
+  let elastic_net ?(i=false) ?(alpha=1.0) ?(l1_ratio=0.5) x y =
+    let a = alpha *. l1_ratio in
+    let b = alpha *. (1. -. l1_ratio) /. 2. in
+    let params = Params.config
+      ~batch:(Batch.Full) ~learning_rate:(Learning_Rate.Adagrad 1.) ~gradient:(Gradient.GD)
+      ~loss:(Loss.Quadratic) ~regularisation:(Regularisation.Elastic_net (a, b)) ~verbosity:false
       ~stopping:(Stopping.Const 1e-16) 1000.
     in
     _linear_reg i params x y

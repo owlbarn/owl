@@ -7,5 +7,6 @@ let () = begin
     "sparse ndarray", Unit_sparse_ndarray.test_set;
     "stats", Unit_stats.test_set;
     "lazy evaluation", Unit_lazy.test_set;
+    "linear algebra", Unit_linalg.test_set;
   ]
 end

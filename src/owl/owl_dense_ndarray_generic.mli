@@ -74,6 +74,9 @@ val ones : ('a, 'b) kind -> int array -> ('a, 'b) t
   one can be [1.] or [Complex.one].
  *)
 
+val eye : ('a, 'b) kind -> int -> ('a, 'b) t
+(** [eye m] creates an [m] by [m] identity matrix. *)
+
 val uniform : ?scale:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
 (** [uniform Bigarray.Float64 [|3;4;5|]] creates a three-diemensional array
   of type [Bigarray.Float64]. Each dimension has the following size: 3, 4,
@@ -168,7 +171,7 @@ val index_1d_nd : int -> int array -> int array
  *)
 
 val index_nd_1d : int array -> int array -> int
-(** [index_nd_1d i shp] converts n-dimensional index [i] to one-dimensional
+(** [index_nd_1d i stride] converts n-dimensional index [i] to one-dimensional
   index according to the passed in [stride].
 
   NOTE: you need to pass in stride, not the shape of [x]!
@@ -235,7 +238,7 @@ val set_slice : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
 
 val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
 (** [get_slice_simple axis x] aims to provide a simpler version of [get_slice].
-  This function assumes that every list element in the passed in [in list list]
+  This function assumes that every list element in the passed in [int list list]
   represents a range, i.e., [R] constructor.
 
   E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
@@ -243,7 +246,7 @@ val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
 
 val set_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** [set_slice_simple axis x y] aims to provide a simpler version of [set_slice].
-  This function assumes that every list element in the passed in [in list list]
+  This function assumes that every list element in the passed in [int list list]
   represents a range, i.e., [R] constructor.
 
   E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
@@ -1196,6 +1199,14 @@ val scalar_pow : 'a -> ('a, 'b) t -> ('a, 'b) t
 
 val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [pow_scalar x a] computes each element in [x] power to [a]. *)
+
+val mpow : ('a, 'b) t -> float -> ('a, 'b) t
+(** [mpow x r] returns the dot product of square matrix [x] with 
+  itself [r] times, and more generally raises the matrix to the
+  [r]th power.  [r] is a float that must be equal to an integer;
+  it can be be negative, zero, or positive. Non-integer exponents
+  are not yet implemented. (If [r] is negative, [mpow] calls [inv],
+  and warnings in documentation for [inv] apply.) *)
 
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]
