@@ -16,7 +16,7 @@
     -g -O3 -Ofast
     ; Experimental switches
     ; -ffast-math may break IEEE754 semantics
-    -march=native -mfpmath=sse -funroll-loops -ffast-math -flto
+    -march=native -funroll-loops -ffast-math -flto
     ; For development use before release
     ; -Wall -pedantic -Wextra -Wunused
   ))
