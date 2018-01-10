@@ -265,26 +265,51 @@ module Make (A : StatsSig) = struct
     | F           of F.t
 
   let sample t n = match t with
-    | Uniform t  -> Uniform.sample t n
-    | Gaussian t -> Gaussian.sample t n
+    | Uniform t     -> Uniform.sample t n
+    | Gaussian t    -> Gaussian.sample t n
+    | Exponential t -> Exponential.sample t n
+    | Gamma t       -> Gamma.sample t n
+    | Beta t        -> Beta.sample t n
+    | Chi2 t        -> Chi2.sample t n
+    | F t           -> F.sample t n
 
 
   let prob t x = match t with
-    | Uniform t  -> Uniform.pdf t x
-    | Gaussian t -> Gaussian.pdf t x
+    | Uniform t     -> Uniform.pdf t x
+    | Gaussian t    -> Gaussian.pdf t x
+    | Exponential t -> Exponential.pdf t x
+    | Gamma t       -> Gamma.pdf t x
+    | Beta t        -> Beta.pdf t x
+    | Chi2 t        -> Chi2.pdf t x
+    | F t           -> F.pdf t x
 
 
   let log_prob t x = match t with
-    | Uniform t  -> Uniform.logpdf t x
-    | Gaussian t -> Gaussian.logpdf t x
+    | Uniform t     -> Uniform.logpdf t x
+    | Gaussian t    -> Gaussian.logpdf t x
+    | Exponential t -> Exponential.logpdf t x
+    | Gamma t       -> Gamma.logpdf t x
+    | Beta t        -> Beta.logpdf t x
+    | Chi2 t        -> Chi2.logpdf t x
+    | F t           -> F.logpdf t x
 
   let cdf t x = match t with
-    | Uniform t  -> Uniform.cdf t x
-    | Gaussian t -> Gaussian.cdf t x
+    | Uniform t     -> Uniform.cdf t x
+    | Gaussian t    -> Gaussian.cdf t x
+    | Exponential t -> Exponential.cdf t x
+    | Gamma t       -> Gamma.cdf t x
+    | Beta t        -> Beta.cdf t x
+    | Chi2 t        -> Chi2.cdf t x
+    | F t           -> F.cdf t x
 
   let logcdf t x = match t with
-    | Uniform t  -> Uniform.logcdf t x
-    | Gaussian t -> Gaussian.logcdf t x
+    | Uniform t     -> Uniform.logcdf t x
+    | Gaussian t    -> Gaussian.logcdf t x
+    | Exponential t -> Exponential.logcdf t x
+    | Gamma t       -> Gamma.logcdf t x
+    | Beta t        -> Beta.logcdf t x
+    | Chi2 t        -> Chi2.logcdf t x
+    | F t           -> F.logcdf t x
 
 (*
   let mean t = match t with
