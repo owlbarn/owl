@@ -97,6 +97,102 @@ module Make (A : StatsSig) = struct
   end
 
 
+  module Gamma = struct
+
+    type t = {
+      shape : A.arr;
+      scale : A.arr;
+    }
+
+    let make ~shape ~scale =
+      Utility._check_broadcast_shape [|shape; scale|];
+      { shape; scale }
+
+    let sample t n = A.gamma_rvs ~shape:t.shape ~scale:t.scale ~n
+
+    let pdf t x = A.gamma_pdf ~shape:t.shape ~scale:t.scale x
+
+    let logpdf t x = A.gamma_logpdf ~shape:t.shape ~scale:t.scale x
+
+    let cdf t x = A.gamma_cdf ~shape:t.shape ~scale:t.scale x
+
+    let logcdf t x = A.gamma_logcdf ~shape:t.shape ~scale:t.scale x
+
+    let ppf t x = A.gamma_ppf ~shape:t.shape ~scale:t.scale x
+
+    let sf t x = A.gamma_sf ~shape:t.shape ~scale:t.scale x
+
+    let logsf t x = A.gamma_logsf ~shape:t.shape ~scale:t.scale x
+
+    let isf t x = A.gamma_isf ~shape:t.shape ~scale:t.scale x
+
+  end
+
+
+  module Beta = struct
+
+    type t = {
+      a : A.arr;
+      b : A.arr;
+    }
+
+    let make ~a ~b =
+      Utility._check_broadcast_shape [|a; b|];
+      { a; b }
+
+    let sample t n = A.beta_rvs ~a:t.a ~b:t.b ~n
+
+    let pdf t x = A.beta_pdf ~a:t.a ~b:t.b x
+
+    let logpdf t x = A.beta_logpdf ~a:t.a ~b:t.b x
+
+    let cdf t x = A.beta_cdf ~a:t.a ~b:t.b x
+
+    let logcdf t x = A.beta_logcdf ~a:t.a ~b:t.b x
+
+    let ppf t x = A.beta_ppf ~a:t.a ~b:t.b x
+
+    let sf t x = A.beta_sf ~a:t.a ~b:t.b x
+
+    let logsf t x = A.beta_logsf ~a:t.a ~b:t.b x
+
+    let isf t x = A.beta_isf ~a:t.a ~b:t.b x
+
+  end
+
+
+  module F = struct
+
+    type t = {
+      dfnum : A.arr;
+      dfden : A.arr;
+    }
+
+    let make ~dfnum ~dfden =
+      Utility._check_broadcast_shape [|dfnum; dfden|];
+      { dfnum; dfden }
+
+    let sample t n = A.f_rvs ~dfnum:t.dfnum ~dfden:t.dfden ~n
+
+    let pdf t x = A.f_pdf ~dfnum:t.dfnum ~dfden:t.dfden x
+
+    let logpdf t x = A.f_logpdf ~dfnum:t.dfnum ~dfden:t.dfden x
+
+    let cdf t x = A.f_cdf ~dfnum:t.dfnum ~dfden:t.dfden x
+
+    let logcdf t x = A.f_logcdf ~dfnum:t.dfnum ~dfden:t.dfden x
+
+    let ppf t x = A.f_ppf ~dfnum:t.dfnum ~dfden:t.dfden x
+
+    let sf t x = A.f_sf ~dfnum:t.dfnum ~dfden:t.dfden x
+
+    let logsf t x = A.f_logsf ~dfnum:t.dfnum ~dfden:t.dfden x
+
+    let isf t x = A.f_isf ~dfnum:t.dfnum ~dfden:t.dfden x
+
+  end
+
+
   type dist =
     | Uniform  of Uniform.t
     | Gaussian of Gaussian.t
