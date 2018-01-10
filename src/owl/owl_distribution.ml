@@ -256,9 +256,13 @@ module Make (A : StatsSig) = struct
 
 
   type dist =
-    | Uniform  of Uniform.t
-    | Gaussian of Gaussian.t
-
+    | Uniform     of Uniform.t
+    | Gaussian    of Gaussian.t
+    | Exponential of Exponential.t
+    | Gamma       of Gamma.t
+    | Beta        of Beta.t
+    | Chi2        of Chi2.t
+    | F           of F.t
 
   let sample t n = match t with
     | Uniform t  -> Uniform.sample t n
