@@ -97,6 +97,37 @@ module Make (A : StatsSig) = struct
   end
 
 
+  module Exponential = struct
+
+    type t = {
+      lambda : A.arr;
+    }
+
+    let make ~lambda =
+      Utility._check_broadcast_shape [|lambda|];
+      { lambda }
+
+    let sample t n = A.exponential_rvs ~lambda:t.lambda ~n
+
+    let pdf t x = A.exponential_pdf ~lambda:t.lambda x
+
+    let logpdf t x = A.exponential_logpdf ~lambda:t.lambda x
+
+    let cdf t x = A.exponential_cdf ~lambda:t.lambda x
+
+    let logcdf t x = A.exponential_logcdf ~lambda:t.lambda x
+
+    let ppf t x = A.exponential_ppf ~lambda:t.lambda x
+
+    let sf t x = A.exponential_sf ~lambda:t.lambda x
+
+    let logsf t x = A.exponential_logsf ~lambda:t.lambda x
+
+    let isf t x = A.exponential_isf ~lambda:t.lambda x
+
+  end
+
+
   module Gamma = struct
 
     type t = {
@@ -157,6 +188,37 @@ module Make (A : StatsSig) = struct
     let logsf t x = A.beta_logsf ~a:t.a ~b:t.b x
 
     let isf t x = A.beta_isf ~a:t.a ~b:t.b x
+
+  end
+
+
+  module Chi2 = struct
+
+    type t = {
+      df : A.arr;
+    }
+
+    let make ~df ~sigma =
+      Utility._check_broadcast_shape [|df|];
+      { df }
+
+    let sample t n = A.chi2_rvs ~df:t.df ~n
+
+    let pdf t x = A.chi2_pdf ~df:t.df x
+
+    let logpdf t x = A.chi2_logpdf ~df:t.df x
+
+    let cdf t x = A.chi2_cdf ~df:t.df x
+
+    let logcdf t x = A.chi2_logcdf ~df:t.df x
+
+    let ppf t x = A.chi2_ppf ~df:t.df x
+
+    let sf t x = A.chi2_sf ~df:t.df x
+
+    let logsf t x = A.chi2_logsf ~df:t.df x
+
+    let isf t x = A.chi2_isf ~df:t.df x
 
   end
 
