@@ -513,3 +513,651 @@ let _owl_f_isf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
   | Float32        -> owl_float32_f_isf
   | Float64        -> owl_float64_f_isf
   | _              -> failwith "_owl_f_isf: unsupported operation"
+
+external owl_float32_cauchy_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_cauchy_rvs" "float32_cauchy_rvs_impl"
+external owl_float64_cauchy_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_cauchy_rvs" "float64_cauchy_rvs_impl"
+
+let _owl_cauchy_rvs : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_cauchy_rvs
+  | Float64        -> owl_float64_cauchy_rvs
+  | _              -> failwith "_owl_cauchy_rvs: unsupported operation"
+
+external owl_float32_cauchy_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_cauchy_pdf" "float32_cauchy_pdf_impl"
+external owl_float64_cauchy_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_cauchy_pdf" "float64_cauchy_pdf_impl"
+
+let _owl_cauchy_pdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_cauchy_pdf
+  | Float64        -> owl_float64_cauchy_pdf
+  | _              -> failwith "_owl_cauchy_pdf: unsupported operation"
+
+external owl_float32_cauchy_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_cauchy_logpdf" "float32_cauchy_logpdf_impl"
+external owl_float64_cauchy_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_cauchy_logpdf" "float64_cauchy_logpdf_impl"
+
+let _owl_cauchy_logpdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_cauchy_logpdf
+  | Float64        -> owl_float64_cauchy_logpdf
+  | _              -> failwith "_owl_cauchy_logpdf: unsupported operation"
+
+external owl_float32_cauchy_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_cauchy_cdf" "float32_cauchy_cdf_impl"
+external owl_float64_cauchy_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_cauchy_cdf" "float64_cauchy_cdf_impl"
+
+let _owl_cauchy_cdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_cauchy_cdf
+  | Float64        -> owl_float64_cauchy_cdf
+  | _              -> failwith "_owl_cauchy_cdf: unsupported operation"
+
+external owl_float32_cauchy_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_cauchy_logcdf" "float32_cauchy_logcdf_impl"
+external owl_float64_cauchy_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_cauchy_logcdf" "float64_cauchy_logcdf_impl"
+
+let _owl_cauchy_logcdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_cauchy_logcdf
+  | Float64        -> owl_float64_cauchy_logcdf
+  | _              -> failwith "_owl_cauchy_logcdf: unsupported operation"
+
+external owl_float32_cauchy_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_cauchy_ppf" "float32_cauchy_ppf_impl"
+external owl_float64_cauchy_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_cauchy_ppf" "float64_cauchy_ppf_impl"
+
+let _owl_cauchy_ppf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_cauchy_ppf
+  | Float64        -> owl_float64_cauchy_ppf
+  | _              -> failwith "_owl_cauchy_ppf: unsupported operation"
+
+external owl_float32_cauchy_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_cauchy_sf" "float32_cauchy_sf_impl"
+external owl_float64_cauchy_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_cauchy_sf" "float64_cauchy_sf_impl"
+
+let _owl_cauchy_sf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_cauchy_sf
+  | Float64        -> owl_float64_cauchy_sf
+  | _              -> failwith "_owl_cauchy_sf: unsupported operation"
+
+external owl_float32_cauchy_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_cauchy_logsf" "float32_cauchy_logsf_impl"
+external owl_float64_cauchy_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_cauchy_logsf" "float64_cauchy_logsf_impl"
+
+let _owl_cauchy_logsf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_cauchy_logsf
+  | Float64        -> owl_float64_cauchy_logsf
+  | _              -> failwith "_owl_cauchy_logsf: unsupported operation"
+
+external owl_float32_cauchy_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_cauchy_isf" "float32_cauchy_isf_impl"
+external owl_float64_cauchy_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_cauchy_isf" "float64_cauchy_isf_impl"
+
+let _owl_cauchy_isf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_cauchy_isf
+  | Float64        -> owl_float64_cauchy_isf
+  | _              -> failwith "_owl_cauchy_isf: unsupported operation"
+
+external owl_float32_lomax_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lomax_rvs" "float32_lomax_rvs_impl"
+external owl_float64_lomax_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lomax_rvs" "float64_lomax_rvs_impl"
+
+let _owl_lomax_rvs : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lomax_rvs
+  | Float64        -> owl_float64_lomax_rvs
+  | _              -> failwith "_owl_lomax_rvs: unsupported operation"
+
+external owl_float32_lomax_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lomax_pdf" "float32_lomax_pdf_impl"
+external owl_float64_lomax_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lomax_pdf" "float64_lomax_pdf_impl"
+
+let _owl_lomax_pdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lomax_pdf
+  | Float64        -> owl_float64_lomax_pdf
+  | _              -> failwith "_owl_lomax_pdf: unsupported operation"
+
+external owl_float32_lomax_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lomax_logpdf" "float32_lomax_logpdf_impl"
+external owl_float64_lomax_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lomax_logpdf" "float64_lomax_logpdf_impl"
+
+let _owl_lomax_logpdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lomax_logpdf
+  | Float64        -> owl_float64_lomax_logpdf
+  | _              -> failwith "_owl_lomax_logpdf: unsupported operation"
+
+external owl_float32_lomax_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lomax_cdf" "float32_lomax_cdf_impl"
+external owl_float64_lomax_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lomax_cdf" "float64_lomax_cdf_impl"
+
+let _owl_lomax_cdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lomax_cdf
+  | Float64        -> owl_float64_lomax_cdf
+  | _              -> failwith "_owl_lomax_cdf: unsupported operation"
+
+external owl_float32_lomax_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lomax_logcdf" "float32_lomax_logcdf_impl"
+external owl_float64_lomax_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lomax_logcdf" "float64_lomax_logcdf_impl"
+
+let _owl_lomax_logcdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lomax_logcdf
+  | Float64        -> owl_float64_lomax_logcdf
+  | _              -> failwith "_owl_lomax_logcdf: unsupported operation"
+
+external owl_float32_lomax_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lomax_ppf" "float32_lomax_ppf_impl"
+external owl_float64_lomax_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lomax_ppf" "float64_lomax_ppf_impl"
+
+let _owl_lomax_ppf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lomax_ppf
+  | Float64        -> owl_float64_lomax_ppf
+  | _              -> failwith "_owl_lomax_ppf: unsupported operation"
+
+external owl_float32_lomax_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lomax_sf" "float32_lomax_sf_impl"
+external owl_float64_lomax_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lomax_sf" "float64_lomax_sf_impl"
+
+let _owl_lomax_sf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lomax_sf
+  | Float64        -> owl_float64_lomax_sf
+  | _              -> failwith "_owl_lomax_sf: unsupported operation"
+
+external owl_float32_lomax_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lomax_logsf" "float32_lomax_logsf_impl"
+external owl_float64_lomax_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lomax_logsf" "float64_lomax_logsf_impl"
+
+let _owl_lomax_logsf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lomax_logsf
+  | Float64        -> owl_float64_lomax_logsf
+  | _              -> failwith "_owl_lomax_logsf: unsupported operation"
+
+external owl_float32_lomax_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lomax_isf" "float32_lomax_isf_impl"
+external owl_float64_lomax_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lomax_isf" "float64_lomax_isf_impl"
+
+let _owl_lomax_isf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lomax_isf
+  | Float64        -> owl_float64_lomax_isf
+  | _              -> failwith "_owl_lomax_isf: unsupported operation"
+
+external owl_float32_weibull_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_weibull_rvs" "float32_weibull_rvs_impl"
+external owl_float64_weibull_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_weibull_rvs" "float64_weibull_rvs_impl"
+
+let _owl_weibull_rvs : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_weibull_rvs
+  | Float64        -> owl_float64_weibull_rvs
+  | _              -> failwith "_owl_weibull_rvs: unsupported operation"
+
+external owl_float32_weibull_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_weibull_pdf" "float32_weibull_pdf_impl"
+external owl_float64_weibull_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_weibull_pdf" "float64_weibull_pdf_impl"
+
+let _owl_weibull_pdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_weibull_pdf
+  | Float64        -> owl_float64_weibull_pdf
+  | _              -> failwith "_owl_weibull_pdf: unsupported operation"
+
+external owl_float32_weibull_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_weibull_logpdf" "float32_weibull_logpdf_impl"
+external owl_float64_weibull_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_weibull_logpdf" "float64_weibull_logpdf_impl"
+
+let _owl_weibull_logpdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_weibull_logpdf
+  | Float64        -> owl_float64_weibull_logpdf
+  | _              -> failwith "_owl_weibull_logpdf: unsupported operation"
+
+external owl_float32_weibull_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_weibull_cdf" "float32_weibull_cdf_impl"
+external owl_float64_weibull_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_weibull_cdf" "float64_weibull_cdf_impl"
+
+let _owl_weibull_cdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_weibull_cdf
+  | Float64        -> owl_float64_weibull_cdf
+  | _              -> failwith "_owl_weibull_cdf: unsupported operation"
+
+external owl_float32_weibull_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_weibull_logcdf" "float32_weibull_logcdf_impl"
+external owl_float64_weibull_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_weibull_logcdf" "float64_weibull_logcdf_impl"
+
+let _owl_weibull_logcdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_weibull_logcdf
+  | Float64        -> owl_float64_weibull_logcdf
+  | _              -> failwith "_owl_weibull_logcdf: unsupported operation"
+
+external owl_float32_weibull_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_weibull_ppf" "float32_weibull_ppf_impl"
+external owl_float64_weibull_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_weibull_ppf" "float64_weibull_ppf_impl"
+
+let _owl_weibull_ppf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_weibull_ppf
+  | Float64        -> owl_float64_weibull_ppf
+  | _              -> failwith "_owl_weibull_ppf: unsupported operation"
+
+external owl_float32_weibull_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_weibull_sf" "float32_weibull_sf_impl"
+external owl_float64_weibull_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_weibull_sf" "float64_weibull_sf_impl"
+
+let _owl_weibull_sf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_weibull_sf
+  | Float64        -> owl_float64_weibull_sf
+  | _              -> failwith "_owl_weibull_sf: unsupported operation"
+
+external owl_float32_weibull_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_weibull_logsf" "float32_weibull_logsf_impl"
+external owl_float64_weibull_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_weibull_logsf" "float64_weibull_logsf_impl"
+
+let _owl_weibull_logsf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_weibull_logsf
+  | Float64        -> owl_float64_weibull_logsf
+  | _              -> failwith "_owl_weibull_logsf: unsupported operation"
+
+external owl_float32_weibull_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_weibull_isf" "float32_weibull_isf_impl"
+external owl_float64_weibull_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_weibull_isf" "float64_weibull_isf_impl"
+
+let _owl_weibull_isf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_weibull_isf
+  | Float64        -> owl_float64_weibull_isf
+  | _              -> failwith "_owl_weibull_isf: unsupported operation"
+
+external owl_float32_laplace_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_laplace_rvs" "float32_laplace_rvs_impl"
+external owl_float64_laplace_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_laplace_rvs" "float64_laplace_rvs_impl"
+
+let _owl_laplace_rvs : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_laplace_rvs
+  | Float64        -> owl_float64_laplace_rvs
+  | _              -> failwith "_owl_laplace_rvs: unsupported operation"
+
+external owl_float32_laplace_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_laplace_pdf" "float32_laplace_pdf_impl"
+external owl_float64_laplace_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_laplace_pdf" "float64_laplace_pdf_impl"
+
+let _owl_laplace_pdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_laplace_pdf
+  | Float64        -> owl_float64_laplace_pdf
+  | _              -> failwith "_owl_laplace_pdf: unsupported operation"
+
+external owl_float32_laplace_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_laplace_logpdf" "float32_laplace_logpdf_impl"
+external owl_float64_laplace_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_laplace_logpdf" "float64_laplace_logpdf_impl"
+
+let _owl_laplace_logpdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_laplace_logpdf
+  | Float64        -> owl_float64_laplace_logpdf
+  | _              -> failwith "_owl_laplace_logpdf: unsupported operation"
+
+external owl_float32_laplace_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_laplace_cdf" "float32_laplace_cdf_impl"
+external owl_float64_laplace_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_laplace_cdf" "float64_laplace_cdf_impl"
+
+let _owl_laplace_cdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_laplace_cdf
+  | Float64        -> owl_float64_laplace_cdf
+  | _              -> failwith "_owl_laplace_cdf: unsupported operation"
+
+external owl_float32_laplace_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_laplace_logcdf" "float32_laplace_logcdf_impl"
+external owl_float64_laplace_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_laplace_logcdf" "float64_laplace_logcdf_impl"
+
+let _owl_laplace_logcdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_laplace_logcdf
+  | Float64        -> owl_float64_laplace_logcdf
+  | _              -> failwith "_owl_laplace_logcdf: unsupported operation"
+
+external owl_float32_laplace_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_laplace_ppf" "float32_laplace_ppf_impl"
+external owl_float64_laplace_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_laplace_ppf" "float64_laplace_ppf_impl"
+
+let _owl_laplace_ppf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_laplace_ppf
+  | Float64        -> owl_float64_laplace_ppf
+  | _              -> failwith "_owl_laplace_ppf: unsupported operation"
+
+external owl_float32_laplace_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_laplace_sf" "float32_laplace_sf_impl"
+external owl_float64_laplace_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_laplace_sf" "float64_laplace_sf_impl"
+
+let _owl_laplace_sf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_laplace_sf
+  | Float64        -> owl_float64_laplace_sf
+  | _              -> failwith "_owl_laplace_sf: unsupported operation"
+
+external owl_float32_laplace_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_laplace_logsf" "float32_laplace_logsf_impl"
+external owl_float64_laplace_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_laplace_logsf" "float64_laplace_logsf_impl"
+
+let _owl_laplace_logsf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_laplace_logsf
+  | Float64        -> owl_float64_laplace_logsf
+  | _              -> failwith "_owl_laplace_logsf: unsupported operation"
+
+external owl_float32_laplace_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_laplace_isf" "float32_laplace_isf_impl"
+external owl_float64_laplace_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_laplace_isf" "float64_laplace_isf_impl"
+
+let _owl_laplace_isf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_laplace_isf
+  | Float64        -> owl_float64_laplace_isf
+  | _              -> failwith "_owl_laplace_isf: unsupported operation"
+
+external owl_float32_gumbel1_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel1_rvs" "float32_gumbel1_rvs_impl"
+external owl_float64_gumbel1_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel1_rvs" "float64_gumbel1_rvs_impl"
+
+let _owl_gumbel1_rvs : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel1_rvs
+  | Float64        -> owl_float64_gumbel1_rvs
+  | _              -> failwith "_owl_gumbel1_rvs: unsupported operation"
+
+external owl_float32_gumbel1_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel1_pdf" "float32_gumbel1_pdf_impl"
+external owl_float64_gumbel1_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel1_pdf" "float64_gumbel1_pdf_impl"
+
+let _owl_gumbel1_pdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel1_pdf
+  | Float64        -> owl_float64_gumbel1_pdf
+  | _              -> failwith "_owl_gumbel1_pdf: unsupported operation"
+
+external owl_float32_gumbel1_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel1_logpdf" "float32_gumbel1_logpdf_impl"
+external owl_float64_gumbel1_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel1_logpdf" "float64_gumbel1_logpdf_impl"
+
+let _owl_gumbel1_logpdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel1_logpdf
+  | Float64        -> owl_float64_gumbel1_logpdf
+  | _              -> failwith "_owl_gumbel1_logpdf: unsupported operation"
+
+external owl_float32_gumbel1_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel1_cdf" "float32_gumbel1_cdf_impl"
+external owl_float64_gumbel1_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel1_cdf" "float64_gumbel1_cdf_impl"
+
+let _owl_gumbel1_cdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel1_cdf
+  | Float64        -> owl_float64_gumbel1_cdf
+  | _              -> failwith "_owl_gumbel1_cdf: unsupported operation"
+
+external owl_float32_gumbel1_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel1_logcdf" "float32_gumbel1_logcdf_impl"
+external owl_float64_gumbel1_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel1_logcdf" "float64_gumbel1_logcdf_impl"
+
+let _owl_gumbel1_logcdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel1_logcdf
+  | Float64        -> owl_float64_gumbel1_logcdf
+  | _              -> failwith "_owl_gumbel1_logcdf: unsupported operation"
+
+external owl_float32_gumbel1_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel1_ppf" "float32_gumbel1_ppf_impl"
+external owl_float64_gumbel1_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel1_ppf" "float64_gumbel1_ppf_impl"
+
+let _owl_gumbel1_ppf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel1_ppf
+  | Float64        -> owl_float64_gumbel1_ppf
+  | _              -> failwith "_owl_gumbel1_ppf: unsupported operation"
+
+external owl_float32_gumbel1_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel1_sf" "float32_gumbel1_sf_impl"
+external owl_float64_gumbel1_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel1_sf" "float64_gumbel1_sf_impl"
+
+let _owl_gumbel1_sf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel1_sf
+  | Float64        -> owl_float64_gumbel1_sf
+  | _              -> failwith "_owl_gumbel1_sf: unsupported operation"
+
+external owl_float32_gumbel1_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel1_logsf" "float32_gumbel1_logsf_impl"
+external owl_float64_gumbel1_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel1_logsf" "float64_gumbel1_logsf_impl"
+
+let _owl_gumbel1_logsf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel1_logsf
+  | Float64        -> owl_float64_gumbel1_logsf
+  | _              -> failwith "_owl_gumbel1_logsf: unsupported operation"
+
+external owl_float32_gumbel1_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel1_isf" "float32_gumbel1_isf_impl"
+external owl_float64_gumbel1_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel1_isf" "float64_gumbel1_isf_impl"
+
+let _owl_gumbel1_isf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel1_isf
+  | Float64        -> owl_float64_gumbel1_isf
+  | _              -> failwith "_owl_gumbel1_isf: unsupported operation"
+
+external owl_float32_gumbel2_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel2_rvs" "float32_gumbel2_rvs_impl"
+external owl_float64_gumbel2_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel2_rvs" "float64_gumbel2_rvs_impl"
+
+let _owl_gumbel2_rvs : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel2_rvs
+  | Float64        -> owl_float64_gumbel2_rvs
+  | _              -> failwith "_owl_gumbel2_rvs: unsupported operation"
+
+external owl_float32_gumbel2_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel2_pdf" "float32_gumbel2_pdf_impl"
+external owl_float64_gumbel2_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel2_pdf" "float64_gumbel2_pdf_impl"
+
+let _owl_gumbel2_pdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel2_pdf
+  | Float64        -> owl_float64_gumbel2_pdf
+  | _              -> failwith "_owl_gumbel2_pdf: unsupported operation"
+
+external owl_float32_gumbel2_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel2_logpdf" "float32_gumbel2_logpdf_impl"
+external owl_float64_gumbel2_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel2_logpdf" "float64_gumbel2_logpdf_impl"
+
+let _owl_gumbel2_logpdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel2_logpdf
+  | Float64        -> owl_float64_gumbel2_logpdf
+  | _              -> failwith "_owl_gumbel2_logpdf: unsupported operation"
+
+external owl_float32_gumbel2_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel2_cdf" "float32_gumbel2_cdf_impl"
+external owl_float64_gumbel2_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel2_cdf" "float64_gumbel2_cdf_impl"
+
+let _owl_gumbel2_cdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel2_cdf
+  | Float64        -> owl_float64_gumbel2_cdf
+  | _              -> failwith "_owl_gumbel2_cdf: unsupported operation"
+
+external owl_float32_gumbel2_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel2_logcdf" "float32_gumbel2_logcdf_impl"
+external owl_float64_gumbel2_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel2_logcdf" "float64_gumbel2_logcdf_impl"
+
+let _owl_gumbel2_logcdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel2_logcdf
+  | Float64        -> owl_float64_gumbel2_logcdf
+  | _              -> failwith "_owl_gumbel2_logcdf: unsupported operation"
+
+external owl_float32_gumbel2_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel2_ppf" "float32_gumbel2_ppf_impl"
+external owl_float64_gumbel2_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel2_ppf" "float64_gumbel2_ppf_impl"
+
+let _owl_gumbel2_ppf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel2_ppf
+  | Float64        -> owl_float64_gumbel2_ppf
+  | _              -> failwith "_owl_gumbel2_ppf: unsupported operation"
+
+external owl_float32_gumbel2_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel2_sf" "float32_gumbel2_sf_impl"
+external owl_float64_gumbel2_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel2_sf" "float64_gumbel2_sf_impl"
+
+let _owl_gumbel2_sf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel2_sf
+  | Float64        -> owl_float64_gumbel2_sf
+  | _              -> failwith "_owl_gumbel2_sf: unsupported operation"
+
+external owl_float32_gumbel2_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel2_logsf" "float32_gumbel2_logsf_impl"
+external owl_float64_gumbel2_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel2_logsf" "float64_gumbel2_logsf_impl"
+
+let _owl_gumbel2_logsf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel2_logsf
+  | Float64        -> owl_float64_gumbel2_logsf
+  | _              -> failwith "_owl_gumbel2_logsf: unsupported operation"
+
+external owl_float32_gumbel2_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_gumbel2_isf" "float32_gumbel2_isf_impl"
+external owl_float64_gumbel2_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_gumbel2_isf" "float64_gumbel2_isf_impl"
+
+let _owl_gumbel2_isf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_gumbel2_isf
+  | Float64        -> owl_float64_gumbel2_isf
+  | _              -> failwith "_owl_gumbel2_isf: unsupported operation"
+
+external owl_float32_logistic_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_logistic_rvs" "float32_logistic_rvs_impl"
+external owl_float64_logistic_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_logistic_rvs" "float64_logistic_rvs_impl"
+
+let _owl_logistic_rvs : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_logistic_rvs
+  | Float64        -> owl_float64_logistic_rvs
+  | _              -> failwith "_owl_logistic_rvs: unsupported operation"
+
+external owl_float32_logistic_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_logistic_pdf" "float32_logistic_pdf_impl"
+external owl_float64_logistic_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_logistic_pdf" "float64_logistic_pdf_impl"
+
+let _owl_logistic_pdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_logistic_pdf
+  | Float64        -> owl_float64_logistic_pdf
+  | _              -> failwith "_owl_logistic_pdf: unsupported operation"
+
+external owl_float32_logistic_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_logistic_logpdf" "float32_logistic_logpdf_impl"
+external owl_float64_logistic_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_logistic_logpdf" "float64_logistic_logpdf_impl"
+
+let _owl_logistic_logpdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_logistic_logpdf
+  | Float64        -> owl_float64_logistic_logpdf
+  | _              -> failwith "_owl_logistic_logpdf: unsupported operation"
+
+external owl_float32_logistic_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_logistic_cdf" "float32_logistic_cdf_impl"
+external owl_float64_logistic_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_logistic_cdf" "float64_logistic_cdf_impl"
+
+let _owl_logistic_cdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_logistic_cdf
+  | Float64        -> owl_float64_logistic_cdf
+  | _              -> failwith "_owl_logistic_cdf: unsupported operation"
+
+external owl_float32_logistic_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_logistic_logcdf" "float32_logistic_logcdf_impl"
+external owl_float64_logistic_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_logistic_logcdf" "float64_logistic_logcdf_impl"
+
+let _owl_logistic_logcdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_logistic_logcdf
+  | Float64        -> owl_float64_logistic_logcdf
+  | _              -> failwith "_owl_logistic_logcdf: unsupported operation"
+
+external owl_float32_logistic_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_logistic_ppf" "float32_logistic_ppf_impl"
+external owl_float64_logistic_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_logistic_ppf" "float64_logistic_ppf_impl"
+
+let _owl_logistic_ppf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_logistic_ppf
+  | Float64        -> owl_float64_logistic_ppf
+  | _              -> failwith "_owl_logistic_ppf: unsupported operation"
+
+external owl_float32_logistic_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_logistic_sf" "float32_logistic_sf_impl"
+external owl_float64_logistic_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_logistic_sf" "float64_logistic_sf_impl"
+
+let _owl_logistic_sf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_logistic_sf
+  | Float64        -> owl_float64_logistic_sf
+  | _              -> failwith "_owl_logistic_sf: unsupported operation"
+
+external owl_float32_logistic_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_logistic_logsf" "float32_logistic_logsf_impl"
+external owl_float64_logistic_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_logistic_logsf" "float64_logistic_logsf_impl"
+
+let _owl_logistic_logsf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_logistic_logsf
+  | Float64        -> owl_float64_logistic_logsf
+  | _              -> failwith "_owl_logistic_logsf: unsupported operation"
+
+external owl_float32_logistic_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_logistic_isf" "float32_logistic_isf_impl"
+external owl_float64_logistic_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_logistic_isf" "float64_logistic_isf_impl"
+
+let _owl_logistic_isf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_logistic_isf
+  | Float64        -> owl_float64_logistic_isf
+  | _              -> failwith "_owl_logistic_isf: unsupported operation"
+
+external owl_float32_lognormal_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lognormal_rvs" "float32_lognormal_rvs_impl"
+external owl_float64_lognormal_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lognormal_rvs" "float64_lognormal_rvs_impl"
+
+let _owl_lognormal_rvs : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lognormal_rvs
+  | Float64        -> owl_float64_lognormal_rvs
+  | _              -> failwith "_owl_lognormal_rvs: unsupported operation"
+
+external owl_float32_lognormal_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lognormal_pdf" "float32_lognormal_pdf_impl"
+external owl_float64_lognormal_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lognormal_pdf" "float64_lognormal_pdf_impl"
+
+let _owl_lognormal_pdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lognormal_pdf
+  | Float64        -> owl_float64_lognormal_pdf
+  | _              -> failwith "_owl_lognormal_pdf: unsupported operation"
+
+external owl_float32_lognormal_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lognormal_logpdf" "float32_lognormal_logpdf_impl"
+external owl_float64_lognormal_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lognormal_logpdf" "float64_lognormal_logpdf_impl"
+
+let _owl_lognormal_logpdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lognormal_logpdf
+  | Float64        -> owl_float64_lognormal_logpdf
+  | _              -> failwith "_owl_lognormal_logpdf: unsupported operation"
+
+external owl_float32_lognormal_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lognormal_cdf" "float32_lognormal_cdf_impl"
+external owl_float64_lognormal_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lognormal_cdf" "float64_lognormal_cdf_impl"
+
+let _owl_lognormal_cdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lognormal_cdf
+  | Float64        -> owl_float64_lognormal_cdf
+  | _              -> failwith "_owl_lognormal_cdf: unsupported operation"
+
+external owl_float32_lognormal_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lognormal_logcdf" "float32_lognormal_logcdf_impl"
+external owl_float64_lognormal_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lognormal_logcdf" "float64_lognormal_logcdf_impl"
+
+let _owl_lognormal_logcdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lognormal_logcdf
+  | Float64        -> owl_float64_lognormal_logcdf
+  | _              -> failwith "_owl_lognormal_logcdf: unsupported operation"
+
+external owl_float32_lognormal_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lognormal_ppf" "float32_lognormal_ppf_impl"
+external owl_float64_lognormal_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lognormal_ppf" "float64_lognormal_ppf_impl"
+
+let _owl_lognormal_ppf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lognormal_ppf
+  | Float64        -> owl_float64_lognormal_ppf
+  | _              -> failwith "_owl_lognormal_ppf: unsupported operation"
+
+external owl_float32_lognormal_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lognormal_sf" "float32_lognormal_sf_impl"
+external owl_float64_lognormal_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lognormal_sf" "float64_lognormal_sf_impl"
+
+let _owl_lognormal_sf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lognormal_sf
+  | Float64        -> owl_float64_lognormal_sf
+  | _              -> failwith "_owl_lognormal_sf: unsupported operation"
+
+external owl_float32_lognormal_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lognormal_logsf" "float32_lognormal_logsf_impl"
+external owl_float64_lognormal_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lognormal_logsf" "float64_lognormal_logsf_impl"
+
+let _owl_lognormal_logsf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lognormal_logsf
+  | Float64        -> owl_float64_lognormal_logsf
+  | _              -> failwith "_owl_lognormal_logsf: unsupported operation"
+
+external owl_float32_lognormal_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_lognormal_isf" "float32_lognormal_isf_impl"
+external owl_float64_lognormal_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_lognormal_isf" "float64_lognormal_isf_impl"
+
+let _owl_lognormal_isf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_lognormal_isf
+  | Float64        -> owl_float64_lognormal_isf
+  | _              -> failwith "_owl_lognormal_isf: unsupported operation"
+
+external owl_float32_rayleigh_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_rayleigh_rvs" "float32_rayleigh_rvs_impl"
+external owl_float64_rayleigh_rvs : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_rayleigh_rvs" "float64_rayleigh_rvs_impl"
+
+let _owl_rayleigh_rvs : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_rayleigh_rvs
+  | Float64        -> owl_float64_rayleigh_rvs
+  | _              -> failwith "_owl_rayleigh_rvs: unsupported operation"
+
+external owl_float32_rayleigh_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_rayleigh_pdf" "float32_rayleigh_pdf_impl"
+external owl_float64_rayleigh_pdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_rayleigh_pdf" "float64_rayleigh_pdf_impl"
+
+let _owl_rayleigh_pdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_rayleigh_pdf
+  | Float64        -> owl_float64_rayleigh_pdf
+  | _              -> failwith "_owl_rayleigh_pdf: unsupported operation"
+
+external owl_float32_rayleigh_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_rayleigh_logpdf" "float32_rayleigh_logpdf_impl"
+external owl_float64_rayleigh_logpdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_rayleigh_logpdf" "float64_rayleigh_logpdf_impl"
+
+let _owl_rayleigh_logpdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_rayleigh_logpdf
+  | Float64        -> owl_float64_rayleigh_logpdf
+  | _              -> failwith "_owl_rayleigh_logpdf: unsupported operation"
+
+external owl_float32_rayleigh_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_rayleigh_cdf" "float32_rayleigh_cdf_impl"
+external owl_float64_rayleigh_cdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_rayleigh_cdf" "float64_rayleigh_cdf_impl"
+
+let _owl_rayleigh_cdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_rayleigh_cdf
+  | Float64        -> owl_float64_rayleigh_cdf
+  | _              -> failwith "_owl_rayleigh_cdf: unsupported operation"
+
+external owl_float32_rayleigh_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_rayleigh_logcdf" "float32_rayleigh_logcdf_impl"
+external owl_float64_rayleigh_logcdf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_rayleigh_logcdf" "float64_rayleigh_logcdf_impl"
+
+let _owl_rayleigh_logcdf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_rayleigh_logcdf
+  | Float64        -> owl_float64_rayleigh_logcdf
+  | _              -> failwith "_owl_rayleigh_logcdf: unsupported operation"
+
+external owl_float32_rayleigh_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_rayleigh_ppf" "float32_rayleigh_ppf_impl"
+external owl_float64_rayleigh_ppf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_rayleigh_ppf" "float64_rayleigh_ppf_impl"
+
+let _owl_rayleigh_ppf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_rayleigh_ppf
+  | Float64        -> owl_float64_rayleigh_ppf
+  | _              -> failwith "_owl_rayleigh_ppf: unsupported operation"
+
+external owl_float32_rayleigh_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_rayleigh_sf" "float32_rayleigh_sf_impl"
+external owl_float64_rayleigh_sf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_rayleigh_sf" "float64_rayleigh_sf_impl"
+
+let _owl_rayleigh_sf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_rayleigh_sf
+  | Float64        -> owl_float64_rayleigh_sf
+  | _              -> failwith "_owl_rayleigh_sf: unsupported operation"
+
+external owl_float32_rayleigh_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_rayleigh_logsf" "float32_rayleigh_logsf_impl"
+external owl_float64_rayleigh_logsf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_rayleigh_logsf" "float64_rayleigh_logsf_impl"
+
+let _owl_rayleigh_logsf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_rayleigh_logsf
+  | Float64        -> owl_float64_rayleigh_logsf
+  | _              -> failwith "_owl_rayleigh_logsf: unsupported operation"
+
+external owl_float32_rayleigh_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float32_rayleigh_isf" "float32_rayleigh_isf_impl"
+external owl_float64_rayleigh_isf : ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> ('a, 'b) owl_arr -> (int64, int64_elt) owl_arr -> unit = "float64_rayleigh_isf" "float64_rayleigh_isf_impl"
+
+let _owl_rayleigh_isf : type a b. (a, b) kind -> (a, b) owl_arr_op17 = function
+  | Float32        -> owl_float32_rayleigh_isf
+  | Float64        -> owl_float64_rayleigh_isf
+  | _              -> failwith "_owl_rayleigh_isf: unsupported operation"

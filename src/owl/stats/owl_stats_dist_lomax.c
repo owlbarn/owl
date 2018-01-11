@@ -12,23 +12,23 @@ double lomax_rvs(double shape, double scale) {
   return scale * (exp(std_exponential_rvs() / shape) - 1.);
 }
 
-double pareto_pdf(double x, double shape, double scale) {
+double lomax_pdf(double x, double shape, double scale) {
   return (x < scale) ? 0 : ( (shape / scale) / pow(x / scale, shape + 1) );
 }
 
-double pareto_logpdf(double x, double shape, double scale) {
-  return log(pareto_pdf(x, shape, scale));
+double lomax_logpdf(double x, double shape, double scale) {
+  return log(lomax_pdf(x, shape, scale));
 }
 
-double pareto_cdf(double x, double shape, double scale) {
+double lomax_cdf(double x, double shape, double scale) {
   return (x < scale) ? 0 : (1 - pow(scale / x, shape));
 }
 
-double pareto_logcdf(double x, double shape, double scale) {
-  return log(pareto_cdf(x, shape, scale));
+double lomax_logcdf(double x, double shape, double scale) {
+  return log(lomax_cdf(x, shape, scale));
 }
 
-double pareto_ppf(double p, double shape, double scale) {
+double lomax_ppf(double p, double shape, double scale) {
   if (p == 1.)
     return OWL_POSINF;
   else if (p == 0.)
@@ -37,15 +37,15 @@ double pareto_ppf(double p, double shape, double scale) {
     return scale * exp(-log1p(-p) / shape);
 }
 
-double pareto_sf(double x, double shape, double scale) {
+double lomax_sf(double x, double shape, double scale) {
   return (x < scale) ? 1 : pow(scale / x, shape);;
 }
 
-double pareto_logsf(double x, double shape, double scale) {
-  return log(pareto_sf(x, shape, scale));
+double lomax_logsf(double x, double shape, double scale) {
+  return log(lomax_sf(x, shape, scale));
 }
 
-double pareto_isf(double q, double shape, double scale) {
+double lomax_isf(double q, double shape, double scale) {
   if (q == 0.)
     return OWL_POSINF;
   else if (q == 1.)
@@ -54,6 +54,6 @@ double pareto_isf(double q, double shape, double scale) {
     return scale * exp(-log(q) / shape);
 }
 
-double pareto_entropy(double shape, double scale) {
+double lomax_entropy(double shape, double scale) {
   return (shape + 1) / shape - log(shape / scale);
 }
