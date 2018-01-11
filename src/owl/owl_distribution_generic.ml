@@ -205,4 +205,118 @@ let f_logsf ~dfnum ~dfden x = broadcast_op2 (_owl_f_logsf (kind x)) dfnum dfden 
 let f_isf ~dfnum ~dfden x = broadcast_op2 (_owl_f_isf (kind x)) dfnum dfden x
 
 
+let cauchy_rvs ~loc ~scale ~n = broadcast_op0 (_owl_cauchy_rvs (kind loc)) loc scale n
+
+let cauchy_pdf ~loc ~scale x = broadcast_op2 (_owl_cauchy_pdf (kind x)) loc scale x
+
+let cauchy_logpdf ~loc ~scale x = broadcast_op2 (_owl_cauchy_logpdf (kind x)) loc scale x
+
+let cauchy_cdf ~loc ~scale x = broadcast_op2 (_owl_cauchy_cdf (kind x)) loc scale x
+
+let cauchy_logcdf ~loc ~scale x = broadcast_op2 (_owl_cauchy_logcdf (kind x)) loc scale x
+
+let cauchy_ppf ~loc ~scale x = broadcast_op2 (_owl_cauchy_ppf (kind x)) loc scale x
+
+let cauchy_sf ~loc ~scale x = broadcast_op2 (_owl_cauchy_sf (kind x)) loc scale x
+
+let cauchy_logsf ~loc ~scale x = broadcast_op2 (_owl_cauchy_logsf (kind x)) loc scale x
+
+let cauchy_isf ~loc ~scale x = broadcast_op2 (_owl_cauchy_isf (kind x)) loc scale x
+
+
+let lomax_rvs ~shape ~scale ~n = broadcast_op0 (_owl_lomax_rvs (kind shape)) shape scale n
+
+let lomax_pdf ~shape ~scale x = broadcast_op2 (_owl_lomax_pdf (kind x)) shape scale x
+
+let lomax_logpdf ~shape ~scale x = broadcast_op2 (_owl_lomax_logpdf (kind x)) shape scale x
+
+let lomax_cdf ~shape ~scale x = broadcast_op2 (_owl_lomax_cdf (kind x)) shape scale x
+
+let lomax_logcdf ~shape ~scale x = broadcast_op2 (_owl_lomax_logcdf (kind x)) shape scale x
+
+let lomax_ppf ~shape ~scale x = broadcast_op2 (_owl_lomax_ppf (kind x)) shape scale x
+
+let lomax_sf ~shape ~scale x = broadcast_op2 (_owl_lomax_sf (kind x)) shape scale x
+
+let lomax_logsf ~shape ~scale x = broadcast_op2 (_owl_lomax_logsf (kind x)) shape scale x
+
+let lomax_isf ~shape ~scale x = broadcast_op2 (_owl_lomax_isf (kind x)) shape scale x
+
+
+let weibull_rvs ~shape ~scale ~n = broadcast_op0 (_owl_weibull_rvs (kind shape)) shape scale n
+
+let weibull_pdf ~shape ~scale x = broadcast_op2 (_owl_weibull_pdf (kind x)) shape scale x
+
+let weibull_logpdf ~shape ~scale x = broadcast_op2 (_owl_weibull_logpdf (kind x)) shape scale x
+
+let weibull_cdf ~shape ~scale x = broadcast_op2 (_owl_weibull_cdf (kind x)) shape scale x
+
+let weibull_logcdf ~shape ~scale x = broadcast_op2 (_owl_weibull_logcdf (kind x)) shape scale x
+
+let weibull_ppf ~shape ~scale x = broadcast_op2 (_owl_weibull_ppf (kind x)) shape scale x
+
+let weibull_sf ~shape ~scale x = broadcast_op2 (_owl_weibull_sf (kind x)) shape scale x
+
+let weibull_logsf ~shape ~scale x = broadcast_op2 (_owl_weibull_logsf (kind x)) shape scale x
+
+let weibull_isf ~shape ~scale x = broadcast_op2 (_owl_weibull_isf (kind x)) shape scale x
+
+
+let laplace_rvs ~loc ~scale ~n = broadcast_op0 (_owl_laplace_rvs (kind loc)) loc scale n
+
+let laplace_pdf ~loc ~scale x = broadcast_op2 (_owl_laplace_pdf (kind x)) loc scale x
+
+let laplace_logpdf ~loc ~scale x = broadcast_op2 (_owl_laplace_logpdf (kind x)) loc scale x
+
+let laplace_cdf ~loc ~scale x = broadcast_op2 (_owl_laplace_cdf (kind x)) loc scale x
+
+let laplace_logcdf ~loc ~scale x = broadcast_op2 (_owl_laplace_logcdf (kind x)) loc scale x
+
+let laplace_ppf ~loc ~scale x = broadcast_op2 (_owl_laplace_ppf (kind x)) loc scale x
+
+let laplace_sf ~loc ~scale x = broadcast_op2 (_owl_laplace_sf (kind x)) loc scale x
+
+let laplace_logsf ~loc ~scale x = broadcast_op2 (_owl_laplace_logsf (kind x)) loc scale x
+
+let laplace_isf ~loc ~scale x = broadcast_op2 (_owl_laplace_isf (kind x)) loc scale x
+
+
+let gumbel1_rvs ~a ~b ~n = broadcast_op0 (_owl_gumbel1_rvs (kind a)) a b n
+
+let gumbel1_pdf ~a ~b x = broadcast_op2 (_owl_gumbel1_pdf (kind x)) a b x
+
+let gumbel1_logpdf ~a ~b x = broadcast_op2 (_owl_gumbel1_logpdf (kind x)) a b x
+
+let gumbel1_cdf ~a ~b x = broadcast_op2 (_owl_gumbel1_cdf (kind x)) a b x
+
+let gumbel1_logcdf ~a ~b x = broadcast_op2 (_owl_gumbel1_logcdf (kind x)) a b x
+
+let gumbel1_ppf ~a ~b x = broadcast_op2 (_owl_gumbel1_ppf (kind x)) a b x
+
+let gumbel1_sf ~a ~b x = broadcast_op2 (_owl_gumbel1_sf (kind x)) a b x
+
+let gumbel1_logsf ~a ~b x = broadcast_op2 (_owl_gumbel1_logsf (kind x)) a b x
+
+let gumbel1_isf ~a ~b x = broadcast_op2 (_owl_gumbel1_isf (kind x)) a b x
+
+
+let gumbel2_rvs ~a ~b ~n = broadcast_op0 (_owl_gumbel2_rvs (kind a)) a b n
+
+let gumbel2_pdf ~a ~b x = broadcast_op2 (_owl_gumbel2_pdf (kind x)) a b x
+
+let gumbel2_logpdf ~a ~b x = broadcast_op2 (_owl_gumbel2_logpdf (kind x)) a b x
+
+let gumbel2_cdf ~a ~b x = broadcast_op2 (_owl_gumbel2_cdf (kind x)) a b x
+
+let gumbel2_logcdf ~a ~b x = broadcast_op2 (_owl_gumbel2_logcdf (kind x)) a b x
+
+let gumbel2_ppf ~a ~b x = broadcast_op2 (_owl_gumbel2_ppf (kind x)) a b x
+
+let gumbel2_sf ~a ~b x = broadcast_op2 (_owl_gumbel2_sf (kind x)) a b x
+
+let gumbel2_logsf ~a ~b x = broadcast_op2 (_owl_gumbel2_logsf (kind x)) a b x
+
+let gumbel2_isf ~a ~b x = broadcast_op2 (_owl_gumbel2_isf (kind x)) a b x
+
+
 (* ends here *)
