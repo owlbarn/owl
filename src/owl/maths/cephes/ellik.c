@@ -88,7 +88,7 @@ double ellik(double phi,  double m)
 	    return (OWL_POSINF);
 	}
         /* DLMF 19.6.8, and 4.23.42 */
-       return npy_asinh(tan(phi));
+       return asinh(tan(phi));
     }
     npio2 = floor(phi / OWL_PI_2);
     if (fmod(fabs(npio2), 2.0) == 1.0)

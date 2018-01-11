@@ -74,24 +74,6 @@ extern "C" {
 #define OWL_SQRT1_2l  0.707106781186547524400844362104849039L /* 1/sqrt(2) */
 
 
-/* float C99 math functions */
-
-#define npy_asinh(X) asinh(X)
-
-#define npy_copysign(X,Y) copysign(X,Y)
-
-
-/* Extended functions */
-
-extern double xlogy(double x, double y);
-
-extern double xlog1py(double x, double y);
-
-extern double expit(double x);
-
-extern double logit(double x);
-
-
 /*
  * IEEE 754 fpu handling. Those are guaranteed to be macros
  */
@@ -111,7 +93,6 @@ extern double logit(double x);
     #endif
   #endif
 #endif
-
 
 /* only available if npy_config.h is available (= numpys own build) */
 #if HAVE___BUILTIN_ISFINITE
@@ -154,6 +135,31 @@ extern double logit(double x);
 #else
   #define owl_signbit(x) signbit((x))
 #endif
+
+#if defined(_MSC_VER)
+  #define OWL_INLINE __inline
+#elif defined(__GNUC__)
+	#if defined(__STRICT_ANSI__)
+		#define OWL_INLINE __inline__
+	#else
+		#define OWL_INLINE inline
+	#endif
+#else
+  #define OWL_INLINE
+#endif
+
+/*
+ * Special functions
+ */
+
+extern double xlogy(double x, double y);
+
+extern double xlog1py(double x, double y);
+
+extern double expit(double x);
+
+extern double logit(double x);
+
 
 
 #ifdef __cplusplus

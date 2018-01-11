@@ -59,7 +59,8 @@
     ;dcdflib
     ;ipmpar
     ; maths
-    owl_maths_ext
+    owl_maths_special_impl
+    owl_maths_special_stub
     sf_error
     airy
     bdtr

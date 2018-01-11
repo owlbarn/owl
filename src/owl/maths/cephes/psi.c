@@ -160,7 +160,7 @@ double psi(double x)
     }
     else if (x == 0) {
 	mtherr("psi", SING);
-	return npy_copysign(OWL_POSINF, -x);
+	return copysign(OWL_POSINF, -x);
     }
     else if (x < 0.0) {
 	/* argument reduction before evaluating tan(pi * x) */

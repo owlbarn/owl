@@ -59,25 +59,7 @@
 #define CEPHES_MCONF_H
 
 
-// FIXME: hacking
-
 #include "owl_maths.h"
-
-
-#if defined(_MSC_VER)
-        #define NPY_INLINE __inline
-#elif defined(__GNUC__)
-	#if defined(__STRICT_ANSI__)
-		#define NPY_INLINE __inline__
-	#else
-		#define NPY_INLINE inline
-	#endif
-#else
-        #define NPY_INLINE
-#endif
-
-// hacking ends
-
 
 #include "cephes_names.h"
 #include "protos.h"

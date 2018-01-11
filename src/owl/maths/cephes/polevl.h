@@ -63,7 +63,7 @@
 
 #include "protos.h"
 
-static NPY_INLINE double polevl(double x, double coef[], int N)
+static OWL_INLINE double polevl(double x, double coef[], int N)
 {
     double ans;
     int i;
@@ -86,7 +86,7 @@ static NPY_INLINE double polevl(double x, double coef[], int N)
  * Otherwise same as polevl.
  */
 
-static NPY_INLINE double p1evl(double x, double coef[], int N)
+static OWL_INLINE double p1evl(double x, double coef[], int N)
 {
     double ans;
     double *p;
@@ -105,7 +105,7 @@ static NPY_INLINE double p1evl(double x, double coef[], int N)
 
 /* Evaluate a rational function. See [1]. */
 
-static NPY_INLINE double ratevl(double x, double num[], int M, double denom[], int N)
+static OWL_INLINE double ratevl(double x, double num[], int M, double denom[], int N)
 {
     int i, dir;
     double y, num_ans, denom_ans;
