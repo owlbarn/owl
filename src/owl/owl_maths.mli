@@ -155,149 +155,52 @@ val airy_zero_Ai : int -> float
 val airy_zero_Bi : int -> float
 
 
-(** {6 Regular Cylindrical Bessel Functions} *)
+(** {6 Bessel functions} *)
 
-val bessel_J0 : float -> float
+val j0 : float -> float
+(** Bessel function of the first kind of order 0. *)
 
-val bessel_J1 : float -> float
+val j1 : float -> float
+(** Bessel function of the first kind of order 1. *)
 
-val bessel_Jn : int -> float -> float
+val jv : float -> float -> float
+(** Bessel function of real order. *)
 
-val bessel_Jn_array : int -> int -> float -> float array
+val y0 : float -> float
+(** Bessel function of the second kind of order 0. *)
 
+val y1 : float -> float
+(** Bessel function of the second kind of order 1. *)
 
-(** {6 Irregular Cylindrical Bessel Functions} *)
+val yv : float -> float -> float
+(** Bessel function of the second kind of real order. *)
 
-val bessel_Y0 : float -> float
+val yn : int -> float -> float
+(** Bessel function of the second kind of integer order. *)
 
-val bessel_Y1 : float -> float
+val i0 : float -> float
+(** Modified Bessel function of order 0. *)
 
-val bessel_Yn : int -> float -> float
+val i0e : float -> float
+(** Exponentially scaled modified Bessel function of order 0. *)
 
-val bessel_Yn_array : int -> int -> float -> float array
+val i1 : float -> float
+(** Modified Bessel function of order 1. *)
 
+val i1e : float -> float
+(** Exponentially scaled modified Bessel function of order 1. *)
 
-(** {6 Regular Modified Cylindrical Bessel Functions} *)
+val k0 : float -> float
+(** Modified Bessel function of the second kind of order 0, K_0.*)
 
-val bessel_I0 : float -> float
+val k0e : float -> float
+(** Exponentially scaled modified Bessel function K of order 0. *)
 
-val bessel_I1 : float -> float
+val k1 : float -> float
+(** Modified Bessel function of the second kind of order 1, K_1(x). *)
 
-val bessel_In : int -> float -> float
-
-val bessel_In_array : int -> int -> float -> float array
-
-val bessel_I0_scaled : float -> float
-
-val bessel_I1_scaled : float -> float
-
-val bessel_In_scaled : int -> float -> float
-
-val bessel_In_scaled_array : int -> int -> float -> float array
-
-
-(** {6 Irregular Modified Cylindrical Bessel Functions} *)
-
-val bessel_K0 : float -> float
-
-val bessel_K1 : float -> float
-
-val bessel_Kn : int -> float -> float
-
-val bessel_Kn_array : int -> int -> float -> float array
-
-val bessel_K0_scaled : float -> float
-
-val bessel_K1_scaled : float -> float
-
-val bessel_Kn_scaled : int -> float -> float
-
-val bessel_Kn_scaled_array : int -> int -> float -> float array
-
-
-(** {6 Regular Spherical Bessel Functions} *)
-
-val bessel_j0 : float -> float
-
-val bessel_j1 : float -> float
-
-val bessel_j2 : float -> float
-
-val bessel_jl : int -> float -> float
-
-val bessel_jl_array : int -> float -> float array
-
-val bessel_jl_steed_array : int -> float -> float array
-
-
-(** {6 Irregular Spherical Bessel Functions} *)
-
-val bessel_y0 : float -> float
-
-val bessel_y1 : float -> float
-
-val bessel_y2 : float -> float
-
-val bessel_yl : int -> float -> float
-
-val bessel_yl_array : int -> float -> float array
-
-
-(** {6 Regular Modified Spherical Bessel Functions} *)
-
-val bessel_i0_scaled : float -> float
-
-val bessel_i1_scaled : float -> float
-
-val bessel_il_scaled : int -> float -> float
-
-val bessel_il_array_scaled : int -> float -> float array
-
-
-(** {6 Irregular Modified Spherical Bessel Functions} *)
-
-val bessel_k0_scaled : float -> float
-
-val bessel_k1_scaled : float -> float
-
-val bessel_kl_scaled : int -> float -> float
-
-val bessel_kl_array_scaled : int -> float -> float array
-
-
-(** {6 Regular Bessel Function - Fractional Order} *)
-
-val bessel_Jnu : float -> float -> float
-
-
-(** {6 Irregular Bessel Functions - Fractional Order} *)
-
-val bessel_Ynu : float -> float -> float
-
-
-(** {6 Regular Modified Bessel Functions - Fractional Order} *)
-
-val bessel_Inu : float -> float -> float
-
-val bessel_Inu_scaled : float -> float -> float
-
-
-(** {6 Irregular Modified Bessel Functions - Fractional Order} *)
-
-val bessel_Knu : float -> float -> float
-
-val bessel_lnKnu : float -> float -> float
-
-val bessel_Knu_scaled : float -> float -> float
-
-
-(** {6 Zeros of Regular Bessel Functions} *)
-
-val bessel_zero_J0 : int -> float
-
-val bessel_zero_J1 : int -> float
-
-val bessel_zero_Jnu : float -> int -> float
+val k1e : float -> float
+(** Exponentially scaled modified Bessel function K of order 1. *)
 
 
 (** {6 Clausen Functions} *)
@@ -427,6 +330,9 @@ val fermi_dirac_inc_0 : float -> float -> float
 val gamma : float -> float
 (** Gamma function. *)
 
+val rgamma : float -> float
+(** Reciprocal Gamma function. *)
+
 val loggamma : float -> float
 (** Logarithm of the gamma function. *)
 
@@ -444,6 +350,18 @@ val gammainccinv : float -> float -> float
 
 val psi : float -> float
 (** The digamma function. *)
+
+
+(** {6 Beta functions} *)
+
+val beta : float -> float -> float
+(** Beta function. *)
+
+val betainc : float -> float -> float -> float
+(** Incomplete beta integral. *)
+
+val betaincinv : float -> float -> float -> float
+(** Inverse funciton of beta integral. *)
 
 
 (** {6 Factorials} *)
@@ -489,18 +407,6 @@ val poch : float -> float -> float
 val lnpoch : float -> float -> float
 
 val pochrel : float -> float -> float
-
-
-(** {6 Beta functions} *)
-
-val beta : float -> float -> float
-(** Beta function. *)
-
-val betainc : float -> float -> float -> float
-(** Incomplete beta integral. *)
-
-val betaincinv : float -> float -> float -> float
-(** Inverse funciton of beta integral. *)
 
 
 (** {6 Laguerre Functions} *)
