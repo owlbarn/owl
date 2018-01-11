@@ -319,4 +319,61 @@ let gumbel2_logsf ~a ~b x = broadcast_op2 (_owl_gumbel2_logsf (kind x)) a b x
 let gumbel2_isf ~a ~b x = broadcast_op2 (_owl_gumbel2_isf (kind x)) a b x
 
 
+let logistic_rvs ~loc ~scale ~n = broadcast_op0 (_owl_logistic_rvs (kind loc)) loc scale n
+
+let logistic_pdf ~loc ~scale x = broadcast_op2 (_owl_logistic_pdf (kind x)) loc scale x
+
+let logistic_logpdf ~loc ~scale x = broadcast_op2 (_owl_logistic_logpdf (kind x)) loc scale x
+
+let logistic_cdf ~loc ~scale x = broadcast_op2 (_owl_logistic_cdf (kind x)) loc scale x
+
+let logistic_logcdf ~loc ~scale x = broadcast_op2 (_owl_logistic_logcdf (kind x)) loc scale x
+
+let logistic_ppf ~loc ~scale x = broadcast_op2 (_owl_logistic_ppf (kind x)) loc scale x
+
+let logistic_sf ~loc ~scale x = broadcast_op2 (_owl_logistic_sf (kind x)) loc scale x
+
+let logistic_logsf ~loc ~scale x = broadcast_op2 (_owl_logistic_logsf (kind x)) loc scale x
+
+let logistic_isf ~loc ~scale x = broadcast_op2 (_owl_logistic_isf (kind x)) loc scale x
+
+
+let lognormal_rvs ~mu ~sigma ~n = broadcast_op0 (_owl_lognormal_rvs (kind mu)) mu sigma n
+
+let lognormal_pdf ~mu ~sigma x = broadcast_op2 (_owl_lognormal_pdf (kind x)) mu sigma x
+
+let lognormal_logpdf ~mu ~sigma x = broadcast_op2 (_owl_lognormal_logpdf (kind x)) mu sigma x
+
+let lognormal_cdf ~mu ~sigma x = broadcast_op2 (_owl_lognormal_cdf (kind x)) mu sigma x
+
+let lognormal_logcdf ~mu ~sigma x = broadcast_op2 (_owl_lognormal_logcdf (kind x)) mu sigma x
+
+let lognormal_ppf ~mu ~sigma x = broadcast_op2 (_owl_lognormal_ppf (kind x)) mu sigma x
+
+let lognormal_sf ~mu ~sigma x = broadcast_op2 (_owl_lognormal_sf (kind x)) mu sigma x
+
+let lognormal_logsf ~mu ~sigma x = broadcast_op2 (_owl_lognormal_logsf (kind x)) mu sigma x
+
+let lognormal_isf ~mu ~sigma x = broadcast_op2 (_owl_lognormal_isf (kind x)) mu sigma x
+
+
+let rayleigh_rvs ~sigma ~n = broadcast_op1 (_owl_rayleigh_rvs (kind sigma)) sigma n
+
+let rayleigh_pdf ~sigma x = broadcast_op2 (_owl_rayleigh_pdf (kind x)) sigma sigma x
+
+let rayleigh_logpdf ~sigma x = broadcast_op2 (_owl_rayleigh_logpdf (kind x)) sigma sigma x
+
+let rayleigh_cdf ~sigma x = broadcast_op2 (_owl_rayleigh_cdf (kind x)) sigma sigma x
+
+let rayleigh_logcdf ~sigma x = broadcast_op2 (_owl_rayleigh_logcdf (kind x)) sigma sigma x
+
+let rayleigh_ppf ~sigma x = broadcast_op2 (_owl_rayleigh_ppf (kind x)) sigma sigma x
+
+let rayleigh_sf ~sigma x = broadcast_op2 (_owl_rayleigh_sf (kind x)) sigma sigma x
+
+let rayleigh_logsf ~sigma x = broadcast_op2 (_owl_rayleigh_logsf (kind x)) sigma sigma x
+
+let rayleigh_isf ~sigma x = broadcast_op2 (_owl_rayleigh_isf (kind x)) sigma sigma x
+
+
 (* ends here *)

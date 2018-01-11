@@ -689,6 +689,168 @@ module type StatsSig = sig
 
   val f_isf : dfnum:arr -> dfden:arr -> arr -> arr
 
+  val cauchy_rvs : loc:arr -> scale:arr -> n:int -> arr
+
+  val cauchy_pdf : loc:arr -> scale:arr -> arr -> arr
+
+  val cauchy_logpdf : loc:arr -> scale:arr -> arr -> arr
+
+  val cauchy_cdf : loc:arr -> scale:arr -> arr -> arr
+
+  val cauchy_logcdf : loc:arr -> scale:arr -> arr -> arr
+
+  val cauchy_ppf : loc:arr -> scale:arr -> arr -> arr
+
+  val cauchy_sf : loc:arr -> scale:arr -> arr -> arr
+
+  val cauchy_logsf : loc:arr -> scale:arr -> arr -> arr
+
+  val cauchy_isf : loc:arr -> scale:arr -> arr -> arr
+
+  val lomax_rvs : shape:arr -> scale:arr -> n:int -> arr
+
+  val lomax_pdf : shape:arr -> scale:arr -> arr -> arr
+
+  val lomax_logpdf : shape:arr -> scale:arr -> arr -> arr
+
+  val lomax_cdf : shape:arr -> scale:arr -> arr -> arr
+
+  val lomax_logcdf : shape:arr -> scale:arr -> arr -> arr
+
+  val lomax_ppf : shape:arr -> scale:arr -> arr -> arr
+
+  val lomax_sf : shape:arr -> scale:arr -> arr -> arr
+
+  val lomax_logsf : shape:arr -> scale:arr -> arr -> arr
+
+  val lomax_isf : shape:arr -> scale:arr -> arr -> arr
+
+  val weibull_rvs : shape:arr -> scale:arr -> n:int -> arr
+
+  val weibull_pdf : shape:arr -> scale:arr -> arr -> arr
+
+  val weibull_logpdf : shape:arr -> scale:arr -> arr -> arr
+
+  val weibull_cdf : shape:arr -> scale:arr -> arr -> arr
+
+  val weibull_logcdf : shape:arr -> scale:arr -> arr -> arr
+
+  val weibull_ppf : shape:arr -> scale:arr -> arr -> arr
+
+  val weibull_sf : shape:arr -> scale:arr -> arr -> arr
+
+  val weibull_logsf : shape:arr -> scale:arr -> arr -> arr
+
+  val weibull_isf : shape:arr -> scale:arr -> arr -> arr
+
+  val laplace_rvs : loc:arr -> scale:arr -> n:int -> arr
+
+  val laplace_pdf : loc:arr -> scale:arr -> arr -> arr
+
+  val laplace_logpdf : loc:arr -> scale:arr -> arr -> arr
+
+  val laplace_cdf : loc:arr -> scale:arr -> arr -> arr
+
+  val laplace_logcdf : loc:arr -> scale:arr -> arr -> arr
+
+  val laplace_ppf : loc:arr -> scale:arr -> arr -> arr
+
+  val laplace_sf : loc:arr -> scale:arr -> arr -> arr
+
+  val laplace_logsf : loc:arr -> scale:arr -> arr -> arr
+
+  val laplace_isf : loc:arr -> scale:arr -> arr -> arr
+
+  val gumbel1_rvs : a:arr -> b:arr -> n:int -> arr
+
+  val gumbel1_pdf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel1_logpdf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel1_cdf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel1_logcdf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel1_ppf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel1_sf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel1_logsf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel1_isf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel2_rvs : a:arr -> b:arr -> n:int -> arr
+
+  val gumbel2_pdf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel2_logpdf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel2_cdf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel2_logcdf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel2_ppf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel2_sf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel2_logsf : a:arr -> b:arr -> arr -> arr
+
+  val gumbel2_isf : a:arr -> b:arr -> arr -> arr
+
+  val logistic_rvs : loc:arr -> scale:arr -> n:int -> arr
+
+  val logistic_pdf : loc:arr -> scale:arr -> arr -> arr
+
+  val logistic_logpdf : loc:arr -> scale:arr -> arr -> arr
+
+  val logistic_cdf : loc:arr -> scale:arr -> arr -> arr
+
+  val logistic_logcdf : loc:arr -> scale:arr -> arr -> arr
+
+  val logistic_ppf : loc:arr -> scale:arr -> arr -> arr
+
+  val logistic_sf : loc:arr -> scale:arr -> arr -> arr
+
+  val logistic_logsf : loc:arr -> scale:arr -> arr -> arr
+
+  val logistic_isf : loc:arr -> scale:arr -> arr -> arr
+
+  val lognormal_rvs : mu:arr -> sigma:arr -> n:int -> arr
+
+  val lognormal_pdf : mu:arr -> sigma:arr -> arr -> arr
+
+  val lognormal_logpdf : mu:arr -> sigma:arr -> arr -> arr
+
+  val lognormal_cdf : mu:arr -> sigma:arr -> arr -> arr
+
+  val lognormal_logcdf : mu:arr -> sigma:arr -> arr -> arr
+
+  val lognormal_ppf : mu:arr -> sigma:arr -> arr -> arr
+
+  val lognormal_sf : mu:arr -> sigma:arr -> arr -> arr
+
+  val lognormal_logsf : mu:arr -> sigma:arr -> arr -> arr
+
+  val lognormal_isf : mu:arr -> sigma:arr -> arr -> arr
+
+  val rayleigh_rvs : sigma:arr -> n:int -> arr
+
+  val rayleigh_pdf : sigma:arr -> arr -> arr
+
+  val rayleigh_logpdf : sigma:arr -> arr -> arr
+
+  val rayleigh_cdf : sigma:arr -> arr -> arr
+
+  val rayleigh_logcdf : sigma:arr -> arr -> arr
+
+  val rayleigh_ppf : sigma:arr -> arr -> arr
+
+  val rayleigh_sf : sigma:arr -> arr -> arr
+
+  val rayleigh_logsf : sigma:arr -> arr -> arr
+
+  val rayleigh_isf : sigma:arr -> arr -> arr
+  
 end
 
 

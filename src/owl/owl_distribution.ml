@@ -255,6 +255,293 @@ module Make (A : StatsSig) = struct
   end
 
 
+  module Cauchy = struct
+
+    type t = {
+      loc   : A.arr;
+      scale : A.arr;
+    }
+
+    let make ~loc ~scale =
+      Utility._check_broadcast_shape [|loc; scale|];
+      { loc; scale }
+
+    let sample t n = A.cauchy_rvs ~loc:t.loc ~scale:t.scale ~n
+
+    let pdf t x = A.cauchy_pdf ~loc:t.loc ~scale:t.scale x
+
+    let logpdf t x = A.cauchy_logpdf ~loc:t.loc ~scale:t.scale x
+
+    let cdf t x = A.cauchy_cdf ~loc:t.loc ~scale:t.scale x
+
+    let logcdf t x = A.cauchy_logcdf ~loc:t.loc ~scale:t.scale x
+
+    let ppf t x = A.cauchy_ppf ~loc:t.loc ~scale:t.scale x
+
+    let sf t x = A.cauchy_sf ~loc:t.loc ~scale:t.scale x
+
+    let logsf t x = A.cauchy_logsf ~loc:t.loc ~scale:t.scale x
+
+    let isf t x = A.cauchy_isf ~loc:t.loc ~scale:t.scale x
+
+  end
+
+
+  module Lomax = struct
+
+    type t = {
+      shape : A.arr;
+      scale : A.arr;
+    }
+
+    let make ~shape ~scale =
+      Utility._check_broadcast_shape [|shape; scale|];
+      { shape; scale }
+
+    let sample t n = A.lomax_rvs ~shape:t.shape ~scale:t.scale ~n
+
+    let pdf t x = A.lomax_pdf ~shape:t.shape ~scale:t.scale x
+
+    let logpdf t x = A.lomax_logpdf ~shape:t.shape ~scale:t.scale x
+
+    let cdf t x = A.lomax_cdf ~shape:t.shape ~scale:t.scale x
+
+    let logcdf t x = A.lomax_logcdf ~shape:t.shape ~scale:t.scale x
+
+    let ppf t x = A.lomax_ppf ~shape:t.shape ~scale:t.scale x
+
+    let sf t x = A.lomax_sf ~shape:t.shape ~scale:t.scale x
+
+    let logsf t x = A.lomax_logsf ~shape:t.shape ~scale:t.scale x
+
+    let isf t x = A.lomax_isf ~shape:t.shape ~scale:t.scale x
+
+  end
+
+
+  module Weibull = struct
+
+    type t = {
+      shape : A.arr;
+      scale : A.arr;
+    }
+
+    let make ~shape ~scale =
+      Utility._check_broadcast_shape [|shape; scale|];
+      { shape; scale }
+
+    let sample t n = A.weibull_rvs ~shape:t.shape ~scale:t.scale ~n
+
+    let pdf t x = A.weibull_pdf ~shape:t.shape ~scale:t.scale x
+
+    let logpdf t x = A.weibull_logpdf ~shape:t.shape ~scale:t.scale x
+
+    let cdf t x = A.weibull_cdf ~shape:t.shape ~scale:t.scale x
+
+    let logcdf t x = A.weibull_logcdf ~shape:t.shape ~scale:t.scale x
+
+    let ppf t x = A.weibull_ppf ~shape:t.shape ~scale:t.scale x
+
+    let sf t x = A.weibull_sf ~shape:t.shape ~scale:t.scale x
+
+    let logsf t x = A.weibull_logsf ~shape:t.shape ~scale:t.scale x
+
+    let isf t x = A.weibull_isf ~shape:t.shape ~scale:t.scale x
+
+  end
+
+
+  module Laplace = struct
+
+    type t = {
+      loc   : A.arr;
+      scale : A.arr;
+    }
+
+    let make ~loc ~scale =
+      Utility._check_broadcast_shape [|loc; scale|];
+      { loc; scale }
+
+    let sample t n = A.laplace_rvs ~loc:t.loc ~scale:t.scale ~n
+
+    let pdf t x = A.laplace_pdf ~loc:t.loc ~scale:t.scale x
+
+    let logpdf t x = A.laplace_logpdf ~loc:t.loc ~scale:t.scale x
+
+    let cdf t x = A.laplace_cdf ~loc:t.loc ~scale:t.scale x
+
+    let logcdf t x = A.laplace_logcdf ~loc:t.loc ~scale:t.scale x
+
+    let ppf t x = A.laplace_ppf ~loc:t.loc ~scale:t.scale x
+
+    let sf t x = A.laplace_sf ~loc:t.loc ~scale:t.scale x
+
+    let logsf t x = A.laplace_logsf ~loc:t.loc ~scale:t.scale x
+
+    let isf t x = A.laplace_isf ~loc:t.loc ~scale:t.scale x
+
+  end
+
+
+  module Gumbel1 = struct
+
+    type t = {
+      a : A.arr;
+      b : A.arr;
+    }
+
+    let make ~a ~b =
+      Utility._check_broadcast_shape [|a; b|];
+      { a; b }
+
+    let sample t n = A.gumbel1_rvs ~a:t.a ~b:t.b ~n
+
+    let pdf t x = A.gumbel1_pdf ~a:t.a ~b:t.b x
+
+    let logpdf t x = A.gumbel1_logpdf ~a:t.a ~b:t.b x
+
+    let cdf t x = A.gumbel1_cdf ~a:t.a ~b:t.b x
+
+    let logcdf t x = A.gumbel1_logcdf ~a:t.a ~b:t.b x
+
+    let ppf t x = A.gumbel1_ppf ~a:t.a ~b:t.b x
+
+    let sf t x = A.gumbel1_sf ~a:t.a ~b:t.b x
+
+    let logsf t x = A.gumbel1_logsf ~a:t.a ~b:t.b x
+
+    let isf t x = A.gumbel1_isf ~a:t.a ~b:t.b x
+
+  end
+
+
+  module Gumbel2 = struct
+
+    type t = {
+      a : A.arr;
+      b : A.arr;
+    }
+
+    let make ~a ~b =
+      Utility._check_broadcast_shape [|a; b|];
+      { a; b }
+
+    let sample t n = A.gumbel2_rvs ~a:t.a ~b:t.b ~n
+
+    let pdf t x = A.gumbel2_pdf ~a:t.a ~b:t.b x
+
+    let logpdf t x = A.gumbel2_logpdf ~a:t.a ~b:t.b x
+
+    let cdf t x = A.gumbel2_cdf ~a:t.a ~b:t.b x
+
+    let logcdf t x = A.gumbel2_logcdf ~a:t.a ~b:t.b x
+
+    let ppf t x = A.gumbel2_ppf ~a:t.a ~b:t.b x
+
+    let sf t x = A.gumbel2_sf ~a:t.a ~b:t.b x
+
+    let logsf t x = A.gumbel2_logsf ~a:t.a ~b:t.b x
+
+    let isf t x = A.gumbel2_isf ~a:t.a ~b:t.b x
+
+  end
+
+
+  module Logistic = struct
+
+    type t = {
+      loc   : A.arr;
+      scale : A.arr;
+    }
+
+    let make ~loc ~scale =
+      Utility._check_broadcast_shape [|loc; scale|];
+      { loc; scale }
+
+    let sample t n = A.logistic_rvs ~loc:t.loc ~scale:t.scale ~n
+
+    let pdf t x = A.logistic_pdf ~loc:t.loc ~scale:t.scale x
+
+    let logpdf t x = A.logistic_logpdf ~loc:t.loc ~scale:t.scale x
+
+    let cdf t x = A.logistic_cdf ~loc:t.loc ~scale:t.scale x
+
+    let logcdf t x = A.logistic_logcdf ~loc:t.loc ~scale:t.scale x
+
+    let ppf t x = A.logistic_ppf ~loc:t.loc ~scale:t.scale x
+
+    let sf t x = A.logistic_sf ~loc:t.loc ~scale:t.scale x
+
+    let logsf t x = A.logistic_logsf ~loc:t.loc ~scale:t.scale x
+
+    let isf t x = A.logistic_isf ~loc:t.loc ~scale:t.scale x
+
+  end
+
+
+  module Lognormal = struct
+
+    type t = {
+      mu    : A.arr;
+      sigma : A.arr;
+    }
+
+    let make ~mu ~sigma =
+      Utility._check_broadcast_shape [|mu; sigma|];
+      { mu; sigma }
+
+    let sample t n = A.lognormal_rvs ~mu:t.mu ~sigma:t.sigma ~n
+
+    let pdf t x = A.lognormal_pdf ~mu:t.mu ~sigma:t.sigma x
+
+    let logpdf t x = A.lognormal_logpdf ~mu:t.mu ~sigma:t.sigma x
+
+    let cdf t x = A.lognormal_cdf ~mu:t.mu ~sigma:t.sigma x
+
+    let logcdf t x = A.lognormal_logcdf ~mu:t.mu ~sigma:t.sigma x
+
+    let ppf t x = A.lognormal_ppf ~mu:t.mu ~sigma:t.sigma x
+
+    let sf t x = A.lognormal_sf ~mu:t.mu ~sigma:t.sigma x
+
+    let logsf t x = A.lognormal_logsf ~mu:t.mu ~sigma:t.sigma x
+
+    let isf t x = A.lognormal_isf ~mu:t.mu ~sigma:t.sigma x
+
+  end
+
+
+  module Rayleigh = struct
+
+    type t = {
+      sigma : A.arr;
+    }
+
+    let make ~sigma =
+      Utility._check_broadcast_shape [|sigma|];
+      { sigma }
+
+    let sample t n = A.rayleigh_rvs ~sigma:t.sigma ~n
+
+    let pdf t x = A.rayleigh_pdf ~sigma:t.sigma x
+
+    let logpdf t x = A.rayleigh_logpdf ~sigma:t.sigma x
+
+    let cdf t x = A.rayleigh_cdf ~sigma:t.sigma x
+
+    let logcdf t x = A.rayleigh_logcdf ~sigma:t.sigma x
+
+    let ppf t x = A.rayleigh_ppf ~sigma:t.sigma x
+
+    let sf t x = A.rayleigh_sf ~sigma:t.sigma x
+
+    let logsf t x = A.rayleigh_logsf ~sigma:t.sigma x
+
+    let isf t x = A.rayleigh_isf ~sigma:t.sigma x
+
+  end
+
+
   type dist =
     | Uniform     of Uniform.t
     | Gaussian    of Gaussian.t
@@ -263,6 +550,15 @@ module Make (A : StatsSig) = struct
     | Beta        of Beta.t
     | Chi2        of Chi2.t
     | F           of F.t
+    | Cauchy      of Cauchy.t
+    | Lomax       of Lomax.t
+    | Weibull     of Weibull.t
+    | Laplace     of Laplace.t
+    | Gumbel1     of Gumbel1.t
+    | Gumbel2     of Gumbel2.t
+    | Logistic    of Logistic.t
+    | Lognormal   of Lognormal.t
+    | Rayleigh    of Rayleigh.t
 
   let sample t n = match t with
     | Uniform t     -> Uniform.sample t n
@@ -272,7 +568,15 @@ module Make (A : StatsSig) = struct
     | Beta t        -> Beta.sample t n
     | Chi2 t        -> Chi2.sample t n
     | F t           -> F.sample t n
-
+    | Cauchy t      -> Cauchy.sample t n
+    | Lomax t       -> Lomax.sample t n
+    | Weibull t     -> Weibull.sample t n
+    | Laplace t     -> Laplace.sample t n
+    | Gumbel1 t     -> Gumbel1.sample t n
+    | Gumbel2 t     -> Gumbel2.sample t n
+    | Logistic t    -> Logistic.sample t n
+    | Lognormal t   -> Lognormal.sample t n
+    | Rayleigh t    -> Rayleigh.sample t n
 
   let prob t x = match t with
     | Uniform t     -> Uniform.pdf t x
@@ -282,7 +586,15 @@ module Make (A : StatsSig) = struct
     | Beta t        -> Beta.pdf t x
     | Chi2 t        -> Chi2.pdf t x
     | F t           -> F.pdf t x
-
+    | Cauchy t      -> Cauchy.pdf t x
+    | Lomax t       -> Lomax.pdf t x
+    | Weibull t     -> Weibull.pdf t x
+    | Laplace t     -> Laplace.pdf t x
+    | Gumbel1 t     -> Gumbel1.pdf t x
+    | Gumbel2 t     -> Gumbel2.pdf t x
+    | Logistic t    -> Logistic.pdf t x
+    | Lognormal t   -> Lognormal.pdf t x
+    | Rayleigh t    -> Rayleigh.pdf t x
 
   let log_prob t x = match t with
     | Uniform t     -> Uniform.logpdf t x
@@ -292,6 +604,15 @@ module Make (A : StatsSig) = struct
     | Beta t        -> Beta.logpdf t x
     | Chi2 t        -> Chi2.logpdf t x
     | F t           -> F.logpdf t x
+    | Cauchy t      -> Cauchy.logpdf t x
+    | Lomax t       -> Lomax.logpdf t x
+    | Weibull t     -> Weibull.logpdf t x
+    | Laplace t     -> Laplace.logpdf t x
+    | Gumbel1 t     -> Gumbel1.logpdf t x
+    | Gumbel2 t     -> Gumbel2.logpdf t x
+    | Logistic t    -> Logistic.logpdf t x
+    | Lognormal t   -> Lognormal.logpdf t x
+    | Rayleigh t    -> Rayleigh.logpdf t x
 
   let cdf t x = match t with
     | Uniform t     -> Uniform.cdf t x
@@ -301,6 +622,15 @@ module Make (A : StatsSig) = struct
     | Beta t        -> Beta.cdf t x
     | Chi2 t        -> Chi2.cdf t x
     | F t           -> F.cdf t x
+    | Cauchy t      -> Cauchy.cdf t x
+    | Lomax t       -> Lomax.cdf t x
+    | Weibull t     -> Weibull.cdf t x
+    | Laplace t     -> Laplace.cdf t x
+    | Gumbel1 t     -> Gumbel1.cdf t x
+    | Gumbel2 t     -> Gumbel2.cdf t x
+    | Logistic t    -> Logistic.cdf t x
+    | Lognormal t   -> Lognormal.cdf t x
+    | Rayleigh t    -> Rayleigh.cdf t x
 
   let logcdf t x = match t with
     | Uniform t     -> Uniform.logcdf t x
@@ -310,6 +640,15 @@ module Make (A : StatsSig) = struct
     | Beta t        -> Beta.logcdf t x
     | Chi2 t        -> Chi2.logcdf t x
     | F t           -> F.logcdf t x
+    | Cauchy t      -> Cauchy.logcdf t x
+    | Lomax t       -> Lomax.logcdf t x
+    | Weibull t     -> Weibull.logcdf t x
+    | Laplace t     -> Laplace.logcdf t x
+    | Gumbel1 t     -> Gumbel1.logcdf t x
+    | Gumbel2 t     -> Gumbel2.logcdf t x
+    | Logistic t    -> Logistic.logcdf t x
+    | Lognormal t   -> Lognormal.logcdf t x
+    | Rayleigh t    -> Rayleigh.logcdf t x
 
 (*
   let mean t = match t with
