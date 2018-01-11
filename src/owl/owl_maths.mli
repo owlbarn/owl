@@ -425,21 +425,25 @@ val fermi_dirac_inc_0 : float -> float -> float
 (** {6 Gamma Functions} *)
 
 val gamma : float -> float
+(** Gamma function. *)
 
-val lngamma : float -> float
+val loggamma : float -> float
+(** Logarithm of the gamma function. *)
 
-val gammastar : float -> float
+val gammainc : float -> float -> float
+(** Incomplete gamma function. *)
 
-val gammainv : float -> float
+val gammaincinv : float -> float -> float
+(** Inverse function of [gammainc] *)
 
+val gammaincc : float -> float -> float
+(** Complemented incomplete gamma integral *)
 
-(** {6 Incomplete Gamma Functions} *)
+val gammainccinv : float -> float -> float
+(** Inverse function of [gammaincc] *)
 
-val gamma_inc : float -> float -> float
-
-val gamma_inc_Q : float -> float -> float
-
-val gamma_inc_P : float -> float -> float
+val psi : float -> float
+(** The digamma function. *)
 
 
 (** {6 Factorials} *)
@@ -489,11 +493,14 @@ val pochrel : float -> float -> float
 
 (** {6 Beta functions} *)
 
-val betaf : float -> float -> float
+val beta : float -> float -> float
+(** Beta function. *)
 
-val lnbeta : float -> float -> float
+val betainc : float -> float -> float -> float
+(** Incomplete beta integral. *)
 
-val beta_inc : float -> float -> float -> float
+val betaincinv : float -> float -> float -> float
+(** Inverse funciton of beta integral. *)
 
 
 (** {6 Laguerre Functions} *)
@@ -531,21 +538,6 @@ val legendre_Q0 : float -> float
 val legendre_Q1 : float -> float
 
 val legendre_Ql : int -> float -> float
-
-
-(** {6 Psi (Digamma) Function} *)
-
-val psi : float -> float
-
-val psi_int : int -> float
-
-val psi_1 : float -> float
-
-val psi_1piy : float -> float
-
-val psi_1_pint : int -> float
-
-val psi_n : int -> float -> float
 
 
 (** {6 Synchrotron Functions} *)

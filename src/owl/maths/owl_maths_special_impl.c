@@ -5,6 +5,11 @@
 
 #include "owl_maths.h"
 
+/*
+ * Implementation of some spefial functions which are not included in cephes
+ * and CDFLIB. The implementation is double precision.
+ */
+
 
 double xlogy(double x, double y) {
   if (x == 0 && !owl_isnan(y))

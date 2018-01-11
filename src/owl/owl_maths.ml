@@ -394,19 +394,19 @@ let fermi_dirac_3half x = Gsl.Sf.fermi_dirac_3half x
 
 let fermi_dirac_inc_0 x b = Gsl.Sf.fermi_dirac_inc_0 x b
 
-let gamma x = Gsl.Sf.gamma x
+let gamma x = Owl_maths_special.gamma x
 
-let lngamma x = Gsl.Sf.lngamma x
+let loggamma x = Owl_maths_special.loggamma x
 
-let gammastar x = Gsl.Sf.gammastar x
+let gammainc a x  = Owl_maths_special.gammainc a x
 
-let gammainv x = Gsl.Sf.gammainv x
+let gammaincinv a x  = Owl_maths_special.gammaincinv a x
 
-let gamma_inc a x = Gsl.Sf.gamma_inc a x
+let gammaincc a x  = Owl_maths_special.gammaincc a x
 
-let gamma_inc_Q a x  = Gsl.Sf.gamma_inc_Q a x
+let gammainccinv a x  = Owl_maths_special.gammainccinv a x
 
-let gamma_inc_P a x  = Gsl.Sf.gamma_inc_P a x
+let psi x = Owl_maths_special.psi x
 
 let factorial x = Gsl.Sf.fact x
 
@@ -430,11 +430,11 @@ let lnpoch a x = Gsl.Sf.lnpoch a x
 
 let pochrel a x = Gsl.Sf.pochrel a x
 
-let betaf x y = Gsl.Sf.beta x y
+let beta a b = Owl_maths_special.beta a b
 
-let lnbeta x y = Gsl.Sf.lnbeta x y
+let betainc a b x = Owl_maths_special.betainc a b x
 
-let beta_inc a b x = Gsl.Sf.beta_inc a b x
+let betaincinv a b y = Owl_maths_special.betaincinv a b y
 
 let laguerre_1 a x = Gsl.Sf.laguerre_1 a x
 
@@ -465,18 +465,6 @@ let legendre_Q0 x = Gsl.Sf.legendre_Q0 x
 let legendre_Q1 x = Gsl.Sf.legendre_Q1 x
 
 let legendre_Ql l x = Gsl.Sf.legendre_Ql l x
-
-let psi x = Gsl.Sf.psi x
-
-let psi_int n = Gsl.Sf.psi_int n
-
-let psi_1 x = Gsl.Sf.psi_1 x
-
-let psi_1piy n = Gsl.Sf.psi_1piy n
-
-let psi_1_pint n = Gsl.Sf.psi_int n
-
-let psi_n n x = Gsl.Sf.psi_n n x
 
 let synchrotron_1 x = Gsl.Sf.synchrotron_1 x
 
