@@ -3,6 +3,33 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+module CI = Cstubs_internals
+
+
+(* Airy functions *)
+
+external airy : float -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_airy"
+
+let airy x ai aip bi bip = airy x (CI.cptr ai) (CI.cptr aip) (CI.cptr bi) (CI.cptr bip)
+
+
+(* Elliptic Functions *)
+
+external ellipj : float -> float -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_ellipj_byte6" "owl_stub_sf_ellipj"
+
+let ellipj u m sn cn dn phi = ellipj u m (CI.cptr sn) (CI.cptr cn) (CI.cptr dn) (CI.cptr phi)
+
+external ellipk : float -> float = "owl_stub_sf_ellipk"
+
+external ellipkm1 : float -> float = "owl_stub_sf_ellipkm1"
+
+external ellipkinc : float -> float -> float = "owl_stub_sf_ellipkinc"
+
+external ellipe : float -> float = "owl_stub_sf_ellipe"
+
+external ellipeinc : float -> float -> float = "owl_stub_sf_ellipeinc"
+
+
 (* Bessel functions *)
 
 external j0 : float -> float = "owl_stub_sf_j0"
@@ -62,3 +89,20 @@ external beta : float -> float -> float = "owl_stub_sf_beta"
 external betainc : float -> float -> float -> float = "owl_stub_sf_betainc"
 
 external betaincinv : float -> float -> float -> float = "owl_stub_sf_betaincinv"
+
+
+(* Other functions *)
+
+external expn : int -> float -> float = "owl_stub_sf_expn"
+
+external shichi : float -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_shichi"
+
+let shichi x si ci = shichi x (CI.cptr si) (CI.cptr ci)
+
+external sici : float -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_sici"
+
+let sici x si ci = sici x (CI.cptr si) (CI.cptr ci)
+
+external zeta : float -> float -> float = "owl_stub_sf_zeta"
+
+external zetac : float -> float = "owl_stub_sf_zetac"

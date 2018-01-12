@@ -9,8 +9,7 @@
   This module contains some basic and advanced mathematical operations.
   If you cannot find some function in this module, try Stats module.
 
-  Please refer to GSL documentation using following linke for details:
-  https://www.gnu.org/software/gsl/manual
+  Please refer to Scipy documentation.
 *)
 
 
@@ -132,27 +131,12 @@ val angle_restrict_symm : float -> float
 val angle_restrict_pos : float -> float
 
 
-(** {6 Airy functions and derivatives} *)
+(** {6 Airy functions} *)
 
-val airy_Ai : float -> float
-
-val airy_Bi : float -> float
-
-val airy_Ai_scaled : float -> float
-
-val airy_Bi_scaled : float -> float
-
-val airy_Ai_deriv : float -> float
-
-val airy_Bi_deriv : float -> float
-
-val airy_Ai_deriv : float -> float
-
-val airy_Bi_deriv : float -> float
-
-val airy_zero_Ai : int -> float
-
-val airy_zero_Bi : int -> float
+val airy : float -> float * float * float * float
+(** Airy function [airy x] returns [(Ai, Aip, Bi, Bip)]. [Aip] is the
+  derivative of [Ai] whilst [Bip] is the derivative of [Bi].
+ *)
 
 
 (** {6 Bessel functions} *)
@@ -233,75 +217,55 @@ val debye_6 : float -> float
 val dilog : float -> float
 
 
-(** {6 Elliptic Integrals} *)
+(** {6 Elliptic functions} *)
 
-val ellint_Kcomp : float -> float
+val ellipj : float -> float -> float * float * float * float
+(** Jacobian Elliptic function [ellipj u m] returns [(sn, cn, dn, phi)]. *)
 
-val ellint_Ecomp : float -> float
+val ellipk : float -> float
+(** Complete elliptic integral of the first kind [ellipk m]. *)
 
-val ellint_Pcomp : float -> float -> float
+val ellipkm1 : float -> float
+(** Complete elliptic integral of the first kind around [m = 1]. *)
 
-val ellint_Dcomp : float -> float
+val ellipkinc : float -> float -> float
+(** Incomplete elliptic integral of the first kind [ellipkinc phi m]. *)
 
+val ellipe : float -> float
+(** Complete elliptic integral of the second kind [ellipe m]. *)
 
-(** {6 Elliptic Integrals - Legendre Form of Complete Elliptic Integrals} *)
-
-val laguerre_1 : float -> float -> float
-
-val laguerre_2 : float -> float -> float
-
-val laguerre_3 : float -> float -> float
-
-val laguerre_n : int -> float -> float -> float
-
-
-(** {6 Elliptic Integrals - Legendre Form of Incomplete Elliptic Integrals} *)
-
-val ellint_F : float -> float -> float
-
-val ellint_E : float -> float -> float
-
-val ellint_P : float -> float -> float -> float
-
-val ellint_D : float -> float -> float
+val ellipeinc : float -> float -> float
+(** Incomplete elliptic integral of the second kind [ellipeinc phi m]. *)
 
 
-(** {6 Elliptic Integrals - Carlson Forms of Incomplete Elliptic Integrals} *)
+(** {6 Other special functions} *)
 
-val ellint_RC : float -> float -> float
+val expn : int -> float -> float
+(** Exponential integral E_n. *)
 
-val ellint_RD : float -> float -> float -> float
-
-val ellint_RF : float -> float -> float -> float
-
-val ellint_RJ : float -> float -> float -> float -> float
-
-
-(** {6 Exponential Integrals} *)
-
-val expint_E1 : float -> float
-
-val expint_E2 : float -> float
-
-val expint_Ei : float -> float
-
-val expint_E1_scaled : float -> float
-
-val expint_E2_scaled : float -> float
-
-val expint_Ei_scaled : float -> float
-
-val expint_3 : float -> float
+val shichi : float -> float * float
+(** Hyperbolic sine and cosine integrals, [shichi x] returns [(shi, chi)]. *)
 
 val shi : float -> float
+(** Hyperbolic sine integrals. *)
 
 val chi : float -> float
+(** Hyperbolic cosine integrals. *)
+
+val sici : float -> float * float
+(** Sine and cosine integrals, [sici x] returns [(si, ci)]. *)
 
 val si : float -> float
+(** Sine integral. *)
 
 val ci : float -> float
+(** Cosine integral. *)
 
-val atanint : float -> float
+val zeta : float -> float -> float
+(** Riemann or Hurwitz zeta function [zeta x q]. *)
+
+val zetac : float -> float
+(** Riemann zeta function minus 1. *)
 
 
 (** {6 Fermi-Dirac Function} *)
@@ -409,17 +373,6 @@ val lnpoch : float -> float -> float
 val pochrel : float -> float -> float
 
 
-(** {6 Laguerre Functions} *)
-
-val laguerre_1 : float -> float -> float
-
-val laguerre_2 : float -> float -> float
-
-val laguerre_3 : float -> float -> float
-
-val laguerre_n : int -> float -> float -> float
-
-
 (** {6 Lambert W Functions} *)
 
 val lambert_w0 : float -> float
@@ -462,19 +415,6 @@ val transport_3 : float -> float
 val transport_4 : float -> float
 
 val transport_5 : float -> float
-
-
-(** {6 Zeta Functions} *)
-
-val zeta : float -> float
-
-val zeta_int : int -> float
-
-val hzeta : float -> float -> float
-
-val eta : float -> float
-
-val eta_int : int -> float
 
 
 (** {6 Some constants} *)

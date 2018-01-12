@@ -3,6 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+module CI = Cstubs_internals
+
+
 (** [ Mathematics Module ]  *)
 
 let e = Gsl.Math.e
@@ -162,25 +165,32 @@ let angle_restrict_symm x = Gsl.Sf.angle_restrict_symm x
 
 let angle_restrict_pos x = Gsl.Sf.angle_restrict_pos x
 
-let airy_Ai x = Gsl.Sf.airy_Ai x Gsl.Fun.DOUBLE
+let airy x =
+  let ai = Ctypes.(allocate double 0.) in
+  let aip = Ctypes.(allocate double 0.) in
+  let bi = Ctypes.(allocate double 0.) in
+  let bip = Ctypes.(allocate double 0.) in
+  (* TODO: unify exception handling ... *)
+  Owl_maths_special.airy x ai aip bi bip |> ignore;
+  Ctypes.(!@ai, !@aip, !@bi, !@bip)
 
-let airy_Bi x = Gsl.Sf.airy_Ai x Gsl.Fun.DOUBLE
+let ellipj u m =
+  let sn = Ctypes.(allocate double 0.) in
+  let cn = Ctypes.(allocate double 0.) in
+  let dn = Ctypes.(allocate double 0.) in
+  let ph = Ctypes.(allocate double 0.) in
+  Owl_maths_special.ellipj u m sn cn dn ph |> ignore;
+  Ctypes.(!@sn, !@cn, !@dn, !@ph)
 
-let airy_Ai_scaled x = Gsl.Sf.airy_Ai_scaled x Gsl.Fun.DOUBLE
+let ellipk m = Owl_maths_special.ellipk m
 
-let airy_Bi_scaled x = Gsl.Sf.airy_Bi_scaled x Gsl.Fun.DOUBLE
+let ellipkm1 m = Owl_maths_special.ellipkm1 m
 
-let airy_Ai_deriv x = Gsl.Sf.airy_Ai_deriv x Gsl.Fun.DOUBLE
+let ellipkinc phi m = Owl_maths_special.ellipkinc phi m
 
-let airy_Bi_deriv x = Gsl.Sf.airy_Ai_deriv x Gsl.Fun.DOUBLE
+let ellipe m = Owl_maths_special.ellipe m
 
-let airy_Ai_deriv x = Gsl.Sf.airy_Ai_deriv_scaled x Gsl.Fun.DOUBLE
-
-let airy_Bi_deriv x = Gsl.Sf.airy_Bi_deriv_scaled x Gsl.Fun.DOUBLE
-
-let airy_zero_Ai x = Gsl.Sf.airy_zero_Ai x
-
-let airy_zero_Bi x = Gsl.Sf.airy_zero_Ai x
+let ellipeinc phi m = Owl_maths_special.ellipeinc phi m
 
 let j0 x = Owl_maths_special.j0 x
 
@@ -230,53 +240,27 @@ let debye_6 x = Gsl.Sf.debye_6 x
 
 let dilog x = Gsl.Sf.dilog x
 
-let ellint_Kcomp x = Gsl.Sf.ellint_Kcomp x Gsl.Fun.DOUBLE
+let expn n x = Owl_maths_special.expn n x
 
-let ellint_Ecomp x = Gsl.Sf.ellint_Ecomp x Gsl.Fun.DOUBLE
+let shichi x =
+  let si = Ctypes.(allocate double 0.) in
+  let ci = Ctypes.(allocate double 0.) in
+  Owl_maths_special.shichi x si ci |> ignore;
+  Ctypes.(!@si, !@ci)
 
-let ellint_Pcomp x n = Gsl.Sf.ellint_Pcomp x n Gsl.Fun.DOUBLE
+let shi x = shichi x |> fst
 
-let ellint_Dcomp x = Gsl.Sf.ellint_Dcomp x Gsl.Fun.DOUBLE
+let chi x = shichi x |> snd
 
-let ellint_F phi x =  Gsl.Sf.ellint_F phi x Gsl.Fun.DOUBLE
+let sici x =
+  let si = Ctypes.(allocate double 0.) in
+  let ci = Ctypes.(allocate double 0.) in
+  Owl_maths_special.sici x si ci |> ignore;
+  Ctypes.(!@si, !@ci)
 
-let ellint_E phi x =  Gsl.Sf.ellint_E phi x Gsl.Fun.DOUBLE
+let si x = sici x |> fst
 
-let ellint_P phi x n =  Gsl.Sf.ellint_P phi x n Gsl.Fun.DOUBLE
-
-let ellint_D phi x =  Gsl.Sf.ellint_D phi x Gsl.Fun.DOUBLE
-
-let ellint_RC x y = Gsl.Sf.ellint_RC x y Gsl.Fun.DOUBLE
-
-let ellint_RD x y z = Gsl.Sf.ellint_RD x y z Gsl.Fun.DOUBLE
-
-let ellint_RF x y z = Gsl.Sf.ellint_RF x y z Gsl.Fun.DOUBLE
-
-let ellint_RJ x y z p = Gsl.Sf.ellint_RJ x y z p Gsl.Fun.DOUBLE
-
-let expint_E1 x = Gsl.Sf.expint_E1 x
-
-let expint_E2 x = Gsl.Sf.expint_E2 x
-
-let expint_Ei x = Gsl.Sf.expint_Ei x
-
-let expint_E1_scaled x = Gsl.Sf.expint_E1_scaled x
-
-let expint_E2_scaled x = Gsl.Sf.expint_E2_scaled x
-
-let expint_Ei_scaled x = Gsl.Sf.expint_Ei_scaled x
-
-let expint_3 x = Gsl.Sf.expint_3 x
-
-let shi x = Gsl.Sf.shi x
-
-let chi x = Gsl.Sf.chi x
-
-let si x = Gsl.Sf.si x
-
-let ci x = Gsl.Sf.ci x
-
-let atanint x = Gsl.Sf.atanint x
+let ci x = sici x |> snd
 
 let fermi_dirac_m1 x = Gsl.Sf.fermi_dirac_m1 x
 
@@ -340,14 +324,6 @@ let betainc a b x = Owl_maths_special.betainc a b x
 
 let betaincinv a b y = Owl_maths_special.betaincinv a b y
 
-let laguerre_1 a x = Gsl.Sf.laguerre_1 a x
-
-let laguerre_2 a x = Gsl.Sf.laguerre_2 a x
-
-let laguerre_3 a x = Gsl.Sf.laguerre_3 a x
-
-let laguerre_n n a x = Gsl.Sf.laguerre_n n a x
-
 let lambert_w0 x = Gsl.Sf.lambert_W0 x
 
 let lambert_w1 x = Gsl.Sf.lambert_Wm1 x
@@ -382,15 +358,9 @@ let transport_4 x = Gsl.Sf.transport_4 x
 
 let transport_5 x = Gsl.Sf.transport_5 x
 
-let zeta x = Gsl.Sf.zeta x
+let zeta x q = Owl_maths_special.zeta x q
 
-let zeta_int x = Gsl.Sf.zeta_int x
-
-let hzeta x y = Gsl.Sf.hzeta x y
-
-let eta x = Gsl.Sf.eta x
-
-let eta_int x = Gsl.Sf.eta_int x
+let zetac x = Owl_maths_special.zetac x
 
 let permutation n k =
   let r = ref 1 in

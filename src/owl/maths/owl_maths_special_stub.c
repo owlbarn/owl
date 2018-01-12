@@ -8,6 +8,77 @@
 #include <stdio.h>
 
 
+value owl_stub_sf_airy(value vX, value Ai, value Aip, value Bi, value Bip) {
+  double x = Double_val(vX);
+  double* ai = CTYPES_ADDR_OF_FATPTR(Ai);
+  double* aip = CTYPES_ADDR_OF_FATPTR(Aip);
+  double* bi = CTYPES_ADDR_OF_FATPTR(Bi);
+  double* bip = CTYPES_ADDR_OF_FATPTR(Bip);
+  int r = airy(x, ai, aip, bi, bip);
+  return Val_long(r);
+}
+
+
+value owl_stub_sf_ellipj(value vU, value vM, value Sn, value Cn, value Dn, value Phi) {
+  double u = Double_val(vU);
+  double m = Double_val(vM);
+  double* sn = CTYPES_ADDR_OF_FATPTR(Sn);
+  double* cn = CTYPES_ADDR_OF_FATPTR(Cn);
+  double* dn = CTYPES_ADDR_OF_FATPTR(Dn);
+  double* phi = CTYPES_ADDR_OF_FATPTR(Phi);
+  int r = ellpj(u, m, sn, cn, dn, phi);
+  return Val_long(r);
+}
+
+
+value owl_stub_sf_ellipj_byte6(value* argv, int argc) {
+  value phi = argv[5];
+  value dn = argv[4];
+  value cn = argv[3];
+  value sn = argv[2];
+  value m = argv[1];
+  value u = argv[0];
+  return owl_stub_sf_ellipj(u, m, sn, cn, dn, phi);
+}
+
+
+value owl_stub_sf_ellipk(value vM) {
+  double m = Double_val(vM);
+  double y = ellpk(1 - m);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_ellipkm1(value vM) {
+  double m = Double_val(vM);
+  double y = ellpk(m);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_ellipkinc(value vPhi, value vM) {
+  double phi = Double_val(vPhi);
+  double m = Double_val(vM);
+  double y = ellik(phi, m);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_ellipe(value vM) {
+  double m = Double_val(vM);
+  double y = ellpe(m);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_ellipeinc(value vPhi, value vM) {
+  double phi = Double_val(vPhi);
+  double m = Double_val(vM);
+  double y = ellie(phi, m);
+  return caml_copy_double(y);
+}
+
+
 value owl_stub_sf_j0(value vX) {
   double x = Double_val(vX);
   double y = j0(x);
@@ -53,7 +124,7 @@ value owl_stub_sf_yv(value vV, value vX) {
 
 
 value owl_stub_sf_yn(value vN, value vX) {
-  double n = Int_val(vN);
+  double n = Long_val(vN);
   double x = Double_val(vX);
   double y = yn(n, x);
   return caml_copy_double(y);
@@ -198,5 +269,46 @@ value owl_stub_sf_betaincinv(value vA, value vB, value vY) {
 value owl_stub_sf_psi(value vX) {
   double x = Double_val(vX);
   double y = psi(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_expn(value vN, value vX) {
+  int n = Long_val(vN);
+  double x = Double_val(vX);
+  double y = expn(n, x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_shichi(value vX, value vSi, value vCi) {
+  double x = Double_val(vX);
+  double* si = CTYPES_ADDR_OF_FATPTR(vSi);
+  double* ci = CTYPES_ADDR_OF_FATPTR(vCi);
+  int r = shichi(x, si, ci);
+  return Val_long(r);
+}
+
+
+value owl_stub_sf_sici(value vX, value vSi, value vCi) {
+  double x = Double_val(vX);
+  double* si = CTYPES_ADDR_OF_FATPTR(vSi);
+  double* ci = CTYPES_ADDR_OF_FATPTR(vCi);
+  int r = sici(x, si, ci);
+  return Val_long(r);
+}
+
+
+value owl_stub_sf_zeta(value vX, value vQ) {
+  double x = Double_val(vX);
+  double q = Double_val(vQ);
+  double y = zeta(x, q);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_zetac(value vX) {
+  double x = Double_val(vX);
+  double y = zetac(x);
   return caml_copy_double(y);
 }
