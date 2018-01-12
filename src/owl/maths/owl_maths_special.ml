@@ -54,6 +54,8 @@ external i1 : float -> float = "owl_stub_sf_i1"
 
 external i1e : float -> float = "owl_stub_sf_i1e"
 
+external iv : float -> float -> float = "owl_stub_sf_iv"
+
 external k0 : float -> float = "owl_stub_sf_k0"
 
 external k0e : float -> float = "owl_stub_sf_k0e"

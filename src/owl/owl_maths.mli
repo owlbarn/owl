@@ -174,6 +174,9 @@ val i1 : float -> float
 val i1e : float -> float
 (** Exponentially scaled modified Bessel function of order 1. *)
 
+val iv : float -> float -> float
+(** Modified Bessel function of the first kind of real order. *)
+
 val k0 : float -> float
 (** Modified Bessel function of the second kind of order 0, K_0.*)
 

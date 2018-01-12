@@ -159,6 +159,14 @@ value owl_stub_sf_i1e(value vX) {
 }
 
 
+value owl_stub_sf_iv(value vV, value vX) {
+  double v = Double_val(vV);
+  double x = Double_val(vX);
+  double y = iv(v, x);
+  return caml_copy_double(y);
+}
+
+
 value owl_stub_sf_k0(value vX) {
   double x = Double_val(vX);
   double y = k0(x);

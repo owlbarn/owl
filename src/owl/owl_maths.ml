@@ -214,6 +214,8 @@ let i1 x = Owl_maths_special.i1 x
 
 let i1e x = Owl_maths_special.i1e x
 
+let iv v x = Owl_maths_special.iv v x
+
 let k0 x = Owl_maths_special.k0 x
 
 let k0e x = Owl_maths_special.k0e x
