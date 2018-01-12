@@ -1121,7 +1121,7 @@ let stairs ?(h=_default_handle) ?(spec=[]) x y =
 let draw_circle ?(h=_default_handle) ?(spec=[]) x y rr =
   let open Plplot in
   let n = 1000 in
-  let theta = (2. *. Owl_maths.pi) /. (float_of_int n) in
+  let theta = (2. *. Owl_const.pi) /. (float_of_int n) in
   let x' = Array.init (n + 1) (fun i -> x +. Owl_maths.(sin (float_of_int i *. theta)) *. rr) in
   let y' = Array.init (n + 1) (fun i -> y +. Owl_maths.(cos (float_of_int i *. theta)) *. rr) in
   _adjust_range h ~margin:0.05 x' X;
@@ -1158,7 +1158,7 @@ let draw_circle ?(h=_default_handle) ?(spec=[]) x y rr =
 
 let _draw_arc fill n x =
   let open Plplot in
-  let a = 2. *. Owl_maths.pi in
+  let a = 2. *. Owl_const.pi in
   let theta = a /. n in
   let i = ref 0. in
 

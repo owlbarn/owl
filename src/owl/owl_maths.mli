@@ -37,10 +37,6 @@ val exp : float -> float
 
 val expm1 : float -> float
 
-val exp_mult : float -> float -> float
-
-val exprel : float -> float
-
 val log : float -> float
 
 val log1p : float -> float
@@ -51,7 +47,7 @@ val log2 : float -> float
 
 val log10 : float -> float
 
-val logN : float -> float -> float
+val logn : float -> float -> float
 
 val sigmoid : float -> float
 
@@ -121,14 +117,6 @@ val lnsinh : float -> float
 val lncosh : float -> float
 
 val hypot : float -> float -> float
-
-val rect_of_polar : r:float -> theta:float -> float * float
-
-val polar_of_rect : x:float -> y:float -> float * float
-
-val angle_restrict_symm : float -> float
-
-val angle_restrict_pos : float -> float
 
 
 (** {6 Airy functions} *)
@@ -330,41 +318,6 @@ val pochrel : float -> float -> float
 val lambert_w0 : float -> float
 
 val lambert_w1 : float -> float
-
-
-(** {6 Some constants} *)
-
-val e : float
-
-val euler : float
-
-val log2e : float
-
-val log10e : float
-
-val sqrt1_2 : float
-
-val sqrt2 : float
-
-val sqrt3 : float
-
-val sqrtpi : float
-
-val pi : float
-
-val pi_2 : float
-
-val pi_4 : float
-
-val i_1_pi : float
-
-val i_1_pi : float
-
-val ln10 : float
-
-val ln2 : float
-
-val lnpi : float
 
 
 (** {6 Some utility functions} *)

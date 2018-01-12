@@ -3,6 +3,45 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+
+(** Maths constants *)
+
+let e       = 2.718281828459045235360287471352662498  (* e *)
+
+let euler   = 0.577215664901532860606512090082402431  (* Euler constant *)
+
+let log2e   = 1.442695040888963407359924681001892137  (* log2_e *)
+
+let log10e  = 0.434294481903251827651128918916605082  (* log_10 e *)
+
+let loge2   = 0.693147180559945309417232121458176568  (* log_e 2 *)
+
+let loge10  = 2.302585092994045684017991454684364208  (* log_e 10 *)
+
+let logepi  = 1.144729885849400174143427351353058711  (* log_e pi *)
+
+let sqrt1_2 = 0.707106781186547524400844362104849039  (* 1/sqrt(2) *)
+
+let sqrt2   = 1.414213562373095048801688724209698079  (* sqrt(2) *)
+
+let sqrt3   = 1.732050807568877293527446341505872366  (* sqrt(3) *)
+
+let sqrtpi  = 1.772453850905516027298167483341145182  (* sqrt(pi) *)
+
+let pi      = 3.141592653589793238462643383279502884  (* pi *)
+
+let pi2     = 6.283185307179586476925286766559005768  (* 2*pi *)
+
+let pi4     = 12.56637061435917295385057353311801153  (* 4*pi *)
+
+let pi_2    = 1.570796326794896619231321691639751442  (* pi/2 *)
+
+let pi_4    = 0.785398163397448309615660845819875721  (* pi/4 *)
+
+
+
+(** Unit prefixes *)
+
 module Prefix = struct
   let fine_structure = 7.297352533e-3
   let avogadro = 6.02214199e23
@@ -27,6 +66,7 @@ module Prefix = struct
   let zepto = 1e-21
   let yocto = 1e-24
 end
+
 
 (** Values of physical constants *)
 
@@ -123,6 +163,7 @@ module CGS = struct
  let stefan_boltzmann_constant = 5.67040047374e-5
  let thomson_cross_section = 6.65245893699e-25
 end
+
 
 module CGSM = struct
  let speed_of_light = 2.99792458e10
@@ -223,6 +264,7 @@ module CGSM = struct
  let faraday = 9.64853429775e3
  let electron_charge = 1.602176487e-20
 end
+
 
 module MKS = struct
  let speed_of_light = 2.99792458e8
@@ -327,6 +369,7 @@ module MKS = struct
  let debye = 3.33564095198e-30
  let gauss = 1e-4
 end
+
 
 module SI = struct
  let speed_of_light = 2.99792458e8

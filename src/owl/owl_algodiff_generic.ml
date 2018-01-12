@@ -507,7 +507,7 @@ module Make
         | _        -> error_uniop "log2" a
       in
       let fd a = log2 a in
-      let df cp ap at = at / (ap * (F Owl_maths.log2e)) in
+      let df cp ap at = at / (ap * (F Owl_const.log2e)) in
       let r a = Log2_D a in
       op_d_d a ff fd df r
 
@@ -518,7 +518,7 @@ module Make
         | _        -> error_uniop "log10" a
       in
       let fd a = log10 a in
-      let df cp ap at = at / (ap * (F Owl_maths.log10e)) in
+      let df cp ap at = at / (ap * (F Owl_const.log10e)) in
       let r a = Log10_D a in
       op_d_d a ff fd df r
 
@@ -1279,8 +1279,8 @@ module Make
               | Sqr_D a                  -> push (((!aa * (primal a) * (F 2.)), a) :: t)
               | Sqrt_D a                 -> push (((!aa / ((F 2.) * ap)), a) :: t)
               | Log_D a                  -> push (((!aa / (primal a)), a) :: t)
-              | Log2_D a                 -> push (((!aa / ((primal a) * (F Owl_maths.log2e))), a) :: t)
-              | Log10_D a                -> push (((!aa / ((primal a) * (F Owl_maths.log10e))), a) :: t)
+              | Log2_D a                 -> push (((!aa / ((primal a) * (F Owl_const.log2e))), a) :: t)
+              | Log10_D a                -> push (((!aa / ((primal a) * (F Owl_const.log10e))), a) :: t)
               | Exp_D a                  -> push (((!aa * ap), a) :: t)
               | Sin_D a                  -> push (((!aa * cos (primal a)), a) :: t)
               | Cos_D a                  -> push (((!aa * (neg (sin (primal a)))), a) :: t)

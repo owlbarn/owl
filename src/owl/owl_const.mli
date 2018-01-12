@@ -21,6 +21,72 @@
   http://www.npl.co.uk/upload/pdf/units-of-measurement-poster.pdf
 *)
 
+
+(** {6 Maths constants} *)
+
+val e : float        (* e *)
+
+val euler : float    (* Euler constant *)
+
+val log2e : float    (* log2_e *)
+
+val log10e : float   (* log_10 e *)
+
+val loge2 : float    (* log_e 2 *)
+
+val loge10 : float   (* log_e 10 *)
+
+val logepi : float   (* log_e pi *)
+
+val sqrt1_2 : float  (* 1/sqrt(2) *)
+
+val sqrt2 : float    (* sqrt(2) *)
+
+val sqrt3 : float    (* sqrt(3) *)
+
+val sqrtpi : float   (* sqrt(pi) *)
+
+val pi : float       (* pi *)
+
+val pi2 : float      (* 2*pi *)
+
+val pi4 : float      (* 4*pi *)
+
+val pi_2 : float     (* pi/2 *)
+
+val pi_4 : float     (* pi/4 *)
+
+
+(** {6 Unit prefixes} *)
+
+module Prefix : sig
+  val fine_structure : float
+  val avogadro : float
+  val yotta : float
+  val zetta : float
+  val exa : float
+  val peta : float
+  val tera : float
+  val giga : float
+  val mega : float
+  val kilo : float
+  val hecto : float
+  val deca : float
+  val deci : float
+  val centi : float
+  val milli : float
+  val micro : float
+  val nano : float
+  val pico : float
+  val femto : float
+  val atto : float
+  val zepto : float
+  val yocto : float
+end
+
+
+(** {6 SI: International System of Units} *)
+
 module SI : sig
   val speed_of_light : float
   val gravitational_constant : float
@@ -125,30 +191,8 @@ module SI : sig
   val gauss : float
 end
 
-module Prefix : sig
-  val fine_structure : float
-  val avogadro : float
-  val yotta : float
-  val zetta : float
-  val exa : float
-  val peta : float
-  val tera : float
-  val giga : float
-  val mega : float
-  val kilo : float
-  val hecto : float
-  val deca : float
-  val deci : float
-  val centi : float
-  val milli : float
-  val micro : float
-  val nano : float
-  val pico : float
-  val femto : float
-  val atto : float
-  val zepto : float
-  val yocto : float
-end
+
+(** {6 MKS: MKS system of units} *)
 
 module MKS : sig
   val speed_of_light : float
@@ -254,6 +298,9 @@ module MKS : sig
   val gauss : float
 end
 
+
+(** {6 CGS: Centimetre–gram–second system of units} *)
+
 module CGS : sig
   val speed_of_light : float
   val gravitational_constant : float
@@ -347,6 +394,9 @@ module CGS : sig
   val stefan_boltzmann_constant : float
   val thomson_cross_section : float
 end
+
+
+(** {6 CGSM: Unit Systems in Electromagnetism} *)
 
 module CGSM : sig
   val speed_of_light : float

@@ -869,7 +869,7 @@ let linspace k a b n =
   _owl_linspace k n a b x;
   x
 
-let logspace k ?(base=Owl_maths.e) a b n =
+let logspace k ?(base=Owl_const.e) a b n =
   let x = empty k [|n|] in
   _owl_logspace k n base a b x;
   x

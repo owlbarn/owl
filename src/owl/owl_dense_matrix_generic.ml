@@ -56,7 +56,7 @@ let linspace k a b n =
   reshape x [|1;n|]
 
 
-let logspace k ?(base=Owl_maths.e) a b n =
+let logspace k ?(base=Owl_const.e) a b n =
   let x = Owl_dense_ndarray_generic.logspace k ~base a b n in
   Owl_dense_ndarray_generic.reshape x [|1;n|]
 

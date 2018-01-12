@@ -6,41 +6,7 @@
 module CI = Cstubs_internals
 
 
-(** [ Mathematics Module ]  *)
-
-let e = Gsl.Math.e
-
-let euler = Gsl.Math.euler
-
-let log2e = Gsl.Math.log2e
-
-let log10e = Gsl.Math.log10e
-
-let sqrt1_2 = Gsl.Math.sqrt1_2
-
-let sqrt2 = Gsl.Math.sqrt2
-
-let sqrt3 = Gsl.Math.sqrt3
-
-let sqrtpi = Gsl.Math.sqrtpi
-
-let pi = Gsl.Math.pi
-
-let pi_2 = Gsl.Math.pi_2
-
-let pi_4 = Gsl.Math.pi_4
-
-let i_1_pi = Gsl.Math.i_1_pi
-
-let i_1_pi = Gsl.Math.i_2_pi
-
-let ln10 = Gsl.Math.ln10
-
-let ln2 = Gsl.Math.ln2
-
-let lnpi = Gsl.Math.lnpi
-
-(** [ Basic and advanced math functions ] *)
+(** Basic and advanced math functions *)
 
 let abs x = abs_float x
 
@@ -73,25 +39,21 @@ let sqrt x = sqrt x
 
 let pow x y = x ** y
 
-let exp x = Gsl.Sf.exp x
+let exp x = exp x
 
-let expm1 x = Gsl.Sf.expm1 x
+let expm1 x = expm1 x
 
-let exp_mult x y = Gsl.Sf.exp_mult x y
+let log x = log x
 
-let exprel x = Gsl.Sf.exprel x
+let log1p x = log1p x
 
-let log x = Gsl.Sf.log x
+let log_abs x = log (abs_float x)
 
-let log1p x = Gsl.Sf.log_1plusx x
+let log2 x = (log x) /. Owl_const.loge2
 
-let log_abs x = Gsl.Sf.log_abs x
+let log10 x = (log x) /. Owl_const.loge10
 
-let log2 x = (log x) /. Gsl.Math.ln2
-
-let log10 x = (log x) /. Gsl.Math.ln10
-
-let logN base x = (log x) /. (log base)
+let logn base x = (log x) /. (log base)
 
 let sigmoid x = 1. /. ((exp (-.x)) +. 1.)
 
@@ -113,7 +75,7 @@ let acos x = acos x
 
 let atan x = atan x
 
-let acot x = (Gsl.Math.pi /. 2.) -. (atan x)
+let acot x = (Owl_const.pi /. 2.) -. (atan x)
 
 let asec x = acos (1. /. x)
 
@@ -150,20 +112,6 @@ let lnsinh x = Gsl.Sf.lnsinh x
 let lncosh x = Gsl.Sf.lncosh x
 
 let hypot x y = Gsl.Sf.hypot x y
-
-let rect_of_polar ~r ~theta =
-  let open Gsl.Fun in
-  let x, y = Gsl.Sf.rect_of_polar ~r ~theta in
-  x.res, y.res
-
-let polar_of_rect ~x ~y =
-  let open Gsl.Fun in
-  let a, b = Gsl.Sf.polar_of_rect ~x ~y in
-  a.res, b.res
-
-let angle_restrict_symm x = Gsl.Sf.angle_restrict_symm x
-
-let angle_restrict_pos x = Gsl.Sf.angle_restrict_pos x
 
 let airy x =
   let ai = Ctypes.(allocate double 0.) in
