@@ -187,21 +187,6 @@ val k1e : float -> float
 (** Exponentially scaled modified Bessel function K of order 1. *)
 
 
-(** {6 Debye Functions} *)
-
-val debye_1 : float -> float
-
-val debye_2 : float -> float
-
-val debye_3 : float -> float
-
-val debye_4 : float -> float
-
-val debye_5 : float -> float
-
-val debye_6 : float -> float
-
-
 (** {6 Elliptic functions} *)
 
 val ellipj : float -> float -> float * float * float * float
@@ -251,27 +236,6 @@ val zeta : float -> float -> float
 
 val zetac : float -> float
 (** Riemann zeta function minus 1. *)
-
-
-(** {6 Fermi-Dirac Function} *)
-
-val fermi_dirac_m1 : float -> float
-
-val fermi_dirac_0 : float -> float
-
-val fermi_dirac_1 : float -> float
-
-val fermi_dirac_2 : float -> float
-
-val fermi_dirac_int : int -> float -> float
-
-val fermi_dirac_mhalf : float -> float
-
-val fermi_dirac_half : float -> float
-
-val fermi_dirac_3half : float -> float
-
-val fermi_dirac_inc_0 : float -> float -> float
 
 
 (** {6 Gamma Functions} *)

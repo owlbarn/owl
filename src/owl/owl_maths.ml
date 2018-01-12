@@ -222,24 +222,6 @@ let k1 x = Owl_maths_special.k1 x
 
 let k1e x = Owl_maths_special.k1e x
 
-let clausen x = Gsl.Sf.clausen x
-
-let dawson x = Gsl.Sf.dawson x
-
-let debye_1 x = Gsl.Sf.debye_1 x
-
-let debye_2 x = Gsl.Sf.debye_2 x
-
-let debye_3 x = Gsl.Sf.debye_3 x
-
-let debye_4 x = Gsl.Sf.debye_4 x
-
-let debye_5 x = Gsl.Sf.debye_5 x
-
-let debye_6 x = Gsl.Sf.debye_6 x
-
-let dilog x = Gsl.Sf.dilog x
-
 let expn n x = Owl_maths_special.expn n x
 
 let shichi x =
@@ -261,24 +243,6 @@ let sici x =
 let si x = sici x |> fst
 
 let ci x = sici x |> snd
-
-let fermi_dirac_m1 x = Gsl.Sf.fermi_dirac_m1 x
-
-let fermi_dirac_0 x = Gsl.Sf.fermi_dirac_0 x
-
-let fermi_dirac_1 x = Gsl.Sf.fermi_dirac_1 x
-
-let fermi_dirac_2 x = Gsl.Sf.fermi_dirac_2 x
-
-let fermi_dirac_int j x = Gsl.Sf.fermi_dirac_int j x
-
-let fermi_dirac_mhalf x = Gsl.Sf.fermi_dirac_mhalf x
-
-let fermi_dirac_half x = Gsl.Sf.fermi_dirac_half x
-
-let fermi_dirac_3half x = Gsl.Sf.fermi_dirac_3half x
-
-let fermi_dirac_inc_0 x b = Gsl.Sf.fermi_dirac_inc_0 x b
 
 let gamma x = Owl_maths_special.gamma x
 
