@@ -187,16 +187,6 @@ val k1e : float -> float
 (** Exponentially scaled modified Bessel function K of order 1. *)
 
 
-(** {6 Clausen Functions} *)
-
-val clausen : float -> float
-
-
-(** {6 Dawson Function} *)
-
-val dawson : float -> float
-
-
 (** {6 Debye Functions} *)
 
 val debye_1 : float -> float
@@ -210,11 +200,6 @@ val debye_4 : float -> float
 val debye_5 : float -> float
 
 val debye_6 : float -> float
-
-
-(** {6 Dilogarithm} *)
-
-val dilog : float -> float
 
 
 (** {6 Elliptic functions} *)
@@ -378,43 +363,6 @@ val pochrel : float -> float -> float
 val lambert_w0 : float -> float
 
 val lambert_w1 : float -> float
-
-
-(** {6 Legendre Functions and Spherical Harmonics} *)
-
-val legendre_P1 : float -> float
-
-val legendre_P2 : float -> float
-
-val legendre_P3 : float -> float
-
-val legendre_Pl : int -> float -> float
-
-val legendre_Pl_array : int -> float -> float array
-
-val legendre_Q0 : float -> float
-
-val legendre_Q1 : float -> float
-
-val legendre_Ql : int -> float -> float
-
-
-(** {6 Synchrotron Functions} *)
-
-val synchrotron_1 : float -> float
-
-val synchrotron_2 : float -> float
-
-
-(** {6 Transport Functions} *)
-
-val transport_2 : float -> float
-
-val transport_3 : float -> float
-
-val transport_4 : float -> float
-
-val transport_5 : float -> float
 
 
 (** {6 Some constants} *)

@@ -328,36 +328,6 @@ let lambert_w0 x = Gsl.Sf.lambert_W0 x
 
 let lambert_w1 x = Gsl.Sf.lambert_Wm1 x
 
-let legendre_P1 x = Gsl.Sf.legendre_P1 x
-
-let legendre_P2 x = Gsl.Sf.legendre_P2 x
-
-let legendre_P3 x = Gsl.Sf.legendre_P3 x
-
-let legendre_Pl l x = Gsl.Sf.legendre_Pl l x
-
-let legendre_Pl_array l x =
-  let y = Array.make l 0. in
-  Gsl.Sf.legendre_Pl_array x y; y
-
-let legendre_Q0 x = Gsl.Sf.legendre_Q0 x
-
-let legendre_Q1 x = Gsl.Sf.legendre_Q1 x
-
-let legendre_Ql l x = Gsl.Sf.legendre_Ql l x
-
-let synchrotron_1 x = Gsl.Sf.synchrotron_1 x
-
-let synchrotron_2 x = Gsl.Sf.synchrotron_2 x
-
-let transport_2 x = Gsl.Sf.transport_2 x
-
-let transport_3 x = Gsl.Sf.transport_3 x
-
-let transport_4 x = Gsl.Sf.transport_4 x
-
-let transport_5 x = Gsl.Sf.transport_5 x
-
 let zeta x q = Owl_maths_special.zeta x q
 
 let zetac x = Owl_maths_special.zetac x
