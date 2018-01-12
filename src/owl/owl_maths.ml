@@ -47,13 +47,13 @@ let log x = log x
 
 let log1p x = log1p x
 
-let log_abs x = log (abs_float x)
-
 let log2 x = (log x) /. Owl_const.loge2
 
 let log10 x = (log x) /. Owl_const.loge10
 
 let logn base x = (log x) /. (log base)
+
+let logabs x = Owl_maths_special.logabs x
 
 let sigmoid x = 1. /. ((exp (-.x)) +. 1.)
 
@@ -81,7 +81,7 @@ let asec x = acos (1. /. x)
 
 let acsc x = asin (1. /. x)
 
-let sinc x = Gsl.Sf.sinc x
+let sinc x = Owl_maths_special.sinc x
 
 let sinh x = sinh x
 
@@ -95,11 +95,11 @@ let sech x = 1. /. cosh x
 
 let csch x = 1. /. sinh x
 
-let asinh x = Gsl.Math.asinh x
+let asinh x = Owl_maths_special.asinh x
 
-let acosh x = Gsl.Math.acosh x
+let acosh x = Owl_maths_special.acosh x
 
-let atanh x = Gsl.Math.atanh x
+let atanh x = Owl_maths_special.atanh x
 
 let acoth x = atanh (1. /. x)
 
@@ -107,11 +107,19 @@ let asech x = acosh (1. /. x)
 
 let acsch x = asinh (1. /. x)
 
-let lnsinh x = Gsl.Sf.lnsinh x
+let logsinh x = log (sinh x)
 
-let lncosh x = Gsl.Sf.lncosh x
+let logcosh x = log (cosh x)
 
-let hypot x y = Gsl.Sf.hypot x y
+let hypot x y = Owl_maths_special.hypot x y
+
+let xlogy x y = Owl_maths_special.xlogy x y
+
+let xlog1py x y = Owl_maths_special.xlog1py x y
+
+let logit x = Owl_maths_special.logit x
+
+let expit x = Owl_maths_special.expit x
 
 let airy x =
   let ai = Ctypes.(allocate double 0.) in
@@ -200,13 +208,13 @@ let rgamma x = Owl_maths_special.rgamma x
 
 let loggamma x = Owl_maths_special.loggamma x
 
-let gammainc a x  = Owl_maths_special.gammainc a x
+let gammainc a x = Owl_maths_special.gammainc a x
 
-let gammaincinv a x  = Owl_maths_special.gammaincinv a x
+let gammaincinv a x = Owl_maths_special.gammaincinv a x
 
-let gammaincc a x  = Owl_maths_special.gammaincc a x
+let gammaincc a x = Owl_maths_special.gammaincc a x
 
-let gammainccinv a x  = Owl_maths_special.gammainccinv a x
+let gammainccinv a x = Owl_maths_special.gammainccinv a x
 
 let psi x = Owl_maths_special.psi x
 

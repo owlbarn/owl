@@ -108,3 +108,26 @@ let sici x si ci = sici x (CI.cptr si) (CI.cptr ci)
 external zeta : float -> float -> float = "owl_stub_sf_zeta"
 
 external zetac : float -> float = "owl_stub_sf_zetac"
+
+
+(* From owl_maths_special_impl.c file *)
+
+external asinh : float -> float = "owl_stub_sf_asinh"
+
+external acosh : float -> float = "owl_stub_sf_acosh"
+
+external atanh : float -> float = "owl_stub_sf_atanh"
+
+external hypot : float -> float -> float = "owl_stub_sf_hypot"
+
+external xlogy : float -> float -> float = "owl_stub_sf_xlogy"
+
+external xlog1py : float -> float -> float = "owl_stub_sf_xlog1py"
+
+external logit : float -> float = "owl_stub_sf_logit"
+
+external expit : float -> float = "owl_stub_sf_expit"
+
+external sinc : float -> float = "owl_stub_sf_sinc"
+
+external logabs : float -> float = "owl_stub_sf_logabs"

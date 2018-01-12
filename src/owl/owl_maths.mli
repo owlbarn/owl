@@ -41,7 +41,7 @@ val log : float -> float
 
 val log1p : float -> float
 
-val log_abs : float -> float
+val logabs : float -> float
 
 val log2 : float -> float
 
@@ -58,9 +58,6 @@ val softsign : float -> float
 val softplus : float -> float
 
 val relu : float -> float
-
-
-(** {6 Trigonometric and hyperbolic functions} *)
 
 val sin : float -> float
 
@@ -112,11 +109,23 @@ val acsch : float -> float
 
 val sinc : float -> float
 
-val lnsinh : float -> float
+val logsinh : float -> float
 
-val lncosh : float -> float
+val logcosh : float -> float
 
 val hypot : float -> float -> float
+
+val xlogy : float -> float -> float
+(** [xlogy(x, y) = x*log(y)] *)
+
+val xlog1py : float -> float -> float
+(** [xlog1py(x, y) = x*log1p(y)] *)
+
+val logit : float -> float
+(** [logit(x) = log(p/(1-p))] *)
+
+val expit : float -> float
+(** [expit(x) = 1/(1+exp(-x))] *)
 
 
 (** {6 Airy functions} *)

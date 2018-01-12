@@ -35,3 +35,13 @@ double expit(double x) {
 double logit(double x) {
   return log(1 / (1 - x));
 }
+
+
+double logabs(double x) {
+  return log(fabs (x));
+}
+
+
+double sinc(double x) {
+  return (x == 0) ? 1 : (sin(x) / x);
+}

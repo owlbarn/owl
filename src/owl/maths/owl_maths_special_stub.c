@@ -320,3 +320,78 @@ value owl_stub_sf_zetac(value vX) {
   double y = zetac(x);
   return caml_copy_double(y);
 }
+
+
+/* From owl_maths_special_impl.c file */
+
+value owl_stub_sf_xlogy(value vX, value vY) {
+  double x = Double_val(vX);
+  double y = Double_val(vY);
+  double z = xlogy(x, y);
+  return caml_copy_double(z);
+}
+
+
+value owl_stub_sf_xlog1py(value vX, value vY) {
+  double x = Double_val(vX);
+  double y = Double_val(vY);
+  double z = xlog1py(x, y);
+  return caml_copy_double(z);
+}
+
+
+value owl_stub_sf_logit(value vX) {
+  double x = Double_val(vX);
+  double y = logit(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_expit(value vX) {
+  double x = Double_val(vX);
+  double y = expit(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_logabs(value vX) {
+  double x = Double_val(vX);
+  double y = logabs(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_asinh(value vX) {
+  double x = Double_val(vX);
+  double y = asinh(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_acosh(value vX) {
+  double x = Double_val(vX);
+  double y = acosh(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_atanh(value vX) {
+  double x = Double_val(vX);
+  double y = atanh(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_hypot(value vX, value vY) {
+  double x = Double_val(vX);
+  double y = Double_val(vY);
+  double z = hypot(x, y);
+  return caml_copy_double(z);
+}
+
+
+value owl_stub_sf_sinc(value vX) {
+  double x = Double_val(vX);
+  double y = sinc(x);
+  return caml_copy_double(y);
+}
