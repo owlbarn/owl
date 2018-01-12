@@ -208,36 +208,6 @@ val ellipeinc : float -> float -> float
 (** Incomplete elliptic integral of the second kind [ellipeinc phi m]. *)
 
 
-(** {6 Other special functions} *)
-
-val expn : int -> float -> float
-(** Exponential integral E_n. *)
-
-val shichi : float -> float * float
-(** Hyperbolic sine and cosine integrals, [shichi x] returns [(shi, chi)]. *)
-
-val shi : float -> float
-(** Hyperbolic sine integrals. *)
-
-val chi : float -> float
-(** Hyperbolic cosine integrals. *)
-
-val sici : float -> float * float
-(** Sine and cosine integrals, [sici x] returns [(si, ci)]. *)
-
-val si : float -> float
-(** Sine integral. *)
-
-val ci : float -> float
-(** Cosine integral. *)
-
-val zeta : float -> float -> float
-(** Riemann or Hurwitz zeta function [zeta x q]. *)
-
-val zetac : float -> float
-(** Riemann zeta function minus 1. *)
-
-
 (** {6 Gamma Functions} *)
 
 val gamma : float -> float
@@ -279,54 +249,55 @@ val betaincinv : float -> float -> float -> float
 
 (** {6 Factorials} *)
 
-val factorial : int -> float
+val fact : int -> float
+(** Factorial function [fact n] calculates [n!]. *)
 
-val double_factorial : int -> float
-
-val ln_factorial : int -> float
-
-val ln_double_factorial : int -> float
-
-val taylorcoeff : int -> float -> float
+val log_fact : int -> float
+(** Logarithm of factorial function [log_fact n] calculates [log n!]. *)
 
 val permutation : int -> int -> int
 (** [permutation n k] return the number of permutations of n things taken k at a time. *)
 
 val combination : int -> int -> int
-(** [combination n k] return the number of combination of n things taken k at a time. *)
+(** [combination n k] return the combination number of taking k out of n. *)
 
-val combination_float : int -> int -> float
-(** [combination_float n k] return the number of combination of n things taken
-  k at a time. This function can handle the result in a much larger range from
-  [[-.max_float, max_float]] comparing to [combination n k].
-*)
-
-val ln_combination : int -> int -> float
-(** [ln_combination n k] return the logarithm of the number of combination of n things taken k at a time. *)
-
-val combination_iterator : int -> int -> (unit -> int array)
+(* val combination_iterator : int -> int -> (unit -> int array) *)
 (** [combination_iterator n k] returns an iterator so that you can iterate all
   the possible combinations of taking k elements from a set of n of elements. *)
 
-val permutation_iterator : int -> (unit -> int array)
+(* val permutation_iterator : int -> (unit -> int array) *)
 (** [permutation_iterator n] returns an iterator so that you can iterate all the
   possible combinations of a set of n of elements. *)
 
 
-(** {6 Pochhammer Symbol} *)
+(** {6 Other special functions} *)
 
-val poch : float -> float -> float
+val expn : int -> float -> float
+(** Exponential integral E_n. *)
 
-val lnpoch : float -> float -> float
+val shichi : float -> float * float
+(** Hyperbolic sine and cosine integrals, [shichi x] returns [(shi, chi)]. *)
 
-val pochrel : float -> float -> float
+val shi : float -> float
+(** Hyperbolic sine integrals. *)
 
+val chi : float -> float
+(** Hyperbolic cosine integrals. *)
 
-(** {6 Lambert W Functions} *)
+val sici : float -> float * float
+(** Sine and cosine integrals, [sici x] returns [(si, ci)]. *)
 
-val lambert_w0 : float -> float
+val si : float -> float
+(** Sine integral. *)
 
-val lambert_w1 : float -> float
+val ci : float -> float
+(** Cosine integral. *)
+
+val zeta : float -> float -> float
+(** Riemann or Hurwitz zeta function [zeta x q]. *)
+
+val zetac : float -> float
+(** Riemann zeta function minus 1. *)
 
 
 (** {6 Some utility functions} *)

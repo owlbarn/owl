@@ -218,27 +218,12 @@ let gammainccinv a x = Owl_maths_special.gammainccinv a x
 
 let psi x = Owl_maths_special.psi x
 
-let factorial x = Gsl.Sf.fact x
+(* TODO: look up table is faster, but let's leave it for future *)
+let fact x =
+  assert (x >= 0);
+  Owl_maths_special.gamma (float_of_int x +. 1.0)
 
-let double_factorial x = Gsl.Sf.doublefact x
-
-let ln_factorial x = Gsl.Sf.lnfact x
-
-let ln_double_factorial x = Gsl.Sf.lndoublefact x
-
-let combination n x = int_of_float (Gsl.Sf.choose n x)
-
-let combination_float n x = Gsl.Sf.choose n x
-
-let ln_combination n x = Gsl.Sf.lnchoose n x
-
-let taylorcoeff n x = Gsl.Sf.taylorcoeff n x
-
-let poch a x = Gsl.Sf.poch a x
-
-let lnpoch a x = Gsl.Sf.lnpoch a x
-
-let pochrel a x = Gsl.Sf.pochrel a x
+let log_fact x = log (fact x)
 
 let beta a b = Owl_maths_special.beta a b
 
@@ -246,13 +231,11 @@ let betainc a b x = Owl_maths_special.betainc a b x
 
 let betaincinv a b y = Owl_maths_special.betaincinv a b y
 
-let lambert_w0 x = Gsl.Sf.lambert_W0 x
-
-let lambert_w1 x = Gsl.Sf.lambert_Wm1 x
-
 let zeta x q = Owl_maths_special.zeta x q
 
 let zetac x = Owl_maths_special.zetac x
+
+let combination n k = (fact n /. fact (n - k) /. fact k) |> int_of_float
 
 let permutation n k =
   let r = ref 1 in
@@ -261,40 +244,9 @@ let permutation n k =
   done;
   !r
 
-let combination_iterator n k =
-  let c = combination n k in
-  let x = Gsl.Combi.make n k in
-  let i = ref 0 in
-  let f = fun () -> (
-    let y = match !i < c with
-      | true  -> Gsl.Combi.to_array x
-      | false -> [||]
-    in
-    let _ = Gsl.Combi.next x in
-    let _ = i := !i + 1 in
-    y )
-  in f
-
-let permutation_iterator n =
-  let c = permutation n n in
-  let x = Gsl.Permut.make n in
-  let i = ref 0 in
-  let f = fun () -> (
-    let y = match !i < c with
-      | true  -> Gsl.Permut.to_array x
-      | false -> [||]
-    in
-    let _ = Gsl.Permut.next x in
-    let _ = i := !i + 1 in
-    y )
-  in f
-
-
 let is_odd x = ((Pervasives.abs x) mod 2) = 1
 
-
 let is_even x = (x mod 2) = 0
-
 
 let is_pow2 x = (x <> 0) && (x land (x - 1) = 0)
 
