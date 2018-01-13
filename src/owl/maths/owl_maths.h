@@ -165,6 +165,10 @@ extern double logabs(double x);
 
 extern double sinc(double x);
 
+extern double erfinv(double x);
+
+extern double erfcinv(double x);
+
 
 #ifdef __cplusplus
 }

@@ -41,7 +41,9 @@ val sample : 'a array -> int -> 'a array
 
 (** {6 Basic statistical functions} *)
 
-val mean : ?w:float array -> float array -> float
+val sum : float array -> float
+
+val mean : float array -> float
 
 val variance : ?w:float array -> ?mean:float -> float array -> float
 
@@ -93,11 +95,11 @@ val max : float array -> float
 
 val minmax : float array -> float * float
 
-val min_i : float array -> float * int
+val min_i : float array -> int
 
-val max_i : float array -> float * int
+val max_i : float array -> int
 
-val minmax_i : float array -> float * int * float * int
+val minmax_i : float array -> int * int
 
 val sort : ?inc:bool -> float array -> float array
 

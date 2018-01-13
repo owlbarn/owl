@@ -35,7 +35,9 @@ let sample x n =
 
 (** [ Statistics function ]  *)
 
-let mean ?w x = Gsl.Stats.mean ?w x
+let sum x = Array.fold_left ( +. ) 0. x
+
+let mean x = sum x /. (x |> Array.length |> float_of_int)
 
 let variance ?w ?mean x = Gsl.Stats.variance ?w ?mean x
 
@@ -191,23 +193,40 @@ let spearman_rho x0 x1 =
   let b = (std r0) *. (std r1) in
   a /. b
 
-let max x = Gsl.Stats.max x
-
-let min x = Gsl.Stats.min x
-
-let minmax x = Gsl.Stats.minmax x
-
-let max_i x =
-  let i = Gsl.Stats.max_index x in
-  x.(i), i
-
-let min_i x =
-  let i = Gsl.Stats.min_index x in
-  x.(i), i
-
 let minmax_i x =
-let i, j = Gsl.Stats.minmax_index x in
-x.(i), i, x.(j), j
+  assert (Array.length x > 0);
+  let _min = ref x.(0) in
+  let _max = ref x.(0) in
+  let _min_idx = ref 0 in
+  let _max_idx = ref 0 in
+  Array.iteri (fun i a ->
+    if a < !_min then (
+      _min := a;
+      _min_idx := i
+    )
+    else if a > !_max then (
+      _max := a;
+      _max_idx := i;
+    )
+  ) x;
+  !_min_idx, !_max_idx
+
+let min_i x = minmax_i x |> fst
+
+let max_i x = minmax_i x |> snd
+
+let min x = Array.fold_left min infinity x
+
+let max x = Array.fold_left max neg_infinity x
+
+let minmax x =
+  let _min = ref infinity in
+  let _max = ref neg_infinity in
+  Array.iter (fun a ->
+    if a < !_min then _min := a;
+    if a > !_max then _max := a;
+  ) x;
+  !_min, !_max
 
 let histogram x n =
   let a, b = minmax x in
