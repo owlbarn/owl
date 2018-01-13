@@ -26,6 +26,7 @@
     owl_stats_extend_shuffle
     SFMT
     owl_stats_ziggurat
+    owl_stats_dist_stub
     owl_stats_dist_beta
     owl_stats_dist_binomial
     owl_stats_dist_cauchy
