@@ -93,6 +93,21 @@ external betainc : float -> float -> float -> float = "owl_stub_sf_betainc"
 external betaincinv : float -> float -> float -> float = "owl_stub_sf_betaincinv"
 
 
+(* Error Function and Fresnel Integrals *)
+
+external erf : float -> float = "owl_stub_sf_erf"
+
+external erfc : float -> float = "owl_stub_sf_erfc"
+
+external erfcx : float -> float = "owl_stub_sf_erfcx"
+
+external dawsn : float -> float = "owl_stub_sf_dawsn"
+
+external fresnel : float -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_fresnel"
+
+let fresnel x ssa csa = fresnel x (CI.cptr ssa) (CI.cptr csa)
+
+
 (* Other functions *)
 
 external expn : int -> float -> float = "owl_stub_sf_expn"

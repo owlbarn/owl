@@ -244,6 +244,20 @@ let permutation n k =
   done;
   !r
 
+let erf x = Owl_maths_special.erf x
+
+let erfc x = Owl_maths_special.erfc x
+
+let erfcx x = Owl_maths_special.erfcx x
+
+let dawsn x = Owl_maths_special.dawsn x
+
+let fresnel x =
+  let ssa = Ctypes.(allocate double 0.) in
+  let csa = Ctypes.(allocate double 0.) in
+  Owl_maths_special.fresnel x ssa csa |> ignore;
+  Ctypes.(!@ssa, !@csa)
+
 let is_odd x = ((Pervasives.abs x) mod 2) = 1
 
 let is_even x = (x mod 2) = 0

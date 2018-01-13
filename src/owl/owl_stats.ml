@@ -17,8 +17,6 @@ let rng =
 
 let seed s = Gsl.Rng.set rng (Nativeint.of_int s)
 
-(* TODO: change the order of the arguments in _pdf functions *)
-
 
 (* Randomisation function *)
 

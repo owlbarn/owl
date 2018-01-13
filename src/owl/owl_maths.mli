@@ -261,13 +261,25 @@ val permutation : int -> int -> int
 val combination : int -> int -> int
 (** [combination n k] return the combination number of taking k out of n. *)
 
-(* val combination_iterator : int -> int -> (unit -> int array) *)
-(** [combination_iterator n k] returns an iterator so that you can iterate all
-  the possible combinations of taking k elements from a set of n of elements. *)
 
-(* val permutation_iterator : int -> (unit -> int array) *)
-(** [permutation_iterator n] returns an iterator so that you can iterate all the
-  possible combinations of a set of n of elements. *)
+(** {6 Error Function and Fresnel Integrals} *)
+
+val erf : float -> float
+(** Error function. *)
+
+val erfc : float -> float
+(** Complementary error function, [1 - erf(x)] *)
+
+val erfcx : float -> float
+(** Scaled complementary error function, [exp(x**2) * erfc(x)]. *)
+
+val dawsn : float -> float
+(** Dawson’s integral. *)
+
+val fresnel : float -> float * float
+(** Fresnel sin and cos integrals, [fresnel x] returns a tuple consisting of
+  [(Fresnel sin integral, Fresnel cos integral)]
+ *)
 
 
 (** {6 Other special functions} *)

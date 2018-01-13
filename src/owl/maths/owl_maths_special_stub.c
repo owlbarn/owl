@@ -322,6 +322,43 @@ value owl_stub_sf_zetac(value vX) {
 }
 
 
+value owl_stub_sf_erf(value vX) {
+  double x = Double_val(vX);
+  double y = erf(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_erfc(value vX) {
+  double x = Double_val(vX);
+  double y = erfc(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_erfcx(value vX) {
+  double x = Double_val(vX);
+  double y = exp(x * x) * erfc(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_dawsn(value vX) {
+  double x = Double_val(vX);
+  double y = dawsn(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_fresnel(value vX, value vSsa, value vCsa) {
+  double x = Double_val(vX);
+  double* ssa = CTYPES_ADDR_OF_FATPTR(vSsa);
+  double* csa = CTYPES_ADDR_OF_FATPTR(vCsa);
+  int r = fresnl(x, ssa, csa);
+  return Val_long(r);
+}
+
+
 /* From owl_maths_special_impl.c file */
 
 value owl_stub_sf_xlogy(value vX, value vY) {
