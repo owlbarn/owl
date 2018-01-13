@@ -26,11 +26,11 @@ let kmeans x c =
         ) cpts0
       ) x;
       iteri_rows (fun j u ->
-        let l = UT.array_filteri_v (fun i y -> Pervasives.(fst y = j), i) assignment in
+        let l = UT.Array.filteri_v (fun i y -> Pervasives.(fst y = j), i) assignment in
         let z = mean_rows (rows x l) in
         let _ = copy_row_to z cpts1 j in ()
       ) cpts0;
       if equal cpts0 cpts1 then failwith "converged" else ignore (copy_to cpts1 cpts0)
     done with exn -> ()
   in
-  cpts1, UT.array_map fst assignment
+  cpts1, UT.Array.map fst assignment

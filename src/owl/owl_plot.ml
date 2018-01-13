@@ -754,7 +754,7 @@ let stem ?(h=_default_handle) ?(spec=[]) x y =
     plschr marker_size 1.;
     if line_style > 0 && line_style < 9 then (
       pllsty line_style;
-      Owl_utils.array_iter2 (fun x' y' -> pljoin x' 0. x' y') x y
+      Owl_utils.Array.iter2 (fun x' y' -> pljoin x' 0. x' y') x y
     );
     if not (marker = "") then plstring x y marker;
     (* restore original settings *)
@@ -873,7 +873,7 @@ let error_bar ?(h=_default_handle) ?(spec=[]) x y e =
     plcol0 1;
     if line_width > (-1.) then plwidth line_width;
     pllsty line_style;
-    Owl_utils.array_iter3 (fun x0 y0 e0 ->
+    Owl_utils.Array.iter3 (fun x0 y0 e0 ->
       _draw_error_bar ~w x0 y0 e0
     ) x y e;
     (* restore original settings *)
@@ -925,7 +925,7 @@ let boxplot ?(h=_default_handle) ?(spec=[]) y =
     let r', g', b' = plgcol0 1 in
     plscol0 1 r g b;
     plcol0 1;
-    Owl_utils.array_iter2 (fun x' y' -> _draw_whiskers_box w x' y') x y1;
+    Owl_utils.Array.iter2 (fun x' y' -> _draw_whiskers_box w x' y') x y1;
     (* restore original settings *)
     plscol0 1 r' g' b';
     plcol0 1;
@@ -998,7 +998,7 @@ let bar ?(h=_default_handle) ?(spec=[]) y =
     plcol0 1;
     pllsty line_style;
     plpsty fill_pattern;
-    Owl_utils.array_iter2 (fun x0 y0 -> _draw_bar w x0 y0) x y;
+    Owl_utils.Array.iter2 (fun x0 y0 -> _draw_bar w x0 y0) x y;
     (* restore original settings *)
     plscol0 1 r' g' b';
     plcol0 1;

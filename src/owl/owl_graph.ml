@@ -59,16 +59,16 @@ let connect parents children =
 let remove_node x =
   let f = fun y -> y.id <> x.id in
   Array.iter (fun parent ->
-    parent.next <- Owl_utils.array_filter f parent.next
+    parent.next <- Owl_utils.Array.filter f parent.next
   ) x.prev;
   Array.iter (fun child ->
-    child.prev <- Owl_utils.array_filter f child.prev
+    child.prev <- Owl_utils.Array.filter f child.prev
   ) x.next
 
 
 let remove_edge src dst =
-  src.next <- Owl_utils.array_filter (fun x -> x.id <> dst.id) src.next;
-  dst.prev <- Owl_utils.array_filter (fun x -> x.id <> src.id) dst.prev
+  src.next <- Owl_utils.Array.filter (fun x -> x.id <> dst.id) src.next;
+  dst.prev <- Owl_utils.Array.filter (fun x -> x.id <> src.id) dst.prev
 
 
 (* depth-first search from [x]; [f : node -> unit] is applied to each node;

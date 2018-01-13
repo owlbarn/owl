@@ -125,7 +125,7 @@ let sub_left x i =
   let s_len = x.stride.(i_len - 1) in
   let pad_len = num_dims x - i_len in
   assert (pad_len > 0);
-  let i = Owl_utils.array_pad `Right i 0 pad_len in
+  let i = Owl_utils.Array.pad `Right i 0 pad_len in
   let start_pos = _index_nd_1d i x.stride in
   let data_y = Array.sub x.data start_pos s_len in
   let shape_y = Array.sub x.shape i_len pad_len in
@@ -137,7 +137,7 @@ let squeeze ?(axis=[||]) x =
     | 0 -> Array.init (num_dims x) (fun i -> i)
     | _ -> axis
   in
-  let s = Owl_utils.array_filteri (fun i v ->
+  let s = Owl_utils.Array.filteri (fun i v ->
     not (v == 1 && Array.mem i a)
   ) (shape x)
   in
@@ -146,7 +146,7 @@ let squeeze ?(axis=[||]) x =
 let expand x d =
   let d0 = d - (num_dims x) in
   match d0 > 0 with
-  | true  -> Owl_utils.array_pad `Left (shape x) 1 d0 |> reshape x
+  | true  -> Owl_utils.Array.pad `Left (shape x) 1 d0 |> reshape x
   | false -> x
 
 let reverse x =
@@ -406,11 +406,11 @@ let tile x reps =
   let b = Array.length reps in
   let x, reps = match a < b with
     | true -> (
-      let d = Owl_utils.array_pad `Left (shape x) 1 (b - a) in
+      let d = Owl_utils.Array.pad `Left (shape x) 1 (b - a) in
       (reshape x d), reps
       )
     | false -> (
-      let r = Owl_utils.array_pad `Left reps 1 (a - b) in
+      let r = Owl_utils.Array.pad `Left reps 1 (a - b) in
       x, r
       )
   in
@@ -423,7 +423,7 @@ let tile x reps =
     dx := !dx * sx.(!i);
   done;
   (* make the array to store the result *)
-  let sy = Owl_utils.array_map2i (fun _ a b -> a * b) sx reps in
+  let sy = Owl_utils.Array.map2i (fun _ a b -> a * b) sx reps in
   let y_data = Array.make (_calc_numel_from_shape sy) x.data.(0) in
   let y = make_arr sy (_calc_stride sy) y_data in
   (* project x and y to 1-dimensional arrays *)
@@ -543,7 +543,7 @@ let concatenate ?(axis=0) xs =
 let _expand_padding_index d s =
   let ls = Array.length s in
   let ld = Array.length d in
-  let d = Owl_utils.(array_pad `Right d [|0;0|] (ls - ld)) in
+  let d = Owl_utils.(Array.pad `Right d [|0;0|] (ls - ld)) in
   Array.map (function
     | [||]  -> [|0;0|]
     | [|x|] -> [|x;x|]

@@ -185,7 +185,7 @@ let mapn_arr_eval fun_name x =
   let kernel = Owl_opencl_context.(mk_kernel kind fun_name default.program) in
 
   let src = Array.mapi (fun i a -> get_val_mem_ptr a i) x.input in
-  let tmp = Owl_utils.array_filteri_v (fun i a -> a.refnum = 1, i) x.input in
+  let tmp = Owl_utils.Array.filteri_v (fun i a -> a.refnum = 1, i) x.input in
   let dst = match Array.length tmp > 0 with
     | true  -> (allocate_from_inputs ctx x |> snd).(tmp.(0))
     | false -> (allocate_from_inputs ctx x |> snd).(0)

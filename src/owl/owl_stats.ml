@@ -284,7 +284,7 @@ let t_score x =
   z_score ~mu ~sigma x
 
 let normlise_pdf x =
-  let c = Owl_utils.array_sum x in
+  let c = Owl_utils.Array.sum x in
   Array.map (fun x -> x /. c) x
 
 let centerise x = None
@@ -677,8 +677,8 @@ let t_test_paired ?(alpha=0.05) ?(side=BothSide) x y =
   let _ = if nx <> ny then
     failwith "the sizes of two samples does not equal."
   in
-  let d = Owl_utils.array_map2i (fun _ a b -> a -. b) x y in
-  let m = Owl_utils.array_sum d /. nx in
+  let d = Owl_utils.Array.map2i (fun _ a b -> a -. b) x y in
+  let m = Owl_utils.Array.sum d /. nx in
   let t = m /. (sem ~mean:m d) in
   let pl = Cdf.tdist_P t (nx -. 1.) in
   let pr = Cdf.tdist_Q t (nx -. 1.) in
@@ -999,7 +999,7 @@ let mannwhitneyu ?(alpha=0.05) ?(side=BothSide) x y =
 (* wilcoxon paired *)
 let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
   let d = Array.map2 (fun a b -> a -. b) x y in
-  let d = Owl_utils.array_filter (fun a -> a <> 0.) d in
+  let d = Owl_utils.Array.filter (fun a -> a <> 0.) d in
   let n = float_of_int (Array.length d) in
   let rankval = rank (Array.map abs_float d) in
   let rp = Array.map2 (fun a b -> (if a > 0.0 then 1. else 0.) *. b) d rankval in
@@ -1039,7 +1039,7 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
     in
     let p =
       if v < 0. then 0.
-      else Array.fold_left (+.) 0. (Owl_utils.array_map (fun i -> f (float_of_int i) n1) (Owl_utils.range 0 (int_of_float v)))
+      else Array.fold_left (+.) 0. (Owl_utils.Array.map (fun i -> f (float_of_int i) n1) (Owl_utils.range 0 (int_of_float v)))
     in
     match side with
     | BothSide -> 2. *. p /. (2. ** n1)

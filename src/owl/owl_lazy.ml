@@ -188,11 +188,11 @@ module Make (A : InpureSig) = struct
       )
       else Some (A.copy x_val, y_val)
     )
-    else if Owl_utils.array_greater_eqaul x_shp y_shp && refnum x = 1 && is_var x = false then (
+    else if Owl_utils.Array.greater_eqaul x_shp y_shp && refnum x = 1 && is_var x = false then (
       invalidate x;
       Some (x_val, y_val)
     )
-    else if Owl_utils.array_greater_eqaul y_shp x_shp && refnum y = 1 && is_var y = false then (
+    else if Owl_utils.Array.greater_eqaul y_shp x_shp && refnum y = 1 && is_var y = false then (
       invalidate y;
       Some (y_val, x_val)
     )

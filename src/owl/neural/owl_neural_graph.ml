@@ -72,7 +72,7 @@ module Make
 
 
   let get_node nn name =
-    let x = Owl_utils.array_filter (fun n -> n.name = name) nn.topo in
+    let x = Owl_utils.Array.filter (fun n -> n.name = name) nn.topo in
     if Array.length x = 0 then failwith "Owl_neural_graph:get_node"
     else x.(0)
 
@@ -192,16 +192,16 @@ module Make
 
 
   let _remove_training_nodes nn =
-    let topo' = Owl_utils.array_filter (fun n ->
+    let topo' = Owl_utils.Array.filter (fun n ->
       if n.train = true then (
         (* remove myself from my parents *)
         Array.iter (fun m ->
-          let next' = Owl_utils.array_filter (fun x -> x.name <> n.name) m.next in
+          let next' = Owl_utils.Array.filter (fun x -> x.name <> n.name) m.next in
           m.next <- next'
         ) n.prev;
         (* remove myself from my children *)
         Array.iter (fun m ->
-          let prev' = Owl_utils.array_filter (fun x -> x.name <> n.name) m.prev in
+          let prev' = Owl_utils.Array.filter (fun x -> x.name <> n.name) m.prev in
           m.prev <- prev'
         ) n.next;
         (* connect my parents and my children *)

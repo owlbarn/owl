@@ -112,11 +112,11 @@ let tile x reps =
   let b = Array.length reps in
   let x, reps = match a < b with
     | true -> (
-      let d = Owl_utils.array_pad `Left (shape x) 1 (b - a) in
+      let d = Owl_utils.Array.pad `Left (shape x) 1 (b - a) in
       (reshape x d), reps
       )
     | false -> (
-      let r = Owl_utils.array_pad `Left reps 1 (a - b) in
+      let r = Owl_utils.Array.pad `Left reps 1 (a - b) in
       x, r
       )
   in
@@ -129,7 +129,7 @@ let tile x reps =
     dx := !dx * sx.(!i);
   done;
   (* project x and y to 1-dimensional arrays *)
-  let sy = Owl_utils.array_map2i (fun _ a b -> a * b) sx reps in
+  let sy = Owl_utils.Array.map2i (fun _ a b -> a * b) sx reps in
   let _kind = kind x in
   let y = empty _kind sy in
   let stride_x = _calc_stride (shape x) in
@@ -230,7 +230,7 @@ let squeeze ?(axis=[||]) x =
     | 0 -> Array.init (num_dims x) (fun i -> i)
     | _ -> axis
   in
-  let s = Owl_utils.array_filteri (fun i v ->
+  let s = Owl_utils.Array.filteri (fun i v ->
     not (v == 1 && Array.mem i a)
   ) (shape x)
   in
@@ -240,7 +240,7 @@ let squeeze ?(axis=[||]) x =
 let expand x d =
   let d0 = d - (num_dims x) in
   match d0 > 0 with
-  | true  -> Owl_utils.array_pad `Left (shape x) 1 d0 |> reshape x
+  | true  -> Owl_utils.Array.pad `Left (shape x) 1 d0 |> reshape x
   | false -> x
 
 
@@ -1494,7 +1494,7 @@ let clip_by_l2norm t x =
 let _expand_padding_index d s =
   let ls = Array.length s in
   let ld = Array.length d in
-  let d = Owl_utils.(array_pad `Right d [|0;0|] (ls - ld)) in
+  let d = Owl_utils.(Array.pad `Right d [|0;0|] (ls - ld)) in
   Array.map (function
     | [||]  -> [|0;0|]
     | [|x|] -> [|x;x|]
@@ -2435,7 +2435,7 @@ let draw_slices ?(axis=0) x n =
   let pad_len = num_dims x - axis - 1 in
   let indices = Array.init n (fun _ ->
     let idx_pre = Array.map (fun b -> Owl_stats.Rnd.uniform_int ~a:0 ~b:(b-1) ()) pre in
-    Owl_utils.(array_pad `Right idx_pre 0 pad_len)
+    Owl_utils.(Array.pad `Right idx_pre 0 pad_len)
   ) in
   (* copy slices to the output array *)
   let sfx = Array.sub shp axis (num_dims x - axis) in
@@ -2849,7 +2849,7 @@ let add_ x y =
   if sx = sy then _owl_add (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_add (kind x)) x y ~out:x |> ignore
   )
 
@@ -2859,7 +2859,7 @@ let sub_ x y =
   if sx = sy then _owl_sub (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_sub (kind x)) x y ~out:x |> ignore
   )
 
@@ -2869,7 +2869,7 @@ let mul_ x y =
   if sx = sy then _owl_mul (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_mul (kind x)) x y ~out:x |> ignore
   )
 
@@ -2879,7 +2879,7 @@ let div_ x y =
   if sx = sy then _owl_div (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_div (kind x)) x y ~out:x |> ignore
   )
 
@@ -2889,7 +2889,7 @@ let pow_ x y =
   if sx = sy then _owl_pow (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_pow (kind x)) x y ~out:x |> ignore
   )
 
@@ -2899,7 +2899,7 @@ let atan2_ x y =
   if sx = sy then _owl_atan2 (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_atan2 (kind x)) x y ~out:x |> ignore
   )
 
@@ -2909,7 +2909,7 @@ let hypot_ x y =
   if sx = sy then _owl_hypot (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_hypot (kind x)) x y ~out:x |> ignore
   )
 
@@ -2919,7 +2919,7 @@ let fmod_ x y =
   if sx = sy then _owl_fmod (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_fmod (kind x)) x y ~out:x |> ignore
   )
 
@@ -2929,7 +2929,7 @@ let min2_ x y =
   if sx = sy then _owl_min2 (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_min2 (kind x)) x y ~out:x |> ignore
   )
 
@@ -2939,7 +2939,7 @@ let max2_ x y =
   if sx = sy then _owl_max2 (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_max2 (kind x)) x y ~out:x |> ignore
   )
 
@@ -2949,7 +2949,7 @@ let elt_equal_ x y =
   if sx = sy then _owl_elt_equal (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_elt_equal (kind x)) x y ~out:x |> ignore
   )
 
@@ -2959,7 +2959,7 @@ let elt_not_equal_ x y =
   if sx = sy then _owl_elt_not_equal (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_elt_not_equal (kind x)) x y ~out:x |> ignore
   )
 
@@ -2969,7 +2969,7 @@ let elt_less_ x y =
   if sx = sy then _owl_elt_less (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_elt_less (kind x)) x y ~out:x |> ignore
   )
 
@@ -2979,7 +2979,7 @@ let elt_greater_ x y =
   if sx = sy then _owl_elt_greater (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_elt_greater (kind x)) x y ~out:x |> ignore
   )
 
@@ -2989,7 +2989,7 @@ let elt_less_equal_ x y =
   if sx = sy then _owl_elt_less_equal (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_elt_less_equal (kind x)) x y ~out:x |> ignore
   )
 
@@ -2999,7 +2999,7 @@ let elt_greater_equal_ x y =
   if sx = sy then _owl_elt_equal (kind x) (numel x) x y x
   else (
     (* broadcast [y] to [x], so make sure [x] is big enough *)
-    assert (Owl_utils.array_greater_eqaul sx sy);
+    assert (Owl_utils.Array.greater_eqaul sx sy);
     broadcast_op (_owl_broadcast_elt_greater_equal (kind x)) x y ~out:x |> ignore
   )
 
