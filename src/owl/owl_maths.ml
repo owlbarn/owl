@@ -250,6 +250,10 @@ let erfc x = Owl_maths_special.erfc x
 
 let erfcx x = Owl_maths_special.erfcx x
 
+let erfinv x = Owl_maths_special.erfinv x
+
+let erfcinv x = Owl_maths_special.erfcinv x
+
 let dawsn x = Owl_maths_special.dawsn x
 
 let fresnel x =

@@ -101,6 +101,10 @@ external erfc : float -> float = "owl_stub_sf_erfc"
 
 external erfcx : float -> float = "owl_stub_sf_erfcx"
 
+external erfinv : float -> float = "owl_stub_sf_erfinv"
+
+external erfcinv : float -> float = "owl_stub_sf_erfcinv"
+
 external dawsn : float -> float = "owl_stub_sf_dawsn"
 
 external fresnel : float -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_fresnel"

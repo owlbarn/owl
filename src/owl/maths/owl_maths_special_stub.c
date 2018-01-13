@@ -329,9 +329,23 @@ value owl_stub_sf_erf(value vX) {
 }
 
 
+value owl_stub_sf_erfinv(value vX) {
+  double x = Double_val(vX);
+  double y = erfinv(x);
+  return caml_copy_double(y);
+}
+
+
 value owl_stub_sf_erfc(value vX) {
   double x = Double_val(vX);
   double y = erfc(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_erfcinv(value vX) {
+  double x = Double_val(vX);
+  double y = erfcinv(x);
   return caml_copy_double(y);
 }
 

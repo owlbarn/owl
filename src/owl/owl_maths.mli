@@ -273,12 +273,18 @@ val erfc : float -> float
 val erfcx : float -> float
 (** Scaled complementary error function, [exp(x**2) * erfc(x)]. *)
 
+val erfinv : float -> float
+(** Inverse of [erf x]. *)
+
+val erfcinv : float -> float
+(** Inverse of [erfc x] *)
+
 val dawsn : float -> float
 (** Dawson’s integral. *)
 
 val fresnel : float -> float * float
 (** Fresnel sin and cos integrals, [fresnel x] returns a tuple consisting of
-  [(Fresnel sin integral, Fresnel cos integral)]
+  [(Fresnel sin integral, Fresnel cos integral)].
  *)
 
 

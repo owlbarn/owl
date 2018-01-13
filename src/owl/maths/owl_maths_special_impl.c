@@ -45,3 +45,13 @@ double logabs(double x) {
 double sinc(double x) {
   return (x == 0) ? 1 : (sin(x) / x);
 }
+
+
+double erfinv(double x) {
+  return ndtri((x + 1) / 2) / sqrt(2);
+}
+
+
+double erfcinv(double x) {
+  return -ndtri(0.5 * x) / sqrt(2);
+}
