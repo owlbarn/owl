@@ -128,6 +128,8 @@ external zeta : float -> float -> float = "owl_stub_sf_zeta"
 
 external zetac : float -> float = "owl_stub_sf_zetac"
 
+external struve : float -> float -> float = "owl_stub_sf_struve"
+
 
 (* From owl_maths_special_impl.c file *)
 

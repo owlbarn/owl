@@ -373,6 +373,14 @@ value owl_stub_sf_fresnel(value vX, value vSsa, value vCsa) {
 }
 
 
+value owl_stub_sf_struve(value vV, value vX) {
+  double v = Double_val(vV);
+  double x = Double_val(vX);
+  double y = struve(v, x);
+  return caml_copy_double(y);
+}
+
+
 /* From owl_maths_special_impl.c file */
 
 value owl_stub_sf_xlogy(value vX, value vY) {

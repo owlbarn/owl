@@ -288,6 +288,12 @@ val fresnel : float -> float * float
  *)
 
 
+(** {6 Struve functions} *)
+
+val struve : float -> float -> float
+(** Struve function [struve v x]. *)
+
+
 (** {6 Other special functions} *)
 
 val expn : int -> float -> float

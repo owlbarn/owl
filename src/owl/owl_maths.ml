@@ -262,6 +262,8 @@ let fresnel x =
   Owl_maths_special.fresnel x ssa csa |> ignore;
   Ctypes.(!@ssa, !@csa)
 
+let struve v x = Owl_maths_special.struve v x
+
 let is_odd x = ((Pervasives.abs x) mod 2) = 1
 
 let is_even x = (x mod 2) = 0
