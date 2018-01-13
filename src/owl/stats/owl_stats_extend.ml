@@ -5,3 +5,7 @@
 
 
 external shuffle : 'a array -> unit = "owl_stats_stub_shuffle"
+
+external choose : src:'a array -> dst:'a array -> unit = "owl_stats_stub_choose"
+
+external sample : src:'a array -> dst:'a array -> unit = "owl_stats_stub_sample"

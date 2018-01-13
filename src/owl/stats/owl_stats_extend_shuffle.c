@@ -37,3 +37,27 @@ void owl_stats_shuffle (void* base, int n, int size) {
     owl_stats_swap(base, size, i, j) ;
   }
 }
+
+
+// choose k out of n elements from src and save to dst
+void owl_stats_choose (void* dst, int k, void* src, int n, int size) {
+  int i, j = 0;
+
+  for (i = 0; i < n && j < k; i++) {
+    if ((n - i) * sfmt_f64_1 < k - j) {
+      owl_stats_copy(dst, j, src, i, size);
+      j++;
+    }
+  }
+}
+
+
+// sample k out of n elements from src and save to dst, with replacement
+void owl_stats_sample (void* dst, int k, void* src, int n, int size) {
+  int i, j = 0;
+
+  for (i = 0; i < k; i++) {
+    j = sfmt_f64_1 * n;
+    owl_stats_copy(dst, i, src, j, size);
+  }
+}

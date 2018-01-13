@@ -519,6 +519,9 @@ extern double loggam(double x);
 
 extern void owl_stats_shuffle(void* base, int n, int size);
 
+extern void owl_stats_choose(void* dst, int k, void* src, int n, int size);
+
+extern void owl_stats_sample(void* dst, int k, void* src, int n, int size);
 
 
 #endif // OWL_STATS_H

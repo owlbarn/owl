@@ -25,13 +25,16 @@ let shuffle x =
   Owl_stats_extend.shuffle y;
   y
 
-let choose x n =
-  let y = Array.make n x.(0) in
-  Gsl.Randist.choose rng x y; y
+let choose x k =
+  assert (Array.length x >= k);
+  let y = Array.make k x.(0) in
+  Owl_stats_extend.choose ~src:x ~dst:y;
+  y
 
-let sample x n =
-  let y = Array.make n x.(0) in
-  Gsl.Randist.sample rng x y; y
+let sample x k =
+  let y = Array.make k x.(0) in
+  Owl_stats_extend.sample ~src:x ~dst:y;
+  y
 
 
 (** [ Statistics function ]  *)
