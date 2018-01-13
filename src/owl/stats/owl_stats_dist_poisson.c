@@ -81,12 +81,12 @@ long poisson_ptrs_rvs(double lam) {
 }
 
 
-long poisson_rvs(double lam)
+long poisson_rvs(double lambda)
 {
-  if (lam == 0)
+  if (lambda == 0)
     return 0;
-  else if (lam >= 10)
-    return poisson_ptrs_rvs(lam);
+  else if (lambda >= 10)
+    return poisson_ptrs_rvs(lambda);
   else
-    return poisson_mult_rvs(lam);
+    return poisson_mult_rvs(lambda);
 }

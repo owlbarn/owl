@@ -184,7 +184,7 @@ extern double chi2_entropy(double df);
 
 /** Noncentral Chi-squared distribution **/
 
-extern double noncentral_chi2_rvs(double, double);
+extern double noncentral_chi2_rvs(double df, double nonc);
 
 /** F distribution **/
 
@@ -210,7 +210,7 @@ extern double f_entropy(double dfnum, double dfden);
 
 /** Noncentral F distribution **/
 
-extern double noncentral_f_rvs(double, double, double);
+extern double noncentral_f_rvs(double dfnum, double dfden, double nonc);
 
 /** Binomial distribution **/
 
@@ -222,7 +222,7 @@ extern long negative_binomial_rvs(double, double);
 
 /** Poisson distribution **/
 
-extern long poisson_rvs(double);
+extern long poisson_rvs(double lambda);
 
 /** Cauchy distribution **/
 
@@ -468,7 +468,7 @@ extern double rayleigh_entropy(double sigma);
 
 /** Wald distribution **/
 
-extern double wald_rvs(double, double);
+extern double wald_rvs(double mu, double lambda);
 
 extern double wald_pdf(double x, double mu, double lambda);
 
