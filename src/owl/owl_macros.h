@@ -15,13 +15,23 @@
 #include <caml/signals.h>
 #include <caml/threads.h>
 #include <math.h>
-#include "owl_stats.h"
+
 
 // Define the structure for complex numbers
 
 typedef struct { float r, i; } complex_float;
 
 typedef struct { double r, i; } complex_double;
+
+
+// Define macros for interfacing to foreign code
+
+#define Array_length(v)        (Wosize_val(v))
+
+#define Double_array_length(v) (Wosize_val(v) / Double_wosize)
+
+#define Double_array_val(v)    ((double *)v)
+
 
 //  Other
 

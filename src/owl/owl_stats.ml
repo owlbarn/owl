@@ -22,7 +22,8 @@ let seed s = Gsl.Rng.set rng (Nativeint.of_int s)
 
 let shuffle x =
   let y = Array.copy x in
-  Gsl.Randist.shuffle rng y; y
+  Owl_stats_extend.shuffle y;
+  y
 
 let choose x n =
   let y = Array.make n x.(0) in

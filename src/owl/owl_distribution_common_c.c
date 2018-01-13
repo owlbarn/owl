@@ -4,6 +4,7 @@
  */
 
 #include "owl_macros.h"
+#include "owl_stats.h"
 
 //////////////////// function templates starts ////////////////////
 

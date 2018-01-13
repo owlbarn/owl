@@ -5,6 +5,7 @@
 
 #include <complex.h>
 #include "owl_macros.h"
+#include "owl_stats.h"
 
 // some helper functions
 

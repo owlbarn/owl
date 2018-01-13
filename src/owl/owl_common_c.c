@@ -4,6 +4,7 @@
  */
 
 #include "owl_macros.h"
+#include "owl_stats.h"
 
 // Internal state of SFMT PRNG
 sfmt_t sfmt_state;

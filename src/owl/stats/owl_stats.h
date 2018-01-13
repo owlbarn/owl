@@ -515,4 +515,10 @@ extern long logseries_rvs(double);
 extern double loggam(double x);
 
 
+/** Basic Statistic funcitons **/
+
+extern void owl_stats_shuffle(void* base, int n, int size);
+
+
+
 #endif // OWL_STATS_H
