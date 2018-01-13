@@ -162,7 +162,7 @@ extern double beta_entropy(double a, double b);
 
 /** Chi-squared distribution **/
 
-extern double chi2_rvs(double);
+extern double chi2_rvs(double df);
 
 extern double chi2_pdf(double x, double df);
 
@@ -188,7 +188,7 @@ extern double noncentral_chi2_rvs(double, double);
 
 /** F distribution **/
 
-extern double f_rvs(double, double);
+extern double f_rvs(double dfnum, double dfden);
 
 extern double f_pdf(double x, double dfnum, double dfden);
 
@@ -274,7 +274,7 @@ extern double t_entropy(double df);
 
 /** von Mises distribution **/
 
-extern double vonmises_rvs(double, double);
+extern double vonmises_rvs(double mu, double kappa);
 
 extern double vonmises_pdf(double x, double mu, double kappa);
 
@@ -291,8 +291,6 @@ extern double vonmises_logsf(double x, double mu, double kappa);
 extern double vonmises_entropy(double kappa);
 
 /** Lomax distribution, i.e. Pareto Type II distribution **/
-
-extern double lomax_rvs(double shape, double scale);
 
 extern double lomax_rvs(double shape, double scale);
 
@@ -342,7 +340,7 @@ extern double power_rvs(double);
 
 /** Laplace distribution **/
 
-extern double laplace_rvs(double, double);
+extern double laplace_rvs(double loc, double scale);
 
 extern double laplace_pdf(double x, double loc, double scale);
 
@@ -364,7 +362,7 @@ extern double laplace_entropy(double scale);
 
 /** Gumbel Type-1 distribution **/
 
-extern double gumbel1_rvs(double, double);
+extern double gumbel1_rvs(double a, double b);
 
 extern double gumbel1_pdf(double x, double a, double b);
 
@@ -384,7 +382,7 @@ extern double gumbel1_isf(double q, double a, double b);
 
 /** Gumbel Type-2 distribution **/
 
-extern double gumbel2_rvs(double, double);
+extern double gumbel2_rvs(double a, double b);
 
 extern double gumbel2_pdf(double x, double a, double b);
 
@@ -448,7 +446,7 @@ extern double lognormal_entropy(double mu, double sigma);
 
 /** Rayleigh distribution **/
 
-extern double rayleigh_rvs(double);
+extern double rayleigh_rvs(double sigma);
 
 extern double rayleigh_pdf(double x, double sigma);
 
