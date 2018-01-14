@@ -83,10 +83,10 @@ long hypergeometric_rvs(long good, long bad, long sample) {
 }
 
 double hypergeometric_pdf(long k, long good, long bad, long sample) {
-  return exp(hypergeometric_logpmf(k, good, bad, sample));
+  return exp(hypergeometric_logpdf(k, good, bad, sample));
 }
 
-double hypergeometric_logpmf(long k, long good, long bad, long sample) {
+double hypergeometric_logpdf(long k, long good, long bad, long sample) {
   double tot = good + bad;
   double a0 = 1;
   double a1 = good + 1;

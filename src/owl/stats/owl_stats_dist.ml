@@ -337,4 +337,4 @@ external hypergeometric_rvs : good:int -> bad:int -> sample:int -> int = "owl_st
 
 external hypergeometric_pdf : int -> good:int -> bad:int -> sample:int -> float = "owl_stub_hypergeometric_pdf"
 
-external hypergeometric_logpmf : int -> good:int -> bad:int -> sample:int -> float = "owl_stub_hypergeometric_logpmf"
+external hypergeometric_logpdf : int -> good:int -> bad:int -> sample:int -> float = "owl_stub_hypergeometric_logpdf"

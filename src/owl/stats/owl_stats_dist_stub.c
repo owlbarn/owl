@@ -1466,11 +1466,11 @@ value owl_stub_hypergeometric_pdf(value vX, value vA, value vB, value vC) {
 }
 
 
-value owl_stub_hypergeometric_logpmf(value vX, value vA, value vB, value vC) {
+value owl_stub_hypergeometric_logpdf(value vX, value vA, value vB, value vC) {
   int a = Long_val(vA);
   int b = Long_val(vB);
   int c = Long_val(vC);
   int x = Long_val(vX);
-  double p = hypergeometric_logpmf(x, a, b, c);
+  double p = hypergeometric_logpdf(x, a, b, c);
   return caml_copy_double(p);
 }

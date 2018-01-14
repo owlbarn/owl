@@ -257,7 +257,7 @@ val hypergeometric_rvs : good:int -> bad:int -> sample:int -> int
 
 val hypergeometric_pdf : int -> good:int -> bad:int -> sample:int -> float
 
-val hypergeometric_logpmf : int -> good:int -> bad:int -> sample:int -> float
+val hypergeometric_logpdf : int -> good:int -> bad:int -> sample:int -> float
 
 
 (** {6 Continuous random variables} *)
