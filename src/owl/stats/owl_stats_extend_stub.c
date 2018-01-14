@@ -10,6 +10,9 @@
 #include "owl_stats.h"
 
 
+/***** owl_stats_extend_shuffle.c ******/
+
+
 CAMLprim value owl_stats_stub_shuffle(value vX) {
   if(Tag_val(vX) == Double_array_tag)
     owl_stats_shuffle((double *) vX, Double_array_length(vX), sizeof(double));
@@ -49,4 +52,53 @@ CAMLprim value owl_stats_stub_sample(value src, value dst) {
 		   sizeof(value));
 
   return Val_unit;
+}
+
+
+/***** owl_stats_extend_misc.c ******/
+
+
+CAMLprim value owl_stats_stub_sum(value vX) {
+  double y = owl_stats_sum((double *) vX, Double_array_length(vX));
+  return caml_copy_double(y);
+}
+
+
+CAMLprim value owl_stats_stub_mean(value vX) {
+  double y = owl_stats_mean((double *) vX, Double_array_length(vX));
+  return caml_copy_double(y);
+}
+
+
+CAMLprim value owl_stats_stub_var(value vX, value vA) {
+  double y = owl_stats_var((double *) vX, Double_val(vA), Double_array_length(vX));
+  return caml_copy_double(y);
+}
+
+
+CAMLprim value owl_stats_stub_std(value vX, value vA) {
+  double y = owl_stats_std((double *) vX, Double_val(vA), Double_array_length(vX));
+  return caml_copy_double(y);
+}
+
+
+CAMLprim value owl_stats_stub_absdev(value vX, value vA) {
+  double y = owl_stats_absdev((double *) vX, Double_val(vA), Double_array_length(vX));
+  return caml_copy_double(y);
+}
+
+
+CAMLprim value owl_stats_stub_skew(value vX, value vA, value vB) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = owl_stats_skew((double *) vX, a, b, Double_array_length(vX));
+  return caml_copy_double(y);
+}
+
+
+CAMLprim value owl_stats_stub_kurtosis(value vX, value vA, value vB) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double y = owl_stats_kurtosis((double *) vX, a, b, Double_array_length(vX));
+  return caml_copy_double(y);
 }

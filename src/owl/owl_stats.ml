@@ -30,35 +30,43 @@ let sample x k =
 
 (** [ Statistics function ]  *)
 
-let sum x = Array.fold_left ( +. ) 0. x
+let sum x = Owl_stats_extend.sum x
 
-let mean x = sum x /. (x |> Array.length |> float_of_int)
+let mean x = Owl_stats_extend.mean x
 
-let variance ?w ?mean x = Gsl.Stats.variance ?w ?mean x
+let _get_mean m x =
+  match m with
+  | Some a -> a
+  | None   -> mean x
 
-let std ?w ?mean x = Gsl.Stats.sd ?w ?mean x
+let var ?mean x = Owl_stats_extend.var x (_get_mean mean x)
 
-let sem ?w ?mean x =
-  let s = std ?w ?mean x in
+let std ?mean x = Owl_stats_extend.std x (_get_mean mean x)
+
+let sem ?mean x =
+  let s = std ?mean x in
   let n = float_of_int (Array.length x) in
   s /. (sqrt n)
 
-let absdev ?w ?mean x = Gsl.Stats.absdev ?w ?mean x
+let absdev ?mean x = Owl_stats_extend.absdev x (_get_mean mean x)
 
-let skew ?w ?mean ?sd x =
-  match mean, sd with
-  | Some m, Some sd -> Gsl.Stats.skew_m_sd ?w ~mean:m ~sd:sd x
-  | None, None -> Gsl.Stats.skew x
-  | _, _ -> failwith "not enough arguments"
+let skew ?mean ?sd x =
+  let m = _get_mean mean x in
+  let s = match sd with
+    | Some a -> a
+    | None   -> std ~mean:m x
+  in
+  Owl_stats_extend.skew x m s
 
-let kurtosis ?w ?mean ?sd x =
-  let k = match mean, sd with
-    | Some m, Some sd -> Gsl.Stats.kurtosis_m_sd ?w ~mean:m ~sd:sd x
-    | None, None -> Gsl.Stats.kurtosis x
-    | _, _ -> failwith "not enough arguments"
-  (* GSL returns excess kurtosis, so add back *)
-  in k +. 3.
+let kurtosis ?mean ?sd x =
+  let m = _get_mean mean x in
+  let s = match sd with
+    | Some a -> a
+    | None   -> std ~mean:m x
+  in
+  Owl_stats_extend.kurtosis x m s
 
+(* TODO: move to C code *)
 let central_moment n x =
   let m = float_of_int n in
   let u = mean x in
@@ -548,10 +556,10 @@ let jb_test ?(alpha=0.05) x =
   make_hypothesis h p j
 
 
-let var_test ?(alpha=0.05) ?(side=BothSide) ~var x =
+let var_test ?(alpha=0.05) ?(side=BothSide) ~variance x =
   let n = float_of_int (Array.length x) in
   let v = n -. 1. in
-  let k = v *. (variance x) /. var in
+  let k = v *. (var x) /. variance in
   let pl = chi2_cdf ~df:v k in
   let pr = chi2_sf  ~df:v k in
   let p = match side with

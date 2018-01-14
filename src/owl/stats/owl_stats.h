@@ -525,5 +525,19 @@ extern void owl_stats_choose(void* dst, int k, void* src, int n, int size);
 
 extern void owl_stats_sample(void* dst, int k, void* src, int n, int size);
 
+extern double owl_stats_sum(double* x, int n);
+
+extern double owl_stats_mean(double* x, int n);
+
+extern double owl_stats_var(double* x, double mean, int n);
+
+extern double owl_stats_std(double* x, double mean, int n);
+
+extern double owl_stats_absdev(double* x, double mean, int n);
+
+extern double owl_stats_skew(double* x, double mean, double sd, int n);
+
+extern double owl_stats_kurtosis(double* x, double mean, double sd, int n);
+
 
 #endif // OWL_STATS_H

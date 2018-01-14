@@ -27,21 +27,26 @@ val sum : float array -> float
 
 val mean : float array -> float
 
-val variance : ?w:float array -> ?mean:float -> float array -> float
+val var : ?mean:float -> float array -> float
 
-val std : ?w:float array -> ?mean:float -> float array -> float
+val std : ?mean:float -> float array -> float
 (** [std x] calculates the standard deviation of [x]. *)
 
-val sem : ?w:float array -> ?mean:float -> float array -> float
+val sem : ?mean:float -> float array -> float
 (** [sem x] calculates the standard error of [x], also referred to as standard
-  error of the mean. *)
+  error of the mean.
+ *)
 
-val absdev : ?w:float array -> ?mean:float -> float array -> float
+val absdev : ?mean:float -> float array -> float
+(** [absdev x] calculates the average absolute deviation of [x]. *)
 
-val skew : ?w:float array -> ?mean:float -> ?sd:float -> float array -> float
+val skew : ?mean:float -> ?sd:float -> float array -> float
+(** [skew x] calculates the skewness (the third standardized moment) of [x]. *)
 
-val kurtosis : ?w:float array -> ?mean:float -> ?sd:float -> float array -> float
-(** [kurtosis x] return the Pearson's kurtosis of [x]. *)
+val kurtosis : ?mean:float -> ?sd:float -> float array -> float
+(** [kurtosis x] calculates the Pearson's kurtosis of [x], i.e. the fourth
+  standardized moment of [x].
+ *)
 
 val central_moment : int -> float array -> float
 
@@ -207,10 +212,10 @@ val ks2_test : ?alpha:float -> float array -> float array -> hypothesis
     test statistic.
 *)
 
-val var_test : ?alpha:float -> ?side:tail -> var:float -> float array -> hypothesis
-(** [var_test ~alpha ~side ~var x] returns a test decision for the null
-  hypothesis that the data in [x] comes from a normal distribution with
-  variance [var], using the chi-square variance test. The alternative hypothesis
+val var_test : ?alpha:float -> ?side:tail -> variance:float -> float array -> hypothesis
+(** [var_test ~alpha ~side ~variance x] returns a test decision for the null
+  hypothesis that the data in [x] comes from a normal distribution with input
+  [variance], using the chi-square variance test. The alternative hypothesis
   is that [x] comes from a normal distribution with a different variance.
  *)
 

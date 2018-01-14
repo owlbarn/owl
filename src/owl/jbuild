@@ -22,7 +22,7 @@
     owl_cblas_generated_stub
     owl_lapacke_generated_stub
     ; stats
-    owl_stats_extend_impl
+    owl_stats_extend_misc
     owl_stats_extend_stub
     owl_stats_extend_shuffle
     SFMT

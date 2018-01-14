@@ -150,7 +150,7 @@ module Array = struct
 
   include Array
 
-  let sum x = Array.fold_left (+.) 0. x
+  let sum x = Owl_stats_extend.sum x
 
   (* filter array, f : int -> 'a -> bool * 'b *)
   let filteri_v f x =
