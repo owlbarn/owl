@@ -498,7 +498,11 @@ extern long geometric_rvs(double);
 
 /** Hypergeometric distribution **/
 
-extern long hypergeometric_rvs(long, long, long);
+extern long hypergeometric_rvs(long good, long bad, long sample);
+
+extern double hypergeometric_pdf(long k, long good, long bad, long sample);
+
+extern double hypergeometric_logpmf(long k, long good, long bad, long sample);
 
 /** Triangular distribution **/
 

@@ -12,6 +12,19 @@
 #include "owl_stats.h"
 
 
+value owl_stub_std_uniform_rvs() {
+  return caml_copy_double(sfmt_f64_1);
+}
+
+
+value owl_stub_uniform_int_rvs(value vA, value vB) {
+  double a = Long_val(vA);
+  double b = Long_val(vB);
+  double y = sfmt_f64_1 * (b - a) + a;
+  return caml_copy_double(y);
+}
+
+
 value owl_stub_uniform_rvs(value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
@@ -634,6 +647,95 @@ value owl_stub_cauchy_isf(value vQ, value vA, value vB) {
 }
 
 
+value owl_stub_t_rvs(value vA, value vB, value vC) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double c = Double_val(vC);
+  double y = t_rvs(a, b, c);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_t_pdf(value vX, value vA, value vB, value vC) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double c = Double_val(vC);
+  double x = Double_val(vX);
+  double p = t_pdf(x, a, b, c);
+  return caml_copy_double(p);
+}
+
+
+value owl_stub_t_logpdf(value vX, value vA, value vB, value vC) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double c = Double_val(vC);
+  double x = Double_val(vX);
+  double p = t_logpdf(x, a, b, c);
+  return caml_copy_double(p);
+}
+
+
+value owl_stub_t_cdf(value vX, value vA, value vB, value vC) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double c = Double_val(vC);
+  double x = Double_val(vX);
+  double p = t_cdf(x, a, b, c);
+  return caml_copy_double(p);
+}
+
+
+value owl_stub_t_logcdf(value vX, value vA, value vB, value vC) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double c = Double_val(vC);
+  double x = Double_val(vX);
+  double p = t_logcdf(x, a, b, c);
+  return caml_copy_double(p);
+}
+
+
+value owl_stub_t_ppf(value vP, value vA, value vB, value vC) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double c = Double_val(vC);
+  double p = Double_val(vP);
+  double x = t_ppf(p, a, b, c);
+  return caml_copy_double(x);
+}
+
+
+value owl_stub_t_sf(value vX, value vA, value vB, value vC) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double c = Double_val(vC);
+  double x = Double_val(vX);
+  double p = t_sf(x, a, b, c);
+  return caml_copy_double(p);
+}
+
+
+value owl_stub_t_logsf(value vX, value vA, value vB, value vC) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double c = Double_val(vC);
+  double x = Double_val(vX);
+  double p = t_logsf(x, a, b, c);
+  return caml_copy_double(p);
+}
+
+
+value owl_stub_t_isf(value vQ, value vA, value vB, value vC) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double c = Double_val(vC);
+  double q = Double_val(vQ);
+  double x = t_sf(q, a, b, c);
+  return caml_copy_double(x);
+}
+
+
 value owl_stub_vonmises_rvs(value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
@@ -704,15 +806,15 @@ value owl_stub_vonmises_logsf(value vX, value vA, value vB) {
   return caml_copy_double(p);
 }
 
-
+/** FIXME
 value owl_stub_vonmises_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = vonmises_sf(q, a, b);
+  double x = vonmises_isf(q, a, b);
   return caml_copy_double(x);
 }
-
+**/
 
 value owl_stub_lomax_rvs(value vA, value vB) {
   double a = Double_val(vA);
@@ -1342,4 +1444,33 @@ value owl_stub_rayleigh_isf(value vQ, value vA) {
   double q = Double_val(vQ);
   double x = rayleigh_sf(q, a);
   return caml_copy_double(x);
+}
+
+
+value owl_stub_hypergeometric_rvs(value vA, value vB, value vC) {
+  int a = Long_val(vA);
+  int b = Long_val(vB);
+  int c = Long_val(vC);
+  double y = hypergeometric_rvs(a, b, c);
+  return Val_long(y);
+}
+
+
+value owl_stub_hypergeometric_pdf(value vX, value vA, value vB, value vC) {
+  int a = Long_val(vA);
+  int b = Long_val(vB);
+  int c = Long_val(vC);
+  int x = Long_val(vX);
+  double p = hypergeometric_pdf(x, a, b, c);
+  return caml_copy_double(p);
+}
+
+
+value owl_stub_hypergeometric_logpmf(value vX, value vA, value vB, value vC) {
+  int a = Long_val(vA);
+  int b = Long_val(vB);
+  int c = Long_val(vC);
+  int x = Long_val(vX);
+  double p = hypergeometric_logpmf(x, a, b, c);
+  return caml_copy_double(p);
 }

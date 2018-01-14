@@ -53,7 +53,7 @@ module Make (A : StatsSig) = struct
         ratio := !ratio +. (L.to_elt p') -. (L.to_elt p)
       ) p_y_x' p_y_x;
 
-      let accept = log (Owl_stats.Rnd.uniform ()) < !ratio in
+      let accept = log (Owl_stats.std_uniform_rvs ()) < !ratio in
       if accept = true then (
         let sample = Hashtbl.find h "latent" in
         let sample' = Hashtbl.find h "proposal" in

@@ -61,8 +61,8 @@
     owl_stats_dist_weibull
     owl_stats_dist_zipf
     ; CDFlib
-    ;dcdflib
-    ;ipmpar
+    owl_dcdflib
+    owl_ipmpar
     ; maths
     owl_maths_special_impl
     owl_maths_special_stub

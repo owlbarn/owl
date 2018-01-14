@@ -1,7 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
-#include "cdflib.h"
+#include "owl_cdflib.h"
+
+/* Declare the functions masked in the header owl_cdflib.h */
+
+double psi(double*);
+
+
 /*
 -----------------------------------------------------------------------
 

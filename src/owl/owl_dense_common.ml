@@ -278,17 +278,17 @@ let _float_typ_elt : type a b. (a, b) kind -> (float -> a) = function
   | _              -> failwith "_float_typ_elt: unsupported operation"
 
 let _owl_uniform_fun : type a b. (a, b) kind -> (float -> a) = function
-  | Float32   -> fun s -> Owl_stats.Rnd.uniform () *. s
-  | Float64   -> fun s -> Owl_stats.Rnd.uniform () *. s
-  | Complex32 -> fun s -> Complex.({re = Owl_stats.Rnd.uniform () *. s; im = Owl_stats.Rnd.uniform () *. s})
-  | Complex64 -> fun s -> Complex.({re = Owl_stats.Rnd.uniform () *. s; im = Owl_stats.Rnd.uniform () *. s})
+  | Float32   -> fun s -> Owl_stats.std_uniform_rvs () *. s
+  | Float64   -> fun s -> Owl_stats.std_uniform_rvs () *. s
+  | Complex32 -> fun s -> Complex.({re = Owl_stats.std_uniform_rvs () *. s; im = Owl_stats.std_uniform_rvs () *. s})
+  | Complex64 -> fun s -> Complex.({re = Owl_stats.std_uniform_rvs () *. s; im = Owl_stats.std_uniform_rvs () *. s})
   | _         -> failwith "_owl_uniform: unsupported operation"
 
 let _owl_gaussian_fun : type a b. (a, b) kind -> (float -> a) = function
-  | Float32   -> fun s -> Owl_stats.Rnd.gaussian ~sigma:s ()
-  | Float64   -> fun s -> Owl_stats.Rnd.gaussian ~sigma:s ()
-  | Complex32 -> fun s -> Complex.({re = Owl_stats.Rnd.gaussian ~sigma:s (); im = Owl_stats.Rnd.gaussian ~sigma:s ()})
-  | Complex64 -> fun s -> Complex.({re = Owl_stats.Rnd.gaussian ~sigma:s (); im = Owl_stats.Rnd.gaussian ~sigma:s ()})
+  | Float32   -> fun s -> Owl_stats.gaussian_rvs ~mu:0. ~sigma:s
+  | Float64   -> fun s -> Owl_stats.gaussian_rvs ~mu:0. ~sigma:s
+  | Complex32 -> fun s -> Complex.({re = Owl_stats.gaussian_rvs ~mu:0. ~sigma:s; im = Owl_stats.gaussian_rvs ~mu:0. ~sigma:s})
+  | Complex64 -> fun s -> Complex.({re = Owl_stats.gaussian_rvs ~mu:0. ~sigma:s; im = Owl_stats.gaussian_rvs ~mu:0. ~sigma:s})
   | _         -> failwith "_owl_gaussian: unsupported operation"
 
 

@@ -51,8 +51,8 @@ let _random_basic f m n =
 
 let uniform_int ?(a=1) ?(b=99) m n =
   _random_basic (fun () ->
-    let re = Owl_stats.Rnd.uniform_int ~a ~b () |> float_of_int in
-    let im = Owl_stats.Rnd.uniform_int ~a ~b () |> float_of_int in
+    let re = Owl_stats.uniform_int_rvs ~a ~b |> float_of_int in
+    let im = Owl_stats.uniform_int_rvs ~a ~b |> float_of_int in
     Complex.({re; im})
   ) m n
 

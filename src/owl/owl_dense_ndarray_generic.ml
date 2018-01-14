@@ -2434,7 +2434,7 @@ let draw_slices ?(axis=0) x n =
   let pre = Array.sub shp 0 axis in
   let pad_len = num_dims x - axis - 1 in
   let indices = Array.init n (fun _ ->
-    let idx_pre = Array.map (fun b -> Owl_stats.Rnd.uniform_int ~a:0 ~b:(b-1) ()) pre in
+    let idx_pre = Array.map (fun b -> Owl_stats.uniform_int_rvs ~a:0 ~b:(b-1)) pre in
     Owl_utils.(Array.pad `Right idx_pre 0 pad_len)
   ) in
   (* copy slices to the output array *)

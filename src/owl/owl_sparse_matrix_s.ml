@@ -48,7 +48,7 @@ let _random_basic f m n =
   x
 
 let uniform_int ?(a=0) ?(b=99) m n =
-  _random_basic (fun () -> float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ())) m n
+  _random_basic (fun () -> float_of_int (Owl_stats.uniform_int_rvs ~a ~b)) m n
 
 let linspace a b n = Owl_dense_matrix_generic.linspace Float32 a b n |> of_dense
 

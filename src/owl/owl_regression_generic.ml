@@ -94,9 +94,9 @@ module Make
 
 
   let exponential ?(i=false) x y =
-    let a = Owl_stats.Rnd.uniform () in
-    let l = Owl_stats.Rnd.uniform () in
-    let b = Owl_stats.Rnd.uniform () in
+    let a = Owl_stats.std_uniform_rvs () in
+    let l = Owl_stats.std_uniform_rvs () in
+    let b = Owl_stats.std_uniform_rvs () in
 
     let f w x =
       let a = Mat.get w 0 0 in

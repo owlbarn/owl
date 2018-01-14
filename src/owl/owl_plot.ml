@@ -1451,7 +1451,7 @@ let _draw_extended_line x0 y0 x1 y1 l r u d =
   (* restore line style *)
   pllsty 1
 
-let probplot ?(h=_default_handle) ?(spec=[]) ?(dist=(fun q -> Owl_stats.Cdf.gaussian_Pinv q 1.)) ?(noref=false) x =
+let probplot ?(h=_default_handle) ?(spec=[]) ?(dist=(Owl_stats.gaussian_ppf ~mu:0. ~sigma:1.)) ?(noref=false) x =
 
     (* TODO: show y-axis as probability instead of invcdf; Choose suitable
       yticks for different distribution; support for censor data, frequency *)
@@ -1503,7 +1503,7 @@ let probplot ?(h=_default_handle) ?(spec=[]) ?(dist=(fun q -> Owl_stats.Cdf.gaus
 
 let normplot ?(h=_default_handle) ?(spec=[]) ?(sigma=1.) x =
   (* TODO: replace yticklabels, including unseen tick labels,  with user-defined labels *)
-  let dist = fun q -> Owl_stats.Cdf.gaussian_Pinv q sigma in
+  let dist = Owl_stats.gaussian_ppf ~mu:0. ~sigma in
   probplot ~h ~spec ~dist:dist x
 
 
@@ -1512,7 +1512,7 @@ let wblplot ?(h=_default_handle) ?(spec=[]) ?(lambda=1.) ?(k=1.) x =
   (* inputs *)
   let open Plplot in
   let x = Owl_dense_matrix.D.to_array x |> Owl_stats.sort ~inc:true in
-  let dist = (fun q -> Owl_stats.Cdf.weibull_Pinv q lambda k) in
+  let dist = Owl_stats.weibull_ppf ~shape:k ~scale:lambda in
   let y =
     let n = Array.length x in
     let qth = Owl_dense_matrix.D.linspace ((1. -. 0.5) /. float_of_int n)
@@ -1567,7 +1567,7 @@ let _ecdf_dist a b p =
   a.(i)
 
 
-let qqplot ?(h=_default_handle) ?(spec=[]) ?(pd=(fun i -> Owl_stats.Cdf.gaussian_Pinv i 1.)) ?x y =
+let qqplot ?(h=_default_handle) ?(spec=[]) ?(pd=Owl_stats.gaussian_ppf ~mu:0. ~sigma:1.) ?x y =
   (* TODO: support matrix input; add support for `pvec` argument;
     plot the larger data input on x-axis *)
   let open Plplot in

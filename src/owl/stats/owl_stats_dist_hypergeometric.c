@@ -5,6 +5,8 @@
 
 #include "owl_maths.h"
 #include "owl_stats.h"
+#include "owl_cdflib.h"
+
 
 /** Hypergeometric distribution **/
 
@@ -78,4 +80,27 @@ long hypergeometric_rvs(long good, long bad, long sample) {
     return hypergeometric_hrua_rvs(good, bad, sample);
   else
     return hypergeometric_hyp_rvs(good, bad, sample);
+}
+
+double hypergeometric_pdf(long k, long good, long bad, long sample) {
+  return exp(hypergeometric_logpmf(k, good, bad, sample));
+}
+
+double hypergeometric_logpmf(long k, long good, long bad, long sample) {
+  double tot = good + bad;
+  double a0 = 1;
+  double a1 = good + 1;
+  double a2 = bad + 1;
+  double a3 = tot - sample + 1;
+  double a4 = sample + 1;
+  double a5 = k + 1;
+  double a6 = good - k + 1;
+  double a7 = sample - k + 1;
+  double a8 = bad - sample + k + 1;
+  double a9 = tot + 1;
+
+  double p = betaln(&a1, &a0) + betaln(&a2, &a0) + betaln(&a3, &a4)
+    - betaln(&a5, &a6) - betaln(&a7, &a8) - betaln(&a9, &a0);
+
+  return p;
 }

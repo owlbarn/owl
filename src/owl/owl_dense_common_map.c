@@ -523,7 +523,6 @@ static OWL_INLINE void FUN25_CODE (
 
   if (d == X->num_dims - 1) {
     for (int i = 0; i < Z->dim[d+1]; i++) {
-      //printf ("d:%i ofs_x:%i ofs_y:%i ofs_z:%i\n", d, ofs_x, ofs_y, ofs_z); fflush(stdout);
       MAPFN((x + ofs_x), (y + ofs_y), (z + ofs_z));
       ofs_x += inc_x;
       ofs_y += inc_y;
@@ -668,6 +667,96 @@ CAMLprim value FUN26(value *argv, int __unused_argn)
 #endif /* FUN26 */
 
 
+// Similar to FUN25, but broadcast between w, x, y, then save the result to z
+#ifdef FUN27
+
+static OWL_INLINE void FUN27_CODE (
+  int d,
+  struct caml_ba_array *W, int64_t *stride_w, int ofs_w,
+  struct caml_ba_array *X, int64_t *stride_x, int ofs_x,
+  struct caml_ba_array *Y, int64_t *stride_y, int ofs_y,
+  struct caml_ba_array *Z, int64_t *stride_z, int ofs_z
+)
+{
+  int inc_w = W->dim[d] == Z->dim[d+1] ? stride_w[d] : 0;
+  int inc_x = X->dim[d] == Z->dim[d+1] ? stride_x[d] : 0;
+  int inc_y = Y->dim[d] == Z->dim[d+1] ? stride_y[d] : 0;
+  int inc_z = stride_z[d+1];
+
+  NUMBER *w = (NUMBER *) W->data;
+  NUMBER *x = (NUMBER *) X->data;
+  NUMBER *y = (NUMBER *) Y->data;
+  NUMBER *z = (NUMBER *) Z->data;
+
+
+  if (d == X->num_dims - 1) {
+    for (int i = 0; i < Z->dim[d+1]; i++) {
+      MAPFN((w + ofs_w), (x + ofs_x), (y + ofs_y), (z + ofs_z));
+      ofs_w += inc_w;
+      ofs_x += inc_x;
+      ofs_y += inc_y;
+      ofs_z += inc_z;
+    }
+  }
+  else {
+    for (int i = 0; i < Z->dim[d+1]; i++) {
+      FUN27_CODE (d+1, W, stride_w, ofs_w, X, stride_x, ofs_x, Y, stride_y, ofs_y, Z, stride_z, ofs_z);
+      ofs_w += inc_w;
+      ofs_x += inc_x;
+      ofs_y += inc_y;
+      ofs_z += inc_z;
+    }
+  }
+
+  return;
+}
+
+CAMLprim value FUN27_IMPL(
+  value vW, value vSTRIDE_W,
+  value vX, value vSTRIDE_X,
+  value vY, value vSTRIDE_Y,
+  value vZ, value vSTRIDE_Z
+)
+{
+  CAMLparam4(vW, vSTRIDE_W, vX, vSTRIDE_X);
+  CAMLparam4(vY, vSTRIDE_Y, vZ, vSTRIDE_Z);
+
+  struct caml_ba_array *W = Caml_ba_array_val(vW);
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  struct caml_ba_array *Z = Caml_ba_array_val(vZ);
+
+  struct caml_ba_array *stride_W = Caml_ba_array_val(vSTRIDE_W);
+  int64_t *stride_w = (int64_t *) stride_W->data;
+  struct caml_ba_array *stride_X = Caml_ba_array_val(vSTRIDE_X);
+  int64_t *stride_x = (int64_t *) stride_X->data;
+  struct caml_ba_array *stride_Y = Caml_ba_array_val(vSTRIDE_Y);
+  int64_t *stride_y = (int64_t *) stride_Y->data;
+  struct caml_ba_array *stride_Z = Caml_ba_array_val(vSTRIDE_Z);
+  int64_t *stride_z = (int64_t *) stride_Z->data;
+
+  caml_enter_blocking_section();  /* Allow other threads */
+
+  int ofs_z = 0;
+
+  for (int i = 0; i < Z->dim[0]; i++) {
+    FUN27_CODE (0, W, stride_w, 0, X, stride_x, 0, Y, stride_y, 0, Z, stride_z, ofs_z);
+    ofs_z += stride_z[0];
+  }
+
+  caml_leave_blocking_section();  /* Disallow other threads */
+
+  CAMLreturn(Val_unit);
+}
+
+CAMLprim value FUN27(value *argv, int __unused_argn)
+{
+  return FUN27_IMPL(argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7]);
+}
+
+#endif /* FUN27 */
+
+
 #undef NUMBER
 #undef NUMBER1
 #undef NUMBER2
@@ -696,3 +785,6 @@ CAMLprim value FUN26(value *argv, int __unused_argn)
 #undef FUN25_CODE
 #undef FUN26
 #undef FUN26_IMPL
+#undef FUN27
+#undef FUN27_IMPL
+#undef FUN27_CODE

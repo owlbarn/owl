@@ -589,7 +589,7 @@ let shuffle_rows x =
   let m, n = shape x in
   let y = copy x in
   for i = 0 to m - 1 do
-    swap_rows y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(m-1) ())
+    swap_rows y i (Owl_stats.uniform_int_rvs ~a:0 ~b:(m-1))
   done; y
 
 
@@ -597,7 +597,7 @@ let shuffle_cols x =
   let m, n = shape x in
   let y = copy x in
   for i = 0 to n - 1 do
-    swap_cols y i (Owl_stats.Rnd.uniform_int ~a:0 ~b:(n-1) ())
+    swap_cols y i (Owl_stats.uniform_int_rvs ~a:0 ~b:(n-1))
   done; y
 
 

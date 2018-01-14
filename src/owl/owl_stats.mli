@@ -4,30 +4,12 @@
  *)
 
 (** Statistics: random number generators, PDF and CDF functions, and hypothesis
-  tests.
+  tests. The module also includes some basic statistical functions such as mean,
+  variance, skew, and etc.
  *)
-
-(**
-  The module includes some basic statistical functions such as mean, variance,
-  skew, and etc. It also includes the following three submodules.
-
-  The {! Rnd } module provides random number generators of various
-  distributions.
-
-  The {! Pdf } module provides a range of probability density/mass functions of
-  different distributions.
-
-  The {! Cdf } module provides cumulative distribution functions.
-
-  Please refer to {{: https://www.gnu.org/software/gsl/manual }
-  GSL documentation} for details.
-*)
 
 
 (** {6 Randomisation functions} *)
-
-val seed : int -> unit
-(** [seed x] sets [x] as seed for the internal random number generator.  *)
 
 val shuffle : 'a array -> 'a array
 (** [ shuffle x ] return a new array of the shuffled [x].  *)
@@ -267,392 +249,340 @@ val mannwhitneyu : ?alpha:float -> ?side:tail -> float array -> float array -> h
 val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypothesis
 
 
-(** {6 Random numbers, PDF, and CDF} *)
+(** {6 Discrete random variables} *)
 
-module Rnd : sig
+val uniform_int_rvs : a:int -> b:int -> int
 
-  (** Rnd module is for generating random variables of various distributions.
+val hypergeometric_rvs : good:int -> bad:int -> sample:int -> int
 
-    Please refer to {{: https://www.gnu.org/software/gsl/manual }
-    GSL documentation} for details.
-   *)
+val hypergeometric_pdf : int -> good:int -> bad:int -> sample:int -> float
 
-  (** {6 Continuous random variables} *)
+val hypergeometric_logpmf : int -> good:int -> bad:int -> sample:int -> float
 
-  val flat : float -> float -> float
-  (** [flat a b] draws a random number from the interval [\[a,b)] with a uniform
-    distribution.
-   *)
 
-  val uniform : unit -> float
-  (** [uniform] returns a random float number within [\[0,1)], including 0
-      but excluding 1. [uniform ()] is equivalent to [flat 0. 1.]
-   *)
+(** {6 Continuous random variables} *)
 
-  val gaussian : ?sigma:float -> unit -> float
-  (** [gaussian ~sigma:s ()] returns the value of a random variable that
-      follows Normal distribution of [sigma = s]. *)
+val std_uniform_rvs : unit -> float
 
-  val gaussian_tail : float -> float -> float
-  (** [ gaussian_tail a x sigma ] returns a random value of a gaussian tail
-    distribution. note "a" must be positive. *)
+val uniform_rvs : a:float -> b:float -> float
 
-  val bivariate_gaussian : float -> float -> float -> float * float
-  (** [ bivariate_gaussian sigma_x sigma_y rho ] returns a pair of correlated
-    gaussian variates, with mean zero, correlation coefficient rho [-1, 1] and
-    standard deviations sigma_x and sigma_y in the x and y directions. *)
+val uniform_pdf : float -> a:float -> b:float -> float
 
-  val exponential : float -> float
-  (** [ exponential mu ] return a random value that follows exponential distribution. *)
+val uniform_logpdf : float -> a:float -> b:float -> float
 
-  val laplace : float -> float
+val uniform_cdf : float -> a:float -> b:float -> float
 
-  val exppow : float -> float -> float
+val uniform_logcdf : float -> a:float -> b:float -> float
 
-  val cauchy : float -> float
+val uniform_ppf : float -> a:float -> b:float -> float
 
-  val rayleigh : float -> float
+val uniform_sf : float -> a:float -> b:float -> float
 
-  val landau : unit -> float
+val uniform_logsf : float -> a:float -> b:float -> float
 
-  val levy : float -> float -> float
+val uniform_isf : float -> a:float -> b:float -> float
 
-  val levy_skew : float -> float -> float -> float
+val exponential_rvs : lambda:float -> float
 
-  val gamma : float -> float -> float
+val exponential_pdf : float -> lambda:float -> float
 
-  val lognormal : float -> float -> float
+val exponential_logpdf : float -> lambda:float -> float
 
-  val chisq : float -> float
+val exponential_cdf : float -> lambda:float -> float
 
-  val dirichlet : float array -> float array -> unit
+val exponential_logcdf : float -> lambda:float -> float
 
-  val fdist : float -> float -> float
+val exponential_ppf : float -> lambda:float -> float
 
-  val tdist : float -> float
+val exponential_sf : float -> lambda:float -> float
 
-  val beta : float -> float -> float
+val exponential_logsf : float -> lambda:float -> float
 
-  val logistic : float -> float
+val exponential_isf : float -> lambda:float -> float
 
-  val pareto : float -> float -> float
+val gaussian_rvs : mu:float -> sigma:float -> float
 
-  val dir_2d : unit -> float * float
+val gaussian_pdf : float -> mu:float -> sigma:float -> float
 
-  val dir_2d_trig_method : unit -> float * float
+val gaussian_logpdf : float -> mu:float -> sigma:float -> float
 
-  val dir_3d : unit -> float * float * float
+val gaussian_cdf : float -> mu:float -> sigma:float -> float
 
-  val dir_nd : int -> float array
+val gaussian_logcdf : float -> mu:float -> sigma:float -> float
 
-  val weibull : float -> float -> float
+val gaussian_ppf : float -> mu:float -> sigma:float -> float
 
-  val gumbel1 : float -> float -> float
+val gaussian_sf : float -> mu:float -> sigma:float -> float
 
-  val gumbel2 : float -> float -> float
+val gaussian_logsf : float -> mu:float -> sigma:float -> float
 
+val gaussian_isf : float -> mu:float -> sigma:float -> float
 
-  (** {6 Discrete random variables} *)
+val gamma_rvs : shape:float -> scale:float -> float
 
-  val uniform_int : ?a:int -> ?b:int -> unit -> int
-  (** [uniform_int a b] returns a random int between a and b inclusive,
-      i.e., a random int in [a, b] *)
+val gamma_pdf : float -> shape:float -> scale:float -> float
 
-  val poisson : float -> int
+val gamma_logpdf : float -> shape:float -> scale:float -> float
 
-  val bernoulli : float -> int
+val gamma_cdf : float -> shape:float -> scale:float -> float
 
-  val binomial : float -> int -> int
+val gamma_logcdf : float -> shape:float -> scale:float -> float
 
-  val multinomial : int -> float array -> int array
+val gamma_ppf : float -> shape:float -> scale:float -> float
 
-  val negative_binomial : float -> float -> int
+val gamma_sf : float -> shape:float -> scale:float -> float
 
-  val pascal : float -> int -> int
+val gamma_logsf : float -> shape:float -> scale:float -> float
 
-  val geometric : float -> int
+val gamma_isf : float -> shape:float -> scale:float -> float
 
-  val hypergeometric : int -> int -> int -> int
+val beta_rvs : a:float -> b:float -> float
 
-  val logarithmic : float -> int
+val beta_pdf : float -> a:float -> b:float -> float
 
-end
+val beta_logpdf : float -> a:float -> b:float -> float
 
+val beta_cdf : float -> a:float -> b:float -> float
 
-module Pdf : sig
-  (** Pdf module provides the probability density functions of various random
-    number distribution.
+val beta_logcdf : float -> a:float -> b:float -> float
 
-    Please refer to {{: https://www.gnu.org/software/gsl/manual }
-    GSL documentation} for details.
-   *)
+val beta_ppf : float -> a:float -> b:float -> float
 
-   (** {6 Continuous random variables} *)
+val beta_sf : float -> a:float -> b:float -> float
 
-  val flat : float -> float -> float -> float
+val beta_logsf : float -> a:float -> b:float -> float
 
-  val gaussian : float -> float -> float
-  (** [ gaussian_pdf x sigma ] returns the probability density at x *)
+val beta_isf : float -> a:float -> b:float -> float
 
-  val gaussian_tail : float -> float -> float -> float
-  (** [ gaussian_tail_pdf x a sigma ] returns the probability density at x given
-      a gaussian tail distribution of N(a, sigma) *)
+val chi2_rvs : df:float -> float
 
-  val bivariate_gaussian : float -> float -> float -> float -> float -> float
-  (** [ bivariate_gaussian x y sigma_x sigma_y rho ] returns the probability
-    density p(x,y) at (x,y) for a bivariate Gaussian distribution with standard
-    deviations sigma_x, sigma_y and correlation coefficient rho.  *)
+val chi2_pdf : float -> df:float -> float
 
-  val exponential : float -> float -> float
-  (** [ exponential x mu ] returns the probability density at x*)
+val chi2_logpdf : float -> df:float -> float
 
-  val laplace : float -> float -> float
+val chi2_cdf : float -> df:float -> float
 
-  val cauchy : float -> float -> float
+val chi2_logcdf : float -> df:float -> float
 
-  val exppow : float -> float -> float -> float
+val chi2_ppf : float -> df:float -> float
 
-  val rayleigh : float -> float -> float
+val chi2_sf : float -> df:float -> float
 
-  val landau : float -> float
+val chi2_logsf : float -> df:float -> float
 
-  val gamma : float -> float -> float -> float
+val chi2_isf : float -> df:float -> float
 
-  val lognormal : float -> float -> float -> float
+val f_rvs : dfnum:float -> dfden:float -> float
 
-  val chisq : float -> float -> float
+val f_pdf : float -> dfnum:float -> dfden:float -> float
 
-  val dirichlet : float array -> float array -> float
+val f_logpdf : float -> dfnum:float -> dfden:float -> float
 
-  val dirichlet_lnpdf : float array -> float array -> float
+val f_cdf : float -> dfnum:float -> dfden:float -> float
 
-  val fdist : float -> float -> float -> float
+val f_logcdf : float -> dfnum:float -> dfden:float -> float
 
-  val tdist : float -> float -> float
+val f_ppf : float -> dfnum:float -> dfden:float -> float
 
-  val beta : float -> float -> float -> float
+val f_sf : float -> dfnum:float -> dfden:float -> float
 
-  val logistic : float -> float -> float
+val f_logsf : float -> dfnum:float -> dfden:float -> float
 
-  val pareto : float -> float -> float -> float
+val f_isf : float -> dfnum:float -> dfden:float -> float
 
-  val weibull : float -> float -> float -> float
+val cauchy_rvs : loc:float -> scale:float -> float
 
-  val gumbel1 : float -> float -> float -> float
+val cauchy_pdf : float -> loc:float -> scale:float -> float
 
-  val gumbel2 : float -> float -> float -> float
+val cauchy_logpdf : float -> loc:float -> scale:float -> float
 
-  (** {6 Discrete random variables} *)
+val cauchy_cdf : float -> loc:float -> scale:float -> float
 
-  val poisson : int -> float -> float
+val cauchy_logcdf : float -> loc:float -> scale:float -> float
 
-  val bernoulli : int -> float -> float
+val cauchy_ppf : float -> loc:float -> scale:float -> float
 
-  val binomial : int -> float -> int -> float
+val cauchy_sf : float -> loc:float -> scale:float -> float
 
-  val multinomial : float array -> int array -> float
+val cauchy_logsf : float -> loc:float -> scale:float -> float
 
-  val multinomial_lnpdf : float array -> int array -> float
+val cauchy_isf : float -> loc:float -> scale:float -> float
 
-  val negative_binomial : int -> float -> float -> float
+val t_rvs : df:float -> loc:float -> scale:float -> float
 
-  val pascal : int -> float -> int -> float
+val t_pdf : float -> df:float -> loc:float -> scale:float -> float
 
-  val geometric : int -> float -> float
+val t_logpdf : float -> df:float -> loc:float -> scale:float -> float
 
-  val hypergeometric : int -> int -> int -> int -> float
+val t_cdf : float -> df:float -> loc:float -> scale:float -> float
 
-  val logarithmic : int -> float -> float
+val t_logcdf : float -> df:float -> loc:float -> scale:float -> float
 
-end
+val t_ppf : float -> df:float -> loc:float -> scale:float -> float
 
+val t_sf : float -> df:float -> loc:float -> scale:float -> float
 
-module Cdf : sig
-  (**
-    For each random variable distribution, the module includes four corresponding
-    functions (if well-defined).
+val t_logsf : float -> df:float -> loc:float -> scale:float -> float
 
-    E.g., for [gaussian] distribution, there are four functions as follows:
-    {ul
-      {- [gaussian_P] : calculates CDF of the distribution, i.e., P(X <= x);}
-      {- [gaussian_Q] : calculates tail distribution Q (X > x), i.e., 1 - P (X <= x);}
-      {- [gaussian_Pinv] : the inverse function of P, also a.k.a percentile function;}
-      {- [gaussian_Qinv] : the inverse function of Q.}
-    }
+val t_isf : float -> df:float -> loc:float -> scale:float -> float
 
-    Please refer to {{: https://www.gnu.org/software/gsl/manual }
-    GSL documentation} for details.
-  *)
+val vonmises_rvs : mu:float -> kappa:float -> float
 
-  (** {6 Continuous random variables} *)
+val vonmises_pdf : float -> mu:float -> kappa:float -> float
 
-  val flat_P : float -> float -> float -> float
+val vonmises_logpdf : float -> mu:float -> kappa:float -> float
 
-  val flat_Q : float -> float -> float -> float
+val vonmises_cdf : float -> mu:float -> kappa:float -> float
 
-  val flat_Pinv : float -> float -> float -> float
+val vonmises_logcdf : float -> mu:float -> kappa:float -> float
 
-  val flat_Qinv : float -> float -> float -> float
+val vonmises_sf : float -> mu:float -> kappa:float -> float
 
-  val gaussian_P : float -> float -> float
+val vonmises_logsf : float -> mu:float -> kappa:float -> float
 
-  val gaussian_Q : float -> float -> float
+val lomax_rvs : shape:float -> scale:float -> float
 
-  val gaussian_Pinv : float -> float -> float
+val lomax_pdf : float -> shape:float -> scale:float -> float
 
-  val gaussian_Qinv : float -> float -> float
+val lomax_logpdf : float -> shape:float -> scale:float -> float
 
-  val exponential_P : float -> float -> float
+val lomax_cdf : float -> shape:float -> scale:float -> float
 
-  val exponential_Q : float -> float -> float
+val lomax_logcdf : float -> shape:float -> scale:float -> float
 
-  val exponential_Pinv : float -> float -> float
+val lomax_ppf : float -> shape:float -> scale:float -> float
 
-  val exponential_Qinv : float -> float -> float
+val lomax_sf : float -> shape:float -> scale:float -> float
 
-  val laplace_P : float -> float -> float
+val lomax_logsf : float -> shape:float -> scale:float -> float
 
-  val laplace_Q : float -> float -> float
+val lomax_isf : float -> shape:float -> scale:float -> float
 
-  val laplace_Pinv : float -> float -> float
+val weibull_rvs : shape:float -> scale:float -> float
 
-  val laplace_Qinv : float -> float -> float
+val weibull_pdf : float -> shape:float -> scale:float -> float
 
-  val exppow_P : float -> float -> float -> float
+val weibull_logpdf : float -> shape:float -> scale:float -> float
 
-  val exppow_Q : float -> float -> float -> float
+val weibull_cdf : float -> shape:float -> scale:float -> float
 
-  val cauchy_P : float -> float -> float
+val weibull_logcdf : float -> shape:float -> scale:float -> float
 
-  val cauchy_Q : float -> float -> float
+val weibull_ppf : float -> shape:float -> scale:float -> float
 
-  val cauchy_Pinv : float -> float -> float
+val weibull_sf : float -> shape:float -> scale:float -> float
 
-  val cauchy_Qinv : float -> float -> float
+val weibull_logsf : float -> shape:float -> scale:float -> float
 
-  val rayleigh_P : float -> float -> float
+val weibull_isf : float -> shape:float -> scale:float -> float
 
-  val rayleigh_Q : float -> float -> float
+val laplace_rvs : loc:float -> scale:float -> float
 
-  val rayleigh_Pinv : float -> float -> float
+val laplace_pdf : float -> loc:float -> scale:float -> float
 
-  val rayleigh_Qinv : float -> float -> float
+val laplace_logpdf : float -> loc:float -> scale:float -> float
 
-  val gamma_P : float -> float -> float -> float
+val laplace_cdf : float -> loc:float -> scale:float -> float
 
-  val gamma_Q : float -> float -> float -> float
+val laplace_logcdf : float -> loc:float -> scale:float -> float
 
-  val gamma_Pinv : float -> float -> float -> float
+val laplace_ppf : float -> loc:float -> scale:float -> float
 
-  val gamma_Qinv : float -> float -> float -> float
+val laplace_sf : float -> loc:float -> scale:float -> float
 
-  val lognormal_P : float -> float -> float -> float
+val laplace_logsf : float -> loc:float -> scale:float -> float
 
-  val lognormal_Q : float -> float -> float -> float
+val laplace_isf : float -> loc:float -> scale:float -> float
 
-  val lognormal_Pinv : float -> float -> float -> float
+val gumbel1_rvs : a:float -> b:float -> float
 
-  val lognormal_Qinv : float -> float -> float -> float
+val gumbel1_pdf : float -> a:float -> b:float -> float
 
-  val chisq_P : float -> float -> float
+val gumbel1_logpdf : float -> a:float -> b:float -> float
 
-  val chisq_Q : float -> float -> float
+val gumbel1_cdf : float -> a:float -> b:float -> float
 
-  val chisq_Pinv : float -> float -> float
+val gumbel1_logcdf : float -> a:float -> b:float -> float
 
-  val chisq_Qinv : float -> float -> float
+val gumbel1_ppf : float -> a:float -> b:float -> float
 
-  val fdist_P : float -> float -> float -> float
+val gumbel1_sf : float -> a:float -> b:float -> float
 
-  val fdist_Q : float -> float -> float -> float
+val gumbel1_logsf : float -> a:float -> b:float -> float
 
-  val fdist_Pinv : float -> float -> float -> float
+val gumbel1_isf : float -> a:float -> b:float -> float
 
-  val fdist_Qinv : float -> float -> float -> float
+val gumbel2_rvs : a:float -> b:float -> float
 
-  val tdist_P : float -> float -> float
+val gumbel2_pdf : float -> a:float -> b:float -> float
 
-  val tdist_Q : float -> float -> float
+val gumbel2_logpdf : float -> a:float -> b:float -> float
 
-  val tdist_Pinv : float -> float -> float
+val gumbel2_cdf : float -> a:float -> b:float -> float
 
-  val tdist_Qinv : float -> float -> float
+val gumbel2_logcdf : float -> a:float -> b:float -> float
 
-  val beta_P : float -> float -> float -> float
+val gumbel2_ppf : float -> a:float -> b:float -> float
 
-  val beta_Q : float -> float -> float -> float
+val gumbel2_sf : float -> a:float -> b:float -> float
 
-  val beta_Pinv : float -> float -> float -> float
+val gumbel2_logsf : float -> a:float -> b:float -> float
 
-  val beta_Qinv : float -> float -> float -> float
+val gumbel2_isf : float -> a:float -> b:float -> float
 
-  val logistic_P : float -> float -> float
+val logistic_rvs : loc:float -> scale:float -> float
 
-  val logistic_Q : float -> float -> float
+val logistic_pdf : float -> loc:float -> scale:float -> float
 
-  val logistic_Pinv : float -> float -> float
+val logistic_logpdf : float -> loc:float -> scale:float -> float
 
-  val logistic_Qinv : float -> float -> float
+val logistic_cdf : float -> loc:float -> scale:float -> float
 
-  val pareto_P : float -> float -> float -> float
+val logistic_logcdf : float -> loc:float -> scale:float -> float
 
-  val pareto_Q : float -> float -> float -> float
+val logistic_ppf : float -> loc:float -> scale:float -> float
 
-  val pareto_Pinv : float -> float -> float -> float
+val logistic_sf : float -> loc:float -> scale:float -> float
 
-  val pareto_Qinv : float -> float -> float -> float
+val logistic_logsf : float -> loc:float -> scale:float -> float
 
-  val weibull_P : float -> float -> float -> float
+val logistic_isf : float -> loc:float -> scale:float -> float
 
-  val weibull_Q : float -> float -> float -> float
+val lognormal_rvs : mu:float -> sigma:float -> float
 
-  val weibull_Pinv : float -> float -> float -> float
+val lognormal_pdf : float -> mu:float -> sigma:float -> float
 
-  val weibull_Qinv : float -> float -> float -> float
+val lognormal_logpdf : float -> mu:float -> sigma:float -> float
 
-  val gumbel1_P : float -> float -> float -> float
+val lognormal_cdf : float -> mu:float -> sigma:float -> float
 
-  val gumbel1_Q : float -> float -> float -> float
+val lognormal_logcdf : float -> mu:float -> sigma:float -> float
 
-  val gumbel1_Pinv : float -> float -> float -> float
+val lognormal_ppf : float -> mu:float -> sigma:float -> float
 
-  val gumbel1_Qinv : float -> float -> float -> float
+val lognormal_sf : float -> mu:float -> sigma:float -> float
 
-  val gumbel2_P : float -> float -> float -> float
+val lognormal_logsf : float -> mu:float -> sigma:float -> float
 
-  val gumbel2_Q : float -> float -> float -> float
+val lognormal_isf : float -> mu:float -> sigma:float -> float
 
-  val gumbel2_Pinv : float -> float -> float -> float
+val rayleigh_rvs : sigma:float -> float
 
-  val gumbel2_Qinv : float -> float -> float -> float
+val rayleigh_pdf : float -> sigma:float -> float
 
-  (** {6 Discrete random variables} *)
+val rayleigh_logpdf : float -> sigma:float -> float
 
-  val poisson_P : int -> float -> float
+val rayleigh_cdf : float -> sigma:float -> float
 
-  val poisson_Q : int -> float -> float
+val rayleigh_logcdf : float -> sigma:float -> float
 
-  val binomial_P : int -> float -> int -> float
+val rayleigh_ppf : float -> sigma:float -> float
 
-  val binomial_Q : int -> float -> int -> float
+val rayleigh_sf : float -> sigma:float -> float
 
-  val negative_binomial_P : int -> float -> float -> float
+val rayleigh_logsf : float -> sigma:float -> float
 
-  val negative_binomial_Q : int -> float -> float -> float
-
-  val pascal_P : int -> float -> int -> float
-
-  val pascal_Q : int -> float -> int -> float
-
-  val geometric_P : int -> float -> float
-
-  val geometric_Q : int -> float -> float
-
-  val hypergeometric_P : int -> int -> int -> int -> float
-
-  val hypergeometric_Q : int -> int -> int -> int -> float
-
-end
+val rayleigh_isf : float -> sigma:float -> float
 
 
 

@@ -70,8 +70,8 @@ let vector_uniform n = uniform 1 n
 let uniform_int ?(a=0) ?(b=99) m n =
   let x = empty m n in
   iteri (fun i j _ ->
-    let re = float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ()) in
-    let im = float_of_int (Owl_stats.Rnd.uniform_int ~a ~b ()) in
+    let re = float_of_int (Owl_stats.uniform_int_rvs ~a ~b) in
+    let im = float_of_int (Owl_stats.uniform_int_rvs ~a ~b) in
     M.set x i j Complex.({re; im})
   ) x; x
 

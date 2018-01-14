@@ -65,7 +65,7 @@ module SimpleLDA = struct
         p.(j) <- !x;
       done;
       (* draw a sample *)
-      let u = Owl_stats.Rnd.uniform () *. !x in
+      let u = Owl_stats.std_uniform_rvs () *. !x in
       let k = ref 0 in
       while p.(!k) < u do k := !k + 1 done;
       include_token m w d !k;
@@ -177,7 +177,7 @@ module SparseLDA = struct
           k_q := !k_q + 1;
         done;
         k_q := 0;
-        let u = ref (Owl_stats.Rnd.uniform () *. (!s +. !r +. !qsum)) in
+        let u = ref (Owl_stats.std_uniform_rvs () *. (!s +. !r +. !qsum)) in
         let k = ref 0 in
         (* Work out which factor to sample from *)
         if !u < !s then (
@@ -278,7 +278,7 @@ let init ?(iter=100) k v d =
   (* randomise the topic assignment for each token *)
   m.t__z <- Owl_nlp_corpus.mapi_tok (fun i s ->
     Array.init (Array.length s) (fun j ->
-      let k' = Owl_stats.Rnd.uniform_int ~a:0 ~b:(k - 1) () in
+      let k' = Owl_stats.uniform_int_rvs ~a:0 ~b:(k - 1) in
       include_token m s.(j) i k';
       k'
     )

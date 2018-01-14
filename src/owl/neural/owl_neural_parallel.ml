@@ -159,7 +159,7 @@ module Make (M : ModelSig) (E : EngineSig) = struct
       | Some p -> p
       | None   -> Params.default ()
     in
-    let id = Owl_stats.Rnd.uniform_int () in
+    let id = Owl_stats.uniform_int_rvs ~a:0 ~b:max_int in
     let task = make_task id params nn x y in
     (* register sched/push/pull/stop/barrier *)
     E.register_schedule (schedule task);

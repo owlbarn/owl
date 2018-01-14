@@ -74,7 +74,7 @@ double Xgamm(double*);
 void grat1(double*,double*,double*,double*,double*,double*);
 void gratio(double*,double*,double*,double*,int*);
 double gsumln(double*,double*);
-double psi(double*);
+// double psi(double*);
 double rcomp(double*,double*);
 double rexp(double*);
 double rlog(double*);
@@ -89,4 +89,3 @@ long fifidint(double);
 long fifmod(long,long);
 void ftnstop(char*);
 extern int ipmpar(int*);
-
