@@ -454,3 +454,31 @@ value owl_stub_sf_sinc(value vX) {
   double y = sinc(x);
   return caml_copy_double(y);
 }
+
+
+value owl_stub_sf_sindg(value vX) {
+  double x = Double_val(vX);
+  double y = sindg(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_cosdg(value vX) {
+  double x = Double_val(vX);
+  double y = cosdg(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_tandg(value vX) {
+  double x = Double_val(vX);
+  double y = tandg(x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_cotdg(value vX) {
+  double x = Double_val(vX);
+  double y = cotdg(x);
+  return caml_copy_double(y);
+}

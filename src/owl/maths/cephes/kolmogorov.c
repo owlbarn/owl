@@ -1,13 +1,8 @@
-/* File altered for inclusion in cephes module for Python:
- * Main loop commented out.... */
-/*  Travis Oliphant Nov. 1998 */
-
-
 /* Re Kolmogorov statistics, here is Birnbaum and Tingey's formula for the
  * distribution of D+, the maximum of all positive deviations between a
  * theoretical distribution function P(x) and an empirical one Sn(x)
  * from n samples.
- * 
+ *
  *     +
  *    D  =         sup     [P(x) - S (x)]
  *     n     -inf < x < inf         n
@@ -18,7 +13,7 @@
  *    Pr{D   > e} =    >    C    e (e + v/n)    (1 - e - v/n)
  *        n            -   n v
  *                    v=0
- * 
+ *
  * [n(1-e)] is the largest integer not exceeding n(1-e).
  * nCv is the number of combinations of n things taken v at a time.  */
 
@@ -181,7 +176,7 @@ double kolmogi(double p)
  * double *px;
  * {
  * char str[30];
- * 
+ *
  * printf (" %s (%.15e) ? ", s, *px);
  * gets (str);
  * if (str[0] == '\0' || str[0] == '\n')
@@ -197,7 +192,7 @@ double kolmogi(double p)
  * {
  * int n;
  * double e, p, ps, pk, ek, y;
- * 
+ *
  * n = 5;
  * e = 0.0;
  * p = 0.1;

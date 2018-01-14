@@ -111,6 +111,14 @@ let logsinh x = log (sinh x)
 
 let logcosh x = log (cosh x)
 
+let sindg x = Owl_maths_special.sindg x
+
+let cosdg x = Owl_maths_special.cosdg x
+
+let tandg x = Owl_maths_special.tandg x
+
+let cotdg x = Owl_maths_special.cotdg x
+
 let hypot x y = Owl_maths_special.hypot x y
 
 let xlogy x y = Owl_maths_special.xlogy x y

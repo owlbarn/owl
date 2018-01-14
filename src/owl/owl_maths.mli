@@ -113,7 +113,20 @@ val logsinh : float -> float
 
 val logcosh : float -> float
 
+val sindg : float -> float
+(** Sine of angle given in degrees *)
+
+val cosdg : float -> float
+(** Cosine of the angle x given in degrees. *)
+
+val tandg : float -> float
+(** Tangent of angle x given in degrees. *)
+
+val cotdg : float -> float
+(** Cotangent of the angle x given in degrees. *)
+
 val hypot : float -> float -> float
+(** Calculate the length of the hypotenuse. *)
 
 val xlogy : float -> float -> float
 (** [xlogy(x, y) = x*log(y)] *)

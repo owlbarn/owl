@@ -149,6 +149,14 @@ external logit : float -> float = "owl_stub_sf_logit"
 
 external expit : float -> float = "owl_stub_sf_expit"
 
+external logabs : float -> float = "owl_stub_sf_logabs"
+
 external sinc : float -> float = "owl_stub_sf_sinc"
 
-external logabs : float -> float = "owl_stub_sf_logabs"
+external sindg : float -> float = "owl_stub_sf_sindg"
+
+external cosdg : float -> float = "owl_stub_sf_cosdg"
+
+external tandg : float -> float = "owl_stub_sf_tandg"
+
+external cotdg : float -> float = "owl_stub_sf_cotdg"
