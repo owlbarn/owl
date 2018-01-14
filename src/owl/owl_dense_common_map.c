@@ -426,7 +426,7 @@ CAMLprim value FUN20(value *argv, int __unused_argn)
 // broadcast function of x and y then save the result to z
 #ifdef FUN24
 
-void FUN24_CODE (
+static OWL_INLINE void FUN24_CODE (
   int d,
   struct caml_ba_array *X, int64_t *stride_x, int ofs_x,
   struct caml_ba_array *Y, int64_t *stride_y, int ofs_y,
@@ -505,7 +505,7 @@ CAMLprim value FUN24(value *argv, int __unused_argn)
 // used as sample dimension.
 #ifdef FUN25
 
-void FUN25_CODE (
+static OWL_INLINE void FUN25_CODE (
   int d,
   struct caml_ba_array *X, int64_t *stride_x, int ofs_x,
   struct caml_ba_array *Y, int64_t *stride_y, int ofs_y,
