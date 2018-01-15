@@ -50,11 +50,15 @@ val kurtosis : ?mean:float -> ?sd:float -> float array -> float
 
 val central_moment : int -> float array -> float
 
-val covariance : ?mean0:float -> ?mean1:float -> float array -> float array -> float
+val cov : ?m0:float -> ?m1:float -> float array -> float array -> float
+(** [cov x0 x1] calculates the covariance of [x0] and [x1], the mean of [x0]
+  and [x1] can be specified by [m0] and [m1] respectively.
+ *)
 
-val correlation : float array -> float array -> float
-
-val pearson_r : float array -> float array -> float
+val corrcoef : float array -> float array -> float
+(** [corrcoef x y] calculates the Pearson correlation of [x] and [y]. Namely,
+  [corrcoef x y ]= cov(x, y) / (sigma_x * sigma_y).
+ *)
 
 val kendall_tau : float array -> float array -> float
 
@@ -62,19 +66,24 @@ val spearman_rho : float array -> float array -> float
 
 val autocorrelation : ?lag:int -> float array -> float
 
-val median : float array -> float
-(** [median x] returns the median of [x]. *)
-
 val percentile : float array -> float -> float
 (** [percentile x p] returns the [p] percentile of the data [x]. [p] is between
-  0. and 1. [x] does not need to be sorted.
+  0. and 100. [x] does not need to be sorted beforehand.
+ *)
+
+val quantile : float array -> float -> float
+(** [quantile x p] returns the [p] quantile of the data [x]. [p] is between
+  0. and 1. [x] does not need to be sorted beforehand.
  *)
 
 val first_quartile : float array -> float
-(** [first_quartile x] returns the first quartile of [x], i.e., 25 percentiles. *)
+(** [first_quartile x] returns the first quartile of [x], i.e. 25 percentiles. *)
 
 val third_quartile : float array -> float
-(** [third_quartile x] returns the third quartile of [x], i.e., 75 percentiles. *)
+(** [third_quartile x] returns the third quartile of [x], i.e. 75 percentiles. *)
+
+val median : float array -> float
+(** [median x] returns the median of [x]. *)
 
 val min : float array -> float
 

@@ -74,10 +74,11 @@ let central_moment n x =
   let a = Array.fold_left (+.) 0. x in
   a /. (float_of_int (Array.length x))
 
-let correlation x0 x1 = Gsl.Stats.correlation x0 x1
+let corrcoef x0 x1 =
+  assert Array.(length x0 = length x1);
+  Owl_stats_extend.corrcoef x0 x1
 
-let pearson_r x0 x1 = correlation x0 x1
-
+(* TODO: optimise *)
 let sort ?(inc=true) x =
   let y = Array.copy x in
   let c = if inc then 1 else (-1) in
@@ -132,12 +133,11 @@ let autocorrelation ?(lag=1) x =
   done in
   (!a /. !b)
 
-let covariance ?mean0 ?mean1 x0 x1 =
-  match mean0, mean1 with
-  | Some m0, Some m1 -> Gsl.Stats.covariance_m m0 x0 m1 x1
-  | Some m0, None -> Gsl.Stats.covariance_m m0 x0 (mean x1) x1
-  | None, Some m1 -> Gsl.Stats.covariance_m (mean x0) x0 m1 x1
-  | None, None -> Gsl.Stats.covariance x0 x1
+let cov ?m0 ?m1 x0 x1 =
+  assert Array.(length x0 = length x1);
+  let m0 = _get_mean m0 x0 in
+  let m1 = _get_mean m1 x1 in
+  Owl_stats_extend.cov x0 x1 m0 m1
 
 let _concordant x0 x1 =
   let c = ref 0 in
@@ -170,7 +170,8 @@ let concordant x0 x1 =
         ((x0.(i) > x0.(j)) && (x1.(i) > x1.(j))) ) then
         c := !c + 1
     done
-  done; !c
+  done;
+  !c
 
 let discordant x0 x1 =
   let c = ref 0 in
@@ -181,7 +182,8 @@ let discordant x0 x1 =
         ((x0.(i) > x0.(j)) && (x1.(i) < x1.(j))) ) then
         c := !c + 1
     done
-  done; !c
+  done;
+  !c
 
 let kendall_tau x0 x1 =
   let a = float_of_int (concordant x0 x1) in
@@ -192,7 +194,7 @@ let kendall_tau x0 x1 =
 let spearman_rho x0 x1 =
   let r0 = rank x0 in
   let r1 = rank x1 in
-  let a = covariance r0 r1 in
+  let a = cov r0 r1 in
   let b = (std r0) *. (std r1) in
   a /. b
 
@@ -264,10 +266,11 @@ let ecdf x =
   done;
   !y, !f
 
-let _quantile_from_sorted_data x q = Gsl.Stats.quantile_from_sorted_data x q
-(* x must be in ascending order. *)
+let quantile x p =
+  assert (p >= 0. && p <= 1.);
+  Owl_stats_extend.quantile (sort ~inc:true x) p
 
-let percentile x q = _quantile_from_sorted_data (sort ~inc:true x) q
+let percentile x p = quantile x (p /. 100.)
 
 let median x = percentile x 0.5
 

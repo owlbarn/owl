@@ -539,5 +539,11 @@ extern double owl_stats_skew(double* x, double mean, double sd, int n);
 
 extern double owl_stats_kurtosis(double* x, double mean, double sd, int n);
 
+extern double owl_stats_cov(double* x, double* y, double mean_x, double mean_y, int n);
+
+extern double owl_stats_corrcoef(double* x, double* y, int n);
+
+extern double owl_stats_quantile(double* x, double p, int n);
+
 
 #endif // OWL_STATS_H

@@ -102,3 +102,23 @@ CAMLprim value owl_stats_stub_kurtosis(value vX, value vA, value vB) {
   double y = owl_stats_kurtosis((double *) vX, a, b, Double_array_length(vX));
   return caml_copy_double(y);
 }
+
+
+CAMLprim value owl_stats_stub_cov(value vX, value vY, value vA, value vB) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double z = owl_stats_cov((double *) vX, (double *) vY, a, b, Double_array_length(vX));
+  return caml_copy_double(z);
+}
+
+
+CAMLprim value owl_stats_stub_corrcoef(value vX, value vY) {
+  double z = owl_stats_corrcoef((double *) vX, (double *) vY, Double_array_length(vX));
+  return caml_copy_double(z);
+}
+
+
+CAMLprim value owl_stats_stub_quantile(value vX, value vA) {
+  double y = owl_stats_quantile((double *) vX, Double_val(vA), Double_array_length(vX));
+  return caml_copy_double(y);
+}

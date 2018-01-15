@@ -23,3 +23,9 @@ external absdev : float array -> float -> float = "owl_stats_stub_absdev"
 external skew : float array -> float -> float -> float = "owl_stats_stub_skew"
 
 external kurtosis : float array -> float -> float -> float = "owl_stats_stub_kurtosis"
+
+external cov : float array -> float array -> float -> float -> float = "owl_stats_stub_cov"
+
+external corrcoef : float array -> float array -> float = "owl_stats_stub_corrcoef"
+
+external quantile : float array -> float -> float = "owl_stats_stub_quantile"
