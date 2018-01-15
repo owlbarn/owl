@@ -7,6 +7,7 @@
 
 #include <math.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 #define DOUBLE
 #ifdef DOUBLE
@@ -1203,26 +1204,6 @@ static void cfftf1(int n, Treal c[], Treal ch[], const Treal wa[], const int ifa
   } /* cfftf1 */
 
 
-void owl_fftpack_cfftf(int n, Treal c[], Treal wsave[])
-  {
-    int iw1, iw2;
-    if (n == 1) return;
-    iw1 = 2*n;
-    iw2 = iw1 + 2*n;
-    cfftf1(n, c, wsave, wsave+iw1, (int*)(wsave+iw2), -1);
-  } /* owl_fftpack_cfftf */
-
-
-void owl_fftpack_cfftb(int n, Treal c[], Treal wsave[])
-  {
-    int iw1, iw2;
-    if (n == 1) return;
-    iw1 = 2*n;
-    iw2 = iw1 + 2*n;
-    cfftf1(n, c, wsave, wsave+iw1, (int*)(wsave+iw2), +1);
-  } /* owl_fftpack_cfftb */
-
-
 static void factorize(int n, int ifac[MAXFAC+2], const int ntryh[NSPECIAL])
   /* Factorize n in factors in ntryh and rest. On exit,
 ifac[0] contains n and ifac[1] contains number of factors,
@@ -1311,6 +1292,34 @@ void owl_fftpack_cffti(int n, Treal wsave[])
     iw2 = iw1 + 2*n;
     cffti1(n, wsave+iw1, (int*)(wsave+iw2));
   } /* owl_fftpack_cffti */
+
+
+void owl_fftpack_cfftf(int n, Treal input[], Treal output[]) {
+  if (n == 1) return;
+
+  size_t ws_sz = 2 * n * sizeof(Treal);
+  size_t fc_sz = (MAXFAC + 2) * sizeof(int);
+  void* ws = malloc(ws_sz + fc_sz);
+
+  cffti1(n, ws, (int*) (ws + ws_sz));
+  cfftf1(n, input, output, ws, (int*) (ws + ws_sz), -1);
+
+  free(ws);
+}
+
+
+void owl_fftpack_cfftb(int n, Treal input[], Treal output[]) {
+  if (n == 1) return;
+
+  size_t ws_sz = 2 * n * sizeof(Treal);
+  size_t fc_sz = (MAXFAC + 2) * sizeof(int);
+  void* ws = malloc(ws_sz + fc_sz);
+
+  cffti1(n, ws, (int*) (ws + ws_sz));
+  cfftf1(n, input, output, ws, (int*) (ws + ws_sz), +1);
+
+  free(ws);
+}
 
   /* -------------------------------------------------------------------
 rfftf1, rfftb1, owl_fftpack_rfftf, owl_fftpack_rfftb, rffti1, owl_fftpack_rffti. Treal FFTs.

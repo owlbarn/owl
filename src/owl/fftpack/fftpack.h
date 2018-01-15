@@ -15,13 +15,8 @@ extern "C" {
 #define Treal float
 #endif
 
-extern void owl_fftpack_cfftf(int N, Treal data[], const Treal wrk[]);
-extern void owl_fftpack_cfftb(int N, Treal data[], const Treal wrk[]);
-extern void owl_fftpack_cffti(int N, Treal wrk[]);
-
-extern void owl_fftpack_rfftf(int N, Treal data[], const Treal wrk[]);
-extern void owl_fftpack_rfftb(int N, Treal data[], const Treal wrk[]);
-extern void owl_fftpack_rffti(int N, Treal wrk[]);
+extern void owl_fftpack_cfftf(int N, Treal input[], const Treal output[]);
+extern void owl_fftpack_cfftb(int N, Treal input[], const Treal output[]);
 
 #ifdef __cplusplus
 }
