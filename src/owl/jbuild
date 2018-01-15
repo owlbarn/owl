@@ -7,6 +7,7 @@
 (copy_files# stats/*)
 (copy_files# stats/sfmt/*)
 (copy_files# neural/*)
+(copy_files# fftpack/*)
 
 (library (
   (name owl)
@@ -21,6 +22,9 @@
     owl_dense_common_fold
     owl_cblas_generated_stub
     owl_lapacke_generated_stub
+    ; FFTPACK
+    fftpack
+    owl_fftpack_stub
     ; stats
     owl_stats_extend_misc
     owl_stats_extend_stub
