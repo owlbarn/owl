@@ -1284,43 +1284,6 @@ static void cffti1(int n, Treal wa[], int ifac[MAXFAC+2])
   } /* cffti1 */
 
 
-void owl_fftpack_cffti(int n, Treal wsave[])
- {
-    int iw1, iw2;
-    if (n == 1) return;
-    iw1 = 2*n;
-    iw2 = iw1 + 2*n;
-    cffti1(n, wsave+iw1, (int*)(wsave+iw2));
-  } /* owl_fftpack_cffti */
-
-
-void owl_fftpack_cfftf(int n, Treal input[], Treal output[]) {
-  if (n == 1) return;
-
-  size_t ws_sz = 2 * n * sizeof(Treal);
-  size_t fc_sz = (MAXFAC + 2) * sizeof(int);
-  void* ws = malloc(ws_sz + fc_sz);
-
-  cffti1(n, ws, (int*) (ws + ws_sz));
-  cfftf1(n, input, output, ws, (int*) (ws + ws_sz), -1);
-
-  free(ws);
-}
-
-
-void owl_fftpack_cfftb(int n, Treal input[], Treal output[]) {
-  if (n == 1) return;
-
-  size_t ws_sz = 2 * n * sizeof(Treal);
-  size_t fc_sz = (MAXFAC + 2) * sizeof(int);
-  void* ws = malloc(ws_sz + fc_sz);
-
-  cffti1(n, ws, (int*) (ws + ws_sz));
-  cfftf1(n, input, output, ws, (int*) (ws + ws_sz), +1);
-
-  free(ws);
-}
-
   /* -------------------------------------------------------------------
 rfftf1, rfftb1, owl_fftpack_rfftf, owl_fftpack_rfftb, rffti1, owl_fftpack_rffti. Treal FFTs.
 ---------------------------------------------------------------------- */
@@ -1442,20 +1405,6 @@ static void rfftb1(int n, Treal c[], Treal ch[], const Treal wa[], const int ifa
   } /* rfftb1 */
 
 
-void owl_fftpack_rfftf(int n, Treal r[], Treal wsave[])
-  {
-    if (n == 1) return;
-    rfftf1(n, r, wsave, wsave+n, (int*)(wsave+2*n));
-  } /* owl_fftpack_rfftf */
-
-
-void owl_fftpack_rfftb(int n, Treal r[], Treal wsave[])
-  {
-    if (n == 1) return;
-    rfftb1(n, r, wsave, wsave+n, (int*)(wsave+2*n));
-  } /* owl_fftpack_rfftb */
-
-
 static void rffti1(int n, Treal wa[], int ifac[MAXFAC+2])
   {
     static const Treal twopi = 6.28318530717959;
@@ -1498,11 +1447,51 @@ static void rffti1(int n, Treal wa[], int ifac[MAXFAC+2])
   } /* rffti1 */
 
 
-void owl_fftpack_rffti(int n, Treal wsave[])
-  {
-    if (n == 1) return;
-    rffti1(n, wsave+n, (int*)(wsave+2*n));
-  } /* owl_fftpack_rffti */
+
+/** Owl's interface function **/
+
+
+void owl_fftpack_cffti(int n, Treal wsave[]) {
+  if (n == 1) return;
+  int iw1 = 2 * n;
+  int iw2 = iw1 + 2 * n;
+  cffti1(n, wsave + iw1, (int*) (wsave + iw2));
+}
+
+
+void owl_fftpack_cfftf(int n, Treal c[], Treal wsave[]) {
+  if (n == 1) return;
+  int iw1 = 2 * n;
+  int iw2 = iw1 + 2 * n;
+  cfftf1(n, c, wsave, wsave + iw1, (int*) (wsave + iw2), -1);
+}
+
+
+void owl_fftpack_cfftb(int n, Treal c[], Treal wsave[]) {
+  if (n == 1) return;
+  int iw1 = 2 * n;
+  int iw2 = iw1 + 2 * n;
+  cfftf1(n, c, wsave, wsave + iw1, (int*) (wsave + iw2), +1);
+}
+
+
+void owl_fftpack_rffti(int n, Treal wsave[]) {
+  if (n == 1) return;
+  rffti1(n, wsave + n, (int*) (wsave + 2 * n));
+}
+
+
+void owl_fftpack_rfftf(int n, Treal r[], Treal wsave[]) {
+  if (n == 1) return;
+  rfftf1(n, r, wsave, wsave + n, (int*) (wsave + 2 * n));
+}
+
+
+void owl_fftpack_rfftb(int n, Treal r[], Treal wsave[]) {
+  if (n == 1) return;
+  rfftb1(n, r, wsave, wsave + n, (int*) (wsave + 2 * n));
+}
+
 
 #ifdef __cplusplus
 }
