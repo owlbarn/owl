@@ -13,7 +13,16 @@
 
 #define MAXFAC 13    /* maximum number of factors in factorization of n */
 
+// copy x to y with given offset and stride
+inline void owl_fftpack_complex64_copy (int N, _Complex double* x, int ofsx, int stdx, _Complex double* y, int ofsy, int stdy) {
+  for (int i = 0; i < N; i++) {
+    *(y + ofsy) = *(x + ofsx);
+    ofsx += stdx;
+    ofsy += stdy;
+  }
+}
 
+// calculate the number of elements given a bigarray
 inline int owl_ndarray_numel (struct caml_ba_array *X) {
   int n = 1;
 
@@ -23,7 +32,27 @@ inline int owl_ndarray_numel (struct caml_ba_array *X) {
   return n;
 }
 
+// calculate the stride of a given dimension of a bigarray
+inline int owl_ndarray_stride_size (struct caml_ba_array *X, int d) {
+  int s = 1;
 
+  for (int i = X->num_dims - 1; i > d; i--)
+    s *= X->dim[i];
+
+  return s;
+}
+
+// calculate the slice size of a given dimension of a bigarray
+inline int owl_ndarray_slice_size (struct caml_ba_array *X, int d) {
+  int s = 1;
+
+  for (int i = X->num_dims - 1; i >= d; i--)
+    s *= X->dim[i];
+
+  return s;
+}
+
+/**
 value owl_stub_cfftf (value vX) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   double *X_data = (double *) X->data;
@@ -40,21 +69,87 @@ value owl_stub_cfftf (value vX) {
 
   return Val_unit;
 }
+**/
 
-
-value owl_stub_cfftb (value vX) {
+value owl_stub_cfftf (value vX, value vY, value vD) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
-  double *X_data = (double *) X->data;
-  int n = owl_ndarray_numel(X);
+  _Complex double *X_data = (_Complex double *) X->data;
 
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  _Complex double *Y_data = (_Complex double *) Y->data;
+
+  int d = Long_val(vD);
+  int n = X->dim[d];
   size_t ws_sz = 4 * n * sizeof(Treal);
   size_t fc_sz = (MAXFAC + 2) * sizeof(int);
   void* wsave = malloc(ws_sz + fc_sz);
+  void* data = malloc(n * sizeof(_Complex double));
+
+  int stdx = owl_ndarray_stride_size(X, d);
+  int slcx = owl_ndarray_slice_size(X,d);
+  int stdy = owl_ndarray_stride_size(Y, d);
+  int slcy = owl_ndarray_slice_size(Y,d);
+  int m = owl_ndarray_numel(X) / slcx;
+
   owl_fftpack_cffti(n, wsave);
 
-  owl_fftpack_cfftb(n, X_data, wsave);
+  int ofsx = 0;
+  int ofsy = 0;
+
+  for (int i = 0; i < m; i ++) {
+    for (int j = 0; j < stdx; j++) {
+      owl_fftpack_complex64_copy(n, X_data, ofsx + j, stdx, data, 0, 1);
+      owl_fftpack_cfftf(n, (Treal*) data, wsave);
+      owl_fftpack_complex64_copy(n, data, 0, 1, Y_data, ofsy + j, stdy);
+    }
+    ofsx += slcx;
+    ofsy += slcy;
+  }
 
   free(wsave);
+  free(data);
+
+  return Val_unit;
+}
+
+
+value owl_stub_cfftb (value vX, value vY, value vD) {
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  _Complex double *X_data = (_Complex double *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  _Complex double *Y_data = (_Complex double *) Y->data;
+
+  int d = Long_val(vD);
+  int n = X->dim[d];
+  size_t ws_sz = 4 * n * sizeof(Treal);
+  size_t fc_sz = (MAXFAC + 2) * sizeof(int);
+  void* wsave = malloc(ws_sz + fc_sz);
+  void* data = malloc(n * sizeof(_Complex double));
+
+  int stdx = owl_ndarray_stride_size(X, d);
+  int slcx = owl_ndarray_slice_size(X,d);
+  int stdy = owl_ndarray_stride_size(Y, d);
+  int slcy = owl_ndarray_slice_size(Y,d);
+  int m = owl_ndarray_numel(X) / slcx;
+
+  owl_fftpack_cffti(n, wsave);
+
+  int ofsx = 0;
+  int ofsy = 0;
+
+  for (int i = 0; i < m; i ++) {
+    for (int j = 0; j < stdx; j++) {
+      owl_fftpack_complex64_copy(n, X_data, ofsx + j, stdx, data, 0, 1);
+      owl_fftpack_cfftb(n, (Treal*) data, wsave);
+      owl_fftpack_complex64_copy(n, data, 0, 1, Y_data, ofsy + j, stdy);
+    }
+    ofsx += slcx;
+    ofsy += slcy;
+  }
+
+  free(wsave);
+  free(data);
 
   return Val_unit;
 }
