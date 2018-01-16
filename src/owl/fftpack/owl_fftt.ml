@@ -21,7 +21,10 @@ let ifft x =
 let rfft x =
   let y = copy x in
   Owl_fftpack.rfftf y;
-  y
+  let n = numel x / 2 + 1 in
+  let z = empty Complex64 [|n|] in
+  Owl_fftpack.halfcomplex_unpack y z;
+  z
 
 
 let irfft x =

@@ -13,3 +13,5 @@ external cfftb : ('a, 'b) owl_arr -> unit = "owl_stub_cfftb"
 external rfftf : ('a, 'b) owl_arr -> unit = "owl_stub_rfftf"
 
 external rfftb : ('a, 'b) owl_arr -> unit = "owl_stub_rfftb"
+
+external halfcomplex_unpack : ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> unit = "owl_stub_halfcomplex_unpack"

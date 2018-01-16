@@ -4,6 +4,7 @@
  */
 
 #include <stdlib.h>
+#include <complex.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
 
@@ -90,6 +91,33 @@ value owl_stub_rfftb (value vX) {
   owl_fftpack_rfftb(n, X_data, wsave);
 
   free(wsave);
+
+  return Val_unit;
+}
+
+
+value owl_stub_halfcomplex_unpack (value vX, value vY) {
+
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  double *X_data = (double *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  _Complex double *Y_data = (_Complex double *) Y->data;
+
+  int n = owl_ndarray_numel(X);
+  int stride = 1;
+  int i;
+
+  *Y_data = *X_data + 0 * I;
+
+  for (i = 1; i < n - i; i++) {
+    double re = *(X_data + (2 * i - 1) * stride);
+    double im = *(X_data + 2 * i * stride);
+    *(Y_data + i * stride) = re + im * I;
+  }
+
+  if (i == n - i)
+    *(Y_data + i * stride) = *(X_data + (n - 1) * stride) + 0 * I;
 
   return Val_unit;
 }
