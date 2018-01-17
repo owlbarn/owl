@@ -227,7 +227,7 @@ value owl_stub_rfftf (value vX, value vY, value vD) {
   return Val_unit;
 }
 
-
+#include <stdio.h>
 value owl_stub_rfftb (value vX, value vY, value vD) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   _Complex double *X_data = (_Complex double *) X->data;
@@ -257,6 +257,10 @@ value owl_stub_rfftb (value vX, value vY, value vD) {
     for (int j = 0; j < stdx; j++) {
       owl_fftpack_float64_copy(n, (Treal*) X_data, ofsx + j, stdx, data, 0, 1);
       owl_fftpack_rfftb(n, (Treal*) data, wsave);
+      for (int k = 0; k < n; k++) {
+        printf("%.3f ", *(((Treal *) data) + k));
+      }
+      printf(" .... ofsy:%i\n", ofsy);
       owl_fftpack_float64_copy(n, (Treal*) data, 0, 1, Y_data, ofsy + j, stdy);
     }
     ofsx += slcx;
