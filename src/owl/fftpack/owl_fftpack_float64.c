@@ -3,51 +3,43 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
+#include <stdlib.h>
+#include <complex.h>
+#include <caml/alloc.h>
+#include <caml/memory.h>
+
+#include "owl_core.h"
+#include "owl_macros.h"
+
+
 #define Treal double
 
-#include "fftpack.c"
+#define REAL_COPY owl_float64_copy
+#define COMPLEX_COPY owl_complex64_copy
+#define FFTPACK_CFFTI float64_fftpack_cffti
+#define FFTPACK_CFFTF float64_fftpack_cfftf
+#define FFTPACK_CFFTB float64_fftpack_cfftb
+#define FFTPACK_RFFTI float64_fftpack_rffti
+#define FFTPACK_RFFTF float64_fftpack_rfftf
+#define FFTPACK_RFFTB float64_fftpack_rfftb
+#define STUB_CFFTF float64_cfftf
+#define STUB_CFFTB float64_cfftb
+#define STUB_RFFTF float64_rfftf
+#define STUB_RFFTB float64_rfftb
 
+#include "owl_fftpack_impl.c"
 
-/** Owl's interface function **/
+#undef REAL_COPY
+#undef COMPLEX_COPY
+#undef FFTPACK_CFFTI
+#undef FFTPACK_CFFTF
+#undef FFTPACK_CFFTB
+#undef FFTPACK_RFFTI
+#undef FFTPACK_RFFTF
+#undef FFTPACK_RFFTB
+#undef STUB_CFFTF
+#undef STUB_CFFTB
+#undef STUB_RFFTF
+#undef STUB_RFFTB
 
-
-void owl_fftpack_cffti(int n, Treal wsave[]) {
-  if (n == 1) return;
-  int iw1 = 2 * n;
-  int iw2 = iw1 + 2 * n;
-  cffti1(n, wsave + iw1, (int*) (wsave + iw2));
-}
-
-
-void owl_fftpack_cfftf(int n, Treal c[], Treal wsave[]) {
-  if (n == 1) return;
-  int iw1 = 2 * n;
-  int iw2 = iw1 + 2 * n;
-  cfftf1(n, c, wsave, wsave + iw1, (int*) (wsave + iw2), -1);
-}
-
-
-void owl_fftpack_cfftb(int n, Treal c[], Treal wsave[]) {
-  if (n == 1) return;
-  int iw1 = 2 * n;
-  int iw2 = iw1 + 2 * n;
-  cfftf1(n, c, wsave, wsave + iw1, (int*) (wsave + iw2), +1);
-}
-
-
-void owl_fftpack_rffti(int n, Treal wsave[]) {
-  if (n == 1) return;
-  rffti1(n, wsave + n, (int*) (wsave + 2 * n));
-}
-
-
-void owl_fftpack_rfftf(int n, Treal r[], Treal wsave[]) {
-  if (n == 1) return;
-  rfftf1(n, r, wsave, wsave + n, (int*) (wsave + 2 * n));
-}
-
-
-void owl_fftpack_rfftb(int n, Treal r[], Treal wsave[]) {
-  if (n == 1) return;
-  rfftb1(n, r, wsave, wsave + n, (int*) (wsave + 2 * n));
-}
+#undef Treal

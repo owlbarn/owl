@@ -6,10 +6,10 @@
 open Owl_dense_common_types
 
 
-external cfftf : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> unit = "owl_stub_cfftf"
+external cfftf : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> unit = "float64_cfftf"
 
-external cfftb : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> unit = "owl_stub_cfftb"
+external cfftb : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> unit = "float64_cfftb"
 
-external rfftf : ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> int -> unit = "owl_stub_rfftf"
+external rfftf : ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> int -> unit = "float64_rfftf"
 
-external rfftb : ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> int -> unit = "owl_stub_rfftb"
+external rfftb : ('a, 'b) owl_arr -> ('c, 'd) owl_arr -> int -> unit = "float64_rfftb"

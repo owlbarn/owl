@@ -9,21 +9,25 @@
 extern "C" {
 #endif
 
-#define DOUBLE
+// Single precision FFT
 
-#ifdef DOUBLE
-#define Treal double
-#else
-#define Treal float
-#endif
+extern void float32_fftpack_cffti(int N, const float wsave[]);
+extern void float32_fftpack_cfftf(int N, float c[], const float wsave[]);
+extern void float32_fftpack_cfftb(int N, float c[], const float wsave[]);
 
-extern void owl_fftpack_cffti(int N, const Treal wsave[]);
-extern void owl_fftpack_cfftf(int N, Treal c[], const Treal wsave[]);
-extern void owl_fftpack_cfftb(int N, Treal c[], const Treal wsave[]);
+extern void float32_fftpack_rffti(int N, const float wsave[]);
+extern void float32_fftpack_rfftf(int N, float r[], const float wsave[]);
+extern void float32_fftpack_rfftb(int N, float r[], const float wsave[]);
 
-extern void owl_fftpack_rffti(int N, const Treal wsave[]);
-extern void owl_fftpack_rfftf(int N, Treal r[], const Treal wsave[]);
-extern void owl_fftpack_rfftb(int N, Treal r[], const Treal wsave[]);
+// Double precision FFT
+
+extern void float64_fftpack_cffti(int N, const double wsave[]);
+extern void float64_fftpack_cfftf(int N, double c[], const double wsave[]);
+extern void float64_fftpack_cfftb(int N, double c[], const double wsave[]);
+
+extern void float64_fftpack_rffti(int N, const double wsave[]);
+extern void float64_fftpack_rfftf(int N, double r[], const double wsave[]);
+extern void float64_fftpack_rfftb(int N, double r[], const double wsave[]);
 
 #ifdef __cplusplus
 }

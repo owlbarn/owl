@@ -1,5 +1,6 @@
 (jbuild_version 1)
 
+(copy_files# core/*)
 (copy_files# ext/*)
 (copy_files# maths/*)
 (copy_files# maths/cdflib/*)
@@ -14,6 +15,8 @@
   (public_name owl)
   (wrapped false)
   (c_names (
+    ; Core
+    owl_core_utils
     owl_common_c
     owl_distribution_common_c
     owl_dense_common_c
@@ -24,7 +27,8 @@
     owl_lapacke_generated_stub
     ; FFTPACK
     fftpack
-    owl_fftpack_stub
+    ;; owl_fftpack_stub
+    owl_fftpack_impl
     owl_fftpack_float32
     owl_fftpack_float64
     ; stats
