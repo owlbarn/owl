@@ -25,6 +25,8 @@ let ifft ?axis x =
   assert (axis < num_dims x);
   let y = empty (kind x) (shape x) in
   Owl_fftpack.cfftb x y axis;
+  let norm = Complex.{re = float_of_int (shape y).(axis); im = 0.} in
+  div_scalar_ y norm;
   y
 
 
@@ -41,14 +43,19 @@ let rfft ?axis x =
   y
 
 
-let irfft ?axis x =
+let irfft ?axis ?n x =
   let axis = match axis with
     | Some a -> a
     | None   -> num_dims x - 1
   in
   assert (axis < num_dims x);
   let s = shape x in
-  s.(axis) <- (s.(axis) - 1) * 2;
+  let _ = match n with
+    | Some n -> s.(axis) <- n
+    | None   -> s.(axis) <- (s.(axis) - 1) * 2
+  in
   let y = empty Float64 s in
   Owl_fftpack.rfftb x y axis;
+  let norm = float_of_int s.(axis) in
+  div_scalar_ y norm;
   y

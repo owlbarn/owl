@@ -148,26 +148,6 @@ value owl_stub_cfftb (value vX, value vY, value vD) {
 }
 
 
-/**
-value owl_stub_rfftf (value vX) {
-  struct caml_ba_array *X = Caml_ba_array_val(vX);
-  double *X_data = (double *) X->data;
-  int n = owl_ndarray_numel(X);
-
-  size_t ws_sz = 2 * n * sizeof(Treal);
-  size_t fc_sz = (MAXFAC + 2) * sizeof(int);
-  void* wsave = malloc(ws_sz + fc_sz);
-  owl_fftpack_rffti(n, wsave);
-
-  owl_fftpack_rfftf(n, X_data, wsave);
-
-  free(wsave);
-
-  return Val_unit;
-}
-**/
-
-
 // uppack from halfcomplex x to complex y
 inline void owl_halfcomplex_unpack (int n, double* x, int ofsx, int incx, _Complex double* y, int ofsy, int incy) {
   int i;
