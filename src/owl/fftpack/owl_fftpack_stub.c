@@ -11,6 +11,8 @@
 #include "owl_macros.h"
 #include "fftpack.h"
 
+#include <stdio.h>
+
 #define MAXFAC 13    /* maximum number of factors in factorization of n */
 
 // copy x to y with given offset and stride
@@ -165,6 +167,8 @@ value owl_stub_rfftf (value vX) {
 }
 **/
 
+
+// uppack from halfcomplex x to complex y
 inline void owl_halfcomplex_unpack (int n, double* x, int ofsx, int incx, _Complex double* y, int ofsy, int incy) {
   int i;
   *(y + ofsy) = *(x + ofsx) + 0 * I;
@@ -179,6 +183,23 @@ inline void owl_halfcomplex_unpack (int n, double* x, int ofsx, int incx, _Compl
 
   if (i == n - i)
     *(y + ofsy + incy) = *(x + ofsx + incx) + 0 * I;
+}
+
+
+// pack from complex x to halfcomplex y
+inline void owl_halfcomplex_pack (int n, _Complex double* x, int ofsx, int incx, double* y, int ofsy, int incy) {
+  int i;
+  *(y + ofsy) = creal(*(x + ofsx));
+
+  for (i = 1; i < n - i; i++) {
+    ofsx += incx;
+    ofsy += incy + incy;
+    *(y + ofsy - incy) = creal(*(x + ofsx));
+    *(y + ofsy) = cimag(*(x + ofsx));
+  }
+
+  if (i == n - i)
+    *(y + ofsy + incy) = creal(*(x + ofsx + incx));
 }
 
 
@@ -227,7 +248,7 @@ value owl_stub_rfftf (value vX, value vY, value vD) {
   return Val_unit;
 }
 
-#include <stdio.h>
+
 value owl_stub_rfftb (value vX, value vY, value vD) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   _Complex double *X_data = (_Complex double *) X->data;
@@ -240,7 +261,7 @@ value owl_stub_rfftb (value vX, value vY, value vD) {
   size_t ws_sz = 2 * n * sizeof(Treal);
   size_t fc_sz = (MAXFAC + 2) * sizeof(int);
   void* wsave = malloc(ws_sz + fc_sz);
-  void* data = malloc(n * sizeof(Treal));
+  void* data = malloc(n * sizeof(_Complex double));
 
   int stdx = owl_ndarray_stride_size(X, d);
   int slcx = owl_ndarray_slice_size(X,d);
@@ -255,12 +276,8 @@ value owl_stub_rfftb (value vX, value vY, value vD) {
 
   for (int i = 0; i < m; i ++) {
     for (int j = 0; j < stdx; j++) {
-      owl_fftpack_float64_copy(n, (Treal*) X_data, ofsx + j, stdx, data, 0, 1);
+      owl_halfcomplex_pack(n, X_data, ofsx + j, stdx, data, 0, 1);
       owl_fftpack_rfftb(n, (Treal*) data, wsave);
-      for (int k = 0; k < n; k++) {
-        printf("%.3f ", *(((Treal *) data) + k));
-      }
-      printf(" .... ofsy:%i\n", ofsy);
       owl_fftpack_float64_copy(n, (Treal*) data, 0, 1, Y_data, ofsy + j, stdy);
     }
     ofsx += slcx;
@@ -272,31 +289,3 @@ value owl_stub_rfftb (value vX, value vY, value vD) {
 
   return Val_unit;
 }
-
-/**
-value owl_stub_halfcomplex_unpack (value vX, value vY) {
-
-  struct caml_ba_array *X = Caml_ba_array_val(vX);
-  double *X_data = (double *) X->data;
-
-  struct caml_ba_array *Y = Caml_ba_array_val(vY);
-  _Complex double *Y_data = (_Complex double *) Y->data;
-
-  int n = owl_ndarray_numel(X);
-  int stride = 1;
-  int i;
-
-  *Y_data = *X_data + 0 * I;
-
-  for (i = 1; i < n - i; i++) {
-    double re = *(X_data + (2 * i - 1) * stride);
-    double im = *(X_data + 2 * i * stride);
-    *(Y_data + i * stride) = re + im * I;
-  }
-
-  if (i == n - i)
-    *(Y_data + i * stride) = *(X_data + (n - 1) * stride) + 0 * I;
-
-  return Val_unit;
-}
-**/

@@ -1490,6 +1490,7 @@ void owl_fftpack_rfftf(int n, Treal r[], Treal wsave[]) {
 void owl_fftpack_rfftb(int n, Treal r[], Treal wsave[]) {
   if (n == 1) return;
   rfftb1(n, r, wsave, wsave + n, (int*) (wsave + 2 * n));
+  printf("owl_fftpack_rfftb\n");
 }
 
 
