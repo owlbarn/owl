@@ -25,6 +25,8 @@
     ; FFTPACK
     fftpack
     owl_fftpack_stub
+    owl_fftpack_float32
+    owl_fftpack_float64
     ; stats
     owl_stats_extend_misc
     owl_stats_extend_stub
