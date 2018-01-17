@@ -28,16 +28,27 @@ let ifft ?axis x =
   y
 
 
-let rfft x =
-  let y = copy x in
-  Owl_fftpack.rfftf y;
-  let n = numel x / 2 + 1 in
-  let z = empty Complex64 [|n|] in
-  Owl_fftpack.halfcomplex_unpack y z;
-  z
+let rfft ?axis x =
+  let axis = match axis with
+    | Some a -> a
+    | None   -> num_dims x - 1
+  in
+  assert (axis < num_dims x);
+  let s = shape x in
+  s.(axis) <- s.(axis) / 2 + 1;
+  let y = empty Complex64 s in
+  Owl_fftpack.rfftf x y axis;
+  y
 
 
-let irfft x =
-  let y = copy x in
-  Owl_fftpack.rfftb y;
+let irfft ?axis x =
+  let axis = match axis with
+    | Some a -> a
+    | None   -> num_dims x - 1
+  in
+  assert (axis < num_dims x);
+  let s = shape x in
+  s.(axis) <- (s.(axis) - 1) * 2;
+  let y = empty Float64 s in
+  Owl_fftpack.rfftb x y axis;
   y
