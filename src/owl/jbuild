@@ -7,6 +7,8 @@
 (copy_files# maths/cephes/*)
 (copy_files# stats/*)
 (copy_files# stats/sfmt/*)
+(copy_files# cblas/*)
+(copy_files# lapacke/*)
 (copy_files# neural/*)
 (copy_files# fftpack/*)
 
