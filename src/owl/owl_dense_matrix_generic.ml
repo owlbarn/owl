@@ -548,10 +548,10 @@ let add_diag x a =
 
 (* io operations *)
 
-let of_array k x m n = Owl_backend_gsl_linalg.of_array k x m n |> Bigarray.genarray_of_array2
-
-
-let to_array x = Owl_backend_gsl_linalg.to_array (kind x) (Bigarray.array2_of_genarray x)
+let of_array k x m n =
+  let open Bigarray in
+  let y = Array1.of_array k C_layout x |> genarray_of_array1 in
+  reshape y [|m; n|]
 
 
 (* FIXME *)

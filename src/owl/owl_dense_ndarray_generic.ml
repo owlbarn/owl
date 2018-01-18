@@ -1374,9 +1374,9 @@ let of_array k x d =
   reshape y d
 
 let to_array x =
-  let y = reshape x [|1;numel x|] |> array2_of_genarray in
-  Owl_backend_gsl_linalg.to_array (kind x) y
-
+  let n = numel x in
+  let y = flatten x |> array1_of_genarray in
+  Array.init n (fun i -> y.{i})
 
 let complex
   : type a b c d. (a, b) kind -> (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
@@ -2403,76 +2403,6 @@ let avg_pool1d_backward padding input kernel stride output' =
   reshape input' input_shp
 
 
-(* simiar to sum_rows in matrix, sum all the slices along an axis.
-  The default [axis] is the highest dimension. E.g., for [x] of [|2;3;4;5|],
-  [sum_slices ~axis:2] returns an ndarray of shape [|4;5|].
-
-  currently, the operation is done using [gemm], fast but uses more memory.
- *)
-let sum_slices ?axis x =
-  let axis = match axis with
-    | Some a -> a
-    | None   -> num_dims x - 1
-  in
-  (* reshape into 2d matrix *)
-  let s = shape x in
-  let n = (_calc_slice s).(axis) in
-  let m = (numel x) / n in
-  let y = reshape x [|m;n|] |> array2_of_genarray in
-  (* create a row vector of all ones *)
-  let v = ones (kind x) [|1;m|] |> array2_of_genarray in
-  (* sum all the rows using gemm operation *)
-  let y = Owl_backend_gsl_linalg.dot (kind x) v y in
-  (* reshape back into ndarray *)
-  let s = Array.(sub s axis (length s - axis)) in
-  reshape (genarray_of_array2 y) s
-
-
-(* FIXME: experimental *)
-let draw_slices ?(axis=0) x n =
-  let shp = shape x in
-  let pre = Array.sub shp 0 axis in
-  let pad_len = num_dims x - axis - 1 in
-  let indices = Array.init n (fun _ ->
-    let idx_pre = Array.map (fun b -> Owl_stats.uniform_int_rvs ~a:0 ~b:(b-1)) pre in
-    Owl_utils.(Array.pad `Right idx_pre 0 pad_len)
-  ) in
-  (* copy slices to the output array *)
-  let sfx = Array.sub shp axis (num_dims x - axis) in
-  let y = empty (kind x) Array.(append [|n|] sfx) in
-  let jdx = Array.make (num_dims y) 0 in
-  Array.iteri (fun i idx ->
-    let s = Genarray.slice_left x idx in
-    let src = reshape s sfx in
-    jdx.(0) <- i;
-    let s = Genarray.slice_left y jdx in
-    let dst = reshape s sfx in
-    Genarray.blit src dst;
-  ) indices;
-  y, indices
-
-(* FIXME: experimental *)
-let slice_along_dim0 x indices =
-  let shp = shape x in
-  let n = Array.length indices in
-  shp.(0) <- n;
-  let y = empty (kind x) shp in
-
-  Array.iteri (fun dst_idx src_idx ->
-    let src = Genarray.slice_left x [|src_idx|] in
-    let dst = Genarray.slice_left y [|dst_idx|] in
-    Genarray.blit src dst;
-  ) indices;
-  y
-
-
-(* FIXME: experimental *)
-let draw_along_dim0 x n =
-  let all_indices = Array.init (shape x).(0) (fun i -> i) in
-  let indices = Owl_stats.choose all_indices n in
-  (slice_along_dim0 x indices), indices
-
-
 (* TODO: optimise performance, slow along the low dimension *)
 let cumulative_op ?axis _cumop x =
   let d = num_dims x in
@@ -3346,10 +3276,22 @@ let of_cols l =
   x
 
 
-let of_arrays k x = Owl_backend_gsl_linalg.of_arrays k x |> Bigarray.genarray_of_array2
+let of_arrays k x = Array2.of_array k C_layout x |> genarray_of_array2
 
 
-let to_arrays x = Owl_backend_gsl_linalg.to_arrays (kind x) (Bigarray.array2_of_genarray x)
+let to_arrays x =
+  let s = shape x in
+  let m = s.(0) in
+  let n = s.(1) in
+  let a0 = _zero (kind x) in
+  let x = array2_of_genarray x in
+  let y = Array.init m (fun _ -> Array.make n a0) in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      y.(i).(j) <- x.{i,j}
+    done
+  done;
+  y
 
 
 let rows x l =
@@ -3397,6 +3339,77 @@ let draw_rows2 ?(replacement=true) x y c =
 let draw_cols2 ?(replacement=true) x y c =
   let x_cols, l = draw_rows ~replacement x c in
   x_cols, cols y l, l
+
+
+(* simiar to sum_rows in matrix, sum all the slices along an axis.
+  The default [axis] is the highest dimension. E.g., for [x] of [|2;3;4;5|],
+  [sum_slices ~axis:2] returns an ndarray of shape [|4;5|].
+
+  currently, the operation is done using [gemm], fast but uses more memory.
+ *)
+let sum_slices ?axis x =
+  let axis = match axis with
+    | Some a -> a
+    | None   -> num_dims x - 1
+  in
+  (* reshape into 2d matrix *)
+  let s = shape x in
+  let n = (_calc_slice s).(axis) in
+  let m = (numel x) / n in
+  let y = reshape x [|m;n|] in
+  (* create a row vector of all ones *)
+  let v = ones (kind x) [|1;m|] in
+  (* sum all the rows using gemm operation *)
+  let y = dot v y in
+  (* reshape back into ndarray *)
+  let s = Array.(sub s axis (length s - axis)) in
+  reshape y s
+
+
+(* FIXME: experimental *)
+let draw_slices ?(axis=0) x n =
+  let shp = shape x in
+  let pre = Array.sub shp 0 axis in
+  let pad_len = num_dims x - axis - 1 in
+  let indices = Array.init n (fun _ ->
+    let idx_pre = Array.map (fun b -> Owl_stats.uniform_int_rvs ~a:0 ~b:(b-1)) pre in
+    Owl_utils.(Array.pad `Right idx_pre 0 pad_len)
+  ) in
+  (* copy slices to the output array *)
+  let sfx = Array.sub shp axis (num_dims x - axis) in
+  let y = empty (kind x) Array.(append [|n|] sfx) in
+  let jdx = Array.make (num_dims y) 0 in
+  Array.iteri (fun i idx ->
+    let s = Genarray.slice_left x idx in
+    let src = reshape s sfx in
+    jdx.(0) <- i;
+    let s = Genarray.slice_left y jdx in
+    let dst = reshape s sfx in
+    Genarray.blit src dst;
+  ) indices;
+  y, indices
+
+(* FIXME: experimental *)
+let slice_along_dim0 x indices =
+  let shp = shape x in
+  let n = Array.length indices in
+  shp.(0) <- n;
+  let y = empty (kind x) shp in
+
+  Array.iteri (fun dst_idx src_idx ->
+    let src = Genarray.slice_left x [|src_idx|] in
+    let dst = Genarray.slice_left y [|dst_idx|] in
+    Genarray.blit src dst;
+  ) indices;
+  y
+
+
+(* FIXME: experimental *)
+let draw_along_dim0 x n =
+  let all_indices = Array.init (shape x).(0) (fun i -> i) in
+  let indices = Owl_stats.choose all_indices n in
+  (slice_along_dim0 x indices), indices
+
 
 
 (* ends here *)
