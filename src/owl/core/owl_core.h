@@ -18,6 +18,14 @@ extern int owl_ndarray_stride_size (struct caml_ba_array *X, int d);
 
 extern int owl_ndarray_slice_size (struct caml_ba_array *X, int d);
 
+extern void owl_float32_matrix_transpose (float *x, float *y, int m, int n);
+
+extern void owl_float64_matrix_transpose (double *x, double *y, int m, int n);
+
+extern void owl_complex32_matrix_transpose (_Complex float *x, _Complex float *y, int m, int n);
+
+extern void owl_complex64_matrix_transpose (_Complex double *x, _Complex double *y, int m, int n);
+
 
 // compare two numbers (real & complex & int)
 

@@ -23,7 +23,7 @@
 #define STUB_RFFTF float64_rfftf
 #define STUB_RFFTB float64_rfftb
 
-#include "owl_fftpack_stub.c"
+#include "owl_fftpack_impl.c"
 
 #undef REAL_COPY
 #undef COMPLEX_COPY
