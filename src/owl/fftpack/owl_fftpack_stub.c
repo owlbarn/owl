@@ -9,13 +9,10 @@
 #include "fftpack.c"
 
 
-#define MAXFAC 13    /* maximum number of factors in factorization of n */
-
-
 /** Owl's interface function to FFTPACK **/
 
 
-static void FFTPACK_CFFTI (int n, Treal wsave[]) {
+void FFTPACK_CFFTI (int n, Treal wsave[]) {
   if (n == 1) return;
   int iw1 = 2 * n;
   int iw2 = iw1 + 2 * n;
@@ -23,7 +20,7 @@ static void FFTPACK_CFFTI (int n, Treal wsave[]) {
 }
 
 
-static void FFTPACK_CFFTF (int n, Treal c[], Treal wsave[]) {
+void FFTPACK_CFFTF (int n, Treal c[], Treal wsave[]) {
   if (n == 1) return;
   int iw1 = 2 * n;
   int iw2 = iw1 + 2 * n;
@@ -31,7 +28,7 @@ static void FFTPACK_CFFTF (int n, Treal c[], Treal wsave[]) {
 }
 
 
-static void FFTPACK_CFFTB (int n, Treal c[], Treal wsave[]) {
+void FFTPACK_CFFTB (int n, Treal c[], Treal wsave[]) {
   if (n == 1) return;
   int iw1 = 2 * n;
   int iw2 = iw1 + 2 * n;
@@ -39,19 +36,19 @@ static void FFTPACK_CFFTB (int n, Treal c[], Treal wsave[]) {
 }
 
 
-static void FFTPACK_RFFTI (int n, Treal wsave[]) {
+void FFTPACK_RFFTI (int n, Treal wsave[]) {
   if (n == 1) return;
   rffti1(n, wsave + n, (int*) (wsave + 2 * n));
 }
 
 
-static void FFTPACK_RFFTF (int n, Treal r[], Treal wsave[]) {
+void FFTPACK_RFFTF (int n, Treal r[], Treal wsave[]) {
   if (n == 1) return;
   rfftf1(n, r, wsave, wsave + n, (int*) (wsave + 2 * n));
 }
 
 
-static void FFTPACK_RFFTB(int n, Treal r[], Treal wsave[]) {
+void FFTPACK_RFFTB(int n, Treal r[], Treal wsave[]) {
   if (n == 1) return;
   rfftb1(n, r, wsave, wsave + n, (int*) (wsave + 2 * n));
 }
@@ -211,10 +208,6 @@ value STUB_RFFTF (value vX, value vY, value vD) {
     for (int j = 0; j < stdx; j++) {
       REAL_COPY(n, X_data, ofsx + j, stdx, data, 0, 1);
       FFTPACK_RFFTF(n, (Treal*) data, wsave);
-      /** for (int k = 0; k < n; k++) {
-        printf("%.3f ", *(((Treal *) data) + k));
-      }
-      printf(" .... ofsy:%i\n", ofsy); **/
       halfcomplex_unpack(n, data, 0, 1, Y_data, ofsy + j, stdy);
     }
     ofsx += slcx;
