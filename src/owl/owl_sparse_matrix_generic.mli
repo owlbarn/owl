@@ -5,14 +5,6 @@
 
 (** Sparse matrix module *)
 
-(** Sparse real matrix: this module supports the operations on sparse matrices
-  of real numbers. The module is partly built atop of GSL fucntions. Because
-  GSL only has limited support for sparse matrices. There are some hacks and
-  workarounds in the code.
-
-  In the future, I might use a pure OCaml implementation to replace the current
-  solution. At the moment, use with care and let me know if you find bugs.
- *)
 
 type ('a, 'b) t
 

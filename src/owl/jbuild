@@ -166,7 +166,6 @@
   (libraries (
     ctypes
     ctypes.stubs
-    gsl
     eigen
     plplot
   ))
