@@ -27,8 +27,7 @@
     owl_lapacke_generated_stub
     ; FFTPACK
     fftpack
-    ;; owl_fftpack_stub
-    owl_fftpack_impl
+    owl_fftpack_stub
     owl_fftpack_float32
     owl_fftpack_float64
     ; stats

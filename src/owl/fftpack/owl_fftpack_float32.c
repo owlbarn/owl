@@ -4,12 +4,8 @@
  */
 
 #include <stdlib.h>
-#include <complex.h>
-#include <caml/alloc.h>
-#include <caml/memory.h>
 
 #include "owl_core.h"
-#include "owl_macros.h"
 
 
 #define Treal float
@@ -27,7 +23,7 @@
 #define STUB_RFFTF float32_rfftf
 #define STUB_RFFTB float32_rfftb
 
-#include "owl_fftpack_impl.c"
+#include "owl_fftpack_stub.c"
 
 #undef REAL_COPY
 #undef COMPLEX_COPY

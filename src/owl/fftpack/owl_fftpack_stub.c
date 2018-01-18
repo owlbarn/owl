@@ -3,122 +3,73 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-#define Treal double
+
+#ifdef Treal
+
+#include "fftpack.c"
+
 
 #define MAXFAC 13    /* maximum number of factors in factorization of n */
 
-// copy x to y with given offset and stride
-inline void owl_fftpack_complex64_copy (int N, _Complex double* x, int ofsx, int stdx, _Complex double* y, int ofsy, int stdy) {
-  for (int i = 0; i < N; i++) {
-    *(y + ofsy) = *(x + ofsx);
-    ofsx += stdx;
-    ofsy += stdy;
-  }
-}
 
-inline void owl_fftpack_float64_copy (int N, double* x, int ofsx, int stdx, double* y, int ofsy, int stdy) {
-  for (int i = 0; i < N; i++) {
-    *(y + ofsy) = *(x + ofsx);
-    ofsx += stdx;
-    ofsy += stdy;
-  }
+/** Owl's interface function to FFTPACK **/
+
+
+static void FFTPACK_CFFTI (int n, Treal wsave[]) {
+  if (n == 1) return;
+  int iw1 = 2 * n;
+  int iw2 = iw1 + 2 * n;
+  cffti1(n, wsave + iw1, (int*) (wsave + iw2));
 }
 
 
-value owl_stub_cfftf (value vX, value vY, value vD) {
-  struct caml_ba_array *X = Caml_ba_array_val(vX);
-  _Complex double *X_data = (_Complex double *) X->data;
-
-  struct caml_ba_array *Y = Caml_ba_array_val(vY);
-  _Complex double *Y_data = (_Complex double *) Y->data;
-
-  int d = Long_val(vD);
-  int n = X->dim[d];
-  size_t ws_sz = 4 * n * sizeof(Treal);
-  size_t fc_sz = (MAXFAC + 2) * sizeof(int);
-  void* wsave = malloc(ws_sz + fc_sz);
-  void* data = malloc(2 * n * sizeof(Treal));
-
-  int stdx = owl_ndarray_stride_size(X, d);
-  int slcx = owl_ndarray_slice_size(X,d);
-  int stdy = owl_ndarray_stride_size(Y, d);
-  int slcy = owl_ndarray_slice_size(Y,d);
-  int m = owl_ndarray_numel(X) / slcx;
-
-  float64_fftpack_cffti(n, wsave);
-
-  int ofsx = 0;
-  int ofsy = 0;
-
-  for (int i = 0; i < m; i ++) {
-    for (int j = 0; j < stdx; j++) {
-      owl_fftpack_complex64_copy(n, X_data, ofsx + j, stdx, data, 0, 1);
-      float64_fftpack_cfftf(n, (Treal*) data, wsave);
-      owl_fftpack_complex64_copy(n, data, 0, 1, Y_data, ofsy + j, stdy);
-    }
-    ofsx += slcx;
-    ofsy += slcy;
-  }
-
-  free(wsave);
-  free(data);
-
-  return Val_unit;
+static void FFTPACK_CFFTF (int n, Treal c[], Treal wsave[]) {
+  if (n == 1) return;
+  int iw1 = 2 * n;
+  int iw2 = iw1 + 2 * n;
+  cfftf1(n, c, wsave, wsave + iw1, (int*) (wsave + iw2), -1);
 }
 
 
-value owl_stub_cfftb (value vX, value vY, value vD) {
-  struct caml_ba_array *X = Caml_ba_array_val(vX);
-  _Complex double *X_data = (_Complex double *) X->data;
-
-  struct caml_ba_array *Y = Caml_ba_array_val(vY);
-  _Complex double *Y_data = (_Complex double *) Y->data;
-
-  int d = Long_val(vD);
-  int n = X->dim[d];
-  size_t ws_sz = 4 * n * sizeof(Treal);
-  size_t fc_sz = (MAXFAC + 2) * sizeof(int);
-  void* wsave = malloc(ws_sz + fc_sz);
-  void* data = malloc(2 * n * sizeof(Treal));
-
-  int stdx = owl_ndarray_stride_size(X, d);
-  int slcx = owl_ndarray_slice_size(X,d);
-  int stdy = owl_ndarray_stride_size(Y, d);
-  int slcy = owl_ndarray_slice_size(Y,d);
-  int m = owl_ndarray_numel(X) / slcx;
-
-  float64_fftpack_cffti(n, wsave);
-
-  int ofsx = 0;
-  int ofsy = 0;
-
-  for (int i = 0; i < m; i ++) {
-    for (int j = 0; j < stdx; j++) {
-      owl_fftpack_complex64_copy(n, X_data, ofsx + j, stdx, data, 0, 1);
-      float64_fftpack_cfftb(n, (Treal*) data, wsave);
-      owl_fftpack_complex64_copy(n, data, 0, 1, Y_data, ofsy + j, stdy);
-    }
-    ofsx += slcx;
-    ofsy += slcy;
-  }
-
-  free(wsave);
-  free(data);
-
-  return Val_unit;
+static void FFTPACK_CFFTB (int n, Treal c[], Treal wsave[]) {
+  if (n == 1) return;
+  int iw1 = 2 * n;
+  int iw2 = iw1 + 2 * n;
+  cfftf1(n, c, wsave, wsave + iw1, (int*) (wsave + iw2), +1);
 }
+
+
+static void FFTPACK_RFFTI (int n, Treal wsave[]) {
+  if (n == 1) return;
+  rffti1(n, wsave + n, (int*) (wsave + 2 * n));
+}
+
+
+static void FFTPACK_RFFTF (int n, Treal r[], Treal wsave[]) {
+  if (n == 1) return;
+  rfftf1(n, r, wsave, wsave + n, (int*) (wsave + 2 * n));
+}
+
+
+static void FFTPACK_RFFTB(int n, Treal r[], Treal wsave[]) {
+  if (n == 1) return;
+  rfftb1(n, r, wsave, wsave + n, (int*) (wsave + 2 * n));
+}
+
+
+/** Helper functions **/
 
 
 // uppack from halfcomplex x to complex y
-inline void owl_halfcomplex_unpack (int n, double* x, int ofsx, int incx, _Complex double* y, int ofsy, int incy) {
+static OWL_INLINE void halfcomplex_unpack (int n, Treal* x, int ofsx, int incx, _Complex Treal* y, int ofsy, int incy) {
   int i;
   *(y + ofsy) = *(x + ofsx) + 0 * I;
 
   for (i = 1; i < n - i; i++) {
     ofsx += incx + incx;
     ofsy += incy;
-    double re = *(x + ofsx - incx);
-    double im = *(x + ofsx);
+    Treal re = *(x + ofsx - incx);
+    Treal im = *(x + ofsx);
     *(y + ofsy) = re + im * I;
   }
 
@@ -128,7 +79,7 @@ inline void owl_halfcomplex_unpack (int n, double* x, int ofsx, int incx, _Compl
 
 
 // pack from complex x to halfcomplex y
-inline void owl_halfcomplex_pack (int n, _Complex double* x, int ofsx, int incx, double* y, int ofsy, int incy) {
+static OWL_INLINE void halfcomplex_pack (int n, _Complex Treal* x, int ofsx, int incx, Treal* y, int ofsy, int incy) {
   int i;
   *(y + ofsy) = creal(*(x + ofsx));
 
@@ -144,12 +95,99 @@ inline void owl_halfcomplex_pack (int n, _Complex double* x, int ofsx, int incx,
 }
 
 
-value owl_stub_rfftf (value vX, value vY, value vD) {
+/** Owl's stub functions **/
+
+
+value STUB_CFFTF (value vX, value vY, value vD) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
-  double *X_data = (double *) X->data;
+  _Complex Treal *X_data = (_Complex Treal *) X->data;
 
   struct caml_ba_array *Y = Caml_ba_array_val(vY);
-  _Complex double *Y_data = (_Complex double *) Y->data;
+  _Complex Treal *Y_data = (_Complex Treal *) Y->data;
+
+  int d = Long_val(vD);
+  int n = X->dim[d];
+  size_t ws_sz = 4 * n * sizeof(Treal);
+  size_t fc_sz = (MAXFAC + 2) * sizeof(int);
+  void* wsave = malloc(ws_sz + fc_sz);
+  void* data = malloc(2 * n * sizeof(Treal));
+
+  int stdx = owl_ndarray_stride_size(X, d);
+  int slcx = owl_ndarray_slice_size(X,d);
+  int stdy = owl_ndarray_stride_size(Y, d);
+  int slcy = owl_ndarray_slice_size(Y,d);
+  int m = owl_ndarray_numel(X) / slcx;
+
+  FFTPACK_CFFTI(n, wsave);
+
+  int ofsx = 0;
+  int ofsy = 0;
+
+  for (int i = 0; i < m; i ++) {
+    for (int j = 0; j < stdx; j++) {
+      COMPLEX_COPY(n, X_data, ofsx + j, stdx, data, 0, 1);
+      FFTPACK_CFFTF(n, (Treal*) data, wsave);
+      COMPLEX_COPY(n, data, 0, 1, Y_data, ofsy + j, stdy);
+    }
+    ofsx += slcx;
+    ofsy += slcy;
+  }
+
+  free(wsave);
+  free(data);
+
+  return Val_unit;
+}
+
+
+value STUB_CFFTB (value vX, value vY, value vD) {
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  _Complex Treal *X_data = (_Complex Treal *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  _Complex Treal *Y_data = (_Complex Treal *) Y->data;
+
+  int d = Long_val(vD);
+  int n = X->dim[d];
+  size_t ws_sz = 4 * n * sizeof(Treal);
+  size_t fc_sz = (MAXFAC + 2) * sizeof(int);
+  void* wsave = malloc(ws_sz + fc_sz);
+  void* data = malloc(2 * n * sizeof(Treal));
+
+  int stdx = owl_ndarray_stride_size(X, d);
+  int slcx = owl_ndarray_slice_size(X,d);
+  int stdy = owl_ndarray_stride_size(Y, d);
+  int slcy = owl_ndarray_slice_size(Y,d);
+  int m = owl_ndarray_numel(X) / slcx;
+
+  FFTPACK_CFFTI(n, wsave);
+
+  int ofsx = 0;
+  int ofsy = 0;
+
+  for (int i = 0; i < m; i ++) {
+    for (int j = 0; j < stdx; j++) {
+      COMPLEX_COPY(n, X_data, ofsx + j, stdx, data, 0, 1);
+      FFTPACK_CFFTB(n, (Treal*) data, wsave);
+      COMPLEX_COPY(n, data, 0, 1, Y_data, ofsy + j, stdy);
+    }
+    ofsx += slcx;
+    ofsy += slcy;
+  }
+
+  free(wsave);
+  free(data);
+
+  return Val_unit;
+}
+
+
+value STUB_RFFTF (value vX, value vY, value vD) {
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  Treal *X_data = (Treal *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  _Complex Treal *Y_data = (_Complex Treal *) Y->data;
 
   int d = Long_val(vD);
   int n = X->dim[d];
@@ -164,20 +202,20 @@ value owl_stub_rfftf (value vX, value vY, value vD) {
   int slcy = owl_ndarray_slice_size(Y,d);
   int m = owl_ndarray_numel(X) / slcx;
 
-  float64_fftpack_rffti(n, wsave);
+  FFTPACK_RFFTI(n, wsave);
 
   int ofsx = 0;
   int ofsy = 0;
 
   for (int i = 0; i < m; i ++) {
     for (int j = 0; j < stdx; j++) {
-      owl_fftpack_float64_copy(n, X_data, ofsx + j, stdx, data, 0, 1);
-      float64_fftpack_rfftf(n, (Treal*) data, wsave);
+      REAL_COPY(n, X_data, ofsx + j, stdx, data, 0, 1);
+      FFTPACK_RFFTF(n, (Treal*) data, wsave);
       /** for (int k = 0; k < n; k++) {
         printf("%.3f ", *(((Treal *) data) + k));
       }
       printf(" .... ofsy:%i\n", ofsy); **/
-      owl_halfcomplex_unpack(n, data, 0, 1, Y_data, ofsy + j, stdy);
+      halfcomplex_unpack(n, data, 0, 1, Y_data, ofsy + j, stdy);
     }
     ofsx += slcx;
     ofsy += slcy;
@@ -190,19 +228,19 @@ value owl_stub_rfftf (value vX, value vY, value vD) {
 }
 
 
-value owl_stub_rfftb (value vX, value vY, value vD) {
+value STUB_RFFTB (value vX, value vY, value vD) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
-  _Complex double *X_data = (_Complex double *) X->data;
+  _Complex Treal *X_data = (_Complex Treal *) X->data;
 
   struct caml_ba_array *Y = Caml_ba_array_val(vY);
-  double *Y_data = (double *) Y->data;
+  Treal *Y_data = (Treal *) Y->data;
 
   int d = Long_val(vD);
   int n = Y->dim[d];
   size_t ws_sz = 2 * n * sizeof(Treal);
   size_t fc_sz = (MAXFAC + 2) * sizeof(int);
   void* wsave = malloc(ws_sz + fc_sz);
-  void* data = malloc(n * sizeof(_Complex double));
+  void* data = malloc(n * sizeof(_Complex Treal));
 
   int stdx = owl_ndarray_stride_size(X, d);
   int slcx = owl_ndarray_slice_size(X,d);
@@ -210,16 +248,16 @@ value owl_stub_rfftb (value vX, value vY, value vD) {
   int slcy = owl_ndarray_slice_size(Y,d);
   int m = owl_ndarray_numel(X) / slcx;
 
-  float64_fftpack_rffti(n, wsave);
+  FFTPACK_RFFTI(n, wsave);
 
   int ofsx = 0;
   int ofsy = 0;
 
   for (int i = 0; i < m; i ++) {
     for (int j = 0; j < stdx; j++) {
-      owl_halfcomplex_pack(n, X_data, ofsx + j, stdx, data, 0, 1);
-      float64_fftpack_rfftb(n, (Treal*) data, wsave);
-      owl_fftpack_float64_copy(n, (Treal*) data, 0, 1, Y_data, ofsy + j, stdy);
+      halfcomplex_pack(n, X_data, ofsx + j, stdx, data, 0, 1);
+      FFTPACK_RFFTB(n, (Treal*) data, wsave);
+      REAL_COPY(n, (Treal*) data, 0, 1, Y_data, ofsy + j, stdy);
     }
     ofsx += slcx;
     ofsy += slcy;
@@ -230,3 +268,6 @@ value owl_stub_rfftb (value vX, value vY, value vD) {
 
   return Val_unit;
 }
+
+
+#endif //Treal
