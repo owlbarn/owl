@@ -6,6 +6,8 @@
 #ifndef OWL_MACROS_H
 #define OWL_MACROS_H
 
+#include <math.h>
+#include <complex.h>
 #include <caml/mlvalues.h>
 #include <caml/alloc.h>
 #include <caml/memory.h>
@@ -14,7 +16,6 @@
 #include <caml/bigarray.h>
 #include <caml/signals.h>
 #include <caml/threads.h>
-#include <math.h>
 
 
 // Define the structure for complex numbers

@@ -3,12 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-#include "owl_macros.h"
-
-#ifndef NUMBER
-#define NUMBER double
-void __dumb_fun_vec_fold() {};  // define a dumb to avoid warnings
-#endif /* NUMBER */
+#ifdef OWL_ENABLE_TEMPLATE
 
 
 // function to accumulate all the elements in x
@@ -312,3 +307,6 @@ CAMLprim value FUN26(value vM, value vN, value vO, value vX, value vY)
 #undef FUN11
 #undef FUN23
 #undef FUN26
+
+
+#endif /* OWL_ENABLE_TEMPLATE */

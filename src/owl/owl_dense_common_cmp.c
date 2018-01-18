@@ -3,16 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-#include "owl_macros.h"
-
-#ifndef NUMBER
-#define NUMBER double
-void __dumb_fun() {};  // define a dumb to avoid warnings
-#endif /* NUMBER */
-
-#ifndef STOPFN
-#define STOPFN(X, Y) (X < Y)
-#endif /* STOPFN */
+#ifdef OWL_ENABLE_TEMPLATE
 
 
 // function to compare two arrays
@@ -270,3 +261,6 @@ CAMLprim value FUN22(value vN, value vX, value vA, value vB)
 #undef FUN16
 #undef FUN21
 #undef FUN22
+
+
+#endif /* OWL_ENABLE_TEMPLATE */

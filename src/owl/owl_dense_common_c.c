@@ -3,9 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-#include <complex.h>
-#include "owl_macros.h"
+#include "owl_core.h"
 #include "owl_stats.h"
+
 
 // some helper functions
 
@@ -13,94 +13,8 @@
 #define exp10f(X) expf(LN10 * X)
 #define exp10(X) exp(LN10 * X)
 
-OWL_INLINE value cp_two_doubles(double d0, double d1)
-{
-  value res = caml_alloc_small(2 * Double_wosize, Double_array_tag);
-  Store_double_field(res, 0, d0);
-  Store_double_field(res, 1, d1);
-  return res;
-}
 
-
-// compare two complex numbers
-
-#define CEQF(X,Y) ((crealf(X) == crealf(Y)) && (cimagf(X) < cimagf(Y)))
-
-#define CEQ(X,Y) ((creal(X) == creal(Y)) && (cimag(X) < cimag(Y)))
-
-#define CNEQF(X,Y) ((crealf(X) != crealf(Y)) || (cimagf(X) != cimagf(Y)))
-
-#define CNEQ(X,Y) ((creal(X) != creal(Y)) || (cimag(X) != cimag(Y)))
-
-#define CLTF(X,Y) ((cabsf(X) < cabsf(Y)) || ((cabsf(X) == cabsf(Y)) && (cargf(X) < cargf(Y))))
-
-#define CGTF(X,Y) ((cabsf(X) > cabsf(Y)) || ((cabsf(X) == cabsf(Y)) && (cargf(X) > cargf(Y))))
-
-#define CLEF(X,Y) !CGTF(X,Y)
-
-#define CGEF(X,Y) !CLTF(X,Y)
-
-#define CLT(X,Y) ((cabs(X) < cabs(Y)) || ((cabs(X) == cabs(Y)) && (carg(X) < carg(Y))))
-
-#define CGT(X,Y) ((cabs(X) > cabs(Y)) || ((cabs(X) == cabs(Y)) && (carg(X) > carg(Y))))
-
-#define CLE(X,Y) !CGT(X,Y)
-
-#define CGE(X,Y) !CLT(X,Y)
-
-
-// compare two numbers (real & complex & int)
-
-static OWL_INLINE int float32_cmp (const void * a, const void * b)
-{
-  return ( *(float*)a < *(float*)b ? -1 : (*(float*)a > *(float*)b ? 1 : 0) );
-}
-
-static OWL_INLINE int float64_cmp (const void * a, const void * b)
-{
-  return ( *(double*)a < *(double*)b ? -1 : (*(double*)a > *(double*)b ? 1 : 0) );
-}
-
-static OWL_INLINE int complex32_cmpf (const void * a, const void * b)
-{
- return ( CLTF(*(_Complex float*)a,*(_Complex float*)b) ? -1 : (CGTF(*(_Complex float*)a,*(_Complex float*)b) ? 1 : 0) );
-}
-
-static OWL_INLINE int complex64_cmpf (const void * a, const void * b)
-{
- return ( CLT(*(_Complex double*)a,*(_Complex double*)b) ? -1 : (CGT(*(_Complex double*)a,*(_Complex double*)b) ? 1 : 0) );
-}
-
-static OWL_INLINE int int8_cmp (const void * a, const void * b)
-{
-  return ( *(int8_t*)a < *(int8_t*)b ? -1 : (*(int8_t*)a > *(int8_t*)b ? 1 : 0) );
-}
-
-static OWL_INLINE int uint8_cmp (const void * a, const void * b)
-{
-  return ( *(uint8_t*)a < *(uint8_t*)b ? -1 : (*(uint8_t*)a > *(uint8_t*)b ? 1 : 0) );
-}
-
-static OWL_INLINE int int16_cmp (const void * a, const void * b)
-{
-  return ( *(int16_t*)a < *(int16_t*)b ? -1 : (*(int16_t*)a > *(int16_t*)b ? 1 : 0) );
-}
-
-static OWL_INLINE int uint16_cmp (const void * a, const void * b)
-{
-  return ( *(uint16_t*)a < *(uint16_t*)b ? -1 : (*(uint16_t*)a > *(uint16_t*)b ? 1 : 0) );
-}
-
-static OWL_INLINE int int32_cmp (const void * a, const void * b)
-{
-  return ( *(int32_t*)a < *(int32_t*)b ? -1 : (*(int32_t*)a > *(int32_t*)b ? 1 : 0) );
-}
-
-static OWL_INLINE int int64_cmp (const void * a, const void * b)
-{
-  return ( *(int64_t*)a < *(int64_t*)b ? -1 : (*(int64_t*)a > *(int64_t*)b ? 1 : 0) );
-}
-
+#define OWL_ENABLE_TEMPLATE
 
 //////////////////// function templates starts ////////////////////
 
@@ -6786,4 +6700,7 @@ static OWL_INLINE int int64_cmp (const void * a, const void * b)
 #define MAPFN(X,Y,Z) *Z = (*X >= *Y)
 #include "owl_dense_common_map.c"
 
+
 //////////////////// function templates ends ////////////////////
+
+#undef OWL_ENABLE_TEMPLATE

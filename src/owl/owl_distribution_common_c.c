@@ -3,8 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-#include "owl_macros.h"
+#include "owl_core.h"
 #include "owl_stats.h"
+
+
+#define OWL_ENABLE_TEMPLATE
 
 //////////////////// function templates starts ////////////////////
 
@@ -2314,3 +2317,5 @@
 #include "owl_dense_common_map.c"
 
 //////////////////// function templates ends ////////////////////
+
+#undef OWL_ENABLE_TEMPLATE

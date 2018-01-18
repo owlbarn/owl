@@ -3,16 +3,11 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  */
 
-#include "owl_macros.h"
+#ifdef OWL_ENABLE_TEMPLATE
 
-#ifndef NUMBER
-#define NUMBER double
-void __dumb_fun_vec_map() {};  // define a dumb to avoid warnings
-#endif /* NUMBER */
-
-#ifndef INIT
-#define INIT
-#endif /* INIT */
+#ifndef INIT // Because some functions do not really utilise this,
+#define INIT // so define an empty string as default.
+#endif
 
 
 // function to perform in-place sorting
@@ -788,3 +783,6 @@ CAMLprim value FUN27(value *argv, int __unused_argn)
 #undef FUN27
 #undef FUN27_IMPL
 #undef FUN27_CODE
+
+
+#endif /* OWL_ENABLE_TEMPLATE */
