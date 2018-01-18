@@ -1019,12 +1019,11 @@ let _check_transpose_axis axis d =
 
 
 let matrix_transpose x =
+  let k = kind x in
   let s = shape x in
   let m, n = s.(0), s.(1) in
-  let y = empty (kind x) [|n;m|] in
-  let x' = Bigarray.array2_of_genarray x in
-  let y' = Bigarray.array2_of_genarray y in
-  Owl_backend_gsl_linalg.transpose_copy (kind x) y' x';
+  let y = empty k [|n;m|] in
+  Owl_core._matrix_transpose k x y;
   y
 
 

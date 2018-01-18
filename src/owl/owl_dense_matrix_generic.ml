@@ -286,11 +286,10 @@ let swap_cols x j j' =
 
 
 let transpose x =
+  let k = kind x in
   let m, n = shape x in
-  let y = empty (kind x) n m in
-  let x' = Bigarray.array2_of_genarray x in
-  let y' = Bigarray.array2_of_genarray y in
-  Owl_backend_gsl_linalg.transpose_copy (kind x) y' x';
+  let y = empty k n m in
+  Owl_core._matrix_transpose k x y;
   y
 
 

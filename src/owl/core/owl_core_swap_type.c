@@ -11,28 +11,28 @@
 //////////////////// function templates starts ////////////////////
 
 
-#define FUNCTION(b) owl_float32 ## _ ## a
+#define FUNCTION(name) owl_float32 ## _ ## name
 #define TYPE float
 #include "owl_core_swap_impl.c"
 #undef TYPE
 #undef FUNCTION
 
 
-#define FUNCTION(b) owl_float64 ## _ ## a
+#define FUNCTION(name) owl_float64 ## _ ## name
 #define TYPE double
 #include "owl_core_swap_impl.c"
 #undef TYPE
 #undef FUNCTION
 
 
-#define FUNCTION(b) owl_complex32 ## _ ## a
+#define FUNCTION(name) owl_complex32 ## _ ## name
 #define TYPE _Complex float
 #include "owl_core_swap_impl.c"
 #undef TYPE
 #undef FUNCTION
 
 
-#define FUNCTION(b) owl_complex64 ## _ ## a
+#define FUNCTION(name) owl_complex64 ## _ ## name
 #define TYPE _Complex double
 #include "owl_core_swap_impl.c"
 #undef TYPE

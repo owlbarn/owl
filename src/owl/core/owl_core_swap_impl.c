@@ -12,12 +12,12 @@ void FUNCTION (matrix_transpose) (TYPE * x, TYPE * y, int m, int n) {
   int ofsy = 0;
 
   for (int i = 0; i < m; i++) {
+    ofsy = i;
     for (int j = 0; j < n; j++) {
       *(y + ofsy) = *(x + ofsx);
       ofsy += m;
       ofsx += 1;
     }
-    ofsy = i;
   }
 }
 
