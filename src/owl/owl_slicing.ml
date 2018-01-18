@@ -102,7 +102,7 @@ let calc_continuous_blksz axis shp =
   in !d, !ssz
 
 
-(* calculat the shape according the slice definition
+(* calculat the shape according to the slice definition
    axis: slice definition
  *)
 let calc_slice_shape axis =

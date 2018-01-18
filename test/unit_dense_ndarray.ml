@@ -1,3 +1,5 @@
+(** Unit test for Owl_dense_ndarray_generic module *)
+
 open Bigarray
 open Owl_types
 

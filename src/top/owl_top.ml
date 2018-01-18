@@ -12,6 +12,7 @@ let printers = [
   "Owl.Neural.D.Graph.pp_network";
   "Owl.Algodiff.S.pp_num";
   "Owl.Algodiff.D.pp_num";
+  "Owl.Graph.pp_node";
 ]
 
 

@@ -74,6 +74,9 @@ val ones : ('a, 'b) kind -> int array -> ('a, 'b) t
   one can be [1.] or [Complex.one].
  *)
 
+val eye : ('a, 'b) kind -> int -> ('a, 'b) t
+(** [eye m] creates an [m] by [m] identity matrix. *)
+
 val uniform : ?scale:float -> ('a, 'b) kind -> int array -> ('a, 'b) t
 (** [uniform Bigarray.Float64 [|3;4;5|]] creates a three-diemensional array
   of type [Bigarray.Float64]. Each dimension has the following size: 3, 4,
@@ -168,7 +171,7 @@ val index_1d_nd : int -> int array -> int array
  *)
 
 val index_nd_1d : int array -> int array -> int
-(** [index_nd_1d i shp] converts n-dimensional index [i] to one-dimensional
+(** [index_nd_1d i stride] converts n-dimensional index [i] to one-dimensional
   index according to the passed in [stride].
 
   NOTE: you need to pass in stride, not the shape of [x]!
@@ -235,7 +238,7 @@ val set_slice : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
 
 val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
 (** [get_slice_simple axis x] aims to provide a simpler version of [get_slice].
-  This function assumes that every list element in the passed in [in list list]
+  This function assumes that every list element in the passed in [int list list]
   represents a range, i.e., [R] constructor.
 
   E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
@@ -243,7 +246,7 @@ val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
 
 val set_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** [set_slice_simple axis x y] aims to provide a simpler version of [set_slice].
-  This function assumes that every list element in the passed in [in list list]
+  This function assumes that every list element in the passed in [int list list]
   represents a range, i.e., [R] constructor.
 
   E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
@@ -549,6 +552,8 @@ val elt_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   that [a] is from [x] and [b] is the corresponding element of [a] from [y] of
   the same position. The function returns another binary ([0] and [1])
   ndarray/matrix wherein [1] indicates [a = b].
+
+  The function supports broadcast operation.
  *)
 
 val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -556,6 +561,8 @@ val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   Assume that [a] is from [x] and [b] is the corresponding element of [a] from
   [y] of the same position. The function returns another binary ([0] and [1])
   ndarray/matrix wherein [1] indicates [a <> b].
+
+  The function supports broadcast operation.
 *)
 
 val elt_less : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -563,6 +570,8 @@ val elt_less : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   that [a] is from [x] and [b] is the corresponding element of [a] from [y] of
   the same position. The function returns another binary ([0] and [1])
   ndarray/matrix wherein [1] indicates [a < b].
+
+  The function supports broadcast operation.
  *)
 
 val elt_greater : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -570,6 +579,8 @@ val elt_greater : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   Assume that [a] is from [x] and [b] is the corresponding element of [a] from
   [y] of the same position. The function returns another binary ([0] and [1])
   ndarray/matrix wherein [1] indicates [a > b].
+
+  The function supports broadcast operation.
  *)
 
 val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -577,6 +588,8 @@ val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   Assume that [a] is from [x] and [b] is the corresponding element of [a] from
   [y] of the same position. The function returns another binary ([0] and [1])
   ndarray/matrix wherein [1] indicates [a <= b].
+
+  The function supports broadcast operation.
  *)
 
 val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -584,6 +597,8 @@ val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
   Assume that [a] is from [x] and [b] is the corresponding element of [a] from
   [y] of the same position. The function returns another binary ([0] and [1])
   ndarray/matrix wherein [1] indicates [a >= b].
+
+  The function supports broadcast operation.
  *)
 
 val equal_scalar : ('a, 'b) t -> 'a -> bool
@@ -817,7 +832,7 @@ val minmax_i : ('a, 'b) t -> ('a * (int array)) * ('a * (int array))
   maximum value along its index.
  *)
 
-val abs : (float, 'a) t -> (float, 'a) t
+val abs : ('a, 'b) t -> ('a, 'b) t
 (** [abs x] returns the absolute value of all elements in [x] in a new ndarray. *)
 
 val abs_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
@@ -826,7 +841,7 @@ val abs_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val abs_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [abs_z2d x] is similar to [abs] but takes [complex64] as input. *)
 
-val abs2 : (float, 'a) t -> (float, 'a) t
+val abs2 : ('a, 'b) t -> ('a, 'b) t
 (** [abs2 x] returns the square of absolute value of all elements in [x] in a new ndarray. *)
 
 val abs2_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
@@ -1184,6 +1199,14 @@ val scalar_pow : 'a -> ('a, 'b) t -> ('a, 'b) t
 
 val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [pow_scalar x a] computes each element in [x] power to [a]. *)
+
+val mpow : ('a, 'b) t -> float -> ('a, 'b) t
+(** [mpow x r] returns the dot product of square matrix [x] with 
+  itself [r] times, and more generally raises the matrix to the
+  [r]th power.  [r] is a float that must be equal to an integer;
+  it can be be negative, zero, or positive. Non-integer exponents
+  are not yet implemented. (If [r] is negative, [mpow] calls [inv],
+  and warnings in documentation for [inv] apply.) *)
 
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]
@@ -1642,6 +1665,75 @@ val cummin_ : ?axis:int -> ('a, 'b) t -> unit
 
 val cummax_ : ?axis:int -> ('a, 'b) t -> unit
 (** [cummax_ x] is similar to [cummax] but output is written to [x] *)
+
+val dropout_ : ?rate:float -> ?seed:int -> ('a, 'b) t -> unit
+(** [dropout_ x] is similar to [dropout] but output is written to [x] *)
+
+val elt_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_equal_ x y] is simiar to [elt_equal] function but the output is written
+  to [x]. The broadcast operation only allows broadcasting [y] over [x], so you
+  need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_not_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_not_equal_ x y] is simiar to [elt_not_equal] function but the output is
+  written to [x]. The broadcast operation only allows broadcasting [y] over [x],
+  so you need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_less_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_less_ x y] is simiar to [elt_less] function but the output is written
+  to [x]. The broadcast operation only allows broadcasting [y] over [x], so you
+  need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_greater_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_greater_ x y] is simiar to [elt_greater] function but the output is
+  written to [x]. The broadcast operation only allows broadcasting [y] over [x],
+  so you need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_less_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_less_equal_ x y] is simiar to [elt_less_equal] function but the output
+  is written to [x]. The broadcast operation only allows broadcasting [y] over
+  [x], so you need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_greater_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_greater_equal_ x y] is simiar to [elt_greater_equal] function but the
+  output is written to [x]. The broadcast operation only allows broadcasting [y]
+  over [x], so you need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_equal_scalar_ x a] is simiar to [elt_equal_scalar] function but the
+  output is written to [x].
+ *)
+
+val elt_not_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_not_equal_scalar_ x a] is simiar to [elt_not_equal_scalar] function but
+  the output is written to [x].
+ *)
+
+val elt_less_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_less_scalar_ x a] is simiar to [elt_less_scalar] function but the
+  output is written to [x].
+ *)
+
+val elt_greater_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_greater_scalar_ x a] is simiar to [elt_greater_scalar] function but the
+  output is written to [x].
+ *)
+
+val elt_less_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_less_equal_scalar_ x a] is simiar to [elt_less_equal_scalar] function
+  but the output is written to [x].
+ *)
+
+val elt_greater_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_greater_equal_scalar_ x a] is simiar to [elt_greater_equal_scalar]
+  function but the output is written to [x].
+ *)
 
 
 (** {6 Matrix functions} *)

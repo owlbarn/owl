@@ -1,8 +1,20 @@
-### 0.3.0 (in progress)
+### 0.3.1 (in progress)
+
+* Design View module for Ndarray.
+
+
+### 0.3.0 (2017-12-05)
+
 * Migrate to jbuilder building system.
 * Unify Dense Ndarray and Matrix types.
 * Split Toplevel out as a separate library.
 * Redesign Zoo system for recursive importing.
+* Simplify the module signature for Ndarray.
+* Introduce functions in Ndarray module to support in-place modification.
+* Introduce reduction functions to reduce an ndarray to a scalar value.
+* Add Lazy functor to support lazy evaluation, dataflow, and incremental computing.
+* Implement a new and more powerful pretty printer to support both ndarray and matrix.
+* Fix bugs in the core module, improve the performance.
 
 
 ### 0.2.8 (2017-09-02)

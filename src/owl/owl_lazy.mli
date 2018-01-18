@@ -3,7 +3,18 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.caMD.ac.uk>
  *)
 
-(** Lazy module implments lazy evaluation atop of owl's ndarray. *)
+(** Lazy module
+  The module is used to construct a computation graph explicitly for evaluation.
+  The module can be used to simulate the lazy evaluation atop of OCaml. It can
+  also be used for dataflow programming and supports incremental computation.
+  If a variable is updated, only the subgraph depending on such variable will be
+  evaluated.
+
+  The module also tracks the reference of each node in the compuation graph and
+  tries to reuse the allocated memory if possible. This mechanism avoids the
+  overhead from memory allocation but may also cause extra computation in
+  incremental compuation.
+ *)
 
 open Owl_types
 
@@ -12,86 +23,91 @@ module Make
   : sig
 
   type t
+  (** [t] is an abstract type to represent an experssion, it is also an alias
+    for type [node]. Type [node] is only for internal use in the module.
+   *)
 
-  type arr = t
 
-  type elt = A.elt
+  (** {6 Core functions} *)
+
+  val variable : unit -> t
+  (** [variable ()] creates a placeholder for the variable in the graph. *)
+
+  val assign_arr : t -> A.arr -> unit
+  (** [assign_arr x a] assigns value [a] to [x]. [x] is the variable created by
+    [variable ()] function before. Note that assignment will invalidate all the
+    nodes in the subgraph depending on [x].
+   *)
+
+  val assign_elt : t -> A.elt -> unit
+  (** [assign_elt x a] assigns value [a] to [x], simiar to [assign_arr]. *)
+
+  val to_arr : t -> A.arr
+  (** [to_arr x] unpacks an ndarray from [x] of type [t]. *)
+
+  val to_elt : t -> A.elt
+  (** [to_elt x] unpacks an element from [x] of type [t]. *)
+
+  val of_arr : A.arr -> t
+  (** [of_arr x] creates a constant value from [x] in the computation graph. The
+    constant value cannot be re-assigned by [assign_arr] or [assign_elt] later.
+   *)
+
+  val of_elt : A.elt -> t
+  (** [of_elt x] is similar to [of_arr] but used for the value of type [elt]. *)
+
+  val eval : t -> unit
+  (** [eval x] evaluates the experssion represented by [x]. Note only the
+    subgraph that [x] depends on will be evaluated rather than the whole graph.
+   *)
 
 
-  (** {6 Creation functions} *)
+  (** {6 Printing functions} *)
 
-  val empty : int array -> t
+  val pp_lazy : Format.formatter -> t -> unit
+  (** [pp_lazy x] pretty prints [x]. *)
 
-  val zeros : int array -> t
+  val to_trace : t list -> string
+  (** [to_trace x] returns the trace string that can be printed on the terminal
+    for a list of given expressions. The trace shows the structure of the graph.
+   *)
 
-  val ones : int array -> t
-
-  val uniform : ?scale:elt -> int array -> t
-
-  val gaussian : ?sigma:elt -> int array -> t
-
-  val bernoulli : ?p:float -> ?seed:int -> int array -> t
+  val to_dot : t list -> string
+  (** [to_dot x] converts a list of experssions into graph using dot-formatted
+    string. The returned string can be used for visualising the computation
+    graph with third-party tool such as graphviz.
+   *)
 
 
   (** {6 Properties and manipulations} *)
 
-  val shape : t -> int array
+  val is_var : t -> bool
+  (** [is_var x] returns [true] if [x] is a variable created by [variable]. *)
 
-  val numel : t -> int
+  val is_const : t -> bool
+  (** [is_const x] returns [true] if [x] is a const created by [of_arr] or [of_elt]. *)
 
-  val row_num : t -> int
+  val refnum : t -> int
+  (** [refnum x] returns the number of [x]'s parents in the computation graph. *)
 
-  val col_num : t -> int
+  val map : ?name:string -> (t array -> t) -> t array -> t
+  (** [map f x] is a general mechanism that allows you to plug in any functions
+    into a compuation graph as a computation node in case the unary and binary
+    math operators defined in this functor are not sufficient. Also because of
+    [map], we do not really need the control flow node in Owl as that in
+    TensorFlow since [map] is more general can be used to implement arbitrary
+    operations (almost).
 
-  val get : t -> int array -> elt
-
-  val set : t -> int array -> elt -> unit
-
-  val get_slice : index list -> t -> t
-
-  val set_slice : index list -> t -> t -> unit
-
-  val row : t -> int -> t
-
-  val rows : t -> int array -> t
-
-  val copy_row_to : t -> t -> int -> unit
-
-  val copy_col_to : t -> t -> int -> unit
-
-  val trace : t -> elt
-
-  val copy : t -> t
-
-  val reset : t -> unit
-
-  val reshape : t -> int array -> t
+    [f : t array -> t] takes an array of [t] as inputs and outputs a constant
+    value of [t]. This means the output must be wrapped up using either [of_arr]
+    or [of_elt] function before returning the result.
+   *)
 
   val tile : t -> int array -> t
 
   val repeat : ?axis:int -> t -> int -> t
 
   val concatenate : ?axis:int -> t array -> t
-
-  val split : ?axis:int -> int array -> t -> t array
-
-  val to_rows : t -> t array
-
-  val of_rows : t array -> t
-
-  val of_arrays : elt array array -> t
-
-  val sum_slices : ?axis:int -> t -> t
-
-  val draw_along_dim0 : t -> int -> t * int array
-
-  val draw_rows : ?replacement:bool -> t -> int -> t * int array
-
-  val draw_rows2 : ?replacement:bool -> t -> t -> int -> t * t * int array
-
-  val elt_greater_equal_scalar : t -> elt -> t
-
-  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> t -> unit
 
 
   (** {6 Unary operators} *)
@@ -202,31 +218,25 @@ module Make
 
   val cummax : ?axis:int -> t -> t
 
-  val inv : t -> t
+  val sum' : t -> t
 
-  val transpose : ?axis:int array -> t -> t
+  val prod' : t -> t
 
-  val clip_by_l2norm : elt -> t -> t
+  val min' : t -> t
 
-  val sum' : t -> elt
+  val max' : t -> t
 
-  val prod' : t -> elt
+  val mean' : t -> t
 
-  val min' : t -> elt
+  val var' : t -> t
 
-  val max' : t -> elt
+  val std' : t -> t
 
-  val mean' : t -> elt
+  val l1norm' : t -> t
 
-  val var' : t -> elt
+  val l2norm' : t -> t
 
-  val std' : t -> elt
-
-  val l1norm' : t -> elt
-
-  val l2norm' : t -> elt
-
-  val l2norm_sqr' : t -> elt
+  val l2norm_sqr' : t -> t
 
 
   (** {6 Binary operators} *)
@@ -253,33 +263,33 @@ module Make
 
   val max2 : t -> t -> t
 
-  val add_scalar : t -> elt -> t
+  val add_scalar : t -> t -> t
 
-  val sub_scalar : t -> elt -> t
+  val sub_scalar : t -> t -> t
 
-  val mul_scalar : t -> elt -> t
+  val mul_scalar : t -> t -> t
 
-  val div_scalar : t -> elt -> t
+  val div_scalar : t -> t -> t
 
-  val pow_scalar : t -> elt -> t
+  val pow_scalar : t -> t -> t
 
-  val atan2_scalar : t -> elt -> t
+  val atan2_scalar : t -> t -> t
 
-  val fmod_scalar : t -> elt -> t
+  val fmod_scalar : t -> t -> t
 
-  val scalar_add : elt -> t -> t
+  val scalar_add : t -> t -> t
 
-  val scalar_sub : elt -> t -> t
+  val scalar_sub : t -> t -> t
 
-  val scalar_mul : elt -> t -> t
+  val scalar_mul : t -> t -> t
 
-  val scalar_div : elt -> t -> t
+  val scalar_div : t -> t -> t
 
-  val scalar_pow : elt -> t -> t
+  val scalar_pow : t -> t -> t
 
-  val scalar_atan2 : elt -> t -> t
+  val scalar_atan2 : t -> t -> t
 
-  val scalar_fmod : elt -> t -> t
+  val scalar_fmod : t -> t -> t
 
   val conv1d : ?padding:padding -> t -> t -> int array -> t
 
@@ -320,15 +330,31 @@ module Make
   val avg_pool2d_backward : padding -> t -> int array -> int array -> t -> t
 
 
-  (** {6 Helper functions} *)
+  (** {6 Comparion functions} *)
 
-  val of_ndarray : A.arr -> t
+  val elt_equal : t -> t -> t
 
-  val to_ndarray : t -> A.arr
+  val elt_not_equal : t -> t -> t
 
-  val eval : t -> unit
+  val elt_less : t -> t -> t
 
-  val inc_refnum : t -> unit
+  val elt_greater : t -> t -> t
+
+  val elt_less_equal : t -> t -> t
+
+  val elt_greater_equal : t -> t -> t
+
+  val elt_equal_scalar : t -> t -> t
+
+  val elt_not_equal_scalar : t -> t -> t
+
+  val elt_less_scalar : t -> t -> t
+
+  val elt_greater_scalar : t -> t -> t
+
+  val elt_less_equal_scalar : t -> t -> t
+
+  val elt_greater_equal_scalar : t -> t -> t
 
 
 end

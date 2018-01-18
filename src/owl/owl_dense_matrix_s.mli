@@ -592,6 +592,8 @@ val scalar_pow : elt -> mat -> mat
 
 val pow_scalar : mat -> elt -> mat
 
+val mpow : mat -> float -> mat
+
 val atan2 : mat -> mat -> mat
 
 val scalar_atan2 : elt -> mat -> mat

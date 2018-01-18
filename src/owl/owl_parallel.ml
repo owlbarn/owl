@@ -68,8 +68,6 @@ module type Ndarray = sig
 
   val cos : arr -> arr
 
-  val sum : arr -> elt
-
   val add : arr -> arr -> arr
 
   val sub : arr -> arr -> arr
@@ -77,6 +75,8 @@ module type Ndarray = sig
   val mul : arr -> arr -> arr
 
   val div : arr -> arr -> arr
+
+  val sum' : arr -> elt
 
 end
 
@@ -295,7 +295,7 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
 
   (* TODO: need to implement add_elt to support complex number *)
   let sum x =
-    let y = map_chunk M.sum x in
+    let y = map_chunk M.sum' x in
     let l = E.collect y.id |> List.map (fun l' -> List.nth l' 0 |> snd) in
     let a = ref (List.nth l 0) in
     for i = 1 to List.length l - 1 do

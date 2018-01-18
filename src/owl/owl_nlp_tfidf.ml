@@ -134,12 +134,12 @@ let _build_with norm sort tf_fun df_fun m =
   let tfile = Owl_nlp_corpus.get_tok_uri m.corpus in
   let fname = m.uri in
 
-  Log.info "calculate document frequency ...";
+  Owl_log.info "calculate document frequency ...";
   let d_f, n_d = doc_count vocab tfile in
   let n_d = Owl_nlp_corpus.length m.corpus |> float_of_int in
   m.doc_freq <- d_f;
 
-  Log.info "calculate tf-idf ...";
+  Owl_log.info "calculate tf-idf ...";
   let fo = open_out fname in
   (* buffer for calculate term frequency *)
   let _h = Hashtbl.create 1024 in

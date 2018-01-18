@@ -7,23 +7,21 @@ dev-repo: "git+https://github.com/ryanrhymes/owl.git"
 bug-reports: "https://github.com/ryanrhymes/owl/issues"
 doc: "http://www.cl.cam.ac.uk/~lw525/owl/"
 
-name: "owl"
 version: "dev"
 
 build: [
   ["jbuilder" "subst" "-n" name] {pinned}
   ["jbuilder" "build" "-p" name "-j" jobs]
 ]
+build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 
 depends: [
   "ctypes"
-  "dolog" {>= "3.0"}
   "gsl" {>= "1.20.0"}
   "conf-gsl"
-  "oasis" {build & >= "0.4"}
-  "ocamlbuild" {build}
-  "ocamlfind" {build}
+  "jbuilder" {build}
   "plplot"
   "eigen" {>= "0.0.3"}
   "conf-openblas"
 ]
+available: [ ocaml-version >= "4.04.0" ]

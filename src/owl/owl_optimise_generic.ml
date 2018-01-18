@@ -349,7 +349,7 @@ module Make
       let file_name = Printf.sprintf "%s/%s.%i"
         (Sys.getcwd ()) "model" (Unix.time () |> int_of_float)
       in
-      Log.info "#%i | checkpoint => %s" (Unix.getpid()) file_name;
+      Owl_log.info "#%i | checkpoint => %s" (Unix.getpid()) file_name;
       save_fun file_name
 
     let print_state_info state =
@@ -363,7 +363,7 @@ module Make
       let d = l0 -. l1 in
       let s = if d = 0. then "-" else if d < 0. then "▲" else "▼" in
       let t = (Unix.gettimeofday () -. state.start_at) |> Owl_utils.format_time in
-      Log.info "#%i | T: %s | E: %.1f/%g | B: %i/%i | L: %.6f[%s]"
+      Owl_log.info "#%i | T: %s | E: %.1f/%g | B: %i/%i | L: %.6f[%s]"
         pid t e_i e_n b_i b_n l1 s
 
     let print_summary state =

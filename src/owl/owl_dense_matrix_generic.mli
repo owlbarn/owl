@@ -894,7 +894,7 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
  *)
 
 val save_txt : ('a, 'b) t -> string -> unit
-(** [save_txt x f] save the matrix [x] into a tab-delimited text file [f]. 
+(** [save_txt x f] save the matrix [x] into a tab-delimited text file [f].
   The operation can be very time consuming.
  *)
 
@@ -965,7 +965,10 @@ val minmax_i : ('a, 'b) t -> ('a * int array) * ('a * int array)
  *)
 
 val inv : ('a, 'b) t -> ('a, 'b) t
-(** [inv x] returns the inverse of a square matrix [x]. *)
+(** [inv x] calculates the inverse of an invertible square matrix [x]
+    such that [x *@ x = I] wherein [I] is an identity matrix.  (If [x] 
+    is singular, [inv] will return a useless result.)
+ *)
 
 val trace : ('a, 'b) t -> 'a
 (** [trace x] returns the sum of diagonal elements in [x]. *)
@@ -1028,7 +1031,7 @@ val max_rows : (float, 'b) t -> (float * int * int) array
 val max_cols : (float, 'b) t -> (float * int * int) array
 (** [max_cols x] returns the maximum value in each column along with their coordinates. *)
 
-val abs : (float, 'a) t -> (float, 'a) t
+val abs : ('a, 'b) t -> ('a, 'b) t
 (** [abs x] returns the absolute value of all elements in [x] in a new matrix. *)
 
 val abs_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
@@ -1037,7 +1040,7 @@ val abs_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 val abs_z2d : (Complex.t, complex64_elt) t -> (float, float64_elt) t
 (** [abs_z2d x] is similar to [abs] but takes [complex64] as input. *)
 
-val abs2 : (float, 'a) t -> (float, 'a) t
+val abs2 : ('a, 'b) t -> ('a, 'b) t
 (** [abs2 x] returns the square of absolute value of all elements in [x] in a new ndarray. *)
 
 val abs2_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
@@ -1400,6 +1403,14 @@ val scalar_pow : 'a -> ('a, 'b) t -> ('a, 'b) t
 val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** [pow_scalar x a] *)
 
+val mpow : ('a, 'b) t -> float -> ('a, 'b) t
+(** [mpow x r] returns the dot product of square matrix [x] with 
+  itself [r] times, and more generally raises the matrix to the
+  [r]th power.  [r] is a float that must be equal to an integer;
+  it can be be negative, zero, or positive. Non-integer exponents
+  are not yet implemented. (If [r] is negative, [mpow] calls [inv],
+  and warnings in documentation for [inv] apply.) *)
+
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (** [atan2 x y] computes [atan2(a, b)] of all the elements in [x] and [y]
   elementwise, and returns the result in a new matrix.
@@ -1760,3 +1771,69 @@ val cummin_ : ?axis:int -> ('a, 'b) t -> unit
 
 val cumprod_ : ?axis:int -> ('a, 'b) t -> unit
 (** [cumprod_ x] is similar to [cumprod] but output is written to [x] *)
+
+val elt_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_equal_ x y] is simiar to [elt_equal] function but the output is written
+  to [x]. The broadcast operation only allows broadcasting [y] over [x], so you
+  need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_not_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_not_equal_ x y] is simiar to [elt_not_equal] function but the output is
+  written to [x]. The broadcast operation only allows broadcasting [y] over [x],
+  so you need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_less_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_less_ x y] is simiar to [elt_less] function but the output is written
+  to [x]. The broadcast operation only allows broadcasting [y] over [x], so you
+  need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_greater_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_greater_ x y] is simiar to [elt_greater] function but the output is
+  written to [x]. The broadcast operation only allows broadcasting [y] over [x],
+  so you need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_less_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_less_equal_ x y] is simiar to [elt_less_equal] function but the output
+  is written to [x]. The broadcast operation only allows broadcasting [y] over
+  [x], so you need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_greater_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit
+(** [elt_greater_equal_ x y] is simiar to [elt_greater_equal] function but the
+  output is written to [x]. The broadcast operation only allows broadcasting [y]
+  over [x], so you need to make sure [x] is big enough to hold the output result.
+ *)
+
+val elt_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_equal_scalar_ x a] is simiar to [elt_equal_scalar] function but the
+  output is written to [x].
+ *)
+
+val elt_not_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_not_equal_scalar_ x a] is simiar to [elt_not_equal_scalar] function but
+  the output is written to [x].
+ *)
+
+val elt_less_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_less_scalar_ x a] is simiar to [elt_less_scalar] function but the
+  output is written to [x].
+ *)
+
+val elt_greater_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_greater_scalar_ x a] is simiar to [elt_greater_scalar] function but the
+  output is written to [x].
+ *)
+
+val elt_less_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_less_equal_scalar_ x a] is simiar to [elt_less_equal_scalar] function
+  but the output is written to [x].
+ *)
+
+val elt_greater_equal_scalar_ : ('a, 'b) t -> 'a -> unit
+(** [elt_greater_equal_scalar_ x a] is simiar to [elt_greater_equal_scalar]
+  function but the output is written to [x].
+ *)

@@ -19,7 +19,7 @@ RUN wget https://github.com/ocaml/opam/archive/2.0.0-beta4.tar.gz && tar xzvf 2.
 RUN cd opam-2.0.0-beta4 && ./configure && make lib-ext && make && make install
 RUN yes | opam init && eval $(opam env) && opam update && opam switch create 4.04.0
 
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop dolog plplot gsl
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop plplot "gsl=1.20.0"
 
 
 #################### SET UP ENV VARS #######################
@@ -29,6 +29,8 @@ ENV CAML_LD_LIBRARY_PATH /root/.opam/4.04.0/lib/stublibs
 
 ENV EIGENPATH /root/eigen
 RUN cd /root && git clone https://github.com/ryanrhymes/eigen.git
+RUN sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile ###FIXME
+RUN sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis       ###FIXME
 RUN make -C $EIGENPATH oasis && make -C $EIGENPATH && make -C $EIGENPATH install
 
 
