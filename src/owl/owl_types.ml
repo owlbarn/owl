@@ -6,7 +6,8 @@
 (** Define the types shared by various modules *)
 
 open Bigarray
-
+open Ctypes
+open Foreign
 
 (* type of slice definition *)
 
@@ -850,9 +851,20 @@ module type StatsSig = sig
   val rayleigh_logsf : sigma:arr -> arr -> arr
 
   val rayleigh_isf : sigma:arr -> arr -> arr
-  
+
 end
 
+module TENSOR_S = struct
 
+  let elt = float
+
+  let ml_tensor_spatial_avg_pooling = foreign "c_tensor_s_spatial_avg_pooling" (ptr elt @-> ptr elt @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> returning void)
+
+  let ml_tensor_spatial_max_pooling = foreign "c_tensor_s_spatial_max_pooling" (ptr elt @-> ptr elt @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> returning void)
+
+  let ml_tensor_spatial_conv = foreign "c_tensor_s_spatial_conv" (ptr elt @-> ptr elt @-> ptr elt @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> returning void)
+
+  let ml_tensor_spatial_avg_pooling_backward = foreign "c_tensor_s_spatial_avg_pooling_backward" (ptr elt @-> ptr elt @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> returning void)
+end
 
 (* ends here *)

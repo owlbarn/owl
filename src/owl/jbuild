@@ -17,6 +17,7 @@
 (copy_files# fftpack/*)
 (copy_files# misc/*)
 (copy_files# nlp/*)
+(copy_files# tensor/*)
 
 (library (
   (name owl)
@@ -36,6 +37,7 @@
     owl_dense_common_fold
     owl_cblas_generated_stub
     owl_lapacke_generated_stub
+    owl_tensors_s
     ; FFTPACK
     fftpack
     owl_fftpack_impl
@@ -165,12 +167,14 @@
     -L/usr/local/opt/openblas/lib
     -lopenblas
     -lgfortran
+    -llapacke
     -lm
   ))
   (flags (:standard -safe-string))
   (libraries (
     ctypes
     ctypes.stubs
+    ctypes.foreign
     eigen
     plplot
   ))

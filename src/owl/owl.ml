@@ -59,6 +59,8 @@ module Graph = Owl_graph
 
 module Common = Owl_common
 
+module Tensor = Owl_tensor
+
 
 (* backend modules *)
 
