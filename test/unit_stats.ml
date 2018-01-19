@@ -152,7 +152,7 @@ let ks_teststat1 () =
     true
     (abs_float((To_test.ks_test_statistic
                   [| 1.; 2.; 3. |]
-                  (fun x -> M.Cdf.gaussian_P x 1.0)) -. 0.8413) < 0.0001)
+                  (fun x -> M.gaussian_cdf ~mu:0. ~sigma:1. x)) -. 0.8413) < 0.0001)
 
 let ks_teststat2 () =
   Alcotest.(check bool)
@@ -160,7 +160,7 @@ let ks_teststat2 () =
     true
     (abs_float((To_test.ks_test_statistic
                   [| 0.; 0.; 0. |]
-                  (fun x -> M.Cdf.gaussian_P x 1.0)) -. 0.5) < 0.0001)
+                  (fun x -> M.gaussian_cdf ~mu:0. ~sigma:1. x)) -. 0.5) < 0.0001)
 
 let ks_pval_test1 () =
   Alcotest.(check bool)
@@ -168,7 +168,7 @@ let ks_pval_test1 () =
     true
     (abs_float((To_test.ks_test_pval
                   [| 1.; 2.; 3. |]
-                  (fun x -> M.Cdf.gaussian_P x 1.0)) -. 0.0079) < 0.0001)
+                  (fun x -> M.gaussian_cdf ~mu:0. ~sigma:1. x)) -. 0.0079) < 0.0001)
 
 let ks_pval_test2 () =
   Alcotest.(check bool)
@@ -176,7 +176,7 @@ let ks_pval_test2 () =
     true
     (abs_float((To_test.ks_test_pval
                   [| 0.; 0.25; 0.15; 0.05 |]
-                  (fun x -> M.Cdf.gaussian_P x 1.0)) -. 0.1875) < 0.0001)
+                  (fun x -> M.gaussian_cdf ~mu:0. ~sigma:1. x)) -. 0.1875) < 0.0001)
 
 let ks_pval_test3 () =
   Alcotest.(check bool)
@@ -184,7 +184,7 @@ let ks_pval_test3 () =
     true
     (abs_float((To_test.ks_test_pval
                   (Array.mapi (fun i _ -> 0.99 /. 2000. *. float_of_int i) (Array.create_float 2000))
-                  (fun x -> M.Cdf.flat_P x 0. 1.)) -. 0.98025) < 0.00001)
+                  (fun x -> M.uniform_cdf ~a:0. ~b:1. x)) -. 0.98025) < 0.00001)
 
 let ks_pval_test4 () =
   Alcotest.(check bool)
@@ -192,13 +192,13 @@ let ks_pval_test4 () =
     true
     (abs_float((To_test.ks_test_pval
                   (Array.mapi (fun i _ -> 0.99 /. 10_000. *. float_of_int i) (Array.create_float 10_000))
-                  (fun x -> M.Cdf.flat_P x 0. 1.)) -. 0.25953) < 0.00001)
+                  (fun x -> M.uniform_cdf ~a:0. ~b:1. x)) -. 0.25953) < 0.00001)
 
 let ks_pval_test5 () =
   Alcotest.check_raises
     "ks_test exception"
     M.EXN_EMPTY_ARRAY
-    (fun _ -> ignore (To_test.ks_test_pval [| |] (fun x -> M.Cdf.gaussian_P x 1.0));)
+    (fun _ -> ignore (To_test.ks_test_pval [| |] (fun x -> M.gaussian_cdf ~mu:0. ~sigma:1. x));)
 
 
 let ks2_teststat () =

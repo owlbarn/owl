@@ -1,12 +1,12 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 include Owl_types
 
 
-let version = "0.3.1 dev"
+let version = "%%VERSION%%"
 
 (* So we don't have to open Bigarray all the time. *)
 
@@ -57,6 +57,8 @@ module Lazy = Owl_lazy
 
 module Graph = Owl_graph
 
+module Common = Owl_common
+
 
 (* backend modules *)
 
@@ -78,9 +80,14 @@ module Vec = struct
 end
 
 
-(* set up owl's folder *)
+(* initialise owl's working environment *)
 
 let _ =
+  (* FIXME: need to unify with the Stats module in the future *)
+  Random.State.make_self_init () |> ignore;
+  (* init the internal state of PRNG *)
+  Owl_common.PRNG.init ();
+  (* set up owl's folder *)
   let home = Sys.getenv "HOME" ^ "/.owl" in
   let dir_dataset = home ^ "/dataset" in
   let dir_zoo = home ^ "/zoo" in
