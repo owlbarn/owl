@@ -1,7 +1,9 @@
 (jbuild_version 1)
 
-(copy_files# core/*)
 (copy_files# ext/*)
+(copy_files# core/*)
+(copy_files# dense/*)
+(copy_files# sparse/*)
 (copy_files# maths/*)
 (copy_files# maths/cdflib/*)
 (copy_files# maths/cephes/*)
