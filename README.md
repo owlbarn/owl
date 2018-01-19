@@ -67,7 +67,9 @@ You can simply type the following in the command line to start.
 opam install owl
 ```
 
-Owl's current version on OPAM is `0.2.9`, and it lags behind the master branch and misses many new features. If you want to try the newest version, I recommend the other three ways to install.
+Owl's current version on OPAM is `0.3.0`, and it lags behind the master branch and misses many new features. If you want to try the newest version, I recommend the other three ways to install.
+
+Note that there is a known bug with opam 1.2 that will prevent Owl from loading once it's installed.  One solution is to upgrade to one of the opam 2.0.0 beta versions--at least beta4.  Another solution is to install Owl with opam 1.2, but after installation, move the file dllowl_stubs.so from ~/.opam/.../lib/stubslibs to ~/.opam/.../lib/stublibs.  (The "..." should be filled in with the name of your current OCaml compiler switch, e.g. "4.06.0".)
 
 ### Option 2: Pull from Docker Hub
 
