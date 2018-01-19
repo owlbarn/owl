@@ -12,6 +12,7 @@
 (copy_files# cblas/*)
 (copy_files# lapacke/*)
 (copy_files# linalg/*)
+(copy_files# optimise/*)
 (copy_files# neural/*)
 (copy_files# fftpack/*)
 (copy_files# misc/*)
