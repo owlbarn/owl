@@ -14,6 +14,8 @@
 (copy_files# linalg/*)
 (copy_files# neural/*)
 (copy_files# fftpack/*)
+(copy_files# misc/*)
+(copy_files# nlp/*)
 
 (library (
   (name owl)
