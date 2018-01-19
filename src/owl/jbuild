@@ -28,6 +28,9 @@
     owl_core_swap_impl
     owl_core_swap_type
     owl_core_swap_stub
+    owl_slicing_impl
+    owl_slicing_type
+    owl_slicing_stub
     owl_common_c
     owl_distribution_common_c
     owl_dense_common_c

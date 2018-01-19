@@ -7,7 +7,7 @@
 
 
 // transpose x(m,n) and save to y(n,m)
-void FUNCTION (matrix_transpose) (TYPE * x, TYPE * y, int m, int n) {
+void FUNCTION (matrix_transpose) (TYPE *x, TYPE *y, int m, int n) {
   int ofsx = 0;
   int ofsy = 0;
 
