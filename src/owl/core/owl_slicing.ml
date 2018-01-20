@@ -39,7 +39,7 @@ let check_slice_definition axis shp =
     match i with
     | I_ x -> (
         assert (x < n);
-        if n = 1 then R_ [|0;0;1|] else L_ [|x|]
+        R_ [|x;x;1|]
       )
     | L_ x -> (
         let is_cont = ref true in
@@ -56,7 +56,7 @@ let check_slice_definition axis shp =
         | 1 -> (
             let a = if x.(0) >= 0 then x.(0) else n + x.(0) in
             assert (a < n);
-            if n = 1 then R_ [|0;0;1|] else L_ [|a|]
+            R_ [|a;a;1|]
           )
         | 2 -> (
             let a = if x.(0) >= 0 then x.(0) else n + x.(0) in
