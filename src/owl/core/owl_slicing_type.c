@@ -4,21 +4,7 @@
  */
 
 #include "owl_core.h"
-
-
-struct slice_pair {
-  int dim;
-  int dep;
-  int *n;
-  void *x;
-  int posx;
-  int *ofsx;
-  int *incx;
-  void *y;
-  int posy;
-  int *ofsy;
-  int *incy;
-};
+#include "owl_slicing.h"
 
 
 #define OWL_ENABLE_TEMPLATE

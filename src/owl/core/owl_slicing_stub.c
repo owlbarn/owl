@@ -4,6 +4,8 @@
  */
 
 #include "owl_core.h"
+#include "owl_slicing.h"
+
 
 value float64_ndarray_slicing (value vX, value vY, value vZ) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);

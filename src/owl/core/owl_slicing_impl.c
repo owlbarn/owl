@@ -35,4 +35,14 @@ void FUNCTION (ndarray_slicing_1) (struct slice_pair *p) {
 }
 
 
+void FUNCTION (ndarray_slicing_2) (struct slice_pair *p) {
+
+}
+
+
+void FUNCTION (ndarray_slicing_3) (struct slice_pair *p) {
+
+}
+
+
 #endif /* OWL_ENABLE_TEMPLATE */
