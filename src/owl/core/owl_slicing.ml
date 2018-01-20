@@ -3,9 +3,13 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Bigarray
+
 open Owl_types
 
 open Owl_dense_common
+
+open Owl_dense_common_types
 
 
 (* local functions, since we will not use ndarray_generic module *)
@@ -166,7 +170,7 @@ let _foreach_continuous_blk a d f =
    axis: index array, slice definition, e.g., format [start;stop;step]
    x: ndarray
  *)
-let get_slice_array_typ axis x =
+let get_slice_array_typ''' axis x =
   let _kind = kind x in
   (* check axis is within boundary then re-format *)
   let s0 = shape x in
@@ -226,6 +230,49 @@ let get_slice_array_typ axis x =
     (* reshape the ndarray *)
     Bigarray.reshape y s1
   )
+
+
+external owl_float32_ndarray_slicing : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "float32_ndarray_slicing"
+external owl_float64_ndarray_slicing : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "float64_ndarray_slicing"
+external owl_complex32_ndarray_slicing : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "complex32_ndarray_slicing"
+external owl_complex64_ndarray_slicing : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "complex64_ndarray_slicing"
+
+let _ndarray_slicing
+  : type a b c. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr -> (int64, c) owl_arr -> unit
+  = function
+  | Float32   -> owl_float32_ndarray_slicing
+  | Float64   -> owl_float64_ndarray_slicing
+  | Complex32 -> owl_complex32_ndarray_slicing
+  | Complex64 -> owl_complex64_ndarray_slicing
+  | _         -> failwith "_ndarray_slicing: unsupported operation"
+
+
+(* convert simple slice definition consisting only R_ to (start,stop,step) triplets *)
+let sd_to_triplet s =
+  let t = Genarray.create Int64 C_layout [|3 * Array.length s|] in
+  Array.iteri (fun i a ->
+    match a with
+    | R_ x -> (
+        let j = 3 * i in
+        Genarray.set t [|j|]     (Int64.of_int x.(0));
+        Genarray.set t [|j + 1|] (Int64.of_int x.(1));
+        Genarray.set t [|j + 2|] (Int64.of_int x.(2));
+      )
+    | _    -> failwith "sd_to_triplet"
+  ) s;
+  t
+
+
+let get_slice_array_typ axis x =
+  let _kind = kind x in
+  (* check axis is within boundary then re-format *)
+  let s0 = shape x in
+  let axis = check_slice_definition axis s0 in
+  (* calculate the new shape for slice *)
+  let s1 = calc_slice_shape axis in
+  let y = empty _kind s1 in
+  _ndarray_slicing _kind x y (sd_to_triplet axis);
+  y
 
 
 (* set slice in [x] according to [y] *)

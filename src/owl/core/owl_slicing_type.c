@@ -4,7 +4,6 @@
  */
 
 #include "owl_core.h"
-#include "owl_slicing.h"
 
 
 #define OWL_ENABLE_TEMPLATE

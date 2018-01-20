@@ -7,16 +7,17 @@
 #define OWL_CORE_H
 
 #include "owl_macros.h"
-
+#include "owl_slicing.h"
+#include <stdio.h>
 
 /** Core function declaration **/
 
 
 extern int owl_ndarray_numel (struct caml_ba_array *X);
 
-extern int owl_ndarray_stride_size (struct caml_ba_array *X, int d);
+extern int owl_ndarray_stride_dim (struct caml_ba_array *X, int d);
 
-extern int owl_ndarray_slice_size (struct caml_ba_array *X, int d);
+extern int owl_ndarray_slice_dim (struct caml_ba_array *X, int d);
 
 extern void owl_float32_matrix_transpose (float *x, float *y, int m, int n);
 
@@ -25,6 +26,20 @@ extern void owl_float64_matrix_transpose (double *x, double *y, int m, int n);
 extern void owl_complex32_matrix_transpose (_Complex float *x, _Complex float *y, int m, int n);
 
 extern void owl_complex64_matrix_transpose (_Complex double *x, _Complex double *y, int m, int n);
+
+extern void owl_ndarray_stride (struct caml_ba_array *X, int *stride);
+
+extern void owl_slicing_stride (struct caml_ba_array *X, int64_t *slice, int *stride);
+
+extern void owl_slicing_offset (struct caml_ba_array *X, int64_t *slice, int *offset);
+
+extern void owl_float32_ndarray_slicing (struct slice_pair *sp);
+
+extern void owl_float64_ndarray_slicing (struct slice_pair *sp);
+
+extern void owl_complex32_ndarray_slicing (struct slice_pair *sp);
+
+extern void owl_complex64_ndarray_slicing (struct slice_pair *sp);
 
 
 // compare two numbers (real & complex & int)
