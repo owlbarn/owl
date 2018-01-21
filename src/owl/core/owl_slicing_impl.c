@@ -17,7 +17,7 @@ void FUNCTION (c, slice_1) (struct slice_pair *p) {
   int incy = p->incy[d];
 
   for (int i = 0; i < n; i++) {
-    *(y + posy) = *(x + posx);
+    MAPFUN (*(x + posx), *(y + posy));
     posx += incx;
     posy += incy;
   }
@@ -50,7 +50,7 @@ void FUNCTION (c, slice_2) (struct slice_pair *p) {
       posy1 = posy0 + ofsy1;
 
       for (int i1 = 0; i1 < n1; i1++) {
-        *(y + posy1) = *(x + posx1);
+        MAPFUN (*(x + posx1), *(y + posy1));
         posx1 += incx1;
         posy1 += incy1;
       }
@@ -99,7 +99,7 @@ void FUNCTION (c, slice_3) (struct slice_pair *p) {
       posy2 = posy1 + ofsy2;
 
       for (int i2 = 0; i2 < n2; i2++) {
-        *(y + posy2) = *(x + posx2);
+        MAPFUN (*(x + posx2), *(y + posy2));
         posx2 += incx2;
         posy2 += incy2;
       }
@@ -164,7 +164,7 @@ void FUNCTION (c, slice_4) (struct slice_pair *p) {
         posy3 = posy2 + ofsy3;
 
         for (int i3 = 0; i3 < n3; i3++) {
-          *(y + posy3) = *(x + posx3);
+          MAPFUN (*(x + posx3), *(y + posy3));
           posx3 += incx3;
           posy3 += incy3;
         }
