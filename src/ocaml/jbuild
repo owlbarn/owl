@@ -6,6 +6,6 @@
   (wrapped false)
   (flags (:standard -safe-string))
   (libraries (
-
+    owl
   ))
 ))
