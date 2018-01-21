@@ -647,15 +647,68 @@ module Ndarray32float = struct
       varr
     end
 
+  let _apply_perm arr perm =
+    Array.init (Array.length arr) (fun i -> arr.(perm.(i)))
+
+  let transpose ?axis varr =
+    let dims = shape varr in
+    let rank = Array.length dims in
+    let axis_perm = match axis with
+      | Some perm -> perm
+      | None -> Array.init rank (fun i -> rank - i - 1)
+    in
+    let new_dims = _apply_perm dims axis_perm in
+    let new_varr = empty new_dims in
+    let ind = Array.make rank 0 in
+    let should_stop = ref false in
+    begin
+      while not !should_stop do
+        Genarray.set new_varr
+          (_apply_perm ind axis_perm) (Genarray.get varr ind);
+        if not (_next_index ind dims) then
+          should_stop := true
+      done;
+      new_varr
+    end
+
+  let _draw_int_samples replacement range count =
+    if not replacement && count > range
+    then raise (Invalid_argument "cannot draw that many samples from the given range, without replacement")
+    else (
+      let pop_cnt = ref range in
+      let pop = Array.init !pop_cnt (fun i -> i) in
+      let rand_gen = Random.State.make_self_init() in
+      let draw_fun = (fun _ ->
+          let index = Random.State.int rand_gen !pop_cnt in
+          let sample = pop.(index) in
+          if replacement
+          then sample
+          else (
+            pop_cnt := !pop_cnt - 1;
+            pop.(index) <- pop.(!pop_cnt); (* eliminate sample by swapping with last element *)
+            sample
+          )
+        )
+      in
+      Array.init count draw_fun
+    )
+
+  let draw_rows ?(replacement=true) varr count =
+    let dims = shape varr in
+    let indices = _draw_int_samples replacement (Array.length dims) count in
+    let extracted = rows varr indices in
+    (extracted, indices)
+
+  let draw_rows2 ?(replacement=true) varr_a varr_b count =
+    let extracted_a, indices =
+      draw_rows ~replacement:replacement varr_a count in
+    let extracted_b = rows varr_b indices in
+    (extracted_a, extracted_b, indices)
+
+
   (* TODO:
 
   val inv : arr -> arr
-
-  val transpose : ?axis:int array -> arr -> arr
-
-  val draw_rows : ?replacement:bool -> arr -> int -> arr * int array
-
-  val draw_rows2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
 
 *)
 end
