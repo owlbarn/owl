@@ -74,7 +74,6 @@ module To_test = struct
     M.print x_arr;
     let df_arr   = M.map (fun x -> df x) x_arr in
     M.print df_arr;
-    (* let diff_arr = (diff f (Arr x_arr)) |> unpack_arr in *)
     let diff_arr = M.map (fun x -> diff f (F x) |> unpack_flt) x_arr in
     M.print diff_arr;
     M.approx_equal ~eps:eps df_arr diff_arr
@@ -139,9 +138,9 @@ let xs_filter f =
 
 let x_ne_y x y = ((abs_float (x -. y)) > 0.00000001)
 
-let xs_gt_one = xs_filter (fun x -> (x>1.0))
+let xs_gt_one = xs_filter (fun x -> (x > 1.0))
 
-let xs_abs_lt_one = xs_filter (fun x -> ((x>(-1.) && (x<1.0))))
+let xs_abs_lt_one = xs_filter (fun x -> ((x > (-1.) && (x < 1.0))))
 
 let xs_nonones = xs_filter (fun x -> (x_ne_y x 1.0) && (x_ne_y x (-1.)))
 
@@ -149,40 +148,40 @@ let xs_nonzero = xs_filter (fun x -> (x_ne_y x 0.0))
 
 let xs_nonzero_nonone = xs_filter (fun x -> (x_ne_y x 0.0) && (x_ne_y x 1.0))
 
-let xs_positive = xs_filter (fun x -> (x>=0.0))
+let xs_positive = xs_filter (fun x -> (x >= 0.0))
 
-let xs_positive_nonzero =  xs_filter (fun x -> (x>0.0))
+let xs_positive_nonzero =  xs_filter (fun x -> (x > 0.0))
 
 (* Simple powers/multiples of x *)
 let constant () =
-  check_derivative "f(x) = 1" (fun x->Maths.(F 1.)) (fun x->0.) xs
+  check_derivative "f(x) = 1" (fun x -> Maths.(F 1.)) (fun x -> 0.) xs
 
 let linear () =
-  check_derivative "f(x) = x" (fun x->Maths.(x)) (fun x->1.) xs
+  check_derivative "f(x) = x" (fun x -> Maths.(x)) (fun x -> 1.) xs
 
 let square () =
-  check_derivative "f(x) = x^2" (fun x->Maths.(x * x)) (fun x->2.*.x) xs
+  check_derivative "f(x) = x^2" (fun x -> Maths.(x * x)) (fun x -> 2.*.x) xs
 
 let cube () =
-  check_derivative "f(x) = x^3" (fun x->Maths.(x * x * x )) (fun x->3.*.x*.x) xs
+  check_derivative "f(x) = x^3" (fun x -> Maths.(x * x * x )) (fun x -> 3.*.x*.x) xs
 
 let sum_x_x () =
-  check_derivative "f(x) = x + x" (fun x->Maths.(x + x)) (fun x->2.) xs
+  check_derivative "f(x) = x + x" (fun x -> Maths.(x + x)) (fun x -> 2.) xs
 
 let diff_2x_x () =
-  check_derivative "f(x) = 2x - x" (fun x->Maths.((F 2.) * x - x)) (fun x->1.) xs
+  check_derivative "f(x) = 2x - x" (fun x -> Maths.((F 2.) * x - x)) (fun x -> 1.) xs
 
 let div_x_x () =
-  check_derivative "f(x) = x / x" (fun x->Maths.(x / x)) (fun x->0.) xs_nonzero
+  check_derivative "f(x) = x / x" (fun x -> Maths.(x / x)) (fun x -> 0.) xs_nonzero
 
 let div_x2_x () =
-  check_derivative "f(x) = x^2 / x" (fun x->Maths.((x * x) / x)) (fun x->1.) xs_nonzero
+  check_derivative "f(x) = x^2 / x" (fun x -> Maths.((x * x) / x)) (fun x -> 1.) xs_nonzero
 
 let pow_x_2_5 () =
-  check_derivative "f(x) = x^(2.5)" (fun x->Maths.(x ** (F 2.5))) (fun x->2.5 *. (x**1.5)) xs_positive
+  check_derivative "f(x) = x^(2.5)" (fun x -> Maths.(x ** (F 2.5))) (fun x -> 2.5 *. (x**1.5)) xs_positive
 
 let pow_2_5_x () =
-  check_derivative "f(x) = 2.5^x" (fun x->Maths.((F 2.5) ** x)) (fun x->(log 2.5) *. (2.5**x)) xs
+  check_derivative "f(x) = 2.5^x" (fun x -> Maths.((F 2.5) ** x)) (fun x -> (log 2.5) *. (2.5**x)) xs
 
 (* Min, max, neg, abs, sign, floor/ceil/round *)
 
@@ -190,212 +189,212 @@ let min_x_x2 () =
   (* min2 f(x) g(x) is INCORRECT at points where f(x)=g(x) as the function is not
    differentiable at those points *)
   check_derivative "f(x) = min(x,x^2)"
-                   (fun x->Maths.(min2 (x) (x*x)))
-                   (fun x->(if ((x<0.0) || (x>1.0)) then 1. else (2.*.x)))
+                   (fun x -> Maths.(min2 (x) (x*x)))
+                   (fun x -> (if ((x < 0.0) || (x > 1.0)) then 1. else (2.*.x)))
                    xs_nonzero_nonone
 
 let max_x_x2 () =
   (* max2 f(x) g(x) is INCORRECT at points where f(x)=g(x) as the function is not
    differentiable at those points *)
   check_derivative  "f(x) = max(x,x^2)"
-                    (fun x->Maths.(max2 (x) (x*x)))
-                    (fun x->(if ((x<0.0) || (x>1.0)) then (2.*.x) else 1.))
+                    (fun x -> Maths.(max2 (x) (x*x)))
+                    (fun x -> (if ((x < 0.0) || (x > 1.0)) then (2.*.x) else 1.))
                     xs_nonzero_nonone
 
 let neg_x () =
   check_derivative "f(x) = -x"
-                   (fun x->Maths.(neg x))
+                   (fun x -> Maths.(neg x))
                    (fun x -> (-1.))
                    xs
 
 let abs_x2 () =
   check_derivative "f(x) = abs(x^2)"
-                   (fun x->Maths.(abs (x*x)))
-                   (fun x->2. *. x)
+                   (fun x -> Maths.(abs (x*x)))
+                   (fun x -> 2. *. x)
                    xs
 
 let abs_x2_m_1 () =
   (* abs f(x) is INCORRECT at points where f(x)=0 as the function is not differentiable at those points *)
   check_derivative "f(x) = abs(x^2-1)"
-                   (fun x->Maths.(abs (x*x - (F 1.))))
-                   (fun x->(if (x<(-1.) || (x>1.)) then (2. *. x) else ((-2.) *. x)))
+                   (fun x -> Maths.(abs (x*x - (F 1.))))
+                   (fun x -> (if (x < (-1.) || (x > 1.)) then (2. *. x) else ((-2.) *. x)))
                    xs_nonones
 
 let sign_x2_m_1 () =
    (* sign(f) is not differentiable when f is zero, but otherwise its derivative is zero; hence d/dx(sign(f(x)) === 0 *)
   check_derivative "f(x) = signum(x^2-1)"
-                  (fun x->Maths.(signum (x*x -(F 1.))))
-                  (fun x->0.)
+                  (fun x -> Maths.(signum (x*x -(F 1.))))
+                  (fun x -> 0.)
                   xs
 
 let floor_x2_m_1 () =
   (* floor(f) is not differentiable when f is an integer, but otherwise its derivative is zero; hence d/dx === 0 *)
   check_derivative "f(x) = floor(x^2-1)"
-                   (fun x->Maths.(floor (x*x - (F 1.))))
-                   (fun x->0.)
+                   (fun x -> Maths.(floor (x*x - (F 1.))))
+                   (fun x -> 0.)
                    xs
 
 let ceil_x2_m_1 () =
   (* ceil(f) is not differentiable when f is an integer, but otherwise its derivative is zero; hence d/dx === 0 *)
   check_derivative "f(x) = ceil(x^2-1)"
-                   (fun x->Maths.(ceil (x*x - (F 1.))))
-                   (fun x->0.)
+                   (fun x -> Maths.(ceil (x*x - (F 1.))))
+                   (fun x -> 0.)
                    xs
 
 let round_x2_m_1 () =
   (* round(f) is not differentiable when f is an integer, but otherwise its derivative is zero; hence d/dx === 0 *)
   check_derivative "f(x) = round(x^2-1)"
-                   (fun x->Maths.(round (x*x - (F 1.))))
-                   (fun x->0.)
+                   (fun x -> Maths.(round (x*x - (F 1.))))
+                   (fun x -> 0.)
                    xs
 
 (* sqr, sqrt, log, log2, log10, exp *)
 let sqr_x () =
   check_derivative "f(x) = sqr(x)"
-                   (fun x->Maths.(sqr x))
-                   (fun x->2. *. x)
+                   (fun x -> Maths.(sqr x))
+                   (fun x -> 2. *. x)
                    xs
 
 let sqr_x_x () =
   check_derivative "f(x) = sqr(x*x)"
-                   (fun x->Maths.(sqr (x*x)))
-                   (fun x->4. *. x *. x *. x)
+                   (fun x -> Maths.(sqr (x*x)))
+                   (fun x -> 4. *. x *. x *. x)
                    xs
 
 let sqrt_x () =
   check_derivative "f(x) = sqrt(x)"
-                   (fun x->Maths.(sqrt x))
-                   (fun x->0.5 /. (x ** 0.5))
+                   (fun x -> Maths.(sqrt x))
+                   (fun x -> 0.5 /. (x ** 0.5))
                    xs_positive_nonzero
 
 let log_x () =
   check_derivative "f(x) = log(x)"
-                   (fun x->Maths.(log x))
-                   (fun x->1. /. x)
+                   (fun x -> Maths.(log x))
+                   (fun x -> 1. /. x)
                    xs_positive_nonzero
 
 let log_x_x () =
   check_derivative "f(x) = log(x*x)"
-                   (fun x->Maths.(log (x*x)))
-                   (fun x->2. /. x)
+                   (fun x -> Maths.(log (x*x)))
+                   (fun x -> 2. /. x)
                    xs_positive_nonzero
 
 let log2_x () =
   check_derivative "f(x) = log2(x)"
-                   (fun x->Maths.(log2 (x)))
-                   (fun x->(log 2.) /. x )
+                   (fun x -> Maths.(log2 (x)))
+                   (fun x -> (log 2.) /. x )
                    xs_positive_nonzero
 
 let log10_x () =
   check_derivative "f(x) = log10(x)"
-                   (fun x->Maths.(log10 (x)))
-                   (fun x->(log 10.) /. x )
+                   (fun x -> Maths.(log10 (x)))
+                   (fun x -> (log 10.) /. x )
                    xs_positive_nonzero
 
 let exp_x () =
   check_derivative "f(x) = exp(x)"
-                   (fun x->Maths.(exp (x)))
-                   (fun x->exp x )
+                   (fun x -> Maths.(exp (x)))
+                   (fun x -> exp x )
                    xs
 
 (* trigonometric functions - sin, cos, tan, asin, acos, atan, atan2 *)
 
 let sin_x () =
   check_derivative "f(x) = sin(x)"
-                   (fun x->Maths.(sin (x)))
-                   (fun x->cos x )
+                   (fun x -> Maths.(sin (x)))
+                   (fun x -> cos x )
                    xs
 
 let sin_x_x () =
   check_derivative "f(x) = sin(x*x)"
-                   (fun x->Maths.(sin (x * x)))
-                   (fun x->2. *. x *. (cos (x*.x)))
+                   (fun x -> Maths.(sin (x * x)))
+                   (fun x -> 2. *. x *. (cos (x*.x)))
                    xs
 
 let cos_x () =
   check_derivative "f(x) = cos(x)"
-                   (fun x->Maths.(cos (x)))
-                   (fun x->sin (-. x))
+                   (fun x -> Maths.(cos (x)))
+                   (fun x -> sin (-. x))
                    xs
 
 let tan_x () =
   check_derivative "f(x) = tan(x)"
-                   (fun x->Maths.(tan (x)))
-                   (fun x->1. /. ((cos x) ** 2.))
+                   (fun x -> Maths.(tan (x)))
+                   (fun x -> 1. /. ((cos x) ** 2.))
                    xs
 
 let asin_x () =
   check_derivative "f(x) = asin(x)"
-                   (fun x->Maths.(asin (x)))
-                   (fun x->1. /. sqrt( 1. -. (x**2.)))
+                   (fun x -> Maths.(asin (x)))
+                   (fun x -> 1. /. sqrt( 1. -. (x**2.)))
                    xs_abs_lt_one
 
 let acos_x () =
   check_derivative "f(x) = acos(x)"
-                   (fun x->Maths.(acos (x)))
-                   (fun x->(-1.) /. sqrt( 1. -. (x**2.)))
+                   (fun x -> Maths.(acos (x)))
+                   (fun x -> (-1.) /. sqrt( 1. -. (x**2.)))
                    xs_abs_lt_one
 
 let atan_x () =
   check_derivative "f(x) = atan(x)"
-                   (fun x->Maths.(atan (x)))
-                   (fun x->1. /. ( 1. +. (x**2.)))
+                   (fun x -> Maths.(atan (x)))
+                   (fun x -> 1. /. ( 1. +. (x**2.)))
                    xs
 
 let atan2_x2_x () =
   check_derivative "f(x) = atan2(x*x,x)"
-                   (fun x->Maths.(atan2 (x*x) x))
-                   (fun x->1. /. ( 1. +. (x**2.)))
+                   (fun x -> Maths.(atan2 (x*x) x))
+                   (fun x -> 1. /. ( 1. +. (x**2.)))
                    xs_nonzero
 
 let atan2_x_x2 () =
   check_derivative "f(x) = atan2(x,x*x)"
-                   (fun x->Maths.(atan2 x (x*x)))
-                   (fun x->(-1.) /. ( 1. +. (x**2.)))
+                   (fun x -> Maths.(atan2 x (x*x)))
+                   (fun x -> (-1.) /. ( 1. +. (x**2.)))
                    xs_nonzero
 
 (* trigonometric functions - sin, cos, tan, asin, acos, atan, atan2 *)
 
 let sinh_x () =
   check_derivative "f(x) = sinh(x)"
-                   (fun x->Maths.(sinh (x)))
-                   (fun x->cosh x )
+                   (fun x -> Maths.(sinh (x)))
+                   (fun x -> cosh x )
                    xs
 
 let sinh_x_x () =
   check_derivative "f(x) = sinh(x*x)"
-                   (fun x->Maths.(sinh (x * x)))
-                   (fun x->2. *. x *. (cosh (x*.x)))
+                   (fun x -> Maths.(sinh (x * x)))
+                   (fun x -> 2. *. x *. (cosh (x*.x)))
                    xs
 
 let cosh_x () =
   check_derivative "f(x) = cosh(x)"
-                   (fun x->Maths.(cosh (x)))
-                   (fun x->sinh x)
+                   (fun x -> Maths.(cosh (x)))
+                   (fun x -> sinh x)
                    xs
 
 let tanh_x () =
   check_derivative "f(x) = tanh(x)"
-                   (fun x->Maths.(tanh (x)))
-                   (fun x->1. -. ((tanh x) ** 2.))
+                   (fun x -> Maths.(tanh (x)))
+                   (fun x -> 1. -. ((tanh x) ** 2.))
                    xs
 
 let asinh_x () =
   check_derivative "f(x) = asinh(x)"
-                   (fun x->Maths.(asinh (x)))
-                   (fun x->1. /. sqrt( 1. +. (x**2.)))
+                   (fun x -> Maths.(asinh (x)))
+                   (fun x -> 1. /. sqrt( 1. +. (x**2.)))
                    xs
 
 let acosh_x () =
   check_derivative "f(x) = acosh(x)"
-                   (fun x->Maths.(acosh (x)))
-                   (fun x->1. /. sqrt( (-1.) +. (x**2.)))
+                   (fun x -> Maths.(acosh (x)))
+                   (fun x -> 1. /. sqrt( (-1.) +. (x**2.)))
                    xs_gt_one
 
 let atanh_x () =
   check_derivative "f(x) = atanh(x)"
-                   (fun x->Maths.(atanh (x)))
-                   (fun x->1. /. ( 1. -. (x**2.)))
+                   (fun x -> Maths.(atanh (x)))
+                   (fun x -> 1. /. ( 1. -. (x**2.)))
                    xs_abs_lt_one
 
 (* the tests *)
