@@ -6,6 +6,7 @@
 #ifdef OWL_ENABLE_TEMPLATE
 
 
+// Level 1 optimisation
 void FUNCTION (c, slice_1) (struct slice_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
@@ -24,6 +25,7 @@ void FUNCTION (c, slice_1) (struct slice_pair *p) {
 }
 
 
+// Level 2 optimisation
 void FUNCTION (c, slice_2) (struct slice_pair *p) {
     TYPE *x = (TYPE *) p->x;
     TYPE *y = (TYPE *) p->y;
@@ -61,6 +63,7 @@ void FUNCTION (c, slice_2) (struct slice_pair *p) {
 }
 
 
+// Level 3 optimisation
 void FUNCTION (c, slice_3) (struct slice_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
@@ -114,6 +117,7 @@ void FUNCTION (c, slice_3) (struct slice_pair *p) {
 }
 
 
+// Level 4 optimisation
 void FUNCTION (c, slice_4) (struct slice_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;

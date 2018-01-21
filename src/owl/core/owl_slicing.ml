@@ -19,6 +19,37 @@ let shape x = Bigarray.Genarray.dims x
 let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
 
 
+
+external owl_float32_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_float32_ndarray_get_slice"
+external owl_float64_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_float64_ndarray_get_slice"
+external owl_complex32_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_complex32_ndarray_get_slice"
+external owl_complex64_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_complex64_ndarray_get_slice"
+
+let _ndarray_get_slice
+  : type a b c. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr -> (int64, c) owl_arr -> unit
+  = function
+  | Float32   -> owl_float32_ndarray_get_slice
+  | Float64   -> owl_float64_ndarray_get_slice
+  | Complex32 -> owl_complex32_ndarray_get_slice
+  | Complex64 -> owl_complex64_ndarray_get_slice
+  | _         -> failwith "_ndarray_get_slice: unsupported operation"
+
+
+external owl_float32_ndarray_set_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_float32_ndarray_set_slice"
+external owl_float64_ndarray_set_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_float64_ndarray_set_slice"
+external owl_complex32_ndarray_set_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_complex32_ndarray_set_slice"
+external owl_complex64_ndarray_set_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_complex64_ndarray_set_slice"
+
+let _ndarray_set_slice
+  : type a b c. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr -> (int64, c) owl_arr -> unit
+  = function
+  | Float32   -> owl_float32_ndarray_set_slice
+  | Float64   -> owl_float64_ndarray_set_slice
+  | Complex32 -> owl_complex32_ndarray_set_slice
+  | Complex64 -> owl_complex64_ndarray_set_slice
+  | _         -> failwith "_ndarray_set_slice: unsupported operation"
+
+
 (* check the validity of the slice definition, also re-format slice definition,
    axis: slice definition;
    shp: shape of the original ndarray;
@@ -230,21 +261,6 @@ let get_slice_array_typ''' axis x =
     (* reshape the ndarray *)
     Bigarray.reshape y s1
   )
-
-
-external owl_float32_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_float32_ndarray_get_slice"
-external owl_float64_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_float64_ndarray_get_slice"
-external owl_complex32_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_complex32_ndarray_get_slice"
-external owl_complex64_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_complex64_ndarray_get_slice"
-
-let _ndarray_get_slice
-  : type a b c. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr -> (int64, c) owl_arr -> unit
-  = function
-  | Float32   -> owl_float32_ndarray_get_slice
-  | Float64   -> owl_float64_ndarray_get_slice
-  | Complex32 -> owl_complex32_ndarray_get_slice
-  | Complex64 -> owl_complex64_ndarray_get_slice
-  | _         -> failwith "_ndarray_get_slice: unsupported operation"
 
 
 (* convert simple slice definition consisting only R_ to (start,stop,step) triplets *)
