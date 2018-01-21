@@ -72,9 +72,10 @@ module To_test = struct
 
   let check_derivative_array ?eps:(eps=0.) f df x_arr =
     M.print x_arr;
-    let df_arr   = M.mapi (fun o x -> df x) x_arr in
+    let df_arr   = M.map (fun x -> df x) x_arr in
     M.print df_arr;
-    let diff_arr = (diff f (Arr x_arr)) |> unpack_arr in
+    (* let diff_arr = (diff f (Arr x_arr)) |> unpack_arr in *)
+    let diff_arr = M.map (fun x -> diff f (F x) |> unpack_flt) x_arr in
     M.print diff_arr;
     M.approx_equal ~eps:eps df_arr diff_arr
   (** check_derivative_array ?eps f df x_arr returns true if the absolute delta
