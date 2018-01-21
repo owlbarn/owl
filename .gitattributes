@@ -1,8 +1,10 @@
 *.ml linguist-language=OCaml
 src/owl/lapacke/lapacke* linguist-vendored
 src/owl/cblas/cblas.h linguist-vendored
-src/owl/maths/cephes/*.h linguist-vendored
+src/owl/maths/cephes/* linguist-vendored
+src/owl/maths/cdflib/* linguist-vendored
 src/owl/stats/owl_stats.h linguist-vendored
+src/owl/stats/sfmt/* linguist-vendored
 src/opencl/bindings/opencl12/* linguist-vendored
 src/opencl/bindings/opencl20/* linguist-vendored
 src/opencl/bindings/opencl22/* linguist-vendored
