@@ -6,7 +6,7 @@
 #ifdef OWL_ENABLE_TEMPLATE
 
 
-void FUNCTION (ndarray_slicing_1) (struct slice_pair *p) {
+void FUNCTION (c, slice_1) (struct slice_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
   int d = p->dim - 1;
@@ -24,7 +24,7 @@ void FUNCTION (ndarray_slicing_1) (struct slice_pair *p) {
 }
 
 
-void FUNCTION (ndarray_slicing_2) (struct slice_pair *p) {
+void FUNCTION (c, slice_2) (struct slice_pair *p) {
     TYPE *x = (TYPE *) p->x;
     TYPE *y = (TYPE *) p->y;
     int d0 = p->dim - 2;
@@ -61,7 +61,7 @@ void FUNCTION (ndarray_slicing_2) (struct slice_pair *p) {
 }
 
 
-void FUNCTION (ndarray_slicing_3) (struct slice_pair *p) {
+void FUNCTION (c, slice_3) (struct slice_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
   int d0 = p->dim - 3;
@@ -114,7 +114,7 @@ void FUNCTION (ndarray_slicing_3) (struct slice_pair *p) {
 }
 
 
-void FUNCTION (ndarray_slicing_4) (struct slice_pair *p) {
+void FUNCTION (c, slice_4) (struct slice_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
   int d0 = p->dim - 4;
@@ -184,16 +184,16 @@ void FUNCTION (ndarray_slicing_4) (struct slice_pair *p) {
 
 
 // slice x based on the slice definition and save to y.
-void FUNCTION (ndarray_slicing) (struct slice_pair *p) {
+void FUNCTION (c, slice) (struct slice_pair *p) {
 
   if (p->dep == p->dim - 1)
-    FUNCTION (ndarray_slicing_1) (p);
+    FUNCTION (c, slice_1) (p);
   else if (p->dep == p->dim - 2)
-    FUNCTION (ndarray_slicing_2) (p);
+    FUNCTION (c, slice_2) (p);
   else if (p->dep == p->dim - 3)
-    FUNCTION (ndarray_slicing_3) (p);
+    FUNCTION (c, slice_3) (p);
   else if (p->dep == p->dim - 4)
-    FUNCTION (ndarray_slicing_4) (p);
+    FUNCTION (c, slice_4) (p);
   else {
     const int d = p->dep;
     const int save_posx = p->posx;
@@ -203,7 +203,7 @@ void FUNCTION (ndarray_slicing) (struct slice_pair *p) {
 
     for (int i = 0; i < p->n[d]; i++) {
       p->dep += 1;
-      FUNCTION (ndarray_slicing) (p);
+      FUNCTION (c, slice) (p);
       p->dep -= 1;
       p->posx += p->incx[d];
       p->posy += p->incy[d];
@@ -213,6 +213,46 @@ void FUNCTION (ndarray_slicing) (struct slice_pair *p) {
     p->posy = save_posy;
   }
 }
+
+
+// stub function
+value FUNCTION (stub, slice) (value vX, value vY, value vZ) {
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  TYPE *X_data = (TYPE *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  TYPE *Y_data = (TYPE *) Y->data;
+
+  struct caml_ba_array *Z = Caml_ba_array_val(vZ);
+  int64_t *slice = (int64_t *) Z->data;
+
+  struct slice_pair * sp = calloc(1, sizeof(struct slice_pair));
+  sp->dim = X->num_dims;
+  sp->dep = 0;
+  sp->n = Y->dim;
+  sp->x = X_data;
+  sp->y = Y_data;
+  sp->posx = 0;
+  sp->posy = 0;
+  sp->ofsx = calloc(sp->dim, sizeof(int));
+  sp->ofsy = calloc(sp->dim, sizeof(int));
+  sp->incx = calloc(sp->dim, sizeof(int));
+  sp->incy = calloc(sp->dim, sizeof(int));
+  c_slicing_offset(X, slice, sp->ofsx);
+  c_slicing_stride(X, slice, sp->incx);
+  c_ndarray_stride(Y, sp->incy);
+
+  FUNCTION (c, slice) (sp);
+
+  free(sp->ofsx);
+  free(sp->ofsy);
+  free(sp->incx);
+  free(sp->incy);
+  free(sp);
+
+  return Val_unit;
+}
+
 
 
 #endif /* OWL_ENABLE_TEMPLATE */

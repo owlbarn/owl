@@ -50,7 +50,7 @@ int int64_cmp (const void * a, const void * b) {
 
 
 // calculate the number of elements given a bigarray
-int owl_ndarray_numel (struct caml_ba_array *X) {
+int c_ndarray_numel (struct caml_ba_array *X) {
   int n = 1;
 
   for (int i = 0; i < X->num_dims; i ++)
@@ -61,7 +61,7 @@ int owl_ndarray_numel (struct caml_ba_array *X) {
 
 
 // calculate the stride of a given dimension of a bigarray
-int owl_ndarray_stride_dim (struct caml_ba_array *X, int d) {
+int c_ndarray_stride_dim (struct caml_ba_array *X, int d) {
   int s = 1;
 
   for (int i = X->num_dims - 1; i > d; i--)
@@ -72,7 +72,7 @@ int owl_ndarray_stride_dim (struct caml_ba_array *X, int d) {
 
 
 // calculate the slice size of a given dimension of a bigarray
-int owl_ndarray_slice_dim (struct caml_ba_array *X, int d) {
+int c_ndarray_slice_dim (struct caml_ba_array *X, int d) {
   int s = 1;
 
   for (int i = X->num_dims - 1; i >= d; i--)
@@ -82,7 +82,7 @@ int owl_ndarray_slice_dim (struct caml_ba_array *X, int d) {
 }
 
 // calculate the slice size of all dimensions of a bigarray
-void owl_ndarray_stride (struct caml_ba_array *X, int *stride) {
+void c_ndarray_stride (struct caml_ba_array *X, int *stride) {
   int i = X->num_dims - 1;
   *(stride + i) = 1;
 
@@ -93,8 +93,8 @@ void owl_ndarray_stride (struct caml_ba_array *X, int *stride) {
 
 // calculate the offset of each dimension in output based on a slice definition
 // the slice definition is a list (start,stop,step) triplets.
-void owl_slicing_stride (struct caml_ba_array *X, int64_t *slice, int *stride) {
-  owl_ndarray_stride(X, stride);
+void c_slicing_stride (struct caml_ba_array *X, int64_t *slice, int *stride) {
+  c_ndarray_stride(X, stride);
 
   for (int i = 0; i < X->num_dims; i++)
     *(stride + i) *= *(slice + 3 * i + 2);
@@ -103,8 +103,8 @@ void owl_slicing_stride (struct caml_ba_array *X, int64_t *slice, int *stride) {
 
 // calculate the offset of each dimension in output based on a slice definition
 // the slice definition is a list (start,stop,step) triplets.
-void owl_slicing_offset (struct caml_ba_array *X, int64_t *slice, int *offset) {
-  owl_ndarray_stride(X, offset);
+void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int *offset) {
+  c_ndarray_stride(X, offset);
 
   for (int i = 0; i < X->num_dims; i++)
     *(offset + i) *= *(slice + 3 * i);

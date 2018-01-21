@@ -232,19 +232,19 @@ let get_slice_array_typ''' axis x =
   )
 
 
-external owl_float32_ndarray_slicing : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "float32_ndarray_slicing"
-external owl_float64_ndarray_slicing : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "float64_ndarray_slicing"
-external owl_complex32_ndarray_slicing : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "complex32_ndarray_slicing"
-external owl_complex64_ndarray_slicing : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "complex64_ndarray_slicing"
+external owl_float32_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_float32_ndarray_get_slice"
+external owl_float64_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_float64_ndarray_get_slice"
+external owl_complex32_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_complex32_ndarray_get_slice"
+external owl_complex64_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_complex64_ndarray_get_slice"
 
-let _ndarray_slicing
+let _ndarray_get_slice
   : type a b c. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr -> (int64, c) owl_arr -> unit
   = function
-  | Float32   -> owl_float32_ndarray_slicing
-  | Float64   -> owl_float64_ndarray_slicing
-  | Complex32 -> owl_complex32_ndarray_slicing
-  | Complex64 -> owl_complex64_ndarray_slicing
-  | _         -> failwith "_ndarray_slicing: unsupported operation"
+  | Float32   -> owl_float32_ndarray_get_slice
+  | Float64   -> owl_float64_ndarray_get_slice
+  | Complex32 -> owl_complex32_ndarray_get_slice
+  | Complex64 -> owl_complex64_ndarray_get_slice
+  | _         -> failwith "_ndarray_get_slice: unsupported operation"
 
 
 (* convert simple slice definition consisting only R_ to (start,stop,step) triplets *)
@@ -271,7 +271,7 @@ let get_slice_array_typ axis x =
   (* calculate the new shape for slice *)
   let s1 = calc_slice_shape axis in
   let y = empty _kind s1 in
-  _ndarray_slicing _kind x y (sd_to_triplet axis);
+  _ndarray_get_slice _kind x y (sd_to_triplet axis);
   y
 
 

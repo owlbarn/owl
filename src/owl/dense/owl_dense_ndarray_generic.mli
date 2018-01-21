@@ -233,7 +233,7 @@ val set_slice : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
 (** [set_slice axis x y] set the slice defined by [axis] in [x] according to
   the values in [y]. [y] must have the same shape as the one defined by [axis].
 
-  About the slice definition of [axis], please refer to [slice] function.
+  About the slice definition of [axis], please refer to [get_slice] function.
  *)
 
 val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
