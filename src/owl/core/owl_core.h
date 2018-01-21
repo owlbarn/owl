@@ -49,6 +49,22 @@ extern void c_complex32_ndarray_set_slice (struct slice_pair *sp);
 
 extern void c_complex64_ndarray_set_slice (struct slice_pair *sp);
 
+extern void c_float32_ndarray_get_fancy (struct fancy_pair *sp);
+
+extern void c_float64_ndarray_get_fancy (struct fancy_pair *sp);
+
+extern void c_complex32_ndarray_get_fancy (struct fancy_pair *sp);
+
+extern void c_complex64_ndarray_get_fancy (struct fancy_pair *sp);
+
+extern void c_float32_ndarray_set_fancy (struct fancy_pair *sp);
+
+extern void c_float64_ndarray_set_fancy (struct fancy_pair *sp);
+
+extern void c_complex32_ndarray_set_fancy (struct fancy_pair *sp);
+
+extern void c_complex64_ndarray_set_fancy (struct fancy_pair *sp);
+
 
 // compare two numbers (real & complex & int)
 

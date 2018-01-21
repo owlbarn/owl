@@ -8,14 +8,14 @@ module CI = Cstubs_internals
 
 (* Airy functions *)
 
-external airy : float -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_airy"
+external airy : float -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> int = "stub_sf_airy"
 
 let airy x ai aip bi bip = airy x (CI.cptr ai) (CI.cptr aip) (CI.cptr bi) (CI.cptr bip)
 
 
 (* Elliptic Functions *)
 
-external ellipj : float -> float -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> int = "owl_stub_sf_ellipj_byte6" "owl_stub_sf_ellipj"
+external ellipj : float -> float -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> _ CI.fatptr -> int = "stub_sf_ellipj_byte6" "stub_sf_ellipj"
 
 let ellipj u m sn cn dn phi = ellipj u m (CI.cptr sn) (CI.cptr cn) (CI.cptr dn) (CI.cptr phi)
 
