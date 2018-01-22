@@ -100,16 +100,20 @@ let check_slice_definition axis shp =
   Array.map2 (fun i n ->
     match i with
     | I_ x -> (
+        let x = if x >= 0 then x else n + x in
         assert (x < n);
         R_ [|x;x;1|]
       )
     | L_ x -> (
         let is_cont = ref true in
         if Array.length x <> n then is_cont := false;
-        Array.iteri (fun i j ->
+        let x = Array.mapi (fun i j ->
+          let j = if j >= 0 then j else n + j in
           assert (j < n);
-          if i <> j then is_cont := false
-        ) x;
+          if i <> j then is_cont := false;
+          j
+        ) x
+        in
         if !is_cont = true then R_ [|0;n-1;1|] else L_ x
       )
     | R_ x -> (
