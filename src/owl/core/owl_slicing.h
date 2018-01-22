@@ -34,8 +34,8 @@ struct slice_pair {
  * re-format the slice definition to make sure both start and stop are greater
  * than zero. In case of a list of indices, the latter two elements b and c is
  * used to specify the starting and ending point of the list and in the index
- * field. All the list will be flattened and saved in index before calling any
- * fancy slicing functions.
+ * field, inclusive. All the list will be flattened and saved in index before
+ * calling any fancy slicing functions.
  *
  * As a result, the fields in ofsx and incx are only meaningful for the
  * dimension defined using normal slice definition.

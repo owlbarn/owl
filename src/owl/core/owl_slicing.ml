@@ -236,7 +236,7 @@ let _foreach_continuous_blk a d f =
    axis: index array, slice definition, e.g., format [start;stop;step]
    x: ndarray
  *)
-let get_slice_array_typ axis x =
+let get_slice_array_typ''' axis x =
   let _kind = kind x in
   (* check axis is within boundary then re-format *)
   let s0 = shape x in
@@ -305,6 +305,25 @@ let get_slice_array_typ axis x =
     )
   )
 
+
+let get_slice_array_typ axis x =
+  let _kind = kind x in
+  (* check axis is within boundary then re-format *)
+  let s0 = shape x in
+  let axis = check_slice_definition axis s0 in
+  (* calculate the new shape for slice *)
+  let s1 = calc_slice_shape axis in
+  let y = empty _kind s1 in
+  (* slicing vs. fancy indexing *)
+  if is_it_slicing axis = true then (
+    let triplets = convert_to_triplet axis in
+    _ndarray_get_slice _kind x y triplets;
+    y
+  )
+  else (
+    Owl_slicing_fancy.get _kind axis x y;
+    y
+  )
 
 (* set slice in [x] according to [y] *)
 let set_slice_array_typ axis x y =

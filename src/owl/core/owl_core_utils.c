@@ -91,21 +91,36 @@ void c_ndarray_stride (struct caml_ba_array *X, int *stride) {
 }
 
 
-// calculate the offset of each dimension in output based on a slice definition
-// the slice definition is a list (start,stop,step) triplets.
+/*
+ * calculate the offset of each dimension in output based on a slice definition
+ * the slice definition is a list (start,stop,step) triplets.
+ *
+ * Note that slice may encode information for fancy slicing. In case of L, the
+ * stride remains the same.
+ */
 void c_slicing_stride (struct caml_ba_array *X, int64_t *slice, int *stride) {
   c_ndarray_stride(X, stride);
 
-  for (int i = 0; i < X->num_dims; i++)
-    *(stride + i) *= *(slice + 3 * i + 2);
+  for (int i = 0; i < X->num_dims; i++) {
+    int64_t start = *(slice + 3 * i);
+    int64_t step = *(slice + 3 * i + 2);
+    *(stride + i) *= start < 0 ? 1 : step;
+  }
 }
 
 
-// calculate the offset of each dimension in output based on a slice definition
-// the slice definition is a list (start,stop,step) triplets.
+/*
+ * calculate the offset of each dimension in output based on a slice definition
+ * the slice definition is a list (start,stop,step) triplets.
+ *
+ * Note that slice may encode information for fancy slicing. In case of L, we
+ * set offset to zero since the elements in L will be used to calculate ofsx.
+ */
 void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int *offset) {
   c_ndarray_stride(X, offset);
 
-  for (int i = 0; i < X->num_dims; i++)
-    *(offset + i) *= *(slice + 3 * i);
+  for (int i = 0; i < X->num_dims; i++) {
+    int64_t start = *(slice + 3 * i);
+    *(offset + i) *= start < 0 ? 0 : start;
+  }
 }

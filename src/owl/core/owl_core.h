@@ -8,7 +8,7 @@
 
 #include "owl_macros.h"
 #include "owl_slicing.h"
-
+#include <stdio.h>
 
 /** Core function declaration **/
 
