@@ -1,6 +1,7 @@
 let () = begin
   Alcotest.run "Owl" [
     "algodiff", Unit_algodiff_ad.test_set;
+    "algodiff_grad", Unit_algodiff_grad.test_set;
     "dense matrix", Unit_dense_matrix.test_set;
     "dense ndarray", Unit_dense_ndarray.test_set;
     "sparse matrix", Unit_sparse_matrix.test_set;

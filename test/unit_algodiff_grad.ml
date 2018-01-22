@@ -10,7 +10,7 @@ let approx_equal ?eps:(eps=1e-12) a b = Pervasives.abs_float (a -. b) < eps
 (* a module with functions to test *)
 module To_test = struct
 
-  let check_grad ?eps:(eps=1e-12) f dfs xys =
+  let check_grad ?eps:(eps=1e-6) f dfs xys =
     let dim = Array.length xys in
     let xys_arr = M.init [|1;dim|] (fun i -> xys.(i)) in
     let grad_f =  Bigarray.array2_of_genarray ((grad f (Arr xys_arr)) |> unpack_arr) in
@@ -50,20 +50,14 @@ module To_test = struct
 end
 
 (* Vector positions for evaluation of grad *)
-let vs = [| [|-4.;-3.|];
-            [|-4.;3.|];
-            [|4.;-3.|];
-            [|4.;3.|];
-            [|-0.1;-0.1|];
-            [| 0.1;-0.1|];
-            [|-0.1; 0.1|];
-            [| 0.1; 0.1|];
-            [|-0.1; 0.0|];
-            [| 0.1; 0.0|];
-            [| 0.0;-0.1|];
-            [| 0.0; 0.1|];
-            [| 0.0; 0.0|];
-     |]
+let coords = [0.; 0.1; 0.2; 0.3; 0.8; 0.9; 1.0; 1.1; 2.0; 3.0; 4.0;]
+let vs_list = 
+  let vs_of_x acc x = 
+    List.fold_left (fun acc y -> [|x;(-1.)*.y|]::([|x;y|]::acc)) acc coords
+  in
+  List.fold_left (fun acc x -> vs_of_x acc x) [] coords
+
+let vs = Array.of_list vs_list
 
 let x_ne_y x y = ((abs_float (x -. y)) > 0.00000001)
 
@@ -81,6 +75,12 @@ let vs_x_abs_lt_one = vs_filter (fun v -> (((v.(0))>(-1.) && ((v.(0))<1.0)))) vs
 let vs_y_abs_lt_one = vs_filter (fun v -> (((v.(1))>(-1.) && ((v.(1))<1.0)))) vs
 
 let vs_y_gt_one = vs_filter (fun v -> ((v.(1))>(1.))) vs
+
+let vs_prod_positive = vs_filter (fun v -> ((v.(1) *. v.(0))>0.00001)) vs
+
+let vs_diff = vs_filter (fun v -> (x_ne_y v.(1) v.(0))) vs
+
+let vs_sq_diff = vs_filter (fun v -> (x_ne_y (v.(1)**2.) (v.(0)**2.))) vs
 
 (* Functions to simplify testing of grad *)
 
@@ -195,14 +195,14 @@ let grad_tests_poly = [
                     vs ));
     ( "xy_sq", ("xy^2", 
                     (fun v ->Maths.(((Mat.get v 0 0) * (Mat.get v 0 1)) ** (F 2.))),
-                    [| (fun v -> 2. *. (v.(0) *. ((v.(1)**2.))));
+                    [| (fun v -> 2. *. (v.(0) *. ((v.(1) ** 2.))));
                        (fun v -> 2. *. ((v.(0)**2.) *. (v.(1))));
                     |],
                     vs ));
     ( "xy_cube", ("xy^3", 
                     (fun v ->Maths.((Mat.get v 0 0) * (Mat.get v 0 1) * (Mat.get v 0 0) * (Mat.get v 0 1) * (Mat.get v 0 0) * (Mat.get v 0 1))),
-                    [| (fun v -> 3. *. ((v.(0)**2.) *. ((v.(1)**3.))));
-                       (fun v -> 3. *. ((v.(0)**3.) *. ((v.(1)**2.))));
+                    [| (fun v -> 3. *. ((v.(0) ** 2.) *. ((v.(1) ** 3.))));
+                       (fun v -> 3. *. ((v.(0) ** 3.) *. ((v.(1) ** 2.))));
                     |],
                     vs ));
     ( "x_pow_y", ("x^y", 
@@ -214,6 +214,105 @@ let grad_tests_poly = [
   ]
 
 (* grad_tests_other provide tests for min, max, neg, abs, sign, floor/ceil/round *)
+let grad_tests_other = [
+    ( "min_x_y", ("min(x,y)", 
+                    (fun v ->Maths.(min2 (Mat.get v 0 0) (Mat.get v 0 1))),
+                    [| (fun v -> (if (v.(0) < v.(1)) then 1. else 0.));
+                       (fun v -> (if (v.(1) < v.(0)) then 1. else 0.));
+                    |],
+                    vs_diff ));
+
+    ( "max_x_y", ("max(x,y)", 
+                    (fun v ->Maths.(max2 (Mat.get v 0 0) (Mat.get v 0 1))),
+                    [| (fun v -> (if (v.(0) > v.(1)) then 1. else 0.));
+                       (fun v -> (if (v.(1) > v.(0)) then 1. else 0.));
+                    |],
+                    vs_diff ));
+    ( "neg_y", ("-y)", 
+                    (fun v ->Maths.(neg (Mat.get v 0 1))),
+                    [| (fun v -> 0.);
+                       (fun v -> (-1.));
+                    |],
+                    vs ));
+    ( "abs_y2", ("abs(y^2)", 
+                    (fun v ->Maths.(abs ((Mat.get v 0 1) ** (F 2.)))),
+                    [| (fun v -> 0.);
+                       (fun v -> 2. *. v.(1));
+                    |],
+                    vs ));
+    ( "abs_x2_m_y2", ("abs(x^2-y^2)", 
+                    (fun v ->Maths.(abs (((Mat.get v 0 0) ** (F 2.)) - (Mat.get v 0 1) ** (F 2.)))),
+                    [| (fun v -> (if ((v.(0))**2.<v.(1)**2.) then (-1.) else (1.)) *. (2.) *. v.(0));
+                       (fun v -> (if ((v.(0))**2.<v.(1)**2.) then (-1.) else (1.)) *. (-2.) *. v.(1));
+                    |],
+                    vs_sq_diff ));
+    ( "sign_x2_m_y2", ("sign(x^2-y^2)", 
+                    (fun v ->Maths.(signum (((Mat.get v 0 0) ** (F 2.)) - (Mat.get v 0 1) ** (F 2.)))),
+                    [| (fun v -> 0.);
+                       (fun v -> 0.);
+                    |],
+                    vs ));
+    ( "floor_x2_m_y2", ("floor(x^2-y^2)", 
+                    (fun v ->Maths.(floor (((Mat.get v 0 0) ** (F 2.)) - (Mat.get v 0 1) ** (F 2.)))),
+                    [| (fun v -> 0.);
+                       (fun v -> 0.);
+                    |],
+                    vs ));
+    ( "ceil_x2_m_y2", ("ceil(x^2-y^2)", 
+                    (fun v ->Maths.(ceil (((Mat.get v 0 0) ** (F 2.)) - (Mat.get v 0 1) ** (F 2.)))),
+                    [| (fun v -> 0.);
+                       (fun v -> 0.);
+                    |],
+                    vs ));
+    ( "round_x2_m_y2", ("round(x^2-y^2)", 
+                    (fun v ->Maths.(round (((Mat.get v 0 0) ** (F 2.)) - (Mat.get v 0 1) ** (F 2.)))),
+                    [| (fun v -> 0.);
+                       (fun v -> 0.);
+                    |],
+                    vs ));
+  ]
+               
+(* grad_tests_logexp provides tests for sqr, sqrt, log, log2, log10, exp *)
+let grad_tests_logexp = [
+    ( "sqr_x_m_sqr_y", ("sqr(x)-sqr(y)", 
+                    (fun v ->Maths.((sqr (Mat.get v 0 0)) - (sqr (Mat.get v 0 1)) )),
+                    [| (fun v -> 2. *. v.(0));
+                       (fun v -> (-2.) *. v.(1));
+                    |],
+                    vs ));
+
+    ( "sqrt_xy", ("sqrt(xy)", 
+                    (fun v ->Maths.(sqrt ((Mat.get v 0 0) * (Mat.get v 0 1)))),
+                    [| (fun v -> (0.5) *. v.(1) /. sqrt(v.(0)*.v.(1)));
+                       (fun v -> (0.5) *. v.(0) /. sqrt(v.(0)*.v.(1)));
+                    |],
+                    vs_prod_positive ));
+
+    ( "log_xy", ("log(xy)", 
+                    (fun v ->Maths.(log ((Mat.get v 0 0) * (Mat.get v 0 1)))),
+                    [| (fun v -> (1.) /. v.(0));
+                       (fun v -> (1.) /. v.(1));
+                    |],
+                    vs_prod_positive ));
+    ( "log2_xy", ("log2(xy)", 
+                    (fun v ->Maths.(log2 ((Mat.get v 0 0) * (Mat.get v 0 1)))),
+                    [| (fun v -> (log 2.) /. v.(0));
+                       (fun v -> (log 2.) /. v.(1));
+                    |],
+                    vs_prod_positive ));
+    ( "log10_xy", ("log10(xy)", 
+                    (fun v ->Maths.(log10 ((Mat.get v 0 0) * (Mat.get v 0 1)))),
+                    [| (fun v -> (log 10.) /. v.(0));
+                       (fun v -> (log 10.) /. v.(1));
+                    |],
+                    vs_prod_positive ));
+    ( "exp_xy", ("exp(xy)", 
+                    (fun v ->Maths.(exp ((Mat.get v 0 0) * (Mat.get v 0 1)))),
+                    [| (fun v -> v.(1) *. (exp (v.(1) *. v.(0))));
+                       (fun v -> v.(0) *. (exp (v.(1) *. v.(0))));
+                    |],
+                    vs ));
+  ]
 
 (* grad_tests_trig provide tests for sin, cos, tan, asin, acos, atan, atan2 *)
 let grad_tests_trig = [
@@ -255,14 +354,14 @@ let grad_tests_trig = [
                     vs ));
     ( "asin_x", ("asin(x)", 
                     (fun v ->Maths.(asin (Mat.get v 0 0))),
-                    [| (fun v -> 1. /. (sqrt ( 1. -. v.(0)**2.)));
+                    [| (fun v -> 1. /. (sqrt ( 1. -. v.(0) ** 2.)));
                        (fun v -> 0.);
                     |],
                     vs_x_abs_lt_one ));
     ( "acos_y", ("acos(y)", 
                     (fun v ->Maths.(acos (Mat.get v 0 1))),
                     [| (fun v -> 0.);
-                       (fun v -> (-1.) /. (sqrt ( 1. -. v.(1)**2.)));
+                       (fun v -> (-1.) /. (sqrt ( 1. -. v.(1) ** 2.)));
                     |],
                     vs_y_abs_lt_one ));
     ( "atan_y", ("atan(y)", 
@@ -273,8 +372,8 @@ let grad_tests_trig = [
                     vs ));
     ( "atan2_y_x", ("atan2(y,x)", 
                     (fun v ->Maths.(atan2 (Mat.get v 0 1) (Mat.get v 0 0))),
-                    [| (fun v -> (-1.) /. ( 1. +. (v.(1)/.v.(0))**2.) *.v.(1) /. (v.(0)**2.));
-                       (fun v -> 1. /. ( 1. +. (v.(1)/.v.(0))**2.) /. v.(0));
+                    [| (fun v -> (-1.) /. ( 1. +. (v.(1)/.v.(0)) ** 2.) *.v.(1) /. (v.(0) ** 2.));
+                       (fun v -> 1. /. ( 1. +. (v.(1)/.v.(0)) ** 2.) /. v.(0));
                     |],
                     vs_x_nonzero ));
   ]
@@ -319,20 +418,20 @@ let grad_tests_hype = [
                     vs ));
     ( "asinh_x", ("asinh(x)", 
                     (fun v ->Maths.(asinh (Mat.get v 0 0))),
-                    [| (fun v -> 1. /. (sqrt ( 1. +. v.(0)**2.)));
+                    [| (fun v -> 1. /. (sqrt ( 1. +. v.(0) ** 2.)));
                        (fun v -> 0.);
                     |],
                     vs ));
     ( "acosh_y", ("acos(y)", 
                     (fun v ->Maths.(acosh (Mat.get v 0 1))),
                     [| (fun v -> 0.);
-                       (fun v -> 1. /. (sqrt ( (-1.) +. v.(1)**2.)));
+                       (fun v -> 1. /. (sqrt ( (-1.) +. v.(1) ** 2.)));
                     |],
                     vs_y_gt_one ));
     ( "atanh_y", ("atan(y)", 
                     (fun v ->Maths.(atanh (Mat.get v 0 1))),
                     [| (fun v -> 0.);
-                       (fun v -> 1. /. ( 1. -. v.(1)**2.));
+                       (fun v -> 1. /. ( 1. -. v.(1) ** 2.));
                     |],
                     vs_y_abs_lt_one ));
   ]
@@ -341,8 +440,10 @@ let grad_tests_hype = [
 (* test_set - create the test_set for Alcotest *)
 let test_set = 
   List.concat [
-      make_grad_test_set "poly" grad_tests_poly;
-      make_grad_test_set "trig" grad_tests_trig;
+      make_grad_test_set "poly"       grad_tests_poly;
+      make_grad_test_set "logexp"     grad_tests_logexp;
+      make_grad_test_set "other"      grad_tests_other;
+      make_grad_test_set "trig"       grad_tests_trig;
       make_grad_test_set "hyperbolic" grad_tests_hype;
     ]
 
