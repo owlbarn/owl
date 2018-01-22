@@ -8,6 +8,6 @@ let () = begin
     "stats", Unit_stats.test_set;
     "lazy evaluation", Unit_lazy.test_set;
     "linear algebra", Unit_linalg.test_set;
-    "slicing", Unit_slicing.test_set;
+    "slicing basic", Unit_slicing_basic.test_set;
   ]
 end
