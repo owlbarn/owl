@@ -9,5 +9,6 @@ let () = begin
     "lazy evaluation", Unit_lazy.test_set;
     "linear algebra", Unit_linalg.test_set;
     "slicing basic", Unit_slicing_basic.test_set;
+    "slicing fancy", Unit_slicing_fancy.test_set;
   ]
 end
