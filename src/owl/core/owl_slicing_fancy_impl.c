@@ -11,6 +11,7 @@ void FUNCTION (c, fancy) (struct fancy_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
   const int d = p->dep;
+  const int n = p->n[d];
   const int e = d + d + d;
   const int a = p->slice[e];
   const int b = p->slice[e + 1];
@@ -37,7 +38,8 @@ void FUNCTION (c, fancy) (struct fancy_pair *p) {
     }
     else {
       // basic slicing, (a, b, c) = (start, stop, step)
-      for (int i = a; i <= b; i += c) {
+      for (int i = 0; i < n; i++) {
+        //printf("=== a:%i b:%i c:%i ofsx:%i incx:%i ofsy:%i incy:%i posx:%lld posy:%i\n", a, b, c, p->ofsx[d], incx, p->ofsy[d], incy, posx, posy);
         MAPFUN (*(x + posx), *(y + posy));
         posx += incx;
         posy += incy;
@@ -58,7 +60,7 @@ void FUNCTION (c, fancy) (struct fancy_pair *p) {
     }
     else {
       // basic slicing, (a, b, c) = (start, stop, step)
-      for (int i = a; i <= b; i += c) {
+      for (int i = 0; i < n; i++) {
         p->dep += 1;
         FUNCTION (c, fancy) (p);
         p->dep -= 1;
@@ -90,6 +92,7 @@ value FUNCTION (stub, fancy) (value vX, value vY, value vA, value vB) {
   struct fancy_pair * fp = calloc(1, sizeof(struct fancy_pair));
   fp->dim = X->num_dims;
   fp->dep = 0;
+  fp->n = Y->dim;
   fp->slice = slice;
   fp->index = index;
   fp->x = X_data;
@@ -104,7 +107,7 @@ value FUNCTION (stub, fancy) (value vX, value vY, value vA, value vB) {
   c_slicing_stride(X, slice, fp->incx);
   c_ndarray_stride(Y, fp->incy);
 
-  // debug
+  /** debug
   printf("slice: ");
   for (int i = 0; i < fp->dim; i++) {
     int64_t *j = fp->slice + (3 * i);
@@ -118,7 +121,7 @@ value FUNCTION (stub, fancy) (value vX, value vY, value vA, value vB) {
     printf("%lld,", *(fp->index + i));
   }
   printf("\n");
-  // debug
+   debug **/
 
   FUNCTION (c, fancy) (fp);
 

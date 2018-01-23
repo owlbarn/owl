@@ -44,6 +44,7 @@ struct slice_pair {
 struct fancy_pair {
   int dim;          // number of dimensions, x and y must be the same
   int dep;          // the depth of current recursion.
+  long *n;          // number of iteration in each dimension, i.e. y's shape
   int64_t *slice;   // (a,b,c) triplet, if a >= 0 then normal slice.
   int64_t *index;   // combined use with slice, check the details above.
   void *x;          // x, source if operation is get, destination if set.

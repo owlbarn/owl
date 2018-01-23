@@ -64,7 +64,6 @@ let _calc_total_list_len axis =
 let encode_slice_definition axis =
   let n0 = 3 * Array.length axis in
   let n1 = _calc_total_list_len axis in
-  Printf.printf "==>%i\n" n1; flush_all();
   let slice = Genarray.create Int64 C_layout [|3 * n0|] in
   let index = Genarray.create Int64 C_layout [|n1|] in
   let k = ref 0 in
