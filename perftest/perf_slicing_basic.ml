@@ -23,27 +23,27 @@ let run_perftest c =
   let s9 = [[-1;0]; []; [-1;0;-2]] in
   (* config then test *)
   let c = 1 in
-  test_op "get_slice_simple ----     " c (fun () -> Arr.get_slice_simple ss x);
-  test_op "get_slice_simple s0 x     " c (fun () -> Arr.get_slice_simple s0 x);
-  test_op "get_slice_simple s1 x     " c (fun () -> Arr.get_slice_simple s1 x);
-  test_op "get_slice_simple s2 x     " c (fun () -> Arr.get_slice_simple s2 x);
-  test_op "get_slice_simple s3 x     " c (fun () -> Arr.get_slice_simple s3 x);
-  test_op "get_slice_simple s4 x     " c (fun () -> Arr.get_slice_simple s4 x);
-  test_op "get_slice_simple s5 x     " c (fun () -> Arr.get_slice_simple s5 x);
-  test_op "get_slice_simple s6 x     " c (fun () -> Arr.get_slice_simple s6 x);
-  test_op "get_slice_simple s7 x     " c (fun () -> Arr.get_slice_simple s7 x);
-  test_op "get_slice_simple s8 x     " c (fun () -> Arr.get_slice_simple s8 x);
-  test_op "get_slice_simple s9 x     " c (fun () -> Arr.get_slice_simple s9 x);
-  test_op "get_slice_simple s0 y     " c (fun () -> Arr.get_slice_simple s0 y);
-  test_op "get_slice_simple s1 y     " c (fun () -> Arr.get_slice_simple s1 y);
-  test_op "get_slice_simple s2 y     " c (fun () -> Arr.get_slice_simple s2 y);
-  test_op "get_slice_simple s3 y     " c (fun () -> Arr.get_slice_simple s3 y);
-  test_op "get_slice_simple s4 y     " c (fun () -> Arr.get_slice_simple s4 y);
-  test_op "get_slice_simple s5 y     " c (fun () -> Arr.get_slice_simple s5 y);
-  test_op "get_slice_simple s6 y     " c (fun () -> Arr.get_slice_simple s6 y);
-  test_op "get_slice_simple s7 y     " c (fun () -> Arr.get_slice_simple s7 y);
-  test_op "get_slice_simple s8 y     " c (fun () -> Arr.get_slice_simple s8 y);
-  test_op "get_slice_simple s9 y     " c (fun () -> Arr.get_slice_simple s9 y)
+  test_op "get_slice ----     " c (fun () -> Arr.get_slice ss x);
+  test_op "get_slice s0 x     " c (fun () -> Arr.get_slice s0 x);
+  test_op "get_slice s1 x     " c (fun () -> Arr.get_slice s1 x);
+  test_op "get_slice s2 x     " c (fun () -> Arr.get_slice s2 x);
+  test_op "get_slice s3 x     " c (fun () -> Arr.get_slice s3 x);
+  test_op "get_slice s4 x     " c (fun () -> Arr.get_slice s4 x);
+  test_op "get_slice s5 x     " c (fun () -> Arr.get_slice s5 x);
+  test_op "get_slice s6 x     " c (fun () -> Arr.get_slice s6 x);
+  test_op "get_slice s7 x     " c (fun () -> Arr.get_slice s7 x);
+  test_op "get_slice s8 x     " c (fun () -> Arr.get_slice s8 x);
+  test_op "get_slice s9 x     " c (fun () -> Arr.get_slice s9 x);
+  test_op "get_slice s0 y     " c (fun () -> Arr.get_slice s0 y);
+  test_op "get_slice s1 y     " c (fun () -> Arr.get_slice s1 y);
+  test_op "get_slice s2 y     " c (fun () -> Arr.get_slice s2 y);
+  test_op "get_slice s3 y     " c (fun () -> Arr.get_slice s3 y);
+  test_op "get_slice s4 y     " c (fun () -> Arr.get_slice s4 y);
+  test_op "get_slice s5 y     " c (fun () -> Arr.get_slice s5 y);
+  test_op "get_slice s6 y     " c (fun () -> Arr.get_slice s6 y);
+  test_op "get_slice s7 y     " c (fun () -> Arr.get_slice s7 y);
+  test_op "get_slice s8 y     " c (fun () -> Arr.get_slice s8 y);
+  test_op "get_slice s9 y     " c (fun () -> Arr.get_slice s9 y)
 
 
 let _ = run_perftest 5

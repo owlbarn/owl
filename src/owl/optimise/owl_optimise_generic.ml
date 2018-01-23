@@ -46,8 +46,8 @@ module Make
           let n = A.row_num y in
           let a = (i * c) mod n in
           let b = Pervasives.min (a + c - 1) (n - 1) in
-          let x = A.get_slice [R [a;b]] x in
-          let y = A.get_slice [R [a;b]] y in
+          let x = A.get_fancy [R [a;b]] x in
+          let y = A.get_fancy [R [a;b]] y in
           Arr x, Arr y
         )
       | x, y         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))

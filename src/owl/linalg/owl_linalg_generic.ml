@@ -166,7 +166,7 @@ let lq ?(thin=true) x =
   let l = match thin with
     | true  ->
         if m < n then
-          M.get_slice [R[]; R[0; minmn-1]] (M.tril a)
+          M.get_fancy [R[]; R[0; minmn-1]] (M.tril a)
         else M.tril a
     | false -> M.tril a
   in

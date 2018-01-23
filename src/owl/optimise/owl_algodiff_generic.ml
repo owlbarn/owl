@@ -700,26 +700,26 @@ module Make
       let r_c_d a b = AddI_C_D (a, i, j, b) in
       op_d_d_d a b ff fd df_da df_db df_dab r_d_d r_d_c r_c_d
 
-    and get_slice i a =
+    and get_fancy i a =
       let ff = function
-        | Arr a    -> Arr A.(get_slice i a)
+        | Arr a    -> Arr A.(get_fancy i a)
         | _        -> error_uniop "slice" a
       in
-      let fd a = get_slice i a in
-      let df cp ap at = get_slice i at in
+      let fd a = get_fancy i a in
+      let df cp ap at = get_fancy i at in
       let r a = Get_Slice_D (a, i) in
       op_d_d a ff fd df r
 
-    and set_slice i a b =
+    and set_fancy i a b =
       let ff a b =
         match a, b with
-        | Arr a, Arr b -> let a = A.copy a in A.(set_slice i a b); Arr a
-        | _            -> error_binop "set_slice" a b
+        | Arr a, Arr b -> let a = A.copy a in A.(set_fancy i a b); Arr a
+        | _            -> error_binop "set_fancy" a b
       in
-      let fd a b = set_slice i a b in
-      let df_da cp ap at = set_slice i at (zero b) in
-      let df_db cp bp bt = set_slice i (zero a) bt in
-      let df_dab cp ap at bp bt = set_slice i at bt in
+      let fd a b = set_fancy i a b in
+      let df_da cp ap at = set_fancy i at (zero b) in
+      let df_db cp bp bt = set_fancy i (zero a) bt in
+      let df_dab cp ap at bp bt = set_fancy i at bt in
       let r_d_d a b = Set_Slice_D_D (a, b, i) in
       let r_d_c a b = Set_Slice_D_C (a, b, i) in
       let r_c_d a b = Set_Slice_C_D (a, b, i) in
@@ -1301,10 +1301,10 @@ module Make
               | AddI_D_D (a, i, j, b)    -> push ((!aa, a) :: (get_item !aa i j, b) :: t)
               | AddI_D_C (a, _, _, _)    -> push ((!aa, a) :: t)
               | AddI_C_D (_, i, j, b)    -> push ((get_item !aa i j, b) :: t)
-              | Get_Slice_D (a, i)       -> push ((set_slice i (zero a) !aa, a) :: t)
-              | Set_Slice_D_D (a, b, i)  -> push ((set_slice i !aa (zero b), a) :: (get_slice i !aa, b) :: t)
-              | Set_Slice_D_C (a, b, i)  -> push ((set_slice i !aa (zero b), a) :: t)
-              | Set_Slice_C_D (a, b, i)  -> push ((get_slice i !aa, b) :: t)
+              | Get_Slice_D (a, i)       -> push ((set_fancy i (zero a) !aa, a) :: t)
+              | Set_Slice_D_D (a, b, i)  -> push ((set_fancy i !aa (zero b), a) :: (get_fancy i !aa, b) :: t)
+              | Set_Slice_D_C (a, b, i)  -> push ((set_fancy i !aa (zero b), a) :: t)
+              | Set_Slice_C_D (a, b, i)  -> push ((get_fancy i !aa, b) :: t)
               | Sum_D a                  -> push ((!aa, a) :: t)
               | Sum__D (a, i)            -> push ((repeat ~axis:i !aa (shape a).(i), a) :: t)
               | Dot_D_D (a, b)           -> push (((dot !aa (transpose (primal b))), a) :: ((dot (transpose (primal a)) !aa), b) :: t)

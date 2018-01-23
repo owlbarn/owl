@@ -1079,13 +1079,13 @@ let fold ?axis f a x =
   iter ?axis (fun y -> c := (f !c y)) x;
   !c
 
-let get_slice axis x = Owl_slicing.get_slice_list_typ axis x
+let get_fancy axis x = Owl_slicing.get_slice_list_typ axis x
 
-let set_slice axis x y = Owl_slicing.set_slice_list_typ axis x y
+let set_fancy axis x y = Owl_slicing.set_slice_list_typ axis x y
 
-let get_slice_simple axis x = Owl_slicing.get_slice_simple axis x
+let get_slice axis x = Owl_slicing.get_slice axis x
 
-let set_slice_simple axis x y = Owl_slicing.set_slice_simple axis x y
+let set_slice axis x y = Owl_slicing.set_slice axis x y
 
 let rec _iteri_slice index slice_def axis f x =
   if Array.length axis = 0 then (

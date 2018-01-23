@@ -162,9 +162,9 @@ module Make
 
     val concat : int -> t -> t -> t
 
-    val get_slice: index list -> t -> t
+    val get_fancy: index list -> t -> t
 
-    val set_slice : index list -> t -> t -> t
+    val set_fancy : index list -> t -> t -> t
 
   end
 

@@ -96,9 +96,9 @@ module type NdarraySig = sig
 
   val set : arr -> int array -> elt -> unit
 
-  val get_slice : index list -> arr -> arr
+  val get_fancy : index list -> arr -> arr
 
-  val set_slice : index list -> arr -> arr -> unit
+  val set_fancy : index list -> arr -> arr -> unit
 
   val copy : arr -> arr
 
@@ -850,7 +850,7 @@ module type StatsSig = sig
   val rayleigh_logsf : sigma:arr -> arr -> arr
 
   val rayleigh_isf : sigma:arr -> arr -> arr
-  
+
 end
 
 

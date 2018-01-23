@@ -209,9 +209,9 @@ val set_index : ('a, 'b) t -> int array array -> 'a array -> unit
   [a] equals to one, then all the elements will be assigned the same value.
  *)
 
-val get_slice : index list -> ('a, 'b) t -> ('a, 'b) t
-(** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
-  which is an [int option array]. E.g., for a ndarray [x] of dimension
+val get_fancy : index list -> ('a, 'b) t -> ('a, 'b) t
+(** [get_fancy s x] returns a copy of the slice in [x]. The slice is defined by
+  [a] which is an [int option array]. E.g., for a ndarray [x] of dimension
   [[|2; 2; 3|]], [slice [0] x] takes the following slices of index [\(0,*,*\)],
   i.e., [[|0;0;0|]], [[|0;0;1|]], [[|0;0;2|]] ... Also note that if the length
   of [s] is less than the number of dimensions of [x], [slice] function will
@@ -229,23 +229,23 @@ val get_slice : index list -> ('a, 'b) t -> ('a, 'b) t
   on arbitrary axis which need not start from left-most side.
  *)
 
-val set_slice : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** [set_slice axis x y] set the slice defined by [axis] in [x] according to
+val set_fancy : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_fancy axis x y] set the slice defined by [axis] in [x] according to
   the values in [y]. [y] must have the same shape as the one defined by [axis].
 
-  About the slice definition of [axis], please refer to [get_slice] function.
+  About the slice definition of [axis], please refer to [get_fancy] function.
  *)
 
-val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
-(** [get_slice_simple axis x] aims to provide a simpler version of [get_slice].
+val get_slice : int list list -> ('a, 'b) t -> ('a, 'b) t
+(** [get_slice axis x] aims to provide a simpler version of [get_fancy].
   This function assumes that every list element in the passed in [int list list]
   represents a range, i.e., [R] constructor.
 
   E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
  *)
 
-val set_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** [set_slice_simple axis x y] aims to provide a simpler version of [set_slice].
+val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_slice axis x y] aims to provide a simpler version of [set_fancy].
   This function assumes that every list element in the passed in [int list list]
   represents a range, i.e., [R] constructor.
 

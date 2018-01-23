@@ -18,59 +18,59 @@ module To_test = struct
 
   let test_01 () =
     let s = [[]] in
-    let y = Arr.get_slice_simple s x0 in
+    let y = Arr.get_slice s x0 in
     Arr.(y = x0)
 
   let test_02 () =
     let s = [[3]] in
-    let y = Arr.get_slice_simple s x0 in
+    let y = Arr.get_slice s x0 in
     let z = Arr.of_array [|3.|] [|1|] in
     Arr.(y = z)
 
   let test_03 () =
     let s = [[2;5]] in
-    let y = Arr.get_slice_simple s x0 in
+    let y = Arr.get_slice s x0 in
     let z = Arr.of_array [|2.;3.;4.;5.|] [|4|] in
     Arr.(y = z)
 
   let test_04 () =
     let s = [[2;-1;3]] in
-    let y = Arr.get_slice_simple s x0 in
+    let y = Arr.get_slice s x0 in
     let z = Arr.of_array [|2.;5.;8.|] [|3|] in
     Arr.(y = z)
 
   let test_05 () =
     let s = [[-2;5]] in
-    let y = Arr.get_slice_simple s x0 in
+    let y = Arr.get_slice s x0 in
     let z = Arr.of_array [|8.;7.;6.;5.|] [|4|] in
     Arr.(y = z)
 
   let test_06 () =
     let s = [[-2;4;-2]] in
-    let y = Arr.get_slice_simple s x0 in
+    let y = Arr.get_slice s x0 in
     let z = Arr.of_array [|8.;6.;4.|] [|3|] in
     Arr.(y = z)
 
   let test_07 () =
     let s = [[];[]] in
-    let y = Arr.get_slice_simple s x1 in
+    let y = Arr.get_slice s x1 in
     Arr.(y = x1)
 
   let test_08 () =
     let s = [[2];[]] in
-    let y = Arr.get_slice_simple s x1 in
+    let y = Arr.get_slice s x1 in
     let z = Arr.of_array [|20.;21.;22.;23.;24.;25.;26.;27.;28.;29.|] [|1;10|] in
     Arr.(y = z)
 
   let test_09 () =
     let s = [[0;5];[]] in
-    let y = Arr.get_slice_simple s x1 in
+    let y = Arr.get_slice s x1 in
     let z = Arr.sequential [|6;10|] in
     Arr.(y = z)
 
   let test_10 () =
     let s = [[0;5;2];[]] in
-    let y = Arr.get_slice_simple s x1 in
+    let y = Arr.get_slice s x1 in
     let z = Arr.of_array [|
        0.; 1.; 2.; 3.; 4.; 5.; 6.; 7.; 8.; 9.;
       20.;21.;22.;23.;24.;25.;26.;27.;28.;29.;
@@ -80,7 +80,7 @@ module To_test = struct
 
   let test_11 () =
     let s = [[5;0;-2];[]] in
-    let y = Arr.get_slice_simple s x1 in
+    let y = Arr.get_slice s x1 in
     let z = Arr.of_array [|
       50.;51.;52.;53.;54.;55.;56.;57.;58.;59.;
       30.;31.;32.;33.;34.;35.;36.;37.;38.;39.;
@@ -90,7 +90,7 @@ module To_test = struct
 
   let test_12 () =
     let s = [[0;5;2];[1;5]] in
-    let y = Arr.get_slice_simple s x1 in
+    let y = Arr.get_slice s x1 in
     let z = Arr.of_array [|
        1.; 2.; 3.; 4.; 5.;
       21.;22.;23.;24.;25.;
@@ -100,7 +100,7 @@ module To_test = struct
 
   let test_13 () =
     let s = [[0;5;2];[1;5;3]] in
-    let y = Arr.get_slice_simple s x1 in
+    let y = Arr.get_slice s x1 in
     let z = Arr.of_array [|
        1.; 4.;
       21.;24.;
@@ -110,7 +110,7 @@ module To_test = struct
 
   let test_14 () =
     let s = [[0;5;2];[-5;1]] in
-    let y = Arr.get_slice_simple s x1 in
+    let y = Arr.get_slice s x1 in
     let z = Arr.of_array [|
        5.; 4.; 3.; 2.; 1.;
       25.;24.;23.;22.;21.;
@@ -120,7 +120,7 @@ module To_test = struct
 
   let test_15 () =
     let s = [[0;5;2];[-5;1;-2]] in
-    let y = Arr.get_slice_simple s x1 in
+    let y = Arr.get_slice s x1 in
     let z = Arr.of_array [|
        5.; 3.; 1.;
       25.;23.;21.;
@@ -130,24 +130,24 @@ module To_test = struct
 
   let test_16 () =
     let s = [[];[];[]] in
-    let y = Arr.get_slice_simple s x2 in
+    let y = Arr.get_slice s x2 in
     Arr.(y = x2)
 
   let test_17 () =
     let s = [[0];[];[]] in
-    let y = Arr.get_slice_simple s x2 in
+    let y = Arr.get_slice s x2 in
     let z = Arr.sequential [|1;10;10|] in
     Arr.(y = z)
 
   let test_18 () =
     let s = [[1];[2];[]] in
-    let y = Arr.get_slice_simple s x2 in
+    let y = Arr.get_slice s x2 in
     let z = Arr.of_array [|120.;121.;122.;123.;124.;125.;126.;127.;128.;129.|] [|1;1;10|] in
     Arr.(y = z)
 
   let test_19 () =
     let s = [[0;5;3];[0;5;3];[0;2]] in
-    let y = Arr.get_slice_simple s x2 in
+    let y = Arr.get_slice s x2 in
     let z = Arr.of_array [|
         0.;  1.;  2.;
        30.; 31.; 32.;
@@ -158,19 +158,19 @@ module To_test = struct
 
   let test_20 () =
     let s = [[1];[2];[3]] in
-    let y = Arr.get_slice_simple s x2 in
+    let y = Arr.get_slice s x2 in
     let z = Arr.of_array [|123.|] [|1;1;1|] in
     Arr.(y = z)
 
   let test_21 () =
     let s = [[-1;0];[-1;0];[-1;0]] in
-    let y = Arr.get_slice_simple s x2 in
+    let y = Arr.get_slice s x2 in
     let z = Arr.reverse x2 in
     Arr.(y = z)
 
   let test_22 () =
     let s = [[-1;0];[-1;0];[-1;0];[-1;0]] in
-    let y = Arr.get_slice_simple s x3 in
+    let y = Arr.get_slice s x3 in
     let z = Arr.reverse x3 in
     Arr.(y = z)
 
@@ -178,7 +178,7 @@ module To_test = struct
     let s = [[0;2]] in
     let x = Arr.copy x0 in
     let y = Arr.of_array [|2.;3.;5.|] [|3|] in
-    Arr.set_slice_simple s x y;
+    Arr.set_slice s x y;
     let z = Arr.of_array [|2.;3.;5.;3.;4.;5.;6.;7.;8.;9.|] [|10|] in
     Arr.(x = z)
 
@@ -186,7 +186,7 @@ module To_test = struct
     let s = [[5;3]] in
     let x = Arr.copy x0 in
     let y = Arr.of_array [|2.;3.;5.|] [|3|] in
-    Arr.set_slice_simple s x y;
+    Arr.set_slice s x y;
     let z = Arr.of_array [|0.;1.;2.;5.;3.;2.;6.;7.;8.;9.|] [|10|] in
     Arr.(x = z)
 
@@ -194,7 +194,7 @@ module To_test = struct
     let s = [[2;8;3]] in
     let x = Arr.copy x0 in
     let y = Arr.of_array [|2.;3.;5.|] [|3|] in
-    Arr.set_slice_simple s x y;
+    Arr.set_slice s x y;
     let z = Arr.of_array [|0.;1.;2.;3.;4.;3.;6.;7.;5.;9.|] [|10|] in
     Arr.(x = z)
 
@@ -202,7 +202,7 @@ module To_test = struct
     let s = [[-1];[-1]] in
     let x = Arr.copy x1 in
     let y = Arr.of_array [|0.|] [|1;1|] in
-    Arr.set_slice_simple s x y;
+    Arr.set_slice s x y;
     let z = Arr.copy x1 in
     Arr.set z [|9;9|] 0.;
     Arr.(x = z)
@@ -211,7 +211,7 @@ module To_test = struct
     let s = [[0;9;9];[0;9;9]] in
     let x = Arr.copy x1 in
     let y = Arr.of_array [|5.;6.;7.;8.;|] [|2;2|] in
-    Arr.set_slice_simple s x y;
+    Arr.set_slice s x y;
     let z = Arr.copy x1 in
     Arr.set z [|0;0|] 5.;
     Arr.set z [|0;9|] 6.;
@@ -223,7 +223,7 @@ module To_test = struct
     let s = [[-1;0;-9];[-1;0;-9]] in
     let x = Arr.copy x1 in
     let y = Arr.of_array [|5.;6.;7.;8.;|] [|2;2|] in
-    Arr.set_slice_simple s x y;
+    Arr.set_slice s x y;
     let z = Arr.copy x1 in
     Arr.set z [|0;0|] 8.;
     Arr.set z [|0;9|] 7.;
@@ -235,7 +235,7 @@ module To_test = struct
     let s = [[-1];[-1];[-2]] in
     let x = Arr.copy x2 in
     let y = Arr.of_array [|5.|] [|1;1;1|] in
-    Arr.set_slice_simple s x y;
+    Arr.set_slice s x y;
     let z = Arr.copy x2 in
     Arr.set z [|9;9;8|] 5.;
     Arr.(x = z)
@@ -244,7 +244,7 @@ module To_test = struct
     let s = [[-1];[5;6];[0]] in
     let x = Arr.copy x2 in
     let y = Arr.of_array [|1.;2.|] [|1;2;1|] in
-    Arr.set_slice_simple s x y;
+    Arr.set_slice s x y;
     let z = Arr.copy x2 in
     Arr.set z [|9;5;0|] 1.;
     Arr.set z [|9;6;0|] 2.;

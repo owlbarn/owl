@@ -135,9 +135,9 @@ module type BasicSig = sig
 
   val set : mat -> int -> int -> elt -> unit
 
-  val get_slice : index list -> mat -> mat
+  val get_fancy : index list -> mat -> mat
 
-  val set_slice : index list -> mat -> mat -> unit
+  val set_fancy : index list -> mat -> mat -> unit
 
   val row : mat -> int -> mat
 
@@ -451,9 +451,9 @@ module Make_Basic
 
   let set x i j a = M.set (unpack_box x) i j (unpack_elt a)
 
-  let get_slice axis x = M.get_slice axis (unpack_box x) |> pack_box
+  let get_fancy axis x = M.get_fancy axis (unpack_box x) |> pack_box
 
-  let set_slice axis x y = M.set_slice axis (unpack_box x) (unpack_box y)
+  let set_fancy axis x y = M.set_fancy axis (unpack_box x) (unpack_box y)
 
   let row x i = M.row (unpack_box x) i |> pack_box
 
