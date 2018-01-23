@@ -7,8 +7,6 @@ open Bigarray
 
 open Owl_types
 
-open Owl_dense_common
-
 open Owl_dense_common_types
 
 
@@ -65,8 +63,7 @@ let encode_slice_definition s =
 
 let get kind axis x y =
   let triplets = encode_slice_definition axis in
-  _ndarray_get_slice kind x y triplets;
-  y
+  _ndarray_get_slice kind x y triplets
 
 
 let set kind axis x y =

@@ -10,6 +10,7 @@ let run_perftest c =
   let x = Arr.uniform [|10; 3000; 3000|] in
   let y = Arr.uniform [|3000; 3000; 10|] in
   (* slice definitions for testing *)
+  let ss = [[0;-1]; []; []] in
   let s0 = [[-1;0]; []; []] in
   let s1 = [[-1;0]; [-1;0]; []] in
   let s2 = [[-1;0]; [-1;0]; [-1;0;]] in
@@ -22,6 +23,7 @@ let run_perftest c =
   let s9 = [[-1;0]; []; [-1;0;-2]] in
   (* config then test *)
   let c = 1 in
+  test_op "get_slice_simple ss x     " c (fun () -> Arr.get_slice_simple ss x);
   test_op "get_slice_simple s0 x     " c (fun () -> Arr.get_slice_simple s0 x);
   test_op "get_slice_simple s1 x     " c (fun () -> Arr.get_slice_simple s1 x);
   test_op "get_slice_simple s2 x     " c (fun () -> Arr.get_slice_simple s2 x);

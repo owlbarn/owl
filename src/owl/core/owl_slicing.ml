@@ -7,8 +7,6 @@ open Bigarray
 
 open Owl_types
 
-open Owl_dense_common
-
 open Owl_dense_common_types
 
 
@@ -101,7 +99,7 @@ let check_slice_definition axis shp =
    shp: shape of the original ndarray;
  *)
 let calc_continuous_blksz axis shp =
-  let slice_sz = _calc_slice shp in
+  let slice_sz = Owl_dense_common._calc_slice shp in
   let ssz = ref 1 in
   let d = ref 0 in
   let _ = try
@@ -184,6 +182,43 @@ let _foreach_continuous_blk a d f =
   __foreach_continuous_blk a d 0 i f
 
 
+(* reshape inputs in order to optimise the slicing performance *)
+let optimise_input_shape axis x y =
+  let n = Genarray.num_dims x in
+  let sx = Genarray.dims x in
+  let sy = Genarray.dims y in
+  let dim = ref (n - 1) in
+  let acx = ref 1 in
+  let acy = ref 1 in
+  (try
+    for i = !dim downto 0 do
+      match axis.(i) with
+      | R_ a ->
+          if a.(0) = 0 && a.(1) = sx.(i) - 1 && a.(2) = 1 then (
+            acx := !acx * sx.(i);
+            acy := !acy * sy.(i);
+            dim := i;
+          )
+          else failwith "stop"
+      | _    -> failwith "stop"
+    done
+  with exn -> ());
+  if n - !dim > 1 then (
+    (* can be optimised *)
+    let axis' = Array.sub axis 0 (!dim + 1) in
+    let sx' = Array.sub sx 0 (!dim + 1) in
+    let sy' = Array.sub sy 0 (!dim + 1) in
+    sx'.(!dim) <- !acx;
+    sy'.(!dim) <- !acy;
+    let x' = reshape x sx' in
+    let y' = reshape y sy' in
+    axis', x', y'
+  )
+  else (
+    (* cannot be optimised *)
+    axis, x, y
+  )
+
 (* core slice function
    axis: index array, slice definition, e.g., format [start;stop;step]
    x: ndarray
@@ -191,32 +226,40 @@ let _foreach_continuous_blk a d f =
 let get_slice_array_typ axis x =
   let _kind = kind x in
   (* check axis is within boundary then re-format *)
-  let s0 = shape x in
-  let axis = check_slice_definition axis s0 in
+  let sx = shape x in
+  let axis = check_slice_definition axis sx in
   (* calculate the new shape for slice *)
-  let s1 = calc_slice_shape axis in
-  let y = empty _kind s1 in
+  let sy = calc_slice_shape axis in
+  let y = empty _kind sy in
+  (* optimise the shape if possible *)
+  let axis', x', y' = optimise_input_shape axis x y in
   (* slicing vs. fancy indexing *)
-  if is_basic_slicing axis = true then
-    Owl_slicing_basic.get _kind axis x y
-  else
-    Owl_slicing_fancy.get _kind axis x y
+  if is_basic_slicing axis = true then (
+    Owl_slicing_basic.get _kind axis' x' y';
+    y
+  )
+  else (
+    Owl_slicing_fancy.get _kind axis' x' y';
+    y
+  )
 
 
 (* set slice in [x] according to [y] *)
 let set_slice_array_typ axis x y =
   let _kind = kind x in
   (* check axis is within boundary then re-format *)
-  let s0 = shape x in
-  let axis = check_slice_definition axis s0 in
+  let sx = shape x in
+  let axis = check_slice_definition axis sx in
   (* validate the slice shape is the same as y's *)
-  let s1 = calc_slice_shape axis in
-  assert (shape y = s1);
+  let sy = calc_slice_shape axis in
+  assert (shape y = sy);
+  (* optimise the shape if possible *)
+  let axis', x', y' = optimise_input_shape axis x y in
   (* slicing vs. fancy indexing *)
   if is_basic_slicing axis = true then
-    Owl_slicing_basic.set _kind axis x y
+    Owl_slicing_basic.set _kind axis' x' y'
   else
-    Owl_slicing_fancy.set _kind axis x y
+    Owl_slicing_fancy.set _kind axis' x' y'
 
 
 (* same as slice_array_typ function but take list type as slice definition *)
