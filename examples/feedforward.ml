@@ -1,7 +1,7 @@
 #!/usr/bin/env owl
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 (** Feedforward Neural Network
