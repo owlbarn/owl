@@ -4,7 +4,6 @@
  *)
 
 open Bigarray
-open Owl
 
 let pi_val = 3.141592653589793238462643383279502884197169399375105820974944592307816
 
@@ -30,6 +29,32 @@ module Ndarray32float = struct
   let get varr index = (Genarray.get varr index)
 
   let set varr index value = (Genarray.set varr index value)
+
+
+(*TODO: this is a stub *)
+  let get_slice index_list varr =
+    let dims = shape varr in
+    let x = match index_list with
+      | y::tl -> (match y with
+            | I x -> 1
+            | _ -> 2)
+      | [] -> 0
+    in
+    (raise (Failure "get_slice - not implemented"); varr)
+
+  (*TODO: this is a stub *)
+  let set_slice index_list varr_a varr_b =
+    let dims_a = shape varr_a in
+    let dims_b = shape varr_b in
+    let x = match index_list with
+      | y::tl -> (match y with
+          | I x -> 1
+          | _ -> 2)
+      | [] -> 0
+    in
+    (raise (Failure "get_slice - not implemented"); ())
+
+
 
   (*TODO: val get_slice : index list -> arr -> arr *)
 
@@ -79,6 +104,7 @@ module Ndarray32float = struct
     (_generate_random_ndarray dims bernoulli_gen_fun)
 
   (* TODO: investigate whether using the Box-Muller transform is okay *)
+      (* TODO: use the polar, is more efficient *)
   let gaussian ?(sigma=1.) dims =
     let rand_gen = Random.State.make_self_init() in
     let u1 = ref 0. in
@@ -100,6 +126,39 @@ module Ndarray32float = struct
       ) in
     (_generate_random_ndarray dims gaussian_gen_fun)
 
+  (* TODO: make sure this is pure OCaml *)
+  let print ?max_row ?max_col ?header ?fmt varr =
+    let dims = shape varr in
+    let rank = Array.length dims in
+    let n = dims.(rank - 1) in
+    let max_row = match max_row with
+      | Some a -> Some a
+      | None   -> Some ((numel varr) / n)
+    in
+    let max_col = match max_col with
+      | Some a -> Some a
+      | None   -> Some n
+    in
+    Owl_pretty.print ?max_row ?max_col ?header ?elt_to_str_fun:fmt varr
+
+  (* TODO: this is a stub *)
+  let tile varr reps =
+    let dims = shape varr in
+    let type_int = reps.(0) + 1 in
+    (raise (Failure "tile - not implemented"); varr)
+
+  (* TODO: this is a stub *)
+  let split ?(axis=0) dims varr =
+    let dims = shape varr in
+    let type_int = dims.(0) + 1 in
+    (raise (Failure "split - not implemented"); [|varr|])
+
+  (*TODO : this is a stub *)
+  let draw_along_dim0 varr x =
+    let dims = shape varr in
+    let y = x + 1 in
+    (raise (Failure "draw_along_dim0 - not implemented"); (varr, [|x; y|]))
+
   (*TODO: val tile : arr -> int array -> arr
 
   TODO:val split : ?axis:int -> int array -> arr -> arr array
@@ -107,6 +166,8 @@ module Ndarray32float = struct
   TODO:val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
 
     TODO:val draw_along_dim0 : arr -> int -> arr * int array *)
+
+
 
   (* TODO: is there a more efficient way to do this? *)
   let concatenate ?(axis=0) varrs =
@@ -247,7 +308,16 @@ module Ndarray32float = struct
       (* TODO:
   val sum : ?axis:int -> arr -> arr
 
-  val sum_slices : ?axis:int -> arr -> arr*)
+         val sum_slices : ?axis:int -> arr -> arr*)
+  (* TODO: this is a stub *)
+  let sum ?(axis=0) varr =
+    let dims = shape varr in
+    (raise (Failure "sum - not implemented"); varr)
+
+  (* TODO: this is a stub *)
+  let sum_slices ?(axis=0) varr =
+    let dims = shape varr in
+    (raise (Failure "sum_slices - not implemented"); varr)
 
   (* -1. for negative numbers, 0 or (-0) for 0,
    1 for positive numbers, nan for nan*)
@@ -469,7 +539,7 @@ module Ndarray32float = struct
 
   (* Neural network related functions *)
 
-  (*val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
+  (*TODO:val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
 
   val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
 
@@ -507,6 +577,146 @@ module Ndarray32float = struct
 
   val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
   *)
+
+  (*TODO: this is a stub *)
+  let conv1d ?(padding=SAME) varr_a varr_b intarr =
+    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
+    let x = intarr.(0) + 1 in
+    (raise (Failure "conv1d - not implemented"); varr_a)
+
+  (*TODO: this is a stub *)
+  let conv2d ?(padding=SAME) varr_a varr_b intarr =
+    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
+    let x = intarr.(0) + 1 in
+    (raise (Failure "conv2d - not implemented"); varr_a)
+
+  (*TODO: this is a stub *)
+  let conv3d ?(padding=SAME) varr_a varr_b intarr =
+    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
+    let x = intarr.(0) + 1 in
+    (raise (Failure "conv3d - not implemented"); varr_a)
+
+  (*TODO: this is a stub *)
+  let max_pool1d ?(padding=SAME) varr intarr_a intarr_b =
+    let dims = shape varr in
+    let x = intarr_a.(0) + intarr_b.(0) + 1 in
+    (raise (Failure "max_pool1d - not implemented"); varr)
+
+  (*TODO: this is a stub *)
+  let max_pool2d ?(padding=SAME) varr intarr_a intarr_b =
+    let dims = shape varr in
+    let x = intarr_a.(0) + intarr_b.(0) + 1 in
+    (raise (Failure "max_pool2d - not implemented"); varr)
+
+  (*TODO: this is a stub *)
+  let max_pool3d ?(padding=SAME) varr intarr_a intarr_b =
+    let dims = shape varr in
+    let x = intarr_a.(0) + intarr_b.(0) + 1 in
+    (raise (Failure "max_pool3d - not implemented"); varr)
+
+  (*TODO: this is a stub *)
+  let avg_pool1d ?(padding=SAME) varr intarr_a intarr_b =
+    let dims = shape varr in
+    let x = intarr_a.(0) + intarr_b.(0) + 1 in
+    (raise (Failure "avg_pool1d - not implemented"); varr)
+
+  (*TODO: this is a stub *)
+  let avg_pool2d ?(padding=SAME) varr intarr_a intarr_b =
+    let dims = shape varr in
+    let x = intarr_a.(0) + intarr_b.(0) + 1 in
+    (raise (Failure "avg_pool2d - not implemented"); varr)
+
+  (*TODO: this is a stub *)
+  let avg_pool3d ?(padding=SAME) varr intarr_a intarr_b =
+    let dims = shape varr in
+    let x = intarr_a.(0) + intarr_b.(0) + 1 in
+    (raise (Failure "avg_pool3d - not implemented"); varr)
+
+  (*TODO: this is a stub *)
+  let conv1d_backward_input varr_a varr_b intarr varr_c =
+    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
+    let dims_c = shape varr_c in
+    let x = intarr.(0) + 1 in
+    (raise (Failure "conv1d_backward_input - not implemented"); varr_a)
+
+  (*TODO: this is a stub *)
+  let conv1d_backward_kernel varr_a varr_b intarr varr_c =
+    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
+    let dims_c = shape varr_c in
+    let x = intarr.(0) + 1 in
+    (raise (Failure "conv1d_backward_kernel - not implemented"); varr_a)
+
+  (*TODO: this is a stub *)
+  let conv2d_backward_input varr_a varr_b intarr varr_c =
+    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
+    let dims_c = shape varr_c in
+    let x = intarr.(0) + 1 in
+    (raise (Failure "conv2d_backward_input - not implemented"); varr_a)
+
+  (*TODO: this is a stub *)
+  let conv2d_backward_kernel varr_a varr_b intarr varr_c =
+    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
+    let dims_c = shape varr_c in
+    let x = intarr.(0) + 1 in
+    (raise (Failure "conv2d_backward_kernel - not implemented"); varr_a)
+
+  (*TODO: this is a stub *)
+  let conv3d_backward_input varr_a varr_b intarr varr_c =
+    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
+    let dims_c = shape varr_c in
+    let x = intarr.(0) + 1 in
+    (raise (Failure "conv3d_backward_input - not implemented"); varr_a)
+
+  (*TODO: this is a stub *)
+  let conv3d_backward_kernel varr_a varr_b intarr varr_c =
+    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
+    let dims_c = shape varr_c in
+    let x = intarr.(0) + 1 in
+    (raise (Failure "conv3d_backward_kernel - not implemented"); varr_a)
+
+  (*TODO: this is a stub *)
+  let max_pool1d_backward padding (varr_a:arr) intarr_a intarr_b (varr_b:arr) =
+    let padding = (match padding with
+        | SAME -> SAME
+        | VALID -> VALID)
+    in
+    let dims_a = shape varr_a in
+    let dims_b = shape varr_b in
+    let x = intarr_a.(0) + intarr_b.(0) + 1 in
+    (raise (Failure "max_pool1d_backward - not implemented"); varr_a)
+
+  (*TODO: this is a stub *)
+  let max_pool2d_backward padding (varr_a:arr) intarr_a intarr_b (varr_b:arr) =
+    let padding = (match padding with
+        | SAME -> SAME
+        | VALID -> VALID)
+    in
+    let dims_a = shape varr_a in
+    let dims_b = shape varr_b in
+    let x = intarr_a.(0) + intarr_b.(0) + 1 in
+    (raise (Failure "max_pool2d_backward - not implemented"); varr_a)
+
+  (*TODO: this is a stub *)
+  let avg_pool1d_backward padding (varr_a:arr) intarr_a intarr_b (varr_b:arr) =
+    let padding = (match padding with
+        | SAME -> SAME
+        | VALID -> VALID)
+    in
+    let dims_a = shape varr_a in
+    let dims_b = shape varr_b in
+    let x = intarr_a.(0) + intarr_b.(0) + 1 in
+    (raise (Failure "avg_pool1d_backward - not implemented"); varr_a)
+
+  (*TODO: this is a stub *)
+  let avg_pool2d_backward padding (varr_a:arr) intarr_a intarr_b (varr_b:arr) =
+    let padding = (match padding with
+        | SAME -> SAME
+        | VALID -> VALID)
+    in
+    let dims_a = shape varr_a in
+    let dims_b = shape varr_b in
+    let x = intarr_a.(0) + intarr_b.(0) + 1 in
+    (raise (Failure "avg_pool2d_backward - not implemented"); varr_a)
 
   (* matrix functions *)
 
@@ -706,6 +916,10 @@ module Ndarray32float = struct
     (extracted_a, extracted_b, indices)
 
 
+(* TODO: this is a stub *)
+  let inv varr =
+    let dims = shape varr in
+    (raise (Failure "inv - not implemented"); varr)
   (* TODO:
 
   val inv : arr -> arr
