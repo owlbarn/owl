@@ -343,7 +343,7 @@ let test_29 () =
   Alcotest.(check bool) "test 29" true (To_test.test_29 ())
 
 let test_30 () =
-  Alcotest.(check bool) "test 20" true (To_test.test_30 ())
+  Alcotest.(check bool) "test 30" true (To_test.test_30 ())
 
 let test_set = [
   "test 01", `Slow, test_01;
