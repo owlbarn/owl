@@ -84,8 +84,8 @@ module Make
 
 
   let to_arr x =
-    let slice = Array.(map (fun a -> R (to_list a)) x.slice |> to_list) in
-    A.get_fancy slice x.data
+    let slice = Array.(map (fun a -> to_list a) x.slice |> to_list) in
+    A.get_slice slice x.data
 
 
   (* manipulation functions *)
