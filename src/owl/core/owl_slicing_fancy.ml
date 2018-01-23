@@ -85,14 +85,15 @@ let encode_slice_definition axis =
         Genarray.set slice [|j + 1|] (Int64.of_int x.(1));
         Genarray.set slice [|j + 2|] (Int64.of_int x.(2));
       )
-    | _    -> failwith "encode_slice_definition"
+    | _    -> failwith "owl_slicing_fancy:encode_slice_definition"
   ) axis;
   slice, index
 
 
 let get kind axis x y =
   let slice, index = encode_slice_definition axis in
-  _ndarray_get_fancy kind x y slice index
+  _ndarray_get_fancy kind x y slice index;
+  y
 
 
 let set kind axis x y =

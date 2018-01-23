@@ -19,54 +19,6 @@ let shape x = Bigarray.Genarray.dims x
 let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
 
 
-(* Interface to native slicing functions *)
-
-external owl_float32_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_float32_ndarray_get_slice"
-external owl_float64_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_float64_ndarray_get_slice"
-external owl_complex32_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_complex32_ndarray_get_slice"
-external owl_complex64_ndarray_get_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_complex64_ndarray_get_slice"
-
-let _ndarray_get_slice
-  : type a b c. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr -> (int64, c) owl_arr -> unit
-  = function
-  | Float32   -> owl_float32_ndarray_get_slice
-  | Float64   -> owl_float64_ndarray_get_slice
-  | Complex32 -> owl_complex32_ndarray_get_slice
-  | Complex64 -> owl_complex64_ndarray_get_slice
-  | _         -> failwith "_ndarray_get_slice: unsupported operation"
-
-
-external owl_float32_ndarray_set_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_float32_ndarray_set_slice"
-external owl_float64_ndarray_set_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_float64_ndarray_set_slice"
-external owl_complex32_ndarray_set_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_complex32_ndarray_set_slice"
-external owl_complex64_ndarray_set_slice : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> unit = "stub_complex64_ndarray_set_slice"
-
-let _ndarray_set_slice
-  : type a b c. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr -> (int64, c) owl_arr -> unit
-  = function
-  | Float32   -> owl_float32_ndarray_set_slice
-  | Float64   -> owl_float64_ndarray_set_slice
-  | Complex32 -> owl_complex32_ndarray_set_slice
-  | Complex64 -> owl_complex64_ndarray_set_slice
-  | _         -> failwith "_ndarray_set_slice: unsupported operation"
-
-
-(* convert simple slice definition consisting only R_ to (start,stop,step) triplets *)
-let convert_to_triplet s =
-  let t = Genarray.create Int64 C_layout [|3 * Array.length s|] in
-  Array.iteri (fun i a ->
-    match a with
-    | R_ x -> (
-        let j = 3 * i in
-        Genarray.set t [|j|]     (Int64.of_int x.(0));
-        Genarray.set t [|j + 1|] (Int64.of_int x.(1));
-        Genarray.set t [|j + 2|] (Int64.of_int x.(2));
-      )
-    | _    -> failwith "sd_to_triplet"
-  ) s;
-  t
-
-
 (* convert from a list of slice definition to array for internal use *)
 let sdlist_to_sdarray axis =
   List.map (function
@@ -78,7 +30,7 @@ let sdlist_to_sdarray axis =
 
 
 (* return true if slicing (all R_) or false if fancy indexing (has L_) *)
-let is_it_slicing = Array.for_all (function R_ _ -> true | _ -> false)
+let is_basic_slicing = Array.for_all (function R_ _ -> true | _ -> false)
 
 
 (* check the validity of the slice definition, also re-format slice definition,
@@ -236,76 +188,6 @@ let _foreach_continuous_blk a d f =
    axis: index array, slice definition, e.g., format [start;stop;step]
    x: ndarray
  *)
-let get_slice_array_typ''' axis x =
-  let _kind = kind x in
-  (* check axis is within boundary then re-format *)
-  let s0 = shape x in
-  let axis = check_slice_definition axis s0 in
-  (* calculate the new shape for slice *)
-  let s1 = calc_slice_shape axis in
-  let y = empty _kind s1 in
-  (* slicing vs. fancy indexing *)
-  if is_it_slicing axis = true then (
-    let triplets = convert_to_triplet axis in
-    _ndarray_get_slice _kind x y triplets;
-    y
-  )
-  else (
-    (* prepare function of copying blocks *)
-    let d0 = Array.length s1 in
-    let d1, cb = calc_continuous_blksz axis s0 in
-    let sd = _calc_stride s0 in
-    let ofsy_i = ref 0 in
-    (* two copying strategies based on the size of the minimum continuous block.
-       also, consider the special case wherein the highest-dimension equals to 1.
-     *)
-    let high_dim_list = (function L_ _ -> true | _ -> false) axis.(d0 - 1) in
-    if cb > 1 || s0.(d0 - 1) = 1 || high_dim_list = true then (
-      (* yay, there are at least some continuous blocks *)
-      let b = cb in
-      let f = fun i -> (
-        let ofsx = _index_nd_1d i sd in
-        let ofsy = !ofsy_i * b in
-        _owl_copy _kind b ~ofsx ~incx:1 ~ofsy ~incy:1 x y;
-        ofsy_i := !ofsy_i + 1
-      )
-      in
-      (* start copying blocks *)
-      _foreach_continuous_blk axis d1 f;
-      (* reshape the ndarray *)
-      Bigarray.reshape y s1
-    )
-    else (
-      (* copy happens at the highest dimension, no continuous block *)
-      let b = s1.(d0 - 1) in
-      (* do the math yourself, [dd] is actually reduced from
-         s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
-      *)
-      let c, dd =
-        match axis.(d0 - 1) with
-        | R_ i -> (
-            if i.(2) > 0 then i.(2), i.(0)
-            else i.(2), i.(0) + (b - 1) * i.(2)
-          )
-        | _    -> failwith "owl_slicing:slice_array_typ"
-      in
-      let cx = if c > 0 then c else -c in
-      let cy = if c > 0 then 1 else -1 in
-      let f = fun i -> (
-        let ofsx = _index_nd_1d i sd + dd in
-        let ofsy = if c > 0 then !ofsy_i * b else (!ofsy_i + 1) * b - 1 in
-        _owl_copy _kind b ~ofsx ~incx:cx ~ofsy ~incy:cy x y;
-        ofsy_i := !ofsy_i + 1
-      )
-      in
-      (* start copying blocks *)
-      _foreach_continuous_blk axis (d1 - 1) f;
-      (* reshape the ndarray *)
-      Bigarray.reshape y s1
-    )
-  )
-
-
 let get_slice_array_typ axis x =
   let _kind = kind x in
   (* check axis is within boundary then re-format *)
@@ -315,15 +197,11 @@ let get_slice_array_typ axis x =
   let s1 = calc_slice_shape axis in
   let y = empty _kind s1 in
   (* slicing vs. fancy indexing *)
-  if is_it_slicing axis = true then (
-    let triplets = convert_to_triplet axis in
-    _ndarray_get_slice _kind x y triplets;
-    y
-  )
-  else (
-    Owl_slicing_fancy.get _kind axis x y;
-    y
-  )
+  if is_basic_slicing axis = true then
+    Owl_slicing_basic.get _kind axis x y
+  else
+    Owl_slicing_fancy.get _kind axis x y
+
 
 (* set slice in [x] according to [y] *)
 let set_slice_array_typ axis x y =
@@ -335,60 +213,10 @@ let set_slice_array_typ axis x y =
   let s1 = calc_slice_shape axis in
   assert (shape y = s1);
   (* slicing vs. fancy indexing *)
-  if is_it_slicing axis = true then (
-    let triplets = convert_to_triplet axis in
-    _ndarray_set_slice _kind x y triplets
-  )
-  else (
-    (* prepare function of copying blocks *)
-    let d0 = Array.length s1 in
-    let d1, cb = calc_continuous_blksz axis s0 in
-    let sd = _calc_stride s0 in
-    let ofsy_i = ref 0 in
-    (* two copying strategies based on the size of the minimum continuous block.
-       also, consider the special case wherein the highest-dimension equals to 1.
-     *)
-    let high_dim_list = (function L_ _ -> true | _ -> false) axis.(d0 - 1) in
-    if cb > 1 || s0.(d0 - 1) = 1 || high_dim_list = true then (
-      (* yay, there are at least some continuous blocks *)
-      let b = cb in
-      let f = fun i -> (
-        let ofsx = _index_nd_1d i sd in
-        let ofsy = !ofsy_i * b in
-        _owl_copy _kind b ~ofsx:ofsy ~incx:1 ~ofsy:ofsx ~incy:1 y x;
-        ofsy_i := !ofsy_i + 1
-      )
-      in
-      (* start copying blocks *)
-      _foreach_continuous_blk axis d1 f
-    )
-    else (
-      (* copy happens at the highest dimension, no continuous block *)
-      let b = s1.(d0 - 1) in
-      (* do the math yourself, [dd] is actually reduced from
-         s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
-      *)
-      let c, dd =
-        match axis.(d0 - 1) with
-        | R_ i -> (
-            if i.(2) > 0 then i.(2), i.(0)
-            else i.(2), i.(0) + (b - 1) * i.(2)
-          )
-        | _    -> failwith "owl_slicing:set_slice_array_typ"
-      in
-      let cx = if c > 0 then c else -c in
-      let cy = if c > 0 then 1 else -1 in
-      let f = fun i -> (
-        let ofsx = _index_nd_1d i sd + dd in
-        let ofsy = if c > 0 then !ofsy_i * b else (!ofsy_i + 1) * b - 1 in
-        _owl_copy _kind b ~ofsx:ofsy ~incx:cy ~ofsy:ofsx ~incy:cx y x;
-        ofsy_i := !ofsy_i + 1
-      )
-      in
-      (* start copying blocks *)
-      _foreach_continuous_blk axis (d1 - 1) f
-    )
-  )
+  if is_basic_slicing axis = true then
+    Owl_slicing_basic.set _kind axis x y
+  else
+    Owl_slicing_fancy.set _kind axis x y
 
 
 (* same as slice_array_typ function but take list type as slice definition *)
