@@ -9,6 +9,7 @@
 module Operator = struct
   include Owl_operator.Make_Basic (Owl_dense_ndarray_generic)
   include Owl_operator.Make_Extend (Owl_dense_ndarray_generic)
+  include Owl_operator.Make_Ndarray (Owl_dense_ndarray_generic)
 end
 
 

@@ -126,6 +126,14 @@ module type ExtendSig = sig
 
   val div_scalar_ : ('a, 'b) t -> 'a -> unit
 
+  val get_fancy : Owl_types.index list -> ('a, 'b) t -> ('a, 'b) t
+
+  val set_fancy : Owl_types.index list -> ('a, 'b) t -> ('a, 'b) t -> unit
+
+  val get_slice : int list list -> ('a, 'b) t -> ('a, 'b) t
+
+  val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+
 end
 
 
@@ -133,11 +141,26 @@ module type MatrixSig = sig
 
   type ('a, 'b) t
 
+  val get : ('a, 'b) t -> int -> int -> 'a
+
+  val set : ('a, 'b) t -> int -> int -> 'a -> unit
+
   val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
   val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
   val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+end
+
+
+module type NdarraySig = sig
+
+  type ('a, 'b) t
+
+  val get : ('a, 'b) t -> int array -> 'a
+
+  val set : ('a, 'b) t -> int array -> 'a -> unit
 
 end
 
@@ -270,6 +293,14 @@ module Make_Extend (M : ExtendSig) = struct
 
   let ( /$= ) = M.div_scalar_
 
+  let ( .!{ } ) x s = M.get_fancy s x
+
+  let ( .!{ }<- ) x s = M.set_fancy s x
+
+  let ( .${ } ) x s = M.get_slice s x
+
+  let ( .${ }<- ) x s = M.set_slice s x
+
 end
 
 
@@ -282,6 +313,21 @@ module Make_Matrix (M : MatrixSig) = struct
   let ( @= ) = M.concat_vertical
 
   let ( @|| ) = M.concat_horizontal
+
+  let ( .%{ } ) x i = M.get x i.(0) i.(1)
+
+  let ( .%{ }<- ) x i = M.set x i.(0) i.(1)
+
+end
+
+
+module Make_Ndarray (M : NdarraySig) = struct
+
+  type ('a, 'b) op_t3 = ('a, 'b) M.t
+
+  let ( .%{ } ) x i = M.get x i
+
+  let ( .%{ }<- ) x i = M.set x i
 
 end
 
