@@ -168,6 +168,88 @@ module To_test = struct
     let z = Arr.of_array [|927.|] [|1;1;1|] in
     Arr.(y = z)
 
+  let test_26 () =
+    let s = [R[3;2];L[5;4]] in
+    let y = Arr.get_slice s x1 in
+    let z = Arr.of_array [|35.;34.;25.;24.|] [|2;2|] in
+    Arr.(y = z)
+
+  let test_27 () =
+    let s = [L[0;1;2]] in
+    let x = Arr.copy x0 in
+    let y = Arr.of_array [|2.;3.;5.|] [|3|] in
+    Arr.set_slice s x y;
+    let z = Arr.of_array [|2.;3.;5.;3.;4.;5.;6.;7.;8.;9.|] [|10|] in
+    Arr.(x = z)
+
+  let test_28 () =
+    let s = [L[5;4;3]] in
+    let x = Arr.copy x0 in
+    let y = Arr.of_array [|2.;3.;5.|] [|3|] in
+    Arr.set_slice s x y;
+    let z = Arr.of_array [|0.;1.;2.;5.;3.;2.;6.;7.;8.;9.|] [|10|] in
+    Arr.(x = z)
+
+  let test_29 () =
+    let s = [R[2;8;3]] in
+    let x = Arr.copy x0 in
+    let y = Arr.of_array [|2.;3.;5.|] [|3|] in
+    Arr.set_slice s x y;
+    let z = Arr.of_array [|0.;1.;2.;3.;4.;3.;6.;7.;5.;9.|] [|10|] in
+    Arr.(x = z)
+
+  let test_30 () =
+    let s = [L[-1];R[-1]] in
+    let x = Arr.copy x1 in
+    let y = Arr.of_array [|0.|] [|1;1|] in
+    Arr.set_slice s x y;
+    let z = Arr.copy x1 in
+    Arr.set z [|9;9|] 0.;
+    Arr.(x = z)
+
+  let test_31 () =
+    let s = [R[0;9;9];R[0;9;9]] in
+    let x = Arr.copy x1 in
+    let y = Arr.of_array [|5.;6.;7.;8.;|] [|2;2|] in
+    Arr.set_slice s x y;
+    let z = Arr.copy x1 in
+    Arr.set z [|0;0|] 5.;
+    Arr.set z [|0;9|] 6.;
+    Arr.set z [|9;0|] 7.;
+    Arr.set z [|9;9|] 8.;
+    Arr.(x = z)
+
+  let test_32 () =
+    let s = [R[-1;0;-9];R[-1;0;-9]] in
+    let x = Arr.copy x1 in
+    let y = Arr.of_array [|5.;6.;7.;8.;|] [|2;2|] in
+    Arr.set_slice s x y;
+    let z = Arr.copy x1 in
+    Arr.set z [|0;0|] 8.;
+    Arr.set z [|0;9|] 7.;
+    Arr.set z [|9;0|] 6.;
+    Arr.set z [|9;9|] 5.;
+    Arr.(x = z)
+
+  let test_33 () =
+    let s = [I(-1);L[-1];R[-2]] in
+    let x = Arr.copy x2 in
+    let y = Arr.of_array [|5.|] [|1;1;1|] in
+    Arr.set_slice s x y;
+    let z = Arr.copy x2 in
+    Arr.set z [|9;9;8|] 5.;
+    Arr.(x = z)
+
+  let test_34 () =
+    let s = [I(-1);L[5;6];L[0]] in
+    let x = Arr.copy x2 in
+    let y = Arr.of_array [|1.;2.|] [|1;2;1|] in
+    Arr.set_slice s x y;
+    let z = Arr.copy x2 in
+    Arr.set z [|9;5;0|] 1.;
+    Arr.set z [|9;6;0|] 2.;
+    Arr.(x = z)
+
 end
 
 
@@ -248,6 +330,33 @@ let test_24 () =
 let test_25 () =
   Alcotest.(check bool) "test 25" true (To_test.test_25 ())
 
+let test_26 () =
+  Alcotest.(check bool) "test 26" true (To_test.test_26 ())
+
+let test_27 () =
+  Alcotest.(check bool) "test 27" true (To_test.test_27 ())
+
+let test_28 () =
+  Alcotest.(check bool) "test 28" true (To_test.test_28 ())
+
+let test_29 () =
+  Alcotest.(check bool) "test 29" true (To_test.test_29 ())
+
+let test_30 () =
+  Alcotest.(check bool) "test 30" true (To_test.test_30 ())
+
+let test_31 () =
+  Alcotest.(check bool) "test 31" true (To_test.test_31 ())
+
+let test_32 () =
+  Alcotest.(check bool) "test 32" true (To_test.test_32 ())
+
+let test_33 () =
+  Alcotest.(check bool) "test 33" true (To_test.test_33 ())
+
+let test_34 () =
+  Alcotest.(check bool) "test 34" true (To_test.test_34 ())
+
 let test_set = [
   "test 01", `Slow, test_01;
   "test 02", `Slow, test_02;
@@ -274,4 +383,13 @@ let test_set = [
   "test 23", `Slow, test_23;
   "test 24", `Slow, test_24;
   "test 25", `Slow, test_25;
+  "test 26", `Slow, test_26;
+  "test 27", `Slow, test_27;
+  "test 28", `Slow, test_28;
+  "test 29", `Slow, test_29;
+  "test 30", `Slow, test_30;
+  "test 31", `Slow, test_31;
+  "test 32", `Slow, test_32;
+  "test 33", `Slow, test_33;
+  "test 34", `Slow, test_34;
 ]

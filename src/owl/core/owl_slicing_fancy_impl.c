@@ -30,7 +30,6 @@ void FUNCTION (c, fancy) (struct fancy_pair *p) {
     if (a < 0) {
       // fancy slicing, (a, b, c) = (_, start, stop) in index
       for (int i = b; i <= c; i++) {
-        //printf("@@@ b:%i c:%i ofsx:%i incx:%i ofsy:%i incy:%i posx:%lld posy:%i\n", b, c, p->ofsx[d], incx, p->ofsy[d], incy, (save_posx + incx * p->index[i]), posy);
         posx = save_posx + incx * p->index[i];
         MAPFUN (*(x + posx), *(y + posy));
         posy += incy;
@@ -39,7 +38,6 @@ void FUNCTION (c, fancy) (struct fancy_pair *p) {
     else {
       // basic slicing, (a, b, c) = (start, stop, step)
       for (int i = 0; i < n; i++) {
-        //printf("=== a:%i b:%i c:%i ofsx:%i incx:%i ofsy:%i incy:%i posx:%lld posy:%i\n", a, b, c, p->ofsx[d], incx, p->ofsy[d], incy, posx, posy);
         MAPFUN (*(x + posx), *(y + posy));
         posx += incx;
         posy += incy;
@@ -50,7 +48,6 @@ void FUNCTION (c, fancy) (struct fancy_pair *p) {
     if (a < 0) {
       // fancy slicing, (a, b, c) = (_, start, stop) in index
       for (int i = b; i <= c; i++) {
-        //printf("+++ b:%i c:%i posx:%lld\n", b, c, p->index[i]);
         p->posx = save_posx + incx * p->index[i];
         p->dep += 1;
         FUNCTION (c, fancy) (p);
@@ -106,22 +103,6 @@ value FUNCTION (stub, fancy) (value vX, value vY, value vA, value vB) {
   c_slicing_offset(X, slice, fp->ofsx);
   c_slicing_stride(X, slice, fp->incx);
   c_ndarray_stride(Y, fp->incy);
-
-  /** debug
-  printf("slice: ");
-  for (int i = 0; i < fp->dim; i++) {
-    int64_t *j = fp->slice + (3 * i);
-    printf("(%lld,", *(j + 0));
-    printf("%lld,", *(j + 1));
-    printf("%lld)", *(j + 2));
-  }
-  printf("\n");
-  printf("index: ");
-  for (int i = 0; i < 2; i++) {
-    printf("%lld,", *(fp->index + i));
-  }
-  printf("\n");
-   debug **/
 
   FUNCTION (c, fancy) (fp);
 
