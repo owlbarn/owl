@@ -23,7 +23,7 @@ let run_perftest c =
   let s9 = [[-1;0]; []; [-1;0;-2]] in
   (* config then test *)
   let c = 1 in
-  test_op "get_slice_simple ss x     " c (fun () -> Arr.get_slice_simple ss x);
+  test_op "get_slice_simple ----     " c (fun () -> Arr.get_slice_simple ss x);
   test_op "get_slice_simple s0 x     " c (fun () -> Arr.get_slice_simple s0 x);
   test_op "get_slice_simple s1 x     " c (fun () -> Arr.get_slice_simple s1 x);
   test_op "get_slice_simple s2 x     " c (fun () -> Arr.get_slice_simple s2 x);
