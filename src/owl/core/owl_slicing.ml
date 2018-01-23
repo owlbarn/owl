@@ -214,10 +214,10 @@ let optimise_input_shape axis x y =
     let y' = reshape y sy' in
     axis', x', y'
   )
-  else (
+  else
     (* cannot be optimised *)
     axis, x, y
-  )
+
 
 (* core slice function
    axis: index array, slice definition, e.g., format [start;stop;step]
