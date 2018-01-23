@@ -4,11 +4,12 @@
  *)
 
 open Bigarray
+open Owl
 
 let pi_val = 3.141592653589793238462643383279502884197169399375105820974944592307816
 
 (* TODO: add : Ndarraysig *)
-module Ndarray32float = struct
+module Ndarray32float:NdarraySig = struct
 
   type arr = (float, float32_elt, c_layout) Genarray.t
 
@@ -87,25 +88,22 @@ module Ndarray32float = struct
       varr
     end
 
-  let uniform ?(scale=1.) dims =
+  let uniform ?(a=0.) ?(b=1.) dims =
     let rand_gen = Random.State.make_self_init() in
     let uniform_gen_fun =
-      (fun () -> (scale *. (Random.State.float rand_gen 1.))) in (*TODO: is this actually uniform?*)
+      (fun () -> (a +. (b -. a) *. (Random.State.float rand_gen 1.))) in (*TODO: is this actually uniform?*)
     (_generate_random_ndarray dims uniform_gen_fun)
 
-  let bernoulli ?(p=0.5) ?seed dims =
+  let bernoulli ?(p=0.5) dims =
     assert (p >= 0. && p <= 1.);
-    let rand_gen = match seed with
-      | Some seedval -> Random.State.make [|seedval|]
-      | None -> Random.State.make_self_init()
-    in
+    let rand_gen = Random.State.make_self_init() in
     let bernoulli_gen_fun =
       (fun () -> if (Random.State.float rand_gen 1.) <= p then 1. else 0.) in
     (_generate_random_ndarray dims bernoulli_gen_fun)
 
   (* TODO: investigate whether using the Box-Muller transform is okay *)
       (* TODO: use the polar, is more efficient *)
-  let gaussian ?(sigma=1.) dims =
+  let gaussian ?(mu=0.) ?(sigma=1.) dims =
     let rand_gen = Random.State.make_self_init() in
     let u1 = ref 0. in
     let u2 = ref 0. in
@@ -114,14 +112,14 @@ module Ndarray32float = struct
     let z1 = ref 1. in
     let gaussian_gen_fun () = (
         if !case
-        then (case := false; sigma *. !z1)
+        then (case := false; mu +. sigma *. !z1)
         else (
           case := true;
           u1 := Random.State.float rand_gen 1.;
           u2 := Random.State.float rand_gen 1.;
           z0 := (Pervasives.sqrt ((~-. 2.) *. (Pervasives.log (!u1)))) *. (Pervasives.cos (2. *. pi_val *. (!u2)));
           z1 := (Pervasives.sqrt ((~-. 2.) *. (Pervasives.log (!u1)))) *. (Pervasives.sin (2. *. pi_val *. (!u2)));
-          sigma *. !z0
+          mu +. sigma *. !z0
         )
       ) in
     (_generate_random_ndarray dims gaussian_gen_fun)
@@ -926,3 +924,5 @@ module Ndarray32float = struct
 
 *)
 end
+
+module MYS = Owl_algodiff_generic.Make (Owl_dense_ndarray.S)
