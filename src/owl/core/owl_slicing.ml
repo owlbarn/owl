@@ -219,7 +219,7 @@ let optimise_input_shape axis x y =
     axis, x, y
 
 
-(* fancy slice function *)
+(* fancy slicing function *)
 
 let get_fancy_array_typ axis x =
   let _kind = kind x in
