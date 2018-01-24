@@ -328,66 +328,96 @@ module To_test_conv3d_back_kernel = struct
       [|5;4;3;1;2|] [|1;1;1|] VALID expected
 end
 
-(* the tests *)
+(* tests for conv3d forward operation *)
 
 let fun_conv00 () =
   Alcotest.(check bool) "fun_conv00" true (To_test_conv3d.fun00 ())
+
 let fun_conv01 () =
   Alcotest.(check bool) "fun_conv01" true (To_test_conv3d.fun01 ())
+
 let fun_conv02 () =
   Alcotest.(check bool) "fun_conv02" true (To_test_conv3d.fun02 ())
+
 let fun_conv03 () =
   Alcotest.(check bool) "fun_conv03" true (To_test_conv3d.fun03 ())
+
 let fun_conv04 () =
   Alcotest.(check bool) "fun_conv04" true (To_test_conv3d.fun04 ())
+
 let fun_conv05 () =
   Alcotest.(check bool) "fun_conv05" true (To_test_conv3d.fun05 ())
+
 let fun_conv06 () =
   Alcotest.(check bool) "fun_conv06" true (To_test_conv3d.fun06 ())
+
 let fun_conv07 () =
   Alcotest.(check bool) "fun_conv07" true (To_test_conv3d.fun07 ())
+
 let fun_conv08 () =
   Alcotest.(check bool) "fun_conv08" true (To_test_conv3d.fun08 ())
+
 let fun_conv09 () =
   Alcotest.(check bool) "fun_conv09" true (To_test_conv3d.fun09 ())
+
 let fun_conv10 () =
   Alcotest.(check bool) "fun_conv10" true (To_test_conv3d.fun10 ())
+
 let fun_conv11 () =
   Alcotest.(check bool) "fun_conv11" true (To_test_conv3d.fun11 ())
 
+(* tests for conv3d input backward operation *)
+
 let fun_cbi00 () =
   Alcotest.(check bool) "fun_cbi00" true (To_test_conv3d_back_input.fun00 ())
+
 let fun_cbi01 () =
   Alcotest.(check bool) "fun_cbi01" true (To_test_conv3d_back_input.fun01 ())
+
 let fun_cbi02 () =
   Alcotest.(check bool) "fun_cbi02" true (To_test_conv3d_back_input.fun02 ())
+
 let fun_cbi03 () =
   Alcotest.(check bool) "fun_cbi03" true (To_test_conv3d_back_input.fun03 ())
+
 let fun_cbi04 () =
   Alcotest.(check bool) "fun_cbi04" true (To_test_conv3d_back_input.fun04 ())
+
 let fun_cbi05 () =
   Alcotest.(check bool) "fun_cbi05" true (To_test_conv3d_back_input.fun05 ())
+
 let fun_cbi06 () =
   Alcotest.(check bool) "fun_cbi06" true (To_test_conv3d_back_input.fun06 ())
+
 let fun_cbi07 () =
   Alcotest.(check bool) "fun_cbi07" true (To_test_conv3d_back_input.fun07 ())
 
+(* tests for conv3d kernel backward operation *)
+
 let fun_cbk00 () =
   Alcotest.(check bool) "fun_cbk00" true (To_test_conv3d_back_kernel.fun00 ())
+
 let fun_cbk01 () =
   Alcotest.(check bool) "fun_cbk01" true (To_test_conv3d_back_kernel.fun01 ())
+
 let fun_cbk02 () =
   Alcotest.(check bool) "fun_cbk02" true (To_test_conv3d_back_kernel.fun02 ())
+
 let fun_cbk03 () =
   Alcotest.(check bool) "fun_cbk03" true (To_test_conv3d_back_kernel.fun03 ())
+
 let fun_cbk04 () =
   Alcotest.(check bool) "fun_cbk04" true (To_test_conv3d_back_kernel.fun04 ())
+
 let fun_cbk05 () =
   Alcotest.(check bool) "fun_cbk05" true (To_test_conv3d_back_kernel.fun05 ())
+
 let fun_cbk06 () =
   Alcotest.(check bool) "fun_cbk06" true (To_test_conv3d_back_kernel.fun06 ())
+
 let fun_cbk07 () =
   Alcotest.(check bool) "fun_cbk07" true (To_test_conv3d_back_kernel.fun07 ())
+
 
 let test_set = [
   "fun_conv00", `Slow, fun_conv00;
@@ -402,7 +432,6 @@ let test_set = [
   "fun_conv09", `Slow, fun_conv09;
   "fun_conv10", `Slow, fun_conv10;
   "fun_conv11", `Slow, fun_conv11;
-
   "fun_cbi00", `Slow, fun_cbi00;
   "fun_cbi01", `Slow, fun_cbi01;
   "fun_cbi02", `Slow, fun_cbi02;
@@ -411,7 +440,6 @@ let test_set = [
   "fun_cbi05", `Slow, fun_cbi05;
   "fun_cbi06", `Slow, fun_cbi06;
   "fun_cbi07", `Slow, fun_cbi07;
-
   "fun_cbk00", `Slow, fun_cbk00;
   "fun_cbk01", `Slow, fun_cbk01;
   "fun_cbk02", `Slow, fun_cbk02;

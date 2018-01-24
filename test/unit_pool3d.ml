@@ -82,28 +82,38 @@ end
 
 (* TODO: Max/Pooling3D Backward Tests *)
 
-(* the tests *)
+(* tests for forward 3D pooling operations *)
 
 let fun_forward00 () =
   Alcotest.(check bool) "fun_forward00" true (To_test_pool3d.fun00 ())
+
 let fun_forward01 () =
   Alcotest.(check bool) "fun_forward01" true (To_test_pool3d.fun01 ())
+
 let fun_forward02 () =
   Alcotest.(check bool) "fun_forward02" true (To_test_pool3d.fun02 ())
+
 let fun_forward03 () =
   Alcotest.(check bool) "fun_forward03" true (To_test_pool3d.fun03 ())
+
 let fun_forward04 () =
   Alcotest.(check bool) "fun_forward04" true (To_test_pool3d.fun04 ())
+
 let fun_forward05 () =
   Alcotest.(check bool) "fun_forward05" true (To_test_pool3d.fun05 ())
+
 let fun_forward06 () =
   Alcotest.(check bool) "fun_forward06" true (To_test_pool3d.fun06 ())
+
 let fun_forward07 () =
   Alcotest.(check bool) "fun_forward07" true (To_test_pool3d.fun07 ())
+
 let fun_forward08 () =
   Alcotest.(check bool) "fun_forward08" true (To_test_pool3d.fun08 ())
+
 let fun_forward09 () =
   Alcotest.(check bool) "fun_forward09" true (To_test_pool3d.fun09 ())
+  
 
 let test_set = [
   "fun_forward00", `Slow, fun_forward00;

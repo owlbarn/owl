@@ -12,22 +12,22 @@ let close a b =
   N.(a - b |> abs |> sum') < tolerance_f32
 
 let test_conv2d input_shape kernel_shape stride pad =
-  let inp    = N.sequential ~a:1. input_shape  in
+  let inp = N.sequential ~a:1. input_shape  in
   let kernel = N.sequential ~a:1. kernel_shape in
   N.conv2d ~padding:pad inp kernel stride
 
 let test_conv2d_back_input input_shape kernel_shape stride pad =
-  let inp     = N.sequential ~a:1. input_shape  in
-  let kernel  = N.sequential ~a:1. kernel_shape in
-  let output  = N.conv2d ~padding:pad inp kernel stride in
+  let inp = N.sequential ~a:1. input_shape  in
+  let kernel = N.sequential ~a:1. kernel_shape in
+  let output = N.conv2d ~padding:pad inp kernel stride in
   let output_shape = N.shape output in
   let output' = N.sequential ~a:1. output_shape in
   N.conv2d_backward_input  inp kernel stride output'
 
 let test_conv2d_back_kernel input_shape kernel_shape stride pad =
-  let inp     = N.sequential ~a:1. input_shape  in
-  let kernel  = N.sequential ~a:1. kernel_shape in
-  let output  = N.conv2d ~padding:pad inp kernel stride in
+  let inp = N.sequential ~a:1. input_shape  in
+  let kernel = N.sequential ~a:1. kernel_shape in
+  let output = N.conv2d ~padding:pad inp kernel stride in
   let output_shape = N.shape output in
   let output' = N.sequential ~a:1. output_shape in
   N.conv2d_backward_kernel inp kernel stride output'
@@ -240,86 +240,115 @@ module To_test_conv2d_back_kernel = struct
 
 end
 
-(* the tests *)
+(* tests for conv2d forward operation *)
 
 let fun_conv00 () =
   Alcotest.(check bool) "fun_conv00" true (To_test_conv2d.fun00 ())
+
 let fun_conv01 () =
   Alcotest.(check bool) "fun_conv01" true (To_test_conv2d.fun01 ())
+
 let fun_conv02 () =
   Alcotest.(check bool) "fun_conv02" true (To_test_conv2d.fun02 ())
+
 let fun_conv03 () =
   Alcotest.(check bool) "fun_conv03" true (To_test_conv2d.fun03 ())
+
 let fun_conv04 () =
   Alcotest.(check bool) "fun_conv04" true (To_test_conv2d.fun04 ())
+
+(* tests for conv2d input backward operation *)
 
 let fun_cbi00 () =
   Alcotest.(check bool) "fun_conv2d_back_input_00" true
     (To_test_conv2d_back_input.fun00 ())
+
 let fun_cbi01 () =
   Alcotest.(check bool) "fun_conv2d_back_input_01" true
     (To_test_conv2d_back_input.fun01 ())
+
 let fun_cbi02 () =
   Alcotest.(check bool) "fun_conv2d_back_input_02" true
     (To_test_conv2d_back_input.fun01 ())
+
 let fun_cbi03 () =
   Alcotest.(check bool) "fun_conv2d_back_input_03" true
     (To_test_conv2d_back_input.fun03 ())
+
 let fun_cbi04 () =
   Alcotest.(check bool) "fun_conv2d_back_input_04" true
     (To_test_conv2d_back_input.fun04 ())
+
 let fun_cbi05 () =
   Alcotest.(check bool) "fun_conv2d_back_input_05" true
     (To_test_conv2d_back_input.fun05 ())
+
 let fun_cbi06 () =
   Alcotest.(check bool) "fun_conv2d_back_input_06" true
     (To_test_conv2d_back_input.fun06 ())
+
 let fun_cbi07 () =
   Alcotest.(check bool) "fun_conv2d_back_input_07" true
     (To_test_conv2d_back_input.fun07 ())
+
 let fun_cbi08 () =
   Alcotest.(check bool) "fun_conv2d_back_input_08" true
     (To_test_conv2d_back_input.fun08 ())
 
+(* tests for conv2d kernel backward operation *)
+
 let fun_cbk00 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_00" true
     (To_test_conv2d_back_kernel.fun00 ())
+
 let fun_cbk01 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_01" true
     (To_test_conv2d_back_kernel.fun01 ())
+
 let fun_cbk02 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_02" true
     (To_test_conv2d_back_kernel.fun02 ())
+
 let fun_cbk03 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_03" true
     (To_test_conv2d_back_kernel.fun03 ())
+
 let fun_cbk04 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_04" true
     (To_test_conv2d_back_kernel.fun04 ())
+
 let fun_cbk05 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_05" true
     (To_test_conv2d_back_kernel.fun05 ())
+
 let fun_cbk06 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_06" true
     (To_test_conv2d_back_kernel.fun06 ())
+
 let fun_cbk07 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_07" true
     (To_test_conv2d_back_kernel.fun07 ())
+
 let fun_cbk08 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_08" true
     (To_test_conv2d_back_kernel.fun08 ())
+
 let fun_cbk09 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_09" true
     (To_test_conv2d_back_kernel.fun09 ())
+
 let fun_cbk10 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_10" true
     (To_test_conv2d_back_kernel.fun10 ())
+
 let fun_cbk11 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_11" true
     (To_test_conv2d_back_kernel.fun11 ())
+
 let fun_cbk12 () =
   Alcotest.(check bool) "fun_conv2d_back_kernel_11" true
     (To_test_conv2d_back_kernel.fun11 ())
+
 
 let test_set = [
   "fun_conv00", `Slow, fun_conv00;
@@ -327,7 +356,6 @@ let test_set = [
   "fun_conv02", `Slow, fun_conv02;
   "fun_conv03", `Slow, fun_conv03;
   "fun_conv04", `Slow, fun_conv04;
-
   "fun_cbi00", `Slow, fun_cbi00;
   "fun_cbi01", `Slow, fun_cbi01;
   "fun_cbi02", `Slow, fun_cbi02;
@@ -337,7 +365,6 @@ let test_set = [
   "fun_cbi06", `Slow, fun_cbi06;
   "fun_cbi07", `Slow, fun_cbi07;
   "fun_cbi08", `Slow, fun_cbi08;
-
   "fun_cbk00", `Slow, fun_cbk00;
   "fun_cbk01", `Slow, fun_cbk01;
   "fun_cbk02", `Slow, fun_cbk02;

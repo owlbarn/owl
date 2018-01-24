@@ -20,15 +20,15 @@ let test_avgpool2d input_shape kernel stride pad =
   N.avg_pool2d ~padding:pad inp kernel stride
 
 let test_maxpool2d_back input_shape kernel stride pad =
-  let input   = N.sequential ~a:1. input_shape in
-  let output  = N.max_pool2d ~padding:pad input kernel stride in
+  let input = N.sequential ~a:1. input_shape in
+  let output = N.max_pool2d ~padding:pad input kernel stride in
   let output_shape = N.shape output in
   let output' = N.sequential ~a:1. output_shape in
   N.max_pool2d_backward VALID input kernel stride output'
 
 let test_avgpool2d_back input_shape kernel stride pad =
-  let input   = N.sequential ~a:1. input_shape in
-  let output  = N.avg_pool2d ~padding:pad input kernel stride in
+  let input = N.sequential ~a:1. input_shape in
+  let output = N.avg_pool2d ~padding:pad input kernel stride in
   let output_shape = N.shape output in
   let output' = N.sequential ~a:1. output_shape in
   N.avg_pool2d_backward VALID input kernel stride output'
@@ -219,58 +219,96 @@ module To_test_avgpool2d_back = struct
     verify_value test_avgpool2d_back [|1;4;4;4|] [|2;2|] [|2;2|] SAME expected
 end
 
-(* the tests *)
+(* tests for forward 2D pooling operations *)
 
 let fun_forward00 () =
   Alcotest.(check bool) "fun_forward00" true (To_test_forward.fun00 ())
+
 let fun_forward01 () =
   Alcotest.(check bool) "fun_forward01" true (To_test_forward.fun01 ())
+
 let fun_forward02 () =
   Alcotest.(check bool) "fun_forward02" true (To_test_forward.fun02 ())
+
 let fun_forward03 () =
   Alcotest.(check bool) "fun_forward03" true (To_test_forward.fun03 ())
+
 let fun_forward04 () =
   Alcotest.(check bool) "fun_forward04" true (To_test_forward.fun04 ())
+
 let fun_forward05 () =
   Alcotest.(check bool) "fun_forward05" true (To_test_forward.fun05 ())
+
 let fun_forward06 () =
   Alcotest.(check bool) "fun_forward06" true (To_test_forward.fun06 ())
+
 let fun_forward07 () =
   Alcotest.(check bool) "fun_forward07" true (To_test_forward.fun07 ())
+
 let fun_forward08 () =
   Alcotest.(check bool) "fun_forward08" true (To_test_forward.fun08 ())
+
 let fun_forward09 () =
   Alcotest.(check bool) "fun_forward09" true (To_test_forward.fun09 ())
+
 let fun_forward10 () =
   Alcotest.(check bool) "fun_forward10" true (To_test_forward.fun10 ())
+
 let fun_forward11 () =
   Alcotest.(check bool) "fun_forward11" true (To_test_forward.fun11 ())
 
+(* tests for backward 2D maxpooling operations *)
+
 let fun_max2d_back00 () =
-  Alcotest.(check bool) "fun_max2d_back00" true (To_test_maxpool2d_back.fun00 ())
+  Alcotest.(check bool) "fun_max2d_back00" true
+    (To_test_maxpool2d_back.fun00 ())
+
 let fun_max2d_back01 () =
-  Alcotest.(check bool) "fun_max2d_back01" true (To_test_maxpool2d_back.fun01 ())
+  Alcotest.(check bool) "fun_max2d_back01" true
+    (To_test_maxpool2d_back.fun01 ())
+
 let fun_max2d_back02 () =
-  Alcotest.(check bool) "fun_max2d_back02" true (To_test_maxpool2d_back.fun02 ())
+  Alcotest.(check bool) "fun_max2d_back02" true
+    (To_test_maxpool2d_back.fun02 ())
+
 let fun_max2d_back03 () =
-  Alcotest.(check bool) "fun_max2d_back03" true (To_test_maxpool2d_back.fun03 ())
+  Alcotest.(check bool) "fun_max2d_back03" true
+    (To_test_maxpool2d_back.fun03 ())
+
 let fun_max2d_back04 () =
-  Alcotest.(check bool) "fun_max2d_back04" true (To_test_maxpool2d_back.fun04 ())
+  Alcotest.(check bool) "fun_max2d_back04" true
+    (To_test_maxpool2d_back.fun04 ())
+
 let fun_max2d_back05 () =
-  Alcotest.(check bool) "fun_max2d_back05" true (To_test_maxpool2d_back.fun05 ())
+  Alcotest.(check bool) "fun_max2d_back05" true
+    (To_test_maxpool2d_back.fun05 ())
+
+(* tests for backward 2D avgpooling operations *)
 
 let fun_avg2d_back00 () =
-  Alcotest.(check bool) "fun_avg2d_back00" true (To_test_avgpool2d_back.fun00 ())
+  Alcotest.(check bool) "fun_avg2d_back00" true
+    (To_test_avgpool2d_back.fun00 ())
+
 let fun_avg2d_back01 () =
-  Alcotest.(check bool) "fun_avg2d_back01" true (To_test_avgpool2d_back.fun01 ())
+  Alcotest.(check bool) "fun_avg2d_back01" true
+    (To_test_avgpool2d_back.fun01 ())
+
 let fun_avg2d_back02 () =
-  Alcotest.(check bool) "fun_avg2d_back02" true (To_test_avgpool2d_back.fun02 ())
+  Alcotest.(check bool) "fun_avg2d_back02" true
+    (To_test_avgpool2d_back.fun02 ())
+
 let fun_avg2d_back03 () =
-  Alcotest.(check bool) "fun_avg2d_back03" true (To_test_avgpool2d_back.fun03 ())
+  Alcotest.(check bool) "fun_avg2d_back03" true
+    (To_test_avgpool2d_back.fun03 ())
+
 let fun_avg2d_back04 () =
-  Alcotest.(check bool) "fun_avg2d_back04" true (To_test_avgpool2d_back.fun04 ())
+  Alcotest.(check bool) "fun_avg2d_back04" true
+    (To_test_avgpool2d_back.fun04 ())
+
 let fun_avg2d_back05 () =
-  Alcotest.(check bool) "fun_avg2d_back05" true (To_test_avgpool2d_back.fun05 ())
+  Alcotest.(check bool) "fun_avg2d_back05" true
+    (To_test_avgpool2d_back.fun05 ())
+
 
 let test_set = [
   "fun_forward00", `Slow, fun_forward00;
@@ -285,14 +323,12 @@ let test_set = [
   "fun_forward09", `Slow, fun_forward09;
   "fun_forward10", `Slow, fun_forward10;
   "fun_forward11", `Slow, fun_forward11;
-
   "fun_max2d_back00", `Slow, fun_max2d_back00;
   (* "fun_max2d_back01", `Slow, fun_max2d_back01;
      "fun_max2d_back02", `Slow, fun_max2d_back02; *)
   "fun_max2d_back03", `Slow, fun_max2d_back03;
   "fun_max2d_back04", `Slow, fun_max2d_back04;
   "fun_max2d_back05", `Slow, fun_max2d_back05;
-
   "fun_avg2d_back00", `Slow, fun_avg2d_back00;
   (* "fun_avg2d_back01", `Slow, fun_avg2d_back01;
      "fun_avg2d_back02", `Slow, fun_avg2d_back02; *)
