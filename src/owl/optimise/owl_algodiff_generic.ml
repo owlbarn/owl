@@ -75,10 +75,10 @@ module Make
     | AddI_D_D      of t * int * int * t
     | AddI_D_C      of t * int * int * t
     | AddI_C_D      of t * int * int * t
-    | Get_Slice_D   of t * index list
-    | Set_Slice_D_D of t * t * index list
-    | Set_Slice_D_C of t * t * index list
-    | Set_Slice_C_D of t * t * index list
+    | Get_Slice_D   of t * int list list
+    | Set_Slice_D_D of t * t * int list list
+    | Set_Slice_D_C of t * t * int list list
+    | Set_Slice_C_D of t * t * int list list
     | Sum_D         of t
     | Sum__D        of t * int
     | Dot_D_D       of t * t

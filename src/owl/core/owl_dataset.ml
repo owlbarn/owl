@@ -97,8 +97,8 @@ let draw_samples_cifar x y n =
   let col_num = (Owl_dense_ndarray_generic.shape x).(0) in
   let a = Array.init col_num (fun i -> i) in
   let a = Owl_stats.choose a n |> Array.to_list in
-  Owl_dense_ndarray.S.get_slice [L a; R []; R []; R []] x,
-  Owl_dense_matrix.S.get_slice  [L a; R []] y
+  Owl_dense_ndarray.S.get_fancy [L a; R []; R []; R []] x,
+  Owl_dense_matrix.S.get_fancy  [L a; R []] y
 
 (* load text data and stopwords *)
 let load_stopwords () =

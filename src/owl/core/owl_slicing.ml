@@ -219,11 +219,9 @@ let optimise_input_shape axis x y =
     axis, x, y
 
 
-(* core slice function
-   axis: index array, slice definition, e.g., format [start;stop;step]
-   x: ndarray
- *)
-let get_slice_array_typ axis x =
+(* fancy slicing function *)
+
+let get_fancy_array_typ axis x =
   let _kind = kind x in
   (* check axis is within boundary then re-format *)
   let sx = shape x in
@@ -244,8 +242,7 @@ let get_slice_array_typ axis x =
   )
 
 
-(* set slice in [x] according to [y] *)
-let set_slice_array_typ axis x y =
+let set_fancy_array_typ axis x y =
   let _kind = kind x in
   (* check axis is within boundary then re-format *)
   let sx = shape x in
@@ -262,22 +259,45 @@ let set_slice_array_typ axis x y =
     Owl_slicing_fancy.set _kind axis' x' y'
 
 
+(* Basic slicing function *)
+
+let get_slice_array_typ axis x =
+  let _kind = kind x in
+  let sx = shape x in
+  let axis = check_slice_definition axis sx in
+  let sy = calc_slice_shape axis in
+  let y = empty _kind sy in
+  let axis', x', y' = optimise_input_shape axis x y in
+  Owl_slicing_basic.get _kind axis' x' y';
+  y
+
+
+let set_slice_array_typ axis x y =
+  let _kind = kind x in
+  let sx = shape x in
+  let axis = check_slice_definition axis sx in
+  let sy = calc_slice_shape axis in
+  assert (shape y = sy);
+  let axis', x', y' = optimise_input_shape axis x y in
+  Owl_slicing_basic.set _kind axis' x' y'
+
+
 (* same as slice_array_typ function but take list type as slice definition *)
-let get_slice_list_typ axis x = get_slice_array_typ (sdlist_to_sdarray axis) x
+let get_fancy_list_typ axis x = get_fancy_array_typ (sdlist_to_sdarray axis) x
 
 
 (* same as set_slice_array_typ function but take list type as slice definition *)
-let set_slice_list_typ axis x y = set_slice_array_typ (sdlist_to_sdarray axis) x y
+let set_fancy_list_typ axis x y = set_fancy_array_typ (sdlist_to_sdarray axis) x y
 
 
 (* simplified get_slice function which accept list of list as slice definition *)
-let get_slice_simple axis x =
+let get_slice_list_typ axis x =
   let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
   get_slice_array_typ axis x
 
 
 (* simplified set_slice function which accept list of list as slice definition *)
-let set_slice_simple axis x y =
+let set_slice_list_typ axis x y =
   let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
   set_slice_array_typ axis x y
 
