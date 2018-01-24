@@ -730,13 +730,13 @@ Actor system is currently in a closed repository (due to my techreport writing).
 
 ## Run Owl on Different Platforms
 
-If you want to try Owl on ARM-based platforms such as Raspberry Pi instead of the x86 ones, the recommended way is to use the [Docker image](https://hub.docker.com/r/matrixanger/owl/) that is built specifically for ARM platform. Just pull the image, start a container, then play with Owl in `utop`.
+If you want to try Owl on ARM-based platforms such as Raspberry Pi instead of the x86 ones, the recommended way is to use the [Docker image](https://hub.docker.com/r/matrixanger/owl/) that is built specifically for ARM platform. Just pull the image, start a container, and then play with Owl in `utop`. The source code is stored in `/root/owl` directory.
 
 ```
 docker run --name owl -it matrixanger/owl:arm
 ```
 
-Direct installation on ARM devices by source compilation is similar to that on the [x86 platform](https://github.com/ryanrhymes/owl#option-4-compile-from-source), but there might be some extra details you need to pay attention to, such as unsupported compiling options. Also note that Owl requires OCaml version 4.04 or above, which might not be supported on your platform's binary distribution system yet, so you might want to consider compiling from [OCaml source](https://ocaml.org/releases/4.04.html).
+Direct installation on ARM devices by source compilation is similar to that on the [x86 platform](https://github.com/ryanrhymes/owl#option-4-compile-from-source), but there might be some extra details you need to pay attention to, such as unsupported compiler options. Also note that Owl requires OCaml version 4.04 or above, which might not be supported on your platform's binary distribution system yet, so you might want to consider compiling from [OCaml source](https://ocaml.org/releases/4.04.html).
 Please refer to the [Dockerfile](https://github.com/jzstark/owl-docker/blob/master/Dockerfile) for a detailed installation guide.
 
 ## How To Contribute
