@@ -109,11 +109,11 @@ value STUB_CFFTF (value vX, value vY, value vD) {
   void* wsave = malloc(ws_sz + fc_sz);
   void* data = malloc(2 * n * sizeof(Treal));
 
-  int stdx = owl_ndarray_stride_size(X, d);
-  int slcx = owl_ndarray_slice_size(X,d);
-  int stdy = owl_ndarray_stride_size(Y, d);
-  int slcy = owl_ndarray_slice_size(Y,d);
-  int m = owl_ndarray_numel(X) / slcx;
+  int stdx = c_ndarray_stride_dim(X, d);
+  int slcx = c_ndarray_slice_dim(X,d);
+  int stdy = c_ndarray_stride_dim(Y, d);
+  int slcy = c_ndarray_slice_dim(Y,d);
+  int m = c_ndarray_numel(X) / slcx;
 
   FFTPACK_CFFTI(n, wsave);
 
@@ -151,11 +151,11 @@ value STUB_CFFTB (value vX, value vY, value vD) {
   void* wsave = malloc(ws_sz + fc_sz);
   void* data = malloc(2 * n * sizeof(Treal));
 
-  int stdx = owl_ndarray_stride_size(X, d);
-  int slcx = owl_ndarray_slice_size(X,d);
-  int stdy = owl_ndarray_stride_size(Y, d);
-  int slcy = owl_ndarray_slice_size(Y,d);
-  int m = owl_ndarray_numel(X) / slcx;
+  int stdx = c_ndarray_stride_dim(X, d);
+  int slcx = c_ndarray_slice_dim(X,d);
+  int stdy = c_ndarray_stride_dim(Y, d);
+  int slcy = c_ndarray_slice_dim(Y,d);
+  int m = c_ndarray_numel(X) / slcx;
 
   FFTPACK_CFFTI(n, wsave);
 
@@ -193,11 +193,11 @@ value STUB_RFFTF (value vX, value vY, value vD) {
   void* wsave = malloc(ws_sz + fc_sz);
   void* data = malloc(n * sizeof(Treal));
 
-  int stdx = owl_ndarray_stride_size(X, d);
-  int slcx = owl_ndarray_slice_size(X,d);
-  int stdy = owl_ndarray_stride_size(Y, d);
-  int slcy = owl_ndarray_slice_size(Y,d);
-  int m = owl_ndarray_numel(X) / slcx;
+  int stdx = c_ndarray_stride_dim(X, d);
+  int slcx = c_ndarray_slice_dim(X,d);
+  int stdy = c_ndarray_stride_dim(Y, d);
+  int slcy = c_ndarray_slice_dim(Y,d);
+  int m = c_ndarray_numel(X) / slcx;
 
   FFTPACK_RFFTI(n, wsave);
 
@@ -235,11 +235,11 @@ value STUB_RFFTB (value vX, value vY, value vD) {
   void* wsave = malloc(ws_sz + fc_sz);
   void* data = malloc(n * sizeof(_Complex Treal));
 
-  int stdx = owl_ndarray_stride_size(X, d);
-  int slcx = owl_ndarray_slice_size(X,d);
-  int stdy = owl_ndarray_stride_size(Y, d);
-  int slcy = owl_ndarray_slice_size(Y,d);
-  int m = owl_ndarray_numel(X) / slcx;
+  int stdx = c_ndarray_stride_dim(X, d);
+  int slcx = c_ndarray_slice_dim(X,d);
+  int stdy = c_ndarray_stride_dim(Y, d);
+  int slcy = c_ndarray_slice_dim(Y,d);
+  int m = c_ndarray_numel(X) / slcx;
 
   FFTPACK_RFFTI(n, wsave);
 

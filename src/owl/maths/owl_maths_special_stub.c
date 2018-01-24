@@ -8,7 +8,7 @@
 #include <stdio.h>
 
 
-value owl_stub_sf_airy(value vX, value Ai, value Aip, value Bi, value Bip) {
+value stub_sf_airy(value vX, value Ai, value Aip, value Bi, value Bip) {
   double x = Double_val(vX);
   double* ai = CTYPES_ADDR_OF_FATPTR(Ai);
   double* aip = CTYPES_ADDR_OF_FATPTR(Aip);
@@ -19,7 +19,7 @@ value owl_stub_sf_airy(value vX, value Ai, value Aip, value Bi, value Bip) {
 }
 
 
-value owl_stub_sf_ellipj(value vU, value vM, value Sn, value Cn, value Dn, value Phi) {
+value stub_sf_ellipj(value vU, value vM, value Sn, value Cn, value Dn, value Phi) {
   double u = Double_val(vU);
   double m = Double_val(vM);
   double* sn = CTYPES_ADDR_OF_FATPTR(Sn);
@@ -31,14 +31,14 @@ value owl_stub_sf_ellipj(value vU, value vM, value Sn, value Cn, value Dn, value
 }
 
 
-value owl_stub_sf_ellipj_byte6(value* argv, int argc) {
+value stub_sf_ellipj_byte6(value* argv, int argc) {
   value phi = argv[5];
   value dn = argv[4];
   value cn = argv[3];
   value sn = argv[2];
   value m = argv[1];
   value u = argv[0];
-  return owl_stub_sf_ellipj(u, m, sn, cn, dn, phi);
+  return stub_sf_ellipj(u, m, sn, cn, dn, phi);
 }
 
 

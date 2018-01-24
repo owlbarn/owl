@@ -7,24 +7,63 @@
 #define OWL_CORE_H
 
 #include "owl_macros.h"
-
+#include "owl_slicing.h"
+#include <stdio.h>
 
 /** Core function declaration **/
 
 
-extern int owl_ndarray_numel (struct caml_ba_array *X);
+extern int c_ndarray_numel (struct caml_ba_array *X);
 
-extern int owl_ndarray_stride_size (struct caml_ba_array *X, int d);
+extern int c_ndarray_stride_dim (struct caml_ba_array *X, int d);
 
-extern int owl_ndarray_slice_size (struct caml_ba_array *X, int d);
+extern int c_ndarray_slice_dim (struct caml_ba_array *X, int d);
 
-extern void owl_float32_matrix_transpose (float *x, float *y, int m, int n);
+extern void c_float32_matrix_transpose (float *x, float *y, int m, int n);
 
-extern void owl_float64_matrix_transpose (double *x, double *y, int m, int n);
+extern void c_float64_matrix_transpose (double *x, double *y, int m, int n);
 
-extern void owl_complex32_matrix_transpose (_Complex float *x, _Complex float *y, int m, int n);
+extern void c_complex32_matrix_transpose (_Complex float *x, _Complex float *y, int m, int n);
 
-extern void owl_complex64_matrix_transpose (_Complex double *x, _Complex double *y, int m, int n);
+extern void c_complex64_matrix_transpose (_Complex double *x, _Complex double *y, int m, int n);
+
+extern void c_ndarray_stride (struct caml_ba_array *X, int *stride);
+
+extern void c_slicing_stride (struct caml_ba_array *X, int64_t *slice, int *stride);
+
+extern void c_slicing_offset (struct caml_ba_array *X, int64_t *slice, int *offset);
+
+extern void c_float32_ndarray_get_slice (struct slice_pair *sp);
+
+extern void c_float64_ndarray_get_slice (struct slice_pair *sp);
+
+extern void c_complex32_ndarray_get_slice (struct slice_pair *sp);
+
+extern void c_complex64_ndarray_get_slice (struct slice_pair *sp);
+
+extern void c_float32_ndarray_set_slice (struct slice_pair *sp);
+
+extern void c_float64_ndarray_set_slice (struct slice_pair *sp);
+
+extern void c_complex32_ndarray_set_slice (struct slice_pair *sp);
+
+extern void c_complex64_ndarray_set_slice (struct slice_pair *sp);
+
+extern void c_float32_ndarray_get_fancy (struct fancy_pair *sp);
+
+extern void c_float64_ndarray_get_fancy (struct fancy_pair *sp);
+
+extern void c_complex32_ndarray_get_fancy (struct fancy_pair *sp);
+
+extern void c_complex64_ndarray_get_fancy (struct fancy_pair *sp);
+
+extern void c_float32_ndarray_set_fancy (struct fancy_pair *sp);
+
+extern void c_float64_ndarray_set_fancy (struct fancy_pair *sp);
+
+extern void c_complex32_ndarray_set_fancy (struct fancy_pair *sp);
+
+extern void c_complex64_ndarray_set_fancy (struct fancy_pair *sp);
 
 
 // compare two numbers (real & complex & int)
@@ -92,7 +131,7 @@ OWL_INLINE void owl_float32_copy (int N, float* x, int ofsx, int incx, float* y,
 }
 
 // copy x to y with given offset and stride
-OWL_INLINE void owl_complex32_copy (int N, _Complex float* x, int ofsx, int incx, _Complex float* y, int ofsy, int incy) {
+OWL_INLINE void owl_float64_copy (int N, double* x, int ofsx, int incx, double* y, int ofsy, int incy) {
   for (int i = 0; i < N; i++) {
     *(y + ofsy) = *(x + ofsx);
     ofsx += incx;
@@ -101,7 +140,7 @@ OWL_INLINE void owl_complex32_copy (int N, _Complex float* x, int ofsx, int incx
 }
 
 // copy x to y with given offset and stride
-OWL_INLINE void owl_float64_copy (int N, double* x, int ofsx, int incx, double* y, int ofsy, int incy) {
+OWL_INLINE void owl_complex32_copy (int N, _Complex float* x, int ofsx, int incx, _Complex float* y, int ofsy, int incy) {
   for (int i = 0; i < N; i++) {
     *(y + ofsy) = *(x + ofsx);
     ofsx += incx;

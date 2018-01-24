@@ -26,8 +26,11 @@
     ; Core
     owl_core_utils
     owl_core_swap_impl
-    owl_core_swap_type
     owl_core_swap_stub
+    owl_slicing_basic_impl
+    owl_slicing_basic_stub
+    owl_slicing_fancy_impl
+    owl_slicing_fancy_stub
     owl_common_c
     owl_distribution_common_c
     owl_dense_common_c
