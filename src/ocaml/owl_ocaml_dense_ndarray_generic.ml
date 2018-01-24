@@ -4,7 +4,7 @@
  *)
 
 open Bigarray
-open Owl
+open Owl_types_my
 
 let pi_val = 3.141592653589793238462643383279502884197169399375105820974944592307816
 
@@ -137,7 +137,7 @@ module Ndarray32float:NdarraySig = struct
       | Some a -> Some a
       | None   -> Some n
     in
-    Owl_pretty.print ?max_row ?max_col ?header ?elt_to_str_fun:fmt varr
+    (raise (Failure "print - not implemented"); ())
 
   (* TODO: this is a stub *)
   let tile varr reps =
@@ -925,4 +925,4 @@ module Ndarray32float:NdarraySig = struct
 *)
 end
 
-module MYS = Owl_algodiff_generic.Make (Owl_dense_ndarray.S)
+module MYS = Owl_algodiff_generic_mine.Make (Ndarray32float)

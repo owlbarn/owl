@@ -1,0 +1,13 @@
+(jbuild_version 1)
+
+(executable (
+  (name        gradient_descent_pure)
+  (public_name owl_experimental)
+  (package     owl_experimental)
+  (libraries  (
+    owl_ocaml
+  ))
+  (flags (:standard -safe-string))
+  (link_flags (-linkall))
+  (modes      (byte))
+))
