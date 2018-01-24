@@ -1,5 +1,7 @@
 (** Unit test for Pooling3D operations *)
+
 open Owl
+
 module N = Dense.Ndarray.S
 
 (* Functions used in tests *)
