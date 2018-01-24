@@ -4,10 +4,12 @@ open Owl
 
 module N = Dense.Ndarray.S
 
+
 (* Functions used in tests *)
 
 let tolerance_f64 = 1e-8
 let tolerance_f32 = 5e-4
+
 let close a b =
   N.(a - b |> abs |> sum') < tolerance_f32
 
@@ -38,6 +40,7 @@ let verify_value fn input_shape kernel stride pad expected =
   let output_shape = N.shape a in
   let b = N.of_array expected output_shape in
   close a b
+
 
 (* Test AvgPooling2D and MaxPooling2D forward operations *)
 
@@ -118,7 +121,9 @@ module To_test_forward = struct
   let fun11 () =
     let expected = [|7.;8.;9.;11.5;12.5;13.5|] in
     verify_value test_avgpool2d [|1;2;3;3|] [|2;2|] [|2;2|] SAME expected
+
 end
+
 
 (* Test MaxPooling2D backward operations *)
 module To_test_maxpool2d_back = struct
@@ -169,6 +174,7 @@ module To_test_maxpool2d_back = struct
     verify_value test_maxpool2d_back [|1;4;4;4|] [|2;2|] [|2;2|] SAME expected
 end
 
+
 (* Test AvgPooling2D backward operations *)
 module To_test_avgpool2d_back = struct
 
@@ -217,7 +223,9 @@ module To_test_avgpool2d_back = struct
       3.5 ; 3.75; 4.  ; 2.25; 2.5 ; 2.75; 3.  ; 2.25; 2.5 ;
       2.75; 3.  ; 3.25; 3.5 ; 3.75; 4.  ; 3.25; 3.5 ; 3.75; 4.|] in
     verify_value test_avgpool2d_back [|1;4;4;4|] [|2;2|] [|2;2|] SAME expected
+
 end
+
 
 (* tests for forward 2D pooling operations *)
 

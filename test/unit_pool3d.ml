@@ -4,6 +4,7 @@ open Owl
 
 module N = Dense.Ndarray.S
 
+
 (* Functions used in tests *)
 
 let tolerance_f64 = 1e-8
@@ -24,6 +25,7 @@ let verify_value fn input_shape kernel stride pad expected =
   let output_shape = N.shape a in
   let b = N.of_array expected output_shape in
   close a b
+
 
 (* Test AvgPooling3D and MaxPooling3D forward operations *)
 
@@ -78,9 +80,11 @@ module To_test_pool3d = struct
   let fun09 () =
     let expected = [|29.5; 32.5; 50.5; 53.5; 176.5; 179.5; 197.5; 200.5|] in
     verify_value test_avgpool3d [|1;7;7;7;1|] [|2;2;2|] [|3;3;3|] VALID expected
+
 end
 
 (* TODO: Max/Pooling3D Backward Tests *)
+
 
 (* tests for forward 3D pooling operations *)
 
@@ -113,7 +117,7 @@ let fun_forward08 () =
 
 let fun_forward09 () =
   Alcotest.(check bool) "fun_forward09" true (To_test_pool3d.fun09 ())
-  
+
 
 let test_set = [
   "fun_forward00", `Slow, fun_forward00;
