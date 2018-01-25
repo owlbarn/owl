@@ -73,13 +73,13 @@ let test nn i2w wndsz tlen x =
   let all_char = ref x in
   let nxt_char = Dense.Matrix.S.zeros 1 1 in
   for i = 0 to tlen - 1 do
-    let xt = Dense.Matrix.S.get_slice_simple [[];[i;i+wndsz-1]] !all_char in
+    let xt = Dense.Matrix.S.get_slice [[];[i;i+wndsz-1]] !all_char in
     let yt = Graph.run (Arr xt) nn |> unpack_arr in
     let _, next_i = Dense.Matrix.S.max_i yt in
     Dense.Matrix.S.set nxt_char 0 0 (float_of_int next_i.(1));
     all_char := Dense.Matrix.S.(!all_char @|| nxt_char)
   done;
-  Dense.Matrix.S.get_slice_simple [[];[wndsz;-1]] !all_char
+  Dense.Matrix.S.get_slice [[];[wndsz;-1]] !all_char
   |> Dense.Matrix.S.to_array
   |> Array.map (Hashtbl.find i2w)
   |> Array.fold_left (fun a c -> a ^ (String.make 1 c)) ""

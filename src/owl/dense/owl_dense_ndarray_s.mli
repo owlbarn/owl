@@ -75,13 +75,13 @@ val get_index : arr -> int array array -> elt array
 
 val set_index : arr -> int array array -> elt array -> unit
 
-val get_slice : index list -> arr -> arr
+val get_fancy : index list -> arr -> arr
 
-val set_slice : index list -> arr -> arr -> unit
+val set_fancy : index list -> arr -> arr -> unit
 
-val get_slice_simple : int list list -> arr -> arr
+val get_slice : int list list -> arr -> arr
 
-val set_slice_simple : int list list -> arr -> arr -> unit
+val set_slice : int list list -> arr -> arr -> unit
 
 val sub_left : arr -> int -> int -> arr
 

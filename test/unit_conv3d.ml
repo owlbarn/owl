@@ -4,10 +4,12 @@ open Owl
 
 module N = Dense.Ndarray.S
 
+
 (* Functions used in tests *)
 
 let tolerance_f64 = 1e-8
 let tolerance_f32 = 5e-4
+
 let close a b =
   N.(a - b |> abs |> sum') < tolerance_f32
 
@@ -41,6 +43,7 @@ let verify_value fn input_shape kernel_shape stride pad expected =
   let output_shape = N.shape a in
   let b = N.of_array expected output_shape in
   close a b
+
 
 (* Test Convolution3D forward operations *)
 
@@ -156,6 +159,7 @@ module To_test_conv3d = struct
 
 end
 
+
 (* Test Convolution3D input-backward operations *)
 
 module To_test_conv3d_back_input = struct
@@ -245,9 +249,11 @@ module To_test_conv3d_back_input = struct
 
 end
 
+
 (* Test Convolution3D kernel-backward operations *)
 
 module To_test_conv3d_back_kernel = struct
+
   (* testKernelGradientValidPaddingStrideOne *)
   let fun00 () =
     let expected = [|
@@ -326,7 +332,9 @@ module To_test_conv3d_back_kernel = struct
       0.; 58.; 0.; 59.; 0.; 60.|] in
     verify_value test_conv3d_back_kernel [|1;5;4;3;1|]
       [|5;4;3;1;2|] [|1;1;1|] VALID expected
+
 end
+
 
 (* tests for conv3d forward operation *)
 

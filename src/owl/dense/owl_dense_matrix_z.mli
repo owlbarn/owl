@@ -127,13 +127,13 @@ val get_index : mat -> int array array -> elt array
 
 val set_index : mat -> int array array -> elt array -> unit
 
-val get_slice : index list -> mat -> mat
+val get_fancy : index list -> mat -> mat
 
-val set_slice : index list -> mat -> mat -> unit
+val set_fancy : index list -> mat -> mat -> unit
 
-val get_slice_simple : int list list -> mat -> mat
+val get_slice : int list list -> mat -> mat
 
-val set_slice_simple : int list list -> mat -> mat -> unit
+val set_slice : int list list -> mat -> mat -> unit
 
 val row : mat -> int -> mat
 

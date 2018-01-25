@@ -263,29 +263,29 @@ val set_index : ('a, 'b) t -> int array array -> 'a array -> unit
   indices in that dimension.
  *)
 
-val get_slice : index list -> ('a, 'b) t -> ('a, 'b) t
-(** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
-  which is an [int array]. Please refer to the same function in the
+val get_fancy : index list -> ('a, 'b) t -> ('a, 'b) t
+(** [get_fancy s x] returns a copy of the slice in [x]. The slice is defined by
+  [a] which is an [int array]. Please refer to the same function in the
   [Owl_dense_ndarray_generic] documentation for more details.
  *)
 
-val set_slice : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** [set_slice axis x y] set the slice defined by [axis] in [x] according to
+val set_fancy : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_fancy axis x y] set the slice defined by [axis] in [x] according to
   the values in [y]. [y] must have the same shape as the one defined by [axis].
 
   About the slice definition of [axis], please refer to [slice] function.
  *)
 
-val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
-(** [get_slice_simple axis x] aims to provide a simpler version of [get_slice].
+val get_slice : int list list -> ('a, 'b) t -> ('a, 'b) t
+(** [get_slice axis x] aims to provide a simpler version of [get_fancy].
   This function assumes that every list element in the passed in [in list list]
   represents a range, i.e., [R] constructor.
 
   E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
  *)
 
-val set_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** [set_slice_simple axis x y] aims to provide a simpler version of [set_slice].
+val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_slice axis x y] aims to provide a simpler version of [set_slice].
   This function assumes that every list element in the passed in [in list list]
   represents a range, i.e., [R] constructor.
 
@@ -966,7 +966,7 @@ val minmax_i : ('a, 'b) t -> ('a * int array) * ('a * int array)
 
 val inv : ('a, 'b) t -> ('a, 'b) t
 (** [inv x] calculates the inverse of an invertible square matrix [x]
-    such that [x *@ x = I] wherein [I] is an identity matrix.  (If [x] 
+    such that [x *@ x = I] wherein [I] is an identity matrix.  (If [x]
     is singular, [inv] will return a useless result.)
  *)
 

@@ -796,15 +796,15 @@ let magic k n =
     let xd = _magic_odd m (3 * m2 + 1) in
 
     let m3 = m / 2 in
-    let xa' = concat_horizontal (get_slice [R[];R[0;m3-1]] xd) (get_slice [R[];R[m3;-1]] xa) in
-    let xd' = concat_horizontal (get_slice [R[];R[0;m3-1]] xa) (get_slice [R[];R[m3;-1]] xd) in
+    let xa' = concat_horizontal (get_slice [[];[0;m3-1]] xd) (get_slice [[];[m3;-1]] xa) in
+    let xd' = concat_horizontal (get_slice [[];[0;m3-1]] xa) (get_slice [[];[m3;-1]] xd) in
     let xb' =
       if m3 - 1 = 0 then xb
-      else concat_horizontal (get_slice [R[];R[0;m-m3]] xb) (get_slice [R[];R[1-m3;-1]] xc)
+      else concat_horizontal (get_slice [[];[0;m-m3]] xb) (get_slice [[];[1-m3;-1]] xc)
     in
     let xc' =
       if m3 - 1 = 0 then xc
-      else concat_horizontal (get_slice [R[];R[0;m-m3]] xc) (get_slice [R[];R[1-m3;-1]] xb)
+      else concat_horizontal (get_slice [[];[0;m-m3]] xc) (get_slice [[];[1-m3;-1]] xb)
     in
     set xa' m3 0  (get xa m3 0);
     set xa' m3 m3 (get xd m3 m3);

@@ -4,10 +4,12 @@ open Owl
 
 module N = Dense.Ndarray.S
 
+
 (* Functions used in tests *)
 
 let tolerance_f64 = 1e-8
 let tolerance_f32 = 5e-4
+
 let close a b =
   N.(a - b |> abs |> sum') < tolerance_f32
 
@@ -37,6 +39,7 @@ let verify_value fn input_shape kernel_shape stride pad expected =
   let output_shape = N.shape a in
   let b = N.of_array expected output_shape in
   close a b
+
 
 (* Test Convolution2D forward operations *)
 
@@ -70,7 +73,9 @@ module To_test_conv2d = struct
   let fun04 () =
     let expected = [|2271.0; 2367.0; 2463.0; 1230.0; 1305.0; 1380.0|] in
     verify_value test_conv2d [|1;2;3;3|] [|2;2;3;3|] [|2;2|] SAME expected
+
 end
+
 
 (* Test Convolution2D input-backward operations *)
 
@@ -144,7 +149,9 @@ module To_test_conv2d_back_input = struct
     let expected = [|1.; 2.; 2.; 3.; 4.; 6.|] in
     verify_value test_conv2d_back_input [|1;2;3;1|]
       [|2;2;1;1|] [|2;2|] SAME expected
+
 end
+
 
 (* Test Convolution2D kernel-backward operations *)
 
@@ -239,6 +246,7 @@ module To_test_conv2d_back_kernel = struct
       [|2;2;1;1|] [|2;2|] SAME expected
 
 end
+
 
 (* tests for conv2d forward operation *)
 

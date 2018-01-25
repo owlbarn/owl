@@ -596,10 +596,10 @@ let pad v d x =
   y
 
 
-(* get_slice function is adapted from its original implementation in owl_slicing
+(* get_fancy function is adapted from its original implementation in owl_slicing
    module, refer to Owl_slicing module for more information
  *)
-let get_slice axis x =
+let get_fancy axis x =
   let axis = Owl_slicing.sdlist_to_sdarray axis in
   (* check axis is within boundary then re-format *)
   let s0 = shape x in
@@ -668,10 +668,10 @@ let get_slice axis x =
   )
 
 
-(* set_slice function is adapted from its original implementation in owl_slicing
+(* set_fancy function is adapted from its original implementation in owl_slicing
    module, refer to Owl_slicing module for more information
  *)
-let set_slice axis x y =
+let set_fancy axis x y =
   let axis = Owl_slicing.sdlist_to_sdarray axis in
   (* check axis is within boundary then re-format *)
   let s0 = shape x in
@@ -734,20 +734,20 @@ let set_slice axis x y =
     Owl_slicing._foreach_continuous_blk axis (d1 - 1) f
   )
 
-(* simplified get_slice function which accept list of list as slice definition.
+(* simplified get_fancy function which accept list of list as slice definition.
   adapted from owl_slicing module, refer to Owl_slicing for more information.
  *)
-let get_slice_simple axis x =
+let get_slice axis x =
   let axis = List.map (fun i -> R i) axis in
-  get_slice axis x
+  get_fancy axis x
 
 
 (* simplified set_slice function which accept list of list as slice definition
   adapted from owl_slicing module, refer to Owl_slicing for more information.
 *)
-let set_slice_simple axis x y =
+let set_slice axis x y =
   let axis = List.map (fun i -> R i) axis in
-  set_slice axis x y
+  set_fancy axis x y
 
 
 let swap a0 a1 x =
