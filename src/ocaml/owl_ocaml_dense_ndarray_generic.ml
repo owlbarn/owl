@@ -4,11 +4,8 @@
  *)
 
 open Bigarray
-open Owl_types_my
+open Owl_types
 
-let pi_val = 3.141592653589793238462643383279502884197169399375105820974944592307816
-
-(* TODO: add : Ndarraysig *)
 module Ndarray32float:NdarraySig = struct
 
   type arr = (float, float32_elt, c_layout) Genarray.t
@@ -117,8 +114,8 @@ module Ndarray32float:NdarraySig = struct
           case := true;
           u1 := Random.State.float rand_gen 1.;
           u2 := Random.State.float rand_gen 1.;
-          z0 := (Pervasives.sqrt ((~-. 2.) *. (Pervasives.log (!u1)))) *. (Pervasives.cos (2. *. pi_val *. (!u2)));
-          z1 := (Pervasives.sqrt ((~-. 2.) *. (Pervasives.log (!u1)))) *. (Pervasives.sin (2. *. pi_val *. (!u2)));
+          z0 := (Pervasives.sqrt ((~-. 2.) *. (Pervasives.log (!u1)))) *. (Pervasives.cos (2. *. Owl_const.pi *. (!u2)));
+          z1 := (Pervasives.sqrt ((~-. 2.) *. (Pervasives.log (!u1)))) *. (Pervasives.sin (2. *. Owl_const.pi *. (!u2)));
           mu +. sigma *. !z0
         )
       ) in
@@ -925,4 +922,4 @@ module Ndarray32float:NdarraySig = struct
 *)
 end
 
-module MYS = Owl_algodiff_generic_mine.Make (Ndarray32float)
+module MYS = Owl_algodiff_generic.Make (Ndarray32float)

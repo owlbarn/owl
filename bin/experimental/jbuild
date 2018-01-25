@@ -6,8 +6,8 @@
   (package     owl_experimental)
   (libraries  (
     owl_ocaml
+    js_of_ocaml
   ))
   (flags (:standard -safe-string))
-  (link_flags (-linkall))
   (modes      (byte))
 ))

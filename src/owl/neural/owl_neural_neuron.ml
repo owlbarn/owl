@@ -115,7 +115,7 @@ module Make
       check_shape (primal x); x
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
       Printf.sprintf "    Input : in/out:[*,%s]\n" in_str
 
     let to_name () = "input"
@@ -193,7 +193,7 @@ module Make
       | None        -> Printf.sprintf "%s" "none"
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
       let act_str = activation_to_string l.activation in
       Printf.sprintf "    Activation : %s in/out:[*,%s]\n" act_str in_str ^
       ""
@@ -914,8 +914,8 @@ module Make
     let to_string l =
       let ws = Arr.shape l.w in
       let bn = Arr.shape l.b in
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Conv1D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
       Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2) + bn.(0)) ^
@@ -1005,8 +1005,8 @@ module Make
     let to_string l =
       let ws = Arr.shape l.w in
       let bn = Arr.shape l.b in
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Conv2D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
       Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3) + bn.(0)) ^
@@ -1099,8 +1099,8 @@ module Make
     let to_string l =
       let ws = Arr.shape l.w in
       let bn = Arr.shape l.b in
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Conv3D : tensor in:[*;%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    init   : %s\n" (Init.to_string l.init_typ) ^
       Printf.sprintf "    params : %i\n" (ws.(0)*ws.(1)*ws.(2)*ws.(3)*ws.(4) + bn.(0)) ^
@@ -1182,7 +1182,7 @@ module Make
       let wm = Array.fold_left (fun a b -> a * b) 1 l.in_shape in
       let wn = l.out_shape.(0) in
       let bn = l.out_shape.(0) in
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
       Printf.sprintf "    FullyConnected : tensor in:[*,%s] matrix out:(*,%i)\n" in_str l.out_shape.(0) ^
       Printf.sprintf "    init           : %s\n" (Init.to_string l.init_typ) ^
       Printf.sprintf "    params         : %i\n" (wm * wn + bn) ^
@@ -1605,8 +1605,8 @@ module Make
     let run x l = l.lambda x
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Lambda       : in:[*,%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    customised f : t -> t\n" ^
       ""
@@ -1643,8 +1643,8 @@ module Make
       Maths.(a * b)
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Dropout : in:[*,%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    rate    : %g\n" l.rate
 
@@ -1685,8 +1685,8 @@ module Make
       Maths.reshape x out_shape
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Reshape : in:[*,%s] out:[*,%s]\n" in_str out_str
 
     let to_name () = "reshape"
@@ -1717,7 +1717,7 @@ module Make
     let run x l = Maths.reshape x [|(shape x).(0); l.out_shape.(0)|]
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
       Printf.sprintf "    Flatten : in:[*,%s] out:[*,%i]\n" in_str l.out_shape.(0)
 
     let to_name () = "flatten"
@@ -1756,8 +1756,8 @@ module Make
       !acc
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Add : in:[*,%s] out:[*,%s]\n" in_str out_str
 
     let to_name () = "add"
@@ -1796,8 +1796,8 @@ module Make
       !acc
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Multiply : in:[*,%s] out:[*,%s]\n" in_str out_str
 
     let to_name () = "mul"
@@ -1873,8 +1873,8 @@ module Make
       !acc
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Max : in:[*,%s] out:[*,%s]\n" in_str out_str
 
     let to_name () = "max"
@@ -1913,8 +1913,8 @@ module Make
       Maths.(!acc / F (float_of_int n))
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Average : in:[*,%s] out:[*,%s]\n" in_str out_str
 
     let to_name () = "average"
@@ -1966,11 +1966,11 @@ module Make
       !acc
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array (fun i ->
+      let in_str = Owl_utils_pure.string_of_array (fun i ->
         if i = -1 then "*" else string_of_int i
       ) l.in_shape
       in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    Concatenate : in:[*,%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    axis : %i\n" l.axis ^
       ""
@@ -2055,10 +2055,10 @@ module Make
       Maths.(x' * l.gamma + l.beta)
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       let s = Array.(make (length l.in_shape + 1) 1) in s.(l.axis) <- l.in_shape.(l.axis - 1);
-      let s_str = Owl_utils.string_of_array string_of_int s in
+      let s_str = Owl_utils_pure.string_of_array string_of_int s in
       Printf.sprintf "    Normalisation : in:[*,%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    training      : %b\n" l.training ^
       Printf.sprintf "    axis          : %i\n" l.axis ^
@@ -2102,8 +2102,8 @@ module Make
       Maths.(x + a)
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    GaussianNoise : in:[*,%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    sigma         : %g\n" l.sigma
 
@@ -2143,8 +2143,8 @@ module Make
       Maths.(x * (a + F 1.))
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    GaussianDropout : in:[*,%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    rate            : %g\n" l.rate
 
@@ -2195,8 +2195,8 @@ module Make
       Maths.(a * x + b)
 
     let to_string l =
-      let in_str = Owl_utils.string_of_array string_of_int l.in_shape in
-      let out_str = Owl_utils.string_of_array string_of_int l.out_shape in
+      let in_str = Owl_utils_pure.string_of_array string_of_int l.in_shape in
+      let out_str = Owl_utils_pure.string_of_array string_of_int l.out_shape in
       Printf.sprintf "    AlphaDropout : in:[*,%s] out:[*,%s]\n" in_str out_str ^
       Printf.sprintf "    rate         : %g\n" l.rate
 

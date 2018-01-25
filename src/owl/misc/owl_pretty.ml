@@ -61,7 +61,7 @@ let _make_header ?(row_prefix="R") ?(col_prefix="C") row_indices col_indices x =
       let idx_s = match dim_num with
         | 1 -> ""
         | 2 -> string_of_int idx_nd.(0)
-        | _ -> Owl_utils.string_of_array ~prefix:"[" ~suffix:"]" string_of_int idx_nd
+        | _ -> Owl_utils_pure.string_of_array ~prefix:"[" ~suffix:"]" string_of_int idx_nd
       in
       Printf.sprintf "%s%s" row_prefix idx_s
     )

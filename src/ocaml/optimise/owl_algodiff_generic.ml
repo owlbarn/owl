@@ -3,45 +3,10 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types_my
+open Owl_types
 
 module S = Pervasives
 
-let string_of_array ?(prefix="") ?(suffix="") ?(sep=",") string_of_x x =
-  let s = Array.to_list x |> List.map string_of_x |> String.concat sep in
-  Printf.sprintf "%s%s%s" prefix s suffix
-
-let asinh_fun =
-  (fun x -> (Pervasives.log (x +. (Pervasives.sqrt ((x *. x) +. 1.)))))
-
-let acosh_fun =
-  (fun x -> (Pervasives.log (x +. (Pervasives.sqrt ((x *. x) -. 1.)))))
-
-let atanh_fun =
-  (fun x -> (0.5 *. (Pervasives.log ((1. +. x) /. (1. -. x)))))
-
-let sigmoid_fun = (fun x -> (1. /. (1. +. (Pervasives.log (~-. x)) ) ))
-
-let log2_fun = (fun x -> ((Pervasives.log x) /. (Pervasives.log 2.)))
-
-let round_fun = (fun x -> (Pervasives.floor (x +. 0.5)))
-
-let signum_fun =
-  (fun x ->
-     if ((compare x nan) = 0)
-     then nan
-     else (
-       if (x > 0.)
-       then 1.
-       else (
-         if x < 0.
-         then (~-. 1.)
-         else 0.
-       )
-     )
-  )
-
-let relu_fun = (fun x -> Pervasives.max 0. x)
 
 (* Functor of making AD module of different precisions *)
 
@@ -252,7 +217,7 @@ module Make
 
   let deep_info x = match primal' x with
     | F a   -> Printf.sprintf "F(%g)" a
-    | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> string_of_array string_of_int)
+    | Arr a -> Printf.sprintf "Arr(%s)" (A.shape a |> Owl_utils_pure.string_of_array string_of_int)
     | _     -> "you should not have reached here!"
 
   let type_info x = match x with
@@ -460,7 +425,7 @@ module Make
 
     and signum a =
       let ff = function
-        | F a      -> F (signum_fun a)
+        | F a      -> F Owl_maths_pure.(signum a)
         | Arr a    -> Arr A.(signum a)
         | _        -> error_uniop "signum" a
       in
@@ -493,7 +458,7 @@ module Make
 
     and round a =
       let ff = function
-        | F a      -> F (round_fun a)
+        | F a      -> F Owl_maths_pure.(round a)
         | Arr a    -> Arr A.(round a)
         | _        -> error_uniop "round" a
       in
@@ -537,12 +502,12 @@ module Make
 
     and log2 a =
       let ff = function
-        | F a      -> F (log2_fun a)
+        | F a      -> F Owl_maths_pure.(log2 a)
         | Arr a    -> Arr A.(log2 a)
         | _        -> error_uniop "log2" a
       in
       let fd a = log2 a in
-      let df cp ap at = at / (ap * (F Owl_const_my.log2e)) in
+      let df cp ap at = at / (ap * (F Owl_const.log2e)) in
       let r a = Log2_D a in
       op_d_d a ff fd df r
 
@@ -553,7 +518,7 @@ module Make
         | _        -> error_uniop "log10" a
       in
       let fd a = log10 a in
-      let df cp ap at = at / (ap * (F Owl_const_my.log10e)) in
+      let df cp ap at = at / (ap * (F Owl_const.log10e)) in
       let r a = Log10_D a in
       op_d_d a ff fd df r
 
@@ -669,7 +634,7 @@ module Make
 
     and asinh a =
       let ff = function
-        | F a      -> F (asinh_fun a)
+        | F a      -> F Owl_maths_pure.(asinh a)
         | Arr a    -> Arr A.(asinh a)
         | _        -> error_uniop "asinh" a
       in
@@ -680,7 +645,7 @@ module Make
 
     and acosh a =
       let ff = function
-        | F a      -> F (acosh_fun a)
+        | F a      -> F Owl_maths_pure.(acosh a)
         | Arr a    -> Arr A.(acosh a)
         | _        -> error_uniop "acosh" a
       in
@@ -691,7 +656,7 @@ module Make
 
     and atanh a =
       let ff = function
-        | F a      -> F (atanh_fun a)
+        | F a      -> F Owl_maths_pure.(atanh a)
         | Arr a    -> Arr A.(atanh a)
         | _        -> error_uniop "atanh" a
       in
@@ -843,7 +808,7 @@ module Make
 
     and sigmoid a =
       let ff = function
-        | F a      -> F (sigmoid_fun a)
+        | F a      -> F Owl_maths_pure.(sigmoid a)
         | Arr a    -> Arr A.(sigmoid a)
         | _        -> error_uniop "sigmoid" a
       in
@@ -854,7 +819,7 @@ module Make
 
     and relu a =
       let ff = function
-        | F a      -> F (relu_fun a)
+        | F a      -> F Owl_maths_pure.(relu a)
         | Arr a    -> Arr A.(relu a)
         | _        -> error_uniop "relu" a
       in
@@ -1314,8 +1279,8 @@ module Make
               | Sqr_D a                  -> push (((!aa * (primal a) * (F 2.)), a) :: t)
               | Sqrt_D a                 -> push (((!aa / ((F 2.) * ap)), a) :: t)
               | Log_D a                  -> push (((!aa / (primal a)), a) :: t)
-              | Log2_D a                 -> push (((!aa / ((primal a) * (F Owl_const_my.log2e))), a) :: t)
-              | Log10_D a                -> push (((!aa / ((primal a) * (F Owl_const_my.log10e))), a) :: t)
+              | Log2_D a                 -> push (((!aa / ((primal a) * (F Owl_const.log2e))), a) :: t)
+              | Log10_D a                -> push (((!aa / ((primal a) * (F Owl_const.log10e))), a) :: t)
               | Exp_D a                  -> push (((!aa * ap), a) :: t)
               | Sin_D a                  -> push (((!aa * cos (primal a)), a) :: t)
               | Cos_D a                  -> push (((!aa * (neg (sin (primal a)))), a) :: t)

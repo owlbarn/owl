@@ -175,6 +175,7 @@
     ctypes
     ctypes.stubs
     eigen
+    owl_ocaml
     plplot
   ))
 ))
