@@ -380,48 +380,36 @@ val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -
 (** {6 Iterate array elements} *)
 
 val iteri :(int -> 'a -> unit) -> ('a, 'b) t -> unit
-(** [iteri ~axis f x] applies function [f] to each element in a slice defined by
-  [~axis]. If [~axis] is not passed in, then [iteri] simply iterates all the
-  elements in [x].
+(** [iteri f x] applies function [f] to each element in [x]. Note that 1d index
+  is passed to function [f], you need to convert it to nd-index by yourself.
  *)
 
 val iter : ('a -> unit) -> ('a, 'b) t -> unit
-(** [iter ~axis f x] is similar to [iteri ~axis f x], excpet the index [i] of
-  an element is not passed in [f]. Note that [iter] is much faster than [iteri].
- *)
+(** [iter f x] is similar to [iteri f x], excpet the index is not passed to [f]. *)
 
 val mapi : (int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** [mapi ~axis f x] makes a copy of [x], then applies [f] to each element in a
-  slice defined by [~axis].  If [~axis] is not passed in, then [mapi] simply
-  iterates all the elements in [x].
- *)
+(** [mapi f x] makes a copy of [x], then applies [f] to each element in [x]. *)
 
 val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** [map ~axis f x] is similar to [mapi ~axis f x] except the index of the
-  current element is not passed to the function [f]. Note that [map] is much
-  faster than [mapi].
- *)
+(** [map f x] is similar to [mapi f x] except the index is not passed. *)
 
 val map2i : (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [map2i ~axis f x y] applies [f] to two elements of the same position in a
-  slice defined by [~axis] in both [x] and [y]. If [~axis] is not passed in,
-  then [map2i] simply iterates all the elements in [x] and [y]. The two matrices
-  mush have the same shape.
+(** [map2i f x y] applies [f] to two elements of the same position in both [x]
+  and [y]. Note that 1d index is passed to funciton [f].
  *)
 
 val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [map2 ~axis f x y] is similar to [map2i ~axis f x y] except the index of the
-  index of the current element is not passed to the function [f].
- *)
+(** [map2 f x y] is similar to [map2i f x y] except the index is not passed. *)
 
 val filteri : (int -> 'a -> bool) -> ('a, 'b) t -> int array
-(** [filteri ~axis f x] uses [f] to filter out certain elements in a slice
-  defined by [~axis]. An element will be included if [f] returns [true]. The
-  returned result is a list of indices of the selected elements.
+(** [filteri f x] uses [f] to filter out certain elements in [x]. An element
+  will be included if [f] returns [true]. The returned result is an array of
+  1-dimensional indices of the selected elements. To obtain the n-dimensional
+  indices, you need to convert it manulally with Owl's helper function.
  *)
 
 val filter : ('a -> bool) -> ('a, 'b) t -> int array
-(** Similar to [filteri], but the indices of the elements are not passed to [f]. *)
+(** Similar to [filteri], but the indices are not passed to [f]. *)
 
 val foldi : ?axis:int -> (int -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
 (** [foldi ~axis f a x] folds (or reduces) the elements in [x] from left along

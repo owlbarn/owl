@@ -970,7 +970,6 @@ let map f x =
 let map2i f x y =
   assert (same_shape x y);
   let z = copy x in
-  let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   let z' = flatten z |> array1_of_genarray in
   for i = 0 to (Array1.dim z') - 1 do
@@ -984,7 +983,6 @@ let map2i f x y =
 let map2 f x y =
   assert (same_shape x y);
   let z = copy x in
-  let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
   let z' = flatten z |> array1_of_genarray in
   for i = 0 to (Array1.dim z') - 1 do
