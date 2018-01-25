@@ -111,14 +111,12 @@ let tile x reps =
   let a = num_dims x in
   let b = Array.length reps in
   let x, reps = match a < b with
-    | true -> (
-      let d = Owl_utils.Array.pad `Left (shape x) 1 (b - a) in
-      (reshape x d), reps
-      )
-    | false -> (
-      let r = Owl_utils.Array.pad `Left reps 1 (a - b) in
-      x, r
-      )
+    | true ->
+        let d = Owl_utils.Array.pad `Left (shape x) 1 (b - a) in
+        (reshape x d), reps
+    | false ->
+        let r = Owl_utils.Array.pad `Left reps 1 (a - b) in
+        x, r
   in
   (* calculate the smallest continuous slice dx *)
   let i = ref (Array.length reps - 1) in
@@ -2533,8 +2531,8 @@ let foldi ?axis f a x =
 let fold ?axis f a x = foldi ?axis (fun _ b c ->  f b c) a x
 
 
-(* generic cumulate function *)
-let cumulate ?axis f x =
+(* generic scan function *)
+let scani ?axis f x =
   let d = num_dims x in
   let a = match axis with
     | Some a -> a
@@ -2550,18 +2548,25 @@ let cumulate ?axis f x =
   let incy = _slicez.(a) in
   let start_x = ref 0 in
   let start_y = ref _stride.(a) in
+  let k = ref 0 in
 
   let y = copy x in
   let y' = flatten y |> array1_of_genarray in
 
   for i = 0 to m - 1 do
     for j = 0 to n - 1 do
-      y'.{!start_y + j} <- f y'.{!start_x + j} y'.{!start_y + j}
+      let b = Array1.unsafe_get y' (!start_x + j) in
+      let c = Array1.unsafe_get y' (!start_y + j) in
+      Array1.unsafe_set y' (!start_y + j) (f !k b c);
+      k := !k + 1
     done;
     start_x := !start_x + incx;
     start_y := !start_y + incy;
   done;
   y
+
+
+let scan ?axis f x = scani (fun _ a b -> f a b) x
 
 
 let sum ?axis x =

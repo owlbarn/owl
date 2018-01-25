@@ -476,6 +476,17 @@ val foldi : ?axis:int -> (int -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b)
 val fold : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Similar to [foldi], except that the index of an element is not passed to [f]. *)
 
+val scani : ?axis:int -> (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** [scan ~axis f x] scans the [x] along the specified [axis] using passed in
+  function [f]. [f acc a b] returns an updated [acc] which will be passed in
+  the next call to [f i acc a]. This function can be used to implement
+  accumulative operations such as [sum] and [prod] functions. Note that the [i]
+  is 1d index of [a] in [x].
+ *)
+
+val scan : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to [scani], except that the index of an element is not passed to [f]. *)
+
 val filteri : (int -> int -> 'a -> bool) -> ('a, 'b) t -> (int * int) array
 (** [filteri f x] uses [f : int -> int -> float -> bool] to filter out certain
   elements in [x]. An element will be included if [f] returns [true]. The

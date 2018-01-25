@@ -163,6 +163,10 @@ val foldi : ?axis:int -> (int -> elt -> elt -> elt) -> elt -> arr -> arr
 
 val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> arr -> arr
 
+val scani : ?axis:int -> (int -> elt -> elt -> elt) -> arr -> arr
+
+val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
+
 val iteri_slice : int array -> (int array array -> arr -> unit) -> arr -> unit
 
 val iter_slice : int array -> (arr -> unit) -> arr -> unit

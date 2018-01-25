@@ -197,6 +197,10 @@ val foldi : ?axis:int -> (int -> elt -> elt -> elt) -> elt -> mat -> mat
 
 val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> mat -> mat
 
+val scani : ?axis:int -> (int -> elt -> elt -> elt) -> mat -> mat
+
+val scan : ?axis:int -> (elt -> elt -> elt) -> mat -> mat
+
 val filteri : (int -> int -> elt -> bool) -> mat -> (int * int) array
 
 val filter : (elt -> bool) -> mat -> (int * int) array
