@@ -393,14 +393,6 @@ val mapi : (int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** [map f x] is similar to [mapi f x] except the index is not passed. *)
 
-val map2i : (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [map2i f x y] applies [f] to two elements of the same position in both [x]
-  and [y]. Note that 1d index is passed to funciton [f].
- *)
-
-val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [map2 f x y] is similar to [map2i f x y] except the index is not passed. *)
-
 val filteri : (int -> 'a -> bool) -> ('a, 'b) t -> int array
 (** [filteri f x] uses [f] to filter out certain elements in [x]. An element
   will be included if [f] returns [true]. The returned result is an array of
@@ -439,6 +431,14 @@ val iter2i : (int -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 
 val iter2 : ('a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 (** Similar to [iter2i], except that the index of a slice is not passed to [f]. *)
+
+val map2i : (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [map2i f x y] applies [f] to two elements of the same position in both [x]
+  and [y]. Note that 1d index is passed to funciton [f].
+ *)
+
+val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [map2 f x y] is similar to [map2i f x y] except the index is not passed. *)
 
 
 (** {6 Examine array elements or compare two arrays } *)

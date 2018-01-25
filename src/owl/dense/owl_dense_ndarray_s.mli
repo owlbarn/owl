@@ -146,10 +146,6 @@ val mapi : (int -> elt -> elt) -> arr -> arr
 
 val map : (elt -> elt) -> arr -> arr
 
-val map2i : (int -> elt -> elt -> elt) -> arr -> arr -> arr
-
-val map2 : (elt -> elt -> elt) -> arr -> arr -> arr
-
 val filteri : (int -> elt -> bool) -> arr -> int array
 
 val filter : (elt -> bool) -> arr -> int array
@@ -165,6 +161,10 @@ val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
 val iter2i : (int -> elt -> elt -> unit) -> arr -> arr -> unit
 
 val iter2 : (elt -> elt -> unit) -> arr -> arr -> unit
+
+val map2i : (int -> elt -> elt -> elt) -> arr -> arr -> arr
+
+val map2 : (elt -> elt -> elt) -> arr -> arr -> arr
 
 
 (** {6 Examine array elements or compare two arrays } *)

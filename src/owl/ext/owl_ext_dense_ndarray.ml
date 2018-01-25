@@ -172,10 +172,6 @@ module type BasicSig = sig
 
   val map : (elt -> elt) -> arr -> arr
 
-  val map2i : (int -> elt -> elt -> elt) -> arr -> arr -> arr
-
-  val map2 : (elt -> elt -> elt) -> arr -> arr -> arr
-
   val filteri : (int -> elt -> bool) -> arr -> int array
 
   val filter : (elt -> bool) -> arr -> int array
@@ -187,6 +183,10 @@ module type BasicSig = sig
   val iter2i : (int -> elt -> elt -> unit) -> arr -> arr -> unit
 
   val iter2 : (elt -> elt -> unit) -> arr -> arr -> unit
+
+  val map2i : (int -> elt -> elt -> elt) -> arr -> arr -> arr
+
+  val map2 : (elt -> elt -> elt) -> arr -> arr -> arr
 
 
   val exists : (elt -> bool) -> arr -> bool
@@ -377,10 +377,6 @@ module Make_Basic
 
   let map f x = M.map f (unpack_box x) |> pack_box
 
-  let map2i f x y = M.map2i f (unpack_box x) (unpack_box y) |> pack_box
-
-  let map2 f x y = M.map2i f (unpack_box x) (unpack_box y) |> pack_box
-
   let filteri f x = M.filteri f (unpack_box x)
 
   let filter f x = M.filter f (unpack_box x)
@@ -393,6 +389,10 @@ module Make_Basic
 
   let iter2 f x y = M.iter2 f (unpack_box x) (unpack_box y)
 
+  let map2i f x y = M.map2i f (unpack_box x) (unpack_box y) |> pack_box
+
+  let map2 f x y = M.map2i f (unpack_box x) (unpack_box y) |> pack_box
+  
 
   let exists f x = M.exists f (unpack_box x)
 
