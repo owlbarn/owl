@@ -474,7 +474,12 @@ let to_dense x =
 let of_dense x =
   let m, n = Owl_dense_matrix_generic.shape x in
   let y = zeros ~density:1. (Owl_dense_matrix_generic.kind x) m n in
-  Owl_dense_matrix_generic.iteri (fun i j z -> insert y i j z) x;
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      let z = Owl_dense_matrix_generic.get x i j in
+      insert y i j z
+    done;
+  done;
   y
 
 let sum_rows x =

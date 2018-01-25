@@ -440,7 +440,7 @@ val sort : ('a, 'b) t -> unit
 
 (** {6 Iterate elements, columns, and rows.} *)
 
-val iteri : (int -> int -> 'a -> unit) -> ('a, 'b) t -> unit
+val iteri : (int -> 'a -> unit) -> ('a, 'b) t -> unit
 (** [iteri f x] iterates all the elements in [x] and applies the user defined
   function [f : int -> int -> float -> 'a]. [f i j v] takes three parameters,
   [i] and [j] are the coordinates of current element, and [v] is its value.
@@ -451,7 +451,7 @@ val iter : ('a -> unit) -> ('a, 'b) t -> unit
   current element is not passed to the function [f : float -> 'a]
  *)
 
-val mapi : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+val mapi : (int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** [mapi f x] maps each element in [x] to a new value by applying
   [f : int -> int -> float -> float]. The first two parameters are the
   coordinates of the element, and the third parameter is the value.
@@ -462,7 +462,7 @@ val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
   current element is not passed to the function [f : float -> float]
  *)
 
-val map2i : (int -> int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+val map2i : (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
@@ -487,13 +487,13 @@ val scani : ?axis:int -> (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 val scan : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** Similar to [scani], except that the index of an element is not passed to [f]. *)
 
-val filteri : (int -> int -> 'a -> bool) -> ('a, 'b) t -> (int * int) array
+val filteri : (int -> 'a -> bool) -> ('a, 'b) t -> int array
 (** [filteri f x] uses [f : int -> int -> float -> bool] to filter out certain
   elements in [x]. An element will be included if [f] returns [true]. The
   returned result is a list of coordinates of the selected elements.
  *)
 
-val filter : ('a -> bool) -> ('a, 'b) t -> (int * int) array
+val filter : ('a -> bool) -> ('a, 'b) t -> int array
 (** Similar to [filteri], but the coordinates of the elements are not passed to
   the function [f : float -> bool].
  *)
@@ -586,7 +586,7 @@ val map_by_col : int -> (('a, 'b) t -> ('a, 'b) t) -> ('a, 'b) t -> ('a, 'b) t
   indices are not passed to [f].
  *)
 
-val mapi_at_row : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
+val mapi_at_row : (int -> 'a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
 (** [mapi_at_row f x i] creates a new matrix by applying function [f] only to
   the [i]th row in matrix [x].
  *)
@@ -596,7 +596,7 @@ val map_at_row : ('a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
   of an element is not passed to [f].
  *)
 
-val mapi_at_col : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
+val mapi_at_col : (int -> 'a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
 (** [mapi_at_col f x j] creates a new matrix by applying function [f] only to
   the [j]th column in matrix [x].
  *)

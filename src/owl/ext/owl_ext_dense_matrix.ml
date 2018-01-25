@@ -103,8 +103,6 @@ module type BasicSig = sig
 
   val sequential : ?a:elt -> ?step:elt -> int -> int -> mat
 
-  val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
-
   val uniform : ?a:elt -> ?b:elt -> int -> int -> mat
 
   val gaussian : ?mu:elt -> ?sigma:elt -> int -> int -> mat
@@ -182,15 +180,15 @@ module type BasicSig = sig
   val repeat : ?axis:int -> mat -> int -> mat
 
 
-  val iteri : (int -> int -> elt -> unit) -> mat -> unit
+  val iteri : (int -> elt -> unit) -> mat -> unit
 
   val iter : (elt -> unit) -> mat -> unit
 
-  val mapi : (int -> int -> elt -> elt) -> mat -> mat
+  val mapi : (int -> elt -> elt) -> mat -> mat
 
   val map : (elt -> elt) -> mat -> mat
 
-  val map2i : (int -> int -> elt -> elt -> elt) -> mat -> mat -> mat
+  val map2i : (int -> elt -> elt -> elt) -> mat -> mat -> mat
 
   val map2 : (elt -> elt -> elt) -> mat -> mat -> mat
 
@@ -198,9 +196,9 @@ module type BasicSig = sig
 
   val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> mat -> mat
 
-  val filteri : (int -> int -> elt -> bool) -> mat -> (int * int) array
+  val filteri : (int -> elt -> bool) -> mat -> int array
 
-  val filter : (elt -> bool) -> mat -> (int * int) array
+  val filter : (elt -> bool) -> mat -> int array
 
   val iteri_rows : (int -> mat -> unit) -> mat -> unit
 
@@ -242,11 +240,11 @@ module type BasicSig = sig
 
   val map_by_col : int -> (mat -> mat) -> mat -> mat
 
-  val mapi_at_row : (int -> int -> elt -> elt) -> mat -> int -> mat
+  val mapi_at_row : (int -> elt -> elt) -> mat -> int -> mat
 
   val map_at_row : (elt -> elt) -> mat -> int -> mat
 
-  val mapi_at_col : (int -> int -> elt -> elt) -> mat -> int -> mat
+  val mapi_at_col : (int -> elt -> elt) -> mat -> int -> mat
 
   val map_at_col : (elt -> elt) -> mat -> int -> mat
 

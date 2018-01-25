@@ -82,18 +82,18 @@ let set x i a =
 
 let iteri f x =
   match vec_typ x with
-  | Row -> M.iteri (fun _ i a -> f i a) x
-  | Col -> M.iteri (fun i _ a -> f i a) x
+  | Row -> M.iteri (fun i a -> f i a) x
+  | Col -> M.iteri (fun i a -> f i a) x
 
 let mapi f x =
   match vec_typ x with
-  | Row -> M.mapi (fun _ i a -> f i a) x
-  | Col -> M.mapi (fun i _ a -> f i a) x
+  | Row -> M.mapi (fun i a -> f i a) x
+  | Col -> M.mapi (fun i a -> f i a) x
 
 let filteri f x =
   match vec_typ x with
-  | Row -> M.filteri (fun _ i a -> f i a) x
-  | Col -> M.filteri (fun i _ a -> f i a) x
+  | Row -> M.filteri (fun i a -> f i a) x
+  | Col -> M.filteri (fun i a -> f i a) x
 
 let foldi f a x =
   match vec_typ x with
