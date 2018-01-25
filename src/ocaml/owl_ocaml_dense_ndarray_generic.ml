@@ -6,13 +6,28 @@
 open Bigarray
 open Owl_types
 
-module Ndarray32float:NdarraySig = struct
+module type GenarrayFloatEltSig = sig
+  type elt
+  val element_kind: (float, elt) kind
+end
 
-  type arr = (float, float32_elt, c_layout) Genarray.t
+module GenarrayFloat32Elt : GenarrayFloatEltSig = struct
+  type elt = float32_elt
+  let element_kind = float32
+end
+
+module GenarrayFloat64Elt : GenarrayFloatEltSig = struct
+  type elt = float64_elt
+  let element_kind = float64
+end
+
+module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
+
+  type arr = (float, ELT.elt, c_layout) Genarray.t
 
   type elt = float
 
-  let empty dims = (Genarray.create float32 c_layout dims)
+  let empty dims = (Genarray.create ELT.element_kind c_layout dims)
 
   let zeros dims = let varr = empty dims in (Genarray.fill varr 0.; varr)
 
@@ -922,4 +937,8 @@ module Ndarray32float:NdarraySig = struct
 *)
 end
 
-module MYS = Owl_algodiff_generic.Make (Ndarray32float)
+module NdarrayPureSingle = MakeNdarray(GenarrayFloat32Elt)
+module NdarrayPureDouble = MakeNdarray(GenarrayFloat64Elt)
+
+module PureS = Owl_algodiff_generic.Make (NdarrayPureSingle)
+module PureD = Owl_algodiff_generic.Make (NdarrayPureDouble)

@@ -1,6 +1,6 @@
 (* This example demonstrates how to write a gradient descent algorithm. *)
 
-open Owl_ocaml_dense_ndarray_generic.MYS
+open Owl_ocaml_dense_ndarray_generic.PureD
 
 let count = ref 0
 
