@@ -423,21 +423,15 @@ val filteri : ?axis:int option array -> (int array -> 'a -> bool) -> ('a, 'b) t 
 val filter : ?axis:int option array -> ('a -> bool) -> ('a, 'b) t -> int array array
 (** Similar to [filteri], but the indices of the elements are not passed to [f]. *)
 
-val foldi : ?axis:int option array -> (int array -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
-(** [foldi ~axis f a x] folds all the elements in a slice defined by [~axis]
-  with the function [f]. If [~axis] is not passed in, then [foldi] simply
-  folds all the elements in [x].
+val foldi : ?axis:int -> (int -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [foldi ~axis f a x] folds (or reduces) the elements in [x] from left along
+  the specified [axis] using passed in function [f]. [a] is the initial element
+  and in [f i acc b] [acc] is the accumulater and [b] is one of the elemets in
+  [x] along the same axis. Note that [i] is 1d index of [b].
  *)
 
-val fold : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
+val fold : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Similar to [foldi], except that the index of an element is not passed to [f]. *)
-
-val fold__ : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
-(** [TODO: rename and add doc] [fold ~axis f a x] folds the elements in [x] from
-  left along specified [axis] using passed in function [f]. [a] is the initial
-  element and in [f acc b] is the accumulater and [b] is one of the elemets in
-  [x] along the same axis.
- *)
 
 val cumulate : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** [TODO: rename and add doc] [accumulate ~axis f x] scans the [x] along specified

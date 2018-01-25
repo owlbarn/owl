@@ -1069,16 +1069,6 @@ let filteri ?axis f x =
 
 let filter ?axis f x = filteri ?axis (fun _ y -> f y) x
 
-let foldi ?axis f a x =
-  let c = ref a in
-  iteri ?axis (fun i y -> c := (f i !c y)) x;
-  !c
-
-let fold ?axis f a x =
-  let c = ref a in
-  iter ?axis (fun y -> c := (f !c y)) x;
-  !c
-
 let get_fancy axis x = Owl_slicing.get_fancy_list_typ axis x
 
 let set_fancy axis x y = Owl_slicing.set_fancy_list_typ axis x y
@@ -2486,7 +2476,7 @@ let sum' x = _owl_sum (kind x) (numel x) x
 let prod' x = _owl_prod (kind x) (numel x) x
 
 
-(* prepare the parameters for reduce operation, [a] is axis *)
+(* prepare the parameters for reduce/fold operation, [a] is axis *)
 let reduce_params a x =
   let d = num_dims x in
   assert (0 <= a && a < d);
@@ -2503,8 +2493,7 @@ let reduce_params a x =
 
 (* TODO: performance can be optimised by removing embedded loops *)
 (* generic fold funtion *)
-let fold__ ?axis f a x =
-  let _kind = kind x in
+let foldi ?axis f a x =
   let x' = flatten x |> array1_of_genarray in
   match axis with
   | Some axis -> (
@@ -2512,15 +2501,19 @@ let fold__ ?axis f a x =
       let start_x = ref 0 in
       let start_y = ref 0 in
       let incy = ref 0 in
+      let k = ref 0 in
 
-      let y = create _kind s a in
+      let y = create (kind x) s a in
       let y' = flatten y |> array1_of_genarray in
 
       for i = 0 to m - 1 do
         for j = 0 to n - 1 do
-          y'.{!start_y + !incy} <- f y'.{!start_y + !incy} x'.{!start_x + j};
+          let b = Array1.unsafe_get y' (!start_y + !incy) in
+          let c = Array1.unsafe_get x' (!start_x + j) in
+          Array1.unsafe_set y' (!start_y + !incy) (f !k b c);
           if !incy + 1 = o then incy := 0
           else incy := !incy + 1;
+          k := !k + 1;
         done;
         start_x := !start_x + n;
         start_y := !start_y + o;
@@ -2528,12 +2521,16 @@ let fold__ ?axis f a x =
       y
     )
   | None   -> (
-      let b = ref x'.{0} in
-      for i = 1 to (numel x) - 1 do
-        b := f !b x'.{i}
+      let b = ref a in
+      for i = 0 to (numel x) - 1 do
+        let c = Array1.unsafe_get x' i in
+        b := f i !b c
       done;
-      create _kind [|1|] !b
+      create (kind x) [|1|] !b
     )
+
+
+let fold ?axis f a x = foldi ?axis (fun _ b c ->  f b c) a x
 
 
 (* generic cumulate function *)

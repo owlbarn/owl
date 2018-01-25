@@ -482,19 +482,10 @@ let _fold_basic iter_fun f a x =
   !r
 
 
-let fold f a x = _fold_basic iter f a x
-
-
 let fold_rows f a x = _fold_basic iter_rows f a x
 
 
 let fold_cols f a x = _fold_basic iter_cols f a x
-
-
-let foldi f a x =
-  let r = ref a in
-  iteri (fun i j y -> r := f i j !r y) x;
-  !r
 
 
 let sum_cols x = sum ~axis:1 x

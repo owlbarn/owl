@@ -194,9 +194,9 @@ module type BasicSig = sig
 
   val map2 : (elt -> elt -> elt) -> mat -> mat -> mat
 
-  val foldi : (int -> int -> 'a -> elt -> 'a) -> 'a -> mat -> 'a
+  val foldi : ?axis:int -> (int -> elt -> elt -> elt) -> elt -> mat -> mat
 
-  val fold : ('a -> elt -> 'a) -> 'a -> mat -> 'a
+  val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> mat -> mat
 
   val filteri : (int -> int -> elt -> bool) -> mat -> (int * int) array
 

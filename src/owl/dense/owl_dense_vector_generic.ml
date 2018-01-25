@@ -97,8 +97,8 @@ let filteri f x =
 
 let foldi f a x =
   match vec_typ x with
-  | Row -> M.foldi (fun _ i c b -> f i c b) a x
-  | Col -> M.foldi (fun i _ c b -> f i c b) a x
+  | Row -> M.foldi (fun i c b -> f i c b) a x
+  | Col -> M.foldi (fun i c b -> f i c b) a x
 
 (* to/from other types *)
 

@@ -159,9 +159,9 @@ val filteri : ?axis:int option array -> (int array -> elt -> bool) -> arr -> int
 
 val filter : ?axis:int option array -> (elt -> bool) -> arr -> int array array
 
-val foldi : ?axis:int option array -> (int array -> 'c -> elt -> 'c) -> 'c -> arr -> 'c
+val foldi : ?axis:int -> (int -> elt -> elt -> elt) -> elt -> arr -> arr
 
-val fold : ?axis:int option array -> ('a -> elt -> 'a) -> 'a -> arr -> 'a
+val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> arr -> arr
 
 val iteri_slice : int array -> (int array array -> arr -> unit) -> arr -> unit
 

@@ -466,13 +466,15 @@ val map2i : (int -> int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, '
 
 val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-val foldi : (int -> int -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
-
-val fold : ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
-(** [fold f a x] folds all the elements in [x] with the function
-  [f : 'a -> float -> 'a]. For an [m] by [n] matrix [x], the order of folding
-  is from [(0,0)] to [(m-1,n-1)], row by row.
+val foldi : ?axis:int -> (int -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [foldi ~axis f a x] folds (or reduces) the elements in [x] from left along
+  the specified [axis] using passed in function [f]. [a] is the initial element
+  and in [f i acc b] [acc] is the accumulater and [b] is one of the elemets in
+  [x] along the same axis. Note that [i] is 1d index of [b].
  *)
+
+val fold : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to [foldi], except that the index of an element is not passed to [f]. *)
 
 val filteri : (int -> int -> 'a -> bool) -> ('a, 'b) t -> (int * int) array
 (** [filteri f x] uses [f : int -> int -> float -> bool] to filter out certain

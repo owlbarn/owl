@@ -12,6 +12,7 @@
 * Include FFTPACK to provide native support for FFT functions.
 * Minimise dependency, remove dependencies on Gsl and etc.
 * Implement slicing and indexing as native C functions.
+* Use new extended indexing operators for slicing functions.
 * Reorganise the module structure in the source tree.
 * Fix some bugs and enhance the performance of core functions.
 * Add another 200+ unit tests.
