@@ -909,99 +909,90 @@ let dropout ?(rate=0.5) x =
 
 (* advanced operations *)
 
-let rec __iteri_fix_axis d j i l h f x =
-  if j = d - 1 then (
-    for k = l.(j) to h.(j) do
-      i.(j) <- k;
-      f i (get x i);
-    done
-  )
-  else (
-    for k = l.(j) to h.(j) do
-      i.(j) <- k;
-      __iteri_fix_axis d (j + 1) i l h f x
-    done
-  )
-
-let _iteri_fix_axis axis f x =
-  let d = num_dims x in
-  let i = Array.make d 0 in
-  let l = Array.make d 0 in
-  let h = shape x in
-  Array.iteri (fun j a ->
-    match a with
-    | Some b -> (l.(j) <- b; h.(j) <- b)
-    | None   -> (h.(j) <- h.(j) - 1)
-  ) axis;
-  __iteri_fix_axis d 0 i l h f x
-
-let iteri ?axis f x =
-  match axis with
-  | Some a -> _iteri_fix_axis a f x
-  | None   -> _iteri_fix_axis (Array.make (num_dims x) None) f x
-
-let _iter_all_axis f x =
-  let y = flatten x |> array1_of_genarray in
-  for i = 0 to (numel x) - 1 do
-    f y.{i}
+let iteri f x =
+  let x' = flatten x |> array1_of_genarray in
+  for i = 0 to (Array1.dim x') - 1 do
+    let a = Array1.unsafe_get x' i in
+    f i a
   done
 
-let iter ?axis f x =
-  match axis with
-  | Some a -> _iteri_fix_axis a (fun _ y -> f y) x
-  | None   -> _iter_all_axis f x
+
+let iter f x =
+  let x' = flatten x |> array1_of_genarray in
+  for i = 0 to (Array1.dim x') - 1 do
+    let a = Array1.unsafe_get x' i in
+    f a
+  done
+
 
 let iter2i f x y =
-  let s = shape x in
-  let d = num_dims x in
-  let i = Array.make d 0 in
-  let k = ref 0 in
-  let n = (numel x) - 1 in
-  for j = 0 to n do
-    f i (get x i) (get y i);
-    k := d - 1;
-    i.(!k) <- i.(!k) + 1;
-    while not (i.(!k) < s.(!k)) && j <> n do
-      i.(!k) <- 0;
-      k := !k - 1;
-      i.(!k) <- i.(!k) + 1;
-    done
-  done
-
-let iter2 f x y =
+  assert (same_shape x y);
   let x' = flatten x |> array1_of_genarray in
   let y' = flatten y |> array1_of_genarray in
-  for i = 0 to (numel x) - 1 do
-    f x'.{i} y'.{i}
+  for i = 0 to (Array1.dim x') - 1 do
+    let a = Array1.unsafe_get x' i in
+    let b = Array1.unsafe_get y' i in
+    f i a b
   done
 
-let mapi ?axis f x =
+
+let iter2 f x y =
+  assert (same_shape x y);
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  for i = 0 to (Array1.dim x') - 1 do
+    let a = Array1.unsafe_get x' i in
+    let b = Array1.unsafe_get y' i in
+    f a b
+  done
+
+
+let mapi f x =
   let y = copy x in
-  iteri ?axis (fun i z -> set y i (f i z)) y; y
-
-let _map_all_axis f x =
-  let x = copy x in
-  let y = flatten x |> array1_of_genarray in
-  for i = 0 to (numel x) - 1 do
-    y.{i} <- f y.{i}
+  let y' = flatten y |> array1_of_genarray in
+  for i = 0 to (Array1.dim y') - 1 do
+    let a = Array1.unsafe_get y' i in
+    Array1.unsafe_set y' i (f i a)
   done;
-  x
+  y
 
-let map ?axis f x =
-  match axis with
-  | Some a -> mapi ?axis (fun _ y -> f y) x
-  | None   -> _map_all_axis f x
 
-let map2i ?axis f x y =
-  if same_shape x y = false then
-    failwith "error: dimension mismatch";
-  let z = empty (kind x) (shape x) in
-  iteri ?axis (fun i a ->
-    let b = get y i in
-    set z i (f i a b)
-  ) x; z
+let map f x =
+  let y = copy x in
+  let y' = flatten y |> array1_of_genarray in
+  for i = 0 to (Array1.dim y') - 1 do
+    let a = Array1.unsafe_get y' i in
+    Array1.unsafe_set y' i (f a)
+  done;
+  y
 
-let map2 ?axis f x y = map2i ?axis (fun _ a b -> f a b) x y
+
+let map2i f x y =
+  assert (same_shape x y);
+  let z = copy x in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  for i = 0 to (Array1.dim z') - 1 do
+    let a = Array1.unsafe_get z' i in
+    let b = Array1.unsafe_get y' i in
+    Array1.unsafe_set z' i (f i a b)
+  done;
+  z
+
+
+let map2 f x y =
+  assert (same_shape x y);
+  let z = copy x in
+  let x' = flatten x |> array1_of_genarray in
+  let y' = flatten y |> array1_of_genarray in
+  let z' = flatten z |> array1_of_genarray in
+  for i = 0 to (Array1.dim z') - 1 do
+    let a = Array1.unsafe_get z' i in
+    let b = Array1.unsafe_get y' i in
+    Array1.unsafe_set z' i (f a b)
+  done;
+  z
 
 
 let _check_transpose_axis axis d =
@@ -1040,8 +1031,12 @@ let transpose ?axis x =
     let s1 = Array.map (fun j -> s0.(j)) a in
     let i' = Array.make d 0 in
     let y = empty (kind x) s1 in
+    (* allocate space for nd index *)
+    let l = Array.make d 0 in
+    let s = Owl_dense_common._calc_stride s0 in
     iteri (fun i z ->
-      Array.iteri (fun k j -> i'.(k) <- i.(j)) a;
+      Owl_dense_common._index_1d_nd i l s;
+      Array.iteri (fun k j -> i'.(k) <- l.(j)) a;
       set y i' z
     ) x;
     y
@@ -1056,16 +1051,15 @@ let swap a0 a1 x =
   a.(a1) <- t;
   transpose ~axis:a x
 
-let filteri ?axis f x =
+let filteri f x =
   let s = Owl_utils.Stack.make () in
-  iteri ?axis (fun i y ->
+  iteri (fun i y ->
     if f i y = true then
-      let j = Array.copy i in
-      Owl_utils.Stack.push s j
+      Owl_utils.Stack.push s i
   ) x;
   Owl_utils.Stack.to_array s
 
-let filter ?axis f x = filteri ?axis (fun _ y -> f y) x
+let filter f x = filteri (fun _ y -> f y) x
 
 let get_fancy axis x = Owl_slicing.get_fancy_list_typ axis x
 

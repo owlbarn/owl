@@ -379,48 +379,48 @@ val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -
 
 (** {6 Iterate array elements} *)
 
-val iteri : ?axis:int option array -> (int array -> 'a -> unit) -> ('a, 'b) t -> unit
+val iteri :(int -> 'a -> unit) -> ('a, 'b) t -> unit
 (** [iteri ~axis f x] applies function [f] to each element in a slice defined by
   [~axis]. If [~axis] is not passed in, then [iteri] simply iterates all the
   elements in [x].
  *)
 
-val iter : ?axis:int option array -> ('a -> unit) -> ('a, 'b) t -> unit
+val iter : ('a -> unit) -> ('a, 'b) t -> unit
 (** [iter ~axis f x] is similar to [iteri ~axis f x], excpet the index [i] of
   an element is not passed in [f]. Note that [iter] is much faster than [iteri].
  *)
 
-val mapi : ?axis:int option array -> (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+val mapi : (int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** [mapi ~axis f x] makes a copy of [x], then applies [f] to each element in a
   slice defined by [~axis].  If [~axis] is not passed in, then [mapi] simply
   iterates all the elements in [x].
  *)
 
-val map : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** [map ~axis f x] is similar to [mapi ~axis f x] except the index of the
   current element is not passed to the function [f]. Note that [map] is much
   faster than [mapi].
  *)
 
-val map2i : ?axis:int option array -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+val map2i : (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [map2i ~axis f x y] applies [f] to two elements of the same position in a
   slice defined by [~axis] in both [x] and [y]. If [~axis] is not passed in,
   then [map2i] simply iterates all the elements in [x] and [y]. The two matrices
   mush have the same shape.
  *)
 
-val map2 : ?axis:int option array -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** [map2 ~axis f x y] is similar to [map2i ~axis f x y] except the index of the
   index of the current element is not passed to the function [f].
  *)
 
-val filteri : ?axis:int option array -> (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
+val filteri : (int -> 'a -> bool) -> ('a, 'b) t -> int array
 (** [filteri ~axis f x] uses [f] to filter out certain elements in a slice
   defined by [~axis]. An element will be included if [f] returns [true]. The
   returned result is a list of indices of the selected elements.
  *)
 
-val filter : ?axis:int option array -> ('a -> bool) -> ('a, 'b) t -> int array array
+val filter : ('a -> bool) -> ('a, 'b) t -> int array
 (** Similar to [filteri], but the indices of the elements are not passed to [f]. *)
 
 val foldi : ?axis:int -> (int -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
@@ -458,7 +458,7 @@ val iteri_slice : int array -> (int array array -> ('a, 'b) t -> unit) -> ('a, '
 val iter_slice : int array -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 (** Similar to [iteri_slice], except that the index of a slice is not passed to [f]. *)
 
-val iter2i : (int array -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
+val iter2i : (int -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 (** Similar to [iteri] but applies to two N-dimensional arrays [x] and [y]. Both
   [x] and [y] must have the same shape.
  *)

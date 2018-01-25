@@ -13,6 +13,7 @@
 * Minimise dependency, remove dependencies on Gsl and etc.
 * Implement slicing and indexing as native C functions.
 * Use new extended indexing operators for slicing functions.
+* Refine ndarray fold function and introduce scan function.
 * Reorganise the module structure in the source tree.
 * Fix some bugs and enhance the performance of core functions.
 * Add another 200+ unit tests.

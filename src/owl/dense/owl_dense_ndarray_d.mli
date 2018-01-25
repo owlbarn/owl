@@ -138,21 +138,21 @@ val mmap : Unix.file_descr -> ?pos:int64 -> bool -> int array -> arr
 
 (** {6 Iterate array elements} *)
 
-val iteri : ?axis:int option array -> (int array -> elt -> unit) -> arr -> unit
+val iteri : (int -> elt -> unit) -> arr -> unit
 
-val iter : ?axis:int option array -> (elt -> unit) -> arr -> unit
+val iter : (elt -> unit) -> arr -> unit
 
-val mapi : ?axis:int option array -> (int array -> elt -> elt) -> arr -> arr
+val mapi : (int -> elt -> elt) -> arr -> arr
 
-val map : ?axis:int option array -> (elt -> elt) -> arr -> arr
+val map : (elt -> elt) -> arr -> arr
 
-val map2i : ?axis:int option array -> (int array -> elt -> elt -> elt) -> arr -> arr -> arr
+val map2i : (int -> elt -> elt -> elt) -> arr -> arr -> arr
 
-val map2 : ?axis:int option array -> (elt -> elt -> elt) -> arr -> arr -> arr
+val map2 : (elt -> elt -> elt) -> arr -> arr -> arr
 
-val filteri : ?axis:int option array -> (int array -> elt -> bool) -> arr -> int array array
+val filteri : (int -> elt -> bool) -> arr -> int array
 
-val filter : ?axis:int option array -> (elt -> bool) -> arr -> int array array
+val filter : (elt -> bool) -> arr -> int array
 
 val foldi : ?axis:int -> (int -> elt -> elt -> elt) -> elt -> arr -> arr
 
@@ -166,7 +166,7 @@ val iteri_slice : int array -> (int array array -> arr -> unit) -> arr -> unit
 
 val iter_slice : int array -> (arr -> unit) -> arr -> unit
 
-val iter2i : (int array -> elt -> elt -> unit) -> arr -> arr -> unit
+val iter2i : (int -> elt -> elt -> unit) -> arr -> arr -> unit
 
 val iter2 : (elt -> elt -> unit) -> arr -> arr -> unit
 
