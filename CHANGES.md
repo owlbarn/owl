@@ -1,6 +1,20 @@
-### 0.3.1 (in progress)
+### 0.3.2 (in progress)
 
-* Design View module for Ndarray.
+* Rewrite the documentation migrate to Sphinx system.
+
+
+### 0.3.1 (2018-01-25)
+
+* Design View module as an experimental module for Ndarray.
+* Include Mersenne Twister (SFMT) to generate random numbers.
+* Implement random number generator of various distributions.
+* Implement native functions for maths and stats module.
+* Include FFTPACK to provide native support for FFT functions.
+* Minimise dependency, remove dependencies on Gsl and etc.
+* Implement slicing and indexing as native C functions.
+* Reorganise the module structure in the source tree.
+* Fix some bugs and enhance the performance of core functions.
+* Add another 200+ unit tests.
 
 
 ### 0.3.0 (2017-12-05)
