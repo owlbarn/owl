@@ -432,20 +432,6 @@ val scani : ?axis:int -> (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 val scan : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** Similar to [scani], except that the index of an element is not passed to [f]. *)
 
-val iteri_slice : int array -> (int array array -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
-(** [iteri_slice s f x] iterates the slices along the passed in axis indices [s],
-  and applies the function [f] to each of them. The order of iterating slices is
-  based on the order of axis in [s].
-
-  E.g., for a three-dimensional ndarray of shape [[|2;2;2|]], [iteri_slice [|1;0|] f x]
-  will access the slices in the following order: [[ [0]; [0]; [] ]],
-  [[ [1]; [0]; [] ]], [[ [1]; [1]; [] ]]. Also note the slice passed in [f] is
-  a copy of the original data.
- *)
-
-val iter_slice : int array -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
-(** Similar to [iteri_slice], except that the index of a slice is not passed to [f]. *)
-
 val iter2i : (int -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 (** Similar to [iteri] but applies to two N-dimensional arrays [x] and [y]. Both
   [x] and [y] must have the same shape.

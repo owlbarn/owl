@@ -1049,6 +1049,7 @@ let swap a0 a1 x =
   a.(a1) <- t;
   transpose ~axis:a x
 
+
 let filteri f x =
   let s = Owl_utils.Stack.make () in
   iteri (fun i y ->
@@ -1057,37 +1058,21 @@ let filteri f x =
   ) x;
   Owl_utils.Stack.to_array s
 
+
 let filter f x = filteri (fun _ y -> f y) x
+
 
 let get_fancy axis x = Owl_slicing.get_fancy_list_typ axis x
 
+
 let set_fancy axis x y = Owl_slicing.set_fancy_list_typ axis x y
+
 
 let get_slice axis x = Owl_slicing.get_slice_list_typ axis x
 
+
 let set_slice axis x y = Owl_slicing.set_slice_list_typ axis x y
 
-let rec _iteri_slice index slice_def axis f x =
-  if Array.length axis = 0 then (
-    f index (Owl_slicing.get_slice_array_typ slice_def x)
-  )
-  else (
-    let s = shape x in
-    for i = 0 to s.(axis.(0)) - 1 do
-      index.(axis.(0)) <- [|i|];
-      slice_def.(axis.(0)) <- R_ [|i|];
-      _iteri_slice index slice_def (Array.sub axis 1 (Array.length axis - 1)) f x
-    done
-  )
-
-let iteri_slice axis f x =
-  if Array.length axis > num_dims x then
-    failwith "iteri_slice: invalid indices";
-  let index = Array.make (num_dims x) [||] in
-  let slice_def = Array.make (num_dims x) (R_ [||]) in
-  _iteri_slice index slice_def axis f x
-
-let iter_slice axis f x = iteri_slice axis (fun _ y -> f y) x
 
 let flip ?(axis=0) x =
   let a = Array.init (num_dims x) (fun _ -> R_ [||]) in

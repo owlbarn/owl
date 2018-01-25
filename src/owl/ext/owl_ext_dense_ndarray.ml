@@ -184,10 +184,6 @@ module type BasicSig = sig
 
   val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> arr -> arr
 
-  val iteri_slice : int array -> (int array array -> arr -> unit) -> arr -> unit
-
-  val iter_slice : int array -> (arr -> unit) -> arr -> unit
-
   val iter2i : (int -> elt -> elt -> unit) -> arr -> arr -> unit
 
   val iter2 : (elt -> elt -> unit) -> arr -> arr -> unit
@@ -392,10 +388,6 @@ module Make_Basic
   let foldi ?axis f a x = M.foldi ?axis f a (unpack_box x)
 
   let fold f a x = M.fold f a (unpack_box x)
-
-  let iteri_slice axis f x = M.iteri_slice axis f (unpack_box x)
-
-  let iter_slice axis f x = M.iter_slice axis f (unpack_box x)
 
   let iter2i f x y = M.iter2i f (unpack_box x) (unpack_box y)
 

@@ -167,10 +167,6 @@ val scani : ?axis:int -> (int -> elt -> elt -> elt) -> arr -> arr
 
 val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
 
-val iteri_slice : int array -> (int array array -> arr -> unit) -> arr -> unit
-
-val iter_slice : int array -> (arr -> unit) -> arr -> unit
-
 val iter2i : (int -> elt -> elt -> unit) -> arr -> arr -> unit
 
 val iter2 : (elt -> elt -> unit) -> arr -> arr -> unit
