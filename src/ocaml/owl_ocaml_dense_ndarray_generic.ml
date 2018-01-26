@@ -6,6 +6,96 @@
 open Bigarray
 open Owl_types
 
+(* Prepend an array with ones to the given length *)
+let _prepend_dims dims desired_len =
+  let dims_len = Array.length dims in
+  if dims_len >= desired_len
+  then dims
+  else (Array.append (Array.make (desired_len - dims_len) 1) dims)
+
+let _get_broadcasted_dims dims_a dims_b =
+  let len_c = Pervasives.max (Array.length dims_a) (Array.length dims_b) in
+  let ext_dims_a = _prepend_dims dims_a len_c in
+  let ext_dims_b = _prepend_dims dims_b len_c in
+  let dims_c = Array.make len_c 0 in
+  begin
+    for i = 0 to len_c - 1 do
+      let val_a = ext_dims_a.(i) in
+      let val_b = ext_dims_b.(i) in
+      if val_a = val_b
+      then dims_c.(i) <- val_a
+      else
+        begin
+          if val_a != 1 && val_b != 1
+          then raise (Invalid_argument "The arrays cannot be broadcast into the same shape")
+          else dims_c.(i) <- (Pervasives.max val_a val_b)
+        end
+    done;
+    (ext_dims_a, ext_dims_b, dims_c)
+  end
+
+(* Increment the index array, with respect to the dimensions array *)
+let _next_index ind dims =
+  let num_dims = Array.length ind in
+  let p = ref (num_dims - 1) in
+  let ok = ref false in
+  begin
+    while !p >= 0 && not !ok do
+      if ind.(!p) + 1 < dims.(!p) then
+        begin
+          ind.(!p) <- (ind.(!p) + 1);
+          ok := true;
+        end
+      else
+        begin
+          ind.(!p) <- 0;
+          p := !p - 1;
+        end
+    done;
+    !ok
+  end
+
+let _get_broadcasted_index ind dims =
+  let num_dims = Array.length dims in
+  let calc_fun =
+    (fun i ->
+       let max_ind = dims.(i) in
+       let ind_val = ind.(i) in
+       if ind_val < max_ind
+       then ind_val
+       else (
+         if max_ind = 1
+         then 0
+         else raise (Invalid_argument "not broadcasted correctly")
+       )
+    ) in
+  (Array.init num_dims calc_fun)
+
+let _apply_perm arr perm =
+  Array.init (Array.length arr) (fun i -> arr.(perm.(i)))
+
+let _draw_int_samples replacement range count =
+  if not replacement && count > range
+  then raise (Invalid_argument "cannot draw that many samples from the given range, without replacement")
+  else (
+    let pop_cnt = ref range in
+    let pop = Array.init !pop_cnt (fun i -> i) in
+    let rand_gen = Random.State.make_self_init() in
+    let draw_fun = (fun _ ->
+        let index = Random.State.int rand_gen !pop_cnt in
+        let sample = pop.(index) in
+        if replacement
+        then sample
+        else (
+          pop_cnt := !pop_cnt - 1;
+          pop.(index) <- pop.(!pop_cnt); (* eliminate sample by swapping with last element *)
+          sample
+        )
+      )
+    in
+    Array.init count draw_fun
+  )
+
 module type GenarrayFloatEltSig = sig
   type elt
   val element_kind: (float, elt) kind
@@ -114,7 +204,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
     (_generate_random_ndarray dims bernoulli_gen_fun)
 
   (* TODO: investigate whether using the Box-Muller transform is okay *)
-      (* TODO: use the polar, is more efficient *)
+  (* TODO: use the polar, is more efficient *)
   let gaussian ?(mu=0.) ?(sigma=1.) dims =
     let rand_gen = Random.State.make_self_init() in
     let u1 = ref 0. in
@@ -315,19 +405,62 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
       (fun x -> (0.5 *. (Pervasives.log ((1. +. x) /. (1. -. x))))) in
     (_map_fun atanh_fun varr)
 
-      (* TODO:
-  val sum : ?axis:int -> arr -> arr
-
-         val sum_slices : ?axis:int -> arr -> arr*)
-  (* TODO: this is a stub *)
+  (* TODO: can this be made more efficient? *)
   let sum ?(axis=0) varr =
-    let dims = shape varr in
-    (raise (Failure "sum - not implemented"); varr)
+    let old_dims = shape varr in
+    let old_rank = Array.length old_dims in
+    if old_rank = 0
+    then varr
+    else
+      let old_ind = Array.make old_rank 0 in
+      let new_rank = old_rank - 1 in
+      let new_dims = Array.init new_rank
+          (fun i -> if i < axis then old_dims.(i) else old_dims.(i + 1))
+      in
+      let new_varr = empty new_dims in
+      let new_ind = Array.make new_rank 0 in
+      let should_stop = ref false in
+      let sum = ref 0. in
+      begin
+        while not !should_stop do
+          for i = 0 to new_rank - 1 do (* copy the new index into the old one *)
+            old_ind.(if i < axis then i else i + 1) <- new_ind.(i)
+          done;
+          sum := 0.;
+          for i = 0 to old_dims.(axis) - 1 do
+            old_ind.(axis) <- i;
+            sum := !sum +. (Genarray.get varr old_ind)
+          done;
+          Genarray.set new_varr new_ind !sum;
+          if not (_next_index old_ind old_dims) then
+            should_stop := true
+        done;
+        new_varr
+      end
 
   (* TODO: this is a stub *)
   let sum_slices ?(axis=0) varr =
     let dims = shape varr in
-    (raise (Failure "sum_slices - not implemented"); varr)
+    let rank = Array.length dims in
+    (* reshape into 2d matrix *)
+    let num_rows = Array.fold_left ( * ) 1 (Array.sub dims 0 (axis + 1)) in
+    let num_cols = (numel varr) / num_rows in
+    let varr_mat = reshape varr [|num_rows; num_cols|] in
+    let result_vec = empty [|num_cols|] in
+    let result_varr = reshape result_vec
+        (Array.sub dims (axis + 1) (rank - axis - 1))
+    in
+    let row_sum = ref 0. in
+    begin
+      for j = 0 to num_cols - 1 do
+        row_sum := 0.;
+        for i = 0 to num_rows - 1 do
+          row_sum := !row_sum +. (Genarray.get varr_mat [|i; j|])
+        done;
+        Genarray.set result_vec [|j|] !row_sum
+      done;
+      result_varr
+    end
 
   (* -1. for negative numbers, 0 or (-0) for 0,
    1 for positive numbers, nan for nan*)
@@ -408,71 +541,6 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
   let atan2_scalar varr a =
     let atan2_scalar_fun = (fun x -> (Pervasives.atan2 x a)) in
     (_map_fun atan2_scalar_fun varr)
-
-  (* Prepend an array with ones to the given length *)
-  let _prepend_dims dims desired_len =
-    let dims_len = Array.length dims in
-    if dims_len >= desired_len
-    then dims
-    else (Array.append (Array.make (desired_len - dims_len) 1) dims)
-
-  let _get_broadcasted_dims dims_a dims_b =
-    let len_c = Pervasives.max (Array.length dims_a) (Array.length dims_b) in
-    let ext_dims_a = _prepend_dims dims_a len_c in
-    let ext_dims_b = _prepend_dims dims_b len_c in
-    let dims_c = Array.make len_c 0 in
-    begin
-      for i = 0 to len_c - 1 do
-        let val_a = ext_dims_a.(i) in
-        let val_b = ext_dims_b.(i) in
-        if val_a = val_b
-        then dims_c.(i) <- val_a
-        else
-          begin
-            if val_a != 1 && val_b != 1
-            then raise (Invalid_argument "The arrays cannot be broadcast into the same shape")
-            else dims_c.(i) <- (Pervasives.max val_a val_b)
-          end
-      done;
-      (ext_dims_a, ext_dims_b, dims_c)
-    end
-
-  (* Increment the index array, with respect to the dimensions array *)
-  let _next_index ind dims =
-    let num_dims = Array.length ind in
-    let p = ref (num_dims - 1) in
-    let ok = ref false in
-    begin
-      while !p >= 0 && not !ok do
-        if ind.(!p) + 1 < dims.(!p) then
-          begin
-            ind.(!p) <- (ind.(!p) + 1);
-            ok := true;
-          end
-        else
-          begin
-            ind.(!p) <- 0;
-            p := !p - 1;
-          end
-      done;
-      !ok
-    end
-
-  let _get_broadcasted_index ind dims =
-    let num_dims = Array.length dims in
-    let calc_fun =
-      (fun i ->
-         let max_ind = dims.(i) in
-         let ind_val = ind.(i) in
-         if ind_val < max_ind
-         then ind_val
-         else (
-           if max_ind = 1
-           then 0
-           else raise (Invalid_argument "not broadcasted correctly")
-         )
-      ) in
-    (Array.init num_dims calc_fun)
 
   let _broadcasted_op varr_a varr_b op_fun =
     let (dims_a, dims_b, dims_c) =
@@ -867,9 +935,6 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
       varr
     end
 
-  let _apply_perm arr perm =
-    Array.init (Array.length arr) (fun i -> arr.(perm.(i)))
-
   let transpose ?axis varr =
     let dims = shape varr in
     let rank = Array.length dims in
@@ -890,28 +955,6 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
       done;
       new_varr
     end
-
-  let _draw_int_samples replacement range count =
-    if not replacement && count > range
-    then raise (Invalid_argument "cannot draw that many samples from the given range, without replacement")
-    else (
-      let pop_cnt = ref range in
-      let pop = Array.init !pop_cnt (fun i -> i) in
-      let rand_gen = Random.State.make_self_init() in
-      let draw_fun = (fun _ ->
-          let index = Random.State.int rand_gen !pop_cnt in
-          let sample = pop.(index) in
-          if replacement
-          then sample
-          else (
-            pop_cnt := !pop_cnt - 1;
-            pop.(index) <- pop.(!pop_cnt); (* eliminate sample by swapping with last element *)
-            sample
-          )
-        )
-      in
-      Array.init count draw_fun
-    )
 
   let draw_rows ?(replacement=true) varr count =
     let dims = shape varr in
