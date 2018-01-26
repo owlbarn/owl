@@ -78,18 +78,7 @@ let init_nd k d f =
   done;
   x
 
-(* FIXME: optimise, no need to iterate all dimension *)
-let same_shape x y =
-  if (num_dims x) <> (num_dims y) then false
-  else (
-    let s0 = shape x in
-    let s1 = shape y in
-    let b = ref true in
-    Array.iteri (fun i d ->
-      if s0.(i) <> s1.(i) then b := false
-    ) s0;
-    !b
-  )
+let same_shape x y = (shape x) = (shape y)
 
 let copy x =
   let y = empty (kind x) (shape x) in

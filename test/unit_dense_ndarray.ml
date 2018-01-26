@@ -157,6 +157,31 @@ module To_test = struct
     M.get y [|0;1|] = 1. &&
     M.get y [|0;2|] = 0.
 
+  let same_shape_1 () =
+    let x = M.empty Float64 [|1;2;3|] in
+    let y = M.empty Float64 [|1;2;3|] in
+    M.same_shape x y = true
+
+  let same_shape_2 () =
+    let x = M.empty Float64 [|1;2;3|] in
+    let y = M.empty Float64 [|1;2;4|] in
+    M.same_shape x y = false
+
+  let same_shape_3 () =
+    let x = M.empty Float64 [|1;2;3|] in
+    let y = M.empty Float64 [|1;2;3;4|] in
+    M.same_shape x y = false
+
+  let same_shape_4 () =
+    let x = M.empty Float64 [|1;2;3|] in
+    let y = M.empty Float64 [|3;2;1|] in
+    M.same_shape x y = false
+
+  let same_shape_5 () =
+    let x = M.empty Float64 [|1|] in
+    let y = M.empty Float64 [|1|] in
+    M.same_shape x y = true
+
 end
 
 (* the tests *)
@@ -284,6 +309,21 @@ let reverse () =
 let rotate () =
   Alcotest.(check bool) "rotate" true (To_test.rotate ())
 
+let same_shape_1 () =
+  Alcotest.(check bool) "same_shape_1" true (To_test.same_shape_1 ())
+
+let same_shape_2 () =
+  Alcotest.(check bool) "same_shape_2" true (To_test.same_shape_2 ())
+
+let same_shape_3 () =
+  Alcotest.(check bool) "same_shape_3" true (To_test.same_shape_3 ())
+
+let same_shape_4 () =
+  Alcotest.(check bool) "same_shape_4" true (To_test.same_shape_4 ())
+
+let same_shape_5 () =
+  Alcotest.(check bool) "same_shape_5" true (To_test.same_shape_5 ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -326,4 +366,9 @@ let test_set = [
   "broadcast_add", `Slow, broadcast_add;
   "reverse", `Slow, reverse;
   "rotate", `Slow, rotate;
+  "same_shape_1", `Slow, same_shape_1;
+  "same_shape_2", `Slow, same_shape_2;
+  "same_shape_3", `Slow, same_shape_3;
+  "same_shape_4", `Slow, same_shape_4;
+  "same_shape_5", `Slow, same_shape_5;
 ]
