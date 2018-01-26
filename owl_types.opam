@@ -16,8 +16,6 @@ build: [
 build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 
 depends: [
-  "owl"
-  "ocaml-compiler-libs"
   "jbuilder" {build}
 ]
 available: [ ocaml-version >= "4.06.0" ]

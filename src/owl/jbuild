@@ -173,6 +173,8 @@
   ))
   (flags (:standard -safe-string))
   (libraries (
+    owl_const
+    owl_types
     ctypes
     ctypes.stubs
     eigen
