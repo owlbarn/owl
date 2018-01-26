@@ -7,7 +7,7 @@ open Owl_types
 
 
 module Make
-  (A : NdarraySig)
+  (A : Ndarray_Basic)
   = struct
 
   include Owl_optimise_generic.Make (A)

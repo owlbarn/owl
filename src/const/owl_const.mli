@@ -57,6 +57,17 @@ val pi_2 : float     (* pi/2 *)
 val pi_4 : float     (* pi/4 *)
 
 
+(** {6 Functions that return constants using Bigarray kind} *)
+
+val zero : ('a, 'b) Bigarray.kind -> 'a
+
+val one : ('a, 'b) Bigarray.kind -> 'a
+
+val pos_inf : ('a, 'b) Bigarray.kind -> 'a
+
+val neg_inf : ('a, 'b) Bigarray.kind -> 'a
+
+
 (** {6 Unit prefixes} *)
 
 module Prefix : sig

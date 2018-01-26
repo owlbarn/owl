@@ -11,7 +11,7 @@ module S = Pervasives
 (* Functor of making AD module of different precisions *)
 
 module Make
-  (A : NdarraySig)
+  (A : Ndarray_Basic)
   = struct
 
   (* type definitions *)

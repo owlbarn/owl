@@ -10,7 +10,7 @@ open Owl_graph
 
 (* Functor of making Lazy module of different number types *)
 
-module Make (A : InpureSig) = struct
+module Make (A : Ndarray_Mutable) = struct
 
   (* type definitions *)
 

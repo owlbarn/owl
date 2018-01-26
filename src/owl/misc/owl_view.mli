@@ -16,7 +16,7 @@ open Owl_types
 
 
 module Make
-  (A : InpureSig)
+  (A : Ndarray_Basic)
   : sig
 
   type t

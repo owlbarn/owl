@@ -44,7 +44,7 @@ let density x = (float_of_int (nnz x)) /. (float_of_int (numel x))
 let kind x = x.k
 
 let insert x i j a =
-  if a <> Owl_types._zero x.k then
+  if a <> Owl_const.zero x.k then
   _eigen_insert x.d i j a
 
 let set x i j a = _eigen_set x.d i j a
@@ -428,7 +428,7 @@ let scalar_div a x = div_scalar x a |> reci
 let permutation_matrix k d =
   let l = Array.init d (fun x -> x) |> Owl_stats.shuffle in
   let y = zeros k d d in
-  let _a1 = Owl_types._one k in
+  let _a1 = Owl_const.one k in
   Array.iteri (fun i j -> insert y i j _a1) l;
   y
 
@@ -440,7 +440,7 @@ let draw_rows ?(replacement=true) x c =
     | false -> Owl_stats.choose a c
   in
   let y = zeros (kind x) c m in
-  let _a1 = Owl_types._one (kind x) in
+  let _a1 = Owl_const.one (kind x) in
   let _ = Array.iteri (fun i j -> insert y i j _a1) l in
   dot y x, l
 
@@ -452,7 +452,7 @@ let draw_cols ?(replacement=true) x c =
     | false -> Owl_stats.choose a c
   in
   let y = zeros (kind x) n c in
-  let _a1 = Owl_types._one (kind x) in
+  let _a1 = Owl_const.one (kind x) in
   let _ = Array.iteri (fun j i -> insert y i j _a1) l in
   dot x y, l
 
@@ -493,14 +493,14 @@ let sum_cols x =
 let mean_rows x =
   let m, n = shape x in
   let k = kind x in
-  let a = (Owl_dense_common._mean_elt k) (Owl_types._one k) m in
+  let a = (Owl_dense_common._mean_elt k) (Owl_const.one k) m in
   let y = Owl_dense_matrix_generic.create k 1 m a |> of_dense in
   dot y x
 
 let mean_cols x =
   let m, n = shape x in
   let k = kind x in
-  let a = (Owl_dense_common._mean_elt k) (Owl_types._one k) n in
+  let a = (Owl_dense_common._mean_elt k) (Owl_const.one k) n in
   let y = Owl_dense_matrix_generic.create k n 1 a |> of_dense in
   dot x y
 
@@ -519,7 +519,7 @@ let row_num_nz x = nnz_rows x |> Array.length
 let col_num_nz x = nnz_cols x |> Array.length
 
 let to_array x =
-  let y = Array.make (nnz x) ([||], Owl_types._zero x.k) in
+  let y = Array.make (nnz x) ([||], Owl_const.zero x.k) in
   let k = ref 0 in
   iteri_nz (fun i j v ->
     y.(!k) <- ([|i;j|], v);
@@ -536,7 +536,7 @@ let ones k m n = Owl_dense_matrix_generic.ones k m n |> of_dense
 
 let sequential k m n =
   let x = Owl_dense_matrix_generic.sequential k m n |> of_dense in
-  _eigen_prune x.d (Owl_types._zero x.k) 0.;
+  _eigen_prune x.d (Owl_const.zero x.k) 0.;
   x
 
 let fill x a =
@@ -559,7 +559,7 @@ let _random_basic d k f m n =
   x
 
 let binary ?(density=0.15) k m n =
-  let _a1 = Owl_types._one k in
+  let _a1 = Owl_const.one k in
   _random_basic density k (fun () -> _a1) m n
 
 let uniform ?(density=0.15) ?(scale=1.) k m n =

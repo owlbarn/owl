@@ -11,7 +11,7 @@ module S = Pervasives
 (* Functor of making a View module of given Ndarray module *)
 
 module Make
-  (A : NdarraySig)
+  (A : Ndarray_Basic)
   = struct
 
   type t = {

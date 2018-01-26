@@ -46,7 +46,7 @@ let sequential ?(typ=Row) ?a ?step k m = match typ with
   | Col -> M.sequential ?a ?step k m 1
 
 let unit_basis ?(typ=Row) k m i =
-  let a1 = Owl_types._one k in
+  let a1 = Owl_const.one k in
   match typ with
   | Row -> let v = M.zeros k 1 m in M.set v 0 i a1; v
   | Col -> let v = M.zeros k m 1 in M.set v 0 i a1; v

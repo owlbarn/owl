@@ -39,7 +39,7 @@ let prune x r =
   ) x.d
 
 let nnz x =
-  let _ = prune x (Owl_types._zero x.k) in
+  let _ = prune x (Owl_const.zero x.k) in
   Hashtbl.((stats x.d).num_bindings)
 
 let density x = (float_of_int (nnz x)) /. (float_of_int (numel x))
@@ -52,7 +52,7 @@ let _check_boundary i j m n =
 
 let set x i j a =
   _check_boundary i j x.m x.n;
-  let _a0 = Owl_types._zero x.k in
+  let _a0 = Owl_const.zero x.k in
   match Hashtbl.mem x.d (i,j) with
   | true  -> (
     if a <> _a0 then Hashtbl.replace x.d (i,j) a
@@ -66,7 +66,7 @@ let get x i j =
   _check_boundary i j x.m x.n;
   match Hashtbl.mem x.d (i,j) with
   | true  -> Hashtbl.find x.d (i,j)
-  | false -> Owl_types._zero (x.k)
+  | false -> Owl_const.zero (x.k)
 
 let reset x = Hashtbl.reset x.d
 

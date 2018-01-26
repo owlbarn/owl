@@ -6,7 +6,7 @@
 open Owl_types
 
 
-module Make (A : StatsSig) = struct
+module Make (A : Stats_Dist) = struct
 
   module D = Owl_distribution.Make (A)
 
