@@ -1,0 +1,8 @@
+(jbuild_version 1)
+
+(library (
+  (name owl_log)
+  (public_name owl_log)
+  (wrapped false)
+  (flags (:standard -safe-string))
+))

@@ -71,6 +71,10 @@ module type Sig = sig
 
     val atanh : elt -> elt
 
+    val relu : elt -> elt
+
+    val sigmoid : elt -> elt
+
   end
 
 

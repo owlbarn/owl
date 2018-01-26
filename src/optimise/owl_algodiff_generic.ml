@@ -806,7 +806,7 @@ module Make
 
     and sigmoid a =
       let ff = function
-        | F a      -> F Owl_maths.(sigmoid a)
+        | F a      -> F A.Scalar.(sigmoid a)
         | Arr a    -> Arr A.(sigmoid a)
         | _        -> error_uniop "sigmoid" a
       in
@@ -817,7 +817,7 @@ module Make
 
     and relu a =
       let ff = function
-        | F a      -> F Owl_maths.(relu a)
+        | F a      -> F A.Scalar.(relu a)
         | Arr a    -> Arr A.(relu a)
         | _        -> error_uniop "relu" a
       in

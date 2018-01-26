@@ -175,6 +175,7 @@
   (libraries (
     owl_const
     owl_types
+    owl_optimise
     ctypes
     ctypes.stubs
     eigen
