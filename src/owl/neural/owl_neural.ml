@@ -8,7 +8,7 @@
 open Owl_types
 
 
-module Make (A : Ndarray_Basic) = struct
+module Make (A : Ndarray_Algodiff) = struct
 
   (* module aliases: graphical network & parallel *)
 

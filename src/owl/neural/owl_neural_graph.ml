@@ -12,7 +12,7 @@ open Owl_types
 (* Make functor starts *)
 
 module Make
-  (A : Ndarray_Basic)
+  (A : Ndarray_Algodiff)
   = struct
 
   module Neuron = Owl_neural_neuron.Make (A)

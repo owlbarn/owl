@@ -15,7 +15,7 @@ open Owl_types
  *)
 
 module Make
-  (A : Ndarray_Basic)
+  (A : Ndarray_Algodiff)
   : sig
 
   type arr = A.arr

@@ -5,13 +5,11 @@
 
 open Owl_types
 
-module S = Pervasives
-
 
 (* Functor of making AD module of different precisions *)
 
 module Make
-  (A : Ndarray_Basic)
+  (A : Ndarray_Algodiff)
   = struct
 
   (* type definitions *)
@@ -288,7 +286,7 @@ module Make
     and add a b =
       let ff a b =
         match a, b with
-        | F a, F b     -> F S.(a +. b)
+        | F a, F b     -> F A.Scalar.(add a b)
         | F a, Arr b   -> Arr A.(scalar_add a b)
         | Arr a, F b   -> Arr A.(add_scalar a b)
         | Arr a, Arr b -> Arr A.(add a b)
@@ -307,7 +305,7 @@ module Make
     and sub a b =
       let ff a b =
         match a, b with
-        | F a, F b     -> F S.(a -. b)
+        | F a, F b     -> F A.Scalar.(sub a b)
         | F a, Arr b   -> Arr A.(scalar_sub a b)
         | Arr a, F b   -> Arr A.(sub_scalar a b)
         | Arr a, Arr b -> Arr A.(sub a b)
@@ -326,7 +324,7 @@ module Make
     and mul a b =
       let ff a b =
         match a, b with
-        | F a, F b     -> F S.(a *. b)
+        | F a, F b     -> F A.Scalar.(mul a b)
         | F a, Arr b   -> Arr A.(scalar_mul a b)
         | Arr a, F b   -> Arr A.(mul_scalar a b)
         | Arr a, Arr b -> Arr A.(mul a b)
@@ -345,7 +343,7 @@ module Make
     and div a b =
       let ff a b =
         match a, b with
-        | F a, F b     -> F S.(a /. b)
+        | F a, F b     -> F A.Scalar.(div a b)
         | F a, Arr b   -> Arr A.(scalar_div a b)
         | Arr a, F b   -> Arr A.(div_scalar a b)
         | Arr a, Arr b -> Arr A.(div a b)
@@ -364,7 +362,7 @@ module Make
     and pow a b =
       let ff a b =
         match a, b with
-        | F a, F b     -> F S.(a ** b)
+        | F a, F b     -> F A.Scalar.(pow a b)
         | F a, Arr b   -> Arr A.(scalar_pow a b)
         | Arr a, F b   -> Arr A.(pow_scalar a b)
         | Arr a, Arr b -> Arr A.(pow a b)
@@ -382,7 +380,7 @@ module Make
     and atan2 a b =
       let ff a b =
         match a, b with
-        | F a, F b     -> F S.(atan2 a b)
+        | F a, F b     -> F A.Scalar.(atan2 a b)
         | F a, Arr b   -> Arr A.(scalar_atan2 a b)
         | Arr a, F b   -> Arr A.(atan2_scalar a b)
         | Arr a, Arr b -> Arr A.(atan2 a b)
@@ -403,7 +401,7 @@ module Make
 
     and neg a =
       let ff = function
-        | F a      -> F S.(0. -. a)
+        | F a      -> F A.Scalar.(neg a)
         | Arr a    -> Arr A.(neg a)
         | _        -> error_uniop "neg" a
       in
@@ -414,7 +412,7 @@ module Make
 
     and abs a =
       let ff = function
-        | F a      -> F Owl_maths.(abs a)
+        | F a      -> F A.Scalar.(abs a)
         | Arr a    -> Arr A.(abs a)
         | _        -> error_uniop "abs" a
       in
@@ -425,7 +423,7 @@ module Make
 
     and signum a =
       let ff = function
-        | F a      -> F Owl_maths.(signum a)
+        | F a      -> F A.Scalar.(signum a)
         | Arr a    -> Arr A.(signum a)
         | _        -> error_uniop "signum" a
       in
@@ -436,7 +434,7 @@ module Make
 
     and floor a =
       let ff = function
-        | F a      -> F Owl_maths.(floor a)
+        | F a      -> F A.Scalar.(floor a)
         | Arr a    -> Arr A.(floor a)
         | _        -> error_uniop "floor" a
       in
@@ -447,7 +445,7 @@ module Make
 
     and ceil a =
       let ff = function
-        | F a      -> F Owl_maths.(ceil a)
+        | F a      -> F A.Scalar.(ceil a)
         | Arr a    -> Arr A.(ceil a)
         | _        -> error_uniop "ceil" a
       in
@@ -458,7 +456,7 @@ module Make
 
     and round a =
       let ff = function
-        | F a      -> F Owl_maths.(round a)
+        | F a      -> F A.Scalar.(round a)
         | Arr a    -> Arr A.(round a)
         | _        -> error_uniop "round" a
       in
@@ -469,7 +467,7 @@ module Make
 
     and sqr a =
       let ff = function
-        | F a      -> F S.(a *. a)
+        | F a      -> F A.Scalar.(sqr a)
         | Arr a    -> Arr A.(sqr a)
         | _        -> error_uniop "sqr" a
       in
@@ -480,7 +478,7 @@ module Make
 
     and sqrt a =
       let ff = function
-        | F a      -> F S.(sqrt a)
+        | F a      -> F A.Scalar.(sqrt a)
         | Arr a    -> Arr A.(sqrt a)
         | _        -> error_uniop "sqrt" a
       in
@@ -491,7 +489,7 @@ module Make
 
     and log a =
       let ff = function
-        | F a      -> F S.(log a)
+        | F a      -> F A.Scalar.(log a)
         | Arr a    -> Arr A.(log a)
         | _        -> error_uniop "log" a
       in
@@ -502,7 +500,7 @@ module Make
 
     and log2 a =
       let ff = function
-        | F a      -> F Owl_maths.(log2 a)
+        | F a      -> F A.Scalar.(log2 a)
         | Arr a    -> Arr A.(log2 a)
         | _        -> error_uniop "log2" a
       in
@@ -513,7 +511,7 @@ module Make
 
     and log10 a =
       let ff = function
-        | F a      -> F S.(log10 a)
+        | F a      -> F A.Scalar.(log10 a)
         | Arr a    -> Arr A.(log10 a)
         | _        -> error_uniop "log10" a
       in
@@ -524,7 +522,7 @@ module Make
 
     and exp a =
       let ff = function
-        | F a      -> F S.(exp a)
+        | F a      -> F A.Scalar.(exp a)
         | Arr a    -> Arr A.(exp a)
         | _        -> error_uniop "exp" a
       in
@@ -535,7 +533,7 @@ module Make
 
     and sin a =
       let ff = function
-        | F a      -> F S.(sin a)
+        | F a      -> F A.Scalar.(sin a)
         | Arr a    -> Arr A.(sin a)
         | _        -> error_uniop "sin" a
       in
@@ -546,7 +544,7 @@ module Make
 
     and cos a =
       let ff = function
-        | F a      -> F S.(cos a)
+        | F a      -> F A.Scalar.(cos a)
         | Arr a    -> Arr A.(cos a)
         | _        -> error_uniop "cos" a
       in
@@ -557,7 +555,7 @@ module Make
 
     and tan a =
       let ff = function
-        | F a      -> F S.(tan a)
+        | F a      -> F A.Scalar.(tan a)
         | Arr a    -> Arr A.(tan a)
         | _        -> error_uniop "tan" a
       in
@@ -568,7 +566,7 @@ module Make
 
     and sinh a =
       let ff = function
-        | F a      -> F S.(sinh a)
+        | F a      -> F A.Scalar.(sinh a)
         | Arr a    -> Arr A.(sinh a)
         | _        -> error_uniop "sinh" a
       in
@@ -579,7 +577,7 @@ module Make
 
     and cosh a =
       let ff = function
-        | F a      -> F S.(cosh a)
+        | F a      -> F A.Scalar.(cosh a)
         | Arr a    -> Arr A.(cosh a)
         | _        -> error_uniop "cosh" a
       in
@@ -590,7 +588,7 @@ module Make
 
     and tanh a =
       let ff = function
-        | F a      -> F S.(tanh a)
+        | F a      -> F A.Scalar.(tanh a)
         | Arr a    -> Arr A.(tanh a)
         | _        -> error_uniop "tanh" a
       in
@@ -601,7 +599,7 @@ module Make
 
     and asin a =
       let ff = function
-        | F a      -> F S.(asin a)
+        | F a      -> F A.Scalar.(asin a)
         | Arr a    -> Arr A.(asin a)
         | _        -> error_uniop "asin" a
       in
@@ -612,7 +610,7 @@ module Make
 
     and acos a =
       let ff = function
-        | F a      -> F S.(acos a)
+        | F a      -> F A.Scalar.(acos a)
         | Arr a    -> Arr A.(acos a)
         | _        -> error_uniop "acos" a
       in
@@ -623,7 +621,7 @@ module Make
 
     and atan a =
       let ff = function
-        | F a      -> F S.(atan a)
+        | F a      -> F A.Scalar.(atan a)
         | Arr a    -> Arr A.(atan a)
         | _        -> error_uniop "atan" a
       in
@@ -634,7 +632,7 @@ module Make
 
     and asinh a =
       let ff = function
-        | F a      -> F Owl_maths.(asinh a)
+        | F a      -> F A.Scalar.(asinh a)
         | Arr a    -> Arr A.(asinh a)
         | _        -> error_uniop "asinh" a
       in
@@ -645,7 +643,7 @@ module Make
 
     and acosh a =
       let ff = function
-        | F a      -> F Owl_maths.(acosh a)
+        | F a      -> F A.Scalar.(acosh a)
         | Arr a    -> Arr A.(acosh a)
         | _        -> error_uniop "acosh" a
       in
@@ -656,7 +654,7 @@ module Make
 
     and atanh a =
       let ff = function
-        | F a      -> F Owl_maths.(atanh a)
+        | F a      -> F A.Scalar.(atanh a)
         | Arr a    -> Arr A.(atanh a)
         | _        -> error_uniop "atanh" a
       in
@@ -688,7 +686,7 @@ module Make
 
     and add_item a i j b =
       let ff a b = match a, b with
-        | Arr a, F b        -> let aa = A.copy a in A.set aa [|i;j|] S.((A.get aa [|i;j|]) +. b); Arr aa
+        | Arr a, F b        -> let aa = A.copy a in A.set aa [|i;j|] A.Scalar.(add (A.get aa [|i;j|]) b); Arr aa
         | _                 -> error_binop "add_item" a b
       in
       let fd a b = add_item a i j b in
@@ -797,7 +795,7 @@ module Make
 
     and l2norm_sqr' a =
       let ff = function
-        | F a      -> F S.(a *. a)
+        | F a      -> F A.Scalar.(sqr a)
         | Arr a    -> F A.(l2norm_sqr' a)
         | _        -> error_uniop "l2norm_sqr'" a
       in
@@ -1248,7 +1246,7 @@ module Make
           | DR (ap, aa, ao, af, ai) -> (
             let v = _melt !aa v in
             aa := Maths.(!aa + v);
-            af := S.(!af - 1);
+            af := Pervasives.(!af - 1);
             if !af = 0 then (
               match ao with
               | Noop                     -> push t

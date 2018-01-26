@@ -15,6 +15,16 @@
 
 (** {6 Basic math functions} *)
 
+val add : float -> float -> float
+
+val sub : float -> float -> float
+
+val mul : float -> float -> float
+
+val div : float -> float -> float
+
+val atan2 : float -> float -> float
+
 val abs : float -> float
 
 val neg : float -> float
@@ -28,6 +38,8 @@ val ceil : float -> float
 val round : float -> float
 
 val trunc : float -> float
+
+val sqr : float -> float
 
 val sqrt : float -> float
 

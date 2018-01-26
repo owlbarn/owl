@@ -11,7 +11,7 @@ open Owl_types
 (* Make functor starts *)
 
 module Make
-  (A : Ndarray_Basic)
+  (A : Ndarray_Algodiff)
   = struct
 
   include Owl_algodiff_generic.Make (A)

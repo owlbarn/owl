@@ -3,7 +3,10 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Define the types shared by Owl sublibraries *)
+(** This module defines the types shared by various sub-libraries in Owl.
+  Note that they just wrappers, to find the exact module signature, please
+  refer to the definition in the corresponding module.
+ *)
 
 include Owl_types_common
 
@@ -27,6 +30,13 @@ end
 module type Ndarray_Mutable = sig
 
   include Owl_types_ndarray_mutable.Sig
+
+end
+
+
+module type Ndarray_Algodiff = sig
+
+  include Owl_types_ndarray_algodiff.Sig
 
 end
 
