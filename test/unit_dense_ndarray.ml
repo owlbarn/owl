@@ -72,13 +72,9 @@ module To_test = struct
 
   let map () = M.map (fun a -> a +. 1.) x0 |> M.sum' = 18.
 
-  let fold () = M.fold (fun c a -> c +. a) 0. x0 = 6.
-
-  let foldi () =
-    let a = M.foldi (fun i c a ->
-      if i.(2) = 0 then c +. a else c
-    ) 0. x0
-    in a = 5.
+  let fold () =
+    let a = M.fold (fun c a -> c +. a) 0. x0 in
+    M.get a [|0|] = 6.
 
   let add () = M.equal (M.add x0 x1) x2
 
@@ -122,12 +118,6 @@ module To_test = struct
   let not_exists () = M.not_exists ((>) 0.) x0
 
   let for_all () = M.for_all ((<=) 0.) x0
-
-  let filter () = M.filter ((=) 3.) x0 = [| [|1;0;0|] |]
-
-  let filteri () = M.filteri (fun i a ->
-    i.(2) = 1 && a = 3.
-    ) x1 = [| [|0;1;1|] |]
 
   let transpose () =
     let y = M.copy x0 in
@@ -210,9 +200,6 @@ let map () =
 let fold () =
   Alcotest.(check bool) "fold" true (To_test.fold ())
 
-let foldi () =
-  Alcotest.(check bool) "foldi" true (To_test.foldi ())
-
 let add () =
   Alcotest.(check bool) "add" true (To_test.add ())
 
@@ -273,12 +260,6 @@ let not_exists () =
 let for_all () =
   Alcotest.(check bool) "for_all" true (To_test.for_all ())
 
-let filter () =
-  Alcotest.(check bool) "filter" true (To_test.filter ())
-
-let filteri () =
-  Alcotest.(check bool) "filteri" true (To_test.filteri ())
-
 let transpose () =
   Alcotest.(check bool) "transpose" true (To_test.transpose ())
 
@@ -317,7 +298,6 @@ let test_set = [
   "fill", `Slow, fill;
   "map", `Slow, map;
   "fold", `Slow, fold;
-  "foldi", `Slow, foldi;
   "add", `Slow, add;
   "mul", `Slow, mul;
   "add_scalar", `Slow, add_scalar;
@@ -338,8 +318,6 @@ let test_set = [
   "exists", `Slow, exists;
   "not_exists", `Slow, not_exists;
   "for_all", `Slow, for_all;
-  "filter", `Slow, filter;
-  "filteri", `Slow, filteri;
   "transpose", `Slow, transpose;
   "flatten", `Slow, flatten;
   "reshape", `Slow, reshape;
