@@ -247,17 +247,26 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
     let type_int = reps.(0) + 1 in
     (raise (Failure "tile - not implemented"); varr)
 
-  (* TODO: this is a stub *)
-  let split ?(axis=0) dims varr =
+  (* TODO: optimise and ensure it is correct *)
+  let split ?(axis=0) parts varr =
     let dims = shape varr in
-    let type_int = dims.(0) + 1 in
-    (raise (Failure "split - not implemented"); [|varr|])
+    let rank = Array.length dims in
+    let pos = ref 0 in
+    let axis_indices = Array.map (fun d -> (pos := !pos + d; R [!pos - d; !pos - 1])) parts in
+    let slices_defs =
+      Array.map (fun ind ->
+          Array.to_list (Array.init rank
+                           (fun i -> if i = axis then ind else R [])))
+        axis_indices
+    in
+    (Array.map (fun def -> get_slice def varr) slices_defs)
 
-  (*TODO : this is a stub *)
-  let draw_along_dim0 varr x =
+  (*TODO : ensure this is correct *)
+  (* Similar to draw rows for matrices *)
+  let draw_along_dim0 varr count =
     let dims = shape varr in
-    let y = x + 1 in
-    (raise (Failure "draw_along_dim0 - not implemented"); (varr, [|x; y|]))
+    let indices = _draw_int_samples false dims.(0) count in
+    (get_slice [L (Array.to_list indices)] varr, indices)
 
   (*TODO: val tile : arr -> int array -> arr
 
