@@ -473,10 +473,10 @@ module Make
     let s = ref (nn.nnid ^ "\n\n") in
     Array.iter (fun n ->
       let prev = Array.map (fun n -> n.name) n.prev
-        |> Owl_utils_pure.string_of_array (fun s -> s)
+        |> Owl_utils.string_of_array (fun s -> s)
       in
       let next = Array.map (fun n -> n.name) n.next
-        |> Owl_utils_pure.string_of_array (fun s -> s)
+        |> Owl_utils.string_of_array (fun s -> s)
       in
       s := !s ^
         Printf.sprintf "\x1b[31m[ Node %s ]:\x1b[0m\n" n.name ^
