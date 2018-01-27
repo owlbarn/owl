@@ -75,10 +75,6 @@ module Mat = struct
   include Owl_dense.Matrix.D
 end
 
-module Vec = struct
-  include Owl_dense.Vector.D
-end
-
 
 (* initialise owl's working environment *)
 
