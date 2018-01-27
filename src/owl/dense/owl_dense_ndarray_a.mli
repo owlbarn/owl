@@ -58,13 +58,13 @@ val get_index : 'a arr -> int array array -> 'a array
 
 val set_index : 'a arr -> int array array -> 'a array -> unit
 
-val get_slice : index list -> 'a arr -> 'a arr
+val get_fancy : index list -> 'a arr -> 'a arr
 
-val set_slice : index list -> 'a arr -> 'a arr -> unit
+val set_fancy : index list -> 'a arr -> 'a arr -> unit
 
-val get_slice_simple : int list list -> 'a arr -> 'a arr
+val get_slice : int list list -> 'a arr -> 'a arr
 
-val set_slice_simple : int list list -> 'a arr -> 'a arr -> unit
+val set_slice : int list list -> 'a arr -> 'a arr -> unit
 
 val fill : 'a arr -> 'a -> unit
 

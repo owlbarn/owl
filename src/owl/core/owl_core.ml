@@ -7,10 +7,10 @@ open Bigarray
 open Owl_dense_common_types
 
 
-external owl_float32_matrix_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float32_matrix_transpose"
-external owl_float64_matrix_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "float64_matrix_transpose"
-external owl_complex32_matrix_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex32_matrix_transpose"
-external owl_complex64_matrix_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "complex64_matrix_transpose"
+external owl_float32_matrix_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "stub_float32_matrix_transpose"
+external owl_float64_matrix_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "stub_float64_matrix_transpose"
+external owl_complex32_matrix_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "stub_complex32_matrix_transpose"
+external owl_complex64_matrix_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "stub_complex64_matrix_transpose"
 
 let _matrix_transpose
   : type a b. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr -> unit

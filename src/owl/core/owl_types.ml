@@ -97,9 +97,9 @@ module type NdarraySig = sig
 
   val set : arr -> int array -> elt -> unit
 
-  val get_slice : index list -> arr -> arr
+  val get_slice : int list list -> arr -> arr
 
-  val set_slice : index list -> arr -> arr -> unit
+  val set_slice : int list list -> arr -> arr -> unit
 
   val copy : arr -> arr
 

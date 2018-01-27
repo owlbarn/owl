@@ -3,9 +3,11 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Bigarray
+
 open Owl_types
 
-open Owl_dense_common
+open Owl_dense_common_types
 
 
 (* local functions, since we will not use ndarray_generic module *)
@@ -13,6 +15,20 @@ let empty kind d = Bigarray.Genarray.create kind Bigarray.c_layout d
 let kind x = Bigarray.Genarray.kind x
 let shape x = Bigarray.Genarray.dims x
 let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
+
+
+(* convert from a list of slice definition to array for internal use *)
+let sdlist_to_sdarray axis =
+  List.map (function
+    | I i -> I_ i
+    | L i -> L_ (Array.of_list i)
+    | R i -> R_ (Array.of_list i)
+  ) axis
+  |> Array.of_list
+
+
+(* return true if slicing (all R_) or false if fancy indexing (has L_) *)
+let is_basic_slicing = Array.for_all (function R_ _ -> true | _ -> false)
 
 
 (* check the validity of the slice definition, also re-format slice definition,
@@ -34,16 +50,20 @@ let check_slice_definition axis shp =
   Array.map2 (fun i n ->
     match i with
     | I_ x -> (
+        let x = if x >= 0 then x else n + x in
         assert (x < n);
-        if n = 1 then R_ [|0;0;1|] else L_ [|x|]
+        R_ [|x;x;1|]
       )
     | L_ x -> (
         let is_cont = ref true in
         if Array.length x <> n then is_cont := false;
-        Array.iteri (fun i j ->
+        let x = Array.mapi (fun i j ->
+          let j = if j >= 0 then j else n + j in
           assert (j < n);
-          if i <> j then is_cont := false
-        ) x;
+          if i <> j then is_cont := false;
+          j
+        ) x
+        in
         if !is_cont = true then R_ [|0;n-1;1|] else L_ x
       )
     | R_ x -> (
@@ -52,7 +72,7 @@ let check_slice_definition axis shp =
         | 1 -> (
             let a = if x.(0) >= 0 then x.(0) else n + x.(0) in
             assert (a < n);
-            if n = 1 then R_ [|0;0;1|] else L_ [|a|]
+            R_ [|a;a;1|]
           )
         | 2 -> (
             let a = if x.(0) >= 0 then x.(0) else n + x.(0) in
@@ -79,7 +99,7 @@ let check_slice_definition axis shp =
    shp: shape of the original ndarray;
  *)
 let calc_continuous_blksz axis shp =
-  let slice_sz = _calc_slice shp in
+  let slice_sz = Owl_dense_common._calc_slice shp in
   let ssz = ref 1 in
   let d = ref 0 in
   let _ = try
@@ -162,157 +182,122 @@ let _foreach_continuous_blk a d f =
   __foreach_continuous_blk a d 0 i f
 
 
-(* core slice function
-   axis: index array, slice definition, e.g., format [start;stop;step]
-   x: ndarray
- *)
+(* reshape inputs in order to optimise the slicing performance *)
+let optimise_input_shape axis x y =
+  let n = Genarray.num_dims x in
+  let sx = Genarray.dims x in
+  let sy = Genarray.dims y in
+  let dim = ref (n - 1) in
+  let acx = ref 1 in
+  let acy = ref 1 in
+  (try
+    for i = !dim downto 0 do
+      match axis.(i) with
+      | R_ a ->
+          if a.(0) = 0 && a.(1) = sx.(i) - 1 && a.(2) = 1 then (
+            acx := !acx * sx.(i);
+            acy := !acy * sy.(i);
+            dim := i;
+          )
+          else failwith "stop"
+      | _    -> failwith "stop"
+    done
+  with exn -> ());
+  if n - !dim > 1 then (
+    (* can be optimised *)
+    let axis' = Array.sub axis 0 (!dim + 1) in
+    let sx' = Array.sub sx 0 (!dim + 1) in
+    let sy' = Array.sub sy 0 (!dim + 1) in
+    sx'.(!dim) <- !acx;
+    sy'.(!dim) <- !acy;
+    let x' = reshape x sx' in
+    let y' = reshape y sy' in
+    axis', x', y'
+  )
+  else
+    (* cannot be optimised *)
+    axis, x, y
+
+
+(* fancy slicing function *)
+
+let get_fancy_array_typ axis x =
+  let _kind = kind x in
+  (* check axis is within boundary then re-format *)
+  let sx = shape x in
+  let axis = check_slice_definition axis sx in
+  (* calculate the new shape for slice *)
+  let sy = calc_slice_shape axis in
+  let y = empty _kind sy in
+  (* optimise the shape if possible *)
+  let axis', x', y' = optimise_input_shape axis x y in
+  (* slicing vs. fancy indexing *)
+  if is_basic_slicing axis = true then (
+    Owl_slicing_basic.get _kind axis' x' y';
+    y
+  )
+  else (
+    Owl_slicing_fancy.get _kind axis' x' y';
+    y
+  )
+
+
+let set_fancy_array_typ axis x y =
+  let _kind = kind x in
+  (* check axis is within boundary then re-format *)
+  let sx = shape x in
+  let axis = check_slice_definition axis sx in
+  (* validate the slice shape is the same as y's *)
+  let sy = calc_slice_shape axis in
+  assert (shape y = sy);
+  (* optimise the shape if possible *)
+  let axis', x', y' = optimise_input_shape axis x y in
+  (* slicing vs. fancy indexing *)
+  if is_basic_slicing axis = true then
+    Owl_slicing_basic.set _kind axis' x' y'
+  else
+    Owl_slicing_fancy.set _kind axis' x' y'
+
+
+(* Basic slicing function *)
+
 let get_slice_array_typ axis x =
   let _kind = kind x in
-  (* check axis is within boundary then re-format *)
-  let s0 = shape x in
-  let axis = check_slice_definition axis s0 in
-  (* calculate the new shape for slice *)
-  let s1 = calc_slice_shape axis in
-  let y = empty _kind s1 in
-  (* prepare function of copying blocks *)
-  let d0 = Array.length s1 in
-  let d1, cb = calc_continuous_blksz axis s0 in
-  let sd = _calc_stride s0 in
-  let ofsy_i = ref 0 in
-  (* two copying strategies based on the size of the minimum continuous block.
-     also, consider the special case wherein the highest-dimension equals to 1.
-   *)
-  let high_dim_list = (function L_ _ -> true | _ -> false) axis.(d0 - 1) in
-  if cb > 1 || s0.(d0 - 1) = 1 || high_dim_list = true then (
-    (* yay, there are at least some continuous blocks *)
-    let b = cb in
-    let f = fun i -> (
-      let ofsx = _index_nd_1d i sd in
-      let ofsy = !ofsy_i * b in
-      _owl_copy _kind b ~ofsx ~incx:1 ~ofsy ~incy:1 x y;
-      ofsy_i := !ofsy_i + 1
-    )
-    in
-    (* start copying blocks *)
-    _foreach_continuous_blk axis d1 f;
-    (* reshape the ndarray *)
-    Bigarray.reshape y s1
-  )
-  else (
-    (* copy happens at the highest dimension, no continuous block *)
-    let b = s1.(d0 - 1) in
-    (* do the math yourself, [dd] is actually reduced from
-       s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
-    *)
-    let c, dd =
-      match axis.(d0 - 1) with
-      | R_ i -> (
-          if i.(2) > 0 then i.(2), i.(0)
-          else i.(2), i.(0) + (b - 1) * i.(2)
-        )
-      | _    -> failwith "owl_slicing:slice_array_typ"
-    in
-    let cx = if c > 0 then c else -c in
-    let cy = if c > 0 then 1 else -1 in
-    let f = fun i -> (
-      let ofsx = _index_nd_1d i sd + dd in
-      let ofsy = if c > 0 then !ofsy_i * b else (!ofsy_i + 1) * b - 1 in
-      _owl_copy _kind b ~ofsx ~incx:cx ~ofsy ~incy:cy x y;
-      ofsy_i := !ofsy_i + 1
-    )
-    in
-    (* start copying blocks *)
-    _foreach_continuous_blk axis (d1 - 1) f;
-    (* reshape the ndarray *)
-    Bigarray.reshape y s1
-  )
+  let sx = shape x in
+  let axis = check_slice_definition axis sx in
+  let sy = calc_slice_shape axis in
+  let y = empty _kind sy in
+  let axis', x', y' = optimise_input_shape axis x y in
+  Owl_slicing_basic.get _kind axis' x' y';
+  y
 
 
-(* set slice in [x] according to [y] *)
 let set_slice_array_typ axis x y =
   let _kind = kind x in
-  (* check axis is within boundary then re-format *)
-  let s0 = shape x in
-  let axis = check_slice_definition axis s0 in
-  (* validate the slice shape is the same as y's *)
-  let s1 = calc_slice_shape axis in
-  assert (shape y = s1);
-  (* prepare function of copying blocks *)
-  let d0 = Array.length s1 in
-  let d1, cb = calc_continuous_blksz axis s0 in
-  let sd = _calc_stride s0 in
-  let ofsy_i = ref 0 in
-  (* two copying strategies based on the size of the minimum continuous block.
-     also, consider the special case wherein the highest-dimension equals to 1.
-   *)
-  let high_dim_list = (function L_ _ -> true | _ -> false) axis.(d0 - 1) in
-  if cb > 1 || s0.(d0 - 1) = 1 || high_dim_list = true then (
-    (* yay, there are at least some continuous blocks *)
-    let b = cb in
-    let f = fun i -> (
-      let ofsx = _index_nd_1d i sd in
-      let ofsy = !ofsy_i * b in
-      _owl_copy _kind b ~ofsx:ofsy ~incx:1 ~ofsy:ofsx ~incy:1 y x;
-      ofsy_i := !ofsy_i + 1
-    )
-    in
-    (* start copying blocks *)
-    _foreach_continuous_blk axis d1 f
-  )
-  else (
-    (* copy happens at the highest dimension, no continuous block *)
-    let b = s1.(d0 - 1) in
-    (* do the math yourself, [dd] is actually reduced from
-       s0.(d0 - 1) + (b - 1) * c - (s0.(d0 - 1) - axis.(d0 - 1).(0) - 1) - 1
-    *)
-    let c, dd =
-      match axis.(d0 - 1) with
-      | R_ i -> (
-          if i.(2) > 0 then i.(2), i.(0)
-          else i.(2), i.(0) + (b - 1) * i.(2)
-        )
-      | _    -> failwith "owl_slicing:set_slice_array_typ"
-    in
-    let cx = if c > 0 then c else -c in
-    let cy = if c > 0 then 1 else -1 in
-    let f = fun i -> (
-      let ofsx = _index_nd_1d i sd + dd in
-      let ofsy = if c > 0 then !ofsy_i * b else (!ofsy_i + 1) * b - 1 in
-      _owl_copy _kind b ~ofsx:ofsy ~incx:cy ~ofsy:ofsx ~incy:cx y x;
-      ofsy_i := !ofsy_i + 1
-    )
-    in
-    (* start copying blocks *)
-    _foreach_continuous_blk axis (d1 - 1) f
-  )
-
-
-(* convert from a list of slice definition to array for internal use *)
-let sdlist_to_sdarray axis =
-  List.map (function
-    | I i -> I_ i
-    | L i -> L_ (Array.of_list i)
-    | R i -> R_ (Array.of_list i)
-  ) axis
-  |> Array.of_list
+  let sx = shape x in
+  let axis = check_slice_definition axis sx in
+  let sy = calc_slice_shape axis in
+  assert (shape y = sy);
+  let axis', x', y' = optimise_input_shape axis x y in
+  Owl_slicing_basic.set _kind axis' x' y'
 
 
 (* same as slice_array_typ function but take list type as slice definition *)
-let get_slice_list_typ axis x = get_slice_array_typ (sdlist_to_sdarray axis) x
+let get_fancy_list_typ axis x = get_fancy_array_typ (sdlist_to_sdarray axis) x
 
 
 (* same as set_slice_array_typ function but take list type as slice definition *)
-let set_slice_list_typ axis x y = set_slice_array_typ (sdlist_to_sdarray axis) x y
+let set_fancy_list_typ axis x y = set_fancy_array_typ (sdlist_to_sdarray axis) x y
 
 
 (* simplified get_slice function which accept list of list as slice definition *)
-let get_slice_simple axis x =
+let get_slice_list_typ axis x =
   let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
   get_slice_array_typ axis x
 
 
 (* simplified set_slice function which accept list of list as slice definition *)
-let set_slice_simple axis x y =
+let set_slice_list_typ axis x y =
   let axis = List.map (fun i -> R_ (Array.of_list i)) axis |> Array.of_list in
   set_slice_array_typ axis x y
 
