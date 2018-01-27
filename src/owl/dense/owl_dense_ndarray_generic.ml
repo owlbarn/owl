@@ -3222,7 +3222,8 @@ let draw_cols2 ?(replacement=true) x y c =
   x_cols, cols y l, l
 
 
-(* simiar to sum_rows in matrix, sum all the slices along an axis.
+(* FIXME: optimise ...
+  simiar to sum_rows in matrix, sum all the slices along an axis.
   The default [axis] is the highest dimension. E.g., for [x] of [|2;3;4;5|],
   [sum_slices ~axis:2] returns an ndarray of shape [|4;5|].
 
