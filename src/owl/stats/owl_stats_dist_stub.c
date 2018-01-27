@@ -20,8 +20,8 @@ value owl_stub_std_uniform_rvs() {
 value owl_stub_uniform_int_rvs(value vA, value vB) {
   double a = Long_val(vA);
   double b = Long_val(vB);
-  double y = sfmt_f64_1 * (b - a) + a;
-  return caml_copy_double(y);
+  long y = sfmt_f64_2 * (b - a + 1) + a;
+  return Val_long(y);
 }
 
 

@@ -1364,6 +1364,7 @@ val slice_along_dim0 : ('a, 'b) t -> int array -> ('a, 'b) t
 
 val draw_along_dim0 : ('a, 'b) t -> int -> ('a, 'b) t * int array
 
+val draw : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 
 (** {6 Fucntions of in-place modification } *)
 

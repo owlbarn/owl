@@ -3289,6 +3289,14 @@ let draw_slices ?(axis=0) x n =
   ) indices;
   y, indices
 
+let draw ?(axis=0) x n =
+  let b = nth_dim x axis in
+  let indices = Array.init n (fun _ -> Owl_stats.uniform_int_rvs ~a:0 ~b:(b-1)) in
+  let slice = Array.init (num_dims x) (fun i -> if i = axis then L_ indices else R_ [||]) in
+  let samples = Owl_slicing.get_fancy_array_typ slice x in
+  samples, indices
+
+
 (* FIXME: experimental *)
 let slice_along_dim0 x indices =
   let shp = shape x in
