@@ -190,8 +190,8 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     with exn -> !i
 
   let get x i_nd =
-    let stride = Owl_dense_common._calc_stride x.shape in
-    let i_1d = Owl_dense_common._index_nd_1d i_nd stride in
+    let stride = Owl_utils.calc_stride x.shape in
+    let i_1d = Owl_utils.index_nd_1d i_nd stride in
     assert (numel x > i_1d);
     let pos = calc_index_owner i_1d x.c_start x.c_len in
     let owner_id = x.workers.(pos) in
@@ -212,8 +212,8 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     List.(nth (nth l 0) 0)
 
   let set x i_nd a =
-    let stride = Owl_dense_common._calc_stride x.shape in
-    let i_1d = Owl_dense_common._index_nd_1d i_nd stride in
+    let stride = Owl_utils.calc_stride x.shape in
+    let i_1d = Owl_utils.index_nd_1d i_nd stride in
     assert (numel x > i_1d);
     let pos = calc_index_owner i_1d x.c_start x.c_len in
     let owner_id = x.workers.(pos) in

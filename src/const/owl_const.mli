@@ -63,6 +63,8 @@ val zero : ('a, 'b) Bigarray.kind -> 'a
 
 val one : ('a, 'b) Bigarray.kind -> 'a
 
+val neg_one : ('a, 'b) Bigarray.kind -> 'a
+
 val pos_inf : ('a, 'b) Bigarray.kind -> 'a
 
 val neg_inf : ('a, 'b) Bigarray.kind -> 'a

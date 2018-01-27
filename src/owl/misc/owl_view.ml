@@ -26,7 +26,7 @@ module Make
   (* calculate (offset, stride) from the [shape] of original data and [slice] *)
   let calc_ofstr shape slice =
     let dims = Array.length shape in
-    let strides = Owl_dense_common._calc_stride shape in
+    let strides = Owl_utils.calc_stride shape in
     Array.init dims (fun i ->
       let offset = slice.(i).(0) * strides.(i) in
       let stride = strides.(i) * slice.(i).(2) in

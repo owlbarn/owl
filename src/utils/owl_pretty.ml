@@ -48,7 +48,7 @@ let _chunk_table max_row max_col row_num col_num =
 
 let _make_header ?(row_prefix="R") ?(col_prefix="C") row_indices col_indices x =
   let shape = Bigarray.Genarray.dims x in
-  let stride = Owl_dense_common._calc_stride shape in
+  let stride = Owl_utils.calc_stride shape in
   let dim_num = Array.length shape in
   let col_num = shape.(dim_num - 1) in
   let row_header = Array.map (fun i ->
@@ -56,7 +56,7 @@ let _make_header ?(row_prefix="R") ?(col_prefix="C") row_indices col_indices x =
     else (
       let idx_1d = i * col_num in
       let idx_nd = Array.copy stride in
-      Owl_dense_common._index_1d_nd idx_1d idx_nd stride;
+      Owl_utils.index_1d_nd idx_1d idx_nd stride;
       let idx_nd = Array.(sub idx_nd 0 (dim_num - 1)) in
       let idx_s = match dim_num with
         | 1 -> ""
@@ -123,7 +123,7 @@ let print_table ?(header=true) ?(max_row=10) ?(max_col=10) ?elt_to_str_fun forma
   let elt_to_str_fun =
     match elt_to_str_fun with
     | Some f -> f
-    | None   -> Owl_dense_common._owl_elt_to_str (Bigarray.Genarray.kind x)
+    | None   -> Owl_utils.elt_to_str (Bigarray.Genarray.kind x)
   in
   let y, row_num, col_num = _reshape_ndarray x in
   let row_indices, col_indices = _chunk_table max_row max_col row_num col_num in

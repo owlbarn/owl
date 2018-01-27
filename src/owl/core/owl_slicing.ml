@@ -99,7 +99,7 @@ let check_slice_definition axis shp =
    shp: shape of the original ndarray;
  *)
 let calc_continuous_blksz axis shp =
-  let slice_sz = Owl_dense_common._calc_slice shp in
+  let slice_sz = Owl_utils.calc_slice shp in
   let ssz = ref 1 in
   let d = ref 0 in
   let _ = try

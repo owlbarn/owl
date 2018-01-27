@@ -6,6 +6,15 @@
 (** Helper functions used in the library *)
 
 
+include Owl_utils_conv
+
+include Owl_utils_ndarray
+
+module Stack = Owl_utils_stack
+
+module Array = Owl_utils_array
+
+
 let range a b =
   let r = Array.make (b - a + 1) 0 in
   for i = a to b do r.(i - a) <- i done; r
@@ -86,154 +95,6 @@ let array2_to_array1 x =
   let c = m * n in
   let x = genarray_of_array2 x in
   reshape_1 x c
-
-
-(* A simple stack implementation *)
-
-module Stack = struct
-
-  type 'a t = {
-    mutable used : int;
-    mutable size : int;
-    mutable data : 'a array;
-  }
-
-  let allocate_space x = Array.(append x (copy x))
-
-  let make () = {
-    used = 0;
-    size = 0;
-    data = [||];
-  }
-
-  let push s x =
-    if s.size = 0 then s.data <- [|x|];
-    if s.used = s.size then (
-      s.data <- allocate_space s.data;
-      s.size <- Array.length s.data;
-    );
-    s.data.(s.used) <- x;
-    s.used <- s.used + 1
-
-  let pop s = match s.used with
-    | 0 -> None
-    | i -> s.used <- i - 1; Some s.data.(i)
-
-  let peek s = match s.used with
-    | 0 -> None
-    | i -> Some s.data.(i)
-
-  let is_empty s = s.size = 0
-
-  let mem s x = Array.mem x s.data
-
-  let memq s x = Array.memq x s.data
-
-  let to_array s = Array.sub s.data 0 s.used
-
-end
-
-
-(* Enhanced Array module *)
-
-module Array = struct
-
-  include Array
-
-  (* filter array, f : int -> 'a -> bool * 'b *)
-  let filteri_v f x =
-    let r = Stack.make () in
-    iteri (fun i a ->
-      let y, z = f i a in
-      if y = true then Stack.push r z
-    ) x;
-    Stack.to_array r
-
-  (* filter array, f : 'a -> bool * 'b *)
-  let filter_v f x = filteri_v (fun _ y -> f y) x
-
-  (* filter array, f : int -> 'a -> bool *)
-  let filteri f x =
-    if Array.length x = 0 then [||]
-    else (
-      let r = Stack.make () in
-      iteri (fun i a ->
-        if f i a then Stack.push r a
-      ) x;
-      Stack.to_array r
-    )
-
-  (* filter array, f : 'a -> bool *)
-  let filter f x = filteri (fun _ y -> f y) x
-
-  let mapi f x =
-    let n = Array.length x in
-    if n = 0 then [||]
-    else (
-      let r = Stack.make () in
-      iteri (fun i a -> Stack.push r (f i a)) x;
-      Stack.to_array r
-    )
-
-  let map f x = mapi (fun _ y -> f y) x
-
-  (* deal with the issue: OCaml 4.02.3 does not have Array.iter2
-    eventually we need to move to OCaml 4.03.0 *)
-  let iter2 f x y =
-    let c = min (Array.length x) (Array.length y) in
-    for i = 0 to c - 1 do
-      f x.(i) y.(i)
-    done
-
-  let iter3 f x y z =
-    let c = min (Array.length x) (Array.length y) |> min (Array.length z) in
-    for i = 0 to c - 1 do
-      f x.(i) y.(i) z.(i)
-    done
-
-  let map2i f x y =
-    let c = min (Array.length x) (Array.length y) in
-    Array.init c (fun i -> f i x.(i) y.(i))
-
-  (* map two arrays, and split into two arrays, f returns 2-tuple *)
-  let map2i_split2 f x y =
-    let c = min (Array.length x) (Array.length y) in
-    match c with
-    | 0 -> [||], [||]
-    | _ -> (
-      let z0 = Stack.make () in
-      let z1 = Stack.make () in
-      for i = 1 to c - 1 do
-        let a, b = f i x.(i) y.(i) in
-        Stack.push z0 a;
-        Stack.push z1 b;
-      done;
-      Stack.(to_array z0, to_array z1)
-    )
-
-  (* pad n value of v to the left/right of array x *)
-  let pad s x v n =
-    let l = Array.length x in
-    let y = Array.make (l + n) v in
-    let _ = match s with
-      | `Left  -> Array.blit x 0 y n l
-      | `Right -> Array.blit x 0 y 0 l
-    in y
-
-  (* [x] is greater or equal than [y] elementwise *)
-  let greater_eqaul x y =
-    let la = Array.length x in
-    let lb = Array.length y in
-    assert (la = lb);
-    let b = ref true in
-    (
-      try for i = 0 to la - 1 do
-        if x.(i) < y.(i) then failwith "found"
-      done with exn -> b := false
-    );
-    !b
-
-end
 
 
 (* pretty-print an array to string *)
@@ -383,6 +244,7 @@ let eps
   | Complex32 -> 2. ** (-23.)
   | Complex64 -> 2. ** (-52.)
   | _         -> failwith "owl_utils:eps"
+
 
 
 (* ends here *)

@@ -496,7 +496,7 @@ let of_array k x m n =
 
 (* FIXME *)
 let save_txt x f =
-  let _op = _owl_elt_to_str (kind x) in
+  let _op = Owl_utils.elt_to_str (kind x) in
   let h = open_out f in
   iter_rows (fun y ->
     iter (fun z -> Printf.fprintf h "%s\t" (_op z)) y;
@@ -642,7 +642,7 @@ let hadamard k n =
   let cp_op = _owl_copy k in
   let neg_op = _owl_neg k in
   if Owl_maths.is_pow2 n then (
-    Owl_dense_ndarray_generic.set x [|0;0|] (_one k);
+    Owl_dense_ndarray_generic.set x [|0;0|] (Owl_const.one k);
     _make_hadamard cp_op neg_op n n 1 x;
     x
   )
@@ -668,8 +668,8 @@ let hadamard k n =
 
 let magic k n =
   assert (n >= 3);
-  let a0 = _zero k in
-  let a1 = _one k in
+  let a0 = Owl_const.zero k in
+  let a1 = Owl_const.one k in
 
   let _magic_odd n a =
     let x = zeros k n n in
