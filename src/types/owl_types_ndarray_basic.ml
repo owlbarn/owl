@@ -55,9 +55,9 @@ module type Sig = sig
 
   val split : ?axis:int -> int array -> arr -> arr array
 
-  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
+  val draw : ?axis:int -> arr -> int -> arr * int array
 
-  val draw_along_dim0 : arr -> int -> arr * int array
+  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
 
   (* mathematical functions *)
 

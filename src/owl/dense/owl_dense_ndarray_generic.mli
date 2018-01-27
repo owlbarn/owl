@@ -373,6 +373,12 @@ val bottom : ('a, 'b) t -> int -> int array array
 val sort : ('a, 'b) t -> unit
 (** [sort x] performs in-place quicksort of the elelments in [x]. *)
 
+val draw : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array
+(** [draw ~axis x n] draws [n] samples from [x] along the specified [axis],
+  with replacement. [axis] is set to zero by default. The return is a tuple
+  of both samples and the indices of the selected samples.
+ *)
+
 val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -> ('a, 'b) t
 (** [mmap fd kind layout shared dims] ... *)
 
@@ -1357,14 +1363,6 @@ val sum_slices : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
   more memory.
  *)
 
-(* val draw_slices : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array array *)
-(** [] *)
-
-val slice_along_dim0 : ('a, 'b) t -> int array -> ('a, 'b) t
-
-val draw_along_dim0 : ('a, 'b) t -> int -> ('a, 'b) t * int array
-
-val draw : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 
 (** {6 Fucntions of in-place modification } *)
 

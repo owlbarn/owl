@@ -138,6 +138,8 @@ val bottom : arr -> int -> int array array
 
 val sort : arr -> unit
 
+val draw : ?axis:int -> arr -> int -> arr * int array
+
 val mmap : Unix.file_descr -> ?pos:int64 -> bool -> int array -> arr
 
 
@@ -445,5 +447,3 @@ val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
 (** {6 Experimental functions} *)
 
 val sum_slices : ?axis:int -> arr -> arr
-
-val draw_along_dim0 : arr -> int -> arr * int array

@@ -34,7 +34,7 @@ module Make
     let draw_samples x y n =
       match x, y with
       | Arr x, Arr y -> (
-          let x, i = A.draw_along_dim0 x n in
+          let x, i = A.draw ~axis:0 x n in
           let y = A.rows y i in
           Arr x, Arr y
         )
