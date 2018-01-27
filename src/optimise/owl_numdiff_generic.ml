@@ -32,11 +32,11 @@ module Make
   let diff' f x = f x, diff f x
 
 
-  (* second order derivative of f : float -> float, return both function value and derivative *)
+  (* second order derivative of f : scalar -> scalar *)
   let diff2 f x = (f (x +. _eps) +. f (x -. _eps) -. (2. *. f x)) /. (_eps *. _eps)
 
 
-  (* second order derivative of f : scalar -> scalar *)
+  (* second order derivative of f : float -> float, return both function value and derivative *)
   let diff2' f x = f x, diff2 f x
 
 
