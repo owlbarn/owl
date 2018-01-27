@@ -28,6 +28,7 @@ let range_fold a b ~f ~init =
     else go (f acc x) (x + 1)
   in go init a
 
+
 let array_reverse x =
   let d = Array.length x - 1 in
   let n = d / 2 in
@@ -36,6 +37,7 @@ let array_reverse x =
     x.(i) <- x.(d - i);
     x.(d - i) <- t;
   done
+
 
 (* insert element [a] at position [i] in [x] *)
 let array_insert x i a =
@@ -46,10 +48,12 @@ let array_insert x i a =
   Array.blit x i y (i + 1) (n - i);
   y
 
+
 (* get the suffix a file name *)
 let get_suffix s =
   let parts = Str.(split (regexp "\\.")) s in
   List.(nth parts (length parts - 1))
+
 
 let count_dup l =
   match l with
@@ -61,6 +65,7 @@ let count_dup l =
                   tl
     in (x,c)::acc
 
+
 (* save a marshalled object to a file *)
 let marshal_to_file x f =
   let s = Marshal.to_string x [] in
@@ -68,14 +73,13 @@ let marshal_to_file x f =
   output_string h s;
   close_out h
 
+
 (* load a marshalled object from a file *)
 let marshal_from_file f =
   let h = open_in f in
   let s = really_input_string h (in_channel_length h) in
   Marshal.from_string s 0
 
-(* check if passed-in variable is a row vector *)
-let check_row_vector x = assert ((Bigarray.Genarray.dims x).(0) = 1)
 
 (* search the list given a value, return the position of its first occurrence *)
 let list_search x l =

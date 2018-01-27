@@ -6,8 +6,8 @@
 
 module type Sig = sig
 
-   type elt
+  type elt
 
-   val add : elt -> elt -> elt
+  val add : elt -> elt -> elt
 
 end
