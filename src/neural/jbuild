@@ -1,11 +1,12 @@
 (jbuild_version 1)
 
 (library (
-  (name owl_utils)
-  (public_name owl_utils)
+  (name owl_neural)
+  (public_name owl_neural)
   (wrapped false)
   (flags (:standard -safe-string))
   (libraries (
-    owl_types
+    owl_utils
+    owl_optimise
   ))
 ))

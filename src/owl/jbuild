@@ -177,6 +177,7 @@
     owl_types
     owl_utils
     owl_optimise
+    owl_neural
     ctypes
     ctypes.stubs
     eigen

@@ -1357,15 +1357,6 @@ val sum_slices : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
   more memory.
  *)
 
-val calc_conv1d_output_shape : padding -> int -> int -> int -> int
-(** [] *)
-
-val calc_conv2d_output_shape : padding -> int -> int -> int -> int -> int -> int -> int * int
-(** [] *)
-
-val calc_conv3d_output_shape : padding -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int * int * int
-(** [] *)
-
 (* val draw_slices : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array array *)
 (** [] *)
 

@@ -1528,46 +1528,6 @@ let pad ?v d x =
  *)
 
 
-(* calculate the output shape of [conv2d] given input and kernel and stride *)
-let calc_conv2d_output_shape
-  padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
-  =
-  let input_cols = float_of_int input_cols in
-  let input_rows = float_of_int input_rows in
-  let kernel_cols = float_of_int kernel_cols in
-  let kernel_rows = float_of_int kernel_rows in
-  let row_stride = float_of_int row_stride in
-  let col_stride = float_of_int col_stride in
-  let output_cols = match padding with
-    | SAME  -> (input_cols /. col_stride) |> Owl_maths.ceil |> int_of_float
-    | VALID -> ((input_cols -. kernel_cols +. 1.) /. col_stride) |> Owl_maths.ceil |> int_of_float
-  in
-  let output_rows = match padding with
-    | SAME  -> (input_rows /. row_stride) |> Owl_maths.ceil |> int_of_float
-    | VALID -> ((input_rows -. kernel_rows +. 1.) /. row_stride) |> Owl_maths.ceil |> int_of_float
-  in
-  (output_cols, output_rows)
-
-(* calculate the padding size along width and height *)
-let calc_conv2d_padding
-  input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
-  =
-  let pad_along_height = Pervasives.max ((output_rows - 1) * row_stride + kernel_rows - input_rows) 0 in
-  let pad_along_width = Pervasives.max ((output_cols - 1) * col_stride + kernel_cols - input_cols) 0 in
-  let pad_top = pad_along_height / 2 in
-  let pad_bottom = pad_along_height - pad_top in
-  let pad_left = pad_along_width / 2 in
-  let pad_right = pad_along_width - pad_left in
-  pad_top, pad_left, pad_bottom, pad_right
-
-(* calc_conv1d_output_shape actually calls its 2d version  *)
-let calc_conv1d_output_shape padding input_cols kernel_cols col_stride =
-  let input_rows = 1 in
-  let kernel_rows = 1 in
-  let row_stride = 1 in
-  calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
-  |> fst
-
 (* conv2d: 4d input and 4d kernel, refer to tensorlfow doc
   input : [batch; input_column; input_row; input_channel]
   kernel: [kernel_column; kernel_row; input_channel; output_channel]
@@ -1597,19 +1557,11 @@ let conv2d ?(padding=SAME) input kernel stride =
   let row_in_stride = 1 in
 
   let output_cols, output_rows =
-    calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+    Owl_utils_conv.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   in
   let output = empty (kind input) [|batches; output_cols; output_rows; out_channel|] in
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
-
-  (* FIXME: DEBUG *)
-  (*
-  Printf.printf "input:\t [ b:%i, c:%i, r:%i, i:%i ]\n" batches input_cols input_rows in_channel;
-  Printf.printf "kernel:\t [ c:%i, r:%i, i:%i, o:%i ]\n" kernel_cols kernel_rows in_channel out_channel;
-  Printf.printf "output:\t [ b:%i, c:%i, r:%i, o:%i ]\n" batches output_cols output_rows out_channel;
-  flush_all ();
-  *)
 
   _eigen_spatial_conv (kind input)
     input kernel output batches input_cols input_rows in_channel
@@ -1699,36 +1651,6 @@ let conv2d_backward_kernel input kernel stride output' =
   kernel'
 
 
-(* calculate the output shape of [conv3d] given input and kernel and stride *)
-let calc_conv3d_output_shape
-  padding input_cols input_rows input_dpts
-  kernel_cols kernel_rows kernel_dpts
-  row_stride col_stride dpt_stride
-  =
-  let input_cols = float_of_int input_cols in
-  let input_rows = float_of_int input_rows in
-  let input_dpts = float_of_int input_dpts in
-  let kernel_cols = float_of_int kernel_cols in
-  let kernel_rows = float_of_int kernel_rows in
-  let kernel_dpts = float_of_int kernel_dpts in
-  let row_stride = float_of_int row_stride in
-  let col_stride = float_of_int col_stride in
-  let dpt_stride = float_of_int dpt_stride in
-  let output_cols = match padding with
-    | SAME  -> (input_cols /. col_stride) |> Owl_maths.ceil |> int_of_float
-    | VALID -> ((input_cols -. kernel_cols +. 1.) /. col_stride) |> Owl_maths.ceil |> int_of_float
-  in
-  let output_rows = match padding with
-    | SAME  -> (input_rows /. row_stride) |> Owl_maths.ceil |> int_of_float
-    | VALID -> ((input_rows -. kernel_rows +. 1.) /. row_stride) |> Owl_maths.ceil |> int_of_float
-  in
-  let output_dpts = match padding with
-    | SAME  -> (input_dpts /. dpt_stride) |> Owl_maths.ceil |> int_of_float
-    | VALID -> ((input_dpts -. kernel_dpts +. 1.) /. dpt_stride) |> Owl_maths.ceil |> int_of_float
-  in
-  (output_cols, output_rows, output_dpts)
-
-
 (* conv3d: 5d input and 5d kernel, refer to tensorflow doc
   input : [batch; input_column; input_row; input_depth; input_channel]
   kernel: [kernel_column; kernel_row; kernel_depth; input_channel; output_channel]
@@ -1759,19 +1681,11 @@ let conv3d ?(padding=SAME) input kernel stride =
   let dpt_stride = stride.(2) in
 
   let output_cols, output_rows, output_dpts =
-    calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+    Owl_utils_conv.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
   in
   let output = empty (kind input) [|batches; output_cols; output_rows; output_dpts; out_channel|] in
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
-
-  (* FIXME: DEBUG *)
-  (*
-  Printf.printf "input:\t [ b:%i, c:%i, r:%i, d:%i, i:%i ]\n" batches input_cols input_rows input_dpts in_channel;
-  Printf.printf "kernel:\t [ c:%i, r:%i, d:%i, i:%i, o:%i ]\n" kernel_cols kernel_rows kernel_dpts in_channel out_channel;
-  Printf.printf "output:\t [ b:%i, c:%i, r:%i, d:%i, o:%i ]\n" batches output_cols output_rows output_dpts out_channel;
-  flush_all ();
-  *)
 
   _eigen_cuboid_conv (kind input)
     input kernel output batches
@@ -2002,7 +1916,7 @@ let max_pool2d ?(padding=SAME) input kernel stride =
   let row_in_stride = 1 in
 
   let output_cols, output_rows =
-    calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+    Owl_utils_conv.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   in
   let output = empty (kind input) [|batches; output_cols; output_rows; in_channel|] in
 
@@ -2067,7 +1981,7 @@ let avg_pool2d ?(padding=SAME) input kernel stride =
   let row_in_stride = 1 in
 
   let output_cols, output_rows =
-    calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+    Owl_utils_conv.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   in
   let output = empty (kind input) [|batches; output_cols; output_rows; in_channel|] in
 
@@ -2133,7 +2047,7 @@ let max_pool3d ?(padding=SAME) input kernel stride =
   let dpt_stride = stride.(2) in
 
   let output_cols, output_rows, output_dpts =
-    calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+    Owl_utils_conv.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
   in
   let output = empty (kind input) [|batches; output_cols; output_rows; output_dpts; in_channel|] in
 
@@ -2171,7 +2085,7 @@ let avg_pool3d ?(padding=SAME) input kernel stride =
   let dpt_stride = stride.(2) in
 
   let output_cols, output_rows, output_dpts =
-    calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+    Owl_utils_conv.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
   in
   let output = empty (kind input) [|batches; output_cols; output_rows; output_dpts; in_channel|] in
 
@@ -2206,13 +2120,13 @@ let max_pool2d_argmax ?(padding=SAME) input kernel stride =
   let row_stride = stride.(1) in
 
   let output_cols, output_rows =
-    calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+    Owl_utils_conv.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   in
   let output = empty (kind input) [|batches; output_cols; output_rows; in_channel|] in
   let argmax = Genarray.create int64 c_layout [|batches; output_cols; output_rows; in_channel|] in
 
   let pad_top, pad_left, _, _ =
-    calc_conv2d_padding input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
+    Owl_utils_conv.calc_conv2d_padding input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
   in
 
   _eigen_spatial_max_pooling_argmax (kind input)
@@ -2243,10 +2157,10 @@ let max_pool2d_backward padding input kernel stride output' =
   let row_stride = stride.(1) in
 
   let output_cols, output_rows =
-    calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+    Owl_utils_conv.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   in
   let pad_top, pad_left, _, _ =
-    calc_conv2d_padding input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
+    Owl_utils_conv.calc_conv2d_padding input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
   in
   let input' = empty (kind input) (shape input) in
 
@@ -2309,10 +2223,10 @@ let avg_pool2d_backward padding input kernel stride output' =
   let row_stride = stride.(1) in
 
   let output_cols, output_rows =
-    calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
+    Owl_utils_conv.calc_conv2d_output_shape padding input_cols input_rows kernel_cols kernel_rows row_stride col_stride
   in
   let pad_top, pad_left, _, _ =
-    calc_conv2d_padding input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
+    Owl_utils_conv.calc_conv2d_padding input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
   in
   let input' = empty (kind input) (shape input) in
 
