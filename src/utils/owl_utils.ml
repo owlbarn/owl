@@ -19,16 +19,6 @@ let range_fold a b ~f ~init =
     else go (f acc x) (x + 1)
   in go init a
 
-(*
-let array_exists f x =
-  try Array.iter (fun a -> if f a then failwith "found") x; false
-  with exn -> true
-
-let array_mem a x =
-  try Array.iter (fun b -> if b = a then failwith "found") x; false
-  with exn -> true
-*)
-
 let array_reverse x =
   let d = Array.length x - 1 in
   let n = d / 2 in
@@ -149,8 +139,6 @@ end
 module Array = struct
 
   include Array
-
-  let sum x = Owl_stats_extend.sum x
 
   (* filter array, f : int -> 'a -> bool * 'b *)
   let filteri_v f x =
