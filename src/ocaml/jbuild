@@ -1,9 +1,5 @@
 (jbuild_version 1)
 
-(copy_files# maths/*)
-(copy_files# optimise/*)
-(copy_files# misc/*)
-
 (library (
   (name owl_ocaml)
   (public_name owl_ocaml)
@@ -11,5 +7,9 @@
   (flags (:standard -safe-string))
   (libraries (
     bigarray
+    owl_const
+    owl_types
+    owl_utils
+    owl_optimise
   ))
 ))

@@ -111,17 +111,23 @@ module GenarrayFloat64Elt : GenarrayFloatEltSig = struct
   let element_kind = float64
 end
 
-module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
+module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
 
   type arr = (float, ELT.elt, c_layout) Genarray.t
 
   type elt = float
 
+  module Scalar = Owl_maths_pure
+
   let empty dims = (Genarray.create ELT.element_kind c_layout dims)
 
-  let zeros dims = let varr = empty dims in (Genarray.fill varr 0.; varr)
+  let create dims value =
+    let varr = empty dims in
+    (Genarray.fill varr value; varr)
 
-  let ones dims = let varr = empty dims in (Genarray.fill varr 1.; varr)
+  let zeros dims = create dims 0.
+
+  let ones dims = create dims 1.
 
   (* return the shape of the ndarray *)
   let shape varr = Genarray.dims varr
@@ -138,9 +144,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
   let get_slice index_list varr =
     let dims = shape varr in
     let x = match index_list with
-      | y::tl -> (match y with
-            | I x -> 1
-            | _ -> 2)
+      | y::tl -> 1
       | [] -> 0
     in
     (raise (Failure "get_slice - not implemented"); varr)
@@ -150,9 +154,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
     let dims_a = shape varr_a in
     let dims_b = shape varr_b in
     let x = match index_list with
-      | y::tl -> (match y with
-          | I x -> 1
-          | _ -> 2)
+      | y::tl -> 1
       | [] -> 0
     in
     (raise (Failure "get_slice - not implemented"); ())
@@ -219,8 +221,8 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
           case := true;
           u1 := Random.State.float rand_gen 1.;
           u2 := Random.State.float rand_gen 1.;
-          z0 := (Pervasives.sqrt ((~-. 2.) *. (Pervasives.log (!u1)))) *. (Pervasives.cos (2. *. Owl_const.pi *. (!u2)));
-          z1 := (Pervasives.sqrt ((~-. 2.) *. (Pervasives.log (!u1)))) *. (Pervasives.sin (2. *. Owl_const.pi *. (!u2)));
+          z0 := (Scalar.sqrt ((~-. 2.) *. (Scalar.log (!u1)))) *. (Scalar.cos (2. *. Owl_const.pi *. (!u2)));
+          z1 := (Scalar.sqrt ((~-. 2.) *. (Scalar.log (!u1)))) *. (Scalar.sin (2. *. Owl_const.pi *. (!u2)));
           mu +. sigma *. !z0
         )
       ) in
@@ -252,11 +254,11 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
     let dims = shape varr in
     let rank = Array.length dims in
     let pos = ref 0 in
-    let axis_indices = Array.map (fun d -> (pos := !pos + d; R [!pos - d; !pos - 1])) parts in
+    let axis_indices = Array.map (fun d -> (pos := !pos + d; [!pos - d; !pos - 1])) parts in
     let slices_defs =
       Array.map (fun ind ->
           Array.to_list (Array.init rank
-                           (fun i -> if i = axis then ind else R [])))
+                           (fun i -> if i = axis then ind else [])))
         axis_indices
     in
     (Array.map (fun def -> get_slice def varr) slices_defs)
@@ -348,71 +350,59 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
   (* mathematical functions *)
 
   (* Absolute values of all elements, in a new arrray *)
-  let abs varr = (_map_fun Pervasives.abs_float varr)
+  let abs varr = (_map_fun Scalar.abs varr)
 
-  let neg varr = (_map_fun Pervasives.(~-.) varr)
+  let neg varr = (_map_fun Scalar.neg varr)
 
-  let floor varr = (_map_fun Pervasives.floor varr)
+  let floor varr = (_map_fun Scalar.floor varr)
 
-  let ceil varr = (_map_fun Pervasives.ceil varr)
+  let ceil varr = (_map_fun Scalar.ceil varr)
 
   let round varr =
-    let round_fun = (fun x -> (Pervasives.floor (x +. 0.5))) in
+    let round_fun = (fun x -> (Scalar.floor (x +. 0.5))) in
     (_map_fun round_fun varr)
 
   let sqr varr =
     let sqr_fun = (fun x -> x *. x) in
     (_map_fun sqr_fun varr)
 
-  let sqrt varr = (_map_fun Pervasives.sqrt varr)
+  let sqrt varr = (_map_fun Scalar.sqrt varr)
 
-  let log varr = (_map_fun Pervasives.log varr)
+  let log varr = (_map_fun Scalar.log varr)
 
   let log2 varr =
-    let log2_fun = (fun x -> ((Pervasives.log x) /. (Pervasives.log 2.))) in
+    let log2_fun = (fun x -> ((Scalar.log x) /. (Scalar.log 2.))) in
     (_map_fun log2_fun varr)
 
-  let log10 varr = (_map_fun Pervasives.log10 varr)
+  let log10 varr = (_map_fun Scalar.log10 varr)
 
-  let exp varr = (_map_fun Pervasives.exp varr)
+  let exp varr = (_map_fun Scalar.exp varr)
 
-  let sin varr = (_map_fun Pervasives.sin varr)
+  let sin varr = (_map_fun Scalar.sin varr)
 
-  let cos varr = (_map_fun Pervasives.cos varr)
+  let cos varr = (_map_fun Scalar.cos varr)
 
-  let tan varr = (_map_fun Pervasives.tan varr)
+  let tan varr = (_map_fun Scalar.tan varr)
 
-  let tan varr = (_map_fun Pervasives.tan varr)
+  let tan varr = (_map_fun Scalar.tan varr)
 
-  let sinh varr = (_map_fun Pervasives.sinh varr)
+  let sinh varr = (_map_fun Scalar.sinh varr)
 
-  let cosh varr = (_map_fun Pervasives.cosh varr)
+  let cosh varr = (_map_fun Scalar.cosh varr)
 
-  let tanh varr = (_map_fun Pervasives.tanh varr)
+  let tanh varr = (_map_fun Scalar.tanh varr)
 
-  let asin varr = (_map_fun Pervasives.asin varr)
+  let asin varr = (_map_fun Scalar.asin varr)
 
-  let acos varr = (_map_fun Pervasives.acos varr)
+  let acos varr = (_map_fun Scalar.acos varr)
 
-  let atan varr = (_map_fun Pervasives.atan varr)
+  let atan varr = (_map_fun Scalar.atan varr)
 
-  let asinh varr =
-    (* asinh(x) is log(x + sqrt(x * x + 1)) TODO: check this is precise enough*)
-    let asinh_fun =
-      (fun x -> (Pervasives.log (x +. (Pervasives.sqrt ((x *. x) +. 1.))))) in
-    (_map_fun asinh_fun varr)
+  let asinh varr = (_map_fun Scalar.asinh varr)
 
-  let acosh varr =
-    (* acosh(x) is log(x + sqrt(x * x - 1)) TODO: check this is precise enough*)
-    let acosh_fun =
-      (fun x -> (Pervasives.log (x +. (Pervasives.sqrt ((x *. x) -. 1.))))) in
-    (_map_fun acosh_fun varr)
+  let acosh varr = (_map_fun Scalar.acosh varr)
 
-  let atanh varr =
-    (* atanh(x) is 1/2 * log((1 + x)/(1-x)))TODO: check this is precise enough*)
-    let atanh_fun =
-      (fun x -> (0.5 *. (Pervasives.log ((1. +. x) /. (1. -. x))))) in
-    (_map_fun atanh_fun varr)
+  let atanh varr = (_map_fun Scalar.atanh varr)
 
   (* TODO: can this be made more efficient? *)
   let sum ?(axis=0) varr =
@@ -473,31 +463,12 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
 
   (* -1. for negative numbers, 0 or (-0) for 0,
    1 for positive numbers, nan for nan*)
-  let signum varr =
-    let signum_fun =
-      (fun x ->
-         if ((compare x nan) = 0)
-         then nan
-         else (
-           if (x > 0.)
-           then 1.
-           else (
-             if x < 0.
-             then (~-. 1.)
-             else 0.
-           )
-         )
-      ) in
-    (_map_fun signum_fun varr)
+  let signum varr = (_map_fun Scalar.signum varr)
 
   (* Apply 1 / (1 + exp (-x)) for each element x *)
-  let sigmoid varr =
-    let sigmoid_fun = (fun x -> (1. /. (1. +. (Pervasives.log (~-. x)) ) )) in
-    (_map_fun sigmoid_fun varr)
+  let sigmoid varr = (_map_fun Scalar.sigmoid varr)
 
-  let relu varr =
-    let relu_fun = (fun x -> Pervasives.max 0. x) in
-    (_map_fun relu_fun varr)
+  let relu varr = (_map_fun Scalar.relu varr)
 
   let _fold_left f a varr =
     let aref = ref a in
@@ -521,7 +492,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
 
   let l1norm' varr =
     let l1norm_fun =
-      (fun aggregate elem -> (aggregate +. (Pervasives.abs_float (elem)))) in
+      (fun aggregate elem -> (aggregate +. (Scalar.abs (elem)))) in
     (_fold_left l1norm_fun 0. varr)
 
   let l2norm_sqr' varr =
@@ -531,7 +502,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
 
   let l2norm' varr =
     let l2norm_sqr_val = l2norm_sqr' varr in
-    (Pervasives.sqrt l2norm_sqr_val)
+    (Scalar.sqrt l2norm_sqr_val)
 
   (* scalar_pow a varr computes the power of scalar to each element of varr *)
   let scalar_pow a varr =
@@ -544,11 +515,11 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
     (_map_fun pow_scalar_fun varr)
 
   let scalar_atan2 a varr =
-    let scalar_atan2_fun = (fun x -> (Pervasives.atan2 a x)) in
+    let scalar_atan2_fun = (fun x -> (Scalar.atan2 a x)) in
     (_map_fun scalar_atan2_fun varr)
 
   let atan2_scalar varr a =
-    let atan2_scalar_fun = (fun x -> (Pervasives.atan2 x a)) in
+    let atan2_scalar_fun = (fun x -> (Scalar.atan2 x a)) in
     (_map_fun atan2_scalar_fun varr)
 
   let _broadcasted_op varr_a varr_b op_fun =
@@ -579,7 +550,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : NdarraySig = struct
 
   let div varr_a varr_b = (_broadcasted_op varr_a varr_b ( /. ))
 
-  let atan2 varr_a varr_b = (_broadcasted_op varr_a varr_b (Pervasives.atan2))
+  let atan2 varr_a varr_b = (_broadcasted_op varr_a varr_b (Scalar.atan2))
 
   let pow varr_a varr_b = (_broadcasted_op varr_a varr_b ( ** ))
 

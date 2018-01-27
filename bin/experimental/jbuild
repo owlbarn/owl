@@ -7,6 +7,7 @@
   (libraries  (
     owl_ocaml
     js_of_ocaml
+    str
   ))
   (flags (:standard -safe-string))
   (modes      (byte))
