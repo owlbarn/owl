@@ -9,12 +9,12 @@ open Owl_types
 (* Functor of making numerical differentiation module of different precisions *)
 
 module Make
-  (A : Ndarray_Algodiff)
+  (A : Ndarray_Numdiff)
   = struct
 
   type arr = A.arr
   type elt = A.elt
-  
+
 
   (* global epsilon value used in numerical differentiation *)
   let _eps = 0.00001
@@ -36,9 +36,8 @@ module Make
   let diff2' f x = f x, diff2 f x
 
   (* gradient of f : vector -> scalar, return both function value and gradient *)
-  (*
   let grad' f x =
-    (* Owl_utils.check_row_vector x; *)
+    (* FIXME Owl_utils.check_row_vector x; *)
     let n = A.numel x in
     let g = A.create [|n|] (f x) in
     let gg = A.mapi (fun i xi ->
@@ -48,17 +47,14 @@ module Make
     ) x
     in
     g, A.((gg - g) *$ _ep1)
-  *)
 
   (* gradient of f : vector -> scalar *)
-  (*
   let grad f x = grad' f x |> snd
-  *)
 
   (* transposed jacobian of f : vector -> vector, return both function value and jacobian *)
   (*
   let jacobianT' f x =
-    Owl_utils.check_row_vector x;
+    (* FIXME Owl_utils.check_row_vector x; *)
     let y = f x in
     let m, n = A.numel x, A.numel y in
     let j = A.tile y [|m; 1|] in
@@ -80,7 +76,7 @@ module Make
   (*
   let jacobian' f x =
     let y, j = jacobianT' f x in
-    y, M.transpose j
+    y, M.matrix_transpose j
   *)
 
   (* jacobian of f : vector -> vector *)

@@ -11,7 +11,7 @@ open Owl_types
 (** The functor used to generate Numdiff module of various precisions. *)
 
 module Make
-  (A : Ndarray_Algodiff)
+  (A : Ndarray_Numdiff)
   : sig
 
   type arr = A.arr

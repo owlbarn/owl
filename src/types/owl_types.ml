@@ -41,6 +41,13 @@ module type Ndarray_Algodiff = sig
 end
 
 
+module type Ndarray_Numdiff = sig
+
+  include Owl_types_ndarray_numdiff.Sig
+
+end
+
+
 module type Stats_Dist = sig
 
   include Owl_types_stats_dist.Sig

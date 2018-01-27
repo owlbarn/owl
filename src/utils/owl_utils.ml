@@ -222,9 +222,6 @@ let write_file f s =
   close_out h
 
 
-(* The following function relates to performance measurement *)
-
-
 (** measure the time spent in a function in millisecond *)
 let time f =
   let t = Unix.gettimeofday () in
