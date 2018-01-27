@@ -66,3 +66,23 @@ let index_nd_1d j s =
   let i = ref 0 in
   Array.iteri (fun k a -> i := !i + (a * s.(k))) j;
   !i
+
+
+(* given ndarray [x] and 1d index, return nd index. *)
+let ind x i_1d =
+  let shape = Genarray.dims x in
+  let stride = calc_stride shape in
+  let i_nd = Array.copy stride in
+  index_1d_nd i_1d i_nd stride;
+  i_nd
+
+
+(* given ndarray [x] and nd index, return 1d index. *)
+let i1d x i_nd =
+  let shape = Genarray.dims x in
+  let stride = calc_stride shape in
+  index_nd_1d i_nd stride
+
+
+
+(* ends here *)

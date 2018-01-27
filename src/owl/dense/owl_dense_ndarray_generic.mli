@@ -51,7 +51,7 @@ val init : ('a, 'b) kind -> int array -> (int -> 'a) -> ('a, 'b) t
 (** [init Bigarray.Float64 d f] creates a ndarray [x] of shape [d], then using
   [f] to initialise the elements in [x]. The input of [f] is 1-dimensional
   index of the ndarray. You need to explicitly convert it if you need N-dimensional
-  index. The function [index_1d_nd] can help you.
+  index. The function [ind] can help you.
  *)
 
 val init_nd : ('a, 'b) kind -> int array -> (int array -> 'a) -> ('a, 'b) t
@@ -154,8 +154,8 @@ val kind : ('a, 'b) t -> ('a, 'b) kind
  *)
 
 val strides : ('a, 'b) t -> int array
-(** [strides x] calcuates the strides of [x]. E.g., if [x] is of shape [[|3;4;5|]],
-  the returned strides will be [[|20;5;1|]].
+(** [strides x] calcuates the strides of [x]. E.g., if [x] is of shape
+  [[|3;4;5|]], the returned strides will be [[|20;5;1|]].
  *)
 
 val slice_size : ('a, 'b) t -> int array
@@ -163,19 +163,11 @@ val slice_size : ('a, 'b) t -> int array
   shape [[|3;4;5|]], the returned slice size will be [|60; 20; 5|].
  *)
 
-val index_1d_nd : int -> int array -> int array
-(** [index_1d_nd i stride] converts one-dimensional index [i] to n-dimensional
-  index according to the passed in [stride].
+val ind : ('a, 'b) t -> int -> int array
+(** [ind x i] converts [x]'s one-dimensional index [i] to n-dimensional one. *)
 
-  NOTE: you need to pass in stride, not the shape of [x]!
- *)
-
-val index_nd_1d : int array -> int array -> int
-(** [index_nd_1d i stride] converts n-dimensional index [i] to one-dimensional
-  index according to the passed in [stride].
-
-  NOTE: you need to pass in stride, not the shape of [x]!
- *)
+val i1d : ('a, 'b) t -> int array -> int
+(** [i1d x i] converts [x]'s n-dimensional index [i] to one-dimensional one. *)
 
 
 (** {6 Manipulate a N-dimensional array} *)

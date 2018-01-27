@@ -60,9 +60,9 @@ val strides : arr -> int array
 
 val slice_size : arr -> int array
 
-val index_1d_nd : int -> int array -> int array
+val ind : arr -> int -> int array
 
-val index_nd_1d : int array -> int array -> int
+val i1d : arr -> int array -> int
 
 
 (** {6 Manipulate a N-dimensional array} *)

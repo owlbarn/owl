@@ -262,14 +262,9 @@ let strides x = x |> shape |> Owl_utils.calc_stride
 let slice_size x = x |> shape |> Owl_utils.calc_slice
 
 
-let index_nd_1d i_nd _stride =
-  Owl_utils.index_nd_1d i_nd _stride
+let ind = Owl_utils.ind
 
-
-let index_1d_nd i_1d _stride =
-  let i_nd = Array.copy _stride in
-  Owl_utils.index_1d_nd i_1d i_nd _stride;
-  i_nd
+let i1d = Owl_utils.i1d
 
 
 (* align and calculate the output shape for broadcasting over [x0] and [x1] *)
