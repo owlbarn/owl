@@ -213,17 +213,7 @@ module Make
 
     val dot : t -> t -> t
 
-    val clip_by_l2norm : t -> t -> t
-
-    (* val iteri : (int -> int -> elt -> unit) -> t -> unit
-
-    val mapi : (int -> int -> elt -> elt) -> t -> t
-
-    val iter2_rows : (t -> t -> unit) -> t -> t -> unit
-    *)
     val map_by_row : (t -> t) -> t -> t
-
-    val draw_rows2 : ?replacement:bool -> t -> t -> int -> t * t * int array
 
     val of_arrays : elt array array -> t
 
@@ -370,6 +360,8 @@ module Make
 
 
   (* other functions, without tracking gradient *)
+
+  val clip_by_value : amin:elt -> amax:elt -> t -> t
 
   val clip_by_l2norm : elt -> t -> t
 

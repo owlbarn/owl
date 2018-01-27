@@ -20,7 +20,7 @@ module type Sig = sig
 
   val ( / ) : arr -> arr -> arr
 
-  val ( *$ ) : arr -> elt -> arr
+  val ( +$ ) : arr -> elt -> arr
 
   val ( -$ ) : arr -> elt -> arr
 

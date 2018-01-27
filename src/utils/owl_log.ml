@@ -7,13 +7,14 @@
 
 type color = Red | Green | Yellow | Blue | Magenta | Cyan
 
-type level = DEBUG | INFO | WARN | ERROR
+type level = DEBUG | INFO | WARN | ERROR | FATAL
 
 let _level_to_int = function
   | DEBUG -> 0
   | INFO  -> 1
   | WARN  -> 2
   | ERROR -> 3
+  | FATAL -> 4
 
 let _color_to_str = function
   | Red     -> "\027[31m"
@@ -47,6 +48,7 @@ let _level_to_str = function
   | INFO  -> _shall_paint Green "INFO"
   | WARN  -> _shall_paint Yellow "WARN"
   | ERROR -> _shall_paint Red "ERROR"
+  | FATAL -> _shall_paint Magenta "FATAL"
 
 let make_prefix lvl =
   let ts = Unix.gettimeofday() in
@@ -66,10 +68,12 @@ let _log lvl fmt =
   | true  -> Printf.fprintf !_output ("%s" ^^ fmt ^^ "\n%!") (make_prefix lvl)
   | false -> Printf.ifprintf !_output fmt
 
-let error fmt = _log ERROR fmt
-
-let warn fmt = _log WARN  fmt
-
-let info fmt = _log INFO  fmt
+let info fmt = _log INFO fmt
 
 let debug fmt = _log DEBUG fmt
+
+let warn fmt = _log WARN fmt
+
+let error fmt = _log ERROR fmt
+
+let fatal fmt = _log FATAL fmt
