@@ -7,7 +7,6 @@
   (flags (:standard -safe-string))
   (libraries (
     owl_types
-    owl_const
     owl_utils
   ))
 ))

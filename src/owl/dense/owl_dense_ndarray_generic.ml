@@ -53,7 +53,7 @@ let reshape x dimension = reshape x dimension
 
 let reset x = Genarray.fill x (Owl_const.zero (kind x))
 
-let mmap fd ?pos kind shared dims = Genarray.map_file fd ?pos kind c_layout shared dims
+let mmap fd ?pos kind shared dims = Unix.map_file fd ?pos kind c_layout shared dims
 
 let flatten x = reshape x [|numel x|]
 

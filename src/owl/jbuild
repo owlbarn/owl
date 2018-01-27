@@ -173,7 +173,6 @@
   ))
   (flags (:standard -safe-string))
   (libraries (
-    owl_const
     owl_types
     owl_utils
     owl_optimise
