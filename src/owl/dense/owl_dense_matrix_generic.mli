@@ -43,7 +43,7 @@ val init : ('a, 'b) kind -> int -> int -> (int -> 'a) -> ('a, 'b) t
 (** [init m n f] creates a matrix [x] of shape [m x n], then using
   [f] to initialise the elements in [x]. The input of [f] is 1-dimensional
   index of the matrix. You need to explicitly convert it if you need 2D
-  index. The function [Owl_utils._index_1d_nd] can help you.
+  index. The function [Owl_utils.index_1d_nd] can help you.
  *)
 
 val init_nd : ('a, 'b) kind -> int -> int -> (int -> int -> 'a) -> ('a, 'b) t
@@ -263,29 +263,29 @@ val set_index : ('a, 'b) t -> int array array -> 'a array -> unit
   indices in that dimension.
  *)
 
-val get_slice : index list -> ('a, 'b) t -> ('a, 'b) t
-(** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
-  which is an [int array]. Please refer to the same function in the
+val get_fancy : index list -> ('a, 'b) t -> ('a, 'b) t
+(** [get_fancy s x] returns a copy of the slice in [x]. The slice is defined by
+  [a] which is an [int array]. Please refer to the same function in the
   [Owl_dense_ndarray_generic] documentation for more details.
  *)
 
-val set_slice : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** [set_slice axis x y] set the slice defined by [axis] in [x] according to
+val set_fancy : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_fancy axis x y] set the slice defined by [axis] in [x] according to
   the values in [y]. [y] must have the same shape as the one defined by [axis].
 
   About the slice definition of [axis], please refer to [slice] function.
  *)
 
-val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
-(** [get_slice_simple axis x] aims to provide a simpler version of [get_slice].
+val get_slice : int list list -> ('a, 'b) t -> ('a, 'b) t
+(** [get_slice axis x] aims to provide a simpler version of [get_fancy].
   This function assumes that every list element in the passed in [in list list]
   represents a range, i.e., [R] constructor.
 
   E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
  *)
 
-val set_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** [set_slice_simple axis x y] aims to provide a simpler version of [set_slice].
+val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_slice axis x y] aims to provide a simpler version of [set_slice].
   This function assumes that every list element in the passed in [in list list]
   represents a range, i.e., [R] constructor.
 
@@ -440,7 +440,7 @@ val sort : ('a, 'b) t -> unit
 
 (** {6 Iterate elements, columns, and rows.} *)
 
-val iteri : (int -> int -> 'a -> unit) -> ('a, 'b) t -> unit
+val iteri : (int -> 'a -> unit) -> ('a, 'b) t -> unit
 (** [iteri f x] iterates all the elements in [x] and applies the user defined
   function [f : int -> int -> float -> 'a]. [f i j v] takes three parameters,
   [i] and [j] are the coordinates of current element, and [v] is its value.
@@ -451,7 +451,7 @@ val iter : ('a -> unit) -> ('a, 'b) t -> unit
   current element is not passed to the function [f : float -> 'a]
  *)
 
-val mapi : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+val mapi : (int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** [mapi f x] maps each element in [x] to a new value by applying
   [f : int -> int -> float -> float]. The first two parameters are the
   coordinates of the element, and the third parameter is the value.
@@ -462,25 +462,38 @@ val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
   current element is not passed to the function [f : float -> float]
  *)
 
-val map2i : (int -> int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+val map2i : (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-val foldi : (int -> int -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
-
-val fold : ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
-(** [fold f a x] folds all the elements in [x] with the function
-  [f : 'a -> float -> 'a]. For an [m] by [n] matrix [x], the order of folding
-  is from [(0,0)] to [(m-1,n-1)], row by row.
+val foldi : ?axis:int -> (int -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [foldi ~axis f a x] folds (or reduces) the elements in [x] from left along
+  the specified [axis] using passed in function [f]. [a] is the initial element
+  and in [f i acc b] [acc] is the accumulater and [b] is one of the elemets in
+  [x] along the same axis. Note that [i] is 1d index of [b].
  *)
 
-val filteri : (int -> int -> 'a -> bool) -> ('a, 'b) t -> (int * int) array
+val fold : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to [foldi], except that the index of an element is not passed to [f]. *)
+
+val scani : ?axis:int -> (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** [scan ~axis f x] scans the [x] along the specified [axis] using passed in
+  function [f]. [f acc a b] returns an updated [acc] which will be passed in
+  the next call to [f i acc a]. This function can be used to implement
+  accumulative operations such as [sum] and [prod] functions. Note that the [i]
+  is 1d index of [a] in [x].
+ *)
+
+val scan : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to [scani], except that the index of an element is not passed to [f]. *)
+
+val filteri : (int -> 'a -> bool) -> ('a, 'b) t -> int array
 (** [filteri f x] uses [f : int -> int -> float -> bool] to filter out certain
   elements in [x]. An element will be included if [f] returns [true]. The
   returned result is a list of coordinates of the selected elements.
  *)
 
-val filter : ('a -> bool) -> ('a, 'b) t -> (int * int) array
+val filter : ('a -> bool) -> ('a, 'b) t -> int array
 (** Similar to [filteri], but the coordinates of the elements are not passed to
   the function [f : float -> bool].
  *)
@@ -573,7 +586,7 @@ val map_by_col : int -> (('a, 'b) t -> ('a, 'b) t) -> ('a, 'b) t -> ('a, 'b) t
   indices are not passed to [f].
  *)
 
-val mapi_at_row : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
+val mapi_at_row : (int -> 'a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
 (** [mapi_at_row f x i] creates a new matrix by applying function [f] only to
   the [i]th row in matrix [x].
  *)
@@ -583,7 +596,7 @@ val map_at_row : ('a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
   of an element is not passed to [f].
  *)
 
-val mapi_at_col : (int -> int -> 'a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
+val mapi_at_col : (int -> 'a -> 'a) -> ('a, 'b) t -> int -> ('a, 'b) t
 (** [mapi_at_col f x j] creates a new matrix by applying function [f] only to
   the [j]th column in matrix [x].
  *)
@@ -966,7 +979,7 @@ val minmax_i : ('a, 'b) t -> ('a * int array) * ('a * int array)
 
 val inv : ('a, 'b) t -> ('a, 'b) t
 (** [inv x] calculates the inverse of an invertible square matrix [x]
-    such that [x *@ x = I] wherein [I] is an identity matrix.  (If [x] 
+    such that [x *@ x = I] wherein [I] is an identity matrix.  (If [x]
     is singular, [inv] will return a useless result.)
  *)
 

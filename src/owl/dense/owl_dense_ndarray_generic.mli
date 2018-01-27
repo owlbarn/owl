@@ -209,9 +209,9 @@ val set_index : ('a, 'b) t -> int array array -> 'a array -> unit
   [a] equals to one, then all the elements will be assigned the same value.
  *)
 
-val get_slice : index list -> ('a, 'b) t -> ('a, 'b) t
-(** [slice s x] returns a copy of the slice in [x]. The slice is defined by [a]
-  which is an [int option array]. E.g., for a ndarray [x] of dimension
+val get_fancy : index list -> ('a, 'b) t -> ('a, 'b) t
+(** [get_fancy s x] returns a copy of the slice in [x]. The slice is defined by
+  [a] which is an [int option array]. E.g., for a ndarray [x] of dimension
   [[|2; 2; 3|]], [slice [0] x] takes the following slices of index [\(0,*,*\)],
   i.e., [[|0;0;0|]], [[|0;0;1|]], [[|0;0;2|]] ... Also note that if the length
   of [s] is less than the number of dimensions of [x], [slice] function will
@@ -229,23 +229,23 @@ val get_slice : index list -> ('a, 'b) t -> ('a, 'b) t
   on arbitrary axis which need not start from left-most side.
  *)
 
-val set_slice : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** [set_slice axis x y] set the slice defined by [axis] in [x] according to
+val set_fancy : index list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_fancy axis x y] set the slice defined by [axis] in [x] according to
   the values in [y]. [y] must have the same shape as the one defined by [axis].
 
-  About the slice definition of [axis], please refer to [get_slice] function.
+  About the slice definition of [axis], please refer to [get_fancy] function.
  *)
 
-val get_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t
-(** [get_slice_simple axis x] aims to provide a simpler version of [get_slice].
+val get_slice : int list list -> ('a, 'b) t -> ('a, 'b) t
+(** [get_slice axis x] aims to provide a simpler version of [get_fancy].
   This function assumes that every list element in the passed in [int list list]
   represents a range, i.e., [R] constructor.
 
   E.g., [ [[];[0;3];[0]] ] is equivalent to [ [R []; R [0;3]; R [0]] ].
  *)
 
-val set_slice_simple : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** [set_slice_simple axis x y] aims to provide a simpler version of [set_slice].
+val set_slice : int list list -> ('a, 'b) t -> ('a, 'b) t -> unit
+(** [set_slice axis x y] aims to provide a simpler version of [set_fancy].
   This function assumes that every list element in the passed in [int list list]
   represents a range, i.e., [R] constructor.
 
@@ -379,94 +379,66 @@ val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -
 
 (** {6 Iterate array elements} *)
 
-val iteri : ?axis:int option array -> (int array -> 'a -> unit) -> ('a, 'b) t -> unit
-(** [iteri ~axis f x] applies function [f] to each element in a slice defined by
-  [~axis]. If [~axis] is not passed in, then [iteri] simply iterates all the
-  elements in [x].
+val iteri :(int -> 'a -> unit) -> ('a, 'b) t -> unit
+(** [iteri f x] applies function [f] to each element in [x]. Note that 1d index
+  is passed to function [f], you need to convert it to nd-index by yourself.
  *)
 
-val iter : ?axis:int option array -> ('a -> unit) -> ('a, 'b) t -> unit
-(** [iter ~axis f x] is similar to [iteri ~axis f x], excpet the index [i] of
-  an element is not passed in [f]. Note that [iter] is much faster than [iteri].
+val iter : ('a -> unit) -> ('a, 'b) t -> unit
+(** [iter f x] is similar to [iteri f x], excpet the index is not passed to [f]. *)
+
+val mapi : (int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** [mapi f x] makes a copy of [x], then applies [f] to each element in [x]. *)
+
+val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** [map f x] is similar to [mapi f x] except the index is not passed. *)
+
+val filteri : (int -> 'a -> bool) -> ('a, 'b) t -> int array
+(** [filteri f x] uses [f] to filter out certain elements in [x]. An element
+  will be included if [f] returns [true]. The returned result is an array of
+  1-dimensional indices of the selected elements. To obtain the n-dimensional
+  indices, you need to convert it manulally with Owl's helper function.
  *)
 
-val mapi : ?axis:int option array -> (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** [mapi ~axis f x] makes a copy of [x], then applies [f] to each element in a
-  slice defined by [~axis].  If [~axis] is not passed in, then [mapi] simply
-  iterates all the elements in [x].
+val filter : ('a -> bool) -> ('a, 'b) t -> int array
+(** Similar to [filteri], but the indices are not passed to [f]. *)
+
+val foldi : ?axis:int -> (int -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
+(** [foldi ~axis f a x] folds (or reduces) the elements in [x] from left along
+  the specified [axis] using passed in function [f]. [a] is the initial element
+  and in [f i acc b] [acc] is the accumulater and [b] is one of the elemets in
+  [x] along the same axis. Note that [i] is 1d index of [b].
  *)
 
-val map : ?axis:int option array -> ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** [map ~axis f x] is similar to [mapi ~axis f x] except the index of the
-  current element is not passed to the function [f]. Note that [map] is much
-  faster than [mapi].
- *)
-
-val map2i : ?axis:int option array -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [map2i ~axis f x y] applies [f] to two elements of the same position in a
-  slice defined by [~axis] in both [x] and [y]. If [~axis] is not passed in,
-  then [map2i] simply iterates all the elements in [x] and [y]. The two matrices
-  mush have the same shape.
- *)
-
-val map2 : ?axis:int option array -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** [map2 ~axis f x y] is similar to [map2i ~axis f x y] except the index of the
-  index of the current element is not passed to the function [f].
- *)
-
-val filteri : ?axis:int option array -> (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
-(** [filteri ~axis f x] uses [f] to filter out certain elements in a slice
-  defined by [~axis]. An element will be included if [f] returns [true]. The
-  returned result is a list of indices of the selected elements.
- *)
-
-val filter : ?axis:int option array -> ('a -> bool) -> ('a, 'b) t -> int array array
-(** Similar to [filteri], but the indices of the elements are not passed to [f]. *)
-
-val foldi : ?axis:int option array -> (int array -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
-(** [foldi ~axis f a x] folds all the elements in a slice defined by [~axis]
-  with the function [f]. If [~axis] is not passed in, then [foldi] simply
-  folds all the elements in [x].
- *)
-
-val fold : ?axis:int option array -> ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
+val fold : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Similar to [foldi], except that the index of an element is not passed to [f]. *)
 
-val fold__ : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
-(** [TODO: rename and add doc] [fold ~axis f a x] folds the elements in [x] from
-  left along specified [axis] using passed in function [f]. [a] is the initial
-  element and in [f acc b] is the accumulater and [b] is one of the elemets in
-  [x] along the same axis.
+val scani : ?axis:int -> (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** [scan ~axis f x] scans the [x] along the specified [axis] using passed in
+  function [f]. [f acc a b] returns an updated [acc] which will be passed in
+  the next call to [f i acc a]. This function can be used to implement
+  accumulative operations such as [sum] and [prod] functions. Note that the [i]
+  is 1d index of [a] in [x].
  *)
 
-val cumulate : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** [TODO: rename and add doc] [accumulate ~axis f x] scans the [x] along specified
-  [axis] using passed in function [f]. [f acc a b] returns an updated [acc] which
-  will be passed in the next call to [f acc a b]. This function can be used to
-  implement accumulate [sum] and [prod] funcgions.
- *)
+val scan : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to [scani], except that the index of an element is not passed to [f]. *)
 
-val iteri_slice : int array -> (int array array -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
-(** [iteri_slice s f x] iterates the slices along the passed in axis indices [s],
-  and applies the function [f] to each of them. The order of iterating slices is
-  based on the order of axis in [s].
-
-  E.g., for a three-dimensional ndarray of shape [[|2;2;2|]], [iteri_slice [|1;0|] f x]
-  will access the slices in the following order: [[ [0]; [0]; [] ]],
-  [[ [1]; [0]; [] ]], [[ [1]; [1]; [] ]]. Also note the slice passed in [f] is
-  a copy of the original data.
- *)
-
-val iter_slice : int array -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
-(** Similar to [iteri_slice], except that the index of a slice is not passed to [f]. *)
-
-val iter2i : (int array -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
+val iter2i : (int -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 (** Similar to [iteri] but applies to two N-dimensional arrays [x] and [y]. Both
   [x] and [y] must have the same shape.
  *)
 
 val iter2 : ('a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 (** Similar to [iter2i], except that the index of a slice is not passed to [f]. *)
+
+val map2i : (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [map2i f x y] applies [f] to two elements of the same position in both [x]
+  and [y]. Note that 1d index is passed to funciton [f].
+ *)
+
+val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** [map2 f x y] is similar to [map2i f x y] except the index is not passed. *)
 
 
 (** {6 Examine array elements or compare two arrays } *)
@@ -1384,15 +1356,6 @@ val sum_slices : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
   shape [|4;5|]. Currently, the operation is done using [gemm], fast but uses
   more memory.
  *)
-
-val calc_conv1d_output_shape : padding -> int -> int -> int -> int
-(** [] *)
-
-val calc_conv2d_output_shape : padding -> int -> int -> int -> int -> int -> int -> int * int
-(** [] *)
-
-val calc_conv3d_output_shape : padding -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int * int * int
-(** [] *)
 
 (* val draw_slices : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array array *)
 (** [] *)

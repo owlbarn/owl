@@ -29,8 +29,6 @@ val eye : int -> mat
 
 val sequential : ?a:elt -> ?step:elt -> int -> int -> mat
 
-val uniform_int : ?a:int -> ?b:int -> int -> int -> mat
-
 val uniform : ?a:elt -> ?b:elt -> int -> int -> mat
 
 val gaussian : ?mu:elt -> ?sigma:elt -> int -> int -> mat
@@ -106,13 +104,13 @@ val get_index : mat -> int array array -> elt array
 
 val set_index : mat -> int array array -> elt array -> unit
 
-val get_slice : index list -> mat -> mat
+val get_fancy : index list -> mat -> mat
 
-val set_slice : index list -> mat -> mat -> unit
+val set_fancy : index list -> mat -> mat -> unit
 
-val get_slice_simple : int list list -> mat -> mat
+val get_slice : int list list -> mat -> mat
 
-val set_slice_simple : int list list -> mat -> mat -> unit
+val set_slice : int list list -> mat -> mat -> unit
 
 val row : mat -> int -> mat
 
@@ -181,25 +179,29 @@ val sort : mat -> unit
 
 (** {6 Iterate elements, columns, and rows.} *)
 
-val iteri : (int -> int -> elt -> unit) -> mat -> unit
+val iteri : (int -> elt -> unit) -> mat -> unit
 
 val iter : (elt -> unit) -> mat -> unit
 
-val mapi : (int -> int -> elt -> elt) -> mat -> mat
+val mapi : (int -> elt -> elt) -> mat -> mat
 
 val map : (elt -> elt) -> mat -> mat
 
-val map2i : (int -> int -> elt -> elt -> elt) -> mat -> mat -> mat
+val map2i : (int -> elt -> elt -> elt) -> mat -> mat -> mat
 
 val map2 : (elt -> elt -> elt) -> mat -> mat -> mat
 
-val foldi : (int -> int -> 'a -> elt -> 'a) -> 'a -> mat -> 'a
+val foldi : ?axis:int -> (int -> elt -> elt -> elt) -> elt -> mat -> mat
 
-val fold : ('a -> elt -> 'a) -> 'a -> mat -> 'a
+val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> mat -> mat
 
-val filteri : (int -> int -> elt -> bool) -> mat -> (int * int) array
+val scani : ?axis:int -> (int -> elt -> elt -> elt) -> mat -> mat
 
-val filter : (elt -> bool) -> mat -> (int * int) array
+val scan : ?axis:int -> (elt -> elt -> elt) -> mat -> mat
+
+val filteri : (int -> elt -> bool) -> mat -> int array
+
+val filter : (elt -> bool) -> mat -> int array
 
 val iteri_rows : (int -> mat -> unit) -> mat -> unit
 
@@ -241,11 +243,11 @@ val mapi_by_col : int -> (int -> mat -> mat) -> mat -> mat
 
 val map_by_col : int -> (mat -> mat) -> mat -> mat
 
-val mapi_at_row : (int -> int -> elt -> elt) -> mat -> int -> mat
+val mapi_at_row : (int -> elt -> elt) -> mat -> int -> mat
 
 val map_at_row : (elt -> elt) -> mat -> int -> mat
 
-val mapi_at_col : (int -> int -> elt -> elt) -> mat -> int -> mat
+val mapi_at_col : (int -> elt -> elt) -> mat -> int -> mat
 
 val map_at_col : (elt -> elt) -> mat -> int -> mat
 

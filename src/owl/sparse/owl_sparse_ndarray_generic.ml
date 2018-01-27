@@ -20,7 +20,7 @@ let nnz x =
 
 let _make_elt_array k n =
   let x = Array1.create k c_layout n in
-  Array1.fill x (_zero k);
+  Array1.fill x (Owl_const.zero k);
   x
 
 let _allocate_more_space x =
@@ -108,11 +108,11 @@ let copy x = {
 let get x i =
   try let j = Hashtbl.find x.h i in
     Array1.unsafe_get x.d j
-  with exn -> _zero (kind x)
+  with exn -> Owl_const.zero (kind x)
 
 let set x i a =
   _allocate_more_space x;
-  let _a0 = _zero (kind x) in
+  let _a0 = Owl_const.zero (kind x) in
   if a = _a0 then (
     try let j = Hashtbl.find x.h i in
       Array1.unsafe_set x.d j _a0;
@@ -130,10 +130,10 @@ let set x i a =
   )
 
 let flatten x =
-  let s = _calc_stride (shape x) in
+  let s = Owl_utils.calc_stride (shape x) in
   let y = copy x in
   Hashtbl.iter (fun i j ->
-    let i' = _index_nd_1d i s in
+    let i' = Owl_utils.index_nd_1d i s in
     Hashtbl.remove y.h i;
     Hashtbl.add y.h [|i'|] j
   ) x.h;
@@ -142,12 +142,12 @@ let flatten x =
 
 let reshape x s =
   let y = copy x in
-  let s0 = _calc_stride (shape x) in
-  let s1 = _calc_stride s in
+  let s0 = Owl_utils.calc_stride (shape x) in
+  let s1 = Owl_utils.calc_stride s in
   let i1 = Array.copy s in
   Hashtbl.iter (fun i j ->
-    let k = _index_nd_1d i s0 in
-    _index_1d_nd k i1 s1;
+    let k = Owl_utils.index_nd_1d i s0 in
+    Owl_utils.index_1d_nd k i1 s1;
     Hashtbl.remove y.h i;
     Hashtbl.add y.h (Array.copy i1) j;
   ) x.h;
@@ -361,21 +361,21 @@ let for_all_nz f x = let g y = not (f y) in not_exists_nz g x
 let is_zero x = (nnz x) = 0
 
 let is_positive x =
-  let _a0 = _zero (kind x) in
+  let _a0 = Owl_const.zero (kind x) in
   if (nnz x) < (numel x) then false
   else for_all (( < ) _a0) x
 
 let is_negative x =
-  let _a0 = _zero (kind x) in
+  let _a0 = Owl_const.zero (kind x) in
   if (nnz x) < (numel x) then false
   else for_all (( > ) _a0) x
 
 let is_nonpositive x =
-  let _a0 = _zero (kind x) in
+  let _a0 = Owl_const.zero (kind x) in
   for_all_nz (( >= ) _a0) x
 
 let is_nonnegative x =
-  let _a0 = _zero (kind x) in
+  let _a0 = Owl_const.zero (kind x) in
   for_all_nz (( <= ) _a0) x
 
 let add_scalar x a =
@@ -408,7 +408,7 @@ let scalar_div a x =
 
 let add x1 x2 =
   let k = kind x1 in
-  let _a0 = _zero k in
+  let _a0 = Owl_const.zero k in
   let __add_elt = _add_elt k in
   let y = zeros k (shape x1) in
   let _ = iteri_nz (fun i a ->
@@ -427,7 +427,7 @@ let sub x1 x2 = add x1 (neg x2)
 
 let mul x1 x2 =
   let k = kind x1 in
-  let _a0 = _zero k in
+  let _a0 = Owl_const.zero k in
   let __mul_elt = _mul_elt k in
   let y = zeros (kind x1) (shape x1) in
   let _ = iteri_nz (fun i a ->
@@ -438,7 +438,7 @@ let mul x1 x2 =
 
 let div x1 x2 =
   let k = kind x1 in
-  let _a0 = _zero k in
+  let _a0 = Owl_const.zero k in
   let __div_elt = _div_elt k in
   let __inv_elt = _inv_elt k in
   let y = zeros (kind x1) (shape x1) in
@@ -454,7 +454,7 @@ let abs x =
 
 let sum x =
   let k = kind x in
-  fold_nz (_add_elt k) (_zero k) x
+  fold_nz (_add_elt k) (Owl_const.zero k) x
 
 let mean x = (_mean_elt (kind x)) (sum x) (numel x)
 
@@ -479,9 +479,9 @@ let less_equal x1 x2 = greater_equal x2 x1
 
 let minmax x =
   let k = kind x in
-  let _a0 = _zero k in
-  let xmin = ref (_pos_inf k) in
-  let xmax = ref (_neg_inf k) in
+  let _a0 = Owl_const.zero k in
+  let xmin = ref (Owl_const.pos_inf k) in
+  let xmax = ref (Owl_const.neg_inf k) in
   iter_nz (fun y ->
     if y < !xmin then xmin := y;
     if y > !xmax then xmax := y;
@@ -503,23 +503,23 @@ let print_index i =
   Printf.printf "] "
 
 let print_element k v =
-  let s = (_owl_elt_to_str k) v in
+  let s = (Owl_utils.elt_to_str k) v in
   Printf.printf "%s" s
 
 let print x =
-  let _op = _owl_elt_to_str (kind x) in
+  let _op = Owl_utils.elt_to_str (kind x) in
   iteri (fun i y ->
     print_index i;
     Printf.printf "%s\n" (_op y)
   ) x
 
 let pp_spnda x =
-  let _op = _owl_elt_to_str (kind x) in
+  let _op = Owl_utils.elt_to_str (kind x) in
   let k = shape x in
-  let s = _calc_stride k in
+  let s = Owl_utils.calc_stride k in
   let _pp = fun i j -> (
     for i' = i to j do
-      _index_1d_nd i' k s;
+      Owl_utils.index_1d_nd i' k s;
       print_index k;
       Printf.printf "%s\n" (_op (get x k))
     done
@@ -544,16 +544,16 @@ let _random_basic a k f d =
   let n = numel x in
   let c = int_of_float ((float_of_int n) *. a) in
   let i = Array.copy d in
-  let s = _calc_stride d in
+  let s = Owl_utils.calc_stride d in
   for k = 0 to c - 1 do
     let j = Owl_stats.uniform_int_rvs ~a:0 ~b:(n-1) in
-    _index_1d_nd j i s;
+    Owl_utils.index_1d_nd j i s;
     set x i (f ())
   done;
   x
 
 let binary ?(density=0.1) k s =
-  let _a1 = _one k in
+  let _a1 = Owl_const.one k in
   _random_basic density k (fun () -> _a1) s
 
 let uniform ?(scale=1.) ?(density=0.1) k s =
@@ -561,7 +561,7 @@ let uniform ?(scale=1.) ?(density=0.1) k s =
   _random_basic density k (fun () -> _op scale) s
 
 let to_array x =
-  let y = Array.make (nnz x) ([||], _zero (kind x)) in
+  let y = Array.make (nnz x) ([||], Owl_const.zero (kind x)) in
   let j = ref 0 in
   iteri_nz (fun i v ->
     y.(!j) <- (Array.copy i, v);

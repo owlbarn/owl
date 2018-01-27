@@ -1,0 +1,11 @@
+(jbuild_version 1)
+
+(library (
+  (name owl_utils)
+  (public_name owl_utils)
+  (wrapped false)
+  (flags (:standard -safe-string))
+  (libraries (
+    owl_types
+  ))
+))

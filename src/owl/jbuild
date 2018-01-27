@@ -17,6 +17,7 @@
 (copy_files# fftpack/*)
 (copy_files# misc/*)
 (copy_files# nlp/*)
+(copy_files# working/*)
 
 (library (
   (name owl)
@@ -172,6 +173,11 @@
   ))
   (flags (:standard -safe-string))
   (libraries (
+    owl_const
+    owl_types
+    owl_utils
+    owl_optimise
+    owl_neural
     ctypes
     ctypes.stubs
     eigen

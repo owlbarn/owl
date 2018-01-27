@@ -11,7 +11,7 @@ module S = Pervasives
 (* Functor of making a View module of given Ndarray module *)
 
 module Make
-  (A : NdarraySig)
+  (A : Ndarray_Basic)
   = struct
 
   type t = {
@@ -26,7 +26,7 @@ module Make
   (* calculate (offset, stride) from the [shape] of original data and [slice] *)
   let calc_ofstr shape slice =
     let dims = Array.length shape in
-    let strides = Owl_dense_common._calc_stride shape in
+    let strides = Owl_utils.calc_stride shape in
     Array.init dims (fun i ->
       let offset = slice.(i).(0) * strides.(i) in
       let stride = strides.(i) * slice.(i).(2) in
@@ -84,7 +84,7 @@ module Make
 
 
   let to_arr x =
-    let slice = Array.(map (fun a -> R (to_list a)) x.slice |> to_list) in
+    let slice = Array.(map (fun a -> to_list a) x.slice |> to_list) in
     A.get_slice slice x.data
 
 
@@ -110,7 +110,7 @@ module Make
     A.set x.data i' a
 
 
-  let get_slice_simple axis x =
+  let get_slice axis x =
     let s0 = Array.of_list axis |> Array.(map of_list) in
     let s1 = Array.map (fun a -> R_ a) s0 in
     let s1 = Owl_slicing.check_slice_definition s1 x.shape in
@@ -212,8 +212,8 @@ module Make
       _iter2 (fun i j a b -> A.set y.dvec j (f a b)) x y 0 0 0
 
 
-  let set_slice_simple axis x y =
-    let x = get_slice_simple axis x in
+  let set_slice axis x y =
+    let x = get_slice axis x in
     map2 (fun _ a -> a) y x
 
 

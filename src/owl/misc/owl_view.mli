@@ -16,7 +16,7 @@ open Owl_types
 
 
 module Make
-  (A : InpureSig)
+  (A : Ndarray_Basic)
   : sig
 
   type t
@@ -38,9 +38,9 @@ module Make
 
   val set : t -> int array -> A.elt -> unit
 
-  val get_slice_simple : int list list -> t -> t
+  val get_slice : int list list -> t -> t
 
-  val set_slice_simple : int list list -> t -> t -> unit
+  val set_slice : int list list -> t -> t -> unit
 
   val shape : t -> int array
 

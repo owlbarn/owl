@@ -8,6 +8,17 @@ module CI = Cstubs_internals
 
 (** Basic and advanced math functions *)
 
+let add = ( +. )
+
+let sub = ( -. )
+
+let mul = ( *. )
+
+let div = ( /. )
+
+let atan2 = Pervasives.atan2
+
+
 let abs x = abs_float x
 
 let neg x = 0. -. x
@@ -34,6 +45,8 @@ let round t =
   else t
 
 let trunc x = modf x |> snd
+
+let sqr x = x *. x
 
 let sqrt x = sqrt x
 

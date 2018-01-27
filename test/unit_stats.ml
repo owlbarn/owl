@@ -10,42 +10,55 @@ module To_test = struct
   let mannwhitneyu_both_side x y =
     let h = M.mannwhitneyu x y in
     h.p_value
+
   let mannwhitneyu_right_side x y =
     let h = M.mannwhitneyu ~side:M.RightSide x y in
     h.p_value
+
   let mannwhitneyu_left_side x y =
     let h = M.mannwhitneyu ~side:M.LeftSide x y in
     h.p_value
+
   let wilcoxon_both_side x y =
     let h = M.wilcoxon x y in
     h.p_value
+
   let wilcoxon_right_side x y =
     let h = M.wilcoxon ~side:M.RightSide x y in
     h.p_value
+
   let wilcoxon_left_side x y =
     let h = M.wilcoxon ~side:M.LeftSide x y in
     h.p_value
+
   let fisher_test_both_side a b c d =
     let h = M.fisher_test a b c d in
     h.p_value
+
   let fisher_test_right_side a b c d =
     let h = M.fisher_test ~side:M.RightSide a b c d in
     h.p_value
+
   let fisher_test_left_side a b c d =
     let h = M.fisher_test ~side:M.LeftSide a b c d in
     h.p_value
+
   let ks_test_pval a b =
     let h = M.ks_test a b in
     h.p_value
+
   let ks_test_statistic a b =
     let h = M.ks_test a b in
     h.score
+
   let ks2_test_pval a b =
     let h = M.ks2_test a b in
     h.p_value
+
   let ks2_test_statistic a b =
     let h = M.ks2_test a b in
     h.score
+    
 end
 
 (* The tests *)

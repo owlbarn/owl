@@ -46,7 +46,7 @@ let sequential ?(typ=Row) ?a ?step k m = match typ with
   | Col -> M.sequential ?a ?step k m 1
 
 let unit_basis ?(typ=Row) k m i =
-  let a1 = Owl_types._one k in
+  let a1 = Owl_const.one k in
   match typ with
   | Row -> let v = M.zeros k 1 m in M.set v 0 i a1; v
   | Col -> let v = M.zeros k m 1 in M.set v 0 i a1; v
@@ -82,23 +82,23 @@ let set x i a =
 
 let iteri f x =
   match vec_typ x with
-  | Row -> M.iteri (fun _ i a -> f i a) x
-  | Col -> M.iteri (fun i _ a -> f i a) x
+  | Row -> M.iteri (fun i a -> f i a) x
+  | Col -> M.iteri (fun i a -> f i a) x
 
 let mapi f x =
   match vec_typ x with
-  | Row -> M.mapi (fun _ i a -> f i a) x
-  | Col -> M.mapi (fun i _ a -> f i a) x
+  | Row -> M.mapi (fun i a -> f i a) x
+  | Col -> M.mapi (fun i a -> f i a) x
 
 let filteri f x =
   match vec_typ x with
-  | Row -> M.filteri (fun _ i a -> f i a) x
-  | Col -> M.filteri (fun i _ a -> f i a) x
+  | Row -> M.filteri (fun i a -> f i a) x
+  | Col -> M.filteri (fun i a -> f i a) x
 
 let foldi f a x =
   match vec_typ x with
-  | Row -> M.foldi (fun _ i c b -> f i c b) a x
-  | Col -> M.foldi (fun i _ c b -> f i c b) a x
+  | Row -> M.foldi (fun i c b -> f i c b) a x
+  | Col -> M.foldi (fun i c b -> f i c b) a x
 
 (* to/from other types *)
 

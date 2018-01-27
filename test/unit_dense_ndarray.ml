@@ -58,7 +58,7 @@ module To_test = struct
     M.get x [|1;0;1|] = 5.
 
   let get_slice () =
-    let y = M.get_slice [R[];R[0];R[0]] x0 |> M.flatten in
+    let y = M.get_slice [[];[0];[0]] x0 |> M.flatten in
     let z = M.zeros Float64 [|2|] in
     M.set z [|1|] 3.;
     M.equal y z
@@ -72,13 +72,9 @@ module To_test = struct
 
   let map () = M.map (fun a -> a +. 1.) x0 |> M.sum' = 18.
 
-  let fold () = M.fold (fun c a -> c +. a) 0. x0 = 6.
-
-  let foldi () =
-    let a = M.foldi (fun i c a ->
-      if i.(2) = 0 then c +. a else c
-    ) 0. x0
-    in a = 5.
+  let fold () =
+    let a = M.fold (fun c a -> c +. a) 0. x0 in
+    M.get a [|0|] = 6.
 
   let add () = M.equal (M.add x0 x1) x2
 
@@ -123,12 +119,6 @@ module To_test = struct
 
   let for_all () = M.for_all ((<=) 0.) x0
 
-  let filter () = M.filter ((=) 3.) x0 = [| [|1;0;0|] |]
-
-  let filteri () = M.filteri (fun i a ->
-    i.(2) = 1 && a = 3.
-    ) x1 = [| [|0;1;1|] |]
-
   let transpose () =
     let y = M.copy x0 in
     let y = M.transpose y in
@@ -166,6 +156,31 @@ module To_test = struct
     M.get y [|0;0|] = 2. &&
     M.get y [|0;1|] = 1. &&
     M.get y [|0;2|] = 0.
+
+  let same_shape_1 () =
+    let x = M.empty Float64 [|1;2;3|] in
+    let y = M.empty Float64 [|1;2;3|] in
+    M.same_shape x y = true
+
+  let same_shape_2 () =
+    let x = M.empty Float64 [|1;2;3|] in
+    let y = M.empty Float64 [|1;2;4|] in
+    M.same_shape x y = false
+
+  let same_shape_3 () =
+    let x = M.empty Float64 [|1;2;3|] in
+    let y = M.empty Float64 [|1;2;3;4|] in
+    M.same_shape x y = false
+
+  let same_shape_4 () =
+    let x = M.empty Float64 [|1;2;3|] in
+    let y = M.empty Float64 [|3;2;1|] in
+    M.same_shape x y = false
+
+  let same_shape_5 () =
+    let x = M.empty Float64 [|1|] in
+    let y = M.empty Float64 [|1|] in
+    M.same_shape x y = true
 
 end
 
@@ -209,9 +224,6 @@ let map () =
 
 let fold () =
   Alcotest.(check bool) "fold" true (To_test.fold ())
-
-let foldi () =
-  Alcotest.(check bool) "foldi" true (To_test.foldi ())
 
 let add () =
   Alcotest.(check bool) "add" true (To_test.add ())
@@ -273,12 +285,6 @@ let not_exists () =
 let for_all () =
   Alcotest.(check bool) "for_all" true (To_test.for_all ())
 
-let filter () =
-  Alcotest.(check bool) "filter" true (To_test.filter ())
-
-let filteri () =
-  Alcotest.(check bool) "filteri" true (To_test.filteri ())
-
 let transpose () =
   Alcotest.(check bool) "transpose" true (To_test.transpose ())
 
@@ -303,6 +309,21 @@ let reverse () =
 let rotate () =
   Alcotest.(check bool) "rotate" true (To_test.rotate ())
 
+let same_shape_1 () =
+  Alcotest.(check bool) "same_shape_1" true (To_test.same_shape_1 ())
+
+let same_shape_2 () =
+  Alcotest.(check bool) "same_shape_2" true (To_test.same_shape_2 ())
+
+let same_shape_3 () =
+  Alcotest.(check bool) "same_shape_3" true (To_test.same_shape_3 ())
+
+let same_shape_4 () =
+  Alcotest.(check bool) "same_shape_4" true (To_test.same_shape_4 ())
+
+let same_shape_5 () =
+  Alcotest.(check bool) "same_shape_5" true (To_test.same_shape_5 ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -317,7 +338,6 @@ let test_set = [
   "fill", `Slow, fill;
   "map", `Slow, map;
   "fold", `Slow, fold;
-  "foldi", `Slow, foldi;
   "add", `Slow, add;
   "mul", `Slow, mul;
   "add_scalar", `Slow, add_scalar;
@@ -338,8 +358,6 @@ let test_set = [
   "exists", `Slow, exists;
   "not_exists", `Slow, not_exists;
   "for_all", `Slow, for_all;
-  "filter", `Slow, filter;
-  "filteri", `Slow, filteri;
   "transpose", `Slow, transpose;
   "flatten", `Slow, flatten;
   "reshape", `Slow, reshape;
@@ -348,4 +366,9 @@ let test_set = [
   "broadcast_add", `Slow, broadcast_add;
   "reverse", `Slow, reverse;
   "rotate", `Slow, rotate;
+  "same_shape_1", `Slow, same_shape_1;
+  "same_shape_2", `Slow, same_shape_2;
+  "same_shape_3", `Slow, same_shape_3;
+  "same_shape_4", `Slow, same_shape_4;
+  "same_shape_5", `Slow, same_shape_5;
 ]
