@@ -21,6 +21,8 @@ module type Sig = sig
 
   val ones : int array -> arr
 
+  val create : int array -> elt -> arr
+
   val uniform : ?a:elt -> ?b:elt -> int array -> arr
 
   val gaussian : ?mu:elt -> ?sigma:elt -> int array -> arr

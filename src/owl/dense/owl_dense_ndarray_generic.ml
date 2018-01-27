@@ -3246,6 +3246,24 @@ let sum_slices ?axis x =
   let s = Array.(sub s axis (length s - axis)) in
   reshape y s
 
+(** Slower than the previous one ... need to optimise sum function
+
+let sum_slices ?axis x =
+  let axis = match axis with
+    | Some a -> a
+    | None   -> num_dims x - 1
+  in
+  (* reshape into 2d matrix *)
+  let s = shape x in
+  let n = (_calc_slice s).(axis) in
+  let m = (numel x) / n in
+  let y = reshape x [|m;n|] in
+  let y = sum ~axis:0 y in
+  (* reshape back into ndarray *)
+  let s = Array.(sub s axis (length s - axis)) in
+  reshape y s
+*)
+
 
 (* FIXME: experimental *)
 let draw_slices ?(axis=0) x n =
