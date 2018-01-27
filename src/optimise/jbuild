@@ -9,6 +9,5 @@
     owl_types
     owl_const
     owl_utils
-    owl_log
   ))
 ))
