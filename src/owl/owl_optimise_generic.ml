@@ -58,6 +58,7 @@ module Make
   module Learning_Rate = struct
 
     type typ =
+      | Adam      of float * float * float
       | Adagrad   of float
       | Const     of float
       | Decay     of float * float
@@ -66,14 +67,28 @@ module Make
       | Schedule  of float array
 
     let run = function
-      | Adagrad a        -> fun _ _ c -> Maths.(F a / sqrt (c + F 1e-32))
-      | Const a          -> fun _ _ _ -> F a
-      | Decay (a, k)     -> fun i _ _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
-      | Exp_decay (a, k) -> fun i _ _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
-      | RMSprop (a, k)   -> fun _ g c -> Maths.(F a / sqrt (c + F 1e-32))
-      | Schedule a       -> fun i _ _ -> F a.(i mod (Array.length a))
+      | Adam (a, b1, b2) -> fun i _ m v  -> Maths.neg (Maths.(((F a * (m / (F 1. - (F b1 ** F (float_of_int i)))) ) 
+                                            / sqrt ((v / (F 1. - (F b2 ** F (float_of_int i)))) + F 1e-32) ) 
+                                            ))
+      | Adagrad a        -> fun _ g c _  -> Maths.(g * F a / sqrt (c + F 1e-32))
+      | Const a          -> fun _ g _ _  -> Maths.(g * F a)
+      | Decay (a, k)     -> fun i g _ _  -> Maths.(g * F a / (F 1. + F k * (F (float_of_int i))))
+      | Exp_decay (a, k) -> fun i g _ _  -> Maths.(g * F a * exp (neg (F k) * (F (float_of_int i))))
+      | RMSprop (a, k)   -> fun _ g c _  -> Maths.(g * F a / sqrt (c + F 1e-32))
+      | Schedule a       -> fun i g _ _  -> Maths.(g * F a.(i mod (Array.length a)))
+      (* | Adam (a, b1, b2) -> fun i g m v  -> Maths.(((F a * m ) 
+                                            / (sqrt (v) + F 1e-32)) 
+                                            )
+       *)
+(*       | Adagrad a        -> fun _ _ c _  -> Maths.(F a / sqrt (c + F 1e-32))
+      | Const a          -> fun _ _ _ _  -> F a
+      | Decay (a, k)     -> fun i _ _ _  -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
+      | Exp_decay (a, k) -> fun i _ _ _  -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
+      | RMSprop (a, k)   -> fun _ _ c _  -> Maths.(F a / sqrt (c + F 1e-32))
+      | Schedule a       -> fun i _ _ _  -> F a.(i mod (Array.length a)) *)
 
     let default = function
+      | Adam _      -> Adam (0.01, 0.9, 0.999)
       | Adagrad _   -> Adagrad 0.01
       | Const _     -> Const 0.001
       | Decay _     -> Decay (0.1, 0.1)
@@ -82,11 +97,17 @@ module Make
       | Schedule _  -> Schedule [|0.001|]
 
     let update_ch typ g c = match typ with
+      | Adam (a, b1, b2) -> Maths.((F b1 * c) + (F 1. - F b1) * g) 
       | Adagrad _      -> Maths.(c + g * g)
-      | RMSprop (a, k) -> Maths.((F k * c) + (F 1. - F k) * g * g)
+      | RMSprop (a, k) -> Maths.((F k * c) + (F 1. - F k) * g * g) 
+      | _              -> c
+
+    let update_ch2 typ g c = match typ with
+      | Adam (a, b1, b2) -> Maths.((F b2 * c) + (F 1. - F b2) * (g * g))
       | _              -> c
 
     let to_string = function
+      | Adam (a, b1, b2) -> Printf.sprintf "adam (%g, %g, %g)" a b1 b2
       | Adagrad a        -> Printf.sprintf "adagrad %g" a
       | Const a          -> Printf.sprintf "constant %g" a
       | Decay (a, k)     -> Printf.sprintf "decay (%g, %g)" a k
@@ -320,7 +341,8 @@ module Make
       mutable gs                : t array array; (* gradient of the the previous iteration *)
       mutable ps                : t array array; (* direction of the the prevoius iteration *)
       mutable us                : t array array; (* direction update of the previous iteration *)
-      mutable ch                : t array array; (* gcache of the prevoius iteration *)
+      mutable ch                : t array array; (* gcache of the previous iteration *)
+      mutable ch2               : t array array; (* second gcache of the previous iteration *)
     }
 
     type typ =
@@ -343,6 +365,7 @@ module Make
         ps                = [| [| F 0. |] |];
         us                = [| [| F 0. |] |];
         ch                = [| [| F 0. |] |];
+        ch2               = [| [| F 0. |] |];
       }
 
     let default_checkpoint_fun save_fun =
@@ -479,6 +502,7 @@ module Make
     let regl_fun = Regularisation.run params.regularisation in
     let momt_fun = Momentum.run params.momentum in
     let upch_fun = Learning_Rate.update_ch params.learning_rate in
+    let upch2_fun = Learning_Rate.update_ch2 params.learning_rate in
     let clip_fun = Clipping.run params.clipping in
     let stop_fun = Stopping.run params.stopping in
     let chkp_fun = Checkpoint.run params.checkpoint in
@@ -507,6 +531,7 @@ module Make
           Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
           Checkpoint.(state.us <- [| [|F 0.|] |]);
           Checkpoint.(state.ch <- [| [|F 0.|] |]);
+          Checkpoint.(state.ch2 <- [| [|F 0.|] |]);
           Checkpoint.(state.loss.(0) <- _loss);
           state
         )
@@ -528,8 +553,11 @@ module Make
       let p' = Checkpoint.(grad_fun optz' !w state.gs.(0).(0) state.ps.(0).(0) g') in
       (* update gcache if necessary *)
       Checkpoint.(state.ch.(0).(0) <- upch_fun g' state.ch.(0).(0));
+      (* update gcache2 if necessary *)
+      Checkpoint.(state.ch2.(0).(0) <- upch2_fun g' state.ch2.(0).(0));
       (* adjust direction based on learning_rate *)
-      let u' = Checkpoint.(Maths.(p' * rate_fun state.current_batch g' state.ch.(0).(0))) in
+      (* let u' = Checkpoint.(Maths.(p' * rate_fun state.current_batch g' state.ch.(0).(0) state.ch2.(0).(0))) in *)
+      let u' = Checkpoint.(Maths.(rate_fun state.current_batch p' state.ch.(0).(0) state.ch2.(0).(0))) in
       (* adjust direction based on momentum *)
       let u' = momt_fun Checkpoint.(state.us.(0).(0)) u' in
       (* update the weight *)
@@ -565,6 +593,7 @@ module Make
     let regl_fun = Regularisation.run params.regularisation in
     let momt_fun = Momentum.run params.momentum in
     let upch_fun = Learning_Rate.update_ch params.learning_rate in
+    let upch2_fun = Learning_Rate.update_ch2 params.learning_rate in
     let clip_fun = Clipping.run params.clipping in
     let stop_fun = Stopping.run params.stopping in
     let chkp_fun = Checkpoint.run params.checkpoint in
@@ -600,6 +629,7 @@ module Make
           Checkpoint.(state.ps <- Owl_utils.aarr_map Maths.neg _gs);
           Checkpoint.(state.us <- Owl_utils.aarr_map (fun _ -> F 0.) _gs);
           Checkpoint.(state.ch <- Owl_utils.aarr_map (fun _ -> F 0.) _gs);
+          Checkpoint.(state.ch2 <- Owl_utils.aarr_map (fun _ -> F 0.) _gs);
           Checkpoint.(state.loss.(0) <- _loss);
           state
         )
@@ -616,19 +646,28 @@ module Make
       if params.verbosity = true then Checkpoint.print_state_info state;
       (* clip the gradient if necessary *)
       let gs' = Owl_utils.aarr_map clip_fun gs' in
+(*       Owl_utils.aarr_iter (pp_num Format.std_formatter) (state.gs);
+      Owl_utils.aarr_iter (pp_num Format.std_formatter) (state.ps);
+      Printf.printf "\n";
+      flush stdout; *)
       (* calculate gradient descent *)
       let ps' = Checkpoint.(Owl_utils.aarr_map4 (grad_fun (fun a -> a)) ws state.gs state.ps gs') in
       (* update gcache if necessary *)
       Checkpoint.(state.ch <- Owl_utils.aarr_map2 upch_fun gs' state.ch);
+      (* update gcache2 if necessary *)
+      Checkpoint.(state.ch2 <- Owl_utils.aarr_map2 upch2_fun gs' state.ch2);
+      
       (* adjust direction based on learning_rate *)
       let us' = Checkpoint.(
-        Owl_utils.aarr_map3 (fun p' g' c ->
-          Maths.(p' * rate_fun state.current_batch g' c)
-        ) ps' gs' state.ch
+        Owl_utils.aarr_map3 (fun p' c c2 ->
+          (* Maths.(p' * rate_fun state.current_batch g' c c2) *)
+          Maths.(rate_fun state.current_batch p' c c2)
+        ) ps' state.ch state.ch2
       )
       in
       (* adjust direction based on momentum *)
       let us' = Owl_utils.aarr_map2 momt_fun Checkpoint.(state.us) us' in
+      
       (* update the weight *)
       let ws' = Owl_utils.aarr_map2 (fun w u -> Maths.(w + u)) ws us' in
       update ws';
@@ -660,6 +699,7 @@ module Make
   let regl_fun = Regularisation.run params.regularisation in
   let momt_fun = Momentum.run params.momentum in
   let upch_fun = Learning_Rate.update_ch params.learning_rate in
+  let upch2_fun = Learning_Rate.update_ch2 params.learning_rate in
   let clip_fun = Clipping.run params.clipping in
   let stop_fun = Stopping.run params.stopping in
   let chkp_fun = Checkpoint.run params.checkpoint in
@@ -685,6 +725,7 @@ module Make
         Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
         Checkpoint.(state.us <- [| [|F 0.|] |]);
         Checkpoint.(state.ch <- [| [|F 0.|] |]);
+        Checkpoint.(state.ch2 <- [| [|F 0.|] |]);
         Checkpoint.(state.loss.(0) <- _loss);
         state
       )
@@ -706,8 +747,11 @@ module Make
       let p' = Checkpoint.(grad_fun optz' !x state.gs.(0).(0) state.ps.(0).(0) g') in
       (* update gcache if necessary *)
       Checkpoint.(state.ch.(0).(0) <- upch_fun g' state.ch.(0).(0));
+      (* update gcache2 if necessary *)
+      Checkpoint.(state.ch2.(0).(0) <- upch2_fun g' state.ch2.(0).(0));
       (* adjust direction based on learning_rate *)
-      let u' = Checkpoint.(Maths.(p' * rate_fun state.current_batch g' state.ch.(0).(0))) in
+      (* let u' = Checkpoint.(Maths.(p' * rate_fun state.current_batch g' state.ch.(0).(0) state.ch2.(0).(0))) in *)
+      let u' = Checkpoint.(Maths.(rate_fun state.current_batch p' state.ch.(0).(0) state.ch2.(0).(0))) in
       (* adjust direction based on momentum *)
       let u' = momt_fun Checkpoint.(state.us.(0).(0)) u' in
       (* update the weight *)
