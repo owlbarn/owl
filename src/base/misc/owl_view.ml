@@ -77,7 +77,7 @@ module Make
   let of_arr x =
     let shape = A.shape x in
     let s0 = Array.(make (length shape)) (R_ [||]) in
-    let s1 = Owl_slicing.check_slice_definition s0 shape
+    let s1 = Owl_base_slicing.check_slice_definition s0 shape
       |> Array.map (function R_ a -> a | _ -> failwith "owl_view:of_arr")
     in
     make_view shape s1 x
@@ -113,10 +113,10 @@ module Make
   let get_slice axis x =
     let s0 = Array.of_list axis |> Array.(map of_list) in
     let s1 = Array.map (fun a -> R_ a) s0 in
-    let s1 = Owl_slicing.check_slice_definition s1 x.shape in
+    let s1 = Owl_base_slicing.check_slice_definition s1 x.shape in
     let s2 = Array.map (function R_ a -> a | _ -> failwith "owl_view:of_arr") s1 in
     let slice = project_slice x.slice s2 in
-    let shape = Owl_slicing.calc_slice_shape s1 in
+    let shape = Owl_base_slicing.calc_slice_shape s1 in
     make_view shape slice x.data
 
 
