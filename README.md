@@ -457,7 +457,7 @@ The end result is as follows. You probably have already grasped the idea of how 
 
 ## Maths and Stats
 
-There are a lot of basic and advanced mathematical and statistical functions in `Maths` and `Stats` modules. Most of them are interfaced to Gsl directly, so you may want to read [GSL Manual](https://www.gnu.org/software/gsl/manual/html_node/) carefully before using the module. In the future, Owl will also supports other math library as optional backend in case you need different licence.
+There are a lot of basic and advanced mathematical and statistical functions in `Maths` and `Stats` modules. The document lags significantly behind the development, so I recommend you to read the mli file directly at the moment.
 
 [`Stats`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.html) has three submodules: [`Stats.Rnd`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Rnd.html) for random numbers, [`Stats.Pdf`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Pdf.html) for probability dense functions, and [`Stats.Cdf`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Cdf.html) for cumulative distribution functions. In addition, I have implemented extra functions such as two ranking correlations: `Stats.kendall_tau` and `Stats.spearman_rho`); two MCMC (Markov Chain Monte Carlo) functions in `Stats` module: Metropolis-Hastings (`Stats.metropolis_hastings`) and Gibbs sampling (`Stats.gibbs_sampling`) algorithms.
 
@@ -730,24 +730,14 @@ Actor system is currently in a closed repository (due to my techreport writing).
 
 ## Run Owl on Different Platforms
 
-If you want to try Owl on ARM based platforms such as Raspberry Pi rather than x86 ones, the installation are similar. Just note that Owl requires OCaml 4.04, which might not be supported on your platform's binary distribution system yet, so you might consider compiling [OCaml sources](https://ocaml.org/releases/4.04.html). Besides, to solve a potential conflict with gsl package, after running `./configure` in the top directory, you should run:
-```
-sed -i -e 's/#define ARCH_ALIGN_DOUBLE/#undef ARCH_ALIGN_DOUBLE/g' config/m.h config/m-templ.h
-```
-before running `make world.opt`.
-
- A [Docker image](https://hub.docker.com/r/matrixanger/owl/) is also provided on Docker Hub specifically for ARM platform. Just pull the image, start a container, then play with it in `utop`.
+If you want to try Owl on ARM-based platforms such as Raspberry Pi instead of the x86 ones, the recommended way is to use the [Docker image](https://hub.docker.com/r/matrixanger/owl/) that is built specifically for ARM platform. Just pull the image, start a container, and then play with Owl in `utop`. The source code is stored in `/root/owl` directory.
 
 ```
 docker run --name owl -it matrixanger/owl:arm
 ```
 
-Note that after starting a new container you need to run
-```
-eval `opam config env`
-```
-for once before starting `utop`.
-
+Direct installation on ARM devices by source compilation is similar to that on the [x86 platform](https://github.com/ryanrhymes/owl#option-4-compile-from-source), but there might be some extra details you need to pay attention to, such as unsupported compiler options. Also note that Owl requires OCaml version 4.04 or above, which might not be supported on your platform's binary distribution system yet, so you might want to consider compiling from [OCaml source](https://ocaml.org/releases/4.04.html).
+Please refer to the [Dockerfile](https://github.com/jzstark/owl-docker/blob/master/Dockerfile) for a detailed installation guide.
 
 ## How To Contribute
 

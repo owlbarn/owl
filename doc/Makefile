@@ -33,8 +33,7 @@ INCDIR=\
 	-I ../_build/lib \
 	-I ../_build/lib/neural \
 	-I ../_build/lib/nlp \
-	-I `ocamlfind query ctypes` \
-	-I `ocamlfind query gsl`
+	-I `ocamlfind query ctypes`
 DOCFLAGS=-html -d .
 all:
 	### ocamldoc ${INCDIR} ${DOCFLAGS} ${DOCS}
