@@ -109,6 +109,6 @@ let greater_eqaul x y =
   (
     try for i = 0 to la - 1 do
       if x.(i) < y.(i) then failwith "found"
-    done with exn -> b := false
+    done with _ -> b := false
   );
   !b

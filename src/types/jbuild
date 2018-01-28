@@ -1,8 +1,0 @@
-(jbuild_version 1)
-
-(library (
-  (name owl_types)
-  (public_name owl_types)
-  (wrapped false)
-  (flags (:standard -safe-string))
-))

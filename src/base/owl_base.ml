@@ -4,10 +4,7 @@
  *)
 
 
-module type Sig = sig
+module Maths = Owl_base_maths
 
-   type elt
 
-   val add : elt -> elt -> elt
-
-end
+module Stats = Owl_base_stats

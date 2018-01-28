@@ -125,7 +125,7 @@ module Make
     else if ai < bi then -1
     else 0
 
-  let rec reset_zero = function
+  let reset_zero = function
     | F _    -> F 0.
     | Arr ap -> A.reset ap; Arr ap
     | _      -> failwith "error: reset_zero"
@@ -143,8 +143,8 @@ module Make
   let rec zero = function
     | F _                     -> F 0.
     | Arr ap                  -> Arr A.(zeros (shape ap))
-    | DF (ap, at, ai)         -> ap |> primal' |> zero
-    | DR (ap, at, ao, af, ai) -> ap |> primal' |> zero
+    | DF (ap, _, _)           -> ap |> primal' |> zero
+    | DR (ap, _, _, _, _)     -> ap |> primal' |> zero
 
   let tangent = function
     | DF (_, at, _) -> at
@@ -174,6 +174,11 @@ module Make
     match primal' x with
     | Arr x -> A.numel x
     | _     -> failwith "error: AD.numel"
+
+  let clip_by_value ~amin ~amax x =
+    match primal' x with
+    | Arr x -> Arr A.(clip_by_value ~amin ~amax x)
+    | _     -> failwith "error: AD.clip_by_value"
 
   let clip_by_l2norm a x =
     match primal' x with
@@ -1050,7 +1055,7 @@ module Make
       in
       let fd a = avg_pool1d padding a b s in
       let df cp ap at = failwith "avg_pool1d:df" in
-      let r a = Avgpool2D_D (a, padding, b, s) in
+      let r a = Avgpool1D_D (a, padding, b, s) in
       op_d_d a ff fd df r
 
     (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
@@ -1332,7 +1337,7 @@ module Make
               | Reshape_D a              -> push ((reshape !aa (shape (primal a)), a) :: t)
               | Maxpool1D_D (a, p, d, s) -> push ((max_pool1d_backward p (primal a) d s !aa, a) :: t)
               | Maxpool2D_D (a, p, d, s) -> push ((max_pool2d_backward p (primal a) d s !aa, a) :: t)
-              | Avgpool1D_D (a, p, d, s) -> push ((avg_pool2d_backward p (primal a) d s !aa, a) :: t)
+              | Avgpool1D_D (a, p, d, s) -> push ((avg_pool1d_backward p (primal a) d s !aa, a) :: t)
               | Avgpool2D_D (a, p, d, s) -> push ((avg_pool2d_backward p (primal a) d s !aa, a) :: t)
               | Concat_D_D (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: (s.(1) ,b) :: t)
               | Concat_D_C (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: t)
@@ -1523,29 +1528,7 @@ module Make
 
     let dot x y = Maths.dot x y
 
-    let clip_by_l2norm t x = A.clip_by_l2norm (unpack_flt t) (unpack_arr x) |> pack_arr
-
-    (* FIXME: need to be call row fun *)
-    (* let iteri_rows f x = M.iteri_rows (fun i v -> f i (pack_arr v)) (unpack_arr x)
-
-    let iter2_rows f x y = M.iter2_rows (fun u v -> f (pack_arr u) (pack_arr v)) (unpack_arr x) (unpack_arr y)
-
-    let iteri f x = x |> unpack_arr |> M.iteri f
-
-    let mapi f x = x |> unpack_arr |> M.mapi f |> pack_arr
-    *)
-
     let map_by_row f x = x |> Maths.to_rows |> Array.map f |> Maths.of_rows
-
-    (* FIXME: severe *)
-    let draw_rows ?replacement x c =
-      let x', l = A.draw_rows ?replacement (unpack_arr x) c in
-      pack_arr x', l
-
-    (* FIXME: severe *)
-    let draw_rows2 ?replacement x y c =
-      let x', y', l = A.draw_rows2 ?replacement (unpack_arr x) (unpack_arr y) c in
-      pack_arr x', pack_arr y', l
 
     let print x = A.print (unpack_arr x)
 

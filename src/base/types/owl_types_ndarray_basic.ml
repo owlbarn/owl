@@ -55,9 +55,9 @@ module type Sig = sig
 
   val split : ?axis:int -> int array -> arr -> arr array
 
-  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
+  val draw : ?axis:int -> arr -> int -> arr * int array
 
-  val draw_along_dim0 : arr -> int -> arr * int array
+  val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
 
   (* mathematical functions *)
 
@@ -128,6 +128,8 @@ module type Sig = sig
   val l2norm' : arr -> elt
 
   val l2norm_sqr' : arr -> elt
+
+  val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
 
   val clip_by_l2norm : elt -> arr -> arr
 
@@ -236,9 +238,5 @@ module type Sig = sig
   val of_rows : arr array -> arr
 
   val of_arrays : elt array array -> arr
-
-  val draw_rows : ?replacement:bool -> arr -> int -> arr * int array
-
-  val draw_rows2 : ?replacement:bool -> arr -> arr -> int -> arr * arr * int array
 
 end

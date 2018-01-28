@@ -60,9 +60,9 @@ val strides : arr -> int array
 
 val slice_size : arr -> int array
 
-val index_1d_nd : int -> int array -> int array
+val ind : arr -> int -> int array
 
-val index_nd_1d : int array -> int array -> int
+val i1d : arr -> int array -> int
 
 
 (** {6 Manipulate a N-dimensional array} *)
@@ -132,6 +132,8 @@ val top : arr -> int -> int array array
 val bottom : arr -> int -> int array array
 
 val sort : arr -> unit
+
+val draw : ?axis:int -> arr -> int -> arr * int array
 
 val mmap : Unix.file_descr -> ?pos:int64 -> bool -> int array -> arr
 
@@ -521,8 +523,6 @@ val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 (** {6 Experimental functions} *)
 
 val sum_slices : ?axis:int -> arr -> arr
-
-val draw_along_dim0 : arr -> int -> arr * int array
 
 
 (** {6 Fucntions of in-place modification } *)

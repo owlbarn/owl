@@ -168,7 +168,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
 
   type elt = float
 
-  module Scalar = Owl_maths_pure
+  module Scalar = Owl_base_maths
 
   let empty dims = (Genarray.create ELT.element_kind c_layout dims)
 
@@ -357,10 +357,15 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
 
   (*TODO : ensure this is correct *)
   (* Similar to draw rows for matrices *)
-  let draw_along_dim0 varr count =
+  let draw ?(axis=0) varr count =
     let dims = shape varr in
-    let indices = _draw_int_samples false dims.(0) count in
-    (get_slice [(Array.to_list indices)] varr, indices)
+    let rank = Array.length dims in
+    let indices = _draw_int_samples false dims.(axis) count in
+    (get_slice
+       (List.init rank
+          (fun i -> if i = axis then (Array.to_list indices) else []))
+       varr,
+     indices)
 
   (* TODO: is there a more efficient way to do this? *)
   let concatenate ?(axis=0) varrs =
@@ -651,6 +656,10 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
   let div_scalar varr a =
     let div_scalar_fun = (fun x -> (x /. a)) in
     (_map_fun div_scalar_fun varr)
+
+  let clip_by_value ?(amin=Pervasives.min_float) ?(amax=Pervasives.max_float) varr =
+    let clip_by_val_fun = (fun x -> Pervasives.min amax (Pervasives.max amin x)) in
+    (_map_fun clip_by_val_fun varr)
 
   (* Addition is commutative *)
   let scalar_add a varr = (add_scalar varr a)

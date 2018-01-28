@@ -34,11 +34,11 @@ module Make
     let draw_samples x y n =
       match x, y with
       | Arr x, Arr y -> (
-          let x, i = A.draw_along_dim0 x n in
+          let x, i = A.draw ~axis:0 x n in
           let y = A.rows y i in
           Arr x, Arr y
         )
-      | x, y         -> failwith ("Owl_neural_optimise.Utils.draw_samples:" ^ (type_info x))
+      | x, _         -> failwith ("Owl_neural_optimise.Utils.draw_samples:" ^ (type_info x))
 
     let get_chunk x y i c =
       match x, y with
@@ -50,7 +50,7 @@ module Make
           let y = A.get_slice [[a;b]] y in
           Arr x, Arr y
         )
-      | x, y         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))
+      | x, _         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))
 
   end
 
@@ -70,7 +70,7 @@ module Make
       | Const a          -> fun _ _ _ -> F a
       | Decay (a, k)     -> fun i _ _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
       | Exp_decay (a, k) -> fun i _ _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
-      | RMSprop (a, k)   -> fun _ g c -> Maths.(F a / sqrt (c + F 1e-32))
+      | RMSprop (a, _)   -> fun _ _ c -> Maths.(F a / sqrt (c + F 1e-32))
       | Schedule a       -> fun i _ _ -> F a.(i mod (Array.length a))
 
     let default = function
@@ -83,7 +83,7 @@ module Make
 
     let update_ch typ g c = match typ with
       | Adagrad _      -> Maths.(c + g * g)
-      | RMSprop (a, k) -> Maths.((F k * c) + (F 1. - F k) * g * g)
+      | RMSprop (_, k) -> Maths.((F k * c) + (F 1. - F k) * g * g)
       | _              -> c
 
     let to_string = function
@@ -181,18 +181,18 @@ module Make
           let b = Maths.((l2norm_sqr' g') / (l2norm_sqr' g)) in
           Maths.((neg g') + (b * p))
         )
-      | DaiYuanCG   -> fun _ w g p g' -> (
+      | DaiYuanCG   -> fun _ _ g p g' -> (
           let y = Maths.(g' - g) in
           let b = Maths.((l2norm_sqr' g') / (sum' (p * y))) in
           Maths.((neg g') + (b * p))
         )
-      | NewtonCG    -> fun f w g p g' -> (
+      | NewtonCG    -> fun f w _ p g' -> (
           (* TODO: NOT FINISHED *)
           let hv = hessianv f w p |> Maths.transpose in
           let b = Maths.((hv *@ g') / (hv *@ p)) in
           Maths.((neg g') + p *@ b)
         )
-      | Newton      -> fun f w g p g' -> (
+      | Newton      -> fun f w _ _ _  -> (
           let g', h' = gradhessian f w in
           Maths.(neg (g' *@ (inv h')))
         )
@@ -266,7 +266,7 @@ module Make
 
     let run typ x = match typ with
       | L2norm t     -> clip_by_l2norm t x
-      | Value (a, b) -> failwith "not implemented"  (* TODO *)
+      | Value (a, b) -> clip_by_value ~amin:a ~amax:b x
       | None         -> x
 
     let default = function
@@ -291,7 +291,7 @@ module Make
 
     let run typ x = match typ with
       | Const a      -> x < a
-      | Early (s, o) -> failwith "not implemented"   (* TODO *)
+      | Early (_, _) -> failwith "not implemented"   (* TODO *)
       | None         -> false
 
     let default = function
@@ -650,48 +650,48 @@ module Make
     [x] is an ndarray; and [y] is an scalar value.
    *)
   let minimise_fun ?state params f x =
-  let open Params in
-  if params.verbosity = true && state = None then
-    print_endline (Params.to_string params);
+    let open Params in
+    if params.verbosity = true && state = None then
+      print_endline (Params.to_string params);
 
-  (* make alias functions *)
-  let grad_fun = Gradient.run params.gradient in
-  let rate_fun = Learning_Rate.run params.learning_rate in
-  let regl_fun = Regularisation.run params.regularisation in
-  let momt_fun = Momentum.run params.momentum in
-  let upch_fun = Learning_Rate.update_ch params.learning_rate in
-  let clip_fun = Clipping.run params.clipping in
-  let stop_fun = Stopping.run params.stopping in
-  let chkp_fun = Checkpoint.run params.checkpoint in
+    (* make alias functions *)
+    let grad_fun = Gradient.run params.gradient in
+    let rate_fun = Learning_Rate.run params.learning_rate in
+    let regl_fun = Regularisation.run params.regularisation in
+    let momt_fun = Momentum.run params.momentum in
+    let upch_fun = Learning_Rate.update_ch params.learning_rate in
+    let clip_fun = Clipping.run params.clipping in
+    let stop_fun = Stopping.run params.stopping in
+    let chkp_fun = Checkpoint.run params.checkpoint in
 
-  (* make the function to minimise *)
-  let optz_fun xi = Maths.((f xi) + (regl_fun xi)) in
+    (* make the function to minimise *)
+    let optz_fun xi = Maths.((f xi) + (regl_fun xi)) in
 
-  (* operations in the ith iteration *)
-  let iterate i xi =
-    let loss, g = grad' optz_fun xi in
-    loss |> primal', g, optz_fun
-  in
+    (* operations in the ith iteration *)
+    let iterate _ xi =
+      let loss, g = grad' optz_fun xi in
+      loss |> primal', g, optz_fun
+    in
 
-  (* init new or continue previous state of optimisation process *)
-  let state = match state with
-    | Some state -> state
-    | None       -> (
-        let state = Checkpoint.init_state 1 params.epochs in
-        (* first iteration to bootstrap the optimisation *)
-        let _loss, _g0, _ = iterate 0 x in
-        (* variables used for specific gradient method *)
-        Checkpoint.(state.gs <- [| [|_g0|] |]);
-        Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
-        Checkpoint.(state.us <- [| [|F 0.|] |]);
-        Checkpoint.(state.ch <- [| [|F 0.|] |]);
-        Checkpoint.(state.loss.(0) <- _loss);
-        state
-      )
-  in
+    (* init new or continue previous state of optimisation process *)
+    let state = match state with
+      | Some state -> state
+      | None       -> (
+          let state = Checkpoint.init_state 1 params.epochs in
+          (* first iteration to bootstrap the optimisation *)
+          let _loss, _g0, _ = iterate 0 x in
+          (* variables used for specific gradient method *)
+          Checkpoint.(state.gs <- [| [|_g0|] |]);
+          Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
+          Checkpoint.(state.us <- [| [|F 0.|] |]);
+          Checkpoint.(state.ch <- [| [|F 0.|] |]);
+          Checkpoint.(state.loss.(0) <- _loss);
+          state
+        )
+    in
 
-  (* try to iterate all batches *)
-  let x = ref x in
+    (* try to iterate all batches *)
+    let x = ref x in
     while Checkpoint.(state.stop = false) do
       let loss', g', optz' = iterate Checkpoint.(state.current_batch) !x in
       (* check if the stopping criterion is met *)

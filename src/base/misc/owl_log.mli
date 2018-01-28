@@ -8,7 +8,7 @@
 
 (** {6 Type definition} *)
 
-type level = DEBUG | INFO | WARN | ERROR
+type level = DEBUG | INFO | WARN | ERROR | FATAL
 (** type definition of log levels, priority is from low to high. *)
 
 
@@ -30,3 +30,5 @@ val info : ('a, out_channel, unit) format -> 'a
 val warn : ('a, out_channel, unit) format -> 'a
 
 val error : ('a, out_channel, unit) format -> 'a
+
+val fatal : ('a, out_channel, unit) format -> 'a

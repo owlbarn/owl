@@ -43,7 +43,7 @@ val init : ('a, 'b) kind -> int -> int -> (int -> 'a) -> ('a, 'b) t
 (** [init m n f] creates a matrix [x] of shape [m x n], then using
   [f] to initialise the elements in [x]. The input of [f] is 1-dimensional
   index of the matrix. You need to explicitly convert it if you need 2D
-  index. The function [Owl_utils.index_1d_nd] can help you.
+  index. The function [Owl_utils.ind] can help you.
  *)
 
 val init_nd : ('a, 'b) kind -> int -> int -> (int -> int -> 'a) -> ('a, 'b) t

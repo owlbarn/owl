@@ -5,9 +5,7 @@
   (public_name owl_experimental)
   (package     owl_experimental)
   (libraries  (
-    owl_ocaml
-    js_of_ocaml
-    str
+    owl_base
   ))
   (flags (:standard -safe-string))
   (modes      (byte))

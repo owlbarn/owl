@@ -53,7 +53,7 @@ let reshape x dimension = reshape x dimension
 
 let reset x = Genarray.fill x (Owl_const.zero (kind x))
 
-let mmap fd ?pos kind shared dims = Genarray.map_file fd ?pos kind c_layout shared dims
+let mmap fd ?pos kind shared dims = Unix.map_file fd ?pos kind c_layout shared dims
 
 let flatten x = reshape x [|numel x|]
 
@@ -262,14 +262,9 @@ let strides x = x |> shape |> Owl_utils.calc_stride
 let slice_size x = x |> shape |> Owl_utils.calc_slice
 
 
-let index_nd_1d i_nd _stride =
-  Owl_utils.index_nd_1d i_nd _stride
+let ind = Owl_utils.ind
 
-
-let index_1d_nd i_1d _stride =
-  let i_nd = Array.copy _stride in
-  Owl_utils.index_1d_nd i_1d i_nd _stride;
-  i_nd
+let i1d = Owl_utils.i1d
 
 
 (* align and calculate the output shape for broadcasting over [x0] and [x1] *)
@@ -3266,49 +3261,12 @@ let sum_slices ?axis x =
 *)
 
 
-(* FIXME: experimental *)
-let draw_slices ?(axis=0) x n =
-  let shp = shape x in
-  let pre = Array.sub shp 0 axis in
-  let pad_len = num_dims x - axis - 1 in
-  let indices = Array.init n (fun _ ->
-    let idx_pre = Array.map (fun b -> Owl_stats.uniform_int_rvs ~a:0 ~b:(b-1)) pre in
-    Owl_utils.(Array.pad `Right idx_pre 0 pad_len)
-  ) in
-  (* copy slices to the output array *)
-  let sfx = Array.sub shp axis (num_dims x - axis) in
-  let y = empty (kind x) Array.(append [|n|] sfx) in
-  let jdx = Array.make (num_dims y) 0 in
-  Array.iteri (fun i idx ->
-    let s = Genarray.slice_left x idx in
-    let src = reshape s sfx in
-    jdx.(0) <- i;
-    let s = Genarray.slice_left y jdx in
-    let dst = reshape s sfx in
-    Genarray.blit src dst;
-  ) indices;
-  y, indices
-
-(* FIXME: experimental *)
-let slice_along_dim0 x indices =
-  let shp = shape x in
-  let n = Array.length indices in
-  shp.(0) <- n;
-  let y = empty (kind x) shp in
-
-  Array.iteri (fun dst_idx src_idx ->
-    let src = Genarray.slice_left x [|src_idx|] in
-    let dst = Genarray.slice_left y [|dst_idx|] in
-    Genarray.blit src dst;
-  ) indices;
-  y
-
-
-(* FIXME: experimental *)
-let draw_along_dim0 x n =
-  let all_indices = Array.init (shape x).(0) (fun i -> i) in
-  let indices = Owl_stats.choose all_indices n in
-  (slice_along_dim0 x indices), indices
+let draw ?(axis=0) x n =
+  let b = nth_dim x axis in
+  let indices = Array.init n (fun _ -> Owl_stats.uniform_int_rvs ~a:0 ~b:(b-1)) in
+  let slice = Array.init (num_dims x) (fun i -> if i = axis then L_ indices else R_ [||]) in
+  let samples = Owl_slicing.get_fancy_array_typ slice x in
+  samples, indices
 
 
 

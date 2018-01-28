@@ -61,7 +61,7 @@ let load_mnist_test_data () =
 let print_mnist_image x =
   Owl_dense_matrix_generic.reshape x [|28; 28|]
   |> Owl_dense_matrix_generic.iter_rows (fun v ->
-    Owl_dense_vector_generic.iter (function 0. -> Printf.printf " " | _ -> Printf.printf "■") v;
+    Owl_dense_matrix_generic.iter (function 0. -> Printf.printf " " | _ -> Printf.printf "■") v;
     print_endline "";
   )
 

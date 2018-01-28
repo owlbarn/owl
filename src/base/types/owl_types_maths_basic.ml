@@ -3,10 +3,11 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Dense data structures: matrix & ndarray  *)
 
+module type Sig = sig
 
-module Ndarray = Owl_dense_ndarray
+  type elt
 
+  val add : elt -> elt -> elt
 
-module Matrix = Owl_dense_matrix
+end
