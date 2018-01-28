@@ -861,7 +861,134 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
         output
       end
 
-  (*TODO: this is a stub *)
+  (* General function for avg_pool2d and max_pool2d *)
+  let _pool2d ?(padding=SAME) input kernel stride
+        init_pool_fun add_val_pool_fun end_pool_fun =
+    assert (num_dims input = 4);
+    assert (Array.length kernel = 2);
+    assert (Array.length stride = 2);
+
+    let input_shp = shape input in
+    let batches = input_shp.(0) in
+    let input_cols = input_shp.(1) in
+    let input_rows = input_shp.(2) in
+    let in_channel = input_shp.(3) in
+
+    let kernel_cols = kernel.(0) in
+    let kernel_rows = kernel.(1) in
+
+    let col_stride = stride.(0) in
+    let row_stride = stride.(1) in
+
+    let (output_cols, output_rows) =
+      Owl_utils_conv.calc_conv2d_output_shape padding
+        input_cols input_rows
+        kernel_cols kernel_rows
+        row_stride col_stride
+    in
+    let output = empty [|batches; output_cols; output_rows; in_channel|] in
+    let (pad_top, pad_left, _, _) = Owl_utils_conv.calc_conv2d_padding
+        input_cols input_rows kernel_cols kernel_rows output_cols output_rows
+        row_stride col_stride
+    in
+    begin
+      for b = 0 to batches - 1 do
+        for i = 0 to output_cols - 1 do
+          for j = 0 to output_rows - 1 do
+            for k = 0 to in_channel - 1 do
+              init_pool_fun ();
+
+              for di = 0 to kernel_cols - 1 do
+                for dj = 0 to kernel_rows - 1 do
+                  let in_col = i * col_stride + di - pad_left in
+                  let in_row = j * row_stride + dj - pad_top in
+                  let in_val = (
+                    if ((0 <= in_col) && (in_col < input_cols) &&
+                        (0 <= in_row) && (in_row < input_rows))
+                    then (get input [|b; in_col; in_row; k|])
+                    else 0.
+                  ) in
+                  add_val_pool_fun in_val
+                done; (*dj*)
+              done; (*di*)
+
+              (set output [|b; i; j; k|] (end_pool_fun ()))
+            done; (*k*)
+          done; (*j*)
+        done; (*i*)
+      done; (*b*)
+      output
+    end
+
+  let _pool3d ?(padding=SAME) input kernel stride
+      init_pool_fun add_val_pool_fun end_pool_fun =
+    assert (num_dims input = 5);
+    assert (Array.length kernel = 3);
+    assert (Array.length stride = 3);
+
+    let input_shp = shape input in
+    let batches = input_shp.(0) in
+    let input_cols = input_shp.(1) in
+    let input_rows = input_shp.(2) in
+    let input_dpts = input_shp.(3) in
+    let in_channel = input_shp.(4) in
+
+    let kernel_cols = kernel.(0) in
+    let kernel_rows = kernel.(1) in
+    let kernel_dpts = kernel.(2) in
+
+    let col_stride = stride.(0) in
+    let row_stride = stride.(1) in
+    let dpt_stride = stride.(2) in
+
+    let output_cols, output_rows, output_dpts =
+      Owl_utils_conv.calc_conv3d_output_shape padding
+        input_cols input_rows input_dpts
+        kernel_cols kernel_rows kernel_dpts
+        row_stride col_stride dpt_stride
+    in
+    let output = empty [|batches; output_cols; output_rows; output_dpts; in_channel|] in
+    let (pad_top, pad_left, pad_shallow, _, _, _) = _calc_conv3d_padding
+        input_cols input_rows input_dpts
+        kernel_cols kernel_rows kernel_dpts
+        output_cols output_rows output_dpts
+        row_stride col_stride dpt_stride
+    in
+    begin
+      for b = 0 to batches - 1 do
+        for i = 0 to output_cols - 1 do
+          for j = 0 to output_rows - 1 do
+            for dpt = 0 to output_dpts - 1 do
+              for k = 0 to in_channel - 1 do
+                init_pool_fun ();
+
+                for di = 0 to kernel_cols - 1 do
+                  for dj = 0 to kernel_rows - 1 do
+                    for d_dpt = 0 to kernel_dpts - 1 do
+                      let in_col = i * col_stride + di - pad_left in
+                      let in_row = j * row_stride + dj - pad_top in
+                      let in_dpt = dpt * dpt_stride + d_dpt - pad_shallow in
+                      let in_val = (
+                        if ((0 <= in_col) && (in_col < input_cols) &&
+                            (0 <= in_row) && (in_row < input_rows)  &&
+                            (0 <= in_dpt) && (in_dpt < input_dpts))
+                        then (get input [|b; in_col; in_row; in_dpt; k|])
+                        else 0.
+                      ) in
+                      add_val_pool_fun in_val
+                    done; (*d_dpt*)
+                  done; (*dj*)
+                done; (*di*)
+
+                (set output [|b; i; j; dpt; k|] (end_pool_fun ()))
+              done; (*k*)
+            done; (*dpt*)
+          done; (*j*)
+        done; (*i*)
+      done; (*b*)
+      output
+    end
+
   (* max_pool2d: 4d input and 2d kernel, refer to tensorlfow doc
      input : [batch; input_column; input_row; input_channel]
      kernel: [kernel_column; kernel_row]
@@ -869,10 +996,14 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
      output: [batch; output_column; output_row; input_channel]
   *)
   let max_pool2d ?(padding=SAME) input kernel stride =
-    assert (Array.length (shape input) = 4);
-    assert (Array.length kernel = 2);
-    assert (Array.length stride = 2);
-    (failwith "max_pool2d - not implemented"; input)
+    let max_pool = ref 0. in
+    let init_pool_fun = (fun () -> max_pool := Pervasives.min_float) in
+    let add_val_pool_fun =
+      (fun v -> max_pool := Pervasives.max !max_pool v)
+    in
+    let end_pool_fun = (fun () -> !max_pool) in
+    (_pool2d ~padding:padding input kernel stride
+       init_pool_fun add_val_pool_fun end_pool_fun)
 
   (* max_pool1d: 3d input and 1d kernel, refer to tensorlfow doc
      input : [batch; input_column; input_channel]
@@ -903,7 +1034,6 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     let output = reshape output [|batches; output_cols; in_channel|] in
     output
 
-  (*TODO: this is a stub *)
   (* max_pool3d: 5d input and 3d kernel, refer to tensorflow doc
   input : [batch; input_column; input_row; input_depth; input_channel]
   kernel: [kernel_column; kernel_row; kernel_depth]
@@ -911,18 +1041,26 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
   output: [batch; output_column; output_row; output_dpts; input_channel]
   *)
   let max_pool3d ?(padding=SAME) input kernel stride =
-    assert (num_dims input = 5);
-    assert (Array.length kernel = 3);
-    assert (Array.length stride = 3);
-    (failwith "max_pool3d - not implemented"; input)
+    let max_pool = ref 0. in
+    let init_pool_fun = (fun () -> max_pool := Pervasives.min_float) in
+    let add_val_pool_fun =
+      (fun v -> max_pool := Pervasives.max !max_pool v)
+    in
+    let end_pool_fun = (fun () -> !max_pool) in
+    (_pool3d ~padding:padding input kernel stride
+       init_pool_fun add_val_pool_fun end_pool_fun)
 
-  (*TODO: this is a stub *)
   (* similar to max_pool2d *)
   let avg_pool2d ?(padding=SAME) input kernel stride =
-    assert (num_dims input = 4);
-    assert (Array.length kernel = 2);
-    assert (Array.length stride = 2);
-    (failwith "avg_pool2d - not implemented"; input)
+    let sum_pool = ref 0. in
+    let cnt = ref 0. in
+    let init_pool_fun = (fun () -> (sum_pool := 0.; cnt := 0.)) in
+    let add_val_pool_fun =
+      (fun v -> sum_pool := !sum_pool +. v; cnt := !cnt +. 1.)
+    in
+    let end_pool_fun = (fun () -> (!sum_pool /. !cnt)) in
+    (_pool2d ~padding:padding input kernel stride
+       init_pool_fun add_val_pool_fun end_pool_fun)
 
   (* similar to max_pool1d *)
   let avg_pool1d ?(padding=SAME) input kernel stride =
@@ -948,13 +1086,17 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     let output = reshape output [|batches; output_cols; in_channel|] in
     output
 
-  (*TODO: this is a stub *)
   (* simiar to max_pool3d *)
   let avg_pool3d ?(padding=SAME) input kernel stride =
-    assert (num_dims input = 5);
-    assert (Array.length kernel = 3);
-    assert (Array.length stride = 3);
-    (failwith "avg_pool3d - not implemented"; input)
+    let sum_pool = ref 0. in
+    let cnt = ref 0. in
+    let init_pool_fun = (fun () -> (sum_pool := 0.; cnt := 0.)) in
+    let add_val_pool_fun =
+      (fun v -> sum_pool := !sum_pool +. v; cnt := !cnt +. 1.)
+    in
+    let end_pool_fun = (fun () -> (!sum_pool /. !cnt)) in
+    (_pool3d ~padding:padding input kernel stride
+       init_pool_fun add_val_pool_fun end_pool_fun)
 
   (*TODO: this is a stub *)
   (* gradient of conv2d w.r.t the input *)
