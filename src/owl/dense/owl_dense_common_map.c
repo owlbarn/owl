@@ -79,7 +79,7 @@ CAMLprim value FUN4(value vN, value vX, value vY)
 CAMLprim value FUN12(value vN, value vA, value vB, value vX)
 {
   CAMLparam1(vX);
-  int i, N = Long_val(vN);
+  int N = Long_val(vN);
   INIT;
 
   struct caml_ba_array *X = Caml_ba_array_val(vX);
@@ -87,7 +87,7 @@ CAMLprim value FUN12(value vN, value vA, value vB, value vX)
 
   caml_enter_blocking_section();  /* Allow other threads */
 
-  for (i = 1; i <= N; i++) {
+  for (int i = 0; i < N; i++) {
     MAPFN(*X_data);
     X_data++;
   }
@@ -106,7 +106,7 @@ CAMLprim value FUN12(value vN, value vA, value vB, value vX)
 CAMLprim value FUN13(value vN, value vBase, value vA, value vB, value vX)
 {
   CAMLparam1(vX);
-  int i, N = Long_val(vN);
+  int N = Long_val(vN);
   INIT;
 
   struct caml_ba_array *X = Caml_ba_array_val(vX);
@@ -115,22 +115,22 @@ CAMLprim value FUN13(value vN, value vBase, value vA, value vB, value vX)
   caml_enter_blocking_section();  /* Allow other threads */
 
   if (base == 2.0)
-    for (i = 1; i <= N; i++) {
+    for (int i = 0; i < N; i++) {
       MAPFN(X_data);
       X_data++;
     }
   else if (base == 10.0)
-    for (i = 1; i <= N; i++) {
+    for (int i = 0; i < N; i++) {
       MAPFN1(X_data);
       X_data++;
     }
   else if (base == 2.7182818284590452353602874713526625L)
-    for (i = 1; i <= N; i++) {
+    for (int i = 0; i < N; i++) {
       MAPFN2(X_data);
       X_data++;
     }
   else {
-    for (i = 1; i <= N; i++) {
+    for (int i = 0; i < N; i++) {
       MAPFN3(X_data);
       X_data++;
     }
@@ -431,22 +431,22 @@ static OWL_INLINE void FUN24_CODE (
   int inc_x = X->dim[d] == Z->dim[d] ? stride_x[d] : 0;
   int inc_y = Y->dim[d] == Z->dim[d] ? stride_y[d] : 0;
   int inc_z = stride_z[d];
-
-  NUMBER *x = (NUMBER *) X->data;
-  NUMBER *y = (NUMBER *) Y->data;
-  NUMBER *z = (NUMBER *) Z->data;
-
+  const int n = Z->dim[d];
 
   if (d == X->num_dims - 1) {
-    for (int i = 0; i < Z->dim[d]; i++) {
-      MAPFN((x + ofs_x), (y + ofs_y), (z + ofs_z));
-      ofs_x += inc_x;
-      ofs_y += inc_y;
-      ofs_z += inc_z;
+    NUMBER *x = (NUMBER *) X->data + ofs_x;
+    NUMBER *y = (NUMBER *) Y->data + ofs_y;
+    NUMBER *z = (NUMBER *) Z->data + ofs_z;
+
+    for (int i = 0; i < n; i++) {
+      MAPFN(x, y, z);
+      x += inc_x;
+      y += inc_y;
+      z += inc_z;
     }
   }
   else {
-    for (int i = 0; i < Z->dim[d]; i++) {
+    for (int i = 0; i < n; i++) {
       FUN24_CODE (d+1, X, stride_x, ofs_x, Y, stride_y, ofs_y, Z, stride_z, ofs_z);
       ofs_x += inc_x;
       ofs_y += inc_y;
@@ -510,22 +510,24 @@ static OWL_INLINE void FUN25_CODE (
   int inc_x = X->dim[d] == Z->dim[d+1] ? stride_x[d] : 0;
   int inc_y = Y->dim[d] == Z->dim[d+1] ? stride_y[d] : 0;
   int inc_z = stride_z[d+1];
-
-  NUMBER *x = (NUMBER *) X->data;
-  NUMBER *y = (NUMBER *) Y->data;
-  NUMBER *z = (NUMBER *) Z->data;
+  const int n = Z->dim[d+1];
 
 
   if (d == X->num_dims - 1) {
-    for (int i = 0; i < Z->dim[d+1]; i++) {
-      MAPFN((x + ofs_x), (y + ofs_y), (z + ofs_z));
-      ofs_x += inc_x;
-      ofs_y += inc_y;
-      ofs_z += inc_z;
+    NUMBER *x = (NUMBER *) X->data + ofs_x;
+    NUMBER *y = (NUMBER *) Y->data + ofs_y;
+    NUMBER *z = (NUMBER *) Z->data + ofs_z;
+
+
+    for (int i = 0; i < n; i++) {
+      MAPFN(x, y, z);
+      x += inc_x;
+      y += inc_y;
+      z += inc_z;
     }
   }
   else {
-    for (int i = 0; i < Z->dim[d+1]; i++) {
+    for (int i = 0; i < n; i++) {
       FUN25_CODE (d+1, X, stride_x, ofs_x, Y, stride_y, ofs_y, Z, stride_z, ofs_z);
       ofs_x += inc_x;
       ofs_y += inc_y;
@@ -677,24 +679,25 @@ static OWL_INLINE void FUN27_CODE (
   int inc_x = X->dim[d] == Z->dim[d+1] ? stride_x[d] : 0;
   int inc_y = Y->dim[d] == Z->dim[d+1] ? stride_y[d] : 0;
   int inc_z = stride_z[d+1];
-
-  NUMBER *w = (NUMBER *) W->data;
-  NUMBER *x = (NUMBER *) X->data;
-  NUMBER *y = (NUMBER *) Y->data;
-  NUMBER *z = (NUMBER *) Z->data;
+  const int n = Z->dim[d+1];
 
 
   if (d == X->num_dims - 1) {
-    for (int i = 0; i < Z->dim[d+1]; i++) {
-      MAPFN((w + ofs_w), (x + ofs_x), (y + ofs_y), (z + ofs_z));
-      ofs_w += inc_w;
-      ofs_x += inc_x;
-      ofs_y += inc_y;
-      ofs_z += inc_z;
+    NUMBER *w = (NUMBER *) W->data + ofs_w;
+    NUMBER *x = (NUMBER *) X->data + ofs_x;
+    NUMBER *y = (NUMBER *) Y->data + ofs_y;
+    NUMBER *z = (NUMBER *) Z->data + ofs_z;
+
+    for (int i = 0; i < n; i++) {
+      MAPFN(w, x, y, z);
+      w += inc_w;
+      x += inc_x;
+      y += inc_y;
+      z += inc_z;
     }
   }
   else {
-    for (int i = 0; i < Z->dim[d+1]; i++) {
+    for (int i = 0; i < n; i++) {
       FUN27_CODE (d+1, W, stride_w, ofs_w, X, stride_x, ofs_x, Y, stride_y, ofs_y, Z, stride_z, ofs_z);
       ofs_w += inc_w;
       ofs_x += inc_x;
