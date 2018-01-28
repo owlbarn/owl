@@ -854,6 +854,7 @@ module type StatsSig = sig
 
 end
 
+(*
 module TENSOR_S = struct
 
   let elt = float
@@ -866,5 +867,6 @@ module TENSOR_S = struct
 
   let ml_tensor_spatial_avg_pooling_backward = foreign "c_tensor_s_spatial_avg_pooling_backward" (ptr elt @-> ptr elt @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> int @-> returning void)
 end
+*)
 
 (* ends here *)
