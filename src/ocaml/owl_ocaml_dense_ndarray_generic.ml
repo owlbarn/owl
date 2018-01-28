@@ -165,6 +165,9 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
   (* return the shape of the ndarray *)
   let shape varr = Genarray.dims varr
 
+  (* return the rank of the ndarray *)
+  let num_dims varr = Array.length (shape varr)
+
   (* return the number of elements in the ndarray*)
   let numel varr = let v_shape = shape varr in (Array.fold_left ( * ) 1 v_shape)
 
@@ -698,144 +701,192 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
   *)
 
   (*TODO: this is a stub *)
-  let conv1d ?(padding=SAME) varr_a varr_b intarr =
-    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
-    let x = intarr.(0) + 1 in
-    (raise (Failure "conv1d - not implemented"); varr_a)
+  (* conv1d: 3d input and 3d kernel, refer to tensorlfow doc
+    input : [batch; input_column; input_channel]
+    kernel: [kernel_column; input_channel; output_channel]
+    stride: [column_stride]
+    output: [batch; output_column; output_channel]
+   *)
+  let conv1d ?(padding=SAME) input kernel stride =
+    assert (num_dims input = 3);
+    assert (num_dims kernel = 3);
+    assert (Array.length stride = 1);
+    (failwith "conv1d - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let conv2d ?(padding=SAME) varr_a varr_b intarr =
-    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
-    let x = intarr.(0) + 1 in
-    (raise (Failure "conv2d - not implemented"); varr_a)
+  (* conv2d: 4d input and 4d kernel, refer to tensorlfow doc
+  input : [batch; input_column; input_row; input_channel]
+  kernel: [kernel_column; kernel_row; input_channel; output_channel]
+  stride: [column_stride; row_stride]
+  output: [batch; output_column; output_row; output_channel]
+  *)
+  let conv2d ?(padding=SAME) input kernel stride =
+    assert (num_dims input = 4);
+    assert (num_dims kernel = 4);
+    assert (Array.length stride = 2);
+    (failwith "conv2d - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let conv3d ?(padding=SAME) varr_a varr_b intarr =
-    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
-    let x = intarr.(0) + 1 in
-    (raise (Failure "conv3d - not implemented"); varr_a)
+  (* conv3d: 5d input and 5d kernel, refer to tensorflow doc
+  input : [batch; input_column; input_row; input_depth; input_channel]
+  kernel: [kernel_column; kernel_row; kernel_depth; input_channel; output_channel]
+  stride: [column_stride; row_stride; depth_stride]
+  output: [batch; output_column; output_row; output_dpts; output_channel]
+  *)
+  let conv3d ?(padding=SAME) input kernel stride =
+    assert (num_dims input = 5);
+    assert (num_dims kernel = 5);
+    assert (Array.length stride = 3);
+    (failwith "conv3d - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let max_pool1d ?(padding=SAME) varr intarr_a intarr_b =
-    let dims = shape varr in
-    let x = intarr_a.(0) + intarr_b.(0) + 1 in
-    (raise (Failure "max_pool1d - not implemented"); varr)
+  (* max_pool1d: 3d input and 1d kernel, refer to tensorlfow doc
+    input : [batch; input_column; input_channel]
+    kernel: [kernel_column]
+    stride: [column_stride]
+    output: [batch; output_column; input_channel]
+   *)
+  let max_pool1d ?(padding=SAME) input kernel stride =
+    assert (num_dims input = 3);
+    assert (Array.length kernel = 1);
+    assert (Array.length stride = 1);
+    (failwith "max_pool1d - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let max_pool2d ?(padding=SAME) varr intarr_a intarr_b =
-    let dims = shape varr in
-    let x = intarr_a.(0) + intarr_b.(0) + 1 in
-    (raise (Failure "max_pool2d - not implemented"); varr)
+  (* max_pool2d: 4d input and 2d kernel, refer to tensorlfow doc
+  input : [batch; input_column; input_row; input_channel]
+  kernel: [kernel_column; kernel_row]
+  stride: [column_stride; row_stride]
+  output: [batch; output_column; output_row; input_channel]
+  *)
+  let max_pool2d ?(padding=SAME) input kernel stride =
+    assert (Array.length (shape input) = 4);
+    assert (Array.length kernel = 2);
+    assert (Array.length stride = 2);
+    (failwith "max_pool2d - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let max_pool3d ?(padding=SAME) varr intarr_a intarr_b =
-    let dims = shape varr in
-    let x = intarr_a.(0) + intarr_b.(0) + 1 in
-    (raise (Failure "max_pool3d - not implemented"); varr)
+  (* max_pool3d: 5d input and 3d kernel, refer to tensorflow doc
+  input : [batch; input_column; input_row; input_depth; input_channel]
+  kernel: [kernel_column; kernel_row; kernel_depth]
+  stride: [column_stride; row_stride; depth_stride]
+  output: [batch; output_column; output_row; output_dpts; input_channel]
+  *)
+  let max_pool3d ?(padding=SAME) input kernel stride =
+    assert (num_dims input = 5);
+    assert (Array.length kernel = 3);
+    assert (Array.length stride = 3);
+    (failwith "max_pool3d - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let avg_pool1d ?(padding=SAME) varr intarr_a intarr_b =
-    let dims = shape varr in
-    let x = intarr_a.(0) + intarr_b.(0) + 1 in
-    (raise (Failure "avg_pool1d - not implemented"); varr)
+  (* similar to max_pool1d *)
+  let avg_pool1d ?(padding=SAME) input kernel stride =
+    assert (num_dims input = 3);
+    assert (Array.length kernel = 1);
+    assert (Array.length stride = 1);
+    (failwith "avg_pool1d - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let avg_pool2d ?(padding=SAME) varr intarr_a intarr_b =
-    let dims = shape varr in
-    let x = intarr_a.(0) + intarr_b.(0) + 1 in
-    (raise (Failure "avg_pool2d - not implemented"); varr)
+  (* similar to max_pool2d *)
+  let avg_pool2d ?(padding=SAME) input kernel stride =
+    assert (num_dims input = 4);
+    assert (Array.length kernel = 2);
+    assert (Array.length stride = 2);
+    (failwith "avg_pool2d - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let avg_pool3d ?(padding=SAME) varr intarr_a intarr_b =
-    let dims = shape varr in
-    let x = intarr_a.(0) + intarr_b.(0) + 1 in
-    (raise (Failure "avg_pool3d - not implemented"); varr)
+  (* simiar to max_pool3d *)
+  let avg_pool3d ?(padding=SAME) input kernel stride =
+    assert (num_dims input = 5);
+    assert (Array.length kernel = 3);
+    assert (Array.length stride = 3);
+    (failwith "avg_pool3d - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let conv1d_backward_input varr_a varr_b intarr varr_c =
-    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
-    let dims_c = shape varr_c in
-    let x = intarr.(0) + 1 in
-    (raise (Failure "conv1d_backward_input - not implemented"); varr_a)
+  (* gradient of conv1d w.r.t the input *)
+  let conv1d_backward_input input kernel stride output' =
+    assert (num_dims input = 3);
+    assert (num_dims kernel = 3);
+    assert (num_dims output' = 3);
+    assert (Array.length stride = 1);
+    (failwith "conv1d_backward_input - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let conv1d_backward_kernel varr_a varr_b intarr varr_c =
-    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
-    let dims_c = shape varr_c in
-    let x = intarr.(0) + 1 in
-    (raise (Failure "conv1d_backward_kernel - not implemented"); varr_a)
+  (* gradient of conv1d w.r.t the kernel *)
+  let conv1d_backward_kernel input kernel stride output' =
+    assert (num_dims input = 3);
+    assert (num_dims kernel = 3);
+    assert (num_dims output' = 3);
+    assert (Array.length stride = 1);
+    (failwith "conv1d_backward_kernel - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let conv2d_backward_input varr_a varr_b intarr varr_c =
-    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
-    let dims_c = shape varr_c in
-    let x = intarr.(0) + 1 in
-    (raise (Failure "conv2d_backward_input - not implemented"); varr_a)
+  (* gradient of conv2d w.r.t the input *)
+  let conv2d_backward_input input kernel stride output' =
+    assert (num_dims input = 4);
+    assert (num_dims kernel = 4);
+    assert (num_dims output' = 4);
+    assert (Array.length stride = 2);
+    (failwith "conv2d_backward_input - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let conv2d_backward_kernel varr_a varr_b intarr varr_c =
-    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
-    let dims_c = shape varr_c in
-    let x = intarr.(0) + 1 in
-    (raise (Failure "conv2d_backward_kernel - not implemented"); varr_a)
+  (* gradient of conv2d w.r.t the kernel *)
+  let conv2d_backward_kernel input kernel stride output' =
+    assert (num_dims input = 4);
+    assert (num_dims kernel = 4);
+    assert (num_dims output' = 4);
+    assert (Array.length stride = 2);
+    (failwith "conv2d_backward_kernel - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let conv3d_backward_input varr_a varr_b intarr varr_c =
-    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
-    let dims_c = shape varr_c in
-    let x = intarr.(0) + 1 in
-    (raise (Failure "conv3d_backward_input - not implemented"); varr_a)
+  (* gradient of conv3d w.r.t the input *)
+  let conv3d_backward_input input kernel stride output' =
+    assert (num_dims input = 5);
+    assert (num_dims kernel = 5);
+    assert (num_dims output' = 5);
+    assert (Array.length stride = 3);
+    (failwith "conv3d_backward_input - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let conv3d_backward_kernel varr_a varr_b intarr varr_c =
-    let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
-    let dims_c = shape varr_c in
-    let x = intarr.(0) + 1 in
-    (raise (Failure "conv3d_backward_kernel - not implemented"); varr_a)
+  (* gradient of conv3d w.r.t the kernel *)
+  let conv3d_backward_kernel input kernel stride output' =
+    assert (num_dims input = 5);
+    assert (num_dims kernel = 5);
+    assert (num_dims output' = 5);
+    assert (Array.length stride = 3);
+    (failwith "conv3d_backward_kernel - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let max_pool1d_backward padding (varr_a:arr) intarr_a intarr_b (varr_b:arr) =
-    let padding = (match padding with
-        | SAME -> SAME
-        | VALID -> VALID)
-    in
-    let dims_a = shape varr_a in
-    let dims_b = shape varr_b in
-    let x = intarr_a.(0) + intarr_b.(0) + 1 in
-    (raise (Failure "max_pool1d_backward - not implemented"); varr_a)
+  (* calculate the gradient of max_pool1d *)
+  let max_pool1d_backward padding input kernel stride output' =
+    assert (num_dims input = 3);
+    assert (Array.length kernel = 1);
+    assert (Array.length stride = 1);
+    (failwith "max_pool1d_backward - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let max_pool2d_backward padding (varr_a:arr) intarr_a intarr_b (varr_b:arr) =
-    let padding = (match padding with
-        | SAME -> SAME
-        | VALID -> VALID)
-    in
-    let dims_a = shape varr_a in
-    let dims_b = shape varr_b in
-    let x = intarr_a.(0) + intarr_b.(0) + 1 in
-    (raise (Failure "max_pool2d_backward - not implemented"); varr_a)
+  (* calculate the gradient of max_pool2d *)
+  let max_pool2d_backward padding input kernel stride output' =
+    assert (num_dims input = 4);
+    assert (Array.length kernel = 2);
+    assert (Array.length stride = 2);
+    (failwith "max_pool2d_backward - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let avg_pool1d_backward padding (varr_a:arr) intarr_a intarr_b (varr_b:arr) =
-    let padding = (match padding with
-        | SAME -> SAME
-        | VALID -> VALID)
-    in
-    let dims_a = shape varr_a in
-    let dims_b = shape varr_b in
-    let x = intarr_a.(0) + intarr_b.(0) + 1 in
-    (raise (Failure "avg_pool1d_backward - not implemented"); varr_a)
+  (* calculate the gradient of avg_pool1d *)
+  let avg_pool1d_backward padding input kernel stride output' =
+    assert (num_dims input = 3);
+    assert (Array.length kernel = 1);
+    assert (Array.length stride = 1);
+    (failwith "avg_pool1d_backward - not implemented"; input)
 
   (*TODO: this is a stub *)
-  let avg_pool2d_backward padding (varr_a:arr) intarr_a intarr_b (varr_b:arr) =
-    let padding = (match padding with
-        | SAME -> SAME
-        | VALID -> VALID)
-    in
-    let dims_a = shape varr_a in
-    let dims_b = shape varr_b in
-    let x = intarr_a.(0) + intarr_b.(0) + 1 in
-    (raise (Failure "avg_pool2d_backward - not implemented"); varr_a)
+  (* calculate the gradient of avg_pool2d *)
+  let avg_pool2d_backward padding input kernel stride output' =
+    assert (num_dims input = 4);
+    assert (Array.length kernel = 2);
+    assert (Array.length stride = 2);
+    (failwith "avg_pool2d_backward - not implemented"; input)
 
   (* matrix functions *)
 
