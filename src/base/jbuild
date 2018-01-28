@@ -3,6 +3,7 @@
 (copy_files# types/*)
 (copy_files# optimise/*)
 (copy_files# neural/*)
+(copy_files# misc/*)
 
 (library (
   (name owl_base)
