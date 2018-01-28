@@ -96,6 +96,39 @@ let _draw_int_samples replacement range count =
     Array.init count draw_fun
   )
 
+let _enumerate_slice_def dim ?(step) start stop =
+  let start = if start < 0 then dim + start else start in
+  let stop = if stop < 0 then dim + stop else stop in
+  let step = match step with
+    | Some x -> x
+    | None -> if (start <= stop) then 1 else -1
+  in
+  let _ =
+    assert (((start <= stop) && (step > 0)) || ((start > stop) && (step < 0)))
+  in
+  let step_abs = Pervasives.abs step in
+  let len = ((Pervasives.abs (stop - start)) + step_abs) / step_abs in
+  (Array.init len (fun i -> start + i * step))
+
+
+(* Rewrite the indices s.t. for each dimension they are a list of explicit indices *)
+let _expand_slice_indices index_list dims =
+  let rank = Array.length dims in
+  let sdef_len = List.length index_list in (* the number of dimensions this slice specifies *)
+  let _expand_slice_index = (
+    fun i ind -> match ind with
+      | [] -> Array.init dims.(i) (fun i -> i)
+      | [start] -> [|start|]
+      | [start; stop] -> _enumerate_slice_def dims.(i) start stop
+      | [start; stop; step] -> _enumerate_slice_def dims.(i) ~step:step start stop
+      | _ -> failwith "incorrect slice definition"
+  ) in
+  Array.append
+    (Array.of_list (List.mapi _expand_slice_index index_list)) (* for the axis where the index was specified *)
+    (Array.init (rank - sdef_len) (* the rest of the axis is just all of them *)
+       (fun p -> Array.init dims.(p + sdef_len) (fun i -> i)))
+
+
 module type GenarrayFloatEltSig = sig
   type elt
   val element_kind: (float, elt) kind
@@ -140,30 +173,48 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
   let set varr index value = (Genarray.set varr index value)
 
 
-(*TODO: this is a stub *)
+  (*TODO: make more efficient, test it is correct *)
   let get_slice index_list varr =
     let dims = shape varr in
-    let x = match index_list with
-      | y::tl -> 1
-      | [] -> 0
-    in
-    (raise (Failure "get_slice - not implemented"); varr)
+    let rank = Array.length dims in
+    let index_array = _expand_slice_indices index_list dims in
+    let slice_dims = Array.map (fun a -> Array.length a) index_array in
+    let slice_varr = empty slice_dims in
+    let slice_ind = Array.make rank 0 in
+    let original_ind = Array.make rank 0 in
+    let should_stop = ref false in
+    begin
+      while not !should_stop do
+        for i = 0 to rank - 1 do
+          original_ind.(i) <- (index_array.(i)).(slice_ind.(i))
+        done;
+        Genarray.set slice_varr slice_ind (Genarray.get varr original_ind);
+        if not (_next_index slice_ind slice_dims) then
+          should_stop := true
+      done;
+      slice_varr
+    end
 
-  (*TODO: this is a stub *)
-  let set_slice index_list varr_a varr_b =
-    let dims_a = shape varr_a in
-    let dims_b = shape varr_b in
-    let x = match index_list with
-      | y::tl -> 1
-      | [] -> 0
-    in
-    (raise (Failure "get_slice - not implemented"); ())
-
-
-
-  (*TODO: val get_slice : index list -> arr -> arr *)
-
-  (*TODO: val set_slice : index list -> arr -> arr -> unit *)
+  (*TODO: make more efficient, test it is correct *)
+  let set_slice index_list varr slice_varr =
+    let dims = shape varr in
+    let rank = Array.length dims in
+    let index_array = _expand_slice_indices index_list dims in
+    let slice_dims = Array.map (fun a -> Array.length a) index_array in
+    let slice_varr = reshape slice_varr slice_dims in
+    let slice_ind = Array.make rank 0 in
+    let original_ind = Array.make rank 0 in
+    let should_stop = ref false in
+    begin
+      while not !should_stop do
+        for i = 0 to rank - 1 do
+          original_ind.(i) <- (index_array.(i)).(slice_ind.(i))
+        done;
+        Genarray.set varr original_ind (Genarray.get slice_varr slice_ind);
+        if not (_next_index slice_ind slice_dims) then
+          should_stop := true
+      done;
+    end
 
   (*TODO: This is clone, not copying from one to another, maybe should specify this in documentation *)
   let copy varr =
@@ -241,13 +292,33 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       | Some a -> Some a
       | None   -> Some n
     in
-    (raise (Failure "print - not implemented"); ())
+    Owl_pretty.print ?max_row ?max_col ?header ?elt_to_str_fun:fmt varr
 
-  (* TODO: this is a stub *)
+  (* TODO: test and optimise *)
   let tile varr reps =
+    (* First ensure len(reps) = num_dims(varr) *)
     let dims = shape varr in
-    let type_int = reps.(0) + 1 in
-    (raise (Failure "tile - not implemented"); varr)
+    let result_rank = Pervasives.max (Array.length dims) (Array.length reps) in
+    let dims = _prepend_dims dims result_rank in
+    let reps = _prepend_dims reps result_rank in
+    let varr = reshape varr dims in
+    (* now len(reps) = num_dims(varr) *)
+    let result_dims = Array.map2 (fun a b -> a * b) dims reps in
+    let result_varr = empty result_dims in
+    let result_ind = Array.make result_rank 0 in
+    let original_ind = Array.make result_rank 0 in
+    let should_stop = ref false in
+    begin
+      while not !should_stop do
+        for i = 0 to result_rank - 1 do
+          original_ind.(i) <- (Pervasives.(mod) result_ind.(i) dims.(i))
+        done;
+        Genarray.set result_varr result_ind (Genarray.get varr original_ind);
+        if not (_next_index result_ind result_dims) then
+          should_stop := true
+      done;
+      result_varr
+    end
 
   (* TODO: optimise and ensure it is correct *)
   let split ?(axis=0) parts varr =
@@ -268,17 +339,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
   let draw_along_dim0 varr count =
     let dims = shape varr in
     let indices = _draw_int_samples false dims.(0) count in
-    (get_slice [L (Array.to_list indices)] varr, indices)
-
-  (*TODO: val tile : arr -> int array -> arr
-
-  TODO:val split : ?axis:int -> int array -> arr -> arr array
-
-  TODO:val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
-
-    TODO:val draw_along_dim0 : arr -> int -> arr * int array *)
-
-
+    (get_slice [(Array.to_list indices)] varr, indices)
 
   (* TODO: is there a more efficient way to do this? *)
   let concatenate ?(axis=0) varrs =
@@ -949,15 +1010,52 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     (extracted_a, extracted_b, indices)
 
 
-(* TODO: this is a stub *)
+  (* TODO: optimise and test *)
+  (* Implementing the following algorithm http://www.irma-international.org/viewtitle/41011/ *)
   let inv varr =
     let dims = shape varr in
-    (raise (Failure "inv - not implemented"); varr)
-  (* TODO:
+    let _ = _check_is_matrix dims in
+    let n = Array.get dims 0 in
+    if (Array.get dims 1) != n
+    then failwith "no inverse - the matrix is not square"
+    else
+      let pivot_row = Array.make n 0. in
+      let result_varr = copy varr in
+      begin
+        for p = 0 to n - 1 do
+          let pivot_elem = get result_varr [|p; p|] in
+          if get result_varr [|p; p|] = 0.
+          then failwith "the matrix does not have an inverse";
+          (* update elements of the pivot row, save old vals *)
+          for j = 0 to n - 1 do
+            pivot_row.(j) <- get result_varr [|p; j|];
+            if j != p
+            then set result_varr [|p; j|] (pivot_row.(j) /. pivot_elem)
+          done;
+          (* update elements of the pivot col *)
+          for i = 0 to n - 1 do
+            if i != p
+            then set result_varr [|i; p|]
+                ((get result_varr [|i; p|]) /. (~-. pivot_elem))
+          done;
+          (* update the rest of the matrix *)
+          for i = 0 to n - 1 do
+            let pivot_col_elem = get result_varr [|i; p|] in
+            for j = 0 to n - 1 do
+              if i != p && j != p
+              then
+                let pivot_row_elem = pivot_row.(j) in (* use old value *)
+                let old_val = get result_varr [|i; j|] in
+                let new_val = old_val +. (pivot_row_elem *. pivot_col_elem) in
+                (set result_varr [|i; j|] new_val)
+            done;
+          done;
+          (* update the pivot element *)
+          set result_varr [|p; p|] (1. /. pivot_elem)
+        done;
+        result_varr
+      end
 
-  val inv : arr -> arr
-
-*)
 end
 
 module NdarrayPureSingle = MakeNdarray(GenarrayFloat32Elt)
