@@ -178,10 +178,7 @@
     ; -w "-32-27-6-37-3"
   ))
   (libraries (
-    owl_types
-    owl_utils
-    owl_optimise
-    owl_neural
+    owl_base
     ctypes
     ctypes.stubs
     eigen
