@@ -129,6 +129,24 @@ let _expand_slice_indices index_list dims =
        (fun p -> Array.init dims.(p + sdef_len) (fun i -> i)))
 
 
+(* TODO: move to utils *)
+let _calc_conv3d_padding
+    input_cols input_rows input_depth
+    kernel_cols kernel_rows kernel_depth
+    output_cols output_rows output_depth
+    row_stride col_stride depth_stride
+  =
+  let pad_along_height = Pervasives.max ((output_rows - 1) * row_stride + kernel_rows - input_rows) 0 in
+  let pad_along_width = Pervasives.max ((output_cols - 1) * col_stride + kernel_cols - input_cols) 0 in
+  let pad_along_depth = Pervasives.max ((output_depth - 1) * depth_stride + kernel_depth - input_depth) 0 in
+  let pad_top = pad_along_height / 2 in
+  let pad_bottom = pad_along_height - pad_top in
+  let pad_left = pad_along_width / 2 in
+  let pad_right = pad_along_width - pad_left in
+  let pad_shallow = pad_along_depth / 2 in
+  let pad_deep = pad_along_depth - pad_shallow in
+  pad_top, pad_left, pad_shallow, pad_bottom, pad_right, pad_deep
+
 module type GenarrayFloatEltSig = sig
   type elt
   val element_kind: (float, elt) kind
@@ -661,7 +679,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
 
   (* Neural network related functions *)
 
-  (*TODO: this is a stub *)
+  (*TODO: test and optimise *)
   (* conv2d: 4d input and 4d kernel, refer to tensorlfow doc
      input : [batch; input_column; input_row; input_channel]
      kernel: [kernel_column; kernel_row; input_channel; output_channel]
@@ -672,7 +690,62 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     assert (num_dims input = 4);
     assert (num_dims kernel = 4);
     assert (Array.length stride = 2);
-    (failwith "conv2d - not implemented"; input)
+
+    let input_shp = shape input in
+    let batches = input_shp.(0) in
+    let input_cols = input_shp.(1) in
+    let input_rows = input_shp.(2) in
+    let in_channel = input_shp.(3) in
+
+    let kernel_shp = shape kernel in
+    let kernel_cols = kernel_shp.(0) in
+    let kernel_rows = kernel_shp.(1) in
+    let out_channel = kernel_shp.(3) in
+    assert (in_channel = kernel_shp.(2));
+
+    let col_stride = stride.(0) in
+    let row_stride = stride.(1) in
+
+    let (output_cols, output_rows) =
+      Owl_utils_conv.calc_conv2d_output_shape padding input_cols input_rows
+        kernel_cols kernel_rows row_stride col_stride
+    in
+    let output = empty [|batches; output_cols; output_rows; out_channel|] in
+    let (pad_top, pad_left, _, _) = Owl_utils_conv.calc_conv2d_padding
+        input_cols input_rows kernel_cols kernel_rows output_cols output_rows
+        row_stride col_stride
+    in
+    let sum = ref 0. in
+    begin
+      for b = 0 to batches - 1 do
+        for i = 0 to output_cols - 1 do
+          for j = 0 to output_rows - 1 do
+            for k = 0 to out_channel - 1 do
+              sum := 0.;
+
+              for di = 0 to kernel_cols - 1 do
+                for dj = 0 to kernel_rows - 1 do
+                  for q = 0 to in_channel - 1 do
+                    let in_col = i * col_stride + di - pad_left in
+                    let in_row = j * row_stride + dj - pad_top in
+                    let in_val = (
+                      if ((0 <= in_col) && (in_col < input_cols) &&
+                          (0 <= in_row) && (in_row < input_rows))
+                      then (get input [|b; in_col; in_row; q|])
+                      else 0.
+                    ) in
+                    sum := !sum +. in_val *. (get kernel [|di; dj; q; k|])
+                  done; (*q*)
+                done; (*dj*)
+              done; (*di*)
+
+              (set output [|b; i; j; k|] !sum)
+            done; (*k*)
+          done; (*j*)
+        done; (*i*)
+      done; (*b*)
+      output
+    end
 
   (* conv1d: 3d input and 3d kernel, refer to tensorlfow doc
      input : [batch; input_column; input_channel]
@@ -695,7 +768,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     let kernel_cols = kernel_shp.(0) in
     let out_channel = kernel_shp.(2) in
     assert (in_channel = kernel_shp.(1));
-    let kernel = reshape kernel [|1;kernel_cols; in_channel; out_channel|] in
+    let kernel = reshape kernel [|1; kernel_cols; in_channel; out_channel|] in
 
     let col_stride = stride.(0) in
     let stride = [|1; col_stride|] in
@@ -706,18 +779,87 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     let output = reshape output [|batches; output_cols; out_channel|] in
     output
 
-  (*TODO: this is a stub *)
-  (* conv3d: 5d input and 5d kernel, refer to tensorflow doc
-  input : [batch; input_column; input_row; input_depth; input_channel]
-  kernel: [kernel_column; kernel_row; kernel_depth; input_channel; output_channel]
-  stride: [column_stride; row_stride; depth_stride]
-  output: [batch; output_column; output_row; output_dpts; output_channel]
-  *)
-  let conv3d ?(padding=SAME) input kernel stride =
-    assert (num_dims input = 5);
-    assert (num_dims kernel = 5);
-    assert (Array.length stride = 3);
-    (failwith "conv3d - not implemented"; input)
+    (* TODO: test and optimise *)
+    (* conv3d: 5d input and 5d kernel, refer to tensorflow doc
+      input : [batch; input_column; input_row; input_depth; input_channel]
+      kernel: [kernel_column; kernel_row; kernel_depth; input_channel; output_channel]
+      stride: [column_stride; row_stride; depth_stride]
+      output: [batch; output_column; output_row; output_dpts; output_channel]
+     *)
+    let conv3d ?(padding=SAME) input kernel stride =
+      assert (num_dims input = 5);
+      assert (num_dims kernel = 5);
+      assert (Array.length stride = 3);
+
+      let input_shp = shape input in
+      let batches = input_shp.(0) in
+      let input_cols = input_shp.(1) in
+      let input_rows = input_shp.(2) in
+      let input_dpts = input_shp.(3) in
+      let in_channel = input_shp.(4) in
+
+      let kernel_shp = shape kernel in
+      let kernel_cols = kernel_shp.(0) in
+      let kernel_rows = kernel_shp.(1) in
+      let kernel_dpts = kernel_shp.(2) in
+      let out_channel = kernel_shp.(4) in
+      assert (in_channel = kernel_shp.(3));
+
+      let col_stride = stride.(0) in
+      let row_stride = stride.(1) in
+      let dpt_stride = stride.(2) in
+
+      let output_cols, output_rows, output_dpts =
+        Owl_utils_conv.calc_conv3d_output_shape padding
+          input_cols input_rows input_dpts
+          kernel_cols kernel_rows kernel_dpts
+          row_stride col_stride dpt_stride
+      in
+      let output =
+        empty [|batches; output_cols; output_rows; output_dpts; out_channel|] in
+      let (pad_top, pad_left, pad_shallow, _, _, _) = _calc_conv3d_padding
+          input_cols input_rows input_dpts
+          kernel_cols kernel_rows kernel_dpts
+          output_cols output_rows output_dpts
+          row_stride col_stride dpt_stride
+      in
+      let sum = ref 0. in
+      begin
+        for b = 0 to batches - 1 do
+          for i = 0 to output_cols - 1 do
+            for j = 0 to output_rows - 1 do
+              for dpt = 0 to output_dpts - 1 do
+                for k = 0 to out_channel - 1 do
+                  sum := 0.;
+
+                  for di = 0 to kernel_cols - 1 do
+                    for dj = 0 to kernel_rows - 1 do
+                      for d_dpt = 0 to kernel_dpts -1 do
+                        for q = 0 to in_channel - 1 do
+                          let in_col = i * col_stride + di - pad_left in
+                          let in_row = j * row_stride + dj - pad_top in
+                          let in_dpt = dpt * dpt_stride + d_dpt - pad_shallow in
+                          let in_val = (
+                            if ((0 <= in_col) && (in_col < input_cols) &&
+                                (0 <= in_row) && (in_row < input_rows) &&
+                                (0 <= in_dpt) && (in_dpt < input_dpts))
+                            then (get input [|b; in_col; in_row; in_dpt; q|])
+                            else 0.
+                          ) in
+                          sum := !sum +. in_val *. (get kernel [|di; dj; d_dpt; q; k|])
+                        done; (*q*)
+                      done; (*d_dpt*)
+                    done; (*dj*)
+                  done; (*di*)
+
+                  (set output [|b; i; j; dpt; k|] !sum)
+                done; (*k*)
+              done; (*dpt*)
+            done; (*j*)
+          done; (*i*)
+        done; (*b*)
+        output
+      end
 
   (*TODO: this is a stub *)
   (* max_pool2d: 4d input and 2d kernel, refer to tensorlfow doc
