@@ -661,70 +661,50 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
 
   (* Neural network related functions *)
 
-  (*TODO:val conv1d : ?padding:padding -> arr -> arr -> int array -> arr
-
-  val conv2d : ?padding:padding -> arr -> arr -> int array -> arr
-
-  val conv3d : ?padding:padding -> arr -> arr -> int array -> arr
-
-  val max_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
-
-  val max_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
-
-  val max_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
-
-  val avg_pool1d : ?padding:padding -> arr -> int array -> int array -> arr
-
-  val avg_pool2d : ?padding:padding -> arr -> int array -> int array -> arr
-
-  val avg_pool3d : ?padding:padding -> arr -> int array -> int array -> arr
-
-  val conv1d_backward_input : arr -> arr -> int array -> arr -> arr
-
-  val conv1d_backward_kernel : arr -> arr -> int array -> arr -> arr
-
-  val conv2d_backward_input : arr -> arr -> int array -> arr -> arr
-
-  val conv2d_backward_kernel : arr -> arr -> int array -> arr -> arr
-
-  val conv3d_backward_input : arr -> arr -> int array -> arr -> arr
-
-  val conv3d_backward_kernel : arr -> arr -> int array -> arr -> arr
-
-  val max_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
-
-  val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
-
-  val avg_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
-
-  val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
-  *)
-
-  (*TODO: this is a stub *)
-  (* conv1d: 3d input and 3d kernel, refer to tensorlfow doc
-    input : [batch; input_column; input_channel]
-    kernel: [kernel_column; input_channel; output_channel]
-    stride: [column_stride]
-    output: [batch; output_column; output_channel]
-   *)
-  let conv1d ?(padding=SAME) input kernel stride =
-    assert (num_dims input = 3);
-    assert (num_dims kernel = 3);
-    assert (Array.length stride = 1);
-    (failwith "conv1d - not implemented"; input)
-
   (*TODO: this is a stub *)
   (* conv2d: 4d input and 4d kernel, refer to tensorlfow doc
-  input : [batch; input_column; input_row; input_channel]
-  kernel: [kernel_column; kernel_row; input_channel; output_channel]
-  stride: [column_stride; row_stride]
-  output: [batch; output_column; output_row; output_channel]
+     input : [batch; input_column; input_row; input_channel]
+     kernel: [kernel_column; kernel_row; input_channel; output_channel]
+     stride: [column_stride; row_stride]
+     output: [batch; output_column; output_row; output_channel]
   *)
   let conv2d ?(padding=SAME) input kernel stride =
     assert (num_dims input = 4);
     assert (num_dims kernel = 4);
     assert (Array.length stride = 2);
     (failwith "conv2d - not implemented"; input)
+
+  (* conv1d: 3d input and 3d kernel, refer to tensorlfow doc
+     input : [batch; input_column; input_channel]
+     kernel: [kernel_column; input_channel; output_channel]
+     stride: [column_stride]
+     output: [batch; output_column; output_channel]
+  *)
+  let conv1d ?(padding=SAME) input kernel stride =
+    assert (num_dims input = 3);
+    assert (num_dims kernel = 3);
+    assert (Array.length stride = 1);
+
+    let input_shp = shape input in
+    let batches = input_shp.(0) in
+    let input_cols = input_shp.(1) in
+    let in_channel = input_shp.(2) in
+    let input = reshape input [|batches; 1; input_cols; in_channel|] in
+
+    let kernel_shp = shape kernel in
+    let kernel_cols = kernel_shp.(0) in
+    let out_channel = kernel_shp.(2) in
+    assert (in_channel = kernel_shp.(1));
+    let kernel = reshape kernel [|1;kernel_cols; in_channel; out_channel|] in
+
+    let col_stride = stride.(0) in
+    let stride = [|1; col_stride|] in
+
+    let output = conv2d ~padding input kernel stride in
+    let output_shp = shape output in
+    let output_cols = output_shp.(2) in
+    let output = reshape output [|batches; output_cols; out_channel|] in
+    output
 
   (*TODO: this is a stub *)
   (* conv3d: 5d input and 5d kernel, refer to tensorflow doc
@@ -740,30 +720,46 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     (failwith "conv3d - not implemented"; input)
 
   (*TODO: this is a stub *)
-  (* max_pool1d: 3d input and 1d kernel, refer to tensorlfow doc
-    input : [batch; input_column; input_channel]
-    kernel: [kernel_column]
-    stride: [column_stride]
-    output: [batch; output_column; input_channel]
-   *)
-  let max_pool1d ?(padding=SAME) input kernel stride =
-    assert (num_dims input = 3);
-    assert (Array.length kernel = 1);
-    assert (Array.length stride = 1);
-    (failwith "max_pool1d - not implemented"; input)
-
-  (*TODO: this is a stub *)
   (* max_pool2d: 4d input and 2d kernel, refer to tensorlfow doc
-  input : [batch; input_column; input_row; input_channel]
-  kernel: [kernel_column; kernel_row]
-  stride: [column_stride; row_stride]
-  output: [batch; output_column; output_row; input_channel]
+     input : [batch; input_column; input_row; input_channel]
+     kernel: [kernel_column; kernel_row]
+     stride: [column_stride; row_stride]
+     output: [batch; output_column; output_row; input_channel]
   *)
   let max_pool2d ?(padding=SAME) input kernel stride =
     assert (Array.length (shape input) = 4);
     assert (Array.length kernel = 2);
     assert (Array.length stride = 2);
     (failwith "max_pool2d - not implemented"; input)
+
+  (* max_pool1d: 3d input and 1d kernel, refer to tensorlfow doc
+     input : [batch; input_column; input_channel]
+     kernel: [kernel_column]
+     stride: [column_stride]
+     output: [batch; output_column; input_channel]
+  *)
+  let max_pool1d ?(padding=SAME) input kernel stride =
+    assert (num_dims input = 3);
+    assert (Array.length kernel = 1);
+    assert (Array.length stride = 1);
+
+    let input_shp = shape input in
+    let batches = input_shp.(0) in
+    let input_cols = input_shp.(1) in
+    let in_channel = input_shp.(2) in
+    let input = reshape input [|batches; 1; input_cols; in_channel|] in
+
+    let kernel_cols = kernel.(0) in
+    let kernel = [|1; kernel_cols|] in
+
+    let col_stride = stride.(0) in
+    let stride = [|1; col_stride|] in
+
+    let output = max_pool2d ~padding input kernel stride in
+    let output_shp = shape output in
+    let output_cols = output_shp.(2) in
+    let output = reshape output [|batches; output_cols; in_channel|] in
+    output
 
   (*TODO: this is a stub *)
   (* max_pool3d: 5d input and 3d kernel, refer to tensorflow doc
@@ -779,20 +775,36 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     (failwith "max_pool3d - not implemented"; input)
 
   (*TODO: this is a stub *)
-  (* similar to max_pool1d *)
-  let avg_pool1d ?(padding=SAME) input kernel stride =
-    assert (num_dims input = 3);
-    assert (Array.length kernel = 1);
-    assert (Array.length stride = 1);
-    (failwith "avg_pool1d - not implemented"; input)
-
-  (*TODO: this is a stub *)
   (* similar to max_pool2d *)
   let avg_pool2d ?(padding=SAME) input kernel stride =
     assert (num_dims input = 4);
     assert (Array.length kernel = 2);
     assert (Array.length stride = 2);
     (failwith "avg_pool2d - not implemented"; input)
+
+  (* similar to max_pool1d *)
+  let avg_pool1d ?(padding=SAME) input kernel stride =
+    assert (num_dims input = 3);
+    assert (Array.length kernel = 1);
+    assert (Array.length stride = 1);
+
+    let input_shp = shape input in
+    let batches = input_shp.(0) in
+    let input_cols = input_shp.(1) in
+    let in_channel = input_shp.(2) in
+    let input = reshape input [|batches; 1; input_cols; in_channel|] in
+
+    let kernel_cols = kernel.(0) in
+    let kernel = [|1; kernel_cols|] in
+
+    let col_stride = stride.(0) in
+    let stride = [|1; col_stride|] in
+
+    let output = avg_pool2d ~padding input kernel stride in
+    let output_shp = shape output in
+    let output_cols = output_shp.(2) in
+    let output = reshape output [|batches; output_cols; in_channel|] in
+    output
 
   (*TODO: this is a stub *)
   (* simiar to max_pool3d *)
@@ -801,24 +813,6 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     assert (Array.length kernel = 3);
     assert (Array.length stride = 3);
     (failwith "avg_pool3d - not implemented"; input)
-
-  (*TODO: this is a stub *)
-  (* gradient of conv1d w.r.t the input *)
-  let conv1d_backward_input input kernel stride output' =
-    assert (num_dims input = 3);
-    assert (num_dims kernel = 3);
-    assert (num_dims output' = 3);
-    assert (Array.length stride = 1);
-    (failwith "conv1d_backward_input - not implemented"; input)
-
-  (*TODO: this is a stub *)
-  (* gradient of conv1d w.r.t the kernel *)
-  let conv1d_backward_kernel input kernel stride output' =
-    assert (num_dims input = 3);
-    assert (num_dims kernel = 3);
-    assert (num_dims output' = 3);
-    assert (Array.length stride = 1);
-    (failwith "conv1d_backward_kernel - not implemented"; input)
 
   (*TODO: this is a stub *)
   (* gradient of conv2d w.r.t the input *)
@@ -837,6 +831,77 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     assert (num_dims output' = 4);
     assert (Array.length stride = 2);
     (failwith "conv2d_backward_kernel - not implemented"; input)
+
+  (* gradient of conv1d w.r.t the input *)
+  let conv1d_backward_input input kernel stride output' =
+    assert (num_dims input = 3);
+    assert (num_dims kernel = 3);
+    assert (num_dims output' = 3);
+    assert (Array.length stride = 1);
+
+    let input_shp = shape input in
+    let batches = input_shp.(0) in
+    let input_cols = input_shp.(1) in
+    let in_channel = input_shp.(2) in
+    let input_rows = 1 in
+    let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+    let kernel_shp = shape kernel in
+    let kernel_cols = kernel_shp.(0) in
+    let out_channel = kernel_shp.(2) in
+    assert (in_channel = kernel_shp.(1));
+    let kernel_rows = 1 in
+    let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
+
+    let output'_shp = shape output' in
+    let output_cols = output'_shp.(1) in
+    assert (batches = output'_shp.(0));
+    assert (out_channel = output'_shp.(2));
+    let output_rows = 1 in
+    let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+    let col_stride = stride.(0) in
+    let row_stride = 1 in
+    let stride = [|row_stride; col_stride|] in
+
+    let input' = conv2d_backward_input input kernel stride output' in
+    reshape input' input_shp
+
+
+  (* gradient of conv1d w.r.t the kernel *)
+  let conv1d_backward_kernel input kernel stride output' =
+    assert (num_dims input = 3);
+    assert (num_dims kernel = 3);
+    assert (num_dims output' = 3);
+    assert (Array.length stride = 1);
+
+    let input_shp = shape input in
+    let batches = input_shp.(0) in
+    let input_cols = input_shp.(1) in
+    let in_channel = input_shp.(2) in
+    let input_rows = 1 in
+    let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+    let kernel_shp = shape kernel in
+    let kernel_cols = kernel_shp.(0) in
+    let out_channel = kernel_shp.(2) in
+    assert (in_channel = kernel_shp.(1));
+    let kernel_rows = 1 in
+    let kernel = reshape kernel [|kernel_rows; kernel_cols; in_channel; out_channel|] in
+
+    let output'_shp = shape output' in
+    let output_cols = output'_shp.(1) in
+    assert (batches = output'_shp.(0));
+    assert (out_channel = output'_shp.(2));
+    let output_rows = 1 in
+    let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+    let col_stride = stride.(0) in
+    let row_stride = 1 in
+    let stride = [|row_stride; col_stride|] in
+
+    let kernel' = conv2d_backward_kernel input kernel stride output' in
+    reshape kernel' kernel_shp
 
   (*TODO: this is a stub *)
   (* gradient of conv3d w.r.t the input *)
@@ -857,14 +922,6 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     (failwith "conv3d_backward_kernel - not implemented"; input)
 
   (*TODO: this is a stub *)
-  (* calculate the gradient of max_pool1d *)
-  let max_pool1d_backward padding input kernel stride output' =
-    assert (num_dims input = 3);
-    assert (Array.length kernel = 1);
-    assert (Array.length stride = 1);
-    (failwith "max_pool1d_backward - not implemented"; input)
-
-  (*TODO: this is a stub *)
   (* calculate the gradient of max_pool2d *)
   let max_pool2d_backward padding input kernel stride output' =
     assert (num_dims input = 4);
@@ -873,20 +930,73 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     (failwith "max_pool2d_backward - not implemented"; input)
 
   (*TODO: this is a stub *)
-  (* calculate the gradient of avg_pool1d *)
-  let avg_pool1d_backward padding input kernel stride output' =
-    assert (num_dims input = 3);
-    assert (Array.length kernel = 1);
-    assert (Array.length stride = 1);
-    (failwith "avg_pool1d_backward - not implemented"; input)
-
-  (*TODO: this is a stub *)
   (* calculate the gradient of avg_pool2d *)
   let avg_pool2d_backward padding input kernel stride output' =
     assert (num_dims input = 4);
     assert (Array.length kernel = 2);
     assert (Array.length stride = 2);
     (failwith "avg_pool2d_backward - not implemented"; input)
+
+  (* calculate the gradient of max_pool1d *)
+  let max_pool1d_backward padding input kernel stride output' =
+    assert (num_dims input = 3);
+    assert (Array.length kernel = 1);
+    assert (Array.length stride = 1);
+
+    let input_shp = shape input in
+    let batches = input_shp.(0) in
+    let input_cols = input_shp.(1) in
+    let input_rows = 1 in
+    let in_channel = input_shp.(2) in
+    let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+    let kernel_cols = kernel.(0) in
+    let kernel_rows = 1 in
+    let kernel = [|kernel_rows; kernel_cols|] in
+
+    let col_stride = stride.(0) in
+    let row_stride = 1 in
+    let stride = [|row_stride; col_stride|] in
+
+    let output'_shp = shape output' in
+    let output_cols = output'_shp.(1) in
+    let output_rows = 1 in
+    let out_channel = output'_shp.(2) in
+    let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+    let input' = max_pool2d_backward padding input kernel stride output' in
+    reshape input' input_shp
+
+
+  (* calculate the gradient of avg_pool1d *)
+  let avg_pool1d_backward padding input kernel stride output' =
+    assert (num_dims input = 3);
+    assert (Array.length kernel = 1);
+    assert (Array.length stride = 1);
+
+    let input_shp = shape input in
+    let batches = input_shp.(0) in
+    let input_cols = input_shp.(1) in
+    let input_rows = 1 in
+    let in_channel = input_shp.(2) in
+    let input = reshape input [|batches; input_rows; input_cols; in_channel|] in
+
+    let kernel_cols = kernel.(0) in
+    let kernel_rows = 1 in
+    let kernel = [|kernel_rows; kernel_cols|] in
+
+    let col_stride = stride.(0) in
+    let row_stride = 1 in
+    let stride = [|row_stride; col_stride|] in
+
+    let output'_shp = shape output' in
+    let output_cols = output'_shp.(1) in
+    let output_rows = 1 in
+    let out_channel = output'_shp.(2) in
+    let output' = reshape output' [|batches; output_rows; output_cols; out_channel|] in
+
+    let input' = avg_pool2d_backward padding input kernel stride output' in
+    reshape input' input_shp
 
   (* matrix functions *)
 
