@@ -26,8 +26,7 @@ CAMLprim value FUN5(value vN, value vX)
   stop_x = start_x + N;
 
   while (start_x != stop_x) {
-    NUMBER x = *start_x;
-    ACCFN(r,x);
+    ACCFN(r, (*start_x));
     start_x += 1;
   };
 
@@ -60,7 +59,7 @@ CAMLprim value FUN6(value vN, value vX)
   int r = 0;
 
   for(int i = 0; i < N; i++) {
-    if (CHECKFN(x,*start_x)) {
+    if (CHECKFN(x, *start_x)) {
       x = *start_x;
       r = i;
     };
@@ -101,8 +100,7 @@ CAMLprim value FUN8(value vN, value vX)
   NUMBER1 r = 0.;
 
   while (start_x != stop_x) {
-    NUMBER x = *start_x;
-    r += exp(x - max_x);
+    r += exp((*start_x) - max_x);
     start_x += 1;
   };
 
@@ -136,8 +134,7 @@ CAMLprim value FUN9(value vN, value vC, value vX)
   stop_x = start_x + N;
 
   while (start_x != stop_x) {
-    NUMBER x = *start_x;
-    ACCFN(r,x);
+    ACCFN(r, (*start_x));
     start_x += 1;
   };
 
@@ -174,9 +171,7 @@ CAMLprim value FUN11(value vN, value vX, value vY)
   start_y = Y_data;
 
   while (start_x != stop_x) {
-    NUMBER  x = *start_x;
-    NUMBER1 y = *start_y;
-    ACCFN(r,x,y);
+    ACCFN(r, (*start_x), (*start_y));
     start_x += 1;
     start_y += 1;
   };
