@@ -12,7 +12,6 @@
 
 /** Core function declaration **/
 
-
 extern int c_ndarray_numel (struct caml_ba_array *X);
 
 extern int c_ndarray_stride_dim (struct caml_ba_array *X, int d);
