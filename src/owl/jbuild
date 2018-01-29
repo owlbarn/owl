@@ -156,7 +156,7 @@
     -g -O3 -Ofast
     ; Experimental switches
     ; -ffast-math may break IEEE754 semantics
-    -march=native -mfpmath=sse -funroll-loops -ffast-math -flto
+    -march=native -mfpmath=sse -funroll-loops -ffast-math 
     ; For Mersenne Twister RNG
     -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing
     ;  Turn off the warning on logical op parentheses
@@ -169,6 +169,7 @@
     -L/usr/local/opt/openblas/lib
     -lopenblas
     -lgfortran
+    -llapacke
     -lm
   ))
   (flags (:standard -safe-string))

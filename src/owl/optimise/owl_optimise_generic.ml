@@ -68,7 +68,7 @@ module Make
 
     let run = function
       | Adam (a, b1, b2) -> fun i _ m v  -> Maths.neg (Maths.(((F a * (m / (F 1. - (F b1 ** F (float_of_int i)))) ) 
-                                            / sqrt ((v / (F 1. - (F b2 ** F (float_of_int i)))) + F 1e-32) ) 
+                                            / sqrt ((v / (F 1. - (F b2 ** F (float_of_int i)))) + F 1e-8) ) 
                                             ))
       | Adagrad a        -> fun _ g c _  -> Maths.(g * F a / sqrt (c + F 1e-32))
       | Const a          -> fun _ g _ _  -> Maths.(g * F a)
