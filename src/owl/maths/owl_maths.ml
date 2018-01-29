@@ -291,6 +291,9 @@ let is_even x = (x mod 2) = 0
 
 let is_pow2 x = (x <> 0) && (x land (x - 1) = 0)
 
+let nextafter = Owl_maths_special.nextafter
+
+let nextafterf = Owl_maths_special.nextafterf
 
 
 (* ends here *)

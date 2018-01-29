@@ -482,3 +482,19 @@ value owl_stub_sf_cotdg(value vX) {
   double y = cotdg(x);
   return caml_copy_double(y);
 }
+
+
+value stub_sf_nextafter(value vX, value vY) {
+  double from = Double_val(vX);
+  double to = Double_val(vY);
+  double next = nextafter(from, to);
+  return caml_copy_double(next);
+}
+
+
+value stub_sf_nextafterf(value vX, value vY) {
+  float from = Double_val(vX);
+  float to = Double_val(vY);
+  float next = nextafterf(from, to);
+  return caml_copy_double(next);
+}
