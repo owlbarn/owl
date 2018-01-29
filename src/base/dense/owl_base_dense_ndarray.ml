@@ -1511,8 +1511,6 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     assert (batches = output_shp.(0));
     assert (in_channel = output_shp.(3));
 
-    let col_stride = stride.(0) in
-    let row_stride = stride.(1) in
     let (pad_top, pad_left, _, _) = Owl_utils_conv.calc_conv2d_padding
         input_cols input_rows kernel_cols kernel_rows output_cols output_rows
         row_stride col_stride
