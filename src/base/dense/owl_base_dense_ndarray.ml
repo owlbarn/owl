@@ -1168,7 +1168,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
               for di = 0 to kernel_cols - 1 do
                 for dj = 0 to kernel_rows - 1 do
                   if ( ((Pervasives.(mod) (in_i + pad_left - di) col_stride) = 0) &&
-                       ((Pervasives.(mod) (in_j + pad_top - dj) col_stride) = 0) )
+                       ((Pervasives.(mod) (in_j + pad_top - dj) row_stride) = 0) )
                   then
                     begin
                       let out_col = (in_i + pad_left - di) / col_stride in
@@ -1331,23 +1331,163 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     let kernel' = conv2d_backward_kernel input kernel stride output' in
     reshape kernel' kernel_shp
 
-  (*TODO: this is a stub *)
+  (*TODO: optimise *)
   (* gradient of conv3d w.r.t the input *)
   let conv3d_backward_input input kernel stride output' =
     assert (num_dims input = 5);
     assert (num_dims kernel = 5);
     assert (num_dims output' = 5);
     assert (Array.length stride = 3);
-    (failwith "conv3d_backward_input - not implemented"; input)
 
-  (*TODO: this is a stub *)
-  (* gradient of conv3d w.r.t the kernel *)
+    let input_shp = shape input in
+    let batches = input_shp.(0) in
+    let input_cols = input_shp.(1) in
+    let input_rows = input_shp.(2) in
+    let input_dpts = input_shp.(3) in
+    let in_channel = input_shp.(4) in
+
+    let kernel_shp = shape kernel in
+    let kernel_cols = kernel_shp.(0) in
+    let kernel_rows = kernel_shp.(1) in
+    let kernel_dpts = kernel_shp.(2) in
+    let out_channel = kernel_shp.(4) in
+    assert (in_channel = kernel_shp.(3));
+
+    let output_shp = shape output' in
+    let output_cols = output_shp.(1) in
+    let output_rows = output_shp.(2) in
+    let output_dpts =  output_shp.(3) in
+    assert (batches = output_shp.(0));
+    assert (out_channel = output_shp.(4));
+
+    let col_stride = stride.(0) in
+    let row_stride = stride.(1) in
+    let dpt_stride = stride.(2) in
+
+    let input' = empty (shape input) in
+    let (pad_top, pad_left, pad_shallow, _, _, _) = _calc_conv3d_padding
+        input_cols input_rows input_dpts
+        kernel_cols kernel_rows kernel_dpts
+        output_cols output_rows output_dpts
+        row_stride col_stride dpt_stride
+    in
+    begin
+      for b = 0 to batches - 1 do
+        for in_i = 0 to input_cols - 1 do
+          for in_j = 0 to input_rows - 1 do
+            for in_dpt = 0 to input_dpts - 1 do
+              for q = 0 to in_channel - 1 do
+                let sum = ref 0. in
+
+                for di = 0 to kernel_cols - 1 do
+                  for dj = 0 to kernel_rows - 1 do
+                    for d_dpt = 0 to kernel_dpts - 1 do
+                      if ( ((Pervasives.(mod) (in_i + pad_left - di) col_stride) = 0) &&
+                           ((Pervasives.(mod) (in_j + pad_top - dj) row_stride) = 0) &&
+                           ((Pervasives.(mod) (in_dpt + pad_shallow - d_dpt) dpt_stride) = 0))
+                      then
+                        begin
+                          let out_col = (in_i + pad_left - di) / col_stride in
+                          let out_row = (in_j + pad_top - dj) / row_stride in
+                          let out_dpt = (in_dpt + pad_shallow - d_dpt) / dpt_stride in
+                          if ((0 <= out_col) && (out_col < output_cols) &&
+                              (0 <= out_row) && (out_row < output_rows) &&
+                              (0 <= out_dpt) && (out_dpt < output_dpts))
+                          then
+                            for k = 0 to out_channel - 1 do
+                              let out_grad = get output' [|b; out_col; out_row; out_dpt; k|] in
+                              let kernel_val = get kernel [|di; dj; d_dpt; q; k|] in
+                              sum := !sum +. out_grad *. kernel_val
+                            done; (*k*)
+                        end
+                  done; (*d_dpt*)
+                  done; (*dj*)
+                done; (*di*)
+
+                (set input' [|b; in_i; in_j; in_dpt; q|] !sum)
+              done; (*q*)
+            done; (*in_dpt*)
+          done; (*in_j*)
+        done; (*in_i*)
+      done; (*b*)
+      input'
+    end
+
+    (* gradient of conv3d w.r.t the kernel *)
   let conv3d_backward_kernel input kernel stride output' =
     assert (num_dims input = 5);
     assert (num_dims kernel = 5);
     assert (num_dims output' = 5);
     assert (Array.length stride = 3);
-    (failwith "conv3d_backward_kernel - not implemented"; input)
+
+    let input_shp = shape input in
+    let batches = input_shp.(0) in
+    let input_cols = input_shp.(1) in
+    let input_rows = input_shp.(2) in
+    let input_dpts = input_shp.(3) in
+    let in_channel = input_shp.(4) in
+
+    let kernel_shp = shape kernel in
+    let kernel_cols = kernel_shp.(0) in
+    let kernel_rows = kernel_shp.(1) in
+    let kernel_dpts = kernel_shp.(2) in
+    let out_channel = kernel_shp.(4) in
+    assert (in_channel = kernel_shp.(3));
+
+    let output_shp = shape output' in
+    let output_cols = output_shp.(1) in
+    let output_rows = output_shp.(2) in
+    let output_dpts =  output_shp.(3) in
+    assert (batches = output_shp.(0));
+    assert (out_channel = output_shp.(4));
+
+    let col_stride = stride.(0) in
+    let row_stride = stride.(1) in
+    let dpt_stride = stride.(2) in
+
+    let kernel' = empty (shape kernel) in
+
+    let (pad_top, pad_left, pad_shallow, _, _, _) = _calc_conv3d_padding
+        input_cols input_rows input_dpts
+        kernel_cols kernel_rows kernel_dpts
+        output_cols output_rows output_dpts
+        row_stride col_stride dpt_stride
+    in
+    begin
+      for di = 0 to kernel_cols - 1 do
+        for dj = 0 to kernel_rows - 1 do
+          for d_dpt = 0 to kernel_dpts - 1 do
+            for q = 0 to in_channel - 1 do
+              for k = 0 to out_channel - 1 do
+                let sum = ref 0. in
+
+                for b = 0 to batches - 1 do
+                  for i = 0 to output_cols - 1 do
+                    for j = 0 to output_rows - 1 do
+                      for dpt = 0 to output_dpts - 1 do
+                        let in_col = i * col_stride + di - pad_left in
+                        let in_row = j * row_stride + dj - pad_top in
+                        let in_dpt = dpt * dpt_stride + d_dpt - pad_shallow in
+                        if ((0 <= in_col) && (in_col < input_cols) &&
+                            (0 <= in_row) && (in_row < input_rows) &&
+                            (0 <= in_dpt) && (in_dpt < input_dpts))
+                        then
+                          let out_grad = get output' [|b; i; j; dpt; k|] in
+                          let input_val = get input [|b; in_col; in_row; in_dpt; q|] in
+                          sum := !sum +. out_grad *. input_val
+                      done; (*dpt*)
+                    done; (*j*)
+                  done; (*i*)
+                done; (*b*)
+
+                set kernel' [|di; dj; d_dpt; q; k|] !sum
+              done; (*k*)
+            done; (*q*)
+          done; (*d_dpt*)
+        done; (*dj*)
+      done; (*di*)
+      kernel'
+    end
 
   (*TODO: this is a stub *)
   (* calculate the gradient of max_pool2d *)
