@@ -253,6 +253,28 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
   (* Return the array as a contiguous block, without copying *)
   let _flatten varr = (reshape varr [|(numel varr)|])
 
+  let sequential ?(a=0.) ?(step=1.) dims =
+    let varr = empty dims in
+    let flat_varr = _flatten varr in
+    let n = numel flat_varr in
+    begin
+      for i = 0 to n - 1 do
+        set flat_varr [|i|] (a +. (Pervasives.float_of_int i) *. step)
+      done;
+      varr
+    end
+
+  let of_array arr dims =
+    let varr = empty dims in
+    let flat_varr = _flatten varr in
+    let n = numel flat_varr in
+    begin
+      for i = 0 to n - 1 do
+        set flat_varr [|i|] arr.(i)
+      done;
+      varr
+    end
+
   let _generate_random_ndarray dims gen_fun =
     let varr = empty dims in
     let varr_linear = _flatten varr in
@@ -911,13 +933,9 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
                 for dj = 0 to kernel_rows - 1 do
                   let in_col = i * col_stride + di - pad_left in
                   let in_row = j * row_stride + dj - pad_top in
-                  let in_val = (
-                    if ((0 <= in_col) && (in_col < input_cols) &&
-                        (0 <= in_row) && (in_row < input_rows))
-                    then (get input [|b; in_col; in_row; k|])
-                    else 0.
-                  ) in
-                  add_val_pool_fun in_val
+                  if ((0 <= in_col) && (in_col < input_cols) &&
+                      (0 <= in_row) && (in_row < input_rows))
+                  then add_val_pool_fun (get input [|b; in_col; in_row; k|])
                 done; (*dj*)
               done; (*di*)
 
@@ -977,14 +995,11 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
                       let in_col = i * col_stride + di - pad_left in
                       let in_row = j * row_stride + dj - pad_top in
                       let in_dpt = dpt * dpt_stride + d_dpt - pad_shallow in
-                      let in_val = (
-                        if ((0 <= in_col) && (in_col < input_cols) &&
-                            (0 <= in_row) && (in_row < input_rows)  &&
-                            (0 <= in_dpt) && (in_dpt < input_dpts))
-                        then (get input [|b; in_col; in_row; in_dpt; k|])
-                        else 0.
-                      ) in
-                      add_val_pool_fun in_val
+                      if ((0 <= in_col) && (in_col < input_cols) &&
+                          (0 <= in_row) && (in_row < input_rows)  &&
+                          (0 <= in_dpt) && (in_dpt < input_dpts))
+                      then add_val_pool_fun
+                          (get input [|b; in_col; in_row; in_dpt; k|])
                     done; (*d_dpt*)
                   done; (*dj*)
                 done; (*di*)
