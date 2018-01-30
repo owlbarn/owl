@@ -2,7 +2,7 @@
 
 let () =
   Alcotest.run "Owl" [
-    "adagrad_rmsprop",      Unit_adagrad_rmsprop.test_set;
+    "optimise lr",          Unit_optimise_learning_rate.test_set;
 (*     "algodiff diff",        Unit_algodiff_diff.test_set;
     "algodiff grad",        Unit_algodiff_grad.test_set;
     "dense matrix",         Unit_dense_matrix.test_set;
