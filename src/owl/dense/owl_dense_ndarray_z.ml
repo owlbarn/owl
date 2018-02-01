@@ -35,7 +35,7 @@ let sequential ?a ?step dimension = M.sequential Complex64 ?a ?step dimension
 
 let linspace a b n = M.linspace Complex64 a b n
 
-let logspace ?base a b n = M.logspace Complex64 a b n
+let logspace ?base a b n = M.logspace Complex64 ?base a b n
 
 let bernoulli ?p d = M.bernoulli Complex64 ?p d
 

@@ -357,6 +357,15 @@ val is_even : int -> bool
 
 val is_pow2 : int -> bool
 
+val nextafter : float -> float -> float
+(** [nextafter from to] returns the next representable double precision value
+  of [from] in the direction of [to]. If from equals to [to], [to] is returned.
+ *)
+
+val nextafterf : float -> float -> float
+(** [nextafter from to] returns the next representable single precision value
+  of [from] in the direction of [to]. If from equals to [to], [to] is returned.
+ *)
 
 
 (* ends here *)

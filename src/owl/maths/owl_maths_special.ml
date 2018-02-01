@@ -160,3 +160,10 @@ external cosdg : float -> float = "owl_stub_sf_cosdg"
 external tandg : float -> float = "owl_stub_sf_tandg"
 
 external cotdg : float -> float = "owl_stub_sf_cotdg"
+
+
+(* Other functions *)
+
+external nextafter : float -> float -> float = "stub_sf_nextafter"
+
+external nextafterf : float -> float -> float = "stub_sf_nextafterf"

@@ -2195,17 +2195,53 @@ let _owl_linspace : type a b. (a, b) kind -> (a, b) owl_arr_op07 = function
   | Complex64 -> owl_complex64_linspace
   | _         -> failwith "_owl_linspace: unsupported operation"
 
-external owl_float32_logspace : int -> float -> float -> float -> (float, 'a) owl_arr -> unit = "float32_logspace"
-external owl_float64_logspace : int -> float -> float -> float -> (float, 'a) owl_arr -> unit = "float64_logspace"
-external owl_complex32_logspace : int -> float -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex32_logspace"
-external owl_complex64_logspace : int -> float -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex64_logspace"
+external owl_float32_logspace_2 : int -> float -> float -> (float, 'a) owl_arr -> unit = "float32_logspace_2"
+external owl_float64_logspace_2 : int -> float -> float -> (float, 'a) owl_arr -> unit = "float64_logspace_2"
+external owl_complex32_logspace_2 : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex32_logspace_2"
+external owl_complex64_logspace_2 : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex64_logspace_2"
 
-let _owl_logspace : type a b. (a, b) kind -> (a, b) owl_arr_op08 = function
-  | Float32   -> owl_float32_logspace
-  | Float64   -> owl_float64_logspace
-  | Complex32 -> owl_complex32_logspace
-  | Complex64 -> owl_complex64_logspace
-  | _         -> failwith "_owl_logspace: unsupported operation"
+let _owl_logspace_2 : type a b. (a, b) kind -> (a, b) owl_arr_op07 = function
+  | Float32   -> owl_float32_logspace_2
+  | Float64   -> owl_float64_logspace_2
+  | Complex32 -> owl_complex32_logspace_2
+  | Complex64 -> owl_complex64_logspace_2
+  | _         -> failwith "_owl_logspace_2: unsupported operation"
+
+external owl_float32_logspace_10 : int -> float -> float -> (float, 'a) owl_arr -> unit = "float32_logspace_10"
+external owl_float64_logspace_10 : int -> float -> float -> (float, 'a) owl_arr -> unit = "float64_logspace_10"
+external owl_complex32_logspace_10 : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex32_logspace_10"
+external owl_complex64_logspace_10 : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex64_logspace_10"
+
+let _owl_logspace_10 : type a b. (a, b) kind -> (a, b) owl_arr_op07 = function
+  | Float32   -> owl_float32_logspace_10
+  | Float64   -> owl_float64_logspace_10
+  | Complex32 -> owl_complex32_logspace_10
+  | Complex64 -> owl_complex64_logspace_10
+  | _         -> failwith "_owl_logspace_10: unsupported operation"
+
+external owl_float32_logspace_e : int -> float -> float -> (float, 'a) owl_arr -> unit = "float32_logspace_e"
+external owl_float64_logspace_e : int -> float -> float -> (float, 'a) owl_arr -> unit = "float64_logspace_e"
+external owl_complex32_logspace_e : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex32_logspace_e"
+external owl_complex64_logspace_e : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex64_logspace_e"
+
+let _owl_logspace_e : type a b. (a, b) kind -> (a, b) owl_arr_op07 = function
+  | Float32   -> owl_float32_logspace_e
+  | Float64   -> owl_float64_logspace_e
+  | Complex32 -> owl_complex32_logspace_e
+  | Complex64 -> owl_complex64_logspace_e
+  | _         -> failwith "_owl_logspace_e: unsupported operation"
+
+external owl_float32_logspace_base : int -> float -> float -> float -> (float, 'a) owl_arr -> unit = "float32_logspace_base"
+external owl_float64_logspace_base : int -> float -> float -> float -> (float, 'a) owl_arr -> unit = "float64_logspace_base"
+external owl_complex32_logspace_base : int -> float -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex32_logspace_base"
+external owl_complex64_logspace_base : int -> float -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex64_logspace_base"
+
+let _owl_logspace_base : type a b. (a, b) kind -> (a, b) owl_arr_op08 = function
+  | Float32   -> owl_float32_logspace_base
+  | Float64   -> owl_float64_logspace_base
+  | Complex32 -> owl_complex32_logspace_base
+  | Complex64 -> owl_complex64_logspace_base
+  | _         -> failwith "_owl_logspace_base: unsupported operation"
 
 external owl_complex32_conj : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex32_conj" "complex32_conj_impl"
 external owl_complex64_conj : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex64_conj" "complex64_conj_impl"

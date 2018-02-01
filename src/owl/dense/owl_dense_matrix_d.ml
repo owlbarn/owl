@@ -41,7 +41,7 @@ let semidef m = M.semidef Float64 m
 
 let linspace a b n = M.linspace Float64 a b n
 
-let logspace ?(base=Owl_const.e) a b n = M.logspace Float64 ~base a b n
+let logspace ?base a b n = M.logspace Float64 ?base a b n
 
 let meshgrid xa xb ya yb xn yn = M.meshgrid Float64 xa xb ya yb xn yn
 
