@@ -1,8 +1,8 @@
 (jbuild_version 1)
 
-(executable (
-  (name        gradient_descent_pure)
-  (public_name owl_experimental)
+(executables (
+  (names        (gradient_descent_pure test_mnist_cnn))
+  (public_names (owl_experimental_grad owl_experimental_mnistcnn))
   (package     owl_experimental)
   (libraries  (
     owl_base

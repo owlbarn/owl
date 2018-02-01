@@ -1867,6 +1867,49 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
         result_varr
       end
 
+  (*let load f = Owl_utils.marshal_from_file f *)
+
+  let load f dims =
+    let fd = open_in f in
+    let fd = Unix.descr_of_in_channel fd in
+    let big = Genarray.map_file fd ELT.element_kind c_layout false dims in
+    big
+
+
+  let elt_equal varr_a varr_b =
+    let dims = shape varr_a in
+    let varr_c = empty dims in
+    let varr_a = _flatten varr_a in
+    let varr_b = _flatten varr_b in
+    let flat_varr_c = _flatten varr_c in
+    let n = numel varr_a in
+    begin
+      for i = 0 to n - 1 do
+        let va, vb = (get varr_a [|i|]), (get varr_b [|i|]) in
+        set flat_varr_c [|i|] (if (Scalar.abs (va -. vb)) < 1e-8 then 1.0 else 0.0)
+      done;
+      varr_c
+    end
+
+  let max_rows varr =
+    let dims = shape varr in
+    let _ = _check_is_matrix dims in
+    let r, c = dims.(0), dims.(1) in
+    let result = Array.make r (0., 0, 0) in
+    begin
+      for i = 0 to r - 1 do
+        let best = ref Pervasives.min_float in
+        let best_pos = ref ~- 1 in
+        for j = 0 to c - 1 do
+          let x = get varr [|i; j|] in
+          if (x > !best)
+          then (best := x; best_pos := j)
+        done;
+        result.(i) <- (!best, i, !best_pos)
+      done;
+      result
+    end
+
 end
 
 module NdarrayPureSingle = MakeNdarray(GenarrayFloat32Elt)
