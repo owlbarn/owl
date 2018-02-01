@@ -1,6 +1,7 @@
 (* This example demonstrates how to write a gradient descent algorithm. *)
 
-open Owl_base_dense_ndarray.PureD
+module PureD = Owl_algodiff_generic.Make (Owl_base_dense_ndarray.NdarrayPureDouble)
+open PureD
 
 let count = ref 0
 

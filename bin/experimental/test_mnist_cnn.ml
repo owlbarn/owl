@@ -1,4 +1,4 @@
-
+(*
 module NdarrayS = Owl_base_dense_ndarray.NdarrayPureSingle
 module NeuralS = Owl_neural_generic.Make (NdarrayS)
 module NeuralSGraph = NeuralS.Graph
@@ -49,3 +49,4 @@ let test network =
 
 
 let _ = train () |> test
+*)

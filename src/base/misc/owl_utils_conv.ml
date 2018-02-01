@@ -80,3 +80,20 @@ let calc_conv3d_output_shape
     | VALID -> ((input_dpts -. kernel_dpts +. 1.) /. dpt_stride) |> ceil |> int_of_float
   in
   (output_cols, output_rows, output_dpts)
+
+let calc_conv3d_padding
+    input_cols input_rows input_depth
+    kernel_cols kernel_rows kernel_depth
+    output_cols output_rows output_depth
+    row_stride col_stride depth_stride
+  =
+  let pad_along_height = Pervasives.max ((output_rows - 1) * row_stride + kernel_rows - input_rows) 0 in
+  let pad_along_width = Pervasives.max ((output_cols - 1) * col_stride + kernel_cols - input_cols) 0 in
+  let pad_along_depth = Pervasives.max ((output_depth - 1) * depth_stride + kernel_depth - input_depth) 0 in
+  let pad_top = pad_along_height / 2 in
+  let pad_bottom = pad_along_height - pad_top in
+  let pad_left = pad_along_width / 2 in
+  let pad_right = pad_along_width - pad_left in
+  let pad_shallow = pad_along_depth / 2 in
+  let pad_deep = pad_along_depth - pad_shallow in
+  pad_top, pad_left, pad_shallow, pad_bottom, pad_right, pad_deep
