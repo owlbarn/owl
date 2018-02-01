@@ -9,7 +9,7 @@
 
 // some helper functions
 
-#define LN10 2.30258509299404568402  /* log_e 10 */
+#define LN10 2.302585092994045684017991454684364208  /* log_e 10 */
 #define exp10f(X) expf(LN10 * X)
 #define exp10(X) exp(LN10 * X)
 
