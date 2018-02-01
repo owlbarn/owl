@@ -41,7 +41,7 @@ let gaussian ?mu ?sigma m n = M.gaussian Complex32 ?mu ?sigma m n
 
 let linspace a b n = M.linspace Complex32 a b n
 
-let logspace ?(base=Owl_const.e) a b n = M.logspace Complex32 ~base a b n
+let logspace ?base a b n = M.logspace Complex32 ?base a b n
 
 let meshgrid xa xb ya yb xn yn = M.meshgrid Complex32 xa xb ya yb xn yn
 

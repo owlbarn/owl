@@ -5,6 +5,9 @@ open Owl_types
 
 module M = Owl_dense_ndarray_generic
 
+(* define the test error *)
+let eps = 5e-10
+
 (* make testable *)
 let ndarray = Alcotest.testable (fun p (x : (float, float64_elt) M.t) -> ()) M.equal
 
@@ -182,6 +185,35 @@ module To_test = struct
     let y = M.empty Float64 [|1|] in
     M.same_shape x y = true
 
+  let linspace () =
+    let x = M.linspace Float64 0. 9. 10 in
+    let a = M.get x [|0|] in
+    let b = M.get x [|5|] in
+    let c = M.get x [|9|] in
+    a = 0. && b = 5. && c = 9.
+
+  let logspace_2 () =
+    let x = M.logspace Float64 ~base:2. 0. 5. 6 in
+    let a = M.get x [|0|] in
+    let b = M.get x [|2|] in
+    let c = M.get x [|5|] in
+    a = 1. && b = 4. && c = 32.
+
+  let logspace_10 () =
+    let x = M.logspace Float64 ~base:10. 0. 5. 6 in
+    let a = M.get x [|0|] in
+    let b = M.get x [|2|] in
+    let c = M.get x [|5|] in
+    (a -. 1. < eps) && (b -. 100. < eps) && (c -. 100000. < eps)
+
+  let logspace_e () =
+    let _e = Owl.Const.e in
+    let x = M.logspace Float64 0. 5. 6 in
+    let a = M.get x [|0|] in
+    let b = M.get x [|2|] in
+    let c = M.get x [|5|] in
+    (a -. _e < eps) && (b -. Owl.Maths.(pow _e 2.) < eps) && (c -. Owl.Maths.(pow _e 5.) < eps)
+
 end
 
 (* the tests *)
@@ -324,6 +356,18 @@ let same_shape_4 () =
 let same_shape_5 () =
   Alcotest.(check bool) "same_shape_5" true (To_test.same_shape_5 ())
 
+let linspace () =
+  Alcotest.(check bool) "linspace" true (To_test.linspace ())
+
+let logspace_2 () =
+  Alcotest.(check bool) "logspace_2" true (To_test.logspace_2 ())
+
+let logspace_10 () =
+  Alcotest.(check bool) "logspace_10" true (To_test.logspace_10 ())
+
+let logspace_e () =
+  Alcotest.(check bool) "logspace_e" true (To_test.logspace_e ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -371,4 +415,8 @@ let test_set = [
   "same_shape_3", `Slow, same_shape_3;
   "same_shape_4", `Slow, same_shape_4;
   "same_shape_5", `Slow, same_shape_5;
+  "linspace", `Slow, linspace;
+  "logspace_2", `Slow, logspace_2;
+  "logspace_10", `Slow, logspace_10;
+  "logspace_e", `Slow, logspace_e;
 ]

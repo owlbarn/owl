@@ -73,7 +73,7 @@ CAMLprim value FUN4(value vN, value vX, value vY)
 #endif /* FUN4 */
 
 
-// function to map elements in [x] w.r.t scalar values
+// function to map elements in [x] w.r.t scalar values, linspace and etc.
 #ifdef FUN12
 
 CAMLprim value FUN12(value vN, value vA, value vB, value vX)
@@ -87,7 +87,7 @@ CAMLprim value FUN12(value vN, value vA, value vB, value vX)
 
   caml_enter_blocking_section();  /* Allow other threads */
 
-  for (int i = 0; i < N; i++) {
+  for (int i = 1; i <= N; i++) {
     MAPFN(*X_data);
     X_data++;
   }
@@ -100,7 +100,7 @@ CAMLprim value FUN12(value vN, value vA, value vB, value vX)
 #endif /* FUN12 */
 
 
-// function to calculate logspace function
+// function to calculate logspace_base function
 #ifdef FUN13
 
 CAMLprim value FUN13(value vN, value vBase, value vA, value vB, value vX)
@@ -114,26 +114,9 @@ CAMLprim value FUN13(value vN, value vBase, value vA, value vB, value vX)
 
   caml_enter_blocking_section();  /* Allow other threads */
 
-  if (base == 2.0)
-    for (int i = 0; i < N; i++) {
-      MAPFN(X_data);
-      X_data++;
-    }
-  else if (base == 10.0)
-    for (int i = 0; i < N; i++) {
-      MAPFN1(X_data);
-      X_data++;
-    }
-  else if (base == 2.7182818284590452353602874713526625L)
-    for (int i = 0; i < N; i++) {
-      MAPFN2(X_data);
-      X_data++;
-    }
-  else {
-    for (int i = 0; i < N; i++) {
-      MAPFN3(X_data);
-      X_data++;
-    }
+  for (int i = 1; i <= N; i++) {
+    MAPFN(X_data);
+    X_data++;
   }
 
   caml_leave_blocking_section();  /* Disallow other threads */

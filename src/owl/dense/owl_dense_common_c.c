@@ -4651,42 +4651,108 @@
 #define MAPFN(X) (X).r = xr; (X).i = xi; xr = ar + i * hr; xi = ai + i * hi
 #include "owl_dense_common_map.c"
 
-// logspace
+// logspace_2
 
-#define FUN13 float32_logspace
+#define FUN12 float32_logspace_2
+#define INIT float a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), x = a
+#define NUMBER float
+#define MAPFN(X) X = exp2f(x); x = a + i * h
+#include "owl_dense_common_map.c"
+
+#define FUN12 float64_logspace_2
+#define INIT double a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), x = a
+#define NUMBER double
+#define MAPFN(X) X = exp2(x); x = a + i * h
+#include "owl_dense_common_map.c"
+
+#define FUN12 complex32_logspace_2
+#define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, xr = ar, xi = ai
+#define NUMBER complex_float
+#define MAPFN(X) (X).r = exp2f(xr); (X).i = exp2f(xi); xr = ar + i * hr; xi = ai + i * hi
+#include "owl_dense_common_map.c"
+
+#define FUN12 complex64_logspace_2
+#define INIT double ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, xr = ar, xi = ai
+#define NUMBER complex_double
+#define MAPFN(X) (X).r = exp2(xr); (X).i = exp2(xi); xr = ar + i * hr; xi = ai + i * hi
+#include "owl_dense_common_map.c"
+
+// logspace_10
+
+#define FUN12 float32_logspace_10
+#define INIT float a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), x = a
+#define NUMBER float
+#define MAPFN(X) X = exp10f(x); x = a + i * h
+#include "owl_dense_common_map.c"
+
+#define FUN12 float64_logspace_10
+#define INIT double a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), x = a
+#define NUMBER double
+#define MAPFN(X) X = exp10(x); x = a + i * h
+#include "owl_dense_common_map.c"
+
+#define FUN12 complex32_logspace_10
+#define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, xr = ar, xi = ai
+#define NUMBER complex_float
+#define MAPFN(X) (X).r = exp10f(xr); (X).i = exp10f(xi); xr = ar + i * hr; xi = ai + i * hi
+#include "owl_dense_common_map.c"
+
+#define FUN12 complex64_logspace_10
+#define INIT double ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, xr = ar, xi = ai
+#define NUMBER complex_double
+#define MAPFN(X) (X).r = exp10(xr); (X).i = exp10(xi); xr = ar + i * hr; xi = ai + i * hi
+#include "owl_dense_common_map.c"
+
+// logspace_e
+
+#define FUN12 float32_logspace_e
+#define INIT float a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), x = a
+#define NUMBER float
+#define MAPFN(X) X = expf(x); x = a + i * h
+#include "owl_dense_common_map.c"
+
+#define FUN12 float64_logspace_e
+#define INIT double a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), x = a
+#define NUMBER double
+#define MAPFN(X) X = exp(x); x = a + i * h
+#include "owl_dense_common_map.c"
+
+#define FUN12 complex32_logspace_e
+#define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, xr = ar, xi = ai
+#define NUMBER complex_float
+#define MAPFN(X) (X).r = expf(xr); (X).i = expf(xi); xr = ar + i * hr; xi = ai + i * hi
+#include "owl_dense_common_map.c"
+
+#define FUN12 complex64_logspace_e
+#define INIT double ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, xr = ar, xi = ai
+#define NUMBER complex_double
+#define MAPFN(X) (X).r = exp(xr); (X).i = exp(xi); xr = ar + i * hr; xi = ai + i * hi
+#include "owl_dense_common_map.c"
+
+// logspace_base
+
+#define FUN13 float32_logspace_base
 #define INIT float a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), base = Double_val(vBase), x = a, log_base = log(base)
 #define NUMBER float
-#define MAPFN(X)  *X = exp2f(x); x = a + i * h
-#define MAPFN1(X) *X = exp10f(x); x = a + i * h
-#define MAPFN2(X) *X = expf(x); x = a + i * h
-#define MAPFN3(X) *X = expf(x * log_base); x = a + i * h
+#define MAPFN(X) *X = expf(x * log_base); x = a + i * h
 #include "owl_dense_common_map.c"
 
-#define FUN13 float64_logspace
+#define FUN13 float64_logspace_base
 #define INIT double a = Double_val(vA), h = (Double_val(vB) - a)/(N - 1), base = Double_val(vBase), x = a, log_base = log(base)
 #define NUMBER double
-#define MAPFN(X)  *X = exp2(x); x = a + i * h
-#define MAPFN1(X) *X = exp10(x); x = a + i * h
-#define MAPFN2(X) *X = exp(x); x = a + i * h
-#define MAPFN3(X) *X = exp(x * log_base); x = a + i * h
+#define MAPFN(X) *X = exp(x * log_base); x = a + i * h
 #include "owl_dense_common_map.c"
 
-#define FUN13 complex32_logspace
+#define FUN13 complex32_logspace_base
 #define INIT float ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, base = Double_val(vBase), xr = ar, xi = ai, log_base = log(base)
 #define NUMBER complex_float
-#define MAPFN(X)  X->r = exp2f(xr); X->i = exp2f(xi); xr = ar + i * hr; xi = ai + i * hi
-#define MAPFN1(X) X->r = exp10f(xr); X->i = exp10f(xi); xr = ar + i * hr; xi = ai + i * hi
-#define MAPFN2(X) X->r = expf(xr); X->i = expf(xi); xr = ar + i * hr; xi = ai + i * hi
-#define MAPFN3(X) X->r = expf(xr * log_base); X->i = expf(xi * log_base); xr = ar + i * hr; xi = ai + i * hi
+#define MAPFN(X) X->r = expf(xr * log_base); X->i = expf(xi * log_base); xr = ar + i * hr; xi = ai + i * hi
 #include "owl_dense_common_map.c"
 
-#define FUN13 complex64_logspace
+#define FUN13 complex64_logspace_base
 #define INIT double ar = Double_field(vA, 0), ai = Double_field(vA, 1), N1 = N - 1., hr = (Double_field(vB, 0) - ar) / N1, hi = (Double_field(vB, 1) - ai) / N1, base = Double_val(vBase), xr = ar, xi = ai, log_base = log(base)
 #define NUMBER complex_double
-#define MAPFN(X)  X->r = exp2(xr); X->i = exp2(xi); xr = ar + i * hr; xi = ai + i * hi
-#define MAPFN1(X) X->r = exp10(xr); X->i = exp10(xi); xr = ar + i * hr; xi = ai + i * hi
-#define MAPFN2(X) X->r = exp(xr); X->i = exp(xi); xr = ar + i * hr; xi = ai + i * hi
-#define MAPFN3(X) X->r = exp(xr * log_base); X->i = exp(xi * log_base); xr = ar + i * hr; xi = ai + i * hi
+#define MAPFN(X) X->r = exp(xr * log_base); X->i = exp(xi * log_base); xr = ar + i * hr; xi = ai + i * hi
 #include "owl_dense_common_map.c"
 
 // re

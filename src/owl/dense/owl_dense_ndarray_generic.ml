@@ -852,8 +852,16 @@ let linspace k a b n =
   x
 
 let logspace k ?(base=Owl_const.e) a b n =
-  let x = empty k [|n|] in
-  _owl_logspace k n base a b x;
+  let x = empty k [|n|] in (
+    if base = 2. then
+      _owl_logspace_2 k n a b x
+    else if base = 10. then
+      _owl_logspace_10 k n a b x
+    else if base = Owl_const.e then
+      _owl_logspace_e k n a b x
+    else
+      _owl_logspace_base k n base a b x
+  );
   x
 
 let bernoulli k ?(p=0.5) d =

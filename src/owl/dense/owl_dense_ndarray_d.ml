@@ -37,7 +37,7 @@ let sequential ?a ?step dimension = M.sequential Float64 ?a ?step dimension
 
 let linspace a b n = M.linspace Float64 a b n
 
-let logspace ?base a b n = M.logspace Float64 a b n
+let logspace ?base a b n = M.logspace Float64 ?base a b n
 
 let bernoulli ?p d = M.bernoulli Float64 ?p d
 
