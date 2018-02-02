@@ -27,8 +27,8 @@ type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
 
 val inv : ('a, 'b) t -> ('a, 'b) t
 (** [inv x] calculates the inverse of an invertible square matrix [x]
-    such that [x *@ x = I] wherein [I] is an identity matrix.  (If [x] 
-    is singular, [inv] will return a useless result.)
+  such that [x *@ x = I] wherein [I] is an identity matrix.  (If [x]
+  is singular, [inv] will return a useless result.)
  *)
 
 val pinv : ?tol:float -> ('a, 'b) t -> ('a, 'b) t
