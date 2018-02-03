@@ -374,7 +374,7 @@ module Make
    *)
 
   val to_dot : t list -> string
-  (** `to_dot [t0; t1; ...]`` outputs the trace of computation graph in the dot
+  (** ``to_dot [t0; t1; ...]`` outputs the trace of computation graph in the dot
       file format which you can use other tools further visualisation, such as
       Graphviz.
    *)
