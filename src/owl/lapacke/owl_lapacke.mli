@@ -18,7 +18,7 @@ type lapacke_transpose = NoTrans | Trans | ConjTrans
 (** Transpose type. *)
 
 type lapacke_uplo = Upper | Lower
-(** Uppper or lower trangular. *)
+(** Upper or lower trangular. *)
 
 type lapacke_diag = NonUnit | Unit
 (** Diangonal type. *)
@@ -189,7 +189,7 @@ val orglq : ?k:int -> a:(float, 'a) t -> tau:(float, 'a) t -> (float, 'a) t
 Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_
  *)
 
-val unglq : ?k:int -> a:(Owl_dense_ndarray.Z.elt, 'a) t -> tau:(Owl_dense_ndarray.Z.elt, 'a) t -> (Owl_dense_ndarray.Z.elt, 'a) t
+val unglq : ?k:int -> a:(Complex.t, 'a) t -> tau:(Complex.t, 'a) t -> (Complex.t, 'a) t
 (**
 Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_
  *)
@@ -199,7 +199,7 @@ val orgqr : ?k:int -> a:(float, 'a) t -> tau:(float, 'a) t -> (float, 'a) t
 Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_
  *)
 
-val ungqr : ?k:int -> a:(Owl_dense_ndarray.Z.elt, 'a) t -> tau:(Owl_dense_ndarray.Z.elt, 'a) t -> (Owl_dense_ndarray.Z.elt, 'a) t
+val ungqr : ?k:int -> a:(Complex.t, 'a) t -> tau:(Complex.t, 'a) t -> (Complex.t, 'a) t
 (**
 Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_
  *)
@@ -354,7 +354,7 @@ val sytrs : uplo:char -> a:('a, 'b) t -> ipiv:(int32, int32_elt) t -> b:('a, 'b)
 Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_
  *)
 
-val hesv : uplo:char -> a:(Owl_dense_ndarray.Z.elt, 'a) t -> b:(Owl_dense_ndarray.Z.elt, 'a) t -> (Owl_dense_ndarray.Z.elt, 'a) t * (Owl_dense_ndarray.Z.elt, 'a) t * (int32, int32_elt) t
+val hesv : uplo:char -> a:(Complex.t, 'a) t -> b:(Complex.t, 'a) t -> (Complex.t, 'a) t * (Complex.t, 'a) t * (int32, int32_elt) t
 (**
 Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_
  *)
@@ -369,12 +369,12 @@ val hetrf_rook : uplo:char -> a:('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t 
 Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_
  *)
 
-val hetri : uplo:char -> a:(Owl_dense_ndarray.Z.elt, 'a) t -> ipiv:(int32, int32_elt) t -> (Owl_dense_ndarray.Z.elt, 'a) t
+val hetri : uplo:char -> a:(Complex.t, 'a) t -> ipiv:(int32, int32_elt) t -> (Complex.t, 'a) t
 (**
 Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_
  *)
 
-val hetrs : uplo:char -> a:(Owl_dense_ndarray.Z.elt, 'a) t -> ipiv:(int32, int32_elt) t -> b:(Owl_dense_ndarray.Z.elt, 'a) t -> (Owl_dense_ndarray.Z.elt, 'a) t
+val hetrs : uplo:char -> a:(Complex.t, 'a) t -> ipiv:(int32, int32_elt) t -> b:(Complex.t, 'a) t -> (Complex.t, 'a) t
 (**
 Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_
  *)
@@ -419,7 +419,7 @@ val orghr : ilo:int -> ihi:int -> a:(float, 'a) t -> tau:(float, 'a) t -> (float
 Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_
  *)
 
-val unghr : ilo:int -> ihi:int -> a:(Owl_dense_ndarray.Z.elt, 'a) t -> tau:(Owl_dense_ndarray.Z.elt, 'a) t -> (Owl_dense_ndarray.Z.elt, 'a) t
+val unghr : ilo:int -> ihi:int -> a:(Complex.t, 'a) t -> tau:(Complex.t, 'a) t -> (Complex.t, 'a) t
 (**
 Refer to `Intel MKL C Reference <https://software.intel.com/en-us/mkl-developer-reference-c-lapack-routines>`_
  *)
