@@ -168,7 +168,7 @@ val z_test : mu:float -> sigma:float -> ?alpha:float -> ?side:tail -> float arra
   and a standard deviation ``sigma``, using the z-test of ``alpha`` significance
   level. The alternative hypothesis is that the mean is not ``mu``.
 
-  The result ``(h,p,z)``: ``h`` is ``true`` if the test rejects the null hypothesis at
+  The result ``(h,p,z)`` : ``h`` is ``true`` if the test rejects the null hypothesis at
   the ``alpha`` significance level, and ``false`` otherwise. ``p`` is the p-value and
   ``z`` is the z-score.
  *)
@@ -207,7 +207,7 @@ val ks_test : ?alpha:float -> float array -> (float -> float) -> hypothesis
    hypothesis is that the data in ``x`` comes from a different
    distribution.
 
-    The result ``(h,p,d)``: ``h`` is ``true`` if the test rejects the null
+   The result ``(h,p,d)`` : ``h`` is ``true`` if the test rejects the null
    hypothesis at the ``alpha`` significance level, and ``false``
    otherwise. ``p`` is the p-value and ``d`` is the Kolmogorov-Smirnov
    test statistic. *)
@@ -242,10 +242,10 @@ val jb_test : ?alpha:float -> float array -> hypothesis
 
 val fisher_test : ?alpha:float -> ?side:tail -> int -> int -> int -> int -> hypothesis
 (** ``fisher_test ~alpha ~side a b c d`` fisher's exact test for contingency table
-    |``a``, ``b``|
-    |``c``, ``d``|
-    .
-    The result ``(h,p,z)``: ``h`` is ``true`` if the test rejects the null hypothesis at
+    | ``a``, ``b`` |
+    | ``c``, ``d`` |
+
+    The result ``(h,p,z)`` : ``h`` is ``true`` if the test rejects the null hypothesis at
     the ``alpha`` significance level, and ``false`` otherwise. ``p`` is the p-value and
     ``z`` is prior odds ratio.
 *)

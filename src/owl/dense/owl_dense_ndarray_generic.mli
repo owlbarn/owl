@@ -160,7 +160,7 @@ val strides : ('a, 'b) t -> int array
 
 val slice_size : ('a, 'b) t -> int array
 (** ``slice_size`` calculates the slice size in each dimension, E.g., if ``x`` is of
-  shape ``[|3;4;5|]``, the returned slice size will be [|60; 20; 5|].
+  shape ``[|3;4;5|]``, the returned slice size will be ``[|60; 20; 5|]``.
  *)
 
 val ind : ('a, 'b) t -> int -> int array

@@ -355,16 +355,16 @@ val copy : ('a, 'b) t -> ('a, 'b) t
 
 val copy_to : ('a, 'b) t -> ('a, 'b) t -> unit
 (** ``copy_to x y`` copies the elements of ``x`` to ``y``. ``x`` and ``y`` must have
-  the same demensions.
+  the same dimensions.
  *)
 
 val copy_row_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
-(** ``copy_row_to v x i`` copies an ``1`` by ``n`` row vector ``v`` to the ``i``th row
+(** ``copy_row_to v x i`` copies an ``1`` by ``n`` row vector ``v`` to the ``ith`` row
   in an ``m`` by ``n`` matrix ``x``.
  *)
 
 val copy_col_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
-(** ``copy_col_to v x j`` copies an ``1`` by ``n`` column vector ``v`` to the ``j``th
+(** ``copy_col_to v x j`` copies an ``1`` by ``n`` column vector ``v`` to the ``jth``
   column in an ``m`` by ``n`` matrix ``x``.
  *)
 
