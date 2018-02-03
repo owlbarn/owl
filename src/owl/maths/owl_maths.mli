@@ -211,8 +211,9 @@ val expit : float -> float
 (** {6 Airy functions} *)
 
 val airy : float -> float * float * float * float
-(** Airy function ``airy x`` returns ``(Ai, Aip, Bi, Bip)``. ``Aip`` is the
-  derivative of ``Ai`` whilst ``Bip`` is the derivative of ``Bi``.
+(**
+Airy function ``airy x`` returns ``(Ai, Aip, Bi, Bip)``. ``Aip`` is the
+derivative of ``Ai`` whilst ``Bip`` is the derivative of ``Bi``.
  *)
 
 
@@ -363,8 +364,9 @@ val dawsn : float -> float
 (** Dawson’s integral. *)
 
 val fresnel : float -> float * float
-(** Fresnel sin and cos integrals, ``fresnel x`` returns a tuple consisting of
-  ``(Fresnel sin integral, Fresnel cos integral)``.
+(**
+Fresnel sin and cos integrals, ``fresnel x`` returns a tuple consisting of
+``(Fresnel sin integral, Fresnel cos integral)``.
  *)
 
 
@@ -416,13 +418,15 @@ val is_pow2 : int -> bool
 (** ``is_pow2 x`` return ``true`` if ``x`` is integer power of 2, e.g. 32, 64, etc. *)
 
 val nextafter : float -> float -> float
-(** ``nextafter from to`` returns the next representable double precision value
-  of ``from`` in the direction of ``to``. If from equals to ``to``, ``to`` is returned.
+(**
+``nextafter from to`` returns the next representable double precision value
+of ``from`` in the direction of ``to``. If from equals to ``to``, ``to`` is returned.
  *)
 
 val nextafterf : float -> float -> float
-(** ``nextafter from to`` returns the next representable single precision value
-  of ``from`` in the direction of ``to``. If from equals to ``to``, ``to`` is returned.
+(**
+``nextafter from to`` returns the next representable single precision value
+of ``from`` in the direction of ``to``. If from equals to ``to``, ``to`` is returned.
  *)
 
 
