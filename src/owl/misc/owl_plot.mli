@@ -302,7 +302,7 @@ Parameters: ``RGB``, ``Marker``, ``MarkerSize``.
  *)
 
 
-(** {6 3D plot functions} *)
+(** {6 Plot 3D figures} *)
 
 val plot3d : ?h:handle -> ?spec:spec list -> dsmat -> dsmat -> dsmat -> unit
 (** TODO: ``plot3d`` is just an alias of ``surf`` function.
