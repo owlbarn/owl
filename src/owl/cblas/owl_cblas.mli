@@ -16,16 +16,22 @@ open Bigarray
 (** {6 Definition of basic types} *)
 
 type ('a, 'b) t = ('a, 'b, Bigarray.c_layout) Bigarray.Array1.t
+(** The default type is Bigarray's ``Array1.t``. *)
 
 type cblas_layout = CblasRowMajor | CblasColMajor
+(** Layout type, Row-major or Column-major. *)
 
 type cblas_transpose = CblasNoTrans | CblasTrans | CblasConjTrans
+(** Transpose type, no transpose, transpose, or conjugate transpose. *)
 
 type cblas_uplo = CblasUpper | CblasLower
+(** Upper or lower triangular matrix. *)
 
 type cblas_diag = CblasNonUnit | CblasUnit
+(** Diag type *)
 
 type cblas_side = CblasLeft | CblasRight
+(** Side type *)
 
 
 (** {6 Level-1 BLAS: vector-vector operations} *)
@@ -114,8 +120,9 @@ val spmv : cblas_layout -> cblas_uplo -> int -> int -> float -> (float, 'a) t ->
 (** Computes a matrix-vector product using a symmetric packed matrix. *)
 
 val ger : ?conj:bool -> cblas_layout -> int -> int -> 'a -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> ('a, 'b) t -> int -> unit
-(** Performs a rank-1 update of a general matrix. [conj] is for complex numbers,
-  [true] indicates conjugated, [false] indicates unconjugated.
+(**
+Performs a rank-1 update of a general matrix. [conj] is for complex numbers,
+[true] indicates conjugated, [false] indicates unconjugated.
  *)
 
 val syr : cblas_layout -> cblas_uplo -> int -> float -> (float, 'a) t -> int -> (float, 'a) t -> int -> unit
