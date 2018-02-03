@@ -26,9 +26,13 @@ open Owl_dense_ndarray_generic
 
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
+(**
+N-dimensional array type, i.e. Bigarray Genarray type.
+ *)
 
 
 (** {6 Create dense matrices}  *)
+
 
 val empty : ('a, 'b) kind -> int -> int -> ('a, 'b) t
 (**

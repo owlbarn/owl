@@ -24,7 +24,7 @@ open Owl_types
 
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 (**
-N-dimensional array abstract type
+N-dimensional array type, i.e. Bigarray Genarray type.
  *)
 
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind

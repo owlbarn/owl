@@ -19,7 +19,11 @@
 
 open Bigarray
 
+
 type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
+(**
+Matrix type, a special case of N-dimensional array.
+ *)
 
 
 (** {6 Basic functions} *)
