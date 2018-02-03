@@ -93,7 +93,7 @@ val neg_inf : ('a, 'b) Bigarray.kind -> 'a
 
 (** {6 Unit prefixes} *)
 
-module Prefix = struct
+module Prefix : sig
 
   val fine_structure : float
   (** fine_structure = 7.297352533e-3 *)
@@ -166,7 +166,7 @@ end
 
 (** {6 SI: International System of Units} *)
 
-module SI = struct
+module SI : sig
 
   val speed_of_light : float
   (** speed_of_light = 2.99792458e8 *)
@@ -476,7 +476,7 @@ end
 
 (** {6 MKS: MKS system of units} *)
 
-module MKS = struct
+module MKS : sig
 
   val speed_of_light : float
   (** speed_of_light = 2.99792458e8 *)
@@ -786,7 +786,7 @@ end
 
 (** {6 CGS: Centimetre–gram–second system of units} *)
 
-module CGS = struct
+module CGS : sig
 
   val speed_of_light : float
   (** speed_of_light = 2.99792458e10 *)
@@ -1066,7 +1066,7 @@ end
 
 (** {6 CGSM: Unit Systems in Electromagnetism} *)
 
-module CGSM = struct
+module CGSM : sig
 
   val speed_of_light : float
   (** speed_of_light = 2.99792458e10 *)
