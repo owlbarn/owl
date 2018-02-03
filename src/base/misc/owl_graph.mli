@@ -122,4 +122,4 @@ val pp_node : Format.formatter -> 'a node -> unit
 (** Pretty print a given node. *)
 
 val to_string : bool -> 'a node array -> string
-(** Convert a given node to string. *)
+(** Convert a given node to its string representaion. *)

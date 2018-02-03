@@ -24,50 +24,71 @@
 
 (** {6 Maths constants} *)
 
-val e : float        (* e *)
+val e : float
+(** e *)
 
-val euler : float    (* Euler constant *)
+val euler : float
+(** Euler constant *)
 
-val log2e : float    (* log2_e *)
+val log2e : float
+(** log2_e *)
 
-val log10e : float   (* log_10 e *)
+val log10e : float
+(** log_10 e *)
 
-val loge2 : float    (* log_e 2 *)
+val loge2 : float
+(** log_e 2 *)
 
-val loge10 : float   (* log_e 10 *)
+val loge10 : float
+(** log_e 10 *)
 
-val logepi : float   (* log_e pi *)
+val logepi : float
+(** log_e pi *)
 
-val sqrt1_2 : float  (* 1/sqrt(2) *)
+val sqrt1_2 : float
+(** 1/sqrt(2) *)
 
-val sqrt2 : float    (* sqrt(2) *)
+val sqrt2 : float
+(** sqrt(2) *)
 
-val sqrt3 : float    (* sqrt(3) *)
+val sqrt3 : float
+(** sqrt(3) *)
 
-val sqrtpi : float   (* sqrt(pi) *)
+val sqrtpi : float
+(** sqrt(pi) *)
 
-val pi : float       (* pi *)
+val pi : float
+(** pi *)
 
-val pi2 : float      (* 2*pi *)
+val pi2 : float
+(** 2*pi *)
 
-val pi4 : float      (* 4*pi *)
+val pi4 : float
+(** 4*pi *)
 
-val pi_2 : float     (* pi/2 *)
+val pi_2 : float
+(** pi/2 *)
 
-val pi_4 : float     (* pi/4 *)
+val pi_4 : float
+(** pi/4 *)
 
 
 (** {6 Functions that return constants using Bigarray kind} *)
 
 val zero : ('a, 'b) Bigarray.kind -> 'a
+(** ``zero kind`` returns value zero of the given number type ``kind``. *)
 
 val one : ('a, 'b) Bigarray.kind -> 'a
+(** ``one kind`` returns value one of the given number type ``kind``. *)
 
 val neg_one : ('a, 'b) Bigarray.kind -> 'a
+(** ``neg_one kind`` returns negative one of the given number type ``kind``. *)
 
 val pos_inf : ('a, 'b) Bigarray.kind -> 'a
+(** ``pos_inf kind`` returns positive infinity of the given number type ``kind``. *)
 
 val neg_inf : ('a, 'b) Bigarray.kind -> 'a
+(** ``neg_inf kind`` returns negative infinity of the given number type ``kind``. *)
 
 
 (** {6 Unit prefixes} *)
