@@ -76,17 +76,7 @@ module Make
       | Exp_decay (a, k) -> fun i g _ _  -> Maths.(g * F a * exp (neg (F k) * (F (float_of_int i))))
       | RMSprop (a, k)   -> fun _ g c _  -> Maths.(g * F a / sqrt (c + F 1e-32))
       | Schedule a       -> fun i g _ _  -> Maths.(g * F a.(i mod (Array.length a)))
-      (* | Adam (a, b1, b2) -> fun i g m v  -> Maths.(((F a * m ) 
-                                            / (sqrt (v) + F 1e-32)) 
-                                            )
-       *)
-(*       | Adagrad a        -> fun _ _ c _  -> Maths.(F a / sqrt (c + F 1e-32))
-      | Const a          -> fun _ _ _ _  -> F a
-      | Decay (a, k)     -> fun i _ _ _  -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
-      | Exp_decay (a, k) -> fun i _ _ _  -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
-      | RMSprop (a, k)   -> fun _ _ c _  -> Maths.(F a / sqrt (c + F 1e-32))
-      | Schedule a       -> fun i _ _ _  -> F a.(i mod (Array.length a)) *)
-
+      
     let default = function
       | Adam _      -> Adam (0.01, 0.9, 0.999)
       | Adagrad _   -> Adagrad 0.01
@@ -646,21 +636,15 @@ module Make
       if params.verbosity = true then Checkpoint.print_state_info state;
       (* clip the gradient if necessary *)
       let gs' = Owl_utils.aarr_map clip_fun gs' in
-(*       Owl_utils.aarr_iter (pp_num Format.std_formatter) (state.gs);
-      Owl_utils.aarr_iter (pp_num Format.std_formatter) (state.ps);
-      Printf.printf "\n";
-      flush stdout; *)
       (* calculate gradient descent *)
       let ps' = Checkpoint.(Owl_utils.aarr_map4 (grad_fun (fun a -> a)) ws state.gs state.ps gs') in
       (* update gcache if necessary *)
       Checkpoint.(state.ch <- Owl_utils.aarr_map2 upch_fun gs' state.ch);
       (* update gcache2 if necessary *)
-      Checkpoint.(state.ch2 <- Owl_utils.aarr_map2 upch2_fun gs' state.ch2);
-      
+      Checkpoint.(state.ch2 <- Owl_utils.aarr_map2 upch2_fun gs' state.ch2);      
       (* adjust direction based on learning_rate *)
       let us' = Checkpoint.(
         Owl_utils.aarr_map3 (fun p' c c2 ->
-          (* Maths.(p' * rate_fun state.current_batch g' c c2) *)
           Maths.(rate_fun state.current_batch p' c c2)
         ) ps' state.ch state.ch2
       )
