@@ -3,28 +3,23 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(**
-Algodiff: algorithmic differentiation module
+open Owl_types_common
 
-The functor used to generate Algodiff module of various precisions.
-Currently, Dense.Matrix.S and Dense.Matrix.D can be plugged in to suppport
-32-bit and 64-bit two precisions.
- *)
-
-open Owl_types
+(*
+module type Sig =
+  functor (A : Owl_types_ndarray_algodiff.Sig) ->
+  sig
+*)
 
 
-module Make
-  (A : Ndarray_Algodiff)
-  : sig
-
+module type Sig = sig
 
   (** {6 Type definition} *)
 
-  type arr = A.arr
+  type arr
   (** General ndarray type *)
 
-  type elt = A.elt
+  type elt
   (** Scalar type *)
 
   type trace_op
@@ -483,5 +478,6 @@ Graphviz.
 
   val pp_num : Format.formatter -> t -> unit
   (** ``pp_num t`` pretty prints the abstract number used in ``Algodiff``. *)
+
 
 end
