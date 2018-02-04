@@ -26,7 +26,7 @@ module Make
   (** ``t`` is the abstract type to represent a view atop of an ndarray. *)
 
 
-  (** {6 Core functions} *)
+  (** {6 Conversion functions} *)
 
   val of_arr : A.arr -> t
   (** ``of_arr x`` creates a view from ndarray ``x``. *)
@@ -68,7 +68,7 @@ module Make
   (**
 ``iteri f x`` iterates and applies ``f`` to every element in ``x``. ``f`` has type
 ``f : int array -> elt -> unit``, the first paramater is index. The function
-is much slower than ``iter``
+is much slower than ``iter``.
    *)
 
   val iter : (A.elt -> unit) -> t -> unit
@@ -88,8 +88,8 @@ the result in place in ``x``.
 
   val iter2 : (A.elt -> A.elt -> unit) -> t -> t -> unit
   (**
-``iteri f x y`` applies ``f : elt -> elt -> elt`` every pair of elements in ``x``
-and ``y`. The indices are not passed in the user function.
+``iter2 f x y`` applies ``f : elt -> elt -> elt`` every pair of elements in
+``x`` and ``y``. The indices are not passed in the user function.
    *)
 
   val map2 : (A.elt -> A.elt -> A.elt) -> t -> t -> unit
