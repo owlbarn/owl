@@ -16,10 +16,10 @@ module type Sig = sig
 
   (** {6 Type definition} *)
 
-  type arr = A.arr
+  type arr
   (** General ndarray type *)
 
-  type elt = A.elt
+  type elt
   (** Scalar type *)
 
 
@@ -60,4 +60,4 @@ end
 
 (* This is a dumb module for checking the module signature. *)
 
-module Impl (A : Ndarray_Algodiff) : Sig = Owl_algodiff_generic.Make(A)
+module Impl (A : Ndarray_Numdiff) : Sig = Owl_numdiff_generic.Make (A)
