@@ -16,8 +16,16 @@ module Make
   (A : Ndarray_Numdiff)
   : sig
 
+  (** {6 Type definition} *)
+
   type arr = A.arr
+  (** General ndarray type *)
+
   type elt = A.elt
+  (** Scalar type *)
+
+
+  (** {6 Basic functions} *)
 
   val diff : (elt -> elt) -> elt -> elt
   (** derivative of ``f : scalar -> scalar``. *)

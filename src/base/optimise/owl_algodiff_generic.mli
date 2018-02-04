@@ -18,160 +18,234 @@ module Make
   (A : Ndarray_Algodiff)
   : sig
 
+
+  (** {6 Type definition} *)
+
   type arr = A.arr
+  (** General ndarray type *)
+
   type elt = A.elt
+  (** Scalar type *)
 
   type trace_op
+  (** Trace type *)
 
   type t =
+  (** Abstract number type *)
     | F   of float                                  (* constructor of float numbers *)
     | Arr of arr                                    (* constructor of ndarrays *)
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
 
 
-  (* mathematical functions supported by Algodiff *)
+  (** {6 Supported Maths functions} *)
 
   module Maths : sig
 
     val ( + )  : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val ( - )  : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val ( * )  : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val ( / )  : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val ( *@ )  : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val ( ** )  : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val add : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val sub : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val mul : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val div : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val dot : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val pow : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val atan2 : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val min2 : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val max2 : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val cross_entropy : t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val inv : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val neg : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val abs : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val signum : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val floor : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val ceil : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val round : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val sqr : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val sqrt : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val log : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val log2 : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val log10 : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val exp : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val sin : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val cos : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val tan : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val sinh : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val cosh : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val tanh : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val asin : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val acos : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val atan : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val asinh : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val acosh : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val atanh : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val sum' : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val sum : ?axis:int -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val mean : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val transpose : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val l1norm' : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val l2norm' : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val l2norm_sqr' : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val sigmoid : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val relu : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val softplus : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val softsign: t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val softmax : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val dropout : ?rate:float -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val conv1d : ?padding:padding -> t -> t -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val conv2d : ?padding:padding -> t -> t -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val conv3d : ?padding:padding -> t -> t -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val max_pool1d : padding -> t -> int array -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val max_pool2d : padding -> t -> int array -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val avg_pool1d : padding -> t -> int array -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val avg_pool2d : padding -> t -> int array -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val reshape : t -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val flatten : t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val concat : int -> t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val get_slice : int list list -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val set_slice : int list list -> t -> t -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
   end
 
 
-  (** {Simple wrappers of matrix and ndarray module, so you don't have to pack
+  (* Simple wrappers of matrix and ndarray module, so you don't have to pack
     and unpack stuff all the time. Some operations just interface to those
-    already defined in the Maths module.} *)
+    already defined in the Maths module. *)
 
   module Mat : sig
 
@@ -253,7 +327,7 @@ module Make
   end
 
 
-  (* core Algodiff functions for algorithmic differentiation *)
+  (** {6 Core functions} *)
 
   val diff : (t -> t) -> t -> t
   (**
@@ -281,8 +355,10 @@ Keep calling this function will give you higher-order derivatives of ``f``, i.e.
   (** similar to ``jacobian``, but return ``(f x, jacobian f x)`` *)
 
   val jacobianv : (t -> t) -> t -> t -> t
-  (** jacobian vector product of ``f`` : (vector -> vector) at ``x`` along ``v``,
-    forward ad. Namely, it calcultes ``(jacobian x) v`` *)
+  (**
+jacobian vector product of ``f`` : (vector -> vector) at ``x`` along ``v``,
+forward ad. Namely, it calcultes ``(jacobian x) v``
+  *)
 
   val jacobianv' : (t -> t) -> t -> t -> t * t
   (** similar to ``jacobianv'``, but return ``(f x, jacobianv f x v)`` *)
@@ -303,8 +379,10 @@ along ``v``, backward ad. Namely, it calculates ``transpose ((jacobianv f x v))`
   (** simiarl to ``hessian``, but return ``(f x, hessian f x)`` *)
 
   val hessianv : (t -> t) -> t -> t -> t
-  (** hessian vector product of ``f`` : (scalar -> scalar) at ``x`` along ``v``.
-    Namely, it calculates ``(hessian x) v``. *)
+  (**
+hessian vector product of ``f`` : (scalar -> scalar) at ``x`` along ``v``.
+Namely, it calculates ``(hessian x) v``.
+   *)
 
   val hessianv' : (t -> t) -> t -> t -> t * t
   (** similar to ``hessianv``, but return ``(f x, hessianv f x v)``. *)
@@ -328,39 +406,57 @@ along ``v``, backward ad. Namely, it calculates ``transpose ((jacobianv f x v))`
   (** return ``(f x, grad f x v, hessian f x v)`` *)
 
 
+  (** {6 Low-level functions} *)
+
   (* low-level functions, only use them if you know what you are doing. *)
 
   val pack_flt : elt -> t
+  (** TODO *)
 
   val unpack_flt : t -> elt
+  (** TODO *)
 
   val pack_arr : arr -> t
+  (** TODO *)
 
   val unpack_arr : t -> arr
+  (** TODO *)
 
   val tag : unit -> int
+  (** TODO *)
 
   val primal : t -> t
+  (** TODO *)
 
   val primal' : t -> t
+  (** TODO *)
 
   val adjval : t -> t
+  (** TODO *)
 
   val adjref : t -> t ref
+  (** TODO *)
 
   val tangent : t -> t
+  (** TODO *)
 
   val make_forward : t -> t -> int -> t
+  (** TODO *)
 
   val make_reverse : t -> int -> t
+  (** TODO *)
 
   val reverse_prop : t -> t -> unit
+  (** TODO *)
 
   val type_info : t -> string
+  (** TODO *)
 
   val shape : t -> int array
+  (** TODO *)
 
   val copy_primal' : t -> t
+  (** TODO *)
 
 
   (* other functions, without tracking gradient *)
@@ -370,7 +466,7 @@ along ``v``, backward ad. Namely, it calculates ``transpose ((jacobianv f x v))`
   val clip_by_l2norm : elt -> t -> t
 
 
-  (* functions for debugging *)
+  (** {6 Helper functions} *)
 
   val to_trace : t list -> string
   (**
@@ -385,7 +481,7 @@ file format which you can use other tools further visualisation, such as
 Graphviz.
    *)
 
-   val pp_num : Format.formatter -> t -> unit
-   (** ``pp_num t`` pretty prints the abstract number used in ``Algodiff``. *)
+  val pp_num : Format.formatter -> t -> unit
+  (** ``pp_num t`` pretty prints the abstract number used in ``Algodiff``. *)
 
 end
