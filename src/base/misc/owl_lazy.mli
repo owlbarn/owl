@@ -36,9 +36,10 @@ for type ``node``. Type ``node`` is only for internal use in the module.
   (** ``variable ()`` creates a placeholder for the variable in the graph. *)
 
   val assign_arr : t -> A.arr -> unit
-  (** ``assign_arr x a`` assigns value ``a`` to ``x``. ``x`` is the variable created by
-    ``variable ()`` function before. Note that assignment will invalidate all the
-    nodes in the subgraph depending on ``x``.
+  (**
+``assign_arr x a`` assigns value ``a`` to ``x``. ``x`` is the variable created by
+``variable ()`` function before. Note that assignment will invalidate all the
+nodes in the subgraph depending on ``x``.
    *)
 
   val assign_elt : t -> A.elt -> unit
@@ -51,16 +52,18 @@ for type ``node``. Type ``node`` is only for internal use in the module.
   (** ``to_elt x`` unpacks an element from ``x`` of type ``t``. *)
 
   val of_arr : ?name:string -> A.arr -> t
-  (** ``of_arr x`` creates a constant value from ``x`` in the computation graph. The
-    constant value cannot be re-assigned by ``assign_arr`` or ``assign_elt`` later.
+  (**
+``of_arr x`` creates a constant value from ``x`` in the computation graph. The
+constant value cannot be re-assigned by ``assign_arr`` or ``assign_elt`` later.
    *)
 
   val of_elt : ?name:string -> A.elt -> t
   (** ``of_elt x`` is similar to ``of_arr`` but used for the value of type ``elt``. *)
 
   val eval : t -> unit
-  (** ``eval x`` evaluates the experssion represented by ``x``. Note only the
-    subgraph that ``x`` depends on will be evaluated rather than the whole graph.
+  (**
+``eval x`` evaluates the experssion represented by ``x``. Note only the
+subgraph that ``x`` depends on will be evaluated rather than the whole graph.
    *)
 
 
@@ -70,14 +73,16 @@ for type ``node``. Type ``node`` is only for internal use in the module.
   (** ``pp_lazy x`` pretty prints ``x``. *)
 
   val to_trace : t list -> string
-  (** ``to_trace x`` returns the trace string that can be printed on the terminal
-    for a list of given expressions. The trace shows the structure of the graph.
+  (**
+``to_trace x`` returns the trace string that can be printed on the terminal
+for a list of given expressions. The trace shows the structure of the graph.
    *)
 
   val to_dot : t list -> string
-  (** ``to_dot x`` converts a list of experssions into graph using dot-formatted
-    string. The returned string can be used for visualising the computation
-    graph with third-party tool such as graphviz.
+  (**
+``to_dot x`` converts a list of experssions into graph using dot-formatted
+string. The returned string can be used for visualising the computation
+graph with third-party tool such as graphviz.
    *)
 
   val copy : t array -> t array
@@ -96,16 +101,17 @@ for type ``node``. Type ``node`` is only for internal use in the module.
   (** ``refnum x`` returns the number of ``x``'s parents in the computation graph. *)
 
   val map : ?name:string -> (t array -> t) -> t array -> t
-  (** ``map f x`` is a general mechanism that allows you to plug in any functions
-    into a compuation graph as a computation node in case the unary and binary
-    math operators defined in this functor are not sufficient. Also because of
-    ``map``, we do not really need the control flow node in Owl as that in
-    TensorFlow since ``map`` is more general can be used to implement arbitrary
-    operations (almost).
+  (**
+``map f x`` is a general mechanism that allows you to plug in any functions
+into a compuation graph as a computation node in case the unary and binary
+math operators defined in this functor are not sufficient. Also because of
+``map``, we do not really need the control flow node in Owl as that in
+TensorFlow since ``map`` is more general can be used to implement arbitrary
+operations (almost).
 
-    ``f : t array -> t`` takes an array of ``t`` as inputs and outputs a constant
-    value of ``t``. This means the output must be wrapped up using either ``of_arr``
-    or ``of_elt`` function before returning the result.
+``f : t array -> t`` takes an array of ``t`` as inputs and outputs a constant
+value of ``t``. This means the output must be wrapped up using either ``of_arr``
+or ``of_elt`` function before returning the result.
    *)
 
   val tile : t -> int array -> t
