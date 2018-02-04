@@ -8,7 +8,7 @@ open Owl_types
 
 module type Sig = sig
 
-  include Owl_types_algodiff.Sig
+  include Owl_algodiff_generic_sig.Sig
 
 
 module Init :

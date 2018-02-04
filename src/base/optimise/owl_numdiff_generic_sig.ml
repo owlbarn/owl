@@ -12,9 +12,7 @@ open Owl_types
 
 (* TODO: unit test *)
 
-module Make
-  (A : Ndarray_Numdiff)
-  : sig
+module type Sig = sig
 
   (** {6 Type definition} *)
 
@@ -58,3 +56,8 @@ module Make
   (** transposed jacobian of ``f : vector -> vector``, return ``f x`` and ``j x``. *)
 
 end
+
+
+(* This is a dumb module for checking the module signature. *)
+
+module Impl (A : Ndarray_Algodiff) : Sig = Owl_algodiff_generic.Make(A)

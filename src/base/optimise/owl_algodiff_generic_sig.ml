@@ -3,13 +3,7 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-open Owl_types_common
-
-(*
-module type Sig =
-  functor (A : Owl_types_ndarray_algodiff.Sig) ->
-  sig
-*)
+open Owl_types
 
 
 module type Sig = sig
@@ -481,3 +475,8 @@ Graphviz.
 
 
 end
+
+
+(* This is a dumb module for checking the module signature. *)
+
+module Impl (A : Ndarray_Algodiff) : Sig = Owl_algodiff_generic.Make(A)
