@@ -32,6 +32,7 @@
     owl_slicing_basic_stub
     owl_slicing_fancy_impl
     owl_slicing_fancy_stub
+    owl_tensor_impl
     owl_tensor_stub
     owl_common_c
     owl_distribution_common_c
@@ -157,7 +158,7 @@
     -g -O3 -Ofast
     ; Experimental switches
     ; -ffast-math may break IEEE754 semantics
-    -march=native -mfpmath=sse -funroll-loops -ffast-math ;-flto
+    -march=native -mfpmath=sse -funroll-loops -ffast-math -flto
     ; For Mersenne Twister RNG
     -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing
     ;  Turn off the warning on logical op parentheses
@@ -177,7 +178,6 @@
   (libraries (
     ctypes
     ctypes.stubs
-    ctypes.foreign
     eigen
     plplot
   ))
