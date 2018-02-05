@@ -11,6 +11,8 @@ module type Sig = sig
   include Owl_algodiff_generic_sig.Sig
 
 
+  (** {6 Init neuron} *)
+
 module Init :
   sig
     type typ =
@@ -27,6 +29,10 @@ module Init :
     val to_string : typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Input neuron} *)
+
 module Input :
   sig
     type neuron_typ = {
@@ -39,6 +45,10 @@ module Input :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Activation neuron} *)
+
 module Activation :
   sig
     type typ =
@@ -69,6 +79,10 @@ module Activation :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Linear neuron} *)
+
 module Linear :
   sig
     type neuron_typ = {
@@ -92,6 +106,10 @@ module Linear :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 LinearNoBias neuron} *)
+
 module LinearNoBias :
   sig
     type neuron_typ = {
@@ -114,6 +132,10 @@ module LinearNoBias :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Recurrent neuron} *)
+
 module Recurrent :
   sig
     type neuron_typ = {
@@ -146,6 +168,10 @@ module Recurrent :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 LSTM neuron} *)
+
 module LSTM :
   sig
     type neuron_typ = {
@@ -182,6 +208,10 @@ module LSTM :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 GRU neuron} *)
+
 module GRU :
   sig
     type neuron_typ = {
@@ -214,6 +244,10 @@ module GRU :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Conv1D neuron} *)
+
 module Conv1D :
   sig
     type neuron_typ = {
@@ -243,6 +277,10 @@ module Conv1D :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Conv2D neuron} *)
+
 module Conv2D :
   sig
     type neuron_typ = {
@@ -272,6 +310,10 @@ module Conv2D :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Conv3D neuron} *)
+
 module Conv3D :
   sig
     type neuron_typ = {
@@ -301,6 +343,10 @@ module Conv3D :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 FullyConnected neuron} *)
+
 module FullyConnected :
   sig
     type neuron_typ = {
@@ -324,6 +370,10 @@ module FullyConnected :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 MaxPool1D neuron} *)
+
 module MaxPool1D :
   sig
     type neuron_typ = {
@@ -341,6 +391,10 @@ module MaxPool1D :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 MaxPool2D neuron} *)
+
 module MaxPool2D :
   sig
     type neuron_typ = {
@@ -358,6 +412,10 @@ module MaxPool2D :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 AvgPool1D neuron} *)
+
 module AvgPool1D :
   sig
     type neuron_typ = {
@@ -375,6 +433,10 @@ module AvgPool1D :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 AvgPool2D neuron} *)
+
 module AvgPool2D :
   sig
     type neuron_typ = {
@@ -392,6 +454,10 @@ module AvgPool2D :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 GlobalMaxPool1D neuron} *)
+
 module GlobalMaxPool1D :
   sig
     type neuron_typ = {
@@ -405,6 +471,10 @@ module GlobalMaxPool1D :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 GlobalMaxPool2D neuron} *)
+
 module GlobalMaxPool2D :
   sig
     type neuron_typ = {
@@ -418,6 +488,10 @@ module GlobalMaxPool2D :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 GlobalAvgPool1D neuron} *)
+
 module GlobalAvgPool1D :
   sig
     type neuron_typ = {
@@ -431,6 +505,10 @@ module GlobalAvgPool1D :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 GlobalAvgPool2D neuron} *)
+
 module GlobalAvgPool2D :
   sig
     type neuron_typ = {
@@ -444,12 +522,39 @@ module GlobalAvgPool2D :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+  (** {6 UpSampling1D neuron} *)
+
 module UpSampling1D : sig  end
+
+
+  (** {6 UpSampling2D neuron} *)
+
 module UpSampling2D : sig  end
+
+
+  (** {6 UpSampling3D neuron} *)
+
 module UpSampling3D : sig  end
+
+
+  (** {6 Padding1D neuron} *)
+
 module Padding1D : sig  end
+
+
+  (** {6 Padding2D neuron} *)
+
 module Padding2D : sig  end
+
+
+  (** {6 Padding3D neuron} *)
+
 module Padding3D : sig  end
+
+
+  (** {6 Lambda neuron} *)
+
 module Lambda :
   sig
     type neuron_typ = {
@@ -464,6 +569,10 @@ module Lambda :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Dropout neuron} *)
+
 module Dropout :
   sig
     type neuron_typ = {
@@ -478,6 +587,10 @@ module Dropout :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Reshape neuron} *)
+
 module Reshape :
   sig
     type neuron_typ = {
@@ -491,6 +604,10 @@ module Reshape :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Flatten neuron} *)
+
 module Flatten :
   sig
     type neuron_typ = {
@@ -504,6 +621,10 @@ module Flatten :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Add neuron} *)
+
 module Add :
   sig
     type neuron_typ = {
@@ -517,6 +638,10 @@ module Add :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Mul neuron} *)
+
 module Mul :
   sig
     type neuron_typ = {
@@ -530,6 +655,10 @@ module Mul :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Dot neuron} *)
+
 module Dot :
   sig
     type neuron_typ = {
@@ -543,6 +672,10 @@ module Dot :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Max neuron} *)
+
 module Max :
   sig
     type neuron_typ = {
@@ -556,6 +689,10 @@ module Max :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Average neuron} *)
+
 module Average :
   sig
     type neuron_typ = {
@@ -569,6 +706,10 @@ module Average :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Concatenate neuron} *)
+
 module Concatenate :
   sig
     type neuron_typ = {
@@ -583,6 +724,10 @@ module Concatenate :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Normalisation neuron} *)
+
 module Normalisation :
   sig
     type neuron_typ = {
@@ -612,6 +757,10 @@ module Normalisation :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 GaussianNoise neuron} *)
+
 module GaussianNoise :
   sig
     type neuron_typ = {
@@ -626,6 +775,10 @@ module GaussianNoise :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 GaussianDropout neuron} *)
+
 module GaussianDropout :
   sig
     type neuron_typ = {
@@ -640,6 +793,10 @@ module GaussianDropout :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 AlphaDropout neuron} *)
+
 module AlphaDropout :
   sig
     type neuron_typ = {
@@ -654,6 +811,10 @@ module AlphaDropout :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Embedding neuron} *)
+
 module Embedding :
   sig
     type neuron_typ = {
@@ -677,7 +838,13 @@ module Embedding :
     val to_string : neuron_typ -> string
     val to_name : unit -> string
   end
+
+
+  (** {6 Masking neuron} *)
+
 module Masking : sig  end
+
+
 type neuron =
     Input of Input.neuron_typ
   | Linear of Linear.neuron_typ
@@ -713,21 +880,53 @@ type neuron =
   | Max of Max.neuron_typ
   | Average of Average.neuron_typ
   | Concatenate of Concatenate.neuron_typ
+(** TODO *)
+
 val get_in_out_shape : neuron -> int array * int array
+(** TODO *)
+
 val get_in_shape : neuron -> int array
+(** TODO *)
+
 val get_out_shape : neuron -> int array
+(** TODO *)
+
 val connect : int array array -> neuron -> unit
+(** TODO *)
+
 val init : neuron -> unit
+(** TODO *)
+
 val reset : neuron -> unit
+(** TODO *)
+
 val mktag : int -> neuron -> unit
+(** TODO *)
+
 val mkpar : neuron -> t array
+(** TODO *)
+
 val mkpri : neuron -> t array
+(** TODO *)
+
 val mkadj : neuron -> t array
+(** TODO *)
+
 val update : neuron -> t array -> unit
+(** TODO *)
+
 val copy : neuron -> neuron
+(** TODO *)
+
 val run : t array -> neuron -> t
+(** TODO *)
+
 val to_string : neuron -> string
+(** TODO *)
+
 val to_name : neuron -> string
+(** TODO *)
+
 
 end
 
