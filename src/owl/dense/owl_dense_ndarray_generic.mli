@@ -22,6 +22,9 @@ open Bigarray
 
 open Owl_types
 
+
+(** {6 Type definition} *)
+
 type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
 (**
 N-dimensional array type, i.e. Bigarray Genarray type.

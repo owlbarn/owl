@@ -6,6 +6,8 @@
 (** Sparse matrix module *)
 
 
+(** {6 Type definition} *)
+
 type ('a, 'b) t
 (**
 Abstract type of sparse matrices

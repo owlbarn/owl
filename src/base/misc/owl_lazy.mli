@@ -23,6 +23,9 @@ module Make
   (A : Ndarray_Mutable)
   : sig
 
+
+  (** {6 Type definition} *)
+
   type t
   (**
 ``t`` is an abstract type to represent an experssion, it is also an alias

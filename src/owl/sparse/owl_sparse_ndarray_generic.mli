@@ -6,11 +6,13 @@
 (** Sparse N-dimensional array module *)
 
 
+(** {6 Type definition} *)
+
 type ('a, 'b) kind = ('a, 'b) Bigarray.kind
-(** TODO *)
+(** Type of ``kind``. *)
 
 type ('a, 'b) t
-(** TODO *)
+(** Abstract type of sparse ndarray. *)
 
 
 (** {6 Create sparse ndarray} *)

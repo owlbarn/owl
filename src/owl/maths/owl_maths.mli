@@ -13,7 +13,7 @@
 *)
 
 
-(** {6 Basic math functions} *)
+(** {6 Basic functions} *)
 
 val add : float -> float -> float
 (** ``add x y`` *)
@@ -343,7 +343,7 @@ val combination : int -> int -> int
 (** ``combination n k`` return the combination number of taking k out of n. *)
 
 
-(** {6 Error Function and Fresnel Integrals} *)
+(** {6 Error function and Fresnel integrals} *)
 
 val erf : float -> float
 (** Error function. *)

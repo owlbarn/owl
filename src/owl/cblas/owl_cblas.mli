@@ -13,7 +13,7 @@
 open Bigarray
 
 
-(** {6 Definition of basic types} *)
+(** {6 Type definition} *)
 
 type ('a, 'b) t = ('a, 'b, Bigarray.c_layout) Bigarray.Array1.t
 (** The default type is Bigarray's ``Array1.t``. *)
