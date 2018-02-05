@@ -36,7 +36,7 @@ Type of the ndarray, e.g., Bigarray.Float32, Bigarray.Complex64, and etc.
  *)
 
 
-(** {6 Create N-dimensional array}  *)
+(** {6 Create Ndarrays}  *)
 
 val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
 (**
@@ -221,7 +221,7 @@ val i1d : ('a, 'b) t -> int array -> int
 *)
 
 
-(** {6 Manipulate a N-dimensional array}  *)
+(** {6 Manipulate Ndarrays}  *)
 
 val get : ('a, 'b) t -> int array -> 'a
 (**
@@ -559,7 +559,7 @@ val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 
-(** {6 Examine array elements or compare two arrays }  *)
+(** {6 Examination & Comparison}  *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
 (**
@@ -882,7 +882,7 @@ It is necesssary to specify the type of the ndarray with paramater ``k``.
 *)
 
 
-(** {6 Unary mathematical operations }  *)
+(** {6 Unary math operators }  *)
 
 val re_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 (**
@@ -1382,7 +1382,7 @@ val proj : (Complex.t, 'a) t -> (Complex.t, 'a) t
  *)
 
 
-(** {6 Binary mathematical operations }  *)
+(** {6 Binary math operators}  *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
@@ -1618,7 +1618,7 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
  *)
 
 
-(** {6 Neural network related functions}  *)
+(** {6 Neural network related}  *)
 
 val conv1d : ?padding:padding -> (float, 'a) t -> (float, 'a) t -> int array -> (float, 'a) t
 (**
@@ -1721,7 +1721,7 @@ val avg_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> 
  *)
 
 
-(** {6 Some helper and experimental functions }  *)
+(** {6 Helper functions }  *)
 
 (**
 The following functions are helper functions for some other functions in
@@ -1752,7 +1752,7 @@ more memory.
  *)
 
 
-(** {6 Fucntions of in-place modification }  *)
+(** {6 In-place modification}  *)
 
 val add_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (**
@@ -2215,55 +2215,79 @@ function but the output is written to ``x``.
 (** {6 Matrix functions}  *)
 
 type area = { a : int; b : int; c : int; d : int }
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val area : int -> int -> int -> int -> area
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val copy_area_to : ('a, 'b) t -> area -> ('a, 'b) t -> area -> unit
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val row_num : ('a, 'b) t -> int
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val col_num : ('a, 'b) t -> int
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val row : ('a, 'b) t -> int -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val col : ('a, 'b) t -> int -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val rows : ('a, 'b) t -> int array -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val cols : ('a, 'b) t -> int array -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val copy_row_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val copy_col_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val inv : ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val trace : ('a, 'b) t -> 'a
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val to_rows : ('a, 'b) t -> ('a, 'b) t array
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val of_rows : ('a, 'b) t array -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val to_cols : ('a, 'b) t -> ('a, 'b) t array
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val of_cols : ('a, 'b) t array -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val to_arrays : ('a, 'b) t -> 'a array array
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val of_arrays : ('a, 'b) kind -> 'a array array -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val draw_rows : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val draw_cols : ?replacement:bool -> ('a, 'b) t -> int -> ('a, 'b) t * int array
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val draw_rows2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val draw_cols2 : ?replacement:bool -> ('a, 'b) t -> ('a, 'b) t -> int -> ('a, 'b) t * ('a, 'b) t * int array
+(** Refer to :doc:`owl_dense_matrix_generic` *)
 
 
-(* ends ehre
- *)
+(* ends here *)

@@ -33,7 +33,7 @@ N-dimensional array type, i.e. Bigarray Genarray type.
  *)
 
 
-(** {6 Create dense matrices}  *)
+(** {6 Create matrices}  *)
 
 
 val empty : ('a, 'b) kind -> int -> int -> ('a, 'b) t
@@ -242,7 +242,7 @@ and doubly even respectively.
  *)
 
 
-(** {6 Obtain the basic properties}  *)
+(** {6 Obtain basic properties}  *)
 
 val shape : ('a, 'b) t -> int * int
 (**
@@ -548,7 +548,7 @@ val sort : ('a, 'b) t -> unit
  *)
 
 
-(**{6 Iterate elements, columns, and rows.} *)
+(**{6 Iteration functions} *)
 
 val iteri : (int -> 'a -> unit) -> ('a, 'b) t -> unit
 (**
@@ -757,7 +757,7 @@ of an element is not passed to ``f``.
  *)
 
 
-(** {6 Examine elements and compare two matrices}  *)
+(** {6 Examination & Comparison} *)
 
 val exists : ('a -> bool) -> ('a, 'b) t -> bool
 (**
@@ -1132,7 +1132,7 @@ val load_txt : (float, 'a) kind -> string -> (float, 'a) t
  *)
 
 
-(** {6 Unary mathematical operations }  *)
+(** {6 Unary math operators}  *)
 
 val re_c2s : (Complex.t, complex32_elt) t -> (float, float32_elt) t
 (**
@@ -1698,7 +1698,7 @@ The elements in ``x`` are clipped by ``amin`` and ``amax``, and they will be bet
  *)
 
 
-(** {6 Binary mathematical operations }  *)
+(** {6 Binary math operators}  *)
 
 val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
@@ -1905,7 +1905,7 @@ between the elements of ``a`` and the matrix ``b``.
  *)
 
 
-(** {6 Cast functions to different number types}  *)
+(** {6 Cast functions}  *)
 
 val cast : ('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
 (**
@@ -1955,7 +1955,7 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
  *)
 
 
-(** {6 Fucntions of in-place modification }  *)
+(** {6 In-place modification}  *)
 
 val add_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (**
