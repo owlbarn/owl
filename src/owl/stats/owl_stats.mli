@@ -171,9 +171,9 @@ conditional function of all variables
 (** {6 Hypothesis tests} *)
 
 type hypothesis = {
-reject  : bool;    (* reject null hypothesis if ``true`` *)
-p_value : float;   (* p-value of the hypothesis test *)
-score   : float;   (* score has different meaning in different tests *)
+  reject  : bool;    (* reject null hypothesis if ``true`` *)
+  p_value : float;   (* p-value of the hypothesis test *)
+  score   : float;   (* score has different meaning in different tests *)
 }
 (** record type contains the result of hypothesis tests. *)
 

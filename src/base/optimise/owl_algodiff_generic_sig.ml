@@ -20,11 +20,11 @@ module type Sig = sig
   (** Trace type *)
 
   type t =
-  (** Abstract number type *)
     | F   of float                                  (* constructor of float numbers *)
     | Arr of arr                                    (* constructor of ndarrays *)
     | DF  of t * t * int                            (* primal, tangent, tag *)
     | DR  of t * t ref * trace_op * int ref * int   (* primal, adjoint, op, fanout, tag *)
+  (** Abstract number type *)
 
 
   (** {6 Supported Maths functions} *)

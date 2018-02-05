@@ -38,7 +38,7 @@ Type of the ndarray, e.g., Bigarray.Float32, Bigarray.Complex64, and etc.
 val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
 (**
 ``empty Bigarray.Float64 [|3;4;5|]`` creates a three diemensional array of
-type ``Bigarray.Float64``. Each dimension has the following size: 3, 4, and 5.
+``Bigarray.Float64`` type. Each dimension has the following size: 3, 4, and 5.
 The elements in the array are not initialised, they can be any value. ``empty``
 is faster than ``zeros`` to create a ndarray.
 
@@ -50,7 +50,7 @@ The module only supports the following four types of ndarray: ``Bigarray.Float32
 val create : ('a, 'b) kind -> int array -> 'a -> ('a, 'b) t
 (**
 ``create Bigarray.Float64 [|3;4;5|] 2.`` creates a three-diemensional array of
-type ``Bigarray.Float64``. Each dimension has the following size: 3, 4, and 5.
+``Bigarray.Float64`` type. Each dimension has the following size: 3, 4, and 5.
 The elements in the array are initialised to ``2.``
  *)
 
@@ -72,7 +72,7 @@ yourself, but this also means ``init_nd`` is slower than ``init``.
 val zeros : ('a, 'b) kind -> int array -> ('a, 'b) t
 (**
 ``zeros Bigarray.Complex32 [|3;4;5|]`` creates a three-diemensional array of
-type ``Bigarray.Complex32``. Each dimension has the following size: 3, 4, and 5.
+``Bigarray.Complex32`` type. Each dimension has the following size: 3, 4, and 5.
 The elements in the array are initialised to "zero". Depending on the ``kind``,
 zero can be ``0.`` or ``Complex.zero``.
  *)
@@ -80,7 +80,7 @@ zero can be ``0.`` or ``Complex.zero``.
 val ones : ('a, 'b) kind -> int array -> ('a, 'b) t
 (**
 ``ones Bigarray.Complex32 [|3;4;5|]`` creates a three-diemensional array of
-type ``Bigarray.Complex32``. Each dimension has the following size: 3, 4, and 5.
+``Bigarray.Complex32`` type. Each dimension has the following size: 3, 4, and 5.
 The elements in the array are initialised to "one". Depending on the ``kind``,
 one can be ``1.`` or ``Complex.one``.
  *)
@@ -1569,9 +1569,9 @@ val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 
 val cast : ('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
 (**
-``cast kind x`` casts ``x`` of type ``('c, 'd) t`` to type ``('a, 'b) t`` specify by
-the passed in ``kind`` parameter. This function is a generalisation of the other
-type casting functions such as ``cast_s2d``, ``cast_c2z``, and etc.
+``cast kind x`` casts ``x`` of type ``('c, 'd) t`` to type ``('a, 'b) t``
+specify by the passed in ``kind`` parameter. This function is a generalisation
+of the other type casting functions such as ``cast_s2d``, ``cast_c2z``, and etc.
  *)
 
 val cast_s2d : (float, float32_elt) t -> (float, float64_elt) t
