@@ -646,7 +646,7 @@ let convert_opencl_header_to_extern fname funs structs consts exns =
   Printf.fprintf h_mli "\n\n(** {6 Constant definition} *)\n\n";
   Array.iter (fun (const_name, const_val) ->
     Printf.fprintf h_mli "val cl_%s : int\n" const_name;
-    Printf.fprintf h_mli "(** Constant ``%s``. *)\n\n" const_name;
+    Printf.fprintf h_mli "(** Constant ``%s = %s``. *)\n\n" const_name const_val;
   ) consts;
 
   Printf.fprintf h_mli "\n\n(** {6 Exception definition} *)\n\n";
