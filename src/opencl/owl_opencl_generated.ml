@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** auto-generated opencl interface file, timestamp:1506204035 *)
+(** auto-generated opencl interface file, timestamp:1517848191 *)
 
 open Ctypes
 
@@ -11,7 +11,7 @@ module CI = Cstubs_internals
 
 
 
-(** type definition *)
+(** {6 Type definition} *)
 
 type cl_platform_id = unit Ctypes.ptr
 let cl_platform_id : cl_platform_id Ctypes.typ = Ctypes.(ptr void)
@@ -60,7 +60,7 @@ let cl_sampler_ptr_null : cl_sampler Ctypes.ptr = Obj.magic Ctypes.null
 
 
 
-(** function definition *)
+(** {6 Function definition} *)
 
 external owl_opencl_clGetPlatformIDs
   : Unsigned.uint32 -> _ CI.fatptr -> _ CI.fatptr -> int32
@@ -380,7 +380,7 @@ external owl_opencl_clGetExtensionFunctionAddressForPlatform
 
 
 
-(** stub function definition *)
+(** {6 Stub function definition} *)
 
 let clGetPlatformIDs x0 x1 x2 =
   owl_opencl_clGetPlatformIDs x0 (CI.cptr x1) (CI.cptr x2) 
@@ -636,7 +636,7 @@ let clGetExtensionFunctionAddressForPlatform x0 x1 =
 
 
 
-(** constant definition *)
+(** {6 Constants definition} *)
 
 let cl_SUCCESS = 0
 
@@ -1366,7 +1366,7 @@ let cl_PROFILING_COMMAND_END = 0x1283
 
 
 
-(** exception definition *)
+(** {6 Exception definition} *)
 
 exception EXN_SUCCESS
 
