@@ -343,7 +343,7 @@ val combination : int -> int -> int
 (** ``combination n k`` return the combination number of taking k out of n. *)
 
 
-(** {6 Error function and Fresnel integrals} *)
+(** {6 Error functions} *)
 
 val erf : float -> float
 (** Error function. *)
@@ -359,6 +359,9 @@ val erfinv : float -> float
 
 val erfcinv : float -> float
 (** Inverse of ``erfc x`` *)
+
+
+(** {6 Dawson & Fresnel integrals} *)
 
 val dawsn : float -> float
 (** Dawson’s integral. *)
