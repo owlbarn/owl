@@ -550,7 +550,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) = struct
             sum := !sum +. (Genarray.get varr old_ind)
           done;
           Genarray.set new_varr new_ind !sum;
-          if not (_next_index old_ind old_dims) then
+          if not (_next_index new_ind new_dims) then
             should_stop := true
         done;
         new_varr
