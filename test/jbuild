@@ -4,6 +4,7 @@
   (names (test_runner))
   (libraries (
     owl
+    owl_base
     alcotest
   ))
   (flags (:standard -safe-string))

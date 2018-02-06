@@ -163,7 +163,7 @@ module GenarrayFloat64Elt : GenarrayFloatEltSig = struct
 end
 
 
-module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
+module MakeNdarray (ELT : GenarrayFloatEltSig) = struct
 
   type arr = (float, ELT.elt, c_layout) Genarray.t
 
