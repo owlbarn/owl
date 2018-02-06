@@ -16,13 +16,20 @@ module type Sig = sig
   module Utils : sig
 
     val sample_num : t -> int
-    (** TODO *)
+    (** Return the total number of samples in passed in ndarray. *)
 
     val draw_samples : t -> t -> int -> t * t
-    (** TODO *)
+    (**
+``draw_samples x y`` draws samples from both ``x`` (observations) and ``y``
+(labels). The samples will be drew along axis 0, so ``x`` and ``y`` must agree
+along axis 0.
+     *)
 
     val get_chunk : t -> t -> int -> int -> t * t
-    (** TODO *)
+    (**
+``get_chunk x y i c`` gets a continuous chunk of ``c`` samples from position
+``i`` from  ``x`` (observations) and ``y`` (labels).
+     *)
 
   end
 
@@ -41,14 +48,16 @@ module type Sig = sig
     (** types of learning rate *)
 
     val run : typ -> int -> 'a -> t -> t
-    (** TODO *)
+    (** Execute the computations defined in module ``typ``. *)
 
     val default : typ -> typ
-    (** TODO *)
+    (** Create module ``typ`` with default values. *)
+
     val update_ch : typ -> t -> t -> t
-    (** TODO *)
+    (** Update the cache of gradients. *)
+
     val to_string : typ -> string
-    (** TODO *)
+    (** Convert the module ``typ`` to its string representation. *)
 
   end
 
@@ -58,16 +67,16 @@ module type Sig = sig
   module Batch : sig
 
     type typ = Full | Mini of int | Sample of int | Stochastic
-    (** TODO *)
+    (** Types of batches. *)
 
     val run : typ -> t -> t -> int -> t * t
-    (** TODO *)
+    (** Execute the computations defined in module ``typ``. *)
 
     val batches : typ -> t -> int
-    (** TODO *)
+    (** Return the total number of batches given a batch ``typ``. *)
 
     val to_string : typ -> string
-    (** TODO *)
+    (** Convert the module ``typ`` to its string representation. *)
 
   end
 
@@ -83,13 +92,13 @@ module type Sig = sig
       | Quadratic
       | Cross_entropy
       | Custom of (t -> t -> t)
-    (** TODO *)
+    (** Types of loss functions. *)
 
     val run : typ -> t -> t -> t
-    (** TODO *)
+    (** Execute the computations defined in module ``typ``. *)
 
     val to_string : typ -> string
-    (** TODO *)
+    (** Convert the module ``typ`` to its string representation. *)
 
   end
 
@@ -99,13 +108,13 @@ module type Sig = sig
   module Gradient : sig
 
     type typ = GD | CG | CD | NonlinearCG | DaiYuanCG | NewtonCG | Newton
-    (** TODO *)
+    (** Types of gradient function. *)
 
     val run : typ -> (t -> t) -> t -> t -> t -> t -> t
-    (** TODO *)
+    (** Execute the computations defined in module ``typ``. *)
 
     val to_string : typ -> string
-    (** TODO *)
+    (** Convert the module ``typ`` to its string representation. *)
 
   end
 
@@ -115,16 +124,16 @@ module type Sig = sig
   module Momentum : sig
 
     type typ = Standard of float | Nesterov of float | None
-    (** TODO *)
+    (** Types of momentum functions. *)
 
     val run : typ -> t -> t -> t
-    (** TODO *)
+    (** Execute the computations defined in module ``typ``. *)
 
     val default : typ -> typ
-    (** TODO *)
+    (** Create module ``typ`` with default values. *)
 
     val to_string : typ -> string
-    (** TODO *)
+    (** Convert the module ``typ`` to its string representation. *)
 
   end
 
@@ -138,13 +147,13 @@ module type Sig = sig
       | L2norm of float
       | Elastic_net of float * float
       | None
-    (** TODO *)
+    (** Types of regularisation functions. *)
 
     val run : typ -> t -> t
-    (** TODO *)
+    (** Execute the computations defined in module ``typ``. *)
 
     val to_string : typ -> string
-    (** TODO *)
+    (** Convert the module ``typ`` to its string representation. *)
 
   end
 
@@ -154,16 +163,16 @@ module type Sig = sig
   module Clipping : sig
 
     type typ = L2norm of float | Value of float * float | None
-    (** TODO *)
+    (** Types of clipping functions. *)
 
     val run : typ -> t -> t
-    (** TODO *)
+    (** Execute the computations defined in module ``typ``. *)
 
     val default : typ -> typ
-    (** TODO *)
+    (** Create module ``typ`` with default values. *)
 
     val to_string : typ -> string
-    (** TODO *)
+    (** Convert the module ``typ`` to its string representation. *)
 
   end
 
@@ -173,16 +182,16 @@ module type Sig = sig
   module Stopping : sig
 
     type typ = Const of float | Early of int * int | None
-    (** TODO *)
+    (** Types of stopping functions. *)
 
     val run : typ -> float -> bool
-    (** TODO *)
+    (** Execute the computations defined in module ``typ``. *)
 
     val default : typ -> typ
-    (** TODO *)
+    (** Create module ``typ`` with default values. *)
 
     val to_string : typ -> string
-    (** TODO *)
+    (** Convert the module ``typ`` to its string representation. *)
 
   end
 
@@ -204,32 +213,35 @@ module type Sig = sig
       mutable us : t array array;
       mutable ch : t array array;
     }
-    (** TODO *)
+    (** Type definition of checkpoint *)
 
     type typ =
       | Batch of int
       | Epoch of float
       | Custom of (state -> unit)
       | None
-    (** TODO *)
+    (** Batch type. *)
 
     val init_state : int -> float -> state
-    (** TODO *)
+    (**
+``init_state batches_per_epoch epochs`` initialises a state by specifying the
+number of batches per epoch and the number of epochs in total.
+     *)
 
     val default_checkpoint_fun : (string -> 'a) -> 'a
-    (** TODO *)
+    (** This function is used for saving intermediate files during optimisation. *)
 
     val print_state_info : state -> unit
-    (** TODO *)
+    (** Print out the detail information of current ``state``. *)
 
     val print_summary : state -> unit
-    (** TODO *)
+    (** Print out the summary of current ``state``. *)
 
     val run : typ -> (string -> unit) -> int -> t -> state -> unit
-    (** TODO *)
+    (** Execute the computations defined in module ``typ``. *)
 
     val to_string : typ -> string
-    (** TODO *)
+    (** Convert the module ``typ`` to its string representation. *)
 
   end
 
@@ -251,16 +263,16 @@ module type Sig = sig
       mutable checkpoint : Checkpoint.typ;
       mutable verbosity : bool;
     }
-    (** TODO *)
+    (** Type definition of paramater. *)
 
     val default : unit -> typ
-    (** TODO *)
+    (** Create module ``typ`` with default values. *)
 
     val config : ?batch:Batch.typ -> ?gradient:Gradient.typ -> ?loss:Loss.typ -> ?learning_rate:Learning_Rate.typ -> ?regularisation:Regularisation.typ -> ?momentum:Momentum.typ -> ?clipping:Clipping.typ -> ?stopping:Stopping.typ -> ?checkpoint:Checkpoint.typ -> ?verbosity:bool -> float -> typ
-    (** TODO *)
+    (** This function creates a parameter object with many configurations. *)
 
     val to_string : typ -> string
-    (** TODO *)
+    (** Convert the module ``typ`` to its string representation. *)
 
   end
 
@@ -268,14 +280,28 @@ module type Sig = sig
   (** {6 Core functions} *)
 
   val minimise_weight : ?state:Checkpoint.state -> Params.typ -> (t -> t -> t) -> t -> t -> t -> Checkpoint.state * t
-  (** TODO *)
+  (**
+This function minimises the weight ``w`` of passed-in function ``f``.
+
+* ``f`` is a function ``f : w -> x -> y``.
+* ``w`` is a row vector but ``y`` can have any shape.
+   *)
 
   val minimise_network : ?state:Checkpoint.state -> Params.typ -> (t -> t * t array array) -> (t -> t array array * t array array) -> (t array array -> 'a) -> (string -> unit) -> t -> t -> Checkpoint.state
-  (** TODO *)
+  (**
+This function is specifically designed for minimising the weights in a neural
+network of graph structure. In Owl's earlier versions, the functions in the
+regression module were actually implemented using this function.
+   *)
 
   val minimise_fun : ?state:Checkpoint.state -> Params.typ -> (t -> t) -> t -> Checkpoint.state * t
-  (** TODO *)
-  
+  (**
+This function minimises ``f : x -> y`` w.r.t ``x``.
+
+``x`` is an ndarray; and ``y`` is an scalar value.
+   *)
+
+
 end
 
 
