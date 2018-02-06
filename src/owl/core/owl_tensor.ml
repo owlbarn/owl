@@ -46,3 +46,28 @@ external owl_float32_tensor_maxpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_ar
 external owl_float32_tensor_avgpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
 "stub_float32_tensor_avgpool_cuboid_bytecode"
 "stub_float32_tensor_avgpool_cuboid_native"
+
+external owl_float32_tensor_maxpool_cuboid_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_float32_tensor_maxpool_cuboid_backward_bytecode"
+"stub_float32_tensor_maxpool_cuboid_backward_native"
+
+external _owl_float32_tensor_avgpool_cuboid_backward : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_float32_tensor_avgpool_cuboid_backward_bytecode"
+"stub_float32_tensor_avgpool_cuboid_backward_native"
+
+let owl_float32_tensor_avgpool_cuboid_backward
+  input output
+  batches input_cols input_rows input_depth in_channel
+  kernel_cols kernel_rows kernel_depth
+  output_cols output_rows output_depth
+  row_stride col_stride depth_stride
+  pad_rows pad_cols pad_depth
+  =
+  let dummy_input = input in
+  _owl_float32_tensor_avgpool_cuboid_backward
+    dummy_input output input
+    batches input_cols input_rows input_depth in_channel
+    kernel_cols kernel_rows kernel_depth
+    output_cols output_rows output_depth
+    row_stride col_stride depth_stride
+    pad_rows pad_cols pad_depth
