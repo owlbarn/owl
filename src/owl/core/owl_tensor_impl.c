@@ -216,5 +216,111 @@ value FUN_2DB_BYTE(value * argv, int argn){
   );
 }
 
+value FUN_3DF_NATIVE (
+  value vInput, value vOutput,
+  value vBatches, value vInput_cols, value vInput_rows,
+  value vInput_depth, value vIn_channel,
+  value vKernel_cols, value vKernel_rows, value vKernel_depth,
+  value vOutput_cols, value vOutput_rows, value vOutput_depth,
+  value vDepth_stride, value vRow_stride,  value vCol_stride,
+  value vPadding
+)
+{
+  struct caml_ba_array *IN = Caml_ba_array_val(vInput);
+  struct caml_ba_array *OU = Caml_ba_array_val(vOutput);
+  TYPE *input_ptr  = (TYPE *) IN->data;
+  TYPE *output_ptr = (TYPE *) OU->data;
+
+  int batches       = Long_val(vBatches);
+  int input_cols    = Long_val(vInput_cols);
+  int input_rows    = Long_val(vInput_rows);
+  int input_depth   = Long_val(vInput_depth);
+  int in_channel    = Long_val(vIn_channel);
+  int kernel_cols   = Long_val(vKernel_cols);
+  int kernel_rows   = Long_val(vKernel_rows);
+  int kernel_depth  = Long_val(vKernel_depth);
+  int output_cols   = Long_val(vOutput_cols);
+  int output_rows   = Long_val(vOutput_rows);
+  int output_depth  = Long_val(vOutput_depth);
+  int depth_stride  = Long_val(vDepth_stride);
+  int row_stride    = Long_val(vRow_stride);
+  int col_stride    = Long_val(vCol_stride);
+  int padding       = Long_val(vPadding);
+
+  TYPE pr, pc, pd;
+  if (padding == 1){
+    pr = 0.; pc = 0.; pd = 0.;
+  } else {
+    pr = (row_stride * ( output_rows - 1) +
+      kernel_rows - input_rows) / 2.;
+    pc = (col_stride * ( output_cols - 1) +
+      kernel_cols - input_cols) / 2.;
+    pd = (depth_stride * ( output_cols - 1) +
+      kernel_depth - input_depth) / 2.;
+    if (pr < 0) pr = 0.;
+    if (pc < 0) pc = 0.;
+    if (pd < 0) pd = 0.;
+  }
+
+  for (int i = 0; i < batches; ++i) {
+    for (int j = 0; j < output_cols; ++j) {
+      for (int k = 0; k < output_rows; ++k) {
+        for (int d = 0; d < output_depth; ++d) {
+
+          const int cstart = j * col_stride   - floor(pc);
+          const int rstart = k * row_stride   - floor(pr);
+          const int dstart = d * depth_stride - floor(pd);
+          const int cend   = cstart + kernel_cols;
+          const int rend   = rstart + kernel_rows;
+          const int dend   = dstart + kernel_depth;
+
+          for (int l = 0; l < in_channel; ++l) {
+            TYPE acc = INITACC;
+            int counter = 0;
+            for (int a = cstart; a < cend; ++a) {
+              for (int b = rstart; b < rend; ++b) {
+                for (int c = dstart; c < dend; ++c){
+                  if (a >= 0 && a < input_cols &&
+                      b >= 0 && b < input_rows &&
+                      c >= 0 && c < input_depth) {
+                    int input_idx =
+                      i * (input_cols * input_rows * input_depth * in_channel) +
+                      a * (input_rows * input_depth * in_channel) +
+                      b * (input_depth * in_channel) +
+                      c * in_channel +
+                      l;
+                    TYPE t = *(input_ptr + input_idx);
+                    ACCFN(acc, t);
+                    counter++;
+
+                  }
+                }
+              }
+            }
+
+            int output_idx =
+              i * (output_cols * output_rows * output_depth * in_channel) +
+              j * (output_rows * output_depth * in_channel) +
+              k * (output_depth * in_channel) +
+              d * in_channel +
+              l;
+            *(output_ptr + output_idx) = UPDATEFN(acc, counter);
+          }
+        }
+      }
+    }
+  }
+
+  return Val_unit;
+}
+
+value FUN_3DF_BYTE(value * argv, int argn){
+  return FUN_3DF_NATIVE(
+    argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
+    argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],
+    argv[15], argv[16]
+  );
+}
+
 
 #endif /* OWL_ENABLE_TEMPLATE */

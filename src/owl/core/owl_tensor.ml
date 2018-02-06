@@ -38,3 +38,11 @@ let owl_float32_tensor_avgpool_spatial_backward
     batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows
     row_stride col_stride pad_rows pad_cols
+
+external owl_float32_tensor_maxpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_float32_tensor_maxpool_cuboid_bytecode"
+"stub_float32_tensor_maxpool_cuboid_native"
+
+external owl_float32_tensor_avgpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_float32_tensor_avgpool_cuboid_bytecode"
+"stub_float32_tensor_avgpool_cuboid_native"
