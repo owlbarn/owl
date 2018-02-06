@@ -1,0 +1,12 @@
+(jbuild_version 1)
+
+(executables (
+  (names        (gradient_descent_pure test_mnist_cnn))
+  (public_names (owl_experimental_grad owl_experimental_mnistcnn))
+  (package     owl_experimental)
+  (libraries  (
+    owl_base
+  ))
+  (flags (:standard -safe-string))
+  (modes      (byte))
+))

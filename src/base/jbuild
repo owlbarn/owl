@@ -16,5 +16,7 @@
   (flags (:standard -safe-string))
   (libraries (
     ; Let's keep the dependency minimal
+    bigarray
+    str
   ))
 ))
