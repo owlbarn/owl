@@ -23,6 +23,8 @@ module type Sig = sig
 
   val create : int array -> elt -> arr
 
+  val sequential : ?a:elt -> ?step:elt -> int array -> arr
+
   val uniform : ?a:elt -> ?b:elt -> int array -> arr
 
   val gaussian : ?mu:elt -> ?sigma:elt -> int array -> arr
@@ -236,6 +238,8 @@ module type Sig = sig
   val to_rows : arr -> arr array
 
   val of_rows : arr array -> arr
+
+  val of_array : elt array -> int array -> arr
 
   val of_arrays : elt array array -> arr
 

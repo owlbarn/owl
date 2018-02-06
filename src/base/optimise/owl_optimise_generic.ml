@@ -3,10 +3,12 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** [Optimisation engine]
-  This module provides fundamental supports for Owl's regression and neural
-  network module. The module supports both single and double precision float
-  numbers.
+(**
+Optimisation engine
+
+This module provides fundamental supports for Owl's regression and neural
+network module. The module supports both single and double precision float
+numbers.
  *)
 
 open Owl_types
@@ -29,7 +31,7 @@ module Make
     let sample_num x =
       match x with
       | Arr _ -> Arr.(shape x).(0)
-      | x     -> failwith ("Owl_neural_optimise.Utils.sample_num:" ^ (type_info x))
+      | x     -> failwith ("Owl_optimise.Utils.sample_num:" ^ (type_info x))
 
     let draw_samples x y n =
       match x, y with
@@ -38,7 +40,7 @@ module Make
           let y = A.rows y i in
           Arr x, Arr y
         )
-      | x, _         -> failwith ("Owl_neural_optimise.Utils.draw_samples:" ^ (type_info x))
+      | x, _         -> failwith ("Owl_optimise.Utils.draw_samples:" ^ (type_info x))
 
     let get_chunk x y i c =
       match x, y with
@@ -50,7 +52,7 @@ module Make
           let y = A.get_slice [[a;b]] y in
           Arr x, Arr y
         )
-      | x, _         -> failwith ("Owl_neural_optimise.Utils.get_chunk:" ^ (type_info x))
+      | x, _         -> failwith ("Owl_optimise.Utils.get_chunk:" ^ (type_info x))
 
   end
 
@@ -349,11 +351,10 @@ module Make
       let file_name = Printf.sprintf "%s/%s.%i"
         (Sys.getcwd ()) "model" (Unix.time () |> int_of_float)
       in
-      Owl_log.info "#%i | checkpoint => %s" (Unix.getpid()) file_name;
+      Owl_log.info "checkpoint => %s" file_name;
       save_fun file_name
 
     let print_state_info state =
-      let pid = Unix.getpid () in
       let b_i = state.current_batch in
       let b_n = state.batches in
       let e_n = state.epochs in
@@ -363,8 +364,8 @@ module Make
       let d = l0 -. l1 in
       let s = if d = 0. then "-" else if d < 0. then "▲" else "▼" in
       let t = (Unix.gettimeofday () -. state.start_at) |> Owl_utils.format_time in
-      Owl_log.info "#%i | T: %s | E: %.1f/%g | B: %i/%i | L: %.6f[%s]"
-        pid t e_i e_n b_i b_n l1 s
+      Owl_log.info "T: %s | E: %.1f/%g | B: %i/%i | L: %.6f[%s]"
+        t e_i e_n b_i b_n l1 s
 
     let print_summary state =
       (Unix.gettimeofday () -. state.start_at)

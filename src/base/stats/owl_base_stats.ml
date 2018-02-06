@@ -1,3 +1,5 @@
+(** Owl - Experimental *)
+
 let rand_gen = Random.State.make_self_init ()
 
 let get_uniform a b =

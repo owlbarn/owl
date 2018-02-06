@@ -51,19 +51,18 @@ let array_insert x i a =
 
 (* get the suffix a file name *)
 let get_suffix s =
-  let parts = Str.(split (regexp "\\.")) s in
+  let parts = String.split_on_char '.' s in
   List.(nth parts (length parts - 1))
 
 
 let count_dup l =
   match l with
-  | [] -> []
-  | hd::tl -> let acc,x,c =
-                List.fold_left
-                  (fun (acc,x,c) y -> if y = x then acc,x,c+1 else (x,c)::acc, y,1)
-                  ([],hd,1)
-                  tl
-    in (x,c)::acc
+  | []     -> []
+  | hd::tl ->
+      let acc,x,c = List.fold_left
+        (fun (acc,x,c) y -> if y = x then acc,x,c+1 else (x,c)::acc, y,1)
+        ([],hd,1) tl
+      in (x,c)::acc
 
 
 (* save a marshalled object to a file *)
@@ -184,12 +183,15 @@ let array1_copy x =
 
 
 (* read a file of a given path *)
-let read_file f =
+let read_file ?(trim=true) f =
   let h = open_in f in
   let s = Stack.make () in
   (
     try while true do
-      let l = input_line h |> String.trim in
+      let l = match trim with
+        | true  -> input_line h |> String.trim
+        | false -> input_line h
+      in
       Stack.push s l;
     done with End_of_file -> ()
   );
@@ -214,8 +216,8 @@ let format_time t =
 
 
 (* TODO: optimise - read file into a string *)
-let read_file_string f =
-  read_file f
+let read_file_string ?trim f =
+  read_file ?trim f
   |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
 
 
