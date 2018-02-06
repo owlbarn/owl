@@ -81,6 +81,8 @@ let calc_conv3d_output_shape
   in
   (output_cols, output_rows, output_dpts)
 
+
+(* calculate the padding size along width, height, and depth. *)
 let calc_conv3d_padding
     input_cols input_rows input_depth
     kernel_cols kernel_rows kernel_depth

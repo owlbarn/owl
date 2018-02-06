@@ -6,12 +6,14 @@
 open Bigarray
 open Owl_types
 
+
 (* Prepend an array with ones to the given length *)
 let _prepend_dims dims desired_len =
   let dims_len = Array.length dims in
   if dims_len >= desired_len
   then dims
   else (Array.append (Array.make (desired_len - dims_len) 1) dims)
+
 
 let _get_broadcasted_dims dims_a dims_b =
   let len_c = Pervasives.max (Array.length dims_a) (Array.length dims_b) in
@@ -34,6 +36,7 @@ let _get_broadcasted_dims dims_a dims_b =
     (ext_dims_a, ext_dims_b, dims_c)
   end
 
+
 (* Increment the index array, with respect to the dimensions array *)
 let _next_index ind dims =
   let num_dims = Array.length ind in
@@ -55,6 +58,7 @@ let _next_index ind dims =
     !ok
   end
 
+
 let _get_broadcasted_index ind dims =
   let num_dims = Array.length dims in
   let calc_fun =
@@ -71,8 +75,10 @@ let _get_broadcasted_index ind dims =
     ) in
   (Array.init num_dims calc_fun)
 
+
 let _apply_perm arr perm =
   Array.init (Array.length arr) (fun i -> arr.(perm.(i)))
+
 
 let _draw_int_samples replacement range count =
   if not replacement && count > range
@@ -95,6 +101,7 @@ let _draw_int_samples replacement range count =
     in
     Array.init count draw_fun
   )
+
 
 let _enumerate_slice_def dim ?(step) start stop =
   let start = if start < 0 then dim + start else start in
@@ -130,19 +137,31 @@ let _expand_slice_indices index_list dims =
 
 
 module type GenarrayFloatEltSig = sig
+
   type elt
+
   val element_kind: (float, elt) kind
+
 end
+
 
 module GenarrayFloat32Elt : GenarrayFloatEltSig = struct
+
   type elt = float32_elt
+
   let element_kind = float32
+
 end
 
+
 module GenarrayFloat64Elt : GenarrayFloatEltSig = struct
+
   type elt = float64_elt
+
   let element_kind = float64
+
 end
+
 
 module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
 
@@ -152,26 +171,35 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
 
   module Scalar = Owl_base_maths
 
+
   let empty dims = (Genarray.create ELT.element_kind c_layout dims)
+
 
   let create dims value =
     let varr = empty dims in
     (Genarray.fill varr value; varr)
 
+
   let zeros dims = create dims 0.
 
+
   let ones dims = create dims 1.
+
 
   (* return the shape of the ndarray *)
   let shape varr = Genarray.dims varr
 
+
   (* return the rank of the ndarray *)
   let num_dims varr = Array.length (shape varr)
+
 
   (* return the number of elements in the ndarray*)
   let numel varr = let v_shape = shape varr in (Array.fold_left ( * ) 1 v_shape)
 
+
   let get varr index = (Genarray.get varr index)
+
 
   let set varr index value = (Genarray.set varr index value)
 
@@ -198,6 +226,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       slice_varr
     end
 
+
   (*TODO: optimise, test *)
   let set_slice index_list varr slice_varr =
     let dims = shape varr in
@@ -219,6 +248,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       done;
     end
 
+
   (*TODO: This is clone, not copying from one to another, maybe should specify this in documentation *)
   let copy varr =
     let varr_copy = empty (shape varr) in
@@ -226,14 +256,18 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       Genarray.blit varr varr_copy; varr_copy
     end
 
+
   (* Reset to zero *)
   let reset varr = (Genarray.fill varr 0.)
+
 
   (* The result shares the underlying buffer with original, not a copy *)
   let reshape varr newshape = (Bigarray.reshape varr newshape)
 
+
   (* Return the array as a contiguous block, without copying *)
   let _flatten varr = (reshape varr [|(numel varr)|])
+
 
   (* Apply a function over a bigarray, with no copying *)
   let _apply_fun f varr =
@@ -245,10 +279,12 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       done
     end
 
+
   (* Map a NDarray from elements x -> f(x), by copying the array *)
   let _map_fun f varr =
     let varr_copy = copy varr in
     (_apply_fun f varr_copy; varr_copy)
+
 
   let sequential ?(a=0.) ?(step=1.) dims =
     let varr = empty dims in
@@ -257,6 +293,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       (fun x -> (count := !count +. 1.; a +. (!count -. 1.) *. step))
     in
     (_apply_fun seq_fun varr; varr)
+
 
   let of_array arr dims =
     let varr = empty dims in
@@ -269,20 +306,24 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       varr
     end
 
+
   let uniform ?(a=0.) ?(b=1.) dims =
     let uniform_gen_fun = (fun _ -> Owl_base_stats.get_uniform a b) in
     let varr = empty dims in
     (_apply_fun uniform_gen_fun varr; varr)
+
 
   let bernoulli ?(p=0.5) dims =
     let bernoulli_gen_fun = (fun _ -> Owl_base_stats.get_bernoulli p) in
     let varr = empty dims in
     (_apply_fun bernoulli_gen_fun varr; varr)
 
+
   let gaussian ?(mu=0.) ?(sigma=1.) dims =
     let gaussian_gen_fun = (fun _ -> Owl_base_stats.get_gaussian mu sigma) in
     let varr = empty dims in
     (_apply_fun gaussian_gen_fun varr; varr)
+
 
   let print ?max_row ?max_col ?header ?fmt varr =
     let dims = shape varr in
@@ -297,6 +338,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       | None   -> Some n
     in
     Owl_pretty.print ?max_row ?max_col ?header ?elt_to_str_fun:fmt varr
+
 
   (* TODO: optimise *)
   let tile varr reps =
@@ -324,6 +366,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       result_varr
     end
 
+
   (* TODO: optimise *)
   let split ?(axis=0) parts varr =
     let dims = shape varr in
@@ -338,6 +381,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     in
     (Array.map (fun def -> get_slice def varr) slices_defs)
 
+
   (*TODO : ensure this is desired behaviour *)
   (* Similar to draw rows for matrices *)
   let draw ?(axis=0) varr count =
@@ -349,6 +393,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
           (fun i -> if i = axis then (Array.to_list indices) else []))
        varr,
      indices)
+
 
   (* TODO: optimise? *)
   let concatenate ?(axis=0) varrs =
@@ -396,61 +441,87 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       result_varr
     end
 
+
   (* TODO: is there a more efficient way to do this? *)
   let repeat ?(axis=0) varr reps =
     let varrs = Array.make reps varr in
     (concatenate ~axis:axis varrs)
+
 
   (* mathematical functions *)
 
   (* Absolute values of all elements, in a new arrray *)
   let abs varr = (_map_fun Scalar.abs varr)
 
+
   let neg varr = (_map_fun Scalar.neg varr)
+
 
   let floor varr = (_map_fun Scalar.floor varr)
 
+
   let ceil varr = (_map_fun Scalar.ceil varr)
+
 
   let round varr = (_map_fun Scalar.round varr)
 
+
   let sqr varr = (_map_fun Scalar.sqr varr)
+
 
   let sqrt varr = (_map_fun Scalar.sqrt varr)
 
+
   let log varr = (_map_fun Scalar.log varr)
+
 
   let log2 varr = (_map_fun Scalar.log2 varr)
 
+
   let log10 varr = (_map_fun Scalar.log10 varr)
+
 
   let exp varr = (_map_fun Scalar.exp varr)
 
+
   let sin varr = (_map_fun Scalar.sin varr)
+
 
   let cos varr = (_map_fun Scalar.cos varr)
 
-  let tan varr = (_map_fun Scalar.tan varr)
 
   let tan varr = (_map_fun Scalar.tan varr)
+
+
+  let tan varr = (_map_fun Scalar.tan varr)
+
 
   let sinh varr = (_map_fun Scalar.sinh varr)
 
+
   let cosh varr = (_map_fun Scalar.cosh varr)
+
 
   let tanh varr = (_map_fun Scalar.tanh varr)
 
+
   let asin varr = (_map_fun Scalar.asin varr)
+
 
   let acos varr = (_map_fun Scalar.acos varr)
 
+
   let atan varr = (_map_fun Scalar.atan varr)
+
 
   let asinh varr = (_map_fun Scalar.asinh varr)
 
+
   let acosh varr = (_map_fun Scalar.acosh varr)
 
+
   let atanh varr = (_map_fun Scalar.atanh varr)
+
 
   (* TODO: can this be made more efficient? *)
   let sum ?(axis=0) varr =
@@ -485,6 +556,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
         new_varr
       end
 
+
   let sum_slices ?(axis=0) varr =
     let dims = shape varr in
     let rank = Array.length dims in
@@ -508,14 +580,18 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       result_varr
     end
 
+
   (* -1. for negative numbers, 0 or (-0) for 0,
    1 for positive numbers, nan for nan*)
   let signum varr = (_map_fun Scalar.signum varr)
 
+
   (* Apply 1 / (1 + exp (-x)) for each element x *)
   let sigmoid varr = (_map_fun Scalar.sigmoid varr)
 
+
   let relu varr = (_map_fun Scalar.relu varr)
+
 
   let _fold_left f a varr =
     let aref = ref a in
@@ -528,46 +604,57 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       !aref
     end
 
+
   (* Min of all elements in the NDarray *)
   let min' varr = (_fold_left (Pervasives.min) Pervasives.max_float varr)
+
 
   (* Max of all elements in the NDarray *)
   let max' varr = (_fold_left (Pervasives.max) Pervasives.min_float varr)
 
+
   (* Sum of all elements *)
   let sum' varr = (_fold_left (+.) 0. varr)
+
 
   let l1norm' varr =
     let l1norm_fun =
       (fun aggregate elem -> (aggregate +. (Scalar.abs (elem)))) in
     (_fold_left l1norm_fun 0. varr)
 
+
   let l2norm_sqr' varr =
     let l2norm_sqr_fun =
       (fun aggregate elem -> (aggregate +. (elem *. elem))) in
     (_fold_left l2norm_sqr_fun 0. varr)
 
+
   let l2norm' varr =
     let l2norm_sqr_val = l2norm_sqr' varr in
     (Scalar.sqrt l2norm_sqr_val)
+
 
   (* scalar_pow a varr computes the power of scalar to each element of varr *)
   let scalar_pow a varr =
     let scalar_pow_fun = (fun x -> (a ** x)) in
     (_map_fun scalar_pow_fun varr)
 
+
   (* Raise each element to power a *)
   let pow_scalar varr a =
     let pow_scalar_fun = (fun x -> (x ** a)) in
     (_map_fun pow_scalar_fun varr)
 
+
   let scalar_atan2 a varr =
     let scalar_atan2_fun = (fun x -> (Scalar.atan2 a x)) in
     (_map_fun scalar_atan2_fun varr)
 
+
   let atan2_scalar varr a =
     let atan2_scalar_fun = (fun x -> (Scalar.atan2 x a)) in
     (_map_fun atan2_scalar_fun varr)
+
 
   let _broadcasted_op varr_a varr_b op_fun =
     let (dims_a, dims_b, dims_c) =
@@ -589,62 +676,80 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       varr_c
     end
 
+
   let add varr_a varr_b = (_broadcasted_op varr_a varr_b (+.))
+
 
   let sub varr_a varr_b = (_broadcasted_op varr_a varr_b (-.))
 
+
   let mul varr_a varr_b = (_broadcasted_op varr_a varr_b ( *. ))
+
 
   let div varr_a varr_b = (_broadcasted_op varr_a varr_b ( /. ))
 
+
   let atan2 varr_a varr_b = (_broadcasted_op varr_a varr_b (Scalar.atan2))
 
+
   let pow varr_a varr_b = (_broadcasted_op varr_a varr_b ( ** ))
+
 
   let add_scalar varr a =
     let add_scalar_fun = (fun x -> (x +. a)) in
     (_map_fun add_scalar_fun varr)
 
+
   let sub_scalar varr a =
     let sub_scalar_fun = (fun x -> (x -. a)) in
     (_map_fun sub_scalar_fun varr)
+
 
   let mul_scalar varr a =
     let mul_scalar_fun = (fun x -> (x *. a)) in
     (_map_fun mul_scalar_fun varr)
 
+
   let div_scalar varr a =
     let div_scalar_fun = (fun x -> (x /. a)) in
     (_map_fun div_scalar_fun varr)
+
 
   let clip_by_value ?(amin=Pervasives.min_float) ?(amax=Pervasives.max_float) varr =
     let clip_by_val_fun = (fun x -> Pervasives.min amax (Pervasives.max amin x)) in
     (_map_fun clip_by_val_fun varr)
 
+
   (* Addition is commutative *)
   let scalar_add a varr = (add_scalar varr a)
+
 
   let scalar_sub a varr =
     let scalar_sub_fun = (fun x -> (a -. x)) in
     (_map_fun scalar_sub_fun varr)
 
+
   (* Multiplication is commutative *)
   let scalar_mul a varr = (mul_scalar varr a)
+
 
   let scalar_div a varr =
     let scalar_div_fun = (fun x -> (a /. x)) in
     (_map_fun scalar_div_fun varr)
+
 
   let elt_greater_equal_scalar varr b =
     let greater_equal_scalar_fun =
       (fun x -> if (Pervasives.compare x b) >= 0 then 1. else 0.) in
     (_map_fun greater_equal_scalar_fun varr)
 
+
   let clip_by_l2norm clip_norm varr =
     let l2norm_val = l2norm' varr in
     if l2norm_val > clip_norm
     then mul_scalar varr (clip_norm /. l2norm_val)
     else varr
+
 
   (* Neural network related functions *)
 
@@ -715,6 +820,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       done; (*b*)
       output
     end
+
 
   (* conv1d: 3d input and 3d kernel, refer to tensorlfow doc
      input : [batch; input_column; input_channel]
@@ -831,6 +937,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
         output
       end
 
+
   (* General function for avg_pool2d and max_pool2d *)
   let _pool2d ?(padding=SAME) input kernel stride
         init_pool_fun add_val_pool_fun end_pool_fun =
@@ -885,6 +992,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       done; (*b*)
       output
     end
+
 
   let _pool3d ?(padding=SAME) input kernel stride
       init_pool_fun add_val_pool_fun end_pool_fun =
@@ -953,6 +1061,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       output
     end
 
+
   (* max_pool2d: 4d input and 2d kernel, refer to tensorlfow doc
      input : [batch; input_column; input_row; input_channel]
      kernel: [kernel_column; kernel_row]
@@ -998,6 +1107,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     let output = reshape output [|batches; output_cols; in_channel|] in
     output
 
+
   (* max_pool3d: 5d input and 3d kernel, refer to tensorflow doc
   input : [batch; input_column; input_row; input_depth; input_channel]
   kernel: [kernel_column; kernel_row; kernel_depth]
@@ -1014,6 +1124,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     (_pool3d ~padding:padding input kernel stride
        init_pool_fun add_val_pool_fun end_pool_fun)
 
+
   (* similar to max_pool2d *)
   let avg_pool2d ?(padding=SAME) input kernel stride =
     let sum_pool = ref 0. in
@@ -1025,6 +1136,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     let end_pool_fun = (fun () -> (!sum_pool /. !cnt)) in
     (_pool2d ~padding:padding input kernel stride
        init_pool_fun add_val_pool_fun end_pool_fun)
+
 
   (* similar to max_pool1d *)
   let avg_pool1d ?(padding=SAME) input kernel stride =
@@ -1050,6 +1162,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     let output = reshape output [|batches; output_cols; in_channel|] in
     output
 
+
   (* simiar to max_pool3d *)
   let avg_pool3d ?(padding=SAME) input kernel stride =
     let sum_pool = ref 0. in
@@ -1061,6 +1174,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     let end_pool_fun = (fun () -> (!sum_pool /. !cnt)) in
     (_pool3d ~padding:padding input kernel stride
        init_pool_fun add_val_pool_fun end_pool_fun)
+
 
   (*TODO: optimise *)
   (* gradient of conv2d w.r.t the input *)
@@ -1130,6 +1244,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       done; (*b*)
       input'
     end
+
 
   (* gradient of conv2d w.r.t the kernel *)
   let conv2d_backward_kernel input kernel stride output' =
@@ -1267,6 +1382,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     let kernel' = conv2d_backward_kernel input kernel stride output' in
     reshape kernel' kernel_shp
 
+
   (*TODO: optimise *)
   (* gradient of conv3d w.r.t the input *)
   let conv3d_backward_input input kernel stride output' =
@@ -1350,6 +1466,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       input'
     end
 
+
     (* gradient of conv3d w.r.t the kernel *)
   let conv3d_backward_kernel input kernel stride output' =
     assert (num_dims input = 5);
@@ -1427,6 +1544,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       kernel'
     end
 
+
   (* TODO: definitely optimise *)
   (* General function for avg_pool2d and max_pool2d *)
   let _pool2d_backward padding input kernel stride output'
@@ -1497,6 +1615,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       input'
     end
 
+
   (* calculate the gradient of max_pool2d *)
   let max_pool2d_backward padding input kernel stride output' =
     let max_pool = ref 0. in
@@ -1513,6 +1632,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     (_pool2d_backward padding input kernel stride output'
        init_pool_fun add_val_pool_fun end_pool_fun compute_grad_fun)
 
+
   (* calculate the gradient of avg_pool2d *)
   let avg_pool2d_backward padding input kernel stride output' =
     let sum_pool = ref 0. in
@@ -1528,6 +1648,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     in
     (_pool2d_backward padding input kernel stride output'
        init_pool_fun add_val_pool_fun end_pool_fun compute_grad_fun)
+
 
   (* calculate the gradient of max_pool1d *)
   let max_pool1d_backward padding input kernel stride output' =
@@ -1590,6 +1711,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     let input' = avg_pool2d_backward padding input kernel stride output' in
     reshape input' input_shp
 
+
   (* matrix functions *)
 
   let _remove_unit_dims dims =
@@ -1600,23 +1722,28 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
     in
     (Array.of_list not_empty_list)
 
+
   let _check_is_matrix dims =
     if (Array.length dims) != 2
     then raise (Invalid_argument "The given NDarray is not a matrix!")
     else ()
 
+
   let row_num varr =
     let dims = shape varr in
     (_check_is_matrix dims; dims.(0))
+
 
   let col_num varr =
     let dims = shape varr in
     (_check_is_matrix dims; dims.(1))
 
+
   (* NOTE: this is a view into the original array *)
   let row varr ind =
     let dims = shape varr in
     (_check_is_matrix dims; Genarray.slice_left varr [|ind|])
+
 
   let rows varr indices =
     let dims = shape varr in
@@ -1633,10 +1760,12 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       new_varr
     end
 
+
   let copy_row_to vec varr ind =
     let dims = shape varr in
     let _ = _check_is_matrix dims in
     (Genarray.blit vec (Genarray.slice_left varr [|ind|]))
+
 
   let copy_col_to vec varr ind =
     let dims = shape varr in
@@ -1657,6 +1786,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
           Genarray.set varr [|i; ind|] (Genarray.get vec_linear [|i|])
         done
       end
+
 
   let dot varr_a varr_b =
     let (dims_a, dims_b) = (shape varr_a, shape varr_b) in
@@ -1682,6 +1812,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
         varr_c
       end
 
+
   let trace varr =
     let dims = shape varr in
     let _ = _check_is_matrix dims in
@@ -1697,12 +1828,14 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
         !sum
       end
 
+
   (* NOTE: each row is actually a view in the original matrix, no copying involved *)
   let to_rows varr =
     let dims = shape varr in
     let _ = _check_is_matrix dims in
     let m = dims.(0) in
     (Array.init m (fun i -> (Genarray.slice_left varr [|i|])))
+
 
   let of_rows rows =
     let m = Array.length rows in
@@ -1716,6 +1849,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       varr
     end
 
+
   let of_arrays arrays =
     let m = Array.length arrays in
     let n = Array.length (arrays.(0)) in
@@ -1728,6 +1862,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       done;
       varr
     end
+
 
   let transpose ?axis varr =
     let dims = shape varr in
@@ -1750,11 +1885,13 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       new_varr
     end
 
+
   let draw_rows ?(replacement=true) varr count =
     let dims = shape varr in
     let indices = _draw_int_samples replacement (Array.length dims) count in
     let extracted = rows varr indices in
     (extracted, indices)
+
 
   let draw_rows2 ?(replacement=true) varr_a varr_b count =
     let extracted_a, indices =
@@ -1811,7 +1948,9 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
         result_varr
       end
 
+
   let load f = Owl_utils.marshal_from_file f
+
 
   let elt_equal varr_a varr_b =
     let dims = shape varr_a in
@@ -1827,6 +1966,7 @@ module MakeNdarray (ELT : GenarrayFloatEltSig) : Ndarray_Algodiff = struct
       done;
       varr_c
     end
+
 
   let max_rows varr =
     let dims = shape varr in
