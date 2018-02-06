@@ -409,7 +409,7 @@ val zetac : float -> float
 (** Riemann zeta function minus 1. *)
 
 
-(** {6 Some utility functions} *)
+(** {6 Helper functions} *)
 
 val is_odd : int -> bool
 (** ``is_odd x`` returns ``true`` if ``x`` is odd. *)
