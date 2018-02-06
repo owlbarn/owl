@@ -51,19 +51,18 @@ let array_insert x i a =
 
 (* get the suffix a file name *)
 let get_suffix s =
-  let parts = Str.(split (regexp "\\.")) s in
+  let parts = String.split_on_char '.' s in
   List.(nth parts (length parts - 1))
 
 
 let count_dup l =
   match l with
-  | [] -> []
-  | hd::tl -> let acc,x,c =
-                List.fold_left
-                  (fun (acc,x,c) y -> if y = x then acc,x,c+1 else (x,c)::acc, y,1)
-                  ([],hd,1)
-                  tl
-    in (x,c)::acc
+  | []     -> []
+  | hd::tl ->
+      let acc,x,c = List.fold_left
+        (fun (acc,x,c) y -> if y = x then acc,x,c+1 else (x,c)::acc, y,1)
+        ([],hd,1) tl
+      in (x,c)::acc
 
 
 (* save a marshalled object to a file *)
