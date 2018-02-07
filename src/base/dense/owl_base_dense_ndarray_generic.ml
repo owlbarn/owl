@@ -7,6 +7,9 @@ open Bigarray
 
 open Owl_types
 
+type ('a, 'b) t = ('a, 'b, c_layout) Genarray.t
+
+type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 module Scalar = Owl_base_maths
 
@@ -129,7 +132,7 @@ let _expand_slice_indices index_list dims =
   let _expand_slice_index = (
     fun i ind -> match ind with
       | [] -> Array.init dims.(i) (fun i -> i)
-      | [start] -> [|start|]
+      | [start] -> _enumerate_slice_def dims.(i) start start
       | [start; stop] -> _enumerate_slice_def dims.(i) start stop
       | [start; stop; step] -> _enumerate_slice_def dims.(i) ~step:step start stop
       | _ -> failwith "incorrect slice definition"
@@ -149,11 +152,10 @@ let create kind dims value =
   Genarray.fill varr value;
   varr
 
-
 let zeros kind dims = create kind dims (Owl_const.zero kind)
 
 
-let ones kind dims = create dims (Owl_const.one kind)
+let ones kind dims = create kind dims (Owl_const.one kind)
 
 
 (* return the shape of the ndarray *)
@@ -241,12 +243,24 @@ let reshape varr newshape = (Bigarray.reshape varr newshape)
 
 
 (* Return the array as a contiguous block, without copying *)
-let _flatten varr = (reshape varr [|(numel varr)|])
+let flatten varr = (reshape varr [|(numel varr)|])
+
+let reverse varr =
+  let n = numel varr in
+  let ret = empty (kind varr) (shape varr) in
+  let ret_flat = reshape ret [|n|] in
+  let varr_flat = reshape varr [|n|] in
+  begin
+    for i = 0 to n - 1 do
+      set ret_flat [|i|] (get varr_flat [|n - 1 - i|])
+    done;
+    ret
+  end
 
 
 (* Apply a function over a bigarray, with no copying *)
 let _apply_fun f varr =
-  let varr_linear = _flatten varr in
+  let varr_linear = flatten varr in
   let length = numel varr_linear in
   begin
     for i = 0 to length - 1 do
@@ -254,9 +268,19 @@ let _apply_fun f varr =
     done
   end
 
+let init kind dims f =
+  let varr = empty kind dims in
+  let varr_flat = flatten varr in
+  let n = numel varr in
+  begin
+    for i = 0 to n - 1 do
+      set varr_flat [|i|] (f i)
+    done;
+    varr
+  end
 
 (* Map a NDarray from elements x -> f(x), by copying the array *)
-let _map_fun f varr =
+let map f varr =
   let varr_copy = copy varr in
   (_apply_fun f varr_copy; varr_copy)
 
@@ -273,7 +297,7 @@ let sequential kind ?(a=0.) ?(step=1.) dims =
 
 let of_array kind arr dims =
   let varr = empty kind dims in
-  let flat_varr = _flatten varr in
+  let flat_varr = flatten varr in
   let n = numel flat_varr in
   begin
     for i = 0 to n - 1 do
@@ -284,21 +308,21 @@ let of_array kind arr dims =
 
 
 let uniform kind ?(a=0.) ?(b=1.) dims =
-  let uniform_gen_fun = (fun _ -> Owl_base_stats.get_uniform a b) in
+  let uniform_gen_fun = (fun _ -> Owl_base_stats.uniform a b) in
   let varr = empty kind dims in
   _apply_fun uniform_gen_fun varr;
   varr
 
 
 let bernoulli kind ?(p=0.5) dims =
-  let bernoulli_gen_fun = (fun _ -> Owl_base_stats.get_bernoulli p) in
+  let bernoulli_gen_fun = (fun _ -> Owl_base_stats.bernoulli p) in
   let varr = empty kind dims in
   _apply_fun bernoulli_gen_fun varr;
   varr
 
 
 let gaussian kind ?(mu=0.) ?(sigma=1.) dims =
-  let gaussian_gen_fun = (fun _ -> Owl_base_stats.get_gaussian mu sigma) in
+  let gaussian_gen_fun = (fun _ -> Owl_base_stats.gaussian mu sigma) in
   let varr = empty kind dims in
   _apply_fun gaussian_gen_fun varr;
   varr
@@ -430,76 +454,76 @@ let repeat ?(axis=0) varr reps =
 (* mathematical functions *)
 
 (* Absolute values of all elements, in a new arrray *)
-let abs varr = (_map_fun Scalar.abs varr)
+let abs varr = (map Scalar.abs varr)
 
 
-let neg varr = (_map_fun Scalar.neg varr)
+let neg varr = (map Scalar.neg varr)
 
 
-let floor varr = (_map_fun Scalar.floor varr)
+let floor varr = (map Scalar.floor varr)
 
 
-let ceil varr = (_map_fun Scalar.ceil varr)
+let ceil varr = (map Scalar.ceil varr)
 
 
-let round varr = (_map_fun Scalar.round varr)
+let round varr = (map Scalar.round varr)
 
 
-let sqr varr = (_map_fun Scalar.sqr varr)
+let sqr varr = (map Scalar.sqr varr)
 
 
-let sqrt varr = (_map_fun Scalar.sqrt varr)
+let sqrt varr = (map Scalar.sqrt varr)
 
 
-let log varr = (_map_fun Scalar.log varr)
+let log varr = (map Scalar.log varr)
 
 
-let log2 varr = (_map_fun Scalar.log2 varr)
+let log2 varr = (map Scalar.log2 varr)
 
 
-let log10 varr = (_map_fun Scalar.log10 varr)
+let log10 varr = (map Scalar.log10 varr)
 
 
-let exp varr = (_map_fun Scalar.exp varr)
+let exp varr = (map Scalar.exp varr)
 
 
-let sin varr = (_map_fun Scalar.sin varr)
+let sin varr = (map Scalar.sin varr)
 
 
-let cos varr = (_map_fun Scalar.cos varr)
+let cos varr = (map Scalar.cos varr)
 
 
-let tan varr = (_map_fun Scalar.tan varr)
+let tan varr = (map Scalar.tan varr)
 
 
-let tan varr = (_map_fun Scalar.tan varr)
+let tan varr = (map Scalar.tan varr)
 
 
-let sinh varr = (_map_fun Scalar.sinh varr)
+let sinh varr = (map Scalar.sinh varr)
 
 
-let cosh varr = (_map_fun Scalar.cosh varr)
+let cosh varr = (map Scalar.cosh varr)
 
 
-let tanh varr = (_map_fun Scalar.tanh varr)
+let tanh varr = (map Scalar.tanh varr)
 
 
-let asin varr = (_map_fun Scalar.asin varr)
+let asin varr = (map Scalar.asin varr)
 
 
-let acos varr = (_map_fun Scalar.acos varr)
+let acos varr = (map Scalar.acos varr)
 
 
-let atan varr = (_map_fun Scalar.atan varr)
+let atan varr = (map Scalar.atan varr)
 
 
-let asinh varr = (_map_fun Scalar.asinh varr)
+let asinh varr = (map Scalar.asinh varr)
 
 
-let acosh varr = (_map_fun Scalar.acosh varr)
+let acosh varr = (map Scalar.acosh varr)
 
 
-let atanh varr = (_map_fun Scalar.atanh varr)
+let atanh varr = (map Scalar.atanh varr)
 
 
 (* TODO: can this be made more efficient? *)
@@ -529,7 +553,7 @@ let sum ?(axis=0) varr =
           sum := !sum +. (Genarray.get varr old_ind)
         done;
         Genarray.set new_varr new_ind !sum;
-        if not (_next_index old_ind old_dims) then
+        if not (_next_index new_ind new_dims) then
           should_stop := true
       done;
       new_varr
@@ -562,19 +586,19 @@ let sum_slices ?(axis=0) varr =
 
 (* -1. for negative numbers, 0 or (-0) for 0,
  1 for positive numbers, nan for nan*)
-let signum varr = (_map_fun Scalar.signum varr)
+let signum varr = (map Scalar.signum varr)
 
 
 (* Apply 1 / (1 + exp (-x)) for each element x *)
-let sigmoid varr = (_map_fun Scalar.sigmoid varr)
+let sigmoid varr = (map Scalar.sigmoid varr)
 
 
-let relu varr = (_map_fun Scalar.relu varr)
+let relu varr = (map Scalar.relu varr)
 
 
 let _fold_left f a varr =
   let aref = ref a in
-  let varr_linear = _flatten varr in
+  let varr_linear = flatten varr in
   let length = numel varr_linear in
   begin
     for i = 0 to length - 1 do
@@ -616,23 +640,23 @@ let l2norm' varr =
 (* scalar_pow a varr computes the power of scalar to each element of varr *)
 let scalar_pow a varr =
   let scalar_pow_fun = (fun x -> (a ** x)) in
-  (_map_fun scalar_pow_fun varr)
+  (map scalar_pow_fun varr)
 
 
 (* Raise each element to power a *)
 let pow_scalar varr a =
   let pow_scalar_fun = (fun x -> (x ** a)) in
-  (_map_fun pow_scalar_fun varr)
+  (map pow_scalar_fun varr)
 
 
 let scalar_atan2 a varr =
   let scalar_atan2_fun = (fun x -> (Scalar.atan2 a x)) in
-  (_map_fun scalar_atan2_fun varr)
+  (map scalar_atan2_fun varr)
 
 
 let atan2_scalar varr a =
   let atan2_scalar_fun = (fun x -> (Scalar.atan2 x a)) in
-  (_map_fun atan2_scalar_fun varr)
+  (map atan2_scalar_fun varr)
 
 
 let _broadcasted_op varr_a varr_b op_fun =
@@ -678,27 +702,27 @@ let pow varr_a varr_b = (_broadcasted_op varr_a varr_b ( ** ))
 
 let add_scalar varr a =
   let add_scalar_fun = (fun x -> (x +. a)) in
-  (_map_fun add_scalar_fun varr)
+  (map add_scalar_fun varr)
 
 
 let sub_scalar varr a =
   let sub_scalar_fun = (fun x -> (x -. a)) in
-  (_map_fun sub_scalar_fun varr)
+  (map sub_scalar_fun varr)
 
 
 let mul_scalar varr a =
   let mul_scalar_fun = (fun x -> (x *. a)) in
-  (_map_fun mul_scalar_fun varr)
+  (map mul_scalar_fun varr)
 
 
 let div_scalar varr a =
   let div_scalar_fun = (fun x -> (x /. a)) in
-  (_map_fun div_scalar_fun varr)
+  (map div_scalar_fun varr)
 
 
 let clip_by_value ?(amin=Pervasives.min_float) ?(amax=Pervasives.max_float) varr =
   let clip_by_val_fun = (fun x -> Pervasives.min amax (Pervasives.max amin x)) in
-  (_map_fun clip_by_val_fun varr)
+  (map clip_by_val_fun varr)
 
 
 (* Addition is commutative *)
@@ -707,7 +731,7 @@ let scalar_add a varr = (add_scalar varr a)
 
 let scalar_sub a varr =
   let scalar_sub_fun = (fun x -> (a -. x)) in
-  (_map_fun scalar_sub_fun varr)
+  (map scalar_sub_fun varr)
 
 
 (* Multiplication is commutative *)
@@ -716,13 +740,13 @@ let scalar_mul a varr = (mul_scalar varr a)
 
 let scalar_div a varr =
   let scalar_div_fun = (fun x -> (a /. x)) in
-  (_map_fun scalar_div_fun varr)
+  (map scalar_div_fun varr)
 
 
 let elt_greater_equal_scalar varr b =
   let greater_equal_scalar_fun =
     (fun x -> if (Pervasives.compare x b) >= 0 then 1. else 0.) in
-  (_map_fun greater_equal_scalar_fun varr)
+  (map greater_equal_scalar_fun varr)
 
 
 let clip_by_l2norm clip_norm varr =
@@ -1762,7 +1786,7 @@ let copy_col_to vec varr ind =
     else raise (Invalid_argument "Vector is not a column vector")
   in
   let num_rows = dims.(0) in
-  let vec_linear = _flatten vec in
+  let vec_linear = flatten vec in
   if num_rows != vec_len
   then raise (Invalid_argument "Column vector does not have the same length as the number of rows in the matrix")
   else
@@ -1934,16 +1958,38 @@ let inv varr =
     end
 
 
-let load f = Owl_utils.marshal_from_file f
+(* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
+let load k f = Owl_utils.marshal_from_file f
 
+let approx_equal ?(eps=1e-8) varr_a varr_b =
+  let n = numel varr_a in
+  let m = numel varr_b in
+  if n != m
+  then false
+  else
+    let varr_a = reshape varr_a [|n|] in
+    let varr_b = reshape varr_b [|n|] in
+    let eq = ref true in
+    begin
+      for i = 0 to n - 1 do
+        let x = get varr_a [|i|] in
+        let y = get varr_b [|i|] in
+        if (Scalar.abs (Scalar.sub x y)) >= eps
+        then eq := false
+      done;
+      !eq
+    end
+
+let equal varr_a varr_b =
+  (approx_equal ~eps:(Owl_utils.eps (kind varr_a)) varr_a varr_b)
 
 let elt_equal varr_a varr_b =
   let dims = shape varr_a in
   let _kind = kind varr_a in
   let varr_c = empty _kind dims in
-  let varr_a = _flatten varr_a in
-  let varr_b = _flatten varr_b in
-  let flat_varr_c = _flatten varr_c in
+  let varr_a = flatten varr_a in
+  let varr_b = flatten varr_b in
+  let flat_varr_c = flatten varr_c in
   let n = numel varr_a in
   begin
     for i = 0 to n - 1 do

@@ -43,6 +43,8 @@ let ceil x = Pervasives.ceil x
 
 let round x = floor (x +. 0.5)
 
+let trunc x = Pervasives.float_of_int (Pervasives.truncate x)
+
 let sin x = Pervasives.sin x
 
 let cos x = Pervasives.cos x
