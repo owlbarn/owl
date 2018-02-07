@@ -137,19 +137,128 @@ val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
 (** {6 Examination & Comparison}  *)
 
-val equal : (float, 'b) t -> (float, 'b) t -> bool
+val exists : ('a -> bool) -> ('a, 'b) t -> bool
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a (except for eps) *)
+val not_exists : ('a -> bool) -> ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val for_all : ('a -> bool) -> ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val is_zero : ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val is_positive : ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val is_negative : ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val is_nonpositive : ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val is_nonnegative : ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+(* TODO: change float to 'a *)
+val is_normal : (float, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+(* TODO: change float to 'a *)
+val not_nan : (float, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+(* TODO: change float to 'a *)
+val not_inf : (float, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val equal : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val not_equal : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val greater : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val less : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val greater_equal : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val less_equal : ('a, 'b) t -> ('a, 'b) t -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val elt_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val elt_not_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val elt_less : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val elt_greater : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val elt_less_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val elt_greater_equal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val equal_scalar : ('a, 'b) t -> 'a -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val not_equal_scalar : ('a, 'b) t -> 'a -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val less_scalar : ('a, 'b) t -> 'a -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val greater_scalar : ('a, 'b) t -> 'a -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val less_equal_scalar : ('a, 'b) t -> 'a -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val greater_equal_scalar : ('a, 'b) t -> 'a -> bool
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val elt_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val elt_not_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val elt_less_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val elt_greater_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val elt_less_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val elt_greater_equal_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+(* TODO: change float to 'a, except for eps *)
 val approx_equal : ?eps:float -> (float, 'b) t -> (float, 'b) t -> bool
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val elt_equal : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+(* TODO: change float to 'a, except for eps *)
+val approx_equal_scalar : ?eps:float -> (float, 'b) t -> float -> bool
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val elt_greater_equal_scalar : (float, 'b) t -> float -> (float, 'b) t
+(* TODO: change float to 'a, except for eps *)
+val approx_elt_equal : ?eps:float -> (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+(* TODO: change float to 'a, except for eps *)
+val approx_elt_equal_scalar : ?eps:float -> (float, 'b) t -> float -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 
