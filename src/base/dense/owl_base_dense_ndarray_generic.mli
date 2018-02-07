@@ -80,6 +80,11 @@ val numel : ('a, 'b) t -> int
 val kind : ('a, 'b) t -> ('a, 'b) kind
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val strides : ('a, 'b) t -> int array
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val slice_size : ('a, 'b) t -> int array
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (** {6 Manipulate Ndarrays}  *)
 
@@ -131,9 +136,35 @@ val draw : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array
 
 (** {6 Iterate array elements}  *)
 
+val iteri : (int -> 'a -> unit) -> ('a, 'b) t -> unit
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val iter : ('a -> unit) -> ('a, 'b) t -> unit
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val mapi : (int -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+val filteri : (int -> 'a -> bool) -> ('a, 'b) t -> int array
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val filter : ('a -> bool) -> ('a, 'b) t -> int array
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val foldi : ?axis:int -> (int -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val fold : ?axis:int -> ('a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val scani : ?axis:int -> (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val scan : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (** {6 Examination & Comparison}  *)
 

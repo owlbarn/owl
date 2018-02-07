@@ -284,6 +284,140 @@ let map f varr =
   let varr_copy = copy varr in
   (_apply_fun f varr_copy; varr_copy)
 
+let mapi f x =
+  let y = copy x in
+  let y' = flatten y |> array1_of_genarray in
+  for i = 0 to (Array1.dim y') - 1 do
+    let a = Array1.unsafe_get y' i in
+    Array1.unsafe_set y' i (f i a)
+  done;
+  y
+
+let strides x = x |> shape |> Owl_utils.calc_stride
+
+
+let slice_size x = x |> shape |> Owl_utils.calc_slice
+
+(* prepare the parameters for reduce/fold operation, [a] is axis *)
+let reduce_params a x =
+  let d = num_dims x in
+  assert (0 <= a && a < d);
+
+  let _shape = shape x in
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = _slicez.(a) in
+  let o = _stride.(a) in
+  _shape.(a) <- 1;
+  m, n, o, _shape
+
+(* TODO: performance can be optimised by removing embedded loops *)
+(* generic fold funtion *)
+let foldi ?axis f a x =
+  let x' = flatten x |> array1_of_genarray in
+  match axis with
+  | Some axis -> (
+      let m, n, o, s = reduce_params axis x in
+      let start_x = ref 0 in
+      let start_y = ref 0 in
+      let incy = ref 0 in
+      let k = ref 0 in
+
+      let y = create (kind x) s a in
+      let y' = flatten y |> array1_of_genarray in
+
+      for i = 0 to m - 1 do
+        for j = 0 to n - 1 do
+          let b = Array1.unsafe_get y' (!start_y + !incy) in
+          let c = Array1.unsafe_get x' (!start_x + j) in
+          Array1.unsafe_set y' (!start_y + !incy) (f !k b c);
+          if !incy + 1 = o then incy := 0
+          else incy := !incy + 1;
+          k := !k + 1;
+        done;
+        start_x := !start_x + n;
+        start_y := !start_y + o;
+      done;
+      y
+    )
+  | None   -> (
+      let b = ref a in
+      for i = 0 to (numel x) - 1 do
+        let c = Array1.unsafe_get x' i in
+        b := f i !b c
+      done;
+      create (kind x) [|1|] !b
+    )
+
+
+let fold ?axis f a x = foldi ?axis (fun _ b c ->  f b c) a x
+
+
+(* generic scan function *)
+let scani ?axis f x =
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None   -> d - 1
+  in
+  assert (0 <= a && a < d);
+
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = _slicez.(a) - _stride.(a) in
+  let incx = _slicez.(a) in
+  let incy = _slicez.(a) in
+  let start_x = ref 0 in
+  let start_y = ref _stride.(a) in
+  let k = ref 0 in
+
+  let y = copy x in
+  let y' = flatten y |> array1_of_genarray in
+
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      let b = Array1.unsafe_get y' (!start_x + j) in
+      let c = Array1.unsafe_get y' (!start_y + j) in
+      Array1.unsafe_set y' (!start_y + j) (f !k b c);
+      k := !k + 1
+    done;
+    start_x := !start_x + incx;
+    start_y := !start_y + incy;
+  done;
+  y
+
+
+let scan ?axis f x = scani (fun _ a b -> f a b) x
+
+
+let iteri f x =
+  let x' = flatten x |> array1_of_genarray in
+  for i = 0 to (Array1.dim x') - 1 do
+    let a = Array1.unsafe_get x' i in
+    f i a
+  done
+
+
+let iter f x =
+  let x' = flatten x |> array1_of_genarray in
+  for i = 0 to (Array1.dim x') - 1 do
+    let a = Array1.unsafe_get x' i in
+    f a
+  done
+
+
+let filteri f x =
+  let s = Owl_utils.Stack.make () in
+  iteri (fun i y ->
+      if f i y = true then
+        Owl_utils.Stack.push s i
+    ) x;
+  Owl_utils.Stack.to_array s
+
+
+let filter f x = filteri (fun _ y -> f y) x
 
 let sequential kind ?(a=0.) ?(step=1.) dims =
   let varr = empty kind dims in

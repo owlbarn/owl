@@ -102,6 +102,12 @@ val shape : arr -> int array
 
 val numel : arr -> int
 
+val strides : arr -> int array
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val slice_size : arr -> int array
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 val get : arr -> int array -> elt
 
 val set : arr -> int array -> elt -> unit
@@ -113,8 +119,6 @@ val set_slice : int list list -> arr -> arr -> unit
 val copy : arr -> arr
 
 val reset : arr -> unit
-
-val map : (elt -> elt) -> arr -> arr
 
 val reshape : arr -> int array -> arr
 
@@ -243,6 +247,38 @@ val scalar_sub : elt -> arr -> arr
 val scalar_mul : elt -> arr -> arr
 
 val scalar_div : elt -> arr -> arr
+
+(** {6 Iterate array elements}  *)
+
+val iteri : (int -> float -> unit) -> arr -> unit
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val iter : (float -> unit) -> arr -> unit
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val mapi : (int -> float -> float) -> arr -> arr
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val map : (float -> float) -> arr -> arr
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val filteri : (int -> float -> bool) -> arr -> int array
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val filter : (float -> bool) -> arr -> int array
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val foldi : ?axis:int -> (int -> float -> float -> float) -> float -> arr -> arr
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val fold : ?axis:int -> (float -> float -> float) -> float -> arr -> arr
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val scani : ?axis:int -> (int -> float -> float -> float) -> arr -> arr
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+val scan : ?axis:int -> (float -> float -> float) -> arr -> arr
+(** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (** {6 Examination & Comparison}  *)
 
