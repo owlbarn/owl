@@ -6,6 +6,7 @@
   (package     owl_experimental)
   (libraries  (
     owl_base
+    bigarray
   ))
   (flags (:standard -safe-string))
   (modes      (byte))
