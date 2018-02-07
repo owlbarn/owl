@@ -114,6 +114,10 @@ val reset : arr -> unit
 
 val reshape : arr -> int array -> arr
 
+val flatten : arr -> arr
+
+val reverse : arr -> arr
+
 val tile : arr -> int array -> arr
 
 val repeat : ?axis:int -> arr -> int -> arr
@@ -235,6 +239,8 @@ val scalar_sub : elt -> arr -> arr
 val scalar_mul : elt -> arr -> arr
 
 val scalar_div : elt -> arr -> arr
+
+val equal : arr -> arr -> bool
 
 val elt_greater_equal_scalar : arr -> elt -> arr
 

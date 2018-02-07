@@ -184,6 +184,12 @@ val flatten : ('a, 'b) t -> ('a, 'b) t
    Therefore the returned value shares the same memory space with original ``x``.
 *)
 
+val reverse : ('a, 'b) t -> ('a, 'b) t
+(**
+   ``reverse x`` reverse the order of all elements in the flattened ``x`` and
+   returns the results in a new ndarray. The original ``x`` remains intact.
+*)
+
 val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 (**
    ``transpose ~axis x`` makes a copy of ``x``, then transpose it according to
@@ -233,6 +239,11 @@ val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 *)
 
 (** {6 Examination & Comparison}  *)
+
+val equal : (float, 'b) t -> (float, 'b) t -> bool
+(**
+   ``equal x y`` returns ``true`` if two ('a, 'b) trices ``x`` and ``y`` are equal.
+*)
 
 (* TODO: change float to 'a *)
 val elt_equal : (float, 'b) t -> (float, 'b) t -> (float, 'b) t

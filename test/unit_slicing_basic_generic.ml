@@ -2,9 +2,18 @@
 
 open Owl_types
 
+module type Sliceable_Ndarray = sig
+
+  include Ndarray_Basic
+
+  val equal : arr -> arr -> bool
+  val reverse : arr -> arr
+
+end
+
 (** Functor to generate test module *)
 
-module Make (N : Ndarray_Algodiff) = struct
+module Make (N : Sliceable_Ndarray) = struct
 
   (* some test input *)
 
@@ -16,92 +25,60 @@ module Make (N : Ndarray_Algodiff) = struct
 
   let x3 = N.sequential [|5;5;5;5|]
 
-  let _reverse varr =
-    let n = N.numel varr in
-    let ret = N.empty (N.shape varr) in
-    let ret_flat = N.reshape ret [|n|] in
-    let varr_flat = N.reshape varr [|n|] in
-    begin
-      for i = 0 to n - 1 do
-        N.set ret_flat [|i|] (N.get varr_flat [|n - 1 - i|])
-      done;
-      ret
-    end
-
-  let _equal varr_a varr_b =
-    let n = N.numel varr_a in
-    let m = N.numel varr_b in
-    if n != m
-    then false
-    else
-      let varr_a = N.reshape varr_a [|n|] in
-      let varr_b = N.reshape varr_b [|n|] in
-      let eq = ref true in
-      begin
-        for i = 0 to n - 1 do
-          let x = N.get varr_a [|i|] in
-          let y = N.get varr_b [|i|] in
-          if (N.Scalar.abs (x -. y)) >= 1e-8
-          then eq := false
-        done;
-        !eq
-      end
-
-
   (* a module with functions to test *)
   module To_test = struct
 
     let test_01 () =
       let s = [[]] in
       let y = N.get_slice s x0 in
-      _equal y x0
+      N.equal y x0
 
     let test_02 () =
       let s = [[3]] in
       let y = N.get_slice s x0 in
       let z = N.of_array [|3.|] [|1|] in
-      _equal y z
+      N.equal y z
 
     let test_03 () =
       let s = [[2;5]] in
       let y = N.get_slice s x0 in
       let z = N.of_array [|2.;3.;4.;5.|] [|4|] in
-      _equal y z
+      N.equal y z
 
     let test_04 () =
       let s = [[2;-1;3]] in
       let y = N.get_slice s x0 in
       let z = N.of_array [|2.;5.;8.|] [|3|] in
-      _equal y z
+      N.equal y z
 
     let test_05 () =
       let s = [[-2;5]] in
       let y = N.get_slice s x0 in
       let z = N.of_array [|8.;7.;6.;5.|] [|4|] in
-      _equal y z
+      N.equal y z
 
     let test_06 () =
       let s = [[-2;4;-2]] in
       let y = N.get_slice s x0 in
       let z = N.of_array [|8.;6.;4.|] [|3|] in
-      _equal y z
+      N.equal y z
 
     let test_07 () =
       let s = [[];[]] in
       let y = N.get_slice s x1 in
-      _equal y x1
+      N.equal y x1
 
     let test_08 () =
       let s = [[2];[]] in
       let y = N.get_slice s x1 in
       let z = N.of_array [|20.;21.;22.;23.;24.;25.;26.;27.;28.;29.|] [|1;10|] in
-      _equal y z
+      N.equal y z
 
     let test_09 () =
       let s = [[0;5];[]] in
       let y = N.get_slice s x1 in
       let z = N.sequential [|6;10|] in
-      _equal y z
+      N.equal y z
 
     let test_10 () =
       let s = [[0;5;2];[]] in
@@ -111,7 +88,7 @@ module Make (N : Ndarray_Algodiff) = struct
           20.;21.;22.;23.;24.;25.;26.;27.;28.;29.;
           40.;41.;42.;43.;44.;45.;46.;47.;48.;49.;
         |] [|3;10|] in
-      _equal y z
+      N.equal y z
 
     let test_11 () =
       let s = [[5;0;-2];[]] in
@@ -121,7 +98,7 @@ module Make (N : Ndarray_Algodiff) = struct
           30.;31.;32.;33.;34.;35.;36.;37.;38.;39.;
           10.;11.;12.;13.;14.;15.;16.;17.;18.;19.;
         |] [|3;10|] in
-      _equal y z
+      N.equal y z
 
     let test_12 () =
       let s = [[0;5;2];[1;5]] in
@@ -131,7 +108,7 @@ module Make (N : Ndarray_Algodiff) = struct
           21.;22.;23.;24.;25.;
           41.;42.;43.;44.;45.;
         |] [|3;5|] in
-      _equal y z
+      N.equal y z
 
     let test_13 () =
       let s = [[0;5;2];[1;5;3]] in
@@ -141,7 +118,7 @@ module Make (N : Ndarray_Algodiff) = struct
           21.;24.;
           41.;44.;
         |] [|3;2|] in
-      _equal y z
+      N.equal y z
 
     let test_14 () =
       let s = [[0;5;2];[-5;1]] in
@@ -151,7 +128,7 @@ module Make (N : Ndarray_Algodiff) = struct
           25.;24.;23.;22.;21.;
           45.;44.;43.;42.;41.;
         |] [|3;5|] in
-      _equal y z
+      N.equal y z
 
     let test_15 () =
       let s = [[0;5;2];[-5;1;-2]] in
@@ -161,24 +138,24 @@ module Make (N : Ndarray_Algodiff) = struct
           25.;23.;21.;
           45.;43.;41.;
         |] [|3;3|] in
-      _equal y z
+      N.equal y z
 
     let test_16 () =
       let s = [[];[];[]] in
       let y = N.get_slice s x2 in
-      _equal y x2
+      N.equal y x2
 
     let test_17 () =
       let s = [[0];[];[]] in
       let y = N.get_slice s x2 in
       let z = N.sequential [|1;10;10|] in
-      _equal y z
+      N.equal y z
 
     let test_18 () =
       let s = [[1];[2];[]] in
       let y = N.get_slice s x2 in
       let z = N.of_array [|120.;121.;122.;123.;124.;125.;126.;127.;128.;129.|] [|1;1;10|] in
-      _equal y z
+      N.equal y z
 
     let test_19 () =
       let s = [[0;5;3];[0;5;3];[0;2]] in
@@ -189,25 +166,25 @@ module Make (N : Ndarray_Algodiff) = struct
           300.;301.;302.;
           330.;331.;332.;
         |] [|2;2;3|] in
-      _equal y z
+      N.equal y z
 
     let test_20 () =
       let s = [[1];[2];[3]] in
       let y = N.get_slice s x2 in
       let z = N.of_array [|123.|] [|1;1;1|] in
-      _equal y z
+      N.equal y z
 
     let test_21 () =
       let s = [[-1;0];[-1;0];[-1;0]] in
       let y = N.get_slice s x2 in
-      let z = _reverse x2 in
-      _equal y z
+      let z = N.reverse x2 in
+      N.equal y z
 
     let test_22 () =
       let s = [[-1;0];[-1;0];[-1;0];[-1;0]] in
       let y = N.get_slice s x3 in
-      let z = _reverse x3 in
-      _equal y z
+      let z = N.reverse x3 in
+      N.equal y z
 
     let test_23 () =
       let s = [[0;2]] in
@@ -215,7 +192,7 @@ module Make (N : Ndarray_Algodiff) = struct
       let y = N.of_array [|2.;3.;5.|] [|3|] in
       N.set_slice s x y;
       let z = N.of_array [|2.;3.;5.;3.;4.;5.;6.;7.;8.;9.|] [|10|] in
-      _equal x z
+      N.equal x z
 
     let test_24 () =
       let s = [[5;3]] in
@@ -223,7 +200,7 @@ module Make (N : Ndarray_Algodiff) = struct
       let y = N.of_array [|2.;3.;5.|] [|3|] in
       N.set_slice s x y;
       let z = N.of_array [|0.;1.;2.;5.;3.;2.;6.;7.;8.;9.|] [|10|] in
-      _equal x z
+      N.equal x z
 
     let test_25 () =
       let s = [[2;8;3]] in
@@ -231,7 +208,7 @@ module Make (N : Ndarray_Algodiff) = struct
       let y = N.of_array [|2.;3.;5.|] [|3|] in
       N.set_slice s x y;
       let z = N.of_array [|0.;1.;2.;3.;4.;3.;6.;7.;5.;9.|] [|10|] in
-      _equal x z
+      N.equal x z
 
     let test_26 () =
       let s = [[-1];[-1]] in
@@ -240,7 +217,7 @@ module Make (N : Ndarray_Algodiff) = struct
       N.set_slice s x y;
       let z = N.copy x1 in
       N.set z [|9;9|] 0.;
-      _equal x z
+      N.equal x z
 
     let test_27 () =
       let s = [[0;9;9];[0;9;9]] in
@@ -252,7 +229,7 @@ module Make (N : Ndarray_Algodiff) = struct
       N.set z [|0;9|] 6.;
       N.set z [|9;0|] 7.;
       N.set z [|9;9|] 8.;
-      _equal x z
+      N.equal x z
 
     let test_28 () =
       let s = [[-1;0;-9];[-1;0;-9]] in
@@ -264,7 +241,7 @@ module Make (N : Ndarray_Algodiff) = struct
       N.set z [|0;9|] 7.;
       N.set z [|9;0|] 6.;
       N.set z [|9;9|] 5.;
-      _equal x z
+      N.equal x z
 
     let test_29 () =
       let s = [[-1];[-1];[-2]] in
@@ -273,7 +250,7 @@ module Make (N : Ndarray_Algodiff) = struct
       N.set_slice s x y;
       let z = N.copy x2 in
       N.set z [|9;9;8|] 5.;
-      _equal x z
+      N.equal x z
 
     let test_30 () =
       let s = [[-1];[5;6];[0]] in
@@ -283,7 +260,7 @@ module Make (N : Ndarray_Algodiff) = struct
       let z = N.copy x2 in
       N.set z [|9;5;0|] 1.;
       N.set z [|9;6;0|] 2.;
-      _equal x z
+      N.equal x z
 
   end
 

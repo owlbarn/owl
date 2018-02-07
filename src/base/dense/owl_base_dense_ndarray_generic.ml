@@ -246,6 +246,18 @@ let reshape varr newshape = (Bigarray.reshape varr newshape)
 (* Return the array as a contiguous block, without copying *)
 let flatten varr = (reshape varr [|(numel varr)|])
 
+let reverse varr =
+  let n = numel varr in
+  let ret = empty (kind varr) (shape varr) in
+  let ret_flat = reshape ret [|n|] in
+  let varr_flat = reshape varr [|n|] in
+  begin
+    for i = 0 to n - 1 do
+      set ret_flat [|i|] (get varr_flat [|n - 1 - i|])
+    done;
+    ret
+  end
+
 
 (* Apply a function over a bigarray, with no copying *)
 let _apply_fun f varr =
@@ -1940,6 +1952,24 @@ let inv varr =
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
 let load k f = Owl_utils.marshal_from_file f
 
+let equal varr_a varr_b =
+  let n = numel varr_a in
+  let m = numel varr_b in
+  if n != m
+  then false
+  else
+    let varr_a = reshape varr_a [|n|] in
+    let varr_b = reshape varr_b [|n|] in
+    let eq = ref true in
+    begin
+      for i = 0 to n - 1 do
+        let x = get varr_a [|i|] in
+        let y = get varr_b [|i|] in
+        if (Scalar.abs (Scalar.sub x y)) >= 1e-8 (* TODO: change this to an eps? *)
+        then eq := false
+      done;
+      !eq
+    end
 
 let elt_equal varr_a varr_b =
   let dims = shape varr_a in
