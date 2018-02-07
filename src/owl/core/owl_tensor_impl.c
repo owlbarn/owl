@@ -329,7 +329,7 @@ value FUN_3DB_NATIVE(
   value vKernel_cols, value vKernel_rows, value vKernel_depth,
   value vOutput_cols, value vOutput_rows, value vOutput_depth,
   value vRow_stride, value vCol_stride, value vDepth_stride,
-  value vPad_rows, value vPad_cols, value vPad_depth
+  value vPadding
 ){
 
   struct caml_ba_array *IN  = Caml_ba_array_val(vInput);
@@ -353,21 +353,29 @@ value FUN_3DB_NATIVE(
   int row_stride    = Long_val(vRow_stride);
   int col_stride    = Long_val(vCol_stride);
   int depth_stride  = Long_val(vDepth_stride);
-  int pad_cols      = Long_val(vPad_cols);
-  int pad_rows      = Long_val(vPad_rows);
-  int pad_depth    = Long_val(vPad_depth);
+  int padding      = Long_val(vPadding);
 
-  if (pad_cols < 0)  pad_cols  = 0;
-  if (pad_rows < 0)  pad_rows  = 0;
-  if (pad_depth < 0) pad_depth = 0;
+  float pad_rows, pad_cols, pad_depth;
+  if (padding == 1){
+    pad_rows = 0.; pad_cols = 0.; pad_depth = 0.;
+  } else {
+    pad_rows = (row_stride * ( output_rows - 1) +
+      kernel_rows - input_rows) / 2.;
+    pad_cols = (col_stride * ( output_cols - 1) +
+      kernel_cols - input_cols) / 2.;
+    pad_depth = (depth_stride * ( output_depth - 1) +
+      kernel_depth - input_depth) / 2.;
+    if (pad_cols < 0)  pad_cols  = 0;
+    if (pad_rows < 0)  pad_rows  = 0;
+    if (pad_depth < 0) pad_depth = 0;
+  }
 
   memset(input_backward_ptr, 0,
     batches * input_cols * input_rows *
     input_depth * in_channel * sizeof(TYPE));
 
-  const int ksize = kernel_cols * kernel_rows;
+  const int ksize = kernel_cols * kernel_rows * kernel_depth;
 
-  int i, j, k, l;
   for (int i = 0; i < batches; ++i) {
     for (int j = 0; j < output_cols; ++j) {
       for (int k = 0; k < output_rows; ++k) {
@@ -380,7 +388,7 @@ value FUN_3DB_NATIVE(
           const int rend   = rstart + kernel_rows;
           const int dend   = dstart + kernel_depth;
 
-          for (l = 0; l < in_channel; ++l) {
+          for (int l = 0; l < in_channel; ++l) {
             TYPE m;
             int output_idx =
               i * (output_cols * output_rows * output_depth * in_channel) +
@@ -399,7 +407,7 @@ value FUN_3DB_NATIVE(
 
             for (int a = cstart; a < cend; ++a) {
               for (int b = rstart; b < rend; ++b) {
-                for (int c = dstart; c < dend; ++d) {
+                for (int c = dstart; c < dend; ++c) {
                   if (a >= 0 && a < input_cols &&
                       b >= 0 && b < input_rows &&
                       c >= 0 && c < input_depth) {
@@ -442,7 +450,7 @@ value FUN_3DB_BYTE(value * argv, int argn){
   return FUN_3DB_NATIVE(
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14],
-    argv[15], argv[16], argv[17], argv[18], argv[19]
+    argv[15], argv[16], argv[17]
   );
 }
 
