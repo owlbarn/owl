@@ -260,21 +260,21 @@ let reverse varr =
 
 (* Apply a function over a bigarray, with no copying *)
 let _apply_fun f varr =
-  let varr_linear = flatten varr in
-  let length = numel varr_linear in
+  let varr_linear = flatten varr |> array1_of_genarray in
+  let length = numel varr in
   begin
     for i = 0 to length - 1 do
-      (Genarray.set varr_linear [|i|] (f (Genarray.get varr_linear [|i|])))
+      (Array1.unsafe_set varr_linear i (f (Array1.unsafe_get varr_linear i)))
     done
   end
 
 let init kind dims f =
   let varr = empty kind dims in
-  let varr_flat = flatten varr in
+  let varr_flat = flatten varr |> array1_of_genarray in
   let n = numel varr in
   begin
     for i = 0 to n - 1 do
-      set varr_flat [|i|] (f i)
+      Array1.unsafe_set varr_flat i (f i)
     done;
     varr
   end
@@ -297,11 +297,11 @@ let sequential kind ?(a=0.) ?(step=1.) dims =
 
 let of_array kind arr dims =
   let varr = empty kind dims in
-  let flat_varr = flatten varr in
-  let n = numel flat_varr in
+  let flat_varr = flatten varr |> array1_of_genarray in
+  let n = numel varr in
   begin
     for i = 0 to n - 1 do
-      set flat_varr [|i|] arr.(i)
+      Array1.unsafe_set flat_varr i arr.(i)
     done;
     varr
   end
@@ -598,11 +598,11 @@ let relu varr = (map Scalar.relu varr)
 
 let _fold_left f a varr =
   let aref = ref a in
-  let varr_linear = flatten varr in
-  let length = numel varr_linear in
+  let varr_linear = flatten varr |> array1_of_genarray in
+  let length = numel varr in
   begin
     for i = 0 to length - 1 do
-      aref := (f !aref (Genarray.get varr_linear [|i|]))
+      aref := (f !aref (Array1.unsafe_get varr_linear i))
     done;
     !aref
   end
@@ -760,14 +760,14 @@ let _compare_util_shortcircuit varr_a varr_b comp_fun =
   if n != m
   then false
   else
-    let varr_a = flatten varr_a in
-    let varr_b = flatten varr_b in
+    let varr_a = flatten varr_a |> array1_of_genarray in
+    let varr_b = flatten varr_b |> array1_of_genarray in
     let all_ok = ref true in
     let i = ref 0 in
     begin
       while !all_ok && (!i < n) do
-        let x = get varr_a [|!i|] in
-        let y = get varr_b [|!i|] in
+        let x = Array1.unsafe_get varr_a !i in
+        let y = Array1.unsafe_get varr_b !i in
         if (not (comp_fun x y))
         then all_ok := false;
         i := !i + 1
@@ -812,13 +812,13 @@ let greater_equal varr_a varr_b =
 (** Return true if for all elements of a comp_fun (xa, bb) == true, false otherwise.
     Returns false as soon as it finds a counterexample. (NOT broadcasted) *)
 let _compare_util_shortcircuit_scalar varr_a b comp_fun =
-  let varr_a = flatten varr_a in
   let n = numel varr_a in
+  let varr_a = flatten varr_a |> array1_of_genarray in
   let all_ok = ref true in
   let i = ref 0 in
   begin
     while !all_ok && (!i < n) do
-      let x = get varr_a [|!i|] in
+      let x = Array1.unsafe_get varr_a !i in
       if (not (comp_fun x b))
       then all_ok := false;
       i := !i + 1
@@ -953,13 +953,13 @@ let elt_greater_equal_scalar varr_a b =
 
 
 let exists f varr =
-  let varr = flatten varr in
   let n = numel varr in
+  let varr = flatten varr |> array1_of_genarray in
   let found = ref false in
   let i = ref 0 in
   begin
     while (!i < n) && (not !found) do
-      let x = get varr [|!i|] in
+      let x = Array1.unsafe_get varr !i in
       if f x
       then found := true;
       i := !i + 1
@@ -2070,13 +2070,13 @@ let copy_col_to vec varr ind =
     else raise (Invalid_argument "Vector is not a column vector")
   in
   let num_rows = dims.(0) in
-  let vec_linear = flatten vec in
+  let vec_linear = flatten vec |> array1_of_genarray in
   if num_rows != vec_len
   then raise (Invalid_argument "Column vector does not have the same length as the number of rows in the matrix")
   else
     begin
       for i = 0 to num_rows - 1 do
-        Genarray.set varr [|i; ind|] (Genarray.get vec_linear [|i|])
+        Genarray.set varr [|i; ind|] (Array1.unsafe_get vec_linear i)
       done
     end
 
