@@ -2,10 +2,10 @@
 
 let rand_gen = Random.State.make_self_init ()
 
-let get_uniform a b =
+let uniform a b =
   a +. (b -. a) *. (Random.State.float rand_gen 1.)
 
-let get_bernoulli p =
+let bernoulli p =
   assert (p >= 0. && p <= 1.);
   if (Random.State.float rand_gen 1.) <= p
   then 1.
@@ -18,7 +18,7 @@ let _z0 = ref 0.
 let _z1 = ref 1.
 
 (* TODO: use the polar, is more efficient *)
-let get_gaussian mu sigma =
+let gaussian mu sigma =
   if !_case
   then (_case := false; mu +. sigma *. !_z1)
   else (

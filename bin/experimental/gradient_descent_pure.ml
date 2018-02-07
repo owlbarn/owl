@@ -1,13 +1,13 @@
 (* This example demonstrates how to write a gradient descent algorithm. *)
 
-module PureD = Owl_algodiff_generic.Make (Owl_base_dense_ndarray.NdarrayPureDouble)
+module PureD = Owl_algodiff_generic.Make (Owl_base_dense_ndarray_d)
 open PureD
 
 let count = ref 0
 
-let get_ind v i = Owl_base_dense_ndarray.NdarrayPureDouble.get (unpack_arr v) [|i|];;
-let set_ind v i x = Owl_base_dense_ndarray.NdarrayPureDouble.set (unpack_arr v) [|i|] x;;
-let offset = Arr (Owl_base_dense_ndarray.NdarrayPureDouble.ones [|2|]);;
+let get_ind v i = Owl_base_dense_ndarray_d.get (unpack_arr v) [|i|];;
+let set_ind v i x = Owl_base_dense_ndarray_d.set (unpack_arr v) [|i|] x;;
+let offset = Arr (Owl_base_dense_ndarray_d.ones [|2|]);;
 let _ = (set_ind offset 0 3.0, set_ind offset 1 5.0);;
 let myff = (fun v -> Maths.sum' (Maths.sqr (Maths.sub v offset)));;
 let init_v =  Maths.add (Arr.ones [|2|]) (F 20.);;
