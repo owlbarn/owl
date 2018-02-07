@@ -152,7 +152,6 @@ let create kind dims value =
   Genarray.fill varr value;
   varr
 
-
 let zeros kind dims = create kind dims (Owl_const.zero kind)
 
 
@@ -269,6 +268,16 @@ let _apply_fun f varr =
     done
   end
 
+let init kind dims f =
+  let varr = empty kind dims in
+  let varr_flat = flatten varr in
+  let n = numel varr in
+  begin
+    for i = 0 to n - 1 do
+      set varr_flat [|i|] (f i)
+    done;
+    varr
+  end
 
 (* Map a NDarray from elements x -> f(x), by copying the array *)
 let map f varr =
@@ -1952,7 +1961,7 @@ let inv varr =
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
 let load k f = Owl_utils.marshal_from_file f
 
-let equal varr_a varr_b =
+let approx_equal ?(eps=1e-8) varr_a varr_b =
   let n = numel varr_a in
   let m = numel varr_b in
   if n != m
@@ -1965,11 +1974,14 @@ let equal varr_a varr_b =
       for i = 0 to n - 1 do
         let x = get varr_a [|i|] in
         let y = get varr_b [|i|] in
-        if (Scalar.abs (Scalar.sub x y)) >= 1e-8 (* TODO: change this to an eps? *)
+        if (Scalar.abs (Scalar.sub x y)) >= eps
         then eq := false
       done;
       !eq
     end
+
+let equal varr_a varr_b =
+  (approx_equal ~eps:(Owl_utils.eps (kind varr_a)) varr_a varr_b)
 
 let elt_equal varr_a varr_b =
   let dims = shape varr_a in

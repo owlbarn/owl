@@ -88,6 +88,8 @@ val ones : int array -> arr
 
 val create : int array -> elt -> arr
 
+val init : int array -> (int -> elt) -> arr
+
 val sequential : ?a:elt -> ?step:elt -> int array -> arr
 
 val uniform : ?a:elt -> ?b:elt -> int array -> arr
@@ -111,6 +113,8 @@ val set_slice : int list list -> arr -> arr -> unit
 val copy : arr -> arr
 
 val reset : arr -> unit
+
+val map : (elt -> elt) -> arr -> arr
 
 val reshape : arr -> int array -> arr
 
@@ -241,6 +245,8 @@ val scalar_mul : elt -> arr -> arr
 val scalar_div : elt -> arr -> arr
 
 val equal : arr -> arr -> bool
+
+val approx_equal : ?eps:float -> arr -> arr -> bool
 
 val elt_greater_equal_scalar : arr -> elt -> arr
 

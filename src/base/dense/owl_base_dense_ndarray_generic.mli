@@ -57,6 +57,14 @@ val create : ('a, 'b) kind -> int array -> 'a -> ('a, 'b) t
    The elements in the array are initialised to ``2.``
 *)
 
+val init : ('a, 'b) kind -> int array -> (int -> 'a) -> ('a, 'b) t
+(**
+   ``init Bigarray.Float64 d f`` creates a ndarray ``x`` of shape ``d``, then using
+   ``f`` to initialise the elements in ``x``. The input of ``f`` is 1-dimensional
+   index of the ndarray. You need to explicitly convert it if you need N-dimensional
+   index. The function ``ind`` can help you.
+*)
+
 val zeros : ('a, 'b) kind -> int array -> ('a, 'b) t
 (**
    ``zeros Bigarray.Complex32 [|3;4;5|]`` creates a three-diemensional array of
@@ -243,6 +251,18 @@ val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 val equal : (float, 'b) t -> (float, 'b) t -> bool
 (**
    ``equal x y`` returns ``true`` if two ('a, 'b) trices ``x`` and ``y`` are equal.
+*)
+
+(* TODO: change float to 'a (except for eps) *)
+val approx_equal : ?eps:float -> (float, 'b) t -> (float, 'b) t -> bool
+(**
+   ``approx_equal ~eps x y`` returns ``true`` if ``x`` and ``y`` are approximately
+   equal, i.e., for any two elements ``a`` from ``x`` and ``b`` from ``y``, we have
+   ``abs (a - b) < eps``. For complex numbers, the ``eps`` applies to both real
+   and imaginary part.
+
+   Note: the threshold check is exclusive for passed in ``eps``, i.e., the
+   threshold interval is ``(a-eps, a+eps)``.
 *)
 
 (* TODO: change float to 'a *)

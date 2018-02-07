@@ -23,6 +23,9 @@ let empty dims = M.empty Float64 dims
 let create dims value = M.create Float64 dims value
 
 
+let init dims f = M.init Float64 dims f
+
+
 let zeros dims = M.zeros Float64 dims
 
 

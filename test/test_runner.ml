@@ -19,6 +19,7 @@ let () =
     "pooling3d",            Unit_pool3d.test_set;
     "conv2d",               Unit_conv2d.test_set;
     "conv3d",               Unit_conv3d.test_set;
+    "base: algodiff diff",  Unit_base_algodiff_diff.test_set;
     "base: slicing basic",  Unit_base_slicing_basic.test_set;
     "base: pooling2d",      Unit_base_pool2d.test_set;
     "base: pooling3d",      Unit_base_pool3d.test_set;

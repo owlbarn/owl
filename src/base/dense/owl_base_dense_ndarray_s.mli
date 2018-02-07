@@ -88,6 +88,8 @@ val ones : int array -> arr
 
 val create : int array -> elt -> arr
 
+val init : int array -> (int -> elt) -> arr
+
 val sequential : ?a:elt -> ?step:elt -> int array -> arr
 
 val uniform : ?a:elt -> ?b:elt -> int array -> arr
@@ -117,6 +119,8 @@ val reshape : arr -> int array -> arr
 val flatten : arr -> arr
 
 val reverse : arr -> arr
+
+val map : (elt -> elt) -> arr -> arr
 
 val tile : arr -> int array -> arr
 
@@ -243,6 +247,8 @@ val scalar_div : elt -> arr -> arr
 val elt_greater_equal_scalar : arr -> elt -> arr
 
 val equal : arr -> arr -> bool
+
+val approx_equal : ?eps:float -> arr -> arr -> bool
 
 (* Neural network related functions *)
 
