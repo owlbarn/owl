@@ -4,9 +4,9 @@
  *)
 
 (**
-   Statistics: random number generators, PDF and CDF functions, and hypothesis
-   tests. The module also includes some basic statistical functions such as mean,
-   variance, skew, and etc.
+Statistics: random number generators, PDF and CDF functions, and hypothesis
+tests. The module also includes some basic statistical functions such as mean,
+variance, skew, and etc.
 *)
 
 (** {1 Random variables} *)
@@ -19,5 +19,6 @@ val bernoulli : float -> float
 
 val gaussian : float -> float -> float
 (** ``gaussian mu sigma`` returns a continous RV normally distributed with mean ``mu`` and stddev ``sigma`` *)
+
 
 (* ends here *)

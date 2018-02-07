@@ -1,4 +1,4 @@
-(** Unit test for Owl_stats module *)
+(** Unit test for Owl_slicing module *)
 
 open Owl_types
 
