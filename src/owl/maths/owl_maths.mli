@@ -292,7 +292,21 @@ val ellipeinc : float -> float -> float
 (** {6 Gamma Functions} *)
 
 val gamma : float -> float
-(** Gamma function. *)
+(**
+Gamma function.
+
+.. math::
+  \Gamma(z) = \int_0^\infty x^{z-1} e^{-x} dx = (z - 1)!
+
+The gamma function is often referred to as the generalized factorial since
+``z*gamma(z) = gamma(z+1)`` and ``gamma(n+1) = n!`` for natural number ``n``.
+
+Parameters:
+  * ``z``
+
+Returns:
+  * The value of gamma(z).
+ *)
 
 val rgamma : float -> float
 (** Reciprocal Gamma function. *)
@@ -319,7 +333,12 @@ val psi : float -> float
 (** {6 Beta functions} *)
 
 val beta : float -> float -> float
-(** Beta function. *)
+(**
+Beta function.
+
+.. math::
+  \Beta(a, b) =  \frac{\Gamma(a) \Gamma(b)}{\Gamma(a+b)}
+ *)
 
 val betainc : float -> float -> float -> float
 (** Incomplete beta integral. *)
@@ -407,6 +426,91 @@ val zeta : float -> float -> float
 
 val zetac : float -> float
 (** Riemann zeta function minus 1. *)
+
+
+(** {6 Raw statistical functions} *)
+
+val bdtr : int -> int -> float -> float
+(**
+Binomial distribution cumulative distribution function.
+
+``bdtr k n p`` calculates the sum of the terms 0 through k of the Binomial
+probability density.
+
+.. math::
+  \mathrm{bdtr}(k, n, p) = \sum_{j=0}^k {{n}\choose{j}} p^j (1-p)^{n-j}
+
+Parameters:
+  * ``k``: Number of successes.
+  * ``n``: Number of events.
+  * ``p``: Probability of success in a single event.
+
+Returns:
+  * Probability of k or fewer successes in n independent events with success probabilities of p.
+ *)
+
+val bdtrc : int -> int -> float -> float
+(**
+Binomial distribution survival function.
+
+``bdtrc k n p`` calculates the sum of the terms k + 1 through n of the binomial
+probability density,
+
+.. math::
+  \mathrm{bdtrc}(k, n, p) = \sum_{j=k+1}^n {{n}\choose{j}} p^j (1-p)^{n-j}
+
+ *)
+
+val bdtri : int -> int -> float -> float
+(**
+Inverse function to ``bdtr`` with respect to ``p``.
+
+Finds the event probability ``p`` such that the sum of the terms 0 through k of
+the binomial probability density is equal to the given cumulative probability y.
+ *)
+
+
+val btdtr : float -> float -> float -> float
+(**
+Cumulative density function of the beta distribution.
+
+``btdtr a b x`` returns the integral from zero to x of the beta probability
+density function,
+
+.. math::
+  I = \int_0^x \frac{\Gamma(a + b)}{\Gamma(a)\Gamma(b)} t^{a-1} (1-t)^{b-1}\,dt
+
+where :math:`\Gamma` is the gamma function.
+
+Parameters:
+  * ``a``: Shape parameter (a > 0).
+  * ``b``: Shape parameter (a > 0).
+  * ``x``: Upper limit of integration, in [0, 1].
+
+Returns:
+  * Cumulative density function of the beta distribution with ``a`` and ``b`` at ``x``.
+ *)
+
+val btdtri : float -> float -> float -> float
+(**
+The p-th quantile of the Beta distribution.
+
+This function is the inverse of the beta cumulative distribution function,
+``btdtr``, returning the value of ``x`` for which ``btdtr(a, b, x) = p``,
+
+.. math::
+  p = \int_0^x \frac{\Gamma(a + b)}{\Gamma(a)\Gamma(b)} t^{a-1} (1-t)^{b-1}\,dt
+
+where :math:`\Gamma` is the gamma function.
+
+Parameters:
+  * ``a``: Shape parameter (a > 0).
+  * ``b``: Shape parameter (a > 0).
+  * ``x``: Cumulative probability, in [0, 1].
+
+Returns:
+  * The quantile corresponding to ``p``.
+ *)
 
 
 (** {6 Helper functions} *)

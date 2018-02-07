@@ -295,5 +295,16 @@ let nextafter = Owl_maths_special.nextafter
 
 let nextafterf = Owl_maths_special.nextafterf
 
+let bdtr k n p = Owl_maths_special.bdtr k n p
+
+let bdtrc k n p = Owl_maths_special.bdtrc k n p
+
+let bdtri k n y = Owl_maths_special.bdtri k n y
+
+let btdtr a b x = Owl_maths_special.btdtr a b x
+
+let btdtri a b p = Owl_maths_special.btdtri a b p
+
+
 
 (* ends here *)
