@@ -1961,6 +1961,11 @@ let inv varr =
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
 let load k f = Owl_utils.marshal_from_file f
 
+(* FIXME: doing to much useless computation in the worst cate
+  also, this impl seems incorrect if two have different shape but same amount
+  of elements. Need to check the shape, but I probably didn't do that either in
+  core ... need to fix this.
+ *)
 let approx_equal ?(eps=1e-8) varr_a varr_b =
   let n = numel varr_a in
   let m = numel varr_b in
@@ -1980,6 +1985,7 @@ let approx_equal ?(eps=1e-8) varr_a varr_b =
       !eq
     end
 
+(** FIXME: this is incorrect. why don't you just use =, check my impl in core. *)
 let equal varr_a varr_b =
   (approx_equal ~eps:(Owl_utils.eps (kind varr_a)) varr_a varr_b)
 
