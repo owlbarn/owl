@@ -4,6 +4,8 @@
  *)
 
 
+(** {6 Core functions} *)
+
 val printers : string list
 (** List of registered pretty printers for Owl. *)
 
