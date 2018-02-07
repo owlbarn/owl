@@ -9,7 +9,7 @@ tests. The module also includes some basic statistical functions such as mean,
 variance, skew, and etc.
 *)
 
-(** {1 Random variables} *)
+(** {6 Random variables} *)
 
 val uniform : float -> float -> float
 (** ``uniform a b`` returns a continuous RV uniformly distributed within [``a``, ``b``]. *)
