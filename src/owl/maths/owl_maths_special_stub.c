@@ -498,3 +498,48 @@ value stub_sf_nextafterf(value vX, value vY) {
   float next = nextafterf(from, to);
   return caml_copy_double(next);
 }
+
+
+value owl_stub_sf_bdtr(value vK, value vN, value vP) {
+  long k = Long_val(vK);
+  long n = Long_val(vN);
+  double p = Double_val(vP);
+  double y = bdtr(k, n, p);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_bdtrc(value vK, value vN, value vP) {
+  long k = Long_val(vK);
+  long n = Long_val(vN);
+  double p = Double_val(vP);
+  double y = bdtrc(k, n, p);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_bdtri(value vK, value vN, value vY) {
+  long k = Long_val(vK);
+  long n = Long_val(vN);
+  double y = Double_val(vY);
+  double p = bdtri(k, n, y);
+  return caml_copy_double(p);
+}
+
+
+value owl_stub_sf_btdtr(value vA, value vB, value vX) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double x = Double_val(vX);
+  double y = btdtr(a, b, x);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_btdtri(value vA, value vB, value vP) {
+  double a = Double_val(vA);
+  double b = Double_val(vB);
+  double p = Double_val(vP);
+  double x = incbi(a, b, p);
+  return caml_copy_double(x);
+}

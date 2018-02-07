@@ -1,19 +1,11 @@
-(** Unit test for Owl_stats module *)
+(** Unit test for Owl_slicing module *)
 
 open Owl_types
 
-module type Sliceable_Ndarray = sig
-
-  include Ndarray_Basic
-
-  val equal : arr -> arr -> bool
-  val reverse : arr -> arr
-
-end
 
 (** Functor to generate test module *)
 
-module Make (N : Sliceable_Ndarray) = struct
+module Make (N : Ndarray_Basic) = struct
 
   (* some test input *)
 

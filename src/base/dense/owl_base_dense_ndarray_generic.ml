@@ -1961,6 +1961,11 @@ let inv varr =
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
 let load k f = Owl_utils.marshal_from_file f
 
+(* FIXME: doing to much useless computation in the worst cate
+  also, this impl seems incorrect if two have different shape but same amount
+  of elements. Need to check the shape, but I probably didn't do that either in
+  core ... need to fix this.
+ *)
 let approx_equal ?(eps=1e-8) varr_a varr_b =
   let n = numel varr_a in
   let m = numel varr_b in
@@ -1970,38 +1975,19 @@ let approx_equal ?(eps=1e-8) varr_a varr_b =
     let varr_a = reshape varr_a [|n|] in
     let varr_b = reshape varr_b [|n|] in
     let eq = ref true in
-    let i = ref 0 in
     begin
-      while !eq && (!i < n) do
-        let x = get varr_a [|!i|] in
-        let y = get varr_b [|!i|] in
+      for i = 0 to n - 1 do
+        let x = get varr_a [|i|] in
+        let y = get varr_b [|i|] in
         if (Scalar.abs (Scalar.sub x y)) >= eps
-        then eq := false;
-        i := !i + 1
+        then eq := false
       done;
       !eq
     end
 
+(** FIXME: this is incorrect. why don't you just use =, check my impl in core. *)
 let equal varr_a varr_b =
-  let n = numel varr_a in
-  let m = numel varr_b in
-  if n != m
-  then false
-  else
-    let varr_a = reshape varr_a [|n|] in
-    let varr_b = reshape varr_b [|n|] in
-    let eq = ref true in
-    let i = ref 0 in
-    begin
-      while !eq && (!i < n) do
-        let x = get varr_a [|!i|] in
-        let y = get varr_b [|!i|] in
-        if x <> y
-        then eq := false;
-        i := !i + 1
-      done;
-      !eq
-    end
+  (approx_equal ~eps:(Owl_utils.eps (kind varr_a)) varr_a varr_b)
 
 let elt_equal varr_a varr_b =
   let dims = shape varr_a in
