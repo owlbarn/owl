@@ -132,7 +132,7 @@ let _expand_slice_indices index_list dims =
   let _expand_slice_index = (
     fun i ind -> match ind with
       | [] -> Array.init dims.(i) (fun i -> i)
-      | [start] -> [|start|]
+      | [start] -> _enumerate_slice_def dims.(i) start start
       | [start; stop] -> _enumerate_slice_def dims.(i) start stop
       | [start; stop; step] -> _enumerate_slice_def dims.(i) ~step:step start stop
       | _ -> failwith "incorrect slice definition"
