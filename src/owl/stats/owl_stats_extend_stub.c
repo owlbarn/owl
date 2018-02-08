@@ -10,6 +10,10 @@
 #include "owl_stats.h"
 
 
+// Internal state of SFMT PRNG
+sfmt_t sfmt_state;
+
+
 /***** owl_stats_extend_shuffle.c ******/
 
 
