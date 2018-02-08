@@ -37,7 +37,6 @@ type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 val empty : ('a, 'b) kind -> int array -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-
 val create : ('a, 'b) kind -> int array -> 'a -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
@@ -66,6 +65,7 @@ val sequential : (float, 'b) kind -> ?a:float -> ?step:float -> int array -> (fl
 val bernoulli : (float, 'b) kind -> ?p:float -> int array -> (float, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+
 (** {6 Obtain basic properties}  *)
 
 val shape : ('a, 'b) t -> int array
@@ -85,6 +85,7 @@ val strides : ('a, 'b) t -> int array
 
 val slice_size : ('a, 'b) t -> int array
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 
 (** {6 Manipulate Ndarrays}  *)
 
@@ -165,6 +166,7 @@ val scani : ?axis:int -> (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 
 val scan : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
 
 (** {6 Examination & Comparison}  *)
 
