@@ -35,7 +35,7 @@ let sequential ?a ?step dimension = M.sequential Complex64 ?a ?step dimension
 
 let linspace a b n = M.linspace Complex64 a b n
 
-let logspace ?base a b n = M.logspace Complex64 a b n
+let logspace ?base a b n = M.logspace Complex64 ?base a b n
 
 let bernoulli ?p d = M.bernoulli Complex64 ?p d
 
@@ -43,7 +43,7 @@ let load f = M.load Complex64 f
 
 let of_array x d = M.of_array Complex64 x d
 
-let mmap fd ?pos shared dims = Genarray.map_file fd ?pos Complex64 c_layout shared dims
+let mmap fd ?pos shared dims = Unix.map_file fd ?pos Complex64 c_layout shared dims
 
 (* specific functions for complex64 ndarray *)
 

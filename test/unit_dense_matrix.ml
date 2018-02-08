@@ -144,15 +144,15 @@ module To_test = struct
     let z1 = M.map (fun a -> a +. 1.) y in
     M.equal z0 z1
 
-  let fold x = M.fold (+.) 0. x
+  let fold () =
+    let a = M.fold (+.) 0. x2 in
+    Owl.Arr.get a [|0|] -. M.sum' x2 < eps
 
   let foldi () =
-    let a = M.foldi (fun i j c a ->
-      if i <> 0 then c +. a else c
-    ) 0. x2
-    in a = 60.
+    let a = M.foldi ~axis:1 (fun _ c a -> c +. a) 0. x2 in
+    M.get a 0 0 -. 60. < eps
 
-  let filter () = M.filter ((=) 3.) x2 = [| (0,3) |]
+  let filter () = M.filter ((=) 3.) x2 = [| 3 |]
 
   let fold_rows () =
     let x = M.fold_rows (fun c a -> M.add c a) (M.zeros Float64 1 4) x2 |> M.to_arrays in
@@ -297,7 +297,7 @@ let map x =
   Alcotest.(check bool) "map" true (To_test.map ())
 
 let fold () =
-  Alcotest.(check (float eps)) "fold" (M.sum' x2) (To_test.fold x2)
+  Alcotest.(check bool) "fold" true (To_test.fold ())
 
 let foldi () =
   Alcotest.(check bool) "foldi" true (To_test.foldi ())

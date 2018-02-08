@@ -286,8 +286,10 @@ let t_score x =
   z_score ~mu ~sigma x
 
 let normlise_pdf x =
-  let c = Owl_utils.Array.sum x in
+  let c = Owl_stats_extend.sum x in
   Array.map (fun x -> x /. c) x
+
+(* TODO *)
 
 let centerise x = None
 
@@ -351,7 +353,7 @@ let t_test_paired ?(alpha=0.05) ?(side=BothSide) x y =
     failwith "the sizes of two samples does not equal."
   in
   let d = Owl_utils.Array.map2i (fun _ a b -> a -. b) x y in
-  let m = Owl_utils.Array.sum d /. nx in
+  let m = Owl_stats_extend.sum d /. nx in
   let t = m /. (sem ~mean:m d) in
   let pl = t_cdf ~df:(nx -. 1.) ~loc:0. ~scale:1. t in
   let pr = t_sf  ~df:(nx -. 1.) ~loc:0. ~scale:1. t in

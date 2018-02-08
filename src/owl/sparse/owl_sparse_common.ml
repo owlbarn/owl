@@ -32,10 +32,10 @@ let _eigen_eye : type a b . (a, b) kind -> int -> (a, b) eigen_mat =
 
 let _eigen_nnz : type a b . (a, b) eigen_mat -> int =
   fun x -> match x with
-  | SPMAT_S x -> Eigen.Sparse.S.(prune x (_zero Float32) 0.; nnz x)
-  | SPMAT_D x -> Eigen.Sparse.D.(prune x (_zero Float64) 0.; nnz x)
-  | SPMAT_C x -> Eigen.Sparse.C.(prune x (_zero Complex32) 0.; nnz x)
-  | SPMAT_Z x -> Eigen.Sparse.Z.(prune x (_zero Complex64) 0.; nnz x)
+  | SPMAT_S x -> Eigen.Sparse.S.(prune x (Owl_const.zero Float32) 0.; nnz x)
+  | SPMAT_D x -> Eigen.Sparse.D.(prune x (Owl_const.zero Float64) 0.; nnz x)
+  | SPMAT_C x -> Eigen.Sparse.C.(prune x (Owl_const.zero Complex32) 0.; nnz x)
+  | SPMAT_Z x -> Eigen.Sparse.Z.(prune x (Owl_const.zero Complex64) 0.; nnz x)
 
 let _eigen_set : type a b . (a, b) eigen_mat -> int -> int -> a -> unit =
   fun x i j a -> match x with

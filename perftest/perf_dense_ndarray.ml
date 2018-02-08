@@ -11,18 +11,18 @@ let test_op s c op = Perf_common.test_op s c op
 let _ =
   let _ = Random.self_init () in
   let m, n, o = 10, 1000, 10000 and c = 1 in
-  print_endline (Bytes.make 60 '+');
+  print_endline (String.make 60 '+');
   Printf.printf "| test ndarray size: %i x %i x %i    exps: %i\n" m n o c;
-  print_endline (Bytes.make 60 '-');
+  print_endline (String.make 60 '-');
   let x = M.create Bigarray.Float64 [|m;n;o|] 1. in
   let y = M.create Bigarray.Float64 [|m;n;o|] 2. in
   let z = M.ones Bigarray.Complex64 [|m;n;o|] in
   test_op "empty             " c (fun () -> M.empty Bigarray.Float64 [|m;n;o|]);
   test_op "create            " c (fun () -> M.create Bigarray.Float64 [|m;n;o|] 1.);
   test_op "slice_left        " c (fun () -> M.slice_left x [|0|]);
-  test_op "get_slice (0,*.*) " c (fun () -> M.get_slice [ R[0]; R[]; R[] ] x);
-  test_op "get_slice (*,0.*) " c (fun () -> M.get_slice [ R[]; R[0]; R[] ] x);
-  test_op "get_slice (*,*.0) " c (fun () -> M.get_slice [ R[]; R[]; R[0] ] x);
+  test_op "get_fancy (0,*.*) " c (fun () -> M.get_fancy [ R[0]; R[]; R[] ] x);
+  test_op "get_fancy (*,0.*) " c (fun () -> M.get_fancy [ R[]; R[0]; R[] ] x);
+  test_op "get_fancy (*,*.0) " c (fun () -> M.get_fancy [ R[]; R[]; R[0] ] x);
   test_op "reshape           " c (fun () -> M.reshape x [|o;n;m|]);
   test_op "flatten           " c (fun () -> M.flatten x);
   test_op "min               " c (fun () -> M.min x);
@@ -43,19 +43,16 @@ let _ =
   test_op "transpose         " c (fun () -> M.transpose x);
   test_op "swap 0 1          " c (fun () -> M.swap 0 1 x);
   test_op "fill              " c (fun () -> M.fill x 1.5);
-  test_op "copy             " c (fun () -> M.copy x);
-  test_op "copy              " c (fun () -> M.copy x y);
+  test_op "copy              " c (fun () -> M.copy x);
+  test_op "copy_to           " c (fun () -> M.copy_to x y);
   test_op "iteri             " c (fun () -> M.iteri (fun i a -> ()) x);
   test_op "iter              " c (fun () -> M.iter (fun a -> ()) x);
-  test_op "iteri (0,*,*)     " c (fun () -> M.iteri ~axis:[|Some 0; None; None|] (fun i a -> ()) x);
-  test_op "iter (0,*,*)      " c (fun () -> M.iter ~axis:[|Some 0; None; None|] (fun a -> ()) x);
   test_op "mapi              " c (fun () -> M.mapi (fun i a -> a) x);
   test_op "map               " c (fun () -> M.map (fun a -> a) x);
   test_op "map (sin)         " c (fun () -> M.map (fun a -> sin a) x);
   test_op "map (+1)          " c (fun () -> M.map (fun a -> a +. 1.) x);
   test_op "map (^2)          " c (fun () -> M.map (fun a -> a *. a) x);
-  (* FIXME test_op "iteri_slice 0     " c (fun () -> M.iteri_slice [|0|] (fun i s -> ()) x); *)
   test_op "iter2i            " c (fun () -> M.iter2i (fun i a b -> ()) x y);
   test_op "iter2             " c (fun () -> M.iter2 (fun a b -> ()) x y);
   test_op "conj              " c (fun () -> M.conj z);
-  print_endline (Bytes.make 60 '+');
+  print_endline (String.make 60 '+');

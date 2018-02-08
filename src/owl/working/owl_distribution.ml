@@ -8,7 +8,7 @@ open Owl_types
 
 (* Functor of making Lazy module of different number types *)
 
-module Make (A : StatsSig) = struct
+module Make (A : Stats_Dist) = struct
 
 
   module Utility = struct

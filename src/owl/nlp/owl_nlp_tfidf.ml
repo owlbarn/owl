@@ -7,7 +7,7 @@
 
 open Owl_nlp_utils
 
-module Vec = Owl_dense_vector_d
+module Vec = Owl_dense.Ndarray.D
 
 
 type tf_typ =
@@ -277,8 +277,8 @@ let density m =
   (float_of_int !nnz) /. (n_d *. n_t)
 
 let doc_to_vec m x =
-  let v = Vec.zeros (vocab_len m) in
-  Array.iter (fun (i, a) -> Vec.set v i a) x;
+  let v = Vec.zeros [|vocab_len m|] in
+  Array.iter (fun (i, a) -> Vec.set v [|i|] a) x;
   v
 
 (* calculate pairwise distance for the whole model, format (id,dist) *)

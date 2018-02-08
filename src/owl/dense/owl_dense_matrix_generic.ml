@@ -56,8 +56,8 @@ let linspace k a b n =
   reshape x [|1;n|]
 
 
-let logspace k ?(base=Owl_const.e) a b n =
-  let x = Owl_dense_ndarray_generic.logspace k ~base a b n in
+let logspace k ?base a b n =
+  let x = Owl_dense_ndarray_generic.logspace k ?base a b n in
   Owl_dense_ndarray_generic.reshape x [|1;n|]
 
 
@@ -315,19 +315,6 @@ let ctranspose x =
 
 (* iteration functions *)
 
-let iter f x = Owl_dense_ndarray_generic.iter f x
-
-
-let iteri f x =
-  let m, n = shape x in
-  let x = Bigarray.array2_of_genarray x in
-
-  for i = 0 to m - 1 do
-    for j = 0 to n - 1 do
-      f i j (Bigarray.Array2.unsafe_get x i j)
-    done
-  done
-
 
 let iteri_rows f x =
   for i = 0 to (row_num x) - 1 do
@@ -362,35 +349,6 @@ let iteri_cols f x =
 let iter_cols f x = iteri_cols (fun _ y -> f y) x
 
 
-let map f x = Owl_dense_ndarray_generic.map f x
-
-
-let mapi f x =
-  let m, n = shape x in
-  let y = empty (kind x) m n in
-  let y' = Bigarray.array2_of_genarray y in
-  iteri (fun i j z ->
-    Bigarray.Array2.unsafe_set y' i j (f i j z)
-  ) x;
-  y
-
-
-let map2i f x y =
-  assert (shape x = shape y);
-  let m, n = shape x in
-  let z = empty (kind x) m n in
-  let y' = Bigarray.array2_of_genarray y in
-  let z' = Bigarray.array2_of_genarray z in
-  iteri (fun i j a ->
-    let b = Bigarray.Array2.unsafe_get y' i j in
-    Bigarray.Array2.unsafe_set z' i j (f i j a b)
-  ) x;
-  z
-
-
-let map2 f x y = map2i (fun _ _ a b -> f a b) x y
-
-
 let mapi_rows f x = Array.init (row_num x) (fun i -> f i (row x i))
 
 
@@ -419,39 +377,31 @@ let mapi_by_col d f x =
   let y = empty (kind x) d (col_num x) in
   iteri_cols (fun j z ->
     copy_col_to (f j z) y j
-  ) x; y
+  ) x;
+  y
 
 
 let map_by_col d f x = mapi_by_col d (fun _ y -> f y) x
 
 
 let mapi_at_row f x i =
-  let v = mapi (fun _ j y -> f i j y) (row x i) in
+  let v = mapi (fun j y -> f j y) (row x i) in
   let y = copy x in
-  copy_row_to v y i; y
+  copy_row_to v y i;
+  y
 
 
-let map_at_row f x i = mapi_at_row (fun _ _ y -> f y) x i
+let map_at_row f x i = mapi_at_row (fun _ y -> f y) x i
 
 
 let mapi_at_col f x j =
-  let v = mapi (fun i _ y -> f i j y) (col x j) in
+  let v = mapi (fun i y -> f i y) (col x j) in
   let y = copy x in
-  copy_col_to v y j; y
+  copy_col_to v y j;
+  y
 
 
-let map_at_col f x j = mapi_at_col (fun _ _ y -> f y) x j
-
-
-let filteri f x =
-  let s = Owl_utils.Stack.make () in
-  iteri (fun i j y ->
-    if (f i j y) then Owl_utils.Stack.push s (i,j)
-  ) x;
-  Owl_utils.Stack.to_array s
-
-
-let filter f x = filteri (fun _ _ y -> f y) x
+let map_at_col f x j = mapi_at_col (fun _ y -> f y) x j
 
 
 let filteri_rows f x =
@@ -482,19 +432,10 @@ let _fold_basic iter_fun f a x =
   !r
 
 
-let fold f a x = _fold_basic iter f a x
-
-
 let fold_rows f a x = _fold_basic iter_rows f a x
 
 
 let fold_cols f a x = _fold_basic iter_cols f a x
-
-
-let foldi f a x =
-  let r = ref a in
-  iteri (fun i j y -> r := f i j !r y) x;
-  !r
 
 
 let sum_cols x = sum ~axis:1 x
@@ -555,7 +496,7 @@ let of_array k x m n =
 
 (* FIXME *)
 let save_txt x f =
-  let _op = _owl_elt_to_str (kind x) in
+  let _op = Owl_utils.elt_to_str (kind x) in
   let h = open_out f in
   iter_rows (fun y ->
     iter (fun z -> Printf.fprintf h "%s\t" (_op z)) y;
@@ -701,7 +642,7 @@ let hadamard k n =
   let cp_op = _owl_copy k in
   let neg_op = _owl_neg k in
   if Owl_maths.is_pow2 n then (
-    Owl_dense_ndarray_generic.set x [|0;0|] (_one k);
+    Owl_dense_ndarray_generic.set x [|0;0|] (Owl_const.one k);
     _make_hadamard cp_op neg_op n n 1 x;
     x
   )
@@ -727,8 +668,8 @@ let hadamard k n =
 
 let magic k n =
   assert (n >= 3);
-  let a0 = _zero k in
-  let a1 = _one k in
+  let a0 = Owl_const.zero k in
+  let a1 = Owl_const.one k in
 
   let _magic_odd n a =
     let x = zeros k n n in
