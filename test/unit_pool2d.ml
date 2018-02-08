@@ -26,14 +26,14 @@ let test_maxpool2d_back input_shape kernel stride pad =
   let output = N.max_pool2d ~padding:pad input kernel stride in
   let output_shape = N.shape output in
   let output' = N.sequential ~a:1. output_shape in
-  N.max_pool2d_backward VALID input kernel stride output'
+  N.max_pool2d_backward pad input kernel stride output'
 
 let test_avgpool2d_back input_shape kernel stride pad =
   let input = N.sequential ~a:1. input_shape in
   let output = N.avg_pool2d ~padding:pad input kernel stride in
   let output_shape = N.shape output in
   let output' = N.sequential ~a:1. output_shape in
-  N.avg_pool2d_backward VALID input kernel stride output'
+  N.avg_pool2d_backward pad input kernel stride output'
 
 let verify_value fn input_shape kernel stride pad expected =
   let a = fn input_shape kernel stride pad in

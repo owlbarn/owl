@@ -1,20 +1,19 @@
+/*
+ * OWL - an OCaml numerical library for scientific computing
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
+ */
+
 #include "owl_core.h"
 #include <string.h>
 
+
+//////////////////// function templates starts ////////////////////
+
 #define OWL_ENABLE_TEMPLATE
 
-//#define FUNCTION(prefix, name) prefix ## _ ## float32_pool ## _ ## name
-//#define FUN_NATIVE(name, dim, fb) stub_float32_tensor ## _ ## name ## _ ## dim ## _ ## fb ## _ ## native
-//#define FUN_BYTE(name, dim, fb) stub_float32_tensor ## _ ## name ## _ ## dim ## _ ## fb ## _ ## native
 #define OWL_TENSOR_MAX
-#define FUN_2DF_NATIVE stub_float32_tensor_maxpool_spatial_native
-#define FUN_2DF_BYTE   stub_float32_tensor_maxpool_spatial_bytecode
-#define FUN_2DB_NATIVE stub_float32_tensor_maxpool_spatial_backward_native
-#define FUN_2DB_BYTE   stub_float32_tensor_maxpool_spatial_backward_bytecode
-#define FUN_3DF_NATIVE stub_float32_tensor_maxpool_cuboid_native
-#define FUN_3DF_BYTE   stub_float32_tensor_maxpool_cuboid_bytecode
-#define FUN_3DB_NATIVE stub_float32_tensor_maxpool_cuboid_backward_native
-#define FUN_3DB_BYTE   stub_float32_tensor_maxpool_cuboid_backward_bytecode
+#define FUN_NATIVE(dim) stub_float32_tensor_maxpool ## _ ## dim  ## _ ## native
+#define FUN_BYTE(dim) stub_float32_tensor_maxpool ## _ ## dim  ## _ ## bytecode
 #define TYPE float
 #define INITACC -INFINITY
 #define ACCFN(a, b) if (a < b) a = b
@@ -24,26 +23,14 @@
 #undef ACCFN
 #undef INITACC
 #undef TYPE
-#undef FUN_2DF_BYTE
-#undef FUN_2DF_NATIVE
-#undef FUN_2DB_BYTE
-#undef FUN_2DB_NATIVE
-#undef FUN_3DF_BYTE
-#undef FUN_3DF_NATIVE
-#undef FUN_3DB_BYTE
-#undef FUN_3DB_NATIVE
+#undef FUN_BYTE
+#undef FUN_NATIVE
 #undef OWL_TENSOR_MAX
 
 
 #define OWL_TENSOR_AVG
-#define FUN_2DF_NATIVE stub_float32_tensor_avgpool_spatial_native
-#define FUN_2DF_BYTE   stub_float32_tensor_avgpool_spatial_bytecode
-#define FUN_2DB_NATIVE stub_float32_tensor_avgpool_spatial_backward_native
-#define FUN_2DB_BYTE   stub_float32_tensor_avgpool_spatial_backward_bytecode
-#define FUN_3DF_NATIVE stub_float32_tensor_avgpool_cuboid_native
-#define FUN_3DF_BYTE   stub_float32_tensor_avgpool_cuboid_bytecode
-#define FUN_3DB_NATIVE stub_float32_tensor_avgpool_cuboid_backward_native
-#define FUN_3DB_BYTE   stub_float32_tensor_avgpool_cuboid_backward_bytecode
+#define FUN_NATIVE(dim) stub_float32_tensor_avgpool ## _ ## dim  ## _ ## native
+#define FUN_BYTE(dim) stub_float32_tensor_avgpool ## _ ## dim  ## _ ## bytecode
 #define TYPE float
 #define INITACC 0.
 #define ACCFN(a, b) a += b
@@ -53,26 +40,14 @@
 #undef ACCFN
 #undef TYPE
 #undef INITACC
-#undef FUN_2DF_BYTE
-#undef FUN_2DF_NATIVE
-#undef FUN_2DB_BYTE
-#undef FUN_2DB_NATIVE
-#undef FUN_3DF_BYTE
-#undef FUN_3DF_NATIVE
-#undef FUN_3DB_BYTE
-#undef FUN_3DB_NATIVE
+#undef FUN_BYTE
+#undef FUN_NATIVE
 #undef OWL_TENSOR_AVG
 
 
 #define OWL_TENSOR_MAX
-#define FUN_2DF_NATIVE stub_float64_tensor_maxpool_spatial_native
-#define FUN_2DF_BYTE   stub_float64_tensor_maxpool_spatial_bytecode
-#define FUN_2DB_NATIVE stub_float64_tensor_maxpool_spatial_backward_native
-#define FUN_2DB_BYTE   stub_float64_tensor_maxpool_spatial_backward_bytecode
-#define FUN_3DF_NATIVE stub_float64_tensor_maxpool_cuboid_native
-#define FUN_3DF_BYTE   stub_float64_tensor_maxpool_cuboid_bytecode
-#define FUN_3DB_NATIVE stub_float64_tensor_maxpool_cuboid_backward_native
-#define FUN_3DB_BYTE   stub_float64_tensor_maxpool_cuboid_backward_bytecode
+#define FUN_NATIVE(dim) stub_float64_tensor_maxpool ## _ ## dim  ## _ ## native
+#define FUN_BYTE(dim) stub_float64_tensor_maxpool ## _ ## dim  ## _ ## bytecode
 #define TYPE double
 #define INITACC -INFINITY
 #define ACCFN(a, b) if (a < b) a = b
@@ -82,26 +57,14 @@
 #undef ACCFN
 #undef INITACC
 #undef TYPE
-#undef FUN_2DF_BYTE
-#undef FUN_2DF_NATIVE
-#undef FUN_2DB_BYTE
-#undef FUN_2DB_NATIVE
-#undef FUN_3DF_BYTE
-#undef FUN_3DF_NATIVE
-#undef FUN_3DB_BYTE
-#undef FUN_3DB_NATIVE
+#undef FUN_BYTE
+#undef FUN_NATIVE
 #undef OWL_TENSOR_MAX
 
 
 #define OWL_TENSOR_AVG
-#define FUN_2DF_NATIVE stub_float64_tensor_avgpool_spatial_native
-#define FUN_2DF_BYTE   stub_float64_tensor_avgpool_spatial_bytecode
-#define FUN_2DB_NATIVE stub_float64_tensor_avgpool_spatial_backward_native
-#define FUN_2DB_BYTE   stub_float64_tensor_avgpool_spatial_backward_bytecode
-#define FUN_3DF_NATIVE stub_float64_tensor_avgpool_cuboid_native
-#define FUN_3DF_BYTE   stub_float64_tensor_avgpool_cuboid_bytecode
-#define FUN_3DB_NATIVE stub_float64_tensor_avgpool_cuboid_backward_native
-#define FUN_3DB_BYTE   stub_float64_tensor_avgpool_cuboid_backward_bytecode
+#define FUN_NATIVE(dim) stub_float64_tensor_avgpool ## _ ## dim  ## _ ## native
+#define FUN_BYTE(dim) stub_float64_tensor_avgpool ## _ ## dim  ## _ ## bytecode
 #define TYPE double
 #define INITACC 0.
 #define ACCFN(a, b) a += b
@@ -111,14 +74,11 @@
 #undef ACCFN
 #undef TYPE
 #undef INITACC
-#undef FUN_2DF_BYTE
-#undef FUN_2DF_NATIVE
-#undef FUN_2DB_BYTE
-#undef FUN_2DB_NATIVE
-#undef FUN_3DF_BYTE
-#undef FUN_3DF_NATIVE
-#undef FUN_3DB_BYTE
-#undef FUN_3DB_NATIVE
+#undef FUN_BYTE
+#undef FUN_NATIVE
 #undef OWL_TENSOR_AVG
+
+
+//////////////////// function templates ends ////////////////////
 
 #undef OWL_ENABLE_TEMPLATE
