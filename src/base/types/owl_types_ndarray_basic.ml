@@ -31,6 +31,8 @@ module type Sig = sig
 
   val bernoulli : ?p:float -> int array -> arr
 
+  val init : int array -> (int -> elt) -> arr
+
   val shape : arr -> int array
 
   val numel : arr -> int
@@ -60,6 +62,12 @@ module type Sig = sig
   val split : ?axis:int -> int array -> arr -> arr array
 
   val draw : ?axis:int -> arr -> int -> arr * int array
+
+  val map : (elt -> elt) -> arr -> arr
+
+  val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> arr -> arr
+
+  val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
 
   val print : ?max_row:int -> ?max_col:int -> ?header:bool -> ?fmt:(elt -> string) -> arr -> unit
 

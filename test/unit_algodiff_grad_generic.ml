@@ -6,15 +6,10 @@ open Owl_types
 let eps = 1e-16
 let approx_equal ?eps:(eps=1e-12) a b = Pervasives.abs_float (a -. b) < eps
 
-module type Ndarray_Algodiff_Extended = sig
 
-  include Ndarray_Algodiff
+(* functor to generate test unit. *)
 
-  val init : int array -> (int -> elt) -> arr
-
-end
-
-module Make (M : Ndarray_Algodiff_Extended) = struct
+module Make (M : Ndarray_Algodiff) = struct
 
   module AlgoM = Owl_algodiff_generic.Make (M)
   open AlgoM
@@ -30,7 +25,7 @@ module Make (M : Ndarray_Algodiff_Extended) = struct
       let grad_f = Array.init dim (fun i -> M.get grad_f [|0; i|]) in
       let rec pass_fail acc i =
         let check_coord acc x y = acc && (approx_equal~eps:eps x y) in
-        if (i==dim) then acc else (
+        if (i == dim) then acc else (
           let new_acc = check_coord acc dfds.(i) grad_f.(i) in
           pass_fail new_acc (i+1)
         )
@@ -101,7 +96,7 @@ module Make (M : Ndarray_Algodiff_Extended) = struct
       let (r,test_result,good_result) = To_test.check_grad f dfs v in
       let strvec v =
         let strx acc x =
-          if (String.length acc==0) then (Printf.sprintf "%f" x) else (Printf.sprintf "%s,%f" acc x)
+          if (String.length acc == 0) then (Printf.sprintf "%f" x) else (Printf.sprintf "%s,%f" acc x)
         in
         Array.fold_left strx "" v
       in

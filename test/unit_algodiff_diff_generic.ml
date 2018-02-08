@@ -6,17 +6,10 @@ open Owl_types
 let eps = 1e-16
 let approx_equal a b = Pervasives.abs_float (a -. b) < 1e-16
 
-module type Ndarray_Algodiff_Extended = sig
 
-  include Ndarray_Algodiff
+(* functor to generate test unit. *)
 
-  val map : (elt -> elt) -> arr -> arr
-  val approx_equal : ?eps:float -> arr -> arr -> bool
-  val init : int array -> (int -> elt) -> arr
-
-end
-
-module Make (M : Ndarray_Algodiff_Extended) = struct
+module Make (M : Ndarray_Algodiff) = struct
 
   module AlgoM = Owl_algodiff_generic.Make (M)
   open AlgoM
