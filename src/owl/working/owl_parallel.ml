@@ -46,7 +46,7 @@ module type Ndarray = sig
 
   val ones  : int array -> arr
 
-  val uniform : ?scale:float -> int array -> arr
+  val uniform : ?a:float -> ?b:float -> int array -> arr
 
   val numel : arr -> int
 
@@ -170,8 +170,8 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
 
   let sequential ?a ?step d = None
 
-  let uniform ?scale d =
-    let create_fun d = M.uniform ?scale d in
+  let uniform ?a ?b d =
+    let create_fun d = M.uniform ?a ?b d in
     distributed_create create_fun d
 
   let gaussian d = None
