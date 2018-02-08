@@ -328,7 +328,7 @@ value FUN_3DB_NATIVE(
   value vInput_depth, value vIn_channel,
   value vKernel_cols, value vKernel_rows, value vKernel_depth,
   value vOutput_cols, value vOutput_rows, value vOutput_depth,
-  value vRow_stride, value vCol_stride, value vDepth_stride,
+  value vCol_stride, value vRow_stride, value vDepth_stride,
   value vPadding
 ){
 
@@ -350,10 +350,10 @@ value FUN_3DB_NATIVE(
   int output_cols   = Long_val(vOutput_cols);
   int output_rows   = Long_val(vOutput_rows);
   int output_depth  = Long_val(vOutput_depth);
-  int row_stride    = Long_val(vRow_stride);
   int col_stride    = Long_val(vCol_stride);
+  int row_stride    = Long_val(vRow_stride);
   int depth_stride  = Long_val(vDepth_stride);
-  int padding      = Long_val(vPadding);
+  int padding       = Long_val(vPadding);
 
   float pad_rows, pad_cols, pad_depth;
   if (padding == 1){
@@ -365,9 +365,9 @@ value FUN_3DB_NATIVE(
       kernel_cols - input_cols) / 2.;
     pad_depth = (depth_stride * ( output_depth - 1) +
       kernel_depth - input_depth) / 2.;
-    if (pad_cols < 0)  pad_cols  = 0;
-    if (pad_rows < 0)  pad_rows  = 0;
-    if (pad_depth < 0) pad_depth = 0;
+    if (pad_cols < 0)  pad_cols  = 0.;
+    if (pad_rows < 0)  pad_rows  = 0.;
+    if (pad_depth < 0) pad_depth = 0.;
   }
 
   memset(input_backward_ptr, 0,
@@ -381,9 +381,9 @@ value FUN_3DB_NATIVE(
       for (int k = 0; k < output_rows; ++k) {
         for (int d = 0; d < output_depth; ++d) {
 
-          const int cstart = j * col_stride - pad_cols;
-          const int rstart = k * row_stride - pad_rows;
-          const int dstart = d * depth_stride - pad_depth;
+          const int cstart = j * col_stride - floor(pad_cols);
+          const int rstart = k * row_stride - floor(pad_rows);
+          const int dstart = d * depth_stride - floor(pad_depth);
           const int cend   = cstart + kernel_cols;
           const int rend   = rstart + kernel_rows;
           const int dend   = dstart + kernel_depth;

@@ -25,14 +25,14 @@ let test_maxpool3d_back input_shape kernel stride pad =
   let output = N.max_pool3d ~padding:pad input kernel stride in
   let output_shape = N.shape output in
   let output' = N.sequential ~a:1. output_shape in
-  N.max_pool3d_backward VALID input kernel stride output'
+  N.max_pool3d_backward pad input kernel stride output'
 
 let test_avgpool3d_back input_shape kernel stride pad =
   let input = N.sequential ~a:1. input_shape in
   let output = N.avg_pool3d ~padding:pad input kernel stride in
   let output_shape = N.shape output in
   let output' = N.sequential ~a:1. output_shape in
-  N.avg_pool3d_backward VALID input kernel stride output'
+  N.avg_pool3d_backward pad input kernel stride output'
 
 let verify_value fn input_shape kernel stride pad expected =
   let a = fn input_shape kernel stride pad in
@@ -214,19 +214,16 @@ module To_test_avgpool3d_back = struct
   (* testAvgPoolGradSamePadding1_1 *)
   let fun03 () =
     let expected = [|
-       1.;  2.;  3.;  4.;  5.;  6.;  7.;  8.;  9.; 10.; 11.; 12.; 13.; 14.; 15.;
-      16.; 17.; 18.; 19.; 20.; 21.; 22.; 23.; 24.; 25.; 26.; 27.; 28.; 29.; 30.;
-      31.; 32.; 33.; 34.; 35.; 36.; 37.; 38.; 39.; 40.; 41.; 42.; 43.; 44.; 45.;
-      46.; 47.; 48.|] in
+       1.;  2.;  3.;  4.;  5.;  6.;  7.;  8.;  9.; 10.; 11.; 12.;
+       13.; 14.; 15.; 16.; 17.; 18.; 19.; 20.; 21.; 22.; 23.; 24.|] in
     verify_value test_avgpool3d_back [|1;3;2;4;1|]
       [|1;1;1|] [|1;1;1|] SAME expected
 
   (* testAvgPoolGradSamePadding2_1 *)
   let fun04 () =
     let expected = [|
-      0.125; 0.25; 0.875; 1.25;  1.375;  1.75;  5.625;  6.75;
-      2.375; 2.75; 8.625; 9.75; 10.125; 11.25; 34.875; 38.25|] in
-    verify_value test_maxpool3d_back [|1;2;2;2;1|]
+      0.125; 0.625; 0.875; 3.375; 1.375; 4.875; 5.625; 19.125 |] in
+    verify_value test_avgpool3d_back [|1;2;2;2;1|]
       [|2;2;2|] [|1;1;1|] SAME expected
 
   (* testAvgPoolGradSamePadding2_2 *)

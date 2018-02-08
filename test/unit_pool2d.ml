@@ -332,14 +332,14 @@ let test_set = [
   "fun_forward10", `Slow, fun_forward10;
   "fun_forward11", `Slow, fun_forward11;
   "fun_max2d_back00", `Slow, fun_max2d_back00;
-  (* "fun_max2d_back01", `Slow, fun_max2d_back01;
-     "fun_max2d_back02", `Slow, fun_max2d_back02; *)
+  "fun_max2d_back01", `Slow, fun_max2d_back01;
+  "fun_max2d_back02", `Slow, fun_max2d_back02;
   "fun_max2d_back03", `Slow, fun_max2d_back03;
   "fun_max2d_back04", `Slow, fun_max2d_back04;
   "fun_max2d_back05", `Slow, fun_max2d_back05;
   "fun_avg2d_back00", `Slow, fun_avg2d_back00;
-  (* "fun_avg2d_back01", `Slow, fun_avg2d_back01;
-     "fun_avg2d_back02", `Slow, fun_avg2d_back02; *)
+  "fun_avg2d_back01", `Slow, fun_avg2d_back01;
+  "fun_avg2d_back02", `Slow, fun_avg2d_back02;
   "fun_avg2d_back03", `Slow, fun_avg2d_back03;
   "fun_avg2d_back04", `Slow, fun_avg2d_back04;
   "fun_avg2d_back05", `Slow, fun_avg2d_back05;
