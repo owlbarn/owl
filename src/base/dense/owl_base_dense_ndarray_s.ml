@@ -14,9 +14,6 @@ type elt = float
 type arr = (float, float32_elt, c_layout) Genarray.t
 
 
-module Scalar = Owl_base_maths
-
-
 let empty dims = M.empty Float32 dims
 
 

@@ -816,16 +816,24 @@ let _broadcasted_op varr_a varr_b op_fun =
   end
 
 
-let add varr_a varr_b = (_broadcasted_op varr_a varr_b (+.))
+let add varr_a varr_b =
+  let _op = Owl_base_dense_common._add_elt (kind varr_a) in
+  _broadcasted_op varr_a varr_b _op
 
 
-let sub varr_a varr_b = (_broadcasted_op varr_a varr_b (-.))
+let sub varr_a varr_b =
+  let _op = Owl_base_dense_common._sub_elt (kind varr_a) in
+  _broadcasted_op varr_a varr_b _op
 
 
-let mul varr_a varr_b = (_broadcasted_op varr_a varr_b ( *. ))
+let mul varr_a varr_b =
+  let _op = Owl_base_dense_common._mul_elt (kind varr_a) in
+  _broadcasted_op varr_a varr_b _op
 
 
-let div varr_a varr_b = (_broadcasted_op varr_a varr_b ( /. ))
+let div varr_a varr_b =
+  let _op = Owl_base_dense_common._div_elt (kind varr_a) in
+  _broadcasted_op varr_a varr_b _op
 
 
 let atan2 varr_a varr_b = (_broadcasted_op varr_a varr_b (Scalar.atan2))
@@ -835,22 +843,26 @@ let pow varr_a varr_b = (_broadcasted_op varr_a varr_b ( ** ))
 
 
 let add_scalar varr a =
-  let add_scalar_fun = (fun x -> (x +. a)) in
+  let _op = Owl_base_dense_common._add_elt (kind varr) in
+  let add_scalar_fun = (fun x -> _op x a) in
   (map add_scalar_fun varr)
 
 
 let sub_scalar varr a =
-  let sub_scalar_fun = (fun x -> (x -. a)) in
+  let _op = Owl_base_dense_common._sub_elt (kind varr) in
+  let sub_scalar_fun = (fun x -> _op x a) in
   (map sub_scalar_fun varr)
 
 
 let mul_scalar varr a =
-  let mul_scalar_fun = (fun x -> (x *. a)) in
+  let _op = Owl_base_dense_common._mul_elt (kind varr) in
+  let mul_scalar_fun = (fun x -> _op x a) in
   (map mul_scalar_fun varr)
 
 
 let div_scalar varr a =
-  let div_scalar_fun = (fun x -> (x /. a)) in
+  let _op = Owl_base_dense_common._div_elt (kind varr) in
+  let div_scalar_fun = (fun x -> _op x a) in
   (map div_scalar_fun varr)
 
 
@@ -864,7 +876,8 @@ let scalar_add a varr = (add_scalar varr a)
 
 
 let scalar_sub a varr =
-  let scalar_sub_fun = (fun x -> (a -. x)) in
+  let _op = Owl_base_dense_common._sub_elt (kind varr) in
+  let scalar_sub_fun = (fun x -> _op a x) in
   (map scalar_sub_fun varr)
 
 
@@ -873,7 +886,8 @@ let scalar_mul a varr = (mul_scalar varr a)
 
 
 let scalar_div a varr =
-  let scalar_div_fun = (fun x -> (a /. x)) in
+  let _op = Owl_base_dense_common._div_elt (kind varr) in
+  let scalar_div_fun = (fun x -> _op a x) in
   (map scalar_div_fun varr)
 
 

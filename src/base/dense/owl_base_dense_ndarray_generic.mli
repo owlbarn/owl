@@ -438,52 +438,40 @@ val l2norm_sqr' : (float, 'b) t -> float
 
 (** {6 Binary math operators}  *)
 
-(* TODO: change float to 'a *)
-val add : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+val add : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val sub : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+val sub : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val mul : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+val mul : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val div : (float, 'b) t -> (float, 'b) t -> (float, 'b) t
+val div : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val add_scalar : (float, 'b) t -> float -> (float, 'b) t
+val add_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val sub_scalar : (float, 'b) t -> float -> (float, 'b) t
+val sub_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val mul_scalar : (float, 'b) t -> float -> (float, 'b) t
+val mul_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val div_scalar : (float, 'b) t -> float -> (float, 'b) t
+val div_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val scalar_add : float -> (float, 'b) t -> (float, 'b) t
+val scalar_add : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val scalar_sub : float -> (float, 'b) t -> (float, 'b) t
+val scalar_sub : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val scalar_mul : float -> (float, 'b) t -> (float, 'b) t
+val scalar_mul : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
-(* TODO: change float to 'a *)
-val scalar_div : float -> (float, 'b) t -> (float, 'b) t
+val scalar_div : 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
 (* TODO: change float to 'a *)
