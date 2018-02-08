@@ -60,9 +60,9 @@ module type Ndarray = sig
 
   val reshape : arr -> int array -> arr
 
-  val map : ?axis:int option array -> (elt -> elt) -> arr -> arr
+  val map : (elt -> elt) -> arr -> arr
 
-  val map2 : ?axis:int option array -> (elt -> elt -> elt) -> arr -> arr -> arr
+  val map2 : (elt -> elt -> elt) -> arr -> arr -> arr
 
   val sin : arr -> arr
 
