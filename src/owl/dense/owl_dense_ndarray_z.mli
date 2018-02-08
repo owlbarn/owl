@@ -65,9 +65,9 @@ val strides : arr -> int array
 
 val slice_size : arr -> int array
 
-val index_1d_nd : int -> int array -> int array
+val ind : arr -> int -> int array
 
-val index_nd_1d : int array -> int array -> int
+val i1d : arr -> int array -> int
 
 
 (** {6 Manipulate a N-dimensional array} *)
@@ -80,13 +80,13 @@ val get_index : arr -> int array array -> elt array
 
 val set_index : arr -> int array array -> elt array -> unit
 
-val get_slice : index list -> arr -> arr
+val get_fancy : index list -> arr -> arr
 
-val set_slice : index list -> arr -> arr -> unit
+val set_fancy : index list -> arr -> arr -> unit
 
-val get_slice_simple : int list list -> arr -> arr
+val get_slice : int list list -> arr -> arr
 
-val set_slice_simple : int list list -> arr -> arr -> unit
+val set_slice : int list list -> arr -> arr -> unit
 
 val sub_left : arr -> int -> int -> arr
 
@@ -138,38 +138,40 @@ val bottom : arr -> int -> int array array
 
 val sort : arr -> unit
 
+val draw : ?axis:int -> arr -> int -> arr * int array
+
 val mmap : Unix.file_descr -> ?pos:int64 -> bool -> int array -> arr
 
 
 (** {6 Iterate array elements} *)
 
-val iteri : ?axis:int option array -> (int array -> elt -> unit) -> arr -> unit
+val iteri : (int -> elt -> unit) -> arr -> unit
 
-val iter : ?axis:int option array -> (elt -> unit) -> arr -> unit
+val iter : (elt -> unit) -> arr -> unit
 
-val mapi : ?axis:int option array -> (int array -> elt -> elt) -> arr -> arr
+val mapi : (int -> elt -> elt) -> arr -> arr
 
-val map : ?axis:int option array -> (elt -> elt) -> arr -> arr
+val map : (elt -> elt) -> arr -> arr
 
-val map2i : ?axis:int option array -> (int array -> elt -> elt -> elt) -> arr -> arr -> arr
+val filteri : (int -> elt -> bool) -> arr -> int array
 
-val map2 : ?axis:int option array -> (elt -> elt -> elt) -> arr -> arr -> arr
+val filter : (elt -> bool) -> arr -> int array
 
-val filteri : ?axis:int option array -> (int array -> elt -> bool) -> arr -> int array array
+val foldi : ?axis:int -> (int -> elt -> elt -> elt) -> elt -> arr -> arr
 
-val filter : ?axis:int option array -> (elt -> bool) -> arr -> int array array
+val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> arr -> arr
 
-val foldi : ?axis:int option array -> (int array -> 'c -> elt -> 'c) -> 'c -> arr -> 'c
+val scani : ?axis:int -> (int -> elt -> elt -> elt) -> arr -> arr
 
-val fold : ?axis:int option array -> ('a -> elt -> 'a) -> 'a -> arr -> 'a
+val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
 
-val iteri_slice : int array -> (int array array -> arr -> unit) -> arr -> unit
-
-val iter_slice : int array -> (arr -> unit) -> arr -> unit
-
-val iter2i : (int array -> elt -> elt -> unit) -> arr -> arr -> unit
+val iter2i : (int -> elt -> elt -> unit) -> arr -> arr -> unit
 
 val iter2 : (elt -> elt -> unit) -> arr -> arr -> unit
+
+val map2i : (int -> elt -> elt -> elt) -> arr -> arr -> arr
+
+val map2 : (elt -> elt -> elt) -> arr -> arr -> arr
 
 
 (** {6 Examine array elements or compare two arrays } *)
@@ -445,5 +447,3 @@ val clip_by_value : ?amin:elt -> ?amax:elt -> arr -> arr
 (** {6 Experimental functions} *)
 
 val sum_slices : ?axis:int -> arr -> arr
-
-val draw_along_dim0 : arr -> int -> arr * int array

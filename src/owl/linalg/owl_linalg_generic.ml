@@ -24,7 +24,7 @@ let lu x =
   let l = M.tril a in
   let u = M.resize (M.triu a) [|n; n|] in
 
-  let _a1 = Owl_dense_common._one (M.kind x) in
+  let _a1 = Owl_const.one (M.kind x) in
   for i = 0 to minmn - 1 do
     M.set l i i _a1
   done;
@@ -49,7 +49,7 @@ let det x =
   assert (m = n);
 
   let a, ipiv = Owl_lapacke.getrf x in
-  let d = ref (Owl_dense_common._one (M.kind x)) in
+  let d = ref (Owl_const.one (M.kind x)) in
   let c = ref 0 in
 
   let _mul_op = Owl_dense_common._mul_elt (M.kind x) in
@@ -73,7 +73,7 @@ let logdet x =
 
   let _kind = M.kind x in
   let a, ipiv = Owl_lapacke.getrf x in
-  let d = ref (Owl_dense_common._zero _kind) in
+  let d = ref (Owl_const.zero _kind) in
   let c = ref 0 in
 
   let _add_op = Owl_dense_common._add_elt _kind in
@@ -166,7 +166,7 @@ let lq ?(thin=true) x =
   let l = match thin with
     | true  ->
         if m < n then
-          M.get_slice [R[]; R[0; minmn-1]] (M.tril a)
+          M.get_slice [[]; [0; minmn-1]] (M.tril a)
         else M.tril a
     | false -> M.tril a
   in
@@ -301,7 +301,7 @@ let eig
   let _construct_v
     : type a b. (float, a) kind -> (Complex.t, b) kind -> (float, a) t -> (float, a) t -> (float, a) t -> (Complex.t, b) t -> unit
     = fun k0 k1 wr wi vr v ->
-    let _a0 = Owl_dense_common._zero (M.kind wi) in
+    let _a0 = Owl_const.zero (M.kind wi) in
     let _, n = M.shape v in
     let j = ref 0 in
 
@@ -431,7 +431,7 @@ let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
 let is_triu x =
   let m, n = M.shape x in
   let k = Pervasives.min m n in
-  let _a0 = Owl_dense_common._zero (M.kind x) in
+  let _a0 = Owl_const.zero (M.kind x) in
   try
     for i = 0 to k - 1 do
       for j = 0 to i - 1 do
@@ -445,7 +445,7 @@ let is_triu x =
 let is_tril x =
   let m, n = M.shape x in
   let k = Pervasives.min m n in
-  let _a0 = Owl_dense_common._zero (M.kind x) in
+  let _a0 = Owl_const.zero (M.kind x) in
   try
     for i = 0 to k - 1 do
       for j = i + 1 to k - 1 do

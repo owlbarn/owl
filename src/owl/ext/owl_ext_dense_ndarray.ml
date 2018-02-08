@@ -131,9 +131,9 @@ module type BasicSig = sig
 
   val set : arr -> int array -> elt -> unit
 
-  val get_slice : index list -> arr -> arr
+  val get_fancy : index list -> arr -> arr
 
-  val set_slice : index list -> arr -> arr -> unit
+  val set_fancy : index list -> arr -> arr -> unit
 
   val sub_left : arr -> int -> int -> arr
 
@@ -164,33 +164,29 @@ module type BasicSig = sig
   val squeeze : ?axis:int array -> arr -> arr
 
 
-  val iteri : ?axis:int option array -> (int array -> elt -> unit) -> arr -> unit
+  val iteri : (int -> elt -> unit) -> arr -> unit
 
-  val iter : ?axis:int option array -> (elt -> unit) -> arr -> unit
+  val iter : (elt -> unit) -> arr -> unit
 
-  val mapi : ?axis:int option array -> (int array -> elt -> elt) -> arr -> arr
+  val mapi : (int -> elt -> elt) -> arr -> arr
 
-  val map : ?axis:int option array -> (elt -> elt) -> arr -> arr
+  val map : (elt -> elt) -> arr -> arr
 
-  val map2i : ?axis:int option array -> (int array -> elt -> elt -> elt) -> arr -> arr -> arr
+  val filteri : (int -> elt -> bool) -> arr -> int array
 
-  val map2 : ?axis:int option array -> (elt -> elt -> elt) -> arr -> arr -> arr
+  val filter : (elt -> bool) -> arr -> int array
 
-  val filteri : ?axis:int option array -> (int array -> elt -> bool) -> arr -> int array array
+  val foldi : ?axis:int -> (int -> elt -> elt -> elt) -> elt -> arr -> arr
 
-  val filter : ?axis:int option array -> (elt -> bool) -> arr -> int array array
+  val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> arr -> arr
 
-  val foldi : ?axis:int option array -> (int array -> 'c -> elt -> 'c) -> 'c -> arr -> 'c
-
-  val fold : ?axis:int option array -> ('a -> elt -> 'a) -> 'a -> arr -> 'a
-
-  val iteri_slice : int array -> (int array array -> arr -> unit) -> arr -> unit
-
-  val iter_slice : int array -> (arr -> unit) -> arr -> unit
-
-  val iter2i : (int array -> elt -> elt -> unit) -> arr -> arr -> unit
+  val iter2i : (int -> elt -> elt -> unit) -> arr -> arr -> unit
 
   val iter2 : (elt -> elt -> unit) -> arr -> arr -> unit
+
+  val map2i : (int -> elt -> elt -> elt) -> arr -> arr -> arr
+
+  val map2 : (elt -> elt -> elt) -> arr -> arr -> arr
 
 
   val exists : (elt -> bool) -> arr -> bool
@@ -342,9 +338,9 @@ module Make_Basic
 
   let set x i a = M.set (unpack_box x) i (unpack_elt a)
 
-  let get_slice axis x = M.get_slice axis (unpack_box x) |> pack_box
+  let get_fancy axis x = M.get_fancy axis (unpack_box x) |> pack_box
 
-  let set_slice axis x y = M.set_slice axis (unpack_box x) (unpack_box y)
+  let set_fancy axis x y = M.set_fancy axis (unpack_box x) (unpack_box y)
 
   let sub_left x s l = M.sub_left (unpack_box x) s l |> pack_box
 
@@ -373,19 +369,15 @@ module Make_Basic
   let squeeze ?(axis=[||]) x = M.squeeze ~axis (unpack_box x) |> pack_box
 
 
-  let iteri ?axis f x = M.iteri ?axis f (unpack_box x)
+  let iteri f x = M.iteri f (unpack_box x)
 
-  let iter ?axis f x = M.iter ?axis f (unpack_box x)
+  let iter f x = M.iter f (unpack_box x)
 
-  let mapi ?axis f x = M.mapi ?axis f (unpack_box x) |> pack_box
+  let mapi f x = M.mapi f (unpack_box x) |> pack_box
 
   let map f x = M.map f (unpack_box x) |> pack_box
 
-  let map2i ?axis f x y = M.map2i ?axis f (unpack_box x) (unpack_box y) |> pack_box
-
-  let map2 f x y = M.map2i f (unpack_box x) (unpack_box y) |> pack_box
-
-  let filteri ?axis f x = M.filteri ?axis f (unpack_box x)
+  let filteri f x = M.filteri f (unpack_box x)
 
   let filter f x = M.filter f (unpack_box x)
 
@@ -393,14 +385,14 @@ module Make_Basic
 
   let fold f a x = M.fold f a (unpack_box x)
 
-  let iteri_slice axis f x = M.iteri_slice axis f (unpack_box x)
-
-  let iter_slice axis f x = M.iter_slice axis f (unpack_box x)
-
   let iter2i f x y = M.iter2i f (unpack_box x) (unpack_box y)
 
   let iter2 f x y = M.iter2 f (unpack_box x) (unpack_box y)
 
+  let map2i f x y = M.map2i f (unpack_box x) (unpack_box y) |> pack_box
+
+  let map2 f x y = M.map2i f (unpack_box x) (unpack_box y) |> pack_box
+  
 
   let exists f x = M.exists f (unpack_box x)
 

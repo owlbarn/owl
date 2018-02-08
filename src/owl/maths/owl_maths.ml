@@ -8,6 +8,17 @@ module CI = Cstubs_internals
 
 (** Basic and advanced math functions *)
 
+let add = ( +. )
+
+let sub = ( -. )
+
+let mul = ( *. )
+
+let div = ( /. )
+
+let atan2 = Pervasives.atan2
+
+
 let abs x = abs_float x
 
 let neg x = 0. -. x
@@ -34,6 +45,8 @@ let round t =
   else t
 
 let trunc x = modf x |> snd
+
+let sqr x = x *. x
 
 let sqrt x = sqrt x
 
@@ -277,6 +290,20 @@ let is_odd x = ((Pervasives.abs x) mod 2) = 1
 let is_even x = (x mod 2) = 0
 
 let is_pow2 x = (x <> 0) && (x land (x - 1) = 0)
+
+let nextafter = Owl_maths_special.nextafter
+
+let nextafterf = Owl_maths_special.nextafterf
+
+let bdtr k n p = Owl_maths_special.bdtr k n p
+
+let bdtrc k n p = Owl_maths_special.bdtrc k n p
+
+let bdtri k n y = Owl_maths_special.bdtri k n y
+
+let btdtr a b x = Owl_maths_special.btdtr a b x
+
+let btdtri a b p = Owl_maths_special.btdtri a b p
 
 
 

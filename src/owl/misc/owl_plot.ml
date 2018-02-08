@@ -1669,12 +1669,18 @@ let image ?(h=_default_handle) x =
 let spy ?(h=_default_handle) ?(spec=[]) x =
   let xs = Owl_utils.Stack.make () in
   let ys = Owl_utils.Stack.make () in
-  Owl_dense_matrix.D.iteri (fun i j a ->
-    if a <> 0. then (
-      Owl_utils.Stack.push xs (float_of_int i);
-      Owl_utils.Stack.push ys (float_of_int j);
-    )
-  ) x;
+  let m, n = Owl_dense_matrix.D.shape x in
+  
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      let a = Owl_dense_matrix.D.get x i j in
+      if a <> 0. then (
+        Owl_utils.Stack.push xs (float_of_int i);
+        Owl_utils.Stack.push ys (float_of_int j);
+      )
+    done;
+  done;
+
   let x = Owl_utils.Stack.to_array xs in
   let y = Owl_utils.Stack.to_array ys in
   let x = Owl_dense_matrix.D.of_arrays [|x|] in

@@ -41,7 +41,7 @@ let semidef m = M.semidef Float64 m
 
 let linspace a b n = M.linspace Float64 a b n
 
-let logspace ?(base=Owl_const.e) a b n = M.logspace Float64 ~base a b n
+let logspace ?base a b n = M.logspace Float64 ?base a b n
 
 let meshgrid xa xb ya yb xn yn = M.meshgrid Float64 xa xb ya yb xn yn
 
@@ -68,12 +68,5 @@ let vector_ones n = ones 1 n
 let vector_zeros n = zeros 1 n
 
 let vector_uniform n = uniform 1 n
-
-let uniform_int ?(a=0) ?(b=99) m n =
-  let x = empty m n in
-  iteri (fun i j _ ->
-    M.set x i j
-    (float_of_int (Owl_stats.uniform_int_rvs ~a ~b))
-  ) x; x
 
 let conj x = copy x

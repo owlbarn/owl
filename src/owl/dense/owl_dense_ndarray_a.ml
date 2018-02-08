@@ -31,23 +31,23 @@ let make_arr shape stride data = {
 
 let create d a =
   let n = _calc_numel_from_shape d in
-  make_arr d (_calc_stride d) (Array.make n a)
+  make_arr d (Owl_utils.calc_stride d) (Array.make n a)
 
 let init d f =
   let n = _calc_numel_from_shape d in
   let data = Array.init n (fun i -> f i) in
-  make_arr d (_calc_stride d) data
+  make_arr d (Owl_utils.calc_stride d) data
 
 let init_nd d f =
   let n = _calc_numel_from_shape d in
   let j = Array.copy d in
-  let s = _calc_stride d in
+  let s = Owl_utils.calc_stride d in
   let data = Array.init n (fun i ->
-    Owl_dense_common._index_1d_nd i j s;
+    Owl_utils.index_1d_nd i j s;
     f j;
   )
   in
-  make_arr d (_calc_stride d) data
+  make_arr d (Owl_utils.calc_stride d) data
 
 let sequential ?(a=0.) ?(step=1.) d =
   let n = _calc_numel_from_shape d in
@@ -56,7 +56,7 @@ let sequential ?(a=0.) ?(step=1.) d =
     a := !a +. step;
     !a
   ) in
-  make_arr d (_calc_stride d) data
+  make_arr d (Owl_utils.calc_stride d) data
 
 let zeros d = create d 0.
 
@@ -71,9 +71,9 @@ let nth_dim x i = x.shape.(i)
 let numel x = _calc_numel_from_shape x.shape
 
 
-let get x i = x.data.(_index_nd_1d i x.stride)
+let get x i = x.data.(Owl_utils.index_nd_1d i x.stride)
 
-let set x i a = x.data.(_index_nd_1d i x.stride) <- a
+let set x i a = x.data.(Owl_utils.index_nd_1d i x.stride) <- a
 
 let get_index x axis =
   let d = num_dims x in
@@ -126,7 +126,7 @@ let sub_left x i =
   let pad_len = num_dims x - i_len in
   assert (pad_len > 0);
   let i = Owl_utils.Array.pad `Right i 0 pad_len in
-  let start_pos = _index_nd_1d i x.stride in
+  let start_pos = Owl_utils.index_nd_1d i x.stride in
   let data_y = Array.sub x.data start_pos s_len in
   let shape_y = Array.sub x.shape i_len pad_len in
   let stride_y = Array.sub x.stride i_len pad_len in
@@ -388,9 +388,9 @@ let transpose ?axis x =
   let s1 = Array.map (fun j -> s0.(j)) a in
   let i' = Array.make d 0 in
   let i = Array.make d 0 in
-  let y = make_arr s1 (_calc_stride s1) (Array.copy x.data) in
+  let y = make_arr s1 (Owl_utils.calc_stride s1) (Array.copy x.data) in
   iteri (fun i_1d z ->
-    Owl_dense_common._index_1d_nd i_1d i x.stride;
+    Owl_utils.index_1d_nd i_1d i x.stride;
     Array.iteri (fun k j -> i'.(k) <- i.(j)) a;
     set y i' z
   ) x;
@@ -425,12 +425,12 @@ let tile x reps =
   (* make the array to store the result *)
   let sy = Owl_utils.Array.map2i (fun _ a b -> a * b) sx reps in
   let y_data = Array.make (_calc_numel_from_shape sy) x.data.(0) in
-  let y = make_arr sy (_calc_stride sy) y_data in
+  let y = make_arr sy (Owl_utils.calc_stride sy) y_data in
   (* project x and y to 1-dimensional arrays *)
   let x1 = x.data in
   let y1 = y.data in
-  let stride_x = _calc_stride (shape x) in
-  let stride_y = _calc_stride (shape y) in
+  let stride_x = Owl_utils.calc_stride (shape x) in
+  let stride_y = Owl_utils.calc_stride (shape y) in
   (* recursively tile the data within y *)
   let rec _tile ofsx ofsy lvl =
     if lvl = !i then (
@@ -465,7 +465,7 @@ let repeat ?axis x reps =
   let _shape_y = shape x in
   _shape_y.(axis) <- _shape_y.(axis) * reps;
   let y_data = Array.make (_calc_numel_from_shape _shape_y) x.data.(0) in
-  let y = make_arr _shape_y (_calc_stride _shape_y) y_data in
+  let y = make_arr _shape_y (Owl_utils.calc_stride _shape_y) y_data in
   (* transform into a flat array first *)
   let x' = x.data in
   let y' = y.data in
@@ -483,7 +483,7 @@ let repeat ?axis x reps =
   )
   (* if repeat at another dimension, use this block copying *)
   else (
-    let _stride_x = _calc_stride (shape x) in
+    let _stride_x = Owl_utils.calc_stride (shape x) in
     let _slice_sz = _stride_x.(axis) in
     (* be careful of the index, this is fortran layout *)
     for i = 0 to (numel x) / _slice_sz - 1 do
@@ -507,7 +507,7 @@ let concatenate ?(axis=0) xs =
   (* validate all the input shapes; update step_sz *)
   let step_sz = Array.(make (length xs) 0) in
   Array.iteri (fun i shape1 ->
-    step_sz.(i) <- (_calc_slice shape1).(axis);
+    step_sz.(i) <- (Owl_utils.calc_slice shape1).(axis);
     acc_dim := !acc_dim + shape1.(axis);
     shape1.(axis) <- 0;
     assert (shape0 = shape1);
@@ -515,10 +515,10 @@ let concatenate ?(axis=0) xs =
   (* allocalte space for new array *)
   shape0.(axis) <- !acc_dim;
   let y_data = Array.make (_calc_numel_from_shape shape0) xs.(0).data.(0) in
-  let y = make_arr shape0 (_calc_stride shape0) y_data in
+  let y = make_arr shape0 (Owl_utils.calc_stride shape0) y_data in
   (* flatten y then calculate the number of copies *)
   let z = y.data in
-  let slice_sz = (_calc_slice shape0).(axis) in
+  let slice_sz = (Owl_utils.calc_slice shape0).(axis) in
   let m = numel y / slice_sz in
   let n = Array.length xs in
   (* flatten all the inputs and init the copy location *)
@@ -561,8 +561,8 @@ let rec _copy_to_padding p1 ls l0 l1 i0 i1 d0 d1 s0 s1 x0 x1 =
     done
   )
   else (
-    let j0 = _index_nd_1d i0 l0 in
-    let j1 = _index_nd_1d i1 l1 in
+    let j0 = Owl_utils.index_nd_1d i0 l0 in
+    let j1 = Owl_utils.index_nd_1d i1 l1 in
     Array.blit x0 j0 x1 j1 ls.(d0)
   )
 
@@ -581,11 +581,11 @@ let pad v d x =
   let s1 = Array.map2 (fun m n -> m + n.(0) + n.(1)) s0 p1 in
   (* create ndarray y for storing the result *)
   let y_data = Array.make (_calc_numel_from_shape s1) v in
-  let y = make_arr s1 (_calc_stride s1) y_data in
+  let y = make_arr s1 (Owl_utils.calc_stride s1) y_data in
   (* prepare variables for block copying *)
-  let ls = _calc_slice s0 in
-  let l0 = _calc_stride s0 in
-  let l1 = _calc_stride s1 in
+  let ls = Owl_utils.calc_slice s0 in
+  let l0 = Owl_utils.calc_stride s0 in
+  let l1 = Owl_utils.calc_stride s1 in
   let i0 = Array.make (num_dims x) 0 in
   let i1 = Array.map (fun a -> a.(0)) p1 in
   let d0 = 0 in
@@ -596,10 +596,10 @@ let pad v d x =
   y
 
 
-(* get_slice function is adapted from its original implementation in owl_slicing
+(* get_fancy function is adapted from its original implementation in owl_slicing
    module, refer to Owl_slicing module for more information
  *)
-let get_slice axis x =
+let get_fancy axis x =
   let axis = Owl_slicing.sdlist_to_sdarray axis in
   (* check axis is within boundary then re-format *)
   let s0 = shape x in
@@ -607,14 +607,14 @@ let get_slice axis x =
   (* calculate the new shape for slice *)
   let s1 = Owl_slicing.calc_slice_shape axis in
   let y_data = Array.make (_calc_numel_from_shape s1) x.data.(0) in
-  let y = make_arr s1 (_calc_stride s1) y_data in
+  let y = make_arr s1 (Owl_utils.calc_stride s1) y_data in
   (* transform into 1d array *)
   let x' = x.data in
   let y' = y.data in
   (* prepare function of copying blocks *)
   let d0 = Array.length s1 in
   let d1, cb = Owl_slicing.calc_continuous_blksz axis s0 in
-  let sd = _calc_stride s0 in
+  let sd = Owl_utils.calc_stride s0 in
   let ofsy_i = ref 0 in
   (* two copying strategies based on the size of the minimum continuous block *)
   let high_dim_list = (function L_ _ -> true | _ -> false) axis.(d0 - 1) in
@@ -622,7 +622,7 @@ let get_slice axis x =
     (* yay, there are at least some continuous blocks *)
     let b = cb in
     let f = fun i -> (
-      let ofsx = _index_nd_1d i sd in
+      let ofsx = Owl_utils.index_nd_1d i sd in
       let ofsy = !ofsy_i * b in
       Array.blit x' ofsx y' ofsy b;
       ofsy_i := !ofsy_i + 1
@@ -648,7 +648,7 @@ let get_slice axis x =
     let cy = if c > 0 then 1 else -1 in
     (* TODO: blit cannot be used, have to copy one by one *)
     let f = fun i -> (
-      let ofsx = ref (_index_nd_1d i sd + dd) in
+      let ofsx = ref (Owl_utils.index_nd_1d i sd + dd) in
       let ofsy =
         if c > 0 then ref (!ofsy_i * b)
         else ref ((!ofsy_i + 1) * b - 1)
@@ -668,10 +668,10 @@ let get_slice axis x =
   )
 
 
-(* set_slice function is adapted from its original implementation in owl_slicing
+(* set_fancy function is adapted from its original implementation in owl_slicing
    module, refer to Owl_slicing module for more information
  *)
-let set_slice axis x y =
+let set_fancy axis x y =
   let axis = Owl_slicing.sdlist_to_sdarray axis in
   (* check axis is within boundary then re-format *)
   let s0 = shape x in
@@ -685,7 +685,7 @@ let set_slice axis x y =
   (* prepare function of copying blocks *)
   let d0 = Array.length s1 in
   let d1, cb = Owl_slicing.calc_continuous_blksz axis s0 in
-  let sd = _calc_stride s0 in
+  let sd = Owl_utils.calc_stride s0 in
   let ofsy_i = ref 0 in
   (* two copying strategies based on the size of the minimum continuous block *)
   let high_dim_list = (function L_ _ -> true | _ -> false) axis.(d0 - 1) in
@@ -693,7 +693,7 @@ let set_slice axis x y =
     (* yay, there are at least some continuous blocks *)
     let b = cb in
     let f = fun i -> (
-      let ofsx = _index_nd_1d i sd in
+      let ofsx = Owl_utils.index_nd_1d i sd in
       let ofsy = !ofsy_i * b in
       Array.blit y' ofsy x' ofsx b;
       ofsy_i := !ofsy_i + 1
@@ -717,7 +717,7 @@ let set_slice axis x y =
     let cy = if c > 0 then 1 else -1 in
     (* TODO: blit cannot be used, have to copy one by one *)
     let f = fun i -> (
-      let ofsx = ref (_index_nd_1d i sd + dd) in
+      let ofsx = ref (Owl_utils.index_nd_1d i sd + dd) in
       let ofsy =
         if c > 0 then ref (!ofsy_i * b)
         else ref ((!ofsy_i + 1) * b - 1)
@@ -734,20 +734,20 @@ let set_slice axis x y =
     Owl_slicing._foreach_continuous_blk axis (d1 - 1) f
   )
 
-(* simplified get_slice function which accept list of list as slice definition.
+(* simplified get_fancy function which accept list of list as slice definition.
   adapted from owl_slicing module, refer to Owl_slicing for more information.
  *)
-let get_slice_simple axis x =
+let get_slice axis x =
   let axis = List.map (fun i -> R i) axis in
-  get_slice axis x
+  get_fancy axis x
 
 
 (* simplified set_slice function which accept list of list as slice definition
   adapted from owl_slicing module, refer to Owl_slicing for more information.
 *)
-let set_slice_simple axis x y =
+let set_slice axis x y =
   let axis = List.map (fun i -> R i) axis in
-  set_slice axis x y
+  set_fancy axis x y
 
 
 let swap a0 a1 x =
@@ -758,22 +758,22 @@ let swap a0 a1 x =
   a.(a1) <- t;
   transpose ~axis:a x
 
-let strides x = x |> shape |> Owl_dense_common._calc_stride
+let strides x = x |> shape |> Owl_utils.calc_stride
 
-let slice_size x = x |> shape |> Owl_dense_common._calc_slice
+let slice_size x = x |> shape |> Owl_utils.calc_slice
 
 let index_nd_1d i_nd _stride =
-  Owl_dense_common._index_nd_1d i_nd _stride
+  Owl_utils.index_nd_1d i_nd _stride
 
 let index_1d_nd i_1d _stride =
   let i_nd = Array.copy _stride in
-  Owl_dense_common._index_1d_nd i_1d i_nd _stride;
+  Owl_utils.index_1d_nd i_1d i_nd _stride;
   i_nd
 
 
 (* input/output functions *)
 
-let of_array x d = make_arr d (_calc_stride d) x
+let of_array x d = make_arr d (Owl_utils.calc_stride d) x
 
 let to_array x = x.data
 

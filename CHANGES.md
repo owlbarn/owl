@@ -1,6 +1,31 @@
-### 0.3.1 (in progress)
+### 0.3.3 (in progress)
 
-* Design View module for Ndarray.
+* Optimise the Base library
+
+
+### 0.3.2 (2018-02-08)
+
+* Fix some bugs and improve the performance.
+* Functorise many unit tests and add more tests.
+* Rewrite the documentation migrate to Sphinx system.
+* Migrate many pure OCaml code into Base library.
+* Implement the initial version of Base library.
+
+
+### 0.3.1 (2018-01-25)
+
+* Design View module as an experimental module for Ndarray.
+* Include Mersenne Twister (SFMT) to generate random numbers.
+* Implement random number generator of various distributions.
+* Implement native functions for maths and stats module.
+* Include FFTPACK to provide native support for FFT functions.
+* Minimise dependency, remove dependencies on Gsl and etc.
+* Implement slicing and indexing as native C functions.
+* Use new extended indexing operators for slicing functions.
+* Refine ndarray fold function and introduce scan function.
+* Reorganise the module structure in the source tree.
+* Fix some bugs and enhance the performance of core functions.
+* Add another 200+ unit tests.
 
 
 ### 0.3.0 (2017-12-05)

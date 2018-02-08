@@ -17,6 +17,7 @@
 (copy_files# fftpack/*)
 (copy_files# misc/*)
 (copy_files# nlp/*)
+(copy_files# working/*)
 
 (library (
   (name owl)
@@ -158,7 +159,7 @@
     -march=native -mfpmath=sse -funroll-loops -ffast-math -flto
     ; For Mersenne Twister RNG
     -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing
-    ;  Turn off the warning on logical op parentheses
+    ; Turn off the warning on logical op parentheses
     -Wno-logical-op-parentheses
     ; For development use before release
     ; -Wall -pedantic -Wextra -Wunused
@@ -170,8 +171,14 @@
     -lgfortran
     -lm
   ))
-  (flags (:standard -safe-string))
+  (flags (
+    ; Turn off some warnings as 4.06.0 is pernickety and errors out
+    :standard
+    -safe-string
+    ; -w "-32-27-6-37-3"
+  ))
   (libraries (
+    owl_base
     ctypes
     ctypes.stubs
     eigen
