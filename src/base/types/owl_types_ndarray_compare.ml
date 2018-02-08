@@ -9,6 +9,16 @@ module type Sig = sig
   include Owl_types_ndarray_basic.Sig
 
 
+  val is_zero : arr -> bool
+
+  val is_positive : arr -> bool
+
+  val is_negative : arr -> bool
+
+  val is_nonpositive : arr -> bool
+
+  val is_nonnegative : arr -> bool
+
   val equal : arr -> arr -> bool
 
   val not_equal : arr -> arr -> bool
@@ -45,14 +55,12 @@ module type Sig = sig
 
   val elt_greater_equal_scalar : arr -> elt -> arr
 
-  val is_zero : arr -> bool
+  val approx_equal : ?eps:float -> arr -> arr -> bool
 
-  val is_positive : arr -> bool
+  val approx_equal_scalar : ?eps:float -> arr -> elt -> bool
 
-  val is_negative : arr -> bool
+  val approx_elt_equal : ?eps:float -> arr -> arr -> arr
 
-  val is_nonpositive : arr -> bool
-
-  val is_nonnegative : arr -> bool
+  val approx_elt_equal_scalar : ?eps:float -> arr -> elt -> arr
 
 end
