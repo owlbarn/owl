@@ -260,21 +260,21 @@ let reverse varr =
 
 (* Apply a function over a bigarray, with no copying *)
 let _apply_fun f varr =
-  let varr_linear = flatten varr in
-  let length = numel varr_linear in
+  let varr_linear = flatten varr |> array1_of_genarray in
+  let length = numel varr in
   begin
     for i = 0 to length - 1 do
-      (Genarray.set varr_linear [|i|] (f (Genarray.get varr_linear [|i|])))
+      (Array1.unsafe_set varr_linear i (f (Array1.unsafe_get varr_linear i)))
     done
   end
 
 let init kind dims f =
   let varr = empty kind dims in
-  let varr_flat = flatten varr in
+  let varr_flat = flatten varr |> array1_of_genarray in
   let n = numel varr in
   begin
     for i = 0 to n - 1 do
-      set varr_flat [|i|] (f i)
+      Array1.unsafe_set varr_flat i (f i)
     done;
     varr
   end
@@ -284,6 +284,140 @@ let map f varr =
   let varr_copy = copy varr in
   (_apply_fun f varr_copy; varr_copy)
 
+let mapi f x =
+  let y = copy x in
+  let y' = flatten y |> array1_of_genarray in
+  for i = 0 to (Array1.dim y') - 1 do
+    let a = Array1.unsafe_get y' i in
+    Array1.unsafe_set y' i (f i a)
+  done;
+  y
+
+let strides x = x |> shape |> Owl_utils.calc_stride
+
+
+let slice_size x = x |> shape |> Owl_utils.calc_slice
+
+(* prepare the parameters for reduce/fold operation, [a] is axis *)
+let reduce_params a x =
+  let d = num_dims x in
+  assert (0 <= a && a < d);
+
+  let _shape = shape x in
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = _slicez.(a) in
+  let o = _stride.(a) in
+  _shape.(a) <- 1;
+  m, n, o, _shape
+
+(* TODO: performance can be optimised by removing embedded loops *)
+(* generic fold funtion *)
+let foldi ?axis f a x =
+  let x' = flatten x |> array1_of_genarray in
+  match axis with
+  | Some axis -> (
+      let m, n, o, s = reduce_params axis x in
+      let start_x = ref 0 in
+      let start_y = ref 0 in
+      let incy = ref 0 in
+      let k = ref 0 in
+
+      let y = create (kind x) s a in
+      let y' = flatten y |> array1_of_genarray in
+
+      for i = 0 to m - 1 do
+        for j = 0 to n - 1 do
+          let b = Array1.unsafe_get y' (!start_y + !incy) in
+          let c = Array1.unsafe_get x' (!start_x + j) in
+          Array1.unsafe_set y' (!start_y + !incy) (f !k b c);
+          if !incy + 1 = o then incy := 0
+          else incy := !incy + 1;
+          k := !k + 1;
+        done;
+        start_x := !start_x + n;
+        start_y := !start_y + o;
+      done;
+      y
+    )
+  | None   -> (
+      let b = ref a in
+      for i = 0 to (numel x) - 1 do
+        let c = Array1.unsafe_get x' i in
+        b := f i !b c
+      done;
+      create (kind x) [|1|] !b
+    )
+
+
+let fold ?axis f a x = foldi ?axis (fun _ b c ->  f b c) a x
+
+
+(* generic scan function *)
+let scani ?axis f x =
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None   -> d - 1
+  in
+  assert (0 <= a && a < d);
+
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = _slicez.(a) - _stride.(a) in
+  let incx = _slicez.(a) in
+  let incy = _slicez.(a) in
+  let start_x = ref 0 in
+  let start_y = ref _stride.(a) in
+  let k = ref 0 in
+
+  let y = copy x in
+  let y' = flatten y |> array1_of_genarray in
+
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      let b = Array1.unsafe_get y' (!start_x + j) in
+      let c = Array1.unsafe_get y' (!start_y + j) in
+      Array1.unsafe_set y' (!start_y + j) (f !k b c);
+      k := !k + 1
+    done;
+    start_x := !start_x + incx;
+    start_y := !start_y + incy;
+  done;
+  y
+
+
+let scan ?axis f x = scani (fun _ a b -> f a b) x
+
+
+let iteri f x =
+  let x' = flatten x |> array1_of_genarray in
+  for i = 0 to (Array1.dim x') - 1 do
+    let a = Array1.unsafe_get x' i in
+    f i a
+  done
+
+
+let iter f x =
+  let x' = flatten x |> array1_of_genarray in
+  for i = 0 to (Array1.dim x') - 1 do
+    let a = Array1.unsafe_get x' i in
+    f a
+  done
+
+
+let filteri f x =
+  let s = Owl_utils.Stack.make () in
+  iteri (fun i y ->
+      if f i y = true then
+        Owl_utils.Stack.push s i
+    ) x;
+  Owl_utils.Stack.to_array s
+
+
+let filter f x = filteri (fun _ y -> f y) x
 
 let sequential kind ?(a=0.) ?(step=1.) dims =
   let varr = empty kind dims in
@@ -297,11 +431,11 @@ let sequential kind ?(a=0.) ?(step=1.) dims =
 
 let of_array kind arr dims =
   let varr = empty kind dims in
-  let flat_varr = flatten varr in
-  let n = numel flat_varr in
+  let flat_varr = flatten varr |> array1_of_genarray in
+  let n = numel varr in
   begin
     for i = 0 to n - 1 do
-      set flat_varr [|i|] arr.(i)
+      Array1.unsafe_set flat_varr i arr.(i)
     done;
     varr
   end
@@ -598,11 +732,11 @@ let relu varr = (map Scalar.relu varr)
 
 let _fold_left f a varr =
   let aref = ref a in
-  let varr_linear = flatten varr in
-  let length = numel varr_linear in
+  let varr_linear = flatten varr |> array1_of_genarray in
+  let length = numel varr in
   begin
     for i = 0 to length - 1 do
-      aref := (f !aref (Genarray.get varr_linear [|i|]))
+      aref := (f !aref (Array1.unsafe_get varr_linear i))
     done;
     !aref
   end
@@ -743,17 +877,301 @@ let scalar_div a varr =
   (map scalar_div_fun varr)
 
 
-let elt_greater_equal_scalar varr b =
-  let greater_equal_scalar_fun =
-    (fun x -> if (Pervasives.compare x b) >= 0 then 1. else 0.) in
-  (map greater_equal_scalar_fun varr)
-
-
 let clip_by_l2norm clip_norm varr =
   let l2norm_val = l2norm' varr in
   if l2norm_val > clip_norm
   then mul_scalar varr (clip_norm /. l2norm_val)
   else varr
+
+
+(* Comparison functions *)
+
+(** Return true if for all elements comp_fun (xa, xb) == true, false otherwise.
+    Returns false as soon as it finds a counterexample. (NOT broadcasted) *)
+let _compare_util_shortcircuit varr_a varr_b comp_fun =
+  let n = numel varr_a in
+  let m = numel varr_b in
+  if n != m
+  then false
+  else
+    let varr_a = flatten varr_a |> array1_of_genarray in
+    let varr_b = flatten varr_b |> array1_of_genarray in
+    let all_ok = ref true in
+    let i = ref 0 in
+    begin
+      while !all_ok && (!i < n) do
+        let x = Array1.unsafe_get varr_a !i in
+        let y = Array1.unsafe_get varr_b !i in
+        if (not (comp_fun x y))
+        then all_ok := false;
+        i := !i + 1
+      done;
+      !all_ok
+    end
+
+
+let approx_equal ?eps varr_a varr_b =
+  let eps = match eps with
+    | Some eps -> eps
+    | None     -> Owl_utils.eps Float32
+  in
+  let approx_equal_fun = (fun x y -> (Scalar.abs (Scalar.sub x y)) < eps) in
+  (_compare_util_shortcircuit varr_a varr_b approx_equal_fun)
+
+
+let equal varr_a varr_b =
+  (_compare_util_shortcircuit varr_a varr_b Pervasives.(=))
+
+
+let not_equal varr_a varr_b =
+  (_compare_util_shortcircuit varr_a varr_b Pervasives.(<>))
+
+
+let less varr_a varr_b =
+  (_compare_util_shortcircuit varr_a varr_b Pervasives.(<))
+
+
+let greater varr_a varr_b =
+  (_compare_util_shortcircuit varr_a varr_b Pervasives.(>))
+
+
+let less_equal varr_a varr_b =
+  (_compare_util_shortcircuit varr_a varr_b Pervasives.(<=))
+
+
+let greater_equal varr_a varr_b =
+  (_compare_util_shortcircuit varr_a varr_b Pervasives.(>=))
+
+
+(** Return true if for all elements of a comp_fun (xa, bb) == true, false otherwise.
+    Returns false as soon as it finds a counterexample. (NOT broadcasted) *)
+let _compare_util_shortcircuit_scalar varr_a b comp_fun =
+  let n = numel varr_a in
+  let varr_a = flatten varr_a |> array1_of_genarray in
+  let all_ok = ref true in
+  let i = ref 0 in
+  begin
+    while !all_ok && (!i < n) do
+      let x = Array1.unsafe_get varr_a !i in
+      if (not (comp_fun x b))
+      then all_ok := false;
+      i := !i + 1
+    done;
+    !all_ok
+  end
+
+
+let approx_equal_scalar ?eps varr_a b =
+  let eps = match eps with
+    | Some eps -> eps
+    | None     -> Owl_utils.eps Float32
+  in
+  let approx_equal_scalar_fun = (fun x y -> (Scalar.abs (Scalar.sub x y)) < eps) in
+  (_compare_util_shortcircuit_scalar varr_a b approx_equal_scalar_fun)
+
+
+let equal_scalar varr_a b =
+  (_compare_util_shortcircuit_scalar varr_a b Pervasives.(=))
+
+
+let not_equal_scalar varr_a b =
+  (_compare_util_shortcircuit_scalar varr_a b Pervasives.(<>))
+
+
+let less_scalar varr_a b =
+  (_compare_util_shortcircuit_scalar varr_a b Pervasives.(<))
+
+
+let greater_scalar varr_a b =
+  (_compare_util_shortcircuit_scalar varr_a b Pervasives.(>))
+
+
+let less_equal_scalar varr_a b =
+  (_compare_util_shortcircuit_scalar varr_a b Pervasives.(<=))
+
+
+let greater_equal_scalar varr_a b =
+  (_compare_util_shortcircuit_scalar varr_a b Pervasives.(>=))
+
+
+(* Broadcasted operation, return an array with values of 1
+   if (one_fun elem_from_a elem_from_b) == true, 0 otherwise *)
+let _elt_compare_util varr_a varr_b one_fun =
+  let _kind = kind varr_a in
+  let c0 = Owl_const.zero _kind in
+  let c1 = Owl_const.one _kind in
+  let comp_fun = (fun x y -> if (one_fun x y) then c1 else c0) in
+  (_broadcasted_op varr_a varr_b comp_fun)
+
+
+let elt_equal varr_a varr_b =
+  (_elt_compare_util varr_a varr_b Pervasives.(=))
+
+
+let approx_elt_equal ?eps varr_a varr_b =
+  let eps = match eps with
+    | Some eps -> eps
+    | None     -> Owl_utils.eps Float32
+  in
+  let approx_equal_fun = (fun x y -> (Scalar.abs (Scalar.sub x y)) < eps) in
+  (_elt_compare_util varr_a varr_b approx_equal_fun)
+
+
+let elt_not_equal varr_a varr_b =
+  (_elt_compare_util varr_a varr_b Pervasives.(<>))
+
+
+let elt_less varr_a varr_b =
+  (_elt_compare_util varr_a varr_b Pervasives.(<))
+
+
+let elt_greater varr_a varr_b =
+  (_elt_compare_util varr_a varr_b Pervasives.(>))
+
+
+let elt_less_equal varr_a varr_b =
+  (_elt_compare_util varr_a varr_b Pervasives.(<=))
+
+
+let elt_greater_equal varr_a varr_b =
+  (_elt_compare_util varr_a varr_b Pervasives.(>=))
+
+
+(* Util function, return an array with values of 1
+    if (one_fun elem_from_a b) == true, 0 otherwise *)
+let _elt_compare_scalar_util varr_a one_fun =
+  let _kind = kind varr_a in
+  let c0 = Owl_const.zero _kind in
+  let c1 = Owl_const.one _kind in
+  let comp_fun = (fun x -> if one_fun x then c1 else c0) in
+  (map comp_fun varr_a)
+
+
+let elt_equal_scalar varr_a b =
+  let equal_scalar_fun = (fun x -> x = b) in
+  (_elt_compare_scalar_util varr_a equal_scalar_fun)
+
+
+let approx_elt_equal_scalar ?eps varr_a b =
+  let eps = match eps with
+    | Some eps -> eps
+    | None     -> Owl_utils.eps Float32
+  in
+  let approx_equal_scalar_fun = (fun x -> (Scalar.abs (Scalar.sub x b)) < eps) in
+  (_elt_compare_scalar_util varr_a approx_equal_scalar_fun)
+
+
+let elt_not_equal_scalar varr_a b =
+  let not_equal_scalar_fun = (fun x -> x <> b) in
+  (_elt_compare_scalar_util varr_a not_equal_scalar_fun)
+
+
+let elt_less_scalar varr_a b =
+  let less_scalar_fun = (fun x -> x < b) in
+  (_elt_compare_scalar_util varr_a less_scalar_fun)
+
+
+let elt_greater_scalar varr_a b =
+  let greater_scalar_fun = (fun x -> x > b) in
+  (_elt_compare_scalar_util varr_a greater_scalar_fun)
+
+
+let elt_less_equal_scalar varr_a b =
+  let less_equal_scalar_fun = (fun x -> x <= b) in
+  (_elt_compare_scalar_util varr_a less_equal_scalar_fun)
+
+
+let elt_greater_equal_scalar varr_a b =
+  let greater_equal_scalar_fun = (fun x -> x > b) in
+  (_elt_compare_scalar_util varr_a greater_equal_scalar_fun)
+
+
+let exists f varr =
+  let n = numel varr in
+  let varr = flatten varr |> array1_of_genarray in
+  let found = ref false in
+  let i = ref 0 in
+  begin
+    while (!i < n) && (not !found) do
+      let x = Array1.unsafe_get varr !i in
+      if f x
+      then found := true;
+      i := !i + 1
+    done;
+    !found
+  end
+
+
+let not_exists f varr = (not (exists f varr))
+
+
+let for_all f varr =
+  let not_f = (fun x -> not (f x)) in
+  (not_exists not_f varr)
+
+
+let is_zero varr =
+  let k = kind varr in
+  let c0 = Owl_const.zero k in
+  let non_zero_fun = (fun x -> x <> c0) in
+  (not_exists non_zero_fun varr)
+
+
+let is_positive varr =
+  let k = kind varr in
+  let c0 = Owl_const.zero k in
+  let non_positive_fun = (fun x -> x <= c0) in
+  (not_exists non_positive_fun varr)
+
+
+let is_negative varr =
+  let k = kind varr in
+  let c0 = Owl_const.zero k in
+  let non_negative_fun = (fun x -> x >= c0) in
+  (not_exists non_negative_fun varr)
+
+
+let is_nonpositive varr =
+  let k = kind varr in
+  let c0 = Owl_const.zero k in
+  let positive_fun = (fun x -> x > c0) in
+  (not_exists positive_fun varr)
+
+
+let is_nonnegative varr =
+  let k = kind varr in
+  let c0 = Owl_const.zero k in
+  let negative_fun = (fun x -> x < c0) in
+  (not_exists negative_fun varr)
+
+
+let is_normal varr =
+  let not_normal_fun = (
+    fun x -> match Pervasives.classify_float x with
+      | FP_subnormal -> true
+      | FP_infinite -> true
+      | FP_nan -> true
+      | _ -> false
+  ) in
+  (not_exists not_normal_fun varr)
+
+
+let not_nan varr =
+  let is_nan_fun = (
+    fun x -> match Pervasives.classify_float x with
+      | FP_nan -> true
+      | _ -> false
+  ) in
+  (not_exists is_nan_fun varr)
+
+
+let not_inf varr =
+  let is_inf_fun = (
+    fun x -> match Pervasives.classify_float x with
+      | FP_infinite -> true
+      | _ -> false
+  ) in
+  (not_exists is_inf_fun varr)
 
 
 (* Neural network related functions *)
@@ -1786,13 +2204,13 @@ let copy_col_to vec varr ind =
     else raise (Invalid_argument "Vector is not a column vector")
   in
   let num_rows = dims.(0) in
-  let vec_linear = flatten vec in
+  let vec_linear = flatten vec |> array1_of_genarray in
   if num_rows != vec_len
   then raise (Invalid_argument "Column vector does not have the same length as the number of rows in the matrix")
   else
     begin
       for i = 0 to num_rows - 1 do
-        Genarray.set varr [|i; ind|] (Genarray.get vec_linear [|i|])
+        Genarray.set varr [|i; ind|] (Array1.unsafe_get vec_linear i)
       done
     end
 
@@ -1866,7 +2284,7 @@ let of_arrays kind arrays =
   begin
     for i = 0 to n - 1 do
       for j = 0 to m - 1 do
-        Genarray.set varr [|i; j|] (Array.get (arrays.(i)) j)
+        Genarray.set varr [|i; j|] (Array.unsafe_get (arrays.(i)) j)
       done
     done;
     varr
@@ -1916,8 +2334,8 @@ let draw_rows2 ?(replacement=true) varr_a varr_b count =
 let inv varr =
   let dims = shape varr in
   let _ = _check_is_matrix dims in
-  let n = Array.get dims 0 in
-  if (Array.get dims 1) != n
+  let n = Array.unsafe_get dims 0 in
+  if (Array.unsafe_get dims 1) != n
   then failwith "no inverse - the matrix is not square"
   else
     let pivot_row = Array.make n 0. in
@@ -1960,50 +2378,6 @@ let inv varr =
 
 (* TODO: here k is not used, but neither is it in nonbase dense array? - investigate *)
 let load k f = Owl_utils.marshal_from_file f
-
-(* FIXME: doing to much useless computation in the worst cate
-  also, this impl seems incorrect if two have different shape but same amount
-  of elements. Need to check the shape, but I probably didn't do that either in
-  core ... need to fix this.
- *)
-let approx_equal ?(eps=1e-8) varr_a varr_b =
-  let n = numel varr_a in
-  let m = numel varr_b in
-  if n != m
-  then false
-  else
-    let varr_a = reshape varr_a [|n|] in
-    let varr_b = reshape varr_b [|n|] in
-    let eq = ref true in
-    begin
-      for i = 0 to n - 1 do
-        let x = get varr_a [|i|] in
-        let y = get varr_b [|i|] in
-        if (Scalar.abs (Scalar.sub x y)) >= eps
-        then eq := false
-      done;
-      !eq
-    end
-
-(** FIXME: this is incorrect. why don't you just use =, check my impl in core. *)
-let equal varr_a varr_b =
-  (approx_equal ~eps:(Owl_utils.eps (kind varr_a)) varr_a varr_b)
-
-let elt_equal varr_a varr_b =
-  let dims = shape varr_a in
-  let _kind = kind varr_a in
-  let varr_c = empty _kind dims in
-  let varr_a = flatten varr_a in
-  let varr_b = flatten varr_b in
-  let flat_varr_c = flatten varr_c in
-  let n = numel varr_a in
-  begin
-    for i = 0 to n - 1 do
-      let va, vb = (get varr_a [|i|]), (get varr_b [|i|]) in
-      set flat_varr_c [|i|] (if (Scalar.abs (va -. vb)) < 1e-8 then 1.0 else 0.0)
-    done;
-    varr_c
-  end
 
 
 let max_rows varr =
