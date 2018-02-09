@@ -32,8 +32,8 @@
     owl_slicing_basic_stub
     owl_slicing_fancy_impl
     owl_slicing_fancy_stub
-    owl_tensor_impl
-    owl_tensor_stub
+    owl_ndarray_impl
+    owl_ndarray_stub
     owl_common_c
     owl_distribution_common_c
     owl_dense_common_c

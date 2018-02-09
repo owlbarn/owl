@@ -12,13 +12,13 @@
 #define OWL_ENABLE_TEMPLATE
 
 #define OWL_TENSOR_MAX
-#define FUN_NATIVE(dim) stub_float32_tensor_maxpool ## _ ## dim  ## _ ## native
-#define FUN_BYTE(dim) stub_float32_tensor_maxpool ## _ ## dim  ## _ ## bytecode
+#define FUN_NATIVE(dim) stub_float32_ndarray_maxpool ## _ ## dim  ## _ ## native
+#define FUN_BYTE(dim) stub_float32_ndarray_maxpool ## _ ## dim  ## _ ## bytecode
 #define TYPE float
 #define INITACC -INFINITY
 #define ACCFN(a, b) if (a < b) a = b
 #define UPDATEFN(a, b) a
-#include "owl_tensor_impl.c"
+#include "owl_ndarray_impl.c"
 #undef UPDATEFN
 #undef ACCFN
 #undef INITACC
@@ -29,13 +29,13 @@
 
 
 #define OWL_TENSOR_AVG
-#define FUN_NATIVE(dim) stub_float32_tensor_avgpool ## _ ## dim  ## _ ## native
-#define FUN_BYTE(dim) stub_float32_tensor_avgpool ## _ ## dim  ## _ ## bytecode
+#define FUN_NATIVE(dim) stub_float32_ndarray_avgpool ## _ ## dim  ## _ ## native
+#define FUN_BYTE(dim) stub_float32_ndarray_avgpool ## _ ## dim  ## _ ## bytecode
 #define TYPE float
 #define INITACC 0.
 #define ACCFN(a, b) a += b
 #define UPDATEFN(a, b) a / b
-#include "owl_tensor_impl.c"
+#include "owl_ndarray_impl.c"
 #undef UPDATEFN
 #undef ACCFN
 #undef TYPE
@@ -46,13 +46,13 @@
 
 
 #define OWL_TENSOR_MAX
-#define FUN_NATIVE(dim) stub_float64_tensor_maxpool ## _ ## dim  ## _ ## native
-#define FUN_BYTE(dim) stub_float64_tensor_maxpool ## _ ## dim  ## _ ## bytecode
+#define FUN_NATIVE(dim) stub_float64_ndarray_maxpool ## _ ## dim  ## _ ## native
+#define FUN_BYTE(dim) stub_float64_ndarray_maxpool ## _ ## dim  ## _ ## bytecode
 #define TYPE double
 #define INITACC -INFINITY
 #define ACCFN(a, b) if (a < b) a = b
 #define UPDATEFN(a, b) a
-#include "owl_tensor_impl.c"
+#include "owl_ndarray_impl.c"
 #undef UPDATEFN
 #undef ACCFN
 #undef INITACC
@@ -63,13 +63,13 @@
 
 
 #define OWL_TENSOR_AVG
-#define FUN_NATIVE(dim) stub_float64_tensor_avgpool ## _ ## dim  ## _ ## native
-#define FUN_BYTE(dim) stub_float64_tensor_avgpool ## _ ## dim  ## _ ## bytecode
+#define FUN_NATIVE(dim) stub_float64_ndarray_avgpool ## _ ## dim  ## _ ## native
+#define FUN_BYTE(dim) stub_float64_ndarray_avgpool ## _ ## dim  ## _ ## bytecode
 #define TYPE double
 #define INITACC 0.
 #define ACCFN(a, b) a += b
 #define UPDATEFN(a, b) a / b
-#include "owl_tensor_impl.c"
+#include "owl_ndarray_impl.c"
 #undef UPDATEFN
 #undef ACCFN
 #undef TYPE
