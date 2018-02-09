@@ -45,7 +45,6 @@ module Make (N : Ndarray_Algodiff) = struct
 
 
   (* Test AvgPooling3D and MaxPooling3D forward operations *)
-
   module To_test_pool3d = struct
 
     (* testAvgPool3dValidPadding *)
@@ -102,7 +101,6 @@ module Make (N : Ndarray_Algodiff) = struct
 
 
   (* Test MaxPooling3D backward operations *)
-
   module To_test_maxpool3d_back = struct
 
     (* testMaxPoolGradValidPadding1_1_3d *)

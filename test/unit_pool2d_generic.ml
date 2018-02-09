@@ -46,7 +46,6 @@ module Make (N : Ndarray_Algodiff) = struct
 
 
   (* Test AvgPooling2D and MaxPooling2D forward operations *)
-
   module To_test_forward = struct
 
     (* testMaxPoolValidPadding *)
