@@ -270,8 +270,8 @@ value FUN_NATIVE (cuboid) (
         for (int d = 0; d < output_dpts; ++d) {
           const int output_idx_base = output_idx_base_k + d * in_channel;
 
-          const int cstart = j * col_stride   - floor(pc);
-          const int rstart = k * row_stride   - floor(pr);
+          const int cstart = j * col_stride - floor(pc);
+          const int rstart = k * row_stride - floor(pr);
           const int dstart = d * dpt_stride - floor(pd);
           const int cend   = cstart + kernel_cols;
           const int rend   = rstart + kernel_rows;
@@ -373,9 +373,7 @@ value FUN_NATIVE (cuboid_backward) (
     if (pad_dpts < 0) pad_dpts = 0.;
   }
 
-  memset(input_backward_ptr, 0,
-    batches * input_cols * input_rows *
-    input_dpts * in_channel * sizeof(TYPE));
+  memset(input_backward_ptr, 0, batches * input_crdi * sizeof(TYPE));
 
   for (int i = 0; i < batches; ++i) {
     const int input_idx_base = i * input_crdi;
@@ -387,8 +385,8 @@ value FUN_NATIVE (cuboid_backward) (
         for (int d = 0; d < output_dpts; ++d) {
           const int output_idx_base = output_idx_base_k + d * in_channel;
 
-          const int cstart = j * col_stride   - floor(pad_cols);
-          const int rstart = k * row_stride   - floor(pad_rows);
+          const int cstart = j * col_stride - floor(pad_cols);
+          const int rstart = k * row_stride - floor(pad_rows);
           const int dstart = d * dpt_stride - floor(pad_dpts);
           const int cend   = cstart + kernel_cols;
           const int rend   = rstart + kernel_rows;
@@ -536,6 +534,7 @@ value FUN_NATIVE (spatial_arg) (
   return Val_unit;
 }
 
+
 value FUN_BYTE (spatial_arg) (value * argv, int argn) {
   return FUN_NATIVE (spatial_arg) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
@@ -543,6 +542,8 @@ value FUN_BYTE (spatial_arg) (value * argv, int argn) {
   );
 }
 
+
 #endif /* OWL_TENSOR_MAX */
+
 
 #endif /* OWL_ENABLE_TEMPLATE */
