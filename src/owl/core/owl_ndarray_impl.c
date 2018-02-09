@@ -195,6 +195,8 @@ value FUN_NATIVE (spatial_backward) (
       }
     }
   }
+
+  return Val_unit;
 }
 
 
@@ -438,6 +440,8 @@ value FUN_NATIVE (cuboid_backward) (
       }
     }
   }
+
+  return Val_unit;
 }
 
 
