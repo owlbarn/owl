@@ -23,7 +23,7 @@ let () =
     "base: algodiff grad",  Unit_base_algodiff_grad.test_set;
     "base: slicing basic",  Unit_base_slicing_basic.test_set;
     "base: pooling2d",      Unit_base_pool2d.test_set;
-    (* "base: pooling3d",      Unit_base_pool3d.test_set; *)
+    "base: pooling3d",      Unit_base_pool3d.test_set;
     "base: conv2d",         Unit_base_conv2d.test_set;
     "base: conv3d",         Unit_base_conv3d.test_set;
   ]
