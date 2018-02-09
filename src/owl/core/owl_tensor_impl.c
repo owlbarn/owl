@@ -209,10 +209,10 @@ value FUN_BYTE (spatial_backward) (value * argv, int argn) {
 value FUN_NATIVE (cuboid) (
   value vInput, value vOutput,
   value vBatches, value vInput_cols, value vInput_rows,
-  value vInput_depth, value vIn_channel,
-  value vKernel_cols, value vKernel_rows, value vKernel_depth,
-  value vOutput_cols, value vOutput_rows, value vOutput_depth,
-  value vDepth_stride, value vRow_stride,  value vCol_stride,
+  value vInput_dpts, value vIn_channel,
+  value vKernel_cols, value vKernel_rows, value vKernel_dpts,
+  value vOutput_cols, value vOutput_rows, value vOutput_dpts,
+  value vDpt_stride, value vRow_stride,  value vCol_stride,
   value vPadding
 ) {
   struct caml_ba_array *IN = Caml_ba_array_val(vInput);
@@ -220,28 +220,28 @@ value FUN_NATIVE (cuboid) (
   TYPE *input_ptr  = (TYPE *) IN->data;
   TYPE *output_ptr = (TYPE *) OU->data;
 
-  int batches       = Long_val(vBatches);
-  int input_cols    = Long_val(vInput_cols);
-  int input_rows    = Long_val(vInput_rows);
-  int input_depth   = Long_val(vInput_depth);
-  int in_channel    = Long_val(vIn_channel);
-  int kernel_cols   = Long_val(vKernel_cols);
-  int kernel_rows   = Long_val(vKernel_rows);
-  int kernel_depth  = Long_val(vKernel_depth);
-  int output_cols   = Long_val(vOutput_cols);
-  int output_rows   = Long_val(vOutput_rows);
-  int output_depth  = Long_val(vOutput_depth);
-  int depth_stride  = Long_val(vDepth_stride);
-  int row_stride    = Long_val(vRow_stride);
-  int col_stride    = Long_val(vCol_stride);
-  int padding       = Long_val(vPadding);
+  int batches     = Long_val(vBatches);
+  int input_cols  = Long_val(vInput_cols);
+  int input_rows  = Long_val(vInput_rows);
+  int input_dpts  = Long_val(vInput_dpts);
+  int in_channel  = Long_val(vIn_channel);
+  int kernel_cols = Long_val(vKernel_cols);
+  int kernel_rows = Long_val(vKernel_rows);
+  int kernel_dpts = Long_val(vKernel_dpts);
+  int output_cols = Long_val(vOutput_cols);
+  int output_rows = Long_val(vOutput_rows);
+  int output_dpts = Long_val(vOutput_dpts);
+  int dpt_stride  = Long_val(vDpt_stride);
+  int row_stride  = Long_val(vRow_stride);
+  int col_stride  = Long_val(vCol_stride);
+  int padding     = Long_val(vPadding);
 
-  const int output_crdi = output_cols * output_rows * output_depth * in_channel;
-  const int output_rdi  = output_rows * output_depth * in_channel;
-  const int output_di   = output_depth * in_channel;
-  const int input_crdi  = input_cols * input_rows * input_depth * in_channel;
-  const int input_rdi   = input_rows * input_depth * in_channel;
-  const int input_di    = input_depth * in_channel;
+  const int output_crdi = output_cols * output_rows * output_dpts * in_channel;
+  const int output_rdi  = output_rows * output_dpts * in_channel;
+  const int output_di   = output_dpts * in_channel;
+  const int input_crdi  = input_cols * input_rows * input_dpts * in_channel;
+  const int input_rdi   = input_rows * input_dpts * in_channel;
+  const int input_di    = input_dpts * in_channel;
 
   memset(output_ptr, 0, batches * output_crdi * sizeof(TYPE));
 
@@ -253,8 +253,8 @@ value FUN_NATIVE (cuboid) (
       kernel_rows - input_rows) / 2.;
     pc = (col_stride * ( output_cols - 1) +
       kernel_cols - input_cols) / 2.;
-    pd = (depth_stride * ( output_cols - 1) +
-      kernel_depth - input_depth) / 2.;
+    pd = (dpt_stride * ( output_cols - 1) +
+      kernel_dpts - input_dpts) / 2.;
     if (pr < 0) pr = 0.;
     if (pc < 0) pc = 0.;
     if (pd < 0) pd = 0.;
@@ -267,15 +267,15 @@ value FUN_NATIVE (cuboid) (
       const int output_idx_base_j = output_idx_base_i + j * output_rdi;
       for (int k = 0; k < output_rows; ++k) {
         const int output_idx_base_k = output_idx_base_j + k * output_di;
-        for (int d = 0; d < output_depth; ++d) {
+        for (int d = 0; d < output_dpts; ++d) {
           const int output_idx_base = output_idx_base_k + d * in_channel;
 
           const int cstart = j * col_stride   - floor(pc);
           const int rstart = k * row_stride   - floor(pr);
-          const int dstart = d * depth_stride - floor(pd);
+          const int dstart = d * dpt_stride - floor(pd);
           const int cend   = cstart + kernel_cols;
           const int rend   = rstart + kernel_rows;
-          const int dend   = dstart + kernel_depth;
+          const int dend   = dstart + kernel_dpts;
 
           for (int l = 0; l < in_channel; ++l) {
             TYPE acc = INITACC;
@@ -285,7 +285,7 @@ value FUN_NATIVE (cuboid) (
                 for (int c = dstart; c < dend; ++c){
                   if (a >= 0 && a < input_cols &&
                       b >= 0 && b < input_rows &&
-                      c >= 0 && c < input_depth) {
+                      c >= 0 && c < input_dpts) {
                     int input_idx =
                       input_idx_base + a * input_rdi + b * input_di +
                       c * in_channel + l;
@@ -321,10 +321,10 @@ value FUN_BYTE (cuboid) (value * argv, int argn) {
 value FUN_NATIVE (cuboid_backward) (
   value vInput, value vOutput_back, value vInput_back,
   value vBatches, value vInput_cols, value vInput_rows,
-  value vInput_depth, value vIn_channel,
-  value vKernel_cols, value vKernel_rows, value vKernel_depth,
-  value vOutput_cols, value vOutput_rows, value vOutput_depth,
-  value vCol_stride, value vRow_stride, value vDepth_stride,
+  value vInput_dpts, value vIn_channel,
+  value vKernel_cols, value vKernel_rows, value vKernel_dpts,
+  value vOutput_cols, value vOutput_rows, value vOutput_dpts,
+  value vCol_stride, value vRow_stride, value vDpt_stride,
   value vPadding
 ) {
   struct caml_ba_array *IN  = Caml_ba_array_val(vInput);
@@ -334,48 +334,48 @@ value FUN_NATIVE (cuboid_backward) (
   TYPE *output_backward_ptr = (TYPE *) OUB->data;
   TYPE *input_backward_ptr  = (TYPE *) INB->data;
 
-  int batches       = Long_val(vBatches);
-  int input_cols    = Long_val(vInput_cols);
-  int input_rows    = Long_val(vInput_rows);
-  int input_depth   = Long_val(vInput_depth);
-  int in_channel    = Long_val(vIn_channel);
-  int kernel_cols   = Long_val(vKernel_cols);
-  int kernel_rows   = Long_val(vKernel_rows);
-  int kernel_depth  = Long_val(vKernel_depth);
-  int output_cols   = Long_val(vOutput_cols);
-  int output_rows   = Long_val(vOutput_rows);
-  int output_depth  = Long_val(vOutput_depth);
-  int col_stride    = Long_val(vCol_stride);
-  int row_stride    = Long_val(vRow_stride);
-  int depth_stride  = Long_val(vDepth_stride);
-  int padding       = Long_val(vPadding);
+  int batches     = Long_val(vBatches);
+  int input_cols  = Long_val(vInput_cols);
+  int input_rows  = Long_val(vInput_rows);
+  int input_dpts  = Long_val(vInput_dpts);
+  int in_channel  = Long_val(vIn_channel);
+  int kernel_cols = Long_val(vKernel_cols);
+  int kernel_rows = Long_val(vKernel_rows);
+  int kernel_dpts = Long_val(vKernel_dpts);
+  int output_cols = Long_val(vOutput_cols);
+  int output_rows = Long_val(vOutput_rows);
+  int output_dpts = Long_val(vOutput_dpts);
+  int col_stride  = Long_val(vCol_stride);
+  int row_stride  = Long_val(vRow_stride);
+  int dpt_stride  = Long_val(vDpt_stride);
+  int padding     = Long_val(vPadding);
 
-  const int ksize       = kernel_cols * kernel_rows * kernel_depth;
-  const int output_crdi = output_cols * output_rows * output_depth * in_channel;
-  const int output_rdi  = output_rows * output_depth * in_channel;
-  const int output_di   = output_depth * in_channel;
-  const int input_crdi  = input_cols * input_rows * input_depth * in_channel;
-  const int input_rdi   = input_rows * input_depth * in_channel;
-  const int input_di    = input_depth * in_channel;
+  const int ksize       = kernel_cols * kernel_rows * kernel_dpts;
+  const int output_crdi = output_cols * output_rows * output_dpts * in_channel;
+  const int output_rdi  = output_rows * output_dpts * in_channel;
+  const int output_di   = output_dpts * in_channel;
+  const int input_crdi  = input_cols * input_rows * input_dpts * in_channel;
+  const int input_rdi   = input_rows * input_dpts * in_channel;
+  const int input_di    = input_dpts * in_channel;
 
-  float pad_rows, pad_cols, pad_depth;
+  float pad_rows, pad_cols, pad_dpts;
   if (padding == 1){
-    pad_rows = 0.; pad_cols = 0.; pad_depth = 0.;
+    pad_rows = 0.; pad_cols = 0.; pad_dpts = 0.;
   } else {
     pad_rows = (row_stride * ( output_rows - 1) +
       kernel_rows - input_rows) / 2.;
     pad_cols = (col_stride * ( output_cols - 1) +
       kernel_cols - input_cols) / 2.;
-    pad_depth = (depth_stride * ( output_depth - 1) +
-      kernel_depth - input_depth) / 2.;
+    pad_dpts = (dpt_stride * ( output_dpts - 1) +
+      kernel_dpts - input_dpts) / 2.;
     if (pad_cols < 0)  pad_cols  = 0.;
     if (pad_rows < 0)  pad_rows  = 0.;
-    if (pad_depth < 0) pad_depth = 0.;
+    if (pad_dpts < 0) pad_dpts = 0.;
   }
 
   memset(input_backward_ptr, 0,
     batches * input_cols * input_rows *
-    input_depth * in_channel * sizeof(TYPE));
+    input_dpts * in_channel * sizeof(TYPE));
 
   for (int i = 0; i < batches; ++i) {
     const int input_idx_base = i * input_crdi;
@@ -384,15 +384,15 @@ value FUN_NATIVE (cuboid_backward) (
       const int output_idx_base_j = output_idx_base_i + j * output_rdi;
       for (int k = 0; k < output_rows; ++k) {
         const int output_idx_base_k = output_idx_base_j + k * output_di;
-        for (int d = 0; d < output_depth; ++d) {
+        for (int d = 0; d < output_dpts; ++d) {
           const int output_idx_base = output_idx_base_k + d * in_channel;
 
           const int cstart = j * col_stride   - floor(pad_cols);
           const int rstart = k * row_stride   - floor(pad_rows);
-          const int dstart = d * depth_stride - floor(pad_depth);
+          const int dstart = d * dpt_stride - floor(pad_dpts);
           const int cend   = cstart + kernel_cols;
           const int rend   = rstart + kernel_rows;
-          const int dend   = dstart + kernel_depth;
+          const int dend   = dstart + kernel_dpts;
 
           for (int l = 0; l < in_channel; ++l) {
             TYPE m;
@@ -410,7 +410,7 @@ value FUN_NATIVE (cuboid_backward) (
                 for (int c = dstart; c < dend; ++c) {
                   if (a >= 0 && a < input_cols &&
                       b >= 0 && b < input_rows &&
-                      c >= 0 && c < input_depth) {
+                      c >= 0 && c < input_dpts) {
                     int input_idx =
                       input_idx_base + a * input_rdi + b * input_di +
                       c * in_channel + l;
@@ -499,7 +499,7 @@ value FUN_NATIVE (spatial_arg) (
       const int output_idx_base_j = output_idx_base_i + j * output_ri;
       for (int k = 0; k < output_rows; ++k) {
         const int output_idx_base = output_idx_base_j + k * in_channel;
-        
+
         const int cstart = j * col_stride - pad_cols;
         const int rstart = k * row_stride - pad_rows;
         const int cend   = cstart + kernel_cols;
