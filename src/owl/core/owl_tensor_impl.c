@@ -53,8 +53,12 @@ value FUN_NATIVE (spatial) (
   }
 
   for (int i = 0; i < batches; ++i) {
+    const int input_idx_base = i * input_cri;
+    const int output_idx_base_i = i * output_cri;
     for (int j = 0; j < output_cols; ++j) {
+      const int output_idx_base_j = output_idx_base_i + j * output_ri;
       for (int k = 0; k < output_rows; ++k) {
+        const int output_idx_base = output_idx_base_j + k * in_channel;
 
         const int cstart = j * col_stride - floor(pc);
         const int rstart = k * row_stride - floor(pr);
@@ -69,7 +73,7 @@ value FUN_NATIVE (spatial) (
               if (a >= 0 && a < input_cols &&
                   b >= 0 && b < input_rows) {
                 int input_idx =
-                  i * input_cri + a * input_ri + b * in_channel + l;
+                   input_idx_base + a * input_ri + b * in_channel + l;
                 TYPE t = *(input_ptr + input_idx);
                 ACCFN (acc, t);
                 c++;
@@ -77,8 +81,7 @@ value FUN_NATIVE (spatial) (
             }
           }
 
-          int output_idx =
-            i * output_cri + j * output_ri + k * in_channel + l;
+          int output_idx = output_idx_base + l;
           *(output_ptr + output_idx) = UPDATEFN (acc, c);
         }
       }
@@ -139,8 +142,12 @@ value FUN_NATIVE (spatial_backward) (
 
   int i, j, k, l;
   for (i = 0; i < batches; ++i) {
+    const int input_idx_base = i * input_cri;
+    const int output_idx_base_i = i * output_cri;
     for (j = 0; j < output_cols; ++j) {
+      const int output_idx_base_j = output_idx_base_i + j * output_ri;
       for (k = 0; k < output_rows; ++k) {
+        const int output_idx_base = output_idx_base_j + k * in_channel;
 
         const int cstart = j * col_stride - pad_cols;
         const int rstart = k * row_stride - pad_rows;
@@ -149,8 +156,7 @@ value FUN_NATIVE (spatial_backward) (
 
         for (l = 0; l < in_channel; ++l) {
           TYPE m;
-          int output_idx =
-            i * output_cri  + j * output_ri + k * in_channel + l;
+          int output_idx = output_idx_base + l;
           m = *(output_backward_ptr + output_idx);
 
           int idx[ksize];
@@ -164,7 +170,7 @@ value FUN_NATIVE (spatial_backward) (
               if (a >= 0 && a < input_cols &&
                   b >= 0 && b < input_rows) {
                 int input_idx =
-                  i * input_cri + a * input_ri + b * in_channel + l;
+                  input_idx_base + a * input_ri + b * in_channel + l;
                 idx[c++] = input_idx;
 
                 #ifdef OWL_TENSOR_MAX
@@ -255,9 +261,14 @@ value FUN_NATIVE (cuboid) (
   }
 
   for (int i = 0; i < batches; ++i) {
+    const int input_idx_base = i * input_crdi;
+    const int output_idx_base_i = i * output_crdi;
     for (int j = 0; j < output_cols; ++j) {
+      const int output_idx_base_j = output_idx_base_i + j * output_rdi;
       for (int k = 0; k < output_rows; ++k) {
+        const int output_idx_base_k = output_idx_base_j + k * output_di;
         for (int d = 0; d < output_depth; ++d) {
+          const int output_idx_base = output_idx_base_k + d * in_channel;
 
           const int cstart = j * col_stride   - floor(pc);
           const int rstart = k * row_stride   - floor(pr);
@@ -276,7 +287,7 @@ value FUN_NATIVE (cuboid) (
                       b >= 0 && b < input_rows &&
                       c >= 0 && c < input_depth) {
                     int input_idx =
-                      i * input_crdi + a * input_rdi + b * input_di +
+                      input_idx_base + a * input_rdi + b * input_di +
                       c * in_channel + l;
                     TYPE t = *(input_ptr + input_idx);
                     ACCFN (acc, t);
@@ -286,9 +297,7 @@ value FUN_NATIVE (cuboid) (
               }
             }
 
-            int output_idx =
-              i * output_crdi + j * output_rdi + k * output_di +
-              d * in_channel + l;
+            int output_idx = output_idx_base + l;
             *(output_ptr + output_idx) = UPDATEFN (acc, counter);
           }
         }
@@ -369,9 +378,14 @@ value FUN_NATIVE (cuboid_backward) (
     input_depth * in_channel * sizeof(TYPE));
 
   for (int i = 0; i < batches; ++i) {
+    const int input_idx_base = i * input_crdi;
+    const int output_idx_base_i = i * output_crdi;
     for (int j = 0; j < output_cols; ++j) {
+      const int output_idx_base_j = output_idx_base_i + j * output_rdi;
       for (int k = 0; k < output_rows; ++k) {
+        const int output_idx_base_k = output_idx_base_j + k * output_di;
         for (int d = 0; d < output_depth; ++d) {
+          const int output_idx_base = output_idx_base_k + d * in_channel;
 
           const int cstart = j * col_stride   - floor(pad_cols);
           const int rstart = k * row_stride   - floor(pad_rows);
@@ -382,9 +396,7 @@ value FUN_NATIVE (cuboid_backward) (
 
           for (int l = 0; l < in_channel; ++l) {
             TYPE m;
-            int output_idx =
-              i * output_crdi + j * output_rdi + k * output_di +
-              d * in_channel + l;
+            int output_idx = output_idx_base + l;
             m = *(output_backward_ptr + output_idx);
 
             int idx[ksize];
@@ -400,7 +412,7 @@ value FUN_NATIVE (cuboid_backward) (
                       b >= 0 && b < input_rows &&
                       c >= 0 && c < input_depth) {
                     int input_idx =
-                      i * input_crdi + a * input_rdi + b * input_di +
+                      input_idx_base + a * input_rdi + b * input_di +
                       c * in_channel + l;
                     idx[counter++] = input_idx;
 
@@ -481,9 +493,13 @@ value FUN_NATIVE (spatial_arg) (
   memset(argmax_ptr, 0, batches * output_cri * sizeof(int64_t));
 
   for (int i = 0; i < batches; ++i) {
+    const int input_idx_base = i * input_cri;
+    const int output_idx_base_i = i * output_cri;
     for (int j = 0; j < output_cols; ++j) {
+      const int output_idx_base_j = output_idx_base_i + j * output_ri;
       for (int k = 0; k < output_rows; ++k) {
-
+        const int output_idx_base = output_idx_base_j + k * in_channel;
+        
         const int cstart = j * col_stride - pad_cols;
         const int rstart = k * row_stride - pad_rows;
         const int cend   = cstart + kernel_cols;
@@ -498,7 +514,7 @@ value FUN_NATIVE (spatial_arg) (
               if (a >= 0 && a < input_cols &&
                   b >= 0 && b < input_rows) {
                 int input_idx =
-                  i * input_cri + a * input_ri + b * in_channel + l;
+                  input_idx_base + a * input_ri + b * in_channel + l;
                 TYPE t = *(input_ptr + input_idx);
                 if (acc < t) {
                   acc = t;
@@ -509,8 +525,7 @@ value FUN_NATIVE (spatial_arg) (
             }
           }
 
-          int output_idx =
-            i * output_cri + j * output_ri + k * in_channel + l;
+          int output_idx = output_idx_base + l;
           *(output_ptr + output_idx) = acc;
           *(argmax_ptr + output_idx) = (int64_t) max_idx;
         }
