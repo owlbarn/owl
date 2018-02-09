@@ -109,8 +109,10 @@ module Make
     | Reshape_D     of t
     | Maxpool1D_D   of t * padding * int array * int array
     | Maxpool2D_D   of t * padding * int array * int array
+    | Maxpool3D_D   of t * padding * int array * int array
     | Avgpool1D_D   of t * padding * int array * int array
     | Avgpool2D_D   of t * padding * int array * int array
+    | Avgpool3D_D   of t * padding * int array * int array
 
 
   (* generate global tags *)
@@ -1048,6 +1050,24 @@ module Make
       |> pack_arr
 
     (* a:input; b:kernel; s:stride *)
+    and max_pool3d padding a b s =
+      let ff = function
+        | Arr a    -> Arr A.(max_pool3d ~padding a b s)
+        | _        -> error_uniop "max_pool3d" a
+      in
+      let fd a = max_pool3d padding a b s in
+      let df cp ap at = failwith "max_pool3d:df" in
+      let r a = Maxpool3D_D (a, padding, b, s) in
+      op_d_d a ff fd df r
+
+    (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
+    and max_pool3d_backward p a b s o =
+      let a = unpack_arr a in
+      let o = unpack_arr o in
+      A.max_pool3d_backward p a b s o
+      |> pack_arr
+
+    (* a:input; b:kernel; s:stride *)
     and avg_pool1d padding a b s =
       let ff = function
         | Arr a    -> Arr A.(avg_pool1d ~padding a b s)
@@ -1083,12 +1103,18 @@ module Make
       A.avg_pool2d_backward p a b s o
       |> pack_arr
 
-    and max_pool3d_backward p a b s o =
-      let a = unpack_arr a in
-      let o = unpack_arr o in
-      A.max_pool3d_backward p a b s o
-      |> pack_arr
+    (* a:input; b:kernel; s:stride *)
+    and avg_pool3d padding a b s =
+      let ff = function
+        | Arr a    -> Arr A.(avg_pool3d ~padding a b s)
+        | _        -> error_uniop "avg_pool3d" a
+      in
+      let fd a = avg_pool3d padding a b s in
+      let df cp ap at = failwith "avg_pool3d:df" in
+      let r a = Avgpool3D_D (a, padding, b, s) in
+      op_d_d a ff fd df r
 
+    (* a:input; p:padding type; b:kernel; s:stride; o:output' *)
     and avg_pool3d_backward p a b s o =
       let a = unpack_arr a in
       let o = unpack_arr o in
@@ -1226,8 +1252,10 @@ module Make
               | Reshape_D a              -> reset (a :: t)
               | Maxpool1D_D (a, _, _, _) -> reset (a :: t)
               | Maxpool2D_D (a, _, _, _) -> reset (a :: t)
+              | Maxpool3D_D (a, _, _, _) -> reset (a :: t)
               | Avgpool1D_D (a, _, _, _) -> reset (a :: t)
               | Avgpool2D_D (a, _, _, _) -> reset (a :: t)
+              | Avgpool3D_D (a, _, _, _) -> reset (a :: t)
               | Concat_D_D (a, b, _)     -> reset (a :: b :: t)
               | Concat_D_C (a, _, _)     -> reset (a :: t)
               | Concat_C_D (_, b, _)     -> reset (b :: t)
@@ -1349,8 +1377,10 @@ module Make
               | Reshape_D a              -> push ((reshape !aa (shape (primal a)), a) :: t)
               | Maxpool1D_D (a, p, d, s) -> push ((max_pool1d_backward p (primal a) d s !aa, a) :: t)
               | Maxpool2D_D (a, p, d, s) -> push ((max_pool2d_backward p (primal a) d s !aa, a) :: t)
+              | Maxpool3D_D (a, p, d, s) -> push ((max_pool3d_backward p (primal a) d s !aa, a) :: t)
               | Avgpool1D_D (a, p, d, s) -> push ((avg_pool1d_backward p (primal a) d s !aa, a) :: t)
               | Avgpool2D_D (a, p, d, s) -> push ((avg_pool2d_backward p (primal a) d s !aa, a) :: t)
+              | Avgpool3D_D (a, p, d, s) -> push ((avg_pool3d_backward p (primal a) d s !aa, a) :: t)
               | Concat_D_D (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: (s.(1) ,b) :: t)
               | Concat_D_C (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(0) ,a) :: t)
               | Concat_C_D (a, b, i)     -> let s = split i [|(shape a).(i); (shape b).(i)|] !aa in push ((s.(1) ,b) :: t)
@@ -1687,8 +1717,10 @@ module Make
                   | Reshape_D a              -> "Reshape_D", [ a ]
                   | Maxpool1D_D (a, p, d, s) -> "Maxpool1D_D", [ a ]
                   | Maxpool2D_D (a, p, d, s) -> "Maxpool2D_D", [ a ]
+                  | Maxpool3D_D (a, p, d, s) -> "Maxpool3D_D", [ a ]
                   | Avgpool1D_D (a, p, d, s) -> "Avgpool1D_D", [ a ]
                   | Avgpool2D_D (a, p, d, s) -> "Avgpool2D_D", [ a ]
+                  | Avgpool3D_D (a, p, d, s) -> "Avgpool3D_D", [ a ]
                   | Concat_D_D (a, b, i)     -> "Concat_D_D", [a; b]
                   | Concat_D_C (a, b, i)     -> "Concat_D_C", [a; b]
                   | Concat_C_D (a, b, i)     -> "Concat_C_D", [a; b]
