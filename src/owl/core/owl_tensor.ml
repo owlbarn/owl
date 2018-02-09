@@ -39,6 +39,10 @@ let owl_float32_tensor_avgpool_spatial_backward
     kernel_cols kernel_rows output_cols output_rows
     row_stride col_stride pad_rows pad_cols
 
+external owl_float32_tensor_maxpool_argmax_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_float32_tensor_maxpool_spatial_arg_bytecode"
+"stub_float32_tensor_maxpool_spatial_arg_native"
+
 external owl_float32_tensor_maxpool_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
 "stub_float32_tensor_maxpool_cuboid_bytecode"
 "stub_float32_tensor_maxpool_cuboid_native"
@@ -134,3 +138,7 @@ let owl_float64_tensor_avgpool_cuboid_backward
     output_cols output_rows output_depth
     row_stride col_stride depth_stride
     pad_typ
+
+external owl_float64_tensor_maxpool_argmax_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_float64_tensor_maxpool_spatial_arg_bytecode"
+"stub_float64_tensor_maxpool_spatial_arg_native"

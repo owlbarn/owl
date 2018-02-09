@@ -238,8 +238,8 @@ let _eigen_cuboid_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 
   | _         -> failwith "_owl_cuboid_avg_pooling: unsupported operation"
 
 let _eigen_spatial_max_pooling_argmax : type a b . (a, b) kind -> (a, b) eigen_arr_op06 = function
-  | Float32   -> Eigen.Tensor.S.spatial_max_pooling_argmax
-  | Float64   -> Eigen.Tensor.D.spatial_max_pooling_argmax
+  | Float32   -> Owl_tensor.owl_float32_tensor_maxpool_argmax_spatial
+  | Float64   -> Owl_tensor.owl_float64_tensor_maxpool_argmax_spatial
   | _         -> failwith "_owl_spatial_max_pooling_argmax: unsupported operation"
 
 let _eigen_spatial_max_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op07 = function

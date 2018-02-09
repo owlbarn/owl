@@ -38,6 +38,8 @@ value FUN_NATIVE (spatial) (
   const int output_cri = output_cols * output_rows * in_channel;
   const int output_ri  = output_rows * in_channel;
 
+  memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
+
   TYPE pr, pc;
   if (padding == 1) {
     pr = 0.; pc = 0.;
@@ -50,22 +52,20 @@ value FUN_NATIVE (spatial) (
     if (pc < 0) pc = 0.;
   }
 
-  int i, j, k, l;
-  for (i = 0; i < batches; ++i) {
-    for (j = 0; j < output_cols; ++j) {
-      for (k = 0; k < output_rows; ++k) {
+  for (int i = 0; i < batches; ++i) {
+    for (int j = 0; j < output_cols; ++j) {
+      for (int k = 0; k < output_rows; ++k) {
 
         const int cstart = j * col_stride - floor(pc);
         const int rstart = k * row_stride - floor(pr);
         const int cend   = cstart + kernel_cols;
         const int rend   = rstart + kernel_rows;
 
-        for (l = 0; l < in_channel; ++l) {
+        for (int l = 0; l < in_channel; ++l) {
           TYPE acc = INITACC;
-          int a, b;
           int c = 0;
-          for (a = cstart; a < cend; ++a) {
-            for (b = rstart; b < rend; ++b) {
+          for (int a = cstart; a < cend; ++a) {
+            for (int b = rstart; b < rend; ++b) {
               if (a >= 0 && a < input_cols &&
                   b >= 0 && b < input_rows) {
                 int input_idx =
@@ -128,8 +128,8 @@ value FUN_NATIVE (spatial_backward) (
   const int ksize      = kernel_cols * kernel_rows;
   const int output_cri = output_cols * output_rows * in_channel;
   const int output_ri  = output_rows * in_channel;
-  const int input_cri  = input_cols * input_rows * in_channel;
-  const int input_ri   = input_rows * in_channel;
+  const int input_cri  = input_cols  * input_rows  * in_channel;
+  const int input_ri   = input_rows  * in_channel;
 
   if (pad_cols < 0) pad_cols = 0;
   if (pad_rows < 0) pad_rows = 0;
@@ -236,6 +236,8 @@ value FUN_NATIVE (cuboid) (
   const int input_crdi  = input_cols * input_rows * input_depth * in_channel;
   const int input_rdi   = input_rows * input_depth * in_channel;
   const int input_di    = input_depth * in_channel;
+
+  memset(output_ptr, 0, batches * output_crdi * sizeof(TYPE));
 
   TYPE pr, pc, pd;
   if (padding == 1){
@@ -437,5 +439,95 @@ value FUN_BYTE (cuboid_backward) (value * argv, int argn) {
   );
 }
 
+#ifdef OWL_TENSOR_MAX
+
+value FUN_NATIVE (spatial_arg) (
+  value vInput_ptr, value vOutput_ptr, value vArgmax_ptr,
+  value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
+  value vKernel_cols, value vKernel_rows,
+  value vOutput_cols, value vOutput_rows,
+  value vRow_stride,  value vCol_stride,
+  value vPad_rows, value vPad_cols
+) {
+  struct caml_ba_array *IN = Caml_ba_array_val(vInput_ptr);
+  struct caml_ba_array *OU = Caml_ba_array_val(vOutput_ptr);
+  struct caml_ba_array *AG = Caml_ba_array_val(vArgmax_ptr);
+  TYPE *input_ptr  = (TYPE *) IN->data;
+  TYPE *output_ptr = (TYPE *) OU->data;
+  int64_t *argmax_ptr = (int64_t *) AG->data;
+
+  int batches       = Long_val(vBatches);
+  int input_cols    = Long_val(vInput_cols);
+  int input_rows    = Long_val(vInput_rows);
+  int in_channel    = Long_val(vIn_channel);
+  int kernel_cols   = Long_val(vKernel_cols);
+  int kernel_rows   = Long_val(vKernel_rows);
+  int output_cols   = Long_val(vOutput_cols);
+  int output_rows   = Long_val(vOutput_rows);
+  int row_stride    = Long_val(vRow_stride);
+  int col_stride    = Long_val(vCol_stride);
+  int pad_rows      = Long_val(vPad_rows);
+  int pad_cols      = Long_val(vPad_cols);
+
+  if (pad_rows < 0) pad_rows = 0.;
+  if (pad_cols < 0) pad_cols = 0.;
+
+  const int input_cri  = input_cols * input_rows * in_channel;
+  const int input_ri   = input_rows * in_channel;
+  const int output_cri = output_cols * output_rows * in_channel;
+  const int output_ri  = output_rows * in_channel;
+
+  memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
+  memset(argmax_ptr, 0, batches * output_cri * sizeof(int64_t));
+
+  for (int i = 0; i < batches; ++i) {
+    for (int j = 0; j < output_cols; ++j) {
+      for (int k = 0; k < output_rows; ++k) {
+
+        const int cstart = j * col_stride - pad_cols;
+        const int rstart = k * row_stride - pad_rows;
+        const int cend   = cstart + kernel_cols;
+        const int rend   = rstart + kernel_rows;
+
+        for (int l = 0; l < in_channel; ++l) {
+          TYPE acc = INITACC;
+          int max_idx = -1;
+          int c = 0;
+          for (int a = cstart; a < cend; ++a) {
+            for (int b = rstart; b < rend; ++b) {
+              if (a >= 0 && a < input_cols &&
+                  b >= 0 && b < input_rows) {
+                int input_idx =
+                  i * input_cri + a * input_ri + b * in_channel + l;
+                TYPE t = *(input_ptr + input_idx);
+                if (acc < t) {
+                  acc = t;
+                  max_idx = input_idx;
+                }
+                c++;
+              }
+            }
+          }
+
+          int output_idx =
+            i * output_cri + j * output_ri + k * in_channel + l;
+          *(output_ptr + output_idx) = acc;
+          *(argmax_ptr + output_idx) = (int64_t) max_idx;
+        }
+      }
+    }
+  }
+
+  return Val_unit;
+}
+
+value FUN_BYTE (spatial_arg) (value * argv, int argn) {
+  return FUN_NATIVE (spatial_arg) (
+    argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
+    argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14]
+  );
+}
+
+#endif /* OWL_TENSOR_MAX */
 
 #endif /* OWL_ENABLE_TEMPLATE */
