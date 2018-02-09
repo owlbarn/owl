@@ -234,8 +234,8 @@ value FUN_NATIVE (cuboid) (
   const int output_rdi  = output_rows * output_depth * in_channel;
   const int output_di   = output_depth * in_channel;
   const int input_crdi  = input_cols * input_rows * input_depth * in_channel;
-  const int input_rdi   = input_rows * input_depth * in_channel
-  const int input_di    = input_depth * in_channel
+  const int input_rdi   = input_rows * input_depth * in_channel;
+  const int input_di    = input_depth * in_channel;
 
   TYPE pr, pc, pd;
   if (padding == 1){
@@ -344,8 +344,8 @@ value FUN_NATIVE (cuboid_backward) (
   const int output_rdi  = output_rows * output_depth * in_channel;
   const int output_di   = output_depth * in_channel;
   const int input_crdi  = input_cols * input_rows * input_depth * in_channel;
-  const int input_rdi   = input_rows * input_depth * in_channel
-  const int input_di    = input_depth * in_channel
+  const int input_rdi   = input_rows * input_depth * in_channel;
+  const int input_di    = input_depth * in_channel;
 
   float pad_rows, pad_cols, pad_depth;
   if (padding == 1){

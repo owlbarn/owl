@@ -13,7 +13,7 @@ module Make (N : Ndarray_Algodiff) = struct
   let tolerance_f64 = 1e-8
   let tolerance_f32 = 5e-4
   let close a b =
-    N.(a - b |> abs |> sum') < tolerance_f32
+    N.(sub a b |> abs |> sum') < tolerance_f32
 
   let test_maxpool3d input_shape kernel stride pad =
     let inp = N.sequential ~a:1. input_shape in
@@ -128,7 +128,7 @@ module Make (N : Ndarray_Algodiff) = struct
     let fun02 () =
       let expected = [|
         0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;
-        0.； 0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;
+        0.; 0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;
         0.;  0.; 0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;  0.;
         0.;  1.;  2.; 3.;  4.;  5.;  6.;  0.;  7.;  8.;  9.; 10.; 11.; 12.;
         0.; 13.; 14.; 15.; 16.; 17.; 18.;  0.; 19.; 20.; 21.; 22.; 23.; 24.;

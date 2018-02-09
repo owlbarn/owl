@@ -2162,7 +2162,7 @@ let max_pool3d_backward padding input kernel stride output' =
   let dpt_stride = stride.(2) in
 
   let output_cols, output_rows, output_dpts =
-    calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+    Owl_utils.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
   in
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
   let input' = empty (kind input) (shape input) in
@@ -2264,7 +2264,7 @@ let avg_pool3d_backward padding input kernel stride output' =
   let dpt_stride = stride.(2) in
 
   let output_cols, output_rows, output_dpts =
-    calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+    Owl_utils.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
   in
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
   let input' = empty (kind input) (shape input) in
