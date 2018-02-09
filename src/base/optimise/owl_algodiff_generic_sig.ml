@@ -208,10 +208,16 @@ module type Sig = sig
     val max_pool2d : padding -> t -> int array -> int array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
+    val max_pool3d : padding -> t -> int array -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
     val avg_pool1d : padding -> t -> int array -> int array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val avg_pool2d : padding -> t -> int array -> int array -> t
+    (** Refer to :doc:`owl_dense_ndarray_generic` *)
+
+    val avg_pool3d : padding -> t -> int array -> int array -> t
     (** Refer to :doc:`owl_dense_ndarray_generic` *)
 
     val reshape : t -> int array -> t

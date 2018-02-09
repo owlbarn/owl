@@ -29,14 +29,14 @@ module Make (N : Ndarray_Algodiff) = struct
     let output = N.max_pool2d ~padding:pad input kernel stride in
     let output_shape = N.shape output in
     let output' = N.sequential ~a:1. output_shape in
-    N.max_pool2d_backward VALID input kernel stride output'
+    N.max_pool2d_backward pad input kernel stride output'
 
   let test_avgpool2d_back input_shape kernel stride pad =
     let input = N.sequential ~a:1. input_shape in
     let output = N.avg_pool2d ~padding:pad input kernel stride in
     let output_shape = N.shape output in
     let output' = N.sequential ~a:1. output_shape in
-    N.avg_pool2d_backward VALID input kernel stride output'
+    N.avg_pool2d_backward pad input kernel stride output'
 
   let verify_value fn input_shape kernel stride pad expected =
     let a = fn input_shape kernel stride pad in
@@ -46,7 +46,6 @@ module Make (N : Ndarray_Algodiff) = struct
 
 
   (* Test AvgPooling2D and MaxPooling2D forward operations *)
-
   module To_test_forward = struct
 
     (* testMaxPoolValidPadding *)
@@ -335,14 +334,14 @@ module Make (N : Ndarray_Algodiff) = struct
     "fun_forward10", `Slow, fun_forward10;
     "fun_forward11", `Slow, fun_forward11;
     "fun_max2d_back00", `Slow, fun_max2d_back00;
-    (* "fun_max2d_back01", `Slow, fun_max2d_back01;
-       "fun_max2d_back02", `Slow, fun_max2d_back02; *)
+    "fun_max2d_back01", `Slow, fun_max2d_back01;
+    "fun_max2d_back02", `Slow, fun_max2d_back02;
     "fun_max2d_back03", `Slow, fun_max2d_back03;
     "fun_max2d_back04", `Slow, fun_max2d_back04;
     "fun_max2d_back05", `Slow, fun_max2d_back05;
     "fun_avg2d_back00", `Slow, fun_avg2d_back00;
-    (* "fun_avg2d_back01", `Slow, fun_avg2d_back01;
-       "fun_avg2d_back02", `Slow, fun_avg2d_back02; *)
+    "fun_avg2d_back01", `Slow, fun_avg2d_back01;
+    "fun_avg2d_back02", `Slow, fun_avg2d_back02;
     "fun_avg2d_back03", `Slow, fun_avg2d_back03;
     "fun_avg2d_back04", `Slow, fun_avg2d_back04;
     "fun_avg2d_back05", `Slow, fun_avg2d_back05;

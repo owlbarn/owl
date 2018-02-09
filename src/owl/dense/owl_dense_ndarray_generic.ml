@@ -2140,6 +2140,42 @@ let max_pool2d_argmax ?(padding=SAME) input kernel stride =
 
   output, argmax
 
+(* calculate the gradient of max_pool2d *)
+let max_pool3d_backward padding input kernel stride output' =
+  assert (num_dims input = 5);
+  assert (Array.length kernel = 3);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+  let kernel_dpts = kernel.(2) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let output_cols, output_rows, output_dpts =
+    Owl_utils.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+  in
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+  let input' = empty (kind input) (shape input) in
+
+  _eigen_cuboid_max_pooling_backward (kind input)
+    input output' input'
+    batches input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts
+    col_stride row_stride dpt_stride
+    pad_typ;
+
+  input'
 
 (* calculate the gradient of max_pool2d *)
 let max_pool2d_backward padding input kernel stride output' =
@@ -2206,6 +2242,42 @@ let max_pool1d_backward padding input kernel stride output' =
   let input' = max_pool2d_backward padding input kernel stride output' in
   reshape input' input_shp
 
+(* calculate the gradient of max_pool2d *)
+let avg_pool3d_backward padding input kernel stride output' =
+  assert (num_dims input = 5);
+  assert (Array.length kernel = 3);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+  let kernel_dpts = kernel.(2) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let output_cols, output_rows, output_dpts =
+    Owl_utils.calc_conv3d_output_shape padding input_cols input_rows input_dpts kernel_cols kernel_rows kernel_dpts row_stride col_stride dpt_stride
+  in
+  let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
+  let input' = empty (kind input) (shape input) in
+
+  _eigen_cuboid_avg_pooling_backward (kind input)
+    input' output'
+    batches input_cols input_rows input_dpts in_channel
+    kernel_cols kernel_rows kernel_dpts
+    output_cols output_rows output_dpts
+    col_stride row_stride dpt_stride
+    pad_typ;
+
+  input'
 
 (* calculate the gradient of avg_pool2d *)
 let avg_pool2d_backward padding input kernel stride output' =
