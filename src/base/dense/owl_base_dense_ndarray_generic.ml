@@ -2090,6 +2090,9 @@ let avg_pool2d_backward padding input kernel stride output' =
   (_pool2d_backward padding input kernel stride output'
      init_pool_fun add_val_pool_fun end_pool_fun compute_grad_fun)
 
+(* TODO *)
+let max_pool3d_backward = max_pool2d_backward
+let avg_pool3d_backward = avg_pool2d_backward
 
 (* calculate the gradient of max_pool1d *)
 let max_pool1d_backward padding input kernel stride output' =

@@ -1083,6 +1083,18 @@ module Make
       A.avg_pool2d_backward p a b s o
       |> pack_arr
 
+    and max_pool3d_backward p a b s o =
+      let a = unpack_arr a in
+      let o = unpack_arr o in
+      A.max_pool3d_backward p a b s o
+      |> pack_arr
+
+    and avg_pool3d_backward p a b s o =
+      let a = unpack_arr a in
+      let o = unpack_arr o in
+      A.avg_pool3d_backward p a b s o
+      |> pack_arr
+
     and dropout ?(rate=0.5) a =
       let b = match (primal' a) with
         | Arr a -> Arr (A.bernoulli ~p:(1. -. rate) (A.shape a))
