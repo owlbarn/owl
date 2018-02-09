@@ -1925,7 +1925,7 @@ let max_pool2d ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  _eigen_spatial_max_pooling (kind input)
+  _owl_spatial_max_pooling (kind input)
     input output batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows
     row_stride col_stride pad_typ row_in_stride col_in_stride;
@@ -1990,7 +1990,7 @@ let avg_pool2d ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  _eigen_spatial_avg_pooling (kind input)
+  _owl_spatial_avg_pooling (kind input)
     input output batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows
     row_stride col_stride pad_typ row_in_stride col_in_stride;
@@ -2056,7 +2056,7 @@ let max_pool3d ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  _eigen_cuboid_max_pooling (kind input)
+  _owl_cuboid_max_pooling (kind input)
     input output batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -2094,7 +2094,7 @@ let avg_pool3d ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  _eigen_cuboid_avg_pooling (kind input)
+  _owl_cuboid_avg_pooling (kind input)
     input output batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -2132,7 +2132,7 @@ let max_pool2d_argmax ?(padding=SAME) input kernel stride =
     Owl_utils.calc_conv2d_padding input_cols input_rows kernel_cols kernel_rows output_cols output_rows row_stride col_stride
   in
 
-  _eigen_spatial_max_pooling_argmax (kind input)
+  _owl_spatial_max_pooling_argmax (kind input)
     input output argmax
     batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows
@@ -2167,7 +2167,7 @@ let max_pool3d_backward padding input kernel stride output' =
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
   let input' = empty (kind input) (shape input) in
 
-  _eigen_cuboid_max_pooling_backward (kind input)
+  _owl_cuboid_max_pooling_backward (kind input)
     input output' input'
     batches input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -2203,7 +2203,7 @@ let max_pool2d_backward padding input kernel stride output' =
   in
   let input' = empty (kind input) (shape input) in
 
-  _eigen_spatial_max_pooling_backward (kind input)
+  _owl_spatial_max_pooling_backward (kind input)
     input output' input'
     batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows
@@ -2269,7 +2269,7 @@ let avg_pool3d_backward padding input kernel stride output' =
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
   let input' = empty (kind input) (shape input) in
 
-  _eigen_cuboid_avg_pooling_backward (kind input)
+  _owl_cuboid_avg_pooling_backward (kind input)
     input' output'
     batches input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -2305,7 +2305,7 @@ let avg_pool2d_backward padding input kernel stride output' =
   in
   let input' = empty (kind input) (shape input) in
 
-  _eigen_spatial_avg_pooling_backward (kind input)
+  _owl_spatial_avg_pooling_backward (kind input)
     input' output'
     batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows
