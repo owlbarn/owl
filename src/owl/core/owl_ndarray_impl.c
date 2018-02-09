@@ -173,7 +173,7 @@ value FUN_NATIVE (spatial_backward) (
                   input_idx_base + a * input_ri + b * in_channel + l;
                 idx[c++] = input_idx;
 
-                #ifdef OWL_TENSOR_MAX
+                #ifdef OWL_NDARRAY_MAX
                 TYPE t = *(input_ptr + input_idx);
                 if (acc < t){
                   acc = t;
@@ -184,7 +184,7 @@ value FUN_NATIVE (spatial_backward) (
             }
           }
 
-          #ifdef OWL_TENSOR_AVG
+          #ifdef OWL_NDARRAY_AVG
           for (int i = 0; i < c; i++) {
             *(input_backward_ptr + idx[i]) += UPDATEFN (m, c);
           }
@@ -414,7 +414,7 @@ value FUN_NATIVE (cuboid_backward) (
                       c * in_channel + l;
                     idx[counter++] = input_idx;
 
-                    #ifdef OWL_TENSOR_MAX
+                    #ifdef OWL_NDARRAY_MAX
                     TYPE t = *(input_ptr + input_idx);
                     if (acc < t){
                       acc = t;
@@ -426,7 +426,7 @@ value FUN_NATIVE (cuboid_backward) (
               }
             }
 
-            #ifdef OWL_TENSOR_AVG
+            #ifdef OWL_NDARRAY_AVG
             for (int i = 0; i < counter; i++) {
               *(input_backward_ptr + idx[i]) += UPDATEFN (m, counter);
             }
@@ -449,7 +449,7 @@ value FUN_BYTE (cuboid_backward) (value * argv, int argn) {
   );
 }
 
-#ifdef OWL_TENSOR_MAX
+#ifdef OWL_NDARRAY_MAX
 
 value FUN_NATIVE (spatial_arg) (
   value vInput_ptr, value vOutput_ptr, value vArgmax_ptr,
@@ -543,7 +543,7 @@ value FUN_BYTE (spatial_arg) (value * argv, int argn) {
 }
 
 
-#endif /* OWL_TENSOR_MAX */
+#endif /* OWL_NDARRAY_MAX */
 
 
 #endif /* OWL_ENABLE_TEMPLATE */

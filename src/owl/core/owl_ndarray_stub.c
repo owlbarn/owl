@@ -11,7 +11,7 @@
 
 #define OWL_ENABLE_TEMPLATE
 
-#define OWL_TENSOR_MAX
+#define OWL_NDARRAY_MAX
 #define FUN_NATIVE(dim) stub_float32_ndarray_maxpool ## _ ## dim  ## _ ## native
 #define FUN_BYTE(dim) stub_float32_ndarray_maxpool ## _ ## dim  ## _ ## bytecode
 #define TYPE float
@@ -25,10 +25,10 @@
 #undef TYPE
 #undef FUN_BYTE
 #undef FUN_NATIVE
-#undef OWL_TENSOR_MAX
+#undef OWL_NDARRAY_MAX
 
 
-#define OWL_TENSOR_AVG
+#define OWL_NDARRAY_AVG
 #define FUN_NATIVE(dim) stub_float32_ndarray_avgpool ## _ ## dim  ## _ ## native
 #define FUN_BYTE(dim) stub_float32_ndarray_avgpool ## _ ## dim  ## _ ## bytecode
 #define TYPE float
@@ -42,10 +42,10 @@
 #undef INITACC
 #undef FUN_BYTE
 #undef FUN_NATIVE
-#undef OWL_TENSOR_AVG
+#undef OWL_NDARRAY_AVG
 
 
-#define OWL_TENSOR_MAX
+#define OWL_NDARRAY_MAX
 #define FUN_NATIVE(dim) stub_float64_ndarray_maxpool ## _ ## dim  ## _ ## native
 #define FUN_BYTE(dim) stub_float64_ndarray_maxpool ## _ ## dim  ## _ ## bytecode
 #define TYPE double
@@ -59,10 +59,10 @@
 #undef TYPE
 #undef FUN_BYTE
 #undef FUN_NATIVE
-#undef OWL_TENSOR_MAX
+#undef OWL_NDARRAY_MAX
 
 
-#define OWL_TENSOR_AVG
+#define OWL_NDARRAY_AVG
 #define FUN_NATIVE(dim) stub_float64_ndarray_avgpool ## _ ## dim  ## _ ## native
 #define FUN_BYTE(dim) stub_float64_ndarray_avgpool ## _ ## dim  ## _ ## bytecode
 #define TYPE double
@@ -76,7 +76,7 @@
 #undef INITACC
 #undef FUN_BYTE
 #undef FUN_NATIVE
-#undef OWL_TENSOR_AVG
+#undef OWL_NDARRAY_AVG
 
 
 //////////////////// function templates ends ////////////////////
