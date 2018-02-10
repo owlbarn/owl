@@ -2682,6 +2682,27 @@ let l2norm ?axis x =
   | None   -> l2norm' x |> create _kind [|1|]
 
 
+let vecnorm ?axis ?(p=2.) x =
+  if p = 1. then l1norm ?axis x
+  else if p = 2. then l2norm ?axis x
+  else (
+    let y = abs x in
+    if p = infinity then max ?axis y
+    else if p = neg_infinity then min ?axis y
+    else (
+      let q = _float_typ_elt (kind x) (1. /. p) in
+      let p = _float_typ_elt (kind x) p in
+      let z = pow_scalar y p |> sum ?axis in
+      pow_scalar z q
+    )
+  )
+
+
+let vecnorm' ?p x =
+  let y = vecnorm ?p x in
+  get y [|0|]
+
+
 (* this function is used for searching top/bottom values in [x] *)
 let _search_close_to_extreme x n neg_ext cmp_fun =
   let m = numel x in

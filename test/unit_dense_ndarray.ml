@@ -8,6 +8,9 @@ module M = Owl_dense_ndarray_generic
 (* define the test error *)
 let eps = 5e-10
 
+let approx_equal a b = Pervasives.(abs_float (a -. b) < eps)
+
+
 (* make testable *)
 let ndarray = Alcotest.testable (fun p (x : (float, float64_elt) M.t) -> ()) M.equal
 
@@ -37,6 +40,9 @@ let vec = M.zeros Complex32 [|2;1|]
 let _ =
    M.set vec [|0;0|] {Complex.re=0.0;im=3.0};
    M.set vec [|1;0|] {Complex.re=0.0;im=(-4.0)}
+
+let x3 = M.sequential Float64 ~a:1. [|6|]
+
 
 (* a module with functions to test *)
 module To_test = struct
@@ -214,6 +220,46 @@ module To_test = struct
     let c = M.get x [|5|] in
     (a -. _e < eps) && (b -. Owl.Maths.(pow _e 2.) < eps) && (c -. Owl.Maths.(pow _e 5.) < eps)
 
+  let vecnorm_01 () =
+    let a = M.vecnorm' ~p:1. x3 in
+    approx_equal a 21.
+
+  let vecnorm_02 () =
+    let a = M.vecnorm' ~p:2. x3 in
+    approx_equal a 9.539392014169456
+
+  let vecnorm_03 () =
+    let a = M.vecnorm' ~p:3. x3 in
+    approx_equal a 7.6116626110202441
+
+  let vecnorm_04 () =
+    let a = M.vecnorm' ~p:4. x3 in
+    approx_equal a 6.9062985796189906
+
+  let vecnorm_05 () =
+    let a = M.vecnorm' ~p:infinity x3 in
+    approx_equal a 6.
+
+  let vecnorm_06 () =
+    let a = M.vecnorm' ~p:(-1.) x3 in
+    approx_equal a 0.40816326530612251
+
+  let vecnorm_07 () =
+    let a = M.vecnorm' ~p:(-2.) x3 in
+    approx_equal a 0.81885036774322384
+
+  let vecnorm_08 () =
+    let a = M.vecnorm' ~p:(-3.) x3 in
+    approx_equal a 0.94358755060582611
+
+  let vecnorm_09 () =
+    let a = M.vecnorm' ~p:(-4.) x3 in
+    approx_equal a 0.98068869669651115
+
+  let vecnorm_10 () =
+    let a = M.vecnorm' ~p:neg_infinity x3 in
+    approx_equal a 1.
+
 end
 
 (* the tests *)
@@ -368,6 +414,36 @@ let logspace_10 () =
 let logspace_e () =
   Alcotest.(check bool) "logspace_e" true (To_test.logspace_e ())
 
+let vecnorm_01 () =
+  Alcotest.(check bool) "vecnorm_01" true (To_test.vecnorm_01 ())
+
+let vecnorm_02 () =
+  Alcotest.(check bool) "vecnorm_02" true (To_test.vecnorm_02 ())
+
+let vecnorm_03 () =
+  Alcotest.(check bool) "vecnorm_03" true (To_test.vecnorm_03 ())
+
+let vecnorm_04 () =
+  Alcotest.(check bool) "vecnorm_04" true (To_test.vecnorm_04 ())
+
+let vecnorm_05 () =
+  Alcotest.(check bool) "vecnorm_05" true (To_test.vecnorm_05 ())
+
+let vecnorm_06 () =
+  Alcotest.(check bool) "vecnorm_06" true (To_test.vecnorm_06 ())
+
+let vecnorm_07 () =
+  Alcotest.(check bool) "vecnorm_07" true (To_test.vecnorm_07 ())
+
+let vecnorm_08 () =
+  Alcotest.(check bool) "vecnorm_08" true (To_test.vecnorm_08 ())
+
+let vecnorm_09 () =
+  Alcotest.(check bool) "vecnorm_09" true (To_test.vecnorm_09 ())
+
+let vecnorm_10 () =
+  Alcotest.(check bool) "vecnorm_10" true (To_test.vecnorm_10 ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -419,4 +495,14 @@ let test_set = [
   "logspace_2", `Slow, logspace_2;
   "logspace_10", `Slow, logspace_10;
   "logspace_e", `Slow, logspace_e;
+  "vecnorm_01", `Slow, vecnorm_01;
+  "vecnorm_02", `Slow, vecnorm_02;
+  "vecnorm_03", `Slow, vecnorm_03;
+  "vecnorm_04", `Slow, vecnorm_04;
+  "vecnorm_05", `Slow, vecnorm_05;
+  "vecnorm_06", `Slow, vecnorm_06;
+  "vecnorm_07", `Slow, vecnorm_07;
+  "vecnorm_08", `Slow, vecnorm_08;
+  "vecnorm_09", `Slow, vecnorm_09;
+  "vecnorm_10", `Slow, vecnorm_10;
 ]
