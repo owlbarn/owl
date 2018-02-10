@@ -64,7 +64,7 @@ where ``eps = 1e-10``.
 
 val norm : ?p:float -> ('a, 'b) t -> float
 (**
-``norm ~p x`` computes the p-norm of the passed in matrix ``x``.
+``norm ~p x`` computes the matrix p-norm of the passed in matrix ``x``.
 
 Parameters:
   * ``p`` is the order of norm, the default value is 2.
