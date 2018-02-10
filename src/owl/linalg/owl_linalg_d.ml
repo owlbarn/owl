@@ -22,3 +22,5 @@ let schur = schur ~otyp:complex64
 let eig = eig ~otyp:complex64
 
 let eigvals = eigvals ~otyp:complex64
+
+let expm x = expm ~otyp:complex64 x |> Owl_dense_ndarray_generic.re_z2d

@@ -12,6 +12,15 @@ type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
 module M = Owl_dense.Matrix.Generic
 
 
+(* utility functions *)
+
+let _is_matrix x = Owl_dense_ndarray_generic.num_dims x = 2
+
+let _is_square x =
+  let m, n = M.shape x in
+  m = n
+
+
 (* LU decomposition *)
 
 
@@ -676,3 +685,19 @@ let peakflops ?(n=2000) () =
 
   let flops = 2. *. (float_of_int n) ** 3. /. (t1 -. t0) in
   flops
+
+
+(* Matrix functions *)
+
+let expm
+  : type a b c d. otyp:(c, d) kind -> (a, b) t -> (c, d) t
+  = fun ~otyp x ->
+  assert (_is_square x);
+  let v, w = eig ~otyp x in
+  let vi = inv v in
+  let u = M.(exp w |> diagm) in
+  M.( dot (dot v u) vi )
+
+
+
+(* ends here *)

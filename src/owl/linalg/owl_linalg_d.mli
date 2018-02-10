@@ -96,3 +96,8 @@ val lufact : mat -> mat * int32_mat
 val qrfact : ?pivot:bool -> mat -> mat * mat * int32_mat
 
 val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> mat -> mat * int32_mat
+
+
+(** {6 Matrix functions} *)
+
+val expm : mat -> mat

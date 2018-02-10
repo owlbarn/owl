@@ -328,6 +328,13 @@ documentation for more details.
  *)
 
 
+(** {6 Matrix functions} *)
+
+val expm : otyp:('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
+(**
+ *)
+
+
 (** {6 Helper functions} *)
 
 
