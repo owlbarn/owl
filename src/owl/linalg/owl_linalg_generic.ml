@@ -560,8 +560,8 @@ let cond ?(p=2.) x =
     let x = M.copy x in
     let a, ipiv = lufact x in
     let anorm = norm ~p x in
-    let norm = if p = 1. then '1' else 'I' in
-    let rcond = Owl_lapacke.gecon norm a anorm in
+    let _norm = if p = 1. then '1' else 'I' in
+    let rcond = Owl_lapacke.gecon _norm a anorm in
     1. /. rcond
   )
   else failwith "owl_linalg_generic:cond:p=1|2|inf"
