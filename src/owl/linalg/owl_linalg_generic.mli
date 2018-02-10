@@ -67,8 +67,8 @@ val norm : ?p:float -> ('a, 'b) t -> float
 ``norm ~p x`` computes the p-norm of the passed in matrix ``x``.
 
 Parameters:
-  * ``p`` is order of norm
-  * ``x`` is the input matrix
+  * ``p`` is the order of norm, the default value is 2.
+  * ``x`` is the input matrix.
 
 Returns:
   * If ``p = 1``, then returns the maximum absolute column sum of the matrix.
@@ -90,8 +90,8 @@ assumes the input is either 1d vector or 2d matrix.
   ||v||_p = \Big[ \sum_{k=0}^{N-1} |v_k|^p \Big]^{1/p}
 
 Parameters:
-  * ``p`` is order of norm
-  * ``x`` is the input vector
+  * ``p`` is the order of norm, the default value is 2.
+  * ``x`` is the input vector or matrix.
 
 Returns:
   * If ``p = infinity``, then returns :math:`||v||_{\infty} = \max_i(|v(i)|)`.
