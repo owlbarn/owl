@@ -542,7 +542,9 @@ let norm ?(p=2.) x =
 
 let vecnorm ?(p=2.) x =
   let k = M.kind x in
-  if p = 2. then
+  if p = 1. then
+    M.l1norm' x |> Owl_dense_common._re_elt k
+  else if p = 2. then
     M.l2norm' x |> Owl_dense_common._re_elt k
   else (
     let v = M.flatten x |> M.abs in
@@ -697,6 +699,9 @@ let expm
   let vi = inv v in
   let u = M.(exp w |> diagm) in
   M.( dot (dot v u) vi )
+
+
+let expm' x = ()
 
 
 
