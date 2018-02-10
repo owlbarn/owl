@@ -64,14 +64,39 @@ where ``eps = 1e-10``.
 
 val norm : ?p:float -> ('a, 'b) t -> float
 (**
-``nomr ~p x`` computes the p-norm of the passed in matrix ``x``.
+``norm ~p x`` computes the p-norm of the passed in matrix ``x``.
 
-If ``p = 1``, then ``n`` is the maximum absolute column sum of the matrix.
+Parameters:
+  * ``p`` is order of norm
+  * ``x`` is the input matrix
 
-If ``p = 2``, then ``n`` is approximately ``max (svd x)``. This is equivalent to norm(X).
-
-If ``p = infinity``, then ``n`` is the maximum absolute row sum of the matrix.
+Returns:
+  * If ``p = 1``, then returns the maximum absolute column sum of the matrix.
+  * If ``p = 2``, then returns approximately ``max (svd x)``.
+  * If ``p = infinity``, then returns the maximum absolute row sum of the matrix.
+  * If ``p = -1``, then returns the minimum absolute column sum of the matrix.
+  * If ``p = -2``, then returns approximately ``min (svd x)``.
+  * If ``p = -infinity``, then returns the minimum absolute row sum of the matrix.
  *)
+
+val vecnorm : ?p:float -> ('a, 'b) t -> float
+(**
+``vecnorm ~p x`` calculates the generalised vector p-norm, defined as below. If
+``x`` is a martrix, it will be flatten to a vector first.
+
+.. math::
+  ||v||_p = \Big[ \sum_{k=0}^{N-1} |v_k|^p \Big]^{1/p}
+
+Parameters:
+  * ``p`` is order of norm
+  * ``x`` is the input vector
+
+Returns:
+  * If ``p = infinity``, then returns :math:`||v||_{\infty} = \max_i(|v(i)|)`.
+  * If ``p = -infinity``, then returns :math:`||v||_{-\infty} = \min_i(|v(i)|)`.
+  * If ``p = 2`` and ``x`` is a matrix, then returns Frobenius norm of ``x``.
+  * Otherwise returns generalised vector p-norm defined above.
+*)
 
 val cond : ?p:float -> ('a, 'b) t -> float
 (**

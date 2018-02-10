@@ -29,6 +29,8 @@ val rank : ?tol:float -> mat -> int
 
 val norm : ?p:float -> mat -> float
 
+val vecnorm : ?p:float -> mat -> float
+
 val cond : ?p:float -> mat -> float
 
 val rcond : mat -> float

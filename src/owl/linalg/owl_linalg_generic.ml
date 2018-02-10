@@ -523,9 +523,30 @@ let _abs
 let norm ?(p=2.) x =
   let k = M.kind x in
   if p = 1. then x |> _abs k |> M.sum_rows |> M.max'
+  else if p = -1. then x |> _abs k |> M.sum_rows |> M.min'
   else if p = 2. then x |> svdvals |> _minmax_real k |> snd
+  else if p = -2. then x |> svdvals |> _minmax_real k |> fst
   else if p = infinity then x |> _abs k |> M.sum_cols |> M.max'
-  else failwith "owl_linalg_generic:norm:p=1|2|inf"
+  else if p = neg_infinity then x |> _abs k |> M.sum_cols |> M.min'
+  else failwith "owl_linalg_generic:norm:p=±1|±2|±inf"
+
+
+let vecnorm ?(p=2.) x =
+  let k = M.kind x in
+  if p = 2. then
+    M.l2norm' x |> Owl_dense_common._re_elt k
+  else (
+    let v = M.flatten x |> M.abs in
+    if p = infinity then
+      M.max' v |> Owl_dense_common._re_elt k
+    else if p = neg_infinity then
+      M.min' v |> Owl_dense_common._re_elt k
+    else (
+      M.pow_scalar_ v (Owl_dense_common._float_typ_elt k p);
+      let a = M.sum' v |> Owl_dense_common._re_elt k in
+      a ** (1. /. p)
+    )
+  )
 
 
 let cond ?(p=2.) x =

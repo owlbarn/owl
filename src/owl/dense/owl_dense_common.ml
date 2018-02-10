@@ -102,6 +102,13 @@ let _log_elt : type a b. (a, b) kind -> (a -> a) = function
   | Complex64 -> Complex.log
   | _         -> failwith "_log_elt: unsupported operation"
 
+let _re_elt : type a b. (a, b) kind -> (a -> float) = function
+  | Float32   -> fun x -> x
+  | Float64   -> fun x -> x
+  | Complex32 -> fun x -> Complex.(x.re)
+  | Complex64 -> fun x -> Complex.(x.re)
+  | _         -> failwith "_re_elt: unsupported operation"
+
 let _sqrt_elt : type a b. (a, b) kind -> (a -> a) = function
   | Float32   -> Pervasives.sqrt
   | Float64   -> Pervasives.sqrt
