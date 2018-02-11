@@ -581,7 +581,7 @@ let convert_opencl_header_to_extern fname funs structs consts exns =
   Printf.fprintf h_ml "open Ctypes\n\n";
   Printf.fprintf h_ml "module CI = Cstubs_internals\n\n";
 
-  Printf.fprintf h_ml "\n\n(** type definition *)\n\n";
+  Printf.fprintf h_ml "\n\n(** {6 Type definition} *)\n\n";
   Array.iter (fun s ->
     Printf.fprintf h_ml "type %s = unit Ctypes.ptr\n" s;
     Printf.fprintf h_ml "let %s : %s Ctypes.typ = Ctypes.(ptr void)\n" s s;
@@ -589,24 +589,24 @@ let convert_opencl_header_to_extern fname funs structs consts exns =
     Printf.fprintf h_ml "let %s_ptr_null : %s Ctypes.ptr = Obj.magic Ctypes.null\n\n" s s;
   ) structs;
 
-  Printf.fprintf h_ml "\n\n(** function definition *)\n\n";
+  Printf.fprintf h_ml "\n\n(** {6 Function definition} *)\n\n";
   Array.iter (fun (fun_ml_s, fun_mli_s) ->
     Printf.fprintf h_ml "%s\n" fun_ml_s;
   ) (convert_to_extern_fun funs);
 
-  Printf.fprintf h_ml "\n\n(** stub function definition *)\n\n";
+  Printf.fprintf h_ml "\n\n(** {6 Stub function definition} *)\n\n";
   Array.iter (fun fun_ml_s ->
     Printf.fprintf h_ml "%s\n" fun_ml_s;
   ) (convert_to_ocaml_fun funs structs);
 
-  Printf.fprintf h_ml "\n\n(** constant definition *)\n\n";
+  Printf.fprintf h_ml "\n\n(** {6 Constants definition} *)\n\n";
   Array.iter (fun (const_name, const_val) ->
     Printf.fprintf h_ml "let cl_%s = %s\n\n" const_name const_val;
   ) consts;
 
-  Printf.fprintf h_ml "\n\n(** exception definition *)\n\n";
-  Array.iter (fun (const_name, const_val) ->
-    Printf.fprintf h_ml "exception %s\n\n" const_name;
+  Printf.fprintf h_ml "\n\n(** {6 Exception definition} *)\n\n";
+  Array.iter (fun (exn_name, exn_val) ->
+    Printf.fprintf h_ml "exception %s\n\n" exn_name;
   ) exns;
   Printf.fprintf h_ml "%s\n" (make_check_err_fun exns);
 
@@ -618,28 +618,41 @@ let convert_opencl_header_to_extern fname funs structs consts exns =
   Printf.fprintf h_mli "(** auto-generated opencl interface file, timestamp:%.0f *)\n\n" (Unix.gettimeofday ());
   Printf.fprintf h_mli "open Ctypes\n\n";
 
-  Printf.fprintf h_mli "\n\n(** type definition *)\n\n";
+  Printf.fprintf h_mli "\n\n(** {6 Type definition} *)\n\n";
   Array.iter (fun s ->
     Printf.fprintf h_mli "type %s\n" s;
+    Printf.fprintf h_mli "(** Type of %s *)\n\n" s;
+
     Printf.fprintf h_mli "val %s : %s Ctypes.typ\n" s s;
+    Printf.fprintf h_mli "(** Value of %s *)\n\n" s;
+
     Printf.fprintf h_mli "val %s_null : %s\n" s s;
-    Printf.fprintf h_mli "val %s_ptr_null : %s Ctypes.ptr\n\n" s s;
+    Printf.fprintf h_mli "(** Null value of %s *)\n\n" s;
+
+    Printf.fprintf h_mli "val %s_ptr_null : %s Ctypes.ptr\n" s s;
+    Printf.fprintf h_mli "(** Null pointer of %s *)\n\n\n" s;
   ) structs;
 
-  Printf.fprintf h_mli "\n\n(** function definition *)\n\n";
-  Printf.fprintf h_mli "val cl_check_err : int32 -> unit\n\n";
+  Printf.fprintf h_mli "\n\n(** {6 Function definition} *)\n\n";
+
+  Printf.fprintf h_mli "val cl_check_err : int32 -> unit\n";
+  Printf.fprintf h_mli "(** ``cl_check_err`` checks error code of return value. *)\n\n";
+
   Array.iter (fun (fun_ml_s, fun_mli_s) ->
-    Printf.fprintf h_mli "%s\n" fun_mli_s;
+    Printf.fprintf h_mli "%s\n" (String.trim fun_mli_s);
+    Printf.fprintf h_mli "(** Refer to `OpenCL <https://www.khronos.org/opencl/>`_ *)\n\n";
   ) (convert_to_extern_fun funs);
 
-  Printf.fprintf h_mli "\n\n(** constant definition *)\n\n";
+  Printf.fprintf h_mli "\n\n(** {6 Constant definition} *)\n\n";
   Array.iter (fun (const_name, const_val) ->
-    Printf.fprintf h_mli "val cl_%s : int\n\n" const_name;
+    Printf.fprintf h_mli "val cl_%s : int\n" const_name;
+    Printf.fprintf h_mli "(** Constant ``%s = %s``. *)\n\n" const_name const_val;
   ) consts;
 
-  Printf.fprintf h_mli "\n\n(** exception definition *)\n\n";
-  Array.iter (fun (const_name, const_val) ->
-    Printf.fprintf h_mli "exception %s\n\n" const_name;
+  Printf.fprintf h_mli "\n\n(** {6 Exception definition} *)\n\n";
+  Array.iter (fun (exn_name, exn_val) ->
+    Printf.fprintf h_mli "exception %s\n" exn_name;
+    Printf.fprintf h_mli "(** Exception ``%s``. *)\n\n" exn_name;
   ) exns;
 
   close_out h_mli

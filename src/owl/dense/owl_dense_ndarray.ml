@@ -22,12 +22,14 @@ end
 module S = struct
   include Owl_dense_ndarray_s
   include Operator
+  module Scalar = Owl_maths
 end
 
 
 module D = struct
   include Owl_dense_ndarray_d
   include Operator
+  module Scalar = Owl_maths
 end
 
 

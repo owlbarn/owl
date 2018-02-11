@@ -5,8 +5,8 @@
 
 (** Dense data structures: matrix & ndarray  *)
 
+
 module Ndarray = Owl_dense_ndarray
 
-module Matrix = Owl_dense_matrix
 
-module Vector = Owl_dense_vector
+module Matrix = Owl_dense_matrix

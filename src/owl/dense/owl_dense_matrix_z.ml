@@ -41,7 +41,7 @@ let gaussian ?mu ?sigma m n = M.gaussian Complex64 ?mu ?sigma m n
 
 let linspace a b n = M.linspace Complex64 a b n
 
-let logspace ?(base=Owl_const.e) a b n = M.logspace Complex64 ~base a b n
+let logspace ?base a b n = M.logspace Complex64 ?base a b n
 
 let meshgrid xa xb ya yb xn yn = M.meshgrid Complex64 xa xb ya yb xn yn
 
@@ -66,14 +66,6 @@ let vector_ones n = ones 1 n
 let vector_zeros n = zeros 1 n
 
 let vector_uniform n = uniform 1 n
-
-let uniform_int ?(a=0) ?(b=99) m n =
-  let x = empty m n in
-  iteri (fun i j _ ->
-    let re = float_of_int (Owl_stats.uniform_int_rvs ~a ~b) in
-    let im = float_of_int (Owl_stats.uniform_int_rvs ~a ~b) in
-    M.set x i j Complex.({re; im})
-  ) x; x
 
 let re x = re_z2d x
 

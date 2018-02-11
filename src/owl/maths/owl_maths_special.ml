@@ -160,3 +160,23 @@ external cosdg : float -> float = "owl_stub_sf_cosdg"
 external tandg : float -> float = "owl_stub_sf_tandg"
 
 external cotdg : float -> float = "owl_stub_sf_cotdg"
+
+
+(* Raw statistical functions *)
+
+external bdtr : int -> int -> float -> float = "owl_stub_sf_bdtr"
+
+external bdtrc : int -> int -> float -> float = "owl_stub_sf_bdtrc"
+
+external bdtri : int -> int -> float -> float = "owl_stub_sf_bdtri"
+
+external btdtr : float -> float -> float -> float = "owl_stub_sf_btdtr"
+
+external btdtri : float -> float -> float -> float = "owl_stub_sf_btdtri"
+
+
+(* Other functions *)
+
+external nextafter : float -> float -> float = "stub_sf_nextafter"
+
+external nextafterf : float -> float -> float = "stub_sf_nextafterf"

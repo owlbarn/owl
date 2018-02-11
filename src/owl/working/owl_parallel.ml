@@ -46,7 +46,7 @@ module type Ndarray = sig
 
   val ones  : int array -> arr
 
-  val uniform : ?scale:float -> int array -> arr
+  val uniform : ?a:float -> ?b:float -> int array -> arr
 
   val numel : arr -> int
 
@@ -60,9 +60,9 @@ module type Ndarray = sig
 
   val reshape : arr -> int array -> arr
 
-  val map : ?axis:int option array -> (elt -> elt) -> arr -> arr
+  val map : (elt -> elt) -> arr -> arr
 
-  val map2 : ?axis:int option array -> (elt -> elt -> elt) -> arr -> arr -> arr
+  val map2 : (elt -> elt -> elt) -> arr -> arr -> arr
 
   val sin : arr -> arr
 
@@ -170,8 +170,8 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
 
   let sequential ?a ?step d = None
 
-  let uniform ?scale d =
-    let create_fun d = M.uniform ?scale d in
+  let uniform ?a ?b d =
+    let create_fun d = M.uniform ?a ?b d in
     distributed_create create_fun d
 
   let gaussian d = None
@@ -190,8 +190,8 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     with exn -> !i
 
   let get x i_nd =
-    let stride = Owl_dense_common._calc_stride x.shape in
-    let i_1d = Owl_dense_common._index_nd_1d i_nd stride in
+    let stride = Owl_utils.calc_stride x.shape in
+    let i_1d = Owl_utils.index_nd_1d i_nd stride in
     assert (numel x > i_1d);
     let pos = calc_index_owner i_1d x.c_start x.c_len in
     let owner_id = x.workers.(pos) in
@@ -212,8 +212,8 @@ module Make_Distributed (M : Ndarray) (E : Mapre_Engine) = struct
     List.(nth (nth l 0) 0)
 
   let set x i_nd a =
-    let stride = Owl_dense_common._calc_stride x.shape in
-    let i_1d = Owl_dense_common._index_nd_1d i_nd stride in
+    let stride = Owl_utils.calc_stride x.shape in
+    let i_1d = Owl_utils.index_nd_1d i_nd stride in
     assert (numel x > i_1d);
     let pos = calc_index_owner i_1d x.c_start x.c_len in
     let owner_id = x.workers.(pos) in

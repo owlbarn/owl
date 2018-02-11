@@ -48,20 +48,20 @@ let backprop nn eta x y =
   loss |> unpack_flt
 
 let test nn x y =
-  Mat.iter2_rows (fun u v ->
-    Dataset.print_mnist_image (unpack_mat u);
-    let p = run_network u nn |> unpack_mat in
+  Dense.Matrix.S.iter2_rows (fun u v ->
+    Dataset.print_mnist_image u;
+    let p = run_network (Arr u) nn |> unpack_arr in
     Dense.Matrix.Generic.print p;
-    Printf.printf "prediction: %i\n" (let _, _, j = Dense.Matrix.Generic.max_i p in j)
-  ) x y
+    Printf.printf "prediction: %i\n" (let _, i = Dense.Matrix.Generic.max_i p in i.(1))
+  ) (unpack_arr x) (unpack_arr y)
 
 let _ =
   let x, _, y = Dataset.load_mnist_train_data () in
   for i = 1 to 999 do
     let x', y' = Dataset.draw_samples x y 100 in
-    backprop nn (F 0.01) (Mat x') (Mat y')
+    backprop nn (F 0.01) (Arr x') (Arr y')
     |> Owl_log.info "#%03i : loss = %g" i
   done;
   let x, y, _ = Dataset.load_mnist_test_data () in
   let x, y = Dataset.draw_samples x y 10 in
-  test nn (Mat x) (Mat y)
+  test nn (Arr x) (Arr y)

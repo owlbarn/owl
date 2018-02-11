@@ -8,134 +8,6 @@ open Bigarray
 open Owl_dense_common_types
 
 
-(* define constants *)
-
-let _zero : type a b. (a, b) kind -> a = function
-  | Float32 -> 0.0
-  | Float64 -> 0.0
-  | Complex32 -> Complex.zero
-  | Complex64 -> Complex.zero
-  | Int8_signed -> 0
-  | Int8_unsigned -> 0
-  | Int16_signed -> 0
-  | Int16_unsigned -> 0
-  | Int32 -> 0l
-  | Int64 -> 0L
-  | Int -> 0
-  | Nativeint -> 0n
-  | Char -> '\000'
-
-let _one : type a b. (a, b) kind -> a = function
-  | Float32 -> 1.0
-  | Float64 -> 1.0
-  | Complex32 -> Complex.one
-  | Complex64 -> Complex.one
-  | Int8_signed -> 1
-  | Int8_unsigned -> 1
-  | Int16_signed -> 1
-  | Int16_unsigned -> 1
-  | Int32 -> 1l
-  | Int64 -> 1L
-  | Int -> 1
-  | Nativeint -> 1n
-  | Char -> '\001'
-
-let _neg_one : type a b. (a, b) kind -> a = function
-  | Float32 -> -1.0
-  | Float64 -> -1.0
-  | Complex32 -> Complex.({re=(-1.); im=0.})
-  | Complex64 -> Complex.({re=(-1.); im=0.})
-  | Int8_signed -> -1
-  | Int8_unsigned -> -1
-  | Int16_signed -> -1
-  | Int16_unsigned -> -1
-  | Int32 -> -1l
-  | Int64 -> -1L
-  | Int -> -1
-  | Nativeint -> -1n
-  | Char -> '\255'
-
-let _pos_inf : type a b. (a, b) kind -> a = function
-  | Float32   -> infinity
-  | Float64   -> infinity
-  | Complex32 -> Complex.({re = infinity; im = infinity})
-  | Complex64 -> Complex.({re = infinity; im = infinity})
-  | _         -> failwith "_pos_inf: unsupported operation"
-
-let _neg_inf : type a b. (a, b) kind -> a = function
-  | Float32   -> neg_infinity
-  | Float64   -> neg_infinity
-  | Complex32 -> Complex.({re = neg_infinity; im = neg_infinity})
-  | Complex64 -> Complex.({re = neg_infinity; im = neg_infinity})
-  | _         -> failwith "_neg_inf: unsupported operation"
-
-let _owl_elt_to_str : type a b. (a, b) kind -> (a -> string) = function
-  | Char           -> fun v -> Printf.sprintf "%c" v
-  | Nativeint      -> fun v -> Printf.sprintf "%nd" v
-  | Int8_signed    -> fun v -> Printf.sprintf "%i" v
-  | Int8_unsigned  -> fun v -> Printf.sprintf "%i" v
-  | Int16_signed   -> fun v -> Printf.sprintf "%i" v
-  | Int16_unsigned -> fun v -> Printf.sprintf "%i" v
-  | Int            -> fun v -> Printf.sprintf "%i" v
-  | Int32          -> fun v -> Printf.sprintf "%ld" v
-  | Int64          -> fun v -> Printf.sprintf "%Ld" v
-  | Float32        -> fun v -> Printf.sprintf "%G" v
-  | Float64        -> fun v -> Printf.sprintf "%G" v
-  | Complex32      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
-  | Complex64      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
-
-
-(* some transformation and helper functions *)
-
-let _size_in_bytes = Eigen.Utils.size_in_bytes
-
-let ndarray_to_c_mat x =
-  let shape = Genarray.dims x in
-  let n = Array.fold_right (fun c a -> c * a) shape 1 in
-  reshape_2 x 1 n
-
-(* calculate the stride of a ndarray, s is the shape
-  for [x] of shape [|2;3;4|], the return is [|12;4;1|]
- *)
-let _calc_stride s =
-  let d = Array.length s in
-  let r = Array.make d 1 in
-  for i = 1 to d - 1 do
-    r.(d - i - 1) <- s.(d - i) * r.(d - i)
-  done;
-  r
-
-(* calculate the slice size in each dimension, s is the shape.
-  for [x] of shape [|2;3;4|], the return is [|24;12;4|]
-*)
-let _calc_slice s =
-  let d = Array.length s in
-  let r = Array.make d s.(d-1) in
-  for i = d - 2 downto 0 do
-    r.(i) <- s.(i) * r.(i+1)
-  done;
-  r
-
-(* c layout index translation: 1d -> nd
-  i is one-dimensional index;
-  j is n-dimensional index;
-  s is the stride.
-  the space of j needs to be pre-allocated *)
-let _index_1d_nd i j s =
-  j.(0) <- i / s.(0);
-  for k = 1 to Array.length s - 1 do
-    j.(k) <- (i mod s.(k - 1)) / s.(k);
-  done
-
-(* c layout index translation: nd -> 1d
-  j is n-dimensional index;
-  s is the stride. *)
-let _index_nd_1d j s =
-  let i = ref 0 in
-  Array.iteri (fun k a -> i := !i + (a * s.(k))) j;
-  !i
-
-
 (* basic operations on individual element *)
 
 let _add_elt : type a b. (a, b) kind -> (a -> a -> a) = function
@@ -229,6 +101,13 @@ let _log_elt : type a b. (a, b) kind -> (a -> a) = function
   | Complex32 -> Complex.log
   | Complex64 -> Complex.log
   | _         -> failwith "_log_elt: unsupported operation"
+
+let _re_elt : type a b. (a, b) kind -> (a -> float) = function
+  | Float32   -> fun x -> x
+  | Float64   -> fun x -> x
+  | Complex32 -> fun x -> Complex.(x.re)
+  | Complex64 -> fun x -> Complex.(x.re)
+  | _         -> failwith "_re_elt: unsupported operation"
 
 let _sqrt_elt : type a b. (a, b) kind -> (a -> a) = function
   | Float32   -> Pervasives.sqrt
@@ -345,43 +224,53 @@ let _eigen_cuboid_conv_backward_kernel : type a b . (a, b) kind -> (a, b) eigen_
   | Float64   -> Eigen.Tensor.D.cuboid_conv_backward_kernel
   | _         -> failwith "_eigen_cuboid_conv_backward_kernel: unsupported operation"
 
-let _eigen_spatial_max_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op04 = function
-  | Float32   -> Eigen.Tensor.S.spatial_max_pooling
-  | Float64   -> Eigen.Tensor.D.spatial_max_pooling
-  | _         -> failwith "_eigen_spatial_max_pooling: unsupported operation"
-
-let _eigen_spatial_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op04 = function
-  | Float32   -> Eigen.Tensor.S.spatial_avg_pooling
-  | Float64   -> Eigen.Tensor.D.spatial_avg_pooling
-  | _         -> failwith "_eigen_spatial_avg_pooling: unsupported operation"
-
-let _eigen_cuboid_max_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 = function
-  | Float32   -> Eigen.Tensor.S.cuboid_max_pooling
-  | Float64   -> Eigen.Tensor.D.cuboid_max_pooling
-  | _         -> failwith "_eigen_cuboid_max_pooling: unsupported operation"
-
-let _eigen_cuboid_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 = function
-  | Float32   -> Eigen.Tensor.S.cuboid_avg_pooling
-  | Float64   -> Eigen.Tensor.D.cuboid_avg_pooling
-  | _         -> failwith "_eigen_cuboid_avg_pooling: unsupported operation"
-
-let _eigen_spatial_max_pooling_argmax : type a b . (a, b) kind -> (a, b) eigen_arr_op06 = function
-  | Float32   -> Eigen.Tensor.S.spatial_max_pooling_argmax
-  | Float64   -> Eigen.Tensor.D.spatial_max_pooling_argmax
-  | _         -> failwith "_eigen_spatial_max_pooling_argmax: unsupported operation"
-
-let _eigen_spatial_max_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op07 = function
-  | Float32   -> Eigen.Tensor.S.spatial_max_pooling_backward
-  | Float64   -> Eigen.Tensor.D.spatial_max_pooling_backward
-  | _         -> failwith "_eigen_spatial_max_pooling_backward: unsupported operation"
-
-let _eigen_spatial_avg_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op08 = function
-  | Float32   -> Eigen.Tensor.S.spatial_avg_pooling_backward
-  | Float64   -> Eigen.Tensor.D.spatial_avg_pooling_backward
-  | _         -> failwith "_eigen_spatial_avg_pooling_backward: unsupported operation"
-
 
 (* call functions in owl native c *)
+
+let _owl_spatial_max_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op04 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_spatial
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_spatial
+  | _         -> failwith "_owl_spatial_max_pooling: unsupported operation"
+
+let _owl_spatial_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op04 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_avgpool_spatial
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_avgpool_spatial
+  | _         -> failwith "_owl_spatial_avg_pooling: unsupported operation"
+
+let _owl_cuboid_max_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_cuboid
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_cuboid
+  | _         -> failwith "_owl_cuboid_max_pooling: unsupported operation"
+
+let _owl_cuboid_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_avgpool_cuboid
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_avgpool_cuboid
+  | _         -> failwith "_owl_cuboid_avg_pooling: unsupported operation"
+
+let _owl_spatial_max_pooling_argmax : type a b . (a, b) kind -> (a, b) eigen_arr_op06 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_argmax_spatial
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_argmax_spatial
+  | _         -> failwith "_owl_spatial_max_pooling_argmax: unsupported operation"
+
+let _owl_spatial_max_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op07 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_spatial_backward
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_spatial_backward
+  | _         -> failwith "_owl_spatial_max_pooling_backward: unsupported operation"
+
+let _owl_spatial_avg_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op08 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_avgpool_spatial_backward
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_avgpool_spatial_backward
+  | _         -> failwith "_owl_spatial_avg_pooling_backward: unsupported operation"
+
+let _owl_cuboid_max_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op09 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_cuboid_backward
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_cuboid_backward
+  | _         -> failwith "_owl_cuboid_max_pooling_backward: unsupported operation"
+
+let _owl_cuboid_avg_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op10 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_avgpool_cuboid_backward
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_avgpool_cuboid_backward
+  | _         -> failwith "_owl_cuboid_avg_pooling_backward: unsupported operation"
 
 external owl_float32_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float32_copy" "float32_copy_impl"
 external owl_float64_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float64_copy" "float64_copy_impl"
@@ -2323,17 +2212,53 @@ let _owl_linspace : type a b. (a, b) kind -> (a, b) owl_arr_op07 = function
   | Complex64 -> owl_complex64_linspace
   | _         -> failwith "_owl_linspace: unsupported operation"
 
-external owl_float32_logspace : int -> float -> float -> float -> (float, 'a) owl_arr -> unit = "float32_logspace"
-external owl_float64_logspace : int -> float -> float -> float -> (float, 'a) owl_arr -> unit = "float64_logspace"
-external owl_complex32_logspace : int -> float -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex32_logspace"
-external owl_complex64_logspace : int -> float -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex64_logspace"
+external owl_float32_logspace_2 : int -> float -> float -> (float, 'a) owl_arr -> unit = "float32_logspace_2"
+external owl_float64_logspace_2 : int -> float -> float -> (float, 'a) owl_arr -> unit = "float64_logspace_2"
+external owl_complex32_logspace_2 : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex32_logspace_2"
+external owl_complex64_logspace_2 : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex64_logspace_2"
 
-let _owl_logspace : type a b. (a, b) kind -> (a, b) owl_arr_op08 = function
-  | Float32   -> owl_float32_logspace
-  | Float64   -> owl_float64_logspace
-  | Complex32 -> owl_complex32_logspace
-  | Complex64 -> owl_complex64_logspace
-  | _         -> failwith "_owl_logspace: unsupported operation"
+let _owl_logspace_2 : type a b. (a, b) kind -> (a, b) owl_arr_op07 = function
+  | Float32   -> owl_float32_logspace_2
+  | Float64   -> owl_float64_logspace_2
+  | Complex32 -> owl_complex32_logspace_2
+  | Complex64 -> owl_complex64_logspace_2
+  | _         -> failwith "_owl_logspace_2: unsupported operation"
+
+external owl_float32_logspace_10 : int -> float -> float -> (float, 'a) owl_arr -> unit = "float32_logspace_10"
+external owl_float64_logspace_10 : int -> float -> float -> (float, 'a) owl_arr -> unit = "float64_logspace_10"
+external owl_complex32_logspace_10 : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex32_logspace_10"
+external owl_complex64_logspace_10 : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex64_logspace_10"
+
+let _owl_logspace_10 : type a b. (a, b) kind -> (a, b) owl_arr_op07 = function
+  | Float32   -> owl_float32_logspace_10
+  | Float64   -> owl_float64_logspace_10
+  | Complex32 -> owl_complex32_logspace_10
+  | Complex64 -> owl_complex64_logspace_10
+  | _         -> failwith "_owl_logspace_10: unsupported operation"
+
+external owl_float32_logspace_e : int -> float -> float -> (float, 'a) owl_arr -> unit = "float32_logspace_e"
+external owl_float64_logspace_e : int -> float -> float -> (float, 'a) owl_arr -> unit = "float64_logspace_e"
+external owl_complex32_logspace_e : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex32_logspace_e"
+external owl_complex64_logspace_e : int -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex64_logspace_e"
+
+let _owl_logspace_e : type a b. (a, b) kind -> (a, b) owl_arr_op07 = function
+  | Float32   -> owl_float32_logspace_e
+  | Float64   -> owl_float64_logspace_e
+  | Complex32 -> owl_complex32_logspace_e
+  | Complex64 -> owl_complex64_logspace_e
+  | _         -> failwith "_owl_logspace_e: unsupported operation"
+
+external owl_float32_logspace_base : int -> float -> float -> float -> (float, 'a) owl_arr -> unit = "float32_logspace_base"
+external owl_float64_logspace_base : int -> float -> float -> float -> (float, 'a) owl_arr -> unit = "float64_logspace_base"
+external owl_complex32_logspace_base : int -> float -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex32_logspace_base"
+external owl_complex64_logspace_base : int -> float -> Complex.t -> Complex.t -> (Complex.t, 'a) owl_arr -> unit = "complex64_logspace_base"
+
+let _owl_logspace_base : type a b. (a, b) kind -> (a, b) owl_arr_op08 = function
+  | Float32   -> owl_float32_logspace_base
+  | Float64   -> owl_float64_logspace_base
+  | Complex32 -> owl_complex32_logspace_base
+  | Complex64 -> owl_complex64_logspace_base
+  | _         -> failwith "_owl_logspace_base: unsupported operation"
 
 external owl_complex32_conj : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex32_conj" "complex32_conj_impl"
 external owl_complex64_conj : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "complex64_conj" "complex64_conj_impl"

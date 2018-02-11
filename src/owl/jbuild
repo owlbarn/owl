@@ -32,6 +32,8 @@
     owl_slicing_basic_stub
     owl_slicing_fancy_impl
     owl_slicing_fancy_stub
+    owl_ndarray_impl
+    owl_ndarray_stub
     owl_common_c
     owl_distribution_common_c
     owl_dense_common_c
@@ -156,10 +158,10 @@
     -g -O3 -Ofast
     ; Experimental switches
     ; -ffast-math may break IEEE754 semantics
-    -march=native -mfpmath=sse -funroll-loops -ffast-math 
+    -march=native -mfpmath=sse -funroll-loops -ffast-math -flto
     ; For Mersenne Twister RNG
     -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing
-    ;  Turn off the warning on logical op parentheses
+    ; Turn off the warning on logical op parentheses
     -Wno-logical-op-parentheses
     ; For development use before release
     ; -Wall -pedantic -Wextra -Wunused
@@ -169,11 +171,16 @@
     -L/usr/local/opt/openblas/lib
     -lopenblas
     -lgfortran
-    -llapacke
     -lm
   ))
-  (flags (:standard -safe-string))
+  (flags (
+    ; Turn off some warnings as 4.06.0 is pernickety and errors out
+    :standard
+    -safe-string
+    ; -w "-32-27-6-37-3"
+  ))
   (libraries (
+    owl_base
     ctypes
     ctypes.stubs
     eigen

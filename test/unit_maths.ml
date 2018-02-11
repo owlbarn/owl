@@ -114,6 +114,21 @@ module To_test = struct
   let test_betainc () =
     M.betainc 0.1 0.2 0.7 -. 0.71632698299586095 < eps
 
+  let test_bdtr () =
+    M.bdtr 5 25 0.2 -. 0.6166894117793692 < eps
+
+  let test_bdtrc () =
+    M.bdtrc 5 25 0.2 -. 0.3833105882206313 < eps
+
+  let test_bdtri () =
+    M.bdtri 5 25 0.2 -. 0.29781277333188838 < eps
+
+  let test_btdtr () =
+    M.btdtr 5. 25. 0.2 -. 0.71605354811801325 < eps
+
+  let test_btdtri () =
+    M.btdtri 5. 25. 0.2 -. 0.10833617793798132 < eps
+
 end
 
 
@@ -215,6 +230,21 @@ let test_beta () =
 let test_betainc () =
   Alcotest.(check bool) "test betainc" true (To_test.test_betainc ())
 
+let test_bdtr () =
+  Alcotest.(check bool) "test bdtr" true (To_test.test_bdtr ())
+
+let test_bdtrc () =
+  Alcotest.(check bool) "test bdtrc" true (To_test.test_bdtrc ())
+
+let test_bdtri () =
+  Alcotest.(check bool) "test bdtri" true (To_test.test_bdtri ())
+
+let test_btdtr () =
+  Alcotest.(check bool) "test btdtr" true (To_test.test_btdtr ())
+
+let test_btdtri () =
+  Alcotest.(check bool) "test btdtri" true (To_test.test_btdtri ())
+
 let test_set = [
   "test j0", `Slow, test_j0;
   "test j1", `Slow, test_j1;
@@ -248,4 +278,9 @@ let test_set = [
   "test psi", `Slow, test_psi;
   "test beta", `Slow, test_beta;
   "test betainc", `Slow, test_betainc;
+  "test bdtr", `Slow, test_bdtr;
+  "test bdtrc", `Slow, test_bdtrc;
+  "test bdtri", `Slow, test_bdtri;
+  "test btdtr", `Slow, test_btdtr;
+  "test btdtri", `Slow, test_btdtri;
 ]

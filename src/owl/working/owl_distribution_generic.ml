@@ -29,8 +29,8 @@ let broadcast_align_shape x0 x1 =
     assert (not(a <> 1 && b <> 1 && a <> b))
   ) s0 s1;
   (* calculate the strides *)
-  let t0 = _calc_stride s0 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
-  let t1 = _calc_stride s1 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t0 = Owl_utils.calc_stride s0 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t1 = Owl_utils.calc_stride s1 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
   (* return aligned arrays, shapes, strides *)
   y0, y1, s0, s1, t0, t1
 
@@ -40,7 +40,7 @@ let broadcast_op0 op x0 x1 n =
   (* align the input rank, calculate the output shape and stride *)
   let y0, y1, s0, s1, t0, t1 = broadcast_align_shape x0 x1 in
   let s2 = Array.(map2 Pervasives.max s0 s1 |> append [|n|]) in
-  let t2 = _calc_stride s2 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t2 = Owl_utils.calc_stride s2 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
   let y2 = empty (kind x0) s2 in
   (* call the specific map function *)
   op y0 t0 y1 t1 y2 t2;
@@ -51,7 +51,7 @@ let broadcast_op2 op x0 x1 y2 =
   let y0, y1, s0, s1, t0, t1 = broadcast_align_shape x0 x1 in
   let y2 = copy y2 in
   let s2 = shape y2 in
-  let t2 = _calc_stride s2 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let t2 = Owl_utils.calc_stride s2 |> Array.map Int64.of_int |> Array1.of_array int64 c_layout |> genarray_of_array1 in
   (* call the specific map function *)
   op y0 t0 y1 t1 y2 t2;
   y2

@@ -24,7 +24,7 @@ let lu x =
   let l = M.tril a in
   let u = M.resize (M.triu a) [|n; n|] in
 
-  let _a1 = Owl_dense_common._one (M.kind x) in
+  let _a1 = Owl_const.one (M.kind x) in
   for i = 0 to minmn - 1 do
     M.set l i i _a1
   done;
@@ -49,7 +49,7 @@ let det x =
   assert (m = n);
 
   let a, ipiv = Owl_lapacke.getrf x in
-  let d = ref (Owl_dense_common._one (M.kind x)) in
+  let d = ref (Owl_const.one (M.kind x)) in
   let c = ref 0 in
 
   let _mul_op = Owl_dense_common._mul_elt (M.kind x) in
@@ -73,7 +73,7 @@ let logdet x =
 
   let _kind = M.kind x in
   let a, ipiv = Owl_lapacke.getrf x in
-  let d = ref (Owl_dense_common._zero _kind) in
+  let d = ref (Owl_const.zero _kind) in
   let c = ref 0 in
 
   let _add_op = Owl_dense_common._add_elt _kind in
@@ -301,7 +301,7 @@ let eig
   let _construct_v
     : type a b. (float, a) kind -> (Complex.t, b) kind -> (float, a) t -> (float, a) t -> (float, a) t -> (Complex.t, b) t -> unit
     = fun k0 k1 wr wi vr v ->
-    let _a0 = Owl_dense_common._zero (M.kind wi) in
+    let _a0 = Owl_const.zero (M.kind wi) in
     let _, n = M.shape v in
     let j = ref 0 in
 
@@ -431,7 +431,7 @@ let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
 let is_triu x =
   let m, n = M.shape x in
   let k = Pervasives.min m n in
-  let _a0 = Owl_dense_common._zero (M.kind x) in
+  let _a0 = Owl_const.zero (M.kind x) in
   try
     for i = 0 to k - 1 do
       for j = 0 to i - 1 do
@@ -445,7 +445,7 @@ let is_triu x =
 let is_tril x =
   let m, n = M.shape x in
   let k = Pervasives.min m n in
-  let _a0 = Owl_dense_common._zero (M.kind x) in
+  let _a0 = Owl_const.zero (M.kind x) in
   try
     for i = 0 to k - 1 do
       for j = i + 1 to k - 1 do
@@ -523,9 +523,30 @@ let _abs
 let norm ?(p=2.) x =
   let k = M.kind x in
   if p = 1. then x |> _abs k |> M.sum_rows |> M.max'
+  else if p = -1. then x |> _abs k |> M.sum_rows |> M.min'
   else if p = 2. then x |> svdvals |> _minmax_real k |> snd
+  else if p = -2. then x |> svdvals |> _minmax_real k |> fst
   else if p = infinity then x |> _abs k |> M.sum_cols |> M.max'
-  else failwith "owl_linalg_generic:norm:p=1|2|inf"
+  else if p = neg_infinity then x |> _abs k |> M.sum_cols |> M.min'
+  else failwith "owl_linalg_generic:norm:p=±1|±2|±inf"
+
+
+let vecnorm ?(p=2.) x =
+  let k = M.kind x in
+  if p = 2. then
+    M.l2norm' x |> Owl_dense_common._re_elt k
+  else (
+    let v = M.flatten x |> M.abs in
+    if p = infinity then
+      M.max' v |> Owl_dense_common._re_elt k
+    else if p = neg_infinity then
+      M.min' v |> Owl_dense_common._re_elt k
+    else (
+      M.pow_scalar_ v (Owl_dense_common._float_typ_elt k p);
+      let a = M.sum' v |> Owl_dense_common._re_elt k in
+      a ** (1. /. p)
+    )
+  )
 
 
 let cond ?(p=2.) x =
@@ -539,8 +560,8 @@ let cond ?(p=2.) x =
     let x = M.copy x in
     let a, ipiv = lufact x in
     let anorm = norm ~p x in
-    let norm = if p = 1. then '1' else 'I' in
-    let rcond = Owl_lapacke.gecon norm a anorm in
+    let _norm = if p = 1. then '1' else 'I' in
+    let rcond = Owl_lapacke.gecon _norm a anorm in
     1. /. rcond
   )
   else failwith "owl_linalg_generic:cond:p=1|2|inf"
