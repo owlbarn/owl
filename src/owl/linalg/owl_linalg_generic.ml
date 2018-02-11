@@ -435,51 +435,14 @@ let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
 
 
 (* Check matrix properties *)
-(* TODO: need to implement in C for better performance *)
 
-let is_triu x =
-  let m, n = M.shape x in
-  let k = Pervasives.min m n in
-  let _a0 = Owl_const.zero (M.kind x) in
-  try
-    for i = 0 to k - 1 do
-      for j = 0 to i - 1 do
-        assert (M.get x i j = _a0)
-      done
-    done;
-    true
-  with exn -> false
+let is_triu x = Owl_core._matrix_is_triu (M.kind x) x
 
 
-let is_tril x =
-  let m, n = M.shape x in
-  let k = Pervasives.min m n in
-  let _a0 = Owl_const.zero (M.kind x) in
-  try
-    for i = 0 to k - 1 do
-      for j = i + 1 to k - 1 do
-        assert (M.get x i j = _a0)
-      done
-    done;
-    true
-  with exn -> false
+let is_tril x = Owl_core._matrix_is_tril (M.kind x) x
 
 
-let is_symmetric x =
-  let m, n = M.shape x in
-  if m <> n then false
-  else (
-    try
-      for i = 0 to n - 1 do
-        for j = (i + 1) to n - 1 do
-          let a = M.get x j i in
-          let b = M.get x i j in
-          assert (a = b)
-        done
-      done;
-      true
-    with exn -> false
-  )
+let is_symmetric x = Owl_core._matrix_is_symmetric (M.kind x) x
 
 
 let is_hermitian x =
@@ -499,7 +462,7 @@ let is_hermitian x =
   )
 
 
-let is_diag x = is_triu x && is_tril x
+let is_diag x = Owl_core._matrix_is_diag (M.kind x) x
 
 
 let is_posdef x =

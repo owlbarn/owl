@@ -97,6 +97,38 @@ module To_test = struct
     let a = M.norm ~p:neg_infinity x1 in
     approx_equal a 6.
 
+  let is_triu_1 () =
+    let x = Mat.of_array [|1.;2.;3.;0.;5.;6.;0.;0.;9.|] 3 3 in
+    M.is_triu x = true
+
+  let is_triu_2 () =
+    let x = Mat.of_array [|1.;2.;3.;4.;5.;6.;0.;0.;9.|] 3 3 in
+    M.is_triu x = false
+
+  let is_tril_1 () =
+    let x = Mat.of_array [|1.;0.;0.;4.;5.;0.;7.;8.;9.|] 3 3 in
+    M.is_tril x = true
+
+  let is_tril_2 () =
+    let x = Mat.of_array [|1.;0.;3.;4.;5.;0.;7.;8.;9.|] 3 3 in
+    M.is_tril x = false
+
+  let is_symmetric_1 () =
+    let x = Mat.of_array [|1.;2.;3.;2.;5.;6.;3.;6.;9.|] 3 3 in
+    M.is_symmetric x = true
+
+  let is_symmetric_2 () =
+    let x = Mat.of_array [|1.;2.;3.;4.;5.;6.;3.;6.;9.|] 3 3 in
+    M.is_symmetric x = false
+
+  let is_diag_1 () =
+    let x = Mat.of_array [|1.;0.;0.;0.;1.;0.;0.;0.;1.|] 3 3 in
+    M.is_diag x = true
+
+  let is_diag_2 () =
+    let x = Mat.of_array [|1.;0.;0.;0.;1.;0.;0.;1.;1.|] 3 3 in
+    M.is_diag x = false
+
 end
 
 (* the tests *)
@@ -158,6 +190,30 @@ let norm_05 () =
 let norm_06 () =
   Alcotest.(check bool) "norm_06" true (To_test.norm_06 ())
 
+let is_triu_1 () =
+  Alcotest.(check bool) "is_triu_1" true (To_test.is_triu_1 ())
+
+let is_triu_2 () =
+  Alcotest.(check bool) "is_triu_2" true (To_test.is_triu_2 ())
+
+let is_tril_1 () =
+  Alcotest.(check bool) "is_tril_1" true (To_test.is_tril_1 ())
+
+let is_tril_2 () =
+  Alcotest.(check bool) "is_tril_2" true (To_test.is_tril_2 ())
+
+let is_symmetric_1 () =
+  Alcotest.(check bool) "is_symmetric_1" true (To_test.is_symmetric_1 ())
+
+let is_symmetric_2 () =
+  Alcotest.(check bool) "is_symmetric_2" true (To_test.is_symmetric_2 ())
+
+let is_diag_1 () =
+  Alcotest.(check bool) "is_diag_1" true (To_test.is_diag_1 ())
+
+let is_diag_2 () =
+  Alcotest.(check bool) "is_diag_2" true (To_test.is_diag_2 ())
+
 let test_set = [
   "rank", `Slow, rank;
   "det", `Slow, det;
@@ -178,4 +234,12 @@ let test_set = [
   "norm_04", `Slow, norm_04;
   "norm_05", `Slow, norm_05;
   "norm_06", `Slow, norm_06;
+  "is_triu_1", `Slow, is_triu_1;
+  "is_triu_2", `Slow, is_triu_2;
+  "is_tril_1", `Slow, is_tril_1;
+  "is_tril_2", `Slow, is_tril_2;
+  "is_symmetric_1", `Slow, is_symmetric_1;
+  "is_symmetric_2", `Slow, is_symmetric_2;
+  "is_diag_1", `Slow, is_diag_1;
+  "is_diag_2", `Slow, is_diag_2;
 ]

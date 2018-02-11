@@ -13,28 +13,28 @@
 
 #define FUNCTION(prefix, name) prefix ## _ ## float32_matrix ## _ ## name
 #define TYPE float
-#include "owl_core_swap_impl.c"
+#include "owl_matrix_swap_impl.c"
 #undef TYPE
 #undef FUNCTION
 
 
 #define FUNCTION(prefix, name) prefix ## _ ## float64_matrix ## _ ## name
 #define TYPE double
-#include "owl_core_swap_impl.c"
+#include "owl_matrix_swap_impl.c"
 #undef TYPE
 #undef FUNCTION
 
 
 #define FUNCTION(prefix, name) prefix ## _ ## complex32_matrix ## _ ## name
 #define TYPE _Complex float
-#include "owl_core_swap_impl.c"
+#include "owl_matrix_swap_impl.c"
 #undef TYPE
 #undef FUNCTION
 
 
 #define FUNCTION(prefix, name) prefix ## _ ## complex64_matrix ## _ ## name
 #define TYPE _Complex double
-#include "owl_core_swap_impl.c"
+#include "owl_matrix_swap_impl.c"
 #undef TYPE
 #undef FUNCTION
 
