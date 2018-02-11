@@ -294,22 +294,10 @@ let transpose x =
 
 
 let ctranspose x =
-  let _kind = kind x in
+  let k = kind x in
   let m, n = shape x in
-  let y = empty _kind n m in
-  (* different strategies depends on row/col ratio *)
-  let len, incx, incy, iofx, iofy, loops =
-    match m <= n with
-    | true  -> n, 1, m, n, 1, m
-    | false -> m, n, 1, 1, m, n
-  in
-  let ofsx = ref 0 in
-  let ofsy = ref 0 in
-  for i = 0 to loops - 1 do
-    _owl_conj _kind len ~ofsx:!ofsx ~incx ~ofsy:!ofsy ~incy x y;
-    ofsx := !ofsx + iofx;
-    ofsy := !ofsy + iofy;
-  done;
+  let y = empty k n m in
+  Owl_core._matrix_ctranspose k x y;
   y
 
 

@@ -21,6 +21,20 @@ let _matrix_transpose
   | Complex64 -> owl_complex64_matrix_transpose
   | _         -> failwith "_matrix_transpose: unsupported operation"
 
+external owl_float32_matrix_ctranspose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "stub_float32_matrix_ctranspose"
+external owl_float64_matrix_ctranspose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "stub_float64_matrix_ctranspose"
+external owl_complex32_matrix_ctranspose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "stub_complex32_matrix_ctranspose"
+external owl_complex64_matrix_ctranspose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "stub_complex64_matrix_ctranspose"
+
+let _matrix_ctranspose
+  : type a b. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr -> unit
+  = function
+  | Float32   -> owl_float32_matrix_ctranspose
+  | Float64   -> owl_float64_matrix_ctranspose
+  | Complex32 -> owl_complex32_matrix_ctranspose
+  | Complex64 -> owl_complex64_matrix_ctranspose
+  | _         -> failwith "_matrix_ctranspose: unsupported operation"
+
 external owl_float32_matrix_is_triu : ('a, 'b) owl_arr -> bool = "stub_float32_matrix_is_triu"
 external owl_float64_matrix_is_triu : ('a, 'b) owl_arr -> bool = "stub_float64_matrix_is_triu"
 external owl_complex32_matrix_is_triu : ('a, 'b) owl_arr -> bool = "stub_complex32_matrix_is_triu"
