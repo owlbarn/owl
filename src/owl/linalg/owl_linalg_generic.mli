@@ -120,6 +120,9 @@ If ``x`` is well conditioned, the returned result is near ``1.0``. If ``x`` is b
 conditioned, the result is near ``0.``
  *)
 
+
+(** {6 Check matrix types} *)
+
 val is_triu : ('a, 'b) t -> bool
 (** ``is_triu x`` returns ``true`` if ``x`` is upper triangular otherwise ``false``. *)
 

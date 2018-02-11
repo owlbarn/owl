@@ -51,7 +51,7 @@ let is_symmetric x =
   else (
     try
       for i = 0 to n - 1 do
-        for j = (i + 1) to n - 1 do
+        for j = i + 1 to n - 1 do
           let a = M.get x [|j; i|] in
           let b = M.get x [|i; j|] in
           assert (a = b)

@@ -76,3 +76,17 @@ let _matrix_is_symmetric
   | Complex32 -> owl_complex32_matrix_is_symmetric
   | Complex64 -> owl_complex64_matrix_is_symmetric
   | _         -> failwith "_matrix_is_symmetric: unsupported operation"
+
+external owl_float32_matrix_is_hermitian : ('a, 'b) owl_arr -> bool = "stub_float32_matrix_is_hermitian"
+external owl_float64_matrix_is_hermitian : ('a, 'b) owl_arr -> bool = "stub_float64_matrix_is_hermitian"
+external owl_complex32_matrix_is_hermitian : ('a, 'b) owl_arr -> bool = "stub_complex32_matrix_is_hermitian"
+external owl_complex64_matrix_is_hermitian : ('a, 'b) owl_arr -> bool = "stub_complex64_matrix_is_hermitian"
+
+let _matrix_is_hermitian
+  : type a b. (a, b) kind -> (a, b) owl_arr -> bool
+  = function
+  | Float32   -> owl_float32_matrix_is_hermitian
+  | Float64   -> owl_float64_matrix_is_hermitian
+  | Complex32 -> owl_complex32_matrix_is_hermitian
+  | Complex64 -> owl_complex64_matrix_is_hermitian
+  | _         -> failwith "_matrix_is_hermitian: unsupported operation"

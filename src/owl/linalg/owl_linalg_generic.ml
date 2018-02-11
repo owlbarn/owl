@@ -431,9 +431,6 @@ let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
   a, ipiv
 
 
-(* helper functions *)
-
-
 (* Check matrix properties *)
 
 let is_triu x = Owl_core._matrix_is_triu (M.kind x) x
@@ -445,21 +442,7 @@ let is_tril x = Owl_core._matrix_is_tril (M.kind x) x
 let is_symmetric x = Owl_core._matrix_is_symmetric (M.kind x) x
 
 
-let is_hermitian x =
-  let m, n = M.shape x in
-  if m <> n then false
-  else (
-    try
-      for i = 0 to n - 1 do
-        for j = i to n - 1 do
-          let a = M.get x j i in
-          let b = Complex.conj (M.get x i j) in
-          assert (a = b)
-        done
-      done;
-      true
-    with exn -> false
-  )
+let is_hermitian x = Owl_core._matrix_is_hermitian (M.kind x) x
 
 
 let is_diag x = Owl_core._matrix_is_diag (M.kind x) x

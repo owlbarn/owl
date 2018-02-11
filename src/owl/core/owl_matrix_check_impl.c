@@ -111,4 +111,42 @@ value FUNCTION (stub, is_symmetric) (value vX) {
 }
 
 
+// stub function for is_hermitian
+value FUNCTION (stub, is_hermitian) (value vX) {
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  TYPE *X_data = (TYPE *) X->data;
+
+  int m = X->dim[0];
+  int n = X->dim[1];
+
+  if (m != n) {
+    return Val_bool(0);
+  }
+  else if (m == 1) {
+    return Val_bool(1);
+  }
+  else {
+    TYPE *x = X_data;
+    TYPE *y = X_data;
+    TYPE *ofsx = X_data + 1;
+    TYPE *ofsy = X_data + n;
+
+    for (int i = 0; i < n; i++) {
+      x = ofsx;
+      y = ofsy;
+      for (int j = i + 1; j < n; j++) {
+        if ( CHECK_CONJ(*x, *y) )
+          return Val_bool(0);
+        x += 1;
+        y += n;
+      }
+      ofsx += n + 1;
+      ofsy += n + 1;
+    }
+
+    return Val_bool(1);
+  }
+}
+
+
 #endif /* OWL_ENABLE_TEMPLATE */
