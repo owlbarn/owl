@@ -65,6 +65,7 @@ module Make
       | Decay     of float * float
       | Exp_decay of float * float
       | RMSprop   of float * float
+      | Adam      of float * float * float
       | Schedule  of float array
 
     let run = function
@@ -73,6 +74,7 @@ module Make
       | Decay (a, k)     -> fun i _ _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
       | Exp_decay (a, k) -> fun i _ _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
       | RMSprop (a, _)   -> fun _ _ c -> Maths.(F a / sqrt (c.(0) + F 1e-32))
+      | Adam (a, b1, b2) -> fun i _ c -> Maths.(F a / (sqrt (c.(1) / (F 1. - F b1 ** F (float_of_int i))) + F 1e-32) * (c.(0) / (F 1. - F b2 ** F (float_of_int i))))
       | Schedule a       -> fun i _ _ -> F a.(i mod (Array.length a))
 
     let default = function
@@ -81,12 +83,17 @@ module Make
       | Decay _     -> Decay (0.1, 0.1)
       | Exp_decay _ -> Exp_decay (1., 0.1)
       | RMSprop _   -> RMSprop (0.001, 0.9)
+      | Adam _      -> Adam (0.001, 0.9, 0.999)
       | Schedule _  -> Schedule [|0.001|]
 
     let update_ch typ g c = match typ with
-      | Adagrad _      -> [|Maths.(c.(0) + g * g); c.(1)|]
-      | RMSprop (_, k) -> [|Maths.((F k * c.(0)) + (F 1. - F k) * g * g); c.(1)|]
-      | _              -> c
+      | Adagrad _        -> [|Maths.(c.(0) + g * g); c.(1)|]
+      | RMSprop (_, k)   -> [|Maths.((F k * c.(0)) + (F 1. - F k) * g * g); c.(1)|]
+      | Adam (_, b1, b2) ->
+        let m = Maths.(F b1 * c.(0) + (F 1. - F b1) * g) in
+        let v = Maths.(F b2 * c.(1) + (F 1. - F b2) * g * g) in
+        [|m; v|]
+      | _                -> c
 
     let to_string = function
       | Adagrad a        -> Printf.sprintf "adagrad %g" a
@@ -94,6 +101,7 @@ module Make
       | Decay (a, k)     -> Printf.sprintf "decay (%g, %g)" a k
       | Exp_decay (a, k) -> Printf.sprintf "exp_decay (%g, %g)" a k
       | RMSprop (a, k)   -> Printf.sprintf "rmsprop (%g, %g)" a k
+      | Adam (a, b1, b2) -> Printf.sprintf "adam (%g, %g, %g)" a b1 b2
       | Schedule a       -> Printf.sprintf "schedule %i" (Array.length a)
 
   end

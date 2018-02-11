@@ -44,6 +44,7 @@ along axis 0.
       | Decay of float * float
       | Exp_decay of float * float
       | RMSprop of float * float
+      | Adam of float * float * float
       | Schedule of float array
     (** types of learning rate *)
 
