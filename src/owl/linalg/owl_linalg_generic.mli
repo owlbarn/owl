@@ -330,13 +330,17 @@ documentation for more details.
 
 (** {6 Matrix functions} *)
 
-val expm : otyp:('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
+val expm : ('a, 'b) t -> ('a, 'b) t
 (**
+``expm x`` computes the matrix exponential of ``x`` defined by
+
+.. math::
+  e^x = \sum_{k=0}^{\infty} \frac{1}{k!} x^k
+
+The function implements the scaling and squaring algorithm which uses Padé
+approximation to compute the matrix exponential :cite:`al2009new`.
  *)
 
-val expm' : ('a, 'b) t -> ('a, 'b) t
-(**
- *)
 
 
 (** {6 Helper functions} *)

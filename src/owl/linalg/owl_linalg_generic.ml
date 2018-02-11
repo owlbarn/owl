@@ -691,7 +691,8 @@ let peakflops ?(n=2000) () =
 
 (* Matrix functions *)
 
-let expm
+(* DEBUG: initial expm implemented with eig, obsoleted *)
+let expm_eig
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (c, d) t
   = fun ~otyp x ->
   assert (_is_square x);
@@ -701,7 +702,7 @@ let expm
   M.( dot (dot v u) vi )
 
 
-let expm' x =
+let expm x =
   assert (_is_matrix x);
   (* trivial case *)
   if M.shape x = (1, 1) then M.exp x
