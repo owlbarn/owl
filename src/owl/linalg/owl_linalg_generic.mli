@@ -334,6 +334,10 @@ val expm : otyp:('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t
 (**
  *)
 
+val expm' : ('a, 'b) t -> ('a, 'b) t
+(**
+ *)
+
 
 (** {6 Helper functions} *)
 
