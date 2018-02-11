@@ -1,6 +1,15 @@
-### 0.3.2 (in progress)
+### 0.3.3 (in progress)
 
+* Optimise the Base library
+
+
+### 0.3.2 (2018-02-08)
+
+* Fix some bugs and improve the performance.
+* Functorise many unit tests and add more tests.
 * Rewrite the documentation migrate to Sphinx system.
+* Migrate many pure OCaml code into Base library.
+* Implement the initial version of Base library.
 
 
 ### 0.3.1 (2018-01-25)

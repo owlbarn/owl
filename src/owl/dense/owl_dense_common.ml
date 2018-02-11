@@ -102,6 +102,13 @@ let _log_elt : type a b. (a, b) kind -> (a -> a) = function
   | Complex64 -> Complex.log
   | _         -> failwith "_log_elt: unsupported operation"
 
+let _re_elt : type a b. (a, b) kind -> (a -> float) = function
+  | Float32   -> fun x -> x
+  | Float64   -> fun x -> x
+  | Complex32 -> fun x -> Complex.(x.re)
+  | Complex64 -> fun x -> Complex.(x.re)
+  | _         -> failwith "_re_elt: unsupported operation"
+
 let _sqrt_elt : type a b. (a, b) kind -> (a -> a) = function
   | Float32   -> Pervasives.sqrt
   | Float64   -> Pervasives.sqrt
@@ -217,43 +224,53 @@ let _eigen_cuboid_conv_backward_kernel : type a b . (a, b) kind -> (a, b) eigen_
   | Float64   -> Eigen.Tensor.D.cuboid_conv_backward_kernel
   | _         -> failwith "_eigen_cuboid_conv_backward_kernel: unsupported operation"
 
-let _eigen_spatial_max_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op04 = function
-  | Float32   -> Eigen.Tensor.S.spatial_max_pooling
-  | Float64   -> Eigen.Tensor.D.spatial_max_pooling
-  | _         -> failwith "_eigen_spatial_max_pooling: unsupported operation"
-
-let _eigen_spatial_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op04 = function
-  | Float32   -> Eigen.Tensor.S.spatial_avg_pooling
-  | Float64   -> Eigen.Tensor.D.spatial_avg_pooling
-  | _         -> failwith "_eigen_spatial_avg_pooling: unsupported operation"
-
-let _eigen_cuboid_max_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 = function
-  | Float32   -> Eigen.Tensor.S.cuboid_max_pooling
-  | Float64   -> Eigen.Tensor.D.cuboid_max_pooling
-  | _         -> failwith "_eigen_cuboid_max_pooling: unsupported operation"
-
-let _eigen_cuboid_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 = function
-  | Float32   -> Eigen.Tensor.S.cuboid_avg_pooling
-  | Float64   -> Eigen.Tensor.D.cuboid_avg_pooling
-  | _         -> failwith "_eigen_cuboid_avg_pooling: unsupported operation"
-
-let _eigen_spatial_max_pooling_argmax : type a b . (a, b) kind -> (a, b) eigen_arr_op06 = function
-  | Float32   -> Eigen.Tensor.S.spatial_max_pooling_argmax
-  | Float64   -> Eigen.Tensor.D.spatial_max_pooling_argmax
-  | _         -> failwith "_eigen_spatial_max_pooling_argmax: unsupported operation"
-
-let _eigen_spatial_max_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op07 = function
-  | Float32   -> Eigen.Tensor.S.spatial_max_pooling_backward
-  | Float64   -> Eigen.Tensor.D.spatial_max_pooling_backward
-  | _         -> failwith "_eigen_spatial_max_pooling_backward: unsupported operation"
-
-let _eigen_spatial_avg_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op08 = function
-  | Float32   -> Eigen.Tensor.S.spatial_avg_pooling_backward
-  | Float64   -> Eigen.Tensor.D.spatial_avg_pooling_backward
-  | _         -> failwith "_eigen_spatial_avg_pooling_backward: unsupported operation"
-
 
 (* call functions in owl native c *)
+
+let _owl_spatial_max_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op04 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_spatial
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_spatial
+  | _         -> failwith "_owl_spatial_max_pooling: unsupported operation"
+
+let _owl_spatial_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op04 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_avgpool_spatial
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_avgpool_spatial
+  | _         -> failwith "_owl_spatial_avg_pooling: unsupported operation"
+
+let _owl_cuboid_max_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_cuboid
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_cuboid
+  | _         -> failwith "_owl_cuboid_max_pooling: unsupported operation"
+
+let _owl_cuboid_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_avgpool_cuboid
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_avgpool_cuboid
+  | _         -> failwith "_owl_cuboid_avg_pooling: unsupported operation"
+
+let _owl_spatial_max_pooling_argmax : type a b . (a, b) kind -> (a, b) eigen_arr_op06 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_argmax_spatial
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_argmax_spatial
+  | _         -> failwith "_owl_spatial_max_pooling_argmax: unsupported operation"
+
+let _owl_spatial_max_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op07 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_spatial_backward
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_spatial_backward
+  | _         -> failwith "_owl_spatial_max_pooling_backward: unsupported operation"
+
+let _owl_spatial_avg_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op08 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_avgpool_spatial_backward
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_avgpool_spatial_backward
+  | _         -> failwith "_owl_spatial_avg_pooling_backward: unsupported operation"
+
+let _owl_cuboid_max_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op09 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_cuboid_backward
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_cuboid_backward
+  | _         -> failwith "_owl_cuboid_max_pooling_backward: unsupported operation"
+
+let _owl_cuboid_avg_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op10 = function
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_avgpool_cuboid_backward
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_avgpool_cuboid_backward
+  | _         -> failwith "_owl_cuboid_avg_pooling_backward: unsupported operation"
 
 external owl_float32_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float32_copy" "float32_copy_impl"
 external owl_float64_copy : int -> ('a, 'b) owl_arr -> int -> int -> ('a, 'b) owl_arr -> int -> int -> unit = "float64_copy" "float64_copy_impl"

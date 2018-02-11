@@ -464,11 +464,21 @@ val reci : mat -> mat
 
 val reci_tol : ?tol:elt -> mat -> mat
 
+val l1norm : ?axis:int -> mat -> mat
+
 val l1norm' : mat -> elt
+
+val l2norm : ?axis:int -> mat -> mat
 
 val l2norm' : mat -> elt
 
+val l2norm_sqr : ?axis:int -> mat -> mat
+
 val l2norm_sqr' : mat -> elt
+
+val vecnorm : ?axis:int -> ?p:float -> mat -> mat
+
+val vecnorm' : ?p:float -> mat -> elt
 
 val cumsum : ?axis:int -> mat -> mat
 

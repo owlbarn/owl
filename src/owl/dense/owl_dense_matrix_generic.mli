@@ -1650,6 +1650,12 @@ of all elements in ``x``. The function uses conjugate transpose in the product,
 hence it always returns a float number.
  *)
 
+val vecnorm : ?axis:int -> ?p:float -> ('a, 'b) t -> ('a, 'b) t
+(** Refer to :doc:`owl_dense_ndarray_generic`. *)
+
+val vecnorm' : ?p:float -> ('a, 'b) t -> 'a
+(** Refer to :doc:`owl_dense_ndarray_generic`. *)
+
 val max_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
 (**
 []

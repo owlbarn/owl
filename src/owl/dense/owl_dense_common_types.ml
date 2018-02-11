@@ -22,6 +22,8 @@ type ('a, 'b) eigen_arr_op05 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -
 type ('a, 'b) eigen_arr_op06 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> (int64, int64_elt) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
 type ('a, 'b) eigen_arr_op07 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
 type ('a, 'b) eigen_arr_op08 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
+type ('a, 'b) eigen_arr_op09 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
+type ('a, 'b) eigen_arr_op10 = ('a, 'b) eigen_arr -> ('a, 'b) eigen_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit
 
 
 (* interface to owl's c functions, types for interfacing to owl *)

@@ -533,11 +533,21 @@ val sigmoid : mat -> mat
 
 val log_sum_exp' : mat -> elt
 
+val l1norm : ?axis:int -> mat -> mat
+
 val l1norm' : mat -> elt
+
+val l2norm : ?axis:int -> mat -> mat
 
 val l2norm' : mat -> elt
 
+val l2norm_sqr : ?axis:int -> mat -> mat
+
 val l2norm_sqr' : mat -> elt
+
+val vecnorm : ?axis:int -> ?p:float -> mat -> mat
+
+val vecnorm' : ?p:float -> mat -> elt
 
 val max_pool : ?padding:padding -> mat -> int array -> int array -> mat
 

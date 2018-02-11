@@ -256,14 +256,18 @@ let zeta x q = Owl_maths_special.zeta x q
 
 let zetac x = Owl_maths_special.zetac x
 
-let combination n k = (fact n /. fact (n - k) /. fact k) |> int_of_float
+let combination_float n k = (fact n /. fact (n - k) /. fact k) |> trunc
 
-let permutation n k =
-  let r = ref 1 in
+let combination n k = combination_float n k |> int_of_float
+
+let permutation_float n k =
+  let r = ref 1. in
   for i = 0 to k - 1 do
-    r := !r * (n - i)
+    r := !r *. float_of_int (n - i)
   done;
-  !r
+  !r |> trunc
+
+let permutation n k = permutation_float n k |> int_of_float
 
 let erf x = Owl_maths_special.erf x
 
