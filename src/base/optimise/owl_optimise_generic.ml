@@ -68,11 +68,11 @@ module Make
       | Schedule  of float array
 
     let run = function
-      | Adagrad a        -> fun _ _ c -> Maths.(F a / sqrt (c + F 1e-32))
+      | Adagrad a        -> fun _ _ c -> Maths.(F a / sqrt (c.(0) + F 1e-32))
       | Const a          -> fun _ _ _ -> F a
       | Decay (a, k)     -> fun i _ _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
       | Exp_decay (a, k) -> fun i _ _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
-      | RMSprop (a, _)   -> fun _ _ c -> Maths.(F a / sqrt (c + F 1e-32))
+      | RMSprop (a, _)   -> fun _ _ c -> Maths.(F a / sqrt (c.(0) + F 1e-32))
       | Schedule a       -> fun i _ _ -> F a.(i mod (Array.length a))
 
     let default = function
@@ -84,8 +84,8 @@ module Make
       | Schedule _  -> Schedule [|0.001|]
 
     let update_ch typ g c = match typ with
-      | Adagrad _      -> Maths.(c + g * g)
-      | RMSprop (_, k) -> Maths.((F k * c) + (F 1. - F k) * g * g)
+      | Adagrad _      -> [|Maths.(c.(0) + g * g); c.(1)|]
+      | RMSprop (_, k) -> [|Maths.((F k * c.(0)) + (F 1. - F k) * g * g); c.(1)|]
       | _              -> c
 
     let to_string = function
@@ -322,7 +322,7 @@ module Make
       mutable gs                : t array array; (* gradient of the the previous iteration *)
       mutable ps                : t array array; (* direction of the the prevoius iteration *)
       mutable us                : t array array; (* direction update of the previous iteration *)
-      mutable ch                : t array array; (* gcache of the prevoius iteration *)
+      mutable ch                : t array array array; (* gcache of the prevoius iteration *)
     }
 
     type typ =
@@ -344,7 +344,7 @@ module Make
         gs                = [| [| F 0. |] |];
         ps                = [| [| F 0. |] |];
         us                = [| [| F 0. |] |];
-        ch                = [| [| F 0. |] |];
+        ch                = [| [| [| F 0.; F 0.|] |] |];
       }
 
     let default_checkpoint_fun save_fun =
@@ -507,7 +507,7 @@ module Make
           Checkpoint.(state.gs <- [| [|_g0|] |]);
           Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
           Checkpoint.(state.us <- [| [|F 0.|] |]);
-          Checkpoint.(state.ch <- [| [|F 0.|] |]);
+          Checkpoint.(state.ch <- [| [| [|F 0.; F 0.|] |] |]);
           Checkpoint.(state.loss.(0) <- _loss);
           state
         )
@@ -600,7 +600,7 @@ module Make
           Checkpoint.(state.gs <- _gs);
           Checkpoint.(state.ps <- Owl_utils.aarr_map Maths.neg _gs);
           Checkpoint.(state.us <- Owl_utils.aarr_map (fun _ -> F 0.) _gs);
-          Checkpoint.(state.ch <- Owl_utils.aarr_map (fun _ -> F 0.) _gs);
+          Checkpoint.(state.ch <- Owl_utils.aarr_map (fun _ -> [|F 0.; F 0.|]) _gs);
           Checkpoint.(state.loss.(0) <- _loss);
           state
         )
@@ -685,7 +685,7 @@ module Make
           Checkpoint.(state.gs <- [| [|_g0|] |]);
           Checkpoint.(state.ps <- [| [|Maths.(neg _g0)|] |]);
           Checkpoint.(state.us <- [| [|F 0.|] |]);
-          Checkpoint.(state.ch <- [| [|F 0.|] |]);
+          Checkpoint.(state.ch <- [| [| [|F 0.; F 0.|] |] |]);
           Checkpoint.(state.loss.(0) <- _loss);
           state
         )

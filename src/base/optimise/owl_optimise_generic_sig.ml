@@ -47,13 +47,13 @@ along axis 0.
       | Schedule of float array
     (** types of learning rate *)
 
-    val run : typ -> int -> 'a -> t -> t
+    val run : typ -> int -> 'a -> t array -> t
     (** Execute the computations defined in module ``typ``. *)
 
     val default : typ -> typ
     (** Create module ``typ`` with default values. *)
 
-    val update_ch : typ -> t -> t -> t
+    val update_ch : typ -> t -> t array -> t array
     (** Update the cache of gradients. *)
 
     val to_string : typ -> string
@@ -211,7 +211,7 @@ along axis 0.
       mutable gs : t array array;
       mutable ps : t array array;
       mutable us : t array array;
-      mutable ch : t array array;
+      mutable ch : t array array array;
     }
     (** Type definition of checkpoint *)
 
