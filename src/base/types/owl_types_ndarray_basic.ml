@@ -222,9 +222,13 @@ module type Sig = sig
 
   val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
+  val max_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
   val avg_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
   val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
+  val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
   (* matrix functions *)
 

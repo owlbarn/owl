@@ -2091,6 +2091,129 @@ let avg_pool2d_backward padding input kernel stride output' =
      init_pool_fun add_val_pool_fun end_pool_fun compute_grad_fun)
 
 
+(* TODO: definitely optimise *)
+(* General function for avg_pool3d and max_pool3d *)
+let _pool3d_backward padding input kernel stride output'
+    init_pool_fun add_val_pool_fun end_pool_fun compute_grad_fun =
+  assert (num_dims input = 5);
+  assert (Array.length kernel = 3);
+  assert (Array.length stride = 3);
+
+  let input_shp = shape input in
+  let batches = input_shp.(0) in
+  let input_cols = input_shp.(1) in
+  let input_rows = input_shp.(2) in
+  let input_dpts = input_shp.(3) in
+  let in_channel = input_shp.(4) in
+
+  let kernel_cols = kernel.(0) in
+  let kernel_rows = kernel.(1) in
+  let kernel_dpts = kernel.(2) in
+
+  let col_stride = stride.(0) in
+  let row_stride = stride.(1) in
+  let dpt_stride = stride.(2) in
+
+  let output_shp = shape output' in
+  let output_cols = output_shp.(1) in
+  let output_rows = output_shp.(2) in
+  let output_dpts = output_shp.(3) in
+  assert (batches = output_shp.(0));
+  assert (in_channel = output_shp.(4));
+
+  let (pad_top, pad_left, pad_shallow, _, _, _) =
+    Owl_utils_conv.calc_conv3d_padding
+      input_cols input_rows input_dpts
+      kernel_cols kernel_rows kernel_dpts
+      output_cols output_rows output_dpts
+      row_stride col_stride dpt_stride
+  in
+  let input' = zeros (kind input) (shape input) in
+  begin
+    for b = 0 to batches - 1 do
+      for i = 0 to output_cols - 1 do
+        for j = 0 to output_rows - 1 do
+          for dpt = 0 to output_dpts - 1 do
+            for k = 0 to in_channel - 1 do
+              init_pool_fun ();
+
+              for di = 0 to kernel_cols - 1 do
+                for dj = 0 to kernel_rows - 1 do
+                  for dk = 0 to kernel_dpts - 1 do
+                    let in_col = i * col_stride + di - pad_left in
+                    let in_row = j * row_stride + dj - pad_top in
+                    let in_dpt = dpt * dpt_stride + dk - pad_shallow in
+                    if ((0 <= in_col) && (in_col < input_cols) &&
+                        (0 <= in_row) && (in_row < input_rows) &&
+                        (0 <= in_dpt) && (in_dpt < input_dpts))
+                    then add_val_pool_fun (get input [|b; in_col; in_row; in_dpt; k|])
+                  done; (*dk*)
+                done; (*dj*)
+              done; (*di*)
+
+              let output_val = end_pool_fun () in
+              let output_grad = get output' [|b; i; j; dpt; k|] in
+              for di = 0 to kernel_cols - 1 do
+                for dj = 0 to kernel_rows - 1 do
+                  for dk = 0 to kernel_dpts - 1 do
+                    let in_col = i * col_stride + di - pad_left in
+                    let in_row = j * row_stride + dj - pad_top in
+                    let in_dpt = dpt * dpt_stride + dk - pad_shallow in
+                    if ((0 <= in_col) && (in_col < input_cols) &&
+                        (0 <= in_row) && (in_row < input_rows) &&
+                        (0 <= in_dpt) && (in_dpt < input_dpts))
+                    then
+                      let input_val = (get input [|b; in_col; in_row; in_dpt; k|]) in
+                      let input_grad = (get input' [|b; in_col; in_row; in_dpt; k|]) in
+                      set input' [|b; in_col; in_row; in_dpt; k|]
+                       (compute_grad_fun input_val input_grad output_val output_grad)
+                  done; (*dk*)
+                done; (*dj*)
+              done; (*di*)
+
+            done; (*k*)
+          done; (*dpt*)
+        done; (*j*)
+      done; (*i*)
+    done; (*b*)
+    input'
+  end
+
+
+(* calculate the gradient of max_pool3d *)
+let max_pool3d_backward padding input kernel stride output' =
+  let max_pool = ref 0. in
+  let init_pool_fun = (fun () -> max_pool := Pervasives.min_float) in
+  let add_val_pool_fun =
+    (fun v -> max_pool := Pervasives.max !max_pool v)
+  in
+  let end_pool_fun = (fun () -> !max_pool) in
+  let compute_grad_fun = (fun input_val input_grad output_val output_grad ->
+      if ((Scalar.abs (input_val -. output_val)) < 1e-8) (*TODO: change comparison here *)
+      then input_grad +. output_grad
+      else input_grad
+    ) in
+  (_pool3d_backward padding input kernel stride output'
+     init_pool_fun add_val_pool_fun end_pool_fun compute_grad_fun)
+
+
+(* calculate the gradient of avg_pool3d *)
+let avg_pool3d_backward padding input kernel stride output' =
+  let sum_pool = ref 0. in
+  let cnt = ref 0. in
+  let init_pool_fun = (fun () -> (sum_pool := 0.; cnt := 0.)) in
+  let add_val_pool_fun =
+    (fun v -> sum_pool := !sum_pool +. v; cnt := !cnt +. 1.)
+  in
+  let end_pool_fun = (fun () -> (!sum_pool /. !cnt)) in
+  let compute_grad_fun =
+    (fun input_val input_grad output_val output_grad ->
+       input_grad +. output_grad /. !cnt)
+  in
+  (_pool3d_backward padding input kernel stride output'
+     init_pool_fun add_val_pool_fun end_pool_fun compute_grad_fun)
+
+
 (* calculate the gradient of max_pool1d *)
 let max_pool1d_backward padding input kernel stride output' =
   assert (num_dims input = 3);

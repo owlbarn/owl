@@ -358,8 +358,20 @@ val log_fact : int -> float
 val permutation : int -> int -> int
 (** ``permutation n k`` return the number of permutations of n things taken k at a time. *)
 
+val permutation_float : int -> int -> float
+(**
+``permutation_float n k`` return the number of permutations of n things taken
+k at a time. This function can deal with larger range than ``permutation``.
+ *)
+
 val combination : int -> int -> int
 (** ``combination n k`` return the combination number of taking k out of n. *)
+
+val combination_float : int -> int -> float
+(**
+``combination_float n k`` return the combination number of taking k out of n.
+This function can deal with larger range than ``combination``.
+ *)
 
 
 (** {6 Error functions} *)

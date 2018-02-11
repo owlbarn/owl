@@ -1338,7 +1338,7 @@ val l2norm' : ('a, 'b) t -> 'a
 
 val l2norm_sqr : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
-``l2norm x`` calculates the square l2-norm of of ``x`` along specified axis.
+``l2norm_sqr x`` calculates the square l2-norm of of ``x`` along specified axis.
  *)
 
 val l2norm_sqr' : ('a, 'b) t -> 'a
@@ -1346,6 +1346,31 @@ val l2norm_sqr' : ('a, 'b) t -> 'a
 ``l2norm_sqr x`` calculates the square of l2-norm (or l2norm, Euclidean norm)
 of all elements in ``x``. The function uses conjugate transpose in the product,
 hence it always returns a float number.
+ *)
+
+val vecnorm : ?axis:int -> ?p:float -> ('a, 'b) t -> ('a, 'b) t
+(**
+``vecnorm ~axis ~p x`` calculates the generalised vector p-norm along the
+specified ``axis``. The generalised p-norm is defined as below.
+
+.. math::
+  ||v||_p = \Big[ \sum_{k=0}^{N-1} |v_k|^p \Big]^{1/p}
+
+Parameters:
+  * ``axis`` is the axis for reduction.
+  * ``p`` is order of norm, default value is 2.
+  * ``x`` is the input ndarray.
+
+Returns:
+  * If ``p = infinity``, then returns :math:`||v||_{\infty} = \max_i(|v(i)|)`.
+  * If ``p = -infinity``, then returns :math:`||v||_{-\infty} = \min_i(|v(i)|)`.
+  * Otherwise returns generalised vector p-norm defined above.
+ *)
+
+val vecnorm' : ?p:float -> ('a, 'b) t -> 'a
+(**
+``vecnorm'`` flattens the input into 1-d vector first, then calcuates the
+generalised p-norm the same as ``venorm``.
  *)
 
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
@@ -1710,6 +1735,9 @@ val max_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> 
 []
  *)
 
+val max_pool3d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
+
 val avg_pool1d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
 (**
 []
@@ -1719,6 +1747,9 @@ val avg_pool2d_backward : padding -> (float, 'a) t -> int array -> int array -> 
 (**
 []
  *)
+
+val avg_pool3d_backward : padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t -> (float, 'a) t
+(** [] *)
 
 
 (** {6 Helper functions }  *)

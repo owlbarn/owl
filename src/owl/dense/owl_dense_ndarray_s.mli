@@ -405,7 +405,13 @@ val l2norm : ?axis:int -> arr -> arr
 
 val l2norm' : arr -> elt
 
+val l2norm_sqr : ?axis:int -> arr -> arr
+
 val l2norm_sqr' : arr -> elt
+
+val vecnorm : ?axis:int -> ?p:float -> arr -> arr
+
+val vecnorm' : ?p:float -> arr -> elt
 
 val cumsum : ?axis:int -> arr -> arr
 
@@ -515,10 +521,13 @@ val max_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
 val max_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
+val max_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
+
 val avg_pool1d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
 val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
+val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
 (** {6 Experimental functions} *)
 

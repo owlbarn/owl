@@ -324,11 +324,21 @@ val reci : arr -> arr
 
 val reci_tol : ?tol:elt -> arr -> arr
 
+val l1norm : ?axis:int -> arr -> arr
+
 val l1norm' : arr -> elt
+
+val l2norm : ?axis:int -> arr -> arr
 
 val l2norm' : arr -> elt
 
+val l2norm_sqr : ?axis:int -> arr -> arr
+
 val l2norm_sqr' : arr -> elt
+
+val vecnorm : ?axis:int -> ?p:float -> arr -> arr
+
+val vecnorm' : ?p:float -> arr -> elt
 
 val cumsum : ?axis:int -> arr -> arr
 
