@@ -1,0 +1,22 @@
+(jbuild_version 1)
+
+(executables (
+  (names        (test))
+  (public_names (pure_test))
+  (package     owl_benchmarks)
+  (libraries  (
+    owl_base
+    bigarray
+  ))
+  (flags (:standard -safe-string))
+  (modes      (byte))
+))
+
+(rule
+ ((targets (test.js))
+  (action
+    (run ${bin:js_of_ocaml} ${path:test.bc} -o ${@} --pretty))))
+
+(alias
+  ((name install)
+  (deps (test.js))))

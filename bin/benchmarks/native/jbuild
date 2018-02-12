@@ -1,0 +1,12 @@
+(jbuild_version 1)
+
+(executables (
+  (names        (test))
+  (public_names (native_test))
+  (package     owl_benchmarks)
+  (libraries  (
+    owl
+  ))
+  (flags (:standard -safe-string))
+  (modes      (native))
+))
