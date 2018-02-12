@@ -563,9 +563,7 @@ Similar to ``iteri`` but applies to two N-dimensional arrays ``x`` and ``y``. Bo
  *)
 
 val iter2 : ('a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
-(**
-Similar to ``iter2i``, except that the index of a slice is not passed to ``f``.
- *)
+(** Similar to ``iter2i``, except that the index not passed to ``f``. *)
 
 val map2i : (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**

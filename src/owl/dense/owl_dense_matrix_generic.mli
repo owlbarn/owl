@@ -1694,14 +1694,10 @@ val vecnorm' : ?p:float -> ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic`. *)
 
 val max_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
-(**
-[]
- *)
+(** TODO *)
 
 val avg_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
-(**
-[]
- *)
+(** TODO *)
 
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
