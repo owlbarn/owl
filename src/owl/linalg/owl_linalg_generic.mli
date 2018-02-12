@@ -364,6 +364,26 @@ val sincosm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
  *)
 
+val sinhm : ('a, 'b) t -> ('a, 'b) t
+(**
+``sinm x`` computes the matrix sine of input ``x``. The function uses ``expm``
+to compute the matrix exponentials.
+ *)
+
+val coshm : ('a, 'b) t -> ('a, 'b) t
+(**
+``cosm x`` computes the matrix cosine of input ``x``. The function uses ``expm``
+to compute the matrix exponentials.
+ *)
+
+val tanhm : ('a, 'b) t -> ('a, 'b) t
+(**
+ *)
+
+val sinhcoshm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(**
+ *)
+
 
 (** {6 Helper functions} *)
 

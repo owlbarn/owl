@@ -866,5 +866,27 @@ let tanm x =
   s
 
 
+let sinhm x =
+  let a = Owl_dense_common._float_typ_elt (M.kind x) 0.5 in
+  M.( a $* ((expm x) - (expm (neg x))) )
+
+
+let coshm x =
+  let a = Owl_dense_common._float_typ_elt (M.kind x) 0.5 in
+  M.( a $* ((expm x) + (expm (neg x))) )
+
+
+let sinhcoshm x =
+  let a = Owl_dense_common._float_typ_elt (M.kind x) 0.5 in
+  let b = expm x in
+  let c = expm (M.neg x) in
+  M.(a $* (b - c)), M.(a $* (b + c))
+
+
+let tanhm x =
+  let s, c = sinhcoshm x in
+  Owl_lapacke.gesv c s |> ignore;
+  s
+
 
 (* ends here *)
