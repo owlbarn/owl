@@ -152,6 +152,8 @@ module Make_Matrix (M : MatrixSig) = struct
 
   let ( *@ ) = M.dot
 
+  let ( /@ ) = M.dot
+
   let ( @= ) = M.concat_vertical
 
   let ( @|| ) = M.concat_horizontal

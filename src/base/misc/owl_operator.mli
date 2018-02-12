@@ -210,6 +210,9 @@ module Make_Matrix (M : MatrixSig) : sig
   val ( *@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
   (** Operator of ``dot`` *)
 
+  val ( /@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
+  (** Operator of ``solve`` *)
+
   val ( @= ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
   (** Operator of ``concat_vertical`` *)
 

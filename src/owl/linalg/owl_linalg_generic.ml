@@ -655,7 +655,7 @@ let expm_eig
 
 
 let expm x =
-  assert (_is_matrix x);
+  assert (_is_square x);
   (* trivial case *)
   if M.shape x = (1, 1) then M.exp x
   else (
@@ -818,6 +818,52 @@ let _cosm :
 
 
 let cosm x = _cosm (M.kind x) x
+
+
+let _sincosm :
+  type a b. (a, b) kind -> (a, b) t -> (a, b) t * (a, b) t
+  = fun k x ->
+  match k with
+  | Float32   -> (
+      let a = Complex.({re=0.; im=1.}) in
+      let x = M.cast_s2c x in
+      let y = M.(expm (a $* x)) in
+      M.(im_c2s y, re_c2s y)
+    )
+  | Float64   -> (
+      let a = Complex.({re=0.; im=1.}) in
+      let x = M.cast_d2z x in
+      let y = M.(expm (a $* x)) in
+      M.(im_z2d y, re_z2d y)
+    )
+  | Complex32 -> (
+      let b = Complex.({re=0.; im=1.}) in
+      let c = Complex.({re=0.; im=(-1.)}) in
+      let x = M.(expm (b $* x)) in
+      let y = M.(expm (c $* x)) in
+      let _sin = M.( Complex.({re=0.; im=(-0.5)}) $* (x - y) ) in
+      let _cos = M.( Complex.({re=0.5; im=0.}) $* (x + y)) in
+      _sin, _cos
+    )
+  | Complex64 -> (
+      let b = Complex.({re=0.; im=1.}) in
+      let c = Complex.({re=0.; im=(-1.)}) in
+      let x = M.(expm (b $* x)) in
+      let y = M.(expm (c $* x)) in
+      let _sin = M.( Complex.({re=0.; im=(-0.5)}) $* (x - y) ) in
+      let _cos = M.( Complex.({re=0.5; im=0.}) $* (x + y)) in
+      _sin, _cos
+    )
+  | _        -> failwith "_sincosm: unsupported operation"
+
+
+let sincosm x = _sincosm (M.kind x) x
+
+
+let tanm x =
+  let s, c = sincosm x in
+  Owl_lapacke.gesv c s |> ignore;
+  s
 
 
 

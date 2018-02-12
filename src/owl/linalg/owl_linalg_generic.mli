@@ -356,6 +356,14 @@ val cosm : ('a, 'b) t -> ('a, 'b) t
 to compute the matrix exponentials.
  *)
 
+val tanm : ('a, 'b) t -> ('a, 'b) t
+(**
+ *)
+
+val sincosm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(**
+ *)
+
 
 (** {6 Helper functions} *)
 
