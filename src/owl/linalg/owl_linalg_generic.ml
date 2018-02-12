@@ -288,6 +288,12 @@ let schur
   t, z, w
 
 
+let schur_tz x =
+  let x = M.copy x in
+  let t, z, _, _ = Owl_lapacke.gees ~jobvs:'V' ~a:x in
+  t, z
+
+
 (* Eigenvalue problem *)
 
 
@@ -729,6 +735,89 @@ let expm x =
       !x
     )
   )
+
+
+let logm x =
+  assert (_is_square x);
+  (* use diagonalisation if possible *)
+  if is_hermitian x then (
+    failwith "logm: not implemented"
+  )
+  (* otherwise Schur decomposition *)
+  else (
+    let t, z = schur_tz x in
+    if is_triu t then (
+      failwith "logm: not implemented"
+    )
+    else (
+      failwith "logm: not implemented"
+    )
+    failwith "logm: not implemented"
+  )
+
+
+let _sinm :
+  type a b. (a, b) kind -> (a, b) t -> (a, b) t
+  = fun k x ->
+  match k with
+  | Float32   -> (
+      let a = Complex.({re=0.; im=1.}) in
+      let x = M.cast_s2c x in
+      M.(expm (a $* x) |> im_c2s)
+    )
+  | Float64   -> (
+      let a = Complex.({re=0.; im=1.}) in
+      let x = M.cast_d2z x in
+      M.(expm (a $* x) |> im_z2d)
+    )
+  | Complex32 -> (
+      let a = Complex.({re=0.; im=(-0.5)}) in
+      let b = Complex.({re=0.; im=1.}) in
+      let c = Complex.({re=0.; im=(-1.)}) in
+      M.(a $* (expm (b $* x) - expm (c $* x)))
+    )
+  | Complex64 -> (
+      let a = Complex.({re=0.; im=(-0.5)}) in
+      let b = Complex.({re=0.; im=1.}) in
+      let c = Complex.({re=0.; im=(-1.)}) in
+      M.(a $* (expm (b $* x) - expm (c $* x)))
+    )
+  | _        -> failwith "_sinm: unsupported operation"
+
+
+let sinm x = _sinm (M.kind x) x
+
+
+let _cosm :
+  type a b. (a, b) kind -> (a, b) t -> (a, b) t
+  = fun k x ->
+  match k with
+  | Float32   -> (
+      let a = Complex.({re=0.; im=1.}) in
+      let x = M.cast_s2c x in
+      M.(expm (a $* x) |> re_c2s)
+    )
+  | Float64   -> (
+      let a = Complex.({re=0.; im=1.}) in
+      let x = M.cast_d2z x in
+      M.(expm (a $* x) |> re_z2d)
+    )
+  | Complex32 -> (
+      let a = Complex.({re=0.5; im=0.}) in
+      let b = Complex.({re=0.; im=1.}) in
+      let c = Complex.({re=0.; im=(-1.)}) in
+      M.(a $* (expm (b $* x) + expm (c $* x)))
+    )
+  | Complex64 -> (
+      let a = Complex.({re=0.5; im=0.}) in
+      let b = Complex.({re=0.; im=1.}) in
+      let c = Complex.({re=0.; im=(-1.)}) in
+      M.(a $* (expm (b $* x) + expm (c $* x)))
+    )
+  | _        -> failwith "_cosm: unsupported operation"
+
+
+let cosm x = _cosm (M.kind x) x
 
 
 

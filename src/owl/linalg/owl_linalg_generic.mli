@@ -344,6 +344,17 @@ The function implements the scaling and squaring algorithm which uses Padé
 approximation to compute the matrix exponential :cite:`al2009new`.
  *)
 
+val sinm : ('a, 'b) t -> ('a, 'b) t
+(**
+``sinm x`` computes the matrix sine of input ``x``. The function uses ``expm``
+to compute the matrix exponentials.
+ *)
+
+val cosm : ('a, 'b) t -> ('a, 'b) t
+(**
+``cosm x`` computes the matrix cosine of input ``x``. The function uses ``expm``
+to compute the matrix exponentials.
+ *)
 
 
 (** {6 Helper functions} *)
