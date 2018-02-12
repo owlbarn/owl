@@ -48,7 +48,7 @@ along axis 0.
       | Schedule of float array
     (** types of learning rate *)
 
-    val run : typ -> int -> 'a -> t array -> t
+    val run : typ -> int -> t -> t array -> t
     (** Execute the computations defined in module ``typ``. *)
 
     val default : typ -> typ
