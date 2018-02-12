@@ -74,7 +74,7 @@ module Make
       | Decay (a, k)     -> fun i _ _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
       | Exp_decay (a, k) -> fun i _ _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
       | RMSprop (a, _)   -> fun _ _ c -> Maths.(F a / sqrt (c.(0) + F 1e-32))
-      | Adam (a, b1, b2) -> fun i _ c -> Maths.(F a / (sqrt (c.(1) / (F 1. - F b1 ** F (float_of_int i))) + F 1e-32) * (c.(0) / (F 1. - F b2 ** F (float_of_int i))))
+      | Adam (a, b1, b2) -> fun i _ c -> Maths.(F a * (sqrt (F 1. - F b2 ** F (float_of_int i))) / (F 1. - F b1 ** F (float_of_int i)) * c.(0) / (sqrt c.(1) + F 1e-8))
       | Schedule a       -> fun i _ _ -> F a.(i mod (Array.length a))
 
     let default = function
