@@ -459,12 +459,16 @@ val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``concat_vertical x y`` concats two matrices ``x`` and ``y`` vertically,
 therefore their column numbers must be the same.
+
+The associated operator is ``@=``, please refer to :doc:`owl_operator`.
  *)
 
 val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``concat_horizontal x y`` concats two matrices ``x`` and ``y`` horizontally,
 therefore their row numbers must be the same.
+
+The associated operator is ``@||``, please refer to :doc:`owl_operator`.
  *)
 
 val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t

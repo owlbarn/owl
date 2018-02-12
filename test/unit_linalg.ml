@@ -7,7 +7,7 @@ module M = Owl.Linalg.D
 (* define the test error *)
 
 let approx_equal a b =
-  let eps = 1e-10 in
+  let eps = 1e-6 in
   Pervasives.(abs_float (a -. b) < eps)
 
 
@@ -129,6 +129,110 @@ module To_test = struct
     let x = Mat.of_array [|1.;0.;0.;0.;1.;0.;0.;1.;1.|] 3 3 in
     M.is_diag x = false
 
+  let expm_1 () =
+    let x = Mat.sequential ~a:1. 3 3 in
+    let y = Mat.of_array
+      [| 1118906.6994132 ;  1374815.06293582;  1630724.42645844;
+         2533881.04189899;  3113415.03138058;  3692947.02086217;
+         3948856.38438479;  4852012.99982535;  5755170.6152659 |] 3 3
+    in
+    let z = M.expm x in
+    approx_equal Mat.((y - z) |> sum') 0.
+
+  let expm_2 () =
+    let x = Mat.(sequential ~a:1. 3 3 /$ 10.) in
+    let y = Mat.of_array
+      [| 1.37316027;  0.53148466;  0.68980905;
+         1.00926035;  2.2481482 ;  1.48703605;
+         1.64536043;  1.96481174;  3.28426304; |] 3 3
+    in
+    let z = M.expm x in
+    approx_equal Mat.((y - z) |> sum') 0.
+
+  let expm_3 () =
+    let x = Mat.(sequential ~a:1. 3 3 /$ 50.) in
+    let y = Mat.of_array
+      [| 1.02667783;  0.04803414;  0.06939044;
+         0.09473789;  1.11808977;  0.14144165;
+         0.16279795;  0.1881454 ;  1.21349285 |] 3 3
+    in
+    let z = M.expm x in
+    approx_equal Mat.((y - z) |> sum') 0.
+
+  let expm_4 () =
+    let x = Mat.(sequential ~a:1. 3 3 /$ 200.) in
+    let y = Mat.of_array
+      [| 1.00538495;  0.01046225;  0.01553954;
+         0.02084758;  1.02604024;  0.03123291;
+         0.03631021;  0.04161824;  1.04692628 |] 3 3
+    in
+    let z = M.expm x in
+    approx_equal Mat.((y - z) |> sum') 0.
+
+  let sinm () =
+    let x = Mat.sequential ~a:1. 2 2 in
+    let y = Mat.of_array
+      [|-0.46558149; -0.14842446; -0.22263669; -0.68821818|] 2 2
+    in
+    let z = M.sinm x in
+    approx_equal Mat.((y - z) |> sum') 0.
+
+  let cosm () =
+    let x = Mat.sequential ~a:1. 2 2 in
+    let y = Mat.of_array
+      [|0.85542317; -0.11087638; -0.16631457; 0.68910859|] 2 2
+    in
+    let z = M.cosm x in
+    approx_equal Mat.((y - z) |> sum') 0.
+
+  let tanm () =
+    let x = Mat.sequential ~a:1. 2 2 in
+    let y = Mat.of_array
+      [|-0.60507478; -0.31274165; -0.46911248; -1.07418726|] 2 2
+    in
+    let z = M.tanm x in
+    approx_equal Mat.((y - z) |> sum') 0.
+
+  let sincosm () =
+    let x = Mat.sequential ~a:1. 2 2 in
+    let s = M.sinm x in
+    let c = M.cosm x in
+    let s', c' = M.sincosm x in
+    (approx_equal Mat.((s - s') |> sum') 0.) &&
+    (approx_equal Mat.((c - c') |> sum') 0.)
+
+  let sinhm () =
+    let x = Mat.(sequential ~a:1. 2 2 /$ 10.) in
+    let y = Mat.of_array
+      [|0.10625636; 0.20913073; 0.31369609; 0.41995246|] 2 2
+    in
+    let z = M.sinhm x in
+    approx_equal Mat.((y - z) |> sum') 0.
+
+  let coshm () =
+    let x = Mat.(sequential ~a:1. 2 2 /$ 10.) in
+    let y = Mat.of_array
+      [|1.03583718; 0.05122002; 0.07683003; 1.11266721|] 2 2
+    in
+    let z = M.coshm x in
+    approx_equal Mat.((y - z) |> sum') 0.
+
+  let tanhm () =
+    let x = Mat.(sequential ~a:1. 2 2 /$ 10.) in
+    let y = Mat.of_array
+      [|0.08894293; 0.18386007; 0.2757901; 0.36473303|] 2 2
+    in
+    let z = M.tanhm x in
+    approx_equal Mat.((y - z) |> sum') 0.
+
+  let sinhcoshm () =
+    let x = Mat.(sequential ~a:1. 2 2 /$ 10.) in
+    let s = M.sinhm x in
+    let c = M.coshm x in
+    let s', c' = M.sinhcoshm x in
+    (approx_equal Mat.((s - s') |> sum') 0.) &&
+    (approx_equal Mat.((c - c') |> sum') 0.)
+
 end
 
 (* the tests *)
@@ -214,6 +318,42 @@ let is_diag_1 () =
 let is_diag_2 () =
   Alcotest.(check bool) "is_diag_2" true (To_test.is_diag_2 ())
 
+let expm_1 () =
+  Alcotest.(check bool) "expm_1" true (To_test.expm_1 ())
+
+let expm_2 () =
+  Alcotest.(check bool) "expm_2" true (To_test.expm_2 ())
+
+let expm_3 () =
+  Alcotest.(check bool) "expm_3" true (To_test.expm_3 ())
+
+let expm_4 () =
+  Alcotest.(check bool) "expm_4" true (To_test.expm_4 ())
+
+let sinm () =
+  Alcotest.(check bool) "sinm" true (To_test.sinm ())
+
+let cosm () =
+  Alcotest.(check bool) "cosm" true (To_test.cosm ())
+
+let tanm () =
+  Alcotest.(check bool) "tanm" true (To_test.tanm ())
+
+let sincosm () =
+  Alcotest.(check bool) "sincosm" true (To_test.sincosm ())
+
+let sinhm () =
+  Alcotest.(check bool) "sinhm" true (To_test.sinhm ())
+
+let coshm () =
+  Alcotest.(check bool) "coshm" true (To_test.coshm ())
+
+let tanhm () =
+  Alcotest.(check bool) "tanhm" true (To_test.tanhm ())
+
+let sinhcoshm () =
+  Alcotest.(check bool) "sinhcoshm" true (To_test.sinhcoshm ())
+
 let test_set = [
   "rank", `Slow, rank;
   "det", `Slow, det;
@@ -242,4 +382,16 @@ let test_set = [
   "is_symmetric_2", `Slow, is_symmetric_2;
   "is_diag_1", `Slow, is_diag_1;
   "is_diag_2", `Slow, is_diag_2;
+  "expm_1", `Slow, expm_1;
+  "expm_2", `Slow, expm_2;
+  "expm_3", `Slow, expm_3;
+  "expm_4", `Slow, expm_4;
+  "sinm", `Slow, sinm;
+  "cosm", `Slow, cosm;
+  "tanm", `Slow, tanm;
+  "sincosm", `Slow, sincosm;
+  "sinhm", `Slow, sinhm;
+  "coshm", `Slow, coshm;
+  "tanhm", `Slow, tanhm;
+  "sinhcoshm", `Slow, sinhcoshm;
 ]

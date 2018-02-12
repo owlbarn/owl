@@ -212,6 +212,12 @@ let concatenate ?(axis=0) xs =
   y
 
 
+let concat_vertical x1 x2 = concatenate ~axis:0 [|x1;x2|]
+
+
+let concat_horizontal x1 x2 = concatenate ~axis:(num_dims x1 - 1) [|x1;x2|]
+
+
 let squeeze ?(axis=[||]) x =
   let a = match Array.length axis with
     | 0 -> Array.init (num_dims x) (fun i -> i)
@@ -224,10 +230,15 @@ let squeeze ?(axis=[||]) x =
   reshape x s
 
 
-let expand x d =
+let expand ?(hi=false) x d =
   let d0 = d - (num_dims x) in
   match d0 > 0 with
-  | true  -> Owl_utils.Array.pad `Left (shape x) 1 d0 |> reshape x
+  | true  -> (
+      if hi = true then
+        Owl_utils.Array.pad `Right (shape x) 1 d0 |> reshape x
+      else
+        Owl_utils.Array.pad `Left (shape x) 1 d0 |> reshape x
+    )
   | false -> x
 
 

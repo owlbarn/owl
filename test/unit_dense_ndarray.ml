@@ -260,6 +260,28 @@ module To_test = struct
     let a = M.vecnorm' ~p:neg_infinity x3 in
     approx_equal a 1.
 
+  let expand_01 () =
+    let y = M.expand ~hi:true x0 5 in
+    M.shape y = [|2;2;3;1;1|]
+
+  let expand_02 () =
+    let y = M.expand ~hi:false x0 5 in
+    M.shape y = [|1;1;2;2;3|]
+
+  let concatenate_01 () =
+    let x = M.sequential Float64 ~a:1. [|2;3;4|] in
+    let y = M.sequential Float64 ~a:25. [|1;3;4|] in
+    let z = M.sequential Float64 ~a:1. [|3;3;4|] in
+    let a = M.concatenate ~axis:0 [|x; y|] in
+    M.(a = z)
+
+  let concatenate_02 () =
+    let x = M.of_array Float64 [|0.;2.|] [|2; 1|] in
+    let y = M.of_array Float64 [|1.;3.|] [|2; 1|] in
+    let z = M.sequential Float64 ~a:0. [|2;2|] in
+    let a = M.concatenate ~axis:1 [|x; y|] in
+    M.(a = z)
+
 end
 
 (* the tests *)
@@ -444,6 +466,18 @@ let vecnorm_09 () =
 let vecnorm_10 () =
   Alcotest.(check bool) "vecnorm_10" true (To_test.vecnorm_10 ())
 
+let expand_01 () =
+  Alcotest.(check bool) "expand_01" true (To_test.expand_01 ())
+
+let expand_02 () =
+  Alcotest.(check bool) "expand_02" true (To_test.expand_02 ())
+
+let concatenate_01 () =
+  Alcotest.(check bool) "concatenate_01" true (To_test.concatenate_01 ())
+
+let concatenate_02 () =
+  Alcotest.(check bool) "concatenate_02" true (To_test.concatenate_02 ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -505,4 +539,8 @@ let test_set = [
   "vecnorm_08", `Slow, vecnorm_08;
   "vecnorm_09", `Slow, vecnorm_09;
   "vecnorm_10", `Slow, vecnorm_10;
+  "expand_01", `Slow, expand_01;
+  "expand_02", `Slow, expand_02;
+  "concatenate_01", `Slow, concatenate_01;
+  "concatenate_02", `Slow, concatenate_02;
 ]

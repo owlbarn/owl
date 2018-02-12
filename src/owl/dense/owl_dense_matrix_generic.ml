@@ -268,12 +268,6 @@ let get x i j = Owl_dense_ndarray_generic.get x [|i;j|]
 let set x i j a = Owl_dense_ndarray_generic.set x [|i;j|] a
 
 
-let concat_vertical x1 x2 = concatenate ~axis:0 [|x1;x2|]
-
-
-let concat_horizontal x1 x2 = concatenate ~axis:1 [|x1;x2|]
-
-
 (* TODO: optimise *)
 let swap_rows x i i' =
   let _x = Bigarray.array2_of_genarray x in

@@ -406,6 +406,24 @@ value of ``?axis`` is the highest dimension of ``x``. This function is similar t
 ``numpy.repeat`` except that ``a`` is an integer instead of an array.
  *)
 
+val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``concat_vertical x y`` concatenates two ndarray ``x`` and ``y`` vertically.
+This is just a convenient function for concatenating two ndarrays along their
+lowest dimension, i.e. 0.
+
+The associated operator is ``@||``, please refer to :doc:`owl_operator`.
+ *)
+
+val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``concat_horizontal x y`` concatenates two ndarrays ``x`` and ``y`` horizontally.
+This is just a convenient function for concatenating two ndarrays along their
+highest dimension.
+
+The associated operator is ``@=``, please refer to :doc:`owl_operator`.
+ *)
+
 val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 (**
 ``concatenate ~axis:2 x`` concatenates an array of ndarrays along the third
@@ -416,7 +434,7 @@ lowest dimension of a matrix/ndarray.
 
 val split : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
 (**
-``split ~axis parts x``
+``split ~axis parts x`` ... TODO
  *)
 
 val squeeze : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
@@ -424,15 +442,17 @@ val squeeze : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 ``squeeze ~axis x`` removes single-dimensional entries from the shape of ``x``.
  *)
 
-val expand : ('a, 'b) t -> int -> ('a, 'b) t
+val expand : ?hi:bool -> ('a, 'b) t -> int -> ('a, 'b) t
 (**
-``expand x d`` reshapes x by increasing its rank from ``num_dims x`` to ``d``. The
-opposite operation is ``squeeze x``.
+``expand x d`` reshapes ``x`` by increasing its rank from ``num_dims x`` to
+``d``. The opposite operation is ``squeeze x``. The ``hi`` parameter is used to
+specify wether the expandsion is along high dimension (by setting ``true``), or
+along the low dimension (by setting ``false``). The default value is ``false``.
  *)
 
 val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 (**
-``pad ~v:0. [[1;1]] x``
+``pad ~v:0. [[1;1]] x`` ... TODO
  *)
 
 val dropout : ?rate:float -> ('a, 'b) t -> ('a, 'b) t

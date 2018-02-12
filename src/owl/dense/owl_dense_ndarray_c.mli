@@ -120,13 +120,17 @@ val tile : arr -> int array -> arr
 
 val repeat : ?axis:int -> arr -> int -> arr
 
+val concat_vertical : arr -> arr -> arr
+
+val concat_horizontal : arr -> arr -> arr
+
 val concatenate : ?axis:int -> arr array -> arr
 
 val split : ?axis:int -> int array -> arr -> arr array
 
 val squeeze : ?axis:int array -> arr -> arr
 
-val expand : arr -> int -> arr
+val expand : ?hi:bool -> arr -> int -> arr
 
 val pad : ?v:elt -> int list list -> arr -> arr
 

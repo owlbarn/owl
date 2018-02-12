@@ -127,6 +127,10 @@ module type ExtendSig = sig
 
   val div_scalar_ : ('a, 'b) t -> 'a -> unit
 
+  val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+  val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
   val get_fancy : Owl_types.index list -> ('a, 'b) t -> ('a, 'b) t
 
   val set_fancy : Owl_types.index list -> ('a, 'b) t -> ('a, 'b) t -> unit
@@ -147,10 +151,6 @@ module type MatrixSig = sig
   val set : ('a, 'b) t -> int -> int -> 'a -> unit
 
   val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-
-  val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-
-  val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
 end
 

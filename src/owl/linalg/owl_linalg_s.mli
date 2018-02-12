@@ -96,3 +96,21 @@ val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> mat -> mat * int32_
 (** {6 Matrix functions} *)
 
 val expm : mat -> mat
+
+val expm : mat -> mat
+
+val sinm : mat -> mat
+
+val cosm : mat -> mat
+
+val tanm : mat -> mat
+
+val sincosm : mat -> mat * mat
+
+val sinhm : mat -> mat
+
+val coshm : mat -> mat
+
+val tanhm : mat -> mat
+
+val sinhcoshm : mat -> mat * mat

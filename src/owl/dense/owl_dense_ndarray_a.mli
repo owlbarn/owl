@@ -80,7 +80,7 @@ val sub_left : 'a arr -> int array -> 'a arr
 
 val squeeze : ?axis:int array -> 'a arr -> 'a arr
 
-val expand : 'a arr -> int -> 'a arr
+val expand : ?hi:bool -> 'a arr -> int -> 'a arr
 
 val reverse : 'a arr -> 'a arr
 
