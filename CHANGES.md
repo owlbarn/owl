@@ -1,6 +1,17 @@
-### 0.3.3 (in progress)
+### 0.3.4 (in progress)
 
-* Optimise the Base library
+* Fix some bugs and improve the performance.
+
+
+### 0.3.3 (2018-02-12)
+
+* Fix some bugs and improve the performance.
+* Integrate with Owl's documentation system.
+* Add native C implementation of pooling operations.
+* Add more operators in Operator module.
+* Add more functions in Linalg module.
+* Optimise the Base library.
+* Add more unit tests.
 
 
 ### 0.3.2 (2018-02-08)
