@@ -1,28 +1,31 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.caMD.ac.uk>
+ * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 open Bigarray
 
 open Owl_types
 
-type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
-
-module M = Owl_dense.Matrix.Generic
+type ('a, 'b) t = ('a, 'b) Owl_dense_matrix_generic.t
 
 
-(* utility functions *)
+(*
+We create a local generic matrix module with basic operators. This is only
+way to let us use operators to write concise math but avoid circular dependency
+at the same time.
+*)
+module M = struct
 
-let _is_matrix x = Owl_dense_ndarray_generic.num_dims x = 2
+  include Owl_dense_matrix_generic
+  include Owl_operator.Make_Basic (Owl_dense_matrix_generic)
+  include Owl_operator.Make_Extend (Owl_dense_matrix_generic)
+  include Owl_operator.Make_Matrix (Owl_dense_matrix_generic)
 
-let _is_square x =
-  let m, n = M.shape x in
-  m = n
+end
 
 
 (* LU decomposition *)
-
 
 let lu x =
   let x = M.copy x in
@@ -45,6 +48,8 @@ let lufact x =
   let a, ipiv = Owl_lapacke.getrf x in
   a, ipiv
 
+
+(* basic functions *)
 
 let inv x =
   let x = M.copy x in
@@ -439,6 +444,11 @@ let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
 
 (* Check matrix properties *)
 
+let is_square x =
+  let m, n = M.shape x in
+  m = n
+
+
 let is_triu x = Owl_core._matrix_is_triu (M.kind x) x
 
 
@@ -647,7 +657,7 @@ let peakflops ?(n=2000) () =
 let expm_eig
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (c, d) t
   = fun ~otyp x ->
-  assert (_is_square x);
+  assert (is_square x);
   let v, w = eig ~otyp x in
   let vi = inv v in
   let u = M.(exp w |> diagm) in
@@ -655,7 +665,7 @@ let expm_eig
 
 
 let expm x =
-  assert (_is_square x);
+  assert (is_square x);
   (* trivial case *)
   if M.shape x = (1, 1) then M.exp x
   else (
@@ -734,25 +744,6 @@ let expm x =
 
       !x
     )
-  )
-
-
-let logm x =
-  assert (_is_square x);
-  (* use diagonalisation if possible *)
-  if is_hermitian x then (
-    failwith "logm: not implemented"
-  )
-  (* otherwise Schur decomposition *)
-  else (
-    let t, z = schur_tz x in
-    if is_triu t then (
-      failwith "logm: not implemented"
-    )
-    else (
-      failwith "logm: not implemented"
-    )
-    failwith "logm: not implemented"
   )
 
 
@@ -887,6 +878,14 @@ let tanhm x =
   let s, c = sinhcoshm x in
   Owl_lapacke.gesv c s |> ignore;
   s
+
+
+(* TODO *)
+let logm x = "logm: not implemented"
+
+
+(* TODO *)
+let sqrtm x = failwith "sqrtm: not implemented"
 
 
 (* ends here *)

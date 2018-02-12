@@ -208,10 +208,7 @@ end
 module Make_Matrix (M : MatrixSig) : sig
 
   val ( *@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``dot`` *)
-
-  val ( /@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``solve`` *)
+  (** Operator of ``dot a b``, i.e. matrix multiplication ``a * b``. *)
 
   val ( @= ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
   (** Operator of ``concat_vertical`` *)
@@ -237,5 +234,16 @@ module Make_Ndarray (M : NdarraySig) : sig
 
   val ( .%{}<- ) : ('a, 'b) M.t -> int array -> 'a -> unit
   (** Operator of ``set`` *)
+
+end
+
+
+
+(** {6 Linalg-specific operators} *)
+
+module Make_Linalg (M : LinalgSig) : sig
+
+  val ( /@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
+  (** Operator of ``linsolve a b``, i.e. for solving ``a * x = b``. *)
 
 end

@@ -1,6 +1,6 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.caMD.ac.uk>
+ * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 (** Linear algebra module including high-level functions to solve linear
@@ -22,14 +22,13 @@ open Bigarray
 
 (** {6 Type definition} *)
 
-type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
+type ('a, 'b) t = ('a, 'b) Owl_dense_matrix_generic.t
 (**
 Matrix type, a special case of N-dimensional array.
  *)
 
 
 (** {6 Basic functions} *)
-
 
 val inv : ('a, 'b) t -> ('a, 'b) t
 (**
@@ -122,6 +121,9 @@ conditioned, the result is near ``0.``
 
 
 (** {6 Check matrix types} *)
+
+val is_square : ('a, 'b) t -> bool
+(** ``is_square x`` returns ``true`` if ``x`` is a square matrix otherwise ``false``. *)
 
 val is_triu : ('a, 'b) t -> bool
 (** ``is_triu x`` returns ``true`` if ``x`` is upper triangular otherwise ``false``. *)
@@ -281,7 +283,7 @@ negligible elements, ``M.col_num x`` is the nullity of ``a``, and
 
 val linsolve : ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
-``linsolve a b -> x`` solves a linear system of equations ``A * x = b``. The
+``linsolve a b -> x`` solves a linear system of equations ``a * x = b``. The
 function uses LU factorisation with partial pivoting when ``a`` is square and
 QR factorisation with column pivoting otherwise. The number of rows of ``a``
 must equal the number of rows of ``b``.
@@ -289,6 +291,9 @@ must equal the number of rows of ``b``.
 By default, ``trans = false`` indicates no transpose. If ``trans = true``, then
 function will solve ``A^T * x = b`` for real matrices; ``A^H * x = b`` for
 complex matrices.
+
+The associated operator is ``/@``, so you can simply use ``a /@ b`` to solve
+the linear equation system to get ``x``. Please refer to :doc:`owl_operator`.
  *)
 
 val linreg : ('a, 'b) t -> ('a, 'b) t -> 'a * 'a
@@ -358,30 +363,36 @@ to compute the matrix exponentials.
 
 val tanm : ('a, 'b) t -> ('a, 'b) t
 (**
+``tanm x`` computes the matrix tangent of input ``x``. The function uses
+``expm`` to compute the matrix exponentials.
  *)
 
 val sincosm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
+``sincosm x`` returns both matrix sine and cosine of ``x``.
  *)
 
 val sinhm : ('a, 'b) t -> ('a, 'b) t
 (**
-``sinm x`` computes the matrix sine of input ``x``. The function uses ``expm``
-to compute the matrix exponentials.
+``sinhm x`` computes the hyperbolic matrix sine of input ``x``. The function
+uses ``expm`` to compute the matrix exponentials.
  *)
 
 val coshm : ('a, 'b) t -> ('a, 'b) t
 (**
-``cosm x`` computes the matrix cosine of input ``x``. The function uses ``expm``
-to compute the matrix exponentials.
+``coshm x`` computes the hyperbolic matrix cosine of input ``x``. The function
+uses ``expm`` to compute the matrix exponentials.
  *)
 
 val tanhm : ('a, 'b) t -> ('a, 'b) t
 (**
+``tanhm x`` computes the hyperbolic matrix tangent of input ``x``. The function
+uses ``expm`` to compute the matrix exponentials.
  *)
 
 val sinhcoshm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
+``sinhcoshm x`` returns both hyperbolic matrix sine and cosine of ``x``.
  *)
 
 

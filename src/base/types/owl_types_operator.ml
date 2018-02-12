@@ -166,4 +166,13 @@ module type NdarraySig = sig
 end
 
 
+module type LinalgSig = sig
+
+  type ('a, 'b) t
+
+  val linsolve : ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+
+end
+
+
 (* ends here *)

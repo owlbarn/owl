@@ -150,9 +150,7 @@ module Make_Matrix (M : MatrixSig) = struct
 
   type ('a, 'b) op_t2 = ('a, 'b) M.t
 
-  let ( *@ ) = M.dot
-
-  let ( /@ ) = M.dot
+  let ( *@ ) a b = M.dot a b
 
   let ( @= ) = M.concat_vertical
 
@@ -174,6 +172,16 @@ module Make_Ndarray (M : NdarraySig) = struct
   let ( .%{ }<- ) x i = M.set x i
 
 end
+
+
+module Make_Linalg (M : LinalgSig) = struct
+
+  type ('a, 'b) op_t4 = ('a, 'b) M.t
+
+  let ( /@ ) a b = M.linsolve a b
+
+end
+
 
 
 (* ends here *)
