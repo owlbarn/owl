@@ -578,6 +578,21 @@ val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 ``map2 f x y`` is similar to ``map2i f x y`` except the index is not passed.
  *)
 
+val iteri_nd :(int array -> 'a -> unit) -> ('a, 'b) t -> unit
+(** Similar to `iteri` but n-d indices are passed to the user function. *)
+
+val mapi_nd : (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to `mapi` but n-d indices are passed to the user function. *)
+
+val filteri_nd : (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
+(** Similar to `filteri` but n-d indices are passed to the user function. *)
+
+val foldi_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to `foldi` but n-d indices are passed to the user function. *)
+
+val scani_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to `scani` but n-d indices are passed to the user function. *)
+
 
 (** {6 Examination & Comparison}  *)
 

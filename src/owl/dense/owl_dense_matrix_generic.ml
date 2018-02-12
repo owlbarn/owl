@@ -420,6 +420,12 @@ let fold_rows f a x = _fold_basic iter_rows f a x
 let fold_cols f a x = _fold_basic iter_cols f a x
 
 
+let mapi_2d f x =
+  let y = array2_of_genarray x in
+  let m, n = shape y in
+  ()
+
+
 let sum_cols x = sum ~axis:1 x
 
 

@@ -19,43 +19,75 @@ type ('a, 'b) kind = ('a, 'b) Bigarray.kind
 
 let empty kind dimension = Genarray.create kind c_layout dimension
 
+
 let get x i = Genarray.get x i
+
 
 let set x i a = Genarray.set x i a
 
+
+let get_fancy axis x = Owl_slicing.get_fancy_list_typ axis x
+
+
+let set_fancy axis x y = Owl_slicing.set_fancy_list_typ axis x y
+
+
+let get_slice axis x = Owl_slicing.get_slice_list_typ axis x
+
+
+let set_slice axis x y = Owl_slicing.set_slice_list_typ axis x y
+
+
 let num_dims x = Genarray.num_dims x
+
 
 let shape x = Genarray.dims x
 
+
 let nth_dim x i = Genarray.nth_dim x i
+
 
 let numel x = Array.fold_right (fun c a -> c * a) (shape x) 1
 
+
 let kind x = Genarray.kind x
+
 
 let layout x = Genarray.layout x
 
+
 let size_in_bytes x = Genarray.size_in_bytes x
+
 
 let sub_left = Genarray.sub_left
 
+
 let sub_right = Genarray.sub_right
+
 
 let slice_left = Genarray.slice_left
 
+
 let slice_right = Genarray.slice_right
+
 
 let copy_to src dst = Genarray.blit src dst
 
+
 let fill x a = Genarray.fill x a
+
 
 let reshape x dimension = reshape x dimension
 
+
 let reset x = Genarray.fill x (Owl_const.zero (kind x))
+
 
 let mmap fd ?pos kind shared dims = Unix.map_file fd ?pos kind c_layout shared dims
 
+
 let flatten x = reshape x [|numel x|]
+
 
 let init k d f =
   let x = empty k d in
@@ -65,6 +97,7 @@ let init k d f =
     Array1.unsafe_set y i (f i)
   done;
   x
+
 
 let init_nd k d f =
   let x = empty k d in
@@ -78,12 +111,15 @@ let init_nd k d f =
   done;
   x
 
+
 let same_shape x y = (shape x) = (shape y)
+
 
 let copy x =
   let y = empty (kind x) (shape x) in
   Genarray.blit x y;
   y
+
 
 let reverse x =
   let y = copy x in
@@ -996,6 +1032,12 @@ let map2 f x y =
   z
 
 
+let iteri_nd f x = iteri (fun i a -> f (Owl_utils.ind x i) a) x
+
+
+let mapi_nd f x = mapi (fun i a -> f (Owl_utils.ind x i) a) x
+
+
 let _check_transpose_axis axis d =
   let info = "check_transpose_axis fails" in
   if Array.length axis <> d then
@@ -1065,16 +1107,14 @@ let filteri f x =
 let filter f x = filteri (fun _ y -> f y) x
 
 
-let get_fancy axis x = Owl_slicing.get_fancy_list_typ axis x
-
-
-let set_fancy axis x y = Owl_slicing.set_fancy_list_typ axis x y
-
-
-let get_slice axis x = Owl_slicing.get_slice_list_typ axis x
-
-
-let set_slice axis x y = Owl_slicing.set_slice_list_typ axis x y
+let filteri_nd f x =
+  let s = Owl_utils.Stack.make () in
+  iteri (fun i y ->
+    let i' = Owl_utils.ind x i in
+    if f i' y = true then
+      Owl_utils.Stack.push s i'
+  ) x;
+  Owl_utils.Stack.to_array s
 
 
 let flip ?(axis=0) x =
@@ -2497,6 +2537,10 @@ let foldi ?axis f a x =
 let fold ?axis f a x = foldi ?axis (fun _ b c ->  f b c) a x
 
 
+let foldi_nd ?axis f a x =
+  foldi ?axis (fun i b c ->  f (Owl_utils.ind x i) b c) a x
+
+
 (* generic scan function *)
 let scani ?axis f x =
   let d = num_dims x in
@@ -2532,7 +2576,11 @@ let scani ?axis f x =
   y
 
 
-let scan ?axis f x = scani (fun _ a b -> f a b) x
+let scan ?axis f x = scani ?axis (fun _ a b -> f a b) x
+
+
+let scani_nd ?axis f x =
+  scani ?axis (fun i a b -> f (Owl_utils.ind x i) a b) x
 
 
 let sum ?axis x =

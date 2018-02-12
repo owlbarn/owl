@@ -177,6 +177,16 @@ val map2i : (int -> elt -> elt -> elt) -> arr -> arr -> arr
 
 val map2 : (elt -> elt -> elt) -> arr -> arr -> arr
 
+val iteri_nd :(int array -> elt -> unit) -> arr -> unit
+
+val mapi_nd : (int array -> elt -> elt) -> arr -> arr
+
+val filteri_nd : (int array -> elt -> bool) -> arr -> int array array
+
+val foldi_nd : ?axis:int -> (int array -> elt -> elt -> elt) -> elt -> arr -> arr
+
+val scani_nd : ?axis:int -> (int array -> elt -> elt -> elt) -> arr -> arr
+
 
 (** {6 Examine array elements or compare two arrays } *)
 
