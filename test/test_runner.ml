@@ -2,6 +2,7 @@
 
 let () =
   Alcotest.run "Owl" [
+    "stats_rvs",            Unit_stats_rvs.test_set;
     "stats",                Unit_stats.test_set;
     "maths",                Unit_maths.test_set;
     "algodiff diff",        Unit_algodiff_diff.test_set;
