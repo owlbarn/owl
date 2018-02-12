@@ -187,10 +187,6 @@ val mapi : (int -> elt -> elt) -> mat -> mat
 
 val map : (elt -> elt) -> mat -> mat
 
-val map2i : (int -> elt -> elt -> elt) -> mat -> mat -> mat
-
-val map2 : (elt -> elt -> elt) -> mat -> mat -> mat
-
 val foldi : ?axis:int -> (int -> elt -> elt -> elt) -> elt -> mat -> mat
 
 val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> mat -> mat
@@ -202,6 +198,24 @@ val scan : ?axis:int -> (elt -> elt -> elt) -> mat -> mat
 val filteri : (int -> elt -> bool) -> mat -> int array
 
 val filter : (elt -> bool) -> mat -> int array
+
+val iteri_2d :(int -> int -> elt -> unit) -> mat -> unit
+
+val mapi_2d : (int -> int -> elt -> elt) -> mat -> mat
+
+val foldi_2d : ?axis:int -> (int -> int -> elt -> elt -> elt) -> elt -> mat -> mat
+
+val scani_2d : ?axis:int -> (int -> int -> elt -> elt -> elt) -> mat -> mat
+
+val filteri_2d : (int -> int -> elt -> bool) -> mat -> (int * int) array
+
+val iter2i : (int -> elt -> elt -> unit) -> mat -> mat -> unit
+
+val iter2 : (elt -> elt -> unit) -> mat -> mat -> unit
+
+val map2i : (int -> elt -> elt -> elt) -> mat -> mat -> mat
+
+val map2 : (elt -> elt -> elt) -> mat -> mat -> mat
 
 val iteri_rows : (int -> mat -> unit) -> mat -> unit
 

@@ -516,19 +516,6 @@ val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 ``map f x`` is similar to ``mapi f x`` except the index is not passed.
  *)
 
-val filteri : (int -> 'a -> bool) -> ('a, 'b) t -> int array
-(**
-``filteri f x`` uses ``f`` to filter out certain elements in ``x``. An element
-will be included if ``f`` returns ``true``. The returned result is an array of
-1-dimensional indices of the selected elements. To obtain the n-dimensional
-indices, you need to convert it manulally with Owl's helper function.
- *)
-
-val filter : ('a -> bool) -> ('a, 'b) t -> int array
-(**
-Similar to ``filteri``, but the indices are not passed to ``f``.
- *)
-
 val foldi : ?axis:int -> (int -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``foldi ~axis f a x`` folds (or reduces) the elements in ``x`` from left along
@@ -554,6 +541,19 @@ is 1d index of ``a`` in ``x``.
 val scan : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (**
 Similar to ``scani``, except that the index of an element is not passed to ``f``.
+ *)
+
+val filteri : (int -> 'a -> bool) -> ('a, 'b) t -> int array
+(**
+``filteri f x`` uses ``f`` to filter out certain elements in ``x``. An element
+will be included if ``f`` returns ``true``. The returned result is an array of
+1-dimensional indices of the selected elements. To obtain the n-dimensional
+indices, you need to convert it manulally with Owl's helper function.
+ *)
+
+val filter : ('a -> bool) -> ('a, 'b) t -> int array
+(**
+Similar to ``filteri``, but the indices are not passed to ``f``.
  *)
 
 val iter2i : (int -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
@@ -584,14 +584,14 @@ val iteri_nd :(int array -> 'a -> unit) -> ('a, 'b) t -> unit
 val mapi_nd : (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** Similar to `mapi` but n-d indices are passed to the user function. *)
 
-val filteri_nd : (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
-(** Similar to `filteri` but n-d indices are passed to the user function. *)
-
 val foldi_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
 (** Similar to `foldi` but n-d indices are passed to the user function. *)
 
 val scani_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 (** Similar to `scani` but n-d indices are passed to the user function. *)
+
+val filteri_nd : (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
+(** Similar to `filteri` but n-d indices are returned. *)
 
 
 (** {6 Examination & Comparison}  *)

@@ -157,10 +157,6 @@ val mapi : (int -> elt -> elt) -> arr -> arr
 
 val map : (elt -> elt) -> arr -> arr
 
-val filteri : (int -> elt -> bool) -> arr -> int array
-
-val filter : (elt -> bool) -> arr -> int array
-
 val foldi : ?axis:int -> (int -> elt -> elt -> elt) -> elt -> arr -> arr
 
 val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> arr -> arr
@@ -168,6 +164,10 @@ val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> arr -> arr
 val scani : ?axis:int -> (int -> elt -> elt -> elt) -> arr -> arr
 
 val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
+
+val filteri : (int -> elt -> bool) -> arr -> int array
+
+val filter : (elt -> bool) -> arr -> int array
 
 val iter2i : (int -> elt -> elt -> unit) -> arr -> arr -> unit
 
@@ -181,11 +181,11 @@ val iteri_nd :(int array -> elt -> unit) -> arr -> unit
 
 val mapi_nd : (int array -> elt -> elt) -> arr -> arr
 
-val filteri_nd : (int array -> elt -> bool) -> arr -> int array array
-
 val foldi_nd : ?axis:int -> (int array -> elt -> elt -> elt) -> elt -> arr -> arr
 
 val scani_nd : ?axis:int -> (int array -> elt -> elt -> elt) -> arr -> arr
+
+val filteri_nd : (int array -> elt -> bool) -> arr -> int array array
 
 
 (** {6 Examine array elements or compare two arrays } *)

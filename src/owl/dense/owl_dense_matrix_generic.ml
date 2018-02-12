@@ -3,6 +3,8 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+open Bigarray
+
 open Owl_dense_common
 
 include Owl_dense_ndarray_generic
@@ -420,10 +422,55 @@ let fold_rows f a x = _fold_basic iter_rows f a x
 let fold_cols f a x = _fold_basic iter_cols f a x
 
 
-let mapi_2d f x =
+let iteri_2d f x =
   let y = array2_of_genarray x in
+  let m, n = shape x in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      f i j (Array2.unsafe_get y i j)
+    done
+  done
+
+
+let mapi_2d f x =
+  let y = copy x in
+  let z = array2_of_genarray y in
   let m, n = shape y in
-  ()
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      let a = Array2.unsafe_get z i j in
+      Array2.unsafe_set z i j (f i j a)
+    done
+  done;
+  y
+
+
+let filteri_2d f x =
+  let s = Owl_utils.Stack.make () in
+  let y = array2_of_genarray x in
+  let m, n = shape x in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      let a = Array2.unsafe_get y i j in
+      if f i j a = true then
+        Owl_utils.Stack.push s (i, j)
+    done
+  done;
+  Owl_utils.Stack.to_array s
+
+
+let foldi_2d ?axis f a x =
+  foldi_nd ?axis (fun k acc b ->
+    let i = k.(0) and j = k.(1) in
+    f i j acc b
+  ) a x
+
+
+let scani_2d ?axis f x =
+  scani_nd ?axis (fun k a b ->
+    let i = k.(0) and j = k.(1) in
+    f i j a b
+  ) x
 
 
 let sum_cols x = sum ~axis:1 x
