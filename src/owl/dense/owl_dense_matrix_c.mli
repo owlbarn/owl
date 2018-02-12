@@ -28,7 +28,7 @@ val empty : int -> int -> mat
 
 val init : int -> int -> (int -> elt) -> mat
 
-val init_nd : int -> int -> (int -> int -> elt) -> mat
+val init_2d : int -> int -> (int -> int -> elt) -> mat
 
 val create : int -> int -> elt -> mat
 

@@ -56,11 +56,11 @@ index of the matrix. You need to explicitly convert it if you need 2D
 index. The function ``Owl_utils.ind`` can help you.
  *)
 
-val init_nd : ('a, 'b) kind -> int -> int -> (int -> int -> 'a) -> ('a, 'b) t
+val init_2d : ('a, 'b) kind -> int -> int -> (int -> int -> 'a) -> ('a, 'b) t
 (**
-``init_nd m n f`` s almost the same as ``init`` but ``f`` receives 2D index
+``init_2d m n f`` s almost the same as ``init`` but ``f`` receives 2D index
 as input. It is more convenient since you don't have to convert the index by
-yourself, but this also means ``init_nd`` is slower than ``init``.
+yourself, but this also means ``init_2d`` is slower than ``init``.
  *)
 
 val zeros : ('a, 'b) kind -> int -> int -> ('a, 'b) t

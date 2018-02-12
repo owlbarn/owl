@@ -35,7 +35,7 @@ let ones k m n = Owl_dense_ndarray_generic.ones k [|m;n|]
 let init k m n f = Owl_dense_ndarray_generic.init k [|m;n|] f
 
 
-let init_nd k m n f =
+let init_2d k m n f =
   let x = empty k m n in
   let y = Bigarray.array2_of_genarray x in
   for i = 0 to m - 1 do
