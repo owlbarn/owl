@@ -195,7 +195,7 @@ val top : mat -> int -> int array array
 
 val bottom : mat -> int -> int array array
 
-val sort : mat -> unit
+val sort : mat -> mat
 
 
 (** {6 Iterate elements, columns, and rows.} *)
@@ -622,3 +622,170 @@ val cov : ?b:mat -> a:mat -> mat
 val kron : mat -> mat -> mat
 
 val clip_by_value : ?amin:elt -> ?amax:elt -> mat -> mat
+
+
+(** {6 Fucntions of in-place modification } *)
+
+val sort_ : mat -> unit
+
+val add_ : mat -> mat -> unit
+
+val sub_ : mat -> mat -> unit
+
+val mul_ : mat -> mat -> unit
+
+val div_ : mat -> mat -> unit
+
+val pow_ : mat -> mat -> unit
+
+val atan2_ : mat -> mat -> unit
+
+val hypot_ : mat -> mat -> unit
+
+val fmod_ : mat -> mat -> unit
+
+val min2_ : mat -> mat -> unit
+
+val max2_ : mat -> mat -> unit
+
+val add_scalar_ : mat -> elt -> unit
+
+val sub_scalar_ : mat -> elt -> unit
+
+val mul_scalar_ : mat -> elt -> unit
+
+val div_scalar_ : mat -> elt -> unit
+
+val pow_scalar_ : mat -> elt -> unit
+
+val atan2_scalar_ : mat -> elt -> unit
+
+val fmod_scalar_ : mat -> elt -> unit
+
+val scalar_add_ : elt -> mat -> unit
+
+val scalar_sub_ : elt -> mat -> unit
+
+val scalar_mul_ : elt -> mat -> unit
+
+val scalar_div_ : elt -> mat -> unit
+
+val scalar_pow_ : elt -> mat -> unit
+
+val scalar_atan2_ : elt -> mat -> unit
+
+val scalar_fmod_ : elt -> mat -> unit
+
+val conj_ : mat -> unit
+
+val abs_ : mat -> unit
+
+val neg_ : mat -> unit
+
+val reci_ : mat -> unit
+
+val signum_ : mat -> unit
+
+val sqr_ : mat -> unit
+
+val sqrt_ : mat -> unit
+
+val cbrt_ : mat -> unit
+
+val exp_ : mat -> unit
+
+val exp2_ : mat -> unit
+
+val exp10_ : mat -> unit
+
+val expm1_ : mat -> unit
+
+val log_ : mat -> unit
+
+val log2_ : mat -> unit
+
+val log10_ : mat -> unit
+
+val log1p_ : mat -> unit
+
+val sin_ : mat -> unit
+
+val cos_ : mat -> unit
+
+val tan_ : mat -> unit
+
+val asin_ : mat -> unit
+
+val acos_ : mat -> unit
+
+val atan_ : mat -> unit
+
+val sinh_ : mat -> unit
+
+val cosh_ : mat -> unit
+
+val tanh_ : mat -> unit
+
+val asinh_ : mat -> unit
+
+val acosh_ : mat -> unit
+
+val atanh_ : mat -> unit
+
+val floor_ : mat -> unit
+
+val ceil_ : mat -> unit
+
+val round_ : mat -> unit
+
+val trunc_ : mat -> unit
+
+val fix_ : mat -> unit
+
+val erf_ : mat -> unit
+
+val erfc_ : mat -> unit
+
+val relu_ : mat -> unit
+
+val softplus_ : mat -> unit
+
+val softsign_ : mat -> unit
+
+val sigmoid_ : mat -> unit
+
+val softmax_ : mat -> unit
+
+val cumsum_ : ?axis:int -> mat -> unit
+
+val cumprod_ : ?axis:int -> mat -> unit
+
+val cummin_ : ?axis:int -> mat -> unit
+
+val cummax_ : ?axis:int -> mat -> unit
+
+val dropout_ : ?rate:float -> mat -> unit
+
+val elt_equal_ : mat -> mat -> unit
+
+val elt_not_equal_ : mat -> mat -> unit
+
+val elt_less_ : mat -> mat -> unit
+
+val elt_greater_ : mat -> mat -> unit
+
+val elt_less_equal_ : mat -> mat -> unit
+
+val elt_greater_equal_ : mat -> mat -> unit
+
+val elt_equal_scalar_ : mat -> elt -> unit
+
+val elt_not_equal_scalar_ : mat -> elt -> unit
+
+val elt_less_scalar_ : mat -> elt -> unit
+
+val elt_greater_scalar_ : mat -> elt -> unit
+
+val elt_less_equal_scalar_ : mat -> elt -> unit
+
+val elt_greater_equal_scalar_ : mat -> elt -> unit

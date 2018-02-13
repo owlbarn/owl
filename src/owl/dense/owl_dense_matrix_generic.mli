@@ -546,9 +546,11 @@ are arranged according to the corresponding elelment values, from the smallest
 one to the greatest one.
  *)
 
-val sort : ('a, 'b) t -> unit
+val sort : ('a, 'b) t -> ('a, 'b) t
 (**
-``sort x`` performs in-place quicksort of the elelments in ``x``.
+``sort x`` performs quicksort of the elelments in ``x``. A new copy is returned
+as result, the original ``x`` remains intact. If you want to perform in-place
+sorting, please use `sort_` instead.
  *)
 
 
@@ -1996,6 +1998,11 @@ val cast_d2c : (float, float64_elt) t -> (Complex.t, complex32_elt) t
 
 (** {6 In-place modification}  *)
 
+val sort_ : ('a, 'b) t -> unit
+(**
+``sort_ x`` performs in-place quicksort of the elelments in ``x``.
+ *)
+
 val add_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``add_ x y`` is simiar to ``add`` function but the output is written to ``x``.
@@ -2102,6 +2109,12 @@ val atan2_scalar_ : ('a, 'b) t -> 'a -> unit
 written to ``x``.
  *)
 
+val fmod_scalar_ : ('a, 'b) t -> 'a -> unit
+(**
+``fmod_scalar_ x y`` is simiar to ``fmod_scalar`` function but the output is
+written to ``x``.
+ *)
+
 val scalar_add_ : 'a -> ('a, 'b) t -> unit
 (**
 ``scalar_add_ a x`` is simiar to ``scalar_add`` function but the output is
@@ -2138,9 +2151,20 @@ val scalar_atan2_ : 'a -> ('a, 'b) t -> unit
 written to ``x``.
  *)
 
+val scalar_fmod_ : 'a -> ('a, 'b) t -> unit
+(**
+``scalar_fmod_ a x`` is simiar to ``scalar_fmod`` function but the output is
+written to ``x``.
+ *)
+
 val conj_ : ('a, 'b) t -> unit
 (**
 ``conj_ x`` is similar to ``conj`` but output is written to ``x``
+ *)
+
+val abs_ : ('a, 'b) t -> unit
+(**
+``abs_ x`` is similar to ``abs`` but output is written to ``x``
  *)
 
 val neg_ : ('a, 'b) t -> unit
@@ -2348,9 +2372,14 @@ val cummin_ : ?axis:int -> ('a, 'b) t -> unit
 ``cummin_ x`` is similar to ``cummin`` but output is written to ``x``
  *)
 
-val cumprod_ : ?axis:int -> ('a, 'b) t -> unit
+val cummax_ : ?axis:int -> ('a, 'b) t -> unit
 (**
-``cumprod_ x`` is similar to ``cumprod`` but output is written to ``x``
+``cummax_ x`` is similar to ``cummax`` but output is written to ``x``
+ *)
+
+val dropout_ : ?rate:float -> ('a, 'b) t -> unit
+(**
+``dropout_ x`` is similar to ``dropout`` but output is written to ``x``
  *)
 
 val elt_equal_ : ('a, 'b) t -> ('a, 'b) t -> unit

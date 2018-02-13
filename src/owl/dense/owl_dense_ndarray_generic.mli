@@ -463,21 +463,23 @@ by setting their values to zeros.
 
 val top : ('a, 'b) t -> int -> int array array
 (**
-``top x n`` returns the indices of ``n`` greatest values of ``x``. The indices are
-arranged according to the corresponding elelment values, from the greatest one
-to the smallest one.
+``top x n`` returns the indices of ``n`` greatest values of ``x``. The indices
+are arranged according to the corresponding elelment values, from the greatest
+one to the smallest one.
  *)
 
 val bottom : ('a, 'b) t -> int -> int array array
 (**
-``bottom x n`` returns the indices of ``n`` smallest values of ``x``. The indices
-are arranged according to the corresponding elelment values, from the smallest
-one to the greatest one.
+``bottom x n`` returns the indices of ``n`` smallest values of ``x``. The
+indices are arranged according to the corresponding elelment values, from the
+smallest one to the greatest one.
  *)
 
-val sort : ('a, 'b) t -> unit
+val sort : ('a, 'b) t -> ('a, 'b) t
 (**
-``sort x`` performs in-place quicksort of the elelments in ``x``.
+``sort x`` performs quicksort of the elelments in ``x``. A new copy is returned
+as result, the original ``x`` remains intact. If you want to perform in-place
+sorting, please use `sort_` instead.
  *)
 
 val draw : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array
@@ -1817,6 +1819,11 @@ more memory.
 
 
 (** {6 In-place modification}  *)
+
+val sort_ : ('a, 'b) t -> unit
+(**
+``sort_ x`` performs in-place quicksort of the elelments in ``x``.
+ *)
 
 val add_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (**

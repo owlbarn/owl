@@ -303,6 +303,14 @@ let resize ?(head=true) x d =
     )
 
 
+let sort x =
+  let y = copy x in
+  _owl_sort (kind y) (numel y) y;
+  y
+
+let sort_ x = _owl_sort (kind x) (numel x) x
+
+
 let strides x = x |> shape |> Owl_utils.calc_stride
 
 
@@ -1234,8 +1242,6 @@ let set_index x axis a =
 
 
 (* some comparison functions *)
-
-let sort x = _owl_sort (kind x) (numel x) x
 
 let is_zero x = _owl_is_zero (kind x) (numel x) x = 1
 

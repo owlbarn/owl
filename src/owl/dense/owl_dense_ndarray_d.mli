@@ -135,7 +135,7 @@ val top : arr -> int -> int array array
 
 val bottom : arr -> int -> int array array
 
-val sort : arr -> unit
+val sort : arr -> arr
 
 val draw : ?axis:int -> arr -> int -> arr * int array
 
@@ -550,6 +550,8 @@ val sum_slices : ?axis:int -> arr -> arr
 
 
 (** {6 Fucntions of in-place modification } *)
+
+val sort_ : arr -> unit
 
 val add_ : arr -> arr -> unit
 
