@@ -1,8 +1,8 @@
 (jbuild_version 1)
 
 (executables (
-  (names        (test))
-  (public_names (native_test))
+  (names        (test map_100 map_10000 map_1000000))
+  (public_names (native_test native_map_100 native_map_10000 native_map_1000000))
   (package     owl_benchmarks)
   (libraries  (
     owl

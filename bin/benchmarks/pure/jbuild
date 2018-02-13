@@ -1,8 +1,8 @@
 (jbuild_version 1)
 
 (executables (
-  (names        (test))
-  (public_names (pure_test))
+  (names        (test map_100 map_10000 map_1000000))
+  (public_names (pure_test pure_map_100 pure_map_10000 pure_map_1000000))
   (package     owl_benchmarks)
   (libraries  (
     benchmarks_common
@@ -14,4 +14,4 @@
 
 (alias
   ((name install)
-  (deps (test.bc.js))))
+  (deps (test.bc.js map_100.bc.js map_10000.bc.js map_1000000.bc.js))))
