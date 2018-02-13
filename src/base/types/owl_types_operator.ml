@@ -152,6 +152,8 @@ module type MatrixSig = sig
 
   val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
+  val mpow : ('a, 'b) t -> float -> ('a, 'b) t
+
 end
 
 
