@@ -74,7 +74,11 @@ module Make
       | Decay (a, k)     -> fun i _ _ -> Maths.(F a / (F 1. + F k * (F (float_of_int i))))
       | Exp_decay (a, k) -> fun i _ _ -> Maths.(F a * exp (neg (F k) * (F (float_of_int i))))
       | RMSprop (a, _)   -> fun _ _ c -> Maths.(F a / sqrt (c.(0) + F 1e-32))
-      | Adam (a, b1, b2) -> fun i g c -> Maths.(F a * (sqrt (F 1. - F b2 ** F (float_of_int i))) / (F 1. - F b1 ** F (float_of_int i)) * c.(0) / (sqrt c.(1) + F 1e-8) / (g + F 1e-32))
+      | Adam (a, b1, b2) -> fun i g c -> Maths.(F a *
+          (sqrt (F 1. - F b2 ** F (float_of_int i))) /
+          (F 1. - F b1 ** F (float_of_int i)) *
+          c.(0) / (sqrt c.(1) + F 1e-8) /
+          (g + F 1e-32))
       | Schedule a       -> fun i _ _ -> F a.(i mod (Array.length a))
 
     let default = function
@@ -320,16 +324,16 @@ module Make
   module Checkpoint = struct
 
     type state = {
-      mutable current_batch     : int;           (* current iteration progress in batch *)
-      mutable batches_per_epoch : int;           (* number of batches in each epoch *)
-      mutable epochs            : float;         (* total number of epochs to run *)
-      mutable batches           : int;           (* total batches = batches_per_epoch * epochs *)
-      mutable loss              : t array;       (* history of loss value in each iteration *)
-      mutable start_at          : float;         (* time when the optimisation starts *)
-      mutable stop              : bool;          (* optimisation stops if true, otherwise false *)
-      mutable gs                : t array array; (* gradient of the the previous iteration *)
-      mutable ps                : t array array; (* direction of the the prevoius iteration *)
-      mutable us                : t array array; (* direction update of the previous iteration *)
+      mutable current_batch     : int;                 (* current iteration progress in batch *)
+      mutable batches_per_epoch : int;                 (* number of batches in each epoch *)
+      mutable epochs            : float;               (* total number of epochs to run *)
+      mutable batches           : int;                 (* total batches = batches_per_epoch * epochs *)
+      mutable loss              : t array;             (* history of loss value in each iteration *)
+      mutable start_at          : float;               (* time when the optimisation starts *)
+      mutable stop              : bool;                (* optimisation stops if true, otherwise false *)
+      mutable gs                : t array array;       (* gradient of the the previous iteration *)
+      mutable ps                : t array array;       (* direction of the the prevoius iteration *)
+      mutable us                : t array array;       (* direction update of the previous iteration *)
       mutable ch                : t array array array; (* gcache of the prevoius iteration *)
     }
 

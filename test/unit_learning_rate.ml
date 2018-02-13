@@ -29,6 +29,7 @@ let test_optimiser rate_fun c g x =
   done;
   !x
 
+
 (* Test adagrad optimiser *)
 module To_test_adagrad = struct
 
