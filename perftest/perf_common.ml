@@ -35,17 +35,17 @@ let test_op_each c op =
 
 (* more advanced test function *)
 let test_advance_op ?(s="test") ?(c=10) ?(burn=0) ?(ts=`MS) op =
-  let times = Utils.Stack.make () in
+  let times = Owl.Utils.Stack.make () in
 
   for i = 1 to c do
     Gc.compact ();
     let t0 = Unix.gettimeofday () in
     let _ = op () in
     let t1 = Unix.gettimeofday () in
-    if i > burn then Utils.Stack.push times (t1 -. t0)
+    if i > burn then Owl.Utils.Stack.push times (t1 -. t0)
   done;
 
-  let times = Utils.Stack.to_array times |> Array.map (
+  let times = Owl.Utils.Stack.to_array times |> Array.map (
     fun t -> match ts with
       | `S  -> t
       | `MS -> 1000. *. t
