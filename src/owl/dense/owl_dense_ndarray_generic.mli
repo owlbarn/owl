@@ -495,7 +495,7 @@ val mmap : Unix.file_descr -> ?pos:int64 -> ('a, 'b) kind -> bool -> int array -
  *)
 
 
-(** {6 Iterate array elements}  *)
+(** {6 Iteration functions}  *)
 
 val iteri :(int -> 'a -> unit) -> ('a, 'b) t -> unit
 (**
