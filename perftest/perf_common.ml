@@ -51,7 +51,7 @@ let test_advance_op ?(s="test") ?(c=10) ?(burn=0) ?(ts=`MS) op =
       | `MS -> 1000. *. t
   )
   in
-  let m_time = Stats.mean times in
-  let s_time = Stats.std times in
+  let m_time = Owl.Stats.mean times in
+  let s_time = Owl.Stats.std times in
   Printf.printf "| %s :\t mean = %.4f \t std = %.4f \n" s m_time s_time;
   flush stdout
