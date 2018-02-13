@@ -34,7 +34,7 @@ along axis 0.
   end
 
 
-  (** {6 Learning_Rate module} *)
+  (** {7 Learning_Rate module} *)
 
   module Learning_Rate : sig
 
