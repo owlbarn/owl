@@ -1,0 +1,12 @@
+(jbuild_version 1)
+
+(library (
+  (name benchmarks_common)
+  (public_name owl_benchmarks)
+  (wrapped false)
+  (flags (:standard -safe-string))
+  (libraries (
+    bigarray
+    owl_base
+  ))
+))

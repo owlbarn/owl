@@ -6,6 +6,7 @@
   (package     owl_benchmarks)
   (libraries  (
     owl
+    benchmarks_common
   ))
   (flags (:standard -safe-string))
   (modes      (native))

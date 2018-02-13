@@ -5,18 +5,13 @@
   (public_names (pure_test))
   (package     owl_benchmarks)
   (libraries  (
-    owl_base
-    bigarray
+    benchmarks_common
   ))
   (flags (:standard -safe-string))
   (modes      (byte))
+  (js_of_ocaml ((flags --pretty)))
 ))
-
-(rule
- ((targets (test.js))
-  (action
-    (run ${bin:js_of_ocaml} ${path:test.bc} -o ${@} --pretty))))
 
 (alias
   ((name install)
-  (deps (test.js))))
+  (deps (test.bc.js))))
