@@ -1,8 +1,20 @@
 (jbuild_version 1)
 
 (executables (
-  (names        (test map_eval scan_eval fold_eval))
-  (public_names (native_test native_map_eval native_scan_eval native_fold_eval))
+  (names (
+    test
+    map_eval
+    scan_eval
+    fold_eval
+    slicing_eval
+  ))
+  (public_names (
+    native_test
+    native_map_eval
+    native_scan_eval
+    native_fold_eval
+    native_slicing_eval
+  ))
   (package     owl_benchmarks)
   (libraries  (
     owl

@@ -1,8 +1,20 @@
 (jbuild_version 1)
 
 (executables (
-  (names        (test map_eval scan_eval fold_eval))
-  (public_names (pure_test pure_map_eval pure_scan_eval pure_fold_eval))
+  (names (
+    test
+    map_eval
+    scan_eval
+    fold_eval
+    slicing_eval
+  ))
+  (public_names (
+    pure_test
+    pure_map_eval
+    pure_scan_eval
+    pure_fold_eval
+    pure_slicing_eval
+  ))
   (package     owl_benchmarks)
   (libraries  (
     benchmarks_common
@@ -19,5 +31,6 @@
   map_eval.bc.js
   scan_eval.bc.js
   fold_eval.bc.js
+  slicing_eval.bc.js
   )
 )))
