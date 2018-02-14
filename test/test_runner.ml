@@ -10,6 +10,7 @@ let () =
     "dense ndarray",        Unit_dense_ndarray.test_set;
     "sparse matrix",        Unit_sparse_matrix.test_set;
     "sparse ndarray",       Unit_sparse_ndarray.test_set;
+    "learning rate",        Unit_optimise_learning_rate.test_set;
     "ndarray primitive",    Unit_ndarray_primitive.test_set;
     "lazy evaluation",      Unit_lazy.test_set;
     "linear algebra",       Unit_linalg.test_set;

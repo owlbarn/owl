@@ -34,11 +34,12 @@ along axis 0.
   end
 
 
-  (** {6 Learning_Rate module} *)
+  (** {7 Learning_Rate module} *)
 
   module Learning_Rate : sig
 
     type typ =
+      | Adam      of float * float * float
       | Adagrad of float
       | Const of float
       | Decay of float * float
@@ -47,7 +48,7 @@ along axis 0.
       | Schedule of float array
     (** types of learning rate *)
 
-    val run : typ -> int -> 'a -> t -> t
+    val run : typ -> int -> t -> t -> t -> t
     (** Execute the computations defined in module ``typ``. *)
 
     val default : typ -> typ
@@ -55,6 +56,9 @@ along axis 0.
 
     val update_ch : typ -> t -> t -> t
     (** Update the cache of gradients. *)
+
+    val update_ch2 : typ -> t -> t -> t
+    (** Update the second cache of gradients. *)
 
     val to_string : typ -> string
     (** Convert the module ``typ`` to its string representation. *)
@@ -212,6 +216,7 @@ along axis 0.
       mutable ps : t array array;
       mutable us : t array array;
       mutable ch : t array array;
+      mutable ch2 : t array array;
     }
     (** Type definition of checkpoint *)
 
