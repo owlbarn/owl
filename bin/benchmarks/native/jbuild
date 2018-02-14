@@ -7,6 +7,7 @@
     scan_eval
     fold_eval
     slicing_eval
+    indexing_eval
   ))
   (public_names (
     native_test
@@ -14,6 +15,7 @@
     native_scan_eval
     native_fold_eval
     native_slicing_eval
+    native_indexing_eval
   ))
   (package     owl_benchmarks)
   (libraries  (

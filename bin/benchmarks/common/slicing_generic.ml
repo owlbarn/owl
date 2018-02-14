@@ -1,4 +1,5 @@
 module Make(M : Owl_types.Ndarray_Basic) = struct
+  let _ = Printf.printf "Evaluating slicing operations\n"
 
   let rank = (Array.length Sys.argv) - 1
 

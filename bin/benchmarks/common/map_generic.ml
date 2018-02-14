@@ -1,4 +1,5 @@
 module Make(M : Owl_types.Ndarray_Basic) = struct
+  let _ = Printf.printf "Evaluating map operation\n"
 
   let _ =
     if ((Array.length Sys.argv) <= 1)
