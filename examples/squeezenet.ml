@@ -12,13 +12,13 @@ open Neural.S
 open Neural.S.Graph
 
 let fire_module in_shape squeeze expand nn =
-  let root = conv2d ~padding:VALID [|1;1; in_shape; squeeze|] [|1;1|] nn
+  let root = conv2d ~padding:VALID [|1;1;in_shape;squeeze|] [|1;1|] nn
     |> activation Activation.Relu in
-  let left = conv2d ~padding:VALID [|1;1; squeeze; expand  |] [|1;1|] root
+  let left = conv2d ~padding:VALID [|1;1;squeeze;expand|] [|1;1|] root
     |> activation Activation.Relu in
-  let right = conv2d ~padding:SAME [|3;3; squeeze; expand  |] [|1;1|] root
+  let right = conv2d ~padding:SAME [|3;3;squeeze;expand|] [|1;1|] root
     |> activation Activation.Relu in
-  concatenate 3 [|left; right|]
+  concatenate 3 [|left;right|]
 
 let make_network img_size =
   input [|img_size;img_size;3|]
