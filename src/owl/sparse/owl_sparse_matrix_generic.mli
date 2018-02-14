@@ -324,6 +324,7 @@ Similar to ``mapi_nz`` except the coordinates of elements are not passed to ``f`
  *)
 
 val foldi_nz : (int -> int -> 'c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
+(** TODO *)
 
 val fold_nz : ('c -> 'a -> 'c) -> 'c -> ('a, 'b) t -> 'c
 (**
@@ -710,3 +711,9 @@ val power_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (**
 ``power x a`` calculates the power of ``a`` of each element in ``x``.
  *)
+
+val mpow : ('a, 'b) t -> float -> ('a, 'b) t
+(** TODO: not implemented, just a place holder. *)
+
+
+(** ends here *)

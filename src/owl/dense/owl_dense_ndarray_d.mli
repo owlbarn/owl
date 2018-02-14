@@ -115,13 +115,17 @@ val tile : arr -> int array -> arr
 
 val repeat : ?axis:int -> arr -> int -> arr
 
+val concat_vertical : arr -> arr -> arr
+
+val concat_horizontal : arr -> arr -> arr
+
 val concatenate : ?axis:int -> arr array -> arr
 
 val split : ?axis:int -> int array -> arr -> arr array
 
 val squeeze : ?axis:int array -> arr -> arr
 
-val expand : arr -> int -> arr
+val expand : ?hi:bool -> arr -> int -> arr
 
 val pad : ?v:elt -> int list list -> arr -> arr
 
@@ -131,7 +135,7 @@ val top : arr -> int -> int array array
 
 val bottom : arr -> int -> int array array
 
-val sort : arr -> unit
+val sort : arr -> arr
 
 val draw : ?axis:int -> arr -> int -> arr * int array
 
@@ -148,10 +152,6 @@ val mapi : (int -> elt -> elt) -> arr -> arr
 
 val map : (elt -> elt) -> arr -> arr
 
-val filteri : (int -> elt -> bool) -> arr -> int array
-
-val filter : (elt -> bool) -> arr -> int array
-
 val foldi : ?axis:int -> (int -> elt -> elt -> elt) -> elt -> arr -> arr
 
 val fold : ?axis:int -> (elt -> elt -> elt) -> elt -> arr -> arr
@@ -160,6 +160,10 @@ val scani : ?axis:int -> (int -> elt -> elt -> elt) -> arr -> arr
 
 val scan : ?axis:int -> (elt -> elt -> elt) -> arr -> arr
 
+val filteri : (int -> elt -> bool) -> arr -> int array
+
+val filter : (elt -> bool) -> arr -> int array
+
 val iter2i : (int -> elt -> elt -> unit) -> arr -> arr -> unit
 
 val iter2 : (elt -> elt -> unit) -> arr -> arr -> unit
@@ -167,6 +171,16 @@ val iter2 : (elt -> elt -> unit) -> arr -> arr -> unit
 val map2i : (int -> elt -> elt -> elt) -> arr -> arr -> arr
 
 val map2 : (elt -> elt -> elt) -> arr -> arr -> arr
+
+val iteri_nd :(int array -> elt -> unit) -> arr -> unit
+
+val mapi_nd : (int array -> elt -> elt) -> arr -> arr
+
+val foldi_nd : ?axis:int -> (int array -> elt -> elt -> elt) -> elt -> arr -> arr
+
+val scani_nd : ?axis:int -> (int array -> elt -> elt -> elt) -> arr -> arr
+
+val filteri_nd : (int array -> elt -> bool) -> arr -> int array array
 
 
 (** {6 Examine array elements or compare two arrays } *)
@@ -536,6 +550,8 @@ val sum_slices : ?axis:int -> arr -> arr
 
 
 (** {6 Fucntions of in-place modification } *)
+
+val sort_ : arr -> unit
 
 val add_ : arr -> arr -> unit
 

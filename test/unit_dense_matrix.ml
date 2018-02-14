@@ -181,6 +181,18 @@ module To_test = struct
     let y = M.load Float64 "ds_mat.tmp" in
     M.equal x2 y
 
+  let transpose () =
+    let x = M.of_array Float64 [|1.;2.;3.;4.|] 2 2 in
+    let y = M.of_array Float64 [|1.;3.;2.;4.|] 2 2 in
+    let z = M.transpose x in
+    M.equal y z
+
+  let ctranspose () =
+    let x = M.of_array Complex64 Complex.([|one;{re=1.;im=2.};{re=3.;im=4.};zero|]) 2 2 in
+    let y = M.of_array Complex64 Complex.([|one;{re=3.;im=(-4.)};{re=1.;im=(-2.)};zero|]) 2 2 in
+    let z = M.ctranspose x in
+    M.equal y z
+
 end
 
 (* the tests *)
@@ -323,6 +335,12 @@ let mpow () =
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
+let transpose () =
+  Alcotest.(check bool) "transpose" true (To_test.transpose ())
+
+let ctranspose () =
+  Alcotest.(check bool) "ctranspose" true (To_test.ctranspose ())
+
 let test_set = [
   "sequential", `Slow, sequential;
   "row_num", `Slow, row_num;
@@ -370,4 +388,6 @@ let test_set = [
   "sum_cols", `Slow, sum_cols;
   "mpow", `Slow, mpow;
   "save_load", `Slow, save_load;
+  "transpose", `Slow, transpose;
+  "ctranspose", `Slow, ctranspose;
 ]

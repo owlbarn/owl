@@ -602,3 +602,5 @@ let concat_vertical x y =
 
 let concat_horizontal x y =
   failwith "owl_sparse_matrix_generic:concat_horizontal:not implemented"
+
+let mpow x a = failwith "owl_sparse_matrix_generic:mpow:not implemented"

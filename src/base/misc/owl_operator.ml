@@ -135,6 +135,10 @@ module Make_Extend (M : ExtendSig) = struct
 
   let ( /$= ) = M.div_scalar_
 
+  let ( @= ) = M.concat_vertical
+
+  let ( @|| ) = M.concat_horizontal
+
   let ( .!{ } ) x s = M.get_fancy s x
 
   let ( .!{ }<- ) x s = M.set_fancy s x
@@ -150,15 +154,13 @@ module Make_Matrix (M : MatrixSig) = struct
 
   type ('a, 'b) op_t2 = ('a, 'b) M.t
 
-  let ( *@ ) = M.dot
-
-  let ( @= ) = M.concat_vertical
-
-  let ( @|| ) = M.concat_horizontal
-
   let ( .%{ } ) x i = M.get x i.(0) i.(1)
 
   let ( .%{ }<- ) x i = M.set x i.(0) i.(1)
+
+  let ( *@ ) a b = M.dot a b
+
+  let ( **@ ) x a = M.mpow x a
 
 end
 
@@ -172,6 +174,16 @@ module Make_Ndarray (M : NdarraySig) = struct
   let ( .%{ }<- ) x i = M.set x i
 
 end
+
+
+module Make_Linalg (M : LinalgSig) = struct
+
+  type ('a, 'b) op_t4 = ('a, 'b) M.t
+
+  let ( /@ ) a b = M.linsolve a b
+
+end
+
 
 
 (* ends here *)

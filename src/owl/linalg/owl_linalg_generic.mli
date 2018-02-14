@@ -1,6 +1,6 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.caMD.ac.uk>
+ * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 (** Linear algebra module including high-level functions to solve linear
@@ -22,14 +22,13 @@ open Bigarray
 
 (** {6 Type definition} *)
 
-type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
+type ('a, 'b) t = ('a, 'b) Owl_dense_matrix_generic.t
 (**
 Matrix type, a special case of N-dimensional array.
  *)
 
 
 (** {6 Basic functions} *)
-
 
 val inv : ('a, 'b) t -> ('a, 'b) t
 (**
@@ -64,11 +63,11 @@ where ``eps = 1e-10``.
 
 val norm : ?p:float -> ('a, 'b) t -> float
 (**
-``norm ~p x`` computes the p-norm of the passed in matrix ``x``.
+``norm ~p x`` computes the matrix p-norm of the passed in matrix ``x``.
 
 Parameters:
-  * ``p`` is order of norm
-  * ``x`` is the input matrix
+  * ``p`` is the order of norm, the default value is 2.
+  * ``x`` is the input matrix.
 
 Returns:
   * If ``p = 1``, then returns the maximum absolute column sum of the matrix.
@@ -90,8 +89,8 @@ assumes the input is either 1d vector or 2d matrix.
   ||v||_p = \Big[ \sum_{k=0}^{N-1} |v_k|^p \Big]^{1/p}
 
 Parameters:
-  * ``p`` is order of norm
-  * ``x`` is the input vector
+  * ``p`` is the order of norm, the default value is 2.
+  * ``x`` is the input vector or matrix.
 
 Returns:
   * If ``p = infinity``, then returns :math:`||v||_{\infty} = \max_i(|v(i)|)`.
@@ -119,6 +118,12 @@ val rcond : ('a, 'b) t -> float
 If ``x`` is well conditioned, the returned result is near ``1.0``. If ``x`` is badly
 conditioned, the result is near ``0.``
  *)
+
+
+(** {6 Check matrix types} *)
+
+val is_square : ('a, 'b) t -> bool
+(** ``is_square x`` returns ``true`` if ``x`` is a square matrix otherwise ``false``. *)
 
 val is_triu : ('a, 'b) t -> bool
 (** ``is_triu x`` returns ``true`` if ``x`` is upper triangular otherwise ``false``. *)
@@ -278,7 +283,7 @@ negligible elements, ``M.col_num x`` is the nullity of ``a``, and
 
 val linsolve : ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
-``linsolve a b -> x`` solves a linear system of equations ``A * x = b``. The
+``linsolve a b -> x`` solves a linear system of equations ``a * x = b``. The
 function uses LU factorisation with partial pivoting when ``a`` is square and
 QR factorisation with column pivoting otherwise. The number of rows of ``a``
 must equal the number of rows of ``b``.
@@ -286,6 +291,9 @@ must equal the number of rows of ``b``.
 By default, ``trans = false`` indicates no transpose. If ``trans = true``, then
 function will solve ``A^T * x = b`` for real matrices; ``A^H * x = b`` for
 complex matrices.
+
+The associated operator is ``/@``, so you can simply use ``a /@ b`` to solve
+the linear equation system to get ``x``. Please refer to :doc:`owl_operator`.
  *)
 
 val linreg : ('a, 'b) t -> ('a, 'b) t -> 'a * 'a
@@ -325,6 +333,66 @@ is stored: ``x = u*d*u'`` else ``x = l*d*l'``.
 For ``ipiv``, it indicates the details of the interchanges and the block
 structure of ``d``. Please refer to the function ``sytrf``, ``hetrf`` in MKL
 documentation for more details.
+ *)
+
+
+(** {6 Matrix functions} *)
+
+val expm : ('a, 'b) t -> ('a, 'b) t
+(**
+``expm x`` computes the matrix exponential of ``x`` defined by
+
+.. math::
+  e^x = \sum_{k=0}^{\infty} \frac{1}{k!} x^k
+
+The function implements the scaling and squaring algorithm which uses Padé
+approximation to compute the matrix exponential :cite:`al2009new`.
+ *)
+
+val sinm : ('a, 'b) t -> ('a, 'b) t
+(**
+``sinm x`` computes the matrix sine of input ``x``. The function uses ``expm``
+to compute the matrix exponentials.
+ *)
+
+val cosm : ('a, 'b) t -> ('a, 'b) t
+(**
+``cosm x`` computes the matrix cosine of input ``x``. The function uses ``expm``
+to compute the matrix exponentials.
+ *)
+
+val tanm : ('a, 'b) t -> ('a, 'b) t
+(**
+``tanm x`` computes the matrix tangent of input ``x``. The function uses
+``expm`` to compute the matrix exponentials.
+ *)
+
+val sincosm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(**
+``sincosm x`` returns both matrix sine and cosine of ``x``.
+ *)
+
+val sinhm : ('a, 'b) t -> ('a, 'b) t
+(**
+``sinhm x`` computes the hyperbolic matrix sine of input ``x``. The function
+uses ``expm`` to compute the matrix exponentials.
+ *)
+
+val coshm : ('a, 'b) t -> ('a, 'b) t
+(**
+``coshm x`` computes the hyperbolic matrix cosine of input ``x``. The function
+uses ``expm`` to compute the matrix exponentials.
+ *)
+
+val tanhm : ('a, 'b) t -> ('a, 'b) t
+(**
+``tanhm x`` computes the hyperbolic matrix tangent of input ``x``. The function
+uses ``expm`` to compute the matrix exponentials.
+ *)
+
+val sinhcoshm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(**
+``sinhcoshm x`` returns both hyperbolic matrix sine and cosine of ``x``.
  *)
 
 

@@ -1,19 +1,31 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.caMD.ac.uk>
+ * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 open Bigarray
 
 open Owl_types
 
-type ('a, 'b) t = ('a, 'b) Owl_dense.Matrix.Generic.t
+type ('a, 'b) t = ('a, 'b) Owl_dense_matrix_generic.t
 
-module M = Owl_dense.Matrix.Generic
+
+(*
+We create a local generic matrix module with basic operators. This is only
+way to let us use operators to write concise math but avoid circular dependency
+at the same time.
+*)
+module M = struct
+
+  include Owl_dense_matrix_generic
+  include Owl_operator.Make_Basic (Owl_dense_matrix_generic)
+  include Owl_operator.Make_Extend (Owl_dense_matrix_generic)
+  include Owl_operator.Make_Matrix (Owl_dense_matrix_generic)
+
+end
 
 
 (* LU decomposition *)
-
 
 let lu x =
   let x = M.copy x in
@@ -36,6 +48,8 @@ let lufact x =
   let a, ipiv = Owl_lapacke.getrf x in
   a, ipiv
 
+
+(* basic functions *)
 
 let inv x =
   let x = M.copy x in
@@ -279,6 +293,12 @@ let schur
   t, z, w
 
 
+let schur_tz x =
+  let x = M.copy x in
+  let t, z, _, _ = Owl_lapacke.gees ~jobvs:'V' ~a:x in
+  t, z
+
+
 (* Eigenvalue problem *)
 
 
@@ -422,75 +442,26 @@ let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
   a, ipiv
 
 
-(* helper functions *)
-
-
 (* Check matrix properties *)
-(* TODO: need to implement in C for better performance *)
 
-let is_triu x =
+let is_square x =
   let m, n = M.shape x in
-  let k = Pervasives.min m n in
-  let _a0 = Owl_const.zero (M.kind x) in
-  try
-    for i = 0 to k - 1 do
-      for j = 0 to i - 1 do
-        assert (M.get x i j = _a0)
-      done
-    done;
-    true
-  with exn -> false
+  m = n
 
 
-let is_tril x =
-  let m, n = M.shape x in
-  let k = Pervasives.min m n in
-  let _a0 = Owl_const.zero (M.kind x) in
-  try
-    for i = 0 to k - 1 do
-      for j = i + 1 to k - 1 do
-        assert (M.get x i j = _a0)
-      done
-    done;
-    true
-  with exn -> false
+let is_triu x = Owl_core._matrix_is_triu (M.kind x) x
 
 
-let is_symmetric x =
-  let m, n = M.shape x in
-  if m <> n then false
-  else (
-    try
-      for i = 0 to n - 1 do
-        for j = (i + 1) to n - 1 do
-          let a = M.get x j i in
-          let b = M.get x i j in
-          assert (a = b)
-        done
-      done;
-      true
-    with exn -> false
-  )
+let is_tril x = Owl_core._matrix_is_tril (M.kind x) x
 
 
-let is_hermitian x =
-  let m, n = M.shape x in
-  if m <> n then false
-  else (
-    try
-      for i = 0 to n - 1 do
-        for j = i to n - 1 do
-          let a = M.get x j i in
-          let b = Complex.conj (M.get x i j) in
-          assert (a = b)
-        done
-      done;
-      true
-    with exn -> false
-  )
+let is_symmetric x = Owl_core._matrix_is_symmetric (M.kind x) x
 
 
-let is_diag x = is_triu x && is_tril x
+let is_hermitian x = Owl_core._matrix_is_hermitian (M.kind x) x
+
+
+let is_diag x = Owl_core._matrix_is_diag (M.kind x) x
 
 
 let is_posdef x =
@@ -533,7 +504,9 @@ let norm ?(p=2.) x =
 
 let vecnorm ?(p=2.) x =
   let k = M.kind x in
-  if p = 2. then
+  if p = 1. then
+    M.l1norm' x |> Owl_dense_common._re_elt k
+  else if p = 2. then
     M.l2norm' x |> Owl_dense_common._re_elt k
   else (
     let v = M.flatten x |> M.abs in
@@ -676,3 +649,243 @@ let peakflops ?(n=2000) () =
 
   let flops = 2. *. (float_of_int n) ** 3. /. (t1 -. t0) in
   flops
+
+
+(* Matrix functions *)
+
+(* DEBUG: initial expm implemented with eig, obsoleted *)
+let expm_eig
+  : type a b c d. otyp:(c, d) kind -> (a, b) t -> (c, d) t
+  = fun ~otyp x ->
+  assert (is_square x);
+  let v, w = eig ~otyp x in
+  let vi = inv v in
+  let u = M.(exp w |> diagm) in
+  M.( dot (dot v u) vi )
+
+
+let expm x =
+  assert (is_square x);
+  (* trivial case *)
+  if M.shape x = (1, 1) then M.exp x
+  else (
+    (* TODO: use gebal to balance to improve accuracy, refer to Julia's impl *)
+    let xe = M.(eye (kind x) (row_num x)) in
+    let norm_x = norm ~p:1. x in
+    (* for small norm, use lower order Padé-approximation *)
+    if norm_x <= 2.097847961257068 then (
+      let c = Array.map (Owl_dense_common._float_typ_elt (M.kind x)) (
+        if norm_x > 0.9504178996162932 then
+          [|17643225600.; 8821612800.; 2075673600.; 302702400.; 30270240.; 2162160.; 110880.; 3960.; 90.; 1.|]
+        else if norm_x > 0.2539398330063230 then
+          [|17297280.; 8648640.; 1995840.; 277200.; 25200.; 1512.; 56.; 1.|]
+        else if norm_x > 0.01495585217958292 then
+          [|30240.; 15120.; 3360.; 420.; 30.; 1.|]
+        else
+          [|120.; 60.; 12.; 1.|]
+      ) in
+
+      let x2 = M.dot x x in
+      let p = ref M.(copy xe) in
+      let u = M.mul_scalar !p c.(1) in
+      let v = M.mul_scalar !p c.(0) in
+
+      for i = 1 to Array.(length c / 2 - 1) do
+        let j = 2 * i in
+        let k = j + 1 in
+        p := M.dot !p x2;
+        M.(add_ u (mul_scalar !p c.(k)));
+        M.(add_ v (mul_scalar !p c.(j)));
+      done;
+
+      let u = M.dot x u in
+      let a = M.sub v u in
+      let b = M.add v u in
+      Owl_lapacke.gesv a b |> ignore;
+      b
+    )
+    (* for larger norm, Padé-13 approximation *)
+    else (
+      let s = Owl_maths.log2 (norm_x /. 5.4) in
+      let t = ceil s in
+      let x =
+        if s > 0. then
+          Owl_dense_common._float_typ_elt (M.kind x) (2. ** t)
+          |> M.div_scalar x
+        else x
+      in
+
+      let c = Array.map (Owl_dense_common._float_typ_elt (M.kind x))
+        [|64764752532480000.; 32382376266240000.; 7771770303897600.;
+          1187353796428800.;  129060195264000.;   10559470521600.;
+          670442572800.;      33522128640.;       1323241920.;
+          40840800.;          960960.;            16380.;
+          182.;               1.|]
+      in
+
+      let x2 = M.dot x x in
+      let x4 = M.dot x2 x2 in
+      let x6 = M.dot x2 x4 in
+      let u = M.( x *@ (x6 *@ (x6 *$ c.(13) + x4 *$ c.(11) + x2 *$ c.(9)) +
+                  x6 *$ c.(7) + x4 *$ c.(5) + x2 *$ c.(3) + xe *$ c.(1)) ) in
+      let v = M.( x6 *@ (x6 *$ c.(12) + x4 *$ c.(10) + x2 *$ c.(8)) +
+                  x6 *$ c.(6) + x4 *$ c.(4) + x2 *$ c.(2) + xe *$ c.(0) ) in
+
+      let a = M.sub v u in
+      let b = M.add v u in
+      Owl_lapacke.gesv a b |> ignore;
+
+      let x = ref b in
+      if s > 0. then (
+        for i = 1 to int_of_float t do
+          x := M.dot !x !x
+        done;
+      );
+
+      !x
+    )
+  )
+
+
+let _sinm :
+  type a b. (a, b) kind -> (a, b) t -> (a, b) t
+  = fun k x ->
+  match k with
+  | Float32   -> (
+      let a = Complex.({re=0.; im=1.}) in
+      let x = M.cast_s2c x in
+      M.(expm (a $* x) |> im_c2s)
+    )
+  | Float64   -> (
+      let a = Complex.({re=0.; im=1.}) in
+      let x = M.cast_d2z x in
+      M.(expm (a $* x) |> im_z2d)
+    )
+  | Complex32 -> (
+      let a = Complex.({re=0.; im=(-0.5)}) in
+      let b = Complex.({re=0.; im=1.}) in
+      let c = Complex.({re=0.; im=(-1.)}) in
+      M.(a $* (expm (b $* x) - expm (c $* x)))
+    )
+  | Complex64 -> (
+      let a = Complex.({re=0.; im=(-0.5)}) in
+      let b = Complex.({re=0.; im=1.}) in
+      let c = Complex.({re=0.; im=(-1.)}) in
+      M.(a $* (expm (b $* x) - expm (c $* x)))
+    )
+  | _        -> failwith "_sinm: unsupported operation"
+
+
+let sinm x = _sinm (M.kind x) x
+
+
+let _cosm :
+  type a b. (a, b) kind -> (a, b) t -> (a, b) t
+  = fun k x ->
+  match k with
+  | Float32   -> (
+      let a = Complex.({re=0.; im=1.}) in
+      let x = M.cast_s2c x in
+      M.(expm (a $* x) |> re_c2s)
+    )
+  | Float64   -> (
+      let a = Complex.({re=0.; im=1.}) in
+      let x = M.cast_d2z x in
+      M.(expm (a $* x) |> re_z2d)
+    )
+  | Complex32 -> (
+      let a = Complex.({re=0.5; im=0.}) in
+      let b = Complex.({re=0.; im=1.}) in
+      let c = Complex.({re=0.; im=(-1.)}) in
+      M.(a $* (expm (b $* x) + expm (c $* x)))
+    )
+  | Complex64 -> (
+      let a = Complex.({re=0.5; im=0.}) in
+      let b = Complex.({re=0.; im=1.}) in
+      let c = Complex.({re=0.; im=(-1.)}) in
+      M.(a $* (expm (b $* x) + expm (c $* x)))
+    )
+  | _        -> failwith "_cosm: unsupported operation"
+
+
+let cosm x = _cosm (M.kind x) x
+
+
+let _sincosm :
+  type a b. (a, b) kind -> (a, b) t -> (a, b) t * (a, b) t
+  = fun k x ->
+  match k with
+  | Float32   -> (
+      let a = Complex.({re=0.; im=1.}) in
+      let x = M.cast_s2c x in
+      let y = M.(expm (a $* x)) in
+      M.(im_c2s y, re_c2s y)
+    )
+  | Float64   -> (
+      let a = Complex.({re=0.; im=1.}) in
+      let x = M.cast_d2z x in
+      let y = M.(expm (a $* x)) in
+      M.(im_z2d y, re_z2d y)
+    )
+  | Complex32 -> (
+      let b = Complex.({re=0.; im=1.}) in
+      let c = Complex.({re=0.; im=(-1.)}) in
+      let x = M.(expm (b $* x)) in
+      let y = M.(expm (c $* x)) in
+      let _sin = M.( Complex.({re=0.; im=(-0.5)}) $* (x - y) ) in
+      let _cos = M.( Complex.({re=0.5; im=0.}) $* (x + y)) in
+      _sin, _cos
+    )
+  | Complex64 -> (
+      let b = Complex.({re=0.; im=1.}) in
+      let c = Complex.({re=0.; im=(-1.)}) in
+      let x = M.(expm (b $* x)) in
+      let y = M.(expm (c $* x)) in
+      let _sin = M.( Complex.({re=0.; im=(-0.5)}) $* (x - y) ) in
+      let _cos = M.( Complex.({re=0.5; im=0.}) $* (x + y)) in
+      _sin, _cos
+    )
+  | _        -> failwith "_sincosm: unsupported operation"
+
+
+let sincosm x = _sincosm (M.kind x) x
+
+
+let tanm x =
+  let s, c = sincosm x in
+  Owl_lapacke.gesv c s |> ignore;
+  s
+
+
+let sinhm x =
+  let a = Owl_dense_common._float_typ_elt (M.kind x) 0.5 in
+  M.( a $* ((expm x) - (expm (neg x))) )
+
+
+let coshm x =
+  let a = Owl_dense_common._float_typ_elt (M.kind x) 0.5 in
+  M.( a $* ((expm x) + (expm (neg x))) )
+
+
+let sinhcoshm x =
+  let a = Owl_dense_common._float_typ_elt (M.kind x) 0.5 in
+  let b = expm x in
+  let c = expm (M.neg x) in
+  M.(a $* (b - c)), M.(a $* (b + c))
+
+
+let tanhm x =
+  let s, c = sinhcoshm x in
+  Owl_lapacke.gesv c s |> ignore;
+  s
+
+
+(* TODO *)
+let logm x = "logm: not implemented"
+
+
+(* TODO *)
+let sqrtm x = failwith "sqrtm: not implemented"
+
+
+(* ends here *)
