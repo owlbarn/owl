@@ -34,7 +34,7 @@ along axis 0.
   end
 
 
-  (** {6 Learning_Rate module} *)
+  (** {7 Learning_Rate module} *)
 
   module Learning_Rate : sig
 
@@ -44,16 +44,17 @@ along axis 0.
       | Decay of float * float
       | Exp_decay of float * float
       | RMSprop of float * float
+      | Adam of float * float * float
       | Schedule of float array
     (** types of learning rate *)
 
-    val run : typ -> int -> 'a -> t -> t
+    val run : typ -> int -> t -> t array -> t
     (** Execute the computations defined in module ``typ``. *)
 
     val default : typ -> typ
     (** Create module ``typ`` with default values. *)
 
-    val update_ch : typ -> t -> t -> t
+    val update_ch : typ -> t -> t array -> t array
     (** Update the cache of gradients. *)
 
     val to_string : typ -> string
@@ -211,7 +212,7 @@ along axis 0.
       mutable gs : t array array;
       mutable ps : t array array;
       mutable us : t array array;
-      mutable ch : t array array;
+      mutable ch : t array array array;
     }
     (** Type definition of checkpoint *)
 

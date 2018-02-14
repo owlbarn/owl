@@ -389,7 +389,7 @@ let scani ?axis f x =
   y
 
 
-let scan ?axis f x = scani (fun _ a b -> f a b) x
+let scan ?axis f x = scani ?axis (fun _ a b -> f a b) x
 
 
 let iteri f x =
