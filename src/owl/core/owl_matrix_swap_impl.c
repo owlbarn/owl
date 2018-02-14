@@ -22,7 +22,7 @@ void FUNCTION (c, transpose) (TYPE *x, TYPE *y, int m, int n) {
 }
 
 
-// stub function
+// stub function of transpose
 value FUNCTION (stub, transpose) (value vX, value vY) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
@@ -31,6 +31,36 @@ value FUNCTION (stub, transpose) (value vX, value vY) {
   TYPE *Y_data = (TYPE *) Y->data;
 
   FUNCTION (c, transpose) (X_data, Y_data, X->dim[0], X->dim[1]);
+
+  return Val_unit;
+}
+
+
+// conjugate transpose x(m,n) and save to y(n,m)
+void FUNCTION (c, ctranspose) (TYPE *x, TYPE *y, int m, int n) {
+  int ofsx = 0;
+  int ofsy = 0;
+
+  for (int i = 0; i < m; i++) {
+    ofsy = i;
+    for (int j = 0; j < n; j++) {
+      *(y + ofsy) = CONJ_FUN(*(x + ofsx));
+      ofsy += m;
+      ofsx += 1;
+    }
+  }
+}
+
+
+// stub function of ctranspose
+value FUNCTION (stub, ctranspose) (value vX, value vY) {
+  struct caml_ba_array *X = Caml_ba_array_val(vX);
+  TYPE *X_data = (TYPE *) X->data;
+
+  struct caml_ba_array *Y = Caml_ba_array_val(vY);
+  TYPE *Y_data = (TYPE *) Y->data;
+
+  FUNCTION (c, ctranspose) (X_data, Y_data, X->dim[0], X->dim[1]);
 
   return Val_unit;
 }

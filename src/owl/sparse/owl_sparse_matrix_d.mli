@@ -280,3 +280,5 @@ val scalar_mul : elt -> mat -> mat
 val scalar_div : elt -> mat -> mat
 
 val power_scalar : mat -> elt -> mat
+
+val mpow : mat -> float -> mat

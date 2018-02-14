@@ -26,14 +26,16 @@
   (c_names (
     ; Core
     owl_core_utils
-    owl_core_swap_impl
-    owl_core_swap_stub
     owl_slicing_basic_impl
     owl_slicing_basic_stub
     owl_slicing_fancy_impl
     owl_slicing_fancy_stub
     owl_ndarray_impl
     owl_ndarray_stub
+    owl_matrix_swap_impl
+    owl_matrix_swap_stub
+    owl_matrix_check_impl
+    owl_matrix_check_stub
     owl_common_c
     owl_distribution_common_c
     owl_dense_common_c

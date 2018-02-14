@@ -23,7 +23,7 @@ let create m n a = M.create Float64 m n a
 
 let init m n f = M.init Float64 m n f
 
-let init_nd m n f = M.init_nd Float64 m n f
+let init_2d m n f = M.init_2d Float64 m n f
 
 let zeros m n = M.zeros Float64 m n
 

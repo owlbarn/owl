@@ -406,6 +406,24 @@ value of ``?axis`` is the highest dimension of ``x``. This function is similar t
 ``numpy.repeat`` except that ``a`` is an integer instead of an array.
  *)
 
+val concat_vertical : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``concat_vertical x y`` concatenates two ndarray ``x`` and ``y`` vertically.
+This is just a convenient function for concatenating two ndarrays along their
+lowest dimension, i.e. 0.
+
+The associated operator is ``@||``, please refer to :doc:`owl_operator`.
+ *)
+
+val concat_horizontal : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``concat_horizontal x y`` concatenates two ndarrays ``x`` and ``y`` horizontally.
+This is just a convenient function for concatenating two ndarrays along their
+highest dimension.
+
+The associated operator is ``@=``, please refer to :doc:`owl_operator`.
+ *)
+
 val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 (**
 ``concatenate ~axis:2 x`` concatenates an array of ndarrays along the third
@@ -416,7 +434,7 @@ lowest dimension of a matrix/ndarray.
 
 val split : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
 (**
-``split ~axis parts x``
+``split ~axis parts x`` ... TODO
  *)
 
 val squeeze : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
@@ -424,15 +442,17 @@ val squeeze : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 ``squeeze ~axis x`` removes single-dimensional entries from the shape of ``x``.
  *)
 
-val expand : ('a, 'b) t -> int -> ('a, 'b) t
+val expand : ?hi:bool -> ('a, 'b) t -> int -> ('a, 'b) t
 (**
-``expand x d`` reshapes x by increasing its rank from ``num_dims x`` to ``d``. The
-opposite operation is ``squeeze x``.
+``expand x d`` reshapes ``x`` by increasing its rank from ``num_dims x`` to
+``d``. The opposite operation is ``squeeze x``. The ``hi`` parameter is used to
+specify wether the expandsion is along high dimension (by setting ``true``), or
+along the low dimension (by setting ``false``). The default value is ``false``.
  *)
 
 val pad : ?v:'a -> int list list -> ('a, 'b) t -> ('a, 'b) t
 (**
-``pad ~v:0. [[1;1]] x``
+``pad ~v:0. [[1;1]] x`` ... TODO
  *)
 
 val dropout : ?rate:float -> ('a, 'b) t -> ('a, 'b) t
@@ -443,21 +463,23 @@ by setting their values to zeros.
 
 val top : ('a, 'b) t -> int -> int array array
 (**
-``top x n`` returns the indices of ``n`` greatest values of ``x``. The indices are
-arranged according to the corresponding elelment values, from the greatest one
-to the smallest one.
+``top x n`` returns the indices of ``n`` greatest values of ``x``. The indices
+are arranged according to the corresponding elelment values, from the greatest
+one to the smallest one.
  *)
 
 val bottom : ('a, 'b) t -> int -> int array array
 (**
-``bottom x n`` returns the indices of ``n`` smallest values of ``x``. The indices
-are arranged according to the corresponding elelment values, from the smallest
-one to the greatest one.
+``bottom x n`` returns the indices of ``n`` smallest values of ``x``. The
+indices are arranged according to the corresponding elelment values, from the
+smallest one to the greatest one.
  *)
 
-val sort : ('a, 'b) t -> unit
+val sort : ('a, 'b) t -> ('a, 'b) t
 (**
-``sort x`` performs in-place quicksort of the elelments in ``x``.
+``sort x`` performs quicksort of the elelments in ``x``. A new copy is returned
+as result, the original ``x`` remains intact. If you want to perform in-place
+sorting, please use `sort_` instead.
  *)
 
 val draw : ?axis:int -> ('a, 'b) t -> int -> ('a, 'b) t * int array
@@ -496,19 +518,6 @@ val map : ('a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 ``map f x`` is similar to ``mapi f x`` except the index is not passed.
  *)
 
-val filteri : (int -> 'a -> bool) -> ('a, 'b) t -> int array
-(**
-``filteri f x`` uses ``f`` to filter out certain elements in ``x``. An element
-will be included if ``f`` returns ``true``. The returned result is an array of
-1-dimensional indices of the selected elements. To obtain the n-dimensional
-indices, you need to convert it manulally with Owl's helper function.
- *)
-
-val filter : ('a -> bool) -> ('a, 'b) t -> int array
-(**
-Similar to ``filteri``, but the indices are not passed to ``f``.
- *)
-
 val foldi : ?axis:int -> (int -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``foldi ~axis f a x`` folds (or reduces) the elements in ``x`` from left along
@@ -536,6 +545,19 @@ val scan : ?axis:int -> ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
 Similar to ``scani``, except that the index of an element is not passed to ``f``.
  *)
 
+val filteri : (int -> 'a -> bool) -> ('a, 'b) t -> int array
+(**
+``filteri f x`` uses ``f`` to filter out certain elements in ``x``. An element
+will be included if ``f`` returns ``true``. The returned result is an array of
+1-dimensional indices of the selected elements. To obtain the n-dimensional
+indices, you need to convert it manulally with Owl's helper function.
+ *)
+
+val filter : ('a -> bool) -> ('a, 'b) t -> int array
+(**
+Similar to ``filteri``, but the indices are not passed to ``f``.
+ *)
+
 val iter2i : (int -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 (**
 Similar to ``iteri`` but applies to two N-dimensional arrays ``x`` and ``y``. Both
@@ -543,9 +565,7 @@ Similar to ``iteri`` but applies to two N-dimensional arrays ``x`` and ``y``. Bo
  *)
 
 val iter2 : ('a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
-(**
-Similar to ``iter2i``, except that the index of a slice is not passed to ``f``.
- *)
+(** Similar to ``iter2i``, except that the index not passed to ``f``. *)
 
 val map2i : (int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
@@ -557,6 +577,21 @@ val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``map2 f x y`` is similar to ``map2i f x y`` except the index is not passed.
  *)
+
+val iteri_nd :(int array -> 'a -> unit) -> ('a, 'b) t -> unit
+(** Similar to `iteri` but n-d indices are passed to the user function. *)
+
+val mapi_nd : (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to `mapi` but n-d indices are passed to the user function. *)
+
+val foldi_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to `foldi` but n-d indices are passed to the user function. *)
+
+val scani_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to `scani` but n-d indices are passed to the user function. *)
+
+val filteri_nd : (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
+(** Similar to `filteri` but n-d indices are returned. *)
 
 
 (** {6 Examination & Comparison}  *)
@@ -1784,6 +1819,11 @@ more memory.
 
 
 (** {6 In-place modification}  *)
+
+val sort_ : ('a, 'b) t -> unit
+(**
+``sort_ x`` performs in-place quicksort of the elelments in ``x``.
+ *)
 
 val add_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (**

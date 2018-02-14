@@ -188,6 +188,12 @@ module Make_Extend (M : ExtendSig) : sig
   val ( /$= ) : ('a, 'b) M.t -> 'a -> unit
   (** Operator of ``div_scalar_`` *)
 
+  val ( @= ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
+  (** Operator of ``concat_vertical`` *)
+
+  val ( @|| ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
+  (** Operator of ``concat_horizontal`` *)
+
   val ( .!{} ) : ('a, 'b) M.t -> Owl_types.index list -> ('a, 'b) M.t
   (** Operator of ``get_fancy`` *)
 
@@ -208,13 +214,10 @@ end
 module Make_Matrix (M : MatrixSig) : sig
 
   val ( *@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``dot`` *)
+  (** Operator of ``dot a b``, i.e. matrix multiplication ``a * b``. *)
 
-  val ( @= ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``concat_vertical`` *)
-
-  val ( @|| ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
-  (** Operator of ``concat_horizontal`` *)
+  val ( **@ ) :  ('a, 'b) M.t -> float -> ('a, 'b) M.t
+  (** Operator of ``mpow``, i.e. matrix power. *)
 
   val ( .%{} ) : ('a, 'b) M.t -> int array -> 'a
   (** Operator of ``get`` *)
@@ -234,5 +237,16 @@ module Make_Ndarray (M : NdarraySig) : sig
 
   val ( .%{}<- ) : ('a, 'b) M.t -> int array -> 'a -> unit
   (** Operator of ``set`` *)
+
+end
+
+
+
+(** {6 Linalg-specific operators} *)
+
+module Make_Linalg (M : LinalgSig) : sig
+
+  val ( /@ ) : ('a, 'b) M.t -> ('a, 'b) M.t -> ('a, 'b) M.t
+  (** Operator of ``linsolve a b``, i.e. for solving a linear system ``a * x = b``. *)
 
 end

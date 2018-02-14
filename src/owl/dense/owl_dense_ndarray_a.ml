@@ -143,10 +143,15 @@ let squeeze ?(axis=[||]) x =
   in
   reshape x s
 
-let expand x d =
+let expand ?(hi=false) x d =
   let d0 = d - (num_dims x) in
   match d0 > 0 with
-  | true  -> Owl_utils.Array.pad `Left (shape x) 1 d0 |> reshape x
+  | true  -> (
+      if hi = true then
+        Owl_utils.Array.pad `Right (shape x) 1 d0 |> reshape x
+      else
+        Owl_utils.Array.pad `Left (shape x) 1 d0 |> reshape x
+    )
   | false -> x
 
 let reverse x =
