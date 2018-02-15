@@ -201,19 +201,19 @@ module Make
     )
 
 
-  let iteri f x = _iteri_adjusted (fun (i, k) a -> f k a) x 0 (ref 0) 0
-
-
   let iter f x = _iteri (fun _ a -> f a) x 0 0
+
+
+  let iteri f x = _iteri_adjusted (fun (i, k) a -> f k a) x 0 (ref 0) 0
 
 
   let iteri_nd f x = _iteri_nd f x (Array.make (num_dims x) 0) 0
 
 
-  let mapi f x = _iteri_adjusted (fun (i, k) a -> A.set x.dvec i (f k a)) x 0 (ref 0) 0
-
-
   let map f x = _iteri (fun i a -> A.set x.dvec i (f a)) x 0 0
+
+
+  let mapi f x = _iteri_adjusted (fun (i, k) a -> A.set x.dvec i (f k a)) x 0 (ref 0) 0
 
 
   let mapi_nd f x = iteri_nd (fun i a -> set x i (f i a)) x
