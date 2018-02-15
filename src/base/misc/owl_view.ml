@@ -124,7 +124,7 @@ module Make
 
 
   (* iterate using 1d-index and x.dvec, fast *)
-  let rec _iter f x i dim =
+  let rec _iteri f x i dim =
     let offset = x.ofstr.(dim).(0) in
     let stride = x.ofstr.(dim).(1) in
     let i = [|i + offset|] in
@@ -136,14 +136,34 @@ module Make
     )
     else (
       for j = 0 to x.shape.(dim) - 1 do
-        _iter f x i.(0) (dim + 1);
+        _iteri f x i.(0) (dim + 1);
+        i.(0) <- i.(0) + stride;
+      done
+    )
+
+
+  (* iterate using both 1d-index i and its adjusted 1d-index k *)
+  let rec _iteri_adjusted f x i k dim =
+    let offset = x.ofstr.(dim).(0) in
+    let stride = x.ofstr.(dim).(1) in
+    let i = [|i + offset|] in
+    if dim = num_dims x - 1 then (
+      for j = 0 to x.shape.(dim) - 1 do
+        f (i, !k) (A.get x.dvec i);
+        i.(0) <- i.(0) + stride;
+        k := !k + 1;
+      done
+    )
+    else (
+      for j = 0 to x.shape.(dim) - 1 do
+        _iteri_adjusted f x i.(0) k (dim + 1);
         i.(0) <- i.(0) + stride;
       done
     )
 
 
   (* iterate using nd-index and x.data, slow *)
-  let rec _iteri f x i dim =
+  let rec _iteri_nd f x i dim =
     if dim = num_dims x - 1 then (
       for j = 0 to x.shape.(dim) - 1 do
         i.(dim) <- j;
@@ -153,7 +173,7 @@ module Make
     else (
       for j = 0 to x.shape.(dim) - 1 do
         i.(dim) <- j;
-        _iteri f x i (dim + 1)
+        _iteri_nd f x i (dim + 1)
       done
     )
 
@@ -181,16 +201,22 @@ module Make
     )
 
 
-  let iteri f x = _iteri f x (Array.make (num_dims x) 0) 0
+  let iteri f x = _iteri_adjusted (fun (i, k) a -> f k a) x 0 (ref 0) 0
 
 
-  let iter f x = _iter (fun _ a -> f a) x 0 0
+  let iter f x = _iteri (fun _ a -> f a) x 0 0
 
 
-  let mapi f x = iteri (fun i a -> set x i (f i a)) x
+  let iteri_nd f x = _iteri_nd f x (Array.make (num_dims x) 0) 0
 
 
-  let map f x = _iter (fun i a -> A.set x.dvec i (f a)) x 0 0
+  let mapi f x = _iteri_adjusted (fun (i, k) a -> A.set x.dvec i (f k a)) x 0 (ref 0) 0
+
+
+  let map f x = _iteri (fun i a -> A.set x.dvec i (f a)) x 0 0
+
+
+  let mapi_nd f x = iteri_nd (fun i a -> set x i (f i a)) x
 
 
   let fold ?axis f x = ()
@@ -199,7 +225,7 @@ module Make
   let iter2 f x y =
     assert (x.shape = y.shape);
     if is_same_view x y then
-      _iter (fun _ a -> f a a) x 0 0
+      _iteri (fun _ a -> f a a) x 0 0
     else
       _iter2 (fun _ _ a b -> f a b) x y 0 0 0
 
@@ -207,7 +233,7 @@ module Make
   let map2 f x y =
     assert (x.shape = y.shape);
     if is_same_view x y then
-      _iter (fun i a -> A.set x.dvec i (f a a)) x 0 0
+      _iteri (fun i a -> A.set x.dvec i (f a a)) x 0 0
     else
       _iter2 (fun i j a b -> A.set y.dvec j (f a b)) x y 0 0 0
 

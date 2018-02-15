@@ -64,20 +64,20 @@ module Make
 
   (** {6 Iteration functions} *)
 
-  val iteri : (int array -> A.elt -> unit) -> t -> unit
+  val iteri : (int -> A.elt -> unit) -> t -> unit
   (**
 ``iteri f x`` iterates and applies ``f`` to every element in ``x``. ``f`` has type
-``f : int array -> elt -> unit``, the first paramater is index. The function
-is much slower than ``iter``.
+``f : int array -> elt -> unit``, the first paramater is index. 1d indices are
+passed to the user function.
    *)
 
   val iter : (A.elt -> unit) -> t -> unit
   (** Similar to ``iteri``, the index is not passed in. *)
 
-  val mapi : (int array -> A.elt -> A.elt) -> t -> unit
+  val mapi : (int -> A.elt -> A.elt) -> t -> unit
   (**
 ``mapi f x`` applies ``f : int array -> elt -> elt`` to every element in ``x``,
-then save the result in place. This function is much slower than ``map``.
+then save the result in place. 1d indices are passed to the user function.
    *)
 
   val map : (A.elt -> A.elt) -> t -> unit
@@ -99,5 +99,16 @@ and ``y``, then saves the result in ``y``. So be careful with the order, it
 matters, the data reflected by view ``y`` will be modified.
    *)
 
+  val iteri_nd : (int array -> A.elt -> unit) -> t -> unit
+  (**
+Similar to `iteri` but n-d indices are passed in. This function is much slower
+than `iteri`.
+   *)
+
+  val mapi_nd : (int array -> A.elt -> A.elt) -> t -> unit
+  (**
+Similar to `mapi` but n-d indices are passed in. This function is much slower
+than `mapi`.
+   *)
 
 end
