@@ -111,4 +111,32 @@ Similar to `mapi` but n-d indices are passed in. This function is much slower
 than `mapi`.
    *)
 
+
+  (** {6 Examination & Comparison}  *)
+
+  val exists : (A.elt -> bool) -> t -> bool
+  (**
+``exists f x`` checks all the elements in ``x`` using ``f``. If at least one
+element satisfies ``f`` then the function returns ``true`` otherwise ``false``.
+   *)
+
+  val not_exists : (A.elt -> bool) -> t -> bool
+  (**
+  ``not_exists f x`` checks all the elements in ``x``, the function returns
+  ``true`` only if all the elements fail to satisfy ``f : float -> bool``.
+   *)
+
+  val for_all : (A.elt -> bool) -> t -> bool
+  (**
+  ``for_all f x`` checks all the elements in ``x``, the function returns ``true``
+  if and only if all the elements pass the check of function ``f``.
+   *)
+
+  val equal : t -> t -> bool
+  (** ``equal x y`` returns ``true`` if ``x`` and ``y`` are elementwise equal. *)
+
+  val not_equal : t -> t -> bool
+  (** ``not_equal x y`` returns ``true`` if ``x`` and ``y`` are not elementwise equal. *)
+
+
 end

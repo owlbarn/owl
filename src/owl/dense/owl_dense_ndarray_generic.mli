@@ -662,7 +662,7 @@ element in ``x``. Otherwise, the function returns ``true``.
 
 val equal : ('a, 'b) t -> ('a, 'b) t -> bool
 (**
-``equal x y`` returns ``true`` if two ('a, 'b) trices ``x`` and ``y`` are equal.
+``equal x y`` returns ``true`` if two matrices ``x`` and ``y`` are equal.
  *)
 
 val not_equal : ('a, 'b) t -> ('a, 'b) t -> bool

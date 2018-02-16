@@ -240,7 +240,38 @@ module Make
 
   let set_slice axis x y =
     let x = get_slice axis x in
-    map2 (fun _ a -> a) y x
+    map2 (fun b _ -> b) y x
+
+
+  (* Examination & Comparison *)
+
+  let equal x y =
+    let r = ref true in
+    (
+      try iter2 (fun a b -> assert (a = b)) x y
+      with exn -> r := false
+    );
+    !r
+
+
+  let not_equal x y = not (equal x y)
+
+
+  let exists f x =
+    let b = ref false in
+    try iter (fun y ->
+      if (f y) then (
+        b := true;
+        failwith "found";
+      )
+    ) x; !b
+    with Failure _ -> !b
+
+
+  let not_exists f x = not (exists f x)
+
+
+  let for_all f x = let g y = not (f y) in not_exists g x
 
 
 end
