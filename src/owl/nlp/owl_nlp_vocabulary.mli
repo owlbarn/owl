@@ -9,7 +9,7 @@
 (** {6 Type definition} *)
 
 type t
-(** Type of vocabulary *)
+(** Type of vocabulary (or dictionary). *)
 
 
 (** {6 Query vocabulary} *)
