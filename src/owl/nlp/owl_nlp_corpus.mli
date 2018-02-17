@@ -114,9 +114,6 @@ E.g., you can plug in ``simple_process`` function to clean up the text. Note
 this function will not change the number of lines in a corpus.
  *)
 
-val create : string -> int array -> int array -> in_channel option -> in_channel option -> Owl_nlp_vocabulary.t option -> int -> int array -> t
-(** TODO *)
-
 
 (** {6 I/O functions} *)
 
@@ -137,6 +134,12 @@ val print : t -> unit
 
 
 (** {6 Helper functions} *)
+
+val create : string -> int array -> int array -> in_channel option -> in_channel option -> Owl_nlp_vocabulary.t option -> int -> int array -> t
+(**
+```create uri bin_ofs tok_ofs bin_fh tok_fh vocab minlen docid` wraps up the
+corpus into a record of type ``t``.
+ *)
 
 val reduce_model : t -> t
 (** Set some fields to ``None`` so it can be safely serialised. *)
