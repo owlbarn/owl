@@ -304,7 +304,7 @@ val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypot
 val uniform_int_rvs : a:int -> b:int -> int
 (** TODO *)
 
-val binomial_rvs : float -> int
+val binomial_rvs : float -> int -> int
 (** TODO *)
 
 val binomial_pdf : int -> float -> int -> float

@@ -339,7 +339,7 @@ external hypergeometric_pdf : int -> good:int -> bad:int -> sample:int -> float 
 
 external hypergeometric_logpdf : int -> good:int -> bad:int -> sample:int -> float = "owl_stub_hypergeometric_logpdf"
 
-external binomial_rvs : float -> int = "owl_stub_binomial_rvs"
+external binomial_rvs : float -> int -> int = "owl_stub_binomial_rvs"
 
 external binomial_pdf : int -> float -> int -> float = "owl_stub_binomial_pdf"
 
