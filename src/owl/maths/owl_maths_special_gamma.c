@@ -501,7 +501,7 @@ double sf_fact(const int n) {
 }
 
 
-int sf_log_fact(const int n) {
+double sf_log_fact(const int n) {
   if(n <= OWL_SF_FACT_NMAX)
     return log(fact_table[n].f);
   else
@@ -517,7 +517,7 @@ double sf_doublefact(const int n) {
 }
 
 
-int sf_log_doublefact(const unsigned int n) {
+double sf_log_doublefact(const int n) {
   if(n <= OWL_SF_DOUBLE_FACT_NMAX)
     return log(double_fact_table[n].f);
   else if(OWL_IS_ODD(n)) {

@@ -543,3 +543,31 @@ value owl_stub_sf_btdtri(value vA, value vB, value vP) {
   double x = incbi(a, b, p);
   return caml_copy_double(x);
 }
+
+
+value owl_stub_sf_fact(value vN) {
+  long n = Long_val(vN);
+  double y = sf_fact(n);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_log_fact(value vN) {
+  long n = Long_val(vN);
+  double y = sf_log_fact(n);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_doublefact(value vN) {
+  long n = Long_val(vN);
+  double y = sf_doublefact(n);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_log_doublefact(value vN) {
+  long n = Long_val(vN);
+  double y = sf_log_doublefact(n);
+  return caml_copy_double(y);
+}

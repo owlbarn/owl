@@ -355,6 +355,12 @@ val fact : int -> float
 val log_fact : int -> float
 (** Logarithm of factorial function ``log_fact n`` calculates ``log n!``. *)
 
+val doublefact : int -> float
+(** Double factorial function ``doublefact n`` calculates ... TODO *)
+
+val log_doublefact : int -> float
+(** Logarithm of double factorial function ``log_doublefact n`` calculates ... TODO *)
+
 val permutation : int -> int -> int
 (** ``permutation n k`` return the number of permutations of n things taken k at a time. *)
 

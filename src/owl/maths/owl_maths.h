@@ -176,6 +176,15 @@ extern double erfinv(double x);
 
 extern double erfcinv(double x);
 
+extern double sf_fact(const int x);
+
+extern double sf_log_fact(const int x);
+
+extern double sf_doublefact(const int x);
+
+extern double sf_log_doublefact(const int x);
+
+
 
 #ifdef __cplusplus
 }
