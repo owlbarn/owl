@@ -81,25 +81,38 @@ val reset_iterators : t -> unit
 (** {6 Core functions} *)
 
 val build : ?docid:int array -> ?stopwords:(string, 'a) Hashtbl.t -> ?lo:float -> ?hi:float -> ?vocab:Owl_nlp_vocabulary.t -> ?minlen:int -> string -> t
-(** TODO *)
+(**
+This function builds up a corpus of type ``t`` from a given raw text corpus. We
+assume that each line in the raw text corpus represents a document.
+
+Parameters:
+  * ``?docid``: passed in ``docid`` can be used for tracking back to the original corpus, but this is not compulsory.
+  * ``?stopwords``: stopwords used in building vocabulary.
+  * ``?lo``: any word below this lower bound of the frequency is removed from vocabulary.
+  * ``?hi``: any word above this upper bound of the frequency is removed from vocabulary.
+  * ``?vocab``: an optional vocabulary, if it is not passed, the vocabulary is built from current corpus.
+  * ``?(minlen=10)``: threshold of the document length, any document shorter than this is removed from the corpus.
+  * ``fname``: the file name of the raw text corpus.
+ *)
 
 val tokenise : t -> string -> int array
-(** TODO *)
+(** ``tokenise corpus doc`` tokenises the document ``doc`` using the ``corpus`` and its associated vocabulary.  *)
 
 val unique : string -> string -> int array
-(** TODO *)
+(** Remove the duplicates in a text corpus, the ids of the removed files are returned. *)
 
 val simple_process : string -> string
-(** TODO *)
+(** Function for simple pre-processing a given string. *)
 
 val preprocess : (string -> bytes) -> string -> string -> unit
-(** TODO *)
+(**
+``preprocess f input_file output_file`` pre-processes a given file
+``input_file`` with the passed in function ``f`` then saves the output to
+``output_file``.
 
-val reduce_model : t -> t
-(** TODO *)
-
-val cleanup : t -> unit
-(** Close the opened file handles associated with the corpus. *)
+E.g., you can plug in ``simple_process`` function to clean up the text. Note
+this function will not change the number of lines in a corpus.
+ *)
 
 val create : string -> int array -> int array -> in_channel option -> in_channel option -> Owl_nlp_vocabulary.t option -> int -> int array -> t
 (** TODO *)
@@ -108,16 +121,25 @@ val create : string -> int array -> int array -> in_channel option -> in_channel
 (** {6 I/O functions} *)
 
 val save : t -> string -> unit
-(** TODO *)
+(** Serialise the corpus and save it to a file of given name. *)
 
 val load : string -> t
-(** TODO *)
+(** Load a serialised corpus from a file. *)
 
 val save_txt : t -> string -> unit
-(** TODO *)
+(** Convert the tokenised corpus back to a text file *)
 
 val to_string : t -> string
-(** TODO *)
+(** The string representation of a corpus, contains the summary of a corpus. *)
 
 val print : t -> unit
-(** TODO *)
+(** Pretty print the summary of a text corpus. *)
+
+
+(** {6 Helper functions} *)
+
+val reduce_model : t -> t
+(** Set some fields to ``None`` so it can be safely serialised. *)
+
+val cleanup : t -> unit
+(** Close the opened file handles associated with the corpus. *)
