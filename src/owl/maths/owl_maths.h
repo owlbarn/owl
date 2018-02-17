@@ -74,6 +74,13 @@ extern "C" {
 #define OWL_SQRT1_2l  0.707106781186547524400844362104849039L /* 1/sqrt(2) */
 
 
+/* Inline functions */
+
+#define OWL_IS_ODD(X) (X % 2 == 1)
+
+#define OWL_IS_EVEN(X) (X % 2 == 0)
+
+
 /*
  * IEEE 754 fpu handling. Those are guaranteed to be macros
  */
