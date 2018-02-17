@@ -5,6 +5,7 @@
 
 open Owl
 
+let dir = Owl_zoo_log.dir
 
 let eval cmd = cmd
   |> Lexing.from_string
@@ -28,47 +29,54 @@ let preprocess script =
   tmp_script
 
 
-let remove_gist gist =
-  Owl_log.debug "owl_zoo: %s removed" gist;
-  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" ^ gist in
+(* TODO: use single gid to express "removing all versions of this gist" *)
+let remove_gist ?(all=false) gist =
+  let gid, vid, _ = Owl_zoo_dir.parse_gist_string gist in
+  let vid = if all then vid else "" in
+  let dir = dir ^ gid ^ "/" ^ vid in
   let cmd = Printf.sprintf "rm -rf %s" dir in
-  Sys.command cmd |> ignore
+  let ret = Sys.command cmd in
+  if ret = 0 then (
+    Owl_zoo_log.remove_log gid vid;
+    Owl_log.debug "owl_zoo: %s removed" gid
+  )
+  else Owl_log.debug "owl_zoo: Error remvoing gist %s" gid
 
 
 let upload_gist gist =
-  Owl_log.debug "owl_zoo: %s uploading" gist;
-  let cmd = Printf.sprintf "owl_upload_gist.sh %s" gist in
+  let gid, _, _ = Owl_zoo_dir.parse_gist_string gist in
+  Owl_log.debug "owl_zoo: %s uploading" gid;
+  let cmd = Printf.sprintf "owl_upload_gist.sh %s" gid in
   Sys.command cmd |> ignore
 
 
 let download_gist gist =
-  Owl_log.debug "owl_zoo: %s downloading" gist;
-  let cmd = Printf.sprintf "owl_download_gist.sh %s" gist in
-  Sys.command cmd |> ignore
+  let gid, vid, _ = Owl_zoo_dir.parse_gist_string gist in
+  Owl_log.debug "owl_zoo: %s (ver. %s) downloading" gid vid;
+  let cmd = Printf.sprintf "owl_download_gist.sh %s %s" gid vid in
+  let ret = Sys.command cmd in
+  if ret = 0 then (Owl_zoo_log.update_log gid vid)
+  else (Owl_log.debug "owl_zoo: Error downloading gist %s" gid)
 
 
 let list_gist () =
-  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
   Owl_log.debug "owl_zoo: %s" dir;
   let cmd = Printf.sprintf "owl_list_gist.sh" in
   Sys.command cmd |> ignore
 
 
 let update_gist gists =
-  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
   let gists =
     if Array.length gists = 0 then Sys.readdir dir
     else gists
   in
   Owl_log.debug "owl_zoo: updating %i gists" Array.(length gists);
-  Array.iter (fun gist ->
-    let cmd = Printf.sprintf "owl_download_gist.sh %s" gist in
-    Sys.command cmd |> ignore
-  ) gists
+  Array.iter download_gist gists
 
 
 let show_info gist =
-  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" ^ gist in
+  let gid, vid, _ = Owl_zoo_dir.parse_gist_string gist in
+  let dir = dir ^ gid ^ "/" ^ vid in
   let files = Sys.readdir dir
     |> Array.fold_left (fun a s -> a ^ s ^ " ") ""
   in
@@ -92,11 +100,10 @@ let show_info gist =
 
 (* format "gist/file", e.g., d7bdd62b355f906ed059f00b1270b79c/readme.md *)
 let load_file f =
-  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
   let gist = Filename.dirname f in
   let file = Filename.basename f in
   let path = Printf.sprintf "%s%s/%s" dir gist file in
-  Utils.read_file_string path
+  Owl_utils.read_file_string path
 
 
 let run args script =
@@ -113,6 +120,11 @@ let run_gist gist =
   run [|""|] tmp_script |> ignore
 
 
+let extend_dir gist =
+  let gid, vid, _ = Owl_zoo_dir.parse_gist_string gist in
+  dir ^ gid ^ "/" ^ vid
+
+
 let print_info () =
   let info =
     "Owl's Zoo System\n\n" ^
@@ -120,10 +132,10 @@ let print_info () =
     "  owl [utop options] [script-file]\texecute an Owl script\n" ^
     "  owl -upload [gist-directory]\t\tupload code snippet to gist\n" ^
     "  owl -download [gist-id]\t\tdownload code snippet from gist\n" ^
-    "  owl -remove [gist-id]\t\t\tremove a cached gist\n" ^
+    "  owl -remove [-a] [gist-id]\t\t\tremove a cached gist\n" ^
     "  owl -update [gist-ids]\t\tupdate (all if not specified) gists\n" ^
     "  owl -run [gist-id]\t\t\trun a self-contained gist\n" ^
-    "  owl -info [gist-ids]\t\t\tshow the basic information of a gist\n" ^
+    "  owl -info [gist-id]\t\t\tshow the basic information of a gist\n" ^
     "  owl -list\t\t\t\tlist all the cached gists\n" ^
     "  owl -help\t\t\t\tprint out help information\n"
   in

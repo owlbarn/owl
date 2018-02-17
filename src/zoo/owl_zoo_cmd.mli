@@ -6,7 +6,7 @@
 
 (** {6 Manipulate gists} *)
 
-val remove_gist : string -> unit
+val remove_gist : ?all:bool -> string -> unit
 (** Remove a local gist of given id. *)
 
 val upload_gist : string -> unit
@@ -50,3 +50,6 @@ val print_info : unit -> unit
 
 val start_toplevel : unit -> unit
 (** Start the toplevel system tailored for Owl's zoo system. *)
+
+val extend_dir : string -> string
+(** ``extend_dir gist`` locate the directory of a file in a given ``gist`` *)
