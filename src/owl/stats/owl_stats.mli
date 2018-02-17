@@ -304,6 +304,27 @@ val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypot
 val uniform_int_rvs : a:int -> b:int -> int
 (** TODO *)
 
+val binomial_rvs : float -> int
+(** TODO *)
+
+val binomial_pdf : int -> float -> int -> float
+(** TODO *)
+
+val binomial_logpdf : int -> float -> int -> float
+(** TODO *)
+
+val binomial_cdf : int -> float -> int -> float
+(** TODO *)
+
+val binomial_logcdf : int -> float -> int -> float
+(** TODO *)
+
+val binomial_sf : int -> float -> int -> float
+(** TODO *)
+
+val binomial_logsf : int -> float -> int -> float
+(** TODO *)
+
 val hypergeometric_rvs : good:int -> bad:int -> sample:int -> int
 (** TODO *)
 

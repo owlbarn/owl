@@ -9,8 +9,8 @@
 
 /** Binomial distribution **/
 
-int64_t binomial_rvs (double p, int64_t n) {
-  int64_t a, b, k = 0;
+long binomial_rvs (double p, long n) {
+  long a, b, k = 0;
 
   while (n > 10) {
     a = 1 + (n / 2);
@@ -29,14 +29,14 @@ int64_t binomial_rvs (double p, int64_t n) {
     }
   }
 
-  for (int64_t i = 0; i < n; i++)
+  for (long i = 0; i < n; i++)
     if (sfmt_f64_2 < p) k++;
 
   return k;
 }
 
 
-double binomial_pdf (int64_t k, double p, int64_t n) {
+double binomial_pdf (long k, double p, long n) {
   if (k > n)
     return 0;
   else {
@@ -53,12 +53,12 @@ double binomial_pdf (int64_t k, double p, int64_t n) {
 }
 
 
-double binomial_logpdf (int64_t k, double p, int64_t n) {
+double binomial_logpdf (long k, double p, long n) {
   return log (binomial_pdf (k, p, n));
 }
 
 
-double binomial_cdf (int k, double p, int n) {
+double binomial_cdf (long k, double p, long n) {
   if (k >= n)
     return 1.;
   else {
@@ -69,12 +69,12 @@ double binomial_cdf (int k, double p, int n) {
 }
 
 
-double binomial_logcdf (int k, double p, int n) {
+double binomial_logcdf (long k, double p, long n) {
   return log (binomial_cdf (k, p, n));
 }
 
 
-double binomial_sf (int k, double p, int n) {
+double binomial_sf (long k, double p, long n) {
   if (k >= n)
     return 0.;
   else {
@@ -85,6 +85,6 @@ double binomial_sf (int k, double p, int n) {
 }
 
 
-double binomial_logsf (int k, double p, int n) {
+double binomial_logsf (long k, double p, long n) {
   return log (binomial_sf (k, p, n));
 }

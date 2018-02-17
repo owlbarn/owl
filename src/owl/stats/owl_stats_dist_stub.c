@@ -1474,3 +1474,65 @@ value owl_stub_hypergeometric_logpdf(value vX, value vA, value vB, value vC) {
   double p = hypergeometric_logpdf(x, a, b, c);
   return caml_copy_double(p);
 }
+
+
+value owl_stub_binomial_rvs(value vP, value vN) {
+  double p = Double_val(vP);
+  int n = Long_val(vN);
+  int y = binomial_rvs(p, n);
+  return Val_long(y);
+}
+
+
+value owl_stub_binomial_pdf(value vK, value vP, value vN) {
+  int k = Long_val(vK);
+  double p = Double_val(vP);
+  int n = Long_val(vN);
+  double y = binomial_pdf(k, p, n);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_binomial_logpdf(value vK, value vP, value vN) {
+  int k = Long_val(vK);
+  double p = Double_val(vP);
+  int n = Long_val(vN);
+  double y = binomial_logpdf(k, p, n);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_binomial_cdf(value vK, value vP, value vN) {
+  int k = Long_val(vK);
+  double p = Double_val(vP);
+  int n = Long_val(vN);
+  double y = binomial_cdf(k, p, n);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_binomial_logcdf(value vK, value vP, value vN) {
+  int k = Long_val(vK);
+  double p = Double_val(vP);
+  int n = Long_val(vN);
+  double y = binomial_logcdf(k, p, n);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_binomial_sf(value vK, value vP, value vN) {
+  int k = Long_val(vK);
+  double p = Double_val(vP);
+  int n = Long_val(vN);
+  double y = binomial_sf(k, p, n);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_binomial_logsf(value vK, value vP, value vN) {
+  int k = Long_val(vK);
+  double p = Double_val(vP);
+  int n = Long_val(vN);
+  double y = binomial_logsf(k, p, n);
+  return caml_copy_double(y);
+}
