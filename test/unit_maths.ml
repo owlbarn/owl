@@ -145,6 +145,14 @@ module To_test = struct
     let z = Array.map2 approx_equal y z in
     Array.for_all (fun a -> a = true) z
 
+  let test_combination () =
+    let n = 100 in
+    let x = [|0; 1; 10; 30; 50; 80|] in
+    let y = Array.map (M.combination_float n) x in
+    let z = [|1.; 100.; 17310309456440.; 2.93723398216109426e+25; 1.0089134454556422e+29; 5.35983370403809657e+20|] in
+    let z = Array.map2 (fun a b -> a -. b) y z in
+    Array.for_all (fun a -> a < 1e-8) z
+
 end
 
 
@@ -267,6 +275,9 @@ let test_fact () =
 let test_log_fact () =
   Alcotest.(check bool) "test log_fact" true (To_test.test_log_fact ())
 
+let test_combination () =
+  Alcotest.(check bool) "test combination" true (To_test.test_combination ())
+
 let test_set = [
   "test j0", `Slow, test_j0;
   "test j1", `Slow, test_j1;
@@ -307,4 +318,5 @@ let test_set = [
   "test btdtri", `Slow, test_btdtri;
   "test fact", `Slow, test_fact;
   "test log_fact", `Slow, test_log_fact;
+  "test combination", `Slow, test_combination;
 ]

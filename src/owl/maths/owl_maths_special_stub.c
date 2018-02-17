@@ -571,3 +571,19 @@ value owl_stub_sf_log_doublefact(value vN) {
   double y = sf_log_doublefact(n);
   return caml_copy_double(y);
 }
+
+
+value owl_stub_sf_combination(value vN, value vM) {
+  long n = Long_val(vN);
+  long m = Long_val(vM);
+  double y = sf_combination(n, m);
+  return caml_copy_double(y);
+}
+
+
+value owl_stub_sf_log_combination(value vN, value vM) {
+  long n = Long_val(vN);
+  long m = Long_val(vM);
+  double y = sf_log_combination(n, m);
+  return caml_copy_double(y);
+}

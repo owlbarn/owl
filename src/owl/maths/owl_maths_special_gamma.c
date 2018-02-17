@@ -529,3 +529,47 @@ double sf_log_doublefact(const int n) {
     return (0.5 * n * OWL_LOGE2 + lg);
   }
 }
+
+
+double sf_log_combination(int n, int m) {
+  if(m == n || m == 0)
+    return 0.;
+  else {
+    if (m * 2 > n) m = n - m;
+    double nf = sf_log_fact(n);
+    double mf = sf_log_fact(m);
+    double nmmf = sf_log_fact(n - m);
+    return (nf - mf - nmmf);
+  }
+}
+
+
+double sf_combination(int n, int m)
+{
+  if(m == n || m == 0)
+    return 0.;
+  else if (n <= OWL_SF_FACT_NMAX)
+    return (fact_table[n].f / fact_table[m].f) / fact_table[n-m].f;
+  else {
+    if(m * 2 < n) m = n - m;
+
+    if (n - m < 64) {
+      double prod = 1.;
+
+      for (int k = n; k >= m + 1; k--) {
+        double tk = (double)k / (double)(k - m);
+
+        if(tk > OWL_DOUBLE_MAX / prod) {
+          prod = OWL_POSINF;
+          break;
+        }
+
+        prod *= tk;
+      }
+
+      return prod;
+    }
+    else
+      return exp (sf_log_combination (n, m));
+  }
+}

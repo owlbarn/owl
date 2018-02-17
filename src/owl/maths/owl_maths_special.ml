@@ -185,6 +185,10 @@ external doublefact : int -> float = "owl_stub_sf_doublefact"
 
 external log_doublefact : int -> float = "owl_stub_sf_log_doublefact"
 
+external combination : int -> int -> float = "owl_stub_sf_combination"
+
+external log_combination : int -> int -> float = "owl_stub_sf_log_combination"
+
 
 (* Other functions *)
 

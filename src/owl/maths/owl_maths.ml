@@ -265,9 +265,11 @@ let zeta x q = Owl_maths_special.zeta x q
 
 let zetac x = Owl_maths_special.zetac x
 
-let combination_float n k = (fact n /. fact (n - k) /. fact k) |> trunc
+let combination_float n k = Owl_maths_special.combination n k |> trunc
 
 let combination n k = combination_float n k |> int_of_float
+
+let log_combination n k = Owl_maths_special.log_combination n k
 
 let permutation_float n k =
   let r = ref 1. in
