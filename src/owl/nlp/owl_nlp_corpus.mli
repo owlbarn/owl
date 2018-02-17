@@ -48,7 +48,7 @@ val get_docid : t -> int array
 (** Return a list of document ids which are mapped back to the original file where the corpus is built. *)
 
 
-(** {6 Iterate functions} *)
+(** {6 Iteration functions} *)
 
 val next : t -> string
 (** Return the next document in the corpus. *)
