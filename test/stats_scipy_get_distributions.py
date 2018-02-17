@@ -26,6 +26,8 @@ class beta(base):
         self.beta = beta
         self.dist = scipy.stats.beta(alpha,beta)
         self.name = "beta"
+        self.dut_pdf = "beta_pdf ~a:%f ~b:%f" % (alpha, beta)
+        self.dut_cdf = "beta_cdf ~a:%f ~b:%f" % (alpha, beta)
         pass
     def __str__(self):
         return "beta_a_%f_b_%f" % (self.alpha, self.beta)
@@ -35,8 +37,10 @@ class exponential(base):
     rx = 1000.0
     def __init__(self, lamb):
         self.lamb = lamb
-        self.dist = scipy.stats.expon(lamb)
+        self.dist = scipy.stats.expon(scale=1/lamb)
         self.name = "exponential"
+        self.dut_pdf = "exponential_pdf ~lambda:%f" % (lamb)
+        self.dut_cdf = "exponential_cdf ~lambda:%f" % (lamb)
         pass
     def __str__(self):
         return "exponential_%f" % (self.lamb)
@@ -48,6 +52,8 @@ class cauchy(base):
         self.lamb = lamb
         self.dist = scipy.stats.cauchy(lamb)
         self.name = "cauchy"
+        self.dut_pdf = "cauchy_pdf ~lambda:%f" % (lamb)
+        self.dut_cdf = "cauchy_cdf ~lambda:%f" % (lamb)
         pass
     def __str__(self):
         return "cauchy_%f" % (self.lamb)
@@ -59,6 +65,8 @@ class chi2(base):
         self.df = df
         self.dist = scipy.stats.chi2(lamb)
         self.name = "chi2"
+        self.dut_pdf = "chi2_pdf ~df:%f" % (df)
+        self.dut_cdf = "chi2_cdf ~df:%f" % (df)
         pass
     def __str__(self):
         return "chi2_%f" % (self.df)
@@ -222,7 +230,7 @@ def show_dist(d):
         result += "%f;"%v
         pass
     result +="|] \n"
-    result +=")\n"
+    result +=");\n"
     print result
     pass
 
