@@ -9,41 +9,269 @@ let sfmt = Printf.sprintf
 
 (*a To test
     cauchy
-    f
-    t
-    vonmises
-    lomax
-    weibull
     laplace
+    lomax
+    lognormal
+    logistic
     gumbel1
     gumbel2
-    logistic
-    lognormal
     rayleigh
+    vonmises
+    f
+    t
+    weibull
  *)
 (*a Types *)
 (*t t_iter is an iterator that takes a function f and an initial accumulator value acc, and
     folds over a data set to produce (N, (f (f (f acc data[0]) data[1]) ... data[N]))
  *)
-type ('a,'b) t_iter  = ('a -> 'b -> 'a) -> 'a -> (int * 'a)
+type ('a,'b) t_iter  = ('a -> int -> 'b -> 'a) -> 'a -> (int * 'a)
 
 
 (*a Test modules *)
+(*f trace - use with
+    trace __POS__;
+ *)
+let trace pos =
+    let (a,b,c,d) = pos in
+    Printf.printf "trace:%s:%d:%d:%d\n%!" a b c d
+
+(*m Cubic
+  A cubic polynomial in x:(lx,rx)
+  Map to a cubic in u:(0,1) by u=(x-lx)/(rx-lx)
+    (or x = lx + (rx-lr)*u)
+    du/dx = 1/(rx-lx)
+    (or dx = (rx-lr)*du)
+
+  Consider then a cubic in u, f, and f' = d/du f,
+    and p(x)=f(u), p'(x) = dp/dx (x) = du/dx.d/du f(u) = f'(u) / (rx-lx)
+
+  Hence: f (0) = f0  = p(lx) = p0
+         f (1) = f1  = p(rx) = p1
+         f'(0) = f'0 = (rx-lx).p'(lx) = (rx-lx) * p'0
+         f'(1) = f'1 = (rx-lx).p'(rx) = (rx-lx) * p'1
+
+  Given f(u) =  au^3 + bu^2 + cu +d
+       f'(u) = 3au^2 + 2bu  + c
+  f(0)  = d = f0
+  f'(0) = c = f'0
+  f'(1) = 3a + 2b + c
+        = 3a + 2b + f'0  = f'1
+  f(1)  = a + b + c + d
+        = a + b + f'0 + f0 = f1
+
+  Solving:
+    d = f0
+    c = f'0
+    a = 2(f0-f1) + (f'0+f'1)
+    b = 3(f1-f0) -2f'0 -f'1
+
+  Then:
+    p(x)  = f(u)          = f((x-lx)/(rx-lx))
+    p'(x) = f'(u)/(rx-lx) = f'((x-lx)/(rx-lx)) / (rx-lx)
+ *)
+module Cubic =
+struct
+  (*t Structure *)
+  type t = {
+    lx : float;
+    rx : float;
+    dx : float;
+    p0: float;
+    p1: float;
+    p'0: float;
+    p'1: float;
+    poly : float array;
+    }
+
+  (*f Get value of cubic at x *)
+  let f t x =
+    let u = (x -. t.lx) /. t.dx in
+    let u2 = u *. u in
+    let u3 = u2 *. u in
+    ( (t.poly.(0) *. u3) +.
+      (t.poly.(1) *. u2) +.
+      (t.poly.(2) *. u) +.
+      (t.poly.(3)) )
+
+  (*f Get value of deriviative at x *)
+  let df t x =
+    let u = (x -. t.lx) /. t.dx in
+    let u2 = u *. u in
+    ( (t.poly.(0) *. u2 *. 3.) +.
+      (t.poly.(1) *. u  *. 2.) +.
+      (t.poly.(2)) ) /. t.dx
+   
+  (*f Find x for p where cubic(x)=p
+    x0 = (rx+lx)/2
+    x1 = x0 - (f(x0) - p) / f'(x0)
+    n times over
+     *)
+  let find_x_of_value t p =
+    let rec iter n x =
+      if (n>0) then (
+        let f' = df t x in
+        let f' = max f' 0.01 in
+        let dx = (((f t x) -. p) /. f') in
+        let x' = x -. dx in
+        iter (n-1) x'
+      ) else (
+        x
+      )
+    in
+    iter 40 ((t.lx +. t.rx) /. 2.)
+   
+  (*f Fit a cubic to two coords and two gradients *)
+  let fit lx rx p0 p'0 p1 p'1 =
+    let dx = rx -. lx in
+    let f0 = p0 in
+    let f1 = p1 in
+    let f'0 = dx *. p'0 in
+    let f'1 = dx *. p'1 in
+    let d = f0 in
+    let c = f'0 in
+    let a = (2.*.(f0-.f1)) +. (f'1 +. f'0) in
+    let b = (3.*.(f1-.f0)) -. (f'1 +. (2.*.f'0)) in
+    let t = {lx; rx; dx; p0; p1; p'0; p'1; poly=[|a;b;c;d;|]} in
+    (* check to see the maths is correct:
+    Printf.printf "lx %f, rx %f\n" lx rx;
+    Printf.printf "f(lx) = %f/%f\n" (f t lx) p0;
+    Printf.printf "f(rx) = %f/%f\n" (f t rx) p1;
+    Printf.printf "f'(lx) = %f/%f\n" (df t lx) p'0;
+    Printf.printf "f'(rx) = %f/%f\n" (df t rx) p'1;
+     *)
+    t
+
+  (*f All done *) 
+end
+type t_cubic = Cubic.t
+
+(*m Distribution - for continuous distributions
+
+  Model a CDF/PDF as a set of N cubics of 'x', with one cubic
+    for P(X<x)=1/n, another for P(X<x)=2/n, and so on
+
+  Each cubic represents cdf(x), so the CDF of a distribution can be
+    compared with one from the stats module
+
+  For the normal distribution, 10 cubics has a negligible error for the body (p=0.1 to 0.9) in the CDF, and an error of less than 5E-4 in the PDF.
+
+  For the normal distribution, 32 cubics has a negligible error for (p=0.03 to 0.97) in the CDF, and an error of less than 5E-7 in the PDF. For the tails, the CDF error is <5E-3 and the PDF error is up to 0.02
+
+  'Correct' distribution parameters can be generated (e.g. in Scipy) - and checked elsewhere, and then these distributions can be used to validate the CDFs in Owl.
+
+  The Distribution can also then be mapped from an 'x' value to the CDF of x, for example to bucket up values from a continous random variable, where buckets can then be selected to determine patterns for checking for independence
+
+*)
+module Distribution = 
+struct
+
+  (*t Structure *)
+  type t = {
+      name : string;
+      num_buckets : int;
+      cdf_x_array : float array; (* i -> x: cdf(x) = i/num_buckets *)
+      pdf_x_array : float array; (* i -> pdf(x : cdf(x)=i/num_buckets ) *)
+      cubics    : t_cubic array;
+      dut_cdf   : float -> float;
+      dut_pdf   : float -> float;
+    }
+
+  (*f create *)
+  let create name dut_cdf dut_pdf cdf_x_array pdf_x_array =
+    let num_buckets = (Array.length cdf_x_array) - 1 in
+    let num_buckets_f = float num_buckets in
+    let cubics = 
+      let rec add_cubic acc i = (* build acc up in forward order *)
+        if (i>=0) then (
+          let lx  = cdf_x_array.(i) in
+          let rx  = cdf_x_array.(i+1) in
+          let p0  = (float i) /. num_buckets_f in
+          let p1  = (float (i+1)) /. num_buckets_f in
+          let p'0 = pdf_x_array.(i) in
+          let p'1 = pdf_x_array.(i+1) in
+          let c = Cubic.fit lx rx p0 p'0 p1 p'1 in
+          add_cubic (c :: acc) (i-1)
+        ) else (
+          acc
+        )
+      in
+      Array.of_list (add_cubic [] (num_buckets-1))
+    in
+    { name; num_buckets; dut_cdf; dut_pdf; pdf_x_array; cdf_x_array; cubics;}
+
+  (*f value *)
+  let value t i = t.cdf_x_array.(i)
+
+  (*f bucket_of_p - find which bucket p is in *)
+  let bucket_of_p t p =
+    let i = int_of_float (p*.(float t.num_buckets)) in
+    (min (t.num_buckets-1) (max i 0))
+    
+  (*f interp_x_of_p - find x given P(X<x) *)
+  let interp_x_of_p t p =
+    let i = bucket_of_p t p in
+    Cubic.find_x_of_value t.cubics.(i) p
+
+  (*f search_for_x - find which bucket x is in *)
+  let search_for_x t x =
+    let rec find_x li ri =
+      if (ri<=li+1) then
+        (li,ri)
+      else (
+        let mi = (ri+li)/2 in
+        let mx = t.cdf_x_array.(mi) in
+        if (x<mx) then (find_x li mi) else (find_x mi ri)
+      )
+    in
+    let (li,ri) = 
+      if (x<=t.cdf_x_array.(0)) then (0,1)
+      else if (x>=t.cdf_x_array.(t.num_buckets)) then (t.num_buckets-1,t.num_buckets)
+      else (find_x 0 t.num_buckets)
+    in
+    (li,ri,t.num_buckets)
+
+  (*f dut_cdf *)
+  let dut_cdf t = t.dut_cdf
+
+  (*f dut_pdf *)
+  let dut_pdf t = t.dut_pdf
+
+  (*f interp_cdf *)
+  let interp_cdf t x =
+    let (li, ri, ni) = search_for_x t x in
+    Cubic.f t.cubics.(li) x
+
+  (*f interp_pdf *)
+  let interp_pdf t x =
+    let (li, ri, ni) = search_for_x t x in
+    Cubic.df t.cubics.(li) x
+
+  (*f All done *)
+end
+
 (*m RandomTest *)
 module RandomTest = struct
-type test_hypothesis = {
-    test_name : string;
-    score_name: string;
-    hypothesis : M.hypothesis
-  }
+  (*t Structure *)
+  type test_hypothesis = {
+      test_name : string;
+      score_name: string;
+      hypothesis : M.hypothesis
+    }
 
-let make_hypothesis reject p_value score : M.hypothesis =
-     {reject; p_value; score }
+  (*t make_hypothesis *)
+  let make_hypothesis reject p_value score : M.hypothesis =
+    {reject; p_value; score }
 
-let make_test_hypothesis test_name score_name hypothesis =
-     { test_name; score_name; hypothesis; }
+  (*t make_test_hypothesis *)
+  let make_test_hypothesis test_name score_name hypothesis =
+    { test_name; score_name; hypothesis; }
 
-let assert_hypothesis ?should_reject:(should_reject=false) rv_name test_hypothesis =
+  (*t is_fail *)
+  let is_fail t = t.hypothesis.reject
+
+  (*t assert_hypothesis *)
+  let assert_hypothesis ?should_reject:(should_reject=false) rv_name test_hypothesis =
     let hypothesis = test_hypothesis.hypothesis in
     let name       = test_hypothesis.test_name in
     let data_name  = test_hypothesis.score_name in
@@ -54,15 +282,70 @@ let assert_hypothesis ?should_reject:(should_reject=false) rv_name test_hypothes
     Alcotest.(check bool) (sfmt "Statistical test '%s' for random variable '%s'" name rv_name ) should_reject hypothesis.reject;
     ()
 
-    let iterate (sampler: int -> int -> (int *(int -> 'b))) (start:int) (length:int) (f:'c -> 'b -> 'c) (acc:'c) : (int * 'c) =
-      let (actual_length, sampler_next) = sampler start length in
-      let rec x acc i n =
-        if (n<=0) then acc else (
-          let new_acc = f acc (sampler_next i) in
-          x new_acc (i+1) (n-1)
-        )
+  (*t iterate *)
+  let iterate (sampler: int -> int -> (int *(int -> 'b))) (start:int) (length:int) (f:'c -> int -> 'b -> 'c) (acc:'c) : (int * 'c) =
+    let (actual_length, sampler_next) = sampler start length in
+    let rec x acc i n =
+      if (n<=0) then acc else (
+        let new_acc = f acc i (sampler_next i) in
+        x new_acc (i+1) (n-1)
+      )
     in
-     (length, x acc 0 actual_length)
+    (length, x acc 0 actual_length)
+
+  (*t match_distribution *)
+  let match_distribution ?significance:(significance=0.01) (dist:Distribution.t) =
+    let diff i = 
+      let x = (float i) /. 32. in
+      (Distribution.interp_cdf dist x) -. (Distribution.dut_cdf dist x)
+    in
+    let diff2 i = (diff i) ** 2. in
+    let rec sum_diff2 acc i =
+      if (i>=0) then (sum_diff2 (acc +. (diff2 i)) (i-1)) else acc
+    in
+    let p = (sum_diff2 0. 32) /. 32. in (* NOT a probability, but a closeness... *)
+    let hypothesis = make_hypothesis (p < significance) p p in
+    hypothesis
+    
+  (*t do_fft *)
+  module C = Owl.Dense.Matrix.C
+  let do_fft ?significance:(significance=0.01) ?n:(n=1024) f iter =
+    let x = C.zeros 1 n in
+    let blah acc i b =
+      if (i<n) then (C.set x 0 i {Complex.re=(f b); im=0.}); (* -1 or +1 *)
+      acc
+    in
+    let (_,_) = iter blah 0 in
+    C.print ~max_col:64 x;
+    (*
+     *)
+    let f = Owl.Fft.S.fft x in
+    C.print ~max_col:64 f;
+    (*
+     *)
+    let p = 0.95 in
+    let q = (1. -. p) in
+
+    let t2 = (float n) *. (-. (log q)) in
+    Printf.printf "t2 %f \n" t2;
+    let rec count_above_threshold i acc =
+      if (i<0) then acc else (
+        let c = C.get f 0 i in
+        let new_acc = 
+          if (Complex.norm2 c) < t2 then (acc+1) else acc
+        in
+        count_above_threshold (i-1) new_acc
+      )
+    in
+    let n_over = count_above_threshold (n/2-1) 0 in
+    let x = (float n_over) -. ((float (n/2)) *. p) in
+    let x = x /. ( sqrt ( (float (2*n)) *. p *. q ) ) in
+    let x = abs_float x in
+    let p = Maths.erfc x in (* probability of seeing x given the distribution actually is mean 0, sd=1/sqrt(2) *)
+    let hypothesis = make_hypothesis (p < significance) p ((float n_over) /. (float (n/2))) in
+    hypothesis
+
+  (*t All done *)
 end
 
 (*m BinaryTest *)
@@ -90,8 +373,7 @@ module BinaryTest = struct
     *)
   let frequency ?significance:(significance=0.01) ?p:(p=0.5) iter =
     let q = 1. -. p in
-    let inc_if_true_else_dec acc b = 
-      Printf.printf "Acc %d try %b\n" acc b ;
+    let inc_if_true_else_dec acc _ b = 
       if b then (acc+1) else (acc-1)
     in
     let (n,sum) = iter inc_if_true_else_dec 0 in              (* if p=0.5  then sum should have mean 0, sd=sqrt(n) *)
@@ -115,7 +397,7 @@ module BinaryTest = struct
     The probability of an observed value x2 for Chi^2 can be found from the Chi^2 distribution for N degrees of freedom.
     *)
   let block_frequency ?significance:(significance=0.01) ?p:(p=0.5) m iter =
-    let number_ones_in_block (i_of_m,acc,chi2,n) b =
+    let number_ones_in_block (i_of_m,acc,chi2,n) _ b =
       let v = if b then 1 else 0 in
       if (i_of_m+1)==m then
         let chi2_obs = ((float (acc+v))/.(float m) -. p)**2. in
@@ -130,7 +412,7 @@ module BinaryTest = struct
     make_test_hypothesis (sfmt "Block frequency of %d run lengths of size %d" n m) "Chi^2" hypothesis
 
   (*f occurrence_of_patterns
-    Conisder every pattern of M bools/bits, given P(true/1)=p and P(false/0)=1-p=q
+    Consider every pattern of M bools/bits, given P(true/1)=p and P(false/0)=1-p=q
 
     A particular pattern, for example TFFFTFT has probability p*q*q*q*p*q*p = p^3*q^4
 
@@ -153,7 +435,7 @@ module BinaryTest = struct
       else
         (count_ones_in_n (acc+(v land 1)) (i-1) (v lsr 1))
     in
-    let count_observations (sum_z,sum_o,m_seen,pat) b =
+    let count_observations (sum_z,sum_o,m_seen,pat) _ b =
       let v = if b then 1 else 0 in
       let new_pat = ((pat lsl 1) land mask) + v in
       if m_seen==m then (
@@ -190,9 +472,75 @@ module BinaryTest = struct
     let hypothesis = make_hypothesis (p < significance) p chi2 in
     make_test_hypothesis (sfmt "Occurrences of %d-bit patterns in run length of size %d" m n) "Chi^2" hypothesis
     
+  (*f occurrences_of_patterns
+    The issue with the occurrence_of_patterns test is that it is a 99%
+    passing test, for good, independent RVs.
+
+    Which means that a good RV will fail 1% of the tests, and if we
+    run 10 RVs with 20 tests, we will fail on average 2 RVs...
+
+    Furthermore, one should probably run the test numerous times on a
+    single bitstream.
+
+    So, this test runs occurrence_of_patterns a number of times and
+    uses a chi2 test to determine if the number of failures is outside
+    the significance level
+
+   *)
+  let occurrences_of_patterns ?significance:(significance=0.01) n m iter =
+    let rec accum_n acc f n = if (n<=0) then acc else (accum_n (f acc) f (n-1)) in
+    let accum acc = (occurrence_of_patterns ~significance:0.01 m iter) :: acc in
+    let run_results = accum_n [] accum n in
+    let num_passing = List.fold_left (fun a i -> if (is_fail i) then a else (a +. 1.)) 0. run_results in
+    let chi2 = (num_passing -. 0.99 *. (float n))**2. /. (0.99 *. (float n)) in
+    let p = 1. -. (M.chi2_cdf chi2 1.) in
+    let hypothesis = make_hypothesis (p < significance) p num_passing in
+    make_test_hypothesis (sfmt "%d iterations of '%s'" n ((List.hd run_results).test_name)) "Num passing" hypothesis
+    
+  (*f fft *)
+  let fft ?significance:(significance=0.01) ~n iter =
+    let hypothesis = do_fft ~significance:significance ~n:n (fun b -> if b then 1. else (-1.)) iter in
+    make_test_hypothesis (sfmt "FFT of size %d" n) "#peaks above 95% power" hypothesis
+  
   (*f All done *)
 end
 
+(*a CDF approximations *)
+(*a Test cdf setup piece-wise cubic *)
+let test_cdf_setup _ =
+  let (name, dut_cdf, dut_pdf, cdf_x_array, pdf_x_array) = M.
+( "gaussian_u_0.000000_sd_1.000000", (gaussian_cdf ~mu:0.000000 ~sigma:1.000000), (gaussian_pdf ~mu:0.000000 ~sigma:1.000000),
+[|-5.187988;-1.281551;-0.841621;-0.524400;-0.253347;0.000000;0.253347;0.524400;0.841621;1.281551;5.187988;|],
+[|0.000001;0.175498;0.279962;0.347693;0.386343;0.398942;0.386343;0.347693;0.279962;0.175498;0.000001;|]
+)
+(*
+( "gaussian_u_0.000000_sd_1.000000", (gaussian_cdf ~mu:0.000000 ~sigma:1.000000), (gaussian_pdf ~mu:0.000000 ~sigma:1.000000),
+[|-5.187988;-1.862731;-1.534120;-1.318010;-1.150349;-1.009990;-0.887146;-0.776422;-0.674490;-0.579132;-0.488776;-0.402250;-0.318639;-0.237202;-0.157311;-0.078412;0.000000;0.078412;0.157311;0.237202;0.318639;0.402250;0.488776;0.579132;0.674490;0.776422;0.887146;1.009990;1.150349;1.318010;1.534120;1.862731;5.187988;|],
+[|0.000001;0.070382;0.122984;0.167376;0.205854;0.239554;0.269159;0.295126;0.317777;0.337350;0.354024;0.367938;0.379195;0.387875;0.394036;0.397718;0.398942;0.397718;0.394036;0.387875;0.379195;0.367938;0.354024;0.337350;0.317777;0.295126;0.269159;0.239554;0.205854;0.167376;0.122984;0.070382;0.000001;|]
+)
+ *)
+  in
+  let dist = Distribution.create name dut_cdf dut_pdf cdf_x_array pdf_x_array in
+  let sum_diff_cdf_2 = ref 0. in
+  let sum_diff_pdf_2 = ref 0. in
+  for i=1 to 99 do (* ignore the last points - the tails are not a good fit *)
+    let p = ((float i)/.100.0)in
+    let x     = Distribution.interp_x_of_p dist p in
+    let cdf_x = Distribution.interp_cdf dist x in
+    let pdf_x = Distribution.interp_pdf dist x in
+    let dut_cdf_x = Distribution.dut_cdf dist x in
+    let dut_pdf_x = Distribution.dut_pdf dist x in
+    let diff_cdf_2 = (cdf_x -. dut_cdf_x) ** 2. in
+    let diff_pdf_2 = (pdf_x -. dut_pdf_x) ** 2. in
+    sum_diff_cdf_2 := !sum_diff_cdf_2 +. diff_cdf_2;
+    sum_diff_pdf_2 := !sum_diff_pdf_2 +. diff_pdf_2;
+    Printf.printf "%d : %f : %f : %f : %f : %f / %f : %f / %f\n" i p x diff_cdf_2 diff_pdf_2 cdf_x dut_cdf_x pdf_x dut_pdf_x
+  done;
+  Printf.printf "Total sq diff in cdf %f pdf %f\n" !sum_diff_cdf_2 !sum_diff_pdf_2;
+  Alcotest.fail "fail"
+
+(*v distributions
+ *)
 (*a Initialization *)
 let _ =
   Owl_common.PRNG.init ();
@@ -200,30 +548,34 @@ let _ =
 
 (*a Tests *)
 
+(*f test descriptors *)
 let one_third = 1. /. 3.
 type t_bin_iter = IOfBool of  ((int,bool) t_iter -> RandomTest.test_hypothesis)
                 | IIIIOfBool of ((int * int * int * int, bool) t_iter -> RandomTest.test_hypothesis)
                 | IIFIOfBool of ((int * int * float * int, bool) t_iter -> RandomTest.test_hypothesis)
 
-let bin_frequency         = IOfBool    (BinaryTest.frequency)           (* Distribution of (# of 1s in runs of length 7) is uniform *)
-let bin_frequency_1_of_3  = IOfBool    (BinaryTest.frequency ~p:one_third)           (* Distribution of (# of 1s in runs of length 7) is uniform *)
+let bin_frequency             = IOfBool    (BinaryTest.frequency)           (* Distribution of (# of 1s in runs of length 7) is uniform *)
+let bin_frequency_1_of_3      = IOfBool    (BinaryTest.frequency ~p:one_third)           (* Distribution of (# of 1s in runs of length 7) is uniform *)
 
-let bin_block_frequency_7   = IIFIOfBool (BinaryTest.block_frequency 7)     (* Distribution of (# of 1s in runs of length 7) is uniform *)
-let bin_block_frequency_70  = IIFIOfBool (BinaryTest.block_frequency 70)    (* Distribution of (# of 1s in runs of length 70) is uniform *)
-let bin_block_frequency_700 = IIFIOfBool (BinaryTest.block_frequency 700)   (* Distribution of (# of 1s in runs of length 700) is uniform *)
+let bin_block_frequency_7     = IIFIOfBool (BinaryTest.block_frequency 7)     (* Distribution of (# of 1s in runs of length 7) is uniform *)
+let bin_block_frequency_70    = IIFIOfBool (BinaryTest.block_frequency 70)    (* Distribution of (# of 1s in runs of length 70) is uniform *)
+let bin_block_frequency_700   = IIFIOfBool (BinaryTest.block_frequency 700)   (* Distribution of (# of 1s in runs of length 700) is uniform *)
 let bin_block_frequency_1_of_3_7   = IIFIOfBool (BinaryTest.block_frequency ~p:one_third 7)     (* Distribution of (# of 1s in runs of length 7) is uniform *)
 let bin_block_frequency_1_of_3_70  = IIFIOfBool (BinaryTest.block_frequency ~p:one_third 70)    (* Distribution of (# of 1s in runs of length 70) is uniform *)
 let bin_block_frequency_1_of_3_700 = IIFIOfBool (BinaryTest.block_frequency ~p:one_third 700)   (* Distribution of (# of 1s in runs of length 700) is uniform *)
 
-let bin_patterns_2 = IIIIOfBool (BinaryTest.occurrence_of_patterns 2) (* Distribution of overlapping 2-bit patterns is uniform *)
-let bin_patterns_3 = IIIIOfBool (BinaryTest.occurrence_of_patterns 3) (* Distribution of overlapping 3-bit patterns is uniform *)
-let bin_patterns_4 = IIIIOfBool (BinaryTest.occurrence_of_patterns 4) (* Distribution of overlapping 4-bit patterns is uniform *)
-let bin_patterns_5 = IIIIOfBool (BinaryTest.occurrence_of_patterns 5) (* Distribution of overlapping 5-bit patterns is uniform *)
-let bin_patterns_6 = IIIIOfBool (BinaryTest.occurrence_of_patterns 6) (* Distribution of overlapping 6-bit patterns is uniform *)
-let bin_patterns_7 = IIIIOfBool (BinaryTest.occurrence_of_patterns 7) (* Distribution of overlapping 7-bit patterns is uniform *)
-let bin_patterns_8 = IIIIOfBool (BinaryTest.occurrence_of_patterns 8) (* Distribution of overlapping 8-bit patterns is uniform *)
-let bin_patterns_9 = IIIIOfBool (BinaryTest.occurrence_of_patterns 9) (* Distribution of overlapping 9-bit patterns is uniform *)
-let bin_patterns_10 = IIIIOfBool (BinaryTest.occurrence_of_patterns 10) (* Distribution of overlapping 10-bit patterns is uniform *)
+let bin_patterns_2 = IIIIOfBool (BinaryTest.occurrences_of_patterns 8 2) (* Distribution of overlapping 2-bit patterns is uniform *)
+let bin_patterns_3 = IIIIOfBool (BinaryTest.occurrences_of_patterns 8 3) (* Distribution of overlapping 3-bit patterns is uniform *)
+let bin_patterns_4 = IIIIOfBool (BinaryTest.occurrences_of_patterns 8 4) (* Distribution of overlapping 4-bit patterns is uniform *)
+let bin_patterns_5 = IIIIOfBool (BinaryTest.occurrences_of_patterns 8 5) (* Distribution of overlapping 5-bit patterns is uniform *)
+let bin_patterns_6 = IIIIOfBool (BinaryTest.occurrences_of_patterns 8 6) (* Distribution of overlapping 6-bit patterns is uniform *)
+let bin_patterns_7 = IIIIOfBool (BinaryTest.occurrences_of_patterns 8 7) (* Distribution of overlapping 7-bit patterns is uniform *)
+let bin_patterns_8 = IIIIOfBool (BinaryTest.occurrences_of_patterns 8 8) (* Distribution of overlapping 8-bit patterns is uniform *)
+let bin_patterns_9 = IIIIOfBool (BinaryTest.occurrences_of_patterns 8 9) (* Distribution of overlapping 9-bit patterns is uniform *)
+let bin_patterns_10 = IIIIOfBool (BinaryTest.occurrences_of_patterns 8 10) (* Distribution of overlapping 10-bit patterns is uniform *)
+
+let bin_fft_64   = IOfBool (BinaryTest.fft ~n:64)
+let bin_fft_1024 = IOfBool (BinaryTest.fft ~n:1024)
 
 (*f run_random_tests *)
 let run_random_tests test_name pretest sampler tests =
@@ -244,7 +596,7 @@ let run_random_tests test_name pretest sampler tests =
   ()
 
 (*f tests to run if p=1/2 *)
-let tests_for_p_0_5 = [ bin_frequency           ,  false, 0, 1000;
+let tests_for_p_0_5 = [ bin_frequency           ,  false, 0, 2000;
                         bin_frequency           ,  false, 0, 10000;
                         bin_frequency_1_of_3    ,  true, 0, 1000;
                         bin_frequency_1_of_3    ,  true, 0, 10000;
@@ -268,6 +620,8 @@ let tests_for_p_0_5 = [ bin_frequency           ,  false, 0, 1000;
                         bin_patterns_8          ,  false, 0, 10000;
                         bin_patterns_9          ,  false, 0, 10000;
                         bin_patterns_10         ,  false, 0, 10000;
+                        bin_fft_64            ,  false, 0, 1024;
+                        bin_fft_1024          ,  false, 0, 1024;
                       ]
 
 (*f tests to run if p=1/3 *)
@@ -298,6 +652,8 @@ let tests_for_p_0_3 = [ bin_frequency           ,  true, 0, 1000;
                         bin_patterns_8          ,  false, 0, 10000;
                         bin_patterns_9          ,  false, 0, 10000;
                         bin_patterns_10         ,  false, 0, 10000;
+                        bin_fft_64            ,  false, 0, 1024;
+                        bin_fft_1024          ,  false, 0, 1024;
                       ]
 
 (*f test_true_is_not_random - Test that a constant 'true' is not random
@@ -314,6 +670,8 @@ let test_true_is_not_random _ =
   let sampler _ length = (length, (fun _ -> true)) in
   let tests = [ bin_frequency         ,  true, 0, 100;
                 bin_block_frequency_7 ,  true, 0, 100;
+                bin_fft_64            ,  false, 0, 1024;
+                bin_fft_1024          ,  true, 0, 1024; (* there is one frequency here - expect others randomly to exceed 95% too *)
               ] in
   run_random_tests test_name pretest sampler tests
 
@@ -445,44 +803,51 @@ let test_uniform_ints_1_100 _ =
  *)
 let test_uniform_ints_1_100_even _ =
   let test_name = "uniform_int ~a:1 ~b:100 even" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_common.PRNG.sfmt_seed 0 in
   let sampler _ length = (length, (fun _ -> ((M.uniform_int_rvs ~a:1 ~b:100) land 1)==0)) in
-  let tests = [ bin_frequency           ,  false, 0, 100;
-                bin_frequency           ,  false, 0, 1000;
-                bin_frequency           ,  false, 0, 10000;
-                bin_block_frequency_7   ,  false, 0, 100;
-                bin_block_frequency_7   ,  false, 0, 1000;
-                bin_block_frequency_70  ,  false, 0, 1000;
-                bin_block_frequency_70  ,  false, 0, 10000;
-                bin_block_frequency_700 ,  false, 0, 10000;
-                bin_block_frequency_700 ,  false, 0, 100000;
-                bin_patterns_2          ,  false, 0, 1000;
-                bin_patterns_3          ,  false, 0, 1000;
-                bin_patterns_4          ,  false, 0, 1000;
-                bin_patterns_5          ,  true , 0, 1000; (* !!! *)
-                bin_patterns_6          ,  true, 0, 1000; (* !!! *)
-                bin_patterns_7          ,  true, 0, 1000; (* !!! *)
-                bin_patterns_7          ,  false, 0, 10000;
-                bin_patterns_8          ,  false, 0, 10000;
-                bin_patterns_9          ,  false, 0, 10000;
-                bin_patterns_10         ,  false, 0, 10000;
-              ] in
+  let tests = tests_for_p_0_5 in
   run_random_tests test_name pretest sampler tests
 
-(*f test_uniform_ints_1_100_biased - Test the Uniform random variable in Owl with 1-100<=48
+(*f test_uniform_ints_0_to_65535 <bit> - Test the Uniform random variable in Owl with 0 to 65535 for a particular bit
+
+  Since the uniform should be random, and any single bit P(0-65535) = 0.5, all tests should accept
+    the null hypothesis that the distribution is random
+
+ *)
+let test_uniform_ints_0_to_65535 (bit:int) _ =
+  let test_name = sfmt "uniform_int ~a:0 ~b:65535 bit %d" bit in
+  let pretest _ = Owl_common.PRNG.sfmt_seed 0 in
+  let sampler _ length = (length, (fun _ -> (((M.uniform_int_rvs ~a:0 ~b:65535) lsr bit) land 1)==0)) in
+  let tests = tests_for_p_0_5 in
+  run_random_tests test_name pretest sampler tests
+let test_uniform_ints_0_to_65535_bit_0 _ = test_uniform_ints_0_to_65535 0 ()
+let test_uniform_ints_0_to_65535_bit_1 _ = test_uniform_ints_0_to_65535 1 ()
+let test_uniform_ints_0_to_65535_bit_2 _ = test_uniform_ints_0_to_65535 2 ()
+let test_uniform_ints_0_to_65535_bit_3 _ = test_uniform_ints_0_to_65535 3 ()
+let test_uniform_ints_0_to_65535_bit_4 _ = test_uniform_ints_0_to_65535 4 ()
+let test_uniform_ints_0_to_65535_bit_5 _ = test_uniform_ints_0_to_65535 5 ()
+let test_uniform_ints_0_to_65535_bit_6 _ = test_uniform_ints_0_to_65535 6 ()
+let test_uniform_ints_0_to_65535_bit_7 _ = test_uniform_ints_0_to_65535 7 ()
+let test_uniform_ints_0_to_65535_bit_8 _ = test_uniform_ints_0_to_65535 8 ()
+let test_uniform_ints_0_to_65535_bit_9 _ = test_uniform_ints_0_to_65535 9 ()
+let test_uniform_ints_0_to_65535_bit_10 _ = test_uniform_ints_0_to_65535 10 ()
+let test_uniform_ints_0_to_65535_bit_11 _ = test_uniform_ints_0_to_65535 11 ()
+let test_uniform_ints_0_to_65535_bit_12 _ = test_uniform_ints_0_to_65535 12 ()
+let test_uniform_ints_0_to_65535_bit_13 _ = test_uniform_ints_0_to_65535 13 ()
+let test_uniform_ints_0_to_65535_bit_14 _ = test_uniform_ints_0_to_65535 14 ()
+let test_uniform_ints_0_to_65535_bit_15 _ = test_uniform_ints_0_to_65535 15 ()
+
+(*f test_uniform_ints_1_100_48 - Test the Uniform random variable in Owl with 1-100<=48
 
   Since the uniform should be random, and P(1-100<48) = 0.48, most tests should accept
     the null hypothesis that the distribution is random
-
-  However, depending on the seed some should fail - particularly longer pattern lengths
-  For example, for seed=1, bin_patterns_8 fails
 
   The longer frequency tests should reject the null hypothesis though
 
  *)
 let test_uniform_ints_1_100_48 _ =
   let test_name = "uniform_int ~a:1 ~b:100 <= 48" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_common.PRNG.sfmt_seed 0 in
   let sampler _ length = (length, (fun _ -> (M.uniform_int_rvs ~a:1 ~b:100)<=48)) in
   let tests = [ bin_frequency           ,  false, 0, 100;
                 bin_frequency           ,  false, 0, 1000;
@@ -492,7 +857,7 @@ let test_uniform_ints_1_100_48 _ =
                 bin_block_frequency_70  ,  false, 0, 1000;
                 bin_block_frequency_70  ,  false, 0, 10000;
                 bin_block_frequency_700 ,  false, 0, 10000;
-                bin_block_frequency_700 ,  false, 0, 100000;
+                bin_block_frequency_700 ,  true, 0, 100000;
                 bin_patterns_2          ,  false, 0, 1000;
                 bin_patterns_3          ,  false, 0, 1000;
                 bin_patterns_4          ,  false, 0, 1000;
@@ -500,7 +865,7 @@ let test_uniform_ints_1_100_48 _ =
                 bin_patterns_6          ,  false, 0, 1000;
                 bin_patterns_7          ,  false, 0, 1000;
                 bin_patterns_7          ,  false, 0, 10000;
-                bin_patterns_8          ,  true, 0, 10000;
+                bin_patterns_8          ,  false, 0, 10000;
                 bin_patterns_9          ,  false, 0, 10000;
                 bin_patterns_10         ,  false, 0, 10000;
                 bin_patterns_7          ,  false, 0, 100000;
@@ -515,14 +880,12 @@ let test_uniform_ints_1_100_48 _ =
   Since the uniform should be random, and P(1-100<45) = 0.45, most tests should accept
     the null hypothesis that the distribution is random
 
-  Indeed, for seed=1, bin_patterns_8 passes, even though it fails for P=0.48
-
   The frequency tests should reject the null hypothesis though
 
  *)
 let test_uniform_ints_1_100_45 _ =
   let test_name = "uniform_int ~a:1 ~b:100 <= 45" in
-  let pretest _ = Owl_common.PRNG.sfmt_seed 1 in
+  let pretest _ = Owl_common.PRNG.sfmt_seed 0 in
   let sampler _ length = (length, (fun _ -> (M.uniform_int_rvs ~a:1 ~b:100)<=45)) in
   let tests = [ bin_frequency           ,  false, 0, 100;
                 bin_frequency           ,  true, 0, 1000;
@@ -902,4 +1265,23 @@ let test_set = [
   "chi2_df_4", `Slow, test_chi2_df_4;
   "chi2_df_4_p0_3_left", `Slow, test_chi2_df_4_p0_3_left;
   "chi2_df_4_p0_3_right", `Slow, test_chi2_df_4_p0_3_right;
+(*
+  "blah", `Slow, test_blah;
+ *)
+  "uniform_ints_0_to_65536_bit_0", `Slow, test_uniform_ints_0_to_65535_bit_0;
+  "uniform_ints_0_to_65536_bit_1", `Slow, test_uniform_ints_0_to_65535_bit_1;
+  "uniform_ints_0_to_65536_bit_2", `Slow, test_uniform_ints_0_to_65535_bit_2;
+  "uniform_ints_0_to_65536_bit_3", `Slow, test_uniform_ints_0_to_65535_bit_3;
+  "uniform_ints_0_to_65536_bit_4", `Slow, test_uniform_ints_0_to_65535_bit_4;
+  "uniform_ints_0_to_65536_bit_5", `Slow, test_uniform_ints_0_to_65535_bit_5;
+  "uniform_ints_0_to_65536_bit_6", `Slow, test_uniform_ints_0_to_65535_bit_6;
+  "uniform_ints_0_to_65536_bit_7", `Slow, test_uniform_ints_0_to_65535_bit_7;
+  "uniform_ints_0_to_65536_bit_8", `Slow, test_uniform_ints_0_to_65535_bit_8;
+  "uniform_ints_0_to_65536_bit_9", `Slow, test_uniform_ints_0_to_65535_bit_9;
+  "uniform_ints_0_to_65536_bit_10", `Slow, test_uniform_ints_0_to_65535_bit_10;
+  "uniform_ints_0_to_65536_bit_11", `Slow, test_uniform_ints_0_to_65535_bit_11;
+  "uniform_ints_0_to_65536_bit_12", `Slow, test_uniform_ints_0_to_65535_bit_12;
+  "uniform_ints_0_to_65536_bit_13", `Slow, test_uniform_ints_0_to_65535_bit_13;
+  "uniform_ints_0_to_65536_bit_14", `Slow, test_uniform_ints_0_to_65535_bit_14;
+  "uniform_ints_0_to_65536_bit_15", `Slow, test_uniform_ints_0_to_65535_bit_15;
 ]
