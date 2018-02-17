@@ -45,10 +45,46 @@ double binomial_pdf (int64_t k, double p, int64_t n) {
     else if (p == 1)
       return (k == n) ? 1 : 0;
     else {
-      //double ln_Cnk = gsl_sf_lnchoose (n, k);
-      //double p_ = ln_Cnk + k * log (p) + (n - k) * log1p (-p);
-      //return exp (_p);
-      return 0.;
+      double ln_cnk = sf_log_combination (n, k);
+      double pp = ln_cnk + k * log (p) + (n - k) * log1p (-p);
+      return exp (pp);
     }
   }
+}
+
+
+double binomial_logpdf (int64_t k, double p, int64_t n) {
+  return log (binomial_pdf (k, p, n));
+}
+
+
+double binomial_cdf (int k, double p, int n) {
+  if (k >= n)
+    return 1.;
+  else {
+    double a = (double) k + 1.;
+    double b = (double) n - k;
+    return beta_sf(p, a, b);
+  }
+}
+
+
+double binomial_logcdf (int k, double p, int n) {
+  return log (binomial_cdf (k, p, n));
+}
+
+
+double binomial_sf (int k, double p, int n) {
+  if (k >= n)
+    return 0.;
+  else {
+    double a = (double) k + 1.;
+    double b = (double) n - k;
+    return beta_cdf (p, a, b);
+  }
+}
+
+
+double binomial_logsf (int k, double p, int n) {
+  return log (binomial_sf (k, p, n));
 }
