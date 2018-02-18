@@ -100,7 +100,7 @@ value owl_stub_uniform_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = uniform_sf(q, a, b);
+  double x = uniform_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -171,7 +171,7 @@ value owl_stub_exponential_logsf(value vX, value vA) {
 value owl_stub_exponential_isf(value vQ, value vA) {
   double a = Double_val(vA);
   double q = Double_val(vQ);
-  double x = exponential_sf(q, a);
+  double x = exponential_isf(q, a);
   return caml_copy_double(x);
 }
 
@@ -251,7 +251,7 @@ value owl_stub_gaussian_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = gaussian_sf(q, a, b);
+  double x = gaussian_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -331,7 +331,7 @@ value owl_stub_gamma_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = gamma_sf(q, a, b);
+  double x = gamma_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -411,7 +411,7 @@ value owl_stub_beta_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = beta_sf(q, a, b);
+  double x = beta_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -482,7 +482,7 @@ value owl_stub_chi2_logsf(value vX, value vA) {
 value owl_stub_chi2_isf(value vQ, value vA) {
   double a = Double_val(vA);
   double q = Double_val(vQ);
-  double x = chi2_sf(q, a);
+  double x = chi2_isf(q, a);
   return caml_copy_double(x);
 }
 
@@ -562,7 +562,7 @@ value owl_stub_f_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = f_sf(q, a, b);
+  double x = f_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -642,7 +642,7 @@ value owl_stub_cauchy_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = cauchy_sf(q, a, b);
+  double x = cauchy_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -731,7 +731,7 @@ value owl_stub_t_isf(value vQ, value vA, value vB, value vC) {
   double b = Double_val(vB);
   double c = Double_val(vC);
   double q = Double_val(vQ);
-  double x = t_sf(q, a, b, c);
+  double x = t_isf(q, a, b, c);
   return caml_copy_double(x);
 }
 
@@ -891,7 +891,7 @@ value owl_stub_lomax_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = lomax_sf(q, a, b);
+  double x = lomax_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -971,7 +971,7 @@ value owl_stub_weibull_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = weibull_sf(q, a, b);
+  double x = weibull_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -1051,7 +1051,7 @@ value owl_stub_laplace_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = laplace_sf(q, a, b);
+  double x = laplace_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -1131,7 +1131,7 @@ value owl_stub_gumbel1_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = gumbel1_sf(q, a, b);
+  double x = gumbel1_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -1211,7 +1211,7 @@ value owl_stub_gumbel2_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = gumbel2_sf(q, a, b);
+  double x = gumbel2_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -1291,7 +1291,7 @@ value owl_stub_logistic_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = logistic_sf(q, a, b);
+  double x = logistic_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -1371,7 +1371,7 @@ value owl_stub_lognormal_isf(value vQ, value vA, value vB) {
   double a = Double_val(vA);
   double b = Double_val(vB);
   double q = Double_val(vQ);
-  double x = lognormal_sf(q, a, b);
+  double x = lognormal_isf(q, a, b);
   return caml_copy_double(x);
 }
 
@@ -1442,7 +1442,7 @@ value owl_stub_rayleigh_logsf(value vX, value vA) {
 value owl_stub_rayleigh_isf(value vQ, value vA) {
   double a = Double_val(vA);
   double q = Double_val(vQ);
-  double x = rayleigh_sf(q, a);
+  double x = rayleigh_isf(q, a);
   return caml_copy_double(x);
 }
 
