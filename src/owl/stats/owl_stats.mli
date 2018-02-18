@@ -311,10 +311,10 @@ val binomial_pdf : int -> p:float -> n:int -> float
 (** ``binomial_pdf k ~p ~n`` *)
 
 val binomial_logpdf : int -> p:float -> n:int -> float
-(** ``binomial_pdf k ~p ~n`` *)
+(** ``binomial_logpdf k ~p ~n`` *)
 
 val binomial_cdf : int -> p:float -> n:int -> float
-(** ``binomial_logpdf k ~p ~n`` *)
+(** ``binomial_cdf k ~p ~n`` *)
 
 val binomial_logcdf : int -> p:float -> n:int -> float
 (** ``binomial_logcdf k ~p ~n`` *)
