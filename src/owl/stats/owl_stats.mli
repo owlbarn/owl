@@ -304,26 +304,26 @@ val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypot
 val uniform_int_rvs : a:int -> b:int -> int
 (** TODO *)
 
-val binomial_rvs : float -> int -> int
-(** TODO *)
+val binomial_rvs : p:float -> n:int -> int
+(** ``binomial_rvs p n`` *)
 
-val binomial_pdf : int -> float -> int -> float
-(** TODO *)
+val binomial_pdf : int -> p:float -> n:int -> float
+(** ``binomial_pdf k ~p ~n`` *)
 
-val binomial_logpdf : int -> float -> int -> float
-(** TODO *)
+val binomial_logpdf : int -> p:float -> n:int -> float
+(** ``binomial_pdf k ~p ~n`` *)
 
-val binomial_cdf : int -> float -> int -> float
-(** TODO *)
+val binomial_cdf : int -> p:float -> n:int -> float
+(** ``binomial_logpdf k ~p ~n`` *)
 
-val binomial_logcdf : int -> float -> int -> float
-(** TODO *)
+val binomial_logcdf : int -> p:float -> n:int -> float
+(** ``binomial_logcdf k ~p ~n`` *)
 
-val binomial_sf : int -> float -> int -> float
-(** TODO *)
+val binomial_sf : int -> p:float -> n:int -> float
+(** ``binomial_sf k ~p ~n`` *)
 
-val binomial_logsf : int -> float -> int -> float
-(** TODO *)
+val binomial_logsf : int -> p:float -> n:int -> float
+(** ``binomial_logsf k ~p ~n`` *)
 
 val hypergeometric_rvs : good:int -> bad:int -> sample:int -> int
 (** TODO *)

@@ -339,16 +339,16 @@ external hypergeometric_pdf : int -> good:int -> bad:int -> sample:int -> float 
 
 external hypergeometric_logpdf : int -> good:int -> bad:int -> sample:int -> float = "owl_stub_hypergeometric_logpdf"
 
-external binomial_rvs : float -> int -> int = "owl_stub_binomial_rvs"
+external binomial_rvs : p:float -> n:int -> int = "owl_stub_binomial_rvs"
 
-external binomial_pdf : int -> float -> int -> float = "owl_stub_binomial_pdf"
+external binomial_pdf : int -> p:float -> n:int -> float = "owl_stub_binomial_pdf"
 
-external binomial_logpdf : int -> float -> int -> float = "owl_stub_binomial_logpdf"
+external binomial_logpdf : int -> p:float -> n:int -> float = "owl_stub_binomial_logpdf"
 
-external binomial_cdf : int -> float -> int -> float = "owl_stub_binomial_cdf"
+external binomial_cdf : int -> p:float -> n:int -> float = "owl_stub_binomial_cdf"
 
-external binomial_logcdf : int -> float -> int -> float = "owl_stub_binomial_logcdf"
+external binomial_logcdf : int -> p:float -> n:int -> float = "owl_stub_binomial_logcdf"
 
-external binomial_sf : int -> float -> int -> float = "owl_stub_binomial_sf"
+external binomial_sf : int -> p:float -> n:int -> float = "owl_stub_binomial_sf"
 
-external binomial_logsf : int -> float -> int -> float = "owl_stub_binomial_logsf"
+external binomial_logsf : int -> p:float -> n:int -> float = "owl_stub_binomial_logsf"
