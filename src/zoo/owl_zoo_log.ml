@@ -14,7 +14,7 @@ let _syscall cmd =
        Buffer.add_channel buf ic 1
      done
    with End_of_file -> ());
-  let _ = Unix.close_process (ic, oc) in
+  Unix.close_process (ic, oc);
   Buffer.contents buf
 
 let _create_log () =
