@@ -23,9 +23,9 @@ let parse_gist_string gist =
     else if (len = 2 || len = 3) then (
       let v = List.nth lst 1 in
       match v with
-        | "remote" -> Owl_zoo_log.find_latest_vid_remote gid
-        | "latest" -> Owl_zoo_log.find_latest_vid_local  gid
-        | _        -> v
+      | "remote" -> Owl_zoo_log.find_latest_vid_remote gid
+      | "latest" -> Owl_zoo_log.find_latest_vid_local  gid
+      | _        -> v
     )
     else failwith "Zoo error: Illegal parameters numbers"
   in
