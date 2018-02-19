@@ -45,11 +45,11 @@ double weibull_ppf(double p, double shape, double scale) {
 }
 
 double weibull_sf(double x, double shape, double scale) {
-  return exp(-pow(x / shape, scale));
+  return exp(-pow(x / scale, shape));
 }
 
 double weibull_logsf(double x, double shape, double scale) {
-  return -pow(x / shape, scale);
+  return -pow(x / scale, shape);
 }
 
 double weibull_isf(double q, double shape, double scale) {
