@@ -39,7 +39,7 @@ double laplace_logcdf(double x, double loc, double scale) {
 }
 
 double laplace_ppf(double q, double loc, double scale) {
-  return (q > 0.5) ? (loc + scale * log(2 * (1 - q))) : (loc + scale * log(2 * q));
+  return (q > 0.5) ? (loc - scale * log(2 * (1 - q))) : (loc + scale * log(2 * q));
 }
 
 double laplace_sf(double x, double loc, double scale) {

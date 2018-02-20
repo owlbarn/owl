@@ -1351,6 +1351,7 @@ let nnz x = _owl_nnz (kind x) (numel x) x
 
 let density x = (nnz x |> float_of_int) /. (numel x |> float_of_int)
 
+
 (* input/output functions *)
 
 let print_index i =

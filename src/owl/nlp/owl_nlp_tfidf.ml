@@ -7,8 +7,6 @@
 
 open Owl_nlp_utils
 
-module Vec = Owl_dense.Ndarray.D
-
 
 type tf_typ =
   | Binary
@@ -276,9 +274,9 @@ let density m =
   iteri (fun _ _ -> nnz := !nnz + 1) m;
   (float_of_int !nnz) /. (n_d *. n_t)
 
-let doc_to_vec m x =
-  let v = Vec.zeros [|vocab_len m|] in
-  Array.iter (fun (i, a) -> Vec.set v [|i|] a) x;
+let doc_to_vec k m x =
+  let v = Owl_dense.Ndarray.Generic.zeros k [|vocab_len m|] in
+  Array.iter (fun (i, a) -> Owl_dense.Ndarray.Generic.set v [|i|] a) x;
   v
 
 (* calculate pairwise distance for the whole model, format (id,dist) *)
@@ -292,6 +290,7 @@ let all_pairwise_distance typ m x =
 let nearest ?(typ=Owl_nlp_similarity.Cosine) m x k =
   let l = all_pairwise_distance typ m x in
   Array.sub l 0 k
+
 
 
 (* ends here *)

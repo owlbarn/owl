@@ -53,6 +53,7 @@ double vonmises_rvs(double mu, double kappa) {
 }
 
 double vonmises_pdf(double x, double mu, double kappa) {
+  x = x - mu;
   return exp(kappa * cos(x)) / (2 * OWL_PI * i0(kappa));
 }
 

@@ -6,128 +6,152 @@ module M = Owl_maths
 (* define the test error *)
 let eps = 1e-10
 
+let approx_equal a b = Pervasives.(abs_float (a -. b) < eps)
+
 
 (* a module with functions to test *)
 module To_test = struct
 
   let test_j0 () =
-    M.j0 0.5 -. 0.93846980724081297 < eps
+    approx_equal (M.j0 0.5) 0.93846980724081297
 
   let test_j1 () =
-    M.j1 0.5 -. 0.24226845767487387 < eps
+    approx_equal (M.j1 0.5) 0.24226845767487387
 
   let test_jv () =
-    M.jv 0.1 0.3 -. 0.85180759557596664 < eps
+    approx_equal (M.jv 0.1 0.3) 0.85180759557596664
 
   let test_y0 () =
-    M.y0 0.5 -. (-0.44451873350670662) < eps
+    approx_equal (M.y0 0.5) (-0.44451873350670662)
 
   let test_y1 () =
-    M.y1 0.3 -. (-2.2931051383885293) < eps
+    approx_equal (M.y1 0.3) (-2.2931051383885293)
 
   let test_yv () =
-    M.yv 0.3 0.2 -. (-1.470298525261079) < eps
+    approx_equal (M.yv 0.3 0.2) (-1.470298525261079)
 
   let test_i0 () =
-    M.i0 0.3 -. 1.0226268793515974 < eps
+    approx_equal (M.i0 0.3) 1.0226268793515974
 
   let test_i0e () =
-    M.i0e 0.3 -. 0.7575806251825481 < eps
+    approx_equal (M.i0e 0.3) 0.7575806251825481
 
   let test_i1 () =
-    M.i1 0.3 -. 0.15169384000359282 < eps
+    approx_equal (M.i1 0.3) 0.15169384000359282
 
   let test_i1e () =
-    M.i1e 0.3 -. 0.11237756063983881 < eps
+    approx_equal (M.i1e 0.3) 0.11237756063983881
 
   let test_iv () =
-    M.iv 0.3 0.1 -. 0.45447035229197424 < eps
+    approx_equal (M.iv 0.3 0.1) 0.45447035229197424
 
   let test_k0 () =
-    M.k0 0.3 -. 1.3724600605442983 < eps
+    approx_equal (M.k0 0.3) 1.3724600605442983
 
   let test_k0e () =
-    M.k0e 0.3 -. 1.8526273007720155 < eps
+    approx_equal (M.k0e 0.3) 1.8526273007720155
 
   let test_k1 () =
-    M.k1 0.3 -. 3.0559920334573252 < eps
+    approx_equal (M.k1 0.3) 3.0559920334573252
 
   let test_k1e () =
-    M.k1e 0.3 -. 4.12515776224447 < eps
+    approx_equal (M.k1e 0.3) 4.12515776224447
 
   let test_airy () =
     let a, b, c, d = M.airy 0.7 in
-    a -. 0.18916240039814997 < eps &&
-    b +. 0.19985119158228049 < eps &&
-    c -. 0.97332865587816564 < eps &&
-    d -. 0.65440591917213997 < eps
+    approx_equal a 0.18916240039814997 &&
+    approx_equal b (-0.19985119158228049) &&
+    approx_equal c 0.97332865587816564 &&
+    approx_equal d 0.65440591917213997
 
   let test_ellipj () =
     let a, b, c, d = M.ellipj 0.2 0.3 in
-    a -. 0.19828063826280756 < eps &&
-    b -. 0.98014528948013302 < eps &&
-    c -. 0.99408522599776539 < eps &&
-    d -. 0.19960341784106181 < eps
+    approx_equal a 0.19828063826280756 &&
+    approx_equal b 0.98014528948013302 &&
+    approx_equal c 0.99408522599776539 &&
+    approx_equal d 0.19960341784106181
 
   let test_ellipk () =
-    M.ellipk 0.3 -. 1.713889448178791 < eps
+    approx_equal (M.ellipk 0.3) 1.713889448178791
 
   let test_ellipkm1 () =
-    M.ellipkm1 0.3 -. 2.0753631352924691 < eps
+    approx_equal (M.ellipkm1 0.3) 2.0753631352924691
 
   let test_ellipkinc () =
-    M.ellipkinc 0.2 0.3 -. 0.20039894647982787 < eps
+    approx_equal (M.ellipkinc 0.2 0.3) 0.20039894647982787
 
   let test_ellipe () =
-    M.ellipe 0.3 -. 1.4453630644126654 < eps
+    approx_equal (M.ellipe 0.3) 1.4453630644126654
 
   let test_ellipeinc () =
-    M.ellipeinc 0.2 0.3 -. 0.19960247841509551 < eps
+    approx_equal (M.ellipeinc 0.2 0.3) 0.19960247841509551
 
   let test_gamma () =
-    M.gamma 0.7 -. 1.2980553326475581 < eps
+    approx_equal (M.gamma 0.7) 1.2980553326475581
 
   let test_rgamma () =
-    M.rgamma 0.7 -. 0.7703831838665659 < eps
+    approx_equal (M.rgamma 0.7) 0.7703831838665659
 
   let test_loggamma () =
-    M.loggamma 0.7 -. 0.26086724653166637 < eps
+    approx_equal (M.loggamma 0.7) 0.26086724653166637
 
   let test_gammainc () =
-    M.gammainc 0.2 0.7 -. 0.91521960195630503 < eps
+    approx_equal (M.gammainc 0.2 0.7) 0.91521960195630503
 
   let test_gammaincinv () =
-    M.gammaincinv 0.2 0.7 -. 0.12103758588873516 < eps
+    approx_equal (M.gammaincinv 0.2 0.7) 0.12103758588873516
 
   let test_gammaincc () =
-    M.gammaincc 0.2 0.7 -. 0.084780398043694499 < eps
+    approx_equal (M.gammaincc 0.2 0.7) 0.084780398043694499
 
   let test_gammainccinv () =
-    M.gammainccinv 0.2 0.7 -. 0.0015877907243441165 < eps
+    approx_equal (M.gammainccinv 0.2 0.7) 0.0015877907243441165
 
   let test_psi () =
-    M.psi 0.7 -. (-1.2200235536979349) < eps
+    approx_equal (M.psi 0.7) (-1.2200235536979349)
 
   let test_beta () =
-    M.beta 0.2 0.7 -. 5.5764636958498768 < eps
+    approx_equal (M.beta 0.2 0.7) 5.5764636958498768
 
   let test_betainc () =
-    M.betainc 0.1 0.2 0.7 -. 0.71632698299586095 < eps
+    approx_equal (M.betainc 0.1 0.2 0.7) 0.71632698299586095
 
   let test_bdtr () =
-    M.bdtr 5 25 0.2 -. 0.6166894117793692 < eps
+    approx_equal (M.bdtr 5 25 0.2) 0.6166894117793692
 
   let test_bdtrc () =
-    M.bdtrc 5 25 0.2 -. 0.3833105882206313 < eps
+    approx_equal (M.bdtrc 5 25 0.2) 0.3833105882206313
 
   let test_bdtri () =
-    M.bdtri 5 25 0.2 -. 0.29781277333188838 < eps
+    approx_equal (M.bdtri 5 25 0.2) 0.29781277333188838
 
   let test_btdtr () =
-    M.btdtr 5. 25. 0.2 -. 0.71605354811801325 < eps
+    approx_equal (M.btdtr 5. 25. 0.2) 0.71605354811801325
 
   let test_btdtri () =
-    M.btdtri 5. 25. 0.2 -. 0.10833617793798132 < eps
+    approx_equal (M.btdtri 5. 25. 0.2) 0.10833617793798132
+
+  let test_fact () =
+    let x = [|0; 1; 10; 50; 100; 150; 170|] in
+    let y = Array.map M.fact x in
+    let z = [|1.; 1.; 3628800.; 3.04140932017133780436126081661e+64; 9.33262154439441526816992388563e+157; 5.71338395644585459047893286526e+262; 7.25741561530799896739672821113e+306|] in
+    let z = Array.map2 approx_equal y z in
+    Array.for_all (fun a -> a = true) z
+
+  let test_log_fact () =
+    let x = [|0; 1; 10; 50; 100; 150; 170|] in
+    let y = Array.map M.log_fact x in
+    let z = [|0.; 0.; 15.1044125730755159; 148.47776695177302; 363.73937555556347; 605.020105849423658; 706.573062245787355|] in
+    let z = Array.map2 approx_equal y z in
+    Array.for_all (fun a -> a = true) z
+
+  let test_combination () =
+    let n = 100 in
+    let x = [|0; 1; 10; 30; 50; 80|] in
+    let y = Array.map (M.combination_float n) x in
+    let z = [|1.; 100.; 17310309456440.; 2.93723398216109426e+25; 1.0089134454556422e+29; 5.35983370403809657e+20|] in
+    let z = Array.map2 (fun a b -> a -. b) y z in
+    Array.for_all (fun a -> a < 1e-8) z
 
 end
 
@@ -245,6 +269,15 @@ let test_btdtr () =
 let test_btdtri () =
   Alcotest.(check bool) "test btdtri" true (To_test.test_btdtri ())
 
+let test_fact () =
+  Alcotest.(check bool) "test fact" true (To_test.test_fact ())
+
+let test_log_fact () =
+  Alcotest.(check bool) "test log_fact" true (To_test.test_log_fact ())
+
+let test_combination () =
+  Alcotest.(check bool) "test combination" true (To_test.test_combination ())
+
 let test_set = [
   "test j0", `Slow, test_j0;
   "test j1", `Slow, test_j1;
@@ -283,4 +316,7 @@ let test_set = [
   "test bdtri", `Slow, test_bdtri;
   "test btdtr", `Slow, test_btdtr;
   "test btdtri", `Slow, test_btdtri;
+  "test fact", `Slow, test_fact;
+  "test log_fact", `Slow, test_log_fact;
+  "test combination", `Slow, test_combination;
 ]

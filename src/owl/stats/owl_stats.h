@@ -214,7 +214,20 @@ extern double noncentral_f_rvs(double dfnum, double dfden, double nonc);
 
 /** Binomial distribution **/
 
-// TODO
+extern long binomial_rvs (double p, long n);
+
+extern double binomial_pdf (long k, double p, long n);
+
+extern double binomial_logpdf (long k, double p, long n);
+
+extern double binomial_cdf (long k, double p, long n);
+
+extern double binomial_logcdf (long k, double p, long n);
+
+extern double binomial_sf (long k, double p, long n);
+
+extern double binomial_logsf (long k, double p, long n);
+
 
 /** Negative Binomial distribution **/
 

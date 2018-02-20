@@ -222,18 +222,18 @@ end
 
 module FTreeLDA = struct
 
-  let init m = ()
+  let init m = failwith "FTreeLDA: not implemented"
 
-  let sampling m d doc = ()
+  let sampling m d doc = failwith "FTreeLDA: not implemented"
 
 end
 
 
 module LightLDA = struct
 
-  let init m = ()
+  let init m = failwith "LightLDA: not implemented"
 
-  let sampling m d doc = ()
+  let sampling m d doc = failwith "LightLDA: not implemented"
 
 end
 
