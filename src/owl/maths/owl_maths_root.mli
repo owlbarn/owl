@@ -3,6 +3,7 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+
 (** Root finding algorithms *)
 
 val bisec : ?max_iter:int -> ?xtol:float -> (float -> float) -> float -> float -> float
