@@ -64,20 +64,20 @@ module Make
 
   (** {6 Iteration functions} *)
 
-  val iteri : (int array -> A.elt -> unit) -> t -> unit
+  val iteri : (int -> A.elt -> unit) -> t -> unit
   (**
 ``iteri f x`` iterates and applies ``f`` to every element in ``x``. ``f`` has type
-``f : int array -> elt -> unit``, the first paramater is index. The function
-is much slower than ``iter``.
+``f : int array -> elt -> unit``, the first paramater is index. 1d indices are
+passed to the user function.
    *)
 
   val iter : (A.elt -> unit) -> t -> unit
   (** Similar to ``iteri``, the index is not passed in. *)
 
-  val mapi : (int array -> A.elt -> A.elt) -> t -> unit
+  val mapi : (int -> A.elt -> A.elt) -> t -> unit
   (**
 ``mapi f x`` applies ``f : int array -> elt -> elt`` to every element in ``x``,
-then save the result in place. This function is much slower than ``map``.
+then save the result in place. 1d indices are passed to the user function.
    *)
 
   val map : (A.elt -> A.elt) -> t -> unit
@@ -98,6 +98,45 @@ the result in place in ``x``.
 and ``y``, then saves the result in ``y``. So be careful with the order, it
 matters, the data reflected by view ``y`` will be modified.
    *)
+
+  val iteri_nd : (int array -> A.elt -> unit) -> t -> unit
+  (**
+Similar to `iteri` but n-d indices are passed in. This function is much slower
+than `iteri`.
+   *)
+
+  val mapi_nd : (int array -> A.elt -> A.elt) -> t -> unit
+  (**
+Similar to `mapi` but n-d indices are passed in. This function is much slower
+than `mapi`.
+   *)
+
+
+  (** {6 Examination & Comparison}  *)
+
+  val exists : (A.elt -> bool) -> t -> bool
+  (**
+``exists f x`` checks all the elements in ``x`` using ``f``. If at least one
+element satisfies ``f`` then the function returns ``true`` otherwise ``false``.
+   *)
+
+  val not_exists : (A.elt -> bool) -> t -> bool
+  (**
+  ``not_exists f x`` checks all the elements in ``x``, the function returns
+  ``true`` only if all the elements fail to satisfy ``f : float -> bool``.
+   *)
+
+  val for_all : (A.elt -> bool) -> t -> bool
+  (**
+  ``for_all f x`` checks all the elements in ``x``, the function returns ``true``
+  if and only if all the elements pass the check of function ``f``.
+   *)
+
+  val equal : t -> t -> bool
+  (** ``equal x y`` returns ``true`` if ``x`` and ``y`` are elementwise equal. *)
+
+  val not_equal : t -> t -> bool
+  (** ``not_equal x y`` returns ``true`` if ``x`` and ``y`` are not elementwise equal. *)
 
 
 end

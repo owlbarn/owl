@@ -1,6 +1,10 @@
 ### 0.3.4 (in progress)
 
 * Fix some bugs and improve the performance.
+* Add Adam learning rate algorithm in Optimise module.
+* Add a number of statistical functions into Stats.
+* Enhance View functor and add more functions.
+* Include and documentation of NLP modules.
 
 
 ### 0.3.3 (2018-02-12)

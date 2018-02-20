@@ -2,6 +2,7 @@
 
 let () =
   Alcotest.run "Owl" [
+    "stats_rvs",            Unit_stats_rvs.test_set;
     "stats",                Unit_stats.test_set;
     "maths",                Unit_maths.test_set;
     "algodiff diff",        Unit_algodiff_diff.test_set;
@@ -27,4 +28,5 @@ let () =
     "base: pooling3d",      Unit_base_pool3d.test_set;
     "base: conv2d",         Unit_base_conv2d.test_set;
     "base: conv3d",         Unit_base_conv3d.test_set;
+    "view",                 Unit_view.test_set;
   ]

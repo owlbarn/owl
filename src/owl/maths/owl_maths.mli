@@ -355,6 +355,12 @@ val fact : int -> float
 val log_fact : int -> float
 (** Logarithm of factorial function ``log_fact n`` calculates ``log n!``. *)
 
+val doublefact : int -> float
+(** Double factorial function ``doublefact n`` calculates ... TODO *)
+
+val log_doublefact : int -> float
+(** Logarithm of double factorial function ``log_doublefact n`` calculates ... TODO *)
+
 val permutation : int -> int -> int
 (** ``permutation n k`` return the number of permutations of n things taken k at a time. *)
 
@@ -365,13 +371,16 @@ k at a time. This function can deal with larger range than ``permutation``.
  *)
 
 val combination : int -> int -> int
-(** ``combination n k`` return the combination number of taking k out of n. *)
+(** ``combination n k`` return the combination number of taking ``k`` out of ``n``. *)
 
 val combination_float : int -> int -> float
 (**
-``combination_float n k`` return the combination number of taking k out of n.
-This function can deal with larger range than ``combination``.
+``combination_float n k`` return the combination number of taking ``k`` out of
+``n``. This function can deal with larger range than ``combination``.
  *)
+
+val log_combination : int -> int -> float
+(** ``log_combination n k`` return the logarithm of combination number of taking ``k`` out of ``n``. *)
 
 
 (** {6 Error functions} *)

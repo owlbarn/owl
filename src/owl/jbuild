@@ -94,6 +94,7 @@
     ; maths
     owl_maths_special_impl
     owl_maths_special_stub
+    owl_maths_special_gamma
     sf_error
     airy
     bdtr

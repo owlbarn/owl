@@ -175,6 +175,21 @@ external btdtr : float -> float -> float -> float = "owl_stub_sf_btdtr"
 external btdtri : float -> float -> float -> float = "owl_stub_sf_btdtri"
 
 
+(* Factorial functions *)
+
+external fact : int -> float = "owl_stub_sf_fact"
+
+external log_fact : int -> float = "owl_stub_sf_log_fact"
+
+external doublefact : int -> float = "owl_stub_sf_doublefact"
+
+external log_doublefact : int -> float = "owl_stub_sf_log_doublefact"
+
+external combination : int -> int -> float = "owl_stub_sf_combination"
+
+external log_combination : int -> int -> float = "owl_stub_sf_log_combination"
+
+
 (* Other functions *)
 
 external nextafter : float -> float -> float = "stub_sf_nextafter"

@@ -134,7 +134,7 @@ Note that the ranking starts with one!
  *)
 
 val histogram : float array -> int -> int array
-(** TODO *)
+(** ``histogram x n`` creates a histogram of ``n`` buckets for ``x``. *)
 
 val ecdf : float array -> float array * float array
 (**
@@ -303,6 +303,27 @@ val wilcoxon : ?alpha:float -> ?side:tail -> float array -> float array -> hypot
 
 val uniform_int_rvs : a:int -> b:int -> int
 (** TODO *)
+
+val binomial_rvs : p:float -> n:int -> int
+(** ``binomial_rvs p n`` *)
+
+val binomial_pdf : int -> p:float -> n:int -> float
+(** ``binomial_pdf k ~p ~n`` *)
+
+val binomial_logpdf : int -> p:float -> n:int -> float
+(** ``binomial_logpdf k ~p ~n`` *)
+
+val binomial_cdf : int -> p:float -> n:int -> float
+(** ``binomial_cdf k ~p ~n`` *)
+
+val binomial_logcdf : int -> p:float -> n:int -> float
+(** ``binomial_logcdf k ~p ~n`` *)
+
+val binomial_sf : int -> p:float -> n:int -> float
+(** ``binomial_sf k ~p ~n`` *)
+
+val binomial_logsf : int -> p:float -> n:int -> float
+(** ``binomial_logsf k ~p ~n`` *)
 
 val hypergeometric_rvs : good:int -> bad:int -> sample:int -> int
 (** TODO *)

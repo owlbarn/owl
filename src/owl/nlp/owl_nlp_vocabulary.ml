@@ -79,7 +79,7 @@ let _trim_percent_w2f lo hi h =
   ) h
 
 (* similar to _trim_percent, but trim all three hashtbls in the vocabulary *)
-let trim_percent lo hi vocab =
+let trim_percent ~lo ~hi vocab =
   let d = copy vocab in
   _trim_percent_w2f lo hi d.i2f;
   Hashtbl.filter_map_inplace (fun i w ->
@@ -97,7 +97,7 @@ let _trim_count_w2f lo hi h =
   ) h
 
 (* similar to trim_count but trim all three hashtbls *)
-let trim_count lo hi vocab =
+let trim_count ~lo ~hi vocab =
   let d = copy vocab in
   _trim_count_w2f lo hi d.i2f;
   Hashtbl.filter_map_inplace (fun i w ->
@@ -120,7 +120,7 @@ Hashtbl.filter_map_inplace (fun w v ->
 (* return both word->index and index->word hashtbl
   lo: percentage of lower bound of word frequency
   hi: percentage of higher bound of word frequency
-  fname: file name of the corpus, each line contains a doc
+  fname: file name of the vocabulary, each line contains a doc
  *)
 let build ?(lo=0.) ?(hi=1.) ?stopwords fname =
   let w2f = Hashtbl.create (64 * 1024) in
