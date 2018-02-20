@@ -3,7 +3,7 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-let dir = Owl_zoo_log.dir
+let dir = Owl_zoo_config.dir
 
 let parse_gist_string gist =
   let strip_string s =
@@ -13,33 +13,32 @@ let parse_gist_string gist =
     if ((String.length s) = len) then s
     else failwith ("Zoo error: invalid " ^ info ^ ":" ^ s)
   in
+
   let regex = Str.regexp "/" in
   let lst = Str.split_delim regex gist
     |> List.map strip_string in
-  let gid = List.hd lst in
-  let len = List.length lst in
-  let vid =
-    if (len = 1 ) then Owl_zoo_log.find_latest_vid_remote gid
-    else if (len = 2 || len = 3) then (
-      let v = List.nth lst 1 in
-      match v with
-        | "remote" -> Owl_zoo_log.find_latest_vid_remote gid
-        | "latest" -> Owl_zoo_log.find_latest_vid_local  gid
-        | _        -> v
-    )
-    else failwith "Zoo error: Illegal parameters numbers"
+
+  let gid, vid =
+    match lst with
+    | gid :: [] -> gid, Owl_zoo_log.find_latest_vid_remote gid
+    | gid :: vid :: _ ->
+      gid,
+      (match vid with
+      | "remote" -> Owl_zoo_log.find_latest_vid_remote gid
+      | "latest" -> Owl_zoo_log.find_latest_vid_local  gid
+      | _        -> vid)
+    | _ -> failwith "Zoo error: Illegal parameters numbers"
   in
   let pin =
-    if (len = 1 || len = 2) then false
-    else if (len = 3) then (
-      if (List.nth lst 2 = "pin") then true else false
-    )
-    else failwith "Zoo error: Illegal parameters numbers"
+    match lst with
+    | a :: b :: ["pin"] -> true
+    | _ -> false
   in
+
   (validate_len gid 32 "gist id"), (validate_len vid 40 "version id"), pin
 
 
-let _deploy_gist gid vid =
+let _download_gist gid vid =
   if (Owl_zoo_log.check_log gid vid) = true then
     Owl_log.info "owl_zoo: %s / %s cached" gid vid
   else (
@@ -68,7 +67,7 @@ let rec _extract_zoo_gist f root =
 
 
 and _dir_zoo_ocaml gid vid root =
-  let dir_gist = dir ^ gid ^ "/" ^ vid in
+  let dir_gist = dir ^ "/" ^ gid ^ "/" ^ vid in
   Sys.readdir (dir_gist)
     |> Array.to_list
     |> List.filter (fun s -> Filename.check_suffix s "ml")
@@ -87,7 +86,7 @@ and process_dir_zoo gist =
     if flag then (Owl_utils.marshal_from_file dagfile)
     else (
       let root = Owl_graph.node (gid, vid) in
-      _deploy_gist gid vid;
+      _download_gist gid vid;
       _dir_zoo_ocaml gid vid root;
       root
     )

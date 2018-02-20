@@ -5,7 +5,7 @@
 
 open Owl
 
-let dir = Owl_zoo_log.dir
+let dir = Owl_zoo_config.dir
 
 let eval cmd = cmd
   |> Lexing.from_string
@@ -29,22 +29,18 @@ let preprocess script =
   tmp_script
 
 
-(* TODO: use single gid to express "removing all versions of this gist" *)
-let remove_gist ?(all=false) gist =
-  let gid, vid, _ = Owl_zoo_dir.parse_gist_string gist in
-  let vid = if all then vid else "" in
-  let dir = dir ^ gid ^ "/" ^ vid in
+let remove_gist gid =
+  let dir = dir ^ "/" ^ gid ^ "/" in
   let cmd = Printf.sprintf "rm -rf %s" dir in
   let ret = Sys.command cmd in
   if ret = 0 then (
-    Owl_zoo_log.remove_log gid vid;
+    Owl_zoo_log.remove_log gid;
     Owl_log.debug "owl_zoo: %s removed" gid
   )
   else Owl_log.debug "owl_zoo: Error remvoing gist %s" gid
 
 
-let upload_gist gist =
-  let gid, _, _ = Owl_zoo_dir.parse_gist_string gist in
+let upload_gist gid =
   Owl_log.debug "owl_zoo: %s uploading" gid;
   let cmd = Printf.sprintf "owl_upload_gist.sh %s" gid in
   Sys.command cmd |> ignore
@@ -59,9 +55,10 @@ let download_gist gist =
   else (Owl_log.debug "owl_zoo: Error downloading gist %s" gid)
 
 
-let list_gist () =
-  Owl_log.debug "owl_zoo: %s" dir;
-  let cmd = Printf.sprintf "owl_list_gist.sh" in
+let list_gist gid =
+  let path = dir ^ "/" ^ gid in
+  Owl_log.debug "owl_zoo: %s" path;
+  let cmd = Printf.sprintf "owl_list_gist.sh %s" path in
   Sys.command cmd |> ignore
 
 
@@ -76,7 +73,7 @@ let update_gist gists =
 
 let show_info gist =
   let gid, vid, _ = Owl_zoo_dir.parse_gist_string gist in
-  let dir = dir ^ gid ^ "/" ^ vid in
+  let dir = dir ^ "/" ^ gid ^ "/" ^ vid in
   let files = Sys.readdir dir
     |> Array.fold_left (fun a s -> a ^ s ^ " ") ""
   in
@@ -98,11 +95,9 @@ let show_info gist =
   print_endline info
 
 
-(* format "gist/file", e.g., d7bdd62b355f906ed059f00b1270b79c/readme.md *)
-let load_file f =
-  let gist = Filename.dirname f in
-  let file = Filename.basename f in
-  let path = Printf.sprintf "%s%s/%s" dir gist file in
+let load_file gist f =
+  let gid, vid, _ = Owl_zoo_dir.parse_gist_string gist in
+  let path = Printf.sprintf "%s/%s" (Owl_zoo_config.extend_dir gid vid) f in
   Owl_utils.read_file_string path
 
 
@@ -118,11 +113,6 @@ let run_gist gist =
   let content = Printf.sprintf "\n#zoo \"%s\"\n" gist in
   Utils.write_file tmp_script content;
   run [|""|] tmp_script |> ignore
-
-
-let extend_dir gist =
-  let gid, vid, _ = Owl_zoo_dir.parse_gist_string gist in
-  dir ^ gid ^ "/" ^ vid
 
 
 let print_info () =

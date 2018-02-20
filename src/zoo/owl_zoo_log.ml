@@ -3,8 +3,7 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-let dir = Sys.getenv "HOME" ^ "/.owl/zoo/"
-let log = dir ^ "log.htb"
+let log = Owl_zoo_config.log
 
 let _syscall cmd =
   let ic, oc = Unix.open_process cmd in
@@ -45,24 +44,13 @@ let update_log (gid : string) (vid : string) =
   )
 
 (* only the vid of remove function can be "" *)
-let remove_log (gid : string) (vid : string) =
+let remove_log (gid : string)  =
   if not (Sys.file_exists log) then _create_log ()
   else (
     let tb = Owl_utils.marshal_from_file log in
     try
-      let v = Hashtbl.find tb gid in
-      if not (vid = "") then (
-        let v' = v
-        |> Array.to_list
-        (* remove vid from list *)
-        |> List.filter (fun x -> not (x = vid))
-        |> Array.of_list
-        in
-        Hashtbl.replace tb gid v'
-      )
-      else Hashtbl.remove tb gid;
+      Hashtbl.remove tb gid;
       Owl_utils.marshal_to_file tb log
-    (* gid not found *)
     with Not_found -> ()
   )
 

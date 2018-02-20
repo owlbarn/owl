@@ -6,7 +6,7 @@
 
 (** {6 Manipulate gists} *)
 
-val remove_gist : ?all:bool -> string -> unit
+val remove_gist : string -> unit
 (** Remove a local gist of given id. *)
 
 val upload_gist : string -> unit
@@ -15,8 +15,8 @@ val upload_gist : string -> unit
 val download_gist : string -> unit
 (** Download the gist of given id. *)
 
-val list_gist : unit -> unit
-(** List all the local gists. *)
+val list_gist : string -> unit
+(** ``list_gist ""`` lists all the local gists; ``list_gist gist`` lists all the local versions of a gist. *)
 
 val update_gist : string array -> unit
 (** Update the zoo gist bundles of an array of gist ids. *)
@@ -27,8 +27,8 @@ val show_info : string -> unit
 
 (** {6 Execute gists} *)
 
-val load_file : string -> string
-(** Load a zoo file with the given file name, the file path is relative to the default zoo folder. *)
+val load_file : string -> string -> string
+(** Load a zoo file with the given gist name and file name, the file path is relative to the default zoo folder. *)
 
 val eval : string -> unit
 (** Evaluate an OCaml expression in toplevel. *)
@@ -50,6 +50,3 @@ val print_info : unit -> unit
 
 val start_toplevel : unit -> unit
 (** Start the toplevel system tailored for Owl's zoo system. *)
-
-val extend_dir : string -> string
-(** ``extend_dir gist`` locate the directory of a file in a given ``gist`` *)
