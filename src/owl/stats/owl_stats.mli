@@ -134,7 +134,7 @@ Note that the ranking starts with one!
  *)
 
 val histogram : float array -> int -> int array
-(** TODO *)
+(** ``histogram x n`` creates a histogram of ``n`` buckets for ``x``. *)
 
 val ecdf : float array -> float array * float array
 (**
