@@ -28,7 +28,7 @@ module Make
 
   type t
   (**
-``t`` is an abstract type to represent an experssion, it is also an alias
+``t`` is an abstract type to represent an expression, it is also an alias
 for type ``node``. Type ``node`` is only for internal use in the module.
    *)
 
