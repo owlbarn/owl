@@ -4,7 +4,39 @@
  *)
 
 
-(** Root finding algorithms *)
+(** Root finding algorithms for nonlinear functions *)
+
+
+(** {6 Type definition} *)
+
+type solver =
+  | Bisec
+  | FalsePos
+  | Ridder
+  | Brent
+(** Type of root functions of univariate functions. *)
+
+
+(** {6 Core functions} *)
+
+val fzero : ?solver:solver -> ?max_iter:int -> ?xtol:float -> (float -> float) -> float -> float -> float
+(**
+``fzero ~solver f a b`` tries to find the root of univariate function ``f`` in
+the bracket ``[a, b]`` using method ``solver``. This is the hub function of the
+individual root finding algorithms in the following sections. You can certainly
+call each individual ones.
+
+Parameters:
+  * ``solver``: solver, default one is Brent method.
+  * ``max_iter``: maximum number of iterations, default value is ``1000``.
+  * ``xtol``: the tolerance of ``x`` on abscissa, default value is ``1e-6``.
+  * ``f``: the univariate scalar function to find root.
+  * ``a``: boundary of bracket.
+  * ``b``: boundary of bracket.
+ *)
+
+
+(** {6 Root of univariate functions} *)
 
 val bisec : ?max_iter:int -> ?xtol:float -> (float -> float) -> float -> float -> float
 (**
@@ -57,6 +89,5 @@ Parameters:
   * ``a``: boundary of bracket.
   * ``b``: boundary of bracket.
 
-Refer to Brent, R. P., Algorithms for Minimization Without Derivatives. Englewood Cliffs, NJ: Prentice-Hall, 1973. Ch. 3-4.
-
+Refer to :cite:`brent2013algorithms`
  *)
