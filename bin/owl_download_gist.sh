@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 GIST=$1
-VER=$2
+GVER=$2
 DIRNAME=$3
 
 if [ -z $DIRNAME ]; then
@@ -16,13 +16,13 @@ if [ -z $GIST ]; then
   exit 1
 fi
 
-if [ -z $VER ]; then
+if [ -z $GVER ]; then
   echo "usage: `basename $0` <gist_id> <version_id> <dirname>"
   exit 1
 fi
 
 GIST_DIR=$(echo $GIST | tr '/' '-')
-MODEL_DIR="$DIRNAME/$GIST_DIR/$VER"
+MODEL_DIR="$DIRNAME/$GIST_DIR/$GVER"
 
 if [ -d $MODEL_DIR ]; then
     echo "Warning: $MODEL_DIR already exists, overwriting!"
@@ -30,7 +30,7 @@ fi
 
 echo "Downloading the gist to $MODEL_DIR ..."
 mkdir -p $MODEL_DIR
-wget https://codeload.github.com/gist/$GIST/zip/$VER -O $MODEL_DIR/gist_ver.zip
+wget https://codeload.github.com/gist/$GIST/zip/$GVER -O $MODEL_DIR/gist_ver.zip
 unzip -o -j $MODEL_DIR/gist_ver.zip -d $MODEL_DIR
 rm $MODEL_DIR/gist_ver.zip
 echo "Succeed!"

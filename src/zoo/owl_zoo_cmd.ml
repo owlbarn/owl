@@ -68,7 +68,11 @@ let update_gist gists =
     else gists
   in
   Owl_log.debug "owl_zoo: updating %i gists" Array.(length gists);
-  Array.iter download_gist gists
+  let download_remote gid =
+    let v = Owl_zoo_log.find_latest_vid_remote gid in
+    download_gist (gid ^ "/" ^ v)
+  in
+  Array.iter download_remote gists
 
 
 let show_info gist =

@@ -3,7 +3,9 @@
  * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
+
 let log = Owl_zoo_config.log
+
 
 let _syscall cmd =
   let ic, oc = Unix.open_process cmd in
@@ -13,13 +15,15 @@ let _syscall cmd =
        Buffer.add_channel buf ic 1
      done
    with End_of_file -> ());
-  let _ = Unix.close_process (ic, oc) in
+  Unix.close_process (ic, oc);
   Buffer.contents buf
+
 
 let _create_log () =
   let tb = Hashtbl.create 128 in
   Hashtbl.add tb "" [|""|];
   Owl_utils.marshal_to_file tb log
+
 
 let check_log (gid : string) (vid : string) =
   if not (Sys.file_exists log) then _create_log ();
@@ -28,6 +32,7 @@ let check_log (gid : string) (vid : string) =
     let v = Hashtbl.find tb gid in
     Array.mem vid v
   with Not_found -> false
+
 
 let update_log (gid : string) (vid : string) =
   if not (Sys.file_exists log) then _create_log ();
@@ -43,7 +48,7 @@ let update_log (gid : string) (vid : string) =
     Owl_utils.marshal_to_file tb log
   )
 
-(* only the vid of remove function can be "" *)
+
 let remove_log (gid : string)  =
   if not (Sys.file_exists log) then _create_log ()
   else (
@@ -54,6 +59,7 @@ let remove_log (gid : string)  =
     with Not_found -> ()
   )
 
+
 let find_latest_vid_remote (gid : string) =
   let cmd = "curl https://api.github.com/gists/" ^ gid ^
     " | grep '\"version\"' | head -n1 | grep -o -E '[0-9A-Za-z]+' | grep -v 'version'"
@@ -61,6 +67,7 @@ let find_latest_vid_remote (gid : string) =
   let ret = _syscall cmd in
   if ret = "" then "" else
   String.sub ret 0 ((String.length ret) - 1)
+
 
 let find_latest_vid_local (gid : string) =
   if not (Sys.file_exists log) then _create_log ();
