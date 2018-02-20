@@ -53,7 +53,7 @@ standardized moment of ``x``.
  *)
 
 val central_moment : int -> float array -> float
-(** TODO *)
+(** ``central_moment n x`` calcuates the ``n`` th central moment of ``x``. *)
 
 val cov : ?m0:float -> ?m1:float -> float array -> float array -> float
 (** ``cov x0 x1`` calculates the covariance of ``x0`` and ``x1``, the mean of ``x0``
