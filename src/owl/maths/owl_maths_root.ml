@@ -118,3 +118,100 @@ let ridder ?(max_iter=1000) ?(xtol=1e-6) f a b =
       !x
     with _ -> !x;
   )
+
+
+(* Brent's algorithm *)
+
+let brent ?(max_iter=1000) ?(xtol=1e-6) f a b =
+  let fa = f a in
+  let fb = f b in
+  assert (fa *. fb < 0.);
+
+  if fa = 0. then a
+  else if fb = 0. then b
+  else (
+    let xa = ref a in
+    let xb = ref b in
+    let xc = ref b in
+    let fc = ref fb in
+    let fa = ref fa in
+    let fb = ref fb in
+    let d = ref infinity in
+    let e = ref infinity in
+    let p = ref infinity in
+    let q = ref infinity in
+    let r = ref infinity in
+    let eps = 3e-16 in
+
+    try
+      for i = 1 to max_iter do
+
+        if (!fb > 0. && !fc > 0.) || (!fb < 0. && !fc < 0.) then (
+          xc := !xa;
+          fc := !fa;
+          d := !xb -. !xa;
+          e := !d;
+        );
+
+        if (abs_float !fc < abs_float !fb) then (
+          xa := !xb;
+          xb := !xc;
+          xc := !xa;
+          fa := !fb;
+          fb := !fc;
+          fc := !fa;
+        );
+
+        let tol = 2. *. eps *. (abs_float !xb) +. 0.5 *. xtol in
+        let xm = 0.5 *. (!xc -. !xb) in
+        assert ((abs_float xm >= tol) && !fb != 0.);
+
+        (* 1st strategy: inverse quadratic interpolation *)
+        if (abs_float !e >= tol) && (abs_float !fa > abs_float !fb) then (
+          let s = !fb /. !fa in
+          if !xa = !xc then (
+            p := 2. *. xm *. s;
+            q := 1. -. s;
+          )
+          else (
+            q := !fa /. !fc;
+            r := !fb /. !fc;
+            p := s *. (2. *. xm *. !q *. (!q -. !r) -. (!xb -. !xa) *. (!r -. 1.));
+            q := (!q -. 1.) *. (!r -. 1.) *. (s -. 1.);
+          );
+
+          if !p > 0. then q := -.(!q);
+          p := abs_float !p;
+          let min1 = 3. *. xm *. !q -. abs_float (tol *. !q) in
+          let min2 = abs_float (!e *. !q) in
+
+          if (2. *. !p) < (min min1 min2) then (
+            e := !d;
+            d := !p /. !q;
+          )
+          else (
+            d := xm;
+            e := !d;
+          )
+        )
+        (* 2nd strategy: bisection method *)
+        else (
+          d := xm;
+          e := !d;
+        );
+
+        (* adjust the position *)
+        xa := !xb;
+        fa := !fb;
+        if (abs_float !d) > tol then xb := !xb +. !d
+        else xb := !xb +. (if tol > 0. then xm else -.xm);
+        fb := f !xb;
+
+      done;
+      !xb
+    with _ -> !xb;
+  )
+
+
+
+(* ends here *)
