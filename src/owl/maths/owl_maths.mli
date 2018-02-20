@@ -560,6 +560,13 @@ val is_even : int -> bool
 val is_pow2 : int -> bool
 (** ``is_pow2 x`` return ``true`` if ``x`` is integer power of 2, e.g. 32, 64, etc. *)
 
+val same_sign : float -> float -> bool
+(**
+``same_sign x y`` returns ``true`` if ``x`` and ``y`` have the same sign,
+otherwise it returns ``false``. Positive and negative zeros are special cases
+and always returns ``true``.
+ *)
+
 val nextafter : float -> float -> float
 (**
 ``nextafter from to`` returns the next representable double precision value
