@@ -3,7 +3,16 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-(** Root finding algorithms *)
+(** Root finding algorithms for nonlinear functions *)
+
+
+(** type definition *)
+
+type solver =
+  | Bisec
+  | FalsePos
+  | Ridder
+  | Brent
 
 
 (* Bisection algorithm *)
@@ -213,7 +222,13 @@ let brent ?(max_iter=1000) ?(xtol=1e-6) f a b =
   )
 
 
-(* Helper functions *)
+let fzero ?(solver=Brent) ?(max_iter=1000) ?(xtol=1e-6) f a b =
+  match solver with
+  | Bisec    -> bisec ~max_iter ~xtol f a b
+  | FalsePos -> false_pos ~max_iter ~xtol f a b
+  | Ridder   -> ridder ~max_iter ~xtol f a b
+  | Brent    -> brent ~max_iter ~xtol f a b
+
 
 let bracket_expand ?(rate=1.6) ?(max_iter=100) f a b =
   assert (a < b);
@@ -236,6 +251,7 @@ let bracket_expand ?(rate=1.6) ?(max_iter=100) f a b =
 
   if Owl_maths.same_sign !fa !fb then None
   else Some (!xa, !xb)
+
 
 
 (* ends here *)

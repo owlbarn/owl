@@ -162,7 +162,8 @@
     ; Experimental switches
     ; -ffast-math may break IEEE754 semantics
     -march=native -mfpmath=sse -funroll-loops -ffast-math
-    ;-flto
+    ; Turn off LTO since it is not well supported at the moment
+    ; -flto
     ; For Mersenne Twister RNG
     -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing
     ; Turn off the warning on logical op parentheses

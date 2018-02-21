@@ -1,5 +1,5 @@
 #!/usr/bin/env owl
-(* This example demonstrates how to use Owl to implement SqueezeNet.
+(* This example demonstrates how to use Owl to implement SqueezeNet (https://arxiv.org/abs/1602.07360).
   Note that only the network structure of SqueezeNet is defined.
 
   If you want to use SqueezeNet for inference, please use Zoo system to
