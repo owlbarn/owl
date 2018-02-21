@@ -240,9 +240,9 @@ let bracket_expand ?(rate=1.6) ?(max_iter=100) f a b =
     try
       for i = 1 to max_iter do
         assert (Owl_maths.same_sign !fa !fb);
-        let d = (!xb - !xa) *. rate in
-        xa := !xa - d;
-        xb := !xb + d;
+        let d = (!xb -. !xa) *. rate in
+        xa := !xa -. d;
+        xb := !xb +. d;
         fa := f !xa;
         fb := f !xb;
       done

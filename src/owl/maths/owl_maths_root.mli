@@ -91,3 +91,19 @@ Parameters:
 
 Refer to :cite:`brent2013algorithms`
  *)
+
+
+(** {6 Helper functions} *)
+
+val bracket_expand : ?rate:float -> ?max_iter:int -> (float -> float) -> float -> float -> (float * float) option
+(**
+``bracket_expand f a b`` expands the bracket ``[a, b]`` for a given function
+``f`` until it finds ``f a`` and ``f b`` have different signs.
+
+Parameters:
+  * ``max_iter``: maximum number of iterations, the default is 100
+  * ``rate``: rate of growth, the default is 1.6
+  * ``f``: the univariate scalar function to find root.
+  * ``a``: initial boundary of bracket.
+  * ``b``: initial boundary of bracket.
+ *)
