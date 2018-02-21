@@ -18,11 +18,11 @@ let str_to_chars s =
 
 
 let prepare wndsz stepsz =
-  Log.info "load file ...";
+  Owl_log.info "load file ...";
   let txt = load_file "217ef87bc36845c4e78e398d52bc4c5b/wonderland.txt" in
   let chars = txt |> String.lowercase_ascii |> str_to_chars in
 
-  Log.info "build vocabulary ...";
+  Owl_log.info "build vocabulary ...";
   let h = Hashtbl.create 1024 in
   Array.iter (fun c ->
     if Hashtbl.mem h c = false then Hashtbl.add h c c
@@ -36,10 +36,10 @@ let prepare wndsz stepsz =
       Hashtbl.add i2w (float_of_int i) w;
     );
 
-  Log.info "tokenise ...";
+  Owl_log.info "tokenise ...";
   let tokens = Array.map (Hashtbl.find w2i) chars in
 
-  Log.info "make x matrix (indices) ...";
+  Owl_log.info "make x matrix (indices) ...";
   let m = (Array.length chars - wndsz) / stepsz in
   let x = Dense.Matrix.S.zeros m wndsz in
   for i = 0 to m - 1 do
@@ -48,14 +48,14 @@ let prepare wndsz stepsz =
     done;
   done;
 
-  Log.info "make y matrix (one-hot) ...";
+  Owl_log.info "make y matrix (one-hot) ...";
   let y = Dense.Matrix.S.zeros m (Hashtbl.length w2i) in
   for i = 0 to m - 1 do
     let j = int_of_float tokens.(i*stepsz + wndsz) in
     Dense.Matrix.S.set y i j 1.
   done;
 
-  Log.info "chars:%i, symbols:%i, wndsz:%i, stepsz:%i"
+  Owl_log.info "chars:%i, symbols:%i, wndsz:%i, stepsz:%i"
     (String.length txt) (Hashtbl.length w2i) wndsz stepsz;
   w2i, i2w, x, y
 
@@ -73,13 +73,13 @@ let test nn i2w wndsz tlen x =
   let all_char = ref x in
   let nxt_char = Dense.Matrix.S.zeros 1 1 in
   for i = 0 to tlen - 1 do
-    let xt = Dense.Matrix.S.get_slice_simple [[];[i;i+wndsz-1]] !all_char in
+    let xt = Dense.Matrix.S.get_slice [[];[i;i+wndsz-1]] !all_char in
     let yt = Graph.run (Arr xt) nn |> unpack_arr in
     let _, next_i = Dense.Matrix.S.max_i yt in
     Dense.Matrix.S.set nxt_char 0 0 (float_of_int next_i.(1));
     all_char := Dense.Matrix.S.(!all_char @|| nxt_char)
   done;
-  Dense.Matrix.S.get_slice_simple [[];[wndsz;-1]] !all_char
+  Dense.Matrix.S.get_slice [[];[wndsz;-1]] !all_char
   |> Dense.Matrix.S.to_array
   |> Array.map (Hashtbl.find i2w)
   |> Array.fold_left (fun a c -> a ^ (String.make 1 c)) ""

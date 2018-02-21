@@ -1,6 +1,6 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 
@@ -20,10 +20,10 @@ let rec _extract_zoo_gist f added =
 
 and _deploy_gist dir gist =
   if Sys.file_exists (dir ^ gist) = true then (
-    Log.info "owl_zoo: %s cached" gist
+    Owl_log.info "owl_zoo: %s cached" gist
   )
   else (
-    Log.info "owl_zoo: %s missing" gist;
+    Owl_log.info "owl_zoo: %s missing" gist;
     Owl_zoo_cmd.download_gist gist
   )
 

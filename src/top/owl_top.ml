@@ -1,6 +1,6 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 
@@ -12,6 +12,7 @@ let printers = [
   "Owl.Neural.D.Graph.pp_network";
   "Owl.Algodiff.S.pp_num";
   "Owl.Algodiff.D.pp_num";
+  "Owl.Graph.pp_node";
 ]
 
 

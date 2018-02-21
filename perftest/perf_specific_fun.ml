@@ -5,10 +5,6 @@
 
 open Bigarray
 
-let c_mat_to_array2d x = Obj.magic (Bigarray.genarray_of_array2 x)
-
-let array2d_to_c_mat x = Bigarray.array2_of_genarray (Obj.magic x)
-
 let _ = let conf = Gc.get () in Gc.(conf.verbose <- 0x80); Gc.set conf
 
 let print_gc_stat () =
@@ -35,15 +31,11 @@ let test_02 _ = Owl_dense_matrix_generic.iter (fun a -> ()) x
 
 let test_03 _ = Owl_dense_matrix_generic.map (fun a -> 0.) x
 
-let test_04 _ =
-  let x = c_mat_to_array2d x in
-  Owl_dense_ndarray_generic.map (fun a -> 0.) x
+let test_04 _ = Owl_dense_ndarray_generic.map (fun a -> 0.) x
 
 let test_05 _ = Owl_dense_matrix_generic.is_zero y
 
-let test_06 _ =
-  let y = c_mat_to_array2d y in
-  Owl_dense_ndarray_generic.is_zero y
+let test_06 _ = Owl_dense_ndarray_generic.is_zero y
 
 let test_07 _ = Owl_dense_matrix_generic.min x
 
@@ -59,7 +51,7 @@ let test_12 _ = Owl_dense_matrix_generic.is_nonnegative x
 
 let test_13 _ = Owl_dense_matrix_generic.is_nonpositive y
 
-let test_14 _ = Owl_dense_ndarray_generic.nnz (Owl_dense_matrix_generic.to_ndarray y)
+let test_14 _ = Owl_dense_ndarray_generic.nnz y
 
 let test_15 _ = Owl_dense_matrix_generic.add_scalar x 2.
 
@@ -77,24 +69,24 @@ let test_20 _ = Owl.Dense.Matrix.D.transpose x
 
 let test_21 _ =
   for i = 1 to 10000 do
-    let x = Owl.Mat.empty 1000 1000 in
-    Array2.fill x 0.;
+    let x = Owl.Dense.Matrix.Generic.empty Float64 1000 1000 in
+    Owl.Dense.Matrix.Generic.fill x 0.;
     Gc.compact ()
   done
 
 let test_22 _ =
   for i = 1 to 10000 do
-    let x = Array2.create Float32 C_layout 1000 1000 in
-    Array2.fill x 0.;
+    let x = Owl.Dense.Matrix.Generic.empty Float32 1000 1000 in
+    Owl.Dense.Matrix.Generic.fill x 0.;
     Gc.compact ()
   done
 
 let test_23 _ =
-  let x = ref (Array2.create Float32 C_layout 1000 1000) in
+  let x = ref (Owl.Dense.Matrix.Generic.empty Float32 1000 1000) in
   for i = 1 to 10000 do
     print_gc_stat ();
-    x := Array2.create Float32 C_layout 1000 1000;
-    Array2.fill !x 0.;
+    x := Owl.Dense.Matrix.Generic.empty Float32 1000 1000;
+    Owl.Dense.Matrix.Generic.fill !x 0.;
     Gc.compact()
   done
 

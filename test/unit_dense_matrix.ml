@@ -1,6 +1,7 @@
 (** Unit test for Owl_dense_matrix_generic module *)
 
 open Bigarray
+
 module M = Owl_dense_matrix_generic
 
 (* define the test error *)
@@ -143,15 +144,15 @@ module To_test = struct
     let z1 = M.map (fun a -> a +. 1.) y in
     M.equal z0 z1
 
-  let fold x = M.fold (+.) 0. x
+  let fold () =
+    let a = M.fold (+.) 0. x2 in
+    Owl.Arr.get a [|0|] -. M.sum' x2 < eps
 
   let foldi () =
-    let a = M.foldi (fun i j c a ->
-      if i <> 0 then c +. a else c
-    ) 0. x2
-    in a = 60.
+    let a = M.foldi ~axis:1 (fun _ c a -> c +. a) 0. x2 in
+    M.get a 0 0 -. 60. < eps
 
-  let filter () = M.filter ((=) 3.) x2 = [| (0,3) |]
+  let filter () = M.filter ((=) 3.) x2 = [| 3 |]
 
   let fold_rows () =
     let x = M.fold_rows (fun c a -> M.add c a) (M.zeros Float64 1 4) x2 |> M.to_arrays in
@@ -169,10 +170,28 @@ module To_test = struct
     let x = M.sum_cols x2 |> M.to_arrays in
     x = [| [|6.|]; [|22.|]; [|38.|] |]
 
+  let mpow () =
+    let x = M.uniform Float64 4 4 in
+    let y = M.mpow x 3. in
+    let z = M.(dot x (dot x x)) in
+    M.(y = z)
+
   let save_load () =
     M.save x2 "ds_mat.tmp";
     let y = M.load Float64 "ds_mat.tmp" in
     M.equal x2 y
+
+  let transpose () =
+    let x = M.of_array Float64 [|1.;2.;3.;4.|] 2 2 in
+    let y = M.of_array Float64 [|1.;3.;2.;4.|] 2 2 in
+    let z = M.transpose x in
+    M.equal y z
+
+  let ctranspose () =
+    let x = M.of_array Complex64 Complex.([|one;{re=1.;im=2.};{re=3.;im=4.};zero|]) 2 2 in
+    let y = M.of_array Complex64 Complex.([|one;{re=3.;im=(-4.)};{re=1.;im=(-2.)};zero|]) 2 2 in
+    let z = M.ctranspose x in
+    M.equal y z
 
 end
 
@@ -290,7 +309,7 @@ let map x =
   Alcotest.(check bool) "map" true (To_test.map ())
 
 let fold () =
-  Alcotest.(check (float eps)) "fold" (M.sum' x2) (To_test.fold x2)
+  Alcotest.(check bool) "fold" true (To_test.fold ())
 
 let foldi () =
   Alcotest.(check bool) "foldi" true (To_test.foldi ())
@@ -310,8 +329,17 @@ let sum_rows () =
 let sum_cols () =
   Alcotest.(check bool) "sum_cols" true (To_test.sum_cols ())
 
+let mpow () =
+  Alcotest.(check bool) "mpow" true (To_test.mpow ())
+
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
+
+let transpose () =
+  Alcotest.(check bool) "transpose" true (To_test.transpose ())
+
+let ctranspose () =
+  Alcotest.(check bool) "ctranspose" true (To_test.ctranspose ())
 
 let test_set = [
   "sequential", `Slow, sequential;
@@ -358,5 +386,8 @@ let test_set = [
   "fold_cols", `Slow, fold_cols;
   "sum_rows", `Slow, sum_rows;
   "sum_cols", `Slow, sum_cols;
+  "mpow", `Slow, mpow;
   "save_load", `Slow, save_load;
+  "transpose", `Slow, transpose;
+  "ctranspose", `Slow, ctranspose;
 ]

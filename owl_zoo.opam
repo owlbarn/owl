@@ -20,3 +20,4 @@ depends: [
   "ocaml-compiler-libs"
   "jbuilder" {build}
 ]
+available: [ ocaml-version >= "4.06.0" ]

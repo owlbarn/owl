@@ -20,7 +20,11 @@ Because Owl is always under active development, there might be a lag between the
 
 - The [Algodiff](https://github.com/ryanrhymes/owl/blob/master/src/owl/owl_algodiff.ml) module partly uses the design of [DiffSharp](http://diffsharp.github.io/DiffSharp/) by [Atilim Gunes Baydin](http://www.cs.nuim.ie/~gunes/), [Barak A. Pearlmutter](http://www.bcl.hamilton.ie/~barak/), and et al., [[techreport]](https://arxiv.org/abs/1502.05767).
 
-- [Sergei Lebedev](https://github.com/superbobry) and [bagmanas](https://github.com/bagmanas) have been contributing to various hypothesis test functions in Stats module.
+- [Gavin Stark](https://github.com/atthecodeface) contributed and reshaped many unit tests. His work has been helping us in identifying and fixing existing bugs and preventing potential ones, greatly assured the quality of Owl.
+
+- [Jianxin Zhao](https://github.com/jzstark/) has been building advanced machine learning and deep neural network applications on top of Owl.
+
+- [Sergei Lebedev](https://github.com/superbobry) and [bagmanas](https://github.com/bagmanas) contributed various hypothesis test functions in Stats module.
 
 - Many functions rely on [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) and its [OCaml binding](https://github.com/ryanrhymes/eigen). The binding also contains some functions (e.g., convolution functions) from Google's [Tensorflow](https://www.tensorflow.org/).
 

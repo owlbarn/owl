@@ -1,5 +1,5 @@
 #!/usr/bin/env owl
-(* This example trains a simple convolutional network over the MNIST dataset. *)
+(* This example trains a simple convolutional network on the MNIST dataset. *)
 
 open Owl
 open Neural.S
@@ -43,7 +43,7 @@ let test network =
   let pred = mat2num (Graph.model network imgs) in
   let fact = mat2num labels in
   let accu = Dense.Matrix.S.(elt_equal pred fact |> sum') in
-  Log.info "Accuracy on test set: %f" (accu /. (float_of_int m))
+  Owl_log.info "Accuracy on test set: %f" (accu /. (float_of_int m))
 
 
 let _ = train () |> test

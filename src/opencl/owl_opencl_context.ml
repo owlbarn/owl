@@ -1,6 +1,6 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 open Bigarray
@@ -32,9 +32,9 @@ let compile_kernels () =
 
 
 let default =
-  Log.info "OpenCL: compling kernels";
+  Owl_log.info "OpenCL: compling kernels";
   let ctx = compile_kernels () in
-  Log.info "OpenCL: kernels compiled";
+  Owl_log.info "OpenCL: kernels compiled";
   ctx
 
 

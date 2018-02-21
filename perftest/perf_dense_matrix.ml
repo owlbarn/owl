@@ -9,11 +9,11 @@ module M = Owl.Dense.Matrix.Generic
 let test_op s c op = Perf_common.test_op s c op
 
 let _ =
-  let _ = Random.self_init () in
+  Random.self_init ();
   let m, n = 5000, 20000 and c = 1 in
-  print_endline (Bytes.make 60 '+');
+  print_endline (String.make 60 '+');
   Printf.printf "| test matrix size: %i x %i    exps: %i\n" m n c;
-  print_endline (Bytes.make 60 '-');
+  print_endline (String.make 60 '-');
   let x, y = (M.uniform Float64 m n), (M.uniform Float64 m n) in
   test_op "empty             " c (fun () -> M.empty Float64 m n);
   test_op "zeros             " c (fun () -> M.zeros Float64 m n);
@@ -22,16 +22,16 @@ let _ =
   test_op "cols              " c (fun () -> M.cols x [|1;2|]);
   test_op "rows              " c (fun () -> M.rows x [|1;2|]);
   test_op "map               " c (fun () -> M.map (fun y -> 0.) x);
-  test_op "mapi              " c (fun () -> M.mapi (fun _ _ y -> 0.) x);
+  test_op "mapi              " c (fun () -> M.mapi (fun _ y -> 0.) x);
   test_op "iter              " c (fun () -> M.iter (fun y -> ()) x);
-  test_op "iteri             " c (fun () -> M.iteri (fun _ _ y -> ()) x);
+  test_op "iteri             " c (fun () -> M.iteri (fun _ y -> ()) x);
   test_op "iter_cols         " c (fun () -> M.iter_cols (fun y -> ()) x);
   test_op "iteri_cols        " c (fun () -> M.iteri_cols (fun i y -> ()) x);
   test_op "iter_rows         " c (fun () -> M.iter_rows (fun y -> ()) x);
   test_op "iteri_rows        " c (fun () -> M.iteri_rows (fun i y -> ()) x);
   test_op "filter            " c (fun () -> M.filter (fun y -> false) x);
-  test_op "filteri           " c (fun () -> M.filteri (fun i j y -> false) x);
-  test_op "fold              " c (fun () -> M.fold (fun y z -> ()) () x);
+  test_op "filteri           " c (fun () -> M.filteri (fun _ y -> false) x);
+  test_op "fold              " c (fun () -> M.fold (fun y z -> 0.) 0. x);
   test_op "fold_cols         " c (fun () -> M.fold_cols (fun y z -> ()) () x);
   test_op "fold_rows         " c (fun () -> M.fold_rows (fun y z -> ()) () x);
   test_op "for_all           " c (fun () -> M.for_all ((>) min_float) x);
@@ -51,7 +51,7 @@ let _ =
   test_op "min_i             " c (fun () -> M.min_i x);
   test_op "min_cols          " c (fun () -> M.min_cols x);
   test_op "min_rows          " c (fun () -> M.min_rows x);
-  test_op "mean           " c (fun () -> M.mean x);
+  test_op "mean              " c (fun () -> M.mean x);
   test_op "avg_col           " c (fun () -> M.mean_cols x);
   test_op "avg_row           " c (fun () -> M.mean_rows x);
   test_op "equal             " c (fun () -> M.equal x x);
@@ -59,7 +59,7 @@ let _ =
   test_op "greater_equal     " c (fun () -> M.greater_equal x x);
   test_op "diag              " c (fun () -> M.diag x);
   test_op "transpose         " c (fun () -> M.transpose x);
-  test_op "copy             " c (fun () -> M.copy x);
+  test_op "copy              " c (fun () -> M.copy x);
   test_op "@=                " c (fun () -> M.concat_vertical x y);
   test_op "@||               " c (fun () -> M.concat_horizontal x y);
   test_op "draw_cols         " c (fun () -> M.draw_cols x 1000);
@@ -71,4 +71,4 @@ let _ =
   test_op "uniform           " c (fun () -> M.uniform Float64 m n);
   test_op "gaussian          " c (fun () -> M.gaussian Float64 m n);
   test_op "sequential        " c (fun () -> M.sequential Float64 m n);
-  print_endline (Bytes.make 60 '+');
+  print_endline (String.make 60 '+');

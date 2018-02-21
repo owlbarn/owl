@@ -1,5 +1,6 @@
 (* helper functions for performance test *)
 
+
 (* test one operation c times, output the mean time *)
 let test_op s c op =
   let ttime = ref 0. in
@@ -13,6 +14,7 @@ let test_op s c op =
   ttime := !ttime /. (float_of_int c);
   Printf.printf "| %s :\t %.8fs \n" s !ttime;
   flush stdout
+
 
 (* test one operation c time, output the used time in each evaluation *)
 let test_op_each c op =
@@ -29,3 +31,27 @@ let test_op_each c op =
   done;
   ttime := !ttime /. (float_of_int c);
   Printf.printf "| avg.\t:\t %.8fs \n" !ttime
+
+
+(* more advanced test function *)
+let test_advance_op ?(s="test") ?(c=10) ?(burn=0) ?(ts=`MS) op =
+  let times = Owl.Utils.Stack.make () in
+
+  for i = 1 to c do
+    Gc.compact ();
+    let t0 = Unix.gettimeofday () in
+    let _ = op () in
+    let t1 = Unix.gettimeofday () in
+    if i > burn then Owl.Utils.Stack.push times (t1 -. t0)
+  done;
+
+  let times = Owl.Utils.Stack.to_array times |> Array.map (
+    fun t -> match ts with
+      | `S  -> t
+      | `MS -> 1000. *. t
+  )
+  in
+  let m_time = Owl.Stats.mean times in
+  let s_time = Owl.Stats.std times in
+  Printf.printf "| %s :\t mean = %.4f \t std = %.4f \n" s m_time s_time;
+  flush stdout

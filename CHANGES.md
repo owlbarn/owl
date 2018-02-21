@@ -1,8 +1,60 @@
-### 0.3.0 (in progress)
+### 0.3.4 (in progress)
+
+* Fix some bugs and improve the performance.
+* Add Adam learning rate algorithm in Optimise module.
+* Add a number of statistical functions into Stats.
+* Enhance View functor and add more functions.
+* Include and documentation of NLP modules.
+
+
+### 0.3.3 (2018-02-12)
+
+* Fix some bugs and improve the performance.
+* Integrate with Owl's documentation system.
+* Add native C implementation of pooling operations.
+* Add more operators in Operator module.
+* Add more functions in Linalg module.
+* Optimise the Base library.
+* Add more unit tests.
+
+
+### 0.3.2 (2018-02-08)
+
+* Fix some bugs and improve the performance.
+* Functorise many unit tests and add more tests.
+* Rewrite the documentation migrate to Sphinx system.
+* Migrate many pure OCaml code into Base library.
+* Implement the initial version of Base library.
+
+
+### 0.3.1 (2018-01-25)
+
+* Design View module as an experimental module for Ndarray.
+* Include Mersenne Twister (SFMT) to generate random numbers.
+* Implement random number generator of various distributions.
+* Implement native functions for maths and stats module.
+* Include FFTPACK to provide native support for FFT functions.
+* Minimise dependency, remove dependencies on Gsl and etc.
+* Implement slicing and indexing as native C functions.
+* Use new extended indexing operators for slicing functions.
+* Refine ndarray fold function and introduce scan function.
+* Reorganise the module structure in the source tree.
+* Fix some bugs and enhance the performance of core functions.
+* Add another 200+ unit tests.
+
+
+### 0.3.0 (2017-12-05)
+
 * Migrate to jbuilder building system.
 * Unify Dense Ndarray and Matrix types.
 * Split Toplevel out as a separate library.
 * Redesign Zoo system for recursive importing.
+* Simplify the module signature for Ndarray.
+* Introduce functions in Ndarray module to support in-place modification.
+* Introduce reduction functions to reduce an ndarray to a scalar value.
+* Add Lazy functor to support lazy evaluation, dataflow, and incremental computing.
+* Implement a new and more powerful pretty printer to support both ndarray and matrix.
+* Fix bugs in the core module, improve the performance.
 
 
 ### 0.2.8 (2017-09-02)

@@ -1,6 +1,6 @@
 (*
  * OWL - an OCaml numerical library for scientific computing
- * Copyright (c) 2016-2017 Liang Wang <liang.wang@cl.cam.ac.uk>
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
 open Owl_zoo_cmd
@@ -8,8 +8,8 @@ open Owl_zoo_cmd
 
 let _ =
   (* initialise logger *)
-  Log.color_on ();
-  Log.(set_log_level DEBUG);
+  Owl_log.set_color true;
+  Owl_log.(set_level DEBUG);
   (* add zoo directive *)
   Owl_zoo_dir.add_dir_zoo ();
 
