@@ -213,5 +213,29 @@ let brent ?(max_iter=1000) ?(xtol=1e-6) f a b =
   )
 
 
+(* Helper functions *)
+
+let bracket_expand ?(rate=1.6) ?(max_iter=100) f a b =
+  assert (a < b);
+  let xa = ref a in
+  let xb = ref b in
+  let fa = ref (f a) in
+  let fb = ref (f b) in
+  (
+    try
+      for i = 1 to max_iter do
+        assert (Owl_maths.same_sign !fa !fb);
+        let d = (!xb - !xa) *. rate in
+        xa := !xa - d;
+        xb := !xb + d;
+        fa := f !xa;
+        fb := f !xb;
+      done
+    with _ -> ()
+  );
+
+  if Owl_maths.same_sign !fa !fb then None
+  else Some (!xa, !xb)
+
 
 (* ends here *)
