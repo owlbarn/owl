@@ -126,11 +126,11 @@ let print_info () =
     "  owl [utop options] [script-file]\texecute an Owl script\n" ^
     "  owl -upload [gist-directory]\t\tupload code snippet to gist\n" ^
     "  owl -download [gist-id]\t\tdownload code snippet from gist\n" ^
-    "  owl -remove [-a] [gist-id]\t\t\tremove a cached gist\n" ^
+    "  owl -remove [gist-id]\t\t\tremove a cached gist\n" ^
     "  owl -update [gist-ids]\t\tupdate (all if not specified) gists\n" ^
     "  owl -run [gist-id]\t\t\trun a self-contained gist\n" ^
     "  owl -info [gist-id]\t\t\tshow the basic information of a gist\n" ^
-    "  owl -list\t\t\t\tlist all the cached gists\n" ^
+    "  owl -list [gist-id]\t\t\tlist all cached versions of a gist; all the cached gists if not specified\n" ^
     "  owl -help\t\t\t\tprint out help information\n"
   in
   print_endline info

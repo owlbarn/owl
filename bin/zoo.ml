@@ -26,8 +26,8 @@ let _ =
   else if Sys.argv.(1) = "-run" then
     run_gist Sys.argv.(2)
   else if Sys.argv.(1) = "-list" then
-    if Array.length Sys.argv > 3 then
-      list_gist Sys.argv.(3)
+    if Array.length Sys.argv >= 3 then
+      list_gist Sys.argv.(2)
     else list_gist ""
   else if Sys.argv.(1) = "-help" then
     print_info ()

@@ -6,3 +6,6 @@
 
 val parse_gist_string : string -> string * string * bool
 (**  Parse a full gist name scheme string and return a gist id, a version id, and a bool value to indicate if `pin` flag is set in the gist name. *)
+
+val add_dir_zoo : unit -> unit
+(** Add directive "zoo" to OCaml toploop. *)
