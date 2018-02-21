@@ -667,6 +667,7 @@ module Make (A : Owl_types.Stats_Dist) : sig
     | Logistic of Logistic.t
     | Lognormal of Lognormal.t
     | Rayleigh of Rayleigh.t
+  (* Type definition of various distribtions *)
 
 
   (** {6 Core functions} *)
