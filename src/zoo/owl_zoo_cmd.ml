@@ -113,7 +113,7 @@ let run args script =
 
 
 let run_gist gist =
-  let tmp_script = Filename.temp_file gist ".ml" in
+  let tmp_script = Filename.temp_file "zoo_tmp" ".ml" in
   let content = Printf.sprintf "\n#zoo \"%s\"\n" gist in
   Utils.write_file tmp_script content;
   run [|""|] tmp_script |> ignore
