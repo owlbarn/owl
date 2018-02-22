@@ -142,3 +142,9 @@ let owl_float64_ndarray_avgpool_cuboid_backward
 external owl_float64_ndarray_maxpool_argmax_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int64, 'c) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
 "stub_float64_ndarray_maxpool_spatial_arg_bytecode"
 "stub_float64_ndarray_maxpool_spatial_arg_native"
+
+(* Convolution Operations *)
+
+external owl_float32_ndarray_conv_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_float32_ndarray_conv_spatial_bytecode"
+"stub_float32_ndarray_conv_spatial_native"

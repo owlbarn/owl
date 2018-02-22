@@ -195,7 +195,7 @@ let _eigen_inv : type a b . (a, b) kind -> (a, b) eigen_mat_op00 = function
   | _         -> failwith "_eigen_inv: unsupported operation"
 
 let _eigen_spatial_conv : type a b . (a, b) kind -> (a, b) eigen_arr_op00 = function
-  | Float32   -> Eigen.Tensor.S.spatial_conv
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_spatial
   | Float64   -> Eigen.Tensor.D.spatial_conv
   | _         -> failwith "_eigen_spatial_conv: unsupported operation"
 
