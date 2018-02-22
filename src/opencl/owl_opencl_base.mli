@@ -134,7 +134,7 @@ module Program : sig
   (** Create a program from its source string. *)
 
   val build : ?options:string -> cl_program -> cl_device_id array -> unit
-  (** Build a program with the given parameters. *)
+  (** Build a program for the passed-in devices with the given parameters. *)
 
   val retain : cl_program -> unit
   (** Retain a resource by increasing its reference number by 1. *)
