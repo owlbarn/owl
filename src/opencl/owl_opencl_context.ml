@@ -28,20 +28,6 @@ let make_t device context program progsrc command_queue = {
 }
 
 
-type context = {
-  context       : cl_context;
-  program       : cl_program;
-  command_queue : cl_command_queue;
-}
-
-
-let make_context context program command_queue = {
-  context;
-  program;
-  command_queue;
-}
-
-
 let platforms () = Platform.get_platforms ()
 
 
@@ -76,35 +62,6 @@ let accelerators () =
   ) (devices ())
 
 
-let compile_kernels () =
-  let ctx = Context.create_from_type cl_DEVICE_TYPE_GPU in
-  let gpu = Context.((get_info ctx).devices).(0) in
-  let cmdq = CommandQueue.create ctx gpu in
-  let prog_s = Owl_opencl_kernel_common.code () in
-  let prog = Program.create_with_source ctx [|prog_s|] in
-  Owl_opencl_base.Program.build prog [|gpu|];
-  make_context ctx prog cmdq
-
-
-let default =
-  Owl_log.info "OpenCL: compling kernels";
-  let ctx = compile_kernels () in
-  Owl_log.info "OpenCL: kernels compiled";
-  ctx
-
-
-let mk_kernel
-  : type a b. (a, b) kind -> string -> cl_program -> cl_kernel
-  = fun kind fun_name program ->
-  let kernel_name =
-    match kind with
-    | Float32 -> "owl_opencl_float32_" ^ fun_name
-    | Float64 -> "owl_opencl_float64_" ^ fun_name
-    | _       -> failwith "owl_opencl_context:mk_kernel"
-  in
-  Kernel.create program kernel_name
-
-
 let kernels ctx =
   let info = Program.get_info ctx.program in
   Program.(info.kernel_names)
@@ -118,11 +75,22 @@ let add_kernels ctx code =
   ctx.program <- program
 
 
-let init ?devs code =
-  let devs = match devs with
-    | Some d -> d
-    | None   -> gpu_devices ()
+let make_kernel ctx kernel_name = Kernel.create ctx.program kernel_name
+
+
+let ba_kernel
+  : type a b. (a, b) kind -> string -> cl_program -> cl_kernel
+  = fun kind fun_name program ->
+  let kernel_name =
+    match kind with
+    | Float32 -> "owl_opencl_float32_" ^ fun_name
+    | Float64 -> "owl_opencl_float64_" ^ fun_name
+    | _       -> failwith "owl_opencl_context:mk_kernel"
   in
+  Kernel.create program kernel_name
+
+
+let create devs code =
   let ctx = Context.create devs in
   let command_queue = Hashtbl.create 32 in
   Array.iter (fun dev ->
@@ -138,6 +106,25 @@ let init ?devs code =
   make_t devs ctx prog prog_src command_queue
 
 
+let get_opencl_ctx ctx = ctx.context
+
+
+let get_program ctx = ctx.program
+
+
+let get_dev ctx idx = ctx.device.(idx)
+
+
+let get_cmdq ctx dev = Hashtbl.find ctx.command_queue dev
+
+
+let default =
+  let devs = gpu_devices () in
+  let code = [||] in
+  Owl_log.info "OpenCL: initialising context ...";
+  let ctx = create devs code in
+  Owl_log.info "OpenCL: finished initialisation.";
+  ctx
 
 
 (* end here *)
