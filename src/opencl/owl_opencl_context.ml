@@ -30,6 +30,27 @@ let devices () =
   Owl_utils.Stack.to_array devs
 
 
+let cpu_devices () =
+  Owl_utils.Array.filter (fun d ->
+    let info = Device.get_info d in
+    Device.(info.typ) = cl_DEVICE_TYPE_CPU
+  ) (devices ())
+
+
+let gpu_devices () =
+  Owl_utils.Array.filter (fun d ->
+    let info = Device.get_info d in
+    Device.(info.typ) = cl_DEVICE_TYPE_GPU
+  ) (devices ())
+
+
+let accelerators () =
+  Owl_utils.Array.filter (fun d ->
+    let info = Device.get_info d in
+    Device.(info.typ) = cl_DEVICE_TYPE_ACCELERATOR
+  ) (devices ())
+
+
 let compile_kernels () =
   let ctx = Context.create_from_type cl_DEVICE_TYPE_GPU in
   let gpu = Context.((get_info ctx).devices).(0) in
@@ -63,11 +84,12 @@ let mk_kernel
   Kernel.create program kernel_name
 
 
+let init ?devices () = ()
+
+
 module Default = struct
 
   let init () = ()
-
-
 
 end
 
