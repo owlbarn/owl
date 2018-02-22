@@ -200,7 +200,7 @@ let _eigen_spatial_conv : type a b . (a, b) kind -> (a, b) eigen_arr_op00 = func
   | _         -> failwith "_eigen_spatial_conv: unsupported operation"
 
 let _eigen_spatial_conv_backward_input : type a b . (a, b) kind -> (a, b) eigen_arr_op01 = function
-  | Float32   -> Eigen.Tensor.S.spatial_conv_backward_input
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_spatial_backward_input
   | Float64   -> Eigen.Tensor.D.spatial_conv_backward_input
   | _         -> failwith "_eigen_spatial_conv_backward_input: unsupported operation"
 
