@@ -148,3 +148,7 @@ external owl_float64_ndarray_maxpool_argmax_spatial : ('a, 'b) owl_arr -> ('a, '
 external owl_float32_ndarray_conv_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
 "stub_float32_ndarray_conv_spatial_bytecode"
 "stub_float32_ndarray_conv_spatial_native"
+
+external owl_float32_ndarray_conv_spatial_backward_kernel : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_float32_ndarray_conv_spatial_backward_kernel_bytecode"
+"stub_float32_ndarray_conv_spatial_backward_kernel_native"
