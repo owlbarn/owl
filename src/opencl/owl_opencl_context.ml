@@ -17,6 +17,19 @@ type context = {
 }
 
 
+let platforms () = Platform.get_platforms ()
+
+
+let devices () =
+  let devs = Owl_utils.Stack.make () in
+  Array.iter (fun p ->
+    Array.iter (fun d ->
+      Owl_utils.Stack.push devs d
+    ) (Device.get_devices p)
+  ) (platforms ());
+  Owl_utils.Stack.to_array devs
+
+
 let compile_kernels () =
   let ctx = Context.create_from_type cl_DEVICE_TYPE_GPU in
   let gpu = Context.((get_info ctx).devices).(0) in
