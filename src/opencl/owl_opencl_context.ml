@@ -9,6 +9,14 @@ open Owl_opencl_base
 
 open Owl_opencl_generated
 
+open Owl_opencl_utils
+
+
+type num =
+  | F   of float
+  | F32 of (float, float32_elt) Owl_dense_ndarray_generic.t
+  | F64 of (float, float64_elt) Owl_dense_ndarray_generic.t
+
 
 type t = {
   mutable device        : cl_device_id array;
@@ -125,6 +133,40 @@ let default =
   let ctx = create devs code in
   Owl_log.info "OpenCL: finished initialisation.";
   ctx
+
+
+let eval ?(param=[||]) ?(ctx=default) ?(dev_id=0) fun_name =
+  let dev = get_dev ctx dev_id in
+  let cmdq = get_cmdq ctx dev in
+  let kernel = make_kernel ctx fun_name in
+  let opencl_ctx = ctx.context in
+  let work_dim = 1 in
+  let work_sz = ref 0 in
+
+  (* set up parameters *)
+  Array.iteri (fun i p ->
+    match p with
+    | F a_val   -> (
+        let a_ptr = Ctypes.allocate Ctypes.float a_val in
+        Kernel.set_arg kernel i sizeof_float_ptr a_ptr;
+      )
+    | F32 a_val -> (
+        if !work_sz = 0 then work_sz := Owl_dense_ndarray_generic.numel a_val;
+        let a_mem = Buffer.create ~flags:[cl_MEM_USE_HOST_PTR] opencl_ctx a_val in
+        let a_ptr = Ctypes.allocate cl_mem a_mem in
+        Owl_opencl_base.Kernel.set_arg kernel i sizeof_cl_mem a_ptr;
+      )
+    | F64 a_val -> (
+        if !work_sz = 0 then work_sz := Owl_dense_ndarray_generic.numel a_val;
+        let a_mem = Buffer.create ~flags:[cl_MEM_USE_HOST_PTR] opencl_ctx a_val in
+        let a_ptr = Ctypes.allocate cl_mem a_mem in
+        Owl_opencl_base.Kernel.set_arg kernel i sizeof_cl_mem a_ptr;
+      )
+  ) param;
+
+  (* execute kernel *)
+  let _ = Kernel.enqueue_ndrange cmdq kernel work_dim [!work_sz] in
+  CommandQueue.finish cmdq
 
 
 (* end here *)
