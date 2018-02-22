@@ -17,6 +17,7 @@
 (copy_files# fftpack/*)
 (copy_files# misc/*)
 (copy_files# nlp/*)
+(copy_files# ppl/*)
 (copy_files# working/*)
 
 (library (
@@ -161,7 +162,9 @@
     -g -O3 -Ofast
     ; Experimental switches
     ; -ffast-math may break IEEE754 semantics
-    -march=native -mfpmath=sse -funroll-loops -ffast-math -flto
+    -march=native -mfpmath=sse -funroll-loops -ffast-math
+    ; Turn off LTO since it is not well supported at the moment
+    ; -flto
     ; For Mersenne Twister RNG
     -DSFMT_MEXP=19937 -msse2 -fno-strict-aliasing
     ; Turn off the warning on logical op parentheses
