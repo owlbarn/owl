@@ -27,8 +27,8 @@ ENV CAML_LD_LIBRARY_PATH /root/.opam/4.06.0/lib/stublibs
 
 ENV EIGENPATH /root/eigen
 RUN cd /root && git clone https://github.com/ryanrhymes/eigen.git
-RUN sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile ###FIXME
-RUN sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis       ###FIXME
+RUN sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile # FIXME: hacking
+RUN sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis       # FIXME: hacking
 RUN make -C $EIGENPATH oasis && make -C $EIGENPATH && make -C $EIGENPATH install
 
 
@@ -37,6 +37,7 @@ RUN make -C $EIGENPATH oasis && make -C $EIGENPATH && make -C $EIGENPATH install
 ENV OWLPATH /root/owl
 RUN cd /root && git clone https://github.com/ryanrhymes/owl.git
 
+RUM rm $OWLPATH/src/opencl/jbuild                                            # FIXME: hacking
 RUN sed -i -- 's/-lopenblas/-lopenblas -llapacke/g' $OWLPATH/src/owl/jbuild  # FIXME: hacking
 RUN make -C $OWLPATH && make -C $OWLPATH install
 RUN mv /root/.opam/4.06.0/lib/stubslibs/* /root/.opam/4.06.0/lib/stublibs    # FIXME: hacking
