@@ -6,7 +6,7 @@ USER opam
 RUN sudo apk update && \
     sudo apk add m4 wget unzip aspcud openblas-dev
 
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes alcotest utop 
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes alcotest utop
 
 #################### SET UP ENV VARS #######################
 
@@ -27,17 +27,18 @@ RUN cd /home/opam/ && git clone https://github.com/ryanrhymes/eigen.git
 RUN sed -i -- 's/-Wno-extern-c-compat -Wno-c++11-long-long -Wno-invalid-partial-specialization/-Wno-ignored-attributes/g' $EIGENPATH/lib/Makefile \
     && sed -i -- 's/typedef int64_t INDEX;/#include <stdint.h>\ntypedef int64_t INDEX;/g' $EIGENPATH/lib/eigen_dsmat.h $EIGENPATH/lib/eigen_spmat.h \
     && sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile \
-    && sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis 
+    && sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis
 
 RUN cd $EIGENPATH \
-    && sudo make oasis && sudo make && sudo make install 
+    && sudo make oasis && sudo make && sudo make install
 
 ####################   INSTALL OWL  #######################
 
 ENV OWLPATH /home/opam/owl
 RUN cd /home/opam && git clone https://github.com/ryanrhymes/owl.git
 
-RUN rm -f $OWLPATH/src/owl/misc/owl_plot.* \
+RUN rm -f $OWLPATH/src/opencl/jbuild \
+    && rm -f $OWLPATH/src/owl/misc/owl_plot.* \
     && sed -i '/plplot/d' $OWLPATH/src/owl/jbuild \
     && sed -i '/module Plot = Owl_plot/d' $OWLPATH/src/owl/owl.ml \
     && sed -i '/output h$/,+2d; /h filename ;$/a *)' $OWLPATH/test/unit_stats_rvs.ml \
