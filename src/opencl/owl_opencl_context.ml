@@ -118,7 +118,7 @@ let add_kernels ctx code =
   ctx.program <- program
 
 
-let init ?devs ?(code=[||]) () =
+let init ?devs code =
   let devs = match devs with
     | Some d -> d
     | None   -> gpu_devices ()
