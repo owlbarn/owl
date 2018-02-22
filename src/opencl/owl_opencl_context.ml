@@ -135,13 +135,13 @@ let default =
   ctx
 
 
-let eval ?(param=[||]) ?(ctx=default) ?(dev_id=0) fun_name =
+let eval ?(param=[||]) ?(ctx=default) ?(dev_id=0) ?(work_dim=1) ?(work_size=[||]) fun_name =
   let dev = get_dev ctx dev_id in
   let cmdq = get_cmdq ctx dev in
   let kernel = make_kernel ctx fun_name in
   let opencl_ctx = ctx.context in
   let work_dim = 1 in
-  let work_sz = ref 0 in
+  let work_sz = ref (Array.to_list work_size) in
 
   (* set up parameters *)
   Array.iteri (fun i p ->
@@ -151,13 +151,13 @@ let eval ?(param=[||]) ?(ctx=default) ?(dev_id=0) fun_name =
         Kernel.set_arg kernel i sizeof_float_ptr a_ptr;
       )
     | F32 a_val -> (
-        if !work_sz = 0 then work_sz := Owl_dense_ndarray_generic.numel a_val;
+        if !work_sz = [] then work_sz := [Owl_dense_ndarray_generic.numel a_val];
         let a_mem = Buffer.create ~flags:[cl_MEM_USE_HOST_PTR] opencl_ctx a_val in
         let a_ptr = Ctypes.allocate cl_mem a_mem in
         Owl_opencl_base.Kernel.set_arg kernel i sizeof_cl_mem a_ptr;
       )
     | F64 a_val -> (
-        if !work_sz = 0 then work_sz := Owl_dense_ndarray_generic.numel a_val;
+        if !work_sz = [] then work_sz := [Owl_dense_ndarray_generic.numel a_val];
         let a_mem = Buffer.create ~flags:[cl_MEM_USE_HOST_PTR] opencl_ctx a_val in
         let a_ptr = Ctypes.allocate cl_mem a_mem in
         Owl_opencl_base.Kernel.set_arg kernel i sizeof_cl_mem a_ptr;
@@ -165,7 +165,7 @@ let eval ?(param=[||]) ?(ctx=default) ?(dev_id=0) fun_name =
   ) param;
 
   (* execute kernel *)
-  let _ = Kernel.enqueue_ndrange cmdq kernel work_dim [!work_sz] in
+  let _ = Kernel.enqueue_ndrange cmdq kernel work_dim !work_sz in
   CommandQueue.finish cmdq
 
 
