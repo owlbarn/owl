@@ -1,12 +1,20 @@
-FROM ocaml/opam:alpine_ocaml-4.06.0
-MAINTAINER Roger Stark
+############################################################
+# Dockerfile to build Owl docker image
+# Based on ryanrhymes/owl master branch
+# By Liang Wang <liang.wang@cl.cam.ac.uk>
+############################################################
 
+FROM ocaml/opam:alpine_ocaml-4.06.0
 USER opam
+
+
+#################### SET UP ENV VARS #######################
 
 RUN sudo apk update && \
     sudo apk add m4 wget unzip aspcud openblas-dev
 
 RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes alcotest utop
+
 
 #################### SET UP ENV VARS #######################
 
@@ -19,6 +27,7 @@ RUN echo "#require \"owl_top\";; open Owl;;" >> /home/opam/.ocamlinit \
     && opam config env >> /home/opam/.profile \
     && bash -c "source /home/opam/.profile"
 
+
 #################### INSTALL EIGEN   #######################
 
 ENV EIGENPATH /home/opam/eigen
@@ -29,8 +38,8 @@ RUN sed -i -- 's/-Wno-extern-c-compat -Wno-c++11-long-long -Wno-invalid-partial-
     && sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile \
     && sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis
 
-RUN cd $EIGENPATH \
-    && sudo make oasis && sudo make && sudo make install
+RUN cd $EIGENPATH && sudo make oasis && sudo make && sudo make install
+
 
 ####################   INSTALL OWL  #######################
 
@@ -43,8 +52,10 @@ RUN rm -f $OWLPATH/src/owl/misc/owl_plot.* \
     && sed -i '/output h$/,+2d; /h filename ;$/a *)' $OWLPATH/test/unit_stats_rvs.ml \
     && sed -i '/let plot_comparison/i (*' $OWLPATH/test/unit_stats_rvs.ml
 
-RUN cd $OWLPATH \
-    && make && make install
+RUN cd $OWLPATH && make && make install
+
+
+############## SET UP DEFAULT CONTAINER VARS ##############
 
 WORKDIR $OWLPATH
 ENTRYPOINT /bin/sh
