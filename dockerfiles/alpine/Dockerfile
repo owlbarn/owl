@@ -37,8 +37,7 @@ RUN cd $EIGENPATH \
 ENV OWLPATH /home/opam/owl
 RUN cd /home/opam && git clone https://github.com/ryanrhymes/owl.git
 
-RUN rm -f $OWLPATH/src/opencl/jbuild \
-    && rm -f $OWLPATH/src/owl/misc/owl_plot.* \
+RUN rm -f $OWLPATH/src/owl/misc/owl_plot.* \
     && sed -i '/plplot/d' $OWLPATH/src/owl/jbuild \
     && sed -i '/module Plot = Owl_plot/d' $OWLPATH/src/owl/owl.ml \
     && sed -i '/output h$/,+2d; /h filename ;$/a *)' $OWLPATH/test/unit_stats_rvs.ml \
