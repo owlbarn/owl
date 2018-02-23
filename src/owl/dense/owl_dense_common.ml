@@ -210,7 +210,7 @@ let _eigen_spatial_conv_backward_kernel : type a b . (a, b) kind -> (a, b) eigen
   | _         -> failwith "_eigen_spatial_conv_backward_kernel: unsupported operation"
 
 let _eigen_cuboid_conv : type a b . (a, b) kind -> (a, b) eigen_arr_op02 = function
-  | Float32   -> Eigen.Tensor.S.cuboid_conv
+  | Float32   ->  Owl_ndarray.owl_float32_ndarray_conv_cuboid
   | Float64   -> Eigen.Tensor.D.cuboid_conv
   | _         -> failwith "_eigen_cuboid_conv: unsupported operation"
 

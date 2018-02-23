@@ -156,3 +156,7 @@ external owl_float32_ndarray_conv_spatial_backward_kernel : ('a, 'b) owl_arr -> 
 external owl_float32_ndarray_conv_spatial_backward_input : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
 "stub_float32_ndarray_conv_spatial_backward_input_bytecode"
 "stub_float32_ndarray_conv_spatial_backward_input_native"
+
+external owl_float32_ndarray_conv_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_float32_ndarray_conv_cuboid_bytecode"
+"stub_float32_ndarray_conv_cuboid_native"
