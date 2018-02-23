@@ -215,7 +215,7 @@ let _eigen_cuboid_conv : type a b . (a, b) kind -> (a, b) eigen_arr_op02 = funct
   | _         -> failwith "_eigen_cuboid_conv: unsupported operation"
 
 let _eigen_cuboid_conv_backward_input : type a b . (a, b) kind -> (a, b) eigen_arr_op03 = function
-  | Float32   -> Eigen.Tensor.S.cuboid_conv_backward_input
+  | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_cuboid_backward_input
   | Float64   -> Eigen.Tensor.D.cuboid_conv_backward_input
   | _         -> failwith "cuboid_conv_backward_input: unsupported operation"
 
