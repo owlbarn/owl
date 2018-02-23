@@ -1,5 +1,8 @@
 #include "owl_core.h"
 #include <string.h>
+
+#include <time.h>
+
 #define TYPE float
 
 value stub_float32_ndarray_conv_spatial_native(
@@ -32,10 +35,10 @@ value stub_float32_ndarray_conv_spatial_native(
   int row_in_stride = Long_val(vRow_in_stride);
   int col_in_stride = Long_val(vCol_in_stride);
 
-  const int input_cri  = in_channel * input_rows * input_cols;
-  const int input_ri   = in_channel * input_rows;
-  const int kernel_rio = out_channel* in_channel * kernel_rows;
-  const int kernel_io  = out_channel* in_channel;
+  const int input_cri  = in_channel  * input_rows  * input_cols;
+  const int input_ri   = in_channel  * input_rows;
+  const int kernel_rio = out_channel * in_channel  * kernel_rows;
+  const int kernel_io  = out_channel * in_channel;
   const int output_cri = out_channel * output_rows * output_cols;
   const int output_ri  = out_channel * output_rows;
 
@@ -55,67 +58,64 @@ value stub_float32_ndarray_conv_spatial_native(
 
   const int ksize = kernel_cols * kernel_rows;
 
+  double t = 0.;
+
+
   for (int i = 0; i < batches; ++i) {
+    const int input_idx_base = i * input_cri;
     for (int j = 0; j < output_cols; ++j) {
       for (int k = 0; k < output_rows; ++k) {
+        const int output_idx_base = i * output_cri + j * output_ri + k * out_channel;
+
+
 
         const int cstart = j * col_stride - floor(pc);
         const int rstart = k * row_stride - floor(pr);
         const int cend   = cstart + kernel_cols;
         const int rend   = rstart + kernel_rows;
 
+
+        clock_t start = clock();
         for (int l = 0; l < out_channel; ++l) {
           TYPE sum = 0;
 
-          for (int h = 0; h < in_channel; ++h) {
-            int count = 0;
-            TYPE conv_biopsy[ksize];
-            TYPE kern_biopsy[ksize];
-            //memset(conv_biopsy, 0, ksize * sizeof(TYPE));
 
-            // Copy part of input data
+          for (int h = 0; h < in_channel; ++h) {
+            TYPE input_val, kernel_val;
+
             for (int a = cstart; a < cend; ++a) {
               for (int b = rstart; b < rend; ++b) {
                 if (a >= 0 && a < input_cols &&
                     b >= 0 && b < input_rows) {
                   int input_idx =
-                    i * input_cri + a * input_ri + b * in_channel + h;
-                  *(conv_biopsy + count) = *(input_ptr + input_idx);
+                     input_idx_base + a * input_ri + b * in_channel + h;
+                  input_val = *(input_ptr + input_idx);
                 } else {
-                  *(conv_biopsy + count) = 0.0;
+                  input_val = 0.0;
                 }
-                count++;
-              }
-            }
 
-            // Copy part of kernel data
-            count = 0;
-            for (int a = 0; a < kernel_cols; ++a) {
-              for (int b = 0; b < kernel_rows; ++b) {
                 int kernel_index =
-                  a * kernel_rio + b * kernel_io + h * out_channel + l;
-                *(kern_biopsy + count) = *(kernel_ptr + kernel_index);
-                count++;
+                  (a - cstart) * kernel_rio + (b - rstart) * kernel_io + h * out_channel + l;
+                kernel_val = *(kernel_ptr + kernel_index);
+
+                sum += input_val * kernel_val;
               }
             }
-
-            // matrix dot multiplication
-            int t;
-            TYPE sum_p = 0.0;
-            for ( t = 0; t < ksize; t++){
-                sum_p += conv_biopsy[t] * kern_biopsy[t];
-            }
-            sum += sum_p;
-
           }
 
-          int output_idx =
-            i * output_cri + j * output_ri + k * out_channel + l;
+          int output_idx = output_idx_base + l;
           *(output_ptr + output_idx) = sum;
         }
+
+        clock_t diff = clock() - start;
+        double msec = (double) (diff * 1000);
+        t += msec;
+
       }
     }
   }
+
+  fprintf(stderr, "Time taken %f milliseconds in out_channel\n", t / CLOCKS_PER_SEC);
 
   return Val_unit;
 }
