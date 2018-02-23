@@ -42,7 +42,7 @@ value stub_float32_ndarray_conv_spatial_native(
   const int output_cri = out_channel * output_rows * output_cols;
   const int output_ri  = out_channel * output_rows;
 
-  memset(output_ptr, 0.0, batches * output_cri * sizeof(TYPE));
+  memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
 
   float pr, pc;
   if (padding == 1){
@@ -57,38 +57,33 @@ value stub_float32_ndarray_conv_spatial_native(
   }
 
   const int ksize = kernel_cols * kernel_rows;
-
-  double t = 0.;
-
+  //double t = 0.;
 
   for (int i = 0; i < batches; ++i) {
     const int input_idx_base = i * input_cri;
+    const int output_idx_base_i = i * output_cri;
     for (int j = 0; j < output_cols; ++j) {
+      const int output_idx_base_ij = output_idx_base_i + j * output_ri;
       for (int k = 0; k < output_rows; ++k) {
-        const int output_idx_base = i * output_cri + j * output_ri + k * out_channel;
-
-
+        const int output_idx_base =  output_idx_base_ij + k * out_channel;
 
         const int cstart = j * col_stride - floor(pc);
         const int rstart = k * row_stride - floor(pr);
         const int cend   = cstart + kernel_cols;
         const int rend   = rstart + kernel_rows;
 
-
-        clock_t start = clock();
         for (int l = 0; l < out_channel; ++l) {
-          TYPE sum = 0;
-
+          TYPE  sum = 0.;
+          int output_idx = output_idx_base + l;
 
           for (int h = 0; h < in_channel; ++h) {
-            TYPE input_val, kernel_val;
-
             for (int a = cstart; a < cend; ++a) {
               for (int b = rstart; b < rend; ++b) {
+                TYPE input_val, kernel_val;
                 if (a >= 0 && a < input_cols &&
                     b >= 0 && b < input_rows) {
                   int input_idx =
-                     input_idx_base + a * input_ri + b * in_channel + h;
+                    input_idx_base + a * input_ri + b * in_channel + h;
                   input_val = *(input_ptr + input_idx);
                 } else {
                   input_val = 0.0;
@@ -103,19 +98,19 @@ value stub_float32_ndarray_conv_spatial_native(
             }
           }
 
-          int output_idx = output_idx_base + l;
-          *(output_ptr + output_idx) = sum;
+          //fprintf(stderr, "%f\n", sum);
+          //clock_t start = clock();
+          *(output_ptr + output_idx) =  sum;
+          //clock_t diff = clock() - start;
+          //double msec = (double) (diff * 1000);
+          //t += msec;
         }
-
-        clock_t diff = clock() - start;
-        double msec = (double) (diff * 1000);
-        t += msec;
 
       }
     }
   }
 
-  fprintf(stderr, "Time taken %f milliseconds in out_channel\n", t / CLOCKS_PER_SEC);
+  //fprintf(stderr, "Time taken %f milliseconds in out_channel\n", t / CLOCKS_PER_SEC);
 
   return Val_unit;
 }
