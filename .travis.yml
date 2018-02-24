@@ -3,10 +3,10 @@ sudo: required
 script: bash -ex .travis-opam.sh
 env:
   global:
-  - OCAML_VERSION=4.04
+  - OCAML_VERSION=4.06
   - PACKAGE="owl"
   - TESTS=true
-  - EXTRA_DEPS="alcotest ocaml-compiler-libs"
+  - EXTRA_DEPS="alcotest oasis jbuilder ocaml-compiler-libs ctypes utop eigen plplot"
   - INSTALL=false
   matrix:
   include:
@@ -17,6 +17,7 @@ env:
 install:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
       sudo apt-get update;
+      sudo apt-get install libopenblas-dev liblapacke-dev gfortran
     elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
       brew update;
       rm '/usr/local/include/c++';
