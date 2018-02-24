@@ -4,4 +4,6 @@ language: c
 
 services: docker
 
-install: docker build -t ryanrhymes/owl:test .
+before_install: docker build -t ryanrhymes/owl:test .
+
+install: true
