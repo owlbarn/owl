@@ -28,36 +28,15 @@ Build status: [![Travis build Status](https://travis-ci.org/ryanrhymes/owl.svg?b
 
 ## Learning
 
-Here are some learning material to help you start with Owl. The full API documentation is recently built on 26th September, 2017:
+Owl's documentation contains a lot of learning materials to help you start. The full documentation consists of two parts: [Tutorial Book](http://www.cl.cam.ac.uk/~lw525/owl/chapter/index.html) and [API Reference](http://www.cl.cam.ac.uk/~lw525/owl/apidoc/index.html). Both are perfectly synchronised with the code in the repository by the automatic building system. You can access both part with the following link.
 
 * on [cl.cam.ac.uk](http://www.cl.cam.ac.uk/~lw525/owl/)
-
-This [How-To?](https://github.com/ryanrhymes/owl/wiki/How-To%3F) maintains a list of practical tips. The series of tutorials is here (more are coming):
-
-* [Tutorial 1: Basic Data Types](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Basic-Data-Types)
-* [Tutorial 2: N-dimensional Array](https://github.com/ryanrhymes/owl/wiki/Tutorial:-N-Dimensional-Array)
-* [Tutorial 3: Matrix Manipulation](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Matrix-Manipulation)
-* [Tutorial 4: How to Plot in Owl?](https://github.com/ryanrhymes/owl/wiki/Tutorial:-How-to-Plot-in-Owl%3F)
-* [Tutorial 5: Metric Systems](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Metric-Systems)
-* [Tutorial 6: Indexing and Slicing](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Indexing-and-Slicing)
-* [Tutorial 7: Broadcasting Operation](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Broadcasting-Operation)
-* [Tutorial 8: Operators and Ext Module](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Operators-and-Ext-Module)
-* [Tutorial 9: Linear Algebra](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Linear-Algebra)
-* [Tutorial 10: Algorithmic Differentiation](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Algorithmic-Differentiation)
-* [Tutorial 11: Neural Network](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Neural-Network)
-* [Tutorial 12: Scripting and Zoo System](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Scripting-and-Zoo-System)
-* [Tutorial 13: Laziness and Dataflow](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Laziness-and-Dataflow)
-* [Tutorial 14: Naming Conventions](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Naming-Conventions)
-
-
-The Presentation Slides in OCaml Workshop 2017 can be viewed with [this link](https://docs.google.com/presentation/d/1A-7KiQLot3X2lLyZntrFGxsxaNir0g_2TlruBP4W2Uc/edit).
-The tutorial material of Owl in CUFP 2017 can be accessed with [this link](https://docs.google.com/presentation/d/1EB4B6xAc81ypUGze22qESnFixZWIK31OaNZ8n0ndC6w/edit?usp=sharing).
 
 
 
 ## Installation
 
-Owl requires OCaml `>=4.04.0`. The installation is rather trivial. There are four possible ways to try out Owl, as shown below, from the most straightforward one to the least one.
+Owl requires OCaml `>=4.06.0`. The installation is rather trivial. There are four possible ways to try out Owl, as shown below, from the most straightforward one to the least one.
 
 ### Option 1: Install from OPAM
 
@@ -67,18 +46,29 @@ You can simply type the following in the command line to start.
 opam install owl
 ```
 
-Owl's current version on OPAM is `0.2.9`, and it lags behind the master branch and misses many new features. If you want to try the newest version, I recommend the other three ways to install.
+Owl's current version on OPAM is `0.2.9`, and it lags way behind the master branch (current `0.3.4`) and misses many new features. If you want to try the newest version, I recommend the other three ways to install.
 
 ### Option 2: Pull from Docker Hub
 
-[Owl's docker image](https://hub.docker.com/r/ryanrhymes/owl/) is perfectly synced with master branch and is always automatically built whenever there are new commits. You can check the building history on [Docker Hub](https://hub.docker.com/r/ryanrhymes/owl/builds/).
-
-You only need to pull the image then start a container, then play with it in `utop`. The source code is stored in `/root/owl` directory.
+You only need to pull in [Owl's docker image](https://hub.docker.com/r/ryanrhymes/owl/) and start a container, then play with it in `utop`. The source code is stored in `/root/owl` directory.
 
 ```bash
 docker pull ryanrhymes/owl
 docker run -t -i ryanrhymes/owl
 ```
+
+There are several Linux distributions provided including an [ARM-based Ubuntu](https://github.com/ryanrhymes/owl/blob/master/docker/Dockerfile.ubuntu.arm). You can pull in a specific Owl image with corresponding tags.
+
+```bash
+docker pull ryanrhymes/owl:ubuntu
+docker pull ryanrhymes/owl:debian
+docker pull ryanrhymes/owl:alpine
+docker pull ryanrhymes/owl:centos
+docker pull ryanrhymes/owl:opensuse
+docker pull ryanrhymes/owl:fedora
+```
+
+All these images are perfectly synced with the master branch by automatic building. You can check the building history on [Docker Hub](https://hub.docker.com/r/ryanrhymes/owl/builds/).
 
 ### Option 3: Pin the Dev-Repo
 
@@ -226,9 +216,7 @@ Mat.load "matrix_01.data";;    (* load the matrix from a file *)
 
 ## Access Elements, Rows, and Columns
 
-**This section needs to be updated**
-
-Both `Dense.Matrix` and `Sparse.Matrix` modules provide a wide range of operations to access the elements, rows, and columns of a matrix. You can refer to the full document in [`Dense.Matrix.Generic`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_dense_matrix_generic.mli). Here we just gave some simple examples briefly.
+Both `Dense.Matrix` and `Sparse.Matrix` modules provide a wide range of operations to access the elements, rows, and columns of a matrix. You can refer to the full document in [`Dense.Matrix.Generic`](http://www.cl.cam.ac.uk/~lw525/owl/apidoc/owl_dense_matrix_generic.html). Here we just gave some simple examples briefly.
 
 You can use `Mat.set` and `Mat.get` to manipulate individual element.
 
@@ -237,11 +225,13 @@ Mat.set x 0 1 2.5;;
 Mat.get x 0 1;;
 ```
 
-Equivalently, there are shorthands for `Mat.get` and `Mat.set`.
+More conveniently, Owl provides a set of extending indexing and slicing operators as below. You can learn more in the tutorial on [Indexing and Slicing](http://www.cl.cam.ac.uk/~lw525/owl/chapter/slicing.html).
 
 ```ocaml
-x.{0,1} <- 2.5;;  (* Mat.set x 0 1 2.5 *)
-x.{0,1};;         (* Mat.get x 0 1 *)
+x.%{ [|0; 1|] } <- 2.5;;      (* Mat.set x 0 1 2.5 *)
+x.%{ [|0; 1|] };;             (* Mat.get x 0 1 *)
+x.${ [[0;4]; [6;-1]] };;      (* Mat.get_slice *)
+x.${ [[0;4]; [6;-1]] } <- b;; (* Mat.set_slice *)
 ```
 
 We can use `Mat.row` and `Mat.col` to retrieve a specific row or column of a matrix, or use `Mat.rows` and `Mat.cols` to retrieve multiple of them.
@@ -283,7 +273,7 @@ Mat.draw_cols x 3;;      (* draw 3 columns from x with replacement *)
 ...
 ```
 
-Practically, `Sparse.Matrix` module provides a subset of the similar operations for sparse matrices. In addition, `Sparse.Matrix` module also has extra functions such as only iterating non-zero elements `Sparse.Matrix.Generic.iter_nz`, and etc. Please read the full documentation for [`Sparse.Matrix.Generic`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_sparse_matrix_generic.mli) for details.
+Practically, `Sparse.Matrix` module provides a subset of the similar operations for sparse matrices. In addition, `Sparse.Matrix` module also has extra functions such as only iterating non-zero elements `Sparse.Matrix.Generic.iter_nz`, and etc. Please read the full documentation for [`Sparse.Matrix.Generic`](http://www.cl.cam.ac.uk/~lw525/owl/apidoc/owl_sparse_matrix_generic.html) for details.
 
 
 ## Linear Algebra
@@ -365,7 +355,7 @@ Linalg.D.is_symmetric x;;  (* is it symmetric *)
 ...
 ```
 
-Owl has implemented a complete set of OCaml interface to [`CBLAS`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_cblas_generated.mli) and [`LAPACKE`](https://github.com/ryanrhymes/owl/blob/master/lib/owl_lapacke_generated.mli) libraries. You can utilise these highly optimised functions to achieve the best performance. However in most cases, you should only use the high-level functions in `Linalg` module rather than dealing with these low-level interface.
+Owl has implemented a complete set of OCaml interface to [`CBLAS`](https://github.com/ryanrhymes/owl/blob/master/src/owl/cblas/owl_cblas.mli) and [`LAPACKE`](https://github.com/ryanrhymes/owl/blob/master/src/owl/lapacke/owl_lapacke_generated.mli) libraries. You can utilise these highly optimised functions to achieve the best performance. However in most cases, you should only use the high-level functions in `Linalg` module rather than dealing with these low-level interface.
 
 
 
@@ -402,7 +392,7 @@ From `utop`, you can see that p' equals `[|0.2; 0.4; 0.8|]` which is exactly the
 
 ## Plotting
 
-There is another separate [Tutorial on Plotting in Owl](https://github.com/ryanrhymes/owl/wiki/Tutorial:-How-to-Plot-in-Owl%3F).
+There is another separate [Tutorial on Plotting in Owl](http://www.cl.cam.ac.uk/~lw525/owl/chapter/plot.html).
 Herein, let's use an example to briefly show how to plot the result using `Plot` module. We first generate two mesh grids then apply sine function to them by using the operations introduced before.
 
 ```ocaml
@@ -459,36 +449,7 @@ The end result is as follows. You probably have already grasped the idea of how 
 
 There are a lot of basic and advanced mathematical and statistical functions in `Maths` and `Stats` modules. The document lags significantly behind the development, so I recommend you to read the mli file directly at the moment.
 
-[`Stats`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.html) has three submodules: [`Stats.Rnd`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Rnd.html) for random numbers, [`Stats.Pdf`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Pdf.html) for probability dense functions, and [`Stats.Cdf`](http://www.cl.cam.ac.uk/~lw525/owl/Stats.Cdf.html) for cumulative distribution functions. In addition, I have implemented extra functions such as two ranking correlations: `Stats.kendall_tau` and `Stats.spearman_rho`); two MCMC (Markov Chain Monte Carlo) functions in `Stats` module: Metropolis-Hastings (`Stats.metropolis_hastings`) and Gibbs sampling (`Stats.gibbs_sampling`) algorithms.
-
-E.g., the following code first defines a probability density function `f` for a mixture Gaussian model. Then we use `Stats.metropolis_hastings` to draw 100_000 samples based on the given pdf `f`, and the initial point is `0.1`. In the end, we call `Plot.histogram` to plot the distribution of the samples, from which we can clearly see they are from a mixture Gaussian model.
-
-```ocaml
-let f p = Stats.Pdf.((gaussian p.(0) 0.5) +. (gaussian (p.(0) -. 3.5) 1.)) in
-let y = Stats.metropolis_hastings f [|0.1|] 100_000 |>  Mat.of_arrays in
-Plot.histogram ~bin:100 y;;
-```
-
-The histogram below shows the distribution of the samples.
-
-![Plot example 02](examples/test_plot_02.png)
-
-Here is another example using `Stats.gibbs_sampling` to sample a bivariate distribution. Gibbs sampling requires the full conditional probability function so we defined its corresponding random number generator in `f p i` where `p` is the parameter vector and `i` indicates which parameter to sample.
-
-```ocaml
-let f p i = match i with
-  | 0 -> Stats.Rnd.gaussian ~sigma:0.5 () +. p.(1)
-  | _ -> Stats.Rnd.gaussian ~sigma:0.1 () *. p.(0)
-in
-let y = Stats.gibbs_sampling f [|0.1;0.1|] 5_000 |> Mat.of_arrays in
-Plot.scatter (Mat.col y 0) (Mat.col y 1);;
-```
-
-We take 5000 samples from the defined distribution and plot them as a scatter plot, as below.
-
-![Plot example 03](examples/test_plot_03.png)
-
-The future plan is to embed a small PPL (Probabilistic Programming Language) in `Stats` module.
+[`Stats`](https://github.com/ryanrhymes/owl/blob/master/src/owl/stats/owl_stats.mli) includes many functions for random numbers: `*_rvs` for random number generator, `*_pdf` for probably density/mass functions, `*_cdf` for cumulative density functions, `*_sf` for survival functions, `*_sf` for percentile functions, and etc. In addition, there are also many other statistical functions such as ranking correlations: `Stats.kendall_tau` and `Stats.spearman_rho`); hypothesis tests, and etc.
 
 
 ## N-dimensional Array
@@ -559,34 +520,7 @@ Arr.not_exists ((<) 2.) x;;
 Arr.for_all ((=) 2.) x;;
 ```
 
-Most importantly, you can use Owl to iterate a ndarray in various ways. Owl provides a simple but flexible and powerful way to define a "slice" in ndarray. Comparing to the "`Bigarray.slice_left`" function, the slice in Owl does not have to start from the left-most axis. E.g., for the previously defined `[|3;4;5|]` ndarray, you can define a slice in the following ways:
-
-```ocaml
-let s0 = [ []; []; [] ]      (* (*,*,*), essentially the whole ndarray as one slice *)
-let s1 = [ [0]; []; [] ]     (* (0,*,*) *)
-let s2 = [ []; [2]; [] ]     (* (*,2,*) *)
-let s3 = [ []; []; [1] ]     (* (*,*,1) *)
-let s4 = [ [1]; []; [2] ]    (* (1,*,2) *)
-...
-```
-
-`slice` function is very flexible, it basically has the same semantic as that in numpy. So you know how to index ndarray in numpy, you should be able to do the same thing in Owl. For advanced use of `slice` function, please refer to my [separate tutorial](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Indexing-and-Slicing). Some examples as as below.
-
-```ocaml
-let s = [ [1]; []; [-1;0;-1]; ];;
-let s = [ [1]; [0]; [-1;0;-1]; ];;
-let s = [ [1]; [0]; [-2;0]; ];;
-let s = [ [0]; [0;1]; [-2;0;-2]; ];;
-...
-```
-
-With the slice definition above, we can iterate and map the elements in a slice. E.g., we add one to all the elements in slice `(0,*,*)`.
-
-```ocaml
-Arr.map ~axis:[ [0]; []; [] ] (fun a -> a +. 1.) x;;
-```
-
-There are more functions to help you to iterate elements and slices in a ndarray: `iteri`, `iter`, `mapi`, `map`, `filteri`, `filter`, `foldi`, `fold`, `iteri_slice`, `iter_slice`, `iter2i`, `iter2`. Please refer to the documentation for their details.
+Most importantly, you can use Owl to index, slice, and iterate a ndarray in various ways. There are many functions to facilitate such operations: `iteri`, `iter`, `mapi`, `map`, `filteri`, `filter`, `foldi`, `fold`, `iteri_slice`, `iter_slice`, `iter2i`, `iter2`. Please refer to the tutorials on [Ndarray](http://www.cl.cam.ac.uk/~lw525/owl/chapter/ndarray.html) and [Indexing and Slicing](http://www.cl.cam.ac.uk/~lw525/owl/chapter/slicing.html).
 
 
 ## Algorithmic Differentiation
@@ -704,7 +638,7 @@ let x, _, y = Dataset.load_mnist_train_data () in
 train nn x y;;
 ```
 
-You may ask "what if I want different training configuration?" Well, the training and network module is actually very flexible and highly configurable. But I will talk about these details in another [separate tutorial](https://github.com/ryanrhymes/owl/wiki/Tutorial:-Neural-Network).
+You may ask "what if I want different training configuration?" Well, the training and network module is actually very flexible and highly configurable. But I will talk about these details in another [separate tutorial](http://www.cl.cam.ac.uk/~lw525/owl/chapter/neural.html).
 
 
 ## Distributed & Parallel Computing
@@ -728,20 +662,9 @@ module M2 = Owl_neural_parallel.Make (Owl_neural_feedforward) (Actor_param)
 Actor system is currently in a closed repository (due to my techreport writing). I will introduce this exciting feature very soon (in September).
 
 
-## Run Owl on Different Platforms
-
-If you want to try Owl on ARM-based platforms such as Raspberry Pi instead of the x86 ones, the recommended way is to use the [Docker image](https://hub.docker.com/r/matrixanger/owl/) that is built specifically for ARM platform. Just pull the image, start a container, and then play with Owl in `utop`. The source code is stored in `/root/owl` directory.
-
-```
-docker run --name owl -it matrixanger/owl:arm
-```
-
-Direct installation on ARM devices by source compilation is similar to that on the [x86 platform](https://github.com/ryanrhymes/owl#option-4-compile-from-source), but there might be some extra details you need to pay attention to, such as unsupported compiler options. Also note that Owl requires OCaml version 4.04 or above, which might not be supported on your platform's binary distribution system yet, so you might want to consider compiling from [OCaml source](https://ocaml.org/releases/4.04.html).
-Please refer to the [Dockerfile](https://github.com/jzstark/owl-docker/blob/master/Dockerfile) for a detailed installation guide.
-
 ## How To Contribute
 
-Owl is under active development, and I really look forward to your comments and contributions. Besides setting up a complete development environment on your native system, the easiest way to contribute is to use the [Owl Docker Image](https://hub.docker.com/r/ryanrhymes/owl/). Moreover, we have also built a docker image for ARM-based platform so that you can run Owl on Raspberry PI and Cubietruck (see the section above).
+Owl is under active development, and I really look forward to your comments and contributions. Besides setting up a complete development environment on your native system, the easiest way to contribute is to use the [Owl Docker Images](https://hub.docker.com/r/ryanrhymes/owl/). Moreover, we have also built a docker image for ARM-based platform so that you can run Owl on Raspberry PI and Cubietruck (see the section above).
 
 Just pull the image and dig into code saved in `/root/owl`, then have fun!
 

@@ -16,7 +16,7 @@ Because Owl is always under active development, there might be a lag between the
 
 - [Tudor Tiplea](https://github.com/tptiplea) contributed the initial Ndarray implementation in the base module.
 
-- [Maria (Majava San)](https://github.com/kanisteri) contributed several root-finding algorithms. She is also working on other numerical functions in Owl.
+- [Maria (kanisteri)](https://github.com/kanisteri) contributed several root-finding algorithms. She is also working on other numerical functions in Owl.
 
 - [Gavin Stark](https://github.com/atthecodeface) contributed and reshaped many unit tests. His work has been helping us in identifying and fixing existing bugs and preventing potential ones, greatly assured the quality of Owl.
 
