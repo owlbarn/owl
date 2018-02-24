@@ -38,7 +38,7 @@ ENV OWLPATH /root/owl
 RUN cd /root && git clone https://github.com/ryanrhymes/owl.git
 
 RUN sed -i -- 's/-lopenblas/-lopenblas -llapacke/g' $OWLPATH/src/owl/jbuild  # FIXME: hacking
-RUN make -C $OWLPATH && make -C $OWLPATH install
+RUN make -C $OWLPATH && make -C $OWLPATH install && make -C $OWLPATH test
 RUN mv /root/.opam/4.06.0/lib/stubslibs/* /root/.opam/4.06.0/lib/stublibs    # FIXME: hacking
 
 
