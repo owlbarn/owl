@@ -6,9 +6,9 @@ services:
   - docker
 
 before_install:
-- docker build -t ryanrhymes/owl .
+- docker pull ryanrhymes/owl
 - docker run -d -p 127.0.0.1:80:4567 ryanrhymes/owl /bin/bash
-- docker run ryanrhymes/owl ryanrhymes/owl -c "cd /root/owl && make test"
+- docker run ryanrhymes/owl /bin/bash -c "cd /root/owl && make test"
 
 script:
 - make test
