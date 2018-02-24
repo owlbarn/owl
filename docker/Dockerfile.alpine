@@ -37,7 +37,7 @@ RUN sed -i -- 's/-Wno-extern-c-compat -Wno-c++11-long-long -Wno-invalid-partial-
     && sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile \
     && sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis
 
-RUN cd $EIGENPATH && sudo make oasis && sudo make && sudo make install
+RUN cd $EIGENPATH && sudo make oasis && sudo make && sudo make install && sudo make clean
 
 
 ####################   INSTALL OWL  #######################

@@ -26,7 +26,7 @@ ENV LD_LIBRARY_PATH /usr/lib/:/usr/local/lib:/home/opam/.opam/4.06.0/lib/:/home/
 
 ENV OPENBLASPATH /home/opam/OpenBLAS
 RUN cd /home/opam && git clone https://github.com/xianyi/OpenBLAS.git
-RUN cd $OPENBLASPATH && sudo make && sudo make install
+RUN cd $OPENBLASPATH && sudo make && sudo make install && sudo make clean
 
 
 ####################   INSTALL OWL  #######################

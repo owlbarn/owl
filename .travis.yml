@@ -2,7 +2,6 @@ sudo: required
 
 language: c
 
-services:
-  - docker
+services: docker
 
 install: docker build -t ryanrhymes/owl:test .

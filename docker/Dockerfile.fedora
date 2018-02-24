@@ -36,7 +36,7 @@ RUN rm -f $OWLPATH/src/owl/misc/owl_plot.* \
     && sed -i '/let plot_comparison/i (*' $OWLPATH/test/unit_stats_rvs.ml
 
 RUN sed -i -- 's:/usr/local/opt/openblas/lib:/usr/lib/x86_64-linux-gnu/:g' $OWLPATH/src/owl/jbuild  # FIXME: hacking
-RUN make -C $OWLPATH && make -C $OWLPATH install
+RUN make -C $OWLPATH && make -C $OWLPATH install && make -C $OWLPATH clean
 
 
 ############## SET UP DEFAULT CONTAINER VARS ##############
