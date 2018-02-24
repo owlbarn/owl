@@ -1,26 +1,14 @@
-language: c
 sudo: required
-script: bash -ex .travis-opam.sh
-env:
-  global:
-  - OCAML_VERSION=4.06
-  - PACKAGE="owl"
-  - TESTS=true
-  - EXTRA_DEPS="alcotest oasis jbuilder ocaml-compiler-libs ctypes utop eigen plplot"
-  - INSTALL=false
-  matrix:
-  include:
-    - os: osx
-      osx_image: xcode7.3
-    - os: osx
-      osx_image: xcode8.2
-install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      sudo apt-get update;
-      sudo apt-get install libopenblas-dev liblapacke-dev gfortran
-    elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
-      brew update;
-      rm '/usr/local/include/c++';
-      brew install homebrew/science/openblas;
-    fi
-  - wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh
+
+language: c
+
+services:
+  - docker
+
+before_install:
+- docker pull ryanrhymes/owl
+- docker run -d -p 127.0.0.1:80:4567 ryanrhymes/owl /bin/bash
+- docker run ryanrhymes/owl ryanrhymes/owl -c "cd /root/owl && make test"
+
+script:
+- make test

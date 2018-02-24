@@ -17,7 +17,7 @@ RUN apt-get -y install libopenblas-dev liblapacke-dev
 
 RUN apt-get -y install opam && yes | opam init && eval $(opam config env)
 RUN opam update && opam switch 4.06.0 && eval $(opam config env)
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop plplot
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop plplot alcotest
 
 
 #################### SET UP ENV VARS #######################
