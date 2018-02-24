@@ -23,11 +23,12 @@ You can reach us in the following ways, looking forward to hearing from you!
 - [Slack Channel](https://join.slack.com/t/owl-dev-team/shared_invite/enQtMjQ3OTM1MDY4MDIwLTA3MmMyMmQ5Y2U0NjJiNjI0NzFhZDAwNGFhODBmMTk4N2ZmNDExYjZiMzI2N2M1MGNiMTUyYTQ5MTAzZjliZDI)
 
 
+
 ## Learning
 
-Owl's documentation contains a lot of learning materials to help you start. The full documentation consists of two parts: [Tutorial Book](http://www.cl.cam.ac.uk/~lw525/owl/chapter/index.html) and [API Reference](http://www.cl.cam.ac.uk/~lw525/owl/apidoc/index.html). Both are perfectly synchronised with the code in the repository by the automatic building system. You can access both part with the following link.
+Owl's documentation contains a lot of learning materials to help you start. The full documentation consists of two parts: [Tutorial Book](http://www.cl.cam.ac.uk/~lw525/owl/chapter/index.html) and [API Reference](http://www.cl.cam.ac.uk/~lw525/owl/apidoc/index.html). Both are perfectly synchronised with the code in the repository by the automatic building system. You can access both parts with the following link.
 
-* on [cl.cam.ac.uk](http://www.cl.cam.ac.uk/~lw525/owl/)
+* [Owl's Full Documentation](http://www.cl.cam.ac.uk/~lw525/owl/)
 
 
 
