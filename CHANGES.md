@@ -1,4 +1,9 @@
-### 0.3.4 (in progress)
+### 0.3.5 (in progress)
+
+* TODO ...
+
+
+### 0.3.4 (2018-02-26)
 
 * Update README, ACKNOWLEDGEMENT, and etc.
 * Initial implementation of OpenCL Context module.
