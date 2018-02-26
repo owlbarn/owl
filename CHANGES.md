@@ -12,6 +12,7 @@
 * Add a number of statistical functions into Stats.
 * Enhance View functor and add more functions.
 * Include and documentation of NLP modules.
+* Add dockerfile for various linux distributions.
 
 
 ### 0.3.3 (2018-02-12)
