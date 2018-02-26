@@ -31,9 +31,7 @@ RUN cd /home/opam && git clone https://github.com/ryanrhymes/owl.git
 
 RUN rm -f $OWLPATH/src/owl/misc/owl_plot.* \
     && sed -i '/plplot/d' $OWLPATH/src/owl/jbuild \
-    && sed -i '/module Plot = Owl_plot/d' $OWLPATH/src/owl/owl.ml \
-    && sed -i '/output h$/,+2d; /h filename ;$/a *)' $OWLPATH/test/unit_stats_rvs.ml \
-    && sed -i '/let plot_comparison/i (*' $OWLPATH/test/unit_stats_rvs.ml
+    && sed -i '/module Plot = Owl_plot/d' $OWLPATH/src/owl/owl.ml
 
 RUN sed -i -- 's:/usr/local/opt/openblas/lib:/usr/lib/x86_64-linux-gnu/:g' $OWLPATH/src/owl/jbuild  # FIXME: hacking
 RUN make -C $OWLPATH && make -C $OWLPATH install && make -C $OWLPATH clean
