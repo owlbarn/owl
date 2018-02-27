@@ -40,13 +40,38 @@ let qtrap ?(n=16) ?(eps=1e-6) f a b =
           let e = eps *. abs_float !s_old in
           assert (not( (d < e) || (!s_new = 0. && !s_old = 0.) ));
           s_old := !s_new;
-          Owl_log.info "iter: %i, d=%g e=%g" i d e;
         )
       done
     with _ -> ()
   );
 
   !s_new
+
+
+let qsim ?(n=16) ?(eps=1e-6) f a b =
+  let s_new = ref 0. in
+  let s_old = ref 0. in
+  let o_new = ref 0. in
+  let o_old = ref 0. in
+
+  (
+    try
+      for i = 1 to n do
+        s_new := trapz f a b i;
+        s_old := (4. *. !s_new -. !o_new) /. 3.;
+        if (i > 5) then (
+          let d = abs_float (!s_old -. !o_old) in
+          let e = eps *. abs_float !o_old in
+          assert (not( (d < e) || (!s_old = 0. && !o_old = 0.) ));
+          o_old := !s_old;
+          o_new := !s_new;
+        )
+      done
+    with _ -> ()
+  );
+
+  !s_new
+
 
 
 (* ends here *)
