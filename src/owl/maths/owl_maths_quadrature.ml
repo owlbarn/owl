@@ -6,7 +6,7 @@
 (** Numerical Integration *)
 
 
-let trapz f a b n =
+let trapzd f a b n =
   assert (n > 0 && a <= b);
 
   if n = 1 then (
@@ -27,14 +27,14 @@ let trapz f a b n =
   )
 
 
-let qtrap ?(n=16) ?(eps=1e-6) f a b =
+let trapz ?(n=16) ?(eps=1e-6) f a b =
   let s_new = ref 0. in
   let s_old = ref 0. in
 
   (
     try
       for i = 1 to n do
-        s_new := trapz f a b i;
+        s_new := trapzd f a b i;
         if (i > 5) then (
           let d = abs_float (!s_new -. !s_old) in
           let e = eps *. abs_float !s_old in
@@ -48,7 +48,7 @@ let qtrap ?(n=16) ?(eps=1e-6) f a b =
   !s_new
 
 
-let qsim ?(n=16) ?(eps=1e-6) f a b =
+let simpson ?(n=16) ?(eps=1e-6) f a b =
   let s_new = ref 0. in
   let s_old = ref 0. in
   let o_new = ref 0. in
@@ -57,7 +57,7 @@ let qsim ?(n=16) ?(eps=1e-6) f a b =
   (
     try
       for i = 1 to n do
-        s_new := trapz f a b i;
+        s_new := trapzd f a b i;
         s_old := (4. *. !s_new -. !o_new) /. 3.;
         if (i > 5) then (
           let d = abs_float (!s_old -. !o_old) in
@@ -72,6 +72,9 @@ let qsim ?(n=16) ?(eps=1e-6) f a b =
 
   !s_new
 
+
+let romberg ?(n=16) ?(eps=1e-6) f a b = ()
+(* TODO *)
 
 
 (* ends here *)
