@@ -26,7 +26,7 @@ Returns:
 
 val simpson : ?n:int -> ?eps:float -> (float -> float) -> float -> float -> float
 (**
-``trapz f a b`` computes the integral of ``f`` on the interval ``[a,b]`` using
+``simpson f a b`` computes the integral of ``f`` on the interval ``[a,b]`` using
 the Simpson's rule, i.e. :math:`\int_a^b f(x) dx`.
 
 Parameters:
@@ -42,7 +42,7 @@ Returns:
 
 val romberg : ?n:int -> ?eps:float -> (float -> float) -> float -> float -> float
 (**
-``trapz f a b`` computes the integral of ``f`` on the interval ``[a,b]`` using
+``romberg f a b`` computes the integral of ``f`` on the interval ``[a,b]`` using
 the Romberg method, i.e. :math:`\int_a^b f(x) dx`. Note that this algorithm is
 much faster than ``trapz`` and ``simpson``.
 
