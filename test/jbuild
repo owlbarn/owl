@@ -12,6 +12,6 @@
 
 (alias (
   (name    runtest)
-  (deps    (test_runner.bc))
+  (deps    (test_runner.exe))
   (action  (run ${<}))
 ))

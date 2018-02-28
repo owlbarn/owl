@@ -41,6 +41,7 @@ value stub_float32_ndarray_conv_spatial_native(
   const int kernel_io  = out_channel * in_channel;
   const int output_cri = out_channel * output_rows * output_cols;
   const int output_ri  = out_channel * output_rows;
+  const int ksize = kernel_cols * kernel_rows;
 
   memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
 
@@ -48,24 +49,17 @@ value stub_float32_ndarray_conv_spatial_native(
   if (padding == 1){
     pr = 0.; pc = 0.;
   } else {
-    pr = (row_stride * ( output_rows - 1) +
-      kernel_rows - input_rows) / 2.;
-    pc = (col_stride * ( output_cols - 1) +
-      kernel_cols - input_cols) / 2.;
+    pr = (row_stride * ( output_rows - 1) + kernel_rows - input_rows) / 2.;
+    pc = (col_stride * ( output_cols - 1) + kernel_cols - input_cols) / 2.;
     if (pr < 0) pr = 0.;
     if (pc < 0) pc = 0.;
   }
 
-  const int ksize = kernel_cols * kernel_rows;
-  //double t = 0.;
-
+  int output_idx = 0;
   for (int i = 0; i < batches; ++i) {
     const int input_idx_base = i * input_cri;
-    const int output_idx_base_i = i * output_cri;
     for (int j = 0; j < output_cols; ++j) {
-      const int output_idx_base_ij = output_idx_base_i + j * output_ri;
       for (int k = 0; k < output_rows; ++k) {
-        const int output_idx_base =  output_idx_base_ij + k * out_channel;
 
         const int cstart = j * col_stride - floor(pc);
         const int rstart = k * row_stride - floor(pr);
@@ -73,44 +67,56 @@ value stub_float32_ndarray_conv_spatial_native(
         const int rend   = rstart + kernel_rows;
 
         for (int l = 0; l < out_channel; ++l) {
-          TYPE  sum = 0.;
-          int output_idx = output_idx_base + l;
+          TYPE sum = 0.;
+          //int input_idx = input_idx_base;
+          //int kernel_idx = l;
 
-          for (int h = 0; h < in_channel; ++h) {
-            for (int a = cstart; a < cend; ++a) {
-              for (int b = rstart; b < rend; ++b) {
+          for (int a = cstart; a < cend; ++a) {
+            for (int b = rstart; b < rend; ++b) {
+              for (int h = 0; h < in_channel; ++h) {
+                int input_idx;
                 TYPE input_val, kernel_val;
                 if (a >= 0 && a < input_cols &&
                     b >= 0 && b < input_rows) {
-                  int input_idx =
+                  input_idx =
                     input_idx_base + a * input_ri + b * in_channel + h;
                   input_val = *(input_ptr + input_idx);
                 } else {
                   input_val = 0.0;
                 }
 
-                int kernel_index =
+                int kernel_idx =
                   (a - cstart) * kernel_rio + (b - rstart) * kernel_io + h * out_channel + l;
-                kernel_val = *(kernel_ptr + kernel_index);
+                kernel_val = *(kernel_ptr + kernel_idx);
+                //fprintf(stderr, "%d ", kernel_idx);
 
                 sum += input_val * kernel_val;
+              } //h
+            } // b
+          } // a
+
+          /* 90 ms
+          for (int a = 0; a < kernel_cols; ++a) {
+            for (int b = 0; b < kernel_rows; ++b) {
+              for (int h = 0; h < in_channel; ++h) {
+                sum += 1;
               }
             }
           }
+          */
 
-          //fprintf(stderr, "%f\n", sum);
-          //clock_t start = clock();
-          *(output_ptr + output_idx) =  sum;
-          //clock_t diff = clock() - start;
-          //double msec = (double) (diff * 1000);
-          //t += msec;
+          /* 52ms
+          for (int a = 0; a < kernel_cols * kernel_rows * in_channel; ++a) {
+            sum += 1;
+          }
+          */
+
+          *(output_ptr + output_idx) = sum;
+          output_idx++;
         }
-
       }
     }
   }
-
-  //fprintf(stderr, "Time taken %f milliseconds in out_channel\n", t / CLOCKS_PER_SEC);
 
   return Val_unit;
 }
