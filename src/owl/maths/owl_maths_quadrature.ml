@@ -30,7 +30,6 @@ let trapzd f a b n =
 let trapz ?(n=20) ?(eps=1e-6) f a b =
   let s_new = ref 0. in
   let s_old = ref 0. in
-
   (
     try
       for i = 1 to n do
@@ -44,7 +43,6 @@ let trapz ?(n=20) ?(eps=1e-6) f a b =
       done
     with _ -> ()
   );
-
   !s_new
 
 
@@ -53,7 +51,6 @@ let simpson ?(n=20) ?(eps=1e-6) f a b =
   let s_old = ref 0. in
   let o_new = ref 0. in
   let o_old = ref 0. in
-
   (
     try
       for i = 1 to n do
@@ -69,7 +66,6 @@ let simpson ?(n=20) ?(eps=1e-6) f a b =
       done
     with _ -> ()
   );
-
   !s_new
 
 
