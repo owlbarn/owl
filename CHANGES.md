@@ -1,6 +1,8 @@
 ### 0.3.5 (in progress)
 
-* TODO ...
+* Add functions for numerical integration.
+* Add functions for interoperation.
+* Add several root-finding algorithms.
 
 
 ### 0.3.4 (2018-02-26)
