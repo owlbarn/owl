@@ -27,7 +27,7 @@ let trapzd f a b n =
   )
 
 
-let trapz ?(n=16) ?(eps=1e-6) f a b =
+let trapz ?(n=20) ?(eps=1e-6) f a b =
   let s_new = ref 0. in
   let s_old = ref 0. in
 
@@ -48,7 +48,7 @@ let trapz ?(n=16) ?(eps=1e-6) f a b =
   !s_new
 
 
-let simpson ?(n=16) ?(eps=1e-6) f a b =
+let simpson ?(n=20) ?(eps=1e-6) f a b =
   let s_new = ref 0. in
   let s_old = ref 0. in
   let o_new = ref 0. in
@@ -73,8 +73,27 @@ let simpson ?(n=16) ?(eps=1e-6) f a b =
   !s_new
 
 
-let romberg ?(n=16) ?(eps=1e-6) f a b = ()
-(* TODO *)
+let romberg ?(n=20) ?(eps=1e-6) f a b =
+  let s = Array.make (n + 1) 0. in
+  let h = Array.make (n + 2) 1. in
+  let rss = ref 0. in
+  let k = 5 in
+  (
+    try
+      for i = 0 to n - 1 do
+        s.(i) <- trapzd f a b (i + 1);
+        if i >= k then (
+          let s' = Array.sub s (i - k) k in
+          let h' = Array.sub h (i - k) k in
+          let ss, dss = Owl_maths_interpolate.polint h' s' 0. in
+          rss := ss;
+          assert ( (abs_float dss) > (eps *. abs_float ss) );
+        );
+        h.(i + 1) <- 0.25 *. h.(i);
+      done
+    with _ -> ()
+  );
+  !rss
 
 
 (* ends here *)
