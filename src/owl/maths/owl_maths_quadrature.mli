@@ -75,3 +75,7 @@ Parameters:
 Returns:
   * ``y``: the integral of ``f`` on ``[a, b]``.
  *)
+
+
+val gauss_legendre : ?eps:float -> float -> float -> int -> float array * float array
+(** TODO *)
