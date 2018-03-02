@@ -137,5 +137,23 @@ let gauss_legendre ?(eps=3e-11) a b n =
   x, w
 
 
+let gauss_laguerre ?(eps=3e-11) a b n = ()
+
+
+let gaussian ?(n=5) f a b =
+  let x, w = gauss_legendre a b n in
+  let xm = 0.5 *. (b +. a) in
+  let xr = 0.5 *. (b -. a) in
+  let s = ref 0. in
+
+  for i = 0 to n - 1 do
+    let dx = xr *. x.(i) in
+    let p = f (xm +. dx) in
+    let q = f (xm -. dx) in
+    s := w.(i) *. (p +. q);
+  done;
+
+  !s *. xr
+
 
 (* ends here *)

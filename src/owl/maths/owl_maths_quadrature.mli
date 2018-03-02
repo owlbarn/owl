@@ -58,6 +58,10 @@ Returns:
  *)
 
 
+val gaussian : ?n:int -> (float -> float) -> float -> float -> float
+(** TODO *)
+
+
 (** {6 Helper functions} *)
 
 val trapzd : (float -> float) -> float -> float -> int -> float
