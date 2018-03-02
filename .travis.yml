@@ -1,25 +1,11 @@
-language: c
 sudo: required
-script: bash -ex .travis-opam.sh
-env:
-  global:
-  - OCAML_VERSION=4.04
-  - PACKAGE="owl"
-  - TESTS=true
-  - EXTRA_DEPS="alcotest ocaml-compiler-libs"
-  - INSTALL=false
-  matrix:
-  include:
-    - os: osx
-      osx_image: xcode7.3
-    - os: osx
-      osx_image: xcode8.2
-install:
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-      sudo apt-get update;
-    elif [[ "${TRAVIS_OS_NAME}" == "osx" ]]; then
-      brew update;
-      rm '/usr/local/include/c++';
-      brew install homebrew/science/openblas;
-    fi
-  - wget https://raw.githubusercontent.com/ocaml/ocaml-ci-scripts/master/.travis-opam.sh
+
+language: c
+
+services: docker
+
+before_install: docker build -t ryanrhymes/owl:test .
+
+script: docker run ryanrhymes/owl:test /bin/bash -c "cd /root/owl"
+
+install: true

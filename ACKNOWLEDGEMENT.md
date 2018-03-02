@@ -14,17 +14,23 @@ Because Owl is always under active development, there might be a lag between the
 
 - [Ben Catterall](https://www.linkedin.com/in/ben-catterall-38643287/?ppe=1) did excellent theoretical work for Owl's underlying distributed computation engine. He also contributed to the NLP module.
 
+- [Tudor Tiplea](https://github.com/tptiplea) contributed the initial Ndarray implementation in the base module.
+
+- [Maria (kanisteri)](https://github.com/kanisteri) contributed several root-finding algorithms. She is also working on other numerical functions in Owl.
+
+- [Gavin Stark](https://github.com/atthecodeface) contributed and reshaped many unit tests. His work has been helping us in identifying and fixing existing bugs and preventing potential ones, greatly assured the quality of Owl.
+
+- [Jianxin Zhao](https://github.com/jzstark/) built several advanced machine learning and deep neural network applications on top of Owl.
+
+- [Marshall Abrams](https://github.com/mars0i) has been contributing code to Plot and other modules, improving the documentation. Moreover, he always provide useful feedback and constructive discussion.
+
+- [Sergei Lebedev](https://github.com/superbobry) and [bagmanas](https://github.com/bagmanas) contributed various hypothesis test functions in Stats module.
+
 - Interfacing to other C/C++ libraries (e.g., CBLAS, LAPACKE, Eigen, OpenCL, and etc.) relies on [Jeremy Yallop](https://www.cl.cam.ac.uk/~jdy22/)'s [ocaml-ctypes](https://github.com/ocamllabs/ocaml-ctypes).
 
 - The plot module is built on top of [Hezekiah M. Carty](https://github.com/hcarty)'s project: [ocaml-plplot](https://github.com/hcarty/ocaml-plplot).
 
 - The [Algodiff](https://github.com/ryanrhymes/owl/blob/master/src/owl/owl_algodiff.ml) module partly uses the design of [DiffSharp](http://diffsharp.github.io/DiffSharp/) by [Atilim Gunes Baydin](http://www.cs.nuim.ie/~gunes/), [Barak A. Pearlmutter](http://www.bcl.hamilton.ie/~barak/), and et al., [[techreport]](https://arxiv.org/abs/1502.05767).
-
-- [Gavin Stark](https://github.com/atthecodeface) contributed and reshaped many unit tests. His work has been helping us in identifying and fixing existing bugs and preventing potential ones, greatly assured the quality of Owl.
-
-- [Jianxin Zhao](https://github.com/jzstark/) has been building advanced machine learning and deep neural network applications on top of Owl.
-
-- [Sergei Lebedev](https://github.com/superbobry) and [bagmanas](https://github.com/bagmanas) contributed various hypothesis test functions in Stats module.
 
 - Many functions rely on [Eigen](http://eigen.tuxfamily.org/index.php?title=Main_Page) and its [OCaml binding](https://github.com/ryanrhymes/eigen). The binding also contains some functions (e.g., convolution functions) from Google's [Tensorflow](https://www.tensorflow.org/).
 

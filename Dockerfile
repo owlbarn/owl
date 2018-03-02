@@ -17,7 +17,7 @@ RUN apt-get -y install libopenblas-dev liblapacke-dev
 
 RUN apt-get -y install opam && yes | opam init && eval $(opam config env)
 RUN opam update && opam switch 4.06.0 && eval $(opam config env)
-RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop plplot
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes utop plplot alcotest
 
 
 #################### SET UP ENV VARS #######################
@@ -27,8 +27,8 @@ ENV CAML_LD_LIBRARY_PATH /root/.opam/4.06.0/lib/stublibs
 
 ENV EIGENPATH /root/eigen
 RUN cd /root && git clone https://github.com/ryanrhymes/eigen.git
-RUN sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile ###FIXME
-RUN sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis       ###FIXME
+RUN sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile # FIXME: hacking
+RUN sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis       # FIXME: hacking
 RUN make -C $EIGENPATH oasis && make -C $EIGENPATH && make -C $EIGENPATH install
 
 
@@ -38,7 +38,7 @@ ENV OWLPATH /root/owl
 RUN cd /root && git clone https://github.com/ryanrhymes/owl.git
 
 RUN sed -i -- 's/-lopenblas/-lopenblas -llapacke/g' $OWLPATH/src/owl/jbuild  # FIXME: hacking
-RUN make -C $OWLPATH && make -C $OWLPATH install
+RUN make -C $OWLPATH && make -C $OWLPATH install && make -C $OWLPATH test && make -C $OWLPATH clean
 RUN mv /root/.opam/4.06.0/lib/stubslibs/* /root/.opam/4.06.0/lib/stublibs    # FIXME: hacking
 
 
