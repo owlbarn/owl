@@ -61,34 +61,29 @@ value stub_float32_ndarray_conv_spatial_native(
     for (int j = 0; j < output_cols; ++j) {
       for (int k = 0; k < output_rows; ++k) {
 
-        const int cstart = j * col_stride - floor(pc);
-        const int rstart = k * row_stride - floor(pr);
+        int cstart = j * col_stride - floor(pc);
+        int rstart = k * row_stride - floor(pr);
         const int cend   = cstart + kernel_cols;
         const int rend   = rstart + kernel_rows;
+        cstart = (cstart < 0) ? 0 : cstart;
+        rstart = (rstart < 0) ? 0 : rstart;
 
         for (int l = 0; l < out_channel; ++l) {
           TYPE sum = 0.;
           //int input_idx = input_idx_base;
           //int kernel_idx = l;
 
-          for (int a = cstart; a < cend; ++a) {
-            for (int b = rstart; b < rend; ++b) {
+          for (int a = cstart; a < cend && a < input_cols; ++a) {
+            for (int b = rstart; b < rend && b < input_rows; ++b) {
               for (int h = 0; h < in_channel; ++h) {
-                int input_idx;
                 TYPE input_val, kernel_val;
-                if (a >= 0 && a < input_cols &&
-                    b >= 0 && b < input_rows) {
-                  input_idx =
-                    input_idx_base + a * input_ri + b * in_channel + h;
-                  input_val = *(input_ptr + input_idx);
-                } else {
-                  input_val = 0.0;
-                }
+                int input_idx =
+                  input_idx_base + a * input_ri + b * in_channel + h;
+                input_val = *(input_ptr + input_idx);
 
                 int kernel_idx =
                   (a - cstart) * kernel_rio + (b - rstart) * kernel_io + h * out_channel + l;
                 kernel_val = *(kernel_ptr + kernel_idx);
-                //fprintf(stderr, "%d ", kernel_idx);
 
                 sum += input_val * kernel_val;
               } //h
