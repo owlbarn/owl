@@ -81,5 +81,5 @@ Returns:
  *)
 
 
-val gauss_legendre : ?eps:float -> float -> float -> int -> float array * float array
+val gauss_legendre : ?eps:float -> ?a:float -> ?b:float -> int -> float array * float array
 (** TODO *)

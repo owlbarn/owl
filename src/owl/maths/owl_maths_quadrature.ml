@@ -94,7 +94,7 @@ let romberg ?(n=20) ?(eps=1e-6) f a b =
 
 (* Compute abscissas and weights *)
 
-let gauss_legendre ?(eps=3e-11) a b n =
+let gauss_legendre ?(eps=3e-11) ?(a=(-1.)) ?(b=(+1.)) n =
   let m = (n + 1) / 2 in
   let n' = float_of_int n in
   let x = Array.create_float n in
@@ -137,23 +137,27 @@ let gauss_legendre ?(eps=3e-11) a b n =
   x, w
 
 
+let gauss_legendre_cache = Array.init 50 gauss_legendre
+
+
 let gauss_laguerre ?(eps=3e-11) a b n = ()
 
 
-let gaussian ?(n=5) f a b =
-  let x, w = gauss_legendre a b n in
-  let xm = 0.5 *. (b +. a) in
+let gaussian ?(n=10) f a b =
+  let x, w = match n < Array.length gauss_legendre_cache with
+    | true  -> gauss_legendre_cache.(n)
+    | false -> gauss_legendre n
+  in
   let xr = 0.5 *. (b -. a) in
   let s = ref 0. in
 
   for i = 0 to n - 1 do
-    let dx = xr *. x.(i) in
-    let p = f (xm +. dx) in
-    let q = f (xm -. dx) in
-    s := w.(i) *. (p +. q);
+    let c = xr *. (x.(i) +. 1.) +. a in
+    s := !s +. w.(i) *. (f c);
   done;
 
   !s *. xr
+
 
 
 (* ends here *)
