@@ -5,3 +5,5 @@
 
 
 module Base = Owl_opencl_base
+
+module Context = Owl_opencl_context

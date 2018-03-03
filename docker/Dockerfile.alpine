@@ -1,0 +1,58 @@
+############################################################
+# Dockerfile to build Owl docker image
+# Based on ryanrhymes/owl master branch
+# By Liang Wang <liang.wang@cl.cam.ac.uk>
+############################################################
+
+FROM ocaml/opam2:alpine-3.6-ocaml-4.06.0
+USER opam
+
+
+##################### PREREQUISITES ########################
+
+RUN sudo apk update
+RUN sudo apk add m4 wget unzip aspcud openblas-dev
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes alcotest utop
+
+
+#################### SET UP ENV VARS #######################
+
+ENV PATH /home/opam/.opam/4.06.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+ENV CAML_LD_LIBRARY_PATH /home/opam/.opam/4.06.0/lib/stublibs
+ENV LD_LIBRARY_PATH /usr/lib/:/usr/local/lib:/home/opam/.opam/4.06.0/lib/:/home/opam/.opam/4.06.0/lib/stublibs/
+
+RUN echo "#require \"owl_top\";; open Owl;;" >> /home/opam/.ocamlinit \
+    && bash -c 'echo -e "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> /home/opam/.profile' \
+    && opam config env >> /home/opam/.profile \
+    && bash -c "source /home/opam/.profile"
+
+
+####################  INSTALL EIGEN  #######################
+
+ENV EIGENPATH /home/opam/eigen
+RUN cd /home/opam/ && git clone https://github.com/ryanrhymes/eigen.git
+
+RUN sed -i -- 's/-Wno-extern-c-compat -Wno-c++11-long-long -Wno-invalid-partial-specialization/-Wno-ignored-attributes/g' $EIGENPATH/lib/Makefile \
+    && sed -i -- 's/typedef int64_t INDEX;/#include <stdint.h>\ntypedef int64_t INDEX;/g' $EIGENPATH/lib/eigen_dsmat.h $EIGENPATH/lib/eigen_spmat.h \
+    && sed -i -- 's/-flto/ /g' $EIGENPATH/lib/Makefile \
+    && sed -i -- 's/-flto/ /g' $EIGENPATH/_oasis
+
+RUN cd $EIGENPATH && sudo make oasis && sudo make && sudo make install && sudo make clean
+
+
+####################   INSTALL OWL  #######################
+
+ENV OWLPATH /home/opam/owl
+RUN cd /home/opam && git clone https://github.com/ryanrhymes/owl.git
+
+RUN rm -f $OWLPATH/src/owl/misc/owl_plot.* \
+    && sed -i '/plplot/d' $OWLPATH/src/owl/jbuild \
+    && sed -i '/module Plot = Owl_plot/d' $OWLPATH/src/owl/owl.ml
+
+RUN cd $OWLPATH && make && make install
+
+
+############## SET UP DEFAULT CONTAINER VARS ##############
+
+WORKDIR $OWLPATH
+ENTRYPOINT /bin/sh

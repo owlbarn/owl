@@ -158,11 +158,10 @@ let allocate_from_inputs ctx x =
   Owl_utils.Stack.(to_array src, to_array dst)
 
 
-let map_arr_eval fun_name x =
-  let ctx = Owl_opencl_context.(default.context) in
-  let cmdq = Owl_opencl_context.(default.command_queue) in
+let map_arr_eval param fun_name x =
+  let ctx, cmdq, program = param in
   let kind = get_input_kind x 0 in
-  let kernel = Owl_opencl_context.(mk_kernel kind fun_name default.program) in
+  let kernel = Owl_opencl_context.(ba_kernel kind fun_name program) in
 
   let src, dst = allocate_from_inputs ctx x in
   let a_val, a_mem, a_ptr = src.(0) in
@@ -178,11 +177,10 @@ let map_arr_eval fun_name x =
   x.events <- [|event|]
 
 
-let mapn_arr_eval fun_name x =
-  let ctx = Owl_opencl_context.(default.context) in
-  let cmdq = Owl_opencl_context.(default.command_queue) in
+let mapn_arr_eval param fun_name x =
+  let ctx, cmdq, program = param in
   let kind = get_input_kind x 0 in
-  let kernel = Owl_opencl_context.(mk_kernel kind fun_name default.program) in
+  let kernel = Owl_opencl_context.(ba_kernel kind fun_name program) in
 
   let src = Array.mapi (fun i a -> get_val_mem_ptr a i) x.input in
   let tmp = Owl_utils.Array.filteri_v (fun i a -> a.refnum = 1, i) x.input in
@@ -203,11 +201,10 @@ let mapn_arr_eval fun_name x =
   x.events <- [|event|]
 
 
-let map_arr_scalar_eval fun_name x =
-  let ctx = Owl_opencl_context.(default.context) in
-  let cmdq = Owl_opencl_context.(default.command_queue) in
+let map_arr_scalar_eval param fun_name x =
+  let ctx, cmdq, program = param in
   let kind = get_input_kind x 0 in
-  let kernel = Owl_opencl_context.(mk_kernel kind fun_name default.program) in
+  let kernel = Owl_opencl_context.(ba_kernel kind fun_name program) in
 
   let src, dst = allocate_from_arr ctx x.input.(0) in
   let a_val, a_mem, a_ptr = src in
@@ -227,11 +224,10 @@ let map_arr_scalar_eval fun_name x =
   x.events <- [|event|]
 
 
-let _reduce_eval fun_name wait_for num_groups group_size a_val a_ptr =
-  let ctx = Owl_opencl_context.(default.context) in
-  let cmdq = Owl_opencl_context.(default.command_queue) in
+let _reduce_eval param fun_name wait_for num_groups group_size a_val a_ptr =
+  let ctx, cmdq, program = param in
   let kind = Owl_dense_ndarray_generic.kind a_val in
-  let kernel = Owl_opencl_context.(mk_kernel kind fun_name default.program) in
+  let kernel = Owl_opencl_context.(ba_kernel kind fun_name program) in
 
   let a_knd = Owl_dense_ndarray_generic.kind a_val in
   let b_val = Owl_dense_ndarray_generic.empty a_knd [|num_groups|] in
@@ -250,15 +246,15 @@ let _reduce_eval fun_name wait_for num_groups group_size a_val a_ptr =
   event, b_val, b_mem, b_ptr
 
 
-let reduce_eval fun_name x =
+let reduce_eval param fun_name x =
   (* FIXME: need to query the device to decide *)
   (* min-len needs to be group_size * 2 *)
   let num_groups = 64 in
   let group_size = 64 in
   let wait_for = get_input_event x in
   let a_val, a_mem, a_ptr = get_val_mem_ptr x.input.(0) 0 in
-  let event, b_val, b_mem, b_ptr = _reduce_eval fun_name wait_for (num_groups * 2) group_size (unpack_arr a_val) a_ptr in
-  let event, b_val, b_mem, b_ptr = _reduce_eval fun_name [event] 1 group_size b_val b_ptr in
+  let event, b_val, b_mem, b_ptr = _reduce_eval param fun_name wait_for (num_groups * 2) group_size (unpack_arr a_val) a_ptr in
+  let event, b_val, b_mem, b_ptr = _reduce_eval param fun_name [event] 1 group_size b_val b_ptr in
   x.outval <- [|F32 b_val|];
   x.outmem <- [|b_mem|];
   x.events <- [|event|]
@@ -283,20 +279,25 @@ let reduce fun_name x = pack_op (Reduce fun_name) [|x|]
 
 
 (* recursively evaluate an expression *)
-let eval x =
+let eval ?(dev_id=0) x =
+  let ctx = Owl_opencl_context.(get_opencl_ctx default) in
+  let dev = Owl_opencl_context.(get_dev default dev_id) in
+  let cmdq = Owl_opencl_context.(get_cmdq default dev) in
+  let prog = Owl_opencl_context.(get_program default) in
+  let p = (ctx, cmdq, prog) in
+
   let rec _eval x =
     Array.iter _eval x.input;
     if x.outmem = [||] then (
       match x.op with
       | Noop _         -> ()
-      | Map s          -> map_arr_eval s x
-      | MapN s         -> mapn_arr_eval s x
-      | MapArrScalar s -> map_arr_scalar_eval s x
-      | Reduce s       -> reduce_eval s x
+      | Map s          -> map_arr_eval p s x
+      | MapN s         -> mapn_arr_eval p s x
+      | MapArrScalar s -> map_arr_scalar_eval p s x
+      | Reduce s       -> reduce_eval p s x
     )
   in
   _eval (unpack_trace x);
-  let cmdq = Owl_opencl_context.(default.command_queue) in
   Owl_opencl_base.CommandQueue.finish cmdq;
   x
 

@@ -27,6 +27,11 @@ let reci x = 1. /. x
 
 let signum x = if x = 0. then 0. else if x > 0. then 1. else -1.
 
+let same_sign x y =
+  if x >= 0. && y >= 0. then true
+  else if x <= 0. && y <= 0. then true
+  else false
+
 let softsign x = x /. (1. +. abs x)
 
 let softplus x = log (1. +. exp x)

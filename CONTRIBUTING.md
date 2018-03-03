@@ -1,4 +1,4 @@
-# How to contribute changes
+# How to Contribute
 
 The following is a set of guidelines for proposing changes to the
 OCaml distribution. These are just guidelines, not rules, use your
@@ -49,6 +49,24 @@ snippets in `owl`.
 - Keep corner cases in mind. For example, does your code also work for complex
  +numbers?
 
+## Submit a Proposal
+
+Before you start implementing something, especially something significant.
+Please submit a proposal first on
+[owl's issue tracker](https://github.com/ryanrhymes/owl/issues). This first
+can ensure you get enough support from me in the following development. Second,
+this avoids unnecessary duplicated work in case someone else already started
+working the same feature, which indeed happened before. Last, you may find
+someone who is willing to help you in tackling the the problem together.
+
+The format of the proposal aims to be light: state what algorithm/feature you
+want to contribute to which module. In case something more significant that
+can be a standalone module, please also briefly specify the included functions,
+although these can be subject to changes in future implementation.
+
 ## Documentation
 
+- Be concise, simple, and correct.
 - Make sure the grammar is correct.
+- Refer to the original paper whenever possible.
+- Use both long documentation in `mli` and short inline documentation in code.
