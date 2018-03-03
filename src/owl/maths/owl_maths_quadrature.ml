@@ -143,7 +143,7 @@ let gauss_legendre_cache = Array.init 50 gauss_legendre
 let gauss_laguerre ?(eps=3e-11) a b n = ()
 
 
-let gaussian ?(n=10) f a b =
+let gaussian_fixed ?(n=10) f a b =
   let x, w = match n < Array.length gauss_legendre_cache with
     | true  -> gauss_legendre_cache.(n)
     | false -> gauss_legendre n
@@ -157,6 +157,21 @@ let gaussian ?(n=10) f a b =
   done;
 
   !s *. xr
+
+
+let gaussian ?(n=50) ?(eps=1e-6) f a b =
+  let s_new = ref infinity in
+  let s_old = ref infinity in
+  (
+    try
+      for i = 1 to n do
+        s_new := gaussian_fixed ~n:i f a b;
+        assert (abs_float (!s_new -. !s_old) > eps);
+        s_old := !s_new;
+      done
+    with _ -> ()
+  );
+  !s_new
 
 
 

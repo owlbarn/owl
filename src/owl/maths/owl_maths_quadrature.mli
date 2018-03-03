@@ -58,7 +58,10 @@ Returns:
  *)
 
 
-val gaussian : ?n:int -> (float -> float) -> float -> float -> float
+val gaussian_fixed : ?n:int -> (float -> float) -> float -> float -> float
+(** TODO *)
+
+val gaussian : ?n:int -> ?eps:float -> (float -> float) -> float -> float -> float
 (** TODO *)
 
 
