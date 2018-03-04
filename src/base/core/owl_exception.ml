@@ -4,6 +4,10 @@
  *)
 
 
+let check p e =
+  if p = false then raise e
+
+
 exception FOUND
 
 exception NOT_FOUND
@@ -11,3 +15,9 @@ exception NOT_FOUND
 exception EMPTY_ARRAY
 
 exception TEST_FAIL
+
+exception NOT_SQUARE
+
+exception DIFFERENT_SHAPE
+
+exception NOT_BROADCASTABLE
