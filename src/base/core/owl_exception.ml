@@ -9,3 +9,5 @@ exception FOUND
 exception NOT_FOUND
 
 exception EMPTY_ARRAY
+
+exception TEST_FAIL

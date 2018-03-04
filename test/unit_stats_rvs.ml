@@ -597,7 +597,7 @@ let cdf_approximations = Unit_stats_rvs_distributions.cdf_approximations
 
 (*f test_rough_cdf - test that a stats CDF/PDF matches that from scipy given in cdf_approximations
  *)
-exception Bug
+
 let test_rough_cdf pydist =
   let (name, imprecision, dut_cdf, dut_pdf, dut_logcdf, dut_logpdf, dut_opt_ppf, dut_sf, dut_logsf, dut_opt_isf, cdf_x_array, pdf_x_array) = pydist in
   let dist = Distribution.create name dut_cdf dut_pdf cdf_x_array pdf_x_array in
@@ -624,14 +624,18 @@ let test_rough_cdf pydist =
     let diff_pdf_2 = (pdf_x /. dut_pdf_x -. 1.) ** 2. in
     let err_log_cdf_2 = ((log dut_cdf_x) -. (dut_logcdf x)) ** 2. in
     let err_log_pdf_2 = ((log dut_pdf_x) -. (dut_logpdf x)) ** 2. in
-    let option_get o = match o with | None -> raise Bug | Some x -> x in
+    let option_get o =
+      match o with
+      | Some x -> x
+      | None   -> raise Owl_exception.TEST_FAIL
+    in
     let dut_cdf_ppf_p, dut_ppf_p, dut_isf_o_m_p =
       match dut_opt_ppf with
-          | None -> (p,0.,0.)
-          | Some dut_ppf -> (
-            let dut_isf = option_get dut_opt_isf in
-            (dut_cdf (dut_ppf p)), (dut_ppf p), (dut_isf (1.-.p))
-          )
+      | None -> (p,0.,0.)
+      | Some dut_ppf -> (
+          let dut_isf = option_get dut_opt_isf in
+          (dut_cdf (dut_ppf p)), (dut_ppf p), (dut_isf (1.-.p))
+        )
     in
     let (err_ppf_2, err_isf_2) =
               (dut_cdf_ppf_p -. p) ** 2.,

@@ -12,3 +12,6 @@ exception NOT_FOUND
 
 exception EMPTY_ARRAY
 (** Exception for empty array *)
+
+exception TEST_FAIL
+(** Unit Test fails. *)
