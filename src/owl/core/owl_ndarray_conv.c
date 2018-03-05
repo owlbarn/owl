@@ -45,16 +45,75 @@ value stub_float32_ndarray_conv_spatial_native(
 
   memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
 
-  float pr, pc;
-  if (padding == 1){
-    pr = 0.; pc = 0.;
-  } else {
-    pr = (row_stride * ( output_rows - 1) + kernel_rows - input_rows) / 2.;
-    pc = (col_stride * ( output_cols - 1) + kernel_cols - input_cols) / 2.;
-    if (pr < 0) pr = 0.;
-    if (pc < 0) pc = 0.;
+  int pr = 0, pc = 0;
+  if (padding != 1){
+    pr = (row_stride * ( output_rows - 1) + kernel_rows - input_rows) / 2;
+    pc = (col_stride * ( output_cols - 1) + kernel_cols - input_cols) / 2;
+    if (pr < 0) pr = 0;
+    if (pc < 0) pc = 0;
   }
 
+  const int output_crb = output_rows * output_cols * batches;
+  const int output_cr  = output_rows * output_cols;
+  const int kernel_cri = ksize * in_channel;
+
+  TYPE kern2d[out_channel][kernel_cri];
+  TYPE inpt2d[output_crb][kernel_cri];
+  memset(inpt2d, 0, output_crb * kernel_cri * sizeof(TYPE));
+  memset(kern2d, 0, out_channel* kernel_cri * sizeof(TYPE));
+
+
+  for (int i = 0; i < output_crb; ++i) {
+    int bt = i / output_cr;
+    int cr = i % output_cr;
+    int c = cr / output_rows;
+    int r = cr % output_rows;
+
+    int cstart = c * col_stride - pc;
+    int rstart = r * row_stride - pr;
+    const int cend = cstart + kernel_cols;
+    const int rend = rstart + kernel_rows;
+
+    int cnt = 0;
+    for (int a = cstart; a < cend; ++a) {
+      for (int b = rstart; b < rend; ++b) {
+        for (int h = 0; h < in_channel; ++h) {
+          if (a < input_cols && a >= 0 &&
+              b < input_rows && b >=0) {
+            int input_idx =
+               bt * input_cri + a * input_ri + b * in_channel + h;
+            inpt2d[i][cnt] = input_ptr[input_idx];
+          }
+          cnt++;
+        }
+      }
+    }
+  }
+
+  // change output_channel to 1st dim
+
+  int kernel_idx = 0;
+  for (int j = 0; j < kernel_cri; ++j) {
+    for (int i = 0; i < out_channel; ++i) {
+      kern2d[i][j] = kernel_ptr[kernel_idx++];
+    }
+  }
+
+  int output_idx = 0;
+  for (int i = 0; i < output_crb; ++i) {
+    for (int l = 0; l < out_channel; ++l) {
+      TYPE sum = 0.;
+      TYPE input_val, kernel_val;
+      for (int q = 0; q < kernel_cri; ++q) {
+        input_val  = inpt2d[i][q];
+        kernel_val = kern2d[l][q];
+        sum += input_val * kernel_val;
+      }
+      *(output_ptr + output_idx) = sum;
+      output_idx++;
+    }
+  }
+/*
   int output_idx = 0;
   for (int i = 0; i < batches; ++i) {
     const int input_idx_base = i * input_cri;
@@ -76,6 +135,7 @@ value stub_float32_ndarray_conv_spatial_native(
           for (int a = cstart; a < cend && a < input_cols; ++a) {
             for (int b = rstart; b < rend && b < input_rows; ++b) {
               for (int h = 0; h < in_channel; ++h) {
+
                 TYPE input_val, kernel_val;
                 int input_idx =
                   input_idx_base + a * input_ri + b * in_channel + h;
@@ -85,26 +145,14 @@ value stub_float32_ndarray_conv_spatial_native(
                   (a - cstart) * kernel_rio + (b - rstart) * kernel_io + h * out_channel + l;
                 kernel_val = *(kernel_ptr + kernel_idx);
 
+                //printf("input_idx: %d; kernel_idx: %d\n", input_idx, kernel_idx);
+                //fflush(stdout);
+
                 sum += input_val * kernel_val;
               } //h
             } // b
           } // a
 
-          /* 90 ms
-          for (int a = 0; a < kernel_cols; ++a) {
-            for (int b = 0; b < kernel_rows; ++b) {
-              for (int h = 0; h < in_channel; ++h) {
-                sum += 1;
-              }
-            }
-          }
-          */
-
-          /* 52ms
-          for (int a = 0; a < kernel_cols * kernel_rows * in_channel; ++a) {
-            sum += 1;
-          }
-          */
 
           *(output_ptr + output_idx) = sum;
           output_idx++;
@@ -112,6 +160,8 @@ value stub_float32_ndarray_conv_spatial_native(
       }
     }
   }
+  */
+
 
   return Val_unit;
 }
