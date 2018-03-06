@@ -21,3 +21,7 @@ exception NOT_SQUARE
 exception DIFFERENT_SHAPE
 
 exception NOT_BROADCASTABLE
+
+exception NOT_CONVERGE
+
+exception MAX_ITERATION

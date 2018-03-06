@@ -41,3 +41,9 @@ exception DIFFERENT_SHAPE
 
 exception NOT_BROADCASTABLE
 (** Fail if the shapes of multiple ndarrays are not broadcastable. *)
+
+exception NOT_CONVERGE
+(** Fail to converge. *)
+
+exception MAX_ITERATION
+(** Number of iteration exceeds the threshold. *)
