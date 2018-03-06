@@ -57,11 +57,21 @@ value stub_float32_ndarray_conv_spatial_native(
   const int output_cr  = output_rows * output_cols;
   const int kernel_cri = ksize * in_channel;
 
-  TYPE kern2d[out_channel][kernel_cri];
-  TYPE inpt2d[output_crb][kernel_cri];
-  memset(inpt2d, 0, output_crb * kernel_cri * sizeof(TYPE));
-  memset(kern2d, 0, out_channel* kernel_cri * sizeof(TYPE));
+  //TYPE kern2d[out_channel][kernel_cri]; //Assume kernel size is small enough
 
+  TYPE **kern2d = (TYPE **) calloc(out_channel, sizeof(TYPE *));
+  if (kern2d == NULL) exit(1);
+  for (int i = 0; i < out_channel; i++) {
+    kern2d[i] = (TYPE *) calloc(kernel_cri, sizeof(TYPE));
+    if (kern2d[i] == NULL) exit(1);
+  }
+
+  TYPE **inpt2d = (TYPE **) calloc(output_crb, sizeof(TYPE *));
+  if (inpt2d == NULL) exit(1);
+  for (int i = 0; i < output_crb; i++) {
+    inpt2d[i] = (TYPE *) calloc(kernel_cri, sizeof(TYPE));
+    if (inpt2d[i] == NULL) exit(1);
+  }
 
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
@@ -69,8 +79,8 @@ value stub_float32_ndarray_conv_spatial_native(
     int c = cr / output_rows;
     int r = cr % output_rows;
 
-    int cstart = c * col_stride - pc;
-    int rstart = r * row_stride - pr;
+    const int cstart = c * col_stride - pc;
+    const int rstart = r * row_stride - pr;
     const int cend = cstart + kernel_cols;
     const int rend = rstart + kernel_rows;
 
@@ -79,7 +89,7 @@ value stub_float32_ndarray_conv_spatial_native(
       for (int b = rstart; b < rend; ++b) {
         for (int h = 0; h < in_channel; ++h) {
           if (a < input_cols && a >= 0 &&
-              b < input_rows && b >=0) {
+              b < input_rows && b >= 0) {
             int input_idx =
                bt * input_cri + a * input_ri + b * in_channel + h;
             inpt2d[i][cnt] = input_ptr[input_idx];
@@ -91,7 +101,6 @@ value stub_float32_ndarray_conv_spatial_native(
   }
 
   // change output_channel to 1st dim
-
   int kernel_idx = 0;
   for (int j = 0; j < kernel_cri; ++j) {
     for (int i = 0; i < out_channel; ++i) {
@@ -113,6 +122,17 @@ value stub_float32_ndarray_conv_spatial_native(
       output_idx++;
     }
   }
+
+  for (int i = 0; i < output_crb; i++) {
+    free(inpt2d[i]);
+  }
+  free(inpt2d);
+
+  for (int i = 0; i < out_channel; i++) {
+    free(kern2d[i]);
+  }
+  free(kern2d);
+
 /*
   int output_idx = 0;
   for (int i = 0; i < batches; ++i) {
