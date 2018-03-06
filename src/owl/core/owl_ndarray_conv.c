@@ -1,7 +1,6 @@
 #include "owl_core.h"
 #include <string.h>
-
-#include <time.h>
+#include <cblas.h>
 
 #define TYPE float
 
@@ -57,14 +56,15 @@ value stub_float32_ndarray_conv_spatial_native(
   const int output_cr  = output_rows * output_cols;
   const int kernel_cri = ksize * in_channel;
 
-  //TYPE kern2d[out_channel][kernel_cri]; //Assume kernel size is small enough
-
+  // Create two matrices based on kernel and input data
+  /*
   TYPE **kern2d = (TYPE **) calloc(out_channel, sizeof(TYPE *));
   if (kern2d == NULL) exit(1);
   for (int i = 0; i < out_channel; i++) {
     kern2d[i] = (TYPE *) calloc(kernel_cri, sizeof(TYPE));
     if (kern2d[i] == NULL) exit(1);
   }
+
 
   TYPE **inpt2d = (TYPE **) calloc(output_crb, sizeof(TYPE *));
   if (inpt2d == NULL) exit(1);
@@ -73,6 +73,7 @@ value stub_float32_ndarray_conv_spatial_native(
     if (inpt2d[i] == NULL) exit(1);
   }
 
+  // flatten each window from input as a row
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
     int cr = i % output_cr;
@@ -107,22 +108,111 @@ value stub_float32_ndarray_conv_spatial_native(
       kern2d[i][j] = kernel_ptr[kernel_idx++];
     }
   }
+  */
 
+  TYPE *kern2d = (TYPE *) calloc(out_channel * kernel_cri, sizeof(TYPE *));
+  if (kern2d == NULL) exit(1);
+
+  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE *));
+  if (inpt2d == NULL) exit(1);
+
+
+  // flatten each window from input as a row
+  for (int i = 0; i < output_crb; ++i) {
+    int bt = i / output_cr;
+    int cr = i % output_cr;
+    int c = cr / output_rows;
+    int r = cr % output_rows;
+
+    const int cstart = c * col_stride - pc;
+    const int rstart = r * row_stride - pr;
+    const int cend = cstart + kernel_cols;
+    const int rend = rstart + kernel_rows;
+
+    int cnt = 0;
+    for (int a = cstart; a < cend; ++a) {
+      for (int b = rstart; b < rend; ++b) {
+        for (int h = 0; h < in_channel; ++h) {
+          if (a < input_cols && a >= 0 &&
+              b < input_rows && b >= 0) {
+            int input_idx =
+               bt * input_cri + a * input_ri + b * in_channel + h;
+            inpt2d[i * kernel_cri + cnt] = input_ptr[input_idx];
+            printf("input: %d, %d <--> %d\n", i, cnt, input_idx);
+          } else {
+            printf("input: %d, %d <--> x\n", i, cnt);
+          }
+          cnt++;
+        }
+      }
+    }
+  }
+
+  for (int i = 0; i < output_crb; ++i) {
+    for (int j = 0; j < kernel_cri; ++j) {
+      printf("%.2f ", inpt2d[i * kernel_cri + j] );
+    }
+    printf("\n");
+  }
+
+  // change output_channel to 1st dim
+  int kernel_idx = 0;
+  for (int j = 0; j < kernel_cri; ++j) {
+    for (int i = 0; i < out_channel; ++i) {
+      kern2d[i * kernel_cri + j] = kernel_ptr[kernel_idx++];
+      printf("input: %d, %d <--> %d\n", i, j, kernel_idx);
+    }
+  }
+
+  for (int i = 0; i < out_channel; ++i) {
+    for (int j = 0; j < kernel_cri; ++j) {
+      printf("%.2f ", kern2d[i * kernel_cri + j] );
+    }
+    printf("\n");
+  }
+
+  fflush(stdout);
+
+
+  // tensor contraction operation
+  /*
   int output_idx = 0;
+  TYPE sum, input_val, kernel_val;
   for (int i = 0; i < output_crb; ++i) {
     for (int l = 0; l < out_channel; ++l) {
-      TYPE sum = 0.;
-      TYPE input_val, kernel_val;
+      sum = 0.;
       for (int q = 0; q < kernel_cri; ++q) {
         input_val  = inpt2d[i][q];
         kernel_val = kern2d[l][q];
         sum += input_val * kernel_val;
       }
+      // sum = cblas_sdsdot(kernel_cri, 0, inpt2d[i], 1, kern2d[l], 1);
+      // slower: 70ms --> 107ms
       *(output_ptr + output_idx) = sum;
       output_idx++;
     }
   }
+  */
 
+  /*
+  cblas_sgemm(CblasColMajor, CblasNoTrans, CblasTrans,
+    out_channel, output_crb, kernel_cri, 1,
+    kern2d, out_channel, inpt2d, output_crb,
+    0, output_ptr, out_channel);
+  */
+
+  // This should be correct for row major
+  /* cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasTrans,
+    out_channel, output_crb, kernel_cri, 1,
+    kern2d, kernel_cri, inpt2d, kernel_cri,
+    0, output_ptr, output_crb); */
+
+    cblas_sgemm(CblasColMajor, CblasNoTrans, CblasTrans,
+      out_channel, output_crb, kernel_cri, 1,
+      kern2d, out_channel, inpt2d, output_crb,
+      0, output_ptr, out_channel);
+
+  /*
   for (int i = 0; i < output_crb; i++) {
     free(inpt2d[i]);
   }
@@ -132,6 +222,10 @@ value stub_float32_ndarray_conv_spatial_native(
     free(kern2d[i]);
   }
   free(kern2d);
+  */
+  free(inpt2d);
+  free(kern2d);
+
 
 /*
   int output_idx = 0;
