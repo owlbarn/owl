@@ -56,8 +56,6 @@ value stub_float32_ndarray_conv_spatial_native(
   const int output_cr  = output_rows * output_cols;
   const int kernel_cri = ksize * in_channel;
 
-  TYPE *kern2d = (TYPE *) calloc(out_channel * kernel_cri, sizeof(TYPE *));
-  if (kern2d == NULL) exit(1);
   TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE *));
   if (inpt2d == NULL) exit(1);
 
@@ -72,6 +70,31 @@ value stub_float32_ndarray_conv_spatial_native(
     const int rstart = r * row_stride - pr;
     const int cend = cstart + kernel_cols;
     const int rend = rstart + kernel_rows;
+    const int input_idx_base = bt * input_cri;
+
+    // The mul to plus trick has only minor improvement in speed
+    /*
+    const int cstart_inp = cstart * input_ri;
+    const int rstart_inc = rstart * in_channel;
+    int cnt = 0;
+    int input_idx_base_a = input_idx_base + cstart_inp;
+    for (int a = cstart; a < cend; ++a) {
+      int input_idx_base_ab = input_idx_base_a + rstart_inc;
+      for (int b = rstart; b < rend; ++b) {
+        for (int h = 0; h < in_channel; ++h) {
+          if (a < input_cols && a >= 0 &&
+              b < input_rows && b >= 0) {
+            int input_idx = input_idx_base_ab + h;
+               //input_idx_base + a * input_ri + b * in_channel + h;
+            inpt2d[cnt + i] = input_ptr[input_idx];
+          }
+          cnt += output_crb;
+        }
+        input_idx_base_ab += in_channel;
+      }
+      input_idx_base_a += input_ri;
+    }
+  } */
 
     int cnt = 0;
     for (int a = cstart; a < cend; ++a) {
@@ -80,26 +103,21 @@ value stub_float32_ndarray_conv_spatial_native(
           if (a < input_cols && a >= 0 &&
               b < input_rows && b >= 0) {
             int input_idx =
-               bt * input_cri + a * input_ri + b * in_channel + h;
-            inpt2d[cnt * output_crb + i] = input_ptr[input_idx];
-          cnt++;
+               input_idx_base + a * input_ri + b * in_channel + h;
+            inpt2d[cnt + i] = input_ptr[input_idx];
+          }
+          cnt += output_crb;
         }
       }
     }
   }
 
-  /* Works. But the output is col major, so...
-  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasTrans,
-    out_channel, output_crb, kernel_cri, 1,
-    kern2d, kernel_cri, inpt2d, kernel_cri,
-    0, output_ptr, output_crb); */
-
   cblas_sgemm(CblasColMajor, CblasNoTrans, CblasTrans,
     out_channel, output_crb, kernel_cri, 1,
     kernel_ptr, out_channel, inpt2d, output_crb,
     0, output_ptr, out_channel);
+
   free(inpt2d);
-  free(kern2d);
 
   return Val_unit;
 }
