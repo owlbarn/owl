@@ -33,7 +33,7 @@ double expit(double x) {
 
 
 double logit(double x) {
-  return log(1 / (1 - x));
+  return log(x / (1 - x));
 }
 
 

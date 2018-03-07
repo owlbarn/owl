@@ -1,0 +1,48 @@
+############################################################
+# Dockerfile to build Owl docker image
+# Based on ryanrhymes/owl master branch
+# By Liang Wang <liang.wang@cl.cam.ac.uk>
+############################################################
+
+FROM ocaml/opam2:debian-9-ocaml-4.06.0
+USER opam
+
+
+##################### PREREQUISITES ########################
+
+RUN sudo apt-get -y update
+RUN sudo apt-get -y install m4 wget unzip aspcud libshp-dev libplplot-dev gfortran
+RUN opam install -y oasis jbuilder ocaml-compiler-libs ctypes alcotest utop plplot eigen
+
+
+#################### SET UP ENV VARS #######################
+
+ENV PATH /home/opam/.opam/4.06.0/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$PATH
+ENV CAML_LD_LIBRARY_PATH /home/opam/.opam/4.06.0/lib/stublibs
+ENV LD_LIBRARY_PATH /usr/lib/:/usr/local/lib:/home/opam/.opam/4.06.0/lib/:/home/opam/.opam/4.06.0/lib/stublibs/:/usr/lib/x86_64-linux-gnu/
+
+
+#################### INSTALL OPENBLAS ######################
+
+ENV OPENBLASPATH /home/opam/OpenBLAS
+RUN cd /home/opam && git clone https://github.com/xianyi/OpenBLAS.git
+RUN cd $OPENBLASPATH && sudo make && sudo make install && sudo make clean
+
+
+####################   INSTALL OWL  #######################
+
+ENV OWLPATH /home/opam/owl
+RUN cd /home/opam && git clone https://github.com/ryanrhymes/owl.git
+RUN sed -i -- 's:/usr/local/opt/openblas/lib:/opt/OpenBLAS/lib:g' $OWLPATH/src/owl/jbuild  # FIXME: hacking
+RUN cd $OWLPATH && make && make install
+
+
+############## SET UP DEFAULT CONTAINER VARS ##############
+
+RUN echo "#require \"owl_top\";; open Owl;;" >> /home/opam/.ocamlinit \
+    && bash -c 'echo -e "export LD_LIBRARY_PATH=$LD_LIBRARY_PATH" >> /home/opam/.profile' \
+    && opam config env >> /home/opam/.profile \
+    && bash -c "source /home/opam/.profile"
+
+WORKDIR $OWLPATH
+ENTRYPOINT /bin/sh

@@ -93,7 +93,7 @@ struct
     ( (t.poly.(0) *. u2 *. 3.) +.
       (t.poly.(1) *. u  *. 2.) +.
       (t.poly.(2)) ) /. t.dx
-   
+
   (*f Find x for p where cubic(x)=p
     x0 = (rx+lx)/2
     x1 = x0 - (f(x0) - p) / f'(x0)
@@ -112,7 +112,7 @@ struct
       )
     in
     iter 40 ((t.lx +. t.rx) /. 2.)
-   
+
   (*f Fit a cubic to two coords and two gradients *)
   let fit lx rx p0 p'0 p1 p'1 =
     let dx = rx -. lx in
@@ -134,13 +134,13 @@ struct
      *)
     t
 
-  (*f All done *) 
+  (*f All done *)
 end
 type t_cubic = Cubic.t
 
 (*m CdfTree
  *)
-module CdfTree = 
+module CdfTree =
 struct
 type binary_node =
   | Leaf of int
@@ -184,7 +184,7 @@ type binary_node =
       find_x_of_p min_x max_x
 
     let rec value t x =
-      match t with 
+      match t with
       | Leaf n -> n
       | Balance (nx,nl,nr) ->
         if (x<nx) then (value nl x) else (value nr x)
@@ -193,7 +193,7 @@ type binary_node =
       create (cdf_x_of_p rv) logn
 end
 
-let _ = 
+let _ =
     let tree = CdfTree.create_from_rv (M.gaussian_cdf ~mu:0. ~sigma:1.) 5 in
     CdfTree.display tree;
     List.iter (fun x -> Printf.printf "bucket of %f: %d\n" x (CdfTree.value tree x)) [-1.;-0.5;0.;0.5;1.;]
@@ -215,7 +215,7 @@ let _ =
   The Distribution can also then be mapped from an 'x' value to the CDF of x, for example to bucket up values from a continous random variable, where buckets can then be selected to determine patterns for checking for independence
 
 *)
-module Distribution = 
+module Distribution =
 struct
 
   (*t Structure *)
@@ -233,7 +233,7 @@ struct
   let create name dut_cdf dut_pdf cdf_x_array pdf_x_array =
     let num_buckets = (Array.length cdf_x_array) - 1 in
     let num_buckets_f = float num_buckets in
-    let cubics = 
+    let cubics =
       let rec add_cubic acc i = (* build acc up in forward order *)
         if (i>=0) then (
           let lx  = cdf_x_array.(i) in
@@ -259,7 +259,7 @@ struct
   let bucket_of_p t p =
     let i = int_of_float (p*.(float t.num_buckets)) in
     (min (t.num_buckets-1) (max i 0))
-    
+
   (*f interp_x_of_p - find x given P(X<x) *)
   let interp_x_of_p t p =
     let i = bucket_of_p t p in
@@ -276,7 +276,7 @@ struct
         if (x<mx) then (find_x li mi) else (find_x mi ri)
       )
     in
-    let (li,ri) = 
+    let (li,ri) =
       if (x<=t.cdf_x_array.(0)) then (0,1)
       else if (x>=t.cdf_x_array.(t.num_buckets)) then (t.num_buckets-1,t.num_buckets)
       else (find_x 0 t.num_buckets)
@@ -300,8 +300,10 @@ struct
     Cubic.df t.cubics.(li) x
 
   (*f plot_comparison - plot comparison of CDF/PDF distributions
-   *)
-  let plot_comparison t dut_cdf dut_pdf filename  = 
+   * disable this to avoid dependency on plplot, this simplies many things
+   * including building docker images.
+
+  let plot_comparison t dut_cdf dut_pdf filename  =
     let lx = t.cdf_x_array.(1) in
     let rx = t.cdf_x_array.(t.num_buckets-1) in
     Owl.Plot.(
@@ -327,6 +329,7 @@ struct
       set_output h filename ;
       output h
     )
+  *)
 
   (*f All done *)
 end
@@ -376,7 +379,7 @@ module RandomTest = struct
 
   (*t match_distribution *)
   let match_distribution ?significance:(significance=0.01) (dist:Distribution.t) =
-    let diff i = 
+    let diff i =
       let x = (float i) /. 32. in
       (Distribution.interp_cdf dist x) -. (Distribution.dut_cdf dist x)
     in
@@ -387,7 +390,7 @@ module RandomTest = struct
     let p = (sum_diff2 0. 32) /. 32. in (* NOT a probability, but a closeness... *)
     let hypothesis = make_hypothesis (p < significance) p p in
     hypothesis
-    
+
   (*t do_fft *)
   module C = Owl.Dense.Matrix.C
   let do_fft ?significance:(significance=0.01) ?n:(n=1024) f iter =
@@ -412,7 +415,7 @@ module RandomTest = struct
     let rec count_above_threshold i acc =
       if (i<0) then acc else (
         let c = C.get f 0 i in
-        let new_acc = 
+        let new_acc =
           if (Complex.norm2 c) < t2 then (acc+1) else acc
         in
         count_above_threshold (i-1) new_acc
@@ -454,7 +457,7 @@ module BinaryTest = struct
     *)
   let frequency ?significance:(significance=0.01) ?p:(p=0.5) iter =
     let q = 1. -. p in
-    let inc_if_true_else_dec acc _ b = 
+    let inc_if_true_else_dec acc _ b =
       if b then (acc+1) else (acc-1)
     in
     let (n,sum) = iter inc_if_true_else_dec 0 in              (* if p=0.5  then sum should have mean 0, sd=sqrt(n) *)
@@ -464,7 +467,7 @@ module BinaryTest = struct
     let p = Maths.erfc x in (* probability of seeing x given the distribution actually is mean 0, sd=1/sqrt(2) *)
     let hypothesis = make_hypothesis (p < significance) p x in
     make_test_hypothesis (sfmt "Frequency with %d samples" n) "Partial sum" hypothesis
-    
+
   (*f block_frequency test
     Consider a stream of N * M bools, which may be represented as 0 or 1s, with prob(true/1) = p
 
@@ -552,7 +555,7 @@ module BinaryTest = struct
     let p = 1. -. (M.chi2_cdf chi2 (float (num_pats-1))) in
     let hypothesis = make_hypothesis (p < significance) p chi2 in
     make_test_hypothesis (sfmt "Occurrences of %d-bit patterns in run length of size %d" m n) "Chi^2" hypothesis
-    
+
   (*f occurrences_of_patterns
     The issue with the occurrence_of_patterns test is that it is a 99%
     passing test, for good, independent RVs.
@@ -577,12 +580,12 @@ module BinaryTest = struct
     let p = 1. -. (M.chi2_cdf chi2 1.) in
     let hypothesis = make_hypothesis (p < significance) p num_passing in
     make_test_hypothesis (sfmt "%d iterations of '%s'" n ((List.hd run_results).test_name)) "Num passing" hypothesis
-    
+
   (*f fft *)
   let fft ?significance:(significance=0.01) ~n iter =
     let hypothesis = do_fft ~significance:significance ~n:n (fun b -> if b then 1. else (-1.)) iter in
     make_test_hypothesis (sfmt "FFT of size %d" n) "#peaks above 95% power" hypothesis
-  
+
   (*f All done *)
 end
 
@@ -622,7 +625,7 @@ let test_rough_cdf pydist =
     let err_log_cdf_2 = ((log dut_cdf_x) -. (dut_logcdf x)) ** 2. in
     let err_log_pdf_2 = ((log dut_pdf_x) -. (dut_logpdf x)) ** 2. in
     let option_get o = match o with | None -> raise Bug | Some x -> x in
-    let dut_cdf_ppf_p, dut_ppf_p, dut_isf_o_m_p = 
+    let dut_cdf_ppf_p, dut_ppf_p, dut_isf_o_m_p =
       match dut_opt_ppf with
           | None -> (p,0.,0.)
           | Some dut_ppf -> (
@@ -630,7 +633,7 @@ let test_rough_cdf pydist =
             (dut_cdf (dut_ppf p)), (dut_ppf p), (dut_isf (1.-.p))
           )
     in
-    let (err_ppf_2, err_isf_2) = 
+    let (err_ppf_2, err_isf_2) =
               (dut_cdf_ppf_p -. p) ** 2.,
               (dut_ppf_p     -. dut_isf_o_m_p) ** 2.
     in
@@ -722,7 +725,7 @@ let bin_fft_1024 = IOfBool (BinaryTest.fft ~n:1024)
 let run_random_tests test_name pretest sampler tests =
   let run_test (test, should_reject, start, length) =
     pretest ();
-    let test_result = 
+    let test_result =
       match test with
       | IOfBool t ->
          t (RandomTest.iterate sampler start length) (* Note type of iterator depends on type of t*)
