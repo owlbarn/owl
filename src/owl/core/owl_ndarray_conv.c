@@ -137,7 +137,8 @@ value stub_float32_ndarray_conv_spatial_native(
               b < input_rows && b >= 0) {
             int input_idx =
                bt * input_cri + a * input_ri + b * in_channel + h;
-            inpt2d[i * kernel_cri + cnt] = input_ptr[input_idx];
+            //inpt2d[i * kernel_cri + cnt] = input_ptr[input_idx];
+            inpt2d[cnt * output_crb + i] = input_ptr[input_idx];
             printf("input: %d, %d <--> %d\n", i, cnt, input_idx);
           } else {
             printf("input: %d, %d <--> x\n", i, cnt);
@@ -155,6 +156,7 @@ value stub_float32_ndarray_conv_spatial_native(
     printf("\n");
   }
 
+  /*
   // change output_channel to 1st dim
   int kernel_idx = 0;
   for (int j = 0; j < kernel_cri; ++j) {
@@ -170,6 +172,7 @@ value stub_float32_ndarray_conv_spatial_native(
     }
     printf("\n");
   }
+  */
 
   fflush(stdout);
 
@@ -207,10 +210,21 @@ value stub_float32_ndarray_conv_spatial_native(
     kern2d, kernel_cri, inpt2d, kernel_cri,
     0, output_ptr, output_crb); */
 
-    cblas_sgemm(CblasColMajor, CblasNoTrans, CblasTrans,
+    /*cblas_sgemm(CblasColMajor, CblasNoTrans, CblasNoTrans,
       out_channel, output_crb, kernel_cri, 1,
-      kern2d, out_channel, inpt2d, output_crb,
-      0, output_ptr, out_channel);
+      kern2d, out_channel, inpt2d, kernel_cri,
+      0, output_ptr, out_channel); */
+
+      /* Works. But the output is col major, so...
+      cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasTrans,
+        out_channel, output_crb, kernel_cri, 1,
+        kern2d, kernel_cri, inpt2d, kernel_cri,
+        0, output_ptr, output_crb); */
+
+        cblas_sgemm(CblasColMajor, CblasNoTrans, CblasTrans,
+          out_channel, output_crb, kernel_cri, 1,
+          kernel_ptr, out_channel, inpt2d, output_crb,
+          0, output_ptr, out_channel);
 
   /*
   for (int i = 0; i < output_crb; i++) {
