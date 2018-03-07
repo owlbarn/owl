@@ -657,7 +657,7 @@ let peakflops ?(n=2000) () =
 let expm_eig
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (c, d) t
   = fun ~otyp x ->
-  assert (is_square x);
+  Owl_exception.(check (is_square x) NOT_SQUARE);
   let v, w = eig ~otyp x in
   let vi = inv v in
   let u = M.(exp w |> diagm) in
@@ -665,7 +665,7 @@ let expm_eig
 
 
 let expm x =
-  assert (is_square x);
+  Owl_exception.(check (is_square x) NOT_SQUARE);
   (* trivial case *)
   if M.shape x = (1, 1) then M.exp x
   else (

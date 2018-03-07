@@ -334,7 +334,7 @@ let broadcast_align_shape x0 x1 =
   let s0 = shape y0 in
   let s1 = shape y1 in
   Array.iter2 (fun a b ->
-    assert (not(a <> 1 && b <> 1 && a <> b))
+    Owl_exception.(check (not(a <> 1 && b <> 1 && a <> b)) NOT_BROADCASTABLE);
   ) s0 s1;
   (* calculate the output shape *)
   let s2 = Array.map2 max s0 s1 in
