@@ -36,10 +36,7 @@ value stub_float32_ndarray_conv_spatial_native(
 
   const int input_cri  = in_channel  * input_rows  * input_cols;
   const int input_ri   = in_channel  * input_rows;
-  const int kernel_rio = out_channel * in_channel  * kernel_rows;
-  const int kernel_io  = out_channel * in_channel;
   const int output_cri = out_channel * output_rows * output_cols;
-  const int output_ri  = out_channel * output_rows;
   const int ksize = kernel_cols * kernel_rows;
 
   memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
@@ -52,9 +49,9 @@ value stub_float32_ndarray_conv_spatial_native(
     if (pc < 0) pc = 0;
   }
 
-  const int output_crb = output_rows * output_cols * batches;
   const int output_cr  = output_rows * output_cols;
-  const int kernel_cri = ksize * in_channel;
+  const int output_crb = output_rows * output_cols * batches;
+  const int kernel_cri = kernel_cols * kernel_rows * in_channel;
 
   TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
@@ -87,7 +84,7 @@ value stub_float32_ndarray_conv_spatial_native(
       }
     }
   }
-  
+
   cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
     output_crb, out_channel, kernel_cri, 1,
     inpt2d, kernel_cri, kernel_ptr, out_channel,
