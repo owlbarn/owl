@@ -83,6 +83,10 @@ val linsolve : ?trans:bool -> mat -> mat -> mat
 
 val linreg : mat -> mat -> elt * elt
 
+val sylvester : mat -> mat -> mat -> mat
+
+val lyapunov : mat -> mat -> mat
+
 
 (** {6 Low-level factorisation functions} *)
 

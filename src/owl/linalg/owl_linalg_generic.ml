@@ -633,6 +633,26 @@ let pinv ?tol x =
   M.(v *@ s' *@ ut)
 
 
+let sylvester a b c =
+  let ra, qa = schur_tz a in
+  let rb, qb = schur_tz b in
+  let d = M.((ctranspose qa) *@ (c *@ qb)) in
+  let y, s = Owl_lapacke.trsyl 'N' 'N' 1 ra rb d in
+  let z = M.(qa *@ (y *@ (ctranspose qb))) in
+  M.mul_scalar_ z (Owl_dense_common._float_typ_elt (M.kind c) (1. /. s));
+  z
+
+
+let lyapunov a c =
+  let r, q = schur_tz a in
+  let d = M.((ctranspose q) *@ (c *@ q)) in
+  let tb = _get_trans_code (M.kind c) in
+  let y, s = Owl_lapacke.trsyl 'N' tb 1 r r d in
+  let z = M.(q *@ (y *@ (ctranspose q))) in
+  M.mul_scalar_ z (Owl_dense_common._float_typ_elt (M.kind c) (1. /. s));
+  z
+
+
 (* helper functions *)
 
 

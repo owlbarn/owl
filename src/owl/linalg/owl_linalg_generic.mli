@@ -146,7 +146,6 @@ val is_posdef : ('a, 'b) t -> bool
 
 (** {6 Factorisation} *)
 
-
 val lu : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
 (**
 ``lu x -> (l, u, ipiv)`` calculates LU decomposition of ``x``. The pivoting is
@@ -251,7 +250,6 @@ Both Hessenberg matrix ``h`` and unitary matrix ``q`` is returned, such that
 
 (** {6 Eigenvalues & eigenvectors} *)
 
-
 val eig : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t * ('a, 'b) t
 (**
 ``eig x -> v, w`` computes the right eigenvectors ``v`` and eigenvalues ``w``
@@ -271,7 +269,6 @@ an arbitrary square matrix ``x``.
 
 
 (** {6 Linear system of equations} *)
-
 
 val null : ('a, 'b) t -> ('a, 'b) t
 (**
@@ -301,9 +298,41 @@ val linreg : ('a, 'b) t -> ('a, 'b) t -> 'a * 'a
 ``linreg x y -> (a, b)`` solves ``y = a + b*x`` using Ordinary Least Squares.
  *)
 
+val sylvester : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``sylvester a b c`` solves a Sylvester equation in the following form. The
+function calls LAPACKE function ``trsyl`` solve the system.
+
+.. math::
+  AX + XB = C
+
+Parameters:
+  * ``a`` : ``m x m`` matrix A.
+  * ``b`` : ``n x n`` matrix B.
+  * ``c`` : ``m x n`` matrix C.
+
+Returns:
+  * ``x`` : ``m x n`` matrix X.
+ *)
+
+val lyapunov : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``lyapunov a q`` solves a continuous Lyapunov equation in the following form.
+The function calls LAPACKE function ``trsyl`` solve the system.
+
+.. math::
+  AX + XA^H = Q
+
+Parameters:
+  * ``a`` : ``m x m`` matrix A.
+  * ``q`` : ``n x n`` matrix Q.
+
+Returns:
+  * ``x`` : ``m x n`` matrix X.
+ *)
+
 
 (** {6 Low-level factorisation functions} *)
-
 
 val lufact : ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
 (**
@@ -397,7 +426,6 @@ val sinhcoshm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 
 
 (** {6 Helper functions} *)
-
 
 val peakflops : ?n:int -> unit -> float
 (**
