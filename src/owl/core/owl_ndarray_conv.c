@@ -56,7 +56,7 @@ value stub_float32_ndarray_conv_spatial_native(
   const int output_cr  = output_rows * output_cols;
   const int kernel_cri = ksize * in_channel;
 
-  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE *));
+  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
 
   // flatten each window from input; col major
@@ -72,30 +72,6 @@ value stub_float32_ndarray_conv_spatial_native(
     const int rend = rstart + kernel_rows;
     const int input_idx_base = bt * input_cri;
 
-    // The mul to plus trick has only minor improvement in speed
-    /*
-    const int cstart_inp = cstart * input_ri;
-    const int rstart_inc = rstart * in_channel;
-    int cnt = 0;
-    int input_idx_base_a = input_idx_base + cstart_inp;
-    for (int a = cstart; a < cend; ++a) {
-      int input_idx_base_ab = input_idx_base_a + rstart_inc;
-      for (int b = rstart; b < rend; ++b) {
-        for (int h = 0; h < in_channel; ++h) {
-          if (a < input_cols && a >= 0 &&
-              b < input_rows && b >= 0) {
-            int input_idx = input_idx_base_ab + h;
-               //input_idx_base + a * input_ri + b * in_channel + h;
-            inpt2d[cnt + i] = input_ptr[input_idx];
-          }
-          cnt += output_crb;
-        }
-        input_idx_base_ab += in_channel;
-      }
-      input_idx_base_a += input_ri;
-    }
-  } */
-
     int cnt = 0;
     for (int a = cstart; a < cend; ++a) {
       for (int b = rstart; b < rend; ++b) {
@@ -104,17 +80,17 @@ value stub_float32_ndarray_conv_spatial_native(
               b < input_rows && b >= 0) {
             int input_idx =
                input_idx_base + a * input_ri + b * in_channel + h;
-            inpt2d[cnt + i] = input_ptr[input_idx];
+            inpt2d[i * kernel_cri + cnt] = input_ptr[input_idx];
           }
-          cnt += output_crb;
+          ++cnt;
         }
       }
     }
   }
-
-  cblas_sgemm(CblasColMajor, CblasNoTrans, CblasTrans,
-    out_channel, output_crb, kernel_cri, 1,
-    kernel_ptr, out_channel, inpt2d, output_crb,
+  
+  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+    output_crb, out_channel, kernel_cri, 1,
+    inpt2d, kernel_cri, kernel_ptr, out_channel,
     0, output_ptr, out_channel);
 
   free(inpt2d);
