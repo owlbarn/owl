@@ -1271,7 +1271,7 @@ result in a new ndarray.
 
 val fix : ('a, 'b) t -> ('a, 'b) t
 (**
-``fix x``  rounds each element of ``x`` to the nearest integer toward zero.
+``fix x`` rounds each element of ``x`` to the nearest integer toward zero.
 For positive elements, the behavior is the same as ``floor``. For negative ones,
 the behavior is the same as ``ceil``.
  *)

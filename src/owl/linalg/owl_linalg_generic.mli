@@ -240,6 +240,9 @@ then ``otyp`` must be ``complex32``. However, if you use S, D, C, Z module, then
 you do not need to worry about ``otyp``.
  *)
 
+val schur_tz : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(** ``schur_tz x`` is similar to ``schur`` but only returns ``(t, z)``. *)
+
 val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
 ``hess x -> (h, q)`` calculates the Hessenberg form of a given matrix ``x``.
