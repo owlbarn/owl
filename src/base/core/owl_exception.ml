@@ -7,6 +7,7 @@
 let check p e =
   if p = false then raise e
 
+exception NOT_IMPLEMENTED
 
 exception FOUND
 

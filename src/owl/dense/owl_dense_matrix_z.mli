@@ -409,6 +409,10 @@ val save : mat -> string -> unit
 
 val load : string -> mat
 
+val save_txt : ?sep:string -> mat -> string -> unit
+
+val load_txt : ?sep:string -> string -> mat
+
 
 (** {6 Unary mathematical operations } *)
 

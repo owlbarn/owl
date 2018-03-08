@@ -21,6 +21,9 @@ Returns:
 
 (** {6 Exception definition} *)
 
+exception NOT_IMPLEMENTED
+(** Exception of not implemented yet. *)
+
 exception FOUND
 (** Exception of found an element. *)
 

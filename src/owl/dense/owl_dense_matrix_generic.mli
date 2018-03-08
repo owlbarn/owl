@@ -1159,15 +1159,17 @@ val load : ('a, 'b) kind -> string -> ('a, 'b) t
 by using ``save`` function.
  *)
 
-val save_txt : ('a, 'b) t -> string -> unit
+val save_txt : ?sep:string -> ('a, 'b) t -> string -> unit
 (**
-``save_txt x f`` save the matrix ``x`` into a tab-delimited text file ``f``.
-The operation can be very time consuming.
+``save_txt ~sep x f`` save the matrix ``x`` into a tab-delimited text file ``f``
+delimited by the specified string ``sep``. Note that the operation can be very
+time consuming.
  *)
 
-val load_txt : (float, 'a) kind -> string -> (float, 'a) t
+val load_txt : ?sep:string -> ('a, 'b) kind -> string -> ('a, 'b) t
 (**
-``load_txt f`` load a tab-delimited text file ``f`` into a matrix.
+``load_txt ~sep k f`` load a text file ``f`` into a matrix of type ``k``. The
+delimitor is specified by ``sep`` which can be a regular expression.
  *)
 
 

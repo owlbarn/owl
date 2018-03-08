@@ -529,28 +529,32 @@ let of_array k x m n =
   reshape y [|m; n|]
 
 
-(* FIXME *)
-let save_txt x f =
+let save_txt ?(sep="\t") x f =
   let _op = Owl_utils.elt_to_str (kind x) in
   let h = open_out f in
   iter_rows (fun y ->
-    iter (fun z -> Printf.fprintf h "%s\t" (_op z)) y;
+    iter (fun z -> Printf.fprintf h "%s%s" (_op z) sep) y;
     Printf.fprintf h "\n"
   ) x;
   close_out h
 
-(* FIXME *)
-let load_txt k f =
+
+let load_txt ?(sep="\t") k f =
+  let _op = Owl_utils.elt_of_str k in
   let h = open_in f in
   let s = input_line h in
-  let n = List.length(Str.split (Str.regexp "\t") s) in
-  let m = ref 1 in (* counting lines in the input file *)
-  let _ = try while true do ignore(input_line h); m := !m + 1
-    done with End_of_file -> () in
-  let x = zeros k !m n in seek_in h 0;
+  let n = List.length(Str.split (Str.regexp sep) s) in
+  let m = ref 1 in (* count lines in the input file *)
+  (
+    try while true do
+      ignore(input_line h); m := !m + 1
+    done with End_of_file -> ()
+  );
+  let x = zeros k !m n in
+  seek_in h 0;
   for i = 0 to !m - 1 do
-    let s = Str.split (Str.regexp "\t") (input_line h) in
-    List.iteri (fun j y -> set x i j (float_of_string y)) s
+    let s = Str.split (Str.regexp sep) (input_line h) in
+    List.iteri (fun j y -> set x i j (_op y)) s
   done;
   close_in h; x
 
