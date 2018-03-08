@@ -187,7 +187,6 @@
   ))
   (libraries (
     owl_base
-    bigarray
     ctypes
     ctypes.stubs
     eigen
