@@ -148,6 +148,70 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
   if (p_top  < 0) p_top  = 0;
   if (p_left < 0) p_left = 0;
 
+  const int output_cr  = output_rows * output_cols;
+  const int output_crb = output_rows * output_cols * batches;
+  const int kernel_cri = kernel_cols * kernel_rows * in_channel;
+
+  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  if (inpt2d == NULL) exit(1);
+
+  TYPE *kern2d = (TYPE *) calloc(kernel_cri * out_channel, sizeof(TYPE));
+  if (kern2d == NULL) exit(1);
+
+  for (int i = 0; i < output_crb; ++i) {
+    int bt = i / output_cr;
+    int cr = i % output_cr;
+    int c = cr / output_rows;
+    int r = cr % output_rows;
+
+    const int cstart = c * col_stride - p_left;
+    const int rstart = r * row_stride - p_top;
+    const int cend = cstart + kernel_cols;
+    const int rend = rstart + kernel_rows;
+    const int input_idx_base = bt * input_cri;
+
+    int cnt = 0;
+    for (int a = cstart; a < cend; ++a) {
+      for (int b = rstart; b < rend; ++b) {
+        for (int h = 0; h < in_channel; ++h) {
+          if (a < input_cols && a >= 0 &&
+              b < input_rows && b >= 0) {
+            int input_idx =
+               input_idx_base + a * input_ri + b * in_channel + h;
+            inpt2d[i * kernel_cri + cnt] = input_ptr[input_idx];
+          }
+          ++cnt;
+        }
+      }
+    }
+  }
+
+  /*
+  for (int k = 0; k < out_channel; ++k){
+    for (int i = 0; i < output_crb; ++i){
+      for (int j = 0; j < kernel_cri; ++j){
+        kern2d[k* kernel_cri + j] += inpt2d[i*kernel_cri + j] * output_ptr[k*output_crb + i];
+      }
+    }
+  } */
+
+  for (int k = 0; k < out_channel; ++k){
+    for (int i = 0; i < output_crb; ++i){
+      cblas_saxpy(kernel_cri, output_ptr[k*output_crb + i],
+        inpt2d + i*kernel_cri, 1, kern2d + k* kernel_cri, 1);
+    }
+  }
+
+  int cnt = 0;
+  for (int j = 0; j < kernel_cri; ++j){
+    for (int i = 0; i < out_channel; ++i){
+      kernel_ptr[cnt++] = kern2d[i * kernel_cri + j];
+    }
+  }
+
+  free(inpt2d);
+  free(kern2d);
+
 /*
   for (int i = 0; i < batches; ++i) {
     for (int j = 0; j < output_cols; ++j) {
