@@ -663,15 +663,14 @@ let lyapunov a c =
 
 let care a b q r =
   let g = M.(b *@ (inv r) *@ (transpose b)) in
-  let c = M.(transpose a |> neg) in
-  let z = M.((a @|| (neg g)) @= ((neg q) @|| c)) in
+  let z = M.((a @|| (neg g)) @= ((neg q) @|| (transpose a |> neg))) in
 
   let t, u, wr, _ = Owl_lapacke.gees ~jobvs:'V' ~a:z in
   let select = M.(zeros Int32 (row_num wr) (col_num wr)) in
   let _re = Owl_dense_common._re_elt (M.kind wr) in
   M.iteri_2d (fun i j x -> if _re x < 0. then M.set select i j 1l) wr;
-
   ignore (Owl_lapacke.trsen ~job:'V' ~compq:'N' ~select ~t ~q:u);
+
   let m, n = M.shape u in
   let u0 = M.get_slice [[0; m / 2 - 1]; [0; n / 2 - 1]] u in
   let u1 = M.get_slice [[m / 2; m - 1]; [0; n / 2 - 1]] u in
