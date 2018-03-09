@@ -155,9 +155,6 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
   TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
 
-  TYPE *kern2d = (TYPE *) calloc(kernel_cri * out_channel, sizeof(TYPE));
-  if (kern2d == NULL) exit(1);
-
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
     int cr = i % output_cr;
@@ -187,19 +184,11 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
   }
 
   cblas_sgemm(CblasRowMajor, CblasTrans, CblasNoTrans,
-    out_channel, kernel_cri, output_crb, 1,
-    output_ptr, out_channel, inpt2d, kernel_cri,
-    0, kern2d, kernel_cri);
-
-  int cnt = 0;
-  for (int j = 0; j < kernel_cri; ++j){
-    for (int i = 0; i < out_channel; ++i){
-      kernel_ptr[cnt++] = kern2d[i * kernel_cri + j];
-    }
-  }
+    kernel_cri, out_channel, output_crb, 1,
+    inpt2d, kernel_cri, output_ptr, out_channel,
+    0, kernel_ptr, out_channel);
 
   free(inpt2d);
-  free(kern2d);
 
   return Val_unit;
 }
@@ -264,19 +253,10 @@ value stub_float32_ndarray_conv_spatial_backward_input_native(
 
   TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
-  TYPE *kern2d = (TYPE *) calloc(kernel_cri * out_channel, sizeof(TYPE));
-  if (kern2d == NULL) exit(1);
 
-  int cnt = 0;
-  for (int j = 0; j < kernel_cri; ++j) {
-    for (int i = 0; i < out_channel; ++i) {
-      kern2d[i * kernel_cri + j] = kernel_ptr[cnt++];
-    }
-  }
-
-  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasTrans,
     output_crb, kernel_cri, out_channel, 1,
-    output_ptr, out_channel, kern2d, kernel_cri,
+    output_ptr, out_channel, kernel_ptr, out_channel,
     0, inpt2d, kernel_cri);
 
   for (int i = 0; i < output_crb; ++i) {
@@ -308,7 +288,6 @@ value stub_float32_ndarray_conv_spatial_backward_input_native(
   }
 
   free(inpt2d);
-  free(kern2d);
 
   return Val_unit;
 }
