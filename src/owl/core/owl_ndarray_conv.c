@@ -186,12 +186,10 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
     }
   }
 
-  for (int i = 0; i < output_crb; ++i) {
-    for (int k = 0; k < out_channel; ++k) {
-      cblas_saxpy(kernel_cri, output_ptr[i * out_channel + k],
-        inpt2d + i * kernel_cri, 1, kern2d + k * kernel_cri, 1);
-    }
-  }
+  cblas_sgemm(CblasRowMajor, CblasTrans, CblasNoTrans,
+    out_channel, kernel_cri, output_crb, 1,
+    output_ptr, out_channel, inpt2d, kernel_cri,
+    0, kern2d, kernel_cri);
 
   int cnt = 0;
   for (int j = 0; j < kernel_cri; ++j){
@@ -276,12 +274,10 @@ value stub_float32_ndarray_conv_spatial_backward_input_native(
     }
   }
 
-  for (int i = 0; i < output_crb; ++i) {
-    for (int k = 0; k < out_channel; ++k) {
-      cblas_saxpy(kernel_cri, output_ptr[i * out_channel + k],
-        kern2d + k * kernel_cri, 1, inpt2d + i * kernel_cri, 1);
-    }
-  }
+  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+    output_crb, kernel_cri, out_channel, 1,
+    output_ptr, out_channel, kern2d, kernel_cri,
+    0, inpt2d, kernel_cri);
 
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
