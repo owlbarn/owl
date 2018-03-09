@@ -309,7 +309,7 @@ complex matrices.
 .. math::
   A^H X = B
 
-The associated operator is ``/@``, so you can simply use ``a /@ b`` to solve
+The associated operator is ``/@``, so you can simply use ``b /@ a`` to solve
 the linear equation system to get ``x``. Please refer to :doc:`owl_operator`.
  *)
 
