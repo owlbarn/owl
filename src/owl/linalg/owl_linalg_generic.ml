@@ -664,7 +664,26 @@ let lyapunov a c =
 (* FIXME *)
 let care a b q r =
   let g = M.(b *@ (inv r) *@ (transpose b)) in
-  ()
+  let z0 = a in
+  let z1 = M.neg g in
+  let z2 = M.neg q in
+  let z3 = M.(transpose a |> neg) in
+  let z = M.((z0 @|| z1) @= (z2 @|| z3)) in
+
+  let t, u, wr, _ = Owl_lapacke.gees ~jobvs:'V' ~a:z in
+  let m, n = M.shape wr in
+  let select = M.zeros Int32 m n in
+  let _k = M.kind wr in
+  let _a = Owl_const.zero _k in
+  M.iteri_2d (fun i j x ->
+    if x < _a then M.set select i j 1l
+  ) wr;
+
+  ignore (Owl_lapacke.trsen ~job:'V' ~compq:'N' ~select ~t ~q:u);
+  let m, n = M.shape u in
+  let u0 = M.get_slice [[0; m / 2 - 1]; [0; n / 2 - 1]] u in
+  let u1 = M.get_slice [[m / 2; m - 1]; [0; n / 2 - 1]] u in
+  linsolve u0 u1
 
 
 (* helper functions *)

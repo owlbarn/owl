@@ -180,7 +180,7 @@ module Make_Linalg (M : LinalgSig) = struct
 
   type ('a, 'b) op_t4 = ('a, 'b) M.t
 
-  let ( /@ ) a b = M.linsolve a b
+  let ( /@ ) b a = M.linsolve a b
 
 end
 

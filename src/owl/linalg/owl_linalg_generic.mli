@@ -356,6 +356,9 @@ Returns:
   * ``x`` : ``m x n`` matrix X.
  *)
 
+val care : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** TODO *)
+
 
 (** {6 Low-level factorisation functions} *)
 
