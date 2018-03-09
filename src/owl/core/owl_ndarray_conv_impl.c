@@ -39,7 +39,12 @@ value FUN_NATIVE (spatial) (
   const int input_cri  = in_channel  * input_rows  * input_cols;
   const int input_ri   = in_channel  * input_rows;
   const int output_cri = out_channel * output_rows * output_cols;
-  const int ksize = kernel_cols * kernel_rows;
+  const int output_cr  = output_rows * output_cols;
+  const int output_crb = output_rows * output_cols * batches;
+  const int kernel_cri = kernel_cols * kernel_rows * in_channel;
+
+  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  if (inpt2d == NULL) exit(1);
 
   memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
 
@@ -50,13 +55,6 @@ value FUN_NATIVE (spatial) (
     if (pr < 0) pr = 0;
     if (pc < 0) pc = 0;
   }
-
-  const int output_cr  = output_rows * output_cols;
-  const int output_crb = output_rows * output_cols * batches;
-  const int kernel_cri = kernel_cols * kernel_rows * in_channel;
-
-  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
-  if (inpt2d == NULL) exit(1);
 
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
@@ -137,9 +135,15 @@ value FUN_NATIVE (spatial_backward_kernel) (
   const int input_cri  = in_channel  * input_rows  * input_cols;
   const int input_ri   = in_channel  * input_rows;
   const int kernel_rio = out_channel * in_channel  * kernel_rows;
-  const int kernel_io  = out_channel * in_channel;
-  const int output_cri = out_channel * output_rows * output_cols;
   const int output_ri  = out_channel * output_rows;
+  const int output_cr  = output_rows * output_cols;
+  const int output_crb = output_rows * output_cols * batches;
+  const int kernel_cri = kernel_cols * kernel_rows * in_channel;
+
+  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  if (inpt2d == NULL) exit(1);
+  TYPE *kern2d = (TYPE *) calloc(kernel_cri * out_channel, sizeof(TYPE));
+  if (kern2d == NULL) exit(1);
 
   memset(kernel_ptr, 0, kernel_cols * kernel_rio * sizeof(TYPE));
 
@@ -149,15 +153,6 @@ value FUN_NATIVE (spatial_backward_kernel) (
   int p_left = pad_cols / 2;
   if (p_top  < 0) p_top  = 0;
   if (p_left < 0) p_left = 0;
-
-  const int output_cr  = output_rows * output_cols;
-  const int output_crb = output_rows * output_cols * batches;
-  const int kernel_cri = kernel_cols * kernel_rows * in_channel;
-
-  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
-  if (inpt2d == NULL) exit(1);
-  TYPE *kern2d = (TYPE *) calloc(kernel_cri * out_channel, sizeof(TYPE));
-  if (kern2d == NULL) exit(1);
 
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
@@ -193,8 +188,8 @@ value FUN_NATIVE (spatial_backward_kernel) (
     0, kern2d, kernel_cri);
 
   int cnt = 0;
-  for (int j = 0; j < kernel_cri; ++j){
-    for (int i = 0; i < out_channel; ++i){
+  for (int j = 0; j < kernel_cri; ++j) {
+    for (int i = 0; i < out_channel; ++i) {
       kernel_ptr[cnt++] = kern2d[i * kernel_cri + j];
     }
   }
@@ -245,10 +240,13 @@ value FUN_NATIVE (spatial_backward_input) (
 
   const int input_cri  = in_channel  * input_rows  * input_cols;
   const int input_ri   = in_channel  * input_rows;
-  const int kernel_rio = out_channel * in_channel  * kernel_rows;
-  const int kernel_io  = out_channel * in_channel;
-  const int output_cri = out_channel * output_rows * output_cols;
   const int output_ri  = out_channel * output_rows;
+  const int output_cr  = output_rows * output_cols;
+  const int output_crb = output_rows * output_cols * batches;
+  const int kernel_cri = kernel_cols * kernel_rows * in_channel;
+
+  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  if (inpt2d == NULL) exit(1);
 
   memset(input_ptr, 0, batches * input_cri * sizeof(TYPE));
 
@@ -258,13 +256,6 @@ value FUN_NATIVE (spatial_backward_input) (
   int p_left = pad_cols / 2;
   if (p_top  < 0) p_top  = 0;
   if (p_left < 0) p_left = 0;
-
-  const int output_cr  = output_rows * output_cols;
-  const int output_crb = output_rows * output_cols * batches;
-  const int kernel_cri = kernel_cols * kernel_rows * in_channel;
-
-  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
-  if (inpt2d == NULL) exit(1);
 
   GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
     output_crb, kernel_cri, out_channel, 1,
@@ -350,12 +341,14 @@ value FUN_NATIVE (cuboid) (
   const int input_crdi  = in_channel  * input_dpts * input_rows * input_cols;
   const int input_rdi   = in_channel  * input_dpts * input_rows;
   const int input_di    = in_channel  * input_dpts;
-  const int kernel_rdio = out_channel * in_channel * kernel_dpts * kernel_rows;
-  const int kernel_dio  = out_channel * in_channel * kernel_dpts;
-  const int kernel_io   = out_channel * in_channel;
   const int output_crdo = out_channel * output_dpts * output_rows * output_cols;
-  const int output_rdo  = out_channel * output_dpts * output_rows;
-  const int output_do   = out_channel * output_dpts;
+  const int output_dr   = output_dpts * output_rows;
+  const int output_drc  = output_dpts * output_rows * output_cols;
+  const int output_drcb = output_dpts * output_rows * output_cols * batches;
+  const int kernel_idrc = in_channel  * kernel_dpts * kernel_rows * kernel_cols;
+
+  TYPE *inpt2d = (TYPE *) calloc(kernel_idrc * output_drcb, sizeof(TYPE));
+  if (inpt2d == NULL) exit(1);
 
   memset(output_ptr, 0, batches * output_crdo * sizeof(TYPE));
 
@@ -370,14 +363,6 @@ value FUN_NATIVE (cuboid) (
     pr = pad_rows / 2; if (pr < 0) pr = 0;
     pd = pad_dpts / 2; if (pd < 0) pd = 0;
   }
-
-  const int output_dr   = output_dpts * output_rows;
-  const int output_drc  = output_dpts * output_rows * output_cols;
-  const int output_drcb = output_dpts * output_rows * output_cols * batches;
-  const int kernel_idrc = in_channel  * kernel_dpts * kernel_rows * kernel_cols;
-
-  TYPE *inpt2d = (TYPE *) calloc(kernel_idrc * output_drcb, sizeof(TYPE));
-  if (inpt2d == NULL) exit(1);
 
   for (int i = 0; i < output_drcb; ++i) {
     int bt  = i / output_drc;
@@ -470,11 +455,15 @@ value FUN_NATIVE (cuboid_backward_kernel) (
   const int input_rdi   = in_channel  * input_dpts * input_rows;
   const int input_di    = in_channel  * input_dpts;
   const int kernel_rdio = out_channel * in_channel * kernel_dpts * kernel_rows;
-  const int kernel_dio  = out_channel * in_channel * kernel_dpts;
-  const int kernel_io   = out_channel * in_channel;
-  const int output_crdo = out_channel * output_dpts * output_rows * output_cols;
-  const int output_rdo  = out_channel * output_dpts * output_rows;
-  const int output_do   = out_channel * output_dpts;
+  const int output_dr   = output_dpts * output_rows;
+  const int output_drc  = output_dpts * output_rows * output_cols;
+  const int output_drcb = output_dpts * output_rows * output_cols * batches;
+  const int kernel_idrc = in_channel  * kernel_dpts * kernel_rows * kernel_cols;
+
+  TYPE *inpt2d = (TYPE *) calloc(kernel_idrc * output_drcb, sizeof(TYPE));
+  if (inpt2d == NULL) exit(1);
+  TYPE *kern2d = (TYPE *) calloc(kernel_idrc * out_channel, sizeof(TYPE));
+  if (kern2d == NULL) exit(1);
 
   memset(kernel_ptr, 0, kernel_cols * kernel_rdio * sizeof(TYPE));
 
@@ -485,16 +474,6 @@ value FUN_NATIVE (cuboid_backward_kernel) (
   pc = pad_cols / 2; if (pc < 0) pc = 0;
   pr = pad_rows / 2; if (pr < 0) pr = 0;
   pd = pad_dpts / 2; if (pd < 0) pd = 0;
-
-  const int output_dr   = output_dpts * output_rows;
-  const int output_drc  = output_dpts * output_rows * output_cols;
-  const int output_drcb = output_dpts * output_rows * output_cols * batches;
-  const int kernel_idrc = in_channel  * kernel_dpts * kernel_rows * kernel_cols;
-
-  TYPE *inpt2d = (TYPE *) calloc(kernel_idrc * output_drcb, sizeof(TYPE));
-  if (inpt2d == NULL) exit(1);
-  TYPE *kern2d = (TYPE *) calloc(kernel_idrc * out_channel, sizeof(TYPE));
-  if (kern2d == NULL) exit(1);
 
   for (int i = 0; i < output_drcb; ++i) {
     int bt  = i / output_drc;
@@ -538,8 +517,8 @@ value FUN_NATIVE (cuboid_backward_kernel) (
     0, kern2d, kernel_idrc);
 
   int cnt = 0;
-  for (int j = 0; j < kernel_idrc; ++j){
-    for (int i = 0; i < out_channel; ++i){
+  for (int j = 0; j < kernel_idrc; ++j) {
+    for (int i = 0; i < out_channel; ++i) {
       kernel_ptr[cnt++] = kern2d[i * kernel_idrc + j];
     }
   }
@@ -594,12 +573,13 @@ value FUN_NATIVE (cuboid_backward_input) (
   const int input_crdi  = in_channel  * input_dpts * input_rows * input_cols;
   const int input_rdi   = in_channel  * input_dpts * input_rows;
   const int input_di    = in_channel  * input_dpts;
-  const int kernel_rdio = out_channel * in_channel * kernel_dpts * kernel_rows;
-  const int kernel_dio  = out_channel * in_channel * kernel_dpts;
-  const int kernel_io   = out_channel * in_channel;
-  const int output_crdo = out_channel * output_dpts * output_rows * output_cols;
-  const int output_rdo  = out_channel * output_dpts * output_rows;
-  const int output_do   = out_channel * output_dpts;
+  const int output_dr   = output_dpts * output_rows;
+  const int output_drc  = output_dpts * output_rows * output_cols;
+  const int output_drcb = output_dpts * output_rows * output_cols * batches;
+  const int kernel_idrc = in_channel  * kernel_dpts * kernel_rows * kernel_cols;
+
+  TYPE *inpt2d = (TYPE *) calloc(kernel_idrc * output_drcb, sizeof(TYPE));
+  if (inpt2d == NULL) exit(1);
 
   memset(input_ptr, 0, batches * input_crdi * sizeof(TYPE));
 
@@ -610,14 +590,6 @@ value FUN_NATIVE (cuboid_backward_input) (
   pc = pad_cols / 2; if (pc < 0) pc = 0;
   pr = pad_rows / 2; if (pr < 0) pr = 0;
   pd = pad_dpts / 2; if (pd < 0) pd = 0;
-
-  const int output_dr   = output_dpts * output_rows;
-  const int output_drc  = output_dpts * output_rows * output_cols;
-  const int output_drcb = output_dpts * output_rows * output_cols * batches;
-  const int kernel_idrc = in_channel  * kernel_dpts * kernel_rows * kernel_cols;
-
-  TYPE *inpt2d = (TYPE *) calloc(kernel_idrc * output_drcb, sizeof(TYPE));
-  if (inpt2d == NULL) exit(1);
 
   GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
     output_drcb, kernel_idrc, out_channel, 1,
