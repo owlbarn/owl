@@ -243,6 +243,9 @@ you do not need to worry about ``otyp``.
 val schur_tz : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** ``schur_tz x`` is similar to ``schur`` but only returns ``(t, z)``. *)
 
+val ordschur : select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(** TODO *)
+
 val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
 ``hess x -> (h, q)`` calculates the Hessenberg form of a given matrix ``x``.

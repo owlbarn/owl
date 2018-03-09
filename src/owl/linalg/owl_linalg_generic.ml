@@ -299,6 +299,14 @@ let schur_tz x =
   t, z
 
 
+let ordschur ~select t z =
+  let t = M.copy t in
+  let q = M.copy z in
+  M.iter (fun a -> assert (a = 0l || a = 1l)) select;
+  let ts, zs, _, _ = Owl_lapacke.trsen ~job:'V' ~compq:'N' ~select ~t ~q in
+  ts, zs
+
+
 (* Eigenvalue problem *)
 
 
@@ -651,6 +659,12 @@ let lyapunov a c =
   let z = M.(q *@ (y *@ (ctranspose q))) in
   M.mul_scalar_ z (Owl_dense_common._float_typ_elt (M.kind c) (1. /. s));
   z
+
+
+(* FIXME *)
+let care a b q r =
+  let g = M.(b *@ (inv r) *@ (transpose b)) in
+  ()
 
 
 (* helper functions *)
