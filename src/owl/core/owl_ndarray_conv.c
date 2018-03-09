@@ -56,7 +56,6 @@ value stub_float32_ndarray_conv_spatial_native(
   TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
 
-  // flatten each window from input; col major
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
     int cr = i % output_cr;
@@ -149,6 +148,7 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
   if (p_top  < 0) p_top  = 0;
   if (p_left < 0) p_left = 0;
 
+/*
   for (int i = 0; i < batches; ++i) {
     for (int j = 0; j < output_cols; ++j) {
       for (int k = 0; k < output_rows; ++k) {
@@ -186,7 +186,7 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
         }
       }
     }
-  }
+  } */
 
   return Val_unit;
 }
@@ -337,7 +337,7 @@ value stub_float32_ndarray_conv_cuboid_native(
   const int output_rdo  = out_channel * output_dpts * output_rows;
   const int output_do   = out_channel * output_dpts;
 
-  //memset(output_ptr, 0, batches * output_crdo * sizeof(TYPE));
+  memset(output_ptr, 0, batches * output_crdo * sizeof(TYPE));
 
   int pd, pr, pc;
   if (padding == 1) {
@@ -351,63 +351,57 @@ value stub_float32_ndarray_conv_cuboid_native(
     pd = pad_dpts / 2; if (pd < 0) pd = 0;
   }
 
-  for (int i = 0; i < batches; ++i) {
-    const int input_idx_base = i * input_crdi;
-    for (int j = 0; j < output_cols; ++j) {
-      for (int k = 0; k < output_rows; ++k) {
-        for (int d = 0; d < output_dpts; ++d) {
-          const int output_idx_base =
-            i * output_crdo +
-            j * output_rdo +
-            k * output_do +
-            d * out_channel;
+  const int output_dr   = output_dpts * output_rows;
+  const int output_drc  = output_dpts * output_rows * output_cols;
+  const int output_drcb = output_dpts * output_rows * output_cols * batches;
+  const int kernel_idrc = in_channel  * kernel_dpts * kernel_rows * kernel_cols;
 
-          const int cstart = j * col_stride - pc;
-          const int rstart = k * row_stride - pr;
-          const int dstart = d * dpt_stride - pd;
-          const int cend   = cstart + kernel_cols;
-          const int rend   = rstart + kernel_rows;
-          const int dend   = dstart + kernel_dpts;
+  TYPE *inpt2d = (TYPE *) calloc(kernel_idrc * output_drcb, sizeof(TYPE));
+  if (inpt2d == NULL) exit(1);
 
-          for (int l = 0; l < out_channel; ++l) {
-            TYPE sum = 0.;
-            int output_idx = output_idx_base + l;
+  for (int i = 0; i < output_drcb; ++i) {
+    int bt  = i / output_drc;
+    int jkd = i % output_drc;
+    int j   = jkd / output_dr;
+    int kd  = jkd % output_dr;
+    int k   = kd / output_dpts;
+    int d   = kd % output_dpts;
 
-            for (int h = 0; h < in_channel; ++h) {
-              for (int a = cstart; a < cend; ++a) {
-                for (int b = rstart; b < rend; ++b) {
-                  for (int c = dstart; c < dend; ++c) {
-                    TYPE input_val, kernel_val;
-                    if (a >= 0 && a < input_cols &&
-                        b >= 0 && b < input_rows &&
-                        c >= 0 && c < input_dpts) {
-                      int input_idx =
-                        input_idx_base + a * input_rdi + b * input_di +
-                        c * in_channel + h;
-                      input_val = *(input_ptr + input_idx);
-                    } else {
-                      input_val = 0;
-                    }
+    const int cstart = j * col_stride - pc;
+    const int rstart = k * row_stride - pr;
+    const int dstart = d * dpt_stride - pd;
+    const int cend   = cstart + kernel_cols;
+    const int rend   = rstart + kernel_rows;
+    const int dend   = dstart + kernel_dpts;
+    const int input_idx_base = bt * input_crdi;
 
-                    int kernel_index =
-                      (a - cstart) * kernel_rdio +
-                      (b - rstart) * kernel_dio +
-                      (c - dstart) * kernel_io +
-                      h * out_channel + l;
-                    kernel_val = *(kernel_ptr + kernel_index);
-
-                    sum += input_val * kernel_val;
-                  }
-                }
-              }
+    int cnt = 0;
+    for (int a = cstart; a < cend; ++a) {
+      for (int b = rstart; b < rend; ++b) {
+        for (int c = dstart; c < dend; ++c) {
+          for (int h = 0; h < in_channel; ++h) {
+            if (a >= 0 && a < input_cols &&
+                b >= 0 && b < input_rows &&
+                c >= 0 && c < input_dpts) {
+              int input_idx =
+                input_idx_base + a * input_rdi + b * input_di +
+                c * in_channel + h;
+              inpt2d[i * kernel_idrc + cnt] = input_ptr[input_idx];
             }
-
-            *(output_ptr + output_idx) =  sum;
+            ++cnt;
           }
         }
       }
     }
   }
+
+  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+    output_drcb, out_channel, kernel_idrc, 1,
+    inpt2d, kernel_idrc, kernel_ptr, out_channel,
+    0, output_ptr, out_channel);
+
+  free(inpt2d);
+
   return Val_unit;
 }
 
