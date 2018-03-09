@@ -158,15 +158,6 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
   TYPE *kern2d = (TYPE *) calloc(kernel_cri * out_channel, sizeof(TYPE));
   if (kern2d == NULL) exit(1);
 
-  /*
-  for (int i = 0; i < out_channel; i++ ){
-    for (int j = 0; j < output_crb; j++){
-      printf("%.2f ", output_ptr[i * output_crb + j]);
-    }
-    printf("\n");
-  } fflush(stdout);
-  */
-
   for (int i = 0; i < output_crb; ++i) {
     int bt = i / output_cr;
     int cr = i % output_cr;
@@ -195,21 +186,10 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
     }
   }
 
-  /*
-  for (int k = 0; k < out_channel; ++k){
-    for (int j = 0; j < kernel_cri; ++j){
-      for (int i = 0; i < output_crb; ++i){
-        kern2d[k * kernel_cri + j] += inpt2d[i*kernel_cri + j] *
-        output_ptr[i * out_channel + k];
-      }
-    }
-  } */
-
-
-  for (int k = 0; k < out_channel; ++k){
-    for (int i = 0; i < output_crb; ++i){
+  for (int i = 0; i < output_crb; ++i){
+    for (int k = 0; k < out_channel; ++k){
       cblas_saxpy(kernel_cri, output_ptr[i * out_channel + k],
-        inpt2d + i*kernel_cri, 1, kern2d + k* kernel_cri, 1);
+        inpt2d + i * kernel_cri, 1, kern2d + k * kernel_cri, 1);
     }
   }
 
@@ -219,6 +199,15 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
       kernel_ptr[cnt++] = kern2d[i * kernel_cri + j];
     }
   }
+
+  /* x2 slower (because of the steps?) */
+  /*
+  for (int k = 0; k < out_channel; ++k){
+    for (int i = 0; i < output_crb; ++i){
+      cblas_saxpy(kernel_cri, output_ptr[i * out_channel + k],
+        inpt2d + i*kernel_cri, 1, kernel_ptr + k, out_channel);
+    }
+  } */
 
   free(inpt2d);
   free(kern2d);
