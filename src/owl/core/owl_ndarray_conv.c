@@ -1,10 +1,14 @@
-#include "owl_core.h"
-#include <string.h>
+/*
+ * OWL - an OCaml numerical library for scientific computing
+ * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
+ */
+
+#ifdef OWL_ENABLE_TEMPLATE
+
+
 #include <cblas.h>
 
-#define TYPE float
-
-value stub_float32_ndarray_conv_spatial_native(
+value FUN_NATIVE (spatial)(
   value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
   value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
   value vKernel_cols, value vKernel_rows,
@@ -84,7 +88,7 @@ value stub_float32_ndarray_conv_spatial_native(
     }
   }
 
-  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+  GEMM(CblasRowMajor, CblasNoTrans, CblasNoTrans,
     output_crb, out_channel, kernel_cri, 1,
     inpt2d, kernel_cri, kernel_ptr, out_channel,
     0, output_ptr, out_channel);
@@ -95,15 +99,15 @@ value stub_float32_ndarray_conv_spatial_native(
 }
 
 
-value stub_float32_ndarray_conv_spatial_bytecode(value * argv, int argn) {
-  return stub_float32_ndarray_conv_spatial_native(
+value FUN_BYTE (spatial) (value * argv, int argn) {
+  return FUN_NATIVE (spatial) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15], argv[16]
   );
 }
 
 
-value stub_float32_ndarray_conv_spatial_backward_kernel_native(
+value FUN_NATIVE (spatial_backward_kernel) (
   value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
   value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
   value vKernel_cols, value vKernel_rows,
@@ -185,7 +189,7 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
     }
   }
 
-  cblas_sgemm(CblasRowMajor, CblasTrans, CblasNoTrans,
+  GEMM(CblasRowMajor, CblasTrans, CblasNoTrans,
     out_channel, kernel_cri, output_crb, 1,
     output_ptr, out_channel, inpt2d, kernel_cri,
     0, kern2d, kernel_cri);
@@ -204,15 +208,15 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
 }
 
 
-value stub_float32_ndarray_conv_spatial_backward_kernel_bytecode(value * argv, int argn) {
-  return stub_float32_ndarray_conv_spatial_backward_kernel_native(
+value FUN_BYTE (spatial_backward_kernel) (value * argv, int argn) {
+  return FUN_NATIVE (spatial_backward_kernel) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15]
   );
 }
 
 
-value stub_float32_ndarray_conv_spatial_backward_input_native(
+value FUN_NATIVE (spatial_backward_input) (
   value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
   value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
   value vKernel_cols, value vKernel_rows,
@@ -264,7 +268,7 @@ value stub_float32_ndarray_conv_spatial_backward_input_native(
   TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
 
-  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasTrans,
+  GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
     output_crb, kernel_cri, out_channel, 1,
     output_ptr, out_channel, kernel_ptr, out_channel,
     0, inpt2d, kernel_cri);
@@ -303,15 +307,15 @@ value stub_float32_ndarray_conv_spatial_backward_input_native(
 }
 
 
-value stub_float32_ndarray_conv_spatial_backward_input_bytecode(value * argv, int argn) {
-  return stub_float32_ndarray_conv_spatial_backward_input_native(
+value FUN_BYTE (spatial_backward_input) (value * argv, int argn) {
+  return FUN_NATIVE (spatial_backward_input) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15]
   );
 }
 
 
-value stub_float32_ndarray_conv_cuboid_native(
+value FUN_NATIVE (cuboid) (
   value vInput, value vKernel, value vOutput,
   value vBatches, value vInput_cols, value vInput_rows,
   value vInput_dpts, value vIn_channel,
@@ -413,7 +417,7 @@ value stub_float32_ndarray_conv_cuboid_native(
     }
   }
 
-  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasNoTrans,
+  GEMM(CblasRowMajor, CblasNoTrans, CblasNoTrans,
     output_drcb, out_channel, kernel_idrc, 1,
     inpt2d, kernel_idrc, kernel_ptr, out_channel,
     0, output_ptr, out_channel);
@@ -424,15 +428,15 @@ value stub_float32_ndarray_conv_cuboid_native(
 }
 
 
-value stub_float32_ndarray_conv_cuboid_bytecode(value * argv, int argn) {
-  return stub_float32_ndarray_conv_cuboid_native(
+value FUN_BYTE (cuboid) (value * argv, int argn) {
+  return FUN_NATIVE (cuboid) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15], argv[16], argv[17], argv[18]
   );
 }
 
 
-value stub_float32_ndarray_conv_cuboid_backward_kernel_native(
+value FUN_NATIVE (cuboid_backward_kernel) (
   value vInput, value vKernel, value vOutput,
   value vBatches, value vInput_cols, value vInput_rows,
   value vInput_dpts, value vIn_channel,
@@ -530,7 +534,7 @@ value stub_float32_ndarray_conv_cuboid_backward_kernel_native(
     }
   }
 
-  cblas_sgemm(CblasRowMajor, CblasTrans, CblasNoTrans,
+  GEMM(CblasRowMajor, CblasTrans, CblasNoTrans,
     out_channel, kernel_idrc, output_drcb, 1,
     output_ptr, out_channel, inpt2d, kernel_idrc,
     0, kern2d, kernel_idrc);
@@ -549,14 +553,14 @@ value stub_float32_ndarray_conv_cuboid_backward_kernel_native(
 }
 
 
-value stub_float32_ndarray_conv_cuboid_backward_kernel_bytecode(value * argv, int argn) {
-  return stub_float32_ndarray_conv_cuboid_backward_kernel_native(
+value FUN_BYTE (cuboid_backward_kernel) (value * argv, int argn) {
+  return FUN_NATIVE (cuboid_backward_kernel) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15], argv[16], argv[17]
   );
 }
 
-value stub_float32_ndarray_conv_cuboid_backward_input_native(
+value FUN_NATIVE (cuboid_backward_input) (
   value vInput, value vKernel, value vOutput,
   value vBatches, value vInput_cols, value vInput_rows,
   value vInput_dpts, value vIn_channel,
@@ -616,7 +620,7 @@ value stub_float32_ndarray_conv_cuboid_backward_input_native(
   TYPE *inpt2d = (TYPE *) calloc(kernel_idrc * output_drcb, sizeof(TYPE));
   if (inpt2d == NULL) exit(1);
 
-  cblas_sgemm(CblasRowMajor, CblasNoTrans, CblasTrans,
+  GEMM(CblasRowMajor, CblasNoTrans, CblasTrans,
     output_drcb, kernel_idrc, out_channel, 1,
     output_ptr, out_channel, kernel_ptr, out_channel,
     0, inpt2d, kernel_idrc);
@@ -663,9 +667,11 @@ value stub_float32_ndarray_conv_cuboid_backward_input_native(
 }
 
 
-value stub_float32_ndarray_conv_cuboid_backward_input_bytecode(value * argv, int argn) {
-  return stub_float32_ndarray_conv_cuboid_backward_input_native(
+value FUN_BYTE (cuboid_backward_input) (value * argv, int argn) {
+  return FUN_NATIVE (cuboid_backward_input) (
     argv[0], argv[1], argv[2], argv[3], argv[4], argv[5], argv[6], argv[7],
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15], argv[16], argv[17]
   );
 }
+
+#endif /* OWL_ENABLE_TEMPLATE */

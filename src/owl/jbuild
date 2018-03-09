@@ -31,7 +31,7 @@
     owl_slicing_basic_stub
     owl_slicing_fancy_impl
     owl_slicing_fancy_stub
-    owl_ndarray_impl
+    owl_ndarray_pool_impl
     owl_ndarray_stub
     owl_ndarray_conv
     owl_matrix_swap_impl

@@ -196,32 +196,33 @@ let _eigen_inv : type a b . (a, b) kind -> (a, b) eigen_mat_op00 = function
 
 let _eigen_spatial_conv : type a b . (a, b) kind -> (a, b) eigen_arr_op00 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_spatial
-  | Float64   -> Eigen.Tensor.D.spatial_conv
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_spatial(* Eigen.Tensor.D.spatial_conv *)
   | _         -> failwith "_eigen_spatial_conv: unsupported operation"
 
 let _eigen_spatial_conv_backward_input : type a b . (a, b) kind -> (a, b) eigen_arr_op01 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_spatial_backward_input
-  | Float64   -> Eigen.Tensor.D.spatial_conv_backward_input
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_spatial_backward_kernel
+  (* Eigen.Tensor.D.spatial_conv_backward_input *)
   | _         -> failwith "_eigen_spatial_conv_backward_input: unsupported operation"
 
 let _eigen_spatial_conv_backward_kernel : type a b . (a, b) kind -> (a, b) eigen_arr_op01 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_spatial_backward_kernel
-  | Float64   -> Eigen.Tensor.D.spatial_conv_backward_kernel
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_spatial_backward_kernel (* Eigen.Tensor.D.spatial_conv_backward_kernel *)
   | _         -> failwith "_eigen_spatial_conv_backward_kernel: unsupported operation"
 
 let _eigen_cuboid_conv : type a b . (a, b) kind -> (a, b) eigen_arr_op02 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_cuboid
-  | Float64   -> Eigen.Tensor.D.cuboid_conv
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_cuboid(* Eigen.Tensor.D.cuboid_conv *)
   | _         -> failwith "_eigen_cuboid_conv: unsupported operation"
 
 let _eigen_cuboid_conv_backward_input : type a b . (a, b) kind -> (a, b) eigen_arr_op03 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_cuboid_backward_input
-  | Float64   -> Eigen.Tensor.D.cuboid_conv_backward_input
+  | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_cuboid_backward_input(* Eigen.Tensor.D.cuboid_conv_backward_input *)
   | _         -> failwith "cuboid_conv_backward_input: unsupported operation"
 
 let _eigen_cuboid_conv_backward_kernel : type a b . (a, b) kind -> (a, b) eigen_arr_op03 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_cuboid_backward_kernel
-  | Float64   -> Eigen.Tensor.D.cuboid_conv_backward_kernel
+  | Float64   -> Owl_ndarray.owl_float32_ndarray_conv_cuboid_backward_kernel(*Eigen.Tensor.D.cuboid_conv_backward_kernel*)
   | _         -> failwith "_eigen_cuboid_conv_backward_kernel: unsupported operation"
 
 
