@@ -1624,7 +1624,7 @@ let conv2d ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  _eigen_spatial_conv (kind input)
+  _owl_spatial_conv (kind input)
     input kernel output batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride pad_typ row_in_stride col_in_stride;
@@ -1664,7 +1664,7 @@ let conv2d_backward_input input kernel stride output' =
 
   let input' = empty (kind input) (shape input) in
 
-  _eigen_spatial_conv_backward_input (kind input')
+  _owl_spatial_conv_backward_input (kind input')
     input' kernel output' batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride row_in_stride col_in_stride;
@@ -1704,7 +1704,7 @@ let conv2d_backward_kernel input kernel stride output' =
 
   let kernel' = empty (kind kernel) (shape kernel) in
 
-  _eigen_spatial_conv_backward_kernel (kind input)
+  _owl_spatial_conv_backward_kernel (kind input)
     input kernel' output' batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride row_in_stride col_in_stride;
@@ -1748,7 +1748,7 @@ let conv3d ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  _eigen_cuboid_conv (kind input)
+  _owl_cuboid_conv (kind input)
     input kernel output batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -1792,7 +1792,7 @@ let conv3d_backward_input input kernel stride output' =
 
   let input' = empty (kind input) (shape input) in
 
-  _eigen_cuboid_conv_backward_input (kind input')
+  _owl_cuboid_conv_backward_input (kind input')
     input' kernel output' batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -1836,7 +1836,7 @@ let conv3d_backward_kernel input kernel stride output' =
 
   let kernel' = empty (kind kernel) (shape kernel) in
 
-  _eigen_cuboid_conv_backward_kernel (kind input)
+  _owl_cuboid_conv_backward_kernel (kind input)
     input kernel' output' batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts

@@ -6,16 +6,14 @@
 #ifdef OWL_ENABLE_TEMPLATE
 
 
-#include <cblas.h>
-
-value FUN_NATIVE (spatial)(
+value FUN_NATIVE (spatial) (
   value vInput_ptr, value vKernel_ptr, value vOutput_ptr,
   value vBatches, value vInput_cols, value vInput_rows, value vIn_channel,
   value vKernel_cols, value vKernel_rows,
   value vOutput_cols, value vOutput_rows, value vOut_channel,
   value vRow_stride,  value vCol_stride,
   value vPadding, value vRow_in_stride, value vCol_in_stride
-){
+) {
   struct caml_ba_array *IN = Caml_ba_array_val(vInput_ptr);
   struct caml_ba_array *KE = Caml_ba_array_val(vKernel_ptr);
   struct caml_ba_array *OU = Caml_ba_array_val(vOutput_ptr);
@@ -114,7 +112,7 @@ value FUN_NATIVE (spatial_backward_kernel) (
   value vOutput_cols, value vOutput_rows, value vOut_channel,
   value vRow_stride,  value vCol_stride,
   value vRow_in_stride, value vCol_in_stride
-){
+) {
   struct caml_ba_array *IN = Caml_ba_array_val(vInput_ptr);
   struct caml_ba_array *KE = Caml_ba_array_val(vKernel_ptr);
   struct caml_ba_array *OU = Caml_ba_array_val(vOutput_ptr);
@@ -223,7 +221,7 @@ value FUN_NATIVE (spatial_backward_input) (
   value vOutput_cols, value vOutput_rows, value vOut_channel,
   value vRow_stride,  value vCol_stride,
   value vRow_in_stride, value vCol_in_stride
-){
+) {
   struct caml_ba_array *IN = Caml_ba_array_val(vInput_ptr);
   struct caml_ba_array *KE = Caml_ba_array_val(vKernel_ptr);
   struct caml_ba_array *OU = Caml_ba_array_val(vOutput_ptr);
@@ -324,7 +322,7 @@ value FUN_NATIVE (cuboid) (
   value vOutput_dpts, value vOut_channel,
   value vDpt_stride, value vRow_stride,  value vCol_stride,
   value vPadding
-){
+) {
   struct caml_ba_array *IN = Caml_ba_array_val(vInput);
   struct caml_ba_array *KE = Caml_ba_array_val(vKernel);
   struct caml_ba_array *OU = Caml_ba_array_val(vOutput);
@@ -444,7 +442,7 @@ value FUN_NATIVE (cuboid_backward_kernel) (
   value vOutput_cols, value vOutput_rows,
   value vOutput_dpts, value vOut_channel,
   value vDpt_stride, value vRow_stride,  value vCol_stride
-){
+) {
   struct caml_ba_array *IN = Caml_ba_array_val(vInput);
   struct caml_ba_array *KE = Caml_ba_array_val(vKernel);
   struct caml_ba_array *OU = Caml_ba_array_val(vOutput);
@@ -560,6 +558,7 @@ value FUN_BYTE (cuboid_backward_kernel) (value * argv, int argn) {
   );
 }
 
+
 value FUN_NATIVE (cuboid_backward_input) (
   value vInput, value vKernel, value vOutput,
   value vBatches, value vInput_cols, value vInput_rows,
@@ -568,7 +567,7 @@ value FUN_NATIVE (cuboid_backward_input) (
   value vOutput_cols, value vOutput_rows,
   value vOutput_dpts, value vOut_channel,
   value vDpt_stride, value vRow_stride,  value vCol_stride
-){
+) {
   struct caml_ba_array *IN = Caml_ba_array_val(vInput);
   struct caml_ba_array *KE = Caml_ba_array_val(vKernel);
   struct caml_ba_array *OU = Caml_ba_array_val(vOutput);
@@ -673,5 +672,6 @@ value FUN_BYTE (cuboid_backward_input) (value * argv, int argn) {
     argv[8], argv[9], argv[10], argv[11], argv[12], argv[13], argv[14], argv[15], argv[16], argv[17]
   );
 }
+
 
 #endif /* OWL_ENABLE_TEMPLATE */
