@@ -186,8 +186,8 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
     }
   }
 
-  for (int i = 0; i < output_crb; ++i){
-    for (int k = 0; k < out_channel; ++k){
+  for (int i = 0; i < output_crb; ++i) {
+    for (int k = 0; k < out_channel; ++k) {
       cblas_saxpy(kernel_cri, output_ptr[i * out_channel + k],
         inpt2d + i * kernel_cri, 1, kern2d + k * kernel_cri, 1);
     }
@@ -200,57 +200,8 @@ value stub_float32_ndarray_conv_spatial_backward_kernel_native(
     }
   }
 
-  /* x2 slower (because of the steps?) */
-  /*
-  for (int k = 0; k < out_channel; ++k){
-    for (int i = 0; i < output_crb; ++i){
-      cblas_saxpy(kernel_cri, output_ptr[i * out_channel + k],
-        inpt2d + i*kernel_cri, 1, kernel_ptr + k, out_channel);
-    }
-  } */
-
   free(inpt2d);
   free(kern2d);
-
-/*
-  for (int i = 0; i < batches; ++i) {
-    for (int j = 0; j < output_cols; ++j) {
-      for (int k = 0; k < output_rows; ++k) {
-
-        const int cstart = j * col_stride - p_left;
-        const int rstart = k * row_stride - p_top;
-        const int cend   = cstart + kernel_cols;
-        const int rend   = rstart + kernel_rows;
-
-        for (int l = 0; l < out_channel; ++l) {
-          int output_idx =
-            i * output_cri + j * output_ri + k * out_channel + l;
-          TYPE output_val = *(output_ptr + output_idx);
-
-          for (int h = 0; h < in_channel; ++h) {
-            TYPE input_val = 0.;
-            for (int a = cstart; a < cend; ++a) {
-              for (int b = rstart; b < rend; ++b) {
-                if (a >= 0 && a < input_cols &&
-                    b >= 0 && b < input_rows) {
-                  int input_idx =
-                    i * input_cri + a * input_ri + b * in_channel + h;
-                  input_val = *(input_ptr + input_idx);
-                } else {
-                  input_val = 0.0;
-                }
-
-                int kernel_index =
-                  (a - cstart) * kernel_rio + (b - rstart) * kernel_io + h * out_channel + l;
-
-                *(kernel_ptr + kernel_index) += output_val * input_val;
-              }
-            }
-          }
-        }
-      }
-    }
-  } */
 
   return Val_unit;
 }
@@ -309,41 +260,59 @@ value stub_float32_ndarray_conv_spatial_backward_input_native(
   if (p_top  < 0) p_top  = 0;
   if (p_left < 0) p_left = 0;
 
-  for (int i = 0; i < batches; ++i) {
-    for (int j = 0; j < output_cols; ++j) {
-      for (int k = 0; k < output_rows; ++k) {
+  const int output_cr  = output_rows * output_cols;
+  const int output_crb = output_rows * output_cols * batches;
+  const int kernel_cri = kernel_cols * kernel_rows * in_channel;
 
-        const int cstart = j * col_stride - p_left;
-        const int rstart = k * row_stride - p_top;
-        const int cend   = cstart + kernel_cols;
-        const int rend   = rstart + kernel_rows;
+  TYPE *inpt2d = (TYPE *) calloc(kernel_cri * output_crb, sizeof(TYPE));
+  if (inpt2d == NULL) exit(1);
+  TYPE *kern2d = (TYPE *) calloc(kernel_cri * out_channel, sizeof(TYPE));
+  if (kern2d == NULL) exit(1);
 
-        for (int l = 0; l < out_channel; ++l) {
-          int output_idx =
-            i * output_cri + j * output_ri + k * out_channel + l;
-          TYPE output_val = *(output_ptr + output_idx);
+  int cnt = 0;
+  for (int j = 0; j < kernel_cri; ++j) {
+    for (int i = 0; i < out_channel; ++i) {
+      kern2d[i * kernel_cri + j] = kernel_ptr[cnt++];
+    }
+  }
 
-          for (int h = 0; h < in_channel; ++h) {
-            TYPE kernel_val = 0.;
-            for (int a = cstart; a < cend; ++a) {
-              for (int b = rstart; b < rend; ++b) {
-                int kernel_index =
-                  (a - cstart) * kernel_rio + (b - rstart) * kernel_io + h * out_channel + l;
-                kernel_val = *(kernel_ptr + kernel_index);
+  for (int i = 0; i < output_crb; ++i) {
+    for (int k = 0; k < out_channel; ++k) {
+      cblas_saxpy(kernel_cri, output_ptr[i * out_channel + k],
+        kern2d + k * kernel_cri, 1, inpt2d + i * kernel_cri, 1);
+    }
+  }
 
-                if (a >= 0 && a < input_cols &&
-                    b >= 0 && b < input_rows) {
-                  int input_idx =
-                    i * input_cri + a * input_ri + b * in_channel + h;
-                  *(input_ptr + input_idx) += output_val * kernel_val;
-                }
-              }
-            }
+  for (int i = 0; i < output_crb; ++i) {
+    int bt = i / output_cr;
+    int cr = i % output_cr;
+    int c = cr / output_rows;
+    int r = cr % output_rows;
+
+    const int cstart = c * col_stride - p_left;
+    const int rstart = r * row_stride - p_top;
+    const int cend = cstart + kernel_cols;
+    const int rend = rstart + kernel_rows;
+    const int input_idx_base = bt * input_cri;
+
+    int cnt = 0;
+    for (int a = cstart; a < cend; ++a) {
+      for (int b = rstart; b < rend; ++b) {
+        for (int h = 0; h < in_channel; ++h) {
+          if (a < input_cols && a >= 0 &&
+              b < input_rows && b >= 0) {
+            int input_idx =
+               input_idx_base + a * input_ri + b * in_channel + h;
+            input_ptr[input_idx] += inpt2d[i * kernel_cri + cnt];
           }
+          ++cnt;
         }
       }
     }
   }
+
+  free(inpt2d);
+  free(kern2d);
 
   return Val_unit;
 }
