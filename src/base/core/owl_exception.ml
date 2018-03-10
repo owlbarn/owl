@@ -26,3 +26,5 @@ exception NOT_BROADCASTABLE
 exception NOT_CONVERGE
 
 exception MAX_ITERATION
+
+exception SINGULAR

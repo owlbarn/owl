@@ -50,3 +50,6 @@ exception NOT_CONVERGE
 
 exception MAX_ITERATION
 (** Number of iteration exceeds the threshold. *)
+
+exception SINGULAR
+(** Exception of singular matrix. *)

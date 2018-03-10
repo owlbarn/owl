@@ -299,6 +299,14 @@ let schur_tz x =
   t, z
 
 
+let ordschur ~select t z =
+  let t = M.copy t in
+  let q = M.copy z in
+  M.iter (fun a -> assert (a = 0l || a = 1l)) select;
+  let ts, zs, _, _ = Owl_lapacke.trsen ~job:'V' ~compq:'N' ~select ~t ~q in
+  ts, zs
+
+
 (* Eigenvalue problem *)
 
 
@@ -651,6 +659,22 @@ let lyapunov a c =
   let z = M.(q *@ (y *@ (ctranspose q))) in
   M.mul_scalar_ z (Owl_dense_common._float_typ_elt (M.kind c) (1. /. s));
   z
+
+
+let care a b q r =
+  let g = M.(b *@ (inv r) *@ (transpose b)) in
+  let z = M.((a @|| (neg g)) @= ((neg q) @|| (transpose a |> neg))) in
+
+  let t, u, wr, _ = Owl_lapacke.gees ~jobvs:'V' ~a:z in
+  let select = M.(zeros Int32 (row_num wr) (col_num wr)) in
+  let _re = Owl_dense_common._re_elt (M.kind wr) in
+  M.iteri_2d (fun i j x -> if _re x < 0. then M.set select i j 1l) wr;
+  ignore (Owl_lapacke.trsen ~job:'V' ~compq:'N' ~select ~t ~q:u);
+
+  let m, n = M.shape u in
+  let u0 = M.get_slice [[0; m / 2 - 1]; [0; n / 2 - 1]] u in
+  let u1 = M.get_slice [[m / 2; m - 1]; [0; n / 2 - 1]] u in
+  M.(u1 *@ (inv u0))
 
 
 (* helper functions *)
