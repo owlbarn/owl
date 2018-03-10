@@ -171,30 +171,6 @@ let _owl_gaussian_fun : type a b. (a, b) kind -> (float -> a) = function
   | _         -> failwith "_owl_gaussian: unsupported operation"
 
 
-(* call functions in eigen *)
-
-let _eigen_swap_rows : type a b . (a, b) kind -> (a, b) eigen_mat_op01 = function
-  | Float32   -> Eigen.Dense.S.swap_rows
-  | Float64   -> Eigen.Dense.D.swap_rows
-  | Complex32 -> Eigen.Dense.C.swap_rows
-  | Complex64 -> Eigen.Dense.Z.swap_rows
-  | _         -> failwith "_eigen_swap_rows: unsupported operation"
-
-let _eigen_swap_cols : type a b . (a, b) kind -> (a, b) eigen_mat_op01 = function
-  | Float32   -> Eigen.Dense.S.swap_cols
-  | Float64   -> Eigen.Dense.D.swap_cols
-  | Complex32 -> Eigen.Dense.C.swap_cols
-  | Complex64 -> Eigen.Dense.Z.swap_cols
-  | _         -> failwith "_eigen_swap_cols: unsupported operation"
-
-let _eigen_inv : type a b . (a, b) kind -> (a, b) eigen_mat_op00 = function
-  | Float32   -> Eigen.Dense.S.inv
-  | Float64   -> Eigen.Dense.D.inv
-  | Complex32 -> Eigen.Dense.C.inv
-  | Complex64 -> Eigen.Dense.Z.inv
-  | _         -> failwith "_eigen_inv: unsupported operation"
-
-
 (* call functions in owl native c *)
 
 let _owl_spatial_conv : type a b . (a, b) kind -> (a, b) eigen_arr_op00 = function

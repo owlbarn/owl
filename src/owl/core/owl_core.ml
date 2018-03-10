@@ -7,6 +7,36 @@ open Bigarray
 open Owl_dense_common_types
 
 
+external owl_float32_matrix_swap_rows : ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "stub_float32_matrix_swap_rows"
+external owl_float64_matrix_swap_rows : ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "stub_float64_matrix_swap_rows"
+external owl_complex32_matrix_swap_rows : ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "stub_complex32_matrix_swap_rows"
+external owl_complex64_matrix_swap_rows : ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "stub_complex64_matrix_swap_rows"
+
+let _matrix_swap_rows
+  : type a b. (a, b) kind -> (a, b) owl_arr -> int -> int -> int -> int -> unit
+  = function
+  | Float32   -> owl_float32_matrix_swap_rows
+  | Float64   -> owl_float64_matrix_swap_rows
+  | Complex32 -> owl_complex32_matrix_swap_rows
+  | Complex64 -> owl_complex64_matrix_swap_rows
+  | _         -> failwith "_matrix_swap_rows: unsupported operation"
+
+
+external owl_float32_matrix_swap_cols : ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "stub_float32_matrix_swap_cols"
+external owl_float64_matrix_swap_cols : ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "stub_float64_matrix_swap_cols"
+external owl_complex32_matrix_swap_cols : ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "stub_complex32_matrix_swap_cols"
+external owl_complex64_matrix_swap_cols : ('a, 'b) owl_arr -> int -> int -> int -> int -> unit = "stub_complex64_matrix_swap_cols"
+
+let _matrix_swap_cols
+  : type a b. (a, b) kind -> (a, b) owl_arr -> int -> int -> int -> int -> unit
+  = function
+  | Float32   -> owl_float32_matrix_swap_cols
+  | Float64   -> owl_float64_matrix_swap_cols
+  | Complex32 -> owl_complex32_matrix_swap_cols
+  | Complex64 -> owl_complex64_matrix_swap_cols
+  | _         -> failwith "_matrix_swap_cols: unsupported operation"
+
+
 external owl_float32_matrix_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "stub_float32_matrix_transpose"
 external owl_float64_matrix_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "stub_float64_matrix_transpose"
 external owl_complex32_matrix_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> unit = "stub_complex32_matrix_transpose"

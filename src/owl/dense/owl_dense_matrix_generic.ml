@@ -270,15 +270,14 @@ let get x i j = Owl_dense_ndarray_generic.get x [|i;j|]
 let set x i j a = Owl_dense_ndarray_generic.set x [|i;j|] a
 
 
-(* TODO: optimise *)
 let swap_rows x i i' =
-  let _x = Bigarray.array2_of_genarray x in
-  _eigen_swap_rows (kind x) _x i i'
+  let m, n = shape x in
+  Owl_core._matrix_swap_rows (kind x) x m n i i'
 
 
 let swap_cols x j j' =
-  let _x = Bigarray.array2_of_genarray x in
-  _eigen_swap_cols (kind x) _x j j'
+  let m, n = shape x in
+  Owl_core._matrix_swap_cols (kind x) x m n j j'
 
 
 let transpose x =

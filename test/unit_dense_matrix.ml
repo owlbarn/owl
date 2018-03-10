@@ -175,6 +175,18 @@ module To_test = struct
     let y = M.load Float64 "ds_mat.tmp" in
     M.equal x2 y
 
+  let swap_rows () =
+    let x = M.of_array Float64 [|1.;2.;3.;4.;5.;6.|] 3 2 in
+    let y = M.of_array Float64 [|5.;6.;3.;4.;1.;2.|] 3 2 in
+    M.swap_rows x 0 2;
+    M.equal x y
+
+  let swap_cols () =
+    let x = M.of_array Float64 [|1.;2.;3.;4.;5.;6.|] 2 3 in
+    let y = M.of_array Float64 [|3.;2.;1.;6.;5.;4.|] 2 3 in
+    M.swap_cols x 0 2;
+    M.equal x y
+
   let transpose () =
     let x = M.of_array Float64 [|1.;2.;3.;4.|] 2 2 in
     let y = M.of_array Float64 [|1.;3.;2.;4.|] 2 2 in
@@ -348,6 +360,12 @@ let sum_cols () =
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
 
+let swap_rows () =
+  Alcotest.(check bool) "swap_rows" true (To_test.swap_rows ())
+
+let swap_cols () =
+  Alcotest.(check bool) "swap_cols" true (To_test.swap_cols ())
+
 let transpose () =
   Alcotest.(check bool) "transpose" true (To_test.transpose ())
 
@@ -409,6 +427,8 @@ let test_set = [
   "sum_rows", `Slow, sum_rows;
   "sum_cols", `Slow, sum_cols;
   "save_load", `Slow, save_load;
+  "swap_rows", `Slow, swap_rows;
+  "swap_cols", `Slow, swap_cols;
   "transpose", `Slow, transpose;
   "ctranspose", `Slow, ctranspose;
   "concat_01", `Slow, concat_01;
