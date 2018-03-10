@@ -368,7 +368,7 @@ Parameters:
   * ``a`` : real cofficient matrix A.
   * ``b`` : real cofficient matrix B.
   * ``q`` : real cofficient matrix Q.
-  * ``r`` : real cofficient matrix R. R must be non-sigular.
+  * ``r`` : real cofficient matrix R. R must be non-singular.
 
 Returns:
   * ``x`` : a symmetric solution matrix X.
@@ -376,7 +376,20 @@ Returns:
 
 val dare : (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (**
-TODO
+``dare a b q r`` solves the discrete-time algebraic Riccati equation system
+in the following form.
+
+.. math::
+  A^T X A - X - (A^T X B) (B^T X B + R)^{-1} (B^T X A) + Q = 0
+
+Parameters:
+  * ``a`` : real cofficient matrix A. A must be non-singular.
+  * ``b`` : real cofficient matrix B.
+  * ``q`` : real cofficient matrix Q.
+  * ``r`` : real cofficient matrix R. R must be non-singular.
+
+Returns:
+  * ``x`` : a symmetric solution matrix X.
  *)
 
 

@@ -673,7 +673,7 @@ let care a b q r =
   let m, n = M.shape u in
   let u0 = M.get_slice [[0; m / 2 - 1]; [0; n / 2 - 1]] u in
   let u1 = M.get_slice [[m / 2; m - 1]; [0; n / 2 - 1]] u in
-  M.(u1 *@ (inv u0))
+  M.((inv u0) *@ u1)
 
 
 let dare a b q r =
