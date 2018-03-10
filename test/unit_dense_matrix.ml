@@ -193,6 +193,28 @@ module To_test = struct
     let z = M.ctranspose x in
     M.equal y z
 
+  let concat_01 () =
+    let a = M.of_arrays Float64 [| [|0.|] |] in
+    let b = M.of_arrays Float64 [| [|1.|] |] in
+    let x = M.of_arrays Float64 [| [|0.;1.|] |] in
+    let y = M.concat_horizontal a b in
+    M.(x = y)
+
+  let concat_02 () =
+    let a = M.of_arrays Float64 [| [|0.|] |] in
+    let b = M.of_arrays Float64 [| [|1.|] |] in
+    let x = M.of_arrays Float64 [| [|0.|]; [|1.|] |] in
+    let y = M.concat_vertical a b in
+    M.(x = y)
+
+  let concat_03 () =
+    let a = M.of_arrays Float64 [| [|0.|] |] in
+    let b = M.of_arrays Float64 [| [|1.|] |] in
+    let c = M.of_arrays Float64 [| [|2.;3.|] |] in
+    let x = M.of_arrays Float64 [| [|0.;1.|]; [|2.;3.|] |] in
+    let y = M.concat_vh [| [|a; b|]; [|c|] |] in
+    M.(x = y)
+
 end
 
 (* the tests *)
@@ -341,6 +363,15 @@ let transpose () =
 let ctranspose () =
   Alcotest.(check bool) "ctranspose" true (To_test.ctranspose ())
 
+let concat_01 () =
+  Alcotest.(check bool) "concat_01" true (To_test.concat_01 ())
+
+let concat_02 () =
+  Alcotest.(check bool) "concat_02" true (To_test.concat_02 ())
+
+let concat_03 () =
+  Alcotest.(check bool) "concat_03" true (To_test.concat_03 ())
+
 let test_set = [
   "sequential", `Slow, sequential;
   "row_num", `Slow, row_num;
@@ -390,4 +421,7 @@ let test_set = [
   "save_load", `Slow, save_load;
   "transpose", `Slow, transpose;
   "ctranspose", `Slow, ctranspose;
+  "concat_01", `Slow, concat_01;
+  "concat_02", `Slow, concat_02;
+  "concat_03", `Slow, concat_03;
 ]
