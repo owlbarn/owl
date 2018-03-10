@@ -663,7 +663,8 @@ let lyapunov a c =
 
 let care a b q r =
   let g = M.(b *@ (inv r) *@ (transpose b)) in
-  let z = M.((a @|| (neg g)) @= ((neg q) @|| (transpose a |> neg))) in
+  let z = M.(concat_vh [| [| a    ; neg g             |];
+                          [| neg q; neg (transpose a) |] |]) in
 
   let t, u, wr, _ = Owl_lapacke.gees ~jobvs:'V' ~a:z in
   let select = M.(zeros Int32 (row_num wr) (col_num wr)) in
@@ -671,9 +672,9 @@ let care a b q r =
   ignore (Owl_lapacke.trsen ~job:'V' ~compq:'N' ~select ~t ~q:u);
 
   let m, n = M.shape u in
-  let u0 = M.get_slice [[0; m / 2 - 1]; [0; n / 2 - 1]] u in
-  let u1 = M.get_slice [[m / 2; m - 1]; [0; n / 2 - 1]] u in
-  M.((inv u0) *@ u1)
+  let u0 = M.get_slice [ [0; m / 2 - 1]; [0; n / 2 - 1] ] u in
+  let u1 = M.get_slice [ [m / 2; m - 1]; [0; n / 2 - 1] ] u in
+  M.(u1 *@ (inv u0))
 
 
 let dare a b q r =
@@ -684,16 +685,14 @@ let dare a b q r =
 
   let t, u, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:z in
   let select = M.(zeros Int32 (row_num wr) (col_num wr)) in
-  M.iteri_2d (fun i j re ->
-    let im = M.get wi i j in
-    let x = Complex.(norm {re; im}) in
-    if x <= 1. then M.set select i j 1l
-  ) wr;
+  M.iter2i_2d (fun i j re im ->
+    if Complex.(norm {re; im}) <= 1. then M.set select i j 1l
+  ) wr wi;
   ignore (Owl_lapacke.trsen ~job:'V' ~compq:'N' ~select ~t ~q:u);
 
   let m, n = M.shape u in
-  let u0 = M.get_slice [[0; m / 2 - 1]; [0; n / 2 - 1]] u in
-  let u1 = M.get_slice [[m / 2; m - 1]; [0; n / 2 - 1]] u in
+  let u0 = M.get_slice [ [0; m / 2 - 1]; [0; n / 2 - 1] ] u in
+  let u1 = M.get_slice [ [m / 2; m - 1]; [0; n / 2 - 1] ] u in
   M.(u1 *@ (inv u0))
 
 

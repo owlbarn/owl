@@ -371,7 +371,7 @@ Parameters:
   * ``r`` : real cofficient matrix R. R must be non-singular.
 
 Returns:
-  * ``x`` : a symmetric solution matrix X.
+  * ``x`` : a solution matrix X.
  *)
 
 val dare : (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t
