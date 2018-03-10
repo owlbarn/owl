@@ -254,6 +254,9 @@ let concat_vertical x1 x2 = concatenate ~axis:0 [|x1;x2|]
 let concat_horizontal x1 x2 = concatenate ~axis:(num_dims x1 - 1) [|x1;x2|]
 
 
+let concat_vh xs = Array.map (concatenate ~axis:1) xs |> concatenate ~axis:0
+
+
 let squeeze ?(axis=[||]) x =
   let a = match Array.length axis with
     | 0 -> Array.init (num_dims x) (fun i -> i)

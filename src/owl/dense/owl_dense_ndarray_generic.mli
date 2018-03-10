@@ -424,6 +424,35 @@ highest dimension.
 The associated operator is ``@=``, please refer to :doc:`owl_operator`.
  *)
 
+val concat_vh : ('a, 'b) t array array -> ('a, 'b) t
+(**
+``concat_vh`` is used to assemble small parts of matrices into a bigger one.
+E.g. In ``[| [|a; b; c|]; [|d; e; f|]; [|g; h; i|] |]``, wherein `a, b, c ... i`
+are matrices of different shapes. They will be concatenated into a big matrix
+as follows.
+
+.. math::
+  \begin{bmatrix}
+    a & b & c \\
+    d & e & f \\
+    g & h & i
+  \end{bmatrix}
+
+This is achieved by first concatenating along ``axis:1`` for each element in the
+array, then concatenating along ``axis:0``. The number of elements in each
+array needs not to be equal as long as the aggregated dimensions match. E.g.,
+please check the following example.
+
+.. code-block:: ocaml
+
+  let a00 = Mat.sequential 2 3 in
+  let a01 = Mat.sequential 2 2 in
+  let a02 = Mat.sequential 2 1 in
+  let a10 = Mat.sequential 3 3 in
+  let a11 = Mat.sequential 3 3 in
+  Mat.concat_vh [| [|a00; a01; a02|]; [|a10; a11|] |];;
+ *)
+
 val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 (**
 ``concatenate ~axis:2 x`` concatenates an array of ndarrays along the third

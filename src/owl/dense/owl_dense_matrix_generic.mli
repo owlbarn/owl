@@ -471,6 +471,15 @@ therefore their row numbers must be the same.
 The associated operator is ``@||``, please refer to :doc:`owl_operator`.
  *)
 
+val concat_vh : ('a, 'b) t array array -> ('a, 'b) t
+(**
+``concat_vh`` is used to assemble small parts of matrices into a bigger one.
+E.g. ``[| [|a; b; c|]; [|d; e; f|]; [|g; h; i|] |]`` will be concatenated into
+a big matrix as follows.
+
+Please refer to :doc:`owl_dense_ndarray_generic`. for details.
+ *)
+
 val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 (**
 ``concatenate ~axis:1 x`` concatenates an array of matrices along the second
