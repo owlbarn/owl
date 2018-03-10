@@ -173,77 +173,77 @@ let _owl_gaussian_fun : type a b. (a, b) kind -> (float -> a) = function
 
 (* call functions in owl native c *)
 
-let _owl_spatial_conv : type a b . (a, b) kind -> (a, b) eigen_arr_op00 = function
+let _owl_spatial_conv : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_spatial
   | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_spatial
   | _         -> failwith "_owl_spatial_conv: unsupported operation"
 
-let _owl_spatial_conv_backward_input : type a b . (a, b) kind -> (a, b) eigen_arr_op01 = function
+let _owl_spatial_conv_backward_input : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_spatial_backward_input
   | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_spatial_backward_input
   | _         -> failwith "_owl_spatial_conv_backward_input: unsupported operation"
 
-let _owl_spatial_conv_backward_kernel : type a b . (a, b) kind -> (a, b) eigen_arr_op01 = function
+let _owl_spatial_conv_backward_kernel : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_spatial_backward_kernel
   | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_spatial_backward_kernel
   | _         -> failwith "_owl_spatial_conv_backward_kernel: unsupported operation"
 
-let _owl_cuboid_conv : type a b . (a, b) kind -> (a, b) eigen_arr_op02 = function
+let _owl_cuboid_conv : type a b . (a, b) kind -> (a, b) owl_arr_op24 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_cuboid
   | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_cuboid
   | _         -> failwith "_owl_cuboid_conv: unsupported operation"
 
-let _owl_cuboid_conv_backward_input : type a b . (a, b) kind -> (a, b) eigen_arr_op03 = function
+let _owl_cuboid_conv_backward_input : type a b . (a, b) kind -> (a, b) owl_arr_op25 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_cuboid_backward_input
   | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_cuboid_backward_input
   | _         -> failwith "_owl_cuboid_conv_backward_input: unsupported operation"
 
-let _owl_cuboid_conv_backward_kernel : type a b . (a, b) kind -> (a, b) eigen_arr_op03 = function
+let _owl_cuboid_conv_backward_kernel : type a b . (a, b) kind -> (a, b) owl_arr_op25 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_cuboid_backward_kernel
   | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_cuboid_backward_kernel
   | _         -> failwith "_owl_cuboid_conv_backward_kernel: unsupported operation"
 
-let _owl_spatial_max_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op04 = function
+let _owl_spatial_max_pooling : type a b . (a, b) kind -> (a, b) owl_arr_op26 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_spatial
   | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_spatial
   | _         -> failwith "_owl_spatial_max_pooling: unsupported operation"
 
-let _owl_spatial_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op04 = function
+let _owl_spatial_avg_pooling : type a b . (a, b) kind -> (a, b) owl_arr_op26 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_avgpool_spatial
   | Float64   -> Owl_ndarray.owl_float64_ndarray_avgpool_spatial
   | _         -> failwith "_owl_spatial_avg_pooling: unsupported operation"
 
-let _owl_cuboid_max_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 = function
+let _owl_cuboid_max_pooling : type a b . (a, b) kind -> (a, b) owl_arr_op27 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_cuboid
   | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_cuboid
   | _         -> failwith "_owl_cuboid_max_pooling: unsupported operation"
 
-let _owl_cuboid_avg_pooling : type a b . (a, b) kind -> (a, b) eigen_arr_op05 = function
+let _owl_cuboid_avg_pooling : type a b . (a, b) kind -> (a, b) owl_arr_op27 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_avgpool_cuboid
   | Float64   -> Owl_ndarray.owl_float64_ndarray_avgpool_cuboid
   | _         -> failwith "_owl_cuboid_avg_pooling: unsupported operation"
 
-let _owl_spatial_max_pooling_argmax : type a b . (a, b) kind -> (a, b) eigen_arr_op06 = function
+let _owl_spatial_max_pooling_argmax : type a b . (a, b) kind -> (a, b) owl_arr_op28 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_argmax_spatial
   | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_argmax_spatial
   | _         -> failwith "_owl_spatial_max_pooling_argmax: unsupported operation"
 
-let _owl_spatial_max_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op07 = function
+let _owl_spatial_max_pooling_backward : type a b . (a, b) kind -> (a, b) owl_arr_op29 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_spatial_backward
   | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_spatial_backward
   | _         -> failwith "_owl_spatial_max_pooling_backward: unsupported operation"
 
-let _owl_spatial_avg_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op08 = function
+let _owl_spatial_avg_pooling_backward : type a b . (a, b) kind -> (a, b) owl_arr_op30 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_avgpool_spatial_backward
   | Float64   -> Owl_ndarray.owl_float64_ndarray_avgpool_spatial_backward
   | _         -> failwith "_owl_spatial_avg_pooling_backward: unsupported operation"
 
-let _owl_cuboid_max_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op09 = function
+let _owl_cuboid_max_pooling_backward : type a b . (a, b) kind -> (a, b) owl_arr_op31 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_maxpool_cuboid_backward
   | Float64   -> Owl_ndarray.owl_float64_ndarray_maxpool_cuboid_backward
   | _         -> failwith "_owl_cuboid_max_pooling_backward: unsupported operation"
 
-let _owl_cuboid_avg_pooling_backward : type a b . (a, b) kind -> (a, b) eigen_arr_op10 = function
+let _owl_cuboid_avg_pooling_backward : type a b . (a, b) kind -> (a, b) owl_arr_op32 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_avgpool_cuboid_backward
   | Float64   -> Owl_ndarray.owl_float64_ndarray_avgpool_cuboid_backward
   | _         -> failwith "_owl_cuboid_avg_pooling_backward: unsupported operation"
