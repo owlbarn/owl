@@ -444,8 +444,6 @@ val re : mat -> cast_mat
 
 val im : mat -> cast_mat
 
-val inv : mat -> mat
-
 val trace : mat -> elt
 
 val sum : ?axis:int -> mat -> mat
@@ -624,8 +622,6 @@ val pow : mat -> mat -> mat
 val scalar_pow : elt -> mat -> mat
 
 val pow_scalar : mat -> elt -> mat
-
-val mpow : mat -> float -> mat
 
 val cov : ?b:mat -> a:mat -> mat
 

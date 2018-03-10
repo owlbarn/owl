@@ -428,6 +428,16 @@ documentation for more details.
 
 (** {6 Matrix functions} *)
 
+val mpow : ('a, 'b) t -> float -> ('a, 'b) t
+(**
+``mpow x r`` returns the dot product of square matrix ``x`` with
+itself ``r`` times, and more generally raises the matrix to the
+``r``th power.  ``r`` is a float that must be equal to an integer;
+it can be be negative, zero, or positive. Non-integer exponents
+are not yet implemented. (If ``r`` is negative, ``mpow`` calls ``inv``,
+and warnings in documentation for ``inv`` apply.)
+ *)
+
 val expm : ('a, 'b) t -> ('a, 'b) t
 (**
 ``expm x`` computes the matrix exponential of ``x`` defined by

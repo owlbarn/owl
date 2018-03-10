@@ -7,9 +7,9 @@ open Bigarray
 
 type elt = Complex.t
 
-type mat = Owl_dense.Matrix.C.mat
+type mat = Owl_dense_matrix_c.mat
 
-type int32_mat = (int32, int32_elt) Owl_dense.Matrix.Generic.t
+type int32_mat = (int32, int32_elt) Owl_dense_matrix_generic.t
 
 
 (** {6 Basic functions} *)
@@ -98,6 +98,8 @@ val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> mat -> mat * int32_
 
 
 (** {6 Matrix functions} *)
+
+val mpow : mat -> float -> mat
 
 val expm : mat -> mat
 

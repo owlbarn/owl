@@ -3237,6 +3237,7 @@ let copy_col_to v x i =
   copy_area_to v r1 x r2
 
 
+(* NOTE: same implementaton code as that in Owl_linalg_generic *)
 let dot x1 x2 =
   let m, k = _matrix_shape x1 in
   let l, n = _matrix_shape x2 in
@@ -3257,14 +3258,6 @@ let dot x1 x2 =
   x3
 
 
-let inv x =
-  let m, n = _matrix_shape x in
-  assert (m = n && num_dims x = 2);
-  let x' = Bigarray.array2_of_genarray x in
-  Owl_dense_common._eigen_inv (kind x) x'
-  |> Bigarray.genarray_of_array2
-
-
 let eye k n =
   let x = zeros k [|n;n|] in
   let y = Bigarray.array2_of_genarray x in
@@ -3273,25 +3266,6 @@ let eye k n =
     Bigarray.Array2.unsafe_set y i i a
   done;
   x
-
-
-let mpow x r =
-  let frac_part, _ = Pervasives.modf r in
-  if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
-  let m, n = _matrix_shape x in assert (m = n);
-  (* integer matrix powers using floats: *)
-  let rec _mpow acc s =
-    if s = 1. then acc
-    else if mod_float s 2. = 0.  (* exponent is even? *)
-    then even_mpow acc s
-    else dot x (even_mpow acc (s -. 1.))
-  and even_mpow acc s =
-    let acc2 = _mpow acc (s /. 2.) in
-    dot acc2 acc2
-  in  (* r is equal to an integer: *)
-  if r = 0.0 then eye (kind x) n
-  else if r > 0.0 then _mpow x r
-  else _mpow (inv x) (-. r)
 
 
 let diag ?(k=0) x =

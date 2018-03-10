@@ -679,7 +679,7 @@ let care a b q r =
 
 let dare a b q r =
   let g = M.(b *@ (inv r) *@ (transpose b)) in
-  let c = M.(transpose (inv a)) in
+  let c = M.transpose (inv a) in
   let z = M.(concat_vh [| [| a + g *@ c *@ q; (neg g) *@ c |];
                           [| (neg c) *@ q   ; c            |] |]) in
 
@@ -715,6 +715,28 @@ let peakflops ?(n=2000) () =
 
 
 (* Matrix functions *)
+
+let dot x y = M.dot x y
+
+
+let mpow x r =
+  let frac_part, _ = Pervasives.modf r in
+  if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
+  let m, n = M.shape x in assert (m = n);
+  (* integer matrix powers using floats: *)
+  let rec _mpow acc s =
+    if s = 1. then acc
+    else if mod_float s 2. = 0.  (* exponent is even? *)
+    then even_mpow acc s
+    else M.dot x (even_mpow acc (s -. 1.))
+  and even_mpow acc s =
+    let acc2 = _mpow acc (s /. 2.) in
+    M.dot acc2 acc2
+  in  (* r is equal to an integer: *)
+  if r = 0.0 then M.(eye (kind x)) n
+  else if r > 0.0 then _mpow x r
+  else _mpow (inv x) (-. r)
+
 
 (* DEBUG: initial expm implemented with eig, obsoleted *)
 let expm_eig

@@ -739,8 +739,6 @@ val col_num : arr -> int
 
 val dot : arr -> arr -> arr
 
-val inv : arr -> arr
-
 val trace : arr -> elt
 
 val to_rows : arr -> arr array

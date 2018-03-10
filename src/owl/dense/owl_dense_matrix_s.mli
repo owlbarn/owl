@@ -419,8 +419,6 @@ val max_i : mat -> elt * int array
 
 val minmax_i : mat -> (elt * int array) * (elt * int array)
 
-val inv : mat -> mat
-
 val trace : mat -> elt
 
 val sum : ?axis:int -> mat -> mat
@@ -623,8 +621,6 @@ val pow : mat -> mat -> mat
 val scalar_pow : elt -> mat -> mat
 
 val pow_scalar : mat -> elt -> mat
-
-val mpow : mat -> float -> mat
 
 val atan2 : mat -> mat -> mat
 
