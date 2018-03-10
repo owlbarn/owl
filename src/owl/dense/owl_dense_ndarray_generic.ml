@@ -1049,6 +1049,16 @@ let iteri_nd f x = iteri (fun i a -> f (Owl_utils.ind x i) a) x
 let mapi_nd f x = mapi (fun i a -> f (Owl_utils.ind x i) a) x
 
 
+let iter2i_nd f x y =
+  assert (same_shape x y);
+  iter2i (fun i a b -> f (Owl_utils.ind x i) a b) x y
+
+
+let map2i_nd f x y =
+  assert (same_shape x y);
+  map2i (fun i a b -> f (Owl_utils.ind x i) a b) x y
+
+
 let _check_transpose_axis axis d =
   let info = "check_transpose_axis fails" in
   if Array.length axis <> d then

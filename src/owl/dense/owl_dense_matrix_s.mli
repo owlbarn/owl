@@ -211,6 +211,10 @@ val scani_2d : ?axis:int -> (int -> int -> elt -> elt -> elt) -> mat -> mat
 
 val filteri_2d : (int -> int -> elt -> bool) -> mat -> (int * int) array
 
+val iter2i_2d :(int -> int -> elt -> elt -> unit) -> mat -> mat -> unit
+
+val map2i_2d : (int -> int -> elt -> elt -> elt) -> mat -> mat -> mat
+
 val iter2i : (int -> elt -> elt -> unit) -> mat -> mat -> unit
 
 val iter2 : (elt -> elt -> unit) -> mat -> mat -> unit

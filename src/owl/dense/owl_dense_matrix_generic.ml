@@ -473,6 +473,36 @@ let scani_2d ?axis f x =
   ) x
 
 
+let iter2i_2d f x y =
+  assert (same_shape x y);
+  let m, n = shape x in
+  let x = array2_of_genarray x in
+  let y = array2_of_genarray y in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      let a = Array2.unsafe_get x i j in
+      let b = Array2.unsafe_get y i j in
+      f i j a b
+    done
+  done
+
+
+let map2i_2d f x y =
+  assert (same_shape x y);
+  let m, n = shape x in
+  let z = copy x in
+  let x = array2_of_genarray z in
+  let y = array2_of_genarray y in
+  for i = 0 to m - 1 do
+    for j = 0 to n - 1 do
+      let a = Array2.unsafe_get x i j in
+      let b = Array2.unsafe_get y i j in
+      Array2.unsafe_set x i j (f i j a b)
+    done
+  done;
+  z
+
+
 let sum_cols x = sum ~axis:1 x
 
 

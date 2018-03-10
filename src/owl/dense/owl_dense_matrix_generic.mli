@@ -646,6 +646,12 @@ val scani_2d : ?axis:int -> (int -> int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a,
 val filteri_2d : (int -> int -> 'a -> bool) -> ('a, 'b) t -> (int * int) array
 (** Similar to `filteri` but 2d indices ``(i,j)`` are returned. *)
 
+val iter2i_2d : (int -> int -> 'a -> 'c -> unit) -> ('a, 'b) t -> ('c, 'd) t -> unit
+(** Similar to `iter2i` but 2d indices ``(i,j)`` are passed to the user function. *)
+
+val map2i_2d : (int -> int -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to `map2i` but 2d indices ``(i,j)`` are passed to the user function. *)
+
 val iter2i : (int -> 'a -> 'b -> unit) -> ('a, 'c) t -> ('b, 'd) t -> unit
 (**
 Similar to ``iteri`` but applies to two matrices ``x`` and ``y``. Both ``x``

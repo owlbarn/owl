@@ -186,7 +186,7 @@ val size_in_bytes : ('a, 'b) t -> int
 ``size_in_bytes x`` returns the size of ``x`` in bytes in memory.
  *)
 
-val same_shape : ('a, 'b) t -> ('a, 'b) t -> bool
+val same_shape : ('a, 'b) t -> ('c, 'd) t -> bool
 (**
 ``same_shape x y`` checks whether ``x`` and ``y`` has the same shape or not.
 *)
@@ -621,6 +621,12 @@ val scani_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 
 
 val filteri_nd : (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
 (** Similar to `filteri` but n-d indices are returned. *)
+
+val iter2i_nd :(int array -> 'a -> 'c -> unit) -> ('a, 'b) t -> ('c, 'd) t -> unit
+(** Similar to `iter2i` but n-d indices are passed to the user function. *)
+
+val map2i_nd : (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to `map2i` but n-d indices are passed to the user function. *)
 
 
 (** {6 Examination & Comparison}  *)
