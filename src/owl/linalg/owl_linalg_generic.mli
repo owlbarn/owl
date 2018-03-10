@@ -244,7 +244,7 @@ val schur_tz : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** ``schur_tz x`` is similar to ``schur`` but only returns ``(t, z)``. *)
 
 val ordschur : select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
-(** TODO *)
+(** Reorder eigenvalues in Schur factorization. *)
 
 val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
@@ -357,7 +357,22 @@ Returns:
  *)
 
 val care : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** TODO *)
+(**
+``care a b q r`` solves the continuous-time algebraic Riccati equation system
+in the following form.
+
+.. math::
+A^T X + X A − X B R^{-1} B^T X + Q = 0
+
+Parameters:
+  * ``a`` : real cofficient matrix A.
+  * ``b`` : real cofficient matrix B.
+  * ``q`` : real cofficient matrix Q.
+  * ``r`` : real cofficient matrix R. R is non-sigular.
+
+Returns:
+  * ``x`` : a symmetric solution matrix X.
+ *)
 
 
 (** {6 Low-level factorisation functions} *)
