@@ -356,7 +356,7 @@ Returns:
   * ``x`` : ``m x n`` matrix X.
  *)
 
-val care : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+val care : (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (**
 ``care a b q r`` solves the continuous-time algebraic Riccati equation system
 in the following form.
@@ -368,10 +368,15 @@ Parameters:
   * ``a`` : real cofficient matrix A.
   * ``b`` : real cofficient matrix B.
   * ``q`` : real cofficient matrix Q.
-  * ``r`` : real cofficient matrix R. R is non-sigular.
+  * ``r`` : real cofficient matrix R. R must be non-sigular.
 
 Returns:
   * ``x`` : a symmetric solution matrix X.
+ *)
+
+val dare : (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+(**
+TODO
  *)
 
 
