@@ -359,7 +359,7 @@ Returns:
 val care : (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (**
 ``care a b q r`` solves the continuous-time algebraic Riccati equation system
-in the following form.
+in the following form. The algorithm is based on :cite:`laub1979schur`.
 
 .. math::
   A^T X + X A − X B R^{-1} B^T X + Q = 0
@@ -377,7 +377,7 @@ Returns:
 val dare : (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t
 (**
 ``dare a b q r`` solves the discrete-time algebraic Riccati equation system
-in the following form.
+in the following form. The algorithm is based on :cite:`laub1979schur`.
 
 .. math::
   A^T X A - X - (A^T X B) (B^T X B + R)^{-1} (B^T X A) + Q = 0
