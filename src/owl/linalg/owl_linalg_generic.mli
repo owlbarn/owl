@@ -362,7 +362,7 @@ val care : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 in the following form.
 
 .. math::
-A^T X + X A − X B R^{-1} B^T X + Q = 0
+  A^T X + X A − X B R^{-1} B^T X + Q = 0
 
 Parameters:
   * ``a`` : real cofficient matrix A.
