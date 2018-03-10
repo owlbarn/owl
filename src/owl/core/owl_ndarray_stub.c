@@ -4,8 +4,8 @@
  */
 
 #include "owl_core.h"
+#include "cblas.h"
 #include <string.h>
-#include <cblas.h>
 
 
 //////////////////// function templates starts ////////////////////
