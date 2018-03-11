@@ -257,10 +257,10 @@ factorization ``schur x -> (t, z)`` such that
   X = P R P^H
 *)
 
-val qz : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
+val qz : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
 (**
-``qz x -> (s, t, q, z)`` calculates generalised Schur factorisation of ``x`` in
-the following form. It is also known as QZ decomposition.
+``qz x -> (s, t, q, z, e)`` calculates generalised Schur factorisation of ``x``
+in the following form. It is also known as QZ decomposition.
 
 .. math::
   X = Q S Z^H

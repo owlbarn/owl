@@ -20,3 +20,5 @@ let schur = schur ~otyp:complex64
 let eig = eig ~otyp:complex64
 
 let eigvals = eigvals ~otyp:complex64
+
+let qz = qz ~otyp:complex64

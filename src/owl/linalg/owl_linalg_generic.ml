@@ -277,19 +277,26 @@ let chol ?(upper=true) x =
   | false -> Owl_lapacke.potrf 'L' x |> M.tril
 
 
+(* Schur Decomposition *)
+
+let _magic_complex
+  : type a b c d. (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
+  = fun otyp re im ->
+  let ityp = M.kind re in
+  match ityp, otyp with
+  | Float32, Complex32   -> M.complex float32 complex32 re im
+  | Float64, Complex64   -> M.complex float64 complex64 re im
+  | Complex32, Complex32 -> re
+  | Complex64, Complex64 -> re
+  | _                    -> failwith "owl_linalg_generic:_magic_complex"
+
+
 let schur
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x ->
   let x = M.copy x in
   let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
-
-  let w = match (M.kind x) with
-    | Float32   -> M.complex float32 complex32 wr wi |> Obj.magic
-    | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
-    | Complex32 -> Obj.magic wr
-    | Complex64 -> Obj.magic wr
-    | _         -> failwith "owl_linalg_generic:schur"
-  in
+  let w = _magic_complex otyp wr wi in
   t, z, w
 
 
@@ -307,11 +314,17 @@ let ordschur ~select t z =
   ts, zs
 
 
-let qz x y =
+let qz
+  : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (c, d) t
+  = fun ~otyp x y ->
   let a = M.copy x in
   let b = M.copy y in
-  let s, t, _, _, _, q, z = Owl_lapacke.gges ~jobvsl:'V' ~jobvsr:'V' ~a ~b in
-  s, t, q, z
+  let s, t, ar, ai, bt, q, z = Owl_lapacke.gges ~jobvsl:'V' ~jobvsr:'V' ~a ~b in
+  let alpha = _magic_complex otyp ar ai in
+  let beta = M.cast otyp bt in
+  let e = M.(alpha / beta) in
+  s, t, q, z, e
+
 
 
 
