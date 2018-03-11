@@ -65,6 +65,10 @@ val gsvdvals : mat -> mat -> mat
 
 val schur : mat -> mat * mat * mat
 
+val schur_tz : mat -> mat * mat
+
+val ordschur : select:int32_mat -> mat -> mat -> mat * mat
+
 val hess : mat -> mat * mat
 
 

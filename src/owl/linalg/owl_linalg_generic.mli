@@ -229,22 +229,44 @@ values of the generalised singular value decomposition of ``x`` and ``y``.
 
 val schur : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
 (**
-``schur x -> (t, z, w)`` calculates Schur factorisation of ``x``. ``t`` is
-(quasi) triangular Schur factor, ``z`` is orthogonal/unitary Schur vectors. The
-eigen values are not sorted, they have the same order as that they appear on
-the diagonal of the output of Schur form ``t``.
+``schur x -> (t, z, w)`` calculates Schur factorisation of ``x`` in the
+following form.
 
-``w`` contains the eigen values. ``otyp`` is used to specify the type of ``w``. It
-needs to be consistent with input type. E.g., if the input ``x`` is ``float32``
-then ``otyp`` must be ``complex32``. However, if you use S, D, C, Z module, then
-you do not need to worry about ``otyp``.
+.. math::
+  X = Z T Z^H
+
+``t`` is (quasi) triangular Schur factor, ``z`` is orthogonal/unitary Schur
+vectors. The eigen values are not sorted, they have the same order as that they
+appear on the diagonal of the output of Schur form ``t``.
+
+``w`` contains the eigen values of ``x``. ``otyp`` is used to specify the type
+of ``w``. It needs to be consistent with input type. E.g., if the input ``x`` is
+``float32`` then ``otyp`` must be ``complex32``. However, if you use S, D, C, Z
+module, then you do not need to worry about ``otyp``.
  *)
 
 val schur_tz : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** ``schur_tz x`` is similar to ``schur`` but only returns ``(t, z)``. *)
 
 val ordschur : select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
-(** Reorder eigenvalues in Schur factorization. *)
+(**
+`ordschur ~select t z -> (p, r)` reorders ``t`` and ``z`` in Schur
+factorization ``schur x -> (t, z)`` such that
+
+.. math::
+  X = P R P^H
+*)
+
+val qz : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
+(**
+``qz x -> (s, t, q, z)`` calculates generalised Schur factorisation of ``x`` in
+the following form. It is also known as QZ decomposition.
+
+.. math::
+  X = Q S Z^H
+  Y = Z T Z^H
+
+ *)
 
 val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**

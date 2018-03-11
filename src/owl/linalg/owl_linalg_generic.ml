@@ -294,8 +294,8 @@ let schur
 
 
 let schur_tz x =
-  let x = M.copy x in
-  let t, z, _, _ = Owl_lapacke.gees ~jobvs:'V' ~a:x in
+  let a = M.copy x in
+  let t, z, _, _ = Owl_lapacke.gees ~jobvs:'V' ~a in
   t, z
 
 
@@ -303,8 +303,16 @@ let ordschur ~select t z =
   let t = M.copy t in
   let q = M.copy z in
   M.iter (fun a -> assert (a = 0l || a = 1l)) select;
-  let ts, zs, _, _ = Owl_lapacke.trsen ~job:'V' ~compq:'N' ~select ~t ~q in
+  let ts, zs, _, _ = Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q in
   ts, zs
+
+
+let qz x y =
+  let a = M.copy x in
+  let b = M.copy y in
+  let s, t, _, _, _, q, z = Owl_lapacke.gges ~jobvsl:'V' ~jobvsr:'V' ~a ~b in
+  s, t, q, z
+
 
 
 (* Eigenvalue problem *)
@@ -667,9 +675,9 @@ let care a b q r =
                           [| neg q; neg (transpose a) |] |]) in
 
   let t, u, wr, _ = Owl_lapacke.gees ~jobvs:'V' ~a:z in
-  let select = M.(zeros Int32 (row_num wr) (col_num wr)) in
+  let select = M.(zeros int32 (row_num wr) (col_num wr)) in
   M.iteri_2d (fun i j re -> if re < 0. then M.set select i j 1l) wr;
-  ignore (Owl_lapacke.trsen ~job:'V' ~compq:'N' ~select ~t ~q:u);
+  ignore (Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q:u);
 
   let m, n = M.shape u in
   let u0 = M.get_slice [ [0; m / 2 - 1]; [0; n / 2 - 1] ] u in
@@ -684,11 +692,11 @@ let dare a b q r =
                           [| (neg c) *@ q   ; c            |] |]) in
 
   let t, u, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:z in
-  let select = M.(zeros Int32 (row_num wr) (col_num wr)) in
+  let select = M.(zeros int32 (row_num wr) (col_num wr)) in
   M.iter2i_2d (fun i j re im ->
     if Complex.(norm {re; im}) <= 1. then M.set select i j 1l
   ) wr wi;
-  ignore (Owl_lapacke.trsen ~job:'V' ~compq:'N' ~select ~t ~q:u);
+  ignore (Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q:u);
 
   let m, n = M.shape u in
   let u0 = M.get_slice [ [0; m / 2 - 1]; [0; n / 2 - 1] ] u in
