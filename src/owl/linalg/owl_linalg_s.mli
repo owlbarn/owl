@@ -7,11 +7,11 @@ open Bigarray
 
 type elt = float
 
-type mat = Owl_dense.Matrix.S.mat
+type mat = Owl_dense_matrix_s.mat
 
-type complex_mat = Owl_dense.Matrix.C.mat
+type complex_mat = Owl_dense_matrix_c.mat
 
-type int32_mat = (int32, int32_elt) Owl_dense.Matrix.Generic.t
+type int32_mat = (int32, int32_elt) Owl_dense_matrix_generic.t
 
 
 (** {6 Basic functions} *)
@@ -65,6 +65,10 @@ val gsvdvals : mat -> mat -> mat
 
 val schur : mat -> mat * mat * complex_mat
 
+val schur_tz : mat -> mat * mat
+
+val ordschur : select:int32_mat -> mat -> mat -> mat * mat
+
 val hess : mat -> mat * mat
 
 
@@ -83,6 +87,14 @@ val linsolve : ?trans:bool -> mat -> mat -> mat
 
 val linreg : mat -> mat -> elt * elt
 
+val sylvester : mat -> mat -> mat -> mat
+
+val lyapunov : mat -> mat -> mat
+
+val care : mat -> mat -> mat -> mat -> mat
+
+val dare : mat -> mat -> mat -> mat -> mat
+
 
 (** {6 Low-level factorisation functions} *)
 
@@ -94,6 +106,8 @@ val bkfact : ?upper:bool -> ?symmetric:bool -> ?rook:bool -> mat -> mat * int32_
 
 
 (** {6 Matrix functions} *)
+
+val mpow : mat -> float -> mat
 
 val expm : mat -> mat
 

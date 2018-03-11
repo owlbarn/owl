@@ -146,7 +146,6 @@ val is_posdef : ('a, 'b) t -> bool
 
 (** {6 Factorisation} *)
 
-
 val lu : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * (int32, int32_elt) t
 (**
 ``lu x -> (l, u, ipiv)`` calculates LU decomposition of ``x``. The pivoting is
@@ -230,15 +229,43 @@ values of the generalised singular value decomposition of ``x`` and ``y``.
 
 val schur : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
 (**
-``schur x -> (t, z, w)`` calculates Schur factorisation of ``x``. ``t`` is
-(quasi) triangular Schur factor, ``z`` is orthogonal/unitary Schur vectors. The
-eigen values are not sorted, they have the same order as that they appear on
-the diagonal of the output of Schur form ``t``.
+``schur x -> (t, z, w)`` calculates Schur factorisation of ``x`` in the
+following form.
 
-``w`` contains the eigen values. ``otyp`` is used to specify the type of ``w``. It
-needs to be consistent with input type. E.g., if the input ``x`` is ``float32``
-then ``otyp`` must be ``complex32``. However, if you use S, D, C, Z module, then
-you do not need to worry about ``otyp``.
+.. math::
+  X = Z T Z^H
+
+``t`` is (quasi) triangular Schur factor, ``z`` is orthogonal/unitary Schur
+vectors. The eigen values are not sorted, they have the same order as that they
+appear on the diagonal of the output of Schur form ``t``.
+
+``w`` contains the eigen values of ``x``. ``otyp`` is used to specify the type
+of ``w``. It needs to be consistent with input type. E.g., if the input ``x`` is
+``float32`` then ``otyp`` must be ``complex32``. However, if you use S, D, C, Z
+module, then you do not need to worry about ``otyp``.
+ *)
+
+val schur_tz : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(** ``schur_tz x`` is similar to ``schur`` but only returns ``(t, z)``. *)
+
+val ordschur : select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+(**
+`ordschur ~select t z -> (p, r)` reorders ``t`` and ``z`` in Schur
+factorization ``schur x -> (t, z)`` such that
+
+.. math::
+  X = P R P^H
+*)
+
+val qz : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
+(**
+``qz x -> (s, t, q, z)`` calculates generalised Schur factorisation of ``x`` in
+the following form. It is also known as QZ decomposition.
+
+.. math::
+  X = Q S Z^H
+  Y = Z T Z^H
+
  *)
 
 val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
@@ -246,11 +273,14 @@ val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 ``hess x -> (h, q)`` calculates the Hessenberg form of a given matrix ``x``.
 Both Hessenberg matrix ``h`` and unitary matrix ``q`` is returned, such that
 ``x = q *@ h *@ (transpose q)``.
+
+.. math::
+  X = Q H Q^T
+
  *)
 
 
 (** {6 Eigenvalues & eigenvectors} *)
-
 
 val eig : ?permute:bool -> ?scale:bool -> otyp:('a, 'b) kind -> ('c, 'd) t -> ('a, 'b) t * ('a, 'b) t
 (**
@@ -272,25 +302,34 @@ an arbitrary square matrix ``x``.
 
 (** {6 Linear system of equations} *)
 
-
 val null : ('a, 'b) t -> ('a, 'b) t
 (**
 ``null a -> x`` computes an orthonormal basis ``x`` for the null space of ``a``
 obtained from the singular value decomposition. Namely, ``a *@ x`` has
 negligible elements, ``M.col_num x`` is the nullity of ``a``, and
-``transpose x *@ x = I``.
+``transpose x *@ x = I``. Namely,
+
+.. math::
+  X^T X = I
+
  *)
 
 val linsolve : ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
-``linsolve a b -> x`` solves a linear system of equations ``a * x = b``. The
-function uses LU factorisation with partial pivoting when ``a`` is square and
-QR factorisation with column pivoting otherwise. The number of rows of ``a``
-must equal the number of rows of ``b``.
+``linsolve a b -> x`` solves a linear system of equations ``a * x = b`` in the
+following form. The function uses LU factorisation with partial pivoting when
+``a`` is square and QR factorisation with column pivoting otherwise. The number
+of rows of ``a`` must equal the number of rows of ``b``.
+
+.. math::
+  AX = B
 
 By default, ``trans = false`` indicates no transpose. If ``trans = true``, then
 function will solve ``A^T * x = b`` for real matrices; ``A^H * x = b`` for
 complex matrices.
+
+.. math::
+  A^H X = B
 
 The associated operator is ``/@``, so you can simply use ``a /@ b`` to solve
 the linear equation system to get ``x``. Please refer to :doc:`owl_operator`.
@@ -299,11 +338,84 @@ the linear equation system to get ``x``. Please refer to :doc:`owl_operator`.
 val linreg : ('a, 'b) t -> ('a, 'b) t -> 'a * 'a
 (**
 ``linreg x y -> (a, b)`` solves ``y = a + b*x`` using Ordinary Least Squares.
+
+.. math::
+  Y = A + BX
+
+ *)
+
+val sylvester : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``sylvester a b c`` solves a Sylvester equation in the following form. The
+function calls LAPACKE function ``trsyl`` solve the system.
+
+.. math::
+  AX + XB = C
+
+Parameters:
+  * ``a`` : ``m x m`` matrix A.
+  * ``b`` : ``n x n`` matrix B.
+  * ``c`` : ``m x n`` matrix C.
+
+Returns:
+  * ``x`` : ``m x n`` matrix X.
+ *)
+
+val lyapunov : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(**
+``lyapunov a q`` solves a continuous Lyapunov equation in the following form.
+The function calls LAPACKE function ``trsyl`` solve the system. In Matlab, the
+same function is called ``lyap``.
+
+.. math::
+  AX + XA^H = Q
+
+Parameters:
+  * ``a`` : ``m x m`` matrix A.
+  * ``q`` : ``n x n`` matrix Q.
+
+Returns:
+  * ``x`` : ``m x n`` matrix X.
+ *)
+
+val care : (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+(**
+``care a b q r`` solves the continuous-time algebraic Riccati equation system
+in the following form. The algorithm is based on :cite:`laub1979schur`.
+
+.. math::
+  A^T X + X A − X B R^{-1} B^T X + Q = 0
+
+Parameters:
+  * ``a`` : real cofficient matrix A.
+  * ``b`` : real cofficient matrix B.
+  * ``q`` : real cofficient matrix Q.
+  * ``r`` : real cofficient matrix R. R must be non-singular.
+
+Returns:
+  * ``x`` : a solution matrix X.
+ *)
+
+val dare : (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t -> (float, 'a) t
+(**
+``dare a b q r`` solves the discrete-time algebraic Riccati equation system
+in the following form. The algorithm is based on :cite:`laub1979schur`.
+
+.. math::
+  A^T X A - X - (A^T X B) (B^T X B + R)^{-1} (B^T X A) + Q = 0
+
+Parameters:
+  * ``a`` : real cofficient matrix A. A must be non-singular.
+  * ``b`` : real cofficient matrix B.
+  * ``q`` : real cofficient matrix Q.
+  * ``r`` : real cofficient matrix R. R must be non-singular.
+
+Returns:
+  * ``x`` : a symmetric solution matrix X.
  *)
 
 
 (** {6 Low-level factorisation functions} *)
-
 
 val lufact : ('a, 'b) t -> ('a, 'b) t * (int32, int32_elt) t
 (**
@@ -337,6 +449,16 @@ documentation for more details.
 
 
 (** {6 Matrix functions} *)
+
+val mpow : ('a, 'b) t -> float -> ('a, 'b) t
+(**
+``mpow x r`` returns the dot product of square matrix ``x`` with
+itself ``r`` times, and more generally raises the matrix to the
+``r``th power.  ``r`` is a float that must be equal to an integer;
+it can be be negative, zero, or positive. Non-integer exponents
+are not yet implemented. (If ``r`` is negative, ``mpow`` calls ``inv``,
+and warnings in documentation for ``inv`` apply.)
+ *)
 
 val expm : ('a, 'b) t -> ('a, 'b) t
 (**
@@ -397,7 +519,6 @@ val sinhcoshm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 
 
 (** {6 Helper functions} *)
-
 
 val peakflops : ?n:int -> unit -> float
 (**

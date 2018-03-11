@@ -182,6 +182,10 @@ val scani_nd : ?axis:int -> (int array -> elt -> elt -> elt) -> arr -> arr
 
 val filteri_nd : (int array -> elt -> bool) -> arr -> int array array
 
+val iter2i_nd :(int array -> elt -> elt -> unit) -> arr -> arr -> unit
+
+val map2i_nd : (int array -> elt -> elt -> elt) -> arr -> arr -> arr
+
 
 (** {6 Examine array elements or compare two arrays } *)
 
@@ -734,8 +738,6 @@ val row_num : arr -> int
 val col_num : arr -> int
 
 val dot : arr -> arr -> arr
-
-val inv : arr -> arr
 
 val trace : arr -> elt
 

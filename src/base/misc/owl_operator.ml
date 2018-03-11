@@ -160,8 +160,6 @@ module Make_Matrix (M : MatrixSig) = struct
 
   let ( *@ ) a b = M.dot a b
 
-  let ( **@ ) x a = M.mpow x a
-
 end
 
 
@@ -179,6 +177,8 @@ end
 module Make_Linalg (M : LinalgSig) = struct
 
   type ('a, 'b) op_t4 = ('a, 'b) M.t
+
+  let ( **@ ) x a = M.mpow x a
 
   let ( /@ ) a b = M.linsolve a b
 

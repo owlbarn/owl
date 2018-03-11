@@ -186,7 +186,7 @@ val size_in_bytes : ('a, 'b) t -> int
 ``size_in_bytes x`` returns the size of ``x`` in bytes in memory.
  *)
 
-val same_shape : ('a, 'b) t -> ('a, 'b) t -> bool
+val same_shape : ('a, 'b) t -> ('c, 'd) t -> bool
 (**
 ``same_shape x y`` checks whether ``x`` and ``y`` has the same shape or not.
 *)
@@ -424,6 +424,35 @@ highest dimension.
 The associated operator is ``@=``, please refer to :doc:`owl_operator`.
  *)
 
+val concat_vh : ('a, 'b) t array array -> ('a, 'b) t
+(**
+``concat_vh`` is used to assemble small parts of matrices into a bigger one.
+E.g. In ``[| [|a; b; c|]; [|d; e; f|]; [|g; h; i|] |]``, wherein `a, b, c ... i`
+are matrices of different shapes. They will be concatenated into a big matrix
+as follows.
+
+.. math::
+  \begin{bmatrix}
+    a & b & c \\
+    d & e & f \\
+    g & h & i
+  \end{bmatrix}
+
+This is achieved by first concatenating along ``axis:1`` for each element in the
+array, then concatenating along ``axis:0``. The number of elements in each
+array needs not to be equal as long as the aggregated dimensions match. E.g.,
+please check the following example.
+
+.. code-block:: ocaml
+
+  let a00 = Mat.sequential 2 3 in
+  let a01 = Mat.sequential 2 2 in
+  let a02 = Mat.sequential 2 1 in
+  let a10 = Mat.sequential 3 3 in
+  let a11 = Mat.sequential 3 3 in
+  Mat.concat_vh [| [|a00; a01; a02|]; [|a10; a11|] |];;
+ *)
+
 val concatenate : ?axis:int -> ('a, 'b) t array -> ('a, 'b) t
 (**
 ``concatenate ~axis:2 x`` concatenates an array of ndarrays along the third
@@ -592,6 +621,12 @@ val scani_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 
 
 val filteri_nd : (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
 (** Similar to `filteri` but n-d indices are returned. *)
+
+val iter2i_nd :(int array -> 'a -> 'c -> unit) -> ('a, 'b) t -> ('c, 'd) t -> unit
+(** Similar to `iter2i` but n-d indices are passed to the user function. *)
+
+val map2i_nd : (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
+(** Similar to `map2i` but n-d indices are passed to the user function. *)
 
 
 (** {6 Examination & Comparison}  *)
@@ -1271,7 +1306,7 @@ result in a new ndarray.
 
 val fix : ('a, 'b) t -> ('a, 'b) t
 (**
-``fix x``  rounds each element of ``x`` to the nearest integer toward zero.
+``fix x`` rounds each element of ``x`` to the nearest integer toward zero.
 For positive elements, the behavior is the same as ``floor``. For negative ones,
 the behavior is the same as ``ceil``.
  *)
@@ -1536,16 +1571,6 @@ in a ndarray ``x``.
 val pow_scalar : ('a, 'b) t -> 'a -> ('a, 'b) t
 (**
 ``pow_scalar x a`` computes each element in ``x`` power to ``a``.
- *)
-
-val mpow : ('a, 'b) t -> float -> ('a, 'b) t
-(**
-``mpow x r`` returns the dot product of square matrix ``x`` with
-itself ``r`` times, and more generally raises the matrix to the
-``r``th power.  ``r`` is a float that must be equal to an integer;
-it can be be negative, zero, or positive. Non-integer exponents
-are not yet implemented. (If ``r`` is negative, ``mpow`` calls ``inv``,
-and warnings in documentation for ``inv`` apply.)
  *)
 
 val atan2 : (float, 'a) t -> (float, 'a) t -> (float, 'a) t
@@ -2319,9 +2344,6 @@ val copy_col_to : ('a, 'b) t -> ('a, 'b) t -> int -> unit
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Refer to :doc:`owl_dense_matrix_generic` *)
-
-val inv : ('a, 'b) t -> ('a, 'b) t
 (** Refer to :doc:`owl_dense_matrix_generic` *)
 
 val diag : ?k:int -> ('a, 'b) t -> ('a, 'b) t

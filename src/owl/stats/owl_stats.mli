@@ -228,9 +228,6 @@ unequal means.
 two variances are not the same, the test is referred to as Welche's t-test.
  *)
 
-exception EXN_EMPTY_ARRAY
-(** Exception for empty array *)
-
 val ks_test : ?alpha:float -> float array -> (float -> float) -> hypothesis
 (**
 ``ks_test ~alpha x f`` returns a test decision for the null

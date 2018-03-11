@@ -19,6 +19,22 @@ extern int c_ndarray_stride_dim (struct caml_ba_array *X, int d);
 
 extern int c_ndarray_slice_dim (struct caml_ba_array *X, int d);
 
+extern void c_float32_matrix_swap_rows (float *x, int m, int n, int i, int j);
+
+extern void c_float64_matrix_swap_rows (double *x, int m, int n, int i, int j);
+
+extern void c_complex32_matrix_swap_rows (_Complex float *x, int m, int n, int i, int j);
+
+extern void c_complex64_matrix_swap_rows (_Complex double *x, int m, int n, int i, int j);
+
+extern void c_float32_matrix_swap_cols (float *x, int m, int n, int i, int j);
+
+extern void c_float64_matrix_swap_cols (double *x, int m, int n, int i, int j);
+
+extern void c_complex32_matrix_swap_cols (_Complex float *x, int m, int n, int i, int j);
+
+extern void c_complex64_matrix_swap_cols (_Complex double *x, int m, int n, int i, int j);
+
 extern void c_float32_matrix_transpose (float *x, float *y, int m, int n);
 
 extern void c_float64_matrix_transpose (double *x, double *y, int m, int n);

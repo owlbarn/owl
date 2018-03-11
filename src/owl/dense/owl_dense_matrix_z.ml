@@ -57,6 +57,8 @@ let of_arrays x = M.of_arrays Complex64 x
 
 let load f = M.load Complex64 f
 
+let load_txt ?sep f = M.load_txt Complex64 ?sep f
+
 (* specific functions for complex64 matrix *)
 
 let vector n = empty 1 n

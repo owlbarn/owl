@@ -170,16 +170,22 @@ module To_test = struct
     let x = M.sum_cols x2 |> M.to_arrays in
     x = [| [|6.|]; [|22.|]; [|38.|] |]
 
-  let mpow () =
-    let x = M.uniform Float64 4 4 in
-    let y = M.mpow x 3. in
-    let z = M.(dot x (dot x x)) in
-    M.(y = z)
-
   let save_load () =
     M.save x2 "ds_mat.tmp";
     let y = M.load Float64 "ds_mat.tmp" in
     M.equal x2 y
+
+  let swap_rows () =
+    let x = M.of_array Float64 [|1.;2.;3.;4.;5.;6.|] 3 2 in
+    let y = M.of_array Float64 [|5.;6.;3.;4.;1.;2.|] 3 2 in
+    M.swap_rows x 0 2;
+    M.equal x y
+
+  let swap_cols () =
+    let x = M.of_array Float64 [|1.;2.;3.;4.;5.;6.|] 2 3 in
+    let y = M.of_array Float64 [|3.;2.;1.;6.;5.;4.|] 2 3 in
+    M.swap_cols x 0 2;
+    M.equal x y
 
   let transpose () =
     let x = M.of_array Float64 [|1.;2.;3.;4.|] 2 2 in
@@ -192,6 +198,28 @@ module To_test = struct
     let y = M.of_array Complex64 Complex.([|one;{re=3.;im=(-4.)};{re=1.;im=(-2.)};zero|]) 2 2 in
     let z = M.ctranspose x in
     M.equal y z
+
+  let concat_01 () =
+    let a = M.of_arrays Float64 [| [|0.|] |] in
+    let b = M.of_arrays Float64 [| [|1.|] |] in
+    let x = M.of_arrays Float64 [| [|0.;1.|] |] in
+    let y = M.concat_horizontal a b in
+    M.(x = y)
+
+  let concat_02 () =
+    let a = M.of_arrays Float64 [| [|0.|] |] in
+    let b = M.of_arrays Float64 [| [|1.|] |] in
+    let x = M.of_arrays Float64 [| [|0.|]; [|1.|] |] in
+    let y = M.concat_vertical a b in
+    M.(x = y)
+
+  let concat_03 () =
+    let a = M.of_arrays Float64 [| [|0.|] |] in
+    let b = M.of_arrays Float64 [| [|1.|] |] in
+    let c = M.of_arrays Float64 [| [|2.;3.|] |] in
+    let x = M.of_arrays Float64 [| [|0.;1.|]; [|2.;3.|] |] in
+    let y = M.concat_vh [| [|a; b|]; [|c|] |] in
+    M.(x = y)
 
 end
 
@@ -329,17 +357,29 @@ let sum_rows () =
 let sum_cols () =
   Alcotest.(check bool) "sum_cols" true (To_test.sum_cols ())
 
-let mpow () =
-  Alcotest.(check bool) "mpow" true (To_test.mpow ())
-
 let save_load () =
   Alcotest.(check bool) "save_load" true (To_test.save_load ())
+
+let swap_rows () =
+  Alcotest.(check bool) "swap_rows" true (To_test.swap_rows ())
+
+let swap_cols () =
+  Alcotest.(check bool) "swap_cols" true (To_test.swap_cols ())
 
 let transpose () =
   Alcotest.(check bool) "transpose" true (To_test.transpose ())
 
 let ctranspose () =
   Alcotest.(check bool) "ctranspose" true (To_test.ctranspose ())
+
+let concat_01 () =
+  Alcotest.(check bool) "concat_01" true (To_test.concat_01 ())
+
+let concat_02 () =
+  Alcotest.(check bool) "concat_02" true (To_test.concat_02 ())
+
+let concat_03 () =
+  Alcotest.(check bool) "concat_03" true (To_test.concat_03 ())
 
 let test_set = [
   "sequential", `Slow, sequential;
@@ -386,8 +426,12 @@ let test_set = [
   "fold_cols", `Slow, fold_cols;
   "sum_rows", `Slow, sum_rows;
   "sum_cols", `Slow, sum_cols;
-  "mpow", `Slow, mpow;
   "save_load", `Slow, save_load;
+  "swap_rows", `Slow, swap_rows;
+  "swap_cols", `Slow, swap_cols;
   "transpose", `Slow, transpose;
   "ctranspose", `Slow, ctranspose;
+  "concat_01", `Slow, concat_01;
+  "concat_02", `Slow, concat_02;
+  "concat_03", `Slow, concat_03;
 ]

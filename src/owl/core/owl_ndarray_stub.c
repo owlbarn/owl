@@ -4,6 +4,7 @@
  */
 
 #include "owl_core.h"
+#include "cblas.h"
 #include <string.h>
 
 
@@ -18,7 +19,7 @@
 #define INITACC -INFINITY
 #define ACCFN(a, b) if (a < b) a = b
 #define UPDATEFN(a, b) a
-#include "owl_ndarray_impl.c"
+#include "owl_ndarray_pool_impl.c"
 #undef UPDATEFN
 #undef ACCFN
 #undef INITACC
@@ -35,7 +36,7 @@
 #define INITACC 0.
 #define ACCFN(a, b) a += b
 #define UPDATEFN(a, b) a / b
-#include "owl_ndarray_impl.c"
+#include "owl_ndarray_pool_impl.c"
 #undef UPDATEFN
 #undef ACCFN
 #undef TYPE
@@ -52,7 +53,7 @@
 #define INITACC -INFINITY
 #define ACCFN(a, b) if (a < b) a = b
 #define UPDATEFN(a, b) a
-#include "owl_ndarray_impl.c"
+#include "owl_ndarray_pool_impl.c"
 #undef UPDATEFN
 #undef ACCFN
 #undef INITACC
@@ -69,7 +70,7 @@
 #define INITACC 0.
 #define ACCFN(a, b) a += b
 #define UPDATEFN(a, b) a / b
-#include "owl_ndarray_impl.c"
+#include "owl_ndarray_pool_impl.c"
 #undef UPDATEFN
 #undef ACCFN
 #undef TYPE
@@ -78,6 +79,29 @@
 #undef FUN_NATIVE
 #undef OWL_NDARRAY_AVG
 
+
+#define FUN_NATIVE(dim) stub_float32_ndarray_conv ## _ ## dim  ## _ ## native
+#define FUN_BYTE(dim) stub_float32_ndarray_conv ## _ ## dim  ## _ ## bytecode
+#define TYPE float
+#define GEMM cblas_sgemm
+#include "owl_ndarray_conv_impl.c"
+#undef TYPE
+#undef GEMM
+#undef INITACC
+#undef FUN_BYTE
+#undef FUN_NATIVE
+
+
+#define FUN_NATIVE(dim) stub_float64_ndarray_conv ## _ ## dim  ## _ ## native
+#define FUN_BYTE(dim) stub_float64_ndarray_conv ## _ ## dim  ## _ ## bytecode
+#define TYPE double
+#define GEMM cblas_dgemm
+#include "owl_ndarray_conv_impl.c"
+#undef TYPE
+#undef GEMM
+#undef INITACC
+#undef FUN_BYTE
+#undef FUN_NATIVE
 
 //////////////////// function templates ends ////////////////////
 

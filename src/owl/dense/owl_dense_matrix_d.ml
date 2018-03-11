@@ -57,7 +57,7 @@ let of_arrays x = M.of_arrays Float64 x
 
 let load f = M.load Float64 f
 
-let load_txt f = M.load_txt Float64 f
+let load_txt ?sep f = M.load_txt Float64 ?sep f
 
 (* specific functions for float64 matrix *)
 
