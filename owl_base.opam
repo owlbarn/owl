@@ -17,5 +17,6 @@ build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 
 depends: [
   "jbuilder" {build}
+  "base-bigarray"
 ]
 available: [ ocaml-version >= "4.06.0" ]

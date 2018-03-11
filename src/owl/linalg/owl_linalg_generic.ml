@@ -294,9 +294,25 @@ let schur
 
 
 let schur_tz x =
-  let x = M.copy x in
-  let t, z, _, _ = Owl_lapacke.gees ~jobvs:'V' ~a:x in
+  let a = M.copy x in
+  let t, z, _, _ = Owl_lapacke.gees ~jobvs:'V' ~a in
   t, z
+
+
+let ordschur ~select t z =
+  let t = M.copy t in
+  let q = M.copy z in
+  M.iter (fun a -> assert (a = 0l || a = 1l)) select;
+  let ts, zs, _, _ = Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q in
+  ts, zs
+
+
+let qz x y =
+  let a = M.copy x in
+  let b = M.copy y in
+  let s, t, _, _, _, q, z = Owl_lapacke.gges ~jobvsl:'V' ~jobvsr:'V' ~a ~b in
+  s, t, q, z
+
 
 
 (* Eigenvalue problem *)
@@ -633,6 +649,61 @@ let pinv ?tol x =
   M.(v *@ s' *@ ut)
 
 
+let sylvester a b c =
+  let ra, qa = schur_tz a in
+  let rb, qb = schur_tz b in
+  let d = M.((ctranspose qa) *@ (c *@ qb)) in
+  let y, s = Owl_lapacke.trsyl 'N' 'N' 1 ra rb d in
+  let z = M.(qa *@ (y *@ (ctranspose qb))) in
+  M.mul_scalar_ z (Owl_dense_common._float_typ_elt (M.kind c) (1. /. s));
+  z
+
+
+let lyapunov a c =
+  let r, q = schur_tz a in
+  let d = M.((ctranspose q) *@ (c *@ q)) in
+  let tb = _get_trans_code (M.kind c) in
+  let y, s = Owl_lapacke.trsyl 'N' tb 1 r r d in
+  let z = M.(q *@ (y *@ (ctranspose q))) in
+  M.mul_scalar_ z (Owl_dense_common._float_typ_elt (M.kind c) (1. /. s));
+  z
+
+
+let care a b q r =
+  let g = M.(b *@ (inv r) *@ (transpose b)) in
+  let z = M.(concat_vh [| [| a    ; neg g             |];
+                          [| neg q; neg (transpose a) |] |]) in
+
+  let t, u, wr, _ = Owl_lapacke.gees ~jobvs:'V' ~a:z in
+  let select = M.(zeros int32 (row_num wr) (col_num wr)) in
+  M.iteri_2d (fun i j re -> if re < 0. then M.set select i j 1l) wr;
+  ignore (Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q:u);
+
+  let m, n = M.shape u in
+  let u0 = M.get_slice [ [0; m / 2 - 1]; [0; n / 2 - 1] ] u in
+  let u1 = M.get_slice [ [m / 2; m - 1]; [0; n / 2 - 1] ] u in
+  M.(u1 *@ (inv u0))
+
+
+let dare a b q r =
+  let g = M.(b *@ (inv r) *@ (transpose b)) in
+  let c = M.transpose (inv a) in
+  let z = M.(concat_vh [| [| a + g *@ c *@ q; (neg g) *@ c |];
+                          [| (neg c) *@ q   ; c            |] |]) in
+
+  let t, u, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:z in
+  let select = M.(zeros int32 (row_num wr) (col_num wr)) in
+  M.iter2i_2d (fun i j re im ->
+    if Complex.(norm {re; im}) <= 1. then M.set select i j 1l
+  ) wr wi;
+  ignore (Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q:u);
+
+  let m, n = M.shape u in
+  let u0 = M.get_slice [ [0; m / 2 - 1]; [0; n / 2 - 1] ] u in
+  let u1 = M.get_slice [ [m / 2; m - 1]; [0; n / 2 - 1] ] u in
+  M.(u1 *@ (inv u0))
+
+
 (* helper functions *)
 
 
@@ -653,11 +724,33 @@ let peakflops ?(n=2000) () =
 
 (* Matrix functions *)
 
+let dot x y = M.dot x y
+
+
+let mpow x r =
+  let frac_part, _ = Pervasives.modf r in
+  if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
+  let m, n = M.shape x in assert (m = n);
+  (* integer matrix powers using floats: *)
+  let rec _mpow acc s =
+    if s = 1. then acc
+    else if mod_float s 2. = 0.  (* exponent is even? *)
+    then even_mpow acc s
+    else M.dot x (even_mpow acc (s -. 1.))
+  and even_mpow acc s =
+    let acc2 = _mpow acc (s /. 2.) in
+    M.dot acc2 acc2
+  in  (* r is equal to an integer: *)
+  if r = 0.0 then M.(eye (kind x)) n
+  else if r > 0.0 then _mpow x r
+  else _mpow (inv x) (-. r)
+
+
 (* DEBUG: initial expm implemented with eig, obsoleted *)
 let expm_eig
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (c, d) t
   = fun ~otyp x ->
-  assert (is_square x);
+  Owl_exception.(check (is_square x) NOT_SQUARE);
   let v, w = eig ~otyp x in
   let vi = inv v in
   let u = M.(exp w |> diagm) in
@@ -665,7 +758,7 @@ let expm_eig
 
 
 let expm x =
-  assert (is_square x);
+  Owl_exception.(check (is_square x) NOT_SQUARE);
   (* trivial case *)
   if M.shape x = (1, 1) then M.exp x
   else (

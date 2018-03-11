@@ -17,6 +17,7 @@ build-test: [["jbuilder" "runtest" "-p" name "-j" jobs]]
 
 depends: [
   "ctypes"
+  "base-bigarray"
   "jbuilder" {build}
   "plplot"
   "eigen" {>= "0.0.3"}

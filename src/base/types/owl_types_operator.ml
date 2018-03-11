@@ -152,8 +152,6 @@ module type MatrixSig = sig
 
   val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 
-  val mpow : ('a, 'b) t -> float -> ('a, 'b) t
-
 end
 
 
@@ -171,6 +169,8 @@ end
 module type LinalgSig = sig
 
   type ('a, 'b) t
+
+  val mpow : ('a, 'b) t -> float -> ('a, 'b) t
 
   val linsolve : ?trans:bool -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 

@@ -254,6 +254,9 @@ let concat_vertical x1 x2 = concatenate ~axis:0 [|x1;x2|]
 let concat_horizontal x1 x2 = concatenate ~axis:(num_dims x1 - 1) [|x1;x2|]
 
 
+let concat_vh xs = Array.map (concatenate ~axis:1) xs |> concatenate ~axis:0
+
+
 let squeeze ?(axis=[||]) x =
   let a = match Array.length axis with
     | 0 -> Array.init (num_dims x) (fun i -> i)
@@ -334,7 +337,7 @@ let broadcast_align_shape x0 x1 =
   let s0 = shape y0 in
   let s1 = shape y1 in
   Array.iter2 (fun a b ->
-    assert (not(a <> 1 && b <> 1 && a <> b))
+    Owl_exception.(check (not(a <> 1 && b <> 1 && a <> b)) NOT_BROADCASTABLE);
   ) s0 s1;
   (* calculate the output shape *)
   let s2 = Array.map2 max s0 s1 in
@@ -1046,6 +1049,16 @@ let iteri_nd f x = iteri (fun i a -> f (Owl_utils.ind x i) a) x
 let mapi_nd f x = mapi (fun i a -> f (Owl_utils.ind x i) a) x
 
 
+let iter2i_nd f x y =
+  assert (same_shape x y);
+  iter2i (fun i a b -> f (Owl_utils.ind x i) a b) x y
+
+
+let map2i_nd f x y =
+  assert (same_shape x y);
+  map2i (fun i a b -> f (Owl_utils.ind x i) a b) x y
+
+
 let _check_transpose_axis axis d =
   let info = "check_transpose_axis fails" in
   if Array.length axis <> d then
@@ -1624,7 +1637,7 @@ let conv2d ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  _eigen_spatial_conv (kind input)
+  _owl_spatial_conv (kind input)
     input kernel output batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride pad_typ row_in_stride col_in_stride;
@@ -1664,7 +1677,7 @@ let conv2d_backward_input input kernel stride output' =
 
   let input' = empty (kind input) (shape input) in
 
-  _eigen_spatial_conv_backward_input (kind input')
+  _owl_spatial_conv_backward_input (kind input')
     input' kernel output' batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride row_in_stride col_in_stride;
@@ -1704,7 +1717,7 @@ let conv2d_backward_kernel input kernel stride output' =
 
   let kernel' = empty (kind kernel) (shape kernel) in
 
-  _eigen_spatial_conv_backward_kernel (kind input)
+  _owl_spatial_conv_backward_kernel (kind input)
     input kernel' output' batches input_cols input_rows in_channel
     kernel_cols kernel_rows output_cols output_rows out_channel
     row_stride col_stride row_in_stride col_in_stride;
@@ -1748,7 +1761,7 @@ let conv3d ?(padding=SAME) input kernel stride =
 
   let pad_typ = match padding with SAME -> 0 | VALID -> 1 in
 
-  _eigen_cuboid_conv (kind input)
+  _owl_cuboid_conv (kind input)
     input kernel output batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -1792,7 +1805,7 @@ let conv3d_backward_input input kernel stride output' =
 
   let input' = empty (kind input) (shape input) in
 
-  _eigen_cuboid_conv_backward_input (kind input')
+  _owl_cuboid_conv_backward_input (kind input')
     input' kernel output' batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -1836,7 +1849,7 @@ let conv3d_backward_kernel input kernel stride output' =
 
   let kernel' = empty (kind kernel) (shape kernel) in
 
-  _eigen_cuboid_conv_backward_kernel (kind input)
+  _owl_cuboid_conv_backward_kernel (kind input)
     input kernel' output' batches
     input_cols input_rows input_dpts in_channel
     kernel_cols kernel_rows kernel_dpts
@@ -3224,6 +3237,7 @@ let copy_col_to v x i =
   copy_area_to v r1 x r2
 
 
+(* NOTE: same implementaton code as that in Owl_linalg_generic *)
 let dot x1 x2 =
   let m, k = _matrix_shape x1 in
   let l, n = _matrix_shape x2 in
@@ -3244,14 +3258,6 @@ let dot x1 x2 =
   x3
 
 
-let inv x =
-  let m, n = _matrix_shape x in
-  assert (m = n && num_dims x = 2);
-  let x' = Bigarray.array2_of_genarray x in
-  Owl_dense_common._eigen_inv (kind x) x'
-  |> Bigarray.genarray_of_array2
-
-
 let eye k n =
   let x = zeros k [|n;n|] in
   let y = Bigarray.array2_of_genarray x in
@@ -3260,25 +3266,6 @@ let eye k n =
     Bigarray.Array2.unsafe_set y i i a
   done;
   x
-
-
-let mpow x r =
-  let frac_part, _ = Pervasives.modf r in
-  if frac_part <> 0. then failwith "mpow: fractional powers not implemented";
-  let m, n = _matrix_shape x in assert (m = n);
-  (* integer matrix powers using floats: *)
-  let rec _mpow acc s =
-    if s = 1. then acc
-    else if mod_float s 2. = 0.  (* exponent is even? *)
-    then even_mpow acc s
-    else dot x (even_mpow acc (s -. 1.))
-  and even_mpow acc s =
-    let acc2 = _mpow acc (s /. 2.) in
-    dot acc2 acc2
-  in  (* r is equal to an integer: *)
-  if r = 0.0 then eye (kind x) n
-  else if r > 0.0 then _mpow x r
-  else _mpow (inv x) (-. r)
 
 
 let diag ?(k=0) x =

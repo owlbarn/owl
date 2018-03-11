@@ -416,8 +416,6 @@ let t_test_unpaired ?(alpha=0.05) ?(side=BothSide) ?(equal_var=true) x y =
   | false -> _t_test2_welche ~alpha ~side x y
 
 
-exception EXN_EMPTY_ARRAY
-
 let smirnov n e =
   let nn = int_of_float (floor ((float_of_int n) *. (1. -. e))) in
   let rec helper sum v c =
@@ -485,7 +483,7 @@ let ks_test ?(alpha=0.05) x f =
   let d = max d1 d2 in
   let pval =  2. *. (smirnov n d) in
   let pval2 = kolmogorov (d *. sqrt nn) in
-  if n = 0 then raise EXN_EMPTY_ARRAY
+  if n = 0 then raise Owl_exception.EMPTY_ARRAY
   else if n > 2666 || pval2 > 0.8 -. nn *. 0.003
   then make_hypothesis (pval2 < alpha) pval2 d
   else make_hypothesis (pval < alpha) pval d
@@ -526,7 +524,7 @@ let ks2_test ?(alpha=0.05) x y =
   let n1 = Array.length x in
   let n2 = Array.length y in
   if n1 = 0 || n2 = 0 then
-    raise EXN_EMPTY_ARRAY
+    raise Owl_exception.EMPTY_ARRAY
   else
     let nn1 = float_of_int n1 in
     let nn2 = float_of_int n2 in

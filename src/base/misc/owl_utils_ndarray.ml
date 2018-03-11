@@ -23,6 +23,23 @@ let elt_to_str : type a b. (a, b) kind -> (a -> string) = function
   | Complex64      -> fun v -> Printf.sprintf "(%G, %Gi)" Complex.(v.re) Complex.(v.im)
 
 
+(* convert an element of string to elt type *)
+let elt_of_str : type a b. (a, b) kind -> (string -> a) = function
+  | Char           -> fun v -> Scanf.sscanf v "%c%!" (fun c -> c)
+  | Nativeint      -> fun v -> Nativeint.of_string v
+  | Int8_signed    -> fun v -> int_of_string v
+  | Int8_unsigned  -> fun v -> int_of_string v
+  | Int16_signed   -> fun v -> int_of_string v
+  | Int16_unsigned -> fun v -> int_of_string v
+  | Int            -> fun v -> int_of_string v
+  | Int32          -> fun v -> Int32.of_string v
+  | Int64          -> fun v -> Int64.of_string v
+  | Float32        -> fun v -> float_of_string v
+  | Float64        -> fun v -> float_of_string v
+  | Complex32      -> fun v -> Scanf.sscanf v "(%f, %fi)%!" (fun re im -> {Complex.re; im})
+  | Complex64      -> fun v -> Scanf.sscanf v "(%f, %fi)%!" (fun re im -> {Complex.re; im})
+
+
 (* calculate the stride of a ndarray, s is the shape
   for [x] of shape [|2;3;4|], the return is [|12;4;1|]
  *)

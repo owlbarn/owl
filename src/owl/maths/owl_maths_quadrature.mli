@@ -58,6 +58,39 @@ Returns:
  *)
 
 
+val gaussian_fixed : ?n:int -> (float -> float) -> float -> float -> float
+(**
+``gaussian_fixed f a b`` computes the integral of ``f`` on the interval
+``[a,b]`` using the Gaussian quadrature of fixed order. Note that this
+algorithm is much faster than others due to cached weights.
+
+Parameters:
+  * ``f``: function to be integrated.
+  * ``n``: the order of polynomial. The default value is ``10``.
+  * ``a``: lower bound of the integrated interval.
+  * ``b``: upper bound of the integrated interval.
+
+Returns:
+  * ``y``: the integral of ``f`` on ``[a, b]``.
+ *)
+
+val gaussian : ?n:int -> ?eps:float -> (float -> float) -> float -> float -> float
+(**
+``gaussian f a b`` computes the integral of ``f`` on the interval  ``[a,b]``
+using adaptive Gaussian quadrature of fixed tolerance.
+
+Parameters:
+  * ``f``: function to be integrated.
+  * ``n``: the maximum order. The default value is ``50``.
+  * ``eps``: the desired fractional accuracy. The default value is ``1e-6``.
+  * ``a``: lower bound of the integrated interval.
+  * ``b``: upper bound of the integrated interval.
+
+Returns:
+  * ``y``: the integral of ``f`` on ``[a, b]``.
+ *)
+
+
 (** {6 Helper functions} *)
 
 val trapzd : (float -> float) -> float -> float -> int -> float
@@ -75,3 +108,10 @@ Parameters:
 Returns:
   * ``y``: the integral of ``f`` on ``[a, b]``.
  *)
+
+val gauss_legendre : ?eps:float -> ?a:float -> ?b:float -> int -> float array * float array
+(**
+Given the lower and upper limits of integration ``a`` and ``b``, and order
+``n``, the function computes the abscissas and weights of the Gauss-Legendre
+n-point quadrature formula.
+*)
