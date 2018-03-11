@@ -235,42 +235,70 @@ following form.
 .. math::
   X = Z T Z^H
 
-``t`` is (quasi) triangular Schur factor, ``z`` is orthogonal/unitary Schur
-vectors. The eigen values are not sorted, they have the same order as that they
-appear on the diagonal of the output of Schur form ``t``.
+Parameters:
+  * ``otyp``: the complex type of eigen values.
+  * ``x``: the ``n x n`` square matrix.
 
-``w`` contains the eigen values of ``x``. ``otyp`` is used to specify the type
-of ``w``. It needs to be consistent with input type. E.g., if the input ``x`` is
-``float32`` then ``otyp`` must be ``complex32``. However, if you use S, D, C, Z
-module, then you do not need to worry about ``otyp``.
+Returns:
+  * ``t`` is (quasi) triangular Schur factor.
+  * ``z`` is orthogonal/unitary Schur vectors. The eigen values are not sorted,
+    they have the same order as that they appear on the diagonal of the output
+    of Schur form ``t``.
+  * ``w`` contains the eigen values of ``x``. ``otyp`` is used to specify the
+    type of ``w``. It needs to be consistent with input type. E.g., if the
+    input ``x`` is ``float32`` then ``otyp`` must be ``complex32``. However,
+    if you use S, D, C, Z module, then you do not need to worry about ``otyp``.
  *)
 
 val schur_tz : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** ``schur_tz x`` is similar to ``schur`` but only returns ``(t, z)``. *)
 
 val ordschur : otyp:('c, 'd) kind -> select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
-(** TODO
-`ordschur ~select t z -> (p, r)` reorders ``t`` and ``z`` returned by Schur
-factorization ``schur x -> (t, z)`` such that
+(**
+``ordschur ~select t z -> (r, p)`` reorders ``t`` and ``z`` returned by Schur
+factorization ``schur x -> (t, z)`` according ``select`` such that
 
 .. math::
   X = P R P^H
+
+Parameters:
+  * ``otyp``: the complex type of eigen values
+  * ``select`` the logical vector to select eigenvalues, refer to ``select_ev``.
+  * ``t``: the Schur matrix returned by ``schur x``.
+  * ``z``: the unitary matrix ``z`` returned by ``schur x``.
+
+Returns:
+  * ``r``: reordered Schur matrix ``t``.
+  * ``p``: reordered orthogonal matrix ``z``.
 *)
 
 val qz : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
-(** TODO
-``qz x -> (s, t, q, z, e)`` calculates generalised Schur factorisation of ``x``
+(**
+``qz x -> (s, t, q, z, w)`` calculates generalised Schur factorisation of ``x``
 in the following form. It is also known as QZ decomposition.
 
 .. math::
   X = Q S Z^H
   Y = Z T Z^H
 
+Parameters:
+  * ``otyp``: the complex type of eigen values.
+  * ``x``: the ``n x n`` square matrix.
+  * ``y``: the ``n x n`` square matrix.
+
+Returns:
+  * ``s``: the upper quasitriangular matrices S.
+  * ``t``: the upper quasitriangular matrices T.
+  * ``q``: the unitary matrices Q.
+  * ``z``: the unitary matrices Z.
+  * ``w``: the generalised eigenvalue for a pair of matrices (X,Y).
  *)
 
 val ordqz : otyp:('c, 'd) kind -> select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
-(** TODO
-``ordqz ~select a b q z``
+(**
+``ordqz ~select a b q z`` reorders the generalised Schur decomposition of a pair
+of matrices (X,Y) so that a selected cluster of eigenvalues appears in the
+leading diagonal blocks of (X,Y).
  *)
 
 val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t

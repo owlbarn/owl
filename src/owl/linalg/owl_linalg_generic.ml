@@ -27,6 +27,11 @@ end
 
 (* Helper functions *)
 
+let is_square x =
+  let m, n = M.shape x in
+  m = n
+
+
 let select_ev keyword ev =
   let k = M.kind ev in
   let m, n = M.shape ev in
@@ -321,6 +326,7 @@ let _magic_complex
 let schur
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x ->
+  assert (is_square x);
   let x = M.copy x in
   let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
   let w = _magic_complex otyp wr wi in
@@ -328,6 +334,7 @@ let schur
 
 
 let schur_tz x =
+  assert (is_square x);
   let a = M.copy x in
   let t, z, _, _ = Owl_lapacke.gees ~jobvs:'V' ~a in
   t, z
@@ -347,6 +354,8 @@ let ordschur
 let qz
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x y ->
+  assert (is_square x);
+  assert (is_square y);
   let a = M.copy x in
   let b = M.copy y in
   let s, t, ar, ai, bt, q, z = Owl_lapacke.gges ~jobvsl:'V' ~jobvsr:'V' ~a ~b in
@@ -515,11 +524,6 @@ let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
 
 
 (* Check matrix properties *)
-
-let is_square x =
-  let m, n = M.shape x in
-  m = n
-
 
 let is_triu x = Owl_core._matrix_is_triu (M.kind x) x
 
