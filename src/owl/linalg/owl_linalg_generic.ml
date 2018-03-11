@@ -306,12 +306,15 @@ let schur_tz x =
   t, z
 
 
-let ordschur ~select t z =
+let ordschur
+  : type a b c d. otyp:(c, d) kind -> select:(int32, int32_elt) t -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
+  = fun ~otyp ~select t q ->
   let t = M.copy t in
-  let q = M.copy z in
+  let q = M.copy q in
   M.iter (fun a -> assert (a = 0l || a = 1l)) select;
-  let ts, zs, _, _ = Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q in
-  ts, zs
+  let ts, zs, wr, wi = Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q in
+  let ws = _magic_complex otyp wr wi in
+  ts, zs, ws
 
 
 let qz
@@ -325,6 +328,19 @@ let qz
   let e = M.(alpha / beta) in
   s, t, q, z, e
 
+
+let ordqz
+  : type a b c d. otyp:(c, d) kind -> select:(int32, int32_elt) t -> (a, b) t -> (a, b) t -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (c, d) t
+  = fun ~otyp ~select a b q z ->
+  let a = M.copy a in
+  let b = M.copy b in
+  let q = M.copy q in
+  let z = M.copy z in
+  let a, b, ar, ai, bt, q, z = Owl_lapacke.tgsen ~select ~a ~b ~q ~z in
+  let alpha = _magic_complex otyp ar ai in
+  let beta = M.cast otyp bt in
+  let e = M.(alpha / beta) in
+  a, b, q, z, e
 
 
 
@@ -736,8 +752,6 @@ let peakflops ?(n=2000) () =
 
 
 (* Matrix functions *)
-
-let dot x y = M.dot x y
 
 
 let mpow x r =

@@ -17,8 +17,12 @@ include Owl_linalg_generic
 
 let schur = schur ~otyp:complex64
 
+let ordschur = ordschur ~otyp:complex64
+
+let qz = qz ~otyp:complex64
+
+let ordqz = ordqz ~otyp:complex64
+
 let eig = eig ~otyp:complex64
 
 let eigvals = eigvals ~otyp:complex64
-
-let qz = qz ~otyp:complex64

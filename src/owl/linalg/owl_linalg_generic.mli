@@ -248,9 +248,9 @@ module, then you do not need to worry about ``otyp``.
 val schur_tz : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** ``schur_tz x`` is similar to ``schur`` but only returns ``(t, z)``. *)
 
-val ordschur : select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
-(**
-`ordschur ~select t z -> (p, r)` reorders ``t`` and ``z`` in Schur
+val ordschur : otyp:('c, 'd) kind -> select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
+(** TODO
+`ordschur ~select t z -> (p, r)` reorders ``t`` and ``z`` returned by Schur
 factorization ``schur x -> (t, z)`` such that
 
 .. math::
@@ -258,7 +258,7 @@ factorization ``schur x -> (t, z)`` such that
 *)
 
 val qz : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
-(**
+(** TODO
 ``qz x -> (s, t, q, z, e)`` calculates generalised Schur factorisation of ``x``
 in the following form. It is also known as QZ decomposition.
 
@@ -266,6 +266,11 @@ in the following form. It is also known as QZ decomposition.
   X = Q S Z^H
   Y = Z T Z^H
 
+ *)
+
+val ordqz : otyp:('c, 'd) kind -> select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
+(** TODO
+``ordqz ~select a b q z``
  *)
 
 val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
