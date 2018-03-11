@@ -351,6 +351,9 @@ let ordschur
   ts, zs, ws
 
 
+
+(* Generalised Schur Decomposition *)
+
 let qz
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x y ->
@@ -390,6 +393,11 @@ let qzvals
   let alpha = _magic_complex otyp ar ai in
   let beta = M.cast otyp bt in
   M.(alpha / beta)
+
+
+(* TODO: RQ Decomposition *)
+
+let rq x = ()
 
 
 (* Eigenvalue problem *)
