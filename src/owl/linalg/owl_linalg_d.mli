@@ -130,3 +130,10 @@ val coshm : mat -> mat
 val tanhm : mat -> mat
 
 val sinhcoshm : mat -> mat * mat
+
+
+(** {6 Helper functions} *)
+
+val select_ev : [ `LHP | `RHP | `UDI | `UDO ] -> mat -> int32_mat
+
+val peakflops : ?n:int -> unit -> float

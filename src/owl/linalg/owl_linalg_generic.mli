@@ -218,7 +218,7 @@ of ``x`` is ``m x n`` and the shape of ``y`` is ``p x n``.
   Mat.(v *@ d2 *@ r *@ transpose q =~ y);;
 
 Please refer to:
-https://software.intel.com/en-us/mkl-developer-reference-c-ggsvd3
+`Intel MKL Reference <https://software.intel.com/en-us/mkl-developer-reference-c-ggsvd3>`_
  *)
 
 val gsvdvals : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -524,6 +524,17 @@ val sinhcoshm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 
 
 (** {6 Helper functions} *)
+
+val select_ev : [ `LHP | `RHP | `UDI | `UDO ] -> ('a, 'b) t -> (int32, int32_elt) t
+(**
+``select_ev keyword ev`` generates a logical vector (of same shape as ``ev``)
+from eigen values ``ev`` according to the passed in keywards.
+
+- ``LHP``: Left-half plane :math:`(real(e) < 0)`.
+- ``RHP``: Left-half plane :math:`(real(e) \ge 0)`.
+- ``UDI``: Left-half plane :math:`(abs(e) < 1)`.
+- ``UDO``: Left-half plane :math:`(abs(e) \ge 0)`.
+ *)
 
 val peakflops : ?n:int -> unit -> float
 (**

@@ -25,6 +25,33 @@ module M = struct
 end
 
 
+(* Helper functions *)
+
+let select_ev keyword ev =
+  let k = M.kind ev in
+  let m, n = M.shape ev in
+  let s = M.zeros int32 m n in
+  let _ = match keyword with
+    | `LHP -> (
+        let _op = Owl_dense_common._re_elt k in
+        M.iteri_2d (fun i j a -> if _op a < 0. then M.set s i j 1l) ev
+      )
+    | `RHP -> (
+        let _op = Owl_dense_common._re_elt k in
+        M.iteri_2d (fun i j a -> if _op a >= 0. then M.set s i j 1l) ev
+      )
+    | `UDI -> (
+        let _op = fun a -> Owl_dense_common.(_abs_elt k a |> _re_elt k) in
+        M.iteri_2d (fun i j a -> if _op a < 1. then M.set s i j 1l) ev
+      )
+    | `UDO -> (
+        let _op = fun a -> Owl_dense_common.(_abs_elt k a |> _re_elt k) in
+        M.iteri_2d (fun i j a -> if _op a >= 1. then M.set s i j 1l) ev
+      )
+  in
+  s
+
+
 (* LU decomposition *)
 
 let lu x =
