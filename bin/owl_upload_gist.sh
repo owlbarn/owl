@@ -13,9 +13,9 @@ fi
 cd $DIRNAME
 
 # force to log into github
-# gist --login
+gist --login
 
-NAME=`head -n 1 readme.md`
+NAME=`head -n 1 _readme.md`
 FILES=`ls * | xargs echo`
 
 # add new or upate a gist
