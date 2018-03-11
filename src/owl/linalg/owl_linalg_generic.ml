@@ -379,6 +379,18 @@ let ordqz
   a, b, q, z, e
 
 
+let qzvals
+  : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
+  = fun ~otyp x y ->
+  assert (is_square x);
+  assert (is_square y);
+  let a = M.copy x in
+  let b = M.copy y in
+  let ar, ai, bt, _, _ = Owl_lapacke.ggev ~jobvl:'N' ~jobvr:'N' ~a ~b in
+  let alpha = _magic_complex otyp ar ai in
+  let beta = M.cast otyp bt in
+  M.(alpha / beta)
+
 
 (* Eigenvalue problem *)
 
@@ -1032,7 +1044,7 @@ let tanhm x =
 
 
 (* TODO *)
-let logm x = "logm: not implemented"
+let logm x = failwith "logm: not implemented"
 
 
 (* TODO *)

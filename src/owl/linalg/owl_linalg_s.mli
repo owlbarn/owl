@@ -73,6 +73,8 @@ val qz : mat -> mat -> mat * mat * mat * mat * complex_mat
 
 val ordqz: select:int32_mat -> mat -> mat -> mat -> mat -> mat * mat * mat * mat * complex_mat
 
+val qzvals : mat -> mat -> complex_mat
+
 val hess : mat -> mat * mat
 
 

@@ -301,6 +301,12 @@ of matrices (X,Y) so that a selected cluster of eigenvalues appears in the
 leading diagonal blocks of (X,Y).
  *)
 
+val qzvals : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('c, 'd) t
+(**
+``qzvals ~otyp x y`` is similar to ``qz ~otyp x y`` but only returns the
+generalised eigen values.
+ *)
+
 val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (**
 ``hess x -> (h, q)`` calculates the Hessenberg form of a given matrix ``x``.

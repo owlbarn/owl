@@ -25,6 +25,8 @@ let qz = qz ~otyp:complex32
 
 let ordqz = ordqz ~otyp:complex32
 
+let qzvals = qzvals ~otyp:complex32
+
 let eig = eig ~otyp:complex32
 
 let eigvals = eigvals ~otyp:complex32
