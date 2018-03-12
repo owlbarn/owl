@@ -9,8 +9,10 @@ open Owl_opencl_primitive
 (** {6 Core functions} *)
 
 val of_ndarray : ('a, 'b) Owl_dense_ndarray_generic.t -> t
+(** ``of_ndarray x`` *)
 
 val to_ndarray : ('a, 'b) Bigarray.kind -> t -> ('a, 'b) Owl_dense_ndarray_generic.t
+(** ``to_ndarray otyp x`` *)
 
 
 (** {6 Unary math functions} *)
