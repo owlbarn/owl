@@ -81,7 +81,7 @@ with the passed in ones.
 val make_kernel : t -> string -> cl_kernel
 (** ``make_kernel ctx fun_name`` makes a kernel object from passed in context with the given function name. *)
 
-val ba_kernel : ('a, 'b) Owl_sparse_ndarray_generic.kind -> string -> cl_program -> cl_kernel
+val ba_kernel : ('a, 'b) kind -> string -> cl_program -> cl_kernel
 (** This function is similar to ``make_kernel`` but specifically for making Bigarray function. *)
 
 
