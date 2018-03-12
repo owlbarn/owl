@@ -363,12 +363,16 @@ val row : ('a, 'b) t -> int -> ('a, 'b) t
 ``row x i`` returns row ``i`` of ``x``.  Note: Unlike ``col``, the return value
 is simply a view onto the original row in ``x``, so modifying ``row``'s
 value also alters ``x``.
+
+The function supports nagative indices.
  *)
 
 val col : ('a, 'b) t -> int -> ('a, 'b) t
 (**
 ``col x j`` returns column ``j`` of ``x``.  Note: Unlike ``row``, the return
 value is a copy of the original row in ``x``.
+
+The function supports nagative indices.
  *)
 
 val rows : ('a, 'b) t -> int array -> ('a, 'b) t
@@ -376,12 +380,16 @@ val rows : ('a, 'b) t -> int array -> ('a, 'b) t
 ``rows x a`` returns the rows (defined in an int array ``a``) of ``x``. The
 returned rows will be combined into a new dense matrix. The order of rows in
 the new matrix is the same as that in the array ``a``.
+
+The function supports nagative indices.
  *)
 
 val cols : ('a, 'b) t -> int array -> ('a, 'b) t
 (**
 Similar to ``rows``, ``cols x a`` returns the columns (specified in array ``a``)
 of x in a new dense matrix.
+
+The function supports nagative indices.
  *)
 
 val resize : ?head:bool -> ('a, 'b) t -> int array -> ('a, 'b) t
@@ -684,10 +692,10 @@ Similar to ``iteri_rows`` except row number is not passed to ``f``.
  *)
 
 val iter2i_rows : (int -> ('a, 'b) t -> ('a, 'b) t -> unit) -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** TODO *)
+(** ``iter2_rows f x y`` iterates rows of two matrices ``x`` and ```y``. *)
 
 val iter2_rows : (('a, 'b) t -> ('a, 'b) t -> unit) -> ('a, 'b) t -> ('a, 'b) t -> unit
-(** TODO *)
+(** Similar to ``iter2iter2i_rows`` but without passing in indices.  *)
 
 val iteri_cols : (int -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 (**
