@@ -47,7 +47,7 @@ let upload_gist gid =
 
 
 let download_gist gist =
-  let gid, vid, _ = Owl_zoo_dir.parse_gist_string gist in
+  let gid, vid, _, _ = Owl_zoo_log.parse_gist_string gist in
   Owl_log.debug "owl_zoo: %s (ver. %s) downloading" gid vid;
   let cmd = Printf.sprintf "owl_download_gist.sh %s %s" gid vid in
   let ret = Sys.command cmd in
@@ -69,14 +69,14 @@ let update_gist gists =
   in
   Owl_log.debug "owl_zoo: updating %i gists" Array.(length gists);
   let download_remote gid =
-    let v = Owl_zoo_log.find_latest_vid_remote gid in
+    let v = Owl_zoo_log.get_latest_vid_remote gid in
     download_gist (gid ^ "/" ^ v)
   in
   Array.iter download_remote gists
 
 
 let show_info gist =
-  let gid, vid, _ = Owl_zoo_dir.parse_gist_string gist in
+  let gid, vid, _, _ = Owl_zoo_log.parse_gist_string gist in
   let dir = dir ^ "/" ^ gid ^ "/" ^ vid in
   let files = Sys.readdir dir
     |> Array.fold_left (fun a s -> a ^ s ^ " ") ""
@@ -100,7 +100,7 @@ let show_info gist =
 
 
 let load_file gist f =
-  let gid, vid, _ = Owl_zoo_dir.parse_gist_string gist in
+  let gid, vid, _, _ = Owl_zoo_log.parse_gist_string gist in
   let path = Printf.sprintf "%s/%s" (Owl_zoo_config.extend_dir gid vid) f in
   Owl_utils.read_file_string path
 

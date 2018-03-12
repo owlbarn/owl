@@ -19,14 +19,15 @@ let _syscall cmd =
   Buffer.contents buf
 
 
-(** Record structure: gid --> timestamp * version list *)
+(* Record structure: gid --> timestamp * version list *)
 let _create_log () =
   let tb = Hashtbl.create 128 in
   Hashtbl.add tb "" ([|""|], 0.);
   Owl_utils.marshal_to_file tb log
 
 
-(* Try to get the content of key `gid`; if not foudn, return a `true` flag *)
+(* Try to get the content of key `gid` including all the records;
+ * if not found, return default values with a `true` flag *)
 let get_gid_content (gid : string) =
   if not (Sys.file_exists log) then _create_log ();
   let tb = Owl_utils.marshal_from_file log in
@@ -36,7 +37,8 @@ let get_gid_content (gid : string) =
   with Not_found ->  [|""|], 0., tb, true
 
 
-(** Get the most up-to-date gist version from Gist server *)
+(* Get the most up-to-date gist version from Gist server;
+ * returns "" if the gid is not found or network error *)
 let get_latest_vid_remote (gid : string) =
   let cmd = "curl https://api.github.com/gists/" ^ gid ^
     " | grep '\"version\"' | head -n1 | grep -o -E '[0-9A-Za-z]+' | grep -v 'version'"
@@ -46,14 +48,18 @@ let get_latest_vid_remote (gid : string) =
   String.sub ret 0 ((String.length ret) - 1)
 
 
-(** Get the latest version downloaded on local machine *)
+(* Get the latest version downloaded on local machine;
+ * if the local version is not found, then get the newst vid from Gist server *)
 let get_latest_vid_local (gid : string) =
   let v, _, _, miss_flag = get_gid_content gid in
   if (miss_flag == false) then (
     assert (Array.length v > 0);
     Array.get v (Array.length v - 1)
-  ) else
+  ) else (
+    Owl_log.info "Gist %s does not exists locally; fetching vid from server." gid;
     get_latest_vid_remote gid
+  )
+
 
 (**  Parse a full gist name scheme string and return a gist id, a version id, and a bool value to indicate if `pin` flag is set in the gist name. *)
 let parse_gist_string gist =
@@ -104,29 +110,39 @@ let check_log (gid : string) (vid : string) =
   else false
 
 
-(** Add a specific version of a gist to the record;
-  if this gist does not exist, create a new item. *)
+(* Add a specific version of a gist to the record;
+ * if this version already exists, do nothing;
+ * if this gist does not exist, create a new item. *)
 let update_log (gid : string) (vid : string) =
   let v, _, tb, miss_flag = get_gid_content gid in
   if (miss_flag == false) then (
-    let v' = Array.append v [|vid|] in
-    let ts = Unix.time () in
-    Hashtbl.replace tb gid (v', ts);
-    Owl_utils.marshal_to_file tb log
+    if not (Array.mem vid v) then (
+      let v' = Array.append v [|vid|] in
+      let ts = Unix.time () in
+      Hashtbl.replace tb gid (v', ts);
+      Owl_utils.marshal_to_file tb log;
+      Owl_log.info "Gist %s/%s information updated." gid vid
+    ) else (
+      Owl_log.debug "Gist %s/%s already exists; no need to update." gid vid
+    )
   ) else (
     let v = [|vid|] in
     let ts = Unix.time () in
     Hashtbl.add tb gid (v, ts);
-    Owl_utils.marshal_to_file tb log
+    Owl_utils.marshal_to_file tb log;
+    Owl_log.info "Gist %s/%s information created." gid vid
   )
 
 
-(** Remove a gist's record *)
+(* Remove a gist's record *)
 let remove_log (gid : string)  =
   let _, _, tb, miss_flag = get_gid_content gid in
   if (miss_flag == false) then (
     Hashtbl.remove tb gid;
-    Owl_utils.marshal_to_file tb log
+    Owl_utils.marshal_to_file tb log;
+    Owl_log.info "Gist %s removed." gid
+  ) else (
+    Owl_log.debug "Zoo: Illegal gid id to remove."
   )
 
 

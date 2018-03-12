@@ -3,10 +3,22 @@
  * Copyright (c) 2016-2018 Liang Wang <liang.wang@cl.cam.ac.uk>
  *)
 
-let dir = Owl_zoo_config.dir
+
+let rec _extract_zoo_gist f added =
+  let s = Owl_utils.read_file_string f in
+  let regex = Str.regexp "^#zoo \"\\([0-9A-Za-z]+\\)\"" in
+  try
+    let pos = ref 0 in
+    while true do
+      pos := Str.search_forward regex s !pos;
+      let gist = Str.matched_group 1 s in
+      pos := !pos + (String.length gist);
+      process_dir_zoo ~added gist
+    done
+  with Not_found -> ()
 
 
-let _download_gist gid vid =
+and _download_gist gid vid =
   if (Owl_zoo_log.check_log gid vid) = true then
     Owl_log.info "owl_zoo: %s / %s cached" gid vid
   else (
@@ -14,57 +26,37 @@ let _download_gist gid vid =
     Owl_log.debug "owl_zoo: %s (ver. %s) downloading" gid vid;
     let cmd = Printf.sprintf "owl_download_gist.sh %s %s" gid vid in
     let ret = Sys.command cmd in
-    if ret = 0 then (Owl_zoo_log.update_log gid vid)
+    if ret = 0 then Owl_zoo_log.update_log gid vid
     else Owl_log.debug "owl_zoo: Error downloading gist %s" gid
   )
 
 
-let rec _extract_zoo_gist f root =
-  let s = Owl.Utils.read_file_string f in
-  let regex = Str.regexp "^#zoo \"\\([0-9A-Za-z /]+\\)\"" in
-  try
-    let pos = ref 0 in
-    while true do
-      pos := Str.search_forward regex s !pos;
-      let gist = Str.matched_group 1 s in
-      pos := !pos + (String.length gist);
-      let sub_root = process_dir_zoo gist in
-      Owl_graph.connect [|root|] [|sub_root|]
-    done;
-  with Not_found -> ()
-
-
-and _dir_zoo_ocaml gid vid root =
-  let dir_gist = dir ^ "/" ^ gid ^ "/" ^ vid in
+and _dir_zoo_ocaml gid vid added =
+  let dir_gist = Owl_zoo_config.extend_dir gid vid in
   Sys.readdir (dir_gist)
-    |> Array.to_list
-    |> List.filter (fun s -> Filename.check_suffix s "ml")
-    |> List.iter (fun l ->
-        let f = Printf.sprintf "%s/%s" dir_gist l in
-        _extract_zoo_gist f root;
-        Toploop.mod_use_file Format.std_formatter f
-        |> ignore
-      )
-
-and process_dir_zoo gist =
-  let gid, vid, pin = parse_gist_string gist in
-  let dagfile = gid ^ "_" ^ vid ^ ".dag" in
-  let flag  = if (Sys.file_exists dagfile) then pin else false in
-  let groot =
-    if flag then (Owl_utils.marshal_from_file dagfile)
-    else (
-      let root = Owl_graph.node (gid, vid) in
-      _download_gist gid vid;
-      _dir_zoo_ocaml gid vid root;
-      root
+  |> Array.to_list
+  |> List.filter (fun s -> Filename.check_suffix s "ml")
+  |> List.iter (fun l ->
+      let f = Printf.sprintf "%s/%s" dir_gist l in
+      _extract_zoo_gist f added;
+      Toploop.mod_use_file Format.std_formatter f
+      |> ignore
     )
+
+
+and process_dir_zoo ?added gist =
+  let gid, vid, _, _ = Owl_zoo_log.parse_gist_string gist in
+  let gist' = Printf.sprintf "%s/%s" gid vid in
+
+  let added = match added with
+    | Some h -> h
+    | None   -> Hashtbl.create 128
   in
-  if pin then (Owl_utils.marshal_to_file groot dagfile);
-  groot
-
-
-and zoo_fun gist =
-  process_dir_zoo gist |> ignore
+  if Hashtbl.mem added gist' = false then (
+    Hashtbl.add added gist' gist';
+    _download_gist gid vid;
+    _dir_zoo_ocaml gid vid added
+  )
 
 
 and add_dir_zoo () =
@@ -74,5 +66,5 @@ and add_dir_zoo () =
     "ditribute code snippet via gist\n"
   in
   let info = Toploop.({ section; doc }) in
-  let dir_fun = Toploop.Directive_string zoo_fun in
+  let dir_fun = Toploop.Directive_string process_dir_zoo in
   Toploop.add_directive "zoo" dir_fun info

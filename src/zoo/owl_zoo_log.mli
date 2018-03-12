@@ -17,7 +17,7 @@ val get_latest_vid_remote : string -> string
 (** Find the most recently downloaded version of a gist of given id on local machine. *)
 
 val get_latest_vid_local : string -> string
-(** Find the most up-to-date version of a gist of given id on remote gist server.*)
+(** Find the most up-to-date version of a gist of given id on remote Gist server.*)
 
 val get_timestamp : string -> float
 (** Get the timestamp of the latest version of a gist. *)
