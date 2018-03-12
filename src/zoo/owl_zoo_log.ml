@@ -26,8 +26,8 @@ let _create_log () =
   Owl_utils.marshal_to_file tb log
 
 
-(* Try to get the content of key `gid` including all the records;
- * if not found, return default values with a `true` flag *)
+(* Try to get the content of key `gid`; if not found,
+ * return default values with a `true` flag *)
 let get_gid_content (gid : string) =
   if not (Sys.file_exists log) then _create_log ();
   let tb = Owl_utils.marshal_from_file log in
@@ -121,16 +121,16 @@ let update_log (gid : string) (vid : string) =
       let ts = Unix.time () in
       Hashtbl.replace tb gid (v', ts);
       Owl_utils.marshal_to_file tb log;
-      Owl_log.info "Gist %s/%s information updated." gid vid
+      Owl_log.info "Gist %s/%s information updated" gid vid
     ) else (
-      Owl_log.debug "Gist %s/%s already exists; no need to update." gid vid
+      Owl_log.debug "Gist %s/%s already exists; no need to update" gid vid
     )
   ) else (
     let v = [|vid|] in
     let ts = Unix.time () in
     Hashtbl.add tb gid (v, ts);
     Owl_utils.marshal_to_file tb log;
-    Owl_log.info "Gist %s/%s information created." gid vid
+    Owl_log.info "Gist %s/%s information created" gid vid
   )
 
 
@@ -140,9 +140,9 @@ let remove_log (gid : string)  =
   if (miss_flag == false) then (
     Hashtbl.remove tb gid;
     Owl_utils.marshal_to_file tb log;
-    Owl_log.info "Gist %s removed." gid
+    Owl_log.info "owl_zoo: %s removed" gid
   ) else (
-    Owl_log.debug "Zoo: Illegal gid id to remove."
+    Owl_log.debug "Zoo: gist id not found"
   )
 
 

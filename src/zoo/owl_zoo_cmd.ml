@@ -48,8 +48,11 @@ let upload_gist dir =
   gist_arr.(0)
 
 
-let download_gist gist =
-  let gid, vid, _, _ = Owl_zoo_log.parse_gist_string gist in
+let download_gist gid ?vid =
+  let vid = match vid with
+  | Some a -> a
+  | None   -> get_latest_vid_remote gid
+  in
   Owl_log.debug "owl_zoo: %s (ver. %s) downloading" gid vid;
   let cmd = Printf.sprintf "owl_download_gist.sh %s %s" gid vid in
   let ret = Sys.command cmd in
@@ -79,7 +82,7 @@ let update_gist gists =
 
 let show_info gist =
   let gid, vid, _, _ = Owl_zoo_log.parse_gist_string gist in
-  let dir = dir ^ "/" ^ gid ^ "/" ^ vid in
+  let dir = Owl_zoo_config.extend_dir gid vid in
   let files = Sys.readdir dir
     |> Array.fold_left (fun a s -> a ^ s ^ " ") ""
   in
@@ -101,20 +104,11 @@ let show_info gist =
   print_endline info
 
 
-<<<<<<< HEAD
+(* f is a file name in the gist, e.g., #readme.md *)
 let load_file gist f =
   let gid, vid, _, _ = Owl_zoo_log.parse_gist_string gist in
   let path = Printf.sprintf "%s/%s" (Owl_zoo_config.extend_dir gid vid) f in
   Owl_utils.read_file_string path
-=======
-(* format "gist/file", e.g., d7bdd62b355f906ed059f00b1270b79c/#readme.md *)
-let load_file f =
-  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
-  let gist = Filename.dirname f in
-  let file = Filename.basename f in
-  let path = Printf.sprintf "%s%s/%s" dir gist file in
-  Utils.read_file_string path
->>>>>>> master
 
 
 let run args script =
