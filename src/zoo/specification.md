@@ -21,4 +21,4 @@
 ## Misc.
 
 - Prerequisite: users need to install and login to `gist` and `git`.
-- Uploading files to Gist needs a `#readme.md` file. The first line of this file will be used as a short description for the shared scripts in the same Gist. The hashtag is used to make sure this file always stays at the top in gist.github.com, where files in a Gist is displayed in the alphabetical order.
+- Uploading a folder to Gist requires a `#readme.md` file in that folder. The first line of this file will be used as a short description for the shared scripts in the same folder. The hashtag is used to make sure this file is always shown at the top in `gist.github.com`, where files in a Gist are displayed in the alphabetical order.
