@@ -13,8 +13,14 @@ val update_log : string -> string -> unit
 val remove_log : string -> unit
 (** ``update_log gid`` removes all versions of a gist `gid` from local zoo repository. *)
 
-val find_latest_vid_remote : string -> string
+val get_latest_vid_remote : string -> string
 (** Find the most recently downloaded version of a gist of given id on local machine. *)
 
-val find_latest_vid_local : string -> string
+val get_latest_vid_local : string -> string
 (** Find the most up-to-date version of a gist of given id on remote gist server.*)
+
+val get_timestamp : string -> float
+(** Get the timestamp of the latest version of a gist. *)
+
+val parse_gist_string : string -> string * string * bool * bool
+(** Parse a full gist name scheme string and return a gist id, a version id, and a bool value to indicate if `pin` flag is set in the gist name. *)
