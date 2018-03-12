@@ -5,19 +5,6 @@
 
 open Owl
 
-let _read_file f =
-  let ic = open_in f in
-  let n = in_channel_length ic in
-  let s = Bytes.create n in
-  really_input ic s 0 n;
-  close_in ic;
-  (s) |> Bytes.to_string
-
-
-let _strip_last_char str =
-  if str = "" then "" else
-  String.sub str 0 ((String.length str) - 1)
-
 
 let eval cmd = cmd
   |> Lexing.from_string
@@ -52,7 +39,8 @@ let upload_gist dir =
   Owl_log.debug "owl_zoo: %s uploading" dir;
   let cmd = Printf.sprintf "owl_upload_gist.sh %s" dir in
   Sys.command cmd |> ignore;
-  _read_file (dir ^ "/gist.id") |> _strip_last_char
+  let gist_arr = Owl_utils.read_file (dir ^ "/gist.id") in
+  gist_arr.(0)
 
 
 let download_gist gist =
