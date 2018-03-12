@@ -28,3 +28,5 @@ exception NOT_CONVERGE
 exception MAX_ITERATION
 
 exception SINGULAR
+
+exception INDEX_OUT_OF_BOUND

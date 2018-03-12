@@ -1,8 +1,18 @@
-### 0.3.5 (in progress)
+### 0.3.6 (in progress)
+
+* Fix some bugs and improve performance.
+
+
+### 0.3.5 (2018-03-12)
 
 * Add functions for numerical integration.
 * Add functions for interoperation.
 * Add several root-finding algorithms.
+* Introduce Owl's exception module.
+* Add more functions in Linalg module.
+* Add native convolution function in core.
+* Remove Eigen dependency of dense data structure.
+* Fix some bugs and improve performance.
 
 
 ### 0.3.4 (2018-02-26)
