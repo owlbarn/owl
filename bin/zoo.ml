@@ -16,7 +16,7 @@ let _ =
   if Array.length Sys.argv < 2 then
     start_toplevel ()
   else if Sys.argv.(1) = "-upload" then
-    upload_gist Sys.argv.(2)
+    upload_gist Sys.argv.(2) |> ignore
   else if Sys.argv.(1) = "-download" then
     download_gist Sys.argv.(2)
   else if Sys.argv.(1) = "-remove" then
