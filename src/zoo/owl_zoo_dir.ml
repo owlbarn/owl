@@ -5,38 +5,6 @@
 
 let dir = Owl_zoo_config.dir
 
-let parse_gist_string gist =
-  let strip_string s =
-    Str.global_replace (Str.regexp "[\r\n\t ]") "" s
-  in
-  let validate_len s len info =
-    if ((String.length s) = len) then s
-    else failwith ("Zoo error: invalid " ^ info ^ ":" ^ s)
-  in
-
-  let regex = Str.regexp "/" in
-  let lst = Str.split_delim regex gist
-    |> List.map strip_string in
-
-  let gid, vid =
-    match lst with
-    | gid :: [] -> gid, Owl_zoo_log.find_latest_vid_remote gid
-    | gid :: vid :: _ ->
-      gid,
-      (match vid with
-      | "remote" -> Owl_zoo_log.find_latest_vid_remote gid
-      | "latest" -> Owl_zoo_log.find_latest_vid_local  gid
-      | _        -> vid)
-    | _ -> failwith "Zoo error: Illegal parameters numbers"
-  in
-  let pin =
-    match lst with
-    | a :: b :: ["pin"] -> true
-    | _ -> false
-  in
-
-  (validate_len gid 32 "gist id"), (validate_len vid 40 "version id"), pin
-
 
 let _download_gist gid vid =
   if (Owl_zoo_log.check_log gid vid) = true then
