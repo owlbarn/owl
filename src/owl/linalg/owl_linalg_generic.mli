@@ -218,7 +218,7 @@ of ``x`` is ``m x n`` and the shape of ``y`` is ``p x n``.
   Mat.(v *@ d2 *@ r *@ transpose q =~ y);;
 
 Please refer to:
-https://software.intel.com/en-us/mkl-developer-reference-c-ggsvd3
+`Intel MKL Reference <https://software.intel.com/en-us/mkl-developer-reference-c-ggsvd3>`_
  *)
 
 val gsvdvals : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
@@ -235,37 +235,76 @@ following form.
 .. math::
   X = Z T Z^H
 
-``t`` is (quasi) triangular Schur factor, ``z`` is orthogonal/unitary Schur
-vectors. The eigen values are not sorted, they have the same order as that they
-appear on the diagonal of the output of Schur form ``t``.
+Parameters:
+  * ``otyp``: the complex type of eigen values.
+  * ``x``: the ``n x n`` square matrix.
 
-``w`` contains the eigen values of ``x``. ``otyp`` is used to specify the type
-of ``w``. It needs to be consistent with input type. E.g., if the input ``x`` is
-``float32`` then ``otyp`` must be ``complex32``. However, if you use S, D, C, Z
-module, then you do not need to worry about ``otyp``.
+Returns:
+  * ``t`` is (quasi) triangular Schur factor.
+  * ``z`` is orthogonal/unitary Schur vectors. The eigen values are not sorted,
+    they have the same order as that they appear on the diagonal of the output
+    of Schur form ``t``.
+  * ``w`` contains the eigen values of ``x``. ``otyp`` is used to specify the
+    type of ``w``. It needs to be consistent with input type. E.g., if the
+    input ``x`` is ``float32`` then ``otyp`` must be ``complex32``. However,
+    if you use S, D, C, Z module, then you do not need to worry about ``otyp``.
  *)
 
 val schur_tz : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 (** ``schur_tz x`` is similar to ``schur`` but only returns ``(t, z)``. *)
 
-val ordschur : select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
+val ordschur : otyp:('c, 'd) kind -> select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
 (**
-`ordschur ~select t z -> (p, r)` reorders ``t`` and ``z`` in Schur
-factorization ``schur x -> (t, z)`` such that
+``ordschur ~select t z -> (r, p)`` reorders ``t`` and ``z`` returned by Schur
+factorization ``schur x -> (t, z)`` according ``select`` such that
 
 .. math::
   X = P R P^H
+
+Parameters:
+  * ``otyp``: the complex type of eigen values
+  * ``select`` the logical vector to select eigenvalues, refer to ``select_ev``.
+  * ``t``: the Schur matrix returned by ``schur x``.
+  * ``z``: the unitary matrix ``z`` returned by ``schur x``.
+
+Returns:
+  * ``r``: reordered Schur matrix ``t``.
+  * ``p``: reordered orthogonal matrix ``z``.
 *)
 
-val qz : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t
+val qz : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
 (**
-``qz x -> (s, t, q, z)`` calculates generalised Schur factorisation of ``x`` in
-the following form. It is also known as QZ decomposition.
+``qz x -> (s, t, q, z, w)`` calculates generalised Schur factorisation of ``x``
+in the following form. It is also known as QZ decomposition.
 
 .. math::
   X = Q S Z^H
   Y = Z T Z^H
 
+Parameters:
+  * ``otyp``: the complex type of eigen values.
+  * ``x``: the ``n x n`` square matrix.
+  * ``y``: the ``n x n`` square matrix.
+
+Returns:
+  * ``s``: the upper quasitriangular matrices S.
+  * ``t``: the upper quasitriangular matrices T.
+  * ``q``: the unitary matrices Q.
+  * ``z``: the unitary matrices Z.
+  * ``w``: the generalised eigenvalue for a pair of matrices (X,Y).
+ *)
+
+val ordqz : otyp:('c, 'd) kind -> select:(int32, int32_elt) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('a, 'b) t * ('c, 'd) t
+(**
+``ordqz ~select a b q z`` reorders the generalised Schur decomposition of a pair
+of matrices (X,Y) so that a selected cluster of eigenvalues appears in the
+leading diagonal blocks of (X,Y).
+ *)
+
+val qzvals : otyp:('c, 'd) kind -> ('a, 'b) t -> ('a, 'b) t -> ('c, 'd) t
+(**
+``qzvals ~otyp x y`` is similar to ``qz ~otyp x y`` but only returns the
+generalised eigen values.
  *)
 
 val hess : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
@@ -519,6 +558,17 @@ val sinhcoshm : ('a, 'b) t -> ('a, 'b) t * ('a, 'b) t
 
 
 (** {6 Helper functions} *)
+
+val select_ev : [ `LHP | `RHP | `UDI | `UDO ] -> ('a, 'b) t -> (int32, int32_elt) t
+(**
+``select_ev keyword ev`` generates a logical vector (of same shape as ``ev``)
+from eigen values ``ev`` according to the passed in keywards.
+
+- ``LHP``: Left-half plane :math:`(real(e) < 0)`.
+- ``RHP``: Left-half plane :math:`(real(e) \ge 0)`.
+- ``UDI``: Left-half plane :math:`(abs(e) < 1)`.
+- ``UDO``: Left-half plane :math:`(abs(e) \ge 0)`.
+ *)
 
 val peakflops : ?n:int -> unit -> float
 (**

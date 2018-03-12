@@ -16,3 +16,9 @@
 - `update_gist`: needs a gist id array; for each gist id, the most up-to-date version id from Gist server will always be fetched before downloading. If no parameters are provided, the latest version from Gist server of all local cached gists will be downloaded.
 - `remove_gist`, `list_gist`: only need gist id. For `list_gist`, it lists all versions of a given gist; if no gist id is provided, it lists all the local gists.
 - `eval`, `upload_gist`, `preprocess`, `run`, `print_info`, `start_toplevel`: do not need gist information.
+
+
+## Misc.
+
+- Prerequisite: users need to install and login to `gist` and `git`.
+- Uploading a folder to Gist requires a `#readme.md` file in that folder. The first line of this file will be used as a short description for the shared scripts in the same folder. The hashtag is used to make sure this file is always shown at the top in `gist.github.com`, where files in a Gist are displayed in the alphabetical order.

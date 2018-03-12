@@ -67,7 +67,13 @@ val schur : mat -> mat * mat * complex_mat
 
 val schur_tz : mat -> mat * mat
 
-val ordschur : select:int32_mat -> mat -> mat -> mat * mat
+val ordschur : select:int32_mat -> mat -> mat -> mat * mat * complex_mat
+
+val qz : mat -> mat -> mat * mat * mat * mat * complex_mat
+
+val ordqz: select:int32_mat -> mat -> mat -> mat -> mat -> mat * mat * mat * mat * complex_mat
+
+val qzvals : mat -> mat -> complex_mat
 
 val hess : mat -> mat * mat
 
@@ -128,3 +134,10 @@ val coshm : mat -> mat
 val tanhm : mat -> mat
 
 val sinhcoshm : mat -> mat * mat
+
+
+(** {6 Helper functions} *)
+
+val select_ev : [ `LHP | `RHP | `UDI | `UDO ] -> mat -> int32_mat
+
+val peakflops : ?n:int -> unit -> float

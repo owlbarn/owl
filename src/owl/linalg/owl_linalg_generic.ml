@@ -25,6 +25,38 @@ module M = struct
 end
 
 
+(* Helper functions *)
+
+let is_square x =
+  let m, n = M.shape x in
+  m = n
+
+
+let select_ev keyword ev =
+  let k = M.kind ev in
+  let m, n = M.shape ev in
+  let s = M.zeros int32 m n in
+  let _ = match keyword with
+    | `LHP -> (
+        let _op = Owl_dense_common._re_elt k in
+        M.iteri_2d (fun i j a -> if _op a < 0. then M.set s i j 1l) ev
+      )
+    | `RHP -> (
+        let _op = Owl_dense_common._re_elt k in
+        M.iteri_2d (fun i j a -> if _op a >= 0. then M.set s i j 1l) ev
+      )
+    | `UDI -> (
+        let _op = fun a -> Owl_dense_common.(_abs_elt k a |> _re_elt k) in
+        M.iteri_2d (fun i j a -> if _op a < 1. then M.set s i j 1l) ev
+      )
+    | `UDO -> (
+        let _op = fun a -> Owl_dense_common.(_abs_elt k a |> _re_elt k) in
+        M.iteri_2d (fun i j a -> if _op a >= 1. then M.set s i j 1l) ev
+      )
+  in
+  s
+
+
 (* LU decomposition *)
 
 let lu x =
@@ -277,42 +309,95 @@ let chol ?(upper=true) x =
   | false -> Owl_lapacke.potrf 'L' x |> M.tril
 
 
+(* Schur Decomposition *)
+
+let _magic_complex
+  : type a b c d. (c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
+  = fun otyp re im ->
+  let ityp = M.kind re in
+  match ityp, otyp with
+  | Float32, Complex32   -> M.complex float32 complex32 re im
+  | Float64, Complex64   -> M.complex float64 complex64 re im
+  | Complex32, Complex32 -> re
+  | Complex64, Complex64 -> re
+  | _                    -> failwith "owl_linalg_generic:_magic_complex"
+
+
 let schur
   : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
   = fun ~otyp x ->
+  assert (is_square x);
   let x = M.copy x in
   let t, z, wr, wi = Owl_lapacke.gees ~jobvs:'V' ~a:x in
-
-  let w = match (M.kind x) with
-    | Float32   -> M.complex float32 complex32 wr wi |> Obj.magic
-    | Float64   -> M.complex float64 complex64 wr wi |> Obj.magic
-    | Complex32 -> Obj.magic wr
-    | Complex64 -> Obj.magic wr
-    | _         -> failwith "owl_linalg_generic:schur"
-  in
+  let w = _magic_complex otyp wr wi in
   t, z, w
 
 
 let schur_tz x =
+  assert (is_square x);
   let a = M.copy x in
   let t, z, _, _ = Owl_lapacke.gees ~jobvs:'V' ~a in
   t, z
 
 
-let ordschur ~select t z =
+let ordschur
+  : type a b c d. otyp:(c, d) kind -> select:(int32, int32_elt) t -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (c, d) t
+  = fun ~otyp ~select t q ->
   let t = M.copy t in
-  let q = M.copy z in
+  let q = M.copy q in
   M.iter (fun a -> assert (a = 0l || a = 1l)) select;
-  let ts, zs, _, _ = Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q in
-  ts, zs
+  let ts, zs, wr, wi = Owl_lapacke.trsen ~job:'V' ~compq:'V' ~select ~t ~q in
+  let ws = _magic_complex otyp wr wi in
+  ts, zs, ws
 
 
-let qz x y =
+
+(* Generalised Schur Decomposition *)
+
+let qz
+  : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (c, d) t
+  = fun ~otyp x y ->
+  assert (is_square x);
+  assert (is_square y);
   let a = M.copy x in
   let b = M.copy y in
-  let s, t, _, _, _, q, z = Owl_lapacke.gges ~jobvsl:'V' ~jobvsr:'V' ~a ~b in
-  s, t, q, z
+  let s, t, ar, ai, bt, q, z = Owl_lapacke.gges ~jobvsl:'V' ~jobvsr:'V' ~a ~b in
+  let alpha = _magic_complex otyp ar ai in
+  let beta = M.cast otyp bt in
+  let e = M.(alpha / beta) in
+  s, t, q, z, e
 
+
+let ordqz
+  : type a b c d. otyp:(c, d) kind -> select:(int32, int32_elt) t -> (a, b) t -> (a, b) t -> (a, b) t -> (a, b) t -> (a, b) t * (a, b) t * (a, b) t * (a, b) t * (c, d) t
+  = fun ~otyp ~select a b q z ->
+  let a = M.copy a in
+  let b = M.copy b in
+  let q = M.copy q in
+  let z = M.copy z in
+  let a, b, ar, ai, bt, q, z = Owl_lapacke.tgsen ~select ~a ~b ~q ~z in
+  let alpha = _magic_complex otyp ar ai in
+  let beta = M.cast otyp bt in
+  let e = M.(alpha / beta) in
+  a, b, q, z, e
+
+
+let qzvals
+  : type a b c d. otyp:(c, d) kind -> (a, b) t -> (a, b) t -> (c, d) t
+  = fun ~otyp x y ->
+  assert (is_square x);
+  assert (is_square y);
+  let a = M.copy x in
+  let b = M.copy y in
+  let ar, ai, bt, _, _ = Owl_lapacke.ggev ~jobvl:'N' ~jobvr:'N' ~a ~b in
+  let alpha = _magic_complex otyp ar ai in
+  let beta = M.cast otyp bt in
+  M.(alpha / beta)
+
+
+(* TODO: RQ Decomposition *)
+
+let rq x = ()
 
 
 (* Eigenvalue problem *)
@@ -459,11 +544,6 @@ let bkfact ?(upper=true) ?(symmetric=true) ?(rook=false) x =
 
 
 (* Check matrix properties *)
-
-let is_square x =
-  let m, n = M.shape x in
-  m = n
-
 
 let is_triu x = Owl_core._matrix_is_triu (M.kind x) x
 
@@ -724,8 +804,6 @@ let peakflops ?(n=2000) () =
 
 (* Matrix functions *)
 
-let dot x y = M.dot x y
-
 
 let mpow x r =
   let frac_part, _ = Pervasives.modf r in
@@ -974,7 +1052,7 @@ let tanhm x =
 
 
 (* TODO *)
-let logm x = "logm: not implemented"
+let logm x = failwith "logm: not implemented"
 
 
 (* TODO *)

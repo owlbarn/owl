@@ -3212,14 +3212,14 @@ let col_num x =
 
 let row x i =
   let m, n = _matrix_shape x in
-  assert (i < m);
+  let i = Owl_utils.adjust_index i m in
   let y = Bigarray.Genarray.slice_left x [|i|] in
   reshape y [|1;n|]
 
 
 let col x j =
   let m, n = _matrix_shape x in
-  assert (j < n);
+  let j = Owl_utils.adjust_index j n in
   let _kind = kind x in
   let y = empty _kind [|m;1|] in
   _owl_copy _kind m ~ofsx:j ~incx:n ~ofsy:0 ~incy:1 x y;
@@ -3325,7 +3325,7 @@ let to_arrays x =
 
 
 let rows x l =
-  let m, n = Array.length (l), col_num x in
+  let m, n = Array.length l, col_num x in
   let y = empty (kind x) [|m;n|] in
   Array.iteri (fun i j ->
     copy_row_to (row x j) y i
@@ -3335,11 +3335,11 @@ let rows x l =
 
 let cols x l =
   let m, n = _matrix_shape x in
-  let nl = Array.length (l) in
+  let nl = Array.length l in
   let _kind = kind x in
   let y = empty _kind [|m;nl|] in
   Array.iteri (fun i j ->
-    assert (i < nl && j < n);
+    let j = Owl_utils.adjust_index j n in
     _owl_copy _kind m ~ofsx:j ~incx:n ~ofsy:i ~incy:nl x y;
   ) l;
   y

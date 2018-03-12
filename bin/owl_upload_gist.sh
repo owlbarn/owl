@@ -5,17 +5,14 @@ gist -v >/dev/null 2>&1 || { echo >&2 "Error: 'gist' is not installed!"; exit 1;
 
 # check for valid directory
 DIRNAME=$1
-if [ ! -f $DIRNAME/_readme.md ]; then
+if [ ! -f $DIRNAME/\#readme.md ]; then
     echo "usage: `basename $0` <dirname>"
-    echo "       <dirname>/_readme.md must exist"
+    echo "       <dirname>/#readme.md must exist"
     exit 1
 fi
 cd $DIRNAME
 
-# force to log into github
-gist --login
-
-NAME=`head -n 1 _readme.md`
+NAME=`head -n 1 \#readme.md`
 FILES=`ls * | xargs echo`
 
 # add new or upate a gist

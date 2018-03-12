@@ -9,8 +9,8 @@
 val remove_gist : string -> unit
 (** Remove a local gist of given id. *)
 
-val upload_gist : string -> unit
-(** Upload a zoo bundle of given path to the gist server. *)
+val upload_gist : string -> string
+(** Upload a zoo bundle of given path to the gist server and return a gist id. *)
 
 val download_gist : string -> unit
 (** Download the gist of given id. *)

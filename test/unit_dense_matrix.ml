@@ -37,9 +37,25 @@ module To_test = struct
     M.set x 2 1 5.;
     M.get x 2 1
 
-  let row () = M.of_arrays Float64 [| [|4.;5.;6.;7.|] |]
+  let row0 () =
+    let x = M.row x2 1 in
+    let y = M.of_arrays Float64 [| [|4.;5.;6.;7.|] |] in
+    M.(x = y)
 
-  let col () = M.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |]
+  let row1 () =
+    let x = M.row x2 (-2) in
+    let y = M.of_arrays Float64 [| [|4.;5.;6.;7.|] |] in
+    M.(x = y)
+
+  let col0 () =
+    let x = M.col x2 1 in
+    let y = M.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |] in
+    M.(x = y)
+
+  let col1 () =
+    let x = M.col x2 (-3) in
+    let y = M.of_arrays Float64 [| [|1.|];[|5.|];[|9.|] |] in
+    M.(x = y)
 
   let trace x = M.trace x
 
@@ -246,11 +262,17 @@ let set () =
 let fill () =
   Alcotest.(check matrix) "fill" x1 (To_test.fill ())
 
-let row () =
-  Alcotest.(check matrix) "row" (M.row x2 1) (To_test.row ())
+let row0 () =
+  Alcotest.(check bool) "row0" true (To_test.row0 ())
 
-let col () =
-  Alcotest.(check matrix) "col" (M.col x2 1) (To_test.col ())
+let row1 () =
+  Alcotest.(check bool) "row1" true (To_test.row1 ())
+
+let col0 () =
+  Alcotest.(check bool) "col0" true (To_test.col0 ())
+
+let col1 () =
+  Alcotest.(check bool) "col1" true (To_test.col1 ())
 
 let trace () =
   Alcotest.(check (float eps)) "trace" 15. (To_test.trace x2)
@@ -388,8 +410,10 @@ let test_set = [
   "numel", `Slow, numel;
   "get", `Slow, get;
   "set", `Slow, set;
-  "row", `Slow, row;
-  "col", `Slow, col;
+  "row0", `Slow, row0;
+  "row1", `Slow, row1;
+  "col0", `Slow, col0;
+  "col1", `Slow, col1;
   "fill", `Slow, fill;
   "trace", `Slow, trace;
   "add_diag", `Slow, add_diag;

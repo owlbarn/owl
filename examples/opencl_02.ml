@@ -5,9 +5,9 @@
 open Owl
 
 let test_gpu x () =
-  let x = Owl_opencl_dense.of_ndarray x in
-  let x = Owl_opencl_dense.(mul x x |> sin |> cos |> tan |> neg) in
-  let x = Owl_opencl_dense.to_ndarray float32 x in
+  let x = Owl_opencl_dense_ndarray.of_ndarray x in
+  let x = Owl_opencl_dense_ndarray.(mul x x |> sin |> cos |> tan |> neg) in
+  let x = Owl_opencl_dense_ndarray.to_ndarray float32 x in
   Dense.Ndarray.Generic.pp_dsnda Format.std_formatter x
 
 let test_cpu x () =

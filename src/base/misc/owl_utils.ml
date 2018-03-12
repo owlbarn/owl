@@ -15,9 +15,18 @@ module Stack = Owl_utils_stack
 module Array = Owl_utils_array
 
 
+(* Generate an array of continuous integers *)
 let range a b =
   let r = Array.make (b - a + 1) 0 in
-  for i = a to b do r.(i - a) <- i done; r
+  for i = a to b do r.(i - a) <- i done;
+  r
+
+
+(* Adjust the index according to the [0, m). m is the boundary, i can be negative. *)
+let adjust_index i m =
+  if i >= 0 && i < m then i
+  else if i < 0 && i >= -m then i + m
+  else raise Owl_exception.INDEX_OUT_OF_BOUND
 
 
 (* Computes a left fold over a range of integers from a to b (inclusive) *)
@@ -182,6 +191,22 @@ let array1_copy x =
   y
 
 
+(* format time period into human-readable format *)
+let format_time t =
+  if t < 60. then
+    Printf.sprintf "%02is" (int_of_float t)
+  else if t >= 60. && t < 3600. then (
+    let m = int_of_float (t /. 60.) in
+    let s = (int_of_float t) mod 60 in
+    Printf.sprintf "%02im%02is" m s
+  )
+  else (
+    let h = int_of_float (t /. 3600.) in
+    let m = int_of_float (t /. 60.) mod 60 in
+    Printf.sprintf "%ih%02im" h m
+  )
+
+
 (* read a file of a given path *)
 let read_file ?(trim=true) f =
   let h = open_in f in
@@ -199,26 +224,13 @@ let read_file ?(trim=true) f =
   Stack.to_array s
 
 
-(* format time period into human-readable format *)
-let format_time t =
-  if t < 60. then
-    Printf.sprintf "%02is" (int_of_float t)
-  else if t >= 60. && t < 3600. then (
-    let m = int_of_float (t /. 60.) in
-    let s = (int_of_float t) mod 60 in
-    Printf.sprintf "%02im%02is" m s
-  )
-  else (
-    let h = int_of_float (t /. 3600.) in
-    let m = int_of_float (t /. 60.) mod 60 in
-    Printf.sprintf "%ih%02im" h m
-  )
-
-
-(* TODO: optimise - read file into a string *)
-let read_file_string ?trim f =
-  read_file ?trim f
-  |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
+let read_file_string f =
+  let ic = open_in f in
+  let n = in_channel_length ic in
+  let s = Bytes.create n in
+  really_input ic s 0 n;
+  close_in ic;
+  Bytes.to_string s
 
 
 (* write a file of a given path *)

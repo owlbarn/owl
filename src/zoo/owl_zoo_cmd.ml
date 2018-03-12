@@ -40,10 +40,12 @@ let remove_gist gid =
   else Owl_log.debug "owl_zoo: Error remvoing gist %s" gid
 
 
-let upload_gist gid =
-  Owl_log.debug "owl_zoo: %s uploading" gid;
-  let cmd = Printf.sprintf "owl_upload_gist.sh %s" gid in
-  Sys.command cmd |> ignore
+let upload_gist dir =
+  Owl_log.debug "owl_zoo: %s uploading" dir;
+  let cmd = Printf.sprintf "owl_upload_gist.sh %s" dir in
+  Sys.command cmd |> ignore;
+  let gist_arr = Owl_utils.read_file (dir ^ "/gist.id") in
+  gist_arr.(0)
 
 
 let download_gist gist =
@@ -81,13 +83,13 @@ let show_info gist =
   let files = Sys.readdir dir
     |> Array.fold_left (fun a s -> a ^ s ^ " ") ""
   in
-  let readme = dir ^ "/readme.md" in
+  let readme = dir ^ "/#readme.md" in
   let info_s =
     if Sys.file_exists readme then (
       Utils.read_file readme
       |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
     )
-    else "missing readme.md"
+    else "missing #readme.md"
   in
   let info =
     Printf.sprintf "[id]    %s\n" gist ^
@@ -99,10 +101,20 @@ let show_info gist =
   print_endline info
 
 
+<<<<<<< HEAD
 let load_file gist f =
   let gid, vid, _, _ = Owl_zoo_log.parse_gist_string gist in
   let path = Printf.sprintf "%s/%s" (Owl_zoo_config.extend_dir gid vid) f in
   Owl_utils.read_file_string path
+=======
+(* format "gist/file", e.g., d7bdd62b355f906ed059f00b1270b79c/#readme.md *)
+let load_file f =
+  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
+  let gist = Filename.dirname f in
+  let file = Filename.basename f in
+  let path = Printf.sprintf "%s%s/%s" dir gist file in
+  Utils.read_file_string path
+>>>>>>> master
 
 
 let run args script =
