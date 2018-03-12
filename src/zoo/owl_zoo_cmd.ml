@@ -5,6 +5,19 @@
 
 open Owl
 
+let _read_file f =
+  let ic = open_in f in
+  let n = in_channel_length ic in
+  let s = Bytes.create n in
+  really_input ic s 0 n;
+  close_in ic;
+  (s) |> Bytes.to_string
+
+
+let _strip_last_char str =
+  if str = "" then "" else
+  String.sub str 0 ((String.length str) - 1)
+
 
 let eval cmd = cmd
   |> Lexing.from_string
@@ -35,10 +48,11 @@ let remove_gist gist =
   Sys.command cmd |> ignore
 
 
-let upload_gist gist =
-  Owl_log.debug "owl_zoo: %s uploading" gist;
-  let cmd = Printf.sprintf "owl_upload_gist.sh %s" gist in
-  Sys.command cmd |> ignore
+let upload_gist dir =
+  Owl_log.debug "owl_zoo: %s uploading" dir;
+  let cmd = Printf.sprintf "owl_upload_gist.sh %s" dir in
+  Sys.command cmd |> ignore;
+  _read_file (dir ^ "/gist.id") |> _strip_last_char
 
 
 let download_gist gist =
@@ -72,13 +86,13 @@ let show_info gist =
   let files = Sys.readdir dir
     |> Array.fold_left (fun a s -> a ^ s ^ " ") ""
   in
-  let readme = dir ^ "/readme.md" in
+  let readme = dir ^ "/#readme.md" in
   let info_s =
     if Sys.file_exists readme then (
       Utils.read_file readme
       |> Array.fold_left (fun a s -> a ^ s ^ "\n") ""
     )
-    else "missing readme.md"
+    else "missing #readme.md"
   in
   let info =
     Printf.sprintf "[id]    %s\n" gist ^
@@ -90,7 +104,7 @@ let show_info gist =
   print_endline info
 
 
-(* format "gist/file", e.g., d7bdd62b355f906ed059f00b1270b79c/readme.md *)
+(* format "gist/file", e.g., d7bdd62b355f906ed059f00b1270b79c/#readme.md *)
 let load_file f =
   let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
   let gist = Filename.dirname f in
