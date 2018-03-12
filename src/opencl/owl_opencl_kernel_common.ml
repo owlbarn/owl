@@ -81,8 +81,74 @@ let functions () = [
     map_arr_scalar_fun "float32_atan2_scalar"   "float" "atan2(a[gid], b)";
     map_arr_scalar_fun "float32_atan2pi_scalar" "float" "atan2pi(a[gid], b)";
 
+    (* float32 functions *)
+    (*
+    map_arr_fun        "float64_erf"            "double" "erf(a[gid])";
+    map_arr_fun        "float64_erfc"           "double" "erfc(a[gid])";
+    map_arr_fun        "float64_abs"            "double" "fabs(a[gid])";
+    map_arr_fun        "float64_neg"            "double" "-a[gid]";
+    map_arr_fun        "float64_sqr"            "double" "a[gid] * a[gid]";
+    map_arr_fun        "float64_sqrt"           "double" "sqrt(a[gid])";
+    map_arr_fun        "float64_rsqrt"          "double" "rsqrt(a[gid])";
+    map_arr_fun        "float64_cbrt"           "double" "cbrt(a[gid])";
+    map_arr_fun        "float64_reci"           "double" "1. / a[gid]";
+    map_arr_fun        "float64_sin"            "double" "sin(a[gid])";
+    map_arr_fun        "float64_cos"            "double" "cos(a[gid])";
+    map_arr_fun        "float64_tan"            "double" "tan(a[gid])";
+    map_arr_fun        "float64_asin"           "double" "asin(a[gid])";
+    map_arr_fun        "float64_acos"           "double" "acos(a[gid])";
+    map_arr_fun        "float64_atan"           "double" "atan(a[gid])";
+    map_arr_fun        "float64_sinh"           "double" "sinh(a[gid])";
+    map_arr_fun        "float64_cosh"           "double" "cosh(a[gid])";
+    map_arr_fun        "float64_tanh"           "double" "tanh(a[gid])";
+    map_arr_fun        "float64_asinh"          "double" "asinh(a[gid])";
+    map_arr_fun        "float64_acosh"          "double" "acosh(a[gid])";
+    map_arr_fun        "float64_atanh"          "double" "atanh(a[gid])";
+    map_arr_fun        "float64_atanpi"         "double" "atanpi(a[gid])";
+    map_arr_fun        "float64_sinpi"          "double" "sinpi(a[gid])";
+    map_arr_fun        "float64_cospi"          "double" "cospi(a[gid])";
+    map_arr_fun        "float64_tanpi"          "double" "tanpi(a[gid])";
+    map_arr_fun        "float64_floor"          "double" "floor(a[gid])";
+    map_arr_fun        "float64_ceil"           "double" "ceil(a[gid])";
+    map_arr_fun        "float64_round"          "double" "round(a[gid])";
+    map_arr_fun        "float64_exp"            "double" "exp(a[gid])";
+    map_arr_fun        "float64_exp2"           "double" "exp2(a[gid])";
+    map_arr_fun        "float64_exp10"          "double" "exp10(a[gid])";
+    map_arr_fun        "float64_expm1"          "double" "expm1(a[gid])";
+    map_arr_fun        "float64_log"            "double" "log(a[gid])";
+    map_arr_fun        "float64_log2"           "double" "log2(a[gid])";
+    map_arr_fun        "float64_log10"          "double" "log10(a[gid])";
+    map_arr_fun        "float64_log1p"          "double" "log1p(a[gid])";
+    map_arr_fun        "float64_logb"           "double" "logb(a[gid])";
+    map_arr_fun        "float64_relu"           "double" "fmax(a[gid], 0)";
+    map_arr_fun        "float64_signum"         "double" "(a[gid] > 0.) ? 1. : (a[gid] < 0.) ? -1. : 0.";
+    map_arr_fun        "float64_sigmoid"        "double" "1. / (1. + exp(-a[gid]))";
+    map_arr_fun        "float64_softplus"       "double" "log1p(exp(a[gid]))";
+    map_arr_fun        "float64_softsign"       "double" "a[gid] / (1. + fabs(a[gid]))";
+    map_arr_arr_fun    "float64_add"            "double" "a[gid] + b[gid]";
+    map_arr_arr_fun    "float64_sub"            "double" "a[gid] - b[gid]";
+    map_arr_arr_fun    "float64_mul"            "double" "a[gid] * b[gid]";
+    map_arr_arr_fun    "float64_div"            "double" "a[gid] / b[gid]";
+    map_arr_arr_fun    "float64_pow"            "double" "pow(a[gid], b[gid])";
+    map_arr_arr_fun    "float64_min2"           "double" "fmin(a[gid], b[gid])";
+    map_arr_arr_fun    "float64_max2"           "double" "fmax(a[gid], b[gid])";
+    map_arr_arr_fun    "float64_fmod"           "double" "fmod(a[gid], b[gid])";
+    map_arr_arr_fun    "float64_hypot"          "double" "hypot(a[gid], b[gid])";
+    map_arr_arr_fun    "float64_atan2"          "double" "atan2(a[gid], b[gid])";
+    map_arr_arr_fun    "float64_atan2pi"        "double" "atan2pi(a[gid], b[gid])";
+    map_arr_arr_fun    "float64_equal"          "double" "a[gid] = b[gid]";
+    map_arr_arr_fun    "float64_not_equal"      "double" "a[gid] != b[gid]";
+    map_arr_scalar_fun "float64_add_scalar"     "double" "a[gid] + b";
+    map_arr_scalar_fun "float64_sub_scalar"     "double" "a[gid] - b";
+    map_arr_scalar_fun "float64_mul_scalar"     "double" "a[gid] * b";
+    map_arr_scalar_fun "float64_div_scalar"     "double" "a[gid] / b";
+    map_arr_scalar_fun "float64_pow_scalar"     "double" "pow(a[gid], b)";
+    map_arr_scalar_fun "float64_fmod_scalar"    "double" "fmod(a[gid], b)";
+    map_arr_scalar_fun "float64_atan2_scalar"   "double" "atan2(a[gid], b)";
+    map_arr_scalar_fun "float64_atan2pi_scalar" "double" "atan2pi(a[gid], b)";
+    *)
+    
     (* TODO: complex32 functions *)
-    (* TODO: float64 functions *)
     (* TODO: int32 functions *)
     (* TODO: int64 functions *)
   ]
