@@ -657,6 +657,28 @@ Please refer to ``iteri_slice`` for more details.
 val map_slice : ?axis:int -> (('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
 (** Similar to ``mapi_slice`` but slice index is not passed in. *)
 
+val filteri_slice : ?axis:int -> (int -> ('a, 'b) t -> bool) -> ('a, 'b) t -> ('a, 'b) t array
+(**
+``filteri_slice ~axis f x`` filters the slices along the specified ``axis`` in
+``x``. The slices which satisfy the predicate ``f`` are returned in an array.
+
+Please refer to ``iteri_slice`` for more details.
+*)
+
+val filter_slice : ?axis:int -> (('a, 'b) t -> bool) -> ('a, 'b) t -> ('a, 'b) t array
+(** Similar to ``filteri_slice`` but slice index is not passed in. *)
+
+val foldi_slice : ?axis:int -> (int -> 'c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
+(**
+``foldi_slice ~axis f a x`` fold (left) the slices along the specified ``axis``
+in ``x``. The slices which satisfy the predicate ``f`` are returned in an array.
+
+Please refer to ``iteri_slice`` for more details.
+*)
+
+val fold_slice : ?axis:int -> ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
+(** Similar to ``foldi_slice`` but slice index is not passed in. *)
+
 
 (** {6 Examination & Comparison}  *)
 

@@ -1097,6 +1097,25 @@ let mapi_slice ?(axis=0) f x =
 let map_slice ?axis f x = mapi_slice ?axis (fun _ y -> f y) x
 
 
+let filteri_slice ?axis f x =
+  let s = Owl_utils.Stack.make () in
+  iteri_slice ?axis (fun i y ->
+    if (f i y) then Owl_utils.Stack.push s y
+  ) x;
+  Owl_utils.Stack.to_array s
+
+
+let filter_slice ?axis f x = filteri_slice ?axis (fun _ y -> f y) x
+
+
+let foldi_slice ?axis f a x =
+  let acc = ref a in
+  iteri_slice ?axis (fun i y -> acc := f i !acc y) x;
+  !acc
+
+let fold_slice ?axis f x = foldi_slice ?axis (fun _ y -> f y) x
+
+
 (* manipulation functions *)
 
 let _check_transpose_axis axis d =
