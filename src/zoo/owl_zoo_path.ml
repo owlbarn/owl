@@ -4,7 +4,7 @@
  *)
 
  let dir = Sys.getenv "HOME" ^ "/.owl/zoo"
- let log = dir ^ "/" ^ "zoo_ver.htb"
+ let htb = dir ^ "/" ^ "zoo_ver.htb"
 
 
  let gist_path gid vid =

@@ -6,7 +6,7 @@
 open Owl
 
 
-let dir = Owl_zoo_path.dir
+let dir = Owl_zoo_path.htb
 
 
 let eval cmd = cmd
@@ -36,7 +36,7 @@ let remove_gist gid =
   let cmd = Printf.sprintf "rm -rf %s" dir in
   let ret = Sys.command cmd in
   if ret = 0 then (
-    Owl_zoo_log.remove_log gid;
+    Owl_zoo_log.remove gid;
     Owl_log.debug "owl_zoo: %s removed" gid
   )
   else Owl_log.debug "owl_zoo: Error remvoing gist %s" gid
@@ -53,12 +53,12 @@ let upload_gist dir =
 let download_gist ?vid gid =
   let vid = match vid with
   | Some a -> a
-  | None   -> Owl_zoo_log.get_latest_vid_remote gid
+  | None   -> Owl_zoo_log.get_remote_vid gid
   in
   Owl_log.debug "owl_zoo: %s/%s downloading" gid vid;
   let cmd = Printf.sprintf "owl_download_gist.sh %s %s" gid vid in
   let ret = Sys.command cmd in
-  if ret = 0 then (Owl_zoo_log.update_log gid vid)
+  if ret = 0 then (Owl_zoo_log.update gid vid)
   else (Owl_log.debug "owl_zoo: Error downloading gist %s" gid)
 
 
@@ -76,7 +76,7 @@ let update_gist gids =
   in
   Owl_log.debug "owl_zoo: updating %i gists" Array.(length gids);
   (*let download_remote gid =
-    let v = Owl_zoo_log.get_latest_vid_remote gid in
+    let v = Owl_zoo_log.get_remote_vid gid in
     download_gist (gid ^ "/" ^ v)
   in*)
   Array.iter download_gist gids

@@ -19,7 +19,7 @@ Returns:
  *)
 
 
-(** {6 Exception definition} *)
+(** {13 Exception definition} *)
 
 exception NOT_IMPLEMENTED
 (** Exception of not implemented yet. *)
@@ -56,3 +56,6 @@ exception SINGULAR
 
 exception INDEX_OUT_OF_BOUND
 (** Exception of index out of boundary. *)
+
+exception ZOO_ILLEGAL_GIST_NAME
+(** Incorrrect input gist name *)
