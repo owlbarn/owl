@@ -199,6 +199,14 @@ val mapi_slice : ?axis:int -> (int -> arr -> 'c) -> arr -> 'c array
 
 val map_slice : ?axis:int -> (arr -> 'c) -> arr -> 'c array
 
+val filteri_slice : ?axis:int -> (int -> arr -> bool) -> arr -> arr array
+
+val filter_slice : ?axis:int -> (arr -> bool) -> arr -> arr array
+
+val foldi_slice : ?axis:int -> (int -> 'c -> arr -> 'c) -> 'c -> arr -> 'c
+
+val fold_slice : ?axis:int -> ('c -> arr -> 'c) -> 'c -> arr -> 'c
+
 
 (** {6 Examine array elements or compare two arrays } *)
 
