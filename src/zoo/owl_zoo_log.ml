@@ -4,7 +4,7 @@
  *)
 
 
-let log = Owl_zoo_config.log
+let log = Owl_zoo_path.log
 
 
 (* Record structure: gid --> timestamp * version list *)

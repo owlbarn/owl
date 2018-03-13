@@ -20,26 +20,34 @@ let rec _extract_zoo_gist f added =
 
 and _download_gist gid vid =
   if (Owl_zoo_log.check_log gid vid) = true then
-    Owl_log.info "owl_zoo: %s / %s cached" gid vid
+    Owl_log.info "owl_zoo: %s/%s cached" gid vid
   else (
-    Owl_log.info "owl_zoo: %s / %s missing" gid vid;
-    Owl_log.debug "owl_zoo: %s (ver. %s) downloading" gid vid;
+    Owl_log.info "owl_zoo: %s/%s missing; downloading" gid vid;
     let cmd = Printf.sprintf "owl_download_gist.sh %s %s" gid vid in
     let ret = Sys.command cmd in
     if ret = 0 then Owl_zoo_log.update_log gid vid
-    else Owl_log.debug "owl_zoo: Error downloading gist %s" gid
+    else Owl_log.debug "owl_zoo: Error downloading gist %s/%s" gid vid
   )
 
 
 and _dir_zoo_ocaml gid vid added =
-  let dir_gist = Owl_zoo_config.extend_dir gid vid in
+  let dir_gist = Owl_zoo_path.gist_path gid vid in
   Sys.readdir (dir_gist)
   |> Array.to_list
   |> List.filter (fun s -> Filename.check_suffix s "ml")
   |> List.iter (fun l ->
       let f = Printf.sprintf "%s/%s" dir_gist l in
-      _extract_zoo_gist f added;
-      Toploop.mod_use_file Format.std_formatter f
+
+      (* extend file path in a script *)
+      let f' = "/tmp/" ^ l in
+      Sys.command (Printf.sprintf "cp %s %s" f f') |> ignore;
+      let cmd = Printf.sprintf
+        "sed -i 's/extend_zoo_path/extend_zoo_path ~gid:\"%s\" ~vid:\"%s\"/g' %s"
+        gid vid f' in
+      Sys.command cmd |> ignore;
+
+      _extract_zoo_gist f' added;
+      Toploop.mod_use_file Format.std_formatter f'
       |> ignore
     )
 

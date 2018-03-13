@@ -5,7 +5,9 @@
 
 open Owl
 
-let dir = Owl_zoo_config.dir
+
+let dir = Owl_zoo_path.dir
+
 
 let eval cmd = cmd
   |> Lexing.from_string
@@ -53,7 +55,7 @@ let download_gist ?vid gid =
   | Some a -> a
   | None   -> Owl_zoo_log.get_latest_vid_remote gid
   in
-  Owl_log.debug "owl_zoo: %s (ver. %s) downloading" gid vid;
+  Owl_log.debug "owl_zoo: %s/%s downloading" gid vid;
   let cmd = Printf.sprintf "owl_download_gist.sh %s %s" gid vid in
   let ret = Sys.command cmd in
   if ret = 0 then (Owl_zoo_log.update_log gid vid)
@@ -82,7 +84,7 @@ let update_gist gids =
 
 let show_info gist =
   let gid, vid, _, _ = Owl_zoo_log.parse_gist_string gist in
-  let dir = Owl_zoo_config.extend_dir gid vid in
+  let dir = Owl_zoo_path.gist_path gid vid in
   let files = Sys.readdir dir
     |> Array.fold_left (fun a s -> a ^ s ^ " ") ""
   in
@@ -109,7 +111,7 @@ let show_info gist =
 (* f is a file name in the gist, e.g., #readme.md *)
 let load_file gist f =
   let gid, vid, _, _ = Owl_zoo_log.parse_gist_string gist in
-  let path = Printf.sprintf "%s/%s" (Owl_zoo_config.extend_dir gid vid) f in
+  let path = Printf.sprintf "%s/%s" (Owl_zoo_path.gist_path gid vid) f in
   Owl_utils.read_file_string path
 
 

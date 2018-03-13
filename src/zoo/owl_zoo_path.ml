@@ -6,5 +6,12 @@
  let dir = Sys.getenv "HOME" ^ "/.owl/zoo"
  let log = dir ^ "/" ^ "zoo_ver.htb"
 
- let extend_dir gid vid =
+
+ let gist_path gid vid =
    dir  ^ "/" ^ gid ^ "/" ^ vid
+
+(* Used by script creators *)
+let extend_zoo_path ?(gid="") ?(vid="") filepath =
+  match gid, vid with
+  | "", "" -> filepath
+  | g, v   -> ((gist_path g v) ^ "/" ^ filepath)
