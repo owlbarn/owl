@@ -48,10 +48,10 @@ let upload_gist dir =
   gist_arr.(0)
 
 
-let download_gist gid ?vid =
+let download_gist ?vid gid =
   let vid = match vid with
   | Some a -> a
-  | None   -> get_latest_vid_remote gid
+  | None   -> Owl_zoo_log.get_latest_vid_remote gid
   in
   Owl_log.debug "owl_zoo: %s (ver. %s) downloading" gid vid;
   let cmd = Printf.sprintf "owl_download_gist.sh %s %s" gid vid in
@@ -67,17 +67,17 @@ let list_gist gid =
   Sys.command cmd |> ignore
 
 
-let update_gist gists =
-  let gists =
-    if Array.length gists = 0 then Sys.readdir dir
-    else gists
+let update_gist gids =
+  let gids =
+    if Array.length gids = 0 then Sys.readdir dir
+    else gids
   in
-  Owl_log.debug "owl_zoo: updating %i gists" Array.(length gists);
-  let download_remote gid =
+  Owl_log.debug "owl_zoo: updating %i gists" Array.(length gids);
+  (*let download_remote gid =
     let v = Owl_zoo_log.get_latest_vid_remote gid in
     download_gist (gid ^ "/" ^ v)
-  in
-  Array.iter download_remote gists
+  in*)
+  Array.iter download_gist gids
 
 
 let show_info gist =
@@ -95,9 +95,11 @@ let show_info gist =
     else "missing #readme.md"
   in
   let info =
-    Printf.sprintf "[id]    %s\n" gist ^
+    Printf.sprintf "[gid]   %s\n" gid ^
+    Printf.sprintf "[vid]   %s\n" vid ^
     Printf.sprintf "[path]  %s\n" dir ^
-    Printf.sprintf "[url]   %s\n" ("https://gist.github.com/" ^ gist) ^
+    Printf.sprintf "[url]   %s\n" ("https://gist.github.com/" ^
+      gid ^ "/" ^ vid) ^
     Printf.sprintf "[files] %s\n" files ^
     Printf.sprintf "[info]  %s" info_s
   in

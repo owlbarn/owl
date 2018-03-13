@@ -12,8 +12,8 @@ val remove_gist : string -> unit
 val upload_gist : string -> string
 (** Upload a zoo bundle of given path to the gist server and return a gist id. *)
 
-val download_gist : string -> unit
-(** Download the gist of given id. *)
+val download_gist : ?vid:string -> string -> unit
+(** Download the gist of given id and version; if a version id is not given, the latest version id will be used. *)
 
 val list_gist : string -> unit
 (** ``list_gist ""`` lists all the local gists; ``list_gist gist`` lists all the local versions of a gist. *)
