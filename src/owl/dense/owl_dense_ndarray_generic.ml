@@ -2436,17 +2436,19 @@ let _diff a x =
   y
 
 
-let rec diff ?axis ?(n=1) x =
-  if n = 0 then x else (
-    let d = num_dims x in
-    let a = match axis with
-      | Some a -> a
-      | None   -> d - 1
-    in
-    assert (0 <= a && a < d);
-    assert (n < nth_dim x a);
-    diff ~axis:a ~n:(n - 1) (_diff a x)
-  )
+let diff ?axis ?(n=1) x =
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None   -> d - 1
+  in
+  assert (0 <= a && a < d);
+  assert (n < nth_dim x a);
+  let y = ref x in
+  for i = 1 to n do
+    y := _diff a !y
+  done;
+  !y
 
 
 (* TODO: optimise performance, slow along the low dimension *)

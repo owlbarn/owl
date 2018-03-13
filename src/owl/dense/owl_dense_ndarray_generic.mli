@@ -1477,8 +1477,8 @@ Parameters:
   * ``n``: how many times to calculate the difference. The default value is 1.
 
 Return:
-  * The difference ndarray y. Note the shape of ``y`` 1 less than that of ``x``
-    along specified axis.
+  * The difference ndarray y. Note that the shape of ``y`` 1 less than that of
+    ``x`` along specified axis.
  *)
 
 val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t
