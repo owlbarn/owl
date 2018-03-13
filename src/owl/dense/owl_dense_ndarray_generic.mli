@@ -631,8 +631,10 @@ val map2i_nd : (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a,
 val iteri_slice : ?axis:int -> (int -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
 (**
 ``iteri_slice ~axis f x`` iterates the slices along the specified ``axis`` in
-``x`` and applies the function ``f``. By default, ``axis`` is 0. The index of
-of the slice is passed in.
+``x`` and applies the function ``f``. The 1-d index of of the slice is passed
+in. By default, the ``axis`` is 0. Setting ``axis`` to the highest dimension
+is not allowed because in that case you can just use `iteri` to iterate all the
+elements in ``x`` which is more efficient.
 
 Note that the slice is obtained by slicing left (due to Owl's C-layout ndarray)
 a sub-array out of ``x``. E.g., if ``x`` has shape ``[|3;4;5|]``, setting

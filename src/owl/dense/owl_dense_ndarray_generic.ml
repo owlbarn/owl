@@ -1061,17 +1061,17 @@ let map2i_nd f x y =
 
 let iteri_slice ?(axis=0) f x =
   let d = num_dims x in
-  assert (axis >=0 && axis < d);
+  assert (axis >=0 && axis < d - 1);
   let m = (numel x) / (strides x).(axis) in
-  let xs = shape x in
-  let zs = Array.sub xs (axis + 1) (d - axis - 1) in
-  let ys = Array.append [|m|] zs in
-  let y = reshape x ys in
+  let s = Array.sub (shape x) (axis + 1) (d - axis - 1) in
+  let n = s.(0) in
+  s.(0) <- m * s.(0);
+  let y = reshape x s in
+  let ofs = ref (-n) in
 
   for i = 0 to m - 1 do
-    let z0 = sub_left y i 1 in
-    let z1 = Bigarray.reshape z0 zs in
-    f i z1
+    ofs := !ofs + n;
+    f i (sub_left y !ofs n)
   done
 
 
@@ -1080,16 +1080,17 @@ let iter_slice ?axis f x = iteri_slice ?axis (fun _ y -> f y) x
 
 let mapi_slice ?(axis=0) f x =
   let d = num_dims x in
-  assert (axis >=0 && axis < d);
+  assert (axis >=0 && axis < d - 1);
   let m = (numel x) / (strides x).(axis) in
-  let xs = shape x in
-  let zs = Array.sub xs (axis + 1) (d - axis - 1) in
-  let ys = Array.append [|m|] zs in
-  let y = reshape x ys in
+  let s = Array.sub (shape x) (axis + 1) (d - axis - 1) in
+  let n = s.(0) in
+  s.(0) <- m * s.(0);
+  let y = reshape x s in
+  let ofs = ref (-n) in
+
   Array.init m (fun i ->
-    let z0 = sub_left y i 1 in
-    let z1 = Bigarray.reshape z0 zs in
-    f i z1
+    ofs := !ofs + n;
+    f i (sub_left y !ofs n)
   )
 
 
