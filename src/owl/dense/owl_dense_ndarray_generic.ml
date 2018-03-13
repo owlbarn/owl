@@ -1059,6 +1059,36 @@ let map2i_nd f x y =
   map2i (fun i a b -> f (Owl_utils.ind x i) a b) x y
 
 
+let iteri_slice ?(axis=0) f x =
+  let d = num_dims x in
+  assert (axis >=0 && axis < d);
+  let m = (numel x) / (strides x).(axis) in
+  let xs = shape x in
+  let ys = Array.(sub xs (axis + 1) (d - axis) |> append [|m|])in
+  let y = reshape x ys in
+
+  for i = 0 to m - 1 do
+    f i (sub_left y i 1)
+  done
+
+
+let iter_slice ?axis f x = iteri_slice ?axis (fun _ y -> f y) x
+
+
+let mapi_slice ?(axis=0) f x =
+  let d = num_dims x in
+  assert (axis >=0 && axis < d);
+  let m = (numel x) / (strides x).(axis) in
+  let s = Array.(sub (shape x) (axis + 1) (d - axis - 1) |> append [|m|])in
+  let y = reshape x s in
+  Array.init m (fun i -> f i (sub_left y i 1))
+
+
+let map_slice ?axis f x = mapi_slice ?axis (fun _ y -> f y) x
+
+
+(* manipulation functions *)
+
 let _check_transpose_axis axis d =
   let info = "check_transpose_axis fails" in
   if Array.length axis <> d then

@@ -608,25 +608,52 @@ val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val iteri_nd :(int array -> 'a -> unit) -> ('a, 'b) t -> unit
-(** Similar to `iteri` but n-d indices are passed to the user function. *)
+(** Similar to ``iteri`` but n-d indices are passed to the user function. *)
 
 val mapi_nd : (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** Similar to `mapi` but n-d indices are passed to the user function. *)
+(** Similar to ``mapi`` but n-d indices are passed to the user function. *)
 
 val foldi_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Similar to `foldi` but n-d indices are passed to the user function. *)
+(** Similar to ``foldi`` but n-d indices are passed to the user function. *)
 
 val scani_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** Similar to `scani` but n-d indices are passed to the user function. *)
+(** Similar to ``scani`` but n-d indices are passed to the user function. *)
 
 val filteri_nd : (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
-(** Similar to `filteri` but n-d indices are returned. *)
+(** Similar to ``filteri`` but n-d indices are returned. *)
 
 val iter2i_nd :(int array -> 'a -> 'c -> unit) -> ('a, 'b) t -> ('c, 'd) t -> unit
-(** Similar to `iter2i` but n-d indices are passed to the user function. *)
+(** Similar to ``iter2i`` but n-d indices are passed to the user function. *)
 
 val map2i_nd : (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Similar to `map2i` but n-d indices are passed to the user function. *)
+(** Similar to ``map2i`` but n-d indices are passed to the user function. *)
+
+val iteri_slice : ?axis:int -> (int -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
+(**
+``iteri_slice ~axis f x`` iterates the slices along the specified ``axis`` in
+``x`` and applies the function ``f``. By default, ``axis`` is 0. The index of
+of the slice is passed in.
+
+Note that the slice is obtained by slicing left (due to Owl's C-layout ndarray)
+a sub-array out of ``x``. E.g., if ``x`` has shape ``[|3;4;5|]``, setting
+``axis=0`` will iterate three ``4 x 5`` matrices. The slice shares the same
+memory with ``x`` so no copy is made.
+ *)
+
+val iter_slice : ?axis:int -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
+(** Similar to ``iteri_slice`` but slice index is not passed in. *)
+
+val mapi_slice : ?axis:int -> (int -> ('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
+(**
+``mapi_slice ~axis f x`` maps the slices along the specified ``axis`` in
+``x`` and applies the function ``f``. By default, ``axis`` is 0. The index of
+of the slice is passed in.
+
+Please refer to ``iteri_slice`` for more details.
+*)
+
+val map_slice : ?axis:int -> (('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
+(** Similar to ``mapi_slice`` but slice index is not passed in. *)
 
 
 (** {6 Examination & Comparison}  *)

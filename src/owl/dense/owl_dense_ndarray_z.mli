@@ -191,6 +191,14 @@ val iter2i_nd :(int array -> elt -> elt -> unit) -> arr -> arr -> unit
 
 val map2i_nd : (int array -> elt -> elt -> elt) -> arr -> arr -> arr
 
+val iteri_slice : ?axis:int -> (int -> arr -> unit) -> arr -> unit
+
+val iter_slice : ?axis:int -> (arr -> unit) -> arr -> unit
+
+val mapi_slice : ?axis:int -> (int -> arr -> 'c) -> arr -> 'c array
+
+val map_slice : ?axis:int -> (arr -> 'c) -> arr -> 'c array
+
 
 (** {6 Examine array elements or compare two arrays } *)
 
