@@ -2416,6 +2416,39 @@ let avg_pool1d_backward padding input kernel stride output' =
   reshape input' input_shp
 
 
+let _diff a x =
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = _slicez.(a) - _stride.(a) in
+  let incx_m = _slicez.(a) in
+  let incx_n = 1 in
+  let incy_m = _slicez.(a) - _stride.(a) in
+  let incy_n = 1 in
+  let ofsx = _stride.(a) in
+  let ofsy = 0 in
+
+  let k = kind x in
+  let s = shape x in
+  s.(a) <- s.(a) - 1;
+  let y = empty k s in
+  _owl_diff k m n x ofsx incx_m incx_n y ofsy incy_m incy_n;
+  y
+
+
+let rec diff ?axis ?(n=1) x =
+  if n = 0 then x else (
+    let d = num_dims x in
+    let a = match axis with
+      | Some a -> a
+      | None   -> d - 1
+    in
+    assert (0 <= a && a < d);
+    assert (n < nth_dim x a);
+    diff ~axis:a ~n:(n - 1) (_diff a x)
+  )
+
+
 (* TODO: optimise performance, slow along the low dimension *)
 let cumulative_op ?axis _cumop x =
   let d = num_dims x in

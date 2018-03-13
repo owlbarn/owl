@@ -282,6 +282,18 @@ module To_test = struct
     let a = M.concatenate ~axis:1 [|x; y|] in
     M.(a = z)
 
+  let diff_1 () =
+    let x = M.sequential Float64 [|3;3|] in
+    let y = M.create Float64 [|2;3|] 3. in
+    let z = M.diff ~axis:0 x in
+    M.(y = z)
+
+  let diff_2 () =
+    let x = M.sequential Float64 [|3;3|] in
+    let y = M.ones Float64 [|3;2|] in
+    let z = M.diff ~axis:1 x in
+    M.(y = z)
+
 end
 
 (* the tests *)
@@ -478,6 +490,12 @@ let concatenate_01 () =
 let concatenate_02 () =
   Alcotest.(check bool) "concatenate_02" true (To_test.concatenate_02 ())
 
+let diff_1 () =
+  Alcotest.(check bool) "diff_1" true (To_test.diff_1 ())
+
+let diff_2 () =
+  Alcotest.(check bool) "diff_2" true (To_test.diff_2 ())
+
 let test_set = [
   "shape", `Slow, shape;
   "num_dims", `Slow, num_dims;
@@ -543,4 +561,6 @@ let test_set = [
   "expand_02", `Slow, expand_02;
   "concatenate_01", `Slow, concatenate_01;
   "concatenate_02", `Slow, concatenate_02;
+  "diff_1", `Slow, diff_1;
+  "diff_2", `Slow, diff_2;
 ]

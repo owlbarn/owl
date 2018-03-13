@@ -439,6 +439,8 @@ val cummin : ?axis:int -> arr -> arr
 
 val cummax : ?axis:int -> arr -> arr
 
+val diff : ?axis:int -> ?n:int -> arr -> arr
+
 
 (** {6 Binary mathematical operations } *)
 

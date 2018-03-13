@@ -366,6 +366,8 @@ val cummin : ?axis:int -> arr -> arr
 
 val cummax : ?axis:int -> arr -> arr
 
+val diff : ?axis:int -> ?n:int -> arr -> arr
+
 val sqr : arr -> arr
 
 val sqrt : arr -> arr

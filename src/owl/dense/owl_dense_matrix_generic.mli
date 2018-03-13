@@ -1739,6 +1739,21 @@ val cummax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 ``cummax ~axis x`` : performs cumulative ``max`` along ``axis`` dimension.
  *)
 
+val diff : ?axis:int -> ?n:int -> ('a, 'b) t -> ('a, 'b) t
+(**
+``diff ~axis ~n x`` calculates the ``n``-th difference of ``x`` along the
+specified ``axis``.
+
+Parameters:
+  * ``axis``: axis to calculate the difference. The default value is the
+    highest dimension.
+  * ``n``: how many times to calculate the difference. The default value is 1.
+
+Return:
+  * The difference ndarray y. Note the shape of ``y`` 1 less than that of ``x``
+    along specified axis.
+ *)
+
 val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t
 (**
 ``angle x`` calculates the phase angle of all complex numbers in ``x``.

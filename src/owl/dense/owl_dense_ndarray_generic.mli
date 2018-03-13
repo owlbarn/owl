@@ -200,7 +200,7 @@ values: ``Bigarray.Float32``, ``Bigarray.Float64``, ``Bigarray.Complex32``, and
 
 val strides : ('a, 'b) t -> int array
 (**
-``strides x`` calcuates the strides of ``x``. E.g., if ``x`` is of shape
+``strides x`` calculates the strides of ``x``. E.g., if ``x`` is of shape
 ``[|3;4;5|]``, the returned strides will be ``[|20;5;1|]``.
  *)
 
@@ -1439,7 +1439,7 @@ Returns:
 
 val vecnorm' : ?p:float -> ('a, 'b) t -> 'a
 (**
-``vecnorm'`` flattens the input into 1-d vector first, then calcuates the
+``vecnorm'`` flattens the input into 1-d vector first, then calculates the
 generalised p-norm the same as ``venorm``.
  *)
 
@@ -1464,6 +1464,21 @@ val cummin : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 val cummax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``cummax ~axis x`` : performs cumulative ``max`` along ``axis`` dimension.
+ *)
+
+val diff : ?axis:int -> ?n:int -> ('a, 'b) t -> ('a, 'b) t
+(**
+``diff ~axis ~n x`` calculates the ``n``-th difference of ``x`` along the
+specified ``axis``.
+
+Parameters:
+  * ``axis``: axis to calculate the difference. The default value is the
+    highest dimension.
+  * ``n``: how many times to calculate the difference. The default value is 1.
+
+Return:
+  * The difference ndarray y. Note the shape of ``y`` 1 less than that of ``x``
+    along specified axis.
  *)
 
 val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t

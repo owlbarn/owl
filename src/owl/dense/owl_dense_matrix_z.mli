@@ -510,6 +510,8 @@ val cummin : ?axis:int -> mat -> mat
 
 val cummax : ?axis:int -> mat -> mat
 
+val diff : ?axis:int -> ?n:int -> mat -> mat
+
 val sqr : mat -> mat
 
 val sqrt : mat -> mat

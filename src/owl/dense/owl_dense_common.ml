@@ -2366,6 +2366,30 @@ let _owl_exponential : type a b. (a, b) kind -> (a, b) owl_arr_op13 = function
   | Float64        -> owl_float64_exponential
   | _              -> failwith "_owl_exponential: unsupported operation"
 
+external owl_float32_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float32_diff" "float32_diff_impl"
+external owl_float64_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float64_diff" "float64_diff_impl"
+external owl_complex32_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex32_diff" "complex32_diff_impl"
+external owl_complex64_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex64_diff" "complex64_diff_impl"
+external owl_int8_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "int8_diff" "int8_diff_impl"
+external owl_uint8_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "uint8_diff" "uint8_diff_impl"
+external owl_int16_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "int16_diff" "int16_diff_impl"
+external owl_uint16_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "uint16_diff" "uint16_diff_impl"
+external owl_int32_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "int32_diff" "int32_diff_impl"
+external owl_int64_diff : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "int64_diff" "int64_diff_impl"
+
+let _owl_diff : type a b. (a, b) kind -> (a, b) owl_arr_op14 = function
+  | Float32        -> owl_float32_diff
+  | Float64        -> owl_float64_diff
+  | Complex32      -> owl_complex32_diff
+  | Complex64      -> owl_complex64_diff
+  | Int8_signed    -> owl_int8_diff
+  | Int8_unsigned  -> owl_uint8_diff
+  | Int16_signed   -> owl_int16_diff
+  | Int16_unsigned -> owl_uint16_diff
+  | Int32          -> owl_int32_diff
+  | Int64          -> owl_int64_diff
+  | _              -> failwith "_owl_diff: unsupported operation"
+
 external owl_float32_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float32_cumsum" "float32_cumsum_impl"
 external owl_float64_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "float64_cumsum" "float64_cumsum_impl"
 external owl_complex32_cumsum : int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> ('a, 'b) owl_arr -> int -> int -> int -> unit = "complex32_cumsum" "complex32_cumsum_impl"
