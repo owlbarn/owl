@@ -16,7 +16,7 @@ val download_gist : ?vid:string -> string -> unit
 (** Download the gist of given id and version; if a version id is not given, the latest version id will be used. *)
 
 val list_gist : string -> unit
-(** ``list_gist ""`` lists all the local gists; ``list_gist gist`` lists all the local versions of a gist. *)
+(** ``list_gist ""`` lists all the local gists; ``list_gist gist-id`` lists all the local versions of a gist. *)
 
 val update_gist : string array -> unit
 (** Update the zoo gist bundles of an array of gist ids. *)
@@ -28,7 +28,7 @@ val show_info : string -> unit
 (** {6 Execute gists} *)
 
 val load_file : string -> string -> string
-(** Load a zoo file with the given gist name and file name, the file path is relative to the default zoo folder. *)
+(** Load a zoo file with the given gist name and file name, the file path is relative to the gist/version folder. *)
 
 val eval : string -> unit
 (** Evaluate an OCaml expression in toplevel. *)
@@ -40,7 +40,7 @@ val run : string array -> string -> unit
 (** ``run args script`` executes the zoo script with the given arguments. *)
 
 val run_gist : string -> unit
-(** ``run_gist gist`` runs a zoo gist with the given ``id``. *)
+(** ``run_gist gist-id`` runs a zoo gist with the given ``gist-id``. *)
 
 
 (** {6 Helper functions} *)

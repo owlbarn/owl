@@ -19,13 +19,13 @@ let rec _extract_zoo_gist f added =
 
 
 and _download_gist gid vid =
-  if (Owl_zoo_log.exist gid vid) = true then
+  if (Owl_zoo_ver.exist gid vid) = true then
     Owl_log.info "owl_zoo: %s/%s cached" gid vid
   else (
     Owl_log.info "owl_zoo: %s/%s missing; downloading" gid vid;
     let cmd = Printf.sprintf "owl_download_gist.sh %s %s" gid vid in
     let ret = Sys.command cmd in
-    if ret = 0 then Owl_zoo_log.update gid vid
+    if ret = 0 then Owl_zoo_ver.update gid vid
     else Owl_log.debug "owl_zoo: Error downloading gist %s/%s" gid vid
   )
 
@@ -53,7 +53,7 @@ and _dir_zoo_ocaml gid vid added =
 
 
 and process_dir_zoo ?added gist =
-  let gid, vid, _, _ = Owl_zoo_log.parse_gist_string gist in
+  let gid, vid, _, _ = Owl_zoo_ver.parse_gist_string gist in
   let gist' = Printf.sprintf "%s/%s" gid vid in
 
   let added = match added with
