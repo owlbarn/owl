@@ -19,7 +19,7 @@ Returns:
  *)
 
 
-(** {13 Exception definition} *)
+(** {6 Exception definition} *)
 
 exception NOT_IMPLEMENTED
 (** Exception of not implemented yet. *)
