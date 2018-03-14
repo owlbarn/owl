@@ -7,6 +7,19 @@
 let htb = Owl_zoo_path.htb
 
 
+(** run system command and return the result as string *)
+let syscall cmd =
+  let ic, oc = Unix.open_process cmd in
+  let buf = Buffer.create 50 in
+  (try
+     while true do
+       Buffer.add_channel buf ic 1
+     done
+   with End_of_file -> ());
+  Unix.close_process (ic, oc) |> ignore;
+  Buffer.contents buf
+  
+ 
 (** Version information of gists is saved as key-value pairs in Hash table:
 key: gid; value: (version list, timestamp). *)
 let create_htb () =
@@ -40,7 +53,7 @@ let get_remote_vid (gid : string) =
   let cmd = "curl https://api.github.com/gists/" ^ gid ^
     " | grep '\"version\"' | head -n1 | grep -o -E '[0-9A-Za-z]+' | grep -v 'version'"
   in
-  Owl_utils.syscall cmd |> String.trim
+  syscall cmd |> String.trim
 
 
 (** Get the latest version downloaded on local machine; if the local version is
