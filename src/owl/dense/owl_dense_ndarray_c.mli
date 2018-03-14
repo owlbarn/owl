@@ -128,7 +128,11 @@ val concat_horizontal : arr -> arr -> arr
 
 val concatenate : ?axis:int -> arr array -> arr
 
+val concat_vh : arr array array -> arr
+
 val split : ?axis:int -> int array -> arr -> arr array
+
+val split_vh : (int * int) array array -> arr -> arr array array
 
 val squeeze : ?axis:int array -> arr -> arr
 

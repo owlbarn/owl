@@ -2598,14 +2598,15 @@ let split ?(axis=0) parts x =
   in
   slices
 
-(*
+
 let split_vh parts x =
   assert (num_dims x >= 2);
   let parts_a0 = Array.map (fun p -> fst p.(0)) parts in
   Array.mapi (fun i part ->
+    let parts_a1 = Array.map snd parts.(i) in
+    split ~axis:1 parts_a1 part
+  ) (sub_ndarray parts_a0 x)
 
-  ) (split_ ~axis:0 parts_a0 x)
-*)
 
 let sum' x = _owl_sum (kind x) (numel x) x
 

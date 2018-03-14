@@ -175,6 +175,8 @@ val concatenate : ?axis:int -> mat array -> mat
 
 val split : ?axis:int -> int array -> mat -> mat array
 
+val split_vh : (int * int) array array -> mat -> mat array array
+
 val transpose : mat -> mat
 
 val ctranspose : mat -> mat

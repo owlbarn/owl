@@ -498,7 +498,14 @@ lowest dimension on a marix, i.e., rows.
 
 val split : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
 (**
-``split ~axis parts x``
+``split ~axis parts x`` splits an ndarray ``x`` into parts along the specified
+``axis``. This function is the inverse operation of ``concatenate``. The
+elements in ``x`` must sum up to the dimension in the specified axis.
+ *)
+
+val split_vh : (int * int) array array -> ('a, 'b) t -> ('a, 'b) t array array
+(**
+Please refer to :doc:`owl_dense_ndarray_generic`. for details.
  *)
 
 val transpose : ('a, 'b) t -> ('a, 'b) t
