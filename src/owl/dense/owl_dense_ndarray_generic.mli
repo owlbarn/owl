@@ -314,6 +314,18 @@ val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
 Same as ``Bigarray.slice_left``, please refer to Bigarray documentation.
  *)
 
+val sub_ndarray : int array -> ('a, 'b) t -> ('a, 'b) t array
+(**
+``sub_ndarray parts x`` is similar to ``Bigarray.sub_left``. It splits the
+passed in ndarray ``x`` along the ``axis 0`` according to ``parts``. The
+elelments in ``parts`` do not need to be equal but they must sum up to the
+dimension along axis zero.
+
+The returned sub-ndarrays share the same memory as ``x``. Because there is no
+copies made, this function is much faster than using `split` function to divide
+the lowest dimensionality of ``x``.
+ *)
+
 val copy_to : ('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``copy_to src dst`` copies the data from ndarray ``src`` to ``dst``.
@@ -1914,13 +1926,6 @@ more memory.
 val sort_ : ('a, 'b) t -> unit
 (**
 ``sort_ x`` performs in-place quicksort of the elelments in ``x``.
- *)
-
-val split_ : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
-(**
-``split_ ~axis parts x`` is similar to ``split`` but the returned splitted
-ndarrays share the same memory as ``x``. Because there is no copies made, this
-function is much faster than `split`.
  *)
 
 val add_ : ('a, 'b) t -> ('a, 'b) t -> unit

@@ -85,6 +85,8 @@ val set_slice : int list list -> arr -> arr -> unit
 
 val sub_left : arr -> int -> int -> arr
 
+val sub_ndarray : int array -> arr -> arr array
+
 val slice_left : arr -> int array -> arr
 
 val copy_to : arr -> arr -> unit
@@ -573,8 +575,6 @@ val sum_slices : ?axis:int -> arr -> arr
 (** {6 Fucntions of in-place modification } *)
 
 val sort_ : arr -> unit
-
-val split_ : ?axis:int -> int array -> arr -> arr array
 
 val add_ : arr -> arr -> unit
 

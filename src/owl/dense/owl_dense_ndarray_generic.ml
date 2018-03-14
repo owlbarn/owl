@@ -2569,19 +2569,15 @@ let modf x =
   x, y
 
 
-let split_ ?(axis=0) parts x =
-  let d = num_dims x in
-  let t = shape x in
+let sub_ndarray parts x =
   let n = Array.fold_left (+) 0 parts in
-  assert (axis >=0 && axis < d && n <= t.(axis));
+  assert (n = (shape x).(0));
   let m = Array.length parts in
-  let s = Array.(sub t (axis + 1) (d - axis - 1) |> append [|n|]) in
-  let y = reshape x s in
   let ofs = ref (-parts.(0)) in
 
   Array.init m (fun i ->
     ofs := !ofs + parts.(i);
-    sub_left y !ofs parts.(i)
+    sub_left x !ofs parts.(i)
   )
 
 
@@ -2602,6 +2598,14 @@ let split ?(axis=0) parts x =
   in
   slices
 
+(*
+let split_vh parts x =
+  assert (num_dims x >= 2);
+  let parts_a0 = Array.map (fun p -> fst p.(0)) parts in
+  Array.mapi (fun i part ->
+
+  ) (split_ ~axis:0 parts_a0 x)
+*)
 
 let sum' x = _owl_sum (kind x) (numel x) x
 
