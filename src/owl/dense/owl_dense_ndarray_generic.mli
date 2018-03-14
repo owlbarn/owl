@@ -309,11 +309,6 @@ val sub_left : ('a, 'b) t -> int -> int -> ('a, 'b) t
 Some as ``Bigarray.sub_left``, please refer to Bigarray documentation.
  *)
 
-val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
-(**
-Same as ``Bigarray.slice_left``, please refer to Bigarray documentation.
- *)
-
 val sub_ndarray : int array -> ('a, 'b) t -> ('a, 'b) t array
 (**
 ``sub_ndarray parts x`` is similar to ``Bigarray.sub_left``. It splits the
@@ -324,6 +319,11 @@ dimension along axis zero.
 The returned sub-ndarrays share the same memory as ``x``. Because there is no
 copies made, this function is much faster than using `split` function to divide
 the lowest dimensionality of ``x``.
+ *)
+
+val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
+(**
+Same as ``Bigarray.slice_left``, please refer to Bigarray documentation.
  *)
 
 val copy_to : ('a, 'b) t -> ('a, 'b) t -> unit
