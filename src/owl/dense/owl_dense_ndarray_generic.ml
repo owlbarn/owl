@@ -1139,6 +1139,36 @@ let matrix_transpose x =
   y
 
 
+let transpose_ ?axis x =
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None   -> Array.init d (fun i -> d - i - 1)
+  in
+  (* trivial case *)
+  if a = Array.init d (fun i -> i) then copy x
+  else (
+    (* check if axis is a correct permutation *)
+    _check_transpose_axis a d;
+    if d = 2 then matrix_transpose x
+    else (
+      let _kind = kind x in
+      let sx = shape x in
+      let sy = Array.map (fun j -> sx.(j)) a in
+      let y = empty _kind sy in
+      let _incx = strides x in
+      let _incy = strides y in
+      let _incy = Array.map (fun j -> _incy.(j)) a in
+      let _incx = Array.map Int32.of_int _incx in
+      let _incy = Array.map Int32.of_int _incy in
+      let incx = Array1.of_array Int32 C_layout _incx |> genarray_of_array1 in
+      let incy = Array1.of_array Int32 C_layout _incy |> genarray_of_array1 in
+      Owl_ndarray._ndarray_transpose _kind x y incx incy;
+      y
+    )
+  )
+
+
 (*TODO: FIXME: optimise*)
 let transpose ?axis x =
   let d = num_dims x in
