@@ -7,16 +7,16 @@
 let htb = Owl_zoo_path.htb
 
 
-(* Version information of gists is saved as key-value pairs in Hash table:
- * key: gid; value: (version list, timestamp) *)
+(** Version information of gists is saved as key-value pairs in Hash table:
+key: gid; value: (version list, timestamp). *)
 let create_htb () =
   let tb = Hashtbl.create 128 in
   Hashtbl.add tb "" ([|""|], 0.);
   Owl_utils.marshal_to_file tb htb
 
 
-(* Try to get the value of key `gid`; if not found, return default values with
-a `true` flag *)
+(** Try to get the value of key `gid`; if not found, return default values with
+a `true` flag. *)
 let get_value (gid : string) =
   if not (Sys.file_exists htb) then create_htb ();
   let tb = Owl_utils.marshal_from_file htb in
@@ -28,14 +28,14 @@ let get_value (gid : string) =
 
 
 (** Get the timestamp of the latest version of a gist; return 0. if the gist
-does not exist *)
+does not exist. *)
 let get_timestamp (gid : string) =
   let _, ts, _, miss_flag = get_value gid in
   if (miss_flag == false) then ts else 0.
 
 
-(* Get the most up-to-date gist version from Gist server; return "" if the gid
-is not found or network error happens *)
+(** Get the most up-to-date gist version from Gist server; return "" if the gid
+is not found or network error happens. *)
 let get_remote_vid (gid : string) =
   let cmd = "curl https://api.github.com/gists/" ^ gid ^
     " | grep '\"version\"' | head -n1 | grep -o -E '[0-9A-Za-z]+' | grep -v 'version'"
@@ -43,8 +43,8 @@ let get_remote_vid (gid : string) =
   Owl_utils.syscall cmd |> String.trim
 
 
-(* Get the latest version downloaded on local machine; if the local version is
-not found on record, get the newest vid from Gist server *)
+(** Get the latest version downloaded on local machine; if the local version is
+not found on record, get the newest vid from Gist server. *)
 let get_latest_vid (gid : string) =
   let v, _, _, miss_flag = get_value gid in
   if (miss_flag == false) then (
@@ -56,7 +56,7 @@ let get_latest_vid (gid : string) =
   )
 
 
-(* Check if a specific version of a gist exists on the record *)
+(** Check if a specific version of a gist exists on the record. *)
 let exist (gid : string) (vid : string) =
   let v, _, _, miss_flag = get_value gid in
   if (miss_flag == false) then
@@ -64,8 +64,8 @@ let exist (gid : string) (vid : string) =
   else false
 
 
-(* Add a specific version of a gist to the record; if this version already
-exists, do nothing; if this gist does not exist, create a new item *)
+(** Add a specific version of a gist to the record; if this version already
+exists, do nothing; if this gist does not exist, create a new item. *)
 let update (gid : string) (vid : string) =
   let v, _, tb, miss_flag = get_value gid in
   if (miss_flag = false) then (
@@ -85,7 +85,7 @@ let update (gid : string) (vid : string) =
   )
 
 
-(* Remove a gist's record *)
+(** Remove a gist's record. *)
 let remove (gid : string)  =
   let _, _, tb, miss_flag = get_value gid in
   if (miss_flag == false) then (
@@ -96,9 +96,9 @@ let remove (gid : string)  =
   )
 
 
-(* Parse a full gist name scheme string and return a gist id, a version id, a
+(** Parse a full gist name scheme string and return a gist id, a version id, a
 bool flag to indicate if the "latest" keyword is used as vid, and a bool flag
-to indicate if `pin` is set in the gist name *)
+to indicate if `pin` is set in the gist name. *)
 let parse_gist_string gist =
   let strip_string s =
     Str.global_replace (Str.regexp "[\r\n\t ]") "" s
