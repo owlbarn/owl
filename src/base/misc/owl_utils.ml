@@ -247,19 +247,6 @@ let time f =
   (Unix.gettimeofday () -. t) *. 1000.
 
 
-(** run system command and return the result as string *)
-let syscall cmd =
-  let ic, oc = Unix.open_process cmd in
-  let buf = Buffer.create 50 in
-  (try
-     while true do
-       Buffer.add_channel buf ic 1
-     done
-   with End_of_file -> ());
-  Unix.close_process (ic, oc) |> ignore;
-  Buffer.contents buf
-
-
 (** TODO: return the the distance between [1.0] and the next larger representable
   floating-point value. *)
 let eps
