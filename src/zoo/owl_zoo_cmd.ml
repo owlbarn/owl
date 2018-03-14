@@ -32,8 +32,8 @@ let preprocess script =
 
 
 let remove_gist gid =
-  let dir = dir ^ "/" ^ gid ^ "/" in
-  let cmd = Printf.sprintf "rm -rf %s" dir in
+  let path = dir ^ "/" ^ gid ^ "/" in
+  let cmd = Printf.sprintf "rm -rf %s" path in
   let ret = Sys.command cmd in
   if ret = 0 then (
     Owl_zoo_ver.remove gid;
@@ -42,11 +42,11 @@ let remove_gist gid =
   else Owl_log.debug "owl_zoo: Error remvoing gist %s" gid
 
 
-let upload_gist dir =
-  Owl_log.debug "owl_zoo: %s uploading" dir;
-  let cmd = Printf.sprintf "owl_upload_gist.sh %s" dir in
+let upload_gist gist_dir =
+  Owl_log.debug "owl_zoo: %s uploading" gist_dir;
+  let cmd = Printf.sprintf "owl_upload_gist.sh %s" gist_dir in
   Sys.command cmd |> ignore;
-  let gist_arr = Owl_utils.read_file (dir ^ "/gist.id") in
+  let gist_arr = Owl_utils.read_file (gist_dir ^ "/gist.id") in
   gist_arr.(0)
 
 

@@ -178,7 +178,6 @@
     -L/usr/local/opt/openblas/lib
     -lopenblas
     -lgfortran
-    -llapacke
     -lm
   ))
   (flags (

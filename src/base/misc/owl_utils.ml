@@ -247,7 +247,7 @@ let time f =
   (Unix.gettimeofday () -. t) *. 1000.
 
 
-(** Run system command and return the result as string *)
+(** run system command and return the result as string *)
 let syscall cmd =
   let ic, oc = Unix.open_process cmd in
   let buf = Buffer.create 50 in

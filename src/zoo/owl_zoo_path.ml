@@ -10,7 +10,7 @@
  let gist_path gid vid =
    dir  ^ "/" ^ gid ^ "/" ^ vid
 
-(* Used by script creators *)
+(* Used by script developers *)
 let extend_zoo_path ?(gid="") ?(vid="") filepath =
   match gid, vid with
   | "", "" -> filepath
