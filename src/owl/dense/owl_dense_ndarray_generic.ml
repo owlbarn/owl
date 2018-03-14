@@ -1059,6 +1059,65 @@ let map2i_nd f x y =
   map2i (fun i a b -> f (Owl_utils.ind x i) a b) x y
 
 
+let iteri_slice ?(axis=0) f x =
+  let d = num_dims x in
+  assert (axis >=0 && axis < d - 1);
+  let m = (numel x) / (strides x).(axis) in
+  let s = Array.sub (shape x) (axis + 1) (d - axis - 1) in
+  let n = s.(0) in
+  s.(0) <- m * s.(0);
+  let y = reshape x s in
+  let ofs = ref (-n) in
+
+  for i = 0 to m - 1 do
+    ofs := !ofs + n;
+    f i (sub_left y !ofs n)
+  done
+
+
+let iter_slice ?axis f x = iteri_slice ?axis (fun _ y -> f y) x
+
+
+let mapi_slice ?(axis=0) f x =
+  let d = num_dims x in
+  assert (axis >=0 && axis < d - 1);
+  let m = (numel x) / (strides x).(axis) in
+  let s = Array.sub (shape x) (axis + 1) (d - axis - 1) in
+  let n = s.(0) in
+  s.(0) <- m * s.(0);
+  let y = reshape x s in
+  let ofs = ref (-n) in
+
+  Array.init m (fun i ->
+    ofs := !ofs + n;
+    f i (sub_left y !ofs n)
+  )
+
+
+let map_slice ?axis f x = mapi_slice ?axis (fun _ y -> f y) x
+
+
+let filteri_slice ?axis f x =
+  let s = Owl_utils.Stack.make () in
+  iteri_slice ?axis (fun i y ->
+    if (f i y) then Owl_utils.Stack.push s y
+  ) x;
+  Owl_utils.Stack.to_array s
+
+
+let filter_slice ?axis f x = filteri_slice ?axis (fun _ y -> f y) x
+
+
+let foldi_slice ?axis f a x =
+  let acc = ref a in
+  iteri_slice ?axis (fun i y -> acc := f i !acc y) x;
+  !acc
+
+let fold_slice ?axis f x = foldi_slice ?axis (fun _ y -> f y) x
+
+
+(* manipulation functions *)
+
 let _check_transpose_axis axis d =
   let info = "check_transpose_axis fails" in
   if Array.length axis <> d then
@@ -2416,6 +2475,41 @@ let avg_pool1d_backward padding input kernel stride output' =
   reshape input' input_shp
 
 
+let _diff a x =
+  let _stride = strides x in
+  let _slicez = slice_size x in
+  let m = (numel x) / _slicez.(a) in
+  let n = _slicez.(a) - _stride.(a) in
+  let incx_m = _slicez.(a) in
+  let incx_n = 1 in
+  let incy_m = _slicez.(a) - _stride.(a) in
+  let incy_n = 1 in
+  let ofsx = _stride.(a) in
+  let ofsy = 0 in
+
+  let k = kind x in
+  let s = shape x in
+  s.(a) <- s.(a) - 1;
+  let y = empty k s in
+  _owl_diff k m n x ofsx incx_m incx_n y ofsy incy_m incy_n;
+  y
+
+
+let diff ?axis ?(n=1) x =
+  let d = num_dims x in
+  let a = match axis with
+    | Some a -> a
+    | None   -> d - 1
+  in
+  assert (0 <= a && a < d);
+  assert (n < nth_dim x a);
+  let y = ref x in
+  for i = 1 to n do
+    y := _diff a !y
+  done;
+  !y
+
+
 (* TODO: optimise performance, slow along the low dimension *)
 let cumulative_op ?axis _cumop x =
   let d = num_dims x in
@@ -2475,7 +2569,18 @@ let modf x =
   x, y
 
 
-(* TODO: optimise *)
+let sub_ndarray parts x =
+  let n = Array.fold_left (+) 0 parts in
+  assert (n = (shape x).(0));
+  let m = Array.length parts in
+  let ofs = ref (-parts.(0)) in
+
+  Array.init m (fun i ->
+    ofs := !ofs + parts.(i);
+    sub_left x !ofs parts.(i)
+  )
+
+
 let split ?(axis=0) parts x =
   let x_shp = shape x in
   let x_dim = num_dims x in
@@ -2492,6 +2597,15 @@ let split ?(axis=0) parts x =
   ) parts
   in
   slices
+
+
+let split_vh parts x =
+  assert (num_dims x >= 2);
+  let parts_a0 = Array.map (fun p -> fst p.(0)) parts in
+  Array.mapi (fun i part ->
+    let parts_a1 = Array.map snd parts.(i) in
+    split ~axis:1 parts_a1 part
+  ) (sub_ndarray parts_a0 x)
 
 
 let sum' x = _owl_sum (kind x) (numel x) x

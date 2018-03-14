@@ -8,9 +8,10 @@
 #include <string.h>
 
 
+#define OWL_ENABLE_TEMPLATE
+
 //////////////////// function templates starts ////////////////////
 
-#define OWL_ENABLE_TEMPLATE
 
 #define OWL_NDARRAY_MAX
 #define FUN_NATIVE(dim) stub_float32_ndarray_maxpool ## _ ## dim  ## _ ## native
@@ -79,29 +80,6 @@
 #undef FUN_NATIVE
 #undef OWL_NDARRAY_AVG
 
-
-#define FUN_NATIVE(dim) stub_float32_ndarray_conv ## _ ## dim  ## _ ## native
-#define FUN_BYTE(dim) stub_float32_ndarray_conv ## _ ## dim  ## _ ## bytecode
-#define TYPE float
-#define GEMM cblas_sgemm
-#include "owl_ndarray_conv_impl.c"
-#undef TYPE
-#undef GEMM
-#undef INITACC
-#undef FUN_BYTE
-#undef FUN_NATIVE
-
-
-#define FUN_NATIVE(dim) stub_float64_ndarray_conv ## _ ## dim  ## _ ## native
-#define FUN_BYTE(dim) stub_float64_ndarray_conv ## _ ## dim  ## _ ## bytecode
-#define TYPE double
-#define GEMM cblas_dgemm
-#include "owl_ndarray_conv_impl.c"
-#undef TYPE
-#undef GEMM
-#undef INITACC
-#undef FUN_BYTE
-#undef FUN_NATIVE
 
 //////////////////// function templates ends ////////////////////
 

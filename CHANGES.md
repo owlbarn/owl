@@ -1,6 +1,7 @@
 ### 0.3.6 (in progress)
 
 * Fix some bugs and improve performance.
+* Add more functions into Ndarray module.
 
 
 ### 0.3.5 (2018-03-12)

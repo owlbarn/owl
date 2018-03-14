@@ -56,3 +56,6 @@ exception SINGULAR
 
 exception INDEX_OUT_OF_BOUND
 (** Exception of index out of boundary. *)
+
+exception ZOO_ILLEGAL_GIST_NAME
+(** Exception of illegal gist name. *)

@@ -5,7 +5,7 @@
 
 
 let rec _extract_zoo_gist f added =
-  let s = Owl.Utils.read_file_string f in
+  let s = Owl_utils.read_file_string f in
   let regex = Str.regexp "^#zoo \"\\([0-9A-Za-z]+\\)\"" in
   try
     let pos = ref 0 in
@@ -18,39 +18,52 @@ let rec _extract_zoo_gist f added =
   with Not_found -> ()
 
 
-and _deploy_gist dir gist =
-  if Sys.file_exists (dir ^ gist) = true then (
-    Owl_log.info "owl_zoo: %s cached" gist
-  )
+and _download_gist gid vid =
+  if (Owl_zoo_ver.exist gid vid) = true then
+    Owl_log.info "owl_zoo: %s/%s cached" gid vid
   else (
-    Owl_log.info "owl_zoo: %s missing" gist;
-    Owl_zoo_cmd.download_gist gist
+    Owl_log.info "owl_zoo: %s/%s missing; downloading" gid vid;
+    let cmd = Printf.sprintf "owl_download_gist.sh %s %s" gid vid in
+    let ret = Sys.command cmd in
+    if ret = 0 then Owl_zoo_ver.update gid vid
+    else Owl_log.debug "owl_zoo: Error downloading gist %s/%s" gid vid
   )
 
 
-and _dir_zoo_ocaml dir gist added =
-  let dir_gist = dir ^ gist in
+and _dir_zoo_ocaml gid vid added =
+  let dir_gist = Owl_zoo_path.gist_path gid vid in
   Sys.readdir (dir_gist)
   |> Array.to_list
   |> List.filter (fun s -> Filename.check_suffix s "ml")
   |> List.iter (fun l ->
       let f = Printf.sprintf "%s/%s" dir_gist l in
-      _extract_zoo_gist f added;
-      Toploop.mod_use_file Format.std_formatter f
+
+      (* extend file path in a script *)
+      let f' = "/tmp/" ^ l in
+      Sys.command (Printf.sprintf "cp %s %s" f f') |> ignore;
+      let cmd = Printf.sprintf
+        "sed -i 's/extend_zoo_path/extend_zoo_path ~gid:\"%s\" ~vid:\"%s\"/g' %s"
+        gid vid f' in
+      Sys.command cmd |> ignore;
+
+      _extract_zoo_gist f' added;
+      Toploop.mod_use_file Format.std_formatter f'
       |> ignore
     )
 
 
 and process_dir_zoo ?added gist =
-  let dir = Sys.getenv "HOME" ^ "/.owl/zoo/" in
+  let gid, vid, _, _ = Owl_zoo_ver.parse_gist_string gist in
+  let gist' = Printf.sprintf "%s/%s" gid vid in
+
   let added = match added with
     | Some h -> h
     | None   -> Hashtbl.create 128
   in
-  if Hashtbl.mem added gist = false then (
-    Hashtbl.add added gist gist;
-    _deploy_gist dir gist;
-    _dir_zoo_ocaml dir gist added
+  if Hashtbl.mem added gist' = false then (
+    Hashtbl.add added gist' gist';
+    _download_gist gid vid;
+    _dir_zoo_ocaml gid vid added
   )
 
 

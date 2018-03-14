@@ -18,7 +18,10 @@ let _ =
   else if Sys.argv.(1) = "-upload" then
     upload_gist Sys.argv.(2) |> ignore
   else if Sys.argv.(1) = "-download" then
-    download_gist Sys.argv.(2)
+    if Array.length Sys.argv <= 3 then
+      download_gist Sys.argv.(2)
+    else
+      download_gist ~vid:(Sys.argv.(3)) Sys.argv.(2)
   else if Sys.argv.(1) = "-remove" then
     remove_gist Sys.argv.(2)
   else if Sys.argv.(1) = "-info" then
@@ -26,7 +29,9 @@ let _ =
   else if Sys.argv.(1) = "-run" then
     run_gist Sys.argv.(2)
   else if Sys.argv.(1) = "-list" then
-    list_gist ()
+    if Array.length Sys.argv >= 3 then
+      list_gist Sys.argv.(2)
+    else list_gist ""
   else if Sys.argv.(1) = "-help" then
     print_info ()
   else if Sys.argv.(1) = "-update" then (

@@ -200,7 +200,7 @@ values: ``Bigarray.Float32``, ``Bigarray.Float64``, ``Bigarray.Complex32``, and
 
 val strides : ('a, 'b) t -> int array
 (**
-``strides x`` calcuates the strides of ``x``. E.g., if ``x`` is of shape
+``strides x`` calculates the strides of ``x``. E.g., if ``x`` is of shape
 ``[|3;4;5|]``, the returned strides will be ``[|20;5;1|]``.
  *)
 
@@ -307,6 +307,18 @@ E.g., ``[[];[0;3];[0]]`` is equivalent to ``[R []; R [0;3]; R [0]]``.
 val sub_left : ('a, 'b) t -> int -> int -> ('a, 'b) t
 (**
 Some as ``Bigarray.sub_left``, please refer to Bigarray documentation.
+ *)
+
+val sub_ndarray : int array -> ('a, 'b) t -> ('a, 'b) t array
+(**
+``sub_ndarray parts x`` is similar to ``Bigarray.sub_left``. It splits the
+passed in ndarray ``x`` along the ``axis 0`` according to ``parts``. The
+elelments in ``parts`` do not need to be equal but they must sum up to the
+dimension along axis zero.
+
+The returned sub-ndarrays share the same memory as ``x``. Because there is no
+copies made, this function is much faster than using `split` function to divide
+the lowest dimensionality of ``x``.
  *)
 
 val slice_left : ('a, 'b) t -> int array -> ('a, 'b) t
@@ -463,7 +475,26 @@ lowest dimension of a matrix/ndarray.
 
 val split : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
 (**
-``split ~axis parts x`` ... TODO
+``split ~axis parts x`` splits an ndarray ``x`` into parts along the specified
+``axis``. This function is the inverse operation of ``concatenate``. The
+elements in ``x`` must sum up to the dimension in the specified axis.
+ *)
+
+val split_vh : (int * int) array array -> ('a, 'b) t -> ('a, 'b) t array array
+(**
+``split_vh parts x`` splits a passed in ndarray ``x`` along the first two
+dimensions, i.e. ``axis 0`` and ``axis 1``. This is the inverse operation of
+``concat_vh`` function, and the function is very useful in dividing a big
+matrix into smaller (especially heterogeneous) parts.
+
+For example, given a matrix ``x`` of shape ``[|8;10|]``, it is possible to
+split in the following ways.
+
+.. code-block:: ocaml
+
+  Mat.split_vh [| [|(8,5);(8,5)|] |] x;;
+  Mat.split_vh [| [|(4,5);(4,5)|]; [|(4,10)|] |] x;;
+  Mat.split_vh [| [|(4,5);(4,5)|]; [|(4,5);(4,5)|] |] x;;
  *)
 
 val squeeze : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
@@ -608,25 +639,76 @@ val map2 : ('a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val iteri_nd :(int array -> 'a -> unit) -> ('a, 'b) t -> unit
-(** Similar to `iteri` but n-d indices are passed to the user function. *)
+(** Similar to ``iteri`` but n-d indices are passed to the user function. *)
 
 val mapi_nd : (int array -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** Similar to `mapi` but n-d indices are passed to the user function. *)
+(** Similar to ``mapi`` but n-d indices are passed to the user function. *)
 
 val foldi_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> 'a -> ('a, 'b) t -> ('a, 'b) t
-(** Similar to `foldi` but n-d indices are passed to the user function. *)
+(** Similar to ``foldi`` but n-d indices are passed to the user function. *)
 
 val scani_nd : ?axis:int -> (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t
-(** Similar to `scani` but n-d indices are passed to the user function. *)
+(** Similar to ``scani`` but n-d indices are passed to the user function. *)
 
 val filteri_nd : (int array -> 'a -> bool) -> ('a, 'b) t -> int array array
-(** Similar to `filteri` but n-d indices are returned. *)
+(** Similar to ``filteri`` but n-d indices are returned. *)
 
 val iter2i_nd :(int array -> 'a -> 'c -> unit) -> ('a, 'b) t -> ('c, 'd) t -> unit
-(** Similar to `iter2i` but n-d indices are passed to the user function. *)
+(** Similar to ``iter2i`` but n-d indices are passed to the user function. *)
 
 val map2i_nd : (int array -> 'a -> 'a -> 'a) -> ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
-(** Similar to `map2i` but n-d indices are passed to the user function. *)
+(** Similar to ``map2i`` but n-d indices are passed to the user function. *)
+
+val iteri_slice : ?axis:int -> (int -> ('a, 'b) t -> unit) -> ('a, 'b) t -> unit
+(**
+``iteri_slice ~axis f x`` iterates the slices along the specified ``axis`` in
+``x`` and applies the function ``f``. The 1-d index of of the slice is passed
+in. By default, the ``axis`` is 0. Setting ``axis`` to the highest dimension
+is not allowed because in that case you can just use `iteri` to iterate all the
+elements in ``x`` which is more efficient.
+
+Note that the slice is obtained by slicing left (due to Owl's C-layout ndarray)
+a sub-array out of ``x``. E.g., if ``x`` has shape ``[|3;4;5|]``, setting
+``axis=0`` will iterate three ``4 x 5`` matrices. The slice shares the same
+memory with ``x`` so no copy is made.
+ *)
+
+val iter_slice : ?axis:int -> (('a, 'b) t -> unit) -> ('a, 'b) t -> unit
+(** Similar to ``iteri_slice`` but slice index is not passed in. *)
+
+val mapi_slice : ?axis:int -> (int -> ('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
+(**
+``mapi_slice ~axis f x`` maps the slices along the specified ``axis`` in
+``x`` and applies the function ``f``. By default, ``axis`` is 0. The index of
+of the slice is passed in.
+
+Please refer to ``iteri_slice`` for more details.
+*)
+
+val map_slice : ?axis:int -> (('a, 'b) t -> 'c) -> ('a, 'b) t -> 'c array
+(** Similar to ``mapi_slice`` but slice index is not passed in. *)
+
+val filteri_slice : ?axis:int -> (int -> ('a, 'b) t -> bool) -> ('a, 'b) t -> ('a, 'b) t array
+(**
+``filteri_slice ~axis f x`` filters the slices along the specified ``axis`` in
+``x``. The slices which satisfy the predicate ``f`` are returned in an array.
+
+Please refer to ``iteri_slice`` for more details.
+*)
+
+val filter_slice : ?axis:int -> (('a, 'b) t -> bool) -> ('a, 'b) t -> ('a, 'b) t array
+(** Similar to ``filteri_slice`` but slice index is not passed in. *)
+
+val foldi_slice : ?axis:int -> (int -> 'c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
+(**
+``foldi_slice ~axis f a x`` fold (left) the slices along the specified ``axis``
+in ``x``. The slices which satisfy the predicate ``f`` are returned in an array.
+
+Please refer to ``iteri_slice`` for more details.
+*)
+
+val fold_slice : ?axis:int -> ('c -> ('a, 'b) t -> 'c) -> 'c -> ('a, 'b) t -> 'c
+(** Similar to ``foldi_slice`` but slice index is not passed in. *)
 
 
 (** {6 Examination & Comparison}  *)
@@ -1439,7 +1521,7 @@ Returns:
 
 val vecnorm' : ?p:float -> ('a, 'b) t -> 'a
 (**
-``vecnorm'`` flattens the input into 1-d vector first, then calcuates the
+``vecnorm'`` flattens the input into 1-d vector first, then calculates the
 generalised p-norm the same as ``venorm``.
  *)
 
@@ -1464,6 +1546,21 @@ val cummin : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 val cummax : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``cummax ~axis x`` : performs cumulative ``max`` along ``axis`` dimension.
+ *)
+
+val diff : ?axis:int -> ?n:int -> ('a, 'b) t -> ('a, 'b) t
+(**
+``diff ~axis ~n x`` calculates the ``n``-th difference of ``x`` along the
+specified ``axis``.
+
+Parameters:
+  * ``axis``: axis to calculate the difference. The default value is the
+    highest dimension.
+  * ``n``: how many times to calculate the difference. The default value is 1.
+
+Return:
+  * The difference ndarray y. Note that the shape of ``y`` 1 less than that of
+    ``x`` along specified axis.
  *)
 
 val angle : (Complex.t, 'a) t -> (Complex.t, 'a) t

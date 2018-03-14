@@ -90,6 +90,8 @@ val set_slice : int list list -> arr -> arr -> unit
 
 val sub_left : arr -> int -> int -> arr
 
+val sub_ndarray : int array -> arr -> arr array
+
 val slice_left : arr -> int array -> arr
 
 val copy_to : arr -> arr -> unit
@@ -124,9 +126,13 @@ val concat_vertical : arr -> arr -> arr
 
 val concat_horizontal : arr -> arr -> arr
 
+val concat_vh : arr array array -> arr
+
 val concatenate : ?axis:int -> arr array -> arr
 
 val split : ?axis:int -> int array -> arr -> arr array
+
+val split_vh : (int * int) array array -> arr -> arr array array
 
 val squeeze : ?axis:int array -> arr -> arr
 
@@ -190,6 +196,22 @@ val filteri_nd : (int array -> elt -> bool) -> arr -> int array array
 val iter2i_nd :(int array -> elt -> elt -> unit) -> arr -> arr -> unit
 
 val map2i_nd : (int array -> elt -> elt -> elt) -> arr -> arr -> arr
+
+val iteri_slice : ?axis:int -> (int -> arr -> unit) -> arr -> unit
+
+val iter_slice : ?axis:int -> (arr -> unit) -> arr -> unit
+
+val mapi_slice : ?axis:int -> (int -> arr -> 'c) -> arr -> 'c array
+
+val map_slice : ?axis:int -> (arr -> 'c) -> arr -> 'c array
+
+val filteri_slice : ?axis:int -> (int -> arr -> bool) -> arr -> arr array
+
+val filter_slice : ?axis:int -> (arr -> bool) -> arr -> arr array
+
+val foldi_slice : ?axis:int -> (int -> 'c -> arr -> 'c) -> 'c -> arr -> 'c
+
+val fold_slice : ?axis:int -> ('c -> arr -> 'c) -> 'c -> arr -> 'c
 
 
 (** {6 Examine array elements or compare two arrays } *)
@@ -365,6 +387,8 @@ val cumprod : ?axis:int -> arr -> arr
 val cummin : ?axis:int -> arr -> arr
 
 val cummax : ?axis:int -> arr -> arr
+
+val diff : ?axis:int -> ?n:int -> arr -> arr
 
 val sqr : arr -> arr
 

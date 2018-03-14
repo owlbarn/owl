@@ -5103,6 +5103,78 @@
 #define MAPFN(X) *X = a * f64_exponential
 #include "owl_dense_common_map.c"
 
+// diff
+
+#define FUN20 float32_diff
+#define FUN20_IMPL float32_diff_impl
+#define NUMBER float
+#define NUMBER1 float
+#define MAPFN(X,Y) *Y = *X - *(X - ofsx)
+#include "owl_dense_common_map.c"
+
+#define FUN20 float64_diff
+#define FUN20_IMPL float64_diff_impl
+#define NUMBER double
+#define NUMBER1 double
+#define MAPFN(X,Y) *Y = *X - *(X - ofsx)
+#include "owl_dense_common_map.c"
+
+#define FUN20 complex32_diff
+#define FUN20_IMPL complex32_diff_impl
+#define NUMBER _Complex float
+#define NUMBER1 _Complex float
+#define MAPFN(X,Y) *Y = *X - *(X - ofsx)
+#include "owl_dense_common_map.c"
+
+#define FUN20 complex64_diff
+#define FUN20_IMPL complex64_diff_impl
+#define NUMBER _Complex double
+#define NUMBER1 _Complex double
+#define MAPFN(X,Y) *Y = *X - *(X - ofsx)
+#include "owl_dense_common_map.c"
+
+#define FUN20 int8_diff
+#define FUN20_IMPL int8_diff_impl
+#define NUMBER int8_t
+#define NUMBER1 int8_t
+#define MAPFN(X,Y) *Y = *X - *(X - ofsx)
+#include "owl_dense_common_map.c"
+
+#define FUN20 uint8_diff
+#define FUN20_IMPL uint8_diff_impl
+#define NUMBER uint8_t
+#define NUMBER1 uint8_t
+#define MAPFN(X,Y) *Y = *X - *(X - ofsx)
+#include "owl_dense_common_map.c"
+
+#define FUN20 int16_diff
+#define FUN20_IMPL int16_diff_impl
+#define NUMBER int16_t
+#define NUMBER1 int16_t
+#define MAPFN(X,Y) *Y = *X - *(X - ofsx)
+#include "owl_dense_common_map.c"
+
+#define FUN20 uint16_diff
+#define FUN20_IMPL uint16_diff_impl
+#define NUMBER uint16_t
+#define NUMBER1 uint16_t
+#define MAPFN(X,Y) *Y = *X - *(X - ofsx)
+#include "owl_dense_common_map.c"
+
+#define FUN20 int32_diff
+#define FUN20_IMPL int32_diff_impl
+#define NUMBER int32_t
+#define NUMBER1 int32_t
+#define MAPFN(X,Y) *Y = *X - *(X - ofsx)
+#include "owl_dense_common_map.c"
+
+#define FUN20 int64_diff
+#define FUN20_IMPL int64_diff_impl
+#define NUMBER int64_t
+#define NUMBER1 int64_t
+#define MAPFN(X,Y) *Y = *X - *(X - ofsx)
+#include "owl_dense_common_map.c"
+
 // cumsum
 
 #define FUN20 float32_cumsum
