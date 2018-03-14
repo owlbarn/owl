@@ -1916,6 +1916,13 @@ val sort_ : ('a, 'b) t -> unit
 ``sort_ x`` performs in-place quicksort of the elelments in ``x``.
  *)
 
+val split_ : ?axis:int -> int array -> ('a, 'b) t -> ('a, 'b) t array
+(**
+``split_ ~axis parts x`` is similar to ``split`` but the returned splitted
+ndarrays share the same memory as ``x``. Because there is no copies made, this
+function is much faster than `split`.
+ *)
+
 val add_ : ('a, 'b) t -> ('a, 'b) t -> unit
 (**
 ``add_ x y`` is simiar to ``add`` function but the output is written to ``x``.

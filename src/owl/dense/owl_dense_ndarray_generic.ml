@@ -2569,7 +2569,22 @@ let modf x =
   x, y
 
 
-(* TODO: optimise *)
+let split_ ?(axis=0) parts x =
+  let d = num_dims x in
+  let t = shape x in
+  let n = Array.fold_left (+) 0 parts in
+  assert (axis >=0 && axis < d && n <= t.(axis));
+  let m = Array.length parts in
+  let s = Array.(sub t (axis + 1) (d - axis - 1) |> append [|n|]) in
+  let y = reshape x s in
+  let ofs = ref (-parts.(0)) in
+
+  Array.init m (fun i ->
+    ofs := !ofs + parts.(i);
+    sub_left y !ofs parts.(i)
+  )
+
+
 let split ?(axis=0) parts x =
   let x_shp = shape x in
   let x_dim = num_dims x in

@@ -499,6 +499,8 @@ val sum_slices : ?axis:int -> arr -> arr
 
 val sort_ : arr -> unit
 
+val split_ : ?axis:int -> int array -> arr -> arr array
+
 val add_ : arr -> arr -> unit
 
 val sub_ : arr -> arr -> unit
