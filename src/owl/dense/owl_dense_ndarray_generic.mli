@@ -399,8 +399,6 @@ val transpose : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
 for a three-dimensional ndarray, it can be ``[2;1;0]``, ``[0;2;1]``, ``[1;2;0]``, and etc.
  *)
 
-val transpose_ : ?axis:int array -> ('a, 'b) t -> ('a, 'b) t
-
 val swap : int -> int -> ('a, 'b) t -> ('a, 'b) t
 (**
 ``swap i j x`` makes a copy of ``x``, then swaps the data on axis ``i`` and ``j``.

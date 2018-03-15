@@ -1139,7 +1139,7 @@ let matrix_transpose x =
   y
 
 
-let transpose_ ?axis x =
+let transpose ?axis x =
   let d = num_dims x in
   let a = match axis with
     | Some a -> a
@@ -1166,33 +1166,6 @@ let transpose_ ?axis x =
       Owl_ndarray._ndarray_transpose (kind x) x y incx incy;
       y
     )
-  )
-
-
-(*TODO: FIXME: optimise*)
-let transpose ?axis x =
-  let d = num_dims x in
-  if d = 2 then matrix_transpose x
-  else (
-    let a = match axis with
-      | Some a -> a
-      | None -> Array.init d (fun i -> d - i - 1)
-    in
-    (* check if axis is a correct permutation *)
-    _check_transpose_axis a d;
-    let s0 = shape x in
-    let s1 = Array.map (fun j -> s0.(j)) a in
-    let i' = Array.make d 0 in
-    let y = empty (kind x) s1 in
-    (* allocate space for nd index *)
-    let l = Array.make d 0 in
-    let s = Owl_utils.calc_stride s0 in
-    iteri (fun i z ->
-      Owl_utils.index_1d_nd i l s;
-      Array.iteri (fun k j -> i'.(k) <- l.(j)) a;
-      set y i' z
-    ) x;
-    y
   )
 
 
