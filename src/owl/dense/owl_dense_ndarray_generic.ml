@@ -1152,18 +1152,18 @@ let transpose_ ?axis x =
     _check_transpose_axis a d;
     if d = 2 then matrix_transpose x
     else (
-      let _kind = kind x in
       let sx = shape x in
       let sy = Array.map (fun j -> sx.(j)) a in
-      let y = empty _kind sy in
-      let _incx = strides x in
+      let y = empty (kind x) sy in
+      (* calculate the inverse of the permutation *)
+      let b = Array.make d 0 in
+      Array.iteri (fun i j -> b.(j) <- i) a;
       let _incy = strides y in
-      let _incy = Array.map (fun j -> _incy.(j)) a in
-      let _incx = Array.map Int32.of_int _incx in
-      let _incy = Array.map Int32.of_int _incy in
+      let _incy = Array.map (fun j -> Int32.of_int _incy.(j)) b in
+      let _incx = Array.map Int32.of_int (strides x) in
       let incx = Array1.of_array Int32 C_layout _incx |> genarray_of_array1 in
       let incy = Array1.of_array Int32 C_layout _incy |> genarray_of_array1 in
-      Owl_ndarray._ndarray_transpose _kind x y incx incy;
+      Owl_ndarray._ndarray_transpose (kind x) x y incx incy;
       y
     )
   )

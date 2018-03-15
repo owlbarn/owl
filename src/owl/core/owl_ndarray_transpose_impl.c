@@ -16,8 +16,9 @@ void FUNCTION (c, transpose_1) (struct slice_pair *p) {
   int posy = p->posy + p->ofsy[d];
   int incx = p->incx[d];
   int incy = p->incy[d];
-printf ("posx:%i, incx:%i, posy:%i, incy:%i\n", posx, incx, posy, incy); 
+
   for (int i = 0; i < n; i++) {
+    printf ("posx:%i, incx:%i, posy:%i, incy:%i\n", posx, incx, posy, incy);
     MAPFUN (*(x + posx), *(y + posy));
     posx += incx;
     posy += incy;
