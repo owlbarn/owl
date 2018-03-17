@@ -5,7 +5,7 @@
 
 #ifdef OWL_ENABLE_TEMPLATE
 
-
+#include <stdio.h>
 // Level 1 optimisation
 void FUNCTION (c, contract_one_1) (struct slice_pair *p) {
   TYPE *x = (TYPE *) p->x;
@@ -18,9 +18,9 @@ void FUNCTION (c, contract_one_1) (struct slice_pair *p) {
   int incy = p->incy[d];
 
   for (int i = 0; i < n; i++) {
+    printf("posx:%i incx:%i posy:%i incy:%i\n", posx, incx, posy, incy);
     MAPFUN (*(x + posx), *(y + posy));
     posx += incx;
-    posy += incy;
   }
 }
 

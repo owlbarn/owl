@@ -3540,5 +3540,32 @@ let draw ?(axis=0) x n =
   samples, indices
 
 
+let contract_one index_pair x =
+  let n = num_dims x in
+  let i, j = index_pair in
+  assert (n > 1 && i >= 0 && i < n && j >= 0 && j < n);
+  let s0 = shape x in
+  assert (s0.(i) = s0.(j) && i <> j);
+  let s1 = Owl_utils.Array.filteri (fun k _ -> k <> i && k <> j) s0 in
+  let s2 = Owl_utils.Array.filteri (fun k _ -> k = i || k = j) s0 in
+  let s3 = Array.append s1 [|s0.(i)|] in
+  let s4 = Array.append s1 [|1|] in
+
+  let y = zeros (kind x) s1 in
+  let p = resize ~head:true x s3 in
+  let q = reshape y s4 in
+
+  let i0 = strides x in
+  let i1 = Owl_utils.Array.filteri (fun k _ -> k <> i && k <> j) i0 in
+  let i2 = Owl_utils.Array.filteri (fun k _ -> k = i || k = j) i0 in
+  let i3 = Array.append i1 [| Array.fold_left ( + ) 0 i2 |] in
+  let i4 = strides q in
+  let incp = Array.map Int32.of_int i3 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let incq = Array.map Int32.of_int i4 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+
+  Owl_ndarray._ndarray_contract_one (kind x) p q incp incq;
+  y
+
+
 
 (* ends here *)
