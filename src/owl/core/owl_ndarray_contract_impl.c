@@ -7,18 +7,17 @@
 
 #include <stdio.h>
 // Level 1 optimisation
-void FUNCTION (c, contract_one_1) (struct slice_pair *p) {
+void FUNCTION (c, contract_one_1) (struct contract_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
-  int d = p->dim - 1;
+  int d = p->dim - 2;
   int n = p->n[d];
   int posx = p->posx + p->ofsx[d];
   int posy = p->posy + p->ofsy[d];
-  int incx = p->incx[d];
-  int incy = p->incy[d];
+  int incx = p->incx[d] + p->incx[d + 1];
 
   for (int i = 0; i < n; i++) {
-    printf("posx:%i incx:%i posy:%i incy:%i\n", posx, incx, posy, incy);
+    printf("posx:%i incx:%i posy:%i incy:%i\n", posx, incx, posy, 0);
     MAPFUN (*(x + posx), *(y + posy));
     posx += incx;
   }
@@ -26,8 +25,8 @@ void FUNCTION (c, contract_one_1) (struct slice_pair *p) {
 
 
 // contract_one a ndarray, i.e. permute the axis
-void FUNCTION (c, contract_one) (struct slice_pair *p) {
-  if (p->dep == p->dim - 1)
+void FUNCTION (c, contract_one) (struct contract_pair *p) {
+  if (p->dep == p->dim - 2)
     FUNCTION (c, contract_one_1) (p);
   else {
     const int d = p->dep;
@@ -39,12 +38,24 @@ void FUNCTION (c, contract_one) (struct slice_pair *p) {
     p->posx += p->ofsx[d];
     p->posy += p->ofsy[d];
 
-    for (int i = 0; i < n; i++) {
-      p->dep += 1;
-      FUNCTION (c, contract_one) (p);
-      p->dep -= 1;
-      p->posx += incx;
-      p->posy += incy;
+    if (p->dep < p->drt) {
+      printf("aaa: dep=%i, drt=%i, incx=%i, incy=%i\n", p->dep, p->drt, incx, incy);
+      for (int i = 0; i < n; i++) {
+        p->dep += 1;
+        FUNCTION (c, contract_one) (p);
+        p->dep -= 1;
+        p->posx += incx;
+        p->posy += incy;
+      }
+    }
+    else {
+      printf("bbb: dep=%i, drt=%i\n", p->dep, p->drt);
+      for (int i = 0; i < n; i++) {
+        p->dep += 2;
+        FUNCTION (c, contract_one) (p);
+        p->dep -= 2;
+        p->posx += incx + p->incx[d + 1];;
+      }
     }
 
     p->posx = save_posx;
@@ -54,7 +65,7 @@ void FUNCTION (c, contract_one) (struct slice_pair *p) {
 
 
 // stub function of contract_one
-value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB) {
+value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB, value vN) {
   struct caml_ba_array *X = Caml_ba_array_val(vX);
   TYPE *X_data = (TYPE *) X->data;
 
@@ -67,9 +78,12 @@ value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB) {
   struct caml_ba_array *B = Caml_ba_array_val(vB);
   int *incy = (int *) B->data;
 
-  struct slice_pair * sp = calloc(1, sizeof(struct slice_pair));
+  int N = Int32_val(vN);
+
+  struct contract_pair * sp = calloc(1, sizeof(struct contract_pair));
   sp->dim = X->num_dims;
   sp->dep = 0;
+  sp->drt = N;
   sp->n = X->dim;
   sp->x = X_data;
   sp->y = Y_data;

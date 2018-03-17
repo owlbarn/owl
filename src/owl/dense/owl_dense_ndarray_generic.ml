@@ -3539,8 +3539,8 @@ let draw ?(axis=0) x n =
   let samples = Owl_slicing.get_fancy_array_typ slice x in
   samples, indices
 
-
-let contract_one index_pair x =
+(*
+let contract_one_ index_pair x =
   let n = num_dims x in
   let i, j = index_pair in
   assert (n > 1 && i >= 0 && i < n && j >= 0 && j < n);
@@ -3565,6 +3565,51 @@ let contract_one index_pair x =
 
   Owl_ndarray._ndarray_contract_one (kind x) p q incp incq;
   y
+*)
+
+let _check_index_pair x idx =
+  let i, j = idx in
+  let s = shape x in
+  let n = num_dims x in
+  (i >= 0 && i < n && j >= 0 && j < n) && (s.(i) = s.(j) && i <> j)
+
+
+let contract_one index_pairs x =
+  let d = num_dims x in
+  assert (d > 1);
+  assert (Array.for_all (_check_index_pair x) index_pairs);
+  let s0 = shape x in
+  let i0 = strides x in
+  let i1 = Array.copy i0 in
+  let s1 = Array.copy s0 in
+  let s2 = Array.copy s0 in
+
+
+  Array.iteri (fun k (i,j) ->
+    let p = d - 2 * k - 2 in
+    let q = d - 2 * k - 1 in
+    i0.(p) <- i1.(i);
+    i0.(i) <- i1.(p);
+    i0.(q) <- i1.(j);
+    i0.(j) <- i1.(q);
+    s0.(p) <- s1.(i);
+    s0.(i) <- s1.(p);
+    s0.(q) <- s1.(j);
+    s0.(j) <- s1.(q);
+    s2.(p) <- 1;
+    s2.(q) <- 1;
+  ) index_pairs;
+
+  let p = reshape x s0 in
+  let q = zeros (kind x) s2 in
+  let i2 = strides q in
+  let incp = Array.map Int32.of_int i0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let incq = Array.map Int32.of_int i2 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+
+  let rtd = d - (2 * Array.length index_pairs) in
+  Owl_ndarray._ndarray_contract_one (kind x) p q incp incq (Int32.of_int rtd);
+  let y = reshape q (Array.sub s2 0 rtd) in
+  q
 
 
 

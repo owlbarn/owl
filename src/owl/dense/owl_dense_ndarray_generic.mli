@@ -1752,7 +1752,7 @@ val clip_by_l2norm : float -> (float, 'a) t -> (float, 'a) t
 
 (** {6 Tensor Calculus}  *)
 
-val contract_one : int * int -> ('a, 'b) t -> ('a, 'b) t
+val contract_one : (int * int) array -> ('a, 'b) t -> ('a, 'b) t
 (** TODO *)
 
 
