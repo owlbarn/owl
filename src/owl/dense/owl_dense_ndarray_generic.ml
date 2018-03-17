@@ -3603,11 +3603,11 @@ let contract_one index_pairs x =
   let p = reshape x s0 in
   let q = zeros (kind x) s2 in
   let i2 = strides q in
-  let incp = Array.map Int64.of_int i0 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
-  let incq = Array.map Int64.of_int i2 |> Array1.of_array int64 c_layout |> genarray_of_array1 in
+  let incp = Array.map Int32.of_int i0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let incq = Array.map Int32.of_int i2 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
 
   let rtd = d - (2 * Array.length index_pairs) in
-  Owl_ndarray._ndarray_contract_one (kind x) p q incp incq (Int64.of_int rtd);
+  Owl_ndarray._ndarray_contract_one (kind x) p q incp incq (Int32.of_int rtd);
   reshape q (Array.sub s2 0 rtd)
 
 

@@ -29,12 +29,12 @@ void FUNCTION (c, contract_one) (struct contract_pair *p) {
   if (p->dep == p->dim - 2)
     FUNCTION (c, contract_one_1) (p);
   else {
-    const int d = p->dep;
-    const int n = p->n[d];
-    const int incx = p->incx[d];
-    const int incy = p->incy[d];
-    const int save_posx = p->posx;
-    const int save_posy = p->posy;
+    int d = p->dep;
+    int n = p->n[d];
+    int incx = p->incx[d];
+    int incy = p->incy[d];
+    int save_posx = p->posx;
+    int save_posy = p->posy;
     p->posx += p->ofsx[d];
     p->posy += p->ofsy[d];
 
@@ -80,7 +80,7 @@ value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB, val
   struct caml_ba_array *B = Caml_ba_array_val(vB);
   int *incy = (int *) B->data;
 
-  int64_t N = Int64_val(vN);
+  int N = Int64_val(vN);
 
   struct contract_pair * sp = calloc(1, sizeof(struct contract_pair));
   sp->dim = X->num_dims;
@@ -91,8 +91,8 @@ value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB, val
   sp->y = Y_data;
   sp->posx = 0;
   sp->posy = 0;
-  sp->ofsx = calloc(sp->dim, sizeof(int64_t));
-  sp->ofsy = calloc(sp->dim, sizeof(int64_t));
+  sp->ofsx = calloc(sp->dim, sizeof(int));
+  sp->ofsy = calloc(sp->dim, sizeof(int));
   sp->incx = incx;
   sp->incy = incy;
 
