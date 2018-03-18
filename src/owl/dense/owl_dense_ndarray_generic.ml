@@ -84,7 +84,7 @@ let reshape x d =
   else (
     let n = numel x in
     let m = Array.fold_right ( * ) d (-1) in
-    let e = Array.map (fun a -> if a > 0 then a else n / m) d in
+    let e = Array.map (fun a -> if a = -1 then n / m else a) d in
     reshape x e
   )
 
