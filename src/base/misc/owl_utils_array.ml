@@ -9,6 +9,10 @@
 include Array
 
 
+(* concatenate two arrays *)
+let ( @ ) a b = Array.append a b
+
+
 (* Generate an array of continuous integers *)
 let range a b =
   let r = Array.make (b - a + 1) 0 in

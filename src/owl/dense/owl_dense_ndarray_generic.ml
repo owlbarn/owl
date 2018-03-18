@@ -3581,14 +3581,10 @@ let contract_one index_pairs x =
 
   let permut_1 = Owl_utils.Array.of_tuples index_pairs in
   let permut_0 = Owl_utils.Array.(complement (range 0 (d - 1)) permut_1) in
-  let permut = Array.append permut_0 permut_1 in
-
-  Printf.printf "permut: ";
-  Array.iter (fun a -> Printf.printf "%i; " a) permut; print_endline ""; flush_all ();
+  let permut = Owl_utils.Array.(permut_0 @ permut_1) in
 
   let s0 = shape x in
   let i0 = strides x in
-
   let sa = Array.copy s0 in
   Array.iter (fun (i,j) ->
     sa.(i) <- 1;
@@ -3601,14 +3597,8 @@ let contract_one index_pairs x =
   let sb = Owl_utils.Array.permute permut sa in
   let ib = Owl_utils.Array.permute permut ia in
 
-  Array.iter (fun a -> Printf.printf "%i; " a) s1; print_endline ""; flush_all ();
-  Array.iter (fun a -> Printf.printf "%i; " a) i1; print_endline ""; flush_all ();
-  Array.iter (fun a -> Printf.printf "%i; " a) sa; print_endline ""; flush_all ();
-  Array.iter (fun a -> Printf.printf "%i; " a) sb; print_endline ""; flush_all ();
-
   let p = reshape x s1 in
   let q = zeros (kind x) sb in
-
   let incp = Array.map Int32.of_int i1 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
   let incq = Array.map Int32.of_int ib |> Array1.of_array int32 c_layout |> genarray_of_array1 in
 
