@@ -3580,35 +3580,42 @@ let contract_one index_pairs x =
   assert (Array.for_all (_check_index_pair x) index_pairs);
   let s0 = shape x in
   let i0 = strides x in
-  let i1 = Array.copy i0 in
   let s1 = Array.copy s0 in
-  let s2 = Array.copy s0 in
+  let i1 = Array.copy i0 in
 
+  let sa = Array.copy s0 in
+  Array.iter (fun (i,j) ->
+    sa.(i) <- 1;
+    sa.(j) <- 1;
+  ) index_pairs;
+  let ia = Owl_utils.calc_stride sa in
+  let sb = Array.copy sa in
+  let ib = Array.copy ia in
 
   Array.iteri (fun k (i,j) ->
-    let p = d - 2 * k - 2 in
-    let q = d - 2 * k - 1 in
-    i0.(p) <- i1.(i);
-    i0.(i) <- i1.(p);
-    i0.(q) <- i1.(j);
-    i0.(j) <- i1.(q);
-    s0.(p) <- s1.(i);
-    s0.(i) <- s1.(p);
-    s0.(q) <- s1.(j);
-    s0.(j) <- s1.(q);
-    s2.(p) <- 1;
-    s2.(q) <- 1;
+    let p = d - 2 * k - 1 in
+    let q = d - 2 * k - 2 in
+    Owl_utils.Array.swap s1 j p;
+    Owl_utils.Array.swap s1 i q;
+    Owl_utils.Array.swap i1 j p;
+    Owl_utils.Array.swap i1 i q;
+    Owl_utils.Array.swap sb j p;
+    Owl_utils.Array.swap sb i q;
+    Owl_utils.Array.swap ib j p;
+    Owl_utils.Array.swap ib i q;
   ) index_pairs;
 
-  let p = reshape x s0 in
-  let q = zeros (kind x) s2 in
-  let i2 = strides q in
-  let incp = Array.map Int32.of_int i0 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
-  let incq = Array.map Int32.of_int i2 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let p = reshape x s1 in
+  let q = zeros (kind x) sb in
+
+  let incp = Array.map Int32.of_int i1 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
+  let incq = Array.map Int32.of_int ib |> Array1.of_array int32 c_layout |> genarray_of_array1 in
 
   let rtd = d - (2 * Array.length index_pairs) in
   Owl_ndarray._ndarray_contract_one (kind x) p q incp incq (Int32.of_int rtd);
-  reshape q (Array.sub s2 0 rtd)
+  Array.iter (fun a -> Printf.printf "%i; " a) sa; print_endline ""; flush_all ();
+  Array.iter (fun a -> Printf.printf "%i; " a) sb; print_endline ""; flush_all ();
+  reshape q (Array.sub sb 0 rtd)
 
 
 

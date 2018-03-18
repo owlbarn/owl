@@ -112,3 +112,10 @@ let greater_eqaul x y =
     done with _ -> b := false
   );
   !b
+
+
+(* swap the ith and jth element in an array *)
+let swap x i j =
+  let a = x.(i) in
+  x.(i) <- x.(j);
+  x.(j) <- a

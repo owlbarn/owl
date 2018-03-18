@@ -6,7 +6,6 @@
 #ifdef OWL_ENABLE_TEMPLATE
 
 #include <stdio.h>
-// Level 1 optimisation
 void FUNCTION (c, contract_one_1) (struct contract_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
@@ -17,14 +16,14 @@ void FUNCTION (c, contract_one_1) (struct contract_pair *p) {
   int incx = p->incx[d] + p->incx[d + 1];
 
   for (int i = 0; i < n; i++) {
-    //printf("posx:%i incx:%i posy:%i incy:%i\n", posx, incx, posy, 0);
+    printf("posx:%i incx:%i posy:%i incy:%i\n", posx, incx, posy, 0);
     MAPFUN (*(x + posx), *(y + posy));
     posx += incx;
   }
 }
 
 
-// contract_one a ndarray, i.e. permute the axis
+// contract one ndarray
 void FUNCTION (c, contract_one) (struct contract_pair *p) {
   if (p->dep == p->dim - 2)
     FUNCTION (c, contract_one_1) (p);
@@ -38,8 +37,9 @@ void FUNCTION (c, contract_one) (struct contract_pair *p) {
     p->posx += p->ofsx[d];
     p->posy += p->ofsy[d];
 
+    printf("==> posx:%i incx:%i posy:%i incy:%i\n", p->posx, incx, p->posy, incy);
+
     if (p->dep < p->drt) {
-      //printf("aaa: dep=%i, drt=%i, incx=%i, incy=%i\n", p->dep, p->drt, incx, incy);
       for (int i = 0; i < n; i++) {
         p->dep += 1;
         FUNCTION (c, contract_one) (p);
@@ -49,7 +49,6 @@ void FUNCTION (c, contract_one) (struct contract_pair *p) {
       }
     }
     else {
-      //printf("bbb: dep=%i, drt=%i\n", p->dep, p->drt);
       incx += p->incx[d + 1];
 
       for (int i = 0; i < n; i++) {
@@ -80,7 +79,7 @@ value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB, val
   struct caml_ba_array *B = Caml_ba_array_val(vB);
   int *incy = (int *) B->data;
 
-  int N = Int64_val(vN);
+  int N = Int32_val(vN);
 
   struct contract_pair * sp = calloc(1, sizeof(struct contract_pair));
   sp->dim = X->num_dims;
@@ -105,6 +104,51 @@ value FUNCTION (stub, contract_one) (value vX, value vY, value vA, value vB, val
   return Val_unit;
 }
 
+/**
+// contract two ndarrays
+void FUNCTION (c, contract_two) (struct contract_pair *p) {
+  if (p->dep == p->dim - 2)
+    FUNCTION (c, contract_two_1) (p);
+  else {
+    int d = p->dep;
+    int n = p->n[d];
+    int incx = p->incx[d];
+    int incy = p->incy[d];
+    int incz = p->incz[d];
+    int save_posx = p->posx;
+    int save_posy = p->posy;
+    int save_posz = p->posz;
+    p->posx += p->ofsx[d];
+    p->posy += p->ofsy[d];
+    p->posz += p->ofsz[d];
+
+    if (p->dep < p->drt) {
+      for (int i = 0; i < n; i++) {
+        p->dep += 1;
+        FUNCTION (c, contract_two) (p);
+        p->dep -= 1;
+        p->posx += incx;
+        p->posy += incy;
+        p->posz += incz;
+      }
+    }
+    else {
+      incx += p->incx[d + 1];
+
+      for (int i = 0; i < n; i++) {
+        p->dep += 2;
+        FUNCTION (c, contract_two) (p);
+        p->dep -= 2;
+        p->posx += incx;
+      }
+    }
+
+    p->posx = save_posx;
+    p->posy = save_posy;
+    p->posz = save_posz;
+  }
+}
+**/
 
 
 #endif /* OWL_ENABLE_TEMPLATE */
