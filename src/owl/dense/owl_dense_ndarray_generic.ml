@@ -1139,30 +1139,33 @@ let matrix_transpose x =
   y
 
 
-(*TODO: FIXME: optimise*)
 let transpose ?axis x =
   let d = num_dims x in
-  if d = 2 then matrix_transpose x
+  let a = match axis with
+    | Some a -> a
+    | None   -> Array.init d (fun i -> d - i - 1)
+  in
+  (* trivial case *)
+  if a = Array.init d (fun i -> i) then copy x
   else (
-    let a = match axis with
-      | Some a -> a
-      | None -> Array.init d (fun i -> d - i - 1)
-    in
     (* check if axis is a correct permutation *)
     _check_transpose_axis a d;
-    let s0 = shape x in
-    let s1 = Array.map (fun j -> s0.(j)) a in
-    let i' = Array.make d 0 in
-    let y = empty (kind x) s1 in
-    (* allocate space for nd index *)
-    let l = Array.make d 0 in
-    let s = Owl_utils.calc_stride s0 in
-    iteri (fun i z ->
-      Owl_utils.index_1d_nd i l s;
-      Array.iteri (fun k j -> i'.(k) <- l.(j)) a;
-      set y i' z
-    ) x;
-    y
+    if d = 2 then matrix_transpose x
+    else (
+      let sx = shape x in
+      let sy = Array.map (fun j -> sx.(j)) a in
+      let y = empty (kind x) sy in
+      (* calculate the inverse of the permutation *)
+      let b = Array.make d 0 in
+      Array.iteri (fun i j -> b.(j) <- i) a;
+      let _incy = strides y in
+      let _incy = Array.map (fun j -> Int32.of_int _incy.(j)) b in
+      let _incx = Array.map Int32.of_int (strides x) in
+      let incx = Array1.of_array Int32 C_layout _incx |> genarray_of_array1 in
+      let incy = Array1.of_array Int32 C_layout _incy |> genarray_of_array1 in
+      Owl_ndarray._ndarray_transpose (kind x) x y incx incy;
+      y
+    )
   )
 
 
