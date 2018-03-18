@@ -24,6 +24,13 @@ let range a b =
   r
 
 
+(* count the number of occurrence of a in x *)
+let count x a =
+  let c = ref 0 in
+  Array.iter (fun b -> if a = b then c := !c + 1) x;
+  !c
+
+
 (* filter array, f : int -> 'a -> bool * 'b *)
 let filteri_v f x =
   let r = Owl_utils_stack.make () in

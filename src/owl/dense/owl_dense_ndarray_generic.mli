@@ -364,6 +364,9 @@ val reshape : ('a, 'b) t -> int array -> ('a, 'b) t
 ``reshape x d`` transforms ``x`` into a new shape definted by ``d``. Note the
 ``reshape`` function will not make a copy of ``x``, the returned ndarray shares
 the same memory with the original ``x``.
+
+One shape dimension (only one) can be set to ``-1``. In this case, the value is
+inferred from the length of the array and remaining dimensions.
  *)
 
 val flatten : ('a, 'b) t -> ('a, 'b) t

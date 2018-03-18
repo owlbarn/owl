@@ -77,7 +77,16 @@ let copy_to src dst = Genarray.blit src dst
 let fill x a = Genarray.fill x a
 
 
-let reshape x dimension = reshape x dimension
+let reshape x d =
+  let minus_one = Owl_utils.Array.count d (-1) in
+  assert (minus_one <= 1);
+  if minus_one = 0 then reshape x d
+  else (
+    let n = numel x in
+    let m = Array.fold_right ( * ) d (-1) in
+    let e = Array.map (fun a -> if a > 0 then a else n / m) d in
+    reshape x e
+  )
 
 
 let reset x = Genarray.fill x (Owl_const.zero (kind x))
