@@ -9,6 +9,13 @@
 include Array
 
 
+(* Generate an array of continuous integers *)
+let range a b =
+  let r = Array.make (b - a + 1) 0 in
+  for i = a to b do r.(i - a) <- i done;
+  r
+
+
 (* filter array, f : int -> 'a -> bool * 'b *)
 let filteri_v f x =
   let r = Owl_utils_stack.make () in
@@ -119,3 +126,32 @@ let swap x i j =
   let a = x.(i) in
   x.(i) <- x.(j);
   x.(j) <- a
+
+
+(* permute an array x based on the permutation array p, such that y.(i) = x.(p.(i)) *)
+let permute p x =
+  let n = Array.length x in
+  Array.init n (fun i -> x.(p.(i)))
+
+
+(* convert a list of tuples into array *)
+let of_tuples x =
+  let s = Owl_utils_stack.make () in
+  Array.iter (fun (i,j) ->
+    Owl_utils_stack.push s i;
+    Owl_utils_stack.push s j;
+  ) x;
+  Owl_utils_stack.to_array s
+
+
+(* given set x and y, return complement of y, i.e. x \ y *)
+let complement x y =
+  let h = Hashtbl.create 64 in
+  Array.iter (fun a -> Hashtbl.add h a a) x;
+  Array.iter (fun a -> Hashtbl.remove h a) y;
+  let s = Owl_utils_stack.make () in
+  Hashtbl.iter (fun a _ -> Owl_utils_stack.push s a) h;
+  Owl_utils_stack.to_array s
+
+
+(* ends here *)

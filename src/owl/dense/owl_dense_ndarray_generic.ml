@@ -3578,10 +3578,16 @@ let contract_one index_pairs x =
   let d = num_dims x in
   assert (d > 1);
   assert (Array.for_all (_check_index_pair x) index_pairs);
+
+  let permut_1 = Owl_utils.Array.of_tuples index_pairs in
+  let permut_0 = Owl_utils.Array.(complement (range 0 (d - 1)) permut_1) in
+  let permut = Array.append permut_0 permut_1 in
+
+  Printf.printf "permut: ";
+  Array.iter (fun a -> Printf.printf "%i; " a) permut; print_endline ""; flush_all ();
+
   let s0 = shape x in
   let i0 = strides x in
-  let s1 = Array.copy s0 in
-  let i1 = Array.copy i0 in
 
   let sa = Array.copy s0 in
   Array.iter (fun (i,j) ->
@@ -3589,21 +3595,16 @@ let contract_one index_pairs x =
     sa.(j) <- 1;
   ) index_pairs;
   let ia = Owl_utils.calc_stride sa in
-  let sb = Array.copy sa in
-  let ib = Array.copy ia in
 
-  Array.iteri (fun k (i,j) ->
-    let p = d - 2 * k - 1 in
-    let q = d - 2 * k - 2 in
-    Owl_utils.Array.swap s1 j p;
-    Owl_utils.Array.swap s1 i q;
-    Owl_utils.Array.swap i1 j p;
-    Owl_utils.Array.swap i1 i q;
-    Owl_utils.Array.swap sb j p;
-    Owl_utils.Array.swap sb i q;
-    Owl_utils.Array.swap ib j p;
-    Owl_utils.Array.swap ib i q;
-  ) index_pairs;
+  let s1 = Owl_utils.Array.permute permut s0 in
+  let i1 = Owl_utils.Array.permute permut i0 in
+  let sb = Owl_utils.Array.permute permut sa in
+  let ib = Owl_utils.Array.permute permut ia in
+
+  Array.iter (fun a -> Printf.printf "%i; " a) s1; print_endline ""; flush_all ();
+  Array.iter (fun a -> Printf.printf "%i; " a) i1; print_endline ""; flush_all ();
+  Array.iter (fun a -> Printf.printf "%i; " a) sa; print_endline ""; flush_all ();
+  Array.iter (fun a -> Printf.printf "%i; " a) sb; print_endline ""; flush_all ();
 
   let p = reshape x s1 in
   let q = zeros (kind x) sb in
@@ -3613,6 +3614,9 @@ let contract_one index_pairs x =
 
   let rtd = d - (2 * Array.length index_pairs) in
   Owl_ndarray._ndarray_contract_one (kind x) p q incp incq (Int32.of_int rtd);
+
+  Array.iter (fun a -> Printf.printf "%i; " a) s1; print_endline ""; flush_all ();
+  Array.iter (fun a -> Printf.printf "%i; " a) i1; print_endline ""; flush_all ();
   Array.iter (fun a -> Printf.printf "%i; " a) sa; print_endline ""; flush_all ();
   Array.iter (fun a -> Printf.printf "%i; " a) sb; print_endline ""; flush_all ();
   reshape q (Array.sub sb 0 rtd)
