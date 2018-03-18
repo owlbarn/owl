@@ -13,6 +13,10 @@ include Array
 let ( @ ) a b = Array.append a b
 
 
+(* set multiple elements to the same value a in x *)
+let set_n x idx a = Array.iter (fun i -> x.(i) <- a) idx
+
+
 (* Generate an array of continuous integers *)
 let range a b =
   let r = Array.make (b - a + 1) 0 in

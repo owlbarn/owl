@@ -5,7 +5,7 @@
 
 #ifdef OWL_ENABLE_TEMPLATE
 
-#include <stdio.h>
+
 void FUNCTION (c, contract_one_1) (struct contract_pair *p) {
   TYPE *x = (TYPE *) p->x;
   TYPE *y = (TYPE *) p->y;
@@ -16,7 +16,6 @@ void FUNCTION (c, contract_one_1) (struct contract_pair *p) {
   int incx = p->incx[d] + p->incx[d + 1];
 
   for (int i = 0; i < n; i++) {
-    printf("posx:%i incx:%i posy:%i incy:%i\n", posx, incx, posy, 0);
     MAPFUN (*(x + posx), *(y + posy));
     posx += incx;
   }
@@ -37,9 +36,8 @@ void FUNCTION (c, contract_one) (struct contract_pair *p) {
     p->posx += p->ofsx[d];
     p->posy += p->ofsy[d];
 
-    printf("==> posx:%i incx:%i posy:%i incy:%i\n", p->posx, incx, p->posy, incy);
-
     if (p->dep < p->drt) {
+      // outer loop
       for (int i = 0; i < n; i++) {
         p->dep += 1;
         FUNCTION (c, contract_one) (p);
@@ -49,8 +47,8 @@ void FUNCTION (c, contract_one) (struct contract_pair *p) {
       }
     }
     else {
+      // inner loop
       incx += p->incx[d + 1];
-
       for (int i = 0; i < n; i++) {
         p->dep += 2;
         FUNCTION (c, contract_one) (p);

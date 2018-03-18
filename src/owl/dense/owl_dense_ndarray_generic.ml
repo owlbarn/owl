@@ -3586,10 +3586,7 @@ let contract_one index_pairs x =
   let s0 = shape x in
   let i0 = strides x in
   let sa = Array.copy s0 in
-  Array.iter (fun (i,j) ->
-    sa.(i) <- 1;
-    sa.(j) <- 1;
-  ) index_pairs;
+  Owl_utils.Array.set_n sa permut_1 1;
   let ia = Owl_utils.calc_stride sa in
 
   let s1 = Owl_utils.Array.permute permut s0 in
@@ -3602,13 +3599,8 @@ let contract_one index_pairs x =
   let incp = Array.map Int32.of_int i1 |> Array1.of_array int32 c_layout |> genarray_of_array1 in
   let incq = Array.map Int32.of_int ib |> Array1.of_array int32 c_layout |> genarray_of_array1 in
 
-  let rtd = d - (2 * Array.length index_pairs) in
+  let rtd = d - (Array.length permut_1) in
   Owl_ndarray._ndarray_contract_one (kind x) p q incp incq (Int32.of_int rtd);
-
-  Array.iter (fun a -> Printf.printf "%i; " a) s1; print_endline ""; flush_all ();
-  Array.iter (fun a -> Printf.printf "%i; " a) i1; print_endline ""; flush_all ();
-  Array.iter (fun a -> Printf.printf "%i; " a) sa; print_endline ""; flush_all ();
-  Array.iter (fun a -> Printf.printf "%i; " a) sb; print_endline ""; flush_all ();
   reshape q (Array.sub sb 0 rtd)
 
 
