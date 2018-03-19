@@ -1721,10 +1721,10 @@ val vecnorm' : ?p:float -> ('a, 'b) t -> 'a
 (** Refer to :doc:`owl_dense_ndarray_generic`. *)
 
 val max_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
-(** TODO *)
+(** Refer to :doc:`owl_dense_ndarray_generic`. *)
 
 val avg_pool : ?padding:padding -> (float, 'a) t -> int array -> int array -> (float, 'a) t
-(** TODO *)
+(** Refer to :doc:`owl_dense_ndarray_generic`. *)
 
 val cumsum : ?axis:int -> ('a, 'b) t -> ('a, 'b) t
 (**
@@ -1859,7 +1859,9 @@ val dot : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
  *)
 
 val add_diag : ('a, 'b) t -> 'a -> ('a, 'b) t
-(** TODO *)
+(** ``add_diag x a`` adds ``a`` to the diagonal elements in ``x``. A new copy
+of the data is returned.
+ *)
 
 val pow : ('a, 'b) t -> ('a, 'b) t -> ('a, 'b) t
 (**
