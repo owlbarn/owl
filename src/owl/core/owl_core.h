@@ -8,7 +8,8 @@
 
 #include "owl_macros.h"
 #include "owl_slicing.h"
-#include <stdio.h>
+#include "owl_ndarray_contract.h"
+
 
 /** Core function declaration **/
 
@@ -26,6 +27,14 @@ extern void c_float64_ndarray_transpose (struct slice_pair *sp);
 extern void c_complex32_ndarray_transpose (struct slice_pair *sp);
 
 extern void c_complex64_ndarray_transpose (struct slice_pair *sp);
+
+extern void c_float32_ndarray_contract_one (struct contract_pair *sp);
+
+extern void c_float64_ndarray_contract_one (struct contract_pair *sp);
+
+extern void c_complex32_ndarray_contract_one (struct contract_pair *sp);
+
+extern void c_complex64_ndarray_contract_one (struct contract_pair *sp);
 
 extern void c_float32_matrix_swap_rows (float *x, int m, int n, int i, int j);
 

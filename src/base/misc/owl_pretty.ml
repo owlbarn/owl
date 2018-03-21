@@ -125,15 +125,25 @@ let print_table ?(header=true) ?(max_row=10) ?(max_col=10) ?elt_to_str_fun forma
     | Some f -> f
     | None   -> Owl_utils.elt_to_str (Bigarray.Genarray.kind x)
   in
-  let y, row_num, col_num = _reshape_ndarray x in
-  let row_indices, col_indices = _chunk_table max_row max_col row_num col_num in
-  let tbody = _fill_table elt_to_str_fun row_indices col_indices y in
-  let row_header, col_header = _make_header row_indices col_indices x in
-  let table = match header with
-    | true  -> _glue_headers row_header col_header tbody
-    | false -> tbody
+
+  let out_s =
+    if Bigarray.Genarray.num_dims x = 0 then (
+      (* special case: rank = 0 *)
+      elt_to_str_fun (Bigarray.Genarray.get x [||])
+    )
+    else (
+      (* common case: rank > 0 *)
+      let y, row_num, col_num = _reshape_ndarray x in
+      let row_indices, col_indices = _chunk_table max_row max_col row_num col_num in
+      let tbody = _fill_table elt_to_str_fun row_indices col_indices y in
+      let row_header, col_header = _make_header row_indices col_indices x in
+      let table = match header with
+        | true  -> _glue_headers row_header col_header tbody
+        | false -> tbody
+      in
+      _format_table table
+    )
   in
-  let out_s = _format_table table in
   Format.open_box 0;
   Format.fprintf formatter "%s" out_s;
   Format.close_box ()

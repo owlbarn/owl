@@ -143,6 +143,7 @@ external owl_float64_ndarray_maxpool_argmax_spatial : ('a, 'b) owl_arr -> ('a, '
 "stub_float64_ndarray_maxpool_spatial_arg_bytecode"
 "stub_float64_ndarray_maxpool_spatial_arg_native"
 
+
 (* Convolution Operations *)
 
 external owl_float32_ndarray_conv_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
@@ -193,6 +194,54 @@ external owl_float64_ndarray_conv_cuboid_backward_input : ('a, 'b) owl_arr -> ('
 "stub_float64_ndarray_conv_cuboid_backward_input_bytecode"
 "stub_float64_ndarray_conv_cuboid_backward_input_native"
 
+external owl_complex32_ndarray_conv_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_complex32_ndarray_conv_spatial_bytecode"
+"stub_complex32_ndarray_conv_spatial_native"
+
+external owl_complex32_ndarray_conv_spatial_backward_kernel : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_complex32_ndarray_conv_spatial_backward_kernel_bytecode"
+"stub_complex32_ndarray_conv_spatial_backward_kernel_native"
+
+external owl_complex32_ndarray_conv_spatial_backward_input : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_complex32_ndarray_conv_spatial_backward_input_bytecode"
+"stub_complex32_ndarray_conv_spatial_backward_input_native"
+
+external owl_complex32_ndarray_conv_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_complex32_ndarray_conv_cuboid_bytecode"
+"stub_complex32_ndarray_conv_cuboid_native"
+
+external owl_complex32_ndarray_conv_cuboid_backward_kernel : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_complex32_ndarray_conv_cuboid_backward_kernel_bytecode"
+"stub_complex32_ndarray_conv_cuboid_backward_kernel_native"
+
+external owl_complex32_ndarray_conv_cuboid_backward_input : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_complex32_ndarray_conv_cuboid_backward_input_bytecode"
+"stub_complex32_ndarray_conv_cuboid_backward_input_native"
+
+external owl_complex64_ndarray_conv_spatial : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_complex64_ndarray_conv_spatial_bytecode"
+"stub_complex64_ndarray_conv_spatial_native"
+
+external owl_complex64_ndarray_conv_spatial_backward_kernel : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_complex64_ndarray_conv_spatial_backward_kernel_bytecode"
+"stub_complex64_ndarray_conv_spatial_backward_kernel_native"
+
+external owl_complex64_ndarray_conv_spatial_backward_input : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_complex64_ndarray_conv_spatial_backward_input_bytecode"
+"stub_complex64_ndarray_conv_spatial_backward_input_native"
+
+external owl_complex64_ndarray_conv_cuboid : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_complex64_ndarray_conv_cuboid_bytecode"
+"stub_complex64_ndarray_conv_cuboid_native"
+
+external owl_complex64_ndarray_conv_cuboid_backward_kernel : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_complex64_ndarray_conv_cuboid_backward_kernel_bytecode"
+"stub_complex64_ndarray_conv_cuboid_backward_kernel_native"
+
+external owl_complex64_ndarray_conv_cuboid_backward_input : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> int -> unit =
+"stub_complex64_ndarray_conv_cuboid_backward_input_bytecode"
+"stub_complex64_ndarray_conv_cuboid_backward_input_native"
+
 
 external owl_float32_ndarray_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int32, int32_elt) owl_arr -> (int32, int32_elt) owl_arr -> unit = "stub_float32_ndarray_transpose"
 external owl_float64_ndarray_transpose : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int32, int32_elt) owl_arr -> (int32, int32_elt) owl_arr -> unit = "stub_float64_ndarray_transpose"
@@ -207,6 +256,21 @@ let _ndarray_transpose
   | Complex32 -> owl_complex32_ndarray_transpose
   | Complex64 -> owl_complex64_ndarray_transpose
   | _         -> failwith "_ndarray_transpose: unsupported operation"
+
+
+external owl_float32_ndarray_contract_one : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int32, int32_elt) owl_arr -> (int32, int32_elt) owl_arr -> int32 -> unit = "stub_float32_ndarray_contract_one"
+external owl_float64_ndarray_contract_one : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int32, int32_elt) owl_arr -> (int32, int32_elt) owl_arr -> int32 -> unit = "stub_float64_ndarray_contract_one"
+external owl_complex32_ndarray_contract_one : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int32, int32_elt) owl_arr -> (int32, int32_elt) owl_arr -> int32 -> unit = "stub_complex32_ndarray_contract_one"
+external owl_complex64_ndarray_contract_one : ('a, 'b) owl_arr -> ('a, 'b) owl_arr -> (int32, int32_elt) owl_arr -> (int32, int32_elt) owl_arr -> int32 -> unit = "stub_complex64_ndarray_contract_one"
+
+let _ndarray_contract_one
+  : type a b. (a, b) kind -> (a, b) owl_arr -> (a, b) owl_arr -> (int32, int32_elt) owl_arr -> (int32, int32_elt) owl_arr -> int32 -> unit
+  = function
+  | Float32   -> owl_float32_ndarray_contract_one
+  | Float64   -> owl_float64_ndarray_contract_one
+  | Complex32 -> owl_complex32_ndarray_contract_one
+  | Complex64 -> owl_complex64_ndarray_contract_one
+  | _         -> failwith "_ndarray_contract_one: unsupported operation"
 
 
 (* ends here *)

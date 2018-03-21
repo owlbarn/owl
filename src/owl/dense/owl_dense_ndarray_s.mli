@@ -571,6 +571,12 @@ val avg_pool2d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
 val avg_pool3d_backward : padding -> arr -> int array -> int array -> arr -> arr
 
+
+(** {6 Tensor Calculus}  *)
+
+val contract_one : (int * int) array -> arr -> arr
+
+
 (** {6 Experimental functions} *)
 
 val sum_slices : ?axis:int -> arr -> arr

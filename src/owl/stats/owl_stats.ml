@@ -712,7 +712,7 @@ let wilcoxon ?(alpha=0.05) ?(side=BothSide) x y =
     in
     let p =
       if v < 0. then 0.
-      else Array.fold_left (+.) 0. (Owl_utils.Array.map (fun i -> f (float_of_int i) n1) (Owl_utils.range 0 (int_of_float v)))
+      else Array.fold_left (+.) 0. (Owl_utils.Array.map (fun i -> f (float_of_int i) n1) (Owl_utils.Array.range 0 (int_of_float v)))
     in
     match side with
     | BothSide -> 2. *. p /. (2. ** n1)
