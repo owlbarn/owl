@@ -176,31 +176,43 @@ let _owl_gaussian_fun : type a b. (a, b) kind -> (float -> a) = function
 let _owl_spatial_conv : type a b . (a, b) kind -> (a, b) owl_arr_op22 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_spatial
   | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_spatial
+  | Complex32 -> Owl_ndarray.owl_complex32_ndarray_conv_spatial
+  | Complex64 -> Owl_ndarray.owl_complex64_ndarray_conv_spatial
   | _         -> failwith "_owl_spatial_conv: unsupported operation"
 
 let _owl_spatial_conv_backward_input : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_spatial_backward_input
   | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_spatial_backward_input
+  | Complex32 -> Owl_ndarray.owl_complex32_ndarray_conv_spatial_backward_input
+  | Complex64 -> Owl_ndarray.owl_complex64_ndarray_conv_spatial_backward_input
   | _         -> failwith "_owl_spatial_conv_backward_input: unsupported operation"
 
 let _owl_spatial_conv_backward_kernel : type a b . (a, b) kind -> (a, b) owl_arr_op23 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_spatial_backward_kernel
   | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_spatial_backward_kernel
+  | Complex32 -> Owl_ndarray.owl_complex32_ndarray_conv_spatial_backward_kernel
+  | Complex64 -> Owl_ndarray.owl_complex64_ndarray_conv_spatial_backward_kernel
   | _         -> failwith "_owl_spatial_conv_backward_kernel: unsupported operation"
 
 let _owl_cuboid_conv : type a b . (a, b) kind -> (a, b) owl_arr_op24 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_cuboid
   | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_cuboid
+  | Complex32 -> Owl_ndarray.owl_complex32_ndarray_conv_cuboid
+  | Complex64 -> Owl_ndarray.owl_complex64_ndarray_conv_cuboid
   | _         -> failwith "_owl_cuboid_conv: unsupported operation"
 
 let _owl_cuboid_conv_backward_input : type a b . (a, b) kind -> (a, b) owl_arr_op25 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_cuboid_backward_input
   | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_cuboid_backward_input
+  | Complex32 -> Owl_ndarray.owl_complex32_ndarray_conv_cuboid_backward_input
+  | Complex64 -> Owl_ndarray.owl_complex64_ndarray_conv_cuboid_backward_input
   | _         -> failwith "_owl_cuboid_conv_backward_input: unsupported operation"
 
 let _owl_cuboid_conv_backward_kernel : type a b . (a, b) kind -> (a, b) owl_arr_op25 = function
   | Float32   -> Owl_ndarray.owl_float32_ndarray_conv_cuboid_backward_kernel
   | Float64   -> Owl_ndarray.owl_float64_ndarray_conv_cuboid_backward_kernel
+  | Complex32 -> Owl_ndarray.owl_complex32_ndarray_conv_cuboid_backward_kernel
+  | Complex64 -> Owl_ndarray.owl_complex64_ndarray_conv_cuboid_backward_kernel
   | _         -> failwith "_owl_cuboid_conv_backward_kernel: unsupported operation"
 
 let _owl_spatial_max_pooling : type a b . (a, b) kind -> (a, b) owl_arr_op26 = function
