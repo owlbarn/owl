@@ -121,7 +121,7 @@ void FUNCTION (c, contract_two_1) (struct contract_pair *p) {
   int incz = p->incz[d];
 
   for (int i = 0; i < n; i++) {
-    *(x + posx) += *(y + posy) * *(z + posz);
+    *(z + posz) += *(x + posx) * *(y + posy);
     posx += incx;
     posy += incy;
     posz += incz;
@@ -162,7 +162,7 @@ void FUNCTION (c, contract_two) (struct contract_pair *p) {
 }
 
 
-// stub function of contract_one
+// stub function of contract_two
 value FUNCTION (stub, contract_two) (
   value vX, value vY, value vZ,
   value vA, value vB, value vC,
