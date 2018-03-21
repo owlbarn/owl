@@ -40,16 +40,12 @@ value FUN_NATIVE (spatial) (
 
   memset(output_ptr, 0, batches * output_cri * sizeof(TYPE));
 
-  TYPE pr, pc;
-  if (padding == 1) {
-    pr = 0.; pc = 0.;
-  } else {
-    pr = (row_stride * ( output_rows - 1) +
-      kernel_rows - input_rows) / 2.;
-    pc = (col_stride * ( output_cols - 1) +
-      kernel_cols - input_cols) / 2.;
-    if (pr < 0) pr = 0.;
-    if (pc < 0) pc = 0.;
+  int pr = 0, pc = 0;
+  if (padding != 1){
+    pr = (row_stride * ( output_rows - 1) + kernel_rows - input_rows) / 2;
+    pc = (col_stride * ( output_cols - 1) + kernel_cols - input_cols) / 2;
+    if (pr < 0) pr = 0;
+    if (pc < 0) pc = 0;
   }
 
   for (int i = 0; i < batches; ++i) {
@@ -60,8 +56,8 @@ value FUN_NATIVE (spatial) (
       for (int k = 0; k < output_rows; ++k) {
         const int output_idx_base = output_idx_base_j + k * in_channel;
 
-        const int cstart = j * col_stride - floor(pc);
-        const int rstart = k * row_stride - floor(pr);
+        const int cstart = j * col_stride - pc;
+        const int rstart = k * row_stride - pr;
         const int cend   = cstart + kernel_cols;
         const int rend   = rstart + kernel_rows;
 
@@ -175,7 +171,7 @@ value FUN_NATIVE (spatial_backward) (
 
                 #ifdef OWL_NDARRAY_MAX
                 TYPE t = *(input_ptr + input_idx);
-                if (acc < t){
+                if (PLT(acc,t)){
                   acc = t;
                   max_idx = input_idx;
                 }
@@ -247,19 +243,16 @@ value FUN_NATIVE (cuboid) (
 
   memset(output_ptr, 0, batches * output_crdi * sizeof(TYPE));
 
-  TYPE pr, pc, pd;
-  if (padding == 1){
-    pr = 0.; pc = 0.; pd = 0.;
+  int pd, pr, pc;
+  if (padding == 1) {
+    pc = 0; pr = 0; pd = 0;
   } else {
-    pr = (row_stride * ( output_rows - 1) +
-      kernel_rows - input_rows) / 2.;
-    pc = (col_stride * ( output_cols - 1) +
-      kernel_cols - input_cols) / 2.;
-    pd = (dpt_stride * ( output_cols - 1) +
-      kernel_dpts - input_dpts) / 2.;
-    if (pr < 0) pr = 0.;
-    if (pc < 0) pc = 0.;
-    if (pd < 0) pd = 0.;
+    int pad_cols = col_stride * (output_cols - 1) + kernel_cols - input_cols;
+    int pad_rows = row_stride * (output_rows - 1) + kernel_rows - input_rows;
+    int pad_dpts = dpt_stride * (output_dpts - 1) + kernel_dpts - input_dpts;
+    pc = pad_cols / 2; if (pc < 0) pc = 0;
+    pr = pad_rows / 2; if (pr < 0) pr = 0;
+    pd = pad_dpts / 2; if (pd < 0) pd = 0;
   }
 
   for (int i = 0; i < batches; ++i) {
@@ -272,9 +265,9 @@ value FUN_NATIVE (cuboid) (
         for (int d = 0; d < output_dpts; ++d) {
           const int output_idx_base = output_idx_base_k + d * in_channel;
 
-          const int cstart = j * col_stride - floor(pc);
-          const int rstart = k * row_stride - floor(pr);
-          const int dstart = d * dpt_stride - floor(pd);
+          const int cstart = j * col_stride - pc;
+          const int rstart = k * row_stride - pr;
+          const int dstart = d * dpt_stride - pd;
           const int cend   = cstart + kernel_cols;
           const int rend   = rstart + kernel_rows;
           const int dend   = dstart + kernel_dpts;
@@ -360,19 +353,16 @@ value FUN_NATIVE (cuboid_backward) (
   const int input_rdi   = input_rows * input_dpts * in_channel;
   const int input_di    = input_dpts * in_channel;
 
-  float pad_rows, pad_cols, pad_dpts;
-  if (padding == 1){
-    pad_rows = 0.; pad_cols = 0.; pad_dpts = 0.;
+  int pd, pr, pc;
+  if (padding == 1) {
+    pc = 0; pr = 0; pd = 0;
   } else {
-    pad_rows = (row_stride * ( output_rows - 1) +
-      kernel_rows - input_rows) / 2.;
-    pad_cols = (col_stride * ( output_cols - 1) +
-      kernel_cols - input_cols) / 2.;
-    pad_dpts = (dpt_stride * ( output_dpts - 1) +
-      kernel_dpts - input_dpts) / 2.;
-    if (pad_cols < 0)  pad_cols  = 0.;
-    if (pad_rows < 0)  pad_rows  = 0.;
-    if (pad_dpts < 0) pad_dpts = 0.;
+    int pad_cols = col_stride * (output_cols - 1) + kernel_cols - input_cols;
+    int pad_rows = row_stride * (output_rows - 1) + kernel_rows - input_rows;
+    int pad_dpts = dpt_stride * (output_dpts - 1) + kernel_dpts - input_dpts;
+    pc = pad_cols / 2; if (pc < 0) pc = 0;
+    pr = pad_rows / 2; if (pr < 0) pr = 0;
+    pd = pad_dpts / 2; if (pd < 0) pd = 0;
   }
 
   memset(input_backward_ptr, 0, batches * input_crdi * sizeof(TYPE));
@@ -387,9 +377,9 @@ value FUN_NATIVE (cuboid_backward) (
         for (int d = 0; d < output_dpts; ++d) {
           const int output_idx_base = output_idx_base_k + d * in_channel;
 
-          const int cstart = j * col_stride - floor(pad_cols);
-          const int rstart = k * row_stride - floor(pad_rows);
-          const int dstart = d * dpt_stride - floor(pad_dpts);
+          const int cstart = j * col_stride - pc;
+          const int rstart = k * row_stride - pr;
+          const int dstart = d * dpt_stride - pd;
           const int cend   = cstart + kernel_cols;
           const int rend   = rstart + kernel_rows;
           const int dend   = dstart + kernel_dpts;
@@ -418,7 +408,7 @@ value FUN_NATIVE (cuboid_backward) (
 
                     #ifdef OWL_NDARRAY_MAX
                     TYPE t = *(input_ptr + input_idx);
-                    if (acc < t){
+                    if (PLT(acc,t)){
                       acc = t;
                       max_idx = input_idx;
                     }
@@ -518,7 +508,7 @@ value FUN_NATIVE (spatial_arg) (
                 int input_idx =
                   input_idx_base + a * input_ri + b * in_channel + l;
                 TYPE t = *(input_ptr + input_idx);
-                if (acc < t) {
+                if (PLT(acc,t)){
                   acc = t;
                   max_idx = input_idx;
                 }
